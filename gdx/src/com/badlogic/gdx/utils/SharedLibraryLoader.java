@@ -132,6 +132,10 @@ public class SharedLibraryLoader {
 			System.loadLibrary(sharedLibName);
 			loaded = true;
 		}
-		if(loaded) loadedLibraries.add(sharedLibName);
+		if(loaded) {
+			loadedLibraries.add(sharedLibName);
+		} else {
+			throw new RuntimeException("Couldn't load shared library: '" + sharedLibName + "' for target " + System.getProperty("os.name") + ", " + (is64Bit?"64-bit":"32-bit"));
+		}
 	}
 }

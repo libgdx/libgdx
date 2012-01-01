@@ -18,10 +18,16 @@ package com.badlogic.gdx.audio.io;
 
 import java.nio.ShortBuffer;
 
+import com.badlogic.gdx.utils.SharedLibraryLoader;
+
 /** A {@link Decoder} implementation that decodes MP3 files via libmpg123 natively.
  * 
  * @author mzechner */
 public class Mpg123Decoder implements Decoder {
+	static {
+		new SharedLibraryLoader().load("gdx-audio");
+	}
+	
 	public final long handle;
 
 	/** Opens the given file for mp3 decoding. Throws an IllegalArugmentException in case the file could not be opened.

@@ -1,11 +1,14 @@
 package com.badlogic.gdx.audio;
 
+import com.badlogic.gdx.audio.transform.SoundTouch;
 import com.badlogic.gdx.jnigen.AntScriptGenerator;
 import com.badlogic.gdx.jnigen.BuildConfig;
 import com.badlogic.gdx.jnigen.BuildExecutor;
 import com.badlogic.gdx.jnigen.BuildTarget;
 import com.badlogic.gdx.jnigen.BuildTarget.TargetOs;
 import com.badlogic.gdx.jnigen.NativeCodeGenerator;
+import com.badlogic.gdx.jnigen.JniGenSharedLibraryLoader;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class AudioBuild {
 	public static void main(String[] args) throws Exception {
@@ -86,5 +89,14 @@ public class AudioBuild {
 		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, android);
 		
 		BuildExecutor.executeAnt("jni/build-windows32home.xml", " -v");
+		BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
+		
+		new SharedLibraryLoader("libs/gdx-audio-natives.jar").load("gdx-audio");
+		SoundTouch soundTouch = new SoundTouch();
+		soundTouch.setSampleRate(44100);
+		soundTouch.setChannels(1);
+		soundTouch.putSamples(new short[1024*10], 0, 1024*10);
+		System.out.println(soundTouch.numSamples());
+		soundTouch.dispose();
 	}
 }

@@ -47,8 +47,6 @@
 	</target>
 	
 	<target name="create-build-dir" depends="precompile">
-		<pathconvert pathsep="${line.separator}" property="files" refid="g++-files"/>
-		<echo>${files}</echo>
 		<!-- FIXME this is pretty nasty :/ -->
 		<copy todir="${buildDir}">
 			<fileset refid="g++-files"/>

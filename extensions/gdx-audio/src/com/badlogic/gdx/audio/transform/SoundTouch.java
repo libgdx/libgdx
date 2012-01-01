@@ -1,6 +1,7 @@
 package com.badlogic.gdx.audio.transform;
 
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class SoundTouch implements Disposable {
 	/** Enable/disable anti-alias filter in pitch transposer (0 = disable) **/
@@ -75,6 +76,7 @@ public class SoundTouch implements Disposable {
 	 * Creates a new SoundTouch object. Needs to be disposed via {@link #dispose()}.
 	 */
 	public SoundTouch() {
+		new SharedLibraryLoader().load("gdx-audio");
 		addr = newSoundTouchJni();
 	}
 
@@ -271,4 +273,22 @@ public class SoundTouch implements Disposable {
 	private native int numUnprocessedSamplesJni(long addr); /*
 		return ((SoundTouch*)addr)->numUnprocessedSamples();
 	*/
+	
+    /** Returns number of samples currently available. **/  
+	public int numSamples() {
+		return numSamplesJni(addr);
+	}
+
+	private native int numSamplesJni(long addr); /*
+		return ((SoundTouch*)addr)->numSamples();
+	*/
+	
+	public static void main(String[] args) {
+		SoundTouch soundTouch = new SoundTouch();
+		soundTouch.setSampleRate(44100);
+		soundTouch.setChannels(1);
+		soundTouch.putSamples(new short[1024*10], 0, 1024*10);
+		System.out.println(soundTouch.numSamples());
+		soundTouch.dispose();
+	}
 }

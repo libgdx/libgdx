@@ -1,6 +1,6 @@
 #include <com.badlogic.gdx.audio.analysis.KissFFT.h>
 
-//@line:59
+//@line:64
 
 	#include <kiss_fftr.h>
 	#include <stdlib.h>
@@ -26,7 +26,7 @@
 	 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_audio_analysis_KissFFT_create(JNIEnv* env, jclass clazz, jint numSamples) {
 
 
-//@line:86
+//@line:91
 
 		KissFFT* fft = new KissFFT();
 		fft->config = kiss_fftr_alloc(numSamples,0,NULL,NULL);
@@ -40,7 +40,7 @@
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_KissFFT_destroy(JNIEnv* env, jclass clazz, jlong handle) {
 
 
-//@line:96
+//@line:101
 
 		KissFFT* fft = (KissFFT*)handle;
 		free(fft->config);
@@ -55,7 +55,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_KissFFT_spectrum(JNI
 	float* spectrum = (float*)env->GetDirectBufferAddress(obj_spectrum);
 
 
-//@line:109
+//@line:114
 
 		KissFFT* fft = (KissFFT*)handle;
 		kiss_fftr( fft->config, (kiss_fft_scalar*)samples, fft->spectrum );
@@ -81,7 +81,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_KissFFT_getRealPart(
 	short* real = (short*)env->GetDirectBufferAddress(obj_real);
 
 
-//@line:128
+//@line:133
 
 		KissFFT* fft = (KissFFT*)handle;
 		short* out = (short*)real;
@@ -95,7 +95,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_KissFFT_getImagPart(
 	short* imag = (short*)env->GetDirectBufferAddress(obj_imag);
 
 
-//@line:135
+//@line:140
 
 		KissFFT* fft = (KissFFT*)handle;
 		short* out = (short*)imag;

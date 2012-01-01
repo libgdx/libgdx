@@ -151,6 +151,14 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_getSetti
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_numUnprocessedSamplesJni
   (JNIEnv *, jobject, jlong);
 
+/*
+ * Class:     com_badlogic_gdx_audio_transform_SoundTouch
+ * Method:    numSamplesJni
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_numSamplesJni
+  (JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif

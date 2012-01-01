@@ -18,9 +18,15 @@ package com.badlogic.gdx.audio.io;
 
 import java.nio.ShortBuffer;
 
+import com.badlogic.gdx.utils.SharedLibraryLoader;
+
 /** A {@link Decoder} implementation that decodes OGG Vorbis files using tremor
  * @author mzechner */
 public class VorbisDecoder implements Decoder {
+	static {
+		new SharedLibraryLoader().load("gdx-audio");
+	}
+	
 	/** the handle **/
 	private final long handle;
 

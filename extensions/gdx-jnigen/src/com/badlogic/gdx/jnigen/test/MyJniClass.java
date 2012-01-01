@@ -9,7 +9,7 @@ import com.badlogic.gdx.jnigen.BuildExecutor;
 import com.badlogic.gdx.jnigen.BuildTarget;
 import com.badlogic.gdx.jnigen.BuildTarget.TargetOs;
 import com.badlogic.gdx.jnigen.NativeCodeGenerator;
-import com.badlogic.gdx.jnigen.SharedLibraryLoader;
+import com.badlogic.gdx.jnigen.JniGenSharedLibraryLoader;
 
 public class MyJniClass {
 	public static native void test(boolean boolArg, 
@@ -74,7 +74,7 @@ public class MyJniClass {
 		BuildExecutor.executeAnt("jni/build.xml", "clean all -v");
 			
 		// load the test-natives.jar and from it the shared library, then execute the test. 
-		new SharedLibraryLoader("libs/test-natives.jar").load("test");
+		new JniGenSharedLibraryLoader("libs/test-natives.jar").load("test");
 		ByteBuffer buffer = ByteBuffer.allocateDirect(1);
 		buffer.put(0, (byte)8);
 		MyJniClass.test(true, (byte)1, (char)2, (short)3, 4, 5, 6, 7, buffer, new boolean[] { false }, new char[] { 9 }, new short[] { 10 }, new int[] { 11 }, new long[] { 12 }, new float[] { 13 }, new double[] { 14 }, null, "Hurray");

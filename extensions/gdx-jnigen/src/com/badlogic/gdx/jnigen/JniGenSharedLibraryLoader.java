@@ -22,11 +22,11 @@ import com.badlogic.gdx.jnigen.test.MyJniClass;
  * @author mzechner
  *
  */
-public class SharedLibraryLoader {
+public class JniGenSharedLibraryLoader {
 	private static Set<String> loadedLibraries = new HashSet<String>();
 	private String nativesJar;
 	
-	public SharedLibraryLoader() {
+	public JniGenSharedLibraryLoader() {
 	}
 	
 	/**
@@ -34,12 +34,12 @@ public class SharedLibraryLoader {
 	 * for testing a shared lib on the fly, see {@link MyJniClass}.
 	 * @param nativesJar
 	 */
-	public SharedLibraryLoader(String nativesJar) {
+	public JniGenSharedLibraryLoader(String nativesJar) {
 		this.nativesJar = nativesJar;
 	}
 	
 	private String crc (String nativeFile) {
-		InputStream input = SharedLibraryLoader.class.getResourceAsStream("/" + nativeFile);
+		InputStream input = JniGenSharedLibraryLoader.class.getResourceAsStream("/" + nativeFile);
 		if (input == null) return "" + System.nanoTime(); // fallback
 		CRC32 crc = new CRC32();
 		byte[] buffer = new byte[4096];
@@ -70,7 +70,7 @@ public class SharedLibraryLoader {
 		try {
 			// Extract native from classpath to temp dir.
 			InputStream input = null;
-			if(nativesJar == null) input = SharedLibraryLoader.class.getResourceAsStream("/" + sharedLibName);
+			if(nativesJar == null) input = JniGenSharedLibraryLoader.class.getResourceAsStream("/" + sharedLibName);
 			else input = getFromJar(nativesJar, sharedLibName);
 			if (input == null) return null;
 			nativesDir.mkdirs();
