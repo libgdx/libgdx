@@ -16,7 +16,7 @@
 		<exec executable="${env.NDK_HOME}/ndk-build"/>
 	</target>
 	
-	<target name="postcompile" depends="link">
+	<target name="postcompile" depends="compile-natives">
 		
 	</target>
 </project>
