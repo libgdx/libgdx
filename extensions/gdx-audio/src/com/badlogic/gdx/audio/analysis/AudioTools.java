@@ -66,7 +66,7 @@ public class AudioTools {
 	 * @param source the source buffer
 	 * @param target the target buffer
 	 * @param numSamples the number of samples to convert (target will have numSamples /2 filled after a call to this) */
-	public static native void convertToMono (ShortBuffer source, ShortBuffer target, int numSamples); /*
+	public static native void convertToMonoShort (ShortBuffer source, ShortBuffer target, int numSamples); /*
 		for( int i = 0; i < numSamples / 2; i++ )
 		{
 			int val = *(source++);
@@ -83,7 +83,7 @@ public class AudioTools {
 	 * @param source the source buffer
 	 * @param target the target buffer
 	 * @param numSamples the number of samples to convert (target will have numSamples /2 filled after a call to this) */
-	public static native void convertToMono (FloatBuffer source, FloatBuffer target, int numSamples); /*
+	public static native void convertToMonoFloat (FloatBuffer source, FloatBuffer target, int numSamples); /*
 		for( int i = 0; i < numSamples / 2; i++ )
 		{
 			float val = *(source++);
@@ -158,5 +158,27 @@ public class AudioTools {
 		float scale = 1.0f / Short.MAX_VALUE;
 		for (int i = offsetSrc, ii = offsetDst; i < numBytes; i++, ii++)
 			dst[i] = src[ii] * scale;
+	}
+	
+	/**
+	 * Generates a mono PCM sample buffer for the given frequency and length in
+	 * seconds for use with {@link AudioMixer}.
+	 * 
+	 * @param frequency
+	 * @param length
+	 * @return
+	 */
+	public static short[] generate(int samplingRate, int frequency, float length) {
+		int numSamples = (int) (samplingRate * length);
+		short[] samples = new short[numSamples];
+		float increment = (float) (2 * Math.PI) * frequency / (float)samplingRate;
+		float angle = 0;
+
+		for (int i = 0; i < numSamples; i++) {
+			samples[i] = (short)(Math.sin(angle) * Short.MAX_VALUE);
+			angle += increment;
+		}
+		
+		return samples;
 	}
 }

@@ -92,7 +92,6 @@ public class VorbisDecoder implements Decoder {
 	private static native long openFile (String filename); /*
 		OggVorbis_File* ogg = new OggVorbis_File();
 		FILE* file = fopen(filename, "rb" );
-		%jnigen-cleanup%
 	
 		if( file == 0 )
 		{
@@ -143,7 +142,7 @@ public class VorbisDecoder implements Decoder {
 	
 		while( read != toRead )
 		{
-			int ret = ov_read( file->ogg, samples + read, toRead - read, &file->bitstream );
+			int ret = ov_read( file->ogg, (char*)samples + read, toRead - read, &file->bitstream );
 			if( ret == OV_HOLE )
 				continue;
 			if( ret == OV_EBADLINK || ret == OV_EINVAL || ret == 0 )

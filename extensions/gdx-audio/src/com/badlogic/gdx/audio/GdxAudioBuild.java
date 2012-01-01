@@ -9,19 +9,31 @@ import com.badlogic.gdx.jnigen.NativeCodeGenerator;
 
 public class GdxAudioBuild {
 	public static void main(String[] args) throws Exception {
-		new NativeCodeGenerator().generate("src", "bin", "jni");
+		new NativeCodeGenerator().generate("src", "bin", "jni", 
+										   new String[] { "**/AudioTools.java", "**/KissFFT.java", "**/VorbisDecoder.java" }, 
+										   new String[] { "**/Mpg123Decoder.java" });
 		
-		String[] headerDirs = new String[] { "kissfft", "vorbis" };
-		String[] cIncludes = new String[] { "kissfft/*.c", "vorbis/*.c", "mpg123/*.c"};
-		String[] cppIncludes = new String[] { "**/*AudioTools.cpp", "**/*KissFFT.cpp", "**/*VorbisDecoder.cpp"};
+		String[] headerDirs = new String[] { "kissfft", "vorbis", "soundtouch/include" };
+		String[] cIncludes = new String[] { 
+											"kissfft/*.c", 
+											"vorbis/*.c", 
+		};
+		String[] cppIncludes = new String[] { 
+											  "**/*AudioTools.cpp", 
+											  "**/*KissFFT.cpp", 
+											  "**/*VorbisDecoder.cpp", 
+											  "soundtouch/source/SoundTouch/**.cpp"
+		};
+		String[] cppExcludes = new String[] { "**/cpu_detect_x86_win.cpp" };
 		
-		BuildConfig buildConfig = new BuildConfig("gdxaudio");
+		BuildConfig buildConfig = new BuildConfig("gdx-audio");
 		BuildTarget win32home = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32home.compilerPrefix = "";
 		win32home.buildFileName = "build-windows32home.xml";
 		win32home.headerDirs = headerDirs;
 		win32home.cIncludes = cIncludes;
 		win32home.cppIncludes = cppIncludes;
+		win32home.cppExcludes = cppExcludes;
 		win32home.excludeFromMasterBuildFile = true;
 		
 		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
@@ -30,6 +42,7 @@ public class GdxAudioBuild {
 		win32.headerDirs = headerDirs;
 		win32.cIncludes = cIncludes;
 		win32.cppIncludes = cppIncludes;
+		win32.cppExcludes = cppExcludes;
 		
 		BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
 		win64.cFlags += "-DFIXED_POINT";
@@ -37,6 +50,7 @@ public class GdxAudioBuild {
 		win64.headerDirs = headerDirs;
 		win64.cIncludes = cIncludes;
 		win64.cppIncludes = cppIncludes;
+		win64.cppExcludes = cppExcludes;
 		
 		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
 		lin32.cFlags += "-DFIXED_POINT";
@@ -44,6 +58,7 @@ public class GdxAudioBuild {
 		lin32.headerDirs = headerDirs;
 		lin32.cIncludes = cIncludes;
 		lin32.cppIncludes = cppIncludes;
+		lin32.cppExcludes = cppExcludes;
 		
 		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
 		lin64.cFlags += "-DFIXED_POINT";
@@ -51,6 +66,7 @@ public class GdxAudioBuild {
 		lin64.headerDirs = headerDirs;
 		lin64.cIncludes = cIncludes;
 		lin64.cppIncludes = cppIncludes;
+		lin64.cppExcludes = cppExcludes;
 		
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
 		android.cFlags += "-DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__";
@@ -58,10 +74,10 @@ public class GdxAudioBuild {
 		android.headerDirs = headerDirs;
 		android.cIncludes = cIncludes;
 		android.cppIncludes = cppIncludes;
+		android.cppExcludes = cppExcludes;
 		
-		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, android);
+		new AntScriptGenerator().generate(buildConfig, win32home);
 		
-//		BuildExecutor.executeAnt("jni/build-windows32home.xml", "clean");
-		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
+		BuildExecutor.executeAnt("jni/build-windows32home.xml", " -v");
 	}
 }

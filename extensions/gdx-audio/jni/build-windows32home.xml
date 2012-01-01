@@ -1,4 +1,4 @@
-<project name="gdxaudio-Windows-32" basedir="." default="link">
+<project name="gdx-audio-Windows-32" basedir="." default="postcompile">
 	<!-- include the environment -->
 	<property environment="env"/>	
 	<!-- output directory for temporary object files -->
@@ -6,7 +6,7 @@
 	<!-- output directory for the shared library -->
 	<property name="libsDir" value="../libs/windows32" />
 	<!-- the name of the shared library -->
-	<property name="libName" value="gdxaudio.dll"/>
+	<property name="libName" value="gdx-audio.dll"/>
 	<!-- the jni header jniPlatform to use -->
 	<property name="jniPlatform" value="win32"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->
@@ -18,7 +18,6 @@
 	<fileset id="gcc-files" dir="./">
 				<include name="kissfft/*.c"/>
 		<include name="vorbis/*.c"/>
-		<include name="mpg123/*.c"/>
 
 				
 	</fileset>
@@ -30,8 +29,10 @@
 				<include name="**/*AudioTools.cpp"/>
 		<include name="**/*KissFFT.cpp"/>
 		<include name="**/*VorbisDecoder.cpp"/>
+		<include name="soundtouch/source/SoundTouch/**.cpp"/>
 
-		
+				<exclude name="**/cpu_detect_x86_win.cpp"/>
+
 	</fileset>
 
 	<!-- define linker and options -->
@@ -49,9 +50,23 @@
 	<target name="precompile">
 		
 	</target>
+	
+	<target name="create-build-dir" depends="precompile">
+		<!-- FIXME this is pretty nasty :/ -->
+		<copy todir="${buildDir}">
+			<fileset refid="g++-files"/>
+			<fileset refid="gcc-files"/>
+		</copy>
+		<delete>
+			<fileset dir="${buildDir}">
+				<include name="*"/>
+				<exclude name="*.o"/>
+			</fileset>
+		</delete>
+	</target>
 
 	<!-- compiles all C and C++ files to object files in the build directory -->
-	<target name="compile" depends="precompile">
+	<target name="compile" depends="create-build-dir" >
 		<mkdir dir="${buildDir}"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
 			<arg line="${g++-opts}"/>
@@ -60,13 +75,13 @@
 			<arg value="-I."/>
 						<arg value="-Ikissfft"/>
 			<arg value="-Ivorbis"/>
+			<arg value="-Isoundtouch/include"/>
 
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>
 			<fileset refid="g++-files"/>
 			<chainedmapper>
-				<flattenmapper/>
 				<mapper type="glob" from="*.cpp" to="*.o"/>
 			</chainedmapper>
 		</apply>
@@ -77,13 +92,13 @@
 			<arg value="-I."/>
 						<arg value="-Ikissfft"/>
 			<arg value="-Ivorbis"/>
+			<arg value="-Isoundtouch/include"/>
 
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>
 			<fileset refid="gcc-files"/>
 			<chainedmapper>
-				<flattenmapper/>
 				<mapper type="glob" from="*.c" to="*.o"/>
 			</chainedmapper>
 		</apply>
@@ -104,7 +119,7 @@
 		</apply>
 	</target>	
 	
-	<target name="postcompile">
+	<target name="postcompile" depends="link">
 		
 	</target>
 </project>

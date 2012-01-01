@@ -81,6 +81,8 @@ public class BuildExecutor {
 												}
 											}
 										}
+									} else {
+										System.out.println(line);
 									}
 								}
 							} catch(Throwable t) {

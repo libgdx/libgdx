@@ -25,18 +25,18 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_AudioTools_convertTo
 
 /*
  * Class:     com_badlogic_gdx_audio_analysis_AudioTools
- * Method:    convertToMono
+ * Method:    convertToMonoShort
  * Signature: (Ljava/nio/ShortBuffer;Ljava/nio/ShortBuffer;I)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_AudioTools_convertToMono__Ljava_nio_ShortBuffer_2Ljava_nio_ShortBuffer_2I
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_AudioTools_convertToMonoShort
   (JNIEnv *, jclass, jobject, jobject, jint);
 
 /*
  * Class:     com_badlogic_gdx_audio_analysis_AudioTools
- * Method:    convertToMono
+ * Method:    convertToMonoFloat
  * Signature: (Ljava/nio/FloatBuffer;Ljava/nio/FloatBuffer;I)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_AudioTools_convertToMono__Ljava_nio_FloatBuffer_2Ljava_nio_FloatBuffer_2I
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_AudioTools_convertToMonoFloat
   (JNIEnv *, jclass, jobject, jobject, jint);
 
 /*

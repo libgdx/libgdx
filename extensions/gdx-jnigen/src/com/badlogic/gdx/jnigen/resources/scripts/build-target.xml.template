@@ -45,19 +45,16 @@
 	</target>
 	
 	<target name="create-build-dir" depends="precompile">
-		<touch mkdirs="true" verbose="false">
+		<!-- FIXME this is pretty nasty :/ -->
+		<copy todir="${buildDir}">
 			<fileset refid="g++-files"/>
-			<mapper type="glob" from="*" to="${buildDir}/*" />
-		</touch>
-		<delete>
-			<fileset dir="${buildDir}" includes="**/*" excludes="**/*.o"/>
-		</delete>
-		<touch mkdirs="true" verbose="false">
 			<fileset refid="gcc-files"/>
-			<mapper type="glob" from="*" to="${buildDir}/*" />
-		</touch>
+		</copy>
 		<delete>
-			<fileset dir="${buildDir}" includes="**/*" excludes="**/*.o"/>
+			<fileset dir="${buildDir}">
+				<include name="*"/>
+				<exclude name="*.o"/>
+			</fileset>
 		</delete>
 	</target>
 

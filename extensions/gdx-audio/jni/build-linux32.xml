@@ -1,4 +1,4 @@
-<project name="gdxaudio-Linux-32" basedir="." default="link">
+<project name="gdxaudio-Linux-32" basedir="." default="postcompile">
 	<!-- include the environment -->
 	<property environment="env"/>	
 	<!-- output directory for temporary object files -->
@@ -16,10 +16,7 @@
 	<property name="gcc" value="${compilerPrefix}gcc"/>	
 	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse -fmessage-length=0 -m32 -fPIC-DFIXED_POINT"/>
 	<fileset id="gcc-files" dir="./">
-				<include name="kissfft/*.c"/>
-		<include name="vorbis/*.c"/>
-		<include name="mpg123/*.c"/>
-
+		
 				
 	</fileset>
 	
@@ -28,8 +25,6 @@
 	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse -fmessage-length=0 -m32 -fPIC-DFIXED_POINT"/>
 	<fileset id="g++-files" dir="./">
 				<include name="**/*AudioTools.cpp"/>
-		<include name="**/*KissFFT.cpp"/>
-		<include name="**/*VorbisDecoder.cpp"/>
 
 		
 	</fileset>
@@ -49,9 +44,26 @@
 	<target name="precompile">
 		
 	</target>
+	
+	<target name="create-build-dir" depends="precompile">
+		<touch mkdirs="true" verbose="false">
+			<fileset refid="g++-files"/>
+			<mapper type="glob" from="*.cpp" to="${buildDir}/*.cpp" />
+		</touch>
+		<delete>
+			<fileset dir="${buildDir}" includes="**/*" excludes="**/*.o"/>
+		</delete>
+		<touch mkdirs="true" verbose="false">
+			<fileset refid="gcc-files"/>
+			<mapper type="glob" from="*.c" to="${buildDir}/*.c" />
+		</touch>
+		<delete>
+			<fileset dir="${buildDir}" includes="**/*" excludes="**/*.o"/>
+		</delete>
+	</target>
 
 	<!-- compiles all C and C++ files to object files in the build directory -->
-	<target name="compile" depends="precompile">
+	<target name="compile" depends="create-build-dir" >
 		<mkdir dir="${buildDir}"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
 			<arg line="${g++-opts}"/>
@@ -66,7 +78,6 @@
 			<targetfile/>
 			<fileset refid="g++-files"/>
 			<chainedmapper>
-				<flattenmapper/>
 				<mapper type="glob" from="*.cpp" to="*.o"/>
 			</chainedmapper>
 		</apply>
@@ -83,7 +94,6 @@
 			<targetfile/>
 			<fileset refid="gcc-files"/>
 			<chainedmapper>
-				<flattenmapper/>
 				<mapper type="glob" from="*.c" to="*.o"/>
 			</chainedmapper>
 		</apply>
@@ -104,7 +114,7 @@
 		</apply>
 	</target>	
 	
-	<target name="postcompile">
+	<target name="postcompile" depends="link">
 		
 	</target>
 </project>
