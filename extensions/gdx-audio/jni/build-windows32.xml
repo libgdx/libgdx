@@ -1,4 +1,4 @@
-<project name="gdxaudio-Windows-32" basedir="." default="postcompile">
+<project name="gdx-audio-Windows-32" basedir="." default="postcompile">
 	<!-- include the environment -->
 	<property environment="env"/>	
 	<!-- output directory for temporary object files -->
@@ -6,7 +6,7 @@
 	<!-- output directory for the shared library -->
 	<property name="libsDir" value="../libs/windows32" />
 	<!-- the name of the shared library -->
-	<property name="libName" value="gdxaudio.dll"/>
+	<property name="libName" value="gdx-audio.dll"/>
 	<!-- the jni header jniPlatform to use -->
 	<property name="jniPlatform" value="win32"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->
@@ -16,7 +16,9 @@
 	<property name="gcc" value="${compilerPrefix}gcc"/>	
 	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32-DFIXED_POINT"/>
 	<fileset id="gcc-files" dir="./">
-		
+				<include name="kissfft/*.c"/>
+		<include name="vorbis/*.c"/>
+
 				
 	</fileset>
 	
@@ -25,8 +27,12 @@
 	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32-DFIXED_POINT"/>
 	<fileset id="g++-files" dir="./">
 				<include name="**/*AudioTools.cpp"/>
+		<include name="**/*KissFFT.cpp"/>
+		<include name="**/*VorbisDecoder.cpp"/>
+		<include name="soundtouch/source/SoundTouch/**.cpp"/>
 
-		
+				<exclude name="**/cpu_detect_x86_win.cpp"/>
+
 	</fileset>
 
 	<!-- define linker and options -->
@@ -42,23 +48,20 @@
 	</target>
 	
 	<target name="precompile">
-		
+		<copy failonerror="true" tofile="soundtouch\include\STTypes.h" verbose="true" overwrite="true" file="STTypes.h.patched"/>
 	</target>
 	
 	<target name="create-build-dir" depends="precompile">
-		<touch mkdirs="true" verbose="false">
+		<!-- FIXME this is pretty nasty :/ -->
+		<copy todir="${buildDir}">
 			<fileset refid="g++-files"/>
-			<mapper type="glob" from="*.cpp" to="${buildDir}/*.cpp" />
-		</touch>
-		<delete>
-			<fileset dir="${buildDir}" includes="**/*" excludes="**/*.o"/>
-		</delete>
-		<touch mkdirs="true" verbose="false">
 			<fileset refid="gcc-files"/>
-			<mapper type="glob" from="*.c" to="${buildDir}/*.c" />
-		</touch>
+		</copy>
 		<delete>
-			<fileset dir="${buildDir}" includes="**/*" excludes="**/*.o"/>
+			<fileset dir="${buildDir}">
+				<include name="*"/>
+				<exclude name="*.o"/>
+			</fileset>
 		</delete>
 	</target>
 
@@ -72,6 +75,7 @@
 			<arg value="-I."/>
 						<arg value="-Ikissfft"/>
 			<arg value="-Ivorbis"/>
+			<arg value="-Isoundtouch/include"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -88,6 +92,7 @@
 			<arg value="-I."/>
 						<arg value="-Ikissfft"/>
 			<arg value="-Ivorbis"/>
+			<arg value="-Isoundtouch/include"/>
 
 			<srcfile/>
 			<arg value="-o"/>

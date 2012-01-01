@@ -25,7 +25,7 @@ public class GdxAudioBuild {
 											  "soundtouch/source/SoundTouch/**.cpp"
 		};
 		String[] cppExcludes = new String[] { "**/cpu_detect_x86_win.cpp" };
-		
+		String precompileTask = "<copy failonerror=\"true\" tofile=\"soundtouch\\include\\STTypes.h\" verbose=\"true\" overwrite=\"true\" file=\"STTypes.h.patched\"/>";		
 		BuildConfig buildConfig = new BuildConfig("gdx-audio");
 		BuildTarget win32home = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32home.compilerPrefix = "";
@@ -35,6 +35,7 @@ public class GdxAudioBuild {
 		win32home.cppIncludes = cppIncludes;
 		win32home.cppExcludes = cppExcludes;
 		win32home.excludeFromMasterBuildFile = true;
+		win32home.preCompileTask = precompileTask;
 		
 		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32.cFlags += "-DFIXED_POINT";
@@ -43,6 +44,7 @@ public class GdxAudioBuild {
 		win32.cIncludes = cIncludes;
 		win32.cppIncludes = cppIncludes;
 		win32.cppExcludes = cppExcludes;
+		win32.preCompileTask = precompileTask;
 		
 		BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
 		win64.cFlags += "-DFIXED_POINT";
@@ -51,6 +53,7 @@ public class GdxAudioBuild {
 		win64.cIncludes = cIncludes;
 		win64.cppIncludes = cppIncludes;
 		win64.cppExcludes = cppExcludes;
+		win64.preCompileTask = precompileTask;
 		
 		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
 		lin32.cFlags += "-DFIXED_POINT";
@@ -59,6 +62,7 @@ public class GdxAudioBuild {
 		lin32.cIncludes = cIncludes;
 		lin32.cppIncludes = cppIncludes;
 		lin32.cppExcludes = cppExcludes;
+		lin32.preCompileTask = precompileTask;
 		
 		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
 		lin64.cFlags += "-DFIXED_POINT";
@@ -67,6 +71,7 @@ public class GdxAudioBuild {
 		lin64.cIncludes = cIncludes;
 		lin64.cppIncludes = cppIncludes;
 		lin64.cppExcludes = cppExcludes;
+		lin64.preCompileTask = precompileTask;
 		
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
 		android.cFlags += "-DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__";
@@ -75,8 +80,9 @@ public class GdxAudioBuild {
 		android.cIncludes = cIncludes;
 		android.cppIncludes = cppIncludes;
 		android.cppExcludes = cppExcludes;
+		android.preCompileTask = precompileTask;
 		
-		new AntScriptGenerator().generate(buildConfig, win32home);
+		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, android);
 		
 		BuildExecutor.executeAnt("jni/build-windows32home.xml", " -v");
 	}
