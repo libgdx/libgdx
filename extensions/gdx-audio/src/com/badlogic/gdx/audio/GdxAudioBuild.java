@@ -84,6 +84,6 @@ public class GdxAudioBuild {
 		
 		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, android);
 		
-		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
+		BuildExecutor.executeAnt("jni/build-windows32home.xml", "clean postcompile -v");
 	}
 }
