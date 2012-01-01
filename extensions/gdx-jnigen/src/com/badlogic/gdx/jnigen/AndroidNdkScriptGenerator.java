@@ -44,9 +44,7 @@ public class AndroidNdkScriptGenerator {
 
 		// create Android.mk file
 		String template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/Android.mk.template", FileType.Classpath).readString();
-		template = template.replace("%precompile%", target.preCompileTask == null? "": target.preCompileTask);
-		template = template.replace("%postcompile%", target.postCompileTask == null? "": target.postCompileTask);
-		
+	
 		StringBuffer srcFiles = new StringBuffer();
 		for(int i = 0; i < files.size(); i++) {
 			if(i > 0) srcFiles.append("\t");

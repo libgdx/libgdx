@@ -8,7 +8,7 @@
 	</target>
 
 	<target name="precompile">
-		%precompile%
+		<copy failonerror="true" tofile="soundtouch\include\STTypes.h" verbose="true" overwrite="true" file="STTypes.h.patched"/>
 	</target>
 
 	<target name="compile-natives" depends="precompile">
@@ -17,6 +17,6 @@
 	</target>
 	
 	<target name="postcompile" depends="link">
-		%postcompile%
+		
 	</target>
 </project>
