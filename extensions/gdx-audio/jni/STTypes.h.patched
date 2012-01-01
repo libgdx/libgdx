@@ -40,7 +40,11 @@
 #define STTypes_H
 
 typedef unsigned int    uint;
+#ifdef __MINGW64__
 typedef unsigned long long   ulong;
+#else
+typedef unsigned long ulong;
+#endif
 
 #ifndef _WINDEF_
     // if these aren't defined already by Windows headers, define now
