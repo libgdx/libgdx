@@ -26,7 +26,6 @@ LOCAL_SRC_FILES := com.badlogic.gdx.audio.analysis.AudioTools.cpp\
 	soundtouch/source/SoundTouch/SoundTouch.cpp\
 	soundtouch/source/SoundTouch/sse_optimized.cpp\
 	soundtouch/source/SoundTouch/TDStretch.cpp\
-	target/windows32/soundtouch/source/SoundTouch/SoundTouch.cpp\
 	vorbis/bitwise.c\
 	vorbis/block.c\
 	vorbis/codebook.c\
