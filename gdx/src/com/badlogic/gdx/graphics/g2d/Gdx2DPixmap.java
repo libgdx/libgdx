@@ -236,7 +236,7 @@ public class Gdx2DPixmap implements Disposable {
 	}
 	
 	/*JNI
-	#include <gdx2d.h>
+	#include <gdx2d/gdx2d.h>
 	#include <stdlib.h>
 	 */
 	

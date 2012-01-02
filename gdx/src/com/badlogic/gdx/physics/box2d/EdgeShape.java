@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
  * used to ensure correct contact normals. */
 public class EdgeShape extends Shape {
 	/*JNI
-#include <Box2D.h>
+#include <Box2d/Box2D.h>
 	 */
 	
 	public EdgeShape () {

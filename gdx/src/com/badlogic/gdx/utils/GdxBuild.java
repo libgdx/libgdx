@@ -18,41 +18,57 @@ public class GdxBuild {
 		String JNI_DIR = "jni-new";
 		String LIBS_DIR = "libs-new";
 		
-		// MD5Jni
-		String[] includes = { "**/MD5Jni.java" };
-		new NativeCodeGenerator().generate("src", "bin", JNI_DIR + "/", includes, null);
+//		// MD5Jni
+//		String[] includes = { "**/MD5Jni.java" };
+//		new NativeCodeGenerator().generate("src", "bin", JNI_DIR + "/", includes, null);
+//		
+//		// Matrix4
+//		includes = new String[] { "**/Matrix4.java" };
+//		new NativeCodeGenerator().generate("src", "bin", JNI_DIR + "/", includes, null);
+//		
+//		// ETC1
+//		includes = new String[] { "**/ETC1.java" };
+//		new NativeCodeGenerator().generate("src", "bin", JNI_DIR + "/etc1/", includes, null);
+//		
+//		// GDX2D
+//		includes = new String[] { "**/Gdx2DPixmap.java" };
+//		new NativeCodeGenerator().generate("src", "bin", JNI_DIR + "/gdx2d/", includes, null);
+//		
+//		// Box2D
+//		includes = new String[] { "**/box2d/**"};
+//		new NativeCodeGenerator().generate("src", "bin", JNI_DIR + "/Box2D/", includes, null);
+//		
+//		new NativeCodeGenerator().generate("src", "bin", JNI_DIR, new String[] { "**/*" }, null);
+//
+//		// build
+//		String[] headerDirs = { "./", "etc1/", "gdx2d/", "Box2D/" };
+//		BuildConfig config = new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR);
+//		BuildTarget target = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
+//		target.compilerPrefix = "";
+//		target.excludeFromMasterBuildFile = true;
+//		target.headerDirs = headerDirs;
+//		
+//		new AntScriptGenerator().generate(config, target);
+//		BuildExecutor.executeAnt(JNI_DIR + "/build-windows32.xml", "");
 		
-		// Matrix4
-		includes = new String[] { "**/Matrix4.java" };
-		new NativeCodeGenerator().generate("src", "bin", JNI_DIR + "/", includes, null);
+		// generate C/C++ code
+		new NativeCodeGenerator().generate("src", "bin", JNI_DIR, new String[] { "**/*" }, null);
 		
-		// ETC1
-		includes = new String[] { "**/ETC1.java" };
-		new NativeCodeGenerator().generate("src", "bin", JNI_DIR + "/etc1/", includes, null);
+		// generate build scripts, for win32 only
+		// custom target for testing purposes
+		BuildTarget win32home = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
+		win32home.compilerPrefix = "";
+		win32home.buildFileName = "build-windows32home.xml";
+		win32home.excludeFromMasterBuildFile = true;
+		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
+		BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
+		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
+		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
+		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
+		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
+		new AntScriptGenerator().generate(new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR), win32home, win32, win64, lin32, lin64, mac, android);
 		
-		// GDX2D
-		includes = new String[] { "**/Gdx2DPixmap.java" };
-		new NativeCodeGenerator().generate("src", "bin", JNI_DIR + "/gdx2d/", includes, null);
-		
-		// Box2D
-		includes = new String[] { "**/World.java", "**/Body.java", "**/ChainShape.java", 
-								  "**/CircleShape.java", "**/Contact.java", "**/ContactImpulse.java", 
-								  "**/EdgeShape.java", "**/Fixture.java", "**/Joint.java",
-								  "**/Manifold.java", "**/PolygonShape.java", "**/Shape.java",
-								  "**/DistanceJoint.java", "**/FrictionJoint.java", "**/GearJoint.java",
-								  "**/MouseJoint.java", "**/PrismaticJoint.java", "**/PulleyJoint.java",
-								  "**/RevoluteJoint.java", "**/RopeJoint.java", "**/WheelJoint.java"};
-		new NativeCodeGenerator().generate("src", "bin", JNI_DIR + "/Box2D/", includes, null);
-
-		// build
-		String[] headerDirs = { "./", "etc1/", "gdx2d/", "Box2D/" };
-		BuildConfig config = new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR);
-		BuildTarget target = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
-		target.compilerPrefix = "";
-		target.excludeFromMasterBuildFile = true;
-		target.headerDirs = headerDirs;
-		
-		new AntScriptGenerator().generate(config, target);
-		BuildExecutor.executeAnt(JNI_DIR + "/build-windows32.xml", "");
+		// build natives
+		BuildExecutor.executeAnt("jni-new/build-windows32home.xml", "clean postcompile -v");
 	}
 }

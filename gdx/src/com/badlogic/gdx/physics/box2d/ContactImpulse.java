@@ -21,7 +21,7 @@ package com.badlogic.gdx.physics.box2d;
  * @author mzechner */
 public class ContactImpulse {
 	/*JNI
-#include <Box2D.h>
+#include <Box2d/Box2D.h>
 	 */
 	
 	final World world;

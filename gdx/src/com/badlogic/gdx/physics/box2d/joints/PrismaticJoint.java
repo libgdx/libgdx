@@ -24,7 +24,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * friction. */
 public class PrismaticJoint extends Joint {
 	/*JNI
-#include <Box2D.h>
+#include <Box2d/Box2D.h>
 	 */
 	
 	public PrismaticJoint (World world, long addr) {

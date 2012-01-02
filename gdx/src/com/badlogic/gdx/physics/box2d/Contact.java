@@ -23,7 +23,7 @@ import com.badlogic.gdx.math.Vector2;
  * @author mzechner */
 public class Contact {
 	/*JNI
-#include <Box2D.h>
+#include <Box2d/Box2D.h>
 	 */
 	
 	/** the address **/

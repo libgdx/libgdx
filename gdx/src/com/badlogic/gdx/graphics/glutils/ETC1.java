@@ -186,7 +186,7 @@ public class ETC1 {
 	}
 	
 	/*JNI
-	#include <etc1_utils.h>
+	#include <etc1/etc1_utils.h>
 	#include <stdlib.h>
 	 */
 

@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * friction. This joint is designed for vehicle suspensions. */
 public class WheelJoint extends Joint {
 	/*JNI
-#include <Box2D.h> 
+#include <Box2d/Box2D.h> 
 	 */
 	
 	public WheelJoint (World world, long addr) {

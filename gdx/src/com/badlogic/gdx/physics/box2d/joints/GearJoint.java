@@ -26,7 +26,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * @warning The revolute and prismatic joints must be attached to fixed bodies (which must be body1 on those joints). */
 public class GearJoint extends Joint {
 	/*JNI
-#include <Box2D.h> 
+#include <Box2d/Box2D.h> 
 	 */
 	
 	public GearJoint (World world, long addr) {

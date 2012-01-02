@@ -25,7 +25,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
  * @author mzechner */
 public class Body {
 	/*JNI
-#include <Box2D.h>
+#include <Box2d/Box2D.h>
 	 */
 	
 	/** the address of the body **/

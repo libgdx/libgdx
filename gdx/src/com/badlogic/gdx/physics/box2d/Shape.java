@@ -23,7 +23,7 @@ package com.badlogic.gdx.physics.box2d;
  * @author mzechner */
 public abstract class Shape {
 	/*JNI
-#include <Box2D.h>
+#include <Box2d/Box2D.h>
 	 */
 	
 	/** Enum describing the type of a shape

@@ -20,7 +20,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Manifold {
 	/*JNI
-#include <Box2D.h>
+#include <Box2d/Box2D.h>
 	 */
 	
 	final World world;
