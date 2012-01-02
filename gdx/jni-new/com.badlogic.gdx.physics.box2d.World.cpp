@@ -602,7 +602,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetContactLi
 		int i = 0;
 		while( contact != 0 )
 		{
-			contacts[i++] = (long)contact;
+			contacts[i++] = (long long)contact;
 			contact = contact->GetNext();
 		}
 	

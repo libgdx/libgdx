@@ -825,7 +825,7 @@ b2ContactFilter defaultFilter;
 		int i = 0;
 		while( contact != 0 )
 		{
-			contacts[i++] = (long)contact;
+			contacts[i++] = (long long)contact;
 			contact = contact->GetNext();
 		}
 	*/
