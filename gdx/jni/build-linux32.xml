@@ -4,7 +4,7 @@
 	<!-- output directory for temporary object files -->
 	<property name="buildDir" value="../target/native/linux32" />
 	<!-- output directory for the shared library -->
-	<property name="libsDir" value="../libs-new/linux32" />
+	<property name="libsDir" value="../libs/linux32" />
 	<!-- the name of the shared library -->
 	<property name="libName" value="libgdx.so"/>
 	<!-- the jni header jniPlatform to use -->

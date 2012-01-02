@@ -82,7 +82,9 @@ public class AntScriptGenerator {
 			System.out.println("Wrote target '" + target.os + (target.is64Bit?"64":"") + "' build script '" + config.jniDir.child(buildFileName) + "'");
 			
 			if(!target.excludeFromMasterBuildFile) {
-				buildFiles.add(buildFileName);
+				if(target.os != TargetOs.MacOsX) {
+					buildFiles.add(buildFileName);
+				}
 				sharedLibFiles.add(getSharedLibFilename(target.os, target.is64Bit, config.sharedLibName));
 				libsDirs.add("../" + libsDir.path().replace('\\', '/'));
 			}

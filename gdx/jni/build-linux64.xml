@@ -4,7 +4,7 @@
 	<!-- output directory for temporary object files -->
 	<property name="buildDir" value="../target/native/linux64" />
 	<!-- output directory for the shared library -->
-	<property name="libsDir" value="../libs-new/linux64" />
+	<property name="libsDir" value="../libs/linux64" />
 	<!-- the name of the shared library -->
 	<property name="libName" value="libgdx64.so"/>
 	<!-- the jni header jniPlatform to use -->

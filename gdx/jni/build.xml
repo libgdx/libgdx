@@ -18,8 +18,8 @@
 	</target>
 	
 	<target name="pack-natives">
-		<jar destfile="../libs-new/gdx-natives.jar">
-			<fileset dir="../libs-new/windows32" includes="gdx.dll"/>			<fileset dir="../libs-new/windows64" includes="gdx64.dll"/>			<fileset dir="../libs-new/linux32" includes="libgdx.so"/>			<fileset dir="../libs-new/linux64" includes="libgdx64.so"/>			<fileset dir="../libs-new/android32" includes="libgdx.so"/>
+		<jar destfile="../libs/gdx-natives.jar">
+			<fileset dir="../libs/macosx32" includes="libgdx.dylib"/>			<fileset dir="../libs/windows32" includes="gdx.dll"/>			<fileset dir="../libs/windows64" includes="gdx64.dll"/>			<fileset dir="../libs/linux32" includes="libgdx.so"/>			<fileset dir="../libs/linux64" includes="libgdx64.so"/>
 		</jar>
 	</target>
 

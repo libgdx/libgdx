@@ -15,8 +15,8 @@ import com.badlogic.gdx.jnigen.BuildTarget.TargetOs;
  */
 public class GdxBuild {
 	public static void main(String[] args) throws Exception {
-		String JNI_DIR = "jni-new";
-		String LIBS_DIR = "libs-new";
+		String JNI_DIR = "jni";
+		String LIBS_DIR = "libs";
 		
 //		// MD5Jni
 //		String[] includes = { "**/MD5Jni.java" };
@@ -64,9 +64,9 @@ public class GdxBuild {
 		BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
 		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
 		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
-		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
-		new AntScriptGenerator().generate(new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR), win32home, win32, win64, lin32, lin64, mac, android);
+		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
+		new AntScriptGenerator().generate(new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR), mac, win32home, win32, win64, lin32, lin64, android);
 		
 		// build natives
 		BuildExecutor.executeAnt("jni-new/build-windows32home.xml", "clean postcompile -v");

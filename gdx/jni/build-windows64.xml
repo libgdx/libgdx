@@ -4,7 +4,7 @@
 	<!-- output directory for temporary object files -->
 	<property name="buildDir" value="../target/native/windows64" />
 	<!-- output directory for the shared library -->
-	<property name="libsDir" value="../libs-new/windows64" />
+	<property name="libsDir" value="../libs/windows64" />
 	<!-- the name of the shared library -->
 	<property name="libName" value="gdx64.dll"/>
 	<!-- the jni header jniPlatform to use -->
