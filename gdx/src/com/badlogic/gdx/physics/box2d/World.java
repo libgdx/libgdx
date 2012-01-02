@@ -51,7 +51,7 @@ import com.badlogic.gdx.utils.Pool;
  * @author mzechner */
 public final class World implements Disposable {
 	/*JNI
-#include <Box2d/Box2D.h>
+#include <Box2D/Box2D.h>
 
 static jclass worldClass = 0;
 static jmethodID shouldCollideID = 0;

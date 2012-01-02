@@ -25,7 +25,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * because it was developed to be used in the testbed. If you want to learn how to use the mouse joint, look at the testbed. */
 public class MouseJoint extends Joint {
 	/*JNI
-#include <Box2d/Box2D.h>
+#include <Box2D/Box2D.h>
 	 */
 	
 	public MouseJoint (World world, long addr) {

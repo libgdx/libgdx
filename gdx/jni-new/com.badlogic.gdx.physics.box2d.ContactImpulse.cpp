@@ -2,7 +2,7 @@
 
 //@line:23
 
-#include <Box2d/Box2D.h>
+#include <Box2D/Box2D.h>
 	 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ContactImpulse_jniGetNormalImpulses(JNIEnv* env, jobject object, jlong addr, jfloatArray obj_values) {
 	float* values = (float*)env->GetPrimitiveArrayCritical(obj_values, 0);
 

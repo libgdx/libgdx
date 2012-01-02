@@ -2,7 +2,7 @@
 
 //@line:7
 
-#include <Box2d/Box2D.h>
+#include <Box2D/Box2D.h>
 	 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_ChainShape_newChainShape(JNIEnv* env, jobject object) {
 
 

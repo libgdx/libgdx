@@ -2,7 +2,7 @@
 
 //@line:23
 
-#include <Box2d/Box2D.h> 
+#include <Box2D/Box2D.h> 
 	 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Joint_jniGetType(JNIEnv* env, jobject object, jlong addr) {
 
 

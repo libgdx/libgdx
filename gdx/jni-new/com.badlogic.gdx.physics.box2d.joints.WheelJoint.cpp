@@ -2,7 +2,7 @@
 
 //@line:11
 
-#include <Box2d/Box2D.h> 
+#include <Box2D/Box2D.h> 
 	 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniGetJointTranslation(JNIEnv* env, jobject object, jlong addr) {
 
 

@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Fixture {
 	/*JNI
-#include <Box2d/Box2D.h>
+#include <Box2D/Box2D.h>
 	 */
 	/** body **/
 	private Body body;

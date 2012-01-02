@@ -2,7 +2,7 @@
 
 //@line:22
 
-#include <Box2d/Box2D.h>
+#include <Box2D/Box2D.h>
 	 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_newPolygonShape(JNIEnv* env, jobject object) {
 
 

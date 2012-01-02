@@ -25,7 +25,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * both sides. This is useful to prevent one side of the pulley hitting the top. */
 public class PulleyJoint extends Joint {
 	/*JNI
-#include <Box2d/Box2D.h> 
+#include <Box2D/Box2D.h> 
 	 */
 	
 	public PulleyJoint (World world, long addr) {

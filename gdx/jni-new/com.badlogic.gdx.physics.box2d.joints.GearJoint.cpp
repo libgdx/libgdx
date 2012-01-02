@@ -2,7 +2,7 @@
 
 //@line:28
 
-#include <Box2d/Box2D.h> 
+#include <Box2D/Box2D.h> 
 	 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_GearJoint_jniSetRatio(JNIEnv* env, jobject object, jlong addr, jfloat ratio) {
 
 

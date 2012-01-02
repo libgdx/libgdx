@@ -2,7 +2,7 @@
 
 //@line:9
 
-#include <Box2d/Box2D.h>
+#include <Box2D/Box2D.h>
 	 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_EdgeShape_newEdgeShape(JNIEnv* env, jobject object) {
 
 

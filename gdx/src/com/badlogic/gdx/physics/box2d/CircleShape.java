@@ -22,7 +22,7 @@ import com.badlogic.gdx.math.Vector2;
  * @author mzechner */
 public class CircleShape extends Shape {
 	/*JNI
-#include <Box2d/Box2D.h>
+#include <Box2D/Box2D.h>
 	 */
 	
 	public CircleShape () {

@@ -25,7 +25,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * provided so that infinite forces are not generated. */
 public class RevoluteJoint extends Joint {
 	/*JNI
-#include <Box2d/Box2D.h> 
+#include <Box2D/Box2D.h> 
 	 */
 	
 	public RevoluteJoint (World world, long addr) {

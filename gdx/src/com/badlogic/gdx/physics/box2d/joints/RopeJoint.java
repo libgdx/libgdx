@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * want to dynamically control length. */
 public class RopeJoint extends Joint {
 	/*JNI
-#include <Box2d/Box2D.h>
+#include <Box2D/Box2D.h>
 	 */
 	
 	public RopeJoint (World world, long addr) {

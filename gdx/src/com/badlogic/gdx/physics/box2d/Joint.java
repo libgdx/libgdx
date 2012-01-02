@@ -21,7 +21,7 @@ import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 
 public abstract class Joint {
 	/*JNI
-#include <Box2d/Box2D.h> 
+#include <Box2D/Box2D.h> 
 	 */
 	/** the address of the joint **/
 	protected long addr;

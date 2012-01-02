@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class ChainShape extends Shape {
 	/*JNI
-#include <Box2d/Box2D.h>
+#include <Box2D/Box2D.h>
 	 */
 	
 	public ChainShape () {

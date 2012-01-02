@@ -23,7 +23,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * massless, rigid rod. */
 public class DistanceJoint extends Joint {
 	/*JNI
-#include <Box2d/Box2D.h>
+#include <Box2D/Box2D.h>
 	 */
 	
 	public DistanceJoint (World world, long addr) {
