@@ -21,6 +21,10 @@ import com.badlogic.gdx.physics.box2d.World;
 
 /** Friction joint. This is used for top-down friction. It provides 2D translational friction and angular friction. */
 public class FrictionJoint extends Joint {
+	/*JNI
+#include <Box2D.h> 
+	 */
+	
 	public FrictionJoint (World world, long addr) {
 		super(world, addr);
 	}
@@ -30,26 +34,38 @@ public class FrictionJoint extends Joint {
 		jniSetMaxForce(addr, force);
 	}
 
-	private native void jniSetMaxForce (long ddr, float force);
+	private native void jniSetMaxForce (long addr, float force); /*
+		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
+		joint->SetMaxForce( force );
+	*/
 
 	/** Get the maximum friction force in N. */
 	public float getMaxForce () {
 		return jniGetMaxForce(addr);
 	}
 
-	private native float jniGetMaxForce (long addr);
+	private native float jniGetMaxForce (long addr); /*
+		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
+		return joint->GetMaxForce();
+	*/
 
 	/** Set the maximum friction torque in N*m. */
 	public void setMaxTorque (float torque) {
 		jniSetMaxTorque(addr, torque);
 	}
 
-	private native void jniSetMaxTorque (long addr, float torque);
+	private native void jniSetMaxTorque (long addr, float torque); /*
+		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
+		joint->SetMaxTorque( torque );
+	*/
 
 	/** Get the maximum friction torque in N*m. */
 	public float getMaxTorque () {
 		return jniGetMaxTorque(addr);
 	}
 
-	private native float jniGetMaxTorque (long addr);
+	private native float jniGetMaxTorque (long addr); /*
+		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
+		return joint->GetMaxTorque();
+	*/
 }

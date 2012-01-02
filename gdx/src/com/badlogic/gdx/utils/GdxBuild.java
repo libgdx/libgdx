@@ -33,9 +33,19 @@ public class GdxBuild {
 		// GDX2D
 		includes = new String[] { "**/Gdx2DPixmap.java" };
 		new NativeCodeGenerator().generate("src", "bin", JNI_DIR + "/gdx2d/", includes, null);
+		
+		// Box2D
+		includes = new String[] { "**/World.java", "**/Body.java", "**/ChainShape.java", 
+								  "**/CircleShape.java", "**/Contact.java", "**/ContactImpulse.java", 
+								  "**/EdgeShape.java", "**/Fixture.java", "**/Joint.java",
+								  "**/Manifold.java", "**/PolygonShape.java", "**/Shape.java",
+								  "**/DistanceJoint.java", "**/FrictionJoint.java", "**/GearJoint.java",
+								  "**/MouseJoint.java", "**/PrismaticJoint.java", "**/PulleyJoint.java",
+								  "**/RevoluteJoint.java", "**/RopeJoint.java", "**/WheelJoint.java"};
+		new NativeCodeGenerator().generate("src", "bin", JNI_DIR + "/Box2D/", includes, null);
 
 		// build
-		String[] headerDirs = { "./", "etc1/", "gdx2d/" };
+		String[] headerDirs = { "./", "etc1/", "gdx2d/", "Box2D/" };
 		BuildConfig config = new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR);
 		BuildTarget target = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		target.compilerPrefix = "";

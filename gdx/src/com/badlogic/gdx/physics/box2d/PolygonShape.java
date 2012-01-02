@@ -19,6 +19,10 @@ package com.badlogic.gdx.physics.box2d;
 import com.badlogic.gdx.math.Vector2;
 
 public class PolygonShape extends Shape {
+	/*JNI
+#include <Box2D.h>
+	 */
+	
 	/** Constructs a new polygon */
 	public PolygonShape () {
 		addr = newPolygonShape();
@@ -28,7 +32,10 @@ public class PolygonShape extends Shape {
 		this.addr = addr;
 	}
 
-	private native long newPolygonShape ();
+	private native long newPolygonShape (); /*
+		b2PolygonShape* poly = new b2PolygonShape();
+		return (jlong)poly;
+	*/
 
 	/** {@inheritDoc} */
 	@Override
@@ -44,10 +51,18 @@ public class PolygonShape extends Shape {
 			verts[i] = vertices[j].x;
 			verts[i + 1] = vertices[j].y;
 		}
-		jniSet(addr, verts);
+		jniSet(addr, verts, verts.length);
 	}
 
-	private native void jniSet (long addr, float[] verts);
+	private native void jniSet (long addr, float[] verts, int len); /*
+		b2PolygonShape* poly = (b2PolygonShape*)addr;
+		int numVertices = len / 2;
+		b2Vec2* verticesOut = new b2Vec2[numVertices];
+		for(int i = 0; i < numVertices; i++)
+			verticesOut[i] = b2Vec2(verts[i<<1], verts[(i<<1)+1]);
+		poly->Set(verticesOut, numVertices);
+		delete verticesOut;
+	*/
 
 	/** Build vertices to represent an axis-aligned box.
 	 * @param hx the half-width.
@@ -56,7 +71,10 @@ public class PolygonShape extends Shape {
 		jniSetAsBox(addr, hx, hy);
 	}
 
-	private native void jniSetAsBox (long addr, float hx, float hy);
+	private native void jniSetAsBox (long addr, float hx, float hy); /*
+		b2PolygonShape* poly = (b2PolygonShape*)addr;
+		poly->SetAsBox(hx, hy);
+	*/
 
 	/** Build vertices to represent an oriented box.
 	 * @param hx the half-width.
@@ -67,14 +85,20 @@ public class PolygonShape extends Shape {
 		jniSetAsBox(addr, hx, hy, center.x, center.y, angle);
 	}
 
-	private native void jniSetAsBox (long addr, float hx, float hy, float centerX, float centerY, float angle);
+	private native void jniSetAsBox (long addr, float hx, float hy, float centerX, float centerY, float angle); /*
+		b2PolygonShape* poly = (b2PolygonShape*)addr;
+		poly->SetAsBox( hx, hy, b2Vec2( centerX, centerY ), angle );
+	*/
 
 	/** @return the number of vertices */
 	public int getVertexCount () {
 		return jniGetVertexCount(addr);
 	}
 
-	private native int jniGetVertexCount (long addr);
+	private native int jniGetVertexCount (long addr); /*
+		b2PolygonShape* poly = (b2PolygonShape*)addr;
+		return poly->GetVertexCount();
+	*/
 
 	private static float[] verts = new float[2];
 
@@ -87,5 +111,10 @@ public class PolygonShape extends Shape {
 		vertex.y = verts[1];
 	}
 
-	private native void jniGetVertex (long addr, int index, float[] verts);
+	private native void jniGetVertex (long addr, int index, float[] verts); /*
+		b2PolygonShape* poly = (b2PolygonShape*)addr;
+		const b2Vec2 v = poly->GetVertex( index );
+		verts[0] = v.x;
+		verts[1] = v.y;
+	*/
 }

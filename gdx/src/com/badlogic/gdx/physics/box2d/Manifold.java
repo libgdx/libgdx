@@ -19,6 +19,10 @@ package com.badlogic.gdx.physics.box2d;
 import com.badlogic.gdx.math.Vector2;
 
 public class Manifold {
+	/*JNI
+#include <Box2D.h>
+	 */
+	
 	final World world;
 	long addr;
 	final ManifoldPoint[] points = new ManifoldPoint[] {new ManifoldPoint(), new ManifoldPoint()};
@@ -41,13 +45,19 @@ public class Manifold {
 		return ManifoldType.Circle;
 	}
 
-	private native int jniGetType (long addr);
+	private native int jniGetType (long addr); /*
+		b2Manifold* manifold = (b2Manifold*)addr;
+		return manifold->type;
+	*/
 
 	public int getPointCount () {
 		return jniGetPointCount(addr);
 	}
 
-	private native int jniGetPointCount (long addr);
+	private native int jniGetPointCount (long addr); /*
+	  	b2Manifold* manifold = (b2Manifold*)addr;
+		return manifold->pointCount;
+	*/
 
 	public Vector2 getLocalNormal () {
 		jniGetLocalNormal(addr, tmpFloat);
@@ -55,7 +65,11 @@ public class Manifold {
 		return localNormal;
 	}
 
-	private native void jniGetLocalNormal (long addr, float[] values);
+	private native void jniGetLocalNormal (long addr, float[] values); /*
+		b2Manifold* manifold = (b2Manifold*)addr;
+		values[0] = manifold->localNormal.x;
+		values[1] = manifold->localNormal.y;
+	*/
 
 	public Vector2 getLocalPoint () {
 		jniGetLocalPoint(addr, tmpFloat);
@@ -63,7 +77,11 @@ public class Manifold {
 		return localPoint;
 	}
 
-	private native void jniGetLocalPoint (long addr, float[] values);
+	private native void jniGetLocalPoint (long addr, float[] values); /*
+		b2Manifold* manifold = (b2Manifold*)addr;
+		values[0] = manifold->localPoint.x;
+		values[1] = manifold->localPoint.y;
+	*/
 
 	public ManifoldPoint[] getPoints () {
 		int count = jniGetPointCount(addr);
@@ -80,7 +98,16 @@ public class Manifold {
 		return points;
 	}
 
-	private native int jniGetPoint (long addr, float[] values, int i);
+	private native int jniGetPoint (long addr, float[] values, int idx); /*
+		b2Manifold* manifold = (b2Manifold*)addr;
+		  
+		values[0] = manifold->points[idx].localPoint.x;
+		values[1] = manifold->points[idx].localPoint.y;
+		values[2] = manifold->points[idx].normalImpulse;
+		values[3] = manifold->points[idx].tangentImpulse;  
+		  
+		return (jint)manifold->points[idx].id.key;
+	*/
 
 	public class ManifoldPoint {
 		public final Vector2 localPoint = new Vector2();

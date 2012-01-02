@@ -9,6 +9,10 @@ import com.badlogic.gdx.physics.box2d.World;
  * dynamically modify the length would have some sponginess, so I chose not to implement it that way. See b2DistanceJoint if you
  * want to dynamically control length. */
 public class RopeJoint extends Joint {
+	/*JNI
+#include <Box2D.h>
+	 */
+	
 	public RopeJoint (World world, long addr) {
 		super(world, addr);
 	}
@@ -18,5 +22,8 @@ public class RopeJoint extends Joint {
 		return jniGetMaxLength(addr);
 	}
 
-	private native float jniGetMaxLength (long addr);
+	private native float jniGetMaxLength (long addr); /*
+		b2RopeJoint* rope = (b2RopeJoint*)addr;
+		return rope->GetMaxLength();
+	*/
 }

@@ -50,6 +50,136 @@ import com.badlogic.gdx.utils.Pool;
  * memory management facilities.
  * @author mzechner */
 public final class World implements Disposable {
+	/*JNI
+#include <Box2D.h>
+
+static jclass worldClass = 0;
+static jmethodID shouldCollideID = 0;
+static jmethodID beginContactID = 0;
+static jmethodID endContactID = 0;
+static jmethodID preSolveID = 0;
+static jmethodID postSolveID = 0;
+static jmethodID reportFixtureID = 0;
+static jmethodID reportRayFixtureID = 0;
+
+class CustomRayCastCallback: public b2RayCastCallback
+{
+private:
+	JNIEnv* env;
+	jobject obj;
+
+public:
+	CustomRayCastCallback( JNIEnv *env, jobject obj )
+	{
+		this->env = env;
+		this->obj = obj;
+	}
+
+	virtual float32 ReportFixture( b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction)
+	{
+		return env->CallFloatMethod(obj, reportRayFixtureID, (jlong)fixture, (jfloat)point.x, (jfloat)point.y,
+																(jfloat)normal.x, (jfloat)normal.y, (jfloat)fraction );
+	}
+};
+
+class CustomContactFilter: public b2ContactFilter
+{
+private:
+	JNIEnv* env;
+	jobject obj;
+
+public:
+	CustomContactFilter( JNIEnv* env, jobject obj )
+	{
+		this->env = env;
+		this->obj = obj;
+	}
+
+	virtual bool ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
+	{
+		if( shouldCollideID != 0 )
+			return env->CallBooleanMethod( obj, shouldCollideID, (jlong)fixtureA, (jlong)fixtureB );
+		else
+			return true;
+	}
+};
+
+class CustomContactListener: public b2ContactListener
+{
+private:
+	JNIEnv* env;
+	jobject obj;
+
+public:
+		CustomContactListener( JNIEnv* env, jobject obj )
+		{
+			this->env = env;
+			this->obj = obj;
+		}
+
+		/// Called when two fixtures begin to touch.
+		virtual void BeginContact(b2Contact* contact)
+		{
+			if( beginContactID != 0 )
+				env->CallVoidMethod(obj, beginContactID, (jlong)contact );
+		}
+
+		/// Called when two fixtures cease to touch.
+		virtual void EndContact(b2Contact* contact)
+		{
+			if( endContactID != 0 )
+				env->CallVoidMethod(obj, endContactID, (jlong)contact);
+		}
+		
+		/// This is called after a contact is updated.
+		virtual void PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
+		{
+			if( preSolveID != 0 )
+				env->CallVoidMethod(obj, preSolveID, (jlong)contact, (jlong)oldManifold);
+		}
+	
+		/// This lets you inspect a contact after the solver is finished.
+		virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
+		{
+			if( postSolveID != 0 )
+				env->CallVoidMethod(obj, postSolveID, (jlong)contact, (jlong)impulse);
+		}
+};
+
+class CustomQueryCallback: public b2QueryCallback
+{
+private:
+	JNIEnv* env;
+	jobject obj;
+
+public:
+	CustomQueryCallback( JNIEnv* env, jobject obj )
+	{
+		this->env = env;
+		this->obj = obj;
+	}
+
+	virtual bool ReportFixture( b2Fixture* fixture )
+	{
+		return env->CallBooleanMethod(obj, reportFixtureID, (jlong)fixture );
+	}
+}; 
+
+inline b2BodyType getBodyType( int type )
+{
+	switch( type )
+	{
+	case 0: return b2_staticBody;
+	case 1: return b2_kinematicBody;
+	case 2: return b2_dynamicBody;
+	default:
+		return b2_staticBody;
+	}
+}
+
+b2ContactFilter defaultFilter;
+	 */
+	
 	/** pool for bodies **/
 	protected final Pool<Body> freeBodies = new Pool<Body>(100, 200) {
 		@Override
@@ -84,34 +214,6 @@ public final class World implements Disposable {
 	/** Contact listener **/
 	protected ContactListener contactListener = null;
 
-	/** Ray-cast the world for all fixtures in the path of the ray. The ray-cast ignores shapes that contain the starting point.
-	 * @param callback a user implemented callback class.
-	 * @param point1 the ray starting point
-	 * @param point2 the ray ending point */
-	public void rayCast (RayCastCallback callback, Vector2 point1, Vector2 point2) {
-		rayCastCallback = callback;
-		jniRayCast(addr, point1.x, point1.y, point2.x, point2.y);
-	}
-
-	private RayCastCallback rayCastCallback = null;
-
-	private native void jniRayCast (long addr, float aX, float aY, float bX, float bY);
-
-	private Vector2 rayPoint = new Vector2();
-	private Vector2 rayNormal = new Vector2();
-
-	private float reportRayFixture (long addr, float pX, float pY, float nX, float nY, float fraction) {
-		if (rayCastCallback != null) {
-			rayPoint.x = pX;
-			rayPoint.y = pY;
-			rayNormal.x = nX;
-			rayNormal.y = nY;
-			return rayCastCallback.reportRayFixture(fixtures.get(addr), rayPoint, rayNormal, fraction);
-		} else {
-			return 0.0f;
-		}
-	}
-
 	/** Construct a world object.
 	 * @param gravity the world gravity vector.
 	 * @param doSleep improve performance by not simulating inactive bodies. */
@@ -125,7 +227,19 @@ public final class World implements Disposable {
 			freeContacts.add(new Contact(this, 0));
 	}
 
-	private native long newWorld (float gravityX, float gravityY, boolean doSleep);
+	private native long newWorld (float gravityX, float gravityY, boolean doSleep); /*
+		worldClass = env->GetObjectClass(object);
+		beginContactID = env->GetMethodID(worldClass, "beginContact", "(J)V" );
+		endContactID = env->GetMethodID( worldClass, "endContact", "(J)V" );
+		preSolveID = env->GetMethodID( worldClass, "preSolve", "(JJ)V" );
+		postSolveID = env->GetMethodID( worldClass, "postSolve", "(JJ)V" );
+		reportFixtureID = env->GetMethodID(worldClass, "reportFixture", "(J)Z" );
+		reportRayFixtureID = env->GetMethodID(worldClass, "reportRayFixture", "(JFFFFF)F" );
+		shouldCollideID = env->GetMethodID( worldClass, "contactFilter", "(JJ)Z");
+	
+		b2World* world = new b2World( b2Vec2( gravityX, gravityY ), doSleep );
+		return (jlong)world;
+	*/
 
 	/** Register a destruction listener. The listener is owned by you and must remain in scope. */
 	public void setDestructionListener (DestructionListener listener) {
@@ -140,7 +254,9 @@ public final class World implements Disposable {
 	}
 	
 	/** tells the native code not to call the Java world class if use is false **/
-	private native void setUseDefaultContactFilter(boolean use);
+	private native void setUseDefaultContactFilter(boolean use); /*
+		// FIXME
+	*/
 
 	/** Register a contact event listener. The listener is owned by you and must remain in scope. */
 	public void setContactListener (ContactListener listener) {
@@ -161,7 +277,26 @@ public final class World implements Disposable {
 
 	private native long jniCreateBody (long addr, int type, float positionX, float positionY, float angle, float linearVelocityX,
 		float linearVelocityY, float angularVelocity, float linearDamping, float angularDamping, boolean allowSleep, boolean awake,
-		boolean fixedRotation, boolean bullet, boolean active, float intertiaScale);
+		boolean fixedRotation, boolean bullet, boolean active, float inertiaScale); /*
+		b2BodyDef bodyDef;
+		bodyDef.type = getBodyType(type);
+		bodyDef.position.Set( positionX, positionY );
+		bodyDef.angle = angle;
+		bodyDef.linearVelocity.Set( linearVelocityX, linearVelocityY );
+		bodyDef.angularVelocity = angularVelocity;
+		bodyDef.linearDamping = linearDamping;
+		bodyDef.angularDamping = angularDamping;
+		bodyDef.allowSleep = allowSleep;
+		bodyDef.awake = awake;
+		bodyDef.fixedRotation = fixedRotation;
+		bodyDef.bullet = bullet;
+		bodyDef.active = active;
+		bodyDef.gravityScale = inertiaScale;
+	
+		b2World* world = (b2World*)addr;
+		b2Body* body = world->CreateBody( &bodyDef );
+		return (jlong)body;
+	*/
 
 	/** Destroy a rigid body given a definition. No reference to the definition is retained. This function is locked during
 	 * callbacks.
@@ -179,7 +314,11 @@ public final class World implements Disposable {
 		freeBodies.free(body);
 	}
 
-	private native void jniDestroyBody (long addr, long bodyAddr);
+	private native void jniDestroyBody (long addr, long bodyAddr); /*
+		b2World* world = (b2World*)addr;
+		b2Body* body = (b2Body*)bodyAddr;
+		world->DestroyBody(body);
+	*/
 
 	/** Create a joint to constrain bodies together. No reference to the definition is retained. This may cause the connected bodies
 	 * to cease colliding.
@@ -266,40 +405,171 @@ public final class World implements Disposable {
 		return 0;
 	}
 
-	private native long jniCreateWheelJoint (long addr, long bodyA, long Bodyb, boolean collideConnected, float localAnchorAX,
+	private native long jniCreateWheelJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
 		float localAnchorAY, float localAnchorBX, float localAnchorBY, float localAxisAX, float localAxisAY, boolean enableMotor,
-		float maxMotorTorque, float motorSpeed, float frequencyHz, float dampingRatio);
+		float maxMotorTorque, float motorSpeed, float frequencyHz, float dampingRatio); /*
+		b2World* world = (b2World*)addr;
+		b2WheelJointDef def;
+		def.bodyA = (b2Body*)bodyA;
+		def.bodyB = (b2Body*)bodyB;
+		def.collideConnected = collideConnected;
+		def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
+		def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
+		def.localAxisA = b2Vec2(localAxisAX, localAxisAY);
+		def.enableMotor = enableMotor;
+		def.maxMotorTorque = maxMotorTorque;
+		def.motorSpeed = motorSpeed;
+		def.frequencyHz = frequencyHz;
+		def.dampingRatio = dampingRatio;
+		
+		return (jlong)world->CreateJoint(&def);
+	*/
 
 	private native long jniCreateRopeJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
-		float localAnchorAY, float localAnchorBX, float localAnchorBY, float maxLength);
+		float localAnchorAY, float localAnchorBX, float localAnchorBY, float maxLength); /*
+		b2World* world = (b2World*)addr;
+		b2RopeJointDef def;
+		def.bodyA = (b2Body*)bodyA;
+		def.bodyB = (b2Body*)bodyB;
+		def.collideConnected = collideConnected;
+		def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
+		def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
+		def.maxLength = maxLength;
+	
+		return (jlong)world->CreateJoint(&def);
+	*/
 
 	private native long jniCreateDistanceJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
-		float localAnchorAY, float localAnchorBX, float localAnchorBY, float length, float frequencyHz, float dampingRatio);
+		float localAnchorAY, float localAnchorBX, float localAnchorBY, float length, float frequencyHz, float dampingRatio); /*
+		b2World* world = (b2World*)addr;
+		b2DistanceJointDef def;
+		def.bodyA = (b2Body*)bodyA;
+		def.bodyB = (b2Body*)bodyB;
+		def.collideConnected = collideConnected;
+		def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
+		def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
+		def.length = length;
+		def.frequencyHz = frequencyHz;
+		def.dampingRatio = dampingRatio;
+	
+		return (jlong)world->CreateJoint(&def);
+	*/
 
 	private native long jniCreateFrictionJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
-		float localAnchorAY, float localAnchorBX, float localAnchorBY, float maxForce, float maxTorque);
+		float localAnchorAY, float localAnchorBX, float localAnchorBY, float maxForce, float maxTorque); /*
+		b2World* world = (b2World*)addr;
+		b2FrictionJointDef def;
+		def.bodyA = (b2Body*)bodyA;
+		def.bodyB = (b2Body*)bodyB;
+		def.collideConnected = collideConnected;
+		def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
+		def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
+		def.maxForce = maxForce;
+		def.maxTorque = maxTorque;
+		return (jlong)world->CreateJoint(&def);
+	*/
 
 	private native long jniCreateGearJoint (long addr, long bodyA, long bodyB, boolean collideConnected, long joint1, long joint2,
-		float ratio);
+		float ratio); /*
+		b2World* world = (b2World*)addr;
+		b2GearJointDef def;
+		def.bodyA = (b2Body*)bodyA;
+		def.bodyB = (b2Body*)bodyB;
+		def.collideConnected = collideConnected;
+		def.joint1 = (b2Joint*)joint1;
+		def.joint2 = (b2Joint*)joint2;
+		def.ratio = ratio;
+		return (jlong)world->CreateJoint(&def);
+	*/
 
 	private native long jniCreateMouseJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float targetX,
-		float targetY, float maxForce, float frequencyHz, float dampingRatio);
+		float targetY, float maxForce, float frequencyHz, float dampingRatio); /*
+		b2World* world = (b2World*)addr;
+		b2MouseJointDef def;
+		def.bodyA = (b2Body*)bodyA;
+		def.bodyB = (b2Body*)bodyB;
+		def.collideConnected = collideConnected;
+		def.target = b2Vec2( targetX, targetY );
+		def.maxForce = maxForce;
+		def.frequencyHz = frequencyHz;
+		def.dampingRatio = dampingRatio;
+		return (jlong)world->CreateJoint(&def);
+	*/
 
 	private native long jniCreatePrismaticJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
 		float localAnchorAY, float localAnchorBX, float localAnchorBY, float localAxisAX, float localAxisAY, float referenceAngle,
 		boolean enableLimit, float lowerTranslation, float upperTranslation, boolean enableMotor, float maxMotorForce,
-		float motorSpeed);
+		float motorSpeed); /*
+		b2World* world = (b2World*)addr;
+		b2PrismaticJointDef def;
+		def.bodyA = (b2Body*)bodyA;
+		def.bodyB = (b2Body*)bodyB;
+		def.collideConnected = collideConnected;
+		def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
+		def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
+		def.localAxisA = b2Vec2( localAxisAX, localAxisAY );
+		def.referenceAngle = referenceAngle;
+		def.enableLimit = enableLimit;
+		def.lowerTranslation = lowerTranslation;
+		def.upperTranslation = upperTranslation;
+		def.enableMotor = enableMotor;
+		def.maxMotorForce = maxMotorForce;
+		def.motorSpeed = motorSpeed;
+		return (jlong)world->CreateJoint(&def);
+	*/
 
 	private native long jniCreatePulleyJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float groundAnchorAX,
 		float groundAnchorAY, float groundAnchorBX, float groundAnchorBY, float localAnchorAX, float localAnchorAY,
-		float localAnchorBX, float localAnchorBY, float lengthA, float lengthB, float ratio);
+		float localAnchorBX, float localAnchorBY, float lengthA, float lengthB, float ratio); /*
+		b2World* world = (b2World*)addr;
+		b2PulleyJointDef def;
+		def.bodyA = (b2Body*)bodyA;
+		def.bodyB = (b2Body*)bodyB;
+		def.collideConnected = collideConnected;
+		def.groundAnchorA = b2Vec2( groundAnchorAX, groundAnchorAY );
+		def.groundAnchorB = b2Vec2( groundAnchorBX, groundAnchorBY );
+		def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
+		def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
+		def.lengthA = lengthA;
+		def.lengthB = lengthB;
+		def.ratio = ratio;
+	
+		return (jlong)world->CreateJoint(&def);
+	*/
 
 	private native long jniCreateRevoluteJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
 		float localAnchorAY, float localAnchorBX, float localAnchorBY, float referenceAngle, boolean enableLimit, float lowerAngle,
-		float upperAngle, boolean enableMotor, float motorSpeed, float maxMotorTorque);
+		float upperAngle, boolean enableMotor, float motorSpeed, float maxMotorTorque); /*
+		b2World* world = (b2World*)addr;
+		b2RevoluteJointDef def;
+		def.bodyA = (b2Body*)bodyA;
+		def.bodyB = (b2Body*)bodyB;
+		def.collideConnected = collideConnected;
+		def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
+		def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
+		def.referenceAngle = referenceAngle;
+		def.enableLimit = enableLimit;
+		def.lowerAngle = lowerAngle;
+		def.upperAngle = upperAngle;
+		def.enableMotor = enableMotor;
+		def.motorSpeed = motorSpeed;
+		def.maxMotorTorque = maxMotorTorque;
+		return (jlong)world->CreateJoint(&def);
+	*/
 
 	private native long jniCreateWeldJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
-		float localAnchorAY, float localAnchorBX, float localAnchorBY, float referenceAngle);
+		float localAnchorAY, float localAnchorBX, float localAnchorBY, float referenceAngle); /*
+		b2World* world = (b2World*)addr;
+		b2WeldJointDef def;
+		def.bodyA = (b2Body*)bodyA;
+		def.bodyB = (b2Body*)bodyB;
+		def.collideConnected = collideConnected;
+		def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
+		def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
+		def.referenceAngle = referenceAngle;
+	
+		return (jlong)world->CreateJoint(&def);
+	*/
 
 	/** Destroy a joint. This may cause the connected bodies to begin colliding.
 	 * @warning This function is locked during callbacks. */
@@ -310,7 +580,11 @@ public final class World implements Disposable {
 		jniDestroyJoint(addr, joint.addr);
 	}
 
-	private native void jniDestroyJoint (long addr, long jointAddr);
+	private native void jniDestroyJoint (long addr, long jointAddr); /*
+		b2World* world = (b2World*)addr;
+		b2Joint* joint = (b2Joint*)jointAddr;
+		world->DestroyJoint( joint );
+	*/
 
 	/** Take a time step. This performs collision detection, integration, and constraint solution.
 	 * @param timeStep the amount of time to simulate, this should not vary.
@@ -320,7 +594,16 @@ public final class World implements Disposable {
 		jniStep(addr, timeStep, velocityIterations, positionIterations);
 	}
 
-	private native void jniStep (long addr, float timeStep, int velocityIterations, int positionIterations);
+	private native void jniStep (long addr, float timeStep, int velocityIterations, int positionIterations); /*
+		b2World* world = (b2World*)addr;
+		CustomContactFilter contactFilter(env, object);
+		CustomContactListener contactListener(env,object);
+		world->SetContactFilter(&contactFilter);
+		world->SetContactListener(&contactListener);
+		world->Step( timeStep, velocityIterations, positionIterations );
+		world->SetContactFilter(&defaultFilter);
+		world->SetContactListener(0);
+	*/
 
 	/** Manually clear the force buffer on all bodies. By default, forces are cleared automatically after each call to Step. The
 	 * default behavior is modified by calling SetAutoClearForces. The purpose of this function is to support sub-stepping.
@@ -331,56 +614,80 @@ public final class World implements Disposable {
 		jniClearForces(addr);
 	}
 
-	private native void jniClearForces (long addr);
+	private native void jniClearForces (long addr); /*
+		b2World* world = (b2World*)addr;
+		world->ClearForces();
+	*/
 
 	/** Enable/disable warm starting. For testing. */
 	public void setWarmStarting (boolean flag) {
 		jniSetWarmStarting(addr, flag);
 	}
 
-	private native void jniSetWarmStarting (long addr, boolean flag);
+	private native void jniSetWarmStarting (long addr, boolean flag); /*
+		b2World* world = (b2World*)addr;
+		world->SetWarmStarting(flag);
+	*/
 
 	/** Enable/disable continuous physics. For testing. */
 	public void setContinuousPhysics (boolean flag) {
 		jniSetContiousPhysics(addr, flag);
 	}
 
-	private native void jniSetContiousPhysics (long addr, boolean flag);
+	private native void jniSetContiousPhysics (long addr, boolean flag); /*
+		b2World* world = (b2World*)addr;
+		world->SetContinuousPhysics(flag);
+	*/
 
 	/** Get the number of broad-phase proxies. */
 	public int getProxyCount () {
 		return jniGetProxyCount(addr);
 	}
 
-	private native int jniGetProxyCount (long addr);
+	private native int jniGetProxyCount (long addr); /*
+		b2World* world = (b2World*)addr;
+		return world->GetProxyCount();
+	*/
 
 	/** Get the number of bodies. */
 	public int getBodyCount () {
 		return jniGetBodyCount(addr);
 	}
 
-	private native int jniGetBodyCount (long addr);
+	private native int jniGetBodyCount (long addr); /*
+		b2World* world = (b2World*)addr;
+		return world->GetBodyCount();
+	*/
 
 	/** Get the number of joints. */
 	public int getJointCount () {
 		return jniGetJointcount(addr);
 	}
 
-	private native int jniGetJointcount (long addr);
+	private native int jniGetJointcount (long addr); /*
+		b2World* world = (b2World*)addr;
+		return world->GetJointCount();
+	*/
 
 	/** Get the number of contacts (each may have 0 or more contact points). */
 	public int getContactCount () {
 		return jniGetContactCount(addr);
 	}
 
-	private native int jniGetContactCount (long addr);
+	private native int jniGetContactCount (long addr); /*
+		b2World* world = (b2World*)addr;
+		return world->GetContactCount();
+	*/
 
 	/** Change the global gravity vector. */
 	public void setGravity (Vector2 gravity) {
 		jniSetGravity(addr, gravity.x, gravity.y);
 	}
 
-	private native void jniSetGravity (long addr, float gravityX, float gravityY);
+	private native void jniSetGravity (long addr, float gravityX, float gravityY); /*
+		b2World* world = (b2World*)addr;
+		world->SetGravity( b2Vec2( gravityX, gravityY ) );
+	*/
 
 	/** Get the global gravity vector. */
 	final float[] tmpGravity = new float[2];
@@ -393,28 +700,42 @@ public final class World implements Disposable {
 		return gravity;
 	}
 
-	private native void jniGetGravity (long addr, float[] gravity);
+	private native void jniGetGravity (long addr, float[] gravity); /*
+		b2World* world = (b2World*)addr;
+		b2Vec2 g = world->GetGravity();
+		gravity[0] = g.x;
+		gravity[1] = g.y;
+	*/
 
 	/** Is the world locked (in the middle of a time step). */
 	public boolean isLocked () {
 		return jniIsLocked(addr);
 	}
 
-	private native boolean jniIsLocked (long addr);
+	private native boolean jniIsLocked (long addr); /*
+		b2World* world = (b2World*)addr;
+		return world->IsLocked();
+	*/
 
 	/** Set flag to control automatic clearing of forces after each time step. */
 	public void setAutoClearForces (boolean flag) {
 		jniSetAutoClearForces(addr, flag);
 	}
 
-	private native void jniSetAutoClearForces (long addr, boolean flag);
+	private native void jniSetAutoClearForces (long addr, boolean flag); /*
+		b2World* world = (b2World*)addr;
+		world->SetAutoClearForces(flag);
+	*/
 
 	/** Get the flag that controls automatic clearing of forces after each time step. */
 	public boolean getAutoClearForces () {
 		return jniGetAutoClearForces(addr);
 	}
 
-	private native boolean jniGetAutoClearForces (long addr);
+	private native boolean jniGetAutoClearForces (long addr); /*
+		b2World* world = (b2World*)addr;
+		return world->GetAutoClearForces();
+	*/
 
 	/** Query the world for all fixtures that potentially overlap the provided AABB.
 	 * @param callback a user implemented callback class.
@@ -429,7 +750,15 @@ public final class World implements Disposable {
 
 	private QueryCallback queryCallback = null;;
 
-	private native void jniQueryAABB (long addr, float lowX, float lowY, float upX, float upY);
+	private native void jniQueryAABB (long addr, float lowX, float lowY, float upX, float upY); /*
+		b2World* world = (b2World*)addr;
+		b2AABB aabb;
+		aabb.lowerBound = b2Vec2( lowX, lowY );
+		aabb.upperBound = b2Vec2( upX, upY );
+	
+		CustomQueryCallback callback( env, object );
+		world->QueryAABB( &callback, aabb );
+	*/
 
 //
 // /// Ray-cast the world for all fixtures in the path of the ray. Your callback
@@ -489,13 +818,26 @@ public final class World implements Disposable {
 		return joints.values();
 	}
 
-	private native void jniGetContactList (long addr, long[] contacts);
+	private native void jniGetContactList (long addr, long[] contacts); /*
+		b2World* world = (b2World*)addr;
+	
+		b2Contact* contact = world->GetContactList();
+		int i = 0;
+		while( contact != 0 )
+		{
+			contacts[i++] = (long)contact;
+			contact = contact->GetNext();
+		}
+	*/
 
 	public void dispose () {
 		jniDispose(addr);
 	}
 
-	private native void jniDispose (long addr);
+	private native void jniDispose (long addr); /*
+		b2World* world = (b2World*)(addr);
+		delete world;
+	*/
 
 	/** Internal method called from JNI in case a contact happens
 	 * @param fixtureA
@@ -552,8 +894,44 @@ public final class World implements Disposable {
 
 	/** Sets the box2d velocity threshold globally, for all World instances.
 	 * @param threshold the threshold, default 1.0f */
-	public static native void setVelocityThreshold (float threshold);
+	public static native void setVelocityThreshold (float threshold); /*
+		b2_velocityThreshold = threshold;
+	*/
 
 	/** @return the global box2d velocity threshold. */
-	public static native float getVelocityThreshold ();
+	public static native float getVelocityThreshold (); /*
+		return b2_velocityThreshold;
+	*/
+	
+	/** Ray-cast the world for all fixtures in the path of the ray. The ray-cast ignores shapes that contain the starting point.
+	 * @param callback a user implemented callback class.
+	 * @param point1 the ray starting point
+	 * @param point2 the ray ending point */
+	public void rayCast (RayCastCallback callback, Vector2 point1, Vector2 point2) {
+		rayCastCallback = callback;
+		jniRayCast(addr, point1.x, point1.y, point2.x, point2.y);
+	}
+
+	private RayCastCallback rayCastCallback = null;
+
+	private native void jniRayCast (long addr, float aX, float aY, float bX, float bY); /*
+		b2World *world = (b2World*)addr;
+		CustomRayCastCallback callback( env, object );	
+		world->RayCast( &callback, b2Vec2(aX,aY), b2Vec2(bX,bY) );
+	*/
+
+	private Vector2 rayPoint = new Vector2();
+	private Vector2 rayNormal = new Vector2();
+
+	private float reportRayFixture (long addr, float pX, float pY, float nX, float nY, float fraction) {
+		if (rayCastCallback != null) {
+			rayPoint.x = pX;
+			rayPoint.y = pY;
+			rayNormal.x = nX;
+			rayNormal.y = nY;
+			return rayCastCallback.reportRayFixture(fixtures.get(addr), rayPoint, rayNormal, fraction);
+		} else {
+			return 0.0f;
+		}
+	}
 }

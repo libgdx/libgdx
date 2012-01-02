@@ -6,11 +6,17 @@ import com.badlogic.gdx.math.Vector2;
 /** A line segment (edge) shape. These can be connected in chains or loops to other edge shapes. The connectivity information is
  * used to ensure correct contact normals. */
 public class EdgeShape extends Shape {
+	/*JNI
+#include <Box2D.h>
+	 */
+	
 	public EdgeShape () {
 		addr = newEdgeShape();
 	}
 
-	private native long newEdgeShape ();
+	private native long newEdgeShape (); /*
+		return (jlong)(new b2EdgeShape());
+	*/
 
 	EdgeShape (long addr) {
 		this.addr = addr;
@@ -26,7 +32,10 @@ public class EdgeShape extends Shape {
 		jniSet(addr, v1X, v1Y, v2X, v2Y);
 	}
 
-	private native void jniSet (long addr, float v1X, float v1Y, float v2X, float v2Y);
+	private native void jniSet (long addr, float v1x, float v1y, float v2x, float v2y); /*
+		b2EdgeShape* edge = (b2EdgeShape*)addr;
+		edge->Set(b2Vec2(v1x, v1y), b2Vec2(v2x, v2y));
+	*/
 
 	static final float[] vertex = new float[2];
 
@@ -36,7 +45,11 @@ public class EdgeShape extends Shape {
 		vec.y = vertex[1];
 	}
 
-	private native void jniGetVertex1 (long addr, float[] vertex);
+	private native void jniGetVertex1 (long addr, float[] vertex); /*
+		b2EdgeShape* edge = (b2EdgeShape*)addr; 
+		vertex[0] = edge->m_vertex1.x;
+		vertex[1] = edge->m_vertex1.y;
+	*/
 
 	public void getVertex2 (Vector2 vec) {
 		jniGetVertex2(addr, vertex);
@@ -44,7 +57,11 @@ public class EdgeShape extends Shape {
 		vec.y = vertex[1];
 	}
 
-	private native void jniGetVertex2 (long addr, float[] vertex);
+	private native void jniGetVertex2 (long addr, float[] vertex); /*
+		b2EdgeShape* edge = (b2EdgeShape*)addr;
+		vertex[0] = edge->m_vertex2.x;
+		vertex[1] = edge->m_vertex2.y;
+	*/
 
 // /// @see b2Shape::TestPoint
 // bool TestPoint(const b2Transform& transform, const b2Vec2& p) const;

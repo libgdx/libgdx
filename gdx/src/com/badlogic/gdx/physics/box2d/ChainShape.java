@@ -4,11 +4,17 @@ package com.badlogic.gdx.physics.box2d;
 import com.badlogic.gdx.math.Vector2;
 
 public class ChainShape extends Shape {
+	/*JNI
+#include <Box2D.h>
+	 */
+	
 	public ChainShape () {
 		addr = newChainShape();
 	}
 
-	private native long newChainShape ();
+	private native long newChainShape (); /*
+		return (jlong)(new b2ChainShape());
+	*/
 
 	ChainShape (long addr) {
 		this.addr = addr;
@@ -27,10 +33,17 @@ public class ChainShape extends Shape {
 			verts[i] = vertices[j].x;
 			verts[i + 1] = vertices[j].y;
 		}
-		jniCreateLoop(addr, verts);
+		jniCreateLoop(addr, verts, verts.length);
 	}
 
-	private native void jniCreateLoop (long addr, float[] verts);
+	private native void jniCreateLoop (long addr, float[] verts, int numVertices); /*
+		b2ChainShape* chain = (b2ChainShape*)addr;
+		b2Vec2* verticesOut = new b2Vec2[numVertices];
+		for( int i = 0; i < numVertices; i++ )
+			verticesOut[i] = b2Vec2(verts[i<<1], verts[(i<<1)+1]);
+		chain->CreateLoop( verticesOut, numVertices );
+		delete verticesOut;
+	*/
 
 	/** Create a chain with isolated end vertices.
 	 * @param vertices an array of vertices, these are copied */
@@ -40,10 +53,17 @@ public class ChainShape extends Shape {
 			verts[i] = vertices[j].x;
 			verts[i + 1] = vertices[j].y;
 		}
-		jniCreateChain(addr, verts);
+		jniCreateChain(addr, verts, verts.length);
 	}
 
-	private native void jniCreateChain (long addr, float[] verts);
+	private native void jniCreateChain (long addr, float[] verts, int numVertices); /*
+		b2ChainShape* chain = (b2ChainShape*)addr;
+		b2Vec2* verticesOut = new b2Vec2[numVertices];
+		for( int i = 0; i < numVertices; i++ )
+			verticesOut[i] = b2Vec2(verts[i<<1], verts[(i<<1)+1]);
+		chain->CreateChain( verticesOut, numVertices );
+		delete verticesOut;
+	*/
 
 	/** Establish connectivity to a vertex that precedes the first vertex. Don't call this for loops. */
 	public void setPrevVertex (Vector2 prevVertex) {
@@ -55,7 +75,10 @@ public class ChainShape extends Shape {
 		jniSetPrevVertex(addr, prevVertexX, prevVertexY);
 	}
 
-	private native void jniSetPrevVertex (long addr, float x, float y);
+	private native void jniSetPrevVertex (long addr, float x, float y); /*
+		b2ChainShape* chain = (b2ChainShape*)addr;
+		chain->SetPrevVertex(b2Vec2(x, y));
+	*/
 
 	/** Establish connectivity to a vertex that follows the last vertex. Don't call this for loops. */
 	public void setNextVertex (Vector2 nextVertex) {
@@ -67,14 +90,20 @@ public class ChainShape extends Shape {
 		jniSetNextVertex(addr, nextVertexX, nextVertexY);
 	}
 
-	private native void jniSetNextVertex (long addr, float x, float y);
+	private native void jniSetNextVertex (long addr, float x, float y); /*
+		b2ChainShape* chain = (b2ChainShape*)addr;
+		chain->SetNextVertex(b2Vec2(x, y));
+	*/
 
 	/** @return the number of vertices */
 	public int getVertexCount () {
 		return jniGetVertexCount(addr);
 	}
 
-	private native int jniGetVertexCount (long addr);
+	private native int jniGetVertexCount (long addr); /*
+		b2ChainShape* chain = (b2ChainShape*)addr;
+		return chain->GetVertexCount();
+	*/
 
 	private static float[] verts = new float[2];
 
@@ -87,7 +116,12 @@ public class ChainShape extends Shape {
 		vertex.y = verts[1];
 	}
 
-	private native void jniGetVertex (long addr, int index, float[] verts);
+	private native void jniGetVertex (long addr, int index, float[] verts); /*
+		b2ChainShape* chain = (b2ChainShape*)addr;
+		const b2Vec2 v = chain->GetVertex( index );
+		verts[0] = v.x;
+		verts[1] = v.y;
+	*/
 
 // /// Implement b2Shape. Vertices are cloned using b2Alloc.
 // b2Shape* Clone(b2BlockAllocator* allocator) const;

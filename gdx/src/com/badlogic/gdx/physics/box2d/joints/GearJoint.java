@@ -25,6 +25,10 @@ import com.badlogic.gdx.physics.box2d.World;
  * 1/length.
  * @warning The revolute and prismatic joints must be attached to fixed bodies (which must be body1 on those joints). */
 public class GearJoint extends Joint {
+	/*JNI
+#include <Box2D.h> 
+	 */
+	
 	public GearJoint (World world, long addr) {
 		super(world, addr);
 	}
@@ -34,12 +38,18 @@ public class GearJoint extends Joint {
 		jniSetRatio(addr, ratio);
 	}
 
-	private native void jniSetRatio (long addr, float ratio);
+	private native void jniSetRatio (long addr, float ratio); /*
+		b2GearJoint* joint =  (b2GearJoint*)addr;
+		joint->SetRatio( ratio );
+	*/
 
 	/** Set/Get the gear ratio. */
 	public float getRatio () {
 		return jniGetRatio(addr);
 	}
 
-	private native float jniGetRatio (long addr);
+	private native float jniGetRatio (long addr); /*
+		b2GearJoint* joint =  (b2GearJoint*)addr;
+		return joint->GetRatio();
+	*/
 }

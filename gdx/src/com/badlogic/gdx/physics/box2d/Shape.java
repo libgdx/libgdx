@@ -22,6 +22,10 @@ package com.badlogic.gdx.physics.box2d;
  * NOTE: YOU NEED TO DISPOSE SHAPES YOU CREATED YOURSELF AFTER YOU NO LONGER USE THEM! E.g. after calling body.createFixture();
  * @author mzechner */
 public abstract class Shape {
+	/*JNI
+#include <Box2D.h>
+	 */
+	
 	/** Enum describing the type of a shape
 	 * @author mzechner */
 	public enum Type {
@@ -40,30 +44,51 @@ public abstract class Shape {
 		return jniGetRadius(addr);
 	}
 
-	private native float jniGetRadius (long addr);
+	private native float jniGetRadius (long addr); /*
+		b2Shape* shape = (b2Shape*)addr;
+		return shape->m_radius;
+	*/
 
 	/** Sets the radius of this shape */
 	public void setRadius (float radius) {
 		jniSetRadius(addr, radius);
 	}
 
-	private native void jniSetRadius (long addr, float radius);
+	private native void jniSetRadius (long addr, float radius); /*
+		b2Shape* shape = (b2Shape*)addr;
+		shape->m_radius = radius;
+	*/
 
 	/** Needs to be called when the shape is no longer used, e.g. after a fixture was created based on the shape. */
 	public void dispose () {
 		jniDispose(addr);
 	}
 
-	private native void jniDispose (long addr);
+	private native void jniDispose (long addr); /*
+		b2Shape* shape = (b2Shape*)addr;
+		delete shape;
+	*/
 
-	protected static native int jniGetType (long addr);
+	protected static native int jniGetType (long addr); /*
+		b2Shape* shape = (b2Shape*)addr;
+		switch(shape->m_type) {
+		case b2Shape::e_circle: return 0;
+		case b2Shape::e_edge: return 1;
+		case b2Shape::e_polygon: return 2;
+		case b2Shape::e_chain: return 3;
+		default: return -1;
+		}
+	*/
 
 	/** Get the number of child primitives. */
 	public int getChildCount () {
 		return jniGetChildCount(addr);
 	}
 
-	private native int jniGetChildCount (long addr);
+	private native int jniGetChildCount (long addr); /*
+		b2Shape* shape = (b2Shape*)addr;
+		return shape->GetChildCount();
+	*/
 
 // /// Test a point for containment in this shape. This only works for convex shapes.
 // /// @param xf the shape world transform.
