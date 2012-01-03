@@ -22,8 +22,6 @@ public class SoundTouchTest extends GdxTest {
 	private static final String FILE = "data/cloudconnected.ogg";
 	/** a VorbisDecoder to read PCM data from the ogg file **/
 	VorbisDecoder decoder;
-	/** a buffer to be filled by the decoder with PCM data **/
-	ShortBuffer buffer;
 	/** an AudioDevice for playing back the PCM data **/
 	AudioDevice device;
 	/** SoundTouch instance to modify the PCM data **/
@@ -36,17 +34,16 @@ public class SoundTouchTest extends GdxTest {
 		Gdx.files.internal(FILE).copyTo(externalFile);
 		
 		// Create the decoder and log some properties. Note that we need
-		// the absolute file path.
-		decoder = new VorbisDecoder(externalFile.file().getAbsolutePath());
-		Gdx.app.log("SoundTouchTest", "channels: " + decoder.getNumChannels() + ", rate: " + decoder.getRate() + ", length: " + decoder.getLength());
+		// and external or absolute file!
+		decoder = new VorbisDecoder(externalFile);
+		Gdx.app.log("SoundTouchTest", "channels: " + decoder.getChannels() + ", rate: " + decoder.getRate() + ", length: " + decoder.getLength());
 
-		// Create a samples buffer and audio device
-		buffer = AudioTools.allocateShortBuffer(1024*4, 2);
-		device = Gdx.audio.newAudioDevice(decoder.getRate(), decoder.getNumChannels() == 1? true: false);
+		// Create an audio device for playback
+		device = Gdx.audio.newAudioDevice(decoder.getRate(), decoder.getChannels() == 1? true: false);
 		
 		// Create the SoundTouch instance
 		soundTouch = new SoundTouch();
-		soundTouch.setChannels(decoder.getNumChannels());
+		soundTouch.setChannels(decoder.getChannels());
 		soundTouch.setSampleRate(decoder.getRate());
 		soundTouch.setPitchSemiTones(2);
 		
@@ -55,26 +52,22 @@ public class SoundTouchTest extends GdxTest {
 			@Override
 			public void run() {
 				// we need a short[] to pass the data to the AudioDevice
-				short[] samples = new short[buffer.capacity()];
+				short[] samples = new short[2048];
 				int readSamples = 0;
 				
 				// read until we reach the end of the file, we read the file
 				// fully as SoundTouch#receiveSamples returns uneven numbers
 				// of samples from time to time. Could be solved with a ring
 				// buffer :)
-				while((readSamples = decoder.readSamples(buffer)) > 0) {
-					// copy the samples from the buffer to the array
-					// and write them to the AudioDevice
-					buffer.get(samples);
-					
+				while((readSamples = decoder.readSamples(samples, 0, samples.length)) > 0) {
 					// process samples with sound touch, divide by 2 for stereo samples
 					// as one sample contains both left and right channel data in SoundTouch.
-					soundTouch.putSamples(samples, 0, readSamples / decoder.getNumChannels());
+					soundTouch.putSamples(samples, 0, readSamples / decoder.getChannels());
 				}
 				
 				// read the samples from SoundTouch and play them back
-				while((readSamples = soundTouch.receiveSamples(samples, 0, samples.length / decoder.getNumChannels())) > 0) {
-					device.writeSamples(samples, 0, readSamples * decoder.getNumChannels());
+				while((readSamples = soundTouch.receiveSamples(samples, 0, samples.length / decoder.getChannels())) > 0) {
+					device.writeSamples(samples, 0, readSamples * decoder.getChannels());
 				}
 			}
 		});
