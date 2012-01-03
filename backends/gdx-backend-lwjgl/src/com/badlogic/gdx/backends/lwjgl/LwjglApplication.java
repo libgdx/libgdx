@@ -177,6 +177,7 @@ public class LwjglApplication implements Application {
 				if (lastWidth != width || lastHeight != height) {
 					lastWidth = width;
 					lastHeight = height;
+					Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
 					listener.resize(lastWidth, lastHeight);
 				}
 			}
@@ -186,6 +187,9 @@ public class LwjglApplication implements Application {
 			audio.update();
 			Display.update();
 			if(Display.wasResized()) {
+				Gdx.gl.glViewport(0, 0, Display.getWidth(), Display.getHeight());
+				graphics.config.width = Display.getWidth();
+				graphics.config.height = Display.getHeight();
 				if(listener != null) listener.resize(Display.getWidth(), Display.getHeight());
 			}
 			if (graphics.vsync && graphics.config.useCPUSynch) {

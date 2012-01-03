@@ -23,8 +23,8 @@ public class JoglDebugStarter {
 
 	public static void main (String[] argv) {
 		JoglApplicationConfiguration config = new JoglApplicationConfiguration();
-		config.useGL20 = true;
+		config.useGL20 = false;
 		config.vSyncEnabled = false;
-		new JoglApplication(new com.badlogic.gdx.tests.UITest(), config);
+		new JoglApplication(new com.badlogic.gdx.tests.MD5Test(), config);
 	}
 }

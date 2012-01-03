@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
-		GdxTest test = new MD5Test();
+		GdxTest test = new InputTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;

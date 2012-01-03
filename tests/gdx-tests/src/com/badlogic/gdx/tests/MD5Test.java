@@ -65,7 +65,7 @@ public class MD5Test extends GdxTest implements InputProcessor {
 
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		Gdx.graphics.getGL10().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		Gdx.input.setInputProcessor(this);
 	}
