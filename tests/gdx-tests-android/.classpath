@@ -6,5 +6,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-android"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-tests"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-audio"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-stb-truetype"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

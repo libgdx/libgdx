@@ -18,13 +18,18 @@ package com.badlogic.gdx.tests.jogl;
 
 import com.badlogic.gdx.backends.jogl.JoglApplication;
 import com.badlogic.gdx.backends.jogl.JoglApplicationConfiguration;
+import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class JoglDebugStarter {
 
 	public static void main (String[] argv) {
+		// this is only here for me to debug native code faster
+		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
+		
+		GdxTest test = new com.badlogic.gdx.tests.StbTrueTypeTest();
 		JoglApplicationConfiguration config = new JoglApplicationConfiguration();
-		config.useGL20 = false;
-		config.vSyncEnabled = false;
-		new JoglApplication(new com.badlogic.gdx.tests.MD5Test(), config);
+		config.useGL20 = test.needsGL20();
+		new JoglApplication(test, config);
 	}
 }

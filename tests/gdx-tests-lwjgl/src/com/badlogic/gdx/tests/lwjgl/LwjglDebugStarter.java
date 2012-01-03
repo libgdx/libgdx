@@ -42,8 +42,10 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
+		// this is only here for me to debug native code faster
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
-		GdxTest test = new InputTest();
+		
+		GdxTest test = new StbTrueTypeTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;
