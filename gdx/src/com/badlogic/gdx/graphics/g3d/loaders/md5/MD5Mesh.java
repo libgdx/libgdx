@@ -204,9 +204,9 @@ public class MD5Mesh {
 	}
 
 	public void calculateVerticesJni (MD5Joints skeleton, float[] verts) {
-		MD5Jni.calculateVertices(skeleton.joints, weights, vertices, verts, numVertices);
+		MD5Jni.calculateVertices(skeleton.joints, weights, vertices, verts, vertices.length, floatsPerVertex, floatsPerWeight);
 	}
-
+	
 	public void calculateNormalsBind (MD5Joints bindPoseSkeleton, float[] verts) {
 		calculateNormalsBind(bindPoseSkeleton, weights, vertices, indices, verts, floatsPerVertex, floatsPerWeight);
 	}

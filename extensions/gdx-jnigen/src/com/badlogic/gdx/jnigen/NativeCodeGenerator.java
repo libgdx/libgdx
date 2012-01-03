@@ -261,6 +261,7 @@ public class NativeCodeGenerator {
 		for(CMethod cMethod: cMethods) {
 			if(cMethod.getHead().contains(javaMethod.getClassName() + "_" + javaMethod.getName())) {
 				// FIXME poor man's overloaded method check...
+				// FIXME float test[] won't work, needs to be float[] test.
 				if(cMethod.getArgumentTypes().length - 2 == javaMethod.getArguments().size()) {
 					boolean match = true;
 					for(int i = 2; i < cMethod.getArgumentTypes().length; i++) {
@@ -313,9 +314,16 @@ public class NativeCodeGenerator {
 			// emit the wrapper method, the one with the declaration in the header file
 			emitMethodSignature(buffer, javaMethod, cMethod, null);
 			buffer.append(jniSetupCode);
-			buffer.append("\t" + cMethod.getReturnType() + " " + JNI_RETURN_VALUE + " = " + wrappedMethodName + "(" + wrapperArgs.toString() + ");\n\n");
-			buffer.append(jniCleanupCode);
-			buffer.append("\treturn " + JNI_RETURN_VALUE + ";\n");
+			
+			if(cMethod.getReturnType().equals("void")) {
+				buffer.append("\t" + wrappedMethodName + "(" + wrapperArgs.toString() + ");\n\n");
+				buffer.append(jniCleanupCode);
+				buffer.append("\treturn;\n");
+			} else {
+				buffer.append("\t" + cMethod.getReturnType() + " " + JNI_RETURN_VALUE + " = " + wrappedMethodName + "(" + wrapperArgs.toString() + ");\n\n");
+				buffer.append(jniCleanupCode);
+				buffer.append("\treturn " + JNI_RETURN_VALUE + ";\n");
+			}
 			buffer.append("}\n\n");
 		} else {
 			// get the setup and cleanup code for arrays, buffers and strings

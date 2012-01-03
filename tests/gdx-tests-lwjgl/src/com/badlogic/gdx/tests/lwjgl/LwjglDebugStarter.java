@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni;
 import com.badlogic.gdx.tests.AlphaTest;
 import com.badlogic.gdx.tests.AssetManagerTest;
 import com.badlogic.gdx.tests.Box2DInitialOverlapTest;
@@ -36,10 +37,13 @@ import com.badlogic.gdx.tests.StbTrueTypeTest;
 import com.badlogic.gdx.tests.TiledMapTest;
 import com.badlogic.gdx.tests.VorbisTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
-		GdxTest test = new FramebufferToTextureTest();
+		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
+		GdxTest test = new MD5Test();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;

@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.graphics.g3d.loaders.md5;
 
+import com.badlogic.gdx.math.Vector3;
+
 public class MD5Jni {
 	public static native void calculateVertices (float[] joints, float[] weights, float[] verticesIn, float[] verticesOut,
 		int numVertices, int vstride, int wstride); /*

@@ -99,6 +99,7 @@ public class MD5Renderer implements Disposable {
 			MD5Mesh mesh = model.meshes[i];
 
 			if (useJni) {
+				if(useNormals) throw new GdxRuntimeException("Can't skin vertices & normals using native code yet");
 				mesh.calculateVerticesJni(skeleton, vertices[i]);
 			} else {
 				if (useNormals) {
