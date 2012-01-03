@@ -121,7 +121,7 @@ public class NativeCodeGenerator {
 	 * @throws Exception
 	 */
 	public void generate() throws Exception {
-		generate("src", "bin", "jni", new String[0], new String[0]);
+		generate("src", "bin", "jni", null, null);
 	}
 	
 	/**
