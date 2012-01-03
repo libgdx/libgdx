@@ -19,7 +19,7 @@
 	
 	<target name="pack-natives">
 		<jar destfile="../libs/gdx-stb-truetype-natives.jar">
-			<fileset dir="../libs/windows32" includes="gdx-stb-truetype.dll"/>			<fileset dir="../libs/windows64" includes="gdx-stb-truetype64.dll"/>			<fileset dir="../libs/linux32" includes="libgdx-stb-truetype.so"/>			<fileset dir="../libs/linux64" includes="libgdx-stb-truetype64.so"/>			<fileset dir="../libs/android32" includes="libgdx-stb-truetype.so"/>
+			<fileset dir="../libs/windows32" includes="gdx-stb-truetype.dll"/>			<fileset dir="../libs/windows64" includes="gdx-stb-truetype64.dll"/>			<fileset dir="../libs/linux32" includes="libgdx-stb-truetype.so"/>			<fileset dir="../libs/linux64" includes="libgdx-stb-truetype64.so"/>			<fileset dir="../libs/macosx32" includes="libgdx-stb-truetype.dylib"/>
 		</jar>
 	</target>
 
