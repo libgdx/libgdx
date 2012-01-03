@@ -141,7 +141,7 @@ public final class AndroidAudio implements Audio {
 
 	/** {@inheritDoc} */
 	@Override
-	public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {
+	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono) {
 		return new AndroidAudioRecorder(samplingRate, isMono);
 	}
 

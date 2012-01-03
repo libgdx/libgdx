@@ -266,7 +266,7 @@ public class OpenALAudio implements Audio {
 		return new OpenALAudioDevice(this, sampleRate, isMono);
 	}
 
-	public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {
+	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono) {
 		// BOZO - Write OpenAL recorder.
 		return new JavaSoundAudioRecorder(samplingRate, isMono);
 	}

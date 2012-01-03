@@ -55,7 +55,7 @@ public interface Audio {
 	 * @return the AudioRecorder
 	 * 
 	 * @throws GdxRuntimeException in case the recorder could not be created */
-	public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono);
+	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono);
 
 	/** <p>
 	 * Creates a new {@link Sound} which is used to play back audio effects such as gun shots or explosions. The Sound's audio data
