@@ -22,11 +22,16 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** Class holding various static native methods for processing audio data.
  * 
  * @author mzechner */
 public class AudioTools {
+	static {
+		new SharedLibraryLoader().load("gdx-audio");
+	}
+	
 	/** Converts the 16-bit signed PCM data given in source to 32-bit float PCM in the range [-1,1]. It is assumed that there's
 	 * numSamples elements available in both buffers. Source and target get read and written to from offset 0. All buffers must be
 	 * direct.

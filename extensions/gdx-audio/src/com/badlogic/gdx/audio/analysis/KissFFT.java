@@ -25,10 +25,6 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 /** A class for spectral analysis using native KissFFT
  * @author mzechner */
 public class KissFFT implements Disposable {
-	static {
-		new SharedLibraryLoader().load("gdx-audio");
-	}
-	
 	/** the pointer to the kiss fft object **/
 	private final long addr;
 
@@ -36,6 +32,7 @@ public class KissFFT implements Disposable {
 	 * 
 	 * @param numSamples the number of samples to be analysed. */
 	public KissFFT (int numSamples) {
+		new SharedLibraryLoader().load("gdx-audio");
 		addr = create(numSamples);
 	}
 
