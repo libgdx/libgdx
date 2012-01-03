@@ -42,10 +42,10 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_getLength
 /*
  * Class:     com_badlogic_gdx_audio_io_VorbisDecoder
  * Method:    readSamples
- * Signature: (JLjava/nio/ShortBuffer;I)I
+ * Signature: (J[SII)I
  */
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_readSamples
-  (JNIEnv *, jclass, jlong, jobject, jint);
+  (JNIEnv *, jclass, jlong, jshortArray, jint, jint);
 
 /*
  * Class:     com_badlogic_gdx_audio_io_VorbisDecoder

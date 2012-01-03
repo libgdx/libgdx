@@ -16,8 +16,8 @@ package com.badlogic.gdx.audio.io;
  ******************************************************************************/
 
 
-import java.nio.ShortBuffer;
-
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** A {@link Decoder} implementation that decodes OGG Vorbis files using tremor
@@ -27,50 +27,46 @@ public class VorbisDecoder implements Decoder {
 		new SharedLibraryLoader().load("gdx-audio");
 	}
 	
-	/** the handle **/
+	/** address of native OggFileHandle structure **/
 	private final long handle;
 
 	/** Opens the given file for ogg decoding. Throws an IllegalArugmentException in case the file could not be opened.
 	 * 
-	 * @param filename the filename */
-	public VorbisDecoder (String filename) {
-		handle = openFile(filename);
-		if (handle == 0) throw new IllegalArgumentException("couldn't open file '" + filename + "'");
+	 * @param file external or absolute {@link FileHandle}
+	 */
+	public VorbisDecoder (FileHandle file) {
+		if(file.type() != FileType.External && file.type() != FileType.Absolute)
+			throw new IllegalArgumentException("File must be absolute or external!");
+		handle = openFile(file.file().getAbsolutePath());
+		if (handle == 0)
+			throw new IllegalArgumentException("couldn't open file '" + file + "'");
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public void dispose () {
 		closeFile(handle);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public float getLength () {
 		return getLength(handle);
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public int getNumChannels () {
+	public int getChannels () {
 		return getNumChannels(handle);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int getRate () {
 		return getRate(handle);
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public int readSamples (ShortBuffer samples) {
-		int read = readSamples(handle, samples, samples.capacity());
-		samples.position(0);
-		return read;
+	public int readSamples (short[] samples, int offset, int numSamples) {
+		return readSamples(handle, samples, offset, numSamples);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int skipSamples (int numSamples) {
 		return skipSamples(handle, numSamples);
@@ -141,10 +137,12 @@ public class VorbisDecoder implements Decoder {
 		return file->length;
 	*/
 
-	private static native int readSamples (long handle, ShortBuffer samples, int numSamples); /*
+	private static native int readSamples (long handle, short[] samples, int offset, int numSamples); /*
 		OggFile* file = (OggFile*)handle;
 		int toRead = 2 * numSamples;
 		int read = 0;
+	
+		samples += offset;
 	
 		while( read != toRead )
 		{

@@ -16,8 +16,6 @@ package com.badlogic.gdx.audio.io;
  ******************************************************************************/
 
 
-import java.nio.ShortBuffer;
-
 import com.badlogic.gdx.utils.Disposable;
 
 /** Interface for audio decoders that return successive amplitude frames. When a decoder is no longer used it has to be disposed.
@@ -28,8 +26,11 @@ public interface Decoder extends Disposable {
 	 * number is smaller than the capacity of the buffer then the end of stream has been reached. The provided ShortBuffer must be
 	 * a direct buffer.
 	 * 
-	 * @param samples The number of read samples. */
-	public int readSamples (ShortBuffer samples);
+	 * @param samples array to write the samples to
+	 * @param offset the offset at which to start writting samples to
+	 * @param samples The number of samples to read. 
+	 * @return the number of samples read, < numSamples means end of file */
+	public int readSamples (short[] samples, int offset, int numSamples);
 
 	/** Skips numSamples samples. If the decoded file is in stereo the left and right channel samples are counted as 2 samples.
 	 * 
@@ -38,7 +39,7 @@ public interface Decoder extends Disposable {
 	public int skipSamples (int numSamples);
 
 	/** @return the number of channels */
-	public int getNumChannels ();
+	public int getChannels ();
 
 	/** @return the sampling rate in herz, e.g. 44100 */
 	public int getRate ();

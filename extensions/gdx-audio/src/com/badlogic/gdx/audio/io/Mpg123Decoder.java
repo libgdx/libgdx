@@ -18,6 +18,8 @@ package com.badlogic.gdx.audio.io;
 
 import java.nio.ShortBuffer;
 
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** A {@link Decoder} implementation that decodes MP3 files via libmpg123 natively.
@@ -33,17 +35,19 @@ public class Mpg123Decoder implements Decoder {
 	/** Opens the given file for mp3 decoding. Throws an IllegalArugmentException in case the file could not be opened.
 	 * 
 	 * @param filename the filename */
-	public Mpg123Decoder (String filename) {
-		handle = openFile(filename);
-		if (handle <= 0) throw new IllegalArgumentException("couldn't open file");
+	public Mpg123Decoder (FileHandle file) {
+		if(file.type() != FileType.External && file.type() != FileType.Absolute)
+			throw new IllegalArgumentException("File must be absolute or external!");
+		handle = openFile(file.file().getAbsolutePath());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int readSamples (ShortBuffer samples) {
-		int read = readSamples(handle, samples, samples.capacity());
-		samples.position(0);
-		return read;
+	public int readSamples (short[] samples, int offset, int numSamples) {
+//		int read = readSamples(handle, samples, samples.capacity());
+//		samples.position(0);
+//		return read;
+		return 0;
 	}
 
 	/** {@inheritDoc} */
@@ -53,7 +57,7 @@ public class Mpg123Decoder implements Decoder {
 	}
 
 	/** {@inheritDoc} */
-	public int getNumChannels () {
+	public int getChannels () {
 		return getNumChannels(handle);
 	}
 
