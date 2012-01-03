@@ -196,3 +196,22 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_numSampl
 
 }
 
+static inline jint wrapped_Java_com_badlogic_gdx_audio_transform_SoundTouch_receiveSamplesJni
+(JNIEnv* env, jobject object, jlong addr, jshortArray obj_samples, jint offset, jint maxSamples, short* samples) {
+
+//@line:290
+
+		return ((SoundTouch*)addr)->receiveSamples((SAMPLETYPE *)samples + offset, maxSamples);
+	
+}
+
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_receiveSamplesJni(JNIEnv* env, jobject object, jlong addr, jshortArray obj_samples, jint offset, jint maxSamples) {
+	short* samples = (short*)env->GetPrimitiveArrayCritical(obj_samples, 0);
+
+	jint JNI_returnValue = wrapped_Java_com_badlogic_gdx_audio_transform_SoundTouch_receiveSamplesJni(env, object, addr, obj_samples, offset, maxSamples, samples);
+
+	env->ReleasePrimitiveArrayCritical(obj_samples, samples, 0);
+
+	return JNI_returnValue;
+}
+

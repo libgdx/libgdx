@@ -283,6 +283,15 @@ public class SoundTouch implements Disposable {
 		return ((SoundTouch*)addr)->numSamples();
 	*/
 	
+	public int receiveSamples(short[] samples, int offset, int maxSamples) {
+		return receiveSamplesJni(addr, samples, offset, maxSamples);
+	}
+	
+	private native int receiveSamplesJni(long addr, short[] samples, int offset, int maxSamples); /*
+		return ((SoundTouch*)addr)->receiveSamples((SAMPLETYPE *)samples + offset, maxSamples);
+	*/
+	
+	
 	public static void main(String[] args) {
 		SoundTouch soundTouch = new SoundTouch();
 		soundTouch.setSampleRate(44100);

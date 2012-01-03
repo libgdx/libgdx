@@ -90,13 +90,5 @@ public class AudioBuild {
 		
 		BuildExecutor.executeAnt("jni/build-windows32home.xml", " -v");
 		BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
-		
-		new SharedLibraryLoader("libs/gdx-audio-natives.jar").load("gdx-audio");
-		SoundTouch soundTouch = new SoundTouch();
-		soundTouch.setSampleRate(44100);
-		soundTouch.setChannels(1);
-		soundTouch.putSamples(new short[1024*10], 0, 1024*10);
-		System.out.println(soundTouch.numSamples());
-		soundTouch.dispose();
 	}
 }
