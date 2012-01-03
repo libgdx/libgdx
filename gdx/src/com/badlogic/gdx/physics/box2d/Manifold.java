@@ -23,7 +23,6 @@ public class Manifold {
 #include <Box2D/Box2D.h>
 	 */
 	
-	final World world;
 	long addr;
 	final ManifoldPoint[] points = new ManifoldPoint[] {new ManifoldPoint(), new ManifoldPoint()};
 	final Vector2 localNormal = new Vector2();
@@ -32,8 +31,7 @@ public class Manifold {
 	final int[] tmpInt = new int[2];
 	final float[] tmpFloat = new float[4];
 
-	protected Manifold (World world, long addr) {
-		this.world = world;
+	protected Manifold (long addr) {
 		this.addr = addr;
 	}
 

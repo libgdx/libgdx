@@ -860,7 +860,7 @@ b2ContactFilter defaultFilter;
 	}
 
 	private final Contact contact = new Contact(this, 0);
-	private final Manifold manifold = new Manifold(this, 0);
+	private final Manifold manifold = new Manifold(0);
 	private final ContactImpulse impulse = new ContactImpulse(this, 0);
 
 	private void beginContact (long contactAddr) {
