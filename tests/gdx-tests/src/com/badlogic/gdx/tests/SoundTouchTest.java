@@ -58,7 +58,10 @@ public class SoundTouchTest extends GdxTest {
 				short[] samples = new short[buffer.capacity()];
 				int readSamples = 0;
 				
-				// read until we reach the end of the file
+				// read until we reach the end of the file, we read the file
+				// fully as SoundTouch#receiveSamples returns uneven numbers
+				// of samples from time to time. Could be solved with a ring
+				// buffer :)
 				while((readSamples = decoder.readSamples(buffer)) > 0) {
 					// copy the samples from the buffer to the array
 					// and write them to the AudioDevice
