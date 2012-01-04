@@ -10,7 +10,6 @@ import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import com.badlogic.gdx.jnigen.test.MyJniClass;
 
 /**
  * Loads shared libraries from a natives jar file (desktop) or arm folders (Android). For desktop projects,
@@ -29,7 +28,7 @@ public class SharedLibraryLoader {
 	
 	/**
 	 * Fetches the natives from the given natives jar file. Used
-	 * for testing a shared lib on the fly, see {@link MyJniClass}.
+	 * for testing a shared lib on the fly.
 	 * @param nativesJar
 	 */
 	public SharedLibraryLoader(String nativesJar) {
