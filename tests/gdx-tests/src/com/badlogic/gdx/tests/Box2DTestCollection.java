@@ -23,6 +23,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.box2d.ApplyForce;
 import com.badlogic.gdx.tests.box2d.BodyTypes;
 import com.badlogic.gdx.tests.box2d.Box2DTest;
@@ -160,6 +161,11 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 	@Override
 	public boolean zoom (float originalDistance, float currentDistance) {
 		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean pinch (Vector2 initialFirstPointer, Vector2 initialSecondPointer, Vector2 firstPointer, Vector2 secondPointer) {
 		return false;
 	}
 }

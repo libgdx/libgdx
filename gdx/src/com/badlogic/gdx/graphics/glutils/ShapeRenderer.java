@@ -390,7 +390,7 @@ public class ShapeRenderer {
 		float cos = MathUtils.cos(angle);
 		float sin = MathUtils.sin(angle);
 		float cx = radius, cy = 0;
-		for (int i = 0; i <= segments; i++) {
+		for (int i = 0; i < segments; i++) {
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(x + cx, y + cy, 0);
 			float temp = cx;
@@ -399,6 +399,14 @@ public class ShapeRenderer {
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(x + cx, y + cy, 0);
 		}
+		// Ensure the last segment is identical to the first.
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + cx, y + cy, 0);
+		float temp = cx;
+		cx = radius;
+		cy = 0;
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + cx, y + cy, 0);
 	}
 
 	/** Calls {@link #filledCircle(float, float, float, int)} by estimating the number of segments needed for a smooth circle. */
@@ -417,6 +425,7 @@ public class ShapeRenderer {
 		float cos = MathUtils.cos(angle);
 		float sin = MathUtils.sin(angle);
 		float cx = radius, cy = 0;
+		segments--;
 		for (int i = 0; i < segments; i++) {
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(x, y, 0);
@@ -428,6 +437,15 @@ public class ShapeRenderer {
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(x + cx, y + cy, 0);
 		}
+		// Ensure the last segment is identical to the first.
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x, y, 0);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + cx, y + cy, 0);
+		cx = radius;
+		cy = 0;
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + cx, y + cy, 0);
 	}
 
 	public void triangle (float x1, float y1, float x2, float y2, float x3, float y3) {
@@ -480,6 +498,12 @@ public class ShapeRenderer {
 	public void end () {
 		renderer.end();
 		currType = null;
+	}
+
+	public void flush () {
+		ShapeType type = currType;
+		end();
+		begin(type);
 	}
 
 	public void dispose () {

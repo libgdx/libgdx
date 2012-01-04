@@ -23,6 +23,7 @@ Skin
 scene2d
 	refactor to not use public fields
 	new input system, similar to inputprocessor
+		need button parameter, not just pointer
 	refactor action system
 		put action classes in action package
 		use Interpolation

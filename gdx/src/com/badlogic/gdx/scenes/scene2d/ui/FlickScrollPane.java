@@ -117,6 +117,10 @@ public class FlickScrollPane extends WidgetGroup {
 				return false;
 			}
 
+			public boolean pinch (Vector2 initialFirstPointer, Vector2 initialSecondPointer, Vector2 firstPointer, Vector2 secondPointer) {
+				return false;
+			}
+
 			public boolean longPress (int x, int y) {
 				return false;
 			}

@@ -23,8 +23,9 @@ import java.io.Serializable;
 public class Vector2 implements Serializable {
 	private static final long serialVersionUID = 913902788239530931L;
 
-	/** static temporary vector **/
-	private final static Vector2 tmp = new Vector2();
+	/** Static temporary vector. Use with care! Use only when sure other code will not also use this.
+	 * @see #tmp() **/
+	public final static Vector2 tmp = new Vector2();
 
 	/** the x-component of this vector **/
 	public float x;
@@ -160,6 +161,15 @@ public class Vector2 implements Serializable {
 	public float dst2 (Vector2 v) {
 		final float x_d = v.x - x;
 		final float y_d = v.y - y;
+		return x_d * x_d + y_d * y_d;
+	}
+
+	/** @param x The x-component of the other vector
+	 * @param y The y-component of the other vector
+	 * @return the squared distance between this and the other vector */
+	public float dst2 (float x, float y) {
+		final float x_d = x - this.x;
+		final float y_d = y - this.y;
 		return x_d * x_d + y_d * y_d;
 	}
 

@@ -21,6 +21,7 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 
 import com.badlogic.gdx.audio.AudioRecorder;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** {@link AudioRecorder} implementation for the android system based on AudioRecord
  * @author badlogicgames@gmail.com */
@@ -29,10 +30,12 @@ public class AndroidAudioRecorder implements AudioRecorder {
 	private AudioRecord recorder;
 
 	public AndroidAudioRecorder (int samplingRate, boolean isMono) {
-		int minBufferSize = AudioRecord.getMinBufferSize(samplingRate, isMono ? AudioFormat.CHANNEL_CONFIGURATION_MONO
-			: AudioFormat.CHANNEL_CONFIGURATION_STEREO, AudioFormat.ENCODING_PCM_16BIT);
-		recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, samplingRate, isMono ? AudioFormat.CHANNEL_CONFIGURATION_MONO
-			: AudioFormat.CHANNEL_CONFIGURATION_STEREO, AudioFormat.ENCODING_PCM_16BIT, minBufferSize);
+		int channelConfig = isMono ? AudioFormat.CHANNEL_IN_MONO : AudioFormat.CHANNEL_IN_STEREO;
+		int minBufferSize = AudioRecord.getMinBufferSize(samplingRate, channelConfig, AudioFormat.ENCODING_PCM_16BIT);
+		recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, samplingRate, channelConfig, AudioFormat.ENCODING_PCM_16BIT,
+			minBufferSize);
+		if (recorder.getState() != AudioRecord.STATE_INITIALIZED)
+			throw new GdxRuntimeException("Unable to initialize AudioRecorder.\nDo you have the RECORD_AUDIO permission?");
 		recorder.startRecording();
 	}
 

@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class GestureDetectorTest extends GdxTest implements ApplicationListener {
@@ -74,6 +75,11 @@ public class GestureDetectorTest extends GdxTest implements ApplicationListener 
 			float ratio = originalDistance / currentDistance;
 			camera.zoom = initialScale * ratio;
 			System.out.println(camera.zoom);
+			return false;
+		}
+
+		@Override
+		public boolean pinch (Vector2 initialFirstPointer, Vector2 initialSecondPointer, Vector2 firstPointer, Vector2 secondPointer) {
 			return false;
 		}
 

@@ -33,6 +33,38 @@ public class GestureDetector extends InputAdapter {
 		public boolean pan (int x, int y, int deltaX, int deltaY);
 
 		public boolean zoom (float originalDistance, float currentDistance);
+
+		public boolean pinch (Vector2 initialFirstPointer, Vector2 initialSecondPointer, Vector2 firstPointer, Vector2 secondPointer);
+	}
+
+	public static class GestureAdapter implements GestureListener {
+		public boolean touchDown (int x, int y, int pointer) {
+			return false;
+		}
+
+		public boolean tap (int x, int y, int count) {
+			return false;
+		}
+
+		public boolean longPress (int x, int y) {
+			return false;
+		}
+
+		public boolean fling (float velocityX, float velocityY) {
+			return false;
+		}
+
+		public boolean pan (int x, int y, int deltaX, int deltaY) {
+			return false;
+		}
+
+		public boolean zoom (float originalDistance, float currentDistance) {
+			return false;
+		}
+
+		public boolean pinch (Vector2 initialFirstPointer, Vector2 initialSecondPointer, Vector2 firstPointer, Vector2 secondPointer) {
+			return false;
+		}
 	}
 
 	static class VelocityTracker {
@@ -137,7 +169,8 @@ public class GestureDetector extends InputAdapter {
 	private long gestureStartTime;
 	private Vector2 firstPointer = new Vector2();
 	private Vector2 secondPointer = new Vector2();
-	private float initialDistance;
+	private Vector2 initialFirstPointer = new Vector2();
+	private Vector2 initialSecondPointer = new Vector2();
 
 	private final GestureListener listener;
 
@@ -166,7 +199,8 @@ public class GestureDetector extends InputAdapter {
 			if (Gdx.input.isTouched(1)) {
 				inTapSquare = false;
 				pinching = true;
-				initialDistance = firstPointer.dst(secondPointer);
+				initialFirstPointer.set(firstPointer);
+				initialSecondPointer.set(firstPointer);
 			} else {
 				inTapSquare = true;
 				pinching = false;
@@ -178,7 +212,8 @@ public class GestureDetector extends InputAdapter {
 			secondPointer.set(x, y);
 			inTapSquare = false;
 			pinching = true;
-			initialDistance = firstPointer.dst(secondPointer);
+			initialFirstPointer.set(firstPointer);
+			initialSecondPointer.set(firstPointer);
 		}
 		return listener.touchDown(x, y, pointer);
 	}
@@ -193,7 +228,10 @@ public class GestureDetector extends InputAdapter {
 				firstPointer.set(x, y);
 			else
 				secondPointer.set(x, y);
-			if (listener != null) return listener.zoom(initialDistance, firstPointer.dst(secondPointer));
+			if (listener != null) {
+				boolean result = listener.pinch(initialFirstPointer, initialSecondPointer, firstPointer, secondPointer);
+				return listener.zoom(initialFirstPointer.dst(initialSecondPointer), firstPointer.dst(secondPointer)) || result;
+			}
 			return false;
 		}
 
@@ -256,7 +294,7 @@ public class GestureDetector extends InputAdapter {
 		}
 		return false;
 	}
-	
+
 	/** @return whether the user touched the screen long enough to trigger a long press event. */
 	public boolean isLongPressed () {
 		return isLongPressed(longPressDuration);

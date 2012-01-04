@@ -95,14 +95,14 @@ public class LwjglGraphics implements Graphics {
 		if (canvas != null)
 			return canvas.getHeight();
 		else
-			return config.height;
+			return Display.getHeight();
 	}
 
 	public int getWidth () {
 		if (canvas != null)
 			return canvas.getWidth();
 		else
-			return config.width;
+			return Display.getWidth();
 	}
 
 	public boolean isGL11Available () {

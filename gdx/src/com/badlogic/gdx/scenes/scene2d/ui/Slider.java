@@ -34,6 +34,7 @@ public class Slider extends Widget {
 	private float value;
 	private float sliderPos;
 	private ValueChangedListener listener = null;
+	private boolean isDragging;
 
 	public Slider (Skin skin) {
 		this(0, 100, 100, skin);
@@ -91,14 +92,14 @@ public class Slider extends Widget {
 		sliderPos = Math.max(0, sliderPos);
 		sliderPos = Math.min(width - knob.getRegionWidth(), sliderPos);
 
-		float maxHeight = Math.max(knob.getRegionHeight(), slider.getTotalHeight());
-		slider.draw(batch, x, y + (int)((maxHeight - slider.getTotalHeight()) * 0.5f), width, slider.getTotalHeight());
-		batch.draw(knob, x + sliderPos, y + (int)((maxHeight - knob.getRegionHeight()) * 0.5f));
+		slider.draw(batch, x, y + (int)((height - slider.getTotalHeight()) * 0.5f), width, slider.getTotalHeight());
+		batch.draw(knob, x + sliderPos, y + (int)((height - knob.getRegionHeight()) * 0.5f));
 	}
 
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
+		isDragging = true;
 		calculatePositionAndValue(x);
 		return true;
 	}
@@ -106,6 +107,7 @@ public class Slider extends Widget {
 	@Override
 	public void touchUp (float x, float y, int pointer) {
 		calculatePositionAndValue(x);
+		isDragging = false;
 	}
 
 	@Override
@@ -121,6 +123,11 @@ public class Slider extends Widget {
 		sliderPos = Math.min(width - knob.getRegionWidth(), sliderPos);
 		value = min + (max - min) * (sliderPos / (width - knob.getRegionWidth()));
 		if (listener != null) listener.changed(this, getValue());
+	}
+
+	/** Returns true if the slider is being dragged. */
+	public boolean isDragging () {
+		return isDragging;
 	}
 
 	/** @param listener May be null. */
