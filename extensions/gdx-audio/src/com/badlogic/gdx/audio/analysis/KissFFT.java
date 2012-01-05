@@ -16,9 +16,6 @@
 
 package com.badlogic.gdx.audio.analysis;
 
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
-
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
@@ -41,7 +38,7 @@ public class KissFFT implements Disposable {
 	 * 
 	 * @param samples the samples
 	 * @param spectrum the spectrum */
-	public void spectrum (ShortBuffer samples, FloatBuffer spectrum) {
+	public void spectrum (short[] samples, float[] spectrum) {
 		spectrum(addr, samples, spectrum);
 	}
 
@@ -50,11 +47,11 @@ public class KissFFT implements Disposable {
 		destroy(addr);
 	}
 
-	public void getRealPart (ShortBuffer real) {
+	public void getRealPart (short[] real) {
 		getRealPart(addr, real);
 	}
 
-	public void getImagPart (ShortBuffer imag) {
+	public void getImagPart (short[] imag) {
 		getImagPart(addr, imag);
 	}
 	
@@ -108,36 +105,32 @@ public class KissFFT implements Disposable {
 	 * @param handle the handle to the kiss fft object
 	 * @param samples the samples in 16-bit signed PCM encoding
 	 * @param spectrum the spectrum */
-	private static native void spectrum (long handle, ShortBuffer samples, FloatBuffer spectrum); /*
+	private static native void spectrum (long handle, short[] samples, float[] spectrum); /*
 		KissFFT* fft = (KissFFT*)handle;
 		kiss_fftr( fft->config, (kiss_fft_scalar*)samples, fft->spectrum );
 	
 		int len = fft->numSamples / 2 + 1;
-		float* out = (float*)spectrum;
-	
 		for( int i = 0; i < len; i++ )
 		{
 			float re = scale(fft->spectrum[i].r) * fft->numSamples;
 			float im = scale(fft->spectrum[i].i) * fft->numSamples;
 	
 			if( i > 0 )
-				out[i] = sqrtf(re*re + im*im) / (fft->numSamples / 2);
+				spectrum[i] = sqrtf(re*re + im*im) / (fft->numSamples);
 			else
-				out[i] = sqrtf(re*re + im*im) / (fft->numSamples);
+				spectrum[i] = sqrtf(re*re + im*im) / (fft->numSamples);
 		}
 	*/
 
-	private static native void getRealPart (long handle, ShortBuffer real); /*
+	private static native void getRealPart (long handle, short[] real); /*
 		KissFFT* fft = (KissFFT*)handle;
-		short* out = (short*)real;
 		for( int i = 0; i < fft->numSamples / 2; i++ )
-			out[i] = fft->spectrum[i].r;
+			real[i] = fft->spectrum[i].r;
 	*/
 
-	private static native void getImagPart (long handle, ShortBuffer imag); /*
+	private static native void getImagPart (long handle, short[] imag); /*
 		KissFFT* fft = (KissFFT*)handle;
-		short* out = (short*)imag;
 		for( int i = 0; i < fft->numSamples / 2; i++ )
-			out[i] = fft->spectrum[i].i;
+			imag[i] = fft->spectrum[i].i;
 	*/
 }

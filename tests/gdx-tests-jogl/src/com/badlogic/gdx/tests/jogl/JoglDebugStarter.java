@@ -27,7 +27,7 @@ public class JoglDebugStarter {
 		// this is only here for me to debug native code faster
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 		
-		GdxTest test = new com.badlogic.gdx.tests.StbTrueTypeTest();
+		GdxTest test = new com.badlogic.gdx.tests.ImmediateModeRendererTest();
 		JoglApplicationConfiguration config = new JoglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		new JoglApplication(test, config);

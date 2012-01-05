@@ -210,10 +210,4 @@ public class FFT extends FourierTransform {
 			coslookup[i] = (float)Math.cos(-(float)Math.PI / i);
 		}
 	}
-
-// public static void main (String[] argv) {
-// FFT fft = new FFT(1024, 44100);
-// System.out.println(fft.getRealPart().length);
-// System.out.println(fft.getSpectrum().length);
-// }
 }

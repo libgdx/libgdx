@@ -81,8 +81,6 @@ public class SharedLibraryLoader {
 			input.close();
 			output.close();
 		} catch (IOException ex) {
-			ex.printStackTrace();
-			throw new RuntimeException(ex);
 		}
 		return nativeFile.exists() ? nativeFile.getAbsolutePath() : null;
 	}

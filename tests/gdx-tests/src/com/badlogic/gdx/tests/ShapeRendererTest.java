@@ -32,7 +32,7 @@ public class ShapeRendererTest extends GdxTest {
 
 	@Override
 	public boolean needsGL20 () {
-		return false;
+		return true;
 	}
 
 	ShapeRenderer renderer;

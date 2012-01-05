@@ -26,26 +26,26 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_KissFFT_destroy
 /*
  * Class:     com_badlogic_gdx_audio_analysis_KissFFT
  * Method:    spectrum
- * Signature: (JLjava/nio/ShortBuffer;Ljava/nio/FloatBuffer;)V
+ * Signature: (J[S[F)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_KissFFT_spectrum
-  (JNIEnv *, jclass, jlong, jobject, jobject);
+  (JNIEnv *, jclass, jlong, jshortArray, jfloatArray);
 
 /*
  * Class:     com_badlogic_gdx_audio_analysis_KissFFT
  * Method:    getRealPart
- * Signature: (JLjava/nio/ShortBuffer;)V
+ * Signature: (J[S)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_KissFFT_getRealPart
-  (JNIEnv *, jclass, jlong, jobject);
+  (JNIEnv *, jclass, jlong, jshortArray);
 
 /*
  * Class:     com_badlogic_gdx_audio_analysis_KissFFT
  * Method:    getImagPart
- * Signature: (JLjava/nio/ShortBuffer;)V
+ * Signature: (J[S)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_KissFFT_getImagPart
-  (JNIEnv *, jclass, jlong, jobject);
+  (JNIEnv *, jclass, jlong, jshortArray);
 
 #ifdef __cplusplus
 }

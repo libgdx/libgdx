@@ -167,14 +167,13 @@ public class AudioTools {
 	
 	/**
 	 * Generates a mono PCM sample buffer for the given frequency and length in
-	 * seconds for use with {@link AudioMixer}.
+	 * samples for use with {@link AudioMixer}.
 	 * 
 	 * @param frequency
-	 * @param length
-	 * @return
+	 * @param numSamples
+	 * @return PCM data for a sine wave
 	 */
-	public static short[] generate(int samplingRate, int frequency, float length) {
-		int numSamples = (int) (samplingRate * length);
+	public static short[] generate(int samplingRate, int frequency, int numSamples) {
 		short[] samples = new short[numSamples];
 		float increment = (float) (2 * Math.PI) * frequency / (float)samplingRate;
 		float angle = 0;
@@ -185,5 +184,51 @@ public class AudioTools {
 		}
 		
 		return samples;
+	}
+	
+	/**
+	 * Generates a mono PCM sample buffer for the given frequency and length in
+	 * seconds for use with {@link AudioMixer}.
+	 * 
+	 * @param frequency
+	 * @param length
+	 * @return
+	 */
+	public static short[] generate(int samplingRate, int frequency, float length) {
+		int numSamples = (int) (samplingRate * length);
+		return generate(samplingRate, frequency, numSamples);
+	}
+	
+	/**
+	 * Generates a mono PCM sample buffer for the given frequency and length in
+	 * seconds for use with {@link AudioMixer}.
+	 * 
+	 * @param frequency
+	 * @param length
+	 * @return
+	 */
+	public static float[] generateFloat(int samplingRate, int frequency, int numSamples) {
+		float[] samples = new float[numSamples];
+		float increment = (float) (2 * Math.PI) * frequency / (float)samplingRate;
+		float angle = 0;
+
+		for (int i = 0; i < numSamples; i++) {
+			samples[i] = (float)Math.sin(angle);
+			angle += increment;
+		}
+		return samples;
+	}
+	
+	/**
+	 * Generates a mono PCM sample buffer for the given frequency and length in
+	 * seconds for use with {@link AudioMixer}.
+	 * 
+	 * @param frequency
+	 * @param length
+	 * @return
+	 */
+	public static float[] generateFloat(int samplingRate, int frequency, float length) {
+		int numSamples = (int) (samplingRate * length);
+		return generateFloat(samplingRate, frequency, numSamples);
 	}
 }
