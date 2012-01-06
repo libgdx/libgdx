@@ -1,0 +1,31 @@
+rm -rf target
+mkdir target
+mkdir target/classpath
+mkdir target/obj
+
+# compile avian
+cd avian
+make platform=darwin arch=i386 ios=true bootimage=true
+cd ..
+
+# compile java classes and add them to 
+# target/classpath.jar, then extract classpath.jar
+find ./src -name *.java | xargs javac -bootclasspath avian/build/darwin-i386-bootimage/classpath 
+rsync -av --include='*.class' src/. target/classpath
+cp -r avian/build/darwin-i386-bootimage/classpath target
+
+# invoke bootimage generator on target/classpath directory
+avian/build/darwin-i386-bootimage/bootimage-generator target/classpath target/bootimage.bin target/codeimage.bin
+avian/build/darwin-i386-bootimage/binaryToObject target/bootimage.bin target/obj/bootimage-bin.o \
+     _binary_bootimage_bin_start _binary_bootimage_bin_end darwin i386 8 writable
+avian/build/darwin-i386-bootimage/binaryToObject target/codeimage.bin target/obj/codeimage-bin.o \
+     _binary_codeimage_bin_start _binary_codeimage_bin_end darwin i386 8 executable
+
+# copy libavian.a to target/obj and extract it so we can link to it.
+cp avian/build/darwin-i386-bootimage/libavian.a target/obj
+cd target/obj
+ar x libavian.a
+rm libavian.a
+cd ..
+
+
