@@ -97,7 +97,7 @@ public class AudioBuild {
 		
 		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac, android);
 		
-		BuildExecutor.executeAnt("jni/build-macosx32.xml", "clean postcompile -v");
+		BuildExecutor.executeAnt("jni/build-macosx32.xml", "-v");
 		BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
 	}
 }
