@@ -23,6 +23,8 @@ import java.nio.IntBuffer;
  * @author mzechner */
 public interface GLCommon {
 	public static final int GL_GENERATE_MIPMAP = 0x8191;
+	public static final int GL_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FE;
+	public static final int GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FF;
 
 	public void glActiveTexture (int texture);
 
