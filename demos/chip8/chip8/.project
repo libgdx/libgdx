@@ -18,7 +18,7 @@
 		<link>
 			<name>assets</name>
 			<type>2</type>
-			<location>D:/workspaces/pennypop-workspace/libgdx/demos/chip8/chip8-android/assets</location>
+			<location>/Users/badlogic/eclipse/Eclipse.app/Contents/MacOS/D::/workspaces/pennypop-workspace/libgdx/demos/chip8/chip8-android/assets</location>
 		</link>
 	</linkedResources>
 </projectDescription>

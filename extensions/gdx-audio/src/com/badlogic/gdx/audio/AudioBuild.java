@@ -77,6 +77,15 @@ public class AudioBuild {
 		lin64.cppExcludes = cppExcludes;
 		lin64.preCompileTask = precompileTask;
 		
+		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
+		lin64.cFlags += " -DFIXED_POINT";
+		lin64.cppFlags += " -DFIXED_POINT";
+		lin64.headerDirs = headerDirs;
+		lin64.cIncludes = cIncludes;
+		lin64.cppIncludes = cppIncludes;
+		lin64.cppExcludes = cppExcludes;
+		lin64.preCompileTask = precompileTask;
+		
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
 		android.cFlags += " -DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__";
 		android.cppFlags += " -DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__";
@@ -86,7 +95,7 @@ public class AudioBuild {
 		android.cppExcludes = cppExcludes;
 		android.preCompileTask = precompileTask;
 		
-		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, android);
+		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac, android);
 		
 		BuildExecutor.executeAnt("jni/build-windows32home.xml", "clean postcompile -v");
 		BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
