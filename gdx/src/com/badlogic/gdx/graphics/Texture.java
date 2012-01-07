@@ -384,6 +384,11 @@ public class Texture implements Disposable {
 					// well as a callback that sets the ref count.
 					TextureParameter params = new TextureParameter();
 					params.textureData = texture.getTextureData();
+					params.minFilter = texture.getMinFilter();
+					params.magFilter = texture.getMagFilter();
+					params.wrapU = texture.getUWrap();
+					params.wrapV = texture.getVWrap();
+					params.genMipMaps = texture.data.useMipMaps(); //not sure about this?
 					params.texture = texture; // special parameter which will ensure that the references stay the same.
 					params.loadedCallback = new LoadedCallback() {
 						@Override
