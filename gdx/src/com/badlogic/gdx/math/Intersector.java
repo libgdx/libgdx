@@ -139,7 +139,7 @@ public final class Intersector {
 	 * @return The distance between the line segment and the point. */
 	public static float distanceLinePoint (Vector2 start, Vector2 end, Vector2 point) {
 		tmp.set(end.x, end.y, 0);
-		float l2 = tmp.sub(start.y, start.y, 0).len2();
+		float l2 = tmp.sub(start.x, start.y, 0).len2();
 		if (l2 == 0.0f) // start == end
 			return point.dst(start);
 
