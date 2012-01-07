@@ -45,7 +45,7 @@ public class Gdx2DPixmap implements Disposable {
 	final int height;
 	final int format;
 	final ByteBuffer pixelPtr;
-	static final long[] nativeData = new long[4];
+	final long[] nativeData = new long[4];
 
 	static {
 		setBlend(GDX2D_BLEND_SRC_OVER);
@@ -85,17 +85,6 @@ public class Gdx2DPixmap implements Disposable {
 		pixelPtr = newPixmap(nativeData, width, height, format);
 		if (pixelPtr == null) throw new IllegalArgumentException("couldn't load pixmap");
 
-		this.basePtr = nativeData[0];
-		this.width = (int)nativeData[1];
-		this.height = (int)nativeData[2];
-		this.format = (int)nativeData[3];
-	}
-
-	public Gdx2DPixmap (ByteBuffer buffer, long[] nativeData) {
-		pixelPtr = buffer;
-		if (pixelPtr == null) throw new IllegalArgumentException("couldn't load pixmap");
-
-		System.arraycopy(nativeData, 0, Gdx2DPixmap.nativeData, 0, 4);
 		this.basePtr = nativeData[0];
 		this.width = (int)nativeData[1];
 		this.height = (int)nativeData[2];
@@ -240,31 +229,37 @@ public class Gdx2DPixmap implements Disposable {
 	#include <stdlib.h>
 	 */
 	
-	private static native ByteBuffer load (long[] nativeData, byte[] buffer, int offset, int len, int requestedFormat); /*
-		gdx2d_pixmap* pixmap = gdx2d_load((const unsigned char*)buffer + offset, len, requestedFormat);
+	private static native ByteBuffer load (long[] nativeData, byte[] buffer, int offset, int len, int requestedFormat); /*MANUAL	
+		const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
+		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer, len, requestedFormat);
+		env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
 	
 		if(pixmap==0)
 			return 0;
 	
-		jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format));
-		nativeData[0] = (jlong)pixmap;
-		nativeData[1] = pixmap->width;
-		nativeData[2] = pixmap->height;
-		nativeData[3] = pixmap->format;
+		jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * pixmap->format);
+		jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
+		p_native_data[0] = (jlong)pixmap;
+		p_native_data[1] = pixmap->width;
+		p_native_data[2] = pixmap->height;
+		p_native_data[3] = pixmap->format;
+		env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
 	
 		return pixel_buffer;
 	*/
 
-	private static native ByteBuffer newPixmap (long[] nativeData, int width, int height, int format); /*
+	private static native ByteBuffer newPixmap (long[] nativeData, int width, int height, int format); /*MANUAL
 		gdx2d_pixmap* pixmap = gdx2d_new(width, height, format);
 		if(pixmap==0)
 			return 0;
 	
-		jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format));
-		nativeData[0] = (jlong)pixmap;
-		nativeData[1] = pixmap->width;
-		nativeData[2] = pixmap->height;
-		nativeData[3] = pixmap->format;
+		jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * pixmap->format);
+		jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
+		p_native_data[0] = (jlong)pixmap;
+		p_native_data[1] = pixmap->width;
+		p_native_data[2] = pixmap->height;
+		p_native_data[3] = pixmap->format;
+		env->ReleasePrimitiveArrayCritical(nativeData, p_native_data, 0);
 	
 		return pixel_buffer;
 	*/

@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Stack;
 
 public class RobustJavaMethodParser implements JavaMethodParser {
+	private static final String JNI_MANUAL = "MANUAL";
 	private static final Map<String, ArgumentType> plainOldDataTypes;
 	private static final Map<String, ArgumentType> arrayTypes;
 	private static final Map<String, ArgumentType> bufferTypes;
@@ -90,6 +91,10 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 		for(JavaMethod method: methods) {
 			for(JniSection section: methodBodies) {
 				if(method.getEndIndex() == section.getStartIndex()) {
+					if(section.getNativeCode().startsWith(JNI_MANUAL)) {
+						section.setNativeCode(section.getNativeCode().substring(JNI_MANUAL.length()));
+						method.setManual(true);
+					}
 					method.setNativeCode(section.getNativeCode());
 					break;
 				}

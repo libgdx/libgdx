@@ -15,14 +15,6 @@ extern "C" {
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g3d_loaders_md5_MD5Jni_calculateVertices
   (JNIEnv *, jclass, jfloatArray, jfloatArray, jfloatArray, jfloatArray, jint, jint, jint);
 
-/*
- * Class:     com_badlogic_gdx_graphics_g3d_loaders_md5_MD5Jni
- * Method:    calculateVerticesN
- * Signature: ([F[F[F[S[FIIII)V
- */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g3d_loaders_md5_MD5Jni_calculateVerticesN
-  (JNIEnv *, jclass, jfloatArray, jfloatArray, jfloatArray, jshortArray, jfloatArray, jint, jint, jint, jint);
-
 #ifdef __cplusplus
 }
 #endif

@@ -162,6 +162,7 @@ public interface JavaMethodParser {
 		private final String className;
 		private final String name;
 		private final boolean isStatic;
+		private boolean isManual;
 		private final String returnType;
 		private String nativeCode;
 		private final ArrayList<Argument> arguments;
@@ -193,6 +194,14 @@ public interface JavaMethodParser {
 		
 		public boolean isStatic() {
 			return isStatic;
+		}
+		
+		public void setManual(boolean isManual) {
+			this.isManual = isManual;
+		}
+		
+		public boolean isManual() {
+			return this.isManual;
 		}
 
 		public String getReturnType() {

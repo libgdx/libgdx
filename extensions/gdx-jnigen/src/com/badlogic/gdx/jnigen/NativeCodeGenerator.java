@@ -75,6 +75,12 @@ import com.badlogic.gdx.jnigen.parsing.RobustJavaMethodParser;
  * <tr><td>Anything else</td><td>jobject/jobjectArray</td></tr>
  * </table>
  * 
+ * If you need control over setting up and cleaning up arrays/strings and direct buffers you can
+ * tell the NativeCodeGenerator to omit setup and cleanup code by starting the native code block
+ * comment with "/*MANUAL" instead of just "/*" to the
+ * method name. See libgdx's Gdx2DPixmap load() method for
+ * an example.
+ * 
  * <h2>.h/.cpp File Generation</h2>
  * The .h files are created via javah, which has to be on your path. The Java classes have to be compiled and
  * accessible to the javah tool. The name of the generated .h/.cpp files is the fully qualified name of the
@@ -294,50 +300,63 @@ public class NativeCodeGenerator {
 	}
 	
 	private void emitJavaMethod(StringBuffer buffer, JavaMethod javaMethod, CMethod cMethod) {
-		// if we have disposable arguments (string, buffer, arry) and if there is a return
+		// get the setup and cleanup code for arrays, buffers and strings
+		StringBuffer jniSetupCode = new StringBuffer();
+		StringBuffer jniCleanupCode = new StringBuffer();
+		StringBuffer additionalArgs = new StringBuffer();
+		StringBuffer wrapperArgs = new StringBuffer();
+		emitJniSetupCode(jniSetupCode, javaMethod, additionalArgs, wrapperArgs);
+		emitJniCleanupCode(jniCleanupCode, javaMethod, cMethod);
+
+		// check if the user wants to do manual setup of JNI args
+		boolean isManual = javaMethod.isManual();
+		
+		// if we have disposable arguments (string, buffer, array) and if there is a return
 		// in the native code (conservative, not syntactically checked), emit a wrapper method.
 		if(javaMethod.hasDisposableArgument() && javaMethod.getNativeCode().contains("return")) {
-			// get the setup and cleanup code for arrays, buffers and strings
-			StringBuffer jniSetupCode = new StringBuffer();
-			StringBuffer jniCleanupCode = new StringBuffer();
-			StringBuffer additionalArgs = new StringBuffer();
-			StringBuffer wrapperArgs = new StringBuffer();
-			emitJniSetupCode(jniSetupCode, javaMethod, additionalArgs, wrapperArgs);
-			emitJniCleanupCode(jniCleanupCode, javaMethod, cMethod);
-
-			// emit the method containing the actual code, called by the wrapper
-			// method with setup pointers to arrays, buffers and strings
-			String wrappedMethodName = emitMethodSignature(buffer, javaMethod, cMethod, additionalArgs.toString());
-			emitMethodBody(buffer, javaMethod);
-			buffer.append("}\n\n");
-			
-			// emit the wrapper method, the one with the declaration in the header file
-			emitMethodSignature(buffer, javaMethod, cMethod, null);
-			buffer.append(jniSetupCode);
-			
-			if(cMethod.getReturnType().equals("void")) {
-				buffer.append("\t" + wrappedMethodName + "(" + wrapperArgs.toString() + ");\n\n");
-				buffer.append(jniCleanupCode);
-				buffer.append("\treturn;\n");
+			// if the method is marked as manual, we just emit the signature and let the
+			// user do whatever she wants.
+			if(isManual) {
+				emitMethodSignature(buffer, javaMethod, cMethod, null, false);
+				emitMethodBody(buffer, javaMethod);
+				buffer.append("}\n\n");
 			} else {
-				buffer.append("\t" + cMethod.getReturnType() + " " + JNI_RETURN_VALUE + " = " + wrappedMethodName + "(" + wrapperArgs.toString() + ");\n\n");
-				buffer.append(jniCleanupCode);
-				buffer.append("\treturn " + JNI_RETURN_VALUE + ";\n");
+				// emit the method containing the actual code, called by the wrapper
+				// method with setup pointers to arrays, buffers and strings
+				String wrappedMethodName = emitMethodSignature(buffer, javaMethod, cMethod, additionalArgs.toString());
+				emitMethodBody(buffer, javaMethod);
+				buffer.append("}\n\n");
+				
+				// emit the wrapper method, the one with the declaration in the header file
+				emitMethodSignature(buffer, javaMethod, cMethod, null);
+				if(!isManual) {
+					buffer.append(jniSetupCode);
+				}
+				
+				if(cMethod.getReturnType().equals("void")) {
+					buffer.append("\t" + wrappedMethodName + "(" + wrapperArgs.toString() + ");\n\n");
+					if(!isManual) {
+						buffer.append(jniCleanupCode);
+					}
+					buffer.append("\treturn;\n");
+				} else {
+					buffer.append("\t" + cMethod.getReturnType() + " " + JNI_RETURN_VALUE + " = " + wrappedMethodName + "(" + wrapperArgs.toString() + ");\n\n");
+					if(!isManual) {
+						buffer.append(jniCleanupCode);
+					}
+					buffer.append("\treturn " + JNI_RETURN_VALUE + ";\n");
+				}
+				buffer.append("}\n\n");
 			}
-			buffer.append("}\n\n");
 		} else {
-			// get the setup and cleanup code for arrays, buffers and strings
-			StringBuffer jniSetupCode = new StringBuffer();
-			StringBuffer jniCleanupCode = new StringBuffer();
-			StringBuffer additionalArgs = new StringBuffer();
-			StringBuffer wrapperArgs = new StringBuffer();
-			emitJniSetupCode(jniSetupCode, javaMethod, additionalArgs, wrapperArgs);
-			emitJniCleanupCode(jniCleanupCode, javaMethod, cMethod);
-			
 			emitMethodSignature(buffer, javaMethod, cMethod, null);
-			buffer.append(jniSetupCode);
+			if(!isManual) {
+				buffer.append(jniSetupCode);
+			}
 			emitMethodBody(buffer, javaMethod);
-			buffer.append(jniCleanupCode);
+			if(!isManual) {
+				buffer.append(jniCleanupCode);
+			}
 			buffer.append("}\n\n");
 		}
 		
@@ -353,6 +372,10 @@ public class NativeCodeGenerator {
 	}
 
 	private String emitMethodSignature(StringBuffer buffer, JavaMethod javaMethod, CMethod cMethod, String additionalArguments) {
+		return emitMethodSignature(buffer, javaMethod, cMethod, additionalArguments, true);
+	}
+	
+	private String emitMethodSignature(StringBuffer buffer, JavaMethod javaMethod, CMethod cMethod, String additionalArguments, boolean appendPrefix) {
 		// emit head, consisting of JNIEXPORT,return type and method name
 		// if this is a wrapped method, prefix the method name
 		String wrappedMethodName = null;
@@ -384,7 +407,7 @@ public class NativeCodeGenerator {
 			// as we will output JNI code to get pointers to strings, arrays
 			// and direct buffers.
 			Argument javaArg = javaMethod.getArguments().get(i);
-			if(!javaArg.getType().isPlainOldDataType() && !javaArg.getType().isObject()) {
+			if(!javaArg.getType().isPlainOldDataType() && !javaArg.getType().isObject() && appendPrefix) {
 				buffer.append(JNI_ARG_PREFIX);
 			}
 			// output the name of the argument

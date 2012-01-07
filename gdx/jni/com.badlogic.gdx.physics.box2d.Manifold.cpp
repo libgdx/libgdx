@@ -6,7 +6,7 @@
 	 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Manifold_jniGetType(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:48
+//@line:46
 
 		b2Manifold* manifold = (b2Manifold*)addr;
 		return manifold->type;
@@ -17,7 +17,7 @@
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Manifold_jniGetPointCount(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:57
+//@line:55
 
 	  	b2Manifold* manifold = (b2Manifold*)addr;
 		return manifold->pointCount;
@@ -29,7 +29,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Manifold_jniGetLocalN
 	float* values = (float*)env->GetPrimitiveArrayCritical(obj_values, 0);
 
 
-//@line:68
+//@line:66
 
 		b2Manifold* manifold = (b2Manifold*)addr;
 		values[0] = manifold->localNormal.x;
@@ -43,7 +43,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Manifold_jniGetLocalP
 	float* values = (float*)env->GetPrimitiveArrayCritical(obj_values, 0);
 
 
-//@line:80
+//@line:78
 
 		b2Manifold* manifold = (b2Manifold*)addr;
 		values[0] = manifold->localPoint.x;
@@ -56,7 +56,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Manifold_jniGetLocalP
 static inline jint wrapped_Java_com_badlogic_gdx_physics_box2d_Manifold_jniGetPoint
 (JNIEnv* env, jobject object, jlong addr, jfloatArray obj_values, jint idx, float* values) {
 
-//@line:101
+//@line:99
 
 		b2Manifold* manifold = (b2Manifold*)addr;
 		  
