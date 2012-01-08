@@ -18,7 +18,9 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.tests.AudioDeviceTest;
 import com.badlogic.gdx.tests.ImmediateModeRendererTest;
+import com.badlogic.gdx.tests.MusicTest;
 import com.badlogic.gdx.tests.PixmapTest;
 import com.badlogic.gdx.tests.ShapeRendererTest;
 import com.badlogic.gdx.tests.SoundTouchTest;
