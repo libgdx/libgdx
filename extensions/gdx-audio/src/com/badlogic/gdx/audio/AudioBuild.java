@@ -113,8 +113,8 @@ public class AudioBuild {
 		mac.preCompileTask = precompileTask;
 		
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
-		android.cFlags += " -DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__ -DMPG123_NO_CONFIGURE -DOPT_ARM -DHAVE_STRERROR -DMPG123_NO_LARGENAME";
-		android.cppFlags += " -DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__ -DMPG123_NO_CONFIGURE -DOPT_ARM -DHAVE_STRERROR -DMPG123_NO_LARGENAME";
+		android.cFlags += " -DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__ -DMPG123_NO_CONFIGURE -DOPT_GENERIC -DHAVE_STRERROR -DMPG123_NO_LARGENAME";
+		android.cppFlags += " -DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__ -DMPG123_NO_CONFIGURE -DOPT_GENERIC -DHAVE_STRERROR -DMPG123_NO_LARGENAME";
 		android.headerDirs = headerDirs;
 		android.cIncludes = cIncludes;
 		android.cppIncludes = cppIncludes;
@@ -123,7 +123,7 @@ public class AudioBuild {
 		
 		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac, android);
 		
-		BuildExecutor.executeAnt("jni/build-linux64.xml", "clean postcompile -v");
-		BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
+//		BuildExecutor.executeAnt("jni/build-linux64.xml", "clean postcompile -v");
+//		BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
 	}
 }
