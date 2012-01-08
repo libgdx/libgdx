@@ -16,38 +16,72 @@
 
 package com.badlogic.gdx.tests;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.AudioDevice;
+import com.badlogic.gdx.audio.io.Mpg123Decoder;
+import com.badlogic.gdx.audio.io.VorbisDecoder;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
+/**
+ * Demonstrates how to read and playback an OGG file with the {@link VorbisDecoder} found
+ * in the gdx-audio extension.
+ * @author mzechner
+ *
+ */
 public class Mpg123Test extends GdxTest {
-
+	/** the file to playback **/
+	private static final String FILE = "data/8.12.mp3";
+	/** a VorbisDecoder to read PCM data from the ogg file **/
+	Mpg123Decoder decoder;
+	/** an AudioDevice for playing back the PCM data **/
+	AudioDevice device;
+	
 	@Override
 	public void create () {
-//		String file = null;
-//		if (Gdx.app.getType() == ApplicationType.Android)
-//			file = "/sdcard/audio/schism.mp3";
-//		else
-//			file = "data/threeofaperfectpair.mp3";
-//
-//		Mpg123Decoder decoder = new Mpg123Decoder(file);
-//		ShortBuffer stereoSamples = AudioTools.allocateShortBuffer(1024, decoder.getNumChannels());
-//		ShortBuffer monoSamples = AudioTools.allocateShortBuffer(1024, 1);
-//		FloatBuffer spectrum = AudioTools.allocateFloatBuffer(1024 / 2 + 1, 1);
-//		KissFFT fft = new KissFFT(1024);
-//
-//		Gdx.app.log("Mpg123",
-//			"rate: " + decoder.getRate() + ", channels: " + decoder.getNumChannels() + ", length: " + decoder.getLength());
-//
-//		long start = System.nanoTime();
-//		while (decoder.readSamples(stereoSamples) > 0) {
-//		}
-//
-//		Gdx.app.log("Mpg123", "took " + (System.nanoTime() - start) / 1000000000.0);
-//		decoder.dispose();
+		// copy ogg file to SD card, can't playback from assets
+		FileHandle externalFile = Gdx.files.external("tmp/test.mp3");
+		Gdx.files.internal(FILE).copyTo(externalFile);
+		
+		// Create the decoder and log some properties. Note that we need
+		// an external or absolute file
+		decoder = new Mpg123Decoder(externalFile);
+		Gdx.app.log("Vorbis", "channels: " + decoder.getChannels() + ", rate: " + decoder.getRate() + ", length: " + decoder.getLength());
+
+		// Create an audio device for playback
+		device = Gdx.audio.newAudioDevice(decoder.getRate(), decoder.getChannels() == 1? true: false);
+		
+		// start a thread for playback
+		Thread playbackThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				int readSamples = 0;
+				// we need a short[] to pass the data to the AudioDevice
+				short[] samples = new short[2048];
+				
+				// read until we reach the end of the file
+				while((readSamples = decoder.readSamples(samples, 0, samples.length)) > 0) {
+					// write the samples to the AudioDevice
+					device.writeSamples(samples, 0, readSamples);
+				}
+			}
+		});
+		playbackThread.setDaemon(true);
+		playbackThread.start();
+	}
+
+	@Override
+	public void dispose() {
+		// we should synchronize with the thread here
+		// left as an excercise to the reader :)
+		device.dispose();
+		decoder.dispose();
+		// kill the file again
+		Gdx.files.external("tmp/test.mp3").delete();
 	}
 
 	@Override
 	public boolean needsGL20 () {
 		return false;
 	}
-
 }

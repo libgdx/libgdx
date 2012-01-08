@@ -20,6 +20,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tests.AudioDeviceTest;
 import com.badlogic.gdx.tests.ImmediateModeRendererTest;
+import com.badlogic.gdx.tests.Mpg123Test;
 import com.badlogic.gdx.tests.MusicTest;
 import com.badlogic.gdx.tests.PixmapTest;
 import com.badlogic.gdx.tests.ShapeRendererTest;
@@ -36,7 +37,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 		new SharedLibraryLoader("../../extensions/gdx-audio/libs/gdx-audio-natives.jar").load("gdx-audio");
 		
-		GdxTest test = new SoundTouchTest();
+		GdxTest test = new Mpg123Test();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;
