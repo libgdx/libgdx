@@ -51,9 +51,6 @@ remove junk
 	TextureRef, TextureDict
 AssetManager
 	document
-audio
-	libmpg123
-		get latest trunk version to work on all platforms, ugh...
 DecalBatch
 	slow
 	remove?
