@@ -285,7 +285,8 @@ static inline long scale_rounded(long x, int shift)
    now: factor on minimum frame buffer size (which takes upsampling into account) */
 #define		AUDIOBUFSIZE		2
 
-#include "true.h"
+#define FALSE 0
+#define TRUE  1
 
 #define         MAX_NAME_SIZE           81
 #define         SBLIMIT                 32

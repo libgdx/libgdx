@@ -14,24 +14,49 @@
 	
 	<!-- define gcc compiler, options and files to compile -->
 	<property name="gcc" value="${compilerPrefix}gcc"/>	
-	<property name="gcc-opts" value="-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5 -DFIXED_POINT"/>
+	<property name="gcc-opts" value="-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5 -DFIXED_POINT -DMPG123_NO_CONFIGURE -DOPT_GENERIC -DHAVE_STRERROR -DMPG123_NO_LARGENAME"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
 				<include name="kissfft/*.c"/>
 		<include name="vorbis/*.c"/>
+		<include name="libmpg123/equalizer.c"/>
+		<include name="libmpg123/index.c"/>
+		<include name="libmpg123/layer2.c"/>
+		<include name="libmpg123/synth.c"/>
+		<include name="libmpg123/dct64.c"/>
+		<include name="libmpg123/format.c"/>
+		<include name="libmpg123/layer3.c"/>
+		<include name="libmpg123/ntom.c"/>
+		<include name="libmpg123/parse.c"/>
+		<include name="libmpg123/readers.c"/>
+		<include name="libmpg123/frame.c"/>
+		<include name="libmpg123/layer1.c"/>
+		<include name="libmpg123/libmpg123.c"/>
+		<include name="libmpg123/optimize.c"/>
+		<include name="libmpg123/synth_arm.S"/>
+		<include name="libmpg123/tabinit.c"/>
+		<include name="libmpg123/id3.c"/>
+		<include name="libmpg123/stringbuf.c"/>
+		<include name="libmpg123/icy.c"/>
+		<include name="libmpg123/icy2utf8.c"/>
+		<include name="libmpg123/compat.c"/>
+		<include name="libmpg123/synth_8bit.c"/>
+		<include name="libmpg123/synth_real.c"/>
+		<include name="libmpg123/synth_s32.c"/>
 
 		
 	</fileset>
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++"/>
-	<property name="g++-opts" value="-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5 -DFIXED_POINT"/>
+	<property name="g++-opts" value="-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5 -DFIXED_POINT -DMPG123_NO_CONFIGURE -DOPT_GENERIC -DHAVE_STRERROR -DMPG123_NO_LARGENAME"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
 				<include name="**/*AudioTools.cpp"/>
 		<include name="**/*KissFFT.cpp"/>
 		<include name="**/*VorbisDecoder.cpp"/>
 		<include name="**/*SoundTouch.cpp"/>
+		<include name="**/*Mpg123Decoder.cpp"/>
 		<include name="soundtouch/source/SoundTouch/*.cpp"/>
 
 				<exclude name="**/cpu_detect_x86_win.cpp"/>
