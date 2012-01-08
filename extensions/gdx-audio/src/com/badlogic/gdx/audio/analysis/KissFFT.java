@@ -116,9 +116,9 @@ public class KissFFT implements Disposable {
 			float im = scale(fft->spectrum[i].i) * fft->numSamples;
 	
 			if( i > 0 )
-				spectrum[i] = sqrtf(re*re + im*im) / (fft->numSamples);
+				spectrum[i] = sqrtf(re*re + im*im);
 			else
-				spectrum[i] = sqrtf(re*re + im*im) / (fft->numSamples);
+				spectrum[i] = sqrtf(re*re + im*im);
 		}
 	*/
 

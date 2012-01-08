@@ -67,9 +67,9 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_KissFFT_spectrum(JNI
 			float im = scale(fft->spectrum[i].i) * fft->numSamples;
 	
 			if( i > 0 )
-				spectrum[i] = sqrtf(re*re + im*im) / (fft->numSamples);
+				spectrum[i] = sqrtf(re*re + im*im);
 			else
-				spectrum[i] = sqrtf(re*re + im*im) / (fft->numSamples);
+				spectrum[i] = sqrtf(re*re + im*im);
 		}
 	
 	env->ReleasePrimitiveArrayCritical(obj_samples, samples, 0);

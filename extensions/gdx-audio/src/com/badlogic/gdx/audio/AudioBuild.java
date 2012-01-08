@@ -32,6 +32,8 @@ public class AudioBuild {
 		String precompileTask = "<copy failonerror=\"true\" tofile=\"soundtouch/include/STTypes.h\" verbose=\"true\" overwrite=\"true\" file=\"STTypes.h.patched\"/>";
 		BuildConfig buildConfig = new BuildConfig("gdx-audio");
 		BuildTarget win32home = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
+		win32home.cFlags += " -DFIXED_POINT";
+		win32home.cppFlags += " -DFIXED_POINT";
 		win32home.compilerPrefix = "";
 		win32home.buildFileName = "build-windows32home.xml";
 		win32home.headerDirs = headerDirs;
@@ -97,7 +99,7 @@ public class AudioBuild {
 		
 		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac, android);
 		
-		BuildExecutor.executeAnt("jni/build-macosx32.xml", "-v");
+		BuildExecutor.executeAnt("jni/build-windows32home.xml", "clean postcompile -v");
 		BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
 	}
 }
