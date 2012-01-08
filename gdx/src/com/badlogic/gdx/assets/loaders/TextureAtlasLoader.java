@@ -61,6 +61,8 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 			TextureParameter params = new TextureParameter();
 			params.format = page.format;
 			params.genMipMaps = page.useMipMaps;
+			params.minFilter = page.minFilter;
+			params.magFilter = page.magFilter;
 			dependencies.add(new AssetDescriptor(handle.path().replaceAll("\\\\", "/"), Texture.class, params));
 		}
 		return dependencies;

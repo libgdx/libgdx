@@ -20,7 +20,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
@@ -33,10 +35,13 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, SkinParameter parameter) {
 		Array<AssetDescriptor> deps = new Array();
+		TextureParameter textureParam = new TextureParameter();
+		textureParam.minFilter = TextureFilter.Linear;
+		textureParam.magFilter = TextureFilter.Linear;
 		if (parameter == null)
-			deps.add(new AssetDescriptor(Gdx.files.internal(fileName).nameWithoutExtension() + ".png", Texture.class));
+			deps.add(new AssetDescriptor(Gdx.files.internal(fileName).nameWithoutExtension() + ".png", Texture.class, textureParam));
 		else
-			deps.add(new AssetDescriptor(parameter.texturePath, Texture.class));
+			deps.add(new AssetDescriptor(parameter.texturePath, Texture.class, textureParam));
 		return deps;
 	}
 

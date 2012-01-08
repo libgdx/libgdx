@@ -543,6 +543,10 @@ public class TextField extends Widget {
 		cursor = Math.min(cursorPosition, text.length());
 	}
 
+	public int getCursorPosition () {
+		return cursor;
+	}
+
 	/** Default is an instance of {@link DefaultOnscreenKeyboard}. */
 	public OnscreenKeyboard getOnscreenKeyboard () {
 		return keyboard;
