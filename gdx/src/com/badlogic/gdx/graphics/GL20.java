@@ -123,6 +123,7 @@ public interface GL20 extends GLCommon {
 	public static final int GL_UNPACK_ALIGNMENT = 0x0CF5;
 	public static final int GL_PACK_ALIGNMENT = 0x0D05;
 	public static final int GL_MAX_TEXTURE_SIZE = 0x0D33;
+	public static final int GL_MAX_TEXTURE_UNITS = 0x84E2;
 	public static final int GL_MAX_VIEWPORT_DIMS = 0x0D3A;
 	public static final int GL_SUBPIXEL_BITS = 0x0D50;
 	public static final int GL_RED_BITS = 0x0D52;
