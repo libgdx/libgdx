@@ -412,6 +412,13 @@ public class Vector3 implements Serializable {
 		return true;
 	}
 
+	/**
+	 * Compares this vector with the other vector, using the supplied
+	 * epsilon for fuzzy equality testing.
+	 * @param obj
+	 * @param epsilon
+	 * @return whether the vectors are the same.
+	 */
 	public boolean epsilonEquals(Vector3 obj, float epsilon) {
 		if(obj == null) return false;
 		if(Math.abs(obj.x - x) > epsilon) return false;

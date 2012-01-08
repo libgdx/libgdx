@@ -258,4 +258,18 @@ public class Vector2 implements Serializable {
 		r.add(target.tmp().mul(alpha));
 		return r;
 	}
+	
+	/**
+	 * Compares this vector with the other vector, using the supplied
+	 * epsilon for fuzzy equality testing.
+	 * @param obj
+	 * @param epsilon
+	 * @return whether the vectors are the same.
+	 */
+	public boolean epsilonEquals(Vector2 obj, float epsilon) {
+		if(obj == null) return false;
+		if(Math.abs(obj.x - x) > epsilon) return false;
+		if(Math.abs(obj.y - y) > epsilon) return false;
+		return true;
+	}
 }
