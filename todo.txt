@@ -52,10 +52,8 @@ remove junk
 AssetManager
 	document
 audio
-	fix KissFFT
-		output should match FFT class
 	libmpg123
-		separate native for LGPL
+		get latest trunk version to work on all platforms, ugh...
 DecalBatch
 	slow
 	remove?
