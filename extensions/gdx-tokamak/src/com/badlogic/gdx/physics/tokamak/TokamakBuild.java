@@ -29,31 +29,37 @@ public class TokamakBuild {
 		win32.headerDirs = headers;
 		win32.cppIncludes = cppIncludes;
 		win32.cppExcludes = new String[] { "**/perflinux.cpp" };
+		win32.linkerFlags += " -lm";
 		
 		BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
 		win64.headerDirs = headers;
 		win64.cppIncludes = cppIncludes;
 		win64.cppExcludes = new String[] { "**/perflinux.cpp" };
+		win64.linkerFlags += " -lm";
 		
 		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
 		lin32.headerDirs = headers;
 		lin32.cppIncludes = cppIncludes;
 		lin32.cppExcludes = new String[] { "**/perfwin32.cpp" };
+		lin32.linkerFlags += " -lm";
 		
 		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
 		lin64.headerDirs = headers;
 		lin64.cppIncludes = cppIncludes;
 		lin64.cppExcludes = new String[] { "**/perfwin32.cpp" };
+		lin64.linkerFlags += " -lm";
 		
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
 		mac.headerDirs = headers;
 		mac.cppIncludes = cppIncludes;
 		mac.cppExcludes = new String[] { "**/perfwin32.cpp" };
+		mac.linkerFlags += " -lm";
 		
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
-		mac.headerDirs = headers;
-		mac.cppIncludes = cppIncludes;
-		mac.cppExcludes = new String[] { "**/perfwin32.cpp" };
+		android.headerDirs = headers;
+		android.cppIncludes = cppIncludes;
+		android.cppExcludes = new String[] { "**/perfwin32.cpp" };
+		android.linkerFlags += " -lm";
 		
 		new AntScriptGenerator().generate(config, win32home, win32, win64, lin32, lin64, mac, android);
 		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
