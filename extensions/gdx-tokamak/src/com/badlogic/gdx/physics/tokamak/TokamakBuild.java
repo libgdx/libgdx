@@ -23,6 +23,7 @@ public class TokamakBuild {
 		win32home.headerDirs = headers;
 		win32home.cppIncludes = cppIncludes;
 		win32home.cppExcludes = new String[] { "**/perflinux.cpp" };
+		win32home.excludeFromMasterBuildFile = true;
 		
 		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32.headerDirs = headers;

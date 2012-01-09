@@ -1,6 +1,5 @@
 <project name="gdx-tokamak-natives" basedir="." default="all">
 	<target name="clean">
-		<ant antfile="build-windows32home.xml" target="clean"/>
 		<ant antfile="build-windows32.xml" target="clean"/>
 		<ant antfile="build-windows64.xml" target="clean"/>
 		<ant antfile="build-linux32.xml" target="clean"/>
@@ -10,7 +9,6 @@
 	</target>
 	
 	<target name="compile-natives">
-		<ant antfile="build-windows32home.xml"/>
 		<ant antfile="build-windows32.xml"/>
 		<ant antfile="build-windows64.xml"/>
 		<ant antfile="build-linux32.xml"/>
@@ -21,7 +19,7 @@
 	
 	<target name="pack-natives">
 		<jar destfile="../libs/gdx-tokamak-natives.jar">
-			<fileset dir="../libs/windows32" includes="gdx-tokamak.dll"/>			<fileset dir="../libs/windows32" includes="gdx-tokamak.dll"/>			<fileset dir="../libs/windows64" includes="gdx-tokamak64.dll"/>			<fileset dir="../libs/linux32" includes="libgdx-tokamak.so"/>			<fileset dir="../libs/linux64" includes="libgdx-tokamak64.so"/>			<fileset dir="../libs/macosx32" includes="libgdx-tokamak.dylib"/>
+			<fileset dir="../libs/windows32" includes="gdx-tokamak.dll"/>			<fileset dir="../libs/windows64" includes="gdx-tokamak64.dll"/>			<fileset dir="../libs/linux32" includes="libgdx-tokamak.so"/>			<fileset dir="../libs/linux64" includes="libgdx-tokamak64.so"/>			<fileset dir="../libs/macosx32" includes="libgdx-tokamak.dylib"/>
 		</jar>
 	</target>
 
