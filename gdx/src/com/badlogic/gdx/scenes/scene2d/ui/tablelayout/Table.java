@@ -104,8 +104,8 @@ public class Table extends WidgetGroup {
 	 * patch. */
 	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
 		if (backgroundPatch != null) {
-			//batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			//backgroundPatch.draw(batch, x, y, width, height);
+			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			backgroundPatch.draw(batch, x, y, width, height);
 		}
 	}
 
