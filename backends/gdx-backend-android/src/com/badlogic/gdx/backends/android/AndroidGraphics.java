@@ -107,46 +107,19 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		} else {
 			config.useGL20 = false;
 			configChooser = getEglConfigChooser();
-			if (Integer.parseInt(android.os.Build.VERSION.SDK) <= 4) {
-				GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(activity, resolutionStrategy);
-				if (configChooser != null)
-					view.setEGLConfigChooser(configChooser);
-				else
-					view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-				view.setRenderer(this);
-				return view;
-			} else {
-				android.opengl.GLSurfaceView view = new DefaultGLSurfaceView(activity, resolutionStrategy);
-				if (configChooser != null)
-					view.setEGLConfigChooser(configChooser);
-				else
-					view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-				view.setRenderer(this);
-				return view;
-			}
+			GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(activity, resolutionStrategy);
+			if (configChooser != null)
+				view.setEGLConfigChooser(configChooser);
+			else
+				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+			view.setRenderer(this);
+			return view;
 		}
 	}
 
 	private EGLConfigChooser getEglConfigChooser () {
 		return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples,
 			config.useGL20);
-
-// if (!Build.DEVICE.equalsIgnoreCase("GT-I7500"))
-// return null;
-// else
-// return new android.opengl.GLSurfaceView.EGLConfigChooser() {
-//
-// public EGLConfig chooseConfig (EGL10 egl, EGLDisplay display) {
-//
-// // Ensure that we get a 16bit depth-buffer. Otherwise, we'll fall
-// // back to Pixelflinger on some device (read: Samsung I7500)
-// int[] attributes = new int[] {EGL10.EGL_DEPTH_SIZE, 16, EGL10.EGL_NONE};
-// EGLConfig[] configs = new EGLConfig[1];
-// int[] result = new int[1];
-// egl.eglChooseConfig(display, attributes, configs, 1, result);
-// return configs[0];
-// }
-// };
 	}
 
 	private void updatePpi () {
