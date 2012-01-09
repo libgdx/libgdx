@@ -145,7 +145,7 @@ public class Group extends Actor implements Cullable {
 					if (!child.visible) continue;
 					child.x += offsetX;
 					child.y += offsetY;
-//					child.draw(batch, parentAlpha);
+					child.draw(batch, parentAlpha);
 					child.x -= offsetX;
 					child.y -= offsetY;
 				}
