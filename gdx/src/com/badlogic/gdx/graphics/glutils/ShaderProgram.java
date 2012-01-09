@@ -33,6 +33,7 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** <p>
@@ -81,7 +82,7 @@ public class ShaderProgram implements Disposable {
 	public static boolean pedantic = true;
 
 	/** the list of currently available shaders **/
-	private final static Map<Application, List<ShaderProgram>> shaders = new HashMap<Application, List<ShaderProgram>>();
+	private final static ObjectMap<Application, List<ShaderProgram>> shaders = new ObjectMap<Application, List<ShaderProgram>>();
 
 	/** the log **/
 	private String log = "";
@@ -90,19 +91,19 @@ public class ShaderProgram implements Disposable {
 	private boolean isCompiled;
 
 	/** uniform lookup **/
-	private final ObjectMap<String, Integer> uniforms = new ObjectMap<String, Integer>();
+	private final ObjectIntMap<String> uniforms = new ObjectIntMap<String>();
 
 	/** uniform types **/
-	private final ObjectMap<String, Integer> uniformTypes = new ObjectMap<String, Integer>();
+	private final ObjectIntMap<String> uniformTypes = new ObjectIntMap<String>();
 
 	/** uniform names **/
 	private String[] uniformNames;
 
 	/** attribute lookup **/
-	private final ObjectMap<String, Integer> attributes = new ObjectMap<String, Integer>();
+	private final ObjectIntMap<String> attributes = new ObjectIntMap<String>();
 
 	/** attribute types **/
-	private final ObjectMap<String, Integer> attributeTypes = new ObjectMap<String, Integer>();
+	private final ObjectIntMap<String> attributeTypes = new ObjectIntMap<String>();
 
 	/** attribute names **/
 	private String[] attributeNames;
@@ -250,8 +251,8 @@ public class ShaderProgram implements Disposable {
 
 	private int fetchAttributeLocation (String name) {
 		GL20 gl = Gdx.graphics.getGL20();
-		Integer location;
-		if ((location = attributes.get(name)) == null) {
+		int location;
+		if ((location = attributes.get(name, -1)) == -1) {
 			location = gl.glGetAttribLocation(program, name);
 			if (location != -1) attributes.put(name, location);
 		}
@@ -260,8 +261,8 @@ public class ShaderProgram implements Disposable {
 
 	private int fetchUniformLocation (String name) {
 		GL20 gl = Gdx.graphics.getGL20();
-		Integer location;
-		if ((location = uniforms.get(name)) == null) {
+		int location;
+		if ((location = uniforms.get(name, -1)) == -1) {
 			location = gl.glGetUniformLocation(program, name);
 			if (location == -1 && pedantic) throw new IllegalArgumentException("no uniform with name '" + name + "' in shader");
 			uniforms.put(name, location);
@@ -584,7 +585,7 @@ public class ShaderProgram implements Disposable {
 		StringBuilder builder = new StringBuilder();
 		int i = 0;
 		builder.append("Managed shaders/app: { ");
-		for (Application app : shaders.keySet()) {
+		for (Application app : shaders.keys()) {
 			builder.append(shaders.get(app).size());
 			builder.append(" ");
 		}
@@ -663,8 +664,8 @@ public class ShaderProgram implements Disposable {
 	/** @param name the name of the attribute
 	 * @return the type of the attribute, one of {@link GL20#GL_FLOAT}, {@link GL20#GL_FLOAT_VEC2} etc. */
 	public int getAttributeType (String name) {
-		Integer type = attributes.get(name);
-		if (type == null)
+		int type = attributes.get(name, -1);
+		if (type == -1)
 			return 0;
 		else
 			return type;
@@ -673,8 +674,8 @@ public class ShaderProgram implements Disposable {
 	/** @param name the name of the attribute
 	 * @return the location of the attribute or -1. */
 	public int getAttributeLocation (String name) {
-		Integer location = attributes.get(name);
-		if (location == null)
+		int location = attributes.get(name, -1);
+		if (location == -1)
 			return -1;
 		else
 			return location;
@@ -689,8 +690,8 @@ public class ShaderProgram implements Disposable {
 	/** @param name the name of the uniform
 	 * @return the type of the uniform, one of {@link GL20#GL_FLOAT}, {@link GL20#GL_FLOAT_VEC2} etc. */
 	public int getUniformType (String name) {
-		Integer type = attributes.get(name);
-		if (type == null)
+		int type = attributes.get(name, -1);
+		if (type == -1)
 			return 0;
 		else
 			return type;
@@ -699,8 +700,8 @@ public class ShaderProgram implements Disposable {
 	/** @param name the name of the uniform
 	 * @return the location of the uniform or -1. */
 	public int getUniformLocation (String name) {
-		Integer location = uniforms.get(name);
-		if (location == null)
+		int location = uniforms.get(name, -1);
+		if (location == -1)
 			return -1;
 		else
 			return location;
