@@ -228,14 +228,17 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native long newWorld (float gravityX, float gravityY, boolean doSleep); /*
-		worldClass = env->GetObjectClass(object);
-		beginContactID = env->GetMethodID(worldClass, "beginContact", "(J)V" );
-		endContactID = env->GetMethodID( worldClass, "endContact", "(J)V" );
-		preSolveID = env->GetMethodID( worldClass, "preSolve", "(JJ)V" );
-		postSolveID = env->GetMethodID( worldClass, "postSolve", "(JJ)V" );
-		reportFixtureID = env->GetMethodID(worldClass, "reportFixture", "(J)Z" );
-		reportRayFixtureID = env->GetMethodID(worldClass, "reportRayFixture", "(JFFFFF)F" );
-		shouldCollideID = env->GetMethodID( worldClass, "contactFilter", "(JJ)Z");
+		// we leak one global ref. 
+		if(!worldClass) {
+			worldClass = (jclass)env->NewGlobalRef(env->GetObjectClass(object));
+			beginContactID = env->GetMethodID(worldClass, "beginContact", "(J)V" );
+			endContactID = env->GetMethodID( worldClass, "endContact", "(J)V" );
+			preSolveID = env->GetMethodID( worldClass, "preSolve", "(JJ)V" );
+			postSolveID = env->GetMethodID( worldClass, "postSolve", "(JJ)V" );
+			reportFixtureID = env->GetMethodID(worldClass, "reportFixture", "(J)Z" );
+			reportRayFixtureID = env->GetMethodID(worldClass, "reportRayFixture", "(JFFFFF)F" );
+			shouldCollideID = env->GetMethodID( worldClass, "contactFilter", "(JJ)Z");
+		}
 	
 		b2World* world = new b2World( b2Vec2( gravityX, gravityY ), doSleep );
 		return (jlong)world;

@@ -36,7 +36,7 @@ public class StagePerformanceTest extends GdxTest {
 
 	@Override
 	public boolean needsGL20 () {
-		return false;
+		return true;
 	}
 
 	TextureRegion[] regions;

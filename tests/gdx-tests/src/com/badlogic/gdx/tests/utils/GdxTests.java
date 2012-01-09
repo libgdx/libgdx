@@ -96,7 +96,8 @@ public class GdxTests {
 			VertexBufferObjectShaderTest.class, VibratorTest.class,
 			VorbisTest.class, WaterRipples.class, HelloTriangle.class,
 			SimpleVertexShader.class, ShapeRendererTest.class,
-			MoveSpriteExample.class, StbTrueTypeTest.class, SoundTouchTest.class, Mpg123Test.class, WavTest.class};
+			MoveSpriteExample.class, StbTrueTypeTest.class, SoundTouchTest.class, Mpg123Test.class, WavTest.class,
+			TextButtonTest.class};
 
 	public static String[] getNames() {
 		List<String> names = new ArrayList<String>();
