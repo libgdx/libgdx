@@ -21,6 +21,8 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -31,9 +33,9 @@ public class TextButtonTest extends GdxTest {
 	
 	@Override
 	public void create () {
-		stage = new Stage(0, 0, false, new SpriteBatch(10000));
+		stage = new Stage(0, 0, false, new SpriteBatch());
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 100; i++) {
 			TextButton t = new TextButton("Button"+i, skin);
 			t.x = MathUtils.random(0, Gdx.graphics.getWidth());
 			t.y = MathUtils.random(0, Gdx.graphics.getHeight());
@@ -50,7 +52,8 @@ public class TextButtonTest extends GdxTest {
 		stage.draw();
 		Gdx.app.log("X", "FPS: "+Gdx.graphics.getFramesPerSecond());
 		Gdx.app.log("X", "GL20: "+Gdx.graphics.isGL20Available());
-		Gdx.app.log("X", "Batches: " + stage.getSpriteBatch().maxSpritesInBatch);
+		Gdx.app.log("X", "render calls: " + stage.getSpriteBatch().totalRenderCalls);
+		stage.getSpriteBatch().totalRenderCalls = 0;
 	}
 
 	@Override
