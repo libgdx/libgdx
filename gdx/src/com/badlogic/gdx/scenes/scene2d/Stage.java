@@ -408,6 +408,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Clears this stage, removing all {@link Actor}s and {@link Group}s. */
 	public void clear () {
 		root.clear();
+		unfocusAll();
 	}
 
 	/** Removes the given {@link Actor} from the stage by trying to find it recursively in the scenegraph.
