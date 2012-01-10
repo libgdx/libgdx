@@ -319,9 +319,7 @@ public final class JoglApplication implements Application {
 		postRunnable(new Runnable() {
 			@Override
 			public void run () {
-				JoglApplication.this.graphics.listener.pause();
-				JoglApplication.this.graphics.listener.dispose();
-				System.exit(-1);
+				frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 	}
