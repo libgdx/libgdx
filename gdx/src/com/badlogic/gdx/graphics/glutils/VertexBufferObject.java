@@ -60,7 +60,6 @@ public class VertexBufferObject implements VertexData {
 	final FloatBuffer buffer;
 	final ByteBuffer byteBuffer;
 	int bufferHandle;
-	final boolean isDirect;
 	final boolean isStatic;
 	final int usage;
 	boolean isDirty = false;
@@ -86,7 +85,6 @@ public class VertexBufferObject implements VertexData {
 
 		byteBuffer = ByteBuffer.allocateDirect(this.attributes.vertexSize * numVertices);
 		byteBuffer.order(ByteOrder.nativeOrder());
-		isDirect = true;
 		buffer = byteBuffer.asFloatBuffer();
 		buffer.flip();
 		byteBuffer.flip();
@@ -130,17 +128,9 @@ public class VertexBufferObject implements VertexData {
 	@Override
 	public void setVertices (float[] vertices, int offset, int count) {
 		isDirty = true;
-		if (isDirect) {
-			BufferUtils.copy(vertices, byteBuffer, count, offset);
-			buffer.position(0);
-			buffer.limit(count);
-		} else {
-			buffer.clear();
-			buffer.put(vertices, offset, count);
-			buffer.flip();
-			byteBuffer.position(0);
-			byteBuffer.limit(buffer.limit() << 2);
-		}
+		BufferUtils.copy(vertices, byteBuffer, count, offset);
+		buffer.position(0);
+		buffer.limit(count);
 
 		if (isBound) {
 			if (Gdx.gl20 != null) {

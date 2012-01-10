@@ -101,6 +101,9 @@ public class SpriteBatch implements Disposable {
 
 	/** number of render calls **/
 	public int renderCalls = 0;
+	
+	/** number of rendering calls in total, will not be reset, unless it's done manually **/
+	public int totalRenderCalls = 0;
 
 	/** the maximum number of sprites rendered in one batch so far **/
 	public int maxSpritesInBatch = 0;
@@ -255,12 +258,13 @@ public class SpriteBatch implements Disposable {
 		renderCalls = 0;
 
 		Gdx.gl.glDepthMask(false);
-		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
 		if (Gdx.graphics.isGL20Available()) {
 			if (customShader != null)
 				customShader.begin();
 			else
 				shader.begin();
+		} else {
+			Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
 		}
 		setupMatrices();
 
@@ -281,13 +285,14 @@ public class SpriteBatch implements Disposable {
 		GLCommon gl = Gdx.gl;
 		gl.glDepthMask(true);
 		if (isBlendingEnabled()) gl.glDisable(GL10.GL_BLEND);
-		gl.glDisable(GL10.GL_TEXTURE_2D);
 
 		if (Gdx.graphics.isGL20Available()) {
 			if (customShader != null)
 				customShader.end();
 			else
 				shader.end();
+		} else {
+			gl.glDisable(GL10.GL_TEXTURE_2D);
 		}
 	}
 
@@ -1071,33 +1076,26 @@ public class SpriteBatch implements Disposable {
 		if (idx == 0) return;
 
 		renderCalls++;
+		totalRenderCalls++;
 		int spritesInBatch = idx / 20;
 		if (spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
 
 		lastTexture.bind();
 		mesh.setVertices(vertices, 0, idx);
 
+		if (blendingDisabled) {
+			Gdx.gl.glDisable(GL20.GL_BLEND);
+		} else {
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
+		}
+		
 		if (Gdx.graphics.isGL20Available()) {
-			if (blendingDisabled) {
-				Gdx.gl20.glDisable(GL20.GL_BLEND);
-			} else {
-				GL20 gl20 = Gdx.gl20;
-				gl20.glEnable(GL20.GL_BLEND);
-				gl20.glBlendFunc(blendSrcFunc, blendDstFunc);
-			}
-
 			if (customShader != null)
 				mesh.render(customShader, GL10.GL_TRIANGLES, 0, spritesInBatch * 6);
 			else
 				mesh.render(shader, GL10.GL_TRIANGLES, 0, spritesInBatch * 6);
 		} else {
-			if (blendingDisabled) {
-				Gdx.gl10.glDisable(GL10.GL_BLEND);
-			} else {
-				GL10 gl10 = Gdx.gl10;
-				gl10.glEnable(GL10.GL_BLEND);
-				gl10.glBlendFunc(blendSrcFunc, blendDstFunc);
-			}
 			mesh.render(GL10.GL_TRIANGLES, 0, spritesInBatch * 6);
 		}
 
