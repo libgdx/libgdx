@@ -1,12 +1,13 @@
 package com.badlogic.gdx.physics.tokamak;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.jnigen.AntScriptGenerator;
 import com.badlogic.gdx.jnigen.BuildConfig;
 import com.badlogic.gdx.jnigen.BuildExecutor;
 import com.badlogic.gdx.jnigen.BuildTarget;
 import com.badlogic.gdx.jnigen.BuildTarget.TargetOs;
 import com.badlogic.gdx.jnigen.NativeCodeGenerator;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class TokamakBuild {
 	public static void main(String[] args) throws Exception {
@@ -63,5 +64,14 @@ public class TokamakBuild {
 		
 		new AntScriptGenerator().generate(config, win32home, win32, win64, lin32, lin64, mac, android);
 		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
+		BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
+		
+		new SharedLibraryLoader("libs/gdx-tokamak-natives.jar").load("gdx-tokamak");
+		Simulator sim = new Simulator(new SimulatorSizeInfo(), new Vector3(0, -10, 0));
+		sim.setGravity(0, -1, 0);
+		System.out.println(sim.getGravity());
+		RigidBody body = sim.createRigidBody();
+		sim.freeRigidBody(body);
+		sim.dispose();
 	}
 }

@@ -41,7 +41,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 		new SharedLibraryLoader("../../extensions/gdx-audio/libs/gdx-audio-natives.jar").load("gdx-audio");
 		
-		GdxTest test = new TextButtonTest();
+		GdxTest test = new TextureBindTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;

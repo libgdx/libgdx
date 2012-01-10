@@ -161,7 +161,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_mulVec___3F_3F(JNIEnv*
 
 //@line:876
 
-		matrix4_mul(mat, vec);
+		matrix4_mulVec(mat, vec);
 	
 	env->ReleasePrimitiveArrayCritical(obj_mat, mat, 0);
 	env->ReleasePrimitiveArrayCritical(obj_vec, vec, 0);

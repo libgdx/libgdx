@@ -9,7 +9,9 @@ LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__
 LOCAL_LDLIBS := -lm -lm
 LOCAL_ARM_MODE  := arm
  
-LOCAL_SRC_FILES := tokamak/boxcylinder.cpp\
+LOCAL_SRC_FILES := com.badlogic.gdx.physics.tokamak.RigidBody.cpp\
+	com.badlogic.gdx.physics.tokamak.Simulator.cpp\
+	tokamak/boxcylinder.cpp\
 	tokamak/collision.cpp\
 	tokamak/collisionbody.cpp\
 	tokamak/constraint.cpp\
