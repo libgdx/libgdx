@@ -874,7 +874,7 @@ public class Matrix4 implements Serializable {
 	 * @param mat the matrix
 	 * @param vec the vector. */
 	public static native void mulVec (float[] mat, float[] vec); /*
-		matrix4_mul(mat, vec);
+		matrix4_mulVec(mat, vec);
 	*/
 
 	/** Multiplies the vectors with the given matrix. The matrix array is assumed to hold a 4x4 column major matrix as you can get
