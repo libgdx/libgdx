@@ -109,7 +109,7 @@ public class SpriteBatch implements Disposable {
 	/** the maximum number of sprites rendered in one batch so far **/
 	public int maxSpritesInBatch = 0;
 	private ShaderProgram customShader = null;
-
+	
 	/** Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
 	 * point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect with
 	 * respect to the screen resolution. */
@@ -326,10 +326,7 @@ public class SpriteBatch implements Disposable {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
 		if (texture != lastTexture) {
-			renderMesh();
-			lastTexture = texture;
-			invTexWidth = 1.0f / texture.getWidth();
-			invTexHeight = 1.0f / texture.getHeight();
+			switchTexture(texture);
 		} else if (idx == vertices.length) renderMesh();
 
 		// bottom left and top right corner points relative to origin
@@ -468,10 +465,7 @@ public class SpriteBatch implements Disposable {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
 		if (texture != lastTexture) {
-			renderMesh();
-			lastTexture = texture;
-			invTexWidth = 1.0f / texture.getWidth();
-			invTexHeight = 1.0f / texture.getHeight();
+			switchTexture(texture);
 		} else if (idx == vertices.length) renderMesh();
 
 		float u = srcX * invTexWidth;
@@ -532,10 +526,7 @@ public class SpriteBatch implements Disposable {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
 		if (texture != lastTexture) {
-			renderMesh();
-			lastTexture = texture;
-			invTexWidth = 1.0f / texture.getWidth();
-			invTexHeight = 1.0f / texture.getHeight();
+			switchTexture(texture);
 		} else if (idx == vertices.length) renderMesh();
 
 		final float u = srcX * invTexWidth;
@@ -583,10 +574,7 @@ public class SpriteBatch implements Disposable {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
 		if (texture != lastTexture) {
-			renderMesh();
-			lastTexture = texture;
-			invTexWidth = 1.0f / texture.getWidth();
-			invTexHeight = 1.0f / texture.getHeight();
+			switchTexture(texture);
 		} else if (idx == vertices.length) renderMesh();
 
 		final float fx2 = x + width;
@@ -625,10 +613,7 @@ public class SpriteBatch implements Disposable {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
 		if (texture != lastTexture) {
-			renderMesh();
-			lastTexture = texture;
-			invTexWidth = 1.0f / texture.getWidth();
-			invTexHeight = 1.0f / texture.getHeight();
+			switchTexture(texture);
 		} else if (idx == vertices.length) renderMesh();
 
 		final float fx2 = x + texture.getWidth();
@@ -664,10 +649,7 @@ public class SpriteBatch implements Disposable {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
 		if (texture != lastTexture) {
-			renderMesh();
-			lastTexture = texture;
-			invTexWidth = 1f / texture.getWidth();
-			invTexHeight = 1f / texture.getHeight();
+			switchTexture(texture);
 		} else if (idx == vertices.length) //
 			renderMesh();
 
@@ -709,10 +691,7 @@ public class SpriteBatch implements Disposable {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
 		if (texture != lastTexture) {
-			renderMesh();
-			lastTexture = texture;
-			invTexWidth = 1.0f / texture.getWidth();
-			invTexHeight = 1.0f / texture.getHeight();
+			switchTexture(texture);
 		}
 
 		int remainingVertices = vertices.length - idx;
@@ -745,10 +724,7 @@ public class SpriteBatch implements Disposable {
 
 		Texture texture = region.texture;
 		if (texture != lastTexture) {
-			renderMesh();
-			lastTexture = texture;
-			invTexWidth = 1f / texture.getWidth();
-			invTexHeight = 1f / texture.getHeight();
+			switchTexture(texture);
 		} else if (idx == vertices.length) //
 			renderMesh();
 
@@ -794,10 +770,7 @@ public class SpriteBatch implements Disposable {
 
 		Texture texture = region.texture;
 		if (texture != lastTexture) {
-			renderMesh();
-			lastTexture = texture;
-			invTexWidth = 1f / texture.getWidth();
-			invTexHeight = 1f / texture.getHeight();
+			switchTexture(texture);
 		} else if (idx == vertices.length) //
 			renderMesh();
 
@@ -915,10 +888,7 @@ public class SpriteBatch implements Disposable {
 
 		Texture texture = region.texture;
 		if (texture != lastTexture) {
-			renderMesh();
-			lastTexture = texture;
-			invTexWidth = 1f / texture.getWidth();
-			invTexHeight = 1f / texture.getHeight();
+			switchTexture(texture);
 		} else if (idx == vertices.length) //
 			renderMesh();
 
@@ -1161,6 +1131,21 @@ public class SpriteBatch implements Disposable {
 				shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
 				shader.setUniformi("u_texture", 0);
 			}
+		}
+	}
+	
+	private void switchTexture(Texture texture) {
+		if(Gdx.graphics.isGL20Available()) {
+			renderMesh();
+			lastTexture = texture;
+			invTexWidth = 1.0f / texture.getWidth();
+			invTexHeight = 1.0f / texture.getHeight();
+		}
+		else {
+			renderMesh();
+			lastTexture = texture;
+			invTexWidth = 1.0f / texture.getWidth();
+			invTexHeight = 1.0f / texture.getHeight();
 		}
 	}
 
