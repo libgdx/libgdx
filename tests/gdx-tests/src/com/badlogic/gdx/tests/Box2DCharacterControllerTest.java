@@ -72,15 +72,15 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		player.setTransform(10.0f, 4.0f, 0);
 		player.setFixedRotation(true);						
  
-//		for(int i = 0; i < 20; i++) {
-//			box = createBox(BodyType.DynamicBody, (float)Math.random(), (float)Math.random(), 3);
-//			box.setTransform((float)Math.random() * 10f - (float)Math.random() * 10f, (float)Math.random() * 10 + 6, (float)(Math.random() * 2 * Math.PI));
-//		}
-// 
-//		for(int i = 0; i < 20; i++) {
-//			Body circle = createCircle(BodyType.DynamicBody, (float)Math.random() * 0.5f, 3);
-//			circle.setTransform((float)Math.random() * 10f - (float)Math.random() * 10f, (float)Math.random() * 10 + 6, (float)(Math.random() * 2 * Math.PI));
-//		}
+		for(int i = 0; i < 20; i++) {
+			box = createBox(BodyType.DynamicBody, (float)Math.random(), (float)Math.random(), 3);
+			box.setTransform((float)Math.random() * 10f - (float)Math.random() * 10f, (float)Math.random() * 10 + 6, (float)(Math.random() * 2 * Math.PI));
+		}
+ 
+		for(int i = 0; i < 20; i++) {
+			Body circle = createCircle(BodyType.DynamicBody, (float)Math.random() * 0.5f, 3);
+			circle.setTransform((float)Math.random() * 10f - (float)Math.random() * 10f, (float)Math.random() * 10 + 6, (float)(Math.random() * 2 * Math.PI));
+		}
  
 		platforms.add(new MovingPlatform(-2, 3, 2, 0.5f, 2, 0, 4));
 		platforms.add(new MovingPlatform(17, 3, 5, 0.5f, 0, 2, 5));		
@@ -190,7 +190,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		// disable friction while jumping
 		if(!grounded) {			
 			playerPhysicsFixture.setFriction(0f);
-			playerSensorFixture.setFriction(0f);			
+			playerSensorFixture.setFriction(0f);
 		} else {
 			if(!Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D) && stillTime > 0.2) {
 				playerPhysicsFixture.setFriction(100f);
@@ -204,7 +204,14 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 			if(groundedPlatform != null && groundedPlatform.dist == 0) {
 				player.applyLinearImpulse(0, -24, pos.x, pos.y);				
 			}
-		}		
+		}
+		
+		// since Box2D 2.2 we need to reset the friction of any existing contacts
+		List<Contact> contacts = world.getContactList();
+		for(int i = 0; i < world.getContactCount(); i++) {
+			Contact contact = contacts.get(i);
+			contact.resetFriction();
+		}
  
 		// apply left impulse, but only if max velocity is not reached yet
 		if(Gdx.input.isKeyPressed(Keys.A) && vel.x > -MAX_VELOCITY) {
