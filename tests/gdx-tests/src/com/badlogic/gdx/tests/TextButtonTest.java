@@ -35,7 +35,7 @@ public class TextButtonTest extends GdxTest {
 	public void create () {
 		stage = new Stage(0, 0, false, new SpriteBatch());
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 1000; i++) {
 			TextButton t = new TextButton("Button"+i, skin);
 			t.x = MathUtils.random(0, Gdx.graphics.getWidth());
 			t.y = MathUtils.random(0, Gdx.graphics.getHeight());
@@ -63,6 +63,6 @@ public class TextButtonTest extends GdxTest {
 
 	@Override
 	public boolean needsGL20 () {
-		return true;
+		return false;
 	}
 }

@@ -76,8 +76,8 @@ public class TextureBindTest extends GdxTest {
 		for(int i = 0; i < positions.size; i++) {
 			float x = positions.get(i).x;
 			float y = positions.get(i).y;
-			if(i % 2 == 0) tex1.bind();
-			else tex2.bind();
+//			if(i % 2 == 0) tex1.bind();
+//			else tex2.bind();
 			
 			if(Gdx.graphics.isGL20Available()) mesh.render(shader, GL10.GL_TRIANGLES);
 			else mesh.render(GL10.GL_TRIANGLES);
@@ -89,10 +89,11 @@ public class TextureBindTest extends GdxTest {
 			mesh.unbind();
 		}
 		Gdx.app.log("TextureBindTest", "fps: " + Gdx.graphics.getFramesPerSecond());
+		Gdx.app.log("TextureBindTest", "gl2: " + Gdx.graphics.isGL20Available());
 	}
 
 	@Override
 	public boolean needsGL20() {
-		return true;
+		return false;
 	}
 }

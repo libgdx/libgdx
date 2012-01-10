@@ -30,6 +30,7 @@ import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.SpriteBatchTest;
 import com.badlogic.gdx.tests.TextButtonTest;
 import com.badlogic.gdx.tests.TextureBindTest;
+import com.badlogic.gdx.tests.TextureBindTestGL2;
 import com.badlogic.gdx.tests.VorbisTest;
 import com.badlogic.gdx.tests.WavTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -41,10 +42,10 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 		new SharedLibraryLoader("../../extensions/gdx-audio/libs/gdx-audio-natives.jar").load("gdx-audio");
 		
-		GdxTest test = new TextureBindTest();
+		GdxTest test = new TextureBindTestGL2();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
-		config.vSyncEnabled = true;
+		config.vSyncEnabled = false;
 		config.resizable = true;
 		new LwjglApplication(test, config);
 	}
