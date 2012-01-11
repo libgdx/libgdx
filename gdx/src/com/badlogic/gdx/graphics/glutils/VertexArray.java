@@ -156,7 +156,7 @@ public class VertexArray implements VertexData {
 			VertexAttribute attribute = attributes.get(i);
 			switch (attribute.usage) {
 			case Usage.Position:
-				break; // no-op, we also need a position bound in gles
+				break; // no-op, we always need a position bound in gles
 			case Usage.Color:
 			case Usage.ColorPacked:
 				gl.glDisableClientState(GL11.GL_COLOR_ARRAY);

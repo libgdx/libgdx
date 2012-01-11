@@ -40,7 +40,7 @@ public class TextureBindTest extends GdxTest {
 		tex2 = new Texture(pixmap);
 		pixmap.dispose();
 		
-		for(int i = 0; i < 5000; i++) {
+		for(int i = 0; i < 2000; i++) {
 			positions.add(new Vector2((float)Math.random() * Gdx.graphics.getWidth(), (float)Math.random() * Gdx.graphics.getHeight()));
 		}
 		
@@ -55,7 +55,7 @@ public class TextureBindTest extends GdxTest {
 									   32, 0, Color.WHITE.toIntBits(), 1, 1,
 									   32, 32, Color.WHITE.toIntBits(), 1, 0,
 									   0, 32, Color.WHITE.toIntBits(), 0, 0 });
-		mesh.setAutoBind(false);
+//		mesh.setAutoBind(false);
 	}
 
 	public void render() {
@@ -66,27 +66,27 @@ public class TextureBindTest extends GdxTest {
 			shader.begin();
 			shader.setUniformi("u_texture", 0);
 			shader.setUniformMatrix("u_projectionViewMatrix", cam.combined);
-			mesh.bind(shader);
+//			mesh.bind(shader);
 		} else {
 			cam.apply(Gdx.gl10);
 			Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
-			mesh.bind();
+//			mesh.bind();
 		}
 
 		for(int i = 0; i < positions.size; i++) {
 			float x = positions.get(i).x;
 			float y = positions.get(i).y;
-//			if(i % 2 == 0) tex1.bind();
-//			else tex2.bind();
+			if(i % 2 == 0) tex1.bind();
+			else tex2.bind();
 			
 			if(Gdx.graphics.isGL20Available()) mesh.render(shader, GL10.GL_TRIANGLES);
 			else mesh.render(GL10.GL_TRIANGLES);
 		}
 		if(Gdx.graphics.isGL20Available()) {
-			mesh.unbind(shader);
+//			mesh.unbind(shader);
 			shader.end();
 		} else {
-			mesh.unbind();
+//			mesh.unbind();
 		}
 		Gdx.app.log("TextureBindTest", "fps: " + Gdx.graphics.getFramesPerSecond());
 		Gdx.app.log("TextureBindTest", "gl2: " + Gdx.graphics.isGL20Available());

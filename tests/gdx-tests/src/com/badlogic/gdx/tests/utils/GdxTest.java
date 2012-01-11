@@ -29,8 +29,9 @@
 package com.badlogic.gdx.tests.utils;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.InputAdapter;
 
-public abstract class GdxTest implements ApplicationListener {
+public abstract class GdxTest extends InputAdapter implements ApplicationListener {
 	public boolean needsGL20 () {
 		return false;
 	}
