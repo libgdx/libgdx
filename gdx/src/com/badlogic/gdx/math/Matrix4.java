@@ -863,7 +863,7 @@ public class Matrix4 implements Serializable {
 	 * 
 	 * @param mata the first matrix.
 	 * @param matb the second matrix. */
-	public static native void mul (float[] mata, float[] matb); /*
+	public static native void mul (float[] mata, float[] matb) /*-{ }-*/; /*
 		matrix4_mul(mata, matb);
 	*/
 
@@ -873,7 +873,7 @@ public class Matrix4 implements Serializable {
 	 * {@link Vector3#mul(Matrix4)}.
 	 * @param mat the matrix
 	 * @param vec the vector. */
-	public static native void mulVec (float[] mat, float[] vec); /*
+	public static native void mulVec (float[] mat, float[] vec) /*-{ }-*/; /*
 		matrix4_mulVec(mat, vec);
 	*/
 
@@ -888,7 +888,7 @@ public class Matrix4 implements Serializable {
 	 * @param offset the offset into the vectors array
 	 * @param numVecs the number of vectors
 	 * @param stride the stride between vectors in floats */
-	public static native void mulVec (float[] mat, float[] vecs, int offset, int numVecs, int stride); /*
+	public static native void mulVec (float[] mat, float[] vecs, int offset, int numVecs, int stride) /*-{ }-*/; /*
 		float* vecPtr = vecs + offset;
 		for(int i = 0; i < numVecs; i++) {
 			matrix4_mulVec(mat, vecPtr);
@@ -902,7 +902,7 @@ public class Matrix4 implements Serializable {
 	 * same as {@link Vector3#prj(Matrix4)}.
 	 * @param mat the matrix
 	 * @param vec the vector. */
-	public static native void prj (float[] mat, float[] vec); /*
+	public static native void prj (float[] mat, float[] vec) /*-{ }-*/; /*
 		matrix4_proj(mat, vec);
 	*/
 
@@ -917,7 +917,7 @@ public class Matrix4 implements Serializable {
 	 * @param offset the offset into the vectors array
 	 * @param numVecs the number of vectors
 	 * @param stride the stride between vectors in floats */
-	public static native void prj (float[] mat, float[] vecs, int offset, int numVecs, int stride); /*
+	public static native void prj (float[] mat, float[] vecs, int offset, int numVecs, int stride) /*-{ }-*/; /*
 		float* vecPtr = vecs + offset;
 		for(int i = 0; i < numVecs; i++) {
 			matrix4_proj(mat, vecPtr);
@@ -931,7 +931,7 @@ public class Matrix4 implements Serializable {
 	 * same as {@link Vector3#rot(Matrix4)}.
 	 * @param mat the matrix
 	 * @param vec the vector. */
-	public static native void rot (float[] mat, float[] vec); /*
+	public static native void rot (float[] mat, float[] vec) /*-{ }-*/; /*
 		matrix4_rot(mat, vec);
 	*/
 
@@ -946,7 +946,7 @@ public class Matrix4 implements Serializable {
 	 * @param offset the offset into the vectors array
 	 * @param numVecs the number of vectors
 	 * @param stride the stride between vectors in floats */
-	public static native void rot (float[] mat, float[] vecs, int offset, int numVecs, int stride); /*
+	public static native void rot (float[] mat, float[] vecs, int offset, int numVecs, int stride) /*-{ }-*/; /*
 		float* vecPtr = vecs + offset;
 		for(int i = 0; i < numVecs; i++) {
 			matrix4_rot(mat, vecPtr);
@@ -958,7 +958,7 @@ public class Matrix4 implements Serializable {
 	 * {@link Matrix4#val}.
 	 * @param values the matrix values.
 	 * @return false in case the inverse could not be calculated, true otherwise. */
-	public static native boolean inv (float[] values); /*
+	public static native boolean inv (float[] values) /*-{ }-*/; /*
 		return matrix4_inv(values);
 	*/
 
@@ -966,7 +966,7 @@ public class Matrix4 implements Serializable {
 	 * from {@link Matrix4#val}.
 	 * @param values the matrix values.
 	 * @return the determinante. */
-	public static native float det (float[] values); /*
+	public static native float det (float[] values) /*-{ }-*/; /*
 		return matrix4_det(values);
 	*/
 
