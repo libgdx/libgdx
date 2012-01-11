@@ -115,10 +115,10 @@ public class Table extends WidgetGroup {
 		tableBounds.width = width;
 		tableBounds.height = height;
 		if (backgroundPatch != null) {
-			tableBounds.x += backgroundPatch.getLeftWidth();
-			tableBounds.y += backgroundPatch.getBottomHeight();
-			tableBounds.width -= backgroundPatch.getLeftWidth() + backgroundPatch.getRightWidth();
-			tableBounds.height -= backgroundPatch.getTopHeight() + backgroundPatch.getBottomHeight();
+			tableBounds.x += layout.getToolkit().width(layout, layout.getPadLeft());
+			tableBounds.y += layout.getToolkit().width(layout, layout.getPadBottom());
+			tableBounds.width -= tableBounds.x + layout.getToolkit().width(layout, layout.getPadRight());
+			tableBounds.height -= tableBounds.y + layout.getToolkit().width(layout, layout.getPadTop());
 		}
 		ScissorStack.calculateScissors(stage.getCamera(), transform, tableBounds, scissors);
 	}
