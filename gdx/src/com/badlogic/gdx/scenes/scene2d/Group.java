@@ -421,28 +421,12 @@ public class Group extends Actor implements Cullable {
 
 	/** Clears this Group, removing all contained {@link Actor}s. */
 	public void clear () {
-		clearActor(this);		
-	}
-		
-	/**
-	 * Recursively clears the given actor and all it's children.
-	 * @param actor
-	 */
-	private static void clearActor(Actor actor) {
-		actor.parent = null;
-		actor.stage = null;
-		
-		if(actor instanceof Group) {
-			Group group = (Group)actor;
-			for(Actor child: group.children) {
-				clearActor(child);
-			}
-			
-			group.children.clear();
-			group.groups.clear();
-			group.namesToActors.clear();
-			group.childrenChanged();
-		}
+		for (int i = 0; i < children.size(); i++)
+			setStage(children.get(i), null);		
+		children.clear();
+		groups.clear();
+		namesToActors.clear();
+		childrenChanged();
 	}
 
 	/** Sorts the children via the given {@link Comparator}.
