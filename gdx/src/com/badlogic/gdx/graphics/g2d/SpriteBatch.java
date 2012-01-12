@@ -92,7 +92,8 @@ public class SpriteBatch implements Disposable {
 	private int blendSrcFunc = GL11.GL_SRC_ALPHA;
 	private int blendDstFunc = GL11.GL_ONE_MINUS_SRC_ALPHA;
 
-	private ShaderProgram shader;
+	private final ShaderProgram shader;
+	private boolean ownsShader;
 
 	float color = Color.WHITE.toFloatBits();
 	private Color tempColor = new Color(1, 1, 1, 1);
@@ -131,9 +132,9 @@ public class SpriteBatch implements Disposable {
 	 * </p>
 	 * 
 	 * @param size the batch size in number of sprites
-	 * @param defaultShader the default shader to use */
+	 * @param defaultShader the default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
 	public SpriteBatch (int size, ShaderProgram defaultShader) {
-		this(size, Gdx.graphics.isGL20Available()?10:1, defaultShader);
+		this(size, Gdx.graphics.isGL20Available() ? 10 : 1, defaultShader);
 	}
 
 	/** Constructs a SpriteBatch with the specified size and number of buffers and (if GL2) the default shader. See
@@ -154,7 +155,7 @@ public class SpriteBatch implements Disposable {
 	 * 
 	 * @param size the batch size in number of sprites
 	 * @param buffers the number of buffers to use. only makes sense with VBOs. This is an expert function.
-	 * @param defaultShader the default shader to use */
+	 * @param defaultShader the default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
 	public SpriteBatch (int size, int buffers, ShaderProgram defaultShader) {
 		this.buffers = new Mesh[buffers];
 
@@ -184,9 +185,10 @@ public class SpriteBatch implements Disposable {
 		}
 		mesh = this.buffers[0];
 
-		if (Gdx.graphics.isGL20Available() && defaultShader == null)
+		if (Gdx.graphics.isGL20Available() && defaultShader == null) {
 			shader = createDefaultShader();
-		else
+			ownsShader = true;
+		} else
 			shader = defaultShader;
 	}
 
@@ -206,8 +208,11 @@ public class SpriteBatch implements Disposable {
 			+ "   gl_Position =  u_projectionViewMatrix * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";
 		String fragmentShader = "#ifdef GL_ES\n" //
-			+ "#define LOWP lowp\n" + "precision mediump float;\n" //
-			+ "#else\n" + "#define LOWP \n" + "#endif\n" //
+			+ "#define LOWP lowp\n" //
+			+ "precision mediump float;\n" //
+			+ "#else\n" //
+			+ "#define LOWP \n" //
+			+ "#endif\n" //
 			+ "varying LOWP vec4 v_color;\n" //
 			+ "varying vec2 v_texCoords;\n" //
 			+ "uniform sampler2D u_texture;\n" //
@@ -1073,7 +1078,7 @@ public class SpriteBatch implements Disposable {
 	public void dispose () {
 		for (int i = 0; i < buffers.length; i++)
 			buffers[i].dispose();
-		if (shader != null) shader.dispose();
+		if (ownsShader && shader != null) shader.dispose();
 	}
 
 	/** Returns the current projection matrix. Changing this will result in undefined behaviour.
