@@ -5,6 +5,7 @@ mkdir target/obj
 
 # compile avian
 cd avian
+echo "compiling avian"
 make platform=darwin arch=i386 ios=true bootimage=true
 cd ..
 
