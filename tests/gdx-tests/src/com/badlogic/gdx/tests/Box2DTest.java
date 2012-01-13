@@ -146,11 +146,9 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		ChainShape chainShape = new ChainShape();
 		chainShape.createLoop(new Vector2[] {
 			new Vector2(-10, 10),
-			new Vector2(-5, 12),
-			new Vector2(-3, 9),
-			new Vector2(-4, 8),
-			new Vector2(-7, 6),
-			new Vector2(-8, 9)
+			new Vector2(-10, 5),
+			new Vector2(10, 5),
+			new Vector2(10, 11),
 		});
 		BodyDef chainBodyDef = new BodyDef();
 		chainBodyDef.type = BodyType.StaticBody;
