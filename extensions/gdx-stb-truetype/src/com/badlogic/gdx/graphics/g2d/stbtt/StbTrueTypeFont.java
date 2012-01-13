@@ -88,7 +88,7 @@ public class StbTrueTypeFont implements Disposable {
 
 	public StbTrueTypeFont (byte[] data, int offset) {
 		new SharedLibraryLoader().load("gdx-stb-truetype");
-		this.addr = StbTrueType.initFont(data, offset);
+		this.addr = StbTrueType.initFont(data, offset, data.length - offset);
 		if (this.addr == 0) throw new GdxRuntimeException("Couldn't load truetype font");
 	}
 

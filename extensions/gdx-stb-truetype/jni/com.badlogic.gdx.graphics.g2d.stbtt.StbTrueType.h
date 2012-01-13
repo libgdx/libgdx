@@ -16,10 +16,10 @@ extern "C" {
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_stbtt_StbTrueType
  * Method:    initFont
- * Signature: ([BI)J
+ * Signature: ([BII)J
  */
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_stbtt_StbTrueType_initFont
-  (JNIEnv *, jclass, jbyteArray, jint);
+  (JNIEnv *, jclass, jbyteArray, jint, jint);
 
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_stbtt_StbTrueType

@@ -27,6 +27,6 @@ public class StbTrueTypeBuild {
 		new AntScriptGenerator().generate(new BuildConfig("gdx-stb-truetype"), win32home, win32, win64, lin32, lin64, mac, android);
 		
 		// build natives
-//		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
+		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
 	}
 }

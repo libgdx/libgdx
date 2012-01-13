@@ -27,11 +27,14 @@ public class StbTrueType {
 	#include <stb_truetype.h>
 	 */
 
-	static native long initFont (byte[] data, int offset); /*
+	static native long initFont (byte[] data, int offset, int len); /*
 		stbtt_fontinfo* info = (stbtt_fontinfo*)malloc(sizeof(stbtt_fontinfo));
-		int result = stbtt_InitFont(info, (const unsigned char*)data, offset);
+		unsigned char* dataCopy = (unsigned char*)malloc(sizeof(unsigned char) * len);
+		memcpy(dataCopy, data, sizeof(unsigned char) * len);
+		int result = stbtt_InitFont(info, (const unsigned char*)dataCopy, 0);
 		if(!result) {
 			free(info);
+			free(dataCopy);
 			return 0;
 		} else {
 			return (jlong)info;
@@ -39,6 +42,7 @@ public class StbTrueType {
 	*/
 
 	static native void disposeFont (long info); /*
+		free(((stbtt_fontinfo*)info)->data);
 		free((void*)info);
 	*/
 
@@ -80,7 +84,6 @@ public class StbTrueType {
 		box[1] = y0;
 		box[2] = x1;
 		box[3] = y1;
-		%jnigen-cleanup%
 		return result;
 	*/
 
@@ -105,7 +108,6 @@ public class StbTrueType {
 		box[1] = y0;
 		box[2] = x1;
 		box[3] = y1;
-		%jnigen-cleanup%
 		return result;
 	*/
 
@@ -113,7 +115,6 @@ public class StbTrueType {
 		stbtt_vertex* verticesAddr = 0;
 		int result = stbtt_GetCodepointShape((stbtt_fontinfo*)info, codePoint, &verticesAddr);
 		vertices[0] = (jlong)verticesAddr;
-		%jnigen-cleanup%
 		return result;
 	*/
 
@@ -121,7 +122,6 @@ public class StbTrueType {
 		stbtt_vertex* verticesAddr = 0;
 		int result = stbtt_GetGlyphShape((stbtt_fontinfo*)info, glyphIndex, &verticesAddr);
 		vertices[0] = (jlong)verticesAddr;
-		%jnigen-cleanup%
 		return result;
 	*/
 
