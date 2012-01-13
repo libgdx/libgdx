@@ -115,7 +115,7 @@ public class FileHandle {
 		}
 		try {
 			return new FileInputStream(file());
-		} catch (FileNotFoundException ex) {
+		} catch (Exception ex) {
 			if (file().isDirectory())
 				throw new GdxRuntimeException("Cannot open a stream to a directory: " + file + " (" + type + ")", ex);
 			throw new GdxRuntimeException("Error reading file: " + file + " (" + type + ")", ex);
@@ -258,7 +258,7 @@ public class FileHandle {
 		parent().mkdirs();
 		try {
 			return new FileOutputStream(file(), append);
-		} catch (FileNotFoundException ex) {
+		} catch (Exception ex) {
 			if (file().isDirectory())
 				throw new GdxRuntimeException("Cannot open a stream to a directory: " + file + " (" + type + ")", ex);
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
