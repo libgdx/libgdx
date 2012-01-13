@@ -30,7 +30,6 @@ public class StbTrueType {
 	static native long initFont (byte[] data, int offset); /*
 		stbtt_fontinfo* info = (stbtt_fontinfo*)malloc(sizeof(stbtt_fontinfo));
 		int result = stbtt_InitFont(info, (const unsigned char*)data, offset);
-		%jnigen-cleanup%
 		if(!result) {
 			free(info);
 			return 0;
