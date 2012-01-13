@@ -10,5 +10,5 @@
 	</source>
 
 	<entry-point class='com.badlogic.gdx.backends.gwt.GdxGwtTest' />
-<!-- 	<entry-point class='com.badlogic.gdx.backends.gwt.PlainTest' /> -->
+<!--  	<entry-point class='com.badlogic.gdx.backends.gwt.PlainTest' /> -->
 </module>

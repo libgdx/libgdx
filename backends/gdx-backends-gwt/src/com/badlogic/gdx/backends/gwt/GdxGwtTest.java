@@ -15,11 +15,22 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.gwt;
 
+import java.nio.IntBuffer;
+
+import gwt.g3d.client.gl2.GL2;
+import gwt.g3d.client.gl2.WebGLProgram;
+import gwt.g3d.client.gl2.WebGLShader;
+import gwt.g3d.client.gl2.enums.ErrorCode;
+import gwt.g3d.client.gl2.enums.ProgramParameter;
+import gwt.g3d.client.gl2.enums.ShaderParameter;
+import gwt.g3d.client.gl2.enums.ShaderType;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.BufferUtils;
 
 public class GdxGwtTest extends GwtApplication implements ApplicationListener {
 	ShaderProgram shader;
@@ -52,10 +63,32 @@ public class GdxGwtTest extends GwtApplication implements ApplicationListener {
 									 	"void main() {\n" +
 									 	"gl_FragColor = v_color;\n" +
 									 	"}\n";
-		shader = new ShaderProgram(vertexShader, fragmentShader);
-		if(!shader.isCompiled()) {
-			Gdx.app.log("GdxGwtTest", "Couldn't compile shader: " + shader.getLog());
-		}
+		setupShader(vertexShader, fragmentShader);
+	}
+	
+	private void setupShader(String vertexShader, String fragmentShader) {
+		int vs = compileShader(vertexShader, true);
+		int fs = compileShader(fragmentShader, false);
+
+		int program = Gdx.gl20.glCreateProgram();
+
+		Gdx.gl20.glAttachShader(program, vs);
+		Gdx.gl20.glAttachShader(program, fs);
+		Gdx.gl20.glLinkProgram(program);
+
+		IntBuffer buffer = BufferUtils.newIntBuffer(1); 
+		Gdx.gl20.glGetProgramiv(program, GL20.GL_LINK_STATUS, buffer);
+		System.out.println(buffer.get(0));
+	}
+	
+	private int compileShader(String source, boolean isVS) {
+		int shader = Gdx.gl20.glCreateShader(isVS?GL20.GL_VERTEX_SHADER:GL20.GL_FRAGMENT_SHADER);
+		Gdx.gl20.glShaderSource(shader, source);
+		Gdx.gl20.glCompileShader(shader);
+		IntBuffer buffer = BufferUtils.newIntBuffer(1); 
+		Gdx.gl20.glGetProgramiv(shader, GL20.GL_COMPILE_STATUS, buffer);
+		System.out.println(buffer.get(0));
+		return shader;
 	}
 
 	@Override

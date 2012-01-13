@@ -19,6 +19,7 @@ package com.badlogic.gdx.tests.lwjgl;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tests.Box2DCharacterControllerTest;
+import com.badlogic.gdx.tests.SortedSpriteTest;
 import com.badlogic.gdx.tests.SpriteBatchOriginScaleTest;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -30,7 +31,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 		new SharedLibraryLoader("../../extensions/gdx-audio/libs/gdx-audio-natives.jar").load("gdx-audio");
 		
-		GdxTest test = new Box2DCharacterControllerTest();
+		GdxTest test = new SortedSpriteTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;
