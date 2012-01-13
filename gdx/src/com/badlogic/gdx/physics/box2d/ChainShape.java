@@ -33,7 +33,7 @@ public class ChainShape extends Shape {
 			verts[i] = vertices[j].x;
 			verts[i + 1] = vertices[j].y;
 		}
-		jniCreateLoop(addr, verts, verts.length);
+		jniCreateLoop(addr, verts, verts.length / 2);
 	}
 
 	private native void jniCreateLoop (long addr, float[] verts, int numVertices); /*
@@ -53,7 +53,7 @@ public class ChainShape extends Shape {
 			verts[i] = vertices[j].x;
 			verts[i + 1] = vertices[j].y;
 		}
-		jniCreateChain(addr, verts, verts.length);
+		jniCreateChain(addr, verts, verts.length / 2);
 	}
 
 	private native void jniCreateChain (long addr, float[] verts, int numVertices); /*
