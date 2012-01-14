@@ -15,7 +15,6 @@
 		768864C414C0FDF900274C13 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 768864C314C0FDF900274C13 /* AppDelegate.mm */; };
 		768864CF14C1005100274C13 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864B514C0FDF900274C13 /* Foundation.framework */; };
 		768864DE14C101CB00274C13 /* boot.c in Sources */ = {isa = PBXBuildFile; fileRef = 768864DA14C101CB00274C13 /* boot.c */; };
-		768864E414C1024500274C13 /* libgdx-backend-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864CE14C1005100274C13 /* libgdx-backend-ios.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		7688651C14C105F500274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864E614C105F300274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp */; };
 		7688651D14C105F500274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.h in Headers */ = {isa = PBXBuildFile; fileRef = 768864E714C105F400274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.h */; };
 		7688651E14C105F500274C13 /* com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864E814C105F400274C13 /* com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp */; };
@@ -187,10 +186,13 @@
 		7688664D14C1192A00274C13 /* gdx2d.c in Sources */ = {isa = PBXBuildFile; fileRef = 768865ED14C1192900274C13 /* gdx2d.c */; };
 		7688664E14C1192A00274C13 /* gdx2d.h in Headers */ = {isa = PBXBuildFile; fileRef = 768865EE14C1192900274C13 /* gdx2d.h */; };
 		7688664F14C1192A00274C13 /* stb_image.c in Sources */ = {isa = PBXBuildFile; fileRef = 768865EF14C1192900274C13 /* stb_image.c */; };
+		7688665114C19D8700274C13 /* vm.h in Headers */ = {isa = PBXBuildFile; fileRef = 7688665014C19D8700274C13 /* vm.h */; };
+		7688665314C19DAE00274C13 /* vm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7688665214C19DAE00274C13 /* vm.cpp */; };
+		7688665614C1BCE300274C13 /* libgdx-backend-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864CE14C1005100274C13 /* libgdx-backend-ios.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		768864E214C1023C00274C13 /* PBXContainerItemProxy */ = {
+		7688665414C1BCDF00274C13 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 768864A614C0FDF900274C13 /* Project object */;
 			proxyType = 1;
@@ -385,6 +387,8 @@
 		768865ED14C1192900274C13 /* gdx2d.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gdx2d.c; sourceTree = "<group>"; };
 		768865EE14C1192900274C13 /* gdx2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gdx2d.h; sourceTree = "<group>"; };
 		768865EF14C1192900274C13 /* stb_image.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stb_image.c; sourceTree = "<group>"; };
+		7688665014C19D8700274C13 /* vm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vm.h; path = ../../jni/vm.h; sourceTree = "<group>"; };
+		7688665214C19DAE00274C13 /* vm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vm.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -392,7 +396,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				768864E414C1024500274C13 /* libgdx-backend-ios.a in Frameworks */,
+				7688665614C1BCE300274C13 /* libgdx-backend-ios.a in Frameworks */,
 				768864B414C0FDF900274C13 /* UIKit.framework in Frameworks */,
 				768864B614C0FDF900274C13 /* Foundation.framework in Frameworks */,
 				768864B814C0FDF900274C13 /* CoreGraphics.framework in Frameworks */,
@@ -490,6 +494,8 @@
 				7688655014C1079100274C13 /* gdx-core */,
 				768864DA14C101CB00274C13 /* boot.c */,
 				768864DB14C101CB00274C13 /* hello.m */,
+				7688665014C19D8700274C13 /* vm.h */,
+				7688665214C19DAE00274C13 /* vm.cpp */,
 			);
 			path = "gdx-backend-ios";
 			sourceTree = "<group>";
@@ -844,6 +850,7 @@
 				7688664A14C1192A00274C13 /* b2Rope.h in Headers */,
 				7688664C14C1192A00274C13 /* etc1_utils.h in Headers */,
 				7688664E14C1192A00274C13 /* gdx2d.h in Headers */,
+				7688665114C19D8700274C13 /* vm.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -861,7 +868,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				768864E314C1023C00274C13 /* PBXTargetDependency */,
+				7688665514C1BCDF00274C13 /* PBXTargetDependency */,
 			);
 			name = "gdx-ios";
 			productName = "gdx-ios";
@@ -1011,16 +1018,17 @@
 				7688664B14C1192A00274C13 /* etc1_utils.cpp in Sources */,
 				7688664D14C1192A00274C13 /* gdx2d.c in Sources */,
 				7688664F14C1192A00274C13 /* stb_image.c in Sources */,
+				7688665314C19DAE00274C13 /* vm.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		768864E314C1023C00274C13 /* PBXTargetDependency */ = {
+		7688665514C1BCDF00274C13 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 768864CD14C1005100274C13 /* gdx-backend-ios */;
-			targetProxy = 768864E214C1023C00274C13 /* PBXContainerItemProxy */;
+			targetProxy = 7688665414C1BCDF00274C13 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1051,7 +1059,7 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -1073,7 +1081,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -1097,7 +1105,6 @@
 				INFOPLIST_FILE = "gdx-ios/gdx-ios-Info.plist";
 				OTHER_LDFLAGS = (
 					"-lz",
-					"-lstdc++",
 					"-all_load",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1113,7 +1120,6 @@
 				INFOPLIST_FILE = "gdx-ios/gdx-ios-Info.plist";
 				OTHER_LDFLAGS = (
 					"-lz",
-					"-lstdc++",
 					"-all_load",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";

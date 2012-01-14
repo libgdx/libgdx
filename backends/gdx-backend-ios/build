@@ -11,9 +11,15 @@ cd ..
 
 # compile java classes and add them to 
 # target/classpath.jar, then extract classpath.jar
-find ./src -name *.java | xargs javac -bootclasspath avian/build/darwin-i386-bootimage/classpath 
+find ./src -name *.java | xargs javac -bootclasspath avian/build/darwin-i386-bootimage/classpath -classpath gdx.jar
 rsync -av --include='*.class' src/. target/classpath
 cp -r avian/build/darwin-i386-bootimage/classpath target
+cp gdx.jar target/classpath
+cd target/classpath
+jar xf gdx.jar
+rm gdx.jar
+cd ..
+cd ..
 
 # invoke bootimage generator on target/classpath directory
 avian/build/darwin-i386-bootimage/bootimage-generator target/classpath target/bootimage.bin target/codeimage.bin
