@@ -12,7 +12,7 @@
 		768864B814C0FDF900274C13 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864B714C0FDF900274C13 /* CoreGraphics.framework */; };
 		768864BE14C0FDF900274C13 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 768864BC14C0FDF900274C13 /* InfoPlist.strings */; };
 		768864C014C0FDF900274C13 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 768864BF14C0FDF900274C13 /* main.m */; };
-		768864C414C0FDF900274C13 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 768864C314C0FDF900274C13 /* AppDelegate.m */; };
+		768864C414C0FDF900274C13 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 768864C314C0FDF900274C13 /* AppDelegate.mm */; };
 		768864CF14C1005100274C13 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864B514C0FDF900274C13 /* Foundation.framework */; };
 		768864DE14C101CB00274C13 /* boot.c in Sources */ = {isa = PBXBuildFile; fileRef = 768864DA14C101CB00274C13 /* boot.c */; };
 		768864E414C1024500274C13 /* libgdx-backend-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864CE14C1005100274C13 /* libgdx-backend-ios.a */; settings = {ATTRIBUTES = (Required, ); }; };
@@ -209,7 +209,7 @@
 		768864BF14C0FDF900274C13 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		768864C114C0FDF900274C13 /* gdx-ios-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "gdx-ios-Prefix.pch"; sourceTree = "<group>"; };
 		768864C214C0FDF900274C13 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		768864C314C0FDF900274C13 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		768864C314C0FDF900274C13 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		768864CE14C1005100274C13 /* libgdx-backend-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libgdx-backend-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		768864DA14C101CB00274C13 /* boot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = boot.c; path = ../../jni/boot.c; sourceTree = "<group>"; };
 		768864DB14C101CB00274C13 /* hello.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = hello.m; path = ../../jni/hello.m; sourceTree = "<group>"; };
@@ -466,7 +466,7 @@
 			isa = PBXGroup;
 			children = (
 				768864C214C0FDF900274C13 /* AppDelegate.h */,
-				768864C314C0FDF900274C13 /* AppDelegate.m */,
+				768864C314C0FDF900274C13 /* AppDelegate.mm */,
 				768864BA14C0FDF900274C13 /* Supporting Files */,
 			);
 			path = "gdx-ios";
@@ -928,7 +928,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				768864C014C0FDF900274C13 /* main.m in Sources */,
-				768864C414C0FDF900274C13 /* AppDelegate.m in Sources */,
+				768864C414C0FDF900274C13 /* AppDelegate.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

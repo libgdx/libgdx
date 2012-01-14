@@ -15,6 +15,10 @@ public class Hello {
   public Hello(long peer) {
     this.peer = peer;
   }
+  
+  public static void main(String[] argv) {
+    new Hello(0).test();
+  }
 
   public void test() {
 	ByteBuffer buffer = ByteBuffer.allocateDirect(10);
