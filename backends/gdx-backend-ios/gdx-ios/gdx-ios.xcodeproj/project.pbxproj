@@ -1,0 +1,608 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		768864B414C0FDF900274C13 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864B314C0FDF900274C13 /* UIKit.framework */; };
+		768864B614C0FDF900274C13 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864B514C0FDF900274C13 /* Foundation.framework */; };
+		768864B814C0FDF900274C13 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864B714C0FDF900274C13 /* CoreGraphics.framework */; };
+		768864BE14C0FDF900274C13 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 768864BC14C0FDF900274C13 /* InfoPlist.strings */; };
+		768864C014C0FDF900274C13 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 768864BF14C0FDF900274C13 /* main.m */; };
+		768864C414C0FDF900274C13 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 768864C314C0FDF900274C13 /* AppDelegate.m */; };
+		768864CF14C1005100274C13 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864B514C0FDF900274C13 /* Foundation.framework */; };
+		768864DE14C101CB00274C13 /* boot.c in Sources */ = {isa = PBXBuildFile; fileRef = 768864DA14C101CB00274C13 /* boot.c */; };
+		768864DF14C101CB00274C13 /* hello.m in Sources */ = {isa = PBXBuildFile; fileRef = 768864DB14C101CB00274C13 /* hello.m */; };
+		768864E014C101CB00274C13 /* iosgl2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864DC14C101CB00274C13 /* iosgl2.cpp */; };
+		768864E114C101CB00274C13 /* iosgl2.h in Headers */ = {isa = PBXBuildFile; fileRef = 768864DD14C101CB00274C13 /* iosgl2.h */; };
+		768864E414C1024500274C13 /* libgdx-backend-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864CE14C1005100274C13 /* libgdx-backend-ios.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		7688651C14C105F500274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864E614C105F300274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp */; };
+		7688651D14C105F500274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.h in Headers */ = {isa = PBXBuildFile; fileRef = 768864E714C105F400274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.h */; };
+		7688651E14C105F500274C13 /* com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864E814C105F400274C13 /* com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp */; };
+		7688651F14C105F500274C13 /* com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 768864E914C105F400274C13 /* com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.h */; };
+		7688652014C105F500274C13 /* com.badlogic.gdx.graphics.glutils.ETC1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864EA14C105F400274C13 /* com.badlogic.gdx.graphics.glutils.ETC1.cpp */; };
+		7688652114C105F500274C13 /* com.badlogic.gdx.graphics.glutils.ETC1.h in Headers */ = {isa = PBXBuildFile; fileRef = 768864EB14C105F400274C13 /* com.badlogic.gdx.graphics.glutils.ETC1.h */; };
+		7688652214C105F500274C13 /* com.badlogic.gdx.math.Matrix4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864EC14C105F400274C13 /* com.badlogic.gdx.math.Matrix4.cpp */; };
+		7688652314C105F500274C13 /* com.badlogic.gdx.math.Matrix4.h in Headers */ = {isa = PBXBuildFile; fileRef = 768864ED14C105F400274C13 /* com.badlogic.gdx.math.Matrix4.h */; };
+		7688652414C105F500274C13 /* com.badlogic.gdx.physics.box2d.Body.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864EE14C105F400274C13 /* com.badlogic.gdx.physics.box2d.Body.cpp */; };
+		7688652514C105F500274C13 /* com.badlogic.gdx.physics.box2d.Body.h in Headers */ = {isa = PBXBuildFile; fileRef = 768864EF14C105F400274C13 /* com.badlogic.gdx.physics.box2d.Body.h */; };
+		7688652614C105F500274C13 /* com.badlogic.gdx.physics.box2d.ChainShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864F014C105F400274C13 /* com.badlogic.gdx.physics.box2d.ChainShape.cpp */; };
+		7688652714C105F500274C13 /* com.badlogic.gdx.physics.box2d.ChainShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 768864F114C105F400274C13 /* com.badlogic.gdx.physics.box2d.ChainShape.h */; };
+		7688652814C105F500274C13 /* com.badlogic.gdx.physics.box2d.CircleShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864F214C105F400274C13 /* com.badlogic.gdx.physics.box2d.CircleShape.cpp */; };
+		7688652914C105F500274C13 /* com.badlogic.gdx.physics.box2d.CircleShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 768864F314C105F400274C13 /* com.badlogic.gdx.physics.box2d.CircleShape.h */; };
+		7688652A14C105F500274C13 /* com.badlogic.gdx.physics.box2d.Contact.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864F414C105F400274C13 /* com.badlogic.gdx.physics.box2d.Contact.cpp */; };
+		7688652B14C105F500274C13 /* com.badlogic.gdx.physics.box2d.Contact.h in Headers */ = {isa = PBXBuildFile; fileRef = 768864F514C105F400274C13 /* com.badlogic.gdx.physics.box2d.Contact.h */; };
+		7688652C14C105F500274C13 /* com.badlogic.gdx.physics.box2d.ContactImpulse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864F614C105F400274C13 /* com.badlogic.gdx.physics.box2d.ContactImpulse.cpp */; };
+		7688652D14C105F500274C13 /* com.badlogic.gdx.physics.box2d.ContactImpulse.h in Headers */ = {isa = PBXBuildFile; fileRef = 768864F714C105F400274C13 /* com.badlogic.gdx.physics.box2d.ContactImpulse.h */; };
+		7688652E14C105F500274C13 /* com.badlogic.gdx.physics.box2d.EdgeShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864F814C105F400274C13 /* com.badlogic.gdx.physics.box2d.EdgeShape.cpp */; };
+		7688652F14C105F500274C13 /* com.badlogic.gdx.physics.box2d.EdgeShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 768864F914C105F400274C13 /* com.badlogic.gdx.physics.box2d.EdgeShape.h */; };
+		7688653014C105F500274C13 /* com.badlogic.gdx.physics.box2d.Fixture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864FA14C105F400274C13 /* com.badlogic.gdx.physics.box2d.Fixture.cpp */; };
+		7688653114C105F500274C13 /* com.badlogic.gdx.physics.box2d.Fixture.h in Headers */ = {isa = PBXBuildFile; fileRef = 768864FB14C105F400274C13 /* com.badlogic.gdx.physics.box2d.Fixture.h */; };
+		7688653214C105F500274C13 /* com.badlogic.gdx.physics.box2d.Joint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864FC14C105F500274C13 /* com.badlogic.gdx.physics.box2d.Joint.cpp */; };
+		7688653314C105F500274C13 /* com.badlogic.gdx.physics.box2d.Joint.h in Headers */ = {isa = PBXBuildFile; fileRef = 768864FD14C105F500274C13 /* com.badlogic.gdx.physics.box2d.Joint.h */; };
+		7688653414C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.DistanceJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864FE14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.DistanceJoint.cpp */; };
+		7688653514C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.DistanceJoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 768864FF14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.DistanceJoint.h */; };
+		7688653614C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.FrictionJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7688650014C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.FrictionJoint.cpp */; };
+		7688653714C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.FrictionJoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7688650114C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.FrictionJoint.h */; };
+		7688653814C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.GearJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7688650214C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.GearJoint.cpp */; };
+		7688653914C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.GearJoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7688650314C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.GearJoint.h */; };
+		7688653A14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.MouseJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7688650414C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.MouseJoint.cpp */; };
+		7688653B14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.MouseJoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7688650514C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.MouseJoint.h */; };
+		7688653C14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7688650614C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.cpp */; };
+		7688653D14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7688650714C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.h */; };
+		7688653E14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PulleyJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7688650814C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PulleyJoint.cpp */; };
+		7688653F14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PulleyJoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7688650914C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PulleyJoint.h */; };
+		7688654014C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RevoluteJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7688650A14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RevoluteJoint.cpp */; };
+		7688654114C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RevoluteJoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7688650B14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RevoluteJoint.h */; };
+		7688654214C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RopeJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7688650C14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RopeJoint.cpp */; };
+		7688654314C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RopeJoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7688650D14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RopeJoint.h */; };
+		7688654414C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.WheelJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7688650E14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.WheelJoint.cpp */; };
+		7688654514C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.WheelJoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7688650F14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.WheelJoint.h */; };
+		7688654614C105F500274C13 /* com.badlogic.gdx.physics.box2d.Manifold.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7688651014C105F500274C13 /* com.badlogic.gdx.physics.box2d.Manifold.cpp */; };
+		7688654714C105F500274C13 /* com.badlogic.gdx.physics.box2d.Manifold.h in Headers */ = {isa = PBXBuildFile; fileRef = 7688651114C105F500274C13 /* com.badlogic.gdx.physics.box2d.Manifold.h */; };
+		7688654814C105F500274C13 /* com.badlogic.gdx.physics.box2d.PolygonShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7688651214C105F500274C13 /* com.badlogic.gdx.physics.box2d.PolygonShape.cpp */; };
+		7688654914C105F500274C13 /* com.badlogic.gdx.physics.box2d.PolygonShape.h in Headers */ = {isa = PBXBuildFile; fileRef = 7688651314C105F500274C13 /* com.badlogic.gdx.physics.box2d.PolygonShape.h */; };
+		7688654A14C105F500274C13 /* com.badlogic.gdx.physics.box2d.Shape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7688651414C105F500274C13 /* com.badlogic.gdx.physics.box2d.Shape.cpp */; };
+		7688654B14C105F500274C13 /* com.badlogic.gdx.physics.box2d.Shape.h in Headers */ = {isa = PBXBuildFile; fileRef = 7688651514C105F500274C13 /* com.badlogic.gdx.physics.box2d.Shape.h */; };
+		7688654C14C105F500274C13 /* com.badlogic.gdx.physics.box2d.World.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7688651614C105F500274C13 /* com.badlogic.gdx.physics.box2d.World.cpp */; };
+		7688654D14C105F500274C13 /* com.badlogic.gdx.physics.box2d.World.h in Headers */ = {isa = PBXBuildFile; fileRef = 7688651714C105F500274C13 /* com.badlogic.gdx.physics.box2d.World.h */; };
+		7688654E14C105F500274C13 /* com.badlogic.gdx.utils.BufferUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7688651814C105F500274C13 /* com.badlogic.gdx.utils.BufferUtils.cpp */; };
+		7688654F14C105F500274C13 /* com.badlogic.gdx.utils.BufferUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7688651914C105F500274C13 /* com.badlogic.gdx.utils.BufferUtils.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		768864E214C1023C00274C13 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 768864A614C0FDF900274C13 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 768864CD14C1005100274C13;
+			remoteInfo = "gdx-backend-ios";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		768864AF14C0FDF900274C13 /* gdx-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "gdx-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		768864B314C0FDF900274C13 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		768864B514C0FDF900274C13 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		768864B714C0FDF900274C13 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		768864BB14C0FDF900274C13 /* gdx-ios-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "gdx-ios-Info.plist"; sourceTree = "<group>"; };
+		768864BD14C0FDF900274C13 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		768864BF14C0FDF900274C13 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		768864C114C0FDF900274C13 /* gdx-ios-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "gdx-ios-Prefix.pch"; sourceTree = "<group>"; };
+		768864C214C0FDF900274C13 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		768864C314C0FDF900274C13 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		768864CE14C1005100274C13 /* libgdx-backend-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libgdx-backend-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		768864DA14C101CB00274C13 /* boot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = boot.c; path = ../../jni/boot.c; sourceTree = "<group>"; };
+		768864DB14C101CB00274C13 /* hello.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = hello.m; path = ../../jni/hello.m; sourceTree = "<group>"; };
+		768864DC14C101CB00274C13 /* iosgl2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = iosgl2.cpp; path = ../../jni/iosgl2.cpp; sourceTree = "<group>"; };
+		768864DD14C101CB00274C13 /* iosgl2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iosgl2.h; path = ../../jni/iosgl2.h; sourceTree = "<group>"; };
+		768864E514C105F300274C13 /* Box2D */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Box2D; path = ../../../../gdx/jni/Box2D; sourceTree = "<group>"; };
+		768864E614C105F300274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp; sourceTree = "<group>"; };
+		768864E714C105F400274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.h; path = ../../../../gdx/jni/com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.h; sourceTree = "<group>"; };
+		768864E814C105F400274C13 /* com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp; sourceTree = "<group>"; };
+		768864E914C105F400274C13 /* com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.h; path = ../../../../gdx/jni/com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.h; sourceTree = "<group>"; };
+		768864EA14C105F400274C13 /* com.badlogic.gdx.graphics.glutils.ETC1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.graphics.glutils.ETC1.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.graphics.glutils.ETC1.cpp; sourceTree = "<group>"; };
+		768864EB14C105F400274C13 /* com.badlogic.gdx.graphics.glutils.ETC1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.graphics.glutils.ETC1.h; path = ../../../../gdx/jni/com.badlogic.gdx.graphics.glutils.ETC1.h; sourceTree = "<group>"; };
+		768864EC14C105F400274C13 /* com.badlogic.gdx.math.Matrix4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.math.Matrix4.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.math.Matrix4.cpp; sourceTree = "<group>"; };
+		768864ED14C105F400274C13 /* com.badlogic.gdx.math.Matrix4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.math.Matrix4.h; path = ../../../../gdx/jni/com.badlogic.gdx.math.Matrix4.h; sourceTree = "<group>"; };
+		768864EE14C105F400274C13 /* com.badlogic.gdx.physics.box2d.Body.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.Body.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.Body.cpp; sourceTree = "<group>"; };
+		768864EF14C105F400274C13 /* com.badlogic.gdx.physics.box2d.Body.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.Body.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.Body.h; sourceTree = "<group>"; };
+		768864F014C105F400274C13 /* com.badlogic.gdx.physics.box2d.ChainShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.ChainShape.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.ChainShape.cpp; sourceTree = "<group>"; };
+		768864F114C105F400274C13 /* com.badlogic.gdx.physics.box2d.ChainShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.ChainShape.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.ChainShape.h; sourceTree = "<group>"; };
+		768864F214C105F400274C13 /* com.badlogic.gdx.physics.box2d.CircleShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.CircleShape.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.CircleShape.cpp; sourceTree = "<group>"; };
+		768864F314C105F400274C13 /* com.badlogic.gdx.physics.box2d.CircleShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.CircleShape.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.CircleShape.h; sourceTree = "<group>"; };
+		768864F414C105F400274C13 /* com.badlogic.gdx.physics.box2d.Contact.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.Contact.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.Contact.cpp; sourceTree = "<group>"; };
+		768864F514C105F400274C13 /* com.badlogic.gdx.physics.box2d.Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.Contact.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.Contact.h; sourceTree = "<group>"; };
+		768864F614C105F400274C13 /* com.badlogic.gdx.physics.box2d.ContactImpulse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.ContactImpulse.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.ContactImpulse.cpp; sourceTree = "<group>"; };
+		768864F714C105F400274C13 /* com.badlogic.gdx.physics.box2d.ContactImpulse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.ContactImpulse.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.ContactImpulse.h; sourceTree = "<group>"; };
+		768864F814C105F400274C13 /* com.badlogic.gdx.physics.box2d.EdgeShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.EdgeShape.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.EdgeShape.cpp; sourceTree = "<group>"; };
+		768864F914C105F400274C13 /* com.badlogic.gdx.physics.box2d.EdgeShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.EdgeShape.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.EdgeShape.h; sourceTree = "<group>"; };
+		768864FA14C105F400274C13 /* com.badlogic.gdx.physics.box2d.Fixture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.Fixture.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.Fixture.cpp; sourceTree = "<group>"; };
+		768864FB14C105F400274C13 /* com.badlogic.gdx.physics.box2d.Fixture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.Fixture.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.Fixture.h; sourceTree = "<group>"; };
+		768864FC14C105F500274C13 /* com.badlogic.gdx.physics.box2d.Joint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.Joint.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.Joint.cpp; sourceTree = "<group>"; };
+		768864FD14C105F500274C13 /* com.badlogic.gdx.physics.box2d.Joint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.Joint.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.Joint.h; sourceTree = "<group>"; };
+		768864FE14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.DistanceJoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.joints.DistanceJoint.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.DistanceJoint.cpp; sourceTree = "<group>"; };
+		768864FF14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.DistanceJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.joints.DistanceJoint.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.DistanceJoint.h; sourceTree = "<group>"; };
+		7688650014C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.FrictionJoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.joints.FrictionJoint.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.FrictionJoint.cpp; sourceTree = "<group>"; };
+		7688650114C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.FrictionJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.joints.FrictionJoint.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.FrictionJoint.h; sourceTree = "<group>"; };
+		7688650214C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.GearJoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.joints.GearJoint.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.GearJoint.cpp; sourceTree = "<group>"; };
+		7688650314C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.GearJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.joints.GearJoint.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.GearJoint.h; sourceTree = "<group>"; };
+		7688650414C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.MouseJoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.joints.MouseJoint.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.MouseJoint.cpp; sourceTree = "<group>"; };
+		7688650514C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.MouseJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.joints.MouseJoint.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.MouseJoint.h; sourceTree = "<group>"; };
+		7688650614C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.cpp; sourceTree = "<group>"; };
+		7688650714C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.h; sourceTree = "<group>"; };
+		7688650814C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PulleyJoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.joints.PulleyJoint.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.PulleyJoint.cpp; sourceTree = "<group>"; };
+		7688650914C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PulleyJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.joints.PulleyJoint.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.PulleyJoint.h; sourceTree = "<group>"; };
+		7688650A14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RevoluteJoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.joints.RevoluteJoint.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.RevoluteJoint.cpp; sourceTree = "<group>"; };
+		7688650B14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RevoluteJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.joints.RevoluteJoint.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.RevoluteJoint.h; sourceTree = "<group>"; };
+		7688650C14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RopeJoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.joints.RopeJoint.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.RopeJoint.cpp; sourceTree = "<group>"; };
+		7688650D14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RopeJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.joints.RopeJoint.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.RopeJoint.h; sourceTree = "<group>"; };
+		7688650E14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.WheelJoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.joints.WheelJoint.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.WheelJoint.cpp; sourceTree = "<group>"; };
+		7688650F14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.WheelJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.joints.WheelJoint.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.joints.WheelJoint.h; sourceTree = "<group>"; };
+		7688651014C105F500274C13 /* com.badlogic.gdx.physics.box2d.Manifold.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.Manifold.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.Manifold.cpp; sourceTree = "<group>"; };
+		7688651114C105F500274C13 /* com.badlogic.gdx.physics.box2d.Manifold.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.Manifold.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.Manifold.h; sourceTree = "<group>"; };
+		7688651214C105F500274C13 /* com.badlogic.gdx.physics.box2d.PolygonShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.PolygonShape.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.PolygonShape.cpp; sourceTree = "<group>"; };
+		7688651314C105F500274C13 /* com.badlogic.gdx.physics.box2d.PolygonShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.PolygonShape.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.PolygonShape.h; sourceTree = "<group>"; };
+		7688651414C105F500274C13 /* com.badlogic.gdx.physics.box2d.Shape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.Shape.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.Shape.cpp; sourceTree = "<group>"; };
+		7688651514C105F500274C13 /* com.badlogic.gdx.physics.box2d.Shape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.Shape.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.Shape.h; sourceTree = "<group>"; };
+		7688651614C105F500274C13 /* com.badlogic.gdx.physics.box2d.World.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.physics.box2d.World.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.World.cpp; sourceTree = "<group>"; };
+		7688651714C105F500274C13 /* com.badlogic.gdx.physics.box2d.World.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.physics.box2d.World.h; path = ../../../../gdx/jni/com.badlogic.gdx.physics.box2d.World.h; sourceTree = "<group>"; };
+		7688651814C105F500274C13 /* com.badlogic.gdx.utils.BufferUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.utils.BufferUtils.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.utils.BufferUtils.cpp; sourceTree = "<group>"; };
+		7688651914C105F500274C13 /* com.badlogic.gdx.utils.BufferUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.utils.BufferUtils.h; path = ../../../../gdx/jni/com.badlogic.gdx.utils.BufferUtils.h; sourceTree = "<group>"; };
+		7688651A14C105F500274C13 /* etc1 */ = {isa = PBXFileReference; lastKnownFileType = folder; name = etc1; path = ../../../../gdx/jni/etc1; sourceTree = "<group>"; };
+		7688651B14C105F500274C13 /* gdx2d */ = {isa = PBXFileReference; lastKnownFileType = folder; name = gdx2d; path = ../../../../gdx/jni/gdx2d; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		768864AC14C0FDF900274C13 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				768864E414C1024500274C13 /* libgdx-backend-ios.a in Frameworks */,
+				768864B414C0FDF900274C13 /* UIKit.framework in Frameworks */,
+				768864B614C0FDF900274C13 /* Foundation.framework in Frameworks */,
+				768864B814C0FDF900274C13 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		768864CB14C1005100274C13 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				768864CF14C1005100274C13 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		768864A414C0FDF900274C13 = {
+			isa = PBXGroup;
+			children = (
+				768864D014C1005100274C13 /* gdx-backend-ios */,
+				768864B914C0FDF900274C13 /* gdx-ios */,
+				768864B214C0FDF900274C13 /* Frameworks */,
+				768864B014C0FDF900274C13 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		768864B014C0FDF900274C13 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				768864AF14C0FDF900274C13 /* gdx-ios.app */,
+				768864CE14C1005100274C13 /* libgdx-backend-ios.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		768864B214C0FDF900274C13 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				768864B314C0FDF900274C13 /* UIKit.framework */,
+				768864B514C0FDF900274C13 /* Foundation.framework */,
+				768864B714C0FDF900274C13 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		768864B914C0FDF900274C13 /* gdx-ios */ = {
+			isa = PBXGroup;
+			children = (
+				768864C214C0FDF900274C13 /* AppDelegate.h */,
+				768864C314C0FDF900274C13 /* AppDelegate.m */,
+				768864BA14C0FDF900274C13 /* Supporting Files */,
+			);
+			path = "gdx-ios";
+			sourceTree = "<group>";
+		};
+		768864BA14C0FDF900274C13 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				768864BB14C0FDF900274C13 /* gdx-ios-Info.plist */,
+				768864BC14C0FDF900274C13 /* InfoPlist.strings */,
+				768864BF14C0FDF900274C13 /* main.m */,
+				768864C114C0FDF900274C13 /* gdx-ios-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		768864D014C1005100274C13 /* gdx-backend-ios */ = {
+			isa = PBXGroup;
+			children = (
+				768864E514C105F300274C13 /* Box2D */,
+				768864E614C105F300274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp */,
+				768864E714C105F400274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.h */,
+				768864E814C105F400274C13 /* com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp */,
+				768864E914C105F400274C13 /* com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.h */,
+				768864EA14C105F400274C13 /* com.badlogic.gdx.graphics.glutils.ETC1.cpp */,
+				768864EB14C105F400274C13 /* com.badlogic.gdx.graphics.glutils.ETC1.h */,
+				768864EC14C105F400274C13 /* com.badlogic.gdx.math.Matrix4.cpp */,
+				768864ED14C105F400274C13 /* com.badlogic.gdx.math.Matrix4.h */,
+				768864EE14C105F400274C13 /* com.badlogic.gdx.physics.box2d.Body.cpp */,
+				768864EF14C105F400274C13 /* com.badlogic.gdx.physics.box2d.Body.h */,
+				768864F014C105F400274C13 /* com.badlogic.gdx.physics.box2d.ChainShape.cpp */,
+				768864F114C105F400274C13 /* com.badlogic.gdx.physics.box2d.ChainShape.h */,
+				768864F214C105F400274C13 /* com.badlogic.gdx.physics.box2d.CircleShape.cpp */,
+				768864F314C105F400274C13 /* com.badlogic.gdx.physics.box2d.CircleShape.h */,
+				768864F414C105F400274C13 /* com.badlogic.gdx.physics.box2d.Contact.cpp */,
+				768864F514C105F400274C13 /* com.badlogic.gdx.physics.box2d.Contact.h */,
+				768864F614C105F400274C13 /* com.badlogic.gdx.physics.box2d.ContactImpulse.cpp */,
+				768864F714C105F400274C13 /* com.badlogic.gdx.physics.box2d.ContactImpulse.h */,
+				768864F814C105F400274C13 /* com.badlogic.gdx.physics.box2d.EdgeShape.cpp */,
+				768864F914C105F400274C13 /* com.badlogic.gdx.physics.box2d.EdgeShape.h */,
+				768864FA14C105F400274C13 /* com.badlogic.gdx.physics.box2d.Fixture.cpp */,
+				768864FB14C105F400274C13 /* com.badlogic.gdx.physics.box2d.Fixture.h */,
+				768864FC14C105F500274C13 /* com.badlogic.gdx.physics.box2d.Joint.cpp */,
+				768864FD14C105F500274C13 /* com.badlogic.gdx.physics.box2d.Joint.h */,
+				768864FE14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.DistanceJoint.cpp */,
+				768864FF14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.DistanceJoint.h */,
+				7688650014C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.FrictionJoint.cpp */,
+				7688650114C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.FrictionJoint.h */,
+				7688650214C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.GearJoint.cpp */,
+				7688650314C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.GearJoint.h */,
+				7688650414C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.MouseJoint.cpp */,
+				7688650514C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.MouseJoint.h */,
+				7688650614C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.cpp */,
+				7688650714C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.h */,
+				7688650814C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PulleyJoint.cpp */,
+				7688650914C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PulleyJoint.h */,
+				7688650A14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RevoluteJoint.cpp */,
+				7688650B14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RevoluteJoint.h */,
+				7688650C14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RopeJoint.cpp */,
+				7688650D14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RopeJoint.h */,
+				7688650E14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.WheelJoint.cpp */,
+				7688650F14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.WheelJoint.h */,
+				7688651014C105F500274C13 /* com.badlogic.gdx.physics.box2d.Manifold.cpp */,
+				7688651114C105F500274C13 /* com.badlogic.gdx.physics.box2d.Manifold.h */,
+				7688651214C105F500274C13 /* com.badlogic.gdx.physics.box2d.PolygonShape.cpp */,
+				7688651314C105F500274C13 /* com.badlogic.gdx.physics.box2d.PolygonShape.h */,
+				7688651414C105F500274C13 /* com.badlogic.gdx.physics.box2d.Shape.cpp */,
+				7688651514C105F500274C13 /* com.badlogic.gdx.physics.box2d.Shape.h */,
+				7688651614C105F500274C13 /* com.badlogic.gdx.physics.box2d.World.cpp */,
+				7688651714C105F500274C13 /* com.badlogic.gdx.physics.box2d.World.h */,
+				7688651814C105F500274C13 /* com.badlogic.gdx.utils.BufferUtils.cpp */,
+				7688651914C105F500274C13 /* com.badlogic.gdx.utils.BufferUtils.h */,
+				7688651A14C105F500274C13 /* etc1 */,
+				7688651B14C105F500274C13 /* gdx2d */,
+				768864DA14C101CB00274C13 /* boot.c */,
+				768864DB14C101CB00274C13 /* hello.m */,
+				768864DC14C101CB00274C13 /* iosgl2.cpp */,
+				768864DD14C101CB00274C13 /* iosgl2.h */,
+			);
+			path = "gdx-backend-ios";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		768864CC14C1005100274C13 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				768864E114C101CB00274C13 /* iosgl2.h in Headers */,
+				7688651D14C105F500274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.h in Headers */,
+				7688651F14C105F500274C13 /* com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.h in Headers */,
+				7688652114C105F500274C13 /* com.badlogic.gdx.graphics.glutils.ETC1.h in Headers */,
+				7688652314C105F500274C13 /* com.badlogic.gdx.math.Matrix4.h in Headers */,
+				7688652514C105F500274C13 /* com.badlogic.gdx.physics.box2d.Body.h in Headers */,
+				7688652714C105F500274C13 /* com.badlogic.gdx.physics.box2d.ChainShape.h in Headers */,
+				7688652914C105F500274C13 /* com.badlogic.gdx.physics.box2d.CircleShape.h in Headers */,
+				7688652B14C105F500274C13 /* com.badlogic.gdx.physics.box2d.Contact.h in Headers */,
+				7688652D14C105F500274C13 /* com.badlogic.gdx.physics.box2d.ContactImpulse.h in Headers */,
+				7688652F14C105F500274C13 /* com.badlogic.gdx.physics.box2d.EdgeShape.h in Headers */,
+				7688653114C105F500274C13 /* com.badlogic.gdx.physics.box2d.Fixture.h in Headers */,
+				7688653314C105F500274C13 /* com.badlogic.gdx.physics.box2d.Joint.h in Headers */,
+				7688653514C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.DistanceJoint.h in Headers */,
+				7688653714C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.FrictionJoint.h in Headers */,
+				7688653914C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.GearJoint.h in Headers */,
+				7688653B14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.MouseJoint.h in Headers */,
+				7688653D14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.h in Headers */,
+				7688653F14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PulleyJoint.h in Headers */,
+				7688654114C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RevoluteJoint.h in Headers */,
+				7688654314C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RopeJoint.h in Headers */,
+				7688654514C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.WheelJoint.h in Headers */,
+				7688654714C105F500274C13 /* com.badlogic.gdx.physics.box2d.Manifold.h in Headers */,
+				7688654914C105F500274C13 /* com.badlogic.gdx.physics.box2d.PolygonShape.h in Headers */,
+				7688654B14C105F500274C13 /* com.badlogic.gdx.physics.box2d.Shape.h in Headers */,
+				7688654D14C105F500274C13 /* com.badlogic.gdx.physics.box2d.World.h in Headers */,
+				7688654F14C105F500274C13 /* com.badlogic.gdx.utils.BufferUtils.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		768864AE14C0FDF900274C13 /* gdx-ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 768864C714C0FDF900274C13 /* Build configuration list for PBXNativeTarget "gdx-ios" */;
+			buildPhases = (
+				768864AB14C0FDF900274C13 /* Sources */,
+				768864AC14C0FDF900274C13 /* Frameworks */,
+				768864AD14C0FDF900274C13 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				768864E314C1023C00274C13 /* PBXTargetDependency */,
+			);
+			name = "gdx-ios";
+			productName = "gdx-ios";
+			productReference = 768864AF14C0FDF900274C13 /* gdx-ios.app */;
+			productType = "com.apple.product-type.application";
+		};
+		768864CD14C1005100274C13 /* gdx-backend-ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 768864D614C1005100274C13 /* Build configuration list for PBXNativeTarget "gdx-backend-ios" */;
+			buildPhases = (
+				768864CA14C1005100274C13 /* Sources */,
+				768864CB14C1005100274C13 /* Frameworks */,
+				768864CC14C1005100274C13 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "gdx-backend-ios";
+			productName = "gdx-backend-ios";
+			productReference = 768864CE14C1005100274C13 /* libgdx-backend-ios.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		768864A614C0FDF900274C13 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = 768864A914C0FDF900274C13 /* Build configuration list for PBXProject "gdx-ios" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 768864A414C0FDF900274C13;
+			productRefGroup = 768864B014C0FDF900274C13 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				768864AE14C0FDF900274C13 /* gdx-ios */,
+				768864CD14C1005100274C13 /* gdx-backend-ios */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		768864AD14C0FDF900274C13 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				768864BE14C0FDF900274C13 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		768864AB14C0FDF900274C13 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				768864C014C0FDF900274C13 /* main.m in Sources */,
+				768864C414C0FDF900274C13 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		768864CA14C1005100274C13 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				768864DE14C101CB00274C13 /* boot.c in Sources */,
+				768864DF14C101CB00274C13 /* hello.m in Sources */,
+				768864E014C101CB00274C13 /* iosgl2.cpp in Sources */,
+				7688651C14C105F500274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp in Sources */,
+				7688651E14C105F500274C13 /* com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp in Sources */,
+				7688652014C105F500274C13 /* com.badlogic.gdx.graphics.glutils.ETC1.cpp in Sources */,
+				7688652214C105F500274C13 /* com.badlogic.gdx.math.Matrix4.cpp in Sources */,
+				7688652414C105F500274C13 /* com.badlogic.gdx.physics.box2d.Body.cpp in Sources */,
+				7688652614C105F500274C13 /* com.badlogic.gdx.physics.box2d.ChainShape.cpp in Sources */,
+				7688652814C105F500274C13 /* com.badlogic.gdx.physics.box2d.CircleShape.cpp in Sources */,
+				7688652A14C105F500274C13 /* com.badlogic.gdx.physics.box2d.Contact.cpp in Sources */,
+				7688652C14C105F500274C13 /* com.badlogic.gdx.physics.box2d.ContactImpulse.cpp in Sources */,
+				7688652E14C105F500274C13 /* com.badlogic.gdx.physics.box2d.EdgeShape.cpp in Sources */,
+				7688653014C105F500274C13 /* com.badlogic.gdx.physics.box2d.Fixture.cpp in Sources */,
+				7688653214C105F500274C13 /* com.badlogic.gdx.physics.box2d.Joint.cpp in Sources */,
+				7688653414C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.DistanceJoint.cpp in Sources */,
+				7688653614C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.FrictionJoint.cpp in Sources */,
+				7688653814C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.GearJoint.cpp in Sources */,
+				7688653A14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.MouseJoint.cpp in Sources */,
+				7688653C14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.cpp in Sources */,
+				7688653E14C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.PulleyJoint.cpp in Sources */,
+				7688654014C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RevoluteJoint.cpp in Sources */,
+				7688654214C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.RopeJoint.cpp in Sources */,
+				7688654414C105F500274C13 /* com.badlogic.gdx.physics.box2d.joints.WheelJoint.cpp in Sources */,
+				7688654614C105F500274C13 /* com.badlogic.gdx.physics.box2d.Manifold.cpp in Sources */,
+				7688654814C105F500274C13 /* com.badlogic.gdx.physics.box2d.PolygonShape.cpp in Sources */,
+				7688654A14C105F500274C13 /* com.badlogic.gdx.physics.box2d.Shape.cpp in Sources */,
+				7688654C14C105F500274C13 /* com.badlogic.gdx.physics.box2d.World.cpp in Sources */,
+				7688654E14C105F500274C13 /* com.badlogic.gdx.utils.BufferUtils.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		768864E314C1023C00274C13 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 768864CD14C1005100274C13 /* gdx-backend-ios */;
+			targetProxy = 768864E214C1023C00274C13 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		768864BC14C0FDF900274C13 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				768864BD14C0FDF900274C13 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		768864C514C0FDF900274C13 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"${SOURCE_ROOT}/../../../gdx/jni",
+					/System/Library/Frameworks/JavaVM.framework/Headers,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		768864C614C0FDF900274C13 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"${SOURCE_ROOT}/../../../gdx/jni",
+					/System/Library/Frameworks/JavaVM.framework/Headers,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		768864C814C0FDF900274C13 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "gdx-ios/gdx-ios-Prefix.pch";
+				INFOPLIST_FILE = "gdx-ios/gdx-ios-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		768864C914C0FDF900274C13 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "gdx-ios/gdx-ios-Prefix.pch";
+				INFOPLIST_FILE = "gdx-ios/gdx-ios-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		768864D714C1005100274C13 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/gdx_backend_ios.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "gdx-backend-ios/gdx-backend-ios-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		768864D814C1005100274C13 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/gdx_backend_ios.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "gdx-backend-ios/gdx-backend-ios-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		768864A914C0FDF900274C13 /* Build configuration list for PBXProject "gdx-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				768864C514C0FDF900274C13 /* Debug */,
+				768864C614C0FDF900274C13 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		768864C714C0FDF900274C13 /* Build configuration list for PBXNativeTarget "gdx-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				768864C814C0FDF900274C13 /* Debug */,
+				768864C914C0FDF900274C13 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		768864D614C1005100274C13 /* Build configuration list for PBXNativeTarget "gdx-backend-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				768864D714C1005100274C13 /* Debug */,
+				768864D814C1005100274C13 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 768864A614C0FDF900274C13 /* Project object */;
+}
