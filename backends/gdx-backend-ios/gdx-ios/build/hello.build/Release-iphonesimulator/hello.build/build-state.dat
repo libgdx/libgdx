@@ -1,311 +1,0 @@
-Thello
-v4
-r1
-cCheck dependencies
-cProcessInfoPlistFile /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/Info.plist hello/hello-Info.plist
-cProcessPCH /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/hello-Prefix-hftbqpstpnnkpcelujsddymmakci/hello-Prefix.pch.gch hello/hello-Prefix.pch normal i386 objective-c com.apple.compilers.llvmgcc42
-cCompileC build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/main.o /Users/badlogic/workspace/hello-ios/hello/hello/main.m normal i386 objective-c com.apple.compilers.llvmgcc42
-cCompileC build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate.o /Users/badlogic/workspace/hello-ios/hello/hello/helloAppDelegate.m normal i386 objective-c com.apple.compilers.llvmgcc42
-cCompileC build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate_iPad.o /Users/badlogic/workspace/hello-ios/hello/hello/iPad/helloAppDelegate_iPad.m normal i386 objective-c com.apple.compilers.llvmgcc42
-cCompileC build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate_iPhone.o /Users/badlogic/workspace/hello-ios/hello/hello/iPhone/helloAppDelegate_iPhone.m normal i386 objective-c com.apple.compilers.llvmgcc42
-cLd /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/hello normal i386
-cGenerateDSYMFile /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app.dSYM /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/hello
-cCopyStringsFile /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/en.lproj/InfoPlist.strings hello/en.lproj/InfoPlist.strings
-cCompileXIB /Users/badlogic/workspace/hello-ios/hello/hello/iPhone/en.lproj/MainWindow_iPhone.xib
-cCompileXIB /Users/badlogic/workspace/hello-ios/hello/hello/iPad/en.lproj/MainWindow_iPad.xib
-cTouch /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app
-
-N/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk
-c000000004F04C5160000000000000110
-t1325712662
-s272
-
-N/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics
-c000000004E72F1CC0000000000245480
-t1316155852
-s2380928
-
-N/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk/System/Library/Frameworks/Foundation.framework/Foundation
-c000000004E72F2960000000000353830
-t1316156054
-s3487792
-
-N/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/Foundation.h
-c000000004E72F28F0000000000001534
-t1316156047
-s5428
-
-N/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIKit.h
-c000000004E78066A0000000000000BCB
-t1316488810
-s3019
-
-N/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk/System/Library/Frameworks/UIKit.framework/UIKit
-c000000004E7806AB00000000008F7390
-t1316488875
-s9401232
-
-N/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk/usr/include/Availability.h
-c000000004E5C62D90000000000001B38
-t1314677465
-s6968
-
-N/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk/usr/include/stdint.h
-c000000004E605A1100000000000018EF
-t1314937361
-s6383
-
-N/System/Library/Frameworks/JavaVM.framework/Headers/jni.h
-c000000004DF6A6390000000000010AF0
-t1308010041
-s68336
-
-N/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app
-t2
-s0
-
-N/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app.dSYM
-t2
-s0
-
-N/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/Info.plist
-t2
-s0
-
-N/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/PkgInfo
-t2
-s0
-
-N/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/en.lproj/InfoPlist.strings
-t2
-s0
-
-N/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/en.lproj/MainWindow_iPad.nib
-t2
-s0
-
-N/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/en.lproj/MainWindow_iPhone.nib
-t2
-s0
-
-N/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/hello
-t2
-s0
-
-N/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/hello.LinkFileList
-c000000004F070BB7000000000000021C
-t1325861815
-s540
-
-N/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate.o
-t2
-s0
-
-N/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate_iPad.o
-t2
-s0
-
-N/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate_iPhone.o
-t2
-s0
-
-N/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/main.o
-t2
-s0
-
-N/Users/badlogic/workspace/hello-ios/hello/hello/en.lproj/InfoPlist.strings
-c000000004F070776000000000000002D
-t1325860726
-s45
-
-N/Users/badlogic/workspace/hello-ios/hello/hello/hello-Prefix.pch
-c000000004F070776000000000000013C
-t1325860726
-s316
-i<Availability.h>
-i<UIKit/UIKit.h>
-i<Foundation/Foundation.h>
-
-N/Users/badlogic/workspace/hello-ios/hello/hello/helloAppDelegate.h
-c000000004F07077600000000000000F4
-t1325860726
-s244
-i<UIKit/UIKit.h>
-i<jni.h>
-
-N/Users/badlogic/workspace/hello-ios/hello/hello/helloAppDelegate.m
-c000000004F0707760000000000001228
-t1325860726
-s4648
-i<stdint.h>
-i"helloAppDelegate.h"
-
-N/Users/badlogic/workspace/hello-ios/hello/hello/iPad/en.lproj/MainWindow_iPad.xib
-c000000004F0707760000000000003EFD
-t1325860726
-s16125
-
-N/Users/badlogic/workspace/hello-ios/hello/hello/iPad/helloAppDelegate_iPad.h
-c000000004F0707760000000000000058
-t1325860726
-s88
-i"helloAppDelegate.h"
-
-N/Users/badlogic/workspace/hello-ios/hello/hello/iPad/helloAppDelegate_iPad.m
-c000000004F070776000000000000004F
-t1325860726
-s79
-i"helloAppDelegate_iPad.h"
-
-N/Users/badlogic/workspace/hello-ios/hello/hello/iPhone/en.lproj/MainWindow_iPhone.xib
-c000000004F07077600000000000040EF
-t1325860726
-s16623
-
-N/Users/badlogic/workspace/hello-ios/hello/hello/iPhone/helloAppDelegate_iPhone.h
-c000000004F070776000000000000005A
-t1325860726
-s90
-i"helloAppDelegate.h"
-
-N/Users/badlogic/workspace/hello-ios/hello/hello/iPhone/helloAppDelegate_iPhone.m
-c000000004F0707760000000000000053
-t1325860726
-s83
-i"helloAppDelegate_iPhone.h"
-
-N/Users/badlogic/workspace/hello-ios/hello/hello/main.m
-c000000004F07077600000000000000DF
-t1325860726
-s223
-i<UIKit/UIKit.h>
-
-N/var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/hello-Prefix-hftbqpstpnnkpcelujsddymmakci/hello-Prefix.pch.gch
-t1325860847
-s13931504
-
-Nhello/hello-Info.plist
-c000000004F0707760000000000000606
-t1325860726
-s1542
-
-CCheck dependencies
-r0
-lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection18"Check dependenciesf451023743b7b441^137fb83743b7b441^---0#1#0#--18"Check dependencies36"4F2AA01F-B6E3-4FD0-8911-9D418C56A74A-
-
-CCompileC build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate.o /Users/badlogic/workspace/hello-ios/hello/hello/helloAppDelegate.m normal i386 objective-c com.apple.compilers.llvmgcc42
-s347554615.802396
-e347554620.290306
-r1
-xCompileC
-xbuild/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate.o
-x/Users/badlogic/workspace/hello-ios/hello/hello/helloAppDelegate.m
-xnormal
-xi386
-xobjective-c
-xcom.apple.compilers.llvmgcc42
-lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection74"Compile /Users/badlogic/workspace/hello-ios/hello/hello/helloAppDelegate.me198cd3743b7b441^bd524a3c43b7b441^---0#0#0#-19%DVTDocumentLocation2@82"file://localhost/Users/badlogic/workspace/hello-ios/hello/hello/helloAppDelegate.m0000000000000000^2291"CompileC build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate.o hello/helloAppDelegate.m normal i386 objective-c com.apple.compilers.llvmgcc42    cd /Users/badlogic/workspace/hello-ios/hello    setenv LANG en_US.US-ASCII    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/Users/badlogic/scripts/"    /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c -arch i386 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -Os -Wmissing-prototypes -Wreturn-type -Wunused-variable -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk -fexceptions -fasm-blocks -mmacosx-version-min=10.6 -gdwarf-2 -fvisibility=hidden -fobjc-abi-version=2 -fobjc-legacy-dispatch -D__IPHONE_OS_VERSION_MIN_REQUIRED=40200 -iquote /Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-generated-files.hmap -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-own-target-headers.hmap -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-all-target-headers.hmap -iquote /Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-project-headers.hmap -I/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/include -I/System/Library/Frameworks/JavaVM.framework/Headers -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/DerivedSources/i386 -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/DerivedSources -F/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator -DNS_BLOCK_ASSERTIONS=1 -include /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/hello-Prefix-hftbqpstpnnkpcelujsddymmakci/hello-Prefix.pch -c /Users/badlogic/workspace/hello-ios/hello/hello/helloAppDelegate.m -o /Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate.o36"8FFB8ADD-42D0-4FD3-94A2-23842532FF73-
-
-CCompileC build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate_iPad.o /Users/badlogic/workspace/hello-ios/hello/hello/iPad/helloAppDelegate_iPad.m normal i386 objective-c com.apple.compilers.llvmgcc42
-s347554615.802432
-e347554619.198957
-r1
-xCompileC
-xbuild/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate_iPad.o
-x/Users/badlogic/workspace/hello-ios/hello/hello/iPad/helloAppDelegate_iPad.m
-xnormal
-xi386
-xobjective-c
-xcom.apple.compilers.llvmgcc42
-lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection84"Compile /Users/badlogic/workspace/hello-ios/hello/hello/iPad/helloAppDelegate_iPad.me198cd3743b7b441^b611333b43b7b441^---0#0#0#-19%DVTDocumentLocation2@92"file://localhost/Users/badlogic/workspace/hello-ios/hello/hello/iPad/helloAppDelegate_iPad.m0000000000000000^2321"CompileC build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate_iPad.o hello/iPad/helloAppDelegate_iPad.m normal i386 objective-c com.apple.compilers.llvmgcc42    cd /Users/badlogic/workspace/hello-ios/hello    setenv LANG en_US.US-ASCII    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/Users/badlogic/scripts/"    /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c -arch i386 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -Os -Wmissing-prototypes -Wreturn-type -Wunused-variable -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk -fexceptions -fasm-blocks -mmacosx-version-min=10.6 -gdwarf-2 -fvisibility=hidden -fobjc-abi-version=2 -fobjc-legacy-dispatch -D__IPHONE_OS_VERSION_MIN_REQUIRED=40200 -iquote /Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-generated-files.hmap -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-own-target-headers.hmap -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-all-target-headers.hmap -iquote /Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-project-headers.hmap -I/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/include -I/System/Library/Frameworks/JavaVM.framework/Headers -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/DerivedSources/i386 -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/DerivedSources -F/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator -DNS_BLOCK_ASSERTIONS=1 -include /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/hello-Prefix-hftbqpstpnnkpcelujsddymmakci/hello-Prefix.pch -c /Users/badlogic/workspace/hello-ios/hello/hello/iPad/helloAppDelegate_iPad.m -o /Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate_iPad.o36"35C089B5-39AB-450B-9B62-CA9E19F02DBF-
-
-CCompileC build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate_iPhone.o /Users/badlogic/workspace/hello-ios/hello/hello/iPhone/helloAppDelegate_iPhone.m normal i386 objective-c com.apple.compilers.llvmgcc42
-s347554615.802441
-e347554619.198911
-r1
-xCompileC
-xbuild/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate_iPhone.o
-x/Users/badlogic/workspace/hello-ios/hello/hello/iPhone/helloAppDelegate_iPhone.m
-xnormal
-xi386
-xobjective-c
-xcom.apple.compilers.llvmgcc42
-lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection88"Compile /Users/badlogic/workspace/hello-ios/hello/hello/iPhone/helloAppDelegate_iPhone.maa99cd3743b7b441^c6df323b43b7b441^---0#0#0#-19%DVTDocumentLocation2@96"file://localhost/Users/badlogic/workspace/hello-ios/hello/hello/iPhone/helloAppDelegate_iPhone.m0000000000000000^2333"CompileC build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate_iPhone.o hello/iPhone/helloAppDelegate_iPhone.m normal i386 objective-c com.apple.compilers.llvmgcc42    cd /Users/badlogic/workspace/hello-ios/hello    setenv LANG en_US.US-ASCII    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/Users/badlogic/scripts/"    /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c -arch i386 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -Os -Wmissing-prototypes -Wreturn-type -Wunused-variable -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk -fexceptions -fasm-blocks -mmacosx-version-min=10.6 -gdwarf-2 -fvisibility=hidden -fobjc-abi-version=2 -fobjc-legacy-dispatch -D__IPHONE_OS_VERSION_MIN_REQUIRED=40200 -iquote /Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-generated-files.hmap -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-own-target-headers.hmap -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-all-target-headers.hmap -iquote /Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-project-headers.hmap -I/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/include -I/System/Library/Frameworks/JavaVM.framework/Headers -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/DerivedSources/i386 -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/DerivedSources -F/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator -DNS_BLOCK_ASSERTIONS=1 -include /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/hello-Prefix-hftbqpstpnnkpcelujsddymmakci/hello-Prefix.pch -c /Users/badlogic/workspace/hello-ios/hello/hello/iPhone/helloAppDelegate_iPhone.m -o /Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/helloAppDelegate_iPhone.o36"DC1FB47C-79A7-46D6-96BF-D8612F8262F0-
-
-CCompileC build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/main.o /Users/badlogic/workspace/hello-ios/hello/hello/main.m normal i386 objective-c com.apple.compilers.llvmgcc42
-s347554615.802199
-e347554619.198772
-r1
-xCompileC
-xbuild/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/main.o
-x/Users/badlogic/workspace/hello-ios/hello/hello/main.m
-xnormal
-xi386
-xobjective-c
-xcom.apple.compilers.llvmgcc42
-lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection62"Compile /Users/badlogic/workspace/hello-ios/hello/hello/main.m0c93cd3743b7b441^cff4323b43b7b441^---0#0#0#-19%DVTDocumentLocation2@70"file://localhost/Users/badlogic/workspace/hello-ios/hello/hello/main.m0000000000000000^2243"CompileC build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/main.o hello/main.m normal i386 objective-c com.apple.compilers.llvmgcc42    cd /Users/badlogic/workspace/hello-ios/hello    setenv LANG en_US.US-ASCII    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/Users/badlogic/scripts/"    /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c -arch i386 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -Os -Wmissing-prototypes -Wreturn-type -Wunused-variable -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk -fexceptions -fasm-blocks -mmacosx-version-min=10.6 -gdwarf-2 -fvisibility=hidden -fobjc-abi-version=2 -fobjc-legacy-dispatch -D__IPHONE_OS_VERSION_MIN_REQUIRED=40200 -iquote /Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-generated-files.hmap -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-own-target-headers.hmap -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-all-target-headers.hmap -iquote /Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/hello-project-headers.hmap -I/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/include -I/System/Library/Frameworks/JavaVM.framework/Headers -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/DerivedSources/i386 -I/Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/DerivedSources -F/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator -DNS_BLOCK_ASSERTIONS=1 -include /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/hello-Prefix-hftbqpstpnnkpcelujsddymmakci/hello-Prefix.pch -c /Users/badlogic/workspace/hello-ios/hello/hello/main.m -o /Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/main.o36"B4AD3C79-F903-43DF-910D-EE2E1BFDE5D5-
-
-CCompileXIB /Users/badlogic/workspace/hello-ios/hello/hello/iPad/en.lproj/MainWindow_iPad.xib
-s347554621.647664
-e347554628.564891
-r1
-xCompileXIB
-x/Users/badlogic/workspace/hello-ios/hello/hello/iPad/en.lproj/MainWindow_iPad.xib
-lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection91"Compiling /Users/badlogic/workspace/hello-ios/hello/hello/iPad/en.lproj/MainWindow_iPad.xib36e6a53d43b7b441^97ae904443b7b441^---0#0#0#-19%DVTDocumentLocation2@97"file://localhost/Users/badlogic/workspace/hello-ios/hello/hello/iPad/en.lproj/MainWindow_iPad.xib0000000000000000^780"CompileXIB hello/iPad/en.lproj/MainWindow_iPad.xib    cd /Users/badlogic/workspace/hello-ios/hello    setenv IBC_MINIMUM_COMPATIBILITY_VERSION 4.2    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/Users/badlogic/scripts/"    setenv XCODE_DEVELOPER_USR_PATH /Developer/usr/bin/..    /Developer/usr/bin/ibtool --errors --warnings --notices --output-format human-readable-text --compile /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/en.lproj/MainWindow_iPad.nib /Users/badlogic/workspace/hello-ios/hello/hello/iPad/en.lproj/MainWindow_iPad.xib --sdk /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk36"E0D869BB-1499-496B-8D90-A6234067FCC9-
-
-CCompileXIB /Users/badlogic/workspace/hello-ios/hello/hello/iPhone/en.lproj/MainWindow_iPhone.xib
-s347554621.599231
-e347554628.561199
-r1
-xCompileXIB
-x/Users/badlogic/workspace/hello-ios/hello/hello/iPhone/en.lproj/MainWindow_iPhone.xib
-lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection95"Compiling /Users/badlogic/workspace/hello-ios/hello/hello/iPhone/en.lproj/MainWindow_iPhone.xibb0739f3d43b7b441^8aae8f4443b7b441^---0#0#0#-19%DVTDocumentLocation2@101"file://localhost/Users/badlogic/workspace/hello-ios/hello/hello/iPhone/en.lproj/MainWindow_iPhone.xib0000000000000000^790"CompileXIB hello/iPhone/en.lproj/MainWindow_iPhone.xib    cd /Users/badlogic/workspace/hello-ios/hello    setenv IBC_MINIMUM_COMPATIBILITY_VERSION 4.2    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/Users/badlogic/scripts/"    setenv XCODE_DEVELOPER_USR_PATH /Developer/usr/bin/..    /Developer/usr/bin/ibtool --errors --warnings --notices --output-format human-readable-text --compile /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/en.lproj/MainWindow_iPhone.nib /Users/badlogic/workspace/hello-ios/hello/hello/iPhone/en.lproj/MainWindow_iPhone.xib --sdk /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk36"1C3C11C2-2C26-4355-A7EF-D1049C572FA6-
-
-CCopyStringsFile /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/en.lproj/InfoPlist.strings hello/en.lproj/InfoPlist.strings
-s347554621.599133
-e347554621.646394
-r1
-xCopyStringsFile
-x/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/en.lproj/InfoPlist.strings
-xhello/en.lproj/InfoPlist.strings
-lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection37"Copy hello/en.lproj/InfoPlist.strings9d81993d43b7b441^967ba53d43b7b441^---0#0#0#-19%DVTDocumentLocation2@90"file://localhost/Users/badlogic/workspace/hello-ios/hello/hello/en.lproj/InfoPlist.strings0000000000000000^566"CopyStringsFile build/Release-iphonesimulator/hello.app/en.lproj/InfoPlist.strings hello/en.lproj/InfoPlist.strings    cd /Users/badlogic/workspace/hello-ios/hello    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/Users/badlogic/scripts/"    builtin-copyStrings --validate --inputencoding utf-8 --outputencoding binary --outdir /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/en.lproj -- hello/en.lproj/InfoPlist.strings36"38C98395-5367-4D6F-92D0-A7DEB9C054BF-
-
-CGenerateDSYMFile /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app.dSYM /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/hello
-s347554621.274613
-e347554621.590548
-r1
-xGenerateDSYMFile
-x/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app.dSYM
-x/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/hello
-lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection97"Generating /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app.dSYM855f463d43b7b441^e42d973d43b7b441^---0#0#0#-19%DVTDocumentLocation2@102"file://localhost/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app.dSYM00f48c04dfffdf42^551"GenerateDSYMFile build/Release-iphonesimulator/hello.app.dSYM build/Release-iphonesimulator/hello.app/hello    cd /Users/badlogic/workspace/hello-ios/hello    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/Users/badlogic/scripts/"    /Developer/usr/bin/dsymutil /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/hello -o /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app.dSYM36"F0EA09A5-B55C-4E61-9B57-E941B2451190-
-
-CLd /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/hello normal i386
-s347554620.296909
-e347554621.265317
-r1
-xLd
-x/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/hello
-xnormal
-xi386
-lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection92"Link /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/hello42274c3c43b7b441^68ec433d43b7b441^---0#0#0#--1069"Ld build/Release-iphonesimulator/hello.app/hello normal i386    cd /Users/badlogic/workspace/hello-ios/hello    setenv MACOSX_DEPLOYMENT_TARGET 10.6    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/Users/badlogic/scripts/"    /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/llvm-gcc-4.2 -arch i386 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk -L/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator -F/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator -filelist /Users/badlogic/workspace/hello-ios/hello/build/hello.build/Release-iphonesimulator/hello.build/Objects-normal/i386/hello.LinkFileList -mmacosx-version-min=10.6 -Xlinker -objc_abi_version -Xlinker 2 -filelist ../build/libhello.list -lz -framework UIKit -framework Foundation -framework CoreGraphics -o /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/hello36"C94C890C-24EA-4B96-A294-8FBE33FD3989-
-
-CProcessInfoPlistFile /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/Info.plist hello/hello-Info.plist
-s347554615.753114
-e347554615.786040
-r1
-xProcessInfoPlistFile
-x/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/Info.plist
-xhello/hello-Info.plist
-lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection30"Process hello/hello-Info.plist1329c13743b7b441^b43ac93743b7b441^---0#0#0#-19%DVTDocumentLocation2@80"file://localhost/Users/badlogic/workspace/hello-ios/hello/hello/hello-Info.plist0000000000000000^640"ProcessInfoPlistFile build/Release-iphonesimulator/hello.app/Info.plist hello/hello-Info.plist    cd /Users/badlogic/workspace/hello-ios/hello    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/Users/badlogic/scripts/"    builtin-infoPlistUtility hello/hello-Info.plist -genpkginfo /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -o /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app/Info.plist36"77446CE9-F307-4964-B192-9C551BB6C0AE-
-
-CProcessPCH /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/hello-Prefix-hftbqpstpnnkpcelujsddymmakci/hello-Prefix.pch.gch hello/hello-Prefix.pch normal i386 objective-c com.apple.compilers.llvmgcc42
-r0
-
-CTouch /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app
-s347554628.574246
-e347554628.591021
-r1
-xTouch
-x/Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app
-lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection87"Touch /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app8524934443b7b441^6859974443b7b441^---0#0#0#--383"Touch build/Release-iphonesimulator/hello.app    cd /Users/badlogic/workspace/hello-ios/hello    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/Users/badlogic/scripts/"    /usr/bin/touch -c /Users/badlogic/workspace/hello-ios/hello/build/Release-iphonesimulator/hello.app36"B6AA7687-B254-4C20-8EC0-EE9D626EBC17-
-
