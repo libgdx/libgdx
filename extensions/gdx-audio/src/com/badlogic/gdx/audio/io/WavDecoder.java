@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner
  *
  */
-public class WavDecoder implements Decoder {
+public class WavDecoder extends Decoder {
 	WavInputStream in;
 	byte[] buffer = new byte[1024];
 	

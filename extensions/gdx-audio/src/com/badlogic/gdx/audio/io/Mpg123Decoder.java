@@ -25,7 +25,7 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 /** A {@link Decoder} implementation that decodes MP3 files via libmpg123 natively.
  * 
  * @author mzechner */
-public class Mpg123Decoder implements Decoder {
+public class Mpg123Decoder extends Decoder {
 	static {
 		new SharedLibraryLoader().load("gdx-audio");
 	}
