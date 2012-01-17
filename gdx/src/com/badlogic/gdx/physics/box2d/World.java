@@ -308,11 +308,13 @@ b2ContactFilter defaultFilter;
 	public void destroyBody (Body body) {
 		body.setUserData(null);
 		this.bodies.remove(body.addr);
-		for (int i = 0; i < body.getFixtureList().size(); i++) {
-			this.fixtures.remove(body.getFixtureList().get(i).addr).setUserData(null);
+		List<Fixture> fixtureList = body.getFixtureList();
+		while(!fixtureList.isEmpty()) {
+			this.fixtures.remove(fixtureList.remove(0).addr).setUserData(null);
 		}
-		for (int i = 0; i < body.getJointList().size(); i++)
-			destroyJoint(body.getJointList().get(i).joint);
+		List<JointEdge> jointList = body.getJointList();
+		while (!jointList.isEmpty())
+			destroyJoint(body.getJointList().get(0).joint);
 		jniDestroyBody(addr, body.addr);
 		freeBodies.free(body);
 	}
