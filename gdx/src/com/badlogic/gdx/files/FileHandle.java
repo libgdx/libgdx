@@ -162,7 +162,9 @@ public class FileHandle {
 	/** Reads the entire file into a string using the specified charset.
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public String readString (String charset) {
-		StringBuilder output = new StringBuilder(512);
+		int fileLength = (int)length();
+		if (fileLength == 0) fileLength = 512;
+		StringBuilder output = new StringBuilder(fileLength);
 		InputStreamReader reader = null;
 		try {
 			if (charset == null)

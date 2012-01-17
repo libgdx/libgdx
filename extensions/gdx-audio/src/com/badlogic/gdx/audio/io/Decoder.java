@@ -26,15 +26,13 @@ public abstract class Decoder implements Disposable {
 	 * number is smaller than the capacity of the buffer then the end of stream has been reached. The provided ShortBuffer must be
 	 * a direct buffer.
 	 * 
-	 * @param samples array to write the samples to
-	 * @param offset the offset at which to start writting samples to
 	 * @param samples The number of samples to read. 
+	 * @param offset the offset at which to start writting samples to
 	 * @return the number of samples read, < numSamples means end of file */
 	public abstract int readSamples (short[] samples, int offset, int numSamples);
 	
 	/**
 	 * Reads in the entire sound file into a single short[] array.
-	 * @return
 	 */
 	public short[] readAllSamples() {
 		short[] out = new short[(int)Math.ceil(getLength() * getRate() * getChannels())];

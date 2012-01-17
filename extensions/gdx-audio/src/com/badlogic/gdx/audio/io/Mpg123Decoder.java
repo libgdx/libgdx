@@ -33,8 +33,7 @@ public class Mpg123Decoder extends Decoder {
 	public final long handle;
 
 	/** Opens the given file for mp3 decoding. Throws an IllegalArugmentException in case the file could not be opened.
-	 * 
-	 * @param filename the filename */
+	 */
 	public Mpg123Decoder (FileHandle file) {
 		if(file.type() != FileType.External && file.type() != FileType.Absolute)
 			throw new IllegalArgumentException("File must be absolute or external!");

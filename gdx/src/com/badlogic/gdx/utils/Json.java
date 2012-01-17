@@ -827,7 +827,9 @@ public class Json {
 				return constructor.newInstance();
 			} catch (SecurityException ignored) {
 			} catch (NoSuchMethodException ignored) {
-				if (type.isMemberClass() && !Modifier.isStatic(type.getModifiers()))
+				if (type.isArray())
+					throw new SerializationException("Encountered JSON object when expected array of type: " + type.getName(), ex);
+				else if (type.isMemberClass() && !Modifier.isStatic(type.getModifiers()))
 					throw new SerializationException("Class cannot be created (non-static member class): " + type.getName(), ex);
 				else
 					throw new SerializationException("Class cannot be created (missing no-arg constructor): " + type.getName(), ex);

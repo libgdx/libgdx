@@ -88,7 +88,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 //		platforms.add(new MovingPlatform(40, 3, 20, 0.5f, 0, 2, 5));
 	}
  
-	private Body createBox(BodyType type, float width, float height, float density) {
+	Body createBox(BodyType type, float width, float height, float density) {
 		BodyDef def = new BodyDef();
 		def.type = type;
 		Body box = world.createBody(def);

@@ -132,7 +132,7 @@ public interface JavaMethodParser {
 	}
 
 	public static class Argument {
-		private final ArgumentType type;
+		final ArgumentType type;
 		private final String name;
 
 		public Argument(ArgumentType type, String name) {

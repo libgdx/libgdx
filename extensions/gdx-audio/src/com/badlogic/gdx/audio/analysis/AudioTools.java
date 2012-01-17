@@ -167,7 +167,7 @@ public class AudioTools {
 	
 	/**
 	 * Generates a mono PCM sample buffer for the given frequency and length in
-	 * samples for use with {@link AudioMixer}.
+	 * samples for use with AudioMixer.
 	 * 
 	 * @param frequency
 	 * @param numSamples
@@ -188,11 +188,10 @@ public class AudioTools {
 	
 	/**
 	 * Generates a mono PCM sample buffer for the given frequency and length in
-	 * seconds for use with {@link AudioMixer}.
+	 * seconds for use with AudioMixer.
 	 * 
 	 * @param frequency
 	 * @param length
-	 * @return
 	 */
 	public static short[] generate(int samplingRate, int frequency, float length) {
 		int numSamples = (int) (samplingRate * length);
@@ -201,11 +200,9 @@ public class AudioTools {
 	
 	/**
 	 * Generates a mono PCM sample buffer for the given frequency and length in
-	 * seconds for use with {@link AudioMixer}.
+	 * seconds for use with AudioMixer.
 	 * 
 	 * @param frequency
-	 * @param length
-	 * @return
 	 */
 	public static float[] generateFloat(int samplingRate, int frequency, int numSamples) {
 		float[] samples = new float[numSamples];
@@ -221,11 +218,10 @@ public class AudioTools {
 	
 	/**
 	 * Generates a mono PCM sample buffer for the given frequency and length in
-	 * seconds for use with {@link AudioMixer}.
+	 * seconds for use with AudioMixer.
 	 * 
 	 * @param frequency
 	 * @param length
-	 * @return
 	 */
 	public static float[] generateFloat(int samplingRate, int frequency, float length) {
 		int numSamples = (int) (samplingRate * length);

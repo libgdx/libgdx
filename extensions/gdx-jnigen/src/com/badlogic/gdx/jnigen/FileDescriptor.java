@@ -39,15 +39,14 @@ public class FileDescriptor {
 	 * @author Nathan Sweet */
 	public enum FileType {
 		/** Path relative to the root of the classpath. Classpath files are always readonly. Note that classpath files are not
-		 * compatible with some functionality on Android, such as {@link Audio#newSound(FileHandle)} and
-		 * {@link Audio#newMusic(FileHandle)}. */
+		 * compatible with some functionality on Android, such as Audio#newSound(FileHandle) and Audio#newMusic(FileHandle). */
 		Classpath,
 
 		/** Path that is a fully qualified, absolute filesystem path. To ensure portability across platforms use absolute files only
 		 * when absolutely (heh) necessary. */
 		Absolute;
 	}
-	
+
 	protected File file;
 	protected FileType type;
 
@@ -55,7 +54,7 @@ public class FileDescriptor {
 	}
 
 	/** Creates a new absolute FileHandle for the file name. Use this for tools on the desktop that don't need any of the backends.
-	 * Do not use this constructor in case you write something cross-platform. Use the {@link Files} interface instead.
+	 * Do not use this constructor in case you write something cross-platform. Use the Files interface instead.
 	 * @param fileName the filename. */
 	public FileDescriptor (String fileName) {
 		this.file = new File(fileName);
@@ -63,7 +62,7 @@ public class FileDescriptor {
 	}
 
 	/** Creates a new absolute FileHandle for the {@link File}. Use this for tools on the desktop that don't need any of the
-	 * backends. Do not use this constructor in case you write something cross-platform. Use the {@link Files} interface instead.
+	 * backends. Do not use this constructor in case you write something cross-platform. Use the Files interface instead.
 	 * @param file the file. */
 	public FileDescriptor (File file) {
 		this.file = file;
@@ -107,7 +106,7 @@ public class FileDescriptor {
 	}
 
 	/** Returns a java.io.File that represents this file handle. Note the returned file will only be usable for
-	 * {@link FileType#Absolute} and {@link FileType#External} file handles. */
+	 * {@link FileType#Absolute} and FileType#External file handles. */
 	public File file () {
 		return file;
 	}
@@ -138,9 +137,10 @@ public class FileDescriptor {
 	/** Returns a reader for reading this file as characters.
 	 * @throw RuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public Reader reader (String charset) {
-		try{return new InputStreamReader(read(), charset);
+		try {
+			return new InputStreamReader(read(), charset);
 		} catch (UnsupportedEncodingException ex) {
-			throw new RuntimeException("Error reading file: " + this,ex);
+			throw new RuntimeException("Error reading file: " + this, ex);
 		}
 	}
 
@@ -156,7 +156,7 @@ public class FileDescriptor {
 		try {
 			return new BufferedReader(new InputStreamReader(read(), charset), bufferSize);
 		} catch (UnsupportedEncodingException ex) {
-			throw new RuntimeException("Error reading file: " + this,ex);
+			throw new RuntimeException("Error reading file: " + this, ex);
 		}
 	}
 
@@ -258,7 +258,7 @@ public class FileDescriptor {
 	/** Returns a stream for writing to this file. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throw RuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 *        FileType#Internal file, or if it could not be written. */
 	public OutputStream write (boolean append) {
 		if (type == FileType.Classpath) throw new RuntimeException("Cannot write to a classpath file: " + file);
 		parent().mkdirs();
@@ -275,7 +275,7 @@ public class FileDescriptor {
 	 * will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throw RuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 *        FileType#Internal file, or if it could not be written. */
 	public void write (InputStream input, boolean append) {
 		OutputStream output = null;
 		try {
@@ -304,7 +304,7 @@ public class FileDescriptor {
 	/** Returns a writer for writing to this file using the default charset. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throw RuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 *        FileType#Internal file, or if it could not be written. */
 	public Writer writer (boolean append) {
 		return writer(append, null);
 	}
@@ -313,7 +313,7 @@ public class FileDescriptor {
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @param charset May be null to use the default charset.
 	 * @throw RuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 *        FileType#Internal file, or if it could not be written. */
 	public Writer writer (boolean append, String charset) {
 		if (type == FileType.Classpath) throw new RuntimeException("Cannot write to a classpath file: " + file);
 		parent().mkdirs();
@@ -333,7 +333,7 @@ public class FileDescriptor {
 	/** Writes the specified string to the file using the default charset. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throw RuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 *        FileType#Internal file, or if it could not be written. */
 	public void writeString (String string, boolean append) {
 		writeString(string, append, null);
 	}
@@ -342,7 +342,7 @@ public class FileDescriptor {
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @param charset May be null to use the default charset.
 	 * @throw RuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 *        FileType#Internal file, or if it could not be written. */
 	public void writeString (String string, boolean append, String charset) {
 		Writer writer = null;
 		try {
@@ -361,7 +361,7 @@ public class FileDescriptor {
 	/** Writes the specified bytes to the file. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throw RuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 *        FileType#Internal file, or if it could not be written. */
 	public void writeBytes (byte[] bytes, boolean append) {
 		OutputStream output = write(append);
 		try {
@@ -377,7 +377,7 @@ public class FileDescriptor {
 	}
 
 	/** Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
-	 * directory. On the desktop, an {@link FileType#Internal} handle to a directory on the classpath will return a zero length
+	 * directory. On the desktop, an FileType#Internal handle to a directory on the classpath will return a zero length
 	 * array.
 	 * @throw RuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileDescriptor[] list () {
@@ -391,7 +391,7 @@ public class FileDescriptor {
 	}
 
 	/** Returns the paths to the children of this directory with the specified suffix. Returns an empty list if this file handle
-	 * represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the classpath
+	 * represents a file and not a directory. On the desktop, an FileType#Internal handle to a directory on the classpath
 	 * will return a zero length array.
 	 * @throw RuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileDescriptor[] list (String suffix) {
@@ -414,8 +414,8 @@ public class FileDescriptor {
 		return handles;
 	}
 
-	/** Returns true if this file is a directory. Always returns false for classpath files. On Android, an {@link FileType#Internal}
-	 * handle to an empty directory will return false. On the desktop, an {@link FileType#Internal} handle to a directory on the
+	/** Returns true if this file is a directory. Always returns false for classpath files. On Android, an FileType#Internal
+	 * handle to an empty directory will return false. On the desktop, an FileType#Internal handle to a directory on the
 	 * classpath will return false. */
 	public boolean isDirectory () {
 		if (type == FileType.Classpath) return false;
@@ -423,7 +423,7 @@ public class FileDescriptor {
 	}
 
 	/** Returns a handle to the child with the specified name.
-	 * @throw RuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the child
+	 * @throw RuntimeException if this file handle is a {@link FileType#Classpath} or FileType#Internal and the child
 	 *        doesn't exist. */
 	public FileDescriptor child (String name) {
 		if (file.getPath().length() == 0) return new FileDescriptor(new File(name), type);
@@ -441,13 +441,13 @@ public class FileDescriptor {
 		return new FileDescriptor(parent, type);
 	}
 
-	/** @throw RuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
+	/** @throw RuntimeException if this file handle is a {@link FileType#Classpath} or FileType#Internal file. */
 	public boolean mkdirs () {
 		if (type == FileType.Classpath) throw new RuntimeException("Cannot mkdirs with a classpath file: " + file);
 		return file().mkdirs();
 	}
 
-	/** Returns true if the file exists. On Android, a {@link FileType#Classpath} or {@link FileType#Internal} handle to a directory
+	/** Returns true if the file exists. On Android, a {@link FileType#Classpath} or FileType#Internal handle to a directory
 	 * will always return false. */
 	public boolean exists () {
 		switch (type) {
@@ -458,14 +458,14 @@ public class FileDescriptor {
 	}
 
 	/** Deletes this file or empty directory and returns success. Will not delete a directory that has children.
-	 * @throw RuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
+	 * @throw RuntimeException if this file handle is a {@link FileType#Classpath} or FileType#Internal file. */
 	public boolean delete () {
 		if (type == FileType.Classpath) throw new RuntimeException("Cannot delete a classpath file: " + file);
 		return file().delete();
 	}
 
 	/** Deletes this file or directory and all children, recursively.
-	 * @throw RuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
+	 * @throw RuntimeException if this file handle is a {@link FileType#Classpath} or FileType#Internal file. */
 	public boolean deleteDirectory () {
 		if (type == FileType.Classpath) throw new RuntimeException("Cannot delete a classpath file: " + file);
 		return deleteDirectory(file());
@@ -474,12 +474,12 @@ public class FileDescriptor {
 	/** Copies this file or directory to the specified file or directory. If this handle is a file, then 1) if the destination is a
 	 * file, it is overwritten, or 2) if the destination is a directory, this file is copied into it, or 3) if the destination
 	 * doesn't exist, {@link #mkdirs()} is called on the destination's parent and this file is copied into it with a new name. If
-	 * this handle is a directory, then 1) if the destination is a file, RuntimeException is thrown, or 2) if the destination is
-	 * a directory, this directory is copied recursively into it as a subdirectory, overwriting existing files, or 3) if the
+	 * this handle is a directory, then 1) if the destination is a file, RuntimeException is thrown, or 2) if the destination is a
+	 * directory, this directory is copied recursively into it as a subdirectory, overwriting existing files, or 3) if the
 	 * destination doesn't exist, {@link #mkdirs()} is called on the destination and this directory is copied recursively into it
 	 * as a subdirectory.
-	 * @throw RuntimeException if the destination file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file,
-	 *        or copying failed. */
+	 * @throw RuntimeException if the destination file handle is a {@link FileType#Classpath} or FileType#Internal file, or
+	 *        copying failed. */
 	public void copyTo (FileDescriptor dest) {
 		if (!isDirectory()) {
 			if (dest.isDirectory()) dest = dest.child(name());
@@ -498,7 +498,7 @@ public class FileDescriptor {
 
 	/** Moves this file to the specified file, overwriting the file if it already exists.
 	 * @throw RuntimeException if the source or destination file handle is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file. */
+	 *        FileType#Internal file. */
 	public void moveTo (FileDescriptor dest) {
 		if (type == FileType.Classpath) throw new RuntimeException("Cannot move a classpath file: " + file);
 		copyTo(dest);
@@ -525,8 +525,8 @@ public class FileDescriptor {
 	}
 
 	/** Returns the last modified time in milliseconds for this file. Zero is returned if the file doesn't exist. Zero is returned
-	 * for {@link FileType#Classpath} files. On Android, zero is returned for {@link FileType#Internal} files. On the desktop, zero
-	 * is returned for {@link FileType#Internal} files on the classpath. */
+	 * for {@link FileType#Classpath} files. On Android, zero is returned for FileType#Internal files. On the desktop, zero
+	 * is returned for FileType#Internal files on the classpath. */
 	public long lastModified () {
 		return file().lastModified();
 	}
