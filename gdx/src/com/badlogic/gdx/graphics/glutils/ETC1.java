@@ -62,7 +62,7 @@ public class ETC1 {
 			try {
 				in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(pkmFile.read())));
 				int fileSize = in.readInt();
-				compressedData = BufferUtils.newDisposableByteBuffer(fileSize);
+				compressedData = BufferUtils.newByteBuffer(fileSize);
 				int readBytes = 0;
 				while ((readBytes = in.read(buffer)) != -1) {
 					compressedData.put(buffer, 0, readBytes);

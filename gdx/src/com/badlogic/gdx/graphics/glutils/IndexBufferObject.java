@@ -69,7 +69,8 @@ public class IndexBufferObject implements IndexData {
 // byteBuffer.order(ByteOrder.nativeOrder());
 // isDirect = false;
 // } else {
-		byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
+		byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
+		byteBuffer.order(ByteOrder.nativeOrder());
 		isDirect = true;
 // }
 		buffer = byteBuffer.asShortBuffer();
@@ -83,7 +84,8 @@ public class IndexBufferObject implements IndexData {
 	 * 
 	 * @param maxIndices the maximum number of indices this buffer can hold */
 	public IndexBufferObject (int maxIndices) {
-		byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
+		byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
+		byteBuffer.order(ByteOrder.nativeOrder());
 		this.isDirect = true;
 
 		buffer = byteBuffer.asShortBuffer();
@@ -217,5 +219,6 @@ public class IndexBufferObject implements IndexData {
 			gl.glDeleteBuffers(1, tmpHandle);
 			bufferHandle = 0;
 		}
+		BufferUtils.freeMemory(byteBuffer);
 	}
 }

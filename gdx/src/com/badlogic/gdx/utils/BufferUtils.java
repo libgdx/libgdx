@@ -276,7 +276,13 @@ public class BufferUtils {
 	/** Allocates a new direct ByteBuffer from native heap memory. Needs to be disposed with {@link #freeMemory(ByteBuffer)}. 
 	 * @param numBytes
 	 */
-	public static native ByteBuffer newDisposableByteBuffer (int numBytes); /*
+	public static ByteBuffer newUnsafeByteBuffer (int numBytes) {
+		ByteBuffer buffer = newDisposableByteBuffer(numBytes);
+		buffer.order(ByteOrder.nativeOrder());
+		return buffer;
+	}
+	
+	private static native ByteBuffer newDisposableByteBuffer (int numBytes); /*
 		char* ptr = (char*)malloc(numBytes);
 		return env->NewDirectByteBuffer(ptr, numBytes);
 	*/

@@ -83,7 +83,7 @@ public class VertexBufferObject implements VertexData {
 		this.isStatic = isStatic;
 		this.attributes = attributes;
 
-		byteBuffer = BufferUtils.newByteBuffer(this.attributes.vertexSize * numVertices);
+		byteBuffer = BufferUtils.newUnsafeByteBuffer(this.attributes.vertexSize * numVertices);
 		buffer = byteBuffer.asFloatBuffer();
 		buffer.flip();
 		byteBuffer.flip();
@@ -299,6 +299,6 @@ public class VertexBufferObject implements VertexData {
 			gl.glDeleteBuffers(1, tmpHandle);
 			bufferHandle = 0;
 		}
-
+		BufferUtils.freeMemory(byteBuffer);
 	}
 }
