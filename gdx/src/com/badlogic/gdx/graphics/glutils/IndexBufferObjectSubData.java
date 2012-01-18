@@ -50,8 +50,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class IndexBufferObjectSubData implements IndexData {
 	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
 
-	final ShortBuffer buffer;
-	final ByteBuffer byteBuffer;
+	ShortBuffer buffer;
+	ByteBuffer byteBuffer;
 	int bufferHandle;
 	final boolean isDirect;
 	boolean isDirty = true;
@@ -69,7 +69,7 @@ public class IndexBufferObjectSubData implements IndexData {
 // byteBuffer.order(ByteOrder.nativeOrder());
 // isDirect = false;
 // } else {
-		byteBuffer = BufferUtils.newDisposableByteBuffer(maxIndices * 2);
+		byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
 		isDirect = true;
 // }
 		usage = isStatic ? GL11.GL_STATIC_DRAW : GL11.GL_DYNAMIC_DRAW;
@@ -83,7 +83,7 @@ public class IndexBufferObjectSubData implements IndexData {
 	 * 
 	 * @param maxIndices the maximum number of indices this buffer can hold */
 	public IndexBufferObjectSubData (int maxIndices) {
-		byteBuffer = BufferUtils.newDisposableByteBuffer(maxIndices * 2);
+		byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
 		this.isDirect = true;
 
 		usage = GL11.GL_STATIC_DRAW;
@@ -215,7 +215,6 @@ public class IndexBufferObjectSubData implements IndexData {
 
 	/** Disposes this IndexBufferObject and all its associated OpenGL resources. */
 	public void dispose () {
-		BufferUtils.freeMemory(byteBuffer);
 		if (Gdx.gl20 != null) {
 			tmpHandle.clear();
 			tmpHandle.put(bufferHandle);

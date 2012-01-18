@@ -82,7 +82,7 @@ public class VertexBufferObjectSubData implements VertexData {
 // byteBuffer.order(ByteOrder.nativeOrder());
 // isDirect = false;
 // } else {
-		byteBuffer = BufferUtils.newDisposableByteBuffer(this.attributes.vertexSize * numVertices);
+		byteBuffer = BufferUtils.newByteBuffer(this.attributes.vertexSize * numVertices);
 		isDirect = true;
 // }
 		usage = isStatic ? GL11.GL_STATIC_DRAW : GL11.GL_DYNAMIC_DRAW;
@@ -302,7 +302,6 @@ public class VertexBufferObjectSubData implements VertexData {
 	/** Disposes of all resources this VertexBufferObject uses. */
 	@Override
 	public void dispose () {
-		BufferUtils.freeMemory(byteBuffer);
 		if (Gdx.gl20 != null) {
 			tmpHandle.clear();
 			tmpHandle.put(bufferHandle);

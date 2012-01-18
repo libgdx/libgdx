@@ -50,8 +50,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class IndexBufferObject implements IndexData {
 	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
 
-	final ShortBuffer buffer;
-	final ByteBuffer byteBuffer;
+	ShortBuffer buffer;
+	ByteBuffer byteBuffer;
 	int bufferHandle;
 	final boolean isDirect;
 	boolean isDirty = true;
@@ -69,7 +69,7 @@ public class IndexBufferObject implements IndexData {
 // byteBuffer.order(ByteOrder.nativeOrder());
 // isDirect = false;
 // } else {
-		byteBuffer = BufferUtils.newDisposableByteBuffer(maxIndices * 2);
+		byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
 		isDirect = true;
 // }
 		buffer = byteBuffer.asShortBuffer();
@@ -83,7 +83,7 @@ public class IndexBufferObject implements IndexData {
 	 * 
 	 * @param maxIndices the maximum number of indices this buffer can hold */
 	public IndexBufferObject (int maxIndices) {
-		byteBuffer = BufferUtils.newDisposableByteBuffer(maxIndices * 2);
+		byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
 		this.isDirect = true;
 
 		buffer = byteBuffer.asShortBuffer();
@@ -217,6 +217,5 @@ public class IndexBufferObject implements IndexData {
 			gl.glDeleteBuffers(1, tmpHandle);
 			bufferHandle = 0;
 		}
-		BufferUtils.freeMemory(byteBuffer);
 	}
 }

@@ -522,7 +522,6 @@ public class ShaderProgram implements Disposable {
 		gl.glDeleteShader(vertexShaderHandle);
 		gl.glDeleteShader(fragmentShaderHandle);
 		gl.glDeleteProgram(program);
-		if (buffer != null) BufferUtils.freeMemory(buffer);
 		if (shaders.get(Gdx.app) != null) shaders.get(Gdx.app).remove(this);
 	}
 
@@ -607,8 +606,7 @@ public class ShaderProgram implements Disposable {
 
 	private void ensureBufferCapacity (int numBytes) {
 		if (buffer == null || buffer.capacity() != numBytes) {
-			if(buffer != null) BufferUtils.freeMemory(buffer);
-			buffer = BufferUtils.newDisposableByteBuffer(numBytes);
+			buffer = BufferUtils.newByteBuffer(numBytes);
 			floatBuffer = buffer.asFloatBuffer();
 			intBuffer = buffer.asIntBuffer();
 		}

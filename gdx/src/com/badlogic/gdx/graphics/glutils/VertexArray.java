@@ -58,7 +58,7 @@ public class VertexArray implements VertexData {
 	 * @param attributes the {@link VertexAttributes} */
 	public VertexArray (int numVertices, VertexAttributes attributes) {
 		this.attributes = attributes;
-		byteBuffer = BufferUtils.newDisposableByteBuffer(this.attributes.vertexSize * numVertices);
+		byteBuffer = BufferUtils.newByteBuffer(this.attributes.vertexSize * numVertices);
 		buffer = byteBuffer.asFloatBuffer();
 		buffer.flip();
 		byteBuffer.flip();
@@ -67,7 +67,7 @@ public class VertexArray implements VertexData {
 	/** {@inheritDoc} */
 	@Override
 	public void dispose () {
-		BufferUtils.freeMemory(byteBuffer);
+
 	}
 
 	/** {@inheritDoc} */
