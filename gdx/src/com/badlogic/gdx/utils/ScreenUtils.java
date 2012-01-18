@@ -90,7 +90,7 @@ public class ScreenUtils {
 	 * @param flipY whether to flip pixels along Y axis */
 	public static byte[] getFrameBufferPixels (int x, int y, int w, int h, boolean flipY) {
 		Gdx.gl.glPixelStorei(GL10.GL_PACK_ALIGNMENT, 1);
-		final ByteBuffer pixels = BufferUtils.newByteBuffer(w * h * 4);
+		final ByteBuffer pixels = BufferUtils.newDisposableByteBuffer(w * h * 4);
 		Gdx.gl.glReadPixels(x, y, w, h, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, pixels);
 		final int numBytes = w * h * 4;
 		byte[] lines = new byte[numBytes];
@@ -104,6 +104,7 @@ public class ScreenUtils {
 			pixels.clear();
 			pixels.get(lines);
 		}
+		BufferUtils.freeMemory(pixels);
 		return lines;
 
 	}

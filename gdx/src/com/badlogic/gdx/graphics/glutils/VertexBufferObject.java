@@ -83,7 +83,7 @@ public class VertexBufferObject implements VertexData {
 		this.isStatic = isStatic;
 		this.attributes = attributes;
 
-		byteBuffer = BufferUtils.newByteBuffer(this.attributes.vertexSize * numVertices);
+		byteBuffer = BufferUtils.newDisposableByteBuffer(this.attributes.vertexSize * numVertices);
 		buffer = byteBuffer.asFloatBuffer();
 		buffer.flip();
 		byteBuffer.flip();
@@ -282,6 +282,7 @@ public class VertexBufferObject implements VertexData {
 	/** Disposes of all resources this VertexBufferObject uses. */
 	@Override
 	public void dispose () {
+		BufferUtils.freeMemory(byteBuffer);
 		if (Gdx.gl20 != null) {
 			tmpHandle.clear();
 			tmpHandle.put(bufferHandle);
