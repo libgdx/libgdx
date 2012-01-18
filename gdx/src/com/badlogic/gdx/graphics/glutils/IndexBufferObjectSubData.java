@@ -69,8 +69,7 @@ public class IndexBufferObjectSubData implements IndexData {
 // byteBuffer.order(ByteOrder.nativeOrder());
 // isDirect = false;
 // } else {
-		byteBuffer = ByteBuffer.allocateDirect(maxIndices * 2);
-		byteBuffer.order(ByteOrder.nativeOrder());
+		byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
 		isDirect = true;
 // }
 		usage = isStatic ? GL11.GL_STATIC_DRAW : GL11.GL_DYNAMIC_DRAW;
@@ -84,8 +83,7 @@ public class IndexBufferObjectSubData implements IndexData {
 	 * 
 	 * @param maxIndices the maximum number of indices this buffer can hold */
 	public IndexBufferObjectSubData (int maxIndices) {
-		byteBuffer = ByteBuffer.allocateDirect(maxIndices * 2);
-		byteBuffer.order(ByteOrder.nativeOrder());
+		byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
 		this.isDirect = true;
 
 		usage = GL11.GL_STATIC_DRAW;

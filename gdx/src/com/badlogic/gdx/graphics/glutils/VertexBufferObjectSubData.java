@@ -82,8 +82,7 @@ public class VertexBufferObjectSubData implements VertexData {
 // byteBuffer.order(ByteOrder.nativeOrder());
 // isDirect = false;
 // } else {
-		byteBuffer = ByteBuffer.allocateDirect(this.attributes.vertexSize * numVertices);
-		byteBuffer.order(ByteOrder.nativeOrder());
+		byteBuffer = BufferUtils.newByteBuffer(this.attributes.vertexSize * numVertices);
 		isDirect = true;
 // }
 		usage = isStatic ? GL11.GL_STATIC_DRAW : GL11.GL_DYNAMIC_DRAW;

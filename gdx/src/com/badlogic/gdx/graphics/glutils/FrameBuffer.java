@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -100,10 +101,7 @@ public class FrameBuffer implements Disposable {
 		colorTexture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		GL20 gl = Gdx.graphics.getGL20();
 
-		ByteBuffer tmp = ByteBuffer.allocateDirect(4);
-		tmp.order(ByteOrder.nativeOrder());
-		IntBuffer handle = tmp.asIntBuffer();
-
+		IntBuffer handle = BufferUtils.newIntBuffer(1);
 		gl.glGenFramebuffers(1, handle);
 		framebufferHandle = handle.get(0);
 
@@ -158,9 +156,7 @@ public class FrameBuffer implements Disposable {
 	public void dispose () {
 		GL20 gl = Gdx.graphics.getGL20();
 
-		ByteBuffer tmp = ByteBuffer.allocateDirect(4);
-		tmp.order(ByteOrder.nativeOrder());
-		IntBuffer handle = tmp.asIntBuffer();
+		IntBuffer handle = BufferUtils.newIntBuffer(1);
 
 		colorTexture.dispose();
 		if (hasDepth) {

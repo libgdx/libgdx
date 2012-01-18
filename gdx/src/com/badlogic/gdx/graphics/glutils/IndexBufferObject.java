@@ -69,8 +69,7 @@ public class IndexBufferObject implements IndexData {
 // byteBuffer.order(ByteOrder.nativeOrder());
 // isDirect = false;
 // } else {
-		byteBuffer = ByteBuffer.allocateDirect(maxIndices * 2);
-		byteBuffer.order(ByteOrder.nativeOrder());
+		byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
 		isDirect = true;
 // }
 		buffer = byteBuffer.asShortBuffer();
@@ -84,8 +83,7 @@ public class IndexBufferObject implements IndexData {
 	 * 
 	 * @param maxIndices the maximum number of indices this buffer can hold */
 	public IndexBufferObject (int maxIndices) {
-		byteBuffer = ByteBuffer.allocateDirect(maxIndices * 2);
-		byteBuffer.order(ByteOrder.nativeOrder());
+		byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
 		this.isDirect = true;
 
 		buffer = byteBuffer.asShortBuffer();

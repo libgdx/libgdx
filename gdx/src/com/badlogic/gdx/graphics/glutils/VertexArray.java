@@ -58,8 +58,7 @@ public class VertexArray implements VertexData {
 	 * @param attributes the {@link VertexAttributes} */
 	public VertexArray (int numVertices, VertexAttributes attributes) {
 		this.attributes = attributes;
-		byteBuffer = ByteBuffer.allocateDirect(this.attributes.vertexSize * numVertices);
-		byteBuffer.order(ByteOrder.nativeOrder());
+		byteBuffer = BufferUtils.newByteBuffer(this.attributes.vertexSize * numVertices);
 		buffer = byteBuffer.asFloatBuffer();
 		buffer.flip();
 		byteBuffer.flip();

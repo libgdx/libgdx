@@ -182,9 +182,7 @@ public class ShaderProgram implements Disposable {
 
 	private int loadShader (int type, String source) {
 		GL20 gl = Gdx.graphics.getGL20();
-		ByteBuffer tmp = ByteBuffer.allocateDirect(4);
-		tmp.order(ByteOrder.nativeOrder());
-		IntBuffer intbuf = tmp.asIntBuffer();
+		IntBuffer intbuf = BufferUtils.newIntBuffer(1);
 
 		int shader = gl.glCreateShader(type);
 		if (shader == 0) return -1;

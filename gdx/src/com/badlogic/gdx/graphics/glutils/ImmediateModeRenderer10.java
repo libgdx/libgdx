@@ -83,19 +83,13 @@ public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 			throw new GdxRuntimeException("ImmediateModeRenderer can only be used with OpenGL ES 1.0/1.1");
 
 		this.positions = new float[3 * maxVertices];
-		this.positionsBuffer = allocateBuffer(3 * maxVertices);
+		this.positionsBuffer = BufferUtils.newFloatBuffer(3 * maxVertices);
 		this.colors = new float[4 * maxVertices];
-		this.colorsBuffer = allocateBuffer(4 * maxVertices);
+		this.colorsBuffer = BufferUtils.newFloatBuffer(4 * maxVertices);
 		this.normals = new float[3 * maxVertices];
-		this.normalsBuffer = allocateBuffer(3 * maxVertices);
+		this.normalsBuffer = BufferUtils.newFloatBuffer(3 * maxVertices);
 		this.texCoords = new float[2 * maxVertices];
-		this.texCoordsBuffer = allocateBuffer(2 * maxVertices);
-	}
-
-	private FloatBuffer allocateBuffer (int numFloats) {
-		ByteBuffer buffer = ByteBuffer.allocateDirect(numFloats * 4);
-		buffer.order(ByteOrder.nativeOrder());
-		return buffer.asFloatBuffer();
+		this.texCoordsBuffer = BufferUtils.newFloatBuffer(2 * maxVertices);
 	}
 
 	public void begin (Matrix4 projModelView, int primitiveType) {
