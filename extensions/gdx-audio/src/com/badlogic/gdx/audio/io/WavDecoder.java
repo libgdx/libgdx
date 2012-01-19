@@ -34,10 +34,11 @@ public class WavDecoder extends Decoder {
 		numSamples *= 2;
 		try {
 			while((read = in.read(buffer, total, numSamples - total)) > 0) {
-				for(int j=0; j < read; j+=2) {
-					samples[offset++] = (short)(((buffer[j + 1] << 8) & 0xff00) | (buffer[j] & 0xff));
-				}
 				total += read;
+			}
+			total = total - (total % 2);
+			for(int j=0; j < total; j+=2) {
+				samples[offset++] = (short)(((buffer[j + 1] << 8) & 0xff00) | (buffer[j] & 0xff));
 			}
 		} catch (IOException e) {
 			return 0;
