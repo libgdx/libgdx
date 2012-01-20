@@ -39,7 +39,7 @@ public class BufferUtilsTest extends GdxTest {
 	@Override
 	public void create () {
 		ByteBuffer bytebuffer = BufferUtils.newUnsafeByteBuffer(1000 * 1000);
-		BufferUtils.freeMemory(bytebuffer);
+		BufferUtils.disposeUnsafeByteBuffer(bytebuffer);
 
 		ByteBuffer bb = BufferUtils.newByteBuffer(8);
 		CharBuffer cb = BufferUtils.newCharBuffer(8);
