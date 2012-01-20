@@ -30,7 +30,7 @@ import java.nio.ShortBuffer;
  * 
  * @author mzechner */
 public class BufferUtils {
-	static ObjectIntMap<ByteBuffer> unsafeBuffers = new ObjectIntMap<ByteBuffer>();
+	static Array<ByteBuffer> unsafeBuffers = new Array<ByteBuffer>();
 	static int allocatedUnsafe = 0;
 	
 	/** Copies numFloats floats from src starting at offset to dst. Dst is assumed to be a direct {@link Buffer}. The method will
@@ -273,9 +273,9 @@ public class BufferUtils {
 	public static void disposeUnsafeByteBuffer(ByteBuffer buffer) {
 		int size = 0; 
 		synchronized(unsafeBuffers) {
-			size = unsafeBuffers.remove(buffer, -1);
+			if(!unsafeBuffers.removeValue(buffer, true))
+				throw new IllegalArgumentException("buffer not allocated with newUnsafeByteBuffer or already disposed");
 		}
-		if(size == -1) throw new IllegalArgumentException("buffer not allocated with newUnsafeByteBuffer or already disposed");
 		allocatedUnsafe -= size;
 		freeMemory(buffer);
 	}
@@ -288,7 +288,7 @@ public class BufferUtils {
 		buffer.order(ByteOrder.nativeOrder());
 		allocatedUnsafe += numBytes;
 		synchronized(unsafeBuffers) {
-			unsafeBuffers.put(buffer, numBytes);
+			unsafeBuffers.add(buffer);
 		}
 		return buffer;
 	}
