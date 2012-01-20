@@ -67,7 +67,7 @@ public class VertexArray implements VertexData {
 	/** {@inheritDoc} */
 	@Override
 	public void dispose () {
-		BufferUtils.freeMemory(byteBuffer);
+		BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
 	}
 
 	/** {@inheritDoc} */

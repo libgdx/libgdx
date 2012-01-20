@@ -299,6 +299,6 @@ public class VertexBufferObject implements VertexData {
 			gl.glDeleteBuffers(1, tmpHandle);
 			bufferHandle = 0;
 		}
-		BufferUtils.freeMemory(byteBuffer);
+		BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
 	}
 }

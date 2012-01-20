@@ -217,6 +217,6 @@ public class IndexBufferObject implements IndexData {
 			gl.glDeleteBuffers(1, tmpHandle);
 			bufferHandle = 0;
 		}
-		BufferUtils.freeMemory(byteBuffer);
+		BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
 	}
 }

@@ -134,7 +134,7 @@ public class SpriteBatch implements Disposable {
 	 * @param size the batch size in number of sprites
 	 * @param defaultShader the default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
 	public SpriteBatch (int size, ShaderProgram defaultShader) {
-		this(size, Gdx.graphics.isGL20Available() ? 10 : 1, defaultShader);
+		this(size, 1, defaultShader);
 	}
 
 	/** Constructs a SpriteBatch with the specified size and number of buffers and (if GL2) the default shader. See

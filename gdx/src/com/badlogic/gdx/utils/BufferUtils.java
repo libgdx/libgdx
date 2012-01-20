@@ -30,6 +30,9 @@ import java.nio.ShortBuffer;
  * 
  * @author mzechner */
 public class BufferUtils {
+	static ObjectIntMap<ByteBuffer> unsafeBuffers = new ObjectIntMap<ByteBuffer>();
+	static int allocatedUnsafe = 0;
+	
 	/** Copies numFloats floats from src starting at offset to dst. Dst is assumed to be a direct {@link Buffer}. The method will
 	 * crash if that is not the case. The position and limit of the buffer are ignored, the copy is placed at position 0 in the
 	 * buffer. After the copying process the position of the buffer is set to 0 and its limit is set to numFloats * 4 if it is a
@@ -267,11 +270,15 @@ public class BufferUtils {
 	#include <string.h>
 	*/
 	
-	/** Frees the memory allocated for the ByteBuffer. DO NOT USE THIS ON BYTEBUFFERS ALLOCATEd VIA METHODS IN THIS CLASS OR
-	 * ByteBuffer.allocateDirect()! IT WILL EXPLODE! */
-	public static native void freeMemory (ByteBuffer buffer); /*
-		free(buffer);
-	*/
+	public static void disposeUnsafeByteBuffer(ByteBuffer buffer) {
+		int size = 0; 
+		synchronized(unsafeBuffers) {
+			size = unsafeBuffers.remove(buffer, -1);
+		}
+		if(size == -1) throw new IllegalArgumentException("buffer not allocated with newUnsafeByteBuffer or already disposed");
+		allocatedUnsafe -= size;
+		freeMemory(buffer);
+	}
 
 	/** Allocates a new direct ByteBuffer from native heap memory. Needs to be disposed with {@link #freeMemory(ByteBuffer)}. 
 	 * @param numBytes
@@ -279,8 +286,25 @@ public class BufferUtils {
 	public static ByteBuffer newUnsafeByteBuffer (int numBytes) {
 		ByteBuffer buffer = newDisposableByteBuffer(numBytes);
 		buffer.order(ByteOrder.nativeOrder());
+		allocatedUnsafe += numBytes;
+		synchronized(unsafeBuffers) {
+			unsafeBuffers.put(buffer, numBytes);
+		}
 		return buffer;
 	}
+	
+	/**
+	 * @return the number of bytes allocated with {@link #newUnsafeByteBuffer(int)}
+	 */
+	public static int getAllocatedBytesUnsafe() {
+		return allocatedUnsafe;
+	}
+	
+	/** Frees the memory allocated for the ByteBuffer. DO NOT USE THIS ON BYTEBUFFERS ALLOCATEd VIA METHODS IN THIS CLASS OR
+	 * ByteBuffer.allocateDirect()! IT WILL EXPLODE! */
+	private static native void freeMemory (ByteBuffer buffer); /*
+		free(buffer);
+	 */
 	
 	private static native ByteBuffer newDisposableByteBuffer (int numBytes); /*
 		char* ptr = (char*)malloc(numBytes);
