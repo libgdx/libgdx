@@ -98,10 +98,10 @@ public class SpriteBatch implements Disposable {
 	float color = Color.WHITE.toFloatBits();
 	private Color tempColor = new Color(1, 1, 1, 1);
 
-	/** number of render calls **/
+	/** number of render calls since last {@link #begin()} **/
 	public int renderCalls = 0;
 	
-	/** number of rendering calls in total, will not be reset, unless it's done manually **/
+	/** number of rendering calls ever, will not be reset, unless it's done manually **/
 	public int totalRenderCalls = 0;
 
 	/** the maximum number of sprites rendered in one batch so far **/

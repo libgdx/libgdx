@@ -280,9 +280,9 @@ public class BufferUtils {
 		freeMemory(buffer);
 	}
 
-	/** Allocates a new direct ByteBuffer from native heap memory. Needs to be disposed with {@link #freeMemory(ByteBuffer)}. 
-	 * @param numBytes
-	 */
+	/** Allocates a new direct ByteBuffer from native heap memory using the native byte order. Needs to be disposed with
+	 * {@link #freeMemory(ByteBuffer)}.
+	 * @param numBytes */
 	public static ByteBuffer newUnsafeByteBuffer (int numBytes) {
 		ByteBuffer buffer = newDisposableByteBuffer(numBytes);
 		buffer.order(ByteOrder.nativeOrder());
@@ -292,7 +292,7 @@ public class BufferUtils {
 		}
 		return buffer;
 	}
-	
+
 	/**
 	 * @return the number of bytes allocated with {@link #newUnsafeByteBuffer(int)}
 	 */

@@ -196,8 +196,11 @@ public class Json {
 		}
 		((JsonWriter)writer).setOutputType(outputType);
 		this.writer = (JsonWriter)writer;
-		writeValue(object, knownType, elementType);
-		this.writer = null;
+		try {
+			writeValue(object, knownType, elementType);
+		} finally {
+			this.writer = null;
+		}
 	}
 
 	public void writeFields (Object object) {

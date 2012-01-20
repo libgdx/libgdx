@@ -68,10 +68,13 @@ public class TableTest extends GdxTest {
 			}
 		});
 
+		root.x = 10;
+		root.y = 10;
+		
 		root.debug();
-		root.add(new Label("meow meow meow meow meow meow meow meow meow meow meow meow meow ", skin)).colspan(3);
+		root.add(new Label("meow meow meow meow meow meow meow meow meow meow meow meow", skin)).colspan(3);
 		root.row();
-		root.add(new TextButton("Text Button", skin));
+		root.add(new TextButton("Text Button", skin)).expand();
 		root.add(new TextButton("Toggle Button", skin.getStyle("toggle", TextButtonStyle.class)));
 		root.add(new CheckBox("meow", skin));
 		root.pack();
