@@ -50,6 +50,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class TexturePacker {
 	static Pattern indexPattern = Pattern.compile(".+_(\\d+)(_.*|$)");
+	static public boolean quiet;
 
 	ArrayList<Image> images = new ArrayList();
 	HashMap<String, Image> imageCrcs = new HashMap();
@@ -84,18 +85,22 @@ public class TexturePacker {
 
 		if (images.isEmpty()) return;
 
-		System.out.println(inputDir);
+		log(inputDir.toString());
 		if (filter.format != null)
-			System.out.println("Format: " + filter.format);
+			log("Format: " + filter.format);
 		else
-			System.out.println("Format: " + settings.defaultFormat + " (default)");
+			log("Format: " + settings.defaultFormat + " (default)");
 		if (filter.minFilter != null && filter.magFilter != null)
-			System.out.println("Filter: " + filter.minFilter + ", " + filter.magFilter);
+			log("Filter: " + filter.minFilter + ", " + filter.magFilter);
 		else
-			System.out.println("Filter: " + settings.defaultFilterMin + ", " + settings.defaultFilterMag + " (default)");
-		if (filter.direction != Direction.none) System.out.println("Repeat: " + filter.direction);
+			log("Filter: " + settings.defaultFilterMin + ", " + settings.defaultFilterMag + " (default)");
+		if (filter.direction != Direction.none) log("Repeat: " + filter.direction);
 
 		process(outputDir, packFile, inputDir.getName());
+	}
+	
+	static void log (String message) {
+		if (!quiet) System.out.println(message);
 	}
 
 	public void addImage (BufferedImage image, String name) {
@@ -135,8 +140,8 @@ public class TexturePacker {
 			while (!images.isEmpty())
 				if (!writePage(prefix, outputDir)) break;
 			if (writer != null) {
-				System.out.println("Pixels eliminated: " + (1 - compressedSize / (float)uncompressedSize) * 100 + "%");
-				System.out.println();
+				log("Pixels eliminated: " + (1 - compressedSize / (float)uncompressedSize) * 100 + "%");
+				log("");
 			}
 		} finally {
 			writer.close();
@@ -291,7 +296,7 @@ public class TexturePacker {
 
 		BufferedImage canvas = new BufferedImage(width, height, type);
 		insert(canvas, images, bestWidth, bestHeight);
-		System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
+		log("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
 		ImageIO.write(canvas, "png", outputFile);
 		if (!settings.pot) ImageIO.write(squeeze(ImageIO.read(outputFile), "", true), "png", outputFile);
 		compressedSize += canvas.getWidth() * canvas.getHeight();
@@ -443,7 +448,7 @@ public class TexturePacker {
 		int newWidth = right - left;
 		int newHeight = bottom - top;
 		if (newWidth <= 0 || newHeight <= 0) {
-			System.out.println("Ignoring blank input image: " + name);
+			log("Ignoring blank input image: " + name);
 			return null;
 		}
 		return new Image(name, source, left, top, newWidth, newHeight);
@@ -523,7 +528,7 @@ public class TexturePacker {
 			String imageName = image.name;
 			imageName = imageName.replace("\\", "/");
 
-			System.out.println("Packing... " + imageName + (alias ? " (alias)" : ""));
+			log("Packing... " + imageName + (alias ? " (alias)" : ""));
 
 			Matcher matcher = indexPattern.matcher(imageName);
 			int index = -1;
@@ -752,9 +757,9 @@ public class TexturePacker {
 				writer.append(section);
 				writer.close();
 
-				System.out.println(inputDir);
-				System.out.println("Skipping unchanged directory.");
-				System.out.println();
+				log(inputDir.toString());
+				log("Skipping unchanged directory.");
+				log("");
 				skip = true;
 			}
 		}
