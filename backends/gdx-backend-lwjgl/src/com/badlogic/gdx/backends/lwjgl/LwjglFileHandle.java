@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.io.File;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 
@@ -46,5 +47,10 @@ public final class LwjglFileHandle extends FileHandle {
 				parent = new File("");
 		}
 		return new LwjglFileHandle(parent, type);
+	}
+
+	public File file () {
+		if (type == FileType.External) return new File(LwjglFiles.externalPath, file.getPath());
+		return file;
 	}
 }

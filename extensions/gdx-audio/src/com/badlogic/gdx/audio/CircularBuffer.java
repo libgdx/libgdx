@@ -73,7 +73,8 @@ public class CircularBuffer {
 	}
 
 	public void setWritePosition (int writePosition) {
-		this.writePosition = Math.abs(writePosition) % buffer.length;;
+		this.writePosition = Math.abs(writePosition) % buffer.length;
+		;
 	}
 
 	public int getWritePosition () {
@@ -100,6 +101,7 @@ public class CircularBuffer {
 			short a = src[srcPos + i];
 			short b = dest[destIndex];
 			dest[destIndex] = MathUtils.clamp((short)(a + b - a * b / Short.MAX_VALUE), (short)0, Short.MAX_VALUE);
+			// dest[destIndex] = (short)(a + b / 2);
 		}
 	}
 

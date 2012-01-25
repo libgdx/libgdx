@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
@@ -35,8 +37,8 @@ public class LwjglPreferences implements Preferences {
 	private final Properties properties = new Properties();
 	private final FileHandle file;
 
-	LwjglPreferences (String name) {
-		this(Gdx.files.external(".prefs/" + name));
+	public LwjglPreferences (String name) {
+		this(new LwjglFileHandle(new File(name), FileType.External));
 	}
 
 	public LwjglPreferences (FileHandle file) {
