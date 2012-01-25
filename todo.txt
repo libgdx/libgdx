@@ -54,5 +54,3 @@ AssetManager
 DecalBatch
 	slow
 	remove?
-SpriteBatch
-	origin fubar
