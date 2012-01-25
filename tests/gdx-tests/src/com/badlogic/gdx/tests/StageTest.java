@@ -140,6 +140,8 @@ public class StageTest extends GdxTest implements InputProcessor {
 				img.y = y;
 				img.width = 32;
 				img.height = 32;
+				img.originX = 16;
+				img.originY = 16;
 				group.addActor(img);
 				images.add(img);
 			}
