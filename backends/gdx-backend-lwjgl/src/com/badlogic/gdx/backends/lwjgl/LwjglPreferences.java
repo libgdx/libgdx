@@ -38,7 +38,7 @@ public class LwjglPreferences implements Preferences {
 	private final FileHandle file;
 
 	public LwjglPreferences (String name) {
-		this(new LwjglFileHandle(new File(name), FileType.External));
+		this(new LwjglFileHandle(new File(".prefs/" + name), FileType.External));
 	}
 
 	public LwjglPreferences (FileHandle file) {
