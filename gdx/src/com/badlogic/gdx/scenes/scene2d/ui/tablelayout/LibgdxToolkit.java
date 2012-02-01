@@ -73,16 +73,6 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 				public void draw (SpriteBatch batch, float parentAlpha) {
 				}
 
-				public boolean touchDown (float x, float y, int pointer) {
-					return false;
-				}
-
-				public void touchUp (float x, float y, int pointer) {
-				}
-
-				public void touchDragged (float x, float y, int pointer) {
-				}
-
 				public Actor hit (float x, float y) {
 					return null;
 				}

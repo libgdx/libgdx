@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.files;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -120,6 +121,12 @@ public class FileHandle {
 				throw new GdxRuntimeException("Cannot open a stream to a directory: " + file + " (" + type + ")", ex);
 			throw new GdxRuntimeException("Error reading file: " + file + " (" + type + ")", ex);
 		}
+	}
+
+	/** Returns a buffered stream for reading this file as bytes.
+	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
+	public BufferedInputStream read (int bufferSize) {
+		return new BufferedInputStream(read(), bufferSize);
 	}
 
 	/** Returns a reader for reading this file as characters.

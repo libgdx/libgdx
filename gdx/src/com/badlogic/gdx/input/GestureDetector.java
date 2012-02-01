@@ -200,7 +200,7 @@ public class GestureDetector extends InputAdapter {
 				inTapSquare = false;
 				pinching = true;
 				initialFirstPointer.set(firstPointer);
-				initialSecondPointer.set(firstPointer);
+				initialSecondPointer.set(secondPointer);
 			} else {
 				inTapSquare = true;
 				pinching = false;
@@ -213,7 +213,7 @@ public class GestureDetector extends InputAdapter {
 			inTapSquare = false;
 			pinching = true;
 			initialFirstPointer.set(firstPointer);
-			initialSecondPointer.set(firstPointer);
+			initialSecondPointer.set(secondPointer);
 		}
 		return listener.touchDown(x, y, pointer);
 	}
