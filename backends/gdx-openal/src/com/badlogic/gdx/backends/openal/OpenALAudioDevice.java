@@ -185,7 +185,7 @@ public class OpenALAudioDevice implements AudioDevice {
 	}
 
 	public boolean isMono () {
-		return false;
+		return channels == 1;
 	}
 
 	public int getLatency () {

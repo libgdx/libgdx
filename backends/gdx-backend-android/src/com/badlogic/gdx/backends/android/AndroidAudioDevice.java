@@ -88,4 +88,9 @@ class AndroidAudioDevice implements AudioDevice {
 	public int getLatency () {
 		return latency;
 	}
+
+	@Override
+	public void setVolume (float volume) {
+		track.setStereoVolume(volume, volume);
+	}
 }

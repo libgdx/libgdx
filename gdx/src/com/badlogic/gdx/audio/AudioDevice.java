@@ -47,4 +47,7 @@ public interface AudioDevice extends Disposable {
 
 	/** Frees all resources associated with this AudioDevice. Needs to be called when the device is no longer needed. */
 	public void dispose ();
+	
+	/** Sets the volume in the range [0,1]. */
+	public void setVolume(float volume);
 }
