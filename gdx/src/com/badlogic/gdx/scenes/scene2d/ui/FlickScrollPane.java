@@ -179,10 +179,9 @@ public class FlickScrollPane extends WidgetGroup {
 		}
 	}
 
-	// BOZO - Use layout.
-	private void calculateBoundsAndPositions (Matrix4 batchTransform) {
+	public void layout () {
 		// Get widget's desired width.
-		float widgetWidth, widgetHeight;
+		float widgetWidth, widgetHeight;	
 		if (widget instanceof Layout) {
 			Layout layout = (Layout)widget;
 			widgetWidth = layout.getPrefWidth();
@@ -197,40 +196,11 @@ public class FlickScrollPane extends WidgetGroup {
 		scrollY = !disableY && (widgetHeight > height || forceOverscrollY);
 
 		// If the widget is smaller than the available space, make it take up the available space.
-		widgetWidth = disableX ? width : Math.max(width, widgetWidth);
-		widgetHeight = disableY ? height : Math.max(height, widgetHeight);
-		if (widget.width != widgetWidth || widget.height != widgetHeight) {
-			widget.width = widgetWidth;
-			widget.height = widgetHeight;
-			if (widget instanceof Layout) ((Layout)widget).invalidate();
-		}
+		widget.width = disableX ? width : Math.max(width, widgetWidth);
+		widget.height = disableY ? height : Math.max(height, widgetHeight);
 
-		// Calculate the widgets offset depending on the scroll state and available widget area.
 		maxX = widget.width - width;
 		maxY = widget.height - height;
-		widget.y = (int)(scrollY ? amountY : maxY) - widget.height + height;
-		widget.x = -(int)(scrollX ? amountX : 0);
-
-		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
-		// project those to screen coordinates for OpenGL ES to consume.
-		widgetAreaBounds.set(0, 0, width, height);
-		ScissorStack.calculateScissors(stage.getCamera(), batchTransform, widgetAreaBounds, scissorBounds);
-
-		if (widget instanceof Cullable) {
-			widgetCullingArea.x = -widget.x;
-			widgetCullingArea.y = -widget.y;
-			widgetCullingArea.width = width;
-			widgetCullingArea.height = height;
-			((Cullable)widget).setCullingArea(widgetCullingArea);
-		}
-	}
-
-	public void layout () {
-		if (widget instanceof Layout) {
-			Layout layout = (Layout)widget;
-			layout.invalidate();
-			layout.validate();
-		}
 	}
 
 	@Override
@@ -242,8 +212,21 @@ public class FlickScrollPane extends WidgetGroup {
 		// Setup transform for this group.
 		applyTransform(batch);
 
-		// Calculate the bounds for the scrollbars, the widget area and the scissor area.
-		calculateBoundsAndPositions(batch.getTransformMatrix());
+		// Calculate the widget position depending on the scroll state and available widget area.
+		widget.y = (int)(scrollY ? amountY : maxY) - widget.height + height;
+		widget.x = -(int)(scrollX ? amountX : 0);
+		if (widget instanceof Cullable) {
+			widgetCullingArea.x = -widget.x;
+			widgetCullingArea.y = -widget.y;
+			widgetCullingArea.width = width;
+			widgetCullingArea.height = height;
+			((Cullable)widget).setCullingArea(widgetCullingArea);
+		}
+
+		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
+		// project those to screen coordinates for OpenGL ES to consume.
+		widgetAreaBounds.set(0, 0, width, height);
+		ScissorStack.calculateScissors(stage.getCamera(), batch.getTransformMatrix(), widgetAreaBounds, scissorBounds);
 
 		// Enable scissors for widget area and draw the widget.
 		if (ScissorStack.pushScissors(scissorBounds)) {

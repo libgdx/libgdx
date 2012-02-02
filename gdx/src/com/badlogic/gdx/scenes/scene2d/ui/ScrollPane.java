@@ -56,6 +56,7 @@ public class ScrollPane extends WidgetGroup {
 	private final Vector2 lastPoint = new Vector2();
 	private float handlePosition;
 	private boolean disableX, disableY;
+	private float areaWidth, areaHeight;
 
 	public ScrollPane (Skin skin) {
 		this(null, skin);
@@ -96,7 +97,7 @@ public class ScrollPane extends WidgetGroup {
 		return style;
 	}
 
-	private void calculateBoundsAndPositions (Matrix4 batchTransform) {
+	public void layout () {
 		final NinePatch bg = style.background;
 		final NinePatch hScrollKnob = style.hScrollKnob;
 		final NinePatch vScrollKnob = style.vScrollKnob;
@@ -108,8 +109,8 @@ public class ScrollPane extends WidgetGroup {
 		float bgBottomHeight = bg == null ? 0 : bg.getTopHeight();
 
 		// Get available space size by subtracting background's padded area.
-		float areaWidth = width - bgLeftWidth - bgRightWidth;
-		float areaHeight = height - bgTopHeight - bgBottomHeight;
+		areaWidth = width - bgLeftWidth - bgRightWidth;
+		areaHeight = height - bgTopHeight - bgBottomHeight;
 
 		// Get widget's desired width.
 		float widgetWidth, widgetHeight;
@@ -169,25 +170,6 @@ public class ScrollPane extends WidgetGroup {
 			vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getScrollPercentY()));
 		}
 
-		// Calculate the widgets offset depending on the scroll state and available widget area.
-		widget.y = widgetAreaBounds.y - (!scrollY ? (int)(widget.height - areaHeight) : 0)
-			- (scrollY ? (int)((widget.height - areaHeight) * (1 - getScrollPercentY())) : 0);
-		widget.x = widgetAreaBounds.x - (scrollX ? (int)((widget.width - areaWidth) * getScrollPercentX()) : 0);
-
-		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
-		// project those to screen coordinates for OpenGL ES to consume.
-		ScissorStack.calculateScissors(stage.getCamera(), batchTransform, widgetAreaBounds, scissorBounds);
-
-		if (widget instanceof Cullable) {
-			widgetCullingArea.x = -widget.x + widgetAreaBounds.x;
-			widgetCullingArea.y = -widget.y + widgetAreaBounds.y;
-			widgetCullingArea.width = areaWidth;
-			widgetCullingArea.height = areaHeight;
-			((Cullable)widget).setCullingArea(widgetCullingArea);
-		}
-	}
-
-	public void layout () {
 		if (widget instanceof Layout) {
 			Layout layout = (Layout)widget;
 			layout.invalidate();
@@ -204,8 +186,25 @@ public class ScrollPane extends WidgetGroup {
 		// Setup transform for this group.
 		applyTransform(batch);
 
-		// Calculate the bounds for the scrollbars, the widget area and the scissor area.
-		calculateBoundsAndPositions(batch.getTransformMatrix());
+		if (scrollX) hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getScrollPercentX());
+		if (scrollY)
+			vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getScrollPercentY()));
+
+		// Calculate the widgets offset depending on the scroll state and available widget area.
+		widget.y = widgetAreaBounds.y - (!scrollY ? (int)(widget.height - areaHeight) : 0)
+			- (scrollY ? (int)((widget.height - areaHeight) * (1 - getScrollPercentY())) : 0);
+		widget.x = widgetAreaBounds.x - (scrollX ? (int)((widget.width - areaWidth) * getScrollPercentX()) : 0);
+		if (widget instanceof Cullable) {
+			widgetCullingArea.x = -widget.x + widgetAreaBounds.x;
+			widgetCullingArea.y = -widget.y + widgetAreaBounds.y;
+			widgetCullingArea.width = areaWidth;
+			widgetCullingArea.height = areaHeight;
+			((Cullable)widget).setCullingArea(widgetCullingArea);
+		}
+
+		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
+		// project those to screen coordinates for OpenGL ES to consume.
+		ScissorStack.calculateScissors(stage.getCamera(), batchTransform, widgetAreaBounds, scissorBounds);
 
 		// Draw the background ninepatch.
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
