@@ -116,7 +116,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 	}
 
-	private View createGLSurfaceView (Activity activity, boolean useGL2, ResolutionStrategy resolutionStrategy) {
+	private View createGLSurfaceView (Activity activity, boolean useGL2, final ResolutionStrategy resolutionStrategy) {
 		EGLConfigChooser configChooser = getEglConfigChooser();
 
 		if (useGL2 && checkGL20()) {
@@ -130,13 +130,31 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		} else {
 			config.useGL20 = false;
 			configChooser = getEglConfigChooser();
-			GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(activity, resolutionStrategy);
-			if (configChooser != null)
-				view.setEGLConfigChooser(configChooser);
-			else
-				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-			view.setRenderer(this);
-			return view;
+			int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+			
+			if(sdkVersion >= 11) {
+				GLSurfaceView view = new GLSurfaceView(activity) {
+					@Override
+					protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec) {
+						ResolutionStrategy.MeasuredDimension measures = resolutionStrategy.calcMeasures(widthMeasureSpec, heightMeasureSpec);
+						setMeasuredDimension(measures.width, measures.height);
+					}
+				};
+				if (configChooser != null)
+					view.setEGLConfigChooser(configChooser);
+				else
+					view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+				view.setRenderer(this);
+				return view;
+			} else {
+				GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(activity, resolutionStrategy);
+				if (configChooser != null)
+					view.setEGLConfigChooser(configChooser);
+				else
+					view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+				view.setRenderer(this);
+				return view;
+			}
 		}
 	}
 
