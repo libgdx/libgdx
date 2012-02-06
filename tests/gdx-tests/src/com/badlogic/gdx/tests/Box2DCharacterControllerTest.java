@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class Box2DCharacterControllerTest extends GdxTest implements ApplicationListener {
 	 
-	final static float MAX_VELOCITY = 7f;		
+	final static float MAX_VELOCITY = 14f;		
 	boolean jump = false;	
 	World world;
 	Body player;
@@ -37,16 +37,18 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 	Fixture playerSensorFixture;
 	OrthographicCamera cam;
 	Box2DDebugRenderer renderer;
-	Array<MovingPlatform> platforms = new Array<MovingPlatform>();
-	MovingPlatform groundedPlatform = null;
+	Array<Platform> platforms = new Array<Platform>();
+	Platform groundedPlatform = null;
 	float stillTime = 0;
 	long lastGroundTime = 0;
 	SpriteBatch batch;
 	BitmapFont font;
+	float accum = 0;
+	float TICK = 1 / 60f;
  
 	@Override
 	public void create() {
-		world = new World(new Vector2(0, -20), true);		
+		world = new World(new Vector2(0, -40), true);		
 		renderer = new Box2DDebugRenderer();
 		cam = new OrthographicCamera(28, 20);
 		createWorld();
@@ -69,7 +71,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		box = createBox(BodyType.StaticBody, 1.2f, 1.2f, 0);
 		box.setTransform(5, 2.4f, 0);
 		player = createPlayer();
-		player.setTransform(10.0f, 4.0f, 0);
+		player.setTransform(-40.0f, 4.0f, 0);
 		player.setFixedRotation(true);						
  
 		for(int i = 0; i < 20; i++) {
@@ -82,9 +84,10 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 			circle.setTransform((float)Math.random() * 10f - (float)Math.random() * 10f, (float)Math.random() * 10 + 6, (float)(Math.random() * 2 * Math.PI));
 		}
  
-		platforms.add(new MovingPlatform(-2, 3, 2, 0.5f, 2, 0, 4));
-		platforms.add(new MovingPlatform(17, 3, 5, 0.5f, 0, 2, 5));		
-		platforms.add(new MovingPlatform(-7, 5, 2, 0.5f, -2, 2, 8));		
+		platforms.add(new CirclePlatform(-24, -5, 10, (float)Math.PI / 4));
+		platforms.add(new MovingPlatform(-2, 3, 2, 0.5f, 2, 0, (float)Math.PI / 10f, 4));
+		platforms.add(new MovingPlatform(17, 2, 5, 0.5f, 2, 0, 0, 5));		
+		platforms.add(new MovingPlatform(-7, 5, 2, 0.5f, -2, 2, 0, 8));		
 //		platforms.add(new MovingPlatform(40, 3, 20, 0.5f, 0, 2, 5));
 	}
  
@@ -193,15 +196,17 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 			playerSensorFixture.setFriction(0f);
 		} else {
 			if(!Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D) && stillTime > 0.2) {
-				playerPhysicsFixture.setFriction(100f);
-				playerSensorFixture.setFriction(100f);
+				playerPhysicsFixture.setFriction(1000f);
+				playerSensorFixture.setFriction(1000f);
 			}
 			else {
 				playerPhysicsFixture.setFriction(0.2f);
 				playerSensorFixture.setFriction(0.2f);
 			}
  
-			if(groundedPlatform != null && groundedPlatform.dist == 0) {
+			// dampen sudden changes in x/y of a MovingPlatform a little bit, otherwise
+			// character hops :)
+			if(groundedPlatform != null && groundedPlatform instanceof MovingPlatform && ((MovingPlatform)groundedPlatform).dist == 0) {
 				player.applyLinearImpulse(0, -24, pos.x, pos.y);				
 			}
 		}
@@ -230,19 +235,24 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 				player.setLinearVelocity(vel.x, 0);			
 				System.out.println("jump before: " + player.getLinearVelocity());
 				player.setTransform(pos.x, pos.y + 0.01f, 0);
-				player.applyLinearImpulse(0, 30, pos.x, pos.y);			
+				player.applyLinearImpulse(0, 40, pos.x, pos.y);			
 				System.out.println("jump, " + player.getLinearVelocity());				
 			}
 		}					
  
 		// update platforms
 		for(int i = 0; i < platforms.size; i++) {
-			MovingPlatform platform = platforms.get(i);
+			Platform platform = platforms.get(i);
 			platform.update(Math.max(1/30.0f, Gdx.graphics.getDeltaTime()));
 		}
  
-		// le step...			
+		// le step...	
 		world.step(Gdx.graphics.getDeltaTime(), 4, 4);
+//		accum += Gdx.graphics.getDeltaTime();
+//		while(accum > TICK) {
+//			accum -= TICK;
+//			world.step(TICK, 4, 4);
+//		}
 		player.setAwake(true);		
  
 		cam.project(point.set(pos.x, pos.y, 0));
@@ -268,11 +278,11 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
  
 				if(below) {
 					if(contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals("p")) {
-						groundedPlatform = (MovingPlatform)contact.getFixtureA().getBody().getUserData();							
+						groundedPlatform = (Platform)contact.getFixtureA().getBody().getUserData();							
 					}
  
 					if(contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals("p")) {
-						groundedPlatform = (MovingPlatform)contact.getFixtureB().getBody().getUserData();
+						groundedPlatform = (Platform)contact.getFixtureB().getBody().getUserData();
 					}											
 					return true;			
 				}
@@ -330,15 +340,35 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
  
 		return false;
 	}
+	
+	abstract class Platform {
+		abstract void update(float deltatime);
+	}
+	
+	class CirclePlatform extends Platform {
+		Body platform;
+		
+		public CirclePlatform(int x, int y, float radius, float da) {
+			platform = createCircle(BodyType.KinematicBody, radius, 1);
+			platform.setTransform(x, y, 0);
+			platform.getFixtureList().get(0).setUserData("p");
+			platform.setAngularVelocity(da);
+			platform.setUserData(this);
+		}
+		
+		@Override
+		void update (float deltatime) {
+		}		
+	}
  
-	class MovingPlatform {
+	class MovingPlatform extends Platform {
 		Body platform;		
 		Vector2 pos = new Vector2();
 		Vector2 dir = new Vector2();
 		float dist = 0;
-		float maxDist = 0;		
+		float maxDist = 0;
  
-		public MovingPlatform(float x, float y, float width, float height, float dx, float dy, float maxDist) {
+		public MovingPlatform(float x, float y, float width, float height, float dx, float dy, float da, float maxDist) {
 			platform = createBox(BodyType.KinematicBody, width, height, 1);			
 			pos.x = x;
 			pos.y = y;
@@ -347,6 +377,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 			this.maxDist = maxDist;
 			platform.setTransform(pos, 0);
 			platform.getFixtureList().get(0).setUserData("p");
+			platform.setAngularVelocity(da);
 			platform.setUserData(this);
 		}
  
@@ -357,7 +388,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 				dist = 0;
 			}
  
-			platform.setLinearVelocity(dir);			
+			platform.setLinearVelocity(dir);
 		}
 	}
 }

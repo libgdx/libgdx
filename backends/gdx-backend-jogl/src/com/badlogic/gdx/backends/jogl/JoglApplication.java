@@ -55,6 +55,7 @@ public final class JoglApplication implements Application {
 	OpenALAudio audio;
 	JFrame frame;
 	List<Runnable> runnables = new ArrayList<Runnable>();
+	List<Runnable> executedRunnables = new ArrayList<Runnable>();
 	int logLevel = LOG_INFO;
 
 	/** Creates a new {@link JoglApplication} with the given title and dimensions. If useGL20IfAvailable is set the JoglApplication

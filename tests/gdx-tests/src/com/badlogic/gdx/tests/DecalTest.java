@@ -29,8 +29,9 @@ import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.decals.GroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.SimpleOrthoGroupStrategy;
 import com.badlogic.gdx.math.WindowedMean;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class DecalTest extends Game {
+public class DecalTest extends GdxTest {
 	public static final int TARGET_FPS = 40;
 	public static final int INITIAL_RENDERED = 100;
 	private boolean willItBlend_that_is_the_question = true;

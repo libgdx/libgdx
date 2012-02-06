@@ -199,6 +199,16 @@ public class Pixmap implements Disposable {
 	public void drawRectangle (int x, int y, int width, int height) {
 		pixmap.drawRect(x, y, width, height, color);
 	}
+	
+	/** Draws an area form another Pixmap to this Pixmap.
+	 * 
+	 * @param pixmap The other Pixmap
+	 * @param x The target x-coordinate (top left corner)
+	 * @param y The target y-coordinate (top left corner)
+	 */
+	public void drawPixmap(Pixmap pixmap, int x, int y) {
+		drawPixmap(pixmap, x, y, 0, 0, pixmap.getWidth(), pixmap.getHeight());
+	}
 
 	/** Draws an area form another Pixmap to this Pixmap.
 	 * 

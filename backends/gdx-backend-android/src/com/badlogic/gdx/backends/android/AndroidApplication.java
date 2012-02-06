@@ -66,6 +66,7 @@ public class AndroidApplication extends Activity implements Application {
 	protected Handler handler;
 	protected boolean firstResume = true;
 	protected final List<Runnable> runnables = new ArrayList<Runnable>();
+	protected final List<Runnable> executedRunnables = new ArrayList<Runnable>();
 	protected WakeLock wakeLock = null;
 	protected int logLevel = LOG_INFO;
 

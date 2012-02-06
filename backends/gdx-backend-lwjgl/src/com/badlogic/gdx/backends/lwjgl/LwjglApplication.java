@@ -46,6 +46,7 @@ public class LwjglApplication implements Application {
 	Thread mainLoopThread;
 	boolean running = true;
 	List<Runnable> runnables = new ArrayList<Runnable>();
+	List<Runnable> executedRunnables = new ArrayList<Runnable>();
 	int logLevel = LOG_INFO;
 
 	public LwjglApplication (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
@@ -159,15 +160,18 @@ public class LwjglApplication implements Application {
 				listener.resize(graphics.getWidth(), graphics.getHeight());
 			}
 			synchronized (runnables) {
-				for (int i = 0; i < runnables.size(); i++) {
+				executedRunnables.clear();
+				executedRunnables.addAll(runnables);
+				runnables.clear();
+				
+				for (int i = 0; i < executedRunnables.size(); i++) {
 					try {
-						runnables.get(i).run();
+						executedRunnables.get(i).run();
 					}
 					catch(Throwable t) {
 						t.printStackTrace();
 					}
 				}
-				runnables.clear();
 			}
 			input.update();
 

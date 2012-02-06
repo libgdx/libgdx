@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -365,6 +366,13 @@ public class TextureAtlas implements Disposable {
 			return new Sprite(region);
 		}
 		return new AtlasSprite(region);
+	}
+	
+	/**
+	 * @return the textures of the pages, unordered
+	 */
+	public Set<Texture> getTextures() {
+		return textures;
 	}
 
 	/** Releases all resources associated with this TextureAtlas instance. This releases all the textures backing all TextureRegions
