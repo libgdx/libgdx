@@ -16,12 +16,15 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.lang.reflect.Method;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
 import android.app.Activity;
+import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
 import android.util.DisplayMetrics;
@@ -88,9 +91,29 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		ResolutionStrategy resolutionStrategy) {
 		this.config = config;
 		view = createGLSurfaceView(activity, config.useGL20, resolutionStrategy);
+		setPreserveContext(view);
 		view.setFocusable(true);
 		view.setFocusableInTouchMode(true);
 		this.app = activity;
+	}
+
+	private void setPreserveContext (View view) {
+		int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+		if (sdkVersion >= 11 && view instanceof GLSurfaceView20) {
+			try {
+				Method method = null;
+				for(Method m: view.getClass().getMethods()) {
+					if(m.getName().equals("setPreserveEGLContextOnPause")) {
+						method = m;
+						break;
+					}
+				}
+				if(method != null) {
+					method.invoke((GLSurfaceView20)view, true);
+				}
+			} catch (Exception e) {
+			}
+		}
 	}
 
 	private View createGLSurfaceView (Activity activity, boolean useGL2, ResolutionStrategy resolutionStrategy) {
