@@ -33,7 +33,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
  */
 public class VorbisTest extends GdxTest {
 	/** the file to playback **/
-	private static final String FILE = "data/cloudconnected.ogg";
+	private static final String FILE = "data/engine-2.ogg";
 	/** a VorbisDecoder to read PCM data from the ogg file **/
 	VorbisDecoder decoder;
 	/** an AudioDevice for playing back the PCM data **/
