@@ -39,11 +39,10 @@ public abstract class Decoder implements Disposable {
 		short[] buffer = new short[1024*5];
 		int readSamples = 0;
 		int totalSamples = 0;
-		int offset = 0;
 		
 		while((readSamples = readSamples(buffer, 0, buffer.length)) > 0) {
-			if(readSamples + offset >= out.length) {
-				short[] tmp = new short[readSamples + offset];
+			if(readSamples + totalSamples >= out.length) {
+				short[] tmp = new short[readSamples + totalSamples];
 				System.arraycopy(out, 0, tmp, 0, totalSamples);
 				out = tmp;
 			}
