@@ -98,7 +98,10 @@ public class FrameBufferTest extends GdxTest {
 
 			"void main()                  \n" + "{                            \n" + "   v_Color = a_Color;"
 			+ "   v_texCoords = a_texCoords;\n" + "   gl_Position =   a_Position;  \n" + "}                            \n";
-		String fragmentShader = "precision mediump float;\n" + "varying vec4 v_Color;\n" + "varying vec2 v_texCoords; \n"
+		String fragmentShader = "#ifdef GL_ES\n"
+			+ "precision mediump float;\n"
+		   + "#endif\n"
+		   + "varying vec4 v_Color;\n" + "varying vec2 v_texCoords; \n"
 			+ "uniform sampler2D u_texture;\n" +
 
 			"void main()                                  \n" + "{                                            \n"
