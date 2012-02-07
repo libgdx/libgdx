@@ -26,6 +26,7 @@ import java.util.Map;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.glutils.IndexArray;
 import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
 import com.badlogic.gdx.graphics.glutils.IndexBufferObjectSubData;
 import com.badlogic.gdx.graphics.glutils.IndexData;
@@ -143,7 +144,7 @@ public class Mesh implements Disposable {
 			isVertexArray = false;
 		} else {
 			vertices = new VertexArray(maxVertices, attributes);
-			indices = new IndexBufferObject(maxIndices);
+			indices = new IndexArray(maxIndices);
 			isVertexArray = true;
 		}
 		addManagedMesh(Gdx.app, this);
@@ -385,10 +386,24 @@ public class Mesh implements Disposable {
 
 		if (autoBind) bind(shader);
 
-		if (indices.getNumIndices() > 0)
-			Gdx.gl20.glDrawElements(primitiveType, count, GL10.GL_UNSIGNED_SHORT, offset * 2);
-		else
-			Gdx.gl20.glDrawArrays(primitiveType, offset, count);
+		if (isVertexArray) {
+			if (indices.getNumIndices() > 0) {
+				ShortBuffer buffer = indices.getBuffer();
+				int oldPosition = buffer.position();
+				int oldLimit = buffer.limit();
+				buffer.position(offset);
+				buffer.limit(offset + count);
+				Gdx.gl20.glDrawElements(primitiveType, count, GL10.GL_UNSIGNED_SHORT, buffer);
+				buffer.position(oldPosition);
+				buffer.limit(oldLimit);
+			} else
+				Gdx.gl10.glDrawArrays(primitiveType, offset, count);
+		} else {
+			if (indices.getNumIndices() > 0)
+				Gdx.gl20.glDrawElements(primitiveType, count, GL10.GL_UNSIGNED_SHORT, offset * 2);
+			else
+				Gdx.gl20.glDrawArrays(primitiveType, offset, count);
+		}
 
 		if (autoBind) unbind(shader);
 	}
@@ -492,8 +507,8 @@ public class Mesh implements Disposable {
 		for (int i = 0; i < meshesList.size(); i++) {
 			if (meshesList.get(i).vertices instanceof VertexBufferObject) {
 				((VertexBufferObject)meshesList.get(i).vertices).invalidate();
-				meshesList.get(i).indices.invalidate();
 			}
+			meshesList.get(i).indices.invalidate();
 		}
 	}
 

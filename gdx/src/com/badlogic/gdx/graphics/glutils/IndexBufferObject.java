@@ -100,9 +100,9 @@ public class IndexBufferObject implements IndexData {
 		} else if (Gdx.gl11 != null) {
 			Gdx.gl11.glGenBuffers(1, tmpHandle);
 			return tmpHandle.get(0);
+		} else {
+			throw new GdxRuntimeException("Can not use IndexBufferObject with GLES 1.0, need 1.1 or 2.0");
 		}
-
-		return 0;
 	}
 
 	/** @return the number of indices currently stored in this buffer */
@@ -160,7 +160,7 @@ public class IndexBufferObject implements IndexData {
 
 	/** Binds this IndexBufferObject for rendering with glDrawElements. */
 	public void bind () {
-		if (bufferHandle == 0) throw new GdxRuntimeException("buuh");
+		if (bufferHandle == 0) throw new GdxRuntimeException("No buffer allocated!");
 
 		if (Gdx.gl11 != null) {
 			GL11 gl = Gdx.gl11;

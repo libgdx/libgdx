@@ -21,11 +21,13 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tests.Box2DCharacterControllerTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.DecalTest;
+import com.badlogic.gdx.tests.FrameBufferTest;
 import com.badlogic.gdx.tests.InterpolationTest;
 import com.badlogic.gdx.tests.ShadowMappingTest;
 import com.badlogic.gdx.tests.SoftKeyboardTest;
 import com.badlogic.gdx.tests.SortedSpriteTest;
 import com.badlogic.gdx.tests.SpriteBatchOriginScaleTest;
+import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.StbTrueTypeTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -38,7 +40,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-audio/libs/gdx-audio-natives.jar").load("gdx-audio");
 		new SharedLibraryLoader("../../extensions/gdx-stb-truetype/libs/gdx-stb-truetype-natives.jar").load("gdx-stb-truetype");
 		
-		GdxTest test = new InterpolationTest();
+		GdxTest test = new SpriteBatchShaderTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;
