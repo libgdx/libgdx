@@ -692,9 +692,18 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 		GL20.glVertexAttrib4f(indx, values.get(), values.get(), values.get(), values.get());
 	}
 
-	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, Buffer ptr) {
-// GL20.glVertexAttribPointer(indx, size, type, normalized, stride, BufferUtils.getOffset(ptr));
-		throw new GdxRuntimeException("not implemented");
+	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, Buffer buffer) {
+		if (buffer instanceof ByteBuffer) {
+			if(type == GL_BYTE) GL20.glVertexAttribPointer(indx, size, false, normalized, stride, (ByteBuffer)buffer);
+			else if(type == GL_UNSIGNED_BYTE) GL20.glVertexAttribPointer(indx, size, true, normalized, stride, (ByteBuffer)buffer);
+			else if(type == GL_SHORT) GL20.glVertexAttribPointer(indx, size, false, normalized, stride, ((ByteBuffer)buffer).asShortBuffer());
+			else if(type == GL_UNSIGNED_SHORT) GL20.glVertexAttribPointer(indx, size, true, normalized, stride, ((ByteBuffer)buffer).asShortBuffer());
+			else if(type == GL_FLOAT) GL20.glVertexAttribPointer(indx, size, normalized, stride, ((ByteBuffer)buffer).asFloatBuffer());
+			else throw new GdxRuntimeException("Can't use " + buffer.getClass().getName()
+				+ " with type " + type + " with this method. Use ByteBuffer and one of GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT, GL_UNSIGNED_SHORT or GL_FLOAT for type. Blame LWJGL");
+		} else
+			throw new GdxRuntimeException("Can't use " + buffer.getClass().getName()
+				+ " with this method. Use ByteBuffer instead. Blame LWJGL");
 	}
 
 	public void glViewport (int x, int y, int width, int height) {

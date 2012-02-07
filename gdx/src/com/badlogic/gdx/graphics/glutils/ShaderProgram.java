@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -475,7 +476,7 @@ public class ShaderProgram implements Disposable {
 	 * @param normalize whether fixed point data should be normalized. Will not work on the desktop
 	 * @param stride the stride in bytes between successive attributes
 	 * @param buffer the buffer containing the vertex attributes. */
-	public void setVertexAttribute (String name, int size, int type, boolean normalize, int stride, FloatBuffer buffer) {
+	public void setVertexAttribute (String name, int size, int type, boolean normalize, int stride, Buffer buffer) {
 		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged();
 		int location = fetchAttributeLocation(name);
@@ -499,7 +500,7 @@ public class ShaderProgram implements Disposable {
 		if (location == -1) return;
 		gl.glVertexAttribPointer(location, size, type, normalize, stride, offset);
 	}
-
+	
 	/** Makes OpenGL ES 2.0 use this vertex and fragment shader pair. When you are done with this shader you have to call
 	 * {@link ShaderProgram#end()}. */
 	public void begin () {

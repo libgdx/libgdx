@@ -23,6 +23,7 @@ import java.nio.FloatBuffer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -173,6 +174,38 @@ public class VertexArray implements VertexData {
 			}
 		}
 		byteBuffer.position(0);
+		isBound = false;
+	}
+	
+	public void bind (ShaderProgram shader) {
+		GL20 gl = Gdx.gl20;
+		int numAttributes = attributes.size();
+		byteBuffer.limit(buffer.limit() * 4);
+		for (int i = 0; i < numAttributes; i++) {
+			VertexAttribute attribute = attributes.get(i);
+			shader.enableVertexAttribute(attribute.alias);
+			int colorType = GL20.GL_FLOAT;
+			boolean normalize = false;
+			if (attribute.usage == Usage.ColorPacked) {
+				colorType = GL20.GL_UNSIGNED_BYTE;
+				normalize = true;
+			}
+			byteBuffer.position(attribute.offset);
+			shader.setVertexAttribute(attribute.alias, attribute.numComponents, colorType, normalize, attributes.vertexSize, byteBuffer);
+		}
+		isBound = true;
+	}
+	
+	/** Unbinds this VertexBufferObject.
+	 * 
+	 * @param shader the shader */
+	public void unbind (ShaderProgram shader) {
+		GL20 gl = Gdx.gl20;
+		int numAttributes = attributes.size();
+		for (int i = 0; i < numAttributes; i++) {
+			VertexAttribute attribute = attributes.get(i);
+			shader.disableVertexAttribute(attribute.alias);
+		}
 		isBound = false;
 	}
 

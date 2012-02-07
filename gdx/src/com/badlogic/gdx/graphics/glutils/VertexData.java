@@ -63,6 +63,12 @@ public interface VertexData extends Disposable {
 
 	/** Unbinds this VertexData. */
 	public void unbind ();
+	
+	/** Binds this VertexData for rendering via glDrawArrays or glDrawElements. */
+	public void bind (ShaderProgram shader);
+
+	/** Unbinds this VertexData. */
+	public void unbind (ShaderProgram shader);
 
 	/** Disposes this VertexData and all its associated OpenGL resources. */
 	public void dispose ();
