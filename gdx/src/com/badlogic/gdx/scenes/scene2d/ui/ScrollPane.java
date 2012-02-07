@@ -112,6 +112,8 @@ public class ScrollPane extends WidgetGroup {
 		areaWidth = width - bgLeftWidth - bgRightWidth;
 		areaHeight = height - bgTopHeight - bgBottomHeight;
 
+		if (widget == null) return;
+		
 		// Get widget's desired width.
 		float widgetWidth, widgetHeight;
 		if (widget instanceof Layout) {

@@ -180,6 +180,8 @@ public class FlickScrollPane extends WidgetGroup {
 	}
 
 	public void layout () {
+		if (widget == null) return;
+		
 		// Get widget's desired width.
 		float widgetWidth, widgetHeight;	
 		if (widget instanceof Layout) {
