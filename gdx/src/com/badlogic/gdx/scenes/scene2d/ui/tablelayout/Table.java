@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Align;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
@@ -217,6 +218,16 @@ public class Table extends WidgetGroup {
 
 	public Actor register (String name, Actor widget) {
 		return layout.register(name, widget);
+	}
+
+	public Cell add (String text) {
+		if (layout.skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
+		return add(new Label(text, layout.skin));
+	}
+
+	/** Adds a cell with a placeholder actor. */
+	public Cell add () {
+		return add((Actor)null);
 	}
 
 	/** Adds a new cell to the table with the specified actor.

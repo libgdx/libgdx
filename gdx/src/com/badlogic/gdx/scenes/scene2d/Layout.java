@@ -38,8 +38,8 @@ public interface Layout {
 	public void invalidateHierarchy ();
 
 	/** Ensures the actor has been laid out. Calls {@link #layout()} if {@link #invalidate()} has called since the last time
-	 * {@link #validate()} was called. This method is usually called in {@link Actor#draw(SpriteBatch, float)} before drawing is
-	 * performed. */
+	 * {@link #validate()} was called, or if the actor otherwise needs to be laid out. This method is usually called in
+	 * {@link Actor#draw(SpriteBatch, float)} before drawing is performed. */
 	public void validate ();
 
 	/** Sizes this actor to its preferred width and height and, if its size was changed, causes the actor to be laid out by calling
@@ -50,6 +50,10 @@ public interface Layout {
 	 * {@link #getPrefWidth()} and {@link #getPrefHeight()}. This allows the actor to have a size at construction time for more
 	 * convenient use outside of a {@link Table}. */
 	public void pack ();
+
+	/** If true, this actor will be sized to the parent in {@link #validate()}. If the parent is the stage, the actor will be sized
+	 * to the stage. */
+	public void setFillParent (boolean fillParent);
 
 	public float getMinWidth ();
 

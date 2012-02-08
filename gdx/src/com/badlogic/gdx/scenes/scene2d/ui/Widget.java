@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.Layout;
  * @author Nathan Sweet */
 public abstract class Widget extends Actor implements Layout {
 	private boolean needsLayout = true;
+	private boolean fillParent;
 
 	/** Creates a new widget without a name. */
 	public Widget () {
@@ -73,6 +74,22 @@ public abstract class Widget extends Actor implements Layout {
 	}
 
 	public void validate () {
+		if (fillParent && parent != null) {
+			float parentWidth, parentHeight;
+			if (stage != null && parent == stage.getRoot()) {
+				parentWidth = stage.width();
+				parentHeight = stage.height();
+			} else {
+				parentWidth = parent.width;
+				parentHeight = parent.height;
+			}
+			if (width != parentWidth || height != parentHeight) {
+				width = parentWidth;
+				height = parentHeight;
+				invalidate();
+			}
+		}
+
 		if (!needsLayout) return;
 		needsLayout = false;
 		layout();
@@ -97,6 +114,10 @@ public abstract class Widget extends Actor implements Layout {
 			invalidate();
 			validate();
 		}
+	}
+
+	public void setFillParent (boolean fillParent) {
+		this.fillParent = fillParent;
 	}
 
 	/** If this method is overridden, the super method or {@link #validate()} should be called to ensure the widget is laid out. */

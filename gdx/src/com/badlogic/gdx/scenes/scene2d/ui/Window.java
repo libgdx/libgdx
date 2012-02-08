@@ -27,10 +27,12 @@ public class Window extends Table {
 
 	public Window (Skin skin) {
 		this("", skin.getStyle(WindowStyle.class), null);
+		setSkin(skin);
 	}
 
 	public Window (String title, Skin skin) {
 		this(title, skin.getStyle(WindowStyle.class), null);
+		setSkin(skin);
 	}
 
 	public Window (String title, WindowStyle style) {
@@ -87,7 +89,7 @@ public class Window extends Table {
 
 		if (super.touchDown(x, y, pointer)) return true;
 
-		dragging = isMovable && height - y <= getTitleBarHeight();
+		dragging = isMovable && height - y <= getTitleBarHeight() && y < height && x > 0 && x < width;
 		dragOffset.set(x, y);
 		return true;
 	}

@@ -106,8 +106,8 @@ public class Slider extends Widget {
 
 	@Override
 	public void touchUp (float x, float y, int pointer) {
-		calculatePositionAndValue(x);
 		isDragging = false;
+		calculatePositionAndValue(x);
 	}
 
 	@Override
@@ -142,7 +142,6 @@ public class Slider extends Widget {
 	public void setValue (float value) {
 		if (value < min || value > max) throw new IllegalArgumentException("value must be >= min and <= max: " + value);
 		this.value = value;
-		if (listener != null) listener.changed(this, getValue());
 	}
 
 	/** Sets the range of this slider. The slider's current value is reset to min. */

@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Layout;
  * @author Nathan Sweet */
 public abstract class WidgetGroup extends Group implements Layout {
 	private boolean needsLayout = true;
+	private boolean fillParent;
 
 	public WidgetGroup () {
 		super();
@@ -47,6 +48,22 @@ public abstract class WidgetGroup extends Group implements Layout {
 	}
 
 	public void validate () {
+		if (fillParent && parent != null) {
+			float parentWidth, parentHeight;
+			if (stage != null && parent == stage.getRoot()) {
+				parentWidth = stage.width();
+				parentHeight = stage.height();
+			} else {
+				parentWidth = parent.width;
+				parentHeight = parent.height;
+			}
+			if (width != parentWidth || height != parentHeight) {
+				width = parentWidth;
+				height = parentHeight;
+				invalidate();
+			}
+		}
+
 		if (!needsLayout) return;
 		needsLayout = false;
 		layout();
@@ -75,6 +92,10 @@ public abstract class WidgetGroup extends Group implements Layout {
 			invalidate();
 			validate();
 		}
+	}
+
+	public void setFillParent (boolean fillParent) {
+		this.fillParent = fillParent;
 	}
 
 	public void layout () {

@@ -345,6 +345,24 @@ public class Skin implements Disposable {
 		}
 	}
 
+	public NinePatch newTintedPatch (String patchName, String colorName) {
+		return newTintedPatch(patchName, getColor(colorName));
+	}
+
+	public NinePatch newTintedPatch (String patchName, Color color) {
+		return new NinePatch(getPatch(patchName), color);
+	}
+
+	public NinePatch newTintedRegion (String regionName, String colorName) {
+		return newTintedRegion(regionName, getColor(colorName));
+	}
+
+	public NinePatch newTintedRegion (String regionName, Color color) {
+		NinePatch patch = new NinePatch(getRegion(regionName));
+		patch.setColor(color);
+		return patch;
+	}
+
 	static private Method findMethod (Class type, String name) {
 		Method[] methods = type.getMethods();
 		for (int i = 0, n = methods.length; i < n; i++) {

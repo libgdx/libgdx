@@ -81,7 +81,7 @@ public class WavDecoder extends Decoder {
 		}
 	}
 
-	
+	/** @author Nathan Sweet */
 	static private class WavInputStream extends FilterInputStream {
 		int channels, sampleRate, dataRemaining;
 
