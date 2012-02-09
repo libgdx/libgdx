@@ -396,8 +396,9 @@ public class Mesh implements Disposable {
 				Gdx.gl20.glDrawElements(primitiveType, count, GL10.GL_UNSIGNED_SHORT, buffer);
 				buffer.position(oldPosition);
 				buffer.limit(oldLimit);
-			} else
-				Gdx.gl10.glDrawArrays(primitiveType, offset, count);
+			} else {
+				Gdx.gl20.glDrawArrays(primitiveType, offset, count);
+			}
 		} else {
 			if (indices.getNumIndices() > 0)
 				Gdx.gl20.glDrawElements(primitiveType, count, GL10.GL_UNSIGNED_SHORT, offset * 2);
