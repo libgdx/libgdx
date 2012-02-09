@@ -379,6 +379,24 @@ public class FileHandle {
 			}
 		}
 	}
+	
+	/** Writes the specified bytes to the file. Parent directories will be created if necessary.
+	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
+	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
+	 *        {@link FileType#Internal} file, or if it could not be written. */
+	public void writeBytes (byte[] bytes, int offset, int length, boolean append) {
+		OutputStream output = write(append);
+		try {
+			output.write(bytes, offset, length);
+		} catch (IOException ex) {
+			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
+		} finally {
+			try {
+				output.close();
+			} catch (IOException ignored) {
+			}
+		}
+	}
 
 	/** Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
 	 * directory. On the desktop, an {@link FileType#Internal} handle to a directory on the classpath will return a zero length
