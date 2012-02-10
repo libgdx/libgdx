@@ -480,6 +480,7 @@ public class ShaderProgram implements Disposable {
 		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged();
 		int location = fetchAttributeLocation(name);
+		if(location == -1) return;
 		gl.glVertexAttribPointer(location, size, type, normalize, stride, buffer);
 	}
 
