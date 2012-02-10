@@ -247,7 +247,7 @@ public class Group extends Actor implements Cullable {
 		int len = children.size() - 1;
 		for (int i = len; i >= 0; i--) {
 			Actor child = children.get(i);
-			if (!child.touchable || !child.touchable) continue;
+			if (!child.touchable || !child.visible) continue;
 
 			toChildCoordinates(child, x, y, point);
 
