@@ -81,6 +81,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 	<!-- create source and class jar -->
 	<target name="all" depends="compile,compile-natives">
 		<!-- source jar -->
+		<mkdir dir="${distDir}/sources" />
 		<jar destfile="${distDir}/sources/${jar}-sources.jar" basedir="${src}" />
 		
 		<!-- copy shared libs for desktop -->
