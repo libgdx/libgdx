@@ -163,7 +163,7 @@ public class JsonWriter extends Writer {
 			value = value.replace("\\", "\\\\");
 			if (this == OutputType.minimal && !value.equals("true") && !value.equals("false") && !value.equals("null")
 				&& minimalPattern.matcher(value).matches()) return value;
-			return '"' + value + '"';
+			return '"' + value.replace("\"", "\\\"") + '"';
 		}
 
 		public String quoteName (String value) {
@@ -171,12 +171,12 @@ public class JsonWriter extends Writer {
 			switch (this) {
 			case minimal:
 				if (minimalPattern.matcher(value).matches()) return value;
-				return '"' + value + '"';
+				return '"' + value.replace("\"", "\\\"") + '"';
 			case javascript:
 				if (javascriptPattern.matcher(value).matches()) return value;
-				return '"' + value + '"';
+				return '"' + value.replace("\"", "\\\"") + '"';
 			default:
-				return '"' + value + '"';
+				return '"' + value.replace("\"", "\\\"") + '"';
 			}
 		}
 	}
