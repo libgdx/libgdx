@@ -28,15 +28,14 @@ import javax.imageio.ImageIO;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.jogl.JoglApplication;
+import com.badlogic.gdx.backends.jogl.JoglApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -58,7 +57,7 @@ public class SkinPacker {
 
 		imageFile.delete();
 
-		final ObjectMap<String, int[]> nameToSplits = new ObjectMap();
+		final ObjectMap<String, Splits> nameToSplits = new ObjectMap();
 
 		final TexturePacker texturePacker = new TexturePacker(settings);
 
@@ -81,75 +80,16 @@ public class SkinPacker {
 				BufferedImage image = ImageIO.read(inputFile.inputFile);
 				String name = inputFile.outputFile.getName();
 				name = name.substring(0, name.length() - 2);
-				image = getSplits(image, name);
+				image = split(image, name);
 				texturePacker.addImage(image, name);
 			}
 
-			private BufferedImage getSplits (BufferedImage image, String name) {
-				WritableRaster raster = image.getRaster();
-				int[] rgba = new int[4];
+			private BufferedImage split (BufferedImage image, String name) {
+				nameToSplits.put(name, getSplits(image, name));
 
-				int startX = 1;
-				for (int x = 1; x < raster.getWidth() - 1; x++) {
-					raster.getPixel(x, 0, rgba);
-					if (rgba[3] == 0) continue;
-					if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
-						throw new RuntimeException("Unknown pixel:" + x + ",0: " + name);
-					startX = x;
-					break;
-				}
-				int endX;
-				for (endX = startX; endX < raster.getWidth() - 1; endX++) {
-					raster.getPixel(endX, 0, rgba);
-					if (rgba[3] == 0) break;
-					if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
-						throw new RuntimeException("Unknown pixel " + endX + ",0: " + name);
-				}
-				for (int x = endX + 1; x < raster.getWidth() - 1; x++) {
-					raster.getPixel(x, 0, rgba);
-					if (rgba[3] != 0) throw new RuntimeException("Unknown pixel " + x + ",0: " + name);
-				}
-
-				int startY = 1;
-				for (int y = 1; y < raster.getHeight() - 1; y++) {
-					raster.getPixel(0, y, rgba);
-					if (rgba[3] == 0) continue;
-					if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
-						throw new RuntimeException("Unknown pixel: 0," + y + ": " + name);
-					startY = y;
-					break;
-				}
-				int endY;
-				for (endY = startY; endY < raster.getHeight() - 1; endY++) {
-					raster.getPixel(0, endY, rgba);
-					if (rgba[3] == 0) break;
-					if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
-						throw new RuntimeException("Unknown pixel 0," + endY + ": " + name);
-				}
-				for (int y = endY + 1; y < raster.getHeight() - 1; y++) {
-					raster.getPixel(0, y, rgba);
-					if (rgba[3] != 0) throw new RuntimeException("Unknown pixel 0," + y + ": " + name);
-				}
-
-				// No splits, or all splits.
-				boolean singleRegion = startX == 1 && endX == 1 && startY == 1 && endY == 1;
-				if (singleRegion) {
-					endX = raster.getWidth();
-					endY = raster.getHeight();
-				}
-
-				int[] splits = new int[5];
-				splits[0] = startX - 1;
-				splits[1] = endX - 1;
-				splits[2] = startY - 1;
-				splits[3] = endY - 1;
-				splits[4] = singleRegion ? 1 : 0;
-				nameToSplits.put(name, splits);
-
-				BufferedImage newImage = new BufferedImage(raster.getWidth() - 2, raster.getHeight() - 2,
-					BufferedImage.TYPE_4BYTE_ABGR);
-				newImage.getGraphics().drawImage(image, 0, 0, newImage.getWidth(), newImage.getHeight(), 1, 1, raster.getWidth() - 1,
-					raster.getHeight() - 1, null);
+				BufferedImage newImage = new BufferedImage(image.getWidth() - 2, image.getHeight() - 2, BufferedImage.TYPE_4BYTE_ABGR);
+				newImage.getGraphics().drawImage(image, 0, 0, newImage.getWidth(), newImage.getHeight(), 1, 1, image.getWidth() - 1,
+					image.getHeight() - 1, null);
 				return newImage;
 			}
 		};
@@ -163,14 +103,13 @@ public class SkinPacker {
 		if (!packFile.exists())
 			throw new RuntimeException("No images were packed from input directory: " + inputDir.getAbsolutePath());
 
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.forceExit = false;
+		JoglApplicationConfiguration config = new JoglApplicationConfiguration();
 		config.width = 1;
 		config.height = 1;
 		config.title = "SkinPacker";
 
 		final CountDownLatch latch = new CountDownLatch(2);
-		new LwjglApplication(new ApplicationListener() {
+		new JoglApplication(new ApplicationListener() {
 			public void create () {
 				try {
 					Skin skin = new Skin();
@@ -179,16 +118,16 @@ public class SkinPacker {
 						throw new GdxRuntimeException("Skin images could not be packed on to a single image!");
 					Texture texture = new Texture(1, 1, Format.Alpha);
 					for (Region region : atlas.getRegions()) {
-						int[] split = nameToSplits.get(region.name);
+						Splits splits = nameToSplits.get(region.name);
 						TextureRegion textureRegion = new TextureRegion(texture, region.left, region.top, region.width, region.height);
-						if (split == null) {
+						if (splits == null) {
 							skin.addResource(region.name, textureRegion);
 						} else {
-							if (split[4] == 1) // Is single region for ninepatch.
+							if (splits.singleRegion)
 								skin.addResource(region.name, new NinePatch(textureRegion));
 							else {
-								skin.addResource(region.name, new NinePatch(textureRegion, split[0], region.width - split[1], split[2],
-									region.height - split[3]));
+								skin.addResource(region.name, new NinePatch(textureRegion, splits.startX, region.width - splits.endX,
+									splits.startY, region.height - splits.endY));
 							}
 						}
 					}
@@ -250,6 +189,70 @@ public class SkinPacker {
 		}, config);
 		latch.countDown();
 		latch.await();
+	}
+
+	static public Splits getSplits (BufferedImage image, String name) {
+		WritableRaster raster = image.getRaster();
+		int[] rgba = new int[4];
+
+		int startX = 1;
+		for (int x = 1; x < raster.getWidth() - 1; x++) {
+			raster.getPixel(x, 0, rgba);
+			if (rgba[3] == 0) continue;
+			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0) throw new RuntimeException("Unknown pixel:" + x + ",0: " + name);
+			startX = x;
+			break;
+		}
+		int endX;
+		for (endX = startX; endX < raster.getWidth() - 1; endX++) {
+			raster.getPixel(endX, 0, rgba);
+			if (rgba[3] == 0) break;
+			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0) throw new RuntimeException("Unknown pixel " + endX + ",0: " + name);
+		}
+		for (int x = endX + 1; x < raster.getWidth() - 1; x++) {
+			raster.getPixel(x, 0, rgba);
+			if (rgba[3] != 0) throw new RuntimeException("Unknown pixel " + x + ",0: " + name);
+		}
+
+		int startY = 1;
+		for (int y = 1; y < raster.getHeight() - 1; y++) {
+			raster.getPixel(0, y, rgba);
+			if (rgba[3] == 0) continue;
+			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0) throw new RuntimeException("Unknown pixel: 0," + y + ": " + name);
+			startY = y;
+			break;
+		}
+		int endY;
+		for (endY = startY; endY < raster.getHeight() - 1; endY++) {
+			raster.getPixel(0, endY, rgba);
+			if (rgba[3] == 0) break;
+			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0) throw new RuntimeException("Unknown pixel 0," + endY + ": " + name);
+		}
+		for (int y = endY + 1; y < raster.getHeight() - 1; y++) {
+			raster.getPixel(0, y, rgba);
+			if (rgba[3] != 0) throw new RuntimeException("Unknown pixel 0," + y + ": " + name);
+		}
+
+		// No splits, or all splits.
+		boolean singleRegion = startX == 1 && endX == 1 && startY == 1 && endY == 1;
+		if (singleRegion) {
+			endX = raster.getWidth();
+			endY = raster.getHeight();
+		}
+
+		Splits splits = new Splits();
+		splits.startX = startX - 1;
+		splits.endX = endX - 1;
+		splits.startY = startY - 1;
+		splits.endY = endY - 1;
+		splits.singleRegion = singleRegion;
+		return splits;
+	}
+
+	static public class Splits {
+		public int startX, endX;
+		public int startY, endY;
+		public boolean singleRegion;
 	}
 
 	static public void main (String[] args) throws Exception {

@@ -138,9 +138,10 @@ public class FileHandle {
 	/** Returns a reader for reading this file as characters.
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public Reader reader (String charset) {
-		try{return new InputStreamReader(read(), charset);
+		try {
+			return new InputStreamReader(read(), charset);
 		} catch (UnsupportedEncodingException ex) {
-			throw new GdxRuntimeException("Error reading file: " + this,ex);
+			throw new GdxRuntimeException("Error reading file: " + this, ex);
 		}
 	}
 
@@ -156,7 +157,7 @@ public class FileHandle {
 		try {
 			return new BufferedReader(new InputStreamReader(read(), charset), bufferSize);
 		} catch (UnsupportedEncodingException ex) {
-			throw new GdxRuntimeException("Error reading file: " + this,ex);
+			throw new GdxRuntimeException("Error reading file: " + this, ex);
 		}
 	}
 
@@ -379,7 +380,7 @@ public class FileHandle {
 			}
 		}
 	}
-	
+
 	/** Writes the specified bytes to the file. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
@@ -503,13 +504,13 @@ public class FileHandle {
 	 * file, it is overwritten, or 2) if the destination is a directory, this file is copied into it, or 3) if the destination
 	 * doesn't exist, {@link #mkdirs()} is called on the destination's parent and this file is copied into it with a new name. If
 	 * this handle is a directory, then 1) if the destination is a file, GdxRuntimeException is thrown, or 2) if the destination is
-	 * a directory, this directory is copied recursively into it as a subdirectory, overwriting existing files, or 3) if the
-	 * destination doesn't exist, {@link #mkdirs()} is called on the destination and this directory is copied recursively into it
-	 * as a subdirectory.
+	 * a directory, this directory is copied into it recursively, overwriting existing files, or 3) if the destination doesn't
+	 * exist, {@link #mkdirs()} is called on the destination and this directory is copied into it recursively.
 	 * @throw GdxRuntimeException if the destination file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file,
 	 *        or copying failed. */
 	public void copyTo (FileHandle dest) {
-		if (!isDirectory()) {
+		boolean sourceDir = isDirectory();
+		if (!sourceDir) {
 			if (dest.isDirectory()) dest = dest.child(name());
 			copyFile(this, dest);
 			return;
@@ -520,7 +521,7 @@ public class FileHandle {
 			dest.mkdirs();
 			if (!dest.isDirectory()) throw new GdxRuntimeException("Destination directory cannot be created: " + dest);
 		}
-		dest = dest.child(name());
+		if (!sourceDir) dest = dest.child(name());
 		copyDirectory(this, dest);
 	}
 

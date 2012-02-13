@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools;
 
 import java.io.File;
@@ -109,13 +110,22 @@ public class FileProcessor {
 			inputFile.outputDir = newOutputDir;
 			inputFile.outputFile = new File(newOutputDir, outputName);
 
-			processDir(inputFile, dirInputFiles);
+			try {
+				processDir(inputFile, dirInputFiles);
+			} catch (Exception ex) {
+				throw new Exception("Error processing directory: " + inputFile.inputFile.getAbsolutePath(), ex);
+			}
 			allInputFiles.addAll(dirInputFiles);
 		}
 
 		if (comparator != null) Collections.sort(allInputFiles, inputFileComparator);
-		for (InputFile inputFile : allInputFiles)
-			processFile(inputFile);
+		for (InputFile inputFile : allInputFiles) {
+			try {
+				processFile(inputFile);
+			} catch (Exception ex) {
+				throw new Exception("Error processing file: " + inputFile.inputFile.getAbsolutePath(), ex);
+			}
+		}
 
 		return outputFiles;
 	}
