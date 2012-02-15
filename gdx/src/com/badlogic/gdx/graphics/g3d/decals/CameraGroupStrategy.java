@@ -154,6 +154,7 @@ public class CameraGroupStrategy implements GroupStrategy {
 
 	@Override
 	public void beforeGroups () {
+		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
 		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
 		if (shader != null) {
 			shader.begin();
@@ -173,6 +174,7 @@ public class CameraGroupStrategy implements GroupStrategy {
 			shader.end();
 		}
 		Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
+		Gdx.gl.glDisable(GL10.GL_DEPTH_TEST);
 	}
 
 	private void createDefaultShader () {

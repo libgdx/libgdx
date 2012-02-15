@@ -342,6 +342,7 @@ public class Pixmap implements Disposable {
 	 * and RGBA4444 the pixel colors are stored in shorts in machine dependent order.
 	 * @return the direct {@link ByteBuffer} holding the pixel data. */
 	public ByteBuffer getPixels () {
+		if(disposed) throw new GdxRuntimeException("Pixmap already disposed"); 
 		return pixmap.getPixels();
 	}
 

@@ -140,6 +140,11 @@ public class Plane implements Serializable {
 		this.normal.set(normal);
 		d = -point.dot(normal);
 	}
+	
+	public void set(float pointX, float pointY, float pointZ, float norX, float norY, float norZ) {
+		this.normal.set(norX, norY, norZ);
+		d = -(pointX * norX +  pointY * norY + pointZ * norZ);
+	}
 
 	/** Sets this plane from the given plane
 	 * 

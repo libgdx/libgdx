@@ -95,7 +95,7 @@ public class Mesh implements Disposable {
 			isVertexArray = false;
 		} else {
 			vertices = new VertexArray(maxVertices, attributes);
-			indices = new IndexBufferObject(maxIndices);
+			indices = new IndexArray(maxIndices);
 			isVertexArray = true;
 		}
 
@@ -116,7 +116,7 @@ public class Mesh implements Disposable {
 			isVertexArray = false;
 		} else {
 			vertices = new VertexArray(maxVertices, attributes);
-			indices = new IndexBufferObject(maxIndices);
+			indices = new IndexArray(maxIndices);
 			isVertexArray = true;
 		}
 

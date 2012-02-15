@@ -108,11 +108,21 @@ final class LwjglInput implements Input {
 	public void getTextInput (final TextInputListener listener, final String title, final String text) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run () {
-				String output = JOptionPane.showInputDialog(null, title, text);
+				final String output = JOptionPane.showInputDialog(null, title, text);
 				if (output != null)
-					listener.input(output);
+					Gdx.app.postRunnable(new Runnable() {
+						@Override
+						public void run () {
+							listener.input(output);
+						}
+					});
 				else
-					listener.canceled();
+					Gdx.app.postRunnable(new Runnable() {
+						@Override
+						public void run () {
+							listener.canceled();
+						}
+					});
 			}
 		});
 	}

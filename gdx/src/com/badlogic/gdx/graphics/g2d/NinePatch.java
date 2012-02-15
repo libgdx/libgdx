@@ -33,6 +33,7 @@ public class NinePatch {
 
 	private TextureRegion[] patches;
 	private Color color;
+	private boolean blending = true;
 
 	private NinePatch () {
 	}
@@ -157,11 +158,13 @@ public class NinePatch {
 		float rightColumnX = x + width - getRightWidth();
 		float middleRowY = y + getBottomHeight();
 		float topRowY = y + height - getTopHeight();
-
+		
 		if (color != null) {
 			Color batchColor = batch.getColor();
 			batch.setColor(color.r, color.g, color.b, batchColor.a * color.a);
 		}
+
+		if(!blending && batch.getColor().a == 1f && color != null && color.a == 1f) batch.disableBlending();
 
 		// Bottom row
 		if (patches[BOTTOM_LEFT] != null) batch.draw(patches[BOTTOM_LEFT], x, y, centerColumnX - x, middleRowY - y);
@@ -183,6 +186,8 @@ public class NinePatch {
 			batch.draw(patches[TOP_CENTER], centerColumnX, topRowY, rightColumnX - centerColumnX, y + height - topRowY);
 		if (patches[TOP_RIGHT] != null)
 			batch.draw(patches[TOP_RIGHT], rightColumnX, topRowY, x + width - rightColumnX, y + height - topRowY);
+		
+		if(!blending) batch.enableBlending();
 	}
 
 	public float getLeftWidth () {
@@ -247,5 +252,9 @@ public class NinePatch {
 
 	public Color getColor () {
 		return color;
+	}
+	
+	public void setBlending(boolean blending) {
+		this.blending = blending;
 	}
 }
