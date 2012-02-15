@@ -634,18 +634,17 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 			 * called before the first instance returns from onDestroy().
 			 * 
 			 * This semaphore ensures that only one instance at a time accesses EGL.
+			 * 
+			 * changed: using a normal monitor instead of a semaphore. see issue
+			 * 704 http://code.google.com/p/libgdx/issues/detail?id=704
 			 */
 			try {
-				try {
-					sEglSemaphore.acquire();
-				} catch (InterruptedException e) {
-					return;
+				synchronized (sEglLock) {					
+					guardedRun();
 				}
-				guardedRun();
 			} catch (InterruptedException e) {
 				// fall thru and exit normally
 			} finally {
-				sEglSemaphore.release();
 			}
 		}
 
@@ -879,7 +878,7 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 		private StringBuilder mBuilder = new StringBuilder();
 	}
 
-	static final Semaphore sEglSemaphore = new Semaphore(1);
+	static final Object sEglLock = new Object();
 
 	private GLThread mGLThread;
 	EGLConfigChooser mEGLConfigChooser;
