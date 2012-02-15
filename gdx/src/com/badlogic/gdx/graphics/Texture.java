@@ -426,4 +426,11 @@ public class Texture implements Disposable {
 		builder.append("}");
 		return builder.toString();
 	}
+	
+	/**
+	 * @return the number of managed textures currently loaded
+	 */
+	public static int getNumManagedTextures() {
+		return managedTextures.get(Gdx.app).size();
+	}
 }
