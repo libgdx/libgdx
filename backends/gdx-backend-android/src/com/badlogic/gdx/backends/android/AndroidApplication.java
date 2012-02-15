@@ -46,6 +46,7 @@ import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 /** An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class. In
@@ -65,8 +66,8 @@ public class AndroidApplication extends Activity implements Application {
 	protected ApplicationListener listener;
 	protected Handler handler;
 	protected boolean firstResume = true;
-	protected final List<Runnable> runnables = new ArrayList<Runnable>();
-	protected final List<Runnable> executedRunnables = new ArrayList<Runnable>();
+	protected final Array<Runnable> runnables = new Array<Runnable>();
+	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected WakeLock wakeLock = null;
 	protected int logLevel = LOG_INFO;
 
