@@ -831,7 +831,7 @@ static uint8 compute_y(int r, int g, int b)
    return (uint8) (((r*77) + (g*150) +  (29*b)) >> 8);
 }
 
-static unsigned char *convert_format(unsigned char *data, int img_n, int req_comp, uint x, uint y)
+static unsigned char *convert_format(unsigned char *data, int img_n, int req_comp, uint32 x, uint32 y)
 {
    int i,j;
    unsigned char *good;
@@ -1826,7 +1826,7 @@ static uint8 *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int re
    // resample and color-convert
    {
       int k;
-      uint i,j;
+      uint32 i,j;
       uint8 *output;
       uint8 *coutput[4];
 
