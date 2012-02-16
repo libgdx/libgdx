@@ -88,6 +88,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 				break;
 			}
 		}
+		Gdx.app.getGraphics().requestRendering();
 	}
 
 	private void logAction (int action, int pointer) {

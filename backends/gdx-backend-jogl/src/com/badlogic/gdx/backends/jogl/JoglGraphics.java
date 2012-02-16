@@ -371,4 +371,22 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
 	}
+
+	@Override
+	public void setContinuousRendering (boolean isContinuous) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isContinuousRendering () {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void requestRendering () {
+		// TODO Auto-generated method stub
+		
+	}
 }

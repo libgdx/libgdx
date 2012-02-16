@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.android;
 import java.lang.reflect.Method;
 
 import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGL11;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
@@ -63,6 +64,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	GL11 gl11;
 	GL20 gl20;
 	GLU glu;
+	EGLContext eglContext;
 	String extensions;
 
 	private long lastFrameTime = System.nanoTime();
@@ -86,6 +88,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	private final AndroidApplicationConfiguration config;
 	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
+	private boolean isContinuous = true;
 
 	public AndroidGraphics (AndroidApplication activity, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy) {
@@ -297,10 +300,11 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	@Override
 	public void onSurfaceCreated (javax.microedition.khronos.opengles.GL10 gl, EGLConfig config) {
+		eglContext = ((EGL10)EGLContext.getEGL()).eglGetCurrentContext();
 		setupGL(gl);
 		logConfig(config);
 		updatePpi();
-
+		
 		Mesh.invalidateAllMeshes(app);
 		Texture.invalidateAllTextures(app);
 		ShaderProgram.invalidateAllShaderPrograms(app);
@@ -594,5 +598,27 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	public boolean supportsExtension (String extension) {
 		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
+	}
+
+	@Override
+	public void setContinuousRendering (boolean isContinuous) {
+		if(view != null) {
+			this.isContinuous = isContinuous;
+			int renderMode = isContinuous?GLSurfaceView.RENDERMODE_CONTINUOUSLY:GLSurfaceView.RENDERMODE_WHEN_DIRTY;
+			if(view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).setRenderMode(renderMode);
+			if(view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
+		}
+	}
+	
+	public boolean isContinuousRendering() {
+		return isContinuous;
+	}
+
+	@Override
+	public void requestRendering () {
+		if(view != null) {
+			if(view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).requestRender();
+			if(view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
+		}
 	}
 }

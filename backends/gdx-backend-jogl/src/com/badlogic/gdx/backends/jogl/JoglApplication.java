@@ -263,6 +263,7 @@ public final class JoglApplication implements Application {
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
 			runnables.add(runnable);
+			Gdx.graphics.requestRendering();
 		}
 	}
 	

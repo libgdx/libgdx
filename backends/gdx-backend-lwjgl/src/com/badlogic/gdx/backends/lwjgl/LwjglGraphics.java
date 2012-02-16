@@ -400,4 +400,17 @@ public class LwjglGraphics implements Graphics {
 	public LwjglApplicationConfiguration getConfig () {
 		return config;
 	}
+
+	@Override
+	public void setContinuousRendering (boolean isContinuous) {
+	}
+
+	@Override
+	public boolean isContinuousRendering () {
+		return false;
+	}
+
+	@Override
+	public void requestRendering () {
+	}
 }

@@ -395,6 +395,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				else
 					keys.remove(e.getKeyCode());
 			}
+			app.getGraphics().requestRendering();
 		}
 
 		//circle button on Xperia Play shouldn't need catchBack == true

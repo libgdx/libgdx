@@ -224,7 +224,22 @@ public interface Graphics {
 	/** @param extension the extension name
 	 * @return whether the extension is supported */
 	public boolean supportsExtension (String extension);
-
+	
+	/**
+	 * @param isContinuous whether the rendering should be continuous or not. Use {@link #requestRendering()} in the later case to trigger frames.
+	 */
+	public void setContinuousRendering(boolean isContinuous);
+	
+	/**
+	 * @return wheter rendering is continuous.
+	 */
+	public boolean isContinuousRendering();
+	
+	/**
+	 * requests a new frame to be rendered if the rendering mode is non-continuous.
+	 */
+	public void requestRendering();
+	
 	// /**
 	// * Opens the first back facing video camera. Only one camera
 	// * can be opened at any given time.

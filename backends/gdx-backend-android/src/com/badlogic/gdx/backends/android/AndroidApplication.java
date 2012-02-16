@@ -187,6 +187,8 @@ public class AndroidApplication extends Activity implements Application {
 	@Override
 	protected void onPause () {
 		if (wakeLock != null) wakeLock.release();
+		boolean isContinuous = graphics.isContinuousRendering();
+		graphics.setContinuousRendering(true);
 		graphics.pause();
 
 		input.unregisterSensorListeners();
@@ -199,6 +201,7 @@ public class AndroidApplication extends Activity implements Application {
 			graphics.clearManagedCaches();
 			graphics.destroy();
 		}
+		graphics.setContinuousRendering(isContinuous);
 
 		if (graphics != null && graphics.view != null) {
 			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onPause();
@@ -225,8 +228,9 @@ public class AndroidApplication extends Activity implements Application {
 			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
 		}
 
-		if (!firstResume)
+		if (!firstResume) {
 			graphics.resume();
+		}
 		else
 			firstResume = false;
 		super.onResume();
@@ -292,6 +296,7 @@ public class AndroidApplication extends Activity implements Application {
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
 			runnables.add(runnable);
+			Gdx.graphics.requestRendering();
 		}
 	}
 
