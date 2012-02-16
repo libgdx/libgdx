@@ -41,6 +41,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Pool;
@@ -305,6 +306,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			touchX = event.x;
 			touchY = event.y;
 			checkCatched(e);
+			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -324,6 +326,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			touchX = event.x;
 			touchY = event.y;
 			checkCatched(e);
+			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -336,11 +339,13 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 		touchX = e.getX();
 		touchY = e.getY();
 		checkCatched(e);
+		Gdx.graphics.requestRendering();
 	}
 
 	@Override
 	public void mouseExited (MouseEvent e) {
 		checkCatched(e);
+		Gdx.graphics.requestRendering();
 	}
 
 	private void checkCatched (MouseEvent e) {
@@ -378,6 +383,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			touchY = event.y;
 			touchDown = true;
 			pressedButtons.add(event.button);
+			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -399,6 +405,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			touchY = event.y;
 			pressedButtons.remove(event.button);
 			if (pressedButtons.size() == 0) touchDown = false;
+			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -411,6 +418,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			event.scrollAmount = e.getWheelRotation();
 			event.timeStamp = System.nanoTime();
 			touchEvents.add(event);
+			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -424,6 +432,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			event.timeStamp = System.nanoTime();
 			keyEvents.add(event);
 			keys.add(event.keyCode);
+			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -437,6 +446,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			event.timeStamp = System.nanoTime();
 			keyEvents.add(event);
 			keys.remove(event.keyCode);
+			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -449,6 +459,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			event.type = KeyEvent.KEY_TYPED;
 			event.timeStamp = System.nanoTime();
 			keyEvents.add(event);
+			Gdx.graphics.requestRendering();
 		}
 	}
 

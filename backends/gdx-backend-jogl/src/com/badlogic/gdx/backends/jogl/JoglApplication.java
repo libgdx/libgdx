@@ -184,6 +184,7 @@ public final class JoglApplication implements Application {
 
 		@Override
 		public void windowClosing (WindowEvent arg0) {
+			graphics.setContinuousRendering(true);
 			graphics.pause();
 			graphics.destroy();
 			audio.dispose();

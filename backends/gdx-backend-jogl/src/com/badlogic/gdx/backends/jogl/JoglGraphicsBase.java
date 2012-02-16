@@ -198,4 +198,19 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	public GraphicsType getType () {
 		return GraphicsType.JoglGL;
 	}
+	
+	@Override
+	public void setContinuousRendering (boolean isContinuous) {
+		animator.setContinuousRendering(isContinuous);
+	}
+
+	@Override
+	public boolean isContinuousRendering () {
+		return animator.isContinuousRendering();
+	}
+
+	@Override
+	public void requestRendering () {
+		animator.requestRendering();
+	}
 }

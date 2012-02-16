@@ -95,6 +95,7 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	@Override
 	public void reshape (GLAutoDrawable drawable, int x, int y, int width, int height) {
 		listener.resize(width, height);
+		requestRendering();
 	}
 
 	@Override
@@ -370,23 +371,5 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	public boolean supportsExtension (String extension) {
 		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
-	}
-
-	@Override
-	public void setContinuousRendering (boolean isContinuous) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isContinuousRendering () {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void requestRendering () {
-		// TODO Auto-generated method stub
-		
 	}
 }
