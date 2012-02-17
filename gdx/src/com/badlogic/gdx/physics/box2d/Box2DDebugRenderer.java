@@ -42,35 +42,36 @@ public class Box2DDebugRenderer {
 	/** vertices for polygon rendering **/
 	private static Vector2[] vertices = new Vector2[1000];
 
-	private static Vector2 mLower;
-	private static Vector2 mUpper;
+	private static Vector2 lower;
+	private static Vector2 upper;
 
-	private boolean mDrawBodies;
-	private boolean mDrawJoints;
-	private boolean mDrawAABBs;
+	private boolean drawBodies;
+	private boolean drawJoints;
+	private boolean drawAABBs;
+	private boolean drawInactiveBodies;
 
 	public Box2DDebugRenderer () {
-
-		this(true, true, false);
+		this(true, true, false, true);
 	}
 
-	public Box2DDebugRenderer (boolean drawBodies, boolean drawJoints, boolean drawAABBs) {
+	public Box2DDebugRenderer (boolean drawBodies, boolean drawJoints, boolean drawAABBs, boolean drawInactiveBodies) {
 		// next we setup the immediate mode renderer
 		renderer = new ShapeRenderer();
 
 		// next we create a SpriteBatch and a font
 		batch = new SpriteBatch();
 
-		mLower = new Vector2();
-		mUpper = new Vector2();
+		lower = new Vector2();
+		upper = new Vector2();
 
 		// initialize vertices array
 		for (int i = 0; i < vertices.length; i++)
 			vertices[i] = new Vector2();
 
-		mDrawBodies = drawBodies;
-		mDrawJoints = drawJoints;
-		mDrawAABBs = drawAABBs;
+		this.drawBodies = drawBodies;
+		this.drawJoints = drawJoints;
+		this.drawAABBs = drawAABBs;
+		this.drawInactiveBodies = drawInactiveBodies;
 	}
 
 	/** This assumes that the projection matrix has already been set. */
@@ -90,7 +91,7 @@ public class Box2DDebugRenderer {
 	private void renderBodies (World world) {
 		renderer.begin(ShapeType.Line);
 
-		if (mDrawBodies || mDrawAABBs) {
+		if (drawBodies || drawAABBs) {
 			for (Iterator<Body> iter = world.getBodies(); iter.hasNext();) {
 				Body body = iter.next();
 				Transform transform = body.getTransform();
@@ -99,8 +100,8 @@ public class Box2DDebugRenderer {
 				for (int i = 0; i < len; i++) {
 					Fixture fixture = fixtures.get(i);
 
-					if (mDrawBodies) {
-						if (body.isActive() == false)
+					if (drawBodies) {
+						if (body.isActive() == false && drawInactiveBodies)
 							drawShape(fixture, transform, SHAPE_NOT_ACTIVE);
 						else if (body.getType() == BodyType.StaticBody)
 							drawShape(fixture, transform, SHAPE_STATIC);
@@ -112,14 +113,14 @@ public class Box2DDebugRenderer {
 							drawShape(fixture, transform, SHAPE_AWAKE);
 					}
 
-					if (mDrawAABBs) {
+					if (drawAABBs) {
 						drawAABB(fixture, transform);
 					}
 				}
 			}
 		}
 
-		if (mDrawJoints) {
+		if (drawJoints) {
 			for (Iterator<Joint> iter = world.getJoints(); iter.hasNext();) {
 				Joint joint = iter.next();
 				drawJoint(joint);
@@ -143,14 +144,14 @@ public class Box2DDebugRenderer {
 			float radius = shape.getRadius();
 			vertices[0].set(shape.getPosition());
 			vertices[0].rotate(transform.getRotation()).add(transform.getPosition());
-			mLower.set(vertices[0].x - radius, vertices[0].y - radius);
-			mUpper.set(vertices[0].x + radius, vertices[0].y + radius);
+			lower.set(vertices[0].x - radius, vertices[0].y - radius);
+			upper.set(vertices[0].x + radius, vertices[0].y + radius);
 
 			// define vertices in ccw fashion...
-			vertices[0].set(mLower.x, mLower.y);
-			vertices[1].set(mUpper.x, mLower.y);
-			vertices[2].set(mUpper.x, mUpper.y);
-			vertices[3].set(mLower.x, mUpper.y);
+			vertices[0].set(lower.x, lower.y);
+			vertices[1].set(upper.x, lower.y);
+			vertices[2].set(upper.x, upper.y);
+			vertices[3].set(lower.x, upper.y);
 
 			drawSolidPolygon(vertices, 4, AABB_COLOR);
 		} else if (fixture.getType() == Type.Polygon) {
@@ -158,22 +159,22 @@ public class Box2DDebugRenderer {
 			int vertexCount = shape.getVertexCount();
 
 			shape.getVertex(0, vertices[0]);
-			mLower.set(transform.mul(vertices[0]));
-			mUpper.set(mLower);
+			lower.set(transform.mul(vertices[0]));
+			upper.set(lower);
 			for (int i = 1; i < vertexCount; i++) {
 				shape.getVertex(i, vertices[i]);
 				transform.mul(vertices[i]);
-				mLower.x = Math.min(mLower.x, vertices[i].x);
-				mLower.y = Math.min(mLower.y, vertices[i].y);
-				mUpper.x = Math.max(mUpper.x, vertices[i].x);
-				mUpper.y = Math.max(mUpper.y, vertices[i].y);
+				lower.x = Math.min(lower.x, vertices[i].x);
+				lower.y = Math.min(lower.y, vertices[i].y);
+				upper.x = Math.max(upper.x, vertices[i].x);
+				upper.y = Math.max(upper.y, vertices[i].y);
 			}
 
 			// define vertices in ccw fashion...
-			vertices[0].set(mLower.x, mLower.y);
-			vertices[1].set(mUpper.x, mLower.y);
-			vertices[2].set(mUpper.x, mUpper.y);
-			vertices[3].set(mLower.x, mUpper.y);
+			vertices[0].set(lower.x, lower.y);
+			vertices[1].set(upper.x, lower.y);
+			vertices[2].set(upper.x, upper.y);
+			vertices[3].set(lower.x, upper.y);
 
 			drawSolidPolygon(vertices, 4, AABB_COLOR);
 		}
@@ -296,6 +297,46 @@ public class Box2DDebugRenderer {
 		if (worldManifold.getNumberOfContactPoints() == 0) return;
 		Vector2 point = worldManifold.getPoints()[0];
 		renderer.point(point.x, point.y, 0);
+	}
+	
+	public boolean isDrawBodies () {
+		return drawBodies;
+	}
+
+	public void setDrawBodies (boolean drawBodies) {
+		this.drawBodies = drawBodies;
+	}
+
+	public boolean isDrawJoints () {
+		return drawJoints;
+	}
+
+	public void setDrawJoints (boolean drawJoints) {
+		this.drawJoints = drawJoints;
+	}
+
+	public boolean isDrawAABBs () {
+		return drawAABBs;
+	}
+
+	public void setDrawAABBs (boolean drawAABBs) {
+		this.drawAABBs = drawAABBs;
+	}
+
+	public boolean isDrawInactiveBodies () {
+		return drawInactiveBodies;
+	}
+
+	public void setDrawInactiveBodies (boolean drawInactiveBodies) {
+		this.drawInactiveBodies = drawInactiveBodies;
+	}
+
+	public static Vector2 getAxis () {
+		return axis;
+	}
+
+	public static void setAxis (Vector2 axis) {
+		Box2DDebugRenderer.axis = axis;
 	}
 
 	public void dispose () {
