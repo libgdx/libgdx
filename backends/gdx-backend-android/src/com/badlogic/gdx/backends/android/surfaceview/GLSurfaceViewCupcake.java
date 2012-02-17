@@ -313,7 +313,10 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 	 * {@link #RENDERMODE_WHEN_DIRTY}, so that frames are only rendered on demand. May be called from any thread. Must be called
 	 * after onResume() and before onPause(). */
 	public void requestRender () {
-		mGLThread.requestRender();
+		GLThread thread = mGLThread;
+		if(thread != null) {
+			thread.requestRender();
+		}
 	}
 
 	/** This method is part of the SurfaceHolder.Callback interface, and is not normally called or subclassed by clients of
