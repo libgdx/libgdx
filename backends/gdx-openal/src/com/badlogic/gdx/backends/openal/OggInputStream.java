@@ -144,6 +144,7 @@ public class OggInputStream extends InputStream {
 
 		// submit a 4k block to libvorbis' Ogg layer
 		int index = syncState.buffer(4096);
+		if (index == -1) return false;
 
 		buffer = syncState.data;
 		if (buffer == null) {
@@ -234,6 +235,7 @@ public class OggInputStream extends InputStream {
 			}
 			// no harm in not checking before adding more
 			index = syncState.buffer(4096);
+			if (index == -1) return false;
 			buffer = syncState.data;
 			try {
 				bytes = input.read(buffer, index, 4096);
