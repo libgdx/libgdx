@@ -98,7 +98,8 @@ public class GdxTests {
 			SimpleVertexShader.class, ShapeRendererTest.class,
 			MoveSpriteExample.class, StbTrueTypeTest.class, SoundTouchTest.class, Mpg123Test.class, WavTest.class,
 			TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, TextureBindTestGL2.class,
-			SortedSpriteTest.class, ExternalMusicTest.class, SoftKeyboardTest.class};
+			SortedSpriteTest.class, ExternalMusicTest.class, SoftKeyboardTest.class, 
+			DirtyRenderingTest.class};
 
 	public static String[] getNames() {
 		List<String> names = new ArrayList<String>();

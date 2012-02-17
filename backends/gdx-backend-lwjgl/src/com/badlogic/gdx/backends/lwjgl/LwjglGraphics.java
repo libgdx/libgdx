@@ -401,16 +401,31 @@ public class LwjglGraphics implements Graphics {
 		return config;
 	}
 
+	volatile boolean isContinuous = true;
+	volatile boolean requestRendering = false;
+	
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
+		this.isContinuous = isContinuous;
 	}
 
 	@Override
 	public boolean isContinuousRendering () {
-		return false;
+		return isContinuous;
 	}
 
 	@Override
 	public void requestRendering () {
+		synchronized(this) {
+			requestRendering = true;
+		}
+	}
+	
+	public boolean shouldRender() {
+		synchronized(this) {
+			boolean rq = requestRendering;
+			requestRendering = false;
+			return rq || isContinuous;
+		}
 	}
 }

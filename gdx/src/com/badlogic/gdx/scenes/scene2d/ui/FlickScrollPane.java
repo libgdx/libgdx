@@ -359,6 +359,10 @@ public class FlickScrollPane extends WidgetGroup {
 	public boolean isPanning () {
 		return gestureDetector.isPanning();
 	}
+	
+	public boolean isFlinging () {
+		return flingTimer > 0;
+	}
 
 	public void setVelocityX (float velocityX) {
 		this.velocityX = velocityX;

@@ -312,6 +312,16 @@ public interface Input {
 	 * @param title The title of the text input dialog.
 	 * @param text The message presented to the user. */
 	public void getTextInput (TextInputListener listener, String title, String text);
+	
+	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
+	 * hint message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called but not
+	 * necessarily in the rendering thread in which all the {@link ApplicationListener} methods are called. You have to synchronize
+	 * this yourself.
+	 * 
+	 * @param listener The TextInputListener.
+	 * @param title The title of the text input dialog.
+	 * @param text The placeholder text presented to the user. */
+	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder);
 
 	/** Sets the on-screen keyboard visible if available.
 	 * 

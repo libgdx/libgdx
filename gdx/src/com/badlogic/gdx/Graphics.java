@@ -226,7 +226,19 @@ public interface Graphics {
 	public boolean supportsExtension (String extension);
 	
 	/**
-	 * @param isContinuous whether the rendering should be continuous or not. Use {@link #requestRendering()} in the later case to trigger frames.
+	 * Sets whether to render continuously. In case rendering is performed non-continuously, the
+	 * following events will trigger a redraw:
+	 * 
+	 * <ul>
+	 * <li>A call to {@link #requestRendering()}</li>
+	 * <li>Input events from the touch screen/mouse or keyboard</li>
+	 * <li>A {@link Runnable} is posted to the rendering thread via {@link Application#postRunnable(Runnable)}</li>
+	 * </ul>
+	 * 
+	 * Life-cycle events will also be reported as usual, see {@link ApplicationListener}. 
+	 * This method can be called from any thread.
+	 * 
+	 * @param isContinuous whether the rendering should be continuous or not.
 	 */
 	public void setContinuousRendering(boolean isContinuous);
 	
@@ -236,7 +248,8 @@ public interface Graphics {
 	public boolean isContinuousRendering();
 	
 	/**
-	 * requests a new frame to be rendered if the rendering mode is non-continuous.
+	 * Requests a new frame to be rendered if the rendering mode is non-continuous. This method
+	 * can be called from any thread.
 	 */
 	public void requestRendering();
 	

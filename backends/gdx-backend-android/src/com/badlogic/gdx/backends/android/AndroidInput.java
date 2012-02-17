@@ -47,10 +47,7 @@ import com.badlogic.gdx.utils.Pool;
 /** An implementation of the {@link Input} interface for Android.
  * 
  * @author mzechner */
-/**
- * @author jshapcot
- *
- */
+/** @author jshapcot */
 public final class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	class KeyEvent {
 		static final int KEY_DOWN = 0;
@@ -125,7 +122,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	private SensorEventListener accelerometerListener;
 	private SensorEventListener compassListener;
-	
+
 	public AndroidInput (AndroidApplication activity, View view, AndroidApplicationConfiguration config) {
 		view.setOnKeyListener(this);
 		view.setOnTouchListener(this);
@@ -201,6 +198,31 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		});
 	}
 
+	public void getPlaceholderTextInput (final TextInputListener listener, final String title, final String placeholder) {
+		handle.post(new Runnable() {
+			public void run () {
+				AlertDialog.Builder alert = new AlertDialog.Builder(AndroidInput.this.app);
+				alert.setTitle(title);
+				final EditText input = new EditText(AndroidInput.this.app);
+				input.setHint(placeholder);
+				input.setSingleLine();
+				alert.setView(input);
+				alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+					public void onClick (DialogInterface dialog, int whichButton) {
+						listener.input(input.getText().toString());
+					}
+				});
+				alert.setOnCancelListener(new OnCancelListener() {
+					@Override
+					public void onCancel (DialogInterface arg0) {
+						listener.canceled();
+					}
+				});
+				alert.show();
+			}
+		});
+	}
+
 	@Override
 	public int getX () {
 		synchronized (this) {
@@ -257,7 +279,6 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			this.processor = processor;
 		}
 	}
-
 
 	void processEvents () {
 		synchronized (this) {
@@ -398,8 +419,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			app.getGraphics().requestRendering();
 		}
 
-		//circle button on Xperia Play shouldn't need catchBack == true
-		if (keyCode == Keys.BUTTON_CIRCLE) return true; 
+		// circle button on Xperia Play shouldn't need catchBack == true
+		if (keyCode == Keys.BUTTON_CIRCLE) return true;
 		if (catchBack && keyCode == android.view.KeyEvent.KEYCODE_BACK) return true;
 		if (catchMenu && keyCode == android.view.KeyEvent.KEYCODE_MENU) return true;
 		return false;
@@ -407,7 +428,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	@Override
 	public void setOnscreenKeyboardVisible (final boolean visible) {
-//		onscreenKeyboard.setVisible(visible);
+// onscreenKeyboard.setVisible(visible);
 		handle.post(new Runnable() {
 			public void run () {
 				InputMethodManager manager = (InputMethodManager)app.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -473,15 +494,15 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		}
 	}
 
-	/**
-	 * Returns the rotation matrix describing the devices rotation as per <a href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">SensorManager#getRotationMatrix(float[], float[], float[], float[])</a>.
-	 * Does not manipulate the matrix if the platform does not have an accelerometer.
-	 * @param matrix
-	 */
-	public void getRotationMatrix(float[] matrix) {
+	/** Returns the rotation matrix describing the devices rotation as per <a href=
+	 * "http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])"
+	 * >SensorManager#getRotationMatrix(float[], float[], float[], float[])</a>. Does not manipulate the matrix if the platform
+	 * does not have an accelerometer.
+	 * @param matrix */
+	public void getRotationMatrix (float[] matrix) {
 		SensorManager.getRotationMatrix(matrix, null, accelerometerValues, magneticFieldValues);
 	}
-	
+
 	@Override
 	public float getAzimuth () {
 		if (!compassAvailable) return 0;
@@ -514,7 +535,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			} else {
 				Sensor accelerometer = manager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
 				accelerometerListener = new SensorListener(this.nativeOrientation, this.accelerometerValues, this.magneticFieldValues);
-				accelerometerAvailable = manager.registerListener(accelerometerListener, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+				accelerometerAvailable = manager.registerListener(accelerometerListener, accelerometer,
+					SensorManager.SENSOR_DELAY_GAME);
 			}
 		} else
 			accelerometerAvailable = false;
@@ -653,25 +675,20 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		return currentEventTimeStamp;
 	}
 
-	/** Our implementation of SensorEventListener. Because Android doesn't like it
-	 *  when we register more than one Sensor to a single SensorEventListener,
-	 *  we add one of these for each Sensor. Could use an anonymous class,
-	 *  but I don't see any harm in explicitly defining it here.
-	 *  Correct me if I am wrong.
-	 */	
-	private class SensorListener implements SensorEventListener
-	{
+	/** Our implementation of SensorEventListener. Because Android doesn't like it when we register more than one Sensor to a single
+	 * SensorEventListener, we add one of these for each Sensor. Could use an anonymous class, but I don't see any harm in
+	 * explicitly defining it here. Correct me if I am wrong. */
+	private class SensorListener implements SensorEventListener {
 		final float[] accelerometerValues;
 		final float[] magneticFieldValues;
 		final Orientation nativeOrientation;
-		
-		SensorListener(Orientation nativeOrientation, float[] accelerometerValues, float[] magneticFieldValues)
-		{
+
+		SensorListener (Orientation nativeOrientation, float[] accelerometerValues, float[] magneticFieldValues) {
 			this.accelerometerValues = accelerometerValues;
 			this.magneticFieldValues = magneticFieldValues;
 			this.nativeOrientation = nativeOrientation;
 		}
-		
+
 		@Override
 		public void onAccuracyChanged (Sensor arg0, int arg1) {
 
@@ -691,6 +708,6 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 				System.arraycopy(event.values, 0, magneticFieldValues, 0, magneticFieldValues.length);
 			}
-		}	
+		}
 	}
 }

@@ -16,13 +16,26 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.OverlayLayout;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -30,6 +43,7 @@ import org.lwjgl.input.Mouse;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.utils.Pool;
 
 /** An implementation of the {@link Input} interface hooking a Jogl panel for input.
@@ -123,6 +137,95 @@ final class LwjglInput implements Input {
 							listener.canceled();
 						}
 					});
+			}
+		});
+	}
+	
+	public void getPlaceholderTextInput (final TextInputListener listener, final String title, final String placeholder) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run () {
+				JPanel panel = new JPanel(new FlowLayout());
+
+				JPanel textPanel = new JPanel() {
+					public boolean isOptimizedDrawingEnabled () {
+						return false;
+					};
+				};
+
+				textPanel.setLayout(new OverlayLayout(textPanel));
+				panel.add(textPanel);
+
+				final JTextField textField = new JTextField(20);
+				textField.setAlignmentX(0.0f);
+				textPanel.add(textField);
+
+				final JLabel placeholderLabel = new JLabel(placeholder);
+				placeholderLabel.setForeground(Color.GRAY);
+				placeholderLabel.setAlignmentX(0.0f);
+				textPanel.add(placeholderLabel, 0);
+
+				textField.getDocument().addDocumentListener(new DocumentListener() {
+
+					@Override
+					public void removeUpdate (DocumentEvent arg0) {
+						this.updated();
+					}
+
+					@Override
+					public void insertUpdate (DocumentEvent arg0) {
+						this.updated();
+					}
+
+					@Override
+					public void changedUpdate (DocumentEvent arg0) {
+						this.updated();
+					}
+
+					private void updated () {
+						if (textField.getText().length() == 0)
+							placeholderLabel.setVisible(true);
+						else
+							placeholderLabel.setVisible(false);
+					}
+				});
+
+				JOptionPane pane = new JOptionPane(panel, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, null,
+					null);
+
+				pane.setInitialValue(null);
+				pane.setComponentOrientation(JOptionPane.getRootFrame().getComponentOrientation());
+
+				Border border = textField.getBorder();
+				placeholderLabel.setBorder(new EmptyBorder(border.getBorderInsets(textField)));
+
+				JDialog dialog = pane.createDialog(null, title);
+				pane.selectInitialValue();
+
+				dialog.addWindowFocusListener(new WindowFocusListener() {
+
+					@Override
+					public void windowLostFocus (WindowEvent arg0) {
+					}
+
+					@Override
+					public void windowGainedFocus (WindowEvent arg0) {
+						textField.requestFocusInWindow();
+					}
+				});
+
+				dialog.setVisible(true);
+				dialog.dispose();
+
+				Object selectedValue = pane.getValue();
+
+				if (selectedValue != null && (selectedValue instanceof Integer)
+					&& ((Integer)selectedValue).intValue() == JOptionPane.OK_OPTION) {
+					listener.input(textField.getText());
+				} else {
+					listener.canceled();
+				}
+
 			}
 		});
 	}
@@ -642,6 +745,8 @@ final class LwjglInput implements Input {
 			if (events == 0) {
 				deltaX = 0;
 				deltaY = 0;
+			} else {
+				Gdx.graphics.requestRendering();
 			}
 		}
 	}
@@ -658,6 +763,7 @@ final class LwjglInput implements Input {
 				event.type = KeyEvent.KEY_TYPED;
 				event.timeStamp = System.nanoTime(); // FIXME this should use the repeat time plus the timestamp of the original
 				keyEvents.add(event);
+				Gdx.graphics.requestRendering();
 			}
 		}
 
@@ -704,6 +810,7 @@ final class LwjglInput implements Input {
 					pressedKeys--;
 					lastKeyCharPressed = 0;
 				}
+				Gdx.graphics.requestRendering();
 			}
 		}
 	}

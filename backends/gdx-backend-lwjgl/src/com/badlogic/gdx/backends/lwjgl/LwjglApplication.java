@@ -149,22 +149,20 @@ public class LwjglApplication implements Application {
 		int lastHeight = graphics.getHeight();
 
 		graphics.lastTime = System.nanoTime();
-		while (running) {
+		while (running) {			
+			Display.processMessages();
 			if (Display.isCloseRequested()) {
 				exit();
 			}
-
-			graphics.updateTime();
-			if (graphics.resize) {
-				graphics.resize = false;
-				listener.resize(graphics.getWidth(), graphics.getHeight());
-			}
+			
+			boolean shouldRender = false;
 			synchronized (runnables) {
 				executedRunnables.clear();
 				executedRunnables.addAll(runnables);
 				runnables.clear();
 				
 				for (int i = 0; i < executedRunnables.size(); i++) {
+					shouldRender = true;
 					try {
 						executedRunnables.get(i).run();
 					}
@@ -174,6 +172,7 @@ public class LwjglApplication implements Application {
 				}
 			}
 			input.update();
+			shouldRender |= graphics.shouldRender();
 
 			if (graphics.canvas != null) {
 				int width = graphics.canvas.getWidth();
@@ -183,21 +182,27 @@ public class LwjglApplication implements Application {
 					lastHeight = height;
 					Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
 					listener.resize(lastWidth, lastHeight);
+					shouldRender = true;
+				}
+			} else {
+				if(Display.wasResized() || Display.getWidth() != graphics.config.width || Display.getHeight() != graphics.config.height) {
+					Gdx.gl.glViewport(0, 0, Display.getWidth(), Display.getHeight());
+					graphics.config.width = Display.getWidth();
+					graphics.config.height = Display.getHeight();
+					if(listener != null) listener.resize(Display.getWidth(), Display.getHeight());
+					graphics.requestRendering();
 				}
 			}
 
 			input.processEvents();
-			listener.render();
 			audio.update();
-			Display.update();
-			if(Display.wasResized()) {
-				Gdx.gl.glViewport(0, 0, Display.getWidth(), Display.getHeight());
-				graphics.config.width = Display.getWidth();
-				graphics.config.height = Display.getHeight();
-				if(listener != null) listener.resize(Display.getWidth(), Display.getHeight());
-			}
-			if (graphics.vsync && graphics.config.useCPUSynch) {
-				Display.sync(60);
+			if(shouldRender) {
+				graphics.updateTime();
+				listener.render();
+				Display.update();
+				if (graphics.vsync && graphics.config.useCPUSynch) {
+					Display.sync(60);
+				}
 			}
 		}
 
