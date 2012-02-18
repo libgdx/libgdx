@@ -26,9 +26,32 @@
 			<arg value="${dir.out}/gdxBullet_wrap.cpp" />
 			<arg value="${basedir}/gdxBullet.i" />
 		</exec>
-		
-		<echo message="Wrapper files generated, now rebuild the gdx-bullet project." level="info" />
 	</target>
 
-	<target name="all" depends="clean,gen" />
+	<target name="fix_casts">
+
+		<echo message="Replacing director dynamic_cast with C-style casts to avoid RTTI" level="info" />
+		<replaceregexp file="${dir.out}/gdxBullet_wrap.cpp" flags="g">
+			<regexp pattern="SwigDirector_[\w]+ \*director = dynamic_cast&lt;(SwigDirector_[\w]+ \*)&gt;\(obj\);" />
+			<substitution expression="SwigDirector_btIDebugDraw *director = (\1)(obj);" />
+		</replaceregexp>
+
+		<echo message="Fixing director attach for Android JNI" level="info" />
+		<replace file = "${dir.out}/gdxBullet_wrap.cpp">
+			<replacetoken>director_-&gt;swig_jvm_-&gt;AttachCurrentThread((void **) &amp;jenv_, NULL);</replacetoken>
+			<replacevalue>
+# ifdef __ANDROID__
+		/* Android JNI wants a "JNIEnv **" */
+        director_-&gt;swig_jvm_-&gt;AttachCurrentThread(&amp;jenv_, NULL);
+# else
+		/* Oracle JNI wants a "void **" */
+        director_-&gt;swig_jvm_-&gt;AttachCurrentThread((void **) &amp;jenv_, NULL);
+# endif
+			</replacevalue>
+		</replace>
+	</target>
+
+	<target name="all" depends="clean,gen,fix_casts">
+		<echo message="Wrapper files generated, now rebuild the gdx-bullet project." level="info" />
+	</target>
 </project>

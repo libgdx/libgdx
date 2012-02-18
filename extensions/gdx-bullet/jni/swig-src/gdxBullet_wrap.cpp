@@ -332,7 +332,15 @@ namespace Swig {
         // the thread to exit upon shutdown. Only for jdk-1.4 and later.
         director_->swig_jvm_->AttachCurrentThreadAsDaemon((void **) &jenv_, NULL);
 #else
+        
+# ifdef __ANDROID__
+		/* Android JNI wants a "JNIEnv **" */
+        director_->swig_jvm_->AttachCurrentThread(&jenv_, NULL);
+# else
+		/* Oracle JNI wants a "void **" */
         director_->swig_jvm_->AttachCurrentThread((void **) &jenv_, NULL);
+# endif
+			
 #endif
       }
       ~JNIEnvWrapper() {
@@ -1715,6 +1723,26 @@ typedef btTypedConstraint::btConstraintInfo2 btConstraintInfo2;
 
 
 #include <BulletDynamics/ConstraintSolver/btHinge2Constraint.h>
+
+
+
+// Begin dummy implementations for missing Bullet methods
+
+void CProfileIterator::Enter_Largest_Child()
+{
+}
+
+void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
+{
+}
+
+bool btGeometryUtil::isInside(btAlignedObjectArray<btVector3> const&, btVector3 const&, float)
+{
+	return false;
+}
+
+// End dummy implementations for missing Bullet methods
+
 
 
 
@@ -6527,7 +6555,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIDebugDraw_1director_1connect(JNIEnv *jenv, jclass jcls, jobject jself, jlong objarg, jboolean jswig_mem_own, jboolean jweak_global) {
   btIDebugDraw *obj = *((btIDebugDraw **)&objarg);
   (void)jcls;
-  SwigDirector_btIDebugDraw *director = dynamic_cast<SwigDirector_btIDebugDraw *>(obj);
+  SwigDirector_btIDebugDraw *director = (SwigDirector_btIDebugDraw *)(obj);
   if (director) {
     director->swig_connect_director(jenv, jself, jenv->GetObjectClass(jself), (jswig_mem_own == JNI_TRUE), (jweak_global == JNI_TRUE));
   }
@@ -6536,7 +6564,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIDeb
 
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIDebugDraw_1change_1ownership(JNIEnv *jenv, jclass jcls, jobject jself, jlong objarg, jboolean jtake_or_release) {
   btIDebugDraw *obj = *((btIDebugDraw **)&objarg);
-  SwigDirector_btIDebugDraw *director = dynamic_cast<SwigDirector_btIDebugDraw *>(obj);
+  SwigDirector_btIDebugDraw *director = (SwigDirector_btIDebugDraw *)(obj);
   (void)jcls;
   if (director) {
     director->swig_java_change_ownership(jenv, jself, jtake_or_release ? true : false);

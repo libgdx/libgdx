@@ -802,3 +802,9 @@
  */
  
 %template(btCollisionObjectArray) btAlignedObjectArray<btCollisionObject *>;
+
+/*
+ * Include dummy methods for ones Bullet declares but doesn't
+ * implement.  At the bottom so we can reference other types.
+ */
+%include "gdxMissingBulletMethods.i"
