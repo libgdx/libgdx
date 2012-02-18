@@ -51,22 +51,27 @@ public class BulletTest {
 
 	public static void testBounce() {
 
+		// Create the collision and dynamics worlds
 		btDefaultCollisionConfiguration collisionConfiguration = new btDefaultCollisionConfiguration();
 		btCollisionDispatcher dispatcher = new btCollisionDispatcher(
 				collisionConfiguration);
 		btDbvtBroadphase broadphase = new btDbvtBroadphase();
 		btSequentialImpulseConstraintSolver solver = new btSequentialImpulseConstraintSolver();
-
 		btDiscreteDynamicsWorld dynamicsWorld = new btDiscreteDynamicsWorld(
 				dispatcher, broadphase, solver, collisionConfiguration);
+
+		// Configure gravity at 10 ms/s/s toward -z
 		dynamicsWorld.setGravity(new Vector3(0f, 0f, -10f));
 
+		// Rigid object at +100m
 		btRigidBody dropBody = createDropObject(100);
 		dynamicsWorld.addRigidBody(dropBody);
 
+		// Ground plane at +0m
 		btRigidBody planeBody = createGroundPlane();
 		dynamicsWorld.addRigidBody(planeBody);
 
+		// Simulate 10 seconds
 		int durationSeconds = 10;
 		int hertz = 60;
 		float timeStep = 1f / (float) hertz;
@@ -77,12 +82,11 @@ public class BulletTest {
 			}
 		}
 
+		// Clean up
 		dynamicsWorld.removeRigidBody(planeBody);
 		planeBody.delete();
-
 		dynamicsWorld.removeRigidBody(dropBody);
 		dropBody.delete();
-
 		dynamicsWorld.delete();
 		solver.delete();
 		broadphase.delete();
@@ -101,6 +105,9 @@ public class BulletTest {
 				new btStaticPlaneShape(new Vector3(0, 0, 1), 0), new Vector3(0,
 						0, 0));
 
+		// Transform values were copied into the rigid object, delete here
+		startTransform.delete();
+		
 		return body;
 	}
 
@@ -108,7 +115,6 @@ public class BulletTest {
 
 		float mass = 100f;
 
-		// 20 meters in the air (+z)
 		btTransform startTransform = new btTransform();
 		startTransform.setIdentity();
 		startTransform.setOrigin(new Vector3(0, 0, height));
@@ -121,13 +127,15 @@ public class BulletTest {
 		btRigidBody body = new btRigidBody(mass, new btDefaultMotionState(
 				startTransform), shape, localInertia);
 
+		// Transform values were copied into the rigid object, delete here
+		startTransform.delete();
+		
 		return body;
 	}
 
 	private static void printZ(btRigidBody body) {
-		btTransform t = body.getWorldTransform();
-		Vector3 v = t.getOrigin();
-		System.out.println(v.z);
-		t.delete();
+		btTransform transform = body.getWorldTransform();
+		System.out.println(transform.getOrigin().z);
+		// We didn't create the transform, don't delete it
 	}
 }

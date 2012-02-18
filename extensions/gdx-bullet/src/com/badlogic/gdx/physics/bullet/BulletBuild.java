@@ -65,8 +65,5 @@ public class BulletBuild {
 		//BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
         BuildExecutor.executeAnt("jni/build-linux64.xml", "");
         BuildExecutor.executeAnt("jni/build.xml", "pack-natives");
-        
-        BulletTest.testMathTypes();
-        BulletTest.testBounce();
 	}
 }
