@@ -1,7 +1,7 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
  
-LOCAL_MODULE    := gdx-bullet
+LOCAL_MODULE    := gdx-image
 LOCAL_C_INCLUDES := libjpeg/ 
  
 LOCAL_CFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__

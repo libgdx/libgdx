@@ -43,7 +43,7 @@ public class ImageBuild {
 		android.cExcludes = android.cppExcludes = excludes;
 		android.headerDirs = headers;
 		
-		new AntScriptGenerator().generate(new BuildConfig("gdx-bullet"), win32home, android, win32, win64, lin32, lin64, mac);
+		new AntScriptGenerator().generate(new BuildConfig("gdx-image"), win32home, android, win32, win64, lin32, lin64, mac);
 
 		// build natives
 //		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");

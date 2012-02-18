@@ -1,4 +1,4 @@
-<project name="gdx-bullet-Windows-64" basedir="." default="postcompile">
+<project name="gdx-image-Windows-64" basedir="." default="postcompile">
 	<!-- include the environment -->
 	<property environment="env"/>	
 	<!-- output directory for temporary object files -->
@@ -6,7 +6,7 @@
 	<!-- output directory for the shared library -->
 	<property name="libsDir" value="../libs/windows64" />
 	<!-- the name of the shared library -->
-	<property name="libName" value="gdx-bullet64.dll"/>
+	<property name="libName" value="gdx-image64.dll"/>
 	<!-- the jni header jniPlatform to use -->
 	<property name="jniPlatform" value="win32"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->
