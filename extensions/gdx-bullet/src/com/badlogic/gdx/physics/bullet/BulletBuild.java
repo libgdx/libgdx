@@ -42,22 +42,31 @@ public class BulletBuild {
 		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
 		lin32.cExcludes = lin32.cppExcludes = excludes;
 		lin32.headerDirs = headers;
-		
+		lin32.cppFlags += " -fno-strict-aliasing";
+
 		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
 		lin64.cExcludes = lin64.cppExcludes = excludes;
 		lin64.headerDirs = headers;
-		
+        lin64.cppFlags += " -fno-strict-aliasing";
+
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
 		mac.cExcludes = mac.cppExcludes = excludes;
 		mac.headerDirs = headers;
-		
+		mac.cppFlags += " -fno-strict-aliasing";
+
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
 		android.cExcludes = android.cppExcludes = excludes;
 		android.headerDirs = headers;
-		
+		android.cppFlags += " -fno-strict-aliasing";
+
 		new AntScriptGenerator().generate(new BuildConfig("gdx-bullet"), win32home, win32, win64, lin32, lin64, mac, android);
 
 		// build natives
-		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
+		//BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
+        BuildExecutor.executeAnt("jni/build-linux64.xml", "");
+        BuildExecutor.executeAnt("jni/build.xml", "pack-natives");
+        
+        BulletTest.testMathTypes();
+        BulletTest.testBounce();
 	}
 }

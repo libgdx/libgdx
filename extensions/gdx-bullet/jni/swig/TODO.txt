@@ -1,0 +1,63 @@
+Dev TODO:
+
+- Build on Windows, ARM, Mac OS (update SwigBulletBuild)
+- Decide on package names (swigbullet vs. bullet)
+- "swig-src" OK name for generated source?
+- Remove generation of mathTypesTest.i
+- btTransform makes a lot of garbage, reuse one for the returns?
+
+Features not yet finished:
+
+- Generate soft body, gimpact types
+    
+    Also update the btCollisionShape downcast switch block to include these
+    
+- Add downcast methods to generated types
+
+	When SWIG generates "class A" and "class B extends A", most methods like
+	"A getB()" actually return a concrete A, which can't be downcast to a B.
+	
+	Need to generate downcast methods on the wrapper types.
+
+- Handle "CUSTOM" btCollisionShape downcasts
+
+- Test perf around largish types crossing boundaries often
+
+	Vector3, Matrix4, and Quaternion should be pretty efficient.  Their 
+	floats are directly accessed in JNI.
+	
+	How about btTransform?  It has a Vector3 and a Matrix3 and they're
+	usually accessed together, possibly with another boundary crossing 
+	for setIdentity().
+	
+- Enable and fix vehicle class generation
+
+	They're the only ones I left disabled because of some C++ compile
+	issues I didn't care to fix at the time.
+	
+- Break into modules
+
+ 	Collision and dynamics types in separate libraries?  The generated 
+ 	wrappers are currently huge because they include everything.
+ 	Maybe disable lesser used features (some shapes? serialization?).
+ 	
+Areas of ongoing maintenance (as upstream Bullet changes):
+
+- Add classes to gdxBullet.i near the bottom
+
+	These are the "simple" classes.  We'll need to add them when Bullet
+	does, remove them when Bullet does.
+	
+- Add new files to "custom" for types with inner classes / structs
+
+	Some classes have inner types that are really useful and they
+	need those types declared in .i files.  When they change, we'll
+	need to update the class declarations.
+	
+	We can ignore inner types that won't be useful to gdx users.
+
+- Write more type substitutions like for Vector3, Matrix3, Quaternion
+
+	These make it more pleasant to use Bullet with GDX, and should
+	help with performance (fewer bytes copied).
+

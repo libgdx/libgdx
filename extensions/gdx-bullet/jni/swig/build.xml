@@ -1,0 +1,34 @@
+<project name="gdx-bullet-swig-gen" basedir="." default="all">
+
+	<property name="dir.out" location="${basedir}/../swig-src/" />
+
+	<target name="clean">
+		<echo message="Deleting previously generated files in ${dir.out}" level="info" />
+		<delete>
+			<fileset dir="${dir.out}" includes="**/*" />
+		</delete>
+	</target>
+
+	<target name="gen">
+
+		<mkdir dir="${dir.out}" />
+
+		<exec executable="swig">
+			<arg value="-java" />
+			<arg value="-c++" />
+			<arg value="-fvirtual" />
+			<arg value="-package" />
+			<arg value="com.badlogic.gdx.physics.bullet" />
+			<arg value="-I${basedir}/../src" />
+			<arg value="-outdir" />
+			<arg value="${dir.out}/com/badlogic/gdx/physics/bullet" />
+			<arg value="-o" />
+			<arg value="${dir.out}/gdxBullet_wrap.cpp" />
+			<arg value="${basedir}/gdxBullet.i" />
+		</exec>
+		
+		<echo message="Wrapper files generated, now rebuild the gdx-bullet project." level="info" />
+	</target>
+
+	<target name="all" depends="clean,gen" />
+</project>

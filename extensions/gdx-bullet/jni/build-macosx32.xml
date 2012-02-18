@@ -16,16 +16,18 @@
 	<property name="gcc" value="${compilerPrefix}gcc"/>	
 	<property name="gcc-opts" value="-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5"/>
 	<fileset id="gcc-files" dir="./">
+		<exclude name="target/"/>		
 				<include name="**/*.c"/>
 
 				<exclude name="src/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
-		
+
 	</fileset>
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++"/>
-	<property name="g++-opts" value="-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5"/>
+	<property name="g++-opts" value="-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5 -fno-strict-aliasing"/>
 	<fileset id="g++-files" dir="./">
+		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
 
 				<exclude name="src/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
@@ -49,19 +51,16 @@
 	</target>
 	
 	<target name="create-build-dir" depends="precompile">
-		<touch mkdirs="true" verbose="false">
+		<!-- FIXME this is pretty nasty :/ -->
+		<copy todir="${buildDir}">
 			<fileset refid="g++-files"/>
-			<mapper type="glob" from="*" to="${buildDir}/*" />
-		</touch>
-		<delete>
-			<fileset dir="${buildDir}" includes="**/*" excludes="**/*.o"/>
-		</delete>
-		<touch mkdirs="true" verbose="false">
 			<fileset refid="gcc-files"/>
-			<mapper type="glob" from="*" to="${buildDir}/*" />
-		</touch>
+		</copy>
 		<delete>
-			<fileset dir="${buildDir}" includes="**/*" excludes="**/*.o"/>
+			<fileset dir="${buildDir}">
+				<include name="*"/>
+				<exclude name="*.o"/>
+			</fileset>
 		</delete>
 	</target>
 
