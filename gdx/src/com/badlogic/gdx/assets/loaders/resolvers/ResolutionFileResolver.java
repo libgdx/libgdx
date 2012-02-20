@@ -18,6 +18,7 @@ package com.badlogic.gdx.assets.loaders.resolvers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver.Resolution;
 import com.badlogic.gdx.files.FileHandle;
 
 public class ResolutionFileResolver implements FileHandleResolver {
@@ -43,6 +44,18 @@ public class ResolutionFileResolver implements FileHandleResolver {
 
 	@Override
 	public FileHandle resolve (String fileName) {
+		Resolution bestDesc = choose(descriptors);
+		FileHandle originalHandle = new FileHandle(fileName);
+		FileHandle handle = baseResolver.resolve(resolve(originalHandle, bestDesc.suffix));
+		if (!handle.exists()) handle = baseResolver.resolve(fileName);
+		return handle;
+	}
+
+	protected String resolve (FileHandle originalHandle, String suffix) {
+		return originalHandle.parent() + "/" + suffix + "/" + originalHandle.name();
+	}
+
+	static public Resolution choose (Resolution... descriptors) {
 		int width = 0;
 		int height = 0;
 		if (Gdx.graphics.getWidth() > Gdx.graphics.getHeight()) {
@@ -62,14 +75,6 @@ public class ResolutionFileResolver implements FileHandleResolver {
 				bestDesc = descriptors[i];
 			}
 		}
-
-		FileHandle originalHandle = new FileHandle(fileName);
-		FileHandle handle = baseResolver.resolve(resolve(originalHandle, bestDesc.suffix));
-		if (!handle.exists()) handle = baseResolver.resolve(fileName);
-		return handle;
-	}
-
-	protected String resolve (FileHandle originalHandle, String suffix) {
-		return originalHandle.parent() + "/" + suffix + "/" + originalHandle.name();
+		return bestDesc;
 	}
 }
