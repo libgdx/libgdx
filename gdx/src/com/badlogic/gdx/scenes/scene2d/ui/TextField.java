@@ -83,6 +83,8 @@ public class TextField extends Widget {
 	private int selectionStart;
 	private float selectionX, selectionWidth;
 
+	private char passwordCharacter = BULLET;
+
 	public TextField (Skin skin) {
 		this("", null, skin.getStyle(TextFieldStyle.class), null);
 	}
@@ -124,6 +126,10 @@ public class TextField extends Widget {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		invalidateHierarchy();
+	}
+	
+	public void setPasswordCharacter (char passwordCharacter) {
+		this.passwordCharacter = passwordCharacter;
 	}
 
 	/** Returns the text field's style. Modifying the returned style may not have an effect until {@link #setStyle(TextFieldStyle)}
@@ -223,13 +229,13 @@ public class TextField extends Widget {
 			}
 		} else {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			if (passwordMode && font.containsCharacter(BULLET)) {
+			if (passwordMode && font.containsCharacter(passwordCharacter)) {
 				if (passwordBuffer == null) passwordBuffer = new StringBuilder(text.length());
 				if (passwordBuffer.length() > text.length()) //
 					passwordBuffer.setLength(text.length());
 				else {
 					for (int i = passwordBuffer.length(), n = text.length(); i < n; i++)
-						passwordBuffer.append(BULLET);
+						passwordBuffer.append(passwordCharacter);
 				}
 				font.draw(batch, passwordBuffer, x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
 			} else

@@ -94,6 +94,12 @@ public class UITest extends GdxTest {
 			SplitPaneStyle.class), "split");
 		final Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "label");
 
+		// configures an example of a TextField in password mode.
+		final Label passwordLabel = new Label("Textfield in password mode: ", skin);
+		final TextField passwordTextField = new TextField("", "password", skin);
+		passwordTextField.setPasswordCharacter('*');
+		passwordTextField.setPasswordMode(true);
+
 		// window.debug();
 		Window window = new Window("Dialog", skin.getStyle(WindowStyle.class), "window");
 		window.x = window.y = 0;
@@ -111,6 +117,9 @@ public class UITest extends GdxTest {
 		window.add(textfield).minWidth(100).expandX().fillX().colspan(3);
 		window.row();
 		window.add(splitPane).fill().expand().colspan(4).maxHeight(200);
+		window.row();
+		window.add(passwordLabel).colspan(2);
+		window.add(passwordTextField).minWidth(100).expandX().fillX().colspan(2);
 		window.row();
 		window.add(fpsLabel).colspan(4);
 		window.pack();
