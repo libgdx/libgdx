@@ -122,9 +122,9 @@ public class MD2Loader implements KeyframedModelLoader {
 				newVerts[idx++] = frame.vertices[vIdx.vIdx * 3];
 				newVerts[idx++] = frame.vertices[vIdx.vIdx * 3 + 1];
 				newVerts[idx++] = frame.vertices[vIdx.vIdx * 3 + 2];
-				newVerts[idx++] = MD2Normals.normals[frame.normalIndices[vIdx.vIdx]][1] * 70;
-				newVerts[idx++] = MD2Normals.normals[frame.normalIndices[vIdx.vIdx]][2] * 70;
-				newVerts[idx++] = MD2Normals.normals[frame.normalIndices[vIdx.vIdx]][0] * 70;
+				newVerts[idx++] = MD2Normals.normals[frame.normalIndices[vIdx.vIdx]][1];
+				newVerts[idx++] = MD2Normals.normals[frame.normalIndices[vIdx.vIdx]][2];
+				newVerts[idx++] = MD2Normals.normals[frame.normalIndices[vIdx.vIdx]][0];
 			}
 			frame.vertices = newVerts;
 		}
