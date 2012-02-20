@@ -4,10 +4,21 @@
 
 %module(directors="1") gdxBullet
 
-/* Lists types that need down cast support */
+/* 
+ * Allow public access to the CPtr methods on proxy classes and wrappers.
+ * 
+ * public was the default in SWIG <= 2.0.4, but changed to protected in
+ * 2.0.5. Getitng pointers to native Bullet objects can be useful (for 
+ * instance, to map them back to associated Java scene objects), so make
+ * the getCPtr method public.
+ */
+SWIG_JAVABODY_PROXY(protected, public, SWIGTYPE)
+SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
+
+/* Configures types that need down cast support */
 %include "gdxDownCast.i"
 
-/* Use directors for virtual methods that need Java implementations */
+/* Configure directors for types with virtual methods that need Java implementations */
 %feature("director") btIDebugDraw;
 
 /*
@@ -19,14 +30,14 @@
 /* Prefer libgdx's linear math types (Vector3, Matrix3, etc.). */
 %include "gdxMathTypes.i"
 
-/* Let's use "unsafe" enums (plain integer constants). */
+/* Use "unsafe" enums (plain integer constants) instead of typesafe enum classes. */
 %include "enumtypeunsafe.swg"
 %javaconst(1);
 
-/* Set Java imports for all the types we'll need in all extensions/custom types. */
+/* Include Java imports for all the types we'll need in all extensions/custom types. */
 %include "gdxJavaImports.i"
 
-/* Put the native lader in all types */
+/* Put the native lader in all types to avoid requiring manual loading. */
 %typemap(javacode) SWIGTYPE %{
   static {
     new SharedLibraryLoader().load("gdx-bullet");

@@ -10,76 +10,111 @@
 
 %fragment("gdxBulletHelpers", "header") {
 
-SWIGINTERN inline jclass gdx_findTempClass(JNIEnv * jenv) {
-  return jenv->FindClass("com/badlogic/gdx/physics/bullet/gdxBulletJNI");
+/* Gets a global ref to the temp class.  Do not release this. */
+SWIGINTERN inline jclass gdx_getTempClass(JNIEnv * jenv) {
+  static jclass cls = NULL;
+  if (cls == NULL) {
+	cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/gdxBulletJNI"));
+  }
+  return cls;
 }
 
-SWIGINTERN inline jobject gdx_getReturnVector3(JNIEnv * jenv, jclass * outClass) {
-  jclass tempClass = gdx_findTempClass(jenv);
-  jfieldID field = jenv->GetStaticFieldID(tempClass, "_RET_VECTOR3", "Lcom/badlogic/gdx/math/Vector3;");
-  
-  jobject ret = jenv->GetStaticObjectField(tempClass, field);
-  if (outClass != NULL) {
-    *outClass = jenv->GetObjectClass(ret);
+/* Gets a global ref to the temp class's Return Vector3.  Do not release this. */ 
+SWIGINTERN inline jobject gdx_getReturnVector3(JNIEnv * jenv) {
+  static jobject ret = NULL;
+  if (ret == NULL) {
+    jclass tempClass = gdx_getTempClass(jenv);
+    jfieldID field = jenv->GetStaticFieldID(tempClass, "_RET_VECTOR3", "Lcom/badlogic/gdx/math/Vector3;");
+    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(tempClass, field));
   }
   return ret;
 }
 
-SWIGINTERN inline jobject gdx_getReturnQuaternion(JNIEnv * jenv, jclass * outClass) {
-  jclass tempClass = gdx_findTempClass(jenv);
-  jfieldID field = jenv->GetStaticFieldID(tempClass, "_RET_QUATERNION", "Lcom/badlogic/gdx/math/Quaternion;");
-  
-  jobject ret = jenv->GetStaticObjectField(tempClass, field);
-  if (outClass != NULL) {
-    *outClass = jenv->GetObjectClass(ret);
+/* Gets a global reference to the temp class's Return Quaternion.  Do not release this. */
+SWIGINTERN inline jobject gdx_getReturnQuaternion(JNIEnv * jenv) {
+  static jobject ret = NULL;
+  if (ret == NULL) {
+    jclass tempClass = gdx_getTempClass(jenv);
+    jfieldID field = jenv->GetStaticFieldID(tempClass, "_RET_QUATERNION", "Lcom/badlogic/gdx/math/Quaternion;");
+    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(tempClass, field));
   }
   return ret;
 }
 
-SWIGINTERN inline jobject gdx_getReturnMatrix3(JNIEnv * jenv, jclass * outClass) {
-  jclass tempClass = gdx_findTempClass(jenv);
-  jfieldID field = jenv->GetStaticFieldID(tempClass, "_RET_MATRIX3", "Lcom/badlogic/gdx/math/Matrix3;");
-  
-  jobject ret = jenv->GetStaticObjectField(tempClass, field);
-  if (outClass != NULL) {
-    *outClass = jenv->GetObjectClass(ret);
+/* Gets a global reference to the temp class's Return Matrix3.  Do not release this. */
+SWIGINTERN inline jobject gdx_getReturnMatrix3(JNIEnv * jenv) {
+  static jobject ret = NULL;
+  if (ret == NULL) {
+    jclass tempClass = gdx_getTempClass(jenv);
+    jfieldID field = jenv->GetStaticFieldID(tempClass, "_RET_MATRIX3", "Lcom/badlogic/gdx/math/Matrix3;");
+    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(tempClass, field));
   }
   return ret;
 }
 
 SWIGINTERN inline jobject gdx_takePoolObject(JNIEnv * jenv, const char * poolName) {
-  jclass tempClass = gdx_findTempClass(jenv);
-  jfieldID poolField = jenv->GetStaticFieldID(tempClass, poolName, "Lcom/badlogic/gdx/utils/Pool;");
+  jclass tempClass = gdx_getTempClass(jenv);
+  
+  static jfieldID poolField = NULL;
+  if (poolField == NULL) {
+    poolField = jenv->GetStaticFieldID(tempClass, poolName, "Lcom/badlogic/gdx/utils/Pool;");
+  }
   
   jobject poolObject = jenv->GetStaticObjectField(tempClass, poolField);
   jclass poolClass = jenv->GetObjectClass(poolObject);
   
-  jmethodID obtainMethod = jenv->GetMethodID(poolClass, "obtain", "()Ljava/lang/Object;");
-  return jenv->CallObjectMethod(poolObject, obtainMethod);
+  static jmethodID obtainMethod = NULL;
+  if (obtainMethod == NULL) {
+    obtainMethod = (jmethodID) jenv->GetMethodID(poolClass, "obtain", "()Ljava/lang/Object;");
+  }
+  
+  jobject ret = jenv->CallObjectMethod(poolObject, obtainMethod);
+
+  jenv->DeleteLocalRef(poolObject);
+  jenv->DeleteLocalRef(poolClass);
+
+  return ret;
 }
 
 SWIGINTERN inline void gdx_releasePoolObject(JNIEnv * jenv, const char * poolName, jobject obj) {
-  jclass tempClass = gdx_findTempClass(jenv);
-  jfieldID poolField = jenv->GetStaticFieldID(tempClass, poolName, "Lcom/badlogic/gdx/utils/Pool;");
+  jclass tempClass = gdx_getTempClass(jenv);
+  
+  static jfieldID poolField = NULL;
+  if (poolField == NULL) {
+    poolField = jenv->GetStaticFieldID(tempClass, poolName, "Lcom/badlogic/gdx/utils/Pool;");
+  }
   
   jobject poolObject = jenv->GetStaticObjectField(tempClass, poolField);
   jclass poolClass = jenv->GetObjectClass(poolObject);
   
-  jmethodID freeMethod = jenv->GetMethodID(poolClass, "free", "(Ljava/lang/Object;)V");
+  static jmethodID freeMethod = NULL;
+  if (freeMethod == NULL) {
+    freeMethod = (jmethodID) jenv->GetMethodID(poolClass, "free", "(Ljava/lang/Object;)V");
+  }
+  
   jenv->CallVoidMethod(poolObject, freeMethod, obj);
+  
+  jenv->DeleteLocalRef(poolObject);
+  jenv->DeleteLocalRef(poolClass);
 }
 
 /* Sets the data in the Bullet type from the Gdx type. */
 SWIGINTERN inline void gdx_setBtVector3FromGdxVector3(JNIEnv * jenv, btVector3 & target, jobject source) {
-  jclass sourceClass = jenv->GetObjectClass(source); 
-  jfieldID xField = jenv->GetFieldID(sourceClass, "x", "F");
-  jfieldID yField = jenv->GetFieldID(sourceClass, "y", "F");
-  jfieldID zField = jenv->GetFieldID(sourceClass, "z", "F");
+  jclass sourceClass = jenv->GetObjectClass(source);
+  
+  static jfieldID xField = NULL, yField = NULL, zField = NULL;
+  if (xField == NULL) {
+    xField = jenv->GetFieldID(sourceClass, "x", "F");
+    yField = jenv->GetFieldID(sourceClass, "y", "F");
+    zField = jenv->GetFieldID(sourceClass, "z", "F");
+  }
 	
   target.setValue(
     jenv->GetFloatField(source, xField),
     jenv->GetFloatField(source, yField),
     jenv->GetFloatField(source, zField));
+    
+  jenv->DeleteLocalRef(sourceClass);
 }
 
 SWIGINTERN inline void gdx_setBtVector3FromGdxVector3(JNIEnv * jenv, btVector3 * target, jobject source) {
@@ -89,13 +124,19 @@ SWIGINTERN inline void gdx_setBtVector3FromGdxVector3(JNIEnv * jenv, btVector3 *
 /* Sets the data in the Gdx type from the Bullet type. */
 SWIGINTERN inline void gdx_setGdxVector3FromBtVector3(JNIEnv * jenv, jobject target, const btVector3 & source) {
   jclass targetClass = jenv->GetObjectClass(target);
-  jfieldID xField = jenv->GetFieldID(targetClass, "x", "F");
-  jfieldID yField = jenv->GetFieldID(targetClass, "y", "F");
-  jfieldID zField = jenv->GetFieldID(targetClass, "z", "F");
+  
+  static jfieldID xField = NULL, yField = NULL, zField = NULL;
+  if (xField == NULL) {
+    xField = jenv->GetFieldID(targetClass, "x", "F");
+    yField = jenv->GetFieldID(targetClass, "y", "F");
+    zField = jenv->GetFieldID(targetClass, "z", "F");
+  }
 
   jenv->SetFloatField(target, xField, source.getX());
   jenv->SetFloatField(target, yField, source.getY());
   jenv->SetFloatField(target, zField, source.getZ());
+  
+  jenv->DeleteLocalRef(targetClass);
 }
 
 SWIGINTERN inline void gdx_setGdxVector3FromBtVector3(JNIEnv * jenv, jobject target, const btVector3 * source) {
@@ -105,16 +146,22 @@ SWIGINTERN inline void gdx_setGdxVector3FromBtVector3(JNIEnv * jenv, jobject tar
 /* Sets the data in the Bullet type from the Gdx type. */
 SWIGINTERN inline void gdx_setBtQuaternionFromGdxQuaternion(JNIEnv * jenv, btQuaternion & target, jobject source) {
   jclass sourceClass = jenv->GetObjectClass(source); 
-  jfieldID xField = jenv->GetFieldID(sourceClass, "x", "F");
-  jfieldID yField = jenv->GetFieldID(sourceClass, "y", "F");
-  jfieldID zField = jenv->GetFieldID(sourceClass, "z", "F");
-  jfieldID wField = jenv->GetFieldID(sourceClass, "w", "F");
-	
+  
+  static jfieldID xField = NULL, yField = NULL, zField = NULL, wField = NULL;
+  if (xField == NULL) {
+    xField = jenv->GetFieldID(sourceClass, "x", "F");
+    yField = jenv->GetFieldID(sourceClass, "y", "F");
+    zField = jenv->GetFieldID(sourceClass, "z", "F");
+    wField = jenv->GetFieldID(sourceClass, "w", "F");
+  }
+  
   target.setValue(
     jenv->GetFloatField(source, xField),
     jenv->GetFloatField(source, yField),
     jenv->GetFloatField(source, zField),
     jenv->GetFloatField(source, wField));
+    
+  jenv->DeleteLocalRef(sourceClass);
 }
 
 SWIGINTERN inline void gdx_setBtQuaternionFromGdxQuaternion(JNIEnv * jenv, btQuaternion * target, jobject source) {
@@ -124,15 +171,21 @@ SWIGINTERN inline void gdx_setBtQuaternionFromGdxQuaternion(JNIEnv * jenv, btQua
 /* Sets the data in the Gdx type from the Bullet type. */
 SWIGINTERN inline void gdx_setGdxQuaternionFromBtQuaternion(JNIEnv * jenv, jobject target, const btQuaternion & source) {
   jclass targetClass = jenv->GetObjectClass(target);
-  jfieldID xField = jenv->GetFieldID(targetClass, "x", "F");
-  jfieldID yField = jenv->GetFieldID(targetClass, "y", "F");
-  jfieldID zField = jenv->GetFieldID(targetClass, "z", "F");
-  jfieldID wField = jenv->GetFieldID(targetClass, "w", "F");
+  
+  static jfieldID xField = NULL, yField = NULL, zField = NULL, wField = NULL;
+  if (xField == NULL) {
+    xField = jenv->GetFieldID(targetClass, "x", "F");
+    yField = jenv->GetFieldID(targetClass, "y", "F");
+    zField = jenv->GetFieldID(targetClass, "z", "F");
+    wField = jenv->GetFieldID(targetClass, "w", "F");
+  }
 
   jenv->SetFloatField(target, xField, source.getX());
   jenv->SetFloatField(target, yField, source.getY());
   jenv->SetFloatField(target, zField, source.getZ());
   jenv->SetFloatField(target, wField, source.getW());
+  
+  jenv->DeleteLocalRef(targetClass);
 }
 
 SWIGINTERN inline void gdx_setGdxQuaternionFromBtQuaternion(JNIEnv * jenv, jobject target, const btQuaternion * source) {
@@ -142,7 +195,12 @@ SWIGINTERN inline void gdx_setGdxQuaternionFromBtQuaternion(JNIEnv * jenv, jobje
 /* Sets the data in the Bullet type from the Gdx type. */
 SWIGINTERN inline void gdx_setBtMatrix3x3FromGdxMatrix3(JNIEnv * jenv, btMatrix3x3 & target, jobject source) {
   jclass sourceClass = jenv->GetObjectClass(source); 
-  jfieldID valsField = jenv->GetFieldID(sourceClass, "vals", "[F");
+  
+  static jfieldID valsField = NULL;
+  if (valsField == NULL) {
+    valsField = jenv->GetFieldID(sourceClass, "vals", "[F");
+  }
+  
   jfloatArray valsArray = (jfloatArray) jenv->GetObjectField(source, valsField);
   jfloat * elements = jenv->GetFloatArrayElements(valsArray, NULL);
   
@@ -153,6 +211,8 @@ SWIGINTERN inline void gdx_setBtMatrix3x3FromGdxMatrix3(JNIEnv * jenv, btMatrix3
     elements[2], elements[5], elements[8]);
   
   jenv->ReleaseFloatArrayElements(valsArray, elements, JNI_ABORT);
+  jenv->DeleteLocalRef(valsArray);
+  jenv->DeleteLocalRef(sourceClass);
 }
 
 SWIGINTERN inline void gdx_setBtMatrix3x3FromGdxMatrix3(JNIEnv * jenv, btMatrix3x3 * target, jobject source) {
@@ -162,7 +222,12 @@ SWIGINTERN inline void gdx_setBtMatrix3x3FromGdxMatrix3(JNIEnv * jenv, btMatrix3
 /* Sets the data in the Gdx type from the Bullet type. */
 SWIGINTERN inline void gdx_setGdxMatrix3FromBtMatrix3x3(JNIEnv * jenv, jobject target, const btMatrix3x3 & source) {
   jclass targetClass = jenv->GetObjectClass(target);
-  jfieldID valsField = jenv->GetFieldID(targetClass, "vals", "[F");
+  
+  static jfieldID valsField = NULL;
+  if (valsField == NULL) {
+    valsField = jenv->GetFieldID(targetClass, "vals", "[F");
+  }
+  
   jfloatArray valsArray = (jfloatArray) jenv->GetObjectField(target, valsField);
   jfloat * elements = jenv->GetFloatArrayElements(valsArray, NULL);
 
@@ -178,6 +243,8 @@ SWIGINTERN inline void gdx_setGdxMatrix3FromBtMatrix3x3(JNIEnv * jenv, jobject t
   elements[8] = (jfloat) source.getColumn(2).getZ();
 
   jenv->ReleaseFloatArrayElements(valsArray, elements, 0);  
+  jenv->DeleteLocalRef(valsArray);
+  jenv->DeleteLocalRef(targetClass);
 }
 
 SWIGINTERN inline void gdx_setGdxMatrix3FromBtMatrix3x3(JNIEnv * jenv, jobject target, const btMatrix3x3 * source) {
@@ -321,7 +388,7 @@ public:
 }
 
 %typemap(out, fragment="gdxBulletHelpers", noblock=1)		btVector3, btVector3 &, const btVector3 &	{
-	$result = gdx_getReturnVector3(jenv, NULL);
+	$result = gdx_getReturnVector3(jenv);
 	gdx_setGdxVector3FromBtVector3(jenv, $result, $1);
 }
 %typemap(javaout)		btVector3, btVector3 &, const btVector3 &	{
@@ -365,7 +432,7 @@ public:
 }
 
 %typemap(out, fragment="gdxBulletHelpers", noblock=1)		btQuaternion, btQuaternion &, const btQuaternion &	{
-	$result = gdx_getReturnQuaternion(jenv, NULL);
+	$result = gdx_getReturnQuaternion(jenv);
 	gdx_setGdxQuaternionFromBtQuaternion(jenv, $result, $1);
 }
 %typemap(javaout)	btQuaternion, btQuaternion &, const btQuaternion &	{
@@ -409,7 +476,7 @@ public:
 }
 
 %typemap(out, fragment="gdxBulletHelpers", noblock=1)		btMatrix3x3, btMatrix3x3 &, const btMatrix3x3 &	{
-	$result = gdx_getReturnMatrix3(jenv, NULL);
+	$result = gdx_getReturnMatrix3(jenv);
 	gdx_setGdxMatrix3FromBtMatrix3x3(jenv, $result, $1);
 }
 %typemap(javaout)	btMatrix3x3, btMatrix3x3 &, const btMatrix3x3 &	{

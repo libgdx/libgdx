@@ -1,10 +1,8 @@
 Dev TODO:
 
-- Build on Windows, ARM, Mac OS (update SwigBulletBuild)
-- Decide on package names (swigbullet vs. bullet)
-- "swig-src" OK name for generated source?
-- Remove generation of mathTypesTest.i
+- Build on Windows, Mac OS (update SwigBulletBuild)
 - btTransform makes a lot of garbage, reuse one for the returns?
+- Remove automatic static library load chunk in every class?
 
 Features not yet finished:
 
@@ -12,13 +10,6 @@ Features not yet finished:
     
     Also update the btCollisionShape downcast switch block to include these
     
-- Add downcast methods to generated types
-
-	When SWIG generates "class A" and "class B extends A", most methods like
-	"A getB()" actually return a concrete A, which can't be downcast to a B.
-	
-	Need to generate downcast methods on the wrapper types.
-
 - Handle "CUSTOM" btCollisionShape downcasts
 
 - Test perf around largish types crossing boundaries often
@@ -43,7 +34,7 @@ Features not yet finished:
  	
 Areas of ongoing maintenance (as upstream Bullet changes):
 
-- Add classes to gdxBullet.i near the bottom
+- Add classes to gdxBullet.i in that big section near the bottom
 
 	These are the "simple" classes.  We'll need to add them when Bullet
 	does, remove them when Bullet does.

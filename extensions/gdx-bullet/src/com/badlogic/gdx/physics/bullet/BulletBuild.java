@@ -19,8 +19,9 @@ public class BulletBuild {
 		cppFlags += " -fno-strict-aliasing";
 		// SWIG directors aren't clearly documented to require RTTI, but SWIG 
 		// normally generates a small number of dynamic_casts for director code.
-		// gdx-bullet's generator replaces these with static C casts so we
-		// can compile without RTTI and save some disk space.
+		// gdx-bullet's swig build.xml replaces these with static C casts so we
+		// can compile without RTTI and save some disk space.  It seems to work
+		// with these static casts.
 		cppFlags += " -fno-rtti";
 		
 		// generate build scripts

@@ -36,19 +36,6 @@
 			<substitution expression="SwigDirector_btIDebugDraw *director = (\1)(obj);" />
 		</replaceregexp>
 
-		<echo message="Fixing director attach for Android JNI" level="info" />
-		<replace file = "${dir.out}/gdxBullet_wrap.cpp">
-			<replacetoken>director_-&gt;swig_jvm_-&gt;AttachCurrentThread((void **) &amp;jenv_, NULL);</replacetoken>
-			<replacevalue>
-# ifdef __ANDROID__
-		/* Android JNI wants a "JNIEnv **" */
-        director_-&gt;swig_jvm_-&gt;AttachCurrentThread(&amp;jenv_, NULL);
-# else
-		/* Oracle JNI wants a "void **" */
-        director_-&gt;swig_jvm_-&gt;AttachCurrentThread((void **) &amp;jenv_, NULL);
-# endif
-			</replacevalue>
-		</replace>
 	</target>
 
 	<target name="all" depends="clean,gen,fix_casts">
