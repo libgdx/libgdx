@@ -1130,6 +1130,7 @@ SWIGINTERN inline void gdx_releasePoolObject(JNIEnv * jenv, const char * poolNam
   
   jenv->DeleteLocalRef(poolObject);
   jenv->DeleteLocalRef(poolClass);
+  jenv->DeleteLocalRef(obj);
 }
 
 /* Sets the data in the Bullet type from the Gdx type. */
