@@ -161,7 +161,6 @@ public class Matrix3 implements Serializable {
 		if (det == 0) throw new GdxRuntimeException("Can't invert a singular matrix");
 
 		float inv_det = 1.0f / det;
-		float tmp[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 		tmp[0] = vals[4] * vals[8] - vals[5] * vals[7];
 		tmp[1] = vals[2] * vals[7] - vals[1] * vals[8];
