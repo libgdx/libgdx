@@ -26,7 +26,7 @@ public class TTFFactoryTest extends GdxTest {
 
 	private BitmapFont fontAtlasDroid;
 
-	public static final float FONT_SIZE = 1f;
+	public static final float FONT_SIZE = 0.5f;
 	public static final String FONT_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;,{}\"´`'<>";
 	public static final String FONT_PATH = "data/DroidSerif-Regular.ttf";
 	private String text = "True type font =) Test <3";

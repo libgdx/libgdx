@@ -34,6 +34,7 @@ import com.badlogic.gdx.tests.SpriteBatchOriginScaleTest;
 import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.StbTrueTypeTest;
+import com.badlogic.gdx.tests.TTFFactoryTest;
 import com.badlogic.gdx.tests.VorbisTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
@@ -46,7 +47,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-stb-truetype/libs/gdx-stb-truetype-natives.jar").load("gdx-stb-truetype");
 		new SharedLibraryLoader("../../extensions/gdx-image/libs/gdx-image-natives.jar").load("gdx-image");
 		
-		GdxTest test = new JpegTest();
+		GdxTest test = new TTFFactoryTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;
