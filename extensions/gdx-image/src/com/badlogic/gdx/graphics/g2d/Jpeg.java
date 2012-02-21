@@ -4,11 +4,22 @@ import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
+/**
+ * Very thin wrapper around libjpeg. Returns Pixmaps given a file or raw jpeg data in a byte array.
+ * The returned Pixmap will always have the {@link Format#RGB888} format.
+ * @author mzechner
+ *
+ */
 public class Jpeg {
+	
+	/**
+	 * Reads a jpeg from the given file, throws a GdxRuntimeException in case something went wrong.
+	 */
 	public static Pixmap read(FileHandle file) {
 		byte[] bytes = file.readBytes();
 		long[] out = new long[4];
@@ -17,6 +28,9 @@ public class Jpeg {
 		return new Pixmap(new Gdx2DPixmap(pixels, out));
 	}
 	
+	/**
+	 * Reads a jpeg from the byte array, throws a GdxRuntimeException in case something went wrong.
+	 */
 	public static Pixmap read(byte[] compressedData, int offset, int length) {
 		long[] out = new long[4];
 		ByteBuffer pixels = read(compressedData, offset, length, out);
