@@ -310,4 +310,10 @@ public class GestureDetector extends InputAdapter {
 	public boolean isPanning () {
 		return panning;
 	}
+
+	public void reset () {
+		gestureStartTime = 0;
+		panning = false;
+		inTapSquare = false;
+	}
 }

@@ -90,6 +90,14 @@ public class Gdx2DPixmap implements Disposable {
 		this.height = (int)nativeData[2];
 		this.format = (int)nativeData[3];
 	}
+	
+	public Gdx2DPixmap(ByteBuffer pixelPtr, long[] nativeData) {
+		this.pixelPtr = pixelPtr;
+		this.basePtr = nativeData[0];
+		this.width = (int)nativeData[1];
+		this.height = (int)nativeData[2];
+		this.format = (int)nativeData[3];
+	}
 
 	public void dispose () {
 		free(basePtr);
@@ -237,7 +245,7 @@ public class Gdx2DPixmap implements Disposable {
 		if(pixmap==0)
 			return 0;
 	
-		jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * pixmap->format);
+		jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format));
 		jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
 		p_native_data[0] = (jlong)pixmap;
 		p_native_data[1] = pixmap->width;
@@ -253,7 +261,7 @@ public class Gdx2DPixmap implements Disposable {
 		if(pixmap==0)
 			return 0;
 	
-		jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * pixmap->format);
+		jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format));
 		jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
 		p_native_data[0] = (jlong)pixmap;
 		p_native_data[1] = pixmap->width;

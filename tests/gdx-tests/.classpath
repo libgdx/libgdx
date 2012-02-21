@@ -5,5 +5,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-audio"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-stb-truetype"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-image"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
