@@ -256,13 +256,15 @@ public class SelectBox extends Widget {
 
 		@Override
 		public boolean touchDown (float x, float y, int pointer) {
-			if (pointer != 0 || hit(x, y) == null) return false;
+			if (pointer != 0) return false;
 			ownsTouch = true;
-			selected = (int)((height - y) / itemHeight);
-			selected = Math.max(0, selected);
-			selected = Math.min(items.length - 1, selected);
-			selection = selected;
-			if (items.length > 0 && listener != null) listener.selected(SelectBox.this, selected, items[selected]);
+			if(x > 0 && x < width && y > 0 && y < height) {
+				selected = (int)((height - y) / itemHeight);
+				selected = Math.max(0, selected);
+				selected = Math.min(items.length - 1, selected);
+				selection = selected;
+				if (items.length > 0 && listener != null) listener.selected(SelectBox.this, selected, items[selected]);
+			}
 			return true;
 		}
 
@@ -278,7 +280,7 @@ public class SelectBox extends Widget {
 
 		@Override
 		public boolean touchMoved (float x, float y) {
-			if (hit(x, y) != null) {
+			if (x > 0 && x < width && y > 0 && y < height) {
 				selected = (int)((height - y) / itemHeight);
 				selected = Math.max(0, selected);
 				selected = Math.min(items.length - 1, selected);
@@ -288,7 +290,7 @@ public class SelectBox extends Widget {
 
 		@Override
 		public Actor hit (float x, float y) {
-			return x > 0 && x < width && y > 0 && y < height ? this : null;
+			return this;
 		}
 
 		public void act (float delta) {
