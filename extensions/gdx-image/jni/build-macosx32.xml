@@ -14,7 +14,7 @@
 	
 	<!-- define gcc compiler, options and files to compile -->
 	<property name="gcc" value="${compilerPrefix}gcc"/>	
-	<property name="gcc-opts" value="-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5"/>
+	<property name="gcc-opts" value="-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5 -DHAVE_CONFIG_H"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
 				<include name="**/*.c"/>
@@ -71,6 +71,8 @@
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
 						<arg value="-Ilibjpeg/"/>
+			<arg value="-Igiflib/"/>
+			<arg value="-I../../../gdx/jni/gdx2d/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -86,6 +88,8 @@
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
 						<arg value="-Ilibjpeg/"/>
+			<arg value="-Igiflib/"/>
+			<arg value="-I../../../gdx/jni/gdx2d/"/>
 
 			<srcfile/>
 			<arg value="-o"/>

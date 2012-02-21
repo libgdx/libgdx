@@ -2,14 +2,24 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
  
 LOCAL_MODULE    := gdx-image
-LOCAL_C_INCLUDES := libjpeg/ 
+LOCAL_C_INCLUDES := libjpeg/ giflib/ ../../../gdx/jni/gdx2d/ 
  
-LOCAL_CFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__
+LOCAL_CFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__ -DHAVE_CONFIG_H
 LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__
 LOCAL_LDLIBS := -lm
 LOCAL_ARM_MODE  := arm
  
-LOCAL_SRC_FILES := libjpeg/cdjpeg.c\
+LOCAL_SRC_FILES := com.badlogic.gdx.graphics.g2d.Jpeg.cpp\
+	giflib/dev2gif.c\
+	giflib/dgif_lib.c\
+	giflib/egif_lib.c\
+	giflib/gifalloc.c\
+	giflib/gif_err.c\
+	giflib/gif_font.c\
+	giflib/gif_hash.c\
+	giflib/qprintf.c\
+	giflib/quantize.c\
+	libjpeg/cdjpeg.c\
 	libjpeg/jaricom.c\
 	libjpeg/jcapimin.c\
 	libjpeg/jcapistd.c\
