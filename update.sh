@@ -19,6 +19,11 @@ cp -rf nightlies/extensions/gdx-stb-truetype-natives.jar extensions/gdx-stb-true
 cp -rf nightlies/extensions/armeabi/libgdx-stb-truetype.so extensions/gdx-stb-truetype/libs/armeabi
 cp -rf nightlies/extensions/armeabi-v7a/libgdx-stb-truetype.so extensions/gdx-stb-truetype/libs/armeabi-v7a
 
+# gdx-image natives
+cp -rf nightlies/extensions/gdx-image-natives.jar extensions/gdx-image/libs
+cp -rf nightlies/extensions/armeabi/libgdx-image.so extensions/gdx-image/libs/armeabi
+cp -rf nightlies/extensions/armeabi-v7a/libgdx-image.so extensions/gdx-image/libs/armeabi-v7a
+
 # copy android natives to tests
 cp -rf nightlies/armeabi nightlies/armeabi-v7a tests/gdx-tests-android/libs
 cp -rf nightlies/extensions/armeabi nightlies/extensions/armeabi-v7a tests/gdx-tests-android/libs

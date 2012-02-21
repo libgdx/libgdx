@@ -16,6 +16,9 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
  *
  */
 public class Jpeg {
+	static {
+		new SharedLibraryLoader().load("gdx-image");
+	}
 	
 	/**
 	 * Reads a jpeg from the given file, throws a GdxRuntimeException in case something went wrong.
