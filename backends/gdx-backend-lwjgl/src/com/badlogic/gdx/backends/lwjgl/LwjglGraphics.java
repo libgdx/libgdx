@@ -67,7 +67,7 @@ public class LwjglGraphics implements Graphics {
 		config.useGL20 = useGL2IfAvailable;
 		this.canvas = canvas;
 	}
-	
+
 	LwjglGraphics (Canvas canvas, LwjglApplicationConfiguration config) {
 		this.config = config;
 		this.config.width = canvas.getWidth();
@@ -288,8 +288,7 @@ public class LwjglGraphics implements Graphics {
 	/** Kindly stolen from http://lwjgl.org/wiki/index.php?title=LWJGL_Basics_5_(Fullscreen), not perfect but will do. */
 	@Override
 	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
-		if ((Display.getDisplayMode().getWidth() == width) && (Display.getDisplayMode().getHeight() == height)
-			&& (Display.isFullscreen() == fullscreen)) {
+		if (getWidth() == width && getHeight() == height && Display.isFullscreen() == fullscreen) {
 			return true;
 		}
 
@@ -375,7 +374,8 @@ public class LwjglGraphics implements Graphics {
 	@Override
 	public void setIcon (Pixmap[] pixmap) {
 		ByteBuffer[] buffers = new ByteBuffer[pixmap.length];
-		for(int i = 0; i < buffers.length; i++) buffers[i] = pixmap[i].getPixels().duplicate();
+		for (int i = 0; i < buffers.length; i++)
+			buffers[i] = pixmap[i].getPixels().duplicate();
 		Display.setIcon(buffers);
 	}
 
@@ -396,14 +396,14 @@ public class LwjglGraphics implements Graphics {
 		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
 	}
-	
+
 	public LwjglApplicationConfiguration getConfig () {
 		return config;
 	}
 
 	volatile boolean isContinuous = true;
 	volatile boolean requestRendering = false;
-	
+
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
 		this.isContinuous = isContinuous;
@@ -416,13 +416,13 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public void requestRendering () {
-		synchronized(this) {
+		synchronized (this) {
 			requestRendering = true;
 		}
 	}
-	
-	public boolean shouldRender() {
-		synchronized(this) {
+
+	public boolean shouldRender () {
+		synchronized (this) {
 			boolean rq = requestRendering;
 			requestRendering = false;
 			return rq || isContinuous;

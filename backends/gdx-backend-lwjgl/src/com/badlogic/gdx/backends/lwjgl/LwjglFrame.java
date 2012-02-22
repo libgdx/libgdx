@@ -46,7 +46,14 @@ public class LwjglFrame extends JFrame {
 
 			protected void setDisplayMode (int width, int height) {
 				LwjglFrame.this.getContentPane().setPreferredSize(new Dimension(width, height));
+				LwjglFrame.this.getContentPane().invalidate();
 				LwjglFrame.this.pack();
+				LwjglFrame.this.setLocationRelativeTo(null);
+				updateSize(width, height);
+			}
+
+			protected void resize (int width, int height) {
+				updateSize(width, height);
 			}
 		};
 		getContentPane().add(lwjglCanvas.getCanvas());
@@ -59,6 +66,9 @@ public class LwjglFrame extends JFrame {
 
 		setVisible(true);
 		lwjglCanvas.getCanvas().requestFocus();
+	}
+
+	public void updateSize (int width, int height) {
 	}
 
 	public LwjglCanvas getLwjglCanvas () {

@@ -173,8 +173,7 @@ public class LwjglCanvas implements Application {
 					for (int i = 0; i < runnables.size(); i++) {
 						try {
 							runnables.get(i).run();
-						}
-						catch(Throwable t) {
+						} catch (Throwable t) {
 							t.printStackTrace();
 						}
 					}
@@ -188,6 +187,7 @@ public class LwjglCanvas implements Application {
 					lastWidth = width;
 					lastHeight = height;
 					Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
+					resize(width, height);
 					listener.resize(width, height);
 				}
 				input.processEvents();
@@ -201,6 +201,9 @@ public class LwjglCanvas implements Application {
 					stopped();
 			}
 		});
+	}
+
+	protected void resize (int width, int height) {
 	}
 
 	protected void stopped () {
@@ -250,14 +253,14 @@ public class LwjglCanvas implements Application {
 			runnables.add(runnable);
 		}
 	}
-	
+
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
 			System.out.println(tag + ": " + message);
 		}
 	}
-	
+
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
