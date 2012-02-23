@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.AnimatedModel;
 import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.graphics.g3d.model.SubMesh;
+import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -127,7 +128,16 @@ public class SkeletonModel implements AnimatedModel {
 
 	@Override
 	public void render (ShaderProgram program) {
-		// FIXME
+		int len = subMeshes.length;
+		for (int i = 0; i < len; i++) {
+			SkeletonSubMesh subMesh = subMeshes[i];
+			if (i == 0) {
+				subMesh.material.bind(program);
+			} else if (!subMeshes[i - 1].material.equals(subMesh.material)) {
+				subMesh.material.bind(program);
+			}
+			subMesh.mesh.render(program, subMesh.primitiveType);
+		}
 	}
 
 	@Override

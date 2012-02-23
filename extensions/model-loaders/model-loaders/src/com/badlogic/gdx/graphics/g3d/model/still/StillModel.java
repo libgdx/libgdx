@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.graphics.g3d.model.SubMesh;
+import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
@@ -46,8 +47,16 @@ public class StillModel implements Model {
 
 	@Override
 	public void render (ShaderProgram program) {
-		// TODO Auto-generated method stub
-
+		int len = subMeshes.length;
+		for (int i = 0; i < len; i++) {
+			StillSubMesh subMesh = subMeshes[i];
+			if (i == 0) {
+				subMesh.material.bind(program);
+			} else if (!subMeshes[i - 1].material.equals(subMesh.material)) {
+				subMesh.material.bind(program);
+			}
+			subMesh.mesh.render(program, subMesh.primitiveType);
+		}
 	}
 
 	@Override

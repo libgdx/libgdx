@@ -79,7 +79,16 @@ public class KeyframedModel implements AnimatedModel, Disposable {
 
 	@Override
 	public void render (ShaderProgram program) {
-		// FIXME
+		int len = subMeshes.length;
+		for (int i = 0; i < len; i++) {
+			KeyframedSubMesh subMesh = subMeshes[i];
+			if (i == 0) {
+				subMesh.material.bind(program);
+			} else if (!subMeshes[i - 1].material.equals(subMesh.material)) {
+				subMesh.material.bind(program);
+			}
+			subMesh.mesh.render(program, subMesh.primitiveType);
+		}
 	}
 
 	@Override
