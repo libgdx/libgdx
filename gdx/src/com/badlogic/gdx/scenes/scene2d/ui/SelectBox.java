@@ -184,6 +184,14 @@ public class SelectBox extends Widget {
 	public float getPrefHeight () {
 		return prefHeight;
 	}
+	
+	
+
+	@Override
+	public void markToRemove (boolean remove) {
+		super.markToRemove(remove);
+		if(list != null) list.markToRemove(true);
+	}
 
 	class SelectList extends Actor {
 		Vector2 oldScreenCoords = new Vector2();
