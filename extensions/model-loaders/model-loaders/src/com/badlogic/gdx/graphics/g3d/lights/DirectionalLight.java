@@ -5,10 +5,6 @@ import com.badlogic.gdx.math.Vector3;
 
 public class DirectionalLight {
 	
-	public Vector3 direction = new Vector3();
-	public Color color = new Color();
-	//or just 
-	// public float r,g,b;
-	
-	public float intensity;
+	final public Vector3 direction = new Vector3();
+	final public Color color = new Color();
 }
