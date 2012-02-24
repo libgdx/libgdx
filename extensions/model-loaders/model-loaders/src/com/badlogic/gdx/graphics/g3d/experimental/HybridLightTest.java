@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.graphics.g3d.experimental;
 
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class HybridLightTest implements ApplicationListener {
 
 	static final int LIGHTS_NUM = 8;
 	static final float LIGHT_INTESITY = 5;
-	
+
 	PerspectiveCamController camController;
 	PerspectiveCamera cam;
 
@@ -39,7 +40,7 @@ public class HybridLightTest implements ApplicationListener {
 	float[] lightsCol = new float[LIGHTS_NUM * 3];
 	float[] lightsInt = new float[LIGHTS_NUM];
 
-	public void render() {
+	public void render () {
 
 		logger.log();
 
@@ -57,10 +58,8 @@ public class HybridLightTest implements ApplicationListener {
 		texture.bind(0);
 
 		lightShader.begin();
-		lightShader.setUniformf("camPos", cam.position.x, cam.position.y,
-				cam.position.z);
+		lightShader.setUniformf("camPos", cam.position.x, cam.position.y, cam.position.z);
 
-		
 		lightShader.setUniform3fv("lightsPos", lightsPos, 0, LIGHTS_NUM * 3);
 		lightShader.setUniform3fv("lightsCol", lightsCol, 0, LIGHTS_NUM * 3);
 		lightShader.setUniform1fv("lightsInt", lightsInt, 0, LIGHTS_NUM);
@@ -77,12 +76,12 @@ public class HybridLightTest implements ApplicationListener {
 
 	}
 
-	public void create() {
+	public void create () {
 		Gdx.graphics.setVSync(false);
 
 		// rng light pos and colors
 		for (int i = 0; i < LIGHTS_NUM; i++) {
-			lightsPos[3 * i + 0] = 2-MathUtils.random() * 5;
+			lightsPos[3 * i + 0] = 2 - MathUtils.random() * 5;
 			lightsPos[3 * i + 1] = MathUtils.random() * 5;
 			;
 			lightsPos[3 * i + 2] = 1 - MathUtils.random() * 8;
@@ -96,27 +95,21 @@ public class HybridLightTest implements ApplicationListener {
 
 		lightShader = ShaderLoader.createShader("light", "light");
 
-		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight());
+		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.near = 0.1f;
 		cam.far = 64f;
-		cam.position.set(0, 0.5f, 1.5f);
+		cam.position.set(0, 0.5f, -2f);
 		cam.update();
 
 		camController = new PerspectiveCamController(cam);
 		Gdx.input.setInputProcessor(camController);
 
-		 texture = new Texture(Gdx.files.internal("data/multipleuvs_1.png"),
-		 null,
-		 true);
-		 texture.setFilter(TextureFilter.MipMapLinearLinear,
-		 TextureFilter.Linear);
-		
-		 texture2 = new Texture(Gdx.files.internal("data/wall.png"), null,
-		 true);
-		 texture2.setFilter(TextureFilter.MipMapLinearLinear,
-		 TextureFilter.Linear);
-		 texture2.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+		texture = new Texture(Gdx.files.internal("data/multipleuvs_1.png"), null, true);
+		texture.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);
+
+		texture2 = new Texture(Gdx.files.internal("data/wall.png"), null, true);
+		texture2.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);
+		texture2.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 
 		try {
 			InputStream in = Gdx.files.internal("data/smoothsphere.obj").read();
@@ -144,24 +137,24 @@ public class HybridLightTest implements ApplicationListener {
 
 	}
 
-	public void resize(int width, int height) {
+	public void resize (int width, int height) {
 	}
 
-	public void pause() {
+	public void pause () {
 	}
 
-	public void dispose() {
+	public void dispose () {
 		mesh.dispose();
 		mesh2.dispose();
-		 texture.dispose();
-		 texture2.dispose();
+		texture.dispose();
+		texture2.dispose();
 
 	}
 
-	public void resume() {
+	public void resume () {
 	}
 
-	public static void main(String[] argv) {
+	public static void main (String[] argv) {
 		JoglApplicationConfiguration config = new JoglApplicationConfiguration();
 		config.title = "Hybrid Light";
 		config.width = 800;
