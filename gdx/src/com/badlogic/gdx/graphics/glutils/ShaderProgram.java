@@ -28,6 +28,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.math.Matrix3;
@@ -159,6 +160,10 @@ public class ShaderProgram implements Disposable {
 		}
 	}
 
+	public ShaderProgram (FileHandle vertexShader, FileHandle fragmentShader) {
+		this(vertexShader.readString(), fragmentShader.readString());
+	}
+
 	/** Loads and compiles the shaders, creates a new program and links the shaders.
 	 * 
 	 * @param vertexShader
@@ -222,6 +227,9 @@ public class ShaderProgram implements Disposable {
 		gl.glGetProgramiv(program, GL20.GL_LINK_STATUS, intbuf);
 		int linked = intbuf.get(0);
 		if (linked == 0) {
+			Gdx.gl20.glGetProgramiv(program, GL20.GL_INFO_LOG_LENGTH, intbuf);
+			int infoLogLength = intbuf.get(0);
+			if (infoLogLength > 1) log = Gdx.gl20.glGetProgramInfoLog(program);
 			return -1;
 		}
 
