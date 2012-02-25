@@ -64,8 +64,9 @@ public class StillModelViewerGL20 implements ApplicationListener {
 	private LightManager lightManager;
 	private PrototypeRendererGL20 protoRenderer;
 	private StillModelInstance instance;
+	private Instance instance2;
 
-	private class Instance implements StillModelInstance {
+	class Instance implements StillModelInstance {
 		final private Matrix4 matrix = new Matrix4();
 		final private Vector3 pos = new Vector3();
 		public Material[] materials;
@@ -96,6 +97,7 @@ public class StillModelViewerGL20 implements ApplicationListener {
 
 	@Override
 	public void create() {
+		Gdx.graphics.setVSync(false);
 		long start = System.nanoTime();
 		model = ModelLoaderRegistry
 				.loadStillModel(Gdx.files.internal(fileName));
@@ -148,7 +150,8 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		shader = ShaderLoader.createShader("light", "light");
 
 		lightManager = new LightManager(8);
-		for (int i = 0; i < 16; i++) {
+		lightManager.ambientLight.set(0.1f, 0.1f, 0.1f, 0);
+		for (int i = 0; i < 32; i++) {
 			PointLight l = new PointLight();
 			l.position.set(MathUtils.random(16) - 8, MathUtils.random(6) - 2,
 					-MathUtils.random(16) + 2);
@@ -159,12 +162,15 @@ public class StillModelViewerGL20 implements ApplicationListener {
 			lightManager.addLigth(l);
 
 		}
-		
+
 		protoRenderer = new PrototypeRendererGL20();
 		protoRenderer.setShader(shader);
 		protoRenderer.setLightManager(lightManager);
 
 		instance = new Instance();
+		instance.getTransform().translate(-6, 0, 1);
+		instance2 = new Instance();
+		instance2.getTransform().translate(6, 0, -5);
 
 		for (StillSubMesh mesh : model.subMeshes) {
 			System.out.println(mesh.material.name);
@@ -190,7 +196,11 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
 
-		instance.getTransform().rotate(0, 1, 0, 45 * Gdx.graphics.getDeltaTime());
+		instance.getTransform().rotate(0, 1, 0,
+				55 * Gdx.graphics.getDeltaTime());
+		instance2.getTransform().rotate(0, 1, 0,
+				-45 * Gdx.graphics.getDeltaTime());
+
 		cam.update();
 
 		shader.begin();
@@ -206,6 +216,7 @@ public class StillModelViewerGL20 implements ApplicationListener {
 
 		protoRenderer.begin();
 		protoRenderer.draw(model, instance);
+		protoRenderer.draw(model, instance2);
 		protoRenderer.end();
 
 		batch.begin();

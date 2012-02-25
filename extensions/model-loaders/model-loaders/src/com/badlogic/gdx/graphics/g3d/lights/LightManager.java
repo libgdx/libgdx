@@ -1,7 +1,9 @@
 package com.badlogic.gdx.graphics.g3d.lights;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.StillModelInstance;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
@@ -19,7 +21,7 @@ public class LightManager {
 
 	public final int maxLightsPerModel;
 
-	final Color ambientLight = new Color();
+	final public Color ambientLight = new Color();
 
 	public LightManager() {
 		this(4);
@@ -41,6 +43,19 @@ public class LightManager {
 		pointLights.clear();
 	}
 
+	final private float[] vec3 = { 0, 0, 0 };
+
+	public void calculateAndApplyLightsToModel(StillModelInstance instance,
+			ShaderProgram shader) {
+		final Vector3 vector = instance.getSortCenter();
+		vec3[0] = vector.x;
+		vec3[1] = vector.y;
+		vec3[2] = vector.z;
+		Matrix4.mulVec(instance.getTransform().val, vec3);
+		this.calculateLights(vec3[0], vec3[1], vec3[2]);
+		this.applyLights(shader);
+	}
+
 	// TODO make it better if it slow
 	// NAIVE but simple implementation of light choosing algorithm
 	// currently calculate lights based on transformed center position of model
@@ -51,22 +66,24 @@ public class LightManager {
 	public void calculateLights(float x, float y, float z) {
 		final int maxSize = pointLights.size;
 
-		PointLight lights[] = pointLights.items;
+		final PointLight lights[] = pointLights.items;
 		// solve what are closest lights
 		if (maxSize > maxLightsPerModel) {
 
 			for (int i = 0; i < maxSize; i++) {
-				lights[i].distance = lights[i].position.dst2(x, y, z);
+				lights[i].distance = lights[i].position.dst2(x, y, z)
+						/ lights[i].range;// if just linear fallof
+				// lights[i].distance = lights[i].position.dst2(x, y, z) -
+				// lights[i].range; //if range based
 			}
 			pointLights.sort();
-
 		}
 
 		// fill the light arrays
 		final int size = maxLightsPerModel > maxSize ? maxSize
 				: maxLightsPerModel;
 		for (int i = 0; i < size; i++) {
-			PointLight l = lights[i];
+			final PointLight l = lights[i];
 			final Vector3 pos = l.position;
 			positions[3 * i + 0] = pos.x;
 			positions[3 * i + 1] = pos.y;
@@ -97,5 +114,14 @@ public class LightManager {
 		shader.setUniform3fv("lightsPos", positions, 0, maxLightsPerModel * 3);
 		shader.setUniform3fv("lightsCol", colors, 0, maxLightsPerModel * 3);
 		shader.setUniform1fv("lightsInt", intensities, 0, maxLightsPerModel);
+	}
+
+	public void applyAmbient() {
+		// TODO fix me
+	}
+
+	public void applyAmbient(ShaderProgram shader) {
+		shader.setUniformf("ambient", ambientLight.r, ambientLight.g,
+				ambientLight.b);
 	}
 }

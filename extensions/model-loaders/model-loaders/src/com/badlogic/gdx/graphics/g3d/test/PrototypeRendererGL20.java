@@ -60,8 +60,6 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		// add animated render queue
 	}
 
-	final private float[] vec3 = { 0, 0, 0 };
-
 	@Override
 	public void end() {
 
@@ -79,6 +77,7 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	private void flush() {
 		drawing = false;
 
+		lightManager.applyAmbient(shader);
 		// do actual drawing
 
 		// frustum culling for all point lights (sphere) @lightMananger
@@ -87,19 +86,12 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		// draw for opaque queu
 		for (int i = 0; i < stillModelQueue.size; i++) {
 			final StillModelInstance instance = stillModelInstances.items[i];
-			final Vector3 vector = instance.getSortCenter();
-			vec3[0] = vector.x;
-			vec3[1] = vector.y;
-			vec3[2] = vector.z;
-			final Matrix4 modelMat = instance.getTransform();
-			Matrix4.mulVec(modelMat.val, vec3);
-			lightManager.calculateLights(vec3[0], vec3[1], vec3[2]);
-			lightManager.applyLights(shader);
 
-			shader.setUniformMatrix("u_modelMatrix", modelMat, false);
+			shader.setUniformMatrix("u_modelMatrix", instance.getTransform(),
+					false);
 			// TODO fastest way to calculate normalsToWorld matrix? JNI
 			// inversion and send with transpose flag?
-
+			lightManager.calculateAndApplyLightsToModel(instance, shader);
 			stillModelQueue.items[i].render(shader);
 		}
 

@@ -15,19 +15,21 @@ varying vec3 v_normal;
 varying vec3 v_lightPos;
 varying vec3 v_eye;
 varying vec3 v_pos;
+varying vec3 v_lightColor;
 varying float v_intensity;
-varying vec3 v_color;
 				
-const float WRAP_AROUND = 0.25; //0 is hard 1 is soft		
+const float WRAP_AROUND = 0.5; //0 is hard 1 is soft. if this is uniform performance is bad		
 void main()
 {	
 	v_texCoords = a_texCoord0; 	
 	v_normal    = a_normal;	
-	gl_Position = u_projectionViewMatrix * (u_modelMatrix * a_position);
-	vec3 pos  = a_position.xyz;
+	vec4 worldPos = u_modelMatrix * a_position;
+	gl_Position = u_projectionViewMatrix * worldPos; 
+	vec3 pos  = worldPos.xyz;
 	v_pos = pos;
-	v_eye = camPos - pos;	
+	v_eye = camPos - pos;
 	
+#if LIGHTS_NUM > 1
 	float aggW = 0.0;
 	vec3 aggPos = vec3(0.0);
 	vec3 aggCol = vec3(0.0);	
@@ -39,16 +41,22 @@ void main()
 		vec3 L    = dif * len; //normalize
 		
 		float lambert = dot(a_normal, L);
-		W *= clamp(0.0, 1.0, (lambert + WRAP_AROUND) / (1.0+WRAP_AROUND) );
+		W *= clamp(0.0, 1.0, (lambert + WRAP_AROUND) / (1.0 + WRAP_AROUND) );
 		//W *= max(0.0, dot(a_normal, L));
 				
 		aggPos   += L * W;
 		len 	 *= W;
-		aggCol   +=  len*lightsCol[i];		
+		aggCol   += len * lightsCol[i];		
 		aggW     += len;
 		
 	}	
 	v_lightPos  = (aggPos / aggW);
-	v_color = max(vec3(0.0), (aggCol / aggW));
+	v_lightColor = max(vec3(0.0), (aggCol / aggW));
 	v_intensity = aggW;
+#else
+	v_lightPos  = lightsPos[0];
+	v_lightColor = lightsCol[0];
+	v_intensity = lightsInt[0];
+#endif
+
 }

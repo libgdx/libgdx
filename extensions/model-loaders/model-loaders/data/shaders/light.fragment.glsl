@@ -5,6 +5,10 @@ precision mediump float;
 #define LOWP  
 #endif
 
+uniform vec3 ambient;
+const float shininessFactor = 15.0;
+const float WRAP_AROUND = 0.5; //0 is hard 1 is soft. if this is uniform performance is bad
+
 uniform sampler2D u_texture0;
 //uniform sampler2D u_texture1;
 
@@ -15,14 +19,11 @@ varying vec3 v_pos;
 varying float v_intensity;
 
 varying vec3 v_lightPos;
-varying vec3 v_color;
-
-const float shininessFactor = 25.0;
-const vec3 ambient = vec3(0.05, 0.05, 0.05);
+varying vec3 v_lightColor;
 
 const float TRESHOLD = 0.05;//prevent color glitches
 
-const float WRAP_AROUND = 0.25; //0 is hard 1 is soft	
+	
 void main()
 {	
 	
@@ -47,9 +48,9 @@ void main()
 	float specular = pow(clamp(dot(halfAngle, surfaceNormal),0.0,1.0), shininessFactor);
 			
 	//combine lights
-	vec3 light = intensity *( v_color * specular + diffuse * v_color * tex );
+	vec3 light = intensity *( v_lightColor * specular + diffuse * v_lightColor * tex );
 	
-	gl_FragColor = vec4( light + (ambient * tex) , 1.0);
+	gl_FragColor = vec4( light + (ambient * tex), 1.0);
 	//gl_FragColor = texture2D(u_texture1, v_texCoords) * vec4( light + (ambient * tex) , 1.0);
 
 
