@@ -66,8 +66,8 @@ public class StillModelViewerGL20 implements ApplicationListener {
 	private StillModelInstance instance;
 
 	private class Instance implements StillModelInstance {
-		final public Matrix4 matrix = new Matrix4();
-		final public Vector3 pos = new Vector3();
+		final private Matrix4 matrix = new Matrix4();
+		final private Vector3 pos = new Vector3();
 		public Material[] materials;
 
 		public Instance() {
@@ -103,7 +103,7 @@ public class StillModelViewerGL20 implements ApplicationListener {
 				+ (System.nanoTime() - start) / 1000000000.0f);
 
 		for (StillSubMesh mesh : model.subMeshes) {
-			mesh.mesh.scale(0.1f, 0.1f, 0.1f);
+			mesh.mesh.scale(5f, 5f, 5f);
 		}
 
 		if (!fileName.endsWith(".g3d")) {
@@ -190,8 +190,7 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
 
-		angle += Gdx.graphics.getDeltaTime();
-		// cam.rotate(Gdx.graphics.getDeltaTime(), 0, 1, 0);
+		instance.getTransform().rotate(0, 1, 0, 45 * Gdx.graphics.getDeltaTime());
 		cam.update();
 
 		shader.begin();
