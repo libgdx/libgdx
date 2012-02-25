@@ -20,11 +20,14 @@
 			<arg value="-package" />
 			<arg value="com.badlogic.gdx.physics.bullet" />
 			<arg value="-I${basedir}/../src" />
+			<!-- Disable Bullet profiling -->
+			<arg value="-DBT_NO_PROFILE" />
 			<arg value="-outdir" />
 			<arg value="${dir.out}/com/badlogic/gdx/physics/bullet" />
 			<arg value="-o" />
 			<arg value="${dir.out}/gdxBullet_wrap.cpp" />
 			<arg value="${basedir}/gdxBullet.i" />
+
 		</exec>
 	</target>
 

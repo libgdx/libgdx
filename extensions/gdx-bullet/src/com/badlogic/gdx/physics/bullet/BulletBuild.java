@@ -23,6 +23,9 @@ public class BulletBuild {
 		// can compile without RTTI and save some disk space.  It seems to work
 		// with these static casts.
 		cppFlags += " -fno-rtti";
+		// Disable profiling (it's on by default).  If you change this, you 
+		// must regenerate the SWIG wrappers with the changed value.
+		cppFlags += " -DBT_NO_PROFILE";
 		
 		// generate build scripts
 		String[] excludes = { "src/BulletMultiThreaded/GpuSoftBodySolvers/**" };

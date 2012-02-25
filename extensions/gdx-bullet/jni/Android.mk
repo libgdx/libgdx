@@ -5,7 +5,7 @@ LOCAL_MODULE    := gdx-bullet
 LOCAL_C_INCLUDES := src/ 
  
 LOCAL_CFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__
-LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__ -fno-strict-aliasing -fno-rtti
+LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__ -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE
 LOCAL_LDLIBS := -lm
 LOCAL_ARM_MODE  := arm
  

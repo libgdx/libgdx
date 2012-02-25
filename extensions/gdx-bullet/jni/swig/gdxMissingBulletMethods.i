@@ -8,9 +8,11 @@
 
 // Begin dummy implementations for missing Bullet methods
 
+#ifndef BT_NO_PROFILE
 void CProfileIterator::Enter_Largest_Child()
 {
 }
+#endif
 
 void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 {
