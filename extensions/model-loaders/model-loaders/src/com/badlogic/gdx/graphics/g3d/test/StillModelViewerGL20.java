@@ -28,14 +28,22 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.StillModelInstance;
+import com.badlogic.gdx.graphics.g3d.experimental.ShaderLoader;
+import com.badlogic.gdx.graphics.g3d.lights.LightManager;
+import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class StillModelViewerGL20 implements ApplicationListener {
@@ -53,6 +61,33 @@ public class StillModelViewerGL20 implements ApplicationListener {
 	BitmapFont font;
 	private ImmediateModeRenderer20 renderer;
 	private ShaderProgram shader;
+	private LightManager lightManager;
+	private PrototypeRendererGL20 protoRenderer;
+	private StillModelInstance instance;
+
+	private class Instance implements StillModelInstance {
+		final public Matrix4 matrix = new Matrix4();
+		final public Vector3 pos = new Vector3();
+		public Material[] materials;
+
+		public Instance() {
+		}
+
+		@Override
+		public Matrix4 getTransform() {
+			return matrix;
+		}
+
+		@Override
+		public Vector3 getSortCenter() {
+			return pos;
+		}
+
+		@Override
+		public Material[] getMaterials() {
+			return null;
+		}
+	}
 
 	public StillModelViewerGL20(String fileName, String... textureFileNames) {
 		this.fileName = fileName;
@@ -110,10 +145,26 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 
-		shader = new ShaderProgram(Gdx.files
-				.internal("data/modelshader.vertex").readString(), Gdx.files
-				.internal("data/modelshader.fragment").readString());
-		System.out.println("shader" + shader.isCompiled());
+		shader = ShaderLoader.createShader("light", "light");
+
+		lightManager = new LightManager(8);
+		for (int i = 0; i < 16; i++) {
+			PointLight l = new PointLight();
+			l.position.set(MathUtils.random(16) - 8, MathUtils.random(6) - 2,
+					-MathUtils.random(16) + 2);
+			l.color.r = MathUtils.random();
+			l.color.b = MathUtils.random();
+			l.color.g = MathUtils.random();
+			l.range = 4;
+			lightManager.addLigth(l);
+
+		}
+		
+		protoRenderer = new PrototypeRendererGL20();
+		protoRenderer.setShader(shader);
+		protoRenderer.setLightManager(lightManager);
+
+		instance = new Instance();
 
 		for (StillSubMesh mesh : model.subMeshes) {
 			System.out.println(mesh.material.name);
@@ -133,9 +184,6 @@ public class StillModelViewerGL20 implements ApplicationListener {
 
 	}
 
-	float[] lightColor = { 1, 1, 1, 0 };
-	float[] lightPosition = { 2, 5, 10, 0 };
-
 	@Override
 	public void render() {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -143,42 +191,29 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
 
 		angle += Gdx.graphics.getDeltaTime();
-		//cam.rotate(Gdx.graphics.getDeltaTime(), 0, 1, 0);
+		// cam.rotate(Gdx.graphics.getDeltaTime(), 0, 1, 0);
 		cam.update();
-
-		// drawAxes();
 
 		shader.begin();
 		shader.setUniformMatrix("u_projectionViewMatrix", cam.combined);
+
 		shader.setUniformi("u_texture0", 0);
-		shader.setUniformi("u_texture1", 1);
 		textures[0].bind(0);
-		textures[1].bind(1);
-		model.render(shader);
+
+		// shader.setUniformi("u_texture1", 1);
+		// textures[1].bind(1);
+
+		// model.render(shader);
+
+		protoRenderer.begin();
+		protoRenderer.draw(model, instance);
+		protoRenderer.end();
 
 		batch.begin();
 		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 20, 30);
 		batch.end();
 
 		fps.log();
-	}
-
-	private void drawAxes() {
-		float len = bounds.getDimensions().len();
-		renderer.begin(cam.combined, GL10.GL_LINES);
-		renderer.color(1, 0, 0, 1);
-		renderer.vertex(0, 0, 0);
-		renderer.color(1, 0, 0, 1);
-		renderer.vertex(len, 0, 0);
-		renderer.color(0, 1, 0, 1);
-		renderer.vertex(0, 0, 0);
-		renderer.color(0, 1, 0, 1);
-		renderer.vertex(0, len, 0);
-		renderer.color(0, 0, 1, 1);
-		renderer.vertex(0, 0, 0);
-		renderer.color(0, 0, 1, 1);
-		renderer.vertex(0, 0, len);
-		renderer.end();
 	}
 
 	@Override

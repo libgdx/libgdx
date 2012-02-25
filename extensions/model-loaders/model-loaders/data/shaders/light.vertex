@@ -8,6 +8,7 @@ uniform vec3  lightsCol[LIGHTS_NUM];
 uniform float lightsInt[LIGHTS_NUM];
 uniform vec3 camPos;
 uniform mat4 u_projectionViewMatrix;
+uniform mat4 u_modelMatrix;
 
 varying vec2 v_texCoords;
 varying vec3 v_normal;
@@ -17,12 +18,12 @@ varying vec3 v_pos;
 varying float v_intensity;
 varying vec3 v_color;
 				
-const float WRAP_AROUND = 0.05; //0 is hard 1 is soft		
+const float WRAP_AROUND = 0.25; //0 is hard 1 is soft		
 void main()
 {	
 	v_texCoords = a_texCoord0; 	
 	v_normal    = a_normal;	
-	gl_Position = u_projectionViewMatrix * a_position;
+	gl_Position = u_projectionViewMatrix * (u_modelMatrix * a_position);
 	vec3 pos  = a_position.xyz;
 	v_pos = pos;
 	v_eye = camPos - pos;	
@@ -30,7 +31,8 @@ void main()
 	float aggW = 0.0;
 	vec3 aggPos = vec3(0.0);
 	vec3 aggCol = vec3(0.0);	
-	for   ( int i = 0; i < LIGHTS_NUM; i++ ){
+	for ( int i = 0; i < LIGHTS_NUM; i++ ){
+	
 		vec3 dif  = lightsPos[i] - pos;		
 		float len = 1.0 / length(dif);
 		float W   = lightsInt[i] * len;//or some better fallof

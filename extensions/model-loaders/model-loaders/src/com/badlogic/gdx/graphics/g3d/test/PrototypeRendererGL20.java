@@ -3,20 +3,46 @@ package com.badlogic.gdx.graphics.g3d.test;
 import com.badlogic.gdx.graphics.g3d.AnimatedModelInstance;
 import com.badlogic.gdx.graphics.g3d.ModelRenderer;
 import com.badlogic.gdx.graphics.g3d.StillModelInstance;
+import com.badlogic.gdx.graphics.g3d.lights.LightManager;
 import com.badlogic.gdx.graphics.g3d.model.AnimatedModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 public class PrototypeRendererGL20 implements ModelRenderer {
 
-	// static final int SIZE = 128;
-	// Array<StillModel> StillModelQueue = new
-	// Array<StillModel>(false,SIZE,StillModel.class);
-	// Array<StillModel> AnimatedModelQueue = new
-	// Array<StillModel>(false,SIZE,StillModel.class);
+	static final int SIZE = 128;// TODO better way
+	final private Array<StillModel> stillModelQueue = new Array<StillModel>(
+			false, SIZE, StillModel.class);
+	final private Array<StillModelInstance> stillModelInstances = new Array<StillModelInstance>(
+			false, SIZE, StillModelInstance.class);
+
+	final private Array<StillModel> animatedModelQueue = new Array<StillModel>(
+			false, SIZE, StillModel.class);
+	final private Array<AnimatedModelInstance> animatedModelInstances = new Array<AnimatedModelInstance>(
+			false, SIZE, AnimatedModelInstance.class);
+
+	private LightManager lightManager;
+	private boolean drawing;
+	private ShaderProgram shader;
+
+	public void setLightManager(LightManager lightManager) {
+		this.lightManager = lightManager;
+		if (drawing)
+			flush();
+	}
+
+	// TODO REMOVE THIS
+	public void setShader(ShaderProgram shader) {
+		this.shader = shader;
+	}
 
 	@Override
 	public void begin() {
+		drawing = true;
+
 		// all setting has to be done before this
 
 		// example: camera updating or updating lights positions
@@ -25,6 +51,8 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	@Override
 	public void draw(StillModel model, StillModelInstance instance) {
 		// add render queue
+		stillModelQueue.add(model);
+		stillModelInstances.add(instance);
 	}
 
 	@Override
@@ -32,20 +60,48 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		// add animated render queue
 	}
 
+	final private float[] vec3 = { 0, 0, 0 };
+
 	@Override
 	public void end() {
 
 		// TODO how materials is accounted
 
-		// batched frustum vs bounding box culling(if slow JNI) for all models
+		// batched frustum vs bounding box culling(if slow JNI) for all models,
+		// Maybe at somewhere else,
 
-		// sort models(submeshes??)to tranparent and opaque render queue
+		// sort models(submeshes??)to tranparent and opaque render queue, maybe
+		// that can be done at flush?
 
-		// frustum culling for all point lights (sphere)
+		flush();
+	}
+
+	private void flush() {
+		drawing = false;
+
+		// do actual drawing
+
+		// frustum culling for all point lights (sphere) @lightMananger
 
 		// find N nearest lights per model
-
 		// draw for opaque queu
+		for (int i = 0; i < stillModelQueue.size; i++) {
+			final StillModelInstance instance = stillModelInstances.items[i];
+			final Vector3 vector = instance.getSortCenter();
+			vec3[0] = vector.x;
+			vec3[1] = vector.y;
+			vec3[2] = vector.z;
+			final Matrix4 modelMat = instance.getTransform();
+			Matrix4.mulVec(modelMat.val, vec3);
+			lightManager.calculateLights(vec3[0], vec3[1], vec3[2]);
+			lightManager.applyLights(shader);
+
+			shader.setUniformMatrix("u_modelMatrix", modelMat, false);
+			// TODO fastest way to calculate normalsToWorld matrix? JNI
+			// inversion and send with transpose flag?
+
+			stillModelQueue.items[i].render(shader);
+		}
 
 		// if transparent queue is not empty enable blending(this force gpu to
 		// flush and there is some time to sort)
@@ -55,7 +111,9 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		// do drawing for transparent models
 
 		// clear all queus
-
+		stillModelQueue.clear();
+		stillModelInstances.clear();
+		animatedModelQueue.clear();
+		animatedModelInstances.clear();
 	}
-
 }
