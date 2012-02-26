@@ -26,7 +26,7 @@ import com.badlogic.gdx.math.Matrix4;
 public class HybridLightTest implements ApplicationListener {
 
 	static final int LIGHTS_NUM = 8;
-	static final float LIGHT_INTESITY = 8;
+	static final float LIGHT_INTESITY = 5;
 
 	LightManager lightManager;
 
