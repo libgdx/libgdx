@@ -27,6 +27,8 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
@@ -57,9 +59,8 @@ public class KeyframedModelViewer implements ApplicationListener {
 	public void create () {
 		model = ModelLoaderRegistry.loadKeyframedModel(Gdx.files.internal(fileName));
 		if (textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName), Format.RGB565, true);
+		model.setMaterial(new Material("default", new TextureAttribute(texture, 0, "skin")));
 		hasNormals = hasNormals();
-// Material material = new Material("material", new TextureAttribute(texture, 0, "s_tex"));
-// model.setMaterial(material);
 		anim = (KeyframedAnimation)model.getAnimations()[0];
 
 		model.getBoundingBox(bounds);
@@ -114,12 +115,9 @@ public class KeyframedModelViewer implements ApplicationListener {
 		if (texture != null) {
 			Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
 			texture.bind();
-// Gdx.gl.glEnable(GL10.GL_BLEND);
-// Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		}
 
 		angle += 45 * Gdx.graphics.getDeltaTime();
-// Gdx.gl10.glRotatef(angle, 0, 1, 0);
 		animTime += Gdx.graphics.getDeltaTime();
 		if (animTime >= anim.totalDuration) {
 			animTime = 0;
@@ -181,14 +179,6 @@ public class KeyframedModelViewer implements ApplicationListener {
 	}
 
 	public static void main (String[] argv) {
-// if(argv.length != 1 && argv.length != 2) {
-// System.out.println("KeyframedModelViewer <filename> ?<texture-filename>");
-// System.exit(-1);
-// }
-// new JoglApplication(new KeyframedModelViewer("data/knight.md2", "data/knight.jpg"), "KeframedModel Viewer", 800, 480, false);
-// new JoglApplication(new KeyframedModelViewer("data/boy.g3dt", "data/boy.png"), "KeframedModel Viewer", 800, 480, false);
-
-		new JoglApplication(new KeyframedModelViewer("data/knight.g3d", "data/knight.jpg"), "KeframedModel Viewer", 800, 480, false);
-// new JoglApplication(new KeyframedModelViewer("data/boy.g3d", "data/boy.png"), "KeframedModel Viewer", 800, 480, false);
+		new JoglApplication(new KeyframedModelViewer("data/knight.md2", "data/knight.jpg"), "KeframedModel Viewer", 800, 480, false);
 	}
 }

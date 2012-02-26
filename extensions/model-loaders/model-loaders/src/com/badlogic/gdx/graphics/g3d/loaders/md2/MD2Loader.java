@@ -164,10 +164,13 @@ public class MD2Loader implements KeyframedModelLoader {
 					int absFrameNum = subFrame - beginFrame;
 					
 					frame = frames[subFrame];
-					float[] vertices = new float[header.numVertices * 3];
+					float[] vertices = new float[header.numVertices * 6];
 					idx = 0;
 					idxV = 0;
 					for (int i = 0; i < header.numVertices; i++) {
+						vertices[idx++] = frame.vertices[idxV++];
+						vertices[idx++] = frame.vertices[idxV++];
+						vertices[idx++] = frame.vertices[idxV++];
 						vertices[idx++] = frame.vertices[idxV++];
 						vertices[idx++] = frame.vertices[idxV++];
 						vertices[idx++] = frame.vertices[idxV++];

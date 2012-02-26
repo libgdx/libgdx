@@ -218,7 +218,7 @@ public class StillModelViewer implements ApplicationListener {
 // new JoglApplication(new StillModelViewer(argv[0], argv.length==2?argv[1]:null), "StillModel Viewer", 800, 480, false);
 // new JoglApplication(new StillModelViewer("data/qbob/world_blobbie_brushes.g3dt", "data/qbob/world_blobbie_blocks.png"),
 // "StillModel Viewer", 800, 480, false);
-		new JoglApplication(new StillModelViewer("data/multipleuvs.g3dt", "data/multipleuvs_1.png", "data/multipleuvs_2.png"),
+		new JoglApplication(new StillModelViewer("data/models/multipleuvs.g3d", "data/multipleuvs_1.png", "data/multipleuvs_2.png"),
 			"StillModel Viewer", 800, 480, false);
 // new JoglApplication(new StillModelViewer("data/head.obj"), "StillModel Viewer", 800, 480, false);
 	}

@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.graphics.g3d.experimental;
 
 import java.io.IOException;
@@ -43,11 +44,11 @@ public class HybridLightTest implements ApplicationListener {
 	private Matrix4 modelMatrix = new Matrix4();
 	private Matrix4 modelMatrix2 = new Matrix4();
 	private Texture texture3;
-	
-	public void render() {
+
+	public void render () {
 
 		logger.log();
-		
+
 		final float delta = Gdx.graphics.getDeltaTime();
 		camController.update(delta);
 
@@ -63,14 +64,13 @@ public class HybridLightTest implements ApplicationListener {
 
 		lightShader.begin();
 		lightShader.setUniformMatrix("u_modelMatrix", modelMatrix2, false);
-		
-		lightShader.setUniformf("camPos", cam.position.x, cam.position.y,
-				cam.position.z);
+
+		lightShader.setUniformf("camPos", cam.position.x, cam.position.y, cam.position.z);
 		lightShader.setUniformMatrix("u_projectionViewMatrix", cam.combined);
 		lightShader.setUniformi("u_texture0", 0);
 		lightShader.setUniformi("u_texture1", 1);
 		lightManager.calculateLights(0, 2, -8);
-		lightManager.applyLights(lightShader);	
+		lightManager.applyLights(lightShader);
 
 		mesh.render(lightShader, GL10.GL_TRIANGLES);
 
@@ -85,7 +85,7 @@ public class HybridLightTest implements ApplicationListener {
 
 	}
 
-	public void create() {
+	public void create () {
 
 		modelMatrix2.translate(0, 2, -8);
 		lightShader = ShaderLoader.createShader("light", "light");
@@ -93,8 +93,7 @@ public class HybridLightTest implements ApplicationListener {
 		lightManager = new LightManager(LIGHTS_NUM);
 		for (int i = 0; i < 16; i++) {
 			PointLight l = new PointLight();
-			l.position.set(MathUtils.random(16) - 8, MathUtils.random(6) - 2,
-					-MathUtils.random(16) + 2);
+			l.position.set(MathUtils.random(16) - 8, MathUtils.random(6) - 2, -MathUtils.random(16) + 2);
 			l.color.r = MathUtils.random();
 			l.color.b = MathUtils.random();
 			l.color.g = MathUtils.random();
@@ -110,11 +109,9 @@ public class HybridLightTest implements ApplicationListener {
 
 		long time = System.nanoTime();
 		lightManager.calculateLights(0, 0, 0);
-		System.out.println("Time to sort lights pwe model: "
-				+ (System.nanoTime() - time) + " ns");
+		System.out.println("Time to sort lights pwe model: " + (System.nanoTime() - time) + " ns");
 
-		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight());
+		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.near = 0.1f;
 		cam.far = 64f;
 		cam.position.set(0, 0.5f, -2f);
@@ -123,26 +120,20 @@ public class HybridLightTest implements ApplicationListener {
 		camController = new PerspectiveCamController(cam);
 		Gdx.input.setInputProcessor(camController);
 
-		texture = new Texture(Gdx.files.internal("data/multipleuvs_1.png"),
-				null, true);
-		texture.setFilter(TextureFilter.MipMapLinearLinear,
-				TextureFilter.Linear);
+		texture = new Texture(Gdx.files.internal("data/multipleuvs_1.png"), null, true);
+		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 
 		texture2 = new Texture(Gdx.files.internal("data/wall.png"), null, true);
-		texture2.setFilter(TextureFilter.MipMapLinearLinear,
-				TextureFilter.Linear);
-		texture2.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
-		
+		texture2.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
+
 		texture3 = new Texture(Gdx.files.internal("data/texture2UV1S.png"), null, true);
-		texture3.setFilter(TextureFilter.MipMapLinearLinear,
-				TextureFilter.Linear);
-		texture3.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+		texture3.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 
 		try {
-			InputStream in = Gdx.files.internal("data/smoothsphere.obj").read();
+			InputStream in = Gdx.files.internal("data/models/sphere.obj").read();
 			mesh = ObjLoader.loadObj(in);
 			in.close();
-			in = Gdx.files.internal("data/basicscene_unwrapped.obj").read();
+			in = Gdx.files.internal("data/models/basicscene.obj").read();
 			mesh2 = ObjLoader.loadObj(in);
 			in.close();
 
@@ -164,13 +155,13 @@ public class HybridLightTest implements ApplicationListener {
 
 	}
 
-	public void resize(int width, int height) {
+	public void resize (int width, int height) {
 	}
 
-	public void pause() {
+	public void pause () {
 	}
 
-	public void dispose() {
+	public void dispose () {
 		mesh.dispose();
 		mesh2.dispose();
 		texture.dispose();
@@ -178,10 +169,10 @@ public class HybridLightTest implements ApplicationListener {
 
 	}
 
-	public void resume() {
+	public void resume () {
 	}
 
-	public static void main(String[] argv) {
+	public static void main (String[] argv) {
 		JoglApplicationConfiguration config = new JoglApplicationConfiguration();
 		config.title = "Hybrid Light";
 		config.width = 800;
