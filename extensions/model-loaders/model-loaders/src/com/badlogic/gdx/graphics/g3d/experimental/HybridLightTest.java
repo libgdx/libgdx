@@ -41,7 +41,7 @@ public class HybridLightTest implements ApplicationListener {
 	FPSLogger logger = new FPSLogger();
 	ShaderProgram lightShader;
 	private Matrix4 modelMatrix = new Matrix4();
-
+	private Matrix4 modelMatrix2 = new Matrix4();
 	public void render() {
 
 		logger.log();
@@ -60,21 +60,20 @@ public class HybridLightTest implements ApplicationListener {
 		texture.bind(0);
 
 		lightShader.begin();
-
-		lightShader.setUniformMatrix("u_modelMatrix", modelMatrix, false);
+		lightShader.setUniformMatrix("u_modelMatrix", modelMatrix2, false);
+		
 		lightShader.setUniformf("camPos", cam.position.x, cam.position.y,
 				cam.position.z);
-
-		lightManager.calculateLights(0, 0, 0);
-		lightManager.applyLights(lightShader);
-
 		lightShader.setUniformMatrix("u_projectionViewMatrix", cam.combined);
 		lightShader.setUniformi("u_texture0", 0);
+		
+		lightManager.calculateLights(0, 3, 3);
+		lightManager.applyLights(lightShader);	
 
 		mesh.render(lightShader, GL10.GL_TRIANGLES);
 
 		texture2.bind(0);
-
+		lightShader.setUniformMatrix("u_modelMatrix", modelMatrix, false);
 		lightManager.calculateLights(0, 0, 0);
 		lightManager.applyLights(lightShader);
 		mesh2.render(lightShader, GL10.GL_TRIANGLES);
@@ -85,10 +84,11 @@ public class HybridLightTest implements ApplicationListener {
 
 	public void create() {
 
+		modelMatrix2.translate(0, 3, -3);
 		lightShader = ShaderLoader.createShader("light", "light");
 
 		lightManager = new LightManager(8);
-		for (int i = 0; i < 32; i++) {
+		for (int i = 0; i < 12; i++) {
 			PointLight l = new PointLight();
 			l.position.set(MathUtils.random(16) - 8, MathUtils.random(6) - 2,
 					-MathUtils.random(16) + 2);
@@ -134,7 +134,7 @@ public class HybridLightTest implements ApplicationListener {
 			InputStream in = Gdx.files.internal("data/smoothsphere.obj").read();
 			mesh = ObjLoader.loadObj(in);
 			in.close();
-			in = Gdx.files.internal("data/basicscene.obj").read();
+			in = Gdx.files.internal("data/basicscene_unwrapped.obj").read();
 			mesh2 = ObjLoader.loadObj(in);
 			in.close();
 
@@ -178,7 +178,7 @@ public class HybridLightTest implements ApplicationListener {
 		config.title = "Hybrid Light";
 		config.width = 800;
 		config.height = 480;
-		config.samples = 8;
+		config.samples = 0;
 		config.vSyncEnabled = true;
 		config.useGL20 = true;
 		new JoglApplication(new HybridLightTest(), config);
