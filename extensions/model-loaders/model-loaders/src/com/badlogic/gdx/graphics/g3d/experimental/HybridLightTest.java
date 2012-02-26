@@ -42,10 +42,11 @@ public class HybridLightTest implements ApplicationListener {
 	ShaderProgram lightShader;
 	private Matrix4 modelMatrix = new Matrix4();
 	private Matrix4 modelMatrix2 = new Matrix4();
+	
 	public void render() {
 
 		logger.log();
-
+		
 		final float delta = Gdx.graphics.getDeltaTime();
 		camController.update(delta);
 
@@ -67,7 +68,7 @@ public class HybridLightTest implements ApplicationListener {
 		lightShader.setUniformMatrix("u_projectionViewMatrix", cam.combined);
 		lightShader.setUniformi("u_texture0", 0);
 		
-		lightManager.calculateLights(0, 3, 3);
+		lightManager.calculateLights(0, 2, -8);
 		lightManager.applyLights(lightShader);	
 
 		mesh.render(lightShader, GL10.GL_TRIANGLES);
@@ -84,7 +85,7 @@ public class HybridLightTest implements ApplicationListener {
 
 	public void create() {
 
-		modelMatrix2.translate(0, 3, -3);
+		modelMatrix2.translate(0, 2, -8);
 		lightShader = ShaderLoader.createShader("light", "light");
 
 		lightManager = new LightManager(8);
@@ -95,7 +96,7 @@ public class HybridLightTest implements ApplicationListener {
 			l.color.r = MathUtils.random();
 			l.color.b = MathUtils.random();
 			l.color.g = MathUtils.random();
-			l.range = 8;
+			l.intensity = 8;
 			lightManager.addLigth(l);
 
 		}

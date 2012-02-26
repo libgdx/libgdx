@@ -52,6 +52,4 @@ void main()
 	
 	gl_FragColor = vec4( light + (ambient * tex), 1.0);
 	//gl_FragColor = texture2D(u_texture1, v_texCoords) * vec4( light + (ambient * tex) , 1.0);
-
-
 }

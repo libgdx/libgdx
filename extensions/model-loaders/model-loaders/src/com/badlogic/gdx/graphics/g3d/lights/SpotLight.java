@@ -13,5 +13,5 @@ public class SpotLight {
 
 	public float cutOffAngle;
 		
-	public float range; //my plan is to use linear fall-off:  intesity = clamp(1 - (distance / range)
+	public float intesity;
 }

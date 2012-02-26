@@ -71,8 +71,8 @@ public class LightManager {
 		if (maxSize > maxLightsPerModel) {
 
 			for (int i = 0; i < maxSize; i++) {
-				lights[i].distance = lights[i].position.dst2(x, y, z)
-						/ lights[i].range;// if just linear fallof
+				lights[i].priority = lights[i].position.dst(x, y, z)
+						/ lights[i].intensity;// if just linear fallof
 				// lights[i].distance = lights[i].position.dst2(x, y, z) -
 				// lights[i].range; //if range based
 			}
@@ -94,7 +94,7 @@ public class LightManager {
 			colors[3 * i + 1] = col.g;
 			colors[3 * i + 2] = col.b;
 
-			intensities[i] = l.range;
+			intensities[i] = l.intensity;
 		}
 
 		// TODO might not be needed

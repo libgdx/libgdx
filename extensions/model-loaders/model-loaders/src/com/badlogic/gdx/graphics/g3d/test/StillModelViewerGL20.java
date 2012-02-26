@@ -158,7 +158,7 @@ public class StillModelViewerGL20 implements ApplicationListener {
 			l.color.r = MathUtils.random();
 			l.color.b = MathUtils.random();
 			l.color.g = MathUtils.random();
-			l.range = 4;
+			l.intensity = 4;
 			lightManager.addLigth(l);
 
 		}

@@ -11,14 +11,14 @@ public class PointLight implements Comparable {
 	// public float x,y,z;
 	// public float r,g,b;
 
-	public float range; // my plan is to use linear fall-off: intesity = clamp(1
-						// - (distance / range)
-
-	float distance;
+	public float intensity;
+	
+	
+	protected float priority;
 
 	@Override
 	public int compareTo(Object light) {
-		return (((PointLight) light).distance > this.distance) ? -1 : 1;
+		return (((PointLight) light).priority > this.priority) ? -1 : 1;
 	}
 
 }
