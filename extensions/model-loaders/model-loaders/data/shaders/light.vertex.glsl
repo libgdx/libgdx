@@ -1,4 +1,4 @@
-#define LIGHTS_NUM 2
+#define LIGHTS_NUM 8
 attribute vec4 a_position; 
 attribute vec2 a_texCoord0;
 attribute vec3 a_normal;
@@ -18,7 +18,7 @@ varying vec3 v_pos;
 varying vec3 v_lightColor;
 varying float v_intensity;
 				
-const float WRAP_AROUND = 0.5; //0 is hard 1 is soft. if this is uniform performance is bad		
+const float WRAP_AROUND = 0.75; //0 is hard 1 is soft. if this is uniform performance is bad		
 void main()
 {	
 	v_texCoords = a_texCoord0; 	
@@ -41,7 +41,7 @@ void main()
 		vec3 L    = dif * len; //normalize
 		
 		float lambert = dot(a_normal, L);
-		W *= clamp(0.0, 1.0, (lambert + WRAP_AROUND) / (1.0 + WRAP_AROUND) );
+		W *= clamp((lambert + WRAP_AROUND) / (1.0 + WRAP_AROUND),0.0, 1.0 );
 		//W *= max(0.0, dot(a_normal, L));
 				
 		aggPos   += L * W;
@@ -51,7 +51,7 @@ void main()
 		
 	}	
 	v_lightPos  = (aggPos / aggW);
-	v_lightColor = max(vec3(0.0), (aggCol / aggW));
+	v_lightColor =clamp((aggCol / aggW),0.0, 1.0 );
 	v_intensity = aggW;
 #else
 	v_lightPos  = lightsPos[0];

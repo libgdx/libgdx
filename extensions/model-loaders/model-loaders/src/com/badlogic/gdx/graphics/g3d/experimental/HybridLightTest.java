@@ -26,7 +26,7 @@ import com.badlogic.gdx.math.Matrix4;
 public class HybridLightTest implements ApplicationListener {
 
 	static final int LIGHTS_NUM = 8;
-	static final float LIGHT_INTESITY = 5;
+	static final float LIGHT_INTESITY = 8;
 
 	LightManager lightManager;
 
@@ -42,6 +42,7 @@ public class HybridLightTest implements ApplicationListener {
 	ShaderProgram lightShader;
 	private Matrix4 modelMatrix = new Matrix4();
 	private Matrix4 modelMatrix2 = new Matrix4();
+	private Texture texture3;
 	
 	public void render() {
 
@@ -67,13 +68,14 @@ public class HybridLightTest implements ApplicationListener {
 				cam.position.z);
 		lightShader.setUniformMatrix("u_projectionViewMatrix", cam.combined);
 		lightShader.setUniformi("u_texture0", 0);
-		
+		lightShader.setUniformi("u_texture1", 1);
 		lightManager.calculateLights(0, 2, -8);
 		lightManager.applyLights(lightShader);	
 
 		mesh.render(lightShader, GL10.GL_TRIANGLES);
 
 		texture2.bind(0);
+		texture3.bind(1);
 		lightShader.setUniformMatrix("u_modelMatrix", modelMatrix, false);
 		lightManager.calculateLights(0, 0, 0);
 		lightManager.applyLights(lightShader);
@@ -88,15 +90,15 @@ public class HybridLightTest implements ApplicationListener {
 		modelMatrix2.translate(0, 2, -8);
 		lightShader = ShaderLoader.createShader("light", "light");
 
-		lightManager = new LightManager(8);
-		for (int i = 0; i < 12; i++) {
+		lightManager = new LightManager(LIGHTS_NUM);
+		for (int i = 0; i < 16; i++) {
 			PointLight l = new PointLight();
 			l.position.set(MathUtils.random(16) - 8, MathUtils.random(6) - 2,
 					-MathUtils.random(16) + 2);
 			l.color.r = MathUtils.random();
 			l.color.b = MathUtils.random();
 			l.color.g = MathUtils.random();
-			l.intensity = 8;
+			l.intensity = LIGHT_INTESITY;
 			lightManager.addLigth(l);
 
 		}
@@ -130,6 +132,11 @@ public class HybridLightTest implements ApplicationListener {
 		texture2.setFilter(TextureFilter.MipMapLinearLinear,
 				TextureFilter.Linear);
 		texture2.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+		
+		texture3 = new Texture(Gdx.files.internal("data/texture2UV1S.png"), null, true);
+		texture3.setFilter(TextureFilter.MipMapLinearLinear,
+				TextureFilter.Linear);
+		texture3.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 
 		try {
 			InputStream in = Gdx.files.internal("data/smoothsphere.obj").read();
