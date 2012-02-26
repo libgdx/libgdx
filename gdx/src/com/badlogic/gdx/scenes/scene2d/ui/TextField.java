@@ -65,6 +65,11 @@ public class TextField extends Widget {
 	private OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
 	private boolean passwordMode;
+	
+	/**
+	 * Used to calculate the cursor position.
+	 */
+	private StringBuilder hiddenText = new StringBuilder();
 	private StringBuilder passwordBuffer;
 
 	private final Rectangle fieldBounds = new Rectangle();
@@ -127,9 +132,10 @@ public class TextField extends Widget {
 		this.style = style;
 		invalidateHierarchy();
 	}
-	
+
 	public void setPasswordCharacter (char passwordCharacter) {
 		this.passwordCharacter = passwordCharacter;
+		computeGlyphAdvancesAndPositions(style.font, text);
 	}
 
 	/** Returns the text field's style. Modifying the returned style may not have an effect until {@link #setStyle(TextFieldStyle)}
@@ -279,8 +285,6 @@ public class TextField extends Widget {
 	}
 
 	public boolean keyDown (int keycode) {
-		final BitmapFont font = style.font;
-
 		if (stage != null && stage.getKeyboardFocus() == this) {
 			if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
 				// paste
@@ -376,7 +380,7 @@ public class TextField extends Widget {
 			content = builder.toString();
 			text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
 			cursor += content.length();
-			style.font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
+			computeGlyphAdvancesAndPositions(style.font, text);
 		}
 	}
 
@@ -398,7 +402,7 @@ public class TextField extends Widget {
 				if (!hasSelection) {
 					text = text.substring(0, cursor - 1) + text.substring(cursor);
 					cursor--;
-					font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
+					computeGlyphAdvancesAndPositions(font, text);
 				} else {
 					delete();
 				}
@@ -407,7 +411,7 @@ public class TextField extends Widget {
 				if (cursor < text.length() || hasSelection) {
 					if (!hasSelection) {
 						text = text.substring(0, cursor) + text.substring(cursor + 1);
-						font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
+						computeGlyphAdvancesAndPositions(font, text);
 					} else {
 						delete();
 					}
@@ -423,7 +427,7 @@ public class TextField extends Widget {
 				if (!hasSelection) {
 					text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
 					cursor++;
-					font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
+					computeGlyphAdvancesAndPositions(font, text);
 				} else {
 					int minIndex = Math.min(cursor, selectionStart);
 					int maxIndex = Math.max(cursor, selectionStart);
@@ -433,7 +437,7 @@ public class TextField extends Widget {
 					cursor = minIndex;
 					text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
 					cursor++;
-					font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
+					computeGlyphAdvancesAndPositions(font, text);
 					clearSelection();
 				}
 			}
@@ -441,6 +445,17 @@ public class TextField extends Widget {
 			return true;
 		} else
 			return false;
+	}
+
+	public void computeGlyphAdvancesAndPositions (final BitmapFont font, String text) {
+		if (!passwordMode) {
+			font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
+		} else {
+			hiddenText.delete(0, hiddenText.length());
+			for (int i = 0; i < text.length(); i++) 
+				hiddenText.append(passwordCharacter);
+			font.computeGlyphAdvancesAndPositions(hiddenText, glyphAdvances, glyphPositions);
+		}
 	}
 
 	/** Focuses the next TextField. If none is found, the keyboard is hidden. Does nothing if the text field is not in a stage.
@@ -505,11 +520,11 @@ public class TextField extends Widget {
 		this.text = buffer.toString();
 		cursor = 0;
 		clearSelection();
-		font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
+		computeGlyphAdvancesAndPositions(font, text);
 
 		textBounds.set(font.getBounds(text));
 		textBounds.height -= font.getDescent() * 2;
-		font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
+		computeGlyphAdvancesAndPositions(font, text);
 	}
 
 	/** @return Never null, might be an empty string. */
@@ -580,6 +595,7 @@ public class TextField extends Widget {
 	 * no affect. */
 	public void setPasswordMode (boolean passwordMode) {
 		this.passwordMode = passwordMode;
+		computeGlyphAdvancesAndPositions(style.font, text);
 	}
 
 	/** Interface for listening to typed characters.
