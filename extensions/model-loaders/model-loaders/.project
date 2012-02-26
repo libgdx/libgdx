@@ -18,7 +18,7 @@
 		<link>
 			<name>assets</name>
 			<type>2</type>
-			<location>D:/workspaces/libgdx-workspace/libgdx/extensions/model-loaders/model-loaders-android/assets</location>
+			<locationURI>PARENT-1-PROJECT_LOC/model-loaders-android/assets</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
