@@ -23,11 +23,12 @@ import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 
 public class HybridLightTest implements ApplicationListener {
 
-	static final int LIGHTS_NUM = 8;
-	static final float LIGHT_INTESITY = 5;
+	static final int LIGHTS_NUM = 4;
+	static final float LIGHT_INTESITY = 10;
 
 	LightManager lightManager;
 
@@ -43,14 +44,21 @@ public class HybridLightTest implements ApplicationListener {
 	ShaderProgram lightShader;
 	private Matrix4 modelMatrix = new Matrix4();
 	private Matrix4 modelMatrix2 = new Matrix4();
-	private Texture texture3;
 
+	float timer;
 	public void render () {
 
-		logger.log();
+		logger.log();		
 
 		final float delta = Gdx.graphics.getDeltaTime();
 		camController.update(delta);
+		
+		
+		for (int i = 0; i < lightManager.pointLights.size; i++) {
+			Vector3 v = lightManager.pointLights.get(i).position;
+			v.x += MathUtils.sin(timer)*0.01f;
+			v.z += MathUtils.cos(timer)*0.01f;
+		}
 
 		Gdx.gl.glEnable(GL10.GL_CULL_FACE);
 		Gdx.gl.glCullFace(GL10.GL_BACK);
@@ -75,7 +83,6 @@ public class HybridLightTest implements ApplicationListener {
 		mesh.render(lightShader, GL10.GL_TRIANGLES);
 
 		texture2.bind(0);
-		texture3.bind(1);
 		lightShader.setUniformMatrix("u_modelMatrix", modelMatrix, false);
 		lightManager.calculateLights(0, 0, 0);
 		lightManager.applyLights(lightShader);
@@ -91,7 +98,7 @@ public class HybridLightTest implements ApplicationListener {
 		lightShader = ShaderLoader.createShader("light", "light");
 
 		lightManager = new LightManager(LIGHTS_NUM);
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < 4; i++) {
 			PointLight l = new PointLight();
 			l.position.set(MathUtils.random(16) - 8, MathUtils.random(6) - 2, -MathUtils.random(16) + 2);
 			l.color.r = MathUtils.random();
@@ -99,17 +106,7 @@ public class HybridLightTest implements ApplicationListener {
 			l.color.g = MathUtils.random();
 			l.intensity = LIGHT_INTESITY;
 			lightManager.addLigth(l);
-
 		}
-
-		for (int i = 0; i < 1000; i++) {
-			lightManager.calculateLights(0, 0, 0);
-			lightManager.pointLights.shuffle();
-		}
-
-		long time = System.nanoTime();
-		lightManager.calculateLights(0, 0, 0);
-		System.out.println("Time to sort lights pwe model: " + (System.nanoTime() - time) + " ns");
 
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.near = 0.1f;
@@ -121,13 +118,11 @@ public class HybridLightTest implements ApplicationListener {
 		Gdx.input.setInputProcessor(camController);
 
 		texture = new Texture(Gdx.files.internal("data/multipleuvs_1.png"), null, true);
-		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
+		texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 
 		texture2 = new Texture(Gdx.files.internal("data/wall.png"), null, true);
-		texture2.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
+		texture2.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 
-		texture3 = new Texture(Gdx.files.internal("data/texture2UV1S.png"), null, true);
-		texture3.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 
 		try {
 			InputStream in = Gdx.files.internal("data/models/sphere.obj").read();
@@ -166,6 +161,7 @@ public class HybridLightTest implements ApplicationListener {
 		mesh2.dispose();
 		texture.dispose();
 		texture2.dispose();
+		lightShader.dispose();
 
 	}
 
@@ -177,7 +173,7 @@ public class HybridLightTest implements ApplicationListener {
 		config.title = "Hybrid Light";
 		config.width = 800;
 		config.height = 480;
-		config.samples = 0;
+		config.samples = 8;
 		config.vSyncEnabled = true;
 		config.useGL20 = true;
 		new JoglApplication(new HybridLightTest(), config);
