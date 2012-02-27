@@ -4,7 +4,7 @@
  
 %module btMotionState
 
-/* newDerivedObject() required for down cast support. */
+/* newDerivedObject() required for down cast support (gdxDownCast.i). */
 
 %typemap(javacode) btMotionState %{
 

@@ -40,7 +40,6 @@ public class btCollisionObject {
     }
   }
 
-
   static {
     new SharedLibraryLoader().load("gdx-bullet");
   }

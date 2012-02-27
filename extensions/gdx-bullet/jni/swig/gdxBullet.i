@@ -18,9 +18,6 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 /* Configures types that need down cast support */
 %include "gdxDownCast.i"
 
-/* Configure directors for types with virtual methods that need Java implementations */
-%feature("director") btIDebugDraw;
-
 /*
  * Use Java float[] where Bullet wants btScalar *.  This gets disabled
  * for some types (and re-enabled right after).
@@ -29,6 +26,9 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 
 /* Prefer libgdx's linear math types (Vector3, Matrix3, etc.). */
 %include "gdxMathTypes.i"
+
+/* Map "void *" to "jlong". */
+/* %include "gdxVoidPointer.i"; */
 
 /* Use "unsafe" enums (plain integer constants) instead of typesafe enum classes. */
 %include "enumtypeunsafe.swg"
@@ -54,7 +54,6 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
  * Extend some classes with custom Java.
  */
 %include "javacode/btTransform.i"
-%include "javacode/btCollisionObject.i"
 %include "javacode/btCollisionShape.i"
 %include "javacode/btMotionState.i"
 
@@ -62,7 +61,13 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
  * Uncomment this include to generate some dummy types that test the 
  * gdxMathTypes.i work.
  */
-/* %include "test/mathTypesTest.i" */
+/*
+%include "test/voidPointerTest.i"
+%include "test/mathTypesTest.i"
+*/
+
+/* Configure directors for types with virtual methods that need Java implementations */
+%feature("director") btIDebugDraw;
 
 /*
  * The rest of the types (some are disabled, commented out at the bottom).

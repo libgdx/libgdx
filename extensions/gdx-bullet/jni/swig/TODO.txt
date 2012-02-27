@@ -3,6 +3,7 @@ Dev TODO:
 - Build on Windows, Mac OS (update SwigBulletBuild)
 - btTransform makes a lot of garbage, reuse one for the returns?
 - Remove automatic static library load chunk in every class?
+- Complete gdxVoidPointer.i and enable it in gdxBullet.i
 
 Features not yet finished:
 

@@ -53,20 +53,6 @@ public class btTransform {
     setBasis(other.getBasis());
   }
   
-  /**
-   * Gets the basis into the specified Matrix3.
-   */
-  public void getBasis(Matrix3 out) {
-  	out.set(getBasis());
-  }
-  
-  /**
-   * Gets the origin into the specified Vector3.
-   */
-  public void getOrigin(Vector3 out) {
-    out.set(getOrigin());
-  }
-  
   @Override
   public String toString() {
     return getOrigin() + "\n" + getBasis();
