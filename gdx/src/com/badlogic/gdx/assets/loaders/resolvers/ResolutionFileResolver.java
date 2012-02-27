@@ -57,21 +57,26 @@ public class ResolutionFileResolver implements FileHandleResolver {
 
 	static public Resolution choose (Resolution... descriptors) {
 		int width = 0;
-		int height = 0;
 		if (Gdx.graphics.getWidth() > Gdx.graphics.getHeight()) {
 			width = Gdx.graphics.getHeight();
-			height = Gdx.graphics.getWidth();
 		} else {
 			width = Gdx.graphics.getWidth();
-			height = Gdx.graphics.getHeight();
 		}
 
 		Resolution bestDesc = null;
-		int bestDistance = Integer.MAX_VALUE;
+		// Find lowest.
+		int best = Integer.MAX_VALUE;
 		for (int i = 0, n = descriptors.length; i < n; i++) {
-			int distance = Math.abs(width - descriptors[i].portraitWidth) + Math.abs(height - descriptors[i].portraitHeight);
-			if (distance < bestDistance) {
-				bestDistance = distance;
+			if (descriptors[i].portraitWidth < best) {
+				best = descriptors[i].portraitWidth;
+				bestDesc = descriptors[i];
+			}
+		}
+		// Find higher, but not over the screen res.
+		best = Integer.MAX_VALUE;
+		for (int i = 0, n = descriptors.length; i < n; i++) {
+			if (descriptors[i].portraitWidth <= width) {
+				best = descriptors[i].portraitWidth;
 				bestDesc = descriptors[i];
 			}
 		}
