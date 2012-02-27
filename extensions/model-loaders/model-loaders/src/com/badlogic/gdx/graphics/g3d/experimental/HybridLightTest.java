@@ -27,8 +27,8 @@ import com.badlogic.gdx.math.Vector3;
 
 public class HybridLightTest implements ApplicationListener {
 
-	static final int LIGHTS_NUM = 4;
-	static final float LIGHT_INTESITY = 10;
+	static final int LIGHTS_NUM = 8;
+	static final float LIGHT_INTESITY = 3;
 
 	LightManager lightManager;
 
@@ -53,7 +53,7 @@ public class HybridLightTest implements ApplicationListener {
 		final float delta = Gdx.graphics.getDeltaTime();
 		camController.update(delta);
 		
-		
+		timer+=delta;
 		for (int i = 0; i < lightManager.pointLights.size; i++) {
 			Vector3 v = lightManager.pointLights.get(i).position;
 			v.x += MathUtils.sin(timer)*0.01f;
@@ -95,10 +95,10 @@ public class HybridLightTest implements ApplicationListener {
 	public void create () {
 
 		modelMatrix2.translate(0, 2, -8);
-		lightShader = ShaderLoader.createShader("light", "light");
+		lightShader = ShaderLoader.createShader("vertexpath", "vertexpath");
 
 		lightManager = new LightManager(LIGHTS_NUM);
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 8; i++) {
 			PointLight l = new PointLight();
 			l.position.set(MathUtils.random(16) - 8, MathUtils.random(6) - 2, -MathUtils.random(16) + 2);
 			l.color.r = MathUtils.random();
@@ -173,8 +173,8 @@ public class HybridLightTest implements ApplicationListener {
 		config.title = "Hybrid Light";
 		config.width = 800;
 		config.height = 480;
-		config.samples = 8;
-		config.vSyncEnabled = true;
+		config.samples = 0;
+		config.vSyncEnabled = false;
 		config.useGL20 = true;
 		new JoglApplication(new HybridLightTest(), config);
 	}
