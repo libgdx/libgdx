@@ -143,6 +143,11 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	public float getDeltaTime () {
 		return deltaTime;
 	}
+	
+	@Override
+	public float getRawDeltaTime () {
+		return deltaTime;
+	}
 
 	@Override
 	public int getFramesPerSecond () {

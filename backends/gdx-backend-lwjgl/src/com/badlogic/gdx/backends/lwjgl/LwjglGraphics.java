@@ -117,6 +117,10 @@ public class LwjglGraphics implements Graphics {
 		return deltaTime;
 	}
 
+	public float getRawDeltaTime () {
+		return deltaTime;
+	}
+	
 	public GraphicsType getType () {
 		return GraphicsType.LWJGL;
 	}

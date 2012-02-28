@@ -477,6 +477,11 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	public float getDeltaTime () {
 		return mean.getMean() == 0 ? deltaTime : mean.getMean();
 	}
+	
+	@Override
+	public float getRawDeltaTime () {
+		return deltaTime;
+	}
 
 	/** {@inheritDoc} */
 	@Override

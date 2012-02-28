@@ -148,9 +148,12 @@ public interface Graphics {
 	/** @return the height in pixels of the display surface */
 	public int getHeight ();
 
-	/** @return the time span between the current frame and the last frame in seconds */
+	/** @return the time span between the current frame and the last frame in seconds. Might be smoothed over n frames. */
 	public float getDeltaTime ();
 
+	/** @return the time span between the current frame and the last frame in seconds, without smoothing **/
+	public float getRawDeltaTime();
+	
 	/** @return the average number of frames per second */
 	public int getFramesPerSecond ();
 
