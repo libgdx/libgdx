@@ -73,7 +73,7 @@ public class BitmapFont implements Disposable {
 		String imagePath;
 		final FileHandle fontFile;
 		final boolean flipped;
-		final float lineHeight;
+		float lineHeight;
 		float capHeight = 1;
 		float ascent;
 		float descent;
@@ -768,6 +768,7 @@ public class BitmapFont implements Disposable {
 	}
 
 	public void setScale (float scaleX, float scaleY) {
+		data.lineHeight = data.lineHeight / this.data.scaleX * scaleX;
 		data.spaceWidth = data.spaceWidth / this.data.scaleX * scaleX;
 		data.xHeight = data.xHeight / this.data.scaleY * scaleY;
 		data.capHeight = data.capHeight / this.data.scaleY * scaleY;
