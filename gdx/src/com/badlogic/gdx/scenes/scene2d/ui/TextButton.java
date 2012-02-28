@@ -77,7 +77,7 @@ public class TextButton extends Button {
 		label.setText(text);
 	}
 
-	public String getText () {
+	public CharSequence getText () {
 		return label.getText();
 	}
 
