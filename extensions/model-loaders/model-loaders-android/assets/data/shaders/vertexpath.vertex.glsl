@@ -6,6 +6,8 @@ attribute vec3 a_normal;
 uniform vec3  lightsPos[LIGHTS_NUM];
 uniform vec3  lightsCol[LIGHTS_NUM];
 uniform float lightsInt[LIGHTS_NUM];
+uniform vec3 dirLightDir;
+uniform vec3 dirLightCol;
 uniform mat4 u_projectionViewMatrix;
 uniform mat4 u_modelMatrix;
 uniform vec3 ambient;
@@ -21,7 +23,7 @@ void main()
 	gl_Position = u_projectionViewMatrix * worldPos; 
 	vec3 pos  = worldPos.xyz;	
 	
-	vec3  aggCol = vec3(0.0);	
+	vec3  aggCol = dirLightCol * clamp((dot(a_normal, -dirLightDir) + WRAP_AROUND) / (1.0 + WRAP_AROUND),0.0, 1.0 );	
 	for ( int i = 0; i < LIGHTS_NUM; i++ ){	
 		vec3 dif  = lightsPos[i] - pos;
 		//fastest way to calculate inverse of length				

@@ -23,6 +23,9 @@ public class LightManager {
 
 	final public Color ambientLight = new Color();
 
+	/** Only one for optimizing - at least at now */
+	public DirectionalLight dirLight;
+
 	public LightManager() {
 		this(4);
 	}
@@ -116,12 +119,18 @@ public class LightManager {
 		shader.setUniform1fv("lightsInt", intensities, 0, maxLightsPerModel);
 	}
 
-	public void applyAmbient() {
+	public void applyGlobalLights() {
 		// TODO fix me
 	}
 
-	public void applyAmbient(ShaderProgram shader) {
+	public void applyGlobalLights(ShaderProgram shader) {
 		shader.setUniformf("ambient", ambientLight.r, ambientLight.g,
 				ambientLight.b);
+		if (dirLight != null) {
+			final Vector3 v = dirLight.direction;
+			final Color c = dirLight.color;
+			shader.setUniformf("dirLightDir", v.x, v.y, v.z);
+			shader.setUniformf("dirLightCol", c.r, c.g, c.b);
+		}
 	}
 }

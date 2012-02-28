@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.LightManager;
 import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
@@ -27,8 +28,8 @@ import com.badlogic.gdx.math.Vector3;
 
 public class HybridLightTest implements ApplicationListener {
 
-	static final int LIGHTS_NUM = 8;
-	static final float LIGHT_INTESITY = 3;
+	static final int LIGHTS_NUM = 4;
+	static final float LIGHT_INTESITY = 1f;
 
 	LightManager lightManager;
 
@@ -68,9 +69,13 @@ public class HybridLightTest implements ApplicationListener {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
+		
 		texture.bind(0);
 
 		lightShader.begin();
+		
+		lightManager.applyGlobalLights(lightShader);
+		
 		lightShader.setUniformMatrix("u_modelMatrix", modelMatrix2, false);
 
 		lightShader.setUniformf("camPos", cam.position.x, cam.position.y, cam.position.z);
@@ -96,9 +101,10 @@ public class HybridLightTest implements ApplicationListener {
 
 		modelMatrix2.translate(0, 2, -8);
 		lightShader = ShaderLoader.createShader("vertexpath", "vertexpath");
-
+		//lightShader = ShaderLoader.createShader("light", "light");
+		
 		lightManager = new LightManager(LIGHTS_NUM);
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 4; i++) {
 			PointLight l = new PointLight();
 			l.position.set(MathUtils.random(16) - 8, MathUtils.random(6) - 2, -MathUtils.random(16) + 2);
 			l.color.r = MathUtils.random();
@@ -107,7 +113,12 @@ public class HybridLightTest implements ApplicationListener {
 			l.intensity = LIGHT_INTESITY;
 			lightManager.addLigth(l);
 		}
-
+		lightManager.dirLight = new DirectionalLight();
+		lightManager.dirLight.color.set(0.078f,0.09f,0.09f,0);
+		lightManager.dirLight.direction.set(-.1f,-1,0.03f).nor();
+		
+		lightManager.ambientLight.set(0.02f,0.02f,0.02f,0f);
+		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.near = 0.1f;
 		cam.far = 64f;
@@ -173,8 +184,8 @@ public class HybridLightTest implements ApplicationListener {
 		config.title = "Hybrid Light";
 		config.width = 800;
 		config.height = 480;
-		config.samples = 0;
-		config.vSyncEnabled = false;
+		config.samples = 8;
+		config.vSyncEnabled = true;
 		config.useGL20 = true;
 		new JoglApplication(new HybridLightTest(), config);
 	}

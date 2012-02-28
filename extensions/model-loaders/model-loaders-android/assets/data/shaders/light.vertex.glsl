@@ -1,4 +1,4 @@
-#define LIGHTS_NUM 4
+#define LIGHTS_NUM 8
 attribute vec4 a_position; 
 attribute vec2 a_texCoord0;
 attribute vec3 a_normal;
@@ -7,6 +7,8 @@ uniform vec3  lightsPos[LIGHTS_NUM];
 uniform vec3  lightsCol[LIGHTS_NUM];
 uniform float lightsInt[LIGHTS_NUM];
 uniform vec3 camPos;
+uniform vec3 dirLightDir;
+uniform vec3 dirLightCol;
 uniform mat4 u_projectionViewMatrix;
 uniform mat4 u_modelMatrix;
 
@@ -31,9 +33,9 @@ void main()
 	
 #if LIGHTS_NUM > 1
 	//this is good place to calculate dir light?
-	float aggWeight = 0.0;
-	vec3  aggDir = vec3(0.0);
-	vec3  aggCol = vec3(0.0);	
+	float aggWeight =  clamp((dot(a_normal, -dirLightDir) + WRAP_AROUND) / (1.0 + WRAP_AROUND),0.0, 1.0 );
+	vec3  aggDir = -dirLightDir * aggWeight;
+	vec3  aggCol = dirLightCol * aggWeight;	
 	for ( int i = 0; i < LIGHTS_NUM; i++ ){
 	
 		vec3 dif  = lightsPos[i] - pos;
