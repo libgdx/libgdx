@@ -115,12 +115,12 @@ public class Array<T> implements Iterable<T> {
 
 	public void addAll (T[] array, int offset, int length) {
 		T[] items = this.items;
-		int sizeNeeded = size + length - offset;
-		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
+		int sizeNeeded = size + length;
+		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
 		System.arraycopy(array, offset, items, size, length);
 		size += length;
 	}
-
+	
 	public T get (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		return items[index];
