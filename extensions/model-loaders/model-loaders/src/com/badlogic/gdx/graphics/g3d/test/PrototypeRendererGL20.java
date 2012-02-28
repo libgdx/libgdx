@@ -77,7 +77,7 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	private void flush() {
 		drawing = false;
 
-		lightManager.applyAmbient(shader);
+		lightManager.applyGlobalLights(shader);
 		// do actual drawing
 
 		// frustum culling for all point lights (sphere) @lightMananger
