@@ -227,13 +227,13 @@ public class SelectBox extends Widget {
 				prefWidth = Math.max(bounds.width, prefWidth);
 			}
 
-			itemHeight = font.getCapHeight() + -font.getDescent() * 2;
+			itemHeight = font.getCapHeight() + -font.getDescent() * 2 + style.itemSpacing;
 			itemHeight += listSelection.getTopHeight() + listSelection.getBottomHeight();
 			itemHeight *= SelectBox.this.parent.scaleY;
 			prefWidth += listSelection.getLeftWidth() + listSelection.getRightWidth();
 			prefHeight = items.length * itemHeight;
 			textOffsetX = listSelection.getLeftWidth();
-			textOffsetY = listSelection.getTopHeight() + -font.getDescent();
+			textOffsetY = listSelection.getTopHeight() + -font.getDescent() + style.itemSpacing / 2;
 
 			width = Math.max(prefWidth, SelectBox.this.width);
 			width *= SelectBox.this.parent.scaleX;
@@ -316,6 +316,7 @@ public class SelectBox extends Widget {
 		public NinePatch listSelection;
 		public BitmapFont font;
 		public Color fontColor = new Color(1, 1, 1, 1);
+		public float itemSpacing = 10;
 
 		public SelectBoxStyle () {
 		}
