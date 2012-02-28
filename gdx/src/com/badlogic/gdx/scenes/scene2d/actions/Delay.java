@@ -27,6 +27,7 @@ public class Delay extends Action {
 		}
 	};
 
+	protected Actor target;
 	protected float taken;
 	protected float duration;
 	protected Action action;
@@ -37,6 +38,13 @@ public class Delay extends Action {
 		delay.action = action;
 		return delay;
 	}
+	
+	public static Delay $(float duration) {
+		Delay delay = pool.obtain();
+		delay.duration = duration;
+		delay.action = null;
+		return delay;
+	}
 
 	@Override
 	public void reset () {
@@ -45,7 +53,8 @@ public class Delay extends Action {
 
 	@Override
 	public void setTarget (Actor actor) {
-		action.setTarget(actor);
+		if(action != null) action.setTarget(actor);
+		this.target = actor;
 		this.taken = 0;
 	}
 
@@ -54,30 +63,40 @@ public class Delay extends Action {
 		taken += delta;
 		if (taken > duration) {
 			callActionCompletedListener();
-			action.act(delta);
-			if (action.isDone()) action.callActionCompletedListener();
+			if(action != null) {
+				action.act(delta);
+				if (action.isDone()) action.callActionCompletedListener();
+			}
 		}
 	}
 
 	@Override
 	public boolean isDone () {
-		return taken > duration && action.isDone();
+		if(action != null) {
+			return taken > duration && action.isDone();
+		} else {
+			return taken > duration;
+		}
 	}
 
 	@Override
 	public void finish () {
 		pool.free(this);
-		action.finish();
+		if(action != null) action.finish();
 		super.finish();
 	}
 
 	@Override
 	public Action copy () {
-		return $(action.copy(), duration);
+		if(action != null) {
+			return $(action.copy(), duration);
+		} else {
+			return $(duration);
+		}
 	}
 
 	@Override
 	public Actor getTarget () {
-		return action.getTarget();
+		return target;
 	}
 }
