@@ -75,6 +75,16 @@ public class ObjLoader {
 	 * @param flipV whether to flip the v texture coordinate or not
 	 * @return The Mesh */
 	public static Mesh loadObjFromString (String obj, boolean flipV) {
+		return loadObjFromString(obj, flipV, false);
+	}
+
+	/** Loads a mesh from the given string in Wavefront OBJ format
+	 * 
+	 * @param obj The string
+	 * @param flipV whether to flip the v texture coordinate or not
+	 * @param useIndices whether to create an array of indices or not
+	 * @return The Mesh */
+	public static Mesh loadObjFromString (String obj, boolean flipV, boolean useIndices) {
 		String[] lines = obj.split("\n");
 		float[] vertices = new float[lines.length * 3];
 		float[] normals = new float[lines.length * 3];
@@ -149,27 +159,6 @@ public class ObjLoader {
 			}
 		}
 
-		float[] verts = new float[(numFaces * 3) * (3 + (numNormals > 0 ? 3 : 0) + (numUV > 0 ? 2 : 0))];
-
-		for (int i = 0, vi = 0; i < numFaces * 3; i++) {
-			int vertexIdx = facesVerts[i] * 3;
-			verts[vi++] = vertices[vertexIdx];
-			verts[vi++] = vertices[vertexIdx + 1];
-			verts[vi++] = vertices[vertexIdx + 2];
-
-			if (numNormals > 0) {
-				int normalIdx = facesNormals[i] * 3;
-				verts[vi++] = normals[normalIdx];
-				verts[vi++] = normals[normalIdx + 1];
-				verts[vi++] = normals[normalIdx + 2];
-			}
-			if (numUV > 0) {
-				int uvIdx = facesUV[i] * 2;
-				verts[vi++] = uv[uvIdx];
-				verts[vi++] = uv[uvIdx + 1];
-			}
-		}
-
 		Mesh mesh = null;
 
 		ArrayList<VertexAttribute> attributes = new ArrayList<VertexAttribute>();
@@ -177,8 +166,68 @@ public class ObjLoader {
 		if (numNormals > 0) attributes.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 		if (numUV > 0) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
-		mesh = new Mesh(true, numFaces * 3, 0, attributes.toArray(new VertexAttribute[attributes.size()]));
-		mesh.setVertices(verts);
+		if (useIndices) {
+			int attrCount = 3 + (numNormals > 0 ? 3 : 0) + (numUV > 0 ? 2 : 0);
+			int normOffset = 3;
+			int uvOffset = 3 + (numNormals > 0 ? 3 : 0);
+
+			float verts[] = new float[numVertices * attrCount];
+
+			for (int i = 0; i < numVertices; i++) {
+				verts[i * attrCount] = vertices[i * 3];
+				verts[i * attrCount + 1] = vertices[i * 3 + 1];
+				verts[i * attrCount + 2] = vertices[i * 3 + 2];
+			}
+
+			for (int i = 0; i < numFaces * 3; i++) {
+				int vertexIdx = facesVerts[i];
+
+				if (numNormals > 0) {
+					int normalIdx = facesNormals[i] * 3;
+					verts[vertexIdx * attrCount + normOffset] = normals[normalIdx];
+					verts[vertexIdx * attrCount + normOffset + 1] = normals[normalIdx + 1];
+					verts[vertexIdx * attrCount + normOffset + 2] = normals[normalIdx + 2];
+				}
+				if (numUV > 0) {
+					int uvIdx = facesUV[i] * 2;
+					verts[vertexIdx * attrCount + uvOffset] = uv[uvIdx];
+					verts[vertexIdx * attrCount + uvOffset + 1] = uv[uvIdx + 1];
+				}
+			}
+
+			short[] indices = new short[numFaces * 3];
+			for (int i = 0; i < indices.length; i++)
+				indices[i] = (short) facesVerts[i];
+
+			mesh = new Mesh(true, verts.length, indices.length, attributes.toArray(new VertexAttribute[attributes.size()]));
+			mesh.setVertices(verts);
+			mesh.setIndices(indices);
+		} else {
+			float[] verts = new float[(numFaces * 3) * (3 + (numNormals > 0 ? 3 : 0) + (numUV > 0 ? 2 : 0))];
+
+			for (int i = 0, vi = 0; i < numFaces * 3; i++) {
+				int vertexIdx = facesVerts[i] * 3;
+				verts[vi++] = vertices[vertexIdx];
+				verts[vi++] = vertices[vertexIdx + 1];
+				verts[vi++] = vertices[vertexIdx + 2];
+
+				if (numNormals > 0) {
+					int normalIdx = facesNormals[i] * 3;
+					verts[vi++] = normals[normalIdx];
+					verts[vi++] = normals[normalIdx + 1];
+					verts[vi++] = normals[normalIdx + 2];
+				}
+				if (numUV > 0) {
+					int uvIdx = facesUV[i] * 2;
+					verts[vi++] = uv[uvIdx];
+					verts[vi++] = uv[uvIdx + 1];
+				}
+			}
+
+			mesh = new Mesh(true, numFaces * 3, 0, attributes.toArray(new VertexAttribute[attributes.size()]));
+			mesh.setVertices(verts);
+		}
+
 		return mesh;
 	}
 
