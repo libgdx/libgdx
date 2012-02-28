@@ -59,10 +59,13 @@ public class LwjglGLU implements GLU {
 		int projectOffset, int[] view, int viewOffset, float[] win, int winOffset) {
 		modelb.clear();
 		modelb.put(model, modelOffset, 16);
+		modelb.rewind();
 		projectb.clear();
 		projectb.put(project, projectOffset, 16);
+		projectb.rewind();
 		viewb.clear();
 		viewb.put(view, viewOffset, 4);
+		viewb.rewind();
 		winb.clear();
 
 		boolean result = org.lwjgl.util.glu.GLU.gluProject(objX, objY, objZ, modelb, projectb, viewb, winb);
@@ -77,10 +80,13 @@ public class LwjglGLU implements GLU {
 		int projectOffset, int[] view, int viewOffset, float[] obj, int objOffset) {
 		modelb.clear();
 		modelb.put(model, modelOffset, 16);
+		modelb.rewind();
 		projectb.clear();
 		projectb.put(project, projectOffset, 16);
+		projectb.rewind();
 		viewb.clear();
 		viewb.put(view, viewOffset, 4);
+		viewb.rewind();
 		winb.clear();
 
 		boolean result = org.lwjgl.util.glu.GLU.gluUnProject(winX, winY, winZ, modelb, projectb, viewb, winb);
