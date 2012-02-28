@@ -26,14 +26,16 @@ import java.util.List;
  * @author mzechner */
 public class Animation {
 	final TextureRegion[] keyFrames;
-	public float frameDuration;
-
+	public final float frameDuration;
+	public final float animationDuration;
+	
 	/** Constructor, storing the frame duration and key frames.
 	 * 
 	 * @param frameDuration the time between frames in seconds.
 	 * @param keyFrames the {@link TextureRegion}s representing the frames. */
 	public Animation (float frameDuration, List keyFrames) {
 		this.frameDuration = frameDuration;
+		this.animationDuration = frameDuration * keyFrames.size();
 		this.keyFrames = new TextureRegion[keyFrames.size()];
 		for (int i = 0, n = keyFrames.size(); i < n; i++) {
 			this.keyFrames[i] = (TextureRegion)keyFrames.get(i);
@@ -47,6 +49,7 @@ public class Animation {
 	public Animation (float frameDuration, TextureRegion... keyFrames) {
 		this.frameDuration = frameDuration;
 		this.keyFrames = keyFrames;
+		this.animationDuration = frameDuration * keyFrames.length;
 	}
 
 	/** Returns a {@link TextureRegion} based on the so called state time. This is the amount of seconds an object has spent in the
