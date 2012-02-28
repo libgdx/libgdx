@@ -26,4 +26,6 @@ public class TiledObject {
 
 	/** Contains the object properties with a key of the property name. */
 	public HashMap<String, String> properties = new HashMap<String, String>();
+
+	public String polyline, polygon;
 }

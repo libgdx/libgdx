@@ -65,6 +65,20 @@ public class TiledLoader {
 				TiledObject currObject;
 				int currTile;
 
+				class Polyline {
+					String name;
+					String points;
+
+					public Polyline( String name ) {
+						this.name = name;
+					}
+
+					public Polyline() {
+					}
+				}
+
+				Polyline polyline,polygon;
+
 				class Property {
 					String parentType, name, value;
 				}
@@ -109,6 +123,16 @@ public class TiledLoader {
 					if ("property".equals(name)) {
 						currProperty = new Property();
 						currProperty.parentType = currBranch.get(currBranch.size() - 3);
+						return;
+					}
+
+					if( "polyline".equals( name ) ) {
+						polyline = new Polyline("polyline");
+						return;
+					}
+
+					if( "polygon".equals( name ) ) {
+						polygon = new Polyline("polygon");
 						return;
 					}
 				}
@@ -284,6 +308,22 @@ public class TiledLoader {
 						}
 						return;
 					}
+
+					if( "polyline".equals( element ) ) {
+						if( "points".equals( name ) ) {
+							polyline.points = value;
+							return;
+						}
+						return;
+					}
+
+					if( "polygon".equals( element ) ) {
+						if( "points".equals( name ) ) {
+							polygon.points = value;
+							return;
+						}
+						return;
+					}
 				}
 
 				@Override
@@ -327,6 +367,18 @@ public class TiledLoader {
 						return;
 					}
 
+					if( "polyline".equals( element ) ) {
+						putPolyLine( polyline );
+						polyline = null;
+						return;
+					}
+
+					if( "polygon".equals( element ) ) {
+						putPolyLine( polygon );
+						polygon = null;
+						return;
+					}
+
 					if ("data".equals(element)) {
 
 						// decode and uncompress the data
@@ -361,6 +413,24 @@ public class TiledLoader {
 						putProperty(currProperty);
 						currProperty = null;
 					}
+				}
+
+				private void putPolyLine( Polyline polyLine ) {
+					if( polyLine == null ) {
+						return;
+					}
+
+					if( "polyline".equals( polyLine.name ) ) {
+						currObject.polyline = polyLine.points;
+						return;
+					}
+
+					if( "polygon".equals( polyLine.name ) ) {
+						currObject.polygon = polyLine.points;
+						return;
+					}
+
+					return;
 				}
 
 				private void putProperty (Property property) {
