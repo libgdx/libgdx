@@ -78,12 +78,16 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		drawing = false;
 
 		lightManager.applyGlobalLights(shader);
-		// do actual drawing
 
-		// frustum culling for all point lights (sphere) @lightMananger
+		// frustumculling via cullingManager
+
+		// frustum culling for all point lights via cullingManager
 
 		// find N nearest lights per model
-		// draw for opaque queu
+
+		// sort opaque meshes from front to end, accuracy is not needed
+
+		// draw all from opaque queu
 		for (int i = 0; i < stillModelQueue.size; i++) {
 			final StillModelInstance instance = stillModelInstances.items[i];
 
@@ -91,14 +95,15 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 					false);
 			// TODO fastest way to calculate normalsToWorld matrix? JNI
 			// inversion and send with transpose flag?
-			lightManager.calculateAndApplyLightsToModel(instance, shader);
+			lightManager.calculateAndApplyLightsToModel(
+					instance.getSortCenter(), shader);
 			stillModelQueue.items[i].render(shader);
 		}
 
 		// if transparent queue is not empty enable blending(this force gpu to
 		// flush and there is some time to sort)
 
-		// sort transparent models(submeshes??)
+		// sort transparent models(submeshes??) accuracy is needed
 
 		// do drawing for transparent models
 

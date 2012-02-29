@@ -29,7 +29,7 @@ import com.badlogic.gdx.math.Vector3;
 public class HybridLightTest implements ApplicationListener {
 
 	static final int LIGHTS_NUM = 4;
-	static final float LIGHT_INTESITY = 1f;
+	static final float LIGHT_INTESITY = 3f;
 
 	LightManager lightManager;
 
@@ -100,8 +100,8 @@ public class HybridLightTest implements ApplicationListener {
 	public void create () {
 
 		modelMatrix2.translate(0, 2, -8);
-		lightShader = ShaderLoader.createShader("vertexpath", "vertexpath");
-		//lightShader = ShaderLoader.createShader("light", "light");
+		//lightShader = ShaderLoader.createShader("vertexpath", "vertexpath");
+		lightShader = ShaderLoader.createShader("light", "light");
 		
 		lightManager = new LightManager(LIGHTS_NUM);
 		for (int i = 0; i < 4; i++) {

@@ -1,4 +1,4 @@
-#define LIGHTS_NUM 8
+#define LIGHTS_NUM 4
 attribute vec4 a_position; 
 attribute vec2 a_texCoord0;
 attribute vec3 a_normal;
@@ -15,7 +15,7 @@ uniform vec3 ambient;
 varying vec2 v_texCoords;
 varying vec4 v_diffuse;
 
-const float WRAP_AROUND = 0.75; //0 is hard 1 is soft. if this is uniform performance is bad		
+const float WRAP_AROUND = 1.0; //0 is hard 1 is soft. if this is uniform performance is bad		
 void main()
 {	
 	v_texCoords = a_texCoord0; 		

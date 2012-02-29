@@ -46,16 +46,9 @@ public class LightManager {
 		pointLights.clear();
 	}
 
-	final private float[] vec3 = { 0, 0, 0 };
-
-	public void calculateAndApplyLightsToModel(StillModelInstance instance,
-			ShaderProgram shader) {
-		final Vector3 vector = instance.getSortCenter();
-		vec3[0] = vector.x;
-		vec3[1] = vector.y;
-		vec3[2] = vector.z;
-		Matrix4.mulVec(instance.getTransform().val, vec3);
-		this.calculateLights(vec3[0], vec3[1], vec3[2]);
+	public void calculateAndApplyLightsToModel(Vector3 center,
+			ShaderProgram shader) {		
+		this.calculateLights(center.x,center.y,center.z);
 		this.applyLights(shader);
 	}
 

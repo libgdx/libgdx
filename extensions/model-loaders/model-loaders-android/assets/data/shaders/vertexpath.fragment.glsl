@@ -1,8 +1,10 @@
 #ifdef GL_ES
 #define LOWP lowp
+#define MED mediump
 precision mediump float;
 #else
-#define LOWP  
+#define MED
+#define LOWP
 #endif
 
 uniform sampler2D u_texture0;
