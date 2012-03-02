@@ -58,6 +58,7 @@ public class TextField extends Widget {
 
 	private TextFieldStyle style;
 	private String text, messageText;
+	private CharSequence displayText;
 	private int cursor;
 	private Clipboard clipboard;
 	private TextFieldListener listener;
@@ -65,11 +66,6 @@ public class TextField extends Widget {
 	private OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
 	private boolean passwordMode;
-	
-	/**
-	 * Used to calculate the cursor position.
-	 */
-	private StringBuilder hiddenText = new StringBuilder();
 	private StringBuilder passwordBuffer;
 
 	private final Rectangle fieldBounds = new Rectangle();
@@ -135,7 +131,6 @@ public class TextField extends Widget {
 
 	public void setPasswordCharacter (char passwordCharacter) {
 		this.passwordCharacter = passwordCharacter;
-		computeGlyphAdvancesAndPositions(style.font, text);
 	}
 
 	/** Returns the text field's style. Modifying the returned style may not have an effect until {@link #setStyle(TextFieldStyle)}
@@ -183,8 +178,8 @@ public class TextField extends Widget {
 		}
 
 		// calculate last visible char based on visible width and render offset
-		visibleTextEnd = Math.min(text.length(), cursor + 1);
-		for (; visibleTextEnd <= text.length(); visibleTextEnd++) {
+		visibleTextEnd = Math.min(displayText.length(), cursor + 1);
+		for (; visibleTextEnd <= displayText.length(); visibleTextEnd++) {
 			if (glyphPositions.items[visibleTextEnd] - startPos > visibleWidth) break;
 		}
 		visibleTextEnd = Math.max(0, visibleTextEnd - 1);
@@ -223,7 +218,7 @@ public class TextField extends Widget {
 				y + textY - textBounds.height - font.getDescent() / 2, selectionWidth, textBounds.height);
 		}
 
-		if (text.length() == 0) {
+		if (displayText.length() == 0) {
 			if (!focused && messageText != null) {
 				if (style.messageFontColor != null) {
 					font.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,
@@ -235,17 +230,7 @@ public class TextField extends Widget {
 			}
 		} else {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			if (passwordMode && font.containsCharacter(passwordCharacter)) {
-				if (passwordBuffer == null) passwordBuffer = new StringBuilder(text.length());
-				if (passwordBuffer.length() > text.length()) //
-					passwordBuffer.setLength(text.length());
-				else {
-					for (int i = passwordBuffer.length(), n = text.length(); i < n; i++)
-						passwordBuffer.append(passwordCharacter);
-				}
-				font.draw(batch, passwordBuffer, x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
-			} else
-				font.draw(batch, text, x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
+			font.draw(batch, displayText, x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
 		}
 		if (focused) {
 			blink();
@@ -254,6 +239,21 @@ public class TextField extends Widget {
 					- textBounds.height - font.getDescent(), cursorPatch.getTotalWidth(), textBounds.height + font.getDescent() / 2);
 			}
 		}
+	}
+
+	private void updateDisplayText () {
+		if (passwordMode && style.font.containsCharacter(passwordCharacter)) {
+			if (passwordBuffer == null) passwordBuffer = new StringBuilder(text.length());
+			if (passwordBuffer.length() > text.length()) //
+				passwordBuffer.setLength(text.length());
+			else {
+				for (int i = passwordBuffer.length(), n = text.length(); i < n; i++)
+					passwordBuffer.append(passwordCharacter);
+			}
+			displayText = passwordBuffer;
+		} else
+			displayText = text;
+		style.font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
 	}
 
 	private void blink () {
@@ -285,6 +285,8 @@ public class TextField extends Widget {
 	}
 
 	public boolean keyDown (int keycode) {
+		final BitmapFont font = style.font;
+
 		if (stage != null && stage.getKeyboardFocus() == this) {
 			if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
 				// paste
@@ -379,8 +381,8 @@ public class TextField extends Widget {
 			}
 			content = builder.toString();
 			text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
+			updateDisplayText();
 			cursor += content.length();
-			computeGlyphAdvancesAndPositions(style.font, text);
 		}
 	}
 
@@ -389,8 +391,8 @@ public class TextField extends Widget {
 		int maxIndex = Math.max(cursor, selectionStart);
 		text = (minIndex > 0 ? text.substring(0, minIndex) : "")
 			+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
+		updateDisplayText();
 		cursor = minIndex;
-		style.font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
 		clearSelection();
 	}
 
@@ -401,8 +403,8 @@ public class TextField extends Widget {
 			if (character == BACKSPACE && (cursor > 0 || hasSelection)) {
 				if (!hasSelection) {
 					text = text.substring(0, cursor - 1) + text.substring(cursor);
+					updateDisplayText();
 					cursor--;
-					computeGlyphAdvancesAndPositions(font, text);
 				} else {
 					delete();
 				}
@@ -411,7 +413,7 @@ public class TextField extends Widget {
 				if (cursor < text.length() || hasSelection) {
 					if (!hasSelection) {
 						text = text.substring(0, cursor) + text.substring(cursor + 1);
-						computeGlyphAdvancesAndPositions(font, text);
+						updateDisplayText();
 					} else {
 						delete();
 					}
@@ -426,8 +428,8 @@ public class TextField extends Widget {
 			if (font.containsCharacter(character)) {
 				if (!hasSelection) {
 					text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
+					updateDisplayText();
 					cursor++;
-					computeGlyphAdvancesAndPositions(font, text);
 				} else {
 					int minIndex = Math.min(cursor, selectionStart);
 					int maxIndex = Math.max(cursor, selectionStart);
@@ -436,8 +438,8 @@ public class TextField extends Widget {
 						+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
 					cursor = minIndex;
 					text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
+					updateDisplayText();
 					cursor++;
-					computeGlyphAdvancesAndPositions(font, text);
 					clearSelection();
 				}
 			}
@@ -445,17 +447,6 @@ public class TextField extends Widget {
 			return true;
 		} else
 			return false;
-	}
-
-	public void computeGlyphAdvancesAndPositions (final BitmapFont font, String text) {
-		if (!passwordMode) {
-			font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
-		} else {
-			hiddenText.delete(0, hiddenText.length());
-			for (int i = 0; i < text.length(); i++) 
-				hiddenText.append(passwordCharacter);
-			font.computeGlyphAdvancesAndPositions(hiddenText, glyphAdvances, glyphPositions);
-		}
 	}
 
 	/** Focuses the next TextField. If none is found, the keyboard is hidden. Does nothing if the text field is not in a stage.
@@ -518,13 +509,13 @@ public class TextField extends Widget {
 		}
 
 		this.text = buffer.toString();
+		updateDisplayText();
 		cursor = 0;
 		clearSelection();
-		computeGlyphAdvancesAndPositions(font, text);
 
-		textBounds.set(font.getBounds(text));
+		textBounds.set(font.getBounds(displayText));
 		textBounds.height -= font.getDescent() * 2;
-		computeGlyphAdvancesAndPositions(font, text);
+		font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
 	}
 
 	/** @return Never null, might be an empty string. */
@@ -595,7 +586,6 @@ public class TextField extends Widget {
 	 * no affect. */
 	public void setPasswordMode (boolean passwordMode) {
 		this.passwordMode = passwordMode;
-		computeGlyphAdvancesAndPositions(style.font, text);
 	}
 
 	/** Interface for listening to typed characters.
