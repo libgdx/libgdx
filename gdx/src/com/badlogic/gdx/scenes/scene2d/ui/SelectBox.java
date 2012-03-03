@@ -230,9 +230,9 @@ public class SelectBox extends Widget {
 			itemHeight = font.getCapHeight() + -font.getDescent() * 2 + style.itemSpacing;
 			itemHeight += listSelection.getTopHeight() + listSelection.getBottomHeight();
 			itemHeight *= SelectBox.this.parent.scaleY;
-			prefWidth += listSelection.getLeftWidth() + listSelection.getRightWidth();
+			prefWidth += listSelection.getLeftWidth() + listSelection.getRightWidth() + 2 * style.itemSpacing;
 			prefHeight = items.length * itemHeight;
-			textOffsetX = listSelection.getLeftWidth();
+			textOffsetX = listSelection.getLeftWidth() + style.itemSpacing;
 			textOffsetY = listSelection.getTopHeight() + -font.getDescent() + style.itemSpacing / 2;
 
 			width = Math.max(prefWidth, SelectBox.this.width);

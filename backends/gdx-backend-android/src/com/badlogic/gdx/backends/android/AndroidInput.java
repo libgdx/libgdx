@@ -184,13 +184,33 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				alert.setView(input);
 				alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 					public void onClick (DialogInterface dialog, int whichButton) {
-						listener.input(input.getText().toString());
+						Gdx.app.postRunnable(new Runnable() {
+							@Override
+							public void run () {
+								listener.input(input.getText().toString());
+							}
+						});
+					}
+				});
+				alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					public void onClick (DialogInterface dialog, int whichButton) {
+						Gdx.app.postRunnable(new Runnable() {
+							@Override
+							public void run () {
+								listener.canceled();
+							}
+						});
 					}
 				});
 				alert.setOnCancelListener(new OnCancelListener() {
 					@Override
 					public void onCancel (DialogInterface arg0) {
-						listener.canceled();
+						Gdx.app.postRunnable(new Runnable() {
+							@Override
+							public void run () {
+								listener.canceled();
+							}
+						});
 					}
 				});
 				alert.show();
@@ -209,13 +229,23 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				alert.setView(input);
 				alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 					public void onClick (DialogInterface dialog, int whichButton) {
-						listener.input(input.getText().toString());
+						Gdx.app.postRunnable(new Runnable() {
+							@Override
+							public void run () {
+								listener.input(input.getText().toString());
+							}
+						});
 					}
 				});
 				alert.setOnCancelListener(new OnCancelListener() {
 					@Override
 					public void onCancel (DialogInterface arg0) {
-						listener.canceled();
+						Gdx.app.postRunnable(new Runnable() {
+							@Override
+							public void run () {
+								listener.canceled();
+							}
+						});
 					}
 				});
 				alert.show();

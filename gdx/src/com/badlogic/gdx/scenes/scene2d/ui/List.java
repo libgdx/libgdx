@@ -85,11 +85,9 @@ public class List extends Widget implements Cullable {
 
 		font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a * parentAlpha);
 		float itemY = height;
-		int drawn = 0;
 		for (int i = 0; i < items.length; i++) {
 			if (cullingArea == null || 
 				(itemY - itemHeight <= cullingArea.y + cullingArea.height && itemY >= cullingArea.y)) {
-				drawn++;
 				if (selected == i) {
 					selectedPatch.draw(batch, x, y + itemY - itemHeight, Math.max(prefWidth, width), itemHeight);
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
@@ -104,7 +102,6 @@ public class List extends Widget implements Cullable {
 			}
 			itemY -= itemHeight;
 		}
-		System.out.println(drawn + "/" + items.length);
 	}
 
 	@Override
