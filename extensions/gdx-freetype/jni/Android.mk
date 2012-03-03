@@ -5,11 +5,12 @@ LOCAL_MODULE    := gdx-freetype
 LOCAL_C_INCLUDES := freetype-2.4.8/include 
  
 LOCAL_CFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__ -std=c99 -DFT2_BUILD_LIBRARY
-LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__
+LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__ -std=c99 -DFT2_BUILD_LIBRARY
 LOCAL_LDLIBS := -lm
 LOCAL_ARM_MODE  := arm
  
-LOCAL_SRC_FILES := freetype-2.4.8/src/autofit/autofit.c\
+LOCAL_SRC_FILES := com.badlogic.gdx.graphics.g2d.freetype.FreeType.cpp\
+	freetype-2.4.8/src/autofit/autofit.c\
 	freetype-2.4.8/src/base/ftbase.c\
 	freetype-2.4.8/src/base/ftbbox.c\
 	freetype-2.4.8/src/base/ftbdf.c\
