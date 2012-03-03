@@ -331,10 +331,10 @@ public class FreeType {
 		
 		byte[] font = new FileHandle("Roboto-Condensed.ttf").readBytes();
 		long face = FreeType.newMemoryFace(library, font, font.length, 0);
-		System.out.println(FreeType.setPixelSizes(face, 0, 16));
+		System.out.println(FreeType.setCharSize(face, 0, 16, 96, 96));
 		char left = 40;
 		char right = 74;
-		int kerning = FreeType.getKerning(face, left, right, FT_KERNING_DEFAULT);
+		int kerning = FreeType.getKerning(face, FreeType.getCharIndex(face,  left), FreeType.getCharIndex(face,  right), 0);
 		System.out.println(FreeType.hasKerning(face) + ", " + left + ", " + right + ", " + kerning);
 		System.out.println(FreeType.getCharIndex(face, '('));
 		FreeType.doneFace(face);
