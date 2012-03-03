@@ -36,7 +36,7 @@ public class Sprite extends TextureRegion {
 	static final int VERTEX_SIZE = 2 + 1 + 2;
 	static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
 
-	final float[] vertices = new float[20];
+	final float[] vertices = new float[SPRITE_SIZE];
 	private final Color color = new Color(1, 1, 1, 1);
 	private float x, y;
 	float width, height;
@@ -104,6 +104,10 @@ public class Sprite extends TextureRegion {
 		if (sprite == null) throw new IllegalArgumentException("sprite cannot be null.");
 		System.arraycopy(sprite.vertices, 0, vertices, 0, SPRITE_SIZE);
 		texture = sprite.texture;
+		u = sprite.u;
+		v = sprite.v;
+		u2 = sprite.u2;
+		v2 = sprite.v2;
 		x = sprite.x;
 		y = sprite.y;
 		width = sprite.width;
@@ -113,6 +117,7 @@ public class Sprite extends TextureRegion {
 		rotation = sprite.rotation;
 		scaleX = sprite.scaleX;
 		scaleY = sprite.scaleY;
+		color.set(sprite.color);
 		dirty = sprite.dirty;
 	}
 
