@@ -102,7 +102,7 @@ public class Frustum {
 	 * @param radius The radius of the sphere
 	 * @return Wheter the sphere is in the frustum */
 	public boolean sphereInFrustumWithoutNearFar (Vector3 center, float radius) {
-		for (int i = 0; i < planes.length; i++)
+		for (int i = 2; i < planes.length; i++)
 			if (planes[i].distance(center) < -radius) return false;
 
 		return true;
