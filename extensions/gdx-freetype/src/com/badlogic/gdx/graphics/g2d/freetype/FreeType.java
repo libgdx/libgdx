@@ -1,5 +1,8 @@
 package com.badlogic.gdx.graphics.g2d.freetype;
 
+import java.io.ByteArrayInputStream;
+import java.util.Arrays;
+
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
@@ -325,13 +328,13 @@ public class FreeType {
    */
    
 	public static void main (String[] args) throws Exception {
-		FreetypeBuild.main(args);
+//		FreetypeBuild.main(args);
 		new SharedLibraryLoader("libs/gdx-freetype-natives.jar").load("gdx-freetype");
 		long library = FreeType.initFreeType();
 		
 		byte[] font = new FileHandle("Roboto-Condensed.ttf").readBytes();
 		long face = FreeType.newMemoryFace(library, font, font.length, 0);
-		System.out.println(FreeType.setCharSize(face, 0, 16, 96, 96));
+		System.out.println(FreeType.setPixelSizes(face, 32, 32));
 		char left = 40;
 		char right = 74;
 		int kerning = FreeType.getKerning(face, FreeType.getCharIndex(face,  left), FreeType.getCharIndex(face,  right), 0);
@@ -339,5 +342,12 @@ public class FreeType {
 		System.out.println(FreeType.getCharIndex(face, '('));
 		FreeType.doneFace(face);
 		FreeType.doneFreeType(library);
+		
+		Kerning kern = new Kerning();
+		kern.load(new ByteArrayInputStream(font), Face.getHeight(face) >> 7 );
+		int[] values = kern.getValues(FreeType.getCharIndex(face, '('));
+		for(int i = 0; i < values.length; i++) {
+			System.out.println("" + (char)(values[i] & 0xffff) + ", " + (values[i] >> 16));
+		}
 	}
 }
