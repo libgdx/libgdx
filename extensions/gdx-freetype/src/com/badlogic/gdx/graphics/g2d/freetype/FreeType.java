@@ -1,9 +1,12 @@
 package com.badlogic.gdx.graphics.g2d.freetype;
 
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
+import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class FreeType {
@@ -31,52 +34,184 @@ public class FreeType {
 			super(address);
 		}
 		
-		public static native int getFaceFlags(long face); /*
+		public int getFaceFlags() {
+			return getFaceFlags(address);
+		}
+		
+		private static native int getFaceFlags(long face); /*
 			return ((FT_Face)face)->face_flags;
 		*/
 		
-		public static native int getStyleFlags(long face); /*
+		public int getStyleFlags() {
+			return getStyleFlags(address);
+		}
+		
+		private static native int getStyleFlags(long face); /*
 			return ((FT_Face)face)->style_flags;
 		*/
 		
-		public static native int getNumGlyphs(long face); /*
+		public int getNumGlyphs() {
+			return getNumGlyphs(address);
+		}
+		
+		private static native int getNumGlyphs(long face); /*
 			return ((FT_Face)face)->num_glyphs;
 		*/
 		
-		public static native int getAscender(long face); /*
+		public int getAscender() {
+			return getAscender(address);
+		}
+		
+		private static native int getAscender(long face); /*
 			return ((FT_Face)face)->ascender;
 		*/
 		
-		public static native int getDescender(long face); /*
+		public int getDescender() {
+			return getDescender(address);
+		}
+		
+		private static native int getDescender(long face); /*
 			return ((FT_Face)face)->descender;
 		*/
 		
-		public static native int getHeight(long face); /*
+		public int getHeight() {
+			return getHeight(address);
+		}
+		
+		private static native int getHeight(long face); /*
 			return ((FT_Face)face)->height;
 		*/
 		
-		public static native int getMaxAdvanceWidth(long face); /*
+		public int getMaxAdvanceWidth() {
+			return getMaxAdvanceWidth(address);
+		}
+		
+		private static native int getMaxAdvanceWidth(long face); /*
 			return ((FT_Face)face)->max_advance_width;
 		*/
 		
-		public static native int getMaxAdvanceHeight(long face); /*
+		public int getMaxAdvanceHeight() {
+			return getMaxAdvanceHeight(address);
+		}
+		
+		private static native int getMaxAdvanceHeight(long face); /*
 			return ((FT_Face)face)->max_advance_height;
 		*/
 		
-		public static native int getUnderlinePosition(long face); /*
+		public int getUnderlinePosition() {
+			return getUnderlinePosition(address);
+		}
+		
+		private static native int getUnderlinePosition(long face); /*
 			return ((FT_Face)face)->underline_position;
 		*/
 		
-		public static native int getUnderlineThickness(long face); /*
+		public int getUnderlineThickness() {
+			return getUnderlineThickness(address);
+		}
+		
+		private static native int getUnderlineThickness(long face); /*
 			return ((FT_Face)face)->underline_thickness;
 		*/
 		
-		public static native long getGlyph(long face); /*
+		public GlyphSlot getGlyph() {
+			return new GlyphSlot(getGlyph(address));
+		}
+		
+		private static native long getGlyph(long face); /*
 			return (jlong)((FT_Face)face)->glyph;
 		*/
 		
-		public static native long getSize(long face); /*
+		public Size getSize() {
+			return new Size(getSize(address));
+		}
+		
+		private static native long getSize(long face); /*
 			return (jlong)((FT_Face)face)->size;
+		*/
+	}
+	
+	public static class Size extends Pointer {
+		Size (long address) {
+			super(address);
+		}
+		
+		public SizeMetrics getMetrics() {
+			return new SizeMetrics(getMetrics(address));
+		}
+		
+		private static native long getMetrics(long address); /*
+			return (jlong)&((FT_Size)address)->metrics;
+		*/
+	}
+	
+	public static class SizeMetrics extends Pointer {
+		SizeMetrics (long address) {
+			super(address);
+		}
+		
+		public int getXppem() {
+			return getXppem(address);
+		}
+		
+		private static native int getXppem(long metrics); /*
+			return ((FT_Size_Metrics*)metrics)->x_ppem;
+		*/
+		
+		public int getYppem() {
+			return getYppem(address);
+		}
+		
+		private static native int getYppem(long metrics); /*
+			return ((FT_Size_Metrics*)metrics)->y_ppem;
+		*/
+		
+		public int getXScale() {
+			return getXscale(address);
+		}
+		
+		private static native int getXscale(long metrics); /*
+			return ((FT_Size_Metrics*)metrics)->x_scale;
+		*/
+		
+		public int getYscale() {
+			return getYscale(address);
+		}
+		
+		private static native int getYscale(long metrics); /*
+			return ((FT_Size_Metrics*)metrics)->x_scale;
+		*/
+		
+		public int getAscender() {
+			return getAscender(address);
+		}
+		
+		private static native int getAscender(long metrics); /*
+			return ((FT_Size_Metrics*)metrics)->ascender;
+		*/
+		
+		public int getDescender() {
+			return getDescender(address);
+		}
+		
+		private static native int getDescender(long metrics); /*
+			return ((FT_Size_Metrics*)metrics)->descender;
+		*/
+		
+		public int getHeight() {
+			return getHeight(address);
+		}
+		
+		private static native int getHeight(long metrics); /*
+			return ((FT_Size_Metrics*)metrics)->height;
+		*/
+		
+		public int getMaxAdvance() {
+			return getMaxAdvance(address);
+		}
+		
+		private static native int getMaxAdvance(long metrics); /*
+			return ((FT_Size_Metrics*)metrics)->max_advance;
 		*/
 	}
 	
@@ -85,39 +220,76 @@ public class FreeType {
 			super(address);
 		}
 		
-		public static native long getMetrics(long slot); /*
+		public GlyphMetrics getMetrics() {
+			return new GlyphMetrics(getMetrics(address));
+		}		
+		
+		private static native long getMetrics(long slot); /*
 			return (jlong)&((FT_GlyphSlot)slot)->metrics;
 		*/
 		
-		public static native int getLinearHoriAdvance(long slot); /*
+		public int getLinearHoriAdvance() {
+			return getLinearHoriAdvance(address);
+		}
+		
+		private static native int getLinearHoriAdvance(long slot); /*
 			return ((FT_GlyphSlot)slot)->linearHoriAdvance;
 		*/
 		
-		public static native int getLinearVertAdvance(long slot); /*
+		public int getLinearVertAdvance() {
+			return getLinearVertAdvance(address);
+		}
+		
+		private static native int getLinearVertAdvance(long slot); /*
 			return ((FT_GlyphSlot)slot)->linearVertAdvance;
 		*/
 		
-		public static native int getAdvanceX(long slot); /*
+		public int getAdvanceX() {
+			return getAdvanceX(address);
+		}
+		
+		private static native int getAdvanceX(long slot); /*
 			return ((FT_GlyphSlot)slot)->advance.x;
 		*/
 		
-		public static native int getAdvanceY(long slot); /*
+		public int getAdvanceY() {
+			return getAdvanceY(address);
+		}
+		
+		private static native int getAdvanceY(long slot); /*
 			return ((FT_GlyphSlot)slot)->advance.y;
 		*/
 		
-		public static native int getFormat(long slot); /*
+		public int getFormat() {
+			return getFormat(address);
+		}
+		
+		private static native int getFormat(long slot); /*
 			return ((FT_GlyphSlot)slot)->format;
 		*/
 		
-		public static native long getBitmap(long slot); /*
-			return (jlong)&((FT_GlyphSlot)slot)->bitmap;
+		public Bitmap getBitmap() {
+			return new Bitmap(getBitmap(address));
+		}
+		
+		private static native long getBitmap(long slot); /*
+			FT_GlyphSlot glyph = ((FT_GlyphSlot)slot);
+			return (jlong)&(glyph->bitmap);
 		*/
 		
-		public static native int getBitmapLeft(long slot); /*
+		public int getBitmapLeft() {
+			return getBitmapLeft(address);
+		}
+		
+		private static native int getBitmapLeft(long slot); /*
 			return ((FT_GlyphSlot)slot)->bitmap_left;
 		*/
 		
-		public static native int getBitmapTop(long slot); /*
+		public int getBitmapTop() {
+			return getBitmapTop(address);
+		}
+		
+		private static native int getBitmapTop(long slot); /*
 			return ((FT_GlyphSlot)slot)->bitmap_top;
 		*/
 	}
@@ -127,27 +299,63 @@ public class FreeType {
 			super(address);
 		}
 		
-		public static native int getRows(long bitmap); /*
+		public int getRows() {
+			return getRows(address);
+		}
+		
+		private static native int getRows(long bitmap); /*
 			return ((FT_Bitmap*)bitmap)->rows;
 		*/
 		
-		public static native int getWidth(long bitmap); /*
+		public int getWidth() {
+			return getWidth(address);
+		}
+		
+		private static native int getWidth(long bitmap); /*
 			return ((FT_Bitmap*)bitmap)->width;
 		*/
 		
-		public static native int getPitch(long bitmap); /*
+		public int getPitch() {
+			return getPitch(address);
+		}
+		
+		private static native int getPitch(long bitmap); /*
 			return ((FT_Bitmap*)bitmap)->pitch;
 		*/
 		
-		public static native long getBuffer(long bitmap); /*
-			return (jlong)((FT_Bitmap*)bitmap)->buffer;
+		public ByteBuffer getBuffer() {
+			return getBuffer(address);
+		}
+		
+		/**
+		 * @return Pixmap representing the glyph, needs to be disposed manually.
+		 */
+		public Pixmap getPixmap(Format format) {
+			Pixmap pixmap = new Pixmap(getWidth(), getRows(), Format.Alpha);
+			BufferUtils.copy(getBuffer(address), pixmap.getPixels(), pixmap.getPixels().capacity());
+			Pixmap converted = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), format);
+			converted.drawPixmap(pixmap, 0, 0);
+			return converted;
+		}
+		
+		private static native ByteBuffer getBuffer(long bitmap); /*
+			FT_Bitmap* bmp = (FT_Bitmap*)bitmap;
+			return env->NewDirectByteBuffer((void*)bmp->buffer, bmp->rows * abs(bmp->pitch));
 		*/
 		
-		public static native int getNumGray(long bitmap); /*
+		public int getNumGray() {
+			return getNumGray(address);
+		}
+		
+		private static native int getNumGray(long bitmap); /*
 			return ((FT_Bitmap*)bitmap)->num_grays;
 		*/
 		
-		public static native int getPixelMode(long bitmap); /*
+		public int getPixelMode() {
+			return getPixelMode(address);
+		}
+		
+		private static native int getPixelMode(long bitmap); /*
 			return ((FT_Bitmap*)bitmap)->pixel_mode;
 		*/
 	}
@@ -157,35 +365,67 @@ public class FreeType {
 			super(address);
 		}
 		
-		public static native int getWidth(long metrics); /*
+		public int getWidth() {
+			return getWidth(address);
+		}
+		
+		private static native int getWidth(long metrics); /*
 			return ((FT_Glyph_Metrics*)metrics)->width;
 		*/
 		
-		public static native int getHeight(long metrics); /*
+		public int getHeight() {
+			return getHeight(address);
+		}
+		
+		private static native int getHeight(long metrics); /*
 			return ((FT_Glyph_Metrics*)metrics)->height;
 		*/
 		
-		public static native int getHoriBearingX(long metrics); /*
+		public int getHoriBearingX() {
+			return getHoriBearingX(address);
+		}
+		
+		private static native int getHoriBearingX(long metrics); /*
 			return ((FT_Glyph_Metrics*)metrics)->horiBearingX;
 		*/
 		
-		public static native int getHoriBearingY(long metrics); /*
+		public int getHoriBearingY() {
+			return getHoriBearingY(address);
+		}
+		
+		private static native int getHoriBearingY(long metrics); /*
 			return ((FT_Glyph_Metrics*)metrics)->horiBearingY;
 		*/
 		
-		public static native int getHoriAdvance(long metrics); /*
+		public int getHoriAdvance() {
+			return getHoriAdvance(address);
+		}
+		
+		private static native int getHoriAdvance(long metrics); /*
 			return ((FT_Glyph_Metrics*)metrics)->horiAdvance;
 		*/
+	
+		public int getVertBearingX() {
+			return getVertBearingX(address);
+		}
 		
-		public static native int getVertBearingX(long metrics); /*
+		private static native int getVertBearingX(long metrics); /*
 			return ((FT_Glyph_Metrics*)metrics)->vertBearingX;
 		*/
+		
+		public int getVertBearingY() {
+			return getVertBearingY(address);
+		}
 	
-		public static native int getVertBearingY(long metrics); /*
+		private static native int getVertBearingY(long metrics); /*
 			return ((FT_Glyph_Metrics*)metrics)->vertBearingY;
 		 */
+		
+		public int getVertAdvance() {
+			return getVertAdvance(address);
+		}
 	
-		public static native int getVertAdvance(long metrics); /*
+		private static native int getVertAdvance(long metrics); /*
 			return ((FT_Glyph_Metrics*)metrics)->vertAdvance;
 		*/
 	}
@@ -262,92 +502,161 @@ public class FreeType {
    public static int FT_KERNING_UNFITTED = 1;
    public static int FT_KERNING_UNSCALED = 2;
 	
-	public static native long initFreeType(); /*
+   public static Library initFreeType() {
+   	new SharedLibraryLoader().load("gdx-freetype");
+   	long address = initFreeTypeJni();
+   	if(address == 0) throw new GdxRuntimeException("Couldn't initialize FreeType library");
+   	else return new Library(address);
+   }
+   
+	private static native long initFreeTypeJni(); /*
 		FT_Library library = 0;
 		FT_Error error = FT_Init_FreeType(&library);
 		if(error) return 0;
 		else return (jlong)library;
 	*/
 	
-	public static native void doneFreeType(long library); /*
+	public static void doneFreeType(Library library) {
+		doneFreeType(library.address);
+	}
+	
+	private static native void doneFreeType(long library); /*
 		FT_Done_FreeType((FT_Library)library);
 	*/
 	
-	public static native long newMemoryFace(long library, byte[] data, int dataSize, int faceIndex); /*
+	public static Face newFace(Library library, FileHandle font, int faceIndex) {
+		byte[] data = font.readBytes();
+		return newMemoryFace(library, data, data.length, faceIndex);
+	}
+	
+	public static Face newMemoryFace(Library library, byte[] data, int dataSize, int faceIndex) {
+		long address = newMemoryFace(library.address, data, dataSize, faceIndex);
+		if(address == 0) throw new GdxRuntimeException("Couldn't load font");
+		else return new Face(address);
+	}
+	
+	private static native long newMemoryFace(long library, byte[] data, int dataSize, int faceIndex); /*
 		FT_Face face = 0;
 		FT_Error error = FT_New_Memory_Face((FT_Library)library, (const FT_Byte*)data, dataSize, faceIndex, &face);
 		if(error) return 0;
 		else return (jlong)face; 
 	*/
 	
-	public static native void doneFace(long face); /*
+	public static void doneFace(Face face) {
+		doneFace(face.address);
+	}
+	
+	private static native void doneFace(long face); /*
 		FT_Done_Face((FT_Face)face);
 	*/
 	
-	public static native boolean selectSize(long face, int strike_index); /*
+	public static boolean selectSize(Face face, int strikeIndex) {
+		return selectSize(face.address, strikeIndex);
+	}
+	
+	private static native boolean selectSize(long face, int strike_index); /*
 		return !FT_Select_Size((FT_Face)face, strike_index);
 	*/
 	
-	public static native boolean setCharSize(long face, int charWidth, int charHeight, int horzResolution, int vertResolution); /*
+	public static boolean setCharSize(Face face, int charWidth, int charHeight, int horzResolution, int vertResolution) {
+		return setCharSize(face.address, charWidth, charHeight, horzResolution, vertResolution);
+	}
+	
+	private static native boolean setCharSize(long face, int charWidth, int charHeight, int horzResolution, int vertResolution); /*
 		return !FT_Set_Char_Size((FT_Face)face, charWidth, charHeight, horzResolution, vertResolution);
 	*/
 	
-	public static native boolean setPixelSizes(long face, int pixelWidth, int pixelHeight); /*
+	public static boolean setPixelSizes(Face face, int pixelWidth, int pixelHeight) {
+		return setPixelSizes(face.address, pixelWidth, pixelHeight);
+	}
+	
+	private static native boolean setPixelSizes(long face, int pixelWidth, int pixelHeight); /*
 		return !FT_Set_Pixel_Sizes((FT_Face)face, pixelWidth, pixelHeight);
 	*/
 	
-	public static native boolean loadGlyph(long face, int glyphIndex, int loadFlags); /*
+	public static boolean loadGlyph(Face face, int glyphIndex, int loadFlags) {
+		return loadGlyph(face.address, glyphIndex, loadFlags);
+	}
+	
+	private static native boolean loadGlyph(long face, int glyphIndex, int loadFlags); /*
 		return !FT_Load_Glyph((FT_Face)face, glyphIndex, loadFlags);
 	*/
 
-	public static native boolean loadChar(long face, int charCode, int loadFlags); /*
+	public static boolean loadChar(Face face, int charCode, int loadFlags) {
+		return loadChar(face.address, charCode, loadFlags);
+	}
+	
+	private static native boolean loadChar(long face, int charCode, int loadFlags); /*
 		return !FT_Load_Char((FT_Face)face, charCode, loadFlags);
 	*/
 	
-	public static native void setTransform(long face, int a, int b, int c, int d, int deltaX, int deltaY); /*
+	public static boolean renderGlyph(GlyphSlot slot, int renderMode) {
+		return renderGlyph(slot.address, renderMode);
+	}
 	
-	*/
-	
-	public static native boolean renderGlyph(long slot, int renderMode); /*
+	private static native boolean renderGlyph(long slot, int renderMode); /*
 		return !FT_Render_Glyph((FT_GlyphSlot)slot, (FT_Render_Mode)renderMode);
 	*/
    
-   public static native boolean hasKerning(long face); /*
+	public static boolean hasKerning(Face face) {
+		return hasKerning(face.address);
+	}
+	
+	private static native boolean hasKerning(long face); /*
    	return FT_HAS_KERNING(((FT_Face)face));
    */
    
-   public static native int getKerning(long face, int leftGlyph, int rightGlyph, int kernMode); /*
+	public static int getKerning(Face face, int leftGlyph, int rightGlyph, int kernMode) {
+		return getKerning(face.address, leftGlyph, rightGlyph, kernMode);
+	}
+	
+	private static native int getKerning(long face, int leftGlyph, int rightGlyph, int kernMode); /*
    	FT_Vector kerning;
    	FT_Error error = FT_Get_Kerning((FT_Face)face, leftGlyph, rightGlyph, kernMode, &kerning);
    	if(error) return 0;
    	return kerning.x;
    */
 	
-   public static native int getCharIndex(long face, int charCode); /*
+	public static int getCharIndex(Face face, int charCode) {
+		return getCharIndex(face.address, charCode);
+	}
+	
+	private static native int getCharIndex(long face, int charCode); /*
    	return FT_Get_Char_Index((FT_Face)face, charCode);
    */
+	
+	public static int round26_6 (int value) {
+		if (value < 0) return (int)((value - 32) >> 6);
+		else return (int)((value + 32) >> 6);
+	}
    
 	public static void main (String[] args) throws Exception {
 //		FreetypeBuild.main(args);
 		new SharedLibraryLoader("libs/gdx-freetype-natives.jar").load("gdx-freetype");
-		long library = FreeType.initFreeType();
+		String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~* ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
 		
-		byte[] font = new FileHandle("Roboto-Condensed.ttf").readBytes();
-		long face = FreeType.newMemoryFace(library, font, font.length, 0);
-		System.out.println(FreeType.setPixelSizes(face, 32, 32));
-		char left = 40;
-		char right = 74;
-		int kerning = FreeType.getKerning(face, FreeType.getCharIndex(face,  left), FreeType.getCharIndex(face,  right), 0);
-		System.out.println(FreeType.hasKerning(face) + ", " + left + ", " + right + ", " + kerning);
-		System.out.println(FreeType.getCharIndex(face, '('));
+		Library library = FreeType.initFreeType();
+		Face face = FreeType.newFace(library, new FileHandle("arial.ttf"), 0);
+		FreeType.setPixelSizes(face, 0, 15);
+		SizeMetrics faceMetrics = face.getSize().getMetrics();
+		System.out.println(round26_6(faceMetrics.getAscender()) + ", " + round26_6(faceMetrics.getDescender()) + ", " + round26_6(faceMetrics.getHeight()));
+		
+		for(int i = 0; i < chars.length(); i++) {
+			if(!FreeType.loadGlyph(face, FreeType.getCharIndex(face, chars.charAt(i)), 0)) continue;
+			if(!FreeType.renderGlyph(face.getGlyph(), FT_RENDER_MODE_NORMAL)) continue;
+			Bitmap bitmap = face.getGlyph().getBitmap();
+			GlyphMetrics glyphMetrics = face.getGlyph().getMetrics();
+			System.out.println(round26_6(glyphMetrics.getWidth()) + ", " + round26_6(glyphMetrics.getHeight()) + ", " + round26_6(glyphMetrics.getHoriAdvance()));
+			System.out.println(bitmap.getWidth() + ", " + bitmap.getRows() + ", " + bitmap.getPitch() + ", " + bitmap.getNumGray());
+			for(int y = 0; y < bitmap.getRows(); y++) {
+				for(int x = 0; x < bitmap.getWidth(); x++) {
+					System.out.print(bitmap.getBuffer().get(x + bitmap.getPitch() * y) != 0? "X": " ");
+				}
+				System.out.println();
+			}
+		}
+	
 		FreeType.doneFace(face);
 		FreeType.doneFreeType(library);
-		
-		Kerning kern = new Kerning();
-		kern.load(new ByteArrayInputStream(font), Face.getHeight(face) >> 7 );
-		int[] values = kern.getValues(FreeType.getCharIndex(face, '('));
-		for(int i = 0; i < values.length; i++) {
-			System.out.println("" + (char)(values[i] & 0xffff) + ", " + (values[i] >> 16));
-		}
 	}
 }

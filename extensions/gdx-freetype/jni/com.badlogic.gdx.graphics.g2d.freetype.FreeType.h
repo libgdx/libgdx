@@ -9,10 +9,10 @@ extern "C" {
 #endif
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType
- * Method:    initFreeType
+ * Method:    initFreeTypeJni
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_initFreeType
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_initFreeTypeJni
   (JNIEnv *, jclass);
 
 /*
@@ -78,14 +78,6 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_
  */
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_loadChar
   (JNIEnv *, jclass, jlong, jint, jint);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType
- * Method:    setTransform
- * Signature: (JIIIIII)V
- */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_setTransform
-  (JNIEnv *, jclass, jlong, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType
@@ -157,9 +149,9 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_Bitmap
  * Method:    getBuffer
- * Signature: (J)J
+ * Signature: (J)Ljava/nio/ByteBuffer;
  */
-JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Bitmap_getBuffer
+JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Bitmap_getBuffer
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -465,6 +457,100 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifdef __cplusplus
+}
+#endif
+#endif
+/* Header for class com_badlogic_gdx_graphics_g2d_freetype_FreeType_Size */
+
+#ifndef _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_Size
+#define _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_Size
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_Size
+ * Method:    getMetrics
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Size_getMetrics
+  (JNIEnv *, jclass, jlong);
+
+#ifdef __cplusplus
+}
+#endif
+#endif
+/* Header for class com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics */
+
+#ifndef _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+#define _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getXppem
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getXppem
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getYppem
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getYppem
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getXscale
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getXscale
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getYscale
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getYscale
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getAscender
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getAscender
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getDescender
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getDescender
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getHeight
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getHeight
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getMaxAdvance
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getMaxAdvance
+  (JNIEnv *, jclass, jlong);
+
 #ifdef __cplusplus
 }
 #endif
