@@ -46,4 +46,20 @@ public final class VertexAttribute {
 		this.numComponents = numComponents;
 		this.alias = alias;
 	}
+	
+	public static VertexAttribute Position() {
+		return new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE);
+	}
+	
+	public static VertexAttribute TexCoords(int unit) {
+		return new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + unit);
+	}
+	
+	public static VertexAttribute Normal() {
+		return new VertexAttribute(Usage.TextureCoordinates, 3, ShaderProgram.NORMAL_ATTRIBUTE);
+	}
+	
+	public static VertexAttribute Color() {
+		return new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE);
+	}
 }

@@ -197,6 +197,19 @@ public class Matrix3 implements Serializable {
 		vals[8] = mat.vals[8];
 		return this;
 	}
+	
+	public Matrix3 set(Matrix4 mat) {
+		vals[0] = mat.val[0];
+		vals[1] = mat.val[1];
+		vals[2] = mat.val[2];
+		vals[3] = mat.val[4];
+		vals[4] = mat.val[5];
+		vals[5] = mat.val[6];
+		vals[6] = mat.val[8];
+		vals[7] = mat.val[9];
+		vals[8] = mat.val[10];
+		return this;
+	}
 
 	/** Adds a translational component to the matrix in the 3rd column. The other columns are untouched.
 	 * @param vector The translation vector

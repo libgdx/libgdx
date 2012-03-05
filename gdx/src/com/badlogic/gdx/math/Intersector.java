@@ -16,8 +16,10 @@
 
 package com.badlogic.gdx.math;
 
+import java.util.Arrays;
 import java.util.List;
 
+import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 
@@ -235,6 +237,36 @@ public final class Intersector {
 			return true;
 		} else
 			return false;
+	}
+
+	/**
+	 * Intersects a line and a plane. The intersection is returned as the distance from the first point
+	 * to the plane. In case an intersection happened, the return value is in the range [0,1]. The
+	 * intersection point can be recovered by point1 + t * (point2 - point1) where t is the return
+	 * value of this method.
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param x2
+	 * @param y2
+	 * @param z2
+	 * @param plane
+	 * @return
+	 */
+	public static float intersectLinePlane(float x, float y, float z, float x2, float y2, float z2, Plane plane, Vector3 intersection) {
+		Vector3 direction = tmp.set(x2, y2, z2).sub(x, y, z);
+		Vector3 origin = tmp2.set(x, y, z);
+		float denom = direction.dot(plane.getNormal());
+		if (denom != 0) {
+			float t = -(origin.dot(plane.getNormal()) + plane.getD()) / denom;
+			if ((t >= 0 && t <= 1) && intersection != null) intersection.set(origin).add(direction.mul(t));
+			return t;
+		} else if (plane.testPoint(origin) == Plane.PlaneSide.OnPlane) {
+			if (intersection != null) intersection.set(origin);
+			return 0;
+		}
+		
+		return -1;
 	}
 
 	private static final Plane p = new Plane(new Vector3(), 0);
@@ -669,5 +701,209 @@ public final class Intersector {
 		}
 
 		return false;
+	}
+	
+	/**
+	 * Splits the triangle by the plane. The result is stored in the SplitTriangle
+	 * instance. Depending on where the triangle is relative to the plane, the result can
+	 * be:
+	 * 
+	 * <ul>
+	 * <li>Triangle is fully in front/behind: {@link SplitTriangle#front} or {@link SplitTriangle#back} will
+	 * contain the original triangle, {@link SplitTriangle#total} will be one.</li>
+	 * <li>Triangle has two vertices in front, one behind: {@link SplitTriangle#front} contains 2 triangles,
+	 * {@link SplitTriangle#back} contains 1 triangles, {@link SplitTriangle#total} will be 3.</li>
+	 * <li>Triangle has one vertex in front, two behind: {@link SplitTriangle#front} contains 1 triangle,
+	 * {@link SplitTriangle#back} contains 2 triangles, {@link SplitTriangle#total} will be 3.</li>
+	 * </ul>
+	 * 
+	 * The input triangle should have the form: x, y, z, x2, y2, z2, x3, y3, y3. One can
+	 * add additional attributes per vertex which will be interpolated if split, such as
+	 * texture coordinates or normals. Note that these additional attributes won't be
+	 * normalized, as might be necessary in case of normals.
+	 * 
+	 * @param triangle
+	 * @param plane
+	 * @param split output SplitTriangle
+	 */
+	public static void splitTriangle(float[] triangle, Plane plane, SplitTriangle split) {
+		int stride = triangle.length / 3;
+		boolean r1 = plane.testPoint(triangle[0], triangle[1], triangle[2]) == PlaneSide.Back;
+		boolean r2 = plane.testPoint(triangle[0 + stride], triangle[1 + stride], triangle[2 + stride]) == PlaneSide.Back;
+		boolean r3 = plane.testPoint(triangle[0 + stride * 2], triangle[1 + stride * 2], triangle[2 + stride * 2]) == PlaneSide.Back;
+		
+		split.reset();
+		
+		// easy case, triangle is on one side (point on plane means front).
+		if((r1 == r2) && (r2 == r3)) {
+			split.total = 1;
+			if(r1) {
+				split.numBack = 1;
+				System.arraycopy(triangle, 0, split.back, 0, triangle.length);
+			} else {
+				split.numFront = 1;
+				System.arraycopy(triangle, 0, split.front, 0, triangle.length);
+			}
+			return;
+		}
+		
+		// set number of triangles
+		split.total = 3;
+		split.numFront = (r1?1:0) + (r2?1:0) + (r3?1:0);
+		split.numBack = split.total - split.numFront;
+		
+		// hard case, split the three edges on the plane
+		// determine which array to fill first, front or back, flip if we
+		// cross the plane
+		split.setSide(r1);
+
+		// split first edge
+		int first = 0;
+		int second = stride;
+		if(r1 != r2) {
+			// split the edge
+			splitEdge(triangle, first, second, stride, plane, split.edgeSplit, 0);
+			
+			// add first edge vertex and new vertex to current side
+			split.add(triangle, first, stride);
+			split.add(split.edgeSplit, 0, stride);
+			
+			// flip side and add new vertex and second edge vertex to current side
+			split.setSide(!split.getSide());
+			split.add(split.edgeSplit, 0, stride);
+		} else {
+			// add both vertices
+			split.add(triangle, first, stride);
+		}
+
+		// split second edge
+		first = stride;
+		second = stride + stride;
+		if(r2 != r3) {
+			// split the edge
+			splitEdge(triangle, first, second, stride, plane, split.edgeSplit, 0);
+			
+			// add first edge vertex and new vertex to current side
+			split.add(triangle, first, stride);
+			split.add(split.edgeSplit, 0, stride);
+			
+			// flip side and add new vertex and second edge vertex to current side
+			split.setSide(!split.getSide());
+			split.add(split.edgeSplit, 0, stride);
+		} else {
+			// add both vertices
+			split.add(triangle, first, stride);
+		}
+		
+		// split third edge
+		first = stride + stride;
+		second = 0;
+		if(r3 != r1) {
+			// split the edge
+			splitEdge(triangle, first, second, stride, plane, split.edgeSplit, 0);
+			
+			// add first edge vertex and new vertex to current side
+			split.add(triangle, first, stride);
+			split.add(split.edgeSplit, 0, stride);
+			
+			// flip side and add new vertex and second edge vertex to current side
+			split.setSide(!split.getSide());
+			split.add(split.edgeSplit, 0, stride);
+		} else {
+			// add both vertices
+			split.add(triangle, first, stride);
+		}
+		
+		// triangulate the side with 2 triangles
+		if(split.numFront == 2) {
+			System.arraycopy(split.front, stride * 2, split.front, stride * 3, stride * 2);
+			System.arraycopy(split.front, 0, split.front, stride * 5, stride);
+		} else {
+			System.arraycopy(split.back, stride * 2, split.back, stride * 3, stride * 2);
+			System.arraycopy(split.back, 0, split.back, stride * 5, stride);
+		}
+	}
+	
+	static Vector3 intersection = new Vector3();
+	private static void splitEdge(float[] vertices, int s, int e, int stride, Plane plane, float[] split, int offset) {
+		float t = Intersector.intersectLinePlane(vertices[s], vertices[s + 1], vertices[s+2],
+															  vertices[e], vertices[e + 1], vertices[e+2],
+															  plane, intersection);
+		split[offset + 0] = intersection.x;
+		split[offset + 1] = intersection.y;
+		split[offset + 2] = intersection.z;
+		for(int i = 3; i < stride; i++) {
+			float a = vertices[s + i];
+			float b = vertices[e + i];
+			split[offset + i] = a + t * (b-a);
+		}
+	}
+	
+	public static void main (String[] args) {
+		Plane plane = new Plane(new Vector3(1, 0, 0), 0);
+		SplitTriangle split = new SplitTriangle(3);
+		float[] fTriangle = { -10, 0, 10, -1, 0, 0, -10, 0, 10 };
+		Intersector.splitTriangle(fTriangle, plane, split);
+		System.out.println(split);
+
+		float[] triangle = { -10, 0, 10, 10, 0, 0, -10, 0, -10 };
+		Intersector.splitTriangle(triangle, plane, split);
+		System.out.println(split);
+	}
+	
+	public static class SplitTriangle {
+		public float[] front;
+		public float[] back;
+		float[] edgeSplit;
+		public int numFront;
+		public int numBack;
+		public int total;
+		boolean frontCurrent = false;
+		int frontOffset = 0;
+		int backOffset = 0;
+		
+		/**
+		 * Creates a new instance, assuming numAttributes attributes per 
+		 * triangle vertex.
+		 * @param numAttributes must be >= 3
+		 */
+		public SplitTriangle(int numAttributes) {
+			front = new float[numAttributes * 3 * 2];
+			back = new float[numAttributes * 3 * 2];
+			edgeSplit = new float[numAttributes];
+		}
+
+		@Override
+		public String toString () {
+			return "SplitTriangle [front=" + Arrays.toString(front) + ", back=" + Arrays.toString(back) + ", numFront=" + numFront
+				+ ", numBack=" + numBack + ", total=" + total + "]";
+		}
+		
+		void setSide(boolean front) {
+			frontCurrent = front;
+		}
+		
+		boolean getSide() {
+			return frontCurrent;
+		}
+		
+		void add(float[] vertex, int offset, int stride) {
+			if(frontCurrent) {
+				System.arraycopy(vertex, offset, front, frontOffset, stride);
+				frontOffset += stride;
+			} else {
+				System.arraycopy(vertex, offset, back, backOffset, stride);
+				backOffset += stride;
+			}
+		}
+
+		void reset() {
+			frontCurrent = false;
+			frontOffset = 0;
+			backOffset = 0;
+			numFront = 0;
+			numBack = 0;
+			total = 0;
+		}
 	}
 }

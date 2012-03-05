@@ -60,6 +60,31 @@ public class ObjLoader {
 		}
 		return loadObjFromString(line, flipV);
 	}
+	
+	/** Loads a Wavefront OBJ file from the given input stream.
+	 * 
+	 * @param in the InputStream
+	 * @param flipV whether to flip the v texture coordinate or not */
+	public static Mesh loadObj (InputStream in, boolean flipV, boolean useIndices) {
+		String line = "";
+
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+			StringBuffer b = new StringBuffer();
+			String l = reader.readLine();
+			while (l != null) {
+				b.append(l);
+				b.append("\n");
+				l = reader.readLine();
+			}
+
+			line = b.toString();
+			reader.close();
+		} catch (Exception ex) {
+			return null;
+		}
+		return loadObjFromString(line, flipV, useIndices);
+	}
 
 	/** Loads a mesh from the given string in Wavefront OBJ format
 	 * 
