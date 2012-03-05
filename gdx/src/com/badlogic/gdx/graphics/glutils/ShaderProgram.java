@@ -22,17 +22,18 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectIntMap;
@@ -477,6 +478,34 @@ public class ShaderProgram implements Disposable {
 		BufferUtils.copy(vals, this.matrix, vals.length, 0);
 		gl.glUniformMatrix3fv(location, 1, transpose, this.matrix);
 	}
+	
+
+   /** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
+    * {@link #begin()}/{@link #end()} block.
+    *
+    * @param name the name of the uniform
+    * @param values x and y as the first and second values respectively */
+   public void setUniformf (String name, Vector2 values) {
+       setUniformf(name, values.x, values.y);
+   }
+
+   /** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
+    * {@link #begin()}/{@link #end()} block.
+    *
+    * @param name the name of the uniform
+    * @param values x, y and z as the first, second and third values respectively */
+   public void setUniformf (String name, Vector3 values) {
+       setUniformf(name, values.x, values.y, values.z);
+   }
+
+   /** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
+    * {@link #begin()}/{@link #end()} block.
+    *
+    * @param name the name of the uniform
+    * @param values r, g, b and a as the first through fourth values respectively */
+   public void setUniformf (String name, Color values) {
+       setUniformf(name, values.r, values.g, values.b, values.a);
+   }
 
 	/** Sets the vertex attribute with the given name. Throws an IllegalArgumentException in case it is not called in between a
 	 * {@link #begin()}/{@link #end()} block.
