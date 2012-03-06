@@ -107,8 +107,6 @@ public class FreeTypeFontGenerator implements Disposable {
 		FreeTypeBitmapFontData data = new FreeTypeBitmapFontData();
 		if (!FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
 
-		new FileHandle("glyphs").mkdirs();
-
 		// set general font data
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
 		data.flipped = flip;
@@ -162,7 +160,6 @@ public class FreeTypeFontGenerator implements Disposable {
 			GlyphMetrics metrics = slot.getMetrics();
 			Bitmap bitmap = slot.getBitmap();
 			Pixmap pixmap = bitmap.getPixmap(Format.RGBA8888);
-			PixmapIO.writePNG(new FileHandle("glyphs/" + i + ".png"), pixmap);
 			Rectangle rect = atlas.insertImage("" + c, pixmap);
 			Glyph glyph = new Glyph();
 			glyph.width = pixmap.getWidth();

@@ -42,8 +42,8 @@ public class FreeTypeTest extends GdxTest {
 
 		batch.begin();
 		font.setColor(Color.RED);
-		font.drawMultiLine(batch, "This is a test\nAnd another line", 100, 112);
-		ftFont.drawMultiLine(batch, "This is a test\nAnd another line", 100, 112);
+		font.drawMultiLine(batch, "This is a test\nAnd another line\n()§$%&/!12390#", 100, 112);
+		ftFont.drawMultiLine(batch, "This is a test\nAnd another line\n()§$%&/!12390#", 100, 112);
 		batch.end();
 	}
 
