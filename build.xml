@@ -163,6 +163,19 @@
 		</ant>
 	</target>
 	
+	<!-- gdx freetype -->
+	<target name="gdx-freetype" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-jnigen.jar"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="extensions/gdx-freetype">
+			<property name="distDir" value="${distDir}/extensions"/>
+			<property name="jar" value="gdx-freetype"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+	
 	<!-- gdx bullet -->
 	<target name="gdx-bullet" depends="gdx-core">
 		<path id="classpath">
@@ -217,7 +230,7 @@
 		</javadoc>
 	</target>
 	
-	<target name="all" depends="clean,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android,gdx-tools,gdx-tiled-preprocessor,gdx-stb-truetype,gdx-image,gdx-audio,docs">
+	<target name="all" depends="clean,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android,gdx-tools,gdx-tiled-preprocessor,gdx-stb-truetype,gdx-image,gdx-audio,gdx-freetype,docs">
 		<!-- copy distribution files (licences etc.) -->
 		<copy tofile="${distDir}/README" file="gdx/dist/README"/>
 		<copy tofile="${distDir}/LICENSE" file="gdx/dist/LICENSE"/>

@@ -56,8 +56,8 @@ public class BitmapFont implements Disposable {
 	static private final int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
 	static private final int PAGES = 0x10000 / PAGE_SIZE;
 
-	static final char[] xChars = {'x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z'};
-	static final char[] capChars = {'M', 'N', 'B', 'D', 'C', 'E', 'F', 'K', 'A', 'G', 'H', 'I', 'J', 'L', 'O', 'P', 'Q', 'R', 'S',
+	public static final char[] xChars = {'x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z'};
+	public static final char[] capChars = {'M', 'N', 'B', 'D', 'C', 'E', 'F', 'K', 'A', 'G', 'H', 'I', 'J', 'L', 'O', 'P', 'Q', 'R', 'S',
 		'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
 	TextureRegion region;
@@ -70,20 +70,27 @@ public class BitmapFont implements Disposable {
 	private boolean ownsTexture;
 
 	public static class BitmapFontData {
-		String imagePath;
-		final FileHandle fontFile;
-		final boolean flipped;
-		float lineHeight;
-		float capHeight = 1;
-		float ascent;
-		float descent;
-		float down;
-		float scaleX = 1, scaleY = 1;
+		public String imagePath;
+		public FileHandle fontFile;
+		public boolean flipped;
+		public float lineHeight;
+		public float capHeight = 1;
+		public float ascent;
+		public float descent;
+		public float down;
+		public float scaleX = 1, scaleY = 1;
 
-		final Glyph[][] glyphs = new Glyph[PAGES][];
-		float spaceWidth;
-		float xHeight = 1;
+		public final Glyph[][] glyphs = new Glyph[PAGES][];
+		public float spaceWidth;
+		public float xHeight = 1;
 
+		/**
+		 * Use this if you want to create BitmapFontData yourself, e.g. from
+		 * stb-truetype of FreeType.
+		 */
+		public BitmapFontData() {
+		}
+		
 		public BitmapFontData (FileHandle fontFile, boolean flip) {
 			this.fontFile = fontFile;
 			this.flipped = flip;
@@ -219,13 +226,13 @@ public class BitmapFont implements Disposable {
 			}
 		}
 
-		private void setGlyph (int ch, Glyph glyph) {
+		public void setGlyph (int ch, Glyph glyph) {
 			Glyph[] page = glyphs[ch / PAGE_SIZE];
 			if (page == null) glyphs[ch / PAGE_SIZE] = page = new Glyph[PAGE_SIZE];
 			page[ch & PAGE_SIZE - 1] = glyph;
 		}
 
-		private Glyph getFirstGlyph () {
+		public Glyph getFirstGlyph () {
 			for (Glyph[] page : this.glyphs) {
 				if (page == null) continue;
 				for (Glyph glyph : page) {
@@ -884,16 +891,16 @@ public class BitmapFont implements Disposable {
 		return data;
 	}
 
-	static class Glyph {
+	public static class Glyph {
 		public int srcX;
 		public int srcY;
-		int width, height;
-		float u, v, u2, v2;
-		int xoffset, yoffset;
-		int xadvance;
-		byte[][] kerning;
+		public int width, height;
+		public float u, v, u2, v2;
+		public int xoffset, yoffset;
+		public int xadvance;
+		public byte[][] kerning;
 
-		int getKerning (char ch) {
+		public int getKerning (char ch) {
 			if (kerning != null) {
 				byte[] page = kerning[ch >>> LOG2_PAGE_SIZE];
 				if (page != null) return page[ch & PAGE_SIZE - 1];
@@ -901,7 +908,7 @@ public class BitmapFont implements Disposable {
 			return 0;
 		}
 
-		void setKerning (int ch, int value) {
+		public void setKerning (int ch, int value) {
 			if (kerning == null) kerning = new byte[PAGES][];
 			byte[] page = kerning[ch >>> LOG2_PAGE_SIZE];
 			if (page == null) kerning[ch >>> LOG2_PAGE_SIZE] = page = new byte[PAGE_SIZE];
