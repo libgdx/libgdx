@@ -136,18 +136,22 @@ public class AssetManager implements Disposable {
 		// get the asset and its type
 		Class type = assetTypes.get(fileName);
 		if (type == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
-		log.debug("Unload: " + fileName);
+
 		RefCountedContainer assetRef = assets.get(type).get(fileName);
 
 		// if it is reference counted, decrement ref count and check if we can really get rid of it.
 		assetRef.decRefCount();
 		if (assetRef.getRefCount() <= 0) {
+			log.debug("Unload (dispose): " + fileName);
+
 			// if it is disposable dispose it
 			if (assetRef.getObject(Object.class) instanceof Disposable) ((Disposable)assetRef.getObject(Object.class)).dispose();
 
 			// remove the asset from the manager.
 			assetTypes.remove(fileName);
 			assets.get(type).remove(fileName);
+		} else {
+			log.debug("Unload (decrement): " + fileName);
 		}
 
 		// remove any dependencies (or just decrement their ref count).

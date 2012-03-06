@@ -203,6 +203,12 @@ public class FlickScrollPane extends WidgetGroup {
 
 		maxX = widget.width - width;
 		maxY = widget.height - height;
+
+		if (widget instanceof Layout) {
+			Layout layout = (Layout)widget;
+			layout.invalidate();
+			layout.validate();
+		}
 	}
 
 	@Override

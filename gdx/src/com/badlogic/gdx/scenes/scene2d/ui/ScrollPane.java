@@ -152,7 +152,6 @@ public class ScrollPane extends WidgetGroup {
 		if (widget.width != widgetWidth || widget.height != widgetHeight) {
 			widget.width = widgetWidth;
 			widget.height = widgetHeight;
-			if (widget instanceof Layout) ((Layout)widget).invalidate();
 		}
 
 		// Set the bounds and scroll knob sizes if scrollbars are needed.

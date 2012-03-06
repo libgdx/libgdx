@@ -346,7 +346,7 @@ public class BitmapFontCache implements Disposable {
 					lineEnd--;
 				}
 				if (lineEnd == start)
-					lineEnd = nextStart; // If no characters to break, show all.
+					lineEnd = nextStart - 1; // If no characters to break, show all.
 				else {
 					nextStart = lineEnd;
 					// Eat whitespace at end of line.
