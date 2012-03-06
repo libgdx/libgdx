@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.PixmapAtlas;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
@@ -150,7 +150,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		// generate the glyphs
 		int maxGlyphHeight = (int)Math.ceil(data.lineHeight);
 		int pageWidth = MathUtils.nextPowerOfTwo((int)Math.sqrt(maxGlyphHeight * maxGlyphHeight * characters.length()));
-		PixmapAtlas atlas = new PixmapAtlas(pageWidth, pageWidth, Format.RGBA8888, 2, false);
+		PixmapPacker atlas = new PixmapPacker(pageWidth, pageWidth, Format.RGBA8888, 2, false);
 		for (int i = 0; i < characters.length(); i++) {
 			char c = characters.charAt(i);
 			if (!FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) continue;
@@ -160,7 +160,7 @@ public class FreeTypeFontGenerator implements Disposable {
 			GlyphMetrics metrics = slot.getMetrics();
 			Bitmap bitmap = slot.getBitmap();
 			Pixmap pixmap = bitmap.getPixmap(Format.RGBA8888);
-			Rectangle rect = atlas.insertImage("" + c, pixmap);
+			Rectangle rect = atlas.pack("" + c, pixmap);
 			Glyph glyph = new Glyph();
 			glyph.width = pixmap.getWidth();
 			glyph.height = pixmap.getHeight();
