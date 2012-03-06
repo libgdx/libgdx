@@ -31,7 +31,61 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap.Keys;
 import com.badlogic.gdx.utils.OrderedMap;
 
-public class PixmapAtlas implements Disposable {
+/**
+ * Packs {@link Pixmap} instances into one more more {@link Page} instances to generate
+ * an atlas of Pixmap instances. Provides means to directly convert the pixmap atlas to a {@link TextureAtlas}. The
+ * packer supports padding and border pixel duplication, specified during construction. The packer supports incremental inserts
+ * and updates of TextureAtlases generated with this class.</p>
+ * 
+ * All methods except {@link #getPage(String)} and {@link #getPages()} are thread safe. The methods {@link #generateTextureAtlas(TextureFilter, TextureFilter)}
+ * and {@link #updateTextureAtlas(TextureAtlas, TextureFilter, TextureFilter)} need to be called on the rendering thread, all
+ * other methods can be called from any thread.</p>
+ * 
+ * One-off usage:
+ * <pre>
+ * // 512x512 pixel pages, RGB565 format, 2 pixels of padding, border duplication
+ * PixmapPacker packer = new PixmapPacker(512, 512, Format.RGB565, 2, true);
+ * packer.pack("First Pixmap", pixmap1);
+ * packer.pack("Second Pixmap", pixmap2);
+ * TextureAtlas altas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest);
+ * </pre>
+ * 
+ * Note that you should not dispose the packer in this usage pattern. Instead, dispose the TextureAtlas
+ * if no longer needed.
+ * 
+ * Incremental usage:
+ * <pre>
+ * // 512x512 pixel pages, RGB565 format, 2 pixels of padding, no border duplication
+ * PixmapPacker packer = new PixmapPacker(512, 512, Format.RGB565, 2, false);
+ * TextureAtlas incrementalAtlas = new TextureAtlas();
+ * 
+ * // potentially on a separate thread, e.g. downloading thumbnails
+ * packer.pack("thumbnail", thumbnail);
+ * 
+ * // on the rendering thread, every frame
+ * packer.updateTextureAtlas(incrementalAtlas, TextureFilter.Linear, TextureFilter.Linear);
+ * 
+ * // once the atlas is no longer needed, make sure you get the final additions. This might
+ * // be more elaborate depending on your threading model.
+ * packer.updateTextureAtlas(incrementalAtlas, TextureFilter.Linear, TextureFilter.Linear);
+ * incrementalAtlas.dispose();
+ * </pre>
+ * 
+ * Pixmap-only usage:
+ * <pre>
+ * PixmapPacker packer = new PixmapPacker(512, 512, Format.RGB565, 2, true);
+ * packer.pack("First Pixmap", pixmap1);
+ * packer.pack("Second Pixmap", pixmap2);
+ * 
+ *  // do something interesting with the resulting pages
+ *  for(Page page: packer.getPages()) {
+ *  }
+ *  
+ *  // dispose of the packer in this case
+ *  packer.dispose();
+ * </pre>
+ */
+public class PixmapPacker implements Disposable {
 	static final class Node {
 		public Node leftChild;
 		public Node rightChild;
@@ -70,7 +124,6 @@ public class PixmapAtlas implements Disposable {
 	final Array<Page> pages = new Array<Page>();
 	Page currPage;
 	boolean disposed;
-	TextureAtlas atlas;
 
 	/** <p>
 	 * Creates a new ImagePacker which will insert all supplied images into a <code>width</code> by <code>height</code> image.
@@ -82,35 +135,25 @@ public class PixmapAtlas implements Disposable {
 	 * @param height the height of the output image
 	 * @param padding the number of padding pixels
 	 * @param duplicateBorder whether to duplicate the border */
-	public PixmapAtlas (int width, int height, Format format, int padding, boolean duplicateBorder) {
+	public PixmapPacker (int width, int height, Format format, int padding, boolean duplicateBorder) {
 		this.pageWidth = width;
 		this.pageHeight = height;
 		this.pageFormat = format;
 		this.padding = padding;
 		this.duplicateBorder = duplicateBorder;
-		this.atlas = new TextureAtlas();
 		newPage();
-	}
-	
-	private void newPage() {
-		Page page = new Page();
-		page.image = new Pixmap(pageWidth, pageHeight, pageFormat);
-		page.root =  new Node(0, 0, pageWidth, pageHeight, null, null, null);
-		page.rects = new OrderedMap<String, Rectangle>();
-		pages.add(page);
-		currPage = page;
 	}
 
 	/** <p>
-	 * Inserts the given image. You can later on retrieve the images position in the output image via the supplied name and the
-	 * method {@link #getRects()}.
+	 * Inserts the given {@link Pixmap}. You can later on retrieve the images position in the output image via the supplied name and the
+	 * method {@link #getRect(String)}.
 	 * </p>
 	 * 
 	 * @param name the name of the image
 	 * @param image the image
 	 * @return Rectangle describing the area the pixmap was rendered to or null.
-	 * @throws RuntimeException in case the image did not fit or you specified a duplicate name */
-	public synchronized Rectangle insertImage (String name, Pixmap image) {
+	 * @throws RuntimeException in case the image did not fit due to the page size being to small or providing a duplicate name */
+	public synchronized Rectangle pack (String name, Pixmap image) {
 		if(disposed) return null;
 		if (getRect(name) != null) throw new RuntimeException("Key with name '" + name + "' is already in map");
 		int borderPixels = padding + (duplicateBorder ? 1 : 0);
@@ -123,7 +166,7 @@ public class PixmapAtlas implements Disposable {
 
 		if (node == null) {
 			newPage();
-			return insertImage(name, image);
+			return pack(name, image);
 		}
 
 		node.leaveName = name;
@@ -161,6 +204,15 @@ public class PixmapAtlas implements Disposable {
 		}
 		currPage.addedRects.add(name);
 		return rect;
+	}
+	
+	private void newPage() {
+		Page page = new Page();
+		page.image = new Pixmap(pageWidth, pageHeight, pageFormat);
+		page.root =  new Node(0, 0, pageWidth, pageHeight, null, null, null);
+		page.rects = new OrderedMap<String, Rectangle>();
+		pages.add(page);
+		currPage = page;
 	}
 
 	private Node insert (Node node, Rectangle rect) {
@@ -210,7 +262,7 @@ public class PixmapAtlas implements Disposable {
 		}
 	}
 
-	/** @return the output image */
+	/** @return the {@link Page} instances created so far. This method is not thread safe! */
 	public Array<Page> getPages () {
 		return pages;
 	}
@@ -240,18 +292,26 @@ public class PixmapAtlas implements Disposable {
 	}
 	
 	/**
-	 * Disposes all pages
+	 * Disposes all resources, including Pixmap instances for the pages
+	 * created so far. These page Pixmap instances are shared with
+	 * any {@link TextureAtlas} generated or updated by either {@link #generateTextureAtlas(TextureFilter, TextureFilter)}
+	 * or {@link #updateTextureAtlas(TextureAtlas, TextureFilter, TextureFilter)}. Do
+	 * not call this method if you generated or updated a TextureAtlas, instead
+	 * dispose the TextureAtlas.
 	 */
 	public synchronized void dispose() {
 		for(Page page: pages) {
 			page.image.dispose();
 		}
-		if(atlas != null) {
-			atlas.dispose();
-		}
 		disposed = true;
 	}
 
+	/**
+	 * Generates a new {@link TextureAtlas} from the {@link Pixmap} instances inserted so far.
+	 * @param minFilter
+	 * @param magFilter
+	 * @return the TextureAtlas
+	 */
 	public synchronized TextureAtlas generateTextureAtlas (TextureFilter minFilter, TextureFilter magFilter) {
 		TextureAtlas atlas = new TextureAtlas();
 		for(Page page: pages) {
@@ -277,11 +337,11 @@ public class PixmapAtlas implements Disposable {
 	}
 
 	/**
-	 * if you update this atlas in a separate thread, you have to call
-	 * this method repeatedly on the rendering thread to update the
-	 * corresponding texture.
+	 * Updates the given {@link TextureAtlas}, adding any new {@link Pixmap} instances packed since the last
+	 * call to this method. This can be used to insert Pixmap instances on a separate thread via {@link #pack(String, Pixmap)}
+	 * and update the TextureAtlas on the rendering thread. This method must be called on the rendering thread.
 	 */
-	public synchronized void updateTextureAtlas() {
+	public synchronized void updateTextureAtlas(TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter) {
 		for(Page page: pages) {
 			if(page.texture == null) {
 				if(page.rects.size != 0 && page.addedRects.size > 0) {
@@ -292,7 +352,7 @@ public class PixmapAtlas implements Disposable {
 							
 						}
 					};
-					page.texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+					page.texture.setFilter(minFilter, magFilter);
 					
 					for(String name: page.addedRects) {
 						Rectangle rect = page.rects.get(name);
@@ -316,15 +376,6 @@ public class PixmapAtlas implements Disposable {
 		}
 	}
 	
-	/**
-	 * Creates a new TextureAtlas internally and updates it with the latest
-	 * page Pixmaps.
-	 * @return 
-	 */
-	public synchronized TextureAtlas getTextureAtlas () {
-		return atlas;
-	}
-
 	public int getPageWidth () {
 		return pageWidth;
 	}
