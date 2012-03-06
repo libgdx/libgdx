@@ -148,6 +148,14 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_Bitmap
+ * Method:    convert
+ * Signature: (Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;I)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Bitmap_convert
+  (JNIEnv *, jclass, jobject, jobject, jint);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_Bitmap
  * Method:    getBuffer
  * Signature: (J)Ljava/nio/ByteBuffer;
  */

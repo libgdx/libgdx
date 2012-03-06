@@ -112,6 +112,7 @@ public class FreetypeBuild {
 		
 		new NativeCodeGenerator().generate();
 		new AntScriptGenerator().generate(new BuildConfig("gdx-freetype"), win32home, win32, win64, lin32, lin64, mac, android);
+//		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v clean");
 		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
 		BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
 	}

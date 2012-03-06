@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -332,9 +333,13 @@ public class FreeType {
 		 */
 		public Pixmap getPixmap(Format format) {
 			Pixmap pixmap = new Pixmap(getWidth(), getRows(), Format.Alpha);
-			BufferUtils.copy(getBuffer(address), pixmap.getPixels(), pixmap.getPixels().capacity());
+			BufferUtils.copy(getBuffer(), pixmap.getPixels(), pixmap.getPixels().capacity());
 			Pixmap converted = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), format);
+			Blending blending = Pixmap.getBlending();
+			Pixmap.setBlending(Blending.None);
 			converted.drawPixmap(pixmap, 0, 0);
+			Pixmap.setBlending(blending);
+			pixmap.dispose();
 			return converted;
 		}
 		
@@ -625,13 +630,13 @@ public class FreeType {
    	return FT_Get_Char_Index((FT_Face)face, charCode);
    */
 	
-	public static int round26_6 (int value) {
+	public static int toInt (int value) {
 		if (value < 0) return (int)((value - 32) >> 6);
 		else return (int)((value + 32) >> 6);
 	}
    
 	public static void main (String[] args) throws Exception {
-//		FreetypeBuild.main(args);
+		FreetypeBuild.main(args);
 		new SharedLibraryLoader("libs/gdx-freetype-natives.jar").load("gdx-freetype");
 		String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~* ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
 		
@@ -639,14 +644,15 @@ public class FreeType {
 		Face face = FreeType.newFace(library, new FileHandle("arial.ttf"), 0);
 		FreeType.setPixelSizes(face, 0, 15);
 		SizeMetrics faceMetrics = face.getSize().getMetrics();
-		System.out.println(round26_6(faceMetrics.getAscender()) + ", " + round26_6(faceMetrics.getDescender()) + ", " + round26_6(faceMetrics.getHeight()));
+		System.out.println(toInt(faceMetrics.getAscender()) + ", " + toInt(faceMetrics.getDescender()) + ", " + toInt(faceMetrics.getHeight()));
 		
 		for(int i = 0; i < chars.length(); i++) {
 			if(!FreeType.loadGlyph(face, FreeType.getCharIndex(face, chars.charAt(i)), 0)) continue;
 			if(!FreeType.renderGlyph(face.getGlyph(), FT_RENDER_MODE_NORMAL)) continue;
 			Bitmap bitmap = face.getGlyph().getBitmap();
 			GlyphMetrics glyphMetrics = face.getGlyph().getMetrics();
-			System.out.println(round26_6(glyphMetrics.getWidth()) + ", " + round26_6(glyphMetrics.getHeight()) + ", " + round26_6(glyphMetrics.getHoriAdvance()));
+			System.out.println(toInt(glyphMetrics.getHoriBearingX()) + ", " + toInt(glyphMetrics.getHoriBearingY()));
+			System.out.println(toInt(glyphMetrics.getWidth()) + ", " + toInt(glyphMetrics.getHeight()) + ", " + toInt(glyphMetrics.getHoriAdvance()));
 			System.out.println(bitmap.getWidth() + ", " + bitmap.getRows() + ", " + bitmap.getPitch() + ", " + bitmap.getNumGray());
 			for(int y = 0; y < bitmap.getRows(); y++) {
 				for(int x = 0; x < bitmap.getWidth(); x++) {
