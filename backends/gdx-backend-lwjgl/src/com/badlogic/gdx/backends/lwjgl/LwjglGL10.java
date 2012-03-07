@@ -525,7 +525,7 @@ class LwjglGL10 implements GL10 {
 	}
 
 	public final void glTexEnvfv (int target, int pname, float[] params, int offset) {
-		glTexEnvf(target, pname, params[offset]);
+		GL11.glTexEnv(target, pname, toBuffer(params, offset));
 	}
 
 	public void glPolygonMode (int face, int mode) {
