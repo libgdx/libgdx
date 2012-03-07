@@ -50,6 +50,7 @@ public class OpenALSound implements Sound {
 	}
 
 	public long play (float volume) {
+		if(audio.noDevice) return 0;
 		int sourceID = audio.obtainSource(false);
 		if (sourceID == -1) return -1;
 		long soundId = audio.getSoundId(sourceID);
@@ -66,6 +67,7 @@ public class OpenALSound implements Sound {
 
 	@Override
 	public long loop (float volume) {
+		if(audio.noDevice) return 0;
 		int sourceID = audio.obtainSource(false);
 		if (sourceID == -1) return -1;
 		long soundId = audio.getSoundId(sourceID);
@@ -77,10 +79,12 @@ public class OpenALSound implements Sound {
 	}
 
 	public void stop () {
+		if(audio.noDevice) return;
 		audio.stopSourcesWithBuffer(bufferID);
 	}
 
 	public void dispose () {
+		if(audio.noDevice) return;
 		if (bufferID == -1) return;
 		audio.freeBuffer(bufferID);
 		alDeleteBuffers(bufferID);
@@ -89,27 +93,32 @@ public class OpenALSound implements Sound {
 
 	@Override
 	public void stop (long soundId) {
+		if(audio.noDevice) return;
 		audio.stopSound(soundId);
 	}
 
 	@Override
 	public void setPitch (long soundId, float pitch) {
+		if(audio.noDevice) return;
 		audio.setSoundPitch(soundId, pitch);
 	}
 
 	@Override
 	public void setVolume (long soundId, float volume) {
+		if(audio.noDevice) return;
 		audio.setSoundGain(soundId, volume);
 	}
 
 
 	@Override
 	public void setLooping (long soundId, boolean looping) {
+		if(audio.noDevice) return;
 		audio.setSoundLooping(soundId, looping);
 	}
 
 	@Override
 	public void setPan (long soundId, float pan, float volume) {
+		if(audio.noDevice) return;
 		audio.setSoundPan(soundId, pan, volume);
 	}
 }

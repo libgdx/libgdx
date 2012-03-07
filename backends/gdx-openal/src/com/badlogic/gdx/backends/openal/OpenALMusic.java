@@ -49,8 +49,9 @@ public abstract class OpenALMusic implements Music {
 	public OpenALMusic (OpenALAudio audio, FileHandle file) {
 		this.audio = audio;
 		this.file = file;
-
-		if(audio != null) audio.music.add(this);
+		if(audio != null) {
+			if(!audio.noDevice) audio.music.add(this);
+		}
 	}
 
 	protected void setup (int channels, int sampleRate) {
@@ -60,6 +61,7 @@ public abstract class OpenALMusic implements Music {
 	}
 
 	public void play () {
+		if(audio.noDevice) return;
 		if (sourceID == -1) {
 			sourceID = audio.obtainSource(true);
 			if (sourceID == -1) return;
@@ -85,6 +87,7 @@ public abstract class OpenALMusic implements Music {
 	}
 
 	public void stop () {
+		if(audio.noDevice) return;
 		if (sourceID == -1) return;
 		reset();
 		audio.freeSource(sourceID);
@@ -94,11 +97,13 @@ public abstract class OpenALMusic implements Music {
 	}
 
 	public void pause () {
+		if(audio.noDevice) return;
 		if (sourceID != -1) alSourcePause(sourceID);
 		isPlaying = false;
 	}
 
 	public boolean isPlaying () {
+		if(audio.noDevice) return false;
 		if (sourceID == -1) return false;
 		return isPlaying;
 	}
@@ -113,10 +118,12 @@ public abstract class OpenALMusic implements Music {
 
 	public void setVolume (float volume) {
 		this.volume = volume;
+		if(audio.noDevice) return;
 		if (sourceID != -1) alSourcef(sourceID, AL_GAIN, volume);
 	}
 
 	public float getPosition () {
+		if(audio.noDevice) return 0;
 		if (sourceID == -1) return 0;
 		return renderedSeconds + alGetSourcef(sourceID, AL11.AL_SEC_OFFSET);
 	}
@@ -137,6 +144,7 @@ public abstract class OpenALMusic implements Music {
 	}
 
 	public void update () {
+		if(audio.noDevice) return;
 		if (sourceID == -1) return;
 
 		boolean end = false;
@@ -175,6 +183,7 @@ public abstract class OpenALMusic implements Music {
 	}
 
 	public void dispose () {
+		if(audio.noDevice) return;
 		if (buffers == null) return;
 		if (sourceID != -1) {
 			reset();

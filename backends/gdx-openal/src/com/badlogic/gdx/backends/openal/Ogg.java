@@ -27,6 +27,7 @@ public class Ogg {
 
 		public Music (OpenALAudio audio, FileHandle file) {
 			super(audio, file);
+			if(audio.noDevice) return;
 			input = new OggInputStream(file.read());
 			setup(input.getChannels(), input.getSampleRate());
 		}
@@ -49,7 +50,7 @@ public class Ogg {
 	static public class Sound extends OpenALSound {
 		public Sound (OpenALAudio audio, FileHandle file) {
 			super(audio);
-
+			if(audio.noDevice) return;
 			OggInputStream input = new OggInputStream(file.read());
 			ByteArrayOutputStream output = new ByteArrayOutputStream(4096);
 			byte[] buffer = new byte[2048];

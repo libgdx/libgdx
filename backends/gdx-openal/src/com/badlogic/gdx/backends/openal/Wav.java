@@ -31,6 +31,7 @@ public class Wav {
 		public Music (OpenALAudio audio, FileHandle file) {
 			super(audio, file);
 			input = new WavInputStream(file);
+			if(audio.noDevice) return;
 			setup(input.channels, input.sampleRate);
 		}
 
@@ -59,6 +60,7 @@ public class Wav {
 	static public class Sound extends OpenALSound {
 		public Sound (OpenALAudio audio, FileHandle file) {
 			super(audio);
+			if(audio.noDevice) return;
 
 			WavInputStream input = new WavInputStream(file);
 			ByteArrayOutputStream output = new ByteArrayOutputStream(4096);

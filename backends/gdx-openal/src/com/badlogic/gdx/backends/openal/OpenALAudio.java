@@ -63,6 +63,7 @@ public class OpenALAudio implements Audio {
 	private ObjectMap<String, Class<? extends OpenALMusic>> extensionToMusicClass = new ObjectMap();
 
 	Array<OpenALMusic> music = new Array(false, 1, OpenALMusic.class);
+	boolean noDevice = false;
 
 	public OpenALAudio () {
 		this(16);
@@ -79,7 +80,9 @@ public class OpenALAudio implements Audio {
 		try {
 			AL.create();
 		} catch (LWJGLException ex) {
-			throw new GdxRuntimeException("Error initializing OpenAL.", ex);
+			noDevice = true;
+			return;
+//			throw new GdxRuntimeException("Error initializing OpenAL.", ex);
 		}
 
 		allSources = new IntArray(false, simultaneousSources);
@@ -136,6 +139,7 @@ public class OpenALAudio implements Audio {
 	}
 
 	int obtainSource (boolean isMusic) {
+		if(noDevice) return 0;
 		for (int i = 0, n = idleSources.size; i < n; i++) {
 			int sourceId = idleSources.get(i);
 			int state = alGetSourcei(sourceId, AL_SOURCE_STATE);
@@ -165,6 +169,7 @@ public class OpenALAudio implements Audio {
 	}
 
 	void freeSource (int sourceID) {
+		if(noDevice) return;
 		alSourceStop(sourceID);
 		alSourcei(sourceID, AL_BUFFER, 0);
 		if (sourceToSoundId.containsKey(sourceID)) {
@@ -175,6 +180,7 @@ public class OpenALAudio implements Audio {
 	}
 
 	void freeBuffer (int bufferID) {
+		if(noDevice) return;
 		for (int i = 0, n = idleSources.size; i < n; i++) {
 			int sourceID = idleSources.get(i);
 			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
@@ -189,6 +195,7 @@ public class OpenALAudio implements Audio {
 	}
 
 	void stopSourcesWithBuffer (int bufferID) {
+		if(noDevice) return;
 		for (int i = 0, n = idleSources.size; i < n; i++) {
 			int sourceID = idleSources.get(i);
 			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
@@ -202,6 +209,7 @@ public class OpenALAudio implements Audio {
 	}
 
 	public void update () {
+		if(noDevice) return;
 		for (int i = 0; i < music.size; i++)
 			music.items[i].update();
 	}
@@ -243,6 +251,7 @@ public class OpenALAudio implements Audio {
 	}
 
 	public void dispose () {
+		if(noDevice) return;
 		for (int i = 0, n = allSources.size; i < n; i++) {
 			int sourceID = allSources.get(i);
 			int state = alGetSourcei(sourceID, AL_SOURCE_STATE);
@@ -262,11 +271,47 @@ public class OpenALAudio implements Audio {
 		}
 	}
 
-	public AudioDevice newAudioDevice (int sampleRate, boolean isMono) {
+	public AudioDevice newAudioDevice (int sampleRate, final  boolean isMono) {
+		if(noDevice) return new AudioDevice() {
+			@Override
+			public void writeSamples (float[] samples, int offset, int numSamples) {
+			}
+			
+			@Override
+			public void writeSamples (short[] samples, int offset, int numSamples) {
+			}
+			
+			@Override
+			public void setVolume (float volume) {
+			}
+			
+			@Override
+			public boolean isMono () {
+				return isMono;
+			}
+			
+			@Override
+			public int getLatency () {
+				return 0;
+			}
+			
+			@Override
+			public void dispose () {
+			}
+		};
 		return new OpenALAudioDevice(this, sampleRate, isMono);
 	}
 
 	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono) {
+		if(noDevice) return new AudioRecorder() {
+			@Override
+			public void read (short[] samples, int offset, int numSamples) {
+			}
+			
+			@Override
+			public void dispose () {
+			}
+		};
 		// BOZO - Write OpenAL recorder.
 		return new JavaSoundAudioRecorder(samplingRate, isMono);
 	}

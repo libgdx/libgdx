@@ -38,6 +38,7 @@ public class Mp3 {
 
 		public Music (OpenALAudio audio, FileHandle file) {
 			super(audio, file);
+			if(audio.noDevice) return;
 			bitstream = new Bitstream(file.read());
 			decoder = new MP3Decoder();
 			try {
@@ -105,7 +106,7 @@ public class Mp3 {
 
 		public Sound (OpenALAudio audio, FileHandle file) {
 			super(audio);
-
+			if(audio.noDevice) return;
 			ByteArrayOutputStream output = new ByteArrayOutputStream(4096);
 
 			Bitstream bitstream = new Bitstream(file.read());
