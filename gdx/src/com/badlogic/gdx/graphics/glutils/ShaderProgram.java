@@ -705,7 +705,7 @@ public class ShaderProgram implements Disposable {
 	/** @param name the name of the attribute
 	 * @return the type of the attribute, one of {@link GL20#GL_FLOAT}, {@link GL20#GL_FLOAT_VEC2} etc. */
 	public int getAttributeType (String name) {
-		int type = attributes.get(name, -1);
+		int type = attributeTypes.get(name, -1);
 		if (type == -1)
 			return 0;
 		else
@@ -731,7 +731,7 @@ public class ShaderProgram implements Disposable {
 	/** @param name the name of the uniform
 	 * @return the type of the uniform, one of {@link GL20#GL_FLOAT}, {@link GL20#GL_FLOAT_VEC2} etc. */
 	public int getUniformType (String name) {
-		int type = attributes.get(name, -1);
+		int type = uniformTypes.get(name, -1);
 		if (type == -1)
 			return 0;
 		else

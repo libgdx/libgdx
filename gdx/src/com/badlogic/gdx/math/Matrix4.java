@@ -673,29 +673,37 @@ public class Matrix4 implements Serializable {
 	/** Sets this matrix to the given 3x3 matrix. The third column of this matrix is set to (0,0,1,0).
 	 * @param mat the matrix */
 	public Matrix4 set (Matrix3 mat) {
-		val[0] = mat.vals[0];
-		val[1] = mat.vals[1];
-		val[2] = mat.vals[2];
+		val[0] = mat.val[0];
+		val[1] = mat.val[1];
+		val[2] = mat.val[2];
 		val[3] = 0;
-		val[4] = mat.vals[3];
-		val[5] = mat.vals[4];
-		val[6] = mat.vals[5];
+		val[4] = mat.val[3];
+		val[5] = mat.val[4];
+		val[6] = mat.val[5];
 		val[7] = 0;
 		val[8] = 0;
 		val[9] = 0;
 		val[10] = 1;
 		val[11] = 0;
-		val[12] = mat.vals[6];
-		val[13] = mat.vals[7];
+		val[12] = mat.val[6];
+		val[13] = mat.val[7];
 		val[14] = 0;
-		val[15] = mat.vals[8];
+		val[15] = mat.val[8];
 		return this;
 	}
 
-	public void scl (Vector3 scale) {
+	public Matrix4 scl (Vector3 scale) {
 		val[M00] *= scale.x;
 		val[M11] *= scale.y;
 		val[M22] *= scale.z;
+		return this;
+	}
+	
+	public Matrix4 scl (float scale) {
+		val[M00] *= scale;
+		val[M11] *= scale;
+		val[M22] *= scale;
+		return this;
 	}
 
 	public void getTranslation (Vector3 position) {

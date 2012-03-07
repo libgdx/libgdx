@@ -26,7 +26,16 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class Matrix3 implements Serializable {
 	private static final long serialVersionUID = 7907569533774959788L;
 	private final static float DEGREE_TO_RAD = (float)Math.PI / 180;
-	public float[] vals = new float[9];
+	public static final int M00 = 0;
+	public static final int M01 = 3;
+	public static final int M02 = 6;
+	public static final int M10 = 1;
+	public static final int M11 = 4;
+	public static final int M12 = 7;
+	public static final int M20 = 2;
+	public static final int M21 = 5;
+	public static final int M22 = 8;
+	public float[] val = new float[9];
 	private float[] tmp = new float[9];
 
 	public Matrix3 () {
@@ -36,17 +45,17 @@ public class Matrix3 implements Serializable {
 	/** Sets this matrix to the identity matrix
 	 * @return this matrix */
 	public Matrix3 idt () {
-		this.vals[0] = 1;
-		this.vals[1] = 0;
-		this.vals[2] = 0;
+		this.val[0] = 1;
+		this.val[1] = 0;
+		this.val[2] = 0;
 
-		this.vals[3] = 0;
-		this.vals[4] = 1;
-		this.vals[5] = 0;
+		this.val[3] = 0;
+		this.val[4] = 1;
+		this.val[5] = 0;
 
-		this.vals[6] = 0;
-		this.vals[7] = 0;
-		this.vals[8] = 1;
+		this.val[6] = 0;
+		this.val[7] = 0;
+		this.val[8] = 1;
 
 		return this;
 	}
@@ -54,27 +63,27 @@ public class Matrix3 implements Serializable {
 	/** Multiplies this matrix with the other matrix in the order this * m.
 	 * @return this matrix */
 	public Matrix3 mul (Matrix3 m) {
-		float v00 = vals[0] * m.vals[0] + vals[3] * m.vals[1] + vals[6] * m.vals[2];
-		float v01 = vals[0] * m.vals[3] + vals[3] * m.vals[4] + vals[6] * m.vals[5];
-		float v02 = vals[0] * m.vals[6] + vals[3] * m.vals[7] + vals[6] * m.vals[8];
+		float v00 = val[0] * m.val[0] + val[3] * m.val[1] + val[6] * m.val[2];
+		float v01 = val[0] * m.val[3] + val[3] * m.val[4] + val[6] * m.val[5];
+		float v02 = val[0] * m.val[6] + val[3] * m.val[7] + val[6] * m.val[8];
 
-		float v10 = vals[1] * m.vals[0] + vals[4] * m.vals[1] + vals[7] * m.vals[2];
-		float v11 = vals[1] * m.vals[3] + vals[4] * m.vals[4] + vals[7] * m.vals[5];
-		float v12 = vals[1] * m.vals[6] + vals[4] * m.vals[7] + vals[7] * m.vals[8];
+		float v10 = val[1] * m.val[0] + val[4] * m.val[1] + val[7] * m.val[2];
+		float v11 = val[1] * m.val[3] + val[4] * m.val[4] + val[7] * m.val[5];
+		float v12 = val[1] * m.val[6] + val[4] * m.val[7] + val[7] * m.val[8];
 
-		float v20 = vals[2] * m.vals[0] + vals[5] * m.vals[1] + vals[8] * m.vals[2];
-		float v21 = vals[2] * m.vals[3] + vals[5] * m.vals[4] + vals[8] * m.vals[5];
-		float v22 = vals[2] * m.vals[6] + vals[5] * m.vals[7] + vals[8] * m.vals[8];
+		float v20 = val[2] * m.val[0] + val[5] * m.val[1] + val[8] * m.val[2];
+		float v21 = val[2] * m.val[3] + val[5] * m.val[4] + val[8] * m.val[5];
+		float v22 = val[2] * m.val[6] + val[5] * m.val[7] + val[8] * m.val[8];
 
-		vals[0] = v00;
-		vals[1] = v10;
-		vals[2] = v20;
-		vals[3] = v01;
-		vals[4] = v11;
-		vals[5] = v21;
-		vals[6] = v02;
-		vals[7] = v12;
-		vals[8] = v22;
+		val[0] = v00;
+		val[1] = v10;
+		val[2] = v20;
+		val[3] = v01;
+		val[4] = v11;
+		val[5] = v21;
+		val[6] = v02;
+		val[7] = v12;
+		val[8] = v22;
 
 		return this;
 	}
@@ -87,17 +96,17 @@ public class Matrix3 implements Serializable {
 		float cos = (float)Math.cos(angle);
 		float sin = (float)Math.sin(angle);
 
-		this.vals[0] = cos;
-		this.vals[1] = sin;
-		this.vals[2] = 0;
+		this.val[0] = cos;
+		this.val[1] = sin;
+		this.val[2] = 0;
 
-		this.vals[3] = -sin;
-		this.vals[4] = cos;
-		this.vals[5] = 0;
+		this.val[3] = -sin;
+		this.val[4] = cos;
+		this.val[5] = 0;
 
-		this.vals[6] = 0;
-		this.vals[7] = 0;
-		this.vals[8] = 1;
+		this.val[6] = 0;
+		this.val[7] = 0;
+		this.val[8] = 1;
 
 		return this;
 	}
@@ -107,17 +116,17 @@ public class Matrix3 implements Serializable {
 	 * @param y the translation in y
 	 * @return this matrix */
 	public Matrix3 setToTranslation (float x, float y) {
-		this.vals[0] = 1;
-		this.vals[1] = 0;
-		this.vals[2] = 0;
+		this.val[0] = 1;
+		this.val[1] = 0;
+		this.val[2] = 0;
 
-		this.vals[3] = 0;
-		this.vals[4] = 1;
-		this.vals[5] = 0;
+		this.val[3] = 0;
+		this.val[4] = 1;
+		this.val[5] = 0;
 
-		this.vals[6] = x;
-		this.vals[7] = y;
-		this.vals[8] = 1;
+		this.val[6] = x;
+		this.val[7] = y;
+		this.val[8] = 1;
 
 		return this;
 	}
@@ -128,30 +137,30 @@ public class Matrix3 implements Serializable {
 	 * @param scaleY the scale in y
 	 * @return this matrix */
 	public Matrix3 setToScaling (float scaleX, float scaleY) {
-		this.vals[0] = scaleX;
-		this.vals[1] = 0;
-		this.vals[2] = 0;
+		this.val[0] = scaleX;
+		this.val[1] = 0;
+		this.val[2] = 0;
 
-		this.vals[3] = 0;
-		this.vals[4] = scaleY;
-		this.vals[5] = 0;
+		this.val[3] = 0;
+		this.val[4] = scaleY;
+		this.val[5] = 0;
 
-		this.vals[6] = 0;
-		this.vals[7] = 0;
-		this.vals[8] = 1;
+		this.val[6] = 0;
+		this.val[7] = 0;
+		this.val[8] = 1;
 
 		return this;
 	}
 
 	public String toString () {
-		return "[" + vals[0] + "|" + vals[3] + "|" + vals[6] + "]\n" + "[" + vals[1] + "|" + vals[4] + "|" + vals[7] + "]\n" + "["
-			+ vals[2] + "|" + vals[5] + "|" + vals[8] + "]";
+		return "[" + val[0] + "|" + val[3] + "|" + val[6] + "]\n" + "[" + val[1] + "|" + val[4] + "|" + val[7] + "]\n" + "["
+			+ val[2] + "|" + val[5] + "|" + val[8] + "]";
 	}
 
 	/** @return the determinant of this matrix */
 	public float det () {
-		return vals[0] * vals[4] * vals[8] + vals[3] * vals[7] * vals[2] + vals[6] * vals[1] * vals[5] - vals[0] * vals[7]
-			* vals[5] - vals[3] * vals[1] * vals[8] - vals[6] * vals[4] * vals[2];
+		return val[0] * val[4] * val[8] + val[3] * val[7] * val[2] + val[6] * val[1] * val[5] - val[0] * val[7]
+			* val[5] - val[3] * val[1] * val[8] - val[6] * val[4] * val[2];
 	}
 
 	/** Inverts this matrix given that the determinant is != 0
@@ -162,52 +171,52 @@ public class Matrix3 implements Serializable {
 
 		float inv_det = 1.0f / det;
 
-		tmp[0] = vals[4] * vals[8] - vals[5] * vals[7];
-		tmp[1] = vals[2] * vals[7] - vals[1] * vals[8];
-		tmp[2] = vals[1] * vals[5] - vals[2] * vals[4];
-		tmp[3] = vals[5] * vals[6] - vals[3] * vals[8];
-		tmp[4] = vals[0] * vals[8] - vals[2] * vals[6];
-		tmp[5] = vals[2] * vals[3] - vals[0] * vals[5];
-		tmp[6] = vals[3] * vals[7] - vals[4] * vals[6];
-		tmp[7] = vals[1] * vals[6] - vals[0] * vals[7];
-		tmp[8] = vals[0] * vals[4] - vals[1] * vals[3];
+		tmp[0] = val[4] * val[8] - val[5] * val[7];
+		tmp[1] = val[2] * val[7] - val[1] * val[8];
+		tmp[2] = val[1] * val[5] - val[2] * val[4];
+		tmp[3] = val[5] * val[6] - val[3] * val[8];
+		tmp[4] = val[0] * val[8] - val[2] * val[6];
+		tmp[5] = val[2] * val[3] - val[0] * val[5];
+		tmp[6] = val[3] * val[7] - val[4] * val[6];
+		tmp[7] = val[1] * val[6] - val[0] * val[7];
+		tmp[8] = val[0] * val[4] - val[1] * val[3];
 
-		vals[0] = inv_det * tmp[0];
-		vals[1] = inv_det * tmp[1];
-		vals[2] = inv_det * tmp[2];
-		vals[3] = inv_det * tmp[3];
-		vals[4] = inv_det * tmp[4];
-		vals[5] = inv_det * tmp[5];
-		vals[6] = inv_det * tmp[6];
-		vals[7] = inv_det * tmp[7];
-		vals[8] = inv_det * tmp[8];
+		val[0] = inv_det * tmp[0];
+		val[1] = inv_det * tmp[1];
+		val[2] = inv_det * tmp[2];
+		val[3] = inv_det * tmp[3];
+		val[4] = inv_det * tmp[4];
+		val[5] = inv_det * tmp[5];
+		val[6] = inv_det * tmp[6];
+		val[7] = inv_det * tmp[7];
+		val[8] = inv_det * tmp[8];
 
 		return this;
 	}
 
 	public Matrix3 set (Matrix3 mat) {
-		vals[0] = mat.vals[0];
-		vals[1] = mat.vals[1];
-		vals[2] = mat.vals[2];
-		vals[3] = mat.vals[3];
-		vals[4] = mat.vals[4];
-		vals[5] = mat.vals[5];
-		vals[6] = mat.vals[6];
-		vals[7] = mat.vals[7];
-		vals[8] = mat.vals[8];
+		val[0] = mat.val[0];
+		val[1] = mat.val[1];
+		val[2] = mat.val[2];
+		val[3] = mat.val[3];
+		val[4] = mat.val[4];
+		val[5] = mat.val[5];
+		val[6] = mat.val[6];
+		val[7] = mat.val[7];
+		val[8] = mat.val[8];
 		return this;
 	}
 	
 	public Matrix3 set(Matrix4 mat) {
-		vals[0] = mat.val[0];
-		vals[1] = mat.val[1];
-		vals[2] = mat.val[2];
-		vals[3] = mat.val[4];
-		vals[4] = mat.val[5];
-		vals[5] = mat.val[6];
-		vals[6] = mat.val[8];
-		vals[7] = mat.val[9];
-		vals[8] = mat.val[10];
+		val[0] = mat.val[0];
+		val[1] = mat.val[1];
+		val[2] = mat.val[2];
+		val[3] = mat.val[4];
+		val[4] = mat.val[5];
+		val[5] = mat.val[6];
+		val[6] = mat.val[8];
+		val[7] = mat.val[9];
+		val[8] = mat.val[10];
 		return this;
 	}
 
@@ -215,8 +224,8 @@ public class Matrix3 implements Serializable {
 	 * @param vector The translation vector
 	 * @return This matrix for chaining */
 	public Matrix3 trn (Vector3 vector) {
-		vals[6] += vector.x;
-		vals[7] += vector.y;
+		val[6] += vector.x;
+		val[7] += vector.y;
 		return this;
 	}
 
@@ -225,8 +234,8 @@ public class Matrix3 implements Serializable {
 	 * @param y The y-component of the translation vector
 	 * @return This matrix for chaining */
 	public Matrix3 trn (float x, float y) {
-		vals[6] += x;
-		vals[7] += y;
+		val[6] += x;
+		val[7] += y;
 		return this;
 	}
 
@@ -247,7 +256,7 @@ public class Matrix3 implements Serializable {
 		tmp[6] = x;
 		tmp[7] = y;
 		tmp[8] = 1;
-		mul(vals, tmp);
+		mul(val, tmp);
 		return this;
 	}
 
@@ -272,7 +281,7 @@ public class Matrix3 implements Serializable {
 		tmp[6] = 0;
 		tmp[7] = 0;
 		tmp[8] = 1;
-		mul(vals, tmp);
+		mul(val, tmp);
 		return this;
 	}
 
@@ -292,12 +301,24 @@ public class Matrix3 implements Serializable {
 		tmp[6] = 0;
 		tmp[7] = 0;
 		tmp[8] = 1;
-		mul(vals, tmp);
+		mul(val, tmp);
 		return this;
 	}
 
 	public float[] getValues () {
-		return vals;
+		return val;
+	}
+	
+	public Matrix3 scl (Vector3 scale) {
+		val[M00] *= scale.x;
+		val[M11] *= scale.y;
+		return this;
+	}
+	
+	public Matrix3 scl (float scale) {
+		val[M00] *= scale;
+		val[M11] *= scale;
+		return this;
 	}
 
 	private static void mul (float[] mata, float[] matb) {

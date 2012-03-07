@@ -200,8 +200,8 @@ public class Vector2 implements Serializable {
 	 * @param mat the matrix
 	 * @return this vector */
 	public Vector2 mul (Matrix3 mat) {
-		float x = this.x * mat.vals[0] + this.y * mat.vals[3] + mat.vals[6];
-		float y = this.x * mat.vals[1] + this.y * mat.vals[4] + mat.vals[7];
+		float x = this.x * mat.val[0] + this.y * mat.val[3] + mat.val[6];
+		float y = this.x * mat.val[1] + this.y * mat.val[4] + mat.val[7];
 		this.x = x;
 		this.y = y;
 		return this;
