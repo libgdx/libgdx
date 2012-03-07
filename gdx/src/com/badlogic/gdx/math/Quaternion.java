@@ -42,8 +42,8 @@ public class Quaternion implements Serializable {
 		this.set(x, y, z, w);
 	}
 
-	Quaternion () {
-
+	public Quaternion () {
+		idt();
 	}
 
 	/** Constructor, sets the quaternion components from the given quaternion.
@@ -243,11 +243,13 @@ public class Quaternion implements Serializable {
 		matrix[Matrix4.M33] = 1;
 	}
 
-	/** Returns the identity quaternion x,y,z = 0 and w=1
-	 * 
-	 * @return Identity quaternion */
-	public static Quaternion idt () {
-		return new Quaternion(0, 0, 0, 1);
+	/**
+	 * Sets the quaternion to an identity Quaternion
+	 * @return this quaternion for chaining
+	 */
+	public Quaternion idt () {
+		this.set(0, 0, 0, 1);
+		return this;
 	}
 
 	// todo : the setFromAxis(v3,float) method should replace the set(v3,float) method

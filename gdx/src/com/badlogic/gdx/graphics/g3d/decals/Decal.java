@@ -45,7 +45,7 @@ public class Decal {
 
 	protected float[] vertices = new float[SIZE];
 	protected Vector3 position = new Vector3();
-	protected Quaternion rotation = Quaternion.idt();
+	protected Quaternion rotation = new Quaternion();
 	protected Vector2 scale = new Vector2(1, 1);
 
 	/** The transformation offset can be used to change the pivot point for rotation and scaling. By default the pivot is the middle
