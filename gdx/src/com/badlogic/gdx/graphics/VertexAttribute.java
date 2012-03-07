@@ -56,7 +56,7 @@ public final class VertexAttribute {
 	}
 	
 	public static VertexAttribute Normal() {
-		return new VertexAttribute(Usage.TextureCoordinates, 3, ShaderProgram.NORMAL_ATTRIBUTE);
+		return new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE);
 	}
 	
 	public static VertexAttribute Color() {
