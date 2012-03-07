@@ -45,6 +45,10 @@ public class LwjglApplicationConfiguration {
 	public boolean forceExit = true;
 	/** whether the window is resizable **/
 	public boolean resizable = true;
+	/** the audio device buffer size in samples **/
+	public int audioDeviceBufferSize = 512;
+	/** the audio device buffer count **/
+	public int audioDeviceBufferCount = 9;
 
 	/** Sets the r, g, b and a bits per channel based on the given {@link DisplayMode} and sets the fullscreen flag to true.
 	 * @param mode */

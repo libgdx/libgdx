@@ -69,6 +69,11 @@ public class OpenALAudio implements Audio {
 		this(16);
 	}
 
+	public OpenALAudio(int bufferSize, int bufferCount) {
+		OpenALAudioDevice.bufferSize = bufferSize;
+		OpenALAudioDevice.bufferCount = bufferCount;
+	}
+	
 	public OpenALAudio (int simultaneousSources) {
 		registerSound("ogg", Ogg.Sound.class);
 		registerMusic("ogg", Ogg.Music.class);

@@ -15,8 +15,8 @@ import static org.lwjgl.openal.AL10.*;
 
 /** @author Nathan Sweet */
 public class OpenALAudioDevice implements AudioDevice {
-	static private final int bufferSize = 512;
-	static private final int bufferCount = 9;
+	static public int bufferSize = 512;
+	static public int bufferCount = 9;
 	static private final int bytesPerSample = 2;
 	static private final ByteBuffer tempBuffer = BufferUtils.createByteBuffer(bufferSize);
 

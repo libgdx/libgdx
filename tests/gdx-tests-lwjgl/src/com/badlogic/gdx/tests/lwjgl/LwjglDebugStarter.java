@@ -27,10 +27,12 @@ import com.badlogic.gdx.tests.FrameBufferTest;
 import com.badlogic.gdx.tests.FreeTypeTest;
 import com.badlogic.gdx.tests.InterpolationTest;
 import com.badlogic.gdx.tests.JpegTest;
+import com.badlogic.gdx.tests.MusicTest;
 import com.badlogic.gdx.tests.ParallaxTest;
 import com.badlogic.gdx.tests.ShadowMappingTest;
 import com.badlogic.gdx.tests.SoftKeyboardTest;
 import com.badlogic.gdx.tests.SortedSpriteTest;
+import com.badlogic.gdx.tests.SoundTest;
 import com.badlogic.gdx.tests.SpriteBatchOriginScaleTest;
 import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.StageTest;
@@ -50,7 +52,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-image/libs/gdx-image-natives.jar").load("gdx-image");
 		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
 		
-		GdxTest test = new FreeTypeTest();
+		GdxTest test = new MusicTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 800;
 		config.height = 480;
