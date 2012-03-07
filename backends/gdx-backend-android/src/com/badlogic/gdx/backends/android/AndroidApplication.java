@@ -100,7 +100,7 @@ public class AndroidApplication extends Activity implements Application {
 			: config.resolutionStrategy);
 		input = new AndroidInput(this, graphics.view, config);
 		audio = new AndroidAudio(this);
-		files = new AndroidFiles(this.getAssets());
+		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		this.listener = listener;
 		this.handler = new Handler();
 
@@ -170,7 +170,7 @@ public class AndroidApplication extends Activity implements Application {
 			: config.resolutionStrategy);
 		input = new AndroidInput(this, graphics.view, config);
 		audio = new AndroidAudio(this);
-		files = new AndroidFiles(this.getAssets());
+		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		this.listener = listener;
 		this.handler = new Handler();
 

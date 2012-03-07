@@ -109,7 +109,7 @@ public class FileHandle {
 	/** Returns a stream for reading this file as bytes.
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public InputStream read () {
-		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists())) {
+		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists()) || (type == FileType.Local && !file.exists())) {
 			InputStream input = FileHandle.class.getResourceAsStream("/" + file.getPath().replace('\\', '/'));
 			if (input == null) throw new GdxRuntimeException("File not found: " + file + " (" + type + ")");
 			return input;

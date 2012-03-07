@@ -50,6 +50,11 @@ public final class LwjglFiles implements Files {
 	}
 
 	@Override
+	public FileHandle local (String path) {
+		return new LwjglFileHandle(path, FileType.Local);
+	}
+	
+	@Override
 	public String getExternalStoragePath () {
 		return externalPath;
 	}
@@ -58,4 +63,14 @@ public final class LwjglFiles implements Files {
 	public boolean isExternalStorageAvailable () {
 		return true;
 	}
+	
+	@Override
+	public String getLocalStoragePath () {
+		return "";
+	}
+
+	@Override
+	public boolean isLocalStorageAvailable () {
+		return true;
+	}	
 }

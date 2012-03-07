@@ -126,12 +126,12 @@ public class AndroidFileHandle extends FileHandle {
 			try {
 				assets.open(fileName).close(); // Check if file exists.
 				return true;
-			} catch (Exception ex) {
-				// This is SUPER slow!
-				// try {
-				// return assets.list(fileName).length > 0;
-				// } catch (Exception ignored) {
-				// }
+			} catch (Exception ex) {			
+//				 This is SUPER slow!
+//				 try {
+//				 return assets.list(fileName).length > 0;
+//				 } catch (Exception ignored) {
+//				 }
 				return false;
 			}
 		}

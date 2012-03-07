@@ -110,12 +110,68 @@ public class FilesTest extends GdxTest {
 		} else {
 			message += "External storage not available";
 		}
+		if (Gdx.files.isLocalStorageAvailable())
+		{
+			message += "Local storage available\n";
+			message += "Local storage path: " + Gdx.files.getLocalStoragePath() + "\n";
 
+			BufferedWriter out = null;
+			try {
+				out = new BufferedWriter(new OutputStreamWriter(Gdx.files.local("test.txt").write(false)));
+				out.write("test");
+				message += "Write local success\n";
+			} catch (GdxRuntimeException ex) {
+				message += "Couldn't open localstorage/test.txt\n";
+			} catch (IOException e) {
+				message += "Couldn't write localstorage/test.txt\n";
+			} finally {
+				if (out != null) {
+					try {
+						out.close();
+					} catch (IOException e) {
+					}
+				}
+			}
+
+			try {
+				InputStream in = Gdx.files.local("test.txt").read();
+				try {
+					in.close();
+				} catch (IOException e) {
+				}
+				message += "Open local success\n";
+			} catch (Throwable e) {
+				message += "Couldn't open localstorage/test.txt\n" + e.getMessage() + "\n";
+			}
+
+			BufferedReader in = null;
+			try {
+				in = new BufferedReader(new InputStreamReader(Gdx.files.local("test.txt").read()));
+				if (!in.readLine().equals("test"))
+					message += "Read result wrong\n";
+				else
+					message += "Read local success\n";
+			} catch (GdxRuntimeException ex) {
+				message += "Couldn't open localstorage/test.txt\n";
+			} catch (IOException e) {
+				message += "Couldn't read localstorage/test.txt\n";
+			} finally {
+				if (in != null) {
+					try {
+						in.close();
+					} catch (IOException e) {
+					}
+				}
+			}
+			
+			if (!Gdx.files.local("test.txt").delete()) message += "Couldn't delete localstorage/test.txt";			
+		}
 		try {
 			testClasspath();
 			testInternal();
 			testExternal();
 			testAbsolute();
+			testLocal();
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -160,7 +216,10 @@ public class FilesTest extends GdxTest {
 		} catch (Exception expected) {
 		}
 		if (handle.list().length != 0) fail();
-		if (!handle.parent().exists()) fail();
+		if (Gdx.app.getType() != ApplicationType.Android)
+		{
+			if (!handle.parent().exists()) fail();	
+		}		
 		try {
 			handle.read().close();
 			fail();
@@ -171,14 +230,20 @@ public class FilesTest extends GdxTest {
 			dir = Gdx.files.internal("data");
 		else
 			dir = Gdx.files.internal("../gdx-tests-android/assets/data");
-		if (!dir.exists()) fail();
+		if (Gdx.app.getType() != ApplicationType.Android)
+		{
+			if (!dir.exists()) fail();
+		}
 		if (!dir.isDirectory()) fail();
 		if (dir.list().length == 0) fail();
 		FileHandle child = dir.child("badlogic.jpg");
 		if (!child.name().equals("badlogic.jpg")) fail();
 		if (!child.nameWithoutExtension().equals("badlogic")) fail();
 		if (!child.extension().equals("jpg")) fail();
-		if (!child.parent().exists()) fail();
+		if (Gdx.app.getType() != ApplicationType.Android)
+		{
+			if (!child.parent().exists()) fail();
+		}
 		FileHandle copy = Gdx.files.external("badlogic.jpg-copy");
 		copy.delete();
 		if (copy.exists()) fail();
@@ -330,7 +395,75 @@ public class FilesTest extends GdxTest {
 		handle.delete();
 		handle.deleteDirectory();
 	}
-
+	private void testLocal () throws IOException {
+		String path = "meow";
+		FileHandle handle = Gdx.files.local(path);
+		handle.delete();
+		if (handle.exists()) fail();
+		if (handle.isDirectory()) fail();
+		if (handle.delete()) fail();
+		if (handle.list().length != 0) fail();
+		if (handle.child("meow").exists()) fail();
+		if (!handle.parent().exists()) fail();
+		try {
+			handle.read().close();
+			fail();
+		} catch (Exception ignored) {
+		}
+		handle.mkdirs();
+		if (!handle.exists()) fail();
+		if (!handle.isDirectory()) fail();
+		if (handle.list().length != 0) fail();
+		handle.child("meow").mkdirs();
+		if (handle.list().length != 1) fail();
+		FileHandle child = handle.list()[0];
+		if (!child.name().equals("meow")) fail();
+		if (!child.parent().exists()) fail();
+		if (!handle.deleteDirectory()) fail();
+		if (handle.exists()) fail();
+		OutputStream output = handle.write(false);
+		output.write("moo".getBytes());
+		output.close();
+		if (!handle.exists()) fail();
+		if (handle.length() != 3) fail();
+		FileHandle copy = Gdx.files.local(path + "-copy");
+		copy.delete();
+		if (copy.exists()) fail();
+		handle.copyTo(copy);
+		if (!copy.exists()) fail();
+		if (copy.length() != 3) fail();
+		FileHandle move = Gdx.files.local(path + "-move");
+		move.delete();
+		if (move.exists()) fail();
+		copy.moveTo(move);
+		if (!move.exists()) fail();
+		if (move.length() != 3) fail();
+		move.deleteDirectory();
+		if (move.exists()) fail();
+		InputStream input = handle.read();
+		byte[] bytes = new byte[6];
+		if (input.read(bytes) != 3) fail();
+		input.close();
+		if (!new String(bytes, 0, 3).equals("moo")) fail();
+		output = handle.write(true);
+		output.write("cow".getBytes());
+		output.close();
+		if (handle.length() != 6) fail();
+		input = handle.read();
+		if (input.read(bytes) != 6) fail();
+		input.close();
+		if (!new String(bytes, 0, 6).equals("moocow")) fail();
+		if (handle.isDirectory()) fail();
+		if (handle.list().length != 0) fail();
+		if (!handle.name().equals("meow")) fail();
+		if (!handle.nameWithoutExtension().equals("meow")) fail();
+		if (!handle.extension().equals("")) fail();
+		handle.deleteDirectory();
+		if (handle.exists()) fail();
+		if (handle.isDirectory()) fail();
+		handle.delete();
+		handle.deleteDirectory();
+	}
 	private void fail () {
 		throw new RuntimeException();
 	}
