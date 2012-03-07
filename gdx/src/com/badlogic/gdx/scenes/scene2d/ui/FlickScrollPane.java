@@ -250,6 +250,7 @@ public class FlickScrollPane extends WidgetGroup {
 		if (pointer != 0) return false;
 		super.touchDown(x, y, pointer);
 		touchFocusedChild = stage.getTouchFocus(0) != this ? stage.getTouchFocus(0) : null;
+		if (emptySpaceOnlyScroll && touchFocusedChild != null) return false;
 		gestureDetector.touchDown((int)x, (int)y, pointer, 0);
 		if (stage != null) stage.setTouchFocus(this, 0); // Always take the touch focus.
 		return true;
