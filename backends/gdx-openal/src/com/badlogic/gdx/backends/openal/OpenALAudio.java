@@ -86,8 +86,8 @@ public class OpenALAudio implements Audio {
 			AL.create();
 		} catch (LWJGLException ex) {
 			noDevice = true;
+			ex.printStackTrace();
 			return;
-//			throw new GdxRuntimeException("Error initializing OpenAL.", ex);
 		}
 
 		allSources = new IntArray(false, simultaneousSources);

@@ -19,7 +19,7 @@ public class FreeTypeTest extends GdxTest {
 
 	@Override
 	public void create () {
-		boolean flip = true;
+		boolean flip = false;
 		batch = new SpriteBatch();
 		if(flip) {
 			OrthographicCamera cam = new OrthographicCamera();
@@ -30,7 +30,7 @@ public class FreeTypeTest extends GdxTest {
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), flip);
 		FileHandle fontFile = Gdx.files.internal("data/arial.ttf");
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
-		FreeTypeBitmapFontData fontData = generator.generateData(15, FreeTypeFontGenerator.DEFAULT_CHARS, flip);
+		FreeTypeBitmapFontData fontData = generator.generateData(22, FreeTypeFontGenerator.DEFAULT_CHARS, flip);
 		generator.dispose();
 		ftFont = new BitmapFont(fontData, fontData.getTextureRegion(), false);
 	}
@@ -44,6 +44,9 @@ public class FreeTypeTest extends GdxTest {
 		font.setColor(Color.RED);
 		font.drawMultiLine(batch, "This is a test\nAnd another line\n()§$%&/!12390#", 100, 112);
 		ftFont.drawMultiLine(batch, "This is a test\nAnd another line\n()§$%&/!12390#", 100, 112);
+//		batch.disableBlending();
+		batch.draw(ftFont.getRegion(), 300, 0);
+//		batch.enableBlending();
 		batch.end();
 	}
 
