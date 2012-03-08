@@ -44,7 +44,7 @@ public interface Files {
 		 * when absolutely (heh) necessary. */
 		Absolute,
 		
-		/** Path relative to the private files directory on Android and to the application's root director on the desktop. */
+		/** Path relative to the private files directory on Android and to the application's root directory on the desktop. */
 		Local;
 	}
 

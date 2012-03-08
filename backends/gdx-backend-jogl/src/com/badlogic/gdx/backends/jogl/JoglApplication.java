@@ -111,7 +111,7 @@ public final class JoglApplication implements Application {
 		JoglNativesLoader.load();
 		graphics = new JoglGraphics(listener, config);
 		input = new JoglInput(graphics.getCanvas());
-		audio = new OpenALAudio(config.audioDeviceBufferCount, config.audioDeviceBufferSize);
+		audio = new OpenALAudio(16, config.audioDeviceBufferCount, config.audioDeviceBufferSize);
 		files = new JoglFiles();
 
 		Gdx.app = JoglApplication.this;

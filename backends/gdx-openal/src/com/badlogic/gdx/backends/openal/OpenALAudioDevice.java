@@ -15,10 +15,7 @@ import static org.lwjgl.openal.AL10.*;
 
 /** @author Nathan Sweet */
 public class OpenALAudioDevice implements AudioDevice {
-	static public int bufferSize = 512;
-	static public int bufferCount = 9;
 	static private final int bytesPerSample = 2;
-	static private final ByteBuffer tempBuffer = BufferUtils.createByteBuffer(bufferSize);
 
 	private final OpenALAudio audio;
 	private final int channels;
@@ -29,13 +26,19 @@ public class OpenALAudioDevice implements AudioDevice {
 	private float volume = 1;
 	private float renderedSeconds, secondsPerBuffer;
 	private byte[] bytes;
+	private final int bufferSize;
+	private final int bufferCount;
+	private final ByteBuffer tempBuffer;
 
-	public OpenALAudioDevice (OpenALAudio audio, int sampleRate, boolean isMono) {
+	public OpenALAudioDevice (OpenALAudio audio, int sampleRate, boolean isMono, int bufferSize, int bufferCount) {
 		this.audio = audio;
 		channels = isMono ? 1 : 2;
+		this.bufferSize = bufferSize;
+		this.bufferCount = bufferCount;
 		this.format = channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
 		this.sampleRate = sampleRate;
 		secondsPerBuffer = (float)bufferSize / bytesPerSample / channels / sampleRate;
+		tempBuffer = BufferUtils.createByteBuffer(bufferSize);
 	}
 
 	public void writeSamples (short[] samples, int offset, int numSamples) {

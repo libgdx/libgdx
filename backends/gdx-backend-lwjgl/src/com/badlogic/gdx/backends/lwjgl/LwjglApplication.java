@@ -59,7 +59,7 @@ public class LwjglApplication implements Application {
 		config.useGL20 = useGL2;
 		config.vSyncEnabled = true;
 		graphics = new LwjglGraphics(config);
-		audio = new OpenALAudio(config.audioDeviceBufferCount, config.audioDeviceBufferSize);
+		audio = new OpenALAudio(16, config.audioDeviceBufferCount, config.audioDeviceBufferSize);
 		files = new LwjglFiles();
 		input = new LwjglInput();
 		this.listener = listener;
@@ -76,7 +76,7 @@ public class LwjglApplication implements Application {
 		LwjglNativesLoader.load();
 
 		graphics = new LwjglGraphics(config);
-		audio = new OpenALAudio(config.audioDeviceBufferCount, config.audioDeviceBufferSize);
+		audio = new OpenALAudio(16, config.audioDeviceBufferCount, config.audioDeviceBufferSize);
 		files = new LwjglFiles();
 		input = new LwjglInput();
 		this.listener = listener;
@@ -111,7 +111,7 @@ public class LwjglApplication implements Application {
 		LwjglNativesLoader.load();
 
 		graphics = new LwjglGraphics(canvas, config);
-		audio = new OpenALAudio(config.audioDeviceBufferCount, config.audioDeviceBufferSize);
+		audio = new OpenALAudio(16, config.audioDeviceBufferCount, config.audioDeviceBufferSize);
 		files = new LwjglFiles();
 		input = new LwjglInput();
 		this.listener = listener;
