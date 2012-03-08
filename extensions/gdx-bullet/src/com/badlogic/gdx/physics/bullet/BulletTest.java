@@ -18,17 +18,17 @@ public class BulletTest {
 	public static void testMathTypes() {
 		Matrix3 m = new Matrix3();
 		m.idt();
-		m.vals[0] = 1;
-		m.vals[1] = 2;
-		m.vals[2] = 3;
-		m.vals[3] = 4;
-		m.vals[4] = 5;
-		m.vals[5] = 6;
-		m.vals[6] = 7;
-		m.vals[7] = 8;
-		m.vals[8] = 9;
+		m.val[0] = 1;
+		m.val[1] = 2;
+		m.val[2] = 3;
+		m.val[3] = 4;
+		m.val[4] = 5;
+		m.val[5] = 6;
+		m.val[6] = 7;
+		m.val[7] = 8;
+		m.val[8] = 9;
 
-		Quaternion q = new Quaternion(Quaternion.idt());
+		Quaternion q = new Quaternion();
 
 		btTransform t = new btTransform();
 		t.setIdentity();

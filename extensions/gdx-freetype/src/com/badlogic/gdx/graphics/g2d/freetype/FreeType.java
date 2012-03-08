@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class FreeType {
@@ -25,14 +26,19 @@ public class FreeType {
 	}
 	
 	public static class Library extends Pointer {
+		LongMap<ByteBuffer> fontData = new LongMap<ByteBuffer>();
+		
 		Library (long address) {
 			super(address);
 		}
 	}
 	
 	public static class Face extends Pointer {
-		public Face (long address) {
+		Library library;
+		
+		public Face (long address, Library library) {
 			super(address);
+			this.library = library;
 		}
 		
 		public int getFaceFlags() {
@@ -523,6 +529,9 @@ public class FreeType {
 	
 	public static void doneFreeType(Library library) {
 		doneFreeType(library.address);
+		for(ByteBuffer buffer: library.fontData.values()) {
+			BufferUtils.disposeUnsafeByteBuffer(buffer);
+		}
 	}
 	
 	private static native void doneFreeType(long library); /*
@@ -535,12 +544,20 @@ public class FreeType {
 	}
 	
 	public static Face newMemoryFace(Library library, byte[] data, int dataSize, int faceIndex) {
-		long address = newMemoryFace(library.address, data, dataSize, faceIndex);
-		if(address == 0) throw new GdxRuntimeException("Couldn't load font");
-		else return new Face(address);
+		ByteBuffer buffer = BufferUtils.newUnsafeByteBuffer(data.length);
+		BufferUtils.copy(data, 0, buffer, data.length);
+		long address = newMemoryFace(library.address, buffer, dataSize, faceIndex);
+		if(address == 0) {
+			BufferUtils.disposeUnsafeByteBuffer(buffer);
+			throw new GdxRuntimeException("Couldn't load font");
+		}
+		else {
+			library.fontData.put(address, buffer);
+			return new Face(address, library);
+		}
 	}
 	
-	private static native long newMemoryFace(long library, byte[] data, int dataSize, int faceIndex); /*
+	private static native long newMemoryFace(long library, ByteBuffer data, int dataSize, int faceIndex); /*
 		FT_Face face = 0;
 		FT_Error error = FT_New_Memory_Face((FT_Library)library, (const FT_Byte*)data, dataSize, faceIndex, &face);
 		if(error) return 0;
@@ -549,6 +566,11 @@ public class FreeType {
 	
 	public static void doneFace(Face face) {
 		doneFace(face.address);
+		ByteBuffer buffer = face.library.fontData.get(face.address);
+		if(buffer != null) {
+			face.library.fontData.remove(face.address);
+			BufferUtils.disposeUnsafeByteBuffer(buffer);
+		}
 	}
 	
 	private static native void doneFace(long face); /*

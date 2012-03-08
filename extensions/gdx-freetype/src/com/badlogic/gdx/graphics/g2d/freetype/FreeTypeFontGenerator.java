@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g2d.freetype;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
@@ -117,7 +118,7 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// determine space width and set glyph
 		if (FreeType.loadChar(face, ' ', FreeType.FT_LOAD_DEFAULT)) {
-			data.spaceWidth = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance()) - 1;
+			data.spaceWidth = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance());
 		} else {
 			data.spaceWidth = face.getMaxAdvanceWidth(); // FIXME possibly very wrong :)
 		}
@@ -149,13 +150,18 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// generate the glyphs
 		int maxGlyphHeight = (int)Math.ceil(data.lineHeight);
-		int pageWidth = MathUtils.nextPowerOfTwo((int)Math.sqrt(maxGlyphHeight * maxGlyphHeight * characters.length()));
+		int pageWidth = MathUtils.nextPowerOfTwo((int)Math.sqrt(maxGlyphHeight / 2 * maxGlyphHeight / 2 * characters.length()));
 		PixmapPacker atlas = new PixmapPacker(pageWidth, pageWidth, Format.RGBA8888, 2, false);
 		for (int i = 0; i < characters.length(); i++) {
 			char c = characters.charAt(i);
-			if (!FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) continue;
-			if (!FreeType.renderGlyph(face.getGlyph(), FreeType.FT_RENDER_MODE_NORMAL))
-			;
+			if (!FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) { 
+				Gdx.app.log("FreeTypeFontGenerator", "Couldn't load char '" + c + "'"); 
+				continue; 
+			}
+			if (!FreeType.renderGlyph(face.getGlyph(), FreeType.FT_RENDER_MODE_NORMAL)) {
+				Gdx.app.log("FreeTypeFontGenerator", "Couldn't render char '" + c + "'");
+				continue;
+			}
 			GlyphSlot slot = face.getGlyph();
 			GlyphMetrics metrics = slot.getMetrics();
 			Bitmap bitmap = slot.getBitmap();
