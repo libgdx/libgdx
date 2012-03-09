@@ -197,13 +197,13 @@ SWIGINTERN inline void gdx_setGdxQuaternionFromBtQuaternion(JNIEnv * jenv, jobje
 SWIGINTERN inline void gdx_setBtMatrix3x3FromGdxMatrix3(JNIEnv * jenv, btMatrix3x3 & target, jobject source) {
   jclass sourceClass = jenv->GetObjectClass(source); 
   
-  static jfieldID valsField = NULL;
-  if (valsField == NULL) {
-    valsField = jenv->GetFieldID(sourceClass, "vals", "[F");
+  static jfieldID valField = NULL;
+  if (valField == NULL) {
+    valField = jenv->GetFieldID(sourceClass, "val", "[F");
   }
   
-  jfloatArray valsArray = (jfloatArray) jenv->GetObjectField(source, valsField);
-  jfloat * elements = jenv->GetFloatArrayElements(valsArray, NULL);
+  jfloatArray valArray = (jfloatArray) jenv->GetObjectField(source, valField);
+  jfloat * elements = jenv->GetFloatArrayElements(valArray, NULL);
   
   // Convert to column-major
   target.setValue(
@@ -211,8 +211,8 @@ SWIGINTERN inline void gdx_setBtMatrix3x3FromGdxMatrix3(JNIEnv * jenv, btMatrix3
     elements[1], elements[4], elements[7],
     elements[2], elements[5], elements[8]);
   
-  jenv->ReleaseFloatArrayElements(valsArray, elements, JNI_ABORT);
-  jenv->DeleteLocalRef(valsArray);
+  jenv->ReleaseFloatArrayElements(valArray, elements, JNI_ABORT);
+  jenv->DeleteLocalRef(valArray);
   jenv->DeleteLocalRef(sourceClass);
 }
 
@@ -224,13 +224,13 @@ SWIGINTERN inline void gdx_setBtMatrix3x3FromGdxMatrix3(JNIEnv * jenv, btMatrix3
 SWIGINTERN inline void gdx_setGdxMatrix3FromBtMatrix3x3(JNIEnv * jenv, jobject target, const btMatrix3x3 & source) {
   jclass targetClass = jenv->GetObjectClass(target);
   
-  static jfieldID valsField = NULL;
-  if (valsField == NULL) {
-    valsField = jenv->GetFieldID(targetClass, "vals", "[F");
+  static jfieldID valField = NULL;
+  if (valField == NULL) {
+    valField = jenv->GetFieldID(targetClass, "val", "[F");
   }
   
-  jfloatArray valsArray = (jfloatArray) jenv->GetObjectField(target, valsField);
-  jfloat * elements = jenv->GetFloatArrayElements(valsArray, NULL);
+  jfloatArray valArray = (jfloatArray) jenv->GetObjectField(target, valField);
+  jfloat * elements = jenv->GetFloatArrayElements(valArray, NULL);
 
   // Convert to column-major
   elements[0] = (jfloat) source.getColumn(0).getX();
@@ -243,8 +243,8 @@ SWIGINTERN inline void gdx_setGdxMatrix3FromBtMatrix3x3(JNIEnv * jenv, jobject t
   elements[7] = (jfloat) source.getColumn(2).getY();
   elements[8] = (jfloat) source.getColumn(2).getZ();
 
-  jenv->ReleaseFloatArrayElements(valsArray, elements, 0);  
-  jenv->DeleteLocalRef(valsArray);
+  jenv->ReleaseFloatArrayElements(valArray, elements, 0);  
+  jenv->DeleteLocalRef(valArray);
   jenv->DeleteLocalRef(targetClass);
 }
 

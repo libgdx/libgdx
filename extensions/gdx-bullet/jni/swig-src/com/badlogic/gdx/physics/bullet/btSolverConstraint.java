@@ -121,6 +121,14 @@ public class btSolverConstraint {
     return gdxBulletJNI.btSolverConstraint_m_jacDiagABInv_get(swigCPtr, this);
   }
 
+  public void setM_overrideNumSolverIterations(int value) {
+    gdxBulletJNI.btSolverConstraint_m_overrideNumSolverIterations_set(swigCPtr, this, value);
+  }
+
+  public int getM_overrideNumSolverIterations() {
+    return gdxBulletJNI.btSolverConstraint_m_overrideNumSolverIterations_get(swigCPtr, this);
+  }
+
   public void setM_rhs(float value) {
     gdxBulletJNI.btSolverConstraint_m_rhs_set(swigCPtr, this, value);
   }

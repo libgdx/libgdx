@@ -48,6 +48,14 @@ public class btTypedConstraint extends btTypedObject {
     return new btRigidBody(gdxBulletJNI.btTypedConstraint_getFixedBody(), false);
   }
 
+  public int getOverrideNumSolverIterations() {
+    return gdxBulletJNI.btTypedConstraint_getOverrideNumSolverIterations(swigCPtr, this);
+  }
+
+  public void setOverrideNumSolverIterations(int overideNumIterations) {
+    gdxBulletJNI.btTypedConstraint_setOverrideNumSolverIterations(swigCPtr, this, overideNumIterations);
+  }
+
   public void buildJacobian() {
     gdxBulletJNI.btTypedConstraint_buildJacobian(swigCPtr, this);
   }

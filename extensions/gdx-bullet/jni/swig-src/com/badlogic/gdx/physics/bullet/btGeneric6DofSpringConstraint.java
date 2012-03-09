@@ -45,7 +45,11 @@ public class btGeneric6DofSpringConstraint extends btGeneric6DofConstraint {
   }
 
   public btGeneric6DofSpringConstraint(btRigidBody rbA, btRigidBody rbB, btTransform frameInA, btTransform frameInB, boolean useLinearReferenceFrameA) {
-    this(gdxBulletJNI.new_btGeneric6DofSpringConstraint(btRigidBody.getCPtr(rbA), rbA, btRigidBody.getCPtr(rbB), rbB, btTransform.getCPtr(frameInA), frameInA, btTransform.getCPtr(frameInB), frameInB, useLinearReferenceFrameA), true);
+    this(gdxBulletJNI.new_btGeneric6DofSpringConstraint__SWIG_0(btRigidBody.getCPtr(rbA), rbA, btRigidBody.getCPtr(rbB), rbB, btTransform.getCPtr(frameInA), frameInA, btTransform.getCPtr(frameInB), frameInB, useLinearReferenceFrameA), true);
+  }
+
+  public btGeneric6DofSpringConstraint(btRigidBody rbB, btTransform frameInB, boolean useLinearReferenceFrameB) {
+    this(gdxBulletJNI.new_btGeneric6DofSpringConstraint__SWIG_1(btRigidBody.getCPtr(rbB), rbB, btTransform.getCPtr(frameInB), frameInB, useLinearReferenceFrameB), true);
   }
 
   public void enableSpring(int index, boolean onOff) {

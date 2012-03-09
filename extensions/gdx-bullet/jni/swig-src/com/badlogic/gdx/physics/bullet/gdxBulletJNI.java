@@ -2525,6 +2525,8 @@ public class gdxBulletJNI {
   public final static native void delete_btConstraintInfo2(long jarg1);
   public final static native void delete_btTypedConstraint(long jarg1);
   public final static native long btTypedConstraint_getFixedBody();
+  public final static native int btTypedConstraint_getOverrideNumSolverIterations(long jarg1, btTypedConstraint jarg1_);
+  public final static native void btTypedConstraint_setOverrideNumSolverIterations(long jarg1, btTypedConstraint jarg1_, int jarg2);
   public final static native void btTypedConstraint_buildJacobian(long jarg1, btTypedConstraint jarg1_);
   public final static native void btTypedConstraint_setupSolverConstraint(long jarg1, btTypedConstraint jarg1_, long jarg2, int jarg3, int jarg4, float jarg5);
   public final static native void btTypedConstraint_getInfo1(long jarg1, btTypedConstraint jarg1_, long jarg2);
@@ -2578,8 +2580,12 @@ public class gdxBulletJNI {
   public final static native float btTypedConstraintData_m_dbgDrawSize_get(long jarg1, btTypedConstraintData jarg1_);
   public final static native void btTypedConstraintData_m_disableCollisionsBetweenLinkedBodies_set(long jarg1, btTypedConstraintData jarg1_, int jarg2);
   public final static native int btTypedConstraintData_m_disableCollisionsBetweenLinkedBodies_get(long jarg1, btTypedConstraintData jarg1_);
-  public final static native void btTypedConstraintData_m_pad4_set(long jarg1, btTypedConstraintData jarg1_, String jarg2);
-  public final static native String btTypedConstraintData_m_pad4_get(long jarg1, btTypedConstraintData jarg1_);
+  public final static native void btTypedConstraintData_m_overrideNumSolverIterations_set(long jarg1, btTypedConstraintData jarg1_, int jarg2);
+  public final static native int btTypedConstraintData_m_overrideNumSolverIterations_get(long jarg1, btTypedConstraintData jarg1_);
+  public final static native void btTypedConstraintData_m_breakingImpulseThreshold_set(long jarg1, btTypedConstraintData jarg1_, float jarg2);
+  public final static native float btTypedConstraintData_m_breakingImpulseThreshold_get(long jarg1, btTypedConstraintData jarg1_);
+  public final static native void btTypedConstraintData_m_isEnabled_set(long jarg1, btTypedConstraintData jarg1_, int jarg2);
+  public final static native int btTypedConstraintData_m_isEnabled_get(long jarg1, btTypedConstraintData jarg1_);
   public final static native long new_btTypedConstraintData();
   public final static native void delete_btTypedConstraintData(long jarg1);
   public final static native long new_btAngularLimit();
@@ -3152,7 +3158,8 @@ public class gdxBulletJNI {
   public final static native String btConeTwistConstraintData_m_pad_get(long jarg1, btConeTwistConstraintData jarg1_);
   public final static native long new_btConeTwistConstraintData();
   public final static native void delete_btConeTwistConstraintData(long jarg1);
-  public final static native long new_btGeneric6DofSpringConstraint(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, boolean jarg5);
+  public final static native long new_btGeneric6DofSpringConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, boolean jarg5);
+  public final static native long new_btGeneric6DofSpringConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, long jarg2, btTransform jarg2_, boolean jarg3);
   public final static native void btGeneric6DofSpringConstraint_enableSpring(long jarg1, btGeneric6DofSpringConstraint jarg1_, int jarg2, boolean jarg3);
   public final static native void btGeneric6DofSpringConstraint_setStiffness(long jarg1, btGeneric6DofSpringConstraint jarg1_, int jarg2, float jarg3);
   public final static native void btGeneric6DofSpringConstraint_setDamping(long jarg1, btGeneric6DofSpringConstraint jarg1_, int jarg2, float jarg3);
@@ -3296,6 +3303,8 @@ public class gdxBulletJNI {
   public final static native float btSolverConstraint_m_friction_get(long jarg1, btSolverConstraint jarg1_);
   public final static native void btSolverConstraint_m_jacDiagABInv_set(long jarg1, btSolverConstraint jarg1_, float jarg2);
   public final static native float btSolverConstraint_m_jacDiagABInv_get(long jarg1, btSolverConstraint jarg1_);
+  public final static native void btSolverConstraint_m_overrideNumSolverIterations_set(long jarg1, btSolverConstraint jarg1_, int jarg2);
+  public final static native int btSolverConstraint_m_overrideNumSolverIterations_get(long jarg1, btSolverConstraint jarg1_);
   public final static native void btSolverConstraint_m_rhs_set(long jarg1, btSolverConstraint jarg1_, float jarg2);
   public final static native float btSolverConstraint_m_rhs_get(long jarg1, btSolverConstraint jarg1_);
   public final static native void btSolverConstraint_m_cfm_set(long jarg1, btSolverConstraint jarg1_, float jarg2);

@@ -126,12 +126,28 @@ public class btTypedConstraintData {
     return gdxBulletJNI.btTypedConstraintData_m_disableCollisionsBetweenLinkedBodies_get(swigCPtr, this);
   }
 
-  public void setM_pad4(String value) {
-    gdxBulletJNI.btTypedConstraintData_m_pad4_set(swigCPtr, this, value);
+  public void setM_overrideNumSolverIterations(int value) {
+    gdxBulletJNI.btTypedConstraintData_m_overrideNumSolverIterations_set(swigCPtr, this, value);
   }
 
-  public String getM_pad4() {
-    return gdxBulletJNI.btTypedConstraintData_m_pad4_get(swigCPtr, this);
+  public int getM_overrideNumSolverIterations() {
+    return gdxBulletJNI.btTypedConstraintData_m_overrideNumSolverIterations_get(swigCPtr, this);
+  }
+
+  public void setM_breakingImpulseThreshold(float value) {
+    gdxBulletJNI.btTypedConstraintData_m_breakingImpulseThreshold_set(swigCPtr, this, value);
+  }
+
+  public float getM_breakingImpulseThreshold() {
+    return gdxBulletJNI.btTypedConstraintData_m_breakingImpulseThreshold_get(swigCPtr, this);
+  }
+
+  public void setM_isEnabled(int value) {
+    gdxBulletJNI.btTypedConstraintData_m_isEnabled_set(swigCPtr, this, value);
+  }
+
+  public int getM_isEnabled() {
+    return gdxBulletJNI.btTypedConstraintData_m_isEnabled_get(swigCPtr, this);
   }
 
   public btTypedConstraintData() {

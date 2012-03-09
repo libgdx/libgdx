@@ -172,7 +172,8 @@ public class btIDebugDraw {
     public final static int DBG_DrawConstraints = (1 << 11);
     public final static int DBG_DrawConstraintLimits = (1 << 12);
     public final static int DBG_FastWireframe = (1 << 13);
-    public final static int DBG_MAX_DEBUG_DRAW_MODE = DBG_FastWireframe + 1;
+    public final static int DBG_DrawNormals = (1 << 14);
+    public final static int DBG_MAX_DEBUG_DRAW_MODE = DBG_DrawNormals + 1;
   }
 
 }
