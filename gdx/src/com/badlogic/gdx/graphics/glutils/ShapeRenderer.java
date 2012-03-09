@@ -301,6 +301,33 @@ public class ShapeRenderer {
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x, y, 0);
 	}
+	
+	/** Draws a filled rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The
+	 * {@link ShapeType} passed to begin has to be {@link ShapeType#FilledRectangle}. The 4 color parameters
+	 * specify the color for the bottom left, bottom right, top right and top left corner of the rectangle, allowing
+	 * you to create gradients.
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height */
+	public void filledRect (float x, float y, float width, float height, Color c1, Color c2, Color c3, Color c4) {
+		if (currType != ShapeType.FilledRectangle) throw new GdxRuntimeException("Must call begin(ShapeType.FilledRectangle)");
+		checkDirty();
+		checkFlush(8);
+		renderer.color(c1.r, c1.g, c1.b, c1.a);
+		renderer.vertex(x, y, 0);
+		renderer.color(c2.r, c2.g, c2.b, c2.a);
+		renderer.vertex(x + width, y, 0);
+		renderer.color(c3.r, c3.g, c3.b, c3.a);
+		renderer.vertex(x + width, y + height, 0);
+
+		renderer.color(c3.r, c3.g, c3.b, c3.a);
+		renderer.vertex(x + width, y + height, 0);
+		renderer.color(c4.r, c4.g, c4.b, c4.a);
+		renderer.vertex(x, y + height, 0);
+		renderer.color(c1.r, c1.g, c1.b, c1.a);
+		renderer.vertex(x, y, 0);
+	}
 
 	/** Draws a box. The x, y and z coordinate specify the bottom left front corner of the rectangle. The {@link ShapeType} passed
 	 * to begin has to be {@link ShapeType#Box}.

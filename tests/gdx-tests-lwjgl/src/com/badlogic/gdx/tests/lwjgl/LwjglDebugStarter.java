@@ -40,6 +40,7 @@ import com.badlogic.gdx.tests.StbTrueTypeTest;
 import com.badlogic.gdx.tests.TTFFactoryTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VorbisTest;
+import com.badlogic.gdx.tests.YDownTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
@@ -52,7 +53,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-image/libs/gdx-image-natives.jar").load("gdx-image");
 		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
 		
-		GdxTest test = new FreeTypeTest();
+		GdxTest test = new YDownTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 800;
 		config.height = 480;
