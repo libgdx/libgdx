@@ -120,9 +120,7 @@ public class GdxGwtTest extends GwtApplication implements ApplicationListener {
 		shader.begin();
 		shader.setUniformMatrix("u_projView", matrix);
 		shader.setUniformi("u_texture", 0);
-		for(int i = 0; i < 100; i++) {
-			mesh.render(shader, GL20.GL_TRIANGLES);
-		}
+		mesh.render(shader, GL20.GL_TRIANGLES);
 		shader.end();
 		
 		batch.begin();
