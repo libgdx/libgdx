@@ -55,8 +55,8 @@ public class Pixmap implements Disposable {
 		this.height = height;
 		this.format = format;
 		canvas = Canvas.createIfSupported();
-		canvas.setWidth("" + width);
-		canvas.setHeight("" + height);
+		canvas.getCanvasElement().setWidth(width);
+		canvas.getCanvasElement().setHeight(height);
 		context = canvas.getContext2d();
 		context.setFillStyle("blue");
 		context.fillRect(10, 10, 10, 10);
