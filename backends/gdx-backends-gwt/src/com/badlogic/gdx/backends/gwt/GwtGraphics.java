@@ -202,23 +202,26 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public void setIcon (Pixmap[] pixmaps) {
+		throw new GdxRuntimeException("No supported");
 	}
 
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
-		// TODO Auto-generated method stub
-		
+		throw new GdxRuntimeException("No supported");
 	}
 
 	@Override
 	public boolean isContinuousRendering () {
-		// TODO Auto-generated method stub
-		return false;
+		throw new GdxRuntimeException("No supported");
 	}
 
 	@Override
 	public void requestRendering () {
-		// TODO Auto-generated method stub
-		
+		throw new GdxRuntimeException("No supported");
+	}
+
+	@Override
+	public float getRawDeltaTime () {
+		throw new GdxRuntimeException("No supported");
 	}
 }
