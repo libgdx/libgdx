@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.backends.gwt;
 
-import gwt.g3d.client.Surface3D;
-import gwt.g3d.client.gl2.GL2;
-import gwt.g3d.client.gl2.WebGLContextAttributes;
+package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -28,38 +25,33 @@ import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.gwt.dom.client.CanvasElement;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.webgl.client.WebGLRenderingContext;
 
 public class GwtGraphics implements Graphics {
-	final Surface3D surface;
-	final GL20 gl;
+	CanvasElement canvas;
+	WebGLRenderingContext context;
+	GL20 gl;
 	String extensions;
 	float fps = 0;
 	long lastTimeStamp = System.currentTimeMillis();
 	float deltaTime = 0;
 
 	public GwtGraphics (Panel root, GwtApplicationConfiguration config) {
-		// create surface per configuration
-		WebGLContextAttributes contextAttribs = new WebGLContextAttributes();
-		contextAttribs.setStencilEnable(config.stencil);
-		contextAttribs.setAntialiasEnable(config.antialiasing);
-		surface = new Surface3D(config.width, config.height, contextAttribs);
-		root.add(surface);
+		canvas = Document.get().createElement("canvas").cast();
+		Document.get().getBody().appendChild(canvas);
+		canvas.setWidth(config.width);
+		canvas.setHeight(config.height);
 
-		// check whether WebGL is supported
-		GL2 gl = surface.getGL();
-		if (gl == null) {
-			throw new GdxRuntimeException("WebGL not supported");
-		}
-
-		this.gl = new GwtGL20(surface);
-
-		// set initial viewport to cover entire surface and
-		gl.viewport(0, 0, surface.getWidth(), surface.getHeight());
+		context = WebGLRenderingContext.getContext(canvas);
+		context.viewport(0, 0, config.width, config.height);
+		this.gl = new GwtGL20(context);
 	}
 
-	public Surface3D getSurface () {
-		return surface;
+	public WebGLRenderingContext getContext () {
+		return context;
 	}
 
 	@Override
@@ -99,12 +91,12 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public int getWidth () {
-		return surface.getWidth();
+		return canvas.getWidth();
 	}
 
 	@Override
 	public int getHeight () {
-		return surface.getHeight();
+		return canvas.getHeight();
 	}
 
 	@Override

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.backends.gwt;
 
-import gwt.g2d.client.util.FpsTimer;
+package com.badlogic.gdx.backends.gwt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +31,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -44,6 +44,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private TextArea log = null;
 	private int logLevel = LOG_ERROR;
 	private List<Runnable> runnables = new ArrayList<Runnable>();
+	private int lastWidth, lastHeight;
 
 	@Override
 	public void onModuleLoad () {
@@ -52,7 +53,9 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		this.root = config.rootPanel != null ? config.rootPanel : RootPanel.get();
 
 		graphics = new GwtGraphics(root, config);
-
+		lastWidth = graphics.getWidth();
+		lastHeight = graphics.getHeight();
+		
 		Gdx.app = this;
 		Gdx.graphics = graphics;
 		Gdx.gl20 = graphics.getGL20();
@@ -67,27 +70,30 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		listener.resize(graphics.getWidth(), graphics.getHeight());
 
 		// add resize handler
-		graphics.surface.addHandler(new ResizeHandler() {
-			@Override
-			public void onResize (ResizeEvent event) {
-				GwtApplication.this.listener.resize(event.getWidth(), event.getHeight());
-			}
-		}, ResizeEvent.getType());
+//		graphics.surface.addHandler(new ResizeHandler() {
+//			@Override
+//			public void onResize (ResizeEvent event) {
+//				GwtApplication.this.listener.resize(event.getWidth(), event.getHeight());
+//			}
+//		}, ResizeEvent.getType());
 
 		// setup rendering timer
-		FpsTimer timer = new FpsTimer(config.fps) {
+		new Timer() {
 			@Override
-			public void update () {
-				graphics.setFps(this.getFps());
-
+			public void run () {
+				graphics.setFps(0); // FIXME
+				if(Gdx.graphics.getWidth() != lastWidth || Gdx.graphics.getHeight() != lastHeight) {
+					GwtApplication.this.listener.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+					lastWidth = graphics.getWidth();
+					lastHeight = graphics.getHeight();
+				}
 				for (int i = 0; i < runnables.size(); i++) {
 					runnables.get(i).run();
 				}
 				runnables.clear();
 				listener.render();
 			}
-		};
-		timer.start();
+		}.scheduleRepeating(config.fps);
 	}
 
 	public abstract GwtApplicationConfiguration getConfig ();
@@ -205,12 +211,12 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	@Override
 	public void debug (String tag, String message) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

@@ -1,0 +1,12 @@
+uniform mat4 projectionMatrix;
+uniform mat4 modelViewMatrix;
+
+attribute vec3 vertexPosition;
+attribute vec2 texCoord;
+
+varying vec2 vTexCoord;
+
+void main(void) {
+	gl_Position = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
+	vTexCoord = texCoord;
+}

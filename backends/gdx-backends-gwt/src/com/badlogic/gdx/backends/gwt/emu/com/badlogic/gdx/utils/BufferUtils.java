@@ -51,6 +51,7 @@ public class BufferUtils {
 			throw new GdxRuntimeException("dst must be a ByteBuffer or FloatBuffer");
 		}
 		
+		floatBuffer.clear();
 		dst.position(0);
 		floatBuffer.put(src, offset, numFloats);
 		dst.position(0);
@@ -219,44 +220,31 @@ public class BufferUtils {
 //	}
 
 	public static FloatBuffer newFloatBuffer (int numFloats) {
-		ByteBuffer buffer = ByteBuffer.allocateDirect(numFloats * 4);
-		buffer.order(ByteOrder.nativeOrder());
-		return buffer.asFloatBuffer();
+		return FloatBuffer.wrap(new float[numFloats]);
 	}
 
 	public static DoubleBuffer newDoubleBuffer (int numDoubles) {
-		ByteBuffer buffer = ByteBuffer.allocateDirect(numDoubles * 8);
-		buffer.order(ByteOrder.nativeOrder());
-		return buffer.asDoubleBuffer();
+		return DoubleBuffer.wrap(new double[numDoubles]);
 	}
 
 	public static ByteBuffer newByteBuffer (int numBytes) {
-		ByteBuffer buffer = ByteBuffer.allocateDirect(numBytes);
-		buffer.order(ByteOrder.nativeOrder());
-		return buffer;
+		return ByteBuffer.wrap(new byte[numBytes]);
 	}
 
 	public static ShortBuffer newShortBuffer (int numShorts) {
-		ByteBuffer buffer = ByteBuffer.allocateDirect(numShorts * 2);
-		buffer.order(ByteOrder.nativeOrder());
-		return buffer.asShortBuffer();
+		return ShortBuffer.wrap(new short[numShorts]);
 	}
 
 	public static CharBuffer newCharBuffer (int numChars) {
-		ByteBuffer buffer = ByteBuffer.allocateDirect(numChars * 2);
-		buffer.order(ByteOrder.nativeOrder());
-		return buffer.asCharBuffer();
+		// FIXME
+		throw new GdxRuntimeException("not implemented");
 	}
 
 	public static IntBuffer newIntBuffer (int numInts) {
-		ByteBuffer buffer = ByteBuffer.allocateDirect(numInts * 4);
-		buffer.order(ByteOrder.nativeOrder());
-		return buffer.asIntBuffer();
+		return IntBuffer.wrap(new int[numInts]);
 	}
 
 	public static LongBuffer newLongBuffer (int numLongs) {
-		ByteBuffer buffer = ByteBuffer.allocateDirect(numLongs * 8);
-		buffer.order(ByteOrder.nativeOrder());
-		return buffer.asLongBuffer();
+		return LongBuffer.wrap(new long[numLongs]);
 	}
 }

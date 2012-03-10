@@ -176,13 +176,11 @@ public class ShaderProgram implements Disposable {
 
 	private int loadShader (int type, String source) {
 		GL20 gl = Gdx.graphics.getGL20();
-		ByteBuffer tmp = ByteBuffer.allocateDirect(4);
-		tmp.order(ByteOrder.nativeOrder());
-		IntBuffer intbuf = tmp.asIntBuffer();
 
 		int shader = gl.glCreateShader(type);
 		if (shader == 0) return -1;
 
+		intbuf.clear();
 		gl.glShaderSource(shader, source);
 		gl.glCompileShader(shader);
 		gl.glGetShaderiv(shader, GL20.GL_COMPILE_STATUS, intbuf);
@@ -210,13 +208,11 @@ public class ShaderProgram implements Disposable {
 		gl.glAttachShader(program, fragmentShaderHandle);
 		gl.glLinkProgram(program);
 
-		ByteBuffer tmp = ByteBuffer.allocateDirect(4);
-		tmp.order(ByteOrder.nativeOrder());
-		IntBuffer intbuf = tmp.asIntBuffer();
-
+		intbuf.clear();
 		gl.glGetProgramiv(program, GL20.GL_LINK_STATUS, intbuf);
 		int linked = intbuf.get(0);
 		if (linked == 0) {
+			log = Gdx.gl20.glGetProgramInfoLog(program);
 			return -1;
 		}
 
@@ -229,6 +225,7 @@ public class ShaderProgram implements Disposable {
 	 *         have an effect. */
 	public String getLog () {
 		if (isCompiled) {
+			intbuf.clear();
 			Gdx.gl20.glGetProgramiv(program, GL20.GL_INFO_LOG_LENGTH, intbuf);
 			int infoLogLength = intbuf.get(0);
 			if (infoLogLength > 1) log = Gdx.gl20.glGetProgramInfoLog(program);

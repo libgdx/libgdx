@@ -15,42 +15,6 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.gwt;
 
-import gwt.g3d.client.Surface3D;
-import gwt.g3d.client.gl2.GL2;
-import gwt.g3d.client.gl2.WebGLBuffer;
-import gwt.g3d.client.gl2.WebGLFramebuffer;
-import gwt.g3d.client.gl2.WebGLProgram;
-import gwt.g3d.client.gl2.WebGLRenderbuffer;
-import gwt.g3d.client.gl2.WebGLShader;
-import gwt.g3d.client.gl2.WebGLTexture;
-import gwt.g3d.client.gl2.enums.BeginMode;
-import gwt.g3d.client.gl2.enums.BlendEquationMode;
-import gwt.g3d.client.gl2.enums.BlendingFactorDest;
-import gwt.g3d.client.gl2.enums.BlendingFactorSrc;
-import gwt.g3d.client.gl2.enums.BufferTarget;
-import gwt.g3d.client.gl2.enums.ClearBufferMask;
-import gwt.g3d.client.gl2.enums.CullFaceMode;
-import gwt.g3d.client.gl2.enums.DepthFunction;
-import gwt.g3d.client.gl2.enums.DrawElementsType;
-import gwt.g3d.client.gl2.enums.EnableCap;
-import gwt.g3d.client.gl2.enums.FramebufferTarget;
-import gwt.g3d.client.gl2.enums.FrontFaceDirection;
-import gwt.g3d.client.gl2.enums.HintMode;
-import gwt.g3d.client.gl2.enums.HintTarget;
-import gwt.g3d.client.gl2.enums.PixelInternalFormat;
-import gwt.g3d.client.gl2.enums.PixelStoreParameter;
-import gwt.g3d.client.gl2.enums.ProgramParameter;
-import gwt.g3d.client.gl2.enums.RenderbufferInternalFormat;
-import gwt.g3d.client.gl2.enums.RenderbufferTarget;
-import gwt.g3d.client.gl2.enums.ShaderParameter;
-import gwt.g3d.client.gl2.enums.ShaderType;
-import gwt.g3d.client.gl2.enums.StencilFunction;
-import gwt.g3d.client.gl2.enums.StencilOp;
-import gwt.g3d.client.gl2.enums.StringName;
-import gwt.g3d.client.gl2.enums.TextureParameterName;
-import gwt.g3d.client.gl2.enums.TextureTarget;
-import gwt.g3d.client.gl2.enums.TextureUnit;
-
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -59,6 +23,16 @@ import java.util.Map;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.gwt.typedarrays.client.Float32Array;
+import com.google.gwt.webgl.client.WebGLActiveInfo;
+import com.google.gwt.webgl.client.WebGLBuffer;
+import com.google.gwt.webgl.client.WebGLFramebuffer;
+import com.google.gwt.webgl.client.WebGLProgram;
+import com.google.gwt.webgl.client.WebGLRenderbuffer;
+import com.google.gwt.webgl.client.WebGLRenderingContext;
+import com.google.gwt.webgl.client.WebGLShader;
+import com.google.gwt.webgl.client.WebGLTexture;
+import com.google.gwt.webgl.client.WebGLUniformLocation;
 
 public class GwtGL20 implements GL20 {
 	final	Map<Integer, WebGLProgram> programs = new HashMap<Integer, WebGLProgram>();
@@ -73,13 +47,31 @@ public class GwtGL20 implements GL20 {
 	int nextRenderBufferId = 1;
 	final Map<Integer, WebGLTexture> textures = new HashMap<Integer, WebGLTexture>();
 	int nextTextureId = 1;
+	final Map<Integer, Map<Integer, WebGLUniformLocation>> uniforms = new HashMap<Integer, Map<Integer, WebGLUniformLocation>>();
+	int nextUniformId = 1;
+	int currProgram = 0;
 	
-	final Surface3D surface;
-	final GL2 gl;
+	final WebGLRenderingContext gl;
 
-	protected GwtGL20 (Surface3D surface) {
-		this.surface = surface;
-		this.gl = surface.getGL();
+	protected GwtGL20 (WebGLRenderingContext gl) {
+		this.gl = gl;
+	}
+	
+	private int allocateUniformLocationId(int program, WebGLUniformLocation location) {
+		Map<Integer, WebGLUniformLocation> progUniforms = uniforms.get(program);
+		if(progUniforms == null) {
+			progUniforms = new HashMap<Integer, WebGLUniformLocation>();
+			uniforms.put(program, progUniforms);
+		}
+		// FIXME check if uniform already stored.
+		// FIXME deallocate stuff...
+		int id = nextUniformId++;
+		progUniforms.put(id, location);
+		return id;
+	}
+	
+	private WebGLUniformLocation getUniformLocation (int location) {
+		return uniforms.get(currProgram).get(location);
 	}
 	
 	private int allocateShaderId(WebGLShader shader) {
@@ -144,49 +136,22 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glActiveTexture (int texture) {
-		gl.activeTexture(TextureUnit.parseTextureUnit(texture));
+		gl.activeTexture(texture);
 	}
 
 	@Override
 	public void glBindTexture (int target, int texture) {
-		gl.bindTexture(TextureTarget.parseTextureTarget(target), textures.get(texture));
+		gl.bindTexture(target, textures.get(texture));
 	}
 
 	@Override
 	public void glBlendFunc (int sfactor, int dfactor) {
-		gl.blendFunc(BlendingFactorSrc.parseBlendingFactorSrc(sfactor), BlendingFactorDest.parseBlendingFactorDest(dfactor));
+		gl.blendFunc(sfactor, dfactor);
 	}
 
 	@Override
 	public void glClear (int mask) {
-		if ((mask & GL20.GL_COLOR_BUFFER_BIT) != 0 && (mask & GL20.GL_DEPTH_BUFFER_BIT) != 0
-			&& (mask & GL20.GL_STENCIL_BUFFER_BIT) != 0) {
-			gl.clear(ClearBufferMask.COLOR_BUFFER_BIT, ClearBufferMask.DEPTH_BUFFER_BIT, ClearBufferMask.STENCIL_BUFFER_BIT);
-		}
-
-		if ((mask & GL20.GL_COLOR_BUFFER_BIT) != 0 && (mask & GL20.GL_DEPTH_BUFFER_BIT) != 0) {
-			gl.clear(ClearBufferMask.COLOR_BUFFER_BIT, ClearBufferMask.DEPTH_BUFFER_BIT);
-		}
-
-		if ((mask & GL20.GL_DEPTH_BUFFER_BIT) != 0 && (mask & GL20.GL_STENCIL_BUFFER_BIT) != 0) {
-			gl.clear(ClearBufferMask.DEPTH_BUFFER_BIT, ClearBufferMask.STENCIL_BUFFER_BIT);
-		}
-
-		if ((mask & GL20.GL_COLOR_BUFFER_BIT) != 0 && (mask & GL20.GL_STENCIL_BUFFER_BIT) != 0) {
-			gl.clear(ClearBufferMask.COLOR_BUFFER_BIT, ClearBufferMask.STENCIL_BUFFER_BIT);
-		}
-
-		if ((mask & GL20.GL_COLOR_BUFFER_BIT) != 0) {
-			gl.clear(ClearBufferMask.COLOR_BUFFER_BIT);
-		}
-
-		if ((mask & GL20.GL_DEPTH_BUFFER_BIT) != 0) {
-			gl.clear(ClearBufferMask.DEPTH_BUFFER_BIT);
-		}
-
-		if ((mask & GL20.GL_STENCIL_BUFFER_BIT) != 0) {
-			gl.clear(ClearBufferMask.STENCIL_BUFFER_BIT);
-		}
+		gl.clear(mask);
 	}
 
 	@Override
@@ -223,18 +188,17 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glCopyTexImage2D (int target, int level, int internalformat, int x, int y, int width, int height, int border) {
-		gl.copyTexImage2D(TextureTarget.parseTextureTarget(target), level,
-			PixelInternalFormat.parsePixelInternalFormat(internalformat), x, y, width, height, border);
+		gl.copyTexImage2D(target, level, internalformat, x, y, width, height, border);
 	}
 
 	@Override
 	public void glCopyTexSubImage2D (int target, int level, int xoffset, int yoffset, int x, int y, int width, int height) {
-		gl.copyTexSubImage2D(TextureTarget.parseTextureTarget(target), level, xoffset, yoffset, x, y, width, height);
+		gl.copyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
 	}
 
 	@Override
 	public void glCullFace (int mode) {
-		gl.cullFace(CullFaceMode.parseCullFaceMode(mode));
+		gl.cullFace(mode);
 	}
 
 	@Override
@@ -248,7 +212,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glDepthFunc (int func) {
-		gl.depthFunc(DepthFunction.parseDepthFunction(func));
+		gl.depthFunc(func);
 	}
 
 	@Override
@@ -263,24 +227,23 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glDisable (int cap) {
-		gl.disable(EnableCap.parseEnableCap(cap));
+		gl.disable(cap);
 	}
 
 	@Override
 	public void glDrawArrays (int mode, int first, int count) {
-		gl.drawArrays(BeginMode.parseBeginMode(mode), first, count);
+		gl.drawArrays(mode, first, count);
 	}
 
 	@Override
 	public void glDrawElements (int mode, int count, int type, Buffer indices) {
-		// FIXME
 		throw new GdxRuntimeException("not implemented");
 // gl.drawElements(BeginMode.parseBeginMode(mode), count, type, offset)
 	}
 
 	@Override
 	public void glEnable (int cap) {
-		gl.enable(EnableCap.parseEnableCap(cap));
+		gl.enable(cap);
 	}
 
 	@Override
@@ -295,7 +258,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glFrontFace (int mode) {
-		gl.frontFace(FrontFaceDirection.parseFrontFaceDirection(mode));
+		gl.frontFace(mode);
 	}
 
 	@Override
@@ -306,22 +269,24 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public int glGetError () {
-		return gl.getError().getValue();
+		return gl.getError();
 	}
 
 	@Override
 	public void glGetIntegerv (int pname, IntBuffer params) {
+		// FIXME
 		throw new GdxRuntimeException("glGetInteger not supported by GWT WebGL backend");
 	}
 
 	@Override
 	public String glGetString (int name) {
-		return gl.getString(StringName.parseStringName(name));
+		// FIXME
+		throw new GdxRuntimeException("not implemented");
 	}
 
 	@Override
 	public void glHint (int target, int mode) {
-		gl.hint(HintTarget.parseHintTarget(target), HintMode.parseHintMode(mode));
+		gl.hint(target, mode);
 	}
 
 	@Override
@@ -331,7 +296,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glPixelStorei (int pname, int param) {
-		gl.pixelStorei(PixelStoreParameter.parsePixelStoreParameter(pname), param);
+		gl.pixelStorei(pname, param);
 	}
 
 	@Override
@@ -352,7 +317,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glStencilFunc (int func, int ref, int mask) {
-		gl.stencilFunc(StencilFunction.parseStencilFunction(func), ref, mask);
+		gl.stencilFunc(func, ref, mask);
 	}
 
 	@Override
@@ -362,7 +327,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glStencilOp (int fail, int zfail, int zpass) {
-		gl.stencilOp(StencilOp.parseStencilOp(fail), StencilOp.parseStencilOp(zfail), StencilOp.parseStencilOp(zpass));
+		gl.stencilOp(fail, zfail, zpass);
 	}
 
 	@Override
@@ -374,7 +339,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glTexParameterf (int target, int pname, float param) {
-		gl.texParameterf(TextureTarget.parseTextureTarget(target), TextureParameterName.parseTextureParameterName(pname), param);
+		gl.texParameterf(target, pname, param);
 	}
 
 	@Override
@@ -392,7 +357,7 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glAttachShader (int program, int shader) {
 		WebGLProgram glProgram = programs.get(program);
-		WebGLShader glShader = shaders.get(program);
+		WebGLShader glShader = shaders.get(shader);
 		gl.attachShader(glProgram, glShader);
 	}
 
@@ -404,17 +369,17 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glBindBuffer (int target, int buffer) {
-		gl.bindBuffer(BufferTarget.parseBufferTarget(target), buffers.get(buffer));
+		gl.bindBuffer(target, buffers.get(buffer));
 	}
 
 	@Override
 	public void glBindFramebuffer (int target, int framebuffer) {
-		gl.bindFramebuffer(FramebufferTarget.parseFramebufferTarget(target), frameBuffers.get(framebuffer));
+		gl.bindFramebuffer(target, frameBuffers.get(framebuffer));
 	}
 
 	@Override
 	public void glBindRenderbuffer (int target, int renderbuffer) {
-		gl.bindRenderbuffer(RenderbufferTarget.parseRenderbufferTarget(target), renderBuffers.get(renderbuffer));
+		gl.bindRenderbuffer(target, renderBuffers.get(renderbuffer));
 	}
 
 	@Override
@@ -424,36 +389,36 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glBlendEquation (int mode) {
-		gl.blendEquation(BlendEquationMode.parseBlendEquationMode(mode));
+		gl.blendEquation(mode);
 	}
 
 	@Override
 	public void glBlendEquationSeparate (int modeRGB, int modeAlpha) {
-		gl.blendEquationSeparate(BlendEquationMode.parseBlendEquationMode(modeRGB),
-			BlendEquationMode.parseBlendEquationMode(modeAlpha));
+		gl.blendEquationSeparate(modeRGB, modeAlpha);
 	}
 
 	@Override
 	public void glBlendFuncSeparate (int srcRGB, int dstRGB, int srcAlpha, int dstAlpha) {
-		gl.blendFuncSeparate(BlendingFactorSrc.parseBlendingFactorSrc(srcRGB), BlendingFactorDest.parseBlendingFactorDest(dstRGB),
-			BlendingFactorSrc.parseBlendingFactorSrc(srcAlpha), BlendingFactorDest.parseBlendingFactorDest(dstAlpha));
+		gl.blendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
 	}
 
 	@Override
 	public void glBufferData (int target, int size, Buffer data, int usage) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		if(data instanceof FloatBuffer) {
+			gl.bufferData(target, Float32Array.create(((FloatBuffer)data).array()), usage);
+		} else throw new GdxRuntimeException("Can only cope with FloatBuffer at the moment");
 	}
 
 	@Override
 	public void glBufferSubData (int target, int offset, int size, Buffer data) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		if(data instanceof FloatBuffer) {
+			gl.bufferSubData(target, offset, Float32Array.create(((FloatBuffer)data).array()));
+		} else throw new GdxRuntimeException("Can only cope with FloatBuffer at the moment");
 	}
 
 	@Override
 	public int glCheckFramebufferStatus (int target) {
-		return gl.checkFramebufferStatus(FramebufferTarget.parseFramebufferTarget(target)).getValue();
+		return gl.checkFramebufferStatus(target);
 	}
 
 	@Override
@@ -470,14 +435,17 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public int glCreateShader (int type) {
-		WebGLShader shader = gl.createShader(ShaderType.parseShaderType(type));
+		WebGLShader shader = gl.createShader(type);
 		return allocateShaderId(shader);
 	}
 
 	@Override
 	public void glDeleteBuffers (int n, IntBuffer buffers) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		// FIXME ignores n
+		int id = buffers.get();
+		WebGLBuffer buffer = this.buffers.get(id);
+		deallocateBufferId(id);
+		gl.deleteBuffer(buffer);
 	}
 
 	@Override
@@ -488,8 +456,9 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glDeleteProgram (int program) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLProgram prog = programs.get(program);
+		deallocateProgramId(program);
+		gl.deleteProgram(prog);
 	}
 
 	@Override
@@ -500,8 +469,9 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glDeleteShader (int shader) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLShader sh = shaders.get(shader);
+		deallocateShaderId(shader);
+		gl.deleteShader(sh);
 	}
 
 	@Override
@@ -517,7 +487,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glDrawElements (int mode, int count, int type, int indices) {
-		gl.drawElements(BeginMode.parseBeginMode(mode), count, DrawElementsType.parseDataType(type), indices);
+		gl.drawElements(mode, count, type, indices);
 	}
 
 	@Override
@@ -539,13 +509,15 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glGenBuffers (int n, IntBuffer buffers) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		// FIXME ignores n
+		WebGLBuffer buffer = gl.createBuffer();
+		int id = allocateBufferId(buffer);
+		buffers.put(id);
 	}
 
 	@Override
 	public void glGenerateMipmap (int target) {
-		gl.generateMipmap(TextureTarget.parseTextureTarget(target));
+		gl.generateMipmap(target);
 	}
 
 	@Override
@@ -562,14 +534,18 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLActiveInfo activeAttrib = gl.getActiveAttrib(programs.get(program), index);
+		size.put(activeAttrib.getSize());
+		((IntBuffer)type).put(activeAttrib.getType());
+		return activeAttrib.getName();
 	}
 
 	@Override
 	public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLActiveInfo activeUniform = gl.getActiveUniform(programs.get(program), index);
+		size.put(activeUniform.getSize());
+		((IntBuffer)type).put(activeUniform.getType());
+		return activeUniform.getName();
 	}
 
 	@Override
@@ -580,8 +556,8 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public int glGetAttribLocation (int program, String name) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLProgram prog = programs.get(program);
+		return gl.getAttribLocation(prog, name);
 	}
 
 	@Override
@@ -609,10 +585,10 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glGetProgramiv (int program, int pname, IntBuffer params) {
 		if(pname == GL20.GL_DELETE_STATUS || pname == GL20.GL_LINK_STATUS || pname == GL20.GL_VALIDATE_STATUS) {
-			boolean result = gl.getProgramParameterb(programs.get(program), ProgramParameter.parseProgramParameter(pname));
+			boolean result = gl.getProgramParameterb(programs.get(program), pname);
 			params.put(result?GL20.GL_TRUE:GL20.GL_FALSE);
 		} else {
-			params.put(gl.getProgramParameteri(programs.get(program), ProgramParameter.parseProgramParameter(pname)));
+			params.put(gl.getProgramParameteri(programs.get(program), pname));
 		}
 	}
 
@@ -630,10 +606,10 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glGetShaderiv (int shader, int pname, IntBuffer params) {
 		if(pname == GL20.GL_COMPILE_STATUS || pname == GL20.GL_DELETE_STATUS) {
-			boolean result = gl.getShaderParameterb(shaders.get(shader), ShaderParameter.parseShaderParameter(pname));
+			boolean result = gl.getShaderParameterb(shaders.get(shader), pname);
 			params.put(result?GL20.GL_TRUE:GL20.GL_FALSE);
 		} else {
-			int result = gl.getShaderParameteri(shaders.get(shader), ShaderParameter.parseShaderParameter(pname));
+			int result = gl.getShaderParameteri(shaders.get(shader), pname);
 			params.put(result);
 		}
 	}
@@ -677,8 +653,8 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public int glGetUniformLocation (int program, String name) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation location = gl.getUniformLocation(programs.get(program), name);
+		return allocateUniformLocationId(program, location);
 	}
 
 	@Override
@@ -706,7 +682,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public boolean glIsEnabled (int cap) {
-		return gl.isEnabled(EnableCap.parseEnableCap(cap));
+		return gl.isEnabled(cap);
 	}
 
 	@Override
@@ -751,8 +727,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glRenderbufferStorage (int target, int internalformat, int width, int height) {
-		gl.renderbufferStorage(RenderbufferTarget.parseRenderbufferTarget(target),
-			RenderbufferInternalFormat.parseRenderbufferInternalFormat(internalformat), width, height);
+		gl.renderbufferStorage(target, internalformat, width, height);
 	}
 
 	@Override
@@ -772,208 +747,219 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glStencilFuncSeparate (int face, int func, int ref, int mask) {
-		gl.stencilFuncSeparate(CullFaceMode.parseCullFaceMode(face), StencilFunction.parseStencilFunction(func), ref, mask);
+		gl.stencilFuncSeparate(face, func, ref, mask);
 	}
 
 	@Override
 	public void glStencilMaskSeparate (int face, int mask) {
-		gl.stencilMaskSeparate(CullFaceMode.parseCullFaceMode(face), mask);
+		gl.stencilMaskSeparate(face, mask);
 	}
 
 	@Override
 	public void glStencilOpSeparate (int face, int fail, int zfail, int zpass) {
-		gl.stencilOpSeparate(CullFaceMode.parseCullFaceMode(face), StencilOp.parseStencilOp(fail), StencilOp.parseStencilOp(zfail),
-			StencilOp.parseStencilOp(zpass));
+		gl.stencilOpSeparate(face, fail, zfail, zpass);
 	}
 
 	@Override
 	public void glTexParameterfv (int target, int pname, FloatBuffer params) {
-		gl.texParameterf(TextureTarget.parseTextureTarget(target), TextureParameterName.parseTextureParameterName(pname),
-			params.get());
+		gl.texParameterf(target, pname, params.get());
 	}
 
 	@Override
 	public void glTexParameteri (int target, int pname, int param) {
-		gl.texParameterf(TextureTarget.parseTextureTarget(target), TextureParameterName.parseTextureParameterName(pname), param);
+		gl.texParameterf(target, pname, param);
 	}
 
 	@Override
 	public void glTexParameteriv (int target, int pname, IntBuffer params) {
-		gl.texParameterf(TextureTarget.parseTextureTarget(target), TextureParameterName.parseTextureParameterName(pname),
-			params.get());
+		gl.texParameterf(target, pname, params.get());
 	}
-
+	
 	@Override
 	public void glUniform1f (int location, float x) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniform1f(loc, x);
 	}
 
 	@Override
 	public void glUniform1fv (int location, int count, FloatBuffer v) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		// FIXME buffer should use array directly, otherwise we allocate all
+		// the time.
+		gl.uniform1fv(loc, v.array());
 	}
 
 	@Override
 	public void glUniform1i (int location, int x) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniform1i(loc, x);
 	}
 
 	@Override
 	public void glUniform1iv (int location, int count, IntBuffer v) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		// FIXME buffer should use array directly, otherwise we allocate all
+		// the time.
+		gl.uniform1iv(loc, v.array());
 	}
 
 	@Override
 	public void glUniform2f (int location, float x, float y) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniform2f(loc, x, y);
 	}
 
 	@Override
 	public void glUniform2fv (int location, int count, FloatBuffer v) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		// FIXME buffer should use array directly, otherwise we allocate all
+		// the time.
+		gl.uniform2fv(loc, v.array());
 	}
 
 	@Override
 	public void glUniform2i (int location, int x, int y) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniform2i(loc, x, y);
 	}
 
 	@Override
 	public void glUniform2iv (int location, int count, IntBuffer v) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		// FIXME buffer should use array directly, otherwise we allocate all
+		// the time.
+		gl.uniform2iv(loc, v.array());
 	}
 
 	@Override
 	public void glUniform3f (int location, float x, float y, float z) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniform3f(loc, x, y, z);
 	}
 
 	@Override
 	public void glUniform3fv (int location, int count, FloatBuffer v) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		// FIXME buffer should use array directly, otherwise we allocate all
+		// the time.
+		gl.uniform3fv(loc, v.array());
 	}
 
 	@Override
 	public void glUniform3i (int location, int x, int y, int z) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniform3i(loc, x, y, z);
 	}
 
 	@Override
 	public void glUniform3iv (int location, int count, IntBuffer v) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		// FIXME buffer should use array directly, otherwise we allocate all
+		// the time.
+		gl.uniform3iv(loc, v.array());
 	}
 
 	@Override
 	public void glUniform4f (int location, float x, float y, float z, float w) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniform4f(loc, x, y, z, w);
 	}
 
 	@Override
 	public void glUniform4fv (int location, int count, FloatBuffer v) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		// FIXME buffer should use array directly, otherwise we allocate all
+		// the time.
+		gl.uniform4fv(loc, v.array());
 	}
 
 	@Override
 	public void glUniform4i (int location, int x, int y, int z, int w) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniform4i(loc, x, y, z, w);
 	}
 
 	@Override
 	public void glUniform4iv (int location, int count, IntBuffer v) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		// FIXME buffer should use array directly, otherwise we allocate all
+		// the time.
+		gl.uniform4iv(loc, v.array());
 	}
 
 	@Override
 	public void glUniformMatrix2fv (int location, int count, boolean transpose, FloatBuffer value) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		// FIXME FloatBuffer should use Float32Array directly, otherwise we allocate all
+		// the time.
+		gl.uniformMatrix2fv(loc, transpose, value.array());
 	}
 
 	@Override
 	public void glUniformMatrix3fv (int location, int count, boolean transpose, FloatBuffer value) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		// FIXME FloatBuffer should use Float32Array directly, otherwise we allocate all
+		// the time.
+		gl.uniformMatrix3fv(loc, transpose, value.array());
 	}
 
 	@Override
 	public void glUniformMatrix4fv (int location, int count, boolean transpose, FloatBuffer value) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		// FIXME FloatBuffer should use Float32Array directly, otherwise we allocate all
+		// the time.
+		gl.uniformMatrix4fv(loc, transpose, value.array());
 	}
 
 	@Override
 	public void glUseProgram (int program) {
+		currProgram = program;
 		gl.useProgram(programs.get(program));
 	}
 
 	@Override
 	public void glValidateProgram (int program) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		gl.validateProgram(programs.get(program));
 	}
 
 	@Override
 	public void glVertexAttrib1f (int indx, float x) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		gl.vertexAttrib1f(indx, x);
 	}
 
 	@Override
 	public void glVertexAttrib1fv (int indx, FloatBuffer values) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		gl.vertexAttrib1fv(indx, values.array());
 	}
 
 	@Override
 	public void glVertexAttrib2f (int indx, float x, float y) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		gl.vertexAttrib2f(indx, x, y);
 	}
 
 	@Override
 	public void glVertexAttrib2fv (int indx, FloatBuffer values) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		gl.vertexAttrib2fv(indx, values.array());
 	}
 
 	@Override
 	public void glVertexAttrib3f (int indx, float x, float y, float z) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		gl.vertexAttrib3f(indx, x, y, z);
 	}
 
 	@Override
 	public void glVertexAttrib3fv (int indx, FloatBuffer values) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		gl.vertexAttrib3fv(indx, values.array());
 	}
 
 	@Override
 	public void glVertexAttrib4f (int indx, float x, float y, float z, float w) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		gl.vertexAttrib4f(indx, x, y, z, w);
 	}
 
 	@Override
 	public void glVertexAttrib4fv (int indx, FloatBuffer values) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		gl.vertexAttrib4fv(indx, values.array());
 	}
 
 	@Override
@@ -983,7 +969,6 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, int ptr) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		gl.vertexAttribPointer(indx, size, type, normalized, stride, ptr);
 	}
 }

@@ -3,6 +3,8 @@
 	<inherits name='com.google.gwt.user.User' />
 	<inherits name='gwt.g3d.g3d' />
 	<inherits name="com.badlogic.gdx" />
+	<inherits name="com.google.gwt.typedarrays.TypedArrays"/>
+	<inherits name="com.google.gwt.webgl.WebGL"/>
 
 	<super-source path="gwt/emu" />
 	<source path="gwt">
@@ -10,5 +12,5 @@
 	</source>
 
 	<entry-point class='com.badlogic.gdx.backends.gwt.GdxGwtTest' />
-<!--  	<entry-point class='com.badlogic.gdx.backends.gwt.PlainTest' /> -->
+<!--     <entry-point class='com.badlogic.gdx.backends.gwt.test.WebGLDemo' /> -->
 </module>
