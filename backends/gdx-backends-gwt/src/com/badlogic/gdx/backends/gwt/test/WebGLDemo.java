@@ -2,6 +2,11 @@ package com.badlogic.gdx.backends.gwt.test;
 
 import static com.google.gwt.webgl.client.WebGLRenderingContext.*;
 
+import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.canvas.dom.client.FillStrokeStyle;
+import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
@@ -55,7 +60,7 @@ public class WebGLDemo implements EntryPoint {
     Document.get().getBody().appendChild(canvas);
     canvas.setWidth(CANVAS_WIDTH);
     canvas.setHeight(CANVAS_HEIGHT);
-
+    
     gl = WebGLRenderingContext.getContext(canvas);
     gl.viewport(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
@@ -107,11 +112,11 @@ public class WebGLDemo implements EntryPoint {
     gl.bindBuffer(ARRAY_BUFFER, buffer);
 
     int vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "vertexPosition");
-    gl.vertexAttribPointer(vertexPositionAttribute, 3, FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(vertexPositionAttribute, 3, FLOAT, false, 20, 0);
     gl.enableVertexAttribArray(vertexPositionAttribute);
 
     int texCoordAttribute = gl.getAttribLocation(shaderProgram, "texCoord");
-    gl.vertexAttribPointer(texCoordAttribute, 2, FLOAT, false, 0, 12 * Float32Array.BYTES_PER_ELEMENT);
+    gl.vertexAttribPointer(texCoordAttribute, 2, FLOAT, false, 20, 12);
     gl.enableVertexAttribArray(texCoordAttribute);
 
     // Elements.
@@ -145,7 +150,7 @@ public class WebGLDemo implements EntryPoint {
     };
 
     // Bird texture.
-    birdTexture = createTexture("/bird.png");
+    birdTexture = createTexture("/sky.png");
 
     // Compile the shader.
     shaderProgram = WebGLUtil.createShaderProgram(gl,
@@ -193,7 +198,7 @@ public class WebGLDemo implements EntryPoint {
 
     // Load the image.
     final ImageElement img = createImage();
-    img.setSrc(url);
+    img.setSrc(Shaders.INSTANCE.sky().getSafeUri().asString());
     hookOnLoad(img, new EventHandler() {
       @Override
       public void onEvent(NativeEvent e) {
@@ -216,27 +221,15 @@ public class WebGLDemo implements EntryPoint {
     buffer = gl.createBuffer();
     gl.bindBuffer(ARRAY_BUFFER, buffer);
 
-    // (12 + 8) == positions (vec3 * 4) + texCoords (vec2 * 4)
-    gl.bufferData(ARRAY_BUFFER, (12 + 8) * Float32Array.BYTES_PER_ELEMENT, STATIC_DRAW);
-
     float z = 0f; // doesn't matter really; [-1, 1] all in front of the camera
     // attribute vec3 vertexPosition;
-    float[] positions = new float[] {
-        -42/2f,-42/2f, z,
-        42/2f,-42/2f,z,
-        -42/2f,42/2f,z,
-        42/2f,42/2f,z,
-    };
-    gl.bufferSubData(ARRAY_BUFFER, 0, Float32Array.create(positions));
-
-    // attribute vec2 texCoord;
-    float[] texCoords = new float[] {
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-    };
-    gl.bufferSubData(ARRAY_BUFFER, 12 * Float32Array.BYTES_PER_ELEMENT, Float32Array.create(texCoords));
+    float[] vertices = new float[] {
+       -42/2f,-42/2f, z, 0, 1,
+       42/2f,-42/2f,z, 1, 1,
+       -42/2f,42/2f,z, 0, 0,
+       42/2f,42/2f,z, 1, 0
+   };
+   gl.bufferData(ARRAY_BUFFER, Float32Array.create(vertices), STREAM_DRAW);
 
     // create the index buffer.
     int[] indices = new int[] { 0, 1, 2, 3 };

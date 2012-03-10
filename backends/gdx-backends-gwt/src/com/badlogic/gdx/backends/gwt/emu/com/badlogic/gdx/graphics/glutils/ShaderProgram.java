@@ -187,12 +187,8 @@ public class ShaderProgram implements Disposable {
 
 		int compiled = intbuf.get(0);
 		if (compiled == 0) {
-			gl.glGetShaderiv(shader, GL20.GL_INFO_LOG_LENGTH, intbuf);
-			int infoLogLength = intbuf.get(0);
-			if (infoLogLength > 1) {
-				String infoLog = gl.glGetShaderInfoLog(shader);
-				log += infoLog;
-			}
+			String infoLog = gl.glGetShaderInfoLog(shader);
+			log += infoLog;
 			return -1;
 		}
 

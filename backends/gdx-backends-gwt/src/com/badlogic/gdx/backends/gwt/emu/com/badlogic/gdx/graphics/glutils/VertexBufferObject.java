@@ -105,7 +105,7 @@ public class VertexBufferObject implements VertexData {
 	/** {@inheritDoc} */
 	@Override
 	public int getNumVertices () {
-		return buffer.limit() * 4 / attributes.vertexSize;
+		return buffer.limit() / (attributes.vertexSize / 4);
 	}
 
 	/** {@inheritDoc} */

@@ -5,6 +5,6 @@
 
 <web-app>
 	<welcome-file-list>
-		<welcome-file>Gdx_backends_gwt.html</welcome-file>
+		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 </web-app>

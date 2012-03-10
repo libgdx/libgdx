@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.typedarrays.client.Float32Array;
 import com.google.gwt.webgl.client.WebGLActiveInfo;
@@ -91,6 +92,7 @@ public class GwtGL20 implements GL20 {
 	}
 	
 	private void deallocateProgramId(int id) {
+		uniforms.remove(id);
 		programs.remove(id);
 	}
 	
@@ -120,7 +122,7 @@ public class GwtGL20 implements GL20 {
 		return id;
 	}
 	
-	private void deallocateRenderFrameBufferId(int id) {
+	private void deallocateRenderBufferId(int id) {
 		renderBuffers.remove(id);
 	}
 	
@@ -263,8 +265,9 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glGenTextures (int n, IntBuffer textures) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		WebGLTexture texture = gl.createTexture();
+		int id = allocateTextureId(texture);
+		textures.put(id);
 	}
 
 	@Override
@@ -333,8 +336,8 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
 		Buffer pixels) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer)pixels).get(0));
+		gl.texImage2D(target, level, internalformat, format, type, pixmap.getCanvasElement());
 	}
 
 	@Override
@@ -345,8 +348,8 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
 		Buffer pixels) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer)pixels).get(0));
+		gl.texSubImage2D(target, level, xoffset, yoffset, width, height, pixmap.getCanvasElement());
 	}
 
 	@Override
@@ -441,17 +444,22 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glDeleteBuffers (int n, IntBuffer buffers) {
-		// FIXME ignores n
-		int id = buffers.get();
-		WebGLBuffer buffer = this.buffers.get(id);
-		deallocateBufferId(id);
-		gl.deleteBuffer(buffer);
+		for(int i = 0; i < n; i++) {
+			int id = buffers.get();
+			WebGLBuffer buffer = this.buffers.get(id);
+			deallocateBufferId(id);
+			gl.deleteBuffer(buffer);
+		}
 	}
 
 	@Override
 	public void glDeleteFramebuffers (int n, IntBuffer framebuffers) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		for(int i = 0; i < n; i++) {
+			int id = framebuffers.get();
+			WebGLFramebuffer fb = this.frameBuffers.get(id);
+			deallocateFrameBufferId(id);
+			gl.deleteFramebuffer(fb);
+		}
 	}
 
 	@Override
@@ -463,8 +471,12 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glDeleteRenderbuffers (int n, IntBuffer renderbuffers) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		for(int i = 0; i < n; i++) {
+			int id = renderbuffers.get();
+			WebGLRenderbuffer rb = this.renderBuffers.get(id);
+			deallocateRenderBufferId(id);
+			gl.deleteRenderbuffer(rb);
+		}
 	}
 
 	@Override
@@ -476,8 +488,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glDetachShader (int program, int shader) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		gl.detachShader(programs.get(program), shaders.get(shader));
 	}
 
 	@Override
@@ -497,22 +508,21 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glFramebufferRenderbuffer (int target, int attachment, int renderbuffertarget, int renderbuffer) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		gl.framebufferRenderbuffer(target, attachment, renderbuffertarget, renderBuffers.get(renderbuffer));
 	}
 
 	@Override
 	public void glFramebufferTexture2D (int target, int attachment, int textarget, int texture, int level) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		gl.framebufferTexture2D(target, attachment, textarget, textures.get(texture), level);
 	}
 
 	@Override
 	public void glGenBuffers (int n, IntBuffer buffers) {
-		// FIXME ignores n
-		WebGLBuffer buffer = gl.createBuffer();
-		int id = allocateBufferId(buffer);
-		buffers.put(id);
+		for(int i = 0; i < n; i++) {
+			WebGLBuffer buffer = gl.createBuffer();
+			int id = allocateBufferId(buffer);
+			buffers.put(id);
+		}
 	}
 
 	@Override
@@ -522,14 +532,20 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glGenFramebuffers (int n, IntBuffer framebuffers) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		for(int i = 0; i < n; i++) {
+			WebGLFramebuffer fb = gl.createFramebuffer();
+			int id = allocateFrameBufferId(fb);
+			framebuffers.put(id);
+		}
 	}
 
 	@Override
 	public void glGenRenderbuffers (int n, IntBuffer renderbuffers) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		for(int i = 0; i < n; i++) {
+			WebGLRenderbuffer rb = gl.createRenderbuffer();
+			int id = allocateRenderBufferId(rb);
+			renderbuffers.put(id);
+		}
 	}
 
 	@Override
@@ -676,8 +692,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public boolean glIsBuffer (int buffer) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		return gl.isBuffer(buffers.get(buffer));
 	}
 
 	@Override
@@ -687,32 +702,27 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public boolean glIsFramebuffer (int framebuffer) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		return gl.isFramebuffer(frameBuffers.get(framebuffer));
 	}
 
 	@Override
 	public boolean glIsProgram (int program) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		return gl.isProgram(programs.get(program));
 	}
 
 	@Override
 	public boolean glIsRenderbuffer (int renderbuffer) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		return gl.isRenderbuffer(renderBuffers.get(renderbuffer));
 	}
 
 	@Override
 	public boolean glIsShader (int shader) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		return gl.isShader(shaders.get(shader));
 	}
 
 	@Override
 	public boolean glIsTexture (int texture) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		return gl.isTexture(textures.get(texture));
 	}
 
 	@Override
@@ -722,7 +732,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glReleaseShaderCompiler () {
-		throw new GdxRuntimeException("glReleaseShaderCompiler not supported by GWT WebGL backend");
+		throw new GdxRuntimeException("not implemented");
 	}
 
 	@Override
@@ -964,7 +974,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, Buffer ptr) {
-		throw new GdxRuntimeException("not implemented");
+		throw new GdxRuntimeException("not implemented, vertex arrays aren't support in WebGL it seems");
 	}
 
 	@Override
