@@ -22,15 +22,6 @@ package com.google.gwt.corp.compatibility;
 public class CompatibilityImpl implements Compatibility.Impl {
 
 	public CompatibilityImpl () {
-		ConsolePrintStream cps;
-		cps = new ConsolePrintStream();
-		System.setOut(cps);
-		System.setErr(cps);
-
-		System.out.println("Test for System.out.println()");
-		new Throwable("Exception test").printStackTrace();
-		System.out.println("Did the exception test appear above?");
-
 	}
 
 	public int floatToIntBits (float f) {
@@ -41,40 +32,33 @@ public class CompatibilityImpl implements Compatibility.Impl {
 		return Numbers.intBitsToFloat(i);
 	}
 
+	@Override
 	public String createString (byte[] b, int ofs, int length) {
-		StringBuffer sb = new StringBuffer(length);
-		for (int i = 0; i < length; i++) {
-			sb.append((char)b[ofs + i]);
-		}
-		return sb.toString();
+		// TODO Auto-generated method stub
+		return null;
 	}
 
+	@Override
 	public String getOriginatingServerAddress () {
-// String moduleUrl = GWT.getModuleBaseURL();
-// return getDomain(moduleUrl);// + ":" + getServerPort();
-		return getServerAddress();
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	private static native String getServerAddress () /*-{
-																		if ($wnd.__serverAddress) {
-																		return $wnd.__serverAddress;
-																		}
-																		return "127.0.0.1";
-																		}-*/;
-
+	@Override
 	public void printStackTrace (Throwable e) {
-		System.out.println("" + e);
-		for (StackTraceElement ste : e.getStackTrace()) {
-			System.out.println(" at " + ste);
-		}
+		// TODO Auto-generated method stub
+		
 	}
 
+	@Override
 	public String createString (byte[] b, String encoding) {
-		return createString(b, 0, b.length);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
+	@Override
 	public void sleep (int i) {
 		// TODO Auto-generated method stub
-
+		
 	}
 }

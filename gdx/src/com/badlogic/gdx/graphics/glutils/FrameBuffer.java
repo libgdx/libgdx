@@ -106,6 +106,7 @@ public class FrameBuffer implements Disposable {
 		framebufferHandle = handle.get(0);
 
 		if (hasDepth) {
+			handle.clear();
 			gl.glGenRenderbuffers(1, handle);
 			depthbufferHandle = handle.get(0);
 		}
@@ -133,12 +134,14 @@ public class FrameBuffer implements Disposable {
 		if (result != GL20.GL_FRAMEBUFFER_COMPLETE) {
 			colorTexture.dispose();
 			if (hasDepth) {
+				handle.clear();
 				handle.put(depthbufferHandle);
 				handle.flip();
 				gl.glDeleteRenderbuffers(1, handle);
 			}
 
 			colorTexture.dispose();
+			handle.clear();
 			handle.put(framebufferHandle);
 			handle.flip();
 			gl.glDeleteFramebuffers(1, handle);
@@ -165,6 +168,7 @@ public class FrameBuffer implements Disposable {
 			gl.glDeleteRenderbuffers(1, handle);
 		}
 
+		handle.clear();
 		handle.put(framebufferHandle);
 		handle.flip();
 		gl.glDeleteFramebuffers(1, handle);

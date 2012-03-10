@@ -18,29 +18,7 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.tests.Box2DCharacterControllerTest;
-import com.badlogic.gdx.tests.Box2DTest;
-import com.badlogic.gdx.tests.CustomShaderSpriteBatchTest;
-import com.badlogic.gdx.tests.DecalTest;
-import com.badlogic.gdx.tests.DirtyRenderingTest;
-import com.badlogic.gdx.tests.FrameBufferTest;
-import com.badlogic.gdx.tests.FreeTypeTest;
-import com.badlogic.gdx.tests.InterpolationTest;
-import com.badlogic.gdx.tests.JpegTest;
-import com.badlogic.gdx.tests.MusicTest;
-import com.badlogic.gdx.tests.ParallaxTest;
-import com.badlogic.gdx.tests.ShadowMappingTest;
-import com.badlogic.gdx.tests.SoftKeyboardTest;
-import com.badlogic.gdx.tests.SortedSpriteTest;
-import com.badlogic.gdx.tests.SoundTest;
-import com.badlogic.gdx.tests.SpriteBatchOriginScaleTest;
-import com.badlogic.gdx.tests.SpriteBatchShaderTest;
-import com.badlogic.gdx.tests.StageTest;
-import com.badlogic.gdx.tests.StbTrueTypeTest;
-import com.badlogic.gdx.tests.TTFFactoryTest;
-import com.badlogic.gdx.tests.UITest;
-import com.badlogic.gdx.tests.VorbisTest;
-import com.badlogic.gdx.tests.YDownTest;
+import com.badlogic.gdx.tests.Mpg123Test;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
@@ -53,7 +31,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-image/libs/gdx-image-natives.jar").load("gdx-image");
 		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
 		
-		GdxTest test = new YDownTest();
+		GdxTest test = new Mpg123Test();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 800;
 		config.height = 480;

@@ -38,6 +38,8 @@ public class GwtGraphics implements Graphics {
 	float fps = 0;
 	long lastTimeStamp = System.currentTimeMillis();
 	float deltaTime = 0;
+	float time = 0;
+	int frames;
 
 	public GwtGraphics (Panel root, GwtApplicationConfiguration config) {
 		canvas = Document.get().createElement("canvas").cast();
@@ -180,11 +182,17 @@ public class GwtGraphics implements Graphics {
 		return extensions.contains(extension);
 	}
 
-	public void setFps (float fps) {
+	public void update () {
 		long currTimeStamp = System.currentTimeMillis();
 		deltaTime = (currTimeStamp - lastTimeStamp) / 1000.0f;
 		lastTimeStamp = currTimeStamp;
-		this.fps = fps;
+		time += deltaTime;
+		frames++;
+		if(time > 1) {
+			this.fps = frames;
+			time = 0;
+			frames = 0;
+		}
 	}
 
 	@Override
@@ -214,6 +222,6 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public float getRawDeltaTime () {
-		throw new GdxRuntimeException("No supported");
+		return getDeltaTime();
 	}
 }

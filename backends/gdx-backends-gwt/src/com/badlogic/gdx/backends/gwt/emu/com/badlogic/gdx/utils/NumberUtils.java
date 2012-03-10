@@ -15,31 +15,30 @@
  ******************************************************************************/
 package com.badlogic.gdx.utils;
 
-import com.google.gwt.corp.compatibility.CompatibilityImpl;
+import com.google.gwt.corp.compatibility.Numbers;
 
 public class NumberUtils {
-	static CompatibilityImpl impl = new CompatibilityImpl();
 
 	public static int floatToIntBits (float value) {
-		return impl.floatToIntBits(value);
+		return Numbers.floatToIntBits(value);
 	}
 
 	public static int floatToRawIntBits (float value) {
-		return impl.floatToIntBits(value);
+		return Numbers.floatToIntBits(value);
 	}
 	
 	public static int floatToIntColor (float value) {
-		return impl.floatToIntBits(value);
+		return Numbers.floatToIntBits(value);
 	}
 
 	public static float intToFloatColor (int value) {
 		// This mask avoids using bits in the NaN range. See Float.intBitsToFloat javadocs.
 		// This unfortunately means we don't get the full range of alpha.
-		return impl.intBitsToFloat(value & 0xfeffffff);
+		return Numbers.intBitsToFloat(value & 0xfeffffff);
 	}
 
 	public static float intBitsToFloat (int value) {
-		return impl.intBitsToFloat(value);
+		return Numbers.intBitsToFloat(value);
 	}
 
 	public static long doubleToLongBits (double value) {

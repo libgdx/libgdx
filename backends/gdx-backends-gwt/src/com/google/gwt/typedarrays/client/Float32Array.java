@@ -77,6 +77,10 @@ public class Float32Array extends ArrayBufferView {
   public static final Float32Array create(float[] data) {
     return create(ArrayUtils.toJsArray(data));
   }
+  
+  public static final Float32Array create(float[] data, int offset, int len) {
+	    return create(ArrayUtils.toJsArray(data, offset, len));
+	  }
 
   /**
    * Create a new ArrayBuffer with enough bytes to hold array.length elements of

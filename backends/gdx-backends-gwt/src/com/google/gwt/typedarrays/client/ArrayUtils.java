@@ -47,6 +47,14 @@ public class ArrayUtils {
     }
     return jsan;
   }
+  
+  public static JsArrayNumber toJsArray(float[] data, int offset, int len) {
+	    JsArrayNumber jsan = (JsArrayNumber) JsArrayNumber.createArray();
+	    for (int i = 0; i < len; i++) {
+	      jsan.set(i, data[i + offset]);
+	    }
+	    return jsan;
+	  }
 
   public static JsArrayInteger toJsArray(int[] data) {
     JsArrayInteger jsan = (JsArrayInteger) JsArrayNumber.createArray();
@@ -65,6 +73,14 @@ public class ArrayUtils {
     }
     return jsan;
   }
+  
+  public static JsArrayInteger toJsArray(short[] data, int offset, int len) {
+	    JsArrayInteger jsan = (JsArrayInteger) JsArrayInteger.createArray();
+	    for (int i = 0; i < len; i++) {
+	      jsan.set(i, data[offset + i]);
+	    }
+	    return jsan;
+	  }
 
   public static JsArrayInteger toJsArrayUnsigned(byte[] data) {
     JsArrayInteger jsan = (JsArrayInteger) JsArrayInteger.createArray();

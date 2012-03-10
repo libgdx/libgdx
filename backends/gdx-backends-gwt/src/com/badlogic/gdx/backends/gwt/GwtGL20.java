@@ -15,9 +15,12 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.gwt;
 
+import gwt.g3d.client.gl2.array.Int16Array;
+
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +28,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.typedarrays.client.Float32Array;
+import com.google.gwt.typedarrays.client.Uint16Array;
 import com.google.gwt.webgl.client.WebGLActiveInfo;
 import com.google.gwt.webgl.client.WebGLBuffer;
 import com.google.gwt.webgl.client.WebGLFramebuffer;
@@ -239,8 +243,8 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glDrawElements (int mode, int count, int type, Buffer indices) {
-		throw new GdxRuntimeException("not implemented");
-// gl.drawElements(BeginMode.parseBeginMode(mode), count, type, offset)
+		// FIXME this assumes that we actually use index buffers, not index arrays...
+		gl.drawElements(mode, count, type, indices.position());
 	}
 
 	@Override
@@ -408,15 +412,23 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glBufferData (int target, int size, Buffer data, int usage) {
 		if(data instanceof FloatBuffer) {
-			gl.bufferData(target, Float32Array.create(((FloatBuffer)data).array()), usage);
-		} else throw new GdxRuntimeException("Can only cope with FloatBuffer at the moment");
+			gl.bufferData(target, Float32Array.create(((FloatBuffer)data).array(), data.position(), data.limit() - data.position()), usage);
+		} else if(data instanceof ShortBuffer) {
+			gl.bufferData(target, Uint16Array.create(((ShortBuffer)data).array(), data.position(), data.limit() - data.position()), usage);
+		} else {
+			throw new GdxRuntimeException("Can only cope with FloatBuffer and ShortBuffer at the moment");
+		}
 	}
 
 	@Override
 	public void glBufferSubData (int target, int offset, int size, Buffer data) {
 		if(data instanceof FloatBuffer) {
-			gl.bufferSubData(target, offset, Float32Array.create(((FloatBuffer)data).array()));
-		} else throw new GdxRuntimeException("Can only cope with FloatBuffer at the moment");
+			gl.bufferSubData(target, offset, Float32Array.create(((FloatBuffer)data).array(), data.position(), data.limit() - data.position()));
+		} else if(data instanceof ShortBuffer) {
+			gl.bufferSubData(target, offset, Uint16Array.create(((ShortBuffer)data).array(), data.position(), data.limit() - data.position()));
+		} else {
+			throw new GdxRuntimeException("Can only cope with FloatBuffer and ShortBuffer at the moment");
+		}
 	}
 
 	@Override

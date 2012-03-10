@@ -39,18 +39,24 @@
 		<include name="**/graphics/Mesh.java"/>
 		<include name="**/graphics/OrthographicCamera.java"/>
 		<include name="**/graphics/PerspectiveCamera.java"/>
-		<include name="**/graphics/Pixmap.java"/>
+		<include name="**/graphics/TextureData.java"/>
 		<include name="**/graphics/VertexAttribute.java"/>
 		<include name="**/graphics/VertexAttributes.java"/>
-		<include name="**/graphics/glutils/IndexBufferObject.java"/>
+		<include name="**/graphics/glutils/PixmapTextureData.java"/>
+		<include name="**/graphics/glutils/FrameBuffer.java"/>
 		<include name="**/graphics/glutils/IndexBufferObjectSubData.java"/>
 		<include name="**/graphics/glutils/IndexData.java"/>
-		<!-- <include name="**/graphics/glutils/ShaderProgram.java"/>-->
-		<include name="**/graphics/glutils/VertexArray.java"/>
-		<include name="**/graphics/glutils/VertexBufferObject.java"/>
 		<include name="**/graphics/glutils/VertexBufferObjectSubData.java"/>
 		<include name="**/graphics/glutils/VertexData.java"/>
 		
+		<include name="**/graphics/g2d/Animation.java"/>
+		<include name="**/graphics/g2d/PixmapPacker.java"/>
+		<include name="**/graphics/g2d/Sprite.java"/>
+		<include name="**/graphics/g2d/SpriteBatch.java"/>
+		<include name="**/graphics/g2d/SpriteCache.java"/>
+		<include name="**/graphics/g2d/TextureRegion.java"/>
+		
+		<include name="**/graphics/g3d/decals/**"/>
 
 		<!-- math package -->
 		<include name="**/math/**"/>
@@ -65,32 +71,4 @@
 		<include name="**/utils/IntMap.java"/>
 		<include name="**/utils/IntArray.java"/>-->
 	</source>
-
-<!-- 	<source path='gdx'> -->
-<!-- 		<exclude name="**/audio/analysis/**" /> -->
-<!-- 		<exclude name="**/audio/io/**" /> -->
-<!-- 		<exclude name="**/files/FileHandle.java**"/> -->
-<!-- 		<exclude name="**/graphics/g2d/tiled/**" /> -->
-<!-- 		<exclude name="**/graphics/g2d/ParticleEffect.java" /> -->
-<!-- 		<exclude name="**/graphics/g2d/ParticleEmitter.java" /> -->
-<!-- 		<exclude name="**/graphics/g2d/Gdx2DPixmap.java" /> -->
-<!-- 		<exclude name="**/graphics/g3d/**" /> -->
-<!-- 		<exclude name="**/graphics/glutils/ETC1.java" /> -->
-<!-- 		<exclude name="**/graphics/Texture.java" /> -->
-<!-- 		<exclude name="**/graphics/Pixmap.java" /> -->
-<!-- 		<exclude name="**/graphics/TextureDict.java"/> -->
-<!-- 		<exclude name="**/graphics/TextureRef.java"/> -->
-<!-- 		<exclude name="**/input/**"/> -->
-<!-- 		<exclude name="**/physics/**" /> -->
-<!-- 		<exclude name="**/scenes/**" /> -->
-<!-- 		<exclude name="**/utils/AtomicQueue.java"/> -->
-<!-- 		<exclude name="**/utils/Base64Coder.java"/> -->
-<!-- 		<exclude name="**/utils/PauseableThread.java"/> -->
-<!-- 		<exclude name="**/utils/GdxNativesLoader.java"/> -->
-<!-- 		<exclude name="**/utils/NumberUtils.java"/> -->
-<!-- 		<exclude name="**/utils/Array.java"/> -->
-<!-- 		<exclude name="**/utils/NumberUtils.java"/> -->
-<!-- 		<exclude name="**/utils/LittleEndianInputStream.java"/> -->
-<!-- 		<exclude name="**/utils/Array.java"/> -->
-<!-- 	</source> -->
 </module>

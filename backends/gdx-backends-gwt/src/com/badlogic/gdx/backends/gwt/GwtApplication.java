@@ -81,7 +81,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		new Timer() {
 			@Override
 			public void run () {
-				graphics.setFps(0); // FIXME
+				graphics.update();
 				if(Gdx.graphics.getWidth() != lastWidth || Gdx.graphics.getHeight() != lastHeight) {
 					GwtApplication.this.listener.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 					lastWidth = graphics.getWidth();
@@ -93,7 +93,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 				runnables.clear();
 				listener.render();
 			}
-		}.scheduleRepeating(config.fps);
+		}.scheduleRepeating((int)((1f / config.fps) * 1000));
 	}
 
 	public abstract GwtApplicationConfiguration getConfig ();

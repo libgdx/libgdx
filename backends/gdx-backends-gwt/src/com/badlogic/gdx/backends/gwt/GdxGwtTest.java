@@ -15,6 +15,9 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.gwt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -22,19 +25,26 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.user.client.ui.Label;
 
 public class GdxGwtTest extends GwtApplication implements ApplicationListener {
 	ShaderProgram shader;
 	Mesh mesh;
 	Matrix4 matrix = new Matrix4();
+	SpriteBatch batch;
 	Texture texture;
+	List<Vector2> positions;
+	private Label label;
 	
 	@Override
 	public GwtApplicationConfiguration getConfig () {
@@ -48,6 +58,9 @@ public class GdxGwtTest extends GwtApplication implements ApplicationListener {
 
 	@Override
 	public void create () {
+		label = new Label("fps:");
+		Document.get().getBody().appendChild(label.getElement());
+		
 		String vertexShader = "attribute vec4 a_position;\n" +
 			"attribute vec2 a_texCoord0;\n" +
 			"uniform mat4 u_projView;\n" +
@@ -76,18 +89,22 @@ public class GdxGwtTest extends GwtApplication implements ApplicationListener {
 												  0.5f, 0.5f, 0, 1, 0,
 												  -0.5f, 0.5f, 0, 0, 0,
 												  -0.5f, -0.5f, 0, 0, 1 });
-		Pixmap pixmap = new Pixmap(512, 512, Format.RGBA8888);
-		pixmap.setColor(1, 0, 0, 1);
-		pixmap.fillRectangle(100, 100, 100, 100);
-		pixmap.setColor(1, 1, 0, 0.5f);
-		pixmap.fillCircle(200, 200, 50);
+		
+		Pixmap pixmap = new Pixmap(32, 32, Format.RGBA8888);
 		pixmap.setColor(0, 0, 1, 1);
-		pixmap.setColor(0xff00ff00);
-		pixmap.drawLine(400, 300, 200, 500);
-		pixmap.drawRectangle(30, 40, 50, 60);
-		pixmap.drawCircle(300, 300, 20);
+		pixmap.fill();
+		pixmap.setColor(1, 0, 0, 1);
+		pixmap.drawLine(0, 0, 32, 32);
+		pixmap.drawLine(32, 0, 0, 32);
 		texture = new Texture(pixmap);
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		pixmap.dispose();
+		
+		batch = new SpriteBatch();
+		positions = new ArrayList<Vector2>();
+		for(int i = 0; i < 100; i++) {
+			positions.add(new Vector2(MathUtils.random() * Gdx.graphics.getWidth(), MathUtils.random() * Gdx.graphics.getHeight()));
+		}
 	}
 
 	@Override
@@ -103,8 +120,17 @@ public class GdxGwtTest extends GwtApplication implements ApplicationListener {
 		shader.begin();
 		shader.setUniformMatrix("u_projView", matrix);
 		shader.setUniformi("u_texture", 0);
-		mesh.render(shader, GL20.GL_TRIANGLES);
+		for(int i = 0; i < 100; i++) {
+			mesh.render(shader, GL20.GL_TRIANGLES);
+		}
 		shader.end();
+		
+		batch.begin();
+		for(Vector2 position: positions) {
+			batch.draw(texture, position.x, position.y);
+		}
+		batch.end();
+		label.setText("fps:" + Gdx.graphics.getFramesPerSecond() + ", delta: " + Gdx.graphics.getDeltaTime());
 	}
 
 	@Override

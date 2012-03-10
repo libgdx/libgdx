@@ -18,6 +18,8 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.utils.NumberUtils;
+
 /** Encapsulates a 2D vector. Allows chaining methods by returning a reference to itself
  * @author badlogicgames@gmail.com */
 public class Vector2 implements Serializable {
@@ -266,8 +268,8 @@ public class Vector2 implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Float.floatToIntBits(x);
-		result = prime * result + Float.floatToIntBits(y);
+		result = prime * result + NumberUtils.floatToIntBits(x);
+		result = prime * result + NumberUtils.floatToIntBits(y);
 		return result;
 	}
 
@@ -280,9 +282,9 @@ public class Vector2 implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Vector2 other = (Vector2) obj;
-		if (Float.floatToIntBits(x) != Float.floatToIntBits(other.x))
+		if (NumberUtils.floatToIntBits(x) != NumberUtils.floatToIntBits(other.x))
 			return false;
-		if (Float.floatToIntBits(y) != Float.floatToIntBits(other.y))
+		if (NumberUtils.floatToIntBits(y) != NumberUtils.floatToIntBits(other.y))
 			return false;
 		return true;
 	}
