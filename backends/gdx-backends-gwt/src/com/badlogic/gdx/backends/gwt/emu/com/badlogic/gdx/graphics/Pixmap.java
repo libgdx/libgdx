@@ -29,6 +29,7 @@ import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.canvas.dom.client.Context2d.Composite;
 import com.google.gwt.dom.client.CanvasElement;
+import com.google.gwt.dom.client.ImageElement;
 
 public class Pixmap implements Disposable {
 	public static Map<Integer, Pixmap> pixmaps = new HashMap<Integer, Pixmap>();
@@ -51,6 +52,11 @@ public class Pixmap implements Disposable {
 	int r = 255, g = 255, b = 255;
 	float a;
 	String color = make(r, g, b, a);
+	
+	public Pixmap(ImageElement img) {
+		this(img.getWidth(), img.getHeight(), Format.RGBA8888);
+		context.drawImage(img, 0, 0);
+	}
 
 	public Pixmap (int width, int height, Format format) {
 		this.width = width;
