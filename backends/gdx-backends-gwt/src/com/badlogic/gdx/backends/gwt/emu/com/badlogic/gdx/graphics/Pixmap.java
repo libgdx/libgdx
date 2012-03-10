@@ -27,6 +27,7 @@ import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.canvas.dom.client.ImageData;
+import com.google.gwt.canvas.dom.client.Context2d.Composite;
 import com.google.gwt.dom.client.CanvasElement;
 
 public class Pixmap implements Disposable {
@@ -47,23 +48,28 @@ public class Pixmap implements Disposable {
 	Context2d context;
 	int id;
 	IntBuffer buffer;
-	int r = 1, g = 1, b = 1, a = 1;
-	CssColor color = CssColor.make(r, g, b);
+	int r = 255, g = 255, b = 255;
+	float a;
+	String color = make(r, g, b, a);
 
 	public Pixmap (int width, int height, Format format) {
 		this.width = width;
 		this.height = height;
-		this.format = format;
+		this.format = Format.RGBA8888;
 		canvas = Canvas.createIfSupported();
 		canvas.getCanvasElement().setWidth(width);
 		canvas.getCanvasElement().setHeight(height);
 		context = canvas.getContext2d();
-		context.setFillStyle("blue");
-		context.fillRect(10, 10, 10, 10);
+		System.out.println(context.getGlobalCompositeOperation());
+		context.setGlobalCompositeOperation(Composite.SOURCE_OVER);
 		buffer = BufferUtils.newIntBuffer(1);
 		id = nextId++;
 		buffer.put(0, id);
 		pixmaps.put(id, this);
+	}
+
+	private String make (int r2, int g2, int b2, float a2) {
+		return "rgba(" + r2 + "," + g2 + "," + b2 + "," + a2 + ")";
 	}
 
 	public Format getFormat () {
@@ -94,11 +100,11 @@ public class Pixmap implements Disposable {
 	/** Sets the color for the following drawing operations
 	 * @param color the color, encoded as RGBA8888 */
 	public void setColor (int color) {
-		a = (color >>> 24) & 0xff;
+		a = ((color >>> 24) & 0xff) / 255f;
 		r = (color >>> 16) & 0xff;
 		g = (color >>> 8) & 0xff;
-		g = (color & 0xff);
-		this.color = CssColor.make(r, g, b);
+		b = (color & 0xff);
+		this.color = make(r, g, b, a);
 		context.setFillStyle(this.color);
 		context.setStrokeStyle(this.color);
 	}
@@ -113,8 +119,8 @@ public class Pixmap implements Disposable {
 		this.r = (int)(r * 255);
 		this.g = (int)(g * 255);
 		this.b = (int)(b * 255);
-		this.a = (int)(a * 255);
-		color = CssColor.make(this.r, this.g, this.b);
+		this.a = a;
+		color = make(this.r, this.g, this.b, this.a);
 		context.setFillStyle(color);
 		context.setStrokeStyle(this.color);
 	}
@@ -144,8 +150,11 @@ public class Pixmap implements Disposable {
 	 * @param x2 The x-coordinate of the first point
 	 * @param y2 The y-coordinate of the first point */
 	public void drawLine (int x, int y, int x2, int y2) {
+		context.beginPath();
 		context.moveTo(x, y);
 		context.lineTo(x2, y2);
+		context.stroke();
+		context.closePath();
 	}
 
 	/** Draws a rectangle outline starting at x, y extending by width to the right and by height downwards (y-axis points downwards)
@@ -156,7 +165,10 @@ public class Pixmap implements Disposable {
 	 * @param width The width in pixels
 	 * @param height The height in pixels */
 	public void drawRectangle (int x, int y, int width, int height) {
+		context.beginPath();
 		context.rect(x, y, width, height);
+		context.stroke();
+		context.closePath();
 	}
 
 	/** Draws an area form another Pixmap to this Pixmap.
@@ -218,6 +230,7 @@ public class Pixmap implements Disposable {
 	public void drawCircle (int x, int y, int radius) {
 		context.beginPath();
 		context.arc(x, y, radius, 0, 2 * Math.PI, false);
+		context.stroke();
 		context.closePath();
 	}
 

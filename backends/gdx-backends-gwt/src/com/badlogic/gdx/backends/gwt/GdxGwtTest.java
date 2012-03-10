@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -37,7 +38,7 @@ public class GdxGwtTest extends GwtApplication implements ApplicationListener {
 	
 	@Override
 	public GwtApplicationConfiguration getConfig () {
-		return new GwtApplicationConfiguration(500, 500);
+		return new GwtApplicationConfiguration(640, 640);
 	}
 
 	@Override
@@ -76,7 +77,17 @@ public class GdxGwtTest extends GwtApplication implements ApplicationListener {
 												  -0.5f, 0.5f, 0, 0, 0,
 												  -0.5f, -0.5f, 0, 0, 1 });
 		Pixmap pixmap = new Pixmap(512, 512, Format.RGBA8888);
+		pixmap.setColor(1, 0, 0, 1);
+		pixmap.fillRectangle(100, 100, 100, 100);
+		pixmap.setColor(1, 1, 0, 0.5f);
+		pixmap.fillCircle(200, 200, 50);
+		pixmap.setColor(0, 0, 1, 1);
+		pixmap.setColor(0xff00ff00);
+		pixmap.drawLine(400, 300, 200, 500);
+		pixmap.drawRectangle(30, 40, 50, 60);
+		pixmap.drawCircle(300, 300, 20);
 		texture = new Texture(pixmap);
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	}
 
 	@Override
