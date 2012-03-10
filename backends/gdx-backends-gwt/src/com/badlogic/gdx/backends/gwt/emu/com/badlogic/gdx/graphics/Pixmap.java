@@ -252,7 +252,16 @@ public class Pixmap implements Disposable {
 	 * @param y The y-coordinate
 	 * @return The pixel color in RGBA8888 format. */
 	public int getPixel (int x, int y) {
-		// FIXME
+		// FIXME welp, this doesn't work :/
+//		ImageData imageData = context.getImageData(x, y, 1, 1);
+//		int r = imageData.getData().get(0);
+//		int g = imageData.getData().get(1);
+//		int b = imageData.getData().get(2);
+//		int a = imageData.getData().get(3);
+//		return (imageData.getAlphaAt(0, 0) << 24) | 
+//				 (imageData.getRedAt(0, 0) << 16) |
+//				 (imageData.getGreenAt(0, 0) << 8) |
+//				 (imageData.getBlueAt(0, 0));
 		return 0;
 	}
 
