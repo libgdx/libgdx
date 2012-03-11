@@ -1,0 +1,5 @@
+i:data/arial-15_00.png
+i:data/badlogic.jpg
+t:data/arial-15.fnt
+t:data/shader-vs.glsl
+t:data/shader-fs.glsl
