@@ -43,6 +43,7 @@
 		<include name="**/graphics/VertexAttribute.java"/>
 		<include name="**/graphics/VertexAttributes.java"/>
 		<include name="**/graphics/glutils/PixmapTextureData.java"/>
+		<include name="**/graphics/glutils/FileTextureData.java"/>
 		<include name="**/graphics/glutils/FrameBuffer.java"/>
 		<include name="**/graphics/glutils/IndexBufferObjectSubData.java"/>
 		<include name="**/graphics/glutils/IndexData.java"/>
@@ -55,8 +56,20 @@
 		<include name="**/graphics/g2d/SpriteBatch.java"/>
 		<include name="**/graphics/g2d/SpriteCache.java"/>
 		<include name="**/graphics/g2d/TextureRegion.java"/>
+		<include name="**/graphics/g2d/BitmapFont.java"/>
+		<include name="**/graphics/g2d/BitmapFontCache.java"/>
 		
 		<include name="**/graphics/g3d/decals/**"/>
+		
+		<!-- assets -->
+		<include name="**/assets/AssetDescriptor.java"/>
+		<include name="**/assets/AssetErrorListener.java"/>
+		<include name="**/assets/AssetLoaderParameters.java"/>
+		<include name="**/assets/RefCountedContainer.java"/>
+		<include name="**/assets/loaders/AssetLoader.java"/>
+		<include name="**/assets/loaders/FileHandleResolver.java"/>
+		<include name="**/assets/loaders/resolvers/InternalFileHandleResolver.java"/>
+		
 
 		<!-- math package -->
 		<include name="**/math/**"/>
@@ -67,8 +80,12 @@
 		<include name="**/utils/Sort.java"/>
 		<include name="**/utils/ComparableTimSort.java"/>
 		<include name="**/utils/TimSort.java"/>
-		<!-- <include name="**/utils/ObjectMap.java"/>
+		<include name="**/utils/ObjectMap.java"/>
+		<include name="**/utils/ObjectIntMap.java"/>
 		<include name="**/utils/IntMap.java"/>
-		<include name="**/utils/IntArray.java"/>-->
+		<include name="**/utils/IntArray.java"/>
+		<include name="**/utils/LongMap.java"/>
+		<include name="**/utils/LongArray.java"/>
+		<include name="**/utils/FloatArray.java"/>
 	</source>
 </module>

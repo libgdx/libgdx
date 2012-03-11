@@ -39,7 +39,7 @@ public class AssetDescriptor<T> {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(fileName);
 		buffer.append(", ");
-		buffer.append(type.getSimpleName());
+		buffer.append(type.getName());
 		return buffer.toString();
 	}
 }
