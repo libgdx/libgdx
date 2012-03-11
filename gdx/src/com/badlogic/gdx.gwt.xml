@@ -58,6 +58,7 @@
 		<include name="**/graphics/g2d/TextureRegion.java"/>
 		<include name="**/graphics/g2d/BitmapFont.java"/>
 		<include name="**/graphics/g2d/BitmapFontCache.java"/>
+		<include name="**/graphics/g2d/TextureAtlas.java"/>
 		
 		<include name="**/graphics/g3d/decals/**"/>
 		

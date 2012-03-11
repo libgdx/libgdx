@@ -86,8 +86,13 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.files = new GwtFiles(preloader);
 		
 		// tell listener about app creation
-		listener.create();
-		listener.resize(graphics.getWidth(), graphics.getHeight());
+		try {
+			listener.create();
+			listener.resize(graphics.getWidth(), graphics.getHeight());
+		} catch(Throwable t) {
+			t.printStackTrace();
+			System.out.println(t.getMessage());
+		}
 
 		// add resize handler to canvas
 		// FIXME
@@ -96,17 +101,21 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		new Timer() {
 			@Override
 			public void run () {
-				graphics.update();
-				if(Gdx.graphics.getWidth() != lastWidth || Gdx.graphics.getHeight() != lastHeight) {
-					GwtApplication.this.listener.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-					lastWidth = graphics.getWidth();
-					lastHeight = graphics.getHeight();
+				try {
+					graphics.update();
+					if(Gdx.graphics.getWidth() != lastWidth || Gdx.graphics.getHeight() != lastHeight) {
+						GwtApplication.this.listener.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+						lastWidth = graphics.getWidth();
+						lastHeight = graphics.getHeight();
+					}
+					for (int i = 0; i < runnables.size(); i++) {
+						runnables.get(i).run();
+					}
+					runnables.clear();
+					listener.render();
+				} catch(Throwable t) {
+					t.printStackTrace();
 				}
-				for (int i = 0; i < runnables.size(); i++) {
-					runnables.get(i).run();
-				}
-				runnables.clear();
-				listener.render();
 			}
 		}.scheduleRepeating((int)((1f / config.fps) * 1000));
 	}

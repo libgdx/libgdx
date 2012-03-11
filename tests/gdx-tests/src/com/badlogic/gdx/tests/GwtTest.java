@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
@@ -33,6 +34,7 @@ public class GwtTest extends GdxTest {
 	Sprite sprite;
 	BitmapFont font;
 	BitmapFontCache cache;
+	TextureAtlas atlas;
 
 	@Override
 	public void create () {
@@ -58,6 +60,8 @@ public class GwtTest extends GdxTest {
 		cache = new BitmapFontCache(font);
 		cache.setColor(Color.RED);
 		cache.setMultiLineText("This is a Test", 0, 0);
+		
+		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
 	}
 
 	@Override
@@ -78,6 +82,8 @@ public class GwtTest extends GdxTest {
 			sprite.setPosition(position.x, position.y);
 			sprite.draw(batch);
 		}
+		
+		batch.draw(atlas.findRegion("font"), 100, 100);
 		font.draw(batch, "fps:" + Gdx.graphics.getFramesPerSecond() + ", delta: " + Gdx.graphics.getDeltaTime(), 0, 30);
 		cache.setPosition(200, 200);
 		cache.draw(batch);

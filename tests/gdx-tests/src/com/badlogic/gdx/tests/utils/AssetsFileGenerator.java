@@ -33,7 +33,7 @@ public class AssetsFileGenerator {
 					System.out.println(fileName);
 				}
 				if(fileName.endsWith(".glsl") || fileName.endsWith(".fnt") || fileName.endsWith(".pack") ||
-					fileName.endsWith(".obj")) {
+					fileName.endsWith(".obj") || file.extension().equals("")) {
 					list.append("t:" + fileName + "\n");
 					System.out.println(fileName);
 				}
