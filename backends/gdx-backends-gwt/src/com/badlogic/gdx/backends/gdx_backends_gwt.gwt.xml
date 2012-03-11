@@ -10,7 +10,4 @@
 	<source path="gwt">
 		<exclude name="**/emu/**" />
 	</source>
-
-	<entry-point class='com.badlogic.gdx.backends.gwt.GdxGwtTest' />
-<!--     <entry-point class='com.badlogic.gdx.backends.gwt.test.WebGLDemo' /> -->
 </module>

@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
@@ -81,6 +79,7 @@ public class IndexBufferObject implements IndexData {
 	}
 
 	private int createBufferObject () {
+		tmpHandle.clear();
 		if (Gdx.gl20 != null) {
 			Gdx.gl20.glGenBuffers(1, tmpHandle);
 			return tmpHandle.get(0);

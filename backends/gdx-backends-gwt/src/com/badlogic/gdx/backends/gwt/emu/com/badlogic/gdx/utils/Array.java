@@ -33,7 +33,6 @@ public class Array<T> implements Iterable<T> {
 	public int size;
 	public boolean ordered;
 
-	@SuppressWarnings("rawtypes")
 	private ArrayIterator iterator;
 
 	/** Creates an ordered array with a capacity of 16. */
@@ -49,10 +48,49 @@ public class Array<T> implements Iterable<T> {
 	/** @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing array to be grown. */
-	@SuppressWarnings("unchecked")
 	public Array (boolean ordered, int capacity) {
 		this.ordered = ordered;
 		items = (T[])new Object[capacity];
+	}
+
+	/** Creates a new array with {@link #items} of the specified type.
+	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
+	 *           memory copy.
+	 * @param capacity Any elements added beyond this will cause the backing array to be grown. */
+	public Array (boolean ordered, int capacity, Class<T> arrayType) {
+		this.ordered = ordered;
+		items = (T[])new Object[capacity];
+	}
+
+	/** Creates an ordered array with {@link #items} of the specified type and a capacity of 16. */
+	public Array (Class<T> arrayType) {
+		this(false, 16, arrayType);
+	}
+
+	/** Creates a new array containing the elements in the specified array. The new array will have the same type of backing array
+	 * and will be ordered if the specified array is ordered. The capacity is set to the number of elements, so any subsequent
+	 * elements added will cause the backing array to be grown. */
+	public Array (Array array) {
+		this(array.ordered, array.size, (Class<T>)array.items.getClass().getComponentType());
+		size = array.size;
+		System.arraycopy(array.items, 0, items, 0, size);
+	}
+
+	/** Creates a new ordered array containing the elements in the specified array. The new array will have the same type of backing
+	 * array. The capacity is set to the number of elements, so any subsequent elements added will cause the backing array to be
+	 * grown. */
+	public Array (T[] array) {
+		this(true, array);
+	}
+
+	/** Creates a new array containing the elements in the specified array. The new array will have the same type of backing array.
+	 * The capacity is set to the number of elements, so any subsequent elements added will cause the backing array to be grown.
+	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
+	 *           memory copy. */
+	public Array (boolean ordered, T[] array) {
+		this(ordered, array.length, (Class)array.getClass().getComponentType());
+		size = array.length;
+		System.arraycopy(array, 0, items, 0, size);
 	}
 
 	public void add (T value) {
@@ -61,12 +99,10 @@ public class Array<T> implements Iterable<T> {
 		items[size++] = value;
 	}
 
-	@SuppressWarnings("rawtypes")
 	public void addAll (Array array) {
 		addAll(array, 0, array.size);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void addAll (Array array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
@@ -79,12 +115,12 @@ public class Array<T> implements Iterable<T> {
 
 	public void addAll (T[] array, int offset, int length) {
 		T[] items = this.items;
-		int sizeNeeded = size + length - offset;
-		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
+		int sizeNeeded = size + length;
+		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
 		System.arraycopy(array, offset, items, size, length);
 		size += length;
 	}
-
+	
 	public T get (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		return items[index];
@@ -108,7 +144,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** @param identity If true, == comparison will be used. If false, .equals() comaparison will be used. */
 	public boolean contains (T value, boolean identity) {
-		Object[] items = this.items;
+		T[] items = this.items;
 		int i = size - 1;
 		if (identity || value == null) {
 			while (i >= 0)
@@ -121,7 +157,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public int indexOf (T value, boolean identity) {
-		Object[] items = this.items;
+		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++)
 				if (items[i] == value) return i;
@@ -133,7 +169,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public boolean removeValue (T value, boolean identity) {
-		Object[] items = this.items;
+		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++) {
 				if (items[i] == value) {
@@ -153,10 +189,9 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Removes and returns the item at the specified index. */
-	@SuppressWarnings("unchecked")
 	public T removeIndex (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		Object[] items = this.items;
+		T[] items = this.items;
 		T value = (T)items[index];
 		size--;
 		if (ordered)
@@ -181,7 +216,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public void clear () {
-		Object[] items = this.items;
+		T[] items = this.items;
 		for (int i = 0, n = size; i < n; i++)
 			items[i] = null;
 		size = 0;
@@ -202,10 +237,9 @@ public class Array<T> implements Iterable<T> {
 		return items;
 	}
 
-	@SuppressWarnings("unchecked")
 	protected T[] resize (int newSize) {
 		T[] items = this.items;
-		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), newSize);
+		T[] newItems = (T[])new Object[newSize];
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		this.items = newItems;
 		return newItems;
@@ -242,7 +276,6 @@ public class Array<T> implements Iterable<T> {
 
 	/** Returns an iterator for the items in the array. Remove is supported. Note that the same iterator instance is returned each
 	 * time this method is called. Use the {@link ArrayIterator} constructor for nested or multithreaded iteration. */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Iterator<T> iterator () {
 		if (iterator == null) iterator = new ArrayIterator(this);
 		iterator.index = 0;
@@ -258,21 +291,25 @@ public class Array<T> implements Iterable<T> {
 		size = newSize;
 	}
 
-	@SuppressWarnings("unchecked")
+	/** Returns a random item from the array, or null if the array is empty. */
+	public T random () {
+		if (size == 0) return null;
+		return items[MathUtils.random(0, size - 1)];
+	}
+
 	public T[] toArray () {
 		return (T[])toArray(items.getClass().getComponentType());
 	}
 
-	@SuppressWarnings("unchecked")
 	public <V> V[] toArray (Class<V> type) {
-		V[] result = (V[])java.lang.reflect.Array.newInstance(type, size);
+		V[] result = (V[])new Object[size];
 		System.arraycopy(items, 0, result, 0, size);
 		return result;
 	}
 
 	public String toString () {
 		if (size == 0) return "[]";
-		Object[] items = this.items;
+		T[] items = this.items;
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append('[');
 		buffer.append(items[0]);
@@ -286,7 +323,7 @@ public class Array<T> implements Iterable<T> {
 
 	public String toString (String separator) {
 		if (size == 0) return "";
-		Object[] items = this.items;
+		T[] items = this.items;
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append(items[0]);
 		for (int i = 1; i < size; i++) {

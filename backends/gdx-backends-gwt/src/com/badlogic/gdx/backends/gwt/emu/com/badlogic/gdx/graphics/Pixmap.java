@@ -21,8 +21,11 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.backends.gwt.GwtFileHandle;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
@@ -53,12 +56,24 @@ public class Pixmap implements Disposable {
 	float a;
 	String color = make(r, g, b, a);
 	
+	public Pixmap (FileHandle file) {
+		GwtFileHandle gwtFile = (GwtFileHandle)file;
+		ImageElement img = gwtFile.preloader.images.get(file.path());
+		if(img == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
+		create(img.getWidth(), img.getHeight(), Format.RGBA8888);
+		context.drawImage(img, 0, 0);
+	}
+	
 	public Pixmap(ImageElement img) {
-		this(img.getWidth(), img.getHeight(), Format.RGBA8888);
+		create(img.getWidth(), img.getHeight(), Format.RGBA8888);
 		context.drawImage(img, 0, 0);
 	}
 
 	public Pixmap (int width, int height, Format format) {
+		create(width, height, format);
+	}
+
+	private void create (int width, int height, Format format2) {
 		this.width = width;
 		this.height = height;
 		this.format = Format.RGBA8888;
@@ -66,7 +81,6 @@ public class Pixmap implements Disposable {
 		canvas.getCanvasElement().setWidth(width);
 		canvas.getCanvasElement().setHeight(height);
 		context = canvas.getContext2d();
-		System.out.println(context.getGlobalCompositeOperation());
 		context.setGlobalCompositeOperation(Composite.SOURCE_OVER);
 		buffer = BufferUtils.newIntBuffer(1);
 		id = nextId++;

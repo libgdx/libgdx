@@ -27,10 +27,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.gwt.preloader.Preloader;
+import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -45,6 +45,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private int logLevel = LOG_ERROR;
 	private List<Runnable> runnables = new ArrayList<Runnable>();
 	private int lastWidth, lastHeight;
+	private Preloader preloader;
 
 	@Override
 	public void onModuleLoad () {
@@ -61,21 +62,35 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.gl20 = graphics.getGL20();
 		Gdx.gl = graphics.getGLCommon();
 
-		setupLoop();
+		preloader = new Preloader();
+		preloader.preload("assets.txt", new PreloaderCallback() {
+			@Override
+			public void loaded (String file, int loaded, int total) {
+				System.out.println("loaded " + file + "," + loaded + "," + total);
+			}
+			
+			@Override
+			public void error (String file) {
+				System.out.println("error: " + file);
+			}
+
+			@Override
+			public void done () {
+				setupLoop();
+			}
+		});
 	}
 
 	private void setupLoop () {
+		// setup rest of modules
+		Gdx.files = new GwtFiles(preloader);
+		
 		// tell listener about app creation
 		listener.create();
 		listener.resize(graphics.getWidth(), graphics.getHeight());
 
-		// add resize handler
-//		graphics.surface.addHandler(new ResizeHandler() {
-//			@Override
-//			public void onResize (ResizeEvent event) {
-//				GwtApplication.this.listener.resize(event.getWidth(), event.getHeight());
-//			}
-//		}, ResizeEvent.getType());
+		// add resize handler to canvas
+		// FIXME
 
 		// setup rendering timer
 		new Timer() {
@@ -119,8 +134,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	@Override
 	public Files getFiles () {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		return Gdx.files;
 	}
 
 	private void checkLogLabel () {
@@ -169,6 +183,18 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	}
 
 	@Override
+	public void debug (String tag, String message) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void debug (String tag, String message, Throwable exception) {
+		// TODO Auto-generated method stub
+
+	}
+	
+	@Override
 	public void setLogLevel (int logLevel) {
 		this.logLevel = logLevel;
 	}
@@ -206,17 +232,5 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	@Override
 	public void exit () {
-	}
-
-	@Override
-	public void debug (String tag, String message) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void debug (String tag, String message, Throwable exception) {
-		// TODO Auto-generated method stub
-
 	}
 }

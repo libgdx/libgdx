@@ -1,0 +1,3 @@
+i:data/badlogic.jpg
+t:data/shader-vs.glsl
+t:data/shader-fs.glsl

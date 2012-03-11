@@ -89,6 +89,7 @@ public class VertexBufferObject implements VertexData {
 	}
 
 	private int createBufferObject () {
+		tmpHandle.clear();
 		if (Gdx.gl20 != null)
 			Gdx.gl20.glGenBuffers(1, tmpHandle);
 		else

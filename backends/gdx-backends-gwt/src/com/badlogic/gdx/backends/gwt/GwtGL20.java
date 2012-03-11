@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.gwt;
 
-import gwt.g3d.client.gl2.array.Int16Array;
-
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;

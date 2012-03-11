@@ -17,7 +17,6 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -27,6 +26,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.math.Matrix3;
@@ -131,6 +131,10 @@ public class ShaderProgram implements Disposable {
 	private ByteBuffer buffer = null;
 	private FloatBuffer floatBuffer = null;
 
+	public ShaderProgram (FileHandle vertexShader, FileHandle fragmentShader) {
+		this(vertexShader.readString(), fragmentShader.readString());
+	}
+	
 	/** Construcs a new JOglShaderProgram and immediatly compiles it.
 	 * 
 	 * @param vertexShader the vertex shader
