@@ -8,6 +8,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Mesh.VertexDataType;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -33,6 +35,7 @@ public class GwtTestStarter extends GwtApplication implements ApplicationListene
 	List<Vector2> positions;
 	Sprite sprite;
 	BitmapFont font;
+	BitmapFontCache cache;
 
 	@Override
 	public GwtApplicationConfiguration getConfig () {
@@ -65,6 +68,9 @@ public class GwtTestStarter extends GwtApplication implements ApplicationListene
 		sprite.setOrigin(32, 32);
 
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		cache = new BitmapFontCache(font);
+		cache.setColor(Color.RED);
+		cache.setMultiLineText("This is a Test", 0, 0);
 	}
 
 	@Override
@@ -86,6 +92,8 @@ public class GwtTestStarter extends GwtApplication implements ApplicationListene
 			sprite.draw(batch);
 		}
 		font.draw(batch, "fps:" + Gdx.graphics.getFramesPerSecond() + ", delta: " + Gdx.graphics.getDeltaTime(), 0, 30);
+		cache.setPosition(200, 200);
+		cache.draw(batch);
 		batch.end();
 	}
 
