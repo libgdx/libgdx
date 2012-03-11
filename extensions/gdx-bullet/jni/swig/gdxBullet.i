@@ -133,10 +133,8 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "LinearMath/btMotionState.h"
 
-%{
-#include <LinearMath/btDefaultMotionState.h>
-%}
-%include "LinearMath/btDefaultMotionState.h"
+/* Extension methods */
+%include "custom/btDefaultMotionState.i"
 
 %{
 #include <LinearMath/btConvexHull.h>
@@ -456,10 +454,8 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "BulletCollision/CollisionShapes/btConvex2dShape.h"
 
-%{
-#include <BulletCollision/CollisionDispatch/btCollisionObject.h>
-%}
-%include "BulletCollision/CollisionDispatch/btCollisionObject.h"
+/* Has extensions */
+%include "custom/btCollisionObject.i"
 
 /* Has nested classes or structs */
 %include "custom/btRigidBody.i"

@@ -49,7 +49,7 @@ public class btCollisionObject {
   }
 
   public Vector3 getAnisotropicFriction() {
-	return gdxBulletJNI.btCollisionObject_getAnisotropicFriction(swigCPtr, this);
+	return gdxBulletJNI.btCollisionObject_getAnisotropicFriction__SWIG_0(swigCPtr, this);
 }
 
   public void setAnisotropicFriction(Vector3 anisotropicFriction) {
@@ -201,11 +201,11 @@ public class btCollisionObject {
   }
 
   public Vector3 getInterpolationLinearVelocity() {
-	return gdxBulletJNI.btCollisionObject_getInterpolationLinearVelocity(swigCPtr, this);
+	return gdxBulletJNI.btCollisionObject_getInterpolationLinearVelocity__SWIG_0(swigCPtr, this);
 }
 
   public Vector3 getInterpolationAngularVelocity() {
-	return gdxBulletJNI.btCollisionObject_getInterpolationAngularVelocity(swigCPtr, this);
+	return gdxBulletJNI.btCollisionObject_getInterpolationAngularVelocity__SWIG_0(swigCPtr, this);
 }
 
   public int getIslandTag() {
@@ -283,6 +283,26 @@ public class btCollisionObject {
 
   public void serializeSingleObject(SWIGTYPE_p_btSerializer serializer) {
     gdxBulletJNI.btCollisionObject_serializeSingleObject(swigCPtr, this, SWIGTYPE_p_btSerializer.getCPtr(serializer));
+  }
+
+  public void getAnisotropicFriction(Vector3 out) {
+    gdxBulletJNI.btCollisionObject_getAnisotropicFriction__SWIG_1(swigCPtr, this, out);
+  }
+
+  public void getWorldTransform(btTransform out) {
+    gdxBulletJNI.btCollisionObject_getWorldTransform__SWIG_2(swigCPtr, this, btTransform.getCPtr(out), out);
+  }
+
+  public void getInterpolationWorldTransform(btTransform out) {
+    gdxBulletJNI.btCollisionObject_getInterpolationWorldTransform__SWIG_2(swigCPtr, this, btTransform.getCPtr(out), out);
+  }
+
+  public void getInterpolationLinearVelocity(Vector3 out) {
+    gdxBulletJNI.btCollisionObject_getInterpolationLinearVelocity__SWIG_1(swigCPtr, this, out);
+  }
+
+  public void getInterpolationAngularVelocity(Vector3 out) {
+    gdxBulletJNI.btCollisionObject_getInterpolationAngularVelocity__SWIG_1(swigCPtr, this, out);
   }
 
   public final static class CollisionFlags {

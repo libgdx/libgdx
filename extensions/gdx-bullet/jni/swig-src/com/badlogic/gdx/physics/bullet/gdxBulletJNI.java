@@ -313,6 +313,9 @@ public class gdxBulletJNI {
   public final static native long new_btDefaultMotionState__SWIG_0(long jarg1, btTransform jarg1_, long jarg2, btTransform jarg2_);
   public final static native long new_btDefaultMotionState__SWIG_1(long jarg1, btTransform jarg1_);
   public final static native long new_btDefaultMotionState__SWIG_2();
+  public final static native void btDefaultMotionState_getGraphicsWorldTrans(long jarg1, btDefaultMotionState jarg1_, long jarg2, btTransform jarg2_);
+  public final static native void btDefaultMotionState_getCenterOfMassOffset(long jarg1, btDefaultMotionState jarg1_, long jarg2, btTransform jarg2_);
+  public final static native void btDefaultMotionState_getStartWorldTrans(long jarg1, btDefaultMotionState jarg1_, long jarg2, btTransform jarg2_);
   public final static native void delete_btDefaultMotionState(long jarg1);
   public final static native long new_HullResult();
   public final static native void HullResult_mPolygons_set(long jarg1, HullResult jarg1_, boolean jarg2);
@@ -1640,7 +1643,7 @@ public class gdxBulletJNI {
   public final static native void delete_btConvex2dShape(long jarg1);
   public final static native long btConvex2dShape_getChildShape__SWIG_0(long jarg1, btConvex2dShape jarg1_);
   public final static native boolean btCollisionObject_mergesSimulationIslands(long jarg1, btCollisionObject jarg1_);
-  public final static native Vector3 btCollisionObject_getAnisotropicFriction(long jarg1, btCollisionObject jarg1_);
+  public final static native Vector3 btCollisionObject_getAnisotropicFriction__SWIG_0(long jarg1, btCollisionObject jarg1_);
   public final static native void btCollisionObject_setAnisotropicFriction(long jarg1, btCollisionObject jarg1_, Vector3 jarg2);
   public final static native boolean btCollisionObject_hasAnisotropicFriction(long jarg1, btCollisionObject jarg1_);
   public final static native void btCollisionObject_setContactProcessingThreshold(long jarg1, btCollisionObject jarg1_, float jarg2);
@@ -1678,8 +1681,8 @@ public class gdxBulletJNI {
   public final static native void btCollisionObject_setInterpolationWorldTransform(long jarg1, btCollisionObject jarg1_, long jarg2, btTransform jarg2_);
   public final static native void btCollisionObject_setInterpolationLinearVelocity(long jarg1, btCollisionObject jarg1_, Vector3 jarg2);
   public final static native void btCollisionObject_setInterpolationAngularVelocity(long jarg1, btCollisionObject jarg1_, Vector3 jarg2);
-  public final static native Vector3 btCollisionObject_getInterpolationLinearVelocity(long jarg1, btCollisionObject jarg1_);
-  public final static native Vector3 btCollisionObject_getInterpolationAngularVelocity(long jarg1, btCollisionObject jarg1_);
+  public final static native Vector3 btCollisionObject_getInterpolationLinearVelocity__SWIG_0(long jarg1, btCollisionObject jarg1_);
+  public final static native Vector3 btCollisionObject_getInterpolationAngularVelocity__SWIG_0(long jarg1, btCollisionObject jarg1_);
   public final static native int btCollisionObject_getIslandTag(long jarg1, btCollisionObject jarg1_);
   public final static native void btCollisionObject_setIslandTag(long jarg1, btCollisionObject jarg1_, int jarg2);
   public final static native int btCollisionObject_getCompanionId(long jarg1, btCollisionObject jarg1_);
@@ -1699,6 +1702,11 @@ public class gdxBulletJNI {
   public final static native int btCollisionObject_calculateSerializeBufferSize(long jarg1, btCollisionObject jarg1_);
   public final static native String btCollisionObject_serialize(long jarg1, btCollisionObject jarg1_, long jarg2, long jarg3);
   public final static native void btCollisionObject_serializeSingleObject(long jarg1, btCollisionObject jarg1_, long jarg2);
+  public final static native void btCollisionObject_getAnisotropicFriction__SWIG_1(long jarg1, btCollisionObject jarg1_, Vector3 jarg2);
+  public final static native void btCollisionObject_getWorldTransform__SWIG_2(long jarg1, btCollisionObject jarg1_, long jarg2, btTransform jarg2_);
+  public final static native void btCollisionObject_getInterpolationWorldTransform__SWIG_2(long jarg1, btCollisionObject jarg1_, long jarg2, btTransform jarg2_);
+  public final static native void btCollisionObject_getInterpolationLinearVelocity__SWIG_1(long jarg1, btCollisionObject jarg1_, Vector3 jarg2);
+  public final static native void btCollisionObject_getInterpolationAngularVelocity__SWIG_1(long jarg1, btCollisionObject jarg1_, Vector3 jarg2);
   public final static native void btCollisionObjectDoubleData_m_broadphaseHandle_set(long jarg1, btCollisionObjectDoubleData jarg1_, long jarg2);
   public final static native long btCollisionObjectDoubleData_m_broadphaseHandle_get(long jarg1, btCollisionObjectDoubleData jarg1_);
   public final static native void btCollisionObjectDoubleData_m_collisionShape_set(long jarg1, btCollisionObjectDoubleData jarg1_, long jarg2);

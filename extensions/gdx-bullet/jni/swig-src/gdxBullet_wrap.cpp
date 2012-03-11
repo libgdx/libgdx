@@ -1395,6 +1395,15 @@ public:
 
 #include <LinearMath/btDefaultMotionState.h>
 
+SWIGINTERN void btDefaultMotionState_getGraphicsWorldTrans(btDefaultMotionState *self,btTransform &out){
+		out = self->m_graphicsWorldTrans;
+	}
+SWIGINTERN void btDefaultMotionState_getCenterOfMassOffset(btDefaultMotionState *self,btTransform &out){
+		out = self->m_centerOfMassOffset;
+	}
+SWIGINTERN void btDefaultMotionState_getStartWorldTrans(btDefaultMotionState *self,btTransform &out){
+		out = self->m_startWorldTrans;
+	}
 
 #include <LinearMath/btConvexHull.h>
 
@@ -1594,6 +1603,21 @@ typedef btDiscreteCollisionDetectorInterface::ClosestPointInput ClosestPointInpu
 
 #include <BulletCollision/CollisionDispatch/btCollisionObject.h>
 
+SWIGINTERN void btCollisionObject_getAnisotropicFriction__SWIG_1(btCollisionObject *self,btVector3 &out){
+		out = self->getAnisotropicFriction();
+	}
+SWIGINTERN void btCollisionObject_getWorldTransform__SWIG_2(btCollisionObject *self,btTransform &out){
+		out = self->getWorldTransform();
+	}
+SWIGINTERN void btCollisionObject_getInterpolationWorldTransform__SWIG_2(btCollisionObject *self,btTransform &out){
+		out = self->getInterpolationWorldTransform();
+	}
+SWIGINTERN void btCollisionObject_getInterpolationLinearVelocity__SWIG_1(btCollisionObject *self,btVector3 &out){
+		out = self->getInterpolationLinearVelocity();
+	}
+SWIGINTERN void btCollisionObject_getInterpolationAngularVelocity__SWIG_1(btCollisionObject *self,btVector3 &out){
+		out = self->getInterpolationAngularVelocity();
+	}
 
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 
@@ -7942,6 +7966,60 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1
   result = (btDefaultMotionState *)new btDefaultMotionState();
   *(btDefaultMotionState **)&jresult = result; 
   return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDefaultMotionState_1getGraphicsWorldTrans(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btDefaultMotionState *arg1 = (btDefaultMotionState *) 0 ;
+  btTransform *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btDefaultMotionState **)&jarg1; 
+  arg2 = *(btTransform **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTransform & reference is null");
+    return ;
+  } 
+  btDefaultMotionState_getGraphicsWorldTrans(arg1,*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDefaultMotionState_1getCenterOfMassOffset(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btDefaultMotionState *arg1 = (btDefaultMotionState *) 0 ;
+  btTransform *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btDefaultMotionState **)&jarg1; 
+  arg2 = *(btTransform **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTransform & reference is null");
+    return ;
+  } 
+  btDefaultMotionState_getCenterOfMassOffset(arg1,*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDefaultMotionState_1getStartWorldTrans(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btDefaultMotionState *arg1 = (btDefaultMotionState *) 0 ;
+  btTransform *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btDefaultMotionState **)&jarg1; 
+  arg2 = *(btTransform **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTransform & reference is null");
+    return ;
+  } 
+  btDefaultMotionState_getStartWorldTrans(arg1,*arg2);
 }
 
 
@@ -29013,7 +29091,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_bt
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCollisionObject_1getAnisotropicFriction(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCollisionObject_1getAnisotropicFriction_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jobject jresult = 0 ;
   btCollisionObject *arg1 = (btCollisionObject *) 0 ;
   btVector3 *result = 0 ;
@@ -29562,7 +29640,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btColl
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCollisionObject_1getInterpolationLinearVelocity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCollisionObject_1getInterpolationLinearVelocity_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jobject jresult = 0 ;
   btCollisionObject *arg1 = (btCollisionObject *) 0 ;
   btVector3 *result = 0 ;
@@ -29578,7 +29656,7 @@ SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btC
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCollisionObject_1getInterpolationAngularVelocity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCollisionObject_1getInterpolationAngularVelocity_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jobject jresult = 0 ;
   btCollisionObject *arg1 = (btCollisionObject *) 0 ;
   btVector3 *result = 0 ;
@@ -29867,6 +29945,90 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btColl
   arg1 = *(btCollisionObject **)&jarg1; 
   arg2 = *(btSerializer **)&jarg2; 
   ((btCollisionObject const *)arg1)->serializeSingleObject(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCollisionObject_1getAnisotropicFriction_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btCollisionObject *arg1 = (btCollisionObject *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btCollisionObject **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setBtVector3FromGdxVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btCollisionObject_getAnisotropicFriction__SWIG_1(arg1,*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCollisionObject_1getWorldTransform_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btCollisionObject *arg1 = (btCollisionObject *) 0 ;
+  btTransform *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btCollisionObject **)&jarg1; 
+  arg2 = *(btTransform **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTransform & reference is null");
+    return ;
+  } 
+  btCollisionObject_getWorldTransform__SWIG_2(arg1,*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCollisionObject_1getInterpolationWorldTransform_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btCollisionObject *arg1 = (btCollisionObject *) 0 ;
+  btTransform *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btCollisionObject **)&jarg1; 
+  arg2 = *(btTransform **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTransform & reference is null");
+    return ;
+  } 
+  btCollisionObject_getInterpolationWorldTransform__SWIG_2(arg1,*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCollisionObject_1getInterpolationLinearVelocity_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btCollisionObject *arg1 = (btCollisionObject *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btCollisionObject **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setBtVector3FromGdxVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btCollisionObject_getInterpolationLinearVelocity__SWIG_1(arg1,*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCollisionObject_1getInterpolationAngularVelocity_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btCollisionObject *arg1 = (btCollisionObject *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btCollisionObject **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setBtVector3FromGdxVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btCollisionObject_getInterpolationAngularVelocity__SWIG_1(arg1,*arg2);
 }
 
 

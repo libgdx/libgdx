@@ -92,4 +92,16 @@ public class btDefaultMotionState extends btMotionState {
     this(gdxBulletJNI.new_btDefaultMotionState__SWIG_2(), true);
   }
 
+  public void getGraphicsWorldTrans(btTransform out) {
+    gdxBulletJNI.btDefaultMotionState_getGraphicsWorldTrans(swigCPtr, this, btTransform.getCPtr(out), out);
+  }
+
+  public void getCenterOfMassOffset(btTransform out) {
+    gdxBulletJNI.btDefaultMotionState_getCenterOfMassOffset(swigCPtr, this, btTransform.getCPtr(out), out);
+  }
+
+  public void getStartWorldTrans(btTransform out) {
+    gdxBulletJNI.btDefaultMotionState_getStartWorldTrans(swigCPtr, this, btTransform.getCPtr(out), out);
+  }
+
 }
