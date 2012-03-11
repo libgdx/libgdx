@@ -81,25 +81,29 @@ public class GwtFileHandle extends FileHandle {
 	/** Returns a reader for reading this file as characters.
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public Reader reader () {
-		throw new GdxRuntimeException("Not implemented");
+		return new InputStreamReader(read());
 	}
 
 	/** Returns a reader for reading this file as characters.
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public Reader reader (String charset) {
-		throw new GdxRuntimeException("Not implemented");
+		try {
+			return new InputStreamReader(read(), charset);
+		} catch (UnsupportedEncodingException e) {
+			throw new GdxRuntimeException("Encoding '" + charset + "' not supported", e);
+		}
 	}
 
 	/** Returns a buffered reader for reading this file as characters.
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public BufferedReader reader (int bufferSize) {
-		throw new GdxRuntimeException("Not implemented");
+		return new BufferedReader(reader(), bufferSize);
 	}
 
 	/** Returns a buffered reader for reading this file as characters.
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public BufferedReader reader (int bufferSize, String charset) {
-		throw new GdxRuntimeException("Not implemented");
+		return new BufferedReader(reader(charset), bufferSize);
 	}
 
 	/** Reads the entire file into a string using the platform's default charset.
@@ -271,12 +275,14 @@ public class GwtFileHandle extends FileHandle {
 	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the child
 	 *        doesn't exist. */
 	public FileHandle child (String name) {
-		if(!preloader.isDirectory(file)) throw new GdxRuntimeException("Can't create a child from a file name");
-		return new GwtFileHandle(preloader, file + "/" + name, FileType.Internal);
+		return new GwtFileHandle(preloader, file + (file.endsWith("/")?"":"/") + name, FileType.Internal);
 	}
 
 	public FileHandle parent () {
-		return new GwtFileHandle(preloader, path(), type);
+		int index = file.lastIndexOf("/");
+		String dir = "";
+		if(index > 0) dir = file.substring(0, index + 1);
+		return new GwtFileHandle(preloader, dir, type);
 	}
 
 	/** @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */

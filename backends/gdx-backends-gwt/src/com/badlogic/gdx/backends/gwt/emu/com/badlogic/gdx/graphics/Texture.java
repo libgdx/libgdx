@@ -3,8 +3,10 @@ package com.badlogic.gdx.graphics;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.TextureData.TextureDataType;
+import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -52,6 +54,22 @@ public class Texture {
 	TextureWrap vWrap = TextureWrap.ClampToEdge;
 	int glHandle;
 	TextureData data;
+	
+	public Texture (String internalPath) {
+		this(Gdx.files.internal(internalPath));
+	}
+
+	public Texture (FileHandle file) {
+		this(file, null, false);
+	}
+
+	public Texture (FileHandle file, boolean useMipMaps) {
+		this(file, null, useMipMaps);
+	}
+
+	public Texture (FileHandle file, Format format, boolean useMipMaps) {
+		create(new FileTextureData(file, null, format, useMipMaps));
+	}
 
 	public Texture (Pixmap pixmap) {
 		this(new PixmapTextureData(pixmap, null, false, false));
@@ -64,8 +82,8 @@ public class Texture {
 	public Texture (Pixmap pixmap, Format format, boolean useMipMaps) {
 		this(new PixmapTextureData(pixmap, format, useMipMaps, false));
 	}
-	
-	public Texture(int width, int height, Format format) {
+
+	public Texture (int width, int height, Format format) {
 		this(new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
 	}
 
@@ -88,11 +106,13 @@ public class Texture {
 	public void load (TextureData data) {
 		this.data = data;
 		if (data.getType() == TextureDataType.Pixmap) {
+			if(!data.isPrepared()) data.prepare();
 			Pixmap pixmap = data.consumePixmap();
 			uploadImageData(pixmap);
 			if (data.disposePixmap()) pixmap.dispose();
 			setFilter(minFilter, magFilter);
 			setWrap(uWrap, vWrap);
+			if(data.useMipMaps()) Gdx.gl20.glGenerateMipmap(GL10.GL_TEXTURE_2D);
 		}
 		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
 	}
