@@ -26,6 +26,7 @@ public class GwtApplicationConfiguration {
 	public int fps = 60;
 	public Panel rootPanel;
 	public TextArea log;
+	public boolean useDebugGL = true;
 
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;

@@ -25,9 +25,10 @@ import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.dom.client.CanvasElement;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.webgl.client.WebGLContextAttributes;
 import com.google.gwt.webgl.client.WebGLRenderingContext;
 
 public class GwtGraphics implements Graphics {
@@ -42,14 +43,20 @@ public class GwtGraphics implements Graphics {
 	int frames;
 
 	public GwtGraphics (Panel root, GwtApplicationConfiguration config) {
-		canvas = Document.get().createElement("canvas").cast();
-		Document.get().getBody().appendChild(canvas);
+		Canvas canvasWidget = Canvas.createIfSupported();
+		if(canvasWidget == null) return;
+		canvas = canvasWidget.getCanvasElement();
+		root.add(canvasWidget);
 		canvas.setWidth(config.width);
 		canvas.setHeight(config.height);
-
-		context = WebGLRenderingContext.getContext(canvas);
+		
+		WebGLContextAttributes attributes = WebGLContextAttributes.create();
+		attributes.setAntialias(config.antialiasing);
+		attributes.setStencil(config.stencil);
+		
+		context = WebGLRenderingContext.getContext(canvas, attributes);
 		context.viewport(0, 0, config.width, config.height);
-		this.gl = new GwtGL20(context);
+		this.gl = config.useDebugGL?new GwtGL20Debug(context): new GwtGL20(context);
 	}
 
 	public WebGLRenderingContext getContext () {

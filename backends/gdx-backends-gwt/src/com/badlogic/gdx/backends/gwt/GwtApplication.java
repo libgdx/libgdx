@@ -53,15 +53,6 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		this.config = getConfig();
 		this.root = config.rootPanel != null ? config.rootPanel : RootPanel.get();
 
-		graphics = new GwtGraphics(root, config);
-		lastWidth = graphics.getWidth();
-		lastHeight = graphics.getHeight();
-		
-		Gdx.app = this;
-		Gdx.graphics = graphics;
-		Gdx.gl20 = graphics.getGL20();
-		Gdx.gl = graphics.getGLCommon();
-
 		preloader = new Preloader();
 		preloader.preload("assets.txt", new PreloaderCallback() {
 			@Override
@@ -82,7 +73,14 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	}
 
 	private void setupLoop () {
-		// setup rest of modules
+		// setup modules
+		graphics = new GwtGraphics(root, config);
+		lastWidth = graphics.getWidth();
+		lastHeight = graphics.getHeight();
+		Gdx.app = this;
+		Gdx.graphics = graphics;
+		Gdx.gl20 = graphics.getGL20();
+		Gdx.gl = graphics.getGLCommon();
 		Gdx.files = new GwtFiles(preloader);
 		
 		// tell listener about app creation
