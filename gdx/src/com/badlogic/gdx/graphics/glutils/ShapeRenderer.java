@@ -119,6 +119,7 @@ public class ShapeRenderer {
 		else
 			renderer = new ImmediateModeRenderer10(maxVertices);
 		projView.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		matrixDirty = true;
 	}
 
 	/** Sets the {@link Color} to be used by shapes.

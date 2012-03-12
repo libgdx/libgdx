@@ -49,6 +49,10 @@
 		<include name="**/graphics/glutils/IndexData.java"/>
 		<include name="**/graphics/glutils/VertexBufferObjectSubData.java"/>
 		<include name="**/graphics/glutils/VertexData.java"/>
+		<include name="**/graphics/glutils/ShapeRenderer.java"/>
+		<include name="**/graphics/glutils/ImmediateModeRenderer.java"/>
+		<include name="**/graphics/glutils/ImmediateModeRenderer10.java"/>
+		<include name="**/graphics/glutils/ImmediateModeRenderer20.java"/>
 		
 		<include name="**/graphics/g2d/Animation.java"/>
 		<include name="**/graphics/g2d/PixmapPacker.java"/>
@@ -88,5 +92,6 @@
 		<include name="**/utils/LongMap.java"/>
 		<include name="**/utils/LongArray.java"/>
 		<include name="**/utils/FloatArray.java"/>
+		<include name="**/utils/Pool.java"/>
 	</source>
 </module>
