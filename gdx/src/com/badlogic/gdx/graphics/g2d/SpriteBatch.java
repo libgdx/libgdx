@@ -1029,6 +1029,8 @@ public class SpriteBatch implements Disposable {
 
 		lastTexture.bind();
 		mesh.setVertices(vertices, 0, idx);
+		mesh.getIndicesBuffer().position(0);
+		mesh.getIndicesBuffer().limit(spritesInBatch * 6); 
 
 		if (blendingDisabled) {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
