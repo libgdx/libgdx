@@ -62,4 +62,8 @@ public final class VertexAttribute {
 	public static VertexAttribute Color() {
 		return new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE);
 	}
+
+	public static VertexAttribute ColorUnpacked () {
+		return new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE);
+	}
 }

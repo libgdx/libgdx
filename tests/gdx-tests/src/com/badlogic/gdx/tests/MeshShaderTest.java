@@ -101,5 +101,4 @@ public class MeshShaderTest extends GdxTest {
 	public boolean needsGL20 () {
 		return true;
 	}
-
 }
