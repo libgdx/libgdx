@@ -41,6 +41,7 @@ public class GwtGraphics implements Graphics {
 	float deltaTime = 0;
 	float time = 0;
 	int frames;
+	GwtApplicationConfiguration config;
 
 	public GwtGraphics (Panel root, GwtApplicationConfiguration config) {
 		Canvas canvasWidget = Canvas.createIfSupported();
@@ -49,6 +50,7 @@ public class GwtGraphics implements Graphics {
 		root.add(canvasWidget);
 		canvas.setWidth(config.width);
 		canvas.setHeight(config.height);
+		this.config = config;
 		
 		WebGLContextAttributes attributes = WebGLContextAttributes.create();
 		attributes.setAntialias(config.antialiasing);
@@ -145,27 +147,27 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public boolean supportsDisplayModeChange () {
-		return false;
+		return false; // FIXME
 	}
 
 	@Override
 	public DisplayMode[] getDisplayModes () {
-		return null;
+		return null; // FIXME
 	}
 
 	@Override
 	public DisplayMode getDesktopDisplayMode () {
-		return null;
+		return null; // FIXME
 	}
 
 	@Override
 	public boolean setDisplayMode (DisplayMode displayMode) {
-		return false;
+		return false; // FIXME
 	}
 
 	@Override
 	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
-		return false;
+		return false; // FIXME
 	}
 
 	@Override
@@ -180,7 +182,7 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public BufferFormat getBufferFormat () {
-		return null;
+		return new BufferFormat(8, 8, 8, 8, 16, config.stencil?8:0, 0, false); // FIXME
 	}
 
 	@Override
