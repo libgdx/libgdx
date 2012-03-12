@@ -31,6 +31,7 @@ import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -46,9 +47,11 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private List<Runnable> runnables = new ArrayList<Runnable>();
 	private int lastWidth, lastHeight;
 	private Preloader preloader;
+	private static AgentInfo agentInfo;
 
 	@Override
 	public void onModuleLoad () {
+		this.agentInfo = computeAgentInfo();
 		this.listener = getApplicationListener();
 		this.config = getConfig();
 		this.root = config.rootPanel != null ? config.rootPanel : RootPanel.get();
@@ -59,7 +62,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			public void loaded (String file, int loaded, int total) {
 				System.out.println("loaded " + file + "," + loaded + "," + total);
 			}
-			
+
 			@Override
 			public void error (String file) {
 				System.out.println("error: " + file);
@@ -82,12 +85,13 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.gl20 = graphics.getGL20();
 		Gdx.gl = graphics.getGLCommon();
 		Gdx.files = new GwtFiles(preloader);
-		
+		Gdx.input = new GwtInput(graphics.canvas);
+
 		// tell listener about app creation
 		try {
 			listener.create();
 			listener.resize(graphics.getWidth(), graphics.getHeight());
-		} catch(Throwable t) {
+		} catch (Throwable t) {
 			t.printStackTrace();
 			System.out.println(t.getMessage());
 		}
@@ -101,7 +105,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			public void run () {
 				try {
 					graphics.update();
-					if(Gdx.graphics.getWidth() != lastWidth || Gdx.graphics.getHeight() != lastHeight) {
+					if (Gdx.graphics.getWidth() != lastWidth || Gdx.graphics.getHeight() != lastHeight) {
 						GwtApplication.this.listener.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 						lastWidth = graphics.getWidth();
 						lastHeight = graphics.getHeight();
@@ -111,7 +115,8 @@ public abstract class GwtApplication implements EntryPoint, Application {
 					}
 					runnables.clear();
 					listener.render();
-				} catch(Throwable t) {
+					((GwtInput)Gdx.input).justTouched = false;
+				} catch (Throwable t) {
 					t.printStackTrace();
 				}
 			}
@@ -200,7 +205,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	@Override
 	public void setLogLevel (int logLevel) {
 		this.logLevel = logLevel;
@@ -239,5 +244,41 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	@Override
 	public void exit () {
+	}
+
+	/** Contains precomputed information on the user-agent. 
+	 * Useful for dealing with browser and OS behavioral differences. Kindly borrowed from PlayN */
+	public static AgentInfo agentInfo () {
+		return agentInfo;
+	}
+	
+	/** kindly borrowed from PlayN **/
+	private static native AgentInfo computeAgentInfo() /*-{
+    var userAgent = navigator.userAgent.toLowerCase();
+    return {
+      	// browser type flags
+      	isFirefox: userAgent.indexOf("firefox") != -1,
+      	isChrome: userAgent.indexOf("chrome") != -1,
+      	isSafari: userAgent.indexOf("safari") != -1,
+      	isOpera: userAgent.indexOf("opera") != -1,
+      	isIE: userAgent.indexOf("msie") != -1,
+      	// OS type flags
+      	isMacOS: userAgent.indexOf("mac") != -1,
+      	isLinux: userAgent.indexOf("linux") != -1,
+      	isWindows: userAgent.indexOf("win") != -1
+      };
+	}-*/;
+	
+	/** Returned by {@link #agentInfo}. Kindly borrowed from PlayN. */
+	public static class AgentInfo extends JavaScriptObject {
+	  public final native boolean isFirefox() /*-{ return this.isFirefox; }-*/;
+	  public final native boolean isChrome() /*-{ return this.isChrome; }-*/;
+	  public final native boolean isSafari() /*-{ return this.isSafari; }-*/;
+	  public final native boolean isOpera() /*-{ return this.isOpera; }-*/;
+	  public final native boolean isIE() /*-{ return this.isIE; }-*/;
+	  public final native boolean isMacOS() /*-{ return this.isMacOS; }-*/;
+	  public final native boolean isLinux() /*-{ return this.isLinux; }-*/;
+	  public final native boolean isWindows() /*-{ return this.isWindows; }-*/;
+	  protected AgentInfo() {}
 	}
 }
