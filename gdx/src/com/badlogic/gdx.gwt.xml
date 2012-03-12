@@ -65,6 +65,7 @@
 		<include name="**/graphics/g2d/TextureAtlas.java"/>
 		
 		<include name="**/graphics/g3d/decals/**"/>
+		<include name="**/loaders/obj/ObjLoader.java"/>
 		
 		<!-- assets -->
 		<include name="**/assets/AssetDescriptor.java"/>
