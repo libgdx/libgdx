@@ -43,22 +43,26 @@ public class GwtPreferences implements Preferences {
 
 	@Override
 	public boolean getBoolean (String key) {
-		return (Boolean)values.get(key);
+		Boolean v = (Boolean)values.get(key);
+		return v == null? false: v;
 	}
 
 	@Override
 	public int getInteger (String key) {
-		return (Integer)values.get(key);
+		Integer v = (Integer)values.get(key);
+		return v == null? 0: v;
 	}
 
 	@Override
 	public long getLong (String key) {
-		return (Long)values.get(key);
+		Long v = (Long)values.get(key);
+		return v == null? 0: v;
 	}
 
 	@Override
 	public float getFloat (String key) {
-		return (Float)values.get(key);
+		Float v = (Float)values.get(key);
+		return v == null? 0: v;
 	}
 
 	@Override

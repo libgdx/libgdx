@@ -5,6 +5,5 @@
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
-	<classpathentry kind="lib" path="libs/gwt-g3d-devbuild.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

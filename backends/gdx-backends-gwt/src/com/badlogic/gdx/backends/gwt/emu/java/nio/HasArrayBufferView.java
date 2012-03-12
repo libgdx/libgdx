@@ -15,7 +15,7 @@
  ******************************************************************************/
 package java.nio;
 
-import gwt.g3d.client.gl2.array.ArrayBufferView;
+import com.google.gwt.typedarrays.client.ArrayBufferView;
 
 public interface HasArrayBufferView {
 

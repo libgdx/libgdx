@@ -16,9 +16,8 @@
 
 package java.nio;
 
-import gwt.g3d.client.gl2.array.ArrayBuffer;
-
 import com.google.gwt.corp.compatibility.Numbers;
+import com.google.gwt.typedarrays.client.ArrayBuffer;
 
 /** DirectByteBuffer, DirectReadWriteByteBuffer and DirectReadOnlyByteBuffer compose the implementation of direct byte buffers.
  * <p>

@@ -16,8 +16,8 @@
 
 package java.nio;
 
-import gwt.g3d.client.gl2.array.ArrayBufferView;
-import gwt.g3d.client.gl2.array.Int32Array;
+import com.google.gwt.typedarrays.client.ArrayBufferView;
+import com.google.gwt.typedarrays.client.Int32Array;
 
 /** This class wraps a byte buffer to be a int buffer.
  * <p>

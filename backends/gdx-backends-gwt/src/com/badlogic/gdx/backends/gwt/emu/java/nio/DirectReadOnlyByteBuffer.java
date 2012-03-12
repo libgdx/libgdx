@@ -17,7 +17,7 @@
 
 package java.nio;
 
-import gwt.g3d.client.gl2.array.ArrayBuffer;
+import com.google.gwt.typedarrays.client.ArrayBuffer;
 
 /** HeapByteBuffer, ReadWriteHeapByteBuffer and ReadOnlyHeapByteBuffer compose the implementation of array based byte buffers.
  * <p>

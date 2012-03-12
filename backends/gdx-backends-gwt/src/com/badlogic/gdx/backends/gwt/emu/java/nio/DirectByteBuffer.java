@@ -17,12 +17,11 @@
 
 package java.nio;
 
-import gwt.g3d.client.gl2.array.ArrayBuffer;
-import gwt.g3d.client.gl2.array.ArrayBufferView;
-import gwt.g3d.client.gl2.array.Int8Array;
-
 import com.google.gwt.corp.compatibility.Endianness;
 import com.google.gwt.corp.compatibility.Numbers;
+import com.google.gwt.typedarrays.client.ArrayBuffer;
+import com.google.gwt.typedarrays.client.ArrayBufferView;
+import com.google.gwt.typedarrays.client.Int8Array;
 
 /** DirectByteBuffer, DirectReadWriteByteBuffer and DirectReadOnlyHeapByteBuffer compose the implementation of direct byte buffers.
  * <p>

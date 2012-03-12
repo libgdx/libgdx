@@ -16,9 +16,10 @@
 
 package com.google.gwt.corp.compatibility;
 
-import gwt.g3d.client.gl2.array.Float32Array;
-import gwt.g3d.client.gl2.array.Int32Array;
-import gwt.g3d.client.gl2.array.Int8Array;
+import com.google.gwt.typedarrays.client.Float32Array;
+import com.google.gwt.typedarrays.client.Int32Array;
+import com.google.gwt.typedarrays.client.Int8Array;
+
 
 public class Numbers {
 
