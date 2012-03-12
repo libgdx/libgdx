@@ -961,6 +961,14 @@ public class Matrix4 implements Serializable {
 
 	/** Postmultiplies this matrix by a translation matrix. Postmultiplication is also used by OpenGL ES'
 	 * glTranslate/glRotate/glScale
+	 * @param translation
+	 * @return this matrix for chaining */
+	public Matrix4 translate (Vector3 translation) {
+		return translate(translation.x, translation.y, translation.z);
+	}
+	
+	/** Postmultiplies this matrix by a translation matrix. Postmultiplication is also used by OpenGL ES'
+	 * glTranslate/glRotate/glScale
 	 * @param x
 	 * @param y
 	 * @param z
@@ -989,6 +997,18 @@ public class Matrix4 implements Serializable {
 
 	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES'
 	 * glTranslate/glRotate/glScale
+	 * 
+	 * @param axis
+	 * @param angle the angle in degrees
+	 * @return this matrix for chaining */
+	public Matrix4 rotate (Vector3 axis, float angle) {
+		if (angle == 0) return this;
+		quat.set(axis, angle);
+		return rotate(quat);
+	}
+
+	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES'
+	 * glTranslate/glRotate/glScale
 	 * @param axisX
 	 * @param axisY
 	 * @param axisZ
@@ -997,34 +1017,16 @@ public class Matrix4 implements Serializable {
 	public Matrix4 rotate (float axisX, float axisY, float axisZ, float angle) {
 		if (angle == 0) return this;
 		quat.set(tmpV.set(axisX, axisY, axisZ), angle);
-		Quaternion quaternion = quat;
-		float l_xx = quaternion.x * quaternion.x;
-		float l_xy = quaternion.x * quaternion.y;
-		float l_xz = quaternion.x * quaternion.z;
-		float l_xw = quaternion.x * quaternion.w;
-		float l_yy = quaternion.y * quaternion.y;
-		float l_yz = quaternion.y * quaternion.z;
-		float l_yw = quaternion.y * quaternion.w;
-		float l_zz = quaternion.z * quaternion.z;
-		float l_zw = quaternion.z * quaternion.w;
-		// Set matrix from quaternion
-		tmp[M00] = 1 - 2 * (l_yy + l_zz);
-		tmp[M01] = 2 * (l_xy - l_zw);
-		tmp[M02] = 2 * (l_xz + l_yw);
-		tmp[M03] = 0;
-		tmp[M10] = 2 * (l_xy + l_zw);
-		tmp[M11] = 1 - 2 * (l_xx + l_zz);
-		tmp[M12] = 2 * (l_yz - l_xw);
-		tmp[M13] = 0;
-		tmp[M20] = 2 * (l_xz - l_yw);
-		tmp[M21] = 2 * (l_yz + l_xw);
-		tmp[M22] = 1 - 2 * (l_xx + l_yy);
-		tmp[M23] = 0;
-		tmp[M30] = 0;
-		tmp[M31] = 0;
-		tmp[M32] = 0;
-		tmp[M33] = 1;
+		return rotate(quat);
+	}
 
+	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES'
+	 * glTranslate/glRotate/glScale
+	 * 
+	 * @param rotation
+	 * @return this matrix for chaining */
+	public Matrix4 rotate (Quaternion rotation) {
+		rotation.toMatrix(tmp);
 		mul(val, tmp);
 		return this;
 	}
