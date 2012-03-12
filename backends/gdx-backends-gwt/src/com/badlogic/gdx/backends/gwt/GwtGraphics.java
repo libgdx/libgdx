@@ -231,4 +231,9 @@ public class GwtGraphics implements Graphics {
 	public float getRawDeltaTime () {
 		return getDeltaTime();
 	}
+
+	@Override
+	public boolean isFullscreen () {
+		return false;
+	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -40,6 +41,10 @@ public class GwtTest extends GdxTest {
 
 	@Override
 	public void create () {
+		Preferences pref = Gdx.app.getPreferences("test");
+		boolean resultb = pref.getBoolean("test");
+		int resulti = pref.getInteger("test");
+		
 		shader = new ShaderProgram(Gdx.files.internal("data/shaders/shader-vs.glsl"), Gdx.files.internal("data/shaders/shader-fs.glsl"));
 		if (!shader.isCompiled()) throw new GdxRuntimeException(shader.getLog());
 		mesh = new Mesh(VertexDataType.VertexBufferObject, true, 6, 0, VertexAttribute.Position(), VertexAttribute.TexCoords(0));

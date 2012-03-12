@@ -626,4 +626,9 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			if(view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
 		}
 	}
+
+	@Override
+	public boolean isFullscreen () {
+		return true;
+	}
 }

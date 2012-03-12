@@ -256,6 +256,11 @@ public interface Graphics {
 	 */
 	public void requestRendering();
 	
+	/**
+	 * Whether the app is fullscreen or not 
+	 */
+	public boolean isFullscreen();
+	
 	// /**
 	// * Opens the first back facing video camera. Only one camera
 	// * can be opened at any given time.

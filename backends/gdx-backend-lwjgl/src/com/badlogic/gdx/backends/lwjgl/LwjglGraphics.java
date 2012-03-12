@@ -432,4 +432,9 @@ public class LwjglGraphics implements Graphics {
 			return rq || isContinuous;
 		}
 	}
+
+	@Override
+	public boolean isFullscreen () {
+		return Display.isFullscreen();
+	}
 }

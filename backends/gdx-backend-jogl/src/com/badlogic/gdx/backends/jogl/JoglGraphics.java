@@ -52,12 +52,14 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	final JoglDisplayMode desktopMode;
 	final JoglApplicationConfiguration config;
 	String extensions;
+	boolean isFullscreen = false;
 
 	public JoglGraphics (ApplicationListener listener, JoglApplicationConfiguration config) {
 		initialize(config);
 		if (listener == null) throw new GdxRuntimeException("RenderListener must not be null");
 		this.listener = listener;
 		this.config = config;
+		this.isFullscreen = config.fullscreen;
 
 		desktopMode = (JoglDisplayMode)JoglApplicationConfiguration.getDesktopDisplayMode();
 	}
@@ -211,13 +213,14 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 		if (!supportsDisplayModeChange()) return false;
 
 		if (!fullscreen) {
-			setWindowedMode(width, height);
+			isFullscreen = false;
+			return setWindowedMode(width, height);
 		} else {
 			DisplayMode mode = findBestMatch(width, height);
 			if (mode == null) return false;
-			setDisplayMode(mode);
+			isFullscreen = true;
+			return setDisplayMode(mode);
 		}
-		return false;
 	}
 
 	protected JoglDisplayMode findBestMatch (int width, int height) {
@@ -279,6 +282,7 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 			}
 		});
 
+		isFullscreen = true;
 		return true;
 	}
 
@@ -371,5 +375,10 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	public boolean supportsExtension (String extension) {
 		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
+	}
+
+	@Override
+	public boolean isFullscreen () {
+		return isFullscreen;
 	}
 }
