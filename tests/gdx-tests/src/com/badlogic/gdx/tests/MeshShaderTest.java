@@ -30,8 +30,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MeshShaderTest extends GdxTest {
-	SpriteBatch spriteBatch;
-	// Font font;
 	ShaderProgram shader;
 	Mesh mesh;
 	Texture texture;
@@ -39,15 +37,28 @@ public class MeshShaderTest extends GdxTest {
 
 	@Override
 	public void create () {
-		String vertexShader = "attribute vec4 a_position;    \n" + "attribute vec4 a_color;\n" + "attribute vec2 a_texCoords;\n"
-			+ "uniform mat4 u_worldView;\n" + "varying vec4 v_color;" + "varying vec2 v_texCoords;"
-			+ "void main()                  \n" + "{                            \n" + "   v_color = vec4(1, 1, 1, 1); \n"
-			+ "   v_texCoords = a_texCoords; \n" + "   gl_Position =  u_worldView * a_position;  \n"
-			+ "}                            \n";
-		String fragmentShader = "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n" + "varying vec4 v_color;\n"
-			+ "varying vec2 v_texCoords;\n" + "uniform sampler2D u_texture;\n" + "void main()                                  \n"
-			+ "{                                            \n" + "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n"
-			+ "}";
+		String vertexShader = "attribute vec4 a_position;    \n" + 
+									 "attribute vec4 a_color;\n" +
+									 "attribute vec2 a_texCoord0;\n" + 
+									 "uniform mat4 u_worldView;\n" + 
+									 "varying vec4 v_color;" + 
+									 "varying vec2 v_texCoords;" + 
+									 "void main()                  \n" + 
+									 "{                            \n" + 
+									 "   v_color = vec4(1, 1, 1, 1); \n" + 
+									 "   v_texCoords = a_texCoord0; \n" + 
+									 "   gl_Position =  u_worldView * a_position;  \n"	+ 
+									 "}                            \n";
+		String fragmentShader = "#ifdef GL_ES\n" +
+									 	"precision mediump float;\n" + 
+									 	"#endif\n" + 
+									 	"varying vec4 v_color;\n" + 
+									 	"varying vec2 v_texCoords;\n" + 
+									 	"uniform sampler2D u_texture;\n" + 
+									 	"void main()                                  \n" + 
+									 	"{                                            \n" + 
+									 	"  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n"
+									 	+ "}";
 
 		shader = new ShaderProgram(vertexShader, fragmentShader);
 		if (shader.isCompiled() == false) {
@@ -55,26 +66,13 @@ public class MeshShaderTest extends GdxTest {
 			System.exit(0);
 		}
 
-		mesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(Usage.Color, 4,
-			"a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
-
-		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, 1, 1, 1, 1, 0, 1, 0.5f, -0.5f, 0, 1, 1, 1, 1, 1, 1, 0.5f, 0.5f, 0, 1, 1, 1,
-			1, 1, 0, -0.5f, 0.5f, 0, 1, 1, 1, 1, 0, 0});
+		mesh = new Mesh(true, 4, 6, VertexAttribute.Position(), VertexAttribute.ColorUnpacked(), VertexAttribute.TexCoords(0));
+		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, 1, 1, 1, 1, 0, 1, 
+												 0.5f, -0.5f, 0, 1, 1, 1, 1, 1, 1, 
+												 0.5f, 0.5f, 0, 1, 1, 1, 1, 1, 0, 
+												 -0.5f, 0.5f, 0, 1, 1, 1, 1, 0, 0});
 		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
-
-// Pixmap pixmap = new Pixmap(2, 1, Format.RGBA8888);
-// pixmap.drawPixel(0, 0, 0xffff0000);
-// pixmap.drawPixel(1, 0, 0xff00ff00);
-// pixmap.drawPixel(0, 1, 0xff0000ff);
-// pixmap.drawPixel(0, 0, 0xffff00ff);
-// pixmap.drawPixel(1, 0, 0xffffff00);
-// texture = Gdx.graphics.newUnmanagedTexture(pixmap, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge,
-// TextureWrap.ClampToEdge);
-// pixmap.dispose();
 		texture = new Texture(Gdx.files.internal("data/bobrgb888-32x32.png"));
-
-		spriteBatch = new SpriteBatch();
-		// font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
 	}
 
 	Vector3 axis = new Vector3(0, 0, 1);
@@ -97,10 +95,6 @@ public class MeshShaderTest extends GdxTest {
 		shader.setUniformi("u_texture", 0);
 		mesh.render(shader, GL10.GL_TRIANGLES);
 		shader.end();
-
-		spriteBatch.begin();
-		// spriteBatch.drawText(font, "This is a test", 100, 100, Color.RED);
-		spriteBatch.end();
 	}
 
 	@Override
