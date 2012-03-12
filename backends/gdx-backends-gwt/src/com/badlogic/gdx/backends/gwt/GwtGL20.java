@@ -54,10 +54,43 @@ public class GwtGL20 implements GL20 {
 	int nextUniformId = 1;
 	int currProgram = 0;
 	
+	Float32Array floatBuffer = Float32Array.create(2000 * 20);
+	Uint16Array shortBuffer = Uint16Array.create(2000 * 6);
+	
 	final WebGLRenderingContext gl;
 
 	protected GwtGL20 (WebGLRenderingContext gl) {
 		this.gl = gl;
+	}
+	
+	private void ensureCapacity(FloatBuffer buffer) {
+		if(buffer.remaining() > floatBuffer.getLength()) {
+			floatBuffer = Float32Array.create(buffer.remaining());
+		}
+	}
+	
+	private void ensureCapacity(ShortBuffer buffer) {
+		if(buffer.remaining() > shortBuffer.getLength()) {
+			shortBuffer = Uint16Array.create(buffer.remaining());
+		}
+	}
+	
+	public Float32Array copy(FloatBuffer buffer) {
+		ensureCapacity(buffer);
+		float[] array = buffer.array();
+		for(int i = buffer.position(), j = 0; i < buffer.limit(); i++, j++) {
+			floatBuffer.set(j, array[i]);
+		}
+		return floatBuffer;
+	}
+	
+	public Uint16Array copy(ShortBuffer buffer) {
+		ensureCapacity(buffer);
+		short[] array = buffer.array();
+		for(int i = buffer.position(), j = 0; i < buffer.limit(); i++, j++) {
+			shortBuffer.set(j, array[i]);
+		}
+		return shortBuffer;
 	}
 	
 	private int allocateUniformLocationId(int program, WebGLUniformLocation location) {
@@ -410,9 +443,9 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glBufferData (int target, int size, Buffer data, int usage) {
 		if(data instanceof FloatBuffer) {
-			gl.bufferData(target, Float32Array.create(((FloatBuffer)data).array(), data.position(), data.limit() - data.position()), usage);
+			gl.bufferData(target, copy((FloatBuffer)data), usage);
 		} else if(data instanceof ShortBuffer) {
-			gl.bufferData(target, Uint16Array.create(((ShortBuffer)data).array(), data.position(), data.limit() - data.position()), usage);
+			gl.bufferData(target, copy((ShortBuffer)data), usage);
 		} else {
 			throw new GdxRuntimeException("Can only cope with FloatBuffer and ShortBuffer at the moment");
 		}
@@ -421,9 +454,9 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glBufferSubData (int target, int offset, int size, Buffer data) {
 		if(data instanceof FloatBuffer) {
-			gl.bufferSubData(target, offset, Float32Array.create(((FloatBuffer)data).array(), data.position(), data.limit() - data.position()));
+			gl.bufferSubData(target, offset, copy((FloatBuffer)data));
 		} else if(data instanceof ShortBuffer) {
-			gl.bufferSubData(target, offset, Uint16Array.create(((ShortBuffer)data).array(), data.position(), data.limit() - data.position()));
+			gl.bufferSubData(target, offset, copy((ShortBuffer)data));
 		} else {
 			throw new GdxRuntimeException("Can only cope with FloatBuffer and ShortBuffer at the moment");
 		}

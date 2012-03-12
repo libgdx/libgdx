@@ -41,6 +41,7 @@ public class ArrayUtils {
 
   public static JsArrayNumber toJsArray(float[] data) {
     JsArrayNumber jsan = (JsArrayNumber) JsArrayNumber.createArray();
+    jsan.setLength(data.length);
     int len = data.length;
     for (int i = len - 1; i >= 0; i--) {
       jsan.set(i, data[i]);
@@ -50,6 +51,7 @@ public class ArrayUtils {
   
   public static JsArrayNumber toJsArray(float[] data, int offset, int len) {
 	    JsArrayNumber jsan = (JsArrayNumber) JsArrayNumber.createArray();
+	    jsan.setLength(len);
 	    for (int i = 0; i < len; i++) {
 	      jsan.set(i, data[i + offset]);
 	    }
