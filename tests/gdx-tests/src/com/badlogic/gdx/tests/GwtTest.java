@@ -49,7 +49,7 @@ public class GwtTest extends GdxTest {
 
 		batch = new SpriteBatch();
 		positions = new ArrayList<Vector2>();
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 10000; i++) {
 			positions.add(new Vector2(MathUtils.random() * Gdx.graphics.getWidth(), MathUtils.random() * Gdx.graphics.getHeight()));
 		}
 		sprite = new Sprite(texture);
@@ -68,7 +68,6 @@ public class GwtTest extends GdxTest {
 	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
 		texture.bind(0);
 		shader.begin();
 		shader.setUniformMatrix("u_projView", matrix);
@@ -76,14 +75,14 @@ public class GwtTest extends GdxTest {
 		mesh.render(shader, GL20.GL_TRIANGLES);
 		shader.end();
 
+		System.out.println(Gdx.graphics.getFramesPerSecond());
 		batch.begin();
+		batch.draw(atlas.findRegion("font"), 0, 100);
 		sprite.rotate(Gdx.graphics.getDeltaTime() * 45);
 		for (Vector2 position : positions) {
 			sprite.setPosition(position.x, position.y);
 			sprite.draw(batch);
 		}
-		
-		batch.draw(atlas.findRegion("font"), 100, 100);
 		font.draw(batch, "fps:" + Gdx.graphics.getFramesPerSecond() + ", delta: " + Gdx.graphics.getDeltaTime(), 0, 30);
 		cache.setPosition(200, 200);
 		cache.draw(batch);
