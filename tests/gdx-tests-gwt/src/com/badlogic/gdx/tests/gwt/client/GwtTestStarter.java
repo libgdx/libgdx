@@ -4,7 +4,7 @@ package com.badlogic.gdx.tests.gwt.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.badlogic.gdx.tests.GwtTest;
+import com.badlogic.gdx.tests.gwt.GwtTest;
 
 public class GwtTestStarter extends GwtApplication {
 

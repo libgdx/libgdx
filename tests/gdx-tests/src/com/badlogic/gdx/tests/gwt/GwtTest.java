@@ -1,9 +1,10 @@
-package com.badlogic.gdx.tests;
+package com.badlogic.gdx.tests.gwt;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -35,6 +36,7 @@ public class GwtTest extends GdxTest {
 	BitmapFont font;
 	BitmapFontCache cache;
 	TextureAtlas atlas;
+	int numSprites;
 
 	@Override
 	public void create () {
@@ -44,12 +46,15 @@ public class GwtTest extends GdxTest {
 		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, 0, 1, 0.5f, -0.5f, 0, 1, 1, 0.5f, 0.5f, 0, 1, 0, 0.5f, 0.5f, 0, 1, 0, -0.5f,
 			0.5f, 0, 0, 0, -0.5f, -0.5f, 0, 0, 1});
 
-		texture = new Texture(new Pixmap(Gdx.files.internal("data/badlogic.jpg")));
-		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		texture = new Texture(new Pixmap(Gdx.files.internal("data/badlogic.jpg")), true);
+		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 
+		String params = Gdx.files.internal("data/gwttestparams.txt").readString();
+		numSprites = Integer.parseInt(params);
+		
 		batch = new SpriteBatch();
 		positions = new ArrayList<Vector2>();
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < numSprites; i++) {
 			positions.add(new Vector2(MathUtils.random() * Gdx.graphics.getWidth(), MathUtils.random() * Gdx.graphics.getHeight()));
 		}
 		sprite = new Sprite(texture);
@@ -75,7 +80,6 @@ public class GwtTest extends GdxTest {
 		mesh.render(shader, GL20.GL_TRIANGLES);
 		shader.end();
 
-		System.out.println(Gdx.graphics.getFramesPerSecond());
 		batch.begin();
 		batch.draw(atlas.findRegion("font"), 0, 100);
 		sprite.rotate(Gdx.graphics.getDeltaTime() * 45);
@@ -83,7 +87,7 @@ public class GwtTest extends GdxTest {
 			sprite.setPosition(position.x, position.y);
 			sprite.draw(batch);
 		}
-		font.draw(batch, "fps:" + Gdx.graphics.getFramesPerSecond() + ", delta: " + Gdx.graphics.getDeltaTime(), 0, 30);
+		font.draw(batch, "fps:" + Gdx.graphics.getFramesPerSecond() + ", delta: " + Gdx.graphics.getDeltaTime() + ", #sprites: " + numSprites, 0, 30);
 		cache.setPosition(200, 200);
 		cache.draw(batch);
 		batch.end();

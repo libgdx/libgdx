@@ -1,3 +1,4 @@
+t:data/gwttestparams.txt
 i:data/43kJgl.jpg
 i:data/alpha.png
 i:data/animation.png
