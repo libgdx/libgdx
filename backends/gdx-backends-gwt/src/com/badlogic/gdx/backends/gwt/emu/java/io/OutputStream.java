@@ -16,8 +16,7 @@
 package java.io;
 
 public abstract class OutputStream {
-  
-  // not abstact because of some gwt strangeness
+  // not abstract because of some gwt strangeness
   public void write(int b) throws IOException {
   }
   
@@ -32,8 +31,9 @@ public abstract class OutputStream {
     }
   }
   
+  public void flush() {
+  }
+  
   public void close() throws IOException {
   }
-
-  
 }

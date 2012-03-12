@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -44,6 +45,19 @@ public class Pixmap implements Disposable {
 	public enum Format {
 		Alpha, Intensity, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888;
 	}
+	
+	/** Blending functions to be set with {@link Pixmap#setBlending}.
+	 * @author mzechner */
+	public enum Blending {
+		None, SourceOver
+	}
+
+	/** Filters to be used with {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
+	 * 
+	 * @author mzechner */
+	public enum Filter {
+		NearestNeighbour, BiLinear
+	}
 
 	int width;
 	int height;
@@ -55,6 +69,7 @@ public class Pixmap implements Disposable {
 	int r = 255, g = 255, b = 255;
 	float a;
 	String color = make(r, g, b, a);
+	static Blending blending;
 	
 	public Pixmap (FileHandle file) {
 		GwtFileHandle gwtFile = (GwtFileHandle)file;
@@ -92,6 +107,24 @@ public class Pixmap implements Disposable {
 		return "rgba(" + r2 + "," + g2 + "," + b2 + "," + a2 + ")";
 	}
 
+
+	/** Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#SourceOver}.
+	 * @param blending the blending type */
+	public static void setBlending (Blending blending) {
+		Pixmap.blending = blending;
+	}
+	
+	/** @return the currently set {@link Blending} */
+	public static Blending getBlending () {
+		return blending;
+	}
+
+	/** Sets the type of interpolation {@link Filter} to be used in conjunction with
+	 * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
+	 * @param filter the filter. */
+	public static void setFilter (Filter filter) {
+	}
+	
 	public Format getFormat () {
 		return format;
 	}

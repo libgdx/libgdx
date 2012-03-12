@@ -86,6 +86,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.gl = graphics.getGLCommon();
 		Gdx.files = new GwtFiles(preloader);
 		Gdx.input = new GwtInput(graphics.canvas);
+		Gdx.audio = new GwtAudio();
 
 		// tell listener about app creation
 		try {

@@ -78,6 +78,7 @@
 
 		<!-- math package -->
 		<include name="**/math/**"/>
+		<exclude name="**/math/Matrix4.java"/>
 		
 		<!-- utils interfaces/classes -->
 		<include name="**/utils/Disposable.java"/>
@@ -93,5 +94,7 @@
 		<include name="**/utils/LongArray.java"/>
 		<include name="**/utils/FloatArray.java"/>
 		<include name="**/utils/Pool.java"/>
+		<include name="**/utils/OrderedMap.java"/>
+		<include name="**/utils/SortedIntList.java"/>
 	</source>
 </module>
