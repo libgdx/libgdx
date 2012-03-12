@@ -188,7 +188,6 @@ public class GameScreen extends Screen {
 	public void present (float deltaTime) {
 		GLCommon gl = Gdx.gl;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		gl.glEnable(GL10.GL_TEXTURE_2D);
 
 		renderer.render();
 

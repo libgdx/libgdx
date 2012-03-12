@@ -1,0 +1,10 @@
+i:data/background.png
+t:data/font.fnt
+i:data/font.png
+i:data/help.png
+i:data/help1.png
+i:data/help2.png
+i:data/help3.png
+i:data/help4.png
+i:data/help5.png
+i:data/items.png
