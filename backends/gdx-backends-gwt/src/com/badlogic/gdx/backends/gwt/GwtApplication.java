@@ -16,9 +16,6 @@
 
 package com.badlogic.gdx.backends.gwt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
@@ -29,7 +26,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Timer;
@@ -44,10 +43,11 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private Panel root = null;
 	private TextArea log = null;
 	private int logLevel = LOG_ERROR;
-	private List<Runnable> runnables = new ArrayList<Runnable>();
+	private Array<Runnable> runnables = new Array<Runnable>();
 	private int lastWidth, lastHeight;
 	private Preloader preloader;
 	private static AgentInfo agentInfo;
+	private ObjectMap<String, Preferences> prefs = new ObjectMap<String, Preferences>();
 
 	@Override
 	public void onModuleLoad () {
@@ -111,7 +111,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 						lastWidth = graphics.getWidth();
 						lastHeight = graphics.getHeight();
 					}
-					for (int i = 0; i < runnables.size(); i++) {
+					for (int i = 0; i < runnables.size; i++) {
 						runnables.get(i).run();
 					}
 					runnables.clear();
@@ -135,14 +135,12 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	@Override
 	public Audio getAudio () {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		return Gdx.audio;
 	}
 
 	@Override
 	public Input getInput () {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		return Gdx.input;
 	}
 
 	@Override
@@ -234,8 +232,12 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	@Override
 	public Preferences getPreferences (String name) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		Preferences pref = prefs.get(name);
+		if(pref == null) {
+			pref = new GwtPreferences();
+			prefs.put(name, pref);
+		}
+		return pref;
 	}
 
 	@Override
