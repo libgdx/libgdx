@@ -16,7 +16,9 @@
 
 package com.badlogicgames.superjumper;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -24,7 +26,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
-public class MainMenuScreen extends Screen {
+public class MainMenuScreen implements Screen {
+	Game game;
+
 	OrthographicCamera guiCam;
 	SpriteBatch batcher;
 	Rectangle soundBounds;
@@ -34,7 +38,8 @@ public class MainMenuScreen extends Screen {
 	Vector3 touchPoint;
 
 	public MainMenuScreen (Game game) {
-		super(game);
+		this.game = game;
+
 		guiCam = new OrthographicCamera(320, 480);
 		guiCam.position.set(320 / 2, 480 / 2, 0);
 		batcher = new SpriteBatch();
@@ -45,7 +50,6 @@ public class MainMenuScreen extends Screen {
 		touchPoint = new Vector3();
 	}
 
-	@Override
 	public void update (float deltaTime) {
 		if (Gdx.input.justTouched()) {
 			guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
@@ -76,7 +80,6 @@ public class MainMenuScreen extends Screen {
 		}
 	}
 
-	@Override
 	public void present (float deltaTime) {
 		GLCommon gl = Gdx.gl;
 		gl.glClearColor(1, 0, 0, 1);
@@ -92,9 +95,27 @@ public class MainMenuScreen extends Screen {
 		batcher.enableBlending();
 		batcher.begin();
 		batcher.draw(Assets.logo, 160 - 274 / 2, 480 - 10 - 142, 274, 142);
-		batcher.draw(Assets.mainMenu, 10, (int)(200 - 110 / 2), 300, 110);
+		batcher.draw(Assets.mainMenu, 10, 200 - 110 / 2, 300, 110);
 		batcher.draw(Settings.soundEnabled ? Assets.soundOn : Assets.soundOff, 0, 0, 64, 64);
 		batcher.end();
+	}
+
+	@Override
+	public void render (float delta) {
+		update(delta);
+		present(delta);
+	}
+
+	@Override
+	public void resize (int width, int height) {
+	}
+
+	@Override
+	public void show () {
+	}
+
+	@Override
+	public void hide () {
 	}
 
 	@Override

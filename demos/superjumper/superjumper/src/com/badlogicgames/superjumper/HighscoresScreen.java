@@ -16,7 +16,9 @@
 
 package com.badlogicgames.superjumper;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -24,7 +26,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
-public class HighscoresScreen extends Screen {
+public class HighscoresScreen implements Screen {
+	Game game;
+
 	OrthographicCamera guiCam;
 	SpriteBatch batcher;
 	Rectangle backBounds;
@@ -33,7 +37,7 @@ public class HighscoresScreen extends Screen {
 	float xOffset = 0;
 
 	public HighscoresScreen (Game game) {
-		super(game);
+		this.game = game;
 
 		guiCam = new OrthographicCamera(320, 480);
 		guiCam.position.set(320 / 2, 480 / 2, 0);
@@ -42,13 +46,12 @@ public class HighscoresScreen extends Screen {
 		batcher = new SpriteBatch();
 		highScores = new String[5];
 		for (int i = 0; i < 5; i++) {
-			highScores[i] = (i + 1) + ". " + Settings.highscores[i];
+			highScores[i] = i + 1 + ". " + Settings.highscores[i];
 			xOffset = Math.max(Assets.font.getBounds(highScores[i]).width, xOffset);
 		}
 		xOffset = 160 - xOffset / 2 + Assets.font.getSpaceWidth() / 2;
 	}
 
-	@Override
 	public void update (float deltaTime) {
 		if (Gdx.input.justTouched()) {
 			guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
@@ -61,7 +64,6 @@ public class HighscoresScreen extends Screen {
 		}
 	}
 
-	@Override
 	public void present (float deltaTime) {
 		GLCommon gl = Gdx.gl;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -87,11 +89,29 @@ public class HighscoresScreen extends Screen {
 	}
 
 	@Override
-	public void resume () {
+	public void render (float delta) {
+		update(delta);
+		present(delta);
+	}
+
+	@Override
+	public void resize (int width, int height) {
+	}
+
+	@Override
+	public void show () {
+	}
+
+	@Override
+	public void hide () {
 	}
 
 	@Override
 	public void pause () {
+	}
+
+	@Override
+	public void resume () {
 	}
 
 	@Override

@@ -16,7 +16,9 @@
 
 package com.badlogicgames.superjumper;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -26,7 +28,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
-public class HelpScreen extends Screen {
+public class HelpScreen implements Screen {
+	Game game;
+
 	OrthographicCamera guiCam;
 	SpriteBatch batcher;
 	Rectangle nextBounds;
@@ -35,7 +39,7 @@ public class HelpScreen extends Screen {
 	TextureRegion helpRegion;
 
 	public HelpScreen (Game game) {
-		super(game);
+		this.game = game;
 
 		guiCam = new OrthographicCamera(320, 480);
 		guiCam.position.set(320 / 2, 480 / 2, 0);
@@ -46,16 +50,6 @@ public class HelpScreen extends Screen {
 		helpRegion = new TextureRegion(helpImage, 0, 0, 320, 480);
 	}
 
-	@Override
-	public void resume () {
-	}
-
-	@Override
-	public void pause () {
-		helpImage.dispose();
-	}
-
-	@Override
 	public void update (float deltaTime) {
 		if (Gdx.input.justTouched()) {
 			guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
@@ -68,7 +62,6 @@ public class HelpScreen extends Screen {
 		}
 	}
 
-	@Override
 	public void present (float deltaTime) {
 		GLCommon gl = Gdx.gl;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -85,6 +78,33 @@ public class HelpScreen extends Screen {
 		batcher.end();
 
 		gl.glDisable(GL10.GL_BLEND);
+	}
+
+	@Override
+	public void render (float delta) {
+		update(delta);
+		present(delta);
+	}
+
+	@Override
+	public void resize (int width, int height) {
+	}
+
+	@Override
+	public void show () {
+	}
+
+	@Override
+	public void hide () {
+	}
+
+	@Override
+	public void pause () {
+		helpImage.dispose();
+	}
+
+	@Override
+	public void resume () {
 	}
 
 	@Override

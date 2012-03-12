@@ -17,8 +17,10 @@
 package com.badlogicgames.superjumper;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -27,12 +29,14 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogicgames.superjumper.World.WorldListener;
 
-public class GameScreen extends Screen {
+public class GameScreen implements Screen {
 	static final int GAME_READY = 0;
 	static final int GAME_RUNNING = 1;
 	static final int GAME_PAUSED = 2;
 	static final int GAME_LEVEL_END = 3;
 	static final int GAME_OVER = 4;
+
+	Game game;
 
 	int state;
 	OrthographicCamera guiCam;
@@ -48,7 +52,8 @@ public class GameScreen extends Screen {
 	String scoreString;
 
 	public GameScreen (Game game) {
-		super(game);
+		this.game = game;
+
 		state = GAME_READY;
 		guiCam = new OrthographicCamera(320, 480);
 		guiCam.position.set(320 / 2, 480 / 2, 0);
@@ -84,7 +89,6 @@ public class GameScreen extends Screen {
 		scoreString = "SCORE: 0";
 	}
 
-	@Override
 	public void update (float deltaTime) {
 		if (deltaTime > 0.1f) deltaTime = 0.1f;
 
@@ -164,7 +168,6 @@ public class GameScreen extends Screen {
 				Assets.playSound(Assets.clickSound);
 				game.setScreen(new MainMenuScreen(game));
 				return;
-
 			}
 		}
 	}
@@ -184,7 +187,6 @@ public class GameScreen extends Screen {
 		}
 	}
 
-	@Override
 	public void present (float deltaTime) {
 		GLCommon gl = Gdx.gl;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -242,6 +244,24 @@ public class GameScreen extends Screen {
 		batcher.draw(Assets.gameOver, 160 - 160 / 2, 240 - 96 / 2, 160, 96);
 		float scoreWidth = Assets.font.getBounds(scoreString).width;
 		Assets.font.draw(batcher, scoreString, 160 - scoreWidth / 2, 480 - 20);
+	}
+
+	@Override
+	public void render (float delta) {
+		update(delta);
+		present(delta);
+	}
+
+	@Override
+	public void resize (int width, int height) {
+	}
+
+	@Override
+	public void show () {
+	}
+
+	@Override
+	public void hide () {
 	}
 
 	@Override
