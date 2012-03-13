@@ -13,9 +13,7 @@ import com.mojang.metagun.Input;
 public class ExpositionScreen extends Screen {
 	private int time = 0;
 
-	// "1234567890123456789012345678901234567890"
-
-	private List<String> lines = new ArrayList<String>();
+	private final List<String> lines = new ArrayList<String>();
 
 	public ExpositionScreen () {
 		try {
@@ -32,6 +30,7 @@ public class ExpositionScreen extends Screen {
 
 	}
 
+	@Override
 	public void render () {
 		int w = -Art.bg.getRegionHeight();
 		spriteBatch.begin();
@@ -48,6 +47,7 @@ public class ExpositionScreen extends Screen {
 		spriteBatch.end();
 	}
 
+	@Override
 	public void tick (Input input) {
 		time++;
 		if (time / 4 > lines.size() * 6 + 250) {

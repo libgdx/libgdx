@@ -21,6 +21,7 @@ public class BossNeck extends BossPart {
 		bounce = 0;
 	}
 
+	@Override
 	public void tick () {
 		if (dieIn > 0) {
 			if (--dieIn == 0) die();
@@ -43,16 +44,19 @@ public class BossNeck extends BossPart {
 		}
 	}
 
+	@Override
 	public void setRot (double rot) {
 		baseRot = rot;
 	}
 
+	@Override
 	public void render (Screen screen, Camera camera) {
 		int xp = (int)x - 1;
 		int yp = (int)y - 1;
 		screen.draw(Art.gremlins[4][1], xp, yp);
 	}
 
+	@Override
 	public void hitSpikes () {
 		die();
 	}
@@ -66,16 +70,18 @@ public class BossNeck extends BossPart {
 			double dir = i * Math.PI * 2 / 8.0;
 			double xa = Math.sin(dir);
 			double ya = Math.cos(dir);
-			double dist = ((i / 8) + 1);
+			double dist = i / 8 + 1;
 			level.add(new Explosion(1, i * 3, x + w / 2 + xa * dist, y + h / 2 + ya * dist, xa, ya));
 		}
 		remove();
 	}
 
+	@Override
 	public boolean shot (Bullet bullet) {
 		return true;
 	}
 
+	@Override
 	public void explode (Explosion explosion) {
 		if (explosion.power > 0) {
 			die();

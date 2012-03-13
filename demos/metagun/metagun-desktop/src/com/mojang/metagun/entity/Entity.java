@@ -34,10 +34,10 @@ public abstract class Entity {
 			hitWall(xa, 0);
 			if (xa < 0) {
 				double xx = x / 10;
-				xa = -(xx - ((int)xx)) * 10;
+				xa = -(xx - (int)xx) * 10;
 			} else {
 				double xx = (x + w) / 10;
-				xa = 10 - (xx - ((int)xx)) * 10;
+				xa = 10 - (xx - (int)xx) * 10;
 			}
 			if (level.isFree(this, x + xa, y, w, h, xa, 0)) {
 				x += xa;
@@ -51,10 +51,10 @@ public abstract class Entity {
 			hitWall(0, ya);
 			if (ya < 0) {
 				double yy = y / 10;
-				ya = -(yy - ((int)yy)) * 10;
+				ya = -(yy - (int)yy) * 10;
 			} else {
 				double yy = (y + h) / 10;
-				ya = 10 - (yy - ((int)yy)) * 10;
+				ya = 10 - (yy - (int)yy) * 10;
 			}
 			if (level.isFree(this, x, y + ya, w, h, 0, ya)) {
 				y += ya;

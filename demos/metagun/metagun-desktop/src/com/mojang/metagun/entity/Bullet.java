@@ -22,6 +22,7 @@ public class Bullet extends Entity {
 		interactsWithWorld = true;
 	}
 
+	@Override
 	public void tick () {
 		tick++;
 		tryMove(xa, ya);
@@ -41,6 +42,7 @@ public class Bullet extends Entity {
 		}
 	}
 
+	@Override
 	protected void hitWall (double xa, double ya) {
 		for (int i = 0; i < 3; i++) {
 			level.add(new Spark(x, y, 0, 0));
@@ -48,6 +50,7 @@ public class Bullet extends Entity {
 		remove();
 	}
 
+	@Override
 	public void render (Screen g, Camera camera) {
 		// FIXME
 // if (tick % 2 == 0) {

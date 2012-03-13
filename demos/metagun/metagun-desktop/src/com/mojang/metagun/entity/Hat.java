@@ -11,7 +11,7 @@ import com.mojang.metagun.screen.Screen;
 public class Hat extends Entity {
 	double time = 0;
 	int noTakeTime = 30;
-	private int xPos, yPos;
+	private final int xPos, yPos;
 	public double xxa;
 
 	public Hat (double x, double y) {
@@ -30,6 +30,7 @@ public class Hat extends Entity {
 		time = Math.PI * 0.5;
 	}
 
+	@Override
 	public void tick () {
 		tryMove(xa, ya);
 		if (onGround) {
@@ -64,6 +65,7 @@ public class Hat extends Entity {
 		}
 	}
 
+	@Override
 	public void render (Screen g, Camera camera) {
 		int dir = 1;
 		int xp = (int)x - (16 - w) / 2;
@@ -76,6 +78,7 @@ public class Hat extends Entity {
 		g.draw(sheet[1 + xFrame][1], xp, yp);
 	}
 
+	@Override
 	public boolean shot (Bullet bullet) {
 		Sound.hit.play();
 		xa += bullet.xa * 0.5;

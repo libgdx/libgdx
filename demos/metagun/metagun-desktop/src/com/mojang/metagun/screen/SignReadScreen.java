@@ -5,9 +5,9 @@ import com.mojang.metagun.Art;
 import com.mojang.metagun.Input;
 
 public class SignReadScreen extends Screen {
-	private Screen parent;
+	private final Screen parent;
 
-	private String[][] signs = {
+	private final String[][] signs = {
 		{"READING", "", "PRESS UP TO READ SIGNS"},
 		{"JUMPING", "", "PRESS Z TO JUMP", "YOU CAN JUMP HIGHER BY", "GETTING A RUNNING START", "OR HOLDING DOWN Z",},
 		{"PROGRESSING", "", "LEAVE A ROOM THROUGH ANY", "EXIT TO CONTINUE YOUR", "ADVENTURE",},
@@ -32,13 +32,14 @@ public class SignReadScreen extends Screen {
 			"FISSION MAILED!",},};
 
 	private int delay = 15;
-	private int id;
+	private final int id;
 
 	public SignReadScreen (Screen parent, int id) {
 		this.parent = parent;
 		this.id = id;
 	}
 
+	@Override
 	public void render () {
 		parent.render();
 		spriteBatch.begin();
@@ -68,6 +69,7 @@ public class SignReadScreen extends Screen {
 		spriteBatch.end();
 	}
 
+	@Override
 	public void tick (Input input) {
 		if (!input.oldButtons[Input.ESCAPE] && input.buttons[Input.ESCAPE]) {
 			setScreen(parent);

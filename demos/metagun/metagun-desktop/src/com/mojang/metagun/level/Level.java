@@ -28,23 +28,19 @@ public class Level {
 	public List<Entity> entities = new ArrayList<Entity>();
 	public byte[] walls;
 	public List<Entity>[] entityMap;
-	private int width, height;
+	private final int width, height;
 	public Player player;
 	public int xSpawn, ySpawn;
-	private Random random = new Random(1000);
-	private GameScreen screen;
+	private final Random random = new Random(1000);
+	private final GameScreen screen;
 	private int respawnTime = 0;
-	// private int xo, yo;
 	private int tick;
 
 	@SuppressWarnings("unchecked")
 	public Level (GameScreen screen, int w, int h, int xo, int yo, int xSpawn, int ySpawn) {
 		this.screen = screen;
-// int[] pixels = new int[32 * 24];
 		this.xSpawn = xSpawn;
 		this.ySpawn = ySpawn;
-
-// Art.level.getRGB(xo * 31, yo * 23, 32, 24, pixels, 0, 32);
 
 		walls = new byte[w * h];
 		entityMap = new ArrayList[w * h];
@@ -55,7 +51,6 @@ public class Level {
 			for (int x = 0; x < w; x++) {
 				entityMap[x + y * w] = new ArrayList<Entity>();
 
-// int col = pixels[x + y * w] & 0xffffff;
 				int col = (Art.level.getPixel(x + xo * 31, y + yo * 23) & 0xffffff00) >>> 8;
 				byte wall = 0;
 
@@ -103,7 +98,7 @@ public class Level {
 				} else if (col == 0xFFADF8) {
 					add(new Hat(x * 10 + 1, y * 10 + 5, xo * 31 + x, yo * 23 + y));
 				} else if ((col & 0x00ffff) == 0x00ff00 && (col & 0xff0000) > 0) {
-					add(new Sign(x * 10, y * 10, (col >> 16) & 0xff));
+					add(new Sign(x * 10, y * 10, col >> 16 & 0xff));
 				} else if (col == 0x0000ff) {
 					// if (xSpawn == 0 && ySpawn == 0) {
 					this.xSpawn = x * 10 + 1;
@@ -170,7 +165,7 @@ public class Level {
 		}
 	}
 
-	private List<Entity> hits = new ArrayList<Entity>();
+	private final List<Entity> hits = new ArrayList<Entity>();
 
 	public List<Entity> getEntities (double xc, double yc, double w, double h) {
 		hits.clear();
@@ -229,11 +224,11 @@ public class Level {
 						yimg = 1;
 					}
 					if (w == 6) {
-						ximg = (tick / 4 + x * 2) & 3;
+						ximg = tick / 4 + x * 2 & 3;
 						yimg = 2;
 					}
 					if (w == 7) {
-						ximg = (-tick / 4 + x * 2) & 3;
+						ximg = -tick / 4 + x * 2 & 3;
 						yimg = 3;
 					}
 					if (w == 4) {
@@ -311,10 +306,10 @@ public class Level {
 							if (bullet.ya > 0) yPush = 1;
 						}
 						double r = 0.5;
-						if (walls[(x + xPush) + (y + yPush) * width] == 0
+						if (walls[x + xPush + (y + yPush) * width] == 0
 							&& getEntities((x + xPush) * 10 + r, (y + yPush) * 10 + r, 10 - r * 2, 10 - r * 2).size() == 0) {
 							walls[x + y * width] = 0;
-							walls[(x + xPush) + (y + yPush) * width] = 2;
+							walls[x + xPush + (y + yPush) * width] = 2;
 						}
 						bullet.remove();
 					}
@@ -324,20 +319,20 @@ public class Level {
 							double dir = i * Math.PI * 2 / 8.0;
 							double xa = Math.sin(dir);
 							double ya = Math.cos(dir);
-							double dist = (i / 8) + 1;
+							double dist = i / 8 + 1;
 							add(new Explosion(1, i * 3, x * 10 + 5 + xa * dist, y * 10 + 5 + ya * dist, xa, ya));
 						}
 						bullet.remove();
 						walls[x + y * width] = 0;
 					}
 					if (ww == 9) {
-						if ((bullet instanceof Explosion) && ((Explosion)bullet).power > 0) {
+						if (bullet instanceof Explosion && ((Explosion)bullet).power > 0) {
 							Sound.boom.play();
 							for (int i = 0; i < 16; i++) {
 								double dir = i * Math.PI * 2 / 8.0;
 								double xa = Math.sin(dir);
 								double ya = Math.cos(dir);
-								double dist = (i / 8) + 1;
+								double dist = i / 8 + 1;
 								add(new Explosion(1, i * 3, x * 10 + 5 + xa * dist, y * 10 + 5 + ya * dist, xa, ya));
 							}
 							bullet.remove();

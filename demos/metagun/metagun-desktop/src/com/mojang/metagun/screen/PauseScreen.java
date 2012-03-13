@@ -5,15 +5,16 @@ import com.mojang.metagun.Art;
 import com.mojang.metagun.Input;
 
 public class PauseScreen extends Screen {
-	private GameScreen parent;
+	private final GameScreen parent;
 	private int selected = 0;
 
-	private String[] options = {"BACK TO GAME", "AUTOMORTIS", "QUIT TO TITLE"};
+	private final String[] options = {"BACK TO GAME", "AUTOMORTIS", "QUIT TO TITLE"};
 
 	public PauseScreen (GameScreen parent) {
 		this.parent = parent;
 	}
 
+	@Override
 	public void render () {
 		parent.render();
 
@@ -47,6 +48,7 @@ public class PauseScreen extends Screen {
 		spriteBatch.end();
 	}
 
+	@Override
 	public void tick (Input input) {
 		if (!input.oldButtons[Input.ESCAPE] && input.buttons[Input.ESCAPE]) {
 			setScreen(parent);

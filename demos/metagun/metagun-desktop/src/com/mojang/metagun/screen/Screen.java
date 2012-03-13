@@ -11,6 +11,7 @@ import com.mojang.metagun.Input;
 import com.mojang.metagun.Metagun;
 
 public abstract class Screen {
+	private final String[] chars = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ".,!?:;\"'+-=/\\< "};
 	protected static Random random = new Random();
 	private Metagun metagun;
 	public SpriteBatch spriteBatch;
@@ -31,8 +32,6 @@ public abstract class Screen {
 	protected void setScreen (Screen screen) {
 		metagun.setScreen(screen);
 	}
-
-	String[] chars = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ".,!?:;\"'+-=/\\< "};
 
 	public void draw (TextureRegion region, int x, int y) {
 		int width = region.getRegionWidth();

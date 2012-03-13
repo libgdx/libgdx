@@ -8,12 +8,12 @@ import com.mojang.metagun.level.Level;
 
 public class LevelTransitionScreen extends Screen {
 	private static final int TRANSITION_DURATION = 20;
-	private Level level1;
-	private Level level2;
+	private final Level level1;
+	private final Level level2;
 	private int time = 0;
-	private Screen parent;
-	private int xa, ya;
-	private int xLevel, yLevel;
+	private final Screen parent;
+	private final int xa, ya;
+	private final int xLevel, yLevel;
 
 	public LevelTransitionScreen (Screen parent, int xLevel, int yLevel, Level level1, Level level2, int xa, int ya) {
 		this.level1 = level1;
@@ -25,6 +25,7 @@ public class LevelTransitionScreen extends Screen {
 		this.ya = ya;
 	}
 
+	@Override
 	public void tick (Input input) {
 		time++;
 		if (time == TRANSITION_DURATION) {
@@ -34,12 +35,12 @@ public class LevelTransitionScreen extends Screen {
 
 	Camera c = new Camera(320, 240);
 
+	@Override
 	public void render () {
 		double pow = time / (double)TRANSITION_DURATION;
 
 		spriteBatch.getTransformMatrix().idt();
 		spriteBatch.begin();
-// draw(Art.bg, -xLevel * 160 - (int)(xa * 160 * pow), -yLevel * 120 - (int)(ya * 120 * pow));
 		draw(Art.bg, 0, 0);
 		spriteBatch.end();
 

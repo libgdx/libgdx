@@ -18,7 +18,7 @@ public class GameScreen extends Screen {
 	private int yLevel = DEBUG_MODE ? 4 : 0;
 
 	Level level = new Level(this, 32, 24, xLevel, yLevel, 0, 0);
-	private Camera camera = new Camera(Metagun.GAME_WIDTH, Metagun.GAME_HEIGHT);
+	private final Camera camera = new Camera(Metagun.GAME_WIDTH, Metagun.GAME_HEIGHT);
 
 	public boolean mayRespawn = false;
 	private int gunLevel = DEBUG_MODE ? 2 : 0;
@@ -31,6 +31,7 @@ public class GameScreen extends Screen {
 		level.player.hatCount = hatCount;
 	}
 
+	@Override
 	public void tick (Input input) {
 		Stats.instance.time++;
 		if (!input.oldButtons[Input.ESCAPE] && input.buttons[Input.ESCAPE]) {
@@ -61,7 +62,7 @@ public class GameScreen extends Screen {
 		level.player.y -= ya * 220;
 		hatCount = level.player.hatCount;
 		if (ya != 0) level.player.y -= 10;
-		Level newLevel = new Level(this, 32, 24, xLevel, yLevel, (int)(level.player.x), (int)(level.player.y + ya * 5));
+		Level newLevel = new Level(this, 32, 24, xLevel, yLevel, (int)level.player.x, (int)(level.player.y + ya * 5));
 		newLevel.player.remove();
 		newLevel.player = level.player;
 		newLevel.add(newLevel.player);
@@ -72,9 +73,9 @@ public class GameScreen extends Screen {
 		level.player.damage = 0;
 	}
 
+	@Override
 	public void render () {
 		spriteBatch.begin();
-// draw(Art.bg, -xLevel * 160, -yLevel * 120);
 		draw(Art.bg, 0, 0);
 		spriteBatch.end();
 		level.render(this, camera);

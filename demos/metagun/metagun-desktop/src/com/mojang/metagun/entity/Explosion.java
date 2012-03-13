@@ -7,8 +7,9 @@ import com.mojang.metagun.level.Level;
 import com.mojang.metagun.screen.Screen;
 
 public class Explosion extends Entity {
-	private int life, delay, color;
-	private int duration;
+	private int life, delay;
+	private final int color;
+	private final int duration;
 	public int power;
 
 	public Explosion (int power, int delay, double x, double y, double xa, double ya) {
@@ -18,8 +19,8 @@ public class Explosion extends Entity {
 		this.w = 1;
 		this.h = 1;
 		bounce = 0.2;
-		this.xa = (xa + (random.nextDouble() - random.nextDouble()) * 0.2);
-		this.ya = (ya + (random.nextDouble() - random.nextDouble()) * 0.2);
+		this.xa = xa + (random.nextDouble() - random.nextDouble()) * 0.2;
+		this.ya = ya + (random.nextDouble() - random.nextDouble()) * 0.2;
 
 		color = random.nextInt(3);
 
@@ -27,13 +28,14 @@ public class Explosion extends Entity {
 		life = 0;
 	}
 
+	@Override
 	public void tick () {
 		if (delay > 0) {
 			delay--;
 			return;
 		}
 		if (life++ >= duration) remove();
-		interactsWithWorld = (life > 10);
+		interactsWithWorld = life > 10;
 		onGround = false;
 		// tryMove(xa, ya);
 		x += xa;
@@ -52,11 +54,13 @@ public class Explosion extends Entity {
 		}
 	}
 
+	@Override
 	protected void hitWall (double xa, double ya) {
 		this.xa *= 0.4;
 		this.ya *= 0.4;
 	}
 
+	@Override
 	public void render (Screen g, Camera camera) {
 		int xp = (int)x;
 		int yp = (int)y;

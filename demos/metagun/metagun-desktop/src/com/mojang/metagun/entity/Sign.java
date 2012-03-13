@@ -21,6 +21,7 @@ public class Sign extends Entity {
 		if (id == 15) autoRead = true;
 	}
 
+	@Override
 	public void tick () {
 		if (id == 6 && level.player.gunLevel >= 1) remove();
 		if (id == 15 && level.player.gunLevel >= 2) remove();
@@ -34,6 +35,7 @@ public class Sign extends Entity {
 		}
 	}
 
+	@Override
 	public void render (Screen g, Camera camera) {
 		if (id == 6 && level.player.gunLevel >= 1) return;
 		if (id == 15 && level.player.gunLevel >= 2) return;

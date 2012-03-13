@@ -22,6 +22,7 @@ public class Gunner extends Entity {
 		this.ya = ya + (random.nextDouble() - random.nextDouble()) * 0.5;
 	}
 
+	@Override
 	public void tick () {
 		onGround = false;
 		tryMove(xa, ya);
@@ -29,8 +30,8 @@ public class Gunner extends Entity {
 		if ((onGround || sliding != 0) && xa * xa < 0.01) {
 			if (chargeTime++ >= CHARGE_DURATION) {
 				chargeTime = 0;
-				double xd = (level.player.x + level.player.w / 2) - (x + w / 2);
-				double yd = (level.player.y + level.player.h / 2) - (y + h / 2);
+				double xd = level.player.x + level.player.w / 2 - (x + w / 2);
+				double yd = level.player.y + level.player.h / 2 - (y + h / 2);
 				double dd = Math.sqrt(xd * xd + yd * yd);
 				xd /= dd;
 				yd /= dd;
@@ -43,6 +44,7 @@ public class Gunner extends Entity {
 		ya += Level.GRAVITY;
 	}
 
+	@Override
 	protected void hitWall (double xa, double ya) {
 		sliding = 0;
 		if (xa != 0) {
@@ -59,6 +61,7 @@ public class Gunner extends Entity {
 		this.ya *= 0.4;
 	}
 
+	@Override
 	public void render (Screen g, Camera camera) {
 		// g.setColor(Color.red);
 		int xp = (int)x;
@@ -68,8 +71,8 @@ public class Gunner extends Entity {
 		int xFrame = 0;
 		int yFrame = 0;
 		if (onGround) {
-			double xd = (level.player.x + level.player.w / 2) - (x + w / 2);
-			double yd = (level.player.y + level.player.h / 2) - (y + h / 2);
+			double xd = level.player.x + level.player.w / 2 - (x + w / 2);
+			double yd = level.player.y + level.player.h / 2 - (y + h / 2);
 			double dd = Math.sqrt(xd * xd + yd * yd);
 			xd /= dd;
 			yd /= dd;
@@ -81,8 +84,8 @@ public class Gunner extends Entity {
 			if (yd > s) yFrame++;
 			if (yd < -s) yFrame--;
 		} else if (sliding != 0) {
-			double xd = (level.player.x + level.player.w / 2) - (x + w / 2);
-			double yd = (level.player.y + level.player.h / 2) - (y + h / 2);
+			double xd = level.player.x + level.player.w / 2 - (x + w / 2);
+			double yd = level.player.y + level.player.h / 2 - (y + h / 2);
 			double dd = Math.sqrt(xd * xd + yd * yd);
 			xd /= dd;
 			yd /= dd;
@@ -107,11 +110,13 @@ public class Gunner extends Entity {
 		}
 	}
 
+	@Override
 	public boolean shot (Bullet bullet) {
 		die();
 		return true;
 	}
 
+	@Override
 	public void hitSpikes () {
 		die();
 	}
@@ -128,6 +133,7 @@ public class Gunner extends Entity {
 		remove();
 	}
 
+	@Override
 	public void shove (Gunner enemy) {
 
 		double xd = enemy.x - x;
@@ -147,10 +153,12 @@ public class Gunner extends Entity {
 		xa -= xd;
 	}
 
+	@Override
 	public void explode (Explosion explosion) {
 		die();
 	}
 
+	@Override
 	public void collideMonster (Entity e) {
 		die();
 	}

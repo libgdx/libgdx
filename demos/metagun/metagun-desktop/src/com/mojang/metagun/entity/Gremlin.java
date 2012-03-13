@@ -22,6 +22,7 @@ public class Gremlin extends Entity {
 		bounce = 0;
 	}
 
+	@Override
 	public void tick () {
 		if (temperature > 0) {
 			temperature--;
@@ -62,6 +63,7 @@ public class Gremlin extends Entity {
 		}
 	}
 
+	@Override
 	public void render (Screen g, Camera camera) {
 		int xp = (int)x;
 		int yp = (int)y;
@@ -77,6 +79,7 @@ public class Gremlin extends Entity {
 // g.fillRect(xp + 5, yp - 8, 20 - (20 * temperature / MAX_TEMPERATURE), 2);
 	}
 
+	@Override
 	public void hitSpikes () {
 		die();
 	}
@@ -91,12 +94,13 @@ public class Gremlin extends Entity {
 			double dir = i * Math.PI * 2 / 8.0;
 			double xa = Math.sin(dir);
 			double ya = Math.cos(dir);
-			double dist = ((i / 8) + 1);
+			double dist = i / 8 + 1;
 			level.add(new Explosion(0, i * 3, x + w / 2 + xa * dist, y + h / 2 + ya * dist, xa, ya));
 		}
 		remove();
 	}
 
+	@Override
 	public boolean shot (Bullet bullet) {
 		Sound.pew.play();
 		for (int i = 0; i < 4; i++) {
@@ -115,6 +119,7 @@ public class Gremlin extends Entity {
 		return true;
 	}
 
+	@Override
 	public void explode (Explosion explosion) {
 		die();
 	}

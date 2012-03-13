@@ -8,7 +8,7 @@ import com.mojang.metagun.screen.Screen;
 
 public class Boss extends BossPart {
 	private static final int MAX_TEMPERATURE = 80 * 5;
-	private int temperature = 0;
+	private final int temperature = 0;
 	public int slamTime = 0;
 	private double xo, yo;
 	public int time = 0;
@@ -21,6 +21,7 @@ public class Boss extends BossPart {
 		bounce = 0;
 	}
 
+	@Override
 	public void tick () {
 		if (dieIn > 0) {
 			if (--dieIn == 0) die();
@@ -35,8 +36,8 @@ public class Boss extends BossPart {
 				level.add(new Gunner(x + xxa * 4, y + yya * 4, xa * 0.2 + xxa, ya * 0.2 + yya - 1));
 			}
 		} else if (time % 60 > 20 && time % 60 < 40 && time % 4 == 0) {
-			double xd = (level.player.x + level.player.w / 2) - (x + w / 2);
-			double yd = (level.player.y + level.player.h / 2) - (y + h / 2);
+			double xd = level.player.x + level.player.w / 2 - (x + w / 2);
+			double yd = level.player.y + level.player.h / 2 - (y + h / 2);
 			double dd = Math.sqrt(xd * xd + yd * yd);
 			xd /= dd;
 			yd /= dd;
@@ -52,6 +53,7 @@ public class Boss extends BossPart {
 		}
 	}
 
+	@Override
 	public void render (Screen screen, Camera camera) {
 		int xp = (int)x - 2;
 		int yp = (int)y - 2;
@@ -65,6 +67,7 @@ public class Boss extends BossPart {
 // g.fillRect(xp + 5, yp - 8, 20 - (20 * temperature / MAX_TEMPERATURE), 2);
 	}
 
+	@Override
 	public void hitSpikes () {
 	}
 
@@ -78,20 +81,21 @@ public class Boss extends BossPart {
 			double dir = i * Math.PI * 2 / 8.0;
 			double xa = Math.sin(dir);
 			double ya = Math.cos(dir);
-			double dist = ((i / 8) + 1);
+			double dist = i / 8 + 1;
 			level.add(new Explosion(1, i * 3, x + w / 2 + xa * dist, y + h / 2 + ya * dist, xa, ya));
 		}
 		remove();
 	}
 
+	@Override
 	public boolean shot (Bullet bullet) {
 		return true;
 	}
 
+	@Override
 	public void explode (Explosion explosion) {
 		if (explosion.power > 0) {
 			die();
 		}
 	}
-
 }

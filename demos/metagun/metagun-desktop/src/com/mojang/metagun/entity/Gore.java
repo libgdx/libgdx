@@ -21,6 +21,7 @@ public class Gore extends Entity {
 		life = random.nextInt(20) + 10;
 	}
 
+	@Override
 	public void tick () {
 		if (life-- <= 0) remove();
 		onGround = false;
@@ -31,11 +32,13 @@ public class Gore extends Entity {
 		ya += Level.GRAVITY * 0.15;
 	}
 
+	@Override
 	protected void hitWall (double xa, double ya) {
 		this.xa *= 0.4;
 		this.ya *= 0.4;
 	}
 
+	@Override
 	public void render (Screen g, Camera camera) {
 		int xp = (int)x;
 		int yp = (int)y;

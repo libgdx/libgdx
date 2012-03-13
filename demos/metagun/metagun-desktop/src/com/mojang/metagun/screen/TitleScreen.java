@@ -10,6 +10,7 @@ import com.mojang.metagun.Sound;
 public class TitleScreen extends Screen {
 	private int time = 0;
 
+	@Override
 	public void render () {
 		int yOffs = 480 - time * 2;
 		if (yOffs < 0) yOffs = 0;
@@ -22,7 +23,7 @@ public class TitleScreen extends Screen {
 				msg = "TOUCH TO START";
 			else
 				msg = "PRESS X TO START";
-			drawString(msg, 160 - msg.length() * 3, 140 - 3 - (int)(Math.abs(Math.sin(time * 0.1) * 10)));
+			drawString(msg, 160 - msg.length() * 3, 140 - 3 - (int)Math.abs(Math.sin(time * 0.1) * 10));
 
 		}
 		if (time >= 0) {
@@ -32,6 +33,7 @@ public class TitleScreen extends Screen {
 		spriteBatch.end();
 	}
 
+	@Override
 	public void tick (Input input) {
 		time++;
 		if (time > 240) {

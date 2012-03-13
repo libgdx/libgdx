@@ -55,7 +55,7 @@ public class Input implements InputProcessor {
 			boolean s = false;
 
 			for (int i = 0; i < 2; i++) {
-				int x = (int)((Gdx.input.getX(i) / (float)Gdx.graphics.getWidth()) * 320);
+				int x = (int)(Gdx.input.getX(i) / (float)Gdx.graphics.getWidth() * 320);
 				if (!Gdx.input.isTouched(i)) continue;
 				if (x < 32) {
 					set(Keys.DPAD_LEFT, true);

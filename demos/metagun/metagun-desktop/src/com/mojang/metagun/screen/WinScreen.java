@@ -8,6 +8,7 @@ import com.mojang.metagun.Stats;
 public class WinScreen extends Screen {
 	private int time = 0;
 
+	@Override
 	public void render () {
 		spriteBatch.begin();
 		int w = 240 * 8; // Art.bg.getHeight();
@@ -40,7 +41,7 @@ public class WinScreen extends Screen {
 			drawString(timeHideScale(Stats.instance.getShotScore(), tt - 30 * 4), xo + 20 * 6, yo + 3 * 6);
 		}
 
-		if (time > 60 * 7 && (time / 30 % 2 == 0)) {
+		if (time > 60 * 7 && time / 30 % 2 == 0) {
 			String msg = "PRESS X TO RESET THE GAME";
 			drawString(msg, 160 - msg.length() * 3, yo + 10 * 6);
 		}
@@ -61,6 +62,7 @@ public class WinScreen extends Screen {
 		return "" + val * time / 60;
 	}
 
+	@Override
 	public void tick (Input input) {
 		time++;
 		if (time > 60 * 7) {

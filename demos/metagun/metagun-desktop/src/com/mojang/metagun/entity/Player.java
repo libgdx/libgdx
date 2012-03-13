@@ -29,14 +29,14 @@ public class Player extends Entity {
 		bounce = 0;
 	}
 
+	@Override
 	public void tick () {
 	}
 
+	@Override
 	public void render (Screen g, Camera camera) {
-		// g.setColor(Color.GREEN);
 		int xp = (int)x - (16 - w) / 2;
 		int yp = (int)y - 2;
-		// g.fillRect(xp, yp, w, h);
 
 		int stepFrame = frame / 4 % 4;
 
@@ -49,7 +49,7 @@ public class Player extends Entity {
 		}
 		g.draw(sheet[3 + stepFrame][hatCount > 0 ? 0 : 1], xp, yp);
 
-		yp += (stepFrame == 3 ? 1 : 0);
+		yp += stepFrame == 3 ? 1 : 0;
 		for (int i = 1; i < hatCount; i++) {
 			g.draw(sheet[0][1], xp, yp - i * 2);
 		}
@@ -149,6 +149,7 @@ public class Player extends Entity {
 		if (x > 320 - h + 10 - 5) level.transition(1, 0);
 	}
 
+	@Override
 	public void hitSpikes () {
 		die();
 	}
@@ -167,6 +168,7 @@ public class Player extends Entity {
 		remove();
 	}
 
+	@Override
 	public boolean shot (Bullet bullet) {
 		Sound.pew.play();
 		xa += bullet.xa * 0.5;
@@ -225,15 +227,17 @@ public class Player extends Entity {
 		sign.remove();
 	}
 
+	@Override
 	public void outOfBounds () {
 	}
 
+	@Override
 	public void explode (Explosion explosion) {
 		die();
 	}
 
+	@Override
 	public void collideMonster (Entity e) {
 		die();
 	}
-
 }

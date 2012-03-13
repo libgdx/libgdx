@@ -21,6 +21,7 @@ public class PlayerGore extends Entity {
 		life = random.nextInt(90) + 60;
 	}
 
+	@Override
 	public void tick () {
 		if (life-- <= 0) remove();
 		onGround = false;
@@ -32,17 +33,20 @@ public class PlayerGore extends Entity {
 		level.add(new Gore(x + random.nextDouble(), y + random.nextDouble() - 1, xa, ya));
 	}
 
+	@Override
 	protected void hitWall (double xa, double ya) {
 		this.xa *= 0.9;
 		this.ya *= 0.9;
 	}
 
+	@Override
 	public void render (Screen g, Camera camera) {
 		int xp = (int)x;
 		int yp = (int)y;
 		g.draw(Art.guys[6][1], xp, yp);
 	}
 
+	@Override
 	public void hitSpikes () {
 		for (int i = 0; i < 4; i++) {
 			xa = (random.nextFloat() - random.nextFloat()) * 6;
