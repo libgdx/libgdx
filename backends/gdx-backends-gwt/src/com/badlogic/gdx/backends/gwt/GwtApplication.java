@@ -86,6 +86,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		try {
 			graphics = new GwtGraphics(root, config);
 		} catch(Throwable e) {
+			root.clear();
 			root.add(new Label("Sorry, your browser doesn't seem to support WebGL"));
 			return;
 		}
