@@ -13,69 +13,57 @@
 
 package com.badlogic.gdxinvaders;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdxinvaders.screens.GameLoop;
 import com.badlogic.gdxinvaders.screens.GameOver;
+import com.badlogic.gdxinvaders.screens.InvadersScreen;
 import com.badlogic.gdxinvaders.screens.MainMenu;
-import com.badlogic.gdxinvaders.screens.Screen;
 
-public class GdxInvaders implements ApplicationListener {
+public class GdxInvaders extends Game {
 	/** flag indicating whether we were initialized already **/
 	private boolean isInitialized = false;
 
-	/** the current screen **/
-	private Screen screen;
-
-	@Override
-	public void dispose () {
-
-	}
-
 	@Override
 	public void render () {
-		Application app = Gdx.app;
+		InvadersScreen currentScreen = getScreen();
 
 		// update the screen
-		screen.update(app);
+		currentScreen.render(Gdx.graphics.getDeltaTime());
 
-		// render the screen
-		screen.render(app);
+		// When the screen is done we change to the
+		// next screen. Ideally the screen transitions are handled
+		// in the screen itself or in a proper state machine.
+		if (currentScreen.isDone()) {
+			// dispose the resources of the current screen
+			currentScreen.dispose();
 
-		// when the screen is done we change to the
-		// next screen
-		if (screen.isDone()) {
-			// dispose the current screen
-			screen.dispose();
-
-			// if this screen is a main menu screen we switch to
+			// if the current screen is a main menu screen we switch to
 			// the game loop
-			if (screen instanceof MainMenu)
-				screen = new GameLoop(app);
+			if (currentScreen instanceof MainMenu) {
+				setScreen(new GameLoop());
+			}
 			else
-			// if this screen is a game loop screen we switch to the
-			// game over screen
-			if (screen instanceof GameLoop)
-				screen = new GameOver(app);
-			else
-			// if this screen is a game over screen we switch to the
-			// main menu screen
-			if (screen instanceof GameOver) screen = new MainMenu(app);
+			{
+				// if the current screen is a game loop screen we switch to the
+				// game over screen
+				if (currentScreen instanceof GameLoop) {
+					setScreen(new GameOver());
+				} else if (currentScreen instanceof GameOver) {
+					// if the current screen is a game over screen we switch to the
+					// main menu screen
+					setScreen(new MainMenu());
+				}
+			}
 		}
-	}
-
-	@Override
-	public void resize (int width, int height) {
-
 	}
 
 	@Override
 	public void create () {
 		if (!isInitialized) {
-			screen = new MainMenu(Gdx.app);
+			setScreen(new MainMenu());
 			Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/8.12.mp3", FileType.Internal));
 			music.setLooping(true);
 			music.play();
@@ -83,15 +71,11 @@ public class GdxInvaders implements ApplicationListener {
 		}
 	}
 
+	/**
+	 * For this game each of our screens is an instance of InvadersScreen.
+	 * @return the currently active {@link InvadersScreen}. */
 	@Override
-	public void pause () {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void resume () {
-		// TODO Auto-generated method stub
-		System.out.println("resume");
+	public InvadersScreen getScreen () {
+		return (InvadersScreen)super.getScreen();
 	}
 }

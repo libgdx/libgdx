@@ -13,7 +13,6 @@
 
 package com.badlogic.gdxinvaders.screens;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -27,7 +26,7 @@ import com.badlogic.gdx.math.Matrix4;
  * game. Waits for the touch and returns isDone() == true when it's done so that the ochestrating GdxInvaders class can switch to
  * the next screen.
  * @author mzechner */
-public class MainMenu implements Screen {
+public class MainMenu extends InvadersScreen {
 	/** the SpriteBatch used to draw the background, logo and text **/
 	private final SpriteBatch spriteBatch;
 	/** the background texture **/
@@ -42,7 +41,7 @@ public class MainMenu implements Screen {
 	private final Matrix4 viewMatrix = new Matrix4();
 	private final Matrix4 transformMatrix = new Matrix4();
 
-	public MainMenu (Application app) {
+	public MainMenu () {
 		spriteBatch = new SpriteBatch();
 		background = new Texture(Gdx.files.internal("data/planet.jpg"));
 		background.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -54,8 +53,20 @@ public class MainMenu implements Screen {
 	}
 
 	@Override
-	public void render (Application app) {
-		app.getGraphics().getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
+	public boolean isDone () {
+		return isDone;
+	}
+
+	@Override
+	public void update (float delta) {
+		if (Gdx.input.isTouched()) {
+			isDone = true;
+		}
+	}
+
+	@Override
+	public void draw (float delta) {
+		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		viewMatrix.setToOrtho2D(0, 0, 480, 320);
 		spriteBatch.setProjectionMatrix(viewMatrix);
@@ -71,16 +82,6 @@ public class MainMenu implements Screen {
 		float width = font.getBounds(text).width;
 		font.draw(spriteBatch, text, 240 - width / 2, 128);
 		spriteBatch.end();
-	}
-
-	@Override
-	public void update (Application app) {
-		isDone = app.getInput().isTouched();
-	}
-
-	@Override
-	public boolean isDone () {
-		return isDone;
 	}
 
 	@Override

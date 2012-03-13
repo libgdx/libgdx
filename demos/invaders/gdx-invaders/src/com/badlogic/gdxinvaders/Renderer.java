@@ -16,9 +16,7 @@ package com.badlogic.gdxinvaders;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
@@ -75,13 +73,13 @@ public class Renderer {
 	private int lastWave = 0;
 
 	/** view and transform matrix for text rendering **/
-	private Matrix4 viewMatrix = new Matrix4();
-	private Matrix4 transformMatrix = new Matrix4();
+	private final Matrix4 viewMatrix = new Matrix4();
+	private final Matrix4 transformMatrix = new Matrix4();
 
 	/** perspective camera **/
 	private PerspectiveCamera camera;
 
-	public Renderer (Application app) {
+	public Renderer () {
 		try {
 			spriteBatch = new SpriteBatch();
 
@@ -152,10 +150,10 @@ public class Renderer {
 		}
 	}
 
-	public void render (Application app, Simulation simulation) {
-		GL10 gl = app.getGraphics().getGL10();
+	public void render (Simulation simulation, float delta) {
+		GL10 gl = Gdx.graphics.getGL10();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		gl.glViewport(0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight());
+		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		renderBackground(gl);
 
@@ -163,12 +161,12 @@ public class Renderer {
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glEnable(GL10.GL_CULL_FACE);
 
-		setProjectionAndCamera(app.getGraphics(), simulation.ship, app);
+		setProjectionAndCamera(simulation.ship);
 		setLighting(gl);
 
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 
-		renderShip(gl, simulation.ship, app);
+		renderShip(gl, simulation.ship);
 		renderInvaders(gl, simulation.invaders);
 
 		gl.glDisable(GL10.GL_TEXTURE_2D);
@@ -197,7 +195,7 @@ public class Renderer {
 		font.draw(spriteBatch, status, 0, 320);
 		spriteBatch.end();
 
-		invaderAngle += app.getGraphics().getDeltaTime() * 90;
+		invaderAngle += delta * 90;
 		if (invaderAngle > 360) invaderAngle -= 360;
 	}
 
@@ -214,7 +212,7 @@ public class Renderer {
 
 	final Vector3 dir = new Vector3();
 
-	private void setProjectionAndCamera (Graphics graphics, Ship ship, Application app) {
+	private void setProjectionAndCamera (Ship ship) {
 		camera.position.set(ship.position.x, 6, 2);
 		camera.direction.set(ship.position.x, 0, -4).sub(camera.position).nor();
 		camera.update();
@@ -230,13 +228,13 @@ public class Renderer {
 		gl.glEnable(GL10.GL_COLOR_MATERIAL);
 	}
 
-	private void renderShip (GL10 gl, Ship ship, Application app) {
+	private void renderShip (GL10 gl, Ship ship) {
 		if (ship.isExploding) return;
 
 		shipTexture.bind();
 		gl.glPushMatrix();
 		gl.glTranslatef(ship.position.x, ship.position.y, ship.position.z);
-		gl.glRotatef(45 * (-app.getInput().getAccelerometerY() / 5), 0, 0, 1);
+		gl.glRotatef(45 * (-Gdx.input.getAccelerometerY() / 5), 0, 0, 1);
 		gl.glRotatef(180, 0, 1, 0);
 		shipMesh.render(GL10.GL_TRIANGLES);
 		gl.glPopMatrix();
@@ -289,7 +287,7 @@ public class Renderer {
 			Explosion explosion = explosions.get(i);
 			gl.glPushMatrix();
 			gl.glTranslatef(explosion.position.x, explosion.position.y, explosion.position.z);
-			explosionMesh.render(GL10.GL_TRIANGLE_FAN, (int)((explosion.aliveTime / Explosion.EXPLOSION_LIVE_TIME) * 15) * 4, 4);
+			explosionMesh.render(GL10.GL_TRIANGLE_FAN, (int)(explosion.aliveTime / Explosion.EXPLOSION_LIVE_TIME * 15) * 4, 4);
 			gl.glPopMatrix();
 		}
 		gl.glDisable(GL10.GL_BLEND);

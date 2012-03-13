@@ -13,25 +13,50 @@
 
 package com.badlogic.gdxinvaders.screens;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Screen;
 
-/** Interface for a game screen, e.g. main menu, game loop, game over screen and so on.
+/** Common class for a game screen, e.g. main menu, game loop, game over screen and so on.
  * @author mzechner */
-public interface Screen {
+public abstract class InvadersScreen implements Screen {
 	/** Called when the screen should update itself, e.g. continue a simulation etc.
-	 * 
-	 * @param app the Application */
-	public void update (Application app);
+	 */
+	public abstract void update (float delta);
 
 	/** Called when a screen should render itself
-	 * @param app */
-	public void render (Application app);
+	 */
+	public abstract void draw (float delta);
 
 	/** Called by GdxInvaders to check whether the screen is done.
-	 * 
 	 * @return true when the screen is done, false otherwise */
-	public boolean isDone ();
+	public abstract boolean isDone ();
 
-	/** Cleans up all resources of the screen, e.g. meshes, textures etc. */
-	public void dispose ();
+	@Override
+	public void render (float delta) {
+		update(delta);
+		draw(delta);
+	}
+
+	@Override
+	public void resize (int width, int height) {
+	}
+
+	@Override
+	public void show () {
+	}
+
+	@Override
+	public void hide () {
+	}
+
+	@Override
+	public void pause () {
+	}
+
+	@Override
+	public void resume () {
+	}
+
+	@Override
+	public void dispose () {
+	}
 }

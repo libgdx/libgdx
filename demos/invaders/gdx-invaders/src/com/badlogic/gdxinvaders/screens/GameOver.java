@@ -13,7 +13,6 @@
 
 package com.badlogic.gdxinvaders.screens;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -29,7 +28,7 @@ import com.badlogic.gdx.math.Matrix4;
  * will signal that it is done to the orchestrating GdxInvaders class.
  * 
  * @author mzechner */
-public class GameOver implements Screen {
+public class GameOver extends InvadersScreen {
 	/** the SpriteBatch used to draw the background, logo and text **/
 	private final SpriteBatch spriteBatch;
 	/** the background texture **/
@@ -44,7 +43,7 @@ public class GameOver implements Screen {
 	private final Matrix4 viewMatrix = new Matrix4();
 	private final Matrix4 transformMatrix = new Matrix4();
 
-	public GameOver (Application app) {
+	public GameOver () {
 		spriteBatch = new SpriteBatch();
 		background = new Texture(Gdx.files.internal("data/planet.jpg"));
 		background.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -69,8 +68,8 @@ public class GameOver implements Screen {
 	}
 
 	@Override
-	public void render (Application app) {
-		app.getGraphics().getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
+	public void draw (float delta) {
+		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		viewMatrix.setToOrtho2D(0, 0, 480, 320);
 		spriteBatch.setProjectionMatrix(viewMatrix);
@@ -89,8 +88,9 @@ public class GameOver implements Screen {
 	}
 
 	@Override
-	public void update (Application app) {
-		isDone = app.getInput().isTouched();
+	public void update (float delta) {
+		if (Gdx.input.isTouched()) {
+			isDone = true;
+		}
 	}
-
 }

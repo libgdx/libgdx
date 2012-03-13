@@ -13,9 +13,7 @@
 
 package com.badlogic.gdxinvaders.screens;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
@@ -23,7 +21,7 @@ import com.badlogic.gdxinvaders.Renderer;
 import com.badlogic.gdxinvaders.simulation.Simulation;
 import com.badlogic.gdxinvaders.simulation.SimulationListener;
 
-public class GameLoop implements Screen, SimulationListener {
+public class GameLoop extends InvadersScreen implements SimulationListener {
 	/** the simulation **/
 	private final Simulation simulation;
 	/** the renderer **/
@@ -33,12 +31,12 @@ public class GameLoop implements Screen, SimulationListener {
 	/** shot sound **/
 	private final Sound shot;
 
-	public GameLoop (Application app) {
+	public GameLoop () {
 		simulation = new Simulation();
 		simulation.listener = this;
-		renderer = new Renderer(app);
-		explosion = app.getAudio().newSound(app.getFiles().getFileHandle("data/explosion.ogg", FileType.Internal));
-		shot = app.getAudio().newSound(app.getFiles().getFileHandle("data/shot.ogg", FileType.Internal));
+		renderer = new Renderer();
+		explosion = Gdx.audio.newSound(Gdx.files.internal("data/explosion.ogg"));
+		shot = Gdx.audio.newSound(Gdx.files.internal("data/shot.ogg"));
 	}
 
 	@Override
@@ -54,25 +52,25 @@ public class GameLoop implements Screen, SimulationListener {
 	}
 
 	@Override
-	public void render (Application app) {
-		app.getGraphics().getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		renderer.render(app, simulation);
+	public void draw (float delta) {
+		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		renderer.render(simulation, delta);
 	}
 
 	@Override
-	public void update (Application app) {
-		simulation.update(app.getGraphics().getDeltaTime());
+	public void update (float delta) {
+		simulation.update(delta);
 
-		Input input = app.getInput();
-		if (input.getAccelerometerY() < 0)
-			simulation.moveShipLeft(app.getGraphics().getDeltaTime(), Math.abs(input.getAccelerometerY()) / 10);
+		float accelerometerY = Gdx.input.getAccelerometerY();
+		if (accelerometerY < 0)
+			simulation.moveShipLeft(delta, Math.abs(accelerometerY) / 10);
 		else
-			simulation.moveShipRight(app.getGraphics().getDeltaTime(), Math.abs(input.getAccelerometerY()) / 10);
+			simulation.moveShipRight(delta, Math.abs(accelerometerY) / 10);
 
-		if (input.isKeyPressed(Keys.DPAD_LEFT)) simulation.moveShipLeft(app.getGraphics().getDeltaTime(), 0.5f);
-		if (input.isKeyPressed(Keys.DPAD_RIGHT)) simulation.moveShipRight(app.getGraphics().getDeltaTime(), 0.5f);
+		if (Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) simulation.moveShipLeft(delta, 0.5f);
+		if (Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) simulation.moveShipRight(delta, 0.5f);
 
-		if (input.isTouched() || input.isKeyPressed(Keys.SPACE)) simulation.shot();
+		if (Gdx.input.isTouched() || Gdx.input.isKeyPressed(Keys.SPACE)) simulation.shot();
 	}
 
 	@Override
