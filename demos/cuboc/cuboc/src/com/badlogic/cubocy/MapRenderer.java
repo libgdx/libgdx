@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.math.Vector3;
 
 public class MapRenderer {
@@ -18,7 +19,7 @@ public class MapRenderer {
 	OrthographicCamera cam;
 	SpriteCache cache;
 	SpriteBatch batch = new SpriteBatch(10000);
-	ImmediateModeRenderer10 renderer = new ImmediateModeRenderer10(2000 * 2);
+	ImmediateModeRenderer20 renderer = new ImmediateModeRenderer20(false, true, 0);
 	int[][] blocks;
 	TextureRegion tile;
 	Animation bobLeft;
@@ -226,8 +227,8 @@ public class MapRenderer {
 	}
 
 	private void renderLaserBeams () {
-		cam.apply(Gdx.gl10);
-		renderer.begin(GL10.GL_LINES);
+		cam.update(false);
+		renderer.begin(cam.combined, GL10.GL_LINES);
 		for (int i = 0; i < map.lasers.size; i++) {
 			Laser laser = map.lasers.get(i);
 			float sx = laser.startPoint.x, sy = laser.startPoint.y;
