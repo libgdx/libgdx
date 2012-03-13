@@ -101,13 +101,13 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.audio = new GwtAudio();
 
 		// tell listener about app creation
-		try {
+//		try {
 			listener.create();
 			listener.resize(graphics.getWidth(), graphics.getHeight());
-		} catch (Throwable t) {
-			t.printStackTrace();
-			System.out.println(t.getMessage());
-		}
+//		} catch (Throwable t) {
+//			t.printStackTrace();
+//			error("GwtApplication", "create/resize threw an exception", t);
+//		}
 
 		// add resize handler to canvas
 		// FIXME
@@ -130,6 +130,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 					listener.render();
 					((GwtInput)Gdx.input).justTouched = false;
 				} catch (Throwable t) {
+					error("GwtApplication", "exception: " + t.getMessage(), t);
 					t.printStackTrace();
 				}
 			}
@@ -201,7 +202,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private void checkLogLabel () {
 		if (log == null) {
 			log = new TextArea();
-			log.setSize(graphics.getWidth() + "px", "150px");
+			log.setSize(graphics.getWidth() + "px", "200px");
 			log.setReadOnly(true);
 			root.add(log);
 		}
@@ -213,6 +214,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			checkLogLabel();
 			log.setText(log.getText() + "\n" + tag + ": " + message);
 			log.setCursorPos(log.getText().length() - 1);
+			System.out.println(tag + ": " + message);
 		}
 	}
 
@@ -220,8 +222,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public void log (String tag, String message, Exception exception) {
 		if (logLevel >= LOG_INFO) {
 			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage());
+			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage() + "\n");
 			log.setCursorPos(log.getText().length() - 1);
+			System.out.println(tag + ": " + message + "\n" + exception.getMessage());
+			System.out.println(getStackTrace(exception));
 		}
 	}
 
@@ -231,6 +235,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			checkLogLabel();
 			log.setText(log.getText() + "\n" + tag + ": " + message);
 			log.setCursorPos(log.getText().length() - 1);
+			System.err.println(tag + ": " + message);
 		}
 	}
 
@@ -240,19 +245,38 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			checkLogLabel();
 			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage());
 			log.setCursorPos(log.getText().length() - 1);
+			System.err.println(tag + ": " + message + "\n" + exception.getMessage() + "\n");
+			System.out.println(getStackTrace(exception));
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message) {
-		// TODO Auto-generated method stub
-
+		if (logLevel >= LOG_DEBUG) {
+			checkLogLabel();
+			log.setText(log.getText() + "\n" + tag + ": " + message + "\n");
+			log.setCursorPos(log.getText().length() - 1);
+			System.out.println(tag + ": " + message + "\n");
+		}
 	}
-
+	
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
-		// TODO Auto-generated method stub
-
+		if (logLevel >= LOG_DEBUG) {
+			checkLogLabel();
+			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage() +"\n");
+			log.setCursorPos(log.getText().length() - 1);
+			System.out.println(tag + ": " + message + "\n" + exception.getMessage());
+			System.out.println(getStackTrace(exception));
+		}
+	}
+	
+	private String getStackTrace(Throwable e) {
+		StringBuffer buffer = new StringBuffer();
+		for(StackTraceElement trace: e.getStackTrace()) {
+			buffer.append(trace.toString() + "\n");
+		}
+		return buffer.toString();
 	}
 
 	@Override

@@ -2,6 +2,7 @@
 package com.badlogic.cubocy;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 
@@ -27,12 +28,16 @@ public class Map {
 	public EndDoor endDoor;
 
 	public Map () {
+		loadBinary();
+	}
+	
+	private void loadBinary() {
 		Pixmap pixmap = new Pixmap(Gdx.files.internal("data/levels.png"));
 		tiles = new int[pixmap.getWidth()][pixmap.getHeight()];
 		for (int y = 0; y < 35; y++) {
-			for (int x = 0; x < 150; x++) {
-				System.out.println(x + ", " + y);
-				int pix = pixmap.getPixel(x, y) >>> 8;
+			for (int x = 0; x < 150; x++) {				
+				int pix = (pixmap.getPixel(x, y) >>> 8) & 0xffffff;
+				Gdx.app.log("Map", x + ", " + y + ", " + Integer.toHexString(pix));
 				if (pix == START) {
 					Dispenser dispenser = new Dispenser(x, pixmap.getHeight() - 1 - y);
 					dispensers.add(dispenser);
@@ -66,7 +71,7 @@ public class Map {
 			lasers.get(i).init();
 		}
 	}
-
+	
 	public void update (float deltaTime) {
 		bob.update(deltaTime);
 		if (bob.state == Bob.DEAD) bob = new Bob(this, activeDispenser.bounds.x, activeDispenser.bounds.y);

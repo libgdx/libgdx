@@ -313,10 +313,10 @@ public class Pixmap implements Disposable {
 		int g = pixels.get(i + 1);
 		int b = pixels.get(i + 2);
 		int a = pixels.get(i + 3);
-		return (a << 24) | 
-				 (r << 16) |
-				 (g << 8) |
-				 (b);
+		return (r << 24) | 
+				 (g << 16) |
+				 (b << 8) |
+				 (a);
 	}
 
 	/** Draws a pixel at the given location with the current color.

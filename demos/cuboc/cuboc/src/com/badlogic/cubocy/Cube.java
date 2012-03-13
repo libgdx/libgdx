@@ -66,10 +66,10 @@ public class Cube {
 		}
 
 		if (state == FIXED) {
-// if(stateTime > 5.0f) {
-// stateTime = 0;
-// state = FOLLOW;
-// }
+			if (stateTime > 5.0f) {
+				stateTime = 0;
+				state = FOLLOW;
+			}
 		}
 
 		stateTime += deltaTime;
