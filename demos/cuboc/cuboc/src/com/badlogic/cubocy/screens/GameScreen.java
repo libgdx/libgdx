@@ -45,7 +45,7 @@ public class GameScreen extends CubocScreen {
 
 	@Override
 	public void hide () {
-		System.out.println("dispose game screen");
+		Gdx.app.debug("Cubocy", "dispose game screen");
 		renderer.dispose();
 		controlRenderer.dispose();
 	}

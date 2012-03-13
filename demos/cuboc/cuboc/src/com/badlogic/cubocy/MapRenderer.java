@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.math.Vector3;
 
@@ -75,7 +74,7 @@ public class MapRenderer {
 				blocks[blockX][blockY] = cache.endCache();
 			}
 		}
-		System.out.println("blocks created");
+		Gdx.app.debug("Cubocy", "blocks created");
 	}
 
 	private void createAnimations () {
@@ -135,7 +134,7 @@ public class MapRenderer {
 			}
 		}
 		cache.end();
-		Gdx.app.log("Cubocy", "blocks: " + b);
+		Gdx.app.debug("Cubocy", "blocks: " + b);
 		stateTime += deltaTime;
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();

@@ -42,7 +42,7 @@ public class MainMenu extends CubocScreen {
 
 	@Override
 	public void hide () {
-		System.out.println("dispose main menu");
+		Gdx.app.debug("Cubocy", "dispose main menu");
 		batch.dispose();
 		title.getTexture().dispose();
 	}
