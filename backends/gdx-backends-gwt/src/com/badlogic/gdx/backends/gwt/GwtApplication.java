@@ -26,12 +26,15 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -56,20 +59,23 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		this.config = getConfig();
 		this.root = config.rootPanel != null ? config.rootPanel : RootPanel.get();
 
+		final PreloaderCallback callback = getPreloaderCallback();
 		preloader = new Preloader();
 		preloader.preload("assets.txt", new PreloaderCallback() {
 			@Override
 			public void loaded (String file, int loaded, int total) {
-				System.out.println("loaded " + file + "," + loaded + "," + total);
+				callback.loaded(file, loaded, total);
 			}
 
 			@Override
 			public void error (String file) {
-				System.out.println("error: " + file);
+				callback.error(file);
 			}
 
 			@Override
 			public void done () {
+				callback.done();
+				root.clear();
 				setupLoop();
 			}
 		});
@@ -128,6 +134,44 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	public abstract ApplicationListener getApplicationListener ();
 
+	public Panel getRootPanel() {
+		return root;
+	}
+	
+	public PreloaderCallback getPreloaderCallback() {
+		final Canvas canvas = Canvas.createIfSupported();
+		canvas.setWidth("300");
+		canvas.setHeight("40");
+		root.add(new Label("Loading..."));
+		root.add(canvas);
+		final Context2d context = canvas.getContext2d();
+		
+		return new PreloaderCallback() {
+			@Override
+			public void done () {
+				context.fillRect(0, 0, 300, 40);
+			}
+
+			@Override
+			public void loaded (String file, int loaded, int total) {
+				System.out.println("loaded " + file + "," + loaded + "/" + total);
+				String color = Pixmap.make(100, 0, 0, 1);
+				context.setFillStyle(color);
+				context.setStrokeStyle(color);
+				context.fillRect(0, 0, 300, 40);
+				color = Pixmap.make(0, 200, 0, 1);
+				context.setFillStyle(color);
+				context.setStrokeStyle(color);
+				context.fillRect(0, 0, 300 * (loaded / (float)total) * 0.97f, 40);
+			}
+
+			@Override
+			public void error (String file) {
+				System.out.println("error: " + file);
+			}
+		};
+	}
+	
 	@Override
 	public Graphics getGraphics () {
 		return graphics;
