@@ -187,7 +187,7 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	public void present (float deltaTime) {
+	public void draw (float deltaTime) {
 		GLCommon gl = Gdx.gl;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
@@ -249,7 +249,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void render (float delta) {
 		update(delta);
-		present(delta);
+		draw(delta);
 	}
 
 	@Override

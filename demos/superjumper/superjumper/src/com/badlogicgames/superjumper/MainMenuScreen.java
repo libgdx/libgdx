@@ -80,7 +80,7 @@ public class MainMenuScreen implements Screen {
 		}
 	}
 
-	public void present (float deltaTime) {
+	public void draw (float deltaTime) {
 		GLCommon gl = Gdx.gl;
 		gl.glClearColor(1, 0, 0, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -103,7 +103,7 @@ public class MainMenuScreen implements Screen {
 	@Override
 	public void render (float delta) {
 		update(delta);
-		present(delta);
+		draw(delta);
 	}
 
 	@Override

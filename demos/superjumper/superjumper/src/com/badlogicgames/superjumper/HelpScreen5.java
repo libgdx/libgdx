@@ -62,7 +62,7 @@ public class HelpScreen5 implements Screen {
 		}
 	}
 
-	public void present (float deltaTime) {
+	public void draw (float deltaTime) {
 		GLCommon gl = Gdx.gl;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		guiCam.update();
