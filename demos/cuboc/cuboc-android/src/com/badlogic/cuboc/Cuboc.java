@@ -16,6 +16,7 @@ public class Cuboc extends AndroidApplication {
 		config.useAccelerometer = false;
 		config.useCompass = false;
 		config.useWakelock = true;
+		config.useGL20 = true;
 		initialize(new Cubocy(), config);
 	}
 }
