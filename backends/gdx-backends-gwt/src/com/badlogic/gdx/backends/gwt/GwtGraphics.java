@@ -45,7 +45,7 @@ public class GwtGraphics implements Graphics {
 
 	public GwtGraphics (Panel root, GwtApplicationConfiguration config) {
 		Canvas canvasWidget = Canvas.createIfSupported();
-		if(canvasWidget == null) return;
+		if(canvasWidget == null) throw new GdxRuntimeException("Canvas not supported");
 		canvas = canvasWidget.getCanvasElement();
 		root.add(canvasWidget);
 		canvas.setWidth(config.width);

@@ -83,7 +83,12 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	private void setupLoop () {
 		// setup modules
-		graphics = new GwtGraphics(root, config);
+		try {
+			graphics = new GwtGraphics(root, config);
+		} catch(Throwable e) {
+			root.add(new Label("Sorry, your browser doesn't seem to support WebGL"));
+			return;
+		}
 		lastWidth = graphics.getWidth();
 		lastHeight = graphics.getHeight();
 		Gdx.app = this;
