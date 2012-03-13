@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.canvas.dom.client.ImageData;
@@ -70,6 +71,7 @@ public class Pixmap implements Disposable {
 	float a;
 	String color = make(r, g, b, a);
 	static Blending blending;
+	CanvasPixelArray pixels;
 	
 	public Pixmap (FileHandle file) {
 		GwtFileHandle gwtFile = (GwtFileHandle)file;
@@ -305,17 +307,16 @@ public class Pixmap implements Disposable {
 	 * @param y The y-coordinate
 	 * @return The pixel color in RGBA8888 format. */
 	public int getPixel (int x, int y) {
-		// FIXME welp, this doesn't work :/
-//		ImageData imageData = context.getImageData(x, y, 1, 1);
-//		int r = imageData.getData().get(0);
-//		int g = imageData.getData().get(1);
-//		int b = imageData.getData().get(2);
-//		int a = imageData.getData().get(3);
-//		return (imageData.getAlphaAt(0, 0) << 24) | 
-//				 (imageData.getRedAt(0, 0) << 16) |
-//				 (imageData.getGreenAt(0, 0) << 8) |
-//				 (imageData.getBlueAt(0, 0));
-		return 0;
+		if(pixels == null) pixels = context.getImageData(0, 0, width, height).getData();
+		int i = x * 4 + y * width * 4;
+		int r = pixels.get(i + 0);
+		int g = pixels.get(i + 1);
+		int b = pixels.get(i + 2);
+		int a = pixels.get(i + 3);
+		return (a << 24) | 
+				 (r << 16) |
+				 (g << 8) |
+				 (b);
 	}
 
 	/** Draws a pixel at the given location with the current color.

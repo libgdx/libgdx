@@ -29,6 +29,7 @@
 <!-- 		<include name="**/FileHandleStream.java"/> -->
 		
 		<!-- graphics interfaces/classes -->
+		<include name="**/graphics/FPSLogger.java"/>
 		<include name="**/graphics/Camera.java"/>
 		<include name="**/graphics/Color.java"/>
 		<include name="**/graphics/GL10.java"/>

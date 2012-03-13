@@ -155,12 +155,12 @@ public class CameraGroupStrategy implements GroupStrategy {
 	@Override
 	public void beforeGroups () {
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
-		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
 		if (shader != null) {
 			shader.begin();
 			shader.setUniformMatrix("u_projectionViewMatrix", camera.combined);
 			shader.setUniformi("u_texture", 0);
 		} else {
+			Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
 			Gdx.gl10.glMatrixMode(GL10.GL_PROJECTION);
 			Gdx.gl10.glLoadMatrixf(camera.projection.val, 0);
 			Gdx.gl10.glMatrixMode(GL10.GL_MODELVIEW);

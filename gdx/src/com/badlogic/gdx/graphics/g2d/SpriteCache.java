@@ -852,7 +852,6 @@ public class SpriteCache implements Disposable {
 
 			GL20 gl = Gdx.gl20;
 			gl.glDepthMask(false);
-			gl.glEnable(GL20.GL_TEXTURE_2D);
 
 			if (customShader != null) {
 				customShader.begin();
