@@ -118,10 +118,10 @@ public interface Application {
 	/** Logs an error message to the console or logcat */
 	public void error (String tag, String message, Throwable exception);
 
-	/** Logs an error message to the console or logcat */
+	/** Logs a debug message to the console or logcat */
 	public void debug (String tag, String message);
 
-	/** Logs an error message to the console or logcat */
+	/** Logs a debug message to the console or logcat */
 	public void debug (String tag, String message, Throwable exception);
 
 	/** Sets the log level. {@link #LOG_NONE} will mute all log output. {@link #LOG_ERROR} will only let error messages through.
