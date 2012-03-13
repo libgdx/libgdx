@@ -5,6 +5,7 @@
 		<!-- main interfaces/classes -->
 		<include name="**/Application.java"/>
 		<include name="**/ApplicationListener.java"/>
+		<include name="**/ApplicationAdapter.java"/>
 		<include name="**/Audio.java"/>
 		<include name="**/Files.java"/>
 		<include name="**/Game.java"/>

@@ -78,7 +78,13 @@ public class Pixmap implements Disposable {
 		ImageElement img = gwtFile.preloader.images.get(file.path());
 		if(img == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
 		create(img.getWidth(), img.getHeight(), Format.RGBA8888);
+		context.setGlobalCompositeOperation(Composite.COPY);
 		context.drawImage(img, 0, 0);
+		context.setGlobalCompositeOperation(getComposite());
+	}
+	
+	private static Composite getComposite() {
+		return blending == Blending.None? Composite.COPY: Composite.SOURCE_OVER;
 	}
 	
 	public Pixmap(ImageElement img) {
@@ -98,7 +104,7 @@ public class Pixmap implements Disposable {
 		canvas.getCanvasElement().setWidth(width);
 		canvas.getCanvasElement().setHeight(height);
 		context = canvas.getContext2d();
-		context.setGlobalCompositeOperation(Composite.SOURCE_OVER);
+		context.setGlobalCompositeOperation(getComposite());
 		buffer = BufferUtils.newIntBuffer(1);
 		id = nextId++;
 		buffer.put(0, id);
@@ -114,6 +120,10 @@ public class Pixmap implements Disposable {
 	 * @param blending the blending type */
 	public static void setBlending (Blending blending) {
 		Pixmap.blending = blending;
+		Composite composite = getComposite();
+		for(Pixmap pixmap: pixmaps.values()) {
+			pixmap.context.setGlobalCompositeOperation(composite);
+		}
 	}
 	
 	/** @return the currently set {@link Blending} */
@@ -309,10 +319,10 @@ public class Pixmap implements Disposable {
 	public int getPixel (int x, int y) {
 		if(pixels == null) pixels = context.getImageData(0, 0, width, height).getData();
 		int i = x * 4 + y * width * 4;
-		int r = pixels.get(i + 0);
-		int g = pixels.get(i + 1);
-		int b = pixels.get(i + 2);
-		int a = pixels.get(i + 3);
+		int r = pixels.get(i + 0) & 0xff;
+		int g = pixels.get(i + 1) & 0xff;
+		int b = pixels.get(i + 2) & 0xff;
+		int a = pixels.get(i + 3) & 0xff;
 		return (r << 24) | 
 				 (g << 16) |
 				 (b << 8) |
