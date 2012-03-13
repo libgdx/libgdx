@@ -7,8 +7,10 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 
 public class CubocDesktop {
 	public static void main (String[] argv) {
-		// Set the log level so we can see the output of calls to Gdx.app.debug
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		new LwjglApplication(new Cubocy(), "Cubocy", 480, 320, true);
+
+		// After creating the Application instance we can set the log level to
+		// show the output of calls to Gdx.app.debug
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 	}
 }
