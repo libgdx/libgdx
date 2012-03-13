@@ -151,17 +151,19 @@ public class Renderer {
 	}
 
 	public void render (Simulation simulation, float delta) {
+		// We explicitly require GL10, otherwise we could've used the GLCommon
+		// interface via Gdx.gl
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		renderBackground(gl);
+		renderBackground();
 
 		gl.glDisable(GL10.GL_DITHER);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glEnable(GL10.GL_CULL_FACE);
 
-		setProjectionAndCamera(simulation.ship);
+		setProjectionAndCamera(gl, simulation.ship);
 		setLighting(gl);
 
 		gl.glEnable(GL10.GL_TEXTURE_2D);
@@ -199,7 +201,7 @@ public class Renderer {
 		if (invaderAngle > 360) invaderAngle -= 360;
 	}
 
-	private void renderBackground (GL10 gl) {
+	private void renderBackground () {
 		viewMatrix.setToOrtho2D(0, 0, 400, 320);
 		spriteBatch.setProjectionMatrix(viewMatrix);
 		spriteBatch.setTransformMatrix(transformMatrix);
@@ -212,11 +214,11 @@ public class Renderer {
 
 	final Vector3 dir = new Vector3();
 
-	private void setProjectionAndCamera (Ship ship) {
+	private void setProjectionAndCamera (GL10 gl, Ship ship) {
 		camera.position.set(ship.position.x, 6, 2);
 		camera.direction.set(ship.position.x, 0, -4).sub(camera.position).nor();
 		camera.update();
-		camera.apply(Gdx.gl10);
+		camera.apply(gl);
 	}
 
 	float[] direction = {1, 0.5f, 0, 0};

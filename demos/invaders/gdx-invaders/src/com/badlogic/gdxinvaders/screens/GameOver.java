@@ -69,7 +69,7 @@ public class GameOver extends InvadersScreen {
 
 	@Override
 	public void draw (float delta) {
-		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		viewMatrix.setToOrtho2D(0, 0, 480, 320);
 		spriteBatch.setProjectionMatrix(viewMatrix);
