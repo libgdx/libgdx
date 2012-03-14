@@ -41,14 +41,12 @@ public class MusicTest extends GdxTest {
 	@Override
 	public void create () {
 		for (int i = 0; i < music.length; i++) {
-			music[i] = Gdx.audio.newMusic(Gdx.files.internal("data/cloudconnected.ogg"));
-// music = Gdx.audio.newMusic(Gdx.files.internal("data/sell_buy_item.wav"));
-// music[i] = Gdx.audio.newMusic(Gdx.files.internal("data/threeofaperfectpair.mp3"));
+			music[i] = Gdx.audio.newMusic(Gdx.files.internal("data/music.mp3"));
 		}
 
 		buttons = new TextureRegion(new Texture(Gdx.files.internal("data/playback.png")));
 		batch = new SpriteBatch();
-		font = new BitmapFont();
+		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 	}
 
 	@Override

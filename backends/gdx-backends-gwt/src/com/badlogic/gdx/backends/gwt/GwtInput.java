@@ -27,9 +27,9 @@ public class GwtInput implements Input {
 	char lastKeyCharPressed;
 	float keyRepeatTimer;
 	long currentEventTimeStamp;
-	final CanvasElement canvas;
+	final Element canvas;
 
-	public GwtInput (CanvasElement canvas) {
+	public GwtInput (Element canvas) {
 		this.canvas = canvas;
 		hookEvents();
 	}
