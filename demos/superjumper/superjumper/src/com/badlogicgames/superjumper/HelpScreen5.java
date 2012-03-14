@@ -82,6 +82,8 @@ public class HelpScreen5 implements Screen {
 
 	@Override
 	public void render (float delta) {
+		update(delta);
+		draw(delta);
 	}
 
 	@Override

@@ -67,8 +67,8 @@ public class MapRenderer {
 						if (y > height) continue;
 						int posX = x;
 						int posY = height - y - 1;
-						if (map.tiles[x][y] == Map.TILE) cache.add(tile, posX, posY, 1, 1);
-						if (map.tiles[x][y] == Map.SPIKES) cache.add(spikes, posX, posY, 1, 1);
+						if (map.match(map.tiles[x][y], Map.TILE)) cache.add(tile, posX, posY, 1, 1);
+						if (map.match(map.tiles[x][y], Map.SPIKES)) cache.add(spikes, posX, posY, 1, 1);
 					}
 				}
 				blocks[blockX][blockY] = cache.endCache();
