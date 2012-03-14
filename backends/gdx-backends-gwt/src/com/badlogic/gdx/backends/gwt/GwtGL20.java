@@ -61,6 +61,7 @@ public class GwtGL20 implements GL20 {
 
 	protected GwtGL20 (WebGLRenderingContext gl) {
 		this.gl = gl;
+		this.gl.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 0);
 	}
 	
 	private void ensureCapacity(FloatBuffer buffer) {
