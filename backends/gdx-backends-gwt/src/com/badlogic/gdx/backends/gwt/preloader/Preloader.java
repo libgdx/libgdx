@@ -4,8 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -39,8 +39,14 @@ public class Preloader {
 		}
 	}
 	
+	final String baseUrl;
+	
+	public Preloader() {
+		baseUrl = GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "");
+	}
+	
 	public void preload(final String assetFileUrl, final PreloaderCallback callback) {
-		new TextLoader(GWT.getHostPageBaseURL() + assetFileUrl, new LoaderCallback<String>() {
+		new TextLoader(baseUrl + assetFileUrl, new LoaderCallback<String>() {
 			@Override
 			public void success (String result) {
 				String[] lines = result.split("\n");
@@ -73,7 +79,7 @@ public class Preloader {
 		
 		final Asset asset = assets.get(next);
 		if(asset.type == AssetType.Text) {
-			new TextLoader(GWT.getHostPageBaseURL() + asset.url, new LoaderCallback<String>() {
+			new TextLoader(baseUrl + asset.url, new LoaderCallback<String>() {
 				@Override
 				public void success (String result) {
 					texts.put(asset.url, result);
@@ -90,7 +96,7 @@ public class Preloader {
 		}
 		
 		if(asset.type == AssetType.Image) {
-			new ImageLoader(GWT.getHostPageBaseURL() + asset.url, new LoaderCallback<ImageElement>() {
+			new ImageLoader(baseUrl + asset.url, new LoaderCallback<ImageElement>() {
 				@Override
 				public void success (ImageElement result) {
 					images.put(asset.url, result);
