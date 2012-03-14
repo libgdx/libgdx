@@ -80,31 +80,41 @@ public class Frustum {
 			PlaneSide result = planes[i].testPoint(point);
 			if (result == PlaneSide.Back) return false;
 		}
-
 		return true;
 	}
 
-	/** Returns wheter the given sphere is in the frustum.
+	/**
+	 * Returns wheter the given sphere is in the frustum.
 	 * 
-	 * @param center The center of the sphere
-	 * @param radius The radius of the sphere
-	 * @return Wheter the sphere is in the frustum */
-	public boolean sphereInFrustum (Vector3 center, float radius) {
-		for (int i = 0; i < planes.length; i++)
-			if (planes[i].distance(center) < -radius) return false;
-
+	 * @param center
+	 *            The center of the sphere
+	 * @param radius
+	 *            The radius of the sphere
+	 * @return Wheter the sphere is in the frustum
+	 */
+	public boolean sphereInFrustum(Vector3 center, float radius) {
+		for (int i = 0; i < 6; i++)
+			if ((planes[i].normal.x * center.x + planes[i].normal.y * center.y + planes[i].normal.z
+					* center.z) < (-radius - planes[i].d))
+				return false;
 		return true;
 	}
 
-	/** Returns wheter the given sphere is in the frustum not checking wheter it is behind the near and far clipping plane.
+	/**
+	 * Returns wheter the given sphere is in the frustum not checking wheter it
+	 * is behind the near and far clipping plane.
 	 * 
-	 * @param center The center of the sphere
-	 * @param radius The radius of the sphere
-	 * @return Wheter the sphere is in the frustum */
-	public boolean sphereInFrustumWithoutNearFar (Vector3 center, float radius) {
-		for (int i = 2; i < planes.length; i++)
-			if (planes[i].distance(center) < -radius) return false;
-
+	 * @param center
+	 *            The center of the sphere
+	 * @param radius
+	 *            The radius of the sphere
+	 * @return Wheter the sphere is in the frustum
+	 */
+	public boolean sphereInFrustumWithoutNearFar(Vector3 center, float radius) {
+		for (int i = 2; i < 6; i++)
+			if ((planes[i].normal.x * center.x + planes[i].normal.y * center.y + planes[i].normal.z
+					* center.z) < (-radius - planes[i].d))
+				return false;
 		return true;
 	}
 
