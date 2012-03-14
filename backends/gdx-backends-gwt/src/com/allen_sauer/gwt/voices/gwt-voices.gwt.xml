@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.6.4//EN" "http://google-web-toolkit.googlecode.com/svn/tags/1.6.4/distro-source/core/src/gwt-module.dtd">
+  <!--
+    Copyright 2007 Fred Sauer Licensed under the Apache License, Version 2.0 (the "License"); you
+    may not use this file except in compliance with the License. You may obtain a copy of the
+    License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or
+    agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+    specific language governing permissions and limitations under the License.
+  -->
+<module>
+
+  <!-- Inherit the core Web Toolkit stuff.                  -->
+  <inherits name='com.google.gwt.user.User' />
+
+  <source path="client" />
+
+  <public path="public">
+    <exclude name="**/*.as" />
+  </public>
+
+  <replace-with class="com.allen_sauer.gwt.voices.client.ui.impl.FlashMovieImplOpera">
+    <when-type-is class="com.allen_sauer.gwt.voices.client.ui.impl.FlashMovieImpl" />
+    <when-property-is name="user.agent" value="opera" />
+  </replace-with>
+
+  <replace-with class="com.allen_sauer.gwt.voices.client.ui.impl.FlashMovieImplSafari">
+    <when-type-is class="com.allen_sauer.gwt.voices.client.ui.impl.FlashMovieImpl" />
+    <when-property-is name="user.agent" value="safari" />
+  </replace-with>
+
+  <replace-with class="com.allen_sauer.gwt.voices.client.ui.impl.FlashMovieImplIE6">
+    <when-type-is class="com.allen_sauer.gwt.voices.client.ui.impl.FlashMovieImpl" />
+    <any>
+      <when-property-is name="user.agent" value="ie6" />
+      <when-property-is name="user.agent" value="ie8" />
+      <when-property-is name="user.agent" value="ie9" />
+    </any>
+  </replace-with>
+
+  <replace-with class="com.allen_sauer.gwt.voices.client.ui.impl.FlashMovieImplMozilla">
+    <when-type-is class="com.allen_sauer.gwt.voices.client.ui.impl.FlashMovieImpl" />
+    <when-property-is name="user.agent" value="gecko1_8" />
+  </replace-with>
+
+  <replace-with class="com.allen_sauer.gwt.voices.client.ui.impl.FlashMovieImplMozillaOld">
+    <when-type-is class="com.allen_sauer.gwt.voices.client.ui.impl.FlashMovieImpl" />
+    <when-property-is name="user.agent" value="gecko" />
+  </replace-with>
+
+
+  <replace-with class="com.allen_sauer.gwt.voices.client.ui.impl.NativeSoundImplOpera">
+    <when-type-is class="com.allen_sauer.gwt.voices.client.ui.impl.NativeSoundImpl" />
+    <when-property-is name="user.agent" value="opera" />
+  </replace-with>
+
+  <replace-with class="com.allen_sauer.gwt.voices.client.ui.impl.NativeSoundImplSafari">
+    <when-type-is class="com.allen_sauer.gwt.voices.client.ui.impl.NativeSoundImpl" />
+    <when-property-is name="user.agent" value="safari" />
+  </replace-with>
+
+  <replace-with class="com.allen_sauer.gwt.voices.client.ui.impl.NativeSoundImplIE6">
+    <when-type-is class="com.allen_sauer.gwt.voices.client.ui.impl.NativeSoundImpl" />
+    <any>
+      <when-property-is name="user.agent" value="ie6" />
+      <when-property-is name="user.agent" value="ie8" />
+      <when-property-is name="user.agent" value="ie9" />
+    </any>
+  </replace-with>
+
+  <replace-with class="com.allen_sauer.gwt.voices.client.ui.impl.NativeSoundImplMozilla">
+    <when-type-is class="com.allen_sauer.gwt.voices.client.ui.impl.NativeSoundImpl" />
+    <when-property-is name="user.agent" value="gecko1_8" />
+  </replace-with>
+
+  <replace-with class="com.allen_sauer.gwt.voices.client.ui.impl.NativeSoundImplMozillaOld">
+    <when-type-is class="com.allen_sauer.gwt.voices.client.ui.impl.NativeSoundImpl" />
+    <when-property-is name="user.agent" value="gecko" />
+  </replace-with>
+
+</module>

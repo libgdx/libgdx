@@ -39,7 +39,7 @@ public class Preloader {
 		}
 	}
 	
-	final String baseUrl;
+	public final String baseUrl;
 	
 	public Preloader() {
 		baseUrl = GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "");

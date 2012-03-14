@@ -124,8 +124,14 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.audio = new GwtAudio();
 
 		// tell listener about app creation
-		listener.create();
-		listener.resize(graphics.getWidth(), graphics.getHeight());
+		try {
+			listener.create();
+			listener.resize(graphics.getWidth(), graphics.getHeight());
+		} catch(Throwable t) {
+			error("GwtApplication", "exception: " + t.getMessage(), t);
+			t.printStackTrace();
+			throw new RuntimeException(t);
+		}
 
 		// add resize handler to canvas
 		// FIXME
@@ -149,7 +155,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 					((GwtInput)Gdx.input).justTouched = false;
 				} catch (Throwable t) {
 					error("GwtApplication", "exception: " + t.getMessage(), t);
-					t.printStackTrace();
+					throw new RuntimeException(t);
 				}
 			}
 		}.scheduleRepeating((int)((1f / config.fps) * 1000));
@@ -400,5 +406,9 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 		protected AgentInfo () {
 		}
+	}
+
+	public String getBaseUrl () {
+		return preloader.baseUrl;
 	}
 }
