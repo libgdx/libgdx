@@ -159,7 +159,8 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public DisplayMode getDesktopDisplayMode () {
-		return null; // FIXME
+		return new DisplayMode(config.width, config.height, 60, 8) {
+		};
 	}
 
 	@Override
@@ -184,7 +185,7 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public BufferFormat getBufferFormat () {
-		return new BufferFormat(8, 8, 8, 8, 16, config.stencil?8:0, 0, false); // FIXME
+		return new BufferFormat(8, 8, 8, 0, 16, config.stencil?8:0, 0, false); // FIXME
 	}
 
 	@Override

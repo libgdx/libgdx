@@ -101,7 +101,6 @@ public class GwtGL20 implements GL20 {
 			uniforms.put(program, progUniforms);
 		}
 		// FIXME check if uniform already stored.
-		// FIXME deallocate stuff...
 		int id = nextUniformId++;
 		progUniforms.put(id, location);
 		return id;

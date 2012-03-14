@@ -4,7 +4,7 @@ package com.badlogic.gdx.tests.gwt.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.badlogic.gdx.tests.gwt.GwtTest;
+import com.badlogic.gdx.tests.PreferencesTest;
 
 public class GwtTestStarter extends GwtApplication {
 
@@ -15,6 +15,6 @@ public class GwtTestStarter extends GwtApplication {
 
 	@Override
 	public ApplicationListener getApplicationListener () {
-		return new GwtTest();
+		return new PreferencesTest();
 	}
 }

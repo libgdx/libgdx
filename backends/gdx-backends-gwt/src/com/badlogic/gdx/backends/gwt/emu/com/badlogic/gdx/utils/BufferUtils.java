@@ -236,8 +236,7 @@ public class BufferUtils {
 	}
 
 	public static CharBuffer newCharBuffer (int numChars) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		return CharBuffer.wrap(new char[numChars]);
 	}
 
 	public static IntBuffer newIntBuffer (int numInts) {

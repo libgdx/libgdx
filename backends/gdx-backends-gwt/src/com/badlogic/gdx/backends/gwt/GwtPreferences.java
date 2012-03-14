@@ -4,10 +4,66 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.google.gwt.corp.localstorage.LocalStorage;
 
 public class GwtPreferences implements Preferences {
+	final String prefix;
 	ObjectMap<String, Object> values = new ObjectMap<String, Object>();
+	
+	GwtPreferences(String prefix) {
+		this.prefix = prefix + ":";
+		int prefixLength = this.prefix.length();
+		try {
+			for(int i = 0; i < LocalStorage.length(); i++) {
+				String key = LocalStorage.key(i);
+				if(key.startsWith(prefix)) {
+					String value = LocalStorage.getItem(key);
+					values.put(key.substring(prefixLength, key.length()-1), toObject(key, value));
+				}
+			}
+		} catch(Exception e) {
+			values.clear();
+		}
+	}
+	
+	private Object toObject(String key, String value) {
+		if(key.endsWith("b")) return new Boolean(Boolean.parseBoolean(value));
+		if(key.endsWith("i")) return new Integer(Integer.parseInt(value));
+		if(key.endsWith("l")) return new Long(Long.parseLong(value));
+		if(key.endsWith("f")) return new Float(Float.parseFloat(value));
+		return value; 
+	}
+	
+	private String toStorageKey(String key, Object value) {
+		if(value instanceof Boolean) return prefix + key + "b";
+		if(value instanceof Integer) return prefix + key + "i";
+		if(value instanceof Long) return prefix + key + "l";
+		if(value instanceof Float) return prefix + key + "f";
+		return prefix + key + "s";
+	}
+	
+	@Override
+	public void flush () {
+		try {
+			// remove all old values
+			for(int i = 0; i < LocalStorage.length(); i++) {
+				String key = LocalStorage.key(i);
+				if(key.startsWith(prefix)) LocalStorage.removeItem(key);
+			}
+			
+			// push new values to LocalStorage
+			for(String key: values.keys()) {
+				String storageKey = toStorageKey(key, values.get(key));
+				String storageValue = "" + values.get(key).toString();
+				LocalStorage.setItem(storageKey, storageValue);
+			}
+			
+		} catch(Exception e) {
+			throw new GdxRuntimeException("Couldn't flush preferences");
+		}
+	}
 	
 	@Override
 	public void putBoolean (String key, boolean val) {
@@ -122,10 +178,5 @@ public class GwtPreferences implements Preferences {
 	@Override
 	public void remove (String key) {
 		values.remove(key);
-	}
-
-	@Override
-	public void flush () {
-		// FIXME
 	}
 }
