@@ -186,11 +186,11 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			@Override
 			public void loaded (String file, int loaded, int total) {
 				System.out.println("loaded " + file + "," + loaded + "/" + total);
-				String color = Pixmap.make(100, 0, 0, 1);
+				String color = Pixmap.make(30, 30, 30, 1);
 				context.setFillStyle(color);
 				context.setStrokeStyle(color);
 				context.fillRect(0, 0, 300, 40);
-				color = Pixmap.make(0, 200, 0, 1);
+				color = Pixmap.make(200, 200, 200, 1);
 				context.setFillStyle(color);
 				context.setStrokeStyle(color);
 				context.fillRect(0, 0, 300 * (loaded / (float)total) * 0.97f, 40);
