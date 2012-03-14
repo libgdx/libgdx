@@ -31,18 +31,21 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.canvas.dom.client.Context2d.TextAlign;
+import com.google.gwt.canvas.dom.client.Context2d.TextBaseline;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -68,15 +71,23 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		if (config.rootPanel != null) {
 			this.root = config.rootPanel;
 		} else {
-			BodyElement body = Document.get().getBody();
-			for(int i = 0; i < body.getChildCount(); i++) {
-				System.out.println(body.getChild(i).getNodeName());
-			}
 			Element element = Document.get().getElementById("embed-" + GWT.getModuleName());
 			if (element == null) {
-				root = RootPanel.get();
+				VerticalPanel panel = new VerticalPanel();
+				panel.setWidth("" + config.width + "px");
+				panel.setHeight("" + config.height + "px");
+				panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+				panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+				RootPanel.get().add(panel);
+				RootPanel.get().setWidth("" + config.width + "px");
+				RootPanel.get().setHeight("" + config.height + "px");
+				this.root = panel;
 			} else {
-				Panel panel = new VerticalPanel();
+				VerticalPanel panel = new VerticalPanel();
+				panel.setWidth("" + config.width + "px");
+				panel.setHeight("" + config.height + "px");
+				panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+				panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 				element.appendChild(panel.getElement());
 				root = panel;
 			}
@@ -171,11 +182,13 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	public PreloaderCallback getPreloaderCallback () {
 		final Canvas canvas = Canvas.createIfSupported();
-		canvas.setWidth("300");
-		canvas.setHeight("40");
-		root.add(new Label("Loading..."));
-		root.add(canvas);
+		canvas.setWidth("" + (int)(config.width * 0.7f) + "px");
+		canvas.setHeight("70px");
+		getRootPanel().add(canvas);
 		final Context2d context = canvas.getContext2d();
+		context.setTextAlign(TextAlign.CENTER);
+		context.setTextBaseline(TextBaseline.MIDDLE);
+		context.setFont("18pt Calibri");
 
 		return new PreloaderCallback() {
 			@Override
@@ -189,11 +202,14 @@ public abstract class GwtApplication implements EntryPoint, Application {
 				String color = Pixmap.make(30, 30, 30, 1);
 				context.setFillStyle(color);
 				context.setStrokeStyle(color);
-				context.fillRect(0, 0, 300, 40);
+				context.fillRect(0, 0, 300, 70);
 				color = Pixmap.make(200, 200, 200, 1);
 				context.setFillStyle(color);
 				context.setStrokeStyle(color);
-				context.fillRect(0, 0, 300 * (loaded / (float)total) * 0.97f, 40);
+				context.fillRect(0, 0, 300 * (loaded / (float)total) * 0.97f, 70);
+				
+				context.setFillStyle(Pixmap.make(50, 50, 50, 1));
+				context.fillText("loading", 300 / 2, 70 / 2);
 			}
 
 			@Override
