@@ -29,7 +29,9 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.StillModelInstance;
+import com.badlogic.gdx.graphics.g3d.StillModelNode;
 import com.badlogic.gdx.graphics.g3d.experimental.ShaderLoader;
+import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.LightManager;
 import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
@@ -63,32 +65,8 @@ public class StillModelViewerGL20 implements ApplicationListener {
 	private ShaderProgram shader;
 	private LightManager lightManager;
 	private PrototypeRendererGL20 protoRenderer;
-	private StillModelInstance instance;
-	private Instance instance2;
-
-	class Instance implements StillModelInstance {
-		final private Matrix4 matrix = new Matrix4();
-		final private Vector3 pos = new Vector3();
-		public Material[] materials;
-
-		public Instance() {
-		}
-
-		@Override
-		public Matrix4 getTransform() {
-			return matrix;
-		}
-
-		@Override
-		public Vector3 getSortCenter() {
-			return pos;
-		}
-
-		@Override
-		public Material[] getMaterials() {
-			return null;
-		}
-	}
+	private StillModelNode instance;
+	private StillModelNode instance2;
 
 	public StillModelViewerGL20(String fileName, String... textureFileNames) {
 		this.fileName = fileName;
@@ -97,26 +75,11 @@ public class StillModelViewerGL20 implements ApplicationListener {
 
 	@Override
 	public void create() {
-		Gdx.graphics.setVSync(false);
 		long start = System.nanoTime();
 		model = ModelLoaderRegistry
 				.loadStillModel(Gdx.files.internal(fileName));
 		Gdx.app.log("StillModelViewer", "loading took: "
 				+ (System.nanoTime() - start) / 1000000000.0f);
-
-		for (StillSubMesh mesh : model.subMeshes) {
-			mesh.mesh.scale(5f, 5f, 5f);
-		}
-
-		if (!fileName.endsWith(".g3d")) {
-			G3dExporter.export(model, Gdx.files.absolute(fileName + ".g3d"));
-			start = System.nanoTime();
-			model = G3dLoader.loadStillModel(Gdx.files.absolute(fileName
-					+ ".g3d"));
-			Gdx.app.log("StillModelViewer",
-					"loading binary took: " + (System.nanoTime() - start)
-							/ 1000000000.0f);
-		}
 
 		if (textureFileNames.length != 0) {
 			textures = new Texture[textureFileNames.length];
@@ -126,9 +89,6 @@ public class StillModelViewerGL20 implements ApplicationListener {
 								: true);
 			}
 		}
-		hasNormals = hasNormals();
-
-		System.out.println("hasNormal: " + hasNormals);
 
 		model.getBoundingBox(bounds);
 		float len = bounds.getDimensions().len();
@@ -141,7 +101,7 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		cam.lookAt(bounds.getCenter().x, bounds.getCenter().y,
 				bounds.getCenter().z);
 		cam.near = 0.1f;
-		cam.far = 1000;
+		cam.far = 512;
 
 		renderer = new ImmediateModeRenderer20(false, true, 16);
 		batch = new SpriteBatch();
@@ -149,40 +109,39 @@ public class StillModelViewerGL20 implements ApplicationListener {
 
 		shader = ShaderLoader.createShader("light", "light");
 
-		lightManager = new LightManager(8);
+		lightManager = new LightManager(4);
 		lightManager.ambientLight.set(0.1f, 0.1f, 0.1f, 0);
-		for (int i = 0; i < 32; i++) {
+		lightManager.dirLight = new DirectionalLight();
+		lightManager.dirLight.color.set(0.048f, 0.04f, 0.09f, 0);
+		lightManager.dirLight.direction.set(-.1f, -1, 0.03f).nor();
+
+		for (int i = 0; i < 8; i++) {
 			PointLight l = new PointLight();
-			l.position.set(MathUtils.random(16) - 8, MathUtils.random(6) - 2,
-					-MathUtils.random(16) + 2);
+			l.position.set(MathUtils.random(6) - 3, MathUtils.random(9) - 3,
+					-MathUtils.random(6) + 3);
 			l.color.r = MathUtils.random();
 			l.color.b = MathUtils.random();
 			l.color.g = MathUtils.random();
-			l.intensity = 4;
+			l.intensity = 64;
 			lightManager.addLigth(l);
-
 		}
+		lightManager.ambientLight.set(1, 0, 0, 0);
 
 		protoRenderer = new PrototypeRendererGL20();
 		protoRenderer.setShader(shader);
 		protoRenderer.setLightManager(lightManager);
 
-		instance = new Instance();
-		instance.getTransform().translate(-6, 0, 1);
-		instance2 = new Instance();
-		instance2.getTransform().translate(6, 0, -5);
+		instance = new StillModelNode();
+		instance.getTransform().translate(-len / 3, 4, 2);
+		instance2 = new StillModelNode();
+		instance2.getTransform().translate(len / 4, -2, 2);
+
+		instance.radius = bounds.getDimensions().len() / 2;
+		instance2.radius = instance.radius;
 
 		for (StillSubMesh mesh : model.subMeshes) {
 			System.out.println(mesh.material.name);
 		}
-	}
-
-	private boolean hasNormals() {
-		for (StillSubMesh mesh : model.subMeshes) {
-			if (mesh.mesh.getVertexAttribute(Usage.Normal) == null)
-				return false;
-		}
-		return true;
 	}
 
 	@Override
@@ -192,14 +151,14 @@ public class StillModelViewerGL20 implements ApplicationListener {
 
 	@Override
 	public void render() {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
+		Gdx.gl.glEnable(GL10.GL_CULL_FACE);
 
-		instance.getTransform().rotate(0, 1, 0,
-				55 * Gdx.graphics.getDeltaTime());
-		instance2.getTransform().rotate(0, 1, 0,
-				-45 * Gdx.graphics.getDeltaTime());
+		instance.getTransform().rotate(0, 1, -0.1f,
+				35 * Gdx.graphics.getDeltaTime());
+		instance2.getTransform().rotate(0, 1, 0.1f,
+				-15 * Gdx.graphics.getDeltaTime());
 
 		cam.update();
 
@@ -207,12 +166,12 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		shader.setUniformMatrix("u_projectionViewMatrix", cam.combined);
 
 		shader.setUniformi("u_texture0", 0);
+		shader.end();
+
 		textures[0].bind(0);
 
 		// shader.setUniformi("u_texture1", 1);
 		// textures[1].bind(1);
-
-		// model.render(shader);
 
 		protoRenderer.begin();
 		protoRenderer.draw(model, instance);
@@ -251,9 +210,10 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		// StillModelViewer("data/qbob/world_blobbie_brushes.g3dt",
 		// "data/qbob/world_blobbie_blocks.png"),
 		// "StillModel Viewer", 800, 480, false);
-		new JoglApplication(new StillModelViewerGL20("data/multipleuvs.g3dt",
-				"data/multipleuvs_1.png", "data/multipleuvs_2.png"),
-				"StillModel Viewer gles2.0", 800, 480, true);
+		new JoglApplication(new StillModelViewerGL20(
+				"data/models/basicscene.obj", "data/multipleuvs_1.png",
+				"data/multipleuvs_2.png"), "StillModel Viewer gles2.0", 800,
+				480, true);
 		// new JoglApplication(new StillModelViewer("data/head.obj"),
 		// "StillModel Viewer", 800, 480, false);
 	}

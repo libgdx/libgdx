@@ -47,8 +47,8 @@ public class LightManager {
 	}
 
 	public void calculateAndApplyLightsToModel(Vector3 center,
-			ShaderProgram shader) {		
-		this.calculateLights(center.x,center.y,center.z);
+			ShaderProgram shader) {
+		this.calculateLights(center.x, center.y, center.z);
 		this.applyLights(shader);
 	}
 
@@ -61,14 +61,15 @@ public class LightManager {
 	// than x that would make sorted faster
 	public void calculateLights(float x, float y, float z) {
 		final int maxSize = pointLights.size;
-
 		final PointLight lights[] = pointLights.items;
-		// solve what are closest lights
+		// solve what are lights that influence most
 		if (maxSize > maxLightsPerModel) {
 
-			for (int i = 0; i < maxSize; i++) {
-				lights[i].priority = lights[i].position.dst(x, y, z)
-						/ lights[i].intensity;// if just linear fallof
+			for (int i = 0; i < maxSize; i++) {				
+				lights[i].priority = lights[i].intensity
+						/ lights[i].position.dst(x, y, z);
+				
+				// if just linear fallof
 				// lights[i].distance = lights[i].position.dst2(x, y, z) -
 				// lights[i].range; //if range based
 			}

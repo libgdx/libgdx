@@ -20,9 +20,12 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 public interface StillModelInstance {
-	public Matrix4 getTransform ();
+	public Matrix4 getTransform();
 
-	public Vector3 getSortCenter ();
+	public Vector3 getSortCenter();
 
-	public Material[] getMaterials ();
+	public float getBoundingSphereRadius();
+
+	public Material[] getMaterials();
+
 }

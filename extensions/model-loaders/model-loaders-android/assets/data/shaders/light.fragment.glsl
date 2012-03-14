@@ -1,3 +1,4 @@
+#define normals
 #ifdef GL_ES
 #define LOWP lowp
 #define MED mediump
@@ -6,6 +7,8 @@ precision mediump float;
 #define MED
 #define LOWP
 #endif
+
+
 
 uniform vec3 ambient;
 const float shininessFactor = 15.0;
@@ -29,13 +32,14 @@ void main()
 {		
 	vec3 tex = texture2D(u_texture0, v_texCoords).rgb;
 		
-	vec3 surfaceNormal = normalize( v_normal );
-	
 	//fastest way to calculate inverse of length
   	float invLength = inversesqrt( dot(v_lightDir, v_lightDir));
   	vec3 intensity = clamp( (v_lightColor * (v_intensity * invLength)), 0.0, 1.0 );	
-	vec3 lightDirection = v_lightDir * invLength;// > TRESHOLD ? invLength : 1.0);    
 	
+	#ifdef normals
+	vec3 lightDirection = v_lightDir * invLength;// > TRESHOLD ? invLength : 1.0);	
+	
+	vec3 surfaceNormal = normalize( v_normal );
 	//lambert phong
     float angle = dot(surfaceNormal, lightDirection);
     float diffuse = clamp((angle + WRAP_AROUND)/ (1.0+WRAP_AROUND), 0.0, 1.0);
@@ -47,8 +51,16 @@ void main()
 	specular = (diffuse > 0.0) ? specular : 0.0;
 		
 	//combine lights
-	vec3 light =  intensity *( specular + diffuse *  tex );
+	vec3 light =  intensity * specular + intensity * diffuse * tex;
+	#else
+	vec3 light =  intensity * tex;
+	#endif
+	
+	#ifdef bakedLight
+	light *= texture2D(u_texture1, v_texCoords).rgb;	
+	#endif
 	
 	gl_FragColor = vec4( light + (ambient * tex), 1.0);
+	
 	//gl_FragColor = texture2D(u_texture1, v_texCoords) * vec4( light + (ambient * tex) , 1.0);
 }

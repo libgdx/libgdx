@@ -1,7 +1,12 @@
+#define normals
 #define LIGHTS_NUM 4
 attribute vec4 a_position; 
 attribute vec2 a_texCoord0;
+
+#ifdef normals
 attribute vec3 a_normal;
+uniform mat3 u_normalMatrix;
+#endif
 
 uniform vec3  lightsPos[LIGHTS_NUM];
 uniform vec3  lightsCol[LIGHTS_NUM];
@@ -19,12 +24,17 @@ varying vec3 v_eye;
 varying vec3 v_pos;
 varying vec3 v_lightColor;
 varying float v_intensity;
+
 				
 const float WRAP_AROUND = 1.0; //0 is hard 1 is soft. if this is uniform performance is bad		
 void main()
-{	
-	v_texCoords = a_texCoord0; 	
-	v_normal    = a_normal;	
+{
+#ifdef normals
+	v_normal    = u_normalMatrix * a_normal;
+#endif
+
+	v_texCoords = a_texCoord0;
+	
 	vec4 worldPos = u_modelMatrix * a_position;
 	gl_Position = u_projectionViewMatrix * worldPos; 
 	vec3 pos  = worldPos.xyz;
@@ -33,8 +43,13 @@ void main()
 	
 #if LIGHTS_NUM > 1
 	//this is good place to calculate dir light?
+#ifdef normals
 	float aggWeight =  clamp((dot(a_normal, -dirLightDir) + WRAP_AROUND) / (1.0 + WRAP_AROUND),0.0, 1.0 );
 	vec3  aggDir = -dirLightDir * aggWeight;
+#else
+	float aggWeight = 1.0;
+	vec3  aggDir = dirLightDir;
+#endif
 	vec3  aggCol = dirLightCol * aggWeight;	
 	for ( int i = 0; i < LIGHTS_NUM; i++ ){
 	
@@ -44,9 +59,13 @@ void main()
 				
 		vec3 L = dif * invLen;// normalize		
 		
-		float lambert = clamp((dot(a_normal, L) + WRAP_AROUND) / (1.0 + WRAP_AROUND),0.0, 1.0 );
+		#ifdef normals
+		float lambert = clamp((dot(a_normal, L) + WRAP_AROUND) / (1.0 + WRAP_AROUND),0.0, 1.0 );		
 		float weight   = lightsInt[i] * invLen * lambert;
-				
+		#else
+		float weight   = lightsInt[i] * invLen;
+		#endif
+		
 		aggDir   += L * weight;
 		invLen 	 *= weight;
 		aggCol   += invLen * lightsCol[i];		

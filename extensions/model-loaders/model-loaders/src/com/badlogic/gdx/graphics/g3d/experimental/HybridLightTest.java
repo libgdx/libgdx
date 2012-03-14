@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
@@ -45,7 +46,7 @@ public class HybridLightTest implements ApplicationListener {
 	ShaderProgram lightShader;
 	private Matrix4 modelMatrix = new Matrix4();
 	private Matrix4 modelMatrix2 = new Matrix4();
-
+	final private Matrix3 normalMatrix = new Matrix3();
 	float timer;
 	public void render () {
 
@@ -81,13 +82,13 @@ public class HybridLightTest implements ApplicationListener {
 		lightShader.setUniformf("camPos", cam.position.x, cam.position.y, cam.position.z);
 		lightShader.setUniformMatrix("u_projectionViewMatrix", cam.combined);
 		lightShader.setUniformi("u_texture0", 0);
-		lightShader.setUniformi("u_texture1", 1);
 		lightManager.calculateLights(0, 2, -8);
 		lightManager.applyLights(lightShader);
 
 		mesh.render(lightShader, GL10.GL_TRIANGLES);
 
 		texture2.bind(0);
+		lightShader.setUniformMatrix("u_normalMatrix", normalMatrix, false);
 		lightShader.setUniformMatrix("u_modelMatrix", modelMatrix, false);
 		lightManager.calculateLights(0, 0, 0);
 		lightManager.applyLights(lightShader);
@@ -114,7 +115,7 @@ public class HybridLightTest implements ApplicationListener {
 			lightManager.addLigth(l);
 		}
 		lightManager.dirLight = new DirectionalLight();
-		lightManager.dirLight.color.set(0.078f,0.09f,0.09f,0);
+		lightManager.dirLight.color.set(0.038f,0.04f,0.09f,0);
 		lightManager.dirLight.direction.set(-.1f,-1,0.03f).nor();
 		
 		lightManager.ambientLight.set(0.02f,0.02f,0.02f,0f);
