@@ -32,12 +32,19 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public abstract class GwtApplication implements EntryPoint, Application {
 	private ApplicationListener listener;
@@ -57,7 +64,23 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		this.agentInfo = computeAgentInfo();
 		this.listener = getApplicationListener();
 		this.config = getConfig();
-		this.root = config.rootPanel != null ? config.rootPanel : RootPanel.get();
+
+		if (config.rootPanel != null) {
+			this.root = config.rootPanel;
+		} else {
+			BodyElement body = Document.get().getBody();
+			for(int i = 0; i < body.getChildCount(); i++) {
+				System.out.println(body.getChild(i).getNodeName());
+			}
+			Element element = Document.get().getElementById("embed-" + GWT.getModuleName());
+			if (element == null) {
+				root = RootPanel.get();
+			} else {
+				Panel panel = new VerticalPanel();
+				element.appendChild(panel.getElement());
+				root = panel;
+			}
+		}
 
 		final PreloaderCallback callback = getPreloaderCallback();
 		preloader = new Preloader();
@@ -85,7 +108,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		// setup modules
 		try {
 			graphics = new GwtGraphics(root, config);
-		} catch(Throwable e) {
+		} catch (Throwable e) {
 			root.clear();
 			root.add(new Label("Sorry, your browser doesn't seem to support WebGL"));
 			return;
@@ -101,13 +124,8 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.audio = new GwtAudio();
 
 		// tell listener about app creation
-//		try {
-			listener.create();
-			listener.resize(graphics.getWidth(), graphics.getHeight());
-//		} catch (Throwable t) {
-//			t.printStackTrace();
-//			error("GwtApplication", "create/resize threw an exception", t);
-//		}
+		listener.create();
+		listener.resize(graphics.getWidth(), graphics.getHeight());
 
 		// add resize handler to canvas
 		// FIXME
@@ -141,18 +159,18 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	public abstract ApplicationListener getApplicationListener ();
 
-	public Panel getRootPanel() {
+	public Panel getRootPanel () {
 		return root;
 	}
-	
-	public PreloaderCallback getPreloaderCallback() {
+
+	public PreloaderCallback getPreloaderCallback () {
 		final Canvas canvas = Canvas.createIfSupported();
 		canvas.setWidth("300");
 		canvas.setHeight("40");
 		root.add(new Label("Loading..."));
 		root.add(canvas);
 		final Context2d context = canvas.getContext2d();
-		
+
 		return new PreloaderCallback() {
 			@Override
 			public void done () {
@@ -178,7 +196,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			}
 		};
 	}
-	
+
 	@Override
 	public Graphics getGraphics () {
 		return graphics;
@@ -259,21 +277,21 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			System.out.println(tag + ": " + message + "\n");
 		}
 	}
-	
+
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
 			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage() +"\n");
+			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage() + "\n");
 			log.setCursorPos(log.getText().length() - 1);
 			System.out.println(tag + ": " + message + "\n" + exception.getMessage());
 			System.out.println(getStackTrace(exception));
 		}
 	}
-	
-	private String getStackTrace(Throwable e) {
+
+	private String getStackTrace (Throwable e) {
 		StringBuffer buffer = new StringBuffer();
-		for(StackTraceElement trace: e.getStackTrace()) {
+		for (StackTraceElement trace : e.getStackTrace()) {
 			buffer.append(trace.toString() + "\n");
 		}
 		return buffer.toString();
@@ -307,7 +325,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	@Override
 	public Preferences getPreferences (String name) {
 		Preferences pref = prefs.get(name);
-		if(pref == null) {
+		if (pref == null) {
 			pref = new GwtPreferences(name);
 			prefs.put(name, pref);
 		}
@@ -323,39 +341,64 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public void exit () {
 	}
 
-	/** Contains precomputed information on the user-agent. 
-	 * Useful for dealing with browser and OS behavioral differences. Kindly borrowed from PlayN */
+	/** Contains precomputed information on the user-agent. Useful for dealing with browser and OS behavioral differences. Kindly
+	 * borrowed from PlayN */
 	public static AgentInfo agentInfo () {
 		return agentInfo;
 	}
-	
+
 	/** kindly borrowed from PlayN **/
-	private static native AgentInfo computeAgentInfo() /*-{
-    var userAgent = navigator.userAgent.toLowerCase();
-    return {
-      	// browser type flags
-      	isFirefox: userAgent.indexOf("firefox") != -1,
-      	isChrome: userAgent.indexOf("chrome") != -1,
-      	isSafari: userAgent.indexOf("safari") != -1,
-      	isOpera: userAgent.indexOf("opera") != -1,
-      	isIE: userAgent.indexOf("msie") != -1,
-      	// OS type flags
-      	isMacOS: userAgent.indexOf("mac") != -1,
-      	isLinux: userAgent.indexOf("linux") != -1,
-      	isWindows: userAgent.indexOf("win") != -1
-      };
+	private static native AgentInfo computeAgentInfo () /*-{
+		var userAgent = navigator.userAgent.toLowerCase();
+		return {
+			// browser type flags
+			isFirefox : userAgent.indexOf("firefox") != -1,
+			isChrome : userAgent.indexOf("chrome") != -1,
+			isSafari : userAgent.indexOf("safari") != -1,
+			isOpera : userAgent.indexOf("opera") != -1,
+			isIE : userAgent.indexOf("msie") != -1,
+			// OS type flags
+			isMacOS : userAgent.indexOf("mac") != -1,
+			isLinux : userAgent.indexOf("linux") != -1,
+			isWindows : userAgent.indexOf("win") != -1
+		};
 	}-*/;
-	
+
 	/** Returned by {@link #agentInfo}. Kindly borrowed from PlayN. */
 	public static class AgentInfo extends JavaScriptObject {
-	  public final native boolean isFirefox() /*-{ return this.isFirefox; }-*/;
-	  public final native boolean isChrome() /*-{ return this.isChrome; }-*/;
-	  public final native boolean isSafari() /*-{ return this.isSafari; }-*/;
-	  public final native boolean isOpera() /*-{ return this.isOpera; }-*/;
-	  public final native boolean isIE() /*-{ return this.isIE; }-*/;
-	  public final native boolean isMacOS() /*-{ return this.isMacOS; }-*/;
-	  public final native boolean isLinux() /*-{ return this.isLinux; }-*/;
-	  public final native boolean isWindows() /*-{ return this.isWindows; }-*/;
-	  protected AgentInfo() {}
+		public final native boolean isFirefox () /*-{
+			return this.isFirefox;
+		}-*/;
+
+		public final native boolean isChrome () /*-{
+			return this.isChrome;
+		}-*/;
+
+		public final native boolean isSafari () /*-{
+			return this.isSafari;
+		}-*/;
+
+		public final native boolean isOpera () /*-{
+			return this.isOpera;
+		}-*/;
+
+		public final native boolean isIE () /*-{
+			return this.isIE;
+		}-*/;
+
+		public final native boolean isMacOS () /*-{
+			return this.isMacOS;
+		}-*/;
+
+		public final native boolean isLinux () /*-{
+			return this.isLinux;
+		}-*/;
+
+		public final native boolean isWindows () /*-{
+			return this.isWindows;
+		}-*/;
+
+		protected AgentInfo () {
+		}
 	}
 }

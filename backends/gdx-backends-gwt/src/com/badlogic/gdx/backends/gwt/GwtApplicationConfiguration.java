@@ -25,6 +25,7 @@ public class GwtApplicationConfiguration {
 	public boolean antialiasing = false;
 	public int fps = 60;
 	public Panel rootPanel;
+	public String canavsId;
 	public TextArea log;
 	public boolean useDebugGL = false;
 
