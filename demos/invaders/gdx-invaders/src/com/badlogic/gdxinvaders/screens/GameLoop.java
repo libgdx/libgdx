@@ -14,10 +14,14 @@
 package com.badlogic.gdxinvaders.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdxinvaders.Renderer;
+import com.badlogic.gdxinvaders.RendererGL10;
+import com.badlogic.gdxinvaders.RendererGL20;
 import com.badlogic.gdxinvaders.simulation.Simulation;
 import com.badlogic.gdxinvaders.simulation.SimulationListener;
 
@@ -34,7 +38,7 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 	public GameLoop () {
 		simulation = new Simulation();
 		simulation.listener = this;
-		renderer = new Renderer();
+		renderer = Gdx.graphics.isGL20Available()? new RendererGL20(): new RendererGL10();
 		explosion = Gdx.audio.newSound(Gdx.files.internal("data/explosion.ogg"));
 		shot = Gdx.audio.newSound(Gdx.files.internal("data/shot.ogg"));
 	}
@@ -53,7 +57,6 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 
 	@Override
 	public void draw (float delta) {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		renderer.render(simulation, delta);
 	}
 
@@ -67,9 +70,8 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 		else
 			simulation.moveShipRight(delta, Math.abs(accelerometerY) / 10);
 
-		if (Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) simulation.moveShipLeft(delta, 0.5f);
-		if (Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) simulation.moveShipRight(delta, 0.5f);
-
+		if (Gdx.input.isKeyPressed(Keys.DPAD_LEFT) || Gdx.input.isKeyPressed(Keys.A)) simulation.moveShipLeft(delta, 0.5f);
+		if (Gdx.input.isKeyPressed(Keys.DPAD_RIGHT) || Gdx.input.isKeyPressed(Keys.D)) simulation.moveShipRight(delta, 0.5f);
 		if (Gdx.input.isTouched() || Gdx.input.isKeyPressed(Keys.SPACE)) simulation.shot();
 	}
 

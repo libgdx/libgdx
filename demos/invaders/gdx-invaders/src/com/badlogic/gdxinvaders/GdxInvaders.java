@@ -13,6 +13,7 @@
 
 package com.badlogic.gdxinvaders;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -23,9 +24,6 @@ import com.badlogic.gdxinvaders.screens.InvadersScreen;
 import com.badlogic.gdxinvaders.screens.MainMenu;
 
 public class GdxInvaders extends Game {
-	/** flag indicating whether we were initialized already **/
-	private boolean isInitialized = false;
-
 	@Override
 	public void render () {
 		InvadersScreen currentScreen = getScreen();
@@ -58,17 +56,22 @@ public class GdxInvaders extends Game {
 				}
 			}
 		}
+
+		// sleep on desktop as Jogl backend vsynch is broken...
+		if(Gdx.app.getType() == ApplicationType.Desktop) {
+			try {
+				Thread.sleep(16);
+			} catch (InterruptedException e) {
+			}
+		}
 	}
 
 	@Override
 	public void create () {
-		if (!isInitialized) {
-			setScreen(new MainMenu());
-			Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/8.12.mp3", FileType.Internal));
-			music.setLooping(true);
-			music.play();
-			isInitialized = true;
-		}
+		setScreen(new MainMenu());
+		Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/8.12.mp3", FileType.Internal));
+		music.setLooping(true);
+		music.play();
 	}
 
 	/**
