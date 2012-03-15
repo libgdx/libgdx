@@ -1,5 +1,5 @@
 #define normals
-#define LIGHTS_NUM 4
+//#define LIGHTS_NUM 4
 attribute vec4 a_position; 
 attribute vec2 a_texCoord0;
 
@@ -44,11 +44,11 @@ void main()
 #if LIGHTS_NUM > 1
 	//this is good place to calculate dir light?
 #ifdef normals
-	float aggWeight =  clamp((dot(a_normal, -dirLightDir) + WRAP_AROUND) / (1.0 + WRAP_AROUND),0.0, 1.0 );
+	float aggWeight =  clamp((dot(v_normal, -dirLightDir) + WRAP_AROUND) / (1.0 + WRAP_AROUND),0.0, 1.0 );
 	vec3  aggDir = -dirLightDir * aggWeight;
 #else
 	float aggWeight = 1.0;
-	vec3  aggDir = dirLightDir;
+	vec3  aggDir = -dirLightDir;
 #endif
 	vec3  aggCol = dirLightCol * aggWeight;	
 	for ( int i = 0; i < LIGHTS_NUM; i++ ){
@@ -60,7 +60,7 @@ void main()
 		vec3 L = dif * invLen;// normalize		
 		
 		#ifdef normals
-		float lambert = clamp((dot(a_normal, L) + WRAP_AROUND) / (1.0 + WRAP_AROUND),0.0, 1.0 );		
+		float lambert = clamp((dot(v_normal, L) + WRAP_AROUND) / (1.0 + WRAP_AROUND),0.0, 1.0 );		
 		float weight   = lightsInt[i] * invLen * lambert;
 		#else
 		float weight   = lightsInt[i] * invLen;
@@ -73,7 +73,7 @@ void main()
 		
 	}	
 	v_lightDir   = aggDir / aggWeight;
-	v_lightColor = aggCol / aggWeight;//clamp((aggCol / aggW),0.0, 1.0 );
+	v_lightColor = clamp((aggCol /aggWeight),0.0, 1.0 );
 	v_intensity  = aggWeight;
 #else
 	v_lightDir   = lightsPos[0];

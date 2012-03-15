@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.graphics.g3d.lights;
 
 import com.badlogic.gdx.graphics.Color;
@@ -9,12 +10,13 @@ import com.badlogic.gdx.utils.Array;
 
 public class LightManager {
 
-	// enum Fallof {
-	// linear, quadratic
-	// };
+	public enum LightQuality {
+		VERTEX, FRAGMENT
+	};
 
-	final public Array<PointLight> pointLights = new Array<PointLight>(false,
-			16, PointLight.class);
+	public LightQuality quality;
+
+	final public Array<PointLight> pointLights = new Array<PointLight>(false, 16, PointLight.class);
 	final private float[] positions;
 	final private float[] colors;
 	final private float[] intensities;
@@ -26,11 +28,12 @@ public class LightManager {
 	/** Only one for optimizing - at least at now */
 	public DirectionalLight dirLight;
 
-	public LightManager() {
-		this(4);
+	public LightManager () {
+		this(4, LightQuality.VERTEX);
 	}
 
-	public LightManager(int maxLightsPerModel) {
+	public LightManager (int maxLightsPerModel, LightQuality lightQuality) {
+		quality = lightQuality;
 		this.maxLightsPerModel = maxLightsPerModel;
 
 		colors = new float[3 * maxLightsPerModel];
@@ -38,16 +41,15 @@ public class LightManager {
 		intensities = new float[maxLightsPerModel];
 	}
 
-	public void addLigth(PointLight light) {
+	public void addLigth (PointLight light) {
 		pointLights.add(light);
 	}
 
-	public void clear() {
+	public void clear () {
 		pointLights.clear();
 	}
 
-	public void calculateAndApplyLightsToModel(Vector3 center,
-			ShaderProgram shader) {
+	public void calculateAndApplyLightsToModel (Vector3 center, ShaderProgram shader) {
 		this.calculateLights(center.x, center.y, center.z);
 		this.applyLights(shader);
 	}
@@ -59,26 +61,21 @@ public class LightManager {
 	// frustum check.
 	// TODO another idea would be first cut lights that are further from model
 	// than x that would make sorted faster
-	public void calculateLights(float x, float y, float z) {
+	public void calculateLights (float x, float y, float z) {
 		final int maxSize = pointLights.size;
 		final PointLight lights[] = pointLights.items;
 		// solve what are lights that influence most
 		if (maxSize > maxLightsPerModel) {
 
-			for (int i = 0; i < maxSize; i++) {				
-				lights[i].priority = lights[i].intensity
-						/ lights[i].position.dst(x, y, z);
-				
+			for (int i = 0; i < maxSize; i++) {
+				lights[i].priority = lights[i].intensity / lights[i].position.dst(x, y, z);
 				// if just linear fallof
-				// lights[i].distance = lights[i].position.dst2(x, y, z) -
-				// lights[i].range; //if range based
 			}
 			pointLights.sort();
 		}
 
 		// fill the light arrays
-		final int size = maxLightsPerModel > maxSize ? maxSize
-				: maxLightsPerModel;
+		final int size = maxLightsPerModel > maxSize ? maxSize : maxLightsPerModel;
 		for (int i = 0; i < size; i++) {
 			final PointLight l = lights[i];
 			final Vector3 pos = l.position;
@@ -101,25 +98,24 @@ public class LightManager {
 	}
 
 	/** Apply lights GLES1.0, call calculateLights before aplying */
-	public void applyLights() {
+	public void applyLights () {
 
 	}
 
 	/** Apply lights GLES2.0, call calculateLights before aplying */
-	public void applyLights(ShaderProgram shader) {
+	public void applyLights (ShaderProgram shader) {
 		// TODO should shader be begin first?
 		shader.setUniform3fv("lightsPos", positions, 0, maxLightsPerModel * 3);
 		shader.setUniform3fv("lightsCol", colors, 0, maxLightsPerModel * 3);
 		shader.setUniform1fv("lightsInt", intensities, 0, maxLightsPerModel);
 	}
 
-	public void applyGlobalLights() {
+	public void applyGlobalLights () {
 		// TODO fix me
 	}
 
-	public void applyGlobalLights(ShaderProgram shader) {
-		shader.setUniformf("ambient", ambientLight.r, ambientLight.g,
-				ambientLight.b);
+	public void applyGlobalLights (ShaderProgram shader) {
+		shader.setUniformf("ambient", ambientLight.r, ambientLight.g, ambientLight.b);
 		if (dirLight != null) {
 			final Vector3 v = dirLight.direction;
 			final Color c = dirLight.color;

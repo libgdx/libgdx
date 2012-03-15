@@ -29,4 +29,6 @@ public abstract class MaterialAttribute {
 	public abstract void bind (ShaderProgram program);
 
 	public abstract MaterialAttribute copy ();
+	
+	public abstract String getShaderFlag ();
 }

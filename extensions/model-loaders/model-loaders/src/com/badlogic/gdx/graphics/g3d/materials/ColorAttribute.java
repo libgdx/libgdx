@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.materials;
 
 import com.badlogic.gdx.Gdx;
@@ -20,26 +21,46 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class ColorAttribute extends MaterialAttribute {
-	Color color;
 
-	public ColorAttribute (Color color, String name) {
+	public enum ColorType {
+		DIFFUSE, SPECULAR, EMISSIVE
+	};
+
+	static final private String[] shaderFlag = {"diffuseCol", "specularCol", "emissiveCol"};
+	
+	static final private String[] colorNames = {"diffuseCol", "specularCol", "emissiveCol"};	
+
+	public final Color color = new Color();
+	public final ColorType colorType;
+	private final int type;
+
+	public ColorAttribute (Color color, String name, ColorType colorType) {
 		super(name);
-		this.color = new Color(color);
+		this.color.set(color);
+		this.colorType = colorType;
+		this.type = colorType.ordinal();
 	}
 
 	@Override
 	public void bind () {
 		if (Gdx.gl10 == null) throw new RuntimeException("Can't call ColorAttribute.bind() in a GL20 context");
-		Gdx.gl10.glColor4f(color.r, color.g, color.b, color.a);
+
+		// todo how about emissive or specular?
+		if (colorType == ColorType.DIFFUSE) Gdx.gl10.glColor4f(color.r, color.g, color.b, 1f);
 	}
 
 	@Override
 	public void bind (ShaderProgram program) {
-		program.setUniformf(name, color.r, color.g, color.b, color.a);
+		program.setUniformf(colorNames[type], color.r, color.g, color.b);
 	}
 
 	@Override
 	public MaterialAttribute copy () {
-		return new ColorAttribute(color, name);
+		return new ColorAttribute(color, name, colorType);
+	}
+
+	@Override
+	public String getShaderFlag () {
+		return shaderFlag[type];
 	}
 }

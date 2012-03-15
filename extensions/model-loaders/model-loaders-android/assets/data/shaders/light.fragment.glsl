@@ -1,3 +1,7 @@
+//#define emissiveColor
+//#define specularColor
+//#define diffuseColor
+//#define bakedLight
 #define normals
 #ifdef GL_ES
 #define LOWP lowp
@@ -8,7 +12,17 @@ precision mediump float;
 #define LOWP
 #endif
 
+#ifdef diffuseColor
+uniform vec3 diffuseCol;
+#endif
 
+#ifdef emissiveColor
+uniform vec3 emissiveCol;
+#endif
+
+#ifdef specularColor
+uniform vec3 specularCol;
+#endif
 
 uniform vec3 ambient;
 const float shininessFactor = 15.0;
@@ -33,8 +47,8 @@ void main()
 	vec3 tex = texture2D(u_texture0, v_texCoords).rgb;
 		
 	//fastest way to calculate inverse of length
-  	float invLength = inversesqrt( dot(v_lightDir, v_lightDir));
-  	vec3 intensity = clamp( (v_lightColor * (v_intensity * invLength)), 0.0, 1.0 );	
+  	float invLength = clamp(inversesqrt( dot(v_lightDir, v_lightDir)),0.0, 1.0 );
+  	vec3 intensity =  v_lightColor * (invLength * v_intensity);	
 	
 	#ifdef normals
 	vec3 lightDirection = v_lightDir * invLength;// > TRESHOLD ? invLength : 1.0);	
@@ -49,9 +63,18 @@ void main()
 	vec3 halfAngle = normalize(lightDirection + fromEye);
 	float specular = pow( clamp( dot(halfAngle, surfaceNormal), 0.0, 1.0), shininessFactor);
 	specular = (diffuse > 0.0) ? specular : 0.0;
-		
+	
+	vec3 diffuseLight = intensity * diffuse * tex;
+	#ifdef diffuseColor
+		diffuseLight *= diffuseCol;
+	#endif 
+	
+	vec3 specularLight = intensity * specular;
+	#ifdef specularColor
+		specularLight *= specularCol;
+	#endif
 	//combine lights
-	vec3 light =  intensity * specular + intensity * diffuse * tex;
+	vec3 light =  specularLight + diffuseLight;
 	#else
 	vec3 light =  intensity * tex;
 	#endif
@@ -60,7 +83,12 @@ void main()
 	light *= texture2D(u_texture1, v_texCoords).rgb;	
 	#endif
 	
-	gl_FragColor = vec4( light + (ambient * tex), 1.0);
+	#ifdef emissiveColor
+		light += emissiveCol;
+	#endif
 	
+	vec3 ambientLight = (ambient * tex);
+	
+	gl_FragColor = vec4( ambientLight + light, 1.0);
 	//gl_FragColor = texture2D(u_texture1, v_texCoords) * vec4( light + (ambient * tex) , 1.0);
 }

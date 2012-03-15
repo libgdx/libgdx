@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.graphics.g3d;
 
 import com.badlogic.gdx.graphics.g3d.materials.Material;
@@ -6,30 +7,30 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class StillModelNode implements StillModelInstance {
-	static final private float[] vec3 = { 0, 0, 0 };
+	static final private float[] vec3 = {0, 0, 0};
 
-	final public Vector3 origin = new Vector3();	
+	final public Vector3 origin = new Vector3();
 	final private Vector3 transformedPosition = new Vector3();
-	
+
 	final private Matrix4 matrix = new Matrix4();
 	public Material[] materials;
 	public float radius;
 
-	public StillModelNode() {
+	public StillModelNode () {
 		this(null);
 	}
 
-	public StillModelNode(Material[] materials) {
+	public StillModelNode (Material[] materials) {
 		this.materials = materials;
 	}
 
 	@Override
-	public Matrix4 getTransform() {
+	public Matrix4 getTransform () {
 		return matrix;
 	}
 
 	@Override
-	public Vector3 getSortCenter() {
+	public Vector3 getSortCenter () {
 		vec3[0] = origin.x;
 		vec3[1] = origin.y;
 		vec3[2] = origin.z;
@@ -41,12 +42,12 @@ public class StillModelNode implements StillModelInstance {
 	}
 
 	@Override
-	public Material[] getMaterials() {
+	public Material[] getMaterials () {
 		return null;
 	}
 
 	@Override
-	public float getBoundingSphereRadius() {
+	public float getBoundingSphereRadius () {
 		return radius;
 	}
 }

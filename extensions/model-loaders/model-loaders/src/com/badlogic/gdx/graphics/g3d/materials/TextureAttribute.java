@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.materials;
 
 import com.badlogic.gdx.Gdx;
@@ -23,6 +24,9 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class TextureAttribute extends MaterialAttribute {
+	
+	static final private String[] shaderFlag = {"diffuseCol", "specularCol", "emissiveCol"};
+
 	public Texture texture;
 	public int unit;
 	public int minFilter;
@@ -71,5 +75,10 @@ public class TextureAttribute extends MaterialAttribute {
 	@Override
 	public MaterialAttribute copy () {
 		return new TextureAttribute(texture, unit, name, minFilter, magFilter, uWrap, vWrap);
+	}
+
+	@Override
+	public String getShaderFlag () {
+		return null;
 	}
 }
