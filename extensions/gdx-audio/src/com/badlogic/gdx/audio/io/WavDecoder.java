@@ -3,7 +3,6 @@ package com.badlogic.gdx.audio.io;
 import java.io.EOFException;
 import java.io.FilterInputStream;
 import java.io.IOException;
-import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

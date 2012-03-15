@@ -16,8 +16,6 @@ package com.badlogic.gdx.audio.io;
  ******************************************************************************/
 
 
-import java.nio.ShortBuffer;
-
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
