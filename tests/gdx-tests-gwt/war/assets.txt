@@ -1,9 +1,10 @@
-t:data/gwttestparams.txt
+t:assets.txt
 i:data/43kJgl.jpg
 i:data/alpha.png
 i:data/animation.png
 t:data/arial-15.fnt
 i:data/arial-15_00.png
+b:data/arial.ttf
 i:data/badlogic.jpg
 i:data/badlogicsmall.jpg
 i:data/black_marked_0.png
@@ -15,14 +16,20 @@ i:data/debug.png
 t:data/default.fnt
 i:data/default.png
 i:data/default_00.png
+b:data/DroidSansJapanese.ttf
+b:data/DroidSerif-Bold.ttf
+b:data/DroidSerif-Italic.ttf
+b:data/DroidSerif-Regular.ttf
 i:data/egg.png
 i:data/environment.jpg
 t:data/font.fnt
 i:data/font.png
 i:data/group-debug.png
+t:data/gwttestparams.txt
 i:data/isotile.png
 t:data/issue_pack
 i:data/jump.png
+t:data/jump.txt
 i:data/layers.png
 t:data/pack
 i:data/pack1.png
@@ -39,6 +46,12 @@ i:data/resource1.jpg
 i:data/rgb.png
 t:data/scene.obj
 t:data/scene2.obj
+b:data/shaders/batch.frag
+b:data/shaders/batch.vert
+b:data/shaders/convolution.frag
+b:data/shaders/default.frag
+b:data/shaders/default.vert
+b:data/shaders/depthtocolor.frag
 t:data/shaders/flat-frag.glsl
 t:data/shaders/flat-vert.glsl
 t:data/shaders/flattex-frag.glsl
@@ -57,6 +70,8 @@ i:data/stone2.png
 i:data/stones.jpg
 i:data/sys.png
 i:data/t8890.png
+b:data/test.etc1
+b:data/test.p
 i:data/test.png
 i:data/test3.png
 i:data/test4.png
@@ -65,10 +80,18 @@ i:data/testdot.png
 t:data/testpack
 i:data/Textures1.png
 i:data/tile.png
+b:data/tiledmap/alignment test.tmx
+b:data/tiledmap/margin spacing doctype test.tmx
 t:data/tiledmap/perspective walls packfile
 t:data/tiledmap/perspective walls test packfile
 i:data/tiledmap/perspective walls test1.png
+b:data/tiledmap/perspective walls.tmx
 i:data/tiledmap/perspective walls1.png
+b:data/tiledmap/tilemap csv.tmx
+b:data/tiledmap/tilemap gzip.tmx
+b:data/tiledmap/tilemap uncompressed.tmx
+b:data/tiledmap/tilemap xml.tmx
+b:data/tiledmap/tilemap zlib.tmx
 t:data/tiledmap/tileset packfile
 i:data/tiledmap/tileset1.png
 t:data/tiledmap/tileset2 packfile
@@ -81,8 +104,11 @@ t:data/tiledmap/tmw-desert-spacing packfile
 i:data/tiledmap/tmw-desert-spacing1.png
 i:data/tiles.png
 i:data/ui.png
+b:data/uiskin.json
 i:data/uiskin.png
 t:data/verdana39.fnt
 i:data/verdana39.png
+b:data/walk1.md5anim
 i:data/walkanim.png
 i:data/wheel.png
+b:data/zfat.md5mesh

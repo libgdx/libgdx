@@ -116,7 +116,11 @@ public class GwtFileHandle extends FileHandle {
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public String readString (String charset) {
 		if(preloader.isText(file)) return preloader.texts.get(file);
-		throw new GdxRuntimeException("reading from a non-text file not supported");
+		try {
+			return new String(readBytes(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			return null;
+		}
 	}
 
 	/** Reads the entire file into a byte array.

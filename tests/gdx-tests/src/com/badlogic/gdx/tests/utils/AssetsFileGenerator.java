@@ -31,10 +31,14 @@ public class AssetsFileGenerator {
 				if(fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) {
 					list.append("i:" + fileName + "\n");
 					System.out.println(fileName);
-				}
+				} else
 				if(fileName.endsWith(".glsl") || fileName.endsWith(".fnt") || fileName.endsWith(".pack") ||
-					fileName.endsWith(".obj") || file.extension().equals("")) {
+					fileName.endsWith(".obj") || file.extension().equals("") || fileName.endsWith("txt")) {
 					list.append("t:" + fileName + "\n");
+					System.out.println(fileName);
+				} else {
+					if(fileName.endsWith(".mp3") || fileName.endsWith(".ogg") || fileName.endsWith(".wav")) continue;
+					list.append("b:" + fileName + "\n");
 					System.out.println(fileName);
 				}
 			}

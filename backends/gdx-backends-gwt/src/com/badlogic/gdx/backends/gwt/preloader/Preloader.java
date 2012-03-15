@@ -2,9 +2,11 @@ package com.badlogic.gdx.backends.gwt.preloader;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.gwt.preloader.BinaryLoader.Blob;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -21,7 +23,7 @@ public class Preloader {
 	
 	public ObjectMap<String, ImageElement> images = new ObjectMap<String, ImageElement>();
 	public ObjectMap<String, String> texts = new ObjectMap<String, String>();
-	public ObjectMap<String, ByteBuffer> binaries = new ObjectMap<String, ByteBuffer>();
+	public ObjectMap<String, Blob> binaries = new ObjectMap<String, Blob>();
 	
 	enum AssetType {
 		Image,
@@ -111,17 +113,38 @@ public class Preloader {
 				}
 			});
 		}
+		
+		if(asset.type == AssetType.Binary) {
+			new BinaryLoader(baseUrl + asset.url, new LoaderCallback<Blob>() {
+				@Override
+				public void success (Blob result) {
+					binaries.put(asset.url, result);
+					callback.loaded(asset.url, next + 1, assets.size);
+					loadNextAsset(assets, next + 1, callback);
+				}
+
+				@Override
+				public void error () {
+					callback.error(asset.url);
+					loadNextAsset(assets, next + 1, callback);
+				}
+			});
+		}
 	}
 	
 	public InputStream read(String url) {
 		if(texts.containsKey(url)) {
-			return new ByteArrayInputStream(texts.get(url).getBytes()); // FIXME, should use UTF-8
+			try {
+				return new ByteArrayInputStream(texts.get(url).getBytes("UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				return null;
+			}
 		}
 		if(images.containsKey(url)) {
 			return new ByteArrayInputStream(new byte[1]); // FIXME, sensible?
 		}
 		if(binaries.containsKey(url)) {
-			throw new GdxRuntimeException("Not implemented");
+			return binaries.get(url).read();
 		}
 		return null;
 	}
@@ -159,7 +182,7 @@ public class Preloader {
 			return 1; // FIXME, sensible?
 		}
 		if(binaries.containsKey(url)) {
-			throw new GdxRuntimeException("Not implemented");
+			return binaries.get(url).length();
 		}
 		return 0;
 	}
