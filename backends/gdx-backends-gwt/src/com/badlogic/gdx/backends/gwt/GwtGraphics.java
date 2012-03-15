@@ -42,6 +42,7 @@ public class GwtGraphics implements Graphics {
 	float time = 0;
 	int frames;
 	GwtApplicationConfiguration config;
+	boolean inFullscreenMode = false;
 
 	public GwtGraphics (Panel root, GwtApplicationConfiguration config) {
 		Canvas canvasWidget = Canvas.createIfSupported();
@@ -149,38 +150,83 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public boolean supportsDisplayModeChange () {
-		return false; // FIXME
+		return true;
 	}
 
 	@Override
 	public DisplayMode[] getDisplayModes () {
-		return null; // FIXME
+		return new DisplayMode[] { new DisplayMode(getScreenWidthJSNI(), getScreenHeightJSNI(), 60, 8){} };
 	}
+	
+	private native int getScreenWidthJSNI() /*-{
+		return screen.width;
+	}-*/;
+	
+	private native int getScreenHeightJSNI() /*-{
+		return screen.height;
+	}-*/;
 
+	private native boolean isFullscreenJSNI() /*-{
+		if("webkitIsFullScreen" in $doc) {
+			return $doc.webkitIsFullScreen;
+		}
+		if("mozFullScreen" in $doc) {
+			return $doc.mozFullScreen;
+		}
+		return false
+	}-*/;
+	
+	private void fullscreenChanged() {
+		if(!isFullscreen()) {
+			canvas.setWidth(config.width);
+			canvas.setHeight(config.height);
+		}
+	}
+	
+	private native boolean setFullscreenJSNI(GwtGraphics graphics, CanvasElement element) /*-{
+		 if(element.webkitRequestFullScreen) {
+		 	element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+		 	$doc.addEventListener("webkitfullscreenchange", function() {
+							graphics.@com.badlogic.gdx.backends.gwt.GwtGraphics::fullscreenChanged()();
+			}, false);
+		 	element.width = screen.width;
+		 	element.height = screen.height;
+		 	return true;
+		 }
+		 if(element.mozRequestFullScreen) {
+		 	element.mozRequestFullScreen();
+		 	return true;
+		 }
+       return false;
+	}-*/;
+	
+	private native void exitFullscreen() /*-{
+		if($doc.webkitExitFullscreen) $doc.webkitExitFullscreen();
+   	if($doc.mozExitFullscreen) $doc.mozExitFullscreen();
+	}-*/;
+	
 	@Override
 	public DisplayMode getDesktopDisplayMode () {
-		return new DisplayMode(config.width, config.height, 60, 8) {
-		};
+		return new DisplayMode(getScreenWidthJSNI(), getScreenHeightJSNI(), 60, 8){};
 	}
 
 	@Override
 	public boolean setDisplayMode (DisplayMode displayMode) {
-		return false; // FIXME
+		if(displayMode.width != getScreenWidthJSNI() && displayMode.height != getScreenHeightJSNI()) return false;
+		return setFullscreenJSNI(this, canvas);
 	}
 
 	@Override
 	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
-		return false; // FIXME
-	}
-
-	@Override
-	public void setTitle (String title) {
-
-	}
-
-	@Override
-	public void setVSync (boolean vsync) {
-
+		if(fullscreen) {
+			if(width != getScreenWidthJSNI() && height != getScreenHeightJSNI()) return false;
+			return setFullscreenJSNI(this, canvas);
+		} else {
+			if(isFullscreenJSNI()) exitFullscreen();
+			canvas.setWidth(width);
+			canvas.setHeight(height);
+			return true;
+		}
 	}
 
 	@Override
@@ -207,6 +253,14 @@ public class GwtGraphics implements Graphics {
 		}
 	}
 
+	@Override
+	public void setTitle (String title) {
+	}
+
+	@Override
+	public void setVSync (boolean vsync) {
+	}
+	
 	@Override
 	public float getDensity () {
 		throw new GdxRuntimeException("No supported");
@@ -239,6 +293,6 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public boolean isFullscreen () {
-		return false;
+		return isFullscreenJSNI();
 	}
 }

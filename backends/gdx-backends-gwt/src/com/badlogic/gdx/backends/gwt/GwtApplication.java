@@ -144,9 +144,6 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			throw new RuntimeException(t);
 		}
 
-		// add resize handler to canvas
-		// FIXME
-
 		// setup rendering timer
 		new Timer() {
 			@Override
@@ -157,6 +154,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 						GwtApplication.this.listener.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 						lastWidth = graphics.getWidth();
 						lastHeight = graphics.getHeight();
+						Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
 					}
 					for (int i = 0; i < runnables.size; i++) {
 						runnables.get(i).run();
