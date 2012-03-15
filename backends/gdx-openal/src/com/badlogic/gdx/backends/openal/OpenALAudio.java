@@ -67,7 +67,7 @@ public class OpenALAudio implements Audio {
 	boolean noDevice = false;
 
 	public OpenALAudio () {
-		this(16, 512, 9);
+		this(16, 9, 512);
 	}
 
 	public OpenALAudio (int simultaneousSources, int deviceBufferCount, int deviceBufferSize) {
