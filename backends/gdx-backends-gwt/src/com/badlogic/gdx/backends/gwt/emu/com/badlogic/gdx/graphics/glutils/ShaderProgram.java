@@ -117,6 +117,7 @@ public class ShaderProgram implements Disposable {
 
 	/** matrix float buffer **/
 	private final FloatBuffer matrix;
+	private final FloatBuffer matrix3;
 
 	/** vertex shader source **/
 	private final String vertexShaderSource;
@@ -147,6 +148,7 @@ public class ShaderProgram implements Disposable {
 		this.vertexShaderSource = vertexShader;
 		this.fragmentShaderSource = fragmentShader;
 		this.matrix = BufferUtils.newFloatBuffer(16);
+		this.matrix3 = BufferUtils.newFloatBuffer(9);
 
 		compileShaders(vertexShader, fragmentShader);
 		if (isCompiled()) {
@@ -453,9 +455,9 @@ public class ShaderProgram implements Disposable {
 		checkManaged();
 		int location = fetchUniformLocation(name);
 		float[] vals = matrix.getValues();
-		this.matrix.clear();
-		BufferUtils.copy(vals, this.matrix, vals.length, 0);
-		gl.glUniformMatrix3fv(location, 1, transpose, this.matrix);
+		this.matrix3.clear();
+		BufferUtils.copy(vals, this.matrix3, vals.length, 0);
+		gl.glUniformMatrix3fv(location, 1, transpose, this.matrix3);
 	}
 
 	/** Sets the vertex attribute with the given name. Throws an IllegalArgumentException in case it is not called in between a

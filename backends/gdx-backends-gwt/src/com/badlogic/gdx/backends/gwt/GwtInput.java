@@ -307,6 +307,7 @@ public class GwtInput implements Input {
 
 	private void handleEvent (NativeEvent e) {
 		if(e.getType().equals("mousedown")) {
+			System.out.println("touch down");
 			if(!e.getEventTarget().equals(canvas)) return;
 			this.justTouched = true;
 			this.touched = true;
