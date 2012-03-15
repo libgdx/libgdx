@@ -14,6 +14,7 @@
 package com.badlogic.gdxinvaders.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
@@ -81,6 +82,11 @@ public class MainMenu extends InvadersScreen {
 		String text = "Touch screen to start!";
 		float width = font.getBounds(text).width;
 		font.draw(spriteBatch, text, 240 - width / 2, 128);
+		if(Gdx.app.getType() == ApplicationType.WebGL) {
+			text = "Press Enter for Fullscreen Mode";
+			width = font.getBounds(text).width;
+			font.draw(spriteBatch, "Press Enter for Fullscreen Mode", 240 - width / 2, 128 - font.getLineHeight());
+		}
 		spriteBatch.end();
 	}
 

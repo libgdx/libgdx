@@ -15,8 +15,10 @@ package com.badlogic.gdxinvaders;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdxinvaders.screens.GameLoop;
 import com.badlogic.gdxinvaders.screens.GameOver;
@@ -72,6 +74,15 @@ public class GdxInvaders extends Game {
 		Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/8.12.mp3", FileType.Internal));
 		music.setLooping(true);
 		music.play();
+		Gdx.input.setInputProcessor(new InputAdapter() {
+			@Override
+			public boolean keyUp (int keycode) {
+				if(keycode == Keys.ENTER && Gdx.app.getType() == ApplicationType.WebGL) {
+					if(!Gdx.graphics.isFullscreen()) Gdx.graphics.setDisplayMode(Gdx.graphics.getDisplayModes()[0]);
+				}
+				return true;
+			}
+		});
 	}
 
 	/**
