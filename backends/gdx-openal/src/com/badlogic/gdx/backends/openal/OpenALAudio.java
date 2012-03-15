@@ -70,7 +70,7 @@ public class OpenALAudio implements Audio {
 		this(16, 512, 9);
 	}
 
-	public OpenALAudio (int simultaneousSources, int deviceBufferSize, int deviceBufferCount) {
+	public OpenALAudio (int simultaneousSources, int deviceBufferCount, int deviceBufferSize) {
 		this.deviceBufferSize = deviceBufferSize;
 		this.deviceBufferCount = deviceBufferCount;
 
