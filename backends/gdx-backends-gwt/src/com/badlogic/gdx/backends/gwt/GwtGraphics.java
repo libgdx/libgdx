@@ -185,16 +185,21 @@ public class GwtGraphics implements Graphics {
 	
 	private native boolean setFullscreenJSNI(GwtGraphics graphics, CanvasElement element) /*-{
 		 if(element.webkitRequestFullScreen) {
+		 	element.width = screen.width;
+		 	element.height = screen.height;
 		 	element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
 		 	$doc.addEventListener("webkitfullscreenchange", function() {
 							graphics.@com.badlogic.gdx.backends.gwt.GwtGraphics::fullscreenChanged()();
 			}, false);
-		 	element.width = screen.width;
-		 	element.height = screen.height;
 		 	return true;
 		 }
 		 if(element.mozRequestFullScreen) {
+		 	element.width = screen.width;
+		 	element.height = screen.height;
 		 	element.mozRequestFullScreen();
+		 	$doc.addEventListener("mozfullscreenchange", function() {
+							graphics.@com.badlogic.gdx.backends.gwt.GwtGraphics::fullscreenChanged()();
+			}, false);
 		 	return true;
 		 }
        return false;
