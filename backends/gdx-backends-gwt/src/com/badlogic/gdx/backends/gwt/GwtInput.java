@@ -1,16 +1,13 @@
 
 package com.badlogic.gdx.backends.gwt;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.utils.Pool;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -28,6 +25,7 @@ public class GwtInput implements Input {
 	float keyRepeatTimer;
 	long currentEventTimeStamp;
 	final Element canvas;
+	boolean hasFocus = true;
 
 	public GwtInput (Element canvas) {
 		this.canvas = canvas;
@@ -293,9 +291,9 @@ public class GwtInput implements Input {
 		addEventListener(canvas, "mousemove", this, true);
 		addEventListener(Document.get(), "mousemove", this, true);
 		addEventListener(canvas, getMouseWheelEvent(), this, true);
-		addEventListener(canvas, "keydown", this, true);
-		addEventListener(canvas, "keyup", this, true);
-		addEventListener(canvas, "keypress", this, true);
+		addEventListener(Document.get(), "keydown", this, false);
+		addEventListener(Document.get(), "keyup", this, false);
+		addEventListener(Document.get(), "keypress", this, false);
 	}
 	
 	private int getButton(int button) {
@@ -307,7 +305,15 @@ public class GwtInput implements Input {
 
 	private void handleEvent (NativeEvent e) {
 		if(e.getType().equals("mousedown")) {
-			if(!e.getEventTarget().equals(canvas) || touched) return;
+			if(!e.getEventTarget().equals(canvas) || touched) {
+				float mouseX = (int)getRelativeX(e, canvas);
+				float mouseY = (int)getRelativeY(e, canvas);
+				if(mouseX < 0 || mouseX > Gdx.graphics.getWidth() || mouseY < 0 || mouseY > Gdx.graphics.getHeight()) {
+					hasFocus = false;
+				}
+				return;
+			}
+			hasFocus = true;
 			this.justTouched = true;
 			this.touched = true;
 			this.pressedButtons.add(getButton(e.getButton()));
@@ -344,18 +350,21 @@ public class GwtInput implements Input {
 			if(processor != null) processor.touchUp(mouseX, mouseY, 0, getButton(e.getButton()));
 		}
 		
-		if(e.getType().equals("keydown")) {
+		if(e.getType().equals("keydown") && hasFocus) {
+			System.out.println("keydown");
 			int code = keyForCode(e.getKeyCode());
 			this.pressedKeys.add(code);
 			if(processor != null) processor.keyDown(code);
 		}
 		
-		if(e.getType().equals("keypress")) {
+		if(e.getType().equals("keypress") && hasFocus) {
+			System.out.println("keypress");
 			char c = (char)e.getCharCode();
 			if(processor != null) processor.keyTyped(c);
 		}
 		
-		if(e.getType().equals("keyup")) {
+		if(e.getType().equals("keyup") && hasFocus) {
+			System.out.println("keyup");
 			int code = keyForCode(e.getKeyCode());
 			this.pressedKeys.remove(code);
 			if(processor != null) processor.keyUp(code);
