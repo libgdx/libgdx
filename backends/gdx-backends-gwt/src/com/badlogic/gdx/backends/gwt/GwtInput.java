@@ -307,8 +307,7 @@ public class GwtInput implements Input {
 
 	private void handleEvent (NativeEvent e) {
 		if(e.getType().equals("mousedown")) {
-			System.out.println("touch down");
-			if(!e.getEventTarget().equals(canvas)) return;
+			if(!e.getEventTarget().equals(canvas) || touched) return;
 			this.justTouched = true;
 			this.touched = true;
 			this.pressedButtons.add(getButton(e.getButton()));
@@ -321,7 +320,6 @@ public class GwtInput implements Input {
 		}
 		
 		if(e.getType().equals("mousemove")) {
-			if(!e.getEventTarget().equals(canvas) && !touched) return;
 			this.deltaX = (int)getRelativeX(e, canvas) - mouseX;
 			this.deltaY = (int)getRelativeY(e, canvas) - mouseY;
 			this.mouseX = (int)getRelativeX(e, canvas);
@@ -334,7 +332,7 @@ public class GwtInput implements Input {
 		}
 		
 		if(e.getType().equals("mouseup")) {
-			if(!e.getEventTarget().equals(canvas) && !touched) return;
+			if(!touched) return;
 			this.pressedButtons.remove(getButton(e.getButton()));
 			this.touched = pressedButtons.size() > 0;
 			this.deltaX = (int)getRelativeX(e, canvas) - mouseX;
@@ -342,6 +340,7 @@ public class GwtInput implements Input {
 			this.mouseX = (int)getRelativeX(e, canvas);
 			this.mouseY = (int)getRelativeY(e, canvas);
 			this.currentEventTimeStamp = System.currentTimeMillis() * 1000;
+			this.touched = false;
 			if(processor != null) processor.touchUp(mouseX, mouseY, 0, getButton(e.getButton()));
 		}
 		
