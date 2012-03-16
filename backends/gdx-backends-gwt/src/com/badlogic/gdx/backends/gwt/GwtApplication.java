@@ -29,6 +29,7 @@ import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.TextAlign;
@@ -178,6 +179,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		return root;
 	}
 
+	long loadStart = TimeUtils.nanoTime();
 	public PreloaderCallback getPreloaderCallback () {
 		final Canvas canvas = Canvas.createIfSupported();
 		canvas.setWidth("" + (int)(config.width * 0.7f) + "px");
@@ -201,7 +203,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 				context.setFillStyle(color);
 				context.setStrokeStyle(color);
 				context.fillRect(0, 0, 300, 70);
-				color = Pixmap.make(200, 200, 200, 1);
+				color = Pixmap.make(200, 200, 200, (((TimeUtils.nanoTime() - loadStart) % 1000000000) / 1000000000f));
 				context.setFillStyle(color);
 				context.setStrokeStyle(color);
 				context.fillRect(0, 0, 300 * (loaded / (float)total) * 0.97f, 70);
