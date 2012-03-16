@@ -62,7 +62,6 @@ public class StillModelViewerGL20 implements ApplicationListener {
 	Texture[] textures = null;
 	boolean hasNormals = false;
 	BoundingBox bounds = new BoundingBox();
-	float angle = 0;
 	String fileName;
 	String[] textureFileNames;
 	FPSLogger fps = new FPSLogger();
@@ -101,38 +100,38 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		cam.position.set(bounds.getCenter().cpy().add(len / 2, len / 2, len / 2));
 		cam.lookAt(bounds.getCenter().x, bounds.getCenter().y, bounds.getCenter().z);
 		cam.near = 0.1f;
-		cam.far = 512;
+		cam.far = 64;
 
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 
-		//shader1 = ShaderLoader.createShader("light", "light");
-		//shader2 = ShaderLoader.createShader("vertexpath", "vertexpath");
+		// shader1 = ShaderLoader.createShader("light", "light");
+		// shader2 = ShaderLoader.createShader("vertexpath", "vertexpath");
 
 		lightManager = new LightManager(4, LightQuality.VERTEX);
 		lightManager.ambientLight.set(0.1f, 0.1f, 0.1f, 0);
 		lightManager.dirLight = new DirectionalLight();
-		lightManager.dirLight.color.set(1.0f, 0.1f, 0.09f, 0);
+		lightManager.dirLight.color.set(0.1f, 0.03f, 0.03f, 0);
 		lightManager.dirLight.direction.set(-.1f, -1, 0.03f).nor();
 
-		for (int i = 0; i < 14; i++) {
+		for (int i = 0; i < 4; i++) {
 			PointLight l = new PointLight();
-			l.position.set(-MathUtils.random(6) + 3, MathUtils.random(3), -MathUtils.random(6) + 3);
+			l.position.set(-MathUtils.random(8) + 4, MathUtils.random(3), -MathUtils.random(6) + 3);
 			l.color.r = MathUtils.random();
 			l.color.b = MathUtils.random();
 			l.color.g = MathUtils.random();
-			l.intensity = 2;
+			l.intensity = 4;
 			lightManager.addLigth(l);
 		}
-		lightManager.ambientLight.set(1, 0, 0, 0);
+		lightManager.ambientLight.set(0.01f, 0.01f, 0.01f, 0);
 
 		protoRenderer = new PrototypeRendererGL20();
 		protoRenderer.setLightManager(lightManager);
 
 		instance = new StillModelNode();
-		instance.getTransform().translate(-len / 2, -2, 2);
+		instance.getTransform().translate(-len / 2, -1, 2);
 		instance2 = new StillModelNode();
-		instance2.getTransform().translate(len / 2, -2, -7);
+		instance2.getTransform().translate(len / 2, -1, -7);
 
 		instance.radius = bounds.getDimensions().len() / 2;
 		instance2.radius = instance.radius;
@@ -142,11 +141,11 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		MaterialAttribute c3 = new ColorAttribute(new Color(0.01f, 0.05f, 0.05f, 1.0f), "color", ColorType.EMISSIVE);
 		Material material = new Material("color", c1, c2, c3);
 		model.setMaterial(material);
-			
+
 		shader2 = ShaderFactory.createShader(material, lightManager);
-		
-		//lightManager.quality=LightQuality.FRAGMENT;
-		//		shader1 = ShaderFactory.createShader(material, lightManager);
+
+		lightManager.quality = LightQuality.FRAGMENT;
+		shader1 = ShaderFactory.createShader(material, lightManager);
 	}
 
 	@Override
@@ -157,9 +156,9 @@ public class StillModelViewerGL20 implements ApplicationListener {
 	@Override
 	public void render () {
 		ShaderProgram shader = shader2;
-//		if (Gdx.input.isTouched()) {
-//			shader = shader1;
-//		}
+		if (Gdx.input.isTouched()) {
+			shader = shader1;
+		}
 		protoRenderer.setShader(shader);
 
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);

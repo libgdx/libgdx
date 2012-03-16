@@ -116,7 +116,7 @@ public class LightManager {
 
 	public void applyGlobalLights (ShaderProgram shader) {
 		shader.setUniformf("ambient", ambientLight.r, ambientLight.g, ambientLight.b);
-		if (dirLight != null) {
+		if (dirLight != null) {			
 			final Vector3 v = dirLight.direction;
 			final Color c = dirLight.color;
 			shader.setUniformf("dirLightDir", v.x, v.y, v.z);

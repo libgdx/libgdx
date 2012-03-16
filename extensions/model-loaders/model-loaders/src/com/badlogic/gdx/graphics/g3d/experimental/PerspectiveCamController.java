@@ -124,7 +124,6 @@ public class PerspectiveCamController extends InputAdapter {
 			cam.position.y -= delta * cam.direction.y;
 			cam.position.z -= delta * cam.direction.z;
 		}
-
 		cam.update();
 
 	}

@@ -118,7 +118,7 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	private void flush() {
 		drawing = false;
 
-		lightManager.applyGlobalLights(shader);
+		
 
 		// frustum culling via cullingManager
 
@@ -138,6 +138,8 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 		// sort opaque meshes from front to end, perfect accuracy is not needed
 		shader.begin();
+		
+		lightManager.applyGlobalLights(shader);
 		// find N nearest lights per model
 		// draw all models from opaque queue
 		for (int i = 0; i < modelQueue.size; i++) {

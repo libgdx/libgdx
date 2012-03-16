@@ -27,7 +27,6 @@ uniform vec3 specularCol;
 uniform vec3 ambient;
 const float shininessFactor = 10.0;
 
-
 uniform sampler2D u_texture0;
 
 varying vec2 v_texCoords;
@@ -38,8 +37,6 @@ varying float v_intensity;
 
 varying vec3 v_lightDir;
 varying vec3 v_lightColor;
-
-const float TRESHOLD = 0.02;//prevent color glitches
 
 //wrap light. this is fastest light model
 float wrapLight(vec3 nor, vec3 direction){
@@ -54,7 +51,7 @@ void main()
   	vec3 intensity =  v_lightColor * (invLength * v_intensity);	
 	
 	#ifdef normals
-	vec3 lightDirection = v_lightDir * invLength;// > TRESHOLD ? invLength : 1.0);	
+	vec3 lightDirection = v_lightDir * invLength;	
 	
 	vec3 surfaceNormal = normalize( v_normal );
 	//lambert phong

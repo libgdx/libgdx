@@ -35,7 +35,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class HybridLightTest implements ApplicationListener {
 
-	static final int LIGHTS_NUM = 4;
+	static final int LIGHTS_NUM = 8;
 	static final float LIGHT_INTESITY = 4f;
 
 	LightManager lightManager;
@@ -46,7 +46,6 @@ public class HybridLightTest implements ApplicationListener {
 	StillModel model;
 	StillModel model2;
 	private Texture texture;
-	private Texture texture2;
 
 	FPSLogger logger = new FPSLogger();
 	ShaderProgram shader;
@@ -65,7 +64,7 @@ public class HybridLightTest implements ApplicationListener {
 
 		final float delta = Gdx.graphics.getDeltaTime();
 		camController.update(delta);
-
+		
 		timer += delta;
 		for (int i = 0; i < lightManager.pointLights.size; i++) {
 			Vector3 v = lightManager.pointLights.get(i).position;
@@ -102,9 +101,9 @@ public class HybridLightTest implements ApplicationListener {
 
 		// lightShader = ShaderLoader.createShader("vertexpath", "vertexpath");
 
-		lightManager = new LightManager(LIGHTS_NUM, LightQuality.VERTEX);
+		lightManager = new LightManager(LIGHTS_NUM, LightQuality.FRAGMENT);
 		shader = ShaderFactory.createShader(null, lightManager);
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 8; i++) {
 			PointLight l = new PointLight();
 			l.position.set(MathUtils.random(32) - 16, MathUtils.random(8) - 2, -MathUtils.random(32) + 16);
 			l.color.r = MathUtils.random();
@@ -114,10 +113,10 @@ public class HybridLightTest implements ApplicationListener {
 			lightManager.addLigth(l);
 		}
 		lightManager.dirLight = new DirectionalLight();
-		lightManager.dirLight.color.set(1f, 0.1f, 0.09f, 0);
+		lightManager.dirLight.color.set(0.05f, 0.15f, 0.1f, 1);		
 		lightManager.dirLight.direction.set(-.1f, -1, 0.03f).nor();
 
-		lightManager.ambientLight.set(0.02f, 0.02f, 0.02f, 0f);
+		lightManager.ambientLight.set(.14f, 0.09f, 0.09f, 0f);
 
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.near = 0.1f;

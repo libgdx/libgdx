@@ -23,9 +23,12 @@ attribute vec3 a_normal;
 uniform mat3 u_normalMatrix;
 #endif
 
+#if LIGHTS_NUM > 0
 uniform vec3  lightsPos[LIGHTS_NUM];
 uniform vec3  lightsCol[LIGHTS_NUM];
 uniform float lightsInt[LIGHTS_NUM];
+#endif
+	
 uniform vec3 dirLightDir;
 uniform vec3 dirLightCol;
 uniform mat4 u_projectionViewMatrix;
@@ -48,25 +51,27 @@ void main()
 	
 	vec3  aggCol = dirLightCol;
 	
-	vec3 normal = u_normalMatrix * a_normal; 
 	#ifdef normals
+	vec3 normal = u_normalMatrix * a_normal;	
 	aggCol *= wrapLight(normal, -dirLightDir);
 	#endif
-		
+
+#if LIGHTS_NUM > 0		
 	for ( int i = 0; i < LIGHTS_NUM; i++ ){	
 		vec3 dif  = lightsPos[i] - pos;
 		//fastest way to calculate inverse of length				
-		float invLen = inversesqrt(dot(dif, dif));				
-		vec3 L = dif * invLen;// normalize		
-		float weight   = lightsInt[i] * invLen;
-		
+		float invLen = inversesqrt(dot(dif, dif));
+		float weight = invLen * lightsInt[i];
+				
 		#ifdef normals
+		vec3 L = invLen * dif;// normalize
 		float lambert = wrapLight(normal, L);
 		weight *= lambert;		
 		#endif
-		aggCol   += lightsCol[i] * weight;
+		aggCol += lightsCol[i] * weight;
 		
 	}
+#endif
 #ifdef diffuseColor
 	aggCol *= diffuseCol;
 #endif

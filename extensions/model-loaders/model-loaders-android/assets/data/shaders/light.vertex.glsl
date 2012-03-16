@@ -8,9 +8,11 @@ attribute vec3 a_normal;
 uniform mat3 u_normalMatrix;
 #endif
 
+#if LIGHTS_NUM > 0
 uniform vec3  lightsPos[LIGHTS_NUM];
 uniform vec3  lightsCol[LIGHTS_NUM];
 uniform float lightsInt[LIGHTS_NUM];
+#endif
 uniform vec3 camPos;
 uniform vec3 dirLightDir;
 uniform vec3 dirLightCol;
@@ -44,16 +46,19 @@ void main()
 	v_pos = pos;
 	v_eye = camPos - pos;
 	
-#if LIGHTS_NUM > 1
-	//this is good place to calculate dir light?
-#ifdef normals
+
+#if LIGHTS_NUM > 0
+
+	#ifdef normals
 	float aggWeight =  wrapLight(v_normal, -dirLightDir);
 	vec3  aggDir = -dirLightDir * aggWeight;
-#else
+	#else
 	float aggWeight = 1.0;
 	vec3  aggDir = -dirLightDir;
-#endif
-	vec3  aggCol = dirLightCol * aggWeight;	
+	#endif
+	vec3  aggCol = dirLightCol * aggWeight;
+
+		
 	for ( int i = 0; i < LIGHTS_NUM; i++ ){
 	
 		vec3 dif  = lightsPos[i] - pos;
@@ -64,9 +69,9 @@ void main()
 		
 		#ifdef normals
 		float lambert = wrapLight(v_normal, L);		
-		float weight   = lightsInt[i] * invLen * lambert;
+		float weight  = lightsInt[i] * invLen * lambert;
 		#else
-		float weight   = lightsInt[i] * invLen;
+		float weight  = lightsInt[i] * invLen;
 		#endif
 		
 		aggDir   += L * weight;
@@ -76,11 +81,11 @@ void main()
 		
 	}	
 	v_lightDir   = aggDir / aggWeight;
-	v_lightColor = clamp((aggCol /aggWeight),0.0, 1.0 );
+	v_lightColor = clamp((aggCol / aggWeight),0.0, 1.0 );
 	v_intensity  = aggWeight;
 #else
-	v_lightDir   = lightsPos[0];
-	v_lightColor = lightsCol[0];
-	v_intensity  = lightsInt[0];
+	v_lightDir   = -dirLightDir;
+	v_lightColor = dirLightCol;
+	v_intensity  = 1.0;
 #endif
 }
