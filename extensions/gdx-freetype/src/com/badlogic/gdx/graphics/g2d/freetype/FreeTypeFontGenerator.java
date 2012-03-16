@@ -58,19 +58,6 @@ public class FreeTypeFontGenerator implements Disposable {
 	}
 	
 	/**
-	 * Generates a new {@link BitmapFont}. The size is expressed in pixels. Throws
-	 * a GdxRuntimeException in case the font could not be generated. Using big
-	 * sizes might cause such an exception. All characters need to fit onto a single
-	 * texture.
-	 * 
-	 * @param size the size of the font in pixels
-	 * @return 
-	 */
-	public BitmapFont generateFont(int size) {
-		return generateFont(size, DEFAULT_CHARS, false);
-	}
-	
-	/**
 	 * Generates a new {@link BitmapFont}, containing glyphs for the given characters. The size 
 	 * is expressed in pixels. Throws a GdxRuntimeException in case the font could not be generated.
 	 * Using big sizes might cause such an exception. All characters need to fit onto a single
@@ -83,6 +70,19 @@ public class FreeTypeFontGenerator implements Disposable {
 	public BitmapFont generateFont(int size, String characters, boolean flip) {
 		FreeTypeBitmapFontData data = generateData(size, characters, flip);
 		return new BitmapFont(data, data.getTextureRegion(), false);
+	}
+	
+	/**
+	 * Generates a new {@link BitmapFont}. The size is expressed in pixels. Throws
+	 * a GdxRuntimeException in case the font could not be generated. Using big
+	 * sizes might cause such an exception. All characters need to fit onto a single
+	 * texture.
+	 * 
+	 * @param size the size of the font in pixels
+	 * @return 
+	 */
+	public BitmapFont generateFont(int size) {
+		return generateFont(size, DEFAULT_CHARS, false);
 	}
 
 	/**
