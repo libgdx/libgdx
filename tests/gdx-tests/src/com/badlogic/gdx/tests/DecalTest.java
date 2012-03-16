@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.decals.GroupStrategy;
@@ -35,8 +36,6 @@ public class DecalTest extends GdxTest {
 	public static final int TARGET_FPS = 40;
 	public static final int INITIAL_RENDERED = 100;
 	private boolean willItBlend_that_is_the_question = true;
-	private GroupStrategy strategy = new SimpleOrthoGroupStrategy();
-	// private GroupStrategy strategy = new DefaultGroupStrategy();
 	Texture egg;
 	Texture wheel;
 	LinkedList<Decal> toRender = new LinkedList<Decal>();
@@ -52,7 +51,7 @@ public class DecalTest extends GdxTest {
 	@Override
 	public void create () {
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
-		Gdx.gl10.glDepthFunc(GL10.GL_LESS);
+		Gdx.gl.glDepthFunc(GL10.GL_LESS);
 
 		egg = new Texture(Gdx.files.internal("data/egg.png"));
 		egg.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -65,8 +64,13 @@ public class DecalTest extends GdxTest {
 		h = Gdx.graphics.getHeight() / 0.8f;
 		for (int i = 0; i < INITIAL_RENDERED; i++) {
 			toRender.add(makeDecal());
-		}
-		batch = new DecalBatch(strategy);
+		}		
+		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam.near = 0.1f;
+		cam.far = 10f;
+		cam.position.set(0, 0, 0.1f);
+		cam.direction.set(0, 0, -1f);
+		batch = new DecalBatch(new CameraGroupStrategy(cam));
 
 		Gdx.gl.glClearColor(1, 1, 0, 1);
 	}
@@ -120,8 +124,6 @@ public class DecalTest extends GdxTest {
 		cam.far = 10f;
 		cam.position.set(0, 0, 0.1f);
 		cam.direction.set(0, 0, -1f);
-		cam.update();
-		cam.apply(Gdx.gl10);
 	}
 
 	private Decal makeDecal () {

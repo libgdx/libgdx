@@ -12,6 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -26,6 +27,12 @@ public class GwtFileHandle extends FileHandle {
 		this.preloader = preloader;
 		this.file = fileName;
 		this.type = type;
+	}
+	
+	public GwtFileHandle(String path) {
+		this.type = FileType.Internal;
+		this.preloader = ((GwtApplication)Gdx.app).getPreloader();
+		this.file = path;
 	}
 
 	public String path () {

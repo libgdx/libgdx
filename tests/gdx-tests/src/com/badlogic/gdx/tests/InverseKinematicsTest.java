@@ -19,6 +19,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -50,7 +52,7 @@ public class InverseKinematicsTest extends GdxTest {
 
 	static final float GRAVITY = 0;
 	OrthographicCamera camera;
-	ImmediateModeRenderer10 renderer;
+	ShapeRenderer renderer;
 	Bone[] bones;
 	Vector3 globalCoords = new Vector3();
 	Vector3 endPoint = new Vector3();
@@ -60,7 +62,9 @@ public class InverseKinematicsTest extends GdxTest {
 	public void create () {
 		float aspect = Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight();
 		camera = new OrthographicCamera(15 * aspect, 15);
-		renderer = new ImmediateModeRenderer10();
+		camera.update();
+		renderer = new ShapeRenderer();
+		renderer.setProjectionMatrix(camera.combined);
 
 		bones = new Bone[] {new Bone("bone0", 0, 0, 0), new Bone("bone1", 0, 2, 2), new Bone("bone2", 0, 4, 2),
 			new Bone("bone3", 0, 6, 2), new Bone("end", 0, 8, 2)};
@@ -72,7 +76,7 @@ public class InverseKinematicsTest extends GdxTest {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		camera.update();
-		camera.apply(Gdx.gl10);
+		renderer.setProjectionMatrix(camera.combined);
 
 		if (Gdx.input.isTouched()) camera.unproject(globalCoords.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 		solveFakeIK(globalCoords);
@@ -80,24 +84,19 @@ public class InverseKinematicsTest extends GdxTest {
 	}
 
 	private void renderBones () {
-		renderer.begin(GL10.GL_LINES);
+		renderer.begin(ShapeType.Line);
+		renderer.setColor(0, 1, 0, 1);
 		for (int i = 0; i < bones.length - 1; i++) {
-			renderer.color(0, 1, 0, 1);
-			renderer.vertex(bones[i].position);
-			renderer.color(0, 1, 0, 1);
-			renderer.vertex(bones[i + 1].position);
+			renderer.line(bones[i].position.x, bones[i].position.y, bones[i + 1].position.x, bones[i + 1].position.y);
 		}
 		renderer.end();
 
-		Gdx.gl10.glPointSize(5);
-
-		renderer.begin(GL10.GL_POINTS);
+		renderer.begin(ShapeType.Point);
+		renderer.setColor(1, 0, 0, 1);
 		for (int i = 0; i < bones.length; i++) {
-			renderer.color(1, 0, 0, 1);
-			renderer.vertex(bones[i].position);
+			renderer.point(bones[i].position.x, bones[i].position.y, 0);
 		}
 		renderer.end();
-		Gdx.gl10.glPointSize(1);
 	}
 
 	public void solveFakeIK (Vector3 target) {

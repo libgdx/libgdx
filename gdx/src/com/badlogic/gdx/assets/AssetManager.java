@@ -48,6 +48,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class AssetManager implements Disposable {
 	final ObjectMap<Class, ObjectMap<String, RefCountedContainer>> assets = new ObjectMap<Class, ObjectMap<String, RefCountedContainer>>();
@@ -389,7 +390,7 @@ public class AssetManager implements Disposable {
 					task.assetDesc.params.loadedCallback.finishedLoading(this, task.assetDesc.fileName, task.assetDesc.type);
 				}
 
-				long endTime = System.nanoTime();
+				long endTime = TimeUtils.nanoTime();
 				log.debug("Loaded: " + (endTime - task.startTime) / 1000000f + "ms " + task.assetDesc);
 			}
 

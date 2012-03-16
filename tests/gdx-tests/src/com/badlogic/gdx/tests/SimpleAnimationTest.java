@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class SimpleAnimationTest extends GdxTest implements InputProcessor {
+public class SimpleAnimationTest extends GdxTest {
 
 	@Override
 	public boolean needsGL20 () {
@@ -83,50 +83,7 @@ public class SimpleAnimationTest extends GdxTest implements InputProcessor {
 	@Override
 	public boolean touchDown (int x, int y, int pointer, int button) {
 		position.x = x;
-		position.y = y;
-		// System.out.println(position);
+		position.y = Gdx.graphics.getHeight() - y;
 		return true;
-	}
-
-	@Override
-	public boolean keyDown (int keycode) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean keyUp (int keycode) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped (char character) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean touchUp (int x, int y, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged (int x, int y, int pointer) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean touchMoved (int x, int y) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean scrolled (int amount) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

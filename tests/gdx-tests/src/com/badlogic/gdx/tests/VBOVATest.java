@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObjectSubData;
 import com.badlogic.gdx.graphics.glutils.VertexData;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class VBOVATest extends GdxTest {
 
@@ -83,7 +84,7 @@ public class VBOVATest extends GdxTest {
 			indices[i] = (short)i;
 		}
 
-		startTime = System.nanoTime();
+		startTime = TimeUtils.nanoTime();
 	}
 
 	@Override
@@ -136,17 +137,17 @@ public class VBOVATest extends GdxTest {
 			vertexBuffer.unbind();
 		}
 
-		long endTime = System.nanoTime();
+		long endTime = TimeUtils.nanoTime();
 		if (endTime - startTime >= 4000000000l) {
 			double secs = (endTime - startTime) / 1000000000.0;
 			double fps = frames / secs;
-			Gdx.app.log("VBOVATest", vertexBuffer.getClass().getSimpleName() + ", " + isStatic + ", " + (mode > 2) + ", " + fps);
+			Gdx.app.log("VBOVATest", vertexBuffer.getClass().getName() + ", " + isStatic + ", " + (mode > 2) + ", " + fps);
 			mode++;
 			if (mode > 5) {
 				mode = 0;
 				isStatic = !isStatic;
 			}
-			startTime = System.nanoTime();
+			startTime = TimeUtils.nanoTime();
 			frames = 0;
 		}
 

@@ -28,11 +28,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class SpriteCacheTest extends GdxTest implements InputProcessor {
 	int SPRITES = 400 / 2;
 
-	long startTime = System.nanoTime();
+	long startTime = TimeUtils.nanoTime();
 	int frames = 0;
 
 	Texture texture;
@@ -60,23 +61,23 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		float end = 0;
 		float draw1 = 0;
 
-		long start = System.nanoTime();
+		long start = TimeUtils.nanoTime();
 		spriteCache.begin();
-		begin = (System.nanoTime() - start) / 1000000000.0f;
+		begin = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 		spriteCache.draw(normalCacheID);
-		draw1 = (System.nanoTime() - start) / 1000000000.0f;
+		draw1 = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 		spriteCache.end();
-		end = (System.nanoTime() - start) / 1000000000.0f;
+		end = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		if (System.nanoTime() - startTime > 1000000000) {
+		if (TimeUtils.nanoTime() - startTime > 1000000000) {
 // Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 +
 // ", " + draw2 + ", " + drawText + ", " + end );
 			frames = 0;
-			startTime = System.nanoTime();
+			startTime = TimeUtils.nanoTime();
 		}
 		frames++;
 	}
@@ -92,23 +93,23 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		float draw2 = 0;
 		float drawText = 0;
 
-		long start = System.nanoTime();
+		long start = TimeUtils.nanoTime();
 		spriteCache.begin();
-		begin = (System.nanoTime() - start) / 1000000000.0f;
+		begin = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 		spriteCache.draw(spriteCacheID);
-		draw1 = (System.nanoTime() - start) / 1000000000.0f;
+		draw1 = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 		spriteCache.end();
-		end = (System.nanoTime() - start) / 1000000000.0f;
+		end = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		if (System.nanoTime() - startTime > 1000000000) {
+		if (TimeUtils.nanoTime() - startTime > 1000000000) {
 // Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 +
 // ", " + draw2 + ", " + drawText + ", " + end );
 			frames = 0;
-			startTime = System.nanoTime();
+			startTime = TimeUtils.nanoTime();
 		}
 		frames++;
 	}
@@ -117,13 +118,10 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 	public void create () {
 		spriteCache = new SpriteCache(1000, true);
 
-		Pixmap pixmap = new Pixmap(Gdx.files.internal("data/badlogicsmall.jpg"));
-		texture = new Texture(32, 32, Format.RGB565);
+		Texture texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		texture.draw(pixmap, 0, 0);
-		pixmap.dispose();
 
-		pixmap = new Pixmap(32, 32, Format.RGBA8888);
+		Pixmap pixmap = new Pixmap(32, 32, Format.RGBA8888);
 		pixmap.setColor(1, 1, 0, 0.5f);
 		pixmap.fill();
 		texture2 = new Texture(pixmap);

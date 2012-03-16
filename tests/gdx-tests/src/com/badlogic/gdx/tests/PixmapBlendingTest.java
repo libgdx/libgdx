@@ -63,9 +63,8 @@ public class PixmapBlendingTest extends GdxTest {
 	@Override
 	public void render () {
 
-		GL10 gl = Gdx.graphics.getGL10();
-		gl.glClearColor(0, 1, 0, 1);
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClearColor(0, 1, 0, 1);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		spriteBatch.begin();
 		logoSprite.draw(spriteBatch);

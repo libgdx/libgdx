@@ -130,22 +130,22 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public float getPpiX () {
-		return 0;
+		return 96;
 	}
 
 	@Override
 	public float getPpiY () {
-		return 0;
+		return 96;
 	}
 
 	@Override
 	public float getPpcX () {
-		return 0;
+		return 96 / 2.54f;
 	}
 
 	@Override
 	public float getPpcY () {
-		return 0;
+		return 96 / 2.54f;
 	}
 
 	@Override
@@ -268,7 +268,7 @@ public class GwtGraphics implements Graphics {
 	
 	@Override
 	public float getDensity () {
-		throw new GdxRuntimeException("No supported");
+		return 96 / 160;
 	}
 
 	@Override

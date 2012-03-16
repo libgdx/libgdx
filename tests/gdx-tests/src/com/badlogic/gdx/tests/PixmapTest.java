@@ -19,7 +19,6 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -38,12 +37,6 @@ public class PixmapTest extends GdxTest {
 	TextureRegion region;
 
 	public void create () {
-		pixmap = new Pixmap(2, 2, Pixmap.Format.RGBA8888);
-		pixmap.setColor(1, 0, 0, 1);
-		pixmap.fill();
-		PixmapIO.writePNG(Gdx.files.absolute("test.png"), pixmap);
-		pixmap.dispose();
-		
 		// Create an empty dynamic pixmap
 		pixmap = new Pixmap(800, 480, Pixmap.Format.RGBA8888); // Pixmap.Format.RGBA8888);
 

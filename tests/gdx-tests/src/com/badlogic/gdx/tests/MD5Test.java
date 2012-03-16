@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Loader;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Model;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Renderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class MD5Test extends GdxTest implements InputProcessor {
 	PerspectiveCamera camera;
@@ -52,10 +53,10 @@ public class MD5Test extends GdxTest implements InputProcessor {
 		renderer = new MD5Renderer(model, useNormals, false);
 		renderer.setSkeleton(model.baseSkeleton);
 
-		// long start = System.nanoTime();
+		// long start = TimeUtils.nanoTime();
 		// for( int i = 0; i < 100000; i++ )
 		// renderer.setSkeleton( model.baseSkeleton );
-		// app.log( "MD5 Test", "took: " + (System.nanoTime() - start ) /
+		// app.log( "MD5 Test", "took: " + (TimeUtils.nanoTime() - start ) /
 		// 1000000000.0 );
 
 		camera = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -94,15 +95,15 @@ public class MD5Test extends GdxTest implements InputProcessor {
 			gl.glRotatef(angle, 0, 1, 0);
 			gl.glRotatef(-90, 1, 0, 0);
 
-			start = System.nanoTime();
+			start = TimeUtils.nanoTime();
 			MD5Animation.interpolate(anim.frames[animInfo.getCurrentFrame()], anim.frames[animInfo.getNextFrame()], skeleton,
 				animInfo.getInterpolation());
 			renderer.setSkeleton(skeleton);
-			skinTime = (System.nanoTime() - start) / 1000000000.0f;
+			skinTime = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-			start = System.nanoTime();
+			start = TimeUtils.nanoTime();
 			renderer.render();
-			renderTime = (System.nanoTime() - start) / 1000000000.0f;
+			renderTime = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 			gl.glPopMatrix();
 		}
 

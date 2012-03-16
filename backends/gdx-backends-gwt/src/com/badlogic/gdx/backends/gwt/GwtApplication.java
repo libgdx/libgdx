@@ -425,4 +425,8 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public String getBaseUrl () {
 		return preloader.baseUrl;
 	}
+
+	public Preloader getPreloader () {
+		return preloader;
+	}
 }

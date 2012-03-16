@@ -32,6 +32,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class TerrainTest extends GdxTest {
 	ImmediateModeRenderer10 renderer;
@@ -40,7 +41,7 @@ public class TerrainTest extends GdxTest {
 	PerspectiveCamera camera;
 	Vector3 intersection = new Vector3();
 	boolean intersected = false;
-	long lastTime = System.nanoTime();
+	long lastTime = TimeUtils.nanoTime();
 
 	@Override
 	public void create () {
@@ -88,9 +89,9 @@ public class TerrainTest extends GdxTest {
 
 		handleInput(Gdx.input, Gdx.graphics.getDeltaTime());
 
-		if (System.nanoTime() - lastTime > 1000000000) {
+		if (TimeUtils.nanoTime() - lastTime > 1000000000) {
 			Gdx.app.log("TerrainTest", "fps: " + Gdx.graphics.getFramesPerSecond());
-			lastTime = System.nanoTime();
+			lastTime = TimeUtils.nanoTime();
 		}
 	}
 

@@ -243,6 +243,7 @@ public class GwtGL20 implements GL20 {
 		for(int i = 0; i < n; i++) {
 			int id = textures.get();
 			WebGLTexture texture = this.textures.get(id);
+			deallocateTextureId(id);
 			gl.deleteTexture(texture);
 		}
 	}
@@ -274,8 +275,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glDrawElements (int mode, int count, int type, Buffer indices) {
-		// FIXME this assumes that we actually use index buffers, not index arrays...
-		gl.drawElements(mode, count, type, indices.position());
+		gl.drawElements(mode, count, type, indices.position()); // FIXME this is assuming WebGL supports client side buffers...
 	}
 
 	@Override
@@ -344,8 +344,7 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glReadPixels (int x, int y, int width, int height, int format, int type, Buffer pixels) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		throw new GdxRuntimeException("Not supported by GWT backend");
 	}
 
 	@Override

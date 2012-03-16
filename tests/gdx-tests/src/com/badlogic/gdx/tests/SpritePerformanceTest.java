@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class SpritePerformanceTest extends GdxTest {
 	StringBuilder log = new StringBuilder();
@@ -70,7 +71,7 @@ public class SpritePerformanceTest extends GdxTest {
 		}
 		int spritesHandle = cache.endCache();
 
-		startTime = System.nanoTime();
+		startTime = TimeUtils.nanoTime();
 		frames = 0;
 	}
 
@@ -116,11 +117,11 @@ public class SpritePerformanceTest extends GdxTest {
 		}
 
 		frames++;
-		if (System.nanoTime() - startTime > 5000000000l) {
+		if (TimeUtils.nanoTime() - startTime > 5000000000l) {
 			Gdx.app.log("SpritePerformanceTest", "mode: " + modes[mode] + ", fps: " + frames / 5.0f);
 			log.append("mode: " + modes[mode] + ", fps: " + frames / 5.0f + "\n");
 			frames = 0;
-			startTime = System.nanoTime();
+			startTime = TimeUtils.nanoTime();
 			mode++;
 			if (mode > 9) mode = 0;
 		}

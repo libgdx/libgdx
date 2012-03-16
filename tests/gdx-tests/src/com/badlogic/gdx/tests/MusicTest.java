@@ -41,7 +41,7 @@ public class MusicTest extends GdxTest {
 	@Override
 	public void create () {
 		for (int i = 0; i < music.length; i++) {
-			music[i] = Gdx.audio.newMusic(Gdx.files.internal("data/music.mp3"));
+			music[i] = Gdx.audio.newMusic(Gdx.files.internal("data/cloudconnected.ogg"));
 		}
 
 		buttons = new TextureRegion(new Texture(Gdx.files.internal("data/playback.png")));

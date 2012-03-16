@@ -144,10 +144,8 @@ public class KeyframedModel {
 				numVertices = vertices.length;
 				numIndices = indices.length;
 				if (!cached) {
-					k.vertices[m] = new float[vertices.length];
-					k.vertices[m] = vertices.clone();
-					k.indices[m] = new short[indices.length];
-					k.indices[m] = indices.clone();
+					k.vertices[m] = clone(vertices);
+					k.indices[m] = clone(indices);
 				}
 
 				if (target[m] == null) {
@@ -200,6 +198,18 @@ public class KeyframedModel {
 		}
 
 		return a;
+	}
+
+	private short[] clone (short[] indices) {
+		short[] tmp = new short[indices.length];
+		System.arraycopy(indices, 0, tmp, 0, indices.length);
+		return tmp;
+	}
+
+	private float[] clone (float[] vertices) {
+		float[] tmp = new float[vertices.length];
+		System.arraycopy(vertices, 0, tmp, 0, vertices.length);
+		return tmp;
 	}
 
 	public void getJointData (int tagIndex, Vector3 pos, Quaternion orient) {

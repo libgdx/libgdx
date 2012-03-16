@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.TimeUtils;
 
 /** A single-line text input field.
  * <p>
@@ -257,7 +258,7 @@ public class TextField extends Widget {
 	}
 
 	private void blink () {
-		long time = System.nanoTime();
+		long time = TimeUtils.nanoTime();
 		if ((time - lastBlink) / 1000000000.0f > blinkTime) {
 			cursorOn = !cursorOn;
 			lastBlink = time;

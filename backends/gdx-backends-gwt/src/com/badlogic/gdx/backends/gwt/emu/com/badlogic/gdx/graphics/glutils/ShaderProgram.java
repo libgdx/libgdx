@@ -129,7 +129,6 @@ public class ShaderProgram implements Disposable {
 	private boolean invalidated;
 
 	/** direct buffer for passing float and int uniform arrays **/
-	private ByteBuffer buffer = null;
 	private FloatBuffer floatBuffer = null;
 
 	public ShaderProgram (FileHandle vertexShader, FileHandle fragmentShader) {
@@ -599,9 +598,8 @@ public class ShaderProgram implements Disposable {
 	}
 
 	private void ensureBufferCapacity (int numBytes) {
-		if (buffer == null || buffer.capacity() != numBytes) {
-			buffer = BufferUtils.newByteBuffer(numBytes);
-			floatBuffer = buffer.asFloatBuffer();
+		if (floatBuffer == null || floatBuffer.capacity() != numBytes / 4) {
+			floatBuffer = BufferUtils.newFloatBuffer(numBytes / 4);
 		}
 	}
 

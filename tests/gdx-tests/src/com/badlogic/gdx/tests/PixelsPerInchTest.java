@@ -31,13 +31,13 @@ public class PixelsPerInchTest extends GdxTest {
 
 	@Override
 	public void create () {
-		font = new BitmapFont();
+		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 		batch = new SpriteBatch();
 		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 	}
 
 	public void render () {
-		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		batch.begin();
 		float width = (int)(Gdx.graphics.getPpcX() * 2);
@@ -51,7 +51,7 @@ public class PixelsPerInchTest extends GdxTest {
 
 	@Override
 	public boolean needsGL20 () {
-		return false;
+		return true;
 	}
 
 }

@@ -183,7 +183,7 @@ public abstract class Actor {
 
 	@Override
 	public String toString () {
-		String name = this.name != null ? this.name : getClass().getSimpleName();
+		String name = this.name != null ? this.name : getClass().getName();
 		if (name.equals("")) name = getClass().getName();
 		return name + " pos=" + x + "," + y + " origin=" + originX + "," + originY + " size=" + width + "," + height;
 	}

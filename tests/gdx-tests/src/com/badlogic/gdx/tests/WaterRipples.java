@@ -33,6 +33,7 @@ import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class WaterRipples extends GdxTest implements InputProcessor {
 	static final short WIDTH = 50;
@@ -160,7 +161,7 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 		}
 	}
 
-	long lastTick = System.nanoTime();
+	long lastTick = TimeUtils.nanoTime();
 	Random rand = new Random();
 
 	@Override

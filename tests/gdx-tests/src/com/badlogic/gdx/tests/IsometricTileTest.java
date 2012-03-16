@@ -24,8 +24,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class IsometricTileTest extends GdxTest {
 	static final int LAYERS = 1;
@@ -43,8 +46,8 @@ public class IsometricTileTest extends GdxTest {
 	int[] layers = new int[LAYERS];
 	OrthographicCamera cam;
 	OrthoCamController camController;
-	ImmediateModeRenderer10 renderer;
-	long startTime = System.nanoTime();
+	ShapeRenderer renderer;
+	long startTime = TimeUtils.nanoTime();
 
 	@Override
 	public void create () {
@@ -52,7 +55,7 @@ public class IsometricTileTest extends GdxTest {
 		camController = new OrthoCamController(cam);
 		Gdx.input.setInputProcessor(camController);
 
-		renderer = new ImmediateModeRenderer10();
+		renderer = new ShapeRenderer();
 		texture = new Texture(Gdx.files.internal("data/isotile.png"));
 
 		Random rand = new Random();
@@ -79,13 +82,12 @@ public class IsometricTileTest extends GdxTest {
 
 	@Override
 	public void render () {
-		GL10 gl = Gdx.gl10;
-		gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		cam.update();
 
-		gl.glEnable(GL10.GL_BLEND);
-		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl.glEnable(GL10.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		for (int i = 0; i < LAYERS; i++) {
 			SpriteCache cache = caches[i];
 			cache.setProjectionMatrix(cam.combined);
@@ -94,25 +96,17 @@ public class IsometricTileTest extends GdxTest {
 			cache.end();
 		}
 
-		renderer.begin(GL10.GL_LINES);
-		renderer.color(1, 0, 0, 1);
-		renderer.vertex(0, 0, 0);
-		renderer.color(1, 0, 0, 1);
-		renderer.vertex(500, 0, 0);
-		renderer.color(0, 1, 0, 1);
-		renderer.vertex(0, 0, 0);
-		renderer.color(0, 1, 0, 1);
-		renderer.vertex(0, 500, 0);
+		renderer.setProjectionMatrix(cam.combined);
+		renderer.begin(ShapeType.Line);
+		renderer.setColor(1, 0, 0, 1);
+		renderer.line(0, 0, 500, 0);
+		renderer.line(0, 0, 0, 500);
 
-		renderer.color(0, 0, 1, 1);
-		renderer.vertex(0, BOUND_Y, 0);
-		renderer.color(0, 0, 1, 1);
-		renderer.vertex(BOUND_X, BOUND_Y, 0);
+		renderer.setColor(0, 0, 1, 1);
+		renderer.line(0, BOUND_Y, BOUND_X, BOUND_Y);
 
-		renderer.color(0, 0, 1, 1);
-		renderer.vertex(BOUND_X, 0, 0);
-		renderer.color(0, 0, 1, 1);
-		renderer.vertex(BOUND_X, BOUND_Y, 0);
+		renderer.setColor(0, 0, 1, 1);
+		renderer.line(BOUND_X, 0, BOUND_X, BOUND_Y);
 
 		renderer.end();
 	}

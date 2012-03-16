@@ -25,21 +25,22 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class BitmapFontTest extends GdxTest {
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
-	ImmediateModeRenderer10 renderer;
-
+	private ShapeRenderer renderer;
+	
 	@Override
 	public void create () {
 		spriteBatch = new SpriteBatch();
-
 		TextureAtlas textureAtlas = new TextureAtlas("data/pack");
 		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), textureAtlas.findRegion("verdana39"), false);
-
-		renderer = new ImmediateModeRenderer10();
+		renderer = new ShapeRenderer();
+		renderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
 	}
 
 	@Override
@@ -48,9 +49,8 @@ public class BitmapFontTest extends GdxTest {
 
 		int viewHeight = Gdx.graphics.getHeight();
 
-		GL10 gl = Gdx.graphics.getGL10();
-		gl.glClearColor(1, 1, 1, 1);
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClearColor(1, 1, 1, 1);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 
 		String text = "Sphinx of black quartz, judge my vow.";
@@ -78,16 +78,8 @@ public class BitmapFontTest extends GdxTest {
 
 		spriteBatch.end();
 
-		drawRect(x, viewHeight - y, x + alignmentWidth, 300);
-	}
-
-	public void drawRect (float x1, float y1, float x2, float y2) {
-		renderer.begin(GL10.GL_LINE_STRIP);
-		renderer.vertex(x1, y1, 0);
-		renderer.vertex(x1, y2, 0);
-		renderer.vertex(x2, y2, 0);
-		renderer.vertex(x2, y1, 0);
-		renderer.vertex(x1, y1, 0);
+		renderer.begin(ShapeType.Rectangle);
+		renderer.rect(x, viewHeight - y, x + alignmentWidth, 300);
 		renderer.end();
 	}
 

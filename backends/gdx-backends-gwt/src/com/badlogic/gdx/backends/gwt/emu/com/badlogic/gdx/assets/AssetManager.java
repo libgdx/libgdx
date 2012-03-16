@@ -20,8 +20,20 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 import com.badlogic.gdx.assets.loaders.AssetLoader;
+import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.MusicLoader;
+import com.badlogic.gdx.assets.loaders.PixmapLoader;
+import com.badlogic.gdx.assets.loaders.SoundLoader;
+import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -48,12 +60,12 @@ public class AssetManager implements Disposable {
 
 	/** Creates a new AssetManager with all default loaders. */
 	public AssetManager (FileHandleResolver resolver) {
-//		setLoader(BitmapFont.class, new BitmapFontLoader(resolver));
-//		setLoader(Music.class, new MusicLoader(resolver));
-//		setLoader(Pixmap.class, new PixmapLoader(resolver));
-//		setLoader(Sound.class, new SoundLoader(resolver));
-//		setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
-//		setLoader(Texture.class, new TextureLoader(resolver));
+		setLoader(BitmapFont.class, new BitmapFontLoader(resolver));
+		setLoader(Music.class, new MusicLoader(resolver));
+		setLoader(Pixmap.class, new PixmapLoader(resolver));
+		setLoader(Sound.class, new SoundLoader(resolver));
+		setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
+		setLoader(Texture.class, new TextureLoader(resolver));
 //		setLoader(Skin.class, new SkinLoader(resolver));
 //		setLoader(TileMapRenderer.class, new TileMapRendererLoader(resolver));
 	}
@@ -324,8 +336,7 @@ public class AssetManager implements Disposable {
 	private void addTask (AssetDescriptor assetDesc) {
 		AssetLoader loader = loaders.get(assetDesc.type);
 		if (loader == null) throw new GdxRuntimeException("No loader for type: " + assetDesc.type.getName());
-		// FIXME
-//		tasks.push(new AssetLoadingTask(this, assetDesc, loader, threadPool));
+		tasks.push(new AssetLoadingTask(this, assetDesc, loader));
 	}
 
 	/** Updates the current task on the top of the task stack.
@@ -445,13 +456,6 @@ public class AssetManager implements Disposable {
 	public synchronized void dispose () {
 //		log.debug("Disposing.");
 		clear();
-		// FIXME
-//		threadPool.shutdown();
-//		try {
-//			threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-//		} catch (InterruptedException e) {
-//			new GdxRuntimeException("Couldn't shutdown loading thread");
-//		}
 	}
 
 	/** Clears and disposes all assets and the preloading queue. */

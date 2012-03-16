@@ -25,12 +25,13 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class FillrateTest extends GdxTest implements InputProcessor {
 	Texture texture;
 	Mesh mesh;
 	int numFills = 1;
-	long lastOut = System.nanoTime();
+	long lastOut = TimeUtils.nanoTime();
 
 	int mode = 0;
 	float mean = 0;
@@ -109,11 +110,11 @@ public class FillrateTest extends GdxTest implements InputProcessor {
 
 		if (Gdx.graphics.getDeltaTime() < 1 / 60f) numFills++;
 
-		if (System.nanoTime() - lastOut >= 1000000000) {
+		if (TimeUtils.nanoTime() - lastOut >= 1000000000) {
 			Gdx.app.log("FillrateTest", "fills: " + mean / frames + ", fps: " + frames + ", mode" + mode);
 			mean = 0;
 			frames = 0;
-			lastOut = System.nanoTime();
+			lastOut = TimeUtils.nanoTime();
 			if (Gdx.graphics.getFramesPerSecond() < 60) numFills--;
 		}
 	}

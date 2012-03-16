@@ -25,11 +25,12 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class SpriteBatchShaderTest extends GdxTest {
 	int SPRITES = 400;
 
-	long startTime = System.nanoTime();
+	long startTime = TimeUtils.nanoTime();
 	int frames = 0;
 
 	Texture texture;
@@ -56,37 +57,37 @@ public class SpriteBatchShaderTest extends GdxTest {
 		float draw2 = 0;
 		float drawText = 0;
 
-		long start = System.nanoTime();
+		long start = TimeUtils.nanoTime();
 		spriteBatch.begin();
-		begin = (System.nanoTime() - start) / 1000000000.0f;
+		begin = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
 		int len = coords.length;
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 		for (int i = 0; i < len; i += 2)
 			spriteBatch.draw(texture, coords[i], coords[i + 1], 0, 0, 32, 32);
-		draw1 = (System.nanoTime() - start) / 1000000000.0f;
+		draw1 = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 		spriteBatch.setColor(col);
 		for (int i = 0; i < coords2.length; i += 2)
 			spriteBatch.draw(texture2, coords2[i], coords2[i + 1], 0, 0, 32, 32);
-		draw2 = (System.nanoTime() - start) / 1000000000.0f;
+		draw2 = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 // spriteBatch.drawText(font, "Question?", 100, 300, Color.RED);
 // spriteBatch.drawText(font, "and another this is a test", 200, 100, Color.WHITE);
 // spriteBatch.drawText(font, "all hail and another this is a test", 200, 200, Color.WHITE);
-		drawText = (System.nanoTime() - start) / 1000000000.0f;
+		drawText = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 		spriteBatch.end();
-		end = (System.nanoTime() - start) / 1000000000.0f;
+		end = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		if (System.nanoTime() - startTime > 1000000000) {
+		if (TimeUtils.nanoTime() - startTime > 1000000000) {
 			Gdx.app.log("SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1
 				+ ", " + draw2 + ", " + drawText + ", " + end);
 			frames = 0;
-			startTime = System.nanoTime();
+			startTime = TimeUtils.nanoTime();
 		}
 		frames++;
 	}
@@ -94,23 +95,13 @@ public class SpriteBatchShaderTest extends GdxTest {
 	@Override
 	public void create () {
 		spriteBatch = new SpriteBatch();
-		Pixmap pixmap = new Pixmap(Gdx.files.internal("data/badlogicsmall.jpg"));
-// pixmap.setColor( 0, 0, 0, 0 );
-// pixmap.fillCircle( 16, 16, 4 );
-		texture = new Texture(32, 32, Format.RGB565);
-		texture.draw(pixmap, 0, 0);
-		pixmap.dispose();
+		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 
-		pixmap = new Pixmap(32, 32, Format.RGB565);
+		Pixmap pixmap = new Pixmap(32, 32, Format.RGB565);
 		pixmap.setColor(1, 1, 0, 0.7f);
 		pixmap.fill();
-// pixmap.setColor( 0, 0, 0, 0 );
-// pixmap.fillCircle( 16, 16, 4 );
-//
 		texture2 = new Texture(pixmap);
 		pixmap.dispose();
-
-// if (font == null) font = Gdx.graphics.newFont("Arial", 32, FontStyle.Plain);
 
 		for (int i = 0; i < coords.length; i += 2) {
 			coords[i] = (int)(Math.random() * Gdx.graphics.getWidth());

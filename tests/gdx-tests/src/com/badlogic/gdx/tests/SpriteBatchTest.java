@@ -26,11 +26,12 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class SpriteBatchTest extends GdxTest implements InputProcessor {
 	int SPRITES = 100 / 2;
 
-	long startTime = System.nanoTime();
+	long startTime = TimeUtils.nanoTime();
 	int frames = 0;
 
 	Texture texture;
@@ -75,37 +76,37 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 			SCALE_SPEED = -1;
 		}
 
-		long start = System.nanoTime();
+		long start = TimeUtils.nanoTime();
 		spriteBatch.begin();
-		begin = (System.nanoTime() - start) / 1000000000.0f;
+		begin = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 		for (int i = 0; i < sprites.length; i += 6)
 			spriteBatch.draw(texture, sprites[i], sprites[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, false, false);
-		draw1 = (System.nanoTime() - start) / 1000000000.0f;
+		draw1 = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 		for (int i = 0; i < sprites2.length; i += 6)
 			spriteBatch
 				.draw(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, false, false);
-		draw2 = (System.nanoTime() - start) / 1000000000.0f;
+		draw2 = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 // spriteBatch.drawText(font, "Question?", 100, 300, Color.RED);
 // spriteBatch.drawText(font, "and another this is a test", 200, 100, Color.WHITE);
 // spriteBatch.drawText(font, "all hail and another this is a test", 200, 200, Color.WHITE);
 // spriteBatch.drawText(font, "normal fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30, Color.RED);
-		drawText = (System.nanoTime() - start) / 1000000000.0f;
+		drawText = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 		spriteBatch.end();
-		end = (System.nanoTime() - start) / 1000000000.0f;
+		end = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		if (System.nanoTime() - startTime > 1000000000) {
+		if (TimeUtils.nanoTime() - startTime > 1000000000) {
 			Gdx.app.log("SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1
 				+ ", " + draw2 + ", " + drawText + ", " + end);
 			frames = 0;
-			startTime = System.nanoTime();
+			startTime = TimeUtils.nanoTime();
 		}
 		frames++;
 
@@ -122,9 +123,9 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 		float draw2 = 0;
 		float drawText = 0;
 
-		long start = System.nanoTime();
+		long start = TimeUtils.nanoTime();
 		spriteBatch.begin();
-		begin = (System.nanoTime() - start) / 1000000000.0f;
+		begin = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
 		float angleInc = ROTATION_SPEED * Gdx.graphics.getDeltaTime();
 		scale += SCALE_SPEED * Gdx.graphics.getDeltaTime();
@@ -137,38 +138,38 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 			SCALE_SPEED = -1;
 		}
 
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 		for (int i = 0; i < SPRITES; i++) {
 			if (angleInc != 0) sprites3[i].rotate(angleInc); // this is aids
 			if (scale != 1) sprites3[i].setScale(scale); // this is aids
 			sprites3[i].draw(spriteBatch);
 		}
-		draw1 = (System.nanoTime() - start) / 1000000000.0f;
+		draw1 = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 		for (int i = SPRITES; i < SPRITES << 1; i++) {
 			if (angleInc != 0) sprites3[i].rotate(angleInc); // this is aids
 			if (scale != 1) sprites3[i].setScale(scale); // this is aids
 			sprites3[i].draw(spriteBatch);
 		}
-		draw2 = (System.nanoTime() - start) / 1000000000.0f;
+		draw2 = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 // spriteBatch.drawText(font, "Question?", 100, 300, Color.RED);
 // spriteBatch.drawText(font, "and another this is a test", 200, 100, Color.WHITE);
 // spriteBatch.drawText(font, "all hail and another this is a test", 200, 200, Color.WHITE);
 // spriteBatch.drawText(font, "Sprite fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30, Color.RED);
-		drawText = (System.nanoTime() - start) / 1000000000.0f;
+		drawText = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		start = System.nanoTime();
+		start = TimeUtils.nanoTime();
 		spriteBatch.end();
-		end = (System.nanoTime() - start) / 1000000000.0f;
+		end = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
-		if (System.nanoTime() - startTime > 1000000000) {
+		if (TimeUtils.nanoTime() - startTime > 1000000000) {
 			Gdx.app.log("SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1
 				+ ", " + draw2 + ", " + drawText + ", " + end);
 			frames = 0;
-			startTime = System.nanoTime();
+			startTime = TimeUtils.nanoTime();
 		}
 		frames++;
 	}

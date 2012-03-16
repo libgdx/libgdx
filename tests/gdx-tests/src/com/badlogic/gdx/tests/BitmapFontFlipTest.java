@@ -97,8 +97,7 @@ public class BitmapFontFlipTest extends GdxTest {
 	public void render () {
 		red.a = (red.a + Gdx.graphics.getDeltaTime() * 0.1f) % 1;
 
-		GL10 gl = Gdx.graphics.getGL10();
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		logoSprite.draw(spriteBatch);
 		switch (renderMode) {

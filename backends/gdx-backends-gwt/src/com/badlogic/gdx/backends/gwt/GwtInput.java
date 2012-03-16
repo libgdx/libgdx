@@ -7,6 +7,7 @@ import java.util.Set;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -321,7 +322,7 @@ public class GwtInput implements Input {
 			this.deltaY = 0;
 			this.mouseX = (int)getRelativeX(e, canvas);
 			this.mouseY = (int)getRelativeY(e, canvas);
-			this.currentEventTimeStamp = System.currentTimeMillis() * 1000;
+			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			if(processor != null) processor.touchDown(mouseX, mouseY, 0, getButton(e.getButton()));
 		}
 		
@@ -330,7 +331,7 @@ public class GwtInput implements Input {
 			this.deltaY = (int)getRelativeY(e, canvas) - mouseY;
 			this.mouseX = (int)getRelativeX(e, canvas);
 			this.mouseY = (int)getRelativeY(e, canvas);
-			this.currentEventTimeStamp = System.currentTimeMillis() * 1000;
+			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			if(processor != null) {
 				if(touched) processor.touchDragged(mouseX, mouseY, 0);
 				else processor.touchMoved(mouseX, mouseY);
@@ -345,7 +346,7 @@ public class GwtInput implements Input {
 			this.deltaY = (int)getRelativeY(e, canvas) - mouseY;
 			this.mouseX = (int)getRelativeX(e, canvas);
 			this.mouseY = (int)getRelativeY(e, canvas);
-			this.currentEventTimeStamp = System.currentTimeMillis() * 1000;
+			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			this.touched = false;
 			if(processor != null) processor.touchUp(mouseX, mouseY, 0, getButton(e.getButton()));
 		}

@@ -79,7 +79,7 @@ public class GdxTests {
 			PixmapTest.class, PreferencesTest.class,
 			ProjectiveTextureTest.class, Pong.class, ProjectTest.class,
 			RemoteTest.class, RotationTest.class, ShaderMultitextureTest.class,
-			ShadowMappingTest.class, SplineTest.class, SimpleTest.class,
+			ShadowMappingTest.class, SplineTest.class,
 			SimpleAnimationTest.class, SimpleDecalTest.class,
 			SimpleStageCullingTest.class, SoundTest.class,
 			SpriteCacheTest.class, SpriteCacheOffsetTest.class,
@@ -97,7 +97,7 @@ public class GdxTests {
 			VorbisTest.class, WaterRipples.class, HelloTriangle.class,
 			SimpleVertexShader.class, ShapeRendererTest.class,
 			MoveSpriteExample.class, StbTrueTypeTest.class, SoundTouchTest.class, Mpg123Test.class, WavTest.class,
-			TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, TextureBindTestGL2.class,
+			TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class,
 			SortedSpriteTest.class, ExternalMusicTest.class, SoftKeyboardTest.class, 
 			DirtyRenderingTest.class, FreeTypeTest.class, YDownTest.class};
 

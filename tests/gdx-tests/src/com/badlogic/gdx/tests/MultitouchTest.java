@@ -23,22 +23,24 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.TimeUtils;
 
-public class MultitouchTest extends GdxTest implements InputProcessor {
-	ImmediateModeRenderer10 renderer;
+public class MultitouchTest extends GdxTest {
+	ShapeRenderer renderer;
 	OrthographicCamera camera;
-	long startTime = System.nanoTime();
+	long startTime = TimeUtils.nanoTime();
 
 	Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.WHITE};
 
 	@Override
 	public void render () {
-		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-		Gdx.graphics.getGL10().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
-		camera.apply(Gdx.gl10);
-		renderer.begin(GL10.GL_TRIANGLES);
+		renderer.setProjectionMatrix(camera.combined);
+		renderer.begin(ShapeType.FilledTriangle);
 		int size = Math.max(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 10;
 		for (int i = 0; i < 10; i++) {
 			if (Gdx.input.isTouched(i) == false) continue;
@@ -46,76 +48,17 @@ public class MultitouchTest extends GdxTest implements InputProcessor {
 			float x = Gdx.input.getX(i);
 			float y = Gdx.graphics.getHeight() - Gdx.input.getY(i) - 1;
 			Color col = colors[i % colors.length];
-			renderer.color(col.r, col.g, col.b, col.a);
-			renderer.vertex(x, y + size, 0);
-			renderer.color(col.r, col.g, col.b, col.a);
-			renderer.vertex(x + size, y - size, 0);
-			renderer.color(col.r, col.g, col.b, col.a);
-			renderer.vertex(x - size, y - size, 0);
+			renderer.filledTriangle(x, y + size, x + size, y - size, x - size, y - size);
 		}
-
 		renderer.end();
-
-// if (System.nanoTime() - startTime > 1000000000l) {
-// Gdx.app.log("MultiTouhTest", "fps:" + Gdx.graphics.getFramesPerSecond());
-// startTime = System.nanoTime();
-// }
 	}
 
 	@Override
 	public void create () {
 		Gdx.app.log("Multitouch", "multitouch supported: " + Gdx.input.isPeripheralAvailable(Peripheral.MultitouchScreen));
-		renderer = new ImmediateModeRenderer10();
+		renderer = new ShapeRenderer();
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);
 		Gdx.input.setInputProcessor(this);
-	}
-
-	@Override
-	public boolean keyDown (int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped (char character) {
-		return false;
-	}
-
-	@Override
-	public boolean keyUp (int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDown (int x, int y, int pointer, int newParam) {
-// Gdx.app.log("Multitouch", "down: " + pointer);
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged (int x, int y, int pointer) {
-// Gdx.app.log("Multitouch", "drag: " + pointer);
-		return false;
-	}
-
-	@Override
-	public boolean touchUp (int x, int y, int pointer, int button) {
-// Gdx.app.log("Multitouch", "up: " + pointer);
-		return false;
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
-	@Override
-	public boolean touchMoved (int x, int y) {
-		return false;
-	}
-
-	@Override
-	public boolean scrolled (int amount) {
-		return false;
 	}
 }

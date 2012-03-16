@@ -58,8 +58,7 @@ public class BitmapFontAlignmentTest extends GdxTest {
 
 	@Override
 	public void render () {
-		GL10 gl = Gdx.graphics.getGL10();
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		logoSprite.draw(spriteBatch);
 		switch (renderMode) {

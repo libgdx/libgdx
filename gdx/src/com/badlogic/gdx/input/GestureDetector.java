@@ -19,6 +19,7 @@ package com.badlogic.gdx.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class GestureDetector extends InputAdapter {
 	public static interface GestureListener {
@@ -266,9 +267,9 @@ public class GestureDetector extends InputAdapter {
 		panning = false;
 		if (inTapSquare & !longPressFired) {
 			// handle taps
-			if (System.nanoTime() - lastTapTime > tapCountInterval) tapCount = 0;
+			if (TimeUtils.nanoTime() - lastTapTime > tapCountInterval) tapCount = 0;
 			tapCount++;
-			lastTapTime = System.nanoTime();
+			lastTapTime = TimeUtils.nanoTime();
 			gestureStartTime = 0;
 			return listener.tap(tapSquareCenterX, tapSquareCenterY, tapCount);
 		} else if (pinching) {
@@ -304,7 +305,7 @@ public class GestureDetector extends InputAdapter {
 	 * @return whether the user touched the screen for as much or more than the given duration. */
 	public boolean isLongPressed (float duration) {
 		if (gestureStartTime == 0) return false;
-		return System.nanoTime() - gestureStartTime > (long)(duration * 1000000000l);
+		return TimeUtils.nanoTime() - gestureStartTime > (long)(duration * 1000000000l);
 	}
 
 	public boolean isPanning () {

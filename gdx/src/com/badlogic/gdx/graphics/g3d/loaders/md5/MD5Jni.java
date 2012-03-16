@@ -20,7 +20,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class MD5Jni {
 	public static native void calculateVertices (float[] joints, float[] weights, float[] verticesIn, float[] verticesOut,
-		int numVertices, int vstride, int wstride); /*
+		int numVertices, int vstride, int wstride)/*-{ }-*/; /*
 		for (int vertexOffset = 2, k = 0; vertexOffset < numVertices; vertexOffset += vstride) {
 			float finalX = 0;
 			float finalY = 0;

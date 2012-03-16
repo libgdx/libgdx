@@ -140,6 +140,18 @@ public class Pixmap implements Disposable {
 	public Format getFormat () {
 		return format;
 	}
+	
+	public int getGLInternalFormat() {
+		return GL20.GL_RGBA;
+	}
+	
+	public int getGLFormat() {
+		return GL20.GL_RGBA;
+	}
+	
+	public int getGLType() {
+		return GL20.GL_UNSIGNED_BYTE;
+	}
 
 	public int getWidth () {
 		return width;

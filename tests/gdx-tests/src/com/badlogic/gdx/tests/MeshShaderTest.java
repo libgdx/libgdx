@@ -63,7 +63,7 @@ public class MeshShaderTest extends GdxTest {
 		shader = new ShaderProgram(vertexShader, fragmentShader);
 		if (shader.isCompiled() == false) {
 			Gdx.app.log("ShaderTest", shader.getLog());
-			System.exit(0);
+			Gdx.app.exit();
 		}
 
 		mesh = new Mesh(true, 4, 6, VertexAttribute.Position(), VertexAttribute.ColorUnpacked(), VertexAttribute.TexCoords(0));

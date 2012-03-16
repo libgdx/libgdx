@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -33,7 +34,7 @@ public class VertexBufferObjectShaderTest extends GdxTest {
 	Texture texture;
 	ShaderProgram shader;
 	VertexBufferObject vbo;
-	ShortBuffer indices;
+	IndexBufferObject indices;
 
 	@Override
 	public boolean needsGL20 () {
@@ -51,6 +52,7 @@ public class VertexBufferObjectShaderTest extends GdxTest {
 	public void render () {
 		GL20 gl = Gdx.gl20;
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glClearColor(0.7f, 0, 0, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		gl.glEnable(GL20.GL_TEXTURE_2D);
@@ -58,7 +60,9 @@ public class VertexBufferObjectShaderTest extends GdxTest {
 		shader.setUniformi("u_texture", 0);
 		texture.bind();
 		vbo.bind(shader);
-		gl.glDrawElements(GL20.GL_TRIANGLES, 3, GL20.GL_UNSIGNED_SHORT, indices);
+		indices.bind();
+		gl.glDrawElements(GL20.GL_TRIANGLES, 3, GL20.GL_UNSIGNED_SHORT, indices.getBuffer().position());
+		indices.unbind();
 		vbo.unbind(shader);
 		shader.end();
 	}
@@ -81,9 +85,8 @@ public class VertexBufferObjectShaderTest extends GdxTest {
 		float[] vertices = new float[] {-1, -1, 0, 0, Color.toFloatBits(1f, 0f, 0f, 1f), 0, 1, 0.5f, 1.0f,
 			Color.toFloatBits(0f, 1f, 0f, 1f), 1, -1, 1, 0, Color.toFloatBits(0f, 0f, 1f, 1f)};
 		vbo.setVertices(vertices, 0, vertices.length);
-		indices = BufferUtils.newShortBuffer(3);
-		indices.put(new short[] {0, 1, 2});
-		indices.flip();
+		indices = new IndexBufferObject(3);
+		indices.setIndices(new short[] {0, 1, 2}, 0, 3);
 
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 	}

@@ -816,32 +816,32 @@ public class Matrix4 implements Serializable {
 		return true;
 	}
 	
-	static void matrix4_mulVec(float[] mat, float[] vec) {
-		float x = vec[0] * mat[M00] + vec[1] * mat[M01] + vec[2] * mat[M02] + mat[M03];
-		float y = vec[0] * mat[M10] + vec[1] * mat[M11] + vec[2] * mat[M12] + mat[M13];
-		float z = vec[0] * mat[M20] + vec[1] * mat[M21] + vec[2] * mat[M22] + mat[M23];
-		vec[0] = x;
-		vec[1] = y;
-		vec[2] = z;
+	static void matrix4_mulVec(float[] mat, float[] vec, int offset) {
+		float x = vec[offset + 0] * mat[M00] + vec[offset + 1] * mat[M01] + vec[offset + 2] * mat[M02] + mat[M03];
+		float y = vec[offset + 0] * mat[M10] + vec[offset + 1] * mat[M11] + vec[offset + 2] * mat[M12] + mat[M13];
+		float z = vec[offset + 0] * mat[M20] + vec[offset + 1] * mat[M21] + vec[offset + 2] * mat[M22] + mat[M23];
+		vec[offset + 0] = x;
+		vec[offset + 1] = y;
+		vec[offset + 2] = z;
 	}
 	
-	static void matrix4_proj(float[] mat, float[] vec) {
-		float inv_w = 1.0f / (vec[0] * mat[M30] + vec[1] * mat[M31] + vec[2] * mat[M32] + mat[M33]);
-		float x = (vec[0] * mat[M00] + vec[1] * mat[M01] + vec[2] * mat[M02] + mat[M03]) * inv_w;
-		float y = (vec[0] * mat[M10] + vec[1] * mat[M11] + vec[2] * mat[M12] + mat[M13]) * inv_w; 
-		float z = (vec[0] * mat[M20] + vec[1] * mat[M21] + vec[2] * mat[M22] + mat[M23]) * inv_w;
-		vec[0] = x;
-		vec[1] = y;
-		vec[2] = z;
+	static void matrix4_proj(float[] mat, float[] vec, int offset) {
+		float inv_w = 1.0f / (vec[offset + 0] * mat[M30] + vec[offset + 1] * mat[M31] + vec[offset + 2] * mat[M32] + mat[M33]);
+		float x = (vec[offset + 0] * mat[M00] + vec[offset + 1] * mat[M01] + vec[offset + 2] * mat[M02] + mat[M03]) * inv_w;
+		float y = (vec[offset + 0] * mat[M10] + vec[offset + 1] * mat[M11] + vec[offset + 2] * mat[M12] + mat[M13]) * inv_w; 
+		float z = (vec[offset + 0] * mat[M20] + vec[offset + 1] * mat[M21] + vec[offset + 2] * mat[M22] + mat[M23]) * inv_w;
+		vec[offset + 0] = x;
+		vec[offset + 1] = y;
+		vec[offset + 2] = z;
 	}
 	
-	static void matrix4_rot(float[] mat, float[] vec) {
-		float x = vec[0] * mat[M00] + vec[1] * mat[M01] + vec[2] * mat[M02];
-		float y = vec[0] * mat[M10] + vec[1] * mat[M11] + vec[2] * mat[M12];
-		float z = vec[0] * mat[M20] + vec[1] * mat[M21] + vec[2] * mat[M22];
-		vec[0] = x;
-		vec[1] = y;
-		vec[2] = z;
+	static void matrix4_rot(float[] mat, float[] vec, int offset) {
+		float x = vec[offset + 0] * mat[M00] + vec[offset + 1] * mat[M01] + vec[offset + 2] * mat[M02];
+		float y = vec[offset + 0] * mat[M10] + vec[offset + 1] * mat[M11] + vec[offset + 2] * mat[M12];
+		float z = vec[offset + 0] * mat[M20] + vec[offset + 1] * mat[M21] + vec[offset + 2] * mat[M22];
+		vec[offset + 0] = x;
+		vec[offset + 1] = y;
+		vec[offset + 2] = z;
 	}
 
 	/** Multiplies the matrix mata with matrix matb, storing the result in mata. The arrays are assumed to hold 4x4 column major
@@ -860,7 +860,7 @@ public class Matrix4 implements Serializable {
 	 * @param mat the matrix
 	 * @param vec the vector. */
 	public static void mulVec (float[] mat, float[] vec) {
-		matrix4_mulVec(mat, vec);
+		matrix4_mulVec(mat, vec, 0);
 	}
 
 	/** Multiplies the vectors with the given matrix. The matrix array is assumed to hold a 4x4 column major matrix as you can get
@@ -875,12 +875,10 @@ public class Matrix4 implements Serializable {
 	 * @param numVecs the number of vectors
 	 * @param stride the stride between vectors in floats */
 	public static void mulVec (float[] mat, float[] vecs, int offset, int numVecs, int stride) {
-		// FIXME
-//		float* vecPtr = vecs + offset;
-//		for(int i = 0; i < numVecs; i++) {
-//			matrix4_mulVec(mat, vecPtr);
-//			vecPtr += stride;
-//		}
+		for(int i = 0; i < numVecs; i++) {
+			matrix4_mulVec(mat, vecs, offset);
+			offset += stride;
+		}
 	}
 
 	/** Multiplies the vector with the given matrix, performing a division by w. The matrix array is assumed to hold a 4x4 column
@@ -890,7 +888,7 @@ public class Matrix4 implements Serializable {
 	 * @param mat the matrix
 	 * @param vec the vector. */
 	public static void prj (float[] mat, float[] vec) {
-		matrix4_proj(mat, vec);
+		matrix4_proj(mat, vec, 0);
 	}
 
 	/** Multiplies the vectors with the given matrix, , performing a division by w. The matrix array is assumed to hold a 4x4 column
@@ -905,12 +903,10 @@ public class Matrix4 implements Serializable {
 	 * @param numVecs the number of vectors
 	 * @param stride the stride between vectors in floats */
 	public static void prj (float[] mat, float[] vecs, int offset, int numVecs, int stride) {
-		// FIXME
-//		float* vecPtr = vecs + offset;
-//		for(int i = 0; i < numVecs; i++) {
-//			matrix4_proj(mat, vecPtr);
-//			vecPtr += stride;
-//		}
+		for(int i = 0; i < numVecs; i++) {
+			matrix4_proj(mat, vecs, offset);
+			offset += stride;
+		}
 	}
 
 	/** Multiplies the vector with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 4x4 column
@@ -920,7 +916,7 @@ public class Matrix4 implements Serializable {
 	 * @param mat the matrix
 	 * @param vec the vector. */
 	public static void rot (float[] mat, float[] vec) {
-		matrix4_rot(mat, vec);
+		matrix4_rot(mat, vec, 0);
 	}
 
 	/** Multiplies the vectors with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 4x4
@@ -935,12 +931,10 @@ public class Matrix4 implements Serializable {
 	 * @param numVecs the number of vectors
 	 * @param stride the stride between vectors in floats */
 	public static void rot (float[] mat, float[] vecs, int offset, int numVecs, int stride) {
-		// FIXME
-//		float* vecPtr = vecs + offset;
-//		for(int i = 0; i < numVecs; i++) {
-//			matrix4_rot(mat, vecPtr);
-//			vecPtr += stride;
-//		}
+		for(int i = 0; i < numVecs; i++) {
+			matrix4_rot(mat, vecs, offset);
+			offset += stride;
+		}
 	}
 
 	/** Computes the inverse of the given matrix. The matrix array is assumed to hold a 4x4 column major matrix as you can get from

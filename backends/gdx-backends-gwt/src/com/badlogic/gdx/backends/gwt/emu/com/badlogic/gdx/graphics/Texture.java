@@ -3,6 +3,7 @@ package com.badlogic.gdx.graphics;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.TextureData.TextureDataType;
@@ -144,7 +145,11 @@ public class Texture {
 	 * @param x The x coordinate in pixels
 	 * @param y The y coordinate in pixels */
 	public void draw (Pixmap pixmap, int x, int y) {
-		throw new GdxRuntimeException("can't draw to a managed texture");
+		if (data.isManaged()) throw new GdxRuntimeException("can't draw to a managed texture");
+
+		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
+		Gdx.gl.glTexSubImage2D(GL10.GL_TEXTURE_2D, 0, x, y, pixmap.getWidth(), pixmap.getHeight(), pixmap.getGLFormat(),
+			pixmap.getGLType(), pixmap.getPixels());
 	}
 
 	/** @return the width of the texture in pixels */
@@ -214,5 +219,9 @@ public class Texture {
 		buffer.flip();
 		Gdx.gl.glDeleteTextures(1, buffer);
 		glHandle = 0;
+	}
+	
+	public static void setAssetManager(AssetManager manager) {
+		// FIXME well not really, no pause/resume cycle
 	}
 }
