@@ -35,7 +35,10 @@ uniform vec3 ambient;
 varying vec2 v_texCoords;
 varying vec4 v_diffuse;
 
-const float WRAP_AROUND = 1.0; //0 is hard 1 is soft. if this is uniform performance is bad		
+//wrap light. this is fastest light model
+float wrapLight(vec3 nor, vec3 direction){
+	return dot(nor, direction) * 0.5 + 0.5;
+}
 void main()
 {	
 	v_texCoords = a_texCoord0; 		
@@ -47,7 +50,7 @@ void main()
 	
 	vec3 normal = u_normalMatrix * a_normal; 
 	#ifdef normals
-	aggCol *= clamp((dot(normal, -dirLightDir) + WRAP_AROUND) / (1.0 + WRAP_AROUND),0.0, 1.0 );
+	aggCol *= wrapLight(normal, -dirLightDir);
 	#endif
 		
 	for ( int i = 0; i < LIGHTS_NUM; i++ ){	
@@ -58,7 +61,7 @@ void main()
 		float weight   = lightsInt[i] * invLen;
 		
 		#ifdef normals
-		float lambert = clamp((dot(normal, L) + WRAP_AROUND) / (1.0 + WRAP_AROUND),0.0, 1.0 );
+		float lambert = wrapLight(normal, L);
 		weight *= lambert;		
 		#endif
 		aggCol   += lightsCol[i] * weight;

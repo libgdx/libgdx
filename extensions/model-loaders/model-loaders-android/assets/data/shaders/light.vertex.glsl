@@ -26,7 +26,10 @@ varying vec3 v_lightColor;
 varying float v_intensity;
 
 				
-const float WRAP_AROUND = 1.0; //0 is hard 1 is soft. if this is uniform performance is bad		
+//wrap light. this is fastest light model
+float wrapLight(vec3 nor, vec3 direction){
+	return dot(nor, direction) * 0.5 + 0.5;
+}
 void main()
 {
 #ifdef normals
@@ -44,7 +47,7 @@ void main()
 #if LIGHTS_NUM > 1
 	//this is good place to calculate dir light?
 #ifdef normals
-	float aggWeight =  clamp((dot(v_normal, -dirLightDir) + WRAP_AROUND) / (1.0 + WRAP_AROUND),0.0, 1.0 );
+	float aggWeight =  wrapLight(v_normal, -dirLightDir);
 	vec3  aggDir = -dirLightDir * aggWeight;
 #else
 	float aggWeight = 1.0;
@@ -60,7 +63,7 @@ void main()
 		vec3 L = dif * invLen;// normalize		
 		
 		#ifdef normals
-		float lambert = clamp((dot(v_normal, L) + WRAP_AROUND) / (1.0 + WRAP_AROUND),0.0, 1.0 );		
+		float lambert = wrapLight(v_normal, L);		
 		float weight   = lightsInt[i] * invLen * lambert;
 		#else
 		float weight   = lightsInt[i] * invLen;

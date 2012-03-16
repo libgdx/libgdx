@@ -25,8 +25,8 @@ uniform vec3 specularCol;
 #endif
 
 uniform vec3 ambient;
-const float shininessFactor = 15.0;
-const float WRAP_AROUND = 1.0; //0 is hard 1 is soft. if this is uniform performance is bad
+const float shininessFactor = 10.0;
+
 
 uniform sampler2D u_texture0;
 
@@ -41,7 +41,10 @@ varying vec3 v_lightColor;
 
 const float TRESHOLD = 0.02;//prevent color glitches
 
-	
+//wrap light. this is fastest light model
+float wrapLight(vec3 nor, vec3 direction){
+	return dot(nor, direction) * 0.5 + 0.5;
+}	
 void main()
 {		
 	vec3 tex = texture2D(u_texture0, v_texCoords).rgb;
@@ -55,8 +58,7 @@ void main()
 	
 	vec3 surfaceNormal = normalize( v_normal );
 	//lambert phong
-    float angle = dot(surfaceNormal, lightDirection);
-    float diffuse = clamp((angle + WRAP_AROUND)/ (1.0+WRAP_AROUND), 0.0, 1.0);
+    float diffuse = wrapLight(surfaceNormal, lightDirection);
    	
 	//specular blinn
 	vec3 fromEye   = normalize(v_eye);	
