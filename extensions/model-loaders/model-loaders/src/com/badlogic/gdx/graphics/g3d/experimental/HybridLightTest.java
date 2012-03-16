@@ -105,7 +105,7 @@ public class HybridLightTest implements ApplicationListener {
 		shader = ShaderFactory.createShader(null, lightManager);
 		for (int i = 0; i < 8; i++) {
 			PointLight l = new PointLight();
-			l.position.set(MathUtils.random(32) - 16, MathUtils.random(8) - 2, -MathUtils.random(32) + 16);
+			l.position.set(MathUtils.random(8) - 4, MathUtils.random(6), MathUtils.random(8) - 4);
 			l.color.r = MathUtils.random();
 			l.color.b = MathUtils.random();
 			l.color.g = MathUtils.random();
