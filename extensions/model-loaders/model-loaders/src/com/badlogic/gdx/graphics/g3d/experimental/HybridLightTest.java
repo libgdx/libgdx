@@ -35,7 +35,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class HybridLightTest implements ApplicationListener {
 
-	static final int LIGHTS_NUM = 8;
+	static final int LIGHTS_NUM = 4;
 	static final float LIGHT_INTESITY = 4f;
 
 	LightManager lightManager;
