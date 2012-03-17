@@ -23,6 +23,11 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
 
+/**
+ * {@link AssetLoader} to load {@link Sound} instances.
+ * @author mzechner
+ *
+ */
 public class SoundLoader extends SynchronousAssetLoader<Sound, SoundLoader.SoundParameter> {
 	public SoundLoader (FileHandleResolver resolver) {
 		super(resolver);

@@ -61,10 +61,6 @@ public class GwtModuleGenerator {
 		excludes.add("RemoteInput.java");
 		excludes.add("RemoteSender.java");
 		
-		// box2d
-		excludes.add("ParticleEmitterBox2D.java");
-		gatherJavaFiles(new FileHandle("src/com/badlogic/gdx/physics/box2d"), excludes, excludesHandles, true);
-		
 		// tiled support
 		excludes.add("TiledLoader.java"); // FIXME?
 		excludes.add("TileMapRendererLoader.java"); // FIXME?

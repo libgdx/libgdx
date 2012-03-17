@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.assets.loaders;
 
+import org.omg.Dynamic.Parameter;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
@@ -23,10 +25,16 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
-/** @author Nathan Sweet */
+/** 
+ * {@link AssetLoader} for {@link Skin} instances. All {@link Texture} and {@link BitmapFont} instances
+ * will be loaded as dependencies. Passing a {@link SkinParameter} allows one to specify the exact
+ * name of the texture associated with the skin. Otherwise the skin texture is looked up just as 
+ * with a call to {@link Skin#Skin(com.badlogic.gdx.files.FileHandle)}.
+ * @author Nathan Sweet */
 public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinParameter> {
 	public SkinLoader (FileHandleResolver resolver) {
 		super(resolver);

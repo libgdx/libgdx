@@ -46,6 +46,7 @@ import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
+import com.badlogic.gdx.utils.TimeUtils;
 
 /** Base class for all Box2D Testbed tests, all subclasses must implement the createWorld() method.
  * 
@@ -80,11 +81,11 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 	@Override
 	public void render () {
 		// update the world with a fixed time step
-		long startTime = System.nanoTime();
+		long startTime = TimeUtils.nanoTime();
 		world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
-		float updateTime = (System.nanoTime() - startTime) / 1000000000.0f;
+		float updateTime = (TimeUtils.nanoTime() - startTime) / 1000000000.0f;
 
-		startTime = System.nanoTime();
+		startTime = TimeUtils.nanoTime();
 		// clear the screen and setup the projection matrix
 		GL10 gl = Gdx.app.getGraphics().getGL10();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -93,7 +94,7 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 
 		// render the world using the debug renderer
 		renderer.render(world, camera.combined);
-		float renderTime = (System.nanoTime() - startTime) / 1000000000.0f;
+		float renderTime = (TimeUtils.nanoTime() - startTime) / 1000000000.0f;
 
 		batch.begin();
 		font.draw(batch, "fps:" + Gdx.graphics.getFramesPerSecond() + ", update: " + updateTime + ", render: " + renderTime, 0, 20);

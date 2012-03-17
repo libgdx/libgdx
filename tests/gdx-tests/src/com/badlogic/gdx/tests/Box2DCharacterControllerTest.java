@@ -6,7 +6,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -26,6 +25,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.WorldManifold;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class Box2DCharacterControllerTest extends GdxTest implements ApplicationListener {
 	 
@@ -168,9 +168,9 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		Vector2 pos = player.getPosition();		
 		boolean grounded = isPlayerGrounded(Gdx.graphics.getDeltaTime());
 		if(grounded) {
-			lastGroundTime = System.nanoTime();
+			lastGroundTime = TimeUtils.nanoTime();
 		} else {
-			if(System.nanoTime() - lastGroundTime < 100000000) {
+			if(TimeUtils.nanoTime() - lastGroundTime < 100000000) {
 				grounded = true;
 			}
 		}

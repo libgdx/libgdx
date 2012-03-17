@@ -19,12 +19,37 @@ package com.badlogic.gdx.assets.loaders;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 
+/**
+ * Base class for asynchronous {@link AssetLoader} instances. Such loaders
+ * try to load parts of an OpenGL resource, like the Pixmap, on a separate
+ * thread to then load the actual resource on the thread the OpenGL context
+ * is active on.
+ * @author mzechner
+ *
+ * @param <T>
+ * @param <P>
+ */
 public abstract class AsynchronousAssetLoader<T, P extends AssetLoaderParameters<T>> extends AssetLoader<T, P> {
+
 	public AsynchronousAssetLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
 
+	/**
+	 * Loads the non-OpenGL part of the asset and injects any dependencies of the asset
+	 * into the AssetManager.
+	 * @param manager
+	 * @param fileName the name of the asset to load
+	 * @param parameter the parameters to use for loading the asset
+	 */
 	public abstract void loadAsync (AssetManager manager, String fileName, P parameter);
 
+	/**
+	 * Loads th
+	 * @param manager
+	 * @param fileName
+	 * @param parameter
+	 * @return
+	 */
 	public abstract T loadSync (AssetManager manager, String fileName, P parameter);
 }

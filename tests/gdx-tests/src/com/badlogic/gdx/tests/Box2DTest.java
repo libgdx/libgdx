@@ -49,6 +49,7 @@ import com.badlogic.gdx.physics.box2d.WorldManifold;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class Box2DTest extends GdxTest implements InputProcessor {
 	/** the camera **/
@@ -228,9 +229,9 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		// we use the delta time provided by the Graphics
 		// instance. Normally you'll want to fix the time
 		// step.
-		long start = System.nanoTime();
+		long start = TimeUtils.nanoTime();
 		world.step(Gdx.graphics.getDeltaTime(), 8, 3);
-		float updateTime = (System.nanoTime() - start) / 1000000000.0f;
+		float updateTime = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
 		// next we clear the color buffer and set the camera
 		// matrices

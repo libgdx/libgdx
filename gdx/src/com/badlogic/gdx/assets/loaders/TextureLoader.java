@@ -31,6 +31,14 @@ import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.utils.Array;
 
+/**
+ * {@link AssetLoader} for {@link Texture} instances. The pixel data is loaded asynchronously. The texture
+ * is then created on the rendering thread, synchronously. Passing a {@link TextureParameter} to {@link AssetManager#load(String, Class, AssetLoaderParameters)}
+ * allows one to specify parameters as can be passed to the various Texture constructors, e.g. filtering,
+ * whether to generate mipmaps and so on.
+ * @author mzechner
+ *
+ */
 public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoader.TextureParameter> {
 	TextureData data;
 	Texture texture;

@@ -134,7 +134,7 @@ public class Settings {
    * A velocity threshold for elastic collisions. Any collision with a relative linear velocity
    * below this threshold will be treated as inelastic.
    */
-  public static final float velocityThreshold = 1.0f;
+  public static float velocityThreshold = 1.0f;
 
   /**
    * The maximum linear position correction used when solving constraints. This helps to prevent

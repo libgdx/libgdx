@@ -67,7 +67,6 @@
 		<include name="Game.java"/>
 		<include name="Gdx.java"/>
 		<include name="utils/GdxRuntimeException.java"/>
-		<include name="assets/loaders/GenericLoader.java"/>
 		<include name="input/GestureDetector.java"/>
 		<include name="Graphics.java"/>
 		<include name="scenes/scene2d/Group.java"/>
@@ -131,6 +130,7 @@
 		<include name="src/com/esotericsoftware/tablelayout/ParseException.java"/>
 		<include name="graphics/g2d/ParticleEffectPool.java"/>
 		<include name="graphics/g2d/ParticleEmitter.java"/>
+		<include name="graphics/g2d/ParticleEmitterBox2D.java"/>
 		<include name="graphics/PerspectiveCamera.java"/>
 		<include name="assets/loaders/PixmapLoader.java"/>
 		<include name="graphics/g2d/PixmapPacker.java"/>

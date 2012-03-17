@@ -2,15 +2,10 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN" "http://google-web-toolkit.googlecode.com/svn/trunk/distro-source/core/src/gwt-module.dtd">
 <module>
 	<source path="tests">
-		<exclude name="**/box2d/**"/>
 		<exclude name="**/AudioDeviceTest.java"/>
 		<exclude name="**/AudioRecorderTest.java"/>
 		<exclude name="**/ActionTest.java"/>
 		<exclude name="**/ActionSequenceTest.java"/>
-		<exclude name="**/Box2DCharacterControllerTest.java"/>
-		<exclude name="**/Box2DInitialOverlapTest.java"/>
-		<exclude name="**/Box2DTest.java"/>
-		<exclude name="**/Box2DTestCollection.java"/>
 		<exclude name="**/BufferUtilsTest.java"/>
 		<exclude name="**/ComplexActionTest.java"/>
 		<exclude name="**/ETC1Test.java"/>

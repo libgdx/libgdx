@@ -27,6 +27,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
+/**
+ * {@link AssetLoader} for {@link BitmapFont} instances. Loads the font description file (.fnt) 
+ * asynchronously, loads the {@link Texture} containing the glyphs as a dependency. The {@link BitmapFontParameter}
+ * allows you to set things like texture filters or whether to flip the glyphs on the y-axis..
+ * @author mzechner
+ *
+ */
 public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, BitmapFontLoader.BitmapFontParameter> {
 	public BitmapFontLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -59,6 +66,12 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 		return new BitmapFont(data, region, true);
 	}
 
+	/**
+	 * Parameter to be passed to {@link AssetManager#load(String, Class, AssetLoaderParameters)} if
+	 * additional configuration is necessary for the {@link BitmapFont}.
+	 * @author mzechner
+	 *
+	 */
 	static public class BitmapFontParameter extends AssetLoaderParameters<BitmapFont> {
 		/** whether to flipY the font or not **/
 		public boolean flip = false;

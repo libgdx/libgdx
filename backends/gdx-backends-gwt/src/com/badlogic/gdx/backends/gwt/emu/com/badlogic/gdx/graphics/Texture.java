@@ -222,6 +222,6 @@ public class Texture {
 	}
 	
 	public static void setAssetManager(AssetManager manager) {
-		// FIXME well not really, no pause/resume cycle
+		// nothing to do, no pause/resume cycle
 	}
 }

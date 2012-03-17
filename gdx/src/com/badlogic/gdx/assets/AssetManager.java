@@ -50,6 +50,11 @@ import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.TimeUtils;
 
+/**
+ * Loads and stores assets like textures, bitmapfonts, tile maps, sounds, music and so on.
+ * @author mzechner
+ *
+ */
 public class AssetManager implements Disposable {
 	final ObjectMap<Class, ObjectMap<String, RefCountedContainer>> assets = new ObjectMap<Class, ObjectMap<String, RefCountedContainer>>();
 	final ObjectMap<String, Class> assetTypes = new ObjectMap<String, Class>();
@@ -180,7 +185,7 @@ public class AssetManager implements Disposable {
 	}
 
 	/** @param asset the asset
-	 * @return whether the filename of the asset or null */
+	 * @return the filename of the asset or null */
 	public synchronized <T> String getAssetFileName (T asset) {
 		for (Class assetType : assets.keys()) {
 			ObjectMap<String, RefCountedContainer> typedAssets = assets.get(assetType);
@@ -301,6 +306,9 @@ public class AssetManager implements Disposable {
 		}
 	}
 
+	/**
+	 * blocks until all assets are loaded.
+	 */
 	public void finishLoading () {
 		log.debug("Waiting for loading to complete...");
 		while (!update())
