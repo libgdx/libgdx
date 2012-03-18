@@ -23,6 +23,7 @@ import com.dozingcatsoftware.bouncy.elements.FieldElement;
 import com.dozingcatsoftware.bouncy.elements.FlipperElement;
 import com.dozingcatsoftware.bouncy.elements.RolloverGroupElement;
 import com.dozingcatsoftware.bouncy.elements.SensorElement;
+import com.dozingcatsoftware.bouncy.fields.Field1Delegate;
 
 public class Field implements ContactListener {
 
@@ -117,21 +118,21 @@ public class Field implements ContactListener {
 		}
 		fieldElementsToTick = tickElements.toArray(new FieldElement[0]);
 
-		delegate = null;
-		String delegateClass = layout.getDelegateClassName();
-		if (delegateClass != null) {
-			if (delegateClass.indexOf('.') == -1) {
-				delegateClass = "com.dozingcatsoftware.bouncy.fields." + delegateClass;
-			}
-			try {
-				delegate = (Delegate)Class.forName(delegateClass).newInstance();
-			} catch (Exception ex) {
-				throw new RuntimeException(ex);
-			}
-		} else {
-			// use no-op delegate if no class specified, so that field.getDelegate() is always non-null
-			delegate = new BaseFieldDelegate();
-		}
+		delegate = new Field1Delegate();
+//		String delegateClass = layout.getDelegateClassName();
+//		if (delegateClass != null) {
+//			if (delegateClass.indexOf('.') == -1) {
+//				delegateClass = "com.dozingcatsoftware.bouncy.fields." + delegateClass;
+//			}
+//			try {
+//				delegate = (Delegate)Class.forName(delegateClass).newInstance();
+//			} catch (Exception ex) {
+//				throw new RuntimeException(ex);
+//			}
+//		} else {
+//			// use no-op delegate if no class specified, so that field.getDelegate() is always non-null
+//			delegate = new BaseFieldDelegate();
+//		}
 	}
 
 	public void startGame () {

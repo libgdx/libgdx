@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.WindowedMean;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.dozingcatsoftware.bouncy.elements.FieldElement;
 
 public class Bouncy extends InputAdapter implements ApplicationListener {
@@ -17,11 +18,10 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 	int level = 1;
 	WindowedMean physicsMean = new WindowedMean(10);
 	WindowedMean renderMean = new WindowedMean(10);
-	long startTime = System.nanoTime();
+	long startTime = TimeUtils.nanoTime();
 
 	@Override
 	public void create () {
-		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		renderer = new GLFieldRenderer();
 		field = new Field();
@@ -38,18 +38,18 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 	public void render () {
 		GLCommon gl = Gdx.gl;
 
-		long startPhysics = System.nanoTime();
+		long startPhysics = TimeUtils.nanoTime();
 		field.tick((long)(Gdx.graphics.getDeltaTime() * 3000), 4);
-		physicsMean.addValue((System.nanoTime() - startPhysics) / 1000000000.0f);
+		physicsMean.addValue((TimeUtils.nanoTime() - startPhysics) / 1000000000.0f);
 
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		cam.viewportWidth = field.getWidth();
 		cam.viewportHeight = field.getHeight();
 		cam.position.set(field.getWidth() / 2, field.getHeight() / 2, 0);
 		cam.update();
-		cam.apply(Gdx.gl10);
+		renderer.setProjectionMatrix(cam.combined);
 
-		long startRender = System.nanoTime();
+		long startRender = TimeUtils.nanoTime();
 		renderer.begin();
 		int len = field.getFieldElements().size();
 		for (int i = 0; i < len; i++) {
@@ -61,12 +61,12 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 		renderer.begin();
 		field.drawBalls(renderer);
 		renderer.end();
-		renderMean.addValue((System.nanoTime() - startRender) / 1000000000.0f);
+		renderMean.addValue((TimeUtils.nanoTime() - startRender) / 1000000000.0f);
 
-		if (System.nanoTime() - startTime > 1000000000) {
+		if (TimeUtils.nanoTime() - startTime > 1000000000) {
 			Gdx.app.log("Bouncy", "fps: " + Gdx.graphics.getFramesPerSecond() + ", physics: " + physicsMean.getMean() * 1000
 				+ ", rendering: " + renderMean.getMean() * 1000);
-			startTime = System.nanoTime();
+			startTime = TimeUtils.nanoTime();
 		}
 	}
 

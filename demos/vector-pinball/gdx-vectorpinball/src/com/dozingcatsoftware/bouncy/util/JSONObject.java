@@ -27,9 +27,6 @@ package com.dozingcatsoftware.bouncy.util;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -228,14 +225,14 @@ public class JSONObject {
 	 * @param names An array of strings, the names of the fields to be obtained from the object. */
 	public JSONObject (Object object, String names[]) {
 		this();
-		Class c = object.getClass();
-		for (int i = 0; i < names.length; i += 1) {
-			String name = names[i];
-			try {
-				putOpt(name, c.getField(name).get(object));
-			} catch (Exception ignore) {
-			}
-		}
+//		Class c = object.getClass();
+//		for (int i = 0; i < names.length; i += 1) {
+//			String name = names[i];
+//			try {
+//				putOpt(name, c.getField(name).get(object));
+//			} catch (Exception ignore) {
+//			}
+//		}
 	}
 
 	/** Construct a JSONObject from a source JSON text string. This is the most commonly used JSONObject constructor.
@@ -250,37 +247,37 @@ public class JSONObject {
 	 * @param baseName The ResourceBundle base name.
 	 * @param locale The Locale to load the ResourceBundle for.
 	 * @throws JSONException If any JSONExceptions are detected. */
-	public JSONObject (String baseName, Locale locale) throws JSONException {
-		this();
-		ResourceBundle bundle = ResourceBundle.getBundle(baseName, locale, Thread.currentThread().getContextClassLoader());
-
-// Iterate through the keys in the bundle.
-
-		Enumeration keys = bundle.getKeys();
-		while (keys.hasMoreElements()) {
-			Object key = keys.nextElement();
-			if (key instanceof String) {
-
-// Go through the path, ensuring that there is a nested JSONObject for each
-// segment except the last. Add the value using the last segment's name into
-// the deepest nested JSONObject.
-
-				String[] path = ((String)key).split("\\.");
-				int last = path.length - 1;
-				JSONObject target = this;
-				for (int i = 0; i < last; i += 1) {
-					String segment = path[i];
-					JSONObject nextTarget = target.optJSONObject(segment);
-					if (nextTarget == null) {
-						nextTarget = new JSONObject();
-						target.put(segment, nextTarget);
-					}
-					target = nextTarget;
-				}
-				target.put(path[last], bundle.getString((String)key));
-			}
-		}
-	}
+//	public JSONObject (String baseName, Locale locale) throws JSONException {
+//		this();
+//		ResourceBundle bundle = ResourceBundle.getBundle(baseName, locale, Thread.currentThread().getContextClassLoader());
+//
+//// Iterate through the keys in the bundle.
+//
+//		Enumeration keys = bundle.getKeys();
+//		while (keys.hasMoreElements()) {
+//			Object key = keys.nextElement();
+//			if (key instanceof String) {
+//
+//// Go through the path, ensuring that there is a nested JSONObject for each
+//// segment except the last. Add the value using the last segment's name into
+//// the deepest nested JSONObject.
+//
+//				String[] path = ((String)key).split("\\.");
+//				int last = path.length - 1;
+//				JSONObject target = this;
+//				for (int i = 0; i < last; i += 1) {
+//					String segment = path[i];
+//					JSONObject nextTarget = target.optJSONObject(segment);
+//					if (nextTarget == null) {
+//						nextTarget = new JSONObject();
+//						target.put(segment, nextTarget);
+//					}
+//					target = nextTarget;
+//				}
+//				target.put(path[last], bundle.getString((String)key));
+//			}
+//		}
+//	}
 
 	/** Accumulate values under a key. It is similar to the put method except that if there is already an object stored under the
 	 * key then a JSONArray is stored under the key to hold all of the accumulated values. If there is already a JSONArray, then
@@ -467,20 +464,21 @@ public class JSONObject {
 	 * 
 	 * @return An array of field names, or null if there are no names. */
 	public static String[] getNames (Object object) {
-		if (object == null) {
-			return null;
-		}
-		Class klass = object.getClass();
-		Field[] fields = klass.getFields();
-		int length = fields.length;
-		if (length == 0) {
-			return null;
-		}
-		String[] names = new String[length];
-		for (int i = 0; i < length; i += 1) {
-			names[i] = fields[i].getName();
-		}
-		return names;
+//		if (object == null) {
+//			return null;
+//		}
+//		Class klass = object.getClass();
+//		Field[] fields = klass.getFields();
+//		int length = fields.length;
+//		if (length == 0) {
+//			return null;
+//		}
+//		String[] names = new String[length];
+//		for (int i = 0; i < length; i += 1) {
+//			names[i] = fields[i].getName();
+//		}
+//		return names;
+		return null;
 	}
 
 	/** Get the string associated with a key.
@@ -722,40 +720,40 @@ public class JSONObject {
 
 // If klass is a System class then set includeSuperClass to false.
 
-		boolean includeSuperClass = klass.getClassLoader() != null;
-
-		Method[] methods = (includeSuperClass) ? klass.getMethods() : klass.getDeclaredMethods();
-		for (int i = 0; i < methods.length; i += 1) {
-			try {
-				Method method = methods[i];
-				if (Modifier.isPublic(method.getModifiers())) {
-					String name = method.getName();
-					String key = "";
-					if (name.startsWith("get")) {
-						if (name.equals("getClass") || name.equals("getDeclaringClass")) {
-							key = "";
-						} else {
-							key = name.substring(3);
-						}
-					} else if (name.startsWith("is")) {
-						key = name.substring(2);
-					}
-					if (key.length() > 0 && Character.isUpperCase(key.charAt(0)) && method.getParameterTypes().length == 0) {
-						if (key.length() == 1) {
-							key = key.toLowerCase();
-						} else if (!Character.isUpperCase(key.charAt(1))) {
-							key = key.substring(0, 1).toLowerCase() + key.substring(1);
-						}
-
-						Object result = method.invoke(bean, (Object[])null);
-						if (result != null) {
-							map.put(key, wrap(result));
-						}
-					}
-				}
-			} catch (Exception ignore) {
-			}
-		}
+//		boolean includeSuperClass = klass.getClassLoader() != null;
+//
+//		Method[] methods = (includeSuperClass) ? klass.getMethods() : klass.getDeclaredMethods();
+//		for (int i = 0; i < methods.length; i += 1) {
+//			try {
+//				Method method = methods[i];
+//				if (Modifier.isPublic(method.getModifiers())) {
+//					String name = method.getName();
+//					String key = "";
+//					if (name.startsWith("get")) {
+//						if (name.equals("getClass") || name.equals("getDeclaringClass")) {
+//							key = "";
+//						} else {
+//							key = name.substring(3);
+//						}
+//					} else if (name.startsWith("is")) {
+//						key = name.substring(2);
+//					}
+//					if (key.length() > 0 && Character.isUpperCase(key.charAt(0)) && method.getParameterTypes().length == 0) {
+//						if (key.length() == 1) {
+//							key = key.toLowerCase();
+//						} else if (!Character.isUpperCase(key.charAt(1))) {
+//							key = key.substring(0, 1).toLowerCase() + key.substring(1);
+//						}
+//
+//						Object result = method.invoke(bean, (Object[])null);
+//						if (result != null) {
+//							map.put(key, wrap(result));
+//						}
+//					}
+//				}
+//			} catch (Exception ignore) {
+//			}
+//		}
 	}
 
 	/** Put a key/boolean pair in the JSONObject.
@@ -1208,36 +1206,37 @@ public class JSONObject {
 	 * @param object The object to wrap
 	 * @return The wrapped value */
 	public static Object wrap (Object object) {
-		try {
-			if (object == null) {
-				return NULL;
-			}
-			if (object instanceof JSONObject || object instanceof JSONArray || NULL.equals(object) || object instanceof JSONString
-				|| object instanceof Byte || object instanceof Character || object instanceof Short || object instanceof Integer
-				|| object instanceof Long || object instanceof Boolean || object instanceof Float || object instanceof Double
-				|| object instanceof String) {
-				return object;
-			}
-
-			if (object instanceof Collection) {
-				return new JSONArray((Collection)object);
-			}
-			if (object.getClass().isArray()) {
-				return new JSONArray(object);
-			}
-			if (object instanceof Map) {
-				return new JSONObject((Map)object);
-			}
-			Package objectPackage = object.getClass().getPackage();
-			String objectPackageName = (objectPackage != null ? objectPackage.getName() : "");
-			if (objectPackageName.startsWith("java.") || objectPackageName.startsWith("javax.")
-				|| object.getClass().getClassLoader() == null) {
-				return object.toString();
-			}
-			return new JSONObject(object);
-		} catch (Exception exception) {
-			return null;
-		}
+//		try {
+//			if (object == null) {
+//				return NULL;
+//			}
+//			if (object instanceof JSONObject || object instanceof JSONArray || NULL.equals(object) || object instanceof JSONString
+//				|| object instanceof Byte || object instanceof Character || object instanceof Short || object instanceof Integer
+//				|| object instanceof Long || object instanceof Boolean || object instanceof Float || object instanceof Double
+//				|| object instanceof String) {
+//				return object;
+//			}
+//
+//			if (object instanceof Collection) {
+//				return new JSONArray((Collection)object);
+//			}
+//			if (object.getClass().isArray()) {
+//				return new JSONArray(object);
+//			}
+//			if (object instanceof Map) {
+//				return new JSONObject((Map)object);
+//			}
+//			Package objectPackage = object.getClass().getPackage();
+//			String objectPackageName = (objectPackage != null ? objectPackage.getName() : "");
+//			if (objectPackageName.startsWith("java.") || objectPackageName.startsWith("javax.")
+//				|| object.getClass().getClassLoader() == null) {
+//				return object.toString();
+//			}
+//			return new JSONObject(object);
+//		} catch (Exception exception) {
+//			return null;
+//		}
+		return null;
 	}
 
 	/** Write the contents of the JSONObject as JSON text to a writer. For compactness, no whitespace is added.
