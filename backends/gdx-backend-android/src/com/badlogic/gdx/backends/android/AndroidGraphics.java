@@ -428,6 +428,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (lresume) {
+			((AndroidApplication)app).audio.resume();
 			app.listener.resume();
 			Gdx.app.log("AndroidGraphics", "resumed");
 		}

@@ -27,9 +27,11 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
  * @author mzechner */
 public class Body {
 	final World world;
-	final org.jbox2d.dynamics.Body body;
+	public final org.jbox2d.dynamics.Body body;
 	final Vec2 tmp = new Vec2();
 	final Vec2 tmp2 = new Vec2();
+	final ArrayList<Fixture> fixtures = new ArrayList<Fixture>();
+	final ArrayList<JointEdge> joints = new ArrayList<JointEdge>();
 	
 	/** Constructs a new body with the given address
 	 * @param world the world
@@ -246,7 +248,7 @@ public class Body {
 		body.resetMassData();
 	}
 
-	private final Vector2 localPoint = new Vector2();
+	private final Vector2 worldPoint = new Vector2();
 
 	/** Get the world coordinates of a point given the local coordinates.
 	 * @param localPoint a point on the body measured relative the the body's origin.
@@ -254,7 +256,7 @@ public class Body {
 	public Vector2 getWorldPoint (Vector2 localPoint) {
 		tmp.set(localPoint.x, localPoint.y);
 		Vec2 wp = body.getWorldPoint(tmp);
-		return localPoint.set(wp.x, wp.y);
+		return worldPoint.set(wp.x, wp.y);
 	}
 
 	private final Vector2 worldVector = new Vector2();
@@ -413,8 +415,12 @@ public class Body {
 	 * @param def the fixture definition.
 	 * @warning This function is locked during callbacks. */
 	public Fixture createFixture (FixtureDef def) {
-		// FIXME
-		return null;
+		org.jbox2d.dynamics.FixtureDef fd = def.toJBox2d();
+		org.jbox2d.dynamics.Fixture f = body.createFixture(fd);
+		Fixture fixture = new Fixture(this, f);
+		fixtures.add(fixture);
+		world.fixtures.put(f, fixture);
+		return fixture;
 	}
 
 	/** Creates a fixture from a shape and attach it to this body. This is a convenience function. Use b2FixtureDef if you need to
@@ -424,8 +430,11 @@ public class Body {
 	 * @param density the shape density (set to zero for static bodies).
 	 * @warning This function is locked during callbacks. */
 	public Fixture createFixture (Shape shape, float density) {
-		// FIXME 
-		return null;
+		org.jbox2d.dynamics.Fixture f = body.createFixture(shape.shape, density);
+		Fixture fixture = new Fixture(this, f);
+		fixtures.add(fixture);
+		world.fixtures.put(f, fixture);
+		return fixture;
 	}
 
 	/** Destroy a fixture. This removes the fixture from the broad-phase and destroys all contacts associated with this fixture.
@@ -434,19 +443,27 @@ public class Body {
 	 * @param fixture the fixture to be removed.
 	 * @warning This function is locked during callbacks. */
 	public void destroyFixture (Fixture fixture) {
-		// FIXME
+		body.destroyFixture(fixture.fixture);
+		fixtures.remove(fixture);
+		world.fixtures.remove(fixture.fixture);
 	}
 	
 	/** Get the list of all fixtures attached to this body. Do not modify the list! */
 	public ArrayList<Fixture> getFixtureList () {
-		// FIXME
-		return null;
+		return fixtures;
 	}
 
 	/** Get the list of all joints attached to this body. Do not modify the list! */
 	public ArrayList<JointEdge> getJointList () {
-		// FIXME
-		return null;
+		// FIXME wow this is bad...
+		org.jbox2d.dynamics.joints.JointEdge jointEdge = body.getJointList();
+		joints.clear();
+		while(jointEdge != null) {
+			JointEdge edge = new JointEdge(world.bodies.get(jointEdge.other), world.joints.get(jointEdge.joint));
+			joints.add(edge);
+			jointEdge = jointEdge.next;
+		}
+		return joints;
 	}
 
 	/** @return Get the gravity scale of the body. */

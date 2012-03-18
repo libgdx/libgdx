@@ -16,14 +16,28 @@
 
 package com.badlogic.gdx.physics.box2d;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jbox2d.collision.AABB;
 import org.jbox2d.common.Settings;
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.joints.JointEdge;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.JointDef.JointType;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
+import com.badlogic.gdx.physics.box2d.joints.FrictionJoint;
+import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
+import com.badlogic.gdx.physics.box2d.joints.PrismaticJoint;
+import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
+import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** The world class manages all physics entities, dynamic simulation, and asynchronous queries. The world also contains efficient
  * memory management facilities.
@@ -32,6 +46,9 @@ public final class World implements Disposable {
 	org.jbox2d.dynamics.World world;
 	Vec2 tmp = new Vec2();
 	Vector2 tmp2 = new Vector2();
+	ObjectMap<org.jbox2d.dynamics.Body, Body> bodies = new ObjectMap<org.jbox2d.dynamics.Body, Body>();
+	ObjectMap<org.jbox2d.dynamics.Fixture, Fixture> fixtures = new ObjectMap<org.jbox2d.dynamics.Fixture, Fixture>();
+	ObjectMap<org.jbox2d.dynamics.joints.Joint, Joint> joints = new ObjectMap<org.jbox2d.dynamics.joints.Joint, Joint>();
 	
 	/** Construct a world object.
 	 * @param gravity the world gravity vector.
@@ -43,26 +60,86 @@ public final class World implements Disposable {
 
 	/** Register a destruction listener. The listener is owned by you and must remain in scope. */
 	public void setDestructionListener (DestructionListener listener) {
-		// FIXME
 	}
 
 	/** Register a contact filter to provide specific control over collision. Otherwise the default filter is used
 	 * (b2_defaultFilter). The listener is owned by you and must remain in scope. */
-	public void setContactFilter (ContactFilter filter) {
-		// FIXME
+	public void setContactFilter (final ContactFilter filter) {
+		if(filter != null) {
+			world.setContactFilter(new org.jbox2d.callbacks.ContactFilter() {
+				@Override
+				public boolean shouldCollide (org.jbox2d.dynamics.Fixture fixtureA, org.jbox2d.dynamics.Fixture fixtureB) {
+					return filter.shouldCollide(fixtures.get(fixtureA), fixtures.get(fixtureB));
+				}
+			});
+		} else {
+			world.setContactFilter(new org.jbox2d.callbacks.ContactFilter());
+		}
 	}
 	
 
 	/** Register a contact event listener. The listener is owned by you and must remain in scope. */
-	public void setContactListener (ContactListener listener) {
-		// FIXME
+	Contact tmpContact = new Contact(this);
+	Manifold tmpManifold = new Manifold();
+	ContactImpulse tmpImpulse = new ContactImpulse();
+	public void setContactListener (final ContactListener listener) {
+		if(listener != null) {
+			world.setContactListener(new org.jbox2d.callbacks.ContactListener() {
+				@Override
+				public void beginContact (org.jbox2d.dynamics.contacts.Contact contact) {
+					tmpContact.contact = contact;
+					listener.beginContact(tmpContact);
+				}
+
+				@Override
+				public void endContact (org.jbox2d.dynamics.contacts.Contact contact) {
+					tmpContact.contact = contact;
+					listener.endContact(tmpContact);
+				}
+
+				@Override
+				public void preSolve (org.jbox2d.dynamics.contacts.Contact contact, org.jbox2d.collision.Manifold oldManifold) {
+					tmpContact.contact = contact;
+					tmpManifold.manifold = oldManifold;
+					listener.preSolve(tmpContact, tmpManifold);
+				}
+
+				@Override
+				public void postSolve (org.jbox2d.dynamics.contacts.Contact contact, org.jbox2d.callbacks.ContactImpulse impulse) {
+					tmpContact.contact = contact;
+					tmpImpulse.impulse = impulse;
+					listener.postSolve(tmpContact, tmpImpulse);
+				}
+			});
+		} else {
+			world.setContactListener(null);
+		}
 	}
 
 	/** Create a rigid body given a definition. No reference to the definition is retained.
 	 * @warning This function is locked during callbacks. */
 	public Body createBody (BodyDef def) {
-		// FIXME
-		return null;
+		org.jbox2d.dynamics.BodyDef bd = new org.jbox2d.dynamics.BodyDef();
+		bd.active = def.active;
+		bd.allowSleep = def.allowSleep;
+		bd.angle = def.angle;
+		bd.angularDamping = def.angularDamping;
+		bd.angularVelocity = def.angularVelocity;
+		bd.awake = def.awake;
+		bd.bullet = def.bullet;
+		bd.fixedRotation = def.fixedRotation;
+		bd.gravityScale = def.gravityScale;
+		bd.linearDamping = def.linearDamping;
+		bd.linearVelocity.set(def.linearVelocity.x, def.linearVelocity.y);
+		bd.position.set(def.position.x, def.position.y);
+		if(def.type == BodyType.DynamicBody) bd.type = org.jbox2d.dynamics.BodyType.DYNAMIC;
+		if(def.type == BodyType.StaticBody) bd.type = org.jbox2d.dynamics.BodyType.STATIC;
+		if(def.type == BodyType.KinematicBody) bd.type = org.jbox2d.dynamics.BodyType.KINEMATIC;
+
+		org.jbox2d.dynamics.Body b = world.createBody(bd);
+		Body body = new Body(this, b);
+		bodies.put(b, body);
+		return body;
 	}
 
 	/** Destroy a rigid body given a definition. No reference to the definition is retained. This function is locked during
@@ -70,21 +147,44 @@ public final class World implements Disposable {
 	 * @warning This automatically deletes all associated shapes and joints.
 	 * @warning This function is locked during callbacks. */
 	public void destroyBody (Body body) {
-		// FIXME
+		world.destroyBody(body.body);
+		bodies.remove(body.body);
+		for(Fixture fixture: body.fixtures) {
+			fixtures.remove(fixture.fixture);
+		}
+		JointEdge jointEdge = body.body.getJointList();
+		while(jointEdge != null) {
+			joints.remove(jointEdge.joint);
+		}
 	}
 
 	/** Create a joint to constrain bodies together. No reference to the definition is retained. This may cause the connected bodies
 	 * to cease colliding.
 	 * @warning This function is locked during callbacks. */
 	public Joint createJoint (JointDef def) {
-		// FIXME
-		return null;
+		org.jbox2d.dynamics.joints.JointDef jd = def.toJBox2d();
+		org.jbox2d.dynamics.joints.Joint j = world.createJoint(jd);
+		Joint joint = null;
+		if(def.type == JointType.DistanceJoint) joint = new DistanceJoint(this, (org.jbox2d.dynamics.joints.DistanceJoint)j);
+		if(def.type == JointType.FrictionJoint) joint = new FrictionJoint(this, (org.jbox2d.dynamics.joints.FrictionJoint)j);
+		// FIXME if(def.type == JointType.GearJoint) joint = new DistanceJoint(this, (org.jbox2d.dynamics.joints.DistanceJoint)j);
+		if(def.type == JointType.MouseJoint) joint = new MouseJoint(this, (org.jbox2d.dynamics.joints.MouseJoint)j);
+		if(def.type == JointType.PrismaticJoint) joint = new PrismaticJoint(this, (org.jbox2d.dynamics.joints.PrismaticJoint)j);
+		if(def.type == JointType.PulleyJoint) joint = new PulleyJoint(this, (org.jbox2d.dynamics.joints.PulleyJoint)j);
+		if(def.type == JointType.RevoluteJoint) joint = new RevoluteJoint(this, (org.jbox2d.dynamics.joints.RevoluteJoint)j);
+		// FIXME if(def.type == JointType.RopeJoint) joint = new RopeJoint(this, (org.jbox2d.dynamics.joints.RopeJoint)j);
+		if(def.type == JointType.WeldJoint) joint = new WeldJoint(this, (org.jbox2d.dynamics.joints.WeldJoint)j);
+// 	FIXME if(def.type == JointType.WheelJoint) joint = new WheelJoint(this, (org.jbox2d.dynamics.joints.WheelJoint)j);
+		if(joint == null) throw new GdxRuntimeException("Joint type '" + def.type + "' not yet supported by GWT backend");
+		joints.put(j, joint);
+		return joint;
 	}
 
 	/** Destroy a joint. This may cause the connected bodies to begin colliding.
 	 * @warning This function is locked during callbacks. */
 	public void destroyJoint (Joint joint) {
-		// FIXME
+		world.destroyJoint(joint.joint);
+		joints.remove(joint.joint);
 	}
 
 	/** Take a time step. This performs collision detection, integration, and constraint solution.
@@ -165,29 +265,45 @@ public final class World implements Disposable {
 	 * @param lowerY the y coordinate of the lower left corner
 	 * @param upperX the x coordinate of the upper right corner
 	 * @param upperY the y coordinate of the upper right corner */
-	public void QueryAABB (QueryCallback callback, float lowerX, float lowerY, float upperX, float upperY) {
-		// FIXME
+	AABB aabb = new AABB();
+	public void QueryAABB (final QueryCallback callback, float lowerX, float lowerY, float upperX, float upperY) {
+		// FIXME pool QueryCallback?
+		aabb.lowerBound.set(lowerX, lowerY);
+		aabb.upperBound.set(upperX, upperY);
+		world.queryAABB(new org.jbox2d.callbacks.QueryCallback() {
+			@Override
+			public boolean reportFixture (org.jbox2d.dynamics.Fixture f) {
+				Fixture fixture = fixtures.get(f);
+				return callback.reportFixture(fixture);
+			}
+		}, aabb);
 	}
 
 	/** Returns the list of {@link Contact} instances produced by the last call to {@link #step(float, int, int)}. Note that the
 	 * returned list will have O(1) access times when using indexing. contacts are created and destroyed in the middle of a time
 	 * step. Use {@link ContactListener} to avoid missing contacts
 	 * @return the contact list */
+	ArrayList<Contact> contacts = new ArrayList<Contact>();
 	public List<Contact> getContactList () {
-		// FIXME
-		return null;
+		// FIXME pool contacts
+		org.jbox2d.dynamics.contacts.Contact contactList = world.getContactList();
+		contacts.clear();
+		while(contactList != null) {
+			Contact contact = new Contact(this, contactList);
+			contacts.add(contact);
+			contactList = contactList.m_next;
+		}
+		return contacts;
 	}
 
 	/** @return all bodies currently in the simulation */
 	public Iterator<Body> getBodies () {
-		// FIXME
-		return null;
+		return bodies.values().iterator();
 	}
 
 	/** @return all joints currently in the simulation */
 	public Iterator<Joint> getJoints () {
-		// FIXME
-		return null;
+		return joints.values().iterator();
 	}
 
 	public void dispose () {
@@ -209,7 +325,17 @@ public final class World implements Disposable {
 	 * @param callback a user implemented callback class.
 	 * @param point1 the ray starting point
 	 * @param point2 the ray ending point */
-	public void rayCast (RayCastCallback callback, Vector2 point1, Vector2 point2) {
-		// FIXME
+	Vec2 point1 = new Vec2();
+	Vec2 point2 = new Vec2();
+	Vector2 point = new Vector2();
+	Vector2 normal = new Vector2();
+	public void rayCast (final RayCastCallback callback, Vector2 point1, Vector2 point2) {
+		// FIXME pool RayCastCallback?
+		world.raycast(new org.jbox2d.callbacks.RayCastCallback() {
+			@Override
+			public float reportFixture (org.jbox2d.dynamics.Fixture f, Vec2 p, Vec2 n, float fraction) {
+				return callback.reportRayFixture(fixtures.get(f), point.set(p.x, p.y), normal.set(n.x, n.y), fraction);
+			}
+		}, this.point1.set(point1.x, point1.y), this.point2.set(point2.x, point2.y));
 	}
 }

@@ -27,6 +27,12 @@ public abstract class Shape {
 	public enum Type {
 		Circle, Polygon, Edge, Chain,
 	};
+	
+	public final org.jbox2d.collision.shapes.Shape shape;
+	
+	public Shape(org.jbox2d.collision.shapes.Shape shape) {
+		this.shape = shape;
+	}
 
 	/** Get the type of this shape. You can use this to down cast to the concrete shape.
 	 * @return the shape type. */

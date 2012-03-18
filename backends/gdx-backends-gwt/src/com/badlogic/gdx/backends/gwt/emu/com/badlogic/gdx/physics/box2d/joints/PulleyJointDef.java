@@ -65,4 +65,21 @@ public class PulleyJointDef extends JointDef {
 
 	/** The pulley ratio, used to simulate a block-and-tackle. */
 	public float ratio = 1;
+
+	@Override
+	public org.jbox2d.dynamics.joints.JointDef toJBox2d () {
+		org.jbox2d.dynamics.joints.PulleyJointDef jd = new org.jbox2d.dynamics.joints.PulleyJointDef();
+		jd.bodyA = bodyA.body;
+		jd.bodyB = bodyB.body;
+		jd.collideConnected = collideConnected;
+		jd.groundAnchorA.set(groundAnchorA.x, groundAnchorB.y);
+		jd.groundAnchorB.set(groundAnchorB.x, groundAnchorB.y);
+		jd.lengthA = lengthA;
+		jd.lengthB = lengthB;
+		jd.localAnchorA.set(localAnchorA.x, localAnchorA.y);
+		jd.localAnchorB.set(localAnchorB.x, localAnchorB.y);
+		jd.ratio = ratio;
+		jd.type = org.jbox2d.dynamics.joints.JointType.PULLEY;
+		return jd;
+	}
 }

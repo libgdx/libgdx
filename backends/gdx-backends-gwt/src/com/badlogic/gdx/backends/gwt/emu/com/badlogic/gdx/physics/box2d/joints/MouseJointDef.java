@@ -37,4 +37,18 @@ public class MouseJointDef extends JointDef {
 
 	/** The damping ratio. 0 = no damping, 1 = critical damping. */
 	public float dampingRatio = 0.7f;
+
+	@Override
+	public org.jbox2d.dynamics.joints.JointDef toJBox2d () {
+		org.jbox2d.dynamics.joints.MouseJointDef jd = new org.jbox2d.dynamics.joints.MouseJointDef();
+		jd.bodyA = bodyA.body;
+		jd.bodyB = bodyB.body;
+		jd.collideConnected = collideConnected;
+		jd.dampingRatio = dampingRatio;
+		jd.frequencyHz = frequencyHz;
+		jd.maxForce = maxForce;
+		jd.target.set(target.x, target.y);
+		jd.type = org.jbox2d.dynamics.joints.JointType.MOUSE;
+		return jd;
+	}
 }

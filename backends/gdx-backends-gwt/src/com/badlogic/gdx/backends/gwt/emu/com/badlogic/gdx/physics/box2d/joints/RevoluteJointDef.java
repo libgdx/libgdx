@@ -65,4 +65,23 @@ public class RevoluteJointDef extends JointDef {
 
 	/** The maximum motor torque used to achieve the desired motor speed. Usually in N-m. */
 	public float maxMotorTorque = 0;
+
+	@Override
+	public org.jbox2d.dynamics.joints.JointDef toJBox2d () {
+		org.jbox2d.dynamics.joints.RevoluteJointDef jd = new org.jbox2d.dynamics.joints.RevoluteJointDef();
+		jd.bodyA = bodyA.body;
+		jd.bodyB = bodyB.body;
+		jd.collideConnected = collideConnected;
+		jd.enableLimit = enableLimit;
+		jd.enableMotor = enableMotor;
+		jd.localAnchorA.set(localAnchorA.x, localAnchorA.y);
+		jd.localAnchorB.set(localAnchorB.x, localAnchorB.y);
+		jd.lowerAngle = lowerAngle;
+		jd.maxMotorTorque = maxMotorTorque;
+		jd.motorSpeed = motorSpeed;
+		jd.referenceAngle = referenceAngle;
+		jd.type = org.jbox2d.dynamics.joints.JointType.REVOLUTE;
+		jd.upperAngle = upperAngle;
+		return jd;
+	}
 }

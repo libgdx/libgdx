@@ -27,10 +27,13 @@ public class Manifold {
 	final int[] tmpInt = new int[2];
 	final float[] tmpFloat = new float[4];
 
+	Manifold() {
+	}
+	
 	protected Manifold (org.jbox2d.collision.Manifold manifold) {
 		this.manifold = manifold;
 	}
-
+	
 	public ManifoldType getType () {
 		org.jbox2d.collision.Manifold.ManifoldType type = manifold.type;
 		if (type == org.jbox2d.collision.Manifold.ManifoldType.CIRCLES) return ManifoldType.Circle;

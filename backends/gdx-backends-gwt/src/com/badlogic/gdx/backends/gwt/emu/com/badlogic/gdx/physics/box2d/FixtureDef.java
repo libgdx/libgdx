@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.physics.box2d;
 
+
 /** A fixture definition is used to create a fixture. This class defines an abstract fixture definition. You can reuse fixture
  * definitions safely.
  * @author mzechner */
@@ -37,4 +38,18 @@ public class FixtureDef {
 
 	/** Contact filtering data. **/
 	public final Filter filter = new Filter();
+	
+	public org.jbox2d.dynamics.FixtureDef toJBox2d() {
+		org.jbox2d.dynamics.FixtureDef fd = new org.jbox2d.dynamics.FixtureDef();
+		fd.density = density;
+		fd.filter = new org.jbox2d.dynamics.Filter();
+		fd.filter.categoryBits = filter.categoryBits;
+		fd.filter.groupIndex = filter.groupIndex;
+		fd.filter.maskBits = filter.maskBits;
+		fd.friction = friction;
+		fd.isSensor = isSensor;
+		fd.restitution = restitution;
+		fd.shape = shape.shape;
+		return fd;
+	}
 }

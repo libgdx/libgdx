@@ -54,7 +54,6 @@ public class GwtModuleGenerator {
 		excludes.add("ScreenUtils.java");
 
 		// asset manager related
-		excludes.add("ResolutionFileResolver.java"); // FIXME
 		excludes.add("SkinLoader.java");
 		
 		// remote input

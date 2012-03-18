@@ -110,7 +110,6 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isButtonPressed (int button) {
-		// FIXME
 		return button == Buttons.LEFT && touched;
 	}
 

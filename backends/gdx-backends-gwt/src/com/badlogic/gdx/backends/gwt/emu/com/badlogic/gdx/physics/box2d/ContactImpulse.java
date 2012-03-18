@@ -20,23 +20,29 @@ package com.badlogic.gdx.physics.box2d;
  * body collisions. These match up one-to-one with the contact points in b2Manifold.
  * @author mzechner */
 public class ContactImpulse {
-	// FIXME there's no equivalent in jbox2d it seems.
+	org.jbox2d.callbacks.ContactImpulse impulse;
 	float[] tmp = new float[2];
 	final float[] normalImpulses = new float[2];
 	final float[] tangentImpulses = new float[2];
 
-	protected ContactImpulse () {
+	ContactImpulse () {
 	}
 
 	public float[] getNormalImpulses () {
+		for(int i = 0; i < impulse.count; i++) {
+			normalImpulses[i] = impulse.normalImpulses[i];
+		}
 		return normalImpulses;
 	}
 
 	public float[] getTangentImpulses () {
+		for(int i = 0; i < impulse.count; i++) {
+			tangentImpulses[i] = impulse.tangentImpulses[i];
+		}
 		return tangentImpulses;
 	}
 
 	public int getCount () {
-		return 0;
+		return impulse.count;
 	}
 }

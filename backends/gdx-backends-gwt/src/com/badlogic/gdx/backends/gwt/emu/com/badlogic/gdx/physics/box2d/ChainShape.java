@@ -9,10 +9,12 @@ public class ChainShape extends Shape {
 	org.jbox2d.collision.shapes.ChainShape shape;
 	
 	public ChainShape () {
-		shape = new org.jbox2d.collision.shapes.ChainShape();
+		super(new org.jbox2d.collision.shapes.ChainShape());
+		shape = (org.jbox2d.collision.shapes.ChainShape)super.shape;
 	}
 	
 	ChainShape(org.jbox2d.collision.shapes.ChainShape shape) {
+		super(shape);
 		this.shape = shape;
 	}
 

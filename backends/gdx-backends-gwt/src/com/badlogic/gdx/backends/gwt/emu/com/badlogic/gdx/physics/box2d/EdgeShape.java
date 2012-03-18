@@ -11,10 +11,12 @@ public class EdgeShape extends Shape {
 	org.jbox2d.collision.shapes.EdgeShape shape;
 	
 	public EdgeShape () {
-		shape = new org.jbox2d.collision.shapes.EdgeShape();
+		super(new org.jbox2d.collision.shapes.EdgeShape());
+		shape = (org.jbox2d.collision.shapes.EdgeShape)super.shape;
 	}
 
 	public EdgeShape (org.jbox2d.collision.shapes.EdgeShape shape) {
+		super(shape);
 		this.shape = shape;
 	}
 

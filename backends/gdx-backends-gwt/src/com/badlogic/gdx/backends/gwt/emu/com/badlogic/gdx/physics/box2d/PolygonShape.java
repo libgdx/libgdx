@@ -25,10 +25,12 @@ public class PolygonShape extends Shape {
 	
 	/** Constructs a new polygon */
 	public PolygonShape () {
-		shape = new org.jbox2d.collision.shapes.PolygonShape();
+		super(new org.jbox2d.collision.shapes.PolygonShape());
+		shape = (org.jbox2d.collision.shapes.PolygonShape)super.shape;
 	}
 
 	public PolygonShape (org.jbox2d.collision.shapes.PolygonShape shape) {
+		super(shape);
 		this.shape = shape;
 	}
 

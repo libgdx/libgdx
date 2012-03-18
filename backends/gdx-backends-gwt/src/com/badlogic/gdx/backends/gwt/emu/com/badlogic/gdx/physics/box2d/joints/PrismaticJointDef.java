@@ -70,4 +70,24 @@ public class PrismaticJointDef extends JointDef {
 
 	/** The desired motor speed in radians per second. */
 	public float motorSpeed = 0;
+
+	@Override
+	public org.jbox2d.dynamics.joints.JointDef toJBox2d () {
+		org.jbox2d.dynamics.joints.PrismaticJointDef jd = new org.jbox2d.dynamics.joints.PrismaticJointDef();
+		jd.bodyA = bodyA.body;
+		jd.bodyB = bodyB.body;
+		jd.collideConnected = collideConnected;
+		jd.enableLimit = enableLimit;
+		jd.enableMotor = enableMotor;
+		jd.localAnchorA.set(localAnchorA.x, localAnchorA.y);
+		jd.localAnchorB.set(localAnchorB.x, localAnchorB.y);
+		jd.localAxisA.set(localAxisA.x, localAxisA.y);
+		jd.lowerTranslation = lowerTranslation;
+		jd.maxMotorForce = maxMotorForce;
+		jd.motorSpeed = motorSpeed;
+		jd.referenceAngle = referenceAngle;
+		jd.type = org.jbox2d.dynamics.joints.JointType.PRISMATIC;
+		jd.upperTranslation = upperTranslation;
+		return jd;
+	}
 }

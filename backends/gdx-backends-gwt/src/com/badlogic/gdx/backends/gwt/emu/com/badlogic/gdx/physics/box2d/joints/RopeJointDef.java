@@ -20,4 +20,10 @@ public class RopeJointDef extends JointDef {
 
 	/** The maximum length of the rope. Warning: this must be larger than b2_linearSlop or the joint will have no effect. */
 	public float maxLength = 0;
+
+	@Override
+	public org.jbox2d.dynamics.joints.JointDef toJBox2d () {
+		// FIXME not implemented in jbox2d
+		return null;
+	}
 }

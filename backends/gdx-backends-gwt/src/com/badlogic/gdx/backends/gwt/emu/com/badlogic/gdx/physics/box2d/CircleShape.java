@@ -24,10 +24,12 @@ public class CircleShape extends Shape {
 	org.jbox2d.collision.shapes.CircleShape shape;
 	
 	public CircleShape () {
-		shape = new org.jbox2d.collision.shapes.CircleShape();
+		super(new org.jbox2d.collision.shapes.CircleShape());
+		shape = (org.jbox2d.collision.shapes.CircleShape)super.shape;
 	}
 	
 	CircleShape(org.jbox2d.collision.shapes.CircleShape shape) {
+		super(shape);
 		this.shape = shape;
 	}
 

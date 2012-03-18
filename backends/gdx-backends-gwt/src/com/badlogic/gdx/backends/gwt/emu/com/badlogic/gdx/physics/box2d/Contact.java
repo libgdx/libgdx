@@ -23,11 +23,17 @@ import com.badlogic.gdx.math.Vector2;
  * filtered). Therefore a contact object may exist that has no contact points.
  * @author mzechner */
 public class Contact {
+	final World world;
 	org.jbox2d.dynamics.contacts.Contact contact;
 	final WorldManifold worldManifold = new WorldManifold();
 	final org.jbox2d.collision.WorldManifold worldManifold2 = new org.jbox2d.collision.WorldManifold();
 
-	protected Contact (org.jbox2d.dynamics.contacts.Contact contact) {
+	Contact(World world) {
+		this.world = world;
+	}
+	
+	protected Contact (World world, org.jbox2d.dynamics.contacts.Contact contact) {
+		this.world = world;
 		this.contact = contact;
 	}
 
@@ -59,14 +65,12 @@ public class Contact {
 
 	/** Get the first fixture in this contact. */
 	public Fixture getFixtureA () {
-		// FIXME
-		return null;
+		return world.fixtures.get(contact.m_fixtureA);
 	}
 
 	/** Get the second fixture in this contact. */
 	public Fixture getFixtureB () {
-		// FIXME
-		return null;
+		return world.fixtures.get(contact.m_fixtureB);
 	}
 
 	/** Get the child primitive index for fixture A. */

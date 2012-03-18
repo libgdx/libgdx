@@ -43,4 +43,19 @@ public class WeldJointDef extends JointDef {
 
 	// / The body2 angle minus body1 angle in the reference state (radians).
 	public float referenceAngle = 0;
+
+	@Override
+	public org.jbox2d.dynamics.joints.JointDef toJBox2d () {
+		org.jbox2d.dynamics.joints.WeldJointDef jd = new org.jbox2d.dynamics.joints.WeldJointDef();
+		jd.bodyA = bodyA.body;
+		jd.bodyB = bodyB.body;
+		jd.collideConnected = collideConnected;
+		jd.dampingRatio = 0; // not in native box2d wrapper
+		jd.frequencyHz = 0; // not in native box2d wrapper
+		jd.localAnchorA.set(localAnchorA.x, localAnchorA.y);
+		jd.localAnchorB.set(localAnchorB.x, localAnchorB.y);
+		jd.referenceAngle = referenceAngle;
+		jd.type = org.jbox2d.dynamics.joints.JointType.WELD;
+		return jd;
+	}
 }

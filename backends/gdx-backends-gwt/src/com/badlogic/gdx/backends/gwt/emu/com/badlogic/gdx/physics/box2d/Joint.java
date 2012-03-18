@@ -53,14 +53,12 @@ public abstract class Joint {
 
 	/** Get the first body attached to this joint. */
 	public Body getBodyA () {
-		// FIXME
-		return null;
+		return world.bodies.get(joint.m_bodyA);
 	}
 
 	/** Get the second body attached to this joint. */
 	public Body getBodyB () {
-		// FIXME
-		return null;
+		return world.bodies.get(joint.m_bodyB);
 	}
 
 	/** Get the anchor point on bodyA in world coordinates. */

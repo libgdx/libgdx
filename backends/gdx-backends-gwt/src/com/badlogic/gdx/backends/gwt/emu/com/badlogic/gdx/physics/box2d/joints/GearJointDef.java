@@ -35,4 +35,10 @@ public class GearJointDef extends JointDef {
 	/** The gear ratio.
 	 * @see GearJoint for explanation. */
 	public float ratio = 1;
+
+	@Override
+	public org.jbox2d.dynamics.joints.JointDef toJBox2d () {
+		// FIXME
+		return null;
+	}
 }

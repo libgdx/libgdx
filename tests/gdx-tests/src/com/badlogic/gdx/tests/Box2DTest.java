@@ -28,7 +28,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -56,7 +59,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	private com.badlogic.gdx.graphics.OrthographicCamera camera;
 
 	/** the immediate mode renderer to output our debug drawings **/
-	private ImmediateModeRenderer10 renderer;
+	private ShapeRenderer renderer;
 
 	/** box2d debug renderer **/
 	private Box2DDebugRenderer debugRenderer;
@@ -94,14 +97,14 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		camera.position.set(0, 16, 0);
 
 		// next we setup the immediate mode renderer
-		renderer = new ImmediateModeRenderer10();
+		renderer = new ShapeRenderer();
 
 		// next we create the box2d debug renderer
 		debugRenderer = new Box2DDebugRenderer();
 
 		// next we create a SpriteBatch and a font
 		batch = new SpriteBatch();
-		font = new BitmapFont();
+		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 		font.setColor(Color.RED);
 		textureRegion = new TextureRegion(new Texture(Gdx.files.internal("data/badlogicsmall.jpg")));
 
@@ -235,13 +238,11 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 
 		// next we clear the color buffer and set the camera
 		// matrices
-		GL10 gl = Gdx.graphics.getGL10();
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
-		camera.apply(gl);
 
 		// next we render the ground body
-		renderBox(gl, groundBody, 50, 1);
+		renderBox(groundBody, 50, 1);
 
 		// next we render each box via the SpriteBatch.
 		// for this we have to set the projection matrix of the
@@ -266,12 +267,12 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		// the renderer. the camera.apply() call is actually
 		// not needed as the opengl matrices are already set
 		// by the spritebatch which in turn uses the camera matrices :)
-		camera.apply(Gdx.gl10);
 		debugRenderer.render(world, camera.combined);
 
 		// finally we render all contact points
-		gl.glPointSize(4);
-		renderer.begin(GL10.GL_POINTS);
+		renderer.setProjectionMatrix(camera.combined);
+		renderer.begin(ShapeType.Point);
+		renderer.setColor(0, 1, 0, 1);
 		for (int i = 0; i < world.getContactCount(); i++) {
 			Contact contact = world.getContactList().get(i);
 			// we only render the contact if it actually touches
@@ -283,13 +284,11 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 				int numContactPoints = manifold.getNumberOfContactPoints();
 				for (int j = 0; j < numContactPoints; j++) {
 					Vector2 point = manifold.getPoints()[j];
-					renderer.color(0, 1, 0, 1);
-					renderer.vertex(point.x, point.y, 0);
+					renderer.point(point.x, point.y, 0);
 				}
 			}
 		}
 		renderer.end();
-		gl.glPointSize(1);
 
 		// finally we render the time it took to update the world
 		// for this we have to set the projection matrix again, so
@@ -300,34 +299,23 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		batch.end();
 	}
 
-	private void renderBox (GL10 gl, Body body, float halfWidth, float halfHeight) {
-		// push the current matrix and
+	Matrix4 transform = new Matrix4();
+	private void renderBox (Body body, float halfWidth, float halfHeight) {
 		// get the bodies center and angle in world coordinates
-		gl.glPushMatrix();
 		Vector2 pos = body.getWorldCenter();
 		float angle = body.getAngle();
 
 		// set the translation and rotation matrix
-		gl.glTranslatef(pos.x, pos.y, 0);
-		gl.glRotatef((float)Math.toDegrees(angle), 0, 0, 1);
+		transform.setToTranslation(pos.x, pos.y, 0);
+		transform.rotate(0, 0, 1, (float)Math.toDegrees(angle));
 
 		// render the box
-		renderer.begin(GL10.GL_LINE_STRIP);
-		renderer.color(1, 1, 1, 1);
-		renderer.vertex(-halfWidth, -halfHeight, 0);
-		renderer.color(1, 1, 1, 1);
-		renderer.vertex(-halfWidth, halfHeight, 0);
-		renderer.color(1, 1, 1, 1);
-		renderer.vertex(halfWidth, halfHeight, 0);
-		renderer.color(1, 1, 1, 1);
-		renderer.vertex(halfWidth, -halfHeight, 0);
-		renderer.color(1, 1, 1, 1);
-		renderer.vertex(-halfWidth, -halfHeight, 0);
+		renderer.begin(ShapeType.Rectangle);
+		renderer.setTransformMatrix(transform);
+		renderer.setColor(1, 1, 1, 1);
+		renderer.rect(-halfWidth, -halfHeight, halfWidth * 2, halfHeight * 2);
 		renderer.end();
-
-		// pop the matrix
-		gl.glPopMatrix();
-	}
+	}		
 
 	/** we instantiate this vector and the callback here so we don't irritate the GC **/
 	Vector3 testPoint = new Vector3();

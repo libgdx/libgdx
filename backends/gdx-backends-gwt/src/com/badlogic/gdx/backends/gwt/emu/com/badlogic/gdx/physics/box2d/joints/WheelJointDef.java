@@ -45,4 +45,10 @@ public class WheelJointDef extends JointDef {
 
 	/** Suspension damping ratio, one indicates critical damping */
 	public float dampingRatio = 0.7f;
+
+	@Override
+	public org.jbox2d.dynamics.joints.JointDef toJBox2d () {
+		// FIXME not implemented in jbox2d port.
+		return null;
+	}
 }
