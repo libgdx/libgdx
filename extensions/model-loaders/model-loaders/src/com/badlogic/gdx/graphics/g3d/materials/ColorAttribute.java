@@ -22,11 +22,12 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class ColorAttribute extends MaterialAttribute {
 
+	//TODO need to be more generic. type's are just WIP 
 	public enum ColorType {
 		DIFFUSE, SPECULAR, EMISSIVE
 	};
 
-	static final private String[] shaderFlag = {"diffuseCol", "specularCol", "emissiveCol"};
+	static final private String[] shaderFlag = {"diffuseColor", "specularColor", "emissiveColor"};
 	
 	static final private String[] colorNames = {"diffuseCol", "specularCol", "emissiveCol"};	
 

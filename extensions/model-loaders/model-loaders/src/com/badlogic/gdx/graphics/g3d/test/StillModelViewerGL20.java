@@ -108,13 +108,12 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		// shader1 = ShaderLoader.createShader("light", "light");
 		// shader2 = ShaderLoader.createShader("vertexpath", "vertexpath");
 
-		lightManager = new LightManager(4, LightQuality.VERTEX);
-		lightManager.ambientLight.set(0.1f, 0.1f, 0.1f, 0);
+		lightManager = new LightManager(1, LightQuality.VERTEX);
 		lightManager.dirLight = new DirectionalLight();
-		lightManager.dirLight.color.set(0.1f, 0.03f, 0.03f, 0);
-		lightManager.dirLight.direction.set(-.1f, -1, 0.03f).nor();
+		lightManager.dirLight.color.set(0.075f, 0.09f, 0.09f, 0);
+		lightManager.dirLight.direction.set(-.4f, -1, 0.03f).nor();
 
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 1; i++) {
 			PointLight l = new PointLight();
 			l.position.set(-MathUtils.random(8) + 4, MathUtils.random(3), -MathUtils.random(6) + 3);
 			l.color.r = MathUtils.random();
@@ -123,7 +122,7 @@ public class StillModelViewerGL20 implements ApplicationListener {
 			l.intensity = 4;
 			lightManager.addLigth(l);
 		}
-		lightManager.ambientLight.set(0.01f, 0.01f, 0.01f, 0);
+		lightManager.ambientLight.set(0.03f, 0.05f, 0.06f, 0);
 
 		protoRenderer = new PrototypeRendererGL20();
 		protoRenderer.setLightManager(lightManager);
@@ -136,7 +135,7 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		instance.radius = bounds.getDimensions().len() / 2;
 		instance2.radius = instance.radius;
 
-		MaterialAttribute c1 = new ColorAttribute(new Color(0.52f, 0.51f, 0.51f, 1.0f), "color", ColorType.SPECULAR);
+		MaterialAttribute c1 = new ColorAttribute(new Color(0.5f, 0.51f, 0.51f, 1.0f), "color", ColorType.SPECULAR);
 		MaterialAttribute c2 = new ColorAttribute(new Color(0.95f, 0.95f, 0.95f, 1.0f), "color", ColorType.DIFFUSE);
 		MaterialAttribute c3 = new ColorAttribute(new Color(0.01f, 0.05f, 0.05f, 1.0f), "color", ColorType.EMISSIVE);
 		Material material = new Material("color", c1, c2, c3);

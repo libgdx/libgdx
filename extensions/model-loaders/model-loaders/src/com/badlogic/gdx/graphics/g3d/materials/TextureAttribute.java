@@ -25,8 +25,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class TextureAttribute extends MaterialAttribute {
 	
-	static final private String[] shaderFlag = {"diffuseCol", "specularCol", "emissiveCol"};
-
 	public Texture texture;
 	public int unit;
 	public int minFilter;

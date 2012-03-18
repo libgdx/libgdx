@@ -48,7 +48,7 @@ void main()
 		
 	//fastest way to calculate inverse of length
   	float invLength = clamp(inversesqrt( dot(v_lightDir, v_lightDir)),0.0, 1.0 );
-  	vec3 intensity =  v_lightColor * (invLength * v_intensity);	
+  	vec3 intensity =  v_lightColor * ( v_intensity);	
 	
 	#ifdef normals
 	vec3 lightDirection = v_lightDir * invLength;	
@@ -61,7 +61,9 @@ void main()
 	vec3 fromEye   = normalize(v_eye);	
 	vec3 halfAngle = normalize(lightDirection + fromEye);
 	float specular = pow( clamp( dot(halfAngle, surfaceNormal), 0.0, 1.0), shininessFactor);
-	specular = (diffuse > 0.0) ? specular : 0.0;
+	//specular = (diffuse > 0.0) ? specular : 0.0;
+	float tmp  = specular * (diffuse * 2.0);
+	specular = (diffuse > 0.5)  ? specular : tmp;
 	
 	vec3 diffuseLight = intensity * diffuse * tex;
 	#ifdef diffuseColor

@@ -31,7 +31,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class PrototypeRendererGL20 implements ModelRenderer {
 
-	static final int SIZE = 128;// TODO better way
+	static final int SIZE = 256;// TODO better way
 	final private Array<Model> modelQueue = new Array<Model>(false, SIZE,
 			Model.class);
 	final private Array<StillModelInstance> stillModelInstances = new Array<StillModelInstance>(
@@ -70,7 +70,7 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 	@Override
 	public void draw(StillModel model, StillModelInstance instance) {
-		// add render queue
+		// add to render queue
 		modelQueue.add(model);
 		stillModelInstances.add(instance);
 	}

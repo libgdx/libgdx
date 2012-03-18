@@ -24,6 +24,10 @@ import com.badlogic.gdx.graphics.g3d.lights.LightManager.LightQuality;
 import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute.ColorType;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.test.PrototypeRendererGL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -35,7 +39,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class HybridLightTest implements ApplicationListener {
 
-	static final int LIGHTS_NUM = 4;
+	static final int LIGHTS_NUM = 0;
 	static final float LIGHT_INTESITY = 4f;
 
 	LightManager lightManager;
@@ -103,7 +107,7 @@ public class HybridLightTest implements ApplicationListener {
 
 		lightManager = new LightManager(LIGHTS_NUM, LightQuality.FRAGMENT);
 		shader = ShaderFactory.createShader(null, lightManager);
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 4; i++) {
 			PointLight l = new PointLight();
 			l.position.set(MathUtils.random(8) - 4, MathUtils.random(6), MathUtils.random(8) - 4);
 			l.color.r = MathUtils.random();
@@ -113,8 +117,8 @@ public class HybridLightTest implements ApplicationListener {
 			lightManager.addLigth(l);
 		}
 		lightManager.dirLight = new DirectionalLight();
-		lightManager.dirLight.color.set(0.05f, 0.15f, 0.1f, 1);		
-		lightManager.dirLight.direction.set(-.1f, -1, 0.03f).nor();
+		lightManager.dirLight.color.set(0.5f, 0.05f, 0.1f, 1);		
+		lightManager.dirLight.direction.set(-.4f, -1, 0.03f).nor();
 
 		lightManager.ambientLight.set(.14f, 0.09f, 0.09f, 0f);
 
@@ -148,6 +152,12 @@ public class HybridLightTest implements ApplicationListener {
 		protoRenderer.setLightManager(lightManager);
 
 		protoRenderer.setShader(shader);
+		
+		MaterialAttribute c1 = new ColorAttribute(new Color(0.52f, 1.00f, 0.51f, 1.0f), "color", ColorType.SPECULAR);
+		MaterialAttribute c2 = new ColorAttribute(new Color(0.95f, 0.95f, 0.95f, 1.0f), "color", ColorType.DIFFUSE);
+		MaterialAttribute c3 = new ColorAttribute(new Color(0.01f, 0.05f, 0.05f, 1.0f), "color", ColorType.EMISSIVE);
+		Material material = new Material("color", c1, c2, c3);
+		model2.setMaterial(material);
 
 	}
 
