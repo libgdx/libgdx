@@ -21,8 +21,8 @@ import java.util.Arrays;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class Material {
-	public String name;
-	public MaterialAttribute[] attributes;
+	final public String name;
+	final public MaterialAttribute[] attributes;
 
 	public Material (String name, MaterialAttribute... attributes) {
 		this.name = name;

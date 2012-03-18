@@ -1,24 +1,24 @@
-#define normals
-//#define specularColor
-//#define emissiveColor
-//#define diffuseColor
+#define normalsFlag
+//#define specularColorFlag
+//#define emissiveColorFlag
+//#define diffuseColorFlag
 //#define LIGHTS_NUM 4
 attribute vec4 a_position; 
 attribute vec2 a_texCoord0;
 
-#ifdef diffuseColor
-uniform vec3 diffuseCol;
+#ifdef diffuseColorFlag
+uniform vec3 diffuseColor;
 #endif
 
-#ifdef emissiveColor
-uniform vec3 emissiveCol;
+#ifdef emissiveColorFlag
+uniform vec3 emissiveColor;
 #endif
 
 //#ifdef specularColor
 //uniform vec3 specularCol;
 //#endif
 
-#ifdef normals
+#ifdef normalsFlag
 attribute vec3 a_normal;
 uniform mat3 u_normalMatrix;
 #endif
@@ -51,7 +51,7 @@ void main()
 	
 	vec3  aggCol = dirLightCol;
 	
-	#ifdef normals
+	#ifdef normalsFlag
 	vec3 normal = u_normalMatrix * a_normal;	
 	aggCol *= wrapLight(normal, -dirLightDir);
 	#endif
@@ -63,7 +63,7 @@ void main()
 		float invLen = inversesqrt(dot(dif, dif));
 		float weight = invLen * lightsInt[i];
 				
-		#ifdef normals
+		#ifdef normalsFlag
 		vec3 L = invLen * dif;// normalize
 		float lambert = wrapLight(normal, L);
 		weight *= lambert;		
@@ -72,12 +72,12 @@ void main()
 		
 	}
 #endif
-#ifdef diffuseColor
-	aggCol *= diffuseCol;
+#ifdef diffuseColorFlag
+	aggCol *= diffuseColor;
 #endif
 
-#ifdef emissiveColor
-	aggCol += emissiveCol;
+#ifdef emissiveColorFlag
+	aggCol += emissiveColor;
 #endif
 	
 	aggCol += ambient;

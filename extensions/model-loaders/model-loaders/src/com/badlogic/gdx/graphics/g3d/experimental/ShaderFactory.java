@@ -38,6 +38,8 @@ public class ShaderFactory {
 
 		ShaderProgram.pedantic = false;
 		final ShaderProgram shader = new ShaderProgram(flags + vertexShader, flags + fragmentShader);
+		
+		System.out.println(flags);
 		return shader;
 	}
 }

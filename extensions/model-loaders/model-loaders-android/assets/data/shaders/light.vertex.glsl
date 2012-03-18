@@ -1,9 +1,9 @@
-#define normals
+#define normalsFlag
 //#define LIGHTS_NUM 4
 attribute vec4 a_position; 
 attribute vec2 a_texCoord0;
 
-#ifdef normals
+#ifdef normalsFlag
 attribute vec3 a_normal;
 uniform mat3 u_normalMatrix;
 #endif
@@ -34,7 +34,7 @@ float wrapLight(vec3 nor, vec3 direction){
 }
 void main()
 {
-#ifdef normals
+#ifdef normalsFlag
 	v_normal    = u_normalMatrix * a_normal;
 #endif
 
@@ -67,7 +67,7 @@ void main()
 				
 		vec3 L = dif * invLen;// normalize		
 		
-		#ifdef normals
+		#ifdef normalsFlag
 		float lambert = wrapLight(v_normal, L);		
 		float weight  = lightsInt[i] * invLen * lambert;
 		#else

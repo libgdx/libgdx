@@ -1,3 +1,5 @@
+//#define lightmapTextureFlag
+//#define diffuseTextureFlag
 #ifdef GL_ES
 #define LOWP lowp
 #define MED mediump
@@ -7,12 +9,27 @@ precision mediump float;
 #define LOWP
 #endif
 
-uniform sampler2D u_texture0;
+#ifdef diffuseTextureFlag
+uniform LOWP sampler2D diffuseTexture;
+#endif
+
+#ifdef lightmapTextureFlag
+uniform LOWP sampler2D lightmapTexture;
+#endif
 
 varying vec2 v_texCoords;
 varying LOWP vec4 v_diffuse;
 void main()
 {		
-	LOWP vec4 tex = texture2D(u_texture0, v_texCoords);
-	gl_FragColor = v_diffuse *  tex;
+	LOWP vec4 light = v_diffuse;
+	
+	#ifdef lightmapTextureFlag
+	light *= texture2D(lightmapTexture, v_texCoords);
+	#endif
+	
+	#ifdef diffuseTextureFlag
+	light *= texture2D(diffuseTexture, v_texCoords);
+	#endif
+	
+	gl_FragColor = light;
 }

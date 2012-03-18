@@ -22,24 +22,15 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class ColorAttribute extends MaterialAttribute {
 
-	//TODO need to be more generic. type's are just WIP 
-	public enum ColorType {
-		DIFFUSE, SPECULAR, EMISSIVE
-	};
-
-	static final private String[] shaderFlag = {"diffuseColor", "specularColor", "emissiveColor"};
-	
-	static final private String[] colorNames = {"diffuseCol", "specularCol", "emissiveCol"};	
+	static final public String diffuse = "diffuseColor";
+	static final public String specular = "specularColor";
+	static final public String emissive = "emissiveColor";
 
 	public final Color color = new Color();
-	public final ColorType colorType;
-	private final int type;
 
-	public ColorAttribute (Color color, String name, ColorType colorType) {
+	public ColorAttribute (Color color, String name) {
 		super(name);
 		this.color.set(color);
-		this.colorType = colorType;
-		this.type = colorType.ordinal();
 	}
 
 	@Override
@@ -47,21 +38,18 @@ public class ColorAttribute extends MaterialAttribute {
 		if (Gdx.gl10 == null) throw new RuntimeException("Can't call ColorAttribute.bind() in a GL20 context");
 
 		// todo how about emissive or specular?
-		if (colorType == ColorType.DIFFUSE) Gdx.gl10.glColor4f(color.r, color.g, color.b, 1f);
+		// TODO replace string equals with something more performant
+		if (diffuse.equals(diffuse)) Gdx.gl10.glColor4f(color.r, color.g, color.b, 1f);
 	}
 
 	@Override
 	public void bind (ShaderProgram program) {
-		program.setUniformf(colorNames[type], color.r, color.g, color.b);
+		program.setUniformf(name, color.r, color.g, color.b);
 	}
 
 	@Override
 	public MaterialAttribute copy () {
-		return new ColorAttribute(color, name, colorType);
+		return new ColorAttribute(color, name);
 	}
 
-	@Override
-	public String getShaderFlag () {
-		return shaderFlag[type];
-	}
 }

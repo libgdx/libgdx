@@ -42,9 +42,9 @@ import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute.ColorType;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
@@ -108,21 +108,21 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		// shader1 = ShaderLoader.createShader("light", "light");
 		// shader2 = ShaderLoader.createShader("vertexpath", "vertexpath");
 
-		lightManager = new LightManager(1, LightQuality.VERTEX);
+		lightManager = new LightManager(4, LightQuality.VERTEX);
 		lightManager.dirLight = new DirectionalLight();
-		lightManager.dirLight.color.set(0.075f, 0.09f, 0.09f, 0);
+		lightManager.dirLight.color.set(0.09f, 0.07f, 0.09f, 0);
 		lightManager.dirLight.direction.set(-.4f, -1, 0.03f).nor();
 
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 4; i++) {
 			PointLight l = new PointLight();
 			l.position.set(-MathUtils.random(8) + 4, MathUtils.random(3), -MathUtils.random(6) + 3);
 			l.color.r = MathUtils.random();
 			l.color.b = MathUtils.random();
 			l.color.g = MathUtils.random();
-			l.intensity = 4;
+			l.intensity = 3;
 			lightManager.addLigth(l);
 		}
-		lightManager.ambientLight.set(0.03f, 0.05f, 0.06f, 0);
+		lightManager.ambientLight.set(.03f, 0.05f, 0.06f, 0);
 
 		protoRenderer = new PrototypeRendererGL20();
 		protoRenderer.setLightManager(lightManager);
@@ -135,10 +135,12 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		instance.radius = bounds.getDimensions().len() / 2;
 		instance2.radius = instance.radius;
 
-		MaterialAttribute c1 = new ColorAttribute(new Color(0.5f, 0.51f, 0.51f, 1.0f), "color", ColorType.SPECULAR);
-		MaterialAttribute c2 = new ColorAttribute(new Color(0.95f, 0.95f, 0.95f, 1.0f), "color", ColorType.DIFFUSE);
-		MaterialAttribute c3 = new ColorAttribute(new Color(0.01f, 0.05f, 0.05f, 1.0f), "color", ColorType.EMISSIVE);
-		Material material = new Material("color", c1, c2, c3);
+		MaterialAttribute c1 = new ColorAttribute(new Color(0.5f, 0.51f, 0.51f, 1.0f), ColorAttribute.specular);
+		MaterialAttribute c2 = new ColorAttribute(new Color(0.95f, 0.95f, 0.95f, 1.0f), ColorAttribute.diffuse);
+		MaterialAttribute c3 = new ColorAttribute(new Color(0.01f, 0.05f, 0.05f, 1.0f), ColorAttribute.emissive);
+		MaterialAttribute t1 = new TextureAttribute(textures[0], 0, TextureAttribute.diffuseTexture);
+		MaterialAttribute t2 = new TextureAttribute(textures[1], 1, TextureAttribute.lightmapTexture);
+		Material material = new Material("basic", c1, c2, c3, t1, t2);
 		model.setMaterial(material);
 
 		shader2 = ShaderFactory.createShader(material, lightManager);
@@ -172,7 +174,6 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		shader.begin();
 		shader.setUniformMatrix("u_projectionViewMatrix", cam.combined);
 		shader.setUniformf("camPos", cam.position.x, cam.position.y, cam.position.z);
-		shader.setUniformi("u_texture0", 0);
 		shader.end();
 
 		textures[0].bind(0);

@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.materials;
 
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public abstract class MaterialAttribute {
+
+	private static final String FLAG = "Flag";
 	String name;
 
 	public MaterialAttribute (String name) {
@@ -29,6 +32,8 @@ public abstract class MaterialAttribute {
 	public abstract void bind (ShaderProgram program);
 
 	public abstract MaterialAttribute copy ();
-	
-	public abstract String getShaderFlag ();
+
+	public String getShaderFlag () {
+		return name + FLAG;
+	}
 }

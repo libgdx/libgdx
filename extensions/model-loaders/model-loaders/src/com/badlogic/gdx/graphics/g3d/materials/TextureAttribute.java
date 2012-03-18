@@ -24,7 +24,11 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class TextureAttribute extends MaterialAttribute {
-	
+
+	static final public String diffuseTexture = "diffuseTexture";
+	static final public String lightmapTexture = "lightmapTexture";
+	static final public String specularTexture = "specularTexture";
+
 	public Texture texture;
 	public int unit;
 	public int minFilter;
@@ -75,8 +79,4 @@ public class TextureAttribute extends MaterialAttribute {
 		return new TextureAttribute(texture, unit, name, minFilter, magFilter, uWrap, vWrap);
 	}
 
-	@Override
-	public String getShaderFlag () {
-		return null;
-	}
 }
