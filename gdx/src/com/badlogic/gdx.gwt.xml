@@ -89,6 +89,7 @@
 		<include name="scenes/scene2d/Interpolator.java"/>
 		<include name="math/Intersector.java"/>
 		<include name="utils/JsonReader.java"/>
+		<include name="utils/JsonWriter.java"/>
 		<include name="graphics/g3d/keyframed/Keyframe.java"/>
 		<include name="graphics/g3d/keyframed/KeyframeAnimation.java"/>
 		<include name="graphics/g3d/keyframed/KeyframeAnimator.java"/>

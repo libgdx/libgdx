@@ -884,7 +884,7 @@ public class ParticleEmitter {
 		return Float.parseFloat(readString(reader, name));
 	}
 
-	static protected class Particle extends Sprite {
+	static class Particle extends Sprite {
 		int life, currentLife;
 		float scale, scaleDiff;
 		float rotation, rotationDiff;

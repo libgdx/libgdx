@@ -69,7 +69,7 @@ public class GdxBuild {
 		new AntScriptGenerator().generate(new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR), mac, win32home, win32, win64, lin32, lin64, android);
 		
 		// build natives
-		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
-		BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
+//		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
+//		BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
 	}
 }

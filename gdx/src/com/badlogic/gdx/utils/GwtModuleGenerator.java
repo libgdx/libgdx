@@ -68,8 +68,8 @@ public class GwtModuleGenerator {
 		excludes.add("AtomicQueue.java");
 		excludes.add("LittleEndianInputStream.java");
 		excludes.add("PauseableThread.java");
-		excludes.add("Json.java");
-		excludes.add("JsonWriter.java");
+//		excludes.add("Json.java");
+//		excludes.add("JsonWriter.java");
 		
 		// scene2d ui package
 		gatherJavaFiles(new FileHandle("src/com/badlogic/gdx/scenes/scene2d/ui"), excludes, excludesHandles, true);
