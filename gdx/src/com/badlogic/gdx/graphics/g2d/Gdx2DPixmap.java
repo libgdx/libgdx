@@ -239,7 +239,7 @@ public class Gdx2DPixmap implements Disposable {
 	
 	private static native ByteBuffer load (long[] nativeData, byte[] buffer, int offset, int len, int requestedFormat); /*MANUAL	
 		const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
-		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer, len, requestedFormat);
+		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len, requestedFormat);
 		env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
 	
 		if(pixmap==0)
