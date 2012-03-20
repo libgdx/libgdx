@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.model.skeleton;
 
 import com.badlogic.gdx.graphics.Mesh;
@@ -25,12 +26,16 @@ public class SkeletonSubMesh extends SubMesh {
 	public short[] indices;
 	public float[] vertices;
 	public float[] skinnedVertices;
-	public int primitiveType;
 	public int[][] boneAssignments;
 	public float[][] boneWeights;
 
 	@Override
 	public void getBoundingBox (BoundingBox bbox) {
 		mesh.calculateBoundingBox(bbox);
+	}
+
+	@Override
+	public Mesh getMesh () {
+		return mesh;
 	}
 }

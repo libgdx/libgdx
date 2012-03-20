@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 public class Material {
 	final public String name;
 	final public MaterialAttribute[] attributes;
+	public ShaderProgram shader;
 
 	public Material (String name, MaterialAttribute... attributes) {
 		this.name = name;
@@ -48,7 +49,7 @@ public class Material {
 		}
 		return new Material(name, attributes);
 	}
-	
+
 	@Override
 	public int hashCode () {
 		final int prime = 31;
@@ -73,4 +74,28 @@ public class Material {
 		} else if (!name.equals(other.name)) return false;
 		return true;
 	}
+
+	public boolean shaderEquals (Material other) {
+		if (this == other) return true;
+
+		int len = this.attributes.length;
+		if (len != other.attributes.length) return false;
+
+		for (int i = 0; i < len; i++) {
+			final String str = this.attributes[i].name;
+			if (str == null) return false;
+
+			boolean matchFound = false;
+			for (int j = 0; j < len; j++) {
+				if (str.equals(other.attributes[j].name)) {
+					matchFound = true;
+					break;
+				}
+			}
+			if (!matchFound) return false;
+		}
+
+		return true;
+	}
+
 }

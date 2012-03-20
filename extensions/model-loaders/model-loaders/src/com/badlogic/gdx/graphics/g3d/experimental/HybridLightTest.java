@@ -52,7 +52,6 @@ public class HybridLightTest implements ApplicationListener {
 	private Texture texture;
 
 	FPSLogger logger = new FPSLogger();
-	ShaderProgram shader;
 	private Matrix4 modelMatrix = new Matrix4();
 	private Matrix4 modelMatrix2 = new Matrix4();
 	final private Matrix3 normalMatrix = new Matrix3();
@@ -76,6 +75,7 @@ public class HybridLightTest implements ApplicationListener {
 			v.x += MathUtils.sin(timer) * 0.01f;
 			v.z += MathUtils.cos(timer) * 0.01f;
 		}
+		c4.color.r = 0.5f + ((MathUtils.sin(timer) + 1f) * 0.25f);
 
 		Gdx.gl.glEnable(GL10.GL_CULL_FACE);
 		Gdx.gl.glCullFace(GL10.GL_BACK);
@@ -85,13 +85,6 @@ public class HybridLightTest implements ApplicationListener {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
-		shader.begin();
-
-		shader.setUniformf("camPos", cam.position.x, cam.position.y, cam.position.z);
-		shader.setUniformMatrix("u_projectionViewMatrix", cam.combined);
-
-		shader.end();
-
 		protoRenderer.begin();
 
 		protoRenderer.draw(model, instance);
@@ -100,12 +93,12 @@ public class HybridLightTest implements ApplicationListener {
 
 	}
 
+	ColorAttribute c4;
+
 	public void create () {
 
-		// lightShader = ShaderLoader.createShader("vertexpath", "vertexpath");
-
 		lightManager = new LightManager(LIGHTS_NUM, LightQuality.FRAGMENT);
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < LIGHTS_NUM; i++) {
 			PointLight l = new PointLight();
 			l.position.set(MathUtils.random(8) - 4, MathUtils.random(6), MathUtils.random(8) - 4);
 			l.color.r = MathUtils.random();
@@ -130,10 +123,8 @@ public class HybridLightTest implements ApplicationListener {
 		Gdx.input.setInputProcessor(camController);
 
 		texture = new Texture(Gdx.files.internal("data/multipleuvs_1.png"), null, true);
-
 		texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
-
-		texture2 = new Texture(Gdx.files.internal("data/multipleuvs_2.png"), null, true);
+		texture2 = new Texture(Gdx.files.internal("data/texture2UV1S.png"), null, true);
 		texture2.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 
 		model = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/models/sphere.obj"));
@@ -150,24 +141,19 @@ public class HybridLightTest implements ApplicationListener {
 		model2.getBoundingBox(box);
 		instance2.radius = box.getDimensions().len() / 2;
 
-		protoRenderer = new PrototypeRendererGL20();
-		protoRenderer.setLightManager(lightManager);
+		protoRenderer = new PrototypeRendererGL20(lightManager);
+		protoRenderer.cam = cam;
 
 		MaterialAttribute c2 = new ColorAttribute(new Color(0.95f, 0.95f, 0.95f, 1.0f), ColorAttribute.diffuse);
 		MaterialAttribute c1 = new ColorAttribute(new Color(0.52f, 1.00f, 0.51f, 1.0f), ColorAttribute.specular);
 		MaterialAttribute c3 = new ColorAttribute(new Color(0.01f, 0.05f, 0.05f, 1.0f), ColorAttribute.emissive);
 		MaterialAttribute t1 = new TextureAttribute(texture, 0, TextureAttribute.diffuseTexture);
-		MaterialAttribute t2 = new TextureAttribute(texture2, 1, TextureAttribute.lightmapTexture);
-		Material material = new Material("basic", c1, c2, c3, t1, t2);
+		Material material = new Material("basic", c1, c2, c3, t1);
 		model2.setMaterial(material);
 
-		MaterialAttribute c4 = new ColorAttribute(new Color(0.3f, 0.15f, 0.05f, 1.0f), ColorAttribute.emissive);
+		c4 = new ColorAttribute(new Color(0.5f, 0.25f, 0.15f, 1.0f), ColorAttribute.emissive);
 		Material material2 = new Material("shiningBall", c1, c2, c4);
 		model.setMaterial(material2);
-
-		shader = ShaderFactory.createShader(material, lightManager);
-
-		protoRenderer.setShader(shader);
 
 	}
 
@@ -181,7 +167,6 @@ public class HybridLightTest implements ApplicationListener {
 		model.dispose();
 		model2.dispose();
 		texture.dispose();
-		shader.dispose();
 
 	}
 
@@ -198,4 +183,5 @@ public class HybridLightTest implements ApplicationListener {
 		config.useGL20 = true;
 		new JoglApplication(new HybridLightTest(), config);
 	}
+
 }

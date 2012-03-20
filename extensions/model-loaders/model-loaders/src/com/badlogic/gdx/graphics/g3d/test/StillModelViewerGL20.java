@@ -124,8 +124,18 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		}
 		lightManager.ambientLight.set(.03f, 0.05f, 0.06f, 0);
 
-		protoRenderer = new PrototypeRendererGL20();
-		protoRenderer.setLightManager(lightManager);
+		protoRenderer = new PrototypeRendererGL20(lightManager);
+		protoRenderer.cam = cam;
+
+
+		MaterialAttribute c1 = new ColorAttribute(new Color(0.5f, 0.51f, 0.51f, 1.0f), ColorAttribute.specular);
+		MaterialAttribute c2 = new ColorAttribute(new Color(0.95f, 0.95f, 0.95f, 1.0f), ColorAttribute.diffuse);
+		MaterialAttribute c3 = new ColorAttribute(new Color(0.01f, 0.05f, 0.05f, 1.0f), ColorAttribute.emissive);
+		MaterialAttribute t1 = new TextureAttribute(textures[0], 0, TextureAttribute.diffuseTexture);
+		Material material = new Material("basic", c1, c2, c3, t1);
+
+		model.setMaterial(material);
+
 
 		instance = new StillModelNode();
 		instance.getTransform().translate(-len / 2, -1, 2);
@@ -134,19 +144,7 @@ public class StillModelViewerGL20 implements ApplicationListener {
 
 		instance.radius = bounds.getDimensions().len() / 2;
 		instance2.radius = instance.radius;
-
-		MaterialAttribute c1 = new ColorAttribute(new Color(0.5f, 0.51f, 0.51f, 1.0f), ColorAttribute.specular);
-		MaterialAttribute c2 = new ColorAttribute(new Color(0.95f, 0.95f, 0.95f, 1.0f), ColorAttribute.diffuse);
-		MaterialAttribute c3 = new ColorAttribute(new Color(0.01f, 0.05f, 0.05f, 1.0f), ColorAttribute.emissive);
-		MaterialAttribute t1 = new TextureAttribute(textures[0], 0, TextureAttribute.diffuseTexture);
-		MaterialAttribute t2 = new TextureAttribute(textures[1], 1, TextureAttribute.lightmapTexture);
-		Material material = new Material("basic", c1, c2, c3, t1, t2);
-		model.setMaterial(material);
-
-		shader2 = ShaderFactory.createShader(material, lightManager);
-
-		lightManager.quality = LightQuality.FRAGMENT;
-		shader1 = ShaderFactory.createShader(material, lightManager);
+		
 	}
 
 	@Override
@@ -156,11 +154,6 @@ public class StillModelViewerGL20 implements ApplicationListener {
 
 	@Override
 	public void render () {
-		ShaderProgram shader = shader2;
-		if (Gdx.input.isTouched()) {
-			shader = shader1;
-		}
-		protoRenderer.setShader(shader);
 
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
@@ -170,16 +163,6 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		instance2.getTransform().rotate(0, 1, 0.1f, -15 * Gdx.graphics.getDeltaTime());
 
 		cam.update();
-
-		shader.begin();
-		shader.setUniformMatrix("u_projectionViewMatrix", cam.combined);
-		shader.setUniformf("camPos", cam.position.x, cam.position.y, cam.position.z);
-		shader.end();
-
-		textures[0].bind(0);
-
-		// shader.setUniformi("u_texture1", 1);
-		// textures[1].bind(1);
 
 		protoRenderer.begin();
 		protoRenderer.draw(model, instance);

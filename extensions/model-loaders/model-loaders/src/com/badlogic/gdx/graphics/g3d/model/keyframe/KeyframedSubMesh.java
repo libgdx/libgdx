@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.model.keyframe;
 
 import com.badlogic.gdx.graphics.Mesh;
@@ -26,7 +27,6 @@ public class KeyframedSubMesh extends SubMesh {
 	public final float[] blendedVertices;
 	public final int animatedComponents;
 	public final ObjectMap<String, KeyframedAnimation> animations;
-	public final int primitiveType;
 
 	public KeyframedSubMesh (String name, Mesh mesh, float[] blendedVertices, ObjectMap<String, KeyframedAnimation> animations,
 		int animatedComponents, int primitiveType) {
@@ -41,5 +41,10 @@ public class KeyframedSubMesh extends SubMesh {
 	@Override
 	public void getBoundingBox (BoundingBox bbox) {
 		mesh.calculateBoundingBox(bbox);
+	}
+
+	@Override
+	public Mesh getMesh () {
+		return mesh;
 	}
 }
