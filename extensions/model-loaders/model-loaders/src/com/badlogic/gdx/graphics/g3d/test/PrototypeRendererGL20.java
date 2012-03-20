@@ -21,29 +21,23 @@ import com.badlogic.gdx.utils.Array;
 
 //stuff that happens
 //0. render begin
-//1. still and animated models are added to different queues
-//2. render ends
-//3. frustum culling
-//4  animated models meshes are calculated and pushed to model queue
-//5. closest lights are calculated
-//6  models are rendered
+//1. frustum culling
+//1.1 if animated, animation is solved and..
+//1.2. all models and instances are put to one queue
+//3. render ends
+//for all models
+//5. batching involving shaders, materials and texture should happen.(impossible to do perfect.)
+//4. closest lights are calculated per model
+//6  model are rendered
 
 //WIP
-//how to choose shader
-//when to compile shaders.
-//is #ifdef scheme enough for shader combinations
-//more stuff
+//tranparency and more batching
 
 public class PrototypeRendererGL20 implements ModelRenderer {
 
 	static final int SIZE = 256;// TODO better way
 	final private Array<Model> modelQueue = new Array<Model>(false, SIZE, Model.class);
-	final private Array<StillModelInstance> stillModelInstances = new Array<StillModelInstance>(false, SIZE,
-		StillModelInstance.class);
-
-	final private Array<AnimatedModel> animatedModelQueue = new Array<AnimatedModel>(false, SIZE, AnimatedModel.class);
-	final private Array<AnimatedModelInstance> animatedModelInstances = new Array<AnimatedModelInstance>(false, SIZE,
-		AnimatedModelInstance.class);
+	final private Array<StillModelInstance> modelInstances = new Array<StillModelInstance>(false, SIZE, StillModelInstance.class);
 
 	final private MaterialShaderHandler materialShaderHandler;
 	private LightManager lightManager;
@@ -59,105 +53,61 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		materialShaderHandler = new MaterialShaderHandler(lightManager);
 	}
 
-// public void setLightManager(LightManager lightManager) {
-// this.lightManager = lightManager;
-// if (drawing)
-// flush();
-// }
-
 	@Override
 	public void begin () {
 		drawing = true;
-
 		// all setting has to be done before this
-
 		// example: camera updating or updating lights positions
 	}
 
 	@Override
 	public void draw (StillModel model, StillModelInstance instance) {
-		// add to render queue
+		if (cam != null) if (!cam.frustum.sphereInFrustum(instance.getSortCenter(), instance.getBoundingSphereRadius())) return;
 		modelQueue.add(model);
-		stillModelInstances.add(instance);
+		modelInstances.add(instance);
 	}
 
 	@Override
 	public void draw (AnimatedModel model, AnimatedModelInstance instance) {
-		animatedModelQueue.add(model);
-		animatedModelInstances.add(instance);
+
+		if (cam != null) if (!cam.frustum.sphereInFrustum(instance.getSortCenter(), instance.getBoundingSphereRadius())) return;
+		model.setAnimation(instance.getAnimation(), instance.getAnimationTime(), instance.isLooping());
+
+		// move skinned models to drawing list
+		modelQueue.add(model);
+		modelInstances.add(instance);
 	}
 
 	@Override
 	public void end () {
-
-		// TODO how materials is accounted
-
-		// batched frustum vs bounding sphere culling(if slow JNI) for all
-		// models,
-		// Maybe at somewhere else,
-		// TODO move this to cullingManager
-		if (cam != null) {
-			for (int i = modelQueue.size - 1; i >= 0; i--) {
-				final StillModelInstance instance = stillModelInstances.items[i];
-				if (!cam.frustum.sphereInFrustum(instance.getSortCenter(), instance.getBoundingSphereRadius())) {
-					stillModelInstances.removeIndex(i);
-					modelQueue.removeIndex(i);
-				}
-			}
-			for (int i = animatedModelInstances.size - 1; i >= 0; i--) {
-				final StillModelInstance instance = animatedModelInstances.items[i];
-				if (!cam.frustum.sphereInFrustum(instance.getSortCenter(), instance.getBoundingSphereRadius())) {
-					animatedModelInstances.removeIndex(i);
-					animatedModelQueue.removeIndex(i);
-				}
-			}
-		}
-
-		// sort models(submeshes??)to tranparent and opaque render queue, maybe
-		// that can be done at flush?
-
+		// maybe rethink this :)
 		flush();
 	}
 
 	private void flush () {
-		drawing = false;
-
-		// frustum culling via cullingManager
-
-		for (int i = 0; i < animatedModelQueue.size; i++) {
-			final AnimatedModelInstance instance = animatedModelInstances.items[i];
-			final String name = instance.getAnimation();
-			final float time = instance.getAnimationTime();
-			boolean looping = instance.isLooping();
-			final AnimatedModel model = animatedModelQueue.items[i];
-			model.setAnimation(name, time, looping);
-
-			// move skinned models to drawing list
-			modelQueue.add(model);
-		}
-		animatedModelQueue.clear();
-		animatedModelInstances.clear();
-
 		// sort opaque meshes from front to end, perfect accuracy is not needed
 
 		// find N nearest lights per model
 		// draw all models from opaque queue
 		for (int i = 0; i < modelQueue.size; i++) {
-			final StillModelInstance instance = stillModelInstances.items[i];
+			final StillModelInstance instance = modelInstances.items[i];
 			final Matrix4 modelMatrix = instance.getTransform();
 			final Vector3 center = instance.getSortCenter();
+			lightManager.calculateLights(center.x, center.y, center.z);
 
+			boolean matrixChanged = true;
 			final Model model = modelQueue.items[i];
 			final SubMesh subMeshes[] = model.getSubMeshes();
 			final Material materials[] = instance.getMaterials();
 
-			// TODO FIX ME if two different models share materials matrices are not updated.
 			final int len = subMeshes.length;
 			for (int j = 0; j < len; j++) {
 				final SubMesh subMesh = subMeshes[j];
 				final Material material = materials != null ? materials[j] : subMesh.material;
-				bindShader(material, modelMatrix, center);
-
+				if (bindShader(material) || matrixChanged) {
+					currentShader.setUniformMatrix("u_normalMatrix", normalMatrix.set(modelMatrix), false);
+					currentShader.setUniformMatrix("u_modelMatrix", modelMatrix, false);
+				}
 				if (material != currentMaterial) {
 					currentMaterial = material;
 					currentMaterial.bind(currentShader);
@@ -179,26 +129,26 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 		// clear all queus
 		modelQueue.clear();
-		stillModelInstances.clear();
-
+		modelInstances.clear();
+		drawing = false;
 	}
 
-	void bindShader (Material material, Matrix4 matrix, Vector3 center) {
+	/** @param material
+	 * @return true if new shader was binded */
+	boolean bindShader (Material material) {
 
 		if (material.shader == null) material.shader = materialShaderHandler.getShader(material);
 
-		if (material.shader == currentShader) return;
+		if (material.shader == currentShader) return false;
 
 		currentShader = material.shader;
 		currentShader.begin();
 
 		lightManager.applyGlobalLights(currentShader);
-		lightManager.calculateAndApplyLightsToModel(center, currentShader);
+		lightManager.applyLights(currentShader);
 		currentShader.setUniformMatrix("u_projectionViewMatrix", cam.combined);
 		currentShader.setUniformf("camPos", cam.position.x, cam.position.y, cam.position.z);
-
-		currentShader.setUniformMatrix("u_normalMatrix", normalMatrix.set(matrix), false);
-		currentShader.setUniformMatrix("u_modelMatrix", matrix, false);
+		return true;
 	}
 
 	public void dispose () {
