@@ -126,7 +126,6 @@ public class StageTest extends GdxTest implements InputProcessor {
 		fps.color.set(0, 1, 0, 1);
 		ui.addActor(fps);
 
-		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		renderer = new ImmediateModeRenderer10();
 		Gdx.input.setInputProcessor(this);
 	}

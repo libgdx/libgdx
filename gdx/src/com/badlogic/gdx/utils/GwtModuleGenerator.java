@@ -68,11 +68,11 @@ public class GwtModuleGenerator {
 		excludes.add("AtomicQueue.java");
 		excludes.add("LittleEndianInputStream.java");
 		excludes.add("PauseableThread.java");
-//		excludes.add("Json.java");
-//		excludes.add("JsonWriter.java");
+		excludes.add("DesktopClipboard.java");
+		excludes.add("AndroidClipboard.java");
 		
 		// scene2d ui package
-		gatherJavaFiles(new FileHandle("src/com/badlogic/gdx/scenes/scene2d/ui"), excludes, excludesHandles, true);
+//		gatherJavaFiles(new FileHandle("src/com/badlogic/gdx/scenes/scene2d/ui"), excludes, excludesHandles, true);
 
 		Set<String> includes = new HashSet<String>();
 		Map<String, FileHandle> includesHandles = new TreeMap<String, FileHandle>();
@@ -94,6 +94,7 @@ public class GwtModuleGenerator {
 		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		XmlWriter builder = new XmlWriter(writer);
 		builder.element("module").attribute("rename-to", "com.badlogic.gdx");
+		builder.element("inherits").attribute("name", "com.esotericsoftware.tablelayout").pop();
 		builder.element("source").attribute("path", "gdx");
 		for(String include: includesHandles.keySet()) {
 			String name = includesHandles.get(include).path().replace("\\", "/").replace("src/com/badlogic/gdx/", "");

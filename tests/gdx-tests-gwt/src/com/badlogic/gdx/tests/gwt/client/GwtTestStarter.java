@@ -41,6 +41,7 @@ import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
 import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
+import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.YDownTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -84,6 +85,7 @@ public class GwtTestStarter extends GwtApplication {
 		new SpriteCacheOffsetTest(),
 		new SpriteCacheTest(),
 		new TextureAtlasTest(),
+		new UITest(),
 		new VertexBufferObjectShaderTest(),
 		new YDownTest()
 	};
@@ -95,6 +97,6 @@ public class GwtTestStarter extends GwtApplication {
 
 	@Override
 	public ApplicationListener getApplicationListener () {
-		return new Box2DTest();
+		return new UITest();
 	}
 }

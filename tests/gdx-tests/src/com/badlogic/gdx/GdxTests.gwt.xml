@@ -34,7 +34,7 @@
 		<exclude name="**/SoundTest.java"/>
 		<exclude name="**/SoundTouchTest.java"/>
 		<exclude name="**/StagePerformanceTest.java"/>
-		<exclude name="**/StageTest.java"/>
+<!-- 		<exclude name="**/StageTest.java"/> -->
 		<exclude name="**/StbTrueTypeTest.java"/>
 		<exclude name="**/TextButtonTestGL2.java"/>
 		<exclude name="**/TextureDownloadTest.java"/>
@@ -43,7 +43,7 @@
 		<exclude name="**/TextButtonTest.java"/>
 		<exclude name="**/TileTest.java"/>
 		<exclude name="**/TiledMapTest.java"/>
-		<exclude name="**/UITest.java"/>
+<!-- 		<exclude name="**/UITest.java"/> -->
 		<exclude name="**/VorbisTest.java"/>
 		<exclude name="**/WavTest.java"/>
 		<exclude name="**/AssetsFileGenerator.java"/>

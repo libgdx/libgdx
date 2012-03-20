@@ -104,7 +104,7 @@ t:data/tiledmap/tmw-desert-spacing packfile
 i:data/tiledmap/tmw-desert-spacing1.png
 i:data/tiles.png
 i:data/ui.png
-b:data/uiskin.json
+t:data/uiskin.json
 i:data/uiskin.png
 t:data/verdana39.fnt
 i:data/verdana39.png

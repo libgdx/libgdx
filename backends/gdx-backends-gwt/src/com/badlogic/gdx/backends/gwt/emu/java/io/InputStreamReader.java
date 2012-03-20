@@ -24,9 +24,10 @@ public class InputStreamReader extends Reader {
   {
     this(in);
 
-    if (! encoding.equals("UTF-8")) {
-      throw new UnsupportedEncodingException(encoding);
-    }    
+    // FIXME this is bad, but some APIs seem to use "ISO-8859-1", fuckers...
+//    if (! encoding.equals("UTF-8")) {
+//      throw new UnsupportedEncodingException(encoding);
+//    }    
   }
 
   

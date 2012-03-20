@@ -5,6 +5,7 @@
 	<inherits name='com.allen_sauer.gwt.voices.gwt-voices' />
 	<inherits name="com.google.gwt.typedarrays.TypedArrays" />
 	<inherits name="com.google.gwt.webgl.WebGL" />
+	<inherits name="com.badlogic.gwtref.GwtReflect"/>
 
 	<super-source path="gwt/emu" />
 	<source path="gwt">
