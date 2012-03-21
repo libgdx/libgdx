@@ -82,7 +82,7 @@ public class GwtGL20 implements GL20 {
 		for(int i = buffer.position(), j = 0; i < buffer.limit(); i++, j++) {
 			floatBuffer.set(j, array[i]);
 		}
-		return floatBuffer;
+		return floatBuffer.subarray(0, buffer.remaining());
 	}
 	
 	public Uint16Array copy(ShortBuffer buffer) {
@@ -91,7 +91,7 @@ public class GwtGL20 implements GL20 {
 		for(int i = buffer.position(), j = 0; i < buffer.limit(); i++, j++) {
 			shortBuffer.set(j, array[i]);
 		}
-		return shortBuffer;
+		return shortBuffer.subarray(0,  buffer.remaining());
 	}
 	
 	private int allocateUniformLocationId(int program, WebGLUniformLocation location) {
