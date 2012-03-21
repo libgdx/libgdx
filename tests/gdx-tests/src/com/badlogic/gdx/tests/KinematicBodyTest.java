@@ -64,7 +64,6 @@ public class KinematicBodyTest extends GdxTest {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		world.step(Math.min(0.032f, Gdx.graphics.getDeltaTime()), 3, 4);
 		cam.update();
-		cam.apply(Gdx.gl10);
 		renderer.render(world, cam.combined);
 	}
 }

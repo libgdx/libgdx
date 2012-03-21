@@ -54,7 +54,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		createWorld();
 		Gdx.input.setInputProcessor(this);
 		batch = new SpriteBatch();
-		font = new BitmapFont();
+		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 	}
  
 	private void createWorld() {

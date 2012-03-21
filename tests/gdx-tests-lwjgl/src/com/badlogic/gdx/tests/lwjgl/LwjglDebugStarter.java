@@ -18,12 +18,20 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.tests.ActionSequenceTest;
+import com.badlogic.gdx.tests.ActionTest;
 import com.badlogic.gdx.tests.AssetManagerTest;
 import com.badlogic.gdx.tests.AtlasIssueTest;
 import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
+import com.badlogic.gdx.tests.Box2DCharacterControllerTest;
 import com.badlogic.gdx.tests.Box2DTest;
+import com.badlogic.gdx.tests.Box2DTestCollection;
+import com.badlogic.gdx.tests.ComplexActionTest;
 import com.badlogic.gdx.tests.CustomShaderSpriteBatchTest;
 import com.badlogic.gdx.tests.DecalTest;
+import com.badlogic.gdx.tests.ImageScaleTest;
+import com.badlogic.gdx.tests.ImageTest;
+import com.badlogic.gdx.tests.LabelTest;
 import com.badlogic.gdx.tests.MeshShaderTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
@@ -45,11 +53,11 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-image/libs/gdx-image-natives.jar").load("gdx-image");
 		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
 		
-		GdxTest test = new Box2DTest();
+		GdxTest test = new Box2DTestCollection();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 800;
 		config.height = 480;
-		config.useGL20 = test.needsGL20();
+		config.useGL20 = true;
 		config.vSyncEnabled = true;
 		config.resizable = true;
 		new LwjglApplication(test, config);

@@ -87,10 +87,8 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 
 		startTime = TimeUtils.nanoTime();
 		// clear the screen and setup the projection matrix
-		GL10 gl = Gdx.app.getGraphics().getGL10();
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
-		camera.apply(gl);
 
 		// render the world using the debug renderer
 		renderer.render(world, camera.combined);
@@ -128,7 +126,7 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 		createWorld(world);
 
 		batch = new SpriteBatch();
-		font = new BitmapFont();
+		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 	}
 
 	@Override

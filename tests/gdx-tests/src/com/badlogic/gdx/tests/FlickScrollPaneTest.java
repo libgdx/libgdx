@@ -34,7 +34,7 @@ public class FlickScrollPaneTest extends GdxTest {
 
 	public void create () {
 		stage = new Stage(0, 0, false);
-		font = new BitmapFont();
+		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 		Gdx.input.setInputProcessor(stage);
 
 		Gdx.graphics.setVSync(false);

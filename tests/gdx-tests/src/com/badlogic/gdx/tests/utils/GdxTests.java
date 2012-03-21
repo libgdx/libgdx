@@ -53,7 +53,7 @@ public class GdxTests {
 			BitmapFontFlipTest.class, GroupCullingTest.class,
 			GestureDetectorTest.class, LabelTest.class, BitmapFontTest.class,
 			BlitTest.class, TableTest.class, BobTest.class,
-			ImageScaleTest.class, Box2DInitialOverlapTest.class,
+			ImageScaleTest.class,
 			Box2DTest.class, InterpolationTest.class,
 			Box2DTestCollection.class, BufferUtilsTest.class, ImageTest.class,
 			CompassTest.class, ComplexActionTest.class, CullTest.class,

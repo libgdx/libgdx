@@ -304,6 +304,7 @@ public class GwtInput implements Input {
 	}
 
 	private void handleEvent (NativeEvent e) {
+		
 		if(e.getType().equals("mousedown")) {
 			if(!e.getEventTarget().equals(canvas) || touched) {
 				float mouseX = (int)getRelativeX(e, canvas);
@@ -369,6 +370,8 @@ public class GwtInput implements Input {
 			this.pressedKeys.remove(code);
 			if(processor != null) processor.keyUp(code);
 		}
+		
+		if(hasFocus) e.stopPropagation();
 	}
 	
 	/** borrowed from PlayN, thanks guys **/

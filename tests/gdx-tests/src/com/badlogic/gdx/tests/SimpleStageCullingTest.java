@@ -124,7 +124,7 @@ public class SimpleStageCullingTest extends GdxTest {
 
 		// we also want to output the number of visible actors, so we need a SpriteBatch and a BitmapFont
 		batch = new SpriteBatch();
-		font = new BitmapFont();
+		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 	}
 
 	public void render () {

@@ -22,6 +22,8 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Align;
@@ -36,18 +38,16 @@ public class LabelTest extends GdxTest {
 	Stage stage;
 	SpriteBatch batch;
 	Actor root;
-	ImmediateModeRenderer10 renderer;
+	ShapeRenderer renderer;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		renderer = new ImmediateModeRenderer10();
+		renderer = new ShapeRenderer();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 		skin.getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		stage = new Stage(0, 0, false);
 		Gdx.input.setInputProcessor(stage);
-
-		Gdx.gl10.glColor4f(1, 0, 0, 0);
 
 		Table table = new Table();
 		stage.addActor(table);
@@ -97,9 +97,9 @@ public class LabelTest extends GdxTest {
 	}
 
 	public void drawLine (float x1, float y1, float x2, float y2) {
-		renderer.begin(batch.getProjectionMatrix(), GL10.GL_LINES);
-		renderer.vertex(x1, y1, 0);
-		renderer.vertex(x2, y2, 0);
+		renderer.setProjectionMatrix(batch.getProjectionMatrix());
+		renderer.begin(ShapeType.Line);
+		renderer.line(x1, y1, x2, y2);
 		renderer.end();
 	}
 

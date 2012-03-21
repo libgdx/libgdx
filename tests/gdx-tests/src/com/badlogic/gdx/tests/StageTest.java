@@ -28,6 +28,8 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -42,7 +44,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 	private static final int NUM_GROUPS = 5;
 	private static final int NUM_SPRITES = (int)Math.sqrt(400 / NUM_GROUPS);
 	private static final float SPACING = 5;
-	ImmediateModeRenderer10 renderer;
+	ShapeRenderer renderer;
 	Stage stage;
 	Stage ui;
 	Texture texture;
@@ -61,7 +63,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 	public void create () {
 		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		font = new BitmapFont();
+		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 
 		stage = new Stage(480, 320, true);
 
@@ -126,7 +128,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		fps.color.set(0, 1, 0, 1);
 		ui.addActor(fps);
 
-		renderer = new ImmediateModeRenderer10();
+		renderer = new ShapeRenderer();
 		Gdx.input.setInputProcessor(this);
 	}
 
@@ -148,10 +150,9 @@ public class StageTest extends GdxTest implements InputProcessor {
 
 	@Override
 	public void render () {
-		GL10 gl = Gdx.graphics.getGL10();
-		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		if (Gdx.input.isTouched()) {
 			stage.toStageCoordinates(Gdx.input.getX(), Gdx.input.getY(), point);
@@ -200,16 +201,14 @@ public class StageTest extends GdxTest implements InputProcessor {
 
 		stage.draw();
 
-		Gdx.graphics.getGL10().glPointSize(4);
-		renderer.begin(GL10.GL_POINTS);
+		renderer.begin(ShapeType.Point);
+		renderer.setColor(1, 0, 0, 1);
 		len = stage.getRoot().getGroups().size();
 		for (int i = 0; i < len; i++) {
-			renderer.color(1, 0, 0, 1);
 			Group group = stage.getRoot().getGroups().get(i);
-			renderer.vertex(group.x + group.originX, group.y + group.originY, 0);
+			renderer.point(group.x + group.originX, group.y + group.originY, 0);
 		}
 		renderer.end();
-		Gdx.graphics.getGL10().glPointSize(4);
 
 		((Label)ui.findActor("fps")).setText("fps: " + Gdx.graphics.getFramesPerSecond() + ", actors " + images.size()
 			+ ", groups " + stage.getGroups().size());
