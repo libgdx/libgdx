@@ -71,8 +71,8 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	public void draw (AnimatedModel model, AnimatedModelInstance instance) {
 
 		if (cam != null) if (!cam.frustum.sphereInFrustum(instance.getSortCenter(), instance.getBoundingSphereRadius())) return;
-		model.setAnimation(instance.getAnimation(), instance.getAnimationTime(), instance.isLooping());
 
+		model.setAnimation(instance.getAnimation(), instance.getAnimationTime(), instance.isLooping());
 		// move skinned models to drawing list
 		modelQueue.add(model);
 		modelInstances.add(instance);
@@ -91,21 +91,22 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		// draw all models from opaque queue
 		for (int i = 0; i < modelQueue.size; i++) {
 			final StillModelInstance instance = modelInstances.items[i];
-			final Matrix4 modelMatrix = instance.getTransform();
 			final Vector3 center = instance.getSortCenter();
 			lightManager.calculateLights(center.x, center.y, center.z);
+			final Matrix4 modelMatrix = instance.getTransform();
+			normalMatrix.set(modelMatrix);
 
-			boolean matrixChanged = true;
 			final Model model = modelQueue.items[i];
 			final SubMesh subMeshes[] = model.getSubMeshes();
 			final Material materials[] = instance.getMaterials();
 
-			final int len = subMeshes.length;
-			for (int j = 0; j < len; j++) {
+			boolean matrixChanged = true;
+			for (int j = 0; j < subMeshes.length; j++) {
+
 				final SubMesh subMesh = subMeshes[j];
 				final Material material = materials != null ? materials[j] : subMesh.material;
 				if (bindShader(material) || matrixChanged) {
-					currentShader.setUniformMatrix("u_normalMatrix", normalMatrix.set(modelMatrix), false);
+					currentShader.setUniformMatrix("u_normalMatrix", normalMatrix, false);
 					currentShader.setUniformMatrix("u_modelMatrix", modelMatrix, false);
 				}
 				if (material != currentMaterial) {
@@ -114,12 +115,10 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				}
 				subMesh.getMesh().render(currentShader, subMesh.primitiveType);
 			}
-		}
-		currentMaterial = null;
-		if (currentShader != null) {
 			currentShader.end();
 			currentShader = null;
 		}
+
 		// if transparent queue is not empty enable blending(this force gpu to
 		// flush and there is some time to sort)
 
