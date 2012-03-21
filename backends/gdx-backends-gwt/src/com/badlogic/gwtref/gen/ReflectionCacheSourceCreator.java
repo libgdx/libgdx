@@ -203,6 +203,7 @@ public class ReflectionCacheSourceCreator {
 			  name.contains("com.badlogic.gdx.utils.Array") ||
 			  name.contains("com.badlogic.gdx.utils.ObjectMap") ||
 			  name.contains("com.badlogic.gdx.utils.OrderedMap") ||
+			  name.contains("com.badlogic.gdx.utils.Disposable") ||
 			  name.contains("java.util.ArrayList") ||
 			  name.contains("java.util.Map") ||
 			  name.contains("java.util.HashMap") ||

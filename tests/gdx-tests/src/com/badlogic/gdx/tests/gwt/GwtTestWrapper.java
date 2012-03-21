@@ -415,7 +415,7 @@ public class GwtTestWrapper extends GdxTest {
 		new Instancer() {public GdxTest instance(){return new ProjectiveTextureTest();}},
 		new Instancer() {public GdxTest instance(){return new RotationTest();}},
 //		new Instancer() {public GdxTest instance(){return new ScrollPaneTest();}}, // FIXME this messes up stuff, why?
-		new Instancer() {public GdxTest instance(){return new ShaderMultitextureTest();}},
+//		new Instancer() {public GdxTest instance(){return new ShaderMultitextureTest();}}, // FIXME fucks up stuff
 		new Instancer() {public GdxTest instance(){return new ShadowMappingTest();}},
 		new Instancer() {public GdxTest instance(){return new ShapeRendererTest();}},
 		new Instancer() {public GdxTest instance(){return new SimpleAnimationTest();}},
@@ -427,7 +427,7 @@ public class GwtTestWrapper extends GdxTest {
 		new Instancer() {public GdxTest instance(){return new SpriteCacheTest();}},
 		new Instancer() {public GdxTest instance(){return new SoundTest();}},
 		new Instancer() {public GdxTest instance(){return new StageTest();}},
-		new Instancer() {public GdxTest instance(){return new StagePerformanceTest();}},
+//		new Instancer() {public GdxTest instance(){return new StagePerformanceTest();}}, // FIXME borks out
 		new Instancer() {public GdxTest instance(){return new TableTest();}},
 		new Instancer() {public GdxTest instance(){return new TextButtonTest();}},
 		new Instancer() {public GdxTest instance(){return new TextButtonTestGL2();}},
