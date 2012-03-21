@@ -55,6 +55,7 @@ public class MipMapTest extends GdxTest {
 	Texture currTexture;
 	ShaderProgram shader;
 	Stage ui;
+	Skin skin;
 	InputMultiplexer multiplexer;
 	SelectBox minFilter;
 	SelectBox magFilter;
@@ -91,7 +92,7 @@ public class MipMapTest extends GdxTest {
 	}
 
 	private void createUI () {
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 
 		String[] filters = new String[TextureFilter.values().length];
@@ -134,5 +135,15 @@ public class MipMapTest extends GdxTest {
 		shader.end();
 
 		ui.draw();
+	}
+	
+	@Override
+	public void dispose () {
+		shader.dispose();
+		textureHW.dispose();
+		textureSW.dispose();
+		mesh.dispose();
+		ui.dispose();
+		skin.dispose();
 	}
 }

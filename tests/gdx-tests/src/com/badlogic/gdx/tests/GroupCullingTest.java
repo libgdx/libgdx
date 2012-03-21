@@ -15,6 +15,7 @@ public class GroupCullingTest extends GdxTest {
 	static private final int count = 100;
 
 	private Stage stage;
+	private Skin skin;
 	private Table root;
 	private Label drawnLabel;
 	int drawn;
@@ -26,7 +27,7 @@ public class GroupCullingTest extends GdxTest {
 		root = new Table();
 		stage.addActor(root);
 
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 
 		Table labels = new Table();
 		root.add(new ScrollPane(labels, skin)).expand().fill();
@@ -42,6 +43,12 @@ public class GroupCullingTest extends GdxTest {
 			});
 			labels.row();
 		}
+	}
+
+	@Override
+	public void dispose () {
+		stage.dispose();
+		skin.dispose();
 	}
 
 	public void resize (int width, int height) {

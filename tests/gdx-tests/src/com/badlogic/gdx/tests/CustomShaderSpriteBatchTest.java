@@ -29,6 +29,13 @@ public class CustomShaderSpriteBatchTest extends GdxTest {
 		batch.draw(texture, 0, 0);
 		batch.end();
 	}
+	
+	@Override
+	public void dispose () {
+		batch.dispose();
+		shader.dispose();
+		texture.dispose();
+	}
 
 	@Override
 	public boolean needsGL20 () {

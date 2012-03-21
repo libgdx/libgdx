@@ -73,20 +73,10 @@ public class TextureAtlasTest extends GdxTest {
 		batch.end();
 	}
 
-	public void resize (int width, int height) {
-	}
-
-	public void pause () {
-	}
-
-	public void resume () {
-	}
-
 	public void dispose () {
 		atlas.dispose();
-	}
-
-	public boolean needsGL20 () {
-		return false;
+		jumpAtlas.dispose();
+		batch.dispose();
+		font.dispose();
 	}
 }

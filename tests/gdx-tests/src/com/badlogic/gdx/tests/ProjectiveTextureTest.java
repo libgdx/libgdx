@@ -65,6 +65,7 @@ public class ProjectiveTextureTest extends GdxTest {
 	Matrix4 modelNormal = new Matrix4();
 	ShaderProgram projTexShader;
 	Stage ui;
+	Skin skin;
 	InputMultiplexer multiplexer = new InputMultiplexer();
 	PerspectiveCamController controller;
 	ImmediateModeRenderer20 renderer;
@@ -108,7 +109,7 @@ public class ProjectiveTextureTest extends GdxTest {
 
 	public void setupUI () {
 		ui = new Stage(480, 320, true);
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 		TextButton reload = new TextButton("Reload Shaders", skin.getStyle(TextButtonStyle.class), "reload");
 		SelectBox camera = new SelectBox(new String[] {"Camera", "Light"}, skin.getStyle(SelectBoxStyle.class), "camera");
 		Label fps = new Label("fps: ", skin.getStyle(LabelStyle.class), "fps");
@@ -188,5 +189,16 @@ public class ProjectiveTextureTest extends GdxTest {
 		shader.setUniformf("u_color", color.r, color.g, color.b);
 		shader.setUniformi("u_texture", 0);
 		mesh.render(shader, GL20.GL_TRIANGLES);
+	}
+
+	@Override
+	public void dispose () {
+		texture.dispose();
+		plane.dispose();
+		cube.dispose();
+		projTexShader.dispose();
+		ui.dispose();
+		skin.dispose();
+		renderer.dispose();
 	}
 }

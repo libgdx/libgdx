@@ -40,6 +40,7 @@ public class ComplexActionTest extends GdxTest {
 	}
 
 	Stage stage;
+	Texture texture;
 
 	@Override
 	public void create () {
@@ -48,7 +49,7 @@ public class ComplexActionTest extends GdxTest {
 		Action complexAction = Forever.$(Sequence.$(Parallel.$(RotateBy.$(180, 2), ScaleTo.$(1.4f, 1.4f, 2), FadeTo.$(0.7f, 2)),
 			Parallel.$(RotateBy.$(180, 2), ScaleTo.$(1.0f, 1.0f, 2), FadeTo.$(1.0f, 2))));
 
-		Texture texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), false);
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), false);
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		final Image img1 = new Image(new TextureRegion(texture));
@@ -77,5 +78,11 @@ public class ComplexActionTest extends GdxTest {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
+	}
+
+	@Override
+	public void dispose () {
+		stage.dispose();
+		texture.dispose();
 	}
 }

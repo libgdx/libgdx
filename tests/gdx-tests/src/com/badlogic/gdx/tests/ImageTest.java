@@ -16,11 +16,12 @@ public class ImageTest extends GdxTest {
 	Skin skin;
 	Stage ui;
 	Table root;
+	TextureRegion image2;
 
 	@Override
 	public void create () {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
-		TextureRegion image2 = new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")));
+		image2 = new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")));
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		Gdx.input.setInputProcessor(ui);
 
@@ -30,6 +31,13 @@ public class ImageTest extends GdxTest {
 
 		Image image = new Image(image2, Scaling.fill);
 		root.add(image).width(160).height(100);
+	}
+
+	@Override
+	public void dispose () {
+		ui.dispose();
+		skin.dispose();
+		image2.getTexture().dispose();
 	}
 
 	@Override

@@ -61,4 +61,9 @@ public class MultitouchTest extends GdxTest {
 		camera.position.set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);
 		Gdx.input.setInputProcessor(this);
 	}
+
+	@Override
+	public void dispose () {
+		renderer.dispose();
+	}
 }

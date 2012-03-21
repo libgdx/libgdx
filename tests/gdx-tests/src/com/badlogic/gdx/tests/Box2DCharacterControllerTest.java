@@ -56,7 +56,15 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		batch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 	}
- 
+	
+	@Override
+	public void dispose() {
+		world.dispose();
+		renderer.dispose();
+		batch.dispose();
+		font.dispose();
+	}
+	
 	private void createWorld() {
 		float y1 = 1; //(float)Math.random() * 0.1f + 1;
 		float y2 = y1;
@@ -292,21 +300,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		}
 		return false;
 	}
- 
-	@Override
-	public void resize(int width, int height) {
- 
-	}
- 
-	@Override
-	public void pause() {
- 
-	}
- 
-	@Override
-	public void dispose() {
- 
-	}
+
  
 	@Override
 	public boolean keyDown(int keycode) {

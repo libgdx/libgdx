@@ -115,6 +115,12 @@ public class GestureDetectorTest extends GdxTest implements ApplicationListener 
 		batch.end();
 	}
 
+	@Override
+	public void dispose () {
+		texture.dispose();
+		batch.dispose();
+	}
+
 	public boolean needsGL20 () {
 		return false;
 	}

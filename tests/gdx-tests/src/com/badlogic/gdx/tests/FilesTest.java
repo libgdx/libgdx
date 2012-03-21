@@ -477,6 +477,12 @@ public class FilesTest extends GdxTest {
 	}
 
 	@Override
+	public void dispose () {
+		batch.dispose();
+		font.dispose();
+	}
+
+	@Override
 	public boolean needsGL20 () {
 		return false;
 	}

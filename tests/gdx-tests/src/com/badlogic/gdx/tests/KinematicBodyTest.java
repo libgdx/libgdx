@@ -66,4 +66,10 @@ public class KinematicBodyTest extends GdxTest {
 		cam.update();
 		renderer.render(world, cam.combined);
 	}
+
+	@Override
+	public void dispose () {
+		world.dispose();
+		renderer.dispose();
+	}
 }

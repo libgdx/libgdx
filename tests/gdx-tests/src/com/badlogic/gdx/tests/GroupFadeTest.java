@@ -35,11 +35,12 @@ public class GroupFadeTest extends GdxTest {
 		return false;
 	}
 
+	Texture texture;
 	Stage stage;
 
 	@Override
 	public void create () {
-		Texture texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		stage = new Stage(480, 320, true);
 
 		for (int i = 0; i < 100; i++) {
@@ -58,5 +59,11 @@ public class GroupFadeTest extends GdxTest {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
+	}
+
+	@Override
+	public void dispose () {
+		texture.dispose();
+		stage.dispose();
 	}
 }

@@ -35,6 +35,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class TableTest extends GdxTest {
 	Skin skin;
 	Stage stage;
+	Texture texture;
 	Table root;
 
 	@Override
@@ -44,7 +45,8 @@ public class TableTest extends GdxTest {
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 
-		TextureRegion region = new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")));
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		TextureRegion region = new TextureRegion(texture);
 
 		NinePatch patch = skin.getPatch("default-round");
 
@@ -101,7 +103,9 @@ public class TableTest extends GdxTest {
 	}
 
 	@Override
-	public boolean needsGL20 () {
-		return false;
+	public void dispose () {
+		stage.dispose();
+		texture.dispose();
+		skin.dispose();
 	}
 }

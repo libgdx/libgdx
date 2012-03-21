@@ -106,6 +106,14 @@ public class ShaderMultitextureTest extends GdxTest {
 	}
 
 	@Override
+	public void dispose () {
+		texture.dispose();
+		texture2.dispose();
+		shader.dispose();
+		mesh.dispose();
+	}
+
+	@Override
 	public boolean needsGL20 () {
 		return true;
 	}

@@ -151,4 +151,11 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 	public void error (String fileName, Class type, Throwable t) {
 		Gdx.app.error("AssetManagerTest", "couldn't load asset '" + fileName + "'", (Exception)t);
 	}
+
+	@Override
+	public void dispose () {
+		manager.dispose();
+		batch.dispose();
+		font.dispose();
+	}
 }

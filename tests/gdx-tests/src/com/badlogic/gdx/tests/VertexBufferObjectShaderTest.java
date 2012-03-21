@@ -45,6 +45,7 @@ public class VertexBufferObjectShaderTest extends GdxTest {
 	public void dispose () {
 		texture.dispose();
 		vbo.dispose();
+		indices.dispose();
 		shader.dispose();
 	}
 
@@ -90,7 +91,7 @@ public class VertexBufferObjectShaderTest extends GdxTest {
 
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 	}
-
+	
 	@Override
 	public void resume () {
 		vbo.invalidate();

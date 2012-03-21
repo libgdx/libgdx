@@ -73,6 +73,8 @@ public class SortedSpriteTest extends GdxTest {
 	
 	/** spritebatch used for rendering **/
 	SpriteBatch batch;
+	/** the texture used by the sprites **/
+	Texture texture;
 	/** array of sprites **/
 	Array<MySprite> sprites = new Array<MySprite>();
 	/** a comparator, we keep it around so the GC shuts up **/
@@ -85,7 +87,7 @@ public class SortedSpriteTest extends GdxTest {
 		
 		// load a texture, usually you dispose of this 
 		// eventually.
-		Texture texture = new Texture("data/badlogicsmall.jpg");
+		texture = new Texture("data/badlogicsmall.jpg");
 		
 		// create 100 sprites, tinted red, from dark to light. 
 		// red color component is also used as z-value so we
@@ -121,5 +123,10 @@ public class SortedSpriteTest extends GdxTest {
 			sprite.draw(batch);
 		}
 		batch.end();
+	}
+	@Override
+	public void dispose () {
+		batch.dispose();
+		texture.dispose();
 	}
 }	

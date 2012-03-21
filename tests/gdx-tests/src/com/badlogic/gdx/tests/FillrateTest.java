@@ -120,26 +120,6 @@ public class FillrateTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override
-	public boolean keyDown (int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyUp (int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped (char character) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDown (int x, int y, int pointer, int newParam) {
-		return false;
-	}
-
-	@Override
 	public boolean touchUp (int x, int y, int pointer, int button) {
 		mode++;
 		if (mode > 3) mode = 0;
@@ -148,22 +128,8 @@ public class FillrateTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override
-	public boolean touchDragged (int x, int y, int pointer) {
-		return false;
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
-	@Override
-	public boolean touchMoved (int x, int y) {
-		return false;
-	}
-
-	@Override
-	public boolean scrolled (int amount) {
-		return false;
+	public void dispose () {
+		mesh.dispose();
+		texture.dispose();
 	}
 }

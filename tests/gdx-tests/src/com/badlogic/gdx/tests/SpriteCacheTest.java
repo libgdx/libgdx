@@ -43,7 +43,6 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 	int renderMethod = 0;
 
 	private float[] sprites;
-
 	private float[] sprites2;
 
 	@Override
@@ -118,7 +117,7 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 	public void create () {
 		spriteCache = new SpriteCache(1000, true);
 
-		Texture texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		Pixmap pixmap = new Pixmap(32, 32, Format.RGBA8888);
@@ -201,44 +200,15 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override
-	public boolean keyTyped (char character) {
-		return false;
-	}
-
-	@Override
-	public boolean keyUp (int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDown (int x, int y, int pointer, int newParam) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged (int x, int y, int pointer) {
-		return false;
-	}
-
-	@Override
 	public boolean touchUp (int x, int y, int pointer, int button) {
 		renderMethod = (renderMethod + 1) % 2;
 		return false;
 	}
 
 	@Override
-	public boolean needsGL20 () {
-		return false;
+	public void dispose () {
+		texture.dispose();
+		texture2.dispose();
+		spriteCache.dispose();
 	}
-
-	@Override
-	public boolean touchMoved (int x, int y) {
-		return false;
-	}
-
-	@Override
-	public boolean scrolled (int amount) {
-		return false;
-	}
-
 }

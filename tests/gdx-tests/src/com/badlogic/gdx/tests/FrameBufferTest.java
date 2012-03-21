@@ -52,10 +52,10 @@ public class FrameBufferTest extends GdxTest {
 	@Override
 	public void render () {
 		frameBuffer.begin();
-		Gdx.graphics.getGL20().glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
-		Gdx.graphics.getGL20().glClearColor(0f, 1f, 0f, 1);
-		Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.graphics.getGL20().glEnable(GL20.GL_TEXTURE_2D);
+		Gdx.gl20.glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
+		Gdx.gl20.glClearColor(0f, 1f, 0f, 1);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl20.glEnable(GL20.GL_TEXTURE_2D);
 		texture.bind();
 		meshShader.begin();
 		meshShader.setUniformi("u_texture", 0);
@@ -109,6 +109,15 @@ public class FrameBufferTest extends GdxTest {
 
 		meshShader = new ShaderProgram(vertexShader, fragmentShader);
 		if (meshShader.isCompiled() == false) throw new IllegalStateException(meshShader.getLog());
+	}
+
+	@Override
+	public void dispose () {
+		mesh.dispose();
+		texture.dispose();
+		frameBuffer.dispose();
+		spriteBatch.dispose();
+		meshShader.dispose();
 	}
 
 	@Override

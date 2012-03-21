@@ -76,6 +76,13 @@ public class ParallaxTest extends GdxTest {
 		batch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 	}
+	
+	@Override
+	public void dispose () {
+		layers[0].getTexture().dispose();
+		batch.dispose();
+		font.dispose();
+	}
 
 	@Override
 	public void render () {

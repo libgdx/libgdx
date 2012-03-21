@@ -100,6 +100,11 @@ public class SimpleDecalTest extends GdxTest {
 	}
 
 	@Override
+	public void dispose () {
+		batch.dispose();
+	}
+
+	@Override
 	public boolean needsGL20 () {
 		return true;
 	}

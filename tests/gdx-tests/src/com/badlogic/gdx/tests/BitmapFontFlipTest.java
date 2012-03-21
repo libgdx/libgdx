@@ -31,6 +31,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class BitmapFontFlipTest extends GdxTest {
 	private SpriteBatch spriteBatch;
+	private Texture texture;
 	private BitmapFont font;
 	private Sprite logoSprite;
 	private Color red = new Color(1, 0, 0, 0);
@@ -50,7 +51,8 @@ public class BitmapFontFlipTest extends GdxTest {
 		spriteBatch = new SpriteBatch();
 		spriteBatch.setProjectionMatrix(new Matrix4().setToOrtho(0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, 1));
 
-		logoSprite = new Sprite(new Texture(Gdx.files.internal("data/badlogic.jpg")));
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		logoSprite = new Sprite(texture);
 		logoSprite.flip(false, true);
 		logoSprite.setPosition(0, 320 - 256);
 		logoSprite.setColor(1, 1, 1, 0.5f);
@@ -172,5 +174,22 @@ public class BitmapFontFlipTest extends GdxTest {
 
 	public boolean needsGL20 () {
 		return false;
+	}
+
+	@Override
+	public void dispose () {
+		spriteBatch.dispose();
+		font.dispose();
+		texture.dispose();
+		cache1.dispose();
+		cache2.dispose();
+		cache3.dispose();
+		cache4.dispose();
+		cache5.dispose();
+		cacheScaled1.dispose();
+		cacheScaled2.dispose();
+		cacheScaled3.dispose();
+		cacheScaled4.dispose();
+		cacheScaled5.dispose();
 	}
 }

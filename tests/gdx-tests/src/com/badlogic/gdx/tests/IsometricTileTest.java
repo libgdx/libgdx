@@ -81,6 +81,13 @@ public class IsometricTileTest extends GdxTest {
 	}
 
 	@Override
+	public void dispose () {
+		renderer.dispose();
+		texture.dispose();
+		for(SpriteCache cache: caches) cache.dispose();
+	}
+
+	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);

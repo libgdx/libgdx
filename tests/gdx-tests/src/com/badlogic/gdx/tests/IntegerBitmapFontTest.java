@@ -49,6 +49,16 @@ public class IntegerBitmapFontTest extends GdxTest {
 		fillCaches();
 	}
 
+	@Override
+	public void dispose () {
+		batch.dispose();
+		font.dispose();
+		singleLineCache.dispose();
+		singleLineCacheNonInteger.dispose();
+		multiLineCache.dispose();
+		multiLineCacheNonInteger.dispose();
+	}
+
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();

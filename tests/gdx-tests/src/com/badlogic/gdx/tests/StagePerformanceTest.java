@@ -39,6 +39,7 @@ public class StagePerformanceTest extends GdxTest {
 		return true;
 	}
 
+	Texture texture;
 	TextureRegion[] regions;
 	Stage stage;
 	SpriteBatch batch;
@@ -54,10 +55,10 @@ public class StagePerformanceTest extends GdxTest {
 		regions = new TextureRegion[8 * 8];
 		sprites = new Sprite[24 * 12];
 
-		Texture tex = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 		for (int y = 0; y < 8; y++) {
 			for (int x = 0; x < 8; x++) {
-				regions[x + y * 8] = new TextureRegion(tex, x * 32, y * 32, 32, 32);
+				regions[x + y * 8] = new TextureRegion(texture, x * 32, y * 32, 32, 32);
 			}
 		}
 
@@ -114,5 +115,13 @@ public class StagePerformanceTest extends GdxTest {
 		if (Gdx.input.justTouched()) {
 			useStage = !useStage;
 		}
+	}
+
+	@Override
+	public void dispose () {
+		stage.dispose();
+		batch.dispose();
+		font.dispose();
+		texture.dispose();
 	}
 }

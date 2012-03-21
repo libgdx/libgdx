@@ -83,4 +83,12 @@ public class ETC1Test extends GdxTest {
 		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 0, 30);
 		batch.end();
 	}
+
+	@Override
+	public void dispose () {
+		batch.dispose();
+		font.dispose();
+		img1.dispose();
+		img2.dispose();
+	}
 }

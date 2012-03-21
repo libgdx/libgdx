@@ -56,12 +56,13 @@ public class AnimationTest extends GdxTest {
 	Animation leftWalk;
 	Animation rightWalk;
 	Caveman[] cavemen;
+	Texture texture;
 	SpriteBatch batch;
 	FPSLogger fpsLog;
 
 	@Override
 	public void create () {
-		Texture texture = new Texture(Gdx.files.internal("data/walkanim.png"));
+		texture = new Texture(Gdx.files.internal("data/walkanim.png"));
 		TextureRegion[] leftWalkFrames = TextureRegion.split(texture, 64, 64)[0];
 		TextureRegion[] rightWalkFrames = new TextureRegion[leftWalkFrames.length];
 		for (int i = 0; i < rightWalkFrames.length; i++) {
@@ -98,5 +99,11 @@ public class AnimationTest extends GdxTest {
 		}
 
 		fpsLog.log();
+	}
+
+	@Override
+	public void dispose () {
+		batch.dispose();
+		texture.dispose();
 	}
 }

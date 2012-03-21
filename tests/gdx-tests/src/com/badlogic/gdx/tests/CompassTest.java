@@ -70,6 +70,13 @@ public class CompassTest extends GdxTest {
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 	}
 
+	@Override
+	public void dispose () {
+		batch.dispose();
+		renderer.dispose();
+		font.dispose();
+	}
+
 	private String getOrientationString () {
 		StringBuilder builder = new StringBuilder();
 		builder.append("\nazimuth: ");

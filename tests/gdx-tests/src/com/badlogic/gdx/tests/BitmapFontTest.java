@@ -31,14 +31,15 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class BitmapFontTest extends GdxTest {
 	private SpriteBatch spriteBatch;
+	private TextureAtlas atlas;
 	private BitmapFont font;
 	private ShapeRenderer renderer;
 	
 	@Override
 	public void create () {
 		spriteBatch = new SpriteBatch();
-		TextureAtlas textureAtlas = new TextureAtlas("data/pack");
-		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), textureAtlas.findRegion("verdana39"), false);
+		atlas = new TextureAtlas("data/pack");
+		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), atlas.findRegion("verdana39"), false);
 		renderer = new ShapeRenderer();
 		renderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
 	}
@@ -85,5 +86,13 @@ public class BitmapFontTest extends GdxTest {
 
 	public boolean needsGL20 () {
 		return false;
+	}
+
+	@Override
+	public void dispose () {
+		spriteBatch.dispose();
+		renderer.dispose();
+		font.dispose();
+		atlas.dispose();
 	}
 }

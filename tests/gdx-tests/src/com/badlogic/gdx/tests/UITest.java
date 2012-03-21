@@ -63,14 +63,18 @@ public class UITest extends GdxTest {
 	Skin skin;
 	Stage stage;
 	SpriteBatch batch;
+	Texture texture1;
+	Texture texture2;
 	Actor root;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
-		TextureRegion image = new TextureRegion(new Texture(Gdx.files.internal("data/badlogicsmall.jpg")));
-		TextureRegion image2 = new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")));
+		texture1 = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+		texture2 = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		TextureRegion image = new TextureRegion(texture1);
+		TextureRegion image2 = new TextureRegion(texture2);
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		Gdx.input.setInputProcessor(stage);
 
@@ -158,7 +162,10 @@ public class UITest extends GdxTest {
 	}
 
 	@Override
-	public boolean needsGL20 () {
-		return false;
+	public void dispose () {
+		stage.dispose();
+		skin.dispose();
+		texture1.dispose();
+		texture2.dispose();
 	}
 }

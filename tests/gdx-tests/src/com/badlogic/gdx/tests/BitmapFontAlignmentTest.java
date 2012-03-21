@@ -31,6 +31,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 /** Shows how to align single line, wrapped, and multi line text within a rectangle. */
 public class BitmapFontAlignmentTest extends GdxTest {
 	private SpriteBatch spriteBatch;
+	private Texture texture;
 	private BitmapFont font;
 	private BitmapFontCache cache;
 	private Sprite logoSprite;
@@ -46,8 +47,8 @@ public class BitmapFontAlignmentTest extends GdxTest {
 		});
 
 		spriteBatch = new SpriteBatch();
-
-		logoSprite = new Sprite(new Texture(Gdx.files.internal("data/badlogic.jpg"), false));
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		logoSprite = new Sprite(texture);
 		logoSprite.setColor(1, 1, 1, 0.6f);
 		logoSprite.setBounds(50, 100, 400, 100);
 
@@ -192,5 +193,13 @@ public class BitmapFontAlignmentTest extends GdxTest {
 
 	public boolean needsGL20 () {
 		return false;
+	}
+
+	@Override
+	public void dispose () {
+		spriteBatch.dispose();
+		font.dispose();
+		cache.dispose();
+		texture.dispose();
 	}
 }

@@ -28,13 +28,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class TextButtonTest extends GdxTest {
-	
 	private Stage stage;
+	private Skin skin;
 	
 	@Override
 	public void create () {
 		stage = new Stage(0, 0, false, new SpriteBatch());
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 		for (int i = 0; i < 500; i++) {
 			TextButton t = new TextButton("Button"+i, skin);
 			t.x = MathUtils.random(0, Gdx.graphics.getWidth());
@@ -62,7 +62,8 @@ public class TextButtonTest extends GdxTest {
 	}
 
 	@Override
-	public boolean needsGL20 () {
-		return false;
+	public void dispose () {
+		stage.dispose();
+		skin.dispose();
 	}
 }

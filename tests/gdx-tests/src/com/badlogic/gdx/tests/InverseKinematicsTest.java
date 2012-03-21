@@ -72,6 +72,11 @@ public class InverseKinematicsTest extends GdxTest {
 	}
 
 	@Override
+	public void dispose () {
+		renderer.dispose();
+	}
+
+	@Override
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 

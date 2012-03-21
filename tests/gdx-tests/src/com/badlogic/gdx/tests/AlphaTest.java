@@ -54,4 +54,10 @@ public class AlphaTest extends GdxTest {
 	public boolean needsGL20 () {
 		return false;
 	}
+
+	@Override
+	public void dispose () {
+		batch.dispose();
+		texture.dispose();
+	}
 }

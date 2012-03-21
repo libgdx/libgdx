@@ -74,13 +74,9 @@ public class FlickScrollPaneTest extends GdxTest {
 		container.height = height;
 	}
 
-	public void pause () {
-	}
-
-	public void resume () {
-	}
-
 	public void dispose () {
+		stage.dispose();
+		font.dispose();
 	}
 
 	public boolean needsGL20 () {

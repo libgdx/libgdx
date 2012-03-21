@@ -101,6 +101,7 @@ public class SimpleStageCullingTest extends GdxTest {
 
 	OrthoCamController camController;
 	Stage stage;
+	Texture texture;
 	SpriteBatch batch;
 	BitmapFont font;
 
@@ -112,7 +113,7 @@ public class SimpleStageCullingTest extends GdxTest {
 		Gdx.input.setInputProcessor(camController);
 
 		// load a dummy texture
-		Texture texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 
 		// populate the stage with some actors and groups.
 		for (int i = 0; i < 5000; i++) {
@@ -141,6 +142,14 @@ public class SimpleStageCullingTest extends GdxTest {
 		batch.begin();
 		font.draw(batch, "Visible: " + numVisible + ", fps: " + Gdx.graphics.getFramesPerSecond(), 20, 30);
 		batch.end();
+	}
+
+	@Override
+	public void dispose () {
+		stage.dispose();
+		texture.dispose();
+		batch.dispose();
+		font.dispose();
 	}
 
 	@Override

@@ -52,4 +52,13 @@ public class BlitTest extends GdxTest {
 		batch.draw(psRgba8888, psRgb888.getWidth() + 20, 60);
 		batch.end();
 	}
+
+	@Override
+	public void dispose () {
+		batch.dispose();
+		rgb888.dispose();
+		rgba8888.dispose();
+		psRgb888.dispose();
+		psRgba8888.dispose();
+	}
 }

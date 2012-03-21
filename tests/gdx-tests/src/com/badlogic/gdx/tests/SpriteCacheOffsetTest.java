@@ -29,9 +29,11 @@ public class SpriteCacheOffsetTest extends GdxTest implements InputProcessor {
 	private int tileMapHeight = 5;
 	private int tileSize = 32;
 	private SpriteCache cache;
+	private Texture texture;
 
 	public void create () {
-		Sprite sprite = new Sprite(new Texture(Gdx.files.internal("data/badlogicsmall.jpg")));
+		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+		Sprite sprite = new Sprite(texture);
 		sprite.setSize(tileSize, tileSize);
 
 		cache = new SpriteCache(1000, false);
@@ -54,41 +56,9 @@ public class SpriteCacheOffsetTest extends GdxTest implements InputProcessor {
 		cache.end();
 	}
 
-	public boolean keyDown (int keycode) {
-		return false;
-	}
-
-	public boolean keyUp (int keycode) {
-		return false;
-	}
-
-	public boolean keyTyped (char character) {
-		return false;
-	}
-
-	public boolean touchDown (int x, int y, int pointer, int newParam) {
-		return false;
-	}
-
-	public boolean touchUp (int x, int y, int pointer, int button) {
-		return false;
-	}
-
-	public boolean touchDragged (int x, int y, int pointer) {
-		return false;
-	}
-
-	public boolean needsGL20 () {
-		return false;
-	}
-
 	@Override
-	public boolean touchMoved (int x, int y) {
-		return false;
-	}
-
-	@Override
-	public boolean scrolled (int amount) {
-		return false;
+	public void dispose () {
+		cache.dispose();
+		texture.dispose();
 	}
 }

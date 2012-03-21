@@ -37,7 +37,7 @@ public class SimpleAnimationTest extends GdxTest {
 	private float currentFrameTime;
 	private Vector2 position;
 
-	private Texture tex;
+	private Texture texture;
 
 	private Animation downWalk;
 	private Animation leftWalk;
@@ -51,8 +51,8 @@ public class SimpleAnimationTest extends GdxTest {
 	@Override
 	public void create () {
 		Gdx.input.setInputProcessor(this);
-		tex = new Texture(Gdx.files.internal("data/animation.png"));
-		TextureRegion[][] regions = TextureRegion.split(tex, 32, 48);
+		texture = new Texture(Gdx.files.internal("data/animation.png"));
+		TextureRegion[][] regions = TextureRegion.split(texture, 32, 48);
 		TextureRegion[] downWalkReg = regions[0];
 		TextureRegion[] leftWalkReg = regions[1];
 		TextureRegion[] rightWalkReg = regions[2];
@@ -85,5 +85,11 @@ public class SimpleAnimationTest extends GdxTest {
 		position.x = x;
 		position.y = Gdx.graphics.getHeight() - y;
 		return true;
+	}
+
+	@Override
+	public void dispose () {
+		spriteBatch.dispose();
+		texture.dispose();
 	}
 }

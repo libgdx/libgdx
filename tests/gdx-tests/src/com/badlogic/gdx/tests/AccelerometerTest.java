@@ -45,4 +45,10 @@ public class AccelerometerTest extends GdxTest {
 			+ Gdx.input.getRotation() + "\n" + "wh: " + Gdx.graphics.getDesktopDisplayMode() + "\n", 0, 100);
 		batch.end();
 	}
+
+	@Override
+	public void dispose () {
+		font.dispose();
+		batch.dispose();
+	}
 }

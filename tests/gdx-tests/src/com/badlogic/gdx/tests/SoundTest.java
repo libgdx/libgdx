@@ -39,6 +39,7 @@ public class SoundTest extends GdxTest {
 	float volume = 0.5f;
 	long soundId = 0;
 	Stage ui;
+	Skin skin;
 
 	BitmapFont font;
 	SpriteBatch batch;
@@ -47,7 +48,7 @@ public class SoundTest extends GdxTest {
 	public void create () {
 		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.wav", FileType.Internal));
 
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		TextButton play = new TextButton("Play", skin);
 		TextButton stop = new TextButton("Stop", skin);
@@ -125,6 +126,15 @@ public class SoundTest extends GdxTest {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		ui.act(Gdx.graphics.getDeltaTime());
 		ui.draw();
+	}
+	
+	@Override
+	public void dispose () {
+		ui.dispose();
+		skin.dispose();
+		sound.dispose();
+		font.dispose();
+		batch.dispose();
 	}
 
 	@Override

@@ -35,11 +35,12 @@ public class ActionTest extends GdxTest implements OnActionCompleted {
 	}
 
 	Stage stage;
+	Texture texture;
 
 	@Override
 	public void create () {
 		stage = new Stage(480, 320, true);
-		Texture texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), false);
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), false);
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		final Image img = new Image(new TextureRegion(texture));
 		img.width = img.height = 100;
@@ -133,5 +134,11 @@ public class ActionTest extends GdxTest implements OnActionCompleted {
 	@Override
 	public void completed (Action action) {
 		System.out.println("completed Action: " + action);
+	}
+
+	@Override
+	public void dispose () {
+		stage.dispose();
+		texture.dispose();
 	}
 }

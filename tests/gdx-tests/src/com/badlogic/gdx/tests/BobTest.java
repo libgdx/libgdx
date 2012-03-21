@@ -80,10 +80,15 @@ public class BobTest extends GdxTest {
 		for (int i = 0; i < NUM_BOBS; i++) {
 			gl.glLoadIdentity();
 			gl.glTranslatef(Math.round(bobs[i].x), Math.round(bobs[i].y), 0);
-			System.out.println(Math.round(bobs[i].x) + ", " + (int)bobs[i].x);
 			bobModel.render(GL10.GL_TRIANGLES, 0, 6);
 		}
 		bobModel.unbind();
+	}
+
+	@Override
+	public void dispose () {
+		bobModel.dispose();
+		bobTexture.dispose();
 	}
 
 	static class Bob {

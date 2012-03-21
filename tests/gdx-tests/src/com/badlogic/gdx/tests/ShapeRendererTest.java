@@ -196,4 +196,11 @@ public class ShapeRendererTest extends GdxTest {
 		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 0, 20);
 		batch.end();
 	}
+
+	@Override
+	public void dispose () {
+		batch.dispose();
+		font.dispose();
+		renderer.dispose();
+	}
 }

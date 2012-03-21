@@ -397,40 +397,14 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	@Override
 	public void dispose () {
 		world.dispose();
+		renderer.dispose();
+		debugRenderer.dispose();
+		font.dispose();
+		textureRegion.getTexture().dispose();
 	}
 
 	@Override
 	public boolean needsGL20 () {
-		return false;
-	}
-
-	// ---------------------------------------------------------------
-	// STUBS FOR UNIMPLEMENTED INTERFACE METHODS, NOTHING TO SEE HERE
-	// MOVE ALONG
-	// ---------------------------------------------------------------
-
-	@Override
-	public boolean keyDown (int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped (char character) {
-		return false;
-	}
-
-	@Override
-	public boolean keyUp (int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean touchMoved (int x, int y) {
-		return false;
-	}
-
-	@Override
-	public boolean scrolled (int amount) {
 		return false;
 	}
 }

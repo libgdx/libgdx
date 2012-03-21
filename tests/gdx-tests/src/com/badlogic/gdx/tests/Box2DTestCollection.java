@@ -72,6 +72,11 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 	}
 
 	@Override
+	public void dispose () {
+		tests[testIndex].dispose();
+	}
+
+	@Override
 	public boolean keyDown (int keycode) {
 		tests[testIndex].keyDown(keycode);
 

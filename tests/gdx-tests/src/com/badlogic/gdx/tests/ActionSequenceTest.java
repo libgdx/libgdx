@@ -41,11 +41,12 @@ public class ActionSequenceTest extends GdxTest implements OnActionCompleted {
 	Image img2;
 	Image img3;
 	Stage stage;
+	Texture texture;
 
 	@Override
 	public void create () {
 		stage = new Stage(480, 320, true);
-		Texture texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), false);
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), false);
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		img = new Image(new TextureRegion(texture));
 		img.width = img.height = 100;
@@ -68,15 +69,15 @@ public class ActionSequenceTest extends GdxTest implements OnActionCompleted {
 		stage.addActor(img);
 		stage.addActor(img2);
 		stage.addActor(img3);
+		
+		img.action(Sequence.$());
+		img2.action(Parallel.$(Sequence.$(), MoveBy.$(100, 0, 1)));
+		img3.action(Sequence.$(Parallel.$(MoveBy.$(100, 200, 2))));
 	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-		img.action(Sequence.$());
-		img2.action(Parallel.$(Sequence.$(), MoveBy.$(0, 0, 1)));
-		img3.action(Sequence.$(Parallel.$(MoveBy.$(0, 0, 2))));
 
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
@@ -85,5 +86,11 @@ public class ActionSequenceTest extends GdxTest implements OnActionCompleted {
 	@Override
 	public void completed (Action action) {
 		System.out.println("completed");
+	}
+
+	@Override
+	public void dispose () {
+		stage.dispose();
+		texture.dispose();
 	}
 }

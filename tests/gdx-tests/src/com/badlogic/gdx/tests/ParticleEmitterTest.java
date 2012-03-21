@@ -111,6 +111,13 @@ public class ParticleEmitterTest extends GdxTest {
 
 		Gdx.input.setInputProcessor(inputProcessor);
 	}
+	
+	@Override
+	public void dispose () {
+		spriteBatch.dispose();
+		effect.dispose();
+	}
+
 
 	public void render () {
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

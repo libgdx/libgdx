@@ -50,6 +50,13 @@ public class PixelsPerInchTest extends GdxTest {
 	}
 
 	@Override
+	public void dispose () {
+		font.dispose();
+		batch.dispose();
+		texture.dispose();
+	}
+
+	@Override
 	public boolean needsGL20 () {
 		return true;
 	}

@@ -79,4 +79,11 @@ public class MusicTest extends GdxTest {
 			}
 		}
 	}
+
+	@Override
+	public void dispose () {
+		batch.dispose();
+		buttons.getTexture().dispose();
+		for(Music m: music) m.dispose();
+	}
 }

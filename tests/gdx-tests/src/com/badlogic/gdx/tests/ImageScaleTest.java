@@ -27,18 +27,20 @@ import com.badlogic.gdx.utils.Scaling;
 
 public class ImageScaleTest extends GdxTest {
 	Stage stage;
+	Texture texture;
 
 	public void create () {
 		stage = new Stage(0, 0, false);
 		Gdx.input.setInputProcessor(stage);
 
-		Image image = new Image(new Texture("data/group-debug.png"), Scaling.fit);
+		texture = new Texture("data/group-debug.png");
+		Image image = new Image(texture, Scaling.fit);
 		image.x = image.y = 100;
 		image.width = 400;
 		image.height = 200;
 		stage.addActor(image);
 
-		Image image2 = new Image(new Texture("data/group-debug.png"), Scaling.fit);
+		Image image2 = new Image(texture, Scaling.fit);
 		image2.x = image2.y = 100;
 		image2.width = 400;
 		image2.height = 200;
@@ -53,6 +55,12 @@ public class ImageScaleTest extends GdxTest {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		stage.draw();
+	}
+	
+	@Override
+	public void dispose () {
+		stage.dispose();
+		texture.dispose();
 	}
 
 	public void resize (int width, int height) {

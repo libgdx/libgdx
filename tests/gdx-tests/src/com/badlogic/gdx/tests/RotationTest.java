@@ -52,4 +52,10 @@ public class RotationTest extends GdxTest {
 		batch.draw(region, 0, 128, 64, 64, 128, 128, 1, 1, 270);
 		batch.end();
 	}
+
+	@Override
+	public void dispose () {
+		texture.dispose();
+		batch.dispose();
+	}
 }

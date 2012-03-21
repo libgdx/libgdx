@@ -80,6 +80,15 @@ public class EdgeDetectionTest extends GdxTest {
 		logger = new FPSLogger();
 		calculateOffsets();
 	}
+	
+	@Override
+	public void dispose () {
+		shader.dispose();
+		batchShader.dispose();
+		mesh.dispose();
+		fbo.dispose();
+		batch.dispose();
+	}
 
 	private void calculateOffsets () {
 		int idx = 0;

@@ -112,6 +112,13 @@ public class SpriteBatchShaderTest extends GdxTest {
 	}
 
 	@Override
+	public void dispose () {
+		spriteBatch.dispose();
+		texture.dispose();
+		texture2.dispose();
+	}
+
+	@Override
 	public boolean needsGL20 () {
 		return true;
 	}

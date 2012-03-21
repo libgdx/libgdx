@@ -96,6 +96,13 @@ public class MeshShaderTest extends GdxTest {
 		mesh.render(shader, GL10.GL_TRIANGLES);
 		shader.end();
 	}
+	
+	@Override
+	public void dispose () {
+		mesh.dispose();
+		texture.dispose();
+		shader.dispose();
+	}
 
 	@Override
 	public boolean needsGL20 () {

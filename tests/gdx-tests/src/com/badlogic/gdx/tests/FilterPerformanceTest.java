@@ -80,6 +80,14 @@ public class FilterPerformanceTest extends GdxTest {
 		});
 	}
 
+	@Override
+	public void dispose () {
+		batch.dispose();
+		atlas.dispose();
+		texture.dispose();
+		font.dispose();
+	}
+
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 

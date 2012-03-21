@@ -48,6 +48,7 @@ public class ShadowMappingTest extends GdxTest {
 	}
 
 	Stage ui;
+	Skin skin;
 
 	PerspectiveCamera cam;
 	PerspectiveCamera lightCam;
@@ -116,7 +117,7 @@ public class ShadowMappingTest extends GdxTest {
 
 	private void setupUI () {
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 
 		Label label = new Label("Camera:", skin.getStyle(LabelStyle.class));
 		SelectBox cameraCombo = new SelectBox(new String[] {"Scene", "Light"}, skin.getStyle(SelectBoxStyle.class));
@@ -222,5 +223,18 @@ public class ShadowMappingTest extends GdxTest {
 		fps.setText("fps: " + Gdx.graphics.getFramesPerSecond());
 		ui.draw();
 		Table.drawDebug(ui);
+	}
+	
+	@Override
+	public void dispose () {
+		ui.dispose();
+		skin.dispose();
+		plane.dispose();
+		cube.dispose();
+		flatShader.dispose();
+		shadowGenShader.dispose();
+		shadowMapShader.dispose();
+		currShader.dispose();
+		shadowMap.dispose();
 	}
 }
