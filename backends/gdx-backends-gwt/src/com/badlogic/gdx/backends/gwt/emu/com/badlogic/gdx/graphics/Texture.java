@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.graphics;
 
 import java.nio.IntBuffer;
@@ -15,7 +16,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Texture implements Disposable {
 	static IntBuffer buffer = BufferUtils.newIntBuffer(1);
-	
+
 	public enum TextureFilter {
 		Nearest(GL10.GL_NEAREST), Linear(GL10.GL_LINEAR), MipMap(GL10.GL_LINEAR_MIPMAP_LINEAR), MipMapNearestNearest(
 			GL10.GL_NEAREST_MIPMAP_NEAREST), MipMapLinearNearest(GL10.GL_LINEAR_MIPMAP_NEAREST), MipMapNearestLinear(
@@ -56,7 +57,7 @@ public class Texture implements Disposable {
 	TextureWrap vWrap = TextureWrap.ClampToEdge;
 	int glHandle;
 	TextureData data;
-	
+
 	public Texture (String internalPath) {
 		this(Gdx.files.internal(internalPath));
 	}
@@ -108,13 +109,13 @@ public class Texture implements Disposable {
 	public void load (TextureData data) {
 		this.data = data;
 		if (data.getType() == TextureDataType.Pixmap) {
-			if(!data.isPrepared()) data.prepare();
+			if (!data.isPrepared()) data.prepare();
 			Pixmap pixmap = data.consumePixmap();
 			uploadImageData(pixmap);
 			if (data.disposePixmap()) pixmap.dispose();
 			setFilter(minFilter, magFilter);
 			setWrap(uWrap, vWrap);
-			if(data.useMipMaps()) Gdx.gl20.glGenerateMipmap(GL10.GL_TEXTURE_2D);
+			if (data.useMipMaps()) Gdx.gl20.glGenerateMipmap(GL10.GL_TEXTURE_2D);
 		}
 		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
 	}
@@ -122,9 +123,10 @@ public class Texture implements Disposable {
 	private void uploadImageData (Pixmap pixmap) {
 		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
 		Gdx.gl.glPixelStorei(GL10.GL_UNPACK_ALIGNMENT, 1);
-		Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, GL10.GL_RGBA, pixmap.getWidth(), pixmap.getHeight(), 0, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, pixmap.getPixels());
+		Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, GL10.GL_RGBA, pixmap.getWidth(), pixmap.getHeight(), 0, GL10.GL_RGBA,
+			GL10.GL_UNSIGNED_BYTE, pixmap.getPixels());
 	}
-	
+
 	/** Binds this texture. The texture will be bound to the currently active texture unit specified via
 	 * {@link GLCommon#glActiveTexture(int)}. */
 	public void bind () {
@@ -221,8 +223,8 @@ public class Texture implements Disposable {
 		Gdx.gl.glDeleteTextures(1, buffer);
 		glHandle = 0;
 	}
-	
-	public static void setAssetManager(AssetManager manager) {
+
+	public static void setAssetManager (AssetManager manager) {
 		// nothing to do, no pause/resume cycle
 	}
 }
