@@ -110,7 +110,7 @@ public class FileHandle {
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public InputStream read () {
 		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists()) || (type == FileType.Local && !file.exists())) {
-			InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream("/" + file.getPath().replace('\\', '/'));
+			InputStream input = FileHandle.class.getResourceAsStream("/" + file.getPath().replace('\\', '/'));
 			if (input == null) throw new GdxRuntimeException("File not found: " + file + " (" + type + ")");
 			return input;
 		}
@@ -479,7 +479,7 @@ public class FileHandle {
 			if (file.exists()) return true;
 			// Fall through.
 		case Classpath:
-			return Thread.currentThread().getContextClassLoader().getResource("/" + file.getPath().replace('\\', '/')) != null;
+			return FileHandle.class.getResource("/" + file.getPath().replace('\\', '/')) != null;
 		}
 		return file().exists();
 	}

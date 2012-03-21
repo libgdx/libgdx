@@ -88,6 +88,7 @@ public class SharedLibraryLoader {
 	private InputStream getFromJar(String jarFile, String sharedLibrary) throws IOException {
 		ZipFile file = new ZipFile(nativesJar);
 		ZipEntry entry = file.getEntry(sharedLibrary);
+		if(entry == null) throw new GdxRuntimeException("Couldn't find " + sharedLibrary + " in jar " + jarFile);
 		return file.getInputStream(entry);
 	}
 
