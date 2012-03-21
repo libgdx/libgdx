@@ -99,7 +99,9 @@ public class AntScriptGenerator {
 		for(int i = 0; i < buildFiles.size(); i++) {
 			clean.append("\t\t<ant antfile=\"" + buildFiles.get(i) + "\" target=\"clean\"/>\n");
 			compile.append("\t\t<ant antfile=\"" + buildFiles.get(i) + "\"/>\n");
-			pack.append("\t\t\t<fileset dir=\"" + libsDirs.get(i) + "\" includes=\"" + sharedLibFiles.get(i) + "\"/>");
+		}
+		for(int i = 0; i < libsDirs.size(); i++ ) {
+			pack.append("\t\t\t<fileset dir=\"" + libsDirs.get(i) + "\" includes=\"" + sharedLibFiles.get(i) + "\"/>\n");
 		}
 		
 		template = template.replace("%projectName%", config.sharedLibName + "-natives");
