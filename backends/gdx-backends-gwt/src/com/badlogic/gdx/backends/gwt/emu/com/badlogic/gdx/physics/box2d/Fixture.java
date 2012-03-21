@@ -18,7 +18,6 @@ package com.badlogic.gdx.physics.box2d;
 
 import org.jbox2d.collision.shapes.ShapeType;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Filter;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
@@ -81,7 +80,7 @@ public class Fixture {
 	/** Set the contact filtering data. This will not update contacts until the next time step when either parent body is active and
 	 * awake. This automatically calls Refilter. */
 	public void setFilterData (Filter filter) {
-		org.jbox2d.dynamics.Filter f = new Filter();
+		org.jbox2d.dynamics.Filter f = new org.jbox2d.dynamics.Filter();
 		f.categoryBits = filter.categoryBits;
 		f.groupIndex = filter.groupIndex;
 		f.maskBits = filter.maskBits;
@@ -92,10 +91,10 @@ public class Fixture {
 	private final Filter filter = new Filter();
 
 	public Filter getFilterData () {
-		Filter f = fixture.getFilterData();
-		filter.categoryBits = f.categoryBits;
-		filter.maskBits = f.maskBits;
-		filter.groupIndex = f.groupIndex;
+		org.jbox2d.dynamics.Filter f = fixture.getFilterData();
+		filter.categoryBits = (short)f.categoryBits;
+		filter.maskBits = (short)f.maskBits;
+		filter.groupIndex = (short)f.groupIndex;
 		return filter;
 	}
 
