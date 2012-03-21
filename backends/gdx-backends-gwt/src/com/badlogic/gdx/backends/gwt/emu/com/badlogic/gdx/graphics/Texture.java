@@ -10,9 +10,10 @@ import com.badlogic.gdx.graphics.TextureData.TextureDataType;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class Texture {
+public class Texture implements Disposable {
 	static IntBuffer buffer = BufferUtils.newIntBuffer(1);
 	
 	public enum TextureFilter {
