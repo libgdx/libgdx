@@ -95,6 +95,18 @@
 		</ant>
 	</target>
 	
+	<!-- gdx gwt backend -->
+	<target name="gdx-backend-gwt" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-backends-gwt">
+			<property name="jar" value="gdx-backend-gwt"/>
+			<reference refid="classpath"/>
+			<reference refid="jarfiles"/>
+		</ant>
+	</target>
+	
 	<!-- build the extensions -->
 	<!-- gdx tools -->
 	<target name="gdx-tools" depends="gdx-core,gdx-backend-lwjgl,gdx-backend-jogl">
