@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7612127414C1E4940025D0A1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7612127314C1E4940025D0A1 /* QuartzCore.framework */; };
+		7612127714C1E49D0025D0A1 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7612127614C1E49D0025D0A1 /* OpenGLES.framework */; };
 		768864B414C0FDF900274C13 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864B314C0FDF900274C13 /* UIKit.framework */; };
 		768864B614C0FDF900274C13 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864B514C0FDF900274C13 /* Foundation.framework */; };
 		768864B814C0FDF900274C13 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864B714C0FDF900274C13 /* CoreGraphics.framework */; };
 		768864BE14C0FDF900274C13 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 768864BC14C0FDF900274C13 /* InfoPlist.strings */; };
 		768864C014C0FDF900274C13 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 768864BF14C0FDF900274C13 /* main.m */; };
-		768864C414C0FDF900274C13 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 768864C314C0FDF900274C13 /* AppDelegate.mm */; };
 		768864CF14C1005100274C13 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864B514C0FDF900274C13 /* Foundation.framework */; };
 		768864DE14C101CB00274C13 /* boot.c in Sources */ = {isa = PBXBuildFile; fileRef = 768864DA14C101CB00274C13 /* boot.c */; };
 		7688651C14C105F500274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 768864E614C105F300274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp */; };
@@ -189,6 +190,8 @@
 		7688665114C19D8700274C13 /* vm.h in Headers */ = {isa = PBXBuildFile; fileRef = 7688665014C19D8700274C13 /* vm.h */; };
 		7688665314C19DAE00274C13 /* vm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7688665214C19DAE00274C13 /* vm.cpp */; };
 		7688665614C1BCE300274C13 /* libgdx-backend-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 768864CE14C1005100274C13 /* libgdx-backend-ios.a */; };
+		76B43BD814C23959008D3BCA /* GLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 76B43BD714C23959008D3BCA /* GLView.mm */; };
+		76FE4F3B14C2571700A06A17 /* GdxAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 768864C314C0FDF900274C13 /* GdxAppDelegate.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -202,6 +205,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7612127314C1E4940025D0A1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		7612127614C1E49D0025D0A1 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		768864AF14C0FDF900274C13 /* gdx-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "gdx-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		768864B314C0FDF900274C13 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		768864B514C0FDF900274C13 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -210,11 +215,10 @@
 		768864BD14C0FDF900274C13 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		768864BF14C0FDF900274C13 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		768864C114C0FDF900274C13 /* gdx-ios-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "gdx-ios-Prefix.pch"; sourceTree = "<group>"; };
-		768864C214C0FDF900274C13 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		768864C314C0FDF900274C13 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
+		768864C214C0FDF900274C13 /* GdxAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GdxAppDelegate.h; path = "../gdx-ios/GdxAppDelegate.h"; sourceTree = "<group>"; };
+		768864C314C0FDF900274C13 /* GdxAppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = GdxAppDelegate.mm; path = "../gdx-ios/GdxAppDelegate.mm"; sourceTree = "<group>"; };
 		768864CE14C1005100274C13 /* libgdx-backend-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libgdx-backend-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		768864DA14C101CB00274C13 /* boot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = boot.c; path = ../../jni/boot.c; sourceTree = "<group>"; };
-		768864DB14C101CB00274C13 /* hello.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = hello.m; path = ../../jni/hello.m; sourceTree = "<group>"; };
 		768864E614C105F300274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp; sourceTree = "<group>"; };
 		768864E714C105F400274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.h; path = ../../../../gdx/jni/com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.h; sourceTree = "<group>"; };
 		768864E814C105F400274C13 /* com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp; path = ../../../../gdx/jni/com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp; sourceTree = "<group>"; };
@@ -389,6 +393,8 @@
 		768865EF14C1192900274C13 /* stb_image.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stb_image.c; sourceTree = "<group>"; };
 		7688665014C19D8700274C13 /* vm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vm.h; path = ../../jni/vm.h; sourceTree = "<group>"; };
 		7688665214C19DAE00274C13 /* vm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vm.cpp; sourceTree = "<group>"; };
+		76B43BD514C2386F008D3BCA /* GLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GLView.h; path = "../gdx-ios/GLView.h"; sourceTree = "<group>"; };
+		76B43BD714C23959008D3BCA /* GLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = GLView.mm; path = "../gdx-ios/GLView.mm"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -397,6 +403,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				7688665614C1BCE300274C13 /* libgdx-backend-ios.a in Frameworks */,
+				7612127714C1E49D0025D0A1 /* OpenGLES.framework in Frameworks */,
+				7612127414C1E4940025D0A1 /* QuartzCore.framework in Frameworks */,
 				768864B414C0FDF900274C13 /* UIKit.framework in Frameworks */,
 				768864B614C0FDF900274C13 /* Foundation.framework in Frameworks */,
 				768864B814C0FDF900274C13 /* CoreGraphics.framework in Frameworks */,
@@ -437,6 +445,36 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7682F86F14C24145004018D6 /* obj */ = {
+			isa = PBXGroup;
+			children = (
+				7688657E14C108BE00274C13 /* bootimage-bin.o */,
+				7688655214C108AB00274C13 /* builtin.o */,
+				7688655314C108AB00274C13 /* classpath-avian.o */,
+				7688655414C108AB00274C13 /* codeimage-bin.o */,
+				7688655514C108AB00274C13 /* compile-x86-asm.o */,
+				7688655614C108AB00274C13 /* compile.o */,
+				7688655714C108AB00274C13 /* compiler.o */,
+				7688655814C108AB00274C13 /* finder.o */,
+				7688655914C108AB00274C13 /* heap.o */,
+				7688655A14C108AB00274C13 /* java-io.o */,
+				7688655B14C108AB00274C13 /* java-lang.o */,
+				7688655C14C108AB00274C13 /* java-net.o */,
+				7688655D14C108AB00274C13 /* java-nio.o */,
+				7688655E14C108AB00274C13 /* java-util-zip.o */,
+				7688655F14C108AB00274C13 /* java-util.o */,
+				7688656014C108AB00274C13 /* jnienv.o */,
+				7688656114C108AB00274C13 /* machine.o */,
+				7688656214C108AB00274C13 /* org_apache_harmony_luni_platform_OSMemory.o */,
+				7688656314C108AB00274C13 /* posix.o */,
+				7688656414C108AB00274C13 /* process.o */,
+				7688656514C108AB00274C13 /* util.o */,
+				7688656614C108AB00274C13 /* x86-asm.o */,
+				7688656714C108AB00274C13 /* x86.o */,
+			);
+			name = obj;
+			sourceTree = "<group>";
+		};
 		768864A414C0FDF900274C13 = {
 			isa = PBXGroup;
 			children = (
@@ -459,6 +497,8 @@
 		768864B214C0FDF900274C13 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7612127614C1E49D0025D0A1 /* OpenGLES.framework */,
+				7612127314C1E4940025D0A1 /* QuartzCore.framework */,
 				768864B314C0FDF900274C13 /* UIKit.framework */,
 				768864B514C0FDF900274C13 /* Foundation.framework */,
 				768864B714C0FDF900274C13 /* CoreGraphics.framework */,
@@ -469,8 +509,7 @@
 		768864B914C0FDF900274C13 /* gdx-ios */ = {
 			isa = PBXGroup;
 			children = (
-				768864C214C0FDF900274C13 /* AppDelegate.h */,
-				768864C314C0FDF900274C13 /* AppDelegate.mm */,
+				768864BF14C0FDF900274C13 /* main.m */,
 				768864BA14C0FDF900274C13 /* Supporting Files */,
 			);
 			path = "gdx-ios";
@@ -481,7 +520,6 @@
 			children = (
 				768864BB14C0FDF900274C13 /* gdx-ios-Info.plist */,
 				768864BC14C0FDF900274C13 /* InfoPlist.strings */,
-				768864BF14C0FDF900274C13 /* main.m */,
 				768864C114C0FDF900274C13 /* gdx-ios-Prefix.pch */,
 			);
 			name = "Supporting Files";
@@ -492,10 +530,12 @@
 			children = (
 				7688655114C1083200274C13 /* avian */,
 				7688655014C1079100274C13 /* gdx-core */,
-				768864DA14C101CB00274C13 /* boot.c */,
-				768864DB14C101CB00274C13 /* hello.m */,
 				7688665014C19D8700274C13 /* vm.h */,
 				7688665214C19DAE00274C13 /* vm.cpp */,
+				76B43BD514C2386F008D3BCA /* GLView.h */,
+				76B43BD714C23959008D3BCA /* GLView.mm */,
+				768864C214C0FDF900274C13 /* GdxAppDelegate.h */,
+				768864C314C0FDF900274C13 /* GdxAppDelegate.mm */,
 			);
 			path = "gdx-backend-ios";
 			sourceTree = "<group>";
@@ -565,29 +605,8 @@
 		7688655114C1083200274C13 /* avian */ = {
 			isa = PBXGroup;
 			children = (
-				7688657E14C108BE00274C13 /* bootimage-bin.o */,
-				7688655214C108AB00274C13 /* builtin.o */,
-				7688655314C108AB00274C13 /* classpath-avian.o */,
-				7688655414C108AB00274C13 /* codeimage-bin.o */,
-				7688655514C108AB00274C13 /* compile-x86-asm.o */,
-				7688655614C108AB00274C13 /* compile.o */,
-				7688655714C108AB00274C13 /* compiler.o */,
-				7688655814C108AB00274C13 /* finder.o */,
-				7688655914C108AB00274C13 /* heap.o */,
-				7688655A14C108AB00274C13 /* java-io.o */,
-				7688655B14C108AB00274C13 /* java-lang.o */,
-				7688655C14C108AB00274C13 /* java-net.o */,
-				7688655D14C108AB00274C13 /* java-nio.o */,
-				7688655E14C108AB00274C13 /* java-util-zip.o */,
-				7688655F14C108AB00274C13 /* java-util.o */,
-				7688656014C108AB00274C13 /* jnienv.o */,
-				7688656114C108AB00274C13 /* machine.o */,
-				7688656214C108AB00274C13 /* org_apache_harmony_luni_platform_OSMemory.o */,
-				7688656314C108AB00274C13 /* posix.o */,
-				7688656414C108AB00274C13 /* process.o */,
-				7688656514C108AB00274C13 /* util.o */,
-				7688656614C108AB00274C13 /* x86-asm.o */,
-				7688656714C108AB00274C13 /* x86.o */,
+				7682F86F14C24145004018D6 /* obj */,
+				768864DA14C101CB00274C13 /* boot.c */,
 			);
 			name = avian;
 			sourceTree = "<group>";
@@ -935,7 +954,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				768864C014C0FDF900274C13 /* main.m in Sources */,
-				768864C414C0FDF900274C13 /* AppDelegate.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -943,6 +961,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76FE4F3B14C2571700A06A17 /* GdxAppDelegate.mm in Sources */,
 				768864DE14C101CB00274C13 /* boot.c in Sources */,
 				7688651C14C105F500274C13 /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp in Sources */,
 				7688651E14C105F500274C13 /* com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp in Sources */,
@@ -1019,6 +1038,7 @@
 				7688664D14C1192A00274C13 /* gdx2d.c in Sources */,
 				7688664F14C1192A00274C13 /* stb_image.c in Sources */,
 				7688665314C19DAE00274C13 /* vm.cpp in Sources */,
+				76B43BD814C23959008D3BCA /* GLView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1104,6 +1124,7 @@
 				GCC_PREFIX_HEADER = "gdx-ios/gdx-ios-Prefix.pch";
 				INFOPLIST_FILE = "gdx-ios/gdx-ios-Info.plist";
 				OTHER_LDFLAGS = (
+					"-lstdc++",
 					"-lz",
 					"-all_load",
 				);
@@ -1119,6 +1140,7 @@
 				GCC_PREFIX_HEADER = "gdx-ios/gdx-ios-Prefix.pch";
 				INFOPLIST_FILE = "gdx-ios/gdx-ios-Info.plist";
 				OTHER_LDFLAGS = (
+					"-lstdc++",
 					"-lz",
 					"-all_load",
 				);
@@ -1170,6 +1192,7 @@
 				768864C914C0FDF900274C13 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		768864D614C1005100274C13 /* Build configuration list for PBXNativeTarget "gdx-backend-ios" */ = {
 			isa = XCConfigurationList;
@@ -1178,6 +1201,7 @@
 				768864D814C1005100274C13 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
