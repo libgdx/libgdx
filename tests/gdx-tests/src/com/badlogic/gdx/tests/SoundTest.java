@@ -41,9 +41,6 @@ public class SoundTest extends GdxTest {
 	Stage ui;
 	Skin skin;
 
-	BitmapFont font;
-	SpriteBatch batch;
-
 	@Override
 	public void create () {
 		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.wav", FileType.Internal));
@@ -133,8 +130,6 @@ public class SoundTest extends GdxTest {
 		ui.dispose();
 		skin.dispose();
 		sound.dispose();
-		font.dispose();
-		batch.dispose();
 	}
 
 	@Override

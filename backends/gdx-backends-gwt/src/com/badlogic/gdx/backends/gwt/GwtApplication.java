@@ -37,11 +37,9 @@ import com.google.gwt.canvas.dom.client.Context2d.TextBaseline;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Label;
@@ -54,6 +52,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private ApplicationListener listener;
 	private GwtApplicationConfiguration config;
 	private GwtGraphics graphics;
+	private GwtInput input;
 	private Panel root = null;
 	private TextArea log = null;
 	private int logLevel = LOG_ERROR;
@@ -132,7 +131,8 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.gl20 = graphics.getGL20();
 		Gdx.gl = graphics.getGLCommon();
 		Gdx.files = new GwtFiles(preloader);
-		Gdx.input = new GwtInput(graphics.canvas);
+		this.input = new GwtInput(graphics.canvas);
+		Gdx.input = this.input;
 		Gdx.audio = new GwtAudio();
 
 		// tell listener about app creation
@@ -162,7 +162,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 					}
 					runnables.clear();
 					listener.render();
-					((GwtInput)Gdx.input).justTouched = false;
+					input.justTouched = false;
 				} catch (Throwable t) {
 					error("GwtApplication", "exception: " + t.getMessage(), t);
 					throw new RuntimeException(t);
