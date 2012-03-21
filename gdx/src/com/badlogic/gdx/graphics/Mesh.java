@@ -79,7 +79,6 @@ public class Mesh implements Disposable {
 	final IndexData indices;
 	boolean autoBind = true;
 	final boolean isVertexArray;
-	int refCount = 0;
 
 	/** Creates a new Mesh with the given attributes.
 	 * 
@@ -411,8 +410,6 @@ public class Mesh implements Disposable {
 
 	/** Frees all resources associated with this Mesh */
 	public void dispose () {
-		refCount--;
-		if (refCount > 0) return;
 		if (meshes.get(Gdx.app) != null) meshes.get(Gdx.app).remove(this);
 		vertices.dispose();
 		indices.dispose();
