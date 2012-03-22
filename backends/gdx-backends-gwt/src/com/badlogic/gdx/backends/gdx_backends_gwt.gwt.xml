@@ -2,11 +2,12 @@
 <module rename-to='com.badlogic.gdx.backends.gwt'>
 	<inherits name='com.google.gwt.user.User' />
 	<inherits name="com.badlogic.gdx" />
-	<inherits name='com.allen_sauer.gwt.voices.gwt-voices' />
 	<inherits name="com.google.gwt.typedarrays.TypedArrays" />
 	<inherits name="com.google.gwt.webgl.WebGL" />
 	<inherits name="com.badlogic.gwtref.GwtReflect"/>
 
+	<script src="soundmanager2-jsmin.js"/>
+	<public path="gwt/resources"/>
 	<super-source path="gwt/emu" />
 	<source path="gwt">
 		<exclude name="**/emu/**" />
