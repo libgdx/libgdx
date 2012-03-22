@@ -10,5 +10,9 @@
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-jogl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-tests"/>
+	<classpathentry kind="lib" path="/gdx-image/libs/gdx-image-natives.jar"/>
+	<classpathentry kind="lib" path="/gdx-freetype/libs/gdx-freetype-natives.jar"/>
+	<classpathentry kind="lib" path="/gdx-stb-truetype/libs/gdx-stb-truetype-natives.jar"/>
+	<classpathentry kind="lib" path="/gdx-audio/libs/gdx-audio-natives.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
