@@ -3,6 +3,5 @@
 <module>
 	<inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />
 	<inherits name='com.badlogic.GdxInvaders' />
-	<add-linker name="xsiframe" />
 	<entry-point class='com.badlogic.gdxinvaders.client.GdxInvadersGwt' />
 </module>
