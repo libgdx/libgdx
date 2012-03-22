@@ -30,7 +30,7 @@ public class ArrayBuffer extends JavaScriptObject {
    * ArrayBuffer are initialized to 0.
    */
   public static final native ArrayBuffer create(int length) /*-{
-    return new WebGLArrayBuffer(length);
+    return new ArrayBuffer(length);
   }-*/;
 
   protected ArrayBuffer() {

@@ -26,6 +26,8 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 
+import com.google.gwt.core.client.GWT;
+
 /** Class with static helper methods to increase the speed of array/direct buffer and direct buffer/direct buffer transfers
  * 
  * @author mzechner */
@@ -220,30 +222,67 @@ public class BufferUtils {
 //	}
 
 	public static FloatBuffer newFloatBuffer (int numFloats) {
-		return FloatBuffer.wrap(new float[numFloats]);
+		if(GWT.isProdMode()) {
+			ByteBuffer buffer = ByteBuffer.allocateDirect(numFloats * 4);
+			buffer.order(ByteOrder.nativeOrder());
+			return buffer.asFloatBuffer();
+		} else {
+			return FloatBuffer.wrap(new float[numFloats]);
+		}
 	}
 
 	public static DoubleBuffer newDoubleBuffer (int numDoubles) {
-		return DoubleBuffer.wrap(new double[numDoubles]);
+		if(GWT.isProdMode()) {
+			ByteBuffer buffer = ByteBuffer.allocateDirect(numDoubles * 8);
+			buffer.order(ByteOrder.nativeOrder());
+			return buffer.asDoubleBuffer();
+		} else {
+			return DoubleBuffer.wrap(new double[numDoubles]);
+		}
 	}
 
 	public static ByteBuffer newByteBuffer (int numBytes) {
-		return ByteBuffer.wrap(new byte[numBytes]);
+		if(GWT.isProdMode()) {
+			ByteBuffer buffer = ByteBuffer.allocateDirect(numBytes);
+			buffer.order(ByteOrder.nativeOrder());
+			return buffer;
+		} else {
+			return ByteBuffer.wrap(new byte[numBytes]);
+		}
 	}
 
 	public static ShortBuffer newShortBuffer (int numShorts) {
-		return ShortBuffer.wrap(new short[numShorts]);
+		if(GWT.isProdMode()) {
+			ByteBuffer buffer = ByteBuffer.allocateDirect(numShorts * 2);
+			buffer.order(ByteOrder.nativeOrder());
+			return buffer.asShortBuffer();
+		} else {
+			return ShortBuffer.wrap(new short[numShorts]);
+		}
 	}
 
 	public static CharBuffer newCharBuffer (int numChars) {
-		return CharBuffer.wrap(new char[numChars]);
+		if(GWT.isProdMode()) {
+			ByteBuffer buffer = ByteBuffer.allocateDirect(numChars * 2);
+			buffer.order(ByteOrder.nativeOrder());
+			return buffer.asCharBuffer();
+		} else {
+			return CharBuffer.wrap(new char[numChars]);
+		}
 	}
 
 	public static IntBuffer newIntBuffer (int numInts) {
-		return IntBuffer.wrap(new int[numInts]);
+		if(GWT.isProdMode()) {
+			ByteBuffer buffer = ByteBuffer.allocateDirect(numInts * 4);
+			buffer.order(ByteOrder.nativeOrder());
+			return buffer.asIntBuffer();
+		} else {
+			return IntBuffer.wrap(new int[numInts]);
+		}
 	}
 
 	public static LongBuffer newLongBuffer (int numLongs) {
+		// FIXME ouch :p
 		return LongBuffer.wrap(new long[numLongs]);
 	}
 }

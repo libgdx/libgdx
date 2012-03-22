@@ -55,7 +55,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 		if (capacity < 0) {
 			throw new IllegalArgumentException();
 		}
-		return BufferFactory.newByteBuffer(capacity);
+		return BufferFactory.newDirectByteBuffer(capacity);
 	}
 
 	/** Creates a new byte buffer by wrapping the given byte array.

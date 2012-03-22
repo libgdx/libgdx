@@ -26,7 +26,7 @@ import com.google.gwt.typedarrays.client.ArrayBuffer;
  * <p>
  * This class is marked final for runtime performance.
  * </p> */
-final class DirectReadWriteByteBuffer extends DirectByteBuffer {
+public final class DirectReadWriteByteBuffer extends DirectByteBuffer {
 
 	static DirectReadWriteByteBuffer copy (DirectByteBuffer other, int markOfOther) {
 		DirectReadWriteByteBuffer buf = new DirectReadWriteByteBuffer(other.byteArray.getBuffer(), other.capacity(),
@@ -42,7 +42,7 @@ final class DirectReadWriteByteBuffer extends DirectByteBuffer {
 		super(backingArray);
 	}
 
-	DirectReadWriteByteBuffer (int capacity) {
+	public DirectReadWriteByteBuffer (int capacity) {
 		super(capacity);
 	}
 
