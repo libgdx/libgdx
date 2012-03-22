@@ -354,8 +354,16 @@ public class GwtInput implements Input {
 		if(e.getType().equals("keydown") && hasFocus) {
 			System.out.println("keydown");
 			int code = keyForCode(e.getKeyCode());
-			this.pressedKeys.add(code);
-			if(processor != null) processor.keyDown(code);
+			if(code == 67) {
+				e.preventDefault();
+				if(processor != null) {
+					processor.keyDown(code);
+					processor.keyTyped('\b');
+				}
+			} else {
+				this.pressedKeys.add(code);
+				if(processor != null) processor.keyDown(code);
+			}
 		}
 		
 		if(e.getType().equals("keypress") && hasFocus) {
