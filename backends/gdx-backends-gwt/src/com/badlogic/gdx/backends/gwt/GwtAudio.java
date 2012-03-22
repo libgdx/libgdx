@@ -5,11 +5,17 @@ import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.gwt.core.client.GWT;
 
 public class GwtAudio implements Audio {
 	public GwtAudio() {
+		System.out.println(SoundManager.getVersion());
+		SoundManager.setUrl(GWT.getModuleBaseURL());
+		SoundManager.setFlashVersion(9);
+		SoundManager.reboot();
 	}
 	
 	@Override

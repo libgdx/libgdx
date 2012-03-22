@@ -92,6 +92,8 @@ public abstract class GwtApplication implements EntryPoint, Application {
 				root = panel;
 			}
 		}
+		// creating audio here so it can load while we load the resources.
+		Gdx.audio = new GwtAudio();
 
 		final PreloaderCallback callback = getPreloaderCallback();
 		preloader = new Preloader();
@@ -133,7 +135,6 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.files = new GwtFiles(preloader);
 		this.input = new GwtInput(graphics.canvas);
 		Gdx.input = this.input;
-		Gdx.audio = new GwtAudio();
 
 		// tell listener about app creation
 		try {
