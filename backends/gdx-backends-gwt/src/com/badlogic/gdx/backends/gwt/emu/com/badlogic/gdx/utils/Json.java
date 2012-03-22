@@ -107,14 +107,13 @@ public class Json {
 		this.usePrototypes = usePrototypes;
 	}
 
-	// FIXME
-//	public void setElementType (Class type, String fieldName, Class elementType) {
-//		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
-//		if (fields == null) fields = cacheFields(type);
-//		FieldMetadata metadata = fields.get(fieldName);
-//		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
-//		metadata.elementType = elementType;
-//	}
+	public void setElementType (Class type, String fieldName, Class elementType) {
+		ObjectMap<String, FieldMetadata> fields = typeToFields.get(ReflectionCache.getType(type));
+		if (fields == null) fields = cacheFields(ReflectionCache.getType(type));
+		FieldMetadata metadata = fields.get(fieldName);
+		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
+		metadata.elementType = elementType;
+	}
 
 	private ObjectMap<String, FieldMetadata> cacheFields (Type type) {
 		ArrayList<Field> allFields = new ArrayList();

@@ -24,6 +24,7 @@ import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.MusicLoader;
 import com.badlogic.gdx.assets.loaders.PixmapLoader;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.assets.loaders.SoundLoader;
 import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
@@ -34,6 +35,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -66,7 +68,7 @@ public class AssetManager implements Disposable {
 		setLoader(Sound.class, new SoundLoader(resolver));
 		setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
 		setLoader(Texture.class, new TextureLoader(resolver));
-//		setLoader(Skin.class, new SkinLoader(resolver));
+		setLoader(Skin.class, new SkinLoader(resolver));
 //		setLoader(TileMapRenderer.class, new TileMapRendererLoader(resolver));
 	}
 
@@ -95,7 +97,6 @@ public class AssetManager implements Disposable {
 			}
 		}
 		if (foundIndex != -1) {
-			// FIXME reload request? OH GOD WHAT SHOULD I DO?
 			loadQueue.remove(foundIndex);
 //			log.debug("Unload (from queue): " + fileName);
 			return;
@@ -104,7 +105,6 @@ public class AssetManager implements Disposable {
 		// check if it's currently processed (and the first element in the stack, thus not a dependency)
 		// and cancel if necessary
 		if (tasks.size() > 0) {
-			// FIXME reload request? OH GOD WHAT SHOULD I DO?
 			AssetLoadingTask currAsset = tasks.firstElement();
 			if (currAsset.assetDesc.fileName.equals(fileName)) {
 				currAsset.cancel = true;

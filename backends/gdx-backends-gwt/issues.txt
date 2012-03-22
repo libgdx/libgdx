@@ -1,3 +1,83 @@
-- typed arrays are still a mystery to me. one resize them, but if you don'T you pass the entire fucking buffer to 
-  the webgl context, even if only the first few bytes are actually filled. creating a new one every time shit gets
-  passed to webgl is a bad idea as well... gah.
+DIFFERENCES TO MAIN APIs/UNSUSPECTED BEHAVIOUR
+[GWTGL20]
+- unfixable: client side arrays (vertex arrays) are unsupported. VertexArray and IndexArray class simulate VAs via
+  VBOs so SpriteBatch etc. still work as intended.
+- getters are not implemented, some are not supported by WebGL
+- uniform location id allocation returns multiple ids if one queries for one uniform multiple times. Not an issue as long
+  as you don't start comparing those ids to each other.
+- glReadPixels does not work.
+
+[GwtInput]
+- mapping of a couple of (minor) keys is bad, see FIXMEs
+- getTextInput and getPlaceholderTextInput need to be implemented
+
+[GwtSound]
+- GwtSound#play()/loop() return 0, you can not modify the properties of a sound id returned by those methods, 
+e.g. via Sound#setLooping() or Sound#setPanning().
+
+[GwtFileHandle]
+- only internal files are supported.
+- FileHandle#list will not work.
+- Checking FileHandles of directories for their existance will not work, you can however create children etc.
+- if you try to access an audio file or an image file via FileHandle#read() and other such methods,
+you won't get anything sensible.
+- binary files specified in the assets.txt file can be opened but are slow to read, avoid if possible.
+
+DIFFERENCES IN EMULATION
+[Box2D emu]
+- GearJoint, WheelJoint and RopeJoint are not implemented.
+- minor things that could be optimized, e.g. caching of query/contact listeners.
+- PrismaticJoint#getJointTranslation always returns 0, not implemented in JBox2D
+- Contact always reports 2 manifold points, JBox2D doesn't specify the amount of manifold points.
+
+[LibgdxToolkit emu]
+- newInstance is not implemented since i lack support for constructor invocations with parameters.
+  this might have an effect if you define your layouts via the DSL.
+
+[BufferUtils emu]
+- BufferUtils#newLongBuffer() works but will not return a direct buffer. Since we don't pass long
+  buffers to OpenGL ES we should be fine.
+  
+[Texture emu]
+- all textures are RGBA8888, i have yet to find a way to get proper pixel formats working.
+  
+[Pixmap emu]
+- All Pixmaps have RGBA8888 as the internal format, i have yet to find a way to fix that. Doesn't seem
+feasible due to the use of Canvas.
+- This is highly experimental and hacked. Pixmap#getPixels() returns an IntBuffer that contains a single
+  integer. You can not read pixel data with this method!
+- Colors returned by Pixmap#getPixel() may slightly deviate from the original colors on some browsers on
+  MacOSX due to the use of ImageIO which modifies colors while decoding PNGs...
+- everything else should work as intended, some things might deviate from the usual behaviour a bit.
+
+[NumberUtils emu]
+- double to long, long to double methods return 0.
+
+[InputStreamReader emu]
+- assumes encoding is UTF-8, always.
+
+[Json emu]
+- deserializing your own classes is not supported unless i create a way to specify classes/packages
+for which reflection information should be generated on top of the reflected libgdx classes. This
+is a bad idea as the reflection info bloats the resulting javascript files.
+- there might be some issues i didn't detect yet, this part of the emulation is rather hackish.
+
+[Unsupported Classes]
+GdxBuild.java
+GdxNativesLoader.java
+GwtModuleGenerator.java
+SharedLibraryLoader.java
+Gdx2DPixmap.java
+PixmapIO.java
+ETC1.java
+ETC1TextureData.java
+ScreenUtils.java
+RemoteInput.java
+RemoteSender.java
+TiledLoader.java
+TileMapRendererLoader.java
+AtomicQueue.java
+LittleEndianInputStream.java
+PauseableThread.java
+DesktopClipboard.java
+AndroidClipboard.java

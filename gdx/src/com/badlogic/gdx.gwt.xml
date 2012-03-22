@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to="com.badlogic.gdx">
-	<inherits name="com.esotericsoftware.TableLayout"/>
+	<inherits name="com.esotericsoftware.tablelayout"/>
 	<source path="gdx">
 		<include name="scenes/scene2d/interpolators/AccelerateDecelerateInterpolator.java"/>
 		<include name="scenes/scene2d/interpolators/AccelerateInterpolator.java"/>
@@ -173,6 +173,7 @@
 		<include name="graphics/glutils/ShapeRenderer.java"/>
 		<include name="graphics/g3d/decals/SimpleOrthoGroupStrategy.java"/>
 		<include name="graphics/g2d/tiled/SimpleTileAtlas.java"/>
+		<include name="assets/loaders/SkinLoader.java"/>
 		<include name="scenes/scene2d/ui/Slider.java"/>
 		<include name="utils/Sort.java"/>
 		<include name="utils/SortedIntList.java"/>

@@ -53,9 +53,6 @@ public class GwtModuleGenerator {
 		excludes.add("ETC1TextureData.java");
 		excludes.add("ScreenUtils.java");
 
-		// asset manager related
-		excludes.add("SkinLoader.java");
-		
 		// remote input
 		excludes.add("RemoteInput.java");
 		excludes.add("RemoteSender.java");
