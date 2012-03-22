@@ -371,7 +371,7 @@ public class GwtInput implements Input {
 			if(processor != null) processor.keyUp(code);
 		}
 		
-		if(hasFocus) e.stopPropagation();
+//		if(hasFocus) e.preventDefault();
 	}
 	
 	/** borrowed from PlayN, thanks guys **/
