@@ -121,7 +121,6 @@ public class AssetManager implements Disposable {
 			}
 		}
 		if (foundIndex != -1) {
-			// FIXME reload request? OH GOD WHAT SHOULD I DO?
 			loadQueue.removeIndex(foundIndex);
 			log.debug("Unload (from queue): " + fileName);
 			return;
@@ -130,7 +129,6 @@ public class AssetManager implements Disposable {
 		// check if it's currently processed (and the first element in the stack, thus not a dependency)
 		// and cancel if necessary
 		if (tasks.size() > 0) {
-			// FIXME reload request? OH GOD WHAT SHOULD I DO?
 			AssetLoadingTask currAsset = tasks.firstElement();
 			if (currAsset.assetDesc.fileName.equals(fileName)) {
 				currAsset.cancel = true;
@@ -242,7 +240,7 @@ public class AssetManager implements Disposable {
 			if (desc.fileName.equals(fileName) && !desc.type.equals(type))
 				throw new GdxRuntimeException("Asset with name '" + fileName
 					+ "' already in preload queue, but has different type (expected: " + type.getSimpleName() + ", found: "
-					+ desc.type.getSimpleName());
+					+ desc.type.getSimpleName() + ")");
 		}
 
 		// check task list
@@ -251,14 +249,14 @@ public class AssetManager implements Disposable {
 			if (desc.fileName.equals(fileName) && !desc.type.equals(type))
 				throw new GdxRuntimeException("Asset with name '" + fileName
 					+ "' already in task list, but has different type (expected: " + type.getSimpleName() + ", found: "
-					+ desc.type.getSimpleName());
+					+ desc.type.getSimpleName() + ")");
 		}
 
 		// check loaded assets
 		Class otherType = assetTypes.get(fileName);
 		if (otherType != null && !otherType.equals(type))
 			throw new GdxRuntimeException("Asset with name '" + fileName + "' already loaded, but has different type (expected: "
-				+ type.getSimpleName() + ", found: " + otherType.getSimpleName());
+				+ type.getSimpleName() + ", found: " + otherType.getSimpleName() + ")");
 
 		toLoad++;
 		AssetDescriptor assetDesc = new AssetDescriptor(fileName, type, parameter);
