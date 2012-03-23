@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to="com.badlogic.gdx">
-	<inherits name="com.esotericsoftware.tablelayout"/>
+	<inherits name="com.esotericsoftware.TableLayout"/>
 	<source path="gdx">
 		<include name="scenes/scene2d/interpolators/AccelerateDecelerateInterpolator.java"/>
 		<include name="scenes/scene2d/interpolators/AccelerateInterpolator.java"/>
