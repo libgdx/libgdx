@@ -112,7 +112,9 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 				final SubMesh subMesh = subMeshes[j];
 				final Material material = materials != null ? materials[j] : subMesh.material;
-				if (bindShader(material) || matrixChanged) {
+
+				final boolean shaderSwapped = bindShader(material);
+				if (shaderSwapped || matrixChanged) {
 					currentShader.setUniformMatrix("u_normalMatrix", normalMatrix, false);
 					currentShader.setUniformMatrix("u_modelMatrix", modelMatrix, false);
 					currentMaterial = null;
@@ -127,14 +129,10 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 							final TextureAttribute texAtrib = (TextureAttribute)atrib;
 							if (!texAtrib.equals(lastTexture[texAtrib.unit])) {
 								lastTexture[texAtrib.unit] = texAtrib;
-								texAtrib.texture.bind(texAtrib.unit);
-								Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, texAtrib.minFilter);
-								Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, texAtrib.magFilter);
-								Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, texAtrib.uWrap);
-								Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, texAtrib.vWrap);
+								texAtrib.bind(currentShader);
+							} else if (shaderSwapped) {
+								currentShader.setUniformi(texAtrib.name, texAtrib.unit);
 							}
-							// this needed to be done if shader is changed.
-							currentShader.setUniformi(texAtrib.name, texAtrib.unit);
 						} else {
 							atrib.bind(currentShader);
 						}
