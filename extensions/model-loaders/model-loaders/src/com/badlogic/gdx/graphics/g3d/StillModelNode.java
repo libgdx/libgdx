@@ -43,11 +43,12 @@ public class StillModelNode implements StillModelInstance {
 
 	@Override
 	public Material[] getMaterials () {
-		return null;
+		return materials;
 	}
 
 	@Override
 	public float getBoundingSphereRadius () {
 		return radius;
 	}
+	
 }

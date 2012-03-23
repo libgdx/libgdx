@@ -119,7 +119,7 @@ public class StillModelViewerGL20 implements ApplicationListener {
 			l.color.r = MathUtils.random();
 			l.color.b = MathUtils.random();
 			l.color.g = MathUtils.random();
-			l.intensity = 3;
+			l.intensity = 5;
 			lightManager.addLigth(l);
 		}
 		lightManager.ambientLight.set(.03f, 0.05f, 0.06f, 0);
@@ -127,24 +127,23 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		protoRenderer = new PrototypeRendererGL20(lightManager);
 		protoRenderer.cam = cam;
 
-
 		MaterialAttribute c1 = new ColorAttribute(new Color(0.5f, 0.51f, 0.51f, 1.0f), ColorAttribute.specular);
 		MaterialAttribute c2 = new ColorAttribute(new Color(0.95f, 0.95f, 0.95f, 1.0f), ColorAttribute.diffuse);
 		MaterialAttribute c3 = new ColorAttribute(new Color(0.01f, 0.05f, 0.05f, 1.0f), ColorAttribute.emissive);
-		MaterialAttribute t1 = new TextureAttribute(textures[0], 0, TextureAttribute.diffuseTexture);
-		Material material = new Material("basic", c1, c2, c3, t1);
-
+		MaterialAttribute t0 = new TextureAttribute(textures[0], 0, TextureAttribute.diffuseTexture);		
+		Material material = new Material("basic", c1, c2, c3, t0);		
+		
 		model.setMaterial(material);
-
-
 		instance = new StillModelNode();
 		instance.getTransform().translate(-len / 2, -1, 2);
+		instance.radius = bounds.getDimensions().len() / 2;
+		
 		instance2 = new StillModelNode();
 		instance2.getTransform().translate(len / 2, -1, -7);
 
-		instance.radius = bounds.getDimensions().len() / 2;
-		instance2.radius = instance.radius;
 		
+		instance2.radius = instance.radius;
+
 	}
 
 	@Override

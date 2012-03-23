@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class TextureAttribute extends MaterialAttribute {
 
+	public final static int MAX_TEXTURE_UNITS = 16;
 	static final public String diffuseTexture = "diffuseTexture";
 	static final public String lightmapTexture = "lightmapTexture";
 	static final public String specularTexture = "specularTexture";
@@ -36,6 +37,16 @@ public class TextureAttribute extends MaterialAttribute {
 	public int uWrap;
 	public int vWrap;
 
+	/** this method check if the texture portion of texture attribute is equal, name isn't used */
+	public boolean equals (TextureAttribute other) {
+		if (other == null) return false;
+		if (this == other) return true;
+
+		return (texture == other.texture) && (unit == other.unit) && (minFilter == other.minFilter)
+			&& (magFilter == other.magFilter) && (uWrap == other.uWrap) && (vWrap == other.vWrap);
+
+	}
+
 	public TextureAttribute (Texture texture, int unit, String name, TextureFilter minFilter, TextureFilter magFilter,
 		TextureWrap uWrap, TextureWrap vWrap) {
 		this(texture, unit, name, minFilter.getGLEnum(), magFilter.getGLEnum(), uWrap.getGLEnum(), vWrap.getGLEnum());
@@ -44,6 +55,7 @@ public class TextureAttribute extends MaterialAttribute {
 	public TextureAttribute (Texture texture, int unit, String name, int minFilter, int magFilter, int uWrap, int vWrap) {
 		super(name);
 		this.texture = texture;
+		if (unit > MAX_TEXTURE_UNITS) throw new RuntimeException(MAX_TEXTURE_UNITS + " is max texture units supported");
 		this.unit = unit;
 		this.uWrap = uWrap;
 		this.vWrap = vWrap;

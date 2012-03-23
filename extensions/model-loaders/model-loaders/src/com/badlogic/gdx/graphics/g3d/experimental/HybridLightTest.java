@@ -146,9 +146,11 @@ public class HybridLightTest implements ApplicationListener {
 
 		MaterialAttribute c2 = new ColorAttribute(new Color(0.95f, 0.95f, 0.95f, 1.0f), ColorAttribute.diffuse);
 		MaterialAttribute c1 = new ColorAttribute(new Color(0.52f, 1.00f, 0.51f, 1.0f), ColorAttribute.specular);
-		MaterialAttribute c3 = new ColorAttribute(new Color(0.01f, 0.05f, 0.05f, 1.0f), ColorAttribute.emissive);
+		MaterialAttribute c3 = new ColorAttribute(new Color(0.01f, 0.05f, 0.05f, 1.0f), ColorAttribute.emissive);		
 		MaterialAttribute t1 = new TextureAttribute(texture, 0, TextureAttribute.diffuseTexture);
-		Material material = new Material("basic", c1, c2, c3, t1);
+		MaterialAttribute t2 = new TextureAttribute(texture2, 1, TextureAttribute.specularTexture);
+		
+		Material material = new Material("basic", c1, c2, c3, t1, t2);
 		model2.setMaterial(material);
 
 		c4 = new ColorAttribute(new Color(0.5f, 0.25f, 0.15f, 1.0f), ColorAttribute.emissive);

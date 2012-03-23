@@ -1,13 +1,19 @@
 
 package com.badlogic.gdx.graphics.g3d.test;
 
+import java.util.Arrays;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g3d.AnimatedModelInstance;
 import com.badlogic.gdx.graphics.g3d.ModelRenderer;
 import com.badlogic.gdx.graphics.g3d.StillModelInstance;
 import com.badlogic.gdx.graphics.g3d.experimental.MaterialShaderHandler;
 import com.badlogic.gdx.graphics.g3d.lights.LightManager;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.AnimatedModel;
 import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.graphics.g3d.model.SubMesh;
@@ -42,8 +48,6 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	final private MaterialShaderHandler materialShaderHandler;
 	private LightManager lightManager;
 	private boolean drawing;
-	private ShaderProgram currentShader;
-	private Material currentMaterial;
 	final private Matrix3 normalMatrix = new Matrix3();
 	public Camera cam;
 
@@ -84,9 +88,13 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		flush();
 	}
 
+	private ShaderProgram currentShader;
+	final private TextureAttribute lastTexture[] = new TextureAttribute[TextureAttribute.MAX_TEXTURE_UNITS];
+
 	private void flush () {
 		// sort opaque meshes from front to end, perfect accuracy is not needed
 
+		Material currentMaterial = null;
 		// find N nearest lights per model
 		// draw all models from opaque queue
 		for (int i = 0; i < modelQueue.size; i++) {
@@ -96,8 +104,7 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 			final Matrix4 modelMatrix = instance.getTransform();
 			normalMatrix.set(modelMatrix);
 
-			final Model model = modelQueue.items[i];
-			final SubMesh subMeshes[] = model.getSubMeshes();
+			final SubMesh subMeshes[] = modelQueue.items[i].getSubMeshes();
 			final Material materials[] = instance.getMaterials();
 
 			boolean matrixChanged = true;
@@ -108,16 +115,39 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				if (bindShader(material) || matrixChanged) {
 					currentShader.setUniformMatrix("u_normalMatrix", normalMatrix, false);
 					currentShader.setUniformMatrix("u_modelMatrix", modelMatrix, false);
+					currentMaterial = null;
 				}
-				if (material != currentMaterial) {
+				if ((material != null) && (material != currentMaterial)) {
 					currentMaterial = material;
-					currentMaterial.bind(currentShader);
+					for (int k = 0, len = currentMaterial.attributes.length; k < len; k++) {
+						final MaterialAttribute atrib = currentMaterial.attributes[k];
+
+						// special case for textures. really important to batch these
+						if (atrib instanceof TextureAttribute) {
+							final TextureAttribute texAtrib = (TextureAttribute)atrib;
+							if (!texAtrib.equals(lastTexture[texAtrib.unit])) {
+								lastTexture[texAtrib.unit] = texAtrib;
+								texAtrib.texture.bind(texAtrib.unit);
+								Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, texAtrib.minFilter);
+								Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, texAtrib.magFilter);
+								Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, texAtrib.uWrap);
+								Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, texAtrib.vWrap);
+							}
+							// this needed to be done if shader is changed.
+							currentShader.setUniformi(texAtrib.name, texAtrib.unit);
+						} else {
+							atrib.bind(currentShader);
+						}
+					}
 				}
 				subMesh.getMesh().render(currentShader, subMesh.primitiveType);
 			}
-			currentShader.end();
-			currentShader = null;
+
 		}
+		currentShader.end();
+		currentShader = null;
+		for (int i = 0, len = TextureAttribute.MAX_TEXTURE_UNITS; i < len; i++)
+			lastTexture[i] = null;
 
 		// if transparent queue is not empty enable blending(this force gpu to
 		// flush and there is some time to sort)
