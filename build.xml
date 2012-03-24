@@ -30,6 +30,21 @@
 		</ant>
 	</target>
 	
+	<!-- gdx setup, custom target -->
+	<target name="gdx-setup">
+		<delete dir="extensions/gdx-setup/target"/>
+		<mkdir dir="extensions/gdx-setup/target"/>
+		<javac srcdir="extensions/gdx-setup/src" destdir="extensions/gdx-setup/target"/>
+		<copy todir="extensions/gdx-setup/target/com/badlogic/gdx/resources" flatten="false">
+			<fileset dir="extensions/gdx-setup/src/com/badlogic/gdx/resources"/>
+		</copy>
+		<jar destfile="${distDir}/gdx-setup.jar" basedir="extensions/gdx-setup/target">
+        <manifest>
+            <attribute name="Main-Class" value="com.badlogic.gdx.GdxSetup"/>
+        </manifest>
+		</jar>
+	</target>
+	
 	<!-- gdx core -->
 	<target name="gdx-core" depends="gdx-jnigen">
 		<path id="classpath">
@@ -242,7 +257,7 @@
 		</javadoc>
 	</target>
 	
-	<target name="all" depends="clean,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-stb-truetype,gdx-image,gdx-audio,gdx-freetype,docs">
+	<target name="all" depends="clean,gdx-setup,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-stb-truetype,gdx-image,gdx-audio,gdx-freetype,docs">
 		<!-- copy distribution files (licences etc.) -->
 		<copy tofile="${distDir}/README" file="gdx/dist/README"/>
 		<copy tofile="${distDir}/LICENSE" file="gdx/dist/LICENSE"/>
