@@ -84,16 +84,17 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 	@Override
 	public void end () {
-		// maybe rethink this :)
-		flush();
+		if (Gdx.graphics.isGL20Available())
+			flush();
+		else {
+			// TODO fixed pipeline
+		}
 	}
 
 	private ShaderProgram currentShader;
 	final private TextureAttribute lastTexture[] = new TextureAttribute[TextureAttribute.MAX_TEXTURE_UNITS];
 
 	private void flush () {
-		// sort opaque meshes from front to end, perfect accuracy is not needed
-
 		Material currentMaterial = null;
 		// find N nearest lights per model
 		// draw all models from opaque queue
@@ -113,11 +114,17 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				final SubMesh subMesh = subMeshes[j];
 				final Material material = materials != null ? materials[j] : subMesh.material;
 
-				final boolean shaderSwapped = bindShader(material);
-				if (shaderSwapped || matrixChanged) {
+				// bind new shader if material cant use old one
+				final boolean shaderChanged = bindShader(material);
+
+				// if shaderChanged can't batch material
+				if (shaderChanged) currentMaterial = null;
+
+				// if shaderChanged can't batch material
+				if (shaderChanged || matrixChanged) {
 					currentShader.setUniformMatrix("u_normalMatrix", normalMatrix, false);
 					currentShader.setUniformMatrix("u_modelMatrix", modelMatrix, false);
-					currentMaterial = null;
+					matrixChanged = false;
 				}
 				if ((material != null) && (material != currentMaterial)) {
 					currentMaterial = material;
@@ -127,10 +134,11 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 						// special case for textures. really important to batch these
 						if (atrib instanceof TextureAttribute) {
 							final TextureAttribute texAtrib = (TextureAttribute)atrib;
-							if (!texAtrib.equals(lastTexture[texAtrib.unit])) {
+							if (!texAtrib.texturePortionEquals(lastTexture[texAtrib.unit])) {
 								lastTexture[texAtrib.unit] = texAtrib;
 								texAtrib.bind(currentShader);
-							} else if (shaderSwapped) {
+							} else {
+								// need to be done, shader textureAtribute name could be changed.
 								currentShader.setUniformi(texAtrib.name, texAtrib.unit);
 							}
 						} else {
@@ -138,14 +146,16 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 						}
 					}
 				}
+				// finally render current submesh
 				subMesh.getMesh().render(currentShader, subMesh.primitiveType);
 			}
-
 		}
-		currentShader.end();
-		currentShader = null;
-		for (int i = 0, len = TextureAttribute.MAX_TEXTURE_UNITS; i < len; i++)
-			lastTexture[i] = null;
+		if (currentShader != null) {
+			currentShader.end();
+			currentShader = null;
+		}
+		modelQueue.clear();
+		modelInstances.clear();
 
 		// if transparent queue is not empty enable blending(this force gpu to
 		// flush and there is some time to sort)
@@ -154,9 +164,10 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 		// do drawing for transparent models
 
+		for (int i = 0, len = TextureAttribute.MAX_TEXTURE_UNITS; i < len; i++)
+			lastTexture[i] = null;
 		// clear all queus
-		modelQueue.clear();
-		modelInstances.clear();
+
 		drawing = false;
 	}
 

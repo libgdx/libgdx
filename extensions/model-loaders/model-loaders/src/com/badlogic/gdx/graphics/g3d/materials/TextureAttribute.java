@@ -38,7 +38,7 @@ public class TextureAttribute extends MaterialAttribute {
 	public int vWrap;
 
 	/** this method check if the texture portion of texture attribute is equal, name isn't used */
-	public boolean equals (TextureAttribute other) {
+	public boolean texturePortionEquals (TextureAttribute other) {
 		if (other == null) return false;
 		if (this == other) return true;
 
