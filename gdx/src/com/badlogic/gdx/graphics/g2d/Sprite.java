@@ -405,7 +405,7 @@ public class Sprite extends TextureRegion {
 	}
 
 	/** Returns the bounding axis aligned {@link Rectangle} that bounds this sprite. The rectangles x and y coordinates describe its
-	 * bottom left corner.
+	 * bottom left corner. If you change the position or size of the sprite, you have to fetch the triangle again for it to be recomputed.
 	 * 
 	 * @return the bounding Rectangle */
 	public Rectangle getBoundingRectangle () {
