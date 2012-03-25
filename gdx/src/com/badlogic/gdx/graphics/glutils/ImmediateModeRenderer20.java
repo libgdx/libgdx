@@ -128,6 +128,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	}
 
 	public void end () {
+		if(numVertices == 0) return;
 		shader.begin();
 		shader.setUniformMatrix("u_projModelView", projModelView);
 		for (int i = 0; i < numTexCoords; i++)
