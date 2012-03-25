@@ -26,7 +26,6 @@ varying vec3 v_eye;
 varying vec3 v_pos;
 varying vec3 v_lightColor;
 varying float v_intensity;
-
 				
 //wrap light. this is fastest light model
 float wrapLight(vec3 nor, vec3 direction){

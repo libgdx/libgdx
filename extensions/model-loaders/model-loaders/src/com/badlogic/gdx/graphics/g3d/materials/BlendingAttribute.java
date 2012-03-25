@@ -8,6 +8,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class BlendingAttribute extends MaterialAttribute {
+
+	/** if BlendingAttribute name is translucent then default tranparency mechanism is used in shader */
+	public static final String translucent = "translucent";
+
 	public int blendSrcFunc;
 	public int blendDstFunc;
 

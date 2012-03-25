@@ -116,11 +116,11 @@ public class StillModelViewerGL20 implements ApplicationListener {
 
 		for (int i = 0; i < 4; i++) {
 			PointLight l = new PointLight();
-			// l.position.set(-MathUtils.random(8) + 4, MathUtils.random(3), -MathUtils.random(6) + 3);
-			l.position.set(2 * i - 4, 2 * i - 4, 2 * i - 4);
-			l.color.r = 0.5f;// MathUtils.random();
-			l.color.b = 0.5f;// MathUtils.random();
-			l.color.g = 0.5f;// MathUtils.random();
+			l.position.set(-MathUtils.random(8) + 4, MathUtils.random(3), -MathUtils.random(6) + 3);
+			
+			l.color.r = MathUtils.random();
+			l.color.b = MathUtils.random();
+			l.color.g = MathUtils.random();
 			l.intensity = 3;
 			lightManager.addLigth(l);
 		}
@@ -131,8 +131,7 @@ public class StillModelViewerGL20 implements ApplicationListener {
 
 		MaterialAttribute c1 = new ColorAttribute(new Color(0.5f, 0.51f, 0.51f, 1.0f), ColorAttribute.specular);
 		MaterialAttribute c2 = new ColorAttribute(new Color(0.95f, 0.95f, 0.95f, 1.0f), ColorAttribute.diffuse);
-		MaterialAttribute t0 = new TextureAttribute(textures[0], 0, TextureAttribute.diffuseTexture);
-		MaterialAttribute b = new BlendingAttribute("blend");
+		MaterialAttribute t0 = new TextureAttribute(textures[0], 0, TextureAttribute.diffuseTexture);		
 		Material material = new Material("basic", c1, c2, t0);
 
 		model.setMaterial(material);

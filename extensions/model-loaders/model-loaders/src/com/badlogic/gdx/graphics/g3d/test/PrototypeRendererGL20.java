@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g3d.ModelRenderer;
 import com.badlogic.gdx.graphics.g3d.StillModelInstance;
 import com.badlogic.gdx.graphics.g3d.experimental.MaterialShaderHandler;
 import com.badlogic.gdx.graphics.g3d.lights.LightManager;
+import com.badlogic.gdx.graphics.g3d.lights.PointLight;
+import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
@@ -24,6 +26,7 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 
 //stuff that happens
 //0. render begin
@@ -156,20 +159,19 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				subMesh.getMesh().render(currentShader, subMesh.primitiveType);
 			}
 		}
-		if (currentShader != null) {
-			currentShader.end();
-			currentShader = null;
-		}
 		modelQueue.clear();
 		modelInstances.clear();
 
 		// if transparent queue is not empty enable blending(this force gpu to
 		// flush and there is some time to sort)
+		if (blendQueue.size > 0) renderBlended();
 
-		// sort transparent models(submeshes??) accuracy is needed
+		// cleaning
 
-		// do drawing for transparent models
-
+		if (currentShader != null) {
+			currentShader.end();
+			currentShader = null;
+		}
 		for (int i = 0, len = TextureAttribute.MAX_TEXTURE_UNITS; i < len; i++)
 			lastTexture[i] = null;
 		// clear all queus
@@ -198,8 +200,97 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	public void dispose () {
 		materialShaderHandler.dispose();
 	}
-	
+
+	class BlendedMesh implements Comparable {
+		public static final int PRIORITY_DISCRETE_STEPS = 256;
+		public Material material;
+		public SubMesh subMesh;
+		public Matrix4 modelMatrix;
+		public Vector3 center;
+		public int distance;
+
+		public BlendedMesh (Material material, SubMesh subMesh, Matrix4 modelMatrix, Vector3 center) {
+			this.material = material;
+			this.subMesh = subMesh;
+			this.modelMatrix = modelMatrix;
+			this.center = center;
+			distance = (int)(PRIORITY_DISCRETE_STEPS * center.dst(cam.position));
+		}
+
+		@Override
+		public int compareTo (Object other) {
+			return ((BlendedMesh)other).distance - this.distance;
+		}
+	}
+
+	final private Array<BlendedMesh> blendQueue = new Array<BlendedMesh>(true, 64);
+
 	private void addTranparentQueu (Material material, SubMesh subMesh, Matrix4 modelMatrix, Vector3 center) {
-		// FIX ME TODO
+		// FIX ME add pooling
+		blendQueue.add(new BlendedMesh(material, subMesh, modelMatrix, center));
+	}
+
+	private void renderBlended () {
+		Gdx.gl.glEnable(GL10.GL_BLEND);
+		Gdx.gl.glDepthMask(false);
+		blendQueue.sort();
+
+		Material currentMaterial = null;
+		// find N nearest lights per model
+		// draw all models from opaque queue
+
+		int lastSrcBlend = -1;
+		int lastDstBlend = -1;
+
+		for (int i = 0; i < blendQueue.size; i++) {
+			final BlendedMesh instance = blendQueue.get(i);
+			final Material material = instance.material;
+			lightManager.calculateLights(instance.center.x, instance.center.y, instance.center.z);
+			normalMatrix.set(instance.modelMatrix);
+
+			// bind new shader if material can't use old one
+			final boolean shaderChanged = bindShader(material);
+			// if shaderChanged can't batch material
+			if (shaderChanged) currentMaterial = null;
+
+			// if shaderChanged can't batch material
+			currentShader.setUniformMatrix("u_normalMatrix", normalMatrix, false);
+			currentShader.setUniformMatrix("u_modelMatrix", instance.modelMatrix, false);
+
+			if ((material != null) && (material != currentMaterial)) {
+				currentMaterial = material;
+				for (int k = 0, len = currentMaterial.attributes.length; k < len; k++) {
+					final MaterialAttribute atrib = currentMaterial.attributes[k];
+
+					// yet another instanceof. TODO is there any better way to do this? maybe stuffing this to material
+					if (atrib instanceof BlendingAttribute) {
+						final BlendingAttribute blending = (BlendingAttribute)atrib;
+						if (blending.blendSrcFunc != lastSrcBlend || blending.blendDstFunc != lastDstBlend) {
+							atrib.bind(currentShader);
+							lastSrcBlend = blending.blendSrcFunc;
+							lastDstBlend = blending.blendDstFunc;
+						}
+					} else if (atrib instanceof TextureAttribute) {
+						// special case for textures. really important to batch these
+						final TextureAttribute texAtrib = (TextureAttribute)atrib;
+						if (!texAtrib.texturePortionEquals(lastTexture[texAtrib.unit])) {
+							lastTexture[texAtrib.unit] = texAtrib;
+							texAtrib.bind(currentShader);
+						} else {
+							// need to be done, shader textureAtribute name could be changed.
+							currentShader.setUniformi(texAtrib.name, texAtrib.unit);
+						}
+					} else {
+						atrib.bind(currentShader);
+					}
+				}
+			}
+			// finally render current submesh
+			instance.subMesh.getMesh().render(currentShader, instance.subMesh.primitiveType);
+		}
+
+		Gdx.gl.glDepthMask(true);
+		Gdx.gl.glDisable(GL10.GL_BLEND);
+		blendQueue.clear();
 	}
 }

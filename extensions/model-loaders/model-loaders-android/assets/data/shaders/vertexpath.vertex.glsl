@@ -2,20 +2,21 @@
 //#define specularColorFlag
 //#define emissiveColorFlag
 //#define diffuseColorFlag
-//#define LIGHTS_NUM 4
+//#define translucentFlag
+#define LIGHTS_NUM 4
 attribute vec4 a_position; 
 attribute vec2 a_texCoord0;
 
 #ifdef diffuseColorFlag
-uniform vec3 diffuseColor;
+uniform vec4 diffuseColor;
 #endif
 
 #ifdef emissiveColorFlag
-uniform vec3 emissiveColor;
+uniform vec4 emissiveColor;
 #endif
 
 //#ifdef specularColor
-//uniform vec3 specularCol;
+//uniform vec4 specularCol;
 //#endif
 
 #ifdef normalsFlag
@@ -81,6 +82,16 @@ void main()
 #endif
 	
 	aggCol += ambient;
-	
-	v_diffuse = vec4(clamp( aggCol, 0.0,1.0), 1.0);	
+
+
+
+
+#ifdef translucentFlag
+	float alpha = diffuseColor.a;	
+#else 
+	float alpha = 1.0;
+#endif
+
+
+v_diffuse = vec4(clamp( aggCol, 0.0, 1.0), alpha);
 }

@@ -14,11 +14,13 @@ public class PointLight implements Comparable {
 
 	public float intensity;
 
-	protected float priority;
+	protected int priority;
+
+	static final int PRIORITY_DISCRETE_STEPS = 256;
 
 	@Override
-	public int compareTo (Object light) {
-		return (((PointLight)light).priority < this.priority) ? -1 : 1;
+	public int compareTo (Object other) {
+		return this.priority - ((PointLight)other).priority;
 	}
 
 }

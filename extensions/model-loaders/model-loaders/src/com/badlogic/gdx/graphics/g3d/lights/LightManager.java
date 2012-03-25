@@ -68,7 +68,7 @@ public class LightManager {
 
 			for (int i = 0; i < maxSize; i++) {
 				final PointLight light = pointLights.get(i);
-				light.priority = light.intensity / light.position.dst(x, y, z);
+				light.priority = (int)(PointLight.PRIORITY_DISCRETE_STEPS * (light.intensity / light.position.dst(x, y, z)));
 				// if just linear fallof
 			}
 			pointLights.sort();

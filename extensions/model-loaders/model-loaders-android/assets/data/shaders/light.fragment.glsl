@@ -4,6 +4,8 @@
 //#define lightmapTextureFlag
 //#define diffuseTextureFlag
 //#define specularTextureFlag
+//#define translucentFlag
+
 #define normalsFlag
 
 #ifdef GL_ES
@@ -16,19 +18,19 @@ precision mediump float;
 #endif
 
 #ifdef diffuseColorFlag
-uniform vec3 diffuseColor;
+uniform vec4 diffuseColor;
 #endif
 
 #ifdef emissiveColorFlag
-uniform vec3 emissiveColor;
+uniform vec4 emissiveColor;
 #endif
 
 #ifdef specularColorFlag
-uniform vec3 specularColor;
+uniform vec4 specularColor;
 #endif
 
 uniform vec3 ambient;
-const float shininessFactor = 10.0;
+const float shininessFactor = 15.0;
 
 #ifdef diffuseTextureFlag
 uniform sampler2D diffuseTexture;
@@ -57,15 +59,25 @@ float wrapLight(vec3 nor, vec3 direction){
 }	
 void main()
 {	
-
-	vec3 diffuse = vec3(0.0);
+	
+	float alpha = 1.0;
 	
 	#ifdef diffuseTextureFlag
-	diffuse = texture2D(diffuseTexture, v_texCoords).rgb;
+		vec4 difTex = texture2D(diffuseTexture, v_texCoords);
+		vec3 diffuse = difTex.rgb;	
+		#ifdef translucentFlag
+			alpha = difTex.a;
+		#endif
+	#else 
+		vec3 diffuse = vec3(1.0);
 	#endif
 	
+	
 	#ifdef diffuseColorFlag
-		diffuse *= diffuseColor;
+		diffuse *= diffuseColor.rgb;
+		#ifdef translucentFlag
+			alpha *= diffuseColor.a;
+		#endif
 	#endif 	
 		
 	//fastest way to calculate inverse of length
@@ -73,48 +85,52 @@ void main()
   	vec3 intensity =  v_lightColor * ( v_intensity * invLength);	
 	
 	#ifdef normalsFlag
-	vec3 lightDirection = v_lightDir * invLength;	
+		vec3 lightDirection = v_lightDir * invLength;	
 	
-	vec3 surfaceNormal = normalize( v_normal );
-	//lambert phong
-    float lambert = wrapLight(surfaceNormal, lightDirection);
+		vec3 surfaceNormal = normalize( v_normal );
+		//lambert phong
+    	float lambert = wrapLight(surfaceNormal, lightDirection);
    	
-	//specular blinn
-	vec3 fromEye   = normalize(v_eye);	
-	vec3 halfAngle = normalize(lightDirection + fromEye);
-	float specular = pow( clamp( dot(halfAngle, surfaceNormal), 0.0, 1.0), shininessFactor);
+		//specular blinn
+		vec3 fromEye   = normalize(v_eye);	
+		vec3 halfAngle = normalize(lightDirection + fromEye);
+		float specular = pow( clamp( dot(halfAngle, surfaceNormal), 0.0, 1.0), shininessFactor);
 	
-	//specular = (lambert > 0.0) ? specular : 0.0;
-	float tmp  = specular * (lambert * 2.0);
-	specular = (lambert > 0.5)  ? specular : tmp;
+		//specular = (lambert > 0.0) ? specular : 0.0;
+		float tmp  = specular * (lambert * 2.0);
+		specular = (lambert > 0.5)  ? specular : tmp;
+			
+		vec3 diffuseLight = intensity * lambert;
 	
-	vec3 diffuseLight = intensity * lambert;
+		vec3 specularLight = intensity * specular;
+		#ifdef specularColorFlag
+			specularLight *= specularColor.rgb;
+			#ifdef translucentFlag
+				alpha += specular * specularColor.a; 
+			#endif
+		#endif
 	
-	vec3 specularLight = intensity * specular;
-	#ifdef specularColorFlag
-		specularLight *= specularColor;
-	#endif
-	
-	#ifdef specularTextureFlag
-		specularLight *= texture2D(specularTexture, v_texCoords).rgb;
-	#endif
+		#ifdef specularTextureFlag
+			specularLight *= texture2D(specularTexture, v_texCoords).rgb;
+		#endif
 
-	//combine lights
-	vec3 light = specularLight + diffuseLight * diffuse;
+		
+		//combine lights
+		vec3 light = specularLight + diffuseLight * diffuse;
 	#else
-	vec3 light = intensity * diffuse ;
+		vec3 light = intensity * diffuse ;
 	#endif
 	
 	#ifdef lightmapTextureFlag
-	light *= texture2D(lightmapTexture, v_texCoords).rgb;
+		light *= texture2D(lightmapTexture, v_texCoords).rgb;
 	#endif
 	
 	#ifdef emissiveColorFlag
-		light += emissiveColor;
+		light += emissiveColor.rgb;
 	#endif
 	
 	light += ambient * diffuse;
 	
-	gl_FragColor = vec4(light, 1.0);
+	gl_FragColor = vec4(light, alpha);
 	
 }

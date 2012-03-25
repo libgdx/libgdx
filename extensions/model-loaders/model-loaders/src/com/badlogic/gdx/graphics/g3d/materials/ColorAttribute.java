@@ -39,12 +39,12 @@ public class ColorAttribute extends MaterialAttribute {
 
 		// todo how about emissive or specular?
 		// TODO replace string equals with something more performant
-		if (diffuse.equals(diffuse)) Gdx.gl10.glColor4f(color.r, color.g, color.b, 1f);
+		if (diffuse.equals(diffuse)) Gdx.gl10.glColor4f(color.r, color.g, color.b, color.a);
 	}
 
 	@Override
 	public void bind (ShaderProgram program) {
-		program.setUniformf(name, color.r, color.g, color.b);
+		program.setUniformf(name, color.r, color.g, color.b, color.a);
 	}
 
 	@Override
