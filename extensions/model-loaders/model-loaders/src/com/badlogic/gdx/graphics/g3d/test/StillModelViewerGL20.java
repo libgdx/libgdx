@@ -41,6 +41,7 @@ import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter;
+import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute;
@@ -115,11 +116,12 @@ public class StillModelViewerGL20 implements ApplicationListener {
 
 		for (int i = 0; i < 4; i++) {
 			PointLight l = new PointLight();
-			l.position.set(-MathUtils.random(8) + 4, MathUtils.random(3), -MathUtils.random(6) + 3);
-			l.color.r = MathUtils.random();
-			l.color.b = MathUtils.random();
-			l.color.g = MathUtils.random();
-			l.intensity = 5;
+			// l.position.set(-MathUtils.random(8) + 4, MathUtils.random(3), -MathUtils.random(6) + 3);
+			l.position.set(2 * i - 4, 2 * i - 4, 2 * i - 4);
+			l.color.r = 0.5f;// MathUtils.random();
+			l.color.b = 0.5f;// MathUtils.random();
+			l.color.g = 0.5f;// MathUtils.random();
+			l.intensity = 3;
 			lightManager.addLigth(l);
 		}
 		lightManager.ambientLight.set(.03f, 0.05f, 0.06f, 0);
@@ -129,19 +131,18 @@ public class StillModelViewerGL20 implements ApplicationListener {
 
 		MaterialAttribute c1 = new ColorAttribute(new Color(0.5f, 0.51f, 0.51f, 1.0f), ColorAttribute.specular);
 		MaterialAttribute c2 = new ColorAttribute(new Color(0.95f, 0.95f, 0.95f, 1.0f), ColorAttribute.diffuse);
-		MaterialAttribute c3 = new ColorAttribute(new Color(0.01f, 0.05f, 0.05f, 1.0f), ColorAttribute.emissive);
-		MaterialAttribute t0 = new TextureAttribute(textures[0], 0, TextureAttribute.diffuseTexture);		
-		Material material = new Material("basic", c1, c2, c3, t0);		
-		
+		MaterialAttribute t0 = new TextureAttribute(textures[0], 0, TextureAttribute.diffuseTexture);
+		MaterialAttribute b = new BlendingAttribute("blend");
+		Material material = new Material("basic", c1, c2, t0);
+
 		model.setMaterial(material);
 		instance = new StillModelNode();
 		instance.getTransform().translate(-len / 2, -1, 2);
 		instance.radius = bounds.getDimensions().len() / 2;
-		
+
 		instance2 = new StillModelNode();
 		instance2.getTransform().translate(len / 2, -1, -7);
 
-		
 		instance2.radius = instance.radius;
 
 	}

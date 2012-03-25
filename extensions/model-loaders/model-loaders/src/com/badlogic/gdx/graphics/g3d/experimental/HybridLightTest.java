@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -40,7 +41,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 public class HybridLightTest implements ApplicationListener {
 
 	static final int LIGHTS_NUM = 4;
-	static final float LIGHT_INTESITY = 4f;
+	static final float LIGHT_INTESITY = 1.5f;
 
 	LightManager lightManager;
 
@@ -107,7 +108,7 @@ public class HybridLightTest implements ApplicationListener {
 			lightManager.addLigth(l);
 		}
 		lightManager.dirLight = new DirectionalLight();
-		lightManager.dirLight.color.set(0.065f, 0.05f, 0.1f, 1);
+		lightManager.dirLight.color.set(0.1f, 0.075f, 0.1f, 1);
 		lightManager.dirLight.direction.set(-.4f, -1, 0.03f).nor();
 
 		lightManager.ambientLight.set(.14f, 0.09f, 0.09f, 0f);
@@ -121,9 +122,9 @@ public class HybridLightTest implements ApplicationListener {
 		camController = new PerspectiveCamController(cam);
 		Gdx.input.setInputProcessor(camController);
 
-		texture = new Texture(Gdx.files.internal("data/multipleuvs_1.png"), null, true);
+		texture = new Texture(Gdx.files.internal("data/multipleuvs_1.png"), Format.RGB565, true);
 		texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
-		texture2 = new Texture(Gdx.files.internal("data/texture2UV1S.png"), null, true);
+		texture2 = new Texture(Gdx.files.internal("data/texture2UV1S.png"), Format.RGB565, true);
 		texture2.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 
 		model = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/models/sphere.obj"));
@@ -135,7 +136,7 @@ public class HybridLightTest implements ApplicationListener {
 
 		BoundingBox box = new BoundingBox();
 		model.getBoundingBox(box);
-		instance.radius = box.getDimensions().len() / 2;
+		instance.radius =box.getDimensions().len() / 2;
 
 		model2.getBoundingBox(box);
 		instance2.radius = box.getDimensions().len() / 2;
@@ -144,15 +145,15 @@ public class HybridLightTest implements ApplicationListener {
 		protoRenderer.cam = cam;
 
 		MaterialAttribute c2 = new ColorAttribute(new Color(0.95f, 0.95f, 0.95f, 1.0f), ColorAttribute.diffuse);
-		MaterialAttribute c1 = new ColorAttribute(new Color(0.52f, 1.00f, 0.51f, 1.0f), ColorAttribute.specular);
+		MaterialAttribute c1 = new ColorAttribute(new Color(0.252f, 0.25f, 0.251f, 1.0f), ColorAttribute.specular);
 		MaterialAttribute c3 = new ColorAttribute(new Color(0.01f, 0.05f, 0.05f, 1.0f), ColorAttribute.emissive);
 		MaterialAttribute t1 = new TextureAttribute(texture, 0, TextureAttribute.diffuseTexture);
-		MaterialAttribute t2 = new TextureAttribute(texture2, 1, TextureAttribute.specularTexture);
+		//MaterialAttribute t2 = new TextureAttribute(texture2, 1, TextureAttribute.specularTexture);
 
-		Material material2 = new Material("basic", c1, c2, c3, t1, t2);
+		Material material2 = new Material("basic", c1, c2, c3, t1);
 		model2.setMaterial(material2);
 
-		c4 = new ColorAttribute(new Color(0.5f, 0.25f, 0.15f, 1.0f), ColorAttribute.emissive);
+		c4 = new ColorAttribute(new Color(0.25f, 0.2f, 0.15f, 1.0f), ColorAttribute.emissive);
 		Material material = new Material("shiningBall", c1, c2, c4);
 		model.setMaterial(material);
 

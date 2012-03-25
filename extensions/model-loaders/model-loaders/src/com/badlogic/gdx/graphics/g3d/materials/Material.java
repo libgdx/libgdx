@@ -23,11 +23,22 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 public class Material {
 	final public String name;
 	final public MaterialAttribute[] attributes;
+	/** This flag is true if material contain blendingAttribute */
+	final public boolean needBlending;
+
 	public ShaderProgram shader;
 
 	public Material (String name, MaterialAttribute... attributes) {
 		this.name = name;
 		this.attributes = attributes;
+
+		// this way we foresee if blending is needed with this material and rendering can deferred more easily
+		boolean blendingNeeded = false;
+		for (int i = 0; i < attributes.length; i++) {
+			if (attributes[i] instanceof BlendingAttribute) blendingNeeded = true;
+		}
+		this.needBlending = blendingNeeded;
+
 	}
 
 	public void bind () {
@@ -47,7 +58,9 @@ public class Material {
 		for (int i = 0; i < attributes.length; i++) {
 			attributes[i] = this.attributes[i].copy();
 		}
-		return new Material(name, attributes);
+		final Material copy = new Material(name, attributes);
+		copy.shader = this.shader;
+		return copy;
 	}
 
 	@Override

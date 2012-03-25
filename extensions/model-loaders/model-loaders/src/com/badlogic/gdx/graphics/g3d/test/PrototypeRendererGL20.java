@@ -42,8 +42,8 @@ import com.badlogic.gdx.utils.Array;
 public class PrototypeRendererGL20 implements ModelRenderer {
 
 	static final int SIZE = 256;// TODO better way
-	final private Array<Model> modelQueue = new Array<Model>(false, SIZE, Model.class);
-	final private Array<StillModelInstance> modelInstances = new Array<StillModelInstance>(false, SIZE, StillModelInstance.class);
+	final private Array<Model> modelQueue = new Array<Model>(false, SIZE);
+	final private Array<StillModelInstance> modelInstances = new Array<StillModelInstance>(false, SIZE);
 
 	final private MaterialShaderHandler materialShaderHandler;
 	private LightManager lightManager;
@@ -99,13 +99,13 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		// find N nearest lights per model
 		// draw all models from opaque queue
 		for (int i = 0; i < modelQueue.size; i++) {
-			final StillModelInstance instance = modelInstances.items[i];
+			final StillModelInstance instance = modelInstances.get(i);
 			final Vector3 center = instance.getSortCenter();
 			lightManager.calculateLights(center.x, center.y, center.z);
 			final Matrix4 modelMatrix = instance.getTransform();
 			normalMatrix.set(modelMatrix);
 
-			final SubMesh subMeshes[] = modelQueue.items[i].getSubMeshes();
+			final SubMesh subMeshes[] = modelQueue.get(i).getSubMeshes();
 			final Material materials[] = instance.getMaterials();
 
 			boolean matrixChanged = true;
@@ -114,7 +114,13 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				final SubMesh subMesh = subMeshes[j];
 				final Material material = materials != null ? materials[j] : subMesh.material;
 
-				// bind new shader if material cant use old one
+				if (material.needBlending) {
+					addTranparentQueu(material, subMesh, modelMatrix, center);
+
+					continue;
+				}
+
+				// bind new shader if material can't use old one
 				final boolean shaderChanged = bindShader(material);
 
 				// if shaderChanged can't batch material
@@ -191,5 +197,9 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 	public void dispose () {
 		materialShaderHandler.dispose();
+	}
+	
+	private void addTranparentQueu (Material material, SubMesh subMesh, Matrix4 modelMatrix, Vector3 center) {
+		// FIX ME TODO
 	}
 }

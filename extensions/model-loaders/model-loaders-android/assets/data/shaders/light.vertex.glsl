@@ -74,10 +74,9 @@ void main()
 		float weight  = lightsInt[i] * invLen;
 		#endif
 		
-		aggDir   += L * weight;
-		invLen 	 *= weight;
-		aggCol   += invLen * lightsCol[i];		
-		aggWeight+= invLen;
+		aggDir   += L * weight;		
+		aggCol   += weight * lightsCol[i];		
+		aggWeight+= weight;
 		
 	}	
 	v_lightDir   = aggDir / aggWeight;

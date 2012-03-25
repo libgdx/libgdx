@@ -16,7 +16,7 @@ public class LightManager {
 
 	public LightQuality quality;
 
-	final public Array<PointLight> pointLights = new Array<PointLight>(false, 16, PointLight.class);
+	final public Array<PointLight> pointLights = new Array<PointLight>(false, 16);
 	final private float[] positions;
 	final private float[] colors;
 	final private float[] intensities;
@@ -63,12 +63,12 @@ public class LightManager {
 	// than x that would make sorted faster
 	public void calculateLights (float x, float y, float z) {
 		final int maxSize = pointLights.size;
-		final PointLight lights[] = pointLights.items;
 		// solve what are lights that influence most
 		if (maxSize > maxLightsPerModel) {
 
 			for (int i = 0; i < maxSize; i++) {
-				lights[i].priority = lights[i].intensity / lights[i].position.dst(x, y, z);
+				final PointLight light = pointLights.get(i);
+				light.priority = light.intensity / light.position.dst(x, y, z);
 				// if just linear fallof
 			}
 			pointLights.sort();
@@ -77,18 +77,18 @@ public class LightManager {
 		// fill the light arrays
 		final int size = maxLightsPerModel > maxSize ? maxSize : maxLightsPerModel;
 		for (int i = 0; i < size; i++) {
-			final PointLight l = lights[i];
-			final Vector3 pos = l.position;
+			final PointLight light = pointLights.get(i);
+			final Vector3 pos = light.position;
 			positions[3 * i + 0] = pos.x;
 			positions[3 * i + 1] = pos.y;
 			positions[3 * i + 2] = pos.z;
 
-			final Color col = l.color;
+			final Color col = light.color;
 			colors[3 * i + 0] = col.r;
 			colors[3 * i + 1] = col.g;
 			colors[3 * i + 2] = col.b;
 
-			intensities[i] = l.intensity;
+			intensities[i] = light.intensity;
 		}
 
 		// TODO might not be needed
@@ -104,7 +104,6 @@ public class LightManager {
 
 	/** Apply lights GLES2.0, call calculateLights before aplying */
 	public void applyLights (ShaderProgram shader) {
-		// TODO should shader be begin first?
 		shader.setUniform3fv("lightsPos", positions, 0, maxLightsPerModel * 3);
 		shader.setUniform3fv("lightsCol", colors, 0, maxLightsPerModel * 3);
 		shader.setUniform1fv("lightsInt", intensities, 0, maxLightsPerModel);
@@ -116,7 +115,7 @@ public class LightManager {
 
 	public void applyGlobalLights (ShaderProgram shader) {
 		shader.setUniformf("ambient", ambientLight.r, ambientLight.g, ambientLight.b);
-		if (dirLight != null) {			
+		if (dirLight != null) {
 			final Vector3 v = dirLight.direction;
 			final Color c = dirLight.color;
 			shader.setUniformf("dirLightDir", v.x, v.y, v.z);

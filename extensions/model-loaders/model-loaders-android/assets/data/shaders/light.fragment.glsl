@@ -116,4 +116,5 @@ void main()
 	light += ambient * diffuse;
 	
 	gl_FragColor = vec4(light, 1.0);
+	
 }

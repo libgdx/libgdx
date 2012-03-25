@@ -51,14 +51,14 @@ public class PerspectiveCamController extends InputAdapter {
 		cam.direction.x = MathUtils.cosDeg(angleX) * cos;
 		cam.direction.y = MathUtils.sinDeg(angleY) * 1f;
 		cam.direction.z = MathUtils.sinDeg(angleX) * cos;
-		cam.update(false);
+		cam.update();
 		return true;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
 		cam.fieldOfView -= -amount * 0.1f;
-		cam.update(false);
+		cam.update();
 		return true;
 	}
 
