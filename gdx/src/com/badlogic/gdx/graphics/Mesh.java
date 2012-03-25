@@ -309,7 +309,7 @@ public class Mesh implements Disposable {
 	 * @param count number of vertices or indices to use */
 	public void render (int primitiveType, int offset, int count) {
 		if (Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 2.0");
-
+		if (count == 0) return;
 		if (autoBind) bind();
 
 		if (isVertexArray) {
@@ -382,7 +382,8 @@ public class Mesh implements Disposable {
 	 * @param count number of vertices or indices to use */
 	public void render (ShaderProgram shader, int primitiveType, int offset, int count) {
 		if (!Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
-
+		if(count == 0) return;
+		
 		if (autoBind) bind(shader);
 
 		if (isVertexArray) {
