@@ -4,5 +4,5 @@
 	<inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />
 	<inherits name='com.badlogicgames.SuperJumper' />
 	<entry-point class='com.badlogicgames.superjumper.client.SuperJumperGwt' />
-	<set-configuration-property name="gdx.assetpath" value="../../superjumper-android/assets" />
+	<set-configuration-property name="gdx.assetpath" value="../superjumper-android/assets" />
 </module>

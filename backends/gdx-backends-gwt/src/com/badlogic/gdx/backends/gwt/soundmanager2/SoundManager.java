@@ -2,6 +2,10 @@ package com.badlogic.gdx.backends.gwt.soundmanager2;
 
 
 public class SoundManager {
+	public interface SoundManagerCallback {
+		public void loaded();
+		public void error();
+	}
 	
 	public static final native SoundManager getInstance() /*-{
 		return $wnd.soundManager;
@@ -41,5 +45,17 @@ public class SoundManager {
 	
 	public static native void reboot() /*-{
 		$wnd.soundManager.reboot();
+	}-*/;
+	
+	public static native boolean swfLoaded() /*-{
+		return $wnd.soundManager.swfLoaded;
+	}-*/;
+
+	public static native void init (String moduleBaseURL, int flashVersion) /*-{
+		$wnd.SM2_DEFER = true;
+		$wnd.soundManager = new $wnd.SoundManager();
+		$wnd.soundManager.url = moduleBaseURL;
+		$wnd.soundManager.flashVersion = flashVersion;
+		$wnd.soundManager.beginDelayedInit()
 	}-*/;
 }

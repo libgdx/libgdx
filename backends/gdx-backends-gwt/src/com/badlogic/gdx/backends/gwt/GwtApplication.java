@@ -26,6 +26,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
+import com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager;
+import com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager.SoundManagerCallback;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -111,29 +113,41 @@ public abstract class GwtApplication implements EntryPoint, Application {
 				root = panel;
 			}
 		}
-		// creating audio here so it can load while we load the resources.
-		Gdx.audio = new GwtAudio();
-
-		final PreloaderCallback callback = getPreloaderCallback();
-		preloader = new Preloader();
-		preloader.preload("assets.txt", new PreloaderCallback() {
+		
+		// initialize SoundManager2
+		SoundManager.init(GWT.getModuleBaseURL(), 9);
+		
+		// wait for soundmanager to load, this is fugly, but for
+		// some reason the ontimeout and onerror callbacks are never
+		// called (function instanceof Function fails, wtf JS?).
+		new Timer() {
 			@Override
-			public void loaded (String file, int loaded, int total) {
-				callback.loaded(file, loaded, total);
+			public void run () {
+				if(SoundManager.swfLoaded()) {
+					final PreloaderCallback callback = getPreloaderCallback();
+					preloader = new Preloader();
+					preloader.preload("assets.txt", new PreloaderCallback() {
+						@Override
+						public void loaded (String file, int loaded, int total) {
+							callback.loaded(file, loaded, total);
+						}
+	
+						@Override
+						public void error (String file) {
+							callback.error(file);
+						}
+	
+						@Override
+						public void done () {
+							callback.done();
+							root.clear();
+							setupLoop();
+						}
+					});	
+					cancel();
+				}
 			}
-
-			@Override
-			public void error (String file) {
-				callback.error(file);
-			}
-
-			@Override
-			public void done () {
-				callback.done();
-				root.clear();
-				setupLoop();
-			}
-		});
+		}.scheduleRepeating(100);
 	}
 
 	private void setupLoop () {
@@ -148,6 +162,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		lastWidth = graphics.getWidth();
 		lastHeight = graphics.getHeight();
 		Gdx.app = this;
+		Gdx.audio = new GwtAudio();
 		Gdx.graphics = graphics;
 		Gdx.gl20 = graphics.getGL20();
 		Gdx.gl = graphics.getGLCommon();

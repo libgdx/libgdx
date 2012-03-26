@@ -39,12 +39,19 @@ public class PreloaderBundleGenerator extends Generator {
 		String assetPath = getAssetPath(context);
 		AssetFilter assetFilter = getAssetFilter(context);
 
-		System.out.println(new File(assetPath).getAbsolutePath());
-		System.out.println("Copying resources from " + assetPath + " to war/");
 		FileWrapper source = new FileWrapper(assetPath);
-		if(!source.exists()) throw new RuntimeException("assets path '" + assetPath + "' does not exist. Check your gdx.assetpath property in your GWT project's module gwt.xml file");
+		if(!source.exists()) {
+			source = new FileWrapper("../" + assetPath);
+			if(!source.exists()) throw new RuntimeException("assets path '" + assetPath + "' does not exist. Check your gdx.assetpath property in your GWT project's module gwt.xml file");
+		}
 		if(!source.isDirectory()) throw new RuntimeException("assets path '" + assetPath + "' is not a directory. Check your gdx.assetpath property in your GWT project's module gwt.xml file");
-		FileWrapper target = new FileWrapper(""); // this should always be the war/ directory of the GWT project.
+		System.out.println("Copying resources from " + assetPath + " to war/");
+		System.out.println(source.file.getAbsolutePath());
+		FileWrapper target = new FileWrapper("assets/"); // this should always be the war/ directory of the GWT project.
+		System.out.println(target.file.getAbsolutePath());
+		if(!target.file.getAbsolutePath().replace("\\", "/").endsWith("war/assets")) {
+			target = new FileWrapper("war/assets/");
+		}
 		if(target.exists()) {
 			if(!target.deleteDirectory()) throw new RuntimeException("Couldn't clean target path '" + target + "'");
 		}
@@ -53,13 +60,14 @@ public class PreloaderBundleGenerator extends Generator {
 		
 		StringBuffer buffer = new StringBuffer();
 		for(Asset asset: assets) {
-			String path = asset.file.path().replace('\\', '/');
+			String path = asset.file.path().replace('\\', '/').replace("war/assets/", "").replaceFirst("assets", "");
+			if(path.startsWith("/")) path = path.substring(1);
 			buffer.append(asset.type.code);
 			buffer.append(":");
 			buffer.append(path);
 			buffer.append("\n");
 		}
-		new FileWrapper("assets.txt").writeString(buffer.toString(), false);
+		target.child("assets.txt").writeString(buffer.toString(), false);
 		System.out.println(buffer.toString());
 		return createDummyClass(logger, context);
 	}

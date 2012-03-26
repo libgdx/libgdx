@@ -11,13 +11,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.core.client.GWT;
 
 public class GwtAudio implements Audio {
-	public GwtAudio() {
-		System.out.println(SoundManager.getVersion());
-		SoundManager.setUrl(GWT.getModuleBaseURL());
-		SoundManager.setFlashVersion(9);
-		SoundManager.reboot();
-	}
-	
 	@Override
 	public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
 		throw new GdxRuntimeException("AudioDevice not supported by GWT backend");

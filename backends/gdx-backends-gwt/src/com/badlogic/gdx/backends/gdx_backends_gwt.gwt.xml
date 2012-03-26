@@ -6,7 +6,9 @@
 	<inherits name="com.google.gwt.webgl.WebGL" />
 	<inherits name="com.badlogic.gwtref.GwtReflect"/>
 
-	<script src="soundmanager2-jsmin.js"/>
+	<script src="soundmanager2-setup.js"/>
+	<script src="soundmanager2.js"/>
+	
 	<public path="gwt/resources"/>
 	<super-source path="gwt/emu" />
 	<source path="gwt">
