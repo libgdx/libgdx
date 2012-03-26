@@ -7,7 +7,7 @@
 	<inherits name="com.badlogic.gwtref.GwtReflect"/>
 
 	<script src="soundmanager2-setup.js"/>
-	<script src="soundmanager2.js"/>
+	<script src="soundmanager2-jsmin.js"/>
 	
 	<public path="gwt/resources"/>
 	<super-source path="gwt/emu" />
