@@ -1,0 +1,33 @@
+
+pack1.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+badlogicslice
+  rotate: false
+  xy: 0, 0
+  size: 41, 236
+  orig: 41, 236
+  offset: 0, 0
+  index: 0
+particle-star
+  rotate: false
+  xy: 42, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 0
+font
+  rotate: false
+  xy: 107, 0
+  size: 252, 53
+  orig: 256, 256
+  offset: 0, 0
+  index: 0
+badlogicsmall
+  rotate: false
+  xy: 42, 65
+  size: 32, 32
+  orig: 256, 256
+  offset: 32, 32
+  index: 0
