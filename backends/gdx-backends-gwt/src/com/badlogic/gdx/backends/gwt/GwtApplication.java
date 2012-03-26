@@ -48,6 +48,15 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * Implementation of an {@link Application} based on GWT. Clients have to 
+ * override {@link #getConfig()}, {@link #getApplicationListener()} and
+ * {@link #getAssetsPath()}. Clients can override the default loading screen
+ * via {@link #getPreloaderCallback()} and implement any loading screen 
+ * drawing via GWT widgets.
+ * @author mzechner
+ *
+ */
 public abstract class GwtApplication implements EntryPoint, Application {
 	private ApplicationListener listener;
 	private GwtApplicationConfiguration config;
@@ -62,6 +71,16 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private static AgentInfo agentInfo;
 	private ObjectMap<String, Preferences> prefs = new ObjectMap<String, Preferences>();
 
+	/**
+	 * @return the configuration for the {@link GwtApplication}.
+	 */
+	public abstract GwtApplicationConfiguration getConfig ();
+
+	/**
+	 * @return the {@link ApplicationListener} to be run by the {@link GwtApplication}.
+	 */
+	public abstract ApplicationListener getApplicationListener ();
+	
 	@Override
 	public void onModuleLoad () {
 		this.agentInfo = computeAgentInfo();
@@ -171,10 +190,6 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			}
 		}.scheduleRepeating((int)((1f / config.fps) * 1000));
 	}
-
-	public abstract GwtApplicationConfiguration getConfig ();
-
-	public abstract ApplicationListener getApplicationListener ();
 
 	public Panel getRootPanel () {
 		return root;

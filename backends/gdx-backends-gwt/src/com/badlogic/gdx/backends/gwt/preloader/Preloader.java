@@ -3,9 +3,8 @@ package com.badlogic.gdx.backends.gwt.preloader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
 import com.badlogic.gdx.backends.gwt.preloader.BinaryLoader.Blob;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
@@ -24,13 +23,7 @@ public class Preloader {
 	public ObjectMap<String, ImageElement> images = new ObjectMap<String, ImageElement>();
 	public ObjectMap<String, String> texts = new ObjectMap<String, String>();
 	public ObjectMap<String, Blob> binaries = new ObjectMap<String, Blob>();
-	
-	enum AssetType {
-		Image,
-		Text,
-		Binary
-	}
-	
+
 	private class Asset {
 		String url;
 		AssetType type;
@@ -45,6 +38,8 @@ public class Preloader {
 	
 	public Preloader() {
 		baseUrl = GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "");
+		// trigger copying of assets creation of assets.txt
+		GWT.create(PreloaderBundle.class);
 	}
 	
 	public void preload(final String assetFileUrl, final PreloaderCallback callback) {

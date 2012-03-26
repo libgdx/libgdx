@@ -11,5 +11,14 @@
 	<super-source path="gwt/emu" />
 	<source path="gwt">
 		<exclude name="**/emu/**" />
+		<exclude name="**/PreloaderBundleGenerator.java"/>
+		<exclude name="**/FileWrapper.java"/>
 	</source>
+	
+	<define-configuration-property name="gdx.assetpath" is-multi-valued="false"/>
+	<define-configuration-property name="gdx.assetfilterclass" is-multi-valued="false"/>
+	
+	<generate-with class="com.badlogic.gdx.backends.gwt.preloader.PreloaderBundleGenerator">
+		<when-type-assignable class="com.badlogic.gdx.backends.gwt.preloader.PreloaderBundle"/>
+	</generate-with>
 </module>
