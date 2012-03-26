@@ -21,6 +21,7 @@ public class Preloader {
 	}
 	
 	public ObjectMap<String, ImageElement> images = new ObjectMap<String, ImageElement>();
+	public ObjectMap<String, Void> audio = new ObjectMap<String, Void>();
 	public ObjectMap<String, String> texts = new ObjectMap<String, String>();
 	public ObjectMap<String, Blob> binaries = new ObjectMap<String, Blob>();
 
@@ -54,6 +55,8 @@ public class Preloader {
 					AssetType type = AssetType.Text;
 					if(tokens[0].equals("i")) type = AssetType.Image;
 					if(tokens[0].equals("b")) type = AssetType.Binary;
+					if(tokens[0].equals("a")) type = AssetType.Audio;
+					if(tokens[0].equals("d")) type = AssetType.Directory;
 					assets.add(new Asset(tokens[1].trim(), type));
 				}
 				
@@ -125,6 +128,27 @@ public class Preloader {
 				}
 			});
 		}
+		
+		if(asset.type == AssetType.Audio) {
+			new AudioLoader(baseUrl + asset.url, new LoaderCallback<Void>() {
+				@Override
+				public void success (Void result) {
+					audio.put(asset.url, null);
+					callback.loaded(asset.url, next + 1, assets.size);
+					loadNextAsset(assets, next + 1, callback);
+				}
+
+				@Override
+				public void error () {
+					callback.error(asset.url);
+					loadNextAsset(assets, next + 1, callback);
+				}
+			});
+		}
+		
+		if(asset.type == AssetType.Directory) {
+			loadNextAsset(assets, next + 1, callback);
+		}
 	}
 	
 	public InputStream read(String url) {
@@ -141,12 +165,15 @@ public class Preloader {
 		if(binaries.containsKey(url)) {
 			return binaries.get(url).read();
 		}
+		if(audio.containsKey(url)) {
+			return new ByteArrayInputStream(new byte[1]); // FIXME, sensible?
+		}
 		return null;
 	}
 	
 	public boolean contains(String url) {
 		// FIXME should also check if directory exists
-		return texts.containsKey(url) || images.containsKey(url) || binaries.containsKey(url);
+		return texts.containsKey(url) || images.containsKey(url) || binaries.containsKey(url) || audio.containsKey(url);
 	}
 	
 	public boolean isText(String url) {
@@ -160,6 +187,10 @@ public class Preloader {
 	public boolean isBinary(String url) {
 		return binaries.containsKey(url);
 	}
+	
+	public boolean isAudio(String url) {
+		return audio.containsKey(url);
+	}
 
 	public FileHandle[] list (String url) {
 		throw new GdxRuntimeException("Not implemented"); // FIXME
@@ -171,13 +202,20 @@ public class Preloader {
 
 	public long length (String url) {
 		if(texts.containsKey(url)) {
-			return texts.get(url).getBytes().length; // FIXME should use UTF-8
+			try {
+				return texts.get(url).getBytes("UTF-8").length;
+			} catch (UnsupportedEncodingException e) {
+				return texts.get(url).getBytes().length;
+			}
 		}
 		if(images.containsKey(url)) {
 			return 1; // FIXME, sensible?
 		}
 		if(binaries.containsKey(url)) {
 			return binaries.get(url).length();
+		}
+		if(audio.containsKey(url)) {
+			return 1; // FIXME sensible?
 		}
 		return 0;
 	}
