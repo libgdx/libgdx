@@ -16,5 +16,4 @@ public class BouncyGwt extends GwtApplication {
 	public ApplicationListener getApplicationListener () {
 		return new Bouncy();
 	}
-
 }
