@@ -103,6 +103,7 @@ public class FreetypeBuild {
 		mac.cIncludes = sources;
 		mac.cFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
 		mac.cppFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
+		mac.linkerFlags += " -framework CoreServices -framework Carbon";
 		
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
 		android.headerDirs = headers;
@@ -113,7 +114,7 @@ public class FreetypeBuild {
 		new NativeCodeGenerator().generate();
 		new AntScriptGenerator().generate(new BuildConfig("gdx-freetype"), win32home, win32, win64, lin32, lin64, mac, android);
 //		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v clean");
-		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
+//		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
 		BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
 	}
 }

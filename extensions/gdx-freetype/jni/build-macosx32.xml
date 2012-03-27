@@ -77,7 +77,7 @@
 
 	<!-- define linker and options -->
 	<property name="linker" value="${compilerPrefix}g++"/>
-	<property name="linker-opts" value="-shared -arch i386 -arch x86_64 -mmacosx-version-min=10.5"/>
+	<property name="linker-opts" value="-shared -arch i386 -arch x86_64 -mmacosx-version-min=10.5 -framework CoreServices -framework Carbon"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">

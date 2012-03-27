@@ -19,7 +19,13 @@
 	
 	<target name="pack-natives">
 		<jar destfile="../libs/gdx-image-natives.jar">
-			<fileset dir="../libs/android32" includes="libgdx-image.so"/>			<fileset dir="../libs/windows32" includes="gdx-image.dll"/>			<fileset dir="../libs/windows64" includes="gdx-image64.dll"/>			<fileset dir="../libs/linux32" includes="libgdx-image.so"/>			<fileset dir="../libs/linux64" includes="libgdx-image64.so"/>
+			<fileset dir="../libs/android32" includes="libgdx-image.so"/>
+			<fileset dir="../libs/windows32" includes="gdx-image.dll"/>
+			<fileset dir="../libs/windows64" includes="gdx-image64.dll"/>
+			<fileset dir="../libs/linux32" includes="libgdx-image.so"/>
+			<fileset dir="../libs/linux64" includes="libgdx-image64.so"/>
+			<fileset dir="../libs/macosx32" includes="libgdx-image.dylib"/>
+
 		</jar>
 	</target>
 

@@ -1,6 +1,6 @@
 #include <com.badlogic.gdx.graphics.g2d.Jpeg.h>
 
-//@line:41
+//@line:44
 
 	#include "gdx2d.h"
 	#include "libjpeg/jpeglib.h"
@@ -21,7 +21,7 @@
 	 static inline jobject wrapped_Java_com_badlogic_gdx_graphics_g2d_Jpeg_read
 (JNIEnv* env, jclass clazz, jbyteArray obj_compressedData, jint offset, jint length, jlongArray obj_out, char* compressedData, long long* out) {
 
-//@line:60
+//@line:63
 
 		struct jpeg_decompress_struct cinfo;
 		struct jpeg_error_mgr jerr;

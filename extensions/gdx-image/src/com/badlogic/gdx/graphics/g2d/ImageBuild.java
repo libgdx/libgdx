@@ -56,7 +56,7 @@ public class ImageBuild {
 		new AntScriptGenerator().generate(new BuildConfig("gdx-image"), win32home, android, win32, win64, lin32, lin64, mac);
 
 		// build natives
-		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
+//		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
 		BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
 	}
 }
