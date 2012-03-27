@@ -29,10 +29,12 @@ import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.ComplexActionTest;
 import com.badlogic.gdx.tests.CustomShaderSpriteBatchTest;
 import com.badlogic.gdx.tests.DecalTest;
+import com.badlogic.gdx.tests.FreeTypeTest;
 import com.badlogic.gdx.tests.ImageScaleTest;
 import com.badlogic.gdx.tests.ImageTest;
 import com.badlogic.gdx.tests.LabelTest;
 import com.badlogic.gdx.tests.MeshShaderTest;
+import com.badlogic.gdx.tests.Mpg123Test;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.PixmapBlendingTest;
@@ -55,7 +57,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-image/libs/gdx-image-natives.jar").load("gdx-image");
 		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
 		
-		GdxTest test = new SoundTest();
+		GdxTest test = new Mpg123Test();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 800;
 		config.height = 480;

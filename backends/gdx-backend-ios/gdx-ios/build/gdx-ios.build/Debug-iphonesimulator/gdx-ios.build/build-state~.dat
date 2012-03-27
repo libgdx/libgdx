@@ -1,0 +1,217 @@
+Tgdx-ios
+v4
+r1
+cCheck dependencies
+cProcessInfoPlistFile /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/Info.plist gdx-ios/gdx-ios-Info.plist
+cProcessPCH /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-acjidpdzgfkejsbyrvxaumcthlqo/gdx-ios-Prefix.pch.pth gdx-ios/gdx-ios-Prefix.pch normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cProcessPCH++ /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-ehcjgnpymxbwhjbfpokvlmfkikxj/gdx-ios-Prefix.pch.pth gdx-ios/gdx-ios-Prefix.pch normal i386 objective-c++ com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/main.o /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/main.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+cCompileC build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/AppDelegate.o /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/AppDelegate.mm normal i386 objective-c++ com.apple.compilers.llvm.clang.1_0.compiler
+cLd /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/gdx-ios normal i386
+cGenerateDSYMFile /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app.dSYM /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/gdx-ios
+cCopyStringsFile /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/en.lproj/InfoPlist.strings gdx-ios/en.lproj/InfoPlist.strings
+cTouch /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app
+
+N/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk
+c000000004F04C5160000000000000110
+t1325712662
+s272
+
+N/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics
+c000000004E72F1CC0000000000245480
+t1316155852
+s2380928
+
+N/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk/System/Library/Frameworks/Foundation.framework/Foundation
+c000000004E72F2960000000000353830
+t1316156054
+s3487792
+
+N/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk/System/Library/Frameworks/UIKit.framework/UIKit
+c000000004E7806AB00000000008F7390
+t1316488875
+s9401232
+
+N/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app
+t2
+s0
+
+N/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app.dSYM
+t2
+s0
+
+N/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/Info.plist
+t2
+s0
+
+N/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/PkgInfo
+t2
+s0
+
+N/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/en.lproj/InfoPlist.strings
+t2
+s0
+
+N/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/gdx-ios
+t2
+s0
+
+N/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/AppDelegate.o
+t2
+s0
+
+N/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/gdx-ios.LinkFileList
+c000000004F1184270000000000000131
+t1326548007
+s305
+
+N/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/main.o
+t2
+s0
+
+N/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/AppDelegate.mm
+c000000004F11836E0000000000000960
+t1326547822
+s2400
+
+N/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/en.lproj/InfoPlist.strings
+c000000004F10C679000000000000002D
+t1326499449
+s45
+
+N/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/gdx-ios-Prefix.pch
+c000000004F10C679000000000000013D
+t1326499449
+s317
+
+N/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/main.m
+c000000004F1183880000000000000153
+t1326547848
+s339
+
+N/var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-acjidpdzgfkejsbyrvxaumcthlqo/gdx-ios-Prefix.pch.pth
+t2
+s0
+
+N/var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-ehcjgnpymxbwhjbfpokvlmfkikxj/gdx-ios-Prefix.pch.pth
+t2
+s0
+
+Ngdx-ios/gdx-ios-Info.plist
+c000000004F10C67900000000000005DD
+t1326499449
+s1501
+
+CBuild AST from /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/AppDelegate.mm
+r0
+
+CBuild AST from /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/main.m
+r0
+
+CCheck dependencies
+r0
+lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection18"Check dependenciesa24621a7bbc1b441^d0d235a7bbc1b441^---0#1#0#--18"Check dependencies36"E5BB3DBF-3D62-4BF8-A88E-221D9DD6122F-
+
+CCompileC build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/AppDelegate.o /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/AppDelegate.mm normal i386 objective-c++ com.apple.compilers.llvm.clang.1_0.compiler
+s348240808.547627
+e348240808.681484
+r1
+xCompileC
+xbuild/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/AppDelegate.o
+x/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/AppDelegate.mm
+xnormal
+xi386
+xobjective-c++
+xcom.apple.compilers.llvm.clang.1_0.compiler
+lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection96"Compile /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/AppDelegate.mmbe4c8ca8bbc1b441^2176aea8bbc1b441^---0#0#0#-19%DVTDocumentLocation2@104"file://localhost/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/AppDelegate.mm0000000000000000^3165"CompileC build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/AppDelegate.o gdx-ios/AppDelegate.mm normal i386 objective-c++ com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios    setenv LANG en_US.US-ASCII    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/clang -x objective-c++ -arch i386 -fmessage-length=0 -fdiagnostics-print-source-range-info -fdiagnostics-show-category=id -fdiagnostics-parseable-fixits -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wparentheses -Wswitch -Wno-unused-parameter -Wunused-variable -Wunused-value -Wno-shorten-64-to-32 -Wno-arc-abi -Wc++0x-extensions -DDEBUG=1 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk -fexceptions -fasm-blocks -mmacosx-version-min=10.6 -gdwarf-2 -fvisibility-inlines-hidden -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch "-DIBOutlet=__attribute__((iboutlet))" "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))" "-DIBAction=void)__attribute__((ibaction)" -D__IPHONE_OS_VERSION_MIN_REQUIRED=50000 -iquote /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-generated-files.hmap -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-own-target-headers.hmap -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-all-target-headers.hmap -iquote /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-project-headers.hmap -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/include -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/../../../gdx/jni -I/System/Library/Frameworks/JavaVM.framework/Headers -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/DerivedSources/i386 -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/DerivedSources -F/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator -include /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-ehcjgnpymxbwhjbfpokvlmfkikxj/gdx-ios-Prefix.pch -MMD -MT dependencies -MF /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/AppDelegate.d -c /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/AppDelegate.mm -o /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/AppDelegate.o36"391B18DD-5A61-4071-8287-C4871ABD3A02-
+
+CCompileC build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/main.o /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/main.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s348240808.436231
+e348240808.549149
+r1
+xCompileC
+xbuild/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/main.o
+x/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/main.m
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection88"Compile /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/main.m60c76fa8bbc1b441^4a958ca8bbc1b441^---0#0#0#-19%DVTDocumentLocation2@96"file://localhost/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/main.m0000000000000000^3075"CompileC build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/main.o gdx-ios/main.m normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios    setenv LANG en_US.US-ASCII    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/clang -x objective-c -arch i386 -fmessage-length=0 -fdiagnostics-print-source-range-info -fdiagnostics-show-category=id -fdiagnostics-parseable-fixits -std=gnu99 -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wparentheses -Wswitch -Wno-unused-parameter -Wunused-variable -Wunused-value -Wno-shorten-64-to-32 -DDEBUG=1 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk -fexceptions -fasm-blocks -mmacosx-version-min=10.6 -gdwarf-2 -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch "-DIBOutlet=__attribute__((iboutlet))" "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))" "-DIBAction=void)__attribute__((ibaction)" -D__IPHONE_OS_VERSION_MIN_REQUIRED=50000 -iquote /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-generated-files.hmap -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-own-target-headers.hmap -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-all-target-headers.hmap -iquote /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-project-headers.hmap -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/include -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/../../../gdx/jni -I/System/Library/Frameworks/JavaVM.framework/Headers -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/DerivedSources/i386 -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/DerivedSources -F/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator -include /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-acjidpdzgfkejsbyrvxaumcthlqo/gdx-ios-Prefix.pch -MMD -MT dependencies -MF /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/main.d -c /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/main.m -o /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/main.o36"705DDEBA-406E-4D8F-87AC-E1B149F615CF-
+
+CCopyStringsFile /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/en.lproj/InfoPlist.strings gdx-ios/en.lproj/InfoPlist.strings
+s348240808.762340
+e348240808.798971
+r1
+xCopyStringsFile
+x/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/en.lproj/InfoPlist.strings
+xgdx-ios/en.lproj/InfoPlist.strings
+lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection39"Copy gdx-ios/en.lproj/InfoPlist.stringsbe85c9a8bbc1b441^828ccca8bbc1b441^---0#0#0#-19%DVTDocumentLocation2@116"file://localhost/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/en.lproj/InfoPlist.strings0000000000000000^565"CopyStringsFile build/Debug-iphonesimulator/gdx-ios.app/en.lproj/InfoPlist.strings gdx-ios/en.lproj/InfoPlist.strings    cd /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    builtin-copyStrings --validate --inputencoding utf-8 --outputencoding binary --outdir /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/en.lproj -- gdx-ios/en.lproj/InfoPlist.strings36"92423496-692A-495D-96EA-85B9C0FCD0B8-
+
+CGenerateDSYMFile /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app.dSYM /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/gdx-ios
+s348240808.740654
+e348240808.754269
+r1
+xGenerateDSYMFile
+x/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app.dSYM
+x/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/gdx-ios
+lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection121"Generating /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app.dSYMd2abbda8bbc1b441^8317c1a8bbc1b441^---0#0#0#-19%DVTDocumentLocation2@126"file://localhost/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app.dSYM00f48c04dfffdf42^574"GenerateDSYMFile build/Debug-iphonesimulator/gdx-ios.app.dSYM build/Debug-iphonesimulator/gdx-ios.app/gdx-ios    cd /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/usr/bin/dsymutil /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/gdx-ios -o /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app.dSYM36"717DCC23-965D-4E52-9CFE-BA9385040CEE-
+
+CLd /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/gdx-ios normal i386
+s348240808.688251
+e348240808.734357
+r1
+xLd
+x/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/gdx-ios
+xnormal
+xi386
+lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection118"Link /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/gdx-ios1345b0a8bbc1b441^4300bca8bbc1b441^---0#0#0#--1168"Ld build/Debug-iphonesimulator/gdx-ios.app/gdx-ios normal i386    cd /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios    setenv MACOSX_DEPLOYMENT_TARGET 10.6    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/clang++ -arch i386 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk -L/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator -F/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator -filelist /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/Objects-normal/i386/gdx-ios.LinkFileList -mmacosx-version-min=10.6 -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -no_implicit_dylibs -D__IPHONE_OS_VERSION_MIN_REQUIRED=50000 -framework UIKit -framework Foundation -framework CoreGraphics -o /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/gdx-ios36"BDC9E07B-9B48-4AEA-83C3-263AD47EBBD4-
+
+CProcessInfoPlistFile /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/Info.plist gdx-ios/gdx-ios-Info.plist
+s348240807.216037
+e348240807.220367
+r1
+xProcessInfoPlistFile
+x/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/Info.plist
+xgdx-ios/gdx-ios-Info.plist
+lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection34"Process gdx-ios/gdx-ios-Info.plistc05c37a7bbc1b441^e86938a7bbc1b441^---0#0#0#-19%DVTDocumentLocation2@108"file://localhost/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/gdx-ios-Info.plist0000000000000000^667"ProcessInfoPlistFile build/Debug-iphonesimulator/gdx-ios.app/Info.plist gdx-ios/gdx-ios-Info.plist    cd /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    builtin-infoPlistUtility gdx-ios/gdx-ios-Info.plist -genpkginfo /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -o /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app/Info.plist36"048260B0-DD44-4734-9489-A6BDA5122CD6-
+
+CProcessPCH /Users/badlogic/Library/Developer/Xcode/DerivedData/gdx-ios-czsoynydizzdomccgygpdjteqtzn/Index/PrecompiledHeaders/gdx-ios-Prefix-baeuogjwbedxcgbqtayxecdnetfs_ast/gdx-ios-Prefix.pch.pth gdx-ios/gdx-ios-Prefix.pch normal i386 objective-c com.apple.compilers.llvm.clang.1_0.astbuilder
+r0
+
+CProcessPCH /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-acjidpdzgfkejsbyrvxaumcthlqo/gdx-ios-Prefix.pch.pth gdx-ios/gdx-ios-Prefix.pch normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler
+s348240807.229328
+e348240808.429252
+r1
+xProcessPCH
+x/var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-acjidpdzgfkejsbyrvxaumcthlqo/gdx-ios-Prefix.pch.pth
+xgdx-ios/gdx-ios-Prefix.pch
+xnormal
+xi386
+xobjective-c
+xcom.apple.compilers.llvm.clang.1_0.compiler
+lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection37"Precompile gdx-ios/gdx-ios-Prefix.pcheacf3aa7bbc1b441^ebe36da8bbc1b441^---0#0#0#-19%DVTDocumentLocation2@108"file://localhost/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/gdx-ios-Prefix.pch0000000000000000^3042"ProcessPCH /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-acjidpdzgfkejsbyrvxaumcthlqo/gdx-ios-Prefix.pch.pth gdx-ios/gdx-ios-Prefix.pch normal i386 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios    setenv LANG en_US.US-ASCII    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/clang -x objective-c-header -arch i386 -fmessage-length=0 -fdiagnostics-print-source-range-info -fdiagnostics-show-category=id -fdiagnostics-parseable-fixits -std=gnu99 -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wparentheses -Wswitch -Wno-unused-parameter -Wunused-variable -Wunused-value -Wno-shorten-64-to-32 -DDEBUG=1 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk -fexceptions -fasm-blocks -mmacosx-version-min=10.6 -gdwarf-2 -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch "-DIBOutlet=__attribute__((iboutlet))" "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))" "-DIBAction=void)__attribute__((ibaction)" -D__IPHONE_OS_VERSION_MIN_REQUIRED=50000 -iquote /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-generated-files.hmap -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-own-target-headers.hmap -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-all-target-headers.hmap -iquote /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-project-headers.hmap -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/include -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/../../../gdx/jni -I/System/Library/Frameworks/JavaVM.framework/Headers -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/DerivedSources/i386 -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/DerivedSources -F/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator -c /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/gdx-ios-Prefix.pch -o /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-acjidpdzgfkejsbyrvxaumcthlqo/gdx-ios-Prefix.pch.pth -MMD -MT dependencies -MF /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-acjidpdzgfkejsbyrvxaumcthlqo/gdx-ios-Prefix.pch.d36"DEEF7B92-423B-43E7-B256-C50D048C6932-
+
+CProcessPCH++ /Users/badlogic/Library/Developer/Xcode/DerivedData/gdx-ios-czsoynydizzdomccgygpdjteqtzn/Index/PrecompiledHeaders/gdx-ios-Prefix-azszjheyiumczjerlasuyqlodyyx_ast/gdx-ios-Prefix.pch.pth gdx-ios/gdx-ios-Prefix.pch normal i386 objective-c++ com.apple.compilers.llvm.clang.1_0.astbuilder
+r0
+
+CProcessPCH++ /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-ehcjgnpymxbwhjbfpokvlmfkikxj/gdx-ios-Prefix.pch.pth gdx-ios/gdx-ios-Prefix.pch normal i386 objective-c++ com.apple.compilers.llvm.clang.1_0.compiler
+s348240807.229335
+e348240808.540713
+r1
+xProcessPCH++
+x/var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-ehcjgnpymxbwhjbfpokvlmfkikxj/gdx-ios-Prefix.pch.pth
+xgdx-ios/gdx-ios-Prefix.pch
+xnormal
+xi386
+xobjective-c++
+xcom.apple.compilers.llvm.clang.1_0.compiler
+lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection37"Precompile gdx-ios/gdx-ios-Prefix.pch7cd13aa7bbc1b441^616b8aa8bbc1b441^---0#0#0#-19%DVTDocumentLocation2@108"file://localhost/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/gdx-ios-Prefix.pch0000000000000000^3097"ProcessPCH++ /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-ehcjgnpymxbwhjbfpokvlmfkikxj/gdx-ios-Prefix.pch.pth gdx-ios/gdx-ios-Prefix.pch normal i386 objective-c++ com.apple.compilers.llvm.clang.1_0.compiler    cd /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios    setenv LANG en_US.US-ASCII    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/clang -x objective-c++-header -arch i386 -fmessage-length=0 -fdiagnostics-print-source-range-info -fdiagnostics-show-category=id -fdiagnostics-parseable-fixits -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wparentheses -Wswitch -Wno-unused-parameter -Wunused-variable -Wunused-value -Wno-shorten-64-to-32 -Wno-arc-abi -Wc++0x-extensions -DDEBUG=1 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk -fexceptions -fasm-blocks -mmacosx-version-min=10.6 -gdwarf-2 -fvisibility-inlines-hidden -Wno-sign-conversion -fobjc-abi-version=2 -fobjc-legacy-dispatch "-DIBOutlet=__attribute__((iboutlet))" "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))" "-DIBAction=void)__attribute__((ibaction)" -D__IPHONE_OS_VERSION_MIN_REQUIRED=50000 -iquote /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-generated-files.hmap -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-own-target-headers.hmap -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-all-target-headers.hmap -iquote /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/gdx-ios-project-headers.hmap -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/include -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/../../../gdx/jni -I/System/Library/Frameworks/JavaVM.framework/Headers -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/DerivedSources/i386 -I/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/gdx-ios.build/Debug-iphonesimulator/gdx-ios.build/DerivedSources -F/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator -c /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/gdx-ios/gdx-ios-Prefix.pch -o /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-ehcjgnpymxbwhjbfpokvlmfkikxj/gdx-ios-Prefix.pch.pth -MMD -MT dependencies -MF /var/folders/bq/b068dpfd0yzdx5hcqj2rzjn40000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/gdx-ios-Prefix-ehcjgnpymxbwhjbfpokvlmfkikxj/gdx-ios-Prefix.pch.d36"D0FA890C-A60F-4B75-9053-8C462A771B7C-
+
+CTouch /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app
+s348240808.806702
+e348240808.811211
+r1
+xTouch
+x/Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app
+lSLF04#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection111"Touch /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app2993cea8bbc1b441^ebabcfa8bbc1b441^---0#0#0#--378"Touch build/Debug-iphonesimulator/gdx-ios.app    cd /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios    setenv PATH "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /usr/bin/touch -c /Users/badlogic/workspace/libgdx/backends/gdx-backend-ios/gdx-ios/build/Debug-iphonesimulator/gdx-ios.app36"77C53BA3-3DE0-4C90-AAB3-E0B6F69364B4-
+
