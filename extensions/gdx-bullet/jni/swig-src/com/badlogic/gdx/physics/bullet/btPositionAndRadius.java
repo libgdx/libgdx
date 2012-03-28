@@ -8,7 +8,6 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
@@ -38,10 +37,6 @@ public class btPositionAndRadius {
       }
       swigCPtr = 0;
     }
-  }
-
-  static {
-    new SharedLibraryLoader().load("gdx-bullet");
   }
 
   public void setM_pos(btVector3FloatData value) {

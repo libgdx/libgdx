@@ -8,10 +8,6 @@
 
 %typemap(javacode) btCollisionShape %{
 
-  static {
-    new SharedLibraryLoader().load("gdx-bullet");
-  }
-
   public static btCollisionShape newDerivedObject(long swigCPtr, boolean owner) {
     if (swigCPtr == 0) {
       return null;

@@ -8,7 +8,6 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
@@ -38,10 +37,6 @@ public class btTriangleMeshShape extends btConcaveShape {
       swigCPtr = 0;
     }
     super.delete();
-  }
-
-  static {
-    new SharedLibraryLoader().load("gdx-bullet");
   }
 
   public Vector3 localGetSupportingVertex(Vector3 vec) {

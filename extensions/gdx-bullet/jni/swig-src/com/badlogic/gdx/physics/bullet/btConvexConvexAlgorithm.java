@@ -8,7 +8,6 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
@@ -38,10 +37,6 @@ public class btConvexConvexAlgorithm extends btActivatingCollisionAlgorithm {
       swigCPtr = 0;
     }
     super.delete();
-  }
-
-  static {
-    new SharedLibraryLoader().load("gdx-bullet");
   }
 
   public btConvexConvexAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, btCollisionObject body0, btCollisionObject body1, SWIGTYPE_p_btSimplexSolverInterface simplexSolver, btConvexPenetrationDepthSolver pdSolver, int numPerturbationIterations, int minimumPointsPerturbationThreshold) {

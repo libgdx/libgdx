@@ -37,13 +37,6 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 /* Include Java imports for all the types we'll need in all extensions/custom types. */
 %include "gdxJavaImports.i"
 
-/* Put the native lader in all types to avoid requiring manual loading. */
-%typemap(javacode) SWIGTYPE %{
-  static {
-    new SharedLibraryLoader().load("gdx-bullet");
-  }
-%}
-
 /*
  * btScalar.h defines macros the other types need, so process it first.  
  * It also defines some static functions that end up in gdxBulletJNI.java.

@@ -8,7 +8,6 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
@@ -38,10 +37,6 @@ public class btConvexPenetrationDepthSolver {
       }
       swigCPtr = 0;
     }
-  }
-
-  static {
-    new SharedLibraryLoader().load("gdx-bullet");
   }
 
   public boolean calcPenDepth(SWIGTYPE_p_btSimplexSolverInterface simplexSolver, btConvexShape convexA, btConvexShape convexB, btTransform transA, btTransform transB, Vector3 v, Vector3 pa, Vector3 pb, btIDebugDraw debugDraw, btStackAlloc stackAlloc) {

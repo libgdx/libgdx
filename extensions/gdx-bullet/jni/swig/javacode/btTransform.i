@@ -6,10 +6,6 @@
 
 %typemap(javacode) btTransform %{
 
-  static {
-    new SharedLibraryLoader().load("gdx-bullet");
-  }
-
   /**
    * Sets the values in this transform from the other.
    */

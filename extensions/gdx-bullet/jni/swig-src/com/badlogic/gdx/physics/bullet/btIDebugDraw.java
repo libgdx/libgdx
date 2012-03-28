@@ -8,7 +8,6 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
@@ -53,10 +52,6 @@ public class btIDebugDraw {
   public void swigTakeOwnership() {
     swigCMemOwn = true;
     gdxBulletJNI.btIDebugDraw_change_ownership(this, swigCPtr, true);
-  }
-
-  static {
-    new SharedLibraryLoader().load("gdx-bullet");
   }
 
   public void drawLine(Vector3 from, Vector3 to, Vector3 color) {

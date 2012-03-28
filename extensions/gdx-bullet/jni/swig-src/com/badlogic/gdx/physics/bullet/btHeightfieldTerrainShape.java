@@ -8,7 +8,6 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
@@ -38,10 +37,6 @@ public class btHeightfieldTerrainShape extends btConcaveShape {
       swigCPtr = 0;
     }
     super.delete();
-  }
-
-  static {
-    new SharedLibraryLoader().load("gdx-bullet");
   }
 
   public btHeightfieldTerrainShape(int heightStickWidth, int heightStickLength, SWIGTYPE_p_void heightfieldData, float heightScale, float minHeight, float maxHeight, int upAxis, int heightDataType, boolean flipQuadEdges) {

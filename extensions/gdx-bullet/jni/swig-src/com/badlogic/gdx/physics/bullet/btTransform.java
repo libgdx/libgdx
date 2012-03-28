@@ -8,7 +8,6 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
@@ -40,10 +39,6 @@ public class btTransform {
     }
   }
 
-
-  static {
-    new SharedLibraryLoader().load("gdx-bullet");
-  }
 
   /**
    * Sets the values in this transform from the other.

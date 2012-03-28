@@ -8,7 +8,6 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
@@ -38,10 +37,6 @@ public class btPolyhedralContactClipping {
       }
       swigCPtr = 0;
     }
-  }
-
-  static {
-    new SharedLibraryLoader().load("gdx-bullet");
   }
 
   public static void clipHullAgainstHull(Vector3 separatingNormal, btConvexPolyhedron hullA, btConvexPolyhedron hullB, btTransform transA, btTransform transB, float minDist, float maxDist, SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result resultOut) {

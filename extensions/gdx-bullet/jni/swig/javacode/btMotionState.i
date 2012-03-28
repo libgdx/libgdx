@@ -8,10 +8,6 @@
 
 %typemap(javacode) btMotionState %{
 
-  static {
-    new SharedLibraryLoader().load("gdx-bullet");
-  }
-
   public static btMotionState newDerivedObject(long swigCPtr, boolean owner) {
     if (swigCPtr == 0) {
       return null;

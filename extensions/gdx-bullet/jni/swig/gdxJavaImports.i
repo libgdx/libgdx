@@ -4,7 +4,6 @@
  */ 
  
 %typemap(javaimports) SWIGTYPE	%{
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;

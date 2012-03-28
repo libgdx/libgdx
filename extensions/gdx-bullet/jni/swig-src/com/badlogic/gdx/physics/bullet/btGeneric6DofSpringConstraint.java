@@ -8,7 +8,6 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
@@ -38,10 +37,6 @@ public class btGeneric6DofSpringConstraint extends btGeneric6DofConstraint {
       swigCPtr = 0;
     }
     super.delete();
-  }
-
-  static {
-    new SharedLibraryLoader().load("gdx-bullet");
   }
 
   public btGeneric6DofSpringConstraint(btRigidBody rbA, btRigidBody rbB, btTransform frameInA, btTransform frameInB, boolean useLinearReferenceFrameA) {

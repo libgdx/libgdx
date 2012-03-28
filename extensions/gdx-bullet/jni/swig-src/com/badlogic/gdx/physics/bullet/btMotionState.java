@@ -8,7 +8,6 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
@@ -40,10 +39,6 @@ public class btMotionState {
     }
   }
 
-
-  static {
-    new SharedLibraryLoader().load("gdx-bullet");
-  }
 
   public static btMotionState newDerivedObject(long swigCPtr, boolean owner) {
     if (swigCPtr == 0) {
