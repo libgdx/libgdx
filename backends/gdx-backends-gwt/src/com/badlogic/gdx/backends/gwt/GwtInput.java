@@ -9,6 +9,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -25,10 +26,10 @@ public class GwtInput implements Input {
 	char lastKeyCharPressed;
 	float keyRepeatTimer;
 	long currentEventTimeStamp;
-	final Element canvas;
+	final CanvasElement canvas;
 	boolean hasFocus = true;
 
-	public GwtInput (Element canvas) {
+	public GwtInput (CanvasElement canvas) {
 		this.canvas = canvas;
 		hookEvents();
 	}
@@ -208,14 +209,103 @@ public class GwtInput implements Input {
 		return Orientation.Landscape;
 	}
 
+	/**
+	 * from https://github.com/toji/game-shim/blob/master/game-shim.js
+	 * @return is Cursor catched
+	 */
+	private native boolean isCursorCatchedJSNI() /*-{
+		if(!navigator.pointer) {
+	        navigator.pointer = navigator.webkitPointer || navigator.mozPointer;
+    	}
+	    if(navigator.pointer) {
+	        if(typeof(navigator.pointer.isLocked) === "boolean") {
+	            // Chrome initially launched with this interface
+	            return navigator.pointer.isLocked;
+	        } else if(typeof(navigator.pointer.isLocked) === "function") {
+	            // Some older builds might provide isLocked as a function
+	            return navigator.pointer.isLocked();
+	        } else if(typeof(navigator.pointer.islocked) === "function") {
+	            // For compatibility with early Firefox build
+	            return navigator.pointer.islocked();
+	        }
+	    }
+    	return false;
+   	}-*/;
+
+	/**
+	 * from https://github.com/toji/game-shim/blob/master/game-shim.js
+	 * @param element Canvas
+	 */
+	private native void setCursorCatchedJSNI(CanvasElement element) /*-{
+	    // Navigator pointer is not the right interface according to spec.
+	    // Here for backwards compatibility only
+	    if(!navigator.pointer) {
+	        navigator.pointer = navigator.webkitPointer || navigator.mozPointer;
+    	}
+    	// element.requestPointerLock
+	    if(!element.requestPointerLock) {
+	        element.requestPointerLock = (function() {
+	            return  element.webkitRequestPointerLock ||
+	                    element.mozRequestPointerLock    ||
+	                    function(){
+	                        if(navigator.pointer) {
+	                            navigator.pointer.lock(element);
+	                        }
+	                    };
+	        })();
+	    }
+	    element.requestPointerLock();
+	}-*/;
+	
+	/**
+	 * from https://github.com/toji/game-shim/blob/master/game-shim.js
+	 */
+	private native void exitCursorCatchedJSNI() /*-{
+    	if(!$doc.exitPointerLock) {
+	        $doc.exitPointerLock = (function() {
+	            return  $doc.webkitExitPointerLock ||
+	                    $doc.mozExitPointerLock ||
+	                    function(){
+	                        if(navigator.pointer) {
+	                            var elem = this;
+	                            navigator.pointer.unlock();
+	                        }
+	                    };
+	        })();
+    	}
+	}-*/;
+	
+	/**
+	 * from https://github.com/toji/game-shim/blob/master/game-shim.js
+	 * @param event JavaScript Mouse Event
+	 * @return movement in x direction
+	 */
+	private native float getMovementXJSNI(NativeEvent event) /*-{
+		return event.movementX || event.webkitMovementX || 0;
+	}-*/;
+	
+	/**
+	 * from https://github.com/toji/game-shim/blob/master/game-shim.js
+	 * @param event JavaScript Mouse Event
+	 * @return movement in y direction
+	 */
+	private native float getMovementYJSNI(NativeEvent event) /*-{
+		return event.movementY || event.webkitMovementY || 0;
+	}-*/;
+	
+	/**
+	 * works only for Chrome > Version 18 with enabled Mouse Lock 
+	 * enable in about:flags or start Chrome with the --enable-pointer-lock flag
+	 */
 	@Override
 	public void setCursorCatched (boolean catched) {
-		// FIXME??
+		if(catched) setCursorCatchedJSNI(canvas);
+		else exitCursorCatchedJSNI();
 	}
 
 	@Override
 	public boolean isCursorCatched () {
-		return false;
+		return isCursorCatchedJSNI();
 	}
 
 	@Override
@@ -320,17 +410,29 @@ public class GwtInput implements Input {
 			this.pressedButtons.add(getButton(e.getButton()));
 			this.deltaX = 0;
 			this.deltaY = 0;
-			this.mouseX = (int)getRelativeX(e, canvas);
-			this.mouseY = (int)getRelativeY(e, canvas);
+			if(isCursorCatched()) {
+				this.mouseX += getMovementXJSNI(e);
+				this.mouseY += getMovementYJSNI(e);
+			} else {
+				this.mouseX = (int)getRelativeX(e, canvas);
+				this.mouseY = (int)getRelativeY(e, canvas);
+			}
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			if(processor != null) processor.touchDown(mouseX, mouseY, 0, getButton(e.getButton()));
 		}
 		
 		if(e.getType().equals("mousemove")) {
-			this.deltaX = (int)getRelativeX(e, canvas) - mouseX;
-			this.deltaY = (int)getRelativeY(e, canvas) - mouseY;
-			this.mouseX = (int)getRelativeX(e, canvas);
-			this.mouseY = (int)getRelativeY(e, canvas);
+			if(isCursorCatched()) {
+				this.deltaX = (int) getMovementXJSNI(e);
+				this.deltaY = (int) getMovementYJSNI(e);
+				this.mouseX += getMovementXJSNI(e);
+				this.mouseY += getMovementYJSNI(e);
+			} else {
+				this.deltaX = (int)getRelativeX(e, canvas) - mouseX;
+				this.deltaY = (int)getRelativeY(e, canvas) - mouseY;
+				this.mouseX = (int)getRelativeX(e, canvas);
+				this.mouseY = (int)getRelativeY(e, canvas);
+			}
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			if(processor != null) {
 				if(touched) processor.touchDragged(mouseX, mouseY, 0);
@@ -342,10 +444,17 @@ public class GwtInput implements Input {
 			if(!touched) return;
 			this.pressedButtons.remove(getButton(e.getButton()));
 			this.touched = pressedButtons.size() > 0;
-			this.deltaX = (int)getRelativeX(e, canvas) - mouseX;
-			this.deltaY = (int)getRelativeY(e, canvas) - mouseY;
-			this.mouseX = (int)getRelativeX(e, canvas);
-			this.mouseY = (int)getRelativeY(e, canvas);
+			if(isCursorCatched()) {
+				this.deltaX = (int) getMovementXJSNI(e);
+				this.deltaY = (int) getMovementYJSNI(e);
+				this.mouseX += getMovementXJSNI(e);
+				this.mouseY += getMovementYJSNI(e);
+			} else {
+				this.deltaX = (int)getRelativeX(e, canvas) - mouseX;
+				this.deltaY = (int)getRelativeY(e, canvas) - mouseY;
+				this.mouseX = (int)getRelativeX(e, canvas);
+				this.mouseY = (int)getRelativeY(e, canvas);
+			}
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			this.touched = false;
 			if(processor != null) processor.touchUp(mouseX, mouseY, 0, getButton(e.getButton()));
