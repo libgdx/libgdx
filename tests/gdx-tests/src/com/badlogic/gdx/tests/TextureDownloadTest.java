@@ -16,20 +16,19 @@
 
 package com.badlogic.gdx.tests;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class TextureDownloadTest extends GdxTest {
 	@Override
@@ -37,55 +36,71 @@ public class TextureDownloadTest extends GdxTest {
 		return false;
 	}
 
-	Texture potTexture;
-	TextureRegion nonPotTexture;
+	TextureRegion image;
+	BitmapFont font;
 	SpriteBatch batch;
 
-	public static class URLHandle extends FileHandle {
-		final URL url;
-
-		public URLHandle (String url) {
-			try {
-				this.url = new URL(url);
-			} catch (Exception e) {
-				throw new GdxRuntimeException("Couldn't create URLHandle for '" + url + "'", e);
-			}
-		}
-
-		@Override
-		public FileHandle child (String name) {
-			return null;
-		}
-
-		@Override
-		public FileHandle parent () {
-			return null;
-		}
-
-		public InputStream read () {
-			try {
-				return url.openStream();
-			} catch (IOException e) {
-				throw new GdxRuntimeException("Couldn't read URL '" + url.toString() + "'");
-			}
-		}
-	}
 
 	@Override
 	public void create () {
-		// POT image, mananged
-		potTexture = new Texture(new URLHandle("http://libgdx.badlogicgames.com/bob.png"));
-
-		// non-POT image, not managed!
-		Pixmap pixmap = new Pixmap(new URLHandle("http://libgdx.badlogicgames.com/libgdx.png"));
-		int width = MathUtils.nextPowerOfTwo(pixmap.getWidth());
-		int height = MathUtils.nextPowerOfTwo(pixmap.getHeight());
-		Pixmap potPixmap = new Pixmap(width, height, pixmap.getFormat());
-		potPixmap.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
-		nonPotTexture = new TextureRegion(new Texture(potPixmap), 0, 0, pixmap.getWidth(), pixmap.getHeight());
-		pixmap.dispose();
-		potPixmap.dispose();
-
+		new Thread(new Runnable() {
+			/**
+			 * Downloads the content of the specified url to the array. The
+			 * array has to be big enough.
+			 */
+			private int download(byte[] out, String url) {
+				InputStream in = null;
+				try {
+					HttpURLConnection conn = null;
+					conn = (HttpURLConnection)new URL(url).openConnection();
+					conn.setDoInput(true);
+					conn.setDoOutput(false);
+					conn.setUseCaches(true);
+					conn.connect();
+					in = conn.getInputStream();
+					int readBytes = 0;
+					while (true) {
+						int length = in.read(out, readBytes, out.length - readBytes);
+						if (length == -1) break;
+						if (length == 0) throw new RuntimeException("Buffer to small for downloading content");
+						readBytes += length;
+					}
+					return readBytes;
+				} catch (Exception ex) {
+					return 0;
+				} finally {
+					try {
+						if (in != null) in.close();
+					} catch (Exception ignored) {
+					}
+				}
+			}
+			
+			@Override
+			public void run () {
+				byte[] bytes = new byte[200*1024]; // assuming the content is not bigger than 200kb.
+				int numBytes = download(bytes, "http://www.badlogicgames.com/wordpress/wp-content/uploads/2012/01/badlogic-new.png");
+				if(numBytes != 0) {
+					// load the pixmap, make it a power of two if necessary (not needed for GL ES 2.0!)
+					Pixmap pixmap = new Pixmap(bytes, 0, numBytes);
+					final int originalWidth = pixmap.getWidth();
+					final int originalHeight = pixmap.getHeight();
+					int width = MathUtils.nextPowerOfTwo(pixmap.getWidth());
+					int height = MathUtils.nextPowerOfTwo(pixmap.getHeight());
+					final Pixmap potPixmap = new Pixmap(width, height, pixmap.getFormat());
+					potPixmap.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
+					pixmap.dispose();
+					Gdx.app.postRunnable(new Runnable() {
+						@Override
+						public void run () {
+							image = new TextureRegion(new Texture(potPixmap), 0, 0, originalWidth, originalHeight);
+						}
+					});
+				}
+			}
+		}).start();
+		
+		font = new BitmapFont();
 		batch = new SpriteBatch();
 	}
 
@@ -93,9 +108,15 @@ public class TextureDownloadTest extends GdxTest {
 	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(potTexture, 100, 100);
-		batch.draw(nonPotTexture, 200, 200);
-		batch.end();
+		
+		if(image != null) {
+			batch.begin();
+			batch.draw(image, 100, 100);
+			batch.end();
+		} else {
+			batch.begin();
+			font.draw(batch, "Downloading...", 100, 100);
+			batch.end();
+		}
 	}
 }
