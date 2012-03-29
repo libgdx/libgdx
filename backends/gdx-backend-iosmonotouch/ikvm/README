@@ -1,7 +1,6 @@
 1) Setup ikvm sources via setup.sh
 2) compile ikvm via ikvm-monotouch/nant -t:moonlight-2.0
-3) compile ikvm-natives via ikvm-natives/build-lib.sh
 4) create monotouch project
   - add all dll's minus zlib dll from ikvm-monotouch/bin
-  - copy (don't link!) ikvm-natives/libikvm-natives.a
+  - copy (don't link!) ikvm-monotouch/bin/libikvm-natives.a
   - IPhone Build -> Additional mtouch arguments: -nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -force_load ${ProjectDir}/libikvm-natives.a"
