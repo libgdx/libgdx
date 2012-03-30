@@ -11,7 +11,7 @@
 #ifdef GL_ES
 #define LOWP lowp
 #define MED mediump
-precision mediump float;
+precision lowp float;
 #else
 #define MED
 #define LOWP
@@ -44,7 +44,7 @@ uniform sampler2D lightmapTexture;
 uniform sampler2D specularTexture;
 #endif
 
-varying vec2 v_texCoords;
+varying MED vec2 v_texCoords;
 varying vec3 v_normal;
 varying vec3 v_eye;
 varying vec3 v_pos;
