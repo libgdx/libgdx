@@ -42,6 +42,7 @@ import com.badlogic.gdx.tests.ShaderMultitextureTest;
 import com.badlogic.gdx.tests.SoundTest;
 import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
+import com.badlogic.gdx.tests.TextureDownloadTest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.gwt.GwtBinaryTest;
 import com.badlogic.gdx.tests.gwt.GwtTestWrapper;
@@ -57,7 +58,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-image/libs/gdx-image-natives.jar").load("gdx-image");
 		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
 		
-		GdxTest test = new Mpg123Test();
+		GdxTest test = new TextureDownloadTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 800;
 		config.height = 480;
