@@ -142,14 +142,14 @@ public class NinePatch {
 		if ((patches[BOTTOM_LEFT] != null && patches[BOTTOM_LEFT].getRegionHeight() != bottomHeight)
 			|| (patches[BOTTOM_CENTER] != null && patches[BOTTOM_CENTER].getRegionHeight() != bottomHeight)
 			|| (patches[BOTTOM_RIGHT] != null && patches[BOTTOM_RIGHT].getRegionHeight() != bottomHeight)) {
-			throw new GdxRuntimeException("Right side patches must have the same width");
+			throw new GdxRuntimeException("Bottom side patches must have the same height");
 		}
 
 		float topHeight = getTopHeight();
 		if ((patches[TOP_LEFT] != null && patches[TOP_LEFT].getRegionHeight() != topHeight)
 			|| (patches[TOP_CENTER] != null && patches[TOP_CENTER].getRegionHeight() != topHeight)
 			|| (patches[TOP_RIGHT] != null && patches[TOP_RIGHT].getRegionHeight() != topHeight)) {
-			throw new GdxRuntimeException("Right side patches must have the same width");
+			throw new GdxRuntimeException("Top side patches must have the same height");
 		}
 	}
 
