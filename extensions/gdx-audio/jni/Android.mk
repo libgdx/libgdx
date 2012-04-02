@@ -42,7 +42,7 @@ LOCAL_SRC_FILES := com.badlogic.gdx.audio.analysis.AudioTools.cpp\
 	libmpg123/tabinit.c\
 	soundtouch/source/SoundTouch/AAFilter.cpp\
 	soundtouch/source/SoundTouch/BPMDetect.cpp\
-	soundtouch/source/SoundTouch/cpu_detect_x86_gcc.cpp\
+	soundtouch/source/SoundTouch/cpu_detect_x86.cpp\
 	soundtouch/source/SoundTouch/FIFOSampleBuffer.cpp\
 	soundtouch/source/SoundTouch/FIRFilter.cpp\
 	soundtouch/source/SoundTouch/mmx_optimized.cpp\
