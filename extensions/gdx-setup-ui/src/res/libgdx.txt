@@ -1,0 +1,43 @@
+[name]
+LibGDX
+
+[description]
+LibGDX is a cross-platform 2D and 3D game development framework written in
+Java/C/C++.<br/><br/>
+It's free for commercial and non-commercial use, pretty powerful
+and lots of fun to work with! Or at least no-one complained yet.<br/><br/>
+Write your game once, deploy to Windows, Linux, Mac OSX and Android!
+
+[homepage]
+http://libgdx.badlogicgames.com/
+
+[stable-version]
+0.9.3
+
+[stable-url]
+http://libgdx.googlecode.com/files/libgdx-0.9.3.zip
+
+[latest-url]
+http://libgdx.badlogicgames.com/nightlies/libgdx-nightly-latest.zip
+
+[libs-common]
+gdx.jar
+gdx-sources.jar
+
+[libs-desktop]
+gdx-backend-lwjgl.jar
+gdx-backend-lwjgl-natives.jar
+gdx-backend-lwjgl-sources.jar
+gdx-natives.jar
+
+[libs-android]
+armeabi/libandroidgl20.so
+armeabi/libgdx.so
+armeabi-v7a/libandroidgl20.so
+armeabi-v7a/libgdx.so
+gdx-backend-android.jar
+gdx-backend-android-sources.jar
+
+[libs-html]
+gdx-backend-gwt.jar
+gdx-backend-gwt-sources.jar
