@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -40,6 +41,7 @@ public class BobTest extends GdxTest {
 
 	public void create () {
 		bobTexture = new Texture(Gdx.files.internal("data/bobargb8888-32x32.png"));
+		bobTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		bobModel = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 2, "a_pos"), new VertexAttribute(
 			Usage.TextureCoordinates, 2, "a_tex"));
@@ -79,7 +81,7 @@ public class BobTest extends GdxTest {
 		bobModel.bind();
 		for (int i = 0; i < NUM_BOBS; i++) {
 			gl.glLoadIdentity();
-			gl.glTranslatef(Math.round(bobs[i].x), Math.round(bobs[i].y), 0);
+			gl.glTranslatef(bobs[i].x, bobs[i].y, 0);
 			bobModel.render(GL10.GL_TRIANGLES, 0, 6);
 		}
 		bobModel.unbind();
