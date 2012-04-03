@@ -3,6 +3,8 @@ package com.badlogic.gdx.graphics.g3d.experimental;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -18,6 +20,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.AnimatedModelInstance;
+import com.badlogic.gdx.graphics.g3d.AnimatedModelNode;
 import com.badlogic.gdx.graphics.g3d.StillModelNode;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.LightManager;
@@ -25,11 +29,15 @@ import com.badlogic.gdx.graphics.g3d.lights.LightManager.LightQuality;
 import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.ogre.OgreXmlLoader;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
+import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.test.PrototypeRendererGL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -42,7 +50,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 public class HybridLightTest implements ApplicationListener {
 
 	static final int LIGHTS_NUM = 4;
-	static final float LIGHT_INTESITY = 1.5f;
+	static final float LIGHT_INTESITY = 4f;
 
 	LightManager lightManager;
 
@@ -63,6 +71,11 @@ public class HybridLightTest implements ApplicationListener {
 	private StillModelNode instance;
 	private StillModelNode instance2;
 	private Texture texture2;
+	private KeyframedModel model3;
+	private int currAnimIdx;
+	String[] animNames;
+	private AnimatedModelNode animInstance;
+	private Texture texture3;
 
 	public void render () {
 
@@ -73,12 +86,28 @@ public class HybridLightTest implements ApplicationListener {
 
 		timer += delta;
 		for (int i = 0; i < lightManager.pointLights.size; i++) {
-			Vector3 v = lightManager.pointLights.get(i).position;
+			final Vector3 v = lightManager.pointLights.get(i).position;
 			v.x += MathUtils.sin(timer) * 0.01f;
 			v.z += MathUtils.cos(timer) * 0.01f;
+			lightManager.pointLights.get(i).color.b = MathUtils.sin(timer) * 0.25f + 0.25f;
+
 		}
+
+		animInstance.time += delta;
+		if (Gdx.input.justTouched()) {
+			currAnimIdx++;
+			if (currAnimIdx == model3.getAnimations().length) currAnimIdx = 0;
+			animInstance.animation = model3.getAnimations()[currAnimIdx].name;
+			animInstance.time = 0;
+		}
+		if (animInstance.time > model3.getAnimations()[currAnimIdx].totalDuration) {
+			animInstance.time = 0;
+		}
+
 		Gdx.gl.glEnable(GL10.GL_CULL_FACE);
-		Gdx.gl.glCullFace(GL10.GL_BACK);
+		Gdx.gl.glFrontFace(GL10.GL_CCW);
+		Gdx.gl.glCullFace(GL10.GL_FRONT);
+
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
 		Gdx.gl.glDepthMask(true);
 
@@ -86,13 +115,15 @@ public class HybridLightTest implements ApplicationListener {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
 		protoRenderer.begin();
+		protoRenderer.draw(model3, animInstance);
+		protoRenderer.end();
+		Gdx.gl.glCullFace(GL10.GL_BACK);
+		protoRenderer.begin();
 		protoRenderer.draw(model, instance);
-
-		protoRenderer.draw(model2, instance2);
 		protoRenderer.draw(model, instance2);
+		protoRenderer.draw(model2, instance2);
 		protoRenderer.end();
 	}
-
 
 	public void create () {
 
@@ -100,17 +131,17 @@ public class HybridLightTest implements ApplicationListener {
 		for (int i = 0; i < LIGHTS_NUM; i++) {
 			PointLight l = new PointLight();
 			l.position.set(MathUtils.random(8) - 4, MathUtils.random(6), MathUtils.random(8) - 4);
-			l.color.r = MathUtils.random();
-			l.color.b = MathUtils.random();
-			l.color.g = MathUtils.random();
-			l.intensity = LIGHT_INTESITY;
+			l.color.r = 0.5f + 0.5f * MathUtils.random();
+			l.color.b = 0.5f + 0.5f * MathUtils.random();
+			l.color.g = 0.5f + 0.5f * MathUtils.random();
+			l.intensity = 1 + MathUtils.random() * LIGHT_INTESITY;
 			lightManager.addLigth(l);
 		}
 		lightManager.dirLight = new DirectionalLight();
-		lightManager.dirLight.color.set(0.075f, 0.075f, 0.08f, 1);
+		lightManager.dirLight.color.set(0.15f, 0.15f, 0.15f, 1);
 		lightManager.dirLight.direction.set(-.4f, -1, 0.03f).nor();
 
-		lightManager.ambientLight.set(.14f, 0.09f, 0.09f, 0f);
+		lightManager.ambientLight.set(.1f, 0.09f, 0.09f, 0f);
 
 		cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.near = 0.1f;
@@ -130,12 +161,12 @@ public class HybridLightTest implements ApplicationListener {
 		model2 = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/models/basicscene.obj"));
 
 		instance = new StillModelNode();
-		instance.getTransform().translate(0, 0, -5);
+		instance.getTransform().translate(2, 0, -5);
 		instance2 = new StillModelNode();
 
 		BoundingBox box = new BoundingBox();
 		model.getBoundingBox(box);
-		instance.radius =box.getDimensions().len() / 2;
+		instance.radius = box.getDimensions().len() / 2;
 
 		model2.getBoundingBox(box);
 		instance2.radius = box.getDimensions().len() / 2;
@@ -143,18 +174,33 @@ public class HybridLightTest implements ApplicationListener {
 		protoRenderer = new PrototypeRendererGL20(lightManager);
 		protoRenderer.cam = cam;
 
-		MaterialAttribute c1 = new ColorAttribute(new Color(0.5f, 0.35f, 0.95f, 0.6f), ColorAttribute.diffuse);
-		MaterialAttribute c2 = new ColorAttribute(new Color(0.25f, 0.5f, 0.75f, 0.35f), ColorAttribute.specular);
+		MaterialAttribute c1 = new ColorAttribute(new Color(0.75f, 0.75f, 0.75f, 0.6f), ColorAttribute.diffuse);
+		MaterialAttribute c2 = new ColorAttribute(new Color(0.35f, 0.35f, 0.35f, 0.35f), ColorAttribute.specular);
 		MaterialAttribute t1 = new TextureAttribute(texture, 0, TextureAttribute.diffuseTexture);
 		MaterialAttribute t2 = new TextureAttribute(texture2, 1, TextureAttribute.specularTexture);
 
-		MaterialAttribute b = new BlendingAttribute(BlendingAttribute.translucent);
-		
-		Material material2 = new Material("basic", c1, c2,  t1, t2);
+		// MaterialAttribute b = new BlendingAttribute(BlendingAttribute.translucent);
+
+		Material material2 = new Material("basic", c2, t1, t2);
 		model2.setMaterial(material2);
-		
-		Material material = new Material("shiningBall", c1, c2, b);
+
+		Material material = new Material("shiningBall", c1, c2);
 		model.setMaterial(material);
+
+		model3 = ModelLoaderRegistry.loadKeyframedModel(Gdx.files.internal("data/models/knight.md2"));
+		animInstance = new AnimatedModelNode();
+		animInstance.animation = model3.getAnimations()[0].name;
+		animInstance.looping = true;
+		model3.getBoundingBox(box);
+		animInstance.radius = box.getDimensions().len() / 2;
+		animInstance.getTransform().trn(-1.75f, 0f, -5.5f);
+		animInstance.getTransform().scale(0.05f, 0.05f, 0.05f);
+		texture3 = new Texture(Gdx.files.internal("data/models/knight.jpg"), Format.RGB565, true);
+		texture3.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
+
+		MaterialAttribute t3 = new TextureAttribute(texture3, 0, TextureAttribute.diffuseTexture);
+		Material material3 = new Material("", c2, t3, t2);
+		model3.setMaterial(material3);
 
 	}
 

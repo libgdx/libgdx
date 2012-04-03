@@ -3,9 +3,14 @@
 //#define emissiveColorFlag
 //#define diffuseColorFlag
 //#define translucentFlag
-#define LIGHTS_NUM 4
+//#define LIGHTS_NUM 4
 attribute vec4 a_position; 
 attribute vec2 a_texCoord0;
+
+#ifdef normalsFlag
+attribute vec3 a_normal;
+uniform mat3 u_normalMatrix;
+#endif
 
 #ifdef diffuseColorFlag
 uniform vec4 diffuseColor;
@@ -19,10 +24,7 @@ uniform vec4 emissiveColor;
 //uniform vec4 specularCol;
 //#endif
 
-#ifdef normalsFlag
-attribute vec3 a_normal;
-uniform mat3 u_normalMatrix;
-#endif
+
 
 #if LIGHTS_NUM > 0
 uniform vec3  lightsPos[LIGHTS_NUM];
@@ -74,11 +76,11 @@ void main()
 	}
 #endif
 #ifdef diffuseColorFlag
-	aggCol *= diffuseColor;
+	aggCol *= diffuseColor.rgb;
 #endif
 
 #ifdef emissiveColorFlag
-	aggCol += emissiveColor;
+	aggCol += emissiveColor.rgb;
 #endif
 	
 	aggCol += ambient;

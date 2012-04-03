@@ -21,12 +21,14 @@ import java.util.List;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.jogl.JoglApplication;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.ogre.OgreXmlLoader;
+import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonKeyframe;
@@ -56,9 +58,9 @@ public class Viewer implements ApplicationListener {
 	@Override
 	public void create () {
 
-		Texture texture = new Texture(Gdx.files.internal("data/ninja.jpg"));
-		Material mat = new Material("mat", new TextureAttribute(texture, 0, "s_tex"));
-		model = new OgreXmlLoader().load(Gdx.files.internal("data/ninja.mesh.xml"), Gdx.files.internal("data/ninja.skeleton.xml"));
+		Texture texture = new Texture(Gdx.files.internal("data/models/ninja.jpg"));
+		Material mat = new Material("mat", new TextureAttribute(texture, 0, "s_tex"), new ColorAttribute(Color.CYAN, ColorAttribute.diffuse));
+		model = new OgreXmlLoader().load(Gdx.files.internal("data/models/ninja.mesh.xml"), Gdx.files.internal("data/models/ninja.skeleton.xml"));
 		model.setMaterial(mat);
 
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

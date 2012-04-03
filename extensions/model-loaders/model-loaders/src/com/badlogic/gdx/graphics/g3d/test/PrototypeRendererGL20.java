@@ -78,7 +78,6 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	public void draw (AnimatedModel model, AnimatedModelInstance instance) {
 
 		if (cam != null) if (!cam.frustum.sphereInFrustum(instance.getSortCenter(), instance.getBoundingSphereRadius())) return;
-
 		model.setAnimation(instance.getAnimation(), instance.getAnimationTime(), instance.isLooping());
 		// move skinned models to drawing list
 		modelQueue.add(model);

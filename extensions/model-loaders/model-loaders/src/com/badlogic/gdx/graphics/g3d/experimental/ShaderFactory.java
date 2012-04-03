@@ -26,9 +26,7 @@ public class ShaderFactory {
 				flags.append("\n");
 			}
 		}
-
-		
-		//TODO FIX ME
+		// TODO FIX light chose method
 		String fileName;
 		if (lights.quality == LightQuality.FRAGMENT)
 			fileName = "light";

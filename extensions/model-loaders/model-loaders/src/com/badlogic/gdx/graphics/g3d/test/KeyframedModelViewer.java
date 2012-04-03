@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.test;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -179,6 +180,7 @@ public class KeyframedModelViewer implements ApplicationListener {
 	}
 
 	public static void main (String[] argv) {
-		new JoglApplication(new KeyframedModelViewer("data/models/knight.md2", "data/models/knight.jpg"), "KeframedModel Viewer", 800, 480, false);
+		new JoglApplication(new KeyframedModelViewer("data/models/knight.md2", "data/models/knight.jpg"), "KeframedModel Viewer",
+			800, 480, false);
 	}
 }
