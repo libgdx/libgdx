@@ -32,7 +32,7 @@ public class GdxNativesLoader {
 	static public boolean isLinux = System.getProperty("os.name").contains("Linux");
 	static public boolean isMac = System.getProperty("os.name").contains("Mac");
 	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64");
-	static public File nativesDir = new File(System.getProperty("java.io.tmpdir") + "/libgdx/" + crc("gdx.dll"));
+	static public File nativesDir = new File(System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/" + crc("gdx.dll"));
 	static public String path;
 
 	static private String crc (String nativeFile) {
