@@ -387,17 +387,15 @@ public class ParticleEmitter {
 		particle.scale = scaleValue.newLowValue() / spriteWidth;
 		particle.scaleDiff = scaleValue.newHighValue() / spriteWidth;
 		if (!scaleValue.isRelative()) particle.scaleDiff -= particle.scale;
-		if ((updateFlags & UPDATE_SCALE) == 0) particle.setScale(particle.scale + particle.scaleDiff * scaleValue.getScale(0));
+		particle.setScale(particle.scale + particle.scaleDiff * scaleValue.getScale(0));
 
 		if (rotationValue.active) {
 			particle.rotation = rotationValue.newLowValue();
 			particle.rotationDiff = rotationValue.newHighValue();
 			if (!rotationValue.isRelative()) particle.rotationDiff -= particle.rotation;
-			if ((updateFlags & UPDATE_ROTATION) == 0) {
-				float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(0);
-				if (aligned) rotation += angle;
-				particle.setRotation(rotation);
-			}
+			float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(0);
+			if (aligned) rotation += angle;
+			particle.setRotation(rotation);
 		}
 
 		if (windValue.active) {
@@ -412,14 +410,12 @@ public class ParticleEmitter {
 			if (!gravityValue.isRelative()) particle.gravityDiff -= particle.gravity;
 		}
 
-		if ((updateFlags & UPDATE_TINT) == 0) {
-			float[] color = particle.tint;
-			if (color == null) particle.tint = color = new float[3];
-			float[] temp = tintValue.getColor(0);
-			color[0] = temp[0];
-			color[1] = temp[1];
-			color[2] = temp[2];
-		}
+		float[] color = particle.tint;
+		if (color == null) particle.tint = color = new float[3];
+		float[] temp = tintValue.getColor(0);
+		color[0] = temp[0];
+		color[1] = temp[1];
+		color[2] = temp[2];
 
 		particle.transparency = transparencyValue.newLowValue();
 		particle.transparencyDiff = transparencyValue.newHighValue() - particle.transparency;
