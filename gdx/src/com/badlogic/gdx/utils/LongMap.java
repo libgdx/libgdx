@@ -75,7 +75,7 @@ public class LongMap<V> {
 
 		threshold = (int)(capacity * loadFactor);
 		mask = capacity - 1;
-		hashShift = 31 - Integer.numberOfTrailingZeros(capacity);
+		hashShift = 63 - Long.numberOfTrailingZeros(capacity);
 		stashCapacity = Math.max(3, (int)Math.ceil(Math.log(capacity)) + 1);
 		pushIterations = Math.max(Math.min(capacity, 32), (int)Math.sqrt(capacity) / 4);
 
@@ -466,7 +466,7 @@ public class LongMap<V> {
 		capacity = newSize;
 		threshold = (int)(newSize * loadFactor);
 		mask = newSize - 1;
-		hashShift = 31 - Integer.numberOfTrailingZeros(newSize);
+		hashShift = 63 - Long.numberOfTrailingZeros(newSize);
 		stashCapacity = Math.max(3, (int)Math.ceil(Math.log(newSize)));
 		pushIterations = Math.max(Math.min(capacity, 32), (int)Math.sqrt(capacity) / 4);
 
