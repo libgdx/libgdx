@@ -13,6 +13,7 @@ import com.badlogic.gdx.backends.jogl.JoglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -37,6 +38,7 @@ import com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
+import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
 import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.test.PrototypeRendererGL20;
@@ -50,7 +52,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 public class HybridLightTest implements ApplicationListener {
 
 	static final int LIGHTS_NUM = 4;
-	static final float LIGHT_INTESITY = 4f;
+	static final float LIGHT_INTESITY = 3f;
 
 	LightManager lightManager;
 
@@ -73,7 +75,6 @@ public class HybridLightTest implements ApplicationListener {
 	private Texture texture2;
 	private KeyframedModel model3;
 	private int currAnimIdx;
-	String[] animNames;
 	private AnimatedModelNode animInstance;
 	private Texture texture3;
 
@@ -112,10 +113,13 @@ public class HybridLightTest implements ApplicationListener {
 		Gdx.gl.glDepthMask(true);
 
 		Gdx.gl.glClearColor(0, 0.1f, 0.2f, 0);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT
+			| (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
 		protoRenderer.begin();
+
 		protoRenderer.draw(model3, animInstance);
+
 		protoRenderer.end();
 		Gdx.gl.glCullFace(GL10.GL_BACK);
 		protoRenderer.begin();
@@ -131,9 +135,9 @@ public class HybridLightTest implements ApplicationListener {
 		for (int i = 0; i < LIGHTS_NUM; i++) {
 			PointLight l = new PointLight();
 			l.position.set(MathUtils.random(8) - 4, MathUtils.random(6), MathUtils.random(8) - 4);
-			l.color.r = 0.5f + 0.5f * MathUtils.random();
-			l.color.b = 0.5f + 0.5f * MathUtils.random();
-			l.color.g = 0.5f + 0.5f * MathUtils.random();
+			l.color.r = MathUtils.random();
+			l.color.b = MathUtils.random();
+			l.color.g = MathUtils.random();
 			l.intensity = 1 + MathUtils.random() * LIGHT_INTESITY;
 			lightManager.addLigth(l);
 		}
@@ -145,7 +149,7 @@ public class HybridLightTest implements ApplicationListener {
 
 		cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.near = 0.1f;
-		cam.far = 64f;
+		cam.far = 264f;
 		cam.position.set(0, 0.5f, -2f);
 		cam.update();
 
@@ -154,7 +158,7 @@ public class HybridLightTest implements ApplicationListener {
 
 		texture = new Texture(Gdx.files.internal("data/multipleuvs_1.png"), Format.RGB565, true);
 		texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
-		texture2 = new Texture(Gdx.files.internal("data/texture2UV1S.png"), Format.RGB565, true);
+		texture2 = new Texture(Gdx.files.internal("data/texture2UV1N.png"), Format.RGB565, true);
 		texture2.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 
 		model = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/models/sphere.obj"));
@@ -192,9 +196,11 @@ public class HybridLightTest implements ApplicationListener {
 		animInstance.animation = model3.getAnimations()[0].name;
 		animInstance.looping = true;
 		model3.getBoundingBox(box);
-		animInstance.radius = box.getDimensions().len() / 2;
-		animInstance.getTransform().trn(-1.75f, 0f, -5.5f);
-		animInstance.getTransform().scale(0.05f, 0.05f, 0.05f);
+
+		animInstance.matrix.trn(-1.75f, 0f, -5.5f);
+		animInstance.matrix.scale(0.05f, 0.05f, 0.05f);
+		box.mul(animInstance.matrix);
+		animInstance.radius = (box.getDimensions().len() / 2);
 		texture3 = new Texture(Gdx.files.internal("data/models/knight.jpg"), Format.RGB565, true);
 		texture3.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 
@@ -213,7 +219,10 @@ public class HybridLightTest implements ApplicationListener {
 	public void dispose () {
 		model.dispose();
 		model2.dispose();
+		model3.dispose();
 		texture.dispose();
+		texture2.dispose();
+		texture3.dispose();
 
 	}
 

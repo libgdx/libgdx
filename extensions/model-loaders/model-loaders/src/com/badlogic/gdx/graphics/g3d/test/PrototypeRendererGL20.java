@@ -37,10 +37,8 @@ import com.badlogic.gdx.utils.Pool;
 //for all models
 //5. batching involving shaders, materials and texture should happen.(impossible to do perfect.)
 //4. closest lights are calculated per model
-//6  model are rendered
-
-//WIP
-//tranparency and more batching
+//6  models are rendered
+//7. tranparency
 
 public class PrototypeRendererGL20 implements ModelRenderer {
 
@@ -76,7 +74,6 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 	@Override
 	public void draw (AnimatedModel model, AnimatedModelInstance instance) {
-
 		if (cam != null) if (!cam.frustum.sphereInFrustum(instance.getSortCenter(), instance.getBoundingSphereRadius())) return;
 		model.setAnimation(instance.getAnimation(), instance.getAnimationTime(), instance.isLooping());
 		// move skinned models to drawing list

@@ -10,9 +10,9 @@ public class StillModelNode implements StillModelInstance {
 	static final private float[] vec3 = {0, 0, 0};
 
 	final public Vector3 origin = new Vector3();
-	final private Vector3 transformedPosition = new Vector3();
+	final public Vector3 transformedPosition = new Vector3();
 
-	final private Matrix4 matrix = new Matrix4();
+	final public Matrix4 matrix = new Matrix4();
 	public Material[] materials;
 	public float radius;
 
@@ -50,5 +50,23 @@ public class StillModelNode implements StillModelInstance {
 	public float getBoundingSphereRadius () {
 		return radius;
 	}
-	
+
+	public StillModelNode copy () {
+		final StillModelNode copy = new StillModelNode();
+		if (materials != null) {
+			final int len = materials.length;
+			Material[] mats = new Material[len];
+			for (int i = 0; i < len; i++) {
+				mats[i] = materials[i].copy();
+			}
+			copy.materials = mats;
+		}
+		copy.matrix.set(matrix.val);
+		copy.origin.set(origin);
+		copy.radius = radius;
+		copy.transformedPosition.set(transformedPosition);
+		return copy;
+
+	}
+
 }
