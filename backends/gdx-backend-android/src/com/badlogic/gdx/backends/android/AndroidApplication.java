@@ -320,15 +320,14 @@ public class AndroidApplication extends Activity implements Application {
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
+			Log.d(tag, message);
 		}
 	}
 	
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
-			System.out.println(tag + ": " + message);
-			exception.printStackTrace(System.out);
+			Log.d(tag, message, exception);
 		}
 	}
 
