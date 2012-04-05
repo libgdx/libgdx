@@ -30,7 +30,7 @@ uniform vec4 specularColor;
 #endif
 
 uniform vec3 ambient;
-const float shininessFactor = 15.0;
+const MED float shininessFactor = 15.0;
 
 #ifdef diffuseTextureFlag
 uniform sampler2D diffuseTexture;
