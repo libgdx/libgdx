@@ -86,12 +86,11 @@ public class HybridLightTest implements ApplicationListener {
 		camController.update(delta);
 
 		timer += delta;
-		for (int i = 0; i < lightManager.pointLights.size; i++) {
+		for (int i = 0; i < 1 && i < lightManager.pointLights.size; i++) {
 			final Vector3 v = lightManager.pointLights.get(i).position;
-			v.x += MathUtils.sin(timer) * 0.01f;
-			v.z += MathUtils.cos(timer) * 0.01f;
-			lightManager.pointLights.get(i).color.b = MathUtils.sin(timer) * 0.25f + 0.25f;
-
+			v.set(animInstance.getSortCenter());
+			v.x += MathUtils.sin(timer);
+			v.z += MathUtils.cos(timer);
 		}
 
 		animInstance.time += delta;
@@ -104,7 +103,6 @@ public class HybridLightTest implements ApplicationListener {
 		if (animInstance.time > model3.getAnimations()[currAnimIdx].totalDuration) {
 			animInstance.time = 0;
 		}
-
 		Gdx.gl.glEnable(GL10.GL_CULL_FACE);
 		Gdx.gl.glFrontFace(GL10.GL_CCW);
 		Gdx.gl.glCullFace(GL10.GL_FRONT);
@@ -112,16 +110,15 @@ public class HybridLightTest implements ApplicationListener {
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
 		Gdx.gl.glDepthMask(true);
 
-		Gdx.gl.glClearColor(0, 0.1f, 0.2f, 0);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT
 			| (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
 		protoRenderer.begin();
-
 		protoRenderer.draw(model3, animInstance);
-
 		protoRenderer.end();
+		
 		Gdx.gl.glCullFace(GL10.GL_BACK);
+		
 		protoRenderer.begin();
 		protoRenderer.draw(model, instance);
 		protoRenderer.draw(model, instance2);
@@ -138,14 +135,14 @@ public class HybridLightTest implements ApplicationListener {
 			l.color.r = MathUtils.random();
 			l.color.b = MathUtils.random();
 			l.color.g = MathUtils.random();
-			l.intensity = 1 + MathUtils.random() * LIGHT_INTESITY;
+			l.intensity = MathUtils.random() * LIGHT_INTESITY;
 			lightManager.addLigth(l);
 		}
 		lightManager.dirLight = new DirectionalLight();
-		lightManager.dirLight.color.set(0.15f, 0.15f, 0.15f, 1);
+		lightManager.dirLight.color.set(0.1f, 0.1f, 0.1f, 1);
 		lightManager.dirLight.direction.set(-.4f, -1, 0.03f).nor();
 
-		lightManager.ambientLight.set(.1f, 0.09f, 0.09f, 0f);
+		lightManager.ambientLight.set(.01f, 0.01f, 0.03f, 0f);
 
 		cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.near = 0.1f;
@@ -187,10 +184,13 @@ public class HybridLightTest implements ApplicationListener {
 
 		Material material2 = new Material("basic", c2, t1, t2);
 		model2.setMaterial(material2);
-
-		Material material = new Material("shiningBall", c1, c2);
+		
+		
+		MaterialAttribute b = new BlendingAttribute(BlendingAttribute.translucent);
+		Material material = new Material("shiningBall", c1, c2, b);
 		model.setMaterial(material);
 
+		
 		model3 = ModelLoaderRegistry.loadKeyframedModel(Gdx.files.internal("data/models/knight.md2"));
 		animInstance = new AnimatedModelNode();
 		animInstance.animation = model3.getAnimations()[0].name;
