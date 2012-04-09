@@ -27,6 +27,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 
 //stuff that happens
@@ -291,57 +292,102 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		blendQueue.clear();
 	}
 	
-	Pool<Drawable> renderablePool = new Pool<Drawable>() {
-		@Override
-		protected Drawable newObject () {
-			return new Drawable();
-		}
-	};
-	
-	/**
-	 * A drawable is a copy of the state of the model and instance
-	 * passed to either {@link PrototypeRendererGL20#draw(AnimatedModel, AnimatedModelInstance)}
-	 * or {@link PrototypeRendererGL20#draw(StillModel, StillModelInstance)}. It is
-	 * used in {@link PrototypeRendererGL20#flush()} to do material and depth
-	 * sorting for blending without having to deal with the API client 
-	 * changing any attributes of a model or instance in between draw calls.
-	 * @author mzechner
-	 *
-	 */
-	class Drawable {
-		Model model;
-		final Matrix4 transform = new Matrix4();
-		final Vector3 sortCenter = new Vector3();
-		float boundingSphereRadius;
-		final Array<Material> materials = new Array<Material>();
-		boolean isAnimated;
-		String animation;
-		float animationTime;
-		boolean isLooping;
+	class DrawableManager {
+		Pool<Drawable> drawablePool = new Pool<Drawable>() {
+			@Override
+			protected Drawable newObject () {
+				return new Drawable();
+			}
+		};
+		Pool<Material> materialPool = new Pool<Material>() {
+			@Override
+			protected Material newObject () {
+				return new Material();
+			}
+		};
+		Array<Drawable> drawables = new Array<Drawable>();
 		
-		public void set(StillModel model, StillModelInstance instance) {
-			setCommon(model, instance);
-			isAnimated = false;
+		public void add(StillModel model, StillModelInstance instance) {
+			Drawable drawable = drawablePool.obtain();
+			drawable.set(model, instance);
 		}
 		
-		public void set(AnimatedModel model, AnimatedModelInstance instance) {
-			setCommon(model, instance);
-			isAnimated = true;
-			animation = instance.getAnimation();
-			animationTime = instance.getAnimationTime();
-			isLooping = instance.isLooping();
+		public void add(AnimatedModel model, AnimatedModelInstance instance) {
+			Drawable drawable = drawablePool.obtain();
+			drawable.set(model, instance);
 		}
 		
-		private void setCommon(Model model, StillModelInstance instance) {
-			this.model = model;
-			transform.set(instance.getTransform());
-			sortCenter.set(instance.getSortCenter());
-			boundingSphereRadius = instance.getBoundingSphereRadius();
+		public void clear() {
+			for(Drawable drawable: drawables) {
+				// return all materials and attribuets to the pools
+				for(Material material: drawable.materials) {
+					for(MaterialAttribute attr: material.attributes) {
+						attr.free();
+					}
+					material.attributes.clear();
+					material.shader = null;
+					materialPool.free(material);
+				}
+				
+				// reset the drawable and return it to the drawable pool
+				drawable.materials.clear();
+				drawablePool.free(drawable);
+			}
+		}
+		
+		/**
+		 * A drawable is a copy of the state of the model and instance
+		 * passed to either {@link PrototypeRendererGL20#draw(AnimatedModel, AnimatedModelInstance)}
+		 * or {@link PrototypeRendererGL20#draw(StillModel, StillModelInstance)}. It is
+		 * used in {@link PrototypeRendererGL20#flush()} to do material and depth
+		 * sorting for blending without having to deal with the API client 
+		 * changing any attributes of a model or instance in between draw calls.
+		 * @author mzechner
+		 *
+		 */
+		class Drawable {
+			Model model;
+			final Matrix4 transform = new Matrix4();
+			final Vector3 sortCenter = new Vector3();
+			float boundingSphereRadius;
+			final Array<Material> materials = new Array<Material>();
+			boolean isAnimated;
+			String animation;
+			float animationTime;
+			boolean isLooping;
 			
-			copyMaterials(model, instance);
-		}
-		
-		private void copyMaterials(Model model, StillModelInstance instance) {
+			public void set(StillModel model, StillModelInstance instance) {
+				setCommon(model, instance);
+				isAnimated = false;
+			}
+			
+			public void set(AnimatedModel model, AnimatedModelInstance instance) {
+				setCommon(model, instance);
+				isAnimated = true;
+				animation = instance.getAnimation();
+				animationTime = instance.getAnimationTime();
+				isLooping = instance.isLooping();
+			}
+			
+			private void setCommon(Model model, StillModelInstance instance) {
+				this.model = model;
+				transform.set(instance.getTransform());
+				sortCenter.set(instance.getSortCenter());
+				boundingSphereRadius = instance.getBoundingSphereRadius();
+				
+				if(instance.getMaterials() != null) {
+					for(Material material: instance.getMaterials()) {
+						Material copy = materialPool.obtain();
+						copy.setPooled(material);
+						materials.add(copy);
+					}
+				} else {
+					for(SubMesh subMesh: model.getSubMeshes()) {
+						Material copy = materialPool.obtain();
+						copy.setPooled(subMesh.material);
+					}
+				}
+			}
 		}
 	}
 }

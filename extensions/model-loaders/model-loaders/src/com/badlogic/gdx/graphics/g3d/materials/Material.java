@@ -22,13 +22,16 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 
 public class Material {
-	final public String name;
-	final public Array<MaterialAttribute> attributes;
+	public String name;
+	public Array<MaterialAttribute> attributes;
 	/** This flag is true if material contain blendingAttribute */
-	final public boolean needBlending;
+	public boolean needBlending;
 
 	public ShaderProgram shader;
 
+	public Material() {
+	}
+	
 	public Material (String name, Array<MaterialAttribute> attributes) {
 		this.name = name;
 		this.attributes = attributes;
@@ -53,7 +56,7 @@ public class Material {
 		this.needBlending = blendingNeeded;
 
 	}
-
+	
 	public void bind () {
 		for (int i = 0; i < attributes.size; i++) {
 			attributes.get(i).bind();
@@ -124,4 +127,12 @@ public class Material {
 		return true;
 	}
 
+	public void setPooled (Material material) {
+		name = material.name;
+		attributes.clear();
+		for(MaterialAttribute attr: material.attributes) {
+			if(attr instanceof BlendingAttribute) needBlending = true;
+			attributes.add(attr.pooledCopy());
+		}
+	}
 }

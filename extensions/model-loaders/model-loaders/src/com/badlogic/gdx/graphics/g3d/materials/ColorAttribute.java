@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.g3d.materials;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.Pool;
 
 public class ColorAttribute extends MaterialAttribute {
 
@@ -27,7 +28,10 @@ public class ColorAttribute extends MaterialAttribute {
 	static final public String emissive = "emissiveColor";
 
 	public final Color color = new Color();
-
+	
+	protected ColorAttribute() {
+	}
+	
 	public ColorAttribute (Color color, String name) {
 		super(name);
 		this.color.set(color);
@@ -53,10 +57,28 @@ public class ColorAttribute extends MaterialAttribute {
 	}
 
 	@Override
-	public void copy (MaterialAttribute attr) {
+	public void set (MaterialAttribute attr) {
 		ColorAttribute colAttr = (ColorAttribute)attr;
 		colAttr.name = name;
 		colAttr.color.set(color);
 	}
+	
+	private final static Pool<ColorAttribute> pool = new Pool<ColorAttribute>() {
+		@Override
+		protected ColorAttribute newObject () {
+			return new ColorAttribute();
+		}
+	};
 
+	@Override
+	public MaterialAttribute pooledCopy () {
+		ColorAttribute attr = pool.obtain();
+		attr.set(this);
+		return null;
+	}
+
+	@Override
+	public void free () {
+		if(isPooled) pool.free(this);
+	}
 }

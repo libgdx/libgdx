@@ -17,14 +17,20 @@
 package com.badlogic.gdx.graphics.g3d.materials;
 
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.Pool;
 
 public abstract class MaterialAttribute {
-
 	private static final String FLAG = "Flag";
 	public String name;
+	protected final boolean isPooled;
 
+	protected MaterialAttribute() {
+		isPooled = true;
+	}
+	
 	public MaterialAttribute (String name) {
 		this.name = name;
+		isPooled = false;
 	}
 
 	public abstract void bind ();
@@ -33,8 +39,12 @@ public abstract class MaterialAttribute {
 
 	public abstract MaterialAttribute copy ();
 	
-	public abstract void copy(MaterialAttribute attr);
-
+	public abstract MaterialAttribute pooledCopy();
+	
+	public abstract void free();
+	
+	public abstract void set(MaterialAttribute attr);
+	
 	public String getShaderFlag () {
 		return name + FLAG;
 	}
