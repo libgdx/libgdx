@@ -114,14 +114,21 @@ public class HybridLightTest implements ApplicationListener {
 			| (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
 		protoRenderer.begin();
-		protoRenderer.draw(model3, animInstance);
+		for (int i = 1; i < 7; i++) {
+			for (int j = 1; j < 7; j++) {
+				animInstance.matrix.val[12] = -i*2+8;
+				animInstance.matrix.val[14] = -j*2-4;
+				protoRenderer.draw(model3, animInstance);
+			}
+		}
+
 		protoRenderer.end();
-		
+
 		Gdx.gl.glCullFace(GL10.GL_BACK);
-		
+
 		protoRenderer.begin();
-		protoRenderer.draw(model, instance);
 		protoRenderer.draw(model, instance2);
+		protoRenderer.draw(model, instance);		
 		protoRenderer.draw(model2, instance2);
 		protoRenderer.end();
 	}
@@ -180,17 +187,15 @@ public class HybridLightTest implements ApplicationListener {
 		MaterialAttribute t1 = new TextureAttribute(texture, 0, TextureAttribute.diffuseTexture);
 		MaterialAttribute t2 = new TextureAttribute(texture2, 1, TextureAttribute.specularTexture);
 
-		// MaterialAttribute b = new BlendingAttribute(BlendingAttribute.translucent);
+		MaterialAttribute b = new BlendingAttribute(BlendingAttribute.translucent);
 
 		Material material2 = new Material("basic", c2, t1, t2);
 		model2.setMaterial(material2);
-		
-		
-		MaterialAttribute b = new BlendingAttribute(BlendingAttribute.translucent);
-		Material material = new Material("shiningBall", c1, c2);
-		model.setMaterial(material);
 
 		
+		Material material = new Material("shiningBall", c1, c2, b);
+		model.setMaterial(material);
+
 		model3 = ModelLoaderRegistry.loadKeyframedModel(Gdx.files.internal("data/models/knight.md2"));
 		animInstance = new AnimatedModelNode();
 		animInstance.animation = model3.getAnimations()[0].name;

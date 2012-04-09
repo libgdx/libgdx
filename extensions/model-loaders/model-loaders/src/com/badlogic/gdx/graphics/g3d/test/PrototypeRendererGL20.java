@@ -106,8 +106,8 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		Material currentMaterial = null;
 		// find N nearest lights per model
 		// draw all models from opaque queue
-		for (Drawable drawable : drawableManager.drawables) {
-
+		for (int i = 0, size = drawableManager.drawables.size; i < size; i++) {
+			final Drawable drawable = drawableManager.drawables.get(i);
 			final Vector3 center = drawable.sortCenter;
 			lightManager.calculateLights(center.x, center.y, center.z);
 			final Matrix4 modelMatrix = drawable.transform;
@@ -188,9 +188,6 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	/** @param material
 	 * @return true if new shader was binded */
 	boolean bindShader (Material material) {
-
-		if (material.shader == null) material.shader = materialShaderHandler.getShader(material);
-
 		if (material.shader == currentShader) return false;
 
 		currentShader = material.shader;
@@ -382,7 +379,8 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 			private void setCommon (Model model, StillModelInstance instance) {
 				this.model = model;
-				transform.set(instance.getTransform().val);
+				// transform.set(instance.getTransform().val);
+				System.arraycopy(instance.getTransform().val, 0, transform.val, 0, 16);
 				sortCenter.set(instance.getSortCenter());
 				boundingSphereRadius = instance.getBoundingSphereRadius();
 

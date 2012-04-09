@@ -131,10 +131,10 @@ public class Material {
 	public void setPooled (Material material) {
 		name = material.name;
 		shader = material.shader;
+		needBlending = material.needBlending;
 		attributes.clear();
-		for (MaterialAttribute attr : material.attributes) {
-			if (attr instanceof BlendingAttribute) needBlending = true;
-			attributes.add(attr.pooledCopy());
+		for (int i = 0, len = material.attributes.size; i < len; i++) {
+			attributes.add(material.attributes.get(i).pooledCopy());
 		}
 	}
 }
