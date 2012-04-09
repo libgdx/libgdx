@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
@@ -288,5 +289,59 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		Gdx.gl.glDepthMask(true);
 		Gdx.gl.glDisable(GL10.GL_BLEND);
 		blendQueue.clear();
+	}
+	
+	Pool<Drawable> renderablePool = new Pool<Drawable>() {
+		@Override
+		protected Drawable newObject () {
+			return new Drawable();
+		}
+	};
+	
+	/**
+	 * A drawable is a copy of the state of the model and instance
+	 * passed to either {@link PrototypeRendererGL20#draw(AnimatedModel, AnimatedModelInstance)}
+	 * or {@link PrototypeRendererGL20#draw(StillModel, StillModelInstance)}. It is
+	 * used in {@link PrototypeRendererGL20#flush()} to do material and depth
+	 * sorting for blending without having to deal with the API client 
+	 * changing any attributes of a model or instance in between draw calls.
+	 * @author mzechner
+	 *
+	 */
+	class Drawable {
+		Model model;
+		final Matrix4 transform = new Matrix4();
+		final Vector3 sortCenter = new Vector3();
+		float boundingSphereRadius;
+		final Array<Material> materials = new Array<Material>();
+		boolean isAnimated;
+		String animation;
+		float animationTime;
+		boolean isLooping;
+		
+		public void set(StillModel model, StillModelInstance instance) {
+			setCommon(model, instance);
+			isAnimated = false;
+		}
+		
+		public void set(AnimatedModel model, AnimatedModelInstance instance) {
+			setCommon(model, instance);
+			isAnimated = true;
+			animation = instance.getAnimation();
+			animationTime = instance.getAnimationTime();
+			isLooping = instance.isLooping();
+		}
+		
+		private void setCommon(Model model, StillModelInstance instance) {
+			this.model = model;
+			transform.set(instance.getTransform());
+			sortCenter.set(instance.getSortCenter());
+			boundingSphereRadius = instance.getBoundingSphereRadius();
+			
+			copyMaterials(model, instance);
+		}
+		
+		private void copyMaterials(Model model, StillModelInstance instance) {
+		}
 	}
 }
