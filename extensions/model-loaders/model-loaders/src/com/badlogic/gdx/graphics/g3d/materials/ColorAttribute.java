@@ -52,4 +52,11 @@ public class ColorAttribute extends MaterialAttribute {
 		return new ColorAttribute(color, name);
 	}
 
+	@Override
+	public void copy (MaterialAttribute attr) {
+		ColorAttribute colAttr = (ColorAttribute)attr;
+		colAttr.name = name;
+		colAttr.color.set(color);
+	}
+
 }

@@ -91,4 +91,15 @@ public class TextureAttribute extends MaterialAttribute {
 		return new TextureAttribute(texture, unit, name, minFilter, magFilter, uWrap, vWrap);
 	}
 
+	@Override
+	public void copy (MaterialAttribute attr) {
+		TextureAttribute texAttr = (TextureAttribute)attr;
+		texAttr.name = name;
+		texAttr.texture = texture;
+		texAttr.unit = unit;
+		texAttr.magFilter = magFilter;
+		texAttr.minFilter = minFilter;
+		texAttr.uWrap = uWrap;
+		texAttr.vWrap = vWrap;
+	}
 }

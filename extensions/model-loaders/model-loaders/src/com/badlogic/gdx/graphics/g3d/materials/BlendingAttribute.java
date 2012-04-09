@@ -41,4 +41,12 @@ public class BlendingAttribute extends MaterialAttribute {
 	public MaterialAttribute copy () {
 		return new BlendingAttribute(this.name, this.blendSrcFunc, this.blendDstFunc);
 	}
+
+	@Override
+	public void copy (MaterialAttribute attr) {
+		BlendingAttribute blendAttr = (BlendingAttribute)attr;
+		blendAttr.name = name;
+		blendAttr.blendDstFunc = blendDstFunc;
+		blendAttr.blendSrcFunc = blendSrcFunc;
+	}
 }

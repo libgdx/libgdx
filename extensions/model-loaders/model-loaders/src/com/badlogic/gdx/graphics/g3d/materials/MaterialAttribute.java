@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 public abstract class MaterialAttribute {
 
 	private static final String FLAG = "Flag";
-	public final String name;
+	public String name;
 
 	public MaterialAttribute (String name) {
 		this.name = name;
@@ -32,6 +32,8 @@ public abstract class MaterialAttribute {
 	public abstract void bind (ShaderProgram program);
 
 	public abstract MaterialAttribute copy ();
+	
+	public abstract void copy(MaterialAttribute attr);
 
 	public String getShaderFlag () {
 		return name + FLAG;
