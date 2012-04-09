@@ -133,8 +133,8 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				}
 				if ((material != null) && (material != currentMaterial)) {
 					currentMaterial = material;
-					for (int k = 0, len = currentMaterial.attributes.length; k < len; k++) {
-						final MaterialAttribute atrib = currentMaterial.attributes[k];
+					for (int k = 0, len = currentMaterial.attributes.size; k < len; k++) {
+						final MaterialAttribute atrib = currentMaterial.attributes.get(k);
 
 						// special case for textures. really important to batch these
 						if (atrib instanceof TextureAttribute) {
@@ -255,8 +255,8 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 			if ((material != null) && (material != currentMaterial)) {
 				currentMaterial = material;
-				for (int k = 0, len = currentMaterial.attributes.length; k < len; k++) {
-					final MaterialAttribute atrib = currentMaterial.attributes[k];
+				for (int k = 0, len = currentMaterial.attributes.size; k < len; k++) {
+					final MaterialAttribute atrib = currentMaterial.attributes.get(k);
 
 					// yet another instanceof. TODO is there any better way to do this? maybe stuffing this to material
 					if (atrib instanceof BlendingAttribute) {

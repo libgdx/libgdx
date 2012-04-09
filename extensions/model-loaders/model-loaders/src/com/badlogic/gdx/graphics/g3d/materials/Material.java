@@ -19,44 +19,57 @@ package com.badlogic.gdx.graphics.g3d.materials;
 import java.util.Arrays;
 
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.Array;
 
 public class Material {
 	final public String name;
-	final public MaterialAttribute[] attributes;
+	final public Array<MaterialAttribute> attributes;
 	/** This flag is true if material contain blendingAttribute */
 	final public boolean needBlending;
 
 	public ShaderProgram shader;
 
-	public Material (String name, MaterialAttribute... attributes) {
+	public Material (String name, Array<MaterialAttribute> attributes) {
 		this.name = name;
 		this.attributes = attributes;
 
 		// this way we foresee if blending is needed with this material and rendering can deferred more easily
 		boolean blendingNeeded = false;
-		for (int i = 0; i < attributes.length; i++) {
-			if (attributes[i] instanceof BlendingAttribute) blendingNeeded = true;
+		for (int i = 0; i < this.attributes.size; i++) {
+			if (this.attributes.get(i) instanceof BlendingAttribute) blendingNeeded = true;
+		}
+		this.needBlending = blendingNeeded;
+	}
+	
+	public Material (String name, MaterialAttribute... attributes) {
+		this.name = name;
+		this.attributes = new Array<MaterialAttribute>(attributes);
+
+		// this way we foresee if blending is needed with this material and rendering can deferred more easily
+		boolean blendingNeeded = false;
+		for (int i = 0; i < this.attributes.size; i++) {
+			if (this.attributes.get(i) instanceof BlendingAttribute) blendingNeeded = true;
 		}
 		this.needBlending = blendingNeeded;
 
 	}
 
 	public void bind () {
-		for (int i = 0; i < attributes.length; i++) {
-			attributes[i].bind();
+		for (int i = 0; i < attributes.size; i++) {
+			attributes.get(i).bind();
 		}
 	}
 
 	public void bind (ShaderProgram program) {
-		for (int i = 0; i < attributes.length; i++) {
-			attributes[i].bind(program);
+		for (int i = 0; i < attributes.size; i++) {
+			attributes.get(i).bind(program);
 		}
 	}
 
 	public Material copy () {
-		MaterialAttribute[] attributes = new MaterialAttribute[this.attributes.length];
-		for (int i = 0; i < attributes.length; i++) {
-			attributes[i] = this.attributes[i].copy();
+		Array<MaterialAttribute> attributes = new Array<MaterialAttribute>(this.attributes.size);
+		for (int i = 0; i < attributes.size; i++) {
+			attributes.add(this.attributes.get(i).copy());
 		}
 		final Material copy = new Material(name, attributes);
 		copy.shader = this.shader;
@@ -67,7 +80,7 @@ public class Material {
 	public int hashCode () {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Arrays.hashCode(attributes);
+		result = prime * result + attributes.hashCode();
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -78,9 +91,9 @@ public class Material {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		Material other = (Material)obj;
-		if (other.attributes.length != attributes.length) return false;
-		for (int i = 0; i < attributes.length; i++) {
-			if (!attributes[i].equals(other.attributes[i])) return false;
+		if (other.attributes.size != attributes.size) return false;
+		for (int i = 0; i < attributes.size; i++) {
+			if (!attributes.get(i).equals(other.attributes.get(i))) return false;
 		}
 		if (name == null) {
 			if (other.name != null) return false;
@@ -91,16 +104,16 @@ public class Material {
 	public boolean shaderEquals (Material other) {
 		if (this == other) return true;
 
-		int len = this.attributes.length;
-		if (len != other.attributes.length) return false;
+		int len = this.attributes.size;
+		if (len != other.attributes.size) return false;
 
 		for (int i = 0; i < len; i++) {
-			final String str = this.attributes[i].name;
+			final String str = this.attributes.get(i).name;
 			if (str == null) return false;
 
 			boolean matchFound = false;
 			for (int j = 0; j < len; j++) {
-				if (str.equals(other.attributes[j].name)) {
+				if (str.equals(other.attributes.get(j).name)) {
 					matchFound = true;
 					break;
 				}
