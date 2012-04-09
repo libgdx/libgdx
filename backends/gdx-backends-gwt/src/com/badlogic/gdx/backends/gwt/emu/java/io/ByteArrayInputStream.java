@@ -26,7 +26,6 @@ public class ByteArrayInputStream extends InputStream {
   
   @Override
   public int read()  {
-    return pos < data.length ? data[pos++] : -1;
+    return pos < data.length ? data[pos++] & 0xff: -1;
   }
-
 }

@@ -72,7 +72,7 @@ public class BinaryLoader {
 		@Override
 		public int read () throws IOException {
 			if (pos == blob.length()) return -1;
-			return blob.get(pos++);
+			return blob.get(pos++) & 0xff;
 		}
 	}
 }
