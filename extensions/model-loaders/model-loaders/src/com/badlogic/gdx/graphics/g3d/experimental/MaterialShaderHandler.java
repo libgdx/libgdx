@@ -14,13 +14,13 @@ public class MaterialShaderHandler {
 		this.lightManager = lightManager;
 	}
 
-	private final Array<Material> materialsWithShader = new Array<Material>(false, 64, Material.class);
+	private final Array<Material> materialsWithShader = new Array<Material>(false, 64);
 
 	public ShaderProgram getShader (Material material) {
 
 		for (int i = 0; i < materialsWithShader.size; i++) {
-			if (material.shaderEquals(materialsWithShader.items[i])) {
-				material.shader = materialsWithShader.items[i].shader;
+			if (material.shaderEquals(materialsWithShader.get(i))) {
+				material.shader = materialsWithShader.get(i).shader;
 				return material.shader;
 			}
 		}
@@ -32,9 +32,9 @@ public class MaterialShaderHandler {
 
 	public void dispose () {
 		for (int i = 0; i < materialsWithShader.size; i++) {
-			if (materialsWithShader.items[i].shader != null) {
-				materialsWithShader.items[i].shader.dispose();
-				materialsWithShader.items[i].shader = null;
+			if (materialsWithShader.get(i).shader != null) {
+				materialsWithShader.get(i).shader.dispose();
+				materialsWithShader.get(i).shader = null;
 			}
 		}
 	}
