@@ -24,7 +24,6 @@ public class MaterialShaderHandler {
 				return material.shader;
 			}
 		}
-
 		material.shader = ShaderFactory.createShader(material, lightManager);
 		materialsWithShader.add(material);
 		return material.shader;

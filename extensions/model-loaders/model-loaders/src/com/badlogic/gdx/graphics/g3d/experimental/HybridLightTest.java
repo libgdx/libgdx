@@ -187,7 +187,7 @@ public class HybridLightTest implements ApplicationListener {
 		
 		
 		MaterialAttribute b = new BlendingAttribute(BlendingAttribute.translucent);
-		Material material = new Material("shiningBall", c1, c2, b);
+		Material material = new Material("shiningBall", c1, c2);
 		model.setMaterial(material);
 
 		
@@ -205,7 +205,7 @@ public class HybridLightTest implements ApplicationListener {
 		texture3.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 
 		MaterialAttribute t3 = new TextureAttribute(texture3, 0, TextureAttribute.diffuseTexture);
-		Material material3 = new Material("", c2, t3, t2);
+		Material material3 = new Material("s", c2, t3, t2);
 		model3.setMaterial(material3);
 
 	}

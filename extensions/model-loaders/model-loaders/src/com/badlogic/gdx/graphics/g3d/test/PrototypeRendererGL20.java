@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.graphics.g3d.model.SubMesh;
 import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonSubMesh;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.test.PrototypeRendererGL20.DrawableManager.Drawable;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
@@ -48,11 +49,13 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	final private Array<Model> modelQueue = new Array<Model>(false, SIZE);
 	final private Array<StillModelInstance> modelInstances = new Array<StillModelInstance>(false, SIZE);
 
-	final private MaterialShaderHandler materialShaderHandler;
+	final MaterialShaderHandler materialShaderHandler;
 	private LightManager lightManager;
 	private boolean drawing;
 	final private Matrix3 normalMatrix = new Matrix3();
 	public Camera cam;
+
+	DrawableManager drawableManager = new DrawableManager();
 
 	// TODO maybe there is better way
 	public PrototypeRendererGL20 (LightManager lightManager) {
@@ -70,17 +73,21 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	@Override
 	public void draw (StillModel model, StillModelInstance instance) {
 		if (cam != null) if (!cam.frustum.sphereInFrustum(instance.getSortCenter(), instance.getBoundingSphereRadius())) return;
-		modelQueue.add(model);
-		modelInstances.add(instance);
+// modelQueue.add(model);
+// modelInstances.add(instance);
+
+		drawableManager.add(model, instance);
 	}
 
 	@Override
 	public void draw (AnimatedModel model, AnimatedModelInstance instance) {
 		if (cam != null) if (!cam.frustum.sphereInFrustum(instance.getSortCenter(), instance.getBoundingSphereRadius())) return;
-		model.setAnimation(instance.getAnimation(), instance.getAnimationTime(), instance.isLooping());
+		// model.setAnimation(instance.getAnimation(), instance.getAnimationTime(), instance.isLooping());
 		// move skinned models to drawing list
-		modelQueue.add(model);
-		modelInstances.add(instance);
+		// modelQueue.add(model);
+		// modelInstances.add(instance);
+
+		drawableManager.add(model, instance);
 	}
 
 	@Override
@@ -99,21 +106,22 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		Material currentMaterial = null;
 		// find N nearest lights per model
 		// draw all models from opaque queue
-		for (int i = 0; i < modelQueue.size; i++) {
-			final StillModelInstance instance = modelInstances.get(i);
-			final Vector3 center = instance.getSortCenter();
-			lightManager.calculateLights(center.x, center.y, center.z);
-			final Matrix4 modelMatrix = instance.getTransform();
-			normalMatrix.set(modelMatrix);
+		for (Drawable drawable : drawableManager.drawables) {
 
-			final SubMesh subMeshes[] = modelQueue.get(i).getSubMeshes();
-			final Material materials[] = instance.getMaterials();
+			final Vector3 center = drawable.sortCenter;
+			lightManager.calculateLights(center.x, center.y, center.z);
+			final Matrix4 modelMatrix = drawable.transform;
+			normalMatrix.set(modelMatrix);
+			if (drawable.isAnimated)
+				((AnimatedModel)(drawable.model)).setAnimation(drawable.animation, drawable.animationTime, drawable.isLooping);
+
+			final SubMesh subMeshes[] = drawable.model.getSubMeshes();
 
 			boolean matrixChanged = true;
 			for (int j = 0; j < subMeshes.length; j++) {
 
 				final SubMesh subMesh = subMeshes[j];
-				final Material material = materials != null ? materials[j] : subMesh.material;
+				final Material material = drawable.materials.get(j);
 
 				if (material.needBlending) {
 					addTranparentQueu(material, subMesh, modelMatrix, center);
@@ -157,8 +165,6 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				subMesh.getMesh().render(currentShader, subMesh.primitiveType);
 			}
 		}
-		modelQueue.clear();
-		modelInstances.clear();
 
 		// if transparent queue is not empty enable blending(this force gpu to
 		// flush and there is some time to sort)
@@ -175,6 +181,8 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		// clear all queus
 
 		drawing = false;
+
+		drawableManager.clear();
 	}
 
 	/** @param material
@@ -291,11 +299,14 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		Gdx.gl.glDisable(GL10.GL_BLEND);
 		blendQueue.clear();
 	}
-	
+
+	Material ref;
+
 	class DrawableManager {
 		Pool<Drawable> drawablePool = new Pool<Drawable>() {
 			@Override
 			protected Drawable newObject () {
+
 				return new Drawable();
 			}
 		};
@@ -306,45 +317,45 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 			}
 		};
 		Array<Drawable> drawables = new Array<Drawable>();
-		
-		public void add(StillModel model, StillModelInstance instance) {
+
+		public void add (StillModel model, StillModelInstance instance) {
 			Drawable drawable = drawablePool.obtain();
 			drawable.set(model, instance);
+			drawables.add(drawable);
 		}
-		
-		public void add(AnimatedModel model, AnimatedModelInstance instance) {
+
+		public void add (AnimatedModel model, AnimatedModelInstance instance) {
 			Drawable drawable = drawablePool.obtain();
 			drawable.set(model, instance);
+			drawables.add(drawable);
 		}
-		
-		public void clear() {
-			for(Drawable drawable: drawables) {
+
+		public void clear () {
+
+			while (drawables.size > 0) {
+				final Drawable drawable = drawables.pop();
+
 				// return all materials and attribuets to the pools
-				for(Material material: drawable.materials) {
-					for(MaterialAttribute attr: material.attributes) {
-						attr.free();
+				while (drawable.materials.size > 0) {
+					final Material material = drawable.materials.pop();
+
+					while (material.attributes.size > 0) {
+						material.attributes.pop().free();
 					}
-					material.attributes.clear();
 					material.shader = null;
 					materialPool.free(material);
 				}
-				
 				// reset the drawable and return it to the drawable pool
-				drawable.materials.clear();
 				drawablePool.free(drawable);
 			}
 		}
-		
-		/**
-		 * A drawable is a copy of the state of the model and instance
-		 * passed to either {@link PrototypeRendererGL20#draw(AnimatedModel, AnimatedModelInstance)}
-		 * or {@link PrototypeRendererGL20#draw(StillModel, StillModelInstance)}. It is
-		 * used in {@link PrototypeRendererGL20#flush()} to do material and depth
-		 * sorting for blending without having to deal with the API client 
-		 * changing any attributes of a model or instance in between draw calls.
-		 * @author mzechner
-		 *
-		 */
+
+		/** A drawable is a copy of the state of the model and instance passed to either
+		 * {@link PrototypeRendererGL20#draw(AnimatedModel, AnimatedModelInstance)} or
+		 * {@link PrototypeRendererGL20#draw(StillModel, StillModelInstance)}. It is used in {@link PrototypeRendererGL20#flush()}
+		 * to do material and depth sorting for blending without having to deal with the API client changing any attributes of a
+		 * model or instance in between draw calls.
+		 * @author mzechner */
 		class Drawable {
 			Model model;
 			final Matrix4 transform = new Matrix4();
@@ -355,36 +366,40 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 			String animation;
 			float animationTime;
 			boolean isLooping;
-			
-			public void set(StillModel model, StillModelInstance instance) {
+
+			public void set (StillModel model, StillModelInstance instance) {
 				setCommon(model, instance);
 				isAnimated = false;
 			}
-			
-			public void set(AnimatedModel model, AnimatedModelInstance instance) {
+
+			public void set (AnimatedModel model, AnimatedModelInstance instance) {
 				setCommon(model, instance);
 				isAnimated = true;
 				animation = instance.getAnimation();
 				animationTime = instance.getAnimationTime();
 				isLooping = instance.isLooping();
 			}
-			
-			private void setCommon(Model model, StillModelInstance instance) {
+
+			private void setCommon (Model model, StillModelInstance instance) {
 				this.model = model;
-				transform.set(instance.getTransform());
+				transform.set(instance.getTransform().val);
 				sortCenter.set(instance.getSortCenter());
 				boundingSphereRadius = instance.getBoundingSphereRadius();
-				
-				if(instance.getMaterials() != null) {
-					for(Material material: instance.getMaterials()) {
+
+				if (instance.getMaterials() != null) {
+					for (Material material : instance.getMaterials()) {
+						if (material.shader == null) material.shader = materialShaderHandler.getShader(material);
 						Material copy = materialPool.obtain();
 						copy.setPooled(material);
 						materials.add(copy);
 					}
 				} else {
-					for(SubMesh subMesh: model.getSubMeshes()) {
+					for (SubMesh subMesh : model.getSubMeshes()) {
+						final Material material = subMesh.material;
+						if (material.shader == null) material.shader = materialShaderHandler.getShader(material);
 						Material copy = materialPool.obtain();
-						copy.setPooled(subMesh.material);
+						copy.setPooled(material);
+						materials.add(copy);
 					}
 				}
 			}

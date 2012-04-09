@@ -28,10 +28,10 @@ public class ColorAttribute extends MaterialAttribute {
 	static final public String emissive = "emissiveColor";
 
 	public final Color color = new Color();
-	
-	protected ColorAttribute() {
+
+	protected ColorAttribute () {
 	}
-	
+
 	public ColorAttribute (Color color, String name) {
 		super(name);
 		this.color.set(color);
@@ -59,10 +59,14 @@ public class ColorAttribute extends MaterialAttribute {
 	@Override
 	public void set (MaterialAttribute attr) {
 		ColorAttribute colAttr = (ColorAttribute)attr;
-		colAttr.name = name;
-		colAttr.color.set(color);
+		name = colAttr.name;
+		final Color c = colAttr.color;
+		color.r = c.r;
+		color.g = c.g;
+		color.b = c.b;
+		color.a = c.a;
 	}
-	
+
 	private final static Pool<ColorAttribute> pool = new Pool<ColorAttribute>() {
 		@Override
 		protected ColorAttribute newObject () {
@@ -74,11 +78,11 @@ public class ColorAttribute extends MaterialAttribute {
 	public MaterialAttribute pooledCopy () {
 		ColorAttribute attr = pool.obtain();
 		attr.set(this);
-		return null;
+		return attr;
 	}
 
 	@Override
 	public void free () {
-		if(isPooled) pool.free(this);
+		if (isPooled) pool.free(this);
 	}
 }

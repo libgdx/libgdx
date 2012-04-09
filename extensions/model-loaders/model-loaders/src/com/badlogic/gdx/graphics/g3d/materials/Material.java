@@ -29,9 +29,10 @@ public class Material {
 
 	public ShaderProgram shader;
 
-	public Material() {
+	public Material () {
+		attributes = new Array<MaterialAttribute>(2);
 	}
-	
+
 	public Material (String name, Array<MaterialAttribute> attributes) {
 		this.name = name;
 		this.attributes = attributes;
@@ -43,7 +44,7 @@ public class Material {
 		}
 		this.needBlending = blendingNeeded;
 	}
-	
+
 	public Material (String name, MaterialAttribute... attributes) {
 		this.name = name;
 		this.attributes = new Array<MaterialAttribute>(attributes);
@@ -56,7 +57,7 @@ public class Material {
 		this.needBlending = blendingNeeded;
 
 	}
-	
+
 	public void bind () {
 		for (int i = 0; i < attributes.size; i++) {
 			attributes.get(i).bind();
@@ -129,9 +130,10 @@ public class Material {
 
 	public void setPooled (Material material) {
 		name = material.name;
+		shader = material.shader;
 		attributes.clear();
-		for(MaterialAttribute attr: material.attributes) {
-			if(attr instanceof BlendingAttribute) needBlending = true;
+		for (MaterialAttribute attr : material.attributes) {
+			if (attr instanceof BlendingAttribute) needBlending = true;
 			attributes.add(attr.pooledCopy());
 		}
 	}

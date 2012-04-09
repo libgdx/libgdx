@@ -37,8 +37,8 @@ public class TextureAttribute extends MaterialAttribute {
 	public int magFilter;
 	public int uWrap;
 	public int vWrap;
-	
-	protected TextureAttribute() {
+
+	protected TextureAttribute () {
 	}
 
 	public TextureAttribute (Texture texture, int unit, String name, TextureFilter minFilter, TextureFilter magFilter,
@@ -56,7 +56,7 @@ public class TextureAttribute extends MaterialAttribute {
 		this.minFilter = minFilter;
 		this.magFilter = magFilter;
 	}
-	
+
 	public TextureAttribute (Texture texture, int unit, String name) {
 		this(texture, unit, name, texture.getMinFilter(), texture.getMagFilter(), texture.getUWrap(), texture.getVWrap());
 	}
@@ -88,13 +88,13 @@ public class TextureAttribute extends MaterialAttribute {
 	@Override
 	public void set (MaterialAttribute attr) {
 		TextureAttribute texAttr = (TextureAttribute)attr;
-		texAttr.name = name;
-		texAttr.texture = texture;
-		texAttr.unit = unit;
-		texAttr.magFilter = magFilter;
-		texAttr.minFilter = minFilter;
-		texAttr.uWrap = uWrap;
-		texAttr.vWrap = vWrap;
+		name = texAttr.name;
+		texture = texAttr.texture;
+		unit = texAttr.unit;
+		magFilter = texAttr.magFilter;
+		minFilter = texAttr.minFilter;
+		uWrap = texAttr.uWrap;
+		vWrap = texAttr.vWrap;
 	}
 
 	/** this method check if the texture portion of texture attribute is equal, name isn't used */
@@ -106,7 +106,7 @@ public class TextureAttribute extends MaterialAttribute {
 			&& (magFilter == other.magFilter) && (uWrap == other.uWrap) && (vWrap == other.vWrap);
 
 	}
-	
+
 	private final static Pool<TextureAttribute> pool = new Pool<TextureAttribute>() {
 		@Override
 		protected TextureAttribute newObject () {
@@ -118,11 +118,11 @@ public class TextureAttribute extends MaterialAttribute {
 	public MaterialAttribute pooledCopy () {
 		TextureAttribute attr = pool.obtain();
 		attr.set(this);
-		return null;
+		return attr;
 	}
 
 	@Override
 	public void free () {
-		if(isPooled) pool.free(this);
+		if (isPooled) pool.free(this);
 	}
 }

@@ -16,9 +16,9 @@ public class BlendingAttribute extends MaterialAttribute {
 	public int blendSrcFunc;
 	public int blendDstFunc;
 
-	protected BlendingAttribute() {
+	protected BlendingAttribute () {
 	}
-	
+
 	/** Utility constuctor for basic transparency blendSrcFunc = GL10.GL_SRC_ALPHA blendDstFunc = GL10.GL_ONE_MINUS_SRC_ALPHA
 	 * @param name */
 	public BlendingAttribute (String name) {
@@ -49,11 +49,11 @@ public class BlendingAttribute extends MaterialAttribute {
 	@Override
 	public void set (MaterialAttribute attr) {
 		BlendingAttribute blendAttr = (BlendingAttribute)attr;
-		blendAttr.name = name;
-		blendAttr.blendDstFunc = blendDstFunc;
-		blendAttr.blendSrcFunc = blendSrcFunc;
+		name = blendAttr.name;
+		blendDstFunc = blendAttr.blendDstFunc;
+		blendSrcFunc = blendAttr.blendSrcFunc;
 	}
-	
+
 	private final static Pool<BlendingAttribute> pool = new Pool<BlendingAttribute>() {
 		@Override
 		protected BlendingAttribute newObject () {
@@ -65,11 +65,11 @@ public class BlendingAttribute extends MaterialAttribute {
 	public MaterialAttribute pooledCopy () {
 		BlendingAttribute attr = pool.obtain();
 		attr.set(this);
-		return null;
+		return attr;
 	}
 
 	@Override
 	public void free () {
-		if(isPooled) pool.free(this);
+		if (isPooled) pool.free(this);
 	}
 }
