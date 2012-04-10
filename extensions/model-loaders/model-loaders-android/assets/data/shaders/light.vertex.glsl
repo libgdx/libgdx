@@ -74,7 +74,7 @@ void main()
 		#endif
 		
 		aggDir   += L * weight;		
-		aggCol   += weight * lightsCol[i];		
+		aggCol   += lightsCol[i] * weight;		
 		aggWeight+= weight;
 		
 	}	

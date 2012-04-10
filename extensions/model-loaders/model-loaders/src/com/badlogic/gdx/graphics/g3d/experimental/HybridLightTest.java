@@ -138,11 +138,11 @@ public class HybridLightTest implements ApplicationListener {
 		lightManager = new LightManager(LIGHTS_NUM, LightQuality.FRAGMENT);
 		for (int i = 0; i < LIGHTS_NUM; i++) {
 			PointLight l = new PointLight();
-			l.position.set(MathUtils.random(8) - 4, MathUtils.random(6), MathUtils.random(8) - 4);
+			l.position.set(MathUtils.random(6) - 3, 1+ MathUtils.random(6), MathUtils.random(6) - 3);
 			l.color.r = MathUtils.random();
 			l.color.b = MathUtils.random();
 			l.color.g = MathUtils.random();
-			l.intensity = MathUtils.random() * LIGHT_INTESITY;
+			l.intensity =  LIGHT_INTESITY;
 			lightManager.addLigth(l);
 		}
 		lightManager.dirLight = new DirectionalLight();
@@ -154,7 +154,7 @@ public class HybridLightTest implements ApplicationListener {
 		cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.near = 0.1f;
 		cam.far = 264f;
-		cam.position.set(0, 0.5f, -2f);
+		cam.position.set(-2, 1.75f, -2f);
 		cam.update();
 
 		camController = new PerspectiveCamController(cam);
@@ -167,6 +167,7 @@ public class HybridLightTest implements ApplicationListener {
 
 		model = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/models/sphere.obj"));
 		model2 = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/models/basicscene.obj"));
+		
 
 		instance = new StillModelNode();
 		instance.getTransform().translate(2, 0, -5);
@@ -178,6 +179,7 @@ public class HybridLightTest implements ApplicationListener {
 
 		model2.getBoundingBox(box);
 		instance2.radius = box.getDimensions().len() / 2;
+		instance2.matrix.scale(2, 1,2);
 
 		protoRenderer = new PrototypeRendererGL20(lightManager);
 		protoRenderer.cam = cam;
@@ -193,7 +195,7 @@ public class HybridLightTest implements ApplicationListener {
 		model2.setMaterial(material2);
 
 		
-		Material material = new Material("shiningBall", c1, c2, b);
+		Material material = new Material("shiningBall", c1, c2);
 		model.setMaterial(material);
 
 		model3 = ModelLoaderRegistry.loadKeyframedModel(Gdx.files.internal("data/models/knight.md2"));

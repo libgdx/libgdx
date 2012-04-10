@@ -30,7 +30,7 @@ uniform vec4 specularColor;
 #endif
 
 uniform vec3 ambient;
-const MED float shininessFactor = 15.0;
+const MED float shininessFactor = 25.0;
 
 #ifdef diffuseTextureFlag
 uniform sampler2D diffuseTexture;
@@ -81,7 +81,7 @@ void main()
 	#endif 	
 		
 	//fastest way to calculate inverse of length
-  	float invLength = clamp(inversesqrt( dot(v_lightDir, v_lightDir)),0.0, 1.0 );
+  	float invLength = (inversesqrt( dot(v_lightDir, v_lightDir)));
   	vec3 intensity =  v_lightColor * ( v_intensity * invLength);	
 	
 	#ifdef normalsFlag
@@ -98,8 +98,7 @@ void main()
 	
 		//specular = (lambert > 0.0) ? specular : 0.0;
 		float tmp  = specular * (lambert * 2.0);
-		specular = (lambert > 0.5)  ? specular : tmp;
-			
+		specular = (lambert > 0.5)  ? specular : 0.0;//tmp;
 		vec3 diffuseLight = intensity * lambert;
 	
 		vec3 specularLight = intensity * specular;

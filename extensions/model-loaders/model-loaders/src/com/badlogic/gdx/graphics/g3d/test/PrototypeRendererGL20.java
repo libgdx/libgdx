@@ -73,9 +73,6 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	@Override
 	public void draw (StillModel model, StillModelInstance instance) {
 		if (cam != null) if (!cam.frustum.sphereInFrustum(instance.getSortCenter(), instance.getBoundingSphereRadius())) return;
-// modelQueue.add(model);
-// modelInstances.add(instance);
-
 		drawableManager.add(model, instance);
 	}
 
@@ -297,13 +294,10 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		blendQueue.clear();
 	}
 
-	Material ref;
-
 	class DrawableManager {
 		Pool<Drawable> drawablePool = new Pool<Drawable>() {
 			@Override
 			protected Drawable newObject () {
-
 				return new Drawable();
 			}
 		};
@@ -381,26 +375,41 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				this.model = model;
 				// transform.set(instance.getTransform().val);
 				System.arraycopy(instance.getTransform().val, 0, transform.val, 0, 16);
+
 				sortCenter.set(instance.getSortCenter());
 				boundingSphereRadius = instance.getBoundingSphereRadius();
-
+				Material lastMat = null;
+				Material lastCopy = null;
 				if (instance.getMaterials() != null) {
 					for (Material material : instance.getMaterials()) {
 						if (material.shader == null) material.shader = materialShaderHandler.getShader(material);
-						Material copy = materialPool.obtain();
-						copy.setPooled(material);
-						materials.add(copy);
+						if (material == lastMat)
+							materials.add(lastCopy);
+						else {
+							final Material copy = materialPool.obtain();
+							copy.setPooled(material);
+							materials.add(copy);
+							lastMat = material;
+							lastCopy = copy;
+						}
 					}
 				} else {
 					for (SubMesh subMesh : model.getSubMeshes()) {
 						final Material material = subMesh.material;
 						if (material.shader == null) material.shader = materialShaderHandler.getShader(material);
-						Material copy = materialPool.obtain();
-						copy.setPooled(material);
-						materials.add(copy);
+						if (material == lastMat)
+							materials.add(lastCopy);
+						else {
+							final Material copy = materialPool.obtain();
+							copy.setPooled(material);
+							materials.add(copy);
+							lastMat = material;
+							lastCopy = copy;
+						}
 					}
 				}
 			}
 		}
 	}
+
 }
