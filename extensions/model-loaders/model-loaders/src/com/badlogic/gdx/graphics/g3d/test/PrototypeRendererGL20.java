@@ -79,10 +79,6 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	@Override
 	public void draw (AnimatedModel model, AnimatedModelInstance instance) {
 		if (cam != null) if (!cam.frustum.sphereInFrustum(instance.getSortCenter(), instance.getBoundingSphereRadius())) return;
-		// model.setAnimation(instance.getAnimation(), instance.getAnimationTime(), instance.isLooping());
-		// move skinned models to drawing list
-		// modelQueue.add(model);
-		// modelInstances.add(instance);
 
 		drawableManager.add(model, instance);
 	}
@@ -101,14 +97,16 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 	private void flush () {
 		Material currentMaterial = null;
-		// find N nearest lights per model
-		// draw all models from opaque queue
 		for (int i = 0, size = drawableManager.drawables.size; i < size; i++) {
+
 			final Drawable drawable = drawableManager.drawables.get(i);
+
 			final Vector3 center = drawable.sortCenter;
 			lightManager.calculateLights(center.x, center.y, center.z);
+
 			final Matrix4 modelMatrix = drawable.transform;
 			normalMatrix.set(modelMatrix);
+
 			if (drawable.isAnimated)
 				((AnimatedModel)(drawable.model)).setAnimation(drawable.animation, drawable.animationTime, drawable.isLooping);
 
@@ -129,10 +127,9 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				// bind new shader if material can't use old one
 				final boolean shaderChanged = bindShader(material);
 
-				// if shaderChanged can't batch material
+				// if shader is changed can't batch material
 				if (shaderChanged) currentMaterial = null;
 
-				// if shaderChanged can't batch material
 				if (shaderChanged || matrixChanged) {
 					currentShader.setUniformMatrix("u_normalMatrix", normalMatrix, false);
 					currentShader.setUniformMatrix("u_modelMatrix", modelMatrix, false);
@@ -378,34 +375,23 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 				sortCenter.set(instance.getSortCenter());
 				boundingSphereRadius = instance.getBoundingSphereRadius();
-				Material lastMat = null;
-				Material lastCopy = null;
 				if (instance.getMaterials() != null) {
 					for (Material material : instance.getMaterials()) {
 						if (material.shader == null) material.shader = materialShaderHandler.getShader(material);
-						if (material == lastMat)
-							materials.add(lastCopy);
-						else {
-							final Material copy = materialPool.obtain();
-							copy.setPooled(material);
-							materials.add(copy);
-							lastMat = material;
-							lastCopy = copy;
-						}
+
+						final Material copy = materialPool.obtain();
+						copy.setPooled(material);
+						materials.add(copy);
 					}
 				} else {
 					for (SubMesh subMesh : model.getSubMeshes()) {
 						final Material material = subMesh.material;
 						if (material.shader == null) material.shader = materialShaderHandler.getShader(material);
-						if (material == lastMat)
-							materials.add(lastCopy);
-						else {
-							final Material copy = materialPool.obtain();
-							copy.setPooled(material);
-							materials.add(copy);
-							lastMat = material;
-							lastCopy = copy;
-						}
+
+						final Material copy = materialPool.obtain();
+						copy.setPooled(material);
+						materials.add(copy);
+
 					}
 				}
 			}
