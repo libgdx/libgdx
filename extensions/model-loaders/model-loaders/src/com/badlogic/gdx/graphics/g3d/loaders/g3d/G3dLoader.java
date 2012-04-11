@@ -21,6 +21,7 @@ import java.io.InputStream;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.g3d.ModelLoaderHints;
 import com.badlogic.gdx.graphics.g3d.loaders.KeyframedModelLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.StillModelLoader;
@@ -207,7 +208,7 @@ public class G3dLoader {
 					animations.put(animationName, new KeyframedAnimation(animationName, frameDuration, keyframes));
 				}
 
-				Mesh mesh = new Mesh(false, numVertices, numIndices, vertAttribs);
+				Mesh mesh = new Mesh(VertexDataType.VertexArray, false, numVertices, numIndices, vertAttribs);
 				meshes[i] = new KeyframedSubMesh(meshName, mesh, vertexData, animations, animatedComponents, primitiveType);
 				mesh.setVertices(vertexData);
 				mesh.setIndices(indexData);

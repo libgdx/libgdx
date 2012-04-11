@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -193,7 +194,7 @@ public class G3dtLoader {
 			animations.put(animationName, animation);
 		}
 
-		KeyframedSubMesh mesh = new KeyframedSubMesh(name, new Mesh(false, numVertices, indices.size, createVertexAttributes(
+		KeyframedSubMesh mesh = new KeyframedSubMesh(name, new Mesh(VertexDataType.VertexArray, false, numVertices, indices.size, createVertexAttributes(
 			hasNormals, uvSets.size)), buildVertices(numVertices, hasNormals, uvSets), animations, animatedComponents,
 			GL10.GL_TRIANGLES);
 		mesh.mesh.setIndices(convertToShortArray(indices));
