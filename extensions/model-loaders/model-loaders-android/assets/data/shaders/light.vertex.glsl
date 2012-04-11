@@ -1,6 +1,6 @@
 #define normalsFlag
 //#define LIGHTS_NUM 4
-attribute vec4 a_position; 
+attribute vec3 a_position; 
 attribute vec2 a_texCoord0;
 
 #ifdef normalsFlag
@@ -39,7 +39,7 @@ void main()
 
 	v_texCoords = a_texCoord0;
 	
-	vec4 worldPos = u_modelMatrix * a_position;
+	vec4 worldPos = u_modelMatrix * vec4(a_position,1.0);
 	gl_Position = u_projectionViewMatrix * worldPos; 
 	vec3 pos  = worldPos.xyz;
 	v_pos = pos;
