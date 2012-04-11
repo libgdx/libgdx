@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.ModelLoaderHints;
@@ -206,7 +207,7 @@ public class MD2Loader implements KeyframedModelLoader {
 			animation.keyframes[frameNum] = keyFrame;
 		}
 
-		Mesh mesh = new Mesh(false, header.numVertices, indices.length, new VertexAttribute(Usage.Position, 3,
+		Mesh mesh = new Mesh(VertexDataType.VertexArray,false, header.numVertices, indices.length, new VertexAttribute(Usage.Position, 3,
 			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE),
 			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		mesh.setIndices(indices);
