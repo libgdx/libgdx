@@ -73,7 +73,7 @@ public interface Sound extends Disposable {
 	/** Changes the pitch multiplier of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}.
 	 * If the sound is no longer playing, this has no effect.
 	 * @param soundId the sound id
-	 * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower */
+	 * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower, the value has to be between 0.5 and 2.0 */
 	public void setPitch (long soundId, float pitch);
 
 	/** Changes the volume of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the
