@@ -34,6 +34,7 @@ import com.badlogic.gdx.tests.FreeTypeTest;
 import com.badlogic.gdx.tests.ImageScaleTest;
 import com.badlogic.gdx.tests.ImageTest;
 import com.badlogic.gdx.tests.LabelTest;
+import com.badlogic.gdx.tests.LifeCycleTest;
 import com.badlogic.gdx.tests.MeshShaderTest;
 import com.badlogic.gdx.tests.Mpg123Test;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
@@ -60,7 +61,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-image/libs/gdx-image-natives.jar").load("gdx-image");
 		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
 		
-		GdxTest test = new BobTest();
+		GdxTest test = new CustomShaderSpriteBatchTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 800;
 		config.height = 480;

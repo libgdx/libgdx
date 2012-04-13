@@ -50,6 +50,9 @@ feasible due to the use of Canvas.
   MacOSX due to the use of ImageIO which modifies colors while decoding PNGs...
 - everything else should work as intended, some things might deviate from the usual behaviour a bit.
 
+[AssetManager]
+- tilemap related loaders are not available, since tilemaps are not available.
+
 [NumberUtils emu]
 - double to long, long to double methods return 0.
 
