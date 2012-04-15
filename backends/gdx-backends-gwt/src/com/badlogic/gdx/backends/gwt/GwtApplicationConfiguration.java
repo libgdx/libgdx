@@ -19,14 +19,28 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextArea;
 
 public class GwtApplicationConfiguration {
+	/** the width of the drawing area in pixels **/
 	public int width;
+	/** the height of the drawing area in pixels **/
 	public int height;
+	/** whether to use a stencil buffer **/
 	public boolean stencil = false;
+	/** whether to enable antialiasing **/
 	public boolean antialiasing = false;
+	/** the framerate to run the game at **/
 	public int fps = 60;
+	/** the Panel to add the WebGL canvas to, can be null in which case
+	 * a Panel is added automatically to the body element of the DOM **/
 	public Panel rootPanel;
+	/** the id of a canvas element to be used as the drawing area, can be null
+	 * in which case a Panel and Canvas are added to the body element of the DOM **/
 	public String canavsId;
+	 /** a TextArea to log messages to, can be null in which case a TextArea
+	  * will be added to the body element of the DOM. */
 	public TextArea log;
+	/** whether to use debugging mode for OpenGL calls. Errors will result in 
+	 * a RuntimeException being thrown.
+	 */
 	public boolean useDebugGL = false;
 
 	public GwtApplicationConfiguration (int width, int height) {
