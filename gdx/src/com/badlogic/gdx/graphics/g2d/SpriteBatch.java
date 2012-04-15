@@ -131,6 +131,12 @@ public class SpriteBatch implements Disposable {
 	 * The size parameter specifies the maximum size of a single batch in number of sprites
 	 * </p>
 	 * 
+	 * <p>
+	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default
+	 * shader are different than the ones expect for shaders set with {@link #setShader(ShaderProgram)}.
+	 * See the {@link #createDefaultShader()} method.
+	 * </p>
+	 * 
 	 * @param size the batch size in number of sprites
 	 * @param defaultShader the default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
 	public SpriteBatch (int size, ShaderProgram defaultShader) {
@@ -151,6 +157,12 @@ public class SpriteBatch implements Disposable {
 	 * 
 	 * <p>
 	 * The size parameter specifies the maximum size of a single batch in number of sprites
+	 * </p>
+	 * 
+	 * <p>
+	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default
+	 * shader are different than the ones expect for shaders set with {@link #setShader(ShaderProgram)}.
+	 * See the {@link #createDefaultShader()} method.
 	 * </p>
 	 * 
 	 * @param size the batch size in number of sprites
