@@ -20,6 +20,10 @@ uniform vec4 diffuseColor;
 uniform vec4 emissiveColor;
 #endif
 
+#ifdef rimColorFlag
+uniform vec4 rimColor;
+#endif
+
 //#ifdef specularColor
 //uniform vec4 specularCol;
 //#endif
@@ -37,6 +41,9 @@ uniform vec3 dirLightCol;
 uniform mat4 u_projectionViewMatrix;
 uniform mat4 u_modelMatrix;
 uniform vec3 ambient;
+
+uniform vec3 camDir;
+
 
 varying vec2 v_texCoords;
 varying vec4 v_diffuse;
@@ -86,6 +93,11 @@ void main()
 	aggCol += ambient;
 
 
+#ifdef normalsFlag
+	#ifdef rimColorFlag
+	aggCol.rgb +=  pow( 1.0 - dot( normal, -camDir ), 2.0 ) * rimColor.rgb;
+	#endif
+#endif
 
 
 #ifdef translucentFlag

@@ -17,6 +17,12 @@ precision lowp float;
 #define LOWP
 #endif
 
+
+#ifdef rimColorFlag
+uniform vec4 rimColor;
+#endif
+
+
 #ifdef diffuseColorFlag
 uniform vec4 diffuseColor;
 #endif
@@ -52,6 +58,8 @@ varying float v_intensity;
 
 varying vec3 v_lightDir;
 varying vec3 v_lightColor;
+
+uniform vec3 camDir;
 
 //wrap light. this is fastest light model
 float wrapLight(vec3 nor, vec3 direction){
@@ -129,6 +137,12 @@ void main()
 	#endif
 	
 	light += ambient * diffuse;
+	
+	#ifdef normalsFlag
+		#ifdef rimColorFlag
+		light +=  pow( 1.0 - dot( surfaceNormal, -camDir ), 2.5 ) * rimColor.rgb;
+		#endif
+	#endif
 	
 	gl_FragColor = vec4(light, alpha);
 	

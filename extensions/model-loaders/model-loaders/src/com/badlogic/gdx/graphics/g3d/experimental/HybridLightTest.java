@@ -114,21 +114,21 @@ public class HybridLightTest implements ApplicationListener {
 			| (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
 		protoRenderer.begin();
+		float tim = animInstance.time;
 		for (int i = 1; i < 7; i++) {
 			for (int j = 1; j < 7; j++) {
-				animInstance.matrix.val[12] = -i*2+8;
-				animInstance.matrix.val[14] = -j*2-4;
+				animInstance.matrix.val[12] = -i * 2 + 8;
+				animInstance.matrix.val[14] = -j * 2 - 4;
 				protoRenderer.draw(model3, animInstance);
 			}
 		}
-
 		protoRenderer.end();
 
 		Gdx.gl.glCullFace(GL10.GL_BACK);
 
+	// protoRenderer.draw(model, instance2);
+	// protoRenderer.draw(model, instance);
 		protoRenderer.begin();
-		protoRenderer.draw(model, instance2);
-		protoRenderer.draw(model, instance);		
 		protoRenderer.draw(model2, instance2);
 		protoRenderer.end();
 	}
@@ -138,11 +138,11 @@ public class HybridLightTest implements ApplicationListener {
 		lightManager = new LightManager(LIGHTS_NUM, LightQuality.FRAGMENT);
 		for (int i = 0; i < LIGHTS_NUM; i++) {
 			PointLight l = new PointLight();
-			l.position.set(MathUtils.random(6) - 3, 1+ MathUtils.random(6), MathUtils.random(6) - 3);
+			l.position.set(MathUtils.random(6) - 3, 1 + MathUtils.random(6), MathUtils.random(6) - 3);
 			l.color.r = MathUtils.random();
 			l.color.b = MathUtils.random();
 			l.color.g = MathUtils.random();
-			l.intensity =  LIGHT_INTESITY;
+			l.intensity = LIGHT_INTESITY;
 			lightManager.addLigth(l);
 		}
 		lightManager.dirLight = new DirectionalLight();
@@ -167,7 +167,6 @@ public class HybridLightTest implements ApplicationListener {
 
 		model = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/models/sphere.obj"));
 		model2 = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/models/basicscene.obj"));
-		
 
 		instance = new StillModelNode();
 		instance.getTransform().translate(2, 0, -5);
@@ -179,22 +178,22 @@ public class HybridLightTest implements ApplicationListener {
 
 		model2.getBoundingBox(box);
 		instance2.radius = box.getDimensions().len() / 2;
-		instance2.matrix.scale(2, 1,2);
+		instance2.matrix.scale(2, 1, 2);
 
 		protoRenderer = new PrototypeRendererGL20(lightManager);
 		protoRenderer.cam = cam;
 
 		MaterialAttribute c1 = new ColorAttribute(new Color(0.75f, 0.75f, 0.75f, 0.6f), ColorAttribute.diffuse);
 		MaterialAttribute c2 = new ColorAttribute(new Color(0.35f, 0.35f, 0.35f, 0.35f), ColorAttribute.specular);
+		MaterialAttribute c3 = new ColorAttribute(new Color(0.2f, 0.15f, 0.15f, 1.0f), ColorAttribute.rim);
 		MaterialAttribute t1 = new TextureAttribute(texture, 0, TextureAttribute.diffuseTexture);
 		MaterialAttribute t2 = new TextureAttribute(texture2, 1, TextureAttribute.specularTexture);
 
 		MaterialAttribute b = new BlendingAttribute(BlendingAttribute.translucent);
 
-		Material material2 = new Material("basic", c2, t1, t2);
+		Material material2 = new Material("basic", c2, t1);
 		model2.setMaterial(material2);
 
-		
 		Material material = new Material("shiningBall", c1, c2);
 		model.setMaterial(material);
 
@@ -212,7 +211,7 @@ public class HybridLightTest implements ApplicationListener {
 		texture3.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 
 		MaterialAttribute t3 = new TextureAttribute(texture3, 0, TextureAttribute.diffuseTexture);
-		Material material3 = new Material("s", c2, t3, t2);
+		Material material3 = new Material("s", t2, t3, c3);
 		model3.setMaterial(material3);
 
 	}

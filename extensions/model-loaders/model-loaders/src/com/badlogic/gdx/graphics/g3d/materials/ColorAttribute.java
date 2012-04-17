@@ -26,6 +26,7 @@ public class ColorAttribute extends MaterialAttribute {
 	static final public String diffuse = "diffuseColor";
 	static final public String specular = "specularColor";
 	static final public String emissive = "emissiveColor";
+	static final public String rim = "rimColor";
 
 	public final Color color = new Color();
 
