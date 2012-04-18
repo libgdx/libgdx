@@ -1171,13 +1171,18 @@ public class SpriteBatch implements Disposable {
 	 * which gets "0" appened to indicate the use of the first texture unit. The projection matrix is uploaded via a mat4 uniform
 	 * called "u_proj", the transform matrix is uploaded via a uniform called "u_trans", the combined transform and projection
 	 * matrx is is uploaded via a mat4 uniform called "u_projTrans". The texture sampler is passed via a uniform called
-	 * "u_texture".
+	 * "u_texture".</p>
 	 * 
-	 * Call this method with a null argument to use the default shader.
+	 * Call this method with a null argument to use the default shader.</p>
+	 * 
+	 * This method will flush the batch before setting the new shader, you can call it in between
+	 * {@link #begin()} and {@link #end()}.
 	 * 
 	 * @param shader the {@link ShaderProgram} or null to use the default shader. */
 	public void setShader (ShaderProgram shader) {
+		if (drawing) flush();
 		customShader = shader;
+		if (drawing) setupMatrices();
 	}
 
 	/** @return whether blending for sprites is enabled */
