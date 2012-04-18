@@ -318,7 +318,7 @@ public class BitmapFont implements Disposable {
 		this.integer = integer;
 		this.data = data;
 		load(data);
-		ownsTexture = region != null;
+		ownsTexture = region == null;
 	}
 
 	private void load (BitmapFontData data) {
