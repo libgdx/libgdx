@@ -329,5 +329,13 @@ public class SelectBox extends Widget {
 			this.font = font;
 			this.fontColor.set(fontColor);
 		}
+		
+		public SelectBoxStyle(SelectBoxStyle style) {
+			this.background = style.background;
+			this.listBackground = style.listBackground;
+			this.listSelection = style.listSelection;
+			this.font = style.font;
+			this.fontColor.set(style.fontColor);
+		}
 	}
 }

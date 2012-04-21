@@ -422,5 +422,13 @@ public class ScrollPane extends WidgetGroup {
 			this.vScroll = vScroll;
 			this.vScrollKnob = vScrollKnob;
 		}
+		
+		public ScrollPaneStyle(ScrollPaneStyle style) {
+			this.background = style.background;
+			this.hScroll = style.hScroll;
+			this.hScrollKnob = style.hScrollKnob;
+			this.vScroll = style.vScroll;
+			this.vScrollKnob = style.vScrollKnob;
+		}
 	}
 }

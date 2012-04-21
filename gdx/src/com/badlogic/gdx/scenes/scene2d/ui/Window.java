@@ -133,5 +133,11 @@ public class Window extends Table {
 			this.titleFont = titleFont;
 			this.titleFontColor.set(titleFontColor);
 		}
+		
+		public WindowStyle(WindowStyle style) {
+			this.background = style.background;
+			this.titleFont = style.titleFont;
+			this.titleFontColor = new Color(style.titleFontColor);
+		}
 	}
 }

@@ -124,5 +124,15 @@ public class ImageButton extends Button {
 			this.patchDown = patchDown;
 			this.patchChecked = patchChecked;
 		}
+		
+		public ImageButtonStyle(ImageButtonStyle style) {
+			super(style);
+			this.regionUp = style.regionUp;
+			this.regionDown = style.regionDown;
+			this.regionChecked = style.regionChecked;
+			this.patchUp = style.patchUp;
+			this.patchDown = style.patchDown;
+			this.patchChecked = style.patchChecked;
+		}
 	}
 }

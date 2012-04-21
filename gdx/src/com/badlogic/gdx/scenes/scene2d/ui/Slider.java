@@ -182,5 +182,10 @@ public class Slider extends Widget {
 			this.slider = sliderPatch;
 			this.knob = knobRegion;
 		}
+		
+		public SliderStyle(SliderStyle style) {
+			this.slider = style.slider;
+			this.knob = style.knob;
+		}
 	}
 }

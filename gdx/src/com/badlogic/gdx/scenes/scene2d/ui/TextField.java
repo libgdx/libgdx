@@ -655,5 +655,15 @@ public class TextField extends Widget {
 			this.fontColor = fontColor;
 			this.selection = selection;
 		}
+		
+		public TextFieldStyle(TextFieldStyle style) {
+			this.messageFont = style.messageFont;
+			if(style.messageFontColor != null) this.messageFontColor = new Color(style.messageFontColor);
+			this.background = style.background;
+			this.cursor = style.cursor;
+			this.font = style.font;
+			if(style.fontColor != null) this.fontColor = new Color(style.fontColor);
+			this.selection = style.selection;
+		}
 	}
 }

@@ -70,5 +70,12 @@ public class CheckBox extends TextButton {
 			this.font = font;
 			this.fontColor = fontColor;
 		}
+		
+		public CheckBoxStyle(CheckBoxStyle style) {
+			this.checkboxOff = style.checkboxOff;
+			this.checkboxOn = style.checkboxOn;
+			this.font = style.font;
+			this.fontColor = new Color(style.fontColor);
+		}
 	}
 }

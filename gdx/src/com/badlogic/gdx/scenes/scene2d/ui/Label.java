@@ -228,5 +228,10 @@ public class Label extends Widget {
 			this.font = font;
 			this.fontColor = fontColor;
 		}
+		
+		public LabelStyle(LabelStyle style) {
+			this.font = style.font;
+			if(style.fontColor != null) this.fontColor = new Color(style.fontColor);
+		}
 	}
 }

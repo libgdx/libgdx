@@ -336,5 +336,9 @@ public class SplitPane extends WidgetGroup {
 		public SplitPaneStyle (NinePatch handle) {
 			this.handle = handle;
 		}
+		
+		public SplitPaneStyle(SplitPaneStyle style) {
+			this.handle = style.handle;
+		}
 	}
 }

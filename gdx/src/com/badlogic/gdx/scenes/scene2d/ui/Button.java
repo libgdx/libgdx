@@ -190,5 +190,15 @@ public class Button extends Table {
 			this.unpressedOffsetX = unpressedOffsetX;
 			this.unpressedOffsetY = unpressedOffsetY;
 		}
+		
+		public ButtonStyle(ButtonStyle style) {
+			this.down = style.down;
+			this.up = style.up;
+			this.checked = style.checked;
+			this.pressedOffsetX = style.pressedOffsetX;
+			this.pressedOffsetY = style.pressedOffsetY;
+			this.unpressedOffsetX = style.unpressedOffsetX;
+			this.unpressedOffsetY = style.unpressedOffsetY;
+		}
 	}
 }

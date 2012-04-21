@@ -213,5 +213,12 @@ public class List extends Widget implements Cullable {
 			this.fontColorUnselected.set(fontColorUnselected);
 			this.selectedPatch = selectedPatch;
 		}
+		
+		public ListStyle(ListStyle style) {
+			this.font = style.font;
+			this.fontColorSelected.set(style.fontColorSelected);
+			this.fontColorUnselected.set(style.fontColorUnselected);
+			this.selectedPatch = style.selectedPatch;
+		}
 	}
 }
