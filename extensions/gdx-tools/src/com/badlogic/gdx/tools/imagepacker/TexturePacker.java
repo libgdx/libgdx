@@ -28,6 +28,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.ObjectInputStream.GetField;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -98,7 +99,7 @@ public class TexturePacker {
 
 		process(outputDir, packFile, inputDir.getName());
 	}
-	
+
 	static void log (String message) {
 		if (!quiet) System.out.println(message);
 	}
@@ -710,11 +711,14 @@ public class TexturePacker {
 		public boolean alias = true;
 		public boolean edgePadding = true;
 
+		// to save the increment file local to where the texture pack run
+		public String incrementalFilePath = null;
+
 		HashMap<String, Long> crcs = new HashMap();
 		HashMap<String, String> packSections = new HashMap();
 	}
 
-	static private void process (Settings settings, File inputDir, File outputDir, File packFile) throws IOException {
+	static private void process (Settings settings, File rootDir, File inputDir, File outputDir, File packFile) throws IOException {
 		if (inputDir.getName().startsWith(".")) return;
 
 		// Abort if nothing has changed.
@@ -724,12 +728,25 @@ public class TexturePacker {
 			if (files == null) return;
 			boolean noneHaveChanged = true;
 			int childCountNow = 0;
+
+			// added flag to generate the crc file using local paths in case the incrementalFilePath is
+			// specified.
+			boolean useAbsolutePaths = true;
+
+			if (settings.incrementalFilePath != null) useAbsolutePaths = false;
+
 			for (File file : files) {
 				if (file.isDirectory()) continue;
 				String path = file.getAbsolutePath();
 				Long crcOld = settings.crcs.get(path);
 				long crcNow = crc(file);
 				if (crcOld == null || crcOld != crcNow) noneHaveChanged = false;
+
+				if (!useAbsolutePaths) {
+					String rootFolderAbsolutePath = rootDir.getAbsolutePath();
+					if (isSubPath(rootFolderAbsolutePath, path)) path = removeSubPath(rootFolderAbsolutePath, path);
+				}
+
 				settings.crcs.put(path, crcNow);
 				childCountNow++;
 			}
@@ -815,7 +832,7 @@ public class TexturePacker {
 		File[] files = inputDir.listFiles();
 		if (files == null) return;
 		for (File file : files)
-			if (file.isDirectory()) process(settings, file, outputDir, packFile);
+			if (file.isDirectory()) process(settings, rootDir, file, outputDir, packFile);
 	}
 
 	static public void process (Settings settings, String input, String output) {
@@ -838,7 +855,15 @@ public class TexturePacker {
 			File incrmentalFile = null;
 			if (settings.incremental && packFile.exists()) {
 				settings.crcs.clear();
-				incrmentalFile = new File(System.getProperty("user.home") + "/.texturepacker/" + hash(inputDir.getAbsolutePath()));
+
+				// if localIncrementFile
+				String incrementalFilePath = settings.incrementalFilePath;
+
+				if (incrementalFilePath == null)
+					incrementalFilePath = System.getProperty("user.home") + "/.texturepacker/" + hash(inputDir.getAbsolutePath());
+
+				incrmentalFile = new File(incrementalFilePath);
+
 				if (incrmentalFile.exists()) {
 					BufferedReader reader = new BufferedReader(new FileReader(incrmentalFile));
 					while (true) {
@@ -882,7 +907,7 @@ public class TexturePacker {
 			// Clean pack file.
 			packFile.delete();
 
-			process(settings, inputDir, outputDir, packFile);
+			process(settings, inputDir, inputDir, outputDir, packFile);
 
 			// Write incrmental file.
 			if (incrmentalFile != null) {
@@ -924,6 +949,20 @@ public class TexturePacker {
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+
+	static boolean isSubPath (String path, String subPath) {
+		if (subPath.length() < path.length()) return false;
+		String subPathSubString = subPath.substring(0, path.length());
+		return subPathSubString.equals(path);
+	}
+
+	static boolean isAbsolutePath (String path) {
+		return new File(path).isAbsolute();
+	}
+
+	static String removeSubPath (String path, String subPath) {
+		return subPath.replace(path, "");
 	}
 
 	static public void main (String[] args) throws Exception {
