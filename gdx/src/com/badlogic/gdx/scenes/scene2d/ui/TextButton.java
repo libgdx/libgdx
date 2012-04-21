@@ -94,7 +94,7 @@ public class TextButton extends Button {
 		public TextButtonStyle (NinePatch down, NinePatch up, NinePatch checked, float pressedOffsetX, float pressedOffsetY,
 			float unpressedOffsetX, float unpressedOffsetY, BitmapFont font, Color fontColor, Color downFontColor,
 			Color checkedFontColor) {
-			super(down, up, checked, pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY);
+			super(up, down, checked, pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY);
 			this.font = font;
 			this.fontColor = fontColor;
 			this.downFontColor = downFontColor;
