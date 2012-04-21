@@ -44,9 +44,10 @@ public class MeshTest extends GdxTest {
 		mesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
 			"a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 
-		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, Color.toFloatBits(255, 0, 0, 255), 0, 0, 0.5f, -0.5f, 0,
-			Color.toFloatBits(0, 255, 0, 255), 1, 0, 0.5f, 0.5f, 0, Color.toFloatBits(0, 0, 255, 255), 1f, 1, -0.5f, 0.5f, 0,
-			Color.toFloatBits(255, 255, 255, 255), 0, 1});
+		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, Color.toFloatBits(255, 0, 0, 255), 0, 0, 
+			                            0.5f, -0.5f, 0, Color.toFloatBits(0, 255, 0, 255), 1, 0, 
+			                            0.5f, 0.5f, 0, Color.toFloatBits(0, 0, 255, 255), 1f, 1, 
+			                            -0.5f, 0.5f, 0, Color.toFloatBits(255, 255, 255, 255), 0, 1});
 		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
 
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
