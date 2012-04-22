@@ -195,7 +195,7 @@ public class FreeTypeFontGenerator implements Disposable {
 			}
 		}
 
-		TextureAtlas textureAtlas = atlas.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest);
+		TextureAtlas textureAtlas = atlas.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest, false);
 		data.region = new TextureRegion(textureAtlas.getRegions().get(0).getTexture());
 		return data;
 	}

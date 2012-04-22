@@ -312,11 +312,11 @@ public class PixmapPacker implements Disposable {
 	 * @param magFilter
 	 * @return the TextureAtlas
 	 */
-	public synchronized TextureAtlas generateTextureAtlas (TextureFilter minFilter, TextureFilter magFilter) {
+	public synchronized TextureAtlas generateTextureAtlas (TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps) {
 		TextureAtlas atlas = new TextureAtlas();
 		for(Page page: pages) {
 			if(page.rects.size != 0) {
-				Texture texture = new Texture(new ManagedPixmapTextureData(page.image, page.image.getFormat(), true)) {
+				Texture texture = new Texture(new ManagedPixmapTextureData(page.image, page.image.getFormat(), useMipMaps)) {
 					@Override
 					public void dispose () {
 						super.dispose();
@@ -341,11 +341,11 @@ public class PixmapPacker implements Disposable {
 	 * call to this method. This can be used to insert Pixmap instances on a separate thread via {@link #pack(String, Pixmap)}
 	 * and update the TextureAtlas on the rendering thread. This method must be called on the rendering thread.
 	 */
-	public synchronized void updateTextureAtlas(TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter) {
+	public synchronized void updateTextureAtlas(TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps) {
 		for(Page page: pages) {
 			if(page.texture == null) {
 				if(page.rects.size != 0 && page.addedRects.size > 0) {
-					 page.texture = new Texture(new ManagedPixmapTextureData(page.image, page.image.getFormat(), false)) {
+					 page.texture = new Texture(new ManagedPixmapTextureData(page.image, page.image.getFormat(), useMipMaps)) {
 						@Override
 						public void dispose () {
 							super.dispose();
