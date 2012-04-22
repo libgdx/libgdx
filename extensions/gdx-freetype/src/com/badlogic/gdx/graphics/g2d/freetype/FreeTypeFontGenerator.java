@@ -150,7 +150,7 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// generate the glyphs
 		int maxGlyphHeight = (int)Math.ceil(data.lineHeight);
-		int pageWidth = MathUtils.nextPowerOfTwo((int)Math.sqrt(maxGlyphHeight / 2 * maxGlyphHeight / 2 * characters.length()));
+		int pageWidth = MathUtils.nextPowerOfTwo((int)Math.sqrt(maxGlyphHeight * maxGlyphHeight * characters.length()));
 		PixmapPacker atlas = new PixmapPacker(pageWidth, pageWidth, Format.RGBA8888, 2, false);
 		for (int i = 0; i < characters.length(); i++) {
 			char c = characters.charAt(i);
@@ -176,6 +176,7 @@ public class FreeTypeFontGenerator implements Disposable {
 			glyph.srcX = (int)rect.x;
 			glyph.srcY = (int)rect.y;
 			data.setGlyph(c, glyph);
+			pixmap.dispose();
 		}
 
 		// generate kerning
