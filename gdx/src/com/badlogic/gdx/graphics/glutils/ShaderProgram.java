@@ -263,18 +263,22 @@ public class ShaderProgram implements Disposable {
 
 	private int fetchAttributeLocation (String name) {
 		GL20 gl = Gdx.graphics.getGL20();
+		// -2 == not yet cached
+		// -1 == cached but not found
 		int location;
-		if ((location = attributes.get(name, -1)) == -1) {
+		if ((location = attributes.get(name, -2)) == -2) {
 			location = gl.glGetAttribLocation(program, name);
-			if (location != -1) attributes.put(name, location);
+			attributes.put(name, location);
 		}
 		return location;
 	}
 
 	private int fetchUniformLocation (String name) {
 		GL20 gl = Gdx.graphics.getGL20();
+		// -2 == not yet cached
+		// -1 == cached but not found
 		int location;
-		if ((location = uniforms.get(name, -1)) == -1) {
+		if ((location = uniforms.get(name, -2)) == -2) {
 			location = gl.glGetUniformLocation(program, name);
 			if (location == -1 && pedantic) throw new IllegalArgumentException("no uniform with name '" + name + "' in shader");
 			uniforms.put(name, location);
