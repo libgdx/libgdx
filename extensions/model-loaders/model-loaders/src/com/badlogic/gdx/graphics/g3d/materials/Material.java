@@ -44,11 +44,13 @@ public class Material {
 		this.attributes = attributes;
 
 		// this way we foresee if blending is needed with this material and rendering can deferred more easily
-		boolean blendingNeeded = false;
+		this.needBlending = false;
 		for (int i = 0; i < this.attributes.size; i++) {
-			if (this.attributes.get(i) instanceof BlendingAttribute) blendingNeeded = true;
+			if (this.attributes.get(i) instanceof BlendingAttribute) {
+				this.needBlending = true;
+				break;
+			}
 		}
-		this.needBlending = blendingNeeded;
 	}
 
 	public Material (String name, MaterialAttribute... attributes) {
@@ -56,11 +58,13 @@ public class Material {
 		this.attributes = new Array<MaterialAttribute>(attributes);
 
 		// this way we foresee if blending is needed with this material and rendering can deferred more easily
-		boolean blendingNeeded = false;
+		this.needBlending = false;
 		for (int i = 0; i < this.attributes.size; i++) {
-			if (this.attributes.get(i) instanceof BlendingAttribute) blendingNeeded = true;
+			if (this.attributes.get(i) instanceof BlendingAttribute) {
+				this.needBlending = true;
+				break;
+			}
 		}
-		this.needBlending = blendingNeeded;
 
 	}
 

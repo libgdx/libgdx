@@ -96,7 +96,11 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	final private TextureAttribute lastTexture[] = new TextureAttribute[TextureAttribute.MAX_TEXTURE_UNITS];
 
 	private void flush () {
-		for (int i = 0, size = drawableManager.drawables.size; i < size; i++) {
+
+		// opaque is sorted front to back
+		// transparent is sorted back to front
+		drawableManager.drawables.sort();
+		for (int i = drawableManager.drawables.size - 1; i >= 0; i--) {
 
 			final Drawable drawable = drawableManager.drawables.get(i);
 
@@ -117,12 +121,6 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				final SubMesh subMesh = subMeshes[j];
 				final Material material = drawable.materials.get(j);
 
-				if (material.isNeedBlending()) {
-					addTranparentQueu(material, subMesh, modelMatrix, center);
-
-					continue;
-				}
-
 				// bind new shader if material can't use old one
 				final boolean shaderChanged = bindShader(material);
 
@@ -131,26 +129,25 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 					currentShader.setUniformMatrix("u_modelMatrix", modelMatrix, false);
 					matrixChanged = false;
 				}
-				if ((material != null)) {
 
-					for (int k = 0, len = material.attributes.size; k < len; k++) {
-						final MaterialAttribute atrib = material.attributes.get(k);
+				for (int k = 0, len = material.attributes.size; k < len; k++) {
+					final MaterialAttribute atrib = material.attributes.get(k);
 
-						// special case for textures. really important to batch these
-						if (atrib instanceof TextureAttribute) {
-							final TextureAttribute texAtrib = (TextureAttribute)atrib;
-							if (!texAtrib.texturePortionEquals(lastTexture[texAtrib.unit])) {
-								lastTexture[texAtrib.unit] = texAtrib;
-								texAtrib.bind(currentShader);
-							} else {
-								// need to be done, shader textureAtribute name could be changed.
-								currentShader.setUniformi(texAtrib.name, texAtrib.unit);
-							}
+					// special case for textures. really important to batch these
+					if (atrib instanceof TextureAttribute) {
+						final TextureAttribute texAtrib = (TextureAttribute)atrib;
+						if (!texAtrib.texturePortionEquals(lastTexture[texAtrib.unit])) {
+							lastTexture[texAtrib.unit] = texAtrib;
+							texAtrib.bind(currentShader);
 						} else {
-							atrib.bind(currentShader);
+							// need to be done, shader textureAtribute name could be changed.
+							currentShader.setUniformi(texAtrib.name, texAtrib.unit);
 						}
+					} else {
+						atrib.bind(currentShader);
 					}
 				}
+
 				// finally render current submesh
 				subMesh.getMesh().render(currentShader, subMesh.primitiveType);
 			}
@@ -158,7 +155,7 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 		// if transparent queue is not empty enable blending(this force gpu to
 		// flush and there is some time to sort)
-		if (blendQueue.size > 0) renderBlended();
+		if (drawableManager.drawablesBlended.size > 0) renderBlended();
 
 		// cleaning
 
@@ -196,39 +193,11 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		materialShaderHandler.dispose();
 	}
 
-	class BlendedMesh implements Comparable {
-		public static final int PRIORITY_DISCRETE_STEPS = 256;
-		public Material material;
-		public SubMesh subMesh;
-		public Matrix4 modelMatrix;
-		public Vector3 center;
-		public int distance;
-
-		public BlendedMesh (Material material, SubMesh subMesh, Matrix4 modelMatrix, Vector3 center) {
-			this.material = material;
-			this.subMesh = subMesh;
-			this.modelMatrix = modelMatrix;
-			this.center = center;
-			distance = (int)(PRIORITY_DISCRETE_STEPS * center.dst(cam.position));
-		}
-
-		@Override
-		public int compareTo (Object other) {
-			return ((BlendedMesh)other).distance - this.distance;
-		}
-	}
-
-	final private Array<BlendedMesh> blendQueue = new Array<BlendedMesh>(true, 64);
-
-	private void addTranparentQueu (Material material, SubMesh subMesh, Matrix4 modelMatrix, Vector3 center) {
-		// FIX ME add pooling
-		blendQueue.add(new BlendedMesh(material, subMesh, modelMatrix, center));
-	}
-
 	private void renderBlended () {
+
 		Gdx.gl.glEnable(GL10.GL_BLEND);
-		Gdx.gl.glDepthMask(false);
-		blendQueue.sort();
+		final Array<Drawable> transparentDrawables = drawableManager.drawablesBlended;
+		transparentDrawables.sort();
 
 		// find N nearest lights per model
 		// draw all models from opaque queue
@@ -236,20 +205,36 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		int lastSrcBlend = -1;
 		int lastDstBlend = -1;
 
-		for (int i = 0; i < blendQueue.size; i++) {
-			final BlendedMesh instance = blendQueue.get(i);
-			final Material material = instance.material;
-			lightManager.calculateLights(instance.center.x, instance.center.y, instance.center.z);
-			normalMatrix.set(instance.modelMatrix);
+		for (int i = 0, size = transparentDrawables.size; i < size; i++) {
 
-			// bind new shader if material can't use old one
-			final boolean shaderChanged = bindShader(material);
+			final Drawable drawable = transparentDrawables.get(i);
 
-			// if shaderChanged can't batch material
-			currentShader.setUniformMatrix("u_normalMatrix", normalMatrix, false);
-			currentShader.setUniformMatrix("u_modelMatrix", instance.modelMatrix, false);
+			final Vector3 center = drawable.sortCenter;
+			lightManager.calculateLights(center.x, center.y, center.z);
 
-			if ((material != null)) {
+			final Matrix4 modelMatrix = drawable.transform;
+			normalMatrix.set(modelMatrix);
+
+			if (drawable.isAnimated)
+				((AnimatedModel)(drawable.model)).setAnimation(drawable.animation, drawable.animationTime, drawable.isLooping);
+
+			final SubMesh subMeshes[] = drawable.model.getSubMeshes();
+
+			boolean matrixChanged = true;
+			for (int j = 0; j < subMeshes.length; j++) {
+
+				final SubMesh subMesh = subMeshes[j];
+				final Material material = drawable.materials.get(j);
+
+				// bind new shader if material can't use old one
+				final boolean shaderChanged = bindShader(material);
+
+				if (shaderChanged || matrixChanged) {
+					currentShader.setUniformMatrix("u_normalMatrix", normalMatrix, false);
+					currentShader.setUniformMatrix("u_modelMatrix", modelMatrix, false);
+					matrixChanged = false;
+				}
+
 				for (int k = 0, len = material.attributes.size; k < len; k++) {
 					final MaterialAttribute atrib = material.attributes.get(k);
 
@@ -275,14 +260,11 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 						atrib.bind(currentShader);
 					}
 				}
+				// finally render current submesh
+				subMesh.getMesh().render(currentShader, subMesh.primitiveType);
 			}
-			// finally render current submesh
-			instance.subMesh.getMesh().render(currentShader, instance.subMesh.primitiveType);
 		}
-
-		Gdx.gl.glDepthMask(true);
 		Gdx.gl.glDisable(GL10.GL_BLEND);
-		blendQueue.clear();
 	}
 
 	class DrawableManager {
@@ -299,21 +281,34 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 			}
 		};
 		Array<Drawable> drawables = new Array<Drawable>();
+		Array<Drawable> drawablesBlended = new Array<Drawable>();
 
 		public void add (StillModel model, StillModelInstance instance) {
 			Drawable drawable = drawablePool.obtain();
 			drawable.set(model, instance);
-			drawables.add(drawable);
+
+			if (drawable.blending)
+				drawablesBlended.add(drawable);
+			else
+				drawables.add(drawable);
 		}
 
 		public void add (AnimatedModel model, AnimatedModelInstance instance) {
 			Drawable drawable = drawablePool.obtain();
 			drawable.set(model, instance);
-			drawables.add(drawable);
+
+			if (drawable.blending)
+				drawablesBlended.add(drawable);
+			else
+				drawables.add(drawable);
 		}
 
 		public void clear () {
+			clear(drawables);
+			clear(drawablesBlended);
+		}
 
+		private void clear (Array<Drawable> drawables) {
 			while (drawables.size > 0) {
 				final Drawable drawable = drawables.pop();
 
@@ -338,7 +333,8 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		 * to do material and depth sorting for blending without having to deal with the API client changing any attributes of a
 		 * model or instance in between draw calls.
 		 * @author mzechner */
-		class Drawable {
+		class Drawable implements Comparable {
+			private static final int PRIORITY_DISCRETE_STEPS = 256;
 			Model model;
 			final Matrix4 transform = new Matrix4();
 			final Vector3 sortCenter = new Vector3();
@@ -348,6 +344,8 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 			String animation;
 			float animationTime;
 			boolean isLooping;
+			boolean blending;
+			int distance;
 
 			public void set (StillModel model, StillModelInstance instance) {
 				setCommon(model, instance);
@@ -368,6 +366,7 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				System.arraycopy(instance.getTransform().val, 0, transform.val, 0, 16);
 
 				sortCenter.set(instance.getSortCenter());
+				distance = (int)(PRIORITY_DISCRETE_STEPS * sortCenter.dst(cam.position));
 				boundingSphereRadius = instance.getBoundingSphereRadius();
 				if (instance.getMaterials() != null) {
 					for (Material material : instance.getMaterials()) {
@@ -388,6 +387,19 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 					}
 				}
+				blending = false;
+				for (Material mat : materials) {
+					if (mat.isNeedBlending()) {
+						blending = true;
+						break;
+					}
+				}
+
+			}
+
+			@Override
+			public int compareTo (Object other) {
+				return ((Drawable)other).distance - this.distance;
 			}
 		}
 	}

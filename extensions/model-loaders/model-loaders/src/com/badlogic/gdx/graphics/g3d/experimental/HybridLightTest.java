@@ -126,10 +126,10 @@ public class HybridLightTest implements ApplicationListener {
 
 		Gdx.gl.glCullFace(GL10.GL_BACK);
 
-	// protoRenderer.draw(model, instance2);
-	// protoRenderer.draw(model, instance);
 		protoRenderer.begin();
 		protoRenderer.draw(model2, instance2);
+		protoRenderer.draw(model, instance2);
+		protoRenderer.draw(model, instance);
 		protoRenderer.end();
 	}
 
@@ -183,7 +183,7 @@ public class HybridLightTest implements ApplicationListener {
 		protoRenderer = new PrototypeRendererGL20(lightManager);
 		protoRenderer.cam = cam;
 
-		MaterialAttribute c1 = new ColorAttribute(new Color(0.75f, 0.75f, 0.75f, 0.6f), ColorAttribute.diffuse);
+		MaterialAttribute c1 = new ColorAttribute(new Color(0.75f, 0.75f, 0.75f, 0.3f), ColorAttribute.diffuse);
 		MaterialAttribute c2 = new ColorAttribute(new Color(0.35f, 0.35f, 0.35f, 0.35f), ColorAttribute.specular);
 		MaterialAttribute c3 = new ColorAttribute(new Color(0.2f, 1f, 0.15f, 1.0f), ColorAttribute.rim);
 		MaterialAttribute t1 = new TextureAttribute(texture, 0, TextureAttribute.diffuseTexture);
@@ -211,7 +211,7 @@ public class HybridLightTest implements ApplicationListener {
 		texture3.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 
 		MaterialAttribute t3 = new TextureAttribute(texture3, 0, TextureAttribute.diffuseTexture);
-		Material material3 = new Material("s", t2, t3, c3);
+		Material material3 = new Material("s", t2, t3);
 		model3.setMaterial(material3);
 
 	}
@@ -241,7 +241,7 @@ public class HybridLightTest implements ApplicationListener {
 		config.width = 800;
 		config.height = 480;
 		config.samples = 8;
-		config.vSyncEnabled = true;
+		config.vSyncEnabled = false;
 		config.useGL20 = true;
 		new JoglApplication(new HybridLightTest(), config);
 	}
