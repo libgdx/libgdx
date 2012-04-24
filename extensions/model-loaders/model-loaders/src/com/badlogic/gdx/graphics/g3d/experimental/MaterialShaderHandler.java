@@ -17,23 +17,21 @@ public class MaterialShaderHandler {
 	private final Array<Material> materialsWithShader = new Array<Material>(false, 64);
 
 	public ShaderProgram getShader (Material material) {
-
 		for (int i = 0; i < materialsWithShader.size; i++) {
 			if (material.shaderEquals(materialsWithShader.get(i))) {
-				material.shader = materialsWithShader.get(i).shader;
-				return material.shader;
+				return materialsWithShader.get(i).getShader();
 			}
 		}
-		material.shader = ShaderFactory.createShader(material, lightManager);
+
 		materialsWithShader.add(material);
-		return material.shader;
+		return ShaderFactory.createShader(material, lightManager);
 	}
 
 	public void dispose () {
 		for (int i = 0; i < materialsWithShader.size; i++) {
-			if (materialsWithShader.get(i).shader != null) {
-				materialsWithShader.get(i).shader.dispose();
-				materialsWithShader.get(i).shader = null;
+			if (materialsWithShader.get(i).getShader() != null) {
+				materialsWithShader.get(i).getShader().dispose();
+				materialsWithShader.get(i).resetShader();
 			}
 		}
 	}

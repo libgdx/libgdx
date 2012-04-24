@@ -96,7 +96,6 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	final private TextureAttribute lastTexture[] = new TextureAttribute[TextureAttribute.MAX_TEXTURE_UNITS];
 
 	private void flush () {
-		Material currentMaterial = null;
 		for (int i = 0, size = drawableManager.drawables.size; i < size; i++) {
 
 			final Drawable drawable = drawableManager.drawables.get(i);
@@ -118,7 +117,7 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				final SubMesh subMesh = subMeshes[j];
 				final Material material = drawable.materials.get(j);
 
-				if (material.needBlending) {
+				if (material.isNeedBlending()) {
 					addTranparentQueu(material, subMesh, modelMatrix, center);
 
 					continue;
@@ -127,18 +126,15 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				// bind new shader if material can't use old one
 				final boolean shaderChanged = bindShader(material);
 
-				// if shader is changed can't batch material
-				if (shaderChanged) currentMaterial = null;
-
 				if (shaderChanged || matrixChanged) {
 					currentShader.setUniformMatrix("u_normalMatrix", normalMatrix, false);
 					currentShader.setUniformMatrix("u_modelMatrix", modelMatrix, false);
 					matrixChanged = false;
 				}
-				if ((material != null) && (material != currentMaterial)) {
-					currentMaterial = material;
-					for (int k = 0, len = currentMaterial.attributes.size; k < len; k++) {
-						final MaterialAttribute atrib = currentMaterial.attributes.get(k);
+				if ((material != null)) {
+
+					for (int k = 0, len = material.attributes.size; k < len; k++) {
+						final MaterialAttribute atrib = material.attributes.get(k);
 
 						// special case for textures. really important to batch these
 						if (atrib instanceof TextureAttribute) {
@@ -182,9 +178,10 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 	/** @param material
 	 * @return true if new shader was binded */
 	boolean bindShader (Material material) {
-		if (material.shader == currentShader) return false;
+		ShaderProgram shader = material.getShader();
+		if (shader == currentShader) return false;
 
-		currentShader = material.shader;
+		currentShader = shader;
 		currentShader.begin();
 
 		lightManager.applyGlobalLights(currentShader);
@@ -233,7 +230,6 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		Gdx.gl.glDepthMask(false);
 		blendQueue.sort();
 
-		Material currentMaterial = null;
 		// find N nearest lights per model
 		// draw all models from opaque queue
 
@@ -248,17 +244,14 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 			// bind new shader if material can't use old one
 			final boolean shaderChanged = bindShader(material);
-			// if shaderChanged can't batch material
-			if (shaderChanged) currentMaterial = null;
 
 			// if shaderChanged can't batch material
 			currentShader.setUniformMatrix("u_normalMatrix", normalMatrix, false);
 			currentShader.setUniformMatrix("u_modelMatrix", instance.modelMatrix, false);
 
-			if ((material != null) && (material != currentMaterial)) {
-				currentMaterial = material;
-				for (int k = 0, len = currentMaterial.attributes.size; k < len; k++) {
-					final MaterialAttribute atrib = currentMaterial.attributes.get(k);
+			if ((material != null)) {
+				for (int k = 0, len = material.attributes.size; k < len; k++) {
+					final MaterialAttribute atrib = material.attributes.get(k);
 
 					// yet another instanceof. TODO is there any better way to do this? maybe stuffing this to material
 					if (atrib instanceof BlendingAttribute) {
@@ -331,7 +324,7 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 					while (material.attributes.size > 0) {
 						material.attributes.pop().free();
 					}
-					material.shader = null;
+					material.resetShader();
 					materialPool.free(material);
 				}
 				// reset the drawable and return it to the drawable pool
@@ -378,7 +371,7 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				boundingSphereRadius = instance.getBoundingSphereRadius();
 				if (instance.getMaterials() != null) {
 					for (Material material : instance.getMaterials()) {
-						if (material.shader == null) material.shader = materialShaderHandler.getShader(material);
+						if (material.getShader() == null) material.generateShader(materialShaderHandler);
 
 						final Material copy = materialPool.obtain();
 						copy.setPooled(material);
@@ -387,7 +380,7 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				} else {
 					for (SubMesh subMesh : model.getSubMeshes()) {
 						final Material material = subMesh.material;
-						if (material.shader == null) material.shader = materialShaderHandler.getShader(material);
+						if (material.getShader() == null) material.generateShader(materialShaderHandler);
 
 						final Material copy = materialPool.obtain();
 						copy.setPooled(material);

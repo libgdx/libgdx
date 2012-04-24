@@ -18,16 +18,22 @@ package com.badlogic.gdx.graphics.g3d.materials;
 
 import java.util.Arrays;
 
+import com.badlogic.gdx.graphics.g3d.experimental.MaterialShaderHandler;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 
 public class Material {
-	public String name;
+	protected String name;
 	public Array<MaterialAttribute> attributes;
-	/** This flag is true if material contain blendingAttribute */
-	public boolean needBlending;
 
-	public ShaderProgram shader;
+	/** This flag is true if material contain blendingAttribute */
+	protected boolean needBlending;
+
+	protected ShaderProgram shader;
+
+	public ShaderProgram getShader () {
+		return shader;
+	}
 
 	public Material () {
 		attributes = new Array<MaterialAttribute>(2);
@@ -68,6 +74,10 @@ public class Material {
 		for (int i = 0; i < attributes.size; i++) {
 			attributes.get(i).bind(program);
 		}
+	}
+
+	public String getName () {
+		return name;
 	}
 
 	public Material copy () {
@@ -136,5 +146,17 @@ public class Material {
 		for (int i = 0, len = material.attributes.size; i < len; i++) {
 			attributes.add(material.attributes.get(i).pooledCopy());
 		}
+	}
+
+	public boolean isNeedBlending () {
+		return needBlending;
+	}
+
+	public void resetShader () {
+		shader = null;
+	}
+
+	public void generateShader (MaterialShaderHandler materialShaderHandler) {
+		shader = materialShaderHandler.getShader(this);
 	}
 }
