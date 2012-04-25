@@ -273,16 +273,16 @@ public class PixmapIO {
 			// MSB
 			zlib.write(raw, off, len); // Data
 		}
-
-		static private int calcADLER32 (byte[] raw) {
-			int s1 = 1;
-			int s2 = 0;
-			for (byte abs : raw) {
-				if (abs < 0) abs += 256;
-				s1 = (s1 + abs) % 65521;
-				s2 = (s2 + s1) % 65521;
-			}
-			return (s2 << 16) + s1;
-		}
+		
+		private static int calcADLER32(final byte[ ] raw) {
+	        int s1 = 1;
+	        int s2 = 0;
+	        for ( int i = 0 ; i < raw.length ; i++ ) {
+	            final int abs = raw[ i ] >= 0 ? raw[ i ] : ( raw[ i ] + 256 );
+	            s1 = ( s1 + abs ) % 65521;
+	            s2 = ( s2 + s1 ) % 65521;
+	        }
+	        return ( s2 << 16 ) + s1;
+	    }
 	}
 }
