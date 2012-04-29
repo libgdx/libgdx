@@ -46,24 +46,35 @@ public final class VertexAttribute {
 		this.numComponents = numComponents;
 		this.alias = alias;
 	}
-	
-	public static VertexAttribute Position() {
+
+	public static VertexAttribute Position () {
 		return new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE);
 	}
-	
-	public static VertexAttribute TexCoords(int unit) {
+
+	public static VertexAttribute TexCoords (int unit) {
 		return new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + unit);
 	}
-	
-	public static VertexAttribute Normal() {
+
+	public static VertexAttribute Normal () {
 		return new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE);
 	}
-	
-	public static VertexAttribute Color() {
+
+	public static VertexAttribute Color () {
 		return new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE);
 	}
 
 	public static VertexAttribute ColorUnpacked () {
 		return new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE);
+	}
+
+	/** Tests to determine if the passed object was created with the same parameters */
+	@Override
+	public boolean equals (final Object obj) {
+		if(obj == null) return false;
+		if (!(obj instanceof VertexAttribute)) {
+			return false;
+		}
+		final VertexAttribute other = (VertexAttribute)obj;
+		return this.usage == other.usage && this.numComponents == other.numComponents && this.alias.equals(other.alias);
 	}
 }
