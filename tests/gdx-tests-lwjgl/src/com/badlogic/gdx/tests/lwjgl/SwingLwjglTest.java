@@ -56,10 +56,11 @@ public class SwingLwjglTest extends JFrame {
 		});
 	}
 	
+	Mesh mesh;
+	Texture texture;
+
 	private class GlListener extends ApplicationAdapter implements InputProcessor {
 		PerspectiveCamera cam;
-		Mesh mesh;
-		Texture texture;
 		float angleY = 0;
 		float angleX = 0;
 		float[] lightColor = {1, 1, 1, 0};
@@ -69,10 +70,12 @@ public class SwingLwjglTest extends JFrame {
 
 		@Override
 		public void create () {
-			mesh = ModelLoaderOld.loadObj(Gdx.files.internal("data/cube.obj").read());
-			Gdx.app.log("ObjTest", "obj bounds: " + mesh.calculateBoundingBox());
-			texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
-			texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
+			if(mesh == null) {
+				mesh = ModelLoaderOld.loadObj(Gdx.files.internal("data/cube.obj").read());
+				Gdx.app.log("ObjTest", "obj bounds: " + mesh.calculateBoundingBox());
+				texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
+				texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
+			}
 
 			cam = new PerspectiveCamera(45, 4, 4);
 			cam.position.set(3, 3, 3);

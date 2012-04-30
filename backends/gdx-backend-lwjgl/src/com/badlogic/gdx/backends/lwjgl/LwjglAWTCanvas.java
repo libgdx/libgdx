@@ -173,10 +173,18 @@ public class LwjglAWTCanvas implements Application {
 	public int getVersion () {
 		return 0;
 	}
+	
+	private void setGlobals() {
+		Gdx.app = this;
+		Gdx.audio = audio;
+		Gdx.files = files;
+		Gdx.graphics = graphics;
+		Gdx.input = input;
+	}
 
 	void start () {
 		try {
-			Gdx.graphics = graphics;
+			setGlobals();
 			graphics.initiateGLInstances();
 			listener.create();
 			lastWidth = Math.max(1, graphics.getWidth());
@@ -189,8 +197,7 @@ public class LwjglAWTCanvas implements Application {
 	}
 
 	private void render () {
-		Gdx.graphics = graphics;
-		Gdx.input = input;
+		setGlobals();
 		canvas.setCursor(null);
 		graphics.updateTime();
 		synchronized (runnables) {
@@ -230,7 +237,7 @@ public class LwjglAWTCanvas implements Application {
 	public void stop () {
 		if (!running) return;
 		running = false;
-		Gdx.graphics = graphics;
+		setGlobals();
 		listener.pause();
 		listener.dispose();
 	}
@@ -319,7 +326,7 @@ public class LwjglAWTCanvas implements Application {
 		postRunnable(new Runnable() {
 			@Override
 			public void run () {
-				Gdx.graphics = graphics;
+				setGlobals();
 				LwjglAWTCanvas.this.listener.pause();
 				LwjglAWTCanvas.this.listener.dispose();
 				System.exit(-1);
