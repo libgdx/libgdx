@@ -49,7 +49,7 @@ public class LwjglAWTCanvas implements Application {
 	final LwjglGraphics graphics;
 	final OpenALAudio audio;
 	final LwjglFiles files;
-	final LwjglInput input;
+	final LwjglAWTInput input;
 	final ApplicationListener listener;
 	final AWTGLCanvas canvas;
 	final List<Runnable> runnables = new ArrayList<Runnable>();
@@ -125,7 +125,7 @@ public class LwjglAWTCanvas implements Application {
 			audio = null;
 		}
 		files = new LwjglFiles();
-		input = new LwjglInput();
+		input = new LwjglAWTInput(canvas);
 		this.listener = listener;
 
 		Gdx.app = this;
@@ -210,7 +210,6 @@ public class LwjglAWTCanvas implements Application {
 			}
 			runnables.clear();
 		}
-		input.update();
 
 		int width = Math.max(1, graphics.getWidth());
 		int height = Math.max(1, graphics.getHeight());
