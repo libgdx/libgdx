@@ -20,6 +20,8 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -124,14 +126,16 @@ public class LwjglAWTCanvas implements Application {
 		} else {
 			audio = null;
 		}
-		files = new LwjglFiles();
+		if(Gdx.files == null) {
+			files = new LwjglFiles();
+			Gdx.files = files;
+		} else {
+			files = null;
+		}
 		input = new LwjglAWTInput(canvas);
 		this.listener = listener;
 
-		Gdx.app = this;
-		Gdx.graphics = graphics;
-		Gdx.files = files;
-		Gdx.input = input;
+		setGlobals();
 	}
 
 	protected void setDisplayMode (int width, int height) {
@@ -176,8 +180,8 @@ public class LwjglAWTCanvas implements Application {
 	
 	private void setGlobals() {
 		Gdx.app = this;
-		Gdx.audio = audio;
-		Gdx.files = files;
+		if(audio != null) Gdx.audio = audio;
+		if(files != null) Gdx.files = files;
 		Gdx.graphics = graphics;
 		Gdx.input = input;
 	}
