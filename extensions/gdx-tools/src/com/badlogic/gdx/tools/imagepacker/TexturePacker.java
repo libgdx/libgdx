@@ -752,6 +752,13 @@ public class TexturePacker {
 			}
 
 			String path = inputDir.getAbsolutePath();
+			
+			if (!useAbsolutePaths) {
+				String rootFolderAbsolutePath = rootDir.getAbsolutePath();
+				if (isSubPath(rootFolderAbsolutePath, path)) 
+					path = removeSubPath(rootFolderAbsolutePath, path);
+			}
+			
 			Long childCountOld = settings.crcs.get(path);
 			if (childCountOld == null || childCountNow != childCountOld) noneHaveChanged = false;
 			settings.crcs.put(path, (long)childCountNow);
