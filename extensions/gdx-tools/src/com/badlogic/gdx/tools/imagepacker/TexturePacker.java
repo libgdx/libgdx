@@ -737,14 +737,15 @@ public class TexturePacker {
 			for (File file : files) {
 				if (file.isDirectory()) continue;
 				String path = file.getAbsolutePath();
-				Long crcOld = settings.crcs.get(path);
-				long crcNow = crc(file);
-				if (crcOld == null || crcOld != crcNow) noneHaveChanged = false;
 
 				if (!useAbsolutePaths) {
 					String rootFolderAbsolutePath = rootDir.getAbsolutePath();
 					if (isSubPath(rootFolderAbsolutePath, path)) path = removeSubPath(rootFolderAbsolutePath, path);
 				}
+
+				Long crcOld = settings.crcs.get(path);
+				long crcNow = crc(file);
+				if (crcOld == null || crcOld != crcNow) noneHaveChanged = false;
 
 				settings.crcs.put(path, crcNow);
 				childCountNow++;
