@@ -94,6 +94,10 @@ public class Box2DDebugRenderer {
 		if (drawBodies || drawAABBs) {
 			for (Iterator<Body> iter = world.getBodies(); iter.hasNext();) {
 				Body body = iter.next();
+				
+				if (body.isActive() == false && !drawInactiveBodies)
+					continue;
+				
 				Transform transform = body.getTransform();
 				int len = body.getFixtureList().size();
 				List<Fixture> fixtures = body.getFixtureList();
@@ -101,7 +105,7 @@ public class Box2DDebugRenderer {
 					Fixture fixture = fixtures.get(i);
 
 					if (drawBodies) {
-						if (body.isActive() == false && drawInactiveBodies)
+						if (body.isActive() == false)
 							drawShape(fixture, transform, SHAPE_NOT_ACTIVE);
 						else if (body.getType() == BodyType.StaticBody)
 							drawShape(fixture, transform, SHAPE_STATIC);
