@@ -1,5 +1,6 @@
 #define normalsFlag
 //#define LIGHTS_NUM 4
+//#define fogColorFlag
 attribute vec3 a_position; 
 attribute vec2 a_texCoord0;
 
@@ -13,11 +14,15 @@ uniform vec3  lightsPos[LIGHTS_NUM];
 uniform vec3  lightsCol[LIGHTS_NUM];
 uniform float lightsInt[LIGHTS_NUM];
 #endif
-uniform vec3 camPos;
+uniform vec4 camPos;
 uniform vec3 dirLightDir;
 uniform vec3 dirLightCol;
 uniform mat4 u_projectionViewMatrix;
 uniform mat4 u_modelMatrix;
+
+#ifdef fogColorFlag
+varying float v_fog;
+#endif
 
 varying vec2 v_texCoords;
 varying vec3 v_normal;
@@ -43,8 +48,13 @@ void main()
 	gl_Position = u_projectionViewMatrix * worldPos; 
 	vec3 pos  = worldPos.xyz;
 	v_pos = pos;
-	v_eye = camPos - pos;
+	v_eye = camPos.xyz - pos;
 	
+#ifdef fogColorFlag
+	float fog    =  length(v_eye) * camPos.w;
+	fog*=fog;
+	v_fog = min(fog, 1.0);
+#endif
 
 #if LIGHTS_NUM > 0
 

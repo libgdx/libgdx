@@ -184,7 +184,7 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		lightManager.applyGlobalLights(currentShader);
 		lightManager.applyLights(currentShader);
 		currentShader.setUniformMatrix("u_projectionViewMatrix", cam.combined);
-		currentShader.setUniformf("camPos", cam.position.x, cam.position.y, cam.position.z);
+		currentShader.setUniformf("camPos", cam.position.x, cam.position.y, cam.position.z, 1.2f / cam.far);
 		currentShader.setUniformf("camDir", cam.direction.x, cam.direction.y, cam.direction.z);
 		return true;
 	}

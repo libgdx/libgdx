@@ -1,11 +1,12 @@
 //#define emissiveColorFlag
 //#define specularColorFlag
 //#define diffuseColorFlag
+//#define rimColorFlag
 //#define lightmapTextureFlag
 //#define diffuseTextureFlag
 //#define specularTextureFlag
 //#define translucentFlag
-
+//#define fogColorFlag
 #define normalsFlag
 
 #ifdef GL_ES
@@ -48,6 +49,11 @@ uniform sampler2D lightmapTexture;
 
 #ifdef specularTextureFlag
 uniform sampler2D specularTexture;
+#endif
+
+#ifdef fogColorFlag
+uniform vec4 fogColor;
+varying float v_fog;
 #endif
 
 varying MED vec2 v_texCoords;
@@ -140,10 +146,21 @@ void main()
 	
 	#ifdef normalsFlag
 		#ifdef rimColorFlag
-		light +=  pow( 1.0 - dot( surfaceNormal, -camDir ), 2.5 ) * rimColor.rgb;
+		light +=  pow( 1.0 - dot( surfaceNormal, -camDir ), 3.0 ) * rimColor.rgb;
 		#endif
 	#endif
 	
-	gl_FragColor = vec4(light, alpha);
+	#ifdef fogColorFlag
+	light = mix(light, fogColor.rgb, v_fog);		
+		#ifdef translucentFlag
+		alpha += v_fog;
+		#endif
+	#endif
+	
+	gl_FragColor.rgb = light;
+	
+	#ifdef translucentFlag
+	gl_FragColor.a = alpha;
+	#endif
 	
 }

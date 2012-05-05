@@ -3,6 +3,7 @@
 //#define emissiveColorFlag
 //#define diffuseColorFlag
 //#define translucentFlag
+//#define fogColorFlag
 //#define LIGHTS_NUM 4
 attribute vec3 a_position; 
 attribute vec2 a_texCoord0;
@@ -28,22 +29,27 @@ uniform vec4 rimColor;
 //uniform vec4 specularCol;
 //#endif
 
-
-
 #if LIGHTS_NUM > 0
 uniform vec3  lightsPos[LIGHTS_NUM];
 uniform vec3  lightsCol[LIGHTS_NUM];
 uniform float lightsInt[LIGHTS_NUM];
 #endif
-	
+
+uniform vec4 camPos;
+uniform vec3 camDir;	
 uniform vec3 dirLightDir;
 uniform vec3 dirLightCol;
 uniform mat4 u_projectionViewMatrix;
 uniform mat4 u_modelMatrix;
 uniform vec3 ambient;
 
-uniform vec3 camDir;
 
+
+
+
+#ifdef fogColorFlag
+varying float v_fog;
+#endif
 
 varying vec2 v_texCoords;
 varying vec4 v_diffuse;
@@ -57,8 +63,9 @@ void main()
 	v_texCoords = a_texCoord0;
 	vec4 worldPos = u_modelMatrix * vec4(a_position,1.0);
 	gl_Position = u_projectionViewMatrix * worldPos; 
-	vec3 pos  = worldPos.xyz;	
+	vec3 pos  = worldPos.xyz;
 	
+		
 	vec3  aggCol = dirLightCol;
 	
 	#ifdef normalsFlag
@@ -84,6 +91,9 @@ void main()
 #endif
 #ifdef diffuseColorFlag
 	aggCol *= diffuseColor.rgb;
+	#ifdef translucentFlag
+		v_diffuse.a = diffuseColor.a;	
+	#endif
 #endif
 
 #ifdef emissiveColorFlag
@@ -100,12 +110,13 @@ void main()
 #endif
 
 
-#ifdef translucentFlag
-	float alpha = diffuseColor.a;	
-#else 
-	float alpha = 1.0;
-#endif
 
+	#ifdef fogColorFlag
+	float fog  =  (distance(pos, camPos.xyz) * camPos.w);
+	fog *=fog;	
+	v_fog = min(fog, 1.0);	
+	#endif
 
-v_diffuse = vec4(clamp( aggCol, 0.0, 1.0), alpha);
+	v_diffuse.rgb = aggCol;
+	
 }
