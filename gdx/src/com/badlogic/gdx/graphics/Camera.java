@@ -105,7 +105,16 @@ public abstract class Camera {
 	 * @param axisY the y-component of the axis
 	 * @param axisZ the z-component of the axis */
 	public void rotate (float angle, float axisX, float axisY, float axisZ) {
-		tmpMat.setToRotation(tmpVec.set(axisX, axisY, axisZ), angle);
+		rotate(tmpVec.set(axisX, axisY, axisZ), angle);
+	}
+	
+	/** Rotates the direction and up vector of this camera by the given angle around the given axis. The direction and up vector
+	 * will not be orthogonalized.
+	 * 
+	 * @param axis
+	 * @param angle the angle */
+	public void rotate (Vector3 axis, float angle) {
+		tmpMat.setToRotation(axis, angle);
 		direction.mul(tmpMat).nor();
 		up.mul(tmpMat).nor();
 	}
@@ -116,6 +125,12 @@ public abstract class Camera {
 	 * @param z the displacement on the z-axis */
 	public void translate (float x, float y, float z) {
 		position.add(x, y, z);
+	}
+	
+	/** Moves the camera by the given vector.
+	 * @param vec the displacement vector */
+	public void translate (Vector3 vec) {
+		position.add(vec);
 	}
 
 	/** Function to translate a point given in window (or window) coordinates to world space. It's the same as

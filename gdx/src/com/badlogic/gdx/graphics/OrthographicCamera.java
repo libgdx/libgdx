@@ -156,4 +156,25 @@ public class OrthographicCamera extends Camera {
 		this.viewportHeight = viewportHeight;
 		update();
 	}
+	
+	/** Rotates the camera by the given angle around the direction vector. The direction and up vector
+	 * will not be orthogonalized.
+	 * @param angle */
+	public void rotate (float angle)
+	{
+		rotate(direction, angle);	
+	}
+	
+	/** Moves the camera by the given amount on each axis.
+	 * @param x the displacement on the x-axis
+	 * @param y the displacement on the y-axis */
+	public void translate(float x, float y) {
+		translate(x, y, 0);
+	}
+	
+	/** Moves the camera by the given vector.
+	 * @param vec the displacement vector */
+	public void translate(Vector2 vec) {
+		translate(vec.x, vec.y, 0);
+	}
 }
