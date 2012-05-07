@@ -61,8 +61,7 @@ public abstract class AnimationAction extends Action {
 		} else if (interpolator == null) {
 			return taken * invDuration;
 		} else {
-			float interpolatedTime = interpolator.getInterpolation(taken / duration) * duration;
-			return interpolatedTime * invDuration;
+			return interpolator.getInterpolation(taken * invDuration);
 		}
 	}
 
