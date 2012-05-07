@@ -146,11 +146,16 @@ public class GdxSetup {
 		public void execute () {
 			log("Copying " + source + " to " + target);
 			try {
-				String resource = read(GdxSetup.class.getResourceAsStream(classpath + source));
-				resource = resource.replace(REPL_MAIN_CLASS, mainClass);
-				resource = resource.replace(REPL_PACKAGE_NAME, packageName);
-				resource = resource.replace(REPL_PROJECT_NAME, projectName);
-				write(new File(target), new ByteArrayInputStream(resource.getBytes("UTF-8")));
+				if (this.source.endsWith(".png")) {
+					write(new File(target), GdxSetup.class.getResourceAsStream(classpath + source));
+				} else {
+					String resource = read(GdxSetup.class.getResourceAsStream(classpath + source));
+					resource = resource.replace(REPL_MAIN_CLASS, mainClass);
+					resource = resource.replace(REPL_PACKAGE_NAME, packageName);
+					resource = resource.replace(REPL_PROJECT_NAME, projectName);
+					write(new File(target), new ByteArrayInputStream(resource.getBytes("UTF-8")));					
+				}
+
 			} catch (Throwable e) {
 				throw new RuntimeException("Couldn't copy resource " + source + " to " + target, e);
 			}
