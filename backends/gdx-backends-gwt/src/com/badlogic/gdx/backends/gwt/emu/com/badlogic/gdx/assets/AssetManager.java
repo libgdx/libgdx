@@ -551,4 +551,11 @@ public class AssetManager implements Disposable {
 		}
 		return buffer.toString();
 	}
+	
+	/**
+	 * blocks until all assets are loaded.
+	 */
+	public void finishLoading () {
+		while (!update());			
+	}
 }
