@@ -71,4 +71,15 @@ public class GwtSound implements Sound {
 	public void setPan (long soundId, float pan, float volume) {
 		// FIXME
 	}
+
+	@Override
+	public long play (float volume, float pitch, float pan) {
+		// TODO Auto-generated method stub
+		return play(volume);
+	}
+
+	@Override
+	public long loop (float volume, float pitch, float pan) {
+		return loop(volume);
+	}
 }

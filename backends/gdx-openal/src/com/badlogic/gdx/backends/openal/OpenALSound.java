@@ -121,4 +121,20 @@ public class OpenALSound implements Sound {
 		if(audio.noDevice) return;
 		audio.setSoundPan(soundId, pan, volume);
 	}
+
+	@Override
+	public long play (float volume, float pitch, float pan) {
+		long id = play();
+		setPitch(id, pitch);
+		setPan(id, pan, volume);
+		return id;
+	}
+
+	@Override
+	public long loop (float volume, float pitch, float pan) {
+		long id = loop();
+		setPitch(id, pitch);
+		setPan(id, pan, volume);
+		return id;
+	}
 }

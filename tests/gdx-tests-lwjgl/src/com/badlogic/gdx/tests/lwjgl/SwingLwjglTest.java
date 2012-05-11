@@ -8,18 +8,12 @@ import javax.swing.SwingUtilities;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderOld;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.tests.MusicTest;
 import com.badlogic.gdx.tests.ObjTest;
-import com.badlogic.gdx.tests.SpriteBatchTest;
 import com.badlogic.gdx.tests.UITest;
 
 /**
@@ -29,13 +23,15 @@ import com.badlogic.gdx.tests.UITest;
  *
  */
 public class SwingLwjglTest extends JFrame {
+	LwjglAWTCanvas canvas1;
+	
 	public SwingLwjglTest() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		Container container = getContentPane();
-		LwjglAWTCanvas canvas1 = new LwjglAWTCanvas(new ObjTest(), false);
+		canvas1 = new LwjglAWTCanvas(new MusicTest(), false);
 		LwjglAWTCanvas canvas2 = new LwjglAWTCanvas(new UITest(), false, canvas1);
-		LwjglAWTCanvas canvas3 = new LwjglAWTCanvas(new SpriteBatchTest(), false, canvas1);
+		LwjglAWTCanvas canvas3 = new LwjglAWTCanvas(new WindowCreator(), false, canvas1);
 		
 		canvas1.getCanvas().setSize(200, 480);
 		canvas2.getCanvas().setSize(200, 480);
@@ -48,6 +44,38 @@ public class SwingLwjglTest extends JFrame {
 		pack();
 		setVisible(true);
 		setSize(800, 480);
+	}
+	
+	private class WindowCreator extends ApplicationAdapter {
+		SpriteBatch batch;
+		BitmapFont font;
+
+		@Override
+		public void create () {
+			batch = new SpriteBatch();
+			font = new BitmapFont();
+		}
+
+		@Override
+		public void render () {
+			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+			batch.begin();
+			font.draw(batch, "Click to create a new window", 10, 100);
+			batch.end();
+			
+			if(Gdx.input.justTouched()) {
+				createWindow();
+			}
+		}
+		
+		private void createWindow() {
+			JFrame window = new JFrame();
+			LwjglAWTCanvas canvas = new LwjglAWTCanvas(new ObjTest(), false, canvas1);
+			window.getContentPane().add(canvas.getCanvas(), BorderLayout.CENTER);
+			window.pack();
+			window.setVisible(true);
+			window.setSize(200, 200);
+		}
 	}
 	
 	public static void main (String[] args) {
