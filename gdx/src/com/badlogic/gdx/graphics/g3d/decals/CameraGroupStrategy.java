@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 
@@ -33,6 +34,9 @@ import com.badlogic.gdx.utils.Pool;
  * </p>
  * <p>
  * Can produce invisible artifacts when transparent decals overlap each other.
+ * </p>
+ * <p>
+ * Needs to be explicitely disposed as it might allocate a ShaderProgram when GLSL 2.0 is used.
  * </p>
  * <p>
  * States (* = any, EV = entry value - same as value before flush):<br/>
@@ -74,7 +78,7 @@ import com.badlogic.gdx.utils.Pool;
  * </tr>
  * </table>
  * </p> */
-public class CameraGroupStrategy implements GroupStrategy {
+public class CameraGroupStrategy implements GroupStrategy, Disposable {
 	private static final int GROUP_OPAQUE = 0;
 	private static final int GROUP_BLEND = 1;
 
@@ -211,5 +215,10 @@ public class CameraGroupStrategy implements GroupStrategy {
 	@Override
 	public ShaderProgram getGroupShader (int group) {
 		return shader;
+	}
+
+	@Override
+	public void dispose () {
+		if(shader != null) shader.dispose();
 	}
 }
