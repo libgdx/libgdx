@@ -389,9 +389,27 @@ public class TextField extends Widget {
 				if (style.font.containsCharacter(c)) builder.append(c);
 			}
 			content = builder.toString();
-			text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
-			updateDisplayText();
-			cursor += content.length();
+			
+			if (!hasSelection) {
+				text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
+				updateDisplayText();
+				cursor += content.length();
+			} else {
+				int minIndex = Math.min(cursor, selectionStart);
+				int maxIndex = Math.max(cursor, selectionStart);
+
+				text = (minIndex > 0 ? text.substring(0, minIndex) : "")
+					+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
+				cursor = minIndex;
+				text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
+				updateDisplayText();
+				cursor=minIndex+content.length();
+				clearSelection();
+			}
+			
+			
+			
+			
 		}
 	}
 
