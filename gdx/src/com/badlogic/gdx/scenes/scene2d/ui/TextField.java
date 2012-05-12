@@ -364,7 +364,11 @@ public class TextField extends Widget {
 		return false;
 	}
 
-	private void copy () {
+	/**
+	 * Copies the contents of this TextField to the {@link Clipboard} implementation
+	 * set on this TextField.
+	 */
+	public void copy () {
 		if (hasSelection) {
 			int minIndex = Math.min(cursor, selectionStart);
 			int maxIndex = Math.max(cursor, selectionStart);
@@ -372,6 +376,10 @@ public class TextField extends Widget {
 		}
 	}
 
+	/**
+	 * Pastes the content of the {@link Clipboard} implementation set on this Textfield
+	 * to this TextField.
+	 */
 	private void paste () {
 		String content = clipboard.getContents();
 		if (content != null) {
