@@ -203,6 +203,10 @@ public class LwjglApplication implements Application {
 				if (graphics.vsync && graphics.config.useCPUSynch) {
 					Display.sync(60);
 				}
+			} else {
+				// Effectively sleeps for a little while so we don't spend all available
+				// cpu power in an essentially empty loop.
+				Display.sync(60);
 			}
 		}
 
