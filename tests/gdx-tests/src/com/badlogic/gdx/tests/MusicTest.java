@@ -41,8 +41,9 @@ public class MusicTest extends GdxTest {
 	@Override
 	public void create () {
 		for (int i = 0; i < music.length; i++) {
-			music[i] = Gdx.audio.newMusic(Gdx.files.internal("data/warmup.mp3"));
+			music[i] = Gdx.audio.newMusic(Gdx.files.internal("data/cloudconnected.ogg"));
 			music[i].setLooping(true);
+			music[i].setLooping(false);
 		}
 
 		buttons = new TextureRegion(new Texture(Gdx.files.internal("data/playback.png")));
@@ -60,7 +61,7 @@ public class MusicTest extends GdxTest {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(buttons, 0, 0);
-		font.draw(batch, "\"Three of a perfect pair: " + music[0].getPosition(), 10, Gdx.graphics.getHeight() - 20);
+//		font.draw(batch, "\"Three of a perfect pair: " + music[0].getPosition(), 10, Gdx.graphics.getHeight() - 20);
 		batch.end();
 
 		if (Gdx.input.justTouched()) {

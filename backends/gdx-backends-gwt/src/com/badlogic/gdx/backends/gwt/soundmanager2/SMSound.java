@@ -19,7 +19,17 @@ public class SMSound extends JavaScriptObject {
 	}-*/;
 	
 	public native final void play() /*-{
-		this.play();
+		if(this.loops) {
+			var sound = this;		
+			function loopSound(soundID) { 
+				sound.play({onfinish:function(){ 
+				loopSound(soundID); 
+				}}); 
+			}
+			loopSound(this);
+		} else {
+			this.play();
+		}
 	}-*/;
 	
 	public native final void resume() /*-{
@@ -40,5 +50,9 @@ public class SMSound extends JavaScriptObject {
 	
 	public native final void loops(int loops) /*-{
 		this.loops = loops;
+	}-*/;
+	
+	public native final int playState() /*-{
+		return this.playState;
 	}-*/;
 }

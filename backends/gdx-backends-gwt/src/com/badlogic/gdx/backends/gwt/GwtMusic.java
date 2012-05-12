@@ -14,11 +14,12 @@ public class GwtMusic implements Music {
 	public GwtMusic (FileHandle file) {
 		String url = ((GwtApplication)Gdx.app).getBaseUrl() + file.path();
 		sound = SoundManager.createSound(url, url);
+		sound.loops(0);
 	}
 	
 	@Override
 	public void play () {
-		if(isPlaying) return;
+		if(isPlaying()) return;
 		sound.play();
 		isPlaying = true;
 	}
@@ -37,12 +38,13 @@ public class GwtMusic implements Music {
 
 	@Override
 	public boolean isPlaying () {
+		isPlaying &= sound.playState() == 1;
 		return isPlaying;
 	}
 
 	@Override
 	public void setLooping (boolean isLooping) {
-		sound.loops(isLooping?100000:1);
+		sound.loops(isLooping?999:0);
 		this.isLooping = isLooping;
 	}
 
