@@ -42,6 +42,13 @@ public class FileHandle {
 	public String nameWithoutExtension () {
 		throw new GdxRuntimeException("Stub");
 	}
+	
+	/**
+	 * @return the path and filename without the extension, e.g. dir/dir2/file.png -> dir/dir2/file
+	 */
+	public String pathWithoutExtension() {
+	    throw new GdxRuntimeException("Stub");
+	}
 
 	public FileType type () {
 		throw new GdxRuntimeException("Stub");

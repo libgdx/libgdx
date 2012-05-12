@@ -73,10 +73,16 @@ public class FileHandle {
 		this.type = type;
 	}
 
+	/**
+	 * @return the path of the file as specified on construction, e.g. Gdx.files.internal("dir/file.png") -> dir/file.png.
+	 */
 	public String path () {
 		return file.getPath();
 	}
 
+	/**
+	 * @return the name of the file, without any parent paths.
+	 */
 	public String name () {
 		return file.getName();
 	}
@@ -88,6 +94,9 @@ public class FileHandle {
 		return name.substring(dotIndex + 1);
 	}
 
+	/**
+	 * @return the name of the file, without parent paths or the extension.
+	 */
 	public String nameWithoutExtension () {
 		String name = file.getName();
 		int dotIndex = name.lastIndexOf('.');
