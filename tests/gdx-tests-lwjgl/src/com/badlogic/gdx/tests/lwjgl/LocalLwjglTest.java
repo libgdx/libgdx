@@ -15,63 +15,68 @@
  ******************************************************************************/
 package com.badlogic.gdx.tests.lwjgl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.EarClippingTriangulator;
+import com.badlogic.gdx.math.Vector2;
 
-public class LocalLwjglTest implements ApplicationListener {
-	private Mesh mesh;
-
+public class LocalLwjglTest extends ApplicationAdapter {
+	ShapeRenderer renderer;
+	OrthographicCamera camera;
+	float[] coords = {-2.0f, 0.0f, -2.0f, 0.5f, 0.0f, 1.0f, 0.5f, 2.875f, 1.0f,0.5f, 1.5f,1.0f, 2.0f,1.0f, 2.0f,0.0f};
+	private List<Vector2> triangles;
+	
 	@Override
 	public void create () {
-		float[] vertices = new float[] {0, 0, 0, // point 0 (invisible)
-			-0.5f, -0.5f, 0, // point 1
-			0.5f, -0.5f, 0, // point 2
-			0, 0.5f, 0}; // point 3
-
-		if (mesh == null) {
-			mesh = new Mesh(true, 3, 3, new VertexAttribute(Usage.Position, 3, "a_position"));
-			mesh.setVertices(vertices, 3, 3 * 3); // Heres the problem, the offset does NOT work as expected
-			mesh.setIndices(new short[] {0, 1, 2});
-
-// Get the vertices again and see whats in them
-			float[] testv = new float[12];
-			mesh.getVertices(testv);
-
-			int i = 0;
-			while (i < testv.length) {
-				System.out.print(i + ":" + testv[i++]);
-				System.out.print(" " + i + ":" + testv[i++]);
-				System.out.print(" " + i + ":" + testv[i++] + "\n");
-			}
+		renderer = new ShapeRenderer();
+		camera = new OrthographicCamera(10, 10);
+		camera.position.set(0, 0, 0);
+		camera.update();
+		
+		List<Vector2> poly = new ArrayList<Vector2>();
+		for(int i = 0; i < coords.length; i+=2) {
+			poly.add(new Vector2(coords[i], coords[i+1]));
 		}
-	}
-
-	@Override
-	public void dispose () {
-	}
-
-	@Override
-	public void pause () {
+		triangles = new EarClippingTriangulator().computeTriangles(poly);
 	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		Gdx.gl10.glColor4f(1, 1, 1, 1);
-		mesh.render(GL10.GL_TRIANGLES);
-	}
-
-	@Override
-	public void resize (int width, int height) {
-	}
-
-	@Override
-	public void resume () {
+		
+		renderer.setProjectionMatrix(camera.combined);
+		renderer.setColor(1, 1, 1, 1);
+		renderer.begin(ShapeType.Line);
+		for(int j = 0; j < coords.length - 2; j+=2) {
+			renderer.line(coords[j], coords[j+1], coords[j+2], coords[j+3]);			
+		}
+		renderer.line(coords[0], coords[1], coords[coords.length - 2], coords[coords.length - 1]);
+		renderer.end();
+		
+		renderer.setColor(1, 0, 0, 1);
+		renderer.translate(0, -4, 0);
+		renderer.begin(ShapeType.Triangle);
+		for(int i = 0; i < triangles.size(); i+=3) {
+			Vector2 v1 = triangles.get(i);
+			Vector2 v2 = triangles.get(i+1);
+			Vector2 v3 = triangles.get(i+2);
+			renderer.triangle(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
+		}
+		renderer.end();
+		renderer.identity();
 	}
 
 	public static void main (String[] argv) {
