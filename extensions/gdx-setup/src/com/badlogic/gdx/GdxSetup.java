@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Given some parameters, this will create all the projects for
+ * Given some parameters, this will create or updates all the projects for
  * a libgdx application targeting multiple platforms. Fetches
  * the latest nightlies from the build server.
  * 
@@ -119,6 +119,31 @@ public class GdxSetup {
 			new CopyResource("html/web.xml", htmlPath + "/war/WEB-INF/web.xml"),
 			new CopyResource("html/assets.txt", htmlPath + "/war/assets.txt"),
 			new CopyResource("html/index.html", htmlPath + "/war/index.html"),
+		});
+	}
+	
+	public void update() {
+		log("Updating core project");
+		String corePath = workspace + projectName;
+		String androidPath = workspace + projectName + "-android";
+		
+		executeTasks(new Task[] {
+			new Download(NIGHTLIES + "gdx.jar", corePath + "/lib/gdx.jar"),
+			new Download(NIGHTLIES + "gdx-natives.jar", corePath + "/lib/gdx-natives.jar"),
+			new Download(NIGHTLIES + "/sources/gdx-sources.jar", corePath + "/lib/gdx-sources.jar"),
+			new Download(NIGHTLIES + "gdx-backend-lwjgl.jar", corePath + "/lib/gdx-backend-lwjgl.jar"),
+			new Download(NIGHTLIES + "gdx-backend-lwjgl-natives.jar", corePath + "/lib/gdx-backend-lwjgl-natives.jar"),
+			new Download(NIGHTLIES + "gdx-backend-android.jar", corePath + "/lib/gdx-backend-android.jar"),
+			new Download(NIGHTLIES + "gdx-backend-gwt.jar", corePath + "/lib/gdx-backend-gwt.jar"),
+			new Download(NIGHTLIES + "/sources/gdx-backend-gwt-sources.jar", corePath + "/lib/gdx-backend-gwt-sources.jar"),
+		});
+		
+		log("Updating android project");
+		executeTasks(new Task[] {
+			new Download(NIGHTLIES + "/armeabi/libgdx.so", androidPath + "/libs/armeabi/libgdx.so"),
+			new Download(NIGHTLIES + "/armeabi/libandroidgl20.so", androidPath + "/libs/armeabi/libandroidgl20.so"),
+			new Download(NIGHTLIES + "/armeabi-v7a/libgdx.so", androidPath + "/libs/armeabi-v7a/libgdx.so"),
+			new Download(NIGHTLIES + "/armeabi-v7a/libandroidgl20.so", androidPath + "/libs/armeabi-v7a/libandroidgl20.so"),
 		});
 	}
 	
@@ -247,55 +272,108 @@ public class GdxSetup {
 	}
 	
 	private static void printUsage() {
-		log("Usage: java -jar gdx-setup.jar <arg1> <arg2> ...");
-		log("Arguments (all are mandatory): ");
-		log("   -workspace <path-to-workspace> ... the workspace directory to create the projects in.");
-		log("   -project <project-name>        ... the name of the project");
-		log("   -package <package-name>        ... the package name");
-		log("   -mainclass <main-class-name>   ... the name of the main class ");
+		log("Usage: java -jar gdx-setup.jar COMMAND [...]");
+		log("COMMANDs are: ");
+		log("    create");
+		log("      Mandatory arguments:");
+		log("        -workspace <path-to-workspace> ... the workspace directory to create the projects in.");
+		log("        -project <project-name>        ... the name of the project");
+		log("        -package <package-name>        ... the package name");
+		log("        -mainclass <main-class-name>   ... the name of the main class ");		
+		log("    update");
+		log("      Mandatory arguments:");
+		log("        -workspace <path-to-workspace> ... the workspace directory to update the projects in.");
+		log("        -project <project-name>        ... the name of the project to update");
 	}
 	
-	static String[] knownArgs = { "-workspace", "-project", "-package", "-mainclass" };
+	static String[] knownArgsCreate = { "-workspace", "-project", "-package", "-mainclass" };
+	static String[] knownArgsUpdate = { "-workspace", "-project" };
 	
 	private static Map<String, String> parseArgs(String[] args) {
 		Map<String, String> parsedArgs = new HashMap<String, String>();
-		for(int i = 0; i < args.length;) {
-			String token = args[i];
-			boolean known = false;
-			for(String knownArg: knownArgs) {
-				if(token.equals(knownArg)) {
-					if(args.length == i + 1) {
-						log("expected value for argument '" + knownArg + "'");
-						printUsage();
-						System.exit(-1);
+		if (args.length > 0 && args[0].equals("create"))
+		{
+			for(int i = 1; i < args.length;) {
+				String token = args[i];
+				boolean known = false;
+				for(String knownArg: knownArgsCreate) {
+					if(token.equals(knownArg)) {
+						if(args.length == i + 1) {
+							log("expected value for argument '" + knownArg + "'");
+							printUsage();
+							System.exit(-1);
+						}
+						parsedArgs.put(knownArg, args[i+1]);
+						known = true;
+						i+=2;
+						break;
 					}
-					parsedArgs.put(knownArg, args[i+1]);
-					known = true;
-					i+=2;
-					break;
+				}
+				if(!known) {
+					log("Unkown argument " + token);
+					printUsage();
+					System.exit(-1);
 				}
 			}
-			if(!known) {
-				log("Unkown argument " + token);
-				printUsage();
-				System.exit(-1);
+			
+			for(String arg: knownArgsCreate) {
+				if(!parsedArgs.containsKey(arg)) {
+					log("missing argument " + arg);
+					printUsage();
+					System.exit(-1);
+				}
+			}		
+		}
+		else
+		if (args.length > 0 && args[0].equals("update")) {
+			for(int i = 1; i < args.length;) {
+				String token = args[i];
+				boolean known = false;
+				for(String knownArg: knownArgsUpdate) {
+					if(token.equals(knownArg)) {
+						if(args.length == i + 1) {
+							log("expected value for argument '" + knownArg + "'");
+							printUsage();
+							System.exit(-1);
+						}
+						parsedArgs.put(knownArg, args[i+1]);
+						known = true;
+						i+=2;
+						break;
+					}
+				}
+				if(!known) {
+					log("Unkown argument " + token);
+					printUsage();
+					System.exit(-1);
+				}
+			}
+			
+			for(String arg: knownArgsUpdate) {
+				if(!parsedArgs.containsKey(arg)) {
+					log("missing argument " + arg);
+					printUsage();
+					System.exit(-1);
+				}
 			}
 		}
-		
-		for(String arg: knownArgs) {
-			if(!parsedArgs.containsKey(arg)) {
-				log("missing argument " + arg);
-				printUsage();
-				System.exit(-1);
-			}
+		else {
+			printUsage();
+			System.exit(-1);
 		}
-		
 		return parsedArgs;
 	}
 	
 	public static void main (String[] args) {
-		Map<String, String> parsedArgs = parseArgs(args);
-		GdxSetup setup = new GdxSetup(parsedArgs.get("-workspace"), parsedArgs.get("-project"), parsedArgs.get("-package"), parsedArgs.get("-mainclass"));
-		setup.create();
+		Map<String, String> parsedArgs = parseArgs(args);		
+		if (args[0].equals("create")) {
+			GdxSetup setup = new GdxSetup(parsedArgs.get("-workspace"), parsedArgs.get("-project"), parsedArgs.get("-package"), parsedArgs.get("-mainclass"));
+			setup.create();
+		}
+		else
+		if (args[0].equals("update")) {
+			GdxSetup setup = new GdxSetup(parsedArgs.get("-workspace"), parsedArgs.get("-project"), null, null);
+			setup.update();			
+		}
 	}
 }
