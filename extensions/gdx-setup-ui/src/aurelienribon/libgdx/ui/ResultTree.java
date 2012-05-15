@@ -162,7 +162,7 @@ public class ResultTree extends JTree {
 		// html
 
 		DefaultMutableTreeNode htmlSrcNode = nodes.get("#DIR#prj-html/src");
-		DefaultMutableTreeNode htmlSrcAppGwtNode = nodes.get("prj-html/src/MyGame.gwt.xml");
+		DefaultMutableTreeNode htmlSrcAppGwtNode = nodes.get("prj-html/src/GwtDefinition.gwt.xml");
 		DefaultMutableTreeNode htmlSrcClientDirNode = nodes.get("#DIR#prj-html/src/client");
 
 		htmlSrcNode.removeAllChildren();

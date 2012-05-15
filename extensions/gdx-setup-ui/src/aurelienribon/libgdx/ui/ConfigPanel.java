@@ -130,7 +130,6 @@ public class ConfigPanel extends javax.swing.JPanel {
 			if (!Pattern.compile("[a-zA-Z0-9_-]*").matcher(field.getText()).matches()) {
 				String msg = "Only alphanumeric, '-' and '_' characters are allowed for project name.";
 				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigPanel.this);
-
 				JOptionPane.showMessageDialog(frame, msg);
 				field.setText(backup);
 				update();
@@ -150,11 +149,9 @@ public class ConfigPanel extends javax.swing.JPanel {
 		@Override
 		public void keyReleased(KeyEvent e) {
 			JTextField field = (JTextField) e.getSource();
-			if (!Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z_][a-zA-Z0-9_]*)*\\.?").matcher(field.getText()).matches()) {
-				String msg = "Only alphanumeric and '_' characters are allowed for class names.\n"
-					+ "Moreover, package name parts cannot start with a number.";
+			if (!Pattern.compile("[a-zA-Z0-9_\\.]*").matcher(field.getText()).matches()) {
+				String msg = "Only alphanumeric, '_' and '.' characters are allowed for package name.";
 				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigPanel.this);
-
 				JOptionPane.showMessageDialog(frame, msg);
 				field.setText(backup);
 				update();
@@ -174,9 +171,8 @@ public class ConfigPanel extends javax.swing.JPanel {
 		@Override
 		public void keyReleased(KeyEvent e) {
 			JTextField field = (JTextField) e.getSource();
-			if (!Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*").matcher(field.getText()).matches()) {
-				String msg = "Only alphanumeric and '_' characters are allowed for class names.\n"
-					+ "Moreover, class names cannot start with a number.";
+			if (!Pattern.compile("[a-zA-Z0-9_]*").matcher(field.getText()).matches()) {
+				String msg = "Only alphanumeric and '_' characters are allowed for class name.\n";
 				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigPanel.this);
 
 				JOptionPane.showMessageDialog(frame, msg);

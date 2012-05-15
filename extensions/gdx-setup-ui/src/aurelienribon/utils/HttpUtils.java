@@ -68,7 +68,6 @@ public class HttpUtils {
 				connection.setDoInput(true);
 				connection.setDoOutput(false);
 				connection.setUseCaches(true);
-				connection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11");
 				connection.setConnectTimeout(3000);
 				connection.connect();
 

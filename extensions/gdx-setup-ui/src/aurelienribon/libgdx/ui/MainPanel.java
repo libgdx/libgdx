@@ -17,6 +17,7 @@ public class MainPanel extends PaintedPanel {
     public MainPanel() {
         initComponents();
 
+		versionlabel.setText("v1.0.1");
 		versionlabel.addMouseListener(new MouseAdapter() {
 			@Override public void mousePressed(MouseEvent e) {
 				if (Desktop.isDesktopSupported()) {

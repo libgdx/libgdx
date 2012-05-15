@@ -92,8 +92,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 			@Override public void completed() {
 				LibraryDef def = new LibraryDef(output.toString());
 				cfg.registerLibrary("libgdx", def);
-				libgdxLoadingLabel.setIcon(Res.getImage("ic_ok.png"));
-				libgdxLoadingLabel.setToolTipText("Latest definition has been successfully downloaded.");
+				libgdxLoadingLabel.setIcon(null);
 			}
 			@Override public void error(IOException ex) {
 				libgdxLoadingLabel.setIcon(Res.getImage("ic_error.png"));

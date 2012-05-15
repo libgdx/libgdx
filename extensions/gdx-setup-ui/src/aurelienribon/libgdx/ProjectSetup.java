@@ -157,7 +157,7 @@ public class ProjectSetup {
 		if (cfg.isHtmlIncluded) {
 			src = new File(tmpDst, "prj-html");
 			dst = new File(tmpDst, cfg.getHtmlPrjName());
-			move(src, "src/MyGame.gwt.xml", "src/" + cfg.getPackageName().replace('.', '/') + "/" + cfg.getMainClassName() + ".gwt.xml");
+			move(src, "src/GwtDefinition.gwt.xml", "src/" + cfg.getPackageName().replace('.', '/') + "/GwtDefinition.gwt.xml");
 			move(src, "src/client", "src/" + cfg.getPackageName().replace('.', '/') + "/client");
 			templateDir(src);
 			FileUtils.moveDirectory(src, dst);
@@ -165,13 +165,17 @@ public class ProjectSetup {
 	}
 
 	private void templateDir(File dir) throws IOException {
+		String[] filteredExts = new String[] {".jar", ".zip", ".png"};
+
 		for (File file : dir.listFiles()) {
 			if (file.isDirectory()) {
 				templateDir(file);
 			} else {
-				if (file.getName().endsWith(".jar")) continue;
-				if (file.getName().endsWith(".zip")) continue;
-				templateManager.processOver(file);
+				boolean isValid = true;
+				for (String filter : filteredExts) {
+					if (file.getName().endsWith(filter)) {isValid = false; break;}
+				}
+				if (isValid) templateManager.processOver(file);
 			}
 		}
 	}

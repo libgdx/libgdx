@@ -34,10 +34,8 @@ public class TemplateManager {
 	}
 
 	public void processOver(File file) throws IOException {
-		if (!file.getName().endsWith(".png")) {
-			String input = FileUtils.readFileToString(file);
-			FileUtils.writeStringToFile(file, process(input));			
-		}
+		String input = FileUtils.readFileToString(file);
+		FileUtils.writeStringToFile(file, process(input));
 	}
 
 	public String process(URL url) {
