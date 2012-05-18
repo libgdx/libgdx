@@ -1,0 +1,8 @@
+[versions]
+2.0.0
+1.0.1
+1.0.0
+
+[libraries]
+libgdx      = http://libgdx.googlecode.com/svn/trunk/extensions/gdx-setup-ui/config/libgdx.txt
+tweenengine = http://www.aurelienribon.com/universal-tween-engine/description.txt
