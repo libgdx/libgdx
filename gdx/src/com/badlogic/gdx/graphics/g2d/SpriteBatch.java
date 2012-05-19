@@ -1180,9 +1180,21 @@ public class SpriteBatch implements Disposable {
 	 * 
 	 * @param shader the {@link ShaderProgram} or null to use the default shader. */
 	public void setShader (ShaderProgram shader) {
-		if (drawing) flush();
+		if (drawing) {
+			flush();
+			if (customShader != null)
+				customShader.end();
+			else
+				this.shader.end();
+		}
 		customShader = shader;
-		if (drawing) setupMatrices();
+		if (drawing) {
+			if (customShader != null)
+				customShader.begin();
+			else
+				this.shader.begin();
+			setupMatrices();
+		}
 	}
 
 	/** @return whether blending for sprites is enabled */
