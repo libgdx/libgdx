@@ -214,6 +214,7 @@ public class LwjglCanvas implements Application {
 		running = false;
 		try {
 			Display.destroy();
+			audio.dispose();
 		} catch (Throwable ignored) {
 		}
 		EventQueue.invokeLater(new Runnable() {
