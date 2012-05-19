@@ -572,13 +572,28 @@ public class BitmapFont implements Disposable {
 	public TextBounds getBounds (CharSequence str) {
 		return getBounds(str, 0, str.length());
 	}
-
+	
+	/** Returns the size of the specified string. The height is the distance from the top of most capital letters in the font (the
+	 * {@link #getCapHeight() cap height}) to the baseline. */
+	public TextBounds getBounds (CharSequence str, TextBounds textBounds) {
+		return getBounds(str, 0, str.length());
+	}
+	
 	/** Returns the size of the specified substring. The height is the distance from the top of most capital letters in the font
 	 * (the {@link #getCapHeight() cap height}) to the baseline. Note the same TextBounds instance is used for all methods that
 	 * return TextBounds.
 	 * @param start The first character of the string.
 	 * @param end The last character of the string (exclusive). */
 	public TextBounds getBounds (CharSequence str, int start, int end) {
+		return getBounds(str, start, end, this.textBounds);
+	}
+
+	/** Returns the size of the specified substring. The height is the distance from the top of most capital letters in the font
+	 * (the {@link #getCapHeight() cap height}) to the baseline. Note the same TextBounds instance is used for all methods that
+	 * return TextBounds.
+	 * @param start The first character of the string.
+	 * @param end The last character of the string (exclusive). */
+	public TextBounds getBounds (CharSequence str, int start, int end, TextBounds textBounds) {
 		int width = 0;
 		Glyph lastGlyph = null;
 		while (start < end) {
@@ -606,6 +621,12 @@ public class BitmapFont implements Disposable {
 	 * capital letters in the font (the {@link #getCapHeight() cap height}) to the baseline of the last line of text. Note the same
 	 * TextBounds instance is used for all methods that return TextBounds. */
 	public TextBounds getMultiLineBounds (CharSequence str) {
+		return getMultiLineBounds(str, this.textBounds);
+	}
+	
+	/** Returns the size of the specified string, which may contain newlines. The height is the distance from the top of most
+	 * capital letters in the font (the {@link #getCapHeight() cap height}) to the baseline of the last line of text. */
+	public TextBounds getMultiLineBounds (CharSequence str, TextBounds textBounds) {
 		int start = 0;
 		float maxWidth = 0;
 		int numLines = 0;
@@ -621,12 +642,19 @@ public class BitmapFont implements Disposable {
 		textBounds.height = data.capHeight + (numLines - 1) * data.lineHeight;
 		return textBounds;
 	}
-
+	
 	/** Returns the size of the specified string, which may contain newlines and is wrapped to keep it within a rectangle of the
 	 * specified width. The height is the distance from the top of most capital letters in the font (the {@link #getCapHeight() cap
 	 * height}) to the baseline of the last line of text. Note the same TextBounds instance is used for all methods that return
 	 * TextBounds. */
 	public TextBounds getWrappedBounds (CharSequence str, float wrapWidth) {
+		return getWrappedBounds(str, wrapWidth, this.textBounds);
+	}
+
+	/** Returns the size of the specified string, which may contain newlines and is wrapped to keep it within a rectangle of the
+	 * specified width. The height is the distance from the top of most capital letters in the font (the {@link #getCapHeight() cap
+	 * height}) to the baseline of the last line of text. */
+	public TextBounds getWrappedBounds (CharSequence str, float wrapWidth, TextBounds textBounds) {
 		if (wrapWidth <= 0) wrapWidth = Integer.MAX_VALUE;
 		float down = this.data.down;
 		int start = 0;
