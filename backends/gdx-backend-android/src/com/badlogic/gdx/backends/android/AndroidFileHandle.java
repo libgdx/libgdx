@@ -33,7 +33,7 @@ public class AndroidFileHandle extends FileHandle {
 	final AssetManager assets;
 
 	AndroidFileHandle (AssetManager assets, String fileName, FileType type) {
-		super(fileName, type);
+		super(fileName.replaceAll("\\", "/"), type);
 		this.assets = assets;
 	}
 
@@ -43,6 +43,7 @@ public class AndroidFileHandle extends FileHandle {
 	}
 
 	public FileHandle child (String name) {
+		name = name.replaceAll("\\", "/");
 		if (file.getPath().length() == 0) return new AndroidFileHandle(assets, new File(name), type);
 		return new AndroidFileHandle(assets, new File(file, name), type);
 	}
@@ -127,7 +128,7 @@ public class AndroidFileHandle extends FileHandle {
 				assets.open(fileName).close(); // Check if file exists.
 				return true;
 			} catch (Exception ex) {			
-//				 This is SUPER slow!
+//				 This is SUPER slow! but we need it for directories.
 //				 try {
 //				 return assets.list(fileName).length > 0;
 //				 } catch (Exception ignored) {
