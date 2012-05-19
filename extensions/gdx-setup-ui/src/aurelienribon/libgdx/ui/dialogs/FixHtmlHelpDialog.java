@@ -16,7 +16,7 @@ public class FixHtmlHelpDialog extends javax.swing.JDialog {
 		Style.registerCssClasses(num1, ".helpNumber");
 		Style.registerCssClasses(num2, ".helpNumber");
 		Style.registerCssClasses(num3, ".helpNumber");
-		Style.apply(getContentPane(), new Style(Res.class.getResource("style.css")));
+		Style.apply(getContentPane(), new Style(Res.getUrl("css/style.css")));
     }
 
 	// -------------------------------------------------------------------------

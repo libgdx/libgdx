@@ -2,7 +2,7 @@ package aurelienribon.libgdx.ui.dialogs;
 
 import aurelienribon.libgdx.ProjectConfiguration;
 import aurelienribon.libgdx.ProjectSetup;
-import aurelienribon.libgdx.ui.AppContext;
+import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.ui.css.Style;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -28,7 +28,7 @@ public class GoDialog extends javax.swing.JDialog {
 		Style.registerCssClasses(fixHtmlQuestion, ".questionLabel");
 		Style.registerCssClasses(paintedPanel1, ".optionGroupPanel");
 		Style.registerCssClasses(progressArea, ".progressArea");
-		Style.apply(getContentPane(), new Style(Res.class.getResource("style.css")));
+		Style.apply(getContentPane(), new Style(Res.getUrl("css/style.css")));
 
 		importQuestion.addMouseListener(new MouseAdapter() {
 			@Override public void mousePressed(MouseEvent e) {
@@ -48,8 +48,7 @@ public class GoDialog extends javax.swing.JDialog {
 			}
 		});
 
-		ProjectConfiguration cfg = AppContext.inst().getConfig();
-		setup = new ProjectSetup(cfg);
+		setup = new ProjectSetup(Ctx.cfg);
 
 		new Thread(new Runnable() {
 			@Override public void run() {
@@ -58,6 +57,10 @@ public class GoDialog extends javax.swing.JDialog {
 					setup.inflateProjects();
 					report(" done\nDecompressing libraries...");
 					setup.inflateLibraries();
+					report(" done\nConfiguring libraries...");
+					setup.configureLibraries();
+					report(" done\nPost-processing files...");
+					setup.postProcess();
 					report(" done\nCopying projects...");
 					setup.copy();
 					report(" done\nCleaning...");

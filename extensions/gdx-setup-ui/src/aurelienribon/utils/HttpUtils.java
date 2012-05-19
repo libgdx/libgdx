@@ -23,11 +23,11 @@ public class HttpUtils {
 		return task;
 	}
 
-	public static interface Callback {
-		public void completed();
-		public void canceled();
-		public void error(IOException ex);
-		public void updated(int length, int totalLength);
+	public static class Callback {
+		public void completed() {}
+		public void canceled() {}
+		public void error(IOException ex) {}
+		public void updated(int length, int totalLength) {}
 	}
 
 	public static class DownloadTask {

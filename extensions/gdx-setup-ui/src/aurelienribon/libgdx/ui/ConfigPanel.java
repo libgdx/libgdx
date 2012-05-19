@@ -1,6 +1,5 @@
 package aurelienribon.libgdx.ui;
 
-import aurelienribon.libgdx.ProjectConfiguration;
 import aurelienribon.libgdx.ui.dialogs.AdvancedSettingsDialog;
 import aurelienribon.ui.css.Style;
 import java.awt.event.ActionEvent;
@@ -24,17 +23,15 @@ import javax.swing.SwingUtilities;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class ConfigPanel extends javax.swing.JPanel {
-	private final ProjectConfiguration cfg = AppContext.inst().getConfig();
-
     public ConfigPanel() {
         initComponents();
 
-		nameField.setText(cfg.getProjectName());
-		packageField.setText(cfg.getPackageName());
-		mainClassField.setText(cfg.getMainClassName());
+		nameField.setText(Ctx.cfg.projectName);
+		packageField.setText(Ctx.cfg.packageName);
+		mainClassField.setText(Ctx.cfg.mainClassName);
 
 		try {
-			File destDir = new File(cfg.getDestinationPath());
+			File destDir = new File(Ctx.cfg.destinationPath);
 			destinationField.setText(destDir.getCanonicalPath());
 		} catch (IOException ex) {
 			assert false;
@@ -76,7 +73,7 @@ public class ConfigPanel extends javax.swing.JPanel {
     }
 
 	private void browse() {
-		String path = cfg.getDestinationPath();
+		String path = Ctx.cfg.destinationPath;
 		JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
 
 		JFileChooser chooser = new JFileChooser(new File(path));
@@ -90,14 +87,14 @@ public class ConfigPanel extends javax.swing.JPanel {
 	}
 
 	private void update() {
-		cfg.setProjectName(nameField.getText());
-		cfg.setPackageName(packageField.getText());
-		cfg.setMainClassName(mainClassField.getText());
-		cfg.setDestinationPath(destinationField.getText());
-		cfg.isDesktopIncluded = genDesktopPrjChk.isSelected();
-		cfg.isAndroidIncluded = genAndroidPrjChk.isSelected();
-		cfg.isHtmlIncluded = genHtmlPrjChk.isSelected();
-		AppContext.inst().fireConfigChangedEvent();
+		Ctx.cfg.projectName = nameField.getText();
+		Ctx.cfg.packageName = packageField.getText();
+		Ctx.cfg.mainClassName = mainClassField.getText();
+		Ctx.cfg.destinationPath = destinationField.getText();
+		Ctx.cfg.isDesktopIncluded = genDesktopPrjChk.isSelected();
+		Ctx.cfg.isAndroidIncluded = genAndroidPrjChk.isSelected();
+		Ctx.cfg.isHtmlIncluded = genHtmlPrjChk.isSelected();
+		Ctx.fireConfigChanged();
 	}
 
 	private final KeyListener updateOnTypeKeyListener = new KeyAdapter() {

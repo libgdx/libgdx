@@ -13,8 +13,13 @@ javax-swing-JScrollPane {
 	-swing-border: null;
 }
 
-javax-swing-JCheckBox {
+javax-swing-JCheckBox,
+javax-swing-JToolBar {
 	-swing-opaque: false;
+}
+
+javax-swing-JToolBar > javax-swing-JButton {
+	-swing-margin: 1;
 }
 
 /*******************************************************************************
@@ -24,30 +29,30 @@ javax-swing-JCheckBox {
 .groupPanel {
 	-swing-background: #FAFAFA;
 	-swing-border: arui-groupborder(noarg);
-	-arui-border-stroke: null;
-	-arui-border-thickness: 0;
-	-arui-border-header-stroke: null;
-	-arui-border-header-thickness: 0;
-	-arui-border-header-fill: lineargradient(0, 0, 0, 1, 0, #4D6082, 1, #3D5277);
-	-arui-border-margin: 3 6;
-	-arui-border-foreground: #FFF;
-	-arui-border-font: Sans bold 14;
+	-ar-border-stroke: null;
+	-ar-border-thickness: 0;
+	-ar-border-header-stroke: null;
+	-ar-border-header-thickness: 0;
+	-ar-border-header-fill: lineargradient(0, 0, 0, 1, 0, #4D6082, 1, #3D5277);
+	-ar-border-margin: 3 6;
+	-ar-border-foreground: #FFF;
+	-ar-border-font: Sans bold 14;
 }
 
 #configPanel {
-	-arui-border-title: "Configuration";
+	-ar-border-title: "Configuration";
 }
 
 #librarySetupPanel {
-	-arui-border-title: "Library selection";
+	-ar-border-title: "Library selection";
 }
 
 #resultPanel {
-	-arui-border-title: "Overview";
+	-ar-border-title: "Overview";
 }
 
 #goPanel {
-	-arui-border-title: "Generation";
+	-ar-border-title: "Generation";
 }
 
 /*******************************************************************************
@@ -55,7 +60,7 @@ javax-swing-JCheckBox {
  ******************************************************************************/
 
 .rootPanel {
-	-arui-fill: texture(url("/res/gfx/bg.png"));
+	-ar-fill: texture(url("/res/gfx/bg.png"));
 }
 
 .rootPanel > javax-swing-JLabel {
@@ -87,7 +92,7 @@ javax-swing-JCheckBox {
  ******************************************************************************/
 
 .optionGroupPanel {
-	-arui-fill: #3FFF;
+	-ar-fill: #3FFF;
 	-swing-opaque: false;
 }
 
@@ -139,6 +144,10 @@ javax-swing-JCheckBox {
 	-swing-foreground: #3D5277;
 }
 
+.legendLabel {
+	-swing-border: emptyborder(5, 5, 5, 5);
+}
+
 /*******************************************************************************
  * LibInfo dialog
  ******************************************************************************/
@@ -147,11 +156,11 @@ javax-swing-JCheckBox {
 	-swing-font-size: 14;
 }
 
-.libInfoHomepageLabel {
-	-swing-foreground: #AAA;
+.libInfoUrlLabel {
+	-swing-foreground: #CCF;
 }
 
-.libInfoHomepageLabel:hover {
+.libInfoUrlLabel:hover {
 	-swing-foreground: #FFF;
 }
 
@@ -173,10 +182,22 @@ javax-swing-JCheckBox {
 	-swing-font-style: bold;
 }
 
-.versionLabel:hover {
-	-swing-foreground: #88F;
-}
-
 .helpNumber {
 	-swing-font-size: 30;
+}
+
+.versionLabelError {
+	-swing-foreground: #FAA;
+}
+
+.versionLabelNoUpdate {
+	-swing-foreground: #AFA;
+}
+
+.versionLabelUpdateFound {
+	-swing-foreground: #FFA;
+}
+
+.versionLabelUpdateFound:hover {
+	-swing-foreground: #FFF;
 }

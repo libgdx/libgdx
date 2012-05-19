@@ -11,6 +11,9 @@ Write your game once, deploy to Windows, Linux, Mac OSX and Android!
 [homepage]
 http://libgdx.badlogicgames.com/
 
+[gwt]
+com.badlogic.gdx.backends.gdx_backends_gwt
+
 [stable-version]
 0.9.3
 

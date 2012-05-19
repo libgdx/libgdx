@@ -1,7 +1,6 @@
 package aurelienribon.libgdx.ui.dialogs;
 
-import aurelienribon.libgdx.ProjectConfiguration;
-import aurelienribon.libgdx.ui.AppContext;
+import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.ui.css.Style;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -19,19 +18,17 @@ import res.Res;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class AdvancedSettingsDialog extends javax.swing.JDialog {
-	private final ProjectConfiguration cfg = AppContext.inst().getConfig();
-
     public AdvancedSettingsDialog(JFrame parent) {
         super(parent, true);
         initComponents();
 
-		commonSuffixField.setText(cfg.commonSuffix);
-		desktopSuffixField.setText(cfg.desktopSuffix);
-		androidSuffixField.setText(cfg.androidSuffix);
-		htmlSuffixField.setText(cfg.htmlSuffix);
-		androidMinSdkField.setText(cfg.androidMinSdkVersion);
-		androidTargetSdkField.setText(cfg.androidTargetSdkVersion);
-		androidMaxSdkField.setText(cfg.androidMaxSdkVersion);
+		commonSuffixField.setText(Ctx.cfg.commonSuffix);
+		desktopSuffixField.setText(Ctx.cfg.desktopSuffix);
+		androidSuffixField.setText(Ctx.cfg.androidSuffix);
+		htmlSuffixField.setText(Ctx.cfg.htmlSuffix);
+		androidMinSdkField.setText(Ctx.cfg.androidMinSdkVersion);
+		androidTargetSdkField.setText(Ctx.cfg.androidTargetSdkVersion);
+		androidMaxSdkField.setText(Ctx.cfg.androidMaxSdkVersion);
 
 		commonSuffixField.addMouseListener(selectOnFocusMouseListener);
 		desktopSuffixField.addMouseListener(selectOnFocusMouseListener);
@@ -57,17 +54,17 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
 		Style.registerCssClasses(title1, ".titleLabel");
 		Style.registerCssClasses(paintedPanel1, ".optionGroupPanel");
 		Style.registerCssClasses(paintedPanel2, ".optionGroupPanel");
-		Style.apply(getContentPane(), new Style(Res.class.getResource("style.css")));
+		Style.apply(getContentPane(), new Style(Res.getUrl("css/style.css")));
     }
 
 	private void update() {
-		cfg.commonSuffix = commonSuffixField.getText();
-		cfg.desktopSuffix = desktopSuffixField.getText();
-		cfg.androidSuffix = androidSuffixField.getText();
-		cfg.androidMinSdkVersion = androidMinSdkField.getText();
-		cfg.androidMaxSdkVersion = androidMaxSdkField.getText();
-		cfg.androidTargetSdkVersion = androidTargetSdkField.getText();
-		AppContext.inst().fireConfigChangedEvent();
+		Ctx.cfg.commonSuffix = commonSuffixField.getText();
+		Ctx.cfg.desktopSuffix = desktopSuffixField.getText();
+		Ctx.cfg.androidSuffix = androidSuffixField.getText();
+		Ctx.cfg.androidMinSdkVersion = androidMinSdkField.getText();
+		Ctx.cfg.androidMaxSdkVersion = androidMaxSdkField.getText();
+		Ctx.cfg.androidTargetSdkVersion = androidTargetSdkField.getText();
+		Ctx.fireConfigChanged();
 	}
 
 	private final KeyListener updateOnTypeKeyListener = new KeyAdapter() {

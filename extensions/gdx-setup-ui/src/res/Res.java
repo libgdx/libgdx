@@ -14,7 +14,7 @@ public class Res {
 
 	public static ImageIcon getImage(String name) {
 		if (!imageIcons.containsKey(name)) {
-			URL url = Res.class.getResource("gfx/" + name);
+			URL url = Res.class.getResource(name);
 			if (url == null) throw new RuntimeException("File not found: " + name);
 			imageIcons.put(name, new ImageIcon(url));
 		}
@@ -26,5 +26,11 @@ public class Res {
 		InputStream is = Res.class.getResourceAsStream(name);
 		if (is == null) throw new RuntimeException("File not found: " + name);
 		return is;
+	}
+
+	public static URL getUrl(String name) {
+		URL url = Res.class.getResource(name);
+		if (url == null) throw new RuntimeException("File not found: " + name);
+		return url;
 	}
 }

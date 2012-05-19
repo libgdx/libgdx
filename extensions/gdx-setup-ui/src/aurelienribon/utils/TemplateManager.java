@@ -18,6 +18,10 @@ public class TemplateManager {
 	private final Map<String, String> replacements = new HashMap<String, String>();
 	private final String varPattern = "[a-zA-Z_][a-zA-Z0-9_]*";
 
+	public void clear() {
+		replacements.clear();
+	}
+
 	public void define(String variable, String replacement) {
 		Matcher m = Pattern.compile(varPattern).matcher(variable);
 		if (!m.matches()) throw new RuntimeException("Variable '" + variable + "' contains invalid characters");

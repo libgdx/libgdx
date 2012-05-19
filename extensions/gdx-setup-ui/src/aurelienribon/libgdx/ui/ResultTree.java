@@ -1,7 +1,6 @@
 package aurelienribon.libgdx.ui;
 
 import aurelienribon.libgdx.LibraryDef;
-import aurelienribon.libgdx.ProjectConfiguration;
 import java.awt.Component;
 import java.io.IOException;
 import java.util.Map;
@@ -21,7 +20,6 @@ import res.Res;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class ResultTree extends JTree {
-	private final ProjectConfiguration cfg = AppContext.inst().getConfig();
 	private final Map<String, DefaultMutableTreeNode> nodes = new TreeMap<String, DefaultMutableTreeNode>();
 	private final DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode();
 
@@ -32,7 +30,7 @@ public class ResultTree extends JTree {
 		setCellRenderer(treeCellRenderer);
 		setOpaque(false);
 
-		AppContext.inst().addListener(new AppContext.Listener() {
+		Ctx.listeners.add(new Ctx.Listener() {
 			@Override public void configChanged() {
 				update();
 			}
@@ -83,9 +81,9 @@ public class ResultTree extends JTree {
 
 		rootNode.removeAllChildren();
 		rootNode.add(commonPrjNode);
-		if (cfg.isDesktopIncluded) rootNode.add(desktopPrjNode);
-		if (cfg.isAndroidIncluded) rootNode.add(androidPrjNode);
-		if (cfg.isHtmlIncluded) rootNode.add(htmlPrjNode);
+		if (Ctx.cfg.isDesktopIncluded) rootNode.add(desktopPrjNode);
+		if (Ctx.cfg.isAndroidIncluded) rootNode.add(androidPrjNode);
+		if (Ctx.cfg.isHtmlIncluded) rootNode.add(htmlPrjNode);
 
 		updateSrc();
 		updateLibs();
@@ -105,8 +103,8 @@ public class ResultTree extends JTree {
 		commonSrcNode.removeAllChildren();
 		previousNode = commonSrcNode;
 
-		if (!cfg.getPackageName().trim().equals("")) {
-			String[] paths = cfg.getPackageName().split("\\.");
+		if (!Ctx.cfg.packageName.trim().equals("")) {
+			String[] paths = Ctx.cfg.packageName.split("\\.");
 			for (String path : paths) {
 				DefaultMutableTreeNode node = new DefaultMutableTreeNode("#DIR#prj-common/src/" + path);
 				previousNode.add(node);
@@ -127,8 +125,8 @@ public class ResultTree extends JTree {
 		desktopSrcNode.removeAllChildren();
 		previousNode = desktopSrcNode;
 
-		if (!cfg.getPackageName().trim().equals("")) {
-			String[] paths = cfg.getPackageName().split("\\.");
+		if (!Ctx.cfg.packageName.trim().equals("")) {
+			String[] paths = Ctx.cfg.packageName.split("\\.");
 			for (String path : paths) {
 				DefaultMutableTreeNode node = new DefaultMutableTreeNode("#DIR#prj-desktop/src/" + path);
 				previousNode.add(node);
@@ -147,8 +145,8 @@ public class ResultTree extends JTree {
 		androidSrcNode.removeAllChildren();
 		previousNode = androidSrcNode;
 
-		if (!cfg.getPackageName().trim().equals("")) {
-			String[] paths = cfg.getPackageName().split("\\.");
+		if (!Ctx.cfg.packageName.trim().equals("")) {
+			String[] paths = Ctx.cfg.packageName.split("\\.");
 			for (String path : paths) {
 				DefaultMutableTreeNode node = new DefaultMutableTreeNode("#DIR#prj-android/src/" + path);
 				previousNode.add(node);
@@ -168,8 +166,8 @@ public class ResultTree extends JTree {
 		htmlSrcNode.removeAllChildren();
 		previousNode = htmlSrcNode;
 
-		if (!cfg.getPackageName().trim().equals("")) {
-			String[] paths = cfg.getPackageName().split("\\.");
+		if (!Ctx.cfg.packageName.trim().equals("")) {
+			String[] paths = Ctx.cfg.packageName.split("\\.");
 			for (String path : paths) {
 				DefaultMutableTreeNode node = new DefaultMutableTreeNode("#DIR#prj-html/src/" + path);
 				previousNode.add(node);
@@ -189,13 +187,19 @@ public class ResultTree extends JTree {
 		DefaultMutableTreeNode androidLibsNode = nodes.get("#DIR#prj-android/libs");
 		DefaultMutableTreeNode htmlLibsNode = nodes.get("#DIR#prj-html/war/WEB-INF/lib");
 
-		for (String libraryName : cfg.getLibraryNames()) {
-			LibraryDef def = cfg.getLibraryDef(libraryName);
-			if (!def.isUsed) continue;
-			for (String path : def.libsCommon) pathToNodes(path, commonLibsNode);
-			for (String path : def.libsDesktop) pathToNodes(path, desktopLibsNode);
-			for (String path : def.libsAndroid) pathToNodes(path, androidLibsNode);
-			for (String path : def.libsHtml) pathToNodes(path, htmlLibsNode);
+		commonLibsNode.removeAllChildren();
+		desktopLibsNode.removeAllChildren();
+		androidLibsNode.removeAllChildren();
+		htmlLibsNode.removeAllChildren();
+
+		for (String libraryName : Ctx.cfg.libs.getNames()) {
+			if (Ctx.cfg.libs.isUsed(libraryName)) {
+				LibraryDef def = Ctx.cfg.libs.getDef(libraryName);
+				for (String path : def.libsCommon) pathToNodes(path, commonLibsNode);
+				for (String path : def.libsDesktop) pathToNodes(path, desktopLibsNode);
+				for (String path : def.libsAndroid) pathToNodes(path, androidLibsNode);
+				for (String path : def.libsHtml) pathToNodes(path, htmlLibsNode);
+			}
 		}
 	}
 
@@ -215,6 +219,8 @@ public class ResultTree extends JTree {
 				nodes.put(names[i], node);
 				if (i == 0) parentNode.add(node);
 				else nodes.get(names[i-1]).add(node);
+			} else if (i == 0) {
+				parentNode.add(node);
 			}
 		}
 	}
@@ -230,15 +236,15 @@ public class ResultTree extends JTree {
 				boolean isDir = name.startsWith("#DIR#");
 
 				name = name.replaceFirst("#DIR#", "");
-				name = name.replace("MyGame", cfg.getMainClassName());
+				name = name.replace("MyGame", Ctx.cfg.mainClassName);
 
-				if (isDir && name.equals("prj-common")) name = cfg.getCommonPrjName();
-				if (isDir && name.equals("prj-desktop")) name = cfg.getDesktopPrjName();
-				if (isDir && name.equals("prj-android")) name = cfg.getAndroidPrjName();
-				if (isDir && name.equals("prj-html")) name = cfg.getHtmlPrjName();
+				if (isDir && name.equals("prj-common")) name = Ctx.cfg.projectName + Ctx.cfg.commonSuffix;
+				if (isDir && name.equals("prj-desktop")) name = Ctx.cfg.projectName + Ctx.cfg.desktopSuffix;
+				if (isDir && name.equals("prj-android")) name = Ctx.cfg.projectName + Ctx.cfg.androidSuffix;
+				if (isDir && name.equals("prj-html")) name = Ctx.cfg.projectName + Ctx.cfg.htmlSuffix;
 
 				label.setText(FilenameUtils.getName(name));
-				label.setIcon(isDir ? Res.getImage("ic_folder.png") : Res.getImage("ic_file.png"));
+				label.setIcon(isDir ? Res.getImage("gfx/ic_folder.png") : Res.getImage("gfx/ic_file.png"));
 			}
 
 			return label;

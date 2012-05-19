@@ -33,7 +33,7 @@ public class DownloadDialog extends javax.swing.JDialog {
 		countLabel.setText("...waiting for response from the server...");
 
 		Style.registerCssClasses(rootPanel, ".rootPanel");
-		Style.apply(getContentPane(), new Style(Res.class.getResource("style.css")));
+		Style.apply(getContentPane(), new Style(Res.getUrl("css/style.css")));
 
 		try {
 			new File(out).getCanonicalFile().getParentFile().mkdirs();
@@ -46,10 +46,14 @@ public class DownloadDialog extends javax.swing.JDialog {
 			OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(out + ".tmp"));
 
 			final HttpUtils.DownloadTask task = HttpUtils.downloadAsync(inputURL, outputStream, fullCallback);
-			addWindowListener(new WindowAdapter() {@Override public void windowClosing(WindowEvent e) {task.stop();}});
+
+			addWindowListener(new WindowAdapter() {@Override public void windowClosing(WindowEvent e) {
+				task.stop();
+				dispose();
+			}});
 
 		} catch (MalformedURLException ex) {
-			assert false;
+			JOptionPane.showMessageDialog(getContentPane(), ex.getMessage());
 		} catch (IOException ex) {
 			JOptionPane.showMessageDialog(getContentPane(), ex.getMessage());
 		}
@@ -63,19 +67,21 @@ public class DownloadDialog extends javax.swing.JDialog {
 		@Override
 		public void completed() {
 			try {
+				FileUtils.deleteQuietly(new File(out));
 				FileUtils.moveFile(new File(out + ".tmp"), new File(out));
 				dispose();
 				callback.completed();
 			} catch (IOException ex) {
 				String msg = "Could not rename \"" + out + ".tmp" + "\" into \"" + out + "\"";
 				JOptionPane.showMessageDialog(getContentPane(), msg);
+				dispose();
 			}
 		}
 
 		@Override
 		public void canceled() {
 			FileUtils.deleteQuietly(new File(out + ".tmp"));
-				dispose();
+			dispose();
 		}
 
 		@Override
@@ -139,25 +145,25 @@ public class DownloadDialog extends javax.swing.JDialog {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(rootPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(countLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(rootPanelLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(rootPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(countLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         rootPanelLayout.setVerticalGroup(
             rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(rootPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nameLabel)
-                    .addComponent(jLabel1))
+                .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
