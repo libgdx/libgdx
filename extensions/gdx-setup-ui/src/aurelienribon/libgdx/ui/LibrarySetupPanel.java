@@ -105,6 +105,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 			}
 			@Override public void error() {
 				System.err.println("[warning] Cannot download the configuration file.");
+				librariesUpdateLabel.setText("Cannot download the configuration file");
 			}
 		});
 	}
