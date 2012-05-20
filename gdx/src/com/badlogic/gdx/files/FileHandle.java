@@ -77,7 +77,7 @@ public class FileHandle {
 	 * @return the path of the file as specified on construction, e.g. Gdx.files.internal("dir/file.png") -> dir/file.png. backward slashes will be replaced by forward slashes.
 	 */
 	public String path () {
-		return file.getPath().replace("\\", "/");
+		return file.getPath().replace('\\', '/');
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class FileHandle {
 	 * @return the path and filename without the extension, e.g. dir/dir2/file.png -> dir/dir2/file. backward slashes will be returned as forward slashes.
 	 */
 	public String pathWithoutExtension() {
-	    String path = file.getPath().replace("\\", "/");
+	    String path = file.getPath().replace('\\', '/');
 	    int dotIndex = path.lastIndexOf('.');
 	    if (dotIndex == -1) return path;
 	    return path.substring(0, dotIndex);
@@ -581,7 +581,7 @@ public class FileHandle {
 	}
 
 	public String toString () {
-		return file.getPath().replace("\\", "/");
+		return file.getPath().replace('\\', '/');
 	}
 
 	static public FileHandle tempFile (String prefix) {

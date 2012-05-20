@@ -33,7 +33,7 @@ public class AndroidFileHandle extends FileHandle {
 	final AssetManager assets;
 
 	AndroidFileHandle (AssetManager assets, String fileName, FileType type) {
-		super(fileName.replace("\\", "/"), type);
+		super(fileName.replace('\\', '/'), type);
 		this.assets = assets;
 	}
 
@@ -43,7 +43,7 @@ public class AndroidFileHandle extends FileHandle {
 	}
 
 	public FileHandle child (String name) {
-		name = name.replace("\\", "/");
+		name = name.replace('\\', '/');
 		if (file.getPath().length() == 0) return new AndroidFileHandle(assets, new File(name), type);
 		return new AndroidFileHandle(assets, new File(file, name), type);
 	}
