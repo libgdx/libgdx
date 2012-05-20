@@ -25,14 +25,14 @@ public class GwtFileHandle extends FileHandle {
 	protected GwtFileHandle (Preloader preloader, String fileName, FileType type) {
 		if(type != FileType.Internal) throw new GdxRuntimeException("FileType '" + type + "' Not supported in GWT backend");
 		this.preloader = preloader;
-		this.file = fileName.replaceAll("\\", "/");
+		this.file = fileName.replace("\\", "/");
 		this.type = type;
 	}
 	
 	public GwtFileHandle(String path) {
 		this.type = FileType.Internal;
 		this.preloader = ((GwtApplication)Gdx.app).getPreloader();
-		this.file = path.replaceAll("\\", "/");
+		this.file = path.replace("\\", "/");
 	}
 
 	public String path () {
@@ -68,7 +68,7 @@ public class GwtFileHandle extends FileHandle {
 		String path = file;
 		int dotIndex = path.lastIndexOf('.');
 		if (dotIndex == -1) return path;
-		return path.substring(0, dotIndex).replaceAll("\\", "/");
+		return path.substring(0, dotIndex).replace("\\", "/");
 	}
 
 	public FileType type () {
