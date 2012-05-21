@@ -62,6 +62,9 @@ public class TexturePacker {
 	int maxWidth, maxHeight;
 	final Settings settings;
 
+	/** Used by squeeze method when ignoreBlankImages is false to add empty region for blank input images during the pack. */
+	BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
+
 	public TexturePacker (Settings settings) {
 		this.settings = settings;
 		this.filter = new Filter(Direction.none, null, -1, -1, null, null);
@@ -448,8 +451,12 @@ public class TexturePacker {
 		int newWidth = right - left;
 		int newHeight = bottom - top;
 		if (newWidth <= 0 || newHeight <= 0) {
-			log("Ignoring blank input image: " + name);
-			return null;
+			if (settings.ignoreBlankImages) {
+				log("Ignoring blank input image: " + name);
+				return null;
+			} else {
+				return new Image(name, emptyImage, 0, 0, 1, 1);
+			}
 		}
 		return new Image(name, source, left, top, newWidth, newHeight);
 	}
@@ -710,7 +717,12 @@ public class TexturePacker {
 		public boolean alias = true;
 		public boolean edgePadding = true;
 
-		// to save the increment file local to where the texture pack run
+		/** True if blank images should be ignored when building the texture pack or false if empty regions should be created for
+		 * them. */
+		public boolean ignoreBlankImages = true;
+
+		/** Specifies the crc file path used when incremental is enabled, if not specified the file is created in the user folder,
+		 * inside the .texturepacker folder. */
 		public String incrementalFilePath = null;
 
 		HashMap<String, Long> crcs = new HashMap();
@@ -752,13 +764,12 @@ public class TexturePacker {
 			}
 
 			String path = inputDir.getAbsolutePath();
-			
+
 			if (!useAbsolutePaths) {
 				String rootFolderAbsolutePath = rootDir.getAbsolutePath();
-				if (isSubPath(rootFolderAbsolutePath, path)) 
-					path = removeSubPath(rootFolderAbsolutePath, path);
+				if (isSubPath(rootFolderAbsolutePath, path)) path = removeSubPath(rootFolderAbsolutePath, path);
 			}
-			
+
 			Long childCountOld = settings.crcs.get(path);
 			if (childCountOld == null || childCountNow != childCountOld) noneHaveChanged = false;
 			settings.crcs.put(path, (long)childCountNow);
