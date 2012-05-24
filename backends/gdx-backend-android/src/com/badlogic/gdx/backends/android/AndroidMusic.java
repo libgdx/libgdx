@@ -27,6 +27,7 @@ public class AndroidMusic implements Music {
 	private final AndroidAudio audio;
 	private MediaPlayer player;
 	private boolean isPrepared = true;
+	protected boolean wasPlaying = false;
 
 	AndroidMusic (AndroidAudio audio, MediaPlayer player) {
 		this.audio = audio;
