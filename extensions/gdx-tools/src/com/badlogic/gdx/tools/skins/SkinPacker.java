@@ -141,7 +141,7 @@ public class SkinPacker {
 					Json json = new Json();
 					if (skinFile != null) {
 						FileHandle oldSkinFile = new FileHandle(skinFile);
-						OrderedMap oldSkin = json.fromJson(OrderedMap.class, new FileHandle(skinFile));
+						OrderedMap oldSkin = json.fromJson(OrderedMap.class, oldSkinFile);
 						OrderedMap newSkin = json.fromJson(OrderedMap.class, newSkinFile);
 						OrderedMap oldResources = (OrderedMap)oldSkin.get("resources");
 						OrderedMap newResources = (OrderedMap)newSkin.get("resources");
