@@ -304,9 +304,7 @@ public interface Input {
 	public boolean isKeyPressed (int key);
 
 	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
-	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called but not
-	 * necessarily in the rendering thread in which all the {@link ApplicationListener} methods are called. You have to synchronize
-	 * this yourself.
+	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the rendering thread.
 	 * 
 	 * @param listener The TextInputListener.
 	 * @param title The title of the text input dialog.
@@ -314,9 +312,8 @@ public interface Input {
 	public void getTextInput (TextInputListener listener, String title, String text);
 	
 	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
-	 * hint message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called but not
-	 * necessarily in the rendering thread in which all the {@link ApplicationListener} methods are called. You have to synchronize
-	 * this yourself.
+	 * hint message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the
+	 * rendering thread.
 	 * 
 	 * @param listener The TextInputListener.
 	 * @param title The title of the text input dialog.
