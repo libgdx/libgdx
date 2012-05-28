@@ -18,26 +18,96 @@ package com.badlogic.gdx.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 
+/**
+ * {@link InputProcessor} implementation that detects gestures (tap, long press, fling,
+ * pan, zoom, pinch) and hands them to a {@link GestureListener}.
+ * @author mzechner
+ *
+ */
 public class GestureDetector extends InputAdapter {
+	/**
+	 * Register an instance of this class with a {@link GestureDetector} to 
+	 * receive gestures such as taps, long presses, flings, panning or pinch
+	 * zooming. Each method returns a boolean indicating if the event should
+	 * be handed to the next listener (false to hand it to the next listener, true
+	 * otherwise).
+	 * @author mzechner
+	 *
+	 */
 	public static interface GestureListener {
+		/**
+		 * Called when a finger went down on the screen or a mouse button was
+		 * pressed.
+		 * @param x 
+		 * @param y
+		 * @param pointer
+		 * @return
+		 */
 		public boolean touchDown (int x, int y, int pointer);
 
+		/**
+		 * Called when a tap occured. A tap happens if a finger went down on 
+		 * the screen and was lifted again without moving outside of the tap square.
+		 * The tap square is a rectangular area around the initial touch position
+		 * as specified on construction time of the {@link GestureDetector}. 
+		 * @param x
+		 * @param y
+		 * @param count the number of taps. 
+		 * @return
+		 */
 		public boolean tap (int x, int y, int count);
 
 		public boolean longPress (int x, int y);
 
+		/**
+		 * Called when the user dragged a finger over the screen and lifted it. Reports
+		 * the last known velocity of the finger in pixels per second.
+		 * @param velocityX velocity on x in seconds
+		 * @param velocityY velocity on y in seconds
+		 * @return
+		 */
 		public boolean fling (float velocityX, float velocityY);
 
+		/**
+		 * Called when the user drags a finger over the screen.
+		 * @param x
+		 * @param y
+		 * @param deltaX the difference in pixels to the last drag event on x.
+		 * @param deltaY the difference in pixels to the last drag event on y.
+		 * @return
+		 */
 		public boolean pan (int x, int y, int deltaX, int deltaY);
 
+		/**
+		 * Called when the user performs a pinch zoom gesture. The original distance
+		 * is the distance in pixels when the gesture started.
+		 * @param originalDistance distance between fingers when the gesture started.
+		 * @param currentDistance current distance between fingers.
+		 * @return
+		 */
 		public boolean zoom (float originalDistance, float currentDistance);
 
+		/**
+		 * Called when a user performs a pinch zoom gesture. Reports the initial positions
+		 * of the two involved fingers and their current positions.
+		 * @param initialFirstPointer
+		 * @param initialSecondPointer
+		 * @param firstPointer
+		 * @param secondPointer
+		 * @return
+		 */
 		public boolean pinch (Vector2 initialFirstPointer, Vector2 initialSecondPointer, Vector2 firstPointer, Vector2 secondPointer);
 	}
 
+	/**
+	 * Derrive from this if you only want to implement a subset of {@link GestureListener}.
+	 * @author mzechner
+	 *
+	 */
 	public static class GestureAdapter implements GestureListener {
 		public boolean touchDown (int x, int y, int pointer) {
 			return false;
@@ -175,10 +245,24 @@ public class GestureDetector extends InputAdapter {
 
 	private final GestureListener listener;
 
+	/**
+	 * Creates a new GestureDetector that will pass on all gestures
+	 * to the specified {@link GestureListener}
+	 * @param listener
+	 */
 	public GestureDetector (GestureListener listener) {
 		this(20, 0.4f, 1.5f, 0.15f, listener);
 	}
 
+	/**
+	 * Creates a new GestureDetector that will pass on all gestures
+	 * to the specified {@link GestureListener}
+	 * @param halfTapSquareSize half width in pixels of the square around an initial touch event, see {@link GestureListener#tap(int, int, int)} 
+	 * @param tapCountInterval time in seconds that must pass for two touch down/up sequences to be detected as consecutive taps.
+	 * @param longPressDuration time in seconds that must pass for the detector to fire a {@link GestureListener#longPress(int, int)} event.
+	 * @param maxFlingDelay time in seconds the finger must have been dragged for a fling event to be fired, see {@link GestureListener#fling(float, float)}
+	 * @param listener
+	 */
 	public GestureDetector (int halfTapSquareSize, float tapCountInterval, float longPressDuration, float maxFlingDelay,
 		GestureListener listener) {
 		this.tapSquareSize = halfTapSquareSize;
