@@ -45,7 +45,7 @@ public class MainPanel extends PaintedPanel {
 
 		URL tmpUrl;
 		//try {tmpUrl = new URL("http://www.aurelienribon.com/libgdx-setup/config.txt");}
-		try {tmpUrl = new URL("http://libgdx.googlecode.com/svn/trunk/extensions/gdx-setup-ui/config/config.txt");}
+		try {tmpUrl = new URL("http://libgdx.badlogicgames.com/nightlies/config/config.txt");}
 		catch (MalformedURLException ex) {throw new RuntimeException(ex);}
 
 		final URL url = tmpUrl;
