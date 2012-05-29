@@ -454,14 +454,14 @@ public class IdentityMap<K, V> {
 		}
 	}
 
-	private int hash2 (long h) {
+	private int hash2 (int h) {
 		h *= PRIME2;
-		return (int)((h ^ h >>> hashShift) & mask);
+		return (h ^ h >>> hashShift) & mask;
 	}
 
-	private int hash3 (long h) {
+	private int hash3 (int h) {
 		h *= PRIME3;
-		return (int)((h ^ h >>> hashShift) & mask);
+		return (h ^ h >>> hashShift) & mask;
 	}
 
 	public String toString () {
