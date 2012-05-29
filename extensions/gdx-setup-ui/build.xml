@@ -4,7 +4,6 @@
 	<!-- Definitions -->
 	<!-- ****************************************************************** -->
 
-	<property name="version" value="1.0.0" />
 	<property name="name" value="libgdx-setup" />
 
 	<!-- ****************************************************************** -->
@@ -13,10 +12,10 @@
 
 	<target name="clean">
 		<delete dir="bin/" />
-		<mkdir dir="bin/" />
 	</target>
 
 	<target name="compile" depends="clean">
+		<mkdir dir="bin/" />
 		<javac destdir="bin/" srcdir="src/" target="1.6" source="1.6" includeAntRuntime="false">
 			<classpath>
 				<pathelement location="bin/" />
@@ -59,6 +58,8 @@
 	<!-- Main task -->
 	<!-- ****************************************************************** -->
 
-	<target name="all" depends="bundle" />
+	<target name="all" depends="bundle">
+		<antcall target="clean"/>
+	</target>
 	
 </project>

@@ -5,8 +5,6 @@ import aurelienribon.ui.css.Style;
 import aurelienribon.utils.HttpUtils;
 import aurelienribon.utils.ParseUtils;
 import java.awt.Desktop;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -18,7 +16,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
-import javax.swing.Timer;
 import res.Res;
 
 /**
@@ -43,7 +40,7 @@ public class MainPanel extends PaintedPanel {
     }
 
 	private void checkUpdates() {
-		final String version = "2.0.0";
+		final String version = "2.0.1";
 		versionLabel.setText("v" + version + " (...)");
 
 		URL tmpUrl;
@@ -69,14 +66,7 @@ public class MainPanel extends PaintedPanel {
 			}
 		};
 
-		Timer timer = new Timer(2000, new ActionListener() {
-			@Override public void actionPerformed(ActionEvent e) {
-				HttpUtils.downloadAsync(url, stream, callback);
-			}
-		});
-
-		timer.setRepeats(false);
-		timer.start();
+		HttpUtils.downloadAsync(url, stream, callback);
 	}
 
 	private void testUpdate(String version, String str) {
