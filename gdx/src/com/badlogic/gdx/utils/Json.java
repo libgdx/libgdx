@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -387,7 +388,7 @@ public class Json {
 			}
 
 			if (value instanceof Collection) {
-				if (knownType != null && actualType != knownType)
+				if (knownType != null && actualType != knownType && actualType != ArrayList.class)
 					throw new SerializationException("Serialization of a Collection other than the known type is not supported.\n"
 						+ "Known type: " + knownType + "\nActual type: " + actualType);
 				writeArrayStart();
