@@ -107,6 +107,12 @@
     <Reference Include="IKVM.Runtime">
       <HintPath>..\..\libs\IKVM.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="gdx">
+      <HintPath>..\..\libs\gdx.dll</HintPath>
+    </Reference>
+    <Reference Include="gdx-backend-ios">
+      <HintPath>..\..\libs\gdx-backend-ios.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

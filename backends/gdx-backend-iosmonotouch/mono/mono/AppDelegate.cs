@@ -1,8 +1,9 @@
-using System;
+	using System;
 using System.Collections.Generic;
 using System.Linq;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
+using com.badlogic.gdx.math;
 
 namespace mono
 {
@@ -22,6 +23,11 @@ namespace mono
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
 			Console.WriteLine(java.lang.System.nanoTime());
+			Console.WriteLine(com.badlogic.gdx.Version.VERSION);
+			
+			Matrix4 mat = new Matrix4();
+			com.badlogic.gdx.backends.ios.IOSApplication gdx = new com.badlogic.gdx.backends.ios.IOSApplication();
+			gdx.log("test", "hello");
 			
 			// create a new window instance based on the screen size
 			window = new UIWindow (UIScreen.MainScreen.Bounds);

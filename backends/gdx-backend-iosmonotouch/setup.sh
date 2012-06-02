@@ -1,3 +1,5 @@
-git clone https://badlogic@github.com/badlogic/ikvm-monotouch.git
-git clone https://badlogic@github.com/badlogic/ikvm-openjdk.git
-sudo ln -s /Developer/MonoTouch/usr/lib/mono/2.1 /Library/Frameworks/Mono.framework/Home/lib/mono/2.1
+# fetch ikvm distri
+curl "http://netcologne.dl.sourceforge.net/project/ikvm/ikvm/7.0.4335.0/ikvmbin-7.0.4335.0.zip" > ikvmbin.zip
+unzip ikvmbin.zip
+mv ikvm-7.0.4335.0 ikvm
+rm ikvmbin.zip
