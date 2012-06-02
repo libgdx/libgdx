@@ -1,6 +1,20 @@
-1) Setup ikvm sources via setup.sh
-2) compile ikvm via ikvm-monotouch/nant -t:moonlight-2.0
-4) create monotouch project
-  - add all dll's minus zlib dll from ikvm-monotouch/bin
-  - copy (don't link!) ikvm-monotouch/bin/libikvm-natives.a
-  - IPhone Build -> Additional mtouch arguments: -nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -force_load ${ProjectDir}/libikvm-natives.a"
+== IKVM ==
+The libs/ folder contains precompiled assemblies and executables for mono. These can be build
+by following the instructions at https://github.com/samskivert/ikvm-monotouch. The one's in
+SVN should be good enough for now.
+
+== How to develop ==
+After checking out the libgdx source, execute ant in gdx-backends-iosmonotouch/. This will 
+generate libs/gdx.dll and libs/gdx-backend-ios.dll necessary for the MonoTouch project in mono/.
+
+The development cycle should look like this from now on:
+
+1) Open Eclipse and import the gdx, gdx-jnigen and gdx-backends-iosmonotouch projects.
+2) Open MonoDevelop and open the solution in the gdx-backens-iosmonotouch/mono folder.
+3) Everytime you make changes to the gdx-backends-iosmonotouch project (add a new Java class, change a class)
+   you have to execute ant:
+    
+	   ant -f build.xml compile-backend
+	   
+   This will only compile the backend and shouldn't take long. It updates the libs/gdx-backend-ios.dll.
+   To test your changes go to MonoDevelop and rebuild and run your app.
