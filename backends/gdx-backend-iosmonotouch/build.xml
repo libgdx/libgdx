@@ -22,7 +22,7 @@
 	<target name="compile-backend">
 		<delete dir="target/backend"/>
 		<mkdir dir="target/backend" />
-		<javac sourcepath="" srcdir="src" destdir="target/backend" >
+		<javac sourcepath="" debug="on" srcdir="src" destdir="target/backend" >
 			<include name="**/*.java"/>		
 			<classpath>
 			<fileset dir="target/core">
