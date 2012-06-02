@@ -50,6 +50,13 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <MtouchProfiling>true</MtouchProfiling>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="ant -f build.xml compile-backend" workingdir="../../" />
+      </CustomCommands>
+    </CustomCommands>
+    <IpaPackageName />
+    <MtouchI18n />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
