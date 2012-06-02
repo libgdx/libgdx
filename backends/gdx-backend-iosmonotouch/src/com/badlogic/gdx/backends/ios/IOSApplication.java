@@ -1,19 +1,29 @@
 package com.badlogic.gdx.backends.ios;
 
 import cli.MonoTouch.UIKit.UIApplication;
+import cli.MonoTouch.UIKit.UIApplicationDelegate;
+import cli.MonoTouch.UIKit.UIScreen;
+import cli.MonoTouch.UIKit.UIWindow;
 import cli.System.Console;
+import cli.System.Drawing.RectangleF;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 
 public class IOSApplication implements Application {
 	final UIApplication uiApp;
+	final UIWindow uiWindow;
 	final ApplicationListener listener;
+	final IOSGraphics graphics;
+	final IOSAudio audio;
+	final IOSFiles files;
+	final IOSInput input;
 	int logLevel = Application.LOG_DEBUG;
 	
 	/**
@@ -23,6 +33,19 @@ public class IOSApplication implements Application {
 	public IOSApplication(UIApplication uiApp, ApplicationListener listener) {
 		this.uiApp = uiApp;
 		this.listener = listener;
+		
+		Gdx.app = this;
+		
+		RectangleF bounds = UIScreen.get_MainScreen().get_Bounds();
+		this.graphics = new IOSGraphics(bounds, this);
+		this.audio = null;
+		this.files = null;
+		this.input = null;
+		
+		this.uiWindow = new UIWindow(bounds);
+		this.uiWindow.Add(graphics);
+		this.graphics.Run();
+		this.uiWindow.MakeKeyAndVisible();
 	}
 	
 	@Override

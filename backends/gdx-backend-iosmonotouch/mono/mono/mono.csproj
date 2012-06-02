@@ -131,17 +131,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
-    <Compile Include="AppDelegate.cs" />
-    <Compile Include="OpenGLViewController.cs" />
-    <Compile Include="EAGLView.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <InterfaceDefinition Include="OpenGLViewController_iPhone.xib" />
-    <InterfaceDefinition Include="OpenGLViewController_iPad.xib" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Shader.fsh" />
-    <Content Include="Shader.vsh" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
