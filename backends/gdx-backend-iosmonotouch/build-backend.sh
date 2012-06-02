@@ -11,5 +11,6 @@ mono $IKVM_HOME/ikvmc.exe -nostdlib -debug -target:library -out:libs/gdx-backend
     -r:$MONO_PATH/OpenTK.dll \
     -r:$MONO_PATH/monotouch.dll \
     -r:$MONO_PATH/Mono.Data.Sqlite.dll \
-	-r:libs/gdx.dll \
+    -r:libs/gdx.dll \
     -recurse:target/backend/*.class
+    

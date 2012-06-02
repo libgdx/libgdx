@@ -7,29 +7,38 @@ using com.badlogic.gdx.math;
 
 namespace mono
 {
-	/// <summary>
-	/// The UIApplicationDelegate for the application. This class is responsible for launching the 
-	/// User Interface of the application, as well as listening (and optionally responding) to 
-	/// application events from iOS.
-	/// </summary>
+	public class TestListener: com.badlogic.gdx.ApplicationListener {
+		public void create() {
+		}
+		
+		public void dispose() {
+		}
+		
+		public void render() {
+		}
+		
+		public void resume() {
+		}
+		
+		public void pause() {
+		}
+		
+		public void resize(int width, int height) {
+		}
+	}
+	
 	[Register ("AppDelegate")]
 	public partial class AppDelegate : UIApplicationDelegate
 	{
-		// class-level declarations
 		UIWindow window;
 		OpenGLViewController viewController;
 		
-		// This method is invoked when the application has loaded its UI and is ready to run
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
-			Console.WriteLine(java.lang.System.nanoTime());
-			Console.WriteLine(com.badlogic.gdx.Version.VERSION);
-			
-			Matrix4 mat = new Matrix4();
-			com.badlogic.gdx.backends.ios.IOSApplication gdx = new com.badlogic.gdx.backends.ios.IOSApplication();
+			com.badlogic.gdx.ApplicationListener listener = new TestListener();
+			com.badlogic.gdx.backends.ios.IOSApplication gdx = new com.badlogic.gdx.backends.ios.IOSApplication(app, listener);
 			gdx.log("test", "hello");
 			
-			// create a new window instance based on the screen size
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 
 			// load the appropriate UI, depending on whether the app is running on an iPhone or iPad
@@ -45,10 +54,7 @@ namespace mono
 				);
 			}
 			window.RootViewController = viewController;
-
-			// make the window visible
 			window.MakeKeyAndVisible ();
-			
 			return true;
 		}
 	}

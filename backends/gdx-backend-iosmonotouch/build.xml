@@ -25,6 +25,9 @@
 		<javac sourcepath="" debug="on" srcdir="src" destdir="target/backend" >
 			<include name="**/*.java"/>		
 			<classpath>
+			<fileset dir="libs">
+				<include name="**/*.jar"/>
+			</fileset>
 			<fileset dir="target/core">
 				<include name="**/*.jar"/>
 			</fileset>
