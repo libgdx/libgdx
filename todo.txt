@@ -49,8 +49,6 @@ replace TileD
 remove junk
 	current 3D stuff
 	TextureRef, TextureDict
-AssetManager
-	document
 DecalBatch
 	slow
 	remove?
