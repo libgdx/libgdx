@@ -18,3 +18,12 @@ The development cycle should look like this from now on:
 	   
    This will only compile the backend and shouldn't take long. It updates the libs/gdx-backend-ios.dll.
    To test your changes go to MonoDevelop and rebuild and run your app.
+   
+== Native code ==
+I'm still working on this.
+
+TODO:
+- add libikvm-natives.a to mono project
+- setup XCode project for gdx core natives, output libgdx.so for arm6/arm7/i386
+- integrate core native build in ant file.
+- add wrappers for OpenGL ES for iOS so we don't have to wrap OpenTK. We want to use ByteBuffers.
