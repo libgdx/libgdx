@@ -3,7 +3,7 @@ The libs/ folder contains precompiled assemblies and executables for mono. These
 by following the instructions at https://github.com/samskivert/ikvm-monotouch. The one's in
 SVN should be good enough for now.
 
-== How to develop ==
+== How to develop for the backend ==
 After checking out the libgdx source, execute ant in gdx-backends-iosmonotouch/. This will 
 generate libs/gdx.dll and libs/gdx-backend-ios.dll necessary for the MonoTouch project in mono/.
 
@@ -11,13 +11,19 @@ The development cycle should look like this from now on:
 
 1) Open Eclipse and import the gdx, gdx-jnigen and gdx-backends-iosmonotouch projects.
 2) Open MonoDevelop and open the solution in the gdx-backens-iosmonotouch/mono folder.
-3) Everytime you make changes to the gdx-backends-iosmonotouch project (add a new Java class, change a class)
-   you have to execute ant:
-    
-	   ant -f build.xml compile-backend
-	   
-   This will only compile the backend and shouldn't take long. It updates the libs/gdx-backend-ios.dll.
-   To test your changes go to MonoDevelop and rebuild and run your app.
+3) Change your code in Eclipse
+4) Build and run in MonoDevelop. The mono project has a custom build step that invokes ant to build
+the backend and create an assembly.
+   
+The current MonoTouch project is just there for testing purposes. Eventually we'll have no C# code
+in the backend. For that we'll use the Java wrappers for the Xamarin APIs as provided by Michael of
+PlayN fame :) IOSApplication will become the real main entry point.
+   
+== How should the process for users look like? ==
+Insead of another Eclipse project, we'll have a MonoTouch project. That will use an assembly generated
+from the core project and symlink to the android project's assets folder. All it does it fire up
+an IOSApplication, passing the ApplicationListener to it. We can add a custom build step in the Monotouch
+project that compiles the core projects Java files and creates a new Mono assembly. That should just work :)
    
 == Native code ==
 I'm still working on this.

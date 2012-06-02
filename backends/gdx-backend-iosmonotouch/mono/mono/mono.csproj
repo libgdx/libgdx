@@ -23,6 +23,11 @@
     <MtouchDebug>true</MtouchDebug>
     <MtouchProfiling>true</MtouchProfiling>
     <MtouchLink>None</MtouchLink>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="ant -f build.xml compile-backend" workingdir="../.." />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
