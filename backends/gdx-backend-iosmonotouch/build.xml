@@ -17,6 +17,9 @@
 		<exec executable="sh">
 			<arg value="build-core.sh"/>
 		</exec>
+		<exec executable="sh" dir="natives">
+			<arg value="build-natives.sh"/>
+		</exec>
 	</target>
 	
 	<target name="compile-backend">
