@@ -38,7 +38,7 @@ public class BitmapFontCache implements Disposable {
 	private boolean integer = true;
 
 	public BitmapFontCache (BitmapFont font) {
-		this(font, true);
+		this(font, font.usesIntegerPositions());
 	}
 
 	/** Creates a new BitmapFontCache
