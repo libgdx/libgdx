@@ -238,8 +238,10 @@ public class TextureAtlas implements Disposable {
 		}
 
 		for (Region region : data.regions) {
-			AtlasRegion atlasRegion = new AtlasRegion(pageToTexture.get(region.page), region.left, region.top, region.width,
-				region.height);
+			int width = region.width;
+			int height = region.height;
+			AtlasRegion atlasRegion = new AtlasRegion(pageToTexture.get(region.page), region.left, region.top, region.rotate ? height : width,
+					region.rotate ? width : height);
 			atlasRegion.index = region.index;
 			atlasRegion.name = region.name;
 			atlasRegion.offsetX = region.offsetX;
