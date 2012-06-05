@@ -463,7 +463,7 @@
                               <Component id="opt_incremental_chk" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="37" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -478,12 +478,14 @@
             <Component class="javax.swing.JComboBox" name="opt_defaultImgFormat_cbox">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="5">
+                  <StringArray count="7">
                     <StringItem index="0" value="RGBA8888"/>
                     <StringItem index="1" value="RGBA4444"/>
                     <StringItem index="2" value="RGB888"/>
                     <StringItem index="3" value="RGB565"/>
                     <StringItem index="4" value="Alpha"/>
+                    <StringItem index="5" value="LuminanceAlpha"/>
+                    <StringItem index="6" value="Intensity"/>
                   </StringArray>
                 </Property>
                 <Property name="opaque" type="boolean" value="false"/>
