@@ -32,4 +32,10 @@ public abstract class CompositeAction extends Action {
 		return actions;
 	}
 
+	public void finish() {
+		for(Action action: actions) {
+			action.finish();
+		}
+		super.finish();
+	}
 }

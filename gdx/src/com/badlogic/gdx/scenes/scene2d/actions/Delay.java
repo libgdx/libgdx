@@ -18,6 +18,7 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.OnActionCompleted;
 
 public class Delay extends Action {
 	static final ActionResetingPool<Delay> pool = new ActionResetingPool<Delay>(4, 100) {
@@ -98,5 +99,51 @@ public class Delay extends Action {
 	@Override
 	public Actor getTarget () {
 		return target;
+	}
+	
+	public static class MyDelay extends Delay
+	{
+		public MyDelay(String name, float duration)
+		{
+			m_name = name;
+			this.duration = duration;
+		}
+
+		public String getName()
+		{
+			return m_name;
+		}
+
+		@Override
+		public void finish()
+		{
+			super.finish();
+
+			System.out.println(m_name + " has finished");
+		}
+
+		private String m_name;
+	}
+	
+	public static void main (String[] args) {
+		OnActionCompleted listener = new OnActionCompleted()
+		{
+			@Override
+			public void completed(Action action)
+			{
+				MyDelay d = (MyDelay)action;
+				System.out.println(d.getName() + " has completed");
+			}
+		};
+
+		Action d1 = new MyDelay("Delay1", 1).setCompletionListener(listener);
+		Action d2 = new MyDelay("Delay2", 1).setCompletionListener(listener);
+		Action d3 = new MyDelay("Delay3", 2).setCompletionListener(listener);
+		Sequence s = Sequence.$(d1, Parallel.$(d2, d3));
+		
+		while(!s.isDone()) {
+			s.act(0.016f);
+		}
+		s.finish();
 	}
 }

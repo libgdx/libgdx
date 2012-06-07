@@ -66,7 +66,6 @@ public class Parallel extends CompositeAction {
 				allDone = false;
 			} else {
 				if (!finished[i]) {
-					action.finish();
 					finished[i] = true;
 					allDone &= finished[i];
 				}
@@ -86,10 +85,6 @@ public class Parallel extends CompositeAction {
 	@Override
 	public void finish () {
 		pool.free(this);
-		int len = actions.size();
-		for (int i = 0; i < len; i++) {
-			if (!finished[i]) actions.get(i).finish();
-		}
 		super.finish();
 	}
 
