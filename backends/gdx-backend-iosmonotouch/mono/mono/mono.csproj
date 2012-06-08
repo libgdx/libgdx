@@ -137,4 +137,13 @@
     <Compile Include="Main.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="data\test.txt" />
+    <Content Include="..\..\..\..\tests\gdx-tests-android\assets\data\badlogic.jpg">
+      <Link>data\badlogic.jpg</Link>
+    </Content>
+  </ItemGroup>
 </Project>
