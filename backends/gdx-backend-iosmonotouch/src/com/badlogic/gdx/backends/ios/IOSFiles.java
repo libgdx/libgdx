@@ -1,56 +1,66 @@
 package com.badlogic.gdx.backends.ios;
 
+import cli.System.Environment;
+
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
 
 public class IOSFiles implements Files {
+	static final String externalPath = Environment.GetFolderPath(Environment.SpecialFolder.wrap(Environment.SpecialFolder.MyDocuments)) + "/external";
+	static final String localPath = Environment.GetFolderPath(Environment.SpecialFolder.wrap(Environment.SpecialFolder.MyDocuments)) + "/local";
+	
+	public IOSFiles() {
+		new FileHandle(externalPath).mkdirs();
+		new FileHandle(localPath).mkdirs();
+	}
+	
 	@Override
-	public FileHandle getFileHandle(String path, FileType type) {
-		return null;
+	public FileHandle getFileHandle (String fileName, FileType type) {
+		return new IOSFileHandle(fileName, type);
 	}
 
 	@Override
-	public FileHandle classpath(String path) {
-		return null;
+	public FileHandle classpath (String path) {
+		return new IOSFileHandle(path, FileType.Classpath);
 	}
 
 	@Override
-	public FileHandle internal(String path) {
-		return null;
+	public FileHandle internal (String path) {
+		return new IOSFileHandle(path, FileType.Internal);
 	}
 
 	@Override
-	public FileHandle external(String path) {
-		return null;
+	public FileHandle external (String path) {
+		return new IOSFileHandle(path, FileType.External);
 	}
 
 	@Override
-	public FileHandle absolute(String path) {
-		return null;
+	public FileHandle absolute (String path) {
+		return new IOSFileHandle(path, FileType.Absolute);
 	}
 
 	@Override
-	public FileHandle local(String path) {
-		return null;
+	public FileHandle local (String path) {
+		return new IOSFileHandle(path, FileType.Local);
 	}
 
 	@Override
 	public String getExternalStoragePath() {
-		return null;
+		return externalPath;
 	}
 
 	@Override
 	public boolean isExternalStorageAvailable() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public String getLocalStoragePath() {
-		return null;
+		return localPath;
 	}
 
 	@Override
 	public boolean isLocalStorageAvailable() {
-		return false;
+		return true;
 	}
 }

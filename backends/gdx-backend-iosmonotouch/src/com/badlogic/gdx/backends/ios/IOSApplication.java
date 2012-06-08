@@ -38,8 +38,8 @@ public class IOSApplication implements Application {
 		
 		RectangleF bounds = UIScreen.get_MainScreen().get_Bounds();
 		this.graphics = new IOSGraphics(bounds, this);
+		this.files = new IOSFiles();
 		this.audio = null;
-		this.files = null;
 		this.input = null;
 		
 		this.uiWindow = new UIWindow(bounds);
