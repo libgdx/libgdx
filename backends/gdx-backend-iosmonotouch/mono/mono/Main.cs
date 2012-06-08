@@ -26,26 +26,10 @@ namespace mono
 			Matrix4.mul(mat.val, new Matrix4().val);
 			Gdx.app.log("Test", mat.toString());
 			
-			var directories = Directory.EnumerateDirectories("./data");
-foreach (var directory in directories) {
-      System.Console.WriteLine(directory);
-}
-			
-			var text = System.IO.File.ReadAllText("info.plist");
-			System.Console.WriteLine(text);
-			
-			com.badlogic.gdx.files.FileHandle file = new com.badlogic.gdx.files.FileHandle("data/test.txt");
-			text = file.readString();
-			System.Console.WriteLine(text);
-			
-			
-			System.Console.WriteLine(file.readString());
-			file.parent().child("dummy").mkdirs();
-			
-			Pixmap pixmap = new Pixmap(new com.badlogic.gdx.files.FileHandle("data/badlogic.jpg"));
-			System.Console.WriteLine(pixmap.getWidth() + "," + pixmap.getHeight());
-			pixmap.dispose();
-			                         
+			System.Console.WriteLine(Gdx.files.getExternalStoragePath());
+			System.Console.WriteLine(Gdx.files.getLocalStoragePath());
+			Gdx.files.external("ugh.txt").writeString("This is an external hurr", false);
+			Gdx.files.local("ugh.txt").writeString("This is a local hurr", false);   
 		}
 		
 		public void dispose() {
