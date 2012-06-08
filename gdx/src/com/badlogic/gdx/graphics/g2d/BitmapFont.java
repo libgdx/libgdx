@@ -748,8 +748,9 @@ public class BitmapFont implements Disposable {
 	 * @param end The last character of the string (exclusive). */
 	public int computeVisibleGlyphs (CharSequence str, int start, int end, float availableWidth) {
 		int index = start;
-		int width = 0;
+		float width = 0;
 		Glyph lastGlyph = null;
+		
 		if (data.scaleX == 1) {
 			for (; index < end; index++) {
 				char ch = str.charAt(index);
