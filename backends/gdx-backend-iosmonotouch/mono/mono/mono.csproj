@@ -28,6 +28,8 @@
         <Command type="BeforeBuild" command="ant -f build.xml compile-backend" workingdir="../.." />
       </CustomCommands>
     </CustomCommands>
+    <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
+    <MtouchI18n />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -128,6 +130,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
+    <None Include="libgdx.a" />
+    <None Include="libikvm-natives.a" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

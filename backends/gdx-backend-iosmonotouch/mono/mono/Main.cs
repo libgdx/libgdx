@@ -7,6 +7,8 @@ using MonoTouch.UIKit;
 using OpenTK.Graphics.ES20;
 using OpenTK.Graphics;
 using com.badlogic.gdx;
+using java.nio;
+using com.badlogic.gdx.math;
 
 namespace mono
 {
@@ -15,6 +17,11 @@ namespace mono
 		
 		public void create() {
 			Gdx.app.log("Test", "created");
+			ByteBuffer buffer = com.badlogic.gdx.utils.BufferUtils.newByteBuffer(0);
+			Matrix4 mat = new Matrix4();
+			mat.rotate(90, 0, 0, 1);
+			Matrix4.mul(mat.val, new Matrix4().val);
+			Gdx.app.log("Test", mat.toString());
 		}
 		
 		public void dispose() {
