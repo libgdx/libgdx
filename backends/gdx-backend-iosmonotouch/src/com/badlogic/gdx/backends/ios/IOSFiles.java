@@ -6,8 +6,8 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
 
 public class IOSFiles implements Files {
-	static final String externalPath = Environment.GetFolderPath(Environment.SpecialFolder.wrap(Environment.SpecialFolder.MyDocuments)) + "/external";
-	static final String localPath = Environment.GetFolderPath(Environment.SpecialFolder.wrap(Environment.SpecialFolder.MyDocuments)) + "/local";
+	static final String externalPath = Environment.GetFolderPath(Environment.SpecialFolder.wrap(Environment.SpecialFolder.MyDocuments));
+	static final String localPath = Environment.GetFolderPath(Environment.SpecialFolder.wrap(Environment.SpecialFolder.MyDocuments)) + "../Library/local";
 	
 	public IOSFiles() {
 		new FileHandle(externalPath).mkdirs();
