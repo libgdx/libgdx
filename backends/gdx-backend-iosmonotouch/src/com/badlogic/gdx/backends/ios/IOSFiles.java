@@ -1,13 +1,14 @@
 package com.badlogic.gdx.backends.ios;
 
 import cli.System.Environment;
+import cli.System.IO.Directory;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
 
 public class IOSFiles implements Files {
 	static final String externalPath = Environment.GetFolderPath(Environment.SpecialFolder.wrap(Environment.SpecialFolder.MyDocuments));
-	static final String localPath = Environment.GetFolderPath(Environment.SpecialFolder.wrap(Environment.SpecialFolder.MyDocuments)) + "../Library/local";
+	static final String localPath = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.wrap(Environment.SpecialFolder.MyDocuments))).ToString() + "/Library/local";
 	
 	public IOSFiles() {
 		new FileHandle(externalPath).mkdirs();
