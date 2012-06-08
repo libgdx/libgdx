@@ -9,11 +9,10 @@ import com.badlogic.gdx.graphics.GLCommon;
 
 
 public class IOSGLES20 implements GL20, GLCommon
-{
-	static
-	{				
-		init( );
-	}	
+{	
+	public IOSGLES20() {
+		init();
+	}
 	
 	private static native void init( );	
 	

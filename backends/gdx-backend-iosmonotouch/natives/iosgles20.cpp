@@ -54,7 +54,7 @@ nativeClassInit(JNIEnv *_env)
 }
 
 static jint getElementSizeShift(JNIEnv *_env, jobject buffer) {
-	if(_env->IsInstanceOf(buffer, byteBufferClass)) return 0;
+	/*if(_env->IsInstanceOf(buffer, byteBufferClass)) return 0;
 	if(_env->IsInstanceOf(buffer, floatBufferClass)) return 2;
 	if(_env->IsInstanceOf(buffer, shortBufferClass)) return 1;
 
@@ -63,7 +63,7 @@ static jint getElementSizeShift(JNIEnv *_env, jobject buffer) {
 	if(_env->IsInstanceOf(buffer, longBufferClass)) return 3;
 	if(_env->IsInstanceOf(buffer, doubleBufferClass)) return 3;
 
-	_env->ThrowNew(IAEClass, "buffer type unkown! (Not a ByteBuffer, ShortBuffer, etc.)");
+	_env->ThrowNew(IAEClass, "buffer type unkown! (Not a ByteBuffer, ShortBuffer, etc.)");*/
 	return 0;
 }
 
@@ -74,9 +74,9 @@ getDirectBufferPointer(JNIEnv *_env, jobject buffer) {
     }
     void* buf = _env->GetDirectBufferAddress(buffer);
     if (buf) {
-        jint position = _env->GetIntField(buffer, positionID);
+        /*jint position = _env->GetIntField(buffer, positionID);
         jint elementSizeShift = getElementSizeShift(_env, buffer);
-        buf = ((char*) buf) + (position << elementSizeShift);
+        buf = ((char*) buf) + (position << elementSizeShift);*/
     } else {
         _env->ThrowNew(IAEClass, "Must use a native order direct Buffer");
     }

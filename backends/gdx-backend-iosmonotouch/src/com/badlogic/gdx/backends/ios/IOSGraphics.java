@@ -22,9 +22,13 @@ import com.badlogic.gdx.graphics.Pixmap;
 public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	IOSApplication app;
 	IOSGLES20 gl20;
+	int width;
+	int height;
 
 	public IOSGraphics(RectangleF bounds, IOSApplication app) {
 		super(bounds);
+		width = (int)bounds.get_Width();
+		height = (int)bounds.get_Height();
 		app.log("IOSGraphics", bounds.get_Width() + "x" + bounds.get_Height() + ", " + UIScreen.get_MainScreen().get_Scale());
 		this.app = app;
 		set_LayerRetainsBacking(false);
@@ -32,8 +36,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		set_MultipleTouchEnabled(true);
 		set_AutoResize(false);
 		set_LayerColorFormat(EAGLColorFormat.RGB565);
-		set_ContextRenderingApi(EAGLRenderingAPI
-				.wrap(EAGLRenderingAPI.OpenGLES2));
+		set_ContextRenderingApi(EAGLRenderingAPI.wrap(EAGLRenderingAPI.OpenGLES2));
 		gl20 = new IOSGLES20();
 		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
@@ -110,12 +113,12 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 
 	@Override
 	public int getWidth() {
-		return 0;
+		return width;
 	}
 
 	@Override
 	public int getHeight() {
-		return 0;
+		return height;
 	}
 
 	@Override
