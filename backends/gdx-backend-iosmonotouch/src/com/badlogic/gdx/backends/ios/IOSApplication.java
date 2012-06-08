@@ -42,6 +42,11 @@ public class IOSApplication implements Application {
 		this.audio = null;
 		this.input = null;
 		
+		Gdx.files = this.files;
+		Gdx.graphics = this.graphics;
+		Gdx.audio = this.audio;
+		Gdx.input = this.input;
+		
 		this.uiWindow = new UIWindow(bounds);
 		this.uiWindow.Add(graphics);
 		this.graphics.Run();
