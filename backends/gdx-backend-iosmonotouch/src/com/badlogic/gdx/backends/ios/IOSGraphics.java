@@ -10,6 +10,7 @@ import cli.OpenTK.Platform.iPhoneOS.iPhoneOSGameView;
 import cli.System.EventArgs;
 import cli.System.Drawing.RectangleF;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 
 public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	IOSApplication app;
+	IOSGLES20 gl20;
 
 	public IOSGraphics(RectangleF bounds, IOSApplication app) {
 		super(bounds);
@@ -32,6 +34,9 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		set_LayerColorFormat(EAGLColorFormat.RGB565);
 		set_ContextRenderingApi(EAGLRenderingAPI
 				.wrap(EAGLRenderingAPI.OpenGLES2));
+		gl20 = new IOSGLES20();
+		Gdx.gl = gl20;
+		Gdx.gl20 = gl20;
 	}
 
 	@Override
@@ -75,12 +80,12 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 
 	@Override
 	public boolean isGL20Available() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public GLCommon getGLCommon() {
-		return null;
+		return gl20;
 	}
 
 	@Override
@@ -95,7 +100,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 
 	@Override
 	public GL20 getGL20() {
-		return null;
+		return gl20;
 	}
 
 	@Override
@@ -220,6 +225,6 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 
 	@Override
 	public boolean isFullscreen() {
-		return false;
+		return true;
 	}
 }

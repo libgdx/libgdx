@@ -165,6 +165,8 @@
 		76057220157C1713004CE04B /* jni_md.h in Headers */ = {isa = PBXBuildFile; fileRef = 760571DD157C1713004CE04B /* jni_md.h */; };
 		76057221157C1713004CE04B /* jawt_md.h in Headers */ = {isa = PBXBuildFile; fileRef = 760571DF157C1713004CE04B /* jawt_md.h */; };
 		76057222157C1713004CE04B /* jni_md.h in Headers */ = {isa = PBXBuildFile; fileRef = 760571E0157C1713004CE04B /* jni_md.h */; };
+		7657C33E1582B4FF0067030A /* iosgles20.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7657C33C1582B4FF0067030A /* iosgles20.cpp */; };
+		7657C33F1582B4FF0067030A /* iosgles20.h in Headers */ = {isa = PBXBuildFile; fileRef = 7657C33D1582B4FF0067030A /* iosgles20.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -328,6 +330,8 @@
 		760571DD157C1713004CE04B /* jni_md.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jni_md.h; sourceTree = "<group>"; };
 		760571DF157C1713004CE04B /* jawt_md.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jawt_md.h; sourceTree = "<group>"; };
 		760571E0157C1713004CE04B /* jni_md.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jni_md.h; sourceTree = "<group>"; };
+		7657C33C1582B4FF0067030A /* iosgles20.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = iosgles20.cpp; sourceTree = "<group>"; };
+		7657C33D1582B4FF0067030A /* iosgles20.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iosgles20.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -345,6 +349,8 @@
 		76056F6A157C140D004CE04B = {
 			isa = PBXGroup;
 			children = (
+				7657C33C1582B4FF0067030A /* iosgles20.cpp */,
+				7657C33D1582B4FF0067030A /* iosgles20.h */,
 				76057199157C1713004CE04B /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp */,
 				7605719A157C1713004CE04B /* com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.h */,
 				7605719B157C1713004CE04B /* com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp */,
@@ -730,6 +736,7 @@
 				76057220157C1713004CE04B /* jni_md.h in Headers */,
 				76057221157C1713004CE04B /* jawt_md.h in Headers */,
 				76057222157C1713004CE04B /* jni_md.h in Headers */,
+				7657C33F1582B4FF0067030A /* iosgles20.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -857,6 +864,7 @@
 				76057215157C1713004CE04B /* etc1_utils.cpp in Sources */,
 				76057217157C1713004CE04B /* gdx2d.c in Sources */,
 				76057219157C1713004CE04B /* stb_image.c in Sources */,
+				7657C33E1582B4FF0067030A /* iosgles20.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
