@@ -14,8 +14,7 @@ static jclass OOMEClass;
 static jclass UOEClass;
 static jclass IAEClass;
 
-static jfieldID positionID;
-static jfieldID limitID;
+static jmethodID positionID;
 
 
 static void
@@ -32,8 +31,8 @@ nativeClassInitBuffer(JNIEnv *_env)
     floatBufferClass = (jclass) _env->NewGlobalRef(_env->FindClass("java/nio/FloatBuffer"));
     doubleBufferClass = (jclass) _env->NewGlobalRef(_env->FindClass("java/nio/DoubleBuffer"));
 
-    positionID = _env->GetFieldID(bufferClass, "position", "I");
-    limitID = _env->GetFieldID(bufferClass, "limit", "I");
+    positionID = _env->GetMethodID(bufferClass, "position","()I");
+    if(positionID == 0) _env->ThrowNew(IAEClass, "Couldn't fetch position() method");
 }
 
 static void
@@ -74,9 +73,9 @@ getDirectBufferPointer(JNIEnv *_env, jobject buffer) {
     }
     void* buf = _env->GetDirectBufferAddress(buffer);
     if (buf) {
-        /*jint position = _env->GetIntField(buffer, positionID);
+        jint position = _env->CallIntMethod(bufferClass, positionID, buffer);
         jint elementSizeShift = getElementSizeShift(_env, buffer);
-        buf = ((char*) buf) + (position << elementSizeShift);*/
+        buf = ((char*) buf) + (position << elementSizeShift);
     } else {
         _env->ThrowNew(IAEClass, "Must use a native order direct Buffer");
     }
