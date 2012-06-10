@@ -178,6 +178,11 @@ public abstract class Actor {
 
 	/** Clears all actions of this Actor. */
 	public void clearActions () {
+		actions.iter();
+		Action action = null;
+		while((action = actions.next()) != null) {
+			action.finish();
+		}
 		actions.clear();
 	}
 
