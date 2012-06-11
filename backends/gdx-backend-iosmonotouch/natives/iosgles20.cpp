@@ -1,6 +1,7 @@
 #include <iosgles20.h>
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
+#include <stdio.h>
 
 static jclass bufferClass;
 static jclass byteBufferClass;
@@ -66,6 +67,12 @@ static jint getElementSizeShift(JNIEnv *_env, jobject buffer) {
 	return 0;
 }
 
+inline jint getBufferPosition(JNIEnv *env, jobject buffer)
+{
+	jint ret = env->CallIntMethodA(buffer, positionID, 0);
+	return  ret;
+}
+
 static void *
 getDirectBufferPointer(JNIEnv *_env, jobject buffer) {
     if (!buffer) {
@@ -73,7 +80,7 @@ getDirectBufferPointer(JNIEnv *_env, jobject buffer) {
     }
     void* buf = _env->GetDirectBufferAddress(buffer);
     if (buf) {
-        jint position = _env->CallIntMethod(bufferClass, positionID, buffer);
+        jint position = getBufferPosition(_env, buffer);
         jint elementSizeShift = getElementSizeShift(_env, buffer);
         buf = ((char*) buf) + (position << elementSizeShift);
     } else {

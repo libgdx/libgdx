@@ -50,8 +50,8 @@ namespace mono
 				Gdx.app.log("ShaderTest", shader.getLog());
 				Gdx.app.exit();
 			}
-	
-			mesh = new Mesh(true, 4, 6, VertexAttribute.Position(), VertexAttribute.ColorUnpacked(), VertexAttribute.TexCoords(0));
+	 
+			mesh = new Mesh(Mesh.VertexDataType.VertexArray, true, 4, 6, VertexAttribute.Position(), VertexAttribute.ColorUnpacked(), VertexAttribute.TexCoords(0));
 			mesh.setVertices(new float[] {-0.5f, -0.5f, 0, 1, 1, 1, 1, 0, 1, 
 													 0.5f, -0.5f, 0, 1, 1, 1, 1, 1, 1, 
 													 0.5f, 0.5f, 0, 1, 1, 1, 1, 1, 0, 
