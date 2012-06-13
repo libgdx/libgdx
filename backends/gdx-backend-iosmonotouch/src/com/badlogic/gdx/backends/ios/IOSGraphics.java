@@ -24,6 +24,11 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	IOSGLES20 gl20;
 	int width;
 	int height;
+	long lastFrameTime;
+	float deltaTime;
+	long framesStart;
+	int frames;
+	int fps;
 
 	public IOSGraphics(RectangleF bounds, IOSApplication app) {
 		super(bounds);
@@ -40,6 +45,9 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		gl20 = new IOSGLES20();
 		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
+		
+		lastFrameTime = System.nanoTime();
+		framesStart = lastFrameTime;
 	}
 
 	@Override
@@ -59,6 +67,18 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	@Override
 	protected void OnRenderFrame(FrameEventArgs arg0) {
 		super.OnRenderFrame(arg0);
+		
+		long time = System.nanoTime();
+		deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		lastFrameTime = time;
+		
+		fps++;
+		if(time - framesStart >= 1000000000l) {
+			framesStart = time;
+			fps = frames;
+			frames = 0;
+		}
+		
 		MakeCurrent();
 		app.listener.render();
 		SwapBuffers();
@@ -123,17 +143,17 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 
 	@Override
 	public float getDeltaTime() {
-		return 0;
+		return deltaTime;
 	}
 
 	@Override
 	public float getRawDeltaTime() {
-		return 0;
+		return deltaTime;
 	}
 
 	@Override
 	public int getFramesPerSecond() {
-		return 0;
+		return fps;
 	}
 
 	@Override

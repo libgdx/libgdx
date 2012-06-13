@@ -21,12 +21,12 @@ public class IOSAudio implements Audio {
 
 	@Override
 	public Sound newSound(FileHandle fileHandle) {
-		return null;
+		return new IOSSound();
 	}
 
 	@Override
 	public Music newMusic(FileHandle file) {
-		return null;
+		return new IOSMusic();
 	}
 
 }
