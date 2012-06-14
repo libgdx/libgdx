@@ -551,11 +551,13 @@ public class TextureAtlas implements Disposable {
 		}
 
 		public float getWidth () {
-			return super.getWidth() / region.packedWidth * region.originalWidth;
+			float packedWidth = region.rotate ? region.packedHeight : region.packedWidth;
+			return super.getWidth() / packedWidth * region.originalWidth;
 		}
 
 		public float getHeight () {
-			return super.getHeight() / region.packedHeight * region.originalHeight;
+			float packedHeight = region.rotate ? region.packedWidth : region.packedHeight;
+			return super.getHeight() / packedHeight * region.originalHeight;
 		}
 
 		public AtlasRegion getAtlasRegion () {
