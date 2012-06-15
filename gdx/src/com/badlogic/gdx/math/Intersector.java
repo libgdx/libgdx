@@ -251,7 +251,6 @@ public final class Intersector {
 	 * @param y2
 	 * @param z2
 	 * @param plane
-	 * @return
 	 */
 	public static float intersectLinePlane(float x, float y, float z, float x2, float y2, float z2, Plane plane, Vector3 intersection) {
 		Vector3 direction = tmp.set(x2, y2, z2).sub(x, y, z);

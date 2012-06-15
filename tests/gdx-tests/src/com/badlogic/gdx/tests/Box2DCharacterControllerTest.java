@@ -126,7 +126,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		return box;
 	}
  
-	private Body createCircle(BodyType type, float radius, float density) {
+	Body createCircle(BodyType type, float radius, float density) {
 		BodyDef def = new BodyDef();
 		def.type = type;
 		Body box = world.createBody(def);

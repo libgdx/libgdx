@@ -317,7 +317,7 @@ public interface Input {
 	 * 
 	 * @param listener The TextInputListener.
 	 * @param title The title of the text input dialog.
-	 * @param text The placeholder text presented to the user. */
+	 * @param placeholder The placeholder text presented to the user. */
 	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder);
 
 	/** Sets the on-screen keyboard visible if available.

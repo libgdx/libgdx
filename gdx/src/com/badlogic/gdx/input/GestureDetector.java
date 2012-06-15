@@ -45,7 +45,6 @@ public class GestureDetector extends InputAdapter {
 		 * @param x 
 		 * @param y
 		 * @param pointer
-		 * @return
 		 */
 		public boolean touchDown (int x, int y, int pointer);
 
@@ -57,7 +56,6 @@ public class GestureDetector extends InputAdapter {
 		 * @param x
 		 * @param y
 		 * @param count the number of taps. 
-		 * @return
 		 */
 		public boolean tap (int x, int y, int count);
 
@@ -68,7 +66,6 @@ public class GestureDetector extends InputAdapter {
 		 * the last known velocity of the finger in pixels per second.
 		 * @param velocityX velocity on x in seconds
 		 * @param velocityY velocity on y in seconds
-		 * @return
 		 */
 		public boolean fling (float velocityX, float velocityY);
 
@@ -78,7 +75,6 @@ public class GestureDetector extends InputAdapter {
 		 * @param y
 		 * @param deltaX the difference in pixels to the last drag event on x.
 		 * @param deltaY the difference in pixels to the last drag event on y.
-		 * @return
 		 */
 		public boolean pan (int x, int y, int deltaX, int deltaY);
 
@@ -87,7 +83,6 @@ public class GestureDetector extends InputAdapter {
 		 * is the distance in pixels when the gesture started.
 		 * @param originalDistance distance between fingers when the gesture started.
 		 * @param currentDistance current distance between fingers.
-		 * @return
 		 */
 		public boolean zoom (float originalDistance, float currentDistance);
 
@@ -98,7 +93,6 @@ public class GestureDetector extends InputAdapter {
 		 * @param initialSecondPointer
 		 * @param firstPointer
 		 * @param secondPointer
-		 * @return
 		 */
 		public boolean pinch (Vector2 initialFirstPointer, Vector2 initialSecondPointer, Vector2 firstPointer, Vector2 secondPointer);
 	}

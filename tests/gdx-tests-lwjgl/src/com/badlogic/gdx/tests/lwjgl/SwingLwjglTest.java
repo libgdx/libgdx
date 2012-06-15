@@ -46,7 +46,7 @@ public class SwingLwjglTest extends JFrame {
 		setSize(800, 480);
 	}
 	
-	private class WindowCreator extends ApplicationAdapter {
+	class WindowCreator extends ApplicationAdapter {
 		SpriteBatch batch;
 		BitmapFont font;
 

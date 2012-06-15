@@ -39,7 +39,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -87,8 +86,7 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 		} catch (RuntimeException ex) {
 			Skin skin = layout.skin;
 			if (skin != null) {
-				if (skin.hasResource(className, TextureRegion.class))
-					return new Image(skin.getRegion(className));
+				if (skin.hasResource(className, TextureRegion.class)) return new Image(skin.getRegion(className));
 				if (skin.hasResource(className, NinePatch.class)) return new Image(skin.getPatch(className));
 			}
 			if (layout.assetManager != null && layout.assetManager.isLoaded(className, Texture.class))
@@ -164,12 +162,7 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 	}
 
 	public Table newTable (Table parent) {
-		Table table;
-		try {
-			table = super.newTable(parent);
-		} catch (Exception ex) {
-			table = new Table();
-		}
+		Table table = new Table();
 		TableLayout layout = parent.getTableLayout();
 		table.setSkin(layout.skin);
 		table.setAssetManager(layout.assetManager);

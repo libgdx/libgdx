@@ -178,7 +178,7 @@ public class LwjglAWTCanvas implements Application {
 		return 0;
 	}
 	
-	private void setGlobals() {
+	void setGlobals() {
 		Gdx.app = this;
 		if(audio != null) Gdx.audio = audio;
 		if(files != null) Gdx.files = files;
@@ -200,7 +200,7 @@ public class LwjglAWTCanvas implements Application {
 		}
 	}
 
-	private void render () {
+	void render () {
 		setGlobals();
 		canvas.setCursor(null);
 		graphics.updateTime();

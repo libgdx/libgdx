@@ -37,8 +37,8 @@ import com.badlogic.gdx.utils.OrderedMap;
  * packer supports padding and border pixel duplication, specified during construction. The packer supports incremental inserts
  * and updates of TextureAtlases generated with this class.</p>
  * 
- * All methods except {@link #getPage(String)} and {@link #getPages()} are thread safe. The methods {@link #generateTextureAtlas(TextureFilter, TextureFilter)}
- * and {@link #updateTextureAtlas(TextureAtlas, TextureFilter, TextureFilter)} need to be called on the rendering thread, all
+ * All methods except {@link #getPage(String)} and {@link #getPages()} are thread safe. The methods {@link #generateTextureAtlas(TextureFilter, TextureFilter, boolean)}
+ * and {@link #updateTextureAtlas(TextureAtlas, TextureFilter, TextureFilter, boolean)} need to be called on the rendering thread, all
  * other methods can be called from any thread.</p>
  * 
  * One-off usage:
@@ -294,8 +294,8 @@ public class PixmapPacker implements Disposable {
 	/**
 	 * Disposes all resources, including Pixmap instances for the pages
 	 * created so far. These page Pixmap instances are shared with
-	 * any {@link TextureAtlas} generated or updated by either {@link #generateTextureAtlas(TextureFilter, TextureFilter)}
-	 * or {@link #updateTextureAtlas(TextureAtlas, TextureFilter, TextureFilter)}. Do
+	 * any {@link TextureAtlas} generated or updated by either {@link #generateTextureAtlas(TextureFilter, TextureFilter, boolean)}
+	 * or {@link #updateTextureAtlas(TextureAtlas, TextureFilter, TextureFilter, boolean)}. Do
 	 * not call this method if you generated or updated a TextureAtlas, instead
 	 * dispose the TextureAtlas.
 	 */

@@ -49,7 +49,6 @@ public abstract class AsynchronousAssetLoader<T, P extends AssetLoaderParameters
 	 * @param manager
 	 * @param fileName
 	 * @param parameter
-	 * @return
 	 */
 	public abstract T loadSync (AssetManager manager, String fileName, P parameter);
 }
