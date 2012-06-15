@@ -104,18 +104,13 @@ void main()
 		vec3 surfaceNormal = normalize( v_normal );
 		//lambert phong
     	float lambert = wrapLight(surfaceNormal, lightDirection);
-   	
+   		vec3 diffuseLight = intensity * lambert;
+   		
 		//specular blinn
 		vec3 fromEye   = normalize(v_eye);	
 		vec3 halfAngle = normalize(lightDirection + fromEye);
-		float specular = pow( clamp( dot(halfAngle, surfaceNormal), 0.0, 1.0), shininessFactor);
-	
-		//specular = (lambert > 0.0) ? specular : 0.0;
-		float tmp  = specular * (lambert * 2.0);
-		specular = (lambert > 0.5)  ? specular : 0.0;//tmp;
-		vec3 diffuseLight = intensity * lambert;
-	
-		vec3 specularLight = intensity * specular;
+		vec3 specularLight = diffuseLight * pow( clamp( dot(halfAngle, surfaceNormal), 0.0, 1.0), shininessFactor);
+		
 		#ifdef specularColorFlag
 			specularLight *= specularColor.rgb;
 			#ifdef translucentFlag
