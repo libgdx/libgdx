@@ -73,8 +73,8 @@ public class ObjectIntMap<K> {
 		threshold = (int)(capacity * loadFactor);
 		mask = capacity - 1;
 		hashShift = 31 - Integer.numberOfTrailingZeros(capacity);
-		stashCapacity = Math.max(3, (int)Math.ceil(Math.log(capacity)) + 1);
-		pushIterations = Math.max(Math.min(capacity, 32), (int)Math.sqrt(capacity) / 4);
+		stashCapacity = Math.max(3, (int)Math.ceil(Math.log(capacity)) * 2);
+		pushIterations = Math.max(Math.min(capacity, 8), (int)Math.sqrt(capacity) / 8);
 
 		keyTable = (K[])new Object[capacity + stashCapacity];
 		valueTable = new int[keyTable.length];
@@ -264,6 +264,7 @@ public class ObjectIntMap<K> {
 		keyTable[index] = key;
 		valueTable[index] = value;
 		stashSize++;
+		size++;
 	}
 
 	/** @param defaultValue Returned if the key was not associated with a value. */
@@ -430,8 +431,8 @@ public class ObjectIntMap<K> {
 		threshold = (int)(newSize * loadFactor);
 		mask = newSize - 1;
 		hashShift = 31 - Integer.numberOfTrailingZeros(newSize);
-		stashCapacity = Math.max(3, (int)Math.ceil(Math.log(newSize)));
-		pushIterations = Math.max(Math.min(capacity, 32), (int)Math.sqrt(capacity) / 4);
+		stashCapacity = Math.max(3, (int)Math.ceil(Math.log(newSize)) * 2);
+		pushIterations = Math.max(Math.min(newSize, 8), (int)Math.sqrt(newSize) / 8);
 
 		K[] oldKeyTable = keyTable;
 		int[] oldValueTable = valueTable;

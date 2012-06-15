@@ -76,8 +76,8 @@ public class IntMap<V> {
 		threshold = (int)(capacity * loadFactor);
 		mask = capacity - 1;
 		hashShift = 31 - Integer.numberOfTrailingZeros(capacity);
-		stashCapacity = Math.max(3, (int)Math.ceil(Math.log(capacity)) + 1);
-		pushIterations = Math.max(Math.min(capacity, 32), (int)Math.sqrt(capacity) / 4);
+		stashCapacity = Math.max(3, (int)Math.ceil(Math.log(capacity)) * 2);
+		pushIterations = Math.max(Math.min(capacity, 8), (int)Math.sqrt(capacity) / 8);
 
 		keyTable = new int[capacity + stashCapacity];
 		valueTable = (V[])new Object[keyTable.length];
@@ -276,6 +276,7 @@ public class IntMap<V> {
 		keyTable[index] = key;
 		valueTable[index] = value;
 		stashSize++;
+		size++;
 	}
 
 	public V get (int key) {
@@ -469,8 +470,8 @@ public class IntMap<V> {
 		threshold = (int)(newSize * loadFactor);
 		mask = newSize - 1;
 		hashShift = 31 - Integer.numberOfTrailingZeros(newSize);
-		stashCapacity = Math.max(3, (int)Math.ceil(Math.log(newSize)));
-		pushIterations = Math.max(Math.min(capacity, 32), (int)Math.sqrt(capacity) / 4);
+		stashCapacity = Math.max(3, (int)Math.ceil(Math.log(newSize)) * 2);
+		pushIterations = Math.max(Math.min(newSize, 8), (int)Math.sqrt(newSize) / 8);
 
 		int[] oldKeyTable = keyTable;
 		V[] oldValueTable = valueTable;
