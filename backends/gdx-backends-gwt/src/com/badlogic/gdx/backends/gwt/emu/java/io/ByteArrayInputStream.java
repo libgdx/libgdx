@@ -28,9 +28,4 @@ public class ByteArrayInputStream extends InputStream {
   public int read()  {
     return pos < data.length ? data[pos++] & 0xff: -1;
   }
-  
-  @Override
-  public int available() {
-	  return data.length - pos;
-  }
 }
