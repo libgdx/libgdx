@@ -652,17 +652,21 @@ public class TexturePacker {
 		}
 
 		void writePackEntry() throws IOException {
-			writePackEntry(image, false);
+			writePackEntry(image, null);
 			for (Image alias : image.aliases)
-				writePackEntry(alias, true);
+				writePackEntry(alias, image);
 		}
 
-		private void writePackEntry(Image image, boolean alias)
+		/**
+		 * @param image The Image to be written to the pack. 
+		 * @param source If the Image is an alias, the source is the original Image, otherwise null is expected.
+		 */
+		private void writePackEntry(Image image, Image source)
 				throws IOException {
 			String imageName = image.name;
 			imageName = imageName.replace("\\", "/");
 
-			log("Packing... " + imageName + (alias ? " (alias)" : ""));
+			log("Packing... " + imageName + (source != null ? " (alias)" : ""));
 
 			Matcher matcher = indexPattern.matcher(imageName);
 			int index = -1;
@@ -673,8 +677,10 @@ public class TexturePacker {
 			if (underscoreIndex != -1)
 				imageName = imageName.substring(0, underscoreIndex);
 
+			boolean rotate = source != null ? source.rotate : image.rotate;
+			
 			writer.write(imageName + "\n");
-			writer.write("  rotate: " + image.rotate + "\n");
+			writer.write("  rotate: " + rotate + "\n");
 			writer.write("  xy: " + left + ", " + top + "\n");
 			writer.write("  size: " + image.getWidth() + ", "
 					+ image.getHeight() + "\n");
@@ -1211,3 +1217,4 @@ public class TexturePacker {
 		process(settings, input, output);
 	}
 }
+
