@@ -4,6 +4,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 
 public class IOSInput implements Input {
+	IOSGraphics graphics;
+	
+	public IOSInput(IOSGraphics graphics) {
+		this.graphics = graphics;
+	}
+	
 	@Override
 	public float getAccelerometerX() {
 		return 0;

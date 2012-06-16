@@ -40,7 +40,7 @@ public class IOSApplication implements Application {
 		this.graphics = new IOSGraphics(bounds, this);
 		this.files = new IOSFiles();
 		this.audio = new IOSAudio();
-		this.input = new IOSInput();
+		this.input = new IOSInput(this.graphics);
 		
 		Gdx.files = this.files;
 		Gdx.graphics = this.graphics;
