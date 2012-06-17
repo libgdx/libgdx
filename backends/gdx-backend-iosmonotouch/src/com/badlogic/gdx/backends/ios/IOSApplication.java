@@ -26,6 +26,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	IOSFiles files;
 	IOSInput input;
 	int logLevel = Application.LOG_DEBUG;
+	boolean firstResume;
 	
 	/**
 	 * Should be called in AppDelegate#FinishedLaunching
@@ -61,16 +62,25 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	@Override
 	public void OnActivated(UIApplication uiApp) {
 		Gdx.app.log("IOSApplication", "resumed");
+		if(!firstResume) {
+			graphics.MakeCurrent();
+			listener.resume();
+			firstResume = true;
+		}
 	}
 
 	@Override
 	public void OnResignActivation(UIApplication uiApp) {
 		Gdx.app.log("IOSApplication", "paused");
+		graphics.MakeCurrent();
+		listener.pause();
 	}
 
 	@Override
 	public void WillTerminate(UIApplication uiApp) {
 		Gdx.app.log("IOSApplication", "disposed");
+		graphics.MakeCurrent();
+		listener.dispose();
 	}
 
 	@Override
