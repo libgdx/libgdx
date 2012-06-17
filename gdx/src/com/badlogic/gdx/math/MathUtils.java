@@ -38,35 +38,40 @@ public class MathUtils {
 	static public final float radiansToDegrees = 180f / PI;
 	static public final float degreesToRadians = PI / 180;
 
-	static public final float[] sin = new float[SIN_COUNT];
-	static public final float[] cos = new float[SIN_COUNT];
-
-	static {
-		for (int i = 0; i < SIN_COUNT; i++) {
-			float a = (i + 0.5f) / SIN_COUNT * radFull;
-			sin[i] = (float)Math.sin(a);
-			cos[i] = (float)Math.cos(a);
+	static private class Sin {
+		static final float[] table = new float[SIN_COUNT];
+		static {
+			for (int i = 0; i < SIN_COUNT; i++)
+				table[i] = (float)Math.sin((i + 0.5f) / SIN_COUNT * radFull);
+			for (int i = 0; i < 360; i += 90)
+				table[(int)(i * degToIndex) & SIN_MASK] = (float)Math.sin(i * degreesToRadians);
 		}
-		for (int i = 0; i < 360; i += 90) {
-			sin[(int)(i * degToIndex) & SIN_MASK] = (float)Math.sin(i * degreesToRadians);
-			cos[(int)(i * degToIndex) & SIN_MASK] = (float)Math.cos(i * degreesToRadians);
+	}
+
+	static private class Cos {
+		static final float[] table = new float[SIN_COUNT];
+		static {
+			for (int i = 0; i < SIN_COUNT; i++)
+				table[i] = (float)Math.cos((i + 0.5f) / SIN_COUNT * radFull);
+			for (int i = 0; i < 360; i += 90)
+				table[(int)(i * degToIndex) & SIN_MASK] = (float)Math.cos(i * degreesToRadians);
 		}
 	}
 
 	static public final float sin (float rad) {
-		return sin[(int)(rad * radToIndex) & SIN_MASK];
+		return Sin.table[(int)(rad * radToIndex) & SIN_MASK];
 	}
 
 	static public final float cos (float rad) {
-		return cos[(int)(rad * radToIndex) & SIN_MASK];
+		return Cos.table[(int)(rad * radToIndex) & SIN_MASK];
 	}
 
 	static public final float sinDeg (float deg) {
-		return sin[(int)(deg * degToIndex) & SIN_MASK];
+		return Sin.table[(int)(deg * degToIndex) & SIN_MASK];
 	}
 
 	static public final float cosDeg (float deg) {
-		return cos[(int)(deg * degToIndex) & SIN_MASK];
+		return Cos.table[(int)(deg * degToIndex) & SIN_MASK];
 	}
 
 	// ---
@@ -75,15 +80,18 @@ public class MathUtils {
 	static private final int ATAN2_BITS2 = ATAN2_BITS << 1;
 	static private final int ATAN2_MASK = ~(-1 << ATAN2_BITS2);
 	static private final int ATAN2_COUNT = ATAN2_MASK + 1;
-	static private final int ATAN2_DIM = (int)Math.sqrt(ATAN2_COUNT);
+	static final int ATAN2_DIM = (int)Math.sqrt(ATAN2_COUNT);
 	static private final float INV_ATAN2_DIM_MINUS_1 = 1.0f / (ATAN2_DIM - 1);
-	static private final float[] atan2 = new float[ATAN2_COUNT];
-	static {
-		for (int i = 0; i < ATAN2_DIM; i++) {
-			for (int j = 0; j < ATAN2_DIM; j++) {
-				float x0 = (float)i / ATAN2_DIM;
-				float y0 = (float)j / ATAN2_DIM;
-				atan2[j * ATAN2_DIM + i] = (float)Math.atan2(y0, x0);
+
+	static private class Atan2 {
+		static final float[] table = new float[ATAN2_COUNT];
+		static {
+			for (int i = 0; i < ATAN2_DIM; i++) {
+				for (int j = 0; j < ATAN2_DIM; j++) {
+					float x0 = (float)i / ATAN2_DIM;
+					float y0 = (float)j / ATAN2_DIM;
+					table[j * ATAN2_DIM + i] = (float)Math.atan2(y0, x0);
+				}
 			}
 		}
 	}
@@ -109,7 +117,7 @@ public class MathUtils {
 		float invDiv = 1 / ((x < y ? y : x) * INV_ATAN2_DIM_MINUS_1);
 		int xi = (int)(x * invDiv);
 		int yi = (int)(y * invDiv);
-		return (atan2[yi * ATAN2_DIM + xi] + add) * mul;
+		return (Atan2.table[yi * ATAN2_DIM + xi] + add) * mul;
 	}
 
 	// ---
