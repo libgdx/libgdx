@@ -74,6 +74,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		Gdx.app.log("IOSApplication", "paused");
 		graphics.MakeCurrent();
 		listener.pause();
+		Gdx.gl.glFlush();
 	}
 
 	@Override
@@ -81,6 +82,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		Gdx.app.log("IOSApplication", "disposed");
 		graphics.MakeCurrent();
 		listener.dispose();
+		Gdx.gl.glFlush();
 	}
 
 	@Override
