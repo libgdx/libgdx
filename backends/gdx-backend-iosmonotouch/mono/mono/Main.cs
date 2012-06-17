@@ -12,6 +12,7 @@ using com.badlogic.gdx.graphics.glutils;
 using java.io;
 using java.nio;
 using System.IO;
+using com.badlogic.gdx.backends.ios;
 
 namespace mono
 {
@@ -39,10 +40,8 @@ namespace mono
 	public class Application
 	{
 		[Register ("AppDelegate")]
-		public partial class AppDelegate : UIApplicationDelegate {
-			public override bool FinishedLaunching (UIApplication app, NSDictionary options) {
-				new com.badlogic.gdx.backends.ios.IOSApplication(app, new TestListener());
-				return true;
+		public class IOSStarter : IOSApplication {
+			public IOSStarter() : base(new TestListener()) {
 			}
 		}
 		

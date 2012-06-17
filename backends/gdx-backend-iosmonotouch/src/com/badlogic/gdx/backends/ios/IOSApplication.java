@@ -1,5 +1,6 @@
 package com.badlogic.gdx.backends.ios;
 
+import cli.MonoTouch.Foundation.NSDictionary;
 import cli.MonoTouch.UIKit.UIApplication;
 import cli.MonoTouch.UIKit.UIApplicationDelegate;
 import cli.MonoTouch.UIKit.UIScreen;
@@ -16,26 +17,28 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 
-public class IOSApplication implements Application {
-	final UIApplication uiApp;
-	final UIWindow uiWindow;
-	final ApplicationListener listener;
-	final IOSGraphics graphics;
-	final IOSAudio audio;
-	final IOSFiles files;
-	final IOSInput input;
+public class IOSApplication extends UIApplicationDelegate implements Application {
+	UIApplication uiApp;
+	UIWindow uiWindow;
+	ApplicationListener listener;
+	IOSGraphics graphics;
+	IOSAudio audio;
+	IOSFiles files;
+	IOSInput input;
 	int logLevel = Application.LOG_DEBUG;
 	
 	/**
 	 * Should be called in AppDelegate#FinishedLaunching
 	 * @param uiApp
 	 */
-	public IOSApplication(UIApplication uiApp, ApplicationListener listener) {
-		this.uiApp = uiApp;
+	public IOSApplication(ApplicationListener listener) {
 		this.listener = listener;
-		
 		Gdx.app = this;
-		
+	}
+	
+	@Override
+	public boolean FinishedLaunching(UIApplication uiApp, NSDictionary options) {
+		this.uiApp = uiApp;
 		RectangleF bounds = UIScreen.get_MainScreen().get_Bounds();
 		this.graphics = new IOSGraphics(bounds, this);
 		this.files = new IOSFiles();
@@ -51,26 +54,43 @@ public class IOSApplication implements Application {
 		this.uiWindow.Add(graphics);
 		this.graphics.Run();
 		this.uiWindow.MakeKeyAndVisible();
+		Gdx.app.log("IOSApplication", "created");
+		return true;
 	}
-	
+
+	@Override
+	public void OnActivated(UIApplication uiApp) {
+		Gdx.app.log("IOSApplication", "resumed");
+	}
+
+	@Override
+	public void OnResignActivation(UIApplication uiApp) {
+		Gdx.app.log("IOSApplication", "paused");
+	}
+
+	@Override
+	public void WillTerminate(UIApplication uiApp) {
+		Gdx.app.log("IOSApplication", "disposed");
+	}
+
 	@Override
 	public Graphics getGraphics () {
-		return null;
+		return graphics;
 	}
 
 	@Override
 	public Audio getAudio () {
-		return null;
+		return audio;
 	}
 
 	@Override
 	public Input getInput () {
-		return null;
+		return input;
 	}
 
 	@Override
 	public Files getFiles () {
-		return null;
+		return files;
 	}
 
 	@Override
@@ -150,10 +170,10 @@ public class IOSApplication implements Application {
 
 	@Override
 	public void postRunnable (Runnable runnable) {
-		
 	}
 
 	@Override
 	public void exit () {	
+		System.exit(0);
 	}
 }

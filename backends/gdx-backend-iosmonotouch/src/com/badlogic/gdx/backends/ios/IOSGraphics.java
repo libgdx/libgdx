@@ -158,7 +158,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 
 	@Override
 	public GraphicsType getType() {
-		return null;
+		return GraphicsType.iOSGL;
 	}
 
 	@Override
