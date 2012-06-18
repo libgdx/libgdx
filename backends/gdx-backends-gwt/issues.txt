@@ -65,6 +65,11 @@ for which reflection information should be generated on top of the reflected lib
 is a bad idea as the reflection info bloats the resulting javascript files.
 - there might be some issues i didn't detect yet, this part of the emulation is rather hackish.
 
+[System emu]
+- ripped from GWT with additions by jgw.
+- Excluded explicitely in .classpath of gdx-backends-gwt!
+- Excluded from ant build (build-template.xml)!
+
 [Unsupported Classes]
 GdxBuild.java
 GdxNativesLoader.java
