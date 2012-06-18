@@ -38,4 +38,8 @@ public abstract class InputStream {
   public void close() throws IOException {
     
   }
+  
+  public int available() {
+	  return 0;
+  }
 }

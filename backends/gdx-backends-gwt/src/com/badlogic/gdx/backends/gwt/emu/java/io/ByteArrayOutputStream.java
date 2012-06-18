@@ -49,4 +49,11 @@ public class ByteArrayOutputStream extends OutputStream {
   public int size() {
     return count;
   }
+  
+  public String toString() {
+	  return new String(buf, 0, count);
+  }
+  public String toString(String enc) throws UnsupportedEncodingException {
+	  return new String(buf, 0, count, enc);
+  }  
 }
