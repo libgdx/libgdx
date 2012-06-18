@@ -14,7 +14,7 @@ import java.io.OutputStream;
  * as we know it works on for our target usage.
  */
 public class Lzma {
-	static public class CommandLine {
+	static class CommandLine {
 		public static final int kEncode = 0;
 		public static final int kDecode = 1;
 		public static final int kBenchmak = 2;
@@ -49,7 +49,7 @@ public class Lzma {
 	 * @param out the {@link OutputStream} to compress to
 	 * @throws IOException
 	 */
-	public void compress(InputStream in, OutputStream out) throws IOException {
+	static public void compress(InputStream in, OutputStream out) throws IOException {
 		CommandLine params = new CommandLine();
 		boolean eos = false;
 		if (params.Eos)
@@ -89,7 +89,7 @@ public class Lzma {
 	 * @param out the {@link OutputStream} to decompress to
 	 * @throws IOException
 	 */	
-	public void decompress(InputStream in, OutputStream out) throws IOException {
+	static public void decompress(InputStream in, OutputStream out) throws IOException {
 		int propertiesSize = 5;
 		byte[] properties = new byte[propertiesSize];
 		if (in.read(properties, 0, propertiesSize) != propertiesSize)
