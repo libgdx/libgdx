@@ -224,5 +224,20 @@
 		<include name="utils/XmlWriter.java"/>
 		<include name="graphics/g2d/Animation.java"/>
 		<include name="graphics/g3d/Animation.java"/>
+		
+		<include name="utils/StringBuilder.java"/>
+		<include name="utils/compression/CRC.java"/>
+		<include name="utils/compression/ICodeProgress.java"/>
+		<include name="utils/compression/Lzma.java"/>
+		<include name="utils/compression/lz/BinTree.java"/>
+		<include name="utils/compression/lz/InWindow.java"/>
+		<include name="utils/compression/lz/OutWindow.java"/>		
+		<include name="utils/compression/lzma/Base.java"/>
+		<include name="utils/compression/lzma/Decoder.java"/>
+		<include name="utils/compression/lzma/Encoder.java"/>
+		<include name="utils/compression/rangecoder/BitTreeDecoder.java"/>
+		<include name="utils/compression/rangecoder/BitTreeEncoder.java"/>
+		<include name="utils/compression/rangecoder/Decoder.java"/>
+		<include name="utils/compression/rangecoder/Encoder.java"/>		
 	</source>
 </module>
