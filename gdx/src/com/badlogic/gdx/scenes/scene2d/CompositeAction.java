@@ -33,8 +33,9 @@ public abstract class CompositeAction extends Action {
 	}
 
 	public void finish() {
-		for(Action action: actions) {
-			action.finish();
+		int len = actions.size();
+		for (int i = 0; i < len; i++) {
+			actions.get(i).finish();
 		}
 		super.finish();
 	}
