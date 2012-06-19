@@ -251,6 +251,7 @@ public class Skin implements Disposable {
 		return (T)resource;
 	}
 
+	/** Returns the name to resource mapping for the specified type, or null if no resources of that type exist. */
 	public <T> ObjectMap<String, T> getResources (Class<T> type) {
 		return (ObjectMap<String, T>)resources.get(type);
 	}
@@ -303,6 +304,7 @@ public class Skin implements Disposable {
 		return (T)style;
 	}
 
+	/** Returns the name to style mapping for the specified type, or null if no styles of that type exist. */
 	public <T> ObjectMap<String, T> getStyles (Class<T> type) {
 		return (ObjectMap<String, T>)styles.get(type);
 	}
