@@ -251,6 +251,10 @@ public class Skin implements Disposable {
 		return (T)resource;
 	}
 
+	public <T> ObjectMap<String, T> getResources (Class<T> type) {
+		return (ObjectMap<String, T>)resources.get(type);
+	}
+
 	public boolean hasResource (String name, Class type) {
 		ObjectMap<String, Object> typeResources = resources.get(type);
 		if (typeResources == null) return false;
@@ -297,6 +301,10 @@ public class Skin implements Disposable {
 		Object style = typeStyles.get(name);
 		if (style == null) throw new GdxRuntimeException("No " + type.getName() + " style registered with name: " + name);
 		return (T)style;
+	}
+
+	public <T> ObjectMap<String, T> getStyles (Class<T> type) {
+		return (ObjectMap<String, T>)styles.get(type);
 	}
 
 	public boolean hasStyle (String name, Class type) {
