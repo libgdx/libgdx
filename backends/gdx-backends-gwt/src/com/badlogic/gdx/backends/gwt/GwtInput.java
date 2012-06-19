@@ -122,12 +122,29 @@ public class GwtInput implements Input {
 
 	@Override
 	public void getTextInput (TextInputListener listener, String title, String text) {
-		// FIXME
+		String input = getTextInputJSNI(title, text);
+		if (input != null) {
+			listener.input(input);
+		}
+		else {
+			listener.canceled();
+		}
 	}
 
 	@Override
 	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder) {
-		// FIXME
+		String input = getTextInputJSNI(title, placeholder);
+		if (input != null) {
+			if (input.equals(placeholder)) {
+				listener.input(input);
+			}
+			else {
+				listener.canceled();
+			}
+		}
+		else {
+			listener.canceled();
+		}
 	}
 
 	@Override
@@ -209,6 +226,10 @@ public class GwtInput implements Input {
 		return Orientation.Landscape;
 	}
 
+	private native String getTextInputJSNI(String title, String text) /*-{
+		return prompt("Please enter your name","Harry Potter");
+	}-*/;
+	
 	/**
 	 * from https://github.com/toji/game-shim/blob/master/game-shim.js
 	 * @return is Cursor catched
