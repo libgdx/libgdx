@@ -17,41 +17,51 @@
 package com.badlogic.gdx.math;
 
 public class Polygon {
-
-	private final float[] vertices;
+	private final float[] localVertices;
+	private float[] worldVertices;
 	private float x, y;
 	private float originX, originY;
 	private float rotation;
 	private float scaleX = 1, scaleY = 1;
-	private boolean dirty;
-	private Rectangle bounds = new Rectangle();
+	private boolean dirty = true;
+	private Rectangle bounds;
 
 	public Polygon (float[] vertices) {
 		if (vertices.length < 6) throw new IllegalArgumentException("polygons must contain at least 3 points.");
-		this.vertices = vertices;
+		this.localVertices = vertices;
 	}
 
-	public float[] getVertices () {
-		if (!dirty) return vertices;
+	/** Returns vertices without scaling or rotation and without being offset by the polygon position. */
+	public float[] getLocalVertices () {
+		return localVertices;
+	}
 
-		float[] vertices = this.vertices;
-		final int numFloats = vertices.length;
+	/** Returns vertices scaled, rotated, and offset by the polygon position. */
+	public float[] getWorldVertices () {
+		if (!dirty) return localVertices;
+		dirty = false;
 
-		final float translateX = x + originX;
-		final float translateY = y + originY;
+		final float[] localVertices = this.localVertices;
+		if (worldVertices == null || worldVertices.length < localVertices.length) worldVertices = new float[localVertices.length];
+
+		final float[] worldVertices = this.worldVertices;
+		final float positionX = x;
+		final float positionY = y;
+		final float originX = this.originX;
+		final float originY = this.originY;
+		final float scaleX = this.scaleX;
+		final float scaleY = this.scaleY;
+		final boolean scale = scaleX != 1 || scaleY != 1;
+		final float rotation = this.rotation;
 		final float cos = MathUtils.cosDeg(rotation);
 		final float sin = MathUtils.sinDeg(rotation);
-		float x, y;
-		for (int i = 0; i < numFloats; i += 2) {
-			x = vertices[i];
-			y = vertices[i + 1];
 
-			// move vertices to local coordinates
-			x -= translateX;
-			y -= translateY;
+		for (int i = 0, n = localVertices.length; i < n; i += 2) {
+			float x = localVertices[i] - originX;
+			float y = localVertices[i + 1] - originY;
 
 			// scale if needed
-			if (scaleX != 1 || scaleY != 1) {
+			if (scale) {
 				x *= scaleX;
 				y *= scaleY;
 			}
@@ -63,17 +73,10 @@ public class Polygon {
 				y = sin * oldX + cos * y;
 			}
 
-			// move vertices back to world coordinates
-			x += translateX;
-			y += translateY;
-
-			vertices[i] = x;
-			vertices[i + 1] = y;
+			worldVertices[i] = positionX + x + originX;
+			worldVertices[i + 1] = positionY + y + originY;
 		}
-
-		dirty = false;
-
-		return vertices;
+		return worldVertices;
 	}
 
 	public void setOrigin (float originX, float originY) {
@@ -119,7 +122,7 @@ public class Polygon {
 	public float area () {
 		float area = 0;
 
-		float[] vertices = getVertices();
+		float[] vertices = getWorldVertices();
 		final int numFloats = vertices.length;
 
 		int x1, y1, x2, y2;
@@ -137,8 +140,7 @@ public class Polygon {
 	}
 
 	public Rectangle getBoundingRectangle () {
-
-		float[] vertices = getVertices();
+		float[] vertices = getWorldVertices();
 
 		float minX = vertices[0];
 		float minY = vertices[1];
@@ -153,6 +155,7 @@ public class Polygon {
 			maxY = maxY < vertices[i + 1] ? vertices[i + 1] : maxY;
 		}
 
+		if (bounds == null) bounds = new Rectangle();
 		bounds.x = minX;
 		bounds.y = minY;
 		bounds.width = maxX - minX;
@@ -162,7 +165,7 @@ public class Polygon {
 	}
 
 	public boolean contains (float x, float y) {
-		final float[] vertices = getVertices();
+		final float[] vertices = getWorldVertices();
 		final int numFloats = vertices.length;
 		int intersects = 0;
 

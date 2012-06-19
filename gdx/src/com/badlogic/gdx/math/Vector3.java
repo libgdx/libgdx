@@ -20,11 +20,11 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.utils.NumberUtils;
 
-/** Encapsulates a 3D vector. Allows chaining operations by returning a reference to it self in all modification methods.
- * 
+/** Encapsulates a 3D vector. Allows chaining operations by returning a reference to itself in all modification methods.
  * @author badlogicgames@gmail.com */
 public class Vector3 implements Serializable {
 	private static final long serialVersionUID = 3840054589595372522L;
+
 	/** the x-component of this vector **/
 	public float x;
 	/** the x-component of this vector **/
@@ -32,9 +32,16 @@ public class Vector3 implements Serializable {
 	/** the x-component of this vector **/
 	public float z;
 
-	private static Vector3 tmp = new Vector3();
-	private static Vector3 tmp2 = new Vector3();
-	private static Vector3 tmp3 = new Vector3();
+	/** Static temporary vector. Use with care! Use only when sure other code will not also use this.
+	 * @see #tmp() **/
+	public final static Vector3 tmp = new Vector3();
+	/** Static temporary vector. Use with care! Use only when sure other code will not also use this.
+	 * @see #tmp() **/
+	public final static Vector3 tmp2 = new Vector3();
+	/** Static temporary vector. Use with care! Use only when sure other code will not also use this.
+	 * @see #tmp() **/
+	public final static Vector3 tmp3 = new Vector3();
+
 	public final static Vector3 X = new Vector3(1, 0, 0);
 	public final static Vector3 Y = new Vector3(0, 1, 0);
 	public final static Vector3 Z = new Vector3(0, 0, 1);
@@ -45,7 +52,6 @@ public class Vector3 implements Serializable {
 	}
 
 	/** Creates a vector with the given components
-	 * 
 	 * @param x The x-component
 	 * @param y The y-component
 	 * @param z The z-component */
@@ -54,7 +60,6 @@ public class Vector3 implements Serializable {
 	}
 
 	/** Creates a vector from the given vector
-	 * 
 	 * @param vector The vector */
 	public Vector3 (Vector3 vector) {
 		this.set(vector);

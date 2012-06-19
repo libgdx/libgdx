@@ -20,9 +20,10 @@ import java.util.Random;
 
 import com.badlogic.gdx.utils.NumberUtils;
 
-/** Utility and fast math functions.<br>
- * <br>
- * Thanks to Riven on JavaGaming.org for sin/cos/atan2/floor/ceil.<br> */
+/** Utility and fast math functions.
+ * <p>
+ * Thanks to Riven on JavaGaming.org for the basis of sin/cos/atan2/floor/ceil.
+ * @author Nathan Sweet */
 public class MathUtils {
 	static public final float PI = 3.1415927f;
 
