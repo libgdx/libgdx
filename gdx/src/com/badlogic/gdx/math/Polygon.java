@@ -38,7 +38,7 @@ public class Polygon {
 
 	/** Returns vertices scaled, rotated, and offset by the polygon position. */
 	public float[] getWorldVertices () {
-		if (!dirty) return localVertices;
+		if (!dirty) return worldVertices;
 		dirty = false;
 
 		final float[] localVertices = this.localVertices;
