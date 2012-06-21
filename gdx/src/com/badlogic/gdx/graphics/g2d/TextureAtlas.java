@@ -528,9 +528,16 @@ public class TextureAtlas implements Disposable {
 			float oldOffsetX = region.offsetX;
 			float oldOffsetY = region.offsetY;
 
+			float widthRatio = getWidth() / region.originalWidth;
+			float heightRatio = getHeight() / region.originalHeight;
+			
+			region.offsetX /= widthRatio;
+			region.offsetY /= heightRatio;
 			// Updates x and y offsets.
 			region.flip(x, y);
-
+			region.offsetX *= widthRatio;
+			region.offsetY *= heightRatio;
+			
 			// Update position and origin with new offsets.
 			translate(region.offsetX - oldOffsetX, region.offsetY - oldOffsetY);
 			setOrigin(oldOriginX, oldOriginY);
