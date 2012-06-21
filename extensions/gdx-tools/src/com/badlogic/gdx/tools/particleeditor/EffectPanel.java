@@ -57,11 +57,13 @@ class EffectPanel extends JPanel {
 	public ParticleEmitter newEmitter (String name, boolean select) {
 		final ParticleEmitter emitter = new ParticleEmitter();
 
-		emitter.getDuration().setLow(3000, 3000);
+		emitter.getDuration().setLow(3000);
 
-		emitter.getEmission().setHigh(10, 10);
+		emitter.getEmission().setHigh(250);
 
-		emitter.getLife().setHigh(1000, 1000);
+		emitter.getLife().setHigh(500, 1000);
+		emitter.getLife().setTimeline(new float[] {0, 0.66f, 1});
+		emitter.getLife().setScaling(new float[] {1, 1, 0.3f});
 
 		emitter.getScale().setHigh(32, 32);
 
@@ -71,18 +73,23 @@ class EffectPanel extends JPanel {
 		emitter.getRotation().setScaling(new float[] {0, 1});
 		emitter.getRotation().setRelative(true);
 
-		emitter.getAngle().setHigh(1, 360);
+		emitter.getAngle().setHigh(45, 135);
+		emitter.getAngle().setLow(90);
+		emitter.getAngle().setTimeline(new float[] {0, 0.5f, 1});
+		emitter.getAngle().setScaling(new float[] {1, 0, 0});
 		emitter.getAngle().setActive(true);
 
-		emitter.getVelocity().setHigh(80, 80);
+		emitter.getVelocity().setHigh(30, 300);
 		emitter.getVelocity().setActive(true);
+
+		emitter.getTint().setColors(new float[] {1, 0.12156863f, 0.047058824f});
 
 		emitter.getTransparency().setHigh(1, 1);
 		emitter.getTransparency().setTimeline(new float[] {0, 0.2f, 0.8f, 1});
-		emitter.getTransparency().setScaling(new float[] {0, 1, 1, 0});
+		emitter.getTransparency().setScaling(new float[] {0, 1, 0.75f, 0});
 
 		emitter.setFlip(false, true);
-		emitter.setMaxParticleCount(15);
+		emitter.setMaxParticleCount(200);
 		emitter.setImagePath("particle.png");
 
 		Array<ParticleEmitter> emitters = editor.effect.getEmitters();
