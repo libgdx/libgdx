@@ -8,12 +8,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.ActorListener;
-import com.badlogic.gdx.scenes.scene2d.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
+import static com.badlogic.gdx.scenes.scene2d.Actions.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -88,7 +86,7 @@ public class Scene2dTest extends GdxTest {
 				System.out.println("up " + x + ", " + y);
 				return true;
 			}
-			
+
 			public boolean touchDragged (ActorEvent event, float x, float y, int pointer) {
 				System.out.println("dragged " + x + ", " + y);
 				return true;
@@ -99,8 +97,10 @@ public class Scene2dTest extends GdxTest {
 
 		meow.setDuration(2);
 
-// actor.addAction(parallel(moveTo(250, 250, 2, elasticOut), color(RED, 6), delay(0.5f), rotateTo(180, 5, swing)));
-// actor.addAction(forever(sequence(scaleTo(2, 2, 0.5f), scaleTo(1, 1, 0.5f), delay(0.5f))));
+		//actor.addAction(parallel(moveBy(250, 250, 2)));
+		actor.addAction(parallel(moveBy(0, 250, 2), moveBy(250, 0, 2)));
+		// actor.addAction(parallel(moveTo(250, 250, 2, elasticOut), color(RED, 6), delay(0.5f), rotateTo(180, 5, swing)));
+		// actor.addAction(forever(sequence(scaleTo(2, 2, 0.5f), scaleTo(1, 1, 0.5f), delay(0.5f))));
 	}
 
 	public void render () {

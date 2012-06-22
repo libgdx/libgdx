@@ -4,7 +4,7 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
 
-/** Base class for actions that transition over time. 
+/** Base class for actions that transition over time.
  * @author Nathan Sweet */
 abstract public class TemporalAction extends Action {
 	private float duration, time;

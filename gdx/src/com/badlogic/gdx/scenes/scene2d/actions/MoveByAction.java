@@ -1,9 +1,9 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
-/** Moves an actor from its current position to a relative position. 
+/** Moves an actor from its current position to a relative position.
  * @author Nathan Sweet */
-public class MoveByAction extends TemporalAction {
+public class MoveByAction extends RelativeTemporalAction {
 	private float startX, startY;
 	private float amountX, amountY;
 
@@ -12,8 +12,8 @@ public class MoveByAction extends TemporalAction {
 		startY = actor.getY();
 	}
 
-	protected void update (float percent) {
-		actor.setPosition(startX + amountX * percent, startY + amountY * percent);
+	protected void updateRelative (float percent) {
+		actor.translate(amountX * percent, amountY * percent);
 	}
 
 	public void setAmount (float x, float y) {
