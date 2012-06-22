@@ -88,6 +88,7 @@ public class SelectBox extends Widget {
 		}
 
 		this.items = (String[])objects;
+		selection = 0;
 
 		NinePatch bg = style.background;
 		BitmapFont font = style.font;
