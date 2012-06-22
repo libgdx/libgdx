@@ -21,6 +21,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 /** An {@link Actor} that participates in layout and provides a minimum, preferred, and maximum size.
  * <p>
@@ -74,18 +75,20 @@ public abstract class Widget extends Actor implements Layout {
 	}
 
 	public void validate () {
+		Group parent = getParent();
 		if (fillParent && parent != null) {
 			float parentWidth, parentHeight;
+			Stage stage = getStage();
 			if (stage != null && parent == stage.getRoot()) {
-				parentWidth = stage.width();
-				parentHeight = stage.height();
+				parentWidth = stage.getWidth();
+				parentHeight = stage.getHeight();
 			} else {
-				parentWidth = parent.width;
-				parentHeight = parent.height;
+				parentWidth = parent.getWidth();
+				parentHeight = parent.getHeight();
 			}
-			if (width != parentWidth || height != parentHeight) {
-				width = parentWidth;
-				height = parentHeight;
+			if (getWidth() != parentWidth || getHeight() != parentHeight) {
+				setWidth(parentWidth);
+				setHeight(parentHeight);
 				invalidate();
 			}
 		}
@@ -102,15 +105,16 @@ public abstract class Widget extends Actor implements Layout {
 
 	public void invalidateHierarchy () {
 		invalidate();
+		Group parent = getParent();
 		if (parent instanceof Layout) ((Layout)parent).invalidateHierarchy();
 	}
 
 	public void pack () {
 		float newWidth = getPrefWidth();
 		float newHeight = getPrefHeight();
-		if (newWidth != width || newHeight != height) {
-			width = newWidth;
-			height = newHeight;
+		if (newWidth != getWidth() || newHeight != getHeight()) {
+			setWidth(newWidth);
+			setHeight(newHeight);
 			invalidate();
 			validate();
 		}
@@ -126,7 +130,7 @@ public abstract class Widget extends Actor implements Layout {
 	}
 
 	public Actor hit (float x, float y) {
-		return x > 0 && x < width && y > 0 && y < height ? this : null;
+		return x > 0 && x < getWidth() && y > 0 && y < getHeight() ? this : null;
 	}
 
 	public void layout () {
@@ -144,16 +148,16 @@ public abstract class Widget extends Actor implements Layout {
 
 	/** This modifies the specified point in the actor's coordinates to be in the stage's coordinates. Note this method will ONLY
 	 * work properly for screen aligned, unrotated, unscaled actors! */
-	static public void toScreenCoordinates (Actor actor, Vector2 point) {
-		point.x += actor.x;
-		point.y += actor.y;
-		Actor parent = actor.parent;
+	static public void toStageCoordinates (Actor actor, Vector2 point) {
+		point.x += actor.getX();
+		point.y += actor.getY();
+		Actor parent = actor.getParent();
 		while (parent != null) {
 			if (parent instanceof Group) {
-				point.x += parent.x;
-				point.y += parent.y;
+				point.x += parent.getX();
+				point.y += parent.getY();
 			}
-			parent = parent.parent;
+			parent = parent.getParent();
 		}
 	}
 }

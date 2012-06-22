@@ -31,20 +31,23 @@ import java.util.List;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Align;
-import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
+import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.tablelayout.Cell;
 import com.esotericsoftware.tablelayout.ParseException;
 
@@ -55,7 +58,6 @@ public class Table extends WidgetGroup {
 	private NinePatch backgroundPatch;
 	private final Rectangle tableBounds = new Rectangle();
 	private final Rectangle scissors = new Rectangle();
-	private ClickListener listener;
 
 	public boolean clip;
 	public boolean isPressed;
@@ -74,19 +76,32 @@ public class Table extends WidgetGroup {
 
 	public Table (Skin skin, TableLayout layout, String name) {
 		super(name);
-		transform = false;
+		setTransform(false);
 		if (layout == null) layout = new TableLayout();
 		this.layout = layout;
 		layout.setTable(this);
 		layout.skin = skin;
+
+		addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				if (pointer == 0) isPressed = true;
+				return false;
+			}
+
+			public boolean exit (ActorEvent event, float x, float y, int pointer, int button) {
+				if (isPressed) isPressed = false;
+				return false;
+			}
+		});
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
+		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		drawBackground(batch, parentAlpha);
 
-		if (transform) {
+		if (isTransform()) {
 			applyTransform(batch);
 			if (clip) {
 				calculateScissors(batch.getTransformMatrix());
@@ -105,23 +120,24 @@ public class Table extends WidgetGroup {
 	 * patch. */
 	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
 		if (backgroundPatch != null) {
+			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			backgroundPatch.draw(batch, x, y, width, height);
+			backgroundPatch.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
 	}
 
 	private void calculateScissors (Matrix4 transform) {
 		tableBounds.x = 0;
 		tableBounds.y = 0;
-		tableBounds.width = width;
-		tableBounds.height = height;
+		tableBounds.width = getWidth();
+		tableBounds.height = getHeight();
 		if (backgroundPatch != null) {
 			tableBounds.x += layout.getToolkit().width(layout, layout.getPadLeft());
 			tableBounds.y += layout.getToolkit().width(layout, layout.getPadBottom());
 			tableBounds.width -= tableBounds.x + layout.getToolkit().width(layout, layout.getPadRight());
 			tableBounds.height -= tableBounds.y + layout.getToolkit().width(layout, layout.getPadTop());
 		}
-		ScissorStack.calculateScissors(stage.getCamera(), transform, tableBounds, scissors);
+		ScissorStack.calculateScissors(getStage().getCamera(), transform, tableBounds, scissors);
 	}
 
 	public void invalidate () {
@@ -168,36 +184,12 @@ public class Table extends WidgetGroup {
 		return backgroundPatch;
 	}
 
-	/** Causes the contents to be clipped if they exceed the table bounds. Enabling clipping will set {@link #transform} to true. */
+	/** Causes the contents to be clipped if they exceed the table bounds. Enabling clipping will set {@link #setTransform(boolean)}
+	 * to true. */
 	public void setClip (boolean enabled) {
 		clip = enabled;
-		transform = enabled;
+		setTransform(enabled);
 		invalidate();
-	}
-
-	public void setClickListener (ClickListener listener) {
-		this.listener = listener;
-	}
-
-	public ClickListener getClickListener () {
-		return listener;
-	}
-
-	public boolean touchDown (float x, float y, int pointer) {
-		if (super.touchDown(x, y, pointer)) return true;
-		if (pointer != 0) return false;
-		if (listener == null) return false;
-		isPressed = true;
-		return true;
-	}
-
-	public void touchUp (float x, float y, int pointer) {
-		if (hit(x, y) != null) click(x, y);
-		isPressed = false;
-	}
-
-	public void click (float x, float y) {
-		if (listener != null) listener.click(this, x, y);
 	}
 
 	/** Returns the row index for the y coordinate. */
@@ -551,7 +543,11 @@ public class Table extends WidgetGroup {
 		return layout.getDebug();
 	}
 
-	public String getHeight () {
+	public String getLayoutWidth () {
+		return layout.getHeight();
+	}
+
+	public String getLayoutHeight () {
 		return layout.getHeight();
 	}
 
@@ -591,8 +587,8 @@ public class Table extends WidgetGroup {
 		drawDebug(stage.getActors(), stage.getSpriteBatch());
 	}
 
-	static private void drawDebug (List<Actor> actors, SpriteBatch batch) {
-		for (int i = 0, n = actors.size(); i < n; i++) {
+	static private void drawDebug (Array<Actor> actors, SpriteBatch batch) {
+		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
 			if (actor instanceof Table) ((Table)actor).layout.drawDebug(batch);
 			if (actor instanceof Group) drawDebug(((Group)actor).getActors(), batch);

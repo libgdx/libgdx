@@ -20,12 +20,10 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Align;
-import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -59,8 +57,7 @@ public class SoundTest extends GdxTest {
 		final Slider pan = new Slider(-1f, 1f, 0.1f, skin);
 		pan.setValue(0);
 		final Label panValue = new Label("0.0", skin);
-		table.width = Gdx.graphics.getWidth();
-		table.height = Gdx.graphics.getHeight();
+		table.setFillParent(true);
 
 		table.align(Align.CENTER | Align.TOP);
 		table.add(play);
@@ -79,18 +76,18 @@ public class SoundTest extends GdxTest {
 		table.add(panValue);
 		ui.addActor(table);
 
-		play.setClickListener(new ClickListener() {
+		play.addListener(new ClickListener() {
 			@Override
-			public void click (Actor actor, float x, float y) {
+			public void clicked (Actor actor, float x, float y) {
 				soundId = sound.play(volume.getValue());
 				sound.setPitch(soundId, pitch.getValue());
 				sound.setPan(soundId, pan.getValue(), volume.getValue());
 			}
 		});
 
-		stop.setClickListener(new ClickListener() {
+		stop.addListener(new ClickListener() {
 			@Override
-			public void click (Actor actor, float x, float y) {
+			public void clicked (Actor actor, float x, float y) {
 				sound.stop(soundId);
 			}
 		});

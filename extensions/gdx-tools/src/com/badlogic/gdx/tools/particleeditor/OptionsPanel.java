@@ -36,8 +36,8 @@ class OptionsPanel extends EditorPanel {
 	JCheckBox additiveCheckbox;
 	JCheckBox behindCheckbox;
 
-	public OptionsPanel (final ParticleEditor editor) {
-		super("Options", null);
+	public OptionsPanel (final ParticleEditor editor, String name, String description) {
+		super(null, name, description);
 
 		initializeComponents();
 

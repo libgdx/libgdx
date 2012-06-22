@@ -46,7 +46,7 @@ public interface Layout {
 	 * {@link #invalidate()} and then {@link #validate()}.
 	 * <p>
 	 * Generally this method should not be called in a constructor because it calls {@link #layout()}, which means a subclass would
-	 * have layout() called before the subclass' constructor. Instead, in a constructor simply set the actors width and height to
+	 * have layout() called before the subclass' constructor. Instead, in a constructor simply sets the actors width and height to
 	 * {@link #getPrefWidth()} and {@link #getPrefHeight()}. This allows the actor to have a size at construction time for more
 	 * convenient use outside of a {@link Table}. */
 	public void pack ();

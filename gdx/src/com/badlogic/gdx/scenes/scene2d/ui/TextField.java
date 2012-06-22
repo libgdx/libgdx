@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
@@ -30,7 +28,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -120,8 +120,8 @@ public class TextField extends Widget {
 		this.clipboard = Clipboard.getDefaultClipboard();
 		setText(text);
 		this.messageText = messageText;
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
 	}
 
 	public void setStyle (TextFieldStyle style) {
@@ -147,7 +147,7 @@ public class TextField extends Widget {
 	private void calculateOffsets () {
 		float position = glyphPositions.get(cursor);
 		float distance = position - Math.abs(renderOffset);
-		float visibleWidth = width;
+		float visibleWidth = getWidth();
 		if (style.background != null) visibleWidth -= style.background.getLeftWidth() + style.background.getRightWidth();
 
 		// check whether the cursor left the left or right side of
@@ -203,6 +203,12 @@ public class TextField extends Widget {
 		final TextureRegion selection = style.selection;
 		final NinePatch cursorPatch = style.cursor;
 
+		Color color = getColor();
+		float x = getX();
+		float y = getY();
+		float width = getWidth();
+		float height = getHeight();
+
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		float bgLeftWidth = 0;
 		if (style.background != null) {
@@ -213,6 +219,7 @@ public class TextField extends Widget {
 		float textY = (int)(height / 2 + textBounds.height / 2 + font.getDescent());
 		calculateOffsets();
 
+		Stage stage = getStage();
 		boolean focused = stage != null && stage.getKeyboardFocus() == this;
 		if (focused && hasSelection && selection != null) {
 			batch.draw(selection, x + selectionX + bgLeftWidth + renderOffset,
@@ -268,6 +275,7 @@ public class TextField extends Widget {
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
+		Stage stage = getStage();
 		if (stage != null) stage.setKeyboardFocus(this);
 		keyboard.show(true);
 		clearSelection();
@@ -288,6 +296,7 @@ public class TextField extends Widget {
 	public boolean keyDown (int keycode) {
 		final BitmapFont font = style.font;
 
+		Stage stage = getStage();
 		if (stage != null && stage.getKeyboardFocus() == this) {
 			if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
 				// paste
@@ -364,10 +373,7 @@ public class TextField extends Widget {
 		return false;
 	}
 
-	/**
-	 * Copies the contents of this TextField to the {@link Clipboard} implementation
-	 * set on this TextField.
-	 */
+	/** Copies the contents of this TextField to the {@link Clipboard} implementation set on this TextField. */
 	public void copy () {
 		if (hasSelection) {
 			int minIndex = Math.min(cursor, selectionStart);
@@ -376,10 +382,7 @@ public class TextField extends Widget {
 		}
 	}
 
-	/**
-	 * Pastes the content of the {@link Clipboard} implementation set on this Textfield
-	 * to this TextField.
-	 */
+	/** Pastes the content of the {@link Clipboard} implementation set on this Textfield to this TextField. */
 	private void paste () {
 		String content = clipboard.getContents();
 		if (content != null) {
@@ -389,7 +392,7 @@ public class TextField extends Widget {
 				if (style.font.containsCharacter(c)) builder.append(c);
 			}
 			content = builder.toString();
-			
+
 			if (!hasSelection) {
 				text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
 				updateDisplayText();
@@ -403,13 +406,10 @@ public class TextField extends Widget {
 				cursor = minIndex;
 				text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
 				updateDisplayText();
-				cursor=minIndex+content.length();
+				cursor = minIndex + content.length();
 				clearSelection();
 			}
-			
-			
-			
-			
+
 		}
 	}
 
@@ -426,6 +426,7 @@ public class TextField extends Widget {
 	public boolean keyTyped (char character) {
 		final BitmapFont font = style.font;
 
+		Stage stage = getStage();
 		if (stage != null && stage.getKeyboardFocus() == this) {
 			if (character == BACKSPACE && (cursor > 0 || hasSelection)) {
 				if (!hasSelection) {
@@ -479,6 +480,7 @@ public class TextField extends Widget {
 	/** Focuses the next TextField. If none is found, the keyboard is hidden. Does nothing if the text field is not in a stage.
 	 * @param up If true, the TextField with the same or next smallest y coordinate is found, else the next highest. */
 	public void next (boolean up) {
+		Stage stage = getStage();
 		if (stage == null) return;
 		TextField textField = findNextTextField(stage.getActors(), null, up);
 		if (textField != null)
@@ -487,14 +489,17 @@ public class TextField extends Widget {
 			Gdx.input.setOnscreenKeyboardVisible(false);
 	}
 
-	private TextField findNextTextField (List<Actor> actors, TextField best, boolean up) {
-		for (int i = 0, n = actors.size(); i < n; i++) {
+	private TextField findNextTextField (Array<Actor> actors, TextField best, boolean up) {
+		float x = getX();
+		float y = getY();
+		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
 			if (actor instanceof TextField) {
 				if (actor == this) continue;
-				if (actor.y == y) {
-					if (best == null && actor.x >= x ^ up) best = (TextField)actor;
-				} else if (actor.y < y ^ up && (best == null || actor.y - y > best.y - y ^ up)) {
+				float actorY = actor.getY();
+				if (actorY == y) {
+					if (best == null && actor.getX() >= x ^ up) best = (TextField)actor;
+				} else if (actorY < y ^ up && (best == null || actorY - y > best.getY() - y ^ up)) {
 					best = (TextField)actor;
 				}
 			}
@@ -681,14 +686,14 @@ public class TextField extends Widget {
 			this.fontColor = fontColor;
 			this.selection = selection;
 		}
-		
-		public TextFieldStyle(TextFieldStyle style) {
+
+		public TextFieldStyle (TextFieldStyle style) {
 			this.messageFont = style.messageFont;
-			if(style.messageFontColor != null) this.messageFontColor = new Color(style.messageFontColor);
+			if (style.messageFontColor != null) this.messageFontColor = new Color(style.messageFontColor);
 			this.background = style.background;
 			this.cursor = style.cursor;
 			this.font = style.font;
-			if(style.fontColor != null) this.fontColor = new Color(style.fontColor);
+			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
 			this.selection = style.selection;
 		}
 	}

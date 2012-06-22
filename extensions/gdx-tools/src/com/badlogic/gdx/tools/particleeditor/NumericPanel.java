@@ -32,8 +32,8 @@ class NumericPanel extends EditorPanel {
 	private final NumericValue value;
 	JSpinner valueSpinner;
 
-	public NumericPanel (String name, final NumericValue value) {
-		super(name, value);
+	public NumericPanel (final NumericValue value, String name, String description) {
+		super(value, name, description);
 		this.value = value;
 
 		initializeComponents();

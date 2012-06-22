@@ -22,9 +22,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -64,14 +64,13 @@ public class TableTest extends GdxTest {
 		table.size(75, 75);
 		table.add(label);
 
-		table.setClickListener(new ClickListener() {
-			public void click (Actor actor, float x, float y) {
+		table.addListener(new ClickListener() {
+			public void clicked (Actor actor, float x, float y) {
 				System.out.println("click!");
 			}
 		});
 
-		root.x = 10;
-		root.y = 10;
+		root.setPosition(10, 10);
 		
 		root.debug();
 		root.add(new Label("meow meow meow meow meow meow meow meow meow meow meow meow", skin)).colspan(3);

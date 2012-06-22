@@ -105,9 +105,8 @@ public class MipMapTest extends GdxTest {
 		magFilter = new SelectBox(new String[] {"Nearest", "Linear"}, skin.getStyle(SelectBoxStyle.class), "magfilter");
 
 		Table table = new Table();
-		table.width = ui.width();
-		table.height = 30;
-		table.y = ui.height() - 30;
+		table.setSize(ui.getWidth(), 30);
+		table.setY(ui.getHeight() - 30);
 		table.add(hwMipMap).spaceRight(5);
 		table.add(new Label("Min Filter", skin.getStyle(LabelStyle.class))).spaceRight(5);
 		table.add(minFilter).spaceRight(5);
@@ -136,7 +135,7 @@ public class MipMapTest extends GdxTest {
 
 		ui.draw();
 	}
-	
+
 	@Override
 	public void dispose () {
 		shader.dispose();

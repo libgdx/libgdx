@@ -57,8 +57,7 @@ public class InterpolationTest extends GdxTest {
 
 	public void resize (int width, int height) {
 		stage.setViewport(width, height, true);
-		root.width = width;
-		root.height = height;
+		root.setSize(width, height);
 		root.invalidate();
 	}
 

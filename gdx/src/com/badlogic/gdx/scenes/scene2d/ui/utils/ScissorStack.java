@@ -26,18 +26,17 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
-/** A scissor stack is a stack of {@link Rectangle} to be used for clipping via {@link GLCommon#glScissor(int, int, int, int)}.
- * When a new Rectangle is pushed onto the stack, it will be merged with the current top of stack. The minimum area of overlap is
- * then set as the real top of the stack.
+/** A stack of {@link Rectangle} objects to be used for clipping via {@link GLCommon#glScissor(int, int, int, int)}. When a new
+ * Rectangle is pushed onto the stack, it will be merged with the current top of stack. The minimum area of overlap is then set as
+ * the real top of the stack.
  * @author mzechner */
 public class ScissorStack {
 	private static Array<Rectangle> scissors = new Array<Rectangle>();
 
 	/** Pushes a new scissor {@link Rectangle} onto the stack, merging it with the current top of the stack. The minimal area of
-	 * overlap between the TOS rectangle and the provided rectangle is pushed onto the stack. This will invoke
-	 * {@link GLCommon#glScissor(int, int, int, int)} with the final TOS rectangle. In case no scissor is yet on the stack this
-	 * will also enable {@link GL10#GL_SCISSOR_TEST} automatically.
-	 * @param scissor the scissor Rectangle
+	 * overlap between the top of stack rectangle and the provided rectangle is pushed onto the stack. This will invoke
+	 * {@link GLCommon#glScissor(int, int, int, int)} with the final top of stack rectangle. In case no scissor is yet on the stack
+	 * this will also enable {@link GL10#GL_SCISSOR_TEST} automatically.
 	 * @return true if the scissors were pushed. false if the scissor area was zero, in this case the scissors were not pushed and
 	 *         no drawing should occur. */
 	public static boolean pushScissors (Rectangle scissor) {
@@ -67,8 +66,8 @@ public class ScissorStack {
 		return true;
 	}
 
-	/** Pops the current scissor rectangle from the stack and sets the new scissor area to the new TOS rectangle. In case no more
-	 * rectangles are on the stack, {@link GL10#GL_SCISSOR_TEST} is disabled. */
+	/** Pops the current scissor rectangle from the stack and sets the new scissor area to the new top of stack rectangle. In case
+	 * no more rectangles are on the stack, {@link GL10#GL_SCISSOR_TEST} is disabled. */
 	public static void popScissors () {
 		scissors.pop();
 		if (scissors.size == 0)

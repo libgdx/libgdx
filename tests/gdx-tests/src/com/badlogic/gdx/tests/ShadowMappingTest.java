@@ -127,8 +127,7 @@ public class ShadowMappingTest extends GdxTest {
 		Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "fps");
 
 		Table table = new Table();
-		table.width = Gdx.graphics.getWidth();
-		table.height = 100;
+		table.setSize(Gdx.graphics.getWidth(), 100);
 		table.top().padTop(12);
 		table.defaults().spaceRight(5);
 		table.add(label);
@@ -136,7 +135,7 @@ public class ShadowMappingTest extends GdxTest {
 		table.add(label2);
 		table.add(shaderCombo);
 		table.add(fpsLabel);
-		table.y = ui.top() - 100;
+		table.setY(ui.getHeight() - 100);
 		ui.addActor(table);
 
 		cameraCombo.setSelectionListener(new SelectionListener() {
@@ -224,7 +223,7 @@ public class ShadowMappingTest extends GdxTest {
 		ui.draw();
 		Table.drawDebug(ui);
 	}
-	
+
 	@Override
 	public void dispose () {
 		ui.dispose();

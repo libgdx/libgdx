@@ -62,7 +62,7 @@ public class GdxTests {
 			FloatTest.class, FrameBufferTest.class,
 			FramebufferToTextureTest.class, FrustumTest.class,
 			FullscreenTest.class, Gdx2DTest.class, GroupFadeTest.class,
-			ImmediateModeRendererTest.class,
+			ImmediateModeRendererTest.class, Scene2dTest.class,
 			ImmediateModeRendererAlphaTest.class,
 			IndexBufferObjectClassTest.class,
 			IndexBufferObjectShaderTest.class, InputTest.class,

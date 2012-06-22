@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -66,8 +67,8 @@ public class Slider extends Widget {
 		this.max = max;
 		this.steps = steps;
 		this.value = min;
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
 	}
 
 	public void setStyle (SliderStyle style) {
@@ -86,6 +87,12 @@ public class Slider extends Widget {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		final TextureRegion knob = style.knob;
 		final NinePatch slider = style.slider;
+
+		Color color = getColor();
+		float x = getX();
+		float y = getY();
+		float width = getWidth();
+		float height = getHeight();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		sliderPos = (value - min) / (max - min) * (width - knob.getRegionWidth());
@@ -117,6 +124,8 @@ public class Slider extends Widget {
 
 	private void calculatePositionAndValue (float x) {
 		final TextureRegion knob = style.knob;
+
+		float width = getWidth();
 
 		sliderPos = x - knob.getRegionWidth() / 2;
 		sliderPos = Math.max(0, sliderPos);
@@ -182,8 +191,8 @@ public class Slider extends Widget {
 			this.slider = sliderPatch;
 			this.knob = knobRegion;
 		}
-		
-		public SliderStyle(SliderStyle style) {
+
+		public SliderStyle (SliderStyle style) {
 			this.slider = style.slider;
 			this.knob = style.knob;
 		}

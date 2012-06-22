@@ -106,7 +106,7 @@ public class UITest extends GdxTest {
 
 		// window.debug();
 		Window window = new Window("Dialog", skin.getStyle(WindowStyle.class), "window");
-		window.x = window.y = 0;
+		window.setPosition(0, 0);
 		window.defaults().spaceBottom(10);
 		window.row().fill().expandX();
 		window.add(button).fill(0f, 0f);
@@ -149,7 +149,7 @@ public class UITest extends GdxTest {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		((Label)stage.findActor("label")).setText("fps: " + Gdx.graphics.getFramesPerSecond());
+		//((Label)stage.findActor("label")).setText("fps: " + Gdx.graphics.getFramesPerSecond());
 
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();

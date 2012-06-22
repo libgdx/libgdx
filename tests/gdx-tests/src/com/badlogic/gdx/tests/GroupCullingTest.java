@@ -25,6 +25,7 @@ public class GroupCullingTest extends GdxTest {
 		Gdx.input.setInputProcessor(stage);
 
 		root = new Table();
+		root.setFillParent(true);
 		stage.addActor(root);
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
@@ -53,8 +54,6 @@ public class GroupCullingTest extends GdxTest {
 
 	public void resize (int width, int height) {
 		stage.setViewport(width, height, true);
-		root.width = width;
-		root.height = height;
 		root.invalidate();
 	}
 

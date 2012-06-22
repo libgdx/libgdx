@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.scenes.scene2d.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 /** Manages a group of buttons to enforce a minimum and maximum number of checked buttons. This enables "radio button"
@@ -76,7 +77,7 @@ public class ButtonGroup {
 			lastChecked = button;
 		}
 
-		if (listener != null) listener.click(button, 0, 0);
+		if (listener != null) listener.clicked(button, 0, 0);
 
 		return true;
 	}

@@ -34,8 +34,8 @@ class PercentagePanel extends EditorPanel {
 	JButton expandButton;
 	Chart chart;
 
-	public PercentagePanel (String name, String chartTitle, final ScaledNumericValue value) {
-		super(name, value);
+	public PercentagePanel (final ScaledNumericValue value, String chartTitle, String name, String description) {
+		super(value, name, description);
 		this.value = value;
 
 		initializeComponents(chartTitle);

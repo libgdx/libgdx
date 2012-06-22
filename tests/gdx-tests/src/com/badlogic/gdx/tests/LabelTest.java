@@ -51,8 +51,7 @@ public class LabelTest extends GdxTest {
 
 		Table table = new Table();
 		stage.addActor(table);
-		table.x = 200;
-		table.y = 65;
+		table.setPosition(200, 65);
 
 		table.debug();
 		table.add(new Label("This is regular text.", skin));

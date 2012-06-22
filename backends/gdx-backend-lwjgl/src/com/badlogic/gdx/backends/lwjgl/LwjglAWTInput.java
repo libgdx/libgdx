@@ -59,6 +59,7 @@ import javax.swing.event.DocumentListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.utils.Pool;
 
 public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener, MouseWheelListener, KeyListener {
@@ -684,6 +685,14 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	}
 
 	@Override
+	public int getButton () {
+		if (pressedButtons.contains(Buttons.LEFT)) return Buttons.LEFT;
+		if (pressedButtons.contains(Buttons.RIGHT)) return Buttons.RIGHT;
+		if (pressedButtons.contains(Buttons.MIDDLE)) return Buttons.MIDDLE;
+		return -1;
+	}
+
+	@Override
 	public void vibrate (long[] pattern, int repeat) {
 	}
 
@@ -740,7 +749,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			frame.setCursor(Cursor.getDefaultCursor());
 		}
 	}
-	
+
 	protected static JFrame findJFrame (Component component) {
 		Container parent = component.getParent();
 		while (parent != null) {

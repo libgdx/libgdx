@@ -52,8 +52,7 @@ public class ImageTest extends GdxTest {
 	@Override
 	public void resize (int width, int height) {
 		ui.setViewport(width, height, false);
-		root.width = width;
-		root.height = height;
+		root.setSize(width, height);
 	}
 
 	@Override

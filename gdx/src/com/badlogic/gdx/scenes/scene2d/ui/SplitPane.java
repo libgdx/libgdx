@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -79,8 +80,8 @@ public class SplitPane extends WidgetGroup {
 		setStyle(style);
 		setFirstWidget(firstWidget);
 		setSecondWidget(secondWidget);
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
 	}
 
 	public void setStyle (SplitPaneStyle style) {
@@ -101,23 +102,18 @@ public class SplitPane extends WidgetGroup {
 		else
 			calculateVertBoundsAndPositions();
 
-		if (firstWidget != null && firstWidget.width != firstWidgetBounds.width || firstWidget.height != firstWidgetBounds.height) {
-			firstWidget.x = firstWidgetBounds.x;
-			firstWidget.y = firstWidgetBounds.y;
-			firstWidget.width = firstWidgetBounds.width;
-			firstWidget.height = firstWidgetBounds.height;
+		if (firstWidget != null && firstWidget.getWidth() != firstWidgetBounds.width
+			|| firstWidget.getHeight() != firstWidgetBounds.height) {
+			firstWidget.setBounds(firstWidgetBounds.x, firstWidgetBounds.y, firstWidgetBounds.width, firstWidgetBounds.height);
 			if (firstWidget instanceof Layout) {
 				Layout layout = (Layout)firstWidget;
 				layout.invalidate();
 				layout.validate();
 			}
 		}
-		if (secondWidget != null && secondWidget.width != secondWidgetBounds.width
-			|| secondWidget.height != secondWidgetBounds.height) {
-			secondWidget.x = secondWidgetBounds.x;
-			secondWidget.y = secondWidgetBounds.y;
-			secondWidget.width = secondWidgetBounds.width;
-			secondWidget.height = secondWidgetBounds.height;
+		if (secondWidget != null && secondWidget.getWidth() != secondWidgetBounds.width
+			|| secondWidget.getHeight() != secondWidgetBounds.height) {
+			secondWidget.setBounds(secondWidgetBounds.x, secondWidgetBounds.y, secondWidgetBounds.width, secondWidgetBounds.height);
 			if (secondWidget instanceof Layout) {
 				Layout layout = (Layout)secondWidget;
 				layout.invalidate();
@@ -128,16 +124,16 @@ public class SplitPane extends WidgetGroup {
 
 	@Override
 	public float getPrefWidth () {
-		float width = firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefWidth() : firstWidget.width;
-		width += secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefWidth() : secondWidget.width;
+		float width = firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefWidth() : firstWidget.getWidth();
+		width += secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefWidth() : secondWidget.getWidth();
 		if (!vertical) width += style.handle.getTotalWidth();
 		return width;
 	}
 
 	@Override
 	public float getPrefHeight () {
-		float height = firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefHeight() : firstWidget.height;
-		height += secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefHeight() : secondWidget.height;
+		float height = firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefHeight() : firstWidget.getHeight();
+		height += secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefHeight() : secondWidget.getHeight();
 		if (vertical) height += style.handle.getTotalHeight();
 		return height;
 	}
@@ -157,7 +153,9 @@ public class SplitPane extends WidgetGroup {
 	private void calculateHorizBoundsAndPositions () {
 		NinePatch handle = style.handle;
 
-		float availWidth = width - handle.getTotalWidth();
+		float height = getHeight();
+
+		float availWidth = getWidth() - handle.getTotalWidth();
 		float leftAreaWidth = (int)(availWidth * splitAmount);
 		float rightAreaWidth = availWidth - leftAreaWidth;
 		float handleWidth = handle.getTotalWidth();
@@ -169,6 +167,9 @@ public class SplitPane extends WidgetGroup {
 
 	private void calculateVertBoundsAndPositions () {
 		NinePatch handle = style.handle;
+
+		float width = getWidth();
+		float height = getHeight();
 
 		float availHeight = height - handle.getTotalHeight();
 		float topAreaHeight = (int)(availHeight * splitAmount);
@@ -184,20 +185,24 @@ public class SplitPane extends WidgetGroup {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
 
+		Color color = getColor();
+
 		NinePatch handle = style.handle;
 		applyTransform(batch);
 		Matrix4 transform = batch.getTransformMatrix();
 		if (firstWidget != null) {
-			ScissorStack.calculateScissors(stage.getCamera(), transform, firstWidgetBounds, firstScissors);
+			ScissorStack.calculateScissors(getStage().getCamera(), transform, firstWidgetBounds, firstScissors);
 			if (ScissorStack.pushScissors(firstScissors)) {
-				drawChild(firstWidget, batch, parentAlpha);
+				if (firstWidget.isVisible()) firstWidget.draw(batch, parentAlpha * color.a);
+				batch.flush();
 				ScissorStack.popScissors();
 			}
 		}
 		if (secondWidget != null) {
-			ScissorStack.calculateScissors(stage.getCamera(), transform, secondWidgetBounds, secondScissors);
+			ScissorStack.calculateScissors(getStage().getCamera(), transform, secondWidgetBounds, secondScissors);
 			if (ScissorStack.pushScissors(secondScissors)) {
-				drawChild(secondWidget, batch, parentAlpha);
+				if (secondWidget.isVisible()) secondWidget.draw(batch, parentAlpha * color.a);
+				batch.flush();
 				ScissorStack.popScissors();
 			}
 		}
@@ -236,7 +241,7 @@ public class SplitPane extends WidgetGroup {
 		NinePatch handle = style.handle;
 		if (!vertical) {
 			float delta = x - lastPoint.x;
-			float availWidth = width - handle.getTotalWidth();
+			float availWidth = getWidth() - handle.getTotalWidth();
 			float dragX = handlePosition.x + delta;
 			handlePosition.x = dragX;
 			dragX = Math.max(0, dragX);
@@ -247,7 +252,7 @@ public class SplitPane extends WidgetGroup {
 			lastPoint.set(x, y);
 		} else {
 			float delta = y - lastPoint.y;
-			float availHeight = height - handle.getTotalHeight();
+			float availHeight = getHeight() - handle.getTotalHeight();
 			float dragY = handlePosition.y + delta;
 			handlePosition.y = dragY;
 			dragY = Math.max(0, dragY);
@@ -310,19 +315,8 @@ public class SplitPane extends WidgetGroup {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
-	public void removeActor (Actor actor) {
+	public boolean removeActor (Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget(null).");
-	}
-
-	public void removeActorRecursive (Actor actor) {
-		if (actor == firstWidget)
-			setFirstWidget(null);
-		else if (actor == firstWidget)
-			setSecondWidget(null);
-		else {
-			if (firstWidget instanceof Group) ((Group)firstWidget).removeActorRecursive(actor);
-			if (secondWidget instanceof Group) ((Group)secondWidget).removeActorRecursive(actor);
-		}
 	}
 
 	/** The style for a splitpane, see {@link SplitPane}.
@@ -336,8 +330,8 @@ public class SplitPane extends WidgetGroup {
 		public SplitPaneStyle (NinePatch handle) {
 			this.handle = handle;
 		}
-		
-		public SplitPaneStyle(SplitPaneStyle style) {
+
+		public SplitPaneStyle (SplitPaneStyle style) {
 			this.handle = style.handle;
 		}
 	}

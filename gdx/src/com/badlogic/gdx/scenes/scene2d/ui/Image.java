@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,7 +19,6 @@ public class Image extends Widget {
 	private Scaling scaling;
 	private int align = Align.CENTER;
 	private float imageX, imageY, imageWidth, imageHeight;
-	private ClickListener clickListener;
 
 	/** Creates an image with no region or patch, stretched, and aligned center. */
 	public Image () {
@@ -66,8 +66,8 @@ public class Image extends Widget {
 		setRegion(region);
 		this.scaling = scaling;
 		this.align = align;
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
 	}
 
 	/** Creates an image stretched, and aligned center.
@@ -93,8 +93,8 @@ public class Image extends Widget {
 		setPatch(patch);
 		this.scaling = scaling;
 		this.align = align;
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
 	}
 
 	public void layout () {
@@ -107,6 +107,9 @@ public class Image extends Widget {
 			regionHeight = region.getRegionHeight();
 		} else
 			return;
+
+		float width = getWidth();
+		float height = getHeight();
 
 		Vector2 size = scaling.apply(regionWidth, regionHeight, width, height);
 		imageWidth = size.x;
@@ -130,15 +133,24 @@ public class Image extends Widget {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
 
+		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+
+		float x = getX();
+		float y = getY();
+		float scaleX = getScaleX();
+		float scaleY = getScaleY();
+
 		if (patch != null)
 			patch.draw(batch, x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);
 		else if (region != null) {
+			float rotation = getRotation();
 			if (scaleX == 1 && scaleY == 1 && rotation == 0)
 				batch.draw(region, x + imageX, y + imageY, imageWidth, imageHeight);
-			else
-				batch.draw(region, x + imageX, y + imageY, originX - imageX, originY - imageY, imageWidth, imageHeight, scaleX,
-					scaleY, rotation);
+			else {
+				batch.draw(region, x + imageX, y + imageY, getOriginX() - imageX, getOriginY() - imageY, imageWidth, imageHeight,
+					scaleX, scaleY, rotation);
+			}
 		}
 	}
 
@@ -201,22 +213,6 @@ public class Image extends Widget {
 		if (region != null) return region.getRegionHeight();
 		if (patch != null) return patch.getTotalHeight();
 		return 0;
-	}
-
-	public boolean touchDown (float x, float y, int pointer) {
-		return clickListener != null;
-	}
-
-	public void touchUp (float x, float y, int pointer) {
-		if (hit(x, y) == null) return;
-		if (clickListener != null) clickListener.click(this, x, y);
-	}
-
-	public void touchDragged (float x, float y, int pointer) {
-	}
-
-	public void setClickListener (ClickListener clickListener) {
-		this.clickListener = clickListener;
 	}
 
 	public float getImageX () {

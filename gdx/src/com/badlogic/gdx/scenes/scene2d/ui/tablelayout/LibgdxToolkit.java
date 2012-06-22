@@ -66,7 +66,7 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 		if (object == null) {
 			return new Actor() {
 				{
-					visible = false;
+					setVisible(false);
 				}
 
 				public void draw (SpriteBatch batch, float parentAlpha) {
@@ -178,7 +178,7 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 	}
 
 	public void addChild (Actor parent, Actor child, String layoutString) {
-		if (child.parent != null) child.remove();
+		child.remove();
 		try {
 			parent.getClass().getMethod("setWidget", Actor.class).invoke(parent, child);
 			return;
@@ -195,22 +195,22 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 
 	public int getMinWidth (Actor actor) {
 		if (actor instanceof Layout) return (int)((Layout)actor).getMinWidth();
-		return (int)actor.width;
+		return (int)actor.getWidth();
 	}
 
 	public int getMinHeight (Actor actor) {
 		if (actor instanceof Layout) return (int)((Layout)actor).getMinHeight();
-		return (int)actor.height;
+		return (int)actor.getHeight();
 	}
 
 	public int getPrefWidth (Actor actor) {
 		if (actor instanceof Layout) return (int)((Layout)actor).getPrefWidth();
-		return (int)actor.width;
+		return (int)actor.getWidth();
 	}
 
 	public int getPrefHeight (Actor actor) {
 		if (actor instanceof Layout) return (int)((Layout)actor).getPrefHeight();
-		return (int)actor.height;
+		return (int)actor.getHeight();
 	}
 
 	public int getMaxWidth (Actor actor) {
@@ -230,7 +230,7 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 	public void addDebugRectangle (TableLayout layout, int type, int x, int y, int w, int h) {
 		drawDebug = true;
 		if (layout.debugRects == null) layout.debugRects = new Array();
-		layout.debugRects.add(new DebugRect(type, x, (int)(layout.getTable().height - y), w, h));
+		layout.debugRects.add(new DebugRect(type, x, (int)(layout.getTable().getHeight() - y), w, h));
 	}
 
 	static class DebugRect extends Rectangle {

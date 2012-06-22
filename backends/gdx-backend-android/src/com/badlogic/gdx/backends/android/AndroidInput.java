@@ -512,6 +512,10 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			return false;
 	}
 
+	public int getButton () {
+		return isTouched() ? Buttons.LEFT : -1;
+	}
+
 	final float[] R = new float[9];
 	final float[] orientation = new float[3];
 

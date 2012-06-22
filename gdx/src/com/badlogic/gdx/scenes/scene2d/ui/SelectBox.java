@@ -41,7 +41,6 @@ public class SelectBox extends Widget {
 	private SelectList list = null;
 	SelectionListener listener;
 	private float prefWidth, prefHeight;
-	final Vector2 stageCoords = new Vector2();
 
 	public SelectBox (Skin skin) {
 		this(new String[0], skin);
@@ -59,8 +58,8 @@ public class SelectBox extends Widget {
 		super(name);
 		setStyle(style);
 		setItems(items);
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
 	}
 
 	public void setStyle (SelectBoxStyle style) {
@@ -114,6 +113,12 @@ public class SelectBox extends Widget {
 		final BitmapFont font = style.font;
 		final Color fontColor = style.fontColor;
 
+		Color color = getColor();
+		float x = getX();
+		float y = getY();
+		float width = getWidth();
+		float height = getHeight();
+
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		background.draw(batch, x, y, width, height);
 		if (items.length > 0) {
@@ -126,25 +131,22 @@ public class SelectBox extends Widget {
 		}
 
 		// calculate screen coords where list should be displayed
-		ScissorStack.toWindowCoordinates(stage.getCamera(), batch.getTransformMatrix(), screenCoords.set(x, y));
+		ScissorStack.toWindowCoordinates(getStage().getCamera(), batch.getTransformMatrix(), screenCoords.set(x, y));
 	}
 
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
-		if (list != null && list.parent != null) {
-			stage.removeActor(list);
+		if (list != null && list.getParent() != null) {
+			list.remove();
 			return true;
 		}
-		stage.toStageCoordinates((int)screenCoords.x, (int)screenCoords.y, stageCoords);
-		list = new SelectList(this.name + "-list", stageCoords.x, stageCoords.y);
+		Stage stage = getStage();
+		Vector2 stageCoords = stage.toStageCoordinates((int)screenCoords.x, (int)screenCoords.y);
+		list = new SelectList(getName() + "-list", stageCoords.x, stageCoords.y);
 		stage.addActor(list);
 		stage.setTouchFocus(list, 0);
 		return true;
-	}
-
-	@Override
-	public void touchUp (float x, float y, int pointer) {
 	}
 
 	/** Sets the {@link SelectionListener}.
@@ -184,14 +186,6 @@ public class SelectBox extends Widget {
 	public float getPrefHeight () {
 		return prefHeight;
 	}
-	
-	
-
-	@Override
-	public void markToRemove (boolean remove) {
-		super.markToRemove(remove);
-		if(list != null) list.markToRemove(true);
-	}
 
 	class SelectList extends Actor {
 		Vector2 oldScreenCoords = new Vector2();
@@ -202,16 +196,17 @@ public class SelectBox extends Widget {
 
 		public SelectList (String name, float x, float y) {
 			super(name);
-			this.x = x;
-			width = SelectBox.this.width;
-			height = 100;
+			setX(x);
+			setWidth(SelectBox.this.getWidth());
+			setHeight(100);
 			this.oldScreenCoords.set(screenCoords);
 			layout();
 			Stage stage = SelectBox.this.getStage();
-			if (y - height < 0 && y + SelectBox.this.height + height < SelectBox.this.getStage().getCamera().viewportHeight)
-				this.y = y + SelectBox.this.height;
+			float height = getHeight();
+			if (y - height < 0 && y + SelectBox.this.getHeight() + height < SelectBox.this.getStage().getCamera().viewportHeight)
+				setY(y + SelectBox.this.getHeight());
 			else
-				this.y = y - height;
+				setY(y - height);
 		}
 
 		private void layout () {
@@ -229,15 +224,15 @@ public class SelectBox extends Widget {
 
 			itemHeight = font.getCapHeight() + -font.getDescent() * 2 + style.itemSpacing;
 			itemHeight += listSelection.getTopHeight() + listSelection.getBottomHeight();
-			itemHeight *= SelectBox.this.parent.scaleY;
+			itemHeight *= SelectBox.this.getParent().getScaleY();
 			prefWidth += listSelection.getLeftWidth() + listSelection.getRightWidth() + 2 * style.itemSpacing;
 			prefHeight = items.length * itemHeight;
 			textOffsetX = listSelection.getLeftWidth() + style.itemSpacing;
 			textOffsetY = listSelection.getTopHeight() + -font.getDescent() + style.itemSpacing / 2;
 
-			width = Math.max(prefWidth, SelectBox.this.width);
-			width *= SelectBox.this.parent.scaleX;
-			height = prefHeight;
+			float width = Math.max(prefWidth, SelectBox.this.getWidth());
+			setWidth(width * SelectBox.this.getParent().getScaleX());
+			setHeight(prefHeight);
 		}
 
 		@Override
@@ -247,6 +242,14 @@ public class SelectBox extends Widget {
 			final BitmapFont font = style.font;
 			final Color fontColor = style.fontColor;
 
+			float x = getX();
+			float y = getY();
+			float width = getWidth();
+			float height = getHeight();
+			float scaleX = SelectBox.this.getParent().getScaleX();
+			float scaleY = SelectBox.this.getParent().getScaleY();
+
+			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			listBackground.draw(batch, x, y, width, height);
 			float posY = height;
@@ -255,7 +258,7 @@ public class SelectBox extends Widget {
 					listSelection.draw(batch, x, y + posY - itemHeight, width, itemHeight);
 				}
 				font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-				font.setScale(SelectBox.this.parent.scaleX, SelectBox.this.parent.scaleY);
+				font.setScale(scaleX, scaleY);
 				font.draw(batch, items[i], x + textOffsetX, y + posY - textOffsetY);
 				font.setScale(1, 1);
 				posY -= itemHeight;
@@ -266,33 +269,31 @@ public class SelectBox extends Widget {
 		public boolean touchDown (float x, float y, int pointer) {
 			if (pointer != 0) return false;
 			ownsTouch = true;
-			if(x > 0 && x < width && y > 0 && y < height) {
-				selected = (int)((height - y) / itemHeight);
+			if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
+				selected = (int)((getHeight() - y) / itemHeight);
 				selected = Math.max(0, selected);
 				selected = Math.min(items.length - 1, selected);
 				selection = selected;
 				if (items.length > 0 && listener != null) listener.selected(SelectBox.this, selected, items[selected]);
 			}
-			return true;
+			return super.touchDown(x, y, pointer);
 		}
 
 		@Override
 		public void touchUp (float x, float y, int pointer) {
-			if (stage != null && ownsTouch) stage.removeActor(this);
+			if (ownsTouch) remove();
 			ownsTouch = false;
-		}
-
-		@Override
-		public void touchDragged (float x, float y, int pointer) {
+			super.touchUp(x, y, pointer);
 		}
 
 		@Override
 		public boolean touchMoved (float x, float y) {
-			if (x > 0 && x < width && y > 0 && y < height) {
-				selected = (int)((height - y) / itemHeight);
+			if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
+				selected = (int)((getHeight() - y) / itemHeight);
 				selected = Math.max(0, selected);
 				selected = Math.min(items.length - 1, selected);
 			}
+			super.touchMoved(x, y);
 			return true;
 		}
 
@@ -302,9 +303,7 @@ public class SelectBox extends Widget {
 		}
 
 		public void act (float delta) {
-			if (screenCoords.x != oldScreenCoords.x || screenCoords.y != oldScreenCoords.y) {
-				if (stage != null) stage.removeActor(this);
-			}
+			if (screenCoords.x != oldScreenCoords.x || screenCoords.y != oldScreenCoords.y) remove();
 		}
 	}
 
@@ -329,8 +328,8 @@ public class SelectBox extends Widget {
 			this.font = font;
 			this.fontColor.set(fontColor);
 		}
-		
-		public SelectBoxStyle(SelectBoxStyle style) {
+
+		public SelectBoxStyle (SelectBoxStyle style) {
 			this.background = style.background;
 			this.listBackground = style.listBackground;
 			this.listSelection = style.listSelection;

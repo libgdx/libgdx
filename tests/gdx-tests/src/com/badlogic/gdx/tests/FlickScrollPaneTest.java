@@ -41,6 +41,7 @@ public class FlickScrollPaneTest extends GdxTest {
 
 		container = new Table();
 		stage.addActor(container);
+		container.setFillParent(true);
 		container.getTableLayout().debug();
 
 		Table table = new Table();
@@ -70,8 +71,6 @@ public class FlickScrollPaneTest extends GdxTest {
 
 	public void resize (int width, int height) {
 		stage.setViewport(width, height, false);
-		container.width = width;
-		container.height = height;
 	}
 
 	public void dispose () {

@@ -109,8 +109,8 @@ public class Animation {
 	}
 
 	/** Returns a {@link TextureRegion} based on the so called state time. This is the amount of seconds an object has spent in the
-	 * state this Animation instance represents, e.g. running, jumping and so on using the mode specified by {@link setPlayType}
-	 * method.
+	 * state this Animation instance represents, e.g. running, jumping and so on using the mode specified by
+	 * {@link #setPlayMode(int)} method.
 	 * 
 	 * @param stateTime
 	 * @return the TextureRegion representing the frame of animation for the given state time. */
@@ -155,15 +155,12 @@ public class Animation {
 	public void setPlayMode (int playMode) {
 		this.playMode = playMode;
 	}
-	
-	/**
-	 * Whether the animation would be finished if played without looping
-	 * (PlayMode Animation#NORMAL), given the state time.
+
+	/** Whether the animation would be finished if played without looping (PlayMode Animation#NORMAL), given the state time.
 	 * @param stateTime
-	 * @return whether the animation is finished.
-	 */
+	 * @return whether the animation is finished. */
 	public boolean isAnimationFinished (float stateTime) {
-	    int frameNumber = (int)(stateTime / frameDuration);
-	    return keyFrames.length - 1 < frameNumber;
+		int frameNumber = (int)(stateTime / frameDuration);
+		return keyFrames.length - 1 < frameNumber;
 	}
 }

@@ -30,8 +30,8 @@ public class ImageButton extends Button {
 		image.setScaling(Scaling.fit);
 		add(image);
 		setStyle(style);
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
 	}
 
 	public ImageButton (TextureRegion region) {

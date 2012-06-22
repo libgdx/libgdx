@@ -30,6 +30,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.LibgdxToolkit;
+import com.badlogic.gdx.utils.Array;
 
 /** A stack is a container that sizes its children to its size and positions them at 0,0 on top of each other.
  * <p>
@@ -43,18 +44,16 @@ public class Stack extends WidgetGroup {
 
 	public Stack (String name) {
 		super(name);
-		transform = false;
-		width = 150;
-		height = 150;
+		setTransform(false);
+		setWidth(150);
+		setHeight(150);
 	}
 
 	public void layout () {
-		for (int i = 0, n = children.size(); i < n; i++) {
+		Array<Actor> children = getActors();
+		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
-			child.x = 0;
-			child.y = 0;
-			child.width = width;
-			child.height = height;
+			child.setBounds(0, 0, getWidth(), getHeight());
 			if (child instanceof Layout) {
 				Layout layout = (Layout)child;
 				layout.invalidate();
@@ -65,49 +64,55 @@ public class Stack extends WidgetGroup {
 
 	public float getPrefWidth () {
 		float width = 0;
-		for (int i = 0, n = children.size(); i < n; i++)
+		Array<Actor> children = getActors();
+		for (int i = 0, n = children.size; i < n; i++)
 			width = Math.max(width, LibgdxToolkit.instance.getPrefWidth(children.get(i)));
-		return width * scaleX;
+		return width * getScaleX();
 	}
 
 	public float getPrefHeight () {
 		float height = 0;
-		for (int i = 0, n = children.size(); i < n; i++)
+		Array<Actor> children = getActors();
+		for (int i = 0, n = children.size; i < n; i++)
 			height = Math.max(height, LibgdxToolkit.instance.getPrefHeight(children.get(i)));
-		return height * scaleY;
+		return height * getScaleY();
 	}
 
 	public float getMaxWidth () {
-		if (children.isEmpty()) return 0;
+		Array<Actor> children = getActors();
+		if (children.size == 0) return 0;
 		float width = 0;
-		for (int i = 0, n = children.size(); i < n; i++) {
+		for (int i = 0, n = children.size; i < n; i++) {
 			int maxWidth = LibgdxToolkit.instance.getMaxHeight(children.get(i));
 			if (maxWidth > 0) width = width == 0 ? maxWidth : Math.min(width, maxWidth);
 		}
-		return width * scaleX;
+		return width * getScaleX();
 	}
 
 	public float getMaxHeight () {
-		if (children.isEmpty()) return 0;
+		Array<Actor> children = getActors();
+		if (children.size == 0) return 0;
 		float height = 0;
-		for (int i = 0, n = children.size(); i < n; i++) {
+		for (int i = 0, n = children.size; i < n; i++) {
 			int maxHeight = LibgdxToolkit.instance.getMaxHeight(children.get(i));
 			if (maxHeight > 0) height = height == 0 ? maxHeight : Math.min(height, maxHeight);
 		}
-		return height * scaleY;
+		return height * getScaleY();
 	}
 
 	public float getMinWidth () {
 		float width = 0;
-		for (int i = 0, n = children.size(); i < n; i++)
+		Array<Actor> children = getActors();
+		for (int i = 0, n = children.size; i < n; i++)
 			width = Math.max(width, LibgdxToolkit.instance.getMinWidth(children.get(i)));
-		return width * scaleX;
+		return width * getScaleX();
 	}
 
 	public float getMinHeight () {
 		float height = 0;
-		for (int i = 0, n = children.size(); i < n; i++)
+		Array<Actor> children = getActors();
+		for (int i = 0, n = children.size; i < n; i++)
 			height = Math.max(height, LibgdxToolkit.instance.getMinHeight(children.get(i)));
-		return height * scaleY;
+		return height * getScaleY();
 	}
 }

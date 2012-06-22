@@ -33,9 +33,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
@@ -115,17 +114,16 @@ public class ProjectiveTextureTest extends GdxTest {
 		Label fps = new Label("fps: ", skin.getStyle(LabelStyle.class), "fps");
 
 		Table table = new Table();
-		table.width = ui.width();
-		table.height = ui.height();
+		table.setFillParent(true);
 		table.top().padTop(15);
 		table.add(reload).spaceRight(5);
 		table.add(camera).spaceRight(5);
 		table.add(fps);
 		ui.addActor(table);
 
-		reload.setClickListener(new ClickListener() {
+		reload.addListener(new ClickListener() {
 			@Override
-			public void click (Actor button, float x, float y) {
+			public void clicked (Actor button, float x, float y) {
 				ShaderProgram prog = new ShaderProgram(Gdx.files.internal("data/shaders/projtex-vert.glsl").readString(), Gdx.files
 					.internal("data/shaders/projtex-frag.glsl").readString());
 				if (prog.isCompiled() == false) {

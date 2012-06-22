@@ -120,7 +120,7 @@ public class Array<T> implements Iterable<T> {
 		System.arraycopy(array, offset, items, size, length);
 		size += length;
 	}
-	
+
 	public T get (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		return items[index];
@@ -140,6 +140,15 @@ public class Array<T> implements Iterable<T> {
 			items[size] = items[index];
 		size++;
 		items[index] = value;
+	}
+
+	public void swap (int first, int second) {
+		if (first >= size) throw new IndexOutOfBoundsException(String.valueOf(first));
+		if (second >= size) throw new IndexOutOfBoundsException(String.valueOf(second));
+		T[] items = this.items;
+		T firstValue = items[first];
+		items[first] = items[second];
+		items[second] = firstValue;
 	}
 
 	/** @param identity If true, == comparison will be used. If false, .equals() comaparison will be used. */
@@ -237,10 +246,11 @@ public class Array<T> implements Iterable<T> {
 		return items;
 	}
 
+	/** Creates a new backing array with the specified size containing . */
 	protected T[] resize (int newSize) {
 		T[] items = this.items;
 		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), newSize);
-		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
+		System.arraycopy(items, 0, newItems, 0, Math.min(size, newItems.length));
 		this.items = newItems;
 		return newItems;
 	}
@@ -277,8 +287,10 @@ public class Array<T> implements Iterable<T> {
 	/** Returns an iterator for the items in the array. Remove is supported. Note that the same iterator instance is returned each
 	 * time this method is called. Use the {@link ArrayIterator} constructor for nested or multithreaded iteration. */
 	public Iterator<T> iterator () {
-		if (iterator == null) iterator = new ArrayIterator(this);
-		iterator.index = 0;
+		if (iterator == null)
+			iterator = new ArrayIterator(this);
+		else
+			iterator.index = 0;
 		return iterator;
 	}
 

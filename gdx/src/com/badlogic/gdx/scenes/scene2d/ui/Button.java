@@ -5,7 +5,10 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.utils.Array;
 
 /** A button is a {@link Table} with a checked state and additional {@link ButtonStyle style} fields for pressed, unpressed, and
  * checked. Being a table, a button can contain any other actors.
@@ -14,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
  * @author Nathan Sweet */
 public class Button extends Table {
 	private ButtonStyle style;
-	ClickListener listener;
 	boolean isChecked;
 	ButtonGroup buttonGroup;
 
@@ -22,40 +24,37 @@ public class Button extends Table {
 		super(skin);
 		initialize();
 		setStyle(skin.getStyle(ButtonStyle.class));
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
 	}
 
 	public Button (ButtonStyle style) {
 		initialize();
 		setStyle(style);
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
 	}
 
 	public Button (Actor child, ButtonStyle style) {
 		initialize();
 		add(child);
 		setStyle(style);
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
 	}
 
 	public Button (ButtonStyle style, String name) {
 		super(null, null, name);
 		initialize();
 		setStyle(style);
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
 	}
 
 	private void initialize () {
-		super.setClickListener(new ClickListener() {
-			public void click (Actor actor, float x, float y) {
-				boolean newChecked = !isChecked;
-				setChecked(newChecked);
-				// Don't fire listener if isChecked wasn't changed.
-				if (newChecked == isChecked && listener != null) listener.click(actor, x, y);
+		addListener(new ClickListener() {
+			public void clicked (ActorEvent event, float x, float y) {
+				setChecked(!isChecked);
 			}
 		});
 	}
@@ -110,11 +109,6 @@ public class Button extends Table {
 		return style;
 	}
 
-	/** @param listener May be null. */
-	public void setClickListener (ClickListener listener) {
-		this.listener = listener;
-	}
-
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		float offsetX = 0, offsetY = 0;
 		if (isPressed) {
@@ -130,17 +124,12 @@ public class Button extends Table {
 			offsetY = style.unpressedOffsetY;
 		}
 		validate();
-		for (int i = 0; i < children.size(); i++) {
-			Actor child = children.get(i);
-			child.x += offsetX;
-			child.y += offsetY;
-		}
+		Array<Actor> children = getActors();
+		for (int i = 0; i < children.size; i++)
+			children.get(i).translate(offsetX, offsetY);
 		super.draw(batch, parentAlpha);
-		for (int i = 0; i < children.size(); i++) {
-			Actor child = children.get(i);
-			child.x -= offsetX;
-			child.y -= offsetY;
-		}
+		for (int i = 0; i < children.size; i++)
+			children.get(i).translate(-offsetX, -offsetY);
 	}
 
 	public float getPrefWidth () {
@@ -190,8 +179,8 @@ public class Button extends Table {
 			this.unpressedOffsetX = unpressedOffsetX;
 			this.unpressedOffsetY = unpressedOffsetY;
 		}
-		
-		public ButtonStyle(ButtonStyle style) {
+
+		public ButtonStyle (ButtonStyle style) {
 			this.down = style.down;
 			this.up = style.up;
 			this.checked = style.checked;

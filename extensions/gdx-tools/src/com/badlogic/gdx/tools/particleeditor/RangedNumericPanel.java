@@ -38,8 +38,8 @@ class RangedNumericPanel extends EditorPanel {
 	JButton rangeButton;
 	JLabel label;
 
-	public RangedNumericPanel (String name, final RangedNumericValue value) {
-		super(name, value);
+	public RangedNumericPanel (final RangedNumericValue value, String name, String description) {
+		super(value, name, description);
 		this.value = value;
 
 		initializeComponents();

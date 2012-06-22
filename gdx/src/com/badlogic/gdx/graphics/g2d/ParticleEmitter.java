@@ -363,8 +363,7 @@ public class ParticleEmitter {
 		float percent = durationTimer / (float)duration;
 		int updateFlags = this.updateFlags;
 
-		float offsetTime = lifeOffset + lifeOffsetDiff * lifeOffsetValue.getScale(percent);
-		particle.life = particle.currentLife = life + (int)(lifeDiff * lifeValue.getScale(percent));
+		particle.currentLife = particle.life = life + (int)(lifeDiff * lifeValue.getScale(percent));
 
 		if (velocityValue.active) {
 			particle.velocity = velocityValue.newLowValue();
@@ -491,6 +490,12 @@ public class ParticleEmitter {
 
 		float spriteHeight = sprite.getHeight();
 		particle.setBounds(x - spriteWidth / 2, y - spriteHeight / 2, spriteWidth, spriteHeight);
+
+		int offsetTime = (int)(lifeOffset + lifeOffsetDiff * lifeOffsetValue.getScale(percent));
+		if (offsetTime > 0) {
+			if (offsetTime >= particle.currentLife) offsetTime = particle.currentLife - 1;
+			updateParticle(particle, offsetTime / 1000f, offsetTime);
+		}
 	}
 
 	private boolean updateParticle (Particle particle, float delta, int deltaMillis) {
@@ -910,7 +915,7 @@ public class ParticleEmitter {
 		}
 
 		public boolean isActive () {
-			return active;
+			return alwaysActive || active;
 		}
 
 		public void setActive (boolean active) {

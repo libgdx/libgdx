@@ -34,6 +34,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEmitter.ParticleValue;
 
 class EditorPanel extends JPanel {
 	private final String name;
+	private final String description;
 	private final ParticleValue value;
 	private JPanel titlePanel;
 	JToggleButton activeButton;
@@ -41,10 +42,12 @@ class EditorPanel extends JPanel {
 	JToggleButton advancedButton;
 	JPanel advancedPanel;
 	private boolean hasAdvanced;
+	JLabel descriptionLabel;
 
-	public EditorPanel (String name, ParticleValue value) {
+	public EditorPanel (ParticleValue value, String name, String description) {
 		this.name = name;
 		this.value = value;
+		this.description = description;
 
 		initializeComponents();
 
@@ -81,6 +84,7 @@ class EditorPanel extends JPanel {
 		contentPanel.setVisible(activeButton.isSelected());
 		advancedPanel.setVisible(activeButton.isSelected() && advancedButton.isSelected());
 		advancedButton.setVisible(activeButton.isSelected() && hasAdvanced);
+		descriptionLabel.setText(activeButton.isSelected() ? description : "");
 		if (value != null) value.setActive(activeButton.isSelected());
 	}
 
@@ -122,19 +126,24 @@ class EditorPanel extends JPanel {
 			titlePanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			{
 				JLabel label = new JLabel(name);
-				titlePanel.add(label, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+				titlePanel.add(label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 					new Insets(3, 6, 3, 6), 0, 0));
 				label.setFont(label.getFont().deriveFont(Font.BOLD));
 			}
 			{
+				descriptionLabel = new JLabel(description);
+				titlePanel.add(descriptionLabel, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0, GridBagConstraints.WEST,
+					GridBagConstraints.NONE, new Insets(3, 6, 3, 6), 0, 0));
+			}
+			{
 				advancedButton = new JToggleButton("Advanced");
-				titlePanel.add(advancedButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				titlePanel.add(advancedButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 					GridBagConstraints.NONE, new Insets(0, 0, 0, 6), 0, 0));
 				advancedButton.setVisible(false);
 			}
 			{
 				activeButton = new JToggleButton("Active");
-				titlePanel.add(activeButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				titlePanel.add(activeButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 					GridBagConstraints.NONE, new Insets(0, 0, 0, 6), 0, 0));
 			}
 		}

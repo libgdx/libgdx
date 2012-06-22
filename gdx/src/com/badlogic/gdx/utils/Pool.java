@@ -52,17 +52,27 @@ abstract public class Pool<T> {
 	public void free (T object) {
 		if (object == null) throw new IllegalArgumentException("object cannot be null.");
 		if (freeObjects.size < max) freeObjects.add(object);
+		if (object instanceof Poolable) ((Poolable)object).reset();
 	}
 
 	/** Puts the specified objects in the pool.
 	 * @see #free(Object) */
 	public void free (Array<T> objects) {
-		for (int i = 0, n = Math.min(objects.size, max - freeObjects.size); i < n; i++)
-			freeObjects.add(objects.get(i));
+		for (int i = 0, n = Math.min(objects.size, max - freeObjects.size); i < n; i++) {
+			T object = objects.get(i);
+			freeObjects.add(object);
+			if (object instanceof Poolable) ((Poolable)object).reset();
+		}
 	}
 
 	/** Removes all free objects from this pool. */
 	public void clear () {
 		freeObjects.clear();
+	}
+
+	/** Objects implementing this interface will have {@link #reset()} called when passed to {@link #free(Object)}. */
+	static public interface Poolable {
+		/** Resets the object for reuse. Object references should be nulled and fields may be set to default values. */
+		public void reset ();
 	}
 }

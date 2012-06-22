@@ -40,7 +40,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.LibgdxToolkit.DebugRect;
 import com.badlogic.gdx.utils.Array;
@@ -65,8 +64,8 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 
 	/** Calls {@link #register(String, Actor)} with the name of the actor. */
 	public Actor register (Actor actor) {
-		if (actor.name == null) throw new IllegalArgumentException("Actor must have a name: " + actor.getClass());
-		return register(actor.name, actor);
+		if (actor.getName() == null) throw new IllegalArgumentException("Actor must have a name: " + actor.getClass());
+		return register(actor.getName(), actor);
 	}
 
 	public Actor getWidget (String name) {
@@ -77,7 +76,10 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 
 	public void layout () {
 		Table table = getTable();
-		setLayoutSize(0, 0, (int)table.width, (int)table.height);
+		float width = table.getWidth();
+		float height = table.getHeight();
+
+		setLayoutSize(0, 0, (int)width, (int)height);
 		super.layout();
 
 		List<Cell> cells = getCells();
@@ -85,14 +87,11 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 			Cell c = cells.get(i);
 			if (c.getIgnore()) continue;
 			Actor actor = (Actor)c.getWidget();
-			actor.x = c.getWidgetX();
 			int widgetHeight = c.getWidgetHeight();
-			actor.y = table.height - c.getWidgetY() - widgetHeight;
-			actor.width = c.getWidgetWidth();
-			actor.height = widgetHeight;
+			actor.setBounds(c.getWidgetX(), height - c.getWidgetY() - widgetHeight, c.getWidgetWidth(), widgetHeight);
 		}
-		List<Actor> children = table.getActors();
-		for (int i = 0, n = children.size(); i < n; i++) {
+		Array<Actor> children = table.getActors();
+		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
 			if (child instanceof Layout) {
 				Layout layout = (Layout)child;
@@ -109,9 +108,9 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 	}
 
 	private void toStageCoordinates (Actor actor, Vector2 point) {
-		point.x += actor.x;
-		point.y += actor.y;
-		toStageCoordinates(actor.parent, point);
+		point.x += actor.getX();
+		point.y += actor.getY();
+		toStageCoordinates(actor.getParent(), point);
 	}
 
 	public void drawDebug (SpriteBatch batch) {
@@ -127,10 +126,10 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 		Actor parent = getTable();
 		while (parent != null) {
 			if (parent instanceof Group) {
-				x += parent.x;
-				y += parent.y;
+				x += parent.getX();
+				y += parent.getY();
 			}
-			parent = parent.parent;
+			parent = parent.getParent();
 		}
 
 		debugRenderer.begin(batch.getProjectionMatrix(), GL10.GL_LINES);

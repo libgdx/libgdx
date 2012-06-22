@@ -159,7 +159,7 @@ public abstract class Camera {
 
 	/** Function to translate a point given in window (or window) coordinates to world space. It's the same as
 	 * {@link GLU#gluUnProject(float, float, float, float[], int, float[], int, int[], int, float[], int)} but does not rely on
-	 * OpenGL. The viewport is assuemd to span the whole screen and is fetched from {@link Graphics#getWidth()} and
+	 * OpenGL. The viewport is assumed to span the whole screen and is fetched from {@link Graphics#getWidth()} and
 	 * {@link Graphics#getHeight()}. The x- and y-coordinate of vec are assumed to be in window coordinates (origin is the top left
 	 * corner, y pointing down, x pointing to the right) as reported by the touch methods in {@link Input}. A z-coordinate of 0
 	 * will return a point on the near plane, a z-coordinate of 1 will return a point on the far plane.

@@ -22,10 +22,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Layout;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 
 /** A text label, with optional word wrapping.
  * <p>
@@ -71,15 +67,15 @@ public class Label extends Widget {
 		if (text == null) text = "";
 		this.text = text;
 		setStyle(style);
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
 	}
 
 	public void setStyle (LabelStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		if (style.font == null) throw new IllegalArgumentException("Missing LabelStyle font.");
 		this.style = style;
-		if(cache != null) cache.dispose();
+		if (cache != null) cache.dispose();
 		cache = new BitmapFontCache(style.font, style.font.usesIntegerPositions());
 		if (style.fontColor != null) cache.setColor(style.fontColor);
 		computeBounds();
@@ -157,7 +153,7 @@ public class Label extends Widget {
 
 	private void computeBounds () {
 		if (wrap)
-			bounds.set(cache.getFont().getWrappedBounds(text, width));
+			bounds.set(cache.getFont().getWrappedBounds(text, getWidth()));
 		else
 			bounds.set(cache.getFont().getMultiLineBounds(text));
 	}
@@ -174,6 +170,8 @@ public class Label extends Widget {
 			}
 		}
 
+		float height = getHeight();
+
 		float y;
 		if ((labelAlign & Align.TOP) != 0) {
 			y = cache.getFont().isFlipped() ? 0 : height - bounds.height;
@@ -189,9 +187,9 @@ public class Label extends Widget {
 		if ((labelAlign & Align.LEFT) != 0)
 			x = 0;
 		else if ((labelAlign & Align.RIGHT) != 0) {
-			x = width - bounds.width;
+			x = getWidth() - bounds.width;
 		} else
-			x = (width - bounds.width) / 2;
+			x = (getWidth() - bounds.width) / 2;
 
 		if (wrap)
 			cache.setWrappedText(text, x, y, bounds.width, lineAlign);
@@ -201,9 +199,10 @@ public class Label extends Widget {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
+		layout();
 		validate();
-		cache.setPosition(x, y);
-		cache.draw(batch, color.a * parentAlpha);
+		cache.setPosition(getX(), getY());
+		cache.draw(batch, getColor().a * parentAlpha);
 	}
 
 	public float getPrefWidth () {
@@ -229,10 +228,10 @@ public class Label extends Widget {
 			this.font = font;
 			this.fontColor = fontColor;
 		}
-		
-		public LabelStyle(LabelStyle style) {
+
+		public LabelStyle (LabelStyle style) {
 			this.font = style.font;
-			if(style.fontColor != null) this.fontColor = new Color(style.fontColor);
+			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
 		}
 	}
 }

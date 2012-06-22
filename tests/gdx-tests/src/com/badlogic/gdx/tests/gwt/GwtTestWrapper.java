@@ -1,6 +1,5 @@
 package com.badlogic.gdx.tests.gwt;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
@@ -10,12 +9,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.FlickScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.tests.AccelerometerTest;
@@ -37,7 +37,6 @@ import com.badlogic.gdx.tests.CustomShaderSpriteBatchTest;
 import com.badlogic.gdx.tests.DecalTest;
 import com.badlogic.gdx.tests.EdgeDetectionTest;
 import com.badlogic.gdx.tests.FilterPerformanceTest;
-import com.badlogic.gdx.tests.FlickScrollPaneTest;
 import com.badlogic.gdx.tests.FrameBufferTest;
 import com.badlogic.gdx.tests.GestureDetectorTest;
 import com.badlogic.gdx.tests.GroupCullingTest;
@@ -52,7 +51,6 @@ import com.badlogic.gdx.tests.IsometricTileTest;
 import com.badlogic.gdx.tests.KinematicBodyTest;
 import com.badlogic.gdx.tests.LabelTest;
 import com.badlogic.gdx.tests.LifeCycleTest;
-import com.badlogic.gdx.tests.MatrixJNITest;
 import com.badlogic.gdx.tests.MeshShaderTest;
 import com.badlogic.gdx.tests.MipMapTest;
 import com.badlogic.gdx.tests.MultitouchTest;
@@ -62,8 +60,6 @@ import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.ProjectiveTextureTest;
 import com.badlogic.gdx.tests.RotationTest;
-import com.badlogic.gdx.tests.ScrollPaneTest;
-import com.badlogic.gdx.tests.ShaderMultitextureTest;
 import com.badlogic.gdx.tests.ShadowMappingTest;
 import com.badlogic.gdx.tests.ShapeRendererTest;
 import com.badlogic.gdx.tests.SimpleAnimationTest;
@@ -74,7 +70,6 @@ import com.badlogic.gdx.tests.SoundTest;
 import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
 import com.badlogic.gdx.tests.SpriteCacheTest;
-import com.badlogic.gdx.tests.StagePerformanceTest;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TableTest;
 import com.badlogic.gdx.tests.TextButtonTest;
@@ -108,9 +103,9 @@ public class GwtTestWrapper extends GdxTest {
 		for (final Instancer instancer: tests) {
 			table.row();
 			TextButton button = new TextButton(instancer.instance().getClass().getName(), skin);
-			button.setClickListener(new ClickListener() {
+			button.addListener(new ClickListener() {
 				@Override
-				public void click (Actor actor, float x, float y) {
+				public void clicked (ActorEvent event, float x, float y) {
 					((InputWrapper)Gdx.input).multiplexer.removeProcessor(ui);
 					test = instancer.instance();
 					test.create();
@@ -160,8 +155,7 @@ public class GwtTestWrapper extends GdxTest {
 	
 	public void resize (int width, int height) {
 		ui.setViewport(width, height, false);
-		container.width = width;
-		container.height = height;
+		container.setSize(width, height);
 	}
 	
 	class InputWrapper extends InputAdapter implements Input {
@@ -249,6 +243,11 @@ public class GwtTestWrapper extends GdxTest {
 		@Override
 		public boolean isButtonPressed (int button) {
 			return input.isButtonPressed(button);
+		}
+
+		@Override
+		public int getButton () {
+			return input.getButton();
 		}
 
 		@Override

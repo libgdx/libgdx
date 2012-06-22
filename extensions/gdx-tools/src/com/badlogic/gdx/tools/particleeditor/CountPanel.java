@@ -29,8 +29,8 @@ import javax.swing.event.ChangeListener;
 class CountPanel extends EditorPanel {
 	JSpinner maxSpinner, minSpinner;
 
-	public CountPanel (final ParticleEditor editor) {
-		super("Count", null);
+	public CountPanel (final ParticleEditor editor, String name, String description) {
+		super(null, name, description);
 
 		initializeComponents();
 

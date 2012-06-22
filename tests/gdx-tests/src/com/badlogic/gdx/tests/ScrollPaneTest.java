@@ -52,11 +52,11 @@ public class ScrollPaneTest extends GdxTest {
 			// This sizes the pane to the size of it's contents.
 			pane.pack();
 			// Then the height is hardcoded, leaving the pane the width of it's contents.
-			pane.height = Gdx.graphics.getHeight();
+			pane.setHeight(Gdx.graphics.getHeight());
 		} else {
 			// This shows a hardcoded size.
-			pane.width = 300;
-			pane.height = Gdx.graphics.getHeight();
+			pane.setWidth(300);
+			pane.setHeight(Gdx.graphics.getHeight());
 		}
 
 		stage.addActor(pane);

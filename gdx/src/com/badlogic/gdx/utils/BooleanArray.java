@@ -123,6 +123,15 @@ public class BooleanArray {
 		items[index] = value;
 	}
 
+	public void swap (int first, int second) {
+		if (first >= size) throw new IndexOutOfBoundsException(String.valueOf(first));
+		if (second >= size) throw new IndexOutOfBoundsException(String.valueOf(second));
+		boolean[] items = this.items;
+		boolean firstValue = items[first];
+		items[first] = items[second];
+		items[second] = firstValue;
+	}
+
 	/** Removes and returns the item at the specified index. */
 	public boolean removeIndex (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
@@ -168,7 +177,7 @@ public class BooleanArray {
 	protected boolean[] resize (int newSize) {
 		boolean[] newItems = new boolean[newSize];
 		boolean[] items = this.items;
-		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
+		System.arraycopy(items, 0, newItems, 0, Math.min(size, newItems.length));
 		this.items = newItems;
 		return newItems;
 	}

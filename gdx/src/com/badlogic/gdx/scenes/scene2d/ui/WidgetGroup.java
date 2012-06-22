@@ -4,12 +4,13 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 /** A {@link Group} that participates in layout and provides a minimum, preferred, and maximum size.
  * <p>
  * The default preferred size of a widget group is 0 and this is almost always overridden by a subclass. The default minimum size
- * returns the preferred size, so a subclass may choose to return 0 if it wants to allow itself to be sized smaller. The default
- * maximum size is 0, which means no maximum size.
+ * returns the preferred size, so a subclass may choose to return 0 for minimum size if it wants to allow itself to be sized
+ * smaller than the preferred size. The default maximum size is 0, which means no maximum size.
  * <p>
  * See {@link Layout} for details on how a widget group should participate in layout. A widget group's mutator methods should call
  * {@link #invalidate()} or {@link #invalidateHierarchy()} as needed. By default, invalidateHierarchy is called when child widgets
@@ -48,18 +49,21 @@ public abstract class WidgetGroup extends Group implements Layout {
 	}
 
 	public void validate () {
+		Group parent = getParent();
 		if (fillParent && parent != null) {
+			Stage stage = getStage();
+
 			float parentWidth, parentHeight;
 			if (stage != null && parent == stage.getRoot()) {
-				parentWidth = stage.width();
-				parentHeight = stage.height();
+				parentWidth = stage.getWidth();
+				parentHeight = stage.getHeight();
 			} else {
-				parentWidth = parent.width;
-				parentHeight = parent.height;
+				parentWidth = parent.getWidth();
+				parentHeight = parent.getHeight();
 			}
-			if (width != parentWidth || height != parentHeight) {
-				width = parentWidth;
-				height = parentHeight;
+			if (getWidth() != parentWidth || getHeight() != parentHeight) {
+				setWidth(parentWidth);
+				setHeight(parentHeight);
 				invalidate();
 			}
 		}
@@ -76,6 +80,7 @@ public abstract class WidgetGroup extends Group implements Layout {
 
 	public void invalidateHierarchy () {
 		invalidate();
+		Group parent = getParent();
 		if (parent instanceof Layout) ((Layout)parent).invalidateHierarchy();
 	}
 
@@ -86,9 +91,9 @@ public abstract class WidgetGroup extends Group implements Layout {
 	public void pack () {
 		float newWidth = getPrefWidth();
 		float newHeight = getPrefHeight();
-		if (newWidth != width || newHeight != height) {
-			width = newWidth;
-			height = newHeight;
+		if (newWidth != getWidth() || newHeight != getHeight()) {
+			setWidth(newWidth);
+			setHeight(newHeight);
 			invalidate();
 			validate();
 		}

@@ -121,6 +121,15 @@ public class LongArray {
 		items[index] = value;
 	}
 
+	public void swap (int first, int second) {
+		if (first >= size) throw new IndexOutOfBoundsException(String.valueOf(first));
+		if (second >= size) throw new IndexOutOfBoundsException(String.valueOf(second));
+		long[] items = this.items;
+		long firstValue = items[first];
+		items[first] = items[second];
+		items[second] = firstValue;
+	}
+
 	public boolean contains (long value) {
 		int i = size - 1;
 		long[] items = this.items;
@@ -192,7 +201,7 @@ public class LongArray {
 	protected long[] resize (int newSize) {
 		long[] newItems = new long[newSize];
 		long[] items = this.items;
-		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
+		System.arraycopy(items, 0, newItems, 0, Math.min(size, newItems.length));
 		this.items = newItems;
 		return newItems;
 	}

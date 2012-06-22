@@ -56,8 +56,8 @@ public class List extends Widget implements Cullable {
 		super(name);
 		setStyle(style);
 		setItems(items);
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
 	}
 
 	public void setStyle (ListStyle style) {
@@ -81,15 +81,18 @@ public class List extends Widget implements Cullable {
 		Color fontColorSelected = style.fontColorSelected;
 		Color fontColorUnselected = style.fontColorUnselected;
 
+		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 
+		float x = getX();
+		float y = getY();
+
 		font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a * parentAlpha);
-		float itemY = height;
+		float itemY = getHeight();
 		for (int i = 0; i < items.length; i++) {
-			if (cullingArea == null || 
-				(itemY - itemHeight <= cullingArea.y + cullingArea.height && itemY >= cullingArea.y)) {
+			if (cullingArea == null || (itemY - itemHeight <= cullingArea.y + cullingArea.height && itemY >= cullingArea.y)) {
 				if (selected == i) {
-					selectedPatch.draw(batch, x, y + itemY - itemHeight, Math.max(prefWidth, width), itemHeight);
+					selectedPatch.draw(batch, x, y + itemY - itemHeight, Math.max(prefWidth, getWidth()), itemHeight);
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				}
 				font.draw(batch, items[i], x + textOffsetX, y + itemY - textOffsetY);
@@ -107,7 +110,7 @@ public class List extends Widget implements Cullable {
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
-		selected = (int)((height - y) / itemHeight);
+		selected = (int)((getHeight() - y) / itemHeight);
 		selected = Math.max(0, selected);
 		selected = Math.min(items.length - 1, selected);
 		if (listener != null && items.length > 0) listener.selected(this, selected, items[selected]);
@@ -213,8 +216,8 @@ public class List extends Widget implements Cullable {
 			this.fontColorUnselected.set(fontColorUnselected);
 			this.selectedPatch = selectedPatch;
 		}
-		
-		public ListStyle(ListStyle style) {
+
+		public ListStyle (ListStyle style) {
 			this.font = style.font;
 			this.fontColorSelected.set(style.fontColorSelected);
 			this.fontColorUnselected.set(style.fontColorUnselected);

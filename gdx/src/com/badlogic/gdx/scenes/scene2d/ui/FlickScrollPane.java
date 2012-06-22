@@ -66,6 +66,8 @@ public class FlickScrollPane extends WidgetGroup {
 	private boolean disableX, disableY;
 	private boolean clamp = true;
 
+	private final Vector2 point = new Vector2();
+
 	public FlickScrollPane () {
 		this(null, null);
 	}
@@ -82,7 +84,7 @@ public class FlickScrollPane extends WidgetGroup {
 		if (widget != null) setWidget(widget);
 
 		gestureDetector = new GestureDetector(new GestureListener() {
-			public boolean pan (int x, int y, int deltaX, int deltaY) {
+			public boolean pan (float x, float y, float deltaX, float deltaY) {
 				amountX -= deltaX;
 				amountY += deltaY;
 				clamp();
@@ -104,12 +106,12 @@ public class FlickScrollPane extends WidgetGroup {
 				return flingTimer > 0;
 			}
 
-			public boolean touchDown (int x, int y, int pointer) {
+			public boolean touchDown (float x, float y, int pointer) {
 				flingTimer = 0;
 				return true;
 			}
 
-			public boolean tap (int x, int y, int count) {
+			public boolean tap (float x, float y, int count) {
 				return false;
 			}
 
@@ -117,17 +119,18 @@ public class FlickScrollPane extends WidgetGroup {
 				return false;
 			}
 
-			public boolean pinch (Vector2 initialFirstPointer, Vector2 initialSecondPointer, Vector2 firstPointer, Vector2 secondPointer) {
+			public boolean pinch (Vector2 initialFirstPointer, Vector2 initialSecondPointer, Vector2 firstPointer,
+				Vector2 secondPointer) {
 				return false;
 			}
 
-			public boolean longPress (int x, int y) {
+			public boolean longPress (float x, float y) {
 				return false;
 			}
 		});
 
-		width = 150;
-		height = 150;
+		setWidth(150);
+		setHeight(150);
 	}
 
 	void clamp () {
@@ -181,28 +184,31 @@ public class FlickScrollPane extends WidgetGroup {
 
 	public void layout () {
 		if (widget == null) return;
-		
+
 		// Get widget's desired width.
-		float widgetWidth, widgetHeight;	
+		float widgetWidth, widgetHeight;
 		if (widget instanceof Layout) {
 			Layout layout = (Layout)widget;
 			widgetWidth = layout.getPrefWidth();
 			widgetHeight = layout.getPrefHeight();
 		} else {
-			widgetWidth = widget.width;
-			widgetHeight = widget.height;
+			widgetWidth = widget.getWidth();
+			widgetHeight = widget.getHeight();
 		}
+
+		float width = getWidth();
+		float height = getHeight();
 
 		// Figure out if we need horizontal/vertical scrollbars,
 		scrollX = !disableX && (widgetWidth > width || forceOverscrollX);
 		scrollY = !disableY && (widgetHeight > height || forceOverscrollY);
 
 		// If the widget is smaller than the available space, make it take up the available space.
-		widget.width = disableX ? width : Math.max(width, widgetWidth);
-		widget.height = disableY ? height : Math.max(height, widgetHeight);
+		widget.setWidth(disableX ? width : Math.max(width, widgetWidth));
+		widget.setHeight(disableY ? height : Math.max(height, widgetHeight));
 
-		maxX = widget.width - width;
-		maxY = widget.height - height;
+		maxX = widget.getWidth() - width;
+		maxY = widget.getHeight() - height;
 
 		if (widget instanceof Layout) {
 			Layout layout = (Layout)widget;
@@ -220,12 +226,15 @@ public class FlickScrollPane extends WidgetGroup {
 		// Setup transform for this group.
 		applyTransform(batch);
 
+		float width = getWidth();
+		float height = getHeight();
+
 		// Calculate the widget position depending on the scroll state and available widget area.
-		widget.y = (int)(scrollY ? amountY : maxY) - widget.height + height;
-		widget.x = -(int)(scrollX ? amountX : 0);
+		widget.setY((int)(scrollY ? amountY : maxY) - widget.getHeight() + height);
+		widget.setX(-(int)(scrollX ? amountX : 0));
 		if (widget instanceof Cullable) {
-			widgetCullingArea.x = -widget.x;
-			widgetCullingArea.y = -widget.y;
+			widgetCullingArea.x = -widget.getX();
+			widgetCullingArea.y = -widget.getY();
 			widgetCullingArea.width = width;
 			widgetCullingArea.height = height;
 			((Cullable)widget).setCullingArea(widgetCullingArea);
@@ -234,7 +243,7 @@ public class FlickScrollPane extends WidgetGroup {
 		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
 		// project those to screen coordinates for OpenGL ES to consume.
 		widgetAreaBounds.set(0, 0, width, height);
-		ScissorStack.calculateScissors(stage.getCamera(), batch.getTransformMatrix(), widgetAreaBounds, scissorBounds);
+		ScissorStack.calculateScissors(getStage().getCamera(), batch.getTransformMatrix(), widgetAreaBounds, scissorBounds);
 
 		// Enable scissors for widget area and draw the widget.
 		if (ScissorStack.pushScissors(scissorBounds)) {
@@ -249,10 +258,11 @@ public class FlickScrollPane extends WidgetGroup {
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
 		super.touchDown(x, y, pointer);
+		Stage stage = getStage();
 		touchFocusedChild = stage.getTouchFocus(0) != this ? stage.getTouchFocus(0) : null;
 		if (emptySpaceOnlyScroll && touchFocusedChild != null) return false;
 		gestureDetector.touchDown((int)x, (int)y, pointer, 0);
-		if (stage != null) stage.setTouchFocus(this, 0); // Always take the touch focus.
+		stage.setTouchFocus(this, 0); // Always take the touch focus.
 		return true;
 	}
 
@@ -266,7 +276,7 @@ public class FlickScrollPane extends WidgetGroup {
 		if (touchFocusedChild != null && isDescendant(touchFocusedChild)) {
 			point.x = x;
 			point.y = y;
-			toLocalCoordinates(touchFocusedChild, point);
+			toDescendantCoordinates(touchFocusedChild, point);
 			touchFocusedChild.touchUp(point.x, point.y, 0);
 			touchFocusedChild = null;
 		}
@@ -352,21 +362,14 @@ public class FlickScrollPane extends WidgetGroup {
 		throw new UnsupportedOperationException("Use FlickScrollPane#setWidget.");
 	}
 
-	public void removeActor (Actor actor) {
+	public boolean removeActor (Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget(null).");
-	}
-
-	public void removeActorRecursive (Actor actor) {
-		if (actor == widget)
-			setWidget(null);
-		else if (widget instanceof Group) //
-			((Group)widget).removeActorRecursive(actor);
 	}
 
 	public boolean isPanning () {
 		return gestureDetector.isPanning();
 	}
-	
+
 	public boolean isFlinging () {
 		return flingTimer > 0;
 	}
@@ -409,7 +412,7 @@ public class FlickScrollPane extends WidgetGroup {
 	}
 
 	public Actor hit (float x, float y) {
-		if (x > 0 && x < width && y > 0 && y < height) return super.hit(x, y);
+		if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) return super.hit(x, y);
 		return null;
 	}
 

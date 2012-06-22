@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.utils;
 
 import java.util.Arrays;
@@ -105,6 +106,15 @@ public class CharArray {
 		items[index] = value;
 	}
 
+	public void swap (int first, int second) {
+		if (first >= size) throw new IndexOutOfBoundsException(String.valueOf(first));
+		if (second >= size) throw new IndexOutOfBoundsException(String.valueOf(second));
+		char[] items = this.items;
+		char firstValue = items[first];
+		items[first] = items[second];
+		items[second] = firstValue;
+	}
+
 	public boolean contains (char value) {
 		int i = size - 1;
 		char[] items = this.items;
@@ -176,7 +186,7 @@ public class CharArray {
 	protected char[] resize (int newSize) {
 		char[] newItems = new char[newSize];
 		char[] items = this.items;
-		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
+		System.arraycopy(items, 0, newItems, 0, Math.min(size, newItems.length));
 		this.items = newItems;
 		return newItems;
 	}

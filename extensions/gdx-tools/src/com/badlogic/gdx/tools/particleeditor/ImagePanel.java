@@ -36,8 +36,8 @@ class ImagePanel extends EditorPanel {
 	JLabel heightLabel;
 	String lastDir;
 
-	public ImagePanel (final ParticleEditor editor) {
-		super("Image", null);
+	public ImagePanel (final ParticleEditor editor, String name, String description) {
+		super(null, name, description);
 		JPanel contentPanel = getContentPanel();
 		{
 			JButton openButton = new JButton("Open");

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 
@@ -45,8 +46,8 @@ public class Window extends Table {
 		setClip(true);
 		this.title = title;
 		setStyle(style);
-		width = 150;
-		height = 150;
+		setWidth(150);
+		setHeight(150);
 	}
 
 	public void setStyle (WindowStyle style) {
@@ -71,13 +72,14 @@ public class Window extends Table {
 	public void layout () {
 		super.layout();
 		TextBounds bounds = style.titleFont.getMultiLineBounds(title);
-		titleCache.setMultiLineText(title, width / 2 - bounds.width / 2, height - getTitleBarHeight() / 2 + bounds.height / 2);
+		titleCache.setMultiLineText(title, getWidth() / 2 - bounds.width / 2, getHeight() - getTitleBarHeight() / 2 + bounds.height
+			/ 2);
 	}
 
 	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
 		super.drawBackground(batch, parentAlpha);
 		// Draw the title without the batch transformed or clipping applied.
-		titleCache.setPosition(x, y);
+		titleCache.setPosition(getX(), getY());
 		titleCache.draw(batch, parentAlpha);
 	}
 
@@ -85,23 +87,23 @@ public class Window extends Table {
 		if (pointer != 0) return false;
 
 		// Make this window on top.
-		if (parent.getActors().size() > 1) parent.swapActor(this, parent.getActors().get(parent.getActors().size() - 1));
+		Group parent = getParent();
+		if (parent.getActors().size > 1) parent.swapActor(this, parent.getActors().get(parent.getActors().size - 1));
 
 		if (super.touchDown(x, y, pointer)) return true;
 
-		dragging = isMovable && height - y <= getTitleBarHeight() && y < height && x > 0 && x < width;
+		dragging = isMovable && getHeight() - y <= getTitleBarHeight() && y < getHeight() && x > 0 && x < getWidth();
 		dragOffset.set(x, y);
 		return true;
 	}
 
 	public void touchDragged (float x, float y, int pointer) {
 		if (!dragging) return;
-		this.x += x - dragOffset.x;
-		this.y += y - dragOffset.y;
+		translate(x - dragOffset.x, y - dragOffset.y);
 	}
 
 	public Actor hit (float x, float y) {
-		return isModal || (x > 0 && x < width && y > 0 && y < height) ? this : null;
+		return isModal || (x > 0 && x < getWidth() && y > 0 && y < getHeight()) ? this : null;
 	}
 
 	public void setTitle (String title) {
@@ -133,8 +135,8 @@ public class Window extends Table {
 			this.titleFont = titleFont;
 			this.titleFontColor.set(titleFontColor);
 		}
-		
-		public WindowStyle(WindowStyle style) {
+
+		public WindowStyle (WindowStyle style) {
 			this.background = style.background;
 			this.titleFont = style.titleFont;
 			this.titleFontColor = new Color(style.titleFontColor);
