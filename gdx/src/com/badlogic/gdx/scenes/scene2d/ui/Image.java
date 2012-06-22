@@ -103,8 +103,8 @@ public class Image extends Widget {
 			regionWidth = patch.getTotalWidth();
 			regionHeight = patch.getTotalHeight();
 		} else if (region != null) {
-			regionWidth = region.getRegionWidth();
-			regionHeight = region.getRegionHeight();
+			regionWidth = Math.abs(region.getRegionWidth());
+			regionHeight = Math.abs(region.getRegionHeight());
 		} else
 			return;
 
@@ -158,7 +158,8 @@ public class Image extends Widget {
 	public void setRegion (TextureRegion region) {
 		if (region != null) {
 			if (this.region == region) return;
-			if (getPrefWidth() != region.getRegionWidth() || getPrefHeight() != region.getRegionHeight()) invalidateHierarchy();
+			if (getPrefWidth() != Math.abs(region.getRegionWidth()) || getPrefHeight() != Math.abs(region.getRegionHeight()))
+				invalidateHierarchy();
 		} else {
 			if (getPrefWidth() != 0 || getPrefHeight() != 0) invalidateHierarchy();
 		}
@@ -204,13 +205,13 @@ public class Image extends Widget {
 	}
 
 	public float getPrefWidth () {
-		if (region != null) return region.getRegionWidth();
+		if (region != null) return Math.abs(region.getRegionWidth());
 		if (patch != null) return patch.getTotalWidth();
 		return 0;
 	}
 
 	public float getPrefHeight () {
-		if (region != null) return region.getRegionHeight();
+		if (region != null) return Math.abs(region.getRegionHeight());
 		if (patch != null) return patch.getTotalHeight();
 		return 0;
 	}
