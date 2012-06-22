@@ -341,6 +341,16 @@ public abstract class Actor {
 		this.height = height;
 	}
 
+	public void size (float size) {
+		width += size;
+		height += size;
+	}
+
+	public void size (float width, float height) {
+		this.width += width;
+		this.height += height;
+	}
+
 	/** Set bounds the x, y, width, and height. */
 	public void setBounds (float x, float y, float width, float height) {
 		this.x = x;
@@ -397,6 +407,16 @@ public abstract class Actor {
 	public void setScale (float scaleX, float scaleY) {
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
+	}
+
+	public void scale (float scale) {
+		scaleX += scale;
+		scaleY += scale;
+	}
+
+	public void scale (float scaleX, float scaleY) {
+		this.scaleX += scaleX;
+		this.scaleY += scaleY;
 	}
 
 	public float getRotation () {
