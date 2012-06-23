@@ -5,8 +5,8 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 
 public class Event implements Poolable {
 	Stage stage;
-	Actor target; // deepest actor hit
-	private Actor currentTarget; // current actor being notified about event
+	private Actor targetActor; // deepest actor hit
+	private Actor contextActor; // current actor being notified about event
 	boolean capture;
 	private boolean bubbles = true; // true means propagate to target's parents
 	private boolean handled; // true means the event was handled (the stage will eat the input)
@@ -28,28 +28,30 @@ public class Event implements Poolable {
 	}
 
 	public void reset () {
-		target = null;
-		currentTarget = null;
+		stage = null;
+		targetActor = null;
+		contextActor = null;
+		capture = false;
+		bubbles = true;
 		handled = false;
 		stopped = false;
 		cancelled = false;
-		bubbles = true;
 	}
 
-	public void setTarget (Actor target) {
-		this.target = target;
+	public void setTargetActor (Actor targetActor) {
+		this.targetActor = targetActor;
 	}
 
-	public Actor getTarget () {
-		return target;
+	public Actor getTargetActor () {
+		return targetActor;
 	}
 
-	public Actor getCurrentTarget () {
-		return currentTarget;
+	public Actor getContextActor () {
+		return contextActor;
 	}
 
-	public void setCurrentTarget (Actor currentTarget) {
-		this.currentTarget = currentTarget;
+	public void setContextActor (Actor contextActor) {
+		this.contextActor = contextActor;
 	}
 
 	public boolean getBubbles () {

@@ -70,6 +70,7 @@ public class ImageButton extends Button {
 	}
 
 	private void updateImage () {
+		boolean isPressed = isPressed();
 		if (isPressed && style.regionDown != null)
 			image.setRegion(style.regionDown);
 		else if (isPressed && style.patchDown != null)
@@ -124,8 +125,8 @@ public class ImageButton extends Button {
 			this.patchDown = patchDown;
 			this.patchChecked = patchChecked;
 		}
-		
-		public ImageButtonStyle(ImageButtonStyle style) {
+
+		public ImageButtonStyle (ImageButtonStyle style) {
 			super(style);
 			this.regionUp = style.regionUp;
 			this.regionDown = style.regionDown;

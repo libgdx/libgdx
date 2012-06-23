@@ -26,7 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-import static com.badlogic.gdx.scenes.scene2d.Actions.*;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class ComplexActionTest extends GdxTest {
 

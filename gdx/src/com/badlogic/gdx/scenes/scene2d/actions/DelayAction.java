@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /** Delays execution of an action or inserts a pause in a {@link SequenceAction}. 

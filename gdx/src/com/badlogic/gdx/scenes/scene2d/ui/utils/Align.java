@@ -1,5 +1,5 @@
 
-package com.badlogic.gdx.scenes.scene2d.ui;
+package com.badlogic.gdx.scenes.scene2d.ui.utils;
 
 /** @author Nathan Sweet */
 public class Align {

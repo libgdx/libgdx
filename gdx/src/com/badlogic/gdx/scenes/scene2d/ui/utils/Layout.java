@@ -14,9 +14,10 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.scenes.scene2d;
+package com.badlogic.gdx.scenes.scene2d.ui.utils;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 
 /** Provides methods for an actor to participate in layout and to provide a minimum, preferred, and maximum size.

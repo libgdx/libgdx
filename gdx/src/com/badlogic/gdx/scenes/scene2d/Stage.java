@@ -230,7 +230,6 @@ public class Stage extends InputAdapter implements Disposable {
 	public boolean touchDragged (int screenX, int screenY, int pointer) {
 		ActorEvent event = Pools.obtain(ActorEvent.class);
 		event.setPointer(pointer);
-		event.setButton(Gdx.input.getButton());
 		Vector2 stageCoords = toStageCoordinates(screenX, screenY);
 		return fireTouch(event, ActorEvent.Type.touchDragged, stageCoords.x, stageCoords.y);
 	}

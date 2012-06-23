@@ -1,9 +1,10 @@
 
-package com.badlogic.gdx.scenes.scene2d;
+package com.badlogic.gdx.scenes.scene2d.listeners;
 
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 
 /** Detects tap, longPress, fling, pan, zoom, and pinch gestures.
  * @see GestureDetector
@@ -12,7 +13,7 @@ public class ActorGestureListener extends ActorListener {
 	/** The GestureDetector that is used for all ActorGestureListeners. This may be configured to customize the detector settings. */
 	static public final GestureDetector detector = new GestureDetector(new GestureAdapter() {
 		public boolean tap (float x, float y, int count) {
-			if (event.getCurrentTarget().hit(x, y) != null) listener.tap(event, x, y, count);
+			if (event.getContextActor().hit(x, y) != null) listener.tap(event, x, y, count);
 			return true;
 		}
 

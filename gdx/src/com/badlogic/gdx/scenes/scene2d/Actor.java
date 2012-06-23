@@ -19,7 +19,6 @@ package com.badlogic.gdx.scenes.scene2d;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent.Type;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.Pools;
@@ -34,6 +33,7 @@ public abstract class Actor {
 	private Group parent;
 	private final DelayedRemovalArray<EventListener> listeners = new DelayedRemovalArray(0);
 	private final DelayedRemovalArray<EventListener> captureListeners = new DelayedRemovalArray(0);
+	private final DelayedRemovalArray<Actor> captureActors = new DelayedRemovalArray(0);
 	private final Array<Action> actions = new Array(0);
 
 	private String name;
@@ -82,13 +82,13 @@ public abstract class Actor {
 		}
 	}
 
-	/** Sets this actor as the {@link Event#setTarget(Actor) target} and propagates the event to this actor and ancestor actors as
-	 * necessary. If this actor is not in the stage, false is returned without firing the event.
+	/** Sets this actor as the {@link Event#setTargetActor(Actor) target} and propagates the event to this actor and ancestor actors
+	 * as necessary. If this actor is not in the stage, false is returned without firing the event.
 	 * @return true of the event was {@link Event#handled() handled}. */
 	public boolean fire (Event event) {
 		event.stage = getStage();
 		if (event.stage == null) return false;
-		event.target = this;
+		event.setTargetActor(this);
 
 		// Collect ancestors so event propagation is unaffected by hierachy changes.
 		Array<Group> ancestors = Pools.obtain(Array.class);
@@ -127,23 +127,38 @@ public abstract class Actor {
 		}
 	}
 
-	/** Sets this actors as the {@link Event#getTarget() current target} and notifies this actor's listeners of the event. Event
-	 * propagation is not performed. The event {@link Event#setTarget(Actor) target} must be set.
+	/** Sets this actors as the {@link Event#getTargetActor() current target} and notifies this actor's listeners of the event.
+	 * Event propagation is not performed. The event {@link Event#setTargetActor(Actor) target} must be set.
 	 * @param capture If true, the capture listeners will be notified instead of the regular listeners. */
 	public void notify (Event event, boolean capture) {
-		if (event.getTarget() == null) throw new IllegalArgumentException("The event target cannot be null.");
+		if (event.getTargetActor() == null) throw new IllegalArgumentException("The event target cannot be null.");
 
-		Array<EventListener> listeners = capture ? getCaptureListeners() : getListeners();
-		if (listeners.size == 0) return;
-		if (listeners instanceof DelayedRemovalArray) ((DelayedRemovalArray)listeners).begin();
+		if (capture) {
+			DelayedRemovalArray<EventListener> listeners = captureListeners;
+			if (listeners.size == 0) return;
 
-		event.setCurrentTarget(this);
-		event.capture = capture;
+			event.capture = true;
 
-		for (int i = 0, n = listeners.size; i < n; i++)
-			if (listeners.get(i).handle(event)) event.handled();
+			DelayedRemovalArray<Actor> actors = captureActors;
+			listeners.begin();
+			for (int i = 0, n = listeners.size; i < n; i++) {
+				Actor actor = actors.get(i);
+				event.setContextActor(actor != null ? actor : this);
+				listeners.get(i).handle(event);
+			}
+			listeners.end();
+		} else {
+			DelayedRemovalArray<EventListener> listeners = this.listeners;
+			if (listeners.size == 0) return;
 
-		if (listeners instanceof DelayedRemovalArray) ((DelayedRemovalArray)listeners).end();
+			event.setContextActor(this);
+			event.capture = false;
+
+			listeners.begin();
+			for (int i = 0, n = listeners.size; i < n; i++)
+				listeners.get(i).handle(event);
+			listeners.end();
+		}
 	}
 
 	/** Returns this actor if the specified point is within the actor, or null if it is not. The point is specified in the actor's
@@ -196,16 +211,52 @@ public abstract class Actor {
 		return listeners;
 	}
 
+	public boolean addCaptureListener (EventListener listener, Actor actor) {
+		// Check for capture listener with same actor;
+		for (int i = captureListeners.size - 1; i >= 0; i--) {
+			if (captureListeners.get(i) != listener) continue;
+			if (captureActors.get(i) != actor) continue;
+			return false;
+		}
+		captureListeners.add(listener);
+		captureActors.add(actor);
+		return true;
+	}
+
 	public boolean addCaptureListener (EventListener listener) {
-		if (!captureListeners.contains(listener, true)) {
-			captureListeners.add(listener);
+		// Check for capture listener with null actor;
+		for (int i = captureListeners.size - 1; i >= 0; i--) {
+			if (captureListeners.get(i) != listener) continue;
+			if (captureActors.get(i) != null) continue;
+			return false;
+		}
+		captureListeners.add(listener);
+		captureActors.add(null);
+		return true;
+	}
+
+	public boolean removeCaptureListener (EventListener listener) {
+		// Remove capture listener with null actor;
+		for (int i = captureListeners.size - 1; i >= 0; i--) {
+			if (captureListeners.get(i) != listener) continue;
+			if (captureActors.get(i) != null) continue;
+			captureListeners.removeIndex(i);
+			captureActors.removeIndex(i);
 			return true;
 		}
 		return false;
 	}
 
-	public boolean removeCaptureListener (EventListener listener) {
-		return captureListeners.removeValue(listener, true);
+	public boolean removeCaptureListener (EventListener listener, Actor contextActor) {
+		// Remove capture listener with same actor;
+		for (int i = captureListeners.size - 1; i >= 0; i--) {
+			if (captureListeners.get(i) != listener) continue;
+			if (captureActors.get(i) != contextActor) continue;
+			captureListeners.removeIndex(i);
+			captureActors.removeIndex(i);
+			return true;
+		}
+		return false;
 	}
 
 	public Array<EventListener> getCaptureListeners () {

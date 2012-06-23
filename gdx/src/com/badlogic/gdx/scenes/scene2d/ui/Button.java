@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.listeners.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.utils.Array;
 
@@ -19,6 +19,7 @@ public class Button extends Table {
 	private ButtonStyle style;
 	boolean isChecked;
 	ButtonGroup buttonGroup;
+	private ClickListener clickListener;
 
 	public Button (Skin skin) {
 		super(skin);
@@ -52,7 +53,7 @@ public class Button extends Table {
 	}
 
 	private void initialize () {
-		addListener(new ClickListener() {
+		addListener(clickListener = new ClickListener() {
 			public void clicked (ActorEvent event, float x, float y) {
 				setChecked(!isChecked);
 			}
@@ -96,10 +97,14 @@ public class Button extends Table {
 		return isChecked;
 	}
 
+	public boolean isPressed () {
+		return clickListener.isPressed();
+	}
+
 	public void setStyle (ButtonStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
-		setBackground((isPressed && style.down != null) ? style.down : style.up);
+		setBackground((clickListener.isPressed() && style.down != null) ? style.down : style.up);
 		invalidateHierarchy();
 	}
 
@@ -111,7 +116,7 @@ public class Button extends Table {
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		float offsetX = 0, offsetY = 0;
-		if (isPressed) {
+		if (clickListener.isPressed()) {
 			setBackground(style.down == null ? style.up : style.down);
 			offsetX = style.pressedOffsetX;
 			offsetY = style.pressedOffsetY;

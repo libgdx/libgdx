@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.utils.Align;
 import com.esotericsoftware.tablelayout.Cell;
 
 /** A button with a child {@link Label} to display text.
@@ -56,7 +57,7 @@ public class TextButton extends Button {
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		if (isPressed) {
+		if (isPressed()) {
 			if (style.downFontColor != null) label.setColor(style.downFontColor);
 		} else {
 			if (style.fontColor != null)

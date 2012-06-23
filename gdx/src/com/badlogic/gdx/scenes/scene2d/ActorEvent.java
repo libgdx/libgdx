@@ -1,12 +1,12 @@
 
 package com.badlogic.gdx.scenes.scene2d;
 
+
 public class ActorEvent extends Event {
 	private Type type;
 	private float stageX, stageY;
-	private int pointer, button, keyCode;
+	private int pointer, button, keyCode, scrollAmount;
 	private char character;
-	private int scrollAmount;
 	private Actor relatedActor;
 
 	public void reset () {

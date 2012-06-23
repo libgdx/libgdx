@@ -38,14 +38,14 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Align;
+import com.badlogic.gdx.scenes.scene2d.listeners.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.tablelayout.Cell;
@@ -54,13 +54,10 @@ import com.esotericsoftware.tablelayout.ParseException;
 /** @author Nathan Sweet */
 public class Table extends WidgetGroup {
 	private final TableLayout layout;
-
 	private NinePatch backgroundPatch;
 	private final Rectangle tableBounds = new Rectangle();
 	private final Rectangle scissors = new Rectangle();
-
-	public boolean clip;
-	public boolean isPressed;
+	private boolean clip;
 
 	public Table () {
 		this(null, null, null);
@@ -81,18 +78,6 @@ public class Table extends WidgetGroup {
 		this.layout = layout;
 		layout.setTable(this);
 		layout.skin = skin;
-
-		addListener(new ActorListener() {
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
-				if (pointer == 0) isPressed = true;
-				return false;
-			}
-
-			public boolean exit (ActorEvent event, float x, float y, int pointer, int button) {
-				if (isPressed) isPressed = false;
-				return false;
-			}
-		});
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {

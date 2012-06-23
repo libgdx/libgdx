@@ -21,12 +21,12 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actions;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-import static com.badlogic.gdx.scenes.scene2d.Actions.*;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class ActionSequenceTest extends GdxTest implements Runnable {
 
