@@ -91,7 +91,7 @@ public class ParticleEditor extends JFrame {
 
 		initializeComponents();
 
-		setSize(950, 950);
+		setSize(1000, 950);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);

@@ -37,8 +37,8 @@ import com.badlogic.gdx.graphics.g2d.ParticleEmitter.ScaledNumericValue;
 
 class ScaledNumericPanel extends EditorPanel {
 	final ScaledNumericValue value;
-	JSpinner lowMinSpinner, lowMaxSpinner;
-	JSpinner highMinSpinner, highMaxSpinner;
+	Slider lowMinSlider, lowMaxSlider;
+	Slider highMinSlider, highMaxSlider;
 	JCheckBox relativeCheckBox;
 	Chart chart;
 	JPanel formPanel;
@@ -52,33 +52,33 @@ class ScaledNumericPanel extends EditorPanel {
 
 		initializeComponents(chartTitle);
 
-		lowMinSpinner.setValue(value.getLowMin());
-		lowMaxSpinner.setValue(value.getLowMax());
-		highMinSpinner.setValue(value.getHighMin());
-		highMaxSpinner.setValue(value.getHighMax());
+		lowMinSlider.setValue(value.getLowMin());
+		lowMaxSlider.setValue(value.getLowMax());
+		highMinSlider.setValue(value.getHighMin());
+		highMaxSlider.setValue(value.getHighMax());
 		chart.setValues(value.getTimeline(), value.getScaling());
 		relativeCheckBox.setSelected(value.isRelative());
 
-		lowMinSpinner.addChangeListener(new ChangeListener() {
+		lowMinSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				value.setLowMin((Float)lowMinSpinner.getValue());
-				if (!lowMaxSpinner.isVisible()) value.setLowMax((Float)lowMinSpinner.getValue());
+				value.setLowMin((Float)lowMinSlider.getValue());
+				if (!lowMaxSlider.isVisible()) value.setLowMax((Float)lowMinSlider.getValue());
 			}
 		});
-		lowMaxSpinner.addChangeListener(new ChangeListener() {
+		lowMaxSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				value.setLowMax((Float)lowMaxSpinner.getValue());
+				value.setLowMax((Float)lowMaxSlider.getValue());
 			}
 		});
-		highMinSpinner.addChangeListener(new ChangeListener() {
+		highMinSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				value.setHighMin((Float)highMinSpinner.getValue());
-				if (!highMaxSpinner.isVisible()) value.setHighMax((Float)highMinSpinner.getValue());
+				value.setHighMin((Float)highMinSlider.getValue());
+				if (!highMaxSlider.isVisible()) value.setHighMax((Float)highMinSlider.getValue());
 			}
 		});
-		highMaxSpinner.addChangeListener(new ChangeListener() {
+		highMaxSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				value.setHighMax((Float)highMaxSpinner.getValue());
+				value.setHighMax((Float)highMaxSlider.getValue());
 			}
 		});
 
@@ -90,29 +90,29 @@ class ScaledNumericPanel extends EditorPanel {
 
 		lowRangeButton.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent event) {
-				boolean visible = !lowMaxSpinner.isVisible();
-				lowMaxSpinner.setVisible(visible);
+				boolean visible = !lowMaxSlider.isVisible();
+				lowMaxSlider.setVisible(visible);
 				lowRangeButton.setText(visible ? "<" : ">");
 				GridBagLayout layout = (GridBagLayout)formPanel.getLayout();
 				GridBagConstraints constraints = layout.getConstraints(lowRangeButton);
 				constraints.gridx = visible ? 5 : 4;
 				layout.setConstraints(lowRangeButton, constraints);
-				JSpinner spinner = visible ? lowMaxSpinner : lowMinSpinner;
-				value.setLowMax((Float)spinner.getValue());
+				Slider slider = visible ? lowMaxSlider : lowMinSlider;
+				value.setLowMax((Float)slider.getValue());
 			}
 		});
 
 		highRangeButton.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent event) {
-				boolean visible = !highMaxSpinner.isVisible();
-				highMaxSpinner.setVisible(visible);
+				boolean visible = !highMaxSlider.isVisible();
+				highMaxSlider.setVisible(visible);
 				highRangeButton.setText(visible ? "<" : ">");
 				GridBagLayout layout = (GridBagLayout)formPanel.getLayout();
 				GridBagConstraints constraints = layout.getConstraints(highRangeButton);
 				constraints.gridx = visible ? 5 : 4;
 				layout.setConstraints(highRangeButton, constraints);
-				JSpinner spinner = visible ? highMaxSpinner : highMinSpinner;
-				value.setHighMax((Float)spinner.getValue());
+				Slider slider = visible ? highMaxSlider : highMinSlider;
+				value.setHighMax((Float)slider.getValue());
 			}
 		});
 
@@ -162,15 +162,13 @@ class ScaledNumericPanel extends EditorPanel {
 					new Insets(0, 0, 0, 6), 0, 0));
 			}
 			{
-				highMinSpinner = new JSpinner(
-					new SpinnerNumberModel(new Float(0), new Float(-99999), new Float(99999), new Float(1f)));
-				formPanel.add(highMinSpinner, new GridBagConstraints(3, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
+				highMinSlider = new Slider(0, -99999, 99999, 1f, -400, 400);
+				formPanel.add(highMinSlider, new GridBagConstraints(3, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
 					GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 			}
 			{
-				highMaxSpinner = new JSpinner(
-					new SpinnerNumberModel(new Float(0), new Float(-99999), new Float(99999), new Float(1f)));
-				formPanel.add(highMaxSpinner, new GridBagConstraints(4, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
+				highMaxSlider = new Slider(0, -99999, 99999, 1f, -400, 400);
+				formPanel.add(highMaxSlider, new GridBagConstraints(4, 1, 1, 1, 0, 0, GridBagConstraints.WEST,
 					GridBagConstraints.NONE, new Insets(0, 6, 0, 0), 0, 0));
 			}
 			{
@@ -185,13 +183,13 @@ class ScaledNumericPanel extends EditorPanel {
 					new Insets(0, 0, 0, 6), 0, 0));
 			}
 			{
-				lowMinSpinner = new JSpinner(new SpinnerNumberModel(new Float(0), new Float(-99999), new Float(99999), new Float(1f)));
-				formPanel.add(lowMinSpinner, new GridBagConstraints(3, 2, 1, 1, 0, 0, GridBagConstraints.WEST,
+				lowMinSlider = new Slider(0, -99999, 99999, 1f, -400, 400);
+				formPanel.add(lowMinSlider, new GridBagConstraints(3, 2, 1, 1, 0, 0, GridBagConstraints.WEST,
 					GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 			}
 			{
-				lowMaxSpinner = new JSpinner(new SpinnerNumberModel(new Float(0), new Float(-99999), new Float(99999), new Float(1f)));
-				formPanel.add(lowMaxSpinner, new GridBagConstraints(4, 2, 1, 1, 0, 0, GridBagConstraints.WEST,
+				lowMaxSlider = new Slider(0, -99999, 99999, 1f, -400, 400);
+				formPanel.add(lowMaxSlider, new GridBagConstraints(4, 2, 1, 1, 0, 0, GridBagConstraints.WEST,
 					GridBagConstraints.NONE, new Insets(0, 6, 0, 0), 0, 0));
 			}
 			{
