@@ -4,7 +4,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.utils.Layout;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 
 /** A {@link Group} that participates in layout and provides a minimum, preferred, and maximum size.
  * <p>

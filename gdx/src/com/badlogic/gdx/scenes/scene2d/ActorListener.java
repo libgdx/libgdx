@@ -1,11 +1,7 @@
 
-package com.badlogic.gdx.scenes.scene2d.listeners;
+package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 
 public class ActorListener implements EventListener {
 	public void handle (Event e) {

@@ -21,7 +21,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.utils.Layout;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 
 /** An {@link Actor} that participates in layout and provides a minimum, preferred, and maximum size.
  * <p>

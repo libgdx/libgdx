@@ -30,7 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LabelTest extends GdxTest {

@@ -1,8 +1,9 @@
 
-package com.badlogic.gdx.scenes.scene2d.listeners;
+package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 
 /** Detects a click on an actor. The touch must go down over the actor and go up over the actor for the click to occur.
  * @author Nathan Sweet */
