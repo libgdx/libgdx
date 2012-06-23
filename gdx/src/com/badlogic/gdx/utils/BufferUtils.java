@@ -271,7 +271,7 @@ public class BufferUtils {
 	*/
 	
 	public static void disposeUnsafeByteBuffer(ByteBuffer buffer) {
-		int size = 0; 
+		int size = buffer.capacity(); 
 		synchronized(unsafeBuffers) {
 			if(!unsafeBuffers.removeValue(buffer, true))
 				throw new IllegalArgumentException("buffer not allocated with newUnsafeByteBuffer or already disposed");
