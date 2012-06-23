@@ -297,10 +297,6 @@ public interface Input {
 	 * @return whether the button is down or not. */
 	public boolean isButtonPressed (int button);
 
-	/** Returns the button pressed, or -1 if no button is pressed. If multiple buttons are pressed, the preferred retrun value is
-	 * {@link Buttons#LEFT}, then {@link Buttons#RIGHT}, then {@link Buttons#MIDDLE}. On Android any touch is counted as
-	 * {@link Buttons#LEFT}. */
-	public int getButton ();
 
 	/** Returns whether the key is pressed.
 	 * 

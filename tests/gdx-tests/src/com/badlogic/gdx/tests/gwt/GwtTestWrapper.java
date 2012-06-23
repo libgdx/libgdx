@@ -246,11 +246,6 @@ public class GwtTestWrapper extends GdxTest {
 		}
 
 		@Override
-		public int getButton () {
-			return input.getButton();
-		}
-
-		@Override
 		public boolean isKeyPressed (int key) {
 			return input.isKeyPressed(key);
 		}

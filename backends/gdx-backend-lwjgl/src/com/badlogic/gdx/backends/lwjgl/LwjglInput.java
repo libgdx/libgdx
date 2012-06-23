@@ -852,14 +852,6 @@ final class LwjglInput implements Input {
 	}
 
 	@Override
-	public int getButton () {
-		if (isButtonPressed(Buttons.LEFT)) return Buttons.LEFT;
-		if (isButtonPressed(Buttons.RIGHT)) return Buttons.RIGHT;
-		if (isButtonPressed(Buttons.MIDDLE)) return Buttons.MIDDLE;
-		return -1;
-	}
-
-	@Override
 	public void vibrate (long[] pattern, int repeat) {
 	}
 

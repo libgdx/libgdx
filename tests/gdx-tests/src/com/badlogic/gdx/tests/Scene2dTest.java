@@ -8,11 +8,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -53,30 +53,32 @@ public class Scene2dTest extends GdxTest {
 // return false;
 // }
 // });
-// stage.addListener(new ActorGestureListener() {
-//
-// public void tap (ActorEvent event, float x, float y, int count) {
-// System.out.println("tap");
-// }
-//
-// public void longPress (ActorEvent event, float x, float y) {
-// System.out.println("long press");
-// }
-//
-// public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {
-// // System.out.println("panning " + x + ", " + y);
-// }
-// });
 
 		stage.addActor(actor);
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		final TextButton button = new TextButton("Some Shit!", skin);
+
 		button.addListener(new ClickListener() {
 			public void clicked (ActorEvent event, float x, float y) {
 				System.out.println("click! " + x + " " + y);
 			}
 		});
+
+		button.addListener(new ActorGestureListener() {
+			public void tap (ActorEvent event, float x, float y, int count) {
+				System.out.println("tap");
+			}
+
+			public void longPress (ActorEvent event, float x, float y) {
+				System.out.println("long press");
+			}
+
+			public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {
+				System.out.println("panning " + x + ", " + y);
+			}
+		});
+
 		// button.addListener(new ActorListener() {
 		// public boolean touchDown (ActorEvent event, float x, float y, int pointer, int b) {
 		// stage.getRoot().addCaptureListener(this, button);

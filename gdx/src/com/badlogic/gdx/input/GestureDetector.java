@@ -126,6 +126,7 @@ public class GestureDetector extends InputAdapter {
 
 	public boolean touchDragged (float x, float y, int pointer) {
 		if (pointer > 1) return false;
+		if (longPressFired) return false;
 
 		// handle pinch zoom
 		if (pinching) {
@@ -150,7 +151,7 @@ public class GestureDetector extends InputAdapter {
 		}
 
 		if (!inTapSquare) {
-			// handle scroll
+			// handle pan
 			inTapSquare = false;
 			panning = true;
 			return listener.pan(tracker.lastX, tracker.lastY, tracker.deltaX, tracker.deltaY);
@@ -173,7 +174,8 @@ public class GestureDetector extends InputAdapter {
 
 		longPressTask.cancel();
 		panning = false;
-		if (inTapSquare & !longPressFired) {
+		if (longPressFired) return false;
+		if (inTapSquare) {
 			// handle taps
 			if (TimeUtils.nanoTime() - lastTapTime > tapCountInterval) tapCount = 0;
 			tapCount++;

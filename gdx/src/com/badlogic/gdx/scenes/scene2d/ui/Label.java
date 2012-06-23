@@ -76,7 +76,6 @@ public class Label extends Widget {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		if (style.font == null) throw new IllegalArgumentException("Missing LabelStyle font.");
 		this.style = style;
-		if (cache != null) cache.dispose();
 		cache = new BitmapFontCache(style.font, style.font.usesIntegerPositions());
 		if (style.fontColor != null) cache.setColor(style.fontColor);
 		computeBounds();

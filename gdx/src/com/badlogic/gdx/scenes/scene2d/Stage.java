@@ -326,10 +326,22 @@ public class Stage extends InputAdapter implements Disposable {
 		return root.addCaptureListener(listener);
 	}
 
+	/** Adds a capture listener to the root.
+	 * @see Actor#addCaptureListener(EventListener, Actor) */
+	public boolean addCaptureListener (EventListener listener, Actor contextActor) {
+		return root.addCaptureListener(listener, contextActor);
+	}
+
 	/** Removes a listener from the root.
 	 * @see Actor#removeCaptureListener(EventListener) */
 	public boolean removeCaptureListener (EventListener listener) {
 		return root.removeCaptureListener(listener);
+	}
+
+	/** Removes a listener from the root.
+	 * @see Actor#removeCaptureListener(EventListener, Actor) */
+	public boolean removeCaptureListener (EventListener listener, Actor contextActor) {
+		return root.removeCaptureListener(listener, contextActor);
 	}
 
 	/** Clears the stage, removing all actors. */

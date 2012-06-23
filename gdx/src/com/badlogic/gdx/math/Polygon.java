@@ -32,12 +32,12 @@ public class Polygon {
 	}
 
 	/** Returns vertices without scaling or rotation and without being offset by the polygon position. */
-	public float[] getLocalVertices () {
+	public float[] getVertices () {
 		return localVertices;
 	}
 
 	/** Returns vertices scaled, rotated, and offset by the polygon position. */
-	public float[] getWorldVertices () {
+	public float[] getTransformedVertices () {
 		if (!dirty) return worldVertices;
 		dirty = false;
 
@@ -122,7 +122,7 @@ public class Polygon {
 	public float area () {
 		float area = 0;
 
-		float[] vertices = getWorldVertices();
+		float[] vertices = getTransformedVertices();
 		final int numFloats = vertices.length;
 
 		int x1, y1, x2, y2;
@@ -140,7 +140,7 @@ public class Polygon {
 	}
 
 	public Rectangle getBoundingRectangle () {
-		float[] vertices = getWorldVertices();
+		float[] vertices = getTransformedVertices();
 
 		float minX = vertices[0];
 		float minY = vertices[1];
@@ -165,7 +165,7 @@ public class Polygon {
 	}
 
 	public boolean contains (float x, float y) {
-		final float[] vertices = getWorldVertices();
+		final float[] vertices = getTransformedVertices();
 		final int numFloats = vertices.length;
 		int intersects = 0;
 

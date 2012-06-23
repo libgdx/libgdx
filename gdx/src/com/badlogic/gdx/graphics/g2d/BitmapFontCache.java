@@ -27,7 +27,7 @@ import com.badlogic.gdx.utils.NumberUtils;
  * of each glyph each frame.
  * @author Nathan Sweet
  * @author Matthias Mann */
-public class BitmapFontCache implements Disposable {
+public class BitmapFontCache {
 	private final BitmapFont font;
 	private float[] vertices = new float[0];
 	private int idx;
@@ -393,11 +393,6 @@ public class BitmapFontCache implements Disposable {
 
 	public BitmapFont getFont () {
 		return font;
-	}
-
-	/** Disposes the underlying BitmapFont of this cache. */
-	public void dispose () {
-		font.dispose();
 	}
 
 	/** Specifies whether to use integer positions or not. Default is to use them so filtering doesn't kick in as badly.
