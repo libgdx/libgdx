@@ -180,9 +180,9 @@ public class Slider extends Widget {
 	 * @author mzechner */
 	static public class SliderStyle {
 		/** The slider background, stretched only in the x direction. */
-		NinePatch slider;
+		public NinePatch slider;
 		/** Centered vertically on the background. */
-		TextureRegion knob;
+		public TextureRegion knob;
 
 		public SliderStyle () {
 		}
