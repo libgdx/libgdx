@@ -20,12 +20,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
@@ -380,6 +377,22 @@ public class ScrollPane extends WidgetGroup {
 
 	public void setScrollPercentY (float percentY) {
 		amountY = widgetAreaBounds.y * percentY;
+	}
+
+	public void scrollTo (float x, float y, float width, float height) {
+		float paneWidth = getWidth();
+		float paneHeight = getHeight();
+
+		if (x < amountX)
+			amountX = x;
+		else if (x + width > amountX + paneWidth) //
+			amountX = x + width - paneWidth;
+
+		y = getMaxY() + paneHeight - y;
+		if (y > amountY + paneHeight)
+			amountY = y - paneHeight;
+		else if (y - height < amountY) //
+			amountY = y - height;
 	}
 
 	/** Returns the maximum scroll value in the x direction. */

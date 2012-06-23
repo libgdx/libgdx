@@ -327,6 +327,22 @@ public class FlickScrollPane extends WidgetGroup {
 		amountY = maxY * percentY;
 	}
 
+	public void scrollTo (float x, float y, float width, float height) {
+		float paneWidth = getWidth();
+		float paneHeight = getHeight();
+
+		if (x < amountX)
+			amountX = x;
+		else if (x + width > amountX + paneWidth) //
+			amountX = x + width - paneWidth;
+
+		y = getMaxY() + paneHeight - y;
+		if (y > amountY + paneHeight)
+			amountY = y - paneHeight;
+		else if (y - height < amountY) //
+			amountY = y - height;
+	}
+
 	/** Returns the maximum scroll value in the x direction. */
 	public float getMaxX () {
 		return maxX;
