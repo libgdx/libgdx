@@ -2,6 +2,7 @@
 package com.badlogic.gdx.graphics.g3d.test;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -99,8 +100,8 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 		// opaque is sorted front to back
 		// transparent is sorted back to front
-		drawableManager.drawables.sort();
-		for (int i = drawableManager.drawables.size - 1; i >= 0; i--) {
+		drawableManager.drawables.sort(opaqueSorter);
+		for (int i = drawableManager.drawables.size; --i >= 0;) {
 
 			final Drawable drawable = drawableManager.drawables.get(i);
 
@@ -333,19 +334,20 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 		 * to do material and depth sorting for blending without having to deal with the API client changing any attributes of a
 		 * model or instance in between draw calls.
 		 * @author mzechner */
-		class Drawable implements Comparable {
+		class Drawable implements Comparable<Drawable> {
 			private static final int PRIORITY_DISCRETE_STEPS = 256;
 			Model model;
 			final Matrix4 transform = new Matrix4();
 			final Vector3 sortCenter = new Vector3();
-			float boundingSphereRadius;
-			final Array<Material> materials = new Array<Material>();
+			final Array<Material> materials = new Array<Material>(2);
 			boolean isAnimated;
 			String animation;
 			float animationTime;
 			boolean isLooping;
 			boolean blending;
 			int distance;
+			int firstShaderHash;
+			int modelHash;
 
 			public void set (StillModel model, StillModelInstance instance) {
 				setCommon(model, instance);
@@ -362,12 +364,12 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 
 			private void setCommon (Model model, StillModelInstance instance) {
 				this.model = model;
+				modelHash = model.hashCode();
 				// transform.set(instance.getTransform().val);
 				System.arraycopy(instance.getTransform().val, 0, transform.val, 0, 16);
 
 				sortCenter.set(instance.getSortCenter());
 				distance = (int)(PRIORITY_DISCRETE_STEPS * sortCenter.dst(cam.position));
-				boundingSphereRadius = instance.getBoundingSphereRadius();
 				if (instance.getMaterials() != null) {
 					for (Material material : instance.getMaterials()) {
 						if (material.getShader() == null) material.generateShader(materialShaderHandler);
@@ -394,14 +396,27 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 						break;
 					}
 				}
+				if (materials.size > 0) firstShaderHash = materials.get(0).getShader().hashCode();
 
 			}
 
 			@Override
-			public int compareTo (Object other) {
-				return ((Drawable)other).distance - this.distance;
+			public int compareTo (Drawable other) {
+				return other.distance - this.distance;
 			}
 		}
 	}
+	
+	public static final Comparator<Drawable> opaqueSorter = new Comparator<Drawable>() {
+
+		public int compare(Drawable a, Drawable b) {
+			if (a.firstShaderHash != b.firstShaderHash) return b.firstShaderHash - a.firstShaderHash;
+			
+			if (a.modelHash != b.modelHash) return b.modelHash - a.modelHash;
+	
+			return b.distance - a.distance;
+		}
+
+	};
 
 }

@@ -69,7 +69,7 @@ void main()
 	vec3  aggCol = dirLightCol;
 	
 	#ifdef normalsFlag
-	vec3 normal = u_normalMatrix * a_normal;	
+	vec3 normal = u_normalMatrix * normalize(a_normal);	
 	aggCol *= wrapLight(normal, -dirLightDir);
 	#endif
 
