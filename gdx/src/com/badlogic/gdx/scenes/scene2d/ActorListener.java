@@ -36,7 +36,7 @@ public class ActorListener implements EventListener {
 			if (touchDragged(event, coords.x, coords.y, event.getPointer())) event.handled();
 			return;
 		case touchMoved:
-			touchMoved(event, coords.x, coords.y);
+			mouseMoved(event, coords.x, coords.y);
 			return;
 		case enter:
 			enter(event, coords.x, coords.y, event.getPointer(), event.getRelatedActor());
@@ -59,7 +59,7 @@ public class ActorListener implements EventListener {
 		return false;
 	}
 
-	public boolean touchMoved (ActorEvent event, float x, float y) {
+	public boolean mouseMoved (ActorEvent event, float x, float y) {
 		return false;
 	}
 

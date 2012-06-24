@@ -25,8 +25,11 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
@@ -48,7 +51,7 @@ public class FlickScrollPane extends WidgetGroup {
 	private final Rectangle widgetAreaBounds = new Rectangle();
 	private final Rectangle widgetCullingArea = new Rectangle();
 	private final Rectangle scissorBounds = new Rectangle();
-	private final GestureDetector gestureDetector;
+	private ActorGestureListener gestureListener;
 
 	private boolean scrollX, scrollY;
 	float amountX, amountY;
@@ -83,49 +86,28 @@ public class FlickScrollPane extends WidgetGroup {
 		this.widget = widget;
 		if (widget != null) setWidget(widget);
 
-		gestureDetector = new GestureDetector(new GestureListener() {
-			public boolean pan (float x, float y, float deltaX, float deltaY) {
+		addListener(gestureListener = new ActorGestureListener() {
+			public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {
 				amountX -= deltaX;
 				amountY += deltaY;
 				clamp();
-				cancelTouchFocusedChild();
-				return true;
 			}
 
-			public boolean fling (float x, float y) {
+			public void fling (ActorEvent event, float x, float y) {
 				if (Math.abs(x) > 150) {
 					flingTimer = flingTime;
 					velocityX = x;
-					cancelTouchFocusedChild();
 				}
 				if (Math.abs(y) > 150) {
 					flingTimer = flingTime;
 					velocityY = -y;
-					cancelTouchFocusedChild();
 				}
-				return flingTimer > 0;
 			}
 
-			public boolean touchDown (float x, float y, int pointer) {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				super.touchDown(event, x, y, pointer, button);
 				flingTimer = 0;
 				return true;
-			}
-
-			public boolean tap (float x, float y, int count) {
-				return false;
-			}
-
-			public boolean zoom (float originalDistance, float currentDistance) {
-				return false;
-			}
-
-			public boolean pinch (Vector2 initialFirstPointer, Vector2 initialSecondPointer, Vector2 firstPointer,
-				Vector2 secondPointer) {
-				return false;
-			}
-
-			public boolean longPress (float x, float y) {
-				return false;
 			}
 		});
 
@@ -162,7 +144,7 @@ public class FlickScrollPane extends WidgetGroup {
 			flingTimer -= delta;
 		}
 
-		if (overscroll && !gestureDetector.isPanning()) {
+		if (overscroll && !gestureListener.getGestureDetector().isPanning()) {
 			if (amountX < 0) {
 				amountX += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountX / overscrollDistance) * delta;
 				if (amountX > 0) amountX = 0;
@@ -252,45 +234,6 @@ public class FlickScrollPane extends WidgetGroup {
 		}
 
 		resetTransform(batch);
-	}
-
-	@Override
-	public boolean touchDown (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-		super.touchDown(x, y, pointer);
-		Stage stage = getStage();
-		touchFocusedChild = stage.getTouchFocus(0) != this ? stage.getTouchFocus(0) : null;
-		if (emptySpaceOnlyScroll && touchFocusedChild != null) return false;
-		gestureDetector.touchDown((int)x, (int)y, pointer, 0);
-		stage.setTouchFocus(this, 0); // Always take the touch focus.
-		return true;
-	}
-
-	@Override
-	public void touchUp (float x, float y, int pointer) {
-		clamp();
-		if (gestureDetector.touchUp((int)x, (int)y, pointer, 0)) {
-			x = Integer.MIN_VALUE;
-			y = Integer.MIN_VALUE;
-		}
-		if (touchFocusedChild != null && isDescendant(touchFocusedChild)) {
-			point.x = x;
-			point.y = y;
-			toDescendantCoordinates(touchFocusedChild, point);
-			touchFocusedChild.touchUp(point.x, point.y, 0);
-			touchFocusedChild = null;
-		}
-	}
-
-	void cancelTouchFocusedChild () {
-		if (touchFocusedChild == null) return;
-		touchFocusedChild.touchUp(Integer.MIN_VALUE, Integer.MIN_VALUE, 0);
-		touchFocusedChild = null;
-	}
-
-	@Override
-	public void touchDragged (float x, float y, int pointer) {
-		gestureDetector.touchDragged((int)x, (int)y, pointer);
 	}
 
 	public void setScrollX (float pixels) {
@@ -383,7 +326,7 @@ public class FlickScrollPane extends WidgetGroup {
 	}
 
 	public boolean isPanning () {
-		return gestureDetector.isPanning();
+		return gestureListener.getGestureDetector().isPanning();
 	}
 
 	public boolean isFlinging () {

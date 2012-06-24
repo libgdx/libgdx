@@ -294,7 +294,7 @@ public class SelectBox extends Widget {
 				selected = Math.max(0, selected);
 				selected = Math.min(items.length - 1, selected);
 			}
-			super.touchMoved(x, y);
+			super.mouseMoved(x, y);
 			return true;
 		}
 

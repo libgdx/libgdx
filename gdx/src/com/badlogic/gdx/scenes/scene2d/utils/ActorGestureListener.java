@@ -84,4 +84,8 @@ public class ActorGestureListener extends ActorListener {
 
 	public void pinch (ActorEvent event, Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
 	}
+
+	public GestureDetector getGestureDetector () {
+		return detector;
+	}
 }

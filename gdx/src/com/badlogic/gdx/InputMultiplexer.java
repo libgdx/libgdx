@@ -104,9 +104,9 @@ public class InputMultiplexer implements InputProcessor {
 	}
 
 	@Override
-	public boolean touchMoved (int x, int y) {
+	public boolean mouseMoved (int x, int y) {
 		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).touchMoved(x, y)) return true;
+			if (processors.get(i).mouseMoved(x, y)) return true;
 		return false;
 	}
 

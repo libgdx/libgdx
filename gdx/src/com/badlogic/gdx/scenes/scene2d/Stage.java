@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent.Type;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pools;
@@ -236,7 +237,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Applies a touch moved event to the stage and returns true if an actor in the scene processed the event. This event only
 	 * occurs on the desktop. */
-	public boolean touchMoved (int screenX, int screenY) {
+	public boolean mouseMoved (int screenX, int screenY) {
 		ActorEvent event = Pools.obtain(ActorEvent.class);
 		Vector2 stageCoords = toStageCoordinates(screenX, screenY);
 		return fireTouch(event, ActorEvent.Type.touchMoved, stageCoords.x, stageCoords.y);

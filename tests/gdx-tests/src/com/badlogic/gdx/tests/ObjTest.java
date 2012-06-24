@@ -121,7 +121,7 @@ public class ObjTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override
-	public boolean touchMoved (int x, int y) {
+	public boolean mouseMoved (int x, int y) {
 		return false;
 	}
 

@@ -325,7 +325,7 @@ final class LwjglInput implements Input {
 						processor.touchDragged(e.x, e.y, e.pointer);
 						break;
 					case TouchEvent.TOUCH_MOVED:
-						processor.touchMoved(e.x, e.y);
+						processor.mouseMoved(e.x, e.y);
 						break;
 					case TouchEvent.TOUCH_SCROLLED:
 						processor.scrolled(e.scrollAmount);
