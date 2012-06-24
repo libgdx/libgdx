@@ -136,16 +136,6 @@ public abstract class Widget extends Actor implements Layout {
 	public void layout () {
 	}
 
-	public boolean touchDown (float x, float y, int pointer) {
-		return false;
-	}
-
-	public void touchUp (float x, float y, int pointer) {
-	}
-
-	public void touchDragged (float x, float y, int pointer) {
-	}
-
 	/** This modifies the specified point in the actor's coordinates to be in the stage's coordinates. Note this method will ONLY
 	 * work properly for screen aligned, unrotated, unscaled actors! */
 	static public void toStageCoordinates (Actor actor, Vector2 point) {

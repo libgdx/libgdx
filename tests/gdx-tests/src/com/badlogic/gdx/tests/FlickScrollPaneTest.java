@@ -20,21 +20,26 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.FlickScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class FlickScrollPaneTest extends GdxTest {
 	private Stage stage;
-	private BitmapFont font;
 	private Table container;
 
 	public void create () {
 		stage = new Stage(0, 0, false);
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		Gdx.input.setInputProcessor(stage);
 
 		Gdx.graphics.setVSync(false);
@@ -52,14 +57,23 @@ public class FlickScrollPaneTest extends GdxTest {
 		table.parse("pad:10 * expand:x space:4");
 		for (int i = 0; i < 100; i++) {
 			table.row();
-			table.add(new Label(i + "uno", new LabelStyle(font, Color.RED))).expandX().fillX();
-			table.add(new Label(i + "dos", new LabelStyle(font, Color.RED)));
-			table.add(new Label(i + "tres long0 long1 long2 long3 long4 long5 long6 long7 long8 long9 long10 long11 long12",
-				new LabelStyle(font, Color.RED)));
+			table.add(new Label(i + "uno", skin)).expandX().fillX();
+			
+			TextButton button;
+			table.add(button = new TextButton(i + "dos", skin));
+			button.addListener(new ClickListener() {
+				public void clicked (ActorEvent event, float x, float y) {
+					System.out.println(x + ", " + y);
+				}
+			});
+			
+			// table.add(new Slider(skin));
+			
+			table.add(new Label(i + "tres long0 long1 long2 long3 long4 long5 long6 long7 long8 long9 long10 long11 long12", skin));
 		}
 
 		container.getTableLayout().row();
-		container.getTableLayout().add(new Label("stuff at bottom!", new LabelStyle(font, Color.WHITE))).pad(20, 20, 20, 20);
+		container.getTableLayout().add(new Label("stuff at bottom!", skin)).pad(20, 20, 20, 20);
 	}
 
 	public void render () {
@@ -75,7 +89,6 @@ public class FlickScrollPaneTest extends GdxTest {
 
 	public void dispose () {
 		stage.dispose();
-		font.dispose();
 	}
 
 	public boolean needsGL20 () {

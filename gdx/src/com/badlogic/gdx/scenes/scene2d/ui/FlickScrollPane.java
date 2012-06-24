@@ -91,16 +91,19 @@ public class FlickScrollPane extends WidgetGroup {
 				amountX -= deltaX;
 				amountY += deltaY;
 				clamp();
+				cancelTouchFocusedChild();
 			}
 
 			public void fling (ActorEvent event, float x, float y) {
 				if (Math.abs(x) > 150) {
 					flingTimer = flingTime;
 					velocityX = x;
+					cancelTouchFocusedChild();
 				}
 				if (Math.abs(y) > 150) {
 					flingTimer = flingTime;
 					velocityY = -y;
+					cancelTouchFocusedChild();
 				}
 			}
 
@@ -113,6 +116,10 @@ public class FlickScrollPane extends WidgetGroup {
 
 		setWidth(150);
 		setHeight(150);
+	}
+
+	void cancelTouchFocusedChild (ActorEvent event) {
+		Actor actor = event.getContextActor();
 	}
 
 	void clamp () {
