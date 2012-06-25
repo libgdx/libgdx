@@ -19,6 +19,7 @@ package com.badlogic.gdx.scenes.scene2d;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent.Type;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.Pools;
@@ -28,15 +29,13 @@ import com.badlogic.gdx.utils.Pools;
  * to the position and is used for scale and rotation.
  * @author mzechner
  * @author Nathan Sweet */
-public abstract class Actor {
+public class Actor {
 	private Stage stage;
 	private Group parent;
 	private final DelayedRemovalArray<EventListener> listeners = new DelayedRemovalArray(0);
 	private final DelayedRemovalArray<EventListener> captureListeners = new DelayedRemovalArray(0);
-	private final DelayedRemovalArray<Actor> captureActors = new DelayedRemovalArray(0);
 	private final Array<Action> actions = new Array(0);
 
-	private String name;
 	private boolean touchable = true;
 	private boolean visible = true;
 	private float x, y;
@@ -45,15 +44,6 @@ public abstract class Actor {
 	private float scaleX = 1, scaleY = 1;
 	private float rotation;
 	private final Color color = new Color(1, 1, 1, 1);
-
-	/** Creates an actor without a name. */
-	public Actor () {
-		this.name = null;
-	}
-
-	public Actor (String name) {
-		this.name = name;
-	}
 
 	/** Draws the actor. The SpriteBatch is configured to draw in the parent's coordinate system.
 	 * {@link SpriteBatch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
@@ -86,8 +76,11 @@ public abstract class Actor {
 	 * as necessary. If this actor is not in the stage, false is returned without firing the event.
 	 * @return true of the event was {@link Event#handled() handled}. */
 	public boolean fire (Event event) {
-		event.stage = getStage();
-		if (event.stage == null) return false;
+		if (event.getStage() == null) {
+			Stage stage = getStage();
+			if (stage == null) throw new IllegalStateException("Stage must be set.");
+			event.setStage(stage);
+		}
 		event.setTargetActor(this);
 
 		// Collect ancestors so event propagation is unaffected by hierachy changes.
@@ -133,32 +126,30 @@ public abstract class Actor {
 	public void notify (Event event, boolean capture) {
 		if (event.getTargetActor() == null) throw new IllegalArgumentException("The event target cannot be null.");
 
-		if (capture) {
-			DelayedRemovalArray<EventListener> listeners = captureListeners;
-			if (listeners.size == 0) return;
+		DelayedRemovalArray<EventListener> listeners = capture ? captureListeners : this.listeners;
+		if (listeners.size == 0) return;
 
-			event.capture = true;
-
-			DelayedRemovalArray<Actor> actors = captureActors;
-			listeners.begin();
-			for (int i = 0, n = listeners.size; i < n; i++) {
-				Actor actor = actors.get(i);
-				event.setContextActor(actor != null ? actor : this);
-				listeners.get(i).handle(event);
-			}
-			listeners.end();
-		} else {
-			DelayedRemovalArray<EventListener> listeners = this.listeners;
-			if (listeners.size == 0) return;
-
-			event.setContextActor(this);
-			event.capture = false;
-
-			listeners.begin();
-			for (int i = 0, n = listeners.size; i < n; i++)
-				listeners.get(i).handle(event);
-			listeners.end();
+		event.setContextActor(this);
+		event.setCapture(capture);
+		if (event.getStage() == null) {
+			Stage stage = getStage();
+			if (stage == null) throw new IllegalStateException("Stage must be set.");
+			event.setStage(stage);
 		}
+
+		listeners.begin();
+		for (int i = 0, n = listeners.size; i < n; i++) {
+			EventListener listener = listeners.get(i);
+			if (listener.handle(event)) {
+				event.handled();
+				if (event instanceof ActorEvent) {
+					ActorEvent actorEvent = (ActorEvent)event;
+					if (actorEvent.getType() == Type.touchDown)
+						event.getStage().addTouchFocus(this, listener, actorEvent.getPointer(), actorEvent.getButton());
+				}
+			}
+		}
+		listeners.end();
 	}
 
 	/** Returns this actor if the specified point is within the actor, or null if it is not. The point is specified in the actor's
@@ -178,21 +169,23 @@ public abstract class Actor {
 		Group.toChildCoordinates(this, stageCoords.x, stageCoords.y, stageCoords);
 	}
 
-	/** Transforms the given point in stage coordinates to the actor's local coordinate system. The returned object is
-	 * {@link Vector2#tmp}, referenecs to it must not be held. */
-	public Vector2 toLocalCoordinates (float stageX, float stageY) {
-		Vector2 tmp = Vector2.tmp;
-		tmp.x = stageX;
-		tmp.y = stageY;
-		if (parent == null) return tmp;
-		parent.toLocalCoordinates(tmp);
-		Group.toChildCoordinates(this, tmp.x, tmp.y, tmp);
-		return tmp;
+	/** This modifies the specified point in the actor's coordinates to be in the stage's coordinates. Note this method will ONLY
+	 * work properly for screen aligned, unrotated, unscaled actors! */
+	public void toStageCoordinates (Vector2 actorCoords) {
+		actorCoords.x += getX();
+		actorCoords.y += getY();
+		Group parent = getParent();
+		while (parent != null) {
+			actorCoords.x += parent.getX();
+			actorCoords.y += parent.getY();
+			parent = parent.getParent();
+		}
 	}
 
 	/** Removes this actor from its parent, if it has a parent. */
-	public void remove () {
-		if (parent != null) parent.removeActor(this);
+	public boolean remove () {
+		if (parent != null) return parent.removeActor(this);
+		return false;
 	}
 
 	public boolean addListener (EventListener listener) {
@@ -211,52 +204,13 @@ public abstract class Actor {
 		return listeners;
 	}
 
-	public boolean addCaptureListener (EventListener listener, Actor actor) {
-		// Check for capture listener with same actor;
-		for (int i = captureListeners.size - 1; i >= 0; i--) {
-			if (captureListeners.get(i) != listener) continue;
-			if (captureActors.get(i) != actor) continue;
-			return false;
-		}
-		captureListeners.add(listener);
-		captureActors.add(actor);
-		return true;
-	}
-
 	public boolean addCaptureListener (EventListener listener) {
-		// Check for capture listener with null actor;
-		for (int i = captureListeners.size - 1; i >= 0; i--) {
-			if (captureListeners.get(i) != listener) continue;
-			if (captureActors.get(i) != null) continue;
-			return false;
-		}
-		captureListeners.add(listener);
-		captureActors.add(null);
+		if (!captureListeners.contains(listener, true)) captureListeners.add(listener);
 		return true;
 	}
 
 	public boolean removeCaptureListener (EventListener listener) {
-		// Remove capture listener with null actor;
-		for (int i = captureListeners.size - 1; i >= 0; i--) {
-			if (captureListeners.get(i) != listener) continue;
-			if (captureActors.get(i) != null) continue;
-			captureListeners.removeIndex(i);
-			captureActors.removeIndex(i);
-			return true;
-		}
-		return false;
-	}
-
-	public boolean removeCaptureListener (EventListener listener, Actor contextActor) {
-		// Remove capture listener with same actor;
-		for (int i = captureListeners.size - 1; i >= 0; i--) {
-			if (captureListeners.get(i) != listener) continue;
-			if (captureActors.get(i) != contextActor) continue;
-			captureListeners.removeIndex(i);
-			captureActors.removeIndex(i);
-			return true;
-		}
-		return false;
+		return captureListeners.removeValue(listener, true);
 	}
 
 	public Array<EventListener> getCaptureListeners () {
@@ -296,21 +250,21 @@ public abstract class Actor {
 	/** Returns true if the actor is this group or a descendant of this group. */
 	public boolean isDescendant (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
+		Actor parent = this;
 		while (true) {
-			if (actor == null) return false;
-			if (actor == this) return true;
-			actor = actor.getParent();
+			if (parent == null) return false;
+			if (parent == actor) return true;
+			parent = parent.getParent();
 		}
 	}
 
 	/** Returns true if the actor is this group or an ancestor of this group. */
 	public boolean isAncestor (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
-		Actor parent = this;
 		while (true) {
-			if (parent == null) return false;
-			if (parent == actor) return true;
-			parent = parent.getParent();
+			if (actor == null) return false;
+			if (actor == this) return true;
+			actor = actor.getParent();
 		}
 	}
 
@@ -482,15 +436,6 @@ public abstract class Actor {
 		this.rotation += amount;
 	}
 
-	public void setName (String name) {
-		this.name = name;
-	}
-
-	/** Returns the actor's name, or null if it has not been set. */
-	public String getName () {
-		return name;
-	}
-
 	public void setColor (Color color) {
 		this.color.set(color);
 	}
@@ -505,14 +450,11 @@ public abstract class Actor {
 	}
 
 	public String toString () {
-		String name = this.name;
-		if (name == null || name.length() == 0) {
-			name = getClass().getSimpleName();
-			if (name.length() == 0) {
-				name = getClass().getName();
-				int dotIndex = name.lastIndexOf('.');
-				if (dotIndex != -1) name = name.substring(dotIndex + 1);
-			}
+		String name = getClass().getSimpleName();
+		if (name.length() == 0) {
+			name = getClass().getName();
+			int dotIndex = name.lastIndexOf('.');
+			if (dotIndex != -1) name = name.substring(dotIndex + 1);
 		}
 		return name + " " + x + "," + y + " " + width + "x" + height;
 	}

@@ -62,6 +62,7 @@ public class ShadowMappingTest extends GdxTest {
 	FrameBuffer shadowMap;
 	InputMultiplexer multiplexer;
 	PerspectiveCamController camController;
+	Label fpsLabel;
 
 	@Override
 	public void create () {
@@ -121,10 +122,10 @@ public class ShadowMappingTest extends GdxTest {
 
 		Label label = new Label("Camera:", skin.getStyle(LabelStyle.class));
 		SelectBox cameraCombo = new SelectBox(new String[] {"Scene", "Light"}, skin.getStyle(SelectBoxStyle.class));
-		Label label2 = new Label("Shader", skin.getStyle(LabelStyle.class), "cameraCombo");
+		Label label2 = new Label("Shader", skin.getStyle(LabelStyle.class));
 		SelectBox shaderCombo = new SelectBox(new String[] {"flat", "shadow-gen", "shadow-map"},
-			skin.getStyle(SelectBoxStyle.class), "shaderCombo");
-		Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "fps");
+			skin.getStyle(SelectBoxStyle.class));
+		fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class));
 
 		Table table = new Table();
 		table.setSize(Gdx.graphics.getWidth(), 100);
@@ -218,8 +219,7 @@ public class ShadowMappingTest extends GdxTest {
 			ui.getSpriteBatch().end();
 		}
 
-		Label fps = (Label)ui.findActor("fps");
-		fps.setText("fps: " + Gdx.graphics.getFramesPerSecond());
+		fpsLabel.setText("fps: " + Gdx.graphics.getFramesPerSecond());
 		ui.draw();
 		Table.drawDebug(ui);
 	}

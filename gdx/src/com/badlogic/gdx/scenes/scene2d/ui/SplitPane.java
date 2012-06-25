@@ -23,6 +23,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
@@ -37,21 +39,21 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner
  * @author Nathan Sweet */
 public class SplitPane extends WidgetGroup {
-	private SplitPaneStyle style;
+	SplitPaneStyle style;
 	private Actor firstWidget, secondWidget;
-	private boolean vertical;
-	private float splitAmount = 0.5f, minAmount, maxAmount = 1;
+	boolean vertical;
+	float splitAmount = 0.5f, minAmount, maxAmount = 1;
 	private float oldSplitAmount;
-	private boolean touchDrag;
+	boolean touchDrag;
 
 	private Rectangle firstWidgetBounds = new Rectangle();
 	private Rectangle secondWidgetBounds = new Rectangle();
-	private Rectangle handleBounds = new Rectangle();
+	Rectangle handleBounds = new Rectangle();
 	private Rectangle firstScissors = new Rectangle();
 	private Rectangle secondScissors = new Rectangle();
 
-	private Vector2 lastPoint = new Vector2();
-	private Vector2 handlePosition = new Vector2();
+	Vector2 lastPoint = new Vector2();
+	Vector2 handlePosition = new Vector2();
 
 	/** Creates a horizontal splitpane with no children. */
 	public SplitPane (Skin skin) {
@@ -61,19 +63,12 @@ public class SplitPane extends WidgetGroup {
 	/** @param firstWidget May be null.
 	 * @param secondWidget May be null. */
 	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Skin skin) {
-		this(firstWidget, secondWidget, vertical, skin.getStyle("default-horizontal", SplitPaneStyle.class), null);
+		this(firstWidget, secondWidget, vertical, skin.getStyle("default-horizontal", SplitPaneStyle.class));
 	}
 
 	/** @param firstWidget May be null.
 	 * @param secondWidget May be null. */
 	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, SplitPaneStyle style) {
-		this(firstWidget, secondWidget, vertical, style, null);
-	}
-
-	/** @param firstWidget May be null.
-	 * @param secondWidget May be null. */
-	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, SplitPaneStyle style, String name) {
-		super(name);
 		this.firstWidget = firstWidget;
 		this.secondWidget = secondWidget;
 		this.vertical = vertical;
@@ -82,6 +77,56 @@ public class SplitPane extends WidgetGroup {
 		setSecondWidget(secondWidget);
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
+		initialize();
+	}
+
+	private void initialize () {
+		addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				if (pointer != 0) return false;
+				if (handleBounds.contains(x, y)) {
+					touchDrag = true;
+					lastPoint.set(x, y);
+					handlePosition.set(handleBounds.x, handleBounds.y);
+					return true;
+				}
+				return false;
+			}
+
+			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+				touchDrag = false;
+			}
+
+			public void touchDragged (ActorEvent event, float x, float y, int pointer) {
+				if (!touchDrag) return;
+
+				NinePatch handle = style.handle;
+				if (!vertical) {
+					float delta = x - lastPoint.x;
+					float availWidth = getWidth() - handle.getTotalWidth();
+					float dragX = handlePosition.x + delta;
+					handlePosition.x = dragX;
+					dragX = Math.max(0, dragX);
+					dragX = Math.min(availWidth, dragX);
+					splitAmount = dragX / availWidth;
+					if (splitAmount < minAmount) splitAmount = minAmount;
+					if (splitAmount > maxAmount) splitAmount = maxAmount;
+					lastPoint.set(x, y);
+				} else {
+					float delta = y - lastPoint.y;
+					float availHeight = getHeight() - handle.getTotalHeight();
+					float dragY = handlePosition.y + delta;
+					handlePosition.y = dragY;
+					dragY = Math.max(0, dragY);
+					dragY = Math.min(availHeight, dragY);
+					splitAmount = 1 - (dragY / availHeight);
+					if (splitAmount < minAmount) splitAmount = minAmount;
+					if (splitAmount > maxAmount) splitAmount = maxAmount;
+					lastPoint.set(x, y);
+				}
+				invalidate();
+			}
+		});
 	}
 
 	public void setStyle (SplitPaneStyle style) {
@@ -209,60 +254,6 @@ public class SplitPane extends WidgetGroup {
 		batch.setColor(color.r, color.g, color.b, color.a);
 		handle.draw(batch, handleBounds.x, handleBounds.y, handleBounds.width, handleBounds.height);
 		resetTransform(batch);
-	}
-
-	@Override
-	public boolean touchDown (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-		if (handleBounds.contains(x, y)) {
-			touchDrag = true;
-			lastPoint.set(x, y);
-			handlePosition.set(handleBounds.x, handleBounds.y);
-			return true;
-		}
-		return super.touchDown(x, y, pointer);
-	}
-
-	@Override
-	public void touchUp (float x, float y, int pointer) {
-		if (touchDrag)
-			touchDrag = false;
-		else
-			super.touchUp(x, y, pointer);
-	}
-
-	@Override
-	public void touchDragged (float x, float y, int pointer) {
-		if (!touchDrag) {
-			super.touchDragged(x, y, pointer);
-			return;
-		}
-
-		NinePatch handle = style.handle;
-		if (!vertical) {
-			float delta = x - lastPoint.x;
-			float availWidth = getWidth() - handle.getTotalWidth();
-			float dragX = handlePosition.x + delta;
-			handlePosition.x = dragX;
-			dragX = Math.max(0, dragX);
-			dragX = Math.min(availWidth, dragX);
-			splitAmount = dragX / availWidth;
-			if (splitAmount < minAmount) splitAmount = minAmount;
-			if (splitAmount > maxAmount) splitAmount = maxAmount;
-			lastPoint.set(x, y);
-		} else {
-			float delta = y - lastPoint.y;
-			float availHeight = getHeight() - handle.getTotalHeight();
-			float dragY = handlePosition.y + delta;
-			handlePosition.y = dragY;
-			dragY = Math.max(0, dragY);
-			dragY = Math.min(availHeight, dragY);
-			splitAmount = 1 - (dragY / availHeight);
-			if (splitAmount < minAmount) splitAmount = minAmount;
-			if (splitAmount > maxAmount) splitAmount = maxAmount;
-			lastPoint.set(x, y);
-		}
-		invalidate();
 	}
 
 	/** @param split The split amount between the min and max amount. */

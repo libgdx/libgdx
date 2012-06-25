@@ -13,6 +13,8 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -111,40 +113,40 @@ public class YDownTest extends GdxTest {
 			// portion of the code of MyActor that is dependend on
 			// whether y points up or down!
 			setHeight(-region.getRegionHeight());
+
+			addListener(new ActorListener() {
+				public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+					// we only care for the first finger to make things easier
+					if (pointer != 0) return false;
+
+					// record the coordinates the finger went down on. they
+					// are given relative to the actor's upper left corner (0, 0)
+					lastX = x;
+					lastY = y;
+					return true;
+				}
+
+				public void touchDragged (ActorEvent event, float x, float y, int pointer) {
+					// we only care for the first finger to make things easier
+					if (pointer != 0) return;
+
+					// adjust the actor's position by (current mouse position - last mouse position)
+					// in the actor's coordinate system.
+
+					translate(x - lastX, y - lastY);
+
+					// save the current mouse position as the basis for the next drag event.
+					// we adjust by the same delta so next time drag is called, lastX/lastY
+					// are in the actor's local coordinate system automatically.
+					lastX = x - (x - lastX);
+					lastY = y - (y - lastY);
+				}
+			});
 		}
 
 		@Override
 		public void draw (SpriteBatch batch, float parentAlpha) {
 			batch.draw(region, getX(), getY());
-		}
-
-		@Override
-		public boolean touchDown (float x, float y, int pointer) {
-			// we only care for the first finger to make things easier
-			if (pointer != 0) return false;
-
-			// record the coordinates the finger went down on. they
-			// are given relative to the actor's upper left corner (0, 0)
-			lastX = x;
-			lastY = y;
-			return true;
-		}
-
-		@Override
-		public void touchDragged (float x, float y, int pointer) {
-			// we only care for the first finger to make things easier
-			if (pointer != 0) return;
-
-			// adjust the actor's position by (current mouse position - last mouse position)
-			// in the actor's coordinate system.
-			
-			translate(x - lastX, y - lastY);
-
-			// save the current mouse position as the basis for the next drag event.
-			// we adjust by the same delta so next time drag is called, lastX/lastY
-			// are in the actor's local coordinate system automatically.
-			lastX = x - (x - lastX);
-			lastY = y - (y - lastY);
 		}
 
 		@Override

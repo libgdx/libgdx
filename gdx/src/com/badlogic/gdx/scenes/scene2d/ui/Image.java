@@ -40,30 +40,20 @@ public class Image extends Widget {
 		this(new TextureRegion(texture), scaling, align);
 	}
 
-	public Image (Texture texture, Scaling scaling, int align, String name) {
-		this(new TextureRegion(texture), scaling, align, name);
-	}
-
 	/** Creates an image stretched, and aligned center.
 	 * @param region May be null. */
 	public Image (TextureRegion region) {
-		this(region, Scaling.stretch, Align.CENTER, null);
+		this(region, Scaling.stretch, Align.CENTER);
 	}
 
 	/** Creates an image aligned center.
 	 * @param region May be null. */
 	public Image (TextureRegion region, Scaling scaling) {
-		this(region, scaling, Align.CENTER, null);
+		this(region, scaling, Align.CENTER);
 	}
 
 	/** @param region May be null. */
 	public Image (TextureRegion region, Scaling scaling, int align) {
-		this(region, scaling, align, null);
-	}
-
-	/** @param region May be null. */
-	public Image (TextureRegion region, Scaling scaling, int align, String name) {
-		super(name);
 		setRegion(region);
 		this.scaling = scaling;
 		this.align = align;
@@ -74,23 +64,17 @@ public class Image extends Widget {
 	/** Creates an image stretched, and aligned center.
 	 * @param patch May be null. */
 	public Image (NinePatch patch) {
-		this(patch, Scaling.stretch, Align.CENTER, null);
+		this(patch, Scaling.stretch, Align.CENTER);
 	}
 
 	/** Creates an image aligned center.
 	 * @param patch May be null. */
 	public Image (NinePatch patch, Scaling scaling) {
-		this(patch, scaling, Align.CENTER, null);
+		this(patch, scaling, Align.CENTER);
 	}
 
 	/** @param patch May be null. */
 	public Image (NinePatch patch, Scaling scaling, int align) {
-		this(patch, scaling, align, null);
-	}
-
-	/** @param patch May be null. */
-	public Image (NinePatch patch, Scaling scaling, int align, String name) {
-		super(name);
 		setPatch(patch);
 		this.scaling = scaling;
 		this.align = align;

@@ -52,7 +52,7 @@ public class SimpleStageCullingTest extends GdxTest {
 		boolean visible = false;
 
 		public CullableActor (String name, Texture texture, OrthographicCamera camera) {
-			super(new TextureRegion(texture), Scaling.none, Align.CENTER, name);
+			super(new TextureRegion(texture), Scaling.none, Align.CENTER);
 			this.camera = camera;
 		}
 

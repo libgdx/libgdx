@@ -84,7 +84,7 @@ public class StagePerformanceTest extends GdxTest {
 			stage.act(Gdx.graphics.getDeltaTime());
 			stage.getSpriteBatch().disableBlending();
 			Group root = stage.getRoot();
-			Array<Actor> actors = root.getActors();
+			Array<Actor> actors = root.getChildren();
 // for(int i = 0; i < actors.size(); i++) {
 // actors.get(i).rotation += 45 * Gdx.graphics.getDeltaTime();
 // }

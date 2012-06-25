@@ -22,6 +22,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -41,23 +43,33 @@ public class List extends Widget implements Cullable {
 	private float textOffsetX, textOffsetY;
 
 	public List (Skin skin) {
-		this(new String[0], skin);
+		this(new Object[0], skin);
 	}
 
 	public List (Object[] items, Skin skin) {
-		this(items, skin.getStyle(ListStyle.class), null);
+		this(items, skin.getStyle(ListStyle.class));
 	}
 
 	public List (Object[] items, ListStyle style) {
-		this(items, style, null);
-	}
-
-	public List (Object[] items, ListStyle style, String name) {
-		super(name);
 		setStyle(style);
 		setItems(items);
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
+
+		addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				if (pointer != 0) return false;
+				List.this.touchDown(y);
+				return true;
+			}
+		});
+	}
+
+	void touchDown (float y) {
+		selected = (int)((getHeight() - y) / itemHeight);
+		selected = Math.max(0, selected);
+		selected = Math.min(items.length - 1, selected);
+		if (listener != null && items.length > 0) listener.selected(List.this, selected, items[selected]);
 	}
 
 	public void setStyle (ListStyle style) {
@@ -105,16 +117,6 @@ public class List extends Widget implements Cullable {
 			}
 			itemY -= itemHeight;
 		}
-	}
-
-	@Override
-	public boolean touchDown (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-		selected = (int)((getHeight() - y) / itemHeight);
-		selected = Math.max(0, selected);
-		selected = Math.min(items.length - 1, selected);
-		if (listener != null && items.length > 0) listener.selected(this, selected, items[selected]);
-		return true;
 	}
 
 	/** @return The index of the currently selected item. The top item has an index of 0. */

@@ -62,18 +62,6 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 		super(toolkit);
 	}
 
-	/** Calls {@link #register(String, Actor)} with the name of the actor. */
-	public Actor register (Actor actor) {
-		if (actor.getName() == null) throw new IllegalArgumentException("Actor must have a name: " + actor.getClass());
-		return register(actor.getName(), actor);
-	}
-
-	public Actor getWidget (String name) {
-		Actor actor = super.getWidget(name);
-		if (actor == null) actor = getTable().findActor(name);
-		return actor;
-	}
-
 	public void layout () {
 		Table table = getTable();
 		float width = table.getWidth();
@@ -90,7 +78,7 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 			int widgetHeight = c.getWidgetHeight();
 			actor.setBounds(c.getWidgetX(), height - c.getWidgetY() - widgetHeight, c.getWidgetWidth(), widgetHeight);
 		}
-		Array<Actor> children = table.getActors();
+		Array<Actor> children = table.getChildren();
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
 			if (child instanceof Layout) {

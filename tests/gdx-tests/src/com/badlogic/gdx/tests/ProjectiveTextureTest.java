@@ -33,6 +33,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -70,6 +71,8 @@ public class ProjectiveTextureTest extends GdxTest {
 	ImmediateModeRenderer20 renderer;
 
 	float angle = 0;
+	private SelectBox camera;
+	private Label fps;
 
 	@Override
 	public void create () {
@@ -109,9 +112,9 @@ public class ProjectiveTextureTest extends GdxTest {
 	public void setupUI () {
 		ui = new Stage(480, 320, true);
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
-		TextButton reload = new TextButton("Reload Shaders", skin.getStyle(TextButtonStyle.class), "reload");
-		SelectBox camera = new SelectBox(new String[] {"Camera", "Light"}, skin.getStyle(SelectBoxStyle.class), "camera");
-		Label fps = new Label("fps: ", skin.getStyle(LabelStyle.class), "fps");
+		TextButton reload = new TextButton("Reload Shaders", skin.getStyle(TextButtonStyle.class));
+		camera = new SelectBox(new String[] {"Camera", "Light"}, skin.getStyle(SelectBoxStyle.class));
+		fps = new Label("fps: ", skin.getStyle(LabelStyle.class));
 
 		Table table = new Table();
 		table.setFillParent(true);
@@ -122,8 +125,7 @@ public class ProjectiveTextureTest extends GdxTest {
 		ui.addActor(table);
 
 		reload.addListener(new ClickListener() {
-			@Override
-			public void clicked (Actor button, float x, float y) {
+			public void clicked (ActorEvent event, float x, float y) {
 				ShaderProgram prog = new ShaderProgram(Gdx.files.internal("data/shaders/projtex-vert.glsl").readString(), Gdx.files
 					.internal("data/shaders/projtex-frag.glsl").readString());
 				if (prog.isCompiled() == false) {
@@ -157,7 +159,7 @@ public class ProjectiveTextureTest extends GdxTest {
 		texture.bind();
 		projTexShader.begin();
 
-		if (((SelectBox)ui.findActor("camera")).getSelectionIndex() == 0) {
+		if (camera.getSelectionIndex() == 0) {
 			renderMesh(projTexShader, cam.combined, projector.combined, planeTrans, plane, Color.WHITE);
 			renderMesh(projTexShader, cam.combined, projector.combined, cubeTrans, cube, Color.WHITE);
 		} else {
@@ -167,8 +169,7 @@ public class ProjectiveTextureTest extends GdxTest {
 
 		projTexShader.end();
 
-		Label label = (Label)ui.findActor("fps");
-		label.setText("fps: " + Gdx.graphics.getFramesPerSecond());
+		fps.setText("fps: " + Gdx.graphics.getFramesPerSecond());
 		ui.draw();
 		Table.drawDebug(ui);
 	}

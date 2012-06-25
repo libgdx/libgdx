@@ -44,14 +44,6 @@ public class Button extends Table {
 		setHeight(getPrefHeight());
 	}
 
-	public Button (ButtonStyle style, String name) {
-		super(null, null, name);
-		initialize();
-		setStyle(style);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
-	}
-
 	private void initialize () {
 		addListener(clickListener = new ClickListener() {
 			public void clicked (ActorEvent event, float x, float y) {
@@ -129,7 +121,7 @@ public class Button extends Table {
 			offsetY = style.unpressedOffsetY;
 		}
 		validate();
-		Array<Actor> children = getActors();
+		Array<Actor> children = getChildren();
 		for (int i = 0; i < children.size; i++)
 			children.get(i).translate(offsetX, offsetY);
 		super.draw(batch, parentAlpha);

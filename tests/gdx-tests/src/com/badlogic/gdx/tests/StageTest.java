@@ -27,11 +27,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -58,6 +59,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 	List<Image> images = new ArrayList<Image>();
 	float scale = 1;
 	float vScale = 1;
+	Label fps;
 
 	@Override
 	public void create () {
@@ -69,7 +71,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 
 		float loc = (NUM_SPRITES * (32 + SPACING) - SPACING) / 2;
 		for (int i = 0; i < NUM_GROUPS; i++) {
-			Group group = new Group("group" + i);
+			Group group = new Group();
 			group.setX((float)Math.random() * (stage.getWidth() - NUM_SPRITES * (32 + SPACING)));
 			group.setY((float)Math.random() * (stage.getHeight() - NUM_SPRITES * (32 + SPACING)));
 			group.setOrigin(loc, loc);
@@ -82,38 +84,41 @@ public class StageTest extends GdxTest implements InputProcessor {
 		uiTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		ui = new Stage(480, 320, false);
 
-		Image blend = new Image(new TextureRegion(uiTexture, 0, 0, 64, 32), Scaling.none, Align.CENTER, "blend") {
-			public boolean touchDown (float x, float y, int pointer) {
+		Image blend = new Image(new TextureRegion(uiTexture, 0, 0, 64, 32), Scaling.none, Align.CENTER);
+		blend.addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
 				if (stage.getSpriteBatch().isBlendingEnabled())
 					stage.getSpriteBatch().disableBlending();
 				else
 					stage.getSpriteBatch().enableBlending();
-				return false;
+				return true;
 			}
-		};
+		});
 		blend.setY(ui.getHeight() - 64);
 
-		Image rotate = new Image(new TextureRegion(uiTexture, 64, 0, 64, 32), Scaling.none, Align.CENTER, "rotate") {
-			public boolean touchDown (float x, float y, int pointer) {
+		Image rotate = new Image(new TextureRegion(uiTexture, 64, 0, 64, 32), Scaling.none, Align.CENTER);
+		rotate.addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
 				rotateSprites = !rotateSprites;
-				return false;
+				return true;
 			}
-		};
+		});
 		rotate.setPosition(64, blend.getY());
 
-		Image scale = new Image(new TextureRegion(uiTexture, 64, 32, 64, 32), Scaling.none, Align.CENTER, "scale") {
-			public boolean touchDown (float x, float y, int pointer) {
+		Image scale = new Image(new TextureRegion(uiTexture, 64, 32, 64, 32), Scaling.none, Align.CENTER);
+		scale.addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
 				scaleSprites = !scaleSprites;
-				return false;
+				return true;
 			}
-		};
+		});
 		scale.setPosition(128, blend.getY());
 
 		ui.addActor(blend);
 		ui.addActor(rotate);
 		ui.addActor(scale);
 
-		Label fps = new Label("fps: 0", new Label.LabelStyle(font, Color.WHITE), "fps");
+		fps = new Label("fps: 0", new Label.LabelStyle(font, Color.WHITE));
 		fps.setPosition(10, 30);
 		fps.setColor(0, 1, 0, 1);
 		ui.addActor(fps);
@@ -126,7 +131,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		float advance = 32 + SPACING;
 		for (int y = 0; y < NUM_SPRITES * advance; y += advance)
 			for (int x = 0; x < NUM_SPRITES * advance; x += advance) {
-				Image img = new Image(new TextureRegion(texture), Scaling.none, Align.CENTER, group.getName() + "-sprite" + x * y);
+				Image img = new Image(new TextureRegion(texture), Scaling.none, Align.CENTER);
 				img.setBounds(x, y, 32, 32);
 				img.setOrigin(16, 16);
 				group.addActor(img);
@@ -141,7 +146,8 @@ public class StageTest extends GdxTest implements InputProcessor {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		if (Gdx.input.isTouched()) {
-			Vector2 stageCoords = stage.toStageCoordinates(Gdx.input.getX(), Gdx.input.getY());
+			Vector2 stageCoords = Vector2.tmp;
+			stage.toStageCoordinates(Gdx.input.getX(), Gdx.input.getY(), stageCoords);
 			Actor actor = stage.hit(stageCoords.x, stageCoords.y);
 			if (actor instanceof Image)
 				((Image)actor).setColor((float)Math.random(), (float)Math.random(), (float)Math.random(),
@@ -193,8 +199,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		}
 		renderer.end();
 
-		((Label)ui.findActor("fps")).setText("fps: " + Gdx.graphics.getFramesPerSecond() + ", actors " + images.size()
-			+ ", groups " + actors.size);
+		fps.setText("fps: " + Gdx.graphics.getFramesPerSecond() + ", actors " + images.size() + ", groups " + actors.size);
 		ui.draw();
 	}
 

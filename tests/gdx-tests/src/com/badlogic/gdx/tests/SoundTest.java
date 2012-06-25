@@ -21,6 +21,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -77,8 +78,7 @@ public class SoundTest extends GdxTest {
 		ui.addActor(table);
 
 		play.addListener(new ClickListener() {
-			@Override
-			public void clicked (Actor actor, float x, float y) {
+			public void clicked (ActorEvent event, float x, float y) {
 				soundId = sound.play(volume.getValue());
 				sound.setPitch(soundId, pitch.getValue());
 				sound.setPan(soundId, pan.getValue(), volume.getValue());
@@ -86,8 +86,7 @@ public class SoundTest extends GdxTest {
 		});
 
 		stop.addListener(new ClickListener() {
-			@Override
-			public void clicked (Actor actor, float x, float y) {
+			public void clicked (ActorEvent event, float x, float y) {
 				sound.stop(soundId);
 			}
 		});

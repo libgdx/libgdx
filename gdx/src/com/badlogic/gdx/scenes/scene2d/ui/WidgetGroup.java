@@ -20,14 +20,6 @@ public abstract class WidgetGroup extends Group implements Layout {
 	private boolean needsLayout = true;
 	private boolean fillParent;
 
-	public WidgetGroup () {
-		super();
-	}
-
-	public WidgetGroup (String name) {
-		super(name);
-	}
-
 	public float getMinWidth () {
 		return getPrefWidth();
 	}

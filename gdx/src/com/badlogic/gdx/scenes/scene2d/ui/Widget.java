@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 /** An {@link Actor} that participates in layout and provides a minimum, preferred, and maximum size.
  * <p>
@@ -36,15 +37,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 public abstract class Widget extends Actor implements Layout {
 	private boolean needsLayout = true;
 	private boolean fillParent;
-
-	/** Creates a new widget without a name. */
-	public Widget () {
-		super(null);
-	}
-
-	public Widget (String name) {
-		super(name);
-	}
 
 	public float getMinWidth () {
 		return getPrefWidth();
@@ -134,20 +126,5 @@ public abstract class Widget extends Actor implements Layout {
 	}
 
 	public void layout () {
-	}
-
-	/** This modifies the specified point in the actor's coordinates to be in the stage's coordinates. Note this method will ONLY
-	 * work properly for screen aligned, unrotated, unscaled actors! */
-	static public void toStageCoordinates (Actor actor, Vector2 point) {
-		point.x += actor.getX();
-		point.y += actor.getY();
-		Actor parent = actor.getParent();
-		while (parent != null) {
-			if (parent instanceof Group) {
-				point.x += parent.getX();
-				point.y += parent.getY();
-			}
-			parent = parent.getParent();
-		}
 	}
 }

@@ -44,27 +44,22 @@ public class Label extends Widget {
 	}
 
 	public Label (CharSequence text, Skin skin) {
-		this(text, skin.getStyle(LabelStyle.class), null);
+		this(text, skin.getStyle(LabelStyle.class));
 	}
 
 	/** Creates a label, using a {@link LabelStyle} that has a BitmapFont with the specified name from the skin and the specified
 	 * color. */
 	public Label (CharSequence text, String fontName, Color color, Skin skin) {
-		this(text, new LabelStyle(skin.getFont(fontName), color), null);
+		this(text, new LabelStyle(skin.getFont(fontName), color));
 	}
 
 	/** Creates a label, using a {@link LabelStyle} that has a BitmapFont with the specified name and the specified color from the
 	 * skin. */
 	public Label (CharSequence text, String fontName, String colorName, Skin skin) {
-		this(text, new LabelStyle(skin.getFont(fontName), skin.getColor(colorName)), null);
+		this(text, new LabelStyle(skin.getFont(fontName), skin.getColor(colorName)));
 	}
 
 	public Label (CharSequence text, LabelStyle style) {
-		this(text, style, null);
-	}
-
-	public Label (CharSequence text, LabelStyle style, String name) {
-		super(name);
 		if (text == null) text = "";
 		this.text = text;
 		setStyle(style);

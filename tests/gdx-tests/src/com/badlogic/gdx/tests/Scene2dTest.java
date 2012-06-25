@@ -8,12 +8,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -59,42 +63,45 @@ public class Scene2dTest extends GdxTest {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		final TextButton button = new TextButton("Some Shit!", skin);
 
-		button.addListener(new ClickListener() {
-			public void clicked (ActorEvent event, float x, float y) {
-				System.out.println("click! " + x + " " + y);
+// button.addListener(new ClickListener() {
+// public void clicked (ActorEvent event, float x, float y) {
+// System.out.println("click! " + x + " " + y);
+// }
+// });
+
+// button.addListener(new ActorGestureListener() {
+// public void tap (ActorEvent event, float x, float y, int count) {
+// System.out.println("tap");
+// }
+//
+// public boolean longPress (ActorEvent event, float x, float y) {
+// System.out.println("long press");
+// return false;
+// }
+//
+// public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {
+// System.out.println("panning " + x + ", " + y);
+// }
+// });
+
+		button.addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int b) {
+				System.out.println("down " + x + ", " + y + " " + pointer + ", " + b);
+				return true;
+			}
+
+			public void touchUp (ActorEvent event, float x, float y, int pointer, int b) {
+				System.out.println("up " + x + ", " + y + " " + pointer + ", " + b);
 			}
 		});
 
-		button.addListener(new ActorGestureListener() {
-			public void tap (ActorEvent event, float x, float y, int count) {
-				System.out.println("tap");
-			}
-
-			public void longPress (ActorEvent event, float x, float y) {
-				System.out.println("long press");
-			}
-
-			public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {
-				System.out.println("panning " + x + ", " + y);
-			}
-		});
-
-		// button.addListener(new ActorListener() {
-		// public boolean touchDown (ActorEvent event, float x, float y, int pointer, int b) {
-		// stage.getRoot().addCaptureListener(this, button);
-		// System.out.println("down " + x + ", " + y);
-		// return true;
-		// }
-		//
-		// public boolean touchUp (ActorEvent event, float x, float y, int pointer, int b) {
-		// event.stop();
-		// stage.getRoot().removeCaptureListener(this, button);
-		// System.out.println("up " + x + ", " + y);
-		// return true;
-		// }
-		// });
-		button.setPosition(100, 100);
+		button.setPosition(50, 50);
 		stage.addActor(button);
+
+		ScrollPane scroll = new ScrollPane(skin);
+		scroll.setBounds(200, 200, 100, 100);
+		scroll.setWidget(actor);
+		stage.addActor(scroll);
 
 		meow.setDuration(2);
 

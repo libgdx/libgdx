@@ -36,9 +36,9 @@ public abstract class Clipboard {
 			return new AndroidClipboard();
 		else {
 			try {
-				return (Clipboard)Class.forName("com.badlogic.gdx.scenes.scene2d.ui.utils.DesktopClipboard").newInstance();
-			} catch (Exception e) {
-				throw new GdxRuntimeException("Couldn't instantiate desktop clipboard", e);
+				return (Clipboard)Class.forName("com.badlogic.gdx.scenes.scene2d.utils.DesktopClipboard").newInstance();
+			} catch (Exception ex) {
+				throw new GdxRuntimeException("Error creating desktop clipboard.", ex);
 			}
 		}
 	}

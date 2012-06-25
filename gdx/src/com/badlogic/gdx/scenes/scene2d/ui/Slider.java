@@ -20,6 +20,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 
 // BOZO - Add snapping to the knob.
 
@@ -35,18 +37,14 @@ public class Slider extends Widget {
 	private float value;
 	private float sliderPos;
 	private ValueChangedListener listener = null;
-	private boolean isDragging;
+	boolean isDragging;
 
 	public Slider (Skin skin) {
 		this(0, 100, 100, skin);
 	}
 
 	public Slider (float min, float max, float steps, Skin skin) {
-		this(min, max, steps, skin.getStyle(SliderStyle.class), null);
-	}
-
-	public Slider (float min, float max, float steps, SliderStyle style) {
-		this(min, max, steps, style, null);
+		this(min, max, steps, skin.getStyle(SliderStyle.class));
 	}
 
 	/** Creates a new slider. It's width is determined by the given prefWidth parameter, its height is determined by the maximum of
@@ -56,10 +54,8 @@ public class Slider extends Widget {
 	 * @param min the minimum value
 	 * @param max the maximum value
 	 * @param steps the step size between values
-	 * @param style the {@link SliderStyle}
-	 * @param name the name */
-	public Slider (float min, float max, float steps, SliderStyle style, String name) {
-		super(name);
+	 * @param style the {@link SliderStyle} */
+	public Slider (float min, float max, float steps, SliderStyle style) {
 		if (min > max) throw new IllegalArgumentException("min must be > max: " + min + " > " + max);
 		if (steps < 0) throw new IllegalArgumentException("steps must be > 0: " + steps);
 		setStyle(style);
@@ -69,6 +65,24 @@ public class Slider extends Widget {
 		this.value = min;
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
+
+		addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				if (pointer != 0) return false;
+				isDragging = true;
+				calculatePositionAndValue(x);
+				return true;
+			}
+
+			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+				isDragging = false;
+				calculatePositionAndValue(x);
+			}
+
+			public void touchDragged (ActorEvent event, float x, float y, int pointer) {
+				calculatePositionAndValue(x);
+			}
+		});
 	}
 
 	public void setStyle (SliderStyle style) {
@@ -103,26 +117,7 @@ public class Slider extends Widget {
 		batch.draw(knob, x + sliderPos, y + (int)((height - knob.getRegionHeight()) * 0.5f));
 	}
 
-	@Override
-	public boolean touchDown (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-		isDragging = true;
-		calculatePositionAndValue(x);
-		return true;
-	}
-
-	@Override
-	public void touchUp (float x, float y, int pointer) {
-		isDragging = false;
-		calculatePositionAndValue(x);
-	}
-
-	@Override
-	public void touchDragged (float x, float y, int pointer) {
-		calculatePositionAndValue(x);
-	}
-
-	private void calculatePositionAndValue (float x) {
+	void calculatePositionAndValue (float x) {
 		final TextureRegion knob = style.knob;
 
 		float width = getWidth();

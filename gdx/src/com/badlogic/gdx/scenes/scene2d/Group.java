@@ -42,14 +42,6 @@ public class Group extends Actor implements Cullable {
 	private Rectangle cullingArea;
 	private final Vector2 point = new Vector2();
 
-	public Group () {
-		this(null);
-	}
-
-	public Group (String name) {
-		super(name);
-	}
-
 	public void act (float delta) {
 		super.act(delta);
 		DelayedRemovalArray<Actor> children = this.children;
@@ -311,7 +303,7 @@ public class Group extends Actor implements Cullable {
 	}
 
 	/** Returns an ordered list of child actors in this group. */
-	public Array<Actor> getActors () {
+	public Array<Actor> getChildren () {
 		return children;
 	}
 
@@ -328,20 +320,6 @@ public class Group extends Actor implements Cullable {
 		return transform;
 	}
 
-	/** Returns the actor with the given name in this group or its children, or null if not found. Note this scans potentially all
-	 * actors in the group and any child groups, recursively. */
-	public Actor findActor (String name) {
-		if (name.equals(getName())) return this;
-		Array<Actor> children = this.children;
-		for (int i = 0, n = children.size; i < n; i++)
-			if (name.equals(children.get(i).getName())) return children.get(i);
-		for (int i = 0, n = children.size; i < n; i++) {
-			Actor child = children.get(i);
-			if (child instanceof Group) return ((Group)child).findActor(name);
-		}
-		return null;
-	}
-
 	/** Returns the stage's actor hierarchy as a string. */
 	public String graphToString () {
 		StringBuilder buffer = new StringBuilder(128);
@@ -355,7 +333,7 @@ public class Group extends Actor implements Cullable {
 		buffer.append(actor);
 		buffer.append('\n');
 		if (actor instanceof Group) {
-			Array<Actor> actors = ((Group)actor).getActors();
+			Array<Actor> actors = ((Group)actor).getChildren();
 			for (int i = 0, n = actors.size; i < n; i++)
 				graphToString(buffer, actors.get(i), level + 1);
 		}

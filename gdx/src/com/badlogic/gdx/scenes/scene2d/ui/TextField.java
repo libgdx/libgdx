@@ -27,6 +27,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.Clipboard;
@@ -57,14 +59,14 @@ public class TextField extends Widget {
 	static private final char DELETE = 127;
 	static private final char BULLET = 149;
 
-	private TextFieldStyle style;
-	private String text, messageText;
+	TextFieldStyle style;
+	String text, messageText;
 	private CharSequence displayText;
-	private int cursor;
+	int cursor;
 	private Clipboard clipboard;
-	private TextFieldListener listener;
-	private TextFieldFilter filter;
-	private OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
+	TextFieldListener listener;
+	TextFieldFilter filter;
+	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
 	private boolean passwordMode;
 	private StringBuilder passwordBuffer;
@@ -72,56 +74,209 @@ public class TextField extends Widget {
 	private final Rectangle fieldBounds = new Rectangle();
 	private final TextBounds textBounds = new TextBounds();
 	private final Rectangle scissor = new Rectangle();
-	private float renderOffset, textOffset;
+	float renderOffset, textOffset;
 	private int visibleTextStart, visibleTextEnd;
 	private final FloatArray glyphAdvances = new FloatArray();
-	private final FloatArray glyphPositions = new FloatArray();
+	final FloatArray glyphPositions = new FloatArray();
 
-	private boolean cursorOn = true;
+	boolean cursorOn = true;
 	private float blinkTime = 0.42f;
-	private long lastBlink;
+	long lastBlink;
 
-	private boolean hasSelection;
-	private int selectionStart;
+	boolean hasSelection;
+	int selectionStart;
 	private float selectionX, selectionWidth;
 
 	private char passwordCharacter = BULLET;
 
 	public TextField (Skin skin) {
-		this("", null, skin.getStyle(TextFieldStyle.class), null);
+		this("", null, skin.getStyle(TextFieldStyle.class));
 	}
 
 	public TextField (String text, Skin skin) {
-		this(text, null, skin.getStyle(TextFieldStyle.class), null);
+		this(text, null, skin.getStyle(TextFieldStyle.class));
 	}
 
 	/** @param messageText Text to show when empty. May be null. */
 	public TextField (String text, String messageText, Skin skin) {
-		this(text, messageText, skin.getStyle(TextFieldStyle.class), null);
+		this(text, messageText, skin.getStyle(TextFieldStyle.class));
 	}
 
 	public TextField (TextFieldStyle style) {
-		this("", null, style, null);
+		this("", null, style);
 	}
 
 	public TextField (String text, TextFieldStyle style) {
-		this(text, null, style, null);
+		this(text, null, style);
 	}
 
 	/** @param messageText Text to show when empty. May be null. */
 	public TextField (String text, String messageText, TextFieldStyle style) {
-		this(text, messageText, style, null);
-	}
-
-	/** @param messageText Text to show when empty. May be null. */
-	public TextField (String text, String messageText, TextFieldStyle style, String name) {
-		super(name);
 		setStyle(style);
 		this.clipboard = Clipboard.getDefaultClipboard();
 		setText(text);
 		this.messageText = messageText;
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
+		initialize();
+	}
+
+	private void initialize () {
+		addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				if (pointer != 0) return false;
+				Stage stage = getStage();
+				if (stage != null) stage.setKeyboardFocus(TextField.this);
+				keyboard.show(true);
+				clearSelection();
+				lastBlink = 0;
+				cursorOn = false;
+				x = x - renderOffset;
+				for (int i = 0; i < glyphPositions.size; i++) {
+					float pos = glyphPositions.items[i];
+					if (pos > x) {
+						cursor = Math.max(0, i - 1);
+						return true;
+					}
+				}
+				cursor = Math.max(0, glyphPositions.size - 1);
+				return true;
+			}
+
+			public boolean keyDown (ActorEvent event, int keycode) {
+				final BitmapFont font = style.font;
+
+				Stage stage = getStage();
+				if (stage != null && stage.getKeyboardFocus() == TextField.this) {
+					if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
+						// paste
+						if (keycode == Keys.V) paste();
+						// copy
+						if (keycode == Keys.C || keycode == Keys.INSERT) copy();
+					} else if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
+						// paste
+						if (keycode == Keys.INSERT) paste();
+						// cut
+						if (keycode == Keys.FORWARD_DEL) {
+							if (hasSelection) {
+								copy();
+								delete();
+							}
+						}
+						// selection
+						if (keycode == Keys.LEFT) {
+							if (!hasSelection) {
+								selectionStart = cursor;
+								hasSelection = true;
+							}
+							cursor--;
+						}
+						if (keycode == Keys.RIGHT) {
+							if (!hasSelection) {
+								selectionStart = cursor;
+								hasSelection = true;
+							}
+							cursor++;
+						}
+						if (keycode == Keys.HOME) {
+							if (!hasSelection) {
+								selectionStart = cursor;
+								hasSelection = true;
+							}
+							cursor = 0;
+						}
+						if (keycode == Keys.END) {
+							if (!hasSelection) {
+								selectionStart = cursor;
+								hasSelection = true;
+							}
+							cursor = text.length();
+						}
+
+						cursor = Math.max(0, cursor);
+						cursor = Math.min(text.length(), cursor);
+					} else {
+						// cursor movement or other keys (kill selection)
+						if (keycode == Keys.LEFT) {
+							cursor--;
+							clearSelection();
+						}
+						if (keycode == Keys.RIGHT) {
+							cursor++;
+							clearSelection();
+						}
+						if (keycode == Keys.HOME) {
+							cursor = 0;
+							clearSelection();
+						}
+						if (keycode == Keys.END) {
+							cursor = text.length();
+							clearSelection();
+						}
+
+						cursor = Math.max(0, cursor);
+						cursor = Math.min(text.length(), cursor);
+					}
+
+					return true;
+				}
+				return false;
+			}
+
+			public boolean keyTyped (ActorEvent event, char character) {
+				final BitmapFont font = style.font;
+
+				Stage stage = getStage();
+				if (stage != null && stage.getKeyboardFocus() == TextField.this) {
+					if (character == BACKSPACE && (cursor > 0 || hasSelection)) {
+						if (!hasSelection) {
+							text = text.substring(0, cursor - 1) + text.substring(cursor);
+							updateDisplayText();
+							cursor--;
+						} else {
+							delete();
+						}
+					}
+					if (character == DELETE) {
+						if (cursor < text.length() || hasSelection) {
+							if (!hasSelection) {
+								text = text.substring(0, cursor) + text.substring(cursor + 1);
+								updateDisplayText();
+							} else {
+								delete();
+							}
+						}
+						return true;
+					}
+					if (character != ENTER_DESKTOP && character != ENTER_ANDROID) {
+						if (filter != null && !filter.acceptChar(TextField.this, character)) return true;
+					}
+					if (character == TAB || character == ENTER_ANDROID)
+						next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
+					if (font.containsCharacter(character)) {
+						if (!hasSelection) {
+							text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
+							updateDisplayText();
+							cursor++;
+						} else {
+							int minIndex = Math.min(cursor, selectionStart);
+							int maxIndex = Math.max(cursor, selectionStart);
+
+							text = (minIndex > 0 ? text.substring(0, minIndex) : "")
+								+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
+							cursor = minIndex;
+							text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
+							updateDisplayText();
+							cursor++;
+							clearSelection();
+						}
+					}
+					if (listener != null) listener.keyTyped(TextField.this, character);
+					return true;
+				} else
+					return false;
+			}
+		});
 	}
 
 	public void setStyle (TextFieldStyle style) {
@@ -249,7 +404,7 @@ public class TextField extends Widget {
 		}
 	}
 
-	private void updateDisplayText () {
+	void updateDisplayText () {
 		if (passwordMode && style.font.containsCharacter(passwordCharacter)) {
 			if (passwordBuffer == null) passwordBuffer = new StringBuilder(text.length());
 			if (passwordBuffer.length() > text.length()) //
@@ -272,107 +427,6 @@ public class TextField extends Widget {
 		}
 	}
 
-	@Override
-	public boolean touchDown (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-		Stage stage = getStage();
-		if (stage != null) stage.setKeyboardFocus(this);
-		keyboard.show(true);
-		clearSelection();
-		lastBlink = 0;
-		cursorOn = false;
-		x = x - renderOffset;
-		for (int i = 0; i < glyphPositions.size; i++) {
-			float pos = glyphPositions.items[i];
-			if (pos > x) {
-				cursor = Math.max(0, i - 1);
-				return true;
-			}
-		}
-		cursor = Math.max(0, glyphPositions.size - 1);
-		return true;
-	}
-
-	public boolean keyDown (int keycode) {
-		final BitmapFont font = style.font;
-
-		Stage stage = getStage();
-		if (stage != null && stage.getKeyboardFocus() == this) {
-			if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
-				// paste
-				if (keycode == Keys.V) paste();
-				// copy
-				if (keycode == Keys.C || keycode == Keys.INSERT) copy();
-			} else if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
-				// paste
-				if (keycode == Keys.INSERT) paste();
-				// cut
-				if (keycode == Keys.FORWARD_DEL) {
-					if (hasSelection) {
-						copy();
-						delete();
-					}
-				}
-				// selection
-				if (keycode == Keys.LEFT) {
-					if (!hasSelection) {
-						selectionStart = cursor;
-						hasSelection = true;
-					}
-					cursor--;
-				}
-				if (keycode == Keys.RIGHT) {
-					if (!hasSelection) {
-						selectionStart = cursor;
-						hasSelection = true;
-					}
-					cursor++;
-				}
-				if (keycode == Keys.HOME) {
-					if (!hasSelection) {
-						selectionStart = cursor;
-						hasSelection = true;
-					}
-					cursor = 0;
-				}
-				if (keycode == Keys.END) {
-					if (!hasSelection) {
-						selectionStart = cursor;
-						hasSelection = true;
-					}
-					cursor = text.length();
-				}
-
-				cursor = Math.max(0, cursor);
-				cursor = Math.min(text.length(), cursor);
-			} else {
-				// cursor movement or other keys (kill selection)
-				if (keycode == Keys.LEFT) {
-					cursor--;
-					clearSelection();
-				}
-				if (keycode == Keys.RIGHT) {
-					cursor++;
-					clearSelection();
-				}
-				if (keycode == Keys.HOME) {
-					cursor = 0;
-					clearSelection();
-				}
-				if (keycode == Keys.END) {
-					cursor = text.length();
-					clearSelection();
-				}
-
-				cursor = Math.max(0, cursor);
-				cursor = Math.min(text.length(), cursor);
-			}
-
-			return true;
-		}
-		return false;
-	}
-
 	/** Copies the contents of this TextField to the {@link Clipboard} implementation set on this TextField. */
 	public void copy () {
 		if (hasSelection) {
@@ -383,7 +437,7 @@ public class TextField extends Widget {
 	}
 
 	/** Pastes the content of the {@link Clipboard} implementation set on this Textfield to this TextField. */
-	private void paste () {
+	void paste () {
 		String content = clipboard.getContents();
 		if (content != null) {
 			StringBuilder builder = new StringBuilder();
@@ -413,7 +467,7 @@ public class TextField extends Widget {
 		}
 	}
 
-	private void delete () {
+	void delete () {
 		int minIndex = Math.min(cursor, selectionStart);
 		int maxIndex = Math.max(cursor, selectionStart);
 		text = (minIndex > 0 ? text.substring(0, minIndex) : "")
@@ -421,60 +475,6 @@ public class TextField extends Widget {
 		updateDisplayText();
 		cursor = minIndex;
 		clearSelection();
-	}
-
-	public boolean keyTyped (char character) {
-		final BitmapFont font = style.font;
-
-		Stage stage = getStage();
-		if (stage != null && stage.getKeyboardFocus() == this) {
-			if (character == BACKSPACE && (cursor > 0 || hasSelection)) {
-				if (!hasSelection) {
-					text = text.substring(0, cursor - 1) + text.substring(cursor);
-					updateDisplayText();
-					cursor--;
-				} else {
-					delete();
-				}
-			}
-			if (character == DELETE) {
-				if (cursor < text.length() || hasSelection) {
-					if (!hasSelection) {
-						text = text.substring(0, cursor) + text.substring(cursor + 1);
-						updateDisplayText();
-					} else {
-						delete();
-					}
-				}
-				return true;
-			}
-			if (character != ENTER_DESKTOP && character != ENTER_ANDROID) {
-				if (filter != null && !filter.acceptChar(this, character)) return true;
-			}
-			if (character == TAB || character == ENTER_ANDROID)
-				next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
-			if (font.containsCharacter(character)) {
-				if (!hasSelection) {
-					text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
-					updateDisplayText();
-					cursor++;
-				} else {
-					int minIndex = Math.min(cursor, selectionStart);
-					int maxIndex = Math.max(cursor, selectionStart);
-
-					text = (minIndex > 0 ? text.substring(0, minIndex) : "")
-						+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
-					cursor = minIndex;
-					text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
-					updateDisplayText();
-					cursor++;
-					clearSelection();
-				}
-			}
-			if (listener != null) listener.keyTyped(this, character);
-			return true;
-		} else
-			return false;
 	}
 
 	/** Focuses the next TextField. If none is found, the keyboard is hidden. Does nothing if the text field is not in a stage.
@@ -503,7 +503,7 @@ public class TextField extends Widget {
 					best = (TextField)actor;
 				}
 			}
-			if (actor instanceof Group) best = findNextTextField(((Group)actor).getActors(), best, up);
+			if (actor instanceof Group) best = findNextTextField(((Group)actor).getChildren(), best, up);
 		}
 		return best;
 	}

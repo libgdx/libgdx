@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
@@ -22,32 +24,51 @@ public class Window extends Table {
 	private WindowStyle style;
 	private String title;
 	private BitmapFontCache titleCache;
-	private boolean isMovable = true, isModal;
-	private final Vector2 dragOffset = new Vector2();
-	private boolean dragging;
+	boolean isMovable = true, isModal;
+	final Vector2 dragOffset = new Vector2();
+	boolean dragging;
 
 	public Window (Skin skin) {
-		this("", skin.getStyle(WindowStyle.class), null);
+		this("", skin.getStyle(WindowStyle.class));
 		setSkin(skin);
 	}
 
 	public Window (String title, Skin skin) {
-		this(title, skin.getStyle(WindowStyle.class), null);
+		this(title, skin.getStyle(WindowStyle.class));
 		setSkin(skin);
 	}
 
 	public Window (String title, WindowStyle style) {
-		this(title, style, null);
-	}
-
-	public Window (String title, WindowStyle style, String name) {
-		super(null, null, name);
 		if (title == null) throw new IllegalArgumentException("title cannot be null.");
 		setClip(true);
 		this.title = title;
 		setStyle(style);
 		setWidth(150);
 		setHeight(150);
+
+		addCaptureListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				if (pointer != 0) return false;
+				// Make this window on top.
+				Group parent = getParent();
+				if (parent.getChildren().size > 1)
+					parent.swapActor(Window.this, parent.getChildren().get(parent.getChildren().size - 1));
+				return false;
+			}
+		});
+		addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				if (pointer != 0) return false;
+				dragging = isMovable && getHeight() - y <= getTitleBarHeight() && y < getHeight() && x > 0 && x < getWidth();
+				dragOffset.set(x, y);
+				return true;
+			}
+
+			public void touchDragged (ActorEvent event, float x, float y, int pointer) {
+				if (!dragging) return;
+				translate(x - dragOffset.x, y - dragOffset.y);
+			}
+		});
 	}
 
 	public void setStyle (WindowStyle style) {
@@ -65,7 +86,7 @@ public class Window extends Table {
 		return style;
 	}
 
-	private int getTitleBarHeight () {
+	int getTitleBarHeight () {
 		return getTableLayout().getToolkit().height(getTableLayout(), getPadTop());
 	}
 
@@ -83,27 +104,10 @@ public class Window extends Table {
 		titleCache.draw(batch, parentAlpha);
 	}
 
-	public boolean touchDown (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-
-		// Make this window on top.
-		Group parent = getParent();
-		if (parent.getActors().size > 1) parent.swapActor(this, parent.getActors().get(parent.getActors().size - 1));
-
-		if (super.touchDown(x, y, pointer)) return true;
-
-		dragging = isMovable && getHeight() - y <= getTitleBarHeight() && y < getHeight() && x > 0 && x < getWidth();
-		dragOffset.set(x, y);
-		return true;
-	}
-
-	public void touchDragged (float x, float y, int pointer) {
-		if (!dragging) return;
-		translate(x - dragOffset.x, y - dragOffset.y);
-	}
-
 	public Actor hit (float x, float y) {
-		return isModal || (x > 0 && x < getWidth() && y > 0 && y < getHeight()) ? this : null;
+		Actor hit = super.hit(x, y);
+		if (hit == null && isModal) return this;
+		return hit;
 	}
 
 	public void setTitle (String title) {

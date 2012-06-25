@@ -21,11 +21,7 @@ public class ImageButton extends Button {
 	}
 
 	public ImageButton (ImageButtonStyle style) {
-		this(style, null);
-	}
-
-	public ImageButton (ImageButtonStyle style, String name) {
-		super(style, name);
+		super(style);
 		image = new Image();
 		image.setScaling(Scaling.fit);
 		add(image);

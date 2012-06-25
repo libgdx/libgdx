@@ -4,59 +4,54 @@ package com.badlogic.gdx.scenes.scene2d;
 import com.badlogic.gdx.math.Vector2;
 
 public class ActorListener implements EventListener {
-	public void handle (Event e) {
-		if (!(e instanceof ActorEvent)) return;
+	public boolean handle (Event e) {
+		if (!(e instanceof ActorEvent)) return false;
 		ActorEvent event = (ActorEvent)e;
 
 		switch (event.getType()) {
 		case keyDown:
-			if (keyDown(event, event.getKeyCode())) event.handled();
-			return;
+			return keyDown(event, event.getKeyCode());
 		case keyUp:
-			if (keyUp(event, event.getKeyCode())) event.handled();
-			return;
+			return keyUp(event, event.getKeyCode());
 		case keyTyped:
-			if (keyTyped(event, event.getCharacter())) event.handled();
-			return;
+			return keyTyped(event, event.getCharacter());
 		case scrolled:
-			if (scrolled(event, event.getScrollAmount())) event.handled();
-			return;
+			return scrolled(event, event.getScrollAmount());
 		}
 
-		Vector2 coords = event.getContextActor().toLocalCoordinates(event.getStageX(), event.getStageY());
+		Vector2 coords = Vector2.tmp.set(event.getStageX(), event.getStageY());
+		event.getContextActor().toLocalCoordinates(coords);
 
 		switch (event.getType()) {
 		case touchDown:
-			if (touchDown(event, coords.x, coords.y, event.getPointer(), event.getButton())) event.handled();
-			return;
+			return touchDown(event, coords.x, coords.y, event.getPointer(), event.getButton());
 		case touchUp:
-			if (touchUp(event, coords.x, coords.y, event.getPointer(), event.getButton())) event.handled();
-			return;
+			touchUp(event, coords.x, coords.y, event.getPointer(), event.getButton());
+			return true;
 		case touchDragged:
-			if (touchDragged(event, coords.x, coords.y, event.getPointer())) event.handled();
-			return;
-		case touchMoved:
+			touchDragged(event, coords.x, coords.y, event.getPointer());
+			return true;
+		case mouseMoved:
 			mouseMoved(event, coords.x, coords.y);
-			return;
+			return false;
 		case enter:
 			enter(event, coords.x, coords.y, event.getPointer(), event.getRelatedActor());
-			return;
+			return false;
 		case exit:
 			exit(event, coords.x, coords.y, event.getPointer(), event.getRelatedActor());
-			return;
+			return false;
 		}
+		return false;
 	}
 
 	public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
 		return false;
 	}
 
-	public boolean touchUp (ActorEvent event, float x, float y, int pointer, int button) {
-		return false;
+	public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
 	}
 
-	public boolean touchDragged (ActorEvent event, float x, float y, int pointer) {
-		return false;
+	public void touchDragged (ActorEvent event, float x, float y, int pointer) {
 	}
 
 	public boolean mouseMoved (ActorEvent event, float x, float y) {

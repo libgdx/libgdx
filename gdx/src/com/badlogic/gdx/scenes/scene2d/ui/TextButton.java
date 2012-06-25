@@ -26,11 +26,7 @@ public class TextButton extends Button {
 	}
 
 	public TextButton (String text, TextButtonStyle style) {
-		this(text, style, null);
-	}
-
-	public TextButton (String text, TextButtonStyle style, String name) {
-		super(style, name);
+		super(style);
 		this.style = style;
 		label = new Label(text, new LabelStyle(style.font, style.fontColor));
 		label.setAlignment(Align.CENTER);
@@ -101,13 +97,13 @@ public class TextButton extends Button {
 			this.downFontColor = downFontColor;
 			this.checkedFontColor = checkedFontColor;
 		}
-		
-		public TextButtonStyle(TextButtonStyle style) {
+
+		public TextButtonStyle (TextButtonStyle style) {
 			super(style);
 			this.font = style.font;
-			if(style.fontColor != null) this.fontColor = new Color(style.fontColor);
-			if(style.downFontColor != null) this.downFontColor = new Color(style.downFontColor);
-			if(style.checkedFontColor != null) this.checkedFontColor = new Color(style.checkedFontColor);
+			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
+			if (style.downFontColor != null) this.downFontColor = new Color(style.downFontColor);
+			if (style.checkedFontColor != null) this.checkedFontColor = new Color(style.checkedFontColor);
 		}
 	}
 }

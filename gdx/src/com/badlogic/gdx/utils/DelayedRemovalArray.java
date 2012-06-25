@@ -54,7 +54,9 @@ public class DelayedRemovalArray<T> extends Array<T> {
 
 	private void remove (int index) {
 		for (int i = 0, n = remove.size; i < n; i++) {
-			if (index < remove.get(i)) {
+			int removeIndex = remove.get(i);
+			if (index == removeIndex) return;
+			if (index < removeIndex) {
 				remove.insert(i, index);
 				return;
 			}
@@ -81,52 +83,52 @@ public class DelayedRemovalArray<T> extends Array<T> {
 	}
 
 	public void set (int index, T value) {
-		if (iterating) throw new IllegalStateException("Invalid during snapshot.");
+		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
 		super.set(index, value);
 	}
 
 	public void insert (int index, T value) {
-		if (iterating) throw new IllegalStateException("Invalid during snapshot.");
+		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
 		super.insert(index, value);
 	}
 
 	public void swap (int first, int second) {
-		if (iterating) throw new IllegalStateException("Invalid during snapshot.");
+		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
 		super.swap(first, second);
 	}
 
 	public T pop () {
-		if (iterating) throw new IllegalStateException("Invalid during snapshot.");
+		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
 		return super.pop();
 	}
 
 	public void clear () {
-		if (iterating) throw new IllegalStateException("Invalid during snapshot.");
+		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
 		super.clear();
 	}
 
 	public void sort () {
-		if (iterating) throw new IllegalStateException("Invalid during snapshot.");
+		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
 		super.sort();
 	}
 
 	public void sort (Comparator<T> comparator) {
-		if (iterating) throw new IllegalStateException("Invalid during snapshot.");
+		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
 		super.sort(comparator);
 	}
 
 	public void reverse () {
-		if (iterating) throw new IllegalStateException("Invalid during snapshot.");
+		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
 		super.reverse();
 	}
 
 	public void shuffle () {
-		if (iterating) throw new IllegalStateException("Invalid during snapshot.");
+		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
 		super.shuffle();
 	}
 
 	public void truncate (int newSize) {
-		if (iterating) throw new IllegalStateException("Invalid during snapshot.");
+		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
 		super.truncate(newSize);
 	}
 }

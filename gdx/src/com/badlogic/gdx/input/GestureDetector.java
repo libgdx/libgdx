@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.Timer.Task;
  * @author mzechner */
 public class GestureDetector extends InputAdapter {
 	final GestureListener listener;
-	private int tapSquareSize;
+	private float tapSquareSize;
 	private long tapCountInterval;
 	private float longPressSeconds;
 	private long maxFlingDelay;
@@ -51,8 +51,7 @@ public class GestureDetector extends InputAdapter {
 
 	private final Task longPressTask = new Task() {
 		public void run () {
-			longPressFired = true;
-			listener.longPress(pointer1.x, pointer1.y);
+			if (listener.longPress(pointer1.x, pointer1.y)) longPressFired = true;
 		}
 	};
 
@@ -70,7 +69,7 @@ public class GestureDetector extends InputAdapter {
 	 * @param maxFlingDelay time in seconds the finger must have been dragged for a fling event to be fired, see
 	 *           {@link GestureListener#fling(float, float)}
 	 * @param listener May be null if the listener will be set later. */
-	public GestureDetector (int halfTapSquareSize, float tapCountInterval, float longPressDuration, float maxFlingDelay,
+	public GestureDetector (float halfTapSquareSize, float tapCountInterval, float longPressDuration, float maxFlingDelay,
 		GestureListener listener) {
 		this.tapSquareSize = halfTapSquareSize;
 		this.tapCountInterval = (long)(tapCountInterval * 1000000000l);
@@ -186,7 +185,7 @@ public class GestureDetector extends InputAdapter {
 			// handle pinch end
 			pinching = false;
 			panning = true;
-			// we are basically in pan/scroll mode again, reset velocity tracker
+			// we are in pan mode again, reset velocity tracker
 			if (pointer == 0) {
 				// first pointer has lifted off, set up panning to use the second pointer...
 				tracker.start(pointer2.x, pointer2.y, Gdx.input.getCurrentEventTime());
@@ -255,11 +254,9 @@ public class GestureDetector extends InputAdapter {
 		 * @param pointer */
 		public boolean touchDown (float x, float y, int pointer);
 
-		/** Called when a tap occured. A tap happens if a finger went down on the screen and was lifted again without moving outside
+		/** Called when a tap occured. A tap happens if a touch went down on the screen and was lifted again without moving outside
 		 * of the tap square. The tap square is a rectangular area around the initial touch position as specified on construction
 		 * time of the {@link GestureDetector}.
-		 * @param x
-		 * @param y
 		 * @param count the number of taps. */
 		public boolean tap (float x, float y, int count);
 

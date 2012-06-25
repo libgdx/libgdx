@@ -4,10 +4,10 @@ package com.badlogic.gdx.scenes.scene2d;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 public class Event implements Poolable {
-	Stage stage;
+	private Stage stage;
 	private Actor targetActor; // deepest actor hit
 	private Actor contextActor; // current actor being notified about event
-	boolean capture;
+	private boolean capture;
 	private boolean bubbles = true; // true means propagate to target's parents
 	private boolean handled; // true means the event was handled (the stage will eat the input)
 	private boolean stopped; // true means event propagation was stopped
@@ -74,8 +74,16 @@ public class Event implements Poolable {
 		return cancelled;
 	}
 
+	public void setCapture (boolean capture) {
+		this.capture = capture;
+	}
+
 	public boolean isCapture () {
 		return capture;
+	}
+
+	public void setStage (Stage stage) {
+		this.stage = stage;
 	}
 
 	public Stage getStage () {

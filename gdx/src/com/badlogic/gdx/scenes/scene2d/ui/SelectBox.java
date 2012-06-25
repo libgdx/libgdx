@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -23,6 +26,8 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
@@ -38,7 +43,7 @@ public class SelectBox extends Widget {
 	int selection = 0;
 	private final TextBounds bounds = new TextBounds();
 	final Vector2 screenCoords = new Vector2();
-	private SelectList list = null;
+	SelectList list;
 	SelectionListener listener;
 	private float prefWidth, prefHeight;
 
@@ -47,19 +52,30 @@ public class SelectBox extends Widget {
 	}
 
 	public SelectBox (Object[] items, Skin skin) {
-		this(items, skin.getStyle(SelectBoxStyle.class), null);
+		this(items, skin.getStyle(SelectBoxStyle.class));
 	}
 
 	public SelectBox (Object[] items, SelectBoxStyle style) {
-		this(items, style, null);
-	}
-
-	public SelectBox (Object[] items, SelectBoxStyle style, String name) {
-		super(name);
 		setStyle(style);
 		setItems(items);
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
+
+		addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				if (pointer != 0) return false;
+				if (list != null && list.getParent() != null) {
+					list.remove();
+					return true;
+				}
+				Stage stage = getStage();
+				Vector2 stageCoords = Vector2.tmp;
+				stage.toStageCoordinates((int)screenCoords.x, (int)screenCoords.y, stageCoords);
+				list = new SelectList(stageCoords.x, stageCoords.y);
+				stage.addActor(list);
+				return true;
+			}
+		});
 	}
 
 	public void setStyle (SelectBoxStyle style) {
@@ -132,22 +148,7 @@ public class SelectBox extends Widget {
 		}
 
 		// calculate screen coords where list should be displayed
-		ScissorStack.toWindowCoordinates(getStage().getCamera(), batch.getTransformMatrix(), screenCoords.set(x, y));
-	}
-
-	@Override
-	public boolean touchDown (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-		if (list != null && list.getParent() != null) {
-			list.remove();
-			return true;
-		}
-		Stage stage = getStage();
-		Vector2 stageCoords = stage.toStageCoordinates((int)screenCoords.x, (int)screenCoords.y);
-		list = new SelectList(getName() + "-list", stageCoords.x, stageCoords.y);
-		stage.addActor(list);
-		stage.setTouchFocus(list, 0);
-		return true;
+		getStage().toScreenCoordinates(screenCoords.set(x, y), batch.getTransformMatrix());
 	}
 
 	/** Sets the {@link SelectionListener}.
@@ -193,13 +194,43 @@ public class SelectBox extends Widget {
 		float itemHeight;
 		float textOffsetX, textOffsetY;
 		int selected = SelectBox.this.selection;
-		boolean ownsTouch = false;
 
-		public SelectList (String name, float x, float y) {
-			super(name);
-			setX(x);
-			setWidth(SelectBox.this.getWidth());
-			setHeight(100);
+		ActorListener stageListener = new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				if (pointer != 0) return false;
+				toLocalCoordinates(Vector2.tmp);
+				x = Vector2.tmp.x;
+				y = Vector2.tmp.y;
+				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
+					selected = (int)((getHeight() - y) / itemHeight);
+					selected = Math.max(0, selected);
+					selected = Math.min(items.length - 1, selected);
+					selection = selected;
+					if (items.length > 0 && listener != null) listener.selected(SelectBox.this, selected, items[selected]);
+				}
+				return true;
+			}
+
+			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+				remove();
+				event.getStage().removeCaptureListener(stageListener);
+			}
+
+			public boolean mouseMoved (ActorEvent event, float x, float y) {
+				toLocalCoordinates(Vector2.tmp);
+				x = Vector2.tmp.x;
+				y = Vector2.tmp.y;
+				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
+					selected = (int)((getHeight() - y) / itemHeight);
+					selected = Math.max(0, selected);
+					selected = Math.min(items.length - 1, selected);
+				}
+				return true;
+			}
+		};
+
+		public SelectList (float x, float y) {
+			setBounds(x, 0, SelectBox.this.getWidth(), 100);
 			this.oldScreenCoords.set(screenCoords);
 			layout();
 			Stage stage = SelectBox.this.getStage();
@@ -208,6 +239,7 @@ public class SelectBox extends Widget {
 				setY(y + SelectBox.this.getHeight());
 			else
 				setY(y - height);
+			stage.addCaptureListener(stageListener);
 		}
 
 		private void layout () {
@@ -264,38 +296,6 @@ public class SelectBox extends Widget {
 				font.setScale(1, 1);
 				posY -= itemHeight;
 			}
-		}
-
-		@Override
-		public boolean touchDown (float x, float y, int pointer) {
-			if (pointer != 0) return false;
-			ownsTouch = true;
-			if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
-				selected = (int)((getHeight() - y) / itemHeight);
-				selected = Math.max(0, selected);
-				selected = Math.min(items.length - 1, selected);
-				selection = selected;
-				if (items.length > 0 && listener != null) listener.selected(SelectBox.this, selected, items[selected]);
-			}
-			return super.touchDown(x, y, pointer);
-		}
-
-		@Override
-		public void touchUp (float x, float y, int pointer) {
-			if (ownsTouch) remove();
-			ownsTouch = false;
-			super.touchUp(x, y, pointer);
-		}
-
-		@Override
-		public boolean touchMoved (float x, float y) {
-			if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
-				selected = (int)((getHeight() - y) / itemHeight);
-				selected = Math.max(0, selected);
-				selected = Math.min(items.length - 1, selected);
-			}
-			super.mouseMoved(x, y);
-			return true;
 		}
 
 		@Override

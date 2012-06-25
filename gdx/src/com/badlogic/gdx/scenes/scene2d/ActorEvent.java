@@ -91,6 +91,6 @@ public class ActorEvent extends Event {
 	}
 
 	static public enum Type {
-		touchDown, touchUp, touchDragged, touchMoved, enter, exit, scrolled, keyDown, keyUp, keyTyped
+		touchDown, touchUp, touchDragged, mouseMoved, enter, exit, scrolled, keyDown, keyUp, keyTyped
 	}
 }

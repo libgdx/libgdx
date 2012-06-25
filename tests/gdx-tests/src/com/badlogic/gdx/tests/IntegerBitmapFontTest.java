@@ -53,10 +53,6 @@ public class IntegerBitmapFontTest extends GdxTest {
 	public void dispose () {
 		batch.dispose();
 		font.dispose();
-		singleLineCache.dispose();
-		singleLineCacheNonInteger.dispose();
-		multiLineCache.dispose();
-		multiLineCacheNonInteger.dispose();
 	}
 
 	public void render () {

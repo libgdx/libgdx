@@ -66,6 +66,7 @@ public class UITest extends GdxTest {
 	Texture texture1;
 	Texture texture2;
 	Actor root;
+	Label fpsLabel;
 
 	@Override
 	public void create () {
@@ -80,23 +81,22 @@ public class UITest extends GdxTest {
 
 		// Group.debug = true;
 
-		final Button button = new TextButton("Single", skin.getStyle(TextButtonStyle.class), "button-sl");
-		final Button buttonMulti = new TextButton("Multi\nLine\nToggle", skin.getStyle("toggle", TextButtonStyle.class),
-			"button-ml-tgl");
+		final Button button = new TextButton("Single", skin.getStyle(TextButtonStyle.class));
+		final Button buttonMulti = new TextButton("Multi\nLine\nToggle", skin.getStyle("toggle", TextButtonStyle.class));
 		final Button imgButton = new Button(new Image(image), skin.getStyle(ButtonStyle.class));
 		final Button imgToggleButton = new Button(new Image(image), skin.getStyle("toggle", ButtonStyle.class));
-		final CheckBox checkBox = new CheckBox("Check me", skin.getStyle(CheckBoxStyle.class), "checkbox");
-		final Slider slider = new Slider(0, 10, 1, skin.getStyle(SliderStyle.class), "slider");
-		final TextField textfield = new TextField("", "Click here!", skin.getStyle(TextFieldStyle.class), "textfield");
+		final CheckBox checkBox = new CheckBox("Check me", skin.getStyle(CheckBoxStyle.class));
+		final Slider slider = new Slider(0, 10, 1, skin.getStyle(SliderStyle.class));
+		final TextField textfield = new TextField("", "Click here!", skin.getStyle(TextFieldStyle.class));
 		final SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX"},
-			skin.getStyle(SelectBoxStyle.class), "combo");
+			skin.getStyle(SelectBoxStyle.class));
 		final Image imageActor = new Image(image2);
-		final FlickScrollPane scrollPane = new FlickScrollPane(imageActor, "flickscroll");
-		final List list = new List(listEntries, skin.getStyle(ListStyle.class), "list");
-		final ScrollPane scrollPane2 = new ScrollPane(list, skin.getStyle(ScrollPaneStyle.class), "scroll");
+		final FlickScrollPane scrollPane = new FlickScrollPane(imageActor);
+		final List list = new List(listEntries, skin.getStyle(ListStyle.class));
+		final ScrollPane scrollPane2 = new ScrollPane(list, skin.getStyle(ScrollPaneStyle.class));
 		final SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, skin.getStyle("default-horizontal",
-			SplitPaneStyle.class), "split");
-		final Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "label");
+			SplitPaneStyle.class));
+		fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class));
 
 		// configures an example of a TextField in password mode.
 		final Label passwordLabel = new Label("Textfield in password mode: ", skin);
@@ -105,7 +105,7 @@ public class UITest extends GdxTest {
 		passwordTextField.setPasswordMode(true);
 
 		// window.debug();
-		Window window = new Window("Dialog", skin.getStyle(WindowStyle.class), "window");
+		Window window = new Window("Dialog", skin.getStyle(WindowStyle.class));
 		window.setPosition(0, 0);
 		window.defaults().spaceBottom(10);
 		window.row().fill().expandX();
@@ -149,7 +149,7 @@ public class UITest extends GdxTest {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		//((Label)stage.findActor("label")).setText("fps: " + Gdx.graphics.getFramesPerSecond());
+		fpsLabel.setText("fps: " + Gdx.graphics.getFramesPerSecond());
 
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();

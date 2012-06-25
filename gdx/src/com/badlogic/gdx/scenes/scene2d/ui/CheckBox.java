@@ -17,16 +17,12 @@ public class CheckBox extends TextButton {
 		this("", skin);
 	}
 
-	public CheckBox (String text, CheckBoxStyle style) {
-		this(text, style, null);
-	}
-
 	public CheckBox (String text, Skin skin) {
-		this(text, skin.getStyle(CheckBoxStyle.class), null);
+		this(text, skin.getStyle(CheckBoxStyle.class));
 	}
 
-	public CheckBox (String text, CheckBoxStyle style, String name) {
-		super(text, style, name);
+	public CheckBox (String text, CheckBoxStyle style) {
+		super(text, style);
 		clear();
 		add(image = new Image(style.checkboxOff));
 		Label label = getLabel();
@@ -71,8 +67,8 @@ public class CheckBox extends TextButton {
 			this.font = font;
 			this.fontColor = fontColor;
 		}
-		
-		public CheckBoxStyle(CheckBoxStyle style) {
+
+		public CheckBoxStyle (CheckBoxStyle style) {
 			this.checkboxOff = style.checkboxOff;
 			this.checkboxOn = style.checkboxOn;
 			this.font = style.font;

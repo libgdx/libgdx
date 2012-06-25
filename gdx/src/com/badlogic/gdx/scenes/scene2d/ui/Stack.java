@@ -39,18 +39,13 @@ import com.badlogic.gdx.utils.Array;
  * @author Nathan Sweet */
 public class Stack extends WidgetGroup {
 	public Stack () {
-		this(null);
-	}
-
-	public Stack (String name) {
-		super(name);
 		setTransform(false);
 		setWidth(150);
 		setHeight(150);
 	}
 
 	public void layout () {
-		Array<Actor> children = getActors();
+		Array<Actor> children = getChildren();
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
 			child.setBounds(0, 0, getWidth(), getHeight());
@@ -64,7 +59,7 @@ public class Stack extends WidgetGroup {
 
 	public float getPrefWidth () {
 		float width = 0;
-		Array<Actor> children = getActors();
+		Array<Actor> children = getChildren();
 		for (int i = 0, n = children.size; i < n; i++)
 			width = Math.max(width, LibgdxToolkit.instance.getPrefWidth(children.get(i)));
 		return width * getScaleX();
@@ -72,14 +67,14 @@ public class Stack extends WidgetGroup {
 
 	public float getPrefHeight () {
 		float height = 0;
-		Array<Actor> children = getActors();
+		Array<Actor> children = getChildren();
 		for (int i = 0, n = children.size; i < n; i++)
 			height = Math.max(height, LibgdxToolkit.instance.getPrefHeight(children.get(i)));
 		return height * getScaleY();
 	}
 
 	public float getMaxWidth () {
-		Array<Actor> children = getActors();
+		Array<Actor> children = getChildren();
 		if (children.size == 0) return 0;
 		float width = 0;
 		for (int i = 0, n = children.size; i < n; i++) {
@@ -90,7 +85,7 @@ public class Stack extends WidgetGroup {
 	}
 
 	public float getMaxHeight () {
-		Array<Actor> children = getActors();
+		Array<Actor> children = getChildren();
 		if (children.size == 0) return 0;
 		float height = 0;
 		for (int i = 0, n = children.size; i < n; i++) {
@@ -102,7 +97,7 @@ public class Stack extends WidgetGroup {
 
 	public float getMinWidth () {
 		float width = 0;
-		Array<Actor> children = getActors();
+		Array<Actor> children = getChildren();
 		for (int i = 0, n = children.size; i < n; i++)
 			width = Math.max(width, LibgdxToolkit.instance.getMinWidth(children.get(i)));
 		return width * getScaleX();
@@ -110,7 +105,7 @@ public class Stack extends WidgetGroup {
 
 	public float getMinHeight () {
 		float height = 0;
-		Array<Actor> children = getActors();
+		Array<Actor> children = getChildren();
 		for (int i = 0, n = children.size; i < n; i++)
 			height = Math.max(height, LibgdxToolkit.instance.getMinHeight(children.get(i)));
 		return height * getScaleY();

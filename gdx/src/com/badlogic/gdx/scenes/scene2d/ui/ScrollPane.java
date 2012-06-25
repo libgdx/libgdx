@@ -23,6 +23,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
@@ -40,19 +42,19 @@ public class ScrollPane extends WidgetGroup {
 	private ScrollPaneStyle style;
 	private Actor widget;
 
-	private final Rectangle hScrollBounds = new Rectangle();
-	private final Rectangle vScrollBounds = new Rectangle();
-	private final Rectangle hKnobBounds = new Rectangle();
-	private final Rectangle vKnobBounds = new Rectangle();
+	final Rectangle hScrollBounds = new Rectangle();
+	final Rectangle vScrollBounds = new Rectangle();
+	final Rectangle hKnobBounds = new Rectangle();
+	final Rectangle vKnobBounds = new Rectangle();
 	private final Rectangle widgetAreaBounds = new Rectangle();
 	private final Rectangle widgetCullingArea = new Rectangle();
 	private final Rectangle scissorBounds = new Rectangle();
 
-	private boolean scrollX, scrollY;
+	boolean scrollX, scrollY;
 	private float amountX, amountY;
-	private boolean touchScrollH, touchScrollV;
-	private final Vector2 lastPoint = new Vector2();
-	private float handlePosition;
+	boolean touchScrollH, touchScrollV;
+	final Vector2 lastPoint = new Vector2();
+	float handlePosition;
 	private boolean disableX, disableY;
 	private float areaWidth, areaHeight;
 
@@ -62,17 +64,11 @@ public class ScrollPane extends WidgetGroup {
 
 	/** @param widget May be null. */
 	public ScrollPane (Actor widget, Skin skin) {
-		this(widget, skin.getStyle(ScrollPaneStyle.class), null);
+		this(widget, skin.getStyle(ScrollPaneStyle.class));
 	}
 
 	/** @param widget May be null. */
 	public ScrollPane (Actor widget, ScrollPaneStyle style) {
-		this(widget, style, null);
-	}
-
-	/** @param widget May be null. */
-	public ScrollPane (Actor widget, ScrollPaneStyle style, String name) {
-		super(name);
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.widget = widget;
 		this.style = style;
@@ -81,6 +77,64 @@ public class ScrollPane extends WidgetGroup {
 		}
 		setWidth(150);
 		setHeight(150);
+
+		addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				if (pointer != 0) return false;
+
+				if (scrollX && hScrollBounds.contains(x, y)) {
+					if (hKnobBounds.contains(x, y)) {
+						lastPoint.set(x, y);
+						handlePosition = hKnobBounds.x;
+						touchScrollH = true;
+						return true;
+					}
+					if (x < hKnobBounds.x)
+						setScrollPercentX(Math.max(0, getScrollPercentX() - 0.1f));
+					else
+						setScrollPercentX(Math.min(1, getScrollPercentX() + 0.1f));
+					return false;
+				} else if (scrollY && vScrollBounds.contains(x, y)) {
+					if (vKnobBounds.contains(x, y)) {
+						lastPoint.set(x, y);
+						handlePosition = vKnobBounds.y;
+						touchScrollV = true;
+						return true;
+					}
+					if (y < vKnobBounds.y)
+						setScrollPercentY(Math.max(0, getScrollPercentY() + 0.1f));
+					else
+						setScrollPercentY(Math.min(1, getScrollPercentY() - 0.1f));
+					return false;
+				}
+				return false;
+			}
+
+			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+				touchScrollH = false;
+				touchScrollV = false;
+			}
+
+			public void touchDragged (ActorEvent event, float x, float y, int pointer) {
+				if (touchScrollH) {
+					float delta = x - lastPoint.x;
+					float scrollH = handlePosition + delta;
+					handlePosition = scrollH;
+					scrollH = Math.max(hScrollBounds.x, scrollH);
+					scrollH = Math.min(hScrollBounds.x + hScrollBounds.width - hKnobBounds.width, scrollH);
+					setScrollPercentX((scrollH - hScrollBounds.x) / (hScrollBounds.width - hKnobBounds.width));
+					lastPoint.set(x, y);
+				} else if (touchScrollV) {
+					float delta = y - lastPoint.y;
+					float scrollV = handlePosition + delta;
+					handlePosition = scrollV;
+					scrollV = Math.max(vScrollBounds.y, scrollV);
+					scrollV = Math.min(vScrollBounds.y + vScrollBounds.height - vKnobBounds.height, scrollV);
+					setScrollPercentY(1 - ((scrollV - vScrollBounds.y) / (vScrollBounds.height - vKnobBounds.height)));
+					lastPoint.set(x, y);
+				}
+			}
+		});
 	}
 
 	public void setStyle (ScrollPaneStyle style) {
@@ -251,68 +305,6 @@ public class ScrollPane extends WidgetGroup {
 
 	public float getMinHeight () {
 		return 0;
-	}
-
-	@Override
-	public boolean touchDown (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-
-		if (scrollX && hScrollBounds.contains(x, y)) {
-			if (hKnobBounds.contains(x, y)) {
-				lastPoint.set(x, y);
-				handlePosition = hKnobBounds.x;
-				touchScrollH = true;
-				return true;
-			}
-			if (x < hKnobBounds.x)
-				setScrollPercentX(Math.max(0, getScrollPercentX() - 0.1f));
-			else
-				setScrollPercentX(Math.min(1, getScrollPercentX() + 0.1f));
-			return false;
-		} else if (scrollY && vScrollBounds.contains(x, y)) {
-			if (vKnobBounds.contains(x, y)) {
-				lastPoint.set(x, y);
-				handlePosition = vKnobBounds.y;
-				touchScrollV = true;
-				return true;
-			}
-			if (y < vKnobBounds.y)
-				setScrollPercentY(Math.max(0, getScrollPercentY() + 0.1f));
-			else
-				setScrollPercentY(Math.min(1, getScrollPercentY() - 0.1f));
-			return false;
-		} else if (widgetAreaBounds.contains(x, y)) {
-			return super.touchDown(x, y, pointer);
-		} else
-			return false;
-	}
-
-	@Override
-	public void touchUp (float x, float y, int pointer) {
-		touchScrollH = false;
-		touchScrollV = false;
-	}
-
-	@Override
-	public void touchDragged (float x, float y, int pointer) {
-		if (touchScrollH) {
-			float delta = x - lastPoint.x;
-			float scrollH = handlePosition + delta;
-			handlePosition = scrollH;
-			scrollH = Math.max(hScrollBounds.x, scrollH);
-			scrollH = Math.min(hScrollBounds.x + hScrollBounds.width - hKnobBounds.width, scrollH);
-			setScrollPercentX((scrollH - hScrollBounds.x) / (hScrollBounds.width - hKnobBounds.width));
-			lastPoint.set(x, y);
-		} else if (touchScrollV) {
-			float delta = y - lastPoint.y;
-			float scrollV = handlePosition + delta;
-			handlePosition = scrollV;
-			scrollV = Math.max(vScrollBounds.y, scrollV);
-			scrollV = Math.min(vScrollBounds.y + vScrollBounds.height - vKnobBounds.height, scrollV);
-			setScrollPercentY(1 - ((scrollV - vScrollBounds.y) / (vScrollBounds.height - vKnobBounds.height)));
-			lastPoint.set(x, y);
-		} else
-			super.touchDragged(x, y, pointer);
 	}
 
 	/** Sets the {@link Actor} embedded in this scroll pane.

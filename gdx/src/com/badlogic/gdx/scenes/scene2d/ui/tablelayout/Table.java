@@ -60,19 +60,18 @@ public class Table extends WidgetGroup {
 	private boolean clip;
 
 	public Table () {
-		this(null, null, null);
+		this(null, null);
 	}
 
 	public Table (String name) {
-		this(null, null, name);
+		this(null, null);
 	}
 
 	public Table (Skin skin) {
-		this(skin, null, null);
+		this(skin, null);
 	}
 
-	public Table (Skin skin, TableLayout layout, String name) {
-		super(name);
+	public Table (Skin skin, TableLayout layout) {
 		setTransform(false);
 		if (layout == null) layout = new TableLayout();
 		this.layout = layout;
@@ -576,7 +575,7 @@ public class Table extends WidgetGroup {
 		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
 			if (actor instanceof Table) ((Table)actor).layout.drawDebug(batch);
-			if (actor instanceof Group) drawDebug(((Group)actor).getActors(), batch);
+			if (actor instanceof Group) drawDebug(((Group)actor).getChildren(), batch);
 		}
 	}
 }

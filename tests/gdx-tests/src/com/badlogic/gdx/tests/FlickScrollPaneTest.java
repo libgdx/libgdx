@@ -54,21 +54,30 @@ public class FlickScrollPaneTest extends GdxTest {
 		FlickScrollPane scroll = new FlickScrollPane(table);
 		container.add(scroll).expand().fill();
 
+		ActorListener stopTouchDown = new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				event.stop();
+				return false;
+			}
+		};
+
 		table.parse("pad:10 * expand:x space:4");
 		for (int i = 0; i < 100; i++) {
 			table.row();
 			table.add(new Label(i + "uno", skin)).expandX().fillX();
-			
-			TextButton button;
-			table.add(button = new TextButton(i + "dos", skin));
+
+			TextButton button = new TextButton(i + "dos", skin);
+			table.add(button);
 			button.addListener(new ClickListener() {
 				public void clicked (ActorEvent event, float x, float y) {
-					System.out.println(x + ", " + y);
+					System.out.println("click " + x + ", " + y);
 				}
 			});
-			
-			// table.add(new Slider(skin));
-			
+
+			Slider slider = new Slider(skin);
+			slider.addListener(stopTouchDown); // Stops touchDown events from propagating to the FlickScrollPane.
+			table.add(slider);
+
 			table.add(new Label(i + "tres long0 long1 long2 long3 long4 long5 long6 long7 long8 long9 long10 long11 long12", skin));
 		}
 
@@ -81,6 +90,7 @@ public class FlickScrollPaneTest extends GdxTest {
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 		Table.drawDebug(stage);
+		System.out.println(stage.touchFocuses);
 	}
 
 	public void resize (int width, int height) {

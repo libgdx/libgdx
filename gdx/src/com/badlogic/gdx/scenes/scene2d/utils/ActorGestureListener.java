@@ -18,8 +18,7 @@ public class ActorGestureListener extends ActorListener {
 		}
 
 		public boolean longPress (float x, float y) {
-			ActorGestureListener.this.longPress(event, x, y);
-			return true;
+			return ActorGestureListener.this.longPress(event, x, y);
 		}
 
 		public boolean fling (float velocityX, float velocityY) {
@@ -48,29 +47,25 @@ public class ActorGestureListener extends ActorListener {
 	public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
 		this.event = event;
 		detector.touchDown(x, y, pointer, 0);
-		event.getStage().addCaptureListener(this, event.getContextActor());
 		return true;
 	}
 
-	public boolean touchUp (ActorEvent event, float x, float y, int pointer, int button) {
-		if (!event.isCapture()) return false;
+	public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
 		this.event = event;
 		detector.touchUp(x, y, pointer, 0);
-		event.getStage().removeCaptureListener(this, event.getContextActor());
-		return true;
 	}
 
-	public boolean touchDragged (ActorEvent event, float x, float y, int pointer) {
-		if (!event.isCapture()) return false;
+	public void touchDragged (ActorEvent event, float x, float y, int pointer) {
 		this.event = event;
 		detector.touchDragged(x, y, pointer);
-		return true;
 	}
 
 	public void tap (ActorEvent event, float x, float y, int count) {
 	}
 
-	public void longPress (ActorEvent event, float x, float y) {
+	/** If true is returned, additional gestures will not be triggered. */
+	public boolean longPress (ActorEvent event, float x, float y) {
+		return false;
 	}
 
 	public void fling (ActorEvent event, float velocityX, float velocityY) {

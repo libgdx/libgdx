@@ -17,22 +17,20 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
-import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 
 // BOZO - Add feature that so first actor will never be cut off (eg for a file browser).
 
@@ -72,38 +70,32 @@ public class FlickScrollPane extends WidgetGroup {
 	private final Vector2 point = new Vector2();
 
 	public FlickScrollPane () {
-		this(null, null);
+		this(null);
 	}
 
 	/** @param widget May be null. */
 	public FlickScrollPane (Actor widget) {
-		this(widget, null);
-	}
-
-	/** @param widget May be null. */
-	public FlickScrollPane (Actor widget, String name) {
-		super(name);
 		this.widget = widget;
 		if (widget != null) setWidget(widget);
 
-		addListener(gestureListener = new ActorGestureListener() {
+		gestureListener = new ActorGestureListener() {
 			public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {
 				amountX -= deltaX;
 				amountY += deltaY;
 				clamp();
-				cancelTouchFocusedChild();
+				cancelTouchFocusedChild(event);
 			}
 
 			public void fling (ActorEvent event, float x, float y) {
 				if (Math.abs(x) > 150) {
 					flingTimer = flingTime;
 					velocityX = x;
-					cancelTouchFocusedChild();
+					cancelTouchFocusedChild(event);
 				}
 				if (Math.abs(y) > 150) {
 					flingTimer = flingTime;
 					velocityY = -y;
-					cancelTouchFocusedChild();
+					cancelTouchFocusedChild(event);
 				}
 			}
 
@@ -112,14 +104,18 @@ public class FlickScrollPane extends WidgetGroup {
 				flingTimer = 0;
 				return true;
 			}
-		});
+		};
+		addListener(gestureListener);
 
 		setWidth(150);
 		setHeight(150);
 	}
 
 	void cancelTouchFocusedChild (ActorEvent event) {
-		Actor actor = event.getContextActor();
+		Stage stage = getStage();
+		stage.removeTouchFocus(this, gestureListener, event.getPointer(), event.getPointer());
+		stage.cancelTouchFocus();
+		stage.addTouchFocus(this, gestureListener, event.getPointer(), event.getPointer());
 	}
 
 	void clamp () {
