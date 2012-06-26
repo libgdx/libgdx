@@ -17,7 +17,6 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -26,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
@@ -150,9 +150,9 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void layout () {
-		final NinePatch bg = style.background;
-		final NinePatch hScrollKnob = style.hScrollKnob;
-		final NinePatch vScrollKnob = style.vScrollKnob;
+		final Drawable bg = style.background;
+		final Drawable hScrollKnob = style.hScrollKnob;
+		final Drawable vScrollKnob = style.vScrollKnob;
 
 		// For no background, ex. background is drawn a parent who has two scroll area
 		float bgLeftWidth = bg == null ? 0 : bg.getLeftWidth();
@@ -187,17 +187,17 @@ public class ScrollPane extends WidgetGroup {
 		if (!disableY && widgetHeight > areaHeight) scrollY = true;
 
 		// Check again, now taking into account the area that's taken up by any enabled scrollbars.
-		if (!disableX && scrollY && widgetWidth > areaWidth - vScrollKnob.getTotalWidth()) {
+		if (!disableX && scrollY && widgetWidth > areaWidth - vScrollKnob.getMinWidth()) {
 			scrollX = true;
-			areaWidth -= vScrollKnob.getTotalWidth();
+			areaWidth -= vScrollKnob.getMinWidth();
 		}
-		if (!disableY && scrollX && widgetHeight > areaHeight - hScrollKnob.getTotalHeight()) {
+		if (!disableY && scrollX && widgetHeight > areaHeight - hScrollKnob.getMinHeight()) {
 			scrollY = true;
-			areaHeight -= hScrollKnob.getTotalHeight();
+			areaHeight -= hScrollKnob.getMinHeight();
 		}
 
 		// Set the widget area bounds.
-		widgetAreaBounds.set(bgLeftWidth, bgBottomHeight + (scrollX ? hScrollKnob.getTotalHeight() : 0), areaWidth, areaHeight);
+		widgetAreaBounds.set(bgLeftWidth, bgBottomHeight + (scrollX ? hScrollKnob.getMinHeight() : 0), areaWidth, areaHeight);
 		amountX = MathUtils.clamp(amountX, 0, widgetAreaBounds.x);
 		amountY = MathUtils.clamp(amountY, 0, widgetAreaBounds.y);
 
@@ -211,18 +211,17 @@ public class ScrollPane extends WidgetGroup {
 
 		// Set the bounds and scroll knob sizes if scrollbars are needed.
 		if (scrollX) {
-			hScrollBounds.set(bgLeftWidth, bgBottomHeight, areaWidth, hScrollKnob.getTotalHeight());
-			hKnobBounds.width = Math.max(hScrollKnob.getTotalWidth(), (int)(hScrollBounds.width * areaWidth / widget.getWidth()));
-			hKnobBounds.height = hScrollKnob.getTotalHeight();
+			hScrollBounds.set(bgLeftWidth, bgBottomHeight, areaWidth, hScrollKnob.getMinHeight());
+			hKnobBounds.width = Math.max(hScrollKnob.getMinWidth(), (int)(hScrollBounds.width * areaWidth / widget.getWidth()));
+			hKnobBounds.height = hScrollKnob.getMinHeight();
 			hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getScrollPercentX());
 			hKnobBounds.y = hScrollBounds.y;
 		}
 		if (scrollY) {
-			vScrollBounds.set(width - bgRightWidth - vScrollKnob.getTotalWidth(), height - bgTopHeight - areaHeight,
-				vScrollKnob.getTotalWidth(), areaHeight);
-			vKnobBounds.width = vScrollKnob.getTotalWidth();
-			vKnobBounds.height = Math.max(vScrollKnob.getTotalHeight(),
-				(int)(vScrollBounds.height * areaHeight / widget.getHeight()));
+			vScrollBounds.set(width - bgRightWidth - vScrollKnob.getMinWidth(), height - bgTopHeight - areaHeight,
+				vScrollKnob.getMinWidth(), areaHeight);
+			vKnobBounds.width = vScrollKnob.getMinWidth();
+			vKnobBounds.height = Math.max(vScrollKnob.getMinHeight(), (int)(vScrollBounds.height * areaHeight / widget.getHeight()));
 			vKnobBounds.x = vScrollBounds.x;
 			vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getScrollPercentY()));
 		}
@@ -407,18 +406,17 @@ public class ScrollPane extends WidgetGroup {
 	 * @author mzechner */
 	static public class ScrollPaneStyle {
 		/** Optional. */
-		public NinePatch background;
-		public NinePatch hScroll;
-		public NinePatch hScrollKnob;
-		public NinePatch vScroll;
-		public NinePatch vScrollKnob;
+		public Drawable background;
+		public Drawable hScroll;
+		public Drawable hScrollKnob;
+		public Drawable vScroll;
+		public Drawable vScrollKnob;
 
 		public ScrollPaneStyle () {
 		}
 
-		public ScrollPaneStyle (NinePatch backgroundPatch, NinePatch hScroll, NinePatch hScrollKnob, NinePatch vScroll,
-			NinePatch vScrollKnob) {
-			this.background = backgroundPatch;
+		public ScrollPaneStyle (Drawable background, Drawable hScroll, Drawable hScrollKnob, Drawable vScroll, Drawable vScrollKnob) {
+			this.background = background;
 			this.hScroll = hScroll;
 			this.hScrollKnob = hScrollKnob;
 			this.vScroll = vScroll;

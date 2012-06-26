@@ -26,10 +26,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider.ValueChangedListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -90,25 +91,22 @@ public class SoundTest extends GdxTest {
 				sound.stop(soundId);
 			}
 		});
-		pitch.setValueChangedListener(new ValueChangedListener() {
-			@Override
-			public void changed (Slider slider, float value) {
-				sound.setPitch(soundId, value);
-				pitchValue.setText("" + value);
+		pitch.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				sound.setPitch(soundId, pitch.getValue());
+				pitchValue.setText("" + pitch.getValue());
 			}
 		});
-		volume.setValueChangedListener(new ValueChangedListener() {
-			@Override
-			public void changed (Slider slider, float value) {
-				sound.setVolume(soundId, value);
-				volumeValue.setText("" + value);
+		volume.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				sound.setVolume(soundId, volume.getValue());
+				volumeValue.setText("" + volume.getValue());
 			}
 		});
-		pan.setValueChangedListener(new ValueChangedListener() {
-			@Override
-			public void changed (Slider slider, float value) {
-				sound.setPan(soundId, value, volume.getValue());
-				panValue.setText("" + value);
+		pan.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				sound.setPan(soundId, pan.getValue(), volume.getValue());
+				panValue.setText("" + pan.getValue());
 			}
 		});
 		Gdx.input.setInputProcessor(ui);
@@ -120,7 +118,7 @@ public class SoundTest extends GdxTest {
 		ui.act(Gdx.graphics.getDeltaTime());
 		ui.draw();
 	}
-	
+
 	@Override
 	public void dispose () {
 		ui.dispose();

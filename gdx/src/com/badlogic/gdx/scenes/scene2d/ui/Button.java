@@ -7,7 +7,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 
 /** A button is a {@link Table} with a checked state and additional {@link ButtonStyle style} fields for pressed, unpressed, and
@@ -47,33 +51,37 @@ public class Button extends Table {
 	private void initialize () {
 		addListener(clickListener = new ClickListener() {
 			public void clicked (ActorEvent event, float x, float y) {
+				boolean wasChecked = isChecked;
 				setChecked(!isChecked);
+				if (wasChecked != isChecked && fire(new ChangeEvent())) setChecked(wasChecked);
 			}
 		});
 	}
 
 	public Button (TextureRegion region) {
-		this(new ButtonStyle(new NinePatch(region), null, null, 0f, 0f, 0f, 0f));
+		this(new ButtonStyle(new TextureRegionDrawable(region), null, null, 0f, 0f, 0f, 0f));
 	}
 
 	public Button (TextureRegion regionUp, TextureRegion regionDown) {
-		this(new ButtonStyle(new NinePatch(regionUp), new NinePatch(regionDown), null, 0f, 0f, 0f, 0f));
+		this(new ButtonStyle(new TextureRegionDrawable(regionUp), new TextureRegionDrawable(regionDown), null, 0f, 0f, 0f, 0f));
 	}
 
 	public Button (TextureRegion regionUp, TextureRegion regionDown, TextureRegion regionChecked) {
-		this(new ButtonStyle(new NinePatch(regionUp), new NinePatch(regionDown), new NinePatch(regionChecked), 0f, 0f, 0f, 0f));
+		this(new ButtonStyle(new TextureRegionDrawable(regionUp), new TextureRegionDrawable(regionDown), new TextureRegionDrawable(
+			regionChecked), 0f, 0f, 0f, 0f));
 	}
 
 	public Button (NinePatch patch) {
-		this(new ButtonStyle(patch, null, null, 0f, 0f, 0f, 0f));
+		this(new ButtonStyle(new NinePatchDrawable(patch), null, null, 0f, 0f, 0f, 0f));
 	}
 
 	public Button (NinePatch patchUp, NinePatch patchDown) {
-		this(new ButtonStyle(patchUp, patchDown, null, 0f, 0f, 0f, 0f));
+		this(new ButtonStyle(new NinePatchDrawable(patchUp), new NinePatchDrawable(patchDown), null, 0f, 0f, 0f, 0f));
 	}
 
 	public Button (NinePatch patchUp, NinePatch patchDown, NinePatch patchChecked) {
-		this(new ButtonStyle(patchUp, patchDown, patchChecked, 0f, 0f, 0f, 0f));
+		this(new ButtonStyle(new NinePatchDrawable(patchUp), new NinePatchDrawable(patchDown), new NinePatchDrawable(patchChecked),
+			0f, 0f, 0f, 0f));
 	}
 
 	public Button (Actor child, Skin skin) {
@@ -131,17 +139,17 @@ public class Button extends Table {
 
 	public float getPrefWidth () {
 		float width = getTableLayout().getPrefWidth();
-		if (style.up != null) width = Math.max(width, style.up.getTotalWidth());
-		if (style.down != null) width = Math.max(width, style.down.getTotalWidth());
-		if (style.checked != null) width = Math.max(width, style.checked.getTotalWidth());
+		if (style.up != null) width = Math.max(width, style.up.getMinWidth());
+		if (style.down != null) width = Math.max(width, style.down.getMinWidth());
+		if (style.checked != null) width = Math.max(width, style.checked.getMinWidth());
 		return width;
 	}
 
 	public float getPrefHeight () {
 		float height = getTableLayout().getPrefHeight();
-		if (style.up != null) height = Math.max(height, style.up.getTotalHeight());
-		if (style.down != null) height = Math.max(height, style.down.getTotalHeight());
-		if (style.checked != null) height = Math.max(height, style.checked.getTotalHeight());
+		if (style.up != null) height = Math.max(height, style.up.getMinHeight());
+		if (style.down != null) height = Math.max(height, style.down.getMinHeight());
+		if (style.checked != null) height = Math.max(height, style.checked.getMinHeight());
 		return height;
 	}
 
@@ -157,7 +165,7 @@ public class Button extends Table {
 	 * @author mzechner */
 	static public class ButtonStyle {
 		/** Optional. */
-		public NinePatch down, up, checked;
+		public Drawable down, up, checked;
 		/** Optional. */
 		public float pressedOffsetX, pressedOffsetY;
 		/** Optional. */
@@ -166,7 +174,7 @@ public class Button extends Table {
 		public ButtonStyle () {
 		}
 
-		public ButtonStyle (NinePatch up, NinePatch down, NinePatch checked, float pressedOffsetX, float pressedOffsetY,
+		public ButtonStyle (Drawable up, Drawable down, Drawable checked, float pressedOffsetX, float pressedOffsetY,
 			float unpressedOffsetX, float unpressedOffsetY) {
 			this.down = down;
 			this.up = up;

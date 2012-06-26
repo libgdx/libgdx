@@ -33,9 +33,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectionListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.PerspectiveCamController;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -121,9 +121,9 @@ public class ShadowMappingTest extends GdxTest {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 
 		Label label = new Label("Camera:", skin.getStyle(LabelStyle.class));
-		SelectBox cameraCombo = new SelectBox(new String[] {"Scene", "Light"}, skin.getStyle(SelectBoxStyle.class));
+		final SelectBox cameraCombo = new SelectBox(new String[] {"Scene", "Light"}, skin.getStyle(SelectBoxStyle.class));
 		Label label2 = new Label("Shader", skin.getStyle(LabelStyle.class));
-		SelectBox shaderCombo = new SelectBox(new String[] {"flat", "shadow-gen", "shadow-map"},
+		final SelectBox shaderCombo = new SelectBox(new String[] {"flat", "shadow-gen", "shadow-map"},
 			skin.getStyle(SelectBoxStyle.class));
 		fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class));
 
@@ -139,10 +139,9 @@ public class ShadowMappingTest extends GdxTest {
 		table.setY(ui.getHeight() - 100);
 		ui.addActor(table);
 
-		cameraCombo.setSelectionListener(new SelectionListener() {
-			@Override
-			public void selected (Actor comboBox, int selectionIndex, String selection) {
-				if (selectionIndex == 0)
+		cameraCombo.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				if (cameraCombo.getSelectionIndex() == 0)
 					currCam = cam;
 				else
 					currCam = lightCam;
@@ -150,12 +149,12 @@ public class ShadowMappingTest extends GdxTest {
 			}
 		});
 
-		shaderCombo.setSelectionListener(new SelectionListener() {
-			@Override
-			public void selected (Actor comboBox, int selectionIndex, String selection) {
-				if (selectionIndex == 0)
+		shaderCombo.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				int index = shaderCombo.getSelectionIndex();
+				if (index == 0)
 					currShader = flatShader;
-				else if (selectionIndex == 1)
+				else if (index == 1)
 					currShader = shadowGenShader;
 				else
 					currShader = shadowMapShader;

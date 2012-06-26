@@ -37,8 +37,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -46,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.tablelayout.Cell;
@@ -54,7 +53,7 @@ import com.esotericsoftware.tablelayout.ParseException;
 /** @author Nathan Sweet */
 public class Table extends WidgetGroup {
 	private final TableLayout layout;
-	private NinePatch backgroundPatch;
+	private Drawable backgroundDrawable;
 	private final Rectangle tableBounds = new Rectangle();
 	private final Rectangle scissors = new Rectangle();
 	private boolean clip;
@@ -103,10 +102,10 @@ public class Table extends WidgetGroup {
 	/** Called to draw the background, before clipping is applied (if enabled). Default implementation draws the background nine
 	 * patch. */
 	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
-		if (backgroundPatch != null) {
+		if (backgroundDrawable != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			backgroundPatch.draw(batch, getX(), getY(), getWidth(), getHeight());
+			backgroundDrawable.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
 	}
 
@@ -115,7 +114,7 @@ public class Table extends WidgetGroup {
 		tableBounds.y = 0;
 		tableBounds.width = getWidth();
 		tableBounds.height = getHeight();
-		if (backgroundPatch != null) {
+		if (backgroundDrawable != null) {
 			tableBounds.x += layout.getToolkit().width(layout, layout.getPadLeft());
 			tableBounds.y += layout.getToolkit().width(layout, layout.getPadBottom());
 			tableBounds.width -= tableBounds.x + layout.getToolkit().width(layout, layout.getPadRight());
@@ -130,12 +129,12 @@ public class Table extends WidgetGroup {
 	}
 
 	public float getPrefWidth () {
-		if (backgroundPatch != null) return Math.max(layout.getPrefWidth(), (int)backgroundPatch.getTotalWidth());
+		if (backgroundDrawable != null) return Math.max(layout.getPrefWidth(), (int)backgroundDrawable.getMinWidth());
 		return layout.getPrefWidth();
 	}
 
 	public float getPrefHeight () {
-		if (backgroundPatch != null) return Math.max(layout.getPrefHeight(), (int)backgroundPatch.getTotalHeight());
+		if (backgroundDrawable != null) return Math.max(layout.getPrefHeight(), (int)backgroundDrawable.getMinHeight());
 		return layout.getPrefHeight();
 	}
 
@@ -147,12 +146,12 @@ public class Table extends WidgetGroup {
 		return layout.getMinHeight();
 	}
 
-	/** Sets the background ninepatch and sets the table's padding to {@link NinePatch#getTopHeight()} ,
-	 * {@link NinePatch#getBottomHeight()}, {@link NinePatch#getLeftWidth()}, and {@link NinePatch#getRightWidth()}.
+	/** Sets the background drawable and sets the table's padding to {@link Drawable#getBottomHeight()} ,
+	 * {@link Drawable#getTopHeight()}, {@link Drawable#getLeftWidth()}, and {@link Drawable#getRightWidth()}.
 	 * @param background If null, no background will be set and all padding is removed. */
-	public void setBackground (NinePatch background) {
-		if (this.backgroundPatch == background) return;
-		this.backgroundPatch = background;
+	public void setBackground (Drawable background) {
+		if (this.backgroundDrawable == background) return;
+		this.backgroundDrawable = background;
 		if (background == null)
 			pad(null);
 		else {
@@ -164,8 +163,8 @@ public class Table extends WidgetGroup {
 		}
 	}
 
-	public NinePatch getBackgroundPatch () {
-		return backgroundPatch;
+	public Drawable getBackground () {
+		return backgroundDrawable;
 	}
 
 	/** Causes the contents to be clipped if they exceed the table bounds. Enabling clipping will set {@link #setTransform(boolean)}

@@ -8,6 +8,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 
 /** Displays a {@link TextureRegion} or {@link NinePatch}, scaled various way within the widgets bounds. The preferred size is the
@@ -15,67 +19,79 @@ import com.badlogic.gdx.utils.Scaling;
  * when drawing.
  * @author Nathan Sweet */
 public class Image extends Widget {
-	private TextureRegion region;
-	private NinePatch patch;
 	private Scaling scaling;
 	private int align = Align.CENTER;
 	private float imageX, imageY, imageWidth, imageHeight;
+	private Drawable drawable;
 
 	/** Creates an image with no region or patch, stretched, and aligned center. */
 	public Image () {
-		this((TextureRegion)null);
+		this((Drawable)null);
 	}
 
 	/** Creates an image stretched, and aligned center. */
 	public Image (Texture texture) {
-		this(new TextureRegion(texture));
+		this(new TextureDrawable(texture));
 	}
 
 	/** Creates an image aligned center. */
 	public Image (Texture texture, Scaling scaling) {
-		this(new TextureRegion(texture), scaling);
+		this(new TextureDrawable(texture), scaling);
 	}
 
 	public Image (Texture texture, Scaling scaling, int align) {
-		this(new TextureRegion(texture), scaling, align);
+		this(new TextureDrawable(texture), scaling, align);
 	}
 
 	/** Creates an image stretched, and aligned center.
 	 * @param region May be null. */
 	public Image (TextureRegion region) {
-		this(region, Scaling.stretch, Align.CENTER);
+		this(new TextureRegionDrawable(region), Scaling.stretch, Align.CENTER);
 	}
 
 	/** Creates an image aligned center.
 	 * @param region May be null. */
 	public Image (TextureRegion region, Scaling scaling) {
-		this(region, scaling, Align.CENTER);
+		this(new TextureRegionDrawable(region), scaling, Align.CENTER);
 	}
 
 	/** @param region May be null. */
 	public Image (TextureRegion region, Scaling scaling, int align) {
-		setRegion(region);
-		this.scaling = scaling;
-		this.align = align;
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		this(new TextureRegionDrawable(region), scaling, align);
 	}
 
 	/** Creates an image stretched, and aligned center.
 	 * @param patch May be null. */
 	public Image (NinePatch patch) {
-		this(patch, Scaling.stretch, Align.CENTER);
+		this(new NinePatchDrawable(patch), Scaling.stretch, Align.CENTER);
 	}
 
 	/** Creates an image aligned center.
 	 * @param patch May be null. */
 	public Image (NinePatch patch, Scaling scaling) {
-		this(patch, scaling, Align.CENTER);
+		this(new NinePatchDrawable(patch), scaling, Align.CENTER);
 	}
 
 	/** @param patch May be null. */
 	public Image (NinePatch patch, Scaling scaling, int align) {
-		setPatch(patch);
+		this(new NinePatchDrawable(patch));
+	}
+
+	/** Creates an image stretched, and aligned center.
+	 * @param drawable May be null. */
+	public Image (Drawable drawable) {
+		this(drawable, Scaling.stretch, Align.CENTER);
+	}
+
+	/** Creates an image aligned center.
+	 * @param drawable May be null. */
+	public Image (Drawable drawable, Scaling scaling) {
+		this(drawable, scaling, Align.CENTER);
+	}
+
+	/** @param drawable May be null. */
+	public Image (Drawable drawable, Scaling scaling, int align) {
+		setDrawable(drawable);
 		this.scaling = scaling;
 		this.align = align;
 		setWidth(getPrefWidth());
@@ -84,12 +100,9 @@ public class Image extends Widget {
 
 	public void layout () {
 		float regionWidth, regionHeight;
-		if (patch != null) {
-			regionWidth = patch.getTotalWidth();
-			regionHeight = patch.getTotalHeight();
-		} else if (region != null) {
-			regionWidth = Math.abs(region.getRegionWidth());
-			regionHeight = Math.abs(region.getRegionHeight());
+		if (drawable != null) {
+			regionWidth = drawable.getMinWidth();
+			regionHeight = drawable.getMinHeight();
 		} else
 			return;
 
@@ -126,50 +139,33 @@ public class Image extends Widget {
 		float scaleX = getScaleX();
 		float scaleY = getScaleY();
 
-		if (patch != null)
-			patch.draw(batch, x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);
-		else if (region != null) {
-			float rotation = getRotation();
-			if (scaleX == 1 && scaleY == 1 && rotation == 0)
-				batch.draw(region, x + imageX, y + imageY, imageWidth, imageHeight);
-			else {
-				batch.draw(region, x + imageX, y + imageY, getOriginX() - imageX, getOriginY() - imageY, imageWidth, imageHeight,
-					scaleX, scaleY, rotation);
-			}
+		if (drawable != null) {
+			if (drawable.getClass() == TextureRegionDrawable.class) {
+				TextureRegion region = ((TextureRegionDrawable)drawable).getRegion();
+				float rotation = getRotation();
+				if (scaleX == 1 && scaleY == 1 && rotation == 0)
+					batch.draw(region, x + imageX, y + imageY, imageWidth, imageHeight);
+				else {
+					batch.draw(region, x + imageX, y + imageY, getOriginX() - imageX, getOriginY() - imageY, imageWidth, imageHeight,
+						scaleX, scaleY, rotation);
+				}
+			} else
+				drawable.draw(batch, x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);
 		}
 	}
 
-	/** @param region May be null. */
-	public void setRegion (TextureRegion region) {
-		if (region != null) {
-			if (this.region == region) return;
-			if (getPrefWidth() != Math.abs(region.getRegionWidth()) || getPrefHeight() != Math.abs(region.getRegionHeight()))
-				invalidateHierarchy();
+	public void setDrawable (Drawable drawable) {
+		if (drawable != null) {
+			if (this.drawable == drawable) return;
+			if (getPrefWidth() != drawable.getMinWidth() || getPrefHeight() != drawable.getMinHeight()) invalidateHierarchy();
 		} else {
 			if (getPrefWidth() != 0 || getPrefHeight() != 0) invalidateHierarchy();
 		}
-		this.region = region;
-		patch = null;
+		this.drawable = drawable;
 	}
 
-	public TextureRegion getRegion () {
-		return region;
-	}
-
-	/** @param patch May be null. */
-	public void setPatch (NinePatch patch) {
-		if (patch != null) {
-			if (this.patch == patch) return;
-			if (getPrefWidth() != patch.getTotalWidth() || getPrefHeight() != patch.getTotalHeight()) invalidateHierarchy();
-		} else {
-			if (getPrefWidth() != 0 || getPrefHeight() != 0) invalidateHierarchy();
-		}
-		this.patch = patch;
-		region = null;
-	}
-
-	public NinePatch getPatch () {
-		return patch;
+	public Drawable getDrawable () {
+		return drawable;
 	}
 
 	public void setScaling (Scaling scaling) {
@@ -190,14 +186,12 @@ public class Image extends Widget {
 	}
 
 	public float getPrefWidth () {
-		if (region != null) return Math.abs(region.getRegionWidth());
-		if (patch != null) return patch.getTotalWidth();
+		if (drawable != null) return drawable.getMinWidth();
 		return 0;
 	}
 
 	public float getPrefHeight () {
-		if (region != null) return Math.abs(region.getRegionHeight());
-		if (patch != null) return patch.getTotalHeight();
+		if (drawable != null) return drawable.getMinHeight();
 		return 0;
 	}
 

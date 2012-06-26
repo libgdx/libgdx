@@ -4,6 +4,9 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.esotericsoftware.tablelayout.Cell;
 
@@ -31,27 +34,31 @@ public class ImageButton extends Button {
 	}
 
 	public ImageButton (TextureRegion region) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, region, null, null));
+		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, new TextureRegionDrawable(region), null, null));
 	}
 
 	public ImageButton (TextureRegion regionUp, TextureRegion regionDown) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, regionUp, regionDown, null));
+		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, new TextureRegionDrawable(regionUp), new TextureRegionDrawable(
+			regionDown), null));
 	}
 
 	public ImageButton (TextureRegion regionUp, TextureRegion regionDown, TextureRegion regionChecked) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, regionUp, regionDown, regionChecked));
+		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, new TextureRegionDrawable(regionUp), new TextureRegionDrawable(
+			regionDown), new TextureRegionDrawable(regionChecked)));
 	}
 
 	public ImageButton (NinePatch patch) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, patch, null, null));
+		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, new NinePatchDrawable(patch), null, null));
 	}
 
 	public ImageButton (NinePatch patchUp, NinePatch patchDown) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, patchUp, patchDown, null));
+		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, new NinePatchDrawable(patchUp),
+			new NinePatchDrawable(patchDown), null));
 	}
 
 	public ImageButton (NinePatch patchUp, NinePatch patchDown, NinePatch patchChecked) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, patchUp, patchDown, patchChecked));
+		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, new NinePatchDrawable(patchUp),
+			new NinePatchDrawable(patchDown), new NinePatchDrawable(patchChecked)));
 	}
 
 	public void setStyle (ButtonStyle style) {
@@ -67,18 +74,12 @@ public class ImageButton extends Button {
 
 	private void updateImage () {
 		boolean isPressed = isPressed();
-		if (isPressed && style.regionDown != null)
-			image.setRegion(style.regionDown);
-		else if (isPressed && style.patchDown != null)
-			image.setPatch(style.patchDown);
-		else if (isChecked && style.regionChecked != null)
-			image.setRegion(style.regionChecked);
-		else if (isChecked && style.patchChecked != null)
-			image.setPatch(style.patchChecked);
-		else if (style.regionUp != null)
-			image.setRegion(style.regionUp);
-		else if (style.patchUp != null) //
-			image.setPatch(style.patchUp);
+		if (isPressed && style.imageDown != null)
+			image.setDrawable(style.imageDown);
+		else if (isChecked && style.imageChecked != null)
+			image.setDrawable(style.imageChecked);
+		else if (style.imageUp != null) //
+			image.setDrawable(style.imageUp);
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
@@ -97,39 +98,24 @@ public class ImageButton extends Button {
 	/** The style for an image button, see {@link ImageButton}.
 	 * @author Nathan Sweet */
 	static public class ImageButtonStyle extends ButtonStyle {
-		/** Optional. */
-		public TextureRegion regionUp, regionDown, regionChecked;
-		/** Optional. */
-		public NinePatch patchUp, patchDown, patchChecked;
+		public Drawable imageUp, imageDown, imageChecked;
 
 		public ImageButtonStyle () {
 		}
 
-		public ImageButtonStyle (NinePatch down, NinePatch up, NinePatch checked, float pressedOffsetX, float pressedOffsetY,
-			float unpressedOffsetX, float unpressedOffsetY, TextureRegion regionUp, TextureRegion regionDown,
-			TextureRegion regionChecked) {
+		public ImageButtonStyle (Drawable down, Drawable up, Drawable checked, float pressedOffsetX, float pressedOffsetY,
+			float unpressedOffsetX, float unpressedOffsetY, Drawable imageUp, Drawable imageDown, Drawable imageChecked) {
 			super(down, up, checked, pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY);
-			this.regionUp = regionUp;
-			this.regionDown = regionDown;
-			this.regionChecked = regionChecked;
-		}
-
-		public ImageButtonStyle (NinePatch down, NinePatch up, NinePatch checked, float pressedOffsetX, float pressedOffsetY,
-			float unpressedOffsetX, float unpressedOffsetY, NinePatch patchUp, NinePatch patchDown, NinePatch patchChecked) {
-			super(down, up, checked, pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY);
-			this.patchUp = patchUp;
-			this.patchDown = patchDown;
-			this.patchChecked = patchChecked;
+			this.imageUp = imageUp;
+			this.imageDown = imageDown;
+			this.imageChecked = imageChecked;
 		}
 
 		public ImageButtonStyle (ImageButtonStyle style) {
 			super(style);
-			this.regionUp = style.regionUp;
-			this.regionDown = style.regionDown;
-			this.regionChecked = style.regionChecked;
-			this.patchUp = style.patchUp;
-			this.patchDown = style.patchDown;
-			this.patchChecked = style.patchChecked;
+			this.imageUp = style.imageUp;
+			this.imageDown = style.imageDown;
+			this.imageChecked = style.imageChecked;
 		}
 	}
 }

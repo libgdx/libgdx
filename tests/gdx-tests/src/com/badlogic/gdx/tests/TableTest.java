@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class TableTest extends GdxTest {
@@ -60,7 +61,7 @@ public class TableTest extends GdxTest {
 		// root.add(table);
 
 		// table.setBackground(region);
-		table.setBackground(patch);
+		table.setBackground(new NinePatchDrawable(patch));
 		table.setClip(true);
 		table.size(75, 75);
 		table.add(label);
@@ -72,7 +73,7 @@ public class TableTest extends GdxTest {
 		});
 
 		root.setPosition(10, 10);
-		
+
 		root.debug();
 		root.add(new Label("meow meow meow meow meow meow meow meow meow meow meow meow", skin)).colspan(3);
 		root.row();
@@ -80,8 +81,8 @@ public class TableTest extends GdxTest {
 		root.add(new TextButton("Toggle Button", skin.getStyle("toggle", TextButtonStyle.class)));
 		root.add(new CheckBox("meow", skin));
 		root.pack();
-		//root.add(new Button(new Image(region), skin));
-//		root.add(new LabelButton("Toggley", skin.getStyle("toggle", LabelButtonStyle.class)));
+		// root.add(new Button(new Image(region), skin));
+// root.add(new LabelButton("Toggley", skin.getStyle("toggle", LabelButtonStyle.class)));
 	}
 
 	@Override
@@ -97,9 +98,9 @@ public class TableTest extends GdxTest {
 	@Override
 	public void resize (int width, int height) {
 		stage.setViewport(width, height, false);
-//		root.width = width;
-//		root.height = height;
-//		root.invalidate();
+// root.width = width;
+// root.height = height;
+// root.invalidate();
 	}
 
 	@Override

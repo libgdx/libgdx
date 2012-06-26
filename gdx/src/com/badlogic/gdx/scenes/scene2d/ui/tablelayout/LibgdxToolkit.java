@@ -42,7 +42,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.esotericsoftware.tablelayout.Toolkit;
@@ -144,6 +147,10 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 				if (layout.skin.hasResource(value, NinePatch.class)) return layout.skin.getPatch(value);
 			} else if (memberType == TextureRegion.class) {
 				if (layout.skin.hasResource(value, TextureRegion.class)) return layout.skin.getRegion(value);
+			} else if (memberType == Drawable.class) {
+				if (layout.skin.hasResource(value, NinePatch.class)) return new NinePatchDrawable(layout.skin.getPatch(value));
+				if (layout.skin.hasResource(value, TextureRegion.class))
+					return new TextureRegionDrawable(layout.skin.getRegion(value));
 			}
 		}
 		// Find Texture, TextureRegion and NinePatch in asset manager.

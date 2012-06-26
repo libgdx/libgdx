@@ -74,7 +74,7 @@ public class Actor {
 
 	/** Sets this actor as the {@link Event#setTargetActor(Actor) target} and propagates the event to this actor and ancestor actors
 	 * as necessary. If this actor is not in the stage, false is returned without firing the event.
-	 * @return true of the event was {@link Event#handled() handled}. */
+	 * @return true of the event was {@link Event#cancel() cancelled}. */
 	public boolean fire (Event event) {
 		if (event.getStage() == null) {
 			Stage stage = getStage();
@@ -96,25 +96,25 @@ public class Actor {
 			for (int i = ancestors.size - 1; i >= 0; i--) {
 				Group currentTarget = ancestors.get(i);
 				currentTarget.notify(event, true);
-				if (event.isStopped()) return event.isHandled();
+				if (event.isStopped()) return event.isCancelled();
 			}
 
 			// Notify the target capture listeners.
 			notify(event, true);
-			if (event.isStopped()) return event.isHandled();
+			if (event.isStopped()) return event.isCancelled();
 
 			// Notify the target listeners.
 			notify(event, false);
-			if (!event.getBubbles()) return event.isHandled();
-			if (event.isStopped()) return event.isHandled();
+			if (!event.getBubbles()) return event.isCancelled();
+			if (event.isStopped()) return event.isCancelled();
 
 			// Notify all parent listeners, starting at the target. Children may stop an event before ancestors receive it.
 			for (int i = 0, n = ancestors.size; i < n; i++) {
 				ancestors.get(i).notify(event, false);
-				if (event.isStopped()) return event.isHandled();
+				if (event.isStopped()) return event.isCancelled();
 			}
 
-			return event.isHandled();
+			return event.isCancelled();
 		} finally {
 			Pools.free(Array.class);
 		}
@@ -122,12 +122,13 @@ public class Actor {
 
 	/** Sets this actors as the {@link Event#getTargetActor() current target} and notifies this actor's listeners of the event.
 	 * Event propagation is not performed. The event {@link Event#setTargetActor(Actor) target} must be set.
-	 * @param capture If true, the capture listeners will be notified instead of the regular listeners. */
-	public void notify (Event event, boolean capture) {
+	 * @param capture If true, the capture listeners will be notified instead of the regular listeners.
+	 * @return true of the event was {@link Event#cancel() cancelled}. */
+	public boolean notify (Event event, boolean capture) {
 		if (event.getTargetActor() == null) throw new IllegalArgumentException("The event target cannot be null.");
 
 		DelayedRemovalArray<EventListener> listeners = capture ? captureListeners : this.listeners;
-		if (listeners.size == 0) return;
+		if (listeners.size == 0) return event.isCancelled();
 
 		event.setContextActor(this);
 		event.setCapture(capture);
@@ -150,6 +151,8 @@ public class Actor {
 			}
 		}
 		listeners.end();
+
+		return event.isCancelled();
 	}
 
 	/** Returns this actor if the specified point is within the actor, or null if it is not. The point is specified in the actor's

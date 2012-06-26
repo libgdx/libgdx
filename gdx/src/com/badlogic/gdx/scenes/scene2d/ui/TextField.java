@@ -22,7 +22,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -32,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.Clipboard;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -355,8 +355,8 @@ public class TextField extends Widget {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		final BitmapFont font = style.font;
 		final Color fontColor = style.fontColor;
-		final TextureRegion selection = style.selection;
-		final NinePatch cursorPatch = style.cursor;
+		final Drawable selection = style.selection;
+		final Drawable cursorPatch = style.cursor;
 
 		Color color = getColor();
 		float x = getX();
@@ -377,7 +377,7 @@ public class TextField extends Widget {
 		Stage stage = getStage();
 		boolean focused = stage != null && stage.getKeyboardFocus() == this;
 		if (focused && hasSelection && selection != null) {
-			batch.draw(selection, x + selectionX + bgLeftWidth + renderOffset,
+			selection.draw(batch, x + selectionX + bgLeftWidth + renderOffset,
 				y + textY - textBounds.height - font.getDescent() / 2, selectionWidth, textBounds.height);
 		}
 
@@ -399,7 +399,7 @@ public class TextField extends Widget {
 			blink();
 			if (cursorOn && cursorPatch != null) {
 				cursorPatch.draw(batch, x + bgLeftWidth + glyphPositions.get(cursor) + renderOffset - 1, y + textY
-					- textBounds.height - font.getDescent(), cursorPatch.getTotalWidth(), textBounds.height + font.getDescent() / 2);
+					- textBounds.height - font.getDescent(), cursorPatch.getMinWidth(), textBounds.height + font.getDescent() / 2);
 			}
 		}
 	}
@@ -663,11 +663,11 @@ public class TextField extends Widget {
 	 * @author mzechner */
 	static public class TextFieldStyle {
 		/** Optional. */
-		public NinePatch background, cursor;
+		public Drawable background, cursor;
 		public BitmapFont font;
 		public Color fontColor;
 		/** Optional. */
-		public TextureRegion selection;
+		public Drawable selection;
 		/** Optional. */
 		public BitmapFont messageFont;
 		/** Optional. */
@@ -676,8 +676,8 @@ public class TextField extends Widget {
 		public TextFieldStyle () {
 		}
 
-		public TextFieldStyle (BitmapFont font, Color fontColor, BitmapFont messageFont, Color messageFontColor, NinePatch cursor,
-			TextureRegion selection, NinePatch background) {
+		public TextFieldStyle (BitmapFont font, Color fontColor, BitmapFont messageFont, Color messageFontColor, Drawable cursor,
+			Drawable selection, Drawable background) {
 			this.messageFont = messageFont;
 			this.messageFontColor = messageFontColor;
 			this.background = background;

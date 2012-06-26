@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.ActorListener;
@@ -10,9 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.ActorListener;
 public class PressedListener extends ActorListener {
 	private float tapSquareSize = 14, touchDownX, touchDownY;
 	private boolean pressed;
+	private int button;
 
 	public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
-		if (pointer > 0) return false;
+		if (pointer > 0 || button != this.button) return false;
 		touchDownX = x;
 		touchDownY = y;
 		pressed = true;
@@ -29,7 +31,7 @@ public class PressedListener extends ActorListener {
 	}
 
 	public void touchDragged (ActorEvent event, float x, float y, int pointer) {
-		pressed = isOver(event.getContextActor(), x, y);
+		pressed = Gdx.input.isButtonPressed(button) && isOver(event.getContextActor(), x, y);
 		if (!pressed) {
 			// Once outside the tap square, don't use the tap square anymore.
 			touchDownX = 0;
@@ -59,5 +61,13 @@ public class PressedListener extends ActorListener {
 
 	public float getTouchDownY () {
 		return touchDownY;
+	}
+
+	public int getButton () {
+		return button;
+	}
+
+	public void setButton (int button) {
+		this.button = button;
 	}
 }

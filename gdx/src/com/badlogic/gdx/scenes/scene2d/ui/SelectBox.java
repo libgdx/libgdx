@@ -29,6 +29,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 /** A select box (aka a drop-down list) allows a user to choose one of a number of values from a list. When inactive, the selected
@@ -40,11 +42,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 public class SelectBox extends Widget {
 	SelectBoxStyle style;
 	String[] items;
-	int selection = 0;
+	int selectedIndex = 0;
 	private final TextBounds bounds = new TextBounds();
 	final Vector2 screenCoords = new Vector2();
 	SelectList list;
-	SelectionListener listener;
 	private float prefWidth, prefHeight;
 
 	public SelectBox (Skin skin) {
@@ -104,13 +105,13 @@ public class SelectBox extends Widget {
 		}
 
 		this.items = (String[])objects;
-		selection = 0;
+		selectedIndex = 0;
 
-		NinePatch bg = style.background;
+		Drawable bg = style.background;
 		BitmapFont font = style.font;
 
 		prefHeight = Math.max(bg.getTopHeight() + bg.getBottomHeight() + font.getCapHeight() - font.getDescent() * 2,
-			bg.getTotalHeight());
+			bg.getMinHeight());
 
 		float max = 0;
 		for (int i = 0; i < items.length; i++)
@@ -126,7 +127,7 @@ public class SelectBox extends Widget {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		final NinePatch background = style.background;
+		final Drawable background = style.background;
 		final BitmapFont font = style.font;
 		final Color fontColor = style.fontColor;
 
@@ -140,45 +141,39 @@ public class SelectBox extends Widget {
 		background.draw(batch, x, y, width, height);
 		if (items.length > 0) {
 			float availableWidth = width - background.getLeftWidth() - background.getRightWidth();
-			int numGlyphs = font.computeVisibleGlyphs(items[selection], 0, items[selection].length(), availableWidth);
-			bounds.set(font.getBounds(items[selection]));
+			int numGlyphs = font.computeVisibleGlyphs(items[selectedIndex], 0, items[selectedIndex].length(), availableWidth);
+			bounds.set(font.getBounds(items[selectedIndex]));
 			float textY = (int)(height / 2) + (int)(bounds.height / 2);
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			font.draw(batch, items[selection], x + background.getLeftWidth(), y + textY, 0, numGlyphs);
+			font.draw(batch, items[selectedIndex], x + background.getLeftWidth(), y + textY, 0, numGlyphs);
 		}
 
 		// calculate screen coords where list should be displayed
 		getStage().toScreenCoordinates(screenCoords.set(x, y), batch.getTransformMatrix());
 	}
 
-	/** Sets the {@link SelectionListener}.
-	 * @param listener the listener or null */
-	public void setSelectionListener (SelectionListener listener) {
-		this.listener = listener;
-	}
-
 	/** Sets the selected item via it's index
 	 * @param selection the selection index */
 	public void setSelection (int selection) {
-		this.selection = selection;
+		this.selectedIndex = selection;
 	}
 
 	public void setSelection (String item) {
 		for (int i = 0; i < items.length; i++) {
 			if (items[i].equals(item)) {
-				selection = i;
+				selectedIndex = i;
 			}
 		}
 	}
 
 	/** @return the index of the current selection. The top item has an index of 0 */
 	public int getSelectionIndex () {
-		return selection;
+		return selectedIndex;
 	}
 
 	/** @return the string of the currently selected item */
 	public String getSelection () {
-		return items[selection];
+		return items[selectedIndex];
 	}
 
 	public float getPrefWidth () {
@@ -193,7 +188,7 @@ public class SelectBox extends Widget {
 		Vector2 oldScreenCoords = new Vector2();
 		float itemHeight;
 		float textOffsetX, textOffsetY;
-		int selected = SelectBox.this.selection;
+		int listSelectedIndex = SelectBox.this.selectedIndex;
 
 		ActorListener stageListener = new ActorListener() {
 			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
@@ -202,11 +197,11 @@ public class SelectBox extends Widget {
 				x = Vector2.tmp.x;
 				y = Vector2.tmp.y;
 				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
-					selected = (int)((getHeight() - y) / itemHeight);
-					selected = Math.max(0, selected);
-					selected = Math.min(items.length - 1, selected);
-					selection = selected;
-					if (items.length > 0 && listener != null) listener.selected(SelectBox.this, selected, items[selected]);
+					listSelectedIndex = (int)((getHeight() - y) / itemHeight);
+					listSelectedIndex = Math.max(0, listSelectedIndex);
+					listSelectedIndex = Math.min(items.length - 1, listSelectedIndex);
+					selectedIndex = listSelectedIndex;
+					if (items.length > 0) SelectBox.this.fire(new ChangeEvent());
 				}
 				return true;
 			}
@@ -221,9 +216,9 @@ public class SelectBox extends Widget {
 				x = Vector2.tmp.x;
 				y = Vector2.tmp.y;
 				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
-					selected = (int)((getHeight() - y) / itemHeight);
-					selected = Math.max(0, selected);
-					selected = Math.min(items.length - 1, selected);
+					listSelectedIndex = (int)((getHeight() - y) / itemHeight);
+					listSelectedIndex = Math.max(0, listSelectedIndex);
+					listSelectedIndex = Math.min(items.length - 1, listSelectedIndex);
 				}
 				return true;
 			}
@@ -235,7 +230,7 @@ public class SelectBox extends Widget {
 			layout();
 			Stage stage = SelectBox.this.getStage();
 			float height = getHeight();
-			if (y - height < 0 && y + SelectBox.this.getHeight() + height < SelectBox.this.getStage().getCamera().viewportHeight)
+			if (y - height < 0 && y + SelectBox.this.getHeight() + height < stage.getCamera().viewportHeight)
 				setY(y + SelectBox.this.getHeight());
 			else
 				setY(y - height);
@@ -244,7 +239,7 @@ public class SelectBox extends Widget {
 
 		private void layout () {
 			final BitmapFont font = style.font;
-			final NinePatch listSelection = style.listSelection;
+			final Drawable listSelection = style.listSelection;
 
 			float prefWidth = 0;
 			float prefHeight = 0;
@@ -270,8 +265,8 @@ public class SelectBox extends Widget {
 
 		@Override
 		public void draw (SpriteBatch batch, float parentAlpha) {
-			final NinePatch listBackground = style.listBackground;
-			final NinePatch listSelection = style.listSelection;
+			final Drawable listBackground = style.listBackground;
+			final Drawable listSelection = style.listSelection;
 			final BitmapFont font = style.font;
 			final Color fontColor = style.fontColor;
 
@@ -287,7 +282,7 @@ public class SelectBox extends Widget {
 			listBackground.draw(batch, x, y, width, height);
 			float posY = height;
 			for (int i = 0; i < items.length; i++) {
-				if (selected == i) {
+				if (listSelectedIndex == i) {
 					listSelection.draw(batch, x, y + posY - itemHeight, width, itemHeight);
 				}
 				font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
@@ -311,9 +306,9 @@ public class SelectBox extends Widget {
 	/** The style for a select box, see {@link SelectBox}.
 	 * @author mzechner */
 	static public class SelectBoxStyle {
-		public NinePatch background;
-		public NinePatch listBackground;
-		public NinePatch listSelection;
+		public Drawable background;
+		public Drawable listBackground;
+		public Drawable listSelection;
 		public BitmapFont font;
 		public Color fontColor = new Color(1, 1, 1, 1);
 		public float itemSpacing = 10;
@@ -321,8 +316,8 @@ public class SelectBox extends Widget {
 		public SelectBoxStyle () {
 		}
 
-		public SelectBoxStyle (BitmapFont font, Color fontColor, NinePatch background, NinePatch listBackground,
-			NinePatch listSelection) {
+		public SelectBoxStyle (BitmapFont font, Color fontColor, Drawable background, Drawable listBackground,
+			Drawable listSelection) {
 			this.background = background;
 			this.listBackground = listBackground;
 			this.listSelection = listSelection;

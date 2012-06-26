@@ -22,6 +22,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 // BOZO - Add snapping to the knob.
 
@@ -36,7 +38,6 @@ public class Slider extends Widget {
 	private float min, max, steps;
 	private float value;
 	private float sliderPos;
-	private ValueChangedListener listener = null;
 	boolean isDragging;
 
 	public Slider (Skin skin) {
@@ -99,8 +100,8 @@ public class Slider extends Widget {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		final TextureRegion knob = style.knob;
-		final NinePatch slider = style.slider;
+		final Drawable knob = style.knob;
+		final Drawable slider = style.slider;
 
 		Color color = getColor();
 		float x = getX();
@@ -109,34 +110,34 @@ public class Slider extends Widget {
 		float height = getHeight();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		sliderPos = (value - min) / (max - min) * (width - knob.getRegionWidth());
+		sliderPos = (value - min) / (max - min) * (width - knob.getMinWidth());
 		sliderPos = Math.max(0, sliderPos);
-		sliderPos = Math.min(width - knob.getRegionWidth(), sliderPos);
+		sliderPos = Math.min(width - knob.getMinWidth(), sliderPos);
 
-		slider.draw(batch, x, y + (int)((height - slider.getTotalHeight()) * 0.5f), width, slider.getTotalHeight());
-		batch.draw(knob, x + sliderPos, y + (int)((height - knob.getRegionHeight()) * 0.5f));
+		slider.draw(batch, x, y + (int)((height - slider.getMinHeight()) * 0.5f), width, slider.getMinHeight());
+		knob.draw(batch, x + sliderPos, y + (int)((height - knob.getMinHeight()) * 0.5f), knob.getMinWidth(), knob.getMinHeight());
 	}
 
 	void calculatePositionAndValue (float x) {
-		final TextureRegion knob = style.knob;
+		final Drawable knob = style.knob;
 
 		float width = getWidth();
 
-		sliderPos = x - knob.getRegionWidth() / 2;
+		float oldPosition = sliderPos;
+		float oldValue = value;
+		sliderPos = x - knob.getMinWidth() / 2;
 		sliderPos = Math.max(0, sliderPos);
-		sliderPos = Math.min(width - knob.getRegionWidth(), sliderPos);
-		value = min + (max - min) * (sliderPos / (width - knob.getRegionWidth()));
-		if (listener != null) listener.changed(this, getValue());
+		sliderPos = Math.min(width - knob.getMinWidth(), sliderPos);
+		value = min + (max - min) * (sliderPos / (width - knob.getMinWidth()));
+		if (oldValue != value && fire(new ChangeEvent())) {
+			sliderPos = oldPosition;
+			value = oldValue;
+		}
 	}
 
 	/** Returns true if the slider is being dragged. */
 	public boolean isDragging () {
 		return isDragging;
-	}
-
-	/** @param listener May be null. */
-	public void setValueChangedListener (ValueChangedListener listener) {
-		this.listener = listener;
 	}
 
 	public float getValue () {
@@ -153,8 +154,9 @@ public class Slider extends Widget {
 		if (min >= max) throw new IllegalArgumentException("min must be < max");
 		this.min = min;
 		this.max = max;
+		float oldValue = value;
 		this.value = min;
-		if (listener != null) listener.changed(this, getValue());
+		if (oldValue != value) fire(new ChangeEvent());
 	}
 
 	public float getPrefWidth () {
@@ -162,29 +164,23 @@ public class Slider extends Widget {
 	}
 
 	public float getPrefHeight () {
-		return Math.max(style.knob.getRegionHeight(), style.slider.getTotalHeight());
-	}
-
-	/** Interface to listen for changes to the value of the slider.
-	 * @author mzechner */
-	static public interface ValueChangedListener {
-		public void changed (Slider slider, float value);
+		return Math.max(style.knob.getMinHeight(), style.slider.getMinHeight());
 	}
 
 	/** The style for a slider, see {@link Slider}.
 	 * @author mzechner */
 	static public class SliderStyle {
 		/** The slider background, stretched only in the x direction. */
-		public NinePatch slider;
+		public Drawable slider;
 		/** Centered vertically on the background. */
-		public TextureRegion knob;
+		public Drawable knob;
 
 		public SliderStyle () {
 		}
 
-		public SliderStyle (NinePatch sliderPatch, TextureRegion knobRegion) {
-			this.slider = sliderPatch;
-			this.knob = knobRegion;
+		public SliderStyle (Drawable slider, Drawable knob) {
+			this.slider = slider;
+			this.knob = knob;
 		}
 
 		public SliderStyle (SliderStyle style) {

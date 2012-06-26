@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 /** A checkbox is a button that contains an image indicating the checked or unchecked state and a label.
  * @author Nathan Sweet */
@@ -45,7 +46,7 @@ public class CheckBox extends TextButton {
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		image.setRegion(isChecked ? style.checkboxOn : style.checkboxOff);
+		image.setDrawable(isChecked ? style.checkboxOn : style.checkboxOff);
 		super.draw(batch, parentAlpha);
 	}
 
@@ -56,12 +57,12 @@ public class CheckBox extends TextButton {
 	/** The style for a select box, see {@link CheckBox}.
 	 * @author Nathan Sweet */
 	static public class CheckBoxStyle extends TextButtonStyle {
-		public TextureRegion checkboxOn, checkboxOff;
+		public Drawable checkboxOn, checkboxOff;
 
 		public CheckBoxStyle () {
 		}
 
-		public CheckBoxStyle (TextureRegion checkboxOff, TextureRegion checkboxOn, BitmapFont font, Color fontColor) {
+		public CheckBoxStyle (Drawable checkboxOff, Drawable checkboxOn, BitmapFont font, Color fontColor) {
 			this.checkboxOff = checkboxOff;
 			this.checkboxOn = checkboxOn;
 			this.font = font;

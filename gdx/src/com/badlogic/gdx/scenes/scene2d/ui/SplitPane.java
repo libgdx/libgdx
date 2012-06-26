@@ -17,7 +17,6 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
@@ -25,8 +24,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.ActorListener;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -100,10 +98,10 @@ public class SplitPane extends WidgetGroup {
 			public void touchDragged (ActorEvent event, float x, float y, int pointer) {
 				if (!touchDrag) return;
 
-				NinePatch handle = style.handle;
+				Drawable handle = style.handle;
 				if (!vertical) {
 					float delta = x - lastPoint.x;
-					float availWidth = getWidth() - handle.getTotalWidth();
+					float availWidth = getWidth() - handle.getMinWidth();
 					float dragX = handlePosition.x + delta;
 					handlePosition.x = dragX;
 					dragX = Math.max(0, dragX);
@@ -114,7 +112,7 @@ public class SplitPane extends WidgetGroup {
 					lastPoint.set(x, y);
 				} else {
 					float delta = y - lastPoint.y;
-					float availHeight = getHeight() - handle.getTotalHeight();
+					float availHeight = getHeight() - handle.getMinHeight();
 					float dragY = handlePosition.y + delta;
 					handlePosition.y = dragY;
 					dragY = Math.max(0, dragY);
@@ -171,7 +169,7 @@ public class SplitPane extends WidgetGroup {
 	public float getPrefWidth () {
 		float width = firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefWidth() : firstWidget.getWidth();
 		width += secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefWidth() : secondWidget.getWidth();
-		if (!vertical) width += style.handle.getTotalWidth();
+		if (!vertical) width += style.handle.getMinWidth();
 		return width;
 	}
 
@@ -179,7 +177,7 @@ public class SplitPane extends WidgetGroup {
 	public float getPrefHeight () {
 		float height = firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefHeight() : firstWidget.getHeight();
 		height += secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefHeight() : secondWidget.getHeight();
-		if (vertical) height += style.handle.getTotalHeight();
+		if (vertical) height += style.handle.getMinHeight();
 		return height;
 	}
 
@@ -196,14 +194,14 @@ public class SplitPane extends WidgetGroup {
 	}
 
 	private void calculateHorizBoundsAndPositions () {
-		NinePatch handle = style.handle;
+		Drawable handle = style.handle;
 
 		float height = getHeight();
 
-		float availWidth = getWidth() - handle.getTotalWidth();
+		float availWidth = getWidth() - handle.getMinWidth();
 		float leftAreaWidth = (int)(availWidth * splitAmount);
 		float rightAreaWidth = availWidth - leftAreaWidth;
-		float handleWidth = handle.getTotalWidth();
+		float handleWidth = handle.getMinWidth();
 
 		firstWidgetBounds.set(0, 0, leftAreaWidth, height);
 		secondWidgetBounds.set(leftAreaWidth + handleWidth, 0, rightAreaWidth, height);
@@ -211,15 +209,15 @@ public class SplitPane extends WidgetGroup {
 	}
 
 	private void calculateVertBoundsAndPositions () {
-		NinePatch handle = style.handle;
+		Drawable handle = style.handle;
 
 		float width = getWidth();
 		float height = getHeight();
 
-		float availHeight = height - handle.getTotalHeight();
+		float availHeight = height - handle.getMinHeight();
 		float topAreaHeight = (int)(availHeight * splitAmount);
 		float bottomAreaHeight = availHeight - topAreaHeight;
-		float handleHeight = handle.getTotalHeight();
+		float handleHeight = handle.getMinHeight();
 
 		firstWidgetBounds.set(0, height - topAreaHeight, width, topAreaHeight);
 		secondWidgetBounds.set(0, 0, width, bottomAreaHeight);
@@ -232,7 +230,7 @@ public class SplitPane extends WidgetGroup {
 
 		Color color = getColor();
 
-		NinePatch handle = style.handle;
+		Drawable handle = style.handle;
 		applyTransform(batch);
 		Matrix4 transform = batch.getTransformMatrix();
 		if (firstWidget != null) {
@@ -313,12 +311,12 @@ public class SplitPane extends WidgetGroup {
 	/** The style for a splitpane, see {@link SplitPane}.
 	 * @author mzechner */
 	static public class SplitPaneStyle {
-		public NinePatch handle;
+		public Drawable handle;
 
 		public SplitPaneStyle () {
 		}
 
-		public SplitPaneStyle (NinePatch handle) {
+		public SplitPaneStyle (Drawable handle) {
 			this.handle = handle;
 		}
 

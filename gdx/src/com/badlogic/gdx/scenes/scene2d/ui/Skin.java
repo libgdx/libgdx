@@ -18,7 +18,6 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.badlogic.gdx.Files.FileType;
@@ -34,6 +33,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -618,6 +620,43 @@ public class Skin implements Disposable {
 				String name = json.readValue("name", String.class, jsonData);
 				Color color = json.readValue("color", Color.class, jsonData);
 				return new NinePatch(getResource(name, NinePatch.class), color);
+			}
+		});
+
+		json.setSerializer(TextureRegion.class, new Serializer<TextureRegion>() {
+			public void write (Json json, TextureRegion region, Class valueType) {
+				json.writeObjectStart();
+				json.writeValue("x", region.getRegionX());
+				json.writeValue("y", region.getRegionY());
+				json.writeValue("width", region.getRegionWidth());
+				json.writeValue("height", region.getRegionHeight());
+				json.writeObjectEnd();
+			}
+
+			public TextureRegion read (Json json, Object jsonData, Class type) {
+				if (jsonData instanceof String) return getResource((String)jsonData, TextureRegion.class);
+				int x = json.readValue("x", int.class, jsonData);
+				int y = json.readValue("y", int.class, jsonData);
+				int width = json.readValue("width", int.class, jsonData);
+				int height = json.readValue("height", int.class, jsonData);
+				return new TextureRegion(skin.texture, x, y, width, height);
+			}
+		});
+
+		json.setSerializer(Drawable.class, new Serializer<Drawable>() {
+			public void write (Json json, Drawable drawable, Class valueType) {
+				throw new SerializationException("Drawables cannot be serialized directly.");
+			}
+
+			public Drawable read (Json json, Object jsonData, Class type) {
+				if (jsonData instanceof String) {
+					String name = (String)jsonData;
+					if (hasResource(name, NinePatch.class)) return new NinePatchDrawable(getResource(name, NinePatch.class));
+					if (hasResource(name, TextureRegion.class))
+						return new TextureRegionDrawable(getResource(name, TextureRegion.class));
+					throw new GdxRuntimeException("No " + type.getName() + " resource registered with name: " + name);
+				}
+				throw new SerializationException("Drawables can only be referenced by name.");
 			}
 		});
 

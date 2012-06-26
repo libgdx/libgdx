@@ -217,9 +217,9 @@ public class Stage extends InputAdapter implements Disposable {
 			target = target.getParent();
 		if (target == null) target = root;
 
-		boolean handled = target.fire(event);
+		target.fire(event);
 		Pools.free(event);
-		return handled;
+		return event.isHandled();
 	}
 
 	/** Applies a touch moved event to the stage and returns true if an actor in the scene processed the event. */
@@ -301,9 +301,9 @@ public class Stage extends InputAdapter implements Disposable {
 			target = target.getParent();
 		if (target == null) target = root;
 
-		boolean handled = target.fire(event);
+		target.fire(event);
 		Pools.free(event);
-		return handled;
+		return event.isHandled();
 	}
 
 	/** Applies a mouse scroll event to the stage and returns true if an actor in the scene processed the event. This event only
@@ -314,9 +314,9 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setStage(this);
 		event.setType(ActorEvent.Type.scrolled);
 		event.setScrollAmount(amount);
-		boolean handled = scrollFocus.fire(event);
+		scrollFocus.fire(event);
 		Pools.free(event);
-		return handled;
+		return event.isHandled();
 	}
 
 	/** Applies a key down event to the actor that has {@link Stage#setKeyboardFocus(Actor) keyboard focus}, if any, and returns
@@ -329,7 +329,7 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setKeyCode(keyCode);
 		boolean handled = keyboardFocus.fire(event);
 		Pools.free(event);
-		return handled;
+		return event.isHandled();
 	}
 
 	/** Applies a key up event to the actor that has {@link Stage#setKeyboardFocus(Actor) keyboard focus}, if any, and returns true
@@ -342,7 +342,7 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setKeyCode(keyCode);
 		boolean handled = keyboardFocus.fire(event);
 		Pools.free(event);
-		return handled;
+		return event.isHandled();
 	}
 
 	/** Applies a key typed event to the actor that has {@link Stage#setKeyboardFocus(Actor) keyboard focus}, if any, and returns
@@ -355,7 +355,7 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setCharacter(character);
 		boolean handled = keyboardFocus.fire(event);
 		Pools.free(event);
-		return handled;
+		return event.isHandled();
 	}
 
 	public void addTouchFocus (Actor actor, EventListener listener, int pointer, int button) {

@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 /** A table that can be dragged and act as a modal window.
  * <p>
@@ -127,15 +128,15 @@ public class Window extends Table {
 	}
 
 	static public class WindowStyle {
-		public NinePatch background;
+		public Drawable background;
 		public BitmapFont titleFont;
 		public Color titleFontColor = new Color(1, 1, 1, 1);
 
 		public WindowStyle () {
 		}
 
-		public WindowStyle (BitmapFont titleFont, Color titleFontColor, NinePatch backgroundPatch) {
-			this.background = backgroundPatch;
+		public WindowStyle (BitmapFont titleFont, Color titleFontColor, Drawable background) {
+			this.background = background;
 			this.titleFont = titleFont;
 			this.titleFontColor.set(titleFontColor);
 		}
