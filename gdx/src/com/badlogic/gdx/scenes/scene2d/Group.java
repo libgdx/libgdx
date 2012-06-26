@@ -17,7 +17,6 @@
 package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
@@ -26,7 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 
-/** 2D scene graph node that may contain other actors. Each child is given a chance to handle touch down and touch move events.
+/** 2D scene graph node that may contain other actors.
  * <p>
  * Actors have a z-order equal to the order they were inserted into the group. Actors inserted later will be drawn on top of
  * actors added earlier. Touch events that hit more than one actor are distributed to topmost actors first.
@@ -51,6 +50,8 @@ public class Group extends Actor implements Cullable {
 		children.end();
 	}
 
+	/** Draws the group and its children. The default implementation calls {@link #applyTransform(SpriteBatch)} if needed, then
+	 * {@link #drawChildren(SpriteBatch, float)}, then {@link #resetTransform(SpriteBatch)} if needed. */
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		if (transform) applyTransform(batch);
 		drawChildren(batch, parentAlpha);
@@ -58,9 +59,9 @@ public class Group extends Actor implements Cullable {
 	}
 
 	/** Draws all children. {@link #applyTransform(SpriteBatch)} should be called before and {@link #resetTransform(SpriteBatch)}
-	 * after this method if {@link #setTransform(boolean) transform} is true. if {@link #setTransform(boolean) transform} is false,
-	 * children positions are temporarily offset by the group position when drawn. Avoids drawing children outside the
-	 * {@link #setCullingArea(Rectangle) culling area}, if set. */
+	 * after this method if {@link #setTransform(boolean) transform} is true. If {@link #setTransform(boolean) transform} is false
+	 * these methods don't need to be called, children positions are temporarily offset by the group position when drawn. This
+	 * method avoids drawing children completely outside the {@link #setCullingArea(Rectangle) culling area}, if set. */
 	protected void drawChildren (SpriteBatch batch, float parentAlpha) {
 		parentAlpha *= getColor().a;
 		DelayedRemovalArray<Actor> children = this.children;
@@ -126,7 +127,7 @@ public class Group extends Actor implements Cullable {
 		children.end();
 	}
 
-	/** Transforms the SpriteBatch to this group's coordinate system. */
+	/** Transforms the SpriteBatch to this group's coordinate system. Note this causes the batch to be flushed. */
 	protected void applyTransform (SpriteBatch batch) {
 		updateTransform();
 		batch.end();
@@ -170,7 +171,8 @@ public class Group extends Actor implements Cullable {
 		batchTransform.set(worldTransform);
 	}
 
-	/** Restores the SpriteBatch transform to what it was before {@link #applyTransform(SpriteBatch)}. */
+	/** Restores the SpriteBatch transform to what it was before {@link #applyTransform(SpriteBatch)}. Note this causes the batch to
+	 * be flushed. */
 	protected void resetTransform (SpriteBatch batch) {
 		batch.end();
 		batch.setTransformMatrix(oldBatchTransform);
@@ -178,7 +180,7 @@ public class Group extends Actor implements Cullable {
 	}
 
 	/** Children completely outside of this rectangle will not be drawn. This is only valid for use with unrotated and unscaled
-	 * actors. */
+	 * actors! */
 	public void setCullingArea (Rectangle cullingArea) {
 		this.cullingArea = cullingArea;
 	}
@@ -187,9 +189,7 @@ public class Group extends Actor implements Cullable {
 		Array<Actor> children = this.children;
 		for (int i = children.size - 1; i >= 0; i--) {
 			Actor child = children.get(i);
-
-			toChildCoordinates(child, x, y, point);
-
+			child.parentToLocalCoordinates(point.set(x, y));
 			Actor hit = child.hit(point.x, point.y);
 			if (hit != null) return hit;
 		}
@@ -243,7 +243,7 @@ public class Group extends Actor implements Cullable {
 
 	/** Removes an actor from this group. If the actor will not be used again and has actions, they should be
 	 * {@link Actor#clearActions() cleared} so the actions will be returned to their
-	 * {@link Action#setPool(com.badlogic.gdx.utils.Pool) pool}, if any. */
+	 * {@link Action#setPool(com.badlogic.gdx.utils.Pool) pool}, if any. This is not done automatically. */
 	public boolean removeActor (Actor actor) {
 		if (!children.removeValue(actor, true)) return false;
 		Stage stage = getStage();
@@ -291,17 +291,6 @@ public class Group extends Actor implements Cullable {
 		return true;
 	}
 
-	/** Converts coordinates for this group to those of a descendant actor.
-	 * @throws IllegalArgumentException if the specified actor is not a descendant of this group. */
-	public void toDescendantCoordinates (Actor descendant, Vector2 localPoint) {
-		Group parent = descendant.getParent();
-		if (parent == null) throw new IllegalArgumentException("Child is not a descendant: " + descendant);
-		// First convert to the actor's parent coordinates.
-		if (parent != this) toDescendantCoordinates(parent, localPoint);
-		// Then from each parent down to the descendant.
-		Group.toChildCoordinates(descendant, localPoint.x, localPoint.y, localPoint);
-	}
-
 	/** Returns an ordered list of child actors in this group. */
 	public Array<Actor> getChildren () {
 		return children;
@@ -339,91 +328,14 @@ public class Group extends Actor implements Cullable {
 		}
 	}
 
-	/** Converts the coordinates given in the child's parent coordinate system to the child's coordinate system. */
-	static public void toChildCoordinates (Actor child, float parentX, float parentY, Vector2 out) {
-		float rotation = child.getRotation();
-		float scaleX = child.getScaleX();
-		float scaleY = child.getScaleY();
-		float childX = child.getX();
-		float childY = child.getY();
-
-		if (rotation == 0) {
-			if (scaleX == 1 && scaleY == 1) {
-				out.x = parentX - childX;
-				out.y = parentY - childY;
-			} else {
-				float originX = child.getOriginX();
-				float originY = child.getOriginY();
-				if (originX == 0 && originY == 0) {
-					out.x = (parentX - childX) / scaleX;
-					out.y = (parentY - childY) / scaleY;
-				} else {
-					out.x = (parentX - childX - originX) / scaleX + originX;
-					out.y = (parentY - childY - originY) / scaleY + originY;
-				}
-			}
-		} else {
-			final float cos = (float)Math.cos(rotation * MathUtils.degreesToRadians);
-			final float sin = (float)Math.sin(rotation * MathUtils.degreesToRadians);
-
-			float originX = child.getOriginX();
-			float originY = child.getOriginY();
-
-			if (scaleX == 1 && scaleY == 1) {
-				if (originX == 0 && originY == 0) {
-					float tox = parentX - childX;
-					float toy = parentY - childY;
-
-					out.x = tox * cos + toy * sin;
-					out.y = tox * -sin + toy * cos;
-				} else {
-					final float worldOriginX = childX + originX;
-					final float worldOriginY = childY + originY;
-					float fx = -originX;
-					float fy = -originY;
-
-					float x1 = cos * fx - sin * fy;
-					float y1 = sin * fx + cos * fy;
-					x1 += worldOriginX;
-					y1 += worldOriginY;
-
-					float tox = parentX - x1;
-					float toy = parentY - y1;
-
-					out.x = tox * cos + toy * sin;
-					out.y = tox * -sin + toy * cos;
-				}
-			} else {
-				if (originX == 0 && originY == 0) {
-					float tox = parentX - childX;
-					float toy = parentY - childY;
-
-					out.x = tox * cos + toy * sin;
-					out.y = tox * -sin + toy * cos;
-
-					out.x /= scaleX;
-					out.y /= scaleY;
-				} else {
-					final float worldOriginX = childX + originX;
-					final float worldOriginY = childY + originY;
-					float fx = -originX * scaleX;
-					float fy = -originY * scaleY;
-
-					float x1 = cos * fx - sin * fy;
-					float y1 = sin * fx + cos * fy;
-					x1 += worldOriginX;
-					y1 += worldOriginY;
-
-					float tox = parentX - x1;
-					float toy = parentY - y1;
-
-					out.x = tox * cos + toy * sin;
-					out.y = tox * -sin + toy * cos;
-
-					out.x /= scaleX;
-					out.y /= scaleY;
-				}
-			}
-		}
+	/** Converts coordinates for this group to those of a descendant actor. The descendant does not need to be a direct child.
+	 * @throws IllegalArgumentException if the specified actor is not a descendant of this group. */
+	public void localToDescendantCoordinates (Actor descendant, Vector2 localPoint) {
+		Group parent = descendant.getParent();
+		if (parent == null) throw new IllegalArgumentException("Child is not a descendant: " + descendant);
+		// First convert to the actor's parent coordinates.
+		if (parent != this) localToDescendantCoordinates(parent, localPoint);
+		// Then from each parent down to the descendant.
+		descendant.parentToLocalCoordinates(localPoint);
 	}
 }

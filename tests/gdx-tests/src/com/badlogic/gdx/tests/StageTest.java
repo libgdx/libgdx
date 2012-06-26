@@ -147,7 +147,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 
 		if (Gdx.input.isTouched()) {
 			Vector2 stageCoords = Vector2.tmp;
-			stage.toStageCoordinates(Gdx.input.getX(), Gdx.input.getY(), stageCoords);
+			stage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 			Actor actor = stage.hit(stageCoords.x, stageCoords.y);
 			if (actor instanceof Image)
 				((Image)actor).setColor((float)Math.random(), (float)Math.random(), (float)Math.random(),

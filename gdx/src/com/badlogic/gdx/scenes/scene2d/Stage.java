@@ -34,7 +34,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SnapshotArray;
 
-/** A 2D scenegraph containing hierarchies of {@link Actor actors}. Stage handles the viewport and distributing events.
+/** A 2D scenegraph containing hierarchies of {@link Actor actors}. Stage handles the viewport and distributing input events.
  * <p>
  * A stage fills the whole screen. {@link #setViewport} controls the coordinates used within the stage and sets up the camera used
  * to convert between stage coordinates and screen coordinates. *
@@ -81,8 +81,9 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** Creates a stage with the specified {@link #setViewport(float, float, boolean) viewport} and {@link SpriteBatch}. This can be
-	 * used to avoid create a new SpriteBatch, which can be somewhat slow.
-	 * @param batch Will not be disposed if {@link #dispose()} is called. */
+	 * used to avoid creating a new SpriteBatch (which can be somewhat slow) if multiple stages are used during an applications
+	 * life time.
+	 * @param batch Will not be disposed if {@link #dispose()} is called. Handle disposal yourself. */
 	public Stage (float width, float height, boolean stretch, SpriteBatch batch) {
 		this.width = width;
 		this.height = height;
@@ -139,7 +140,8 @@ public class Stage extends InputAdapter implements Disposable {
 		batch.end();
 	}
 
-	/** Calls the {@link Actor#act(float)} method on each actor in the stage. Typically called each frame.
+	/** Calls the {@link Actor#act(float)} method on each actor in the stage. Typically called each frame. This method also fires
+	 * enter and exit events.
 	 * @param delta Time in seconds since the last frame. */
 	public void act (float delta) {
 		// Update over actors.
@@ -149,7 +151,7 @@ public class Stage extends InputAdapter implements Disposable {
 			if (!Gdx.input.isTouched(pointer)) {
 				if (overLast != null) {
 					pointerOverActors[pointer] = null;
-					toStageCoordinates(Gdx.input.getX(pointer), Gdx.input.getY(pointer), stageCoords);
+					screenToStageCoordinates(stageCoords.set(Gdx.input.getX(pointer), Gdx.input.getY(pointer)));
 					// Exit over last.
 					ActorEvent event = Pools.obtain(ActorEvent.class);
 					event.setType(ActorEvent.Type.exit);
@@ -175,7 +177,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	private Actor fireEnterAndExit (Actor overLast, int screenX, int screenY, int pointer) {
 		// Find the actor under the point.
-		toStageCoordinates(screenX, screenY, stageCoords);
+		screenToStageCoordinates(stageCoords.set(screenX, screenY));
 		Actor over = hit(stageCoords.x, stageCoords.y);
 		if (over == overLast) return overLast;
 
@@ -200,9 +202,9 @@ public class Stage extends InputAdapter implements Disposable {
 		return over;
 	}
 
-	/** Applies a touch down event to the stage and returns true if an actor in the scene processed the event. */
+	/** Applies a touch down event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event. */
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-		toStageCoordinates(screenX, screenY, stageCoords);
+		screenToStageCoordinates(stageCoords.set(screenX, screenY));
 
 		ActorEvent event = Pools.obtain(ActorEvent.class);
 		event.setType(Type.touchDown);
@@ -222,11 +224,12 @@ public class Stage extends InputAdapter implements Disposable {
 		return event.isHandled();
 	}
 
-	/** Applies a touch moved event to the stage and returns true if an actor in the scene processed the event. */
+	/** Applies a touch moved event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event.
+	 * Only {@link ActorListener listeners} that returned true for touchDown will receive this event. */
 	public boolean touchDragged (int screenX, int screenY, int pointer) {
 		if (touchFocuses.size == 0) return false;
 
-		toStageCoordinates(screenX, screenY, stageCoords);
+		screenToStageCoordinates(stageCoords.set(screenX, screenY));
 
 		ActorEvent event = Pools.obtain(ActorEvent.class);
 		event.setType(Type.touchDragged);
@@ -240,8 +243,8 @@ public class Stage extends InputAdapter implements Disposable {
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {
 			TouchFocus focus = focuses[i];
 			if (focus.pointer != pointer) continue;
-			event.setContextActor(focus.actor);
-			if (focus.listener.handle(event)) event.handled();
+			event.setCurrentTarget(focus.actor);
+			if (focus.listener.handle(event)) event.handle();
 		}
 		touchFocuses.end();
 
@@ -250,11 +253,12 @@ public class Stage extends InputAdapter implements Disposable {
 		return handled;
 	}
 
-	/** Applies a touch up event to the stage and returns true if an actor in the scene processed the event. */
+	/** Applies a touch up event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event.
+	 * Only {@link ActorListener listeners} that returned true for touchDown will receive this event. */
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 		if (touchFocuses.size == 0) return false;
 
-		toStageCoordinates(screenX, screenY, stageCoords);
+		screenToStageCoordinates(stageCoords.set(screenX, screenY));
 
 		ActorEvent event = Pools.obtain(ActorEvent.class);
 		event.setType(Type.touchUp);
@@ -270,8 +274,8 @@ public class Stage extends InputAdapter implements Disposable {
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {
 			TouchFocus focus = focuses[i];
 			if (focus.pointer != pointer || focus.button != button) continue;
-			event.setContextActor(focus.actor);
-			if (focus.listener.handle(event)) event.handled();
+			event.setCurrentTarget(focus.actor);
+			if (focus.listener.handle(event)) event.handle();
 		}
 		touchFocuses.end();
 		for (int i = touchFocuses.size - 1; i >= 0; i--) {
@@ -285,10 +289,10 @@ public class Stage extends InputAdapter implements Disposable {
 		return handled;
 	}
 
-	/** Applies a touch moved event to the stage and returns true if an actor in the scene processed the event. This event only
-	 * occurs on the desktop. */
+	/** Applies a mouse moved event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event.
+	 * This event only occurs on the desktop. */
 	public boolean mouseMoved (int screenX, int screenY) {
-		toStageCoordinates(screenX, screenY, stageCoords);
+		screenToStageCoordinates(stageCoords.set(screenX, screenY));
 
 		ActorEvent event = Pools.obtain(ActorEvent.class);
 		event.setStage(this);
@@ -306,8 +310,8 @@ public class Stage extends InputAdapter implements Disposable {
 		return event.isHandled();
 	}
 
-	/** Applies a mouse scroll event to the stage and returns true if an actor in the scene processed the event. This event only
-	 * occurs on the desktop. */
+	/** Applies a mouse scroll event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the
+	 * event. This event only occurs on the desktop. */
 	public boolean scrolled (int amount) {
 		if (scrollFocus == null) return false;
 		ActorEvent event = Pools.obtain(ActorEvent.class);
@@ -320,7 +324,7 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** Applies a key down event to the actor that has {@link Stage#setKeyboardFocus(Actor) keyboard focus}, if any, and returns
-	 * true if the event was processed. */
+	 * true if the event was {@link Event#handle() handled}. */
 	public boolean keyDown (int keyCode) {
 		if (keyboardFocus == null) return false;
 		ActorEvent event = Pools.obtain(ActorEvent.class);
@@ -333,7 +337,7 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** Applies a key up event to the actor that has {@link Stage#setKeyboardFocus(Actor) keyboard focus}, if any, and returns true
-	 * if the event was processed. */
+	 * if the event was {@link Event#handle() handled}. */
 	public boolean keyUp (int keyCode) {
 		if (keyboardFocus == null) return false;
 		ActorEvent event = Pools.obtain(ActorEvent.class);
@@ -346,7 +350,7 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** Applies a key typed event to the actor that has {@link Stage#setKeyboardFocus(Actor) keyboard focus}, if any, and returns
-	 * true if the event was processed. */
+	 * true if the event was {@link Event#handle() handled}. */
 	public boolean keyTyped (char character) {
 		if (keyboardFocus == null) return false;
 		ActorEvent event = Pools.obtain(ActorEvent.class);
@@ -358,7 +362,9 @@ public class Stage extends InputAdapter implements Disposable {
 		return event.isHandled();
 	}
 
-	public void addTouchFocus (Actor actor, EventListener listener, int pointer, int button) {
+	/** Adds the listener to be notified for all touchDragged and touchUp events for the specified pointer and button. The actor
+	 * will be used as the {@link Event#getCurrentTarget() current target}. */
+	public void addTouchFocus (EventListener listener, Actor actor, int pointer, int button) {
 		TouchFocus focus = Pools.obtain(TouchFocus.class);
 		focus.actor = actor;
 		focus.listener = listener;
@@ -367,7 +373,9 @@ public class Stage extends InputAdapter implements Disposable {
 		touchFocuses.add(focus);
 	}
 
-	public void removeTouchFocus (Actor actor, EventListener listener, int pointer, int button) {
+	/** Removes the listener from being notified for all touchDragged and touchUp events for the specified pointer and button. Note
+	 * the listener may never receive a touchUp event if this method is used. */
+	public void removeTouchFocus (EventListener listener, Actor actor, int pointer, int button) {
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
 		for (int i = touchFocuses.size - 1; i >= 0; i--) {
 			TouchFocus focus = touchFocuses.get(i);
@@ -376,6 +384,10 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 	}
 
+	/** Sends a touchUp event to all listeners that are registered to receive touchDragged and touchUp events and removes their
+	 * touch focus. The location of the touchUp is {@link Integer#MIN_VALUE}. This method removes all touch focus listeners, but
+	 * sends a touchUp event so that the state of the listeners remains consistent (listeners typically expect to receive touchUp
+	 * eventually). */
 	public void cancelTouchFocus () {
 		ActorEvent event = Pools.obtain(ActorEvent.class);
 		event.setStage(this);
@@ -386,7 +398,7 @@ public class Stage extends InputAdapter implements Disposable {
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {
 			TouchFocus focus = touchFocuses.get(i);
-			event.setContextActor(focus.actor);
+			event.setCurrentTarget(focus.actor);
 			event.setPointer(focus.pointer);
 			event.setButton(focus.button);
 			focus.listener.handle(event);
@@ -432,43 +444,15 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Clears the stage, removing all actors. */
 	public void clear () {
-		root.clear();
 		unfocusAll();
-	}
-
-	/** Returns the {@link Actor} at the specified location in stage coordinates. Hit testing is performed in the order the Actors
-	 * were inserted into the Stage, last inserted Actors being tested first. To get stage coordinates from screen coordinates, use
-	 * {@link #toStageCoordinates(int, int, Vector2)}.
-	 * @return May be null if no actor was hit. */
-	public Actor hit (float stageX, float stageY) {
-		Vector2 actorCoords = Vector2.tmp;
-		Group.toChildCoordinates(root, stageX, stageY, actorCoords);
-		return root.hit(actorCoords.x, actorCoords.y);
-	}
-
-	/** Converts the given screen coordinates to stage coordinates.
-	 * @param out Stores the result. */
-	public void toStageCoordinates (int screenX, int screenY, Vector2 out) {
-		camera.unproject(Vector3.tmp.set(screenX, screenY, 0));
-		out.x = Vector3.tmp.x;
-		out.y = Vector3.tmp.y;
-	}
-
-	public void toScreenCoordinates (Vector2 stageCoords) {
-		Vector3.tmp.set(stageCoords.x, stageCoords.y, 0);
-		camera.project(Vector3.tmp);
-		stageCoords.x = Vector3.tmp.x;
-		stageCoords.y = Vector3.tmp.y;
-	}
-
-	public void toScreenCoordinates (Vector2 stageCoords, Matrix4 transformMatrix) {
-		ScissorStack.toWindowCoordinates(camera, transformMatrix, stageCoords);
+		root.clear();
 	}
 
 	/** Removes the touch, keyboard, and scroll focused actors. */
 	public void unfocusAll () {
 		scrollFocus = null;
 		keyboardFocus = null;
+		cancelTouchFocus();
 	}
 
 	/** Removes the touch, keyboard, and scroll focus for the specified actor. */
@@ -519,15 +503,46 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Sets the stage's camera. The camera must be configured properly or {@link #setViewport(float, float, boolean)} can be called
 	 * after the camera is set. {@link Stage#draw()} will call {@link Camera#update()} and use the {@link Camera#combined} matrix
-	 * for the SpriteBatch {@link SpriteBatch#setProjectionMatrix(com.badlogic.gdx.math.Matrix4) projection matrix}.
-	 * @param camera the {@link Camera} */
+	 * for the SpriteBatch {@link SpriteBatch#setProjectionMatrix(com.badlogic.gdx.math.Matrix4) projection matrix}. */
 	public void setCamera (Camera camera) {
 		this.camera = camera;
 	}
 
-	/** Reurns the root group which holds all actors in the stage. */
+	/** Returns the root group which holds all actors in the stage. */
 	public Group getRoot () {
 		return root;
+	}
+
+	/** Returns the {@link Actor} at the specified location in stage coordinates. Hit testing is performed in the order the actors
+	 * were inserted into the stage, last inserted actors being tested first. To get stage coordinates from screen coordinates, use
+	 * {@link #screenToStageCoordinates(Vector2)}.
+	 * @return May be null if no actor was hit. */
+	public Actor hit (float stageX, float stageY) {
+		Vector2 actorCoords = Vector2.tmp;
+		root.parentToLocalCoordinates(actorCoords.set(stageX, stageY));
+		return root.hit(actorCoords.x, actorCoords.y);
+	}
+
+	/** Transforms the screen coordinates to stage coordinates.
+	 * @param screenCoords Stores the result. */
+	public void screenToStageCoordinates (Vector2 screenCoords) {
+		camera.unproject(Vector3.tmp.set(screenCoords.x, screenCoords.y, 0));
+		screenCoords.x = Vector3.tmp.x;
+		screenCoords.y = Vector3.tmp.y;
+	}
+
+	/** Transforms the stage coordinates to screen coordinates. */
+	public void stageToScreenCoordinates (Vector2 stageCoords) {
+		Vector3.tmp.set(stageCoords.x, stageCoords.y, 0);
+		camera.project(Vector3.tmp);
+		stageCoords.x = Vector3.tmp.x;
+		stageCoords.y = Vector3.tmp.y;
+	}
+
+	/** Transforms the coordinates to screen coordinates. The coordinates can be anywhere in the stage since the transform matrix
+	 * describes how to convert them. The transform matrix is typically obtained from {@link SpriteBatch#getTransformMatrix()}. */
+	public void toScreenCoordinates (Vector2 coords, Matrix4 transformMatrix) {
+		ScissorStack.toWindowCoordinates(camera, transformMatrix, coords);
 	}
 
 	public void dispose () {

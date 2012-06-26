@@ -3,6 +3,7 @@ package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.math.Vector2;
 
+/** Listener for actor input events. */
 public class ActorListener implements EventListener {
 	public boolean handle (Event e) {
 		if (!(e instanceof ActorEvent)) return false;
@@ -20,7 +21,7 @@ public class ActorListener implements EventListener {
 		}
 
 		Vector2 coords = Vector2.tmp.set(event.getStageX(), event.getStageY());
-		event.getContextActor().toLocalCoordinates(coords);
+		event.getCurrentTarget().stageToLocalCoordinates(coords);
 
 		switch (event.getType()) {
 		case touchDown:
@@ -44,38 +45,61 @@ public class ActorListener implements EventListener {
 		return false;
 	}
 
+	/** Called when a mouse button or a finger touch goes down on the actor. If true is returned, this listener will receive all
+	 * touchDragged and touchUp events, even those not over this actor, until touchUp is received. Also when true is returned, the
+	 * event is {@link Event#handle() handled}.
+	 * @see ActorEvent */
 	public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
 		return false;
 	}
 
+	/** Called when a mouse button or a finger touch goes up anywhere, but only if touchDown previously returned true for the mouse
+	 * button or touch. The touchUp event is always {@link Event#handle() handled}.
+	 * @see ActorEvent */
 	public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
 	}
 
+	/** Called when a mouse button or a finger touch is moved anywhere, but only if touchDown previously returned true for the mouse
+	 * button or touch. The touchDragged event is always {@link Event#handle() handled}.
+	 * @see ActorEvent */
 	public void touchDragged (ActorEvent event, float x, float y, int pointer) {
 	}
 
+	/** Called any time the mouse is moved when a button is not down. This event only occurs on the desktop. When true is returned,
+	 * the event is {@link Event#handle() handled}.
+	 * @see ActorEvent */
 	public boolean mouseMoved (ActorEvent event, float x, float y) {
 		return false;
 	}
 
+	/** Called any time the mouse cursor or a finger touch is moved over an actor. On the desktop, this event occurs even when no
+	 * mouse buttons are pressed.
+	 * @see ActorEvent */
 	public void enter (ActorEvent event, float x, float y, int pointer, Actor fromActor) {
 	}
 
+	/** Called any time the mouse cursor or a finger touch is moved out of an actor. On the desktop, this event occurs even when no
+	 * mouse buttons are pressed.
+	 * @see ActorEvent */
 	public void exit (ActorEvent event, float x, float y, int pointer, Actor toActor) {
 	}
 
+	/** Called when the mouse wheel has been scrolled. When true is returned, the event is {@link Event#handle() handled}. */
 	public boolean scrolled (ActorEvent event, int amount) {
 		return false;
 	}
 
+	/** Called when a key goes down. When true is returned, the event is {@link Event#handle() handled}. */
 	public boolean keyDown (ActorEvent event, int keycode) {
 		return false;
 	}
 
+	/** Called when a key goes up. When true is returned, the event is {@link Event#handle() handled}. */
 	public boolean keyUp (ActorEvent event, int keycode) {
 		return false;
 	}
 
+	/** Called when a key is typed. When true is returned, the event is {@link Event#handle() handled}. */
 	public boolean keyTyped (ActorEvent event, char character) {
 		return false;
 	}

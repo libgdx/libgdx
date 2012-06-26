@@ -71,7 +71,7 @@ public class SelectBox extends Widget {
 				}
 				Stage stage = getStage();
 				Vector2 stageCoords = Vector2.tmp;
-				stage.toStageCoordinates((int)screenCoords.x, (int)screenCoords.y, stageCoords);
+				stage.screenToStageCoordinates(stageCoords.set(screenCoords.x, screenCoords.y));
 				list = new SelectList(stageCoords.x, stageCoords.y);
 				stage.addActor(list);
 				return true;
@@ -193,7 +193,7 @@ public class SelectBox extends Widget {
 		ActorListener stageListener = new ActorListener() {
 			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0) return false;
-				toLocalCoordinates(Vector2.tmp);
+				stageToLocalCoordinates(Vector2.tmp);
 				x = Vector2.tmp.x;
 				y = Vector2.tmp.y;
 				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
@@ -212,7 +212,7 @@ public class SelectBox extends Widget {
 			}
 
 			public boolean mouseMoved (ActorEvent event, float x, float y) {
-				toLocalCoordinates(Vector2.tmp);
+				stageToLocalCoordinates(Vector2.tmp);
 				x = Vector2.tmp.x;
 				y = Vector2.tmp.y;
 				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {

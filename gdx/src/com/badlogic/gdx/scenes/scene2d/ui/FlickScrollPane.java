@@ -113,9 +113,9 @@ public class FlickScrollPane extends WidgetGroup {
 
 	void cancelTouchFocusedChild (ActorEvent event) {
 		Stage stage = getStage();
-		stage.removeTouchFocus(this, gestureListener, event.getPointer(), event.getPointer());
+		stage.removeTouchFocus(gestureListener, this, event.getPointer(), event.getPointer());
 		stage.cancelTouchFocus();
-		stage.addTouchFocus(this, gestureListener, event.getPointer(), event.getPointer());
+		stage.addTouchFocus(gestureListener, this, event.getPointer(), event.getPointer());
 	}
 
 	void clamp () {

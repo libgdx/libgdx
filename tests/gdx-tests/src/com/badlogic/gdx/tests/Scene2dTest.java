@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.ActorListener;
@@ -20,7 +23,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -66,7 +71,26 @@ public class Scene2dTest extends GdxTest {
 		stage.addActor(actor);
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		final TextButton button = new TextButton("Some Shit!", skin.getStyle("toggle", TextButtonStyle.class));
+
+		TextButtonStyle style = skin.getStyle(TextButtonStyle.class);
+		style.up = new BaseDrawable() {
+			ShapeRenderer renderer = new ShapeRenderer();
+
+			public void draw (SpriteBatch batch, float x, float y, float width, float height) {
+				batch.end();
+				renderer.setProjectionMatrix(batch.getProjectionMatrix());
+				renderer.setTransformMatrix(batch.getTransformMatrix());
+				renderer.begin(ShapeType.Line);
+				for (int i = 0; i < 25; i++) {
+					renderer.setColor(MathUtils.random(0.3f, 1), MathUtils.random(0.3f, 1), MathUtils.random(0.3f, 1), 1);
+					renderer.line(MathUtils.random(x, x + width), MathUtils.random(y, y + height), MathUtils.random(x, x + width),
+						MathUtils.random(y, y + height));
+				}
+				renderer.end();
+				batch.begin();
+			}
+		};
+		final TextButton button = new TextButton("Fancy Background", style);
 
 // button.addListener(new ClickListener() {
 // public void clicked (ActorEvent event, float x, float y) {

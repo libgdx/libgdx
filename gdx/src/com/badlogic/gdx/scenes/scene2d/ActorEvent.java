@@ -1,7 +1,10 @@
 
 package com.badlogic.gdx.scenes.scene2d;
 
+import com.badlogic.gdx.Input.Buttons;
 
+/** Event for actor input: touch, mouse, keyboard, and scroll.
+ * @see ActorListener */
 public class ActorEvent extends Event {
 	private Type type;
 	private float stageX, stageY;
@@ -14,6 +17,7 @@ public class ActorEvent extends Event {
 		relatedActor = null;
 	}
 
+	/** The stage x coordinate where the event occured. Valid for: touchDown, touchDragged, touchUp, mouseMoved, enter, and exit. */
 	public float getStageX () {
 		return stageX;
 	}
@@ -22,6 +26,7 @@ public class ActorEvent extends Event {
 		this.stageX = stageX;
 	}
 
+	/** The stage x coordinate where the event occured. Valid for: touchDown, touchDragged, touchUp, mouseMoved, enter, and exit. */
 	public float getStageY () {
 		return stageY;
 	}
@@ -30,6 +35,7 @@ public class ActorEvent extends Event {
 		this.stageY = stageY;
 	}
 
+	/** The type of input event. */
 	public Type getType () {
 		return type;
 	}
@@ -38,6 +44,8 @@ public class ActorEvent extends Event {
 		this.type = type;
 	}
 
+	/** The pointer index for the event. The first touch is index 0, second touch is index 1, etc. Always 0 on desktop. Valid for:
+	 * touchDown, touchDragged, touchUp, enter, and exit. */
 	public int getPointer () {
 		return pointer;
 	}
@@ -46,6 +54,8 @@ public class ActorEvent extends Event {
 		this.pointer = pointer;
 	}
 
+	/** The index for the mouse button pressed. Always 0 on Android. Valid for: touchDown and touchUp.
+	 * @see Buttons */
 	public int getButton () {
 		return button;
 	}
@@ -54,6 +64,7 @@ public class ActorEvent extends Event {
 		this.button = button;
 	}
 
+	/** The key code of the key that was pressed. Valid for: keyDown and keyUp. */
 	public int getKeyCode () {
 		return keyCode;
 	}
@@ -62,6 +73,7 @@ public class ActorEvent extends Event {
 		this.keyCode = keyCode;
 	}
 
+	/** The character for the key that was type. Valid for: keyTyped. */
 	public char getCharacter () {
 		return character;
 	}
@@ -70,6 +82,7 @@ public class ActorEvent extends Event {
 		this.character = character;
 	}
 
+	/** The amount the mouse was scrolled. Valid for: scrolled. */
 	public int getScrollAmount () {
 		return scrollAmount;
 	}
@@ -78,6 +91,8 @@ public class ActorEvent extends Event {
 		this.scrollAmount = scrollAmount;
 	}
 
+	/** The actor related to the event. Valid for: enter and exit. For enter, this is the actor being exited, or null. For exit,
+	 * this is the actor being entered, or null. */
 	public Actor getRelatedActor () {
 		return relatedActor;
 	}
