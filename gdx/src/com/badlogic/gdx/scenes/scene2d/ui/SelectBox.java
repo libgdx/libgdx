@@ -38,7 +38,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
  * <p>
  * The preferred size of the select box is determined by the maximum text bounds of the items and the size of the
  * {@link SelectBoxStyle#background}.
- * @author mzechner */
+ * @author mzechner
+ * @author Nathan Sweet */
 public class SelectBox extends Widget {
 	SelectBoxStyle style;
 	String[] items;
@@ -119,10 +120,6 @@ public class SelectBox extends Widget {
 		prefWidth = bg.getLeftWidth() + bg.getRightWidth() + max;
 
 		invalidateHierarchy();
-	}
-
-	@Override
-	public void layout () {
 	}
 
 	@Override
@@ -304,7 +301,8 @@ public class SelectBox extends Widget {
 	}
 
 	/** The style for a select box, see {@link SelectBox}.
-	 * @author mzechner */
+	 * @author mzechner
+	 * @author Nathan Sweet */
 	static public class SelectBoxStyle {
 		public Drawable background;
 		public Drawable listBackground;

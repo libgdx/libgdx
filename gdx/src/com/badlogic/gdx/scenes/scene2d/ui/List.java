@@ -198,7 +198,8 @@ public class List extends Widget implements Cullable {
 	}
 
 	/** The style for a list, see {@link List}.
-	 * @author mzechner */
+	 * @author mzechner
+	 * @author Nathan Sweet */
 	static public class ListStyle {
 		public BitmapFont font;
 		public Color fontColorSelected = new Color(1, 1, 1, 1);

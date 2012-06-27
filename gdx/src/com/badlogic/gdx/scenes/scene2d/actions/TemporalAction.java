@@ -4,7 +4,7 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
 
-/** Base class for actions that transition over time.
+/** Base class for actions that transition over time using the percent complete.
  * @author Nathan Sweet */
 abstract public class TemporalAction extends Action {
 	private float duration, time;
@@ -84,6 +84,7 @@ abstract public class TemporalAction extends Action {
 		return reverse;
 	}
 
+	/** When true, the action's progress will go from 100% to 0%. */
 	public void setReverse (boolean reverse) {
 		this.reverse = reverse;
 	}

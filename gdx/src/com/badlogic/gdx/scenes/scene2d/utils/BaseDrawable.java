@@ -1,6 +1,8 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
+/** Base class for a drawable that stores the size information.
+ * @author Nathan Sweet */
 abstract public class BaseDrawable implements Drawable {
 	private float leftWidth, rightWidth, topHeight, bottomHeight, minWidth, minHeight;
 

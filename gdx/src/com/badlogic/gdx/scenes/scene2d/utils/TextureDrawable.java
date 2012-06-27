@@ -4,6 +4,8 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+/** Drawable for a {@link Texture}.
+ * @author Nathan Sweet */
 public class TextureDrawable extends BaseDrawable {
 	private Texture texture;
 

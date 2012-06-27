@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.ActorListener;
 
-/** Detects tap, longPress, fling, pan, zoom, and pinch gestures.
+/** Detects tap, longPress, fling, pan, zoom, and pinch gestures on an actor.
  * @see GestureDetector
  * @author Nathan Sweet */
 public class ActorGestureListener extends ActorListener {
@@ -44,17 +44,20 @@ public class ActorGestureListener extends ActorListener {
 
 	ActorEvent event;
 
+	/** Forwards the touchDown to the {@link GestureDetector}. If overridden, a subclass should call super. */
 	public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
 		this.event = event;
 		detector.touchDown(x, y, pointer, 0);
 		return true;
 	}
 
+	/** Forwards the touchUp to the {@link GestureDetector}. If overridden, a subclass should call super. */
 	public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
 		this.event = event;
 		detector.touchUp(x, y, pointer, 0);
 	}
 
+	/** Forwards the touchDragged to the {@link GestureDetector}. If overridden, a subclass should call super. */
 	public void touchDragged (ActorEvent event, float x, float y, int pointer) {
 		this.event = event;
 		detector.touchDragged(x, y, pointer);

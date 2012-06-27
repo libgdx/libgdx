@@ -32,8 +32,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 
-// BOZO - Add feature that so first actor will never be cut off (eg for a file browser).
-
 /** A group that scrolls a child widget by pressing and dragging.
  * <p>
  * The widget is sized to its preferred size. If the widget's preferred width or height is less than the size of this scroll pane,
@@ -273,6 +271,7 @@ public class FlickScrollPane extends WidgetGroup {
 		amountY = maxY * percentY;
 	}
 
+	/** Sets the scroll offset so the specified rectangle is fully in view. */
 	public void scrollTo (float x, float y, float width, float height) {
 		float paneWidth = getWidth();
 		float paneHeight = getHeight();

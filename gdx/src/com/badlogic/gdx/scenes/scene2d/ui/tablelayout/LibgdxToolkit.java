@@ -50,7 +50,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.esotericsoftware.tablelayout.Toolkit;
 
-/** @author Nathan Sweet */
+/** The libgdx implementation of the table layout functionality.
+ * @author Nathan Sweet */
 public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 	static {
 		addClassPrefix("com.badlogic.gdx.scenes.scene2d.");
@@ -93,7 +94,7 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 				if (skin.hasResource(className, NinePatch.class)) return new Image(skin.getPatch(className));
 			}
 			if (layout.assetManager != null && layout.assetManager.isLoaded(className, Texture.class))
-				return new Image(new TextureRegion(layout.assetManager.get(className, Texture.class)));
+				return new Image(new TextureRegionDrawable(new TextureRegion(layout.assetManager.get(className, Texture.class))));
 			throw ex;
 		}
 	}

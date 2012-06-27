@@ -4,6 +4,8 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+/** Drawable for a {@link TextureRegion}.
+ * @author Nathan Sweet */
 public class TextureRegionDrawable extends BaseDrawable {
 	private TextureRegion region;
 

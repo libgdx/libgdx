@@ -127,6 +127,8 @@ public class Window extends Table {
 		this.isModal = isModal;
 	}
 
+	/** The style for a window, see {@link Window}.
+	 * @author Nathan Sweet */
 	static public class WindowStyle {
 		public Drawable background;
 		public BitmapFont titleFont;

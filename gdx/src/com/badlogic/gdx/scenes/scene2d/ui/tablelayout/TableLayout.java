@@ -46,7 +46,8 @@ import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.tablelayout.BaseTableLayout;
 import com.esotericsoftware.tablelayout.Cell;
 
-/** @author Nathan Sweet */
+/** The libgdx implementation to apply a table layout.
+ * @author Nathan Sweet */
 public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, LibgdxToolkit> {
 	public Skin skin;
 	public AssetManager assetManager;

@@ -370,6 +370,7 @@ public class ScrollPane extends WidgetGroup {
 		amountY = widgetAreaBounds.y * percentY;
 	}
 
+	/** Sets the scroll offset so the specified rectangle is fully in view. */
 	public void scrollTo (float x, float y, float width, float height) {
 		float paneWidth = getWidth();
 		float paneHeight = getHeight();
@@ -403,7 +404,8 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	/** The style for a scroll pane, see {@link ScrollPane}.
-	 * @author mzechner */
+	 * @author mzechner
+	 * @author Nathan Sweet */
 	static public class ScrollPaneStyle {
 		/** Optional. */
 		public Drawable background;

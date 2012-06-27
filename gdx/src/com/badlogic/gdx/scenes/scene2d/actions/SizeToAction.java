@@ -1,7 +1,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
-/** Moves an actor from its current position to a specific position. 
+/** Moves an actor from its current size to a specific size. 
  * @author Nathan Sweet */
 public class SizeToAction extends TemporalAction {
 	private float startWidth, startHeight;

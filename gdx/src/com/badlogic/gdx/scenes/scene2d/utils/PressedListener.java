@@ -6,7 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.ActorListener;
 
-/** Detects a click on an actor. The touch must go down over the actor and go up over the actor for the click to occur.
+/** Detects the mouse or a finger touch on an actor. The touch must go down over the actor and is considered pressed as long as it
+ * is over the actor or within the {@link #setTapSquareSize(float) tap square}.
  * @author Nathan Sweet */
 public class PressedListener extends ActorListener {
 	private float tapSquareSize = 14, touchDownX = -1, touchDownY = -1;
@@ -21,6 +22,7 @@ public class PressedListener extends ActorListener {
 		return true;
 	}
 
+	/** Returns true if the specified position is over the specified actor or one of its decsendants. */
 	public boolean isOver (Actor actor, float x, float y) {
 		Actor hit = actor.hit(x, y);
 		if (hit == null || !hit.isDescendant(actor)) {

@@ -14,9 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 
-/** Displays a {@link TextureRegion} or {@link NinePatch}, scaled various way within the widgets bounds. The preferred size is the
- * actual size of the region or ninepatch. Only when using a TextureRegion will the actor's scale, rotation, and origin be used
- * when drawing.
+/** Displays a {@link Drawable}, scaled various way within the widgets bounds. The preferred size is the min size of the drawable.
+ * Only when using a {@link TextureRegionDrawable} will the actor's scale, rotation, and origin be used when drawing.
  * @author Nathan Sweet */
 public class Image extends Widget {
 	private Scaling scaling;
@@ -29,18 +28,10 @@ public class Image extends Widget {
 		this((Drawable)null);
 	}
 
-	/** Creates an image stretched, and aligned center. */
-	public Image (Texture texture) {
-		this(new TextureDrawable(texture));
-	}
-
-	/** Creates an image aligned center. */
-	public Image (Texture texture, Scaling scaling) {
-		this(new TextureDrawable(texture), scaling);
-	}
-
-	public Image (Texture texture, Scaling scaling, int align) {
-		this(new TextureDrawable(texture), scaling, align);
+	/** Creates an image stretched, and aligned center.
+	 * @param patch May be null. */
+	public Image (NinePatch patch) {
+		this(new NinePatchDrawable(patch), Scaling.stretch, Align.CENTER);
 	}
 
 	/** Creates an image stretched, and aligned center.
@@ -49,32 +40,9 @@ public class Image extends Widget {
 		this(new TextureRegionDrawable(region), Scaling.stretch, Align.CENTER);
 	}
 
-	/** Creates an image aligned center.
-	 * @param region May be null. */
-	public Image (TextureRegion region, Scaling scaling) {
-		this(new TextureRegionDrawable(region), scaling, Align.CENTER);
-	}
-
-	/** @param region May be null. */
-	public Image (TextureRegion region, Scaling scaling, int align) {
-		this(new TextureRegionDrawable(region), scaling, align);
-	}
-
-	/** Creates an image stretched, and aligned center.
-	 * @param patch May be null. */
-	public Image (NinePatch patch) {
-		this(new NinePatchDrawable(patch), Scaling.stretch, Align.CENTER);
-	}
-
-	/** Creates an image aligned center.
-	 * @param patch May be null. */
-	public Image (NinePatch patch, Scaling scaling) {
-		this(new NinePatchDrawable(patch), scaling, Align.CENTER);
-	}
-
-	/** @param patch May be null. */
-	public Image (NinePatch patch, Scaling scaling, int align) {
-		this(new NinePatchDrawable(patch));
+	/** Creates an image stretched, and aligned center. */
+	public Image (Texture texture) {
+		this(new TextureDrawable(texture));
 	}
 
 	/** Creates an image stretched, and aligned center.

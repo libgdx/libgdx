@@ -32,7 +32,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * <p>
  * The preferred height of a slider is determined by the larger of the knob and background. The preferred width of a slider is
  * 140, a relatively arbitrary size.
- * @author mzechner */
+ * @author mzechner
+ * @author Nathan Sweet */
 public class Slider extends Widget {
 	private SliderStyle style;
 	private float min, max, steps;
@@ -168,7 +169,8 @@ public class Slider extends Widget {
 	}
 
 	/** The style for a slider, see {@link Slider}.
-	 * @author mzechner */
+	 * @author mzechner
+	 * @author Nathan Sweet */
 	static public class SliderStyle {
 		/** The slider background, stretched only in the x direction. */
 		public Drawable slider;

@@ -25,21 +25,19 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public abstract class Clipboard {
 	/** gets the current content of the clipboard if it contains text
 	 * @return the clipboard content or null */
-	public abstract String getContents ();
+	abstract public String getContents ();
 
 	/** Sets the content of the system clipboard.
 	 * @param content the content */
-	public abstract void setContents (String content);
+	abstract public void setContents (String content);
 
-	public static Clipboard getDefaultClipboard () {
-		if (Gdx.app.getType() == ApplicationType.Android)
-			return new AndroidClipboard();
-		else {
-			try {
-				return (Clipboard)Class.forName("com.badlogic.gdx.scenes.scene2d.utils.DesktopClipboard").newInstance();
-			} catch (Exception ex) {
-				throw new GdxRuntimeException("Error creating desktop clipboard.", ex);
-			}
+	/** Gets the clipboard instance appropriate to the {@link ApplicationType}. */
+	static public Clipboard getDefaultClipboard () {
+		if (Gdx.app.getType() == ApplicationType.Android) return new AndroidClipboard();
+		try {
+			return (Clipboard)Class.forName("com.badlogic.gdx.scenes.scene2d.utils.DesktopClipboard").newInstance();
+		} catch (Exception ex) {
+			throw new GdxRuntimeException("Error creating desktop clipboard.", ex);
 		}
 	}
 }

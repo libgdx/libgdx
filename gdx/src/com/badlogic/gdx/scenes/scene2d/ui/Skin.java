@@ -663,6 +663,7 @@ public class Skin implements Disposable {
 		return json;
 	}
 
+	/** @author Nathan Sweet */
 	static public class TintedNinePatch extends NinePatch {
 		public String name;
 		public Color color;

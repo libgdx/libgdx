@@ -1,7 +1,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
-/** Moves an actor from its current position to a relative position.
+/** Moves an actor from its current size to a relative size.
  * @author Nathan Sweet */
 public class SizeByAction extends RelativeTemporalAction {
 	private float amountWidth, amountHeight;

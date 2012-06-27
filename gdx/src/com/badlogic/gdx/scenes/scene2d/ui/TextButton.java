@@ -15,8 +15,6 @@ public class TextButton extends Button {
 	private final Label label;
 	private TextButtonStyle style;
 
-	// BOZO - Region/patch constructors?
-
 	public TextButton (Skin skin) {
 		this("", skin);
 	}

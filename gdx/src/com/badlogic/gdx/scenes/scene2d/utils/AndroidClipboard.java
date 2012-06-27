@@ -16,9 +16,11 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
+/** Clipboard implementation for Android that just stores the value.
+ * @author mzechner */
 public class AndroidClipboard extends Clipboard {
 	private String contents;
-	
+
 	@Override
 	public String getContents () {
 		return contents;

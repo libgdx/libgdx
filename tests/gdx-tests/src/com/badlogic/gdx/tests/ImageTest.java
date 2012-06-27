@@ -29,7 +29,8 @@ public class ImageTest extends GdxTest {
 		ui.addActor(root);
 		root.debug();
 
-		Image image = new Image(image2, Scaling.fill);
+		Image image = new Image(image2);
+		image.setScaling(Scaling.fill);
 		root.add(image).width(160).height(100);
 	}
 

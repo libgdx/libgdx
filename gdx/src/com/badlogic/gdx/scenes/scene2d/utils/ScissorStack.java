@@ -32,6 +32,8 @@ import com.badlogic.gdx.utils.Array;
  * @author mzechner */
 public class ScissorStack {
 	private static Array<Rectangle> scissors = new Array<Rectangle>();
+	static Vector3 tmp = new Vector3();
+	static final Rectangle viewport = new Rectangle();
 
 	/** Pushes a new scissor {@link Rectangle} onto the stack, merging it with the current top of the stack. The minimal area of
 	 * overlap between the top of stack rectangle and the provided rectangle is pushed onto the stack. This will invoke
@@ -89,8 +91,6 @@ public class ScissorStack {
 		}
 	}
 
-	static Vector3 tmp = new Vector3();
-
 	/** Calculates a scissor rectangle in OpenGL ES window coordinates from a {@link Camera}, a transformation {@link Matrix4} and
 	 * an axis aligned {@link Rectangle}. The rectangle will get transformed by the camera and transform matrices and is then
 	 * projected to screen coordinates. Note that only axis aligned rectangles will work with this method. If either the Camera or
@@ -113,8 +113,6 @@ public class ScissorStack {
 		scissor.width = tmp.x - scissor.x;
 		scissor.height = tmp.y - scissor.y;
 	}
-
-	static final Rectangle viewport = new Rectangle();
 
 	/** @return the current viewport in OpenGL ES window coordinates based on the currently applied scissor */
 	public static Rectangle getViewport () {

@@ -309,7 +309,8 @@ public class SplitPane extends WidgetGroup {
 	}
 
 	/** The style for a splitpane, see {@link SplitPane}.
-	 * @author mzechner */
+	 * @author mzechner
+	 * @author Nathan Sweet */
 	static public class SplitPaneStyle {
 		public Drawable handle;
 

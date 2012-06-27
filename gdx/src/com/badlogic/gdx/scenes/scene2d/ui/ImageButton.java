@@ -1,12 +1,8 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.esotericsoftware.tablelayout.Cell;
 
@@ -33,32 +29,16 @@ public class ImageButton extends Button {
 		setHeight(getPrefHeight());
 	}
 
-	public ImageButton (TextureRegion region) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, new TextureRegionDrawable(region), null, null));
+	public ImageButton (Drawable imageUp) {
+		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, imageUp, null, null));
 	}
 
-	public ImageButton (TextureRegion regionUp, TextureRegion regionDown) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, new TextureRegionDrawable(regionUp), new TextureRegionDrawable(
-			regionDown), null));
+	public ImageButton (Drawable imageUp, Drawable imageDown) {
+		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, imageUp, imageDown, null));
 	}
 
-	public ImageButton (TextureRegion regionUp, TextureRegion regionDown, TextureRegion regionChecked) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, new TextureRegionDrawable(regionUp), new TextureRegionDrawable(
-			regionDown), new TextureRegionDrawable(regionChecked)));
-	}
-
-	public ImageButton (NinePatch patch) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, new NinePatchDrawable(patch), null, null));
-	}
-
-	public ImageButton (NinePatch patchUp, NinePatch patchDown) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, new NinePatchDrawable(patchUp),
-			new NinePatchDrawable(patchDown), null));
-	}
-
-	public ImageButton (NinePatch patchUp, NinePatch patchDown, NinePatch patchChecked) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, new NinePatchDrawable(patchUp),
-			new NinePatchDrawable(patchDown), new NinePatchDrawable(patchChecked)));
+	public ImageButton (Drawable imageUp, Drawable imageDown, Drawable imageChecked) {
+		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, imageUp, imageDown, imageChecked));
 	}
 
 	public void setStyle (ButtonStyle style) {

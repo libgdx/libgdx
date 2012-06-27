@@ -50,7 +50,10 @@ import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.tablelayout.Cell;
 import com.esotericsoftware.tablelayout.ParseException;
 
-/** @author Nathan Sweet */
+/** A group that sizes and positions children using table constraints.
+ * <p>
+ * The preferred and minimum sizes are that of the children when laid out in columns and rows.
+ * @author Nathan Sweet */
 public class Table extends WidgetGroup {
 	private final TableLayout layout;
 	private Drawable backgroundDrawable;
@@ -99,8 +102,8 @@ public class Table extends WidgetGroup {
 			super.draw(batch, parentAlpha);
 	}
 
-	/** Called to draw the background, before clipping is applied (if enabled). Default implementation draws the background nine
-	 * patch. */
+	/** Called to draw the background, before clipping is applied (if enabled). Default implementation draws the background
+	 * drawable. */
 	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
 		if (backgroundDrawable != null) {
 			Color color = getColor();

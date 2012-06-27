@@ -4,7 +4,8 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 
-/** Detects a click on an actor. The touch must go down over the actor and go up over the actor for the click to occur.
+/** Detects a click on an actor. The touch must go down over the actor and go up over the actor or within the
+ * {@link #setTapSquareSize(float) tap square} for the click to occur.
  * @author Nathan Sweet */
 abstract public class ClickListener extends PressedListener {
 	public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {

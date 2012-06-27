@@ -1,23 +1,21 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 
 /** A button is a {@link Table} with a checked state and additional {@link ButtonStyle style} fields for pressed, unpressed, and
- * checked. Being a table, a button can contain any other actors.
+ * checked. Each time a button is clicked, the checked state is toggled. Being a table, a button can contain any other actors.
  * <p>
- * The preferred size of the button is determined by the background ninepatch and the button contents.
+ * {@link ChangeEvent} is fired when the button is clicked.
+ * <p>
+ * The preferred size of the button is determined by the background and the button contents.
  * @author Nathan Sweet */
 public class Button extends Table {
 	private ButtonStyle style;
@@ -58,30 +56,16 @@ public class Button extends Table {
 		});
 	}
 
-	public Button (TextureRegion region) {
-		this(new ButtonStyle(new TextureRegionDrawable(region), null, null, 0f, 0f, 0f, 0f));
+	public Button (Drawable up) {
+		this(new ButtonStyle(up, null, null, 0f, 0f, 0f, 0f));
 	}
 
-	public Button (TextureRegion regionUp, TextureRegion regionDown) {
-		this(new ButtonStyle(new TextureRegionDrawable(regionUp), new TextureRegionDrawable(regionDown), null, 0f, 0f, 0f, 0f));
+	public Button (Drawable up, Drawable down) {
+		this(new ButtonStyle(up, down, null, 0f, 0f, 0f, 0f));
 	}
 
-	public Button (TextureRegion regionUp, TextureRegion regionDown, TextureRegion regionChecked) {
-		this(new ButtonStyle(new TextureRegionDrawable(regionUp), new TextureRegionDrawable(regionDown), new TextureRegionDrawable(
-			regionChecked), 0f, 0f, 0f, 0f));
-	}
-
-	public Button (NinePatch patch) {
-		this(new ButtonStyle(new NinePatchDrawable(patch), null, null, 0f, 0f, 0f, 0f));
-	}
-
-	public Button (NinePatch patchUp, NinePatch patchDown) {
-		this(new ButtonStyle(new NinePatchDrawable(patchUp), new NinePatchDrawable(patchDown), null, 0f, 0f, 0f, 0f));
-	}
-
-	public Button (NinePatch patchUp, NinePatch patchDown, NinePatch patchChecked) {
-		this(new ButtonStyle(new NinePatchDrawable(patchUp), new NinePatchDrawable(patchDown), new NinePatchDrawable(patchChecked),
-			0f, 0f, 0f, 0f));
+	public Button (Drawable up, Drawable down, Drawable checked) {
+		this(new ButtonStyle(up, down, checked, 0f, 0f, 0f, 0f));
 	}
 
 	public Button (Actor child, Skin skin) {
