@@ -240,8 +240,8 @@ public class TextureAtlas implements Disposable {
 		for (Region region : data.regions) {
 			int width = region.width;
 			int height = region.height;
-			AtlasRegion atlasRegion = new AtlasRegion(pageToTexture.get(region.page), region.left, region.top, region.rotate ? height : width,
-					region.rotate ? width : height);
+			AtlasRegion atlasRegion = new AtlasRegion(pageToTexture.get(region.page), region.left, region.top,
+				region.rotate ? height : width, region.rotate ? width : height);
 			atlasRegion.index = region.index;
 			atlasRegion.name = region.name;
 			atlasRegion.offsetX = region.offsetX;
@@ -369,11 +369,9 @@ public class TextureAtlas implements Disposable {
 		}
 		return new AtlasSprite(region);
 	}
-	
-	/**
-	 * @return the textures of the pages, unordered
-	 */
-	public Set<Texture> getTextures() {
+
+	/** @return the textures of the pages, unordered */
+	public Set<Texture> getTextures () {
 		return textures;
 	}
 
@@ -507,8 +505,7 @@ public class TextureAtlas implements Disposable {
 			region.offsetY = originalOffsetY * heightRatio;
 			int packedWidth = region.rotate ? region.packedHeight : region.packedWidth;
 			int packedHeight = region.rotate ? region.packedWidth : region.packedHeight;
-			super.setBounds(x + region.offsetX, y + region.offsetY, packedWidth * widthRatio, packedHeight
-				* heightRatio);
+			super.setBounds(x + region.offsetX, y + region.offsetY, packedWidth * widthRatio, packedHeight * heightRatio);
 		}
 
 		public void setSize (float width, float height) {
@@ -530,14 +527,15 @@ public class TextureAtlas implements Disposable {
 
 			float widthRatio = getWidth() / region.originalWidth;
 			float heightRatio = getHeight() / region.originalHeight;
-			
-			region.offsetX /= widthRatio;
-			region.offsetY /= heightRatio;
-			// Updates x and y offsets.
-			region.flip(x, y);
+
+			region.offsetX = originalOffsetX;
+			region.offsetY = originalOffsetY;
+			region.flip(x, y); // Updates x and y offsets.
+			originalOffsetX = region.offsetX;
+			originalOffsetY = region.offsetY;
 			region.offsetX *= widthRatio;
 			region.offsetY *= heightRatio;
-			
+
 			// Update position and origin with new offsets.
 			translate(region.offsetX - oldOffsetX, region.offsetY - oldOffsetY);
 			setOrigin(oldOriginX, oldOriginY);
