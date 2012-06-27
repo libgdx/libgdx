@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * can determine how to size and position content.
  * @author Nathan Sweet */
 public interface Drawable {
+	/** Draws this drawable at the specified bounds. The drawable should be tinted {@link SpriteBatch#getColor()}. */
 	public void draw (SpriteBatch batch, float x, float y, float width, float height);
 
 	public float getTopHeight ();

@@ -1,10 +1,15 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
-/** Base class for a drawable that stores the size information.
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+/** Drawable that stores the size information but doesn't draw anything.
  * @author Nathan Sweet */
-abstract public class BaseDrawable implements Drawable {
+public class EmptyDrawable implements Drawable {
 	private float leftWidth, rightWidth, topHeight, bottomHeight, minWidth, minHeight;
+
+	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
+	}
 
 	public float getLeftWidth () {
 		return leftWidth;

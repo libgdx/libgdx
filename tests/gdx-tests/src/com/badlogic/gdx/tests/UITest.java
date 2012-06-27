@@ -27,7 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.FlickScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -51,7 +50,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class UITest extends GdxTest {
@@ -92,9 +90,10 @@ public class UITest extends GdxTest {
 		final SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX"},
 			skin.getStyle(SelectBoxStyle.class));
 		final Image imageActor = new Image(image2);
-		final FlickScrollPane scrollPane = new FlickScrollPane(imageActor);
+		final ScrollPane scrollPane = new ScrollPane(imageActor);
 		final List list = new List(listEntries, skin.getStyle(ListStyle.class));
 		final ScrollPane scrollPane2 = new ScrollPane(list, skin.getStyle(ScrollPaneStyle.class));
+		scrollPane2.setFlickScroll(false);
 		final SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, skin.getStyle("default-horizontal",
 			SplitPaneStyle.class));
 		fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class));

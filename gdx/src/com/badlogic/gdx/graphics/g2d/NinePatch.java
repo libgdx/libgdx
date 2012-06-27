@@ -31,6 +31,8 @@ public class NinePatch {
 	public static final int BOTTOM_CENTER = 7;
 	public static final int BOTTOM_RIGHT = 8;
 
+	static private final Color tempColor = new Color();
+
 	private Texture texture;
 	private TextureRegion[] patches;
 	private int bottomLeft = -1, bottomCenter = -1, bottomRight = -1;
@@ -39,7 +41,7 @@ public class NinePatch {
 	private float leftWidth, rightWidth, middleWidth, middleHeight, topHeight, bottomHeight;
 	private float[] vertices = new float[9 * 4 * 5];
 	private int idx;
-	private Color color;
+	private Color color = Color.WHITE;
 	private boolean blending = true;
 
 	private NinePatch () {
@@ -297,7 +299,7 @@ public class NinePatch {
 		float rightColumnX = x + width - rightWidth;
 		float middleRowY = y + bottomHeight;
 		float topRowY = y + height - topHeight;
-		float c = color == null ? Color.WHITE.toFloatBits() : color.toFloatBits();
+		float c = tempColor.set(color).mul(batch.getColor()).toFloatBits();
 
 		if (bottomLeft != -1) set(bottomLeft, x, y, centerColumnX - x, middleRowY - y, c);
 		if (bottomCenter != -1) set(bottomCenter, centerColumnX, y, rightColumnX - centerColumnX, middleRowY - y, c);

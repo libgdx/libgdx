@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.FlickScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -52,7 +52,7 @@ public class InterpolationTest extends GdxTest {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 
 		list = new List(interpolators, skin);
-		root.add(new FlickScrollPane(list)).expandY().fillY().prefWidth((int)list.getPrefWidth());
+		root.add(new ScrollPane(list)).expandY().fillY().prefWidth((int)list.getPrefWidth());
 	}
 
 	public void resize (int width, int height) {

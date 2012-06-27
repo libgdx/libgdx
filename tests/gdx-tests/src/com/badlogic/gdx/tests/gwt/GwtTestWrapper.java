@@ -8,12 +8,11 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.FlickScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
@@ -97,7 +96,7 @@ public class GwtTestWrapper extends GdxTest {
 		ui.addActor(container);
 		container.getTableLayout().debug();
 		Table table = new Table();
-		FlickScrollPane scroll = new FlickScrollPane(table);
+		ScrollPane scroll = new ScrollPane(table);
 		container.add(scroll).expand().fill();
 		table.parse("pad:10 * expand:x space:4");
 		for (final Instancer instancer: tests) {

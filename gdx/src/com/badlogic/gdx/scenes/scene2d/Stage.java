@@ -56,7 +56,7 @@ public class Stage extends InputAdapter implements Disposable {
 	private Actor[] pointerOverActors = new Actor[20];
 	private Actor mouseOverActor;
 	private Actor keyboardFocus, scrollFocus;
-	public SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
+	private SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
 
 	/** Creates a stage with a {@link #setViewport(float, float, boolean) viewport} equal to the device screen resolution. The stage
 	 * will use its own {@link SpriteBatch}. */

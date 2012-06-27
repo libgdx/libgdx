@@ -698,7 +698,7 @@ public class SpriteBatch implements Disposable {
 	}
 
 	/** Draws a rectangle using the given vertices. There must be 4 vertices, each made up of 5 elements in this order: x, y, color,
-	 * u, v. */
+	 * u, v. The {@link #getColor()} from the SpriteBatch is not applied. */
 	public void draw (Texture texture, float[] spriteVertices, int offset, int length) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 

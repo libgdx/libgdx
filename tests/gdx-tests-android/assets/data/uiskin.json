@@ -29,6 +29,17 @@ resources: {
 			{ width: 2, height: 4, x: 7, y: 71 },
 			{ width: 5, height: 4, x: 9, y: 71 }
 		],
+		default-round-large: [
+			{ width: 5, height: 5, x: 12, y: 112 },
+			{ width: 10, height: 5, x: 17, y: 112 },
+			{ width: 5, height: 5, x: 27, y: 112 },
+			{ width: 5, height: 11, x: 12, y: 117 },
+			{ width: 10, height: 11, x: 17, y: 117 },
+			{ width: 5, height: 11, x: 27, y: 117 },
+			{ width: 5, height: 4, x: 12, y: 127 },
+			{ width: 10, height: 4, x: 17, y: 127 },
+			{ width: 5, height: 4, x: 27, y: 127 }
+		],
 		default-pane-noborder: [
 			{ width: 0, height: 0, x: 29, y: 77 },
 			{ width: 1, height: 0, x: 29, y: 77 },
@@ -198,7 +209,7 @@ styles: {
 		default-horizontal: { handle: default-splitpane }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
-		default: { vScroll: default-slider, hScrollKnob: default-round, background: default-rect, hScroll: default-slider, vScrollKnob: default-round }
+		default: { vScroll: default-slider, hScrollKnob: default-round-large, background: default-rect, hScroll: default-slider, vScrollKnob: default-round-large }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 		default: { titleFont: default-font, background: default-window, titleFontColor: white }

@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /** Drawable for a {@link Texture}.
  * @author Nathan Sweet */
-public class TextureDrawable extends BaseDrawable {
+public class TextureDrawable extends EmptyDrawable {
 	private Texture texture;
 
 	public TextureDrawable () {
