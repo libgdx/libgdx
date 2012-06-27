@@ -18,7 +18,6 @@ import com.badlogic.gdx.graphics.g2d.stbtt.StbTrueTypeFont.Box;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class TrueTypeFontFactory {
-
 	public static final int TTFF_DEFAULT_FONT_PADDING = 1;
 	public static final int TTFF_DEFAULT_MIN_TEXTURESIZE = 64;
 	public static final int TTFF_DEFAULT_MAX_TEXTURESIZE = 1024;
