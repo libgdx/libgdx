@@ -179,6 +179,8 @@ public class Stage extends InputAdapter implements Disposable {
 		// Find the actor under the point.
 		screenToStageCoordinates(stageCoords.set(screenX, screenY));
 		Actor over = hit(stageCoords.x, stageCoords.y);
+		while (over != null && (!over.isTouchable() || !over.isVisible()))
+			over = over.getParent();
 		if (over == overLast) return overLast;
 
 		ActorEvent event = Pools.obtain(ActorEvent.class);

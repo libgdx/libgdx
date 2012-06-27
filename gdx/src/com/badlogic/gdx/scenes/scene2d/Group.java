@@ -309,25 +309,6 @@ public class Group extends Actor implements Cullable {
 		return transform;
 	}
 
-	/** Returns the stage's actor hierarchy as a string. */
-	public String graphToString () {
-		StringBuilder buffer = new StringBuilder(128);
-		graphToString(buffer, this, 0);
-		return buffer.toString();
-	}
-
-	private void graphToString (StringBuilder buffer, Actor actor, int level) {
-		for (int i = 0; i < level; i++)
-			buffer.append(' ');
-		buffer.append(actor);
-		buffer.append('\n');
-		if (actor instanceof Group) {
-			Array<Actor> actors = ((Group)actor).getChildren();
-			for (int i = 0, n = actors.size; i < n; i++)
-				graphToString(buffer, actors.get(i), level + 1);
-		}
-	}
-
 	/** Converts coordinates for this group to those of a descendant actor. The descendant does not need to be a direct child.
 	 * @throws IllegalArgumentException if the specified actor is not a descendant of this group. */
 	public void localToDescendantCoordinates (Actor descendant, Vector2 localPoint) {

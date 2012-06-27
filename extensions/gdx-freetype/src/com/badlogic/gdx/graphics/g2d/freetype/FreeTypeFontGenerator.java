@@ -64,8 +64,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * texture.
 	 * @param size the size in pixels
 	 * @param characters the characters the font should contain
-	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)
-	 * @return
+	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
 	 */
 	public BitmapFont generateFont(int size, String characters, boolean flip) {
 		FreeTypeBitmapFontData data = generateData(size, characters, flip);
@@ -79,7 +78,6 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * texture.
 	 * 
 	 * @param size the size of the font in pixels
-	 * @return 
 	 */
 	public BitmapFont generateFont(int size) {
 		return generateFont(size, DEFAULT_CHARS, false);
@@ -89,7 +87,6 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * Generates a new {@link BitmapFontData} instance, expert usage only. Throws
 	 * a GdxRuntimeException in case something went wrong.
 	 * @param size the size in pixels
-	 * @return
 	 */
 	public FreeTypeBitmapFontData generateData (int size) {
 		return generateData(size, DEFAULT_CHARS, false);
@@ -101,8 +98,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * 
 	 * @param size the size in pixels
 	 * @param characters the characters the font should contain
-	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)
-	 * @return
+	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
 	 */
 	public FreeTypeBitmapFontData generateData (int size, String characters, boolean flip) {
 		FreeTypeBitmapFontData data = new FreeTypeBitmapFontData();

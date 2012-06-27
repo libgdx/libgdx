@@ -2,6 +2,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -15,22 +16,15 @@ import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.EmptyDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.EmptyDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
+import static com.badlogic.gdx.math.Interpolation.*;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class Scene2dTest extends GdxTest {
@@ -45,32 +39,25 @@ public class Scene2dTest extends GdxTest {
 		final TextureRegion region = new TextureRegion(new Texture("data/badlogic.jpg"));
 		Actor actor = new Actor() {
 			public void draw (SpriteBatch batch, float parentAlpha) {
-				batch.setColor(getColor());
-				// batch.draw(region, getX(), getY(), getWidth(), getHeight());
+				Color color = getColor();
+				batch.setColor(color.r, color.g, color.b, parentAlpha);
 				batch.draw(region, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),
 					getRotation());
 			}
 		};
-		actor.setBounds(100, 100, 100, 100);
+		actor.setBounds(15, 15, 100, 100);
 		actor.setOrigin(50, 50);
-// stage.getRoot().addCaptureListener(new ActorListener() {
-// public boolean touchDown (ActorEvent event, float x, float y, int pointer) {
-// System.out.println("down " + event.getTarget());
-// return false;
-// }
-//
-// public boolean touchUp (ActorEvent event, float x, float y, int pointer) {
-// System.out.println("up");
-// return false;
-// }
-//
-// public boolean touchDragged (ActorEvent event, float x, float y, int pointer) {
-// System.out.println("drag");
-// return false;
-// }
-// });
-
 		stage.addActor(actor);
+		actor.addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				System.out.println("down");
+				return true;
+			}
+
+			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+				System.out.println("up");
+			}
+		});
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
@@ -100,20 +87,20 @@ public class Scene2dTest extends GdxTest {
 // }
 // });
 
-// button.addListener(new ActorGestureListener() {
-// public void tap (ActorEvent event, float x, float y, int count) {
-// System.out.println("tap");
-// }
-//
-// public boolean longPress (ActorEvent event, float x, float y) {
-// System.out.println("long press");
-// return false;
-// }
-//
-// public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {
-// System.out.println("panning " + x + ", " + y);
-// }
-// });
+		button.addListener(new ActorGestureListener() {
+			public void tap (ActorEvent event, float x, float y, int count) {
+				System.out.println("tap");
+			}
+
+			public boolean longPress (ActorEvent event, float x, float y) {
+				System.out.println("long press");
+				return false;
+			}
+
+			public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {
+				System.out.println("panning " + x + ", " + y);
+			}
+		});
 
 		button.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
@@ -149,9 +136,9 @@ public class Scene2dTest extends GdxTest {
 		meow.setDuration(2);
 
 		// actor.addAction(parallel(moveBy(250, 250, 2)));
-		//actor.addAction(parallel(rotateBy(90, 2), rotateBy(90, 2)));
-		// actor.addAction(parallel(moveTo(250, 250, 2, elasticOut), color(RED, 6), delay(0.5f), rotateTo(180, 5, swing)));
-		// actor.addAction(forever(sequence(scaleTo(2, 2, 0.5f), scaleTo(1, 1, 0.5f), delay(0.5f))));
+		// actor.addAction(parallel(rotateBy(90, 2), rotateBy(90, 2)));
+actor.addAction(parallel(moveTo(250, 250, 2, elasticOut), color(RED, 6), delay(0.5f), rotateTo(180, 5, swing)));
+actor.addAction(forever(sequence(scaleTo(2, 2, 0.5f), scaleTo(1, 1, 0.5f), delay(0.5f))));
 
 		patch = skin.getPatch("default-round");
 	}

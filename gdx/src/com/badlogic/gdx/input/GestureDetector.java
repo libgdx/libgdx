@@ -45,9 +45,9 @@ public class GestureDetector extends InputAdapter {
 	private float tapSquareCenterX, tapSquareCenterY;
 	private long gestureStartTime;
 	Vector2 pointer1 = new Vector2();
-	private Vector2 pointer2 = new Vector2();
-	private Vector2 initialPointer1 = new Vector2();
-	private Vector2 initialPointer2 = new Vector2();
+	private final Vector2 pointer2 = new Vector2();
+	private final Vector2 initialPointer1 = new Vector2();
+	private final Vector2 initialPointer2 = new Vector2();
 
 	private final Task longPressTask = new Task() {
 		public void run () {

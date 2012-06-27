@@ -1066,7 +1066,7 @@ public class SpriteBatch implements Disposable {
 		mesh = buffers[currBufferIdx];
 	}
 
-	/** Disables blending for drawing sprites. Does not disable blending for text rendering */
+	/** Disables blending for drawing sprites. */
 	public void disableBlending () {
 		renderMesh();
 		blendingDisabled = true;
