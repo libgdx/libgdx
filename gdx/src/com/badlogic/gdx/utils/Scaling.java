@@ -3,7 +3,8 @@ package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.math.Vector2;
 
-/** @author Nathan Sweet */
+/** Various scaling types for fitting one rectangle into another.
+ * @author Nathan Sweet */
 public enum Scaling {
 	/** Scales the source to fit the target while keeping the same aspect ratio. This may cause the source to be smaller than the
 	 * target in one direction. */

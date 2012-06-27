@@ -3,7 +3,8 @@ package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.Gdx;
 
-/** Executes tasks in the future on the main loop thread. */
+/** Executes tasks in the future on the main loop thread.
+ * @author Nathan Sweet */
 public class Timer {
 	/** Timer instance for general application wide usage. Static methods on {@link Timer} make convenient use of this instance. */
 	static public final Timer instance = new Timer();
@@ -135,7 +136,9 @@ public class Timer {
 		instance.scheduleTask(task, delaySeconds, intervalSeconds, repeatCount);
 	}
 
-	/** Runnable with a cancel method. */
+	/** Runnable with a cancel method.
+	 * @see Timer
+	 * @author Nathan Sweet */
 	static abstract public class Task implements Runnable {
 		float delaySeconds;
 		float intervalSeconds;

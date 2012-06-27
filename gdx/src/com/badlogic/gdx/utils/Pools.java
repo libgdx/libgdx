@@ -1,6 +1,8 @@
 
 package com.badlogic.gdx.utils;
 
+/** Stores a map of {@link ReflectionPool}s by type for convenient static access.
+ * @author Nathan Sweet */
 public class Pools {
 	static private final ObjectMap<Class, ReflectionPool> typePools = new ObjectMap();
 
