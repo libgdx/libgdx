@@ -487,7 +487,7 @@ public class TextureAtlas implements Disposable {
 			int width = Math.abs(region.getRegionWidth());
 			int height = Math.abs(region.getRegionHeight());
 			if (region.rotate) {
-				rotate90(true);
+				super.rotate90(true);
 				super.setBounds(region.offsetX, region.offsetY, height, width);
 			} else
 				super.setBounds(region.offsetX, region.offsetY, width, height);
@@ -535,6 +535,28 @@ public class TextureAtlas implements Disposable {
 			originalOffsetY = region.offsetY;
 			region.offsetX *= widthRatio;
 			region.offsetY *= heightRatio;
+
+			// Update position and origin with new offsets.
+			translate(region.offsetX - oldOffsetX, region.offsetY - oldOffsetY);
+			setOrigin(oldOriginX, oldOriginY);
+		}
+
+		public void rotate90 (boolean clockwise) {
+			// Rotate texture.
+			super.rotate90(clockwise);
+
+			float oldOriginX = getOriginX();
+			float oldOriginY = getOriginY();
+			float oldOffsetX = region.offsetX;
+			float oldOffsetY = region.offsetY;
+
+			if (clockwise) {
+				region.offsetX = oldOffsetY;
+				region.offsetY = region.originalHeight - oldOffsetX - region.packedWidth;
+			} else {
+				region.offsetX = region.originalWidth - oldOffsetY - region.packedHeight;
+				region.offsetY = oldOffsetX;
+			}
 
 			// Update position and origin with new offsets.
 			translate(region.offsetX - oldOffsetX, region.offsetY - oldOffsetY);

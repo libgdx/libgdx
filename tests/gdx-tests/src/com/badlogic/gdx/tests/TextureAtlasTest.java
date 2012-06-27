@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class TextureAtlasTest extends GdxTest {
@@ -22,9 +24,12 @@ public class TextureAtlasTest extends GdxTest {
 	Animation jumpAnimation;
 	BitmapFont font;
 	float time = 0;
+	ShapeRenderer renderer;
 
 	public void create () {
 		batch = new SpriteBatch();
+		renderer = new ShapeRenderer();
+
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
 		jumpAtlas = new TextureAtlas(Gdx.files.internal("data/jump.txt"));
 
@@ -55,6 +60,8 @@ public class TextureAtlasTest extends GdxTest {
 					badlogicSmall.flip(true, false);
 				} else if (keycode == Keys.LEFT) {
 					badlogicSmall.setSize(512, 512);
+				} else if (keycode == Keys.DOWN) {
+					badlogicSmall.rotate90(true);
 				}
 				return super.keyUp(keycode);
 			}
@@ -69,6 +76,9 @@ public class TextureAtlasTest extends GdxTest {
 		// star.draw(batch);
 		// font.draw(batch, "This font was packed!", 26, 65);
 		badlogicSmall.draw(batch);
+		renderer.begin(ShapeType.Rectangle);
+		renderer.rect(10, 10, 256, 256);
+		renderer.end();
 		// batch.draw(jumpAnimation.getKeyFrame(time, true), 100, 100);
 		batch.end();
 	}
