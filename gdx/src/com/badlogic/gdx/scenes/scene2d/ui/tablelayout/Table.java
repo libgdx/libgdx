@@ -29,10 +29,7 @@ package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 
 import java.util.List;
 
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
@@ -40,6 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
@@ -47,8 +45,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
+import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
 import com.esotericsoftware.tablelayout.Cell;
-import com.esotericsoftware.tablelayout.ParseException;
+import com.esotericsoftware.tablelayout.Value;
 
 /** A group that sizes and positions children using table constraints.
  * <p>
@@ -60,25 +59,17 @@ public class Table extends WidgetGroup {
 	private final Rectangle tableBounds = new Rectangle();
 	private final Rectangle scissors = new Rectangle();
 	private boolean clip;
+	private Skin skin;
 
 	public Table () {
-		this(null, null);
-	}
-
-	public Table (String name) {
-		this(null, null);
+		this(null);
 	}
 
 	public Table (Skin skin) {
-		this(skin, null);
-	}
-
-	public Table (Skin skin, TableLayout layout) {
-		setTransform(false);
-		if (layout == null) layout = new TableLayout();
-		this.layout = layout;
+		this.skin = skin;
+		layout = new TableLayout();
 		layout.setTable(this);
-		layout.skin = skin;
+		setTransform(false);
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
@@ -118,10 +109,10 @@ public class Table extends WidgetGroup {
 		tableBounds.width = getWidth();
 		tableBounds.height = getHeight();
 		if (backgroundDrawable != null) {
-			tableBounds.x += layout.getToolkit().width(layout, layout.getPadLeft());
-			tableBounds.y += layout.getToolkit().width(layout, layout.getPadBottom());
-			tableBounds.width -= tableBounds.x + layout.getToolkit().width(layout, layout.getPadRight());
-			tableBounds.height -= tableBounds.y + layout.getToolkit().width(layout, layout.getPadTop());
+			tableBounds.x += layout.getToolkit().width(layout.getPadLeft().get());
+			tableBounds.y += layout.getToolkit().height(layout.getPadBottom().get());
+			tableBounds.width -= tableBounds.x + layout.getToolkit().width(layout.getPadRight().get());
+			tableBounds.height -= tableBounds.y + layout.getToolkit().height(layout.getPadTop().get());
 		}
 		ScissorStack.calculateScissors(getStage().getCamera(), transform, tableBounds, scissors);
 	}
@@ -132,12 +123,12 @@ public class Table extends WidgetGroup {
 	}
 
 	public float getPrefWidth () {
-		if (backgroundDrawable != null) return Math.max(layout.getPrefWidth(), (int)backgroundDrawable.getMinWidth());
+		if (backgroundDrawable != null) return Math.max(layout.getPrefWidth(), backgroundDrawable.getMinWidth());
 		return layout.getPrefWidth();
 	}
 
 	public float getPrefHeight () {
-		if (backgroundDrawable != null) return Math.max(layout.getPrefHeight(), (int)backgroundDrawable.getMinHeight());
+		if (backgroundDrawable != null) return Math.max(layout.getPrefHeight(), backgroundDrawable.getMinHeight());
 		return layout.getPrefHeight();
 	}
 
@@ -158,10 +149,10 @@ public class Table extends WidgetGroup {
 		if (background == null)
 			pad(null);
 		else {
-			padBottom((int)background.getBottomHeight());
-			padTop((int)background.getTopHeight());
-			padLeft((int)background.getLeftWidth());
-			padRight((int)background.getRightWidth());
+			padBottom(background.getBottomHeight());
+			padTop(background.getTopHeight());
+			padLeft(background.getLeftWidth());
+			padRight(background.getRightWidth());
 			invalidate();
 		}
 	}
@@ -194,13 +185,16 @@ public class Table extends WidgetGroup {
 		invalidate();
 	}
 
-	public Actor register (String name, Actor widget) {
-		return layout.register(name, widget);
+	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
+	public Cell add (String text) {
+		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
+		return add(new Label(text, skin));
 	}
 
-	public Cell add (String text) {
-		if (layout.skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
-		return add(new Label(text, layout.skin));
+	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
+	public Cell add (String text, String labelStyleName) {
+		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
+		return add(new Label(text, skin.getStyle(labelStyleName, LabelStyle.class)));
 	}
 
 	/** Adds a cell with a placeholder actor. */
@@ -216,15 +210,14 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Adds a new cell to the table with the specified actors in a {@link Stack}.
-	 * @see TableLayout#stack(Actor...)
-	 * @param actor May be null to add a cell without an actor. */
-	public Cell stack (Actor... actor) {
-		return layout.stack(actor);
-	}
-
-	/** Creates a new table with the same Skin and AssetManager as this table. */
-	public Table newTable () {
-		return layout.getToolkit().newTable(this);
+	 * @param actors May be null to add a stack without any actors. */
+	public Cell stack (Actor... actors) {
+		Stack stack = new Stack();
+		if (actors != null) {
+			for (int i = 0, n = actors.length; i < n; i++)
+				stack.addActor(actors[i]);
+		}
+		return add(stack);
 	}
 
 	/** Indicates that subsequent cells should be added to a new row and returns the cell values that will be used as the defaults
@@ -232,20 +225,6 @@ public class Table extends WidgetGroup {
 	 * @see TableLayout#row() */
 	public Cell row () {
 		return layout.row();
-	}
-
-	public void parse (FileHandle tableDescriptionFile) {
-		try {
-			layout.parse(tableDescriptionFile.readString());
-		} catch (ParseException ex) {
-			throw new ParseException("Error parsing layout file: " + tableDescriptionFile, ex);
-		}
-	}
-
-	/** Parses a table description and adds the actors and cells to the table.
-	 * @see TableLayout#parse(String) */
-	public void parse (String tableDescription) {
-		layout.parse(tableDescription);
 	}
 
 	/** Gets the cell values that will be used as the defaults for all cells in the specified column.
@@ -273,43 +252,10 @@ public class Table extends WidgetGroup {
 		layout.reset();
 	}
 
-	/** Returns the widget with the specified name, anywhere in the table hierarchy. */
-	public Actor getWidget (String name) {
-		return layout.getWidget(name);
-	}
-
-	/** Returns all named widgets, anywhere in the table hierarchy. */
-	public List<Actor> getWidgets () {
-		return layout.getWidgets();
-	}
-
-	/** Returns all widgets with the specified name prefix, anywhere in the table hierarchy. */
-	public List<Actor> getWidgets (String namePrefix) {
-		return layout.getWidgets(namePrefix);
-	}
-
 	/** Returns the cell for the specified actor, anywhere in the table hierarchy.
 	 * @see TableLayout#getCell(Actor) */
 	public Cell getCell (Actor actor) {
 		return layout.getCell(actor);
-	}
-
-	/** Returns the cell with the specified name, anywhere in the table hierarchy.
-	 * @see TableLayout#getCell(String) */
-	public Cell getCell (String name) {
-		return layout.getCell(name);
-	}
-
-	/** Returns all cells, anywhere in the table hierarchy.
-	 * @see TableLayout#getAllCells() */
-	public List<Cell> getAllCells () {
-		return layout.getAllCells();
-	}
-
-	/** Returns all cells with the specified name prefix, anywhere in the table hierarchy.
-	 * @see TableLayout#getAllCells(String) */
-	public List<Cell> getAllCells (String namePrefix) {
-		return layout.getAllCells(namePrefix);
 	}
 
 	/** Returns the cells for this table.
@@ -318,134 +264,128 @@ public class Table extends WidgetGroup {
 		return layout.getCells();
 	}
 
-	/** Sets the actor in the cell with the specified name.
-	 * @see TableLayout#setWidget(String, Actor) */
-	public void setWidget (String name, Actor actor) {
-		layout.setWidget(name, actor);
-	}
-
 	/** The fixed size of the table.
-	 * @see TableLayout#size(String, String) */
-	public Table size (String width, String height) {
+	 * @see TableLayout#size(Value, Value) */
+	public Table tableSize (Value width, Value height) {
 		layout.size(width, height);
 		return this;
 	}
 
 	/** The fixed width of the table, or null.
-	 * @see TableLayout#width(String) */
-	public Table width (String width) {
+	 * @see TableLayout#width(Value) */
+	public Table tableWidth (Value width) {
 		layout.width(width);
 		return this;
 	}
 
 	/** The fixed height of the table, or null.
-	 * @see TableLayout#height(String) */
-	public Table height (String height) {
+	 * @see TableLayout#height(Value) */
+	public Table tableHeight (Value height) {
 		layout.height(height);
 		return this;
 	}
 
 	/** The fixed size of the table.
-	 * @see TableLayout#size(int, int) */
-	public Table size (int width, int height) {
+	 * @see TableLayout#size(float, float) */
+	public Table tableSize (float width, float height) {
 		layout.size(width, height);
 		return this;
 	}
 
 	/** The fixed width of the table.
-	 * @see TableLayout#width(int) */
-	public Table width (int width) {
+	 * @see TableLayout#width(float) */
+	public Table tableWidth (float width) {
 		layout.width(width);
 		return this;
 	}
 
 	/** The fixed height of the table.
-	 * @see TableLayout#height(int) */
-	public Table height (int height) {
+	 * @see TableLayout#height(float) */
+	public Table tableHeight (float height) {
 		layout.height(height);
 		return this;
 	}
 
 	/** Padding around the table.
-	 * @see TableLayout#pad(String) */
-	public Table pad (String pad) {
+	 * @see TableLayout#pad(Value) */
+	public Table pad (Value pad) {
 		layout.pad(pad);
 		return this;
 	}
 
 	/** Padding around the table.
-	 * @see TableLayout#pad(String, String, String, String) */
-	public Table pad (String top, String left, String bottom, String right) {
+	 * @see TableLayout#pad(Value, Value, Value, Value) */
+	public Table pad (Value top, Value left, Value bottom, Value right) {
 		layout.pad(top, left, bottom, right);
 		return this;
 	}
 
 	/** Padding at the top of the table.
-	 * @see TableLayout#padTop(String) */
-	public Table padTop (String padTop) {
+	 * @see TableLayout#padTop(Value) */
+	public Table padTop (Value padTop) {
 		layout.padTop(padTop);
 		return this;
 	}
 
 	/** Padding at the left of the table.
-	 * @see TableLayout#padLeft(String) */
-	public Table padLeft (String padLeft) {
+	 * @see TableLayout#padLeft(Value) */
+	public Table padLeft (Value padLeft) {
 		layout.padLeft(padLeft);
 		return this;
 	}
 
 	/** Padding at the bottom of the table.
-	 * @see TableLayout#padBottom(String) */
-	public Table padBottom (String padBottom) {
+	 * @see TableLayout#padBottom(Value) */
+	public Table padBottom (Value padBottom) {
 		layout.padBottom(padBottom);
 		return this;
 	}
 
 	/** Padding at the right of the table.
-	 * @see TableLayout#padRight(String) */
-	public Table padRight (String padRight) {
+	 * @see TableLayout#padRight(Value) */
+	public Table padRight (Value padRight) {
 		layout.padRight(padRight);
 		return this;
 	}
 
 	/** Padding around the table.
-	 * @see TableLayout#pad(int) */
-	public Table pad (int pad) {
+	 * @see TableLayout#pad(float) */
+	public Table pad (float pad) {
 		layout.pad(pad);
 		return this;
 	}
 
 	/** Padding around the table.
-	 * @see TableLayout#pad(int, int, int, int) */
-	public Table pad (int top, int left, int bottom, int right) {
+	 * @see TableLayout#pad(float, float, float, float) */
+	public Table pad (float top, float left, float bottom, float right) {
 		layout.pad(top, left, bottom, right);
 		return this;
 	}
 
 	/** Padding at the top of the table.
-	 * @see TableLayout#padTop(int) */
-	public Table padTop (int padTop) {
+	 * @see TableLayout#padTop(float) */
+	public Table padTop (float padTop) {
 		layout.padTop(padTop);
 		return this;
 	}
 
 	/** Padding at the left of the table.
-	 * @see TableLayout#padLeft(int) */
-	public Table padLeft (int padLeft) {
+	 * @see TableLayout#padLeft(float) */
+	public Table padLeft (float padLeft) {
 		layout.padLeft(padLeft);
 		return this;
 	}
 
 	/** Padding at the bottom of the table.
-	 * @see TableLayout#padBottom(int) */
-	public Table padBottom (int padBottom) {
+	 * @see TableLayout#padBottom(float) */
+	public Table padBottom (float padBottom) {
 		layout.padBottom(padBottom);
 		return this;
 	}
 
 	/** Padding at the right of the table.
-	 * @see TableLayout#padRight(int) */
-	public Table padRight (int padRight) {
+	 * @see TableLayout#padRight(float) */
+	public Table padRight (float padRight) {
 		layout.padRight(padRight);
 		return this;
 	}
@@ -508,48 +448,30 @@ public class Table extends WidgetGroup {
 		return this;
 	}
 
-	/** Turns on debug lines. Set to {@value TableLayout#DEBUG_ALL}, {@value TableLayout#DEBUG_TABLE},
-	 * {@value TableLayout#DEBUG_CELL}, {@value TableLayout#DEBUG_WIDGET}, or any combination of those. Set to
-	 * {@value TableLayout#DEBUG_NONE} to disable.
+	/** Turns on debug lines.
 	 * @see TableLayout#debug() */
-	public Table debug (int debug) {
+	public Table debug (Debug debug) {
 		layout.debug(debug);
 		return this;
 	}
 
-	/** Turns on debug lines. Set to "all", "table", "cell", "widget", or a string containing any combination of those. Set to null
-	 * to disable.
-	 * @see TableLayout#debug(String) */
-	public Table debug (String value) {
-		layout.debug(value);
-		return this;
-	}
-
-	public int getDebug () {
+	public Debug getDebug () {
 		return layout.getDebug();
 	}
 
-	public String getLayoutWidth () {
-		return layout.getHeight();
-	}
-
-	public String getLayoutHeight () {
-		return layout.getHeight();
-	}
-
-	public String getPadTop () {
+	public Value getPadTop () {
 		return layout.getPadTop();
 	}
 
-	public String getPadLeft () {
+	public Value getPadLeft () {
 		return layout.getPadLeft();
 	}
 
-	public String getPadBottom () {
+	public Value getPadBottom () {
 		return layout.getPadBottom();
 	}
 
-	public String getPadRight () {
+	public Value getPadRight () {
 		return layout.getPadRight();
 	}
 
@@ -558,11 +480,7 @@ public class Table extends WidgetGroup {
 	}
 
 	public void setSkin (Skin skin) {
-		layout.skin = skin;
-	}
-
-	public void setAssetManager (AssetManager assetManager) {
-		layout.assetManager = assetManager;
+		this.skin = skin;
 	}
 
 	/** Draws the debug lines for all TableLayouts in the stage. If this method is not called each frame, no debug lines will be

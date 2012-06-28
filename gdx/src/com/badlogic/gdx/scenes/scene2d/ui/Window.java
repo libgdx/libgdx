@@ -84,8 +84,8 @@ public class Window extends Table {
 		return style;
 	}
 
-	int getTitleBarHeight () {
-		return getTableLayout().getToolkit().height(getTableLayout(), getPadTop());
+	float getTitleBarHeight () {
+		return getTableLayout().getToolkit().height(getPadTop().get());
 	}
 
 	public void layout () {

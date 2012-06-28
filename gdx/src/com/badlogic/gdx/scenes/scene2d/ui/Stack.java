@@ -78,7 +78,7 @@ public class Stack extends WidgetGroup {
 		if (children.size == 0) return 0;
 		float width = 0;
 		for (int i = 0, n = children.size; i < n; i++) {
-			int maxWidth = LibgdxToolkit.instance.getMaxHeight(children.get(i));
+			float maxWidth = LibgdxToolkit.instance.getMaxHeight(children.get(i));
 			if (maxWidth > 0) width = width == 0 ? maxWidth : Math.min(width, maxWidth);
 		}
 		return width * getScaleX();
@@ -89,7 +89,7 @@ public class Stack extends WidgetGroup {
 		if (children.size == 0) return 0;
 		float height = 0;
 		for (int i = 0, n = children.size; i < n; i++) {
-			int maxHeight = LibgdxToolkit.instance.getMaxHeight(children.get(i));
+			float maxHeight = LibgdxToolkit.instance.getMaxHeight(children.get(i));
 			if (maxHeight > 0) height = height == 0 ? maxHeight : Math.min(height, maxHeight);
 		}
 		return height * getScaleY();

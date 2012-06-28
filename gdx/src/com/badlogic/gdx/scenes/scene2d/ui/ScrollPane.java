@@ -342,8 +342,8 @@ public class ScrollPane extends WidgetGroup {
 
 		// Make sure widgets are drawn under fading scrollbars.
 		if (fade) {
-			if (scrollX) areaHeight -= hScrollKnob.getMinHeight();
-			if (scrollY) areaWidth -= vScrollKnob.getMinWidth();
+			if (scrollX && hScrollKnob != null) areaHeight -= hScrollKnob.getMinHeight();
+			if (scrollY && vScrollKnob != null) areaWidth -= vScrollKnob.getMinWidth();
 		} else {
 			// Offset widget area y for horizontal scrollbar.
 			if (scrollX && hScrollKnob != null) widgetAreaBounds.y += hScrollKnob.getMinHeight();

@@ -30,7 +30,6 @@ package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
@@ -39,7 +38,6 @@ import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.LibgdxToolkit.DebugRect;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
@@ -49,9 +47,6 @@ import com.esotericsoftware.tablelayout.Cell;
 /** The libgdx implementation to apply a table layout.
  * @author Nathan Sweet */
 public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, LibgdxToolkit> {
-	public Skin skin;
-	public AssetManager assetManager;
-
 	Array<DebugRect> debugRects;
 	private ImmediateModeRenderer debugRenderer;
 
@@ -68,15 +63,14 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 		float width = table.getWidth();
 		float height = table.getHeight();
 
-		setLayoutSize(0, 0, (int)width, (int)height);
-		super.layout();
+		super.layout(0, 0, width, height);
 
 		List<Cell> cells = getCells();
 		for (int i = 0, n = cells.size(); i < n; i++) {
 			Cell c = cells.get(i);
 			if (c.getIgnore()) continue;
 			Actor actor = (Actor)c.getWidget();
-			int widgetHeight = c.getWidgetHeight();
+			float widgetHeight = c.getWidgetHeight();
 			actor.setBounds(c.getWidgetX(), height - c.getWidgetY() - widgetHeight, c.getWidgetWidth(), widgetHeight);
 		}
 		Array<Actor> children = table.getChildren();
@@ -103,7 +97,7 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 	}
 
 	public void drawDebug (SpriteBatch batch) {
-		if (getDebug() == DEBUG_NONE || debugRects == null) return;
+		if (getDebug() == Debug.none || debugRects == null) return;
 		if (debugRenderer == null) {
 			if (Gdx.graphics.isGL20Available())
 				debugRenderer = new ImmediateModeRenderer20(64, false, true, 0);
@@ -128,9 +122,9 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 			float y1 = y + rect.y - rect.height;
 			float x2 = x1 + rect.width;
 			float y2 = y1 + rect.height;
-			float r = (rect.type & DEBUG_CELL) != 0 ? 1 : 0;
-			float g = (rect.type & DEBUG_WIDGET) != 0 ? 1 : 0;
-			float b = (rect.type & DEBUG_TABLE) != 0 ? 1 : 0;
+			float r = rect.type == Debug.cell ? 1 : 0;
+			float g = rect.type == Debug.widget ? 1 : 0;
+			float b = rect.type == Debug.table ? 1 : 0;
 
 			debugRenderer.color(r, g, b, 1);
 			debugRenderer.vertex(x1, y1, 0);

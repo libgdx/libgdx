@@ -28,162 +28,21 @@
 package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
 import com.esotericsoftware.tablelayout.Toolkit;
 
 /** The libgdx implementation of the table layout functionality.
  * @author Nathan Sweet */
 public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
-	static {
-		addClassPrefix("com.badlogic.gdx.scenes.scene2d.");
-		addClassPrefix("com.badlogic.gdx.scenes.scene2d.ui.");
-	}
-
 	static public LibgdxToolkit instance = new LibgdxToolkit();
 
 	static boolean drawDebug;
-
-	public Actor wrap (TableLayout layout, Object object) {
-		if (object instanceof String) {
-			if (layout.skin == null) throw new IllegalStateException("Label cannot be created, no skin has been set.");
-			return new Label((String)object, layout.skin);
-		}
-		if (object == null) {
-			return new Actor() {
-				{
-					setVisible(false);
-				}
-
-				public void draw (SpriteBatch batch, float parentAlpha) {
-				}
-
-				public Actor hit (float x, float y) {
-					return null;
-				}
-			};
-		}
-		return super.wrap(layout, object);
-	}
-
-	public Actor newWidget (TableLayout layout, String className) {
-		try {
-			return super.newWidget(layout, className);
-		} catch (RuntimeException ex) {
-			Skin skin = layout.skin;
-			if (skin != null) {
-				if (skin.hasResource(className, TextureRegion.class)) return new Image(skin.getRegion(className));
-				if (skin.hasResource(className, NinePatch.class)) return new Image(skin.getPatch(className));
-			}
-			if (layout.assetManager != null && layout.assetManager.isLoaded(className, Texture.class))
-				return new Image(new TextureRegionDrawable(new TextureRegion(layout.assetManager.get(className, Texture.class))));
-			throw ex;
-		}
-	}
-
-	protected Actor newInstance (TableLayout layout, String className) throws Exception {
-		try {
-			return super.newInstance(layout, className);
-		} catch (Exception ex) {
-			// Try a Skin constructor.
-			if (layout.skin != null) {
-				try {
-					return (Actor)Class.forName(className).getConstructor(Skin.class).newInstance(layout.skin);
-				} catch (InvocationTargetException ex2) {
-					throw new InvocationTargetException(ex2, "Error constructing instance of class: " + className);
-				} catch (Exception ignored) {
-				}
-			}
-			throw ex;
-		}
-	}
-
-	public void setProperty (TableLayout layout, Actor object, String name, List<String> values) {
-		try {
-			super.setProperty(layout, object, name, values);
-		} catch (RuntimeException ex) {
-			// style:stylename, set widget style from skin.
-			if (layout.skin != null && values.size() == 1 && name.equalsIgnoreCase("style")) {
-				try {
-					String styleName = values.get(0);
-					Class styleClass = Class.forName(object.getClass().getName() + "$" + object.getClass().getSimpleName() + "Style");
-					if (layout.skin.hasStyle(styleName, styleClass)) {
-						try {
-							Method setStyleMethod = object.getClass().getMethod("setStyle", styleClass);
-							setStyleMethod.invoke(object, layout.skin.getStyle(styleName, styleClass));
-							return;
-						} catch (Exception ex2) {
-							throw new GdxRuntimeException("Unable to set style: " + styleName, ex2);
-						}
-					}
-				} catch (ClassNotFoundException ignored) {
-				}
-			}
-			throw ex;
-		}
-	}
-
-	protected Object convertType (TableLayout layout, Object parentObject, Class memberType, String memberName, String value) {
-		// Find TextureRegion and NinePatch in skin.
-		if (layout.skin != null) {
-			if (memberType == NinePatch.class) {
-				if (layout.skin.hasResource(value, NinePatch.class)) return layout.skin.getPatch(value);
-			} else if (memberType == TextureRegion.class) {
-				if (layout.skin.hasResource(value, TextureRegion.class)) return layout.skin.getRegion(value);
-			} else if (memberType == Drawable.class) {
-				if (layout.skin.hasResource(value, NinePatch.class)) return new NinePatchDrawable(layout.skin.getPatch(value));
-				if (layout.skin.hasResource(value, TextureRegion.class))
-					return new TextureRegionDrawable(layout.skin.getRegion(value));
-			}
-		}
-		// Find Texture, TextureRegion and NinePatch in asset manager.
-		if (layout.assetManager != null) {
-			if (memberType == NinePatch.class) {
-				if (layout.assetManager.isLoaded(value, Texture.class))
-					return new NinePatch(new TextureRegion(layout.assetManager.get(value, Texture.class)));
-			} else if (memberType == Texture.class) {
-				if (layout.assetManager.isLoaded(value, Texture.class)) return layout.assetManager.get(value, Texture.class);
-			} else if (memberType == TextureRegion.class) {
-				if (layout.assetManager.isLoaded(value, Texture.class))
-					return new TextureRegion(layout.assetManager.get(value, Texture.class));
-			}
-		}
-		return super.convertType(layout, parentObject, memberType, memberName, value);
-	}
-
-	public Table newTable (Table parent) {
-		Table table = new Table();
-		TableLayout layout = parent.getTableLayout();
-		table.setSkin(layout.skin);
-		table.setAssetManager(layout.assetManager);
-		return table;
-	}
-
-	public TableLayout getLayout (Table table) {
-		return table.getTableLayout();
-	}
-
-	public Actor newStack () {
-		return new Stack();
-	}
 
 	public void addChild (Actor parent, Actor child, String layoutString) {
 		child.remove();
@@ -201,50 +60,58 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 		((Group)parent).removeActor(child);
 	}
 
-	public int getMinWidth (Actor actor) {
+	public float getMinWidth (Actor actor) {
 		if (actor instanceof Layout) return (int)((Layout)actor).getMinWidth();
 		return (int)actor.getWidth();
 	}
 
-	public int getMinHeight (Actor actor) {
+	public float getMinHeight (Actor actor) {
 		if (actor instanceof Layout) return (int)((Layout)actor).getMinHeight();
 		return (int)actor.getHeight();
 	}
 
-	public int getPrefWidth (Actor actor) {
+	public float getPrefWidth (Actor actor) {
 		if (actor instanceof Layout) return (int)((Layout)actor).getPrefWidth();
 		return (int)actor.getWidth();
 	}
 
-	public int getPrefHeight (Actor actor) {
+	public float getPrefHeight (Actor actor) {
 		if (actor instanceof Layout) return (int)((Layout)actor).getPrefHeight();
 		return (int)actor.getHeight();
 	}
 
-	public int getMaxWidth (Actor actor) {
+	public float getMaxWidth (Actor actor) {
 		if (actor instanceof Layout) return (int)((Layout)actor).getMaxWidth();
 		return 0;
 	}
 
-	public int getMaxHeight (Actor actor) {
+	public float getMaxHeight (Actor actor) {
 		if (actor instanceof Layout) return (int)((Layout)actor).getMaxHeight();
 		return 0;
+	}
+
+	public float getWidth (Actor widget) {
+		return widget.getWidth();
+	}
+
+	public float getHeight (Actor widget) {
+		return widget.getHeight();
 	}
 
 	public void clearDebugRectangles (TableLayout layout) {
 		if (layout.debugRects != null) layout.debugRects.clear();
 	}
 
-	public void addDebugRectangle (TableLayout layout, int type, int x, int y, int w, int h) {
+	public void addDebugRectangle (TableLayout layout, Debug type, float x, float y, float w, float h) {
 		drawDebug = true;
 		if (layout.debugRects == null) layout.debugRects = new Array();
-		layout.debugRects.add(new DebugRect(type, x, (int)(layout.getTable().getHeight() - y), w, h));
+		layout.debugRects.add(new DebugRect(type, x, layout.getTable().getHeight() - y, w, h));
 	}
 
 	static class DebugRect extends Rectangle {
-		final int type;
+		final Debug type;
 
-		public DebugRect (int type, int x, int y, int width, int height) {
+		public DebugRect (Debug type, float x, float y, float width, float height) {
 			super(x, y, width, height);
 			this.type = type;
 		}
