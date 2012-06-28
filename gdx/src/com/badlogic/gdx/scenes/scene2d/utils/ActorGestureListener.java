@@ -5,20 +5,29 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 
 /** Detects tap, longPress, fling, pan, zoom, and pinch gestures on an actor.
  * @see GestureDetector
  * @author Nathan Sweet */
-public class ActorGestureListener extends ActorListener {
+public class ActorGestureListener implements EventListener {
 	private final GestureDetector detector = new GestureDetector(new GestureAdapter() {
+		private Vector2 localCoords () {
+			Vector2 coords = Vector2.tmp.set(event.getStageX(), event.getStageY());
+			event.getCurrentTarget().stageToLocalCoordinates(coords);
+			return coords;
+		}
+
 		public boolean tap (float x, float y, int count) {
-			ActorGestureListener.this.tap(event, x, y, count);
+			Vector2 localCoords = localCoords();
+			ActorGestureListener.this.tap(event, localCoords.x, localCoords.y, count);
 			return true;
 		}
 
 		public boolean longPress (float x, float y) {
-			return ActorGestureListener.this.longPress(event, x, y);
+			Vector2 localCoords = localCoords();
+			return ActorGestureListener.this.longPress(event, localCoords.x, localCoords.y);
 		}
 
 		public boolean fling (float velocityX, float velocityY) {
@@ -27,7 +36,8 @@ public class ActorGestureListener extends ActorListener {
 		}
 
 		public boolean pan (float x, float y, float deltaX, float deltaY) {
-			ActorGestureListener.this.pan(event, x, y, deltaX, deltaY);
+			Vector2 localCoords = localCoords();
+			ActorGestureListener.this.pan(event, localCoords.x, localCoords.y, deltaX, deltaY);
 			return true;
 		}
 
@@ -44,24 +54,25 @@ public class ActorGestureListener extends ActorListener {
 
 	ActorEvent event;
 
-	/** Forwards the touchDown to the {@link GestureDetector}. If overridden, a subclass should call super. */
-	public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
-		this.event = event;
-		detector.touchDown(x, y, pointer, 0);
-		return true;
-	}
+	public boolean handle (Event e) {
+		if (!(e instanceof ActorEvent)) return false;
+		ActorEvent event = (ActorEvent)e;
 
-	/** Forwards the touchUp to the {@link GestureDetector}. If overridden, a subclass should call super. */
-	public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
-		this.event = event;
-		detector.touchUp(x, y, pointer, 0);
-	}
-
-	/** Forwards the touchDragged to the {@link GestureDetector}. If overridden, a subclass should call super. */
-	public void touchDragged (ActorEvent event, float x, float y, int pointer) {
-		this.event = event;
-		System.out.println("drag " + x);
-		detector.touchDragged(x, y, pointer);
+		switch (event.getType()) {
+		case touchDown:
+			this.event = event;
+			detector.touchDown(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
+			return true;
+		case touchUp:
+			this.event = event;
+			detector.touchUp(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
+			return true;
+		case touchDragged:
+			this.event = event;
+			detector.touchDragged(event.getStageX(), event.getStageY(), event.getPointer());
+			return true;
+		}
+		return false;
 	}
 
 	public void tap (ActorEvent event, float x, float y, int count) {

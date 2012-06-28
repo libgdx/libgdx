@@ -153,7 +153,7 @@ public class GestureDetector extends InputAdapter {
 			// handle pan
 			inTapSquare = false;
 			panning = true;
-			return listener.pan(tracker.lastX, tracker.lastY, tracker.deltaX, tracker.deltaY);
+			return listener.pan(x, y, tracker.deltaX, tracker.deltaY);
 		}
 
 		return false;
