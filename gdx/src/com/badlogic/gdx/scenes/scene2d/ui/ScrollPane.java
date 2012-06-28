@@ -108,7 +108,6 @@ public class ScrollPane extends WidgetGroup {
 			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0) return false;
 				if (fadeAlpha == 0) return false;
-				resetFade();
 
 				if (scrollX && hScrollBounds.contains(x, y)) {
 					event.stop();
@@ -118,7 +117,8 @@ public class ScrollPane extends WidgetGroup {
 						touchScrollH = true;
 						return true;
 					}
-					setScrollX(Math.max(areaWidth * 0.9f, maxX * 0.1f) * (x < hKnobBounds.x ? -1 : 1));
+					setScrollX(amountX + Math.max(areaWidth * 0.9f, maxX * 0.1f) * (x < hKnobBounds.x ? -1 : 1));
+					resetFade();
 					return true;
 				}
 				if (scrollY && vScrollBounds.contains(x, y)) {
@@ -129,7 +129,8 @@ public class ScrollPane extends WidgetGroup {
 						touchScrollV = true;
 						return true;
 					}
-					setScrollY(Math.max(areaHeight * 0.9f, maxY * 0.1f) * (y < vKnobBounds.y ? 1 : -1));
+					setScrollY(amountY + Math.max(areaHeight * 0.9f, maxY * 0.1f) * (y < vKnobBounds.y ? 1 : -1));
+					resetFade();
 					return true;
 				}
 				return false;
