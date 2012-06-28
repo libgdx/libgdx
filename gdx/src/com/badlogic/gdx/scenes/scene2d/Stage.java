@@ -245,6 +245,7 @@ public class Stage extends InputAdapter implements Disposable {
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {
 			TouchFocus focus = focuses[i];
 			if (focus.pointer != pointer) continue;
+			event.setTarget(focus.actor);
 			event.setCurrentTarget(focus.actor);
 			if (focus.listener.handle(event)) event.handle();
 		}

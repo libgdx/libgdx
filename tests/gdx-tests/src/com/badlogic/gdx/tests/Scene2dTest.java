@@ -24,9 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.EmptyDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-import static com.badlogic.gdx.math.Interpolation.*;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
-
 public class Scene2dTest extends GdxTest {
 	Stage stage;
 	private FloatAction meow = new FloatAction(10, 5);
@@ -98,7 +95,8 @@ public class Scene2dTest extends GdxTest {
 			}
 
 			public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {
-				System.out.println("panning " + x + ", " + y);
+				event.getTargetActor().translate(deltaX, deltaY);
+				System.out.println("panning " + x + ", " + y + " " + event.getTargetActor());
 			}
 		});
 
@@ -137,8 +135,8 @@ public class Scene2dTest extends GdxTest {
 
 		// actor.addAction(parallel(moveBy(250, 250, 2)));
 		// actor.addAction(parallel(rotateBy(90, 2), rotateBy(90, 2)));
-actor.addAction(parallel(moveTo(250, 250, 2, elasticOut), color(RED, 6), delay(0.5f), rotateTo(180, 5, swing)));
-actor.addAction(forever(sequence(scaleTo(2, 2, 0.5f), scaleTo(1, 1, 0.5f), delay(0.5f))));
+		// actor.addAction(parallel(moveTo(250, 250, 2, elasticOut), color(RED, 6), delay(0.5f), rotateTo(180, 5, swing)));
+		// actor.addAction(forever(sequence(scaleTo(2, 2, 0.5f), scaleTo(1, 1, 0.5f), delay(0.5f))));
 
 		patch = skin.getPatch("default-round");
 	}

@@ -53,7 +53,7 @@ public class Event implements Poolable {
 		return targetActor;
 	}
 
-	public void setTargetActor (Actor targetActor) {
+	public void setTarget (Actor targetActor) {
 		this.targetActor = targetActor;
 	}
 

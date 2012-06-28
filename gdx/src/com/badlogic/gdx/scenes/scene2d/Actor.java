@@ -76,7 +76,7 @@ public class Actor {
 		}
 	}
 
-	/** Sets this actor as the event {@link Event#setTargetActor(Actor) target} and propagates the event to this actor and ancestor
+	/** Sets this actor as the event {@link Event#setTarget(Actor) target} and propagates the event to this actor and ancestor
 	 * actors as necessary. If this actor is not in the stage, the stage must be set before calling this method.
 	 * <p>
 	 * Events are fired in 2 phases. The first phase notifies listeners on each actor starting at the root and propagating downward
@@ -90,7 +90,7 @@ public class Actor {
 			if (stage == null) throw new IllegalStateException("Stage must be set.");
 			event.setStage(stage);
 		}
-		event.setTargetActor(this);
+		event.setTarget(this);
 
 		// Collect ancestors so event propagation is unaffected by hierachy changes.
 		Array<Group> ancestors = Pools.obtain(Array.class);
@@ -130,7 +130,7 @@ public class Actor {
 	}
 
 	/** Notifies this actor's listeners of the event. The event is not propagated to any parenst. Before notifying the listeners,
-	 * this actor is set as the {@link Event#getTargetActor() current target}. The event {@link Event#setTargetActor(Actor) target}
+	 * this actor is set as the {@link Event#getTargetActor() current target}. The event {@link Event#setTarget(Actor) target}
 	 * must be set before calling this method. If this actor is not in the stage, the stage must be set before calling this method.
 	 * @param capture If true, the capture listeners will be notified instead of the regular listeners.
 	 * @return true of the event was {@link Event#cancel() cancelled}. */
