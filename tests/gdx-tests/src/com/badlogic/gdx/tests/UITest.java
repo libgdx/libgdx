@@ -109,7 +109,7 @@ public class UITest extends GdxTest {
 		window.setPosition(0, 0);
 		window.defaults().spaceBottom(10);
 		window.row().fill().expandX();
-		window.add(button).fill(0f, 0f);
+		window.add(button).fill(false);
 		window.add(buttonMulti);
 		window.add(imgButton);
 		window.add(imgToggleButton);
