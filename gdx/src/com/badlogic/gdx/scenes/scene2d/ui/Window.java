@@ -50,10 +50,7 @@ public class Window extends Table {
 		addCaptureListener(new ActorListener() {
 			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0) return false;
-				// Make this window on top.
-				Group parent = getParent();
-				if (parent.getChildren().size > 1)
-					parent.swapActor(Window.this, parent.getChildren().get(parent.getChildren().size - 1));
+				toFront();
 				return false;
 			}
 		});

@@ -130,8 +130,8 @@ public class Actor {
 	}
 
 	/** Notifies this actor's listeners of the event. The event is not propagated to any parenst. Before notifying the listeners,
-	 * this actor is set as the {@link Event#getTarget() current target}. The event {@link Event#setTarget(Actor) target}
-	 * must be set before calling this method. If this actor is not in the stage, the stage must be set before calling this method.
+	 * this actor is set as the {@link Event#getTarget() current target}. The event {@link Event#setTarget(Actor) target} must be
+	 * set before calling this method. If this actor is not in the stage, the stage must be set before calling this method.
 	 * @param capture If true, the capture listeners will be notified instead of the regular listeners.
 	 * @return true of the event was {@link Event#cancel() cancelled}. */
 	public boolean notify (Event event, boolean capture) {
@@ -443,6 +443,13 @@ public class Actor {
 	/** Returns the actor's color, which is mutable. */
 	public Color getColor () {
 		return color;
+	}
+
+	/** Changes the z-order for this actor so it is in front of all siblings.
+	 * @see Group#swapActor(Actor, Actor) */
+	public void toFront () {
+		Group parent = getParent();
+		if (parent.getChildren().size > 1) parent.swapActor(this, parent.getChildren().peek());
 	}
 
 	/** Transforms the specified point in the stage's coordinates to the actor's local coordinate system. */

@@ -4,6 +4,7 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -13,21 +14,18 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
  * @author Nathan Sweet */
 public class ActorGestureListener implements EventListener {
 	private final GestureDetector detector = new GestureDetector(new GestureAdapter() {
-		private Vector2 localCoords () {
-			Vector2 coords = Vector2.tmp.set(event.getStageX(), event.getStageY());
-			event.getCurrentTarget().stageToLocalCoordinates(coords);
-			return coords;
-		}
+		private final Vector2 initialPointer1 = new Vector2(), initialPointer2 = new Vector2();
+		private final Vector2 pointer1 = new Vector2(), pointer2 = new Vector2();
 
-		public boolean tap (float x, float y, int count) {
-			Vector2 localCoords = localCoords();
-			ActorGestureListener.this.tap(event, localCoords.x, localCoords.y, count);
+		public boolean tap (float stageX, float stageY, int count) {
+			event.getCurrentTarget().stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
+			ActorGestureListener.this.tap(event, Vector2.tmp.x, Vector2.tmp.y, count);
 			return true;
 		}
 
-		public boolean longPress (float x, float y) {
-			Vector2 localCoords = localCoords();
-			return ActorGestureListener.this.longPress(event, localCoords.x, localCoords.y);
+		public boolean longPress (float stageX, float stageY) {
+			event.getCurrentTarget().stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
+			return ActorGestureListener.this.longPress(event, Vector2.tmp.x, Vector2.tmp.y);
 		}
 
 		public boolean fling (float velocityX, float velocityY) {
@@ -35,9 +33,9 @@ public class ActorGestureListener implements EventListener {
 			return true;
 		}
 
-		public boolean pan (float x, float y, float deltaX, float deltaY) {
-			Vector2 localCoords = localCoords();
-			ActorGestureListener.this.pan(event, localCoords.x, localCoords.y, deltaX, deltaY);
+		public boolean pan (float stageX, float stageY, float deltaX, float deltaY) {
+			event.getCurrentTarget().stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
+			ActorGestureListener.this.pan(event, Vector2.tmp.x, Vector2.tmp.y, deltaX, deltaY);
 			return true;
 		}
 
@@ -46,7 +44,13 @@ public class ActorGestureListener implements EventListener {
 			return true;
 		}
 
-		public boolean pinch (Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+		public boolean pinch (Vector2 stageInitialPointer1, Vector2 stageInitialPointer2, Vector2 stagePointer1,
+			Vector2 stagePointer2) {
+			Actor actor = event.getCurrentTarget();
+			actor.stageToLocalCoordinates(initialPointer1.set(stageInitialPointer1));
+			actor.stageToLocalCoordinates(initialPointer2.set(stageInitialPointer2));
+			actor.stageToLocalCoordinates(pointer1.set(stagePointer1));
+			actor.stageToLocalCoordinates(pointer2.set(stagePointer2));
 			ActorGestureListener.this.pinch(event, initialPointer1, initialPointer2, pointer1, pointer2);
 			return true;
 		}
