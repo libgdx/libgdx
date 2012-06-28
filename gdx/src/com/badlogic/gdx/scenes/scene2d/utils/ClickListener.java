@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ActorEvent;
  * @author Nathan Sweet */
 abstract public class ClickListener extends PressedListener {
 	public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
-		if (pointer == 0 && button == getButton() && isOver(event.getCurrentTarget(), x, y)) clicked(event, x, y);
+		if (pointer == 0 && button == getButton() && isOver(event.getListenerActor(), x, y)) clicked(event, x, y);
 		super.touchUp(event, x, y, pointer, button);
 	}
 

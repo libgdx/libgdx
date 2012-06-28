@@ -64,17 +64,17 @@ public class ActorGestureListener implements EventListener {
 
 		switch (event.getType()) {
 		case touchDown:
-			actor = event.getCurrentTarget();
+			actor = event.getListenerActor();
 			detector.touchDown(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
 			return true;
 		case touchUp:
 			this.event = event;
-			actor = event.getCurrentTarget();
+			actor = event.getListenerActor();
 			detector.touchUp(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
 			return true;
 		case touchDragged:
 			this.event = event;
-			actor = event.getCurrentTarget();
+			actor = event.getListenerActor();
 			detector.touchDragged(event.getStageX(), event.getStageY(), event.getPointer());
 			return true;
 		}

@@ -52,7 +52,7 @@ public class Scene2dTest extends GdxTest {
 			}
 
 			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
+				System.out.println("up " + event.getTarget());
 			}
 		});
 

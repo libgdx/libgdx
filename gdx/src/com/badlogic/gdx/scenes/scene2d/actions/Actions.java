@@ -19,6 +19,7 @@ public class Actions {
 		return action;
 	}
 
+	/** Moves the actor instantly. */
 	static public MoveToAction moveTo (float x, float y) {
 		return moveTo(x, y, 0, null);
 	}
@@ -35,6 +36,7 @@ public class Actions {
 		return action;
 	}
 
+	/** Moves the actor instantly. */
 	static public MoveByAction moveBy (float amountX, float amountY) {
 		return moveBy(amountX, amountY, 0, null);
 	}
@@ -51,6 +53,7 @@ public class Actions {
 		return action;
 	}
 
+	/** Sizes the actor instantly. */
 	static public SizeToAction sizeTo (float x, float y) {
 		return sizeTo(x, y, 0, null);
 	}
@@ -67,6 +70,7 @@ public class Actions {
 		return action;
 	}
 
+	/** Sizes the actor instantly. */
 	static public SizeByAction sizeBy (float amountX, float amountY) {
 		return sizeBy(amountX, amountY, 0, null);
 	}
@@ -83,6 +87,7 @@ public class Actions {
 		return action;
 	}
 
+	/** Scales the actor instantly. */
 	static public ScaleToAction scaleTo (float x, float y) {
 		return scaleTo(x, y, 0, null);
 	}
@@ -99,6 +104,7 @@ public class Actions {
 		return action;
 	}
 
+	/** Scales the actor instantly. */
 	static public ScaleByAction scaleBy (float amountX, float amountY) {
 		return scaleBy(amountX, amountY, 0, null);
 	}
@@ -115,6 +121,7 @@ public class Actions {
 		return action;
 	}
 
+	/** Rotates the actor instantly. */
 	static public RotateToAction rotateTo (float rotation) {
 		return rotateTo(rotation, 0, null);
 	}
@@ -131,6 +138,7 @@ public class Actions {
 		return action;
 	}
 
+	/** Rotates the actor instantly. */
 	static public RotateByAction rotateBy (float rotationAmount) {
 		return rotateBy(rotationAmount, 0, null);
 	}
@@ -147,6 +155,7 @@ public class Actions {
 		return action;
 	}
 
+	/** Sets the actor's color instantly. */
 	static public ColorAction color (Color color) {
 		return color(color, 0, null);
 	}
@@ -163,6 +172,7 @@ public class Actions {
 		return action;
 	}
 
+	/** Sets the actor's alpha instantly. */
 	static public AlphaAction alpha (float a) {
 		return alpha(a, 0, null);
 	}

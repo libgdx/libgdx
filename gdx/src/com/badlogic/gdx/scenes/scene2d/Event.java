@@ -8,13 +8,13 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  * @see Actor#fire(Event) */
 public class Event implements Poolable {
 	private Stage stage;
-	private Actor targetActor; // deepest actor hit
-	private Actor currentTarget; // current actor being notified about event
-	private boolean capture;
+	private Actor targetActor;
+	private Actor listenerActor;
+	private boolean capture; // true means event occurred during the capture phase
 	private boolean bubbles = true; // true means propagate to target's parents
 	private boolean handled; // true means the event was handled (the stage will eat the input)
 	private boolean stopped; // true means event propagation was stopped
-	private boolean cancelled; // true means any action that this event would cause should not happen
+	private boolean cancelled; // true means propagation was stopped and any action that this event would cause should not happen
 
 	/** Marks this event has being handled. This does not affect event propagation inside scene2d, but causes the {@link Stage}
 	 * event methods to return false, which will eat the event so it is not passed on to the application under the stage. */
@@ -31,8 +31,8 @@ public class Event implements Poolable {
 		handled = true;
 	}
 
-	/** Marks this event has being stopped. This halts event propagation. Any other listeners on the {@link #getCurrentTarget()
-	 * current target} are notified, but after that no other listeners are notified. */
+	/** Marks this event has being stopped. This halts event propagation. Any other listeners on the {@link #getListenerActor()
+	 * listener actor} are notified, but after that no other listeners are notified. */
 	public void stop () {
 		stopped = true;
 	}
@@ -40,7 +40,7 @@ public class Event implements Poolable {
 	public void reset () {
 		stage = null;
 		targetActor = null;
-		currentTarget = null;
+		listenerActor = null;
 		capture = false;
 		bubbles = true;
 		handled = false;
@@ -58,12 +58,12 @@ public class Event implements Poolable {
 	}
 
 	/** Returns the actor that this listener is attached to. */
-	public Actor getCurrentTarget () {
-		return currentTarget;
+	public Actor getListenerActor () {
+		return listenerActor;
 	}
 
-	public void setCurrentTarget (Actor currentTarget) {
-		this.currentTarget = currentTarget;
+	public void setListenerActor (Actor listenerActor) {
+		this.listenerActor = listenerActor;
 	}
 
 	public boolean getBubbles () {

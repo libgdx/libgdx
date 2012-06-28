@@ -33,7 +33,7 @@ public class PressedListener extends ActorListener {
 	}
 
 	public void touchDragged (ActorEvent event, float x, float y, int pointer) {
-		pressed = Gdx.input.isButtonPressed(button) && isOver(event.getCurrentTarget(), x, y);
+		pressed = Gdx.input.isButtonPressed(button) && isOver(event.getListenerActor(), x, y);
 		if (!pressed) {
 			// Once outside the tap square, don't use the tap square anymore.
 			touchDownX = -1;

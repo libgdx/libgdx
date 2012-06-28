@@ -21,7 +21,7 @@ public class ActorListener implements EventListener {
 		}
 
 		Vector2 coords = Vector2.tmp.set(event.getStageX(), event.getStageY());
-		event.getCurrentTarget().stageToLocalCoordinates(coords);
+		event.getListenerActor().stageToLocalCoordinates(coords);
 
 		switch (event.getType()) {
 		case touchDown:

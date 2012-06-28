@@ -247,7 +247,7 @@ public class Stage extends InputAdapter implements Disposable {
 			TouchFocus focus = focuses[i];
 			if (focus.pointer != pointer) continue;
 			event.setTarget(focus.actor);
-			event.setCurrentTarget(focus.actor);
+			event.setListenerActor(focus.actor);
 			if (focus.listener.handle(event)) event.handle();
 		}
 		touchFocuses.end();
@@ -279,7 +279,7 @@ public class Stage extends InputAdapter implements Disposable {
 			TouchFocus focus = focuses[i];
 			if (focus.pointer != pointer || focus.button != button) continue;
 			event.setTarget(focus.actor);
-			event.setCurrentTarget(focus.actor);
+			event.setListenerActor(focus.actor);
 			if (focus.listener.handle(event)) event.handle();
 		}
 		touchFocuses.end();
@@ -368,7 +368,7 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** Adds the listener to be notified for all touchDragged and touchUp events for the specified pointer and button. The actor
-	 * will be used as the {@link Event#getCurrentTarget() current target}. */
+	 * will be used as the {@link Event#getListenerActor() listener actor} and {@link Event#getTarget() target}. */
 	public void addTouchFocus (EventListener listener, Actor actor, int pointer, int button) {
 		TouchFocus focus = TouchFocus.pool.obtain();
 		focus.actor = actor;
@@ -403,7 +403,7 @@ public class Stage extends InputAdapter implements Disposable {
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {
 			TouchFocus focus = touchFocuses.get(i);
-			event.setCurrentTarget(focus.actor);
+			event.setListenerActor(focus.actor);
 			event.setPointer(focus.pointer);
 			event.setButton(focus.button);
 			focus.listener.handle(event);
