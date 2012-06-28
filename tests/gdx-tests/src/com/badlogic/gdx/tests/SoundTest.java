@@ -61,7 +61,7 @@ public class SoundTest extends GdxTest {
 		final Label panValue = new Label("0.0", skin);
 		table.setFillParent(true);
 
-		table.align(Align.CENTER | Align.TOP);
+		table.align(Align.center | Align.top);
 		table.add(play);
 		table.add(stop);
 		table.row();

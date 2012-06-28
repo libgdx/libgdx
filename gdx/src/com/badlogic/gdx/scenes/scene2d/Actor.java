@@ -342,11 +342,13 @@ public class Actor {
 		this.height = height;
 	}
 
+	/** Adds the specified size to the current size. */
 	public void size (float size) {
 		width += size;
 		height += size;
 	}
 
+	/** Adds the specified size to the current size. */
 	public void size (float width, float height) {
 		this.width += width;
 		this.height += height;
@@ -410,11 +412,13 @@ public class Actor {
 		this.scaleY = scaleY;
 	}
 
+	/** Adds the specified scale to the current scale. */
 	public void scale (float scale) {
 		scaleX += scale;
 		scaleY += scale;
 	}
 
+	/** Adds the specified scale to the current scale. */
 	public void scale (float scaleX, float scaleY) {
 		this.scaleX += scaleX;
 		this.scaleY += scaleY;
@@ -428,6 +432,7 @@ public class Actor {
 		this.rotation = rotation;
 	}
 
+	/** Adds the specified rotation to the current rotation. */
 	public void rotate (float amount) {
 		this.rotation += amount;
 	}

@@ -59,17 +59,17 @@ public class LabelTest extends GdxTest {
 		table.add(new Label("This is regular text\nwith a newline.", skin));
 		table.row();
 		Label label3 = new Label("This is regular text\n\nwith newlines,\naligned bottom, right.", skin);
-		label3.setAlignment(Align.BOTTOM | Align.RIGHT);
+		label3.setAlignment(Align.bottom | Align.right);
 		table.add(label3).minWidth(200).minHeight(110).fill();
 		table.row();
 		Label label4 = new Label("This is regular text with NO newlines, wrap enabled and aligned bottom, right.", skin);
 		label4.setWrap(true);
-		label4.setAlignment(Align.BOTTOM | Align.RIGHT);
+		label4.setAlignment(Align.bottom | Align.right);
 		table.add(label4).minWidth(200).minHeight(110).fill();
 		table.row();
 		Label label5 = new Label("This is regular text with\n\nnewlines, wrap\nenabled and aligned bottom, right.", skin);
 		label5.setWrap(true);
-		label5.setAlignment(Align.BOTTOM | Align.RIGHT);
+		label5.setAlignment(Align.bottom | Align.right);
 		table.add(label5).minWidth(200).minHeight(110).fill();
 
 		table.pack();

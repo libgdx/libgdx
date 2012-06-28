@@ -85,7 +85,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		ui = new Stage(480, 320, false);
 
 		Image blend = new Image(new TextureRegion(uiTexture, 0, 0, 64, 32));
-		blend.setAlign(Align.CENTER);
+		blend.setAlign(Align.center);
 		blend.setScaling(Scaling.none);
 		blend.addListener(new ActorListener() {
 			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
@@ -99,7 +99,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		blend.setY(ui.getHeight() - 64);
 
 		Image rotate = new Image(new TextureRegion(uiTexture, 64, 0, 64, 32));
-		rotate.setAlign(Align.CENTER);
+		rotate.setAlign(Align.center);
 		rotate.setScaling(Scaling.none);
 		rotate.addListener(new ActorListener() {
 			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
@@ -110,7 +110,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		rotate.setPosition(64, blend.getY());
 
 		Image scale = new Image(new TextureRegion(uiTexture, 64, 32, 64, 32));
-		scale.setAlign(Align.CENTER);
+		scale.setAlign(Align.center);
 		scale.setScaling(Scaling.none);
 		scale.addListener(new ActorListener() {
 			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
@@ -138,7 +138,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		for (int y = 0; y < NUM_SPRITES * advance; y += advance)
 			for (int x = 0; x < NUM_SPRITES * advance; x += advance) {
 				Image img = new Image(new TextureRegion(texture));
-				img.setAlign(Align.CENTER);
+				img.setAlign(Align.center);
 				img.setScaling(Scaling.none);
 				img.setBounds(x, y, 32, 32);
 				img.setOrigin(16, 16);

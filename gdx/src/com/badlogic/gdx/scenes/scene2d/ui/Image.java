@@ -33,7 +33,7 @@ import com.badlogic.gdx.utils.Scaling;
  * @author Nathan Sweet */
 public class Image extends Widget {
 	private Scaling scaling;
-	private int align = Align.CENTER;
+	private int align = Align.center;
 	private float imageX, imageY, imageWidth, imageHeight;
 	private Drawable drawable;
 
@@ -45,13 +45,13 @@ public class Image extends Widget {
 	/** Creates an image stretched, and aligned center.
 	 * @param patch May be null. */
 	public Image (NinePatch patch) {
-		this(new NinePatchDrawable(patch), Scaling.stretch, Align.CENTER);
+		this(new NinePatchDrawable(patch), Scaling.stretch, Align.center);
 	}
 
 	/** Creates an image stretched, and aligned center.
 	 * @param region May be null. */
 	public Image (TextureRegion region) {
-		this(new TextureRegionDrawable(region), Scaling.stretch, Align.CENTER);
+		this(new TextureRegionDrawable(region), Scaling.stretch, Align.center);
 	}
 
 	/** Creates an image stretched, and aligned center. */
@@ -62,13 +62,13 @@ public class Image extends Widget {
 	/** Creates an image stretched, and aligned center.
 	 * @param drawable May be null. */
 	public Image (Drawable drawable) {
-		this(drawable, Scaling.stretch, Align.CENTER);
+		this(drawable, Scaling.stretch, Align.center);
 	}
 
 	/** Creates an image aligned center.
 	 * @param drawable May be null. */
 	public Image (Drawable drawable, Scaling scaling) {
-		this(drawable, scaling, Align.CENTER);
+		this(drawable, scaling, Align.center);
 	}
 
 	/** @param drawable May be null. */
@@ -95,16 +95,16 @@ public class Image extends Widget {
 		imageWidth = size.x;
 		imageHeight = size.y;
 
-		if ((align & Align.LEFT) != 0)
+		if ((align & Align.left) != 0)
 			imageX = 0;
-		else if ((align & Align.RIGHT) != 0)
+		else if ((align & Align.right) != 0)
 			imageX = (int)(width - imageWidth);
 		else
 			imageX = (int)(width / 2 - imageWidth / 2);
 
-		if ((align & Align.TOP) != 0)
+		if ((align & Align.top) != 0)
 			imageY = (int)(height - imageHeight);
-		else if ((align & Align.BOTTOM) != 0)
+		else if ((align & Align.bottom) != 0)
 			imageY = 0;
 		else
 			imageY = (int)(height / 2 - imageHeight / 2);

@@ -53,7 +53,7 @@ public class SimpleStageCullingTest extends GdxTest {
 
 		public CullableActor (String name, Texture texture, OrthographicCamera camera) {
 			super(new TextureRegion(texture));
-			setAlign(Align.CENTER);
+			setAlign(Align.center);
 			setScaling(Scaling.none);
 			this.camera = camera;
 		}

@@ -34,7 +34,7 @@ public class Label extends Widget {
 	private CharSequence text;
 	private BitmapFontCache cache;
 	private float prefWidth, prefHeight;
-	private int labelAlign = Align.LEFT;
+	private int labelAlign = Align.left;
 	private HAlignment lineAlign = HAlignment.LEFT;
 	private boolean wrap;
 	private float lastPrefHeight;
@@ -120,9 +120,9 @@ public class Label extends Widget {
 	public void setAlignment (int labelAlign, int lineAlign) {
 		this.labelAlign = labelAlign;
 
-		if ((lineAlign & Align.LEFT) != 0)
+		if ((lineAlign & Align.left) != 0)
 			this.lineAlign = HAlignment.LEFT;
-		else if ((lineAlign & Align.RIGHT) != 0)
+		else if ((lineAlign & Align.right) != 0)
 			this.lineAlign = HAlignment.RIGHT;
 		else
 			this.lineAlign = HAlignment.CENTER;
@@ -168,10 +168,10 @@ public class Label extends Widget {
 		float height = getHeight();
 
 		float y;
-		if ((labelAlign & Align.TOP) != 0) {
+		if ((labelAlign & Align.top) != 0) {
 			y = cache.getFont().isFlipped() ? 0 : height - bounds.height;
 			y += style.font.getDescent();
-		} else if ((labelAlign & Align.BOTTOM) != 0) {
+		} else if ((labelAlign & Align.bottom) != 0) {
 			y = cache.getFont().isFlipped() ? height - bounds.height : 0;
 			y -= style.font.getDescent();
 		} else
@@ -179,9 +179,9 @@ public class Label extends Widget {
 		if (!cache.getFont().isFlipped()) y += bounds.height;
 
 		float x;
-		if ((labelAlign & Align.LEFT) != 0)
+		if ((labelAlign & Align.left) != 0)
 			x = 0;
-		else if ((labelAlign & Align.RIGHT) != 0) {
+		else if ((labelAlign & Align.right) != 0) {
 			x = getWidth() - bounds.width;
 		} else
 			x = (getWidth() - bounds.width) / 2;

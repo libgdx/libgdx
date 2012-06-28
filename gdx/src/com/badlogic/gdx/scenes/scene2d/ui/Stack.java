@@ -43,6 +43,10 @@ public class Stack extends WidgetGroup {
 		setHeight(150);
 	}
 
+	public void add (Actor actor) {
+		addActor(actor);
+	}
+
 	public void layout () {
 		Array<Actor> children = getChildren();
 		for (int i = 0, n = children.size; i < n; i++) {

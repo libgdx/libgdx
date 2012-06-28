@@ -185,10 +185,6 @@ public class Table extends WidgetGroup {
 		return layout.getRow(y);
 	}
 
-	public TableLayout getTableLayout () {
-		return layout;
-	}
-
 	/** Removes all actors and cells from the table. */
 	public void clear () {
 		super.clear();
@@ -275,48 +271,6 @@ public class Table extends WidgetGroup {
 		return layout.getCells();
 	}
 
-	/** The fixed size of the table.
-	 * @see TableLayout#size(Value, Value) */
-	public Table tableSize (Value width, Value height) {
-		layout.size(width, height);
-		return this;
-	}
-
-	/** The fixed width of the table, or null.
-	 * @see TableLayout#width(Value) */
-	public Table tableWidth (Value width) {
-		layout.width(width);
-		return this;
-	}
-
-	/** The fixed height of the table, or null.
-	 * @see TableLayout#height(Value) */
-	public Table tableHeight (Value height) {
-		layout.height(height);
-		return this;
-	}
-
-	/** The fixed size of the table.
-	 * @see TableLayout#size(float, float) */
-	public Table tableSize (float width, float height) {
-		layout.size(width, height);
-		return this;
-	}
-
-	/** The fixed width of the table.
-	 * @see TableLayout#width(float) */
-	public Table tableWidth (float width) {
-		layout.width(width);
-		return this;
-	}
-
-	/** The fixed height of the table.
-	 * @see TableLayout#height(float) */
-	public Table tableHeight (float height) {
-		layout.height(height);
-		return this;
-	}
-
 	/** Padding around the table.
 	 * @see TableLayout#pad(Value) */
 	public Table pad (Value pad) {
@@ -401,8 +355,8 @@ public class Table extends WidgetGroup {
 		return this;
 	}
 
-	/** Alignment of the table within the actor being laid out. Set to {@link Align#CENTER}, {@link Align#TOP}, {@link Align#BOTTOM}
-	 * , {@link Align#LEFT} , {@link Align#RIGHT}, or any combination of those.
+	/** Alignment of the table within the actor being laid out. Set to {@link Align#center}, {@link Align#top}, {@link Align#bottom}
+	 * , {@link Align#left} , {@link Align#right}, or any combination of those.
 	 * @see TableLayout#align(int) */
 	public Table align (int align) {
 		layout.align(align);
@@ -417,35 +371,35 @@ public class Table extends WidgetGroup {
 		return this;
 	}
 
-	/** Sets the alignment of the table within the actor being laid out to {@link Align#CENTER}.
+	/** Sets the alignment of the table within the actor being laid out to {@link Align#center}.
 	 * @see TableLayout#center() */
 	public Table center () {
 		layout.center();
 		return this;
 	}
 
-	/** Sets the alignment of the table within the actor being laid out to {@link Align#TOP}.
+	/** Sets the alignment of the table within the actor being laid out to {@link Align#top}.
 	 * @see TableLayout#top() */
 	public Table top () {
 		layout.top();
 		return this;
 	}
 
-	/** Sets the alignment of the table within the actor being laid out to {@link Align#LEFT}.
+	/** Sets the alignment of the table within the actor being laid out to {@link Align#left}.
 	 * @see TableLayout#left() */
 	public Table left () {
 		layout.left();
 		return this;
 	}
 
-	/** Sets the alignment of the table within the actor being laid out to {@link Align#BOTTOM}.
+	/** Sets the alignment of the table within the actor being laid out to {@link Align#bottom}.
 	 * @see TableLayout#bottom() */
 	public Table bottom () {
 		layout.bottom();
 		return this;
 	}
 
-	/** Sets the alignment of the table within the actor being laid out to {@link Align#RIGHT}.
+	/** Sets the alignment of the table within the actor being laid out to {@link Align#right}.
 	 * @see TableLayout#right() */
 	public Table right () {
 		layout.right();
