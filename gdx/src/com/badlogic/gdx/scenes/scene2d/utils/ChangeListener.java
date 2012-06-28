@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 abstract public class ChangeListener implements EventListener {
 	public boolean handle (Event event) {
 		if (!(event instanceof ChangeEvent)) return false;
-		changed((ChangeEvent)event, event.getTargetActor());
+		changed((ChangeEvent)event, event.getTarget());
 		return false;
 	}
 

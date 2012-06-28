@@ -49,7 +49,7 @@ public class Event implements Poolable {
 	}
 
 	/** Returns the actor that the event originated from. */
-	public Actor getTargetActor () {
+	public Actor getTarget () {
 		return targetActor;
 	}
 

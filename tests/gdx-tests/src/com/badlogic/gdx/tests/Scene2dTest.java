@@ -32,29 +32,29 @@ public class Scene2dTest extends GdxTest {
 	public void create () {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-
-		final TextureRegion region = new TextureRegion(new Texture("data/badlogic.jpg"));
-		Actor actor = new Actor() {
-			public void draw (SpriteBatch batch, float parentAlpha) {
-				Color color = getColor();
-				batch.setColor(color.r, color.g, color.b, parentAlpha);
-				batch.draw(region, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),
-					getRotation());
-			}
-		};
-		actor.setBounds(15, 15, 100, 100);
-		actor.setOrigin(50, 50);
-		stage.addActor(actor);
-		actor.addListener(new ActorListener() {
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
-				return true;
-			}
-
-			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
-				System.out.println("up");
-			}
-		});
+//
+//		final TextureRegion region = new TextureRegion(new Texture("data/badlogic.jpg"));
+//		Actor actor = new Actor() {
+//			public void draw (SpriteBatch batch, float parentAlpha) {
+//				Color color = getColor();
+//				batch.setColor(color.r, color.g, color.b, parentAlpha);
+//				batch.draw(region, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),
+//					getRotation());
+//			}
+//		};
+//		actor.setBounds(15, 15, 100, 100);
+//		actor.setOrigin(50, 50);
+//		stage.addActor(actor);
+//		actor.addListener(new ActorListener() {
+//			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+//				System.out.println("down");
+//				return true;
+//			}
+//
+//			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+//				System.out.println("up");
+//			}
+//		});
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
@@ -84,36 +84,37 @@ public class Scene2dTest extends GdxTest {
 // }
 // });
 
-		button.addListener(new ActorGestureListener() {
-			public void tap (ActorEvent event, float x, float y, int count) {
-				System.out.println("tap");
-			}
+//		button.addListener(new ActorGestureListener() {
+//			public void tap (ActorEvent event, float x, float y, int count) {
+//				System.out.println("tap");
+//			}
+//
+//			public boolean longPress (ActorEvent event, float x, float y) {
+//				System.out.println("long press");
+//				return false;
+//			}
+//
+//			public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {
+//				event.getTargetActor().translate(deltaX, deltaY);
+//				if (deltaX < 0)
+//				System.out.println("panning " + deltaX + ", " + deltaY + " " + event.getTargetActor());
+//			}
+//		});
 
-			public boolean longPress (ActorEvent event, float x, float y) {
-				System.out.println("long press");
-				return false;
-			}
-
-			public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {
-				event.getTargetActor().translate(deltaX, deltaY);
-				System.out.println("panning " + x + ", " + y + " " + event.getTargetActor());
-			}
-		});
-
-		button.addListener(new ChangeListener() {
-			public void changed (ChangeEvent event, Actor actor) {
-				// event.cancel();
-			}
-		});
-
+//		button.addListener(new ChangeListener() {
+//			public void changed (ChangeEvent event, Actor actor) {
+//				// event.cancel();
+//			}
+//		});
+//
 		button.addListener(new ActorListener() {
 			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int b) {
-				System.out.println("down " + x + ", " + y + " " + pointer + ", " + b);
+				System.out.println("down " + x + ", " + y);
 				return true;
 			}
 
-			public void touchUp (ActorEvent event, float x, float y, int pointer, int b) {
-				System.out.println("up " + x + ", " + y + " " + pointer + ", " + b);
+			public void touchDragged (ActorEvent event, float x, float y, int pointer) {
+				System.out.println("drag " + x + ", " + y);
 			}
 		});
 
@@ -125,11 +126,11 @@ public class Scene2dTest extends GdxTest {
 // select.setItems(new Object[] {1, 2, 3, 4, 5});
 // stage.addActor(select);
 
-		stage.addListener(new ChangeListener() {
-			public void changed (ChangeEvent event, Actor actor) {
-				System.out.println(actor);
-			}
-		});
+//		stage.addListener(new ChangeListener() {
+//			public void changed (ChangeEvent event, Actor actor) {
+//				System.out.println(actor);
+//			}
+//		});
 
 		meow.setDuration(2);
 

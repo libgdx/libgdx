@@ -60,6 +60,7 @@ public class ActorGestureListener extends ActorListener {
 	/** Forwards the touchDragged to the {@link GestureDetector}. If overridden, a subclass should call super. */
 	public void touchDragged (ActorEvent event, float x, float y, int pointer) {
 		this.event = event;
+		System.out.println("drag " + x);
 		detector.touchDragged(x, y, pointer);
 	}
 
