@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
@@ -182,10 +183,12 @@ public class ScrollPane extends WidgetGroup {
 				}
 			}
 
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
-				super.touchDown(event, x, y, pointer, button);
-				flingTimer = 0;
-				return true;
+			public boolean handle (Event event) {
+				if (super.handle(event)) {
+					if (((ActorEvent)event).getType() == ActorEvent.Type.touchDown) flingTimer = 0;
+					return true;
+				}
+				return false;
 			}
 		};
 		addListener(gestureListener);

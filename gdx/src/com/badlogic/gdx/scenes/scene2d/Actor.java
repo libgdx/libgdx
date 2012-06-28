@@ -445,11 +445,28 @@ public class Actor {
 		return color;
 	}
 
-	/** Changes the z-order for this actor so it is in front of all siblings.
-	 * @see Group#swapActor(Actor, Actor) */
+	/** Changes the z-order for this actor so it is in front of all siblings. */
 	public void toFront () {
+		setZIndex(Integer.MAX_VALUE);
+	}
+
+	/** Changes the z-order for this actor so it is in back of all siblings. */
+	public void toBack () {
+		setZIndex(0);
+	}
+
+	/** Sets the z-index of a child. The z-index is the index into the parent's {@link Group#getChildren() children}, where a lower
+	 * index is below a higher index. Setting a z-index out of range will move the child to the front. */
+	public void setZIndex (int index) {
 		Group parent = getParent();
-		if (parent.getChildren().size > 1) parent.swapActor(this, parent.getChildren().peek());
+		if (parent == null) return;
+		Array<Actor> children = parent.getChildren();
+		if (children.size == 1) return;
+		if (!children.removeValue(this, true)) return;
+		if (index >= children.size)
+			children.add(this);
+		else
+			children.insert(index, this);
 	}
 
 	/** Transforms the specified point in the stage's coordinates to the actor's local coordinate system. */

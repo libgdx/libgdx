@@ -33,28 +33,28 @@ public class Scene2dTest extends GdxTest {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 //
-// final TextureRegion region = new TextureRegion(new Texture("data/badlogic.jpg"));
-// Actor actor = new Actor() {
-// public void draw (SpriteBatch batch, float parentAlpha) {
-// Color color = getColor();
-// batch.setColor(color.r, color.g, color.b, parentAlpha);
-// batch.draw(region, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),
-// getRotation());
-// }
-// };
-// actor.setBounds(15, 15, 100, 100);
-// actor.setOrigin(50, 50);
-// stage.addActor(actor);
-// actor.addListener(new ActorListener() {
-// public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
-// System.out.println("down");
-// return true;
-// }
-//
-// public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
-// System.out.println("up");
-// }
-// });
+		final TextureRegion region = new TextureRegion(new Texture("data/badlogic.jpg"));
+		Actor actor = new Actor() {
+			public void draw (SpriteBatch batch, float parentAlpha) {
+				Color color = getColor();
+				batch.setColor(color.r, color.g, color.b, parentAlpha);
+				batch.draw(region, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),
+					getRotation());
+			}
+		};
+		actor.setBounds(15, 15, 100, 100);
+		actor.setOrigin(50, 50);
+		stage.addActor(actor);
+		actor.addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				System.out.println("down");
+				return true;
+			}
+
+			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+				System.out.println("up");
+			}
+		});
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
@@ -87,11 +87,13 @@ public class Scene2dTest extends GdxTest {
 		button.addListener(new ActorGestureListener() {
 			public void tap (ActorEvent event, float x, float y, int count) {
 				System.out.println("tap");
+				button.toFront();
 			}
 
-			public boolean longPress (ActorEvent event, float x, float y) {
+			public boolean longPress (Actor actor, float x, float y) {
+				button.toBack();
 				System.out.println("long press");
-				return false;
+				return true;
 			}
 
 			public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {

@@ -18,14 +18,14 @@ public class ActorGestureListener implements EventListener {
 		private final Vector2 pointer1 = new Vector2(), pointer2 = new Vector2();
 
 		public boolean tap (float stageX, float stageY, int count) {
-			event.getCurrentTarget().stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
+			actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
 			ActorGestureListener.this.tap(event, Vector2.tmp.x, Vector2.tmp.y, count);
 			return true;
 		}
 
 		public boolean longPress (float stageX, float stageY) {
-			event.getCurrentTarget().stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
-			return ActorGestureListener.this.longPress(event, Vector2.tmp.x, Vector2.tmp.y);
+			actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
+			return ActorGestureListener.this.longPress(actor, Vector2.tmp.x, Vector2.tmp.y);
 		}
 
 		public boolean fling (float velocityX, float velocityY) {
@@ -34,7 +34,7 @@ public class ActorGestureListener implements EventListener {
 		}
 
 		public boolean pan (float stageX, float stageY, float deltaX, float deltaY) {
-			event.getCurrentTarget().stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
+			actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
 			ActorGestureListener.this.pan(event, Vector2.tmp.x, Vector2.tmp.y, deltaX, deltaY);
 			return true;
 		}
@@ -46,7 +46,6 @@ public class ActorGestureListener implements EventListener {
 
 		public boolean pinch (Vector2 stageInitialPointer1, Vector2 stageInitialPointer2, Vector2 stagePointer1,
 			Vector2 stagePointer2) {
-			Actor actor = event.getCurrentTarget();
 			actor.stageToLocalCoordinates(initialPointer1.set(stageInitialPointer1));
 			actor.stageToLocalCoordinates(initialPointer2.set(stageInitialPointer2));
 			actor.stageToLocalCoordinates(pointer1.set(stagePointer1));
@@ -57,6 +56,7 @@ public class ActorGestureListener implements EventListener {
 	});
 
 	ActorEvent event;
+	Actor actor;
 
 	public boolean handle (Event e) {
 		if (!(e instanceof ActorEvent)) return false;
@@ -64,15 +64,16 @@ public class ActorGestureListener implements EventListener {
 
 		switch (event.getType()) {
 		case touchDown:
-			this.event = event;
 			detector.touchDown(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
 			return true;
 		case touchUp:
 			this.event = event;
+			actor = event.getCurrentTarget();
 			detector.touchUp(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
 			return true;
 		case touchDragged:
 			this.event = event;
+			actor = event.getCurrentTarget();
 			detector.touchDragged(event.getStageX(), event.getStageY(), event.getPointer());
 			return true;
 		}
@@ -82,8 +83,9 @@ public class ActorGestureListener implements EventListener {
 	public void tap (ActorEvent event, float x, float y, int count) {
 	}
 
-	/** If true is returned, additional gestures will not be triggered. */
-	public boolean longPress (ActorEvent event, float x, float y) {
+	/** If true is returned, additional gestures will not be triggered. No event is provided because this event is triggered by time
+	 * passing, not by an ActorEvent. */
+	public boolean longPress (Actor actor, float x, float y) {
 		return false;
 	}
 
