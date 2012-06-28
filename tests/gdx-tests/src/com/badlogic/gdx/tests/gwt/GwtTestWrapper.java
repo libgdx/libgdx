@@ -15,8 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.AccelerometerTest;
 import com.badlogic.gdx.tests.ActionSequenceTest;
@@ -95,7 +95,7 @@ public class GwtTestWrapper extends GdxTest {
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 		container = new Table();
 		ui.addActor(container);
-		container.getTableLayout().debug();
+		container.debug();
 		Table table = new Table();
 		ScrollPane scroll = new ScrollPane(table);
 		container.add(scroll).expand().fill();
@@ -114,8 +114,8 @@ public class GwtTestWrapper extends GdxTest {
 			});
 			table.add(button).expandX().fillX();
 		}
-		container.getTableLayout().row();
-		container.getTableLayout()
+		container.row();
+		container
 			.add(new Label("Click on a test to start it, press ESC to close it.", new LabelStyle(font, Color.WHITE)))
 			.pad(5, 5, 5, 5);
 

@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ActorEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -368,7 +369,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Adds the listener to be notified for all touchDragged and touchUp events for the specified pointer and button. The actor
 	 * will be used as the {@link Event#getCurrentTarget() current target}. */
 	public void addTouchFocus (EventListener listener, Actor actor, int pointer, int button) {
-		TouchFocus focus = Pools.obtain(TouchFocus.class);
+		TouchFocus focus = TouchFocus.pool.obtain();
 		focus.actor = actor;
 		focus.listener = listener;
 		focus.pointer = pointer;
@@ -383,7 +384,7 @@ public class Stage extends InputAdapter implements Disposable {
 		for (int i = touchFocuses.size - 1; i >= 0; i--) {
 			TouchFocus focus = touchFocuses.get(i);
 			if (focus.listener == listener && focus.actor == actor && focus.pointer == pointer && focus.button == button)
-				Pools.free(touchFocuses.removeIndex(i));
+				TouchFocus.pool.free(touchFocuses.removeIndex(i));
 		}
 	}
 
@@ -406,6 +407,7 @@ public class Stage extends InputAdapter implements Disposable {
 			event.setButton(focus.button);
 			focus.listener.handle(event);
 		}
+		TouchFocus.pool.free(touchFocuses);
 		touchFocuses.clear();
 	}
 
@@ -552,7 +554,13 @@ public class Stage extends InputAdapter implements Disposable {
 		if (ownsBatch) batch.dispose();
 	}
 
-	static private final class TouchFocus {
+	static final class TouchFocus {
+		static final Pool<TouchFocus> pool = new Pool<TouchFocus>(4, 16) {
+			protected TouchFocus newObject () {
+				return new TouchFocus();
+			}
+		};
+
 		Actor actor;
 		EventListener listener;
 		int pointer, button;

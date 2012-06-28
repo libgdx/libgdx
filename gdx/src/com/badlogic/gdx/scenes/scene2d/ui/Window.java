@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 /** A table that can be dragged and act as a modal window.
@@ -85,7 +84,7 @@ public class Window extends Table {
 	}
 
 	float getTitleBarHeight () {
-		return getTableLayout().getToolkit().height(getPadTop().get());
+		return getPadTop().height(this);
 	}
 
 	public void layout () {
