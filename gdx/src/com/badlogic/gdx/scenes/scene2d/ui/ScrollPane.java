@@ -336,11 +336,6 @@ public class ScrollPane extends WidgetGroup {
 		// Set the widget area bounds.
 		widgetAreaBounds.set(bgLeftWidth, bgBottomHeight, areaWidth, areaHeight);
 
-		maxX = widgetWidth - areaWidth;
-		maxY = widgetHeight - areaHeight;
-		amountX = MathUtils.clamp(amountX, 0, maxX);
-		amountY = MathUtils.clamp(amountY, 0, maxY);
-
 		// Make sure widgets are drawn under fading scrollbars.
 		if (fade) {
 			if (scrollX && hScrollKnob != null) areaHeight -= hScrollKnob.getMinHeight();
@@ -357,6 +352,11 @@ public class ScrollPane extends WidgetGroup {
 			widget.setWidth(widgetWidth);
 			widget.setHeight(widgetHeight);
 		}
+
+		maxX = widgetWidth - areaWidth;
+		maxY = widgetHeight - areaHeight;
+		amountX = MathUtils.clamp(amountX, 0, maxX);
+		amountY = MathUtils.clamp(amountY, 0, maxY);
 
 		// Set the bounds and scroll knob sizes if scrollbars are needed.
 		if (scrollX) {
