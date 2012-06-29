@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='com.badlogic.gdx.backends.gwt'>
 	<inherits name='com.google.gwt.user.User' />
+	<inherits name='com.google.gwt.user.theme.chrome.Chrome'/>
+	
 	<inherits name="com.badlogic.gdx" />
 	<inherits name="com.google.gwt.typedarrays.TypedArrays" />
 	<inherits name="com.google.gwt.webgl.WebGL" />

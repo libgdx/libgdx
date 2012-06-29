@@ -7,6 +7,8 @@ import java.util.Set;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
+import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.CanvasElement;
@@ -122,29 +124,44 @@ public class GwtInput implements Input {
 
 	@Override
 	public void getTextInput (TextInputListener listener, String title, String text) {
-		String input = getTextInputJSNI(title, text);
-		if (input != null) {
-			listener.input(input);
-		}
-		else {
-			listener.canceled();
-		}
+		TextInputDialogBox dialog = new TextInputDialogBox(title, text, null);
+		final TextInputListener capturedListener = listener;
+		dialog.setListener(new TextInputDialogListener() {
+			@Override
+			public void onPositive (String text) {
+				if (capturedListener != null) {
+					capturedListener.input(text);	
+				}				
+			}
+
+			@Override
+			public void onNegative () {
+				if (capturedListener != null) {
+					capturedListener.canceled();	
+				}
+			}			
+		});
 	}
 
 	@Override
 	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder) {
-		String input = getTextInputJSNI(title, placeholder);
-		if (input != null) {
-			if (input.equals(placeholder)) {
-				listener.input(input);
+		TextInputDialogBox dialog = new TextInputDialogBox(title, null, placeholder);
+		final TextInputListener capturedListener = listener;
+		dialog.setListener(new TextInputDialogListener() {
+			@Override
+			public void onPositive (String text) {
+				if (capturedListener != null) {
+					capturedListener.input(text);	
+				}				
 			}
-			else {
-				listener.canceled();
-			}
-		}
-		else {
-			listener.canceled();
-		}
+
+			@Override
+			public void onNegative () {
+				if (capturedListener != null) {
+					capturedListener.canceled();	
+				}
+			}			
+		});
 	}
 
 	@Override
@@ -225,10 +242,6 @@ public class GwtInput implements Input {
 	public Orientation getNativeOrientation () {
 		return Orientation.Landscape;
 	}
-
-	private native String getTextInputJSNI(String title, String text) /*-{
-		return prompt("Please enter your name","Harry Potter");
-	}-*/;
 	
 	/**
 	 * from https://github.com/toji/game-shim/blob/master/game-shim.js
