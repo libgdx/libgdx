@@ -67,8 +67,6 @@ public class Table extends WidgetGroup {
 
 	private final TableLayout layout;
 	private Drawable backgroundDrawable;
-	private final Rectangle tableBounds = new Rectangle();
-	private final Rectangle scissors = new Rectangle();
 	private boolean clip;
 	private Skin skin;
 
@@ -76,6 +74,7 @@ public class Table extends WidgetGroup {
 		this(null);
 	}
 
+	/** Creates a table with a skin, which enables the {@link #add(String)} and {@link #add(String, String)} methods to be used. */
 	public Table (Skin skin) {
 		this.skin = skin;
 		layout = new TableLayout();
@@ -92,8 +91,7 @@ public class Table extends WidgetGroup {
 		if (isTransform()) {
 			applyTransform(batch);
 			if (clip) {
-				calculateScissors(batch.getTransformMatrix());
-				if (ScissorStack.pushScissors(scissors)) {
+				if (ScissorStack.pushScissors(calculateScissors(batch.getTransformMatrix()))) {
 					drawChildren(batch, parentAlpha);
 					ScissorStack.popScissors();
 				}
@@ -114,18 +112,21 @@ public class Table extends WidgetGroup {
 		}
 	}
 
-	private void calculateScissors (Matrix4 transform) {
-		tableBounds.x = 0;
-		tableBounds.y = 0;
+	private Rectangle calculateScissors (Matrix4 transform) {
+		Rectangle tableBounds = Rectangle.tmp;
 		tableBounds.width = getWidth();
 		tableBounds.height = getHeight();
-		if (backgroundDrawable != null) {
-			tableBounds.x += layout.getPadLeft().width(this);
-			tableBounds.y += layout.getPadBottom().height(this);
+		if (backgroundDrawable == null) {
+			tableBounds.x = 0;
+			tableBounds.y = 0;
+		} else {
+			tableBounds.x = layout.getPadLeft().width(this);
+			tableBounds.y = layout.getPadBottom().height(this);
 			tableBounds.width -= tableBounds.x + layout.getPadRight().width(this);
 			tableBounds.height -= tableBounds.y + layout.getPadTop().height(this);
 		}
-		ScissorStack.calculateScissors(getStage().getCamera(), transform, tableBounds, scissors);
+		ScissorStack.calculateScissors(getStage().getCamera(), transform, tableBounds, Rectangle.tmp2);
+		return Rectangle.tmp2;
 	}
 
 	public void invalidate () {
@@ -153,7 +154,7 @@ public class Table extends WidgetGroup {
 
 	/** Sets the background drawable and sets the table's padding to {@link Drawable#getBottomHeight()} ,
 	 * {@link Drawable#getTopHeight()}, {@link Drawable#getLeftWidth()}, and {@link Drawable#getRightWidth()}.
-	 * @param background If null, no background will be set and all padding is removed. */
+	 * @param background If null, the background will be cleared and all padding is removed. */
 	public void setBackground (Drawable background) {
 		if (this.backgroundDrawable == background) return;
 		this.backgroundDrawable = background;
@@ -172,8 +173,8 @@ public class Table extends WidgetGroup {
 		return backgroundDrawable;
 	}
 
-	/** Causes the contents to be clipped if they exceed the table bounds. Enabling clipping will set {@link #setTransform(boolean)}
-	 * to true. */
+	/** Causes the contents to be clipped if they exceed the table widget bounds. Enabling clipping will set
+	 * {@link #setTransform(boolean)} to true. */
 	public void setClip (boolean enabled) {
 		clip = enabled;
 		setTransform(enabled);
@@ -204,13 +205,12 @@ public class Table extends WidgetGroup {
 		return add(new Label(text, skin.getStyle(labelStyleName, LabelStyle.class)));
 	}
 
-	/** Adds a cell with a placeholder actor. */
+	/** Adds a cell without a widget. */
 	public Cell add () {
 		return add((Actor)null);
 	}
 
 	/** Adds a new cell to the table with the specified actor.
-	 * @see TableLayout#add(Actor)
 	 * @param actor May be null to add a cell without an actor. */
 	public Cell add (Actor actor) {
 		return layout.add(actor);
@@ -228,193 +228,174 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Indicates that subsequent cells should be added to a new row and returns the cell values that will be used as the defaults
-	 * for all cells in the new row.
-	 * @see TableLayout#row() */
+	 * for all cells in the new row. */
 	public Cell row () {
 		return layout.row();
 	}
 
-	/** Gets the cell values that will be used as the defaults for all cells in the specified column.
-	 * @see TableLayout#columnDefaults(int) */
+	/** Gets the cell values that will be used as the defaults for all cells in the specified column. Columns are indexed starting
+	 * at 0. */
 	public Cell columnDefaults (int column) {
 		return layout.columnDefaults(column);
 	}
 
-	/** The cell values that will be used as the defaults for all cells.
-	 * @see TableLayout#defaults() */
+	/** The cell values that will be used as the defaults for all cells. */
 	public Cell defaults () {
 		return layout.defaults();
 	}
 
-	/** Positions and sizes children of the actor being laid out using the cell associated with each child.
-	 * @see TableLayout#layout() */
 	public void layout () {
 		layout.layout();
 	}
 
 	/** Removes all actors and cells from the table (same as {@link #clear()}) and additionally resets all table properties and
-	 * cell, column, and row defaults.
-	 * @see TableLayout#reset() */
+	 * cell, column, and row defaults. */
 	public void reset () {
 		layout.reset();
 	}
 
-	/** Returns the cell for the specified actor, anywhere in the table hierarchy.
-	 * @see TableLayout#getCell(Actor) */
+	/** Returns the cell for the specified widget in this table, or null. */
 	public Cell getCell (Actor actor) {
 		return layout.getCell(actor);
 	}
 
-	/** Returns the cells for this table.
-	 * @see TableLayout#getCells() */
+	/** Returns the cells for this table. */
 	public List<Cell> getCells () {
 		return layout.getCells();
 	}
 
-	/** Padding around the table.
-	 * @see TableLayout#pad(Value) */
+	/** Sets the padTop, padLeft, padBottom, and padRight around the table to the specified value. */
 	public Table pad (Value pad) {
 		layout.pad(pad);
 		return this;
 	}
 
-	/** Padding around the table.
-	 * @see TableLayout#pad(Value, Value, Value, Value) */
 	public Table pad (Value top, Value left, Value bottom, Value right) {
 		layout.pad(top, left, bottom, right);
 		return this;
 	}
 
-	/** Padding at the top of the table.
-	 * @see TableLayout#padTop(Value) */
+	/** Padding at the top edge of the table. */
 	public Table padTop (Value padTop) {
 		layout.padTop(padTop);
 		return this;
 	}
 
-	/** Padding at the left of the table.
-	 * @see TableLayout#padLeft(Value) */
+	/** Padding at the left edge of the table. */
 	public Table padLeft (Value padLeft) {
 		layout.padLeft(padLeft);
 		return this;
 	}
 
-	/** Padding at the bottom of the table.
-	 * @see TableLayout#padBottom(Value) */
+	/** Padding at the bottom edge of the table. */
 	public Table padBottom (Value padBottom) {
 		layout.padBottom(padBottom);
 		return this;
 	}
 
-	/** Padding at the right of the table.
-	 * @see TableLayout#padRight(Value) */
+	/** Padding at the right edge of the table. */
 	public Table padRight (Value padRight) {
 		layout.padRight(padRight);
 		return this;
 	}
 
-	/** Padding around the table.
-	 * @see TableLayout#pad(float) */
+	/** Sets the padTop, padLeft, padBottom, and padRight around the table to the specified value. */
 	public Table pad (float pad) {
 		layout.pad(pad);
 		return this;
 	}
 
-	/** Padding around the table.
-	 * @see TableLayout#pad(float, float, float, float) */
 	public Table pad (float top, float left, float bottom, float right) {
 		layout.pad(top, left, bottom, right);
 		return this;
 	}
 
-	/** Padding at the top of the table.
-	 * @see TableLayout#padTop(float) */
+	/** Padding at the top edge of the table. */
 	public Table padTop (float padTop) {
 		layout.padTop(padTop);
 		return this;
 	}
 
-	/** Padding at the left of the table.
-	 * @see TableLayout#padLeft(float) */
+	/** Padding at the left edge of the table. */
 	public Table padLeft (float padLeft) {
 		layout.padLeft(padLeft);
 		return this;
 	}
 
-	/** Padding at the bottom of the table.
-	 * @see TableLayout#padBottom(float) */
+	/** Padding at the bottom edge of the table. */
 	public Table padBottom (float padBottom) {
 		layout.padBottom(padBottom);
 		return this;
 	}
 
-	/** Padding at the right of the table.
-	 * @see TableLayout#padRight(float) */
+	/** Padding at the right edge of the table. */
 	public Table padRight (float padRight) {
 		layout.padRight(padRight);
 		return this;
 	}
 
-	/** Alignment of the table within the actor being laid out. Set to {@link Align#center}, {@link Align#top}, {@link Align#bottom}
-	 * , {@link Align#left} , {@link Align#right}, or any combination of those.
-	 * @see TableLayout#align(int) */
+	/** Sets the alignment of the logical table within the table widget. Set to {@link Align#center}, {@link Align#top},
+	 * {@link Align#bottom} , {@link Align#left} , {@link Align#right}, or any combination of those. */
 	public Table align (int align) {
 		layout.align(align);
 		return this;
 	}
 
-	/** Alignment of the table within the actor being laid out. Set to "center", "top", "bottom", "left", "right", or a string
-	 * containing any combination of those.
-	 * @see TableLayout#align(String) */
-	public Table align (String value) {
-		layout.align(value);
-		return this;
-	}
-
-	/** Sets the alignment of the table within the actor being laid out to {@link Align#center}.
-	 * @see TableLayout#center() */
+	/** Sets the alignment of the logical table within the table widget to {@link Align#center}. This clears any other alignment. */
 	public Table center () {
 		layout.center();
 		return this;
 	}
 
-	/** Sets the alignment of the table within the actor being laid out to {@link Align#top}.
-	 * @see TableLayout#top() */
+	/** Adds {@link Align#top} and clears {@link Align#bottom} for the alignment of the logical table within the table widget. */
 	public Table top () {
 		layout.top();
 		return this;
 	}
 
-	/** Sets the alignment of the table within the actor being laid out to {@link Align#left}.
-	 * @see TableLayout#left() */
+	/** Adds {@link Align#left} and clears {@link Align#right} for the alignment of the logical table within the table widget. */
 	public Table left () {
 		layout.left();
 		return this;
 	}
 
-	/** Sets the alignment of the table within the actor being laid out to {@link Align#bottom}.
-	 * @see TableLayout#bottom() */
+	/** Adds {@link Align#bottom} and clears {@link Align#top} for the alignment of the logical table within the table widget. */
 	public Table bottom () {
 		layout.bottom();
 		return this;
 	}
 
-	/** Sets the alignment of the table within the actor being laid out to {@link Align#right}.
-	 * @see TableLayout#right() */
+	/** Adds {@link Align#right} and clears {@link Align#left} for the alignment of the logical table within the table widget. */
 	public Table right () {
 		layout.right();
 		return this;
 	}
 
-	/** Turns on all debug lines.
-	 * @see TableLayout#debug() */
+	/** Turns on all debug lines. */
 	public Table debug () {
 		layout.debug();
 		return this;
 	}
 
-	/** Turns on debug lines.
-	 * @see TableLayout#debug() */
+	/** Turns on table debug lines. */
+	public Table debugTable () {
+		layout.debugTable();
+		return this;
+	}
+
+	/** Turns on cell debug lines. */
+	public Table debugCell () {
+		layout.debugCell();
+		return this;
+	}
+
+	/** Turns on widget debug lines. */
+	public Table debugWidget () {
+		layout.debugWidget();
+		return this;
+	}
+
+	/** Turns on debug lines. */
 	public Table debug (Debug debug) {
 		layout.debug(debug);
 		return this;
@@ -448,9 +429,9 @@ public class Table extends WidgetGroup {
 		this.skin = skin;
 	}
 
-	/** Draws the debug lines for all TableLayouts in the stage. If this method is not called each frame, no debug lines will be
-	 * drawn. If debug is never turned on for any table in the application, calling this method will have no effect. If a table has
-	 * ever had debug set, calling this method causes an expensive traversal of all actors in the stage. */
+	/** Draws the debug lines for all tables in the stage. If this method is not called each frame, no debug lines will be drawn. If
+	 * debug is never turned on for any table in the application, calling this method will have no effect. If a table has ever had
+	 * debug set, calling this method causes an expensive traversal of all actors in the stage. */
 	static public void drawDebug (Stage stage) {
 		if (!LibgdxToolkit.drawDebug) return;
 		drawDebug(stage.getActors(), stage.getSpriteBatch());
@@ -469,7 +450,7 @@ public class Table extends WidgetGroup {
 	static class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 		static boolean drawDebug;
 
-		public void addChild (Actor parent, Actor child, String layoutString) {
+		public void addChild (Actor parent, Actor child) {
 			child.remove();
 			try {
 				parent.getClass().getMethod("setWidget", Actor.class).invoke(parent, child);
