@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class TextureRegionDrawable extends EmptyDrawable {
 	private TextureRegion region;
 
+	/** Creates an unitialized TextureRegionDrawable. The texture region must be set before use. */
 	public TextureRegionDrawable () {
 	}
 

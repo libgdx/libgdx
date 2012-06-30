@@ -471,7 +471,7 @@ public class GwtInput implements Input {
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			if(processor != null) {
 				if(touched) processor.touchDragged(mouseX, mouseY, 0);
-				else processor.touchMoved(mouseX, mouseY);
+				else processor.mouseMoved(mouseX, mouseY);
 			}
 		}
 		

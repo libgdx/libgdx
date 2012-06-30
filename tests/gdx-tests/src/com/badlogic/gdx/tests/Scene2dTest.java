@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -99,15 +100,17 @@ public class Scene2dTest extends GdxTest {
 // });
 
 		button.addListener(new ActorGestureListener() {
-			public void tap (ActorEvent event, float x, float y, int count) {
-				System.out.println("tap");
-				button.toFront();
+			public boolean longPress (Actor actor, float x, float y) {
+				System.out.println("long press " + x + ", " + y);
+				return true;
 			}
 
-			public boolean longPress (Actor actor, float x, float y) {
-				button.toBack();
-				System.out.println("long press");
-				return true;
+			public void fling (ActorEvent event, float velocityX, float velocityY) {
+				System.out.println("fling " + velocityX + ", " + velocityY);
+			}
+
+			public void zoom (ActorEvent event, float initialDistance, float distance) {
+				System.out.println("zoom " + initialDistance + ", " + distance);
 			}
 
 			public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {

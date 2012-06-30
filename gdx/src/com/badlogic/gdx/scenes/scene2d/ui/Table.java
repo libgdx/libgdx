@@ -27,30 +27,20 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Table.LibgdxToolkit.DebugRect;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
-import com.esotericsoftware.tablelayout.BaseTableLayout;
 import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
 import com.esotericsoftware.tablelayout.Cell;
 import com.esotericsoftware.tablelayout.Toolkit;
@@ -62,7 +52,7 @@ import com.esotericsoftware.tablelayout.Value;
  * @author Nathan Sweet */
 public class Table extends WidgetGroup {
 	static {
-		Toolkit.instance = new LibgdxToolkit();
+		Toolkit.instance = new TableToolkit();
 	}
 
 	private final TableLayout layout;
@@ -433,7 +423,7 @@ public class Table extends WidgetGroup {
 	 * debug is never turned on for any table in the application, calling this method will have no effect. If a table has ever had
 	 * debug set, calling this method causes an expensive traversal of all actors in the stage. */
 	static public void drawDebug (Stage stage) {
-		if (!LibgdxToolkit.drawDebug) return;
+		if (!TableToolkit.drawDebug) return;
 		drawDebug(stage.getActors(), stage.getSpriteBatch());
 	}
 
@@ -442,192 +432,6 @@ public class Table extends WidgetGroup {
 			Actor actor = actors.get(i);
 			if (actor instanceof Table) ((Table)actor).layout.drawDebug(batch);
 			if (actor instanceof Group) drawDebug(((Group)actor).getChildren(), batch);
-		}
-	}
-
-	/** The libgdx implementation of the table layout functionality.
-	 * @author Nathan Sweet */
-	static class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
-		static boolean drawDebug;
-
-		public void addChild (Actor parent, Actor child) {
-			child.remove();
-			try {
-				parent.getClass().getMethod("setWidget", Actor.class).invoke(parent, child);
-				return;
-			} catch (InvocationTargetException ex) {
-				throw new RuntimeException("Error calling setWidget.", ex);
-			} catch (Exception ignored) {
-			}
-			((Group)parent).addActor(child);
-		}
-
-		public void removeChild (Actor parent, Actor child) {
-			((Group)parent).removeActor(child);
-		}
-
-		public float getMinWidth (Actor actor) {
-			if (actor instanceof Layout) return ((Layout)actor).getMinWidth();
-			return actor.getWidth();
-		}
-
-		public float getMinHeight (Actor actor) {
-			if (actor instanceof Layout) return ((Layout)actor).getMinHeight();
-			return actor.getHeight();
-		}
-
-		public float getPrefWidth (Actor actor) {
-			if (actor instanceof Layout) return ((Layout)actor).getPrefWidth();
-			return actor.getWidth();
-		}
-
-		public float getPrefHeight (Actor actor) {
-			if (actor instanceof Layout) return ((Layout)actor).getPrefHeight();
-			return actor.getHeight();
-		}
-
-		public float getMaxWidth (Actor actor) {
-			if (actor instanceof Layout) return ((Layout)actor).getMaxWidth();
-			return 0;
-		}
-
-		public float getMaxHeight (Actor actor) {
-			if (actor instanceof Layout) return ((Layout)actor).getMaxHeight();
-			return 0;
-		}
-
-		public float getWidth (Actor widget) {
-			return widget.getWidth();
-		}
-
-		public float getHeight (Actor widget) {
-			return widget.getHeight();
-		}
-
-		public void clearDebugRectangles (TableLayout layout) {
-			if (layout.debugRects != null) layout.debugRects.clear();
-		}
-
-		public void addDebugRectangle (TableLayout layout, Debug type, float x, float y, float w, float h) {
-			drawDebug = true;
-			if (layout.debugRects == null) layout.debugRects = new Array();
-			layout.debugRects.add(new DebugRect(type, x, layout.getTable().getHeight() - y, w, h));
-		}
-
-		static class DebugRect extends Rectangle {
-			final Debug type;
-
-			public DebugRect (Debug type, float x, float y, float width, float height) {
-				super(x, y, width, height);
-				this.type = type;
-			}
-		}
-	}
-
-	/** The libgdx implementation to apply a table layout.
-	 * @author Nathan Sweet */
-	class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, LibgdxToolkit> {
-		Array<DebugRect> debugRects;
-		private ImmediateModeRenderer debugRenderer;
-
-		public TableLayout () {
-			super((LibgdxToolkit)Toolkit.instance);
-		}
-
-		public void layout () {
-			Table table = getTable();
-			float width = table.getWidth();
-			float height = table.getHeight();
-
-			super.layout(0, 0, width, height);
-
-			List<Cell> cells = getCells();
-			for (int i = 0, n = cells.size(); i < n; i++) {
-				Cell c = cells.get(i);
-				if (c.getIgnore()) continue;
-				Actor actor = (Actor)c.getWidget();
-				float widgetHeight = c.getWidgetHeight();
-				actor.setBounds(c.getWidgetX(), height - c.getWidgetY() - widgetHeight, c.getWidgetWidth(), widgetHeight);
-			}
-			Array<Actor> children = table.getChildren();
-			for (int i = 0, n = children.size; i < n; i++) {
-				Actor child = children.get(i);
-				if (child instanceof Layout) {
-					Layout layout = (Layout)child;
-					layout.invalidate();
-					layout.validate();
-				}
-			}
-		}
-
-		/** Invalides the layout of this widget and every parent widget to the root of the hierarchy. */
-		public void invalidateHierarchy () {
-			super.invalidate();
-			getTable().invalidateHierarchy();
-		}
-
-		private void toStageCoordinates (Actor actor, Vector2 point) {
-			point.x += actor.getX();
-			point.y += actor.getY();
-			toStageCoordinates(actor.getParent(), point);
-		}
-
-		public void drawDebug (SpriteBatch batch) {
-			if (getDebug() == Debug.none || debugRects == null) return;
-			if (debugRenderer == null) {
-				if (Gdx.graphics.isGL20Available())
-					debugRenderer = new ImmediateModeRenderer20(64, false, true, 0);
-				else
-					debugRenderer = new ImmediateModeRenderer10(64);
-			}
-
-			float x = 0, y = 0;
-			Actor parent = getTable();
-			while (parent != null) {
-				if (parent instanceof Group) {
-					x += parent.getX();
-					y += parent.getY();
-				}
-				parent = parent.getParent();
-			}
-
-			debugRenderer.begin(batch.getProjectionMatrix(), GL10.GL_LINES);
-			for (int i = 0, n = debugRects.size; i < n; i++) {
-				DebugRect rect = debugRects.get(i);
-				float x1 = x + rect.x;
-				float y1 = y + rect.y - rect.height;
-				float x2 = x1 + rect.width;
-				float y2 = y1 + rect.height;
-				float r = rect.type == Debug.cell ? 1 : 0;
-				float g = rect.type == Debug.widget ? 1 : 0;
-				float b = rect.type == Debug.table ? 1 : 0;
-
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x1, y1, 0);
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x1, y2, 0);
-
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x1, y2, 0);
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x2, y2, 0);
-
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x2, y2, 0);
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x2, y1, 0);
-
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x2, y1, 0);
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x1, y1, 0);
-
-				if (debugRenderer.getNumVertices() == 64) {
-					debugRenderer.end();
-					debugRenderer.begin(batch.getProjectionMatrix(), GL10.GL_LINES);
-				}
-			}
-			debugRenderer.end();
 		}
 	}
 }

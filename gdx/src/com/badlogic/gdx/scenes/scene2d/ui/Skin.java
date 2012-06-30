@@ -365,6 +365,10 @@ public class Skin implements Disposable {
 		return new NinePatch(getPatch(patchName), color);
 	}
 
+	public NinePatch newPatch (String patchName) {
+		return new NinePatch(getPatch(patchName));
+	}
+
 	public NinePatch newTintedRegion (String regionName, String colorName) {
 		return newTintedRegion(regionName, getColor(colorName));
 	}
@@ -373,6 +377,10 @@ public class Skin implements Disposable {
 		NinePatch patch = new NinePatch(getRegion(regionName));
 		patch.setColor(color);
 		return patch;
+	}
+
+	public TextureRegion newRegion (String regionName) {
+		return new TextureRegion(getRegion(regionName));
 	}
 
 	static private Method findMethod (Class type, String name) {

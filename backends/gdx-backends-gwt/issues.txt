@@ -30,10 +30,6 @@ DIFFERENCES IN EMULATION
 - PrismaticJoint#getJointTranslation always returns 0, not implemented in JBox2D
 - Contact always reports 2 manifold points, JBox2D doesn't specify the amount of manifold points.
 
-[LibgdxToolkit emu]
-- newInstance is not implemented since i lack support for constructor invocations with parameters.
-  this might have an effect if you define your layouts via the DSL.
-
 [BufferUtils emu]
 - BufferUtils#newLongBuffer() works but will not return a direct buffer. Since we don't pass long
   buffers to OpenGL ES we should be fine.

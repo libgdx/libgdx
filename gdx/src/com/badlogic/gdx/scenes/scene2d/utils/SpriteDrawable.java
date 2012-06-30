@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -23,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class SpriteDrawable extends EmptyDrawable {
 	private Sprite sprite;
 
+	/** Creates an unitialized SpriteDrawable. The sprite must be set before use. */
 	public SpriteDrawable () {
 	}
 

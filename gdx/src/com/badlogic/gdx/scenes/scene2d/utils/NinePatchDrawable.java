@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -30,6 +31,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class NinePatchDrawable extends EmptyDrawable {
 	private NinePatch patch;
 
+	/** Creates an unitialized NinePatchDrawable. The ninepatch must be set before use. */
 	public NinePatchDrawable () {
 	}
 

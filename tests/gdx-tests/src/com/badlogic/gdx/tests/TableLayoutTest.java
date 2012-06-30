@@ -18,15 +18,18 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
 
 public class TableLayoutTest extends GdxTest {
 	Stage stage;
@@ -48,10 +51,17 @@ public class TableLayoutTest extends GdxTest {
 		// table.align(Align.right | Align.bottom);
 
 		table.debug();
-		Stack stack = new Stack();
-		stack.add(addressLabel);
-		stack.add(nameLabel);
-		table.add(stack);
+
+		TextureRegion upRegion = skin.getRegion("default-slider-knob");
+		TextureRegion downRegion = skin.getRegion("default-slider-knob");
+		BitmapFont buttonFont = skin.getFont("default-font");
+
+		TextButtonStyle style = new TextButtonStyle();
+		style.up = new TextureRegionDrawable(upRegion);
+		style.down = new TextureRegionDrawable(downRegion);
+		style.font = buttonFont;
+		TextButton button = new TextButton("Button Text", style);
+		table.add(button);
 	}
 
 	public void render () {

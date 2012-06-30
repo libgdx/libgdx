@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class TextureDrawable extends EmptyDrawable {
 	private Texture texture;
 
+	/** Creates an unitialized TextureDrawable. The texture must be set before use. */
 	public TextureDrawable () {
 	}
 
