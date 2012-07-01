@@ -153,9 +153,9 @@ public class TextureAtlas implements Disposable {
 						if (readTuple(reader) == 4) { // split is optional
 							region.splits = new int[] {Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
 								Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3])};
+							readTuple(reader);
 						}
 
-						readTuple(reader);
 						region.originalWidth = Integer.parseInt(tuple[0]);
 						region.originalHeight = Integer.parseInt(tuple[1]);
 
@@ -170,8 +170,8 @@ public class TextureAtlas implements Disposable {
 						sortedRegions.add(region);
 					}
 				}
-			} catch (IOException ex) {
-				throw new GdxRuntimeException("Error reading pack file: " + packFile);
+			} catch (Exception ex) {
+				throw new GdxRuntimeException("Error reading pack file: " + packFile, ex);
 			} finally {
 				try {
 					reader.close();
@@ -589,11 +589,14 @@ public class TextureAtlas implements Disposable {
 			float oldOffsetX = region.offsetX;
 			float oldOffsetY = region.offsetY;
 
+			float widthRatio = getWidth() / region.originalWidth;
+			float heightRatio = getHeight() / region.originalHeight;
+
 			if (clockwise) {
 				region.offsetX = oldOffsetY;
-				region.offsetY = region.originalHeight - oldOffsetX - region.packedWidth;
+				region.offsetY = region.originalHeight * heightRatio - oldOffsetX - region.packedWidth * widthRatio;
 			} else {
-				region.offsetX = region.originalWidth - oldOffsetY - region.packedHeight;
+				region.offsetX = region.originalWidth * widthRatio - oldOffsetY - region.packedHeight * heightRatio;
 				region.offsetY = oldOffsetX;
 			}
 
