@@ -645,6 +645,7 @@ public class ScrollPane extends WidgetGroup {
 
 	public void setFadeScrollBars (boolean fadeScrollBars) {
 		this.fadeScrollBars = fadeScrollBars;
+		if (!fadeScrollBars) fadeAlpha = 1;
 	}
 
 	public void setupFadeScrollBars (float fadeAlphaSeconds, float fadeDelaySeconds) {
