@@ -95,6 +95,7 @@ public class TextureAtlas implements Disposable {
 		final Array<Region> regions = new Array<Region>();
 
 		public TextureAtlasData (FileHandle packFile, FileHandle imagesDir, boolean flip) {
+			// BOZO - Just sort after, this isn't faster.
 			PriorityQueue<Region> sortedRegions = new PriorityQueue(16, indexComparator);
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);

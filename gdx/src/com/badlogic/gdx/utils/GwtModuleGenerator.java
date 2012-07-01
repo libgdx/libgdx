@@ -116,6 +116,7 @@ public class GwtModuleGenerator {
 		builder.element("include").attribute("name", "graphics/g3d/Animation.java").pop();
 		builder.pop();
 		builder.pop();
+		builder.close();
 		System.out.println(writer);
 		
 		new FileHandle("src/com/badlogic/gdx.gwt.xml").writeString(writer.toString(), false);

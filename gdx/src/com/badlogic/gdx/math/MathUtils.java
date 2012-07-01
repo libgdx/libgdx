@@ -155,6 +155,7 @@ public class MathUtils {
 
 	// ---
 
+	/** Returns the next power of two. Returns the specified value if the value is already a power of two. */
 	static public int nextPowerOfTwo (int value) {
 		if (value == 0) return 1;
 		value--;
