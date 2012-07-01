@@ -52,15 +52,22 @@ public class ImageProcessor {
 		int dotIndex = name.lastIndexOf('.');
 		if (dotIndex != -1) name = name.substring(0, dotIndex);
 
+		Rect rect = null;
+
 		// Strip ".9" from file name, read ninepatch split pixels, and strip ninepatch split pixels.
 		int[] splits = null;
 		if (name.endsWith(".9")) {
 			name = name.substring(0, name.length() - 2);
 			splits = getSplits(image, name);
+			// Strip split pixels.
 			BufferedImage newImage = new BufferedImage(image.getWidth() - 2, image.getHeight() - 2, BufferedImage.TYPE_4BYTE_ABGR);
 			newImage.getGraphics().drawImage(image, 0, 0, newImage.getWidth(), newImage.getHeight(), 1, 1, image.getWidth() - 1,
 				image.getHeight() - 1, null);
 			image = newImage;
+			// Ninepatches won't be rotated or whitespace stripped.
+			rect = new Rect(image, 0, 0, image.getWidth(), image.getHeight());
+			rect.splits = splits;
+			rect.canRotate = false;
 		}
 
 		// Strip digits off end of name and use as index.
@@ -71,15 +78,16 @@ public class ImageProcessor {
 			index = Integer.parseInt(matcher.group(2));
 		}
 
-		Rect rect = createRect(image);
 		if (rect == null) {
-			System.out.println("Ignoring blank input image: " + name);
-			return;
+			rect = createRect(image);
+			if (rect == null) {
+				System.out.println("Ignoring blank input image: " + name);
+				return;
+			}
 		}
 
 		rect.name = name;
 		rect.index = index;
-		rect.splits = splits;
 
 		if (settings.alias) {
 			String crc = hash(rect.image);

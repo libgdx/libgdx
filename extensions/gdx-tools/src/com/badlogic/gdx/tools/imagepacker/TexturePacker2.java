@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.imageio.IIOImage;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
+/** @author Nathan Sweet */
 public class TexturePacker2 {
 	private final Settings settings;
 	private final MaxRectsPacker maxRectsPacker;
@@ -168,14 +170,14 @@ public class TexturePacker2 {
 				writer.write("  rotate: " + rect.rotated + "\n");
 				writer.write("  xy: " + rect.x + ", " + rect.y + "\n");
 				writer.write("  size: " + rect.image.getWidth() + ", " + rect.image.getHeight() + "\n");
-				writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
-				writer.write("  offset: " + rect.offsetX + ", " + (rect.originalHeight - rect.image.getHeight() - rect.offsetY)
-					+ "\n");
-				writer.write("  index: " + rect.index + "\n");
 				if (rect.splits != null) {
 					writer.write("  split: " + rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3]
 						+ "\n");
 				}
+				writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
+				writer.write("  offset: " + rect.offsetX + ", " + (rect.originalHeight - rect.image.getHeight() - rect.offsetY)
+					+ "\n");
+				writer.write("  index: " + rect.index + "\n");
 			}
 		}
 		writer.close();
@@ -203,6 +205,7 @@ public class TexturePacker2 {
 		}
 	}
 
+	/** @author Nathan Sweet */
 	static class Page {
 		public String imageName;
 		public Array<Rect> outputRects, remainingRects;
@@ -210,6 +213,7 @@ public class TexturePacker2 {
 		public int width, height;
 	}
 
+	/** @author Nathan Sweet */
 	static class Rect {
 		public String name;
 		public BufferedImage image;
@@ -219,7 +223,7 @@ public class TexturePacker2 {
 		public boolean rotated;
 		public ArrayList<Rect> aliases = new ArrayList();
 		public int[] splits;
-		public String imageName;
+		public boolean canRotate = true;
 
 		int score1, score2;
 
@@ -259,7 +263,7 @@ public class TexturePacker2 {
 			rotated = rect.rotated;
 			aliases = rect.aliases;
 			splits = rect.splits;
-			imageName = rect.imageName;
+			canRotate = rect.canRotate;
 			score1 = rect.score1;
 			score2 = rect.score2;
 		}
@@ -280,6 +284,7 @@ public class TexturePacker2 {
 		}
 	}
 
+	/** @author Nathan Sweet */
 	static public class Settings {
 		public boolean fast;
 		public boolean rotation;

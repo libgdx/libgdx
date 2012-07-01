@@ -16,6 +16,7 @@ import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Rect;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 import com.badlogic.gdx.utils.Array;
 
+/** @author Nathan Sweet */
 public class TexturePackerTest extends ApplicationAdapter {
 	ShapeRenderer renderer;
 	Array<Page> pages;
@@ -52,20 +53,6 @@ public class TexturePackerTest extends ApplicationAdapter {
 				rect.width = 1 + random.nextInt(10);
 				inputRects.add(rect);
 			}
-//			inputRects.clear();
-//
-//			Rect rect = new Rect();
-//			rect.width = 50;
-//			rect.height = 50;
-//			inputRects.add(rect);
-//			rect = new Rect();
-//			rect.width = 125;
-//			rect.height = 55;
-//			inputRects.add(rect);
-//			rect = new Rect();
-//			rect.width = 25;
-//			rect.height = 100;
-//			inputRects.add(rect);
 
 			long s = System.nanoTime();
 

@@ -120,7 +120,7 @@ public class MaxRectsPacker {
 				Array<Rect> remaining = new Array();
 				for (int ii = 0, nn = inputRects.size; ii < nn; ii++) {
 					Rect rect = inputRects.get(ii);
-					if (maxRects.insert(rect.width, rect.height, methods[i]) == null) {
+					if (maxRects.insert(rect, methods[i]) == null) {
 						while (ii < nn)
 							remaining.add(inputRects.get(ii++));
 					}
@@ -196,30 +196,8 @@ public class MaxRectsPacker {
 		}
 
 		/** Packs a single image. Order is defined externally. */
-		public Rect insert (int width, int height, FreeRectChoiceHeuristic method) {
-			int rotatedWidth = height - settings.paddingY + settings.paddingX;
-			int rotatedHeight = width - settings.paddingX + settings.paddingY;
-
-			Rect newNode = null;
-			switch (method) {
-			case BestShortSideFit:
-				newNode = FindPositionForNewNodeBestShortSideFit(width, height, rotatedWidth, rotatedHeight);
-				break;
-			case BottomLeftRule:
-				newNode = FindPositionForNewNodeBottomLeft(width, height, rotatedWidth, rotatedHeight);
-				break;
-			case ContactPointRule:
-				newNode = FindPositionForNewNodeContactPoint(width, height, rotatedWidth, rotatedHeight);
-				newNode.score1 = -newNode.score1; // Reverse since we are minimizing, but for contact point score bigger is better.
-				break;
-			case BestLongSideFit:
-				newNode = FindPositionForNewNodeBestLongSideFit(width, height, rotatedWidth, rotatedHeight);
-				break;
-			case BestAreaFit:
-				newNode = FindPositionForNewNodeBestAreaFit(width, height, rotatedWidth, rotatedHeight);
-				break;
-			}
-
+		public Rect insert (Rect rect, FreeRectChoiceHeuristic method) {
+			Rect newNode = ScoreRect(rect, method);
 			if (newNode.height == 0) return null;
 
 			int numRectanglesToProcess = freeRectangles.size;
@@ -248,7 +226,7 @@ public class MaxRectsPacker {
 
 				// Find the next rectangle that packs best.
 				for (int i = 0; i < rects.size; i++) {
-					Rect newNode = ScoreRect(rects.get(i).width, rects.get(i).height, method);
+					Rect newNode = ScoreRect(rects.get(i), method);
 					if (newNode.score1 < bestNode.score1 || (newNode.score1 == bestNode.score1 && newNode.score2 < bestNode.score2)) {
 						bestNode.set(rects.get(i));
 						bestNode.score1 = newNode.score1;
@@ -303,7 +281,9 @@ public class MaxRectsPacker {
 			usedRectangles.add(node);
 		}
 
-		private Rect ScoreRect (int width, int height, FreeRectChoiceHeuristic method) {
+		private Rect ScoreRect (Rect rect, FreeRectChoiceHeuristic method) {
+			int width = rect.width;
+			int height = rect.height;
 			int rotatedWidth = height - settings.paddingY + settings.paddingX;
 			int rotatedHeight = width - settings.paddingX + settings.paddingY;
 

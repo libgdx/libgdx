@@ -47,7 +47,7 @@ import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
  * A TextureAtlas must be disposed to free up the resources consumed by the backing textures.
  * @author Nathan Sweet */
 public class TextureAtlas implements Disposable {
-	static final String[] tuple = new String[2];
+	static final String[] tuple = new String[4];
 
 	private final HashSet<Texture> textures = new HashSet(4);
 	private final ArrayList<AtlasRegion> regions = new ArrayList<AtlasRegion>();
@@ -89,6 +89,7 @@ public class TextureAtlas implements Disposable {
 			public int width;
 			public int height;
 			public boolean flip;
+			public int[] splits;
 		}
 
 		final Array<Page> pages = new Array<Page>();
@@ -148,6 +149,11 @@ public class TextureAtlas implements Disposable {
 						region.height = height;
 						region.name = line;
 						region.rotate = rotate;
+
+						if (readTuple(reader) == 4) { // split is optional
+							region.splits = new int[] {Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
+								Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3])};
+						}
 
 						readTuple(reader);
 						region.originalWidth = Integer.parseInt(tuple[0]);
@@ -250,6 +256,7 @@ public class TextureAtlas implements Disposable {
 			atlasRegion.originalHeight = region.originalHeight;
 			atlasRegion.originalWidth = region.originalWidth;
 			atlasRegion.rotate = region.rotate;
+			atlasRegion.splits = region.splits;
 			if (region.flip) atlasRegion.flip(false, true);
 			regions.add(atlasRegion);
 		}
@@ -371,6 +378,23 @@ public class TextureAtlas implements Disposable {
 		return new AtlasSprite(region);
 	}
 
+	/** Returns the first region found with the specified name as a {@link NinePatch}. The region must have been packed with
+	 * ninepatch splits. This method uses string comparison to find the region and constructs a new ninepatch, so the result should
+	 * be cached rather than calling this method multiple times.
+	 * @return The ninepatch, or null. */
+	public NinePatch createPatch (String name) {
+		for (int i = 0, n = regions.size(); i < n; i++) {
+			AtlasRegion region = regions.get(i);
+			if (region.name.equals(name)) {
+				int[] splits = region.splits;
+				if (splits == null) throw new IllegalArgumentException("Region does not have ninepatch splits: " + name);
+				return new NinePatch(region, splits[0], region.getRegionWidth() - splits[1], splits[2], region.getRegionHeight()
+					- splits[3]);
+			}
+		}
+		return null;
+	}
+
 	/** @return the textures of the pages, unordered */
 	public Set<Texture> getTextures () {
 		return textures;
@@ -401,13 +425,23 @@ public class TextureAtlas implements Disposable {
 		return line.substring(colon + 1).trim();
 	}
 
-	static void readTuple (BufferedReader reader) throws IOException {
+	/** Returns the number of tuple values read (2 or 4). */
+	static int readTuple (BufferedReader reader) throws IOException {
 		String line = reader.readLine();
 		int colon = line.indexOf(':');
-		int comma = line.indexOf(',');
-		if (colon == -1 || comma == -1 || comma < colon + 1) throw new GdxRuntimeException("Invalid line: " + line);
-		tuple[0] = line.substring(colon + 1, comma).trim();
-		tuple[1] = line.substring(comma + 1).trim();
+		if (colon == -1) throw new GdxRuntimeException("Invalid line: " + line);
+		int i = 0, lastMatch = colon + 1;
+		for (i = 0; i < 3; i++) {
+			int comma = line.indexOf(',', lastMatch);
+			if (comma == -1) {
+				if (i == 0) throw new GdxRuntimeException("Invalid line: " + line);
+				break;
+			}
+			tuple[i] = line.substring(lastMatch, comma).trim();
+			lastMatch = comma + 1;
+		}
+		tuple[i] = line.substring(lastMatch).trim();
+		return i + 1;
 	}
 
 	/** Describes the region of a packed image and provides information about the original image before it was packed. */
@@ -445,6 +479,9 @@ public class TextureAtlas implements Disposable {
 		/** If true, the region has been rotated 90 degrees counter clockwise. */
 		public boolean rotate;
 
+		/** The ninepatch splits, or null if not a ninepatch. Has 4 elements: startX, endX, startY, endY. */
+		public int[] splits;
+
 		public AtlasRegion (Texture texture, int x, int y, int width, int height) {
 			super(texture, x, y, width, height);
 			packedWidth = width;
@@ -462,6 +499,7 @@ public class TextureAtlas implements Disposable {
 			originalWidth = region.originalWidth;
 			originalHeight = region.originalHeight;
 			rotate = region.rotate;
+			splits = region.splits;
 		}
 
 		/** Flips the region, adjusting the offset so the image appears to be flipped as if no whitespace has been removed for

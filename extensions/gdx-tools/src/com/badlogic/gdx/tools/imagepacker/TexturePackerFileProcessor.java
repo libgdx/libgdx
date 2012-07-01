@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectMap;
 
+/** @author Nathan Sweet */
 public class TexturePackerFileProcessor extends FileProcessor {
 	private final Settings defaultSettings;
 	private ObjectMap<File, Settings> dirToSettings = new ObjectMap();
