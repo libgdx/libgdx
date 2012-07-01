@@ -78,7 +78,7 @@ public class TexturePacker2 {
 
 			File outputFile;
 			while (true) {
-				outputFile = new File(outputDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.fileFormat);
+				outputFile = new File(outputDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
 				if (!outputFile.exists()) break;
 			}
 			page.imageName = outputFile.getName();
@@ -136,7 +136,7 @@ public class TexturePacker2 {
 			}
 
 			try {
-				if (settings.fileFormat.equalsIgnoreCase("jpg")) {
+				if (settings.outputFormat.equalsIgnoreCase("jpg")) {
 					Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
 					ImageWriter writer = (ImageWriter)writers.next();
 					ImageWriteParam param = writer.getDefaultWriteParam();
@@ -184,9 +184,9 @@ public class TexturePacker2 {
 	}
 
 	private String getRepeatValue () {
-		if (settings.textureWrapX == TextureWrap.Repeat && settings.textureWrapY == TextureWrap.Repeat) return "xy";
-		if (settings.textureWrapX == TextureWrap.Repeat && settings.textureWrapY == TextureWrap.ClampToEdge) return "x";
-		if (settings.textureWrapX == TextureWrap.ClampToEdge && settings.textureWrapY == TextureWrap.Repeat) return "y";
+		if (settings.wrapX == TextureWrap.Repeat && settings.wrapY == TextureWrap.Repeat) return "xy";
+		if (settings.wrapX == TextureWrap.Repeat && settings.wrapY == TextureWrap.ClampToEdge) return "x";
+		if (settings.wrapX == TextureWrap.ClampToEdge && settings.wrapY == TextureWrap.Repeat) return "y";
 		return "none";
 	}
 
@@ -286,23 +286,23 @@ public class TexturePacker2 {
 
 	/** @author Nathan Sweet */
 	static public class Settings {
-		public boolean fast;
-		public boolean rotation;
 		public boolean pot = true;
-		public int minWidth = 128, minHeight = 128;
-		public int maxWidth = 1024, maxHeight = 1024;
 		public int paddingX, paddingY;
 		public boolean edgePadding = true;
-		public int alphaThreshold;
-		public boolean ignoreBlankImages = true;
-		public boolean stripWhitespaceX, stripWhitespaceY;
-		public boolean alias = true;
-		public Format format = Format.RGBA8888;
-		public float jpegQuality = 0.9f;
-		public String fileFormat = "png";
-		public TextureFilter filterMin = TextureFilter.Nearest, filterMag = TextureFilter.Nearest;
-		public TextureWrap textureWrapX = TextureWrap.ClampToEdge, textureWrapY = TextureWrap.ClampToEdge;
 		public boolean duplicatePadding = true;
+		public boolean rotation;
+		public int minWidth = 128, minHeight = 128;
+		public int maxWidth = 1024, maxHeight = 1024;
+		public boolean stripWhitespaceX, stripWhitespaceY;
+		public int alphaThreshold;
+		public TextureFilter filterMin = TextureFilter.Nearest, filterMag = TextureFilter.Nearest;
+		public TextureWrap wrapX = TextureWrap.ClampToEdge, wrapY = TextureWrap.ClampToEdge;
+		public Format format = Format.RGBA8888;
+		public boolean alias = true;
+		public String outputFormat = "png";
+		public float jpegQuality = 0.9f;
+		public boolean ignoreBlankImages = true;
+		public boolean fast;
 		public boolean debug = false;
 
 		public Settings () {
@@ -326,11 +326,11 @@ public class TexturePacker2 {
 			alias = settings.alias;
 			format = settings.format;
 			jpegQuality = settings.jpegQuality;
-			fileFormat = settings.fileFormat;
+			outputFormat = settings.outputFormat;
 			filterMin = settings.filterMin;
 			filterMag = settings.filterMag;
-			textureWrapX = settings.textureWrapX;
-			textureWrapY = settings.textureWrapY;
+			wrapX = settings.wrapX;
+			wrapY = settings.wrapY;
 			duplicatePadding = settings.duplicatePadding;
 			debug = settings.debug;
 		}

@@ -52,12 +52,19 @@ public class TexturePackerFileProcessor extends FileProcessor {
 	}
 
 	protected void processDir (InputFile inputDir, ArrayList<InputFile> files) throws Exception {
-		// Start with a copy of parent dir's settings or the default settings.
-		Settings settings = dirToSettings.get(inputDir.inputFile.getParentFile());
-		if (settings == null)
-			settings = new Settings(defaultSettings);
-		else
-			settings = new Settings(settings);
+		// Start with a copy of a parent dir's settings or the default settings.
+		Settings settings = null;
+		File parent = inputDir.inputFile;
+		while (true) {
+			if (parent.equals(root)) break;
+			parent = parent.getParentFile();
+			settings = dirToSettings.get(parent);
+			if (settings != null) {
+				settings = new Settings(settings);
+				break;
+			}
+		}
+		if (settings == null) settings = new Settings(defaultSettings);
 		dirToSettings.put(inputDir.inputFile, settings);
 
 		// Merge settings from pack.json file.

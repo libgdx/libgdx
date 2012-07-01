@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class ImageProcessor {
 	static private final BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
-	static private Pattern indexPattern = Pattern.compile("(.+)(\\d+)$");
+	static private Pattern indexPattern = Pattern.compile("(.+)_(\\d+)$");
 
 	private String rootPath;
 	private final Settings settings;
