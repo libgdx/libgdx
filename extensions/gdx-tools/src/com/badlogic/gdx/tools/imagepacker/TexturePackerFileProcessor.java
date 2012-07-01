@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.tools.FileProcessor;
+import com.badlogic.gdx.tools.FileProcessor.InputFile;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
@@ -17,6 +18,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 	private ObjectMap<File, Settings> dirToSettings = new ObjectMap();
 	private Json json = new Json();
 	private String packFileName;
+	private File root;
 
 	public TexturePackerFileProcessor () {
 		this(new Settings(), "pack.atlas");
@@ -28,6 +30,11 @@ public class TexturePackerFileProcessor extends FileProcessor {
 
 		setFlattenOutput(true);
 		addInputSuffix(".png", ".jpg");
+	}
+
+	public ArrayList<InputFile> process (File inputFile, File outputRoot) throws Exception {
+		root = inputFile;
+		return super.process(inputFile, outputRoot);
 	}
 
 	public ArrayList<InputFile> process (File[] files, File outputRoot) throws Exception {
@@ -58,7 +65,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		if (settingsFile.exists()) json.readFields(settings, new JsonReader().parse(new FileReader(settingsFile)));
 
 		// Pack.
-		TexturePacker2 packer = new TexturePacker2(inputDir.inputFile, settings);
+		TexturePacker2 packer = new TexturePacker2(root, settings);
 		for (InputFile file : files)
 			packer.addImage(file.inputFile);
 		packer.pack(inputDir.outputDir, packFileName);
