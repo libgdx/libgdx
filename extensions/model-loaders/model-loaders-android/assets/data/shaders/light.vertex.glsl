@@ -39,7 +39,7 @@ float wrapLight(vec3 nor, vec3 direction){
 void main()
 {
 #ifdef normalsFlag
-	v_normal    = u_normalMatrix * a_normal;
+	v_normal    = u_normalMatrix * normalize(a_normal);
 #endif
 
 	v_texCoords = a_texCoord0;
