@@ -102,7 +102,7 @@ public class Slider extends Widget {
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		final Drawable knob = style.knob;
-		final Drawable slider = style.slider;
+		final Drawable slider = style.background;
 
 		Color color = getColor();
 		float x = getX();
@@ -165,7 +165,7 @@ public class Slider extends Widget {
 	}
 
 	public float getPrefHeight () {
-		return Math.max(style.knob.getMinHeight(), style.slider.getMinHeight());
+		return Math.max(style.knob.getMinHeight(), style.background.getMinHeight());
 	}
 
 	/** The style for a slider, see {@link Slider}.
@@ -173,20 +173,20 @@ public class Slider extends Widget {
 	 * @author Nathan Sweet */
 	static public class SliderStyle {
 		/** The slider background, stretched only in the x direction. */
-		public Drawable slider;
+		public Drawable background;
 		/** Centered vertically on the background. */
 		public Drawable knob;
 
 		public SliderStyle () {
 		}
 
-		public SliderStyle (Drawable slider, Drawable knob) {
-			this.slider = slider;
+		public SliderStyle (Drawable background, Drawable knob) {
+			this.background = background;
 			this.knob = knob;
 		}
 
 		public SliderStyle (SliderStyle style) {
-			this.slider = style.slider;
+			this.background = style.background;
 			this.knob = style.knob;
 		}
 	}

@@ -141,7 +141,7 @@ public class Window extends Table {
 	public boolean isDragging () {
 		return dragging;
 	}
-
+	
 	/** The style for a window, see {@link Window}.
 	 * @author Nathan Sweet */
 	static public class WindowStyle {

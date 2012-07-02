@@ -24,8 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
  * @author Nathan Sweet */
 public interface Layout {
 	/** Computes and caches any information needed for drawing and, if this actor has children, positions and sizes each child and
-	 * calls {@link #invalidate()} and then {@link #validate()} on each one. Usually this should not be called directly, instead
-	 * {@link #validate()} should be used. */
+	 * calls {@link #validate()} on each one. Usually this should not be called directly, instead {@link #validate()} should be
+	 * used. */
 	public void layout ();
 
 	/** Invalidates this actor's layout, causing {@link #layout()} to be called the next time {@link #validate()} is called. This
@@ -44,7 +44,7 @@ public interface Layout {
 	public void validate ();
 
 	/** Sizes this actor to its preferred width and height and, if its size was changed, causes the actor to be laid out by calling
-	 * {@link #invalidate()} and then {@link #validate()}.
+	 * {@link #validate()}.
 	 * <p>
 	 * Generally this method should not be called in a constructor because it calls {@link #layout()}, which means a subclass would
 	 * have layout() called before the subclass' constructor. Instead, in a constructor simply sets the actors width and height to

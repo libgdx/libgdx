@@ -33,7 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
-/** A group that scrolls a child widget using scroll bars and/or mouse or touch dragging.
+/** A group that scrolls a child widget using scrollbars and/or mouse or touch dragging.
  * <p>
  * The widget is sized to its preferred size. If the widget's preferred width or height is less than the size of this scroll pane,
  * it is set to the size of this scroll pane. Scrollbars appear when the widget is larger than the scroll pane.

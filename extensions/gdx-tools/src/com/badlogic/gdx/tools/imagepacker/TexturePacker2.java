@@ -61,14 +61,14 @@ public class TexturePacker2 {
 
 		int fileIndex = 0;
 		for (Page page : pages) {
-			int x = 0, y = 0, width = page.width, height = page.height;
+			int width = page.width, height = page.height;
 			int paddingX = (int)Math.ceil(settings.paddingX / 2f);
 			int paddingY = (int)Math.ceil(settings.paddingY / 2f);
 			width -= settings.paddingX;
 			height -= settings.paddingY;
 			if (settings.edgePadding) {
-				x = paddingX;
-				y = paddingY;
+				page.x = paddingX;
+				page.y = paddingY;
 				width += paddingX * 2;
 				height += paddingY * 2;
 			}
@@ -90,7 +90,7 @@ public class TexturePacker2 {
 			System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
 
 			for (Rect rect : page.outputRects) {
-				int rectX = x + rect.x, rectY = y + page.height - rect.y - rect.height;
+				int rectX = page.x + rect.x, rectY = page.y + page.height - rect.y - rect.height;
 				if (rect.rotated) {
 					g.translate(rectX, rectY);
 					g.rotate(-90 * MathUtils.degreesToRadians);
@@ -176,7 +176,7 @@ public class TexturePacker2 {
 	private void writeRect (FileWriter writer, Page page, Rect rect) throws IOException {
 		writer.write(rect.name + "\n");
 		writer.write("  rotate: " + rect.rotated + "\n");
-		writer.write("  xy: " + rect.x + ", " + (page.height - rect.height - rect.y) + "\n");
+		writer.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.height - rect.y) + "\n");
 		writer.write("  size: " + rect.image.getWidth() + ", " + rect.image.getHeight() + "\n");
 		if (rect.splits != null) {
 			writer
@@ -214,7 +214,7 @@ public class TexturePacker2 {
 		public String imageName;
 		public Array<Rect> outputRects, remainingRects;
 		public float occupancy;
-		public int width, height;
+		public int x, y, width, height;
 	}
 
 	/** @author Nathan Sweet */
