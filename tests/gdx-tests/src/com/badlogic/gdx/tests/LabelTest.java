@@ -26,11 +26,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Align;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LabelTest extends GdxTest {
@@ -44,15 +44,14 @@ public class LabelTest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch();
 		renderer = new ShapeRenderer();
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
-		skin.getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		skin.getAtlas().getTextures().iterator().next().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		stage = new Stage(0, 0, false);
 		Gdx.input.setInputProcessor(stage);
 
 		Table table = new Table();
 		stage.addActor(table);
-		table.x = 200;
-		table.y = 65;
+		table.setPosition(200, 65);
 
 		table.debug();
 		table.add(new Label("This is regular text.", skin));
@@ -60,17 +59,17 @@ public class LabelTest extends GdxTest {
 		table.add(new Label("This is regular text\nwith a newline.", skin));
 		table.row();
 		Label label3 = new Label("This is regular text\n\nwith newlines,\naligned bottom, right.", skin);
-		label3.setAlignment(Align.BOTTOM | Align.RIGHT);
+		label3.setAlignment(Align.bottom | Align.right);
 		table.add(label3).minWidth(200).minHeight(110).fill();
 		table.row();
 		Label label4 = new Label("This is regular text with NO newlines, wrap enabled and aligned bottom, right.", skin);
 		label4.setWrap(true);
-		label4.setAlignment(Align.BOTTOM | Align.RIGHT);
+		label4.setAlignment(Align.bottom | Align.right);
 		table.add(label4).minWidth(200).minHeight(110).fill();
 		table.row();
 		Label label5 = new Label("This is regular text with\n\nnewlines, wrap\nenabled and aligned bottom, right.", skin);
 		label5.setWrap(true);
-		label5.setAlignment(Align.BOTTOM | Align.RIGHT);
+		label5.setAlignment(Align.bottom | Align.right);
 		table.add(label5).minWidth(200).minHeight(110).fill();
 
 		table.pack();

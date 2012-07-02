@@ -199,7 +199,6 @@ public class BitmapFontAlignmentTest extends GdxTest {
 	public void dispose () {
 		spriteBatch.dispose();
 		font.dispose();
-		cache.dispose();
 		texture.dispose();
 	}
 }

@@ -57,8 +57,8 @@ public class BitmapFont implements Disposable {
 	static private final int PAGES = 0x10000 / PAGE_SIZE;
 
 	public static final char[] xChars = {'x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z'};
-	public static final char[] capChars = {'M', 'N', 'B', 'D', 'C', 'E', 'F', 'K', 'A', 'G', 'H', 'I', 'J', 'L', 'O', 'P', 'Q', 'R', 'S',
-		'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+	public static final char[] capChars = {'M', 'N', 'B', 'D', 'C', 'E', 'F', 'K', 'A', 'G', 'H', 'I', 'J', 'L', 'O', 'P', 'Q',
+		'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
 	TextureRegion region;
 	private final TextBounds textBounds = new TextBounds();
@@ -84,13 +84,10 @@ public class BitmapFont implements Disposable {
 		public float spaceWidth;
 		public float xHeight = 1;
 
-		/**
-		 * Use this if you want to create BitmapFontData yourself, e.g. from
-		 * stb-truetype of FreeType.
-		 */
-		public BitmapFontData() {
+		/** Use this if you want to create BitmapFontData yourself, e.g. from stb-truetype of FreeType. */
+		public BitmapFontData () {
 		}
-		
+
 		public BitmapFontData (FileHandle fontFile, boolean flip) {
 			this.fontFile = fontFile;
 			this.flipped = flip;
@@ -572,13 +569,13 @@ public class BitmapFont implements Disposable {
 	public TextBounds getBounds (CharSequence str) {
 		return getBounds(str, 0, str.length());
 	}
-	
+
 	/** Returns the size of the specified string. The height is the distance from the top of most capital letters in the font (the
 	 * {@link #getCapHeight() cap height}) to the baseline. */
 	public TextBounds getBounds (CharSequence str, TextBounds textBounds) {
 		return getBounds(str, 0, str.length());
 	}
-	
+
 	/** Returns the size of the specified substring. The height is the distance from the top of most capital letters in the font
 	 * (the {@link #getCapHeight() cap height}) to the baseline. Note the same TextBounds instance is used for all methods that
 	 * return TextBounds.
@@ -623,7 +620,7 @@ public class BitmapFont implements Disposable {
 	public TextBounds getMultiLineBounds (CharSequence str) {
 		return getMultiLineBounds(str, this.textBounds);
 	}
-	
+
 	/** Returns the size of the specified string, which may contain newlines. The height is the distance from the top of most
 	 * capital letters in the font (the {@link #getCapHeight() cap height}) to the baseline of the last line of text. */
 	public TextBounds getMultiLineBounds (CharSequence str, TextBounds textBounds) {
@@ -642,7 +639,7 @@ public class BitmapFont implements Disposable {
 		textBounds.height = data.capHeight + (numLines - 1) * data.lineHeight;
 		return textBounds;
 	}
-	
+
 	/** Returns the size of the specified string, which may contain newlines and is wrapped to keep it within a rectangle of the
 	 * specified width. The height is the distance from the top of most capital letters in the font (the {@link #getCapHeight() cap
 	 * height}) to the baseline of the last line of text. Note the same TextBounds instance is used for all methods that return
@@ -750,7 +747,7 @@ public class BitmapFont implements Disposable {
 		int index = start;
 		float width = 0;
 		Glyph lastGlyph = null;
-		
+
 		if (data.scaleX == 1) {
 			for (; index < end; index++) {
 				char ch = str.charAt(index);

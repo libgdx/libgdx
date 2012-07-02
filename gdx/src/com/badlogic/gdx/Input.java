@@ -297,6 +297,7 @@ public interface Input {
 	 * @return whether the button is down or not. */
 	public boolean isButtonPressed (int button);
 
+
 	/** Returns whether the key is pressed.
 	 * 
 	 * @param key The key code as found in {@link Input.Keys}.
@@ -304,13 +305,14 @@ public interface Input {
 	public boolean isKeyPressed (int key);
 
 	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
-	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the rendering thread.
+	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the rendering
+	 * thread.
 	 * 
 	 * @param listener The TextInputListener.
 	 * @param title The title of the text input dialog.
 	 * @param text The message presented to the user. */
 	public void getTextInput (TextInputListener listener, String title, String text);
-	
+
 	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
 	 * hint message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the
 	 * rendering thread.
@@ -362,13 +364,13 @@ public interface Input {
 	 *      href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
 	 * @return the roll in degrees */
 	public float getRoll ();
-	
-	/**
-	 * Returns the rotation matrix describing the devices rotation as per <a href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">SensorManager#getRotationMatrix(float[], float[], float[], float[])</a>.
-	 * Does not manipulate the matrix if the platform does not have an accelerometer.
-	 * @param matrix
-	 */
-	public void getRotationMatrix(float[] matrix);
+
+	/** Returns the rotation matrix describing the devices rotation as per <a href=
+	 * "http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])"
+	 * >SensorManager#getRotationMatrix(float[], float[], float[], float[])</a>. Does not manipulate the matrix if the platform
+	 * does not have an accelerometer.
+	 * @param matrix */
+	public void getRotationMatrix (float[] matrix);
 
 	/** @return the time of the event currently reported to the {@link InputProcessor}. */
 	public long getCurrentEventTime ();

@@ -181,15 +181,5 @@ public class BitmapFontFlipTest extends GdxTest {
 		spriteBatch.dispose();
 		font.dispose();
 		texture.dispose();
-		cache1.dispose();
-		cache2.dispose();
-		cache3.dispose();
-		cache4.dispose();
-		cache5.dispose();
-		cacheScaled1.dispose();
-		cacheScaled2.dispose();
-		cacheScaled3.dispose();
-		cacheScaled4.dispose();
-		cacheScaled5.dispose();
 	}
 }

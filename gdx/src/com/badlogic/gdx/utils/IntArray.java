@@ -121,6 +121,15 @@ public class IntArray {
 		items[index] = value;
 	}
 
+	public void swap (int first, int second) {
+		if (first >= size) throw new IndexOutOfBoundsException(String.valueOf(first));
+		if (second >= size) throw new IndexOutOfBoundsException(String.valueOf(second));
+		int[] items = this.items;
+		int firstValue = items[first];
+		items[first] = items[second];
+		items[second] = firstValue;
+	}
+
 	public boolean contains (int value) {
 		int i = size - 1;
 		int[] items = this.items;
@@ -192,7 +201,7 @@ public class IntArray {
 	protected int[] resize (int newSize) {
 		int[] newItems = new int[newSize];
 		int[] items = this.items;
-		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
+		System.arraycopy(items, 0, newItems, 0, Math.min(size, newItems.length));
 		this.items = newItems;
 		return newItems;
 	}

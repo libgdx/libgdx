@@ -23,14 +23,10 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.FadeTo;
-import com.badlogic.gdx.scenes.scene2d.actions.Forever;
-import com.badlogic.gdx.scenes.scene2d.actions.Parallel;
-import com.badlogic.gdx.scenes.scene2d.actions.RotateBy;
-import com.badlogic.gdx.scenes.scene2d.actions.ScaleTo;
-import com.badlogic.gdx.scenes.scene2d.actions.Sequence;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class ComplexActionTest extends GdxTest {
 
@@ -46,31 +42,27 @@ public class ComplexActionTest extends GdxTest {
 	public void create () {
 		stage = new Stage(480, 320, true);
 
-		Action complexAction = Forever.$(Sequence.$(Parallel.$(RotateBy.$(180, 2), ScaleTo.$(1.4f, 1.4f, 2), FadeTo.$(0.7f, 2)),
-			Parallel.$(RotateBy.$(180, 2), ScaleTo.$(1.0f, 1.0f, 2), FadeTo.$(1.0f, 2))));
+		Action complexAction = forever(sequence(parallel(rotateBy(180, 2), scaleTo(1.4f, 1.4f, 2), alpha(0.7f, 2)),
+			parallel(rotateBy(180, 2), scaleTo(1.0f, 1.0f, 2), alpha(1.0f, 2))));
 
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), false);
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		final Image img1 = new Image(new TextureRegion(texture));
-
-		img1.width = img1.height = 100;
-		img1.originX = 50;
-		img1.originY = 50;
-		img1.x = img1.y = 50;
+		img1.setSize(100, 100);
+		img1.setOrigin(50, 50);
+		img1.setPosition(50, 50);
 
 		final Image img2 = new Image(new TextureRegion(texture));
-
-		img2.width = img1.height = 50;
-		img2.originX = 50;
-		img2.originY = 50;
-		img2.x = img2.y = 150;
+		img2.setSize(50, 50);
+		img2.setOrigin(50, 50);
+		img2.setPosition(150, 150);
 
 		stage.addActor(img1);
 		stage.addActor(img2);
 
-		img1.action(complexAction.copy());
-		img2.action(complexAction.copy());
+		img1.addAction(complexAction);
+		//img2.action(complexAction.copy());
 	}
 
 	@Override

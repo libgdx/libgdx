@@ -27,24 +27,24 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 class CountPanel extends EditorPanel {
-	JSpinner maxSpinner, minSpinner;
+	Slider maxSlider, minSlider;
 
 	public CountPanel (final ParticleEditor editor, String name, String description) {
 		super(null, name, description);
 
 		initializeComponents();
 
-		maxSpinner.setValue(editor.getEmitter().getMaxParticleCount());
-		maxSpinner.addChangeListener(new ChangeListener() {
+		maxSlider.setValue(editor.getEmitter().getMaxParticleCount());
+		maxSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				editor.getEmitter().setMaxParticleCount((Integer)maxSpinner.getValue());
+				editor.getEmitter().setMaxParticleCount((int)maxSlider.getValue());
 			}
 		});
 
-		minSpinner.setValue(editor.getEmitter().getMinParticleCount());
-		minSpinner.addChangeListener(new ChangeListener() {
+		minSlider.setValue(editor.getEmitter().getMinParticleCount());
+		minSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				editor.getEmitter().setMinParticleCount((Integer)minSpinner.getValue());
+				editor.getEmitter().setMinParticleCount((int)minSlider.getValue());
 			}
 		});
 	}
@@ -57,8 +57,8 @@ class CountPanel extends EditorPanel {
 				new Insets(0, 0, 0, 6), 0, 0));
 		}
 		{
-			minSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 99999, 1));
-			contentPanel.add(minSpinner, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			minSlider = new Slider(0, 0, 99999, 1, 0, 500);
+			contentPanel.add(minSlider, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		{
@@ -67,8 +67,8 @@ class CountPanel extends EditorPanel {
 				new Insets(0, 12, 0, 6), 0, 0));
 		}
 		{
-			maxSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 99999, 1));
-			contentPanel.add(maxSpinner, new GridBagConstraints(3, 1, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			maxSlider = new Slider(0, 0, 99999, 1, 0, 500);
+			contentPanel.add(maxSlider, new GridBagConstraints(3, 1, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 	}

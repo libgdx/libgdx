@@ -119,7 +119,7 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 	}
 
 	@Override
-	public boolean touchMoved (int x, int y) {
+	public boolean mouseMoved (int x, int y) {
 		return false;
 	}
 
@@ -129,12 +129,12 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 	}
 
 	@Override
-	public boolean touchDown (int x, int y, int pointer) {
+	public boolean touchDown (float x, float y, int pointer) {
 		return false;
 	}
 
 	@Override
-	public boolean tap (int x, int y, int count) {
+	public boolean tap (float x, float y, int count) {
 		app.log("TestCollection", "disposing test '" + tests[testIndex].getClass().getName());
 		tests[testIndex].dispose();
 		testIndex++;
@@ -146,7 +146,7 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 	}
 
 	@Override
-	public boolean longPress (int x, int y) {
+	public boolean longPress (float x, float y) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -158,7 +158,7 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 	}
 
 	@Override
-	public boolean pan (int x, int y, int deltaX, int deltaY) {
+	public boolean pan (float x, float y, float deltaX, float deltaY) {
 		// TODO Auto-generated method stub
 		return false;
 	}

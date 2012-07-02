@@ -21,7 +21,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
@@ -79,7 +79,8 @@ public class FileProcessor {
 		return this;
 	}
 
-	/** @return the processed files added with {@link #addProcessedFile(InputFile)}. */
+	/** @param outputRoot May be null.
+	 * @return the processed files added with {@link #addProcessedFile(InputFile)}. */
 	public ArrayList<InputFile> process (File inputFile, File outputRoot) throws Exception {
 		if (!inputFile.exists()) throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
 		if (inputFile.isFile())
@@ -92,7 +93,7 @@ public class FileProcessor {
 	public ArrayList<InputFile> process (File[] files, File outputRoot) throws Exception {
 		outputFiles.clear();
 
-		HashMap<File, ArrayList<InputFile>> dirToEntries = new HashMap();
+		LinkedHashMap<File, ArrayList<InputFile>> dirToEntries = new LinkedHashMap();
 		process(files, outputRoot, outputRoot, dirToEntries, 0);
 
 		ArrayList<InputFile> allInputFiles = new ArrayList();
@@ -108,7 +109,7 @@ public class FileProcessor {
 			InputFile inputFile = new InputFile();
 			inputFile.inputFile = entry.getKey();
 			inputFile.outputDir = newOutputDir;
-			inputFile.outputFile = new File(newOutputDir, outputName);
+			inputFile.outputFile = newOutputDir == null ? null : new File(newOutputDir, outputName);
 
 			try {
 				processDir(inputFile, dirInputFiles);
@@ -130,7 +131,7 @@ public class FileProcessor {
 		return outputFiles;
 	}
 
-	private void process (File[] files, File outputRoot, File outputDir, HashMap<File, ArrayList<InputFile>> dirToEntries,
+	private void process (File[] files, File outputRoot, File outputDir, LinkedHashMap<File, ArrayList<InputFile>> dirToEntries,
 		int depth) {
 		for (File file : files) {
 			if (file.isFile()) {
@@ -155,7 +156,8 @@ public class FileProcessor {
 				inputFile.depth = depth;
 				inputFile.inputFile = file;
 				inputFile.outputDir = outputDir;
-				inputFile.outputFile = flattenOutput ? new File(outputRoot, outputName) : new File(outputDir, outputName);
+				if (outputRoot != null)
+					inputFile.outputFile = flattenOutput ? new File(outputRoot, outputName) : new File(outputDir, outputName);
 				ArrayList<InputFile> inputFiles = dirToEntries.get(dir);
 				if (inputFiles == null) {
 					inputFiles = new ArrayList();

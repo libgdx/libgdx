@@ -1,6 +1,21 @@
-
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 /** Manages a group of buttons to enforce a minimum and maximum number of checked buttons. This enables "radio button"
@@ -12,7 +27,6 @@ public class ButtonGroup {
 	private int minCheckCount, maxCheckCount = 1;
 	private boolean uncheckLast = true;
 	private Button lastChecked;
-	private ClickListener listener;
 
 	public ButtonGroup () {
 		minCheckCount = 1;
@@ -76,8 +90,6 @@ public class ButtonGroup {
 			lastChecked = button;
 		}
 
-		if (listener != null) listener.click(button, 0, 0);
-
 		return true;
 	}
 
@@ -114,12 +126,6 @@ public class ButtonGroup {
 	/** Sets the maximum number of buttons that can be checked. Set to -1 for no maximum. Default is 1. */
 	public void setMaxCheckCount (int maxCheckCount) {
 		this.maxCheckCount = maxCheckCount;
-	}
-
-	/** Sets a listener that is invoked whenever a button is checked or unchecked.
-	 * @param listener May be null. */
-	public void setClickListener (ClickListener listener) {
-		this.listener = listener;
 	}
 
 	/** If true, when the maximum number of buttons are checked and an additional button is checked, the last button to be checked

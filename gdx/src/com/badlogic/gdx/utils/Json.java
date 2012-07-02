@@ -969,6 +969,13 @@ public class Json {
 		public T read (Json json, Object jsonData, Class type);
 	}
 
+	static abstract public class ReadOnlySerializer<T> implements Serializer<T> {
+		public void write (Json json, T object, Class knownType) {
+		}
+
+		abstract public T read (Json json, Object jsonData, Class type);
+	}
+
 	static public interface Serializable {
 		public void write (Json json);
 

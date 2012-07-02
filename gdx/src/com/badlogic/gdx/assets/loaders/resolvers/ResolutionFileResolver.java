@@ -18,7 +18,6 @@ package com.badlogic.gdx.assets.loaders.resolvers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
-import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver.Resolution;
 import com.badlogic.gdx.files.FileHandle;
 
 public class ResolutionFileResolver implements FileHandleResolver {
@@ -56,30 +55,24 @@ public class ResolutionFileResolver implements FileHandleResolver {
 	}
 
 	static public Resolution choose (Resolution... descriptors) {
-		int width = 0;
-		if (Gdx.graphics.getWidth() > Gdx.graphics.getHeight()) {
-			width = Gdx.graphics.getHeight();
-		} else {
-			width = Gdx.graphics.getWidth();
-		}
+		if (descriptors == null) throw new IllegalArgumentException("descriptors cannot be null.");
+		int w = Gdx.graphics.getWidth(), h = Gdx.graphics.getHeight();
 
-		Resolution bestDesc = null;
-		// Find lowest.
-		int best = Integer.MAX_VALUE;
-		for (int i = 0, n = descriptors.length; i < n; i++) {
-			if (descriptors[i].portraitWidth < best) {
-				best = descriptors[i].portraitWidth;
-				bestDesc = descriptors[i];
+		// Prefer the shortest side.
+		Resolution best = descriptors[0];
+		if (w < h) {
+			for (int i = 0, n = descriptors.length; i < n; i++) {
+				Resolution other = descriptors[i];
+				if (w >= other.portraitWidth && other.portraitWidth >= best.portraitWidth
+					&& other.portraitHeight >= best.portraitHeight) best = descriptors[i];
+			}
+		} else {
+			for (int i = 0, n = descriptors.length; i < n; i++) {
+				Resolution other = descriptors[i];
+				if (w >= other.portraitHeight && other.portraitHeight >= best.portraitHeight
+					&& other.portraitWidth >= best.portraitWidth) best = descriptors[i];
 			}
 		}
-		// Find higher, but not over the screen res.
-		best = Integer.MAX_VALUE;
-		for (int i = 0, n = descriptors.length; i < n; i++) {
-			if (descriptors[i].portraitWidth <= width) {
-				best = descriptors[i].portraitWidth;
-				bestDesc = descriptors[i];
-			}
-		}
-		return bestDesc;
+		return best;
 	}
 }

@@ -31,12 +31,16 @@ public class NinePatch {
 	public static final int BOTTOM_CENTER = 7;
 	public static final int BOTTOM_RIGHT = 8;
 
-	private TextureRegion[] patches;
-	private Color color;
-	private boolean blending = true;
+	static private final Color tempColor = new Color();
 
-	private NinePatch () {
-	}
+	private Texture texture;
+	private int bottomLeft = -1, bottomCenter = -1, bottomRight = -1;
+	private int middleLeft = -1, middleCenter = -1, middleRight = -1;
+	private int topLeft = -1, topCenter = -1, topRight = -1;
+	private float leftWidth, rightWidth, middleWidth, middleHeight, topHeight, bottomHeight;
+	private float[] vertices = new float[9 * 4 * 5];
+	private int idx;
+	private final Color color = new Color(Color.WHITE);
 
 	public NinePatch (Texture texture, int left, int right, int top, int bottom) {
 		this(new TextureRegion(texture), left, right, top, bottom);
@@ -47,7 +51,7 @@ public class NinePatch {
 		int middleWidth = region.getRegionWidth() - left - right;
 		int middleHeight = region.getRegionHeight() - top - bottom;
 
-		patches = new TextureRegion[9];
+		TextureRegion[] patches = new TextureRegion[9];
 		if (top > 0) {
 			if (left > 0) patches[0] = new TextureRegion(region, 0, 0, left, top);
 			if (middleWidth > 0) patches[1] = new TextureRegion(region, left, 0, middleWidth, top);
@@ -82,6 +86,8 @@ public class NinePatch {
 			patches[BOTTOM_CENTER] = null;
 			patches[BOTTOM_RIGHT] = null;
 		}
+
+		load(patches);
 	}
 
 	public NinePatch (Texture texture, Color color) {
@@ -99,31 +105,19 @@ public class NinePatch {
 	}
 
 	public NinePatch (TextureRegion region) {
-		this.patches = new TextureRegion[] {
+		load(new TextureRegion[] {
 			//
 			null, null, null, //
 			null, region, null, //
 			null, null, null //
-		};
+		});
 	}
 
 	public NinePatch (TextureRegion... patches) {
 		if (patches == null || patches.length != 9) throw new IllegalArgumentException("NinePatch needs nine TextureRegions");
-		this.patches = patches;
-		checkValidity();
-	}
 
-	public NinePatch (NinePatch ninePatch) {
-		this(ninePatch, ninePatch.color == null ? null : new Color(ninePatch.color));
-	}
+		load(patches);
 
-	public NinePatch (NinePatch ninePatch, Color color) {
-		this.patches = new TextureRegion[9];
-		System.arraycopy(ninePatch.patches, 0, patches, 0, 9);
-		this.color = color;
-	}
-
-	private void checkValidity () {
 		float leftWidth = getLeftWidth();
 		if ((patches[TOP_LEFT] != null && patches[TOP_LEFT].getRegionWidth() != leftWidth)
 			|| (patches[MIDDLE_LEFT] != null && patches[MIDDLE_LEFT].getRegionWidth() != leftWidth)
@@ -153,108 +147,224 @@ public class NinePatch {
 		}
 	}
 
-	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
-		float centerColumnX = x + getLeftWidth();
-		float rightColumnX = x + width - getRightWidth();
-		float middleRowY = y + getBottomHeight();
-		float topRowY = y + height - getTopHeight();
-		
-		if (color != null) {
-			Color batchColor = batch.getColor();
-			batch.setColor(color.r, color.g, color.b, batchColor.a * color.a);
+	public NinePatch (NinePatch ninePatch) {
+		this(ninePatch, new Color(ninePatch.color));
+	}
+
+	public NinePatch (NinePatch ninePatch, Color color) {
+		texture = ninePatch.texture;
+
+		bottomLeft = ninePatch.bottomLeft;
+		bottomCenter = ninePatch.bottomCenter;
+		bottomRight = ninePatch.bottomRight;
+		middleLeft = ninePatch.middleLeft;
+		middleCenter = ninePatch.middleCenter;
+		middleRight = ninePatch.middleRight;
+		topLeft = ninePatch.topLeft;
+		topCenter = ninePatch.topCenter;
+		topRight = ninePatch.topRight;
+
+		leftWidth = ninePatch.leftWidth;
+		rightWidth = ninePatch.rightWidth;
+		middleWidth = ninePatch.middleWidth;
+		middleHeight = ninePatch.middleHeight;
+		topHeight = ninePatch.topHeight;
+		bottomHeight = ninePatch.bottomHeight;
+
+		vertices = new float[ninePatch.vertices.length];
+		System.arraycopy(ninePatch.vertices, 0, vertices, 0, ninePatch.vertices.length);
+		idx = ninePatch.idx;
+		this.color.set(color);
+	}
+
+	private void load (TextureRegion[] patches) {
+		float color = Color.WHITE.toFloatBits();
+
+		if (patches[BOTTOM_LEFT] != null) {
+			bottomLeft = add(patches[BOTTOM_LEFT], color);
+			leftWidth = Math.abs(patches[BOTTOM_LEFT].getRegionWidth());
+			bottomHeight = Math.abs(patches[BOTTOM_LEFT].getRegionHeight());
 		}
-
-		if(!blending && batch.getColor().a == 1f && color != null && color.a == 1f) batch.disableBlending();
-
-		// Bottom row
-		if (patches[BOTTOM_LEFT] != null) batch.draw(patches[BOTTOM_LEFT], x, y, centerColumnX - x, middleRowY - y);
-		if (patches[BOTTOM_CENTER] != null)
-			batch.draw(patches[BOTTOM_CENTER], centerColumnX, y, rightColumnX - centerColumnX, middleRowY - y);
-		if (patches[BOTTOM_RIGHT] != null)
-			batch.draw(patches[BOTTOM_RIGHT], rightColumnX, y, x + width - rightColumnX, middleRowY - y);
-
-		// Middle row
-		if (patches[MIDDLE_LEFT] != null) batch.draw(patches[MIDDLE_LEFT], x, middleRowY, centerColumnX - x, topRowY - middleRowY);
-		if (patches[MIDDLE_CENTER] != null)
-			batch.draw(patches[MIDDLE_CENTER], centerColumnX, middleRowY, rightColumnX - centerColumnX, topRowY - middleRowY);
-		if (patches[MIDDLE_RIGHT] != null)
-			batch.draw(patches[MIDDLE_RIGHT], rightColumnX, middleRowY, x + width - rightColumnX, topRowY - middleRowY);
-
-		// Top row
-		if (patches[TOP_LEFT] != null) batch.draw(patches[TOP_LEFT], x, topRowY, centerColumnX - x, y + height - topRowY);
-		if (patches[TOP_CENTER] != null)
-			batch.draw(patches[TOP_CENTER], centerColumnX, topRowY, rightColumnX - centerColumnX, y + height - topRowY);
-		if (patches[TOP_RIGHT] != null)
-			batch.draw(patches[TOP_RIGHT], rightColumnX, topRowY, x + width - rightColumnX, y + height - topRowY);
-		
-		if(!blending) batch.enableBlending();
+		if (patches[BOTTOM_CENTER] != null) {
+			bottomCenter = add(patches[BOTTOM_CENTER], color);
+			middleWidth = Math.max(middleWidth, Math.abs(patches[BOTTOM_CENTER].getRegionWidth()));
+			bottomHeight = Math.max(bottomHeight, Math.abs(patches[BOTTOM_CENTER].getRegionHeight()));
+		}
+		if (patches[BOTTOM_RIGHT] != null) {
+			bottomRight = add(patches[BOTTOM_RIGHT], color);
+			rightWidth = Math.max(rightWidth, Math.abs(patches[BOTTOM_RIGHT].getRegionWidth()));
+			bottomHeight = Math.max(bottomHeight, Math.abs(patches[BOTTOM_RIGHT].getRegionHeight()));
+		}
+		if (patches[MIDDLE_LEFT] != null) {
+			middleLeft = add(patches[MIDDLE_LEFT], color);
+			leftWidth = Math.max(leftWidth, Math.abs(patches[MIDDLE_LEFT].getRegionWidth()));
+			middleHeight = Math.max(middleHeight, Math.abs(patches[MIDDLE_LEFT].getRegionHeight()));
+		}
+		if (patches[MIDDLE_CENTER] != null) {
+			middleCenter = add(patches[MIDDLE_CENTER], color);
+			middleWidth = Math.max(middleWidth, Math.abs(patches[MIDDLE_CENTER].getRegionWidth()));
+			middleHeight = Math.max(middleHeight, Math.abs(patches[MIDDLE_CENTER].getRegionHeight()));
+		}
+		if (patches[MIDDLE_RIGHT] != null) {
+			middleRight = add(patches[MIDDLE_RIGHT], color);
+			rightWidth = Math.max(rightWidth, Math.abs(patches[MIDDLE_RIGHT].getRegionWidth()));
+			middleHeight = Math.max(middleHeight, Math.abs(patches[MIDDLE_RIGHT].getRegionHeight()));
+		}
+		if (patches[TOP_LEFT] != null) {
+			topLeft = add(patches[TOP_LEFT], color);
+			leftWidth = Math.max(leftWidth, Math.abs(patches[TOP_LEFT].getRegionWidth()));
+			topHeight = Math.max(topHeight, Math.abs(patches[TOP_LEFT].getRegionHeight()));
+		}
+		if (patches[TOP_CENTER] != null) {
+			topCenter = add(patches[TOP_CENTER], color);
+			middleWidth = Math.max(middleWidth, Math.abs(patches[TOP_CENTER].getRegionWidth()));
+			topHeight = Math.max(topHeight, Math.abs(patches[TOP_CENTER].getRegionHeight()));
+		}
+		if (patches[TOP_RIGHT] != null) {
+			topRight = add(patches[TOP_RIGHT], color);
+			rightWidth = Math.max(rightWidth, Math.abs(patches[TOP_RIGHT].getRegionWidth()));
+			topHeight = Math.max(topHeight, Math.abs(patches[TOP_RIGHT].getRegionHeight()));
+		}
+		if (idx < vertices.length) {
+			float[] newVertices = new float[idx];
+			System.arraycopy(vertices, 0, newVertices, 0, idx);
+			vertices = newVertices;
+		}
 	}
 
-	public float getLeftWidth () {
-		if (patches[BOTTOM_LEFT] != null)
-			return patches[BOTTOM_LEFT].getRegionWidth();
-		else if (patches[MIDDLE_LEFT] != null)
-			return patches[MIDDLE_LEFT].getRegionWidth();
-		else if (patches[TOP_LEFT] != null) //
-			return patches[TOP_LEFT].getRegionWidth();
-		return 0;
+	private int add (TextureRegion region, float color) {
+		if (texture == null)
+			texture = region.getTexture();
+		else if (texture != region.getTexture()) //
+			throw new IllegalArgumentException("All regions must be from the same texture.");
+
+		final float u = region.u;
+		final float v = region.v2;
+		final float u2 = region.u2;
+		final float v2 = region.v;
+
+		idx += 2;
+		vertices[idx++] = color;
+		vertices[idx++] = u;
+		vertices[idx] = v;
+		idx += 3;
+		vertices[idx++] = color;
+		vertices[idx++] = u;
+		vertices[idx] = v2;
+		idx += 3;
+		vertices[idx++] = color;
+		vertices[idx++] = u2;
+		vertices[idx] = v2;
+		idx += 3;
+		vertices[idx++] = color;
+		vertices[idx++] = u2;
+		vertices[idx++] = v;
+
+		return idx - 4 * 5;
 	}
 
-	public float getRightWidth () {
-		if (patches[BOTTOM_RIGHT] != null)
-			return patches[BOTTOM_RIGHT].getRegionWidth();
-		else if (patches[MIDDLE_RIGHT] != null)
-			return patches[MIDDLE_RIGHT].getRegionWidth();
-		else if (patches[TOP_RIGHT] != null) //
-			return patches[TOP_RIGHT].getRegionWidth();
-		return 0;
+	private void set (int idx, float x, float y, float width, float height, float color) {
+		final float fx2 = x + width;
+		final float fy2 = y + height;
+		vertices[idx++] = x;
+		vertices[idx++] = y;
+		vertices[idx] = color;
+		idx += 3;
+		vertices[idx++] = x;
+		vertices[idx++] = fy2;
+		vertices[idx] = color;
+		idx += 3;
+		vertices[idx++] = fx2;
+		vertices[idx++] = fy2;
+		vertices[idx] = color;
+		idx += 3;
+		vertices[idx++] = fx2;
+		vertices[idx++] = y;
+		vertices[idx] = color;
 	}
 
-	public float getTopHeight () {
-		if (patches[TOP_LEFT] != null)
-			return patches[TOP_LEFT].getRegionHeight();
-		else if (patches[TOP_CENTER] != null)
-			return patches[TOP_CENTER].getRegionHeight();
-		else if (patches[TOP_RIGHT] != null) //
-			return patches[TOP_RIGHT].getRegionHeight();
-		return 0;
-	}
+	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
+		float centerColumnX = x + leftWidth;
+		float rightColumnX = x + width - rightWidth;
+		float middleRowY = y + bottomHeight;
+		float topRowY = y + height - topHeight;
+		float c = tempColor.set(color).mul(batch.getColor()).toFloatBits();
 
-	public float getBottomHeight () {
-		if (patches[BOTTOM_LEFT] != null)
-			return patches[BOTTOM_LEFT].getRegionHeight();
-		else if (patches[BOTTOM_CENTER] != null)
-			return patches[BOTTOM_CENTER].getRegionHeight();
-		else if (patches[BOTTOM_RIGHT] != null) //
-			return patches[BOTTOM_RIGHT].getRegionHeight();
-		return 0;
-	}
+		if (bottomLeft != -1) set(bottomLeft, x, y, centerColumnX - x, middleRowY - y, c);
+		if (bottomCenter != -1) set(bottomCenter, centerColumnX, y, rightColumnX - centerColumnX, middleRowY - y, c);
+		if (bottomRight != -1) set(bottomRight, rightColumnX, y, x + width - rightColumnX, middleRowY - y, c);
+		if (middleLeft != -1) set(middleLeft, x, middleRowY, centerColumnX - x, topRowY - middleRowY, c);
+		if (middleCenter != -1)
+			set(middleCenter, centerColumnX, middleRowY, rightColumnX - centerColumnX, topRowY - middleRowY, c);
+		if (middleRight != -1) set(middleRight, rightColumnX, middleRowY, x + width - rightColumnX, topRowY - middleRowY, c);
+		if (topLeft != -1) set(topLeft, x, topRowY, centerColumnX - x, y + height - topRowY, c);
+		if (topCenter != -1) set(topCenter, centerColumnX, topRowY, rightColumnX - centerColumnX, y + height - topRowY, c);
+		if (topRight != -1) set(topRight, rightColumnX, topRowY, x + width - rightColumnX, y + height - topRowY, c);
 
-	public float getTotalHeight () {
-		float totalHeight = getTopHeight() + getBottomHeight();
-		if (patches[MIDDLE_CENTER] != null) totalHeight += patches[MIDDLE_CENTER].getRegionHeight();
-		return totalHeight;
-	}
-
-	public float getTotalWidth () {
-		float totalWidth = getLeftWidth() + getRightWidth();
-		if (patches[MIDDLE_CENTER] != null) totalWidth += patches[MIDDLE_CENTER].getRegionWidth();
-		return totalWidth;
-	}
-
-	public TextureRegion[] getPatches () {
-		return patches;
+		batch.draw(texture, vertices, 0, idx);
 	}
 
 	public void setColor (Color color) {
-		this.color = color;
+		this.color.set(color);
 	}
 
 	public Color getColor () {
 		return color;
 	}
-	
-	public void setBlending(boolean blending) {
-		this.blending = blending;
+
+	public float getLeftWidth () {
+		return leftWidth;
+	}
+
+	public void setLeftWidth (float leftWidth) {
+		this.leftWidth = leftWidth;
+	}
+
+	public float getRightWidth () {
+		return rightWidth;
+	}
+
+	public void setRightWidth (float rightWidth) {
+		this.rightWidth = rightWidth;
+	}
+
+	public float getTopHeight () {
+		return topHeight;
+	}
+
+	public void setTopHeight (float topHeight) {
+		this.topHeight = topHeight;
+	}
+
+	public float getBottomHeight () {
+		return bottomHeight;
+	}
+
+	public void setBottomHeight (float bottomHeight) {
+		this.bottomHeight = bottomHeight;
+	}
+
+	public float getMiddleWidth () {
+		return middleWidth;
+	}
+
+	public void setMiddleWidth (float middleWidth) {
+		this.middleWidth = middleWidth;
+	}
+
+	public float getMiddleHeight () {
+		return middleHeight;
+	}
+
+	public void setMiddleHeight (float middleHeight) {
+		this.middleHeight = middleHeight;
+	}
+
+	public float getTotalWidth () {
+		return leftWidth + middleWidth + rightWidth;
+	}
+
+	public float getTotalHeight () {
+		return topHeight + middleHeight + bottomHeight;
 	}
 }

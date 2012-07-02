@@ -140,7 +140,7 @@ final class LwjglInput implements Input {
 			}
 		});
 	}
-	
+
 	public void getPlaceholderTextInput (final TextInputListener listener, final String title, final String placeholder) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -325,7 +325,7 @@ final class LwjglInput implements Input {
 						processor.touchDragged(e.x, e.y, e.pointer);
 						break;
 					case TouchEvent.TOUCH_MOVED:
-						processor.touchMoved(e.x, e.y);
+						processor.mouseMoved(e.x, e.y);
 						break;
 					case TouchEvent.TOUCH_SCROLLED:
 						processor.scrolled(e.scrollAmount);
@@ -835,9 +835,14 @@ final class LwjglInput implements Input {
 	}
 
 	private int toLwjglButton (int button) {
-		if (button == Buttons.LEFT) return 0;
-		if (button == Buttons.RIGHT) return 1;
-		if (button == Buttons.MIDDLE) return 2;
+		switch (button) {
+		case Buttons.LEFT:
+			return 0;
+		case Buttons.RIGHT:
+			return 1;
+		case Buttons.MIDDLE:
+			return 2;
+		}
 		return 0;
 	}
 
@@ -938,6 +943,6 @@ final class LwjglInput implements Input {
 	@Override
 	public void getRotationMatrix (float[] matrix) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

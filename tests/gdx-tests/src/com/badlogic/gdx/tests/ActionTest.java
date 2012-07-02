@@ -21,13 +21,11 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.OnActionCompleted;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class ActionTest extends GdxTest implements OnActionCompleted {
+public class ActionTest extends GdxTest implements Runnable {
 
 	@Override
 	public boolean needsGL20 () {
@@ -43,83 +41,83 @@ public class ActionTest extends GdxTest implements OnActionCompleted {
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), false);
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		final Image img = new Image(new TextureRegion(texture));
-		img.width = img.height = 100;
-		img.originX = 50;
-		img.originY = 50;
-		img.x = img.y = 100;
+		img.setSize(100, 100);
+		img.setOrigin(50, 50);
+		img.setPosition(100, 100);
+
 		// img.action(Forever.$(Sequence.$(ScaleTo.$(1.1f,
 		// 1.1f,0.3f),ScaleTo.$(1f, 1f, 0.3f))));
 		// img.action(Forever.$(Parallel.$(RotateTo.$(1, 1))));
 		// img.action(Delay.$(RotateBy.$(45, 2),
 		// 1).setCompletionListener(this));
-// Action actionMoveBy = MoveBy.$(30, 0, 0.5f).setCompletionListener(
-// new OnActionCompleted() {
+// // Action actionMoveBy = MoveBy.$(30, 0, 0.5f).setCompletionListener(
+// // new OnActionCompleted() {
+// //
+// // @Override
+// // public void completed(Action action) {
+// // System.out.println("move by complete");
+// // }
+// // });
+// //
+// // Action actionDelay = Delay.$(actionMoveBy, 1).setCompletionListener(
+// // new OnActionCompleted() {
+// //
+// // @Override
+// // public void completed(Action action) {
+// // System.out.println("delay complete");
+// // }
+// // });
+// //
+// // img.action(actionDelay);
 //
-// @Override
-// public void completed(Action action) {
-// System.out.println("move by complete");
-// }
-// });
+// // img.action(Repeat.$(Sequence.$(MoveBy.$(50, 0, 1), MoveBy.$(0, 50, 1), MoveBy.$(-50, 0, 1), MoveBy.$(0, -50, 1)), 3));
+// // img.action(Sequence.$(FadeOut.$(1),
+// // FadeIn.$(1),
+// // Delay.$(MoveTo.$(100, 100, 1), 2),
+// // ScaleTo.$(0.5f, 0.5f, 1),
+// // FadeOut.$(0.5f),
+// // Delay.$(Parallel.$( RotateTo.$(360, 1),
+// // FadeIn.$(1),
+// // ScaleTo.$(1, 1, 1)), 1)));
+// // OnActionCompleted listener = new OnActionCompleted() {
+// // @Override public void completed (Action action) {
+// // img.action(Parallel.$(Sequence.$(FadeOut.$(2), FadeIn.$(2)),
+// // Sequence.$(ScaleTo.$(0.1f, 0.1f, 1.5f), ScaleTo.$(1.0f, 1.0f, 1.5f))).setCompletionListener(this));
+// // }
+// // };
+// //
+// // img.action(Parallel.$(Sequence.$(FadeOut.$(2), FadeIn.$(2)),
+// // Sequence.$(ScaleTo.$(0.1f, 0.1f, 1.5f), ScaleTo.$(1.0f, 1.0f, 1.5f))).setCompletionListener(listener));
 //
-// Action actionDelay = Delay.$(actionMoveBy, 1).setCompletionListener(
-// new OnActionCompleted() {
+// // img.action(
+// // Sequence.$(
+// // Parallel.$(RotateBy.$(180, 2), ScaleTo.$(1.4f, 1.4f, 2), FadeTo.$(0.7f, 2)),
+// // Parallel.$(RotateBy.$(180, 2), ScaleTo.$(1.0f, 1.0f, 2), FadeTo.$(1.0f, 2)),
+// // Remove.$()
+// // )
+// // );
+// //
+// // Action action = Repeat.$(Sequence.$(
+// // MoveBy.$(8, 0, 0.5f),
+// // MoveBy.$(0, 8, 0.5f),
+// // MoveBy.$(-8, 0, 0.5f),
+// // MoveBy.$(0, -8, 0.5f)), 20);
+// // Action action2 = action.copy();
+// // img.action(action2);
 //
-// @Override
-// public void completed(Action action) {
-// System.out.println("delay complete");
-// }
-// });
-//
-// img.action(actionDelay);
-
-// img.action(Repeat.$(Sequence.$(MoveBy.$(50, 0, 1), MoveBy.$(0, 50, 1), MoveBy.$(-50, 0, 1), MoveBy.$(0, -50, 1)), 3));
-// img.action(Sequence.$(FadeOut.$(1),
-// FadeIn.$(1),
-// Delay.$(MoveTo.$(100, 100, 1), 2),
-// ScaleTo.$(0.5f, 0.5f, 1),
-// FadeOut.$(0.5f),
-// Delay.$(Parallel.$( RotateTo.$(360, 1),
-// FadeIn.$(1),
-// ScaleTo.$(1, 1, 1)), 1)));
-// OnActionCompleted listener = new OnActionCompleted() {
-// @Override public void completed (Action action) {
-// img.action(Parallel.$(Sequence.$(FadeOut.$(2), FadeIn.$(2)),
-// Sequence.$(ScaleTo.$(0.1f, 0.1f, 1.5f), ScaleTo.$(1.0f, 1.0f, 1.5f))).setCompletionListener(this));
-// }
-// };
-//
-// img.action(Parallel.$(Sequence.$(FadeOut.$(2), FadeIn.$(2)),
-// Sequence.$(ScaleTo.$(0.1f, 0.1f, 1.5f), ScaleTo.$(1.0f, 1.0f, 1.5f))).setCompletionListener(listener));
-
-// img.action(
-// Sequence.$(
-// Parallel.$(RotateBy.$(180, 2), ScaleTo.$(1.4f, 1.4f, 2), FadeTo.$(0.7f, 2)),
-// Parallel.$(RotateBy.$(180, 2), ScaleTo.$(1.0f, 1.0f, 2), FadeTo.$(1.0f, 2)),
-// Remove.$()
-// )
-// );
-//
-// Action action = Repeat.$(Sequence.$(
-// MoveBy.$(8, 0, 0.5f),
-// MoveBy.$(0, 8, 0.5f),
-// MoveBy.$(-8, 0, 0.5f),
-// MoveBy.$(0, -8, 0.5f)), 20);
-// Action action2 = action.copy();
-// img.action(action2);
-
-// float scale = 1;
-// float showDuration = 1;
-// ScaleTo scaleCountdown = ScaleTo.$(scale * 1.0f, scale * 1.0f, 1.0f);
-// scaleCountdown.setInterpolator(DecelerateInterpolator.$(3.0f));
-// Parallel parallel = Parallel.$(scaleCountdown);
-// // Sequence.$(FadeIn.$(0.25f), Delay.$(FadeOut.$(0.25f), 0.5f)));
-// Sequence cdAnim = Sequence.$(Delay.$(parallel, showDuration), Remove.$());
-// cdAnim.setCompletionListener(this);
-// img.action(cdAnim);
-//
-// Delay delay = Delay.$(MoveBy.$(100, 100, 1).setCompletionListener(this), 1);
-// delay.setCompletionListener(this);
-// img.action(Sequence.$(delay).setCompletionListener(this));
+// // float scale = 1;
+// // float showDuration = 1;
+// // ScaleTo scaleCountdown = ScaleTo.$(scale * 1.0f, scale * 1.0f, 1.0f);
+// // scaleCountdown.setInterpolator(DecelerateInterpolator.$(3.0f));
+// // Parallel parallel = Parallel.$(scaleCountdown);
+// // // Sequence.$(FadeIn.$(0.25f), Delay.$(FadeOut.$(0.25f), 0.5f)));
+// // Sequence cdAnim = Sequence.$(Delay.$(parallel, showDuration), Remove.$());
+// // cdAnim.setCompletionListener(this);
+// // img.action(cdAnim);
+// //
+// // Delay delay = Delay.$(MoveBy.$(100, 100, 1).setCompletionListener(this), 1);
+// // delay.setCompletionListener(this);
+// // img.action(Sequence.$(delay).setCompletionListener(this));
 
 		stage.addActor(img);
 	}
@@ -132,8 +130,8 @@ public class ActionTest extends GdxTest implements OnActionCompleted {
 	}
 
 	@Override
-	public void completed (Action action) {
-		System.out.println("completed Action: " + action);
+	public void run () {
+		System.out.println("completed action");
 	}
 
 	@Override

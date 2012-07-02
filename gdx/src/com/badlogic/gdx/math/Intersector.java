@@ -647,8 +647,8 @@ public final class Intersector {
 	 * @param separation Normalized vector defining a direction of the separation axis (optional).
 	 * @return Whether polygons overlap. */
 	public static boolean overlapConvexPolygons (Polygon p1, Polygon p2, Vector2 separation) {
-		final float[] verts1 = p1.getWorldVertices();
-		final float[] verts2 = p2.getWorldVertices();
+		final float[] verts1 = p1.getTransformedVertices();
+		final float[] verts2 = p2.getTransformedVertices();
 		return !separateConvexPolygons(verts1, verts2, separation) && !separateConvexPolygons(verts2, verts1, separation);
 	}
 

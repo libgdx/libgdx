@@ -18,52 +18,84 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ScrollPaneTest extends GdxTest {
-	Stage stage;
-	Skin skin;
+	private Stage stage;
+	private Table container;
 
 	public void create () {
 		stage = new Stage(0, 0, false);
+		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		Gdx.input.setInputProcessor(stage);
 
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
-		
-		Table mytable = new Table();
-		mytable.debug();
-		mytable.add(new Image(new Texture("data/group-debug.png")));
-		mytable.row();
-		mytable.add(new Image(new Texture("data/group-debug.png")));
-		mytable.row();
-		mytable.add(new Image(new Texture("data/group-debug.png")));
-		mytable.row();
-		mytable.add(new Image(new Texture("data/group-debug.png")));
+		Gdx.graphics.setVSync(false);
 
-		ScrollPane pane = new ScrollPane(mytable, skin);
-		pane.setScrollingDisabled(true, false);
-		if (false) {
-			// This sizes the pane to the size of it's contents.
-			pane.pack();
-			// Then the height is hardcoded, leaving the pane the width of it's contents.
-			pane.height = Gdx.graphics.getHeight();
-		} else {
-			// This shows a hardcoded size.
-			pane.width = 300;
-			pane.height = Gdx.graphics.getHeight();
+		container = new Table();
+		stage.addActor(container);
+		container.setFillParent(true);
+		// container.getTableLayout().debug();
+
+		Table table = new Table();
+
+		final ScrollPane scroll = new ScrollPane(table, skin);
+
+		ActorListener stopTouchDown = new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				event.stop();
+				return false;
+			}
+		};
+
+		table.pad(10).defaults().expandX().space(4);
+		for (int i = 0; i < 100; i++) {
+			table.row();
+			table.add(new Label(i + "uno", skin)).expandX().fillX();
+
+			TextButton button = new TextButton(i + "dos", skin);
+			table.add(button);
+			button.addListener(new ClickListener() {
+				public void clicked (ActorEvent event, float x, float y) {
+					System.out.println("click " + x + ", " + y);
+				}
+			});
+
+			Slider slider = new Slider(0, 100, 100, skin);
+			slider.addListener(stopTouchDown); // Stops touchDown events from propagating to the FlickScrollPane.
+			table.add(slider);
+
+			table.add(new Label(i + "tres long0 long1 long2 long3 long4 long5 long6 long7 long8 long9 long10 long11 long12", skin));
 		}
 
-		stage.addActor(pane);
+		final TextButton flickBbutton = new TextButton("Flick Scroll", skin.get("toggle", TextButtonStyle.class));
+		flickBbutton.setChecked(true);
+		flickBbutton.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				scroll.setFlickScroll(flickBbutton.isChecked());
+			}
+		});
+
+		container.add(scroll).expand().fill();
+		container.row();
+		container.add(flickBbutton).pad(10);
 	}
 
 	public void render () {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
@@ -74,10 +106,8 @@ public class ScrollPaneTest extends GdxTest {
 		stage.setViewport(width, height, false);
 	}
 
-	@Override
 	public void dispose () {
 		stage.dispose();
-		skin.dispose();
 	}
 
 	public boolean needsGL20 () {

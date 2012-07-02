@@ -227,7 +227,7 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 	}
 
 	@Override
-	public boolean touchMoved (int x, int y) {
+	public boolean mouseMoved (int x, int y) {
 		return false;
 	}
 

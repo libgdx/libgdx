@@ -22,42 +22,55 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Cullable;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** A list (aka list box) displays textual items and highlights the currently selected item.
  * <p>
- * The preferred size of the list is determined by the text bounds of the items and the size of the
- * {@link ListStyle#selectedPatch}.
+ * The preferred size of the list is determined by the text bounds of the items and the size of the {@link ListStyle#selection}.
  * @author mzechner */
 public class List extends Widget implements Cullable {
 	private ListStyle style;
 	private String[] items;
-	private int selected;
-	private SelectionListener listener;
+	private int selectedIndex;
 	private Rectangle cullingArea;
 	private float prefWidth, prefHeight;
 	private float itemHeight;
 	private float textOffsetX, textOffsetY;
 
-	public List (Skin skin) {
-		this(new String[0], skin);
+	public List (Object[] items, Skin skin) {
+		this(items, skin.get(ListStyle.class));
 	}
 
-	public List (Object[] items, Skin skin) {
-		this(items, skin.getStyle(ListStyle.class), null);
+	public List (Object[] items, Skin skin, String styleName) {
+		this(items, skin.get(styleName, ListStyle.class));
 	}
 
 	public List (Object[] items, ListStyle style) {
-		this(items, style, null);
-	}
-
-	public List (Object[] items, ListStyle style, String name) {
-		super(name);
 		setStyle(style);
 		setItems(items);
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
+
+		addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				if (pointer != 0) return false;
+				List.this.touchDown(y);
+				return true;
+			}
+		});
+	}
+
+	void touchDown (float y) {
+		int oldIndex = selectedIndex;
+		selectedIndex = (int)((getHeight() - y) / itemHeight);
+		selectedIndex = Math.max(0, selectedIndex);
+		selectedIndex = Math.min(items.length - 1, selectedIndex);
+		if (fire(new ChangeEvent())) selectedIndex = oldIndex;
 	}
 
 	public void setStyle (ListStyle style) {
@@ -77,23 +90,26 @@ public class List extends Widget implements Cullable {
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		BitmapFont font = style.font;
-		NinePatch selectedPatch = style.selectedPatch;
+		Drawable selectedDrawable = style.selection;
 		Color fontColorSelected = style.fontColorSelected;
 		Color fontColorUnselected = style.fontColorUnselected;
 
+		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 
+		float x = getX();
+		float y = getY();
+
 		font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a * parentAlpha);
-		float itemY = height;
+		float itemY = getHeight();
 		for (int i = 0; i < items.length; i++) {
-			if (cullingArea == null || 
-				(itemY - itemHeight <= cullingArea.y + cullingArea.height && itemY >= cullingArea.y)) {
-				if (selected == i) {
-					selectedPatch.draw(batch, x, y + itemY - itemHeight, Math.max(prefWidth, width), itemHeight);
+			if (cullingArea == null || (itemY - itemHeight <= cullingArea.y + cullingArea.height && itemY >= cullingArea.y)) {
+				if (selectedIndex == i) {
+					selectedDrawable.draw(batch, x, y + itemY - itemHeight, Math.max(prefWidth, getWidth()), itemHeight);
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				}
 				font.draw(batch, items[i], x + textOffsetX, y + itemY - textOffsetY);
-				if (selected == i) {
+				if (selectedIndex == i) {
 					font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a
 						* parentAlpha);
 				}
@@ -104,43 +120,33 @@ public class List extends Widget implements Cullable {
 		}
 	}
 
-	@Override
-	public boolean touchDown (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-		selected = (int)((height - y) / itemHeight);
-		selected = Math.max(0, selected);
-		selected = Math.min(items.length - 1, selected);
-		if (listener != null && items.length > 0) listener.selected(this, selected, items[selected]);
-		return true;
-	}
-
 	/** @return The index of the currently selected item. The top item has an index of 0. */
 	public int getSelectedIndex () {
-		return selected;
+		return selectedIndex;
 	}
 
 	public void setSelectedIndex (int index) {
 		if (index < 0 || index >= items.length)
 			throw new GdxRuntimeException("index must be >= 0 and < " + items.length + ": " + index);
-		selected = index;
+		selectedIndex = index;
 	}
 
 	/** @return The text of the currently selected item or null if the list is empty. */
 	public String getSelection () {
 		if (items.length == 0) return null;
-		return items[selected];
+		return items[selectedIndex];
 	}
 
 	/** @return The index of the item that was selected, or -1. */
 	public int setSelection (String item) {
-		selected = -1;
+		selectedIndex = -1;
 		for (int i = 0, n = items.length; i < n; i++) {
 			if (items[i].equals(item)) {
-				selected = i;
+				selectedIndex = i;
 				break;
 			}
 		}
-		return selected;
+		return selectedIndex;
 	}
 
 	public void setItems (Object[] objects) {
@@ -154,16 +160,16 @@ public class List extends Widget implements Cullable {
 		} else
 			items = (String[])objects;
 
-		selected = 0;
+		selectedIndex = 0;
 
 		final BitmapFont font = style.font;
-		final NinePatch selectedPatch = style.selectedPatch;
+		final Drawable selectedDrawable = style.selection;
 
 		itemHeight = font.getCapHeight() - font.getDescent() * 2;
-		itemHeight += selectedPatch.getTopHeight() + selectedPatch.getBottomHeight();
-		prefWidth += selectedPatch.getLeftWidth() + selectedPatch.getRightWidth();
-		textOffsetX = selectedPatch.getLeftWidth();
-		textOffsetY = selectedPatch.getTopHeight() - font.getDescent();
+		itemHeight += selectedDrawable.getTopHeight() + selectedDrawable.getBottomHeight();
+		prefWidth += selectedDrawable.getLeftWidth() + selectedDrawable.getRightWidth();
+		textOffsetX = selectedDrawable.getLeftWidth();
+		textOffsetY = selectedDrawable.getTopHeight() - font.getDescent();
 
 		prefWidth = 0;
 		for (int i = 0; i < items.length; i++) {
@@ -187,38 +193,34 @@ public class List extends Widget implements Cullable {
 		return prefHeight;
 	}
 
-	/** @param listener May be null. */
-	public void setSelectionListener (SelectionListener listener) {
-		this.listener = listener;
-	}
-
 	public void setCullingArea (Rectangle cullingArea) {
 		this.cullingArea = cullingArea;
 	}
 
 	/** The style for a list, see {@link List}.
-	 * @author mzechner */
+	 * @author mzechner
+	 * @author Nathan Sweet */
 	static public class ListStyle {
 		public BitmapFont font;
 		public Color fontColorSelected = new Color(1, 1, 1, 1);
 		public Color fontColorUnselected = new Color(1, 1, 1, 1);
-		public NinePatch selectedPatch;
+		public Drawable selection;
 
 		public ListStyle () {
 		}
 
-		public ListStyle (BitmapFont font, Color fontColorSelected, Color fontColorUnselected, NinePatch selectedPatch) {
+		public ListStyle (BitmapFont font, Color fontColorSelected, Color fontColorUnselected, Drawable selection) {
 			this.font = font;
 			this.fontColorSelected.set(fontColorSelected);
 			this.fontColorUnselected.set(fontColorUnselected);
-			this.selectedPatch = selectedPatch;
+			this.selection = selection;
 		}
-		
-		public ListStyle(ListStyle style) {
+
+		public ListStyle (ListStyle style) {
 			this.font = style.font;
 			this.fontColorSelected.set(style.fontColorSelected);
 			this.fontColorUnselected.set(style.fontColorUnselected);
-			this.selectedPatch = style.selectedPatch;
+			this.selection = style.selection;
 		}
 	}
 }

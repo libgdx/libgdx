@@ -27,9 +27,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.FlickScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
@@ -40,7 +40,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider.ValueChangedListener;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane.SplitPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -50,7 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class UITest extends GdxTest {
@@ -66,11 +65,12 @@ public class UITest extends GdxTest {
 	Texture texture1;
 	Texture texture2;
 	Actor root;
+	Label fpsLabel;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		texture1 = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		texture2 = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 		TextureRegion image = new TextureRegion(texture1);
@@ -80,36 +80,37 @@ public class UITest extends GdxTest {
 
 		// Group.debug = true;
 
-		final Button button = new TextButton("Single", skin.getStyle(TextButtonStyle.class), "button-sl");
-		final Button buttonMulti = new TextButton("Multi\nLine\nToggle", skin.getStyle("toggle", TextButtonStyle.class),
-			"button-ml-tgl");
-		final Button imgButton = new Button(new Image(image), skin.getStyle(ButtonStyle.class));
-		final Button imgToggleButton = new Button(new Image(image), skin.getStyle("toggle", ButtonStyle.class));
-		final CheckBox checkBox = new CheckBox("Check me", skin.getStyle(CheckBoxStyle.class), "checkbox");
-		final Slider slider = new Slider(0, 10, 1, skin.getStyle(SliderStyle.class), "slider");
-		final TextField textfield = new TextField("", "Click here!", skin.getStyle(TextFieldStyle.class), "textfield");
-		final SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX"},
-			skin.getStyle(SelectBoxStyle.class), "combo");
+		final Button button = new TextButton("Single", skin);
+		final Button buttonMulti = new TextButton("Multi\nLine\nToggle", skin.get("toggle", TextButtonStyle.class));
+		final Button imgButton = new Button(new Image(image), skin);
+		final Button imgToggleButton = new Button(new Image(image), skin.get("toggle", ButtonStyle.class));
+		final CheckBox checkBox = new CheckBox("Check me", skin);
+		final Slider slider = new Slider(0, 10, 1, skin);
+		final TextField textfield = new TextField("", skin);
+		textfield.setMessageText("Click here!");
+		final SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX"}, skin);
 		final Image imageActor = new Image(image2);
-		final FlickScrollPane scrollPane = new FlickScrollPane(imageActor, "flickscroll");
-		final List list = new List(listEntries, skin.getStyle(ListStyle.class), "list");
-		final ScrollPane scrollPane2 = new ScrollPane(list, skin.getStyle(ScrollPaneStyle.class), "scroll");
-		final SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, skin.getStyle("default-horizontal",
-			SplitPaneStyle.class), "split");
-		final Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "label");
+		final ScrollPane scrollPane = new ScrollPane(imageActor);
+		final List list = new List(listEntries, skin);
+		final ScrollPane scrollPane2 = new ScrollPane(list, skin);
+		scrollPane2.setFlickScroll(false);
+		final SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, skin.get("default-horizontal",
+			SplitPaneStyle.class));
+		fpsLabel = new Label("fps:", skin);
 
 		// configures an example of a TextField in password mode.
 		final Label passwordLabel = new Label("Textfield in password mode: ", skin);
-		final TextField passwordTextField = new TextField("", "password", skin);
+		final TextField passwordTextField = new TextField("", skin);
+		passwordTextField.setMessageText("password");
 		passwordTextField.setPasswordCharacter('*');
 		passwordTextField.setPasswordMode(true);
 
 		// window.debug();
-		Window window = new Window("Dialog", skin.getStyle(WindowStyle.class), "window");
-		window.x = window.y = 0;
+		Window window = new Window("Dialog", skin);
+		window.setPosition(0, 0);
 		window.defaults().spaceBottom(10);
 		window.row().fill().expandX();
-		window.add(button).fill(0f, 0f);
+		window.add(button).fill(false);
 		window.add(buttonMulti);
 		window.add(imgButton);
 		window.add(imgToggleButton);
@@ -137,9 +138,9 @@ public class UITest extends GdxTest {
 			}
 		});
 
-		slider.setValueChangedListener(new ValueChangedListener() {
-			public void changed (Slider slider, float value) {
-				Gdx.app.log("UITest", "slider: " + value);
+		slider.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				Gdx.app.log("UITest", "slider: " + slider.getValue());
 			}
 		});
 	}
@@ -149,7 +150,7 @@ public class UITest extends GdxTest {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		((Label)stage.findActor("label")).setText("fps: " + Gdx.graphics.getFramesPerSecond());
+		fpsLabel.setText("fps: " + Gdx.graphics.getFramesPerSecond());
 
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();

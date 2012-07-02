@@ -73,16 +73,13 @@ public class FileHandle {
 		this.type = type;
 	}
 
-	/**
-	 * @return the path of the file as specified on construction, e.g. Gdx.files.internal("dir/file.png") -> dir/file.png. backward slashes will be replaced by forward slashes.
-	 */
+	/** @return the path of the file as specified on construction, e.g. Gdx.files.internal("dir/file.png") -> dir/file.png. backward
+	 *         slashes will be replaced by forward slashes. */
 	public String path () {
 		return file.getPath().replace('\\', '/');
 	}
 
-	/**
-	 * @return the name of the file, without any parent paths.
-	 */
+	/** @return the name of the file, without any parent paths. */
 	public String name () {
 		return file.getName();
 	}
@@ -94,24 +91,21 @@ public class FileHandle {
 		return name.substring(dotIndex + 1);
 	}
 
-	/**
-	 * @return the name of the file, without parent paths or the extension.
-	 */
+	/** @return the name of the file, without parent paths or the extension. */
 	public String nameWithoutExtension () {
 		String name = file.getName();
 		int dotIndex = name.lastIndexOf('.');
 		if (dotIndex == -1) return name;
 		return name.substring(0, dotIndex);
 	}
-	
-	/**
-	 * @return the path and filename without the extension, e.g. dir/dir2/file.png -> dir/dir2/file. backward slashes will be returned as forward slashes.
-	 */
-	public String pathWithoutExtension() {
-	    String path = file.getPath().replace('\\', '/');
-	    int dotIndex = path.lastIndexOf('.');
-	    if (dotIndex == -1) return path;
-	    return path.substring(0, dotIndex);
+
+	/** @return the path and filename without the extension, e.g. dir/dir2/file.png -> dir/dir2/file. backward slashes will be
+	 *         returned as forward slashes. */
+	public String pathWithoutExtension () {
+		String path = file.getPath().replace('\\', '/');
+		int dotIndex = path.lastIndexOf('.');
+		if (dotIndex == -1) return path;
+		return path.substring(0, dotIndex);
 	}
 
 	public FileType type () {
@@ -128,7 +122,8 @@ public class FileHandle {
 	/** Returns a stream for reading this file as bytes.
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public InputStream read () {
-		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists()) || (type == FileType.Local && !file.exists())) {
+		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists())
+			|| (type == FileType.Local && !file.exists())) {
 			InputStream input = FileHandle.class.getResourceAsStream("/" + file.getPath().replace('\\', '/'));
 			if (input == null) throw new GdxRuntimeException("File not found: " + file + " (" + type + ")");
 			return input;
@@ -470,6 +465,14 @@ public class FileHandle {
 	public FileHandle child (String name) {
 		if (file.getPath().length() == 0) return new FileHandle(new File(name), type);
 		return new FileHandle(new File(file, name), type);
+	}
+
+	/** Returns a handle to the sibling with the specified name.
+	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the sibling
+	 *        doesn't exist, or this file is the root. */
+	public FileHandle sibling (String name) {
+		if (file.getPath().length() == 0) throw new GdxRuntimeException("Cannot get the sibling of the root.");
+		return new FileHandle(new File(file.getParent(), name), type);
 	}
 
 	public FileHandle parent () {

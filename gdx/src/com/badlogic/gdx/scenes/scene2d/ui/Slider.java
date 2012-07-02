@@ -16,9 +16,14 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 // BOZO - Add snapping to the knob.
 
@@ -27,25 +32,21 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * <p>
  * The preferred height of a slider is determined by the larger of the knob and background. The preferred width of a slider is
  * 140, a relatively arbitrary size.
- * @author mzechner */
+ * @author mzechner
+ * @author Nathan Sweet */
 public class Slider extends Widget {
 	private SliderStyle style;
 	private float min, max, steps;
 	private float value;
 	private float sliderPos;
-	private ValueChangedListener listener = null;
-	private boolean isDragging;
-
-	public Slider (Skin skin) {
-		this(0, 100, 100, skin);
-	}
+	boolean isDragging;
 
 	public Slider (float min, float max, float steps, Skin skin) {
-		this(min, max, steps, skin.getStyle(SliderStyle.class), null);
+		this(min, max, steps, skin.get(SliderStyle.class));
 	}
 
-	public Slider (float min, float max, float steps, SliderStyle style) {
-		this(min, max, steps, style, null);
+	public Slider (float min, float max, float steps, Skin skin, String styleName) {
+		this(min, max, steps, skin.get(styleName, SliderStyle.class));
 	}
 
 	/** Creates a new slider. It's width is determined by the given prefWidth parameter, its height is determined by the maximum of
@@ -55,10 +56,8 @@ public class Slider extends Widget {
 	 * @param min the minimum value
 	 * @param max the maximum value
 	 * @param steps the step size between values
-	 * @param style the {@link SliderStyle}
-	 * @param name the name */
-	public Slider (float min, float max, float steps, SliderStyle style, String name) {
-		super(name);
+	 * @param style the {@link SliderStyle} */
+	public Slider (float min, float max, float steps, SliderStyle style) {
 		if (min > max) throw new IllegalArgumentException("min must be > max: " + min + " > " + max);
 		if (steps < 0) throw new IllegalArgumentException("steps must be > 0: " + steps);
 		setStyle(style);
@@ -66,8 +65,26 @@ public class Slider extends Widget {
 		this.max = max;
 		this.steps = steps;
 		this.value = min;
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
+
+		addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				if (pointer != 0) return false;
+				isDragging = true;
+				calculatePositionAndValue(x);
+				return true;
+			}
+
+			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+				isDragging = false;
+				calculatePositionAndValue(x);
+			}
+
+			public void touchDragged (ActorEvent event, float x, float y, int pointer) {
+				calculatePositionAndValue(x);
+			}
+		});
 	}
 
 	public void setStyle (SliderStyle style) {
@@ -84,55 +101,44 @@ public class Slider extends Widget {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		final TextureRegion knob = style.knob;
-		final NinePatch slider = style.slider;
+		final Drawable knob = style.knob;
+		final Drawable slider = style.background;
+
+		Color color = getColor();
+		float x = getX();
+		float y = getY();
+		float width = getWidth();
+		float height = getHeight();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		sliderPos = (value - min) / (max - min) * (width - knob.getRegionWidth());
+		sliderPos = (value - min) / (max - min) * (width - knob.getMinWidth());
 		sliderPos = Math.max(0, sliderPos);
-		sliderPos = Math.min(width - knob.getRegionWidth(), sliderPos);
+		sliderPos = Math.min(width - knob.getMinWidth(), sliderPos);
 
-		slider.draw(batch, x, y + (int)((height - slider.getTotalHeight()) * 0.5f), width, slider.getTotalHeight());
-		batch.draw(knob, x + sliderPos, y + (int)((height - knob.getRegionHeight()) * 0.5f));
+		slider.draw(batch, x, y + (int)((height - slider.getMinHeight()) * 0.5f), width, slider.getMinHeight());
+		knob.draw(batch, x + sliderPos, y + (int)((height - knob.getMinHeight()) * 0.5f), knob.getMinWidth(), knob.getMinHeight());
 	}
 
-	@Override
-	public boolean touchDown (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-		isDragging = true;
-		calculatePositionAndValue(x);
-		return true;
-	}
+	void calculatePositionAndValue (float x) {
+		final Drawable knob = style.knob;
 
-	@Override
-	public void touchUp (float x, float y, int pointer) {
-		isDragging = false;
-		calculatePositionAndValue(x);
-	}
+		float width = getWidth();
 
-	@Override
-	public void touchDragged (float x, float y, int pointer) {
-		calculatePositionAndValue(x);
-	}
-
-	private void calculatePositionAndValue (float x) {
-		final TextureRegion knob = style.knob;
-
-		sliderPos = x - knob.getRegionWidth() / 2;
+		float oldPosition = sliderPos;
+		float oldValue = value;
+		sliderPos = x - knob.getMinWidth() / 2;
 		sliderPos = Math.max(0, sliderPos);
-		sliderPos = Math.min(width - knob.getRegionWidth(), sliderPos);
-		value = min + (max - min) * (sliderPos / (width - knob.getRegionWidth()));
-		if (listener != null) listener.changed(this, getValue());
+		sliderPos = Math.min(width - knob.getMinWidth(), sliderPos);
+		value = min + (max - min) * (sliderPos / (width - knob.getMinWidth()));
+		if (oldValue != value && fire(new ChangeEvent())) {
+			sliderPos = oldPosition;
+			value = oldValue;
+		}
 	}
 
 	/** Returns true if the slider is being dragged. */
 	public boolean isDragging () {
 		return isDragging;
-	}
-
-	/** @param listener May be null. */
-	public void setValueChangedListener (ValueChangedListener listener) {
-		this.listener = listener;
 	}
 
 	public float getValue () {
@@ -149,8 +155,9 @@ public class Slider extends Widget {
 		if (min >= max) throw new IllegalArgumentException("min must be < max");
 		this.min = min;
 		this.max = max;
+		float oldValue = value;
 		this.value = min;
-		if (listener != null) listener.changed(this, getValue());
+		if (oldValue != value) fire(new ChangeEvent());
 	}
 
 	public float getPrefWidth () {
@@ -158,33 +165,28 @@ public class Slider extends Widget {
 	}
 
 	public float getPrefHeight () {
-		return Math.max(style.knob.getRegionHeight(), style.slider.getTotalHeight());
-	}
-
-	/** Interface to listen for changes to the value of the slider.
-	 * @author mzechner */
-	static public interface ValueChangedListener {
-		public void changed (Slider slider, float value);
+		return Math.max(style.knob.getMinHeight(), style.background.getMinHeight());
 	}
 
 	/** The style for a slider, see {@link Slider}.
-	 * @author mzechner */
+	 * @author mzechner
+	 * @author Nathan Sweet */
 	static public class SliderStyle {
 		/** The slider background, stretched only in the x direction. */
-		NinePatch slider;
+		public Drawable background;
 		/** Centered vertically on the background. */
-		TextureRegion knob;
+		public Drawable knob;
 
 		public SliderStyle () {
 		}
 
-		public SliderStyle (NinePatch sliderPatch, TextureRegion knobRegion) {
-			this.slider = sliderPatch;
-			this.knob = knobRegion;
+		public SliderStyle (Drawable background, Drawable knob) {
+			this.background = background;
+			this.knob = knob;
 		}
-		
-		public SliderStyle(SliderStyle style) {
-			this.slider = style.slider;
+
+		public SliderStyle (SliderStyle style) {
+			this.background = style.background;
 			this.knob = style.knob;
 		}
 	}

@@ -17,7 +17,6 @@
 package com.badlogic.gdx.graphics.g2d.tiled;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.StringTokenizer;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -25,6 +24,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.IntMap;
 
@@ -47,8 +47,7 @@ public class TileAtlas implements Disposable {
 		for (TileSet set : map.tileSets) {
 			FileHandle packfile = getRelativeFileHandle(inputDir, removeExtension(set.imageName) + " packfile");
 			TextureAtlas textureAtlas = new TextureAtlas(packfile, packfile.parent(), false);
-			List<AtlasRegion> atlasRegions = textureAtlas.findRegions(removeExtension(removePath(set.imageName)));
-
+			Array<AtlasRegion> atlasRegions = textureAtlas.findRegions(removeExtension(removePath(set.imageName)));
 			for (AtlasRegion reg : atlasRegions) {
 				regionsMap.put(reg.index + set.firstgid, reg);
 				if (!textures.contains(reg.getTexture())) {

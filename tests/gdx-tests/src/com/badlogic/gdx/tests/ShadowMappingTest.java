@@ -30,12 +30,12 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectionListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.PerspectiveCamController;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -62,6 +62,7 @@ public class ShadowMappingTest extends GdxTest {
 	FrameBuffer shadowMap;
 	InputMultiplexer multiplexer;
 	PerspectiveCamController camController;
+	Label fpsLabel;
 
 	@Override
 	public void create () {
@@ -117,18 +118,16 @@ public class ShadowMappingTest extends GdxTest {
 
 	private void setupUI () {
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		Label label = new Label("Camera:", skin.getStyle(LabelStyle.class));
-		SelectBox cameraCombo = new SelectBox(new String[] {"Scene", "Light"}, skin.getStyle(SelectBoxStyle.class));
-		Label label2 = new Label("Shader", skin.getStyle(LabelStyle.class), "cameraCombo");
-		SelectBox shaderCombo = new SelectBox(new String[] {"flat", "shadow-gen", "shadow-map"},
-			skin.getStyle(SelectBoxStyle.class), "shaderCombo");
-		Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "fps");
+		Label label = new Label("Camera:", skin);
+		final SelectBox cameraCombo = new SelectBox(new String[] {"Scene", "Light"}, skin);
+		Label label2 = new Label("Shader", skin);
+		final SelectBox shaderCombo = new SelectBox(new String[] {"flat", "shadow-gen", "shadow-map"}, skin);
+		fpsLabel = new Label("fps:", skin);
 
 		Table table = new Table();
-		table.width = Gdx.graphics.getWidth();
-		table.height = 100;
+		table.setSize(Gdx.graphics.getWidth(), 100);
 		table.top().padTop(12);
 		table.defaults().spaceRight(5);
 		table.add(label);
@@ -136,13 +135,12 @@ public class ShadowMappingTest extends GdxTest {
 		table.add(label2);
 		table.add(shaderCombo);
 		table.add(fpsLabel);
-		table.y = ui.top() - 100;
+		table.setY(ui.getHeight() - 100);
 		ui.addActor(table);
 
-		cameraCombo.setSelectionListener(new SelectionListener() {
-			@Override
-			public void selected (Actor comboBox, int selectionIndex, String selection) {
-				if (selectionIndex == 0)
+		cameraCombo.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				if (cameraCombo.getSelectionIndex() == 0)
 					currCam = cam;
 				else
 					currCam = lightCam;
@@ -150,12 +148,12 @@ public class ShadowMappingTest extends GdxTest {
 			}
 		});
 
-		shaderCombo.setSelectionListener(new SelectionListener() {
-			@Override
-			public void selected (Actor comboBox, int selectionIndex, String selection) {
-				if (selectionIndex == 0)
+		shaderCombo.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				int index = shaderCombo.getSelectionIndex();
+				if (index == 0)
 					currShader = flatShader;
-				else if (selectionIndex == 1)
+				else if (index == 1)
 					currShader = shadowGenShader;
 				else
 					currShader = shadowMapShader;
@@ -219,12 +217,11 @@ public class ShadowMappingTest extends GdxTest {
 			ui.getSpriteBatch().end();
 		}
 
-		Label fps = (Label)ui.findActor("fps");
-		fps.setText("fps: " + Gdx.graphics.getFramesPerSecond());
+		fpsLabel.setText("fps: " + Gdx.graphics.getFramesPerSecond());
 		ui.draw();
 		Table.drawDebug(ui);
 	}
-	
+
 	@Override
 	public void dispose () {
 		ui.dispose();

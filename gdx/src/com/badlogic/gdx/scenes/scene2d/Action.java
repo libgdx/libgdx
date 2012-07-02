@@ -13,68 +13,77 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
 package com.badlogic.gdx.scenes.scene2d;
 
-/** An Action is used with an {@link Actor} and modifes the Actor's attributes over time.
- * 
- * @author mzechner */
-public abstract class Action {
+import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
-	protected OnActionCompleted listener = null;
+/** Actions attach to an {@link Actor} and perform some task, often over time.
+ * @author Nathan Sweet */
+abstract public class Action implements Poolable {
+	/** The actor this action is attached to, or null if it is not attached. */
+	protected Actor actor;
 
-	/** Sets the {@link Actor} of this action. Will be called when the Action is added to an Actor via {@link Actor#action(Action)}
-	 * before any other call to this interface.
-	 * 
-	 * @param actor the actor. */
-	public abstract void setTarget (Actor actor);
+	private Pool pool;
 
-	/** @return the {@link Actor} this action targets. */
-	public abstract Actor getTarget ();
+	/** Updates the action based on time. Typically this is called each frame by {@link Actor#act(float)}.
+	 * @param delta Time in seconds since the last frame.
+	 * @return true if the action is done. This method may continue to be called after the action is done. */
+	abstract public boolean act (float delta);
 
-	/** Apply the action.
-	 * 
-	 * @param delta delta time in seconds */
-	public abstract void act (float delta);
-
-	/** @return whether the action is done or not */
-	public abstract boolean isDone ();
-
-	/** Called by the owner of the action when it can release all its resources, e.g. put itself back into a pool. */
-	public void finish () {
-		if (listener != null) {
-			listener.completed(this);
-		}
+	/** Sets the state of the action so it can be run again. */
+	public void restart () {
 	}
 
-	/** Calls the {@link OnActionCompleted} listener and sets it to null so it won't be called again. */
-	public void callActionCompletedListener () {
-		if (listener != null) {
-			listener.completed(this);
-		}
-		listener = null;
+	/** @return null if the action is not attached to an actor. */
+	public Actor getActor () {
+		return actor;
 	}
 
-	/** Creates a copy of this action. The action must be in a state independent of the original and one must be able to call
-	 * {@link #setTarget(Actor)} on it without any side effects. */
-	public abstract Action copy ();
-
-	/** Sets the listener to be invoked when the action is finished.
-	 * @param listener
-	 * @return this */
-	public Action setCompletionListener (final OnActionCompleted listener) {
-		this.listener = listener;
-		return this;
+	/** Sets the actor this action will be used for. This is called automatically when an action is added to an actor. This is also
+	 * called with null when an action is removed from an actor. When set to null, {@link #reset()} is called.
+	 * <p>
+	 * This method is not typically a good place for a subclass to query the actor's state because the action may not be executed
+	 * for some time, eg it may be {@link DelayAction delayed}. The actor's state is best queried in the first call to
+	 * {@link #act(float)}. For a TimedAction, use TimedAction#initialize(). */
+	public void setActor (Actor actor) {
+		this.actor = actor;
 	}
 
-	/** @return the {@link OnActionCompleted} listener or null. */
-	public OnActionCompleted getCompletionListener () {
-		return listener;
-	}
-
-	/** Sets the Action back to a vanilla state. */
+	/** Resets the optional state of this action to as if it were newly created, allowing the action to be pooled and reused. State
+	 * required to be set for every usage of this action or computed during the action does not need to be reset.
+	 * <p>
+	 * The default implementation calls {@link #restart()}. Also, if the action has a {@link #setPool(Pool) pool} then the action is
+	 * {@link Pool#free(Object) returned} to the pool.
+	 * <p>
+	 * If a subclass has optional state, it must override this method, call super, and reset the optional state. */
 	public void reset () {
-		listener = null;
+		restart();
+		if (pool != null) {
+			pool.free(this);
+			pool = null;
+		}
 	}
 
+	public Pool getPool () {
+		return pool;
+	}
+
+	/** Sets the pool that the action will be returned to when removed from the actor.
+	 * @see #setActor(Actor) */
+	public void setPool (Pool pool) {
+		this.pool = pool;
+	}
+
+	public String toString () {
+		String name = getClass().getSimpleName();
+		if (name.length() == 0) {
+			name = getClass().getName();
+			int dotIndex = name.lastIndexOf('.');
+			if (dotIndex != -1) name = name.substring(dotIndex + 1);
+		}
+		if (name.endsWith("Action")) name = name.substring(0, name.length() - 6);
+		return name;
+	}
 }

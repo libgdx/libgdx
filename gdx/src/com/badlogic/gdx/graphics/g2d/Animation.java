@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.g2d;
 import java.util.List;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 
 /** <p>
  * An Animation stores a list of {@link TextureRegion}s representing an animated sequence, e.g. for running or jumping. Each
@@ -44,11 +45,11 @@ public class Animation {
 	 * 
 	 * @param frameDuration the time between frames in seconds.
 	 * @param keyFrames the {@link TextureRegion}s representing the frames. */
-	public Animation (float frameDuration, List keyFrames) {
+	public Animation (float frameDuration, Array keyFrames) {
 		this.frameDuration = frameDuration;
-		this.animationDuration = keyFrames.size() * frameDuration;
-		this.keyFrames = new TextureRegion[keyFrames.size()];
-		for (int i = 0, n = keyFrames.size(); i < n; i++) {
+		this.animationDuration = keyFrames.size * frameDuration;
+		this.keyFrames = new TextureRegion[keyFrames.size];
+		for (int i = 0, n = keyFrames.size; i < n; i++) {
 			this.keyFrames[i] = (TextureRegion)keyFrames.get(i);
 		}
 
@@ -60,12 +61,12 @@ public class Animation {
 	 * @param frameDuration the time between frames in seconds.
 	 * @param keyFrames the {@link TextureRegion}s representing the frames.
 	 * @param playType the type of animation play (NORMAL, REVERSED, LOOP, LOOP_REVERSED, LOOP_PINGPONG, LOOP_RANDOM) */
-	public Animation (float frameDuration, List keyFrames, int playType) {
+	public Animation (float frameDuration, Array keyFrames, int playType) {
 
 		this.frameDuration = frameDuration;
-		this.animationDuration = keyFrames.size() * frameDuration;
-		this.keyFrames = new TextureRegion[keyFrames.size()];
-		for (int i = 0, n = keyFrames.size(); i < n; i++) {
+		this.animationDuration = keyFrames.size * frameDuration;
+		this.keyFrames = new TextureRegion[keyFrames.size];
+		for (int i = 0, n = keyFrames.size; i < n; i++) {
 			this.keyFrames[i] = (TextureRegion)keyFrames.get(i);
 		}
 
@@ -109,8 +110,8 @@ public class Animation {
 	}
 
 	/** Returns a {@link TextureRegion} based on the so called state time. This is the amount of seconds an object has spent in the
-	 * state this Animation instance represents, e.g. running, jumping and so on using the mode specified by {@link setPlayType}
-	 * method.
+	 * state this Animation instance represents, e.g. running, jumping and so on using the mode specified by
+	 * {@link #setPlayMode(int)} method.
 	 * 
 	 * @param stateTime
 	 * @return the TextureRegion representing the frame of animation for the given state time. */
@@ -155,15 +156,12 @@ public class Animation {
 	public void setPlayMode (int playMode) {
 		this.playMode = playMode;
 	}
-	
-	/**
-	 * Whether the animation would be finished if played without looping
-	 * (PlayMode Animation#NORMAL), given the state time.
+
+	/** Whether the animation would be finished if played without looping (PlayMode Animation#NORMAL), given the state time.
 	 * @param stateTime
-	 * @return whether the animation is finished.
-	 */
+	 * @return whether the animation is finished. */
 	public boolean isAnimationFinished (float stateTime) {
-	    int frameNumber = (int)(stateTime / frameDuration);
-	    return keyFrames.length - 1 < frameNumber;
+		int frameNumber = (int)(stateTime / frameDuration);
+		return keyFrames.length - 1 < frameNumber;
 	}
 }

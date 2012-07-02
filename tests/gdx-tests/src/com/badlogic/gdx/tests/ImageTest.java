@@ -1,4 +1,18 @@
-
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -8,7 +22,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Scaling;
 
@@ -20,7 +34,7 @@ public class ImageTest extends GdxTest {
 
 	@Override
 	public void create () {
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		image2 = new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")));
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		Gdx.input.setInputProcessor(ui);
@@ -29,7 +43,8 @@ public class ImageTest extends GdxTest {
 		ui.addActor(root);
 		root.debug();
 
-		Image image = new Image(image2, Scaling.fill);
+		Image image = new Image(image2);
+		image.setScaling(Scaling.fill);
 		root.add(image).width(160).height(100);
 	}
 
@@ -52,8 +67,7 @@ public class ImageTest extends GdxTest {
 	@Override
 	public void resize (int width, int height) {
 		ui.setViewport(width, height, false);
-		root.width = width;
-		root.height = height;
+		root.setSize(width, height);
 	}
 
 	@Override

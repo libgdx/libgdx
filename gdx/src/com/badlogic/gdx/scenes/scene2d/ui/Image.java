@@ -1,127 +1,110 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 
-/** Displays a {@link TextureRegion} or {@link NinePatch}, scaled various way within the widgets bounds. The preferred size is the
- * actual size of the region or ninepatch. Only when using a TextureRegion will the actor's scale, rotation, and origin be used
- * when drawing.
+/** Displays a {@link Drawable}, scaled various way within the widgets bounds. The preferred size is the min size of the drawable.
+ * Only when using a {@link TextureRegionDrawable} will the actor's scale, rotation, and origin be used when drawing.
  * @author Nathan Sweet */
 public class Image extends Widget {
-	private TextureRegion region;
-	private NinePatch patch;
 	private Scaling scaling;
-	private int align = Align.CENTER;
+	private int align = Align.center;
 	private float imageX, imageY, imageWidth, imageHeight;
-	private ClickListener clickListener;
+	private Drawable drawable;
 
 	/** Creates an image with no region or patch, stretched, and aligned center. */
 	public Image () {
-		this((TextureRegion)null);
-	}
-
-	/** Creates an image stretched, and aligned center. */
-	public Image (Texture texture) {
-		this(new TextureRegion(texture));
-	}
-
-	/** Creates an image aligned center. */
-	public Image (Texture texture, Scaling scaling) {
-		this(new TextureRegion(texture), scaling);
-	}
-
-	public Image (Texture texture, Scaling scaling, int align) {
-		this(new TextureRegion(texture), scaling, align);
-	}
-
-	public Image (Texture texture, Scaling scaling, int align, String name) {
-		this(new TextureRegion(texture), scaling, align, name);
-	}
-
-	/** Creates an image stretched, and aligned center.
-	 * @param region May be null. */
-	public Image (TextureRegion region) {
-		this(region, Scaling.stretch, Align.CENTER, null);
-	}
-
-	/** Creates an image aligned center.
-	 * @param region May be null. */
-	public Image (TextureRegion region, Scaling scaling) {
-		this(region, scaling, Align.CENTER, null);
-	}
-
-	/** @param region May be null. */
-	public Image (TextureRegion region, Scaling scaling, int align) {
-		this(region, scaling, align, null);
-	}
-
-	/** @param region May be null. */
-	public Image (TextureRegion region, Scaling scaling, int align, String name) {
-		super(name);
-		setRegion(region);
-		this.scaling = scaling;
-		this.align = align;
-		width = getPrefWidth();
-		height = getPrefHeight();
+		this((Drawable)null);
 	}
 
 	/** Creates an image stretched, and aligned center.
 	 * @param patch May be null. */
 	public Image (NinePatch patch) {
-		this(patch, Scaling.stretch, Align.CENTER, null);
+		this(new NinePatchDrawable(patch), Scaling.stretch, Align.center);
+	}
+
+	/** Creates an image stretched, and aligned center.
+	 * @param region May be null. */
+	public Image (TextureRegion region) {
+		this(new TextureRegionDrawable(region), Scaling.stretch, Align.center);
+	}
+
+	/** Creates an image stretched, and aligned center. */
+	public Image (Texture texture) {
+		this(new TextureRegionDrawable(new TextureRegion(texture)));
+	}
+
+	/** Creates an image stretched, and aligned center.
+	 * @param drawable May be null. */
+	public Image (Drawable drawable) {
+		this(drawable, Scaling.stretch, Align.center);
 	}
 
 	/** Creates an image aligned center.
-	 * @param patch May be null. */
-	public Image (NinePatch patch, Scaling scaling) {
-		this(patch, scaling, Align.CENTER, null);
+	 * @param drawable May be null. */
+	public Image (Drawable drawable, Scaling scaling) {
+		this(drawable, scaling, Align.center);
 	}
 
-	/** @param patch May be null. */
-	public Image (NinePatch patch, Scaling scaling, int align) {
-		this(patch, scaling, align, null);
-	}
-
-	/** @param patch May be null. */
-	public Image (NinePatch patch, Scaling scaling, int align, String name) {
-		super(name);
-		setPatch(patch);
+	/** @param drawable May be null. */
+	public Image (Drawable drawable, Scaling scaling, int align) {
+		setDrawable(drawable);
 		this.scaling = scaling;
 		this.align = align;
-		width = getPrefWidth();
-		height = getPrefHeight();
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
 	}
 
 	public void layout () {
 		float regionWidth, regionHeight;
-		if (patch != null) {
-			regionWidth = patch.getTotalWidth();
-			regionHeight = patch.getTotalHeight();
-		} else if (region != null) {
-			regionWidth = region.getRegionWidth();
-			regionHeight = region.getRegionHeight();
+		if (drawable != null) {
+			regionWidth = drawable.getMinWidth();
+			regionHeight = drawable.getMinHeight();
 		} else
 			return;
+
+		float width = getWidth();
+		float height = getHeight();
 
 		Vector2 size = scaling.apply(regionWidth, regionHeight, width, height);
 		imageWidth = size.x;
 		imageHeight = size.y;
 
-		if ((align & Align.LEFT) != 0)
+		if ((align & Align.left) != 0)
 			imageX = 0;
-		else if ((align & Align.RIGHT) != 0)
+		else if ((align & Align.right) != 0)
 			imageX = (int)(width - imageWidth);
 		else
 			imageX = (int)(width / 2 - imageWidth / 2);
 
-		if ((align & Align.TOP) != 0)
+		if ((align & Align.top) != 0)
 			imageY = (int)(height - imageHeight);
-		else if ((align & Align.BOTTOM) != 0)
+		else if ((align & Align.bottom) != 0)
 			imageY = 0;
 		else
 			imageY = (int)(height / 2 - imageHeight / 2);
@@ -130,48 +113,41 @@ public class Image extends Widget {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
 
+		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (patch != null)
-			patch.draw(batch, x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);
-		else if (region != null) {
-			if (scaleX == 1 && scaleY == 1 && rotation == 0)
-				batch.draw(region, x + imageX, y + imageY, imageWidth, imageHeight);
-			else
-				batch.draw(region, x + imageX, y + imageY, originX - imageX, originY - imageY, imageWidth, imageHeight, scaleX,
-					scaleY, rotation);
+
+		float x = getX();
+		float y = getY();
+		float scaleX = getScaleX();
+		float scaleY = getScaleY();
+
+		if (drawable != null) {
+			if (drawable.getClass() == TextureRegionDrawable.class) {
+				TextureRegion region = ((TextureRegionDrawable)drawable).getRegion();
+				float rotation = getRotation();
+				if (scaleX == 1 && scaleY == 1 && rotation == 0)
+					batch.draw(region, x + imageX, y + imageY, imageWidth, imageHeight);
+				else {
+					batch.draw(region, x + imageX, y + imageY, getOriginX() - imageX, getOriginY() - imageY, imageWidth, imageHeight,
+						scaleX, scaleY, rotation);
+				}
+			} else
+				drawable.draw(batch, x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);
 		}
 	}
 
-	/** @param region May be null. */
-	public void setRegion (TextureRegion region) {
-		if (region != null) {
-			if (this.region == region) return;
-			if (getPrefWidth() != region.getRegionWidth() || getPrefHeight() != region.getRegionHeight()) invalidateHierarchy();
+	public void setDrawable (Drawable drawable) {
+		if (drawable != null) {
+			if (this.drawable == drawable) return;
+			if (getPrefWidth() != drawable.getMinWidth() || getPrefHeight() != drawable.getMinHeight()) invalidateHierarchy();
 		} else {
 			if (getPrefWidth() != 0 || getPrefHeight() != 0) invalidateHierarchy();
 		}
-		this.region = region;
-		patch = null;
+		this.drawable = drawable;
 	}
 
-	public TextureRegion getRegion () {
-		return region;
-	}
-
-	/** @param patch May be null. */
-	public void setPatch (NinePatch patch) {
-		if (patch != null) {
-			if (this.patch == patch) return;
-			if (getPrefWidth() != patch.getTotalWidth() || getPrefHeight() != patch.getTotalHeight()) invalidateHierarchy();
-		} else {
-			if (getPrefWidth() != 0 || getPrefHeight() != 0) invalidateHierarchy();
-		}
-		this.patch = patch;
-		region = null;
-	}
-
-	public NinePatch getPatch () {
-		return patch;
+	public Drawable getDrawable () {
+		return drawable;
 	}
 
 	public void setScaling (Scaling scaling) {
@@ -192,31 +168,13 @@ public class Image extends Widget {
 	}
 
 	public float getPrefWidth () {
-		if (region != null) return region.getRegionWidth();
-		if (patch != null) return patch.getTotalWidth();
+		if (drawable != null) return drawable.getMinWidth();
 		return 0;
 	}
 
 	public float getPrefHeight () {
-		if (region != null) return region.getRegionHeight();
-		if (patch != null) return patch.getTotalHeight();
+		if (drawable != null) return drawable.getMinHeight();
 		return 0;
-	}
-
-	public boolean touchDown (float x, float y, int pointer) {
-		return clickListener != null;
-	}
-
-	public void touchUp (float x, float y, int pointer) {
-		if (hit(x, y) == null) return;
-		if (clickListener != null) clickListener.click(this, x, y);
-	}
-
-	public void touchDragged (float x, float y, int pointer) {
-	}
-
-	public void setClickListener (ClickListener clickListener) {
-		this.clickListener = clickListener;
 	}
 
 	public float getImageX () {

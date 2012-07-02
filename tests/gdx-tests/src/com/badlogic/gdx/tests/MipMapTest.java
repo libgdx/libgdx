@@ -30,13 +30,13 @@ import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.PerspectiveCamController;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -92,7 +92,7 @@ public class MipMapTest extends GdxTest {
 	}
 
 	private void createUI () {
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 
 		String[] filters = new String[TextureFilter.values().length];
@@ -100,18 +100,17 @@ public class MipMapTest extends GdxTest {
 		for (TextureFilter filter : TextureFilter.values()) {
 			filters[idx++] = filter.toString();
 		}
-		hwMipMap = new CheckBox("Hardware Mips", skin.getStyle(CheckBoxStyle.class), "hardware");
-		minFilter = new SelectBox(filters, skin.getStyle(SelectBoxStyle.class), "minfilter");
-		magFilter = new SelectBox(new String[] {"Nearest", "Linear"}, skin.getStyle(SelectBoxStyle.class), "magfilter");
+		hwMipMap = new CheckBox("Hardware Mips", skin);
+		minFilter = new SelectBox(filters, skin);
+		magFilter = new SelectBox(new String[] {"Nearest", "Linear"}, skin.get(SelectBoxStyle.class));
 
 		Table table = new Table();
-		table.width = ui.width();
-		table.height = 30;
-		table.y = ui.height() - 30;
+		table.setSize(ui.getWidth(), 30);
+		table.setY(ui.getHeight() - 30);
 		table.add(hwMipMap).spaceRight(5);
-		table.add(new Label("Min Filter", skin.getStyle(LabelStyle.class))).spaceRight(5);
+		table.add(new Label("Min Filter", skin)).spaceRight(5);
 		table.add(minFilter).spaceRight(5);
-		table.add(new Label("Mag Filter", skin.getStyle(LabelStyle.class))).spaceRight(5);
+		table.add(new Label("Mag Filter", skin)).spaceRight(5);
 		table.add(magFilter);
 
 		ui.addActor(table);
@@ -136,7 +135,7 @@ public class MipMapTest extends GdxTest {
 
 		ui.draw();
 	}
-	
+
 	@Override
 	public void dispose () {
 		shader.dispose();

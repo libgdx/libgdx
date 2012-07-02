@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -31,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Array;
 
 public class StagePerformanceTest extends GdxTest {
 
@@ -66,10 +66,7 @@ public class StagePerformanceTest extends GdxTest {
 		for (int y = 0, i = 0; y < 12; y++) {
 			for (int x = 0; x < 24; x++) {
 				Image img = new Image(regions[rand.nextInt(8 * 8)]);
-				img.x = x;
-				img.y = y;
-				img.width = 1;
-				img.height = 1;
+				img.setBounds(x, y, 1, 1);
 				stage.addActor(img);
 				sprites[i] = new Sprite(regions[rand.nextInt(8 * 8)]);
 				sprites[i].setPosition(x, y);
@@ -87,7 +84,7 @@ public class StagePerformanceTest extends GdxTest {
 			stage.act(Gdx.graphics.getDeltaTime());
 			stage.getSpriteBatch().disableBlending();
 			Group root = stage.getRoot();
-			List<Actor> actors = root.getActors();
+			Array<Actor> actors = root.getChildren();
 // for(int i = 0; i < actors.size(); i++) {
 // actors.get(i).rotation += 45 * Gdx.graphics.getDeltaTime();
 // }

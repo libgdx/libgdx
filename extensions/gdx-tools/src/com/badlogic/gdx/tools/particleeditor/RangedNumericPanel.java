@@ -34,7 +34,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEmitter.RangedNumericValue;
 
 class RangedNumericPanel extends EditorPanel {
 	private final RangedNumericValue value;
-	JSpinner minSpinner, maxSpinner;
+	Slider minSlider, maxSlider;
 	JButton rangeButton;
 	JLabel label;
 
@@ -44,29 +44,29 @@ class RangedNumericPanel extends EditorPanel {
 
 		initializeComponents();
 
-		minSpinner.setValue(value.getLowMin());
-		maxSpinner.setValue(value.getLowMax());
+		minSlider.setValue(value.getLowMin());
+		maxSlider.setValue(value.getLowMax());
 
-		minSpinner.addChangeListener(new ChangeListener() {
+		minSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				value.setLowMin((Float)minSpinner.getValue());
-				if (!maxSpinner.isVisible()) value.setLowMax((Float)minSpinner.getValue());
+				value.setLowMin((Float)minSlider.getValue());
+				if (!maxSlider.isVisible()) value.setLowMax((Float)minSlider.getValue());
 			}
 		});
 
-		maxSpinner.addChangeListener(new ChangeListener() {
+		maxSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				value.setLowMax((Float)maxSpinner.getValue());
+				value.setLowMax((Float)maxSlider.getValue());
 			}
 		});
 
 		rangeButton.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent event) {
-				boolean visible = !maxSpinner.isVisible();
-				maxSpinner.setVisible(visible);
+				boolean visible = !maxSlider.isVisible();
+				maxSlider.setVisible(visible);
 				rangeButton.setText(visible ? "<" : ">");
-				JSpinner spinner = visible ? maxSpinner : minSpinner;
-				value.setLowMax((Float)spinner.getValue());
+				Slider slider = visible ? maxSlider : minSlider;
+				value.setLowMax((Float)slider.getValue());
 			}
 		});
 
@@ -81,13 +81,13 @@ class RangedNumericPanel extends EditorPanel {
 				new Insets(0, 0, 0, 6), 0, 0));
 		}
 		{
-			minSpinner = new JSpinner(new SpinnerNumberModel(new Float(0), new Float(-99999), new Float(99999), new Float(1f)));
-			contentPanel.add(minSpinner, new GridBagConstraints(3, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			minSlider = new Slider(0, -99999, 99999, 1, -400, 400);
+			contentPanel.add(minSlider, new GridBagConstraints(3, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		{
-			maxSpinner = new JSpinner(new SpinnerNumberModel(new Float(0), new Float(-99999), new Float(99999), new Float(1f)));
-			contentPanel.add(maxSpinner, new GridBagConstraints(4, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			maxSlider = new Slider(0, -99999, 99999, 1, -400, 400);
+			contentPanel.add(maxSlider, new GridBagConstraints(4, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 				new Insets(0, 6, 0, 0), 0, 0));
 		}
 		{

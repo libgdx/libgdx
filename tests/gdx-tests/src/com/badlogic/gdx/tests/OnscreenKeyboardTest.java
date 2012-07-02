@@ -90,7 +90,7 @@ public class OnscreenKeyboardTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override
-	public boolean touchMoved (int x, int y) {
+	public boolean mouseMoved (int x, int y) {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -100,14 +100,14 @@ public class SpriteBatch implements Disposable {
 
 	/** number of render calls since last {@link #begin()} **/
 	public int renderCalls = 0;
-	
+
 	/** number of rendering calls ever, will not be reset, unless it's done manually **/
 	public int totalRenderCalls = 0;
 
 	/** the maximum number of sprites rendered in one batch so far **/
 	public int maxSpritesInBatch = 0;
 	private ShaderProgram customShader = null;
-	
+
 	/** Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
 	 * point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect with
 	 * respect to the screen resolution. */
@@ -132,9 +132,8 @@ public class SpriteBatch implements Disposable {
 	 * </p>
 	 * 
 	 * <p>
-	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default
-	 * shader are different than the ones expect for shaders set with {@link #setShader(ShaderProgram)}.
-	 * See the {@link #createDefaultShader()} method.
+	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
+	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See the {@link #createDefaultShader()} method.
 	 * </p>
 	 * 
 	 * @param size the batch size in number of sprites
@@ -160,9 +159,8 @@ public class SpriteBatch implements Disposable {
 	 * </p>
 	 * 
 	 * <p>
-	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default
-	 * shader are different than the ones expect for shaders set with {@link #setShader(ShaderProgram)}.
-	 * See the {@link #createDefaultShader()} method.
+	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
+	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See the {@link #createDefaultShader()} method.
 	 * </p>
 	 * 
 	 * @param size the batch size in number of sprites
@@ -700,7 +698,7 @@ public class SpriteBatch implements Disposable {
 	}
 
 	/** Draws a rectangle using the given vertices. There must be 4 vertices, each made up of 5 elements in this order: x, y, color,
-	 * u, v. */
+	 * u, v. The {@link #getColor()} from the SpriteBatch is not applied. */
 	public void draw (Texture texture, float[] spriteVertices, int offset, int length) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
@@ -892,10 +890,12 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = v;
 	}
 
-	/** Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height. The
-	 * rectangle is offset by originX, originY relative to the origin. Scale specifies the scaling factor by which the rectangle
-	 * should be scaled around originX, originY. Rotation specifies the angle of counter clockwise rotation of the rectangle around
-	 * originX, originY. */
+	/** Draws a rectangle with the texture coordinates rotated 90 degrees. The bottom left corner at x,y and stretching the region
+	 * to cover the given width and height. The rectangle is offset by originX, originY relative to the origin. Scale specifies the
+	 * scaling factor by which the rectangle should be scaled around originX, originY. Rotation specifies the angle of counter
+	 * clockwise rotation of the rectangle around originX, originY.
+	 * @param clockwise If true, the texture coordinates are rotated 90 degrees clockwise. If false, they are rotated 90 degrees
+	 *           counter clockwise. */
 	public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
 		float scaleX, float scaleY, float rotation, boolean clockwise) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
@@ -1042,7 +1042,7 @@ public class SpriteBatch implements Disposable {
 		lastTexture.bind();
 		mesh.setVertices(vertices, 0, idx);
 		mesh.getIndicesBuffer().position(0);
-		mesh.getIndicesBuffer().limit(spritesInBatch * 6); 
+		mesh.getIndicesBuffer().limit(spritesInBatch * 6);
 
 		if (blendingDisabled) {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -1050,7 +1050,7 @@ public class SpriteBatch implements Disposable {
 			Gdx.gl.glEnable(GL20.GL_BLEND);
 			Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
 		}
-		
+
 		if (Gdx.graphics.isGL20Available()) {
 			if (customShader != null)
 				mesh.render(customShader, GL10.GL_TRIANGLES, 0, spritesInBatch * 6);
@@ -1066,7 +1066,7 @@ public class SpriteBatch implements Disposable {
 		mesh = buffers[currBufferIdx];
 	}
 
-	/** Disables blending for drawing sprites. Does not disable blending for text rendering */
+	/** Disables blending for drawing sprites. */
 	public void disableBlending () {
 		renderMesh();
 		blendingDisabled = true;
@@ -1149,15 +1149,14 @@ public class SpriteBatch implements Disposable {
 			}
 		}
 	}
-	
-	private void switchTexture(Texture texture) {
-		if(Gdx.graphics.isGL20Available()) {
+
+	private void switchTexture (Texture texture) {
+		if (Gdx.graphics.isGL20Available()) {
 			renderMesh();
 			lastTexture = texture;
 			invTexWidth = 1.0f / texture.getWidth();
 			invTexHeight = 1.0f / texture.getHeight();
-		}
-		else {
+		} else {
 			renderMesh();
 			lastTexture = texture;
 			invTexWidth = 1.0f / texture.getWidth();
@@ -1175,8 +1174,8 @@ public class SpriteBatch implements Disposable {
 	 * 
 	 * Call this method with a null argument to use the default shader.</p>
 	 * 
-	 * This method will flush the batch before setting the new shader, you can call it in between
-	 * {@link #begin()} and {@link #end()}.
+	 * This method will flush the batch before setting the new shader, you can call it in between {@link #begin()} and
+	 * {@link #end()}.
 	 * 
 	 * @param shader the {@link ShaderProgram} or null to use the default shader. */
 	public void setShader (ShaderProgram shader) {

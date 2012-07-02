@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.badlogic.gdx.utils;
 
 import java.util.Arrays;
@@ -105,6 +120,15 @@ public class CharArray {
 		items[index] = value;
 	}
 
+	public void swap (int first, int second) {
+		if (first >= size) throw new IndexOutOfBoundsException(String.valueOf(first));
+		if (second >= size) throw new IndexOutOfBoundsException(String.valueOf(second));
+		char[] items = this.items;
+		char firstValue = items[first];
+		items[first] = items[second];
+		items[second] = firstValue;
+	}
+
 	public boolean contains (char value) {
 		int i = size - 1;
 		char[] items = this.items;
@@ -176,7 +200,7 @@ public class CharArray {
 	protected char[] resize (int newSize) {
 		char[] newItems = new char[newSize];
 		char[] items = this.items;
-		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
+		System.arraycopy(items, 0, newItems, 0, Math.min(size, newItems.length));
 		this.items = newItems;
 		return newItems;
 	}

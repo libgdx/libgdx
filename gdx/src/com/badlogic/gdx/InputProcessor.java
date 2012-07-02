@@ -77,7 +77,7 @@ public interface InputProcessor {
 	 * @param x The x coordinate
 	 * @param y The y coordinate
 	 * @return whether the input was processed */
-	public boolean touchMoved (int x, int y);
+	public boolean mouseMoved (int x, int y);
 
 	/** Called when the mouse wheel was scrolled. Will not be called on Android.
 	 * @param amount the scroll amount, -1 or 1 depending on the direction the wheel was scrolled.

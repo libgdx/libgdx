@@ -34,19 +34,16 @@ public class ImageScaleTest extends GdxTest {
 		Gdx.input.setInputProcessor(stage);
 
 		texture = new Texture("data/group-debug.png");
-		Image image = new Image(texture, Scaling.fit);
-		image.x = image.y = 100;
-		image.width = 400;
-		image.height = 200;
+		Image image = new Image(texture);
+		image.setScaling(Scaling.fit);
+		image.setBounds(100, 100, 400, 200);
 		stage.addActor(image);
 
-		Image image2 = new Image(texture, Scaling.fit);
-		image2.x = image2.y = 100;
-		image2.width = 400;
-		image2.height = 200;
-		image2.originX = 200;
-		image2.originY = 100;
-		image2.scaleX = image2.scaleY = 0.5f;
+		Image image2 = new Image(texture);
+		image2.setScaling(Scaling.fit);
+		image.setBounds(100, 100, 400, 200);
+		image2.setOrigin(200, 100);
+		image2.setScale(0.5f);
 		stage.addActor(image2);
 
 	}
@@ -56,7 +53,7 @@ public class ImageScaleTest extends GdxTest {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		stage.draw();
 	}
-	
+
 	@Override
 	public void dispose () {
 		stage.dispose();

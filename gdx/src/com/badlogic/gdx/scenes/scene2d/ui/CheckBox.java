@@ -1,10 +1,26 @@
-
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 /** A checkbox is a button that contains an image indicating the checked or unchecked state and a label.
  * @author Nathan Sweet */
@@ -12,27 +28,23 @@ public class CheckBox extends TextButton {
 	private Image image;
 	private CheckBoxStyle style;
 
-	public CheckBox (Skin skin) {
-		this("", skin);
+	public CheckBox (String text, Skin skin) {
+		this(text, skin.get(CheckBoxStyle.class));
+	}
+	
+	public CheckBox (String text, Skin skin, String styleName) {
+		this(text, skin.get(styleName, CheckBoxStyle.class));
 	}
 
 	public CheckBox (String text, CheckBoxStyle style) {
-		this(text, style, null);
-	}
-
-	public CheckBox (String text, Skin skin) {
-		this(text, skin.getStyle(CheckBoxStyle.class), null);
-	}
-
-	public CheckBox (String text, CheckBoxStyle style, String name) {
-		super(text, style, name);
+		super(text, style);
 		clear();
 		add(image = new Image(style.checkboxOff));
 		Label label = getLabel();
 		add(label);
-		label.setAlignment(Align.LEFT);
-		width = getPrefWidth();
-		height = getPrefHeight();
+		label.setAlignment(Align.left);
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
 	}
 
 	public void setStyle (ButtonStyle style) {
@@ -48,7 +60,7 @@ public class CheckBox extends TextButton {
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		image.setRegion(isChecked ? style.checkboxOn : style.checkboxOff);
+		image.setDrawable(isChecked ? style.checkboxOn : style.checkboxOff);
 		super.draw(batch, parentAlpha);
 	}
 
@@ -59,19 +71,19 @@ public class CheckBox extends TextButton {
 	/** The style for a select box, see {@link CheckBox}.
 	 * @author Nathan Sweet */
 	static public class CheckBoxStyle extends TextButtonStyle {
-		public TextureRegion checkboxOn, checkboxOff;
+		public Drawable checkboxOn, checkboxOff;
 
 		public CheckBoxStyle () {
 		}
 
-		public CheckBoxStyle (TextureRegion checkboxOff, TextureRegion checkboxOn, BitmapFont font, Color fontColor) {
+		public CheckBoxStyle (Drawable checkboxOff, Drawable checkboxOn, BitmapFont font, Color fontColor) {
 			this.checkboxOff = checkboxOff;
 			this.checkboxOn = checkboxOn;
 			this.font = font;
 			this.fontColor = fontColor;
 		}
-		
-		public CheckBoxStyle(CheckBoxStyle style) {
+
+		public CheckBoxStyle (CheckBoxStyle style) {
 			this.checkboxOff = style.checkboxOff;
 			this.checkboxOn = style.checkboxOn;
 			this.font = style.font;

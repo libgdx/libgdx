@@ -168,6 +168,7 @@ public class Pong extends GdxTest {
 		// per second. The ballDirection is a unit vector
 		// we simply scale by the velocity.
 		ball.add(ballSpeed * ballDirection.x * deltaTime, ballSpeed * ballDirection.y * deltaTime);
+		System.out.println(ball);
 
 		// Next we check wheter the ball left the field to
 		// the left or to the right and update the score

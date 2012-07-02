@@ -72,6 +72,10 @@ public class LwjglApplication implements Application {
 		initialize();
 	}
 
+	public LwjglApplication (ApplicationListener listener) {
+		this(listener, new LwjglApplicationConfiguration());
+	}
+
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config) {
 		LwjglNativesLoader.load();
 

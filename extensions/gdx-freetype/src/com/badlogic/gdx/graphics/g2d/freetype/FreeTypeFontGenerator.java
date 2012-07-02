@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.badlogic.gdx.graphics.g2d.freetype;
 
 import com.badlogic.gdx.Gdx;
@@ -64,8 +79,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * texture.
 	 * @param size the size in pixels
 	 * @param characters the characters the font should contain
-	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)
-	 * @return
+	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
 	 */
 	public BitmapFont generateFont(int size, String characters, boolean flip) {
 		FreeTypeBitmapFontData data = generateData(size, characters, flip);
@@ -79,7 +93,6 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * texture.
 	 * 
 	 * @param size the size of the font in pixels
-	 * @return 
 	 */
 	public BitmapFont generateFont(int size) {
 		return generateFont(size, DEFAULT_CHARS, false);
@@ -89,7 +102,6 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * Generates a new {@link BitmapFontData} instance, expert usage only. Throws
 	 * a GdxRuntimeException in case something went wrong.
 	 * @param size the size in pixels
-	 * @return
 	 */
 	public FreeTypeBitmapFontData generateData (int size) {
 		return generateData(size, DEFAULT_CHARS, false);
@@ -101,8 +113,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * 
 	 * @param size the size in pixels
 	 * @param characters the characters the font should contain
-	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)
-	 * @return
+	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
 	 */
 	public FreeTypeBitmapFontData generateData (int size, String characters, boolean flip) {
 		FreeTypeBitmapFontData data = new FreeTypeBitmapFontData();

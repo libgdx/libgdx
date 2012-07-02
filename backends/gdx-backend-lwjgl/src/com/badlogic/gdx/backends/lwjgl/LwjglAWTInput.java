@@ -59,6 +59,7 @@ import javax.swing.event.DocumentListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.utils.Pool;
 
 public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener, MouseWheelListener, KeyListener {
@@ -349,7 +350,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 						processor.touchDragged(e.x, e.y, e.pointer);
 						break;
 					case TouchEvent.TOUCH_MOVED:
-						processor.touchMoved(e.x, e.y);
+						processor.mouseMoved(e.x, e.y);
 						break;
 					case TouchEvent.TOUCH_SCROLLED:
 						processor.scrolled(e.scrollAmount);
@@ -740,7 +741,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			frame.setCursor(Cursor.getDefaultCursor());
 		}
 	}
-	
+
 	protected static JFrame findJFrame (Component component) {
 		Container parent = component.getParent();
 		while (parent != null) {

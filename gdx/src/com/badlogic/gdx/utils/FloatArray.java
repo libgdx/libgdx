@@ -121,6 +121,15 @@ public class FloatArray {
 		items[index] = value;
 	}
 
+	public void swap (int first, int second) {
+		if (first >= size) throw new IndexOutOfBoundsException(String.valueOf(first));
+		if (second >= size) throw new IndexOutOfBoundsException(String.valueOf(second));
+		float[] items = this.items;
+		float firstValue = items[first];
+		items[first] = items[second];
+		items[second] = firstValue;
+	}
+
 	public boolean contains (float value) {
 		int i = size - 1;
 		float[] items = this.items;
@@ -192,7 +201,7 @@ public class FloatArray {
 	protected float[] resize (int newSize) {
 		float[] newItems = new float[newSize];
 		float[] items = this.items;
-		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
+		System.arraycopy(items, 0, newItems, 0, Math.min(size, newItems.length));
 		this.items = newItems;
 		return newItems;
 	}

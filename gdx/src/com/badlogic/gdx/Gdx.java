@@ -21,23 +21,17 @@ import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
+import com.badlogic.gdx.utils.Timer;
 
-/** <p>
- * Environment class holding references to the {@link Application}, {@link Graphics}, {@link Audio}, {@link Files} and
+/** Environment class holding references to the {@link Application}, {@link Graphics}, {@link Audio}, {@link Files} and
  * {@link Input} instances. The references are held in public static fields. Do not mess with this! This essentially allows you
  * static access to all sub systems. It is your responsiblity to keep things thread safe. Don't use Graphics in a thread that is
  * not the rendering thread or things will go crazy. Really.
- * </p>
- * 
  * <p>
  * There's also references to {@link GLCommon}, {@link GL10}, {@link GL11}, {@link GL20} and {@link GLU}. The same rules as above
  * apply. Don't mess with this or things will break!
- * </p>
- * 
  * <p>
  * This is kind of messy but better than throwing around Graphics and similar instances. I'm aware of the design faux pas.
- * </p>
- * 
  * @author mzechner */
 public class Gdx {
 	public static Application app;

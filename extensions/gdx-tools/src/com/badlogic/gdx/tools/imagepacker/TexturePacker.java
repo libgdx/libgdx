@@ -51,9 +51,10 @@ import javax.imageio.stream.ImageOutputStream;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker.FileFormat;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/** Use {@link TexturePacker2}.
+ * @deprecated */
 public class TexturePacker {
 	static Pattern indexPattern = Pattern.compile(".+_(\\d+)(_.*|$)");
 	static public boolean quiet;
@@ -865,6 +866,8 @@ public class TexturePacker {
 		formatToAbbrev.put(Format.Alpha, "a");
 	}
 
+	/** Use {@link TexturePacker2}.
+	 * @deprecated */
 	static public class Settings {
 		public Format defaultFormat = Format.RGBA8888;
 		public float defaultImageQuality = 0.9f;
