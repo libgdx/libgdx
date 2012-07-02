@@ -74,21 +74,19 @@ public class ScrollPane extends WidgetGroup {
 	private boolean disableX, disableY;
 	private boolean clamp = true;
 
-	public ScrollPane () {
-		this(null, new ScrollPaneStyle());
-	}
-
+	/** @param widget May be null. */
 	public ScrollPane (Actor widget) {
 		this(widget, new ScrollPaneStyle());
-	}
-
-	public ScrollPane (Skin skin) {
-		this(null, skin);
 	}
 
 	/** @param widget May be null. */
 	public ScrollPane (Actor widget, Skin skin) {
 		this(widget, skin.get(ScrollPaneStyle.class));
+	}
+
+	/** @param widget May be null. */
+	public ScrollPane (Actor widget, Skin skin, String styleName) {
+		this(widget, skin.get(styleName, ScrollPaneStyle.class));
 	}
 
 	/** @param widget May be null. */

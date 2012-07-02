@@ -40,7 +40,7 @@ public class NinePatch {
 	private float leftWidth, rightWidth, middleWidth, middleHeight, topHeight, bottomHeight;
 	private float[] vertices = new float[9 * 4 * 5];
 	private int idx;
-	private final Color color = Color.WHITE;
+	private final Color color = new Color(Color.WHITE);
 
 	public NinePatch (Texture texture, int left, int right, int top, int bottom) {
 		this(new TextureRegion(texture), left, right, top, bottom);

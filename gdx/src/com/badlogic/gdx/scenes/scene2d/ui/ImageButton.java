@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -31,6 +32,10 @@ public class ImageButton extends Button {
 
 	public ImageButton (Skin skin) {
 		this(skin.get(ImageButtonStyle.class));
+	}
+
+	public ImageButton (Skin skin, String styleName) {
+		this(skin.get(styleName, ImageButtonStyle.class));
 	}
 
 	public ImageButton (ImageButtonStyle style) {

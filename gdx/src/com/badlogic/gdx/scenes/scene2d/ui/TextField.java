@@ -90,33 +90,18 @@ public class TextField extends Widget {
 
 	private char passwordCharacter = BULLET;
 
-	public TextField (Skin skin) {
-		this("", null, skin.get(TextFieldStyle.class));
-	}
-
 	public TextField (String text, Skin skin) {
-		this(text, null, skin.get(TextFieldStyle.class));
+		this(text, skin.get(TextFieldStyle.class));
 	}
 
-	/** @param messageText Text to show when empty. May be null. */
-	public TextField (String text, String messageText, Skin skin) {
-		this(text, messageText, skin.get(TextFieldStyle.class));
-	}
-
-	public TextField (TextFieldStyle style) {
-		this("", null, style);
+	public TextField (String text, Skin skin, String styleName) {
+		this(text, skin.get(styleName, TextFieldStyle.class));
 	}
 
 	public TextField (String text, TextFieldStyle style) {
-		this(text, null, style);
-	}
-
-	/** @param messageText Text to show when empty. May be null. */
-	public TextField (String text, String messageText, TextFieldStyle style) {
 		setStyle(style);
 		this.clipboard = Clipboard.getDefaultClipboard();
 		setText(text);
-		this.messageText = messageText;
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
 		initialize();

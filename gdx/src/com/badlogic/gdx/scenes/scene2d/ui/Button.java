@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -40,6 +41,14 @@ public class Button extends Table {
 		super(skin);
 		initialize();
 		setStyle(skin.get(ButtonStyle.class));
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
+	}
+
+	public Button (Skin skin, String styleName) {
+		super(skin);
+		initialize();
+		setStyle(skin.get(styleName, ButtonStyle.class));
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
 	}

@@ -53,15 +53,16 @@ public class SplitPane extends WidgetGroup {
 	Vector2 lastPoint = new Vector2();
 	Vector2 handlePosition = new Vector2();
 
-	/** Creates a horizontal splitpane with no children. */
-	public SplitPane (Skin skin) {
-		this(null, null, false, skin);
+	/** @param firstWidget May be null.
+	 * @param secondWidget May be null. */
+	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Skin skin) {
+		this(firstWidget, secondWidget, vertical, skin, "default-" + (vertical ? "verticle" : "horizontal"));
 	}
 
 	/** @param firstWidget May be null.
 	 * @param secondWidget May be null. */
-	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Skin skin) {
-		this(firstWidget, secondWidget, vertical, skin.get("default-horizontal", SplitPaneStyle.class));
+	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Skin skin, String styleName) {
+		this(firstWidget, secondWidget, vertical, skin.get(styleName, SplitPaneStyle.class));
 	}
 
 	/** @param firstWidget May be null.

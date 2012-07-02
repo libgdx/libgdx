@@ -28,12 +28,12 @@ public class CheckBox extends TextButton {
 	private Image image;
 	private CheckBoxStyle style;
 
-	public CheckBox (Skin skin) {
-		this("", skin);
-	}
-
 	public CheckBox (String text, Skin skin) {
 		this(text, skin.get(CheckBoxStyle.class));
+	}
+	
+	public CheckBox (String text, Skin skin, String styleName) {
+		this(text, skin.get(styleName, CheckBoxStyle.class));
 	}
 
 	public CheckBox (String text, CheckBoxStyle style) {

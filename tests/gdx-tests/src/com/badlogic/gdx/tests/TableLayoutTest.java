@@ -40,9 +40,9 @@ public class TableLayoutTest extends GdxTest {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
 		Label nameLabel = new Label("Name:", skin);
-		TextField nameText = new TextField(skin);
+		TextField nameText = new TextField("", skin);
 		Label addressLabel = new Label("Address:", skin);
-		TextField addressText = new TextField(skin);
+		TextField addressText = new TextField("", skin);
 
 		Table table = new Table();
 		stage.addActor(table);

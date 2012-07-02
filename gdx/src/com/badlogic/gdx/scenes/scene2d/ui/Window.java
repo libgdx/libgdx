@@ -43,13 +43,13 @@ public class Window extends Table {
 	final Vector2 dragOffset = new Vector2();
 	boolean dragging;
 
-	public Window (Skin skin) {
-		this("", skin.get(WindowStyle.class));
+	public Window (String title, Skin skin) {
+		this(title, skin.get(WindowStyle.class));
 		setSkin(skin);
 	}
 
-	public Window (String title, Skin skin) {
-		this(title, skin.get(WindowStyle.class));
+	public Window (String title, Skin skin, String styleName) {
+		this(title, skin.get(styleName, WindowStyle.class));
 		setSkin(skin);
 	}
 

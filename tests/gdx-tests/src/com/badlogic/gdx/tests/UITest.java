@@ -86,7 +86,8 @@ public class UITest extends GdxTest {
 		final Button imgToggleButton = new Button(new Image(image), skin.get("toggle", ButtonStyle.class));
 		final CheckBox checkBox = new CheckBox("Check me", skin);
 		final Slider slider = new Slider(0, 10, 1, skin);
-		final TextField textfield = new TextField("", "Click here!", skin);
+		final TextField textfield = new TextField("", skin);
+		textfield.setMessageText("Click here!");
 		final SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX"}, skin);
 		final Image imageActor = new Image(image2);
 		final ScrollPane scrollPane = new ScrollPane(imageActor);
@@ -99,7 +100,8 @@ public class UITest extends GdxTest {
 
 		// configures an example of a TextField in password mode.
 		final Label passwordLabel = new Label("Textfield in password mode: ", skin);
-		final TextField passwordTextField = new TextField("", "password", skin);
+		final TextField passwordTextField = new TextField("", skin);
+		passwordTextField.setMessageText("password");
 		passwordTextField.setPasswordCharacter('*');
 		passwordTextField.setPasswordMode(true);
 

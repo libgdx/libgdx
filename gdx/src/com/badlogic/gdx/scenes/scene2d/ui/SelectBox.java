@@ -49,12 +49,12 @@ public class SelectBox extends Widget {
 	SelectList list;
 	private float prefWidth, prefHeight;
 
-	public SelectBox (Skin skin) {
-		this(new String[0], skin);
-	}
-
 	public SelectBox (Object[] items, Skin skin) {
 		this(items, skin.get(SelectBoxStyle.class));
+	}
+
+	public SelectBox (Object[] items, Skin skin, String styleName) {
+		this(items, skin.get(styleName, SelectBoxStyle.class));
 	}
 
 	public SelectBox (Object[] items, SelectBoxStyle style) {

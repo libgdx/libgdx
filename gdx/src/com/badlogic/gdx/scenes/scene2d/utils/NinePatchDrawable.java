@@ -41,7 +41,7 @@ public class NinePatchDrawable extends EmptyDrawable {
 
 	public NinePatchDrawable (NinePatchDrawable drawable) {
 		super(drawable);
-		setPatch(patch);
+		setPatch(drawable.patch);
 	}
 
 	public void draw (SpriteBatch batch, float x, float y, float width, float height) {

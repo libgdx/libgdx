@@ -42,12 +42,12 @@ public class List extends Widget implements Cullable {
 	private float itemHeight;
 	private float textOffsetX, textOffsetY;
 
-	public List (Skin skin) {
-		this(new Object[0], skin);
-	}
-
 	public List (Object[] items, Skin skin) {
 		this(items, skin.get(ListStyle.class));
+	}
+
+	public List (Object[] items, Skin skin, String styleName) {
+		this(items, skin.get(styleName, ListStyle.class));
 	}
 
 	public List (Object[] items, ListStyle style) {

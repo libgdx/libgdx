@@ -18,7 +18,6 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import java.lang.reflect.Method;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -31,9 +30,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasSprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -43,165 +39,33 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.ReadOnlySerializer;
-import com.badlogic.gdx.utils.Json.Serializer;
-import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.SerializationException;
 
-/** A skin holds styles for widgets and the resources (texture regions, ninepatches, bitmap fonts, etc) for those styles. A skin
- * has a single texture that the resources may reference. This reduces the number of texture binds necessary for rendering many
- * different widgets.
+/** A skin has a {@link TextureAtlas} and stores resources for UI widgets to use (texture regions, ninepatches, fonts, colors,
+ * etc). Resources are named and can be looked up by name and type. Skin provides useful conversions, such as allowing access to
+ * regions in the atlas as ninepatches, sprites, drawables, etc.
  * <p>
- * The resources and styles for a skin are usually defined using JSON (or a format that is {@link OutputType#minimal JSON-like}),
- * which is formatted in this way:
+ * Resources can be added to a skin using code, or defined in JSON. Names can be used in JSON to reference already defined
+ * resources or regions in the atlas. The JSON format is:
  * 
  * <pre>
  * {
- * 	resources: {
- * 		className: {
- * 			name: value,
- * 			...
- * 		},
+ * 	className: {
+ * 		name: value,
  * 		...
  * 	},
- * 	styles: {
- * 		className: {
- * 			name: value,
- * 			...
- * 		},
+ * 	className: {
+ * 		name: value,
  * 		...
- * 	}
+ * 	},
+ * 	...
  * }
  * </pre>
  * 
- * There are two sections, one named "resources" and the other "styles". Each section has a class name, which has a number of
- * names and values. The name is the name of the resource or style for that class, and the value is the serialized resource or
- * style. Here is a real example:
- * 
- * <pre>
- * {
- * 	resources: {
- * 		com.badlogic.gdx.graphics.g2d.TextureRegion: {
- * 			check-on: { x: 13, y: 77, width: 14, height: 14 },
- * 			check-off: { x: 2, y: 97, width: 14, height: 14 }
- * 		},
- * 		com.badlogic.gdx.graphics.Color: {
- * 			white: { r: 1, g: 1, b: 1, a: 1 }
- * 		},
- * 		com.badlogic.gdx.graphics.g2d.BitmapFont: {
- * 			default-font: { file: default.fnt }
- * 		}
- * 	},
- * 	styles: {
- * 		com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
- * 			default: {
- * 				checkboxOn: check-on, checkboxOff: check-off,
- * 				font: default-font, fontColor: white
- * 			}
- * 		}
- * 	}
- * }
- * </pre>
- * 
- * Here some named resource are defined: texture regions, a color, and a bitmap font. Also, a {@link CheckBoxStyle} is defined
- * named "default" and it references the resources by name.
- * <p>
- * Styles and resources are retrieved from the skin using the type and name:
- * 
- * <pre>
- * Color highlight = skin.getResource(&quot;highlight&quot;, Color.class);
- * TextureRegion someRegion = skin.getResource(&quot;logo&quot;, TextureRegion.class);
- * CheckBoxStyle checkBoxStyle = skin.getStyle(&quot;bigCheckbox&quot;, CheckBoxStyle.class);
- * CheckBox checkBox = new CheckBox(&quot;Check me!&quot;, checkBoxStyle);
- * </pre>
- * 
- * For convenience, most widget constructors will accept a skin and look up the necessary style using the name "default".
- * <p>
- * The JSON required for a style is simply a JSON object with field names that match the Java field names. The JSON object's field
- * values can be an object to define a new Java object, or a string to reference a named resource of the expected type. Eg,
- * {@link LabelStyle} has two fields, font and fontColor, so the JSON could look like:
- * 
- * <pre>
- * someLabel: { font: small, fontColor: { r: 1, g: 0, b: 0, a: 1 } }
- * </pre>
- * 
- * When this is parsed, the "font" field is a BitmapFont and the string "small" is found, so a BitmapFont resource named "small"
- * is used. The "fontColor" field is a Color and a JSON object is found, so a new Color is created and the JSON object is used to
- * populate its fields.
- * <p>
- * The order resources are defined is important. Resources may reference previously defined resources. This is how a BitmapFont
- * can find a TextureRegion resource (see BitmapFont section below).
- * <p>
- * The following gives examples for the types of resources that are supported by default:
- * <p>
- * {@link Color}:
- * 
- * <pre>
- * { r: 1, g: 1, b: 1, a: 1 }
- * </pre>
- * 
- * {@link TextureRegion}:
- * 
- * <pre>
- * { x: 13, y: 77, width: 14, height: 14 }
- * </pre>
- * 
- * {@link NinePatch}:
- * 
- * <pre>
- * [
- * 	{ x: 2, y: 55, width: 5, height: 5 },
- * 	{ x: 7, y: 55, width: 2, height: 5 },
- * 	{ x: 9, y: 55, width: 5, height: 5 },
- * 	{ x: 2, y: 60, width: 5, height: 11 },
- * 	{ x: 7, y: 60, width: 2, height: 11 },
- * 	{ x: 9, y: 60, width: 5, height: 11 },
- * 	{ x: 2, y: 71, width: 5, height: 4 },
- * 	{ x: 7, y: 71, width: 2, height: 4 },
- * 	{ x: 9, y: 71, width: 5, height: 4 }
- * ]
- * </pre>
- * 
- * {@link NinePatch} can also be specified as a single region, which is set as the center of the ninepatch:
- * 
- * <pre>
- * [ { width: 20, height: 20, x: 6, y: 2 } ]
- * </pre>
- * 
- * This notation is useful to use a single region as a ninepatch. Eg, when creating a button made up of a single image for the
- * {@link ButtonStyle#up} field, which is a ninepatch.
- * <p>
- * {@link BitmapFont}:
- * 
- * <pre>
- * { file: default.fnt }
- * </pre>
- * 
- * First the skin tries to find the font file in the directory containing the skin file. If not found there, it uses the specified
- * path as an {@link FileType#Internal} path. The bitmap font will use a texture region with the same name as the font file
- * without the file extension. If no texture region with that name is defined in the skin (note the order resources are defined is
- * important), it will look in the same directory as the font file for a PNG with the same name as the font file but with a "png"
- * file extension.
- * <p>
- * TintedNinePatch provides a mechanism for tinting an existing NinePatch:
- * 
- * <pre>
- * { name: whiteButton, color: blue }
- * </pre>
- * 
- * This would create a new NinePatch identical to the NinePatch named "whiteButton" and tint it with the color named "blue".
- * <p>
- * The skin JSON is extensible. Styles and resources for your own widgets may be included in the skin, usually without writing any
- * code. Deserialization is handled by the {@link Json} class, which automatically serializes and deserializes most objects. While
- * nearly any style object can be automatically deserialized, often resource objects require custom deserialization. Eg,
- * TextureRegion, BitmapFont, and NinePatch need to reference the skin's single texture. If needed,
- * {@link #getJsonLoader(FileHandle)} may be overridden to register additional custom {@link Serializer serializers}. See the
- * source for {@link Skin#getJsonLoader(FileHandle)} for examples on how to write serializers.
- * <p>
- * Note that there is a SkinPacker class in the gdx-tools project that can take a directory of individual images, pack them into a
- * single texture, and write the proper texture region and ninepatch entries to a skin JSON file. The styles and other resources
- * sections still need to be written by hand, but SkinPacker makes the otherwise tedious entry of pixel coordinates unnecessary.
+ * The class name is the fully qualified Java class name for the type of resource. The name is the name of the resource for that
+ * class, and the value is the serialized resource or style.
  * @author Nathan Sweet */
 public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
@@ -323,8 +187,7 @@ public class Skin implements Disposable {
 			TextureRegion region = getRegion(name);
 			if (region instanceof AtlasRegion) {
 				int[] splits = ((AtlasRegion)region).splits;
-				if (splits != null) 
-					patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
+				if (splits != null) patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
 			}
 			if (patch == null) patch = new NinePatch(region);
 			add(name, patch, NinePatch.class);
@@ -463,14 +326,12 @@ public class Skin implements Disposable {
 		return atlas;
 	}
 
-	/** Disposes the {@link Texture} and all {@link Disposable} resources of this Skin. */
-	@Override
+	/** Disposes the {@link TextureAtlas} and all {@link Disposable} resources in the skin. */
 	public void dispose () {
-		atlas.dispose(); // BOZO - Only if owned.
-		for (Entry<Class, ObjectMap<String, Object>> entry : resources.entries()) {
-			if (!Disposable.class.isAssignableFrom(entry.key)) continue;
-			for (Object resource : entry.value.values())
-				((Disposable)resource).dispose();
+		atlas.dispose();
+		for (ObjectMap<String, Object> entry : resources.values()) {
+			for (Object resource : entry.values())
+				if (resource instanceof Disposable) ((Disposable)resource).dispose();
 		}
 	}
 
@@ -503,12 +364,13 @@ public class Skin implements Disposable {
 			}
 
 			private void readNamedObjects (Json json, Class type, ObjectMap<String, ObjectMap> valueMap) {
+				Class addType = type == TintedDrawable.class ? Drawable.class : type;
 				for (Entry<String, ObjectMap> valueEntry : valueMap.entries()) {
 					String name = valueEntry.key;
 					Object object = json.readValue(type, valueEntry.value);
 					if (object == null) continue;
 					try {
-						add(name, object);
+						add(name, object, addType);
 					} catch (Exception ex) {
 						throw new SerializationException("Error reading " + type.getSimpleName() + ": " + valueEntry.key, ex);
 					}

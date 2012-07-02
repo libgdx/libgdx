@@ -295,7 +295,7 @@ public class TexturePacker2 {
 	/** @author Nathan Sweet */
 	static public class Settings {
 		public boolean pot = true;
-		public int paddingX, paddingY;
+		public int paddingX = 2, paddingY = 2;
 		public boolean edgePadding = true;
 		public boolean duplicatePadding = true;
 		public boolean rotation;
@@ -311,7 +311,7 @@ public class TexturePacker2 {
 		public float jpegQuality = 0.9f;
 		public boolean ignoreBlankImages = true;
 		public boolean fast;
-		public boolean debug = false;
+		public boolean debug;
 
 		public Settings () {
 		}

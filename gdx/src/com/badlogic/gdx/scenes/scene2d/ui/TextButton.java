@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
@@ -29,12 +30,12 @@ public class TextButton extends Button {
 	private final Label label;
 	private TextButtonStyle style;
 
-	public TextButton (Skin skin) {
-		this("", skin);
-	}
-
 	public TextButton (String text, Skin skin) {
 		this(text, skin.get(TextButtonStyle.class));
+	}
+
+	public TextButton (String text, Skin skin, String styleName) {
+		this(text, skin.get(styleName, TextButtonStyle.class));
 	}
 
 	public TextButton (String text, TextButtonStyle style) {
