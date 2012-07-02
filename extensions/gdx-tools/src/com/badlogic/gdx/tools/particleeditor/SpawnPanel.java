@@ -39,8 +39,8 @@ class SpawnPanel extends EditorPanel {
 	JComboBox sideCombo;
 	JLabel sideLabel;
 
-	public SpawnPanel (final SpawnShapeValue spawnShapeValue, final ParticleEditor editor) {
-		super("Spawn", null);
+	public SpawnPanel (final ParticleEditor editor, final SpawnShapeValue spawnShapeValue, String name, String description) {
+		super(null, name, description);
 
 		initializeComponents();
 

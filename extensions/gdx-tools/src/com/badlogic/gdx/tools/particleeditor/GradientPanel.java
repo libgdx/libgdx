@@ -45,8 +45,8 @@ class GradientPanel extends EditorPanel {
 	JPanel colorPanel;
 	private ColorSlider hueSlider;
 
-	public GradientPanel (String name, GradientColorValue value) {
-		super(name, value);
+	public GradientPanel (GradientColorValue value, String name, String description) {
+		super(value, name, description);
 		this.value = value;
 
 		initializeComponents();

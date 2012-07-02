@@ -99,35 +99,42 @@ public class ParticleEditor extends JFrame {
 
 	void reloadRows () {
 		EventQueue.invokeLater(new Runnable() {
-
 			public void run () {
 				editRowsPanel.removeAll();
-				addEditorRow(new NumericPanel("Pixels per meter", pixelsPerMeter));
-				addEditorRow(new NumericPanel("Zoom level", zoomLevel));
+				addEditorRow(new NumericPanel(pixelsPerMeter, "Pixels per meter", ""));
+				addEditorRow(new NumericPanel(zoomLevel, "Zoom level", ""));
 
 				rowsPanel.removeAll();
 				ParticleEmitter emitter = getEmitter();
-				addRow(new ImagePanel(ParticleEditor.this));
-				addRow(new RangedNumericPanel("Delay", emitter.getDelay()));
-				addRow(new RangedNumericPanel("Duration", emitter.getDuration()));
-				addRow(new CountPanel(ParticleEditor.this));
-				addRow(new ScaledNumericPanel("Emission", "Duration", emitter.getEmission()));
-				addRow(new ScaledNumericPanel("Life", "Duration", emitter.getLife()));
-				addRow(new ScaledNumericPanel("Life Offset", "Duration", emitter.getLifeOffset()));
-				addRow(new RangedNumericPanel("X Offset", emitter.getXOffsetValue()));
-				addRow(new RangedNumericPanel("Y Offset", emitter.getYOffsetValue()));
-				addRow(new SpawnPanel(emitter.getSpawnShape(), ParticleEditor.this));
-				addRow(new ScaledNumericPanel("Spawn Width", "Duration", emitter.getSpawnWidth()));
-				addRow(new ScaledNumericPanel("Spawn Height", "Duration", emitter.getSpawnHeight()));
-				addRow(new ScaledNumericPanel("Size", "Life", emitter.getScale()));
-				addRow(new ScaledNumericPanel("Velocity", "Life", emitter.getVelocity()));
-				addRow(new ScaledNumericPanel("Angle", "Life", emitter.getAngle()));
-				addRow(new ScaledNumericPanel("Rotation", "Life", emitter.getRotation()));
-				addRow(new ScaledNumericPanel("Wind", "Life", emitter.getWind()));
-				addRow(new ScaledNumericPanel("Gravity", "Life", emitter.getGravity()));
-				addRow(new GradientPanel("Tint", emitter.getTint()));
-				addRow(new PercentagePanel("Transparency", "Life", emitter.getTransparency()));
-				addRow(new OptionsPanel(ParticleEditor.this));
+				addRow(new ImagePanel(ParticleEditor.this, "Image", ""));
+				addRow(new CountPanel(ParticleEditor.this, "Count",
+					"Min number of particles at all times, max number of particles allowed."));
+				addRow(new RangedNumericPanel(emitter.getDelay(), "Delay",
+					"Time from beginning of effect to emission start, in milliseconds."));
+				addRow(new RangedNumericPanel(emitter.getDuration(), "Duration", "Time particles will be emitted, in milliseconds."));
+				addRow(new ScaledNumericPanel(emitter.getEmission(), "Duration", "Emission",
+					"Number of particles emitted per second."));
+				addRow(new ScaledNumericPanel(emitter.getLife(), "Duration", "Life", "Time particles will live, in milliseconds."));
+				addRow(new ScaledNumericPanel(emitter.getLifeOffset(), "Duration", "Life Offset",
+					"Particle starting life consumed, in milliseconds."));
+				addRow(new RangedNumericPanel(emitter.getXOffsetValue(), "X Offset",
+					"Amount to offset a particle's starting X location, in world units."));
+				addRow(new RangedNumericPanel(emitter.getYOffsetValue(), "Y Offset",
+					"Amount to offset a particle's starting Y location, in world units."));
+				addRow(new SpawnPanel(ParticleEditor.this, emitter.getSpawnShape(), "Spawn", "Shape used to spawn particles."));
+				addRow(new ScaledNumericPanel(emitter.getSpawnWidth(), "Duration", "Spawn Width",
+					"Width of the spawn shape, in world units."));
+				addRow(new ScaledNumericPanel(emitter.getSpawnHeight(), "Duration", "Spawn Height",
+					"Height of the spawn shape, in world units."));
+				addRow(new ScaledNumericPanel(emitter.getScale(), "Life", "Size", "Particle size, in world units."));
+				addRow(new ScaledNumericPanel(emitter.getVelocity(), "Life", "Velocity", "Particle speed, in world units per second."));
+				addRow(new ScaledNumericPanel(emitter.getAngle(), "Life", "Angle", "Particle emission angle, in degrees."));
+				addRow(new ScaledNumericPanel(emitter.getRotation(), "Life", "Rotation", "Particle rotation, in degrees."));
+				addRow(new ScaledNumericPanel(emitter.getWind(), "Life", "Wind", "Wind strength, in world units per second."));
+				addRow(new ScaledNumericPanel(emitter.getGravity(), "Life", "Gravity", "Gravity strength, in world units per second."));
+				addRow(new GradientPanel(emitter.getTint(), "Tint", ""));
+				addRow(new PercentagePanel(emitter.getTransparency(), "Life", "Transparency", ""));
+				addRow(new OptionsPanel(ParticleEditor.this, "Options", ""));
 				for (Component component : rowsPanel.getComponents())
 					if (component instanceof EditorPanel) ((EditorPanel)component).update(ParticleEditor.this);
 				rowsPanel.repaint();
