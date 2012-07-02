@@ -20,6 +20,7 @@ import java.io.File;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** @author mzechner
  * @author Nathan Sweet */
@@ -35,6 +36,11 @@ public class JoglFileHandle extends FileHandle {
 	public FileHandle child (String name) {
 		if (file.getPath().length() == 0) return new JoglFileHandle(new File(name), type);
 		return new JoglFileHandle(new File(file, name), type);
+	}
+	
+	public FileHandle sibling (String name) {
+		if (file.getPath().length() == 0) throw new GdxRuntimeException("Cannot get the sibling of the root.");
+		return new JoglFileHandle(new File(file.getParent(), name), type);
 	}
 
 	public FileHandle parent () {

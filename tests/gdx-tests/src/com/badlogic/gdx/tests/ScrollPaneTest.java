@@ -82,7 +82,7 @@ public class ScrollPaneTest extends GdxTest {
 			table.add(new Label(i + "tres long0 long1 long2 long3 long4 long5 long6 long7 long8 long9 long10 long11 long12", skin));
 		}
 
-		final TextButton flickBbutton = new TextButton("Flick Scroll", skin.getStyle("toggle", TextButtonStyle.class));
+		final TextButton flickBbutton = new TextButton("Flick Scroll", skin.get("toggle", TextButtonStyle.class));
 		flickBbutton.setChecked(true);
 		flickBbutton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {

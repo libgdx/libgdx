@@ -62,7 +62,11 @@ public class TextureDownloadTest extends GdxTest {
 					while (true) {
 						int length = in.read(out, readBytes, out.length - readBytes);
 						if (length == -1) break;
-						if (length == 0) throw new RuntimeException("Buffer to small for downloading content");
+						in.close();
+						in = null;
+						if (length == 0) {
+							throw new RuntimeException("Buffer too small for downloading content");
+						}
 						readBytes += length;
 					}
 					return readBytes;

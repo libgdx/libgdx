@@ -516,6 +516,11 @@ public class TrueTypeFontFactory {
 		public FileHandle child(String name) {
 			return this;
 		}
+		
+		@Override
+		public FileHandle sibling(String name) {
+			return this;
+		}
 
 		@Override
 		public FileHandle parent() {

@@ -3,7 +3,9 @@ package com.badlogic.gdx.tools.imagepacker;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import com.badlogic.gdx.tools.FileProcessor;
 import com.badlogic.gdx.tools.FileProcessor.InputFile;
@@ -26,6 +28,8 @@ public class TexturePackerFileProcessor extends FileProcessor {
 
 	public TexturePackerFileProcessor (Settings defaultSettings, String packFileName) {
 		this.defaultSettings = defaultSettings;
+
+		if (packFileName.indexOf('.') == -1) packFileName += ".atlas";
 		this.packFileName = packFileName;
 
 		setFlattenOutput(true);
@@ -39,15 +43,22 @@ public class TexturePackerFileProcessor extends FileProcessor {
 
 	public ArrayList<InputFile> process (File[] files, File outputRoot) throws Exception {
 		// Delete pack file and images.
-		new File(outputRoot, packFileName).delete();
-		FileProcessor deleteProcessor = new FileProcessor() {
-			protected void processFile (InputFile inputFile) throws Exception {
-				inputFile.inputFile.delete();
-			}
-		};
-		deleteProcessor.setRecursive(false);
-		deleteProcessor.addInputSuffix(".png", ".jpg");
-		deleteProcessor.process(outputRoot, null);
+		if (outputRoot.exists()) {
+			new File(outputRoot, packFileName).delete();
+			FileProcessor deleteProcessor = new FileProcessor() {
+				protected void processFile (InputFile inputFile) throws Exception {
+					inputFile.inputFile.delete();
+				}
+			};
+			deleteProcessor.setRecursive(false);
+
+			String prefix = packFileName;
+			int dotIndex = prefix.lastIndexOf('.');
+			if (dotIndex != -1) prefix = prefix.substring(0, dotIndex);
+			deleteProcessor.addInputRegex(Pattern.quote(prefix) + "\\d*\\.(png|jpg)");
+
+			deleteProcessor.process(outputRoot, null);
+		}
 		return super.process(files, outputRoot);
 	}
 

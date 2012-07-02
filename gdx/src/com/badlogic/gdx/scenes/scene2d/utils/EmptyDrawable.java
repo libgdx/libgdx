@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,6 +22,19 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * @author Nathan Sweet */
 public class EmptyDrawable implements Drawable {
 	private float leftWidth, rightWidth, topHeight, bottomHeight, minWidth, minHeight;
+
+	public EmptyDrawable () {
+	}
+
+	/** Creates a new empty drawable with the same sizing information as the specified drawable. */
+	public EmptyDrawable (Drawable drawable) {
+		leftWidth = drawable.getLeftWidth();
+		rightWidth = drawable.getRightWidth();
+		topHeight = drawable.getTopHeight();
+		bottomHeight = drawable.getBottomHeight();
+		minWidth = drawable.getMinWidth();
+		minHeight = drawable.getMinHeight();
+	}
 
 	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
 	}

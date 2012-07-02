@@ -92,7 +92,7 @@ public class MipMapTest extends GdxTest {
 	}
 
 	private void createUI () {
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 
 		String[] filters = new String[TextureFilter.values().length];
@@ -100,17 +100,17 @@ public class MipMapTest extends GdxTest {
 		for (TextureFilter filter : TextureFilter.values()) {
 			filters[idx++] = filter.toString();
 		}
-		hwMipMap = new CheckBox("Hardware Mips", skin.getStyle(CheckBoxStyle.class));
-		minFilter = new SelectBox(filters, skin.getStyle(SelectBoxStyle.class));
-		magFilter = new SelectBox(new String[] {"Nearest", "Linear"}, skin.getStyle(SelectBoxStyle.class));
+		hwMipMap = new CheckBox("Hardware Mips", skin);
+		minFilter = new SelectBox(filters, skin);
+		magFilter = new SelectBox(new String[] {"Nearest", "Linear"}, skin.get(SelectBoxStyle.class));
 
 		Table table = new Table();
 		table.setSize(ui.getWidth(), 30);
 		table.setY(ui.getHeight() - 30);
 		table.add(hwMipMap).spaceRight(5);
-		table.add(new Label("Min Filter", skin.getStyle(LabelStyle.class))).spaceRight(5);
+		table.add(new Label("Min Filter", skin)).spaceRight(5);
 		table.add(minFilter).spaceRight(5);
-		table.add(new Label("Mag Filter", skin.getStyle(LabelStyle.class))).spaceRight(5);
+		table.add(new Label("Mag Filter", skin)).spaceRight(5);
 		table.add(magFilter);
 
 		ui.addActor(table);

@@ -47,6 +47,12 @@ public class AndroidFileHandle extends FileHandle {
 		if (file.getPath().length() == 0) return new AndroidFileHandle(assets, new File(name), type);
 		return new AndroidFileHandle(assets, new File(file, name), type);
 	}
+	
+	public FileHandle sibling (String name) {
+		name = name.replace('\\', '/');
+		if (file.getPath().length() == 0) throw new GdxRuntimeException("Cannot get the sibling of the root.");
+		return new AndroidFileHandle(assets, new File(file.getParent(), name), type);
+	}
 
 	public FileHandle parent () {
 		File parent = file.getParentFile();

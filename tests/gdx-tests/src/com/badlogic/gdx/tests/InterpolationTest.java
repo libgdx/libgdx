@@ -63,7 +63,7 @@ public class InterpolationTest extends GdxTest {
 		stage.addActor(root);
 		root.pad(10).top().left();
 
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
 		list = new List(interpolators, skin);
 		root.add(new ScrollPane(list)).expandY().fillY().prefWidth((int)list.getPrefWidth());

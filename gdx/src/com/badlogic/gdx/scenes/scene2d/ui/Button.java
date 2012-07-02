@@ -39,7 +39,7 @@ public class Button extends Table {
 	public Button (Skin skin) {
 		super(skin);
 		initialize();
-		setStyle(skin.getStyle(ButtonStyle.class));
+		setStyle(skin.get(ButtonStyle.class));
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
 	}
@@ -82,7 +82,7 @@ public class Button extends Table {
 	}
 
 	public Button (Actor child, Skin skin) {
-		this(child, skin.getStyle(ButtonStyle.class));
+		this(child, skin.get(ButtonStyle.class));
 	}
 
 	public void setChecked (boolean isChecked) {

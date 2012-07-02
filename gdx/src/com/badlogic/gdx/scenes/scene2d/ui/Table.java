@@ -192,7 +192,7 @@ public class Table extends WidgetGroup {
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
 	public Cell add (String text, String labelStyleName) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
-		return add(new Label(text, skin.getStyle(labelStyleName, LabelStyle.class)));
+		return add(new Label(text, skin.get(labelStyleName, LabelStyle.class)));
 	}
 
 	/** Adds a cell without a widget. */

@@ -377,8 +377,7 @@ public class FileDescriptor {
 	}
 
 	/** Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
-	 * directory. On the desktop, an FileType#Internal handle to a directory on the classpath will return a zero length
-	 * array.
+	 * directory. On the desktop, an FileType#Internal handle to a directory on the classpath will return a zero length array.
 	 * @throw RuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileDescriptor[] list () {
 		if (type == FileType.Classpath) throw new RuntimeException("Cannot list a classpath directory: " + file);
@@ -391,8 +390,8 @@ public class FileDescriptor {
 	}
 
 	/** Returns the paths to the children of this directory with the specified suffix. Returns an empty list if this file handle
-	 * represents a file and not a directory. On the desktop, an FileType#Internal handle to a directory on the classpath
-	 * will return a zero length array.
+	 * represents a file and not a directory. On the desktop, an FileType#Internal handle to a directory on the classpath will
+	 * return a zero length array.
 	 * @throw RuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileDescriptor[] list (String suffix) {
 		if (type == FileType.Classpath) throw new RuntimeException("Cannot list a classpath directory: " + file);
@@ -414,17 +413,17 @@ public class FileDescriptor {
 		return handles;
 	}
 
-	/** Returns true if this file is a directory. Always returns false for classpath files. On Android, an FileType#Internal
-	 * handle to an empty directory will return false. On the desktop, an FileType#Internal handle to a directory on the
-	 * classpath will return false. */
+	/** Returns true if this file is a directory. Always returns false for classpath files. On Android, an FileType#Internal handle
+	 * to an empty directory will return false. On the desktop, an FileType#Internal handle to a directory on the classpath will
+	 * return false. */
 	public boolean isDirectory () {
 		if (type == FileType.Classpath) return false;
 		return file().isDirectory();
 	}
 
 	/** Returns a handle to the child with the specified name.
-	 * @throw RuntimeException if this file handle is a {@link FileType#Classpath} or FileType#Internal and the child
-	 *        doesn't exist. */
+	 * @throw RuntimeException if this file handle is a {@link FileType#Classpath} or FileType#Internal and the child doesn't
+	 *        exist. */
 	public FileDescriptor child (String name) {
 		if (file.getPath().length() == 0) return new FileDescriptor(new File(name), type);
 		return new FileDescriptor(new File(file, name), type);
@@ -447,13 +446,10 @@ public class FileDescriptor {
 		return file().mkdirs();
 	}
 
-	/** Returns true if the file exists. On Android, a {@link FileType#Classpath} or FileType#Internal handle to a directory
-	 * will always return false. */
+	/** Returns true if the file exists. On Android, a {@link FileType#Classpath} or FileType#Internal handle to a directory will
+	 * always return false. */
 	public boolean exists () {
-		switch (type) {
-		case Classpath:
-			return FileDescriptor.class.getResource("/" + file.getPath().replace('\\', '/')) != null;
-		}
+		if (type == FileType.Classpath) return FileDescriptor.class.getResource("/" + file.getPath().replace('\\', '/')) != null;
 		return file().exists();
 	}
 
@@ -478,8 +474,8 @@ public class FileDescriptor {
 	 * directory, this directory is copied recursively into it as a subdirectory, overwriting existing files, or 3) if the
 	 * destination doesn't exist, {@link #mkdirs()} is called on the destination and this directory is copied recursively into it
 	 * as a subdirectory.
-	 * @throw RuntimeException if the destination file handle is a {@link FileType#Classpath} or FileType#Internal file, or
-	 *        copying failed. */
+	 * @throw RuntimeException if the destination file handle is a {@link FileType#Classpath} or FileType#Internal file, or copying
+	 *        failed. */
 	public void copyTo (FileDescriptor dest) {
 		if (!isDirectory()) {
 			if (dest.isDirectory()) dest = dest.child(name());
@@ -497,8 +493,7 @@ public class FileDescriptor {
 	}
 
 	/** Moves this file to the specified file, overwriting the file if it already exists.
-	 * @throw RuntimeException if the source or destination file handle is a {@link FileType#Classpath} or
-	 *        FileType#Internal file. */
+	 * @throw RuntimeException if the source or destination file handle is a {@link FileType#Classpath} or FileType#Internal file. */
 	public void moveTo (FileDescriptor dest) {
 		if (type == FileType.Classpath) throw new RuntimeException("Cannot move a classpath file: " + file);
 		copyTo(dest);
@@ -525,8 +520,8 @@ public class FileDescriptor {
 	}
 
 	/** Returns the last modified time in milliseconds for this file. Zero is returned if the file doesn't exist. Zero is returned
-	 * for {@link FileType#Classpath} files. On Android, zero is returned for FileType#Internal files. On the desktop, zero
-	 * is returned for FileType#Internal files on the classpath. */
+	 * for {@link FileType#Classpath} files. On Android, zero is returned for FileType#Internal files. On the desktop, zero is
+	 * returned for FileType#Internal files on the classpath. */
 	public long lastModified () {
 		return file().lastModified();
 	}

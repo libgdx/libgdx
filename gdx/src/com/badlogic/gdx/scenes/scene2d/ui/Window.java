@@ -44,12 +44,12 @@ public class Window extends Table {
 	boolean dragging;
 
 	public Window (Skin skin) {
-		this("", skin.getStyle(WindowStyle.class));
+		this("", skin.get(WindowStyle.class));
 		setSkin(skin);
 	}
 
 	public Window (String title, Skin skin) {
-		this(title, skin.getStyle(WindowStyle.class));
+		this(title, skin.get(WindowStyle.class));
 		setSkin(skin);
 	}
 

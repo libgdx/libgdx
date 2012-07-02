@@ -32,6 +32,11 @@ public class SpriteDrawable extends EmptyDrawable {
 		setSprite(sprite);
 	}
 
+	public SpriteDrawable (SpriteDrawable drawable) {
+		super(drawable);
+		setSprite(drawable.sprite);
+	}
+
 	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
 		sprite.setBounds(x, y, width, height);
 		sprite.draw(batch);

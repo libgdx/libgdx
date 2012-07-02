@@ -30,7 +30,7 @@ public class ImageButton extends Button {
 	private ImageButtonStyle style;
 
 	public ImageButton (Skin skin) {
-		this(skin.getStyle("default", ImageButtonStyle.class));
+		this(skin.get(ImageButtonStyle.class));
 	}
 
 	public ImageButton (ImageButtonStyle style) {

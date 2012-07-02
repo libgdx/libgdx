@@ -34,18 +34,13 @@ public class NinePatch {
 	static private final Color tempColor = new Color();
 
 	private Texture texture;
-	private TextureRegion[] patches;
 	private int bottomLeft = -1, bottomCenter = -1, bottomRight = -1;
 	private int middleLeft = -1, middleCenter = -1, middleRight = -1;
 	private int topLeft = -1, topCenter = -1, topRight = -1;
 	private float leftWidth, rightWidth, middleWidth, middleHeight, topHeight, bottomHeight;
 	private float[] vertices = new float[9 * 4 * 5];
 	private int idx;
-	private Color color = Color.WHITE;
-	private boolean blending = true;
-
-	private NinePatch () {
-	}
+	private final Color color = Color.WHITE;
 
 	public NinePatch (Texture texture, int left, int right, int top, int bottom) {
 		this(new TextureRegion(texture), left, right, top, bottom);
@@ -153,7 +148,7 @@ public class NinePatch {
 	}
 
 	public NinePatch (NinePatch ninePatch) {
-		this(ninePatch, ninePatch.color == null ? null : new Color(ninePatch.color));
+		this(ninePatch, new Color(ninePatch.color));
 	}
 
 	public NinePatch (NinePatch ninePatch, Color color) {
@@ -169,9 +164,6 @@ public class NinePatch {
 		topCenter = ninePatch.topCenter;
 		topRight = ninePatch.topRight;
 
-		patches = new TextureRegion[9];
-		System.arraycopy(ninePatch.patches, 0, patches, 0, ninePatch.patches.length);
-
 		leftWidth = ninePatch.leftWidth;
 		rightWidth = ninePatch.rightWidth;
 		middleWidth = ninePatch.middleWidth;
@@ -182,13 +174,10 @@ public class NinePatch {
 		vertices = new float[ninePatch.vertices.length];
 		System.arraycopy(ninePatch.vertices, 0, vertices, 0, ninePatch.vertices.length);
 		idx = ninePatch.idx;
-		this.color = color == null ? null : new Color(color);
-		blending = ninePatch.blending;
+		this.color.set(color);
 	}
 
 	private void load (TextureRegion[] patches) {
-		this.patches = patches;
-
 		float color = Color.WHITE.toFloatBits();
 
 		if (patches[BOTTOM_LEFT] != null) {
@@ -312,25 +301,15 @@ public class NinePatch {
 		if (topCenter != -1) set(topCenter, centerColumnX, topRowY, rightColumnX - centerColumnX, y + height - topRowY, c);
 		if (topRight != -1) set(topRight, rightColumnX, topRowY, x + width - rightColumnX, y + height - topRowY, c);
 
-		if (blending)
-			batch.draw(texture, vertices, 0, idx);
-		else {
-			if (batch.getColor().a == 1f && color != null && color.a == 1f) batch.disableBlending();
-			batch.draw(texture, vertices, 0, idx);
-			batch.enableBlending();
-		}
+		batch.draw(texture, vertices, 0, idx);
 	}
 
 	public void setColor (Color color) {
-		this.color = color;
+		this.color.set(color);
 	}
 
 	public Color getColor () {
 		return color;
-	}
-
-	public void setBlending (boolean blending) {
-		this.blending = blending;
 	}
 
 	public float getLeftWidth () {
@@ -387,9 +366,5 @@ public class NinePatch {
 
 	public float getTotalHeight () {
 		return topHeight + middleHeight + bottomHeight;
-	}
-
-	public TextureRegion[] getPatches () {
-		return patches;
 	}
 }

@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.g2d;
 import java.util.List;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 
 /** <p>
  * An Animation stores a list of {@link TextureRegion}s representing an animated sequence, e.g. for running or jumping. Each
@@ -44,11 +45,11 @@ public class Animation {
 	 * 
 	 * @param frameDuration the time between frames in seconds.
 	 * @param keyFrames the {@link TextureRegion}s representing the frames. */
-	public Animation (float frameDuration, List keyFrames) {
+	public Animation (float frameDuration, Array keyFrames) {
 		this.frameDuration = frameDuration;
-		this.animationDuration = keyFrames.size() * frameDuration;
-		this.keyFrames = new TextureRegion[keyFrames.size()];
-		for (int i = 0, n = keyFrames.size(); i < n; i++) {
+		this.animationDuration = keyFrames.size * frameDuration;
+		this.keyFrames = new TextureRegion[keyFrames.size];
+		for (int i = 0, n = keyFrames.size; i < n; i++) {
 			this.keyFrames[i] = (TextureRegion)keyFrames.get(i);
 		}
 
@@ -60,12 +61,12 @@ public class Animation {
 	 * @param frameDuration the time between frames in seconds.
 	 * @param keyFrames the {@link TextureRegion}s representing the frames.
 	 * @param playType the type of animation play (NORMAL, REVERSED, LOOP, LOOP_REVERSED, LOOP_PINGPONG, LOOP_RANDOM) */
-	public Animation (float frameDuration, List keyFrames, int playType) {
+	public Animation (float frameDuration, Array keyFrames, int playType) {
 
 		this.frameDuration = frameDuration;
-		this.animationDuration = keyFrames.size() * frameDuration;
-		this.keyFrames = new TextureRegion[keyFrames.size()];
-		for (int i = 0, n = keyFrames.size(); i < n; i++) {
+		this.animationDuration = keyFrames.size * frameDuration;
+		this.keyFrames = new TextureRegion[keyFrames.size];
+		for (int i = 0, n = keyFrames.size; i < n; i++) {
 			this.keyFrames[i] = (TextureRegion)keyFrames.get(i);
 		}
 

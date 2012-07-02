@@ -54,7 +54,7 @@ public class SelectBox extends Widget {
 	}
 
 	public SelectBox (Object[] items, Skin skin) {
-		this(items, skin.getStyle(SelectBoxStyle.class));
+		this(items, skin.get(SelectBoxStyle.class));
 	}
 
 	public SelectBox (Object[] items, SelectBoxStyle style) {

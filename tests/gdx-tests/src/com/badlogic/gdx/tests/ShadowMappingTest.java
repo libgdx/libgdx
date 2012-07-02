@@ -118,14 +118,13 @@ public class ShadowMappingTest extends GdxTest {
 
 	private void setupUI () {
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		Label label = new Label("Camera:", skin.getStyle(LabelStyle.class));
-		final SelectBox cameraCombo = new SelectBox(new String[] {"Scene", "Light"}, skin.getStyle(SelectBoxStyle.class));
-		Label label2 = new Label("Shader", skin.getStyle(LabelStyle.class));
-		final SelectBox shaderCombo = new SelectBox(new String[] {"flat", "shadow-gen", "shadow-map"},
-			skin.getStyle(SelectBoxStyle.class));
-		fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class));
+		Label label = new Label("Camera:", skin);
+		final SelectBox cameraCombo = new SelectBox(new String[] {"Scene", "Light"}, skin);
+		Label label2 = new Label("Shader", skin);
+		final SelectBox shaderCombo = new SelectBox(new String[] {"flat", "shadow-gen", "shadow-map"}, skin);
+		fpsLabel = new Label("fps:", skin);
 
 		Table table = new Table();
 		table.setSize(Gdx.graphics.getWidth(), 100);

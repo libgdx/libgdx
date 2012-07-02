@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
@@ -24,7 +25,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 
@@ -56,7 +56,7 @@ public class Image extends Widget {
 
 	/** Creates an image stretched, and aligned center. */
 	public Image (Texture texture) {
-		this(new TextureDrawable(texture));
+		this(new TextureRegionDrawable(new TextureRegion(texture)));
 	}
 
 	/** Creates an image stretched, and aligned center.

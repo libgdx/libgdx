@@ -45,7 +45,7 @@ public class TableTest extends GdxTest {
 		stage = new Stage(0, 0, false);
 		Gdx.input.setInputProcessor(stage);
 
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 		TextureRegion region = new TextureRegion(texture);
@@ -78,7 +78,7 @@ public class TableTest extends GdxTest {
 		root.add(new Label("meow meow meow meow meow meow meow meow meow meow meow meow", skin)).colspan(3);
 		root.row();
 		root.add(new TextButton("Text Button", skin)).expand();
-		root.add(new TextButton("Toggle Button", skin.getStyle("toggle", TextButtonStyle.class)));
+		root.add(new TextButton("Toggle Button", skin.get("toggle", TextButtonStyle.class)));
 		root.add(new CheckBox("meow", skin));
 		root.pack();
 		// root.add(new Button(new Image(region), skin));

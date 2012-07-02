@@ -105,7 +105,7 @@ public class GwtTestWrapper extends GdxTest {
 	@Override
 	public void create () {
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 		container = new Table();
 		ui.addActor(container);

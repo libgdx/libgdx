@@ -33,7 +33,7 @@ public class CheckBox extends TextButton {
 	}
 
 	public CheckBox (String text, Skin skin) {
-		this(text, skin.getStyle(CheckBoxStyle.class));
+		this(text, skin.get(CheckBoxStyle.class));
 	}
 
 	public CheckBox (String text, CheckBoxStyle style) {

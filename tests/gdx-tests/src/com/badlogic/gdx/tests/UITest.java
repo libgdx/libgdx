@@ -70,7 +70,7 @@ public class UITest extends GdxTest {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		texture1 = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		texture2 = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 		TextureRegion image = new TextureRegion(texture1);
@@ -80,23 +80,22 @@ public class UITest extends GdxTest {
 
 		// Group.debug = true;
 
-		final Button button = new TextButton("Single", skin.getStyle(TextButtonStyle.class));
-		final Button buttonMulti = new TextButton("Multi\nLine\nToggle", skin.getStyle("toggle", TextButtonStyle.class));
-		final Button imgButton = new Button(new Image(image), skin.getStyle(ButtonStyle.class));
-		final Button imgToggleButton = new Button(new Image(image), skin.getStyle("toggle", ButtonStyle.class));
-		final CheckBox checkBox = new CheckBox("Check me", skin.getStyle(CheckBoxStyle.class));
-		final Slider slider = new Slider(0, 10, 1, skin.getStyle(SliderStyle.class));
-		final TextField textfield = new TextField("", "Click here!", skin.getStyle(TextFieldStyle.class));
-		final SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX"},
-			skin.getStyle(SelectBoxStyle.class));
+		final Button button = new TextButton("Single", skin);
+		final Button buttonMulti = new TextButton("Multi\nLine\nToggle", skin.get("toggle", TextButtonStyle.class));
+		final Button imgButton = new Button(new Image(image), skin);
+		final Button imgToggleButton = new Button(new Image(image), skin.get("toggle", ButtonStyle.class));
+		final CheckBox checkBox = new CheckBox("Check me", skin);
+		final Slider slider = new Slider(0, 10, 1, skin);
+		final TextField textfield = new TextField("", "Click here!", skin);
+		final SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX"}, skin);
 		final Image imageActor = new Image(image2);
 		final ScrollPane scrollPane = new ScrollPane(imageActor);
-		final List list = new List(listEntries, skin.getStyle(ListStyle.class));
-		final ScrollPane scrollPane2 = new ScrollPane(list, skin.getStyle(ScrollPaneStyle.class));
+		final List list = new List(listEntries, skin);
+		final ScrollPane scrollPane2 = new ScrollPane(list, skin);
 		scrollPane2.setFlickScroll(false);
-		final SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, skin.getStyle("default-horizontal",
+		final SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, skin.get("default-horizontal",
 			SplitPaneStyle.class));
-		fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class));
+		fpsLabel = new Label("fps:", skin);
 
 		// configures an example of a TextField in password mode.
 		final Label passwordLabel = new Label("Textfield in password mode: ", skin);
@@ -105,7 +104,7 @@ public class UITest extends GdxTest {
 		passwordTextField.setPasswordMode(true);
 
 		// window.debug();
-		Window window = new Window("Dialog", skin.getStyle(WindowStyle.class));
+		Window window = new Window("Dialog", skin);
 		window.setPosition(0, 0);
 		window.defaults().spaceBottom(10);
 		window.row().fill().expandX();

@@ -32,6 +32,11 @@ public class TextureRegionDrawable extends EmptyDrawable {
 		setRegion(region);
 	}
 
+	public TextureRegionDrawable (TextureRegionDrawable drawable) {
+		super(drawable);
+		setRegion(drawable.region);
+	}
+
 	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
 		batch.draw(region, x, y, width, height);
 	}

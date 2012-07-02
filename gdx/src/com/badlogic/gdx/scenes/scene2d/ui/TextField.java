@@ -91,16 +91,16 @@ public class TextField extends Widget {
 	private char passwordCharacter = BULLET;
 
 	public TextField (Skin skin) {
-		this("", null, skin.getStyle(TextFieldStyle.class));
+		this("", null, skin.get(TextFieldStyle.class));
 	}
 
 	public TextField (String text, Skin skin) {
-		this(text, null, skin.getStyle(TextFieldStyle.class));
+		this(text, null, skin.get(TextFieldStyle.class));
 	}
 
 	/** @param messageText Text to show when empty. May be null. */
 	public TextField (String text, String messageText, Skin skin) {
-		this(text, messageText, skin.getStyle(TextFieldStyle.class));
+		this(text, messageText, skin.get(TextFieldStyle.class));
 	}
 
 	public TextField (TextFieldStyle style) {

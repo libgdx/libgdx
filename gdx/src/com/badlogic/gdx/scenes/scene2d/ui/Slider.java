@@ -46,7 +46,7 @@ public class Slider extends Widget {
 	}
 
 	public Slider (float min, float max, float steps, Skin skin) {
-		this(min, max, steps, skin.getStyle(SliderStyle.class));
+		this(min, max, steps, skin.get(SliderStyle.class));
 	}
 
 	/** Creates a new slider. It's width is determined by the given prefWidth parameter, its height is determined by the maximum of

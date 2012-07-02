@@ -34,7 +34,7 @@ public class ImageTest extends GdxTest {
 
 	@Override
 	public void create () {
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		image2 = new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")));
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		Gdx.input.setInputProcessor(ui);

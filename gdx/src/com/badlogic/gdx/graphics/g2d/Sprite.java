@@ -44,7 +44,7 @@ public class Sprite extends TextureRegion {
 	private float rotation;
 	private float scaleX = 1, scaleY = 1;
 	private boolean dirty = true;
-	private Rectangle bounds = new Rectangle();
+	private Rectangle bounds;
 
 	/** Creates an uninitialized sprite. The sprite will need a texture, texture region, bounds, and color set before it can be
 	 * drawn. */
@@ -405,7 +405,8 @@ public class Sprite extends TextureRegion {
 	}
 
 	/** Returns the bounding axis aligned {@link Rectangle} that bounds this sprite. The rectangles x and y coordinates describe its
-	 * bottom left corner. If you change the position or size of the sprite, you have to fetch the triangle again for it to be recomputed.
+	 * bottom left corner. If you change the position or size of the sprite, you have to fetch the triangle again for it to be
+	 * recomputed.
 	 * 
 	 * @return the bounding Rectangle */
 	public Rectangle getBoundingRectangle () {
@@ -432,11 +433,11 @@ public class Sprite extends TextureRegion {
 		maxy = maxy < vertices[Y3] ? vertices[Y3] : maxy;
 		maxy = maxy < vertices[Y4] ? vertices[Y4] : maxy;
 
+		if (bounds == null) bounds = new Rectangle();
 		bounds.x = minx;
 		bounds.y = miny;
 		bounds.width = maxx - minx;
 		bounds.height = maxy - miny;
-
 		return bounds;
 	}
 

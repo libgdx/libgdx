@@ -47,7 +47,7 @@ public class List extends Widget implements Cullable {
 	}
 
 	public List (Object[] items, Skin skin) {
-		this(items, skin.getStyle(ListStyle.class));
+		this(items, skin.get(ListStyle.class));
 	}
 
 	public List (Object[] items, ListStyle style) {

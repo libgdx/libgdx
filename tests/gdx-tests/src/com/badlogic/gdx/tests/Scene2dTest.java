@@ -73,7 +73,7 @@ public class Scene2dTest extends GdxTest {
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		TextButtonStyle style = skin.getStyle(TextButtonStyle.class);
+		TextButtonStyle style = skin.get(TextButtonStyle.class);
 		style.up = new EmptyDrawable() {
 			ShapeRenderer renderer = new ShapeRenderer();
 

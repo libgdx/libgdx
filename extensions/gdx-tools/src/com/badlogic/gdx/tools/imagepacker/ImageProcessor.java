@@ -93,6 +93,7 @@ public class ImageProcessor {
 			String crc = hash(rect.image);
 			Rect existing = crcs.get(crc);
 			if (existing != null) {
+				System.out.println(rect.name + " (alias of " + existing.name + ")");
 				existing.aliases.add(rect);
 				return;
 			}
@@ -172,7 +173,7 @@ public class ImageProcessor {
 	}
 
 	/** Returns the splits, or null if the image had no splits or the splits were only a single region. Splits are an int[4] that
-	 * has startX, endX, startY, endY. */
+	 * has left, right, top, bottom. */
 	private int[] getSplits (BufferedImage image, String name) {
 		WritableRaster raster = image.getRaster();
 		int[] rgba = new int[4];
@@ -222,7 +223,8 @@ public class ImageProcessor {
 		// No splits, or all splits.
 		if (startX == 1 && endX == 1 && startY == 1 && endY == 1) return null;
 
-		return new int[] {startX - 1, endX - 1, startY - 1, endY - 1};
+		// Subtraction here is because the coordinates were computed before the 1px border was stripped.
+		return new int[] {startX - 1, raster.getWidth() - 2 - (endX - 1), startY - 1, raster.getHeight() - 2 - (endY - 1)};
 	}
 
 	static private String hash (BufferedImage image) {

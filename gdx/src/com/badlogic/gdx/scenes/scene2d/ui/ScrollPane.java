@@ -88,7 +88,7 @@ public class ScrollPane extends WidgetGroup {
 
 	/** @param widget May be null. */
 	public ScrollPane (Actor widget, Skin skin) {
-		this(widget, skin.getStyle(ScrollPaneStyle.class));
+		this(widget, skin.get(ScrollPaneStyle.class));
 	}
 
 	/** @param widget May be null. */

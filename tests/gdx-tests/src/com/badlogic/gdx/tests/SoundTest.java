@@ -45,7 +45,7 @@ public class SoundTest extends GdxTest {
 	public void create () {
 		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.mp3", FileType.Internal));
 
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		TextButton play = new TextButton("Play", skin);
 		TextButton stop = new TextButton("Stop", skin);

@@ -44,8 +44,8 @@ public class LabelTest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch();
 		renderer = new ShapeRenderer();
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
-		skin.getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		skin.getAtlas().getTextures().iterator().next().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		stage = new Stage(0, 0, false);
 		Gdx.input.setInputProcessor(stage);
 

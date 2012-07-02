@@ -43,6 +43,8 @@ public class TexturePacker2 {
 	public void pack (File outputDir, String packFileName) {
 		outputDir.mkdirs();
 
+		if (packFileName.indexOf('.') == -1) packFileName += ".atlas";
+
 		Array<Page> pages = maxRectsPacker.pack(imageProcessor.getImages());
 		writeImages(outputDir, pages, packFileName);
 		try {
@@ -58,8 +60,7 @@ public class TexturePacker2 {
 		if (dotIndex != -1) imageName = imageName.substring(0, dotIndex);
 
 		int fileIndex = 0;
-		for (int i = 0, n = pages.size; i < n; i++) {
-			Page page = pages.get(i);
+		for (Page page : pages) {
 			int x = 0, y = 0, width = page.width, height = page.height;
 			int paddingX = (int)Math.ceil(settings.paddingX / 2f);
 			int paddingY = (int)Math.ceil(settings.paddingY / 2f);
@@ -88,8 +89,7 @@ public class TexturePacker2 {
 
 			System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
 
-			for (int ii = 0, nn = page.outputRects.size; ii < nn; ii++) {
-				Rect rect = page.outputRects.get(ii);
+			for (Rect rect : page.outputRects) {
 				int rectX = x + rect.x, rectY = y + page.height - rect.y - rect.height;
 				if (rect.rotated) {
 					g.translate(rectX, rectY);
@@ -156,31 +156,35 @@ public class TexturePacker2 {
 	private void writePackFile (File outputDir, Array<Page> pages, String packFileName) throws IOException {
 		File packFile = new File(outputDir, packFileName);
 		FileWriter writer = new FileWriter(packFile, true);
-		for (int i = 0, n = pages.size; i < n; i++) {
-			Page page = pages.get(i);
-
+		for (Page page : pages) {
 			writer.write("\n" + page.imageName + "\n");
 			writer.write("format: " + settings.format + "\n");
 			writer.write("filter: " + settings.filterMin + "," + settings.filterMag + "\n");
 			writer.write("repeat: " + getRepeatValue() + "\n");
 
-			for (int ii = 0, nn = page.outputRects.size; ii < nn; ii++) {
-				Rect rect = page.outputRects.get(ii);
-				writer.write(rect.name + "\n");
-				writer.write("  rotate: " + rect.rotated + "\n");
-				writer.write("  xy: " + rect.x + ", " + rect.y + "\n");
-				writer.write("  size: " + rect.image.getWidth() + ", " + rect.image.getHeight() + "\n");
-				if (rect.splits != null) {
-					writer.write("  split: " + rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3]
-						+ "\n");
+			for (Rect rect : page.outputRects) {
+				writeRect(writer, page, rect);
+				for (Rect alias : rect.aliases) {
+					alias.setSize(rect);
+					writeRect(writer, page, alias);
 				}
-				writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
-				writer.write("  offset: " + rect.offsetX + ", " + (rect.originalHeight - rect.image.getHeight() - rect.offsetY)
-					+ "\n");
-				writer.write("  index: " + rect.index + "\n");
 			}
 		}
 		writer.close();
+	}
+
+	private void writeRect (FileWriter writer, Page page, Rect rect) throws IOException {
+		writer.write(rect.name + "\n");
+		writer.write("  rotate: " + rect.rotated + "\n");
+		writer.write("  xy: " + rect.x + ", " + (page.height - rect.height - rect.y) + "\n");
+		writer.write("  size: " + rect.image.getWidth() + ", " + rect.image.getHeight() + "\n");
+		if (rect.splits != null) {
+			writer
+				.write("  split: " + rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
+		}
+		writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
+		writer.write("  offset: " + rect.offsetX + ", " + (rect.originalHeight - rect.image.getHeight() - rect.offsetY) + "\n");
+		writer.write("  index: " + rect.index + "\n");
 	}
 
 	private String getRepeatValue () {
@@ -242,6 +246,10 @@ public class TexturePacker2 {
 		}
 
 		Rect (Rect rect) {
+			setSize(rect);
+		}
+
+		void setSize (Rect rect) {
 			x = rect.x;
 			y = rect.y;
 			width = rect.width;
@@ -291,7 +299,7 @@ public class TexturePacker2 {
 		public boolean edgePadding = true;
 		public boolean duplicatePadding = true;
 		public boolean rotation;
-		public int minWidth = 128, minHeight = 128;
+		public int minWidth = 16, minHeight = 16;
 		public int maxWidth = 1024, maxHeight = 1024;
 		public boolean stripWhitespaceX, stripWhitespaceY;
 		public int alphaThreshold;
@@ -338,7 +346,7 @@ public class TexturePacker2 {
 
 	static public void process (String input, String output, String packFileName) {
 		try {
-			new TexturePackerFileProcessor().process(new File(input), new File(output));
+			new TexturePackerFileProcessor(new Settings(), packFileName).process(new File(input), new File(output));
 		} catch (Exception ex) {
 			throw new RuntimeException("Error packing files.", ex);
 		}

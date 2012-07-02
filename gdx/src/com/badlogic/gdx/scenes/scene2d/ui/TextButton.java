@@ -34,7 +34,7 @@ public class TextButton extends Button {
 	}
 
 	public TextButton (String text, Skin skin) {
-		this(text, skin.getStyle("default", TextButtonStyle.class));
+		this(text, skin.get(TextButtonStyle.class));
 	}
 
 	public TextButton (String text, TextButtonStyle style) {
