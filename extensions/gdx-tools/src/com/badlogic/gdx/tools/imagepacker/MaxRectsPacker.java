@@ -9,7 +9,7 @@ import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Rect;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 import com.badlogic.gdx.utils.Array;
 
-/** Packs pages of images using the maximal rectangles bin packing algorithm by Jukka Jylänki. A brute force binary search is used
+/** Packs pages of images using the maximal rectangles bin packing algorithm by Jukka JylÃ¤nki. A brute force binary search is used
  * to pack into the smallest bin possible.
  * @author Nathan Sweet */
 public class MaxRectsPacker {
@@ -173,7 +173,7 @@ public class MaxRectsPacker {
 
 	/** Maximal rectangles bin packing algorithm. Adapted from this C++ public domain source:
 	 * http://clb.demon.fi/projects/even-more-rectangle-bin-packing
-	 * @author Jukka Jylänki
+	 * @author Jukka Jylï¿½nki
 	 * @author Nathan Sweet */
 	class MaxRects {
 		private int binWidth;
