@@ -583,12 +583,9 @@ public class Actor {
 	}
 
 	public String toString () {
-		String name = getClass().getSimpleName();
-		if (name.length() == 0) {
-			name = getClass().getName();
-			int dotIndex = name.lastIndexOf('.');
-			if (dotIndex != -1) name = name.substring(dotIndex + 1);
-		}
+		String name = getClass().getName();
+		int dotIndex = name.lastIndexOf('.');
+		if (dotIndex != -1) name = name.substring(dotIndex + 1);
 		return name + " " + x + "," + y + " " + width + "x" + height;
 	}
 }

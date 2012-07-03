@@ -147,6 +147,7 @@ public class ReflectionCacheSourceCreator {
 		gatherTypes(typeOracle.findType("java.lang.Short").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.lang.Integer").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.lang.Float").getErasedType(), types);
+		gatherTypes(typeOracle.findType("java.lang.CharSequence").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.lang.Double").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.lang.Object").getErasedType(), types);
 		
@@ -210,7 +211,7 @@ public class ReflectionCacheSourceCreator {
 		
 		// java base class
 		String name = type.getQualifiedSourceName();
-		if(!(name.contains("com.badlogic.gdx.scenes.scene2d.ui") ||
+		if(!(name.contains("com.badlogic.gdx.scenes.scene2d") ||
 			  name.contains("com.badlogic.gdx.graphics.g2d.TextureRegion") ||
 			  name.contains("com.badlogic.gdx.graphics.g2d.BitmapFont") ||
 			  name.contains("com.badlogic.gdx.graphics.g2d.NinePatch") ||
@@ -230,6 +231,7 @@ public class ReflectionCacheSourceCreator {
 			  name.contains("java.lang.Integer") ||
 			  name.contains("java.lang.Float") ||
 			  name.contains("java.lang.Double") ||
+			  name.contains("java.lang.CharSequence") ||
 			  name.contains("java.lang.Object") ||
 			  !name.contains("."))) {
 			nesting--;

@@ -20,6 +20,7 @@
 		<include name="utils/BinaryHeap.java"/>
 		<include name="graphics/g2d/BitmapFont.java"/>
 		<include name="graphics/g2d/BitmapFontCache.java"/>
+		<include name="graphics/g2d/Polygon*.java"/>
 		<include name="assets/loaders/BitmapFontLoader.java"/>
 		<include name="utils/BooleanArray.java"/>
 		<include name="math/collision/BoundingBox.java"/>
@@ -117,7 +118,11 @@
 		<include name="graphics/g3d/decals/PluggableGroupStrategy.java"/>
 		<include name="math/Polygon.java"/>
 		<include name="utils/Pool.java"/>
+		<include name="utils/Pools.java"/>
+		<include name="utils/SnapshotArray.java"/>
 		<include name="utils/PooledLinkedList.java"/>
+		<include name="utils/DelayedRemovalArray.java"/>
+		<include name="utils/Timer.java"/>
 		<include name="Preferences.java"/>
 		<include name="math/Quaternion.java"/>
 		<include name="math/collision/Ray.java"/>
@@ -186,7 +191,8 @@
 		<include name="utils/compression/rangecoder/Decoder.java"/>
 		<include name="utils/compression/rangecoder/Encoder.java"/>		
 		
-		<include name="Action.java"/>
+		<include name="scenes/scene2d/Action.java"/>
+		<include name="scenes/scene2d/actions/*.java"/>
 		<include name="scenes/scene2d/Actor.java"/>
 		<include name="scenes/scene2d/ActorEvent.java"/>
 		<include name="scenes/scene2d/ActorListener.java"/>
@@ -199,12 +205,10 @@
 		<include name="scenes/scene2d/ui/CheckBox.java"/>
 		<include name="scenes/scene2d/ui/Image.java"/>
 		<include name="scenes/scene2d/ui/ImageButton.java"/>
-		<include name="scenes/scene2d/ui/Label.java"/>
-		<include name="scenes/scene2d/ui/TableToolkit.java"/>
+		<include name="scenes/scene2d/ui/Label.java"/>		
 		<include name="scenes/scene2d/ui/List.java"/>
 		<include name="scenes/scene2d/ui/ScrollPane.java"/>
 		<include name="scenes/scene2d/ui/SelectBox.java"/>
-		<include name="scenes/scene2d/ui/Skin.java"/>
 		<include name="scenes/scene2d/ui/Slider.java"/>
 		<include name="scenes/scene2d/ui/SplitPane.java"/>
 		<include name="scenes/scene2d/ui/Stack.java"/>
@@ -217,12 +221,9 @@
 		<include name="scenes/scene2d/ui/Window.java"/>
 		<include name="scenes/scene2d/utils/ActorGestureListener.java"/>
 		<include name="scenes/scene2d/utils/Align.java"/>
-		<include name="scenes/scene2d/utils/AndroidClipboard.java"/>
 		<include name="scenes/scene2d/utils/ChangeListener.java"/>
 		<include name="scenes/scene2d/utils/ClickListener.java"/>
-		<include name="scenes/scene2d/utils/Clipboard.java"/>
 		<include name="scenes/scene2d/utils/Cullable.java"/>
-		<include name="scenes/scene2d/utils/DesktopClipboard.java"/>
 		<include name="scenes/scene2d/utils/Drawable.java"/>
 		<include name="scenes/scene2d/utils/EmptyDrawable.java"/>
 		<include name="scenes/scene2d/utils/Layout.java"/>

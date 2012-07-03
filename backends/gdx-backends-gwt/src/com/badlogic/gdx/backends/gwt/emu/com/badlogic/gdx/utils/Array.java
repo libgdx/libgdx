@@ -141,6 +141,15 @@ public class Array<T> implements Iterable<T> {
 		size++;
 		items[index] = value;
 	}
+	
+	public void swap (int first, int second) {
+		if (first >= size) throw new IndexOutOfBoundsException(String.valueOf(first));
+		if (second >= size) throw new IndexOutOfBoundsException(String.valueOf(second));
+		T[] items = this.items;
+		T firstValue = items[first];
+		items[first] = items[second];
+		items[second] = firstValue;
+	}
 
 	/** @param identity If true, == comparison will be used. If false, .equals() comaparison will be used. */
 	public boolean contains (T value, boolean identity) {

@@ -340,7 +340,7 @@ public class Skin implements Disposable {
 
 		final Json json = new Json() {
 			public <T> T readValue (Class<T> type, Class elementType, Object jsonData) {
-				// If the JSON is a string but the type is not, look up the actual value by name.
+				// If the JSON is a string but the type is not, look up the actual value by name.				
 				if (jsonData instanceof String && !CharSequence.class.isAssignableFrom(type)) return get((String)jsonData, type);
 				return super.readValue(type, elementType, jsonData);
 			}

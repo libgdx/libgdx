@@ -320,6 +320,11 @@ public class GwtFileHandle extends FileHandle {
 		if(index > 0) dir = file.substring(0, index + 1);
 		return new GwtFileHandle(preloader, dir, type);
 	}
+	
+	public FileHandle sibling (String name) {
+		name = name.replace('\\', '/');
+		return parent().child(name);		
+	}
 
 	/** @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
 	public void mkdirs () {

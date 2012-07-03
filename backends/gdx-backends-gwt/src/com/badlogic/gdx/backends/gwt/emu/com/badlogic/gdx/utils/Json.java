@@ -695,7 +695,7 @@ public class Json {
 		return (T)readValue(type, null, jsonData);
 	}
 
-	public <T> T readValue (Class clazz, Class elementType, Object jsonData) {
+	public <T> T readValue (Class<T> clazz, Class elementType, Object jsonData) {
 		if (jsonData == null) return null;
 		
 		Type type = ReflectionCache.getType(clazz);
@@ -972,6 +972,13 @@ public class Json {
 		public T read (Json json, Object jsonData, Class type);
 	}
 
+	static abstract public class ReadOnlySerializer<T> implements Serializer<T> {
+		public void write (Json json, T object, Class knownType) {
+		}
+
+		abstract public T read (Json json, Object jsonData, Class type);
+	}
+	
 	static public interface Serializable {
 		public void write (Json json);
 
