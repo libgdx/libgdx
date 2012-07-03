@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gwtref.client.ReflectionCache;
 
 /** A resizable, ordered or unordered array of objects. If unordered, this class avoids a memory copy when removing elements (the
  * last element is moved to the removed element's position).
@@ -59,7 +60,7 @@ public class Array<T> implements Iterable<T> {
 	 * @param capacity Any elements added beyond this will cause the backing array to be grown. */
 	public Array (boolean ordered, int capacity, Class<T> arrayType) {
 		this.ordered = ordered;
-		items = (T[])new Object[capacity];
+		items = (T[])ReflectionCache.newArray(arrayType, capacity);
 	}
 
 	/** Creates an ordered array with {@link #items} of the specified type and a capacity of 16. */

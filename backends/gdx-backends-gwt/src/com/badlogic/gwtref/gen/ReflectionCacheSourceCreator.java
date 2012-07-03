@@ -705,6 +705,7 @@ public class ReflectionCacheSourceCreator {
 
 	private void newArrayC () {
 		p("public Object newArray (Class componentType, int size) {");
+		p("    String typeName = componentType.getName().replace('$', '.');");
 		for(JType type: types) {
 			if(type.getQualifiedSourceName().equals("void")) continue;
 			if(type.getQualifiedSourceName().endsWith("Void")) continue;
@@ -713,9 +714,9 @@ public class ReflectionCacheSourceCreator {
 				arrayType = type.getErasedType().getQualifiedSourceName();
 				arrayType = arrayType.replaceFirst("\\[\\]", "[size]") + "[]";
 			}
-			p("   if(componentType.getName().equals(\"" + type.getQualifiedSourceName() + "\")) return new " + arrayType + ";");
+			p("   if(typeName.equals(\"" + type.getQualifiedSourceName() + "\")) return new " + arrayType + ";");
 		}
-		p("	return null;");
+		p("	throw new RuntimeException(\"Couldn't create array with element type \" + componentType.getName());");
 		p("}");
 	}
 
