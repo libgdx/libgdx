@@ -208,6 +208,10 @@ public class TextField extends Widget {
 				}
 				return false;
 			}
+			
+			public boolean keyUp (ActorEvent event, int keycode) {
+				return true;
+			}
 
 			public boolean keyTyped (ActorEvent event, char character) {
 				final BitmapFont font = style.font;
