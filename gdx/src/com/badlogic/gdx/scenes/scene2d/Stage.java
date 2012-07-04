@@ -555,7 +555,7 @@ public class Stage extends InputAdapter implements Disposable {
 		if (ownsBatch) batch.dispose();
 	}
 
-	static final class TouchFocus {
+	public static final class TouchFocus {
 		static final Pool<TouchFocus> pool = new Pool<TouchFocus>(4, 16) {
 			protected TouchFocus newObject () {
 				return new TouchFocus();
