@@ -668,7 +668,7 @@ public final class Intersector {
 			final int j = (i + 1) % length1;
 
 			// projection axis is perpendicular to potential separation axis edge i->j
-			float projX = verts1[j + 1] - verts1[i + 1];
+			float projX = verts1[(j + 1) % length1] - verts1[i + 1];
 			float projY = verts1[i] - verts1[j];
 
 			// normalize projection axis
