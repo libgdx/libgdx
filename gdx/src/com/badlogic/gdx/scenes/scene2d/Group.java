@@ -200,7 +200,7 @@ public class Group extends Actor implements Cullable {
 	protected void childrenChanged () {
 	}
 
-	/** Adds an actor as a child of this group. */
+	/** Adds an actor as a child of this group. The actor is first removed from its parent group, if any. */
 	public void addActor (Actor actor) {
 		actor.remove();
 		children.add(actor);
@@ -209,7 +209,7 @@ public class Group extends Actor implements Cullable {
 		childrenChanged();
 	}
 
-	/** Adds an actor as a child of this group, at a specific index. */
+	/** Adds an actor as a child of this group, at a specific index. The actor is first removed from its parent group, if any. */
 	public void addActorAt (int index, Actor actor) {
 		actor.remove();
 		children.insert(index, actor);
@@ -218,7 +218,8 @@ public class Group extends Actor implements Cullable {
 		childrenChanged();
 	}
 
-	/** Adds an actor as a child of this group, immediately before another child actor. */
+	/** Adds an actor as a child of this group, immediately before another child actor. The actor is first removed from its parent
+	 * group, if any. */
 	public void addActorBefore (Actor actorBefore, Actor actor) {
 		actor.remove();
 		int index = children.indexOf(actorBefore, true);
@@ -228,7 +229,8 @@ public class Group extends Actor implements Cullable {
 		childrenChanged();
 	}
 
-	/** Adds an actor as a child of this group, immediately after another child actor. */
+	/** Adds an actor as a child of this group, immediately after another child actor. The actor is first removed from its parent
+	 * group, if any. */
 	public void addActorAfter (Actor actorAfter, Actor actor) {
 		actor.remove();
 		int index = children.indexOf(actorAfter, true);

@@ -203,7 +203,7 @@ public class Table extends WidgetGroup {
 	/** Adds a new cell to the table with the specified actor.
 	 * @param actor May be null to add a cell without an actor. */
 	public Cell add (Actor actor) {
-		return layout.add(actor);
+		return layout.add(actor == null ? new Actor() : actor);
 	}
 
 	/** Adds a new cell to the table with the specified actors in a {@link Stack}.

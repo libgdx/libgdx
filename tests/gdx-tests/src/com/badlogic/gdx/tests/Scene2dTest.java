@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ActorEvent;
 import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
@@ -141,7 +142,7 @@ public class Scene2dTest extends GdxTest {
 
 		meow.setDuration(2);
 
-		// actor.addAction(parallel(moveBy(250, 250, 2)));
+		 actor.addAction(forever(sequence(moveBy(50, 0, 2),moveBy(-50, 0, 2))));
 		// actor.addAction(parallel(rotateBy(90, 2), rotateBy(90, 2)));
 		// actor.addAction(parallel(moveTo(250, 250, 2, elasticOut), color(RED, 6), delay(0.5f), rotateTo(180, 5, swing)));
 		// actor.addAction(forever(sequence(scaleTo(2, 2, 0.5f), scaleTo(1, 1, 0.5f), delay(0.5f))));
