@@ -56,7 +56,7 @@ public class Table extends WidgetGroup {
 	}
 
 	private final TableLayout layout;
-	private Drawable backgroundDrawable;
+	private Drawable background;
 	private boolean clip;
 	private Skin skin;
 
@@ -95,10 +95,10 @@ public class Table extends WidgetGroup {
 	/** Called to draw the background, before clipping is applied (if enabled). Default implementation draws the background
 	 * drawable. */
 	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
-		if (backgroundDrawable != null) {
+		if (background != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			backgroundDrawable.draw(batch, getX(), getY(), getWidth(), getHeight());
+			background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
 	}
 
@@ -106,7 +106,7 @@ public class Table extends WidgetGroup {
 		Rectangle tableBounds = Rectangle.tmp;
 		tableBounds.width = getWidth();
 		tableBounds.height = getHeight();
-		if (backgroundDrawable == null) {
+		if (background == null) {
 			tableBounds.x = 0;
 			tableBounds.y = 0;
 		} else {
@@ -125,12 +125,12 @@ public class Table extends WidgetGroup {
 	}
 
 	public float getPrefWidth () {
-		if (backgroundDrawable != null) return Math.max(layout.getPrefWidth(), backgroundDrawable.getMinWidth());
+		if (background != null) return Math.max(layout.getPrefWidth(), background.getMinWidth());
 		return layout.getPrefWidth();
 	}
 
 	public float getPrefHeight () {
-		if (backgroundDrawable != null) return Math.max(layout.getPrefHeight(), backgroundDrawable.getMinHeight());
+		if (background != null) return Math.max(layout.getPrefHeight(), background.getMinHeight());
 		return layout.getPrefHeight();
 	}
 
@@ -146,8 +146,8 @@ public class Table extends WidgetGroup {
 	 * {@link Drawable#getTopHeight()}, {@link Drawable#getLeftWidth()}, and {@link Drawable#getRightWidth()}.
 	 * @param background If null, the background will be cleared and all padding is removed. */
 	public void setBackground (Drawable background) {
-		if (this.backgroundDrawable == background) return;
-		this.backgroundDrawable = background;
+		if (this.background == background) return;
+		this.background = background;
 		if (background == null)
 			pad(null);
 		else {
@@ -160,7 +160,7 @@ public class Table extends WidgetGroup {
 	}
 
 	public Drawable getBackground () {
-		return backgroundDrawable;
+		return background;
 	}
 
 	/** Causes the contents to be clipped if they exceed the table widget bounds. Enabling clipping will set
