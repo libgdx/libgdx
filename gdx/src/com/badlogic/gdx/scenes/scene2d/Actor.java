@@ -311,13 +311,13 @@ public class Actor {
 
 	/** Sets the x and y. */
 	public void setPosition (float x, float y) {
-		this.x = x;
-		this.y = y;
+		setX(x);
+		setY(y);
 	}
 
 	public void translate (float x, float y) {
-		this.x += x;
-		this.y += y;
+		setX(this.x + x);
+		setY(this.y + y);
 	}
 
 	public float getWidth () {
@@ -338,28 +338,28 @@ public class Actor {
 
 	/** Sets the width and height. */
 	public void setSize (float width, float height) {
-		this.width = width;
-		this.height = height;
+		setWidth(width);
+		setHeight(height);
 	}
 
 	/** Adds the specified size to the current size. */
 	public void size (float size) {
-		width += size;
-		height += size;
+		setWidth(width + size);
+		setHeight(height + size);
 	}
 
 	/** Adds the specified size to the current size. */
 	public void size (float width, float height) {
-		this.width += width;
-		this.height += height;
+		setWidth(this.width + width);
+		setHeight(this.height + height);
 	}
 
 	/** Set bounds the x, y, width, and height. */
 	public void setBounds (float x, float y, float width, float height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+		setX(x);
+		setY(y);
+		setWidth(width);
+		setHeight(height);
 	}
 
 	public float getOriginX () {
@@ -402,26 +402,26 @@ public class Actor {
 
 	/** Sets the scalex and scaley. */
 	public void setScale (float scale) {
-		this.scaleX = scale;
-		this.scaleY = scale;
+		setScaleX(scale);
+		setScaleY(scale);
 	}
 
 	/** Sets the scalex and scaley. */
 	public void setScale (float scaleX, float scaleY) {
-		this.scaleX = scaleX;
-		this.scaleY = scaleY;
+		setScaleX(scaleX);
+		setScaleY(scaleY);
 	}
 
 	/** Adds the specified scale to the current scale. */
 	public void scale (float scale) {
-		scaleX += scale;
-		scaleY += scale;
+		setScaleX(scaleX + scale);
+		setScaleY(scaleY + scale);
 	}
 
 	/** Adds the specified scale to the current scale. */
 	public void scale (float scaleX, float scaleY) {
-		this.scaleX += scaleX;
-		this.scaleY += scaleY;
+		setScaleX(this.scaleX + scaleX);
+		setScaleY(this.scaleY + scaleY);
 	}
 
 	public float getRotation () {
@@ -434,7 +434,7 @@ public class Actor {
 
 	/** Adds the specified rotation to the current rotation. */
 	public void rotate (float amount) {
-		this.rotation += amount;
+		setRotation(rotation + amount);
 	}
 
 	public void setColor (Color color) {
@@ -460,8 +460,8 @@ public class Actor {
 		setZIndex(0);
 	}
 
-	/** Sets the z-index of a child. The z-index is the index into the parent's {@link Group#getChildren() children}, where a lower
-	 * index is below a higher index. Setting a z-index out of range will move the child to the front. */
+	/** Sets the z-index of this actor. The z-index is the index into the parent's {@link Group#getChildren() children}, where a
+	 * lower index is below a higher index. Setting a z-index higher than the number of children will move the child to the front. */
 	public void setZIndex (int index) {
 		Group parent = getParent();
 		if (parent == null) return;
@@ -472,6 +472,13 @@ public class Actor {
 			children.add(this);
 		else
 			children.insert(index, this);
+	}
+
+	/** Returns the z-index of this actor. */
+	public int getZIndex () {
+		Group parent = getParent();
+		if (parent == null) return -1;
+		return parent.getChildren().indexOf(this, true);
 	}
 
 	/** Transforms the specified point in the stage's coordinates to the actor's local coordinate system. */

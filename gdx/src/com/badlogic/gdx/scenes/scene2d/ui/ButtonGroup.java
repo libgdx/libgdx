@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -52,6 +53,18 @@ public class ButtonGroup {
 		if (buttons == null) throw new IllegalArgumentException("buttons cannot be null.");
 		for (int i = 0, n = buttons.length; i < n; i++)
 			add(buttons[i]);
+	}
+
+	public void remove (Button button) {
+		if (button == null) throw new IllegalArgumentException("button cannot be null.");
+		button.buttonGroup = null;
+		buttons.removeValue(button, true);
+	}
+
+	public void remove (Button... buttons) {
+		if (buttons == null) throw new IllegalArgumentException("buttons cannot be null.");
+		for (int i = 0, n = buttons.length; i < n; i++)
+			remove(buttons[i]);
 	}
 
 	/** Sets the first {@link TextButton} with the specified text to checked. */
