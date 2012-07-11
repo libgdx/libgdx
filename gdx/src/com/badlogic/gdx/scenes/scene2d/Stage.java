@@ -223,8 +223,9 @@ public class Stage extends InputAdapter implements Disposable {
 		if (target == null) target = root;
 
 		target.fire(event);
+		boolean handled = event.isHandled();
 		Pools.free(event);
-		return event.isHandled();
+		return handled;
 	}
 
 	/** Applies a touch moved event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event.
