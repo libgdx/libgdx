@@ -177,6 +177,18 @@ public class Array<T> implements Iterable<T> {
 		return -1;
 	}
 
+	public int lastIndexOf (T value, boolean identity) {
+		T[] items = this.items;
+		if (identity || value == null) {
+			for (int i = size - 1; i >= 0; i--)
+				if (items[i] == value) return i;
+		} else {
+			for (int i = size - 1; i >= 0; i--)
+				if (value.equals(items[i])) return i;
+		}
+		return -1;
+	}
+
 	public boolean removeValue (T value, boolean identity) {
 		T[] items = this.items;
 		if (identity || value == null) {
