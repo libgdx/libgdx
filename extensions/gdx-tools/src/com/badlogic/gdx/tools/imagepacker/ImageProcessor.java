@@ -230,12 +230,24 @@ public class ImageProcessor {
 	static private String hash (BufferedImage image) {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA1");
-			WritableRaster raster = image.getRaster();
 			int width = image.getWidth();
-			final byte[] pixels = new byte[4 * width];
-			for (int y = 0; y < image.getHeight(); y++) {
+			int height = image.getHeight();
+			if (image.getType() != BufferedImage.TYPE_INT_ARGB) {
+				BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				newImage.getGraphics().drawImage(image, 0, 0, null);
+				image = newImage;
+			}
+			WritableRaster raster = image.getRaster();
+			int[] pixels = new int[width];
+			for (int y = 0; y < height; y++) {
 				raster.getDataElements(0, y, width, 1, pixels);
-				digest.update(pixels);
+				for (int x = 0; x < width; x++) {
+					int rgba = pixels[x];
+					digest.update((byte)(rgba >> 24));
+					digest.update((byte)(rgba >> 16));
+					digest.update((byte)(rgba >> 8));
+					digest.update((byte)rgba);
+				}
 			}
 			return new BigInteger(1, digest.digest()).toString(16);
 		} catch (NoSuchAlgorithmException ex) {
