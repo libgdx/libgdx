@@ -556,8 +556,9 @@ public class Stage extends InputAdapter implements Disposable {
 		if (ownsBatch) batch.dispose();
 	}
 
+	/** Internal class for managing touches. Public only for GWT. */
 	public static final class TouchFocus {
-		static final Pool<TouchFocus> pool = new Pool<TouchFocus>(4, 16) {
+		static final Pool<TouchFocus> pool = new Pool(4, 16) {
 			protected TouchFocus newObject () {
 				return new TouchFocus();
 			}
@@ -566,9 +567,5 @@ public class Stage extends InputAdapter implements Disposable {
 		Actor actor;
 		EventListener listener;
 		int pointer, button;
-
-		public String toString () {
-			return actor.toString();
-		}
 	}
 }

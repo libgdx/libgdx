@@ -54,7 +54,7 @@ public class GdxTests {
 			GestureDetectorTest.class, LabelTest.class, BitmapFontTest.class,
 			BlitTest.class, TableTest.class, BobTest.class,
 			ImageScaleTest.class, TableLayoutTest.class,
-			Box2DTest.class, InterpolationTest.class,
+			Box2DTest.class, InterpolationTest.class, TouchpadTest.class,
 			Box2DTestCollection.class, BufferUtilsTest.class, ImageTest.class,
 			CompassTest.class, ComplexActionTest.class, CullTest.class,
 			DeltaTimeTest.class, EdgeDetectionTest.class, ETC1Test.class,

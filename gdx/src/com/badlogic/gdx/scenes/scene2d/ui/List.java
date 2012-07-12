@@ -31,6 +31,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** A list (aka list box) displays textual items and highlights the currently selected item.
  * <p>
+ * {@link ChangeEvent} is fired when the list selection changes.
+ * <p>
  * The preferred size of the list is determined by the text bounds of the items and the size of the {@link ListStyle#selection}.
  * @author mzechner */
 public class List extends Widget implements Cullable {

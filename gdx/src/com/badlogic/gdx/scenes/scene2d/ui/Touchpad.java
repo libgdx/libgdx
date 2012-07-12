@@ -1,0 +1,214 @@
+
+package com.badlogic.gdx.scenes.scene2d.ui;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
+/** An on-screen joystick. The movement area of the joystick is circular, centered on the touchpad, and its size determined by the
+ * smaller touchpad dimension.
+ * <p>
+ * The preferred size of the touchpad is determined by the background.
+ * <p>
+ * {@link ChangeEvent} is fired when the touchpad knob is moved. Cancelling the event will move the knob to where it was
+ * previously.
+ * @author Josh Street */
+public class Touchpad extends Widget {
+	private TouchpadStyle style;
+	boolean touched;
+	private float deadzoneRadius;
+	private final Circle padBounds = new Circle(0, 0, 0);
+	private final Circle deadzoneBounds = new Circle(0, 0, 0);
+	private final Vector2 knobPosition = new Vector2();
+	private final Vector2 knobPercent = new Vector2();
+
+	/** @param deadzoneRadius The distance in pixels from the center of the touchpad required for the knob to be moved. */
+	public Touchpad (float deadzoneRadius, Skin skin) {
+		this(deadzoneRadius, skin.get(TouchpadStyle.class));
+	}
+
+	/** @param deadzoneRadius The distance in pixels from the center of the touchpad required for the knob to be moved. */
+	public Touchpad (float deadzoneRadius, Skin skin, String styleName) {
+		this(deadzoneRadius, skin.get(styleName, TouchpadStyle.class));
+	}
+
+	/** @param deadzoneRadius The distance in pixels from the center of the touchpad required for the knob to be moved. */
+	public Touchpad (float deadzoneRadius, TouchpadStyle style) {
+		if (deadzoneRadius < 0) throw new IllegalArgumentException("deadzoneRadius must be > 0");
+		this.deadzoneRadius = deadzoneRadius;
+
+		knobPosition.set(getWidth() / 2f, getHeight() / 2f);
+
+		setStyle(style);
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
+
+		addListener(new ActorListener() {
+			@Override
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				if (touched) return false;
+				touched = true;
+				calculatePositionAndValue(x, y, false);
+				return true;
+			}
+
+			@Override
+			public void touchDragged (ActorEvent event, float x, float y, int pointer) {
+				calculatePositionAndValue(x, y, false);
+			}
+
+			@Override
+			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+				touched = false;
+				calculatePositionAndValue(x, y, true);
+			}
+		});
+	}
+
+	void calculatePositionAndValue (float x, float y, boolean isTouchUp) {
+		float oldPositionX = knobPosition.x;
+		float oldPositionY = knobPosition.y;
+		float oldPercentX = knobPercent.x;
+		float oldPercentY = knobPercent.y;
+		knobPosition.set(getWidth() / 2f, getHeight() / 2f);
+		knobPercent.set(0f, 0f);
+		if (!isTouchUp) {
+			if (!deadzoneBounds.contains(x, y)) {
+				knobPercent.set(x - padBounds.x, y - padBounds.y).nor();
+				if (padBounds.contains(x, y)) {
+					knobPosition.set(x, y);
+				} else {
+					knobPosition.set(knobPercent).mul(padBounds.radius).add(padBounds.x, padBounds.y);
+				}
+			}
+		}
+		if ((oldPercentX != knobPercent.x || oldPercentY != knobPercent.y) && fire(new ChangeEvent())) {
+			knobPercent.set(oldPercentX, oldPercentY);
+			knobPosition.set(oldPositionX, oldPositionY);
+		}
+	}
+
+	public void setStyle (TouchpadStyle style) {
+		if (style == null) throw new IllegalArgumentException("style cannot be null");
+		this.style = style;
+		invalidateHierarchy();
+	}
+
+	/** Returns the touchpad's style. Modifying the returned style may not have an effect until {@link #setStyle(TouchpadStyle)} is
+	 * called. */
+	public TouchpadStyle getStyle () {
+		return style;
+	}
+
+	@Override
+	public Actor hit (float x, float y) {
+		return padBounds.contains(x, y) ? this : null;
+	}
+
+	@Override
+	public void layout () {
+		// Recalc pad and deadzone bounds
+		float radius = Math.min(getWidth(), getHeight()) / 2;
+		if (style.knob != null) radius -= Math.max(style.knob.getMinWidth(), style.knob.getMinHeight()) / 2;
+		padBounds.set(getWidth() / 2f, getHeight() / 2f, radius);
+		deadzoneBounds.set(getWidth() / 2f, getHeight() / 2f, deadzoneRadius);
+		// Recalc pad values and knob position
+		knobPosition.set(getWidth() / 2f, getHeight() / 2f);
+		knobPercent.set(0, 0);
+	}
+
+	@Override
+	public void draw (SpriteBatch batch, float parentAlpha) {
+		validate();
+
+		Color c = getColor();
+		batch.setColor(c.r, c.g, c.b, c.a * parentAlpha);
+
+		float x = getX();
+		float y = getY();
+		float w = getWidth();
+		float h = getHeight();
+
+		final Drawable bg = style.background;
+		if (bg != null) bg.draw(batch, x, y, w, h);
+
+		final Drawable knob = style.knob;
+		if (knob != null) {
+			x += knobPosition.x - knob.getMinWidth() / 2f;
+			y += knobPosition.y - knob.getMinHeight() / 2f;
+			knob.draw(batch, x, y, knob.getMinWidth(), knob.getMinHeight());
+		}
+	}
+
+	@Override
+	public float getPrefWidth () {
+		return style.background != null ? style.background.getMinWidth() : 0;
+	}
+
+	@Override
+	public float getPrefHeight () {
+		return style.background != null ? style.background.getMinHeight() : 0;
+	}
+
+	public boolean isTouched () {
+		return touched;
+	}
+
+	/** @param deadzoneRadius The distance in pixels from the center of the touchpad required for the knob to be moved. */
+	public void setDeadzone (float deadzoneRadius) {
+		if (deadzoneRadius < 0) throw new IllegalArgumentException("deadzoneRadius must be > 0");
+		this.deadzoneRadius = deadzoneRadius;
+		invalidate();
+	}
+
+	/** Returns the x-position of the knob relative to the center of the widget. The positive direction is right. */
+	public float getKnobX () {
+		return knobPosition.x;
+	}
+
+	/** Returns the y-position of the knob relative to the center of the widget. The positive direction is up. */
+	public float getKnobY () {
+		return knobPosition.y;
+	}
+
+	/** Returns the x-position of the knob as a percentage from the center of the touchpad to the edge of the circular movement
+	 * area. The positive direction is right. */
+	public float getKnobPercentX () {
+		return knobPercent.x;
+	}
+
+	/** Returns the y-position of the knob as a percentage from the center of the touchpad to the edge of the circular movement
+	 * area. The positive direction is up. */
+	public float getKnobPercentY () {
+		return knobPercent.y;
+	}
+
+	/** The style for a {@link Touchpad}.
+	 * @author Josh Street */
+	public static class TouchpadStyle {
+		/** Stretched in both directions. Optional. */
+		public Drawable background;
+
+		/** Optional. */
+		public Drawable knob;
+
+		public TouchpadStyle () {
+		}
+
+		public TouchpadStyle (Drawable background, Drawable knob) {
+			this.background = background;
+			this.knob = knob;
+		}
+
+		public TouchpadStyle (TouchpadStyle style) {
+			this.background = style.background;
+			this.knob = style.knob;
+		}
+	}
+}

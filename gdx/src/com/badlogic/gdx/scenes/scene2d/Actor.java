@@ -23,6 +23,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ActorEvent.Type;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pools;
 
 /** 2D scene graph node. An actor has a position, rectangular size, origin, scale, rotation, and color. The position corresponds to
@@ -474,7 +475,8 @@ public class Actor {
 			children.insert(index, this);
 	}
 
-	/** Returns the z-index of this actor. */
+	/** Returns the z-index of this actor.
+	 * @see #setZIndex(int) */
 	public int getZIndex () {
 		Group parent = getParent();
 		if (parent == null) return -1;
@@ -489,33 +491,33 @@ public class Actor {
 	}
 
 	/** Transforms the specified point in the actor's coordinates to be in the stage's coordinates. Note this method will ONLY work
-	 * properly for screen aligned, unrotated, unscaled actors! */
+	 * for screen aligned, unrotated, unscaled actors! */
 	public void localToStageCoordinates (Vector2 localCoords) {
-		localCoords.x += getX();
-		localCoords.y += getY();
-		Group parent = getParent();
-		while (parent != null) {
-			localCoords.x += parent.getX();
-			localCoords.y += parent.getY();
-			parent = parent.getParent();
+		Actor actor = this;
+		while (actor != null) {
+			if (actor.getRotation() != 0 || actor.getScaleX() != 1 || actor.getScaleY() != 1)
+				throw new GdxRuntimeException("Only unrotated and unscaled actors may use this method.");
+			localCoords.x += actor.getX();
+			localCoords.y += actor.getY();
+			actor = actor.getParent();
 		}
 	}
 
 	/** Converts the coordinates given in the parent's coordinate system to this actor's coordinate system. */
 	public void parentToLocalCoordinates (Vector2 parentCoords) {
-		float rotation = getRotation();
-		float scaleX = getScaleX();
-		float scaleY = getScaleY();
-		float childX = getX();
-		float childY = getY();
+		final float rotation = getRotation();
+		final float scaleX = getScaleX();
+		final float scaleY = getScaleY();
+		final float childX = getX();
+		final float childY = getY();
 
 		if (rotation == 0) {
 			if (scaleX == 1 && scaleY == 1) {
 				parentCoords.x -= childX;
 				parentCoords.y -= childY;
 			} else {
-				float originX = getOriginX();
-				float originY = getOriginY();
+				final float originX = getOriginX();
+				final float originY = getOriginY();
 				if (originX == 0 && originY == 0) {
 					parentCoords.x = (parentCoords.x - childX) / scaleX;
 					parentCoords.y = (parentCoords.y - childY) / scaleY;
@@ -528,8 +530,8 @@ public class Actor {
 			final float cos = (float)Math.cos(rotation * MathUtils.degreesToRadians);
 			final float sin = (float)Math.sin(rotation * MathUtils.degreesToRadians);
 
-			float originX = getOriginX();
-			float originY = getOriginY();
+			final float originX = getOriginX();
+			final float originY = getOriginY();
 
 			if (scaleX == 1 && scaleY == 1) {
 				if (originX == 0 && originY == 0) {
@@ -541,49 +543,39 @@ public class Actor {
 				} else {
 					final float worldOriginX = childX + originX;
 					final float worldOriginY = childY + originY;
-					float fx = -originX;
-					float fy = -originY;
+					final float fx = -originX;
+					final float fy = -originY;
 
-					float x1 = cos * fx - sin * fy;
-					float y1 = sin * fx + cos * fy;
-					x1 += worldOriginX;
-					y1 += worldOriginY;
+					final float x1 = cos * fx - sin * fy + worldOriginX;
+					final float y1 = sin * fx + cos * fy + worldOriginY;
 
-					float tox = parentCoords.x - x1;
-					float toy = parentCoords.y - y1;
+					final float tox = parentCoords.x - x1;
+					final float toy = parentCoords.y - y1;
 
 					parentCoords.x = tox * cos + toy * sin;
 					parentCoords.y = tox * -sin + toy * cos;
 				}
 			} else {
 				if (originX == 0 && originY == 0) {
-					float tox = parentCoords.x - childX;
-					float toy = parentCoords.y - childY;
+					final float tox = parentCoords.x - childX;
+					final float toy = parentCoords.y - childY;
 
-					parentCoords.x = tox * cos + toy * sin;
-					parentCoords.y = tox * -sin + toy * cos;
-
-					parentCoords.x /= scaleX;
-					parentCoords.y /= scaleY;
+					parentCoords.x = (tox * cos + toy * sin) / scaleX;
+					parentCoords.y = (tox * -sin + toy * cos) / scaleY;
 				} else {
 					final float worldOriginX = childX + originX;
 					final float worldOriginY = childY + originY;
-					float fx = -originX * scaleX;
-					float fy = -originY * scaleY;
+					final float fx = -originX * scaleX;
+					final float fy = -originY * scaleY;
 
-					float x1 = cos * fx - sin * fy;
-					float y1 = sin * fx + cos * fy;
-					x1 += worldOriginX;
-					y1 += worldOriginY;
+					final float x1 = cos * fx - sin * fy + worldOriginX;
+					final float y1 = sin * fx + cos * fy + worldOriginY;
 
-					float tox = parentCoords.x - x1;
-					float toy = parentCoords.y - y1;
+					final float tox = parentCoords.x - x1;
+					final float toy = parentCoords.y - y1;
 
-					parentCoords.x = tox * cos + toy * sin;
-					parentCoords.y = tox * -sin + toy * cos;
-
-					parentCoords.x /= scaleX;
-					parentCoords.y /= scaleY;
+					parentCoords.x = (tox * cos + toy * sin) / scaleX;
+					parentCoords.y = (tox * -sin + toy * cos) / scaleY;
 				}
 			}
 		}
