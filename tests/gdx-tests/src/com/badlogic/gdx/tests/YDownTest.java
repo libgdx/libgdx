@@ -162,14 +162,6 @@ public class YDownTest extends GdxTest {
 		public void draw (SpriteBatch batch, float parentAlpha) {
 			batch.draw(region, getX(), getY());
 		}
-
-		@Override
-		public Actor hit (float x, float y) {
-			// coordinates are passed in relative to the actor's upper left
-			// corner (0, 0)
-			Actor result = x > 0 && x < getWidth() && y > 0 && y < getHeight() ? this : null;
-			return result;
-		}
 	}
 
 	@Override

@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -180,8 +181,6 @@ public class Stage extends InputAdapter implements Disposable {
 		// Find the actor under the point.
 		screenToStageCoordinates(stageCoords.set(screenX, screenY));
 		Actor over = hit(stageCoords.x, stageCoords.y);
-		while (over != null && (!over.isTouchable() || !over.isVisible()))
-			over = over.getParent();
 		if (over == overLast) return overLast;
 
 		ActorEvent event = Pools.obtain(ActorEvent.class);
@@ -218,8 +217,6 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setButton(button);
 
 		Actor target = hit(stageCoords.x, stageCoords.y);
-		while (target != null && (!target.isTouchable() || !target.isVisible()))
-			target = target.getParent();
 		if (target == null) target = root;
 
 		target.fire(event);
@@ -272,7 +269,6 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setStageY(stageCoords.y);
 		event.setPointer(pointer);
 		event.setButton(button);
-		event.setStage(this);
 
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
 		TouchFocus[] focuses = touchFocuses.begin();
@@ -284,10 +280,12 @@ public class Stage extends InputAdapter implements Disposable {
 			if (focus.listener.handle(event)) event.handle();
 		}
 		touchFocuses.end();
+
 		for (int i = touchFocuses.size - 1; i >= 0; i--) {
 			TouchFocus focus = touchFocuses.get(i);
 			if (focus.pointer != pointer || focus.button != button) continue;
 			touchFocuses.removeIndex(i);
+			Pools.free(focus);
 		}
 
 		boolean handled = event.isHandled();
@@ -307,8 +305,6 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setStageY(stageCoords.y);
 
 		Actor target = hit(stageCoords.x, stageCoords.y);
-		while (target != null && (!target.isTouchable() || !target.isVisible()))
-			target = target.getParent();
 		if (target == null) target = root;
 
 		target.fire(event);
@@ -371,7 +367,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Adds the listener to be notified for all touchDragged and touchUp events for the specified pointer and button. The actor
 	 * will be used as the {@link Event#getListenerActor() listener actor} and {@link Event#getTarget() target}. */
 	public void addTouchFocus (EventListener listener, Actor actor, int pointer, int button) {
-		TouchFocus focus = TouchFocus.pool.obtain();
+		TouchFocus focus = Pools.obtain(TouchFocus.class);
 		focus.actor = actor;
 		focus.listener = listener;
 		focus.pointer = pointer;
@@ -385,8 +381,10 @@ public class Stage extends InputAdapter implements Disposable {
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
 		for (int i = touchFocuses.size - 1; i >= 0; i--) {
 			TouchFocus focus = touchFocuses.get(i);
-			if (focus.listener == listener && focus.actor == actor && focus.pointer == pointer && focus.button == button)
-				TouchFocus.pool.free(touchFocuses.removeIndex(i));
+			if (focus.listener == listener && focus.actor == actor && focus.pointer == pointer && focus.button == button) {
+				touchFocuses.removeIndex(i);
+				Pools.free(focus);
+			}
 		}
 	}
 
@@ -395,6 +393,12 @@ public class Stage extends InputAdapter implements Disposable {
 	 * sends a touchUp event so that the state of the listeners remains consistent (listeners typically expect to receive touchUp
 	 * eventually). */
 	public void cancelTouchFocus () {
+		cancelTouchFocus(null, null);
+	}
+
+	/** Cancels touch focus for all listeners except the specified listener.
+	 * @see #cancelTouchFocus() */
+	public void cancelTouchFocus (EventListener listener, Actor actor) {
 		ActorEvent event = Pools.obtain(ActorEvent.class);
 		event.setStage(this);
 		event.setType(ActorEvent.Type.touchUp);
@@ -402,15 +406,19 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setStageY(Integer.MIN_VALUE);
 
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
-		for (int i = 0, n = touchFocuses.size; i < n; i++) {
+		for (int i = touchFocuses.size - 1; i >= 0; i--) {
 			TouchFocus focus = touchFocuses.get(i);
+			if (focus.listener == listener && focus.actor == actor) continue;
+			event.setTarget(focus.actor);
 			event.setListenerActor(focus.actor);
 			event.setPointer(focus.pointer);
 			event.setButton(focus.button);
+			touchFocuses.removeIndex(i);
 			focus.listener.handle(event);
+			// Cannot return TouchFocus to the pool, as it may still be in use (eg if cancelTouchFocus is called from touchDragged).
 		}
-		TouchFocus.pool.free(touchFocuses);
-		touchFocuses.clear();
+
+		Pools.free(event);
 	}
 
 	/** Adds an actor to the root of the stage.
@@ -556,16 +564,16 @@ public class Stage extends InputAdapter implements Disposable {
 		if (ownsBatch) batch.dispose();
 	}
 
-	/** Internal class for managing touches. Public only for GWT. */
-	public static final class TouchFocus {
-		static final Pool<TouchFocus> pool = new Pool(4, 16) {
-			protected TouchFocus newObject () {
-				return new TouchFocus();
-			}
-		};
-
+	/** Internal class for managing touch focus. Public only for GWT.
+	 * @author Nathan Sweet */
+	public static final class TouchFocus implements Poolable {
 		Actor actor;
 		EventListener listener;
 		int pointer, button;
+
+		public void reset () {
+			actor = null;
+			listener = null;
+		}
 	}
 }

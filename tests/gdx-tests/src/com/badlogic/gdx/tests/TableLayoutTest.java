@@ -20,6 +20,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.ActorListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -56,12 +58,28 @@ public class TableLayoutTest extends GdxTest {
 		TextureRegion downRegion = skin.getRegion("default-slider-knob");
 		BitmapFont buttonFont = skin.getFont("default-font");
 
-		TextButtonStyle style = new TextButtonStyle();
-		style.up = new TextureRegionDrawable(upRegion);
-		style.down = new TextureRegionDrawable(downRegion);
-		style.font = buttonFont;
-		TextButton button = new TextButton("Button Text", style);
+		TextButton button = new TextButton("Button 1", skin);
+		button.addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				System.out.println("touchDown 1");
+				return false;
+			}
+		});
 		table.add(button);
+
+		Table table2 = new Table();
+		stage.addActor(table2);
+		table2.setFillParent(true);
+		table2.bottom();
+
+		TextButton button2 = new TextButton("Button 2", skin);
+		button2.addListener(new ActorListener() {
+			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+				System.out.println("touchDown 2");
+				return false;
+			}
+		});
+		table2.add(button2);
 	}
 
 	public void render () {

@@ -107,7 +107,6 @@ public class UITest extends GdxTest {
 
 		// window.debug();
 		Window window = new Window("Dialog", skin);
-		window.setTouchable(false);
 		window.setPosition(0, 0);
 		window.defaults().spaceBottom(10);
 		window.row().fill().expandX();

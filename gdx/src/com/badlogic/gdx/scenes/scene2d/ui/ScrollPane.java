@@ -109,6 +109,7 @@ public class ScrollPane extends WidgetGroup {
 
 				if (scrollX && hScrollBounds.contains(x, y)) {
 					event.stop();
+					resetFade();
 					if (hKnobBounds.contains(x, y)) {
 						lastPoint.set(x, y);
 						handlePosition = hKnobBounds.x;
@@ -116,11 +117,11 @@ public class ScrollPane extends WidgetGroup {
 						return true;
 					}
 					setScrollX(amountX + Math.max(areaWidth * 0.9f, maxX * 0.1f) * (x < hKnobBounds.x ? -1 : 1));
-					resetFade();
 					return true;
 				}
 				if (scrollY && vScrollBounds.contains(x, y)) {
 					event.stop();
+					resetFade();
 					if (vKnobBounds.contains(x, y)) {
 						lastPoint.set(x, y);
 						handlePosition = vKnobBounds.y;
@@ -128,7 +129,6 @@ public class ScrollPane extends WidgetGroup {
 						return true;
 					}
 					setScrollY(amountY + Math.max(areaHeight * 0.9f, maxY * 0.1f) * (y < vKnobBounds.y ? 1 : -1));
-					resetFade();
 					return true;
 				}
 				return false;
@@ -200,9 +200,7 @@ public class ScrollPane extends WidgetGroup {
 
 	void cancelTouchFocusedChild (ActorEvent event) {
 		Stage stage = getStage();
-		stage.removeTouchFocus(gestureListener, this, event.getPointer(), event.getButton());
-		stage.cancelTouchFocus();
-		stage.addTouchFocus(gestureListener, this, event.getPointer(), event.getButton());
+		stage.cancelTouchFocus(gestureListener, this);
 	}
 
 	void clamp () {

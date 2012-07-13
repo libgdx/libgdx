@@ -55,16 +55,16 @@ public class Window extends Table {
 
 	public Window (String title, WindowStyle style) {
 		if (title == null) throw new IllegalArgumentException("title cannot be null.");
-		setClip(true);
 		this.title = title;
+		setTouchable(true);
+		setClip(true);
 		setStyle(style);
 		setWidth(150);
 		setHeight(150);
 
 		addCaptureListener(new ActorListener() {
 			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
-				if (pointer != 0) return false;
-				toFront();
+				if (pointer == 0) toFront();
 				return false;
 			}
 		});
@@ -73,7 +73,7 @@ public class Window extends Table {
 				if (pointer != 0) return false;
 				dragging = isMovable && getHeight() - y <= getTitleBarHeight() && y < getHeight() && x > 0 && x < getWidth();
 				dragOffset.set(x, y);
-				return true;
+				return dragging;
 			}
 
 			public void touchDragged (ActorEvent event, float x, float y, int pointer) {
@@ -141,7 +141,7 @@ public class Window extends Table {
 	public boolean isDragging () {
 		return dragging;
 	}
-	
+
 	/** The style for a window, see {@link Window}.
 	 * @author Nathan Sweet */
 	static public class WindowStyle {

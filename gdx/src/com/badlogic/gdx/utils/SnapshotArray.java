@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.utils;
 
 import java.util.Comparator;
@@ -37,6 +38,7 @@ import java.util.Comparator;
  * @author Nathan Sweet */
 public class SnapshotArray<T> extends Array<T> {
 	private T[] snapshot, recycled;
+	private int snapshots;
 
 	public SnapshotArray () {
 		super();
@@ -73,13 +75,15 @@ public class SnapshotArray<T> extends Array<T> {
 	/** Returns the backing array, which is guaranteed to not be modified before {@link #end()}. */
 	public T[] begin () {
 		snapshot = items;
+		snapshots++;
 		return items;
 	}
 
 	/** Releases the guarantee that the array returned by {@link #begin()} won't be modified. */
 	public void end () {
+		snapshots = Math.max(0, snapshots - 1);
 		if (snapshot == null) return;
-		if (snapshot != items) {
+		if (snapshot != items && snapshots == 0) {
 			// The backing array was copied, keep around the old array.
 			recycled = snapshot;
 			for (int i = 0, n = recycled.length; i < n; i++)

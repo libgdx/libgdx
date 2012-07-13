@@ -126,7 +126,8 @@ public class Actor {
 
 			return event.isCancelled();
 		} finally {
-			Pools.free(Array.class);
+			ancestors.clear();
+			Pools.free(ancestors);
 		}
 	}
 
@@ -166,14 +167,15 @@ public class Actor {
 		return event.isCancelled();
 	}
 
-	/** Returns the deepest actor that contains the specified point, or null if no actor was hit. The point is specified in the
-	 * actor's local coordinate system (0,0 is the bottom left of the actor and width,height is the upper right).
+	/** Returns the deepest actor that contains the specified point and {@link #isTouchable() touchable} and {@link #isVisible()
+	 * visible}, or null if no actor was hit. The point is specified in the actor's local coordinate system (0,0 is the bottom left
+	 * of the actor and width,height is the upper right).
 	 * <p>
 	 * This method is used to delegate touchDown events. If this method returns null, touchDown will not occur.
 	 * <p>
 	 * The default implementation returns this actor if the point is within this actor's bounds. */
 	public Actor hit (float x, float y) {
-		return x >= 0 && x < width && y >= 0 && y < height ? this : null;
+		return isTouchable() && x >= 0 && x < width && y >= 0 && y < height ? this : null;
 	}
 
 	/** Removes this actor from its parent, if it has a parent. */

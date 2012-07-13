@@ -258,7 +258,7 @@ public class Array<T> implements Iterable<T> {
 		return items;
 	}
 
-	/** Creates a new backing array with the specified size containing . */
+	/** Creates a new backing array with the specified size containing the current items. */
 	protected T[] resize (int newSize) {
 		T[] items = this.items;
 		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), newSize);

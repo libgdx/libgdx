@@ -70,6 +70,7 @@ public class Button extends Table {
 	}
 
 	private void initialize () {
+		setTouchable(true);
 		addListener(clickListener = new ClickListener() {
 			public void clicked (ActorEvent event, float x, float y) {
 				boolean wasChecked = isChecked;
