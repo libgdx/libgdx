@@ -33,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
@@ -48,7 +49,7 @@ public class Scene2dTest extends GdxTest {
 	public void create () {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-//
+
 		final TextureRegion region = new TextureRegion(new Texture("data/badlogic.jpg"));
 		Actor actor = new Actor() {
 			public void draw (SpriteBatch batch, float parentAlpha) {
@@ -74,25 +75,9 @@ public class Scene2dTest extends GdxTest {
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		TextButtonStyle style = skin.get(TextButtonStyle.class);
-		style.up = new EmptyDrawable() {
-			ShapeRenderer renderer = new ShapeRenderer();
-
-			public void draw (SpriteBatch batch, float x, float y, float width, float height) {
-				batch.end();
-				renderer.setProjectionMatrix(batch.getProjectionMatrix());
-				renderer.setTransformMatrix(batch.getTransformMatrix());
-				renderer.begin(ShapeType.Line);
-				for (int i = 0; i < 25; i++) {
-					renderer.setColor(MathUtils.random(0.3f, 1), MathUtils.random(0.3f, 1), MathUtils.random(0.3f, 1), 1);
-					renderer.line(MathUtils.random(x, x + width), MathUtils.random(y, y + height), MathUtils.random(x, x + width),
-						MathUtils.random(y, y + height));
-				}
-				renderer.end();
-				batch.begin();
-			}
-		};
-		final TextButton button = new TextButton("Fancy Background", style);
+		
+		final TextButton button = new TextButton("Fancy Background", skin);
+		button.pad(100).debug();
 
 // button.addListener(new ClickListener() {
 // public void clicked (ActorEvent event, float x, float y) {
@@ -155,6 +140,7 @@ public class Scene2dTest extends GdxTest {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
+		Table.drawDebug(stage);
 
 		stage.getSpriteBatch().begin();
 		patch.draw(stage.getSpriteBatch(), 300, 100, 50, 50);

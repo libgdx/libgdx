@@ -43,51 +43,42 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.SerializationException;
 
-/** A skin has a {@link TextureAtlas} and stores resources for UI widgets to use (texture regions, ninepatches, fonts, colors,
- * etc). Resources are named and can be looked up by name and type. Skin provides useful conversions, such as allowing access to
+/** A skin stores resources for UI widgets to use (texture regions, ninepatches, fonts, colors, etc). Resources are named and can
+ * be looked up by name and type. Resources can be described in JSON. Skin provides useful conversions, such as allowing access to
  * regions in the atlas as ninepatches, sprites, drawables, etc.
  * <p>
- * Resources can be added to a skin using code, or defined in JSON. Names can be used in JSON to reference already defined
- * resources or regions in the atlas. The JSON format is:
- * 
- * <pre>
- * {
- * 	className: {
- * 		name: value,
- * 		...
- * 	},
- * 	className: {
- * 		name: value,
- * 		...
- * 	},
- * 	...
- * }
- * </pre>
- * 
- * The class name is the fully qualified Java class name for the type of resource. The name is the name of the resource for that
- * class, and the value is the serialized resource or style.
+ * See the <a href="https://code.google.com/p/libgdx/wiki/Skin">documentation</a> for more.
  * @author Nathan Sweet */
 public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
 	TextureAtlas atlas;
 
-	public Skin (TextureAtlas atlas) {
-		this.atlas = atlas;
-		add(atlas);
+	/** Creates an empty skin. */
+	public Skin () {
 	}
 
+	/** Creates a skin containing the resources in the specified skin JSON file. If a file in the same directory with a ".atlas"
+	 * extension exists, it is loaded as a {@link TextureAtlas} and the texture regions added to the skin. The atlas is
+	 * automatically disposed when the skin is disposed. */
+	public Skin (FileHandle skinFile) {
+		FileHandle atlasFile = skinFile.sibling(skinFile.nameWithoutExtension() + ".atlas");
+		if (atlasFile.exists()) {
+			atlas = new TextureAtlas(atlasFile);
+			addRegions(atlas);
+		}
+
+		load(skinFile);
+	}
+
+	/** Creates a skin containing the resources in the specified skin JSON file and the texture regions from the specified atlas.
+	 * The atlas is automatically disposed when the skin is disposed. */
 	public Skin (FileHandle skinFile, TextureAtlas atlas) {
 		this.atlas = atlas;
-		add(atlas);
+		addRegions(atlas);
 		load(skinFile);
 	}
 
-	public Skin (FileHandle skinFile) {
-		this.atlas = new TextureAtlas(skinFile.sibling(skinFile.nameWithoutExtension() + ".atlas"));
-		add(atlas);
-		load(skinFile);
-	}
-
+	/** Adds all resources in the specified skin JSON file. */
 	public void load (FileHandle skinFile) {
 		try {
 			getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
@@ -96,7 +87,8 @@ public class Skin implements Disposable {
 		}
 	}
 
-	private void add (TextureAtlas atlas) {
+	/** Adds all named txeture regions from the atlas. The atlas will not be automatically disposed when the skin is disposed. */
+	public void addRegions (TextureAtlas atlas) {
 		Array<AtlasRegion> regions = atlas.getRegions();
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
@@ -321,14 +313,14 @@ public class Skin implements Disposable {
 		}
 	}
 
-	/** Returns the {@link TextureAtlas} that resources in this skin reference. */
+	/** Returns the {@link TextureAtlas} that resources in this skin reference, or null. */
 	public TextureAtlas getAtlas () {
 		return atlas;
 	}
 
 	/** Disposes the {@link TextureAtlas} and all {@link Disposable} resources in the skin. */
 	public void dispose () {
-		atlas.dispose();
+		if (atlas != null) atlas.dispose();
 		for (ObjectMap<String, Object> entry : resources.values()) {
 			for (Object resource : entry.values())
 				if (resource instanceof Disposable) ((Disposable)resource).dispose();
@@ -340,7 +332,7 @@ public class Skin implements Disposable {
 
 		final Json json = new Json() {
 			public <T> T readValue (Class<T> type, Class elementType, Object jsonData) {
-				// If the JSON is a string but the type is not, look up the actual value by name.				
+				// If the JSON is a string but the type is not, look up the actual value by name.
 				if (jsonData instanceof String && !CharSequence.class.isAssignableFrom(type)) return get((String)jsonData, type);
 				return super.readValue(type, elementType, jsonData);
 			}

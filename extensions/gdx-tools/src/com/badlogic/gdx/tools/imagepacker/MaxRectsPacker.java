@@ -61,6 +61,12 @@ public class MaxRectsPacker {
 	}
 
 	private Page packPage (Array<Rect> inputRects) {
+		int edgePaddingX = 0, edgePaddingY = 0;
+		if (!settings.duplicatePadding) { // if duplicatePadding, edges get only half padding.
+			edgePaddingX = settings.paddingX;
+			edgePaddingY = settings.paddingY;
+		}
+
 		// Find min size.
 		int minWidth = Integer.MAX_VALUE;
 		int minHeight = Integer.MAX_VALUE;
@@ -88,7 +94,7 @@ public class MaxRectsPacker {
 		while (true) {
 			Page bestWidthResult = null;
 			while (width != -1) {
-				Page result = packAtSize(true, width, height, inputRects);
+				Page result = packAtSize(true, width - edgePaddingX, height - edgePaddingY, inputRects);
 				if (++i % 70 == 0) System.out.println();
 				System.out.print(".");
 				bestWidthResult = getBest(bestWidthResult, result);
@@ -102,7 +108,8 @@ public class MaxRectsPacker {
 		System.out.println();
 
 		// Rects don't fit on one page. Fill a whole page and return.
-		if (bestResult == null) bestResult = packAtSize(false, settings.maxWidth, settings.maxHeight, inputRects);
+		if (bestResult == null)
+			bestResult = packAtSize(false, settings.maxWidth - edgePaddingX, settings.maxHeight - edgePaddingY, inputRects);
 
 		return bestResult;
 	}
@@ -211,8 +218,18 @@ public class MaxRectsPacker {
 
 			PruneFreeList();
 
-			usedRectangles.add(newNode);
-			return newNode;
+			Rect bestNode = new Rect();
+			bestNode.set(rect);
+			bestNode.score1 = newNode.score1;
+			bestNode.score2 = newNode.score2;
+			bestNode.x = newNode.x;
+			bestNode.y = newNode.y;
+			bestNode.width = newNode.width;
+			bestNode.height = newNode.height;
+			bestNode.rotated = newNode.rotated;
+
+			usedRectangles.add(bestNode);
+			return bestNode;
 		}
 
 		/** For each rectangle, packs each one then chooses the best and packs that. Slow! */

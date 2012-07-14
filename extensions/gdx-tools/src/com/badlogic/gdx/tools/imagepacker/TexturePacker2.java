@@ -32,6 +32,13 @@ public class TexturePacker2 {
 	public TexturePacker2 (File rootDir, Settings settings) {
 		this.settings = settings;
 
+		if (settings.pot) {
+			if (settings.maxWidth != MathUtils.nextPowerOfTwo(settings.maxWidth))
+				throw new RuntimeException("If pot is true, maxWidth must be a power of two: " + settings.maxWidth);
+			if (settings.maxHeight != MathUtils.nextPowerOfTwo(settings.maxHeight))
+				throw new RuntimeException("If pot is true, maxHeight must be a power of two: " + settings.maxHeight);
+		}
+
 		maxRectsPacker = new MaxRectsPacker(settings);
 		imageProcessor = new ImageProcessor(rootDir, settings);
 	}
@@ -62,8 +69,12 @@ public class TexturePacker2 {
 		int fileIndex = 0;
 		for (Page page : pages) {
 			int width = page.width, height = page.height;
-			int paddingX = (int)Math.ceil(settings.paddingX / 2f);
-			int paddingY = (int)Math.ceil(settings.paddingY / 2f);
+			int paddingX = settings.paddingX;
+			int paddingY = settings.paddingY;
+			if (settings.duplicatePadding) {
+				paddingX /= 2;
+				paddingY /= 2;
+			}
 			width -= settings.paddingX;
 			height -= settings.paddingY;
 			if (settings.edgePadding) {

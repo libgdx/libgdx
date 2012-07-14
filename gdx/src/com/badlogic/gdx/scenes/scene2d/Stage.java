@@ -18,6 +18,7 @@ package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
@@ -31,7 +32,6 @@ import com.badlogic.gdx.scenes.scene2d.ActorEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -49,6 +49,7 @@ import com.badlogic.gdx.utils.SnapshotArray;
  * @author Nathan Sweet */
 public class Stage extends InputAdapter implements Disposable {
 	private float width, height;
+	private float gutterWidth, gutterHeight;
 	private float centerX, centerY;
 	private Camera camera;
 	private final SpriteBatch batch;
@@ -100,9 +101,10 @@ public class Stage extends InputAdapter implements Disposable {
 		setViewport(width, height, stretch);
 	}
 
-	/** Sets the dimensions of the stage's viewport. The viewport covers the entire screen. If keepAspectRatio is false and the
-	 * specified viewport size is not equal to the screen resolution, it is stretched to the screen resolution. If keepAspectRatio
-	 * is true and the specified viewport size is not equal to the screen resolution, it is enlarged in the shorter dimension. */
+	/** Sets the dimensions of the stage's viewport. The viewport covers the entire screen. If keepAspectRatio is false, the
+	 * viewport is simply stretched to the screen resolution. If keepAspectRatio is true, the viewport is first scaled to fit then
+	 * the shorter dimension is lengthened to fill the screen. The {@link #getGutterWidth()} and {@link #getGutterHeight()} provide
+	 * access to the amount that was lengthened. */
 	public void setViewport (float width, float height, boolean keepAspectRatio) {
 		if (keepAspectRatio) {
 			if (width > height && width / Gdx.graphics.getWidth() <= height / Gdx.graphics.getHeight()) {
@@ -110,19 +112,25 @@ public class Stage extends InputAdapter implements Disposable {
 				float toViewportSpace = height / Gdx.graphics.getHeight();
 
 				float deviceWidth = width * toDeviceSpace;
-				this.width = width + (Gdx.graphics.getWidth() - deviceWidth) * toViewportSpace;
+				gutterWidth = (Gdx.graphics.getWidth() - deviceWidth) * toViewportSpace / 2;
+				gutterHeight = 0;
+				this.width = width + gutterWidth * 2;
 				this.height = height;
 			} else {
 				float toDeviceSpace = Gdx.graphics.getWidth() / width;
 				float toViewportSpace = width / Gdx.graphics.getWidth();
 
 				float deviceHeight = height * toDeviceSpace;
-				this.height = height + (Gdx.graphics.getHeight() - deviceHeight) * toViewportSpace;
+				gutterWidth = 0;
+				gutterHeight = (Gdx.graphics.getHeight() - deviceHeight) * toViewportSpace / 2;
+				this.height = height + gutterHeight * 2;
 				this.width = width;
 			}
 		} else {
 			this.width = width;
 			this.height = height;
+			gutterWidth = 0;
+			gutterHeight = 0;
 		}
 
 		centerX = this.width / 2;
@@ -140,6 +148,11 @@ public class Stage extends InputAdapter implements Disposable {
 		batch.begin();
 		root.draw(batch, 1);
 		batch.end();
+	}
+
+	/** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}. */
+	public void act () {
+		act(Gdx.graphics.getDeltaTime());
 	}
 
 	/** Calls the {@link Actor#act(float)} method on each actor in the stage. Typically called each frame. This method also fires
@@ -506,6 +519,18 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @see #setViewport(float, float, boolean) */
 	public float getHeight () {
 		return height;
+	}
+
+	/** Half the amount in the x direction that the stage's viewport was lengthened to fill the screen.
+	 * @see #setViewport(float, float, boolean) */
+	public float getGutterWidth () {
+		return gutterWidth;
+	}
+
+	/** Half the amount in the y direction that the stage's viewport was lengthened to fill the screen.
+	 * @see #setViewport(float, float, boolean) */
+	public float getGutterHeight () {
+		return gutterHeight;
 	}
 
 	public SpriteBatch getSpriteBatch () {
