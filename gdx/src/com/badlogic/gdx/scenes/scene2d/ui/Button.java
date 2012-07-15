@@ -111,9 +111,28 @@ public class Button extends Table {
 		return clickListener.isPressed();
 	}
 
+	public boolean isDisabled () {
+		return isDisabled;
+	}
+
+	/** When true, the button will not toggle {@link #isChecked()} when clicked and will not fire a {@link ChangeEvent}. */
+	public void setDisabled (boolean isDisabled) {
+		this.isDisabled = isDisabled;
+	}
+
 	public void setStyle (ButtonStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
+
+		Drawable background = style.up;
+		if (background == null) {
+			background = style.down;
+			if (background == null) background = style.checked;
+		}
+		padBottom(background.getBottomHeight());
+		padTop(background.getTopHeight());
+		padLeft(background.getLeftWidth());
+		padRight(background.getRightWidth());
 		invalidateHierarchy();
 	}
 
@@ -180,15 +199,6 @@ public class Button extends Table {
 
 	public float getMinHeight () {
 		return getPrefHeight();
-	}
-
-	public boolean isDisabled () {
-		return isDisabled;
-	}
-
-	/** When true, the button will not toggle {@link #isChecked()} when clicked and will not fire a {@link ChangeEvent}. */
-	public void setDisabled (boolean isDisabled) {
-		this.isDisabled = isDisabled;
 	}
 
 	/** The style for a button, see {@link Button}.
