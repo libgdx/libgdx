@@ -102,9 +102,10 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** Sets the dimensions of the stage's viewport. The viewport covers the entire screen. If keepAspectRatio is false, the
-	 * viewport is simply stretched to the screen resolution. If keepAspectRatio is true, the viewport is first scaled to fit then
-	 * the shorter dimension is lengthened to fill the screen. The {@link #getGutterWidth()} and {@link #getGutterHeight()} provide
-	 * access to the amount that was lengthened. */
+	 * viewport is simply stretched to the screen resolution, which may distort the aspect ratio. If keepAspectRatio is true, the
+	 * viewport is first scaled to fit then the shorter dimension is lengthened to fill the screen, which keeps the aspect ratio
+	 * from changing. The {@link #getGutterWidth()} and {@link #getGutterHeight()} provide access to the amount that was
+	 * lengthened. */
 	public void setViewport (float width, float height, boolean keepAspectRatio) {
 		if (keepAspectRatio) {
 			if (width > height && width / Gdx.graphics.getWidth() <= height / Gdx.graphics.getHeight()) {
