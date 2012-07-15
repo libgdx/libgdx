@@ -18,8 +18,8 @@ package com.badlogic.gdx.scenes.scene2d;
 import com.badlogic.gdx.Input.Buttons;
 
 /** Event for actor input: touch, mouse, keyboard, and scroll.
- * @see ActorListener */
-public class ActorEvent extends Event {
+ * @see InputListener */
+public class InputEvent extends Event {
 	private Type type;
 	private float stageX, stageY;
 	private int pointer, button, keyCode, scrollAmount;

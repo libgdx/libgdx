@@ -19,7 +19,7 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 
@@ -69,12 +69,12 @@ public class ActorGestureListener implements EventListener {
 		}
 	});
 
-	ActorEvent event;
+	InputEvent event;
 	Actor actor;
 
 	public boolean handle (Event e) {
-		if (!(e instanceof ActorEvent)) return false;
-		ActorEvent event = (ActorEvent)e;
+		if (!(e instanceof InputEvent)) return false;
+		InputEvent event = (InputEvent)e;
 
 		switch (event.getType()) {
 		case touchDown:
@@ -95,25 +95,25 @@ public class ActorGestureListener implements EventListener {
 		return false;
 	}
 
-	public void tap (ActorEvent event, float x, float y, int count) {
+	public void tap (InputEvent event, float x, float y, int count) {
 	}
 
 	/** If true is returned, additional gestures will not be triggered. No event is provided because this event is triggered by time
-	 * passing, not by an ActorEvent. */
+	 * passing, not by an InputEvent. */
 	public boolean longPress (Actor actor, float x, float y) {
 		return false;
 	}
 
-	public void fling (ActorEvent event, float velocityX, float velocityY) {
+	public void fling (InputEvent event, float velocityX, float velocityY) {
 	}
 
-	public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {
+	public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
 	}
 
-	public void zoom (ActorEvent event, float initialDistance, float distance) {
+	public void zoom (InputEvent event, float initialDistance, float distance) {
 	}
 
-	public void pinch (ActorEvent event, Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+	public void pinch (InputEvent event, Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
 	}
 
 	public GestureDetector getGestureDetector () {

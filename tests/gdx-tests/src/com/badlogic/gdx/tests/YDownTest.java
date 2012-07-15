@@ -27,8 +27,8 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -128,8 +128,8 @@ public class YDownTest extends GdxTest {
 			// whether y points up or down!
 			setHeight(-region.getRegionHeight());
 
-			addListener(new ActorListener() {
-				public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+			addListener(new InputListener() {
+				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 					// we only care for the first finger to make things easier
 					if (pointer != 0) return false;
 
@@ -140,7 +140,7 @@ public class YDownTest extends GdxTest {
 					return true;
 				}
 
-				public void touchDragged (ActorEvent event, float x, float y, int pointer) {
+				public void touchDragged (InputEvent event, float x, float y, int pointer) {
 					// we only care for the first finger to make things easier
 					if (pointer != 0) return;
 

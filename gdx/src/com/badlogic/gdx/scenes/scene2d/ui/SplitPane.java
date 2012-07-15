@@ -22,8 +22,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
@@ -80,8 +80,8 @@ public class SplitPane extends WidgetGroup {
 	}
 
 	private void initialize () {
-		addListener(new ActorListener() {
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+		addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0) return false;
 				if (handleBounds.contains(x, y)) {
 					touchDrag = true;
@@ -92,11 +92,11 @@ public class SplitPane extends WidgetGroup {
 				return false;
 			}
 
-			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				touchDrag = false;
 			}
 
-			public void touchDragged (ActorEvent event, float x, float y, int pointer) {
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				if (!touchDrag) return;
 
 				Drawable handle = style.handle;

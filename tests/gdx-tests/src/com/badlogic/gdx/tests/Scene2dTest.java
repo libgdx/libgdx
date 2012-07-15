@@ -27,8 +27,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -62,25 +62,24 @@ public class Scene2dTest extends GdxTest {
 		actor.setBounds(15, 15, 100, 100);
 		actor.setOrigin(50, 50);
 		stage.addActor(actor);
-		actor.addListener(new ActorListener() {
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+		actor.addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("down");
 				return true;
 			}
 
-			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("up " + event.getTarget());
 			}
 		});
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		
 		final TextButton button = new TextButton("Fancy Background", skin);
 		button.pad(100).debug();
 
 // button.addListener(new ClickListener() {
-// public void clicked (ActorEvent event, float x, float y) {
+// public void clicked (InputEvent event, float x, float y) {
 // System.out.println("click! " + x + " " + y);
 // }
 // });
@@ -91,15 +90,15 @@ public class Scene2dTest extends GdxTest {
 				return true;
 			}
 
-			public void fling (ActorEvent event, float velocityX, float velocityY) {
+			public void fling (InputEvent event, float velocityX, float velocityY) {
 				System.out.println("fling " + velocityX + ", " + velocityY);
 			}
 
-			public void zoom (ActorEvent event, float initialDistance, float distance) {
+			public void zoom (InputEvent event, float initialDistance, float distance) {
 				System.out.println("zoom " + initialDistance + ", " + distance);
 			}
 
-			public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {
+			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
 				event.getTarget().translate(deltaX, deltaY);
 				if (deltaX < 0) System.out.println("panning " + deltaX + ", " + deltaY + " " + event.getTarget());
 			}
@@ -127,7 +126,7 @@ public class Scene2dTest extends GdxTest {
 
 		meow.setDuration(2);
 
-		 actor.addAction(forever(sequence(moveBy(50, 0, 2),moveBy(-50, 0, 2))));
+		actor.addAction(forever(sequence(moveBy(50, 0, 2), moveBy(-50, 0, 2))));
 		// actor.addAction(parallel(rotateBy(90, 2), rotateBy(90, 2)));
 		// actor.addAction(parallel(moveTo(250, 250, 2, elasticOut), color(RED, 6), delay(0.5f), rotateTo(180, 5, swing)));
 		// actor.addAction(forever(sequence(scaleTo(2, 2, 0.5f), scaleTo(1, 1, 0.5f), delay(0.5f))));

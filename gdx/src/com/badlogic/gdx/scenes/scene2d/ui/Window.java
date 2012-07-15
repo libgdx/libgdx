@@ -24,10 +24,11 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 /** A table that can be dragged and act as a modal window.
@@ -56,27 +57,27 @@ public class Window extends Table {
 	public Window (String title, WindowStyle style) {
 		if (title == null) throw new IllegalArgumentException("title cannot be null.");
 		this.title = title;
-		setTouchable(true);
+		setTouchable(Touchable.enabled);
 		setClip(true);
 		setStyle(style);
 		setWidth(150);
 		setHeight(150);
 
-		addCaptureListener(new ActorListener() {
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+		addCaptureListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == 0) toFront();
 				return false;
 			}
 		});
-		addListener(new ActorListener() {
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+		addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0) return false;
 				dragging = isMovable && getHeight() - y <= getTitleBarHeight() && y < getHeight() && x > 0 && x < getWidth();
 				dragOffset.set(x, y);
 				return dragging;
 			}
 
-			public void touchDragged (ActorEvent event, float x, float y, int pointer) {
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				if (!dragging) return;
 				translate(x - dragOffset.x, y - dragOffset.y);
 			}

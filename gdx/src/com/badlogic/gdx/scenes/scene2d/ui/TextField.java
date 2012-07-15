@@ -26,8 +26,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.Clipboard;
@@ -108,8 +108,8 @@ public class TextField extends Widget {
 	}
 
 	private void initialize () {
-		addListener(new ActorListener() {
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+		addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0) return false;
 				Stage stage = getStage();
 				if (stage != null) stage.setKeyboardFocus(TextField.this);
@@ -129,7 +129,7 @@ public class TextField extends Widget {
 				return true;
 			}
 
-			public boolean keyDown (ActorEvent event, int keycode) {
+			public boolean keyDown (InputEvent event, int keycode) {
 				final BitmapFont font = style.font;
 
 				Stage stage = getStage();
@@ -209,11 +209,11 @@ public class TextField extends Widget {
 				return false;
 			}
 			
-			public boolean keyUp (ActorEvent event, int keycode) {
+			public boolean keyUp (InputEvent event, int keycode) {
 				return true;
 			}
 
-			public boolean keyTyped (ActorEvent event, char character) {
+			public boolean keyTyped (InputEvent event, char character) {
 				final BitmapFont font = style.font;
 
 				Stage stage = getStage();

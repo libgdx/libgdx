@@ -22,12 +22,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Pools;
 
 /** A list (aka list box) displays textual items and highlights the currently selected item.
  * <p>
@@ -58,8 +59,8 @@ public class List extends Widget implements Cullable {
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
 
-		addListener(new ActorListener() {
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+		addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0) return false;
 				List.this.touchDown(y);
 				return true;
@@ -72,7 +73,9 @@ public class List extends Widget implements Cullable {
 		selectedIndex = (int)((getHeight() - y) / itemHeight);
 		selectedIndex = Math.max(0, selectedIndex);
 		selectedIndex = Math.min(items.length - 1, selectedIndex);
-		if (fire(new ChangeEvent())) selectedIndex = oldIndex;
+		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+		if (fire(changeEvent)) selectedIndex = oldIndex;
+		Pools.free(changeEvent);
 	}
 
 	public void setStyle (ListStyle style) {

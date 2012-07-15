@@ -186,6 +186,7 @@ public class Group extends Actor implements Cullable {
 	}
 
 	public Actor hit (float x, float y) {
+		if (getTouchable() == Touchable.disabled) return null;
 		Array<Actor> children = this.children;
 		for (int i = children.size - 1; i >= 0; i--) {
 			Actor child = children.get(i);

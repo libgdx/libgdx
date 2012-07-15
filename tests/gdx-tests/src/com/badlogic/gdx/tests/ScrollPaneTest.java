@@ -19,8 +19,8 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
@@ -55,8 +55,8 @@ public class ScrollPaneTest extends GdxTest {
 
 		final ScrollPane scroll = new ScrollPane(table, skin);
 
-		ActorListener stopTouchDown = new ActorListener() {
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+		InputListener stopTouchDown = new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				event.stop();
 				return false;
 			}
@@ -70,7 +70,7 @@ public class ScrollPaneTest extends GdxTest {
 			TextButton button = new TextButton(i + "dos", skin);
 			table.add(button);
 			button.addListener(new ClickListener() {
-				public void clicked (ActorEvent event, float x, float y) {
+				public void clicked (InputEvent event, float x, float y) {
 					System.out.println("click " + x + ", " + y);
 				}
 			});

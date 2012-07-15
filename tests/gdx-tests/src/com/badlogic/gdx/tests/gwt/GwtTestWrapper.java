@@ -23,7 +23,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -119,7 +119,7 @@ public class GwtTestWrapper extends GdxTest {
 			TextButton button = new TextButton(instancer.instance().getClass().getName(), skin);
 			button.addListener(new ClickListener() {
 				@Override
-				public void clicked (ActorEvent event, float x, float y) {
+				public void clicked (InputEvent event, float x, float y) {
 					((InputWrapper)Gdx.input).multiplexer.removeProcessor(ui);
 					test = instancer.instance();
 					test.create();

@@ -31,8 +31,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -87,8 +87,8 @@ public class StageTest extends GdxTest implements InputProcessor {
 		Image blend = new Image(new TextureRegion(uiTexture, 0, 0, 64, 32));
 		blend.setAlign(Align.center);
 		blend.setScaling(Scaling.none);
-		blend.addListener(new ActorListener() {
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+		blend.addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (stage.getSpriteBatch().isBlendingEnabled())
 					stage.getSpriteBatch().disableBlending();
 				else
@@ -101,8 +101,8 @@ public class StageTest extends GdxTest implements InputProcessor {
 		Image rotate = new Image(new TextureRegion(uiTexture, 64, 0, 64, 32));
 		rotate.setAlign(Align.center);
 		rotate.setScaling(Scaling.none);
-		rotate.addListener(new ActorListener() {
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+		rotate.addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				rotateSprites = !rotateSprites;
 				return true;
 			}
@@ -112,8 +112,8 @@ public class StageTest extends GdxTest implements InputProcessor {
 		Image scale = new Image(new TextureRegion(uiTexture, 64, 32, 64, 32));
 		scale.setAlign(Align.center);
 		scale.setScaling(Scaling.none);
-		scale.addListener(new ActorListener() {
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+		scale.addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				scaleSprites = !scaleSprites;
 				return true;
 			}

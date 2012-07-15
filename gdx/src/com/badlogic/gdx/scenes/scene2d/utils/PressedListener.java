@@ -18,18 +18,18 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 /** Detects the mouse or a finger touch on an actor. The touch must go down over the actor and is considered pressed as long as it
  * is over the actor or within the {@link #setTapSquareSize(float) tap square}.
  * @author Nathan Sweet */
-public class PressedListener extends ActorListener {
+public class PressedListener extends InputListener {
 	private float tapSquareSize = 14, touchDownX = -1, touchDownY = -1;
 	private boolean pressed;
 	private int button;
 
-	public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+	public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 		if (pointer > 0 || button != this.button) return false;
 		touchDownX = x;
 		touchDownY = y;
@@ -41,13 +41,13 @@ public class PressedListener extends ActorListener {
 	public boolean isOver (Actor actor, float x, float y) {
 		Actor hit = actor.hit(x, y);
 		if (hit == null || !hit.isDescendant(actor)) {
-		if (touchDownX == -1 && touchDownY == -1) return false;
-		return Math.abs(x - touchDownX) < tapSquareSize && Math.abs(y - touchDownY) < tapSquareSize;
-	}
+			if (touchDownX == -1 && touchDownY == -1) return false;
+			return Math.abs(x - touchDownX) < tapSquareSize && Math.abs(y - touchDownY) < tapSquareSize;
+		}
 		return true;
 	}
 
-	public void touchDragged (ActorEvent event, float x, float y, int pointer) {
+	public void touchDragged (InputEvent event, float x, float y, int pointer) {
 		pressed = Gdx.input.isButtonPressed(button) && isOver(event.getListenerActor(), x, y);
 		if (!pressed) {
 			// Once outside the tap square, don't use the tap square anymore.
@@ -56,7 +56,7 @@ public class PressedListener extends ActorListener {
 		}
 	}
 
-	public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 		if (pointer == 0 && pressed) pressed = false;
 	}
 

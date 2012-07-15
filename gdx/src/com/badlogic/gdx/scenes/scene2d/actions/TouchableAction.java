@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 
-/** Sets the actor's {@link Actor#setTouchable(boolean) touchability}. 
+/** Sets the actor's {@link Actor#setTouchable(Touchable) touchability}.
  * @author Nathan Sweet */
 public class TouchableAction extends Action {
-	private boolean touchable;
+	private Touchable touchable;
 
 	public boolean act (float delta) {
 		actor.setTouchable(touchable);
 		return true;
 	}
 
-	public boolean isTouchable () {
+	public Touchable getTouchable () {
 		return touchable;
 	}
 
-	public void setTouchable (boolean touchable) {
+	public void setTouchable (Touchable touchable) {
 		this.touchable = touchable;
 	}
 }

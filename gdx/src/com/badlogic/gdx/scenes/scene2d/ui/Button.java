@@ -19,11 +19,13 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pools;
 
 /** A button is a {@link Table} with a checked state and additional {@link ButtonStyle style} fields for pressed, unpressed, and
  * checked. Each time a button is clicked, the checked state is toggled. Being a table, a button can contain any other actors.
@@ -71,13 +73,17 @@ public class Button extends Table {
 	}
 
 	private void initialize () {
-		setTouchable(true);
+		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
-			public void clicked (ActorEvent event, float x, float y) {
+			public void clicked (InputEvent event, float x, float y) {
 				if (isDisabled) return;
 				boolean wasChecked = isChecked;
 				setChecked(!isChecked);
-				if (wasChecked != isChecked && fire(new ChangeEvent())) setChecked(wasChecked);
+				if (wasChecked != isChecked) {
+					ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+					if (fire(changeEvent)) setChecked(wasChecked);
+					Pools.free(changeEvent);
+				}
 			}
 		});
 	}
@@ -129,10 +135,12 @@ public class Button extends Table {
 			background = style.down;
 			if (background == null) background = style.checked;
 		}
-		padBottom(background.getBottomHeight());
-		padTop(background.getTopHeight());
-		padLeft(background.getLeftWidth());
-		padRight(background.getRightWidth());
+		if (background != null) {
+			padBottom(background.getBottomHeight());
+			padTop(background.getTopHeight());
+			padLeft(background.getLeftWidth());
+			padRight(background.getRightWidth());
+		}
 		invalidateHierarchy();
 	}
 
@@ -147,7 +155,7 @@ public class Button extends Table {
 
 		Drawable background = null;
 		float offsetX = 0, offsetY = 0;
-		if (clickListener.isPressed()) {
+		if (clickListener.isPressed() && !isDisabled) {
 			background = style.down == null ? style.up : style.down;
 			offsetX = style.pressedOffsetX;
 			offsetY = style.pressedOffsetY;

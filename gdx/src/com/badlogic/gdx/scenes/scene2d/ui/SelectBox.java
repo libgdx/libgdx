@@ -26,12 +26,13 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
+import com.badlogic.gdx.utils.Pools;
 
 /** A select box (aka a drop-down list) allows a user to choose one of a number of values from a list. When inactive, the selected
  * value is displayed. When activated, it shows the list of values that may be selected.
@@ -65,8 +66,8 @@ public class SelectBox extends Widget {
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
 
-		addListener(new ActorListener() {
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+		addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0) return false;
 				if (list != null && list.getParent() != null) {
 					list.remove();
@@ -189,8 +190,8 @@ public class SelectBox extends Widget {
 		float textOffsetX, textOffsetY;
 		int listSelectedIndex = SelectBox.this.selectedIndex;
 
-		ActorListener stageListener = new ActorListener() {
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+		InputListener stageListener = new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0) return false;
 				stageToLocalCoordinates(Vector2.tmp);
 				x = Vector2.tmp.x;
@@ -200,17 +201,21 @@ public class SelectBox extends Widget {
 					listSelectedIndex = Math.max(0, listSelectedIndex);
 					listSelectedIndex = Math.min(items.length - 1, listSelectedIndex);
 					selectedIndex = listSelectedIndex;
-					if (items.length > 0) SelectBox.this.fire(new ChangeEvent());
+					if (items.length > 0) {
+						ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+						SelectBox.this.fire(changeEvent);
+						Pools.free(changeEvent);
+					}
 				}
 				return true;
 			}
 
-			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				remove();
 				event.getStage().removeCaptureListener(stageListener);
 			}
 
-			public boolean mouseMoved (ActorEvent event, float x, float y) {
+			public boolean mouseMoved (InputEvent event, float x, float y) {
 				stageToLocalCoordinates(Vector2.tmp);
 				x = Vector2.tmp.x;
 				y = Vector2.tmp.y;

@@ -6,10 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Pools;
 
 /** An on-screen joystick. The movement area of the joystick is circular, centered on the touchpad, and its size determined by the
  * smaller touchpad dimension.
@@ -49,9 +50,9 @@ public class Touchpad extends Widget {
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
 
-		addListener(new ActorListener() {
+		addListener(new InputListener() {
 			@Override
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (touched) return false;
 				touched = true;
 				calculatePositionAndValue(x, y, false);
@@ -59,12 +60,12 @@ public class Touchpad extends Widget {
 			}
 
 			@Override
-			public void touchDragged (ActorEvent event, float x, float y, int pointer) {
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				calculatePositionAndValue(x, y, false);
 			}
 
 			@Override
-			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				touched = false;
 				calculatePositionAndValue(x, y, true);
 			}
@@ -88,9 +89,13 @@ public class Touchpad extends Widget {
 				}
 			}
 		}
-		if ((oldPercentX != knobPercent.x || oldPercentY != knobPercent.y) && fire(new ChangeEvent())) {
-			knobPercent.set(oldPercentX, oldPercentY);
-			knobPosition.set(oldPositionX, oldPositionY);
+		if (oldPercentX != knobPercent.x || oldPercentY != knobPercent.y) {
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			if (fire(changeEvent)) {
+				knobPercent.set(oldPercentX, oldPercentY);
+				knobPosition.set(oldPositionX, oldPositionY);
+			}
+			Pools.free(changeEvent);
 		}
 	}
 

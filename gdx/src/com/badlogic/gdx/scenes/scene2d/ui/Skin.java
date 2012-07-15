@@ -289,7 +289,6 @@ public class Skin implements Disposable {
 	 * reflection and the name of that style is found in the skin. If the actor doesn't have a "getStyle" method or the style was
 	 * not found in the skin, no exception is thrown and the actor is left unchanged. */
 	public void setEnabled (Actor actor, boolean enabled) {
-		actor.setTouchable(enabled);
 		// Get current style.
 		Method method = findMethod(actor.getClass(), "getStyle");
 		if (method == null) return;

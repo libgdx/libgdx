@@ -20,11 +20,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Pools;
 
 // BOZO - Add snapping to the knob.
 
@@ -71,20 +71,20 @@ public class Slider extends Widget {
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
 
-		addListener(new ActorListener() {
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+		addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0) return false;
 				isDragging = true;
 				calculatePositionAndValue(x);
 				return true;
 			}
 
-			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				isDragging = false;
 				calculatePositionAndValue(x);
 			}
 
-			public void touchDragged (ActorEvent event, float x, float y, int pointer) {
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				calculatePositionAndValue(x);
 			}
 		});
@@ -133,9 +133,13 @@ public class Slider extends Widget {
 		sliderPos = Math.max(0, sliderPos);
 		sliderPos = Math.min(width - knob.getMinWidth(), sliderPos);
 		value = min + (max - min) * (sliderPos / (width - knob.getMinWidth()));
-		if (oldValue != value && fire(new ChangeEvent())) {
-			sliderPos = oldPosition;
-			value = oldValue;
+		if (oldValue != value) {
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			if (fire(changeEvent)) {
+				sliderPos = oldPosition;
+				value = oldValue;
+			}
+			Pools.free(changeEvent);
 		}
 	}
 
@@ -160,7 +164,11 @@ public class Slider extends Widget {
 		this.max = max;
 		float oldValue = value;
 		this.value = min;
-		if (oldValue != value) fire(new ChangeEvent());
+		if (oldValue != value) {
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			fire(changeEvent);
+			Pools.free(changeEvent);
+		}
 	}
 
 	public float getPrefWidth () {

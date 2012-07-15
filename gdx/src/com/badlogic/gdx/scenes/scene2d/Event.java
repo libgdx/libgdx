@@ -18,7 +18,7 @@ package com.badlogic.gdx.scenes.scene2d;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 /** The base class for all events.
- * @see ActorEvent
+ * @see InputEvent
  * @see Actor#fire(Event) */
 public class Event implements Poolable {
 	private Stage stage;

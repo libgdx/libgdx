@@ -36,6 +36,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -46,7 +47,8 @@ import com.esotericsoftware.tablelayout.Cell;
 import com.esotericsoftware.tablelayout.Toolkit;
 import com.esotericsoftware.tablelayout.Value;
 
-/** A group that sizes and positions children using table constraints. By default, {@link #isTouchable()} is false.
+/** A group that sizes and positions children using table constraints. By default, {@link #getTouchable()} is
+ * {@link Touchable#onlyChildren}.
  * <p>
  * The preferred and minimum sizes are that of the children when laid out in columns and rows.
  * @author Nathan Sweet */
@@ -70,7 +72,7 @@ public class Table extends WidgetGroup {
 		layout = new TableLayout();
 		layout.setTable(this);
 		setTransform(false);
-		setTouchable(false);
+		setTouchable(Touchable.onlyChildren);
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {

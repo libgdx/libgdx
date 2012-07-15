@@ -23,8 +23,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ActorEvent;
-import com.badlogic.gdx.scenes.scene2d.ActorListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
@@ -100,10 +100,10 @@ public class ScrollPane extends WidgetGroup {
 		setWidth(150);
 		setHeight(150);
 
-		addCaptureListener(new ActorListener() {
+		addCaptureListener(new InputListener() {
 			private float handlePosition;
 
-			public boolean touchDown (ActorEvent event, float x, float y, int pointer, int button) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0) return false;
 				if (fadeAlpha == 0) return false;
 
@@ -134,12 +134,12 @@ public class ScrollPane extends WidgetGroup {
 				return false;
 			}
 
-			public void touchUp (ActorEvent event, float x, float y, int pointer, int button) {
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				touchScrollH = false;
 				touchScrollV = false;
 			}
 
-			public void touchDragged (ActorEvent event, float x, float y, int pointer) {
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				if (touchScrollH) {
 					float delta = x - lastPoint.x;
 					float scrollH = handlePosition + delta;
@@ -161,7 +161,7 @@ public class ScrollPane extends WidgetGroup {
 		});
 
 		gestureListener = new ActorGestureListener() {
-			public void pan (ActorEvent event, float x, float y, float deltaX, float deltaY) {
+			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
 				resetFade();
 				amountX -= deltaX;
 				amountY += deltaY;
@@ -169,7 +169,7 @@ public class ScrollPane extends WidgetGroup {
 				cancelTouchFocusedChild(event);
 			}
 
-			public void fling (ActorEvent event, float x, float y) {
+			public void fling (InputEvent event, float x, float y) {
 				if (Math.abs(x) > 150) {
 					flingTimer = flingTime;
 					velocityX = x;
@@ -184,7 +184,7 @@ public class ScrollPane extends WidgetGroup {
 
 			public boolean handle (Event event) {
 				if (super.handle(event)) {
-					if (((ActorEvent)event).getType() == ActorEvent.Type.touchDown) flingTimer = 0;
+					if (((InputEvent)event).getType() == InputEvent.Type.touchDown) flingTimer = 0;
 					return true;
 				}
 				return false;
@@ -198,7 +198,7 @@ public class ScrollPane extends WidgetGroup {
 		fadeDelay = fadeDelaySeconds;
 	}
 
-	void cancelTouchFocusedChild (ActorEvent event) {
+	void cancelTouchFocusedChild (InputEvent event) {
 		Stage stage = getStage();
 		stage.cancelTouchFocus(gestureListener, this);
 	}
