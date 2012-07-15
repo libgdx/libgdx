@@ -108,23 +108,25 @@ public class Stage extends InputAdapter implements Disposable {
 	 * lengthened. */
 	public void setViewport (float width, float height, boolean keepAspectRatio) {
 		if (keepAspectRatio) {
-			if (width > height && width / Gdx.graphics.getWidth() <= height / Gdx.graphics.getHeight()) {
-				float toDeviceSpace = Gdx.graphics.getHeight() / height;
-				float toViewportSpace = height / Gdx.graphics.getHeight();
-
-				float deviceWidth = width * toDeviceSpace;
-				gutterWidth = (Gdx.graphics.getWidth() - deviceWidth) * toViewportSpace / 2;
+			float screenWidth = Gdx.graphics.getWidth();
+			float screenHeight = Gdx.graphics.getHeight();
+			if (screenHeight / screenWidth < height / width) {
+				float toScreenSpace = screenHeight / height;
+				float toViewportSpace = height / screenHeight;
+				float deviceWidth = width * toScreenSpace;
+				float lengthen = (screenWidth - deviceWidth) * toViewportSpace;
+				gutterWidth = lengthen / 2;
 				gutterHeight = 0;
-				this.width = width + gutterWidth * 2;
+				this.width = width + lengthen;
 				this.height = height;
 			} else {
-				float toDeviceSpace = Gdx.graphics.getWidth() / width;
-				float toViewportSpace = width / Gdx.graphics.getWidth();
-
-				float deviceHeight = height * toDeviceSpace;
+				float toScreenSpace = screenWidth / width;
+				float toViewportSpace = width / screenWidth;
+				float deviceHeight = height * toScreenSpace;
+				float lengthen = (screenHeight - deviceHeight) * toViewportSpace;
 				gutterWidth = 0;
-				gutterHeight = (Gdx.graphics.getHeight() - deviceHeight) * toViewportSpace / 2;
-				this.height = height + gutterHeight * 2;
+				gutterHeight = lengthen / 2;
+				this.height = height + lengthen;
 				this.width = width;
 			}
 		} else {
