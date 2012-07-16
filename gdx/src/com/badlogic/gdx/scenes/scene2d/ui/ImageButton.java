@@ -116,5 +116,9 @@ public class ImageButton extends Button {
 			this.imageDown = style.imageDown;
 			this.imageChecked = style.imageChecked;
 		}
+		
+		public ImageButtonStyle (ButtonStyle style) {
+			super(style);
+		}
 	}
 }

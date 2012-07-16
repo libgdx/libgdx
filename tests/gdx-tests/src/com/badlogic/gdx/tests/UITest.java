@@ -28,8 +28,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
@@ -50,6 +52,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class UITest extends GdxTest {
@@ -74,16 +77,23 @@ public class UITest extends GdxTest {
 		texture1 = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		texture2 = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 		TextureRegion image = new TextureRegion(texture1);
+		TextureRegion imageFlipped = new TextureRegion(image);
+		imageFlipped.flip(true, true);
 		TextureRegion image2 = new TextureRegion(texture2);
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		Gdx.input.setInputProcessor(stage);
 
 		// Group.debug = true;
 
-		final Button button = new TextButton("Single", skin);
+		ImageButtonStyle style = new ImageButtonStyle(skin.get(ButtonStyle.class));
+		style.imageUp = new TextureRegionDrawable(image);
+		style.imageDown = new TextureRegionDrawable(imageFlipped);
+		final ImageButton iconButton = new ImageButton(style);
+
 		final Button buttonMulti = new TextButton("Multi\nLine\nToggle", skin.get("toggle", TextButtonStyle.class));
 		final Button imgButton = new Button(new Image(image), skin);
 		final Button imgToggleButton = new Button(new Image(image), skin.get("toggle", ButtonStyle.class));
+
 		final CheckBox checkBox = new CheckBox("Check me", skin);
 		final Slider slider = new Slider(0, 10, 1, skin);
 		final TextField textfield = new TextField("", skin);
@@ -110,7 +120,7 @@ public class UITest extends GdxTest {
 		window.setPosition(0, 0);
 		window.defaults().spaceBottom(10);
 		window.row().fill().expandX();
-		window.add(button).fill(false);
+		window.add(iconButton);
 		window.add(buttonMulti);
 		window.add(imgButton);
 		window.add(imgToggleButton);
