@@ -10,5 +10,5 @@ public enum Touchable {
 	disabled,
 	/** No input events will be received by the actor, but children will still receive events. Note that events on the children will
 	 * still bubble to the parent. */
-	onlyChildren
+	childrenOnly
 }
