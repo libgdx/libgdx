@@ -21,14 +21,17 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -42,18 +45,21 @@ public class TerrainTest extends GdxTest {
 	Vector3 intersection = new Vector3();
 	boolean intersected = false;
 	long lastTime = TimeUtils.nanoTime();
+	private Random rand = new Random();
+	private float[] heightmap;
 
 	@Override
 	public void create () {
 		renderer = new ImmediateModeRenderer10();
 
 		chunk = new TerrainChunk(32, 32, 4);
+		this.heightmap = chunk.heightMap;
 
-		Random rand = new Random();
 		int len = chunk.vertices.length;
-		for (int i = 3; i < len; i += 4)
+		for (int i = 3; i < len; i += 4) {
+			Float f = Color.toFloatBits(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255), 255);
 			chunk.vertices[i] = Color.toFloatBits(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255), 255);
-
+		}
 		mesh = new Mesh(true, chunk.vertices.length / 3, chunk.indices.length, new VertexAttribute(VertexAttributes.Usage.Position,
 			3, "a_position"), new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4, "a_color"));
 
@@ -63,8 +69,9 @@ public class TerrainTest extends GdxTest {
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(0, 5, 5);
 		camera.direction.set(0, 0, 0).sub(camera.position).nor();
-		camera.near = 0.5f;
+		camera.near = -0.5f;
 		camera.far = 300;
+
 	}
 
 	@Override
@@ -76,6 +83,7 @@ public class TerrainTest extends GdxTest {
 
 		camera.update();
 		camera.apply(gl);
+
 		gl.glColor4f(1, 1, 1, 1);
 		mesh.render(GL10.GL_TRIANGLES);
 
@@ -98,40 +106,96 @@ public class TerrainTest extends GdxTest {
 	private void handleInput (Input input, float delta) {
 		if (input.isTouched()) {
 			Ray ray = camera.getPickRay(input.getX(), input.getY());
-			if (Intersector.intersectRayTriangles(ray, chunk.vertices, chunk.indices, 4, intersection)) intersected = true;
+			if (Intersector.intersectRayTriangles(ray, chunk.vertices, chunk.indices, 4, intersection)) {
+				intersected = true;
+			}
+			// camera mouse look
+			// find vector 90° to me
+			Vector3 v90 = camera.direction.cpy();
+			Quaternion q = new Quaternion(camera.up, -90);
+			q.transform(v90);
+
+			// go to plane x,z
+			v90.y = 0;
+
+			// set rotation up/down
+			Quaternion qUpDown = new Quaternion(v90, Gdx.input.getDeltaY());
+
+			// set rotation left/right
+			Quaternion qLeftRight = new Quaternion(camera.up, Gdx.input.getDeltaX());
+
+			// apply the rotations
+			qUpDown.transform(camera.direction);
+			qLeftRight.transform(camera.direction);
+
 		} else {
 			intersected = false;
 		}
 
-		if (input.isKeyPressed(Keys.W)) camera.position.z -= delta;
-		if (input.isKeyPressed(Keys.S)) camera.position.z += delta;
-		if (input.isKeyPressed(Keys.A)) camera.position.x -= delta;
-		if (input.isKeyPressed(Keys.D)) camera.position.x += delta;
+		if (input.isKeyPressed(Keys.W)) {
+			Vector3 forward = new Vector3().set(camera.direction).mul(delta);
+			camera.position.add(forward);
+			camera.position.y = this.heightmap[((int)(camera.position.x) * 33) + ((int)camera.position.z)] * 4 + 1; // current pos
+		}
+		if (input.isKeyPressed(Keys.S)) {
+			Vector3 forward = new Vector3().set(camera.direction).mul(-delta);
+			camera.position.add(forward);
+			camera.position.y = this.heightmap[((int)(camera.position.x) * 33) + ((int)camera.position.z)] * 4 + 1; // current pos
+		}
+		if (input.isKeyPressed(Keys.A)) {
+			camera.position.x -= delta;
+			camera.position.y = this.heightmap[((int)(camera.position.x) * 33) + ((int)camera.position.z)] * 4 + 1; // current pos
+		}
+		if (input.isKeyPressed(Keys.D)) {
+			camera.position.x += delta;
+			camera.position.y = this.heightmap[((int)(camera.position.x) * 33) + ((int)camera.position.z)] * 4 + 1; // current pos
+		}
 		if (input.isKeyPressed(Keys.Q)) camera.position.y += delta;
 		if (input.isKeyPressed(Keys.E)) camera.position.y -= delta;
 	}
 
 	final static class TerrainChunk {
-		public final byte[] heightMap;
+		public final float[] heightMap;
 		public final short width;
 		public final short height;
 		public final float[] vertices;
 		public final short[] indices;
 		public final int vertexSize;
+		private Random rand = new Random();
 
 		public TerrainChunk (int width, int height, int vertexSize) {
 			if ((width + 1) * (height + 1) > Short.MAX_VALUE)
 				throw new IllegalArgumentException("Chunk size too big, (width + 1)*(height+1) must be <= 32767");
 
-			this.heightMap = new byte[(width + 1) * (height + 1)];
+			this.heightMap = new float[(width + 1) * (height + 1)];
 			this.width = (short)width;
 			this.height = (short)height;
 			this.vertices = new float[heightMap.length * vertexSize];
 			this.indices = new short[width * height * 6];
 			this.vertexSize = vertexSize;
 
+			buildHeightmap("data/heightmap.png");
 			buildIndices();
 			buildVertices();
+		}
+
+		public void buildHeightmap (String pathToHeightMap) {
+			/** get the heightmap from filesystem... should match width and height from current chunk..otherwise its just flat on
+			 * missing pixel but no error thrown */
+
+			FileHandle handle = Gdx.files.internal(pathToHeightMap);
+			Pixmap jpg = new Pixmap(handle);
+			Color color = new Color();
+			int idh = 0; // index to iterate
+
+			for (int x = 0; x < this.width + 1; x++) {
+				for (int y = 0; y < this.height + 1; y++) {
+					// we need seperated channels..
+					Color.rgba8888ToColor(color, jpg.getPixel(x, y)); // better way to get pixel ?
+					// pick whatever channel..we do have a b/w map
+					this.heightMap[idh++] = color.r;
+				}
+			}
 		}
 
 		public void buildVertices () {
@@ -141,11 +205,12 @@ public class TerrainTest extends GdxTest {
 			int idx = 0;
 			int hIdx = 0;
 			int inc = vertexSize - 3;
+			int strength = 4; // multiplier for heightmap
 
 			for (int z = 0; z < heightPitch; z++) {
 				for (int x = 0; x < widthPitch; x++) {
 					vertices[idx++] = x;
-					vertices[idx++] = heightMap[hIdx++];
+					vertices[idx++] = heightMap[hIdx++] * strength;
 					vertices[idx++] = z;
 					idx += inc;
 				}

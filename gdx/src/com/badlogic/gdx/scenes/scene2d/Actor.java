@@ -431,13 +431,13 @@ public class Actor {
 		return rotation;
 	}
 
-	public void setRotation (float rotation) {
-		this.rotation = rotation;
+	public void setRotation (float degrees) {
+		this.rotation = degrees;
 	}
 
 	/** Adds the specified rotation to the current rotation. */
-	public void rotate (float amount) {
-		setRotation(rotation + amount);
+	public void rotate (float amountInDegrees) {
+		setRotation(rotation + amountInDegrees);
 	}
 
 	public void setColor (Color color) {

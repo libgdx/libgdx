@@ -77,12 +77,10 @@ public class Table extends WidgetGroup {
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
-		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		drawBackground(batch, parentAlpha);
 
 		if (isTransform()) {
-			applyTransform(batch);
+			applyTransform(batch, computeTransform());
 			if (clip) {
 				if (ScissorStack.pushScissors(calculateScissors(batch.getTransformMatrix()))) {
 					drawChildren(batch, parentAlpha);

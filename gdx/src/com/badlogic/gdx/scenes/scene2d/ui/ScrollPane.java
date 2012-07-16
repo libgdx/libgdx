@@ -396,7 +396,7 @@ public class ScrollPane extends WidgetGroup {
 		validate();
 
 		// Setup transform for this group.
-		applyTransform(batch);
+		applyTransform(batch, computeTransform());
 
 		if (scrollX) hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getScrollPercentX());
 		if (scrollY)

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.input.GestureDetector;
@@ -70,7 +71,7 @@ public class ActorGestureListener implements EventListener {
 	});
 
 	InputEvent event;
-	Actor actor;
+	Actor actor, touchDownTarget;
 
 	public boolean handle (Event e) {
 		if (!(e instanceof InputEvent)) return false;
@@ -79,12 +80,17 @@ public class ActorGestureListener implements EventListener {
 		switch (event.getType()) {
 		case touchDown:
 			actor = event.getListenerActor();
+			touchDownTarget = event.getTarget();
 			detector.touchDown(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
+			actor.stageToLocalCoordinates(Vector2.tmp.set(event.getStageX(), event.getStageY()));
+			touchDown(event, Vector2.tmp.x, Vector2.tmp.y, event.getPointer(), event.getButton());
 			return true;
 		case touchUp:
 			this.event = event;
 			actor = event.getListenerActor();
 			detector.touchUp(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
+			actor.stageToLocalCoordinates(Vector2.tmp.set(event.getStageX(), event.getStageY()));
+			touchUp(event, Vector2.tmp.x, Vector2.tmp.y, event.getPointer(), event.getButton());
 			return true;
 		case touchDragged:
 			this.event = event;
@@ -93,6 +99,12 @@ public class ActorGestureListener implements EventListener {
 			return true;
 		}
 		return false;
+	}
+
+	public void touchDown (InputEvent event, float x, float y, int pointer, int button) {
+	}
+
+	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 	}
 
 	public void tap (InputEvent event, float x, float y, int count) {
@@ -107,6 +119,7 @@ public class ActorGestureListener implements EventListener {
 	public void fling (InputEvent event, float velocityX, float velocityY) {
 	}
 
+	/** The delta is the difference in stage coordinates since the last pan. */
 	public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
 	}
 
@@ -118,5 +131,9 @@ public class ActorGestureListener implements EventListener {
 
 	public GestureDetector getGestureDetector () {
 		return detector;
+	}
+
+	public Actor getTouchDownTarget () {
+		return touchDownTarget;
 	}
 }

@@ -53,15 +53,16 @@ public class Group extends Actor implements Cullable {
 	/** Draws the group and its children. The default implementation calls {@link #applyTransform(SpriteBatch)} if needed, then
 	 * {@link #drawChildren(SpriteBatch, float)}, then {@link #resetTransform(SpriteBatch)} if needed. */
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		if (transform) applyTransform(batch);
+		if (transform) applyTransform(batch, computeTransform());
 		drawChildren(batch, parentAlpha);
 		if (transform) resetTransform(batch);
 	}
 
-	/** Draws all children. {@link #applyTransform(SpriteBatch)} should be called before and {@link #resetTransform(SpriteBatch)}
-	 * after this method if {@link #setTransform(boolean) transform} is true. If {@link #setTransform(boolean) transform} is false
-	 * these methods don't need to be called, children positions are temporarily offset by the group position when drawn. This
-	 * method avoids drawing children completely outside the {@link #setCullingArea(Rectangle) culling area}, if set. */
+	/** Draws all children. {@link #applyTransform(SpriteBatch, Matrix4)} should be called before and
+	 * {@link #resetTransform(SpriteBatch)} after this method if {@link #setTransform(boolean) transform} is true. If
+	 * {@link #setTransform(boolean) transform} is false these methods don't need to be called, children positions are temporarily
+	 * offset by the group position when drawn. This method avoids drawing children completely outside the
+	 * {@link #setCullingArea(Rectangle) culling area}, if set. */
 	protected void drawChildren (SpriteBatch batch, float parentAlpha) {
 		parentAlpha *= getColor().a;
 		DelayedRemovalArray<Actor> children = this.children;
@@ -127,16 +128,17 @@ public class Group extends Actor implements Cullable {
 		children.end();
 	}
 
-	/** Transforms the SpriteBatch to this group's coordinate system. Note this causes the batch to be flushed. */
-	protected void applyTransform (SpriteBatch batch) {
-		updateTransform();
+	/** Set the SpriteBatch's transformation matrix, often with the result of {@link #computeTransform()}. Note this causes the
+	 * batch to be flushed. {@link #resetTransform(SpriteBatch)} will restore the transform to what it was before this call. */
+	protected void applyTransform (SpriteBatch batch, Matrix4 transform) {
 		batch.end();
 		oldBatchTransform.set(batch.getTransformMatrix());
-		batch.setTransformMatrix(batchTransform);
+		batch.setTransformMatrix(transform);
 		batch.begin();
 	}
 
-	private void updateTransform () {
+	/** Returns the transform for this group's coordinate system. */
+	protected Matrix4 computeTransform () {
 		Matrix3 temp = worldTransform;
 
 		float originX = getOriginX();
@@ -169,6 +171,7 @@ public class Group extends Actor implements Cullable {
 		}
 
 		batchTransform.set(worldTransform);
+		return batchTransform;
 	}
 
 	/** Restores the SpriteBatch transform to what it was before {@link #applyTransform(SpriteBatch)}. Note this causes the batch to

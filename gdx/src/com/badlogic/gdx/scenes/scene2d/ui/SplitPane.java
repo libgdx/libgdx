@@ -232,7 +232,7 @@ public class SplitPane extends WidgetGroup {
 		Color color = getColor();
 
 		Drawable handle = style.handle;
-		applyTransform(batch);
+		applyTransform(batch, computeTransform());
 		Matrix4 transform = batch.getTransformMatrix();
 		if (firstWidget != null) {
 			ScissorStack.calculateScissors(getStage().getCamera(), transform, firstWidgetBounds, firstScissors);
