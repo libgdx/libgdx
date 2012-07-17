@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.StringBuilder;
 
 /** A text label, with optional word wrapping.
  * <p>
@@ -32,7 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public class Label extends Widget {
 	private LabelStyle style;
 	private final TextBounds bounds = new TextBounds();
-	private CharSequence text;
+	private final StringBuilder text = new StringBuilder();
 	private BitmapFontCache cache;
 	private float prefWidth, prefHeight;
 	private int labelAlign = Align.left;
@@ -61,8 +62,7 @@ public class Label extends Widget {
 	}
 
 	public Label (CharSequence text, LabelStyle style) {
-		if (text == null) text = "";
-		this.text = text;
+		if (text != null) this.text.append(text);
 		setStyle(style);
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
@@ -84,12 +84,26 @@ public class Label extends Widget {
 		return style;
 	}
 
-	public void setText (CharSequence text) {
-		if (text == null) throw new IllegalArgumentException("text cannot be null.");
-		if (text.equals(this.text)) return;
-		this.text = text;
+	/** @param newText May be null. */
+	public void setText (CharSequence newText) {
+		if (newText instanceof StringBuilder) {
+			if (text.equals(newText)) return;
+		} else {
+			if (newText == null) newText = "";
+			if (isEqual(text.chars, newText)) return;
+		}
+		text.setLength(0);
+		text.append(newText);
 		computeBounds();
 		invalidateHierarchy();
+	}
+
+	private boolean isEqual (char[] chars, CharSequence text) {
+		int length = chars.length;
+		if (length != text.length()) return false;
+		for (int i = 0; i < length; i++)
+			if (chars[i] != text.charAt(i)) return false;
+		return true;
 	}
 
 	public CharSequence getText () {
