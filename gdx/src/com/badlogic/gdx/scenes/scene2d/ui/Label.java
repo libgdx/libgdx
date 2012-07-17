@@ -195,15 +195,14 @@ public class Label extends Widget {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		layout();
 		validate();
+		Color color = getColor();
 		if (style.background != null) {
-			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
 		cache.setPosition(getX(), getY());
-		cache.draw(batch, getColor().a * parentAlpha);
+		cache.draw(batch, color.a * parentAlpha);
 	}
 
 	public float getPrefWidth () {

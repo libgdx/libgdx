@@ -50,8 +50,8 @@ public class Group extends Actor implements Cullable {
 		children.end();
 	}
 
-	/** Draws the group and its children. The default implementation calls {@link #applyTransform(SpriteBatch)} if needed, then
-	 * {@link #drawChildren(SpriteBatch, float)}, then {@link #resetTransform(SpriteBatch)} if needed. */
+	/** Draws the group and its children. The default implementation calls {@link #applyTransform(SpriteBatch, Matrix4)} if needed,
+	 * then {@link #drawChildren(SpriteBatch, float)}, then {@link #resetTransform(SpriteBatch)} if needed. */
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		if (transform) applyTransform(batch, computeTransform());
 		drawChildren(batch, parentAlpha);
@@ -174,8 +174,8 @@ public class Group extends Actor implements Cullable {
 		return batchTransform;
 	}
 
-	/** Restores the SpriteBatch transform to what it was before {@link #applyTransform(SpriteBatch)}. Note this causes the batch to
-	 * be flushed. */
+	/** Restores the SpriteBatch transform to what it was before {@link #applyTransform(SpriteBatch, Matrix4)}. Note this causes the
+	 * batch to be flushed. */
 	protected void resetTransform (SpriteBatch batch) {
 		batch.end();
 		batch.setTransformMatrix(oldBatchTransform);
