@@ -88,12 +88,14 @@ public class Label extends Widget {
 	public void setText (CharSequence newText) {
 		if (newText instanceof StringBuilder) {
 			if (text.equals(newText)) return;
+			text.setLength(0);
+			text.append((StringBuilder)newText);
 		} else {
 			if (newText == null) newText = "";
 			if (isEqual(text.chars, newText)) return;
+			text.setLength(0);
+			text.append(newText);
 		}
-		text.setLength(0);
-		text.append(newText);
 		computeBounds();
 		invalidateHierarchy();
 	}

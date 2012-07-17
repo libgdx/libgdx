@@ -65,6 +65,12 @@ public class StringBuilder implements Appendable, CharSequence {
 		this(seq.toString());
 	}
 
+	public StringBuilder (StringBuilder builder) {
+		length = builder.length;
+		chars = new char[length + INITIAL_CAPACITY];
+		System.arraycopy(builder.chars, 0, chars, 0, length);
+	}
+
 	/** Constructs an instance that's initialized with the contents of the specified {@code String}. The capacity of the new builder
 	 * will be the length of the {@code String} plus 16.
 	 * 
@@ -804,6 +810,14 @@ public class StringBuilder implements Appendable, CharSequence {
 		return this;
 	}
 
+	public StringBuilder append (StringBuilder builder) {
+		if (builder == null)
+			appendNull();
+		else
+			append0(builder.chars, 0, builder.length);
+		return this;
+	}
+
 	/** Appends the string representation of the specified subsequence of the {@code CharSequence}. If the {@code CharSequence} is
 	 * {@code null}, then the string {@code "null"} is used to extract the subsequence from.
 	 * 
@@ -815,6 +829,14 @@ public class StringBuilder implements Appendable, CharSequence {
 	 *            {@code end} is greater than the length of {@code csq}. */
 	public StringBuilder append (CharSequence csq, int start, int end) {
 		append0(csq, start, end);
+		return this;
+	}
+
+	public StringBuilder append (StringBuilder builder, int start, int end) {
+		if (builder == null)
+			appendNull();
+		else
+			append0(builder.chars, start, end);
 		return this;
 	}
 
