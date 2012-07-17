@@ -72,30 +72,48 @@ public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
 	TextureAtlas atlas;
 
-	public Skin (TextureAtlas atlas) {
-		this.atlas = atlas;
-		add(atlas);
-	}
+	/** Creates an empty skin. */
+    public Skin () {
+    }
 
-	public Skin (FileHandle skinFile, TextureAtlas atlas) {
-		this.atlas = atlas;
-		add(atlas);
-		load(skinFile);
-	}
+    /** Creates a skin containing the resources in the specified skin JSON file. If a file in the same directory with a ".atlas"
+     * extension exists, it is loaded as a {@link TextureAtlas} and the texture regions added to the skin. The atlas is
+     * automatically disposed when the skin is disposed. */
+    public Skin (FileHandle skinFile) {
+            FileHandle atlasFile = skinFile.sibling(skinFile.nameWithoutExtension() + ".atlas");
+            if (atlasFile.exists()) {
+                    atlas = new TextureAtlas(atlasFile);
+                    addRegions(atlas);
+            }
 
-	public Skin (FileHandle skinFile) {
-		this.atlas = new TextureAtlas(skinFile.sibling(skinFile.nameWithoutExtension() + ".atlas"));
-		add(atlas);
-		load(skinFile);
-	}
+            load(skinFile);
+    }
 
-	public void load (FileHandle skinFile) {
-		try {
-			getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
-		} catch (SerializationException ex) {
-			throw new SerializationException("Error reading file: " + skinFile, ex);
-		}
-	}
+    /** Creates a skin containing the resources in the specified skin JSON file and the texture regions from the specified atlas.
+     * The atlas is automatically disposed when the skin is disposed. */
+    public Skin (FileHandle skinFile, TextureAtlas atlas) {
+            this.atlas = atlas;
+            addRegions(atlas);
+            load(skinFile);
+    }
+
+    /** Adds all resources in the specified skin JSON file. */
+    public void load (FileHandle skinFile) {
+            try {
+                    getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
+            } catch (SerializationException ex) {
+                    throw new SerializationException("Error reading file: " + skinFile, ex);
+            }
+    }
+
+    /** Adds all named txeture regions from the atlas. The atlas will not be automatically disposed when the skin is disposed. */
+    public void addRegions (TextureAtlas atlas) {
+            Array<AtlasRegion> regions = atlas.getRegions();
+            for (int i = 0, n = regions.size; i < n; i++) {
+                    AtlasRegion region = regions.get(i);
+                    add(region.name, region, TextureRegion.class);
+            }
+    }
 
 	private void add (TextureAtlas atlas) {
 		Array<AtlasRegion> regions = atlas.getRegions();
@@ -298,7 +316,6 @@ public class Skin implements Disposable {
 	 * reflection and the name of that style is found in the skin. If the actor doesn't have a "getStyle" method or the style was
 	 * not found in the skin, no exception is thrown and the actor is left unchanged. */
 	public void setEnabled (Actor actor, boolean enabled) {
-		actor.setTouchable(enabled);
 		// Get current style.
 		com.badlogic.gwtref.client.Method method = findMethod(actor.getClass(), "getStyle");
 		if (method == null) return;

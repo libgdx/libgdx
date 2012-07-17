@@ -194,8 +194,9 @@
 		<include name="scenes/scene2d/Action.java"/>
 		<include name="scenes/scene2d/actions/*.java"/>
 		<include name="scenes/scene2d/Actor.java"/>
-		<include name="scenes/scene2d/ActorEvent.java"/>
-		<include name="scenes/scene2d/ActorListener.java"/>
+		<include name="scenes/scene2d/InputEvent.java"/>
+		<include name="scenes/scene2d/Touchable.java"/>
+		<include name="scenes/scene2d/InputListener.java"/>
 		<include name="scenes/scene2d/Event.java"/>
 		<include name="scenes/scene2d/EventListener.java"/>
 		<include name="scenes/scene2d/Group.java"/>
@@ -219,6 +220,7 @@
 		<include name="scenes/scene2d/ui/Widget.java"/>
 		<include name="scenes/scene2d/ui/WidgetGroup.java"/>
 		<include name="scenes/scene2d/ui/Window.java"/>
+		<include name="scenes/scene2d/ui/Touchpad.java"/>
 		<include name="scenes/scene2d/utils/ActorGestureListener.java"/>
 		<include name="scenes/scene2d/utils/Align.java"/>
 		<include name="scenes/scene2d/utils/ChangeListener.java"/>
