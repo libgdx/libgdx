@@ -122,11 +122,7 @@ public class YDownTest extends GdxTest {
 		public MyActor (TextureRegion region) {
 			this.region = region;
 			setWidth(region.getRegionWidth());
-			// note that the height of the region will be negative since
-			// we flipped it, hence the minus sign. This is the only
-			// portion of the code of MyActor that is dependend on
-			// whether y points up or down!
-			setHeight(-region.getRegionHeight());
+			setHeight(region.getRegionHeight());
 
 			addListener(new InputListener() {
 				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -146,7 +142,6 @@ public class YDownTest extends GdxTest {
 
 					// adjust the actor's position by (current mouse position - last mouse position)
 					// in the actor's coordinate system.
-
 					translate(x - lastX, y - lastY);
 
 					// save the current mouse position as the basis for the next drag event.
