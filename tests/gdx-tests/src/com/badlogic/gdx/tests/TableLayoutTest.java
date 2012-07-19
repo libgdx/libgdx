@@ -70,7 +70,7 @@ public class TableLayoutTest extends GdxTest {
 			}
 		});
 		table.add(button);
-		table.setTouchable(Touchable.disabled);
+		// table.setTouchable(Touchable.disabled);
 
 		Table table2 = new Table();
 		stage.addActor(table2);

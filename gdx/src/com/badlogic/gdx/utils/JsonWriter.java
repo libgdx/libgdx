@@ -17,6 +17,7 @@
 package com.badlogic.gdx.utils;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.regex.Pattern;
 
@@ -161,8 +162,7 @@ public class JsonWriter extends Writer {
 
 		public String quoteValue (String value) {
 			value = value.replace("\\", "\\\\");
-			if (this == OutputType.minimal && !value.equals("true") && !value.equals("false") && !value.equals("null")
-				&& minimalPattern.matcher(value).matches()) return value;
+			if (this == OutputType.minimal && minimalPattern.matcher(value).matches()) return value;
 			return '"' + value.replace("\"", "\\\"") + '"';
 		}
 
@@ -179,5 +179,16 @@ public class JsonWriter extends Writer {
 				return '"' + value.replace("\"", "\\\"") + '"';
 			}
 		}
+	}
+
+	public static void main (String[] args) throws Exception {
+		StringWriter writer = new StringWriter();
+		JsonWriter s = new JsonWriter(writer);
+		s.setOutputType(OutputType.minimal);
+		s.object();
+		s.name("meow");
+		s.value(true);
+		s.close();
+		System.out.println(writer);
 	}
 }

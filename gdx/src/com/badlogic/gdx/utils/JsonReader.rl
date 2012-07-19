@@ -84,6 +84,7 @@ public class JsonReader {
 		int s = 0;
 		Array<String> names = new Array(8);
 		boolean needsUnescape = false;
+		boolean discardBuffer = false; // When unquotedString and true/false/null both match, this discards unquotedString.
 		RuntimeException parseRuntimeEx = null;
 
 		boolean debug = false;
@@ -104,6 +105,7 @@ public class JsonReader {
 			action buffer {
 				s = p;
 				needsUnescape = false;
+				discardBuffer = false;
 			}
 			action needsUnescape {
 				needsUnescape = true;
@@ -116,12 +118,14 @@ public class JsonReader {
 				names.add(name);
 			}
 			action string {
-				String value = new String(data, s, p - s);
-				s = p;
-				if (needsUnescape) value = unescape(value);
-				String name = names.size > 0 ? names.pop() : null;
-				if (debug) System.out.println("string: " + name + "=" + value);
-				string(name, value);
+				if (!discardBuffer) {
+					String value = new String(data, s, p - s);
+					s = p;
+					if (needsUnescape) value = unescape(value);
+					String name = names.size > 0 ? names.pop() : null;
+					if (debug) System.out.println("string: " + name + "=" + value);
+					string(name, value);
+				}
 			}
 			action number {
 				String value = new String(data, s, p - s);
@@ -134,16 +138,19 @@ public class JsonReader {
 				String name = names.size > 0 ? names.pop() : null;
 				if (debug) System.out.println("boolean: " + name + "=true");
 				bool(name, true);
+				discardBuffer = true;
 			}
 			action falseValue {
 				String name = names.size > 0 ? names.pop() : null;
 				if (debug) System.out.println("boolean: " + name + "=false");
 				bool(name, false);
+				discardBuffer = true;
 			}
 			action null {
 				String name = names.size > 0 ? names.pop() : null;
 				if (debug) System.out.println("null: " + name);
 				string(name, null);
+				discardBuffer = true;
 			}
 			action startObject {
 				String name = names.size > 0 ? names.pop() : null;
@@ -168,19 +175,19 @@ public class JsonReader {
 				fret;
 			}
 
-			# parse single quote
+			numberChars = '-'? [0-9]+ ('.' [0-9]+)? ([eE] [+\-]? [0-9]+)?;
 			quotedChars = (^["\\] | ('\\' ["\\/bfnrtu] >needsUnescape))*;
 			unquotedChars = [a-zA-Z_$] ^([:}\],] | space)*;
-			name = ('"' quotedChars >buffer %name '"') | unquotedChars >buffer %name;
+			name = ('"' quotedChars >buffer %name '"') | unquotedChars >buffer %name | numberChars >buffer %name;
 
 			startObject = '{' @startObject;
 			startArray = '[' @startArray;
 			string = '"' quotedChars >buffer %string '"';
 			unquotedString = unquotedChars >buffer %string;
-			number = ('-'? [0-9]+ ('.' [0-9]+)? ([eE] [+\-]? [0-9]+)?) >buffer %number;
+			number = numberChars >buffer %number;
 			nullValue = 'null' %null;
 			booleanValue = 'true' %trueValue | 'false' %falseValue;
-			value = startObject | startArray | number | string | nullValue | booleanValue | unquotedString @-1;
+			value = startObject | startArray | number | string | nullValue | booleanValue | unquotedString $-1;
 
 			nameValue = name space* ':' space* value;
 

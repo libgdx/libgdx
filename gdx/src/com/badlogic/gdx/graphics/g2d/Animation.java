@@ -45,12 +45,12 @@ public class Animation {
 	 * 
 	 * @param frameDuration the time between frames in seconds.
 	 * @param keyFrames the {@link TextureRegion}s representing the frames. */
-	public Animation (float frameDuration, Array keyFrames) {
+	public Animation (float frameDuration, Array<? extends TextureRegion> keyFrames) {
 		this.frameDuration = frameDuration;
 		this.animationDuration = keyFrames.size * frameDuration;
 		this.keyFrames = new TextureRegion[keyFrames.size];
 		for (int i = 0, n = keyFrames.size; i < n; i++) {
-			this.keyFrames[i] = (TextureRegion)keyFrames.get(i);
+			this.keyFrames[i] = keyFrames.get(i);
 		}
 
 		this.playMode = NORMAL;
@@ -61,13 +61,13 @@ public class Animation {
 	 * @param frameDuration the time between frames in seconds.
 	 * @param keyFrames the {@link TextureRegion}s representing the frames.
 	 * @param playType the type of animation play (NORMAL, REVERSED, LOOP, LOOP_REVERSED, LOOP_PINGPONG, LOOP_RANDOM) */
-	public Animation (float frameDuration, Array keyFrames, int playType) {
+	public Animation (float frameDuration, Array<? extends TextureRegion> keyFrames, int playType) {
 
 		this.frameDuration = frameDuration;
 		this.animationDuration = keyFrames.size * frameDuration;
 		this.keyFrames = new TextureRegion[keyFrames.size];
 		for (int i = 0, n = keyFrames.size; i < n; i++) {
-			this.keyFrames[i] = (TextureRegion)keyFrames.get(i);
+			this.keyFrames[i] = keyFrames.get(i);
 		}
 
 		this.playMode = playType;

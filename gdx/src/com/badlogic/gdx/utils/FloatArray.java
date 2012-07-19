@@ -186,6 +186,11 @@ public class FloatArray {
 		return items[size - 1];
 	}
 
+	/** Returns the first item. */
+	public float first () {
+		return items[0];
+	}
+
 	public void clear () {
 		size = 0;
 	}

@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
  * Very thin wrapper around libjpeg. Returns Pixmaps given a file or raw jpeg data in a byte array.
  * The returned Pixmap will always have the {@link Format#RGB888} format.
  * @author mzechner
- *
+ * @author Nathan Sweet
  */
 public class Jpeg {
 	static {

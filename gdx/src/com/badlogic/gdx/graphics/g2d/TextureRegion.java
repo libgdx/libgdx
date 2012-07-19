@@ -26,6 +26,7 @@ public class TextureRegion {
 	Texture texture;
 	float u, v;
 	float u2, v2;
+	int regionWidth, regionHeight;
 
 	/** Constructs a region with no texture and no coordinates defined. */
 	public TextureRegion () {
@@ -80,7 +81,12 @@ public class TextureRegion {
 	public void setRegion (int x, int y, int width, int height) {
 		float invTexWidth = 1f / texture.getWidth();
 		float invTexHeight = 1f / texture.getHeight();
-		setRegion(x * invTexWidth, y * invTexHeight, (x + width) * invTexWidth, (y + height) * invTexHeight);
+		this.u = x * invTexWidth;
+		this.v = y * invTexHeight;
+		this.u2 = (x + width) * invTexWidth;
+		this.v2 = (y + height) * invTexHeight;
+		regionWidth = Math.abs(width);
+		regionHeight = Math.abs(height);
 	}
 
 	public void setRegion (float u, float v, float u2, float v2) {
@@ -88,6 +94,8 @@ public class TextureRegion {
 		this.v = v;
 		this.u2 = u2;
 		this.v2 = v2;
+		regionWidth = Math.round(Math.abs(u2 - u) * texture.getWidth());
+		regionHeight = Math.round(Math.abs(v2 - v) * texture.getHeight());
 	}
 
 	/** Sets the texture and coordinates to the specified region. */
@@ -116,6 +124,7 @@ public class TextureRegion {
 
 	public void setU (float u) {
 		this.u = u;
+		regionWidth = Math.round(Math.abs(u2 - u) * texture.getWidth());
 	}
 
 	public float getV () {
@@ -124,6 +133,7 @@ public class TextureRegion {
 
 	public void setV (float v) {
 		this.v = v;
+		regionHeight = Math.round(Math.abs(v2 - v) * texture.getHeight());
 	}
 
 	public float getU2 () {
@@ -132,6 +142,7 @@ public class TextureRegion {
 
 	public void setU2 (float u2) {
 		this.u2 = u2;
+		regionWidth = Math.round(Math.abs(u2 - u) * texture.getWidth());
 	}
 
 	public float getV2 () {
@@ -140,6 +151,7 @@ public class TextureRegion {
 
 	public void setV2 (float v2) {
 		this.v2 = v2;
+		regionHeight = Math.round(Math.abs(v2 - v) * texture.getHeight());
 	}
 
 	public int getRegionX () {
@@ -158,18 +170,18 @@ public class TextureRegion {
 		setV(y / (float)texture.getHeight());
 	}
 
-	/** Returns the region's width. May be negative if the texture region is flipped horizontally. */
+	/** Returns the region's width. */
 	public int getRegionWidth () {
-		return Math.round((u2 - u) * texture.getWidth());
+		return regionWidth;
 	}
 
 	public void setRegionWidth (int width) {
 		setU2(u + width / (float)texture.getWidth());
 	}
 
-	/** Returns the region's height. May be negative if the texture region is flipped horizontally. */
+	/** Returns the region's height. */
 	public int getRegionHeight () {
-		return Math.round((v2 - v) * texture.getHeight());
+		return regionHeight;
 	}
 
 	public void setRegionHeight (int height) {
@@ -187,6 +199,14 @@ public class TextureRegion {
 			v = v2;
 			v2 = temp;
 		}
+	}
+
+	public boolean isFlipX () {
+		return u > u2;
+	}
+
+	public boolean isFlipY () {
+		return v > v2;
 	}
 
 	/** Offsets the region relative to the current region. Generally the region's size should be the entire size of the texture in
@@ -216,8 +236,8 @@ public class TextureRegion {
 	public TextureRegion[][] split (int tileWidth, int tileHeight) {
 		int x = getRegionX();
 		int y = getRegionY();
-		int width = getRegionWidth();
-		int height = getRegionHeight();
+		int width = regionWidth;
+		int height = regionHeight;
 
 		if (width < 0) {
 			x = x - width;

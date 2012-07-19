@@ -236,6 +236,11 @@ public class Array<T> implements Iterable<T> {
 		return items[size - 1];
 	}
 
+	/** Returns the first item. */
+	public T first () {
+		return items[0];
+	}
+
 	public void clear () {
 		T[] items = this.items;
 		for (int i = 0, n = size; i < n; i++)
