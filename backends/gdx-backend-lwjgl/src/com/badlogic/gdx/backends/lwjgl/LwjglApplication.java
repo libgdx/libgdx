@@ -132,7 +132,11 @@ public class LwjglApplication implements Application {
 		mainLoopThread = new Thread("LWJGL Application") {
 			public void run () {
 				graphics.setVSync(graphics.config.vSyncEnabled);
-				LwjglApplication.this.mainLoop();
+				try {
+					LwjglApplication.this.mainLoop();
+				} catch(Throwable t) {
+					audio.dispose();
+				}
 			}
 		};
 		mainLoopThread.start();
