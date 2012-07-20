@@ -1,4 +1,4 @@
-#!/usr/bin/sh 
+#! /usr/bin/env sh
 # Execute this in the root directory of the trunk to update all jars and natives from 
 # the CI server.
 wget http://libgdx.badlogicgames.com/nightlies/libgdx-nightly-latest.zip -O libgdx-nightlies.zip
