@@ -25,6 +25,7 @@ import java.nio.IntBuffer;
 import javax.media.opengl.GL;
 
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** An implementation of the {@link GL20} interface based on Jogl. Note that Jogl shaders and OpenGL ES shaders will not be 100%
  * compatible. Some glGetXXX methods are not implemented.
@@ -347,7 +348,8 @@ final class JoglGL20 implements GL20 {
 
 	@Override
 	public void glGetBooleanv (int pname, Buffer params) {
-		throw new UnsupportedOperationException("not implemented"); // FIXME
+		if(!(params instanceof ByteBuffer)) throw new GdxRuntimeException("params must be a direct ByteBuffer");
+		gl.glGetBooleanv(pname, (ByteBuffer)params);
 	}
 
 	@Override
