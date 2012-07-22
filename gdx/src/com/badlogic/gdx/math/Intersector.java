@@ -629,77 +629,177 @@ public final class Intersector {
 
 		return closestX + closestY < c.radius * c.radius;
 	}
-
+	
 	/** Check whether specified convex polygons overlap.
 	 * 
 	 * @param p1 The first polygon.
 	 * @param p2 The second polygon.
-	 * @return Whether polygons overlap. */
-	public static boolean overlapConvexPolygons (Polygon p1, Polygon p2) {
+	 * @return Whether polygons overlap. */	
+	public static boolean overlapConvexPolygons(Polygon p1, Polygon p2) {
 		return overlapConvexPolygons(p1, p2, null);
 	}
-
-	/** Check whether specified convex polygons overlap. If they don't optionally obtain a normalized direction of the separation
-	 * axis.
+	
+	/** Check whether specified convex polygons overlap. If they do, optionally obtain a
+	 * Minimum Translation Vector indicating the minimum magnitude vector required
+	 * to push the polygons out of the collision.
 	 * 
 	 * @param p1 The first polygon.
 	 * @param p2 The second polygon.
-	 * @param separation Normalized vector defining a direction of the separation axis (optional).
-	 * @return Whether polygons overlap. */
-	public static boolean overlapConvexPolygons (Polygon p1, Polygon p2, Vector2 separation) {
-		final float[] verts1 = p1.getTransformedVertices();
-		final float[] verts2 = p2.getTransformedVertices();
-		return !separateConvexPolygons(verts1, verts2, separation) && !separateConvexPolygons(verts2, verts1, separation);
+	 * @param mtv A Minimum Translation Vector to fill in the case of a collision (optional).
+	 * @return Whether polygons overlap. */	
+	public static boolean overlapConvexPolygons(Polygon p1, Polygon p2, MinimumTranslationVector mtv) {
+		return overlapConvexPolygons(p1.getTransformedVertices(), p2.getTransformedVertices(), mtv);
 	}
-
-	/** Check whether some of the first polygon's edges defined forms a separation axis of two polygons defined by the lists of
-	 * vertices. Optionally obtain a normalized direction of the separation axis.
+	
+	/** Check whether polygons defined by the given vertex arrays overlap. If they do, optionally obtain a
+	 * Minimum Translation Vector indicating the minimum magnitude vector required
+	 * to push the polygons out of the collision.
 	 * 
-	 * @param verts1 Vertices of the first polygon whose edges will be examined as separation axes.
+	 * @param verts1 Vertices of the first polygon.
 	 * @param verts2 Vertices of the second polygon.
-	 * @param separation Normalized vector defining a direction of the separation axis (optional).
-	 * @return Whether some of the first polygon's edges forms a separation axis. */
-	static boolean separateConvexPolygons (float[] verts1, float[] verts2, Vector2 separation) {
-		final int length1 = verts1.length;
-		final int length2 = verts2.length;
+	 * @param mtv A Minimum Translation Vector to fill in the case of a collision (optional).
+	 * @return Whether polygons overlap. */
+	public static boolean overlapConvexPolygons(float[] verts1, float[] verts2, MinimumTranslationVector mtv) {
+		float overlap = Float.MAX_VALUE;
+		float smallestAxisX = 0;
+		float smallestAxisY = 0;
+		
+		// Get polygon1 axes
+		final int numAxes1 = verts1.length;
+		for (int i = 0; i < numAxes1; i += 2) {
+			float x1 = verts1[i];
+			float y1 = verts1[i + 1];			
+			float x2 = verts1[(i + 2) % numAxes1];
+			float y2 = verts1[(i + 3) % numAxes1];
+			
+			float axisX =  y1 - y2;
+			float axisY = -(x1 - x2);
+			
+			final float length = (float) Math.sqrt(axisX * axisX + axisY * axisY);
+			axisX /= length;
+			axisY /= length;
+			
+			//-- Begin check for separation on this axis --//			
 
-		for (int i = 0; i < length1; i += 2) {
-			// index of the next vertex
-			final int j = (i + 1) % length1;
-
-			// projection axis is perpendicular to potential separation axis edge i->j
-			float projX = verts1[(j + 1) % length1] - verts1[i + 1];
-			float projY = verts1[i] - verts1[j];
-
-			// normalize projection axis
-			final float length = (float)Math.sqrt(projX * projX + projY * projY);
-			projX /= length;
-			projY /= length;
-
-			// project the first vertices to the projection axis
-			float min1 = Float.POSITIVE_INFINITY, max1 = Float.NEGATIVE_INFINITY;
-			for (int k = 0; k < length1; k += 2) {
-				final float dot = projX * verts1[k] + projY * verts1[k + 1];
-				if (dot < min1) min1 = dot;
-				if (dot > max1) max1 = dot;
+			// Project polygon1 onto this axis
+			float min1 = (axisX * verts1[0]) + (axisY * verts1[1]);
+			float max1 = min1;
+			for (int j = 2; j < verts1.length; j += 2) {
+				float p = (axisX * verts1[j]) + (axisY * verts1[j + 1]);
+				if (p < min1) {
+					min1 = p;
+				} else if (p > max1) {
+					max1 = p;
+				}
 			}
-
-			// project the second vertices to the projection axis
-			float min2 = Float.POSITIVE_INFINITY, max2 = Float.NEGATIVE_INFINITY;
-			for (int k = 0; k < length2; k += 2) {
-				final float dot = projX * verts2[k] + projY * verts2[k + 1];
-				if (dot < min2) min2 = dot;
-				if (dot > max2) max2 = dot;
+			
+			// Project polygon2 onto this axis
+			float min2 = (axisX * verts2[0]) + (axisY * verts2[1]);
+			float max2 = min2;			
+			for (int j = 2; j < verts2.length; j += 2) {
+				float p = (axisX * verts2[j]) + (axisY * verts2[j + 1]);
+				if (p < min2) {
+					min2 = p;
+				} else if (p > max2) {
+					max2 = p;
+				}
 			}
-
-			// if projections do not overlap we have found the separation axis
-			if ((max1 < min2) || (max2 < min1)) {
-				if (null != separation) separation.set(projY, -projX);
-				return true;
+			
+			if (!((min1 < min2 && max1 > min2) || (min2 < min1 && max2 > min1))) {
+				return false;
+			} else {
+				float o = Math.min(max1, max2) - Math.max(min1, min2);
+				if ((min1 < min2 && max1 > max2) || (min2 < min1 && max2 > max1)) {
+					float mins = Math.abs(min1 - min2);
+					float maxs = Math.abs(max1 - max2);
+					if (mins < maxs) {
+						axisX = -axisX;
+						axisY = -axisY;						
+						o += mins;
+					} else {
+						o += maxs;
+					}
+				}
+				if (o < overlap) {
+					overlap = o;
+					smallestAxisX = axisX;
+					smallestAxisY = axisY;
+				}
 			}
+			//-- End check for separation on this axis --//
+		}			
+		
+		// Get polygon2 axes
+		final int numAxes2 = verts2.length;
+		for (int i = 0; i < numAxes2; i += 2) {
+			float x1 = verts2[i];
+			float y1 = verts2[i + 1];			
+			float x2 = verts2[(i + 2) % numAxes2];
+			float y2 = verts2[(i + 3) % numAxes2];
+			
+			float axisX =  y1 - y2;
+			float axisY = -(x1 - x2);
+			
+			final float length = (float) Math.sqrt(axisX * axisX + axisY * axisY);
+			axisX /= length;
+			axisY /= length;
+			
+			//-- Begin check for separation on this axis --//
+
+			// Project polygon1 onto this axis
+			float min1 = (axisX * verts1[0]) + (axisY * verts1[1]);
+			float max1 = min1;
+			for (int j = 2; j < verts1.length; j += 2) {
+				float p = (axisX * verts1[j]) + (axisY * verts1[j + 1]);
+				if (p < min1) {
+					min1 = p;
+				} else if (p > max1) {
+					max1 = p;
+				}
+			}
+			
+			// Project polygon2 onto this axis
+			float min2 = (axisX * verts2[0]) + (axisY * verts2[1]);
+			float max2 = min2;			
+			for (int j = 2; j < verts2.length; j += 2) {
+				float p = (axisX * verts2[j]) + (axisY * verts2[j + 1]);
+				if (p < min2) {
+					min2 = p;
+				} else if (p > max2) {
+					max2 = p;
+				}
+			}
+			
+			if (!((min1 < min2 && max1 > min2) || (min2 < min1 && max2 > min1))) {
+				return false;
+			} else {
+				float o = Math.min(max1, max2) - Math.max(min1, min2);
+
+				if ((min1 < min2 && max1 > max2) || (min2 < min1 && max2 > max1)) {
+					float mins = Math.abs(min1 - min2);
+					float maxs = Math.abs(max1 - max2);
+					if (mins < maxs) {
+						axisX = -axisX;
+						axisY = -axisY;
+						o += mins;
+					} else {
+						o += maxs;
+					}
+				}
+				
+				if (o < overlap) {
+					overlap = o;
+					smallestAxisX = axisX;
+					smallestAxisY = axisY;
+				}
+			}			
+			//-- End check for separation on this axis --//
 		}
-
-		return false;
+		if (mtv != null) {
+			mtv.normal.set(smallestAxisX, smallestAxisY);
+			mtv.depth = overlap;
+		}
+		return true;
 	}
 	
 	/**
@@ -904,5 +1004,10 @@ public final class Intersector {
 			numBack = 0;
 			total = 0;
 		}
+	}
+	
+	public static class MinimumTranslationVector {
+		public Vector2 normal = new Vector2();
+		public float depth = 0;
 	}
 }
