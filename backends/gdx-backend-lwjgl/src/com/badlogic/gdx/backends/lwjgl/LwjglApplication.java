@@ -136,6 +136,7 @@ public class LwjglApplication implements Application {
 					LwjglApplication.this.mainLoop();
 				} catch(Throwable t) {
 					audio.dispose();
+					throw new GdxRuntimeException(t);
 				}
 			}
 		};
