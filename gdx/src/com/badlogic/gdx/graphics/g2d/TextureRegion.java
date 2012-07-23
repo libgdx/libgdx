@@ -81,10 +81,7 @@ public class TextureRegion {
 	public void setRegion (int x, int y, int width, int height) {
 		float invTexWidth = 1f / texture.getWidth();
 		float invTexHeight = 1f / texture.getHeight();
-		this.u = x * invTexWidth;
-		this.v = y * invTexHeight;
-		this.u2 = (x + width) * invTexWidth;
-		this.v2 = (y + height) * invTexHeight;
+		setRegion(x * invTexWidth, y * invTexHeight, (x + width) * invTexWidth, (y + height) * invTexHeight);
 		regionWidth = Math.abs(width);
 		regionHeight = Math.abs(height);
 	}

@@ -158,7 +158,7 @@ public class JsonWriter extends Writer {
 		minimal;
 
 		static private Pattern javascriptPattern = Pattern.compile("[a-zA-Z_$][a-zA-Z_$0-9]*");
-		static private Pattern minimalPattern = Pattern.compile("[a-zA-Z_$][^:}\\], ]*");
+		static private Pattern minimalPattern = Pattern.compile("[a-zA-Z0-9_$][^:}\\], ]*");
 
 		public String quoteValue (String value) {
 			value = value.replace("\\", "\\\\");
