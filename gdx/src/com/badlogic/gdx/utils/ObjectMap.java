@@ -623,8 +623,7 @@ public class ObjectMap<K, V> {
 			return array;
 		}
 
-		/** Adds the value entries to the given array.
-		 * @param array */
+		/** Adds the remaining values to the specified array. */
 		public void toArray (Array<V> array) {
 			while (hasNext)
 				array.add(next());
