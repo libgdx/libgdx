@@ -627,6 +627,12 @@ public class IdentityMap<K, V> {
 				array.add(next());
 			return array;
 		}
+
+		/** Adds the remaining values to the specified array. */
+		public void toArray (Array<V> array) {
+			while (hasNext)
+				array.add(next());
+		}
 	}
 
 	static public class Keys<K> extends MapIterator<K, Object> implements Iterable<K>, Iterator<K> {
