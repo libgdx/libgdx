@@ -18,7 +18,6 @@ package com.badlogic.gdx.utils;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Random;
 
 import com.badlogic.gdx.math.MathUtils;
 

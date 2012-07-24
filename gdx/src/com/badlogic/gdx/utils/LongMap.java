@@ -87,8 +87,10 @@ public class LongMap<V> {
 		if (key == 0) {
 			V oldValue = zeroValue;
 			zeroValue = value;
-			hasZeroValue = true;
-			size++;
+			if (!hasZeroValue) {
+				hasZeroValue = true;
+				size++;
+			}
 			return oldValue;
 		}
 
