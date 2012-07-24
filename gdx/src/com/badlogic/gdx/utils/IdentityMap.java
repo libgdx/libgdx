@@ -83,6 +83,7 @@ public class IdentityMap<K, V> {
 
 	public V put (K key, V value) {
 		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+		K[] keyTable = this.keyTable;
 
 		// Check for existing keys.
 		int hashCode = System.identityHashCode(key);
@@ -108,6 +109,15 @@ public class IdentityMap<K, V> {
 			V oldValue = valueTable[index3];
 			valueTable[index3] = value;
 			return oldValue;
+		}
+
+		// Update key in the stash.
+		for (int i = capacity, n = i + stashSize; i < n; i++) {
+			if (keyTable[i] == key) {
+				V oldValue = valueTable[i];
+				valueTable[i] = value;
+				return oldValue;
+			}
 		}
 
 		// Check for empty buckets.
@@ -172,15 +182,6 @@ public class IdentityMap<K, V> {
 
 	private void push (K insertKey, V insertValue, int index1, K key1, int index2, K key2, int index3, K key3) {
 		K[] keyTable = this.keyTable;
-
-		// Update key in the stash.
-		for (int i = capacity, n = i + stashSize; i < n; i++) {
-			if (keyTable[i] == insertKey) {
-				valueTable[i] = insertValue;
-				return;
-			}
-		}
-
 		V[] valueTable = this.valueTable;
 		int mask = this.mask;
 

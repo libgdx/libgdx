@@ -94,6 +94,8 @@ public class IntMap<V> {
 			return oldValue;
 		}
 
+		int[] keyTable = this.keyTable;
+
 		// Check for existing keys.
 		int index1 = key & mask;
 		int key1 = keyTable[index1];
@@ -117,6 +119,15 @@ public class IntMap<V> {
 			V oldValue = valueTable[index3];
 			valueTable[index3] = value;
 			return oldValue;
+		}
+
+		// Update key in the stash.
+		for (int i = capacity, n = i + stashSize; i < n; i++) {
+			if (keyTable[i] == key) {
+				V oldValue = valueTable[i];
+				valueTable[i] = value;
+				return oldValue;
+			}
 		}
 
 		// Check for empty buckets.
@@ -191,14 +202,6 @@ public class IntMap<V> {
 
 	private void push (int insertKey, V insertValue, int index1, int key1, int index2, int key2, int index3, int key3) {
 		int[] keyTable = this.keyTable;
-
-		// Update key in the stash.
-		for (int i = capacity, n = i + stashSize; i < n; i++) {
-			if (keyTable[i] == insertKey) {
-				valueTable[i] = insertValue;
-				return;
-			}
-		}
 
 		V[] valueTable = this.valueTable;
 		int mask = this.mask;
