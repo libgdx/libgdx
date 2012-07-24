@@ -236,16 +236,6 @@ public class TextureRegion {
 		int width = regionWidth;
 		int height = regionHeight;
 
-		if (width < 0) {
-			x = x - width;
-			width = -width;
-		}
-
-		if (height < 0) {
-			y = y - height;
-			height = -height;
-		}
-
 		int rows = height / tileHeight;
 		int cols = width / tileWidth;
 

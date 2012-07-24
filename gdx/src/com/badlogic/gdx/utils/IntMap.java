@@ -18,6 +18,7 @@ package com.badlogic.gdx.utils;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Random;
 
 import com.badlogic.gdx.math.MathUtils;
 
@@ -87,8 +88,10 @@ public class IntMap<V> {
 		if (key == 0) {
 			V oldValue = zeroValue;
 			zeroValue = value;
-			hasZeroValue = true;
-			size++;
+			if (!hasZeroValue) {
+				hasZeroValue = true;
+				size++;
+			}
 			return oldValue;
 		}
 
@@ -189,6 +192,15 @@ public class IntMap<V> {
 
 	private void push (int insertKey, V insertValue, int index1, int key1, int index2, int key2, int index3, int key3) {
 		int[] keyTable = this.keyTable;
+
+		// Update key in the stash.
+		for (int i = capacity, n = i + stashSize; i < n; i++) {
+			if (keyTable[i] == insertKey) {
+				valueTable[i] = insertValue;
+				return;
+			}
+		}
+
 		V[] valueTable = this.valueTable;
 		int mask = this.mask;
 
@@ -262,14 +274,6 @@ public class IntMap<V> {
 			resize(capacity << 1);
 			put(key, value);
 			return;
-		}
-		// Update key in the stash.
-		int[] keyTable = this.keyTable;
-		for (int i = capacity, n = i + stashSize; i < n; i++) {
-			if (keyTable[i] == key) {
-				valueTable[i] = value;
-				return;
-			}
 		}
 		// Store key in the stash.
 		int index = capacity + stashSize;

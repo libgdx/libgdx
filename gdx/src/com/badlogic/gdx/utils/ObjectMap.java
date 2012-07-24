@@ -180,6 +180,15 @@ public class ObjectMap<K, V> {
 
 	private void push (K insertKey, V insertValue, int index1, K key1, int index2, K key2, int index3, K key3) {
 		K[] keyTable = this.keyTable;
+
+		// Update key in the stash.
+		for (int i = capacity, n = i + stashSize; i < n; i++) {
+			if (insertKey.equals(keyTable[i])) {
+				valueTable[i] = insertValue;
+				return;
+			}
+		}
+
 		V[] valueTable = this.valueTable;
 		int mask = this.mask;
 
@@ -254,14 +263,6 @@ public class ObjectMap<K, V> {
 			resize(capacity << 1);
 			put_internal(key, value);
 			return;
-		}
-		// Update key in the stash.
-		K[] keyTable = this.keyTable;
-		for (int i = capacity, n = i + stashSize; i < n; i++) {
-			if (key.equals(keyTable[i])) {
-				valueTable[i] = value;
-				return;
-			}
 		}
 		// Store key in the stash.
 		int index = capacity + stashSize;
@@ -621,12 +622,10 @@ public class ObjectMap<K, V> {
 				array.add(next());
 			return array;
 		}
-		
-		/**
-		 * Adds the value entries to the given array.
-		 * @param array
-		 */
-		public void toArray(Array<V> array) {
+
+		/** Adds the value entries to the given array.
+		 * @param array */
+		public void toArray (Array<V> array) {
 			while (hasNext)
 				array.add(next());
 		}

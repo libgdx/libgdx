@@ -189,6 +189,15 @@ public class LongMap<V> {
 
 	private void push (long insertKey, V insertValue, int index1, long key1, int index2, long key2, int index3, long key3) {
 		long[] keyTable = this.keyTable;
+
+		// Update key in the stash.
+		for (int i = capacity, n = i + stashSize; i < n; i++) {
+			if (keyTable[i] == insertKey) {
+				valueTable[i] = insertValue;
+				return;
+			}
+		}
+
 		V[] valueTable = this.valueTable;
 		int mask = this.mask;
 
@@ -262,14 +271,6 @@ public class LongMap<V> {
 			resize(capacity << 1);
 			put(key, value);
 			return;
-		}
-		// Update key in the stash.
-		long[] keyTable = this.keyTable;
-		for (int i = capacity, n = i + stashSize; i < n; i++) {
-			if (keyTable[i] == key) {
-				valueTable[i] = value;
-				return;
-			}
 		}
 		// Store key in the stash.
 		int index = capacity + stashSize;
