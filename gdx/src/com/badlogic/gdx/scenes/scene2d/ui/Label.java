@@ -147,22 +147,6 @@ public class Label extends Widget {
 		invalidate();
 	}
 
-	public void setColor (float color) {
-		cache.setColor(color);
-	}
-
-	public void setColor (Color tint) {
-		cache.setColor(tint);
-	}
-
-	public void setColor (float r, float g, float b, float a) {
-		cache.setColor(r, g, b, a);
-	}
-
-	public Color getColor () {
-		return cache.getColor();
-	}
-
 	private void computeBounds () {
 		if (wrap)
 			bounds.set(cache.getFont().getWrappedBounds(text, getWidth()));
@@ -217,6 +201,7 @@ public class Label extends Widget {
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
+		cache.setColor(color);
 		cache.setPosition(getX(), getY());
 		cache.draw(batch, color.a * parentAlpha);
 	}
