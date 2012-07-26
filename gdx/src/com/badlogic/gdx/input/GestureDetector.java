@@ -62,7 +62,7 @@ public class GestureDetector extends InputAdapter {
 	}
 
 	/** @param halfTapSquareSize half width in pixels of the square around an initial touch event, see
-	 *           {@link GestureListener#tap(float, float, int)}
+	 *           {@link GestureListener#tap(float, float, int, int, int)}.
 	 * @param tapCountInterval time in seconds that must pass for two touch down/up sequences to be detected as consecutive taps.
 	 * @param longPressDuration time in seconds that must pass for the detector to fire a
 	 *           {@link GestureListener#longPress(float, float)} event.
@@ -180,7 +180,7 @@ public class GestureDetector extends InputAdapter {
 			tapCount++;
 			lastTapTime = TimeUtils.nanoTime();
 			gestureStartTime = 0;
-			return listener.tap(x, y, tapCount);
+			return listener.tap(x, y, tapCount, pointer, button);
 		} else if (pinching) {
 			// handle pinch end
 			pinching = false;
@@ -248,17 +248,14 @@ public class GestureDetector extends InputAdapter {
 	 * to hand it to the next listener, true otherwise).
 	 * @author mzechner */
 	public static interface GestureListener {
-		/** Called when a finger went down on the screen or a mouse button was pressed.
-		 * @param x
-		 * @param y
-		 * @param pointer */
+		/** Called when a finger went down on the screen or a mouse button was pressed. */
 		public boolean touchDown (float x, float y, int pointer);
 
 		/** Called when a tap occured. A tap happens if a touch went down on the screen and was lifted again without moving outside
 		 * of the tap square. The tap square is a rectangular area around the initial touch position as specified on construction
 		 * time of the {@link GestureDetector}.
 		 * @param count the number of taps. */
-		public boolean tap (float x, float y, int count);
+		public boolean tap (float x, float y, int count, int pointer, int button);
 
 		public boolean longPress (float x, float y);
 
@@ -297,7 +294,7 @@ public class GestureDetector extends InputAdapter {
 			return false;
 		}
 
-		public boolean tap (float x, float y, int count) {
+		public boolean tap (float x, float y, int count, int pointer, int button) {
 			return false;
 		}
 

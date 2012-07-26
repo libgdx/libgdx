@@ -134,7 +134,7 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 	}
 
 	@Override
-	public boolean tap (float x, float y, int count) {
+	public boolean tap (float x, float y, int count, int pointer, int button) {
 		app.log("TestCollection", "disposing test '" + tests[testIndex].getClass().getName());
 		tests[testIndex].dispose();
 		testIndex++;

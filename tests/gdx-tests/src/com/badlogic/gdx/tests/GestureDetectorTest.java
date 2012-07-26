@@ -45,7 +45,7 @@ public class GestureDetectorTest extends GdxTest implements ApplicationListener 
 		}
 
 		@Override
-		public boolean tap (float x, float y, int count) {
+		public boolean tap (float x, float y, int count, int pointer, int button) {
 			Gdx.app.log("GestureDetectorTest", "tap at " + x + ", " + y + ", count: " + count);
 			return false;
 		}

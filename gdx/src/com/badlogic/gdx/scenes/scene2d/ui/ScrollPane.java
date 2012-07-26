@@ -251,6 +251,10 @@ public class ScrollPane extends WidgetGroup {
 			if (amountY >= maxY + overscrollDistance) velocityY = 0;
 
 			flingTimer -= delta;
+			if (flingTimer <= 0) {
+				velocityX = 0;
+				velocityY = 0;
+			}
 		}
 
 		if (overscroll && !panning) {

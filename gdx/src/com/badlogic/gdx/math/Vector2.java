@@ -237,10 +237,9 @@ public class Vector2 implements Serializable {
 	}
 
 	/** Rotates the Vector2 by the given angle, counter-clockwise.
-	 * @param angle the angle in degrees
-	 * @return the */
-	public Vector2 rotate (float angle) {
-		float rad = angle * MathUtils.degreesToRadians;
+	 * @param degrees the angle in degrees */
+	public Vector2 rotate (float degrees) {
+		float rad = degrees * MathUtils.degreesToRadians;
 		float cos = (float)Math.cos(rad);
 		float sin = (float)Math.sin(rad);
 
