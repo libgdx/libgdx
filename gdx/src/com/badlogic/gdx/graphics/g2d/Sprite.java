@@ -528,7 +528,7 @@ public class Sprite extends TextureRegion {
 	}
 
 	public void setV (float v) {
-		super.setV(u);
+		super.setV(v);
 		vertices[V2] = v;
 		vertices[V3] = v;
 	}
