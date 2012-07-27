@@ -104,6 +104,5 @@ public class MipMapGenerator {
 			level++;
 		}
 		Pixmap.setBlending(blending);
-		pixmap.dispose();
 	}
 }
