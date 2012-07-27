@@ -613,6 +613,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			int renderMode = isContinuous?GLSurfaceView.RENDERMODE_CONTINUOUSLY:GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 			if(view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).setRenderMode(renderMode);
 			if(view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
+			mean.clear();
 		}
 	}
 	
