@@ -70,7 +70,6 @@ public final class VertexAttribute {
 	/** Tests to determine if the passed object was created with the same parameters */
 	@Override
 	public boolean equals (final Object obj) {
-		if(obj == null) return false;
 		if (!(obj instanceof VertexAttribute)) {
 			return false;
 		}
