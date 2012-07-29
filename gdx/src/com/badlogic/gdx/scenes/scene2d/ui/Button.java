@@ -57,16 +57,20 @@ public class Button extends Table {
 		setHeight(getPrefHeight());
 	}
 
-	public Button (ButtonStyle style) {
-		initialize();
-		setStyle(style);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+	public Button (Actor child, Skin skin, String styleName) {
+		this(child, skin.get(styleName, ButtonStyle.class));
 	}
 
 	public Button (Actor child, ButtonStyle style) {
 		initialize();
 		add(child);
+		setStyle(style);
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
+	}
+
+	public Button (ButtonStyle style) {
+		initialize();
 		setStyle(style);
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());

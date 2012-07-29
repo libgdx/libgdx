@@ -42,8 +42,10 @@ public class SpriteDrawable extends EmptyDrawable {
 
 	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
 		sprite.setBounds(x, y, width, height);
-		sprite.setColor(tempColor.set(sprite.getColor()).mul(batch.getColor()));
+		Color color = sprite.getColor();
+		sprite.setColor(tempColor.set(color).mul(batch.getColor()));
 		sprite.draw(batch);
+		sprite.setColor(color);
 	}
 
 	public void setSprite (Sprite sprite) {

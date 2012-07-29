@@ -88,24 +88,23 @@ public class UITest extends GdxTest {
 		ImageButtonStyle style = new ImageButtonStyle(skin.get(ButtonStyle.class));
 		style.imageUp = new TextureRegionDrawable(image);
 		style.imageDown = new TextureRegionDrawable(imageFlipped);
-		final ImageButton iconButton = new ImageButton(style);
+		ImageButton iconButton = new ImageButton(style);
 
-		final Button buttonMulti = new TextButton("Multi\nLine\nToggle", skin.get("toggle", TextButtonStyle.class));
-		final Button imgButton = new Button(new Image(image), skin);
-		final Button imgToggleButton = new Button(new Image(image), skin.get("toggle", ButtonStyle.class));
+		Button buttonMulti = new TextButton("Multi\nLine\nToggle", skin.get("toggle", TextButtonStyle.class));
+		Button imgButton = new Button(new Image(image), skin);
+		Button imgToggleButton = new Button(new Image(image), skin.get("toggle", ButtonStyle.class));
 
-		final CheckBox checkBox = new CheckBox("Check me", skin);
+		CheckBox checkBox = new CheckBox("Check me", skin);
 		final Slider slider = new Slider(0, 10, 1, skin);
-		final TextField textfield = new TextField("", skin);
+		TextField textfield = new TextField("", skin);
 		textfield.setMessageText("Click here!");
-		final SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX"}, skin);
-		final Image imageActor = new Image(image2);
-		final ScrollPane scrollPane = new ScrollPane(imageActor);
-		final List list = new List(listEntries, skin);
-		final ScrollPane scrollPane2 = new ScrollPane(list, skin);
+		SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX"}, skin);
+		Image imageActor = new Image(image2);
+		ScrollPane scrollPane = new ScrollPane(imageActor);
+		List list = new List(listEntries, skin);
+		ScrollPane scrollPane2 = new ScrollPane(list, skin);
 		scrollPane2.setFlickScroll(false);
-		final SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, skin.get("default-horizontal",
-			SplitPaneStyle.class));
+		SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, skin, "default-horizontal");
 		fpsLabel = new Label("fps:", skin);
 
 		// configures an example of a TextField in password mode.
