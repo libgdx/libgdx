@@ -79,11 +79,6 @@ public class Button extends Table {
 				if (isDisabled) return;
 				boolean wasChecked = isChecked;
 				setChecked(!isChecked);
-				if (wasChecked != isChecked) {
-					ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-					if (fire(changeEvent)) setChecked(wasChecked);
-					Pools.free(changeEvent);
-				}
 			}
 		});
 	}
@@ -105,8 +100,16 @@ public class Button extends Table {
 	}
 
 	public void setChecked (boolean isChecked) {
+		if (this.isChecked == isChecked) return;
 		if (buttonGroup != null && !buttonGroup.canCheck(this, isChecked)) return;
 		this.isChecked = isChecked;
+		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+		if (fire(changeEvent)) this.isChecked = !isChecked;
+		Pools.free(changeEvent);
+	}
+
+	public void toggle () {
+		setChecked(!isChecked);
 	}
 
 	public boolean isChecked () {

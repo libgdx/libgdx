@@ -132,15 +132,9 @@ public class Slider extends Widget {
 		sliderPos = x - knob.getMinWidth() / 2;
 		sliderPos = Math.max(0, sliderPos);
 		sliderPos = Math.min(width - knob.getMinWidth(), sliderPos);
-		value = min + (max - min) * (sliderPos / (width - knob.getMinWidth()));
-		if (oldValue != value) {
-			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-			if (fire(changeEvent)) {
-				sliderPos = oldPosition;
-				value = oldValue;
-			}
-			Pools.free(changeEvent);
-		}
+		float value = min + (max - min) * (sliderPos / (width - knob.getMinWidth()));
+		setValue(value);
+		if (value == oldValue) sliderPos = oldPosition;
 	}
 
 	/** Returns true if the slider is being dragged. */
@@ -154,7 +148,12 @@ public class Slider extends Widget {
 
 	public void setValue (float value) {
 		if (value < min || value > max) throw new IllegalArgumentException("value must be >= min and <= max: " + value);
+		float oldValue = this.value;
+		if (value == oldValue) return;
 		this.value = value;
+		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+		if (fire(changeEvent)) this.value = oldValue;
+		Pools.free(changeEvent);
 	}
 
 	/** Sets the range of this slider. The slider's current value is reset to min. */
@@ -162,13 +161,7 @@ public class Slider extends Widget {
 		if (min >= max) throw new IllegalArgumentException("min must be < max");
 		this.min = min;
 		this.max = max;
-		float oldValue = value;
-		this.value = min;
-		if (oldValue != value) {
-			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-			fire(changeEvent);
-			Pools.free(changeEvent);
-		}
+		setValue(min);
 	}
 
 	public float getPrefWidth () {
