@@ -85,28 +85,28 @@ public class InputMultiplexer implements InputProcessor {
 		return false;
 	}
 
-	public boolean touchDown (int x, int y, int pointer, int button) {
+	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).touchDown(x, y, pointer, button)) return true;
+			if (processors.get(i).touchDown(screenX, screenY, pointer, button)) return true;
 		return false;
 	}
 
-	public boolean touchUp (int x, int y, int pointer, int button) {
+	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).touchUp(x, y, pointer, button)) return true;
+			if (processors.get(i).touchUp(screenX, screenY, pointer, button)) return true;
 		return false;
 	}
 
-	public boolean touchDragged (int x, int y, int pointer) {
+	public boolean touchDragged (int screenX, int screenY, int pointer) {
 		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).touchDragged(x, y, pointer)) return true;
+			if (processors.get(i).touchDragged(screenX, screenY, pointer)) return true;
 		return false;
 	}
 
 	@Override
-	public boolean mouseMoved (int x, int y) {
+	public boolean mouseMoved (int screenX, int screenY) {
 		for (int i = 0, n = processors.size; i < n; i++)
-			if (processors.get(i).mouseMoved(x, y)) return true;
+			if (processors.get(i).mouseMoved(screenX, screenY)) return true;
 		return false;
 	}
 

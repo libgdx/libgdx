@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 /** 2D scene graph node that may contain other actors.
  * <p>
@@ -32,7 +33,7 @@ import com.badlogic.gdx.utils.DelayedRemovalArray;
  * @author mzechner
  * @author Nathan Sweet */
 public class Group extends Actor implements Cullable {
-	private final DelayedRemovalArray<Actor> children = new DelayedRemovalArray(4);
+	private final SnapshotArray<Actor> children = new SnapshotArray(4);
 	private final Matrix3 localTransform = new Matrix3();
 	private final Matrix3 worldTransform = new Matrix3();
 	private final Matrix4 batchTransform = new Matrix4();
@@ -43,7 +44,7 @@ public class Group extends Actor implements Cullable {
 
 	public void act (float delta) {
 		super.act(delta);
-		DelayedRemovalArray<Actor> children = this.children;
+		SnapshotArray<Actor> children = this.children;
 		children.begin();
 		for (int i = 0, n = children.size; i < n; i++)
 			children.get(i).act(delta);
@@ -65,7 +66,7 @@ public class Group extends Actor implements Cullable {
 	 * {@link #setCullingArea(Rectangle) culling area}, if set. */
 	protected void drawChildren (SpriteBatch batch, float parentAlpha) {
 		parentAlpha *= getColor().a;
-		DelayedRemovalArray<Actor> children = this.children;
+		SnapshotArray<Actor> children = this.children;
 		children.begin();
 		if (cullingArea != null) {
 			// Draw children only if inside culling area.

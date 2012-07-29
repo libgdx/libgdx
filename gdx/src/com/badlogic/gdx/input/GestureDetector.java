@@ -67,7 +67,7 @@ public class GestureDetector extends InputAdapter {
 	 * @param longPressDuration time in seconds that must pass for the detector to fire a
 	 *           {@link GestureListener#longPress(float, float)} event.
 	 * @param maxFlingDelay time in seconds the finger must have been dragged for a fling event to be fired, see
-	 *           {@link GestureListener#fling(float, float)}
+	 *           {@link GestureListener#fling(float, float, int, int)}
 	 * @param listener May be null if the listener will be set later. */
 	public GestureDetector (float halfTapSquareSize, float tapCountInterval, float longPressDuration, float maxFlingDelay,
 		GestureListener listener) {
@@ -199,7 +199,7 @@ public class GestureDetector extends InputAdapter {
 			long time = Gdx.input.getCurrentEventTime();
 			if (time - tracker.lastTime < maxFlingDelay) {
 				tracker.update(x, y, time);
-				return listener.fling(tracker.getVelocityX(), tracker.getVelocityY());
+				return listener.fling(tracker.getVelocityX(), tracker.getVelocityY(), pointer, button);
 			}
 		}
 		return false;
@@ -263,7 +263,7 @@ public class GestureDetector extends InputAdapter {
 		 * pixels per second.
 		 * @param velocityX velocity on x in seconds
 		 * @param velocityY velocity on y in seconds */
-		public boolean fling (float velocityX, float velocityY);
+		public boolean fling (float velocityX, float velocityY, int pointer, int button);
 
 		/** Called when the user drags a finger over the screen.
 		 * @param x
@@ -302,7 +302,7 @@ public class GestureDetector extends InputAdapter {
 			return false;
 		}
 
-		public boolean fling (float velocityX, float velocityY) {
+		public boolean fling (float velocityX, float velocityY, int pointer, int button) {
 			return false;
 		}
 

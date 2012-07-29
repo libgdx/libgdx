@@ -51,7 +51,7 @@ public class Scene2dTest extends GdxTest {
 		Gdx.input.setInputProcessor(stage);
 
 		final TextureRegion region = new TextureRegion(new Texture("data/badlogic.jpg"));
-		Actor actor = new Actor() {
+		final Actor actor = new Actor() {
 			public void draw (SpriteBatch batch, float parentAlpha) {
 				Color color = getColor();
 				batch.setColor(color.r, color.g, color.b, parentAlpha);
@@ -126,7 +126,11 @@ public class Scene2dTest extends GdxTest {
 
 		meow.setDuration(2);
 
-		actor.addAction(forever(sequence(moveBy(50, 0, 2), moveBy(-50, 0, 2))));
+		actor.addAction(forever(sequence(moveBy(50, 0, 2), moveBy(-50, 0, 2), run(new Runnable() {
+			public void run () {
+				actor.setZIndex(0);
+			}
+		}))));
 		// actor.addAction(parallel(rotateBy(90, 2), rotateBy(90, 2)));
 		// actor.addAction(parallel(moveTo(250, 250, 2, elasticOut), color(RED, 6), delay(0.5f), rotateTo(180, 5, swing)));
 		// actor.addAction(forever(sequence(scaleTo(2, 2, 0.5f), scaleTo(1, 1, 0.5f), delay(0.5f))));

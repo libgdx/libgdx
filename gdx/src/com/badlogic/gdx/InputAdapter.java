@@ -32,20 +32,20 @@ public class InputAdapter implements InputProcessor {
 		return false;
 	}
 
-	public boolean touchDown (int x, int y, int pointer, int button) {
+	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 		return false;
 	}
 
-	public boolean touchUp (int x, int y, int pointer, int button) {
+	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 		return false;
 	}
 
-	public boolean touchDragged (int x, int y, int pointer) {
+	public boolean touchDragged (int screenX, int screenY, int pointer) {
 		return false;
 	}
 
 	@Override
-	public boolean mouseMoved (int x, int y) {
+	public boolean mouseMoved (int screenX, int screenY) {
 		return false;
 	}
 

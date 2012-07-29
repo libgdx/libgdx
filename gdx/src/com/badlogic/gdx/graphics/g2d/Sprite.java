@@ -266,6 +266,14 @@ public class Sprite extends TextureRegion {
 		vertices[C4] = color;
 	}
 
+	public void setColor (float color) {
+		float[] vertices = this.vertices;
+		vertices[C1] = color;
+		vertices[C2] = color;
+		vertices[C3] = color;
+		vertices[C4] = color;
+	}
+
 	/** Sets the origin in relation to the sprite's position for scaling and rotation. */
 	public void setOrigin (float originX, float originY) {
 		this.originX = originX;

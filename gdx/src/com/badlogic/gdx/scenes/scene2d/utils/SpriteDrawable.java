@@ -16,12 +16,15 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /** Drawable for a {@link Sprite}.
  * @author Nathan Sweet */
 public class SpriteDrawable extends EmptyDrawable {
+	static private final Color tempColor = new Color();
+
 	private Sprite sprite;
 
 	/** Creates an unitialized SpriteDrawable. The sprite must be set before use. */
@@ -39,6 +42,7 @@ public class SpriteDrawable extends EmptyDrawable {
 
 	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
 		sprite.setBounds(x, y, width, height);
+		sprite.setColor(tempColor.set(sprite.getColor()).mul(batch.getColor()));
 		sprite.draw(batch);
 	}
 

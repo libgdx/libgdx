@@ -152,7 +152,7 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 	}
 
 	@Override
-	public boolean fling (float velocityX, float velocityY) {
+	public boolean fling (float velocityX, float velocityY, int pointer, int button) {
 		// TODO Auto-generated method stub
 		return false;
 	}
