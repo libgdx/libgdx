@@ -706,7 +706,7 @@ public class BitmapFont implements Disposable {
 		glyphPositions.clear();
 		int index = 0;
 		int end = str.length();
-		int width = 0;
+		float width = 0;
 		Glyph lastGlyph = null;
 		if (data.scaleX == 1) {
 			for (; index < end; index++) {
@@ -730,9 +730,10 @@ public class BitmapFont implements Disposable {
 				if (g != null) {
 					if (lastGlyph != null) width += lastGlyph.getKerning(ch) * scaleX;
 					lastGlyph = g;
-					glyphAdvances.add(g.xadvance * scaleX);
+					float xadvance = g.xadvance * scaleX;
+					glyphAdvances.add(xadvance);
 					glyphPositions.add(width);
-					width += g.xadvance;
+					width += xadvance;
 				}
 			}
 			glyphAdvances.add(0);
@@ -766,8 +767,9 @@ public class BitmapFont implements Disposable {
 				Glyph g = data.getGlyph(ch);
 				if (g != null) {
 					if (lastGlyph != null) width += lastGlyph.getKerning(ch) * scaleX;
-					if ((width + g.xadvance * scaleX) - availableWidth > 0.001f) break;
-					width += g.xadvance * scaleX;
+					float xadvance = g.xadvance * scaleX;
+					if ((width + xadvance) - availableWidth > 0.001f) break;
+					width += xadvance;
 					lastGlyph = g;
 				}
 			}

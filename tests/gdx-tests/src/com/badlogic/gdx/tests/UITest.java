@@ -90,9 +90,9 @@ public class UITest extends GdxTest {
 		style.imageDown = new TextureRegionDrawable(imageFlipped);
 		ImageButton iconButton = new ImageButton(style);
 
-		Button buttonMulti = new TextButton("Multi\nLine\nToggle", skin.get("toggle", TextButtonStyle.class));
+		Button buttonMulti = new TextButton("Multi\nLine\nToggle", skin, "toggle");
 		Button imgButton = new Button(new Image(image), skin);
-		Button imgToggleButton = new Button(new Image(image), skin.get("toggle", ButtonStyle.class));
+		Button imgToggleButton = new Button(new Image(image), skin, "toggle");
 
 		CheckBox checkBox = new CheckBox("Check me", skin);
 		final Slider slider = new Slider(0, 10, 1, skin);
