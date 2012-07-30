@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
@@ -42,28 +43,32 @@ abstract public class Action implements Poolable {
 	}
 
 	/** Sets the actor this action will be used for. This is called automatically when an action is added to an actor. This is also
-	 * called with null when an action is removed from an actor. When set to null, {@link #reset()} is called.
+	 * called with null when an action is removed from an actor. When set to null, if the action has a {@link #setPool(Pool) pool}
+	 * then the action is {@link Pool#free(Object) returned} to the pool (which calls {@link #reset()}) and the pool is set to null.
+	 * If the action does not have a pool, {@link #reset()} is called.
 	 * <p>
 	 * This method is not typically a good place for a subclass to query the actor's state because the action may not be executed
 	 * for some time, eg it may be {@link DelayAction delayed}. The actor's state is best queried in the first call to
 	 * {@link #act(float)}. For a TimedAction, use TimedAction#initialize(). */
 	public void setActor (Actor actor) {
 		this.actor = actor;
+		if (actor == null) {
+			if (pool != null) {
+				pool.free(this);
+				pool = null;
+			} else
+				reset();
+		}
 	}
 
 	/** Resets the optional state of this action to as if it were newly created, allowing the action to be pooled and reused. State
 	 * required to be set for every usage of this action or computed during the action does not need to be reset.
 	 * <p>
-	 * The default implementation calls {@link #restart()}. Also, if the action has a {@link #setPool(Pool) pool} then the action is
-	 * {@link Pool#free(Object) returned} to the pool.
+	 * The default implementation calls {@link #restart()}.
 	 * <p>
 	 * If a subclass has optional state, it must override this method, call super, and reset the optional state. */
 	public void reset () {
 		restart();
-		if (pool != null) {
-			pool.free(this);
-			pool = null;
-		}
 	}
 
 	public Pool getPool () {
