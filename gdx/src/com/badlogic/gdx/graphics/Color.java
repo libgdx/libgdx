@@ -41,7 +41,7 @@ public class Color {
 	/** the red, green, blue and alpha components **/
 	public float r, g, b, a;
 	
-	private static Color tmp = new Color();
+	public static Color tmp = new Color();
 
 	/** Constructs a new Color with all components set to 0. */
 	public Color () {

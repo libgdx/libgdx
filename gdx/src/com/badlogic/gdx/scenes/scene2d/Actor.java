@@ -86,11 +86,7 @@ public class Actor {
 	 * it will not propagate to the next actor.
 	 * @return true of the event was {@link Event#cancel() cancelled}. */
 	public boolean fire (Event event) {
-		if (event.getStage() == null) {
-			Stage stage = getStage();
-			if (stage == null) throw new IllegalStateException("Stage must be set.");
-			event.setStage(stage);
-		}
+		if (event.getStage() == null) event.setStage(getStage());
 		event.setTarget(this);
 
 		// Collect ancestors so event propagation is unaffected by hierarchy changes.
@@ -144,11 +140,7 @@ public class Actor {
 
 		event.setListenerActor(this);
 		event.setCapture(capture);
-		if (event.getStage() == null) {
-			Stage stage = getStage();
-			if (stage == null) throw new IllegalStateException("Stage must be set.");
-			event.setStage(stage);
-		}
+		if (event.getStage() == null) event.setStage(stage);
 
 		listeners.begin();
 		for (int i = 0, n = listeners.size; i < n; i++) {

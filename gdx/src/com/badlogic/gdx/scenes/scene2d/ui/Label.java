@@ -73,7 +73,6 @@ public class Label extends Widget {
 		if (style.font == null) throw new IllegalArgumentException("Missing LabelStyle font.");
 		this.style = style;
 		cache = new BitmapFontCache(style.font, style.font.usesIntegerPositions());
-		if (style.fontColor != null) cache.setColor(style.fontColor);
 		computeBounds();
 		invalidateHierarchy();
 	}
@@ -201,7 +200,9 @@ public class Label extends Widget {
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
-		cache.setColor(color);
+		Color.tmp.set(color);
+		if (style.fontColor != null) Color.tmp.mul(style.fontColor);
+		cache.setColor(Color.tmp);
 		cache.setPosition(getX(), getY());
 		cache.draw(batch, color.a * parentAlpha);
 	}

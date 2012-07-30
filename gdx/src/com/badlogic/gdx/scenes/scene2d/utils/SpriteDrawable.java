@@ -23,8 +23,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 /** Drawable for a {@link Sprite}.
  * @author Nathan Sweet */
 public class SpriteDrawable extends EmptyDrawable {
-	static private final Color tempColor = new Color();
-
 	private Sprite sprite;
 
 	/** Creates an unitialized SpriteDrawable. The sprite must be set before use. */
@@ -43,7 +41,7 @@ public class SpriteDrawable extends EmptyDrawable {
 	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
 		sprite.setBounds(x, y, width, height);
 		Color color = sprite.getColor();
-		sprite.setColor(tempColor.set(color).mul(batch.getColor()));
+		sprite.setColor(Color.tmp.set(color).mul(batch.getColor()));
 		sprite.draw(batch);
 		sprite.setColor(color);
 	}
