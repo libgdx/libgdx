@@ -9,6 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
+/** A simple tree widget where each node is an actor.
+ * <p>
+ * The preferred size of the tree is determined by the preferred size of the actors for the expanded nodes.
+ * @author Nathan Sweet */
 public class Tree extends WidgetGroup {
 	TreeStyle style;
 	Array<Node> nodes = new Array();
@@ -176,6 +180,8 @@ public class Tree extends WidgetGroup {
 		}
 	}
 
+	/** The style for a {@link Tree}.
+	 * @author Nathan Sweet */
 	static public class TreeStyle {
 		public Drawable plus, minus;
 	}
