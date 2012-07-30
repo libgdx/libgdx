@@ -226,6 +226,7 @@ public class Tree extends WidgetGroup {
 			if (!(parent instanceof Tree)) return;
 			Tree tree = (Tree)parent;
 			node.removeFromTree(tree);
+			if (children.size == 0) expanded = false;
 		}
 
 		public Actor getActor () {
