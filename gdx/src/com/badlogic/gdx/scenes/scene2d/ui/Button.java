@@ -112,6 +112,8 @@ public class Button extends Table {
 		Pools.free(changeEvent);
 	}
 
+	/** Toggles the checked state. This method changes the checked state, which fires a {@link ChangeEvent}, so can be used to
+	 * simulate a button click. */
 	public void toggle () {
 		setChecked(!isChecked);
 	}
