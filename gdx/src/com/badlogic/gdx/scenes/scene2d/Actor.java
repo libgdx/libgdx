@@ -149,8 +149,10 @@ public class Actor {
 				event.handle();
 				if (event instanceof InputEvent) {
 					InputEvent inputEvent = (InputEvent)event;
-					if (inputEvent.getType() == Type.touchDown)
-						event.getStage().addTouchFocus(listener, this, inputEvent.getPointer(), inputEvent.getButton());
+					if (inputEvent.getType() == Type.touchDown) {
+						event.getStage().addTouchFocus(listener, this, inputEvent.getTarget(), inputEvent.getPointer(),
+							inputEvent.getButton());
+					}
 				}
 			}
 		}

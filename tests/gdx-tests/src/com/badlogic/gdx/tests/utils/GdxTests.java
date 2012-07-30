@@ -64,7 +64,7 @@ public class GdxTests {
 			FullscreenTest.class, Gdx2DTest.class, GroupFadeTest.class,
 			ImmediateModeRendererTest.class, Scene2dTest.class,
 			ImmediateModeRendererAlphaTest.class,
-			IndexBufferObjectClassTest.class,
+			IndexBufferObjectClassTest.class, TreeTest.class,
 			IndexBufferObjectShaderTest.class, InputTest.class,
 			IntegerBitmapFontTest.class, InverseKinematicsTest.class,
 			IsoCamTest.class, IsometricTileTest.class, KinematicBodyTest.class,

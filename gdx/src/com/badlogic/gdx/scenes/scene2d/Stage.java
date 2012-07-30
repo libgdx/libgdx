@@ -260,8 +260,8 @@ public class Stage extends InputAdapter implements Disposable {
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {
 			TouchFocus focus = focuses[i];
 			if (focus.pointer != pointer) continue;
-			event.setTarget(focus.actor);
-			event.setListenerActor(focus.actor);
+			event.setTarget(focus.target);
+			event.setListenerActor(focus.listenerActor);
 			if (focus.listener.handle(event)) event.handle();
 		}
 		touchFocuses.end();
@@ -291,8 +291,8 @@ public class Stage extends InputAdapter implements Disposable {
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {
 			TouchFocus focus = focuses[i];
 			if (focus.pointer != pointer || focus.button != button) continue;
-			event.setTarget(focus.actor);
-			event.setListenerActor(focus.actor);
+			event.setTarget(focus.target);
+			event.setListenerActor(focus.listenerActor);
 			if (focus.listener.handle(event)) event.handle();
 		}
 		touchFocuses.end();
@@ -382,9 +382,10 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Adds the listener to be notified for all touchDragged and touchUp events for the specified pointer and button. The actor
 	 * will be used as the {@link Event#getListenerActor() listener actor} and {@link Event#getTarget() target}. */
-	public void addTouchFocus (EventListener listener, Actor actor, int pointer, int button) {
+	public void addTouchFocus (EventListener listener, Actor listenerActor, Actor target, int pointer, int button) {
 		TouchFocus focus = Pools.obtain(TouchFocus.class);
-		focus.actor = actor;
+		focus.listenerActor = listenerActor;
+		focus.target = target;
 		focus.listener = listener;
 		focus.pointer = pointer;
 		focus.button = button;
@@ -393,11 +394,12 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Removes the listener from being notified for all touchDragged and touchUp events for the specified pointer and button. Note
 	 * the listener may never receive a touchUp event if this method is used. */
-	public void removeTouchFocus (EventListener listener, Actor actor, int pointer, int button) {
+	public void removeTouchFocus (EventListener listener, Actor listenerActor, Actor target, int pointer, int button) {
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
 		for (int i = touchFocuses.size - 1; i >= 0; i--) {
 			TouchFocus focus = touchFocuses.get(i);
-			if (focus.listener == listener && focus.actor == actor && focus.pointer == pointer && focus.button == button) {
+			if (focus.listener == listener && focus.listenerActor == listenerActor && focus.target == target
+				&& focus.pointer == pointer && focus.button == button) {
 				touchFocuses.removeIndex(i);
 				Pools.free(focus);
 			}
@@ -424,9 +426,9 @@ public class Stage extends InputAdapter implements Disposable {
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
 		for (int i = touchFocuses.size - 1; i >= 0; i--) {
 			TouchFocus focus = touchFocuses.get(i);
-			if (focus.listener == listener && focus.actor == actor) continue;
-			event.setTarget(focus.actor);
-			event.setListenerActor(focus.actor);
+			if (focus.listener == listener && focus.listenerActor == actor) continue;
+			event.setTarget(focus.target);
+			event.setListenerActor(focus.listenerActor);
 			event.setPointer(focus.pointer);
 			event.setButton(focus.button);
 			touchFocuses.removeIndex(i);
@@ -595,12 +597,12 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Internal class for managing touch focus. Public only for GWT.
 	 * @author Nathan Sweet */
 	public static final class TouchFocus implements Poolable {
-		Actor actor;
 		EventListener listener;
+		Actor listenerActor, target;
 		int pointer, button;
 
 		public void reset () {
-			actor = null;
+			listenerActor = null;
 			listener = null;
 		}
 	}

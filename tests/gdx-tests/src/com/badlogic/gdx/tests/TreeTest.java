@@ -1,0 +1,63 @@
+
+package com.badlogic.gdx.tests;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Tree;
+import com.badlogic.gdx.scenes.scene2d.ui.Tree.Node;
+import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.tests.utils.GdxTest;
+
+public class TreeTest extends GdxTest {
+	Stage stage;
+
+	public void create () {
+		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
+
+		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+
+		Table table = new Table();
+		table.setFillParent(true);
+		stage.addActor(table);
+
+		Tree tree = new Tree(skin);
+
+		tree.add(new Node(new TextButton("moo1", skin)));
+		Node moo2 = new Node(new TextButton("moo2", skin));
+		tree.add(moo2);
+		Node moo3 = new Node(new TextButton("moo3", skin));
+		moo2.add(moo3);
+		moo3.add(new Node(new TextButton("moo4", skin)));
+		tree.add(new Node(new TextButton("moo5", skin)));
+
+		table.add(tree).fill().expand();
+	}
+
+	public void render () {
+		// System.out.println(meow.getValue());
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		stage.act(Gdx.graphics.getDeltaTime());
+		stage.draw();
+		Table.drawDebug(stage);
+	}
+
+	public void resize (int width, int height) {
+		stage.setViewport(width, height, true);
+	}
+
+	public boolean needsGL20 () {
+		return true;
+	}
+
+	public void dispose () {
+		stage.dispose();
+	}
+}
