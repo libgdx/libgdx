@@ -46,6 +46,6 @@ com.badlogic.gdx.scenes.scene2d.ui.Touchpad$TouchpadStyle: {
 	default: { background: default-pane, knob: default-round-large }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Tree$TreeStyle: {
-	default: { minus: tree-minus, plus: tree-plus }
+	default: { minus: tree-minus, plus: tree-plus, selection: default-select-selection }
 }
 }
