@@ -33,7 +33,7 @@ import com.badlogic.gdx.utils.SnapshotArray;
  * @author mzechner
  * @author Nathan Sweet */
 public class Group extends Actor implements Cullable {
-	private final SnapshotArray<Actor> children = new SnapshotArray(4);
+	private final SnapshotArray<Actor> children = new SnapshotArray(true, 4, Actor.class);
 	private final Matrix3 localTransform = new Matrix3();
 	private final Matrix3 worldTransform = new Matrix3();
 	private final Matrix4 batchTransform = new Matrix4();
