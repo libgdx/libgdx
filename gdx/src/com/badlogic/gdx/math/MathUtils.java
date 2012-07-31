@@ -37,7 +37,9 @@ public class MathUtils {
 	static private final float degToIndex = SIN_COUNT / degFull;
 
 	static public final float radiansToDegrees = 180f / PI;
+	static public final float radDeg = radiansToDegrees;
 	static public final float degreesToRadians = PI / 180;
+	static public final float degRad = degreesToRadians;
 
 	static private class Sin {
 		static final float[] table = new float[SIN_COUNT];
@@ -97,6 +99,7 @@ public class MathUtils {
 		}
 	}
 
+	/** Returns atan2 in radians from a lookup table. */
 	static public final float atan2 (float y, float x) {
 		float add, mul;
 		if (x < 0) {
