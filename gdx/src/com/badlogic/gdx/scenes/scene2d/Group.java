@@ -44,10 +44,9 @@ public class Group extends Actor implements Cullable {
 
 	public void act (float delta) {
 		super.act(delta);
-		SnapshotArray<Actor> children = this.children;
-		children.begin();
+		Actor[] actors = children.begin();
 		for (int i = 0, n = children.size; i < n; i++)
-			children.get(i).act(delta);
+			actors[i].act(delta);
 		children.end();
 	}
 
@@ -66,13 +65,12 @@ public class Group extends Actor implements Cullable {
 	 * {@link #setCullingArea(Rectangle) culling area}, if set. */
 	protected void drawChildren (SpriteBatch batch, float parentAlpha) {
 		parentAlpha *= getColor().a;
-		SnapshotArray<Actor> children = this.children;
-		children.begin();
+		Actor[] actors = children.begin();
 		if (cullingArea != null) {
 			// Draw children only if inside culling area.
 			if (transform) {
 				for (int i = 0, n = children.size; i < n; i++) {
-					Actor child = children.get(i);
+					Actor child = actors[i];
 					if (!child.isVisible()) continue;
 					float x = child.getX();
 					float y = child.getY();
@@ -88,7 +86,7 @@ public class Group extends Actor implements Cullable {
 				float offsetY = getY();
 				setPosition(0, 0);
 				for (int i = 0, n = children.size; i < n; i++) {
-					Actor child = children.get(i);
+					Actor child = actors[i];
 					if (!child.isVisible()) continue;
 					float x = child.getX();
 					float y = child.getY();
@@ -104,7 +102,7 @@ public class Group extends Actor implements Cullable {
 		} else {
 			if (transform) {
 				for (int i = 0, n = children.size; i < n; i++) {
-					Actor child = children.get(i);
+					Actor child = actors[i];
 					if (!child.isVisible()) continue;
 					child.draw(batch, parentAlpha);
 				}
@@ -115,7 +113,7 @@ public class Group extends Actor implements Cullable {
 				float offsetY = getY();
 				setPosition(0, 0);
 				for (int i = 0, n = children.size; i < n; i++) {
-					Actor child = children.get(i);
+					Actor child = actors[i];
 					if (!child.isVisible()) continue;
 					float x = child.getX();
 					float y = child.getY();
@@ -264,12 +262,13 @@ public class Group extends Actor implements Cullable {
 
 	/** Removes all actors from this group. */
 	public void clear () {
-		Array<Actor> children = this.children;
+		Actor[] actors = children.begin();
 		for (int i = 0, n = children.size; i < n; i++) {
-			Actor child = children.get(i);
+			Actor child = actors[i];
 			child.setStage(null);
 			child.setParent(null);
 		}
+		children.end();
 		children.clear();
 		childrenChanged();
 	}
