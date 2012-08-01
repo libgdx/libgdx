@@ -27,8 +27,7 @@ public class Vector2 implements Serializable {
 
 	/** Static temporary vector. Use with care! Use only when sure other code will not also use this.
 	 * @see #tmp() **/
-	public final static Vector2 tmp = new Vector2();
-	public final static Vector2 tmp2 = new Vector2();
+	public final static Vector2 tmp = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
 
 	public final static Vector2 X = new Vector2(1, 0);
 	public final static Vector2 Y = new Vector2(0, 1);
