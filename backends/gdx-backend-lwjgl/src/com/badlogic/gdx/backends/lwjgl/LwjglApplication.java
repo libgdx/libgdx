@@ -194,7 +194,10 @@ public class LwjglApplication implements Application {
 					shouldRender = true;
 				}
 			} else {
-				if(graphics.resize || Display.wasResized() || Display.getWidth() != graphics.config.width || Display.getHeight() != graphics.config.height) {
+				graphics.config.x = Display.getX();
+				graphics.config.y = Display.getY();
+				if (graphics.resize || Display.wasResized() || Display.getWidth() != graphics.config.width
+					|| Display.getHeight() != graphics.config.height) {
 					graphics.resize  = false;
 					Gdx.gl.glViewport(0, 0, Display.getWidth(), Display.getHeight());
 					graphics.config.width = Display.getWidth();

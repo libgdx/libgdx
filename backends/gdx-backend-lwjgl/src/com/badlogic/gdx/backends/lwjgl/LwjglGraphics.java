@@ -120,7 +120,7 @@ public class LwjglGraphics implements Graphics {
 	public float getRawDeltaTime () {
 		return deltaTime;
 	}
-	
+
 	public GraphicsType getType () {
 		return GraphicsType.LWJGL;
 	}
@@ -157,7 +157,13 @@ public class LwjglGraphics implements Graphics {
 		}
 		Display.setTitle(config.title);
 		Display.setResizable(config.resizable);
+		Display.setInitialBackground(config.initialBackgroundColor.r, config.initialBackgroundColor.g,
+			config.initialBackgroundColor.b);
+		if (config.x != -1 && config.y != -1) Display.setLocation(config.x, config.y);
 		createDisplayPixelFormat();
+		if (config.x != -1 && config.y != -1) Display.setLocation(config.x, config.y);
+		config.x = Display.getX();
+		config.y = Display.getY();
 		initiateGLInstances();
 	}
 
