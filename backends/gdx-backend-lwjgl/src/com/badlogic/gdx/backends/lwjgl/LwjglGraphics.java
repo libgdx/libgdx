@@ -32,6 +32,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** An implementation of the {@link Graphics} interface based on Lwjgl.
@@ -159,6 +160,23 @@ public class LwjglGraphics implements Graphics {
 		Display.setResizable(config.resizable);
 		Display.setInitialBackground(config.initialBackgroundColor.r, config.initialBackgroundColor.g,
 			config.initialBackgroundColor.b);
+
+		if (config.iconPaths.size > 0) {
+			ByteBuffer[] icons = new ByteBuffer[config.iconPaths.size];
+			for (int i = 0, n = config.iconPaths.size; i < n; i++) {
+				Pixmap pixmap = new Pixmap(Gdx.files.getFileHandle(config.iconPaths.get(i), config.iconFileTypes.get(i)));
+				if (pixmap.getFormat() != Format.RGBA8888) {
+					Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGBA8888);
+					rgba.drawPixmap(pixmap, 0, 0);
+					pixmap = rgba;
+				}
+				icons[i] = ByteBuffer.allocateDirect(pixmap.getPixels().limit());
+				icons[i].put(pixmap.getPixels()).flip();
+				pixmap.dispose();
+			}
+			Display.setIcon(icons);
+		}
+
 		if (config.x != -1 && config.y != -1) Display.setLocation(config.x, config.y);
 		createDisplayPixelFormat();
 		if (config.x != -1 && config.y != -1) Display.setLocation(config.x, config.y);

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics;
 
 import java.io.BufferedInputStream;
@@ -28,13 +29,13 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** Class with static methods to read and write Pixmaps to a custom zlib based format. First three integers define the width,
- * height and format, remaining bytes are zlib compressed pixels.
+/** Writes Pixmaps to various formats.
  * @author mzechner
  * @author Nathan Sweet */
-public class PixmapIO { 
-	/** Writes the {@link Pixmap} to the given file using a custom compression scheme. To be able to load the Pixmap to a Texture,
-	 * use ".cim" as the file suffix! Throws a GdxRuntimeException in case the Pixmap couldn't be written to the file.
+public class PixmapIO {
+	/** Writes the {@link Pixmap} to the given file using a custom compression scheme. First three integers define the width, height
+	 * and format, remaining bytes are zlib compressed pixels. To be able to load the Pixmap to a Texture, use ".cim" as the file
+	 * suffix! Throws a GdxRuntimeException in case the Pixmap couldn't be written to the file.
 	 * @param file the file to write the Pixmap to */
 	static public void writeCIM (FileHandle file, Pixmap pixmap) {
 		CIM.write(file, pixmap);
@@ -287,16 +288,16 @@ public class PixmapIO {
 			// MSB
 			zlib.write(raw, off, len); // Data
 		}
-		
-		private static int calcADLER32(final byte[ ] raw) {
-	        int s1 = 1;
-	        int s2 = 0;
-	        for ( int i = 0 ; i < raw.length ; i++ ) {
-	            final int abs = raw[ i ] >= 0 ? raw[ i ] : ( raw[ i ] + 256 );
-	            s1 = ( s1 + abs ) % 65521;
-	            s2 = ( s2 + s1 ) % 65521;
-	        }
-	        return ( s2 << 16 ) + s1;
-	    }
+
+		private static int calcADLER32 (final byte[] raw) {
+			int s1 = 1;
+			int s2 = 0;
+			for (int i = 0; i < raw.length; i++) {
+				final int abs = raw[i] >= 0 ? raw[i] : (raw[i] + 256);
+				s1 = (s1 + abs) % 65521;
+				s2 = (s2 + s1) % 65521;
+			}
+			return (s2 << 16) + s1;
+		}
 	}
 }

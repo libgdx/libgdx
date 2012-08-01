@@ -18,11 +18,18 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.glutils.FileTextureData;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxNativesLoader;
 
 public class LwjglApplicationConfiguration {
 	/** whether to use OpenGL ES 2.0 or not. default: false **/
@@ -54,6 +61,15 @@ public class LwjglApplicationConfiguration {
 	/** the audio device buffer count **/
 	public int audioDeviceBufferCount = 9;
 	public Color initialBackgroundColor = Color.BLACK;
+
+	Array<String> iconPaths = new Array();
+	Array<FileType> iconFileTypes = new Array();
+
+	/** Adds a window icon. Icons are tried in the order added, the first one that works is used. */
+	public void addIcon (String path, FileType fileType) {
+		iconPaths.add(path);
+		iconFileTypes.add(fileType);
+	}
 
 	/** Sets the r, g, b and a bits per channel based on the given {@link DisplayMode} and sets the fullscreen flag to true.
 	 * @param mode */
