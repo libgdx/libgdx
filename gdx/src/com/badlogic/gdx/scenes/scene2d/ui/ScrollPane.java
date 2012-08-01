@@ -104,6 +104,8 @@ public class ScrollPane extends WidgetGroup {
 			private float handlePosition;
 
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				getStage().setScrollFocus(ScrollPane.this);
+
 				if (pointer != 0) return false;
 				if (fadeAlpha == 0) return false;
 
@@ -191,6 +193,16 @@ public class ScrollPane extends WidgetGroup {
 			}
 		};
 		addListener(gestureListener);
+
+		addListener(new InputListener() {
+			public boolean scrolled (InputEvent event, int amount) {
+				if (scrollY)
+					setScrollY(amountY + Math.max(areaHeight * 0.9f, maxY * 0.1f) / 4 * amount);
+				else if (scrollX) //
+					setScrollX(amountX + Math.max(areaWidth * 0.9f, maxX * 0.1f) / 4 * amount);
+				return true;
+			}
+		});
 	}
 
 	void resetFade () {
