@@ -16,9 +16,14 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.math.MathUtils;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-// BOZO - Add iterator.
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.ObjectMap.Entries;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.ObjectMap.Keys;
+import com.badlogic.gdx.utils.ObjectMap.Values;
 
 /** An ordered or unordered map of objects. This implementation uses arrays to store the keys and values, which means
  * {@link #getKey(Object, boolean) gets} do a comparison for each key in the map. This may be acceptable for small maps and has the
@@ -30,6 +35,10 @@ public class ArrayMap<K, V> {
 	public V[] values;
 	public int size;
 	public boolean ordered;
+
+	private Entries entries;
+	private Values valuesIter;
+	private Keys keysIter;
 
 	/** Creates an ordered map with a capacity of 16. */
 	public ArrayMap () {
@@ -78,8 +87,21 @@ public class ArrayMap<K, V> {
 
 	public void put (K key, V value) {
 		if (size == keys.length) resize(Math.max(8, (int)(size * 1.75f)));
-		keys[size] = key;
-		values[size++] = value;
+		int index = indexOfKey(key);
+		if (index == -1) index = size++;
+		keys[index] = key;
+		values[index] = value;
+	}
+
+	public void put (K key, V value, int index) {
+		if (size == keys.length) resize(Math.max(8, (int)(size * 1.75f)));
+		int existingIndex = indexOfKey(key);
+		if (existingIndex != -1) removeIndex(existingIndex);
+		System.arraycopy(keys, index, keys, index + 1, size - index);
+		System.arraycopy(values, index, values, index + 1, size - index);
+		keys[index] = key;
+		values[index] = value;
+		size++;
 	}
 
 	public void addAll (ArrayMap map) {
@@ -102,22 +124,6 @@ public class ArrayMap<K, V> {
 		Object[] keys = this.keys;
 		int i = size - 1;
 		if (key == null) {
-			for (; i >= 0; i--)
-				if (keys[i] == key) return values[i];
-		} else {
-			for (; i >= 0; i--)
-				if (key.equals(keys[i])) return values[i];
-		}
-		return null;
-	}
-
-	/** Returns the value for the specified key. Note this does a comparison of each key in reverse order until the specified key is
-	 * found.
-	 * @param identity If true, == comparison will be used. If false, .equals() comaparison will be used. */
-	public V get (K key, boolean identity) {
-		Object[] keys = this.keys;
-		int i = size - 1;
-		if (identity || key == null) {
 			for (; i >= 0; i--)
 				if (keys[i] == key) return values[i];
 		} else {
@@ -177,11 +183,10 @@ public class ArrayMap<K, V> {
 		values[index] = value;
 	}
 
-	/** @param identity If true, == comparison will be used. If false, .equals() comaparison will be used. */
-	public boolean containsKey (K key, boolean identity) {
+	public boolean containsKey (K key) {
 		K[] keys = this.keys;
 		int i = size - 1;
-		if (identity || key == null) {
+		if (key == null) {
 			while (i >= 0)
 				if (keys[i--] == key) return true;
 		} else {
@@ -205,9 +210,9 @@ public class ArrayMap<K, V> {
 		return false;
 	}
 
-	public int indexOfKey (K key, boolean identity) {
+	public int indexOfKey (K key) {
 		Object[] keys = this.keys;
-		if (identity || key == null) {
+		if (key == null) {
 			for (int i = 0, n = size; i < n; i++)
 				if (keys[i] == key) return i;
 		} else {
@@ -229,9 +234,9 @@ public class ArrayMap<K, V> {
 		return -1;
 	}
 
-	public V removeKey (K key, boolean identity) {
+	public V removeKey (K key) {
 		Object[] keys = this.keys;
-		if (identity || key == null) {
+		if (key == null) {
 			for (int i = 0, n = size; i < n; i++) {
 				if (keys[i] == key) {
 					V value = values[i];
@@ -384,5 +389,131 @@ public class ArrayMap<K, V> {
 		}
 		buffer.append('}');
 		return buffer.toString();
+	}
+
+	/** Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
+	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	public Entries<K, V> entries () {
+		if (entries == null)
+			entries = new Entries(this);
+		else
+			entries.reset();
+		return entries;
+	}
+
+	/** Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
+	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	public Values<V> values () {
+		if (valuesIter == null)
+			valuesIter = new Values(this);
+		else
+			valuesIter.reset();
+		return valuesIter;
+	}
+
+	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
+	 * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	public Keys<K> keys () {
+		if (keysIter == null)
+			keysIter = new Keys(this);
+		else
+			keysIter.reset();
+		return keysIter;
+	}
+
+	static public class Entries<K, V> implements Iterable<Entry<K, V>>, Iterator<Entry<K, V>> {
+		private final ArrayMap<K, V> map;
+		Entry<K, V> entry = new Entry();
+		int index;
+
+		public Entries (ArrayMap<K, V> map) {
+			this.map = map;
+		}
+
+		public boolean hasNext () {
+			return index < map.size;
+		}
+
+		public Iterator<Entry<K, V>> iterator () {
+			return this;
+		}
+
+		public Entry<K, V> next () {
+			if (index >= map.size) throw new NoSuchElementException(String.valueOf(index));
+			entry.key = map.keys[index];
+			entry.value = map.values[index++];
+			return entry;
+		}
+
+		public void remove () {
+			index--;
+			map.removeIndex(index);
+		}
+
+		public void reset () {
+			index = 0;
+		}
+	}
+
+	static public class Values<V> implements Iterable<V>, Iterator<V> {
+		private final ArrayMap<Object, V> map;
+		int index;
+
+		public Values (ArrayMap<Object, V> map) {
+			this.map = map;
+		}
+
+		public boolean hasNext () {
+			return index < map.size;
+		}
+
+		public Iterator<V> iterator () {
+			return this;
+		}
+
+		public V next () {
+			if (index >= map.size) throw new NoSuchElementException(String.valueOf(index));
+			return map.values[index++];
+		}
+
+		public void remove () {
+			index--;
+			map.removeIndex(index);
+		}
+
+		public void reset () {
+			index = 0;
+		}
+	}
+
+	static public class Keys<K> implements Iterable<K>, Iterator<K> {
+		private final ArrayMap<K, Object> map;
+		int index;
+
+		public Keys (ArrayMap<K, Object> map) {
+			this.map = map;
+		}
+
+		public boolean hasNext () {
+			return index < map.size;
+		}
+
+		public Iterator<K> iterator () {
+			return this;
+		}
+
+		public K next () {
+			if (index >= map.size) throw new NoSuchElementException(String.valueOf(index));
+			return map.keys[index++];
+		}
+
+		public void remove () {
+			index--;
+			map.removeIndex(index);
+		}
+
+		public void reset () {
+			index = 0;
+		}
 	}
 }
