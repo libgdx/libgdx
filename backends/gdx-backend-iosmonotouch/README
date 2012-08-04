@@ -4,8 +4,8 @@ by following the instructions at https://github.com/samskivert/ikvm-monotouch. T
 SVN should be good enough for now.
 
 == How to develop for the backend ==
-After checking out the libgdx source, execute ant in gdx-backends-iosmonotouch/. This will 
-generate libs/gdx.dll and libs/gdx-backend-ios.dll necessary for the MonoTouch project in mono/.
+After checking out the libgdx source, execute ant in gdx-backends-iosmonotouch/. This will
+generate libs/gdx.dll and libs/gdx-backend-ios.dll and libgdx.a necessary for the MonoTouch project in mono/.
 
 The development cycle should look like this from now on:
 
@@ -15,10 +15,6 @@ The development cycle should look like this from now on:
 4) Build and run in MonoDevelop. The mono project has a custom build step that invokes ant to build
 the backend and create an assembly.
    
-The current MonoTouch project is just there for testing purposes. Eventually we'll have no C# code
-in the backend. For that we'll use the Java wrappers for the Xamarin APIs as provided by Michael of
-PlayN fame :) IOSApplication will become the real main entry point.
-   
 == How should the process for users look like? ==
 Insead of another Eclipse project, we'll have a MonoTouch project. That will use an assembly generated
 from the core project and symlink to the android project's assets folder. All it does it fire up
@@ -26,10 +22,12 @@ an IOSApplication, passing the ApplicationListener to it. We can add a custom bu
 project that compiles the core projects Java files and creates a new Mono assembly. That should just work :)
    
 == Native code ==
-I'm still working on this.
+Is contained in the XCode project in the natives folder. We only compile core at the moment.
 
 TODO:
-- add libikvm-natives.a to mono project
-- setup XCode project for gdx core natives, output libgdx.so for arm6/arm7/i386
-- integrate core native build in ant file.
-- add wrappers for OpenGL ES for iOS so we don't have to wrap OpenTK. We want to use ByteBuffers.
+- add wrapper for GLES 1.x?  (we have 2.0 working)
+- audio
+  - use AVMediaPlayerSomethingSomething for Music
+  - use OpenAL for Sound
+  - maybe expose all of OpenAL similar to GL?
+- figure out retina stuff, wow, this is really horrible, to much magic
