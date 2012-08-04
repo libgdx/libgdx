@@ -320,6 +320,7 @@ public class PixmapPacker implements Disposable {
 					@Override
 					public void dispose () {
 						super.dispose();
+						getTextureData().consumePixmap().dispose();
 					}
 				};
 				texture.setFilter(minFilter, magFilter);
@@ -348,7 +349,7 @@ public class PixmapPacker implements Disposable {
 						@Override
 						public void dispose () {
 							super.dispose();
-							
+							getTextureData().consumePixmap().dispose();
 						}
 					};
 					page.texture.setFilter(minFilter, magFilter);
