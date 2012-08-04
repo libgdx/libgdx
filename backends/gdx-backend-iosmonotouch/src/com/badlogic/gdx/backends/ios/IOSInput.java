@@ -15,16 +15,37 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.ios;
 
+import cli.MonoTouch.Foundation.NSObject;
+import cli.MonoTouch.Foundation.NSSet;
+import cli.MonoTouch.Foundation.NSSetEnumerator;
+import cli.MonoTouch.Foundation.NSSetEnumerator.Method;
+import cli.MonoTouch.UIKit.UIEvent;
+import cli.MonoTouch.UIKit.UITouch;
+import cli.System.Drawing.PointF;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 
 public class IOSInput implements Input {
-	IOSGraphics graphics;
-	
-	public IOSInput(IOSGraphics graphics) {
-		this.graphics = graphics;
-	}
-	
+	static final int MAX_TOUCHES = 20;
+
+	int[] deltaX = new int[MAX_TOUCHES];
+	int[] deltaY = new int[MAX_TOUCHES];
+	int[] touchX = new int[MAX_TOUCHES];
+	int[] touchY = new int[MAX_TOUCHES];
+	boolean[] touchDown = new boolean[MAX_TOUCHES];
+	boolean justTouched = false;
+	Pool<TouchEvent> touchEventPool = new Pool<TouchEvent>() {
+		@Override
+		protected TouchEvent newObject() {
+			return new TouchEvent();
+		}
+	};
+	Array<TouchEvent> touchEvents = new Array<TouchEvent>();
+
 	@Override
 	public float getAccelerometerX() {
 		return 0;
@@ -41,58 +62,77 @@ public class IOSInput implements Input {
 	}
 
 	@Override
-	public int getX() {
+	public float getAzimuth() {
 		return 0;
+	}
+
+	@Override
+	public float getPitch() {
+		return 0;
+	}
+
+	@Override
+	public float getRoll() {
+		return 0;
+	}
+
+	@Override
+	public void getRotationMatrix(float[] matrix) {
+	}
+
+	@Override
+	public int getX() {
+		return touchX[0];
 	}
 
 	@Override
 	public int getX(int pointer) {
-		return 0;
+		return touchX[pointer];
 	}
 
 	@Override
 	public int getDeltaX() {
-		return 0;
+		return deltaX[0];
 	}
 
 	@Override
 	public int getDeltaX(int pointer) {
-		return 0;
+		return deltaX[pointer];
 	}
 
 	@Override
 	public int getY() {
-		return 0;
+		return touchY[0];
 	}
 
 	@Override
 	public int getY(int pointer) {
-		return 0;
+		return touchY[pointer];
 	}
 
 	@Override
 	public int getDeltaY() {
-		return 0;
+		return deltaY[0];
 	}
 
 	@Override
 	public int getDeltaY(int pointer) {
-		return 0;
+		return deltaY[pointer];
 	}
 
 	@Override
 	public boolean isTouched() {
-		return false;
+		return touchDown[0];
 	}
 
 	@Override
 	public boolean justTouched() {
-		return false;
+		return justTouched;
 	}
 
 	@Override
 	public boolean isTouched(int pointer) {
-		return false;
+		return touchDown[pointer];
 	}
 
 	@Override
@@ -129,25 +169,6 @@ public class IOSInput implements Input {
 
 	@Override
 	public void cancelVibrate() {
-	}
-
-	@Override
-	public float getAzimuth() {
-		return 0;
-	}
-
-	@Override
-	public float getPitch() {
-		return 0;
-	}
-
-	@Override
-	public float getRoll() {
-		return 0;
-	}
-
-	@Override
-	public void getRotationMatrix(float[] matrix) {
 	}
 
 	@Override
@@ -198,5 +219,35 @@ public class IOSInput implements Input {
 
 	@Override
 	public void setCursorPosition(int x, int y) {
+	}
+
+	public void touchDown(NSSet touches, UIEvent event) {
+		toTouchEvents(touches, event);
+	}
+
+	public void touchUp(NSSet touches, UIEvent event) {
+		toTouchEvents(touches, event);
+	}
+
+	public void touchMoved(NSSet touches, UIEvent event) {
+		toTouchEvents(touches, event);
+	}
+
+	private void toTouchEvents(NSSet touches, UIEvent event) {
+		Gdx.app.log("IOSInput", "got " + touches.get_Count() + " touches" );
+		touches.Enumerate(new NSSetEnumerator(new NSSetEnumerator.Method() {
+			public void Invoke(NSObject obj, boolean[] stop) {
+				UITouch touch = (UITouch) obj;
+				PointF loc = touch.LocationInView(touch.get_View());
+				Gdx.app.log("IOSInput", "" + touch.get_Phase() + ", " + loc.get_X() + ", " + loc.get_Y());
+				stop[0] = false;
+			}
+		}));
+	}
+	
+	static class TouchEvent {
+		long timestamp;
+		int x, y;
+		int pointer;
 	}
 }

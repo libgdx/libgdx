@@ -16,9 +16,11 @@
 package com.badlogic.gdx.backends.ios;
 
 import cli.MonoTouch.Foundation.ExportAttribute;
+import cli.MonoTouch.Foundation.NSSet;
 import cli.MonoTouch.CoreAnimation.CAEAGLLayer;
 import cli.MonoTouch.OpenGLES.EAGLColorFormat;
 import cli.MonoTouch.OpenGLES.EAGLRenderingAPI;
+import cli.MonoTouch.UIKit.UIEvent;
 import cli.MonoTouch.UIKit.UIScreen;
 import cli.OpenTK.FrameEventArgs;
 import cli.OpenTK.Platform.iPhoneOS.iPhoneOSGameView;
@@ -36,6 +38,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 
 public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	IOSApplication app;
+	IOSInput input;
 	IOSGLES20 gl20;
 	int width;
 	int height;
@@ -45,12 +48,13 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	int frames;
 	int fps;
 
-	public IOSGraphics(RectangleF bounds, IOSApplication app) {
+	public IOSGraphics(RectangleF bounds, IOSApplication app, IOSInput input) {
 		super(bounds);
 		width = (int)bounds.get_Width();
 		height = (int)bounds.get_Height();
 		app.log("IOSGraphics", bounds.get_Width() + "x" + bounds.get_Height() + ", " + UIScreen.get_MainScreen().get_Scale());
 		this.app = app;
+		this.input = input;
 		set_LayerRetainsBacking(false);
 		set_ContentScaleFactor(1);
 		set_MultipleTouchEnabled(true);
@@ -264,5 +268,29 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	@Override
 	public boolean isFullscreen() {
 		return true;
+	}
+
+	@Override
+	public void TouchesBegan(NSSet touches, UIEvent event) {
+		super.TouchesBegan(touches, event);
+		input.touchDown(touches, event);
+	}
+
+	@Override
+	public void TouchesCancelled(NSSet touches, UIEvent event) {
+		super.TouchesCancelled(touches, event);
+		input.touchUp(touches, event);
+	}
+
+	@Override
+	public void TouchesEnded(NSSet touches, UIEvent event) {
+		super.TouchesEnded(touches, event);
+		input.touchUp(touches, event);
+	}
+
+	@Override
+	public void TouchesMoved(NSSet touches, UIEvent event) {
+		super.TouchesMoved(touches, event);
+		input.touchMoved(touches, event);
 	}
 }

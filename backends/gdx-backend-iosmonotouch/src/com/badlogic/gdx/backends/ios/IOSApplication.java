@@ -56,10 +56,10 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	public boolean FinishedLaunching(UIApplication uiApp, NSDictionary options) {
 		this.uiApp = uiApp;
 		RectangleF bounds = UIScreen.get_MainScreen().get_Bounds();
-		this.graphics = new IOSGraphics(bounds, this);
+		this.input = new IOSInput();
+		this.graphics = new IOSGraphics(bounds, this, input);
 		this.files = new IOSFiles();
 		this.audio = new IOSAudio();
-		this.input = new IOSInput(this.graphics);
 		
 		Gdx.files = this.files;
 		Gdx.graphics = this.graphics;
