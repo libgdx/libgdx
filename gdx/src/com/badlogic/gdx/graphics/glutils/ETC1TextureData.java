@@ -75,7 +75,7 @@ public class ETC1TextureData implements TextureData {
 	public void consumeCompressedData () {
 		if (!isPrepared) throw new GdxRuntimeException("Call prepare() before calling consumeCompressedData()");
 
-		if (Gdx.app.getType() == ApplicationType.Desktop || Gdx.graphics.isGL20Available() == false) {
+		if (!Gdx.graphics.supportsExtension("GL_OES_compressed_ETC1_RGB8_texture") || Gdx.graphics.isGL20Available() == false) {
 			Pixmap pixmap = ETC1.decodeImage(data, Format.RGB565);
 			Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
 				pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
