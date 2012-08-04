@@ -256,7 +256,7 @@ public class IOSInput implements Input {
 						break;
 					case UITouchPhase.Moved:
 					case UITouchPhase.Stationary:
-						inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
+						inputProcessor.touchDragged(event.x, event.y, event.pointer);
 						break;
 					}
 				}

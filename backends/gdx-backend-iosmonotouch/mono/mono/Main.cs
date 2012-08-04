@@ -16,8 +16,26 @@ using com.badlogic.gdx.backends.ios;
 
 namespace mono
 {
+	class MyInputAdapter: InputAdapter {
+		public override bool touchUp (int x, int y, int pointer, int button) {
+			Gdx.app.log ("Touch", "touch up " + x + ", " + y + ", " + pointer);
+			return true;
+		}
+
+		public override bool touchDown (int x, int y, int pointer, int button) {
+			Gdx.app.log ("Touch", "touch down " + x + ", " + y + ", " + pointer);
+			return true;
+		}
+
+		public override bool touchDragged (int x, int y, int pointer) {
+			Gdx.app.log ("Touch", "touch dragged " + x + ", " + y + ", " + pointer);
+			return true;
+		}
+	}
+
 	public class TestListener: com.badlogic.gdx.ApplicationListener {
 		public void create () {
+			Gdx.input.setInputProcessor(new MyInputAdapter());
 		}
 	
 		public void render () {
