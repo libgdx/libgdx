@@ -109,13 +109,11 @@ public final class Intersector {
 			* (pointX - linePoint1X));
 	}
 
-	/** Checks wheter the given point is in the polygon. Only the x and y coordinates of the provided {@link Vector3}s are used.
-	 * 
+	/** Checks wheter the given point is in the polygon.
 	 * @param polygon The polygon vertices
 	 * @param point The point
-	 * @return Wheter the point is in the polygon */
+	 * @return true if the point is in the polygon */
 	public static boolean isPointInPolygon (List<Vector2> polygon, Vector2 point) {
-
 		int j = polygon.size() - 1;
 		boolean oddNodes = false;
 		for (int i = 0; i < polygon.size(); i++) {
@@ -128,7 +126,6 @@ public final class Intersector {
 			}
 			j = i;
 		}
-
 		return oddNodes;
 	}
 

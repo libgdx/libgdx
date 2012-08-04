@@ -144,6 +144,14 @@ public class Vector2 implements Serializable {
 		return this;
 	}
 
+	/** Multiplies this vector by a scalar
+	 * @return This vector for chaining */
+	public Vector2 mul (float x, float y) {
+		this.x *= x;
+		this.y *= y;
+		return this;
+	}
+
 	/** @param v The other vector
 	 * @return the distance between this and the other vector */
 	public float dst (Vector2 v) {

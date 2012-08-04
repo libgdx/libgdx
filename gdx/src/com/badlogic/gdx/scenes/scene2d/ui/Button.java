@@ -107,9 +107,11 @@ public class Button extends Table {
 		if (this.isChecked == isChecked) return;
 		if (buttonGroup != null && !buttonGroup.canCheck(this, isChecked)) return;
 		this.isChecked = isChecked;
-		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-		if (fire(changeEvent)) this.isChecked = !isChecked;
-		Pools.free(changeEvent);
+		if (!isDisabled) {
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			if (fire(changeEvent)) this.isChecked = !isChecked;
+			Pools.free(changeEvent);
+		}
 	}
 
 	/** Toggles the checked state. This method changes the checked state, which fires a {@link ChangeEvent}, so can be used to
@@ -169,7 +171,9 @@ public class Button extends Table {
 			offsetX = style.pressedOffsetX;
 			offsetY = style.pressedOffsetY;
 		} else {
-			if (style.checked == null)
+			if (isDisabled && style.disabled != null)
+				background = style.disabled;
+			else if (style.checked == null)
 				background = style.up;
 			else
 				background = isChecked ? style.checked : style.up;
@@ -222,7 +226,7 @@ public class Button extends Table {
 	 * @author mzechner */
 	static public class ButtonStyle {
 		/** Optional. */
-		public Drawable down, up, checked;
+		public Drawable down, up, checked, disabled;
 		/** Optional. */
 		public float pressedOffsetX, pressedOffsetY;
 		/** Optional. */

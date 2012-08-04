@@ -119,6 +119,10 @@ public class Polygon {
 		dirty = true;
 	}
 
+	public void dirty () {
+		dirty = true;
+	}
+
 	public float area () {
 		float area = 0;
 
