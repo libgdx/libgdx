@@ -243,10 +243,8 @@ public class Quaternion implements Serializable {
 		matrix[Matrix4.M33] = 1;
 	}
 
-	/**
-	 * Sets the quaternion to an identity Quaternion
-	 * @return this quaternion for chaining
-	 */
+	/** Sets the quaternion to an identity Quaternion
+	 * @return this quaternion for chaining */
 	public Quaternion idt () {
 		this.set(0, 0, 0, 1);
 		return this;
@@ -309,9 +307,9 @@ public class Quaternion implements Serializable {
 	public Quaternion setFromAxes (float xx, float xy, float xz, float yx, float yy, float yz, float zx, float zy, float zz) {
 		// the trace is the sum of the diagonal elements; see
 		// http://mathworld.wolfram.com/MatrixTrace.html
-		final float m00 = xx, m01 = yx, m02 = zx;
-		final float m10 = xy, m11 = yy, m12 = zy;
-		final float m20 = xz, m21 = yz, m22 = zz;
+		final float m00 = xx, m01 = xy, m02 = xz;
+		final float m10 = yx, m11 = yy, m12 = yz;
+		final float m20 = zx, m21 = zy, m22 = zz;
 		final float t = m00 + m11 + m22;
 
 		// we protect the division by s by ensuring that s>=1
