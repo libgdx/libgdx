@@ -99,6 +99,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		}
 		
 		MakeCurrent();
+		((IOSInput)Gdx.input).processEvents();
 		app.listener.render();
 		SwapBuffers();
 	}

@@ -18,15 +18,15 @@ package com.badlogic.gdx.backends.ios;
 import cli.MonoTouch.Foundation.NSObject;
 import cli.MonoTouch.Foundation.NSSet;
 import cli.MonoTouch.Foundation.NSSetEnumerator;
-import cli.MonoTouch.Foundation.NSSetEnumerator.Method;
 import cli.MonoTouch.UIKit.UIEvent;
 import cli.MonoTouch.UIKit.UITouch;
+import cli.MonoTouch.UIKit.UITouchPhase;
 import cli.System.Drawing.PointF;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 
 public class IOSInput implements Input {
@@ -36,7 +36,9 @@ public class IOSInput implements Input {
 	int[] deltaY = new int[MAX_TOUCHES];
 	int[] touchX = new int[MAX_TOUCHES];
 	int[] touchY = new int[MAX_TOUCHES];
-	boolean[] touchDown = new boolean[MAX_TOUCHES];
+	// we store the pointer to the UITouch struct here, or 0
+	int[] touchDown = new int[MAX_TOUCHES];
+	int numTouched = 0;
 	boolean justTouched = false;
 	Pool<TouchEvent> touchEventPool = new Pool<TouchEvent>() {
 		@Override
@@ -45,7 +47,9 @@ public class IOSInput implements Input {
 		}
 	};
 	Array<TouchEvent> touchEvents = new Array<TouchEvent>();
-
+	TouchEvent currentEvent = null;
+	InputProcessor inputProcessor = null;
+	
 	@Override
 	public float getAccelerometerX() {
 		return 0;
@@ -122,7 +126,7 @@ public class IOSInput implements Input {
 
 	@Override
 	public boolean isTouched() {
-		return touchDown[0];
+		return touchDown[0] != 0;
 	}
 
 	@Override
@@ -132,12 +136,12 @@ public class IOSInput implements Input {
 
 	@Override
 	public boolean isTouched(int pointer) {
-		return touchDown[pointer];
+		return touchDown[pointer] != 0;
 	}
 
 	@Override
 	public boolean isButtonPressed(int button) {
-		return false;
+		return button == Buttons.LEFT && numTouched > 0;
 	}
 
 	@Override
@@ -173,7 +177,7 @@ public class IOSInput implements Input {
 
 	@Override
 	public long getCurrentEventTime() {
-		return 0;
+		return currentEvent.timestamp;
 	}
 
 	@Override
@@ -186,11 +190,12 @@ public class IOSInput implements Input {
 
 	@Override
 	public void setInputProcessor(InputProcessor processor) {
+		this.inputProcessor = processor;
 	}
 
 	@Override
 	public InputProcessor getInputProcessor() {
-		return null;
+		return inputProcessor;
 	}
 
 	@Override
@@ -232,20 +237,102 @@ public class IOSInput implements Input {
 	public void touchMoved(NSSet touches, UIEvent event) {
 		toTouchEvents(touches, event);
 	}
+	
+	void processEvents() {
+		synchronized(touchEvents) {
+			justTouched = false;
+			if(inputProcessor != null) {
+				for(TouchEvent event: touchEvents) {
+					currentEvent = event;
+					switch(event.phase) {
+					case UITouchPhase.Began:
+						inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
+						if(numTouched == 1)
+							justTouched = true;
+						break;
+					case UITouchPhase.Cancelled:
+					case UITouchPhase.Ended:
+						inputProcessor.touchUp(event.x, event.y, event.pointer, Buttons.LEFT);
+						break;
+					case UITouchPhase.Moved:
+					case UITouchPhase.Stationary:
+						inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
+						break;
+					}
+				}
+			}
+			touchEventPool.free(touchEvents);
+			touchEvents.clear();
+		}
+	}
+	
+	NSSetEnumerator touchEnumerator = new NSSetEnumerator(new NSSetEnumerator.Method() {
+		public void Invoke(NSObject obj, boolean[] stop) {
+			UITouch touch = (UITouch) obj;
+			PointF loc = touch.LocationInView(touch.get_View());
+			synchronized(touchEvents) {
+				TouchEvent event = touchEventPool.obtain();
+				event.x = (int)loc.get_X();
+				event.y = (int)loc.get_Y();
+				event.phase = touch.get_Phase().Value;
+				event.timestamp = (long)(touch.get_Timestamp() * 1000000000);
+				touchEvents.add(event);
+				
+				if(touch.get_Phase().Value == UITouchPhase.Began) {
+					event.pointer = getFreePointer();
+					touchDown[event.pointer] = touch.get_Handle().ToInt32();
+					touchX[event.pointer] = event.x;
+					touchY[event.pointer] = event.y;
+					deltaX[event.pointer] = 0;
+					deltaY[event.pointer] = 0; 
+					numTouched++;
+				}
+				
+				if(touch.get_Phase().Value == UITouchPhase.Moved ||
+					touch.get_Phase().Value == UITouchPhase.Stationary) {
+					event.pointer = findPointer(touch);
+					deltaX[event.pointer] = event.x - touchX[event.pointer];
+					deltaY[event.pointer] = event.y - touchY[event.pointer]; 
+					touchX[event.pointer] = event.x;
+					touchY[event.pointer] = event.y;
+				}
+				
+				if(touch.get_Phase().Value == UITouchPhase.Cancelled ||
+					touch.get_Phase().Value == UITouchPhase.Ended) {
+					event.pointer = findPointer(touch);
+					touchDown[event.pointer] = 0; 
+					touchX[event.pointer] = event.x;
+					touchY[event.pointer] = event.y;
+					deltaX[event.pointer] = 0;
+					deltaY[event.pointer] = 0;
+					numTouched--;
+				}
+			}
+			stop[0] = false;
+		}
+	});
+	
+	private int getFreePointer() {
+		for(int i = 0; i < touchDown.length; i++) {
+			if(touchDown[i] == 0) return i;
+		}
+		throw new GdxRuntimeException("Couldn't find free pointer id!");
+	}
+	
+	private int findPointer(UITouch touch) {
+		int ptr = touch.get_Handle().ToInt32();
+		for(int i = 0; i < touchDown.length; i++) {
+			if(touchDown[i] == ptr) return i;
+		}
+		throw new GdxRuntimeException("Couldn't find pointer id for touch event!");
+	}
 
 	private void toTouchEvents(NSSet touches, UIEvent event) {
-		Gdx.app.log("IOSInput", "got " + touches.get_Count() + " touches" );
-		touches.Enumerate(new NSSetEnumerator(new NSSetEnumerator.Method() {
-			public void Invoke(NSObject obj, boolean[] stop) {
-				UITouch touch = (UITouch) obj;
-				PointF loc = touch.LocationInView(touch.get_View());
-				Gdx.app.log("IOSInput", "" + touch.get_Phase() + ", " + loc.get_X() + ", " + loc.get_Y());
-				stop[0] = false;
-			}
-		}));
+		touches.Enumerate(touchEnumerator);
 	}
 	
 	static class TouchEvent {
+		int phase;
 		long timestamp;
 		int x, y;
 		int pointer;
