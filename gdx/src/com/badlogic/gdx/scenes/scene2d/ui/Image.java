@@ -59,6 +59,11 @@ public class Image extends Widget {
 		this(new TextureRegionDrawable(new TextureRegion(texture)));
 	}
 
+	/** Creates an image stretched, and aligned center. */
+	public Image (Skin skin, String drawableName) {
+		this(skin.getDrawable(drawableName), Scaling.stretch, Align.center);
+	}
+
 	/** Creates an image stretched, and aligned center.
 	 * @param drawable May be null. */
 	public Image (Drawable drawable) {

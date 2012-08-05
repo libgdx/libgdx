@@ -101,7 +101,7 @@ public class TextButton extends Button {
 		public TextButtonStyle () {
 		}
 
-		public TextButtonStyle (Drawable down, Drawable up, Drawable checked) {
+		public TextButtonStyle (Drawable up, Drawable down, Drawable checked) {
 			super(up, down, checked);
 		}
 
