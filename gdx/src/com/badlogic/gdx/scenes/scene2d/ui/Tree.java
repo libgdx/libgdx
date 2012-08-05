@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -252,5 +253,20 @@ public class Tree extends WidgetGroup {
 		public Drawable plus, minus;
 		/** Optional. */
 		public Drawable selection;
+
+		public TreeStyle () {
+		}
+
+		public TreeStyle (Drawable plus, Drawable minus, Drawable selection) {
+			this.plus = plus;
+			this.minus = minus;
+			this.selection = selection;
+		}
+
+		public TreeStyle (TreeStyle style) {
+			this.plus = style.plus;
+			this.minus = style.minus;
+			this.selection = style.selection;
+		}
 	}
 }

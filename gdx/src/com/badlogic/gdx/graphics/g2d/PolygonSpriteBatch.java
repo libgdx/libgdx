@@ -288,7 +288,7 @@ public class PolygonSpriteBatch {
 
 	/** Draws a polygon region with the bottom left corner at x,y having the width and height of the region. */
 	public void draw (PolygonRegion region, float x, float y) {
-		draw(region, x, y, Math.abs(region.getRegion().getRegionWidth()), Math.abs(region.getRegion().getRegionHeight()));
+		draw(region, x, y, region.getRegion().getRegionWidth(), region.getRegion().getRegionHeight());
 	}
 
 	/** Draws a polygon region with the bottom left corner at x,y and stretching the region to cover the given width and height. */

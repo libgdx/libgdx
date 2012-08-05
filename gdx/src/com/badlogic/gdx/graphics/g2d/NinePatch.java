@@ -182,48 +182,48 @@ public class NinePatch {
 
 		if (patches[BOTTOM_LEFT] != null) {
 			bottomLeft = add(patches[BOTTOM_LEFT], color);
-			leftWidth = Math.abs(patches[BOTTOM_LEFT].getRegionWidth());
-			bottomHeight = Math.abs(patches[BOTTOM_LEFT].getRegionHeight());
+			leftWidth = patches[BOTTOM_LEFT].getRegionWidth();
+			bottomHeight = patches[BOTTOM_LEFT].getRegionHeight();
 		}
 		if (patches[BOTTOM_CENTER] != null) {
 			bottomCenter = add(patches[BOTTOM_CENTER], color);
-			middleWidth = Math.max(middleWidth, Math.abs(patches[BOTTOM_CENTER].getRegionWidth()));
-			bottomHeight = Math.max(bottomHeight, Math.abs(patches[BOTTOM_CENTER].getRegionHeight()));
+			middleWidth = Math.max(middleWidth, patches[BOTTOM_CENTER].getRegionWidth());
+			bottomHeight = Math.max(bottomHeight, patches[BOTTOM_CENTER].getRegionHeight());
 		}
 		if (patches[BOTTOM_RIGHT] != null) {
 			bottomRight = add(patches[BOTTOM_RIGHT], color);
-			rightWidth = Math.max(rightWidth, Math.abs(patches[BOTTOM_RIGHT].getRegionWidth()));
-			bottomHeight = Math.max(bottomHeight, Math.abs(patches[BOTTOM_RIGHT].getRegionHeight()));
+			rightWidth = Math.max(rightWidth, patches[BOTTOM_RIGHT].getRegionWidth());
+			bottomHeight = Math.max(bottomHeight, patches[BOTTOM_RIGHT].getRegionHeight());
 		}
 		if (patches[MIDDLE_LEFT] != null) {
 			middleLeft = add(patches[MIDDLE_LEFT], color);
-			leftWidth = Math.max(leftWidth, Math.abs(patches[MIDDLE_LEFT].getRegionWidth()));
-			middleHeight = Math.max(middleHeight, Math.abs(patches[MIDDLE_LEFT].getRegionHeight()));
+			leftWidth = Math.max(leftWidth, patches[MIDDLE_LEFT].getRegionWidth());
+			middleHeight = Math.max(middleHeight, patches[MIDDLE_LEFT].getRegionHeight());
 		}
 		if (patches[MIDDLE_CENTER] != null) {
 			middleCenter = add(patches[MIDDLE_CENTER], color);
-			middleWidth = Math.max(middleWidth, Math.abs(patches[MIDDLE_CENTER].getRegionWidth()));
-			middleHeight = Math.max(middleHeight, Math.abs(patches[MIDDLE_CENTER].getRegionHeight()));
+			middleWidth = Math.max(middleWidth, patches[MIDDLE_CENTER].getRegionWidth());
+			middleHeight = Math.max(middleHeight, patches[MIDDLE_CENTER].getRegionHeight());
 		}
 		if (patches[MIDDLE_RIGHT] != null) {
 			middleRight = add(patches[MIDDLE_RIGHT], color);
-			rightWidth = Math.max(rightWidth, Math.abs(patches[MIDDLE_RIGHT].getRegionWidth()));
-			middleHeight = Math.max(middleHeight, Math.abs(patches[MIDDLE_RIGHT].getRegionHeight()));
+			rightWidth = Math.max(rightWidth, patches[MIDDLE_RIGHT].getRegionWidth());
+			middleHeight = Math.max(middleHeight, patches[MIDDLE_RIGHT].getRegionHeight());
 		}
 		if (patches[TOP_LEFT] != null) {
 			topLeft = add(patches[TOP_LEFT], color);
-			leftWidth = Math.max(leftWidth, Math.abs(patches[TOP_LEFT].getRegionWidth()));
-			topHeight = Math.max(topHeight, Math.abs(patches[TOP_LEFT].getRegionHeight()));
+			leftWidth = Math.max(leftWidth, patches[TOP_LEFT].getRegionWidth());
+			topHeight = Math.max(topHeight, patches[TOP_LEFT].getRegionHeight());
 		}
 		if (patches[TOP_CENTER] != null) {
 			topCenter = add(patches[TOP_CENTER], color);
-			middleWidth = Math.max(middleWidth, Math.abs(patches[TOP_CENTER].getRegionWidth()));
-			topHeight = Math.max(topHeight, Math.abs(patches[TOP_CENTER].getRegionHeight()));
+			middleWidth = Math.max(middleWidth, patches[TOP_CENTER].getRegionWidth());
+			topHeight = Math.max(topHeight, patches[TOP_CENTER].getRegionHeight());
 		}
 		if (patches[TOP_RIGHT] != null) {
 			topRight = add(patches[TOP_RIGHT], color);
-			rightWidth = Math.max(rightWidth, Math.abs(patches[TOP_RIGHT].getRegionWidth()));
-			topHeight = Math.max(topHeight, Math.abs(patches[TOP_RIGHT].getRegionHeight()));
+			rightWidth = Math.max(rightWidth, patches[TOP_RIGHT].getRegionWidth());
+			topHeight = Math.max(topHeight, patches[TOP_RIGHT].getRegionHeight());
 		}
 		if (idx < vertices.length) {
 			float[] newVertices = new float[idx];

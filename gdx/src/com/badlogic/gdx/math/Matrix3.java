@@ -89,10 +89,10 @@ public class Matrix3 implements Serializable {
 	}
 
 	/** Sets this matrix to a rotation matrix that will rotate any vector in counter clockwise order around the z-axis.
-	 * @param angle the angle in degrees.
+	 * @param degrees the angle in degrees.
 	 * @return this matrix */
-	public Matrix3 setToRotation (float angle) {
-		angle = DEGREE_TO_RAD * angle;
+	public Matrix3 setToRotation (float degrees) {
+		float angle = DEGREE_TO_RAD * degrees;
 		float cos = (float)Math.cos(angle);
 		float sin = (float)Math.sin(angle);
 

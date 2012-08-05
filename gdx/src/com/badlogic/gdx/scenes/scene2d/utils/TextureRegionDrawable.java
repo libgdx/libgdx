@@ -43,8 +43,8 @@ public class TextureRegionDrawable extends EmptyDrawable {
 
 	public void setRegion (TextureRegion region) {
 		this.region = region;
-		setMinWidth(Math.abs(region.getRegionWidth()));
-		setMinHeight(Math.abs(region.getRegionHeight()));
+		setMinWidth(region.getRegionWidth());
+		setMinHeight(region.getRegionHeight());
 	}
 
 	public TextureRegion getRegion () {

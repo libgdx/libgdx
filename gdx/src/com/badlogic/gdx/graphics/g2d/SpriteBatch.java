@@ -727,7 +727,7 @@ public class SpriteBatch implements Disposable {
 
 	/** Draws a rectangle with the bottom left corner at x,y having the width and height of the region. */
 	public void draw (TextureRegion region, float x, float y) {
-		draw(region, x, y, Math.abs(region.getRegionWidth()), Math.abs(region.getRegionHeight()));
+		draw(region, x, y, region.getRegionWidth(), region.getRegionHeight());
 	}
 
 	/** Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height. */

@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -41,7 +42,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 public class Scene2dTest extends GdxTest {
 	Stage stage;
 	private FloatAction meow = new FloatAction(10, 5);
-	private NinePatch patch;
+	private TiledDrawable patch;
 
 	public void create () {
 		stage = new Stage();
@@ -73,7 +74,6 @@ public class Scene2dTest extends GdxTest {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
 		final TextButton button = new TextButton("Fancy Background", skin);
-		button.pad(100).debug();
 
 // button.addListener(new ClickListener() {
 // public void clicked (InputEvent event, float x, float y) {
@@ -96,7 +96,7 @@ public class Scene2dTest extends GdxTest {
 			}
 
 			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
-				event.getTarget().translate(deltaX, deltaY);
+				event.getListenerActor().translate(deltaX, deltaY);
 				if (deltaX < 0) System.out.println("panning " + deltaX + ", " + deltaY + " " + event.getTarget());
 			}
 		});
@@ -132,7 +132,7 @@ public class Scene2dTest extends GdxTest {
 		// actor.addAction(parallel(moveTo(250, 250, 2, elasticOut), color(RED, 6), delay(0.5f), rotateTo(180, 5, swing)));
 		// actor.addAction(forever(sequence(scaleTo(2, 2, 0.5f), scaleTo(1, 1, 0.5f), delay(0.5f))));
 
-		patch = skin.getPatch("default-round");
+		patch = new TiledDrawable(skin.getRegion("default-round"));
 
 		Window window = new Window("Moo", skin);
 		Label lbl = new Label("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJ", skin);
@@ -152,7 +152,7 @@ public class Scene2dTest extends GdxTest {
 		Table.drawDebug(stage);
 
 		stage.getSpriteBatch().begin();
-		patch.draw(stage.getSpriteBatch(), 300, 100, 50, 50);
+		patch.draw(stage.getSpriteBatch(), 300, 100, 126, 126);
 		stage.getSpriteBatch().end();
 	}
 

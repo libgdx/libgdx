@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -167,6 +168,10 @@ public class Skin implements Disposable {
 		region = new TextureRegion(texture);
 		add(name, region, Texture.class);
 		return region;
+	}
+
+	public TiledDrawable getTiledDrawable (String name) {
+		return new TiledDrawable(getRegion(name));
 	}
 
 	/** Returns a registered ninepatch. If no ninepatch is found but a region exists with the name, the region is returned as a

@@ -101,14 +101,8 @@ public class TextButton extends Button {
 		public TextButtonStyle () {
 		}
 
-		public TextButtonStyle (Drawable down, Drawable up, Drawable checked, float pressedOffsetX, float pressedOffsetY,
-			float unpressedOffsetX, float unpressedOffsetY, BitmapFont font, Color fontColor, Color downFontColor,
-			Color checkedFontColor) {
-			super(up, down, checked, pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY);
-			this.font = font;
-			this.fontColor = fontColor;
-			this.downFontColor = downFontColor;
-			this.checkedFontColor = checkedFontColor;
+		public TextButtonStyle (Drawable down, Drawable up, Drawable checked) {
+			super(up, down, checked);
 		}
 
 		public TextButtonStyle (TextButtonStyle style) {

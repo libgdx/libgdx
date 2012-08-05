@@ -88,15 +88,15 @@ public class Button extends Table {
 	}
 
 	public Button (Drawable up) {
-		this(new ButtonStyle(up, null, null, 0f, 0f, 0f, 0f));
+		this(new ButtonStyle(up, null, null));
 	}
 
 	public Button (Drawable up, Drawable down) {
-		this(new ButtonStyle(up, down, null, 0f, 0f, 0f, 0f));
+		this(new ButtonStyle(up, down, null));
 	}
 
 	public Button (Drawable up, Drawable down, Drawable checked) {
-		this(new ButtonStyle(up, down, checked, 0f, 0f, 0f, 0f));
+		this(new ButtonStyle(up, down, checked));
 	}
 
 	public Button (Actor child, Skin skin) {
@@ -173,10 +173,12 @@ public class Button extends Table {
 		} else {
 			if (isDisabled && style.disabled != null)
 				background = style.disabled;
-			else if (style.checked == null)
-				background = style.up;
+			else if (isChecked && style.checked != null)
+				background = style.checked;
+			else if (clickListener.isOver() && style.over != null)
+				background = style.over;
 			else
-				background = isChecked ? style.checked : style.up;
+				background = style.up;
 			offsetX = style.unpressedOffsetX;
 			offsetY = style.unpressedOffsetY;
 		}
@@ -226,7 +228,7 @@ public class Button extends Table {
 	 * @author mzechner */
 	static public class ButtonStyle {
 		/** Optional. */
-		public Drawable down, up, checked, disabled;
+		public Drawable down, up, checked, over, disabled;
 		/** Optional. */
 		public float pressedOffsetX, pressedOffsetY;
 		/** Optional. */
@@ -235,21 +237,18 @@ public class Button extends Table {
 		public ButtonStyle () {
 		}
 
-		public ButtonStyle (Drawable up, Drawable down, Drawable checked, float pressedOffsetX, float pressedOffsetY,
-			float unpressedOffsetX, float unpressedOffsetY) {
+		public ButtonStyle (Drawable up, Drawable down, Drawable checked) {
 			this.down = down;
 			this.up = up;
 			this.checked = checked;
-			this.pressedOffsetX = pressedOffsetX;
-			this.pressedOffsetY = pressedOffsetY;
-			this.unpressedOffsetX = unpressedOffsetX;
-			this.unpressedOffsetY = unpressedOffsetY;
 		}
 
 		public ButtonStyle (ButtonStyle style) {
 			this.down = style.down;
 			this.up = style.up;
 			this.checked = style.checked;
+			this.over = style.over;
+			this.disabled = style.disabled;
 			this.pressedOffsetX = style.pressedOffsetX;
 			this.pressedOffsetY = style.pressedOffsetY;
 			this.unpressedOffsetX = style.unpressedOffsetX;

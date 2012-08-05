@@ -64,8 +64,8 @@ public class Sprite extends TextureRegion {
 		this(texture, 0, 0, srcWidth, srcHeight);
 	}
 
-	/** Creates a sprite with width, height, and texture region equal to the specified size. * @param srcWidth The width of the
-	 * texture region. May be negative to flip the sprite when drawn.
+	/** Creates a sprite with width, height, and texture region equal to the specified size.
+	 * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
 	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn. */
 	public Sprite (Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
 		if (texture == null) throw new IllegalArgumentException("texture cannot be null.");
@@ -80,7 +80,7 @@ public class Sprite extends TextureRegion {
 	public Sprite (TextureRegion region) {
 		setRegion(region);
 		setColor(1, 1, 1, 1);
-		setSize(Math.abs(region.getRegionWidth()), Math.abs(region.getRegionHeight()));
+		setSize(region.getRegionWidth(), region.getRegionHeight());
 		setOrigin(width / 2, height / 2);
 	}
 

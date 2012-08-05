@@ -28,6 +28,7 @@ public class PressedListener extends InputListener {
 	private float tapSquareSize = 14, touchDownX = -1, touchDownY = -1;
 	private boolean pressed;
 	private int button;
+	private boolean over;
 
 	public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 		if (pointer > 0 || button != this.button) return false;
@@ -60,8 +61,20 @@ public class PressedListener extends InputListener {
 		if (pointer == 0 && pressed) pressed = false;
 	}
 
+	public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
+		over = true;
+	}
+
+	public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
+		over = false;
+	}
+
 	public boolean isPressed () {
 		return pressed;
+	}
+
+	public boolean isOver () {
+		return over;
 	}
 
 	public void setTapSquareSize (float halfTapSquareSize) {

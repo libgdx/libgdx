@@ -24,7 +24,7 @@ public class PolygonSprite {
 	public PolygonSprite (PolygonRegion region) {
 		setRegion(region);
 		setColor(1, 1, 1, 1);
-		setSize(Math.abs(region.getRegion().getRegionWidth()), Math.abs(region.getRegion().getRegionHeight()));
+		setSize(region.getRegion().getRegionWidth(), region.getRegion().getRegionHeight());
 		setOrigin(width / 2, height / 2);
 	}
 

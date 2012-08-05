@@ -49,15 +49,15 @@ public class ImageButton extends Button {
 	}
 
 	public ImageButton (Drawable imageUp) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, imageUp, null, null));
+		this(new ImageButtonStyle(null, null, null, imageUp, null, null));
 	}
 
 	public ImageButton (Drawable imageUp, Drawable imageDown) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, imageUp, imageDown, null));
+		this(new ImageButtonStyle(null, null, null, imageUp, imageDown, null));
 	}
 
 	public ImageButton (Drawable imageUp, Drawable imageDown, Drawable imageChecked) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, imageUp, imageDown, imageChecked));
+		this(new ImageButtonStyle(null, null, null, imageUp, imageDown, imageChecked));
 	}
 
 	public void setStyle (ButtonStyle style) {
@@ -102,9 +102,9 @@ public class ImageButton extends Button {
 		public ImageButtonStyle () {
 		}
 
-		public ImageButtonStyle (Drawable down, Drawable up, Drawable checked, float pressedOffsetX, float pressedOffsetY,
-			float unpressedOffsetX, float unpressedOffsetY, Drawable imageUp, Drawable imageDown, Drawable imageChecked) {
-			super(down, up, checked, pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY);
+		public ImageButtonStyle (Drawable down, Drawable up, Drawable checked, Drawable imageDown, Drawable imageUp,
+			Drawable imageChecked) {
+			super(down, up, checked);
 			this.imageUp = imageUp;
 			this.imageDown = imageDown;
 			this.imageChecked = imageChecked;
@@ -116,7 +116,7 @@ public class ImageButton extends Button {
 			this.imageDown = style.imageDown;
 			this.imageChecked = style.imageChecked;
 		}
-		
+
 		public ImageButtonStyle (ButtonStyle style) {
 			super(style);
 		}

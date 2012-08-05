@@ -208,7 +208,7 @@ public class TextField extends Widget {
 				}
 				return false;
 			}
-			
+
 			public boolean keyUp (InputEvent event, int keycode) {
 				return true;
 			}
@@ -649,12 +649,10 @@ public class TextField extends Widget {
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class TextFieldStyle {
-		/** Optional. */
-		public Drawable background, cursor;
 		public BitmapFont font;
 		public Color fontColor;
 		/** Optional. */
-		public Drawable selection;
+		public Drawable background, cursor, selection;
 		/** Optional. */
 		public BitmapFont messageFont;
 		/** Optional. */
@@ -663,10 +661,7 @@ public class TextField extends Widget {
 		public TextFieldStyle () {
 		}
 
-		public TextFieldStyle (BitmapFont font, Color fontColor, BitmapFont messageFont, Color messageFontColor, Drawable cursor,
-			Drawable selection, Drawable background) {
-			this.messageFont = messageFont;
-			this.messageFontColor = messageFontColor;
+		public TextFieldStyle (BitmapFont font, Color fontColor, Drawable cursor, Drawable selection, Drawable background) {
 			this.background = background;
 			this.cursor = cursor;
 			this.font = font;
