@@ -87,7 +87,7 @@ public class Scene2dTest extends GdxTest {
 				return true;
 			}
 
-			public void fling (InputEvent event, float velocityX, float velocityY) {
+			public void fling (InputEvent event, float velocityX, float velocityY, int pointer, int button) {
 				System.out.println("fling " + velocityX + ", " + velocityY);
 			}
 

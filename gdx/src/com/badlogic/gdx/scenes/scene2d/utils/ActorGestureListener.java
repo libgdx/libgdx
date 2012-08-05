@@ -32,9 +32,9 @@ public class ActorGestureListener implements EventListener {
 		private final Vector2 initialPointer1 = new Vector2(), initialPointer2 = new Vector2();
 		private final Vector2 pointer1 = new Vector2(), pointer2 = new Vector2();
 
-		public boolean tap (float stageX, float stageY, int count) {
+		public boolean tap (float stageX, float stageY, int count, int pointer, int button) {
 			actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
-			ActorGestureListener.this.tap(event, Vector2.tmp.x, Vector2.tmp.y, count);
+			ActorGestureListener.this.tap(event, Vector2.tmp.x, Vector2.tmp.y, count, pointer, button);
 			return true;
 		}
 
@@ -43,8 +43,8 @@ public class ActorGestureListener implements EventListener {
 			return ActorGestureListener.this.longPress(actor, Vector2.tmp.x, Vector2.tmp.y);
 		}
 
-		public boolean fling (float velocityX, float velocityY) {
-			ActorGestureListener.this.fling(event, velocityX, velocityY);
+		public boolean fling (float velocityX, float velocityY, int pointer, int button) {
+			ActorGestureListener.this.fling(event, velocityX, velocityY, pointer, button);
 			return true;
 		}
 
@@ -107,7 +107,7 @@ public class ActorGestureListener implements EventListener {
 	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 	}
 
-	public void tap (InputEvent event, float x, float y, int count) {
+	public void tap (InputEvent event, float x, float y, int count, int pointer, int button) {
 	}
 
 	/** If true is returned, additional gestures will not be triggered. No event is provided because this event is triggered by time
@@ -116,7 +116,7 @@ public class ActorGestureListener implements EventListener {
 		return false;
 	}
 
-	public void fling (InputEvent event, float velocityX, float velocityY) {
+	public void fling (InputEvent event, float velocityX, float velocityY, int pointer, int button) {
 	}
 
 	/** The delta is the difference in stage coordinates since the last pan. */

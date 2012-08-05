@@ -171,7 +171,7 @@ public class ScrollPane extends WidgetGroup {
 				cancelTouchFocusedChild(event);
 			}
 
-			public void fling (InputEvent event, float x, float y) {
+			public void fling (InputEvent event, float x, float y, int pointer, int button) {
 				if (Math.abs(x) > 150) {
 					flingTimer = flingTime;
 					velocityX = x;
