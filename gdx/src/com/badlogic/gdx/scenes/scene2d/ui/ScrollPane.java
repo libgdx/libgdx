@@ -23,9 +23,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
@@ -54,6 +54,7 @@ public class ScrollPane extends WidgetGroup {
 	private final Rectangle widgetCullingArea = new Rectangle();
 	private final Rectangle scissorBounds = new Rectangle();
 	private ActorGestureListener gestureListener;
+	private InputListener scrollListener;
 
 	boolean scrollX, scrollY;
 	float amountX, amountY;
@@ -194,7 +195,7 @@ public class ScrollPane extends WidgetGroup {
 		};
 		addListener(gestureListener);
 
-		addListener(new InputListener() {
+		addListener(scrollListener = new InputListener() {
 			public boolean scrolled (InputEvent event, int amount) {
 				resetFade();
 				if (scrollY)
@@ -664,6 +665,14 @@ public class ScrollPane extends WidgetGroup {
 	public void setupFadeScrollBars (float fadeAlphaSeconds, float fadeDelaySeconds) {
 		this.fadeAlphaSeconds = fadeAlphaSeconds;
 		this.fadeDelaySeconds = fadeDelaySeconds;
+	}
+
+	/** If true (the default), the mouse wheel will scroll the scroll pane. */
+	public void setMouseWheelScroll (boolean enabled) {
+		if (enabled)
+			addListener(scrollListener);
+		else
+			removeListener(scrollListener);
 	}
 
 	/** The style for a scroll pane, see {@link ScrollPane}.
