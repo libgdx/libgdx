@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
@@ -146,9 +147,10 @@ public class Slider extends Widget {
 		return value;
 	}
 
+	/** Sets the slider position, rounded to the nearest step size and clamped to the minumum and maximim values. */
 	public void setValue (float value) {
 		if (value < min || value > max) throw new IllegalArgumentException("value must be >= min and <= max: " + value);
-		value = (float)Math.floor(value / steps) * steps;
+		value = MathUtils.clamp(Math.round(value / steps) * steps, min, max);
 		float oldValue = this.value;
 		if (value == oldValue) return;
 		this.value = value;
