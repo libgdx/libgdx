@@ -333,6 +333,16 @@ public class Actor {
 		this.height = height;
 	}
 
+	/** Returns y plus height. */
+	public float getTop () {
+		return getY() + getHeight();
+	}
+
+	/** Returns x plus width. */
+	public float getRight () {
+		return getX() + getWidth();
+	}
+
 	/** Sets the width and height. */
 	public void setSize (float width, float height) {
 		setWidth(width);

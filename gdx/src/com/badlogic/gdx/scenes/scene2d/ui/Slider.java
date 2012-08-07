@@ -143,11 +143,12 @@ public class Slider extends Widget {
 	}
 
 	public float getValue () {
-		return (float)Math.floor(value / steps) * steps;
+		return value;
 	}
 
 	public void setValue (float value) {
 		if (value < min || value > max) throw new IllegalArgumentException("value must be >= min and <= max: " + value);
+		value = (float)Math.floor(value / steps) * steps;
 		float oldValue = this.value;
 		if (value == oldValue) return;
 		this.value = value;
