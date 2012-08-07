@@ -75,7 +75,7 @@ public class ScrollPaneTest extends GdxTest {
 				}
 			});
 
-			Slider slider = new Slider(0, 100, 100, skin);
+			Slider slider = new Slider(0, 100, 100, false, skin);
 			slider.addListener(stopTouchDown); // Stops touchDown events from propagating to the FlickScrollPane.
 			table.add(slider);
 

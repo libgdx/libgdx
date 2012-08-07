@@ -27,8 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
 
-// BOZO - Add snapping to the knob.
-
 /** A slider is a horizontal indicator that allows a user to set a value. The slider his a range (min, max) and a stepping between
  * each value the slider represents.
  * <p>
@@ -43,14 +41,15 @@ public class Slider extends Widget {
 	private float min, max, steps;
 	private float value;
 	private float sliderPos;
-	boolean isDragging;
+	private boolean vertical;
+	boolean dragging;
 
-	public Slider (float min, float max, float steps, Skin skin) {
-		this(min, max, steps, skin.get(SliderStyle.class));
+	public Slider (float min, float max, float steps, boolean vertical, Skin skin) {
+		this(min, max, steps, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), SliderStyle.class));
 	}
 
-	public Slider (float min, float max, float steps, Skin skin, String styleName) {
-		this(min, max, steps, skin.get(styleName, SliderStyle.class));
+	public Slider (float min, float max, float steps, boolean vertical, Skin skin, String styleName) {
+		this(min, max, steps, vertical, skin.get(styleName, SliderStyle.class));
 	}
 
 	/** Creates a new slider. It's width is determined by the given prefWidth parameter, its height is determined by the maximum of
@@ -61,13 +60,14 @@ public class Slider extends Widget {
 	 * @param max the maximum value
 	 * @param steps the step size between values
 	 * @param style the {@link SliderStyle} */
-	public Slider (float min, float max, float steps, SliderStyle style) {
+	public Slider (float min, float max, float steps, boolean vertical, SliderStyle style) {
 		if (min > max) throw new IllegalArgumentException("min must be > max: " + min + " > " + max);
 		if (steps < 0) throw new IllegalArgumentException("steps must be > 0: " + steps);
 		setStyle(style);
 		this.min = min;
 		this.max = max;
 		this.steps = steps;
+		this.vertical = vertical;
 		this.value = min;
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
@@ -75,18 +75,18 @@ public class Slider extends Widget {
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0) return false;
-				isDragging = true;
-				calculatePositionAndValue(x);
+				dragging = true;
+				calculatePositionAndValue(x, y);
 				return true;
 			}
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				isDragging = false;
-				calculatePositionAndValue(x);
+				dragging = false;
+				calculatePositionAndValue(x, y);
 			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-				calculatePositionAndValue(x);
+				calculatePositionAndValue(x, y);
 			}
 		});
 	}
@@ -115,32 +115,53 @@ public class Slider extends Widget {
 		float height = getHeight();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		sliderPos = (value - min) / (max - min) * (width - knob.getMinWidth());
-		sliderPos = Math.max(0, sliderPos);
-		sliderPos = Math.min(width - knob.getMinWidth(), sliderPos);
 
-		slider.draw(batch, x, y + (int)((height - slider.getMinHeight()) * 0.5f), width, slider.getMinHeight());
-		knob.draw(batch, x + sliderPos, y + (int)((height - knob.getMinHeight()) * 0.5f), knob.getMinWidth(), knob.getMinHeight());
+		if (vertical) {
+			sliderPos = (value - min) / (max - min) * (height - knob.getMinHeight());
+			sliderPos = Math.max(0, sliderPos);
+			sliderPos = Math.min(height - knob.getMinHeight(), sliderPos);
+
+			slider.draw(batch, x + (int)((width - slider.getMinWidth()) * 0.5f), y, slider.getMinWidth(), height);
+			knob.draw(batch, x + (int)((width - knob.getMinWidth()) * 0.5f), y + sliderPos, knob.getMinWidth(), knob.getMinHeight());
+		} else {
+			sliderPos = (value - min) / (max - min) * (width - knob.getMinWidth());
+			sliderPos = Math.max(0, sliderPos);
+			sliderPos = Math.min(width - knob.getMinWidth(), sliderPos);
+
+			slider.draw(batch, x, y + (int)((height - slider.getMinHeight()) * 0.5f), width, slider.getMinHeight());
+			knob.draw(batch, x + sliderPos, y + (int)((height - knob.getMinHeight()) * 0.5f), knob.getMinWidth(),
+				knob.getMinHeight());
+		}
 	}
 
-	void calculatePositionAndValue (float x) {
+	void calculatePositionAndValue (float x, float y) {
 		final Drawable knob = style.knob;
 
-		float width = getWidth();
-
+		float value;
 		float oldPosition = sliderPos;
+
+		if (vertical) {
+			float height = getHeight();
+			sliderPos = y - knob.getMinHeight() * 0.5f;
+			sliderPos = Math.max(0, sliderPos);
+			sliderPos = Math.min(height - knob.getMinHeight(), sliderPos);
+			value = min + (max - min) * (sliderPos / (height - knob.getMinHeight()));
+		} else {
+			float width = getWidth();
+			sliderPos = x - knob.getMinWidth() * 0.5f;
+			sliderPos = Math.max(0, sliderPos);
+			sliderPos = Math.min(width - knob.getMinWidth(), sliderPos);
+			value = min + (max - min) * (sliderPos / (width - knob.getMinWidth()));
+		}
+
 		float oldValue = value;
-		sliderPos = x - knob.getMinWidth() / 2;
-		sliderPos = Math.max(0, sliderPos);
-		sliderPos = Math.min(width - knob.getMinWidth(), sliderPos);
-		float value = min + (max - min) * (sliderPos / (width - knob.getMinWidth()));
 		setValue(value);
 		if (value == oldValue) sliderPos = oldPosition;
 	}
 
 	/** Returns true if the slider is being dragged. */
 	public boolean isDragging () {
-		return isDragging;
+		return dragging;
 	}
 
 	public float getValue () {
@@ -168,20 +189,34 @@ public class Slider extends Widget {
 	}
 
 	public float getPrefWidth () {
-		return 140;
+		if (vertical)
+			return Math.max(style.knob.getMinWidth(), style.background.getMinWidth());
+		else
+			return 140;
 	}
 
 	public float getPrefHeight () {
-		return Math.max(style.knob.getMinHeight(), style.background.getMinHeight());
+		if (vertical)
+			return 140;
+		else
+			return Math.max(style.knob.getMinHeight(), style.background.getMinHeight());
+	}
+
+	public float getMinValue () {
+		return this.min;
+	}
+
+	public float getMaxValue () {
+		return this.max;
 	}
 
 	/** The style for a slider, see {@link Slider}.
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class SliderStyle {
-		/** The slider background, stretched only in the x direction. */
+		/** The slider background, stretched only in one direction. */
 		public Drawable background;
-		/** Centered vertically on the background. */
+		/** Centered on the background. */
 		public Drawable knob;
 
 		public SliderStyle () {

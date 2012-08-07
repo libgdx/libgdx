@@ -95,7 +95,7 @@ public class UITest extends GdxTest {
 		Button imgToggleButton = new Button(new Image(image), skin, "toggle");
 
 		CheckBox checkBox = new CheckBox("Check me", skin);
-		final Slider slider = new Slider(0, 10, 1, skin);
+		final Slider slider = new Slider(0, 10, 1, false, skin);
 		TextField textfield = new TextField("", skin);
 		textfield.setMessageText("Click here!");
 		SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX"}, skin);

@@ -56,7 +56,7 @@ public class SplitPane extends WidgetGroup {
 	/** @param firstWidget May be null.
 	 * @param secondWidget May be null. */
 	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Skin skin) {
-		this(firstWidget, secondWidget, vertical, skin, "default-" + (vertical ? "verticle" : "horizontal"));
+		this(firstWidget, secondWidget, vertical, skin, "default-" + (vertical ? "vertical" : "horizontal"));
 	}
 
 	/** @param firstWidget May be null.

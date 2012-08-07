@@ -49,14 +49,14 @@ public class SoundTest extends GdxTest {
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		TextButton play = new TextButton("Play", skin);
 		TextButton stop = new TextButton("Stop", skin);
-		final Slider pitch = new Slider(0.1f, 4, 0.1f, skin);
+		final Slider pitch = new Slider(0.1f, 4, 0.1f, false, skin);
 		pitch.setValue(1);
 		final Label pitchValue = new Label("1.0", skin);
-		final Slider volume = new Slider(0.1f, 1, 0.1f, skin);
+		final Slider volume = new Slider(0.1f, 1, 0.1f, false, skin);
 		volume.setValue(1);
 		final Label volumeValue = new Label("1.0", skin);
 		Table table = new Table();
-		final Slider pan = new Slider(-1f, 1f, 0.1f, skin);
+		final Slider pan = new Slider(-1f, 1f, 0.1f, false, skin);
 		pan.setValue(0);
 		final Label panValue = new Label("0.0", skin);
 		table.setFillParent(true);
