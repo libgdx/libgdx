@@ -349,8 +349,8 @@ public class ScrollPane extends WidgetGroup {
 		// Set the widget area bounds.
 		widgetAreaBounds.set(bgLeftWidth, bgBottomHeight, areaWidth, areaHeight);
 
-		// Make sure widgets are drawn under fading scrollbars.
 		if (fade) {
+			// Make sure widgets are drawn under fading scrollbars.
 			if (scrollX && hScrollKnob != null) areaHeight -= hScrollKnob.getMinHeight();
 			if (scrollY && vScrollKnob != null) areaWidth -= vScrollKnob.getMinWidth();
 		} else {
@@ -368,6 +368,11 @@ public class ScrollPane extends WidgetGroup {
 
 		maxX = widgetWidth - areaWidth;
 		maxY = widgetHeight - areaHeight;
+		// Make sure widgets are drawn under fading scrollbars.
+		if (fade) {
+			if (scrollX && hScrollKnob != null) maxY -= hScrollKnob.getMinHeight();
+			if (scrollY && vScrollKnob != null) maxX -= vScrollKnob.getMinWidth();
+		}
 		amountX = MathUtils.clamp(amountX, 0, maxX);
 		amountY = MathUtils.clamp(amountY, 0, maxY);
 
@@ -554,6 +559,7 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void setFlickScroll (boolean flickScroll) {
+		if (this.flickScroll == flickScroll) return;
 		this.flickScroll = flickScroll;
 		if (flickScroll)
 			addListener(gestureListener);
@@ -657,8 +663,10 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void setFadeScrollBars (boolean fadeScrollBars) {
+		if (this.fadeScrollBars == fadeScrollBars) return;
 		this.fadeScrollBars = fadeScrollBars;
 		if (!fadeScrollBars) fadeAlpha = 1;
+		invalidate();
 	}
 
 	public void setupFadeScrollBars (float fadeAlphaSeconds, float fadeDelaySeconds) {

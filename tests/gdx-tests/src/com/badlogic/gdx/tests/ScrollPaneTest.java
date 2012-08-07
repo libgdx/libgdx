@@ -49,9 +49,9 @@ public class ScrollPaneTest extends GdxTest {
 		container = new Table();
 		stage.addActor(container);
 		container.setFillParent(true);
-		// container.getTableLayout().debug();
 
 		Table table = new Table();
+		// table.debug();
 
 		final ScrollPane scroll = new ScrollPane(table, skin);
 
@@ -82,17 +82,27 @@ public class ScrollPaneTest extends GdxTest {
 			table.add(new Label(i + "tres long0 long1 long2 long3 long4 long5 long6 long7 long8 long9 long10 long11 long12", skin));
 		}
 
-		final TextButton flickBbutton = new TextButton("Flick Scroll", skin.get("toggle", TextButtonStyle.class));
-		flickBbutton.setChecked(true);
-		flickBbutton.addListener(new ChangeListener() {
+		final TextButton flickButton = new TextButton("Flick Scroll", skin.get("toggle", TextButtonStyle.class));
+		flickButton.setChecked(true);
+		flickButton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				scroll.setFlickScroll(flickBbutton.isChecked());
+				scroll.setFlickScroll(flickButton.isChecked());
+			}
+		});
+		
+		final TextButton fadeButton = new TextButton("Fade Scrollbars", skin.get("toggle", TextButtonStyle.class));
+		fadeButton.setChecked(true);
+		fadeButton.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				scroll.setFadeScrollBars(fadeButton.isChecked());
 			}
 		});
 
-		container.add(scroll).expand().fill();
-		container.row();
-		container.add(flickBbutton).pad(10);
+		container.debug();
+		container.add(scroll).expand().fill().colspan(2);
+		container.row().space(10).padBottom(10);
+		container.add(flickButton).right();
+		container.add(fadeButton).left();
 	}
 
 	public void render () {

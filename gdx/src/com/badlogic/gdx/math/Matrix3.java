@@ -19,6 +19,7 @@ package com.badlogic.gdx.math;
 import java.io.Serializable;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StringBuilder;
 
 /** A 3x3 column major matrix for 2D transforms.
  * 
@@ -157,8 +158,14 @@ public class Matrix3 implements Serializable {
 	}
 
 	public String toString () {
-		return "[" + val[0] + "|" + val[3] + "|" + val[6] + "]\n" + "[" + val[1] + "|" + val[4] + "|" + val[7] + "]\n" + "["
-			+ val[2] + "|" + val[5] + "|" + val[8] + "]";
+		String[] values = {Float.toString(val[M00]), Float.toString(val[M01]), Float.toString(val[M02]), Float.toString(val[M10]),
+			Float.toString(val[M11]), Float.toString(val[M12]), Float.toString(val[M20]), Float.toString(val[M21]),
+			Float.toString(val[M22])};
+		int max1 = Math.max(values[0].length(), Math.max(values[3].length(), values[6].length()));
+		int max2 = Math.max(values[1].length(), Math.max(values[4].length(), values[7].length()));
+		int max3 = Math.max(values[2].length(), Math.max(values[5].length(), values[8].length()));
+		return String.format("%" + max1 + "s, %" + max2 + "s, %" + max3 + "s\n%" + max1 + "s, %" + max2 + "s, %" + max3 + "s\n%"
+			+ max1 + "s, %" + max2 + "s, %" + max3 + "s", (Object[])values);
 	}
 
 	/** @return the determinant of this matrix */
