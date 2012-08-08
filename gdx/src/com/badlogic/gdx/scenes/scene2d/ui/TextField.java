@@ -374,8 +374,8 @@ public class TextField extends Widget {
 		Stage stage = getStage();
 		boolean focused = stage != null && stage.getKeyboardFocus() == this;
 		if (focused && hasSelection && selection != null) {
-			selection.draw(batch, x + selectionX + bgLeftWidth + renderOffset,
-				y + textY - textBounds.height - font.getDescent() / 2, selectionWidth, textBounds.height);
+			selection.draw(batch, x + selectionX + bgLeftWidth + renderOffset, y + textY - textBounds.height - font.getDescent(),
+				selectionWidth, textBounds.height + font.getDescent() / 2);
 		}
 
 		if (displayText.length() == 0) {
