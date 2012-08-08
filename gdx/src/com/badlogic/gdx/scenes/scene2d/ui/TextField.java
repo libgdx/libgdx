@@ -115,18 +115,29 @@ public class TextField extends Widget {
 				if (stage != null) stage.setKeyboardFocus(TextField.this);
 				keyboard.show(true);
 				clearSelection();
+				setCursorPosition(x);
+				selectionStart = cursor;
+				return true;
+			}
+
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				lastBlink = 0;
 				cursorOn = false;
-				x = x - renderOffset;
+				setCursorPosition(x);
+				hasSelection = true;
+			}
+
+			private void setCursorPosition (float x) {
+				lastBlink = 0;
+				cursorOn = false;
+				x -= renderOffset;
 				for (int i = 0; i < glyphPositions.size; i++) {
-					float pos = glyphPositions.items[i];
-					if (pos > x) {
+					if (glyphPositions.items[i] > x) {
 						cursor = Math.max(0, i - 1);
-						return true;
+						return;
 					}
 				}
 				cursor = Math.max(0, glyphPositions.size - 1);
-				return true;
 			}
 
 			public boolean keyDown (InputEvent event, int keycode) {
