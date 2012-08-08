@@ -17,12 +17,10 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 /** An {@link Actor} that participates in layout and provides a minimum, preferred, and maximum size.
  * <p>
@@ -37,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 public abstract class Widget extends Actor implements Layout {
 	private boolean needsLayout = true;
 	private boolean fillParent;
+	private boolean layoutEnabled = true;
 
 	public float getMinWidth () {
 		return getPrefWidth();
@@ -62,11 +61,12 @@ public abstract class Widget extends Actor implements Layout {
 		return 0;
 	}
 
-	public void invalidate () {
-		needsLayout = true;
+	public void setLayoutEnabled (boolean enabled) {
+		layoutEnabled = enabled;
 	}
 
 	public void validate () {
+		if (!layoutEnabled) return;
 		Group parent = getParent();
 		if (fillParent && parent != null) {
 			float parentWidth, parentHeight;
@@ -93,6 +93,10 @@ public abstract class Widget extends Actor implements Layout {
 	/** Returns true if the widget's layout has been {@link #invalidate() invalidated}. */
 	public boolean needsLayout () {
 		return needsLayout;
+	}
+
+	public void invalidate () {
+		needsLayout = true;
 	}
 
 	public void invalidateHierarchy () {

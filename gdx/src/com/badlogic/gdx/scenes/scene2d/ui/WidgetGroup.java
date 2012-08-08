@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 /** A {@link Group} that participates in layout and provides a minimum, preferred, and maximum size.
  * <p>
@@ -33,6 +36,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 public abstract class WidgetGroup extends Group implements Layout {
 	private boolean needsLayout = true;
 	private boolean fillParent;
+	private boolean layoutEnabled = true;
 
 	public float getMinWidth () {
 		return getPrefWidth();
@@ -50,8 +54,20 @@ public abstract class WidgetGroup extends Group implements Layout {
 		return 0;
 	}
 
-	public void invalidate () {
-		needsLayout = true;
+	public void setLayoutEnabled (boolean enabled) {
+		layoutEnabled = enabled;
+		setLayoutEnabled(this, enabled);
+	}
+
+	private void setLayoutEnabled (Group parent, boolean enabled) {
+		SnapshotArray<Actor> children = getChildren();
+		for (int i = 0, n = children.size; i < n; i++) {
+			Actor actor = children.get(i);
+			if (actor instanceof Layout)
+				((Layout)actor).setLayoutEnabled(enabled);
+			else if (actor instanceof Group) //
+				setLayoutEnabled((Group)actor, enabled);
+		}
 	}
 
 	public void validate () {
@@ -82,6 +98,10 @@ public abstract class WidgetGroup extends Group implements Layout {
 	/** Returns true if the widget's layout has been {@link #invalidate() invalidated}. */
 	public boolean needsLayout () {
 		return needsLayout;
+	}
+
+	public void invalidate () {
+		needsLayout = true;
 	}
 
 	public void invalidateHierarchy () {

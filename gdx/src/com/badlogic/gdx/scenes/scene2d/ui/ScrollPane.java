@@ -23,9 +23,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
@@ -495,9 +495,8 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	/** Sets the {@link Actor} embedded in this scroll pane.
-	 * @param widget the Actor */
+	 * @param widget May be null to remove any current actor. */
 	public void setWidget (Actor widget) {
-		if (widget == null) throw new IllegalArgumentException("widget cannot be null.");
 		if (this.widget != null) super.removeActor(this.widget);
 		this.widget = widget;
 		if (widget != null) super.addActor(widget);
@@ -516,7 +515,9 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public boolean removeActor (Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget(null).");
+		if (actor != widget) return false;
+		setWidget(null);
+		return true;
 	}
 
 	public Actor hit (float x, float y) {

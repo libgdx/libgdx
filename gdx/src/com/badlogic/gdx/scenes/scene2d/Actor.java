@@ -172,7 +172,8 @@ public class Actor {
 		return touchable == Touchable.enabled && x >= 0 && x < width && y >= 0 && y < height ? this : null;
 	}
 
-	/** Removes this actor from its parent, if it has a parent. */
+	/** Removes this actor from its parent, if it has a parent.
+	 * @see Group#removeActor(Actor) */
 	public boolean remove () {
 		if (parent != null) return parent.removeActor(this);
 		return false;

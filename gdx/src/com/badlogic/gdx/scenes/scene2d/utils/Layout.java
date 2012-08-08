@@ -56,6 +56,10 @@ public interface Layout {
 	 * to the stage. */
 	public void setFillParent (boolean fillParent);
 
+	/** Enables or disables the layout for this actor and all child actors, recursively. When false, {@link #validate()} will not
+	 * cause a layout to occur. This is useful when an actor will be manipulated externally, such as with actions. Default is true. */
+	public void setLayoutEnabled (boolean enabled);
+
 	public float getMinWidth ();
 
 	public float getMinHeight ();

@@ -299,7 +299,7 @@ public class Group extends Actor implements Cullable {
 	}
 
 	/** Returns an ordered list of child actors in this group. */
-	public Array<Actor> getChildren () {
+	public SnapshotArray<Actor> getChildren () {
 		return children;
 	}
 
