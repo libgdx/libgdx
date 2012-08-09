@@ -236,10 +236,6 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	}
 
 	@Override
-	public void setIcon(Pixmap[] pixmaps) {
-	}
-
-	@Override
 	public void setVSync(boolean vsync) {
 	}
 

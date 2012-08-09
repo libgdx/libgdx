@@ -272,11 +272,6 @@ public class GwtGraphics implements Graphics {
 	}
 
 	@Override
-	public void setIcon (Pixmap[] pixmaps) {
-		throw new GdxRuntimeException("No supported");
-	}
-
-	@Override
 	public void setContinuousRendering (boolean isContinuous) {
 		throw new GdxRuntimeException("No supported");
 	}
