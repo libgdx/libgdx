@@ -199,11 +199,6 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	}
 
 	@Override
-	public void setIcon (Pixmap[] pixmap) {
-
-	}
-
-	@Override
 	public DisplayMode getDesktopDisplayMode () {
 		return desktopMode;
 	}

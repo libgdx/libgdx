@@ -179,7 +179,6 @@ public class LwjglGraphics implements Graphics {
 
 		if (config.x != -1 && config.y != -1) Display.setLocation(config.x, config.y);
 		createDisplayPixelFormat();
-		if (config.x != -1 && config.y != -1) Display.setLocation(config.x, config.y);
 		config.x = Display.getX();
 		config.y = Display.getY();
 		initiateGLInstances();
@@ -397,14 +396,6 @@ public class LwjglGraphics implements Graphics {
 	@Override
 	public void setTitle (String title) {
 		Display.setTitle(title);
-	}
-
-	@Override
-	public void setIcon (Pixmap[] pixmap) {
-		ByteBuffer[] buffers = new ByteBuffer[pixmap.length];
-		for (int i = 0; i < buffers.length; i++)
-			buffers[i] = pixmap[i].getPixels().duplicate();
-		Display.setIcon(buffers);
 	}
 
 	@Override

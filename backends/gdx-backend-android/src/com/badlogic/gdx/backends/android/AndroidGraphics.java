@@ -573,11 +573,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	}
 
-	@Override
-	public void setIcon (Pixmap[] pixmap) {
-
-	}
-
 	private class AndroidDisplayMode extends DisplayMode {
 		protected AndroidDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
 			super(width, height, refreshRate, bitsPerPixel);
