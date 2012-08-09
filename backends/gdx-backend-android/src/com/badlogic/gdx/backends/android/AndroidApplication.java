@@ -99,7 +99,7 @@ public class AndroidApplication extends Activity implements Application {
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = new AndroidInput(this, graphics.view, config);
-		audio = new AndroidAudio(this);
+		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		this.listener = listener;
 		this.handler = new Handler();
@@ -169,7 +169,7 @@ public class AndroidApplication extends Activity implements Application {
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = new AndroidInput(this, graphics.view, config);
-		audio = new AndroidAudio(this);
+		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		this.listener = listener;
 		this.handler = new Handler();
