@@ -66,12 +66,18 @@ public class TextButton extends Button {
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		if (isPressed()) {
-			if (style.downFontColor != null) label.setColor(style.downFontColor);
-		} else {
-			if (style.fontColor != null)
-				label.setColor((isChecked && style.checkedFontColor != null) ? style.checkedFontColor : style.fontColor);
-		}
+		Color fontColor;
+		if (isDisabled && style.disabledFontColor != null)
+			fontColor = style.disabledFontColor;
+		else if (isPressed() && style.downFontColor != null)
+			fontColor = style.downFontColor;
+		else if (isChecked && style.checkedFontColor != null)
+			fontColor = style.checkedFontColor;
+		else if (isOver() && style.overFontColor != null)
+			fontColor = style.overFontColor;
+		else
+			fontColor = style.fontColor;
+		if (fontColor != null) label.setColor(fontColor);
 		super.draw(batch, parentAlpha);
 	}
 
@@ -96,7 +102,7 @@ public class TextButton extends Button {
 	static public class TextButtonStyle extends ButtonStyle {
 		public BitmapFont font;
 		/** Optional. */
-		public Color fontColor, downFontColor, checkedFontColor;
+		public Color downFontColor, fontColor, checkedFontColor, overFontColor, disabledFontColor;
 
 		public TextButtonStyle () {
 		}
@@ -108,9 +114,11 @@ public class TextButton extends Button {
 		public TextButtonStyle (TextButtonStyle style) {
 			super(style);
 			this.font = style.font;
-			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
 			if (style.downFontColor != null) this.downFontColor = new Color(style.downFontColor);
+			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
 			if (style.checkedFontColor != null) this.checkedFontColor = new Color(style.checkedFontColor);
+			if (style.overFontColor != null) this.overFontColor = new Color(style.overFontColor);
+			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
 		}
 	}
 }

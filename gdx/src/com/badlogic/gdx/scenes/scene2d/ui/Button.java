@@ -128,6 +128,10 @@ public class Button extends Table {
 		return clickListener.isPressed();
 	}
 
+	public boolean isOver () {
+		return clickListener.isOver();
+	}
+
 	public boolean isDisabled () {
 		return isDisabled;
 	}

@@ -17,6 +17,7 @@
 package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
+import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
@@ -49,7 +50,7 @@ abstract public class Action implements Poolable {
 	 * <p>
 	 * This method is not typically a good place for a subclass to query the actor's state because the action may not be executed
 	 * for some time, eg it may be {@link DelayAction delayed}. The actor's state is best queried in the first call to
-	 * {@link #act(float)}. For a TimedAction, use TimedAction#initialize(). */
+	 * {@link #act(float)}. For a {@link TemporalAction}, use TemporalAction#initialize(). */
 	public void setActor (Actor actor) {
 		this.actor = actor;
 		if (actor == null) {
