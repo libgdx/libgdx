@@ -1,1 +1,0 @@
-You are in a tank which has 25 bombs. Your goal is to hit 25 times a mobile target. The game ends when all your bombs are shot. If your tank hits the target, you lose 5 bombs. Use 2 4 6 and 8 to move. This game uses the original CHIP8 keyboard, so directions 2 and 8 are swapped.

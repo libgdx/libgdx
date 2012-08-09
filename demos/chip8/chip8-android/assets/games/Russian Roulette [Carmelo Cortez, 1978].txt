@@ -1,4 +1,0 @@
-Russian Roulette , by: Carmelo Cortez
-
-This game is called Russian RouLette. Press any key to Spin and pull the Trigger.  
-A "Click" or "Bang" will show, get ten "clicks" in a row and you win.

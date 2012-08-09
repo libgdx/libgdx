@@ -1,3 +1,0 @@
-BRICK: a modified version of BRIX, a CHIP-8 game.
-Original BRIX by Andreas Gustafsson.
-This one is a solid wall; no air between bricks!

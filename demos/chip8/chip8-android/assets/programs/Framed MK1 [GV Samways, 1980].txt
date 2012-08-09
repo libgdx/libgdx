@@ -1,4 +1,0 @@
-Framed MK1, By: G.V. Samways, 1980
-
-This program displays a random movement of dots. You will notice a repetition in the pattern
-after a time.

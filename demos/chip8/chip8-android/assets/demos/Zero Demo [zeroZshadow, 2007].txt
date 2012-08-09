@@ -1,3 +1,0 @@
-This is my first program for the CHIP-8, a simple demo with 4 bouncing sprites.
-
-Enjoy!

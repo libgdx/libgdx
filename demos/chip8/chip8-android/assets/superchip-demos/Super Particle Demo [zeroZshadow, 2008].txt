@@ -1,6 +1,0 @@
-This is my particledemo for the Chip-8, SuperChip and MegaChip8.
-Works on real hardware as well as emulators
-
-Enjoy!
-
-  zeroZshadow

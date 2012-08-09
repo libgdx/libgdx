@@ -1,4 +1,0 @@
-Framed MK2, By: G.V. Samways, 1980
-
-This program displays a random movement of lines. You will notice a repetition in the pattern
-after a time.
