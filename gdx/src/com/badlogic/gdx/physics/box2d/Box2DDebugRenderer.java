@@ -36,9 +36,6 @@ public class Box2DDebugRenderer {
 	/** the immediate mode renderer to output our debug drawings **/
 	protected ShapeRenderer renderer;
 
-	/** a spritebatch and a font for text rendering **/
-	public SpriteBatch batch;
-
 	/** vertices for polygon rendering **/
 	private static Vector2[] vertices = new Vector2[1000];
 
@@ -57,9 +54,6 @@ public class Box2DDebugRenderer {
 	public Box2DDebugRenderer (boolean drawBodies, boolean drawJoints, boolean drawAABBs, boolean drawInactiveBodies) {
 		// next we setup the immediate mode renderer
 		renderer = new ShapeRenderer();
-
-		// next we create a SpriteBatch and a font
-		batch = new SpriteBatch();
 
 		lower = new Vector2();
 		upper = new Vector2();
@@ -344,6 +338,6 @@ public class Box2DDebugRenderer {
 	}
 
 	public void dispose () {
-		batch.dispose();
+		renderer.dispose();
 	}
 }
