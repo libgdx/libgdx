@@ -25,6 +25,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 
 	<!-- init task, creates all necessary directories -->
 	<target name="init" depends="clean">
+		<mkdir dir="${libs]" />
 		<mkdir dir="${target}" />
 		<mkdir dir="${target}/java" />
 		<!-- need to copy the internal font to target if compiling the gdx core :/ -->
