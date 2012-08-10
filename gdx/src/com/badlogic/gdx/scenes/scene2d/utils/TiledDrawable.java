@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -33,18 +34,31 @@ public class TiledDrawable extends TextureRegionDrawable {
 			}
 			x += regionWidth;
 		}
+		Texture texture = region.getTexture();
+		float u = region.getU();
+		float v2 = region.getV2();
 		if (remainingX > 0) {
+			// Right edge.
+			float u2 = u + remainingX / texture.getWidth();
+			float v = region.getV();
 			y = startY;
 			while (y < endY) {
-				batch.draw(region, x, y, remainingX, regionHeight);
+				batch.draw(texture, x, y, remainingX, regionHeight, u, v2, u2, v);
 				y += regionHeight;
 			}
-			if (remainingY > 0) batch.draw(region, x, y, remainingX, remainingY);
+			// Upper right corner.
+			if (remainingY > 0) {
+				v = v2 - remainingY / texture.getHeight();
+				batch.draw(texture, x, y, remainingX, remainingY, u, v2, u2, v);
+			}
 		}
 		if (remainingY > 0) {
+			// Top edge.
+			float u2 = region.getU2();
+			float v = v2 - remainingY / texture.getHeight();
 			x = startX;
 			while (x < endX) {
-				batch.draw(region, x, y, regionWidth, remainingY);
+				batch.draw(texture, x, y, regionWidth, remainingY, u, v2, u2, v);
 				x += regionWidth;
 			}
 		}

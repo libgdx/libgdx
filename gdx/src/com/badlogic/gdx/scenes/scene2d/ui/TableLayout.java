@@ -29,7 +29,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TableToolkit.DebugRect;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.tablelayout.BaseTableLayout;
-import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
 import com.esotericsoftware.tablelayout.Cell;
 import com.esotericsoftware.tablelayout.Toolkit;
 
@@ -38,6 +37,7 @@ import com.esotericsoftware.tablelayout.Toolkit;
 class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolkit> {
 	Array<DebugRect> debugRects;
 	private ImmediateModeRenderer debugRenderer;
+	boolean round = true;
 
 	public TableLayout () {
 		super((TableToolkit)Toolkit.instance);
@@ -51,12 +51,23 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 		super.layout(0, 0, width, height);
 
 		java.util.List<Cell> cells = getCells();
-		for (int i = 0, n = cells.size(); i < n; i++) {
-			Cell c = cells.get(i);
-			if (c.getIgnore()) continue;
-			Actor actor = (Actor)c.getWidget();
-			float widgetHeight = c.getWidgetHeight();
-			actor.setBounds(c.getWidgetX(), height - c.getWidgetY() - widgetHeight, c.getWidgetWidth(), widgetHeight);
+		if (round) {
+			for (int i = 0, n = cells.size(); i < n; i++) {
+				Cell c = cells.get(i);
+				if (c.getIgnore()) continue;
+				Actor actor = (Actor)c.getWidget();
+				float widgetHeight = Math.round(c.getWidgetHeight());
+				actor.setBounds(Math.round(c.getWidgetX()), height - Math.round(c.getWidgetY()) - widgetHeight,
+					Math.round(c.getWidgetWidth()), widgetHeight);
+			}
+		} else {
+			for (int i = 0, n = cells.size(); i < n; i++) {
+				Cell c = cells.get(i);
+				if (c.getIgnore()) continue;
+				Actor actor = (Actor)c.getWidget();
+				float widgetHeight = c.getWidgetHeight();
+				actor.setBounds(c.getWidgetX(), height - c.getWidgetY() - widgetHeight, c.getWidgetWidth(), widgetHeight);
+			}
 		}
 		Array<Actor> children = table.getChildren();
 		for (int i = 0, n = children.size; i < n; i++) {

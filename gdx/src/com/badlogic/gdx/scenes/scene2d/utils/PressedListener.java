@@ -59,11 +59,11 @@ public class PressedListener extends InputListener {
 	}
 
 	public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
-		over = true;
+		if (pointer == -1) over = true;
 	}
 
 	public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
-		over = false;
+		if (pointer == -1) over = false;
 	}
 
 	/** Returns true if the specified position is over the specified actor or within the tap square. */
@@ -81,7 +81,7 @@ public class PressedListener extends InputListener {
 	}
 
 	public boolean isOver () {
-		return over;
+		return over || pressed;
 	}
 
 	public void setTapSquareSize (float halfTapSquareSize) {

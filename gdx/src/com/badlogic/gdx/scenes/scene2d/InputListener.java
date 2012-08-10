@@ -88,13 +88,13 @@ public class InputListener implements EventListener {
 	}
 
 	/** Called any time the mouse cursor or a finger touch is moved over an actor. On the desktop, this event occurs even when no
-	 * mouse buttons are pressed.
+	 * mouse buttons are pressed (pointer will be -1).
 	 * @see InputEvent */
 	public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
 	}
 
 	/** Called any time the mouse cursor or a finger touch is moved out of an actor. On the desktop, this event occurs even when no
-	 * mouse buttons are pressed.
+	 * mouse buttons are pressed (pointer will be -1).
 	 * @see InputEvent */
 	public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
 	}
