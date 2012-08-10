@@ -35,7 +35,6 @@ public class Actions {
 		return action;
 	}
 
-	/** An action that adds the specified action to the specified actor. */
 	static public AddAction add (Actor targetActor, Action action) {
 		AddAction addAction = action(AddAction.class);
 		addAction.setTargetActor(targetActor);
@@ -400,7 +399,6 @@ public class Actions {
 		return action;
 	}
 
-	/** An action that adds the specified action to the specified actor. */
 	static public AfterAction after (Action action) {
 		AfterAction afterAction = action(AfterAction.class);
 		afterAction.setAction(action);
