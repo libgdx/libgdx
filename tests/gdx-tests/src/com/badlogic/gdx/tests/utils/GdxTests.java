@@ -96,7 +96,7 @@ public class GdxTests {
 			VertexBufferObjectShaderTest.class, VibratorTest.class,
 			VorbisTest.class, WaterRipples.class, HelloTriangle.class,
 			SimpleVertexShader.class, ShapeRendererTest.class,
-			MoveSpriteExample.class, StbTrueTypeTest.class, SoundTouchTest.class, Mpg123Test.class, WavTest.class,
+			MoveSpriteExample.class, SoundTouchTest.class, Mpg123Test.class, WavTest.class,
 			TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class,
 			SortedSpriteTest.class, ExternalMusicTest.class, SoftKeyboardTest.class, 
 			DirtyRenderingTest.class, FreeTypeTest.class, YDownTest.class, ScreenCaptureTest.class,

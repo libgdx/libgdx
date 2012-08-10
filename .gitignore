@@ -1,0 +1,6 @@
+gwt-servlet.jar
+target/
+gen/
+bin/
+*.class
+classes/
