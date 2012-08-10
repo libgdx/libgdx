@@ -84,22 +84,7 @@ public class Matrix4 implements Serializable {
 	 * @param values The matrix
 	 * @return This matrix for chaining */
 	public Matrix4 set (float[] values) {
-		val[M00] = values[M00];
-		val[M10] = values[M10];
-		val[M20] = values[M20];
-		val[M30] = values[M30];
-		val[M01] = values[M01];
-		val[M11] = values[M11];
-		val[M21] = values[M21];
-		val[M31] = values[M31];
-		val[M02] = values[M02];
-		val[M12] = values[M12];
-		val[M22] = values[M22];
-		val[M32] = values[M32];
-		val[M03] = values[M03];
-		val[M13] = values[M13];
-		val[M23] = values[M23];
-		val[M33] = values[M33];
+		System.arraycopy(values, 0, val, 0, val.length);
 		return this;
 	}
 
@@ -198,7 +183,8 @@ public class Matrix4 implements Serializable {
 		return val;
 	}
 
-	/** Multiplies this matrix with the given matrix, storing the result in this matrix.
+	/** (Pre-)Multiplies this matrix with the given matrix, storing the result in this matrix. E.g.
+	 * A.mul(B) results in A := BA.
 	 * 
 	 * @param matrix The other matrix
 	 * @return This matrix for chaining. */
