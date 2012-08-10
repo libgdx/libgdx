@@ -70,7 +70,7 @@ public class SelectBox extends Widget {
 
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (pointer != 0) return false;
+				if (pointer == 0 && button != 0) return false;
 				if (list != null && list.getParent() != null) {
 					hideList();
 					return true;
@@ -199,7 +199,7 @@ public class SelectBox extends Widget {
 
 		InputListener stageListener = new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (pointer != 0) return false;
+				if (pointer == 0 && button != 0) return false;
 				stageToLocalCoordinates(Vector2.tmp);
 				x = Vector2.tmp.x;
 				y = Vector2.tmp.y;

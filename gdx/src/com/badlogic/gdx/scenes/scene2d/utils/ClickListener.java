@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -23,7 +24,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
  * @author Nathan Sweet */
 abstract public class ClickListener extends PressedListener {
 	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-		if (pointer == 0 && button == getButton() && isOver(event.getListenerActor(), x, y)) clicked(event, x, y);
+		boolean validClick = isOver(event.getListenerActor(), x, y);
+		if (validClick && pointer == 0 && button != getButton()) validClick = false;
+		if (validClick) clicked(event, x, y);
 		super.touchUp(event, x, y, pointer, button);
 	}
 

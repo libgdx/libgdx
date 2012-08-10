@@ -42,7 +42,6 @@ public class SplitPane extends WidgetGroup {
 	boolean vertical;
 	float splitAmount = 0.5f, minAmount, maxAmount = 1;
 	private float oldSplitAmount;
-	boolean touchDrag;
 
 	private Rectangle firstWidgetBounds = new Rectangle();
 	private Rectangle secondWidgetBounds = new Rectangle();
@@ -81,10 +80,13 @@ public class SplitPane extends WidgetGroup {
 
 	private void initialize () {
 		addListener(new InputListener() {
+			int draggingPointer = -1;
+
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (pointer != 0) return false;
+				if (draggingPointer != -1) return false;
+				if (pointer == 0 && button != 0) return false;
 				if (handleBounds.contains(x, y)) {
-					touchDrag = true;
+					draggingPointer = pointer;
 					lastPoint.set(x, y);
 					handlePosition.set(handleBounds.x, handleBounds.y);
 					return true;
@@ -93,11 +95,11 @@ public class SplitPane extends WidgetGroup {
 			}
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				touchDrag = false;
+				if (pointer == draggingPointer) draggingPointer = -1;
 			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-				if (!touchDrag) return;
+				if (pointer != draggingPointer) return;
 
 				Drawable handle = style.handle;
 				if (!vertical) {

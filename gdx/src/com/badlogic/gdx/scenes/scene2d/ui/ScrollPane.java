@@ -102,11 +102,12 @@ public class ScrollPane extends WidgetGroup {
 
 		addCaptureListener(new InputListener() {
 			private float handlePosition;
+			private int draggingPointer = -1;
 
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				if (draggingPointer != -1) return false;
+				if (pointer == 0 && button != 0) return false;
 				getStage().setScrollFocus(ScrollPane.this);
-
-				if (pointer != 0) return false;
 				if (fadeAlpha == 0) return false;
 
 				if (scrollX && hScrollBounds.contains(x, y)) {
@@ -116,6 +117,7 @@ public class ScrollPane extends WidgetGroup {
 						lastPoint.set(x, y);
 						handlePosition = hKnobBounds.x;
 						touchScrollH = true;
+						draggingPointer = pointer;
 						return true;
 					}
 					setScrollX(amountX + Math.max(areaWidth * 0.9f, maxX * 0.1f) * (x < hKnobBounds.x ? -1 : 1));
@@ -128,6 +130,7 @@ public class ScrollPane extends WidgetGroup {
 						lastPoint.set(x, y);
 						handlePosition = vKnobBounds.y;
 						touchScrollV = true;
+						draggingPointer = pointer;
 						return true;
 					}
 					setScrollY(amountY + Math.max(areaHeight * 0.9f, maxY * 0.1f) * (y < vKnobBounds.y ? 1 : -1));
@@ -137,11 +140,14 @@ public class ScrollPane extends WidgetGroup {
 			}
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				if (pointer != draggingPointer) return;
+				draggingPointer = -1;
 				touchScrollH = false;
 				touchScrollV = false;
 			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
+				if (pointer != draggingPointer) return;
 				if (touchScrollH) {
 					float delta = x - lastPoint.x;
 					float scrollH = handlePosition + delta;

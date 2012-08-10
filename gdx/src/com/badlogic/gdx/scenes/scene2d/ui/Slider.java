@@ -42,7 +42,7 @@ public class Slider extends Widget {
 	private float value;
 	private float sliderPos;
 	private boolean vertical;
-	boolean dragging;
+	int draggingPointer = -1;
 
 	public Slider (float min, float max, float steps, boolean vertical, Skin skin) {
 		this(min, max, steps, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), SliderStyle.class));
@@ -74,14 +74,15 @@ public class Slider extends Widget {
 
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (pointer != 0) return false;
-				dragging = true;
+				if (draggingPointer != -1) return false;
+				draggingPointer = pointer;
 				calculatePositionAndValue(x, y);
 				return true;
 			}
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				dragging = false;
+				if (pointer != draggingPointer) return;
+				draggingPointer = -1;
 				calculatePositionAndValue(x, y);
 			}
 
@@ -161,7 +162,7 @@ public class Slider extends Widget {
 
 	/** Returns true if the slider is being dragged. */
 	public boolean isDragging () {
-		return dragging;
+		return draggingPointer != -1;
 	}
 
 	public float getValue () {

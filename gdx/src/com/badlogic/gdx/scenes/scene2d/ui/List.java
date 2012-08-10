@@ -61,7 +61,7 @@ public class List extends Widget implements Cullable {
 
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (pointer != 0) return false;
+				if (pointer == 0 && button != 0) return false;
 				List.this.touchDown(y);
 				return true;
 			}

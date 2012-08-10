@@ -110,7 +110,7 @@ public class TextField extends Widget {
 	private void initialize () {
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (pointer != 0) return false;
+				if (pointer == 0 && button != 0) return false;
 				Stage stage = getStage();
 				if (stage != null) stage.setKeyboardFocus(TextField.this);
 				keyboard.show(true);
