@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 
-
-/** An action that runs a Runnable. 
+/** An action that runs a {@link Runnable}. Alternatively, the {@link #run()} method can be overridden instead of setting a
+ * runnable.
  * @author Nathan Sweet */
 public class RunnableAction extends Action {
 	private Runnable runnable;
@@ -26,16 +27,21 @@ public class RunnableAction extends Action {
 
 	public boolean act (float delta) {
 		if (!ran) {
-			runnable.run();
+			run();
 			ran = true;
 		}
 		return true;
 	}
 
+	/** Called to run the runnable. */
+	public void run () {
+		runnable.run();
+	}
+
 	public void restart () {
 		ran = false;
 	}
-	
+
 	public void reset () {
 		super.reset();
 		runnable = null;
