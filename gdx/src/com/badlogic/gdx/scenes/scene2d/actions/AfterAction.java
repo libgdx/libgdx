@@ -22,6 +22,7 @@ public class AfterAction extends DelegateAction {
 
 	public boolean act (float delta) {
 		Array<Action> currentActions = actor.getActions();
+		if (currentActions.size == 1) waitForActions.clear();
 		for (int i = waitForActions.size - 1; i >= 0; i--) {
 			Action action = waitForActions.get(i);
 			int index = currentActions.indexOf(action, true);
