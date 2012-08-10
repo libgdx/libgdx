@@ -63,10 +63,12 @@ public abstract class Widget extends Actor implements Layout {
 
 	public void setLayoutEnabled (boolean enabled) {
 		layoutEnabled = enabled;
+		if (enabled) invalidateHierarchy();
 	}
 
 	public void validate () {
 		if (!layoutEnabled) return;
+
 		Group parent = getParent();
 		if (fillParent && parent != null) {
 			float parentWidth, parentHeight;
@@ -100,6 +102,7 @@ public abstract class Widget extends Actor implements Layout {
 	}
 
 	public void invalidateHierarchy () {
+		if (!layoutEnabled) return;
 		invalidate();
 		Group parent = getParent();
 		if (parent instanceof Layout) ((Layout)parent).invalidateHierarchy();

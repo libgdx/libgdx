@@ -57,6 +57,7 @@ public abstract class WidgetGroup extends Group implements Layout {
 	public void setLayoutEnabled (boolean enabled) {
 		layoutEnabled = enabled;
 		setLayoutEnabled(this, enabled);
+		if (enabled) invalidateHierarchy();
 	}
 
 	private void setLayoutEnabled (Group parent, boolean enabled) {
@@ -71,6 +72,7 @@ public abstract class WidgetGroup extends Group implements Layout {
 	}
 
 	public void validate () {
+		if (!layoutEnabled) return;
 		Group parent = getParent();
 		if (fillParent && parent != null) {
 			Stage stage = getStage();

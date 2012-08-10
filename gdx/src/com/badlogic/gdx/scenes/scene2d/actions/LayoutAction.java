@@ -18,36 +18,30 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** Base class for an action that wraps another action.
+/** Sets an actor's {@link Layout#setLayoutEnabled(boolean) layout} to enabled or disabled. The actor must implements
+ * {@link Layout}.
  * @author Nathan Sweet */
-abstract public class DelegateAction extends Action {
-	protected Action action;
-
-	/** Sets the wrapped action. */
-	public void setAction (Action action) {
-		this.action = action;
-	}
-
-	public Action getAction () {
-		return action;
-	}
-
-	public void restart () {
-		if (action != null) action.restart();
-	}
-
-	public void reset () {
-		super.reset();
-		action = null;
-	}
+public class LayoutAction extends Action {
+	private boolean enabled;
 
 	public void setActor (Actor actor) {
-		if (action != null) action.setActor(actor);
+		if (actor != null && !(actor instanceof Layout)) throw new GdxRuntimeException("Actor must implement layout: " + actor);
 		super.setActor(actor);
 	}
 
-	public String toString () {
-		return super.toString() + (action == null ? "" : "(" + action + ")");
+	public boolean act (float delta) {
+		((Layout)actor).setLayoutEnabled(enabled);
+		return true;
+	}
+
+	public boolean isEnabled () {
+		return enabled;
+	}
+
+	public void setLayoutEnabled (boolean enabled) {
+		this.enabled = enabled;
 	}
 }

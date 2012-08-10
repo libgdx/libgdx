@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -124,7 +125,9 @@ public class Tree extends WidgetGroup {
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		batch.setColor(getColor());
+		Color color = getColor();
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		if (style.background != null) style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		draw(batch, rootNodes, iconSpacing);
 		super.draw(batch, parentAlpha);
 	}
@@ -252,7 +255,7 @@ public class Tree extends WidgetGroup {
 	static public class TreeStyle {
 		public Drawable plus, minus;
 		/** Optional. */
-		public Drawable selection;
+		public Drawable selection, background;
 
 		public TreeStyle () {
 		}

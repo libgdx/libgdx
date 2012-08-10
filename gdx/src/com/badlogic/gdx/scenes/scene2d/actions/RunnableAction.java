@@ -35,6 +35,11 @@ public class RunnableAction extends Action {
 	public void restart () {
 		ran = false;
 	}
+	
+	public void reset () {
+		super.reset();
+		runnable = null;
+	}
 
 	public Runnable getRunnable () {
 		return runnable;

@@ -35,6 +35,14 @@ public class Actions {
 		return action;
 	}
 
+	/** An action that adds the specified action to the specified actor. */
+	static public AddAction add (Actor targetActor, Action action) {
+		AddAction addAction = action(AddAction.class);
+		addAction.setTargetActor(targetActor);
+		addAction.setAction(action);
+		return addAction;
+	}
+
 	/** Moves the actor instantly. */
 	static public MoveToAction moveTo (float x, float y) {
 		return moveTo(x, y, 0, null);
@@ -384,5 +392,18 @@ public class Actions {
 		RunnableAction action = action(RunnableAction.class);
 		action.setRunnable(runnable);
 		return action;
+	}
+
+	static public LayoutAction layout (boolean enabled) {
+		LayoutAction action = action(LayoutAction.class);
+		action.setLayoutEnabled(enabled);
+		return action;
+	}
+
+	/** An action that adds the specified action to the specified actor. */
+	static public AfterAction after (Action action) {
+		AfterAction afterAction = action(AfterAction.class);
+		afterAction.setAction(action);
+		return afterAction;
 	}
 }
