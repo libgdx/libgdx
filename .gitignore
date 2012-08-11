@@ -11,3 +11,6 @@ bin/
 gwt-servlet.jar
 *.class
 classes/
+
+# Eclipse Files
+.settings
