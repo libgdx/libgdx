@@ -18,7 +18,7 @@ package com.google.gwt.corp.localstorage;
 
 import java.io.IOException;
 
-import sun.org.mozilla.javascript.internal.JavaScriptException;
+import com.google.gwt.core.client.JavaScriptException;
 
 public class LocalStorage {
 
