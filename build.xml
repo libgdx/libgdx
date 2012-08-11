@@ -193,6 +193,21 @@
 			<reference refid="classpath"/>
 		</ant>
 	</target>
+
+   <!-- model loaders -->
+   <target name="gdx-model-loaders" depends="gdx-core,gdx-backend-jogl">
+      <path id="classpath">
+         <pathelement location="${distDir}/gdx.jar"/>
+         <pathelement location="${distDir}/extensions/gdx-jnigen.jar"/>
+         <pathelement location="${distDir}/gdx-backend-jogl.jar"/>
+      </path>
+      <ant antfile="../../../build-template.xml" dir="extensions/model-loaders/model-loaders">
+         <property name="distDir" value="${distDir}/extensions/model-loaders/model-loaders"/>
+         <property name="jar" value="gdx-model-loaders"/>
+         <reference refid="classpath"/>
+      </ant>
+   </target>
+
 	
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="clean">
