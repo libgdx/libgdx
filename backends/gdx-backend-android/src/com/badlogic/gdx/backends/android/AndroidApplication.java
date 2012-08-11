@@ -16,9 +16,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -229,8 +226,7 @@ public class AndroidApplication extends Activity implements Application {
 
 		if (!firstResume) {
 			graphics.resume();
-		}
-		else
+		} else
 			firstResume = false;
 		super.onResume();
 	}
@@ -316,14 +312,14 @@ public class AndroidApplication extends Activity implements Application {
 			}
 		});
 	}
-	
+
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
 			Log.d(tag, message);
 		}
 	}
-	
+
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {

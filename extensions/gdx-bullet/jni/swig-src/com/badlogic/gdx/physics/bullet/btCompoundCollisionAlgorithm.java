@@ -8,39 +8,37 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-
 public class btCompoundCollisionAlgorithm extends btActivatingCollisionAlgorithm {
-  private long swigCPtr;
+	private long swigCPtr;
 
-  protected btCompoundCollisionAlgorithm(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btCompoundCollisionAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	protected btCompoundCollisionAlgorithm (long cPtr, boolean cMemoryOwn) {
+		super(gdxBulletJNI.btCompoundCollisionAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
 
-  public static long getCPtr(btCompoundCollisionAlgorithm obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (btCompoundCollisionAlgorithm obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected void finalize() {
-    delete();
-  }
+	protected void finalize () {
+		delete();
+	}
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btCompoundCollisionAlgorithm(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+	public synchronized void delete () {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btCompoundCollisionAlgorithm(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
-  public btCompoundCollisionAlgorithm(btCollisionAlgorithmConstructionInfo ci, btCollisionObject body0, btCollisionObject body1, boolean isSwapped) {
-    this(gdxBulletJNI.new_btCompoundCollisionAlgorithm(btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObject.getCPtr(body0), body0, btCollisionObject.getCPtr(body1), body1, isSwapped), true);
-  }
+	public btCompoundCollisionAlgorithm (btCollisionAlgorithmConstructionInfo ci, btCollisionObject body0,
+		btCollisionObject body1, boolean isSwapped) {
+		this(gdxBulletJNI.new_btCompoundCollisionAlgorithm(btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci,
+			btCollisionObject.getCPtr(body0), body0, btCollisionObject.getCPtr(body1), body1, isSwapped), true);
+	}
 
 }

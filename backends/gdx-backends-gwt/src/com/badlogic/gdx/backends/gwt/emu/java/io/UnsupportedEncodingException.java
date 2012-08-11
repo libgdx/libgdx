@@ -13,14 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package java.io;
 
 public class UnsupportedEncodingException extends IOException {
-  public UnsupportedEncodingException() {
-    super();
-  }
+	public UnsupportedEncodingException () {
+		super();
+	}
 
-  public UnsupportedEncodingException(String s) {
-    super(s);
-  }
+	public UnsupportedEncodingException (String s) {
+		super(s);
+	}
 }

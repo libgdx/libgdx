@@ -37,17 +37,17 @@ public abstract class Joint {
 	/** Get the type of the concrete joint. */
 	public JointType getType () {
 		org.jbox2d.dynamics.joints.JointType type2 = joint.getType();
-		if(type2 == org.jbox2d.dynamics.joints.JointType.DISTANCE) return JointType.DistanceJoint;
-		if(type2 == org.jbox2d.dynamics.joints.JointType.FRICTION) return JointType.FrictionJoint;
-		if(type2 == org.jbox2d.dynamics.joints.JointType.GEAR) return JointType.GearJoint;
-		if(type2 == org.jbox2d.dynamics.joints.JointType.MOUSE) return JointType.MouseJoint;
-		if(type2 == org.jbox2d.dynamics.joints.JointType.PRISMATIC) return JointType.PrismaticJoint;
-		if(type2 == org.jbox2d.dynamics.joints.JointType.PULLEY) return JointType.PulleyJoint;
-		if(type2 == org.jbox2d.dynamics.joints.JointType.REVOLUTE) return JointType.RevoluteJoint;
-		if(type2 == org.jbox2d.dynamics.joints.JointType.ROPE) return JointType.RopeJoint;
-		if(type2 == org.jbox2d.dynamics.joints.JointType.UNKNOWN) return JointType.Unknown;
-		if(type2 == org.jbox2d.dynamics.joints.JointType.WELD) return JointType.WeldJoint;
-		if(type2 == org.jbox2d.dynamics.joints.JointType.WHEEL) return JointType.WheelJoint;
+		if (type2 == org.jbox2d.dynamics.joints.JointType.DISTANCE) return JointType.DistanceJoint;
+		if (type2 == org.jbox2d.dynamics.joints.JointType.FRICTION) return JointType.FrictionJoint;
+		if (type2 == org.jbox2d.dynamics.joints.JointType.GEAR) return JointType.GearJoint;
+		if (type2 == org.jbox2d.dynamics.joints.JointType.MOUSE) return JointType.MouseJoint;
+		if (type2 == org.jbox2d.dynamics.joints.JointType.PRISMATIC) return JointType.PrismaticJoint;
+		if (type2 == org.jbox2d.dynamics.joints.JointType.PULLEY) return JointType.PulleyJoint;
+		if (type2 == org.jbox2d.dynamics.joints.JointType.REVOLUTE) return JointType.RevoluteJoint;
+		if (type2 == org.jbox2d.dynamics.joints.JointType.ROPE) return JointType.RopeJoint;
+		if (type2 == org.jbox2d.dynamics.joints.JointType.UNKNOWN) return JointType.Unknown;
+		if (type2 == org.jbox2d.dynamics.joints.JointType.WELD) return JointType.WeldJoint;
+		if (type2 == org.jbox2d.dynamics.joints.JointType.WHEEL) return JointType.WheelJoint;
 		return JointType.Unknown;
 	}
 

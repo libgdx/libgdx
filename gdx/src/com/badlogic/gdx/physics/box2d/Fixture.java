@@ -21,6 +21,7 @@ import com.badlogic.gdx.physics.box2d.Shape.Type;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Fixture {
+	// @off
 	/*JNI
 #include <Box2D/Box2D.h>
 	 */

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.assets;
 
 import com.badlogic.gdx.assets.loaders.AssetLoader;
@@ -29,24 +30,24 @@ public class AssetLoadingTask {
 	boolean dependenciesLoaded;
 	Array<AssetDescriptor> dependencies;
 	Object asset;
-	
-	public AssetLoadingTask(AssetManager manager, AssetDescriptor desc, AssetLoader loader) {
+
+	public AssetLoadingTask (AssetManager manager, AssetDescriptor desc, AssetLoader loader) {
 		this.manager = manager;
 		this.assetDesc = desc;
 		this.loader = loader;
 	}
-	
+
 	public boolean update () {
-		if(loader instanceof AsynchronousAssetLoader) {
+		if (loader instanceof AsynchronousAssetLoader) {
 			handleAsynchLoader((AsynchronousAssetLoader)loader);
 		} else {
 			handleSynchLoader((SynchronousAssetLoader)loader);
 		}
 		return asset != null;
 	}
-	
+
 	private void handleSynchLoader (SynchronousAssetLoader loader) {
-		if(!dependenciesLoaded) {
+		if (!dependenciesLoaded) {
 			Array<AssetDescriptor> dependencies = loader.getDependencies(assetDesc.fileName, assetDesc.params);
 			if (dependencies != null) {
 				for (AssetDescriptor desc : dependencies) {
@@ -62,8 +63,8 @@ public class AssetLoadingTask {
 		}
 	}
 
-	private void handleAsynchLoader(AsynchronousAssetLoader loader) {
-		if(!dependenciesLoaded) {
+	private void handleAsynchLoader (AsynchronousAssetLoader loader) {
+		if (!dependenciesLoaded) {
 			Array<AssetDescriptor> dependencies = loader.getDependencies(assetDesc.fileName, assetDesc.params);
 			if (dependencies != null) {
 				for (AssetDescriptor desc : dependencies) {
@@ -80,7 +81,7 @@ public class AssetLoadingTask {
 			asset = loader.loadSync(manager, assetDesc.fileName, assetDesc.params);
 		}
 	}
-	
+
 	public Object getAsset () {
 		return asset;
 	}

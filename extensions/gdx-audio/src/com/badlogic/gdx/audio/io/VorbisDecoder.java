@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.audio.io;
+
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  * 
@@ -30,7 +32,6 @@ package com.badlogic.gdx.audio.io;
  * limitations under the License.
  ******************************************************************************/
 
-
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
@@ -41,20 +42,18 @@ public class VorbisDecoder extends Decoder {
 	static {
 		new SharedLibraryLoader().load("gdx-audio");
 	}
-	
+
 	/** address of native OggFileHandle structure **/
 	private final long handle;
 
 	/** Opens the given file for ogg decoding. Throws an IllegalArugmentException in case the file could not be opened.
 	 * 
-	 * @param file external or absolute {@link FileHandle}
-	 */
+	 * @param file external or absolute {@link FileHandle} */
 	public VorbisDecoder (FileHandle file) {
-		if(file.type() != FileType.External && file.type() != FileType.Absolute)
+		if (file.type() != FileType.External && file.type() != FileType.Absolute)
 			throw new IllegalArgumentException("File must be absolute or external!");
 		handle = openFile(file.file().getAbsolutePath());
-		if (handle == 0)
-			throw new IllegalArgumentException("couldn't open file '" + file + "'");
+		if (handle == 0) throw new IllegalArgumentException("couldn't open file '" + file + "'");
 	}
 
 	@Override
@@ -87,6 +86,7 @@ public class VorbisDecoder extends Decoder {
 		return skipSamples(handle, numSamples);
 	}
 
+	// @off
 	/*JNI
 	#include <ogg.h>
 	#include <ivorbiscodec.h>

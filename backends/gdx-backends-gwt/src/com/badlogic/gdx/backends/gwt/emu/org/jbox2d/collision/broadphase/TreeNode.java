@@ -21,39 +21,37 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
+
 package org.jbox2d.collision.broadphase;
 
 import org.jbox2d.collision.AABB;
 
 public class TreeNode {
-  public static final int NULL_NODE = -1;
-  /**
-   * Enlarged AABB
-   */
-  public final AABB aabb = new AABB();
+	public static final int NULL_NODE = -1;
+	/** Enlarged AABB */
+	public final AABB aabb = new AABB();
 
-  public Object userData;
+	public Object userData;
 
-  protected int parent;
+	protected int parent;
 
-  protected int child1;
-  protected int child2;
-  protected int height;
+	protected int child1;
+	protected int child2;
+	protected int height;
 
-  public final boolean isLeaf() {
-    return child1 == NULL_NODE;
-  }
+	public final boolean isLeaf () {
+		return child1 == NULL_NODE;
+	}
 
-  public Object getUserData() {
-    return userData;
-  }
+	public Object getUserData () {
+		return userData;
+	}
 
-  public void setUserData(Object argData) {
-    userData = argData;
-  }
+	public void setUserData (Object argData) {
+		userData = argData;
+	}
 
-  /**
-   * Should never be constructed outside the engine
-   */
-  protected TreeNode() {}
+	/** Should never be constructed outside the engine */
+	protected TreeNode () {
+	}
 }

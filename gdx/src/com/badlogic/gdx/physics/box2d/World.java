@@ -50,6 +50,7 @@ import com.badlogic.gdx.utils.Pool;
  * memory management facilities.
  * @author mzechner */
 public final class World implements Disposable {
+	// @off
 	/*JNI
 #include <Box2D/Box2D.h>
 

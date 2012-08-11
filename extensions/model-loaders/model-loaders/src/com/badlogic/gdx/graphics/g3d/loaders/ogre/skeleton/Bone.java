@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.skeleton;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -32,15 +33,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "bone")
 public class Bone {
 
-	@XmlAttribute(required = true)
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	public String id;
-	@XmlAttribute(required = true)
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	public String name;
-	@XmlElement(required = true)
-	public Position position;
-	@XmlElement(required = true)
-	public Rotation rotation;
+	@XmlAttribute(required = true) @XmlJavaTypeAdapter(NormalizedStringAdapter.class) public String id;
+	@XmlAttribute(required = true) @XmlJavaTypeAdapter(NormalizedStringAdapter.class) public String name;
+	@XmlElement(required = true) public Position position;
+	@XmlElement(required = true) public Rotation rotation;
 	public Scale scale;
 }

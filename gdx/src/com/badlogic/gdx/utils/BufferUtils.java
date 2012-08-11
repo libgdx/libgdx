@@ -32,7 +32,7 @@ import java.nio.ShortBuffer;
 public class BufferUtils {
 	static Array<ByteBuffer> unsafeBuffers = new Array<ByteBuffer>();
 	static int allocatedUnsafe = 0;
-	
+
 	/** Copies numFloats floats from src starting at offset to dst. Dst is assumed to be a direct {@link Buffer}. The method will
 	 * crash if that is not the case. The position and limit of the buffer are ignored, the copy is placed at position 0 in the
 	 * buffer. After the copying process the position of the buffer is set to 0 and its limit is set to numFloats * 4 if it is a
@@ -221,7 +221,7 @@ public class BufferUtils {
 		else
 			throw new GdxRuntimeException("Can't copy to a " + dst.getClass().getName() + " instance");
 	}
-	
+
 	public static FloatBuffer newFloatBuffer (int numFloats) {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(numFloats * 4);
 		buffer.order(ByteOrder.nativeOrder());
@@ -263,7 +263,8 @@ public class BufferUtils {
 		buffer.order(ByteOrder.nativeOrder());
 		return buffer.asLongBuffer();
 	}
-	
+
+	// @off
 	/*JNI 
 	#include <stdio.h>
 	#include <stdlib.h>

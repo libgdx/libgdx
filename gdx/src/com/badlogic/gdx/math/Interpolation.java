@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.math;
 
 /** Takes a linear value in the range of 0-1 and outputs a (usually) non-linear, interpolated value.

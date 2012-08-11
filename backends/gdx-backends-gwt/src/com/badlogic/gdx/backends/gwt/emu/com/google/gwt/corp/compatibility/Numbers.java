@@ -20,7 +20,6 @@ import com.google.gwt.typedarrays.client.Float32Array;
 import com.google.gwt.typedarrays.client.Int32Array;
 import com.google.gwt.typedarrays.client.Int8Array;
 
-
 public class Numbers {
 
 	static final double LN2 = Math.log(2);

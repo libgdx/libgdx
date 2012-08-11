@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g2d;
 
 import java.nio.ByteBuffer;
@@ -24,38 +25,33 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
-/**
- * Very thin wrapper around libjpeg. Returns Pixmaps given a file or raw jpeg data in a byte array.
- * The returned Pixmap will always have the {@link Format#RGB888} format.
+/** Very thin wrapper around libjpeg. Returns Pixmaps given a file or raw jpeg data in a byte array. The returned Pixmap will
+ * always have the {@link Format#RGB888} format.
  * @author mzechner
- * @author Nathan Sweet
- */
+ * @author Nathan Sweet */
 public class Jpeg {
 	static {
 		new SharedLibraryLoader().load("gdx-image");
 	}
-	
-	/**
-	 * Reads a jpeg from the given file, throws a GdxRuntimeException in case something went wrong.
-	 */
-	public static synchronized Pixmap read(FileHandle file) {
+
+	/** Reads a jpeg from the given file, throws a GdxRuntimeException in case something went wrong. */
+	public static synchronized Pixmap read (FileHandle file) {
 		byte[] bytes = file.readBytes();
 		long[] out = new long[4];
 		ByteBuffer pixels = read(bytes, 0, bytes.length, out);
-		if(pixels == null) throw new GdxRuntimeException("Couldn't load jpeg '" + file + "'");
+		if (pixels == null) throw new GdxRuntimeException("Couldn't load jpeg '" + file + "'");
 		return new Pixmap(new Gdx2DPixmap(pixels, out));
 	}
-	
-	/**
-	 * Reads a jpeg from the byte array, throws a GdxRuntimeException in case something went wrong.
-	 */
-	public static Pixmap read(byte[] compressedData, int offset, int length) {
+
+	/** Reads a jpeg from the byte array, throws a GdxRuntimeException in case something went wrong. */
+	public static Pixmap read (byte[] compressedData, int offset, int length) {
 		long[] out = new long[4];
 		ByteBuffer pixels = read(compressedData, offset, length, out);
-		if(pixels == null) throw new GdxRuntimeException("Couldn't load jpeg");
+		if (pixels == null) throw new GdxRuntimeException("Couldn't load jpeg");
 		return new Pixmap(new Gdx2DPixmap(pixels, out));
 	}
-	
+
+	// @off
 	/*JNI
 	#include "gdx2d.h"
 	#include "libjpeg/jpeglib.h"

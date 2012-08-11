@@ -1,13 +1,13 @@
+
 package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.NumberUtils;
 
 public class PolygonSprite {
-	
+
 	PolygonRegion region;
 	private float x, y;
 	private float width, height;
@@ -17,7 +17,7 @@ public class PolygonSprite {
 	private float[] vertices;
 	private boolean dirty;
 	private Rectangle bounds = new Rectangle();
-	
+
 	private final Color color = new Color(1f, 1f, 1f, 1f);
 
 	// Note the region is copied.
@@ -35,7 +35,7 @@ public class PolygonSprite {
 
 	public void set (PolygonSprite sprite) {
 		if (sprite == null) throw new IllegalArgumentException("sprite cannot be null.");
-		
+
 		setRegion(sprite.region);
 
 		x = sprite.x;
@@ -101,7 +101,7 @@ public class PolygonSprite {
 		if (dirty) return;
 
 		final float[] vertices = this.vertices;
-		for(int i=0; i<vertices.length; i+=Sprite.VERTEX_SIZE){
+		for (int i = 0; i < vertices.length; i += Sprite.VERTEX_SIZE) {
 			vertices[i] += xAmount;
 		}
 	}
@@ -114,8 +114,8 @@ public class PolygonSprite {
 		if (dirty) return;
 
 		final float[] vertices = this.vertices;
-		for(int i=0; i<vertices.length; i+=Sprite.VERTEX_SIZE){
-			vertices[i+1] += yAmount;
+		for (int i = 0; i < vertices.length; i += Sprite.VERTEX_SIZE) {
+			vertices[i + 1] += yAmount;
 		}
 	}
 
@@ -128,18 +128,18 @@ public class PolygonSprite {
 		if (dirty) return;
 
 		final float[] vertices = this.vertices;
-		for(int i=0; i<vertices.length; i+=Sprite.VERTEX_SIZE){
+		for (int i = 0; i < vertices.length; i += Sprite.VERTEX_SIZE) {
 			vertices[i] += xAmount;
-			vertices[i+1] += yAmount;
+			vertices[i + 1] += yAmount;
 		}
 	}
 
 	public void setColor (Color tint) {
 		float color = tint.toFloatBits();
-		
+
 		final float[] vertices = this.vertices;
-		for(int i=0; i<vertices.length; i+=Sprite.VERTEX_SIZE){
-			vertices[i+2] = color;
+		for (int i = 0; i < vertices.length; i += Sprite.VERTEX_SIZE) {
+			vertices[i + 2] = color;
 		}
 	}
 
@@ -147,8 +147,8 @@ public class PolygonSprite {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		float color = NumberUtils.intToFloatColor(intBits);
 		final float[] vertices = this.vertices;
-		for(int i=0; i<vertices.length; i+=Sprite.VERTEX_SIZE){
-			vertices[i+2] = color;
+		for (int i = 0; i < vertices.length; i += Sprite.VERTEX_SIZE) {
+			vertices[i + 2] = color;
 		}
 	}
 
@@ -200,40 +200,41 @@ public class PolygonSprite {
 			float sY = height / region.getRegion().getRegionHeight();
 			float fx, rx;
 			float fy, ry;
-			
+
 			float[] localVertices = region.getLocalVertices();
-			
+
 			final float cos = MathUtils.cosDeg(rotation);
 			final float sin = MathUtils.sinDeg(rotation);
 
-			for(int i=0; i<localVertices.length; i+=2){
+			for (int i = 0; i < localVertices.length; i += 2) {
 				fx = localVertices[i] * sX;
-				fy = localVertices[i+1] * sY;
-				
+				fy = localVertices[i + 1] * sY;
+
 				fx -= originX;
 				fy -= originY;
-				
-				if(scaleX != 1.0f || scaleY != 1.0){
+
+				if (scaleX != 1.0f || scaleY != 1.0) {
 					fx *= scaleX;
 					fy *= scaleY;
 				}
-				
+
 				rx = cos * fx - sin * fy;
 				ry = sin * fx + cos * fy;
-				
+
 				rx += worldOriginX;
 				ry += worldOriginY;
-				
-				vertices[(i/2)*5] = rx;
-				vertices[((i/2)*5)+1] = ry;
-			} 
+
+				vertices[(i / 2) * 5] = rx;
+				vertices[((i / 2) * 5) + 1] = ry;
+			}
 		}
-		
+
 		return vertices;
 	}
 
 	/** Returns the bounding axis aligned {@link Rectangle} that bounds this sprite. The rectangles x and y coordinates describe its
-	 * bottom left corner. If you change the position or size of the sprite, you have to fetch the triangle again for it to be recomputed.
+	 * bottom left corner. If you change the position or size of the sprite, you have to fetch the triangle again for it to be
+	 * recomputed.
 	 * 
 	 * @return the bounding Rectangle */
 	public Rectangle getBoundingRectangle () {
@@ -243,14 +244,14 @@ public class PolygonSprite {
 		float miny = vertices[1];
 		float maxx = vertices[0];
 		float maxy = vertices[1];
-		
-		for(int i=0; i<vertices.length; i+=5){
+
+		for (int i = 0; i < vertices.length; i += 5) {
 			minx = minx > vertices[i] ? vertices[i] : minx;
 			maxx = maxx < vertices[i] ? vertices[i] : maxx;
-			miny = miny > vertices[i+1] ? vertices[i+1] : miny;
-			maxy = maxy < vertices[i+1] ? vertices[i+1] : maxy;
+			miny = miny > vertices[i + 1] ? vertices[i + 1] : miny;
+			maxy = maxy < vertices[i + 1] ? vertices[i + 1] : maxy;
 		}
-		
+
 		bounds.x = minx;
 		bounds.y = miny;
 		bounds.width = maxx - minx;
@@ -323,20 +324,19 @@ public class PolygonSprite {
 
 	public void setRegion (PolygonRegion region) {
 		this.region = region;
-		
+
 		float[] localVertices = region.getLocalVertices();
 		float[] localTextureCoords = region.getTextureCoords();
-		
-		if(vertices == null || localVertices.length != vertices.length)
-			vertices = new float[(localVertices.length/2)*5];
-		
+
+		if (vertices == null || localVertices.length != vertices.length) vertices = new float[(localVertices.length / 2) * 5];
+
 		// Pack the region info into this sprite's vertices
-		for(int i=0; i<localVertices.length/2; i++){
-			vertices[(i*5)] = localVertices[(i*2)];
-			vertices[(i*5)+1] = localVertices[(i*2)+1];
-			vertices[(i*5)+2] = color.toFloatBits();
-			vertices[(i*5)+3] = localTextureCoords[(i*2)];
-			vertices[(i*5)+4] = localTextureCoords[(i*2)+1];
+		for (int i = 0; i < localVertices.length / 2; i++) {
+			vertices[(i * 5)] = localVertices[(i * 2)];
+			vertices[(i * 5) + 1] = localVertices[(i * 2) + 1];
+			vertices[(i * 5) + 2] = color.toFloatBits();
+			vertices[(i * 5) + 3] = localTextureCoords[(i * 2)];
+			vertices[(i * 5) + 4] = localTextureCoords[(i * 2) + 1];
 		}
 	}
 }

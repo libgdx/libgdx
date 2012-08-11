@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh;
 
 import java.util.ArrayList;
@@ -33,10 +34,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "geometry")
 public class Geometry {
 
-	@XmlAttribute
-	public int vertexcount;
-	@XmlElement(required = true)
-	protected List<Vertexbuffer> vertexbuffer;
+	@XmlAttribute public int vertexcount;
+	@XmlElement(required = true) protected List<Vertexbuffer> vertexbuffer;
 
 	/** Gets the value of the vertexbuffer property.
 	 * 

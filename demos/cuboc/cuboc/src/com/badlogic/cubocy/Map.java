@@ -29,12 +29,12 @@ public class Map {
 	public Map () {
 		loadBinary();
 	}
-	
-	private void loadBinary() {
+
+	private void loadBinary () {
 		Pixmap pixmap = new Pixmap(Gdx.files.internal("data/levels.png"));
 		tiles = new int[pixmap.getWidth()][pixmap.getHeight()];
 		for (int y = 0; y < 35; y++) {
-			for (int x = 0; x < 150; x++) {				
+			for (int x = 0; x < 150; x++) {
 				int pix = (pixmap.getPixel(x, y) >>> 8) & 0xffffff;
 				Gdx.app.log("Map", x + ", " + y + ", " + Integer.toHexString(pix));
 				if (match(pix, START)) {
@@ -70,11 +70,11 @@ public class Map {
 			lasers.get(i).init();
 		}
 	}
-	
-	boolean match(int src, int dst) {
+
+	boolean match (int src, int dst) {
 		return src == dst;
 	}
-	
+
 	public void update (float deltaTime) {
 		bob.update(deltaTime);
 		if (bob.state == Bob.DEAD) bob = new Bob(this, activeDispenser.bounds.x, activeDispenser.bounds.y);

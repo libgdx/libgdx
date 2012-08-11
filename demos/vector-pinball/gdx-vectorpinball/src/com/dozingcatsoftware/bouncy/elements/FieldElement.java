@@ -37,14 +37,14 @@ public abstract class FieldElement {
 			if (params.containsKey("class")) {
 				// if package not specified, use this package
 				String className = (String)params.get("class");
-				if(className.contains("BumperElement")) self = new BumperElement();
-				if(className.contains("DropTargetGroupElement")) self = new DropTargetGroupElement();
-				if(className.contains("FlipperElement")) self = new FlipperElement();
-				if(className.contains("RolloverGroupElement")) self = new RolloverGroupElement();
-				if(className.contains("SensorElement")) self = new SensorElement();
-				if(className.contains("WallArcElement")) self = new WallArcElement();
-				if(className.contains("WallElement")) self = new WallElement();
-				if(className.contains("WallPathElement")) self = new WallPathElement();
+				if (className.contains("BumperElement")) self = new BumperElement();
+				if (className.contains("DropTargetGroupElement")) self = new DropTargetGroupElement();
+				if (className.contains("FlipperElement")) self = new FlipperElement();
+				if (className.contains("RolloverGroupElement")) self = new RolloverGroupElement();
+				if (className.contains("SensorElement")) self = new SensorElement();
+				if (className.contains("WallArcElement")) self = new WallArcElement();
+				if (className.contains("WallElement")) self = new WallElement();
+				if (className.contains("WallPathElement")) self = new WallPathElement();
 			} else {
 				self = new FlipperElement();
 			}

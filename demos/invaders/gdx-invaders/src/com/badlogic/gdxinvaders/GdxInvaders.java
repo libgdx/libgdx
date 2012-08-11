@@ -15,9 +15,9 @@ package com.badlogic.gdxinvaders;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdxinvaders.screens.GameLoop;
@@ -44,9 +44,7 @@ public class GdxInvaders extends Game {
 			// the game loop
 			if (currentScreen instanceof MainMenu) {
 				setScreen(new GameLoop());
-			}
-			else
-			{
+			} else {
 				// if the current screen is a game loop screen we switch to the
 				// game over screen
 				if (currentScreen instanceof GameLoop) {
@@ -60,7 +58,7 @@ public class GdxInvaders extends Game {
 		}
 
 		// sleep on desktop as Jogl backend vsynch is broken...
-		if(Gdx.app.getType() == ApplicationType.Desktop) {
+		if (Gdx.app.getType() == ApplicationType.Desktop) {
 			try {
 				Thread.sleep(16);
 			} catch (InterruptedException e) {
@@ -77,16 +75,15 @@ public class GdxInvaders extends Game {
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean keyUp (int keycode) {
-				if(keycode == Keys.ENTER && Gdx.app.getType() == ApplicationType.WebGL) {
-					if(!Gdx.graphics.isFullscreen()) Gdx.graphics.setDisplayMode(Gdx.graphics.getDisplayModes()[0]);
+				if (keycode == Keys.ENTER && Gdx.app.getType() == ApplicationType.WebGL) {
+					if (!Gdx.graphics.isFullscreen()) Gdx.graphics.setDisplayMode(Gdx.graphics.getDisplayModes()[0]);
 				}
 				return true;
 			}
 		});
 	}
 
-	/**
-	 * For this game each of our screens is an instance of InvadersScreen.
+	/** For this game each of our screens is an instance of InvadersScreen.
 	 * @return the currently active {@link InvadersScreen}. */
 	@Override
 	public InvadersScreen getScreen () {

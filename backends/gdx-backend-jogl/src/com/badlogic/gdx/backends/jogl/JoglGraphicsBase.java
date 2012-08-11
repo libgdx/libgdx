@@ -143,7 +143,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	public float getDeltaTime () {
 		return deltaTime;
 	}
-	
+
 	@Override
 	public float getRawDeltaTime () {
 		return deltaTime;
@@ -203,7 +203,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	public GraphicsType getType () {
 		return GraphicsType.JoglGL;
 	}
-	
+
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
 		animator.setContinuousRendering(isContinuous);

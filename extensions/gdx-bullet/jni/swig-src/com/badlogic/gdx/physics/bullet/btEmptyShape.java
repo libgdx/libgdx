@@ -8,39 +8,35 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-
 public class btEmptyShape extends btConcaveShape {
-  private long swigCPtr;
+	private long swigCPtr;
 
-  protected btEmptyShape(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btEmptyShape_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	protected btEmptyShape (long cPtr, boolean cMemoryOwn) {
+		super(gdxBulletJNI.btEmptyShape_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
 
-  public static long getCPtr(btEmptyShape obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (btEmptyShape obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected void finalize() {
-    delete();
-  }
+	protected void finalize () {
+		delete();
+	}
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btEmptyShape(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+	public synchronized void delete () {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btEmptyShape(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
-  public btEmptyShape() {
-    this(gdxBulletJNI.new_btEmptyShape(), true);
-  }
+	public btEmptyShape () {
+		this(gdxBulletJNI.new_btEmptyShape(), true);
+	}
 
 }

@@ -24,7 +24,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -34,7 +33,7 @@ public class BitmapFontTest extends GdxTest {
 	private TextureAtlas atlas;
 	private BitmapFont font;
 	private ShapeRenderer renderer;
-	
+
 	@Override
 	public void create () {
 		spriteBatch = new SpriteBatch();

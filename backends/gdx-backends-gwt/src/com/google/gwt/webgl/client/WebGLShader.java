@@ -13,10 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package com.google.gwt.webgl.client;
 
 public class WebGLShader extends WebGLObject {
 
-  protected WebGLShader() {
-  }
+	protected WebGLShader () {
+	}
 }

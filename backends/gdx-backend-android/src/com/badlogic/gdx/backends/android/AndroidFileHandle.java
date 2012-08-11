@@ -47,7 +47,7 @@ public class AndroidFileHandle extends FileHandle {
 		if (file.getPath().length() == 0) return new AndroidFileHandle(assets, new File(name), type);
 		return new AndroidFileHandle(assets, new File(file, name), type);
 	}
-	
+
 	public FileHandle sibling (String name) {
 		name = name.replace('\\', '/');
 		if (file.getPath().length() == 0) throw new GdxRuntimeException("Cannot get the sibling of the root.");
@@ -133,12 +133,12 @@ public class AndroidFileHandle extends FileHandle {
 			try {
 				assets.open(fileName).close(); // Check if file exists.
 				return true;
-			} catch (Exception ex) {			
-				 // This is SUPER slow! but we need it for directories.
-				 try {
-				 return assets.list(fileName).length > 0;
-				 } catch (Exception ignored) {
-				 }
+			} catch (Exception ex) {
+				// This is SUPER slow! but we need it for directories.
+				try {
+					return assets.list(fileName).length > 0;
+				} catch (Exception ignored) {
+				}
 				return false;
 			}
 		}

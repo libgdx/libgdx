@@ -13,95 +13,93 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.typedarrays.client;
 
-import com.google.gwt.core.client.JsArrayInteger;
-import com.google.gwt.core.client.JsArrayNumber;
+package com.google.gwt.typedarrays.client;
 
 public class ArrayUtils {
 
-  // TODO(jgw): Get rid of these conversions in web mode.
-  public static JsArrayInteger toJsArray(byte[] data) {
-    JsArrayInteger jsan = (JsArrayInteger) JsArrayInteger.createArray();
-    int len = data.length;
-    for (int i = len - 1; i >= 0; i--) {
-      jsan.set(i, data[i]);
-    }
-    return jsan;
-  }
+	// TODO(jgw): Get rid of these conversions in web mode.
+	public static JsArrayInteger toJsArray (byte[] data) {
+		JsArrayInteger jsan = (JsArrayInteger)JsArrayInteger.createArray();
+		int len = data.length;
+		for (int i = len - 1; i >= 0; i--) {
+			jsan.set(i, data[i]);
+		}
+		return jsan;
+	}
 
-  public static JsArrayNumber toJsArray(double[] data) {
-    JsArrayNumber jsan = (JsArrayNumber) JsArrayNumber.createArray();
-    int len = data.length;
-    for (int i = len - 1; i >= 0; i--) {
-      jsan.set(i, data[i]);
-    }
-    return jsan;
-  }
+	public static JsArrayNumber toJsArray (double[] data) {
+		JsArrayNumber jsan = (JsArrayNumber)JsArrayNumber.createArray();
+		int len = data.length;
+		for (int i = len - 1; i >= 0; i--) {
+			jsan.set(i, data[i]);
+		}
+		return jsan;
+	}
 
-  public static JsArrayNumber toJsArray(float[] data) {
-    JsArrayNumber jsan = (JsArrayNumber) JsArrayNumber.createArray();
-    jsan.setLength(data.length);
-    int len = data.length;
-    for (int i = len - 1; i >= 0; i--) {
-      jsan.set(i, data[i]);
-    }
-    return jsan;
-  }
-  
-  public static JsArrayNumber toJsArray(float[] data, int offset, int len) {
-	    JsArrayNumber jsan = (JsArrayNumber) JsArrayNumber.createArray();
-	    jsan.setLength(len);
-	    for (int i = 0; i < len; i++) {
-	      jsan.set(i, data[i + offset]);
-	    }
-	    return jsan;
-	  }
+	public static JsArrayNumber toJsArray (float[] data) {
+		JsArrayNumber jsan = (JsArrayNumber)JsArrayNumber.createArray();
+		jsan.setLength(data.length);
+		int len = data.length;
+		for (int i = len - 1; i >= 0; i--) {
+			jsan.set(i, data[i]);
+		}
+		return jsan;
+	}
 
-  public static JsArrayInteger toJsArray(int[] data) {
-    JsArrayInteger jsan = (JsArrayInteger) JsArrayNumber.createArray();
-    int len = data.length;
-    for (int i = len - 1; i >= 0; i--) {
-      jsan.set(i, data[i]);
-    }
-    return jsan;
-  }
+	public static JsArrayNumber toJsArray (float[] data, int offset, int len) {
+		JsArrayNumber jsan = (JsArrayNumber)JsArrayNumber.createArray();
+		jsan.setLength(len);
+		for (int i = 0; i < len; i++) {
+			jsan.set(i, data[i + offset]);
+		}
+		return jsan;
+	}
 
-  public static JsArrayInteger toJsArray(short[] data) {
-    JsArrayInteger jsan = (JsArrayInteger) JsArrayInteger.createArray();
-    int len = data.length;
-    for (int i = len - 1; i >= 0; i--) {
-      jsan.set(i, data[i]);
-    }
-    return jsan;
-  }
-  
-  public static JsArrayInteger toJsArray(short[] data, int offset, int len) {
-	    JsArrayInteger jsan = (JsArrayInteger) JsArrayInteger.createArray();
-	    for (int i = 0; i < len; i++) {
-	      jsan.set(i, data[offset + i]);
-	    }
-	    return jsan;
-	  }
+	public static JsArrayInteger toJsArray (int[] data) {
+		JsArrayInteger jsan = (JsArrayInteger)JsArrayNumber.createArray();
+		int len = data.length;
+		for (int i = len - 1; i >= 0; i--) {
+			jsan.set(i, data[i]);
+		}
+		return jsan;
+	}
 
-  public static JsArrayInteger toJsArrayUnsigned(byte[] data) {
-    JsArrayInteger jsan = (JsArrayInteger) JsArrayInteger.createArray();
-    int len = data.length;
-    for (int i = len - 1; i >= 0; i--) {
-      jsan.set(i, data[i] & 255);
-    }
-    return jsan;
-  }
+	public static JsArrayInteger toJsArray (short[] data) {
+		JsArrayInteger jsan = (JsArrayInteger)JsArrayInteger.createArray();
+		int len = data.length;
+		for (int i = len - 1; i >= 0; i--) {
+			jsan.set(i, data[i]);
+		}
+		return jsan;
+	}
 
-  public static JsArrayInteger toJsArrayUnsigned(short[] data) {
-    JsArrayInteger jsan = (JsArrayInteger) JsArrayInteger.createArray();
-    int len = data.length;
-    for (int i = len - 1; i >= 0; i--) {
-      jsan.set(i, data[i] & 65535);
-    }
-    return jsan;
-  }
+	public static JsArrayInteger toJsArray (short[] data, int offset, int len) {
+		JsArrayInteger jsan = (JsArrayInteger)JsArrayInteger.createArray();
+		for (int i = 0; i < len; i++) {
+			jsan.set(i, data[offset + i]);
+		}
+		return jsan;
+	}
 
-  private ArrayUtils() {
-  }
+	public static JsArrayInteger toJsArrayUnsigned (byte[] data) {
+		JsArrayInteger jsan = (JsArrayInteger)JsArrayInteger.createArray();
+		int len = data.length;
+		for (int i = len - 1; i >= 0; i--) {
+			jsan.set(i, data[i] & 255);
+		}
+		return jsan;
+	}
+
+	public static JsArrayInteger toJsArrayUnsigned (short[] data) {
+		JsArrayInteger jsan = (JsArrayInteger)JsArrayInteger.createArray();
+		int len = data.length;
+		for (int i = len - 1; i >= 0; i--) {
+			jsan.set(i, data[i] & 65535);
+		}
+		return jsan;
+	}
+
+	private ArrayUtils () {
+	}
 }

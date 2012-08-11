@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actions;
 
-/** Moves an actor from its current size to a specific size. 
+/** Moves an actor from its current size to a specific size.
  * @author Nathan Sweet */
 public class SizeToAction extends TemporalAction {
 	private float startWidth, startHeight;

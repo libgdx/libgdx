@@ -17,7 +17,6 @@
 package com.badlogic.gdx.backends.android;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import android.app.AlertDialog;
 import android.content.Context;

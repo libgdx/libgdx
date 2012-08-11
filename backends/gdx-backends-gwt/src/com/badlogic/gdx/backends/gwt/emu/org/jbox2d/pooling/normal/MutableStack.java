@@ -24,9 +24,6 @@
 
 package org.jbox2d.pooling.normal;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-
 import org.jbox2d.pooling.IDynamicStack;
 
 public class MutableStack<E, T extends E> implements IDynamicStack<E> {
@@ -57,9 +54,11 @@ public class MutableStack<E, T extends E> implements IDynamicStack<E> {
 		size = newStack.length;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @see org.jbox2d.pooling.IDynamicStack#pop() */
+	 * @see org.jbox2d.pooling.IDynamicStack#pop()
+	 */
 	public final E pop () {
 		if (index >= size) {
 			extendStack(size * 2);
@@ -67,9 +66,11 @@ public class MutableStack<E, T extends E> implements IDynamicStack<E> {
 		return (E)stack[index++];
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @see org.jbox2d.pooling.IDynamicStack#push(E) */
+	 * @see org.jbox2d.pooling.IDynamicStack#push(E)
+	 */
 	@SuppressWarnings("unchecked")
 	public final void push (E argObject) {
 		assert (index > 0);

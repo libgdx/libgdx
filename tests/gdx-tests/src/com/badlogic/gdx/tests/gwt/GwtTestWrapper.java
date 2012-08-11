@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.gwt;
 
 import com.badlogic.gdx.Gdx;
@@ -129,9 +130,8 @@ public class GwtTestWrapper extends GdxTest {
 			table.add(button).expandX().fillX();
 		}
 		container.row();
-		container
-			.add(new Label("Click on a test to start it, press ESC to close it.", new LabelStyle(font, Color.WHITE)))
-			.pad(5, 5, 5, 5);
+		container.add(new Label("Click on a test to start it, press ESC to close it.", new LabelStyle(font, Color.WHITE))).pad(5,
+			5, 5, 5);
 
 		Gdx.input = new InputWrapper(Gdx.input) {
 			@Override

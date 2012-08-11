@@ -80,8 +80,8 @@ public class FramebufferToTextureTest extends GdxTest {
 		gl.glPopMatrix();
 
 		if (Gdx.input.justTouched() || fbTexture == null) {
-			if(fbTexture != null) fbTexture.getTexture().dispose();
- 			fbTexture = ScreenUtils.getFrameBufferTexture();
+			if (fbTexture != null) fbTexture.getTexture().dispose();
+			fbTexture = ScreenUtils.getFrameBufferTexture();
 		}
 
 		batch.begin();

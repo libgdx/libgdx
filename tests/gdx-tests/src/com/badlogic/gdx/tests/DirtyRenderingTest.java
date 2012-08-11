@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-/**
- * Demonstrates how to use non-continuous (aka dirty-only) rendering. The
- * application will clear the screen with a random color every frame it
- * renders. Rendering requests are issued automatically if new input
- * events arrive.
+/** Demonstrates how to use non-continuous (aka dirty-only) rendering. The application will clear the screen with a random color
+ * every frame it renders. Rendering requests are issued automatically if new input events arrive.
  * 
- * @author mzechner
- *
- */
+ * @author mzechner */
 public class DirtyRenderingTest extends GdxTest {
 	@Override
 	public void create () {

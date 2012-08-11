@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.gwt;
 
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -59,8 +59,9 @@ public class GwtTest extends GdxTest {
 		Preferences pref = Gdx.app.getPreferences("test");
 		boolean resultb = pref.getBoolean("test");
 		int resulti = pref.getInteger("test");
-		
-		shader = new ShaderProgram(Gdx.files.internal("data/shaders/shader-vs.glsl"), Gdx.files.internal("data/shaders/shader-fs.glsl"));
+
+		shader = new ShaderProgram(Gdx.files.internal("data/shaders/shader-vs.glsl"),
+			Gdx.files.internal("data/shaders/shader-fs.glsl"));
 		if (!shader.isCompiled()) throw new GdxRuntimeException(shader.getLog());
 		mesh = new Mesh(VertexDataType.VertexBufferObject, true, 6, 0, VertexAttribute.Position(), VertexAttribute.TexCoords(0));
 		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, 0, 1, 0.5f, -0.5f, 0, 1, 1, 0.5f, 0.5f, 0, 1, 0, 0.5f, 0.5f, 0, 1, 0, -0.5f,
@@ -71,7 +72,7 @@ public class GwtTest extends GdxTest {
 
 		String params = Gdx.files.internal("data/gwttestparams.txt").readString();
 		numSprites = Integer.parseInt(params);
-		
+
 		batch = new SpriteBatch();
 		positions = new ArrayList<Vector2>();
 		for (int i = 0; i < numSprites; i++) {
@@ -85,7 +86,7 @@ public class GwtTest extends GdxTest {
 		cache = new BitmapFontCache(font);
 		cache.setColor(Color.RED);
 		cache.setMultiLineText("This is a Test", 0, 0);
-		
+
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
 	}
 
@@ -107,7 +108,8 @@ public class GwtTest extends GdxTest {
 			sprite.setPosition(position.x, position.y);
 			sprite.draw(batch);
 		}
-		font.draw(batch, "fps:" + Gdx.graphics.getFramesPerSecond() + ", delta: " + Gdx.graphics.getDeltaTime() + ", #sprites: " + numSprites, 0, 30);
+		font.draw(batch, "fps:" + Gdx.graphics.getFramesPerSecond() + ", delta: " + Gdx.graphics.getDeltaTime() + ", #sprites: "
+			+ numSprites, 0, 30);
 		cache.setPosition(200, 200);
 		cache.draw(batch);
 		batch.end();

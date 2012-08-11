@@ -3,12 +3,10 @@ package com.badlogic.gdx.tools.imagepacker;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import com.badlogic.gdx.tools.FileProcessor;
-import com.badlogic.gdx.tools.FileProcessor.InputFile;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;

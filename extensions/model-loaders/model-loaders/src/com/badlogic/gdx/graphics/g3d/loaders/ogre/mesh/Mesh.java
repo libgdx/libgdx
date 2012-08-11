@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,8 +32,7 @@ import javax.xml.bind.annotation.XmlType;
 public class Mesh {
 
 	protected Sharedgeometry sharedgeometry;
-	@XmlElement(required = true)
-	protected Submeshes submeshes;
+	@XmlElement(required = true) protected Submeshes submeshes;
 	protected Skeletonlink skeletonlink;
 	protected Boneassignments boneassignments;
 	protected Levelofdetail levelofdetail;

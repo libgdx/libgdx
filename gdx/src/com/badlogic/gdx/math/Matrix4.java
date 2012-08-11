@@ -183,8 +183,7 @@ public class Matrix4 implements Serializable {
 		return val;
 	}
 
-	/** (Pre-)Multiplies this matrix with the given matrix, storing the result in this matrix. E.g.
-	 * A.mul(B) results in A := BA.
+	/** (Pre-)Multiplies this matrix with the given matrix, storing the result in this matrix. E.g. A.mul(B) results in A := BA.
 	 * 
 	 * @param matrix The other matrix
 	 * @return This matrix for chaining. */
@@ -684,7 +683,7 @@ public class Matrix4 implements Serializable {
 		val[M22] *= scale.z;
 		return this;
 	}
-	
+
 	public Matrix4 scl (float scale) {
 		val[M00] *= scale;
 		val[M11] *= scale;
@@ -710,7 +709,8 @@ public class Matrix4 implements Serializable {
 		inv();
 		return tra();
 	}
-	
+
+	// @off
 	/*JNI
 	#include <memory.h>
 	#include <stdio.h>

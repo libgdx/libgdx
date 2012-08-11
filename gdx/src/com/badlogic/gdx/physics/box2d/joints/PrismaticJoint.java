@@ -23,6 +23,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * prevented. You can use a joint limit to restrict the range of motion and a joint motor to drive the motion or to model joint
  * friction. */
 public class PrismaticJoint extends Joint {
+	// @off
 	/*JNI
 #include <Box2D/Box2D.h>
 	 */

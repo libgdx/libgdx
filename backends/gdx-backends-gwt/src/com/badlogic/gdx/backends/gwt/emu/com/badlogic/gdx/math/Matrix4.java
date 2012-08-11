@@ -698,7 +698,7 @@ public class Matrix4 implements Serializable {
 		val[M22] *= scale.z;
 		return this;
 	}
-	
+
 	public Matrix4 scl (float scale) {
 		val[M00] *= scale;
 		val[M11] *= scale;
@@ -724,9 +724,8 @@ public class Matrix4 implements Serializable {
 		inv();
 		return tra();
 	}
-	
-	
-	static void matrix4_mul(float[] mata, float[] matb) {
+
+	static void matrix4_mul (float[] mata, float[] matb) {
 		float tmp[] = new float[16];
 		tmp[M00] = mata[M00] * matb[M00] + mata[M01] * matb[M10] + mata[M02] * matb[M20] + mata[M03] * matb[M30];
 		tmp[M01] = mata[M00] * matb[M01] + mata[M01] * matb[M11] + mata[M02] * matb[M21] + mata[M03] * matb[M31];
@@ -746,20 +745,20 @@ public class Matrix4 implements Serializable {
 		tmp[M33] = mata[M30] * matb[M03] + mata[M31] * matb[M13] + mata[M32] * matb[M23] + mata[M33] * matb[M33];
 		System.arraycopy(tmp, 0, mata, 0, 16);
 	}
-	
-	static float matrix4_det(float[] val) {
+
+	static float matrix4_det (float[] val) {
 		return val[M30] * val[M21] * val[M12] * val[M03] - val[M20] * val[M31] * val[M12] * val[M03] - val[M30] * val[M11]
-				* val[M22] * val[M03] + val[M10] * val[M31] * val[M22] * val[M03] + val[M20] * val[M11] * val[M32] * val[M03] - val[M10]
-				* val[M21] * val[M32] * val[M03] - val[M30] * val[M21] * val[M02] * val[M13] + val[M20] * val[M31] * val[M02] * val[M13]
-				+ val[M30] * val[M01] * val[M22] * val[M13] - val[M00] * val[M31] * val[M22] * val[M13] - val[M20] * val[M01] * val[M32]
-				* val[M13] + val[M00] * val[M21] * val[M32] * val[M13] + val[M30] * val[M11] * val[M02] * val[M23] - val[M10] * val[M31]
-				* val[M02] * val[M23] - val[M30] * val[M01] * val[M12] * val[M23] + val[M00] * val[M31] * val[M12] * val[M23] + val[M10]
-				* val[M01] * val[M32] * val[M23] - val[M00] * val[M11] * val[M32] * val[M23] - val[M20] * val[M11] * val[M02] * val[M33]
-				+ val[M10] * val[M21] * val[M02] * val[M33] + val[M20] * val[M01] * val[M12] * val[M33] - val[M00] * val[M21] * val[M12]
-				* val[M33] - val[M10] * val[M01] * val[M22] * val[M33] + val[M00] * val[M11] * val[M22] * val[M33];
+			* val[M22] * val[M03] + val[M10] * val[M31] * val[M22] * val[M03] + val[M20] * val[M11] * val[M32] * val[M03] - val[M10]
+			* val[M21] * val[M32] * val[M03] - val[M30] * val[M21] * val[M02] * val[M13] + val[M20] * val[M31] * val[M02] * val[M13]
+			+ val[M30] * val[M01] * val[M22] * val[M13] - val[M00] * val[M31] * val[M22] * val[M13] - val[M20] * val[M01] * val[M32]
+			* val[M13] + val[M00] * val[M21] * val[M32] * val[M13] + val[M30] * val[M11] * val[M02] * val[M23] - val[M10] * val[M31]
+			* val[M02] * val[M23] - val[M30] * val[M01] * val[M12] * val[M23] + val[M00] * val[M31] * val[M12] * val[M23] + val[M10]
+			* val[M01] * val[M32] * val[M23] - val[M00] * val[M11] * val[M32] * val[M23] - val[M20] * val[M11] * val[M02] * val[M33]
+			+ val[M10] * val[M21] * val[M02] * val[M33] + val[M20] * val[M01] * val[M12] * val[M33] - val[M00] * val[M21] * val[M12]
+			* val[M33] - val[M10] * val[M01] * val[M22] * val[M33] + val[M00] * val[M11] * val[M22] * val[M33];
 	}
-	
-	static boolean matrix4_inv(float[] val) {
+
+	static boolean matrix4_inv (float[] val) {
 		float tmp[] = new float[16];
 		float l_det = matrix4_det(val);
 		if (l_det == 0) return false;
@@ -795,7 +794,7 @@ public class Matrix4 implements Serializable {
 			* val[M12] * val[M31] + val[M01] * val[M10] * val[M32] - val[M00] * val[M11] * val[M32];
 		tmp[M33] = val[M01] * val[M12] * val[M20] - val[M02] * val[M11] * val[M20] + val[M02] * val[M10] * val[M21] - val[M00]
 			* val[M12] * val[M21] - val[M01] * val[M10] * val[M22] + val[M00] * val[M11] * val[M22];
-	
+
 		float inv_det = 1.0f / l_det;
 		val[M00] = tmp[M00] * inv_det;
 		val[M01] = tmp[M01] * inv_det;
@@ -815,8 +814,8 @@ public class Matrix4 implements Serializable {
 		val[M33] = tmp[M33] * inv_det;
 		return true;
 	}
-	
-	static void matrix4_mulVec(float[] mat, float[] vec, int offset) {
+
+	static void matrix4_mulVec (float[] mat, float[] vec, int offset) {
 		float x = vec[offset + 0] * mat[M00] + vec[offset + 1] * mat[M01] + vec[offset + 2] * mat[M02] + mat[M03];
 		float y = vec[offset + 0] * mat[M10] + vec[offset + 1] * mat[M11] + vec[offset + 2] * mat[M12] + mat[M13];
 		float z = vec[offset + 0] * mat[M20] + vec[offset + 1] * mat[M21] + vec[offset + 2] * mat[M22] + mat[M23];
@@ -824,18 +823,18 @@ public class Matrix4 implements Serializable {
 		vec[offset + 1] = y;
 		vec[offset + 2] = z;
 	}
-	
-	static void matrix4_proj(float[] mat, float[] vec, int offset) {
+
+	static void matrix4_proj (float[] mat, float[] vec, int offset) {
 		float inv_w = 1.0f / (vec[offset + 0] * mat[M30] + vec[offset + 1] * mat[M31] + vec[offset + 2] * mat[M32] + mat[M33]);
 		float x = (vec[offset + 0] * mat[M00] + vec[offset + 1] * mat[M01] + vec[offset + 2] * mat[M02] + mat[M03]) * inv_w;
-		float y = (vec[offset + 0] * mat[M10] + vec[offset + 1] * mat[M11] + vec[offset + 2] * mat[M12] + mat[M13]) * inv_w; 
+		float y = (vec[offset + 0] * mat[M10] + vec[offset + 1] * mat[M11] + vec[offset + 2] * mat[M12] + mat[M13]) * inv_w;
 		float z = (vec[offset + 0] * mat[M20] + vec[offset + 1] * mat[M21] + vec[offset + 2] * mat[M22] + mat[M23]) * inv_w;
 		vec[offset + 0] = x;
 		vec[offset + 1] = y;
 		vec[offset + 2] = z;
 	}
-	
-	static void matrix4_rot(float[] mat, float[] vec, int offset) {
+
+	static void matrix4_rot (float[] mat, float[] vec, int offset) {
 		float x = vec[offset + 0] * mat[M00] + vec[offset + 1] * mat[M01] + vec[offset + 2] * mat[M02];
 		float y = vec[offset + 0] * mat[M10] + vec[offset + 1] * mat[M11] + vec[offset + 2] * mat[M12];
 		float z = vec[offset + 0] * mat[M20] + vec[offset + 1] * mat[M21] + vec[offset + 2] * mat[M22];
@@ -875,7 +874,7 @@ public class Matrix4 implements Serializable {
 	 * @param numVecs the number of vectors
 	 * @param stride the stride between vectors in floats */
 	public static void mulVec (float[] mat, float[] vecs, int offset, int numVecs, int stride) {
-		for(int i = 0; i < numVecs; i++) {
+		for (int i = 0; i < numVecs; i++) {
 			matrix4_mulVec(mat, vecs, offset);
 			offset += stride;
 		}
@@ -903,7 +902,7 @@ public class Matrix4 implements Serializable {
 	 * @param numVecs the number of vectors
 	 * @param stride the stride between vectors in floats */
 	public static void prj (float[] mat, float[] vecs, int offset, int numVecs, int stride) {
-		for(int i = 0; i < numVecs; i++) {
+		for (int i = 0; i < numVecs; i++) {
 			matrix4_proj(mat, vecs, offset);
 			offset += stride;
 		}
@@ -931,7 +930,7 @@ public class Matrix4 implements Serializable {
 	 * @param numVecs the number of vectors
 	 * @param stride the stride between vectors in floats */
 	public static void rot (float[] mat, float[] vecs, int offset, int numVecs, int stride) {
-		for(int i = 0; i < numVecs; i++) {
+		for (int i = 0; i < numVecs; i++) {
 			matrix4_rot(mat, vecs, offset);
 			offset += stride;
 		}
@@ -960,7 +959,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 translate (Vector3 translation) {
 		return translate(translation.x, translation.y, translation.z);
 	}
-	
+
 	/** Postmultiplies this matrix by a translation matrix. Postmultiplication is also used by OpenGL ES'
 	 * glTranslate/glRotate/glScale
 	 * @param x

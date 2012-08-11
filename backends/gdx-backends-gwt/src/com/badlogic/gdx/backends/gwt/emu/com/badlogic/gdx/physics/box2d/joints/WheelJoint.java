@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.box2d.joints;
 
 import com.badlogic.gdx.physics.box2d.Joint;
@@ -23,7 +24,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * friction. This joint is designed for vehicle suspensions. */
 public class WheelJoint extends Joint {
 	// FIXME not implemented by jbox2d
-	
+
 	public WheelJoint (World world) {
 		super(world, null);
 	}

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.skeleton;
 
 import java.util.ArrayList;
@@ -32,8 +33,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "keyframes")
 public class Keyframes {
 
-	@XmlElement(required = true)
-	protected List<Keyframe> keyframe;
+	@XmlElement(required = true) protected List<Keyframe> keyframe;
 
 	/** Gets the value of the keyframe property.
 	 * 

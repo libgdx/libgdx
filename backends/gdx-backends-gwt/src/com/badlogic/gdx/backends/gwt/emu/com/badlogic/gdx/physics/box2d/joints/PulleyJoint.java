@@ -27,7 +27,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * both sides. This is useful to prevent one side of the pulley hitting the top. */
 public class PulleyJoint extends Joint {
 	org.jbox2d.dynamics.joints.PulleyJoint joint;
-	
+
 	public PulleyJoint (World world, org.jbox2d.dynamics.joints.PulleyJoint joint) {
 		super(world, joint);
 		this.joint = joint;

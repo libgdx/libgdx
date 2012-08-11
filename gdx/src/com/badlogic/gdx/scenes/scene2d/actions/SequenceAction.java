@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actions;
 
-/** Executes a number of actions one at a time. 
+/** Executes a number of actions one at a time.
  * @author Nathan Sweet */
 public class SequenceAction extends ParallelAction {
 	private int index;

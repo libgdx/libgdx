@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh;
 
 import java.util.ArrayList;
@@ -32,15 +33,12 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "vertex")
 public class Vertex {
 
-	@XmlElement(required = true)
-	protected Position position;
+	@XmlElement(required = true) protected Position position;
 	protected Normal normal;
 	protected Tangent tangent;
 	protected Binormal binormal;
-	@XmlElement(name = "colour_diffuse")
-	protected ColourDiffuse colourDiffuse;
-	@XmlElement(name = "colour_specular")
-	protected ColourSpecular colourSpecular;
+	@XmlElement(name = "colour_diffuse") protected ColourDiffuse colourDiffuse;
+	@XmlElement(name = "colour_specular") protected ColourSpecular colourSpecular;
 	protected List<Texcoord> texcoord;
 
 	/** Gets the value of the position property.

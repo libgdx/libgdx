@@ -21,29 +21,30 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
+
 package org.jbox2d.dynamics;
 
 import java.util.List;
 
 public class Profile {
-  public float step;
-  public float collide;
-  public float solve;
-  public float solveInit;
-  public float solveVelocity;
-  public float solvePosition;
-  public float broadphase;
-  public float solveTOI;
-  
-  public void toDebugStrings(List<String> strings) {
-    strings.add("Profile:");
-    strings.add(" step: " + step);
-    strings.add("  collide: " + collide);
-    strings.add("  solve: " + solve);
-    strings.add("   solveInit: " + solveInit);
-    strings.add("   solveVelocity: " + solveVelocity);
-    strings.add("   solvePosition: " + solvePosition);
-    strings.add("   broadphase: " + broadphase);
-    strings.add("  solveTOI: " + solveTOI);
-  }
+	public float step;
+	public float collide;
+	public float solve;
+	public float solveInit;
+	public float solveVelocity;
+	public float solvePosition;
+	public float broadphase;
+	public float solveTOI;
+
+	public void toDebugStrings (List<String> strings) {
+		strings.add("Profile:");
+		strings.add(" step: " + step);
+		strings.add("  collide: " + collide);
+		strings.add("  solve: " + solve);
+		strings.add("   solveInit: " + solveInit);
+		strings.add("   solveVelocity: " + solveVelocity);
+		strings.add("   solvePosition: " + solvePosition);
+		strings.add("   broadphase: " + broadphase);
+		strings.add("  solveTOI: " + solveTOI);
+	}
 }

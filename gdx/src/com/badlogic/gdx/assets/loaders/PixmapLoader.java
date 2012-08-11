@@ -22,11 +22,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 
-/**
- * {@link AssetLoader} for {@link Pixmap} instances. The Pixmap is loaded asynchronously.
- * @author mzechner
- *
- */
+/** {@link AssetLoader} for {@link Pixmap} instances. The Pixmap is loaded asynchronously.
+ * @author mzechner */
 public class PixmapLoader extends AsynchronousAssetLoader<Pixmap, PixmapLoader.PixmapParameter> {
 	public PixmapLoader (FileHandleResolver resolver) {
 		super(resolver);

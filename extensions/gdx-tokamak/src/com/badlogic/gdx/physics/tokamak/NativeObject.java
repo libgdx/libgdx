@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.tokamak;
 
-/**
- * Base class for all native objects. Stores the address.
- * @author mzechner
- *
- */
+/** Base class for all native objects. Stores the address.
+ * @author mzechner */
 public class NativeObject {
 	long addr;
-	
-	NativeObject(long addr) {
+
+	NativeObject (long addr) {
 		this.addr = addr;
 	}
 }

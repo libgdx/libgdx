@@ -49,7 +49,7 @@ public final class World implements Disposable {
 	ObjectMap<org.jbox2d.dynamics.Body, Body> bodies = new ObjectMap<org.jbox2d.dynamics.Body, Body>();
 	ObjectMap<org.jbox2d.dynamics.Fixture, Fixture> fixtures = new ObjectMap<org.jbox2d.dynamics.Fixture, Fixture>();
 	ObjectMap<org.jbox2d.dynamics.joints.Joint, Joint> joints = new ObjectMap<org.jbox2d.dynamics.joints.Joint, Joint>();
-	
+
 	/** Construct a world object.
 	 * @param gravity the world gravity vector.
 	 * @param doSleep improve performance by not simulating inactive bodies. */
@@ -65,7 +65,7 @@ public final class World implements Disposable {
 	/** Register a contact filter to provide specific control over collision. Otherwise the default filter is used
 	 * (b2_defaultFilter). The listener is owned by you and must remain in scope. */
 	public void setContactFilter (final ContactFilter filter) {
-		if(filter != null) {
+		if (filter != null) {
 			world.setContactFilter(new org.jbox2d.callbacks.ContactFilter() {
 				@Override
 				public boolean shouldCollide (org.jbox2d.dynamics.Fixture fixtureA, org.jbox2d.dynamics.Fixture fixtureB) {
@@ -76,14 +76,14 @@ public final class World implements Disposable {
 			world.setContactFilter(new org.jbox2d.callbacks.ContactFilter());
 		}
 	}
-	
 
 	/** Register a contact event listener. The listener is owned by you and must remain in scope. */
 	Contact tmpContact = new Contact(this);
 	Manifold tmpManifold = new Manifold();
 	ContactImpulse tmpImpulse = new ContactImpulse();
+
 	public void setContactListener (final ContactListener listener) {
-		if(listener != null) {
+		if (listener != null) {
 			world.setContactListener(new org.jbox2d.callbacks.ContactListener() {
 				@Override
 				public void beginContact (org.jbox2d.dynamics.contacts.Contact contact) {
@@ -132,9 +132,9 @@ public final class World implements Disposable {
 		bd.linearDamping = def.linearDamping;
 		bd.linearVelocity.set(def.linearVelocity.x, def.linearVelocity.y);
 		bd.position.set(def.position.x, def.position.y);
-		if(def.type == BodyType.DynamicBody) bd.type = org.jbox2d.dynamics.BodyType.DYNAMIC;
-		if(def.type == BodyType.StaticBody) bd.type = org.jbox2d.dynamics.BodyType.STATIC;
-		if(def.type == BodyType.KinematicBody) bd.type = org.jbox2d.dynamics.BodyType.KINEMATIC;
+		if (def.type == BodyType.DynamicBody) bd.type = org.jbox2d.dynamics.BodyType.DYNAMIC;
+		if (def.type == BodyType.StaticBody) bd.type = org.jbox2d.dynamics.BodyType.STATIC;
+		if (def.type == BodyType.KinematicBody) bd.type = org.jbox2d.dynamics.BodyType.KINEMATIC;
 
 		org.jbox2d.dynamics.Body b = world.createBody(bd);
 		Body body = new Body(this, b);
@@ -149,11 +149,11 @@ public final class World implements Disposable {
 	public void destroyBody (Body body) {
 		world.destroyBody(body.body);
 		bodies.remove(body.body);
-		for(Fixture fixture: body.fixtures) {
+		for (Fixture fixture : body.fixtures) {
 			fixtures.remove(fixture.fixture);
 		}
 		JointEdge jointEdge = body.body.getJointList();
-		while(jointEdge != null) {
+		while (jointEdge != null) {
 			joints.remove(jointEdge.joint);
 		}
 	}
@@ -165,17 +165,17 @@ public final class World implements Disposable {
 		org.jbox2d.dynamics.joints.JointDef jd = def.toJBox2d();
 		org.jbox2d.dynamics.joints.Joint j = world.createJoint(jd);
 		Joint joint = null;
-		if(def.type == JointType.DistanceJoint) joint = new DistanceJoint(this, (org.jbox2d.dynamics.joints.DistanceJoint)j);
-		if(def.type == JointType.FrictionJoint) joint = new FrictionJoint(this, (org.jbox2d.dynamics.joints.FrictionJoint)j);
+		if (def.type == JointType.DistanceJoint) joint = new DistanceJoint(this, (org.jbox2d.dynamics.joints.DistanceJoint)j);
+		if (def.type == JointType.FrictionJoint) joint = new FrictionJoint(this, (org.jbox2d.dynamics.joints.FrictionJoint)j);
 		// FIXME if(def.type == JointType.GearJoint) joint = new DistanceJoint(this, (org.jbox2d.dynamics.joints.DistanceJoint)j);
-		if(def.type == JointType.MouseJoint) joint = new MouseJoint(this, (org.jbox2d.dynamics.joints.MouseJoint)j);
-		if(def.type == JointType.PrismaticJoint) joint = new PrismaticJoint(this, (org.jbox2d.dynamics.joints.PrismaticJoint)j);
-		if(def.type == JointType.PulleyJoint) joint = new PulleyJoint(this, (org.jbox2d.dynamics.joints.PulleyJoint)j);
-		if(def.type == JointType.RevoluteJoint) joint = new RevoluteJoint(this, (org.jbox2d.dynamics.joints.RevoluteJoint)j);
+		if (def.type == JointType.MouseJoint) joint = new MouseJoint(this, (org.jbox2d.dynamics.joints.MouseJoint)j);
+		if (def.type == JointType.PrismaticJoint) joint = new PrismaticJoint(this, (org.jbox2d.dynamics.joints.PrismaticJoint)j);
+		if (def.type == JointType.PulleyJoint) joint = new PulleyJoint(this, (org.jbox2d.dynamics.joints.PulleyJoint)j);
+		if (def.type == JointType.RevoluteJoint) joint = new RevoluteJoint(this, (org.jbox2d.dynamics.joints.RevoluteJoint)j);
 		// FIXME if(def.type == JointType.RopeJoint) joint = new RopeJoint(this, (org.jbox2d.dynamics.joints.RopeJoint)j);
-		if(def.type == JointType.WeldJoint) joint = new WeldJoint(this, (org.jbox2d.dynamics.joints.WeldJoint)j);
-// 	FIXME if(def.type == JointType.WheelJoint) joint = new WheelJoint(this, (org.jbox2d.dynamics.joints.WheelJoint)j);
-		if(joint == null) throw new GdxRuntimeException("Joint type '" + def.type + "' not yet supported by GWT backend");
+		if (def.type == JointType.WeldJoint) joint = new WeldJoint(this, (org.jbox2d.dynamics.joints.WeldJoint)j);
+// FIXME if(def.type == JointType.WheelJoint) joint = new WheelJoint(this, (org.jbox2d.dynamics.joints.WheelJoint)j);
+		if (joint == null) throw new GdxRuntimeException("Joint type '" + def.type + "' not yet supported by GWT backend");
 		joints.put(j, joint);
 		return joint;
 	}
@@ -243,7 +243,7 @@ public final class World implements Disposable {
 		Vec2 gravity = world.getGravity();
 		return tmp2.set(gravity.x, gravity.y);
 	}
-	
+
 	/** Is the world locked (in the middle of a time step). */
 	public boolean isLocked () {
 		return world.isLocked();
@@ -266,6 +266,7 @@ public final class World implements Disposable {
 	 * @param upperX the x coordinate of the upper right corner
 	 * @param upperY the y coordinate of the upper right corner */
 	AABB aabb = new AABB();
+
 	public void QueryAABB (final QueryCallback callback, float lowerX, float lowerY, float upperX, float upperY) {
 		// FIXME pool QueryCallback?
 		aabb.lowerBound.set(lowerX, lowerY);
@@ -284,11 +285,12 @@ public final class World implements Disposable {
 	 * step. Use {@link ContactListener} to avoid missing contacts
 	 * @return the contact list */
 	ArrayList<Contact> contacts = new ArrayList<Contact>();
+
 	public List<Contact> getContactList () {
 		// FIXME pool contacts
 		org.jbox2d.dynamics.contacts.Contact contactList = world.getContactList();
 		contacts.clear();
-		while(contactList != null) {
+		while (contactList != null) {
 			Contact contact = new Contact(this, contactList);
 			contacts.add(contact);
 			contactList = contactList.m_next;
@@ -309,7 +311,6 @@ public final class World implements Disposable {
 	public void dispose () {
 	}
 
-
 	/** Sets the box2d velocity threshold globally, for all World instances.
 	 * @param threshold the threshold, default 1.0f */
 	public static void setVelocityThreshold (float threshold) {
@@ -320,7 +321,7 @@ public final class World implements Disposable {
 	public static float getVelocityThreshold () {
 		return Settings.velocityThreshold;
 	}
-	
+
 	/** Ray-cast the world for all fixtures in the path of the ray. The ray-cast ignores shapes that contain the starting point.
 	 * @param callback a user implemented callback class.
 	 * @param point1 the ray starting point
@@ -329,6 +330,7 @@ public final class World implements Disposable {
 	Vec2 point2 = new Vec2();
 	Vector2 point = new Vector2();
 	Vector2 normal = new Vector2();
+
 	public void rayCast (final RayCastCallback callback, Vector2 point1, Vector2 point2) {
 		// FIXME pool RayCastCallback?
 		world.raycast(new org.jbox2d.callbacks.RayCastCallback() {

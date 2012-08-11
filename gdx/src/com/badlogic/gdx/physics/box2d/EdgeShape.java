@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.box2d;
 
 import com.badlogic.gdx.math.Vector2;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.math.Vector2;
 /** A line segment (edge) shape. These can be connected in chains or loops to other edge shapes. The connectivity information is
  * used to ensure correct contact normals. */
 public class EdgeShape extends Shape {
+	// @off
 	/*JNI
 #include <Box2D/Box2D.h>
 	 */

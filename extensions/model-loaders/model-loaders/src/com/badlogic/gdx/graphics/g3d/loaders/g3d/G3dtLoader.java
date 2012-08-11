@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.g3d;
 
 import java.io.BufferedReader;
@@ -194,9 +195,9 @@ public class G3dtLoader {
 			animations.put(animationName, animation);
 		}
 
-		KeyframedSubMesh mesh = new KeyframedSubMesh(name, new Mesh(VertexDataType.VertexArray, false, numVertices, indices.size, createVertexAttributes(
-			hasNormals, uvSets.size)), buildVertices(numVertices, hasNormals, uvSets), animations, animatedComponents,
-			GL10.GL_TRIANGLES);
+		KeyframedSubMesh mesh = new KeyframedSubMesh(name, new Mesh(VertexDataType.VertexArray, false, numVertices, indices.size,
+			createVertexAttributes(hasNormals, uvSets.size)), buildVertices(numVertices, hasNormals, uvSets), animations,
+			animatedComponents, GL10.GL_TRIANGLES);
 		mesh.mesh.setIndices(convertToShortArray(indices));
 		mesh.mesh.setVertices(mesh.blendedVertices);
 		return mesh;

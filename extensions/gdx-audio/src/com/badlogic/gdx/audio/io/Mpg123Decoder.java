@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.audio.io;
+
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  * 
@@ -30,7 +32,6 @@ package com.badlogic.gdx.audio.io;
  * limitations under the License.
  ******************************************************************************/
 
-
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
@@ -42,13 +43,12 @@ public class Mpg123Decoder extends Decoder {
 	static {
 		new SharedLibraryLoader().load("gdx-audio");
 	}
-	
+
 	public final long handle;
 
-	/** Opens the given file for mp3 decoding. Throws an IllegalArugmentException in case the file could not be opened.
-	 */
+	/** Opens the given file for mp3 decoding. Throws an IllegalArugmentException in case the file could not be opened. */
 	public Mpg123Decoder (FileHandle file) {
-		if(file.type() != FileType.External && file.type() != FileType.Absolute)
+		if (file.type() != FileType.External && file.type() != FileType.Absolute)
 			throw new IllegalArgumentException("File must be absolute or external!");
 		handle = openFile(file.file().getAbsolutePath());
 	}
@@ -75,12 +75,13 @@ public class Mpg123Decoder extends Decoder {
 	public float getLength () {
 		return getLength(handle);
 	}
-	
+
 	@Override
 	public void dispose () {
 		closeFile(handle);
 	}
 
+	// @off
 	/*JNI
 	extern "C" {
 	#include "libmpg123/mpg123.h"

@@ -424,7 +424,7 @@ class LwjglGL10 implements GL10 {
 		if (pixels == null)
 			GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (ByteBuffer)null);
 		else if (pixels instanceof ByteBuffer)
-			 GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (ByteBuffer)pixels);
+			GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (ByteBuffer)pixels);
 		else if (pixels instanceof ShortBuffer)
 			GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (ShortBuffer)pixels);
 		else if (pixels instanceof IntBuffer)

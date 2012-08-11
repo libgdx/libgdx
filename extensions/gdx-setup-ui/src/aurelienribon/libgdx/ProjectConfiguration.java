@@ -1,3 +1,4 @@
+
 package aurelienribon.libgdx;
 
 import java.util.ArrayList;
@@ -5,9 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Aurelien Ribon | http://www.aurelienribon.com/
- */
+/** @author Aurelien Ribon | http://www.aurelienribon.com/ */
 public class ProjectConfiguration {
 	public String projectName = "my-gdx-game";
 	public String mainClassName = "MyGdxGame";
@@ -33,18 +32,34 @@ public class ProjectConfiguration {
 	// -------------------------------------------------------------------------
 
 	public class Libraries {
-		public void add(String name, LibraryDef def) {
+		public void add (String name, LibraryDef def) {
 			librariesDefs.put(name, def);
 			if (!librariesUsages.containsKey(name)) librariesUsages.put(name, Boolean.FALSE);
 			if (!librariesPaths.containsKey(name)) librariesPaths.put(name, null);
 		}
 
-		public void setUsage(String name, boolean used) {librariesUsages.put(name, used);}
-		public void setPath(String name, String path) {librariesPaths.put(name, path);}
+		public void setUsage (String name, boolean used) {
+			librariesUsages.put(name, used);
+		}
 
-		public List<String> getNames() {return new ArrayList<String>(librariesDefs.keySet());}
-		public LibraryDef getDef(String name) {return librariesDefs.get(name);}
-		public boolean isUsed(String name) {return librariesUsages.get(name);}
-		public String getPath(String name) {return librariesPaths.get(name);}
+		public void setPath (String name, String path) {
+			librariesPaths.put(name, path);
+		}
+
+		public List<String> getNames () {
+			return new ArrayList<String>(librariesDefs.keySet());
+		}
+
+		public LibraryDef getDef (String name) {
+			return librariesDefs.get(name);
+		}
+
+		public boolean isUsed (String name) {
+			return librariesUsages.get(name);
+		}
+
+		public String getPath (String name) {
+			return librariesPaths.get(name);
+		}
 	}
 }

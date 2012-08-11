@@ -19,7 +19,6 @@ package com.badlogic.gdx.backends.android;
 import java.lang.reflect.Method;
 
 import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGL11;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
@@ -34,7 +33,6 @@ import android.view.View;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.backends.android.surfaceview.DefaultGLSurfaceView;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
@@ -45,7 +43,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -105,13 +102,13 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		if (sdkVersion >= 11 && view instanceof GLSurfaceView20) {
 			try {
 				Method method = null;
-				for(Method m: view.getClass().getMethods()) {
-					if(m.getName().equals("setPreserveEGLContextOnPause")) {
+				for (Method m : view.getClass().getMethods()) {
+					if (m.getName().equals("setPreserveEGLContextOnPause")) {
 						method = m;
 						break;
 					}
 				}
-				if(method != null) {
+				if (method != null) {
 					method.invoke((GLSurfaceView20)view, true);
 				}
 			} catch (Exception e) {
@@ -134,12 +131,13 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			config.useGL20 = false;
 			configChooser = getEglConfigChooser();
 			int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
-			
-			if(sdkVersion >= 11) {
+
+			if (sdkVersion >= 11) {
 				GLSurfaceView view = new GLSurfaceView(activity) {
 					@Override
 					protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec) {
-						ResolutionStrategy.MeasuredDimension measures = resolutionStrategy.calcMeasures(widthMeasureSpec, heightMeasureSpec);
+						ResolutionStrategy.MeasuredDimension measures = resolutionStrategy.calcMeasures(widthMeasureSpec,
+							heightMeasureSpec);
 						setMeasuredDimension(measures.width, measures.height);
 					}
 				};
@@ -304,7 +302,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		setupGL(gl);
 		logConfig(config);
 		updatePpi();
-		
+
 		Mesh.invalidateAllMeshes(app);
 		Texture.invalidateAllTextures(app);
 		ShaderProgram.invalidateAllShaderPrograms(app);
@@ -438,12 +436,11 @@ public final class AndroidGraphics implements Graphics, Renderer {
 				app.executedRunnables.clear();
 				app.executedRunnables.addAll(app.runnables);
 				app.runnables.clear();
-				
+
 				for (int i = 0; i < app.executedRunnables.size; i++) {
 					try {
 						app.executedRunnables.get(i).run();
-					}
-					catch(Throwable t) {
+					} catch (Throwable t) {
 						t.printStackTrace();
 					}
 				}
@@ -478,7 +475,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	public float getDeltaTime () {
 		return mean.getMean() == 0 ? deltaTime : mean.getMean();
 	}
-	
+
 	@Override
 	public float getRawDeltaTime () {
 		return deltaTime;
@@ -603,24 +600,24 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
-		if(view != null) {
+		if (view != null) {
 			this.isContinuous = isContinuous;
-			int renderMode = isContinuous?GLSurfaceView.RENDERMODE_CONTINUOUSLY:GLSurfaceView.RENDERMODE_WHEN_DIRTY;
-			if(view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).setRenderMode(renderMode);
-			if(view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
+			int renderMode = isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
+			if (view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).setRenderMode(renderMode);
+			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
 			mean.clear();
 		}
 	}
-	
-	public boolean isContinuousRendering() {
+
+	public boolean isContinuousRendering () {
 		return isContinuous;
 	}
 
 	@Override
 	public void requestRendering () {
-		if(view != null) {
-			if(view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).requestRender();
-			if(view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
+		if (view != null) {
+			if (view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).requestRender();
+			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
 		}
 	}
 

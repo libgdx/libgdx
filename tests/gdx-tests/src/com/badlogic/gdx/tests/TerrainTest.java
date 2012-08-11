@@ -30,7 +30,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Quaternion;
@@ -59,7 +58,7 @@ public class TerrainTest extends GdxTest {
 
 		int len = chunk.vertices.length;
 		for (int i = 3; i < len; i += 4) {
-	
+
 			chunk.vertices[i] = Color.toFloatBits(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255), 255);
 		}
 		mesh = new Mesh(true, chunk.vertices.length / 3, chunk.indices.length, new VertexAttribute(VertexAttributes.Usage.Position,
@@ -107,9 +106,9 @@ public class TerrainTest extends GdxTest {
 
 	private void handleInput (Input input, float delta) {
 		if (input.isTouched()) {
-			// simply modifying speed  
-			delta = delta+0.0485f;
-			
+			// simply modifying speed
+			delta = delta + 0.0485f;
+
 			Ray ray = camera.getPickRay(input.getX(), input.getY());
 			if (Intersector.intersectRayTriangles(ray, chunk.vertices, chunk.indices, 4, intersection)) {
 				intersected = true;
@@ -139,33 +138,32 @@ public class TerrainTest extends GdxTest {
 
 		if (input.isKeyPressed(Keys.W)) {
 			Vector3 forward = new Vector3().set(camera.direction).mul(delta);
-			camera.position.add(forward);	
+			camera.position.add(forward);
 		}
 		if (input.isKeyPressed(Keys.S)) {
 			Vector3 backward = new Vector3().set(camera.direction).mul(delta);
-			camera.position.sub(backward);		
+			camera.position.sub(backward);
 		}
-		
+
 		if (input.isKeyPressed(Keys.A)) {
 			Vector3 left = new Vector3().set(camera.direction.cpy().crs(camera.up).nor()).mul(delta);
-			camera.position.sub(left);					
+			camera.position.sub(left);
 		}
 		if (input.isKeyPressed(Keys.D)) {
 			Vector3 right = new Vector3().set(camera.direction.cpy().crs(camera.up).nor()).mul(delta);
-			camera.position.add(right);					
+			camera.position.add(right);
 		}
-		
-		
+
 		Vector3 forward = new Vector3().set(camera.direction).mul(delta);
-		camera.position.add(forward);			
-		int nextId = ( MathUtils.floor(camera.position.x) * 33) + MathUtils.floor(camera.position.z);
-		// are we still on our current chunk ? - maybe switching to another chunk 
-		if( nextId > heightmap.length-1 || nextId < 0  ){
-			camera.position.y = 5;			// index not in bounds
-		}else{
-			camera.position.y = this.heightmap[nextId] * 4 + 1; // current pos found			
+		camera.position.add(forward);
+		int nextId = (MathUtils.floor(camera.position.x) * 33) + MathUtils.floor(camera.position.z);
+		// are we still on our current chunk ? - maybe switching to another chunk
+		if (nextId > heightmap.length - 1 || nextId < 0) {
+			camera.position.y = 5; // index not in bounds
+		} else {
+			camera.position.y = this.heightmap[nextId] * 4 + 1; // current pos found
 		}
-		
+
 	}
 
 	final static class TerrainChunk {
@@ -187,7 +185,7 @@ public class TerrainTest extends GdxTest {
 			this.vertices = new float[heightMap.length * vertexSize];
 			this.indices = new short[width * height * 6];
 			this.vertexSize = vertexSize;
-			
+
 			buildHeightmap("data/heightmap.png");
 			buildIndices();
 			buildVertices();
@@ -219,7 +217,7 @@ public class TerrainTest extends GdxTest {
 			int idx = 0;
 			int hIdx = 0;
 			int inc = vertexSize - 3;
-			int strength = 4; // multiplier for heightmap			
+			int strength = 4; // multiplier for heightmap
 
 			for (int z = 0; z < heightPitch; z++) {
 				for (int x = 0; x < widthPitch; x++) {

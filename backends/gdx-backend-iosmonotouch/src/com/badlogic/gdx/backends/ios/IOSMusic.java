@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.ios;
 
 import com.badlogic.gdx.audio.Music;
@@ -20,57 +21,57 @@ import com.badlogic.gdx.audio.Music;
 public class IOSMusic implements Music {
 
 	@Override
-	public void play() {
+	public void play () {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void pause() {
+	public void pause () {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void stop() {
+	public void stop () {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public boolean isPlaying() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void setLooping(boolean isLooping) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isLooping() {
+	public boolean isPlaying () {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public void setVolume(float volume) {
+	public void setLooping (boolean isLooping) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public float getPosition() {
+	public boolean isLooping () {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setVolume (float volume) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public float getPosition () {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose () {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

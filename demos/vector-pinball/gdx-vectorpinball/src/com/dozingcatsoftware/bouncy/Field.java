@@ -119,20 +119,20 @@ public class Field implements ContactListener {
 		fieldElementsToTick = tickElements.toArray(new FieldElement[0]);
 
 		delegate = new Field1Delegate();
-//		String delegateClass = layout.getDelegateClassName();
-//		if (delegateClass != null) {
-//			if (delegateClass.indexOf('.') == -1) {
-//				delegateClass = "com.dozingcatsoftware.bouncy.fields." + delegateClass;
-//			}
-//			try {
-//				delegate = (Delegate)Class.forName(delegateClass).newInstance();
-//			} catch (Exception ex) {
-//				throw new RuntimeException(ex);
-//			}
-//		} else {
-//			// use no-op delegate if no class specified, so that field.getDelegate() is always non-null
-//			delegate = new BaseFieldDelegate();
-//		}
+// String delegateClass = layout.getDelegateClassName();
+// if (delegateClass != null) {
+// if (delegateClass.indexOf('.') == -1) {
+// delegateClass = "com.dozingcatsoftware.bouncy.fields." + delegateClass;
+// }
+// try {
+// delegate = (Delegate)Class.forName(delegateClass).newInstance();
+// } catch (Exception ex) {
+// throw new RuntimeException(ex);
+// }
+// } else {
+// // use no-op delegate if no class specified, so that field.getDelegate() is always non-null
+// delegate = new BaseFieldDelegate();
+// }
 	}
 
 	public void startGame () {

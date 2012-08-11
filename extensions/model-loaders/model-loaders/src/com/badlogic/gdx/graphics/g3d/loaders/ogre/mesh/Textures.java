@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh;
 
 import java.util.ArrayList;
@@ -32,8 +33,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "textures")
 public class Textures {
 
-	@XmlElement(required = true)
-	protected List<Texture> texture;
+	@XmlElement(required = true) protected List<Texture> texture;
 
 	/** Gets the value of the texture property.
 	 * 

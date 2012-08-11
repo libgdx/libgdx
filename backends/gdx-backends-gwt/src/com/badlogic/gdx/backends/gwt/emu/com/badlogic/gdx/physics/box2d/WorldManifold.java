@@ -24,12 +24,12 @@ public class WorldManifold {
 	protected final Vector2[] points = {new Vector2(), new Vector2()};
 	protected int numContactPoints;
 
-	protected WorldManifold() {
+	protected WorldManifold () {
 	}
-	
+
 	protected WorldManifold (org.jbox2d.collision.WorldManifold manifold) {
 		normal.set(manifold.normal.x, manifold.normal.y);
-		for(int i = 0; i < manifold.points.length; i++) {
+		for (int i = 0; i < manifold.points.length; i++) {
 			points[i].set(manifold.points[i].x, manifold.points[i].y);
 		}
 		numContactPoints = manifold.points.length;

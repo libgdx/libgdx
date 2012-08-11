@@ -25,7 +25,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * provided so that infinite forces are not generated. */
 public class RevoluteJoint extends Joint {
 	org.jbox2d.dynamics.joints.RevoluteJoint joint;
-	
+
 	public RevoluteJoint (World world, org.jbox2d.dynamics.joints.RevoluteJoint joint) {
 		super(world, joint);
 		this.joint = joint;
@@ -78,6 +78,7 @@ public class RevoluteJoint extends Joint {
 	}
 
 	float motorSpeed = 0;
+
 	/** Set the motor speed in radians per second. */
 	public void setMotorSpeed (float speed) {
 		motorSpeed = speed;
@@ -88,7 +89,6 @@ public class RevoluteJoint extends Joint {
 	public float getMotorSpeed () {
 		return motorSpeed;
 	}
-
 
 	/** Set the maximum motor torque, usually in N-m. */
 	public void setMaxMotorTorque (float torque) {

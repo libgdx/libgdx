@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.bullet;
 
 import com.badlogic.gdx.math.Matrix3;
@@ -25,12 +26,12 @@ public class BulletTest {
 		new SharedLibraryLoader().load("gdx-bullet");
 	}
 
-	public static void main(String[] args) {
+	public static void main (String[] args) {
 		testMathTypes();
 		testBounce();
 	}
 
-	public static void testMathTypes() {
+	public static void testMathTypes () {
 		Matrix3 m = new Matrix3();
 		m.idt();
 		m.val[0] = 1;
@@ -64,16 +65,14 @@ public class BulletTest {
 		t.delete();
 	}
 
-	public static void testBounce() {
+	public static void testBounce () {
 
 		// Create the collision and dynamics worlds
 		btDefaultCollisionConfiguration collisionConfiguration = new btDefaultCollisionConfiguration();
-		btCollisionDispatcher dispatcher = new btCollisionDispatcher(
-				collisionConfiguration);
+		btCollisionDispatcher dispatcher = new btCollisionDispatcher(collisionConfiguration);
 		btDbvtBroadphase broadphase = new btDbvtBroadphase();
 		btSequentialImpulseConstraintSolver solver = new btSequentialImpulseConstraintSolver();
-		btDiscreteDynamicsWorld dynamicsWorld = new btDiscreteDynamicsWorld(
-				dispatcher, broadphase, solver, collisionConfiguration);
+		btDiscreteDynamicsWorld dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 
 		// Configure gravity at 10 ms/s/s toward -z
 		dynamicsWorld.setGravity(new Vector3(0f, 0f, -10f));
@@ -89,7 +88,7 @@ public class BulletTest {
 		// Simulate 10 seconds
 		int durationSeconds = 10;
 		int hertz = 60;
-		float timeStep = 1f / (float) hertz;
+		float timeStep = 1f / (float)hertz;
 		for (int i = 0; i < hertz * durationSeconds; i++) {
 			dynamicsWorld.stepSimulation(timeStep);
 			if (i % hertz == 0) {
@@ -109,24 +108,22 @@ public class BulletTest {
 		collisionConfiguration.delete();
 	}
 
-	private static btRigidBody createGroundPlane() {
+	private static btRigidBody createGroundPlane () {
 
 		btTransform startTransform = new btTransform();
 		startTransform.setIdentity();
 
 		// Ground is the x,y plane
-		btRigidBody body = new btRigidBody(0, new btDefaultMotionState(
-				startTransform),
-				new btStaticPlaneShape(new Vector3(0, 0, 1), 0), new Vector3(0,
-						0, 0));
+		btRigidBody body = new btRigidBody(0, new btDefaultMotionState(startTransform), new btStaticPlaneShape(
+			new Vector3(0, 0, 1), 0), new Vector3(0, 0, 0));
 
 		// Transform values were copied into the rigid object, delete here
 		startTransform.delete();
-		
+
 		return body;
 	}
 
-	private static btRigidBody createDropObject(float height) {
+	private static btRigidBody createDropObject (float height) {
 
 		float mass = 100f;
 
@@ -139,16 +136,15 @@ public class BulletTest {
 		btBoxShape shape = new btBoxShape(new Vector3(0.5f, 0.5f, 0.5f));
 		shape.calculateLocalInertia(mass, localInertia);
 
-		btRigidBody body = new btRigidBody(mass, new btDefaultMotionState(
-				startTransform), shape, localInertia);
+		btRigidBody body = new btRigidBody(mass, new btDefaultMotionState(startTransform), shape, localInertia);
 
 		// Transform values were copied into the rigid object, delete here
 		startTransform.delete();
-		
+
 		return body;
 	}
 
-	private static void printZ(btRigidBody body) {
+	private static void printZ (btRigidBody body) {
 		btTransform transform = body.getWorldTransform();
 		System.out.println(transform.getOrigin().z);
 		// We didn't create the transform, don't delete it

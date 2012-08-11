@@ -340,7 +340,7 @@ public class Hiero4 extends JFrame {
 							}
 
 							@Override
-							public void prepare () {								
+							public void prepare () {
 							}
 						}));
 						renderer.font = new BitmapFont(Gdx.files.absolute("out"), glyphRegion, false);

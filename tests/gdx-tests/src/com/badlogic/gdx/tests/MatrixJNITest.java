@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -106,7 +107,7 @@ public class MatrixJNITest extends GdxTest {
 		float[] fvecs = new float[3 * 500000];
 		start = TimeUtils.nanoTime();
 		Matrix4.mulVec(mata.val, fvecs, 0, 500000, 3);
-		Gdx.app.log("MatrixJNITest", "jni bulk vecs * matrix took: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);			
+		Gdx.app.log("MatrixJNITest", "jni bulk vecs * matrix took: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
 
 		start = TimeUtils.nanoTime();
 		for (int i = 0; i < 1000000; i++) {

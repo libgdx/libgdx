@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package java.lang;
 
 import java.io.IOException;
 import java.nio.CharBuffer;
 
 public interface Readable {
-	int read(CharBuffer cb) throws IOException;
+	int read (CharBuffer cb) throws IOException;
 }

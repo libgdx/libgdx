@@ -177,13 +177,13 @@ public class ObjLoader implements StillModelLoader {
 					finalVerts[vi++] = uvs.get(uvIndex);
 				}
 			}
-			
+
 			final int numIndices = numFaces * 3 >= Short.MAX_VALUE ? 0 : numFaces * 3;
 			final short[] finalIndices = new short[numIndices];
 			// if there are too many vertices in a mesh, we can't use indices
 			if (numIndices > 0) {
-				for (int i=0; i<numIndices; i++){
-					finalIndices[i] = (short) i;
+				for (int i = 0; i < numIndices; i++) {
+					finalIndices[i] = (short)i;
 				}
 			}
 			final Mesh mesh;

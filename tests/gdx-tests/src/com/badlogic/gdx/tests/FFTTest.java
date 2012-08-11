@@ -16,23 +16,15 @@
 
 package com.badlogic.gdx.tests;
 
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 import java.util.Arrays;
 
-import com.badlogic.gdx.audio.AudioBuild;
 import com.badlogic.gdx.audio.analysis.AudioTools;
 import com.badlogic.gdx.audio.analysis.FFT;
 import com.badlogic.gdx.audio.analysis.KissFFT;
-import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
-/**
- * Simples test that makes sure the output of KissFFT and FFT are (mostly)
- * equal.
- * @author mzechner
- *
- */
+/** Simples test that makes sure the output of KissFFT and FFT are (mostly) equal.
+ * @author mzechner */
 public class FFTTest {
 	static int SAMPLES = 1024;
 
@@ -40,11 +32,11 @@ public class FFTTest {
 		new SharedLibraryLoader("../../extensions/gdx-audio/libs/gdx-audio-natives.jar").load("gdx-audio");
 		short[] samples = AudioTools.generate(44100, 440, SAMPLES);
 		float[] samplesFloat = AudioTools.generateFloat(44100, 440, SAMPLES);
-		
+
 		// Damien's FFT
 		FFT fft = new FFT(SAMPLES, 44100);
 		fft.forward(samplesFloat);
-		float[] spectrum = fft.getSpectrum();		
+		float[] spectrum = fft.getSpectrum();
 		System.out.println(Arrays.toString(spectrum));
 
 		// KissFFT

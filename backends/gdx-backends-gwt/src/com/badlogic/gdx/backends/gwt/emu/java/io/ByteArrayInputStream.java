@@ -13,24 +13,25 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package java.io;
 
 public class ByteArrayInputStream extends InputStream {
 
-  byte[] data;
-  int pos = 0;
-  
-  public ByteArrayInputStream(byte[] data) {
-    this.data = data;
-  }
-  
-  @Override
-  public int read()  {
-    return pos < data.length ? data[pos++] & 0xff: -1;
-  }
-  
-  @Override
-  public int available() {
-	  return data.length - pos;
-  }  
+	byte[] data;
+	int pos = 0;
+
+	public ByteArrayInputStream (byte[] data) {
+		this.data = data;
+	}
+
+	@Override
+	public int read () {
+		return pos < data.length ? data[pos++] & 0xff : -1;
+	}
+
+	@Override
+	public int available () {
+		return data.length - pos;
+	}
 }

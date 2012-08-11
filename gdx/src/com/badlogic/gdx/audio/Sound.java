@@ -44,7 +44,7 @@ public interface Sound extends Disposable {
 	 * @param volume the volume in the range [0,1]
 	 * @return the id of the sound instance */
 	public long play (float volume);
-	
+
 	/** Plays the sound. If the sound is already playing, it will be played again, concurrently.
 	 * @param volume the volume in the range [0,1]
 	 * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower, the value has to be between 0.5 and 2.0
@@ -56,14 +56,14 @@ public interface Sound extends Disposable {
 	 * @return the id of the sound instance */
 	public long loop ();
 
-	/** Plays the sound, looping. If the sound is already playing, it will be played again, concurrently. You need
-	 *  to stop the sound via a call to {@link #stop(long)} using the returned id.
+	/** Plays the sound, looping. If the sound is already playing, it will be played again, concurrently. You need to stop the sound
+	 * via a call to {@link #stop(long)} using the returned id.
 	 * @param volume the volume in the range [0, 1]
 	 * @return the id of the sound instance */
 	public long loop (float volume);
-	
-	/** Plays the sound, looping. If the sound is already playing, it will be played again, concurrently. You need
-	 *  to stop the sound via a call to {@link #stop(long)} using the returned id.
+
+	/** Plays the sound, looping. If the sound is already playing, it will be played again, concurrently. You need to stop the sound
+	 * via a call to {@link #stop(long)} using the returned id.
 	 * @param volume the volume in the range [0,1]
 	 * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower, the value has to be between 0.5 and 2.0
 	 * @param pan panning in the range -1 (full right) to 1 (full left). 0 is center position.

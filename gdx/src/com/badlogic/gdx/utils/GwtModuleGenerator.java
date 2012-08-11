@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.utils;
 
 import java.io.IOException;
@@ -29,8 +30,7 @@ import com.badlogic.gdx.files.FileHandle;
  * directory.
  * @author mzechner */
 public class GwtModuleGenerator {
-	private static void gatherJavaFiles (FileHandle dir, Set<String> names, Map<String, FileHandle> fileHandles,
-		boolean recursive) {
+	private static void gatherJavaFiles (FileHandle dir, Set<String> names, Map<String, FileHandle> fileHandles, boolean recursive) {
 		if (dir.name().equals(".svn")) return;
 		FileHandle[] files = dir.list();
 		for (FileHandle file : files) {
@@ -39,7 +39,7 @@ public class GwtModuleGenerator {
 			} else {
 				if (file.extension().equals("java")) {
 					System.out.println(file.name());
-					if(names.contains(file.name())) System.out.println(file.name() + " duplicate!");
+					if (names.contains(file.name())) System.out.println(file.name() + " duplicate!");
 					names.add(file.name());
 					fileHandles.put(file.name(), file);
 				}
@@ -51,7 +51,8 @@ public class GwtModuleGenerator {
 		Set<String> excludes = new HashSet<String>();
 		Map<String, FileHandle> excludesHandles = new HashMap<String, FileHandle>();
 		System.out.println("Excludes -------------------------------------------------");
-		gatherJavaFiles(new FileHandle("../backends/gdx-backends-gwt/src/com/badlogic/gdx/backends/gwt/emu/com/badlogic/gdx"), excludes, excludesHandles, true);
+		gatherJavaFiles(new FileHandle("../backends/gdx-backends-gwt/src/com/badlogic/gdx/backends/gwt/emu/com/badlogic/gdx"),
+			excludes, excludesHandles, true);
 		System.out.println("#" + excludes.size());
 
 		// build and shared library loading utils
@@ -59,7 +60,7 @@ public class GwtModuleGenerator {
 		excludes.add("GdxNativesLoader.java");
 		excludes.add("GwtModuleGenerator.java");
 		excludes.add("SharedLibraryLoader.java");
-		
+
 		// native pixmap routines
 		excludes.add("Gdx2DPixmap.java");
 		excludes.add("PixmapIO.java");
@@ -70,20 +71,20 @@ public class GwtModuleGenerator {
 		// remote input
 		excludes.add("RemoteInput.java");
 		excludes.add("RemoteSender.java");
-		
+
 		// tiled support
 		excludes.add("TiledLoader.java"); // FIXME?
 		excludes.add("TileMapRendererLoader.java"); // FIXME?
-		
+
 		// various utils
 		excludes.add("AtomicQueue.java");
 		excludes.add("LittleEndianInputStream.java");
 		excludes.add("PauseableThread.java");
 		excludes.add("DesktopClipboard.java");
 		excludes.add("AndroidClipboard.java");
-		
+
 		// scene2d ui package
-//		gatherJavaFiles(new FileHandle("src/com/badlogic/gdx/scenes/scene2d/ui"), excludes, excludesHandles, true);
+// gatherJavaFiles(new FileHandle("src/com/badlogic/gdx/scenes/scene2d/ui"), excludes, excludesHandles, true);
 
 		Set<String> includes = new HashSet<String>();
 		Map<String, FileHandle> includesHandles = new TreeMap<String, FileHandle>();
@@ -98,7 +99,7 @@ public class GwtModuleGenerator {
 			includesHandles.remove(include);
 			System.out.println("excluded '" + include + "'");
 		}
-		
+
 		System.out.println("diff: " + includesHandles.size());
 
 		StringWriter writer = new StringWriter();
@@ -107,7 +108,7 @@ public class GwtModuleGenerator {
 		builder.element("module").attribute("rename-to", "com.badlogic.gdx");
 		builder.element("inherits").attribute("name", "com.esotericsoftware.tablelayout").pop();
 		builder.element("source").attribute("path", "gdx");
-		for(String include: includesHandles.keySet()) {
+		for (String include : includesHandles.keySet()) {
 			String name = includesHandles.get(include).path().replace("\\", "/").replace("src/com/badlogic/gdx/", "");
 			builder.element("include").attribute("name", name).pop();
 		}
@@ -118,7 +119,7 @@ public class GwtModuleGenerator {
 		builder.pop();
 		builder.close();
 		System.out.println(writer);
-		
+
 		new FileHandle("src/com/badlogic/gdx.gwt.xml").writeString(writer.toString(), false);
 	}
 }

@@ -24,6 +24,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 /** A rigid body. These are created via World.CreateBody.
  * @author mzechner */
 public class Body {
+	// @off
 	/*JNI
 #include <Box2D/Box2D.h>
 	 */
@@ -608,6 +609,7 @@ public class Body {
 		jniSetType(addr, type.getValue());
 	}
 	
+	// @off
 	/*JNI
 inline b2BodyType getBodyType( int type )
 {

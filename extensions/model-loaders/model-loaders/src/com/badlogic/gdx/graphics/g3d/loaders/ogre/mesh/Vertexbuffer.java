@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh;
 
 import java.util.ArrayList;
@@ -35,48 +36,23 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "vertexbuffer")
 public class Vertexbuffer {
 
-	@XmlAttribute
-	public boolean positions;
-	@XmlAttribute
-	public boolean normals;
-	@XmlAttribute(name = "colours_diffuse")
-	public boolean coloursDiffuse;
-	@XmlAttribute(name = "colours_specular")
-	public boolean coloursSpecular;
-	@XmlAttribute(name = "texture_coords")
-	public int textureCoords;
-	@XmlAttribute(name = "texture_coord_dimensions_0")
-	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-	protected String textureCoordDimensions0;
-	@XmlAttribute(name = "texture_coord_dimensions_1")
-	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-	protected String textureCoordDimensions1;
-	@XmlAttribute(name = "texture_coord_dimensions_2")
-	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-	protected String textureCoordDimensions2;
-	@XmlAttribute(name = "texture_coord_dimensions_3")
-	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-	protected String textureCoordDimensions3;
-	@XmlAttribute(name = "texture_coord_dimensions_4")
-	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-	protected String textureCoordDimensions4;
-	@XmlAttribute(name = "texture_coord_dimensions_5")
-	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-	protected String textureCoordDimensions5;
-	@XmlAttribute(name = "texture_coord_dimensions_6")
-	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-	protected String textureCoordDimensions6;
-	@XmlAttribute(name = "texture_coord_dimensions_7")
-	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-	protected String textureCoordDimensions7;
-	@XmlAttribute
-	public boolean tangents;
-	@XmlAttribute(name = "tangent_dimensions")
-	public int tangentDimensions;
-	@XmlAttribute
-	public boolean binormals;
-	@XmlElement(required = true)
-	protected List<Vertex> vertex;
+	@XmlAttribute public boolean positions;
+	@XmlAttribute public boolean normals;
+	@XmlAttribute(name = "colours_diffuse") public boolean coloursDiffuse;
+	@XmlAttribute(name = "colours_specular") public boolean coloursSpecular;
+	@XmlAttribute(name = "texture_coords") public int textureCoords;
+	@XmlAttribute(name = "texture_coord_dimensions_0") @XmlJavaTypeAdapter(CollapsedStringAdapter.class) protected String textureCoordDimensions0;
+	@XmlAttribute(name = "texture_coord_dimensions_1") @XmlJavaTypeAdapter(CollapsedStringAdapter.class) protected String textureCoordDimensions1;
+	@XmlAttribute(name = "texture_coord_dimensions_2") @XmlJavaTypeAdapter(CollapsedStringAdapter.class) protected String textureCoordDimensions2;
+	@XmlAttribute(name = "texture_coord_dimensions_3") @XmlJavaTypeAdapter(CollapsedStringAdapter.class) protected String textureCoordDimensions3;
+	@XmlAttribute(name = "texture_coord_dimensions_4") @XmlJavaTypeAdapter(CollapsedStringAdapter.class) protected String textureCoordDimensions4;
+	@XmlAttribute(name = "texture_coord_dimensions_5") @XmlJavaTypeAdapter(CollapsedStringAdapter.class) protected String textureCoordDimensions5;
+	@XmlAttribute(name = "texture_coord_dimensions_6") @XmlJavaTypeAdapter(CollapsedStringAdapter.class) protected String textureCoordDimensions6;
+	@XmlAttribute(name = "texture_coord_dimensions_7") @XmlJavaTypeAdapter(CollapsedStringAdapter.class) protected String textureCoordDimensions7;
+	@XmlAttribute public boolean tangents;
+	@XmlAttribute(name = "tangent_dimensions") public int tangentDimensions;
+	@XmlAttribute public boolean binormals;
+	@XmlElement(required = true) protected List<Vertex> vertex;
 
 	/** Gets the value of the textureCoordDimensions0 property.
 	 * 

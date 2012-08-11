@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.gwt;
 
 import java.io.BufferedInputStream;
@@ -36,15 +37,15 @@ public class GwtFileHandle extends FileHandle {
 	public final Preloader preloader;
 	private final String file;
 	private final FileType type;
-	
+
 	protected GwtFileHandle (Preloader preloader, String fileName, FileType type) {
-		if(type != FileType.Internal) throw new GdxRuntimeException("FileType '" + type + "' Not supported in GWT backend");
+		if (type != FileType.Internal) throw new GdxRuntimeException("FileType '" + type + "' Not supported in GWT backend");
 		this.preloader = preloader;
 		this.file = fileName.replace('\\', '/');
 		this.type = type;
 	}
-	
-	public GwtFileHandle(String path) {
+
+	public GwtFileHandle (String path) {
 		this.type = FileType.Internal;
 		this.preloader = ((GwtApplication)Gdx.app).getPreloader();
 		this.file = path.replace('\\', '/');
@@ -57,7 +58,7 @@ public class GwtFileHandle extends FileHandle {
 	public String name () {
 		int index = file.lastIndexOf('/');
 		index = Math.max(index, file.lastIndexOf('\\'));
-		if(index < 0) return file;
+		if (index < 0) return file;
 		// FIXME for paths
 		return file.substring(index + 1);
 	}
@@ -75,11 +76,9 @@ public class GwtFileHandle extends FileHandle {
 		if (dotIndex == -1) return name;
 		return name.substring(0, dotIndex);
 	}
-	
-	/**
-	 * @return the path and filename without the extension, e.g. dir/dir2/file.png -> dir/dir2/file
-	 */
-	public String pathWithoutExtension() {
+
+	/** @return the path and filename without the extension, e.g. dir/dir2/file.png -> dir/dir2/file */
+	public String pathWithoutExtension () {
 		String path = file;
 		int dotIndex = path.lastIndexOf('.');
 		if (dotIndex == -1) return path;
@@ -100,7 +99,7 @@ public class GwtFileHandle extends FileHandle {
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public InputStream read () {
 		InputStream in = preloader.read(file);
-		if(in == null) throw new GdxRuntimeException(file + " does not exist");
+		if (in == null) throw new GdxRuntimeException(file + " does not exist");
 		return in;
 	}
 
@@ -147,7 +146,7 @@ public class GwtFileHandle extends FileHandle {
 	/** Reads the entire file into a string using the specified charset.
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public String readString (String charset) {
-		if(preloader.isText(file)) return preloader.texts.get(file);
+		if (preloader.isText(file)) return preloader.texts.get(file);
 		try {
 			return new String(readBytes(), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -311,19 +310,19 @@ public class GwtFileHandle extends FileHandle {
 	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the child
 	 *        doesn't exist. */
 	public FileHandle child (String name) {
-		return new GwtFileHandle(preloader, file + (file.endsWith("/")?"":"/") + name, FileType.Internal);
+		return new GwtFileHandle(preloader, file + (file.endsWith("/") ? "" : "/") + name, FileType.Internal);
 	}
 
 	public FileHandle parent () {
 		int index = file.lastIndexOf("/");
 		String dir = "";
-		if(index > 0) dir = file.substring(0, index + 1);
+		if (index > 0) dir = file.substring(0, index + 1);
 		return new GwtFileHandle(preloader, dir, type);
 	}
-	
+
 	public FileHandle sibling (String name) {
 		name = name.replace('\\', '/');
-		return parent().child(name);		
+		return parent().child(name);
 	}
 
 	/** @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */

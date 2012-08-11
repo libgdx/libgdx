@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actions;
 
-/** An action that has an int, whose value is transitioned over time. 
+/** An action that has an int, whose value is transitioned over time.
  * @author Nathan Sweet */
 public class IntAction extends TemporalAction {
 	private int start, end;

@@ -60,7 +60,7 @@ public class ObjLoader {
 		}
 		return loadObjFromString(line, flipV);
 	}
-	
+
 	/** Loads a Wavefront OBJ file from the given input stream.
 	 * 
 	 * @param in the InputStream
@@ -222,7 +222,7 @@ public class ObjLoader {
 
 			short[] indices = new short[numFaces * 3];
 			for (int i = 0; i < indices.length; i++)
-				indices[i] = (short) facesVerts[i];
+				indices[i] = (short)facesVerts[i];
 
 			mesh = new Mesh(true, verts.length, indices.length, attributes.toArray(new VertexAttribute[attributes.size()]));
 			mesh.setVertices(verts);

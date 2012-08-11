@@ -22,6 +22,7 @@ package com.badlogic.gdx.physics.box2d;
  * NOTE: YOU NEED TO DISPOSE SHAPES YOU CREATED YOURSELF AFTER YOU NO LONGER USE THEM! E.g. after calling body.createFixture();
  * @author mzechner */
 public abstract class Shape {
+	// @off
 	/*JNI
 #include <Box2D/Box2D.h>
 	 */

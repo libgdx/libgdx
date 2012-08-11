@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.graphics.g3d.test;
 
-import java.util.Arrays;
 import java.util.Comparator;
 
 import com.badlogic.gdx.Gdx;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.graphics.g3d.ModelRenderer;
 import com.badlogic.gdx.graphics.g3d.StillModelInstance;
 import com.badlogic.gdx.graphics.g3d.experimental.MaterialShaderHandler;
 import com.badlogic.gdx.graphics.g3d.lights.LightManager;
-import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute;
@@ -20,16 +18,13 @@ import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.AnimatedModel;
 import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.graphics.g3d.model.SubMesh;
-import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonSubMesh;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.test.PrototypeRendererGL20.DrawableManager.Drawable;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 
 //stuff that happens
@@ -406,14 +401,14 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 			}
 		}
 	}
-	
+
 	public static final Comparator<Drawable> opaqueSorter = new Comparator<Drawable>() {
 
-		public int compare(Drawable a, Drawable b) {
+		public int compare (Drawable a, Drawable b) {
 			if (a.firstShaderHash != b.firstShaderHash) return b.firstShaderHash - a.firstShaderHash;
-			
+
 			if (a.modelHash != b.modelHash) return b.modelHash - a.modelHash;
-	
+
 			return b.distance - a.distance;
 		}
 

@@ -121,7 +121,7 @@ public class Array<T> implements Iterable<T> {
 		System.arraycopy(array, offset, items, size, length);
 		size += length;
 	}
-	
+
 	public T get (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		return items[index];
@@ -142,7 +142,7 @@ public class Array<T> implements Iterable<T> {
 		size++;
 		items[index] = value;
 	}
-	
+
 	public void swap (int first, int second) {
 		if (first >= size) throw new IndexOutOfBoundsException(String.valueOf(first));
 		if (second >= size) throw new IndexOutOfBoundsException(String.valueOf(second));

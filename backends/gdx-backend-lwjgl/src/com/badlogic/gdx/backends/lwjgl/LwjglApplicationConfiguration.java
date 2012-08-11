@@ -18,18 +18,13 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxNativesLoader;
 
 public class LwjglApplicationConfiguration {
 	/** whether to use OpenGL ES 2.0 or not. default: false **/

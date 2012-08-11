@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.Gdx;
@@ -23,12 +24,12 @@ import com.badlogic.gdx.files.FileHandle;
 
 public class GwtSound implements Sound {
 	SMSound sound;
-	
+
 	public GwtSound (FileHandle file) {
 		String url = ((GwtApplication)Gdx.app).getBaseUrl() + file.path();
 		sound = SoundManager.createSound(url, url);
 	}
-	
+
 	@Override
 	public long play () {
 		sound.play();
@@ -71,7 +72,7 @@ public class GwtSound implements Sound {
 	public void setLooping (long soundId, boolean looping) {
 		// FIXME
 	}
-		
+
 	@Override
 	public void setPitch (long soundId, float pitch) {
 		// FIXME

@@ -110,8 +110,7 @@ public class FilesTest extends GdxTest {
 		} else {
 			message += "External storage not available";
 		}
-		if (Gdx.files.isLocalStorageAvailable())
-		{
+		if (Gdx.files.isLocalStorageAvailable()) {
 			message += "Local storage available\n";
 			message += "Local storage path: " + Gdx.files.getLocalStoragePath() + "\n";
 
@@ -163,8 +162,8 @@ public class FilesTest extends GdxTest {
 					}
 				}
 			}
-			
-			if (!Gdx.files.local("test.txt").delete()) message += "Couldn't delete localstorage/test.txt";			
+
+			if (!Gdx.files.local("test.txt").delete()) message += "Couldn't delete localstorage/test.txt";
 		}
 		try {
 			testClasspath();
@@ -216,10 +215,9 @@ public class FilesTest extends GdxTest {
 		} catch (Exception expected) {
 		}
 		if (handle.list().length != 0) fail();
-		if (Gdx.app.getType() != ApplicationType.Android)
-		{
-			if (!handle.parent().exists()) fail();	
-		}		
+		if (Gdx.app.getType() != ApplicationType.Android) {
+			if (!handle.parent().exists()) fail();
+		}
 		try {
 			handle.read().close();
 			fail();
@@ -230,8 +228,7 @@ public class FilesTest extends GdxTest {
 			dir = Gdx.files.internal("data");
 		else
 			dir = Gdx.files.internal("../gdx-tests-android/assets/data");
-		if (Gdx.app.getType() != ApplicationType.Android)
-		{
+		if (Gdx.app.getType() != ApplicationType.Android) {
 			if (!dir.exists()) fail();
 		}
 		if (!dir.isDirectory()) fail();
@@ -240,8 +237,7 @@ public class FilesTest extends GdxTest {
 		if (!child.name().equals("badlogic.jpg")) fail();
 		if (!child.nameWithoutExtension().equals("badlogic")) fail();
 		if (!child.extension().equals("jpg")) fail();
-		if (Gdx.app.getType() != ApplicationType.Android)
-		{
+		if (Gdx.app.getType() != ApplicationType.Android) {
 			if (!child.parent().exists()) fail();
 		}
 		FileHandle copy = Gdx.files.external("badlogic.jpg-copy");
@@ -395,6 +391,7 @@ public class FilesTest extends GdxTest {
 		handle.delete();
 		handle.deleteDirectory();
 	}
+
 	private void testLocal () throws IOException {
 		String path = "meow";
 		FileHandle handle = Gdx.files.local(path);
@@ -464,6 +461,7 @@ public class FilesTest extends GdxTest {
 		handle.delete();
 		handle.deleteDirectory();
 	}
+
 	private void fail () {
 		throw new RuntimeException();
 	}

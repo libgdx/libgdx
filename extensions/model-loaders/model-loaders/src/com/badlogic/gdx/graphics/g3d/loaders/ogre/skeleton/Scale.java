@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.skeleton;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,12 +30,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "scale")
 public class Scale {
 
-	@XmlAttribute
-	public float factor;
-	@XmlAttribute
-	public float x;
-	@XmlAttribute
-	public float y;
-	@XmlAttribute
-	public float z;
+	@XmlAttribute public float factor;
+	@XmlAttribute public float x;
+	@XmlAttribute public float y;
+	@XmlAttribute public float z;
 }

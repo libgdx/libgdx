@@ -184,7 +184,8 @@ public class ETC1 {
 		decodeImage(etc1Data.compressedData, dataOffset, pixmap.getPixels(), 0, width, height, pixelSize);
 		return pixmap;
 	}
-	
+
+	// @off
 	/*JNI
 	#include <etc1/etc1_utils.h>
 	#include <stdlib.h>

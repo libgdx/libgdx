@@ -21,102 +21,66 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
+
 package org.jbox2d.dynamics;
 
 import org.jbox2d.common.Vec2;
 
 // updated to rev 100
-/**
- * A body definition holds all the data needed to construct a rigid body.
- * You can safely re-use body definitions. Shapes are added to a body
- * after construction.
+/** A body definition holds all the data needed to construct a rigid body. You can safely re-use body definitions. Shapes are added
+ * to a body after construction.
  * 
- * @author daniel
- */
+ * @author daniel */
 public class BodyDef {
-	
-	/**
-	 * The body type: static, kinematic, or dynamic.
-	 * Note: if a dynamic body would have zero mass, the mass is set to one.
-	 */
+
+	/** The body type: static, kinematic, or dynamic. Note: if a dynamic body would have zero mass, the mass is set to one. */
 	public BodyType type;
-	
-	/**
-	 * Use this to store application specific body data.
-	 */
+
+	/** Use this to store application specific body data. */
 	public Object userData;
-	
-	/**
-	 * The world position of the body. Avoid creating bodies at the origin
-	 * since this can lead to many overlapping shapes.
-	 */
+
+	/** The world position of the body. Avoid creating bodies at the origin since this can lead to many overlapping shapes. */
 	public Vec2 position;
-	
-	/**
-	 * The world angle of the body in radians.
-	 */
+
+	/** The world angle of the body in radians. */
 	public float angle;
-	
-	/**
-	 * The linear velocity of the body in world co-ordinates.
-	 */
+
+	/** The linear velocity of the body in world co-ordinates. */
 	public Vec2 linearVelocity;
-	
-	/**
-	 * The angular velocity of the body.
-	 */
+
+	/** The angular velocity of the body. */
 	public float angularVelocity;
-	
-	/**
-	 * Linear damping is use to reduce the linear velocity. The damping parameter
-	 * can be larger than 1.0f but the damping effect becomes sensitive to the
-	 * time step when the damping parameter is large.
-	 */
+
+	/** Linear damping is use to reduce the linear velocity. The damping parameter can be larger than 1.0f but the damping effect
+	 * becomes sensitive to the time step when the damping parameter is large. */
 	public float linearDamping;
-	
-	/**
-	 * Angular damping is use to reduce the angular velocity. The damping parameter
-	 * can be larger than 1.0f but the damping effect becomes sensitive to the
-	 * time step when the damping parameter is large.
-	 */
+
+	/** Angular damping is use to reduce the angular velocity. The damping parameter can be larger than 1.0f but the damping effect
+	 * becomes sensitive to the time step when the damping parameter is large. */
 	public float angularDamping;
-	
-	/**
-	 * Set this flag to false if this body should never fall asleep. Note that
-	 * this increases CPU usage.
-	 */
+
+	/** Set this flag to false if this body should never fall asleep. Note that this increases CPU usage. */
 	public boolean allowSleep;
-	
-	/**
-	 * Is this body initially sleeping?
-	 */
+
+	/** Is this body initially sleeping? */
 	public boolean awake;
-	
-	/**
-	 * Should this body be prevented from rotating? Useful for characters.
-	 */
+
+	/** Should this body be prevented from rotating? Useful for characters. */
 	public boolean fixedRotation;
-	
-	/**
-	 * Is this a fast moving body that should be prevented from tunneling through
-	 * other moving bodies? Note that all bodies are prevented from tunneling through
-	 * kinematic and static bodies. This setting is only considered on dynamic bodies.
+
+	/** Is this a fast moving body that should be prevented from tunneling through other moving bodies? Note that all bodies are
+	 * prevented from tunneling through kinematic and static bodies. This setting is only considered on dynamic bodies.
 	 * 
-	 * @warning You should use this flag sparingly since it increases processing time.
-	 */
+	 * @warning You should use this flag sparingly since it increases processing time. */
 	public boolean bullet;
-	
-	/**
-	 * Does this body start out active?
-	 */
+
+	/** Does this body start out active? */
 	public boolean active;
-	
-	/**
-	 * Experimental: scales the inertia tensor.
-	 */
+
+	/** Experimental: scales the inertia tensor. */
 	public float gravityScale;
-	
-	public BodyDef() {
+
+	public BodyDef () {
 		userData = null;
 		position = new Vec2();
 		angle = 0f;

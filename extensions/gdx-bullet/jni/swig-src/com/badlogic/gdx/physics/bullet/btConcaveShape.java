@@ -9,38 +9,37 @@
 package com.badlogic.gdx.physics.bullet;
 
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
 
 public class btConcaveShape extends btCollisionShape {
-  private long swigCPtr;
+	private long swigCPtr;
 
-  protected btConcaveShape(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btConcaveShape_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	protected btConcaveShape (long cPtr, boolean cMemoryOwn) {
+		super(gdxBulletJNI.btConcaveShape_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
 
-  public static long getCPtr(btConcaveShape obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (btConcaveShape obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected void finalize() {
-    delete();
-  }
+	protected void finalize () {
+		delete();
+	}
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btConcaveShape(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+	public synchronized void delete () {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btConcaveShape(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
-  public void processAllTriangles(btTriangleCallback callback, Vector3 aabbMin, Vector3 aabbMax) {
-    gdxBulletJNI.btConcaveShape_processAllTriangles(swigCPtr, this, btTriangleCallback.getCPtr(callback), callback, aabbMin, aabbMax);
-  }
+	public void processAllTriangles (btTriangleCallback callback, Vector3 aabbMin, Vector3 aabbMax) {
+		gdxBulletJNI.btConcaveShape_processAllTriangles(swigCPtr, this, btTriangleCallback.getCPtr(callback), callback, aabbMin,
+			aabbMax);
+	}
 
 }

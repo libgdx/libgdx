@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.utils;
 
 import com.google.gwt.corp.compatibility.Numbers;
@@ -26,7 +27,7 @@ public class NumberUtils {
 	public static int floatToRawIntBits (float value) {
 		return Numbers.floatToIntBits(value);
 	}
-	
+
 	public static int floatToIntColor (float value) {
 		return Numbers.floatToIntBits(value);
 	}

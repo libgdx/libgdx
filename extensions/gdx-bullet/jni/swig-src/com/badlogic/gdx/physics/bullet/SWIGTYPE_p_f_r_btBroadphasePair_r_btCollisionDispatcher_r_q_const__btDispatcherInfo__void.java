@@ -9,18 +9,18 @@
 package com.badlogic.gdx.physics.bullet;
 
 public class SWIGTYPE_p_f_r_btBroadphasePair_r_btCollisionDispatcher_r_q_const__btDispatcherInfo__void {
-  private long swigCPtr;
+	private long swigCPtr;
 
-  protected SWIGTYPE_p_f_r_btBroadphasePair_r_btCollisionDispatcher_r_q_const__btDispatcherInfo__void(long cPtr, boolean futureUse) {
-    swigCPtr = cPtr;
-  }
+	protected SWIGTYPE_p_f_r_btBroadphasePair_r_btCollisionDispatcher_r_q_const__btDispatcherInfo__void (long cPtr,
+		boolean futureUse) {
+		swigCPtr = cPtr;
+	}
 
-  protected SWIGTYPE_p_f_r_btBroadphasePair_r_btCollisionDispatcher_r_q_const__btDispatcherInfo__void() {
-    swigCPtr = 0;
-  }
+	protected SWIGTYPE_p_f_r_btBroadphasePair_r_btCollisionDispatcher_r_q_const__btDispatcherInfo__void () {
+		swigCPtr = 0;
+	}
 
-  public static long getCPtr(SWIGTYPE_p_f_r_btBroadphasePair_r_btCollisionDispatcher_r_q_const__btDispatcherInfo__void obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (SWIGTYPE_p_f_r_btBroadphasePair_r_btCollisionDispatcher_r_q_const__btDispatcherInfo__void obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 }
-

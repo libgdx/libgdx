@@ -8,39 +8,35 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-
 public class btConvexInternalAabbCachingShape extends btConvexInternalShape {
-  private long swigCPtr;
+	private long swigCPtr;
 
-  protected btConvexInternalAabbCachingShape(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btConvexInternalAabbCachingShape_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	protected btConvexInternalAabbCachingShape (long cPtr, boolean cMemoryOwn) {
+		super(gdxBulletJNI.btConvexInternalAabbCachingShape_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
 
-  public static long getCPtr(btConvexInternalAabbCachingShape obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (btConvexInternalAabbCachingShape obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected void finalize() {
-    delete();
-  }
+	protected void finalize () {
+		delete();
+	}
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btConvexInternalAabbCachingShape(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+	public synchronized void delete () {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btConvexInternalAabbCachingShape(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
-  public void recalcLocalAabb() {
-    gdxBulletJNI.btConvexInternalAabbCachingShape_recalcLocalAabb(swigCPtr, this);
-  }
+	public void recalcLocalAabb () {
+		gdxBulletJNI.btConvexInternalAabbCachingShape_recalcLocalAabb(swigCPtr, this);
+	}
 
 }
