@@ -15,4 +15,4 @@ http://www.badlogicgames.com/forum
 
 Join us on irc.freenode.net, #badlogic
 
-Follow us on twitter [http://www.twitter.com/badlogicgames](@badlogicgames)
+Follow us on twitter [@badlogicgames](http://www.twitter.com/badlogicgames)
