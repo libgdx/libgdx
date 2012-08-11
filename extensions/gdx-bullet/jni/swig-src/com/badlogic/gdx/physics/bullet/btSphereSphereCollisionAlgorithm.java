@@ -8,43 +8,42 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-
 public class btSphereSphereCollisionAlgorithm extends btActivatingCollisionAlgorithm {
-  private long swigCPtr;
+	private long swigCPtr;
 
-  protected btSphereSphereCollisionAlgorithm(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btSphereSphereCollisionAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	protected btSphereSphereCollisionAlgorithm (long cPtr, boolean cMemoryOwn) {
+		super(gdxBulletJNI.btSphereSphereCollisionAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
 
-  public static long getCPtr(btSphereSphereCollisionAlgorithm obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (btSphereSphereCollisionAlgorithm obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected void finalize() {
-    delete();
-  }
+	protected void finalize () {
+		delete();
+	}
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSphereSphereCollisionAlgorithm(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+	public synchronized void delete () {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSphereSphereCollisionAlgorithm(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
-  public btSphereSphereCollisionAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, btCollisionObject body0, btCollisionObject body1) {
-    this(gdxBulletJNI.new_btSphereSphereCollisionAlgorithm__SWIG_0(btPersistentManifold.getCPtr(mf), mf, btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObject.getCPtr(body0), body0, btCollisionObject.getCPtr(body1), body1), true);
-  }
+	public btSphereSphereCollisionAlgorithm (btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci,
+		btCollisionObject body0, btCollisionObject body1) {
+		this(gdxBulletJNI.new_btSphereSphereCollisionAlgorithm__SWIG_0(btPersistentManifold.getCPtr(mf), mf,
+			btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObject.getCPtr(body0), body0,
+			btCollisionObject.getCPtr(body1), body1), true);
+	}
 
-  public btSphereSphereCollisionAlgorithm(btCollisionAlgorithmConstructionInfo ci) {
-    this(gdxBulletJNI.new_btSphereSphereCollisionAlgorithm__SWIG_1(btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci), true);
-  }
+	public btSphereSphereCollisionAlgorithm (btCollisionAlgorithmConstructionInfo ci) {
+		this(gdxBulletJNI.new_btSphereSphereCollisionAlgorithm__SWIG_1(btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci), true);
+	}
 
 }

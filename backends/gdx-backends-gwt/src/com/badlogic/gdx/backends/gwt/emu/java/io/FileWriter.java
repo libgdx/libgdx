@@ -13,34 +13,34 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package java.io;
 
-public class FileWriter  {
+public class FileWriter {
 
 	private final RandomAccessFile file;
-	
-	public FileWriter(String name) throws FileNotFoundException {
+
+	public FileWriter (String name) throws FileNotFoundException {
 		this.file = new RandomAccessFile(new File(name), "rw");
 	}
-	
-	public void close() throws IOException {
+
+	public void close () throws IOException {
 		file.close();
 	}
 
-	
-	public void flush() throws IOException {
+	public void flush () throws IOException {
 		file.flush();
 	}
 
-	public void write(String s) throws IOException {
-	    for(int i = 0; i < s.length(); i++) {
-	    	   file.write(s.charAt(i));
-	    }
+	public void write (String s) throws IOException {
+		for (int i = 0; i < s.length(); i++) {
+			file.write(s.charAt(i));
+		}
 	}
-	
-//	public void write(char[] cbuf, int off, int len) throws IOException {
-//		// TODO Auto-generated method stub
+
+// public void write(char[] cbuf, int off, int len) throws IOException {
+// // TODO Auto-generated method stub
 //
-//	}
+// }
 
 }

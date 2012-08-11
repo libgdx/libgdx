@@ -56,7 +56,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 			data = new FileTextureData(handle, pixmap, format, genMipMaps);
 		} else {
 			data = parameter.textureData;
-			if(!data.isPrepared()) data.prepare();
+			if (!data.isPrepared()) data.prepare();
 			texture = parameter.texture;
 		}
 	}

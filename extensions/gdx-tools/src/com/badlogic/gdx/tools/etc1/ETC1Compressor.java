@@ -17,7 +17,6 @@
 package com.badlogic.gdx.tools.etc1;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.files.FileHandle;

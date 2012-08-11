@@ -21,41 +21,38 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
+
 package org.jbox2d.dynamics.joints;
 
 import java.util.ArrayList;
 
 import org.jbox2d.dynamics.Body;
 
-/**
- * Definition for a {@link ConstantVolumeJoint}, which connects a group a bodies together
- * so they maintain a constant volume within them.
- */
+/** Definition for a {@link ConstantVolumeJoint}, which connects a group a bodies together so they maintain a constant volume
+ * within them. */
 public class ConstantVolumeJointDef extends JointDef {
 	public float frequencyHz;
 	public float dampingRatio;
-	
+
 	ArrayList<Body> bodies;
 	ArrayList<DistanceJoint> joints;
-	
-	//public float relaxationFactor;//1.0 is perfectly stiff (but doesn't work, unstable)
 
-	public ConstantVolumeJointDef() {
+	// public float relaxationFactor;//1.0 is perfectly stiff (but doesn't work, unstable)
+
+	public ConstantVolumeJointDef () {
 		type = JointType.CONSTANT_VOLUME;
 		bodies = new ArrayList<Body>();
 		joints = null;
-		//relaxationFactor = 0.9f;
+		// relaxationFactor = 0.9f;
 		collideConnected = false;
 		frequencyHz = 0.0f;
 		dampingRatio = 0.0f;
 	}
-	
-	/**
-	 * Adds a body to the group
-	 * @param argBody
-	 */
-	public void addBody(Body argBody) {
-	  bodies.add(argBody);
+
+	/** Adds a body to the group
+	 * @param argBody */
+	public void addBody (Body argBody) {
+		bodies.add(argBody);
 		if (bodies.size() == 1) {
 			bodyA = argBody;
 		}
@@ -63,16 +60,13 @@ public class ConstantVolumeJointDef extends JointDef {
 			bodyB = argBody;
 		}
 	}
-	
-	/**
-	 * Adds a body and the pre-made distance joint.  Should only
-	 * be used for deserialization.
-	 */
-	public void addBodyAndJoint(Body argBody, DistanceJoint argJoint){
-	  addBody(argBody);
-	  if(joints == null){
-	    joints = new ArrayList<DistanceJoint>();
-	  }
-	  joints.add(argJoint);
+
+	/** Adds a body and the pre-made distance joint. Should only be used for deserialization. */
+	public void addBodyAndJoint (Body argBody, DistanceJoint argJoint) {
+		addBody(argBody);
+		if (joints == null) {
+			joints = new ArrayList<DistanceJoint>();
+		}
+		joints.add(argJoint);
 	}
 }

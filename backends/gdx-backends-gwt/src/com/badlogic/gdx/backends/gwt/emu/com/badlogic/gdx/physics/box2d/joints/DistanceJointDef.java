@@ -52,8 +52,8 @@ public class DistanceJointDef extends JointDef {
 
 	/** The damping ratio. 0 = no damping, 1 = critical damping. */
 	public float dampingRatio = 0;
-	
-	public org.jbox2d.dynamics.joints.DistanceJointDef toJBox2d() {
+
+	public org.jbox2d.dynamics.joints.DistanceJointDef toJBox2d () {
 		org.jbox2d.dynamics.joints.DistanceJointDef fd = new org.jbox2d.dynamics.joints.DistanceJointDef();
 		fd.bodyA = bodyA.body;
 		fd.bodyB = bodyB.body;

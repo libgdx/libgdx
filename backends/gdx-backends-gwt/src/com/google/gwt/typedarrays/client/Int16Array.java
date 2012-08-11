@@ -16,8 +16,6 @@
 
 package com.google.gwt.typedarrays.client;
 
-import com.google.gwt.core.client.JsArrayInteger;
-
 /** The typed array view types represent a view of an ArrayBuffer that allows for indexing and manipulation. The length of each of
  * these is fixed.
  * 
@@ -28,13 +26,13 @@ public class Int16Array extends ArrayBufferView {
 
 	/** @see #create(ArrayBuffer, int, int) */
 	public static final native Int16Array create (ArrayBuffer buffer) /*-{
-		return new Int16Array(buffer);
-	}-*/;
+																							return new Int16Array(buffer);
+																							}-*/;
 
 	/** @see #create(ArrayBuffer, int, int) */
 	public static final native Int16Array create (ArrayBuffer buffer, int byteOffset) /*-{
-		return new Int16Array(buffer, byteOffset);
-	}-*/;
+																													return new Int16Array(buffer, byteOffset);
+																													}-*/;
 
 	/** Create a new TypedArray object using the passed ArrayBuffer for its storage. Optional byteOffset and length can be used to
 	 * limit the section of the buffer referenced. The byteOffset indicates the offset in bytes from the start of the ArrayBuffer,
@@ -50,8 +48,8 @@ public class Int16Array extends ArrayBufferView {
 	 * If length is not explicitly specified, the length of the ArrayBuffer minus the byteOffset must be a multiple of the element
 	 * size of the specific type, or an INDEX_SIZE_ERR exception is raised. */
 	public static final native Int16Array create (ArrayBuffer buffer, int byteOffset, int length) /*-{
-		return new Int16Array(buffer, byteOffset, length);
-	}-*/;
+																																	return new Int16Array(buffer, byteOffset, length);
+																																	}-*/;
 
 	/** Create a new ArrayBuffer with enough bytes to hold array.length elements of this typed array, then create a typed array view
 	 * referring to the full buffer. The contents of the new view are initialized to the contents of the given typed array or
@@ -68,34 +66,34 @@ public class Int16Array extends ArrayBufferView {
 	 * referring to the full buffer. The contents of the new view are initialized to the contents of the given typed array or
 	 * sequence, with each element converted to the appropriate typed array type. */
 	public static final native Int16Array create (Int16Array array) /*-{
-		return new Int16Array(array);
-	}-*/;
+																							return new Int16Array(array);
+																							}-*/;
 
 	/** Create a new ArrayBuffer with enough bytes to hold length elements of this typed array, then creates a typed array view
 	 * referring to the full buffer. */
 	public static final native Int16Array create (int size) /*-{
-		return new Int16Array(size);
-	}-*/;
+																				return new Int16Array(size);
+																				}-*/;
 
 	/** Create a new ArrayBuffer with enough bytes to hold array.length elements of this typed array, then create a typed array view
 	 * referring to the full buffer. The contents of the new view are initialized to the contents of the given typed array or
 	 * sequence, with each element converted to the appropriate typed array type. */
 	public static final native Int16Array create (JsArrayInteger data) /*-{
-		return new Int16Array(data);
-	}-*/;
+																								return new Int16Array(data);
+																								}-*/;
 
 	protected Int16Array () {
 	}
 
 	/** Returns the element at the given numeric index. */
 	public native final int get (int index) /*-{
-		return this[index];
-	}-*/;
+															return this[index];
+															}-*/;
 
 	/** The length of the TypedArray in elements, as fixed at construction time. */
 	public final native int getLength () /*-{
-		return this.length;
-	}-*/;
+														return this.length;
+														}-*/;
 
 	/** @see #set(int[], int) */
 	public final void set (int[] array) {
@@ -114,8 +112,8 @@ public class Int16Array extends ArrayBufferView {
 	/** @see #set(Int16Array, int)
 	 * @param array */
 	public native final void set (Int16Array array) /*-{
-		this.set(array);
-	}-*/;
+																	this.set(array);
+																	}-*/;
 
 	/** Set multiple values, reading input values from the array. The optional offset value indicates the index in the current array
 	 * where values are written. If omitted, it is assumed to be 0.
@@ -127,23 +125,23 @@ public class Int16Array extends ArrayBufferView {
 	 * If the offset plus the length of the given array is out of range for the current TypedArray, an INDEX_SIZE_ERR exception is
 	 * raised. */
 	public native final void set (Int16Array array, int offset) /*-{
-		this.set(array, offset);
-	}-*/;
+																					this.set(array, offset);
+																					}-*/;
 
 	/** Sets the element at the given numeric index to the given value. */
 	public native final void set (int index, int value) /*-{
-		this[index] = value;
-	}-*/;
+																			this[index] = value;
+																			}-*/;
 
 	/** @see #set(int[], int) */
 	public native final void set (JsArrayInteger array) /*-{
-		this.set(array);
-	}-*/;
+																			this.set(array);
+																			}-*/;
 
 	/** @see #set(int[], int) */
 	public native final void set (JsArrayInteger array, int offset) /*-{
-		this.set(array, offset);
-	}-*/;
+																							this.set(array, offset);
+																							}-*/;
 
 	/** Returns a new TypedArray view of the ArrayBuffer store for this TypedArray, referencing the elements at begin, inclusive, up
 	 * to end, exclusive. If either begin or end is negative, it refers to an index from the end of the array, as opposed to from
@@ -156,6 +154,6 @@ public class Int16Array extends ArrayBufferView {
 	 * 
 	 * The returned TypedArray will be of the same type as the array on which this method is invoked. */
 	public final native Int16Array subarray (int offset, int length) /*-{
-		return this.subarray(offset, length);
-	}-*/;
+																							return this.subarray(offset, length);
+																							}-*/;
 }

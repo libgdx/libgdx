@@ -23,7 +23,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * massless, rigid rod. */
 public class DistanceJoint extends Joint {
 	org.jbox2d.dynamics.joints.DistanceJoint joint;
-	
+
 	public DistanceJoint (World world, org.jbox2d.dynamics.joints.DistanceJoint joint) {
 		super(world, joint);
 		this.joint = joint;

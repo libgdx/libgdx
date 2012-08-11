@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package java.lang;
 
 public class Thread {
-	public static void sleep(long millis) throws InterruptedException {
+	public static void sleep (long millis) throws InterruptedException {
 		// noop emu
 	}
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.box2d.joints;
 
 import com.badlogic.gdx.physics.box2d.Joint;
@@ -23,6 +24,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * dynamically modify the length would have some sponginess, so I chose not to implement it that way. See b2DistanceJoint if you
  * want to dynamically control length. */
 public class RopeJoint extends Joint {
+	// @off
 	/*JNI
 #include <Box2D/Box2D.h>
 	 */

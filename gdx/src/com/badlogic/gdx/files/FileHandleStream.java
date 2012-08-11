@@ -45,7 +45,7 @@ public abstract class FileHandleStream extends FileHandle {
 	public FileHandle child (String name) {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public FileHandle sibling (String name) {
 		throw new UnsupportedOperationException();
 	}

@@ -26,8 +26,6 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 
-import com.google.gwt.core.client.GWT;
-
 /** Class with static helper methods to increase the speed of array/direct buffer and direct buffer/direct buffer transfers
  * 
  * @author mzechner */
@@ -44,21 +42,22 @@ public class BufferUtils {
 	 * @param offset the offset in src to start copying from */
 	public static void copy (float[] src, Buffer dst, int numFloats, int offset) {
 		FloatBuffer floatBuffer = null;
-		if(dst instanceof ByteBuffer) {
+		if (dst instanceof ByteBuffer) {
 			floatBuffer = ((ByteBuffer)dst).asFloatBuffer();
-		} else 
-		if(dst instanceof FloatBuffer) {
+		} else if (dst instanceof FloatBuffer) {
 			floatBuffer = (FloatBuffer)dst;
 		} else {
 			throw new GdxRuntimeException("dst must be a ByteBuffer or FloatBuffer");
 		}
-		
+
 		floatBuffer.clear();
 		dst.position(0);
 		floatBuffer.put(src, offset, numFloats);
 		dst.position(0);
-		if (dst instanceof ByteBuffer) dst.limit(numFloats << 2);
-		else dst.limit(numFloats);
+		if (dst instanceof ByteBuffer)
+			dst.limit(numFloats << 2);
+		else
+			dst.limit(numFloats);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -71,8 +70,8 @@ public class BufferUtils {
 	 * @param dst the destination Buffer, its position is used as an offset.
 	 * @param numElements the number of elements to copy. */
 	public static void copy (byte[] src, int srcOffset, Buffer dst, int numElements) {
-		if(!(dst instanceof ByteBuffer)) throw new GdxRuntimeException("dst must be a ByteBuffer");
-		
+		if (!(dst instanceof ByteBuffer)) throw new GdxRuntimeException("dst must be a ByteBuffer");
+
 		ByteBuffer byteBuffer = (ByteBuffer)dst;
 		int oldPosition = byteBuffer.position();
 		byteBuffer.put(src, srcOffset, numElements);
@@ -91,10 +90,11 @@ public class BufferUtils {
 	 * @param numElements the number of elements to copy. */
 	public static void copy (short[] src, int srcOffset, Buffer dst, int numElements) {
 		ShortBuffer buffer = null;
-		if(dst instanceof ByteBuffer) buffer = ((ByteBuffer)dst).asShortBuffer();
-		else if(dst instanceof ShortBuffer) buffer = (ShortBuffer)dst;
-		if(buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or ShortBuffer");
-		
+		if (dst instanceof ByteBuffer)
+			buffer = ((ByteBuffer)dst).asShortBuffer();
+		else if (dst instanceof ShortBuffer) buffer = (ShortBuffer)dst;
+		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or ShortBuffer");
+
 		int oldPosition = buffer.position();
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
@@ -112,10 +112,11 @@ public class BufferUtils {
 	 * @param numElements the number of elements to copy. */
 	public static void copy (char[] src, int srcOffset, Buffer dst, int numElements) {
 		CharBuffer buffer = null;
-		if(dst instanceof ByteBuffer) buffer = ((ByteBuffer)dst).asCharBuffer();
-		else if(dst instanceof CharBuffer) buffer = (CharBuffer)dst;
-		if(buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or CharBuffer");
-		
+		if (dst instanceof ByteBuffer)
+			buffer = ((ByteBuffer)dst).asCharBuffer();
+		else if (dst instanceof CharBuffer) buffer = (CharBuffer)dst;
+		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or CharBuffer");
+
 		int oldPosition = buffer.position();
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
@@ -133,10 +134,11 @@ public class BufferUtils {
 	 * @param numElements the number of elements to copy. */
 	public static void copy (int[] src, int srcOffset, Buffer dst, int numElements) {
 		IntBuffer buffer = null;
-		if(dst instanceof ByteBuffer) buffer = ((ByteBuffer)dst).asIntBuffer();
-		else if(dst instanceof IntBuffer) buffer = (IntBuffer)dst;
-		if(buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or IntBuffer");
-		
+		if (dst instanceof ByteBuffer)
+			buffer = ((ByteBuffer)dst).asIntBuffer();
+		else if (dst instanceof IntBuffer) buffer = (IntBuffer)dst;
+		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or IntBuffer");
+
 		int oldPosition = buffer.position();
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
@@ -154,10 +156,11 @@ public class BufferUtils {
 	 * @param numElements the number of elements to copy. */
 	public static void copy (long[] src, int srcOffset, Buffer dst, int numElements) {
 		LongBuffer buffer = null;
-		if(dst instanceof ByteBuffer) buffer = ((ByteBuffer)dst).asLongBuffer();
-		else if(dst instanceof LongBuffer) buffer = (LongBuffer)dst;
-		if(buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or LongBuffer");
-		
+		if (dst instanceof ByteBuffer)
+			buffer = ((ByteBuffer)dst).asLongBuffer();
+		else if (dst instanceof LongBuffer) buffer = (LongBuffer)dst;
+		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or LongBuffer");
+
 		int oldPosition = buffer.position();
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
@@ -175,10 +178,11 @@ public class BufferUtils {
 	 * @param numElements the number of elements to copy. */
 	public static void copy (float[] src, int srcOffset, Buffer dst, int numElements) {
 		FloatBuffer buffer = null;
-		if(dst instanceof ByteBuffer) buffer = ((ByteBuffer)dst).asFloatBuffer();
-		else if(dst instanceof FloatBuffer) buffer = (FloatBuffer)dst;
-		if(buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or FloatBuffer");
-		
+		if (dst instanceof ByteBuffer)
+			buffer = ((ByteBuffer)dst).asFloatBuffer();
+		else if (dst instanceof FloatBuffer) buffer = (FloatBuffer)dst;
+		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or FloatBuffer");
+
 		int oldPosition = buffer.position();
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
@@ -196,33 +200,34 @@ public class BufferUtils {
 	 * @param numElements the number of elements to copy. */
 	public static void copy (double[] src, int srcOffset, Buffer dst, int numElements) {
 		DoubleBuffer buffer = null;
-		if(dst instanceof ByteBuffer) buffer = ((ByteBuffer)dst).asDoubleBuffer();
-		else if(dst instanceof DoubleBuffer) buffer = (DoubleBuffer)dst;
-		if(buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or DoubleBuffer");
-		
+		if (dst instanceof ByteBuffer)
+			buffer = ((ByteBuffer)dst).asDoubleBuffer();
+		else if (dst instanceof DoubleBuffer) buffer = (DoubleBuffer)dst;
+		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or DoubleBuffer");
+
 		int oldPosition = buffer.position();
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
 		buffer.limit(oldPosition + numElements);
 	}
 
-//	/** Copies the contents of src to dst, starting from the current position of src, copying numElements elements (using the data
-//	 * type of src, no matter the datatype of dst). The dst {@link Buffer#position()} is used as the writing offset. The position
-//	 * of both Buffers will stay the same. The limit of the src Buffer will stay the same. The limit of the dst Buffer will be set
-//	 * to dst.position() + numElements, where numElements are translated to the number of elements appropriate for the dst Buffer
-//	 * data type. <b>The Buffers must be direct Buffers with native byte order. No error checking is performed</b>.
-//	 * 
-//	 * @param src the source Buffer.
-//	 * @param dst the destination Buffer.
-//	 * @param numElements the number of elements to copy. */
-//	public static void copy (Buffer src, Buffer dst, int numElements) {
-//		int numBytes = elementsToBytes(src, numElements);
-//		copyJni(src, positionInBytes(src), dst, positionInBytes(dst), numBytes);
-//		dst.limit(dst.position() + bytesToElements(dst, numBytes));
-//	}
+// /** Copies the contents of src to dst, starting from the current position of src, copying numElements elements (using the data
+// * type of src, no matter the datatype of dst). The dst {@link Buffer#position()} is used as the writing offset. The position
+// * of both Buffers will stay the same. The limit of the src Buffer will stay the same. The limit of the dst Buffer will be set
+// * to dst.position() + numElements, where numElements are translated to the number of elements appropriate for the dst Buffer
+// * data type. <b>The Buffers must be direct Buffers with native byte order. No error checking is performed</b>.
+// *
+// * @param src the source Buffer.
+// * @param dst the destination Buffer.
+// * @param numElements the number of elements to copy. */
+// public static void copy (Buffer src, Buffer dst, int numElements) {
+// int numBytes = elementsToBytes(src, numElements);
+// copyJni(src, positionInBytes(src), dst, positionInBytes(dst), numBytes);
+// dst.limit(dst.position() + bytesToElements(dst, numBytes));
+// }
 
 	public static FloatBuffer newFloatBuffer (int numFloats) {
-		if(GWT.isProdMode()) {
+		if (GWT.isProdMode()) {
 			ByteBuffer buffer = ByteBuffer.allocateDirect(numFloats * 4);
 			buffer.order(ByteOrder.nativeOrder());
 			return buffer.asFloatBuffer();
@@ -232,7 +237,7 @@ public class BufferUtils {
 	}
 
 	public static DoubleBuffer newDoubleBuffer (int numDoubles) {
-		if(GWT.isProdMode()) {
+		if (GWT.isProdMode()) {
 			ByteBuffer buffer = ByteBuffer.allocateDirect(numDoubles * 8);
 			buffer.order(ByteOrder.nativeOrder());
 			return buffer.asDoubleBuffer();
@@ -242,7 +247,7 @@ public class BufferUtils {
 	}
 
 	public static ByteBuffer newByteBuffer (int numBytes) {
-		if(GWT.isProdMode()) {
+		if (GWT.isProdMode()) {
 			ByteBuffer buffer = ByteBuffer.allocateDirect(numBytes);
 			buffer.order(ByteOrder.nativeOrder());
 			return buffer;
@@ -252,7 +257,7 @@ public class BufferUtils {
 	}
 
 	public static ShortBuffer newShortBuffer (int numShorts) {
-		if(GWT.isProdMode()) {
+		if (GWT.isProdMode()) {
 			ByteBuffer buffer = ByteBuffer.allocateDirect(numShorts * 2);
 			buffer.order(ByteOrder.nativeOrder());
 			return buffer.asShortBuffer();
@@ -262,7 +267,7 @@ public class BufferUtils {
 	}
 
 	public static CharBuffer newCharBuffer (int numChars) {
-		if(GWT.isProdMode()) {
+		if (GWT.isProdMode()) {
 			ByteBuffer buffer = ByteBuffer.allocateDirect(numChars * 2);
 			buffer.order(ByteOrder.nativeOrder());
 			return buffer.asCharBuffer();
@@ -272,7 +277,7 @@ public class BufferUtils {
 	}
 
 	public static IntBuffer newIntBuffer (int numInts) {
-		if(GWT.isProdMode()) {
+		if (GWT.isProdMode()) {
 			ByteBuffer buffer = ByteBuffer.allocateDirect(numInts * 4);
 			buffer.order(ByteOrder.nativeOrder());
 			return buffer.asIntBuffer();

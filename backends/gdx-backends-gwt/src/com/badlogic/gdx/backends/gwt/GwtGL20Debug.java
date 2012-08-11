@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.gwt;
 
 import java.nio.Buffer;
@@ -28,13 +29,13 @@ public class GwtGL20Debug extends GwtGL20 {
 		super(gl);
 	}
 
-	private void checkError() {
+	private void checkError () {
 		int error = 0;
-		if((error = gl.getError()) != GL_NO_ERROR) {
+		if ((error = gl.getError()) != GL_NO_ERROR) {
 			throw new GdxRuntimeException("GL error: " + error + ", " + Integer.toHexString(error));
 		}
 	}
-	
+
 	@Override
 	public void glActiveTexture (int texture) {
 		super.glActiveTexture(texture);

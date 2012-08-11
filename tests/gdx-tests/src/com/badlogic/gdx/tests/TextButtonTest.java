@@ -21,8 +21,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -30,14 +28,14 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class TextButtonTest extends GdxTest {
 	private Stage stage;
 	private Skin skin;
-	
+
 	@Override
 	public void create () {
 		stage = new Stage(0, 0, false, new SpriteBatch());
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		for (int i = 0; i < 1; i++) {
-			TextButton t = new TextButton("Button"+i, skin);
+			TextButton t = new TextButton("Button" + i, skin);
 			t.setX(MathUtils.random(0, Gdx.graphics.getWidth()));
 			t.setY(MathUtils.random(0, Gdx.graphics.getHeight()));
 			t.setWidth(MathUtils.random(50, 200));
@@ -51,8 +49,8 @@ public class TextButtonTest extends GdxTest {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		stage.draw();
-		Gdx.app.log("X", "FPS: "+Gdx.graphics.getFramesPerSecond());
-		Gdx.app.log("X", "GL20: "+Gdx.graphics.isGL20Available());
+		Gdx.app.log("X", "FPS: " + Gdx.graphics.getFramesPerSecond());
+		Gdx.app.log("X", "GL20: " + Gdx.graphics.isGL20Available());
 		Gdx.app.log("X", "render calls: " + stage.getSpriteBatch().totalRenderCalls);
 		stage.getSpriteBatch().totalRenderCalls = 0;
 	}

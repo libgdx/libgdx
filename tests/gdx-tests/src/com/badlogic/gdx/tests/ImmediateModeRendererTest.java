@@ -18,8 +18,6 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
@@ -56,7 +54,7 @@ public class ImmediateModeRendererTest extends GdxTest {
 
 	@Override
 	public void create () {
-		if(Gdx.graphics.isGL20Available()) 
+		if (Gdx.graphics.isGL20Available())
 			renderer = new ImmediateModeRenderer20(false, true, 1);
 		else
 			renderer = new ImmediateModeRenderer10();

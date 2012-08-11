@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.gwt.preloader;
 
 import java.io.IOException;
 import java.io.InputStream;
-
-import com.google.gwt.xhr.client.ReadyStateChangeHandler;
-import com.google.gwt.xhr.client.XMLHttpRequest;
 
 public class BinaryLoader {
 	private final LoaderCallback<Blob> callback;
@@ -65,10 +63,10 @@ public class BinaryLoader {
 		}
 
 		private native byte get (String s, int i) /*-{
-			var x = s.charCodeAt(i) & 0xff;
-			if (x > 127) x -= 256;
-			return x;
-		}-*/;
+																var x = s.charCodeAt(i) & 0xff;
+																if (x > 127) x -= 256;
+																return x;
+																}-*/;
 
 		public InputStream read () {
 			return new BlobInputStream(this);

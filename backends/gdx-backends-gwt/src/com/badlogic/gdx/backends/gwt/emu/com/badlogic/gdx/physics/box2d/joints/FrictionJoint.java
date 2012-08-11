@@ -22,7 +22,7 @@ import com.badlogic.gdx.physics.box2d.World;
 /** Friction joint. This is used for top-down friction. It provides 2D translational friction and angular friction. */
 public class FrictionJoint extends Joint {
 	org.jbox2d.dynamics.joints.FrictionJoint joint;
-	
+
 	public FrictionJoint (World world, org.jbox2d.dynamics.joints.FrictionJoint joint) {
 		super(world, joint);
 		this.joint = joint;

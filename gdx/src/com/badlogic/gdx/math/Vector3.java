@@ -418,33 +418,27 @@ public class Vector3 implements Serializable {
 		return true;
 	}
 
-	/**
-	 * Compares this vector with the other vector, using the supplied
-	 * epsilon for fuzzy equality testing.
+	/** Compares this vector with the other vector, using the supplied epsilon for fuzzy equality testing.
 	 * @param obj
 	 * @param epsilon
-	 * @return whether the vectors are the same.
-	 */
-	public boolean epsilonEquals(Vector3 obj, float epsilon) {
-		if(obj == null) return false;
-		if(Math.abs(obj.x - x) > epsilon) return false;
-		if(Math.abs(obj.y - y) > epsilon) return false;
-		if(Math.abs(obj.z - z) > epsilon) return false;
+	 * @return whether the vectors are the same. */
+	public boolean epsilonEquals (Vector3 obj, float epsilon) {
+		if (obj == null) return false;
+		if (Math.abs(obj.x - x) > epsilon) return false;
+		if (Math.abs(obj.y - y) > epsilon) return false;
+		if (Math.abs(obj.z - z) > epsilon) return false;
 		return true;
 	}
-	
-	/**
-	 * Compares this vector with the other vector, using the supplied
-	 * epsilon for fuzzy equality testing.
-	 * @return whether the vectors are the same.
-	 */
-	public boolean epsilonEquals(float x, float y, float z, float epsilon) {
-		if(Math.abs(x - this.x) > epsilon) return false;
-		if(Math.abs(y - this.y) > epsilon) return false;
-		if(Math.abs(z - this.z) > epsilon) return false;
+
+	/** Compares this vector with the other vector, using the supplied epsilon for fuzzy equality testing.
+	 * @return whether the vectors are the same. */
+	public boolean epsilonEquals (float x, float y, float z, float epsilon) {
+		if (Math.abs(x - this.x) > epsilon) return false;
+		if (Math.abs(y - this.y) > epsilon) return false;
+		if (Math.abs(z - this.z) > epsilon) return false;
 		return true;
 	}
-	
+
 	/** Scales the vector components by the given scalars.
 	 * 
 	 * @param scalarX

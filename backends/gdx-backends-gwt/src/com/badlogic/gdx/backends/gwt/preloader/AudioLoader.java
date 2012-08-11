@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.gwt.preloader;
 
 public class AudioLoader {
-	public AudioLoader(String url, LoaderCallback<Void> callback) {
+	public AudioLoader (String url, LoaderCallback<Void> callback) {
 		callback.success(null);
 	}
 }

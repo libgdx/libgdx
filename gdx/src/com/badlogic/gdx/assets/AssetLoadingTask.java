@@ -126,7 +126,7 @@ class AssetLoadingTask implements Callable<Void> {
 						throw new GdxRuntimeException("Couldn't load dependencies of asset '" + assetDesc.fileName + "'", e);
 					}
 					dependenciesLoaded = true;
-					if(asyncDone) {
+					if (asyncDone) {
 						asset = asyncLoader.loadSync(manager, assetDesc.fileName, assetDesc.params);
 					}
 				}
@@ -135,7 +135,7 @@ class AssetLoadingTask implements Callable<Void> {
 			if (loadFuture == null && !asyncDone) {
 				loadFuture = threadPool.submit(this);
 			} else {
-				if(asyncDone) {
+				if (asyncDone) {
 					asset = asyncLoader.loadSync(manager, assetDesc.fileName, assetDesc.params);
 				} else if (loadFuture.isDone()) {
 					try {

@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.graphics.g3d.experimental;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+package com.badlogic.gdx.graphics.g3d.experimental;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -28,14 +24,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.AnimatedModelInstance;
 import com.badlogic.gdx.graphics.g3d.AnimatedModelNode;
 import com.badlogic.gdx.graphics.g3d.StillModelNode;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
@@ -43,20 +35,14 @@ import com.badlogic.gdx.graphics.g3d.lights.LightManager;
 import com.badlogic.gdx.graphics.g3d.lights.LightManager.LightQuality;
 import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
-import com.badlogic.gdx.graphics.g3d.loaders.ogre.OgreXmlLoader;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
-import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
-import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.test.PrototypeRendererGL20;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
@@ -202,14 +188,14 @@ public class HybridLightTest implements ApplicationListener {
 		MaterialAttribute c3 = new ColorAttribute(new Color(0.2f, 1f, 0.15f, 1.0f), ColorAttribute.rim);
 		MaterialAttribute t1 = new TextureAttribute(texture, 0, TextureAttribute.diffuseTexture);
 		MaterialAttribute t2 = new TextureAttribute(texture2, 1, TextureAttribute.specularTexture);
-		MaterialAttribute c4 = new ColorAttribute(new Color(0.0f,0.0f,0.0f, 0.35f), ColorAttribute.fog);
+		MaterialAttribute c4 = new ColorAttribute(new Color(0.0f, 0.0f, 0.0f, 0.35f), ColorAttribute.fog);
 
 		MaterialAttribute b = new BlendingAttribute(BlendingAttribute.translucent);
 
-		Material material2 = new Material("basic", c2, t1,c4);
+		Material material2 = new Material("basic", c2, t1, c4);
 		model2.setMaterial(material2);
 
-		Material material = new Material("shiningBall", c1, c2,c4);
+		Material material = new Material("shiningBall", c1, c2, c4);
 		model.setMaterial(material);
 
 		model3 = ModelLoaderRegistry.loadKeyframedModel(Gdx.files.internal("data/models/knight.md2"));
@@ -226,7 +212,7 @@ public class HybridLightTest implements ApplicationListener {
 		texture3.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 
 		MaterialAttribute t3 = new TextureAttribute(texture3, 0, TextureAttribute.diffuseTexture);
-		Material material3 = new Material("s", t2, t3,c4);
+		Material material3 = new Material("s", t2, t3, c4);
 		model3.setMaterial(material3);
 
 	}

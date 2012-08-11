@@ -35,7 +35,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		int realPointerIndex = 0;
 
 		long timeStamp = System.nanoTime();
-//		long timeStamp = event.getEventTime() * 1000000;
+// long timeStamp = event.getEventTime() * 1000000;
 		// logAction(action, pointerId);
 		synchronized (input) { // FUCK
 			switch (action) {
@@ -113,7 +113,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 	}
 
 	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer, long timeStamp) {
-//		long timeStamp = System.nanoTime();
+// long timeStamp = System.nanoTime();
 		TouchEvent event = input.usedTouchEvents.obtain();
 		event.timeStamp = timeStamp;
 		event.pointer = pointer;

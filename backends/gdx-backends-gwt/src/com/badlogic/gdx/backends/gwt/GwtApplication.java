@@ -16,6 +16,10 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import java.awt.Canvas;
+import java.awt.Panel;
+import java.awt.TextArea;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
@@ -27,38 +31,15 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
 import com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager;
-import com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager.SoundManagerCallback;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.google.gwt.canvas.client.Canvas;
-import com.google.gwt.canvas.dom.client.Context2d;
-import com.google.gwt.canvas.dom.client.Context2d.TextAlign;
-import com.google.gwt.canvas.dom.client.Context2d.TextBaseline;
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
-/**
- * Implementation of an {@link Application} based on GWT. Clients have to 
- * override {@link #getConfig()}, {@link #getApplicationListener()} and
- * {@link #getAssetsPath()}. Clients can override the default loading screen
- * via {@link #getPreloaderCallback()} and implement any loading screen 
- * drawing via GWT widgets.
- * @author mzechner
- *
- */
+/** Implementation of an {@link Application} based on GWT. Clients have to override {@link #getConfig()},
+ * {@link #getApplicationListener()} and {@link #getAssetsPath()}. Clients can override the default loading screen via
+ * {@link #getPreloaderCallback()} and implement any loading screen drawing via GWT widgets.
+ * @author mzechner */
 public abstract class GwtApplication implements EntryPoint, Application {
 	private ApplicationListener listener;
 	private GwtApplicationConfiguration config;
@@ -73,16 +54,12 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private static AgentInfo agentInfo;
 	private ObjectMap<String, Preferences> prefs = new ObjectMap<String, Preferences>();
 
-	/**
-	 * @return the configuration for the {@link GwtApplication}.
-	 */
+	/** @return the configuration for the {@link GwtApplication}. */
 	public abstract GwtApplicationConfiguration getConfig ();
 
-	/**
-	 * @return the {@link ApplicationListener} to be run by the {@link GwtApplication}.
-	 */
+	/** @return the {@link ApplicationListener} to be run by the {@link GwtApplication}. */
 	public abstract ApplicationListener getApplicationListener ();
-	
+
 	@Override
 	public void onModuleLoad () {
 		this.agentInfo = computeAgentInfo();
@@ -113,17 +90,17 @@ public abstract class GwtApplication implements EntryPoint, Application {
 				root = panel;
 			}
 		}
-		
+
 		// initialize SoundManager2
 		SoundManager.init(GWT.getModuleBaseURL(), 9);
-		
+
 		// wait for soundmanager to load, this is fugly, but for
 		// some reason the ontimeout and onerror callbacks are never
 		// called (function instanceof Function fails, wtf JS?).
 		new Timer() {
 			@Override
 			public void run () {
-				if(SoundManager.swfLoaded()) {
+				if (SoundManager.swfLoaded()) {
 					final PreloaderCallback callback = getPreloaderCallback();
 					preloader = new Preloader();
 					preloader.preload("assets.txt", new PreloaderCallback() {
@@ -131,19 +108,19 @@ public abstract class GwtApplication implements EntryPoint, Application {
 						public void loaded (String file, int loaded, int total) {
 							callback.loaded(file, loaded, total);
 						}
-	
+
 						@Override
 						public void error (String file) {
 							callback.error(file);
 						}
-	
+
 						@Override
 						public void done () {
 							callback.done();
 							root.clear();
 							setupLoop();
 						}
-					});	
+					});
 					cancel();
 				}
 			}
@@ -174,7 +151,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		try {
 			listener.create();
 			listener.resize(graphics.getWidth(), graphics.getHeight());
-		} catch(Throwable t) {
+		} catch (Throwable t) {
 			error("GwtApplication", "exception: " + t.getMessage(), t);
 			t.printStackTrace();
 			throw new RuntimeException(t);
@@ -211,6 +188,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	}
 
 	long loadStart = TimeUtils.nanoTime();
+
 	public PreloaderCallback getPreloaderCallback () {
 		final Canvas canvas = Canvas.createIfSupported();
 		canvas.setWidth("" + (int)(config.width * 0.7f) + "px");
@@ -238,7 +216,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 				context.setFillStyle(color);
 				context.setStrokeStyle(color);
 				context.fillRect(0, 0, 300 * (loaded / (float)total) * 0.97f, 70);
-				
+
 				context.setFillStyle(Pixmap.make(50, 50, 50, 1));
 				context.fillText("loading", 300 / 2, 70 / 2);
 			}
@@ -402,54 +380,54 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	/** kindly borrowed from PlayN **/
 	private static native AgentInfo computeAgentInfo () /*-{
-		var userAgent = navigator.userAgent.toLowerCase();
-		return {
-			// browser type flags
-			isFirefox : userAgent.indexOf("firefox") != -1,
-			isChrome : userAgent.indexOf("chrome") != -1,
-			isSafari : userAgent.indexOf("safari") != -1,
-			isOpera : userAgent.indexOf("opera") != -1,
-			isIE : userAgent.indexOf("msie") != -1,
-			// OS type flags
-			isMacOS : userAgent.indexOf("mac") != -1,
-			isLinux : userAgent.indexOf("linux") != -1,
-			isWindows : userAgent.indexOf("win") != -1
-		};
-	}-*/;
+																			var userAgent = navigator.userAgent.toLowerCase();
+																			return {
+																			// browser type flags
+																			isFirefox : userAgent.indexOf("firefox") != -1,
+																			isChrome : userAgent.indexOf("chrome") != -1,
+																			isSafari : userAgent.indexOf("safari") != -1,
+																			isOpera : userAgent.indexOf("opera") != -1,
+																			isIE : userAgent.indexOf("msie") != -1,
+																			// OS type flags
+																			isMacOS : userAgent.indexOf("mac") != -1,
+																			isLinux : userAgent.indexOf("linux") != -1,
+																			isWindows : userAgent.indexOf("win") != -1
+																			};
+																			}-*/;
 
 	/** Returned by {@link #agentInfo}. Kindly borrowed from PlayN. */
 	public static class AgentInfo extends JavaScriptObject {
 		public final native boolean isFirefox () /*-{
-			return this.isFirefox;
-		}-*/;
+																return this.isFirefox;
+																}-*/;
 
 		public final native boolean isChrome () /*-{
-			return this.isChrome;
-		}-*/;
+																return this.isChrome;
+																}-*/;
 
 		public final native boolean isSafari () /*-{
-			return this.isSafari;
-		}-*/;
+																return this.isSafari;
+																}-*/;
 
 		public final native boolean isOpera () /*-{
-			return this.isOpera;
-		}-*/;
+															return this.isOpera;
+															}-*/;
 
 		public final native boolean isIE () /*-{
-			return this.isIE;
-		}-*/;
+														return this.isIE;
+														}-*/;
 
 		public final native boolean isMacOS () /*-{
-			return this.isMacOS;
-		}-*/;
+															return this.isMacOS;
+															}-*/;
 
 		public final native boolean isLinux () /*-{
-			return this.isLinux;
-		}-*/;
+															return this.isLinux;
+															}-*/;
 
 		public final native boolean isWindows () /*-{
-			return this.isWindows;
-		}-*/;
+																return this.isWindows;
+																}-*/;
 
 		protected AgentInfo () {
 		}

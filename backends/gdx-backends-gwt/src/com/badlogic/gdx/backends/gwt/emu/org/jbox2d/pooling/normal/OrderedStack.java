@@ -24,44 +24,42 @@
 /**
  * Created at 12:52:04 AM Jan 20, 2011
  */
+
 package org.jbox2d.pooling.normal;
 
-
-/**
- * @author Daniel Murphy
- */
+/** @author Daniel Murphy */
 public class OrderedStack<E> {
-  private final Object[] pool;
-  private int index;
-  private final int size;
-  private final E[] container;
+	private final Object[] pool;
+	private int index;
+	private final int size;
+	private final E[] container;
 
-  @SuppressWarnings("unchecked")
-  public OrderedStack(Generator<E> gen, int argStackSize, E[] container) {
-    size = argStackSize;
-    pool = new Object[argStackSize];
-    for (int i = 0; i < argStackSize; i++) {
-        pool[i] = gen.gen();
-    }
-    index = 0;
-    this.container = container;
-  }
+	@SuppressWarnings("unchecked")
+	public OrderedStack (Generator<E> gen, int argStackSize, E[] container) {
+		size = argStackSize;
+		pool = new Object[argStackSize];
+		for (int i = 0; i < argStackSize; i++) {
+			pool[i] = gen.gen();
+		}
+		index = 0;
+		this.container = container;
+	}
 
-  public final E pop() {
-    assert (index < size) : "End of stack reached, there is probably a leak somewhere";
-    return (E)pool[index++];
-  }
+	public final E pop () {
+		assert (index < size) : "End of stack reached, there is probably a leak somewhere";
+		return (E)pool[index++];
+	}
 
-  public final E[] pop(int argNum) {
-    assert (index + argNum < size) : "End of stack reached, there is probably a leak somewhere";
-    assert (argNum <= container.length) : "Container array is too small";
-    System.arraycopy(pool, index, container, 0, argNum);
-    index += argNum;
-    return (E[])container;
-  }
+	public final E[] pop (int argNum) {
+		assert (index + argNum < size) : "End of stack reached, there is probably a leak somewhere";
+		assert (argNum <= container.length) : "Container array is too small";
+		System.arraycopy(pool, index, container, 0, argNum);
+		index += argNum;
+		return (E[])container;
+	}
 
-  public final void push(int argNum) {
-    index -= argNum;
-    assert (index >= 0) : "Beginning of stack reached, push/pops are unmatched";
-  }
+	public final void push (int argNum) {
+		index -= argNum;
+		assert (index >= 0) : "Beginning of stack reached, push/pops are unmatched";
+	}
 }

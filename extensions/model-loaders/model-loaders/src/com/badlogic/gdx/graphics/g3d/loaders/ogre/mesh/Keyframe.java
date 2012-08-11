@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh;
 
 import java.util.ArrayList;
@@ -36,11 +37,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "keyframe")
 public class Keyframe {
 
-	@XmlAttribute(required = true)
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	protected String time;
-	@XmlElements({@XmlElement(name = "position", type = Position.class), @XmlElement(name = "normal", type = Normal.class)})
-	protected List<Object> positionOrNormal;
+	@XmlAttribute(required = true) @XmlJavaTypeAdapter(NormalizedStringAdapter.class) protected String time;
+	@XmlElements({@XmlElement(name = "position", type = Position.class), @XmlElement(name = "normal", type = Normal.class)}) protected List<Object> positionOrNormal;
 	protected List<Poseref> poseref;
 
 	/** Gets the value of the time property.

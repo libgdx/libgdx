@@ -22,7 +22,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class PolygonShape extends Shape {
 	org.jbox2d.collision.shapes.PolygonShape shape;
-	
+
 	/** Constructs a new polygon */
 	public PolygonShape () {
 		super(new org.jbox2d.collision.shapes.PolygonShape());
@@ -44,7 +44,7 @@ public class PolygonShape extends Shape {
 	 * edge. */
 	public void set (Vector2[] vertices) {
 		Vec2[] v = new org.jbox2d.common.Vec2[vertices.length];
-		for(int i = 0; i < v.length; i++) {
+		for (int i = 0; i < v.length; i++) {
 			v[i] = new Vec2(vertices[i].x, vertices[i].y);
 		}
 		shape.set(v, v.length);
@@ -58,6 +58,7 @@ public class PolygonShape extends Shape {
 	}
 
 	final Vec2 tmp = new Vec2();
+
 	/** Build vertices to represent an oriented box.
 	 * @param hx the half-width.
 	 * @param hy the half-height.
@@ -87,7 +88,7 @@ public class PolygonShape extends Shape {
 	public int getChildCount () {
 		return shape.getChildCount();
 	}
-	
+
 	/** Returns the vertex at the given position.
 	 * @param index the index of the vertex 0 <= index < getVertexCount( )
 	 * @param vertex vertex */

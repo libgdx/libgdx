@@ -40,15 +40,11 @@ public class TextureDownloadTest extends GdxTest {
 	BitmapFont font;
 	SpriteBatch batch;
 
-
 	@Override
 	public void create () {
 		new Thread(new Runnable() {
-			/**
-			 * Downloads the content of the specified url to the array. The
-			 * array has to be big enough.
-			 */
-			private int download(byte[] out, String url) {
+			/** Downloads the content of the specified url to the array. The array has to be big enough. */
+			private int download (byte[] out, String url) {
 				InputStream in = null;
 				try {
 					HttpURLConnection conn = null;
@@ -79,12 +75,12 @@ public class TextureDownloadTest extends GdxTest {
 					}
 				}
 			}
-			
+
 			@Override
 			public void run () {
-				byte[] bytes = new byte[200*1024]; // assuming the content is not bigger than 200kb.
+				byte[] bytes = new byte[200 * 1024]; // assuming the content is not bigger than 200kb.
 				int numBytes = download(bytes, "http://www.badlogicgames.com/wordpress/wp-content/uploads/2012/01/badlogic-new.png");
-				if(numBytes != 0) {
+				if (numBytes != 0) {
 					// load the pixmap, make it a power of two if necessary (not needed for GL ES 2.0!)
 					Pixmap pixmap = new Pixmap(bytes, 0, numBytes);
 					final int originalWidth = pixmap.getWidth();
@@ -103,7 +99,7 @@ public class TextureDownloadTest extends GdxTest {
 				}
 			}
 		}).start();
-		
+
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 	}
@@ -112,8 +108,8 @@ public class TextureDownloadTest extends GdxTest {
 	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
-		if(image != null) {
+
+		if (image != null) {
 			batch.begin();
 			batch.draw(image, 100, 100);
 			batch.end();

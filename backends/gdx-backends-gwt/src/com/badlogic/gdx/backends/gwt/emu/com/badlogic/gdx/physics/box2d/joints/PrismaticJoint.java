@@ -24,7 +24,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * friction. */
 public class PrismaticJoint extends Joint {
 	org.jbox2d.dynamics.joints.PrismaticJoint joint;
-	
+
 	public PrismaticJoint (World world, org.jbox2d.dynamics.joints.PrismaticJoint joint) {
 		super(world, joint);
 		this.joint = joint;

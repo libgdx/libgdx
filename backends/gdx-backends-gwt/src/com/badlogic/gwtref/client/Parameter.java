@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gwtref.client;
 
 public class Parameter {
 	final String name;
 	final Class type;
 	final String jnsi;
-	
-	Parameter(String name, Class type, String jnsi) {
+
+	Parameter (String name, Class type, String jnsi) {
 		this.name = name;
 		this.type = type;
 		this.jnsi = jnsi;
@@ -33,8 +34,8 @@ public class Parameter {
 	public Class getType () {
 		return type;
 	}
-	
-	public String getJnsi() {
+
+	public String getJnsi () {
 		return jnsi;
 	}
 

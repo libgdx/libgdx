@@ -35,7 +35,7 @@ public class ScrollPane2Test extends GdxTest {
 		Gdx.input.setInputProcessor(stage);
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		
+
 		Table mytable = new Table();
 		mytable.debug();
 		mytable.add(new Image(new Texture("data/group-debug.png")));

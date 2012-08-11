@@ -22,13 +22,13 @@ import com.badlogic.gdx.math.Vector2;
  * @author mzechner */
 public class CircleShape extends Shape {
 	org.jbox2d.collision.shapes.CircleShape shape;
-	
+
 	public CircleShape () {
 		super(new org.jbox2d.collision.shapes.CircleShape());
 		shape = (org.jbox2d.collision.shapes.CircleShape)super.shape;
 	}
-	
-	CircleShape(org.jbox2d.collision.shapes.CircleShape shape) {
+
+	CircleShape (org.jbox2d.collision.shapes.CircleShape shape) {
 		super(shape);
 		this.shape = shape;
 	}

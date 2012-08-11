@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh;
 
 import java.util.ArrayList;
@@ -36,17 +37,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "pose")
 public class Pose {
 
-	@XmlAttribute(required = true)
-	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-	protected String target;
-	@XmlAttribute
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	protected String index;
-	@XmlAttribute
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	protected String name;
-	@XmlElement(required = true)
-	protected List<Poseoffset> poseoffset;
+	@XmlAttribute(required = true) @XmlJavaTypeAdapter(CollapsedStringAdapter.class) protected String target;
+	@XmlAttribute @XmlJavaTypeAdapter(NormalizedStringAdapter.class) protected String index;
+	@XmlAttribute @XmlJavaTypeAdapter(NormalizedStringAdapter.class) protected String name;
+	@XmlElement(required = true) protected List<Poseoffset> poseoffset;
 
 	/** Gets the value of the target property.
 	 * 

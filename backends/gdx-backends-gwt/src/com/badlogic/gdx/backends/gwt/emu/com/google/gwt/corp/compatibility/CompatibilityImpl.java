@@ -47,7 +47,7 @@ public class CompatibilityImpl implements Compatibility.Impl {
 	@Override
 	public void printStackTrace (Throwable e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -59,6 +59,6 @@ public class CompatibilityImpl implements Compatibility.Impl {
 	@Override
 	public void sleep (int i) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

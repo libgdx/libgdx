@@ -18,7 +18,6 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.io.File;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -38,7 +37,7 @@ public final class LwjglFileHandle extends FileHandle {
 		if (file.getPath().length() == 0) return new LwjglFileHandle(new File(name), type);
 		return new LwjglFileHandle(new File(file, name), type);
 	}
-	
+
 	public FileHandle sibling (String name) {
 		if (file.getPath().length() == 0) throw new GdxRuntimeException("Cannot get the sibling of the root.");
 		return new LwjglFileHandle(new File(file.getParent(), name), type);

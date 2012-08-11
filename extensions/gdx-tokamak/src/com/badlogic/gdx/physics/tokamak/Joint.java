@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.tokamak;
 
-/**
- * See <a href="http://www.tokamakphysics.com/documentation/reference/nejoint.htm">http://www.tokamakphysics.com/documentation/reference/nejoint.htm</a>
- * @author mzechner
- *
- */
+/** See <a href="http://www.tokamakphysics.com/documentation/reference/nejoint.htm">http://www.tokamakphysics.com/documentation/
+ * reference/nejoint.htm</a>
+ * @author mzechner */
 public class Joint extends NativeObject {
-	Joint(long addr) {
+	Joint (long addr) {
 		super(addr);
 	}
 }

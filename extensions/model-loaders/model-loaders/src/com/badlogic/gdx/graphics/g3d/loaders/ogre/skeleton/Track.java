@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.skeleton;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -32,11 +33,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "track")
 public class Track {
 
-	@XmlAttribute(required = true)
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	protected String bone;
-	@XmlElement(required = true)
-	protected Keyframes keyframes;
+	@XmlAttribute(required = true) @XmlJavaTypeAdapter(NormalizedStringAdapter.class) protected String bone;
+	@XmlElement(required = true) protected Keyframes keyframes;
 
 	/** Gets the value of the bone property.
 	 * 

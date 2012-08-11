@@ -23,12 +23,8 @@ import com.badlogic.gdx.audio.io.VorbisDecoder;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-/**
- * Demonstrates how to read and playback an OGG file with the {@link VorbisDecoder} found
- * in the gdx-audio extension.
- * @author mzechner
- *
- */
+/** Demonstrates how to read and playback an OGG file with the {@link VorbisDecoder} found in the gdx-audio extension.
+ * @author mzechner */
 public class Mpg123Test extends GdxTest {
 	/** the file to playback **/
 	private static final String FILE = "data/8.12.mp3";
@@ -36,31 +32,32 @@ public class Mpg123Test extends GdxTest {
 	Mpg123Decoder decoder;
 	/** an AudioDevice for playing back the PCM data **/
 	AudioDevice device;
-	
+
 	@Override
 	public void create () {
 		// copy ogg file to SD card, can't playback from assets
 		FileHandle externalFile = Gdx.files.external("tmp/test.mp3");
 		Gdx.files.internal(FILE).copyTo(externalFile);
-		
+
 		// Create the decoder and log some properties. Note that we need
 		// an external or absolute file
 		decoder = new Mpg123Decoder(externalFile);
-		Gdx.app.log("Mp3", "channels: " + decoder.getChannels() + ", rate: " + decoder.getRate() + ", length: " + decoder.getLength());
+		Gdx.app.log("Mp3",
+			"channels: " + decoder.getChannels() + ", rate: " + decoder.getRate() + ", length: " + decoder.getLength());
 
 		// Create an audio device for playback
-		device = Gdx.audio.newAudioDevice(decoder.getRate(), decoder.getChannels() == 1? true: false);
-		
+		device = Gdx.audio.newAudioDevice(decoder.getRate(), decoder.getChannels() == 1 ? true : false);
+
 		// start a thread for playback
 		Thread playbackThread = new Thread(new Runnable() {
 			@Override
-			public void run() {
+			public void run () {
 				int readSamples = 0;
 				// we need a short[] to pass the data to the AudioDevice
 				short[] samples = new short[2048];
-				
+
 				// read until we reach the end of the file
-				while((readSamples = decoder.readSamples(samples, 0, samples.length)) > 0) {
+				while ((readSamples = decoder.readSamples(samples, 0, samples.length)) > 0) {
 					// write the samples to the AudioDevice
 					device.writeSamples(samples, 0, readSamples);
 				}
@@ -71,7 +68,7 @@ public class Mpg123Test extends GdxTest {
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose () {
 		// we should synchronize with the thread here
 		// left as an excercise to the reader :)
 		device.dispose();

@@ -13,15 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package java.io;
 
 public class FileNotFoundException extends IOException {
 
-  public FileNotFoundException() {
-    super();
-  }
+	public FileNotFoundException () {
+		super();
+	}
 
-  public FileNotFoundException(String s) {
-    super(s);
-  }
+	public FileNotFoundException (String s) {
+		super(s);
+	}
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.ios;
 
 import com.badlogic.gdx.Audio;
@@ -25,22 +26,22 @@ import com.badlogic.gdx.files.FileHandle;
 public class IOSAudio implements Audio {
 
 	@Override
-	public AudioDevice newAudioDevice(int samplingRate, boolean isMono) {
+	public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
 		return null;
 	}
 
 	@Override
-	public AudioRecorder newAudioRecorder(int samplingRate, boolean isMono) {
+	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono) {
 		return null;
 	}
 
 	@Override
-	public Sound newSound(FileHandle fileHandle) {
+	public Sound newSound (FileHandle fileHandle) {
 		return new IOSSound();
 	}
 
 	@Override
-	public Music newMusic(FileHandle file) {
+	public Music newMusic (FileHandle file) {
 		return new IOSMusic();
 	}
 

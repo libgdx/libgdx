@@ -27,7 +27,7 @@ import com.badlogic.gdx.Preferences;
 public class AndroidPreferences implements Preferences {
 	SharedPreferences sharedPrefs;
 	Editor editor;
-	
+
 	public AndroidPreferences (SharedPreferences preferences) {
 		this.sharedPrefs = preferences;
 	}
@@ -153,8 +153,8 @@ public class AndroidPreferences implements Preferences {
 		edit();
 		editor.remove(key);
 	}
-	
-	private void edit() {
+
+	private void edit () {
 		if (editor == null) {
 			editor = sharedPrefs.edit();
 		}

@@ -27,7 +27,7 @@ public class JoglDebugStarter {
 	public static void main (String[] argv) {
 		// this is only here for me to debug native code faster
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
-		
+
 		GdxTest test = new DirtyRenderingTest();
 		JoglApplicationConfiguration config = new JoglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();

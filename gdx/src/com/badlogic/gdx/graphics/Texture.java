@@ -222,7 +222,8 @@ public class Texture implements Disposable {
 		}
 	}
 
-	/** Used internally to reload after context loss. Creates a new GL handle then calls {@link #load(TextureData)}. Use this only if you know what you do! */
+	/** Used internally to reload after context loss. Creates a new GL handle then calls {@link #load(TextureData)}. Use this only
+	 * if you know what you do! */
 	private void reload () {
 		if (!data.isManaged()) throw new GdxRuntimeException("Tried to reload unmanaged Texture");
 		glHandle = createGLHandle();
@@ -388,7 +389,7 @@ public class Texture implements Disposable {
 					params.magFilter = texture.getMagFilter();
 					params.wrapU = texture.getUWrap();
 					params.wrapV = texture.getVWrap();
-					params.genMipMaps = texture.data.useMipMaps(); //not sure about this?
+					params.genMipMaps = texture.data.useMipMaps(); // not sure about this?
 					params.texture = texture; // special parameter which will ensure that the references stay the same.
 					params.loadedCallback = new LoadedCallback() {
 						@Override
@@ -426,11 +427,9 @@ public class Texture implements Disposable {
 		builder.append("}");
 		return builder.toString();
 	}
-	
-	/**
-	 * @return the number of managed textures currently loaded
-	 */
-	public static int getNumManagedTextures() {
+
+	/** @return the number of managed textures currently loaded */
+	public static int getNumManagedTextures () {
 		return managedTextures.get(Gdx.app).size();
 	}
 }

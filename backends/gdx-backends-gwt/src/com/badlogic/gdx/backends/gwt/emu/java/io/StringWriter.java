@@ -11,17 +11,19 @@
 package java.io;
 
 public class StringWriter extends Writer {
-  private final StringBuilder out = new StringBuilder();
-  
-  public void write(char[] b, int offset, int length) throws IOException {
-    out.append(b, offset, length);
-  }
+	private final StringBuilder out = new StringBuilder();
 
-  public String toString() {
-    return out.toString();
-  }
+	public void write (char[] b, int offset, int length) throws IOException {
+		out.append(b, offset, length);
+	}
 
-  public void flush() throws IOException { }
+	public String toString () {
+		return out.toString();
+	}
 
-  public void close() throws IOException { }
+	public void flush () throws IOException {
+	}
+
+	public void close () throws IOException {
+	}
 }

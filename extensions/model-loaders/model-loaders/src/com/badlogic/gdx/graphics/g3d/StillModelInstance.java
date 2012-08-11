@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d;
 
 import com.badlogic.gdx.graphics.g3d.materials.Material;
@@ -20,12 +21,12 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 public interface StillModelInstance {
-	public Matrix4 getTransform();
+	public Matrix4 getTransform ();
 
-	public Vector3 getSortCenter();
+	public Vector3 getSortCenter ();
 
-	public float getBoundingSphereRadius();
+	public float getBoundingSphereRadius ();
 
-	public Material[] getMaterials();
+	public Material[] getMaterials ();
 
 }

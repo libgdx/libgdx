@@ -23,7 +23,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * approximate. */
 public class WeldJoint extends Joint {
 	org.jbox2d.dynamics.joints.WeldJoint joint;
-	
+
 	public WeldJoint (World world, org.jbox2d.dynamics.joints.WeldJoint joint) {
 		super(world, joint);
 	}

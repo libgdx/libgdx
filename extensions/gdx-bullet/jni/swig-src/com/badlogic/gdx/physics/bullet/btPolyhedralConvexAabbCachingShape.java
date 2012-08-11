@@ -9,42 +9,41 @@
 package com.badlogic.gdx.physics.bullet;
 
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
 
 public class btPolyhedralConvexAabbCachingShape extends btPolyhedralConvexShape {
-  private long swigCPtr;
+	private long swigCPtr;
 
-  protected btPolyhedralConvexAabbCachingShape(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btPolyhedralConvexAabbCachingShape_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	protected btPolyhedralConvexAabbCachingShape (long cPtr, boolean cMemoryOwn) {
+		super(gdxBulletJNI.btPolyhedralConvexAabbCachingShape_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
 
-  public static long getCPtr(btPolyhedralConvexAabbCachingShape obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (btPolyhedralConvexAabbCachingShape obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected void finalize() {
-    delete();
-  }
+	protected void finalize () {
+		delete();
+	}
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btPolyhedralConvexAabbCachingShape(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+	public synchronized void delete () {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btPolyhedralConvexAabbCachingShape(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
-  public void getNonvirtualAabb(btTransform trans, Vector3 aabbMin, Vector3 aabbMax, float margin) {
-    gdxBulletJNI.btPolyhedralConvexAabbCachingShape_getNonvirtualAabb(swigCPtr, this, btTransform.getCPtr(trans), trans, aabbMin, aabbMax, margin);
-  }
+	public void getNonvirtualAabb (btTransform trans, Vector3 aabbMin, Vector3 aabbMax, float margin) {
+		gdxBulletJNI.btPolyhedralConvexAabbCachingShape_getNonvirtualAabb(swigCPtr, this, btTransform.getCPtr(trans), trans,
+			aabbMin, aabbMax, margin);
+	}
 
-  public void recalcLocalAabb() {
-    gdxBulletJNI.btPolyhedralConvexAabbCachingShape_recalcLocalAabb(swigCPtr, this);
-  }
+	public void recalcLocalAabb () {
+		gdxBulletJNI.btPolyhedralConvexAabbCachingShape_recalcLocalAabb(swigCPtr, this);
+	}
 
 }

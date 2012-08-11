@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.skeleton;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -32,13 +33,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "animation")
 public class Animation {
 
-	@XmlAttribute(required = true)
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	public String name;
-	@XmlAttribute(required = true)
-	public float length;
-	@XmlElement(required = true)
-	protected Tracks tracks;
+	@XmlAttribute(required = true) @XmlJavaTypeAdapter(NormalizedStringAdapter.class) public String name;
+	@XmlAttribute(required = true) public float length;
+	@XmlElement(required = true) protected Tracks tracks;
 
 	/** Gets the value of the tracks property.
 	 * 

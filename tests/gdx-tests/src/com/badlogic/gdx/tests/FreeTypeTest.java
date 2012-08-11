@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -35,7 +36,7 @@ public class FreeTypeTest extends GdxTest {
 	public void create () {
 		boolean flip = false;
 		batch = new SpriteBatch();
-		if(flip) {
+		if (flip) {
 			OrthographicCamera cam = new OrthographicCamera();
 			cam.setToOrtho(flip);
 			cam.update();
@@ -58,9 +59,9 @@ public class FreeTypeTest extends GdxTest {
 		font.setColor(Color.RED);
 		font.drawMultiLine(batch, "This is a test\nAnd another line\n()§$%&/!12390#", 100, 112);
 		ftFont.drawMultiLine(batch, "This is a test\nAnd another line\n()§$%&/!12390#", 100, 112);
-//		batch.disableBlending();
+// batch.disableBlending();
 		batch.draw(ftFont.getRegion(), 300, 0);
-//		batch.enableBlending();
+// batch.enableBlending();
 		batch.end();
 	}
 

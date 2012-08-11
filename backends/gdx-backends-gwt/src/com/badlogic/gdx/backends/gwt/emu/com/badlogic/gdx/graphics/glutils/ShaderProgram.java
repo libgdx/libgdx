@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -134,7 +133,7 @@ public class ShaderProgram implements Disposable {
 	public ShaderProgram (FileHandle vertexShader, FileHandle fragmentShader) {
 		this(vertexShader.readString(), fragmentShader.readString());
 	}
-	
+
 	/** Construcs a new JOglShaderProgram and immediatly compiles it.
 	 * 
 	 * @param vertexShader the vertex shader

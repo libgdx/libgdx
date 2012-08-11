@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -37,7 +38,7 @@ public class OnscreenKeyboardTest extends GdxTest implements InputProcessor {
 		font = new BitmapFont();
 		text = "";
 		Gdx.input.setInputProcessor(this);
-//		Gdx.input.setOnscreenKeyboardVisible(true);
+// Gdx.input.setOnscreenKeyboardVisible(true);
 	}
 
 	public void render () {

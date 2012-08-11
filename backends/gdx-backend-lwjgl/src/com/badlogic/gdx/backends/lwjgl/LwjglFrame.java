@@ -17,8 +17,6 @@
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 

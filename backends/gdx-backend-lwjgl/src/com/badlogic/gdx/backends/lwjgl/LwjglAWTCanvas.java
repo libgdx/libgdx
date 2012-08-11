@@ -18,10 +18,7 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +34,6 @@ import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
@@ -64,24 +60,19 @@ public class LwjglAWTCanvas implements Application {
 		this(listener, useGL2, null);
 	}
 
-	public LwjglAWTCanvas (ApplicationListener listener, boolean useGL2,
-			LwjglAWTCanvas sharedContextCanvas) {
+	public LwjglAWTCanvas (ApplicationListener listener, boolean useGL2, LwjglAWTCanvas sharedContextCanvas) {
 		LwjglNativesLoader.load();
 
-		AWTGLCanvas sharedDrawable = sharedContextCanvas != null ?
-			sharedContextCanvas.canvas : null;
+		AWTGLCanvas sharedDrawable = sharedContextCanvas != null ? sharedContextCanvas.canvas : null;
 		try {
-			canvas = new AWTGLCanvas(
-				GraphicsEnvironment.getLocalGraphicsEnvironment()
-					.getDefaultScreenDevice(),
-					new PixelFormat(),
-					sharedDrawable) {
+			canvas = new AWTGLCanvas(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice(), new PixelFormat(),
+				sharedDrawable) {
 				private final Dimension minSize = new Dimension(0, 0);
 
 				public Dimension getMinimumSize () {
 					return minSize;
 				}
-			
+
 				@Override
 				public void initGL () {
 					start();
@@ -126,7 +117,7 @@ public class LwjglAWTCanvas implements Application {
 		} else {
 			audio = null;
 		}
-		if(Gdx.files == null) {
+		if (Gdx.files == null) {
 			files = new LwjglFiles();
 			Gdx.files = files;
 		} else {
@@ -177,11 +168,11 @@ public class LwjglAWTCanvas implements Application {
 	public int getVersion () {
 		return 0;
 	}
-	
-	void setGlobals() {
+
+	void setGlobals () {
 		Gdx.app = this;
-		if(audio != null) Gdx.audio = audio;
-		if(files != null) Gdx.files = files;
+		if (audio != null) Gdx.audio = audio;
+		if (files != null) Gdx.files = files;
 		Gdx.graphics = graphics;
 		Gdx.input = input;
 	}
@@ -336,17 +327,15 @@ public class LwjglAWTCanvas implements Application {
 			}
 		});
 	}
-	
-   /**
-    * Make the canvas' context current. It is highly recommended that the context
-    * is only made current inside the AWT thread (for example in an overridden paintGL()).
-    */
-   public void makeCurrent() {
-      try {
-         canvas.makeCurrent();
-         setGlobals();
-      } catch (LWJGLException ex) {
-         throw new GdxRuntimeException(ex);
-      }
-   }
+
+	/** Make the canvas' context current. It is highly recommended that the context is only made current inside the AWT thread (for
+	 * example in an overridden paintGL()). */
+	public void makeCurrent () {
+		try {
+			canvas.makeCurrent();
+			setGlobals();
+		} catch (LWJGLException ex) {
+			throw new GdxRuntimeException(ex);
+		}
+	}
 }

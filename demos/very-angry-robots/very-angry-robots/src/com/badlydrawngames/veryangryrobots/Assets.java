@@ -171,13 +171,12 @@ public class Assets {
 			try {
 				float density = Float.parseFloat(availableDensities[i].name());
 				densities.add(density);
-			}
-			catch (NumberFormatException ex) {
+			} catch (NumberFormatException ex) {
 				// Ignore anything non-numeric, such as ".svn" folders.
 			}
 		}
-		densities.shrink();	// Remove empty slots to get rid of zeroes.
-		densities.sort();	// Now the lowest density comes first.
+		densities.shrink(); // Remove empty slots to get rid of zeroes.
+		densities.sort(); // Now the lowest density comes first.
 		return CameraHelper.bestDensity(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, densities.items);
 	}
 

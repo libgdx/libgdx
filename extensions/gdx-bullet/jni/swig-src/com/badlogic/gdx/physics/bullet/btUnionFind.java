@@ -8,79 +8,75 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-
 public class btUnionFind {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+	private long swigCPtr;
+	protected boolean swigCMemOwn;
 
-  protected btUnionFind(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	protected btUnionFind (long cPtr, boolean cMemoryOwn) {
+		swigCMemOwn = cMemoryOwn;
+		swigCPtr = cPtr;
+	}
 
-  public static long getCPtr(btUnionFind obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (btUnionFind obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected void finalize() {
-    delete();
-  }
+	protected void finalize () {
+		delete();
+	}
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btUnionFind(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+	public synchronized void delete () {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btUnionFind(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+	}
 
-  public btUnionFind() {
-    this(gdxBulletJNI.new_btUnionFind(), true);
-  }
+	public btUnionFind () {
+		this(gdxBulletJNI.new_btUnionFind(), true);
+	}
 
-  public void sortIslands() {
-    gdxBulletJNI.btUnionFind_sortIslands(swigCPtr, this);
-  }
+	public void sortIslands () {
+		gdxBulletJNI.btUnionFind_sortIslands(swigCPtr, this);
+	}
 
-  public void reset(int N) {
-    gdxBulletJNI.btUnionFind_reset(swigCPtr, this, N);
-  }
+	public void reset (int N) {
+		gdxBulletJNI.btUnionFind_reset(swigCPtr, this, N);
+	}
 
-  public int getNumElements() {
-    return gdxBulletJNI.btUnionFind_getNumElements(swigCPtr, this);
-  }
+	public int getNumElements () {
+		return gdxBulletJNI.btUnionFind_getNumElements(swigCPtr, this);
+	}
 
-  public boolean isRoot(int x) {
-    return gdxBulletJNI.btUnionFind_isRoot(swigCPtr, this, x);
-  }
+	public boolean isRoot (int x) {
+		return gdxBulletJNI.btUnionFind_isRoot(swigCPtr, this, x);
+	}
 
-  public btElement getElement(int index) {
-    return new btElement(gdxBulletJNI.btUnionFind_getElement__SWIG_0(swigCPtr, this, index), false);
-  }
+	public btElement getElement (int index) {
+		return new btElement(gdxBulletJNI.btUnionFind_getElement__SWIG_0(swigCPtr, this, index), false);
+	}
 
-  public void allocate(int N) {
-    gdxBulletJNI.btUnionFind_allocate(swigCPtr, this, N);
-  }
+	public void allocate (int N) {
+		gdxBulletJNI.btUnionFind_allocate(swigCPtr, this, N);
+	}
 
-  public void Free() {
-    gdxBulletJNI.btUnionFind_Free(swigCPtr, this);
-  }
+	public void Free () {
+		gdxBulletJNI.btUnionFind_Free(swigCPtr, this);
+	}
 
-  public int find(int p, int q) {
-    return gdxBulletJNI.btUnionFind_find__SWIG_0(swigCPtr, this, p, q);
-  }
+	public int find (int p, int q) {
+		return gdxBulletJNI.btUnionFind_find__SWIG_0(swigCPtr, this, p, q);
+	}
 
-  public void unite(int p, int q) {
-    gdxBulletJNI.btUnionFind_unite(swigCPtr, this, p, q);
-  }
+	public void unite (int p, int q) {
+		gdxBulletJNI.btUnionFind_unite(swigCPtr, this, p, q);
+	}
 
-  public int find(int x) {
-    return gdxBulletJNI.btUnionFind_find__SWIG_1(swigCPtr, this, x);
-  }
+	public int find (int x) {
+		return gdxBulletJNI.btUnionFind_find__SWIG_1(swigCPtr, this, x);
+	}
 
 }

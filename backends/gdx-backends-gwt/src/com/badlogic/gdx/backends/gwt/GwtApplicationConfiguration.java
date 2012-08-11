@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.gwt;
 
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.TextArea;
+import java.awt.Panel;
+import java.awt.TextArea;
 
 public class GwtApplicationConfiguration {
 	/** the width of the drawing area in pixels **/
@@ -29,18 +30,15 @@ public class GwtApplicationConfiguration {
 	public boolean antialiasing = false;
 	/** the framerate to run the game at **/
 	public int fps = 60;
-	/** the Panel to add the WebGL canvas to, can be null in which case
-	 * a Panel is added automatically to the body element of the DOM **/
+	/** the Panel to add the WebGL canvas to, can be null in which case a Panel is added automatically to the body element of the
+	 * DOM **/
 	public Panel rootPanel;
-	/** the id of a canvas element to be used as the drawing area, can be null
-	 * in which case a Panel and Canvas are added to the body element of the DOM **/
+	/** the id of a canvas element to be used as the drawing area, can be null in which case a Panel and Canvas are added to the
+	 * body element of the DOM **/
 	public String canavsId;
-	 /** a TextArea to log messages to, can be null in which case a TextArea
-	  * will be added to the body element of the DOM. */
+	/** a TextArea to log messages to, can be null in which case a TextArea will be added to the body element of the DOM. */
 	public TextArea log;
-	/** whether to use debugging mode for OpenGL calls. Errors will result in 
-	 * a RuntimeException being thrown.
-	 */
+	/** whether to use debugging mode for OpenGL calls. Errors will result in a RuntimeException being thrown. */
 	public boolean useDebugGL = false;
 
 	public GwtApplicationConfiguration (int width, int height) {

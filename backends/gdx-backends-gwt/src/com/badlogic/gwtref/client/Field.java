@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gwtref.client;
 
 import java.security.AccessControlException;
@@ -32,8 +33,10 @@ public class Field {
 	boolean accessible;
 	final String getter;
 	final String setter;
-	
-	Field(String name, Class enclosingType, Class type, boolean isFinal, boolean isDefaultAccess, boolean isPrivate, boolean isProtected, boolean isPublic, boolean isStatic, boolean isTransient, boolean isVolatile, String getter, String setter) {
+
+	Field (String name, Class enclosingType, Class type, boolean isFinal, boolean isDefaultAccess, boolean isPrivate,
+		boolean isProtected, boolean isPublic, boolean isStatic, boolean isTransient, boolean isVolatile, String getter,
+		String setter) {
 		this.name = name;
 		this.enclosingType = enclosingType;
 		this.type = type;
@@ -49,36 +52,36 @@ public class Field {
 		this.setter = setter;
 		accessible = isPublic;
 	}
-	
-	public Object get(Object obj) throws IllegalAccessException {
+
+	public Object get (Object obj) throws IllegalAccessException {
 		return ReflectionCache.instance.get(this, obj);
 	}
-	
-	public void set(Object obj, Object value) throws IllegalAccessException {
+
+	public void set (Object obj, Object value) throws IllegalAccessException {
 		ReflectionCache.instance.set(this, obj, value);
 	}
-	
-	public String getName() {
+
+	public String getName () {
 		return name;
 	}
-	
-	public Type getEnclosingType() {
+
+	public Type getEnclosingType () {
 		return ReflectionCache.instance.forName(enclosingType.getName());
 	}
-	
-	public Type getType() {
+
+	public Type getType () {
 		return ReflectionCache.instance.forName(type.getName());
 	}
-	
-	public boolean isSynthetic() {
+
+	public boolean isSynthetic () {
 		return false;
 	}
-	
-	public boolean isAccessible() {
+
+	public boolean isAccessible () {
 		return accessible;
 	}
-	
-	public void setAccessible(boolean accessible) throws AccessControlException {
+
+	public void setAccessible (boolean accessible) throws AccessControlException {
 		this.accessible = accessible;
 	}
 

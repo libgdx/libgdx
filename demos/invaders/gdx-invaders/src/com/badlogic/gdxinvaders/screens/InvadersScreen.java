@@ -18,12 +18,10 @@ import com.badlogic.gdx.Screen;
 /** Common class for a game screen, e.g. main menu, game loop, game over screen and so on.
  * @author mzechner */
 public abstract class InvadersScreen implements Screen {
-	/** Called when the screen should update itself, e.g. continue a simulation etc.
-	 */
+	/** Called when the screen should update itself, e.g. continue a simulation etc. */
 	public abstract void update (float delta);
 
-	/** Called when a screen should render itself
-	 */
+	/** Called when a screen should render itself */
 	public abstract void draw (float delta);
 
 	/** Called by GdxInvaders to check whether the screen is done.

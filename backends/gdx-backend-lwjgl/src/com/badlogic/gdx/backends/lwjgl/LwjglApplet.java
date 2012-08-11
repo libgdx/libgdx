@@ -33,8 +33,8 @@ public class LwjglApplet extends Applet {
 		public LwjglAppletApplication (ApplicationListener listener, boolean useGL2, Canvas canvas) {
 			super(listener, useGL2, canvas);
 		}
-		
-		public LwjglAppletApplication(ApplicationListener listener, Canvas canvas, LwjglApplicationConfiguration config) {
+
+		public LwjglAppletApplication (ApplicationListener listener, Canvas canvas, LwjglApplicationConfiguration config) {
 			super(listener, config, canvas);
 		}
 
@@ -43,8 +43,8 @@ public class LwjglApplet extends Applet {
 			return ApplicationType.Applet;
 		}
 	}
-	
-	public LwjglApplet(final ApplicationListener listener, final LwjglApplicationConfiguration config) {
+
+	public LwjglApplet (final ApplicationListener listener, final LwjglApplicationConfiguration config) {
 		LwjglNativesLoader.load = false;
 		canvas = new Canvas() {
 			public final void addNotify () {

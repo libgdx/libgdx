@@ -8,39 +8,35 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-
 public class btCapsuleShapeZ extends btCapsuleShape {
-  private long swigCPtr;
+	private long swigCPtr;
 
-  protected btCapsuleShapeZ(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btCapsuleShapeZ_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	protected btCapsuleShapeZ (long cPtr, boolean cMemoryOwn) {
+		super(gdxBulletJNI.btCapsuleShapeZ_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
 
-  public static long getCPtr(btCapsuleShapeZ obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (btCapsuleShapeZ obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected void finalize() {
-    delete();
-  }
+	protected void finalize () {
+		delete();
+	}
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btCapsuleShapeZ(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+	public synchronized void delete () {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btCapsuleShapeZ(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
-  public btCapsuleShapeZ(float radius, float height) {
-    this(gdxBulletJNI.new_btCapsuleShapeZ(radius, height), true);
-  }
+	public btCapsuleShapeZ (float radius, float height) {
+		this(gdxBulletJNI.new_btCapsuleShapeZ(radius, height), true);
+	}
 
 }

@@ -21,9 +21,6 @@ import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.graphics.g3d.experimental.HybridLightTest;
-import com.badlogic.gdx.graphics.g3d.test.KeyframedModelViewer;
-import com.badlogic.gdx.graphics.g3d.test.StillModelViewerGL20;
-import com.badlogic.gdx.graphics.g3d.test.Viewer;
 
 public class ModelViewerActivity extends AndroidApplication {
 	/** Called when the activity is first created. */

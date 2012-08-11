@@ -267,14 +267,14 @@ public final class JoglApplication implements Application {
 			Gdx.graphics.requestRendering();
 		}
 	}
-	
+
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
 			System.out.println(tag + ": " + message);
 		}
 	}
-	
+
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.audio.io;
 
 import java.io.EOFException;
@@ -23,35 +24,30 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * {@link Decoder} implementation for WAV files, pure Java, beware.
- * @author mzechner
- *
- */
+/** {@link Decoder} implementation for WAV files, pure Java, beware.
+ * @author mzechner */
 public class WavDecoder extends Decoder {
 	WavInputStream in;
 	byte[] buffer = new byte[1024];
-	
-	/**
-	 * Creates a new WAV decoder. The file can be of any type.
-	 * @param file the {@link FileHandle}
-	 */
-	public WavDecoder(FileHandle file) {
+
+	/** Creates a new WAV decoder. The file can be of any type.
+	 * @param file the {@link FileHandle} */
+	public WavDecoder (FileHandle file) {
 		in = new WavInputStream(file);
 	}
-	
+
 	@Override
-	public int readSamples(short[] samples, int offset, int numSamples) {
+	public int readSamples (short[] samples, int offset, int numSamples) {
 		int read = 0;
 		int total = 0;
-		if(buffer.length < samples.length * 2) buffer = new byte[samples.length * 2];
+		if (buffer.length < samples.length * 2) buffer = new byte[samples.length * 2];
 		numSamples *= 2;
 		try {
-			while((read = in.read(buffer, total, numSamples - total)) > 0) {
+			while ((read = in.read(buffer, total, numSamples - total)) > 0) {
 				total += read;
 			}
 			total = total - (total % 2);
-			for(int j=0; j < total; j+=2) {
+			for (int j = 0; j < total; j += 2) {
 				samples[offset++] = (short)(((buffer[j + 1] << 8) & 0xff00) | (buffer[j] & 0xff));
 			}
 		} catch (IOException e) {
@@ -62,7 +58,7 @@ public class WavDecoder extends Decoder {
 	}
 
 	@Override
-	public int skipSamples(int numSamples) {
+	public int skipSamples (int numSamples) {
 		try {
 			return (int)in.skip(numSamples * 2 * getChannels()) / (2 * getChannels());
 		} catch (IOException e) {
@@ -72,25 +68,25 @@ public class WavDecoder extends Decoder {
 	}
 
 	@Override
-	public int getChannels() {
+	public int getChannels () {
 		return in.channels;
 	}
 
 	@Override
-	public int getRate() {
+	public int getRate () {
 		return in.sampleRate;
 	}
 
 	@Override
-	public float getLength() {
+	public float getLength () {
 		return (in.dataRemaining / (2 * getChannels()) / (float)getRate());
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose () {
 		try {
-			if(in != null) in.close();
-		} catch(Exception e) {
+			if (in != null) in.close();
+		} catch (Exception e) {
 			// silent catch ftw...
 		}
 	}

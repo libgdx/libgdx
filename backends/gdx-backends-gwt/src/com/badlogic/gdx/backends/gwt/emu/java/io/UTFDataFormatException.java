@@ -13,16 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package java.io;
 
 public class UTFDataFormatException extends IOException {
 
-  
-  public UTFDataFormatException(String msg) {
-    super(msg);
-  }
-  
-  public UTFDataFormatException() {
-    super();
-  }
+	public UTFDataFormatException (String msg) {
+		super(msg);
+	}
+
+	public UTFDataFormatException () {
+		super();
+	}
 }

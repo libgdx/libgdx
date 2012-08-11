@@ -20,6 +20,7 @@ package com.badlogic.gdx.physics.box2d;
  * body collisions. These match up one-to-one with the contact points in b2Manifold.
  * @author mzechner */
 public class ContactImpulse {
+	// @off
 	/*JNI
 #include <Box2D/Box2D.h>
 	 */

@@ -28,7 +28,7 @@ import com.badlogic.gdx.physics.box2d.World;
 public class MouseJoint extends Joint {
 	org.jbox2d.dynamics.joints.MouseJoint joint;
 	final Vec2 tmp = new Vec2();
-	
+
 	public MouseJoint (World world, org.jbox2d.dynamics.joints.MouseJoint joint) {
 		super(world, joint);
 		this.joint = joint;
@@ -53,12 +53,10 @@ public class MouseJoint extends Joint {
 		joint.setMaxForce(force);
 	}
 
-
 	/** Set/get the maximum force in Newtons. */
 	public float getMaxForce () {
 		return joint.getMaxForce();
 	}
-
 
 	/** Set/get the frequency in Hertz. */
 	public void setFrequency (float hz) {

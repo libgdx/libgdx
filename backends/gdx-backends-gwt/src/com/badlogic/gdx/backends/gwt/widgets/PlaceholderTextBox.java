@@ -13,36 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
- 
-package com.badlogic.gdx.backends.gwt.widgets;
 
-import com.google.gwt.user.client.ui.TextBox;
+package com.badlogic.gdx.backends.gwt.widgets;
 
 public class PlaceholderTextBox extends TextBox {
 
-  String placeholder = "";
+	String placeholder = "";
 
-  /**
-   * Creates an empty text box.
-   */
-  public PlaceholderTextBox() { }
+	/** Creates an empty text box. */
+	public PlaceholderTextBox () {
+	}
 
-  /**
-   * Gets the current placeholder text for the text box.
-   * 
-   * @return the current placeholder text
-   */
-  public String getPlaceholder() {
-      return placeholder;
-  }
+	/** Gets the current placeholder text for the text box.
+	 * 
+	 * @return the current placeholder text */
+	public String getPlaceholder () {
+		return placeholder;
+	}
 
-  /**
-   * Sets the placeholder text displayed in the text box.
-   * 
-   * @param placeholder the placeholder text
-   */
-  public void setPlaceholder(String text) {
-      placeholder = (text != null ? text : "");
-      getElement().setPropertyString("placeholder", placeholder);
-  }
+	/** Sets the placeholder text displayed in the text box.
+	 * 
+	 * @param placeholder the placeholder text */
+	public void setPlaceholder (String text) {
+		placeholder = (text != null ? text : "");
+		getElement().setPropertyString("placeholder", placeholder);
+	}
 }

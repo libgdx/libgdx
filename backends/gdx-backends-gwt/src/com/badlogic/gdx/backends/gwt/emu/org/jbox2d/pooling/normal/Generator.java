@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package org.jbox2d.pooling.normal;
 
 public interface Generator<T> {
-	public T gen();
+	public T gen ();
 }

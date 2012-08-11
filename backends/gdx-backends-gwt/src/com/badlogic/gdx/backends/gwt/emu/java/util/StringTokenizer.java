@@ -13,9 +13,8 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package java.util;
 
-import java.util.NoSuchElementException;
+package java.util;
 
 public class StringTokenizer {
 	private final String deli;
@@ -24,28 +23,28 @@ public class StringTokenizer {
 
 	private int pos;
 	private String next;
-	
-	public StringTokenizer(String s, String deli) {
+
+	public StringTokenizer (String s, String deli) {
 		this.s = s;
 		this.deli = deli;
 		len = s.length();
 	}
-	
-	public StringTokenizer(String s) {
+
+	public StringTokenizer (String s) {
 		this(s, " \t\n\r\f");
-		
+
 	}
-	
-	public String nextToken() {
-		if(!hasMoreTokens()) {
+
+	public String nextToken () {
+		if (!hasMoreTokens()) {
 			throw new NoSuchElementException();
 		}
 		String result = next;
 		next = null;
 		return result;
 	}
-	
-	public boolean hasMoreTokens() {
+
+	public boolean hasMoreTokens () {
 		if (next != null) {
 			return true;
 		}
@@ -53,16 +52,16 @@ public class StringTokenizer {
 		while (pos < len && deli.indexOf(s.charAt(pos)) != -1) {
 			pos++;
 		}
-		
+
 		if (pos >= len) {
 			return false;
 		}
-		
+
 		int p0 = pos++;
 		while (pos < len && deli.indexOf(s.charAt(pos)) == -1) {
 			pos++;
 		}
-		
+
 		next = s.substring(p0, pos++);
 		return true;
 	}

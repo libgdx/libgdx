@@ -14,11 +14,8 @@
 package com.badlogic.gdxinvaders.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdxinvaders.Renderer;
 import com.badlogic.gdxinvaders.RendererGL10;
 import com.badlogic.gdxinvaders.RendererGL20;
@@ -38,7 +35,7 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 	public GameLoop () {
 		simulation = new Simulation();
 		simulation.listener = this;
-		renderer = Gdx.graphics.isGL20Available()? new RendererGL20(): new RendererGL10();
+		renderer = Gdx.graphics.isGL20Available() ? new RendererGL20() : new RendererGL10();
 		explosion = Gdx.audio.newSound(Gdx.files.internal("data/explosion.ogg"));
 		shot = Gdx.audio.newSound(Gdx.files.internal("data/shot.ogg"));
 	}

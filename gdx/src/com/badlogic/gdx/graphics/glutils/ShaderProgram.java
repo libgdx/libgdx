@@ -200,12 +200,12 @@ public class ShaderProgram implements Disposable {
 
 		int compiled = intbuf.get(0);
 		if (compiled == 0) {
-//			gl.glGetShaderiv(shader, GL20.GL_INFO_LOG_LENGTH, intbuf);
-//			int infoLogLength = intbuf.get(0);
-//			if (infoLogLength > 1) {
-				String infoLog = gl.glGetShaderInfoLog(shader);
-				log += infoLog;
-//			}
+// gl.glGetShaderiv(shader, GL20.GL_INFO_LOG_LENGTH, intbuf);
+// int infoLogLength = intbuf.get(0);
+// if (infoLogLength > 1) {
+			String infoLog = gl.glGetShaderInfoLog(shader);
+			log += infoLog;
+// }
 			return -1;
 		}
 
@@ -228,11 +228,11 @@ public class ShaderProgram implements Disposable {
 		gl.glGetProgramiv(program, GL20.GL_LINK_STATUS, intbuf);
 		int linked = intbuf.get(0);
 		if (linked == 0) {
-//			Gdx.gl20.glGetProgramiv(program, GL20.GL_INFO_LOG_LENGTH, intbuf);
-//			int infoLogLength = intbuf.get(0);
-//			if (infoLogLength > 1) {
-				log = Gdx.gl20.glGetProgramInfoLog(program);
-//			}
+// Gdx.gl20.glGetProgramiv(program, GL20.GL_INFO_LOG_LENGTH, intbuf);
+// int infoLogLength = intbuf.get(0);
+// if (infoLogLength > 1) {
+			log = Gdx.gl20.glGetProgramInfoLog(program);
+// }
 			return -1;
 		}
 
@@ -245,11 +245,11 @@ public class ShaderProgram implements Disposable {
 	 *         have an effect. */
 	public String getLog () {
 		if (isCompiled) {
-//			Gdx.gl20.glGetProgramiv(program, GL20.GL_INFO_LOG_LENGTH, intbuf);
-//			int infoLogLength = intbuf.get(0);
-//			if (infoLogLength > 1) {
-				log = Gdx.gl20.glGetProgramInfoLog(program);
-//			}
+// Gdx.gl20.glGetProgramiv(program, GL20.GL_INFO_LOG_LENGTH, intbuf);
+// int infoLogLength = intbuf.get(0);
+// if (infoLogLength > 1) {
+			log = Gdx.gl20.glGetProgramInfoLog(program);
+// }
 			return log;
 		} else {
 			return log;
@@ -482,34 +482,33 @@ public class ShaderProgram implements Disposable {
 		BufferUtils.copy(vals, this.matrix, vals.length, 0);
 		gl.glUniformMatrix3fv(location, 1, transpose, this.matrix);
 	}
-	
 
-   /** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
-    * {@link #begin()}/{@link #end()} block.
-    *
-    * @param name the name of the uniform
-    * @param values x and y as the first and second values respectively */
-   public void setUniformf (String name, Vector2 values) {
-       setUniformf(name, values.x, values.y);
-   }
+	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
+	 * {@link #begin()}/{@link #end()} block.
+	 * 
+	 * @param name the name of the uniform
+	 * @param values x and y as the first and second values respectively */
+	public void setUniformf (String name, Vector2 values) {
+		setUniformf(name, values.x, values.y);
+	}
 
-   /** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
-    * {@link #begin()}/{@link #end()} block.
-    *
-    * @param name the name of the uniform
-    * @param values x, y and z as the first, second and third values respectively */
-   public void setUniformf (String name, Vector3 values) {
-       setUniformf(name, values.x, values.y, values.z);
-   }
+	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
+	 * {@link #begin()}/{@link #end()} block.
+	 * 
+	 * @param name the name of the uniform
+	 * @param values x, y and z as the first, second and third values respectively */
+	public void setUniformf (String name, Vector3 values) {
+		setUniformf(name, values.x, values.y, values.z);
+	}
 
-   /** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
-    * {@link #begin()}/{@link #end()} block.
-    *
-    * @param name the name of the uniform
-    * @param values r, g, b and a as the first through fourth values respectively */
-   public void setUniformf (String name, Color values) {
-       setUniformf(name, values.r, values.g, values.b, values.a);
-   }
+	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
+	 * {@link #begin()}/{@link #end()} block.
+	 * 
+	 * @param name the name of the uniform
+	 * @param values r, g, b and a as the first through fourth values respectively */
+	public void setUniformf (String name, Color values) {
+		setUniformf(name, values.r, values.g, values.b, values.a);
+	}
 
 	/** Sets the vertex attribute with the given name. Throws an IllegalArgumentException in case it is not called in between a
 	 * {@link #begin()}/{@link #end()} block.
@@ -525,7 +524,7 @@ public class ShaderProgram implements Disposable {
 		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged();
 		int location = fetchAttributeLocation(name);
-		if(location == -1) return;
+		if (location == -1) return;
 		gl.glVertexAttribPointer(location, size, type, normalize, stride, buffer);
 	}
 
@@ -546,7 +545,7 @@ public class ShaderProgram implements Disposable {
 		if (location == -1) return;
 		gl.glVertexAttribPointer(location, size, type, normalize, stride, offset);
 	}
-	
+
 	/** Makes OpenGL ES 2.0 use this vertex and fragment shader pair. When you are done with this shader you have to call
 	 * {@link ShaderProgram#end()}. */
 	public void begin () {

@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics;
 
+import java.awt.Canvas;
 import java.nio.Buffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
@@ -23,18 +24,9 @@ import java.util.Map;
 
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.google.gwt.canvas.client.Canvas;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.canvas.dom.client.Context2d;
-import com.google.gwt.canvas.dom.client.CssColor;
-import com.google.gwt.canvas.dom.client.ImageData;
-import com.google.gwt.canvas.dom.client.Context2d.Composite;
-import com.google.gwt.dom.client.CanvasElement;
-import com.google.gwt.dom.client.ImageElement;
 
 public class Pixmap implements Disposable {
 	public static Map<Integer, Pixmap> pixmaps = new HashMap<Integer, Pixmap>();
@@ -46,7 +38,7 @@ public class Pixmap implements Disposable {
 	public enum Format {
 		Alpha, Intensity, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888;
 	}
-	
+
 	/** Blending functions to be set with {@link Pixmap#setBlending}.
 	 * @author mzechner */
 	public enum Blending {
@@ -72,22 +64,22 @@ public class Pixmap implements Disposable {
 	String color = make(r, g, b, a);
 	static Blending blending;
 	CanvasPixelArray pixels;
-	
+
 	public Pixmap (FileHandle file) {
 		GwtFileHandle gwtFile = (GwtFileHandle)file;
 		ImageElement img = gwtFile.preloader.images.get(file.path());
-		if(img == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
+		if (img == null) throw new GdxRuntimeException("Couldn't load image '" + file.path() + "', file does not exist");
 		create(img.getWidth(), img.getHeight(), Format.RGBA8888);
 		context.setGlobalCompositeOperation(Composite.COPY);
 		context.drawImage(img, 0, 0);
 		context.setGlobalCompositeOperation(getComposite());
 	}
-	
-	private static Composite getComposite() {
-		return blending == Blending.None? Composite.COPY: Composite.SOURCE_OVER;
+
+	private static Composite getComposite () {
+		return blending == Blending.None ? Composite.COPY : Composite.SOURCE_OVER;
 	}
-	
-	public Pixmap(ImageElement img) {
+
+	public Pixmap (ImageElement img) {
 		create(img.getWidth(), img.getHeight(), Format.RGBA8888);
 		context.drawImage(img, 0, 0);
 	}
@@ -115,17 +107,16 @@ public class Pixmap implements Disposable {
 		return "rgba(" + r2 + "," + g2 + "," + b2 + "," + a2 + ")";
 	}
 
-
 	/** Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#SourceOver}.
 	 * @param blending the blending type */
 	public static void setBlending (Blending blending) {
 		Pixmap.blending = blending;
 		Composite composite = getComposite();
-		for(Pixmap pixmap: pixmaps.values()) {
+		for (Pixmap pixmap : pixmaps.values()) {
 			pixmap.context.setGlobalCompositeOperation(composite);
 		}
 	}
-	
+
 	/** @return the currently set {@link Blending} */
 	public static Blending getBlending () {
 		return blending;
@@ -136,20 +127,20 @@ public class Pixmap implements Disposable {
 	 * @param filter the filter. */
 	public static void setFilter (Filter filter) {
 	}
-	
+
 	public Format getFormat () {
 		return format;
 	}
-	
-	public int getGLInternalFormat() {
+
+	public int getGLInternalFormat () {
 		return GL20.GL_RGBA;
 	}
-	
-	public int getGLFormat() {
+
+	public int getGLFormat () {
 		return GL20.GL_RGBA;
 	}
-	
-	public int getGLType() {
+
+	public int getGLType () {
 		return GL20.GL_UNSIGNED_BYTE;
 	}
 
@@ -329,16 +320,13 @@ public class Pixmap implements Disposable {
 	 * @param y The y-coordinate
 	 * @return The pixel color in RGBA8888 format. */
 	public int getPixel (int x, int y) {
-		if(pixels == null) pixels = context.getImageData(0, 0, width, height).getData();
+		if (pixels == null) pixels = context.getImageData(0, 0, width, height).getData();
 		int i = x * 4 + y * width * 4;
 		int r = pixels.get(i + 0) & 0xff;
 		int g = pixels.get(i + 1) & 0xff;
 		int b = pixels.get(i + 2) & 0xff;
 		int a = pixels.get(i + 3) & 0xff;
-		return (r << 24) | 
-				 (g << 16) |
-				 (b << 8) |
-				 (a);
+		return (r << 24) | (g << 16) | (b << 8) | (a);
 	}
 
 	/** Draws a pixel at the given location with the current color.

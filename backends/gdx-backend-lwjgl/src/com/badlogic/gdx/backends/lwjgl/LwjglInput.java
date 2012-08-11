@@ -43,7 +43,6 @@ import org.lwjgl.input.Mouse;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.utils.Pool;
 
 /** An implementation of the {@link Input} interface hooking a Jogl panel for input.

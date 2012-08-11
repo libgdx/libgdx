@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.model;
 
 import com.badlogic.gdx.graphics.Mesh;
@@ -25,6 +26,6 @@ public abstract class SubMesh {
 	public int primitiveType;
 
 	public abstract void getBoundingBox (BoundingBox bbox);
-	
-	public abstract Mesh getMesh(); 
+
+	public abstract Mesh getMesh ();
 }

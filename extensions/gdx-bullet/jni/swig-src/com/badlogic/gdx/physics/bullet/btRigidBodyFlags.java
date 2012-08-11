@@ -9,6 +9,5 @@
 package com.badlogic.gdx.physics.bullet;
 
 public final class btRigidBodyFlags {
-  public final static int BT_DISABLE_WORLD_GRAVITY = 1;
+	public final static int BT_DISABLE_WORLD_GRAVITY = 1;
 }
-

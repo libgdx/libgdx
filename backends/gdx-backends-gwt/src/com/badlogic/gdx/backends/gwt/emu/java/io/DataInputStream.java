@@ -13,136 +13,137 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package java.io;
 
 import com.google.gwt.corp.compatibility.Numbers;
 
 public class DataInputStream extends InputStream implements DataInput {
 
-  private final InputStream is;
-  
-  public DataInputStream(final InputStream is) {
-    this.is = is;
-  }
-  
-  @Override
-  public int read() throws IOException {
-    return is.read();
-  }
+	private final InputStream is;
 
-  public boolean readBoolean() throws IOException {
-    return readByte() != 0;
-  }
+	public DataInputStream (final InputStream is) {
+		this.is = is;
+	}
 
-  public byte readByte() throws IOException {
-    int i = read();
-    if (i == -1) {
-      throw new EOFException();
-    }
-    return (byte) i;
-  }
+	@Override
+	public int read () throws IOException {
+		return is.read();
+	}
 
-  public char readChar() throws IOException {
-    int a = is.read();
-    int b = readUnsignedByte();
-    return (char) ((a << 8) | b);
-  }
+	public boolean readBoolean () throws IOException {
+		return readByte() != 0;
+	}
 
-  public double readDouble() throws IOException {
-    throw new RuntimeException("readDouble");
-  }
+	public byte readByte () throws IOException {
+		int i = read();
+		if (i == -1) {
+			throw new EOFException();
+		}
+		return (byte)i;
+	}
 
-  public float readFloat() throws IOException {
-    return Numbers.intBitsToFloat(readInt());
-  }
+	public char readChar () throws IOException {
+		int a = is.read();
+		int b = readUnsignedByte();
+		return (char)((a << 8) | b);
+	}
 
-  public void readFully(byte[] b) throws IOException {
-    readFully(b, 0, b.length);
-  }
+	public double readDouble () throws IOException {
+		throw new RuntimeException("readDouble");
+	}
 
-  public void readFully(byte[] b, int off, int len) throws IOException {
-    while (len > 0) {
-      int count = is.read(b, off, len);
-      if (count <= 0) {
-        throw new EOFException();
-      }
-      off += count;
-      len -= count;
-    }
-  }
+	public float readFloat () throws IOException {
+		return Numbers.intBitsToFloat(readInt());
+	}
 
-  public int readInt() throws IOException {
-    int a = is.read();
-    int b = is.read();
-    int c = is.read();
-    int d = readUnsignedByte();
-    return (a << 24) | (b << 16) | (c << 8) | d;
-  }
+	public void readFully (byte[] b) throws IOException {
+		readFully(b, 0, b.length);
+	}
 
-  public String readLine() throws IOException {
-    throw new RuntimeException("readline NYI");
-  }
+	public void readFully (byte[] b, int off, int len) throws IOException {
+		while (len > 0) {
+			int count = is.read(b, off, len);
+			if (count <= 0) {
+				throw new EOFException();
+			}
+			off += count;
+			len -= count;
+		}
+	}
 
-  public long readLong() throws IOException {
-    long a = readInt();
-    long b = readInt() & 0x0ffffffff;
-    return (a << 32) | b;
-  }
+	public int readInt () throws IOException {
+		int a = is.read();
+		int b = is.read();
+		int c = is.read();
+		int d = readUnsignedByte();
+		return (a << 24) | (b << 16) | (c << 8) | d;
+	}
 
-  public short readShort() throws IOException {
-    int a = is.read();
-    int b = readUnsignedByte();
-    return (short) ((a << 8) | b);
-  }
+	public String readLine () throws IOException {
+		throw new RuntimeException("readline NYI");
+	}
 
-  public String readUTF() throws IOException {
-    int bytes = readUnsignedShort();
-    StringBuilder sb = new StringBuilder();
-    
-    while (bytes > 0) {
-      bytes -= readUtfChar(sb);
-    }
-    
-    return sb.toString();
-  }
+	public long readLong () throws IOException {
+		long a = readInt();
+		long b = readInt() & 0x0ffffffff;
+		return (a << 32) | b;
+	}
 
-  private int readUtfChar(StringBuilder sb) throws IOException {
-    int a = readUnsignedByte();
-    if ((a & 0x80) == 0) {
-      sb.append((char) a);
-      return 1;
-    }
-    if ((a & 0xe0) == 0xb0) {
-      int b = readUnsignedByte();
-      sb.append((char)(((a& 0x1F) << 6) | (b & 0x3F)));
-      return 2;
-    }
-    if ((a & 0xf0) == 0xe0) {
-      int b = is.read();
-      int c = readUnsignedByte();
-      sb.append((char)(((a & 0x0F) << 12) | ((b & 0x3F) << 6) | (c & 0x3F)));
-      return 3;
-    }
-    throw new UTFDataFormatException();
-  }
+	public short readShort () throws IOException {
+		int a = is.read();
+		int b = readUnsignedByte();
+		return (short)((a << 8) | b);
+	}
 
-  public int readUnsignedByte() throws IOException {
-    int i = read();
-    if (i == -1) {
-      throw new EOFException();
-    }
-    return i;
-  }
+	public String readUTF () throws IOException {
+		int bytes = readUnsignedShort();
+		StringBuilder sb = new StringBuilder();
 
-  public int readUnsignedShort() throws IOException {
-    int a = is.read();
-    int b = readUnsignedByte();
-    return ((a << 8) | b);
-  }
+		while (bytes > 0) {
+			bytes -= readUtfChar(sb);
+		}
 
-  public int skipBytes(int n) throws IOException {
-    // note: This is actually a valid implementation of this method, rendering it quite useless...
-    return 0;
-  }
+		return sb.toString();
+	}
+
+	private int readUtfChar (StringBuilder sb) throws IOException {
+		int a = readUnsignedByte();
+		if ((a & 0x80) == 0) {
+			sb.append((char)a);
+			return 1;
+		}
+		if ((a & 0xe0) == 0xb0) {
+			int b = readUnsignedByte();
+			sb.append((char)(((a & 0x1F) << 6) | (b & 0x3F)));
+			return 2;
+		}
+		if ((a & 0xf0) == 0xe0) {
+			int b = is.read();
+			int c = readUnsignedByte();
+			sb.append((char)(((a & 0x0F) << 12) | ((b & 0x3F) << 6) | (c & 0x3F)));
+			return 3;
+		}
+		throw new UTFDataFormatException();
+	}
+
+	public int readUnsignedByte () throws IOException {
+		int i = read();
+		if (i == -1) {
+			throw new EOFException();
+		}
+		return i;
+	}
+
+	public int readUnsignedShort () throws IOException {
+		int a = is.read();
+		int b = readUnsignedByte();
+		return ((a << 8) | b);
+	}
+
+	public int skipBytes (int n) throws IOException {
+		// note: This is actually a valid implementation of this method, rendering it quite useless...
+		return 0;
+	}
 
 }

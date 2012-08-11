@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.tokamak;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.LongMap;
 
-/**
- * See <a href="http://www.tokamakphysics.com/documentation/reference/neSimulator.htm">http://www.tokamakphysics.com/documentation/reference/neSimulator.htm</a>.
+/** See <a
+ * href="http://www.tokamakphysics.com/documentation/reference/neSimulator.htm">http://www.tokamakphysics.com/documentation/
+ * reference/neSimulator.htm</a>.
  * 
  * The original CreateSimulator and DestroySimulator methods are mapped to the constructor and the #dispose method.
- * @author mzechner
- *
- */
+ * @author mzechner */
 public class Simulator implements Disposable {
 	private long addr;
 	private LongMap<Object> objects = new LongMap<Object>();
 	private CollisionTable collisionTable = new CollisionTable(0);
 	private float[] tmpFloat = new float[3];
 	private Vector3 gravity = new Vector3();
-	
+
+	// @off
 	/*JNI
 	#include <tokamak.h>
 	 */

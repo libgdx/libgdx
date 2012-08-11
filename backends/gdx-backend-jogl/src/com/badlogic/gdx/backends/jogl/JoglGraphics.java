@@ -24,7 +24,6 @@ import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
-import java.util.List;
 
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
@@ -38,7 +37,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Implements the {@link Graphics} interface with Jogl.
@@ -110,12 +108,11 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 					app.executedRunnables.clear();
 					app.executedRunnables.addAll(app.runnables);
 					app.runnables.clear();
-					
+
 					for (int i = 0; i < app.executedRunnables.size(); i++) {
 						try {
 							app.executedRunnables.get(i).run();
-						}
-						catch(Throwable t) {
+						} catch (Throwable t) {
 							t.printStackTrace();
 						}
 					}

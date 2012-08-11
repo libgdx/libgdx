@@ -297,7 +297,6 @@ public interface Input {
 	 * @return whether the button is down or not. */
 	public boolean isButtonPressed (int button);
 
-
 	/** Returns whether the key is pressed.
 	 * 
 	 * @param key The key code as found in {@link Input.Keys}.

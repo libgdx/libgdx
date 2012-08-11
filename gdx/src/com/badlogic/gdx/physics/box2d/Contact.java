@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Vector2;
  * filtered). Therefore a contact object may exist that has no contact points.
  * @author mzechner */
 public class Contact {
+	// @off
 	/*JNI
 #include <Box2D/Box2D.h>
 	 */

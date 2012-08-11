@@ -22,7 +22,6 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Immediate mode rendering class for GLES 2.0. The renderer will allow you to specify vertices on the fly and provides a default
  * shader for (unlit) rendering.</p> *
@@ -128,7 +127,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	}
 
 	public void end () {
-		if(numVertices == 0) return;
+		if (numVertices == 0) return;
 		shader.begin();
 		shader.setUniformMatrix("u_projModelView", projModelView);
 		for (int i = 0; i < numTexCoords; i++)

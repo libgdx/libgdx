@@ -320,7 +320,7 @@ public class RemoteInput implements Runnable, Input {
 	public void getTextInput (TextInputListener listener, String title, String text) {
 		Gdx.app.getInput().getTextInput(listener, title, text);
 	}
-	
+
 	@Override
 	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder) {
 		Gdx.app.getInput().getPlaceholderTextInput(listener, title, placeholder);
@@ -448,6 +448,6 @@ public class RemoteInput implements Runnable, Input {
 	@Override
 	public void getRotationMatrix (float[] matrix) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

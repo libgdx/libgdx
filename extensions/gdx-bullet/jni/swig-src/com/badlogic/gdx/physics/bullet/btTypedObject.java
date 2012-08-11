@@ -8,51 +8,47 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-
 public class btTypedObject {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+	private long swigCPtr;
+	protected boolean swigCMemOwn;
 
-  protected btTypedObject(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	protected btTypedObject (long cPtr, boolean cMemoryOwn) {
+		swigCMemOwn = cMemoryOwn;
+		swigCPtr = cPtr;
+	}
 
-  public static long getCPtr(btTypedObject obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (btTypedObject obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected void finalize() {
-    delete();
-  }
+	protected void finalize () {
+		delete();
+	}
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btTypedObject(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+	public synchronized void delete () {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btTypedObject(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+	}
 
-  public btTypedObject(int objectType) {
-    this(gdxBulletJNI.new_btTypedObject(objectType), true);
-  }
+	public btTypedObject (int objectType) {
+		this(gdxBulletJNI.new_btTypedObject(objectType), true);
+	}
 
-  public void setM_objectType(int value) {
-    gdxBulletJNI.btTypedObject_m_objectType_set(swigCPtr, this, value);
-  }
+	public void setM_objectType (int value) {
+		gdxBulletJNI.btTypedObject_m_objectType_set(swigCPtr, this, value);
+	}
 
-  public int getM_objectType() {
-    return gdxBulletJNI.btTypedObject_m_objectType_get(swigCPtr, this);
-  }
+	public int getM_objectType () {
+		return gdxBulletJNI.btTypedObject_m_objectType_get(swigCPtr, this);
+	}
 
-  public int getObjectType() {
-    return gdxBulletJNI.btTypedObject_getObjectType(swigCPtr, this);
-  }
+	public int getObjectType () {
+		return gdxBulletJNI.btTypedObject_getObjectType(swigCPtr, this);
+	}
 
 }

@@ -1,3 +1,4 @@
+
 package com.badlogicgames.superjumper.client;
 
 import com.badlogic.gdx.ApplicationListener;

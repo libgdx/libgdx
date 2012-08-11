@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.jnigen;
 
 import java.io.File;
@@ -27,32 +28,25 @@ import java.util.zip.ZipFile;
 
 import com.badlogic.gdx.jnigen.test.MyJniClass;
 
-/**
- * Loads shared libraries from a natives jar file (desktop) or arm folders (Android). For desktop projects,
- * have the natives jar in the classpath, for Android projects put the shared libraries in the libs/armeabi
- * and libs/armeabi-v7a folders.
- *
+/** Loads shared libraries from a natives jar file (desktop) or arm folders (Android). For desktop projects, have the natives jar
+ * in the classpath, for Android projects put the shared libraries in the libs/armeabi and libs/armeabi-v7a folders.
+ * 
  * See {@link AntScriptGenerator}.
  * 
- * @author mzechner
- *
- */
+ * @author mzechner */
 public class JniGenSharedLibraryLoader {
 	private static Set<String> loadedLibraries = new HashSet<String>();
 	private String nativesJar;
-	
-	public JniGenSharedLibraryLoader() {
+
+	public JniGenSharedLibraryLoader () {
 	}
-	
-	/**
-	 * Fetches the natives from the given natives jar file. Used
-	 * for testing a shared lib on the fly, see {@link MyJniClass}.
-	 * @param nativesJar
-	 */
-	public JniGenSharedLibraryLoader(String nativesJar) {
+
+	/** Fetches the natives from the given natives jar file. Used for testing a shared lib on the fly, see {@link MyJniClass}.
+	 * @param nativesJar */
+	public JniGenSharedLibraryLoader (String nativesJar) {
 		this.nativesJar = nativesJar;
 	}
-	
+
 	private String crc (String nativeFile) {
 		InputStream input = JniGenSharedLibraryLoader.class.getResourceAsStream("/" + nativeFile);
 		if (input == null) return "" + System.nanoTime(); // fallback
@@ -72,7 +66,7 @@ public class JniGenSharedLibraryLoader {
 		}
 		return Long.toString(crc.getValue());
 	}
-	
+
 	private boolean loadLibrary (String sharedLibName) {
 		String path = extractLibrary(sharedLibName);
 		if (path != null) System.load(path);
@@ -85,8 +79,10 @@ public class JniGenSharedLibraryLoader {
 		try {
 			// Extract native from classpath to temp dir.
 			InputStream input = null;
-			if(nativesJar == null) input = JniGenSharedLibraryLoader.class.getResourceAsStream("/" + sharedLibName);
-			else input = getFromJar(nativesJar, sharedLibName);
+			if (nativesJar == null)
+				input = JniGenSharedLibraryLoader.class.getResourceAsStream("/" + sharedLibName);
+			else
+				input = getFromJar(nativesJar, sharedLibName);
 			if (input == null) return null;
 			nativesDir.mkdirs();
 			FileOutputStream output = new FileOutputStream(nativeFile);
@@ -105,50 +101,52 @@ public class JniGenSharedLibraryLoader {
 		return nativeFile.exists() ? nativeFile.getAbsolutePath() : null;
 	}
 
-	private InputStream getFromJar(String jarFile, String sharedLibrary) throws IOException {
+	private InputStream getFromJar (String jarFile, String sharedLibrary) throws IOException {
 		ZipFile file = new ZipFile(nativesJar);
 		ZipEntry entry = file.getEntry(sharedLibrary);
 		return file.getInputStream(entry);
 	}
 
-	/**
-	 * Loads a shared library with the given name for the platform the application
-	 * is running on. The name should not contain a prefix (e.g. 'lib') or suffix (e.g. '.dll).
-	 * @param sharedLibName
-	 */
+	/** Loads a shared library with the given name for the platform the application is running on. The name should not contain a
+	 * prefix (e.g. 'lib') or suffix (e.g. '.dll).
+	 * @param sharedLibName */
 	public synchronized void load (String sharedLibName) {
 		if (loadedLibraries.contains(sharedLibName)) return;
-		
+
 		boolean isWindows = System.getProperty("os.name").contains("Windows");
 		boolean isLinux = System.getProperty("os.name").contains("Linux");
 		boolean isMac = System.getProperty("os.name").contains("Mac");
 		boolean isAndroid = false;
 		boolean is64Bit = System.getProperty("os.arch").equals("amd64");
 		String vm = System.getProperty("java.vm.name");
-		if(vm != null && vm.contains("Dalvik")) {
+		if (vm != null && vm.contains("Dalvik")) {
 			isAndroid = true;
 			isWindows = false;
 			isLinux = false;
 			isMac = false;
 			is64Bit = false;
 		}
-		
+
 		boolean loaded = false;
-		if(isWindows) {
-			if(!is64Bit) loaded = loadLibrary(sharedLibName + ".dll");
-			else loaded = loadLibrary(sharedLibName + "64.dll");
+		if (isWindows) {
+			if (!is64Bit)
+				loaded = loadLibrary(sharedLibName + ".dll");
+			else
+				loaded = loadLibrary(sharedLibName + "64.dll");
 		}
-		if(isLinux) {
-			if(!is64Bit) loaded = loadLibrary("lib" + sharedLibName + ".so");
-			else loaded = loadLibrary("lib" + sharedLibName + "64.so");
+		if (isLinux) {
+			if (!is64Bit)
+				loaded = loadLibrary("lib" + sharedLibName + ".so");
+			else
+				loaded = loadLibrary("lib" + sharedLibName + "64.so");
 		}
-		if(isMac) {
+		if (isMac) {
 			loaded = loadLibrary("lib" + sharedLibName + ".dylib");
 		}
-		if(isAndroid) {
+		if (isAndroid) {
 			System.loadLibrary(sharedLibName);
 			loaded = true;
 		}
-		if(loaded) loadedLibraries.add(sharedLibName);
+		if (loaded) loadedLibraries.add(sharedLibName);
 	}
 }

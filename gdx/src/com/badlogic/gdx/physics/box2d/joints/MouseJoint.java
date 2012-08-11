@@ -24,6 +24,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * This allows the constraint to stretch and without applying huge forces. NOTE: this joint is not documented in the manual
  * because it was developed to be used in the testbed. If you want to learn how to use the mouse joint, look at the testbed. */
 public class MouseJoint extends Joint {
+	// @off
 	/*JNI
 #include <Box2D/Box2D.h>
 	 */

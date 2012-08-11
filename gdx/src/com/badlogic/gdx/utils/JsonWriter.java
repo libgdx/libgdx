@@ -17,7 +17,6 @@
 package com.badlogic.gdx.utils;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.regex.Pattern;
 

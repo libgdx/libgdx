@@ -62,7 +62,7 @@ public class ComplexActionTest extends GdxTest {
 		stage.addActor(img2);
 
 		img1.addAction(complexAction);
-		//img2.action(complexAction.copy());
+		// img2.action(complexAction.copy());
 	}
 
 	@Override

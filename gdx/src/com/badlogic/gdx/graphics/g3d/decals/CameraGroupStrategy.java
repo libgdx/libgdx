@@ -219,6 +219,6 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 
 	@Override
 	public void dispose () {
-		if(shader != null) shader.dispose();
+		if (shader != null) shader.dispose();
 	}
 }

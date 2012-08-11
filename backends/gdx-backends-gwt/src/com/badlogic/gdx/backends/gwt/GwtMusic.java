@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.Gdx;
@@ -25,16 +26,16 @@ public class GwtMusic implements Music {
 	boolean isPlaying = false;
 	boolean isLooping = false;
 	SMSound sound;
-	
+
 	public GwtMusic (FileHandle file) {
 		String url = ((GwtApplication)Gdx.app).getBaseUrl() + file.path();
 		sound = SoundManager.createSound(url, url);
 		sound.loops(0);
 	}
-	
+
 	@Override
 	public void play () {
-		if(isPlaying()) return;
+		if (isPlaying()) return;
 		sound.play();
 		isPlaying = true;
 	}
@@ -59,7 +60,7 @@ public class GwtMusic implements Music {
 
 	@Override
 	public void setLooping (boolean isLooping) {
-		sound.loops(isLooping?999:0);
+		sound.loops(isLooping ? 999 : 0);
 		this.isLooping = isLooping;
 	}
 

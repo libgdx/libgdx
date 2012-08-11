@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import java.util.List;
-
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 

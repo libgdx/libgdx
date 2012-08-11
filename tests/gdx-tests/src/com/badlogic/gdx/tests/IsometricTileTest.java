@@ -23,7 +23,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -84,7 +83,8 @@ public class IsometricTileTest extends GdxTest {
 	public void dispose () {
 		renderer.dispose();
 		texture.dispose();
-		for(SpriteCache cache: caches) cache.dispose();
+		for (SpriteCache cache : caches)
+			cache.dispose();
 	}
 
 	@Override

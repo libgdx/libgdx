@@ -126,22 +126,22 @@ public class JoglAnimator {
 	 * lightweight widgets are continually being redrawn. */
 	protected void display () {
 		Iterator iter = drawableIterator();
-		
+
 		// wait for a notification if we are non-continuous
-		if(!isContinuous) {
+		if (!isContinuous) {
 			boolean needToWait = true;
-			while(needToWait) {
+			while (needToWait) {
 				try {
-					synchronized(contMonitor) {
+					synchronized (contMonitor) {
 						contMonitor.wait();
 					}
 					needToWait = false;
-				} catch(InterruptedException e) {
+				} catch (InterruptedException e) {
 					needToWait = false;
-				} 
+				}
 			}
 		}
-		
+
 		while (iter.hasNext()) {
 			GLAutoDrawable drawable = (GLAutoDrawable)iter.next();
 			if (drawable instanceof JComponent) {
@@ -323,7 +323,7 @@ public class JoglAnimator {
 
 	public void setContinuousRendering (boolean isContinuous) {
 		this.isContinuous = isContinuous;
-		synchronized(contMonitor) {
+		synchronized (contMonitor) {
 			contMonitor.notifyAll();
 		}
 	}
@@ -333,7 +333,7 @@ public class JoglAnimator {
 	}
 
 	public void requestRendering () {
-		synchronized(contMonitor) {
+		synchronized (contMonitor) {
 			contMonitor.notifyAll();
 		}
 	}

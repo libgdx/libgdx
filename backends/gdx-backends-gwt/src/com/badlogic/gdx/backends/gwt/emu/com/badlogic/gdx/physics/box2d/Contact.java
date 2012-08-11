@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.physics.box2d;
 
-
 import com.badlogic.gdx.math.Vector2;
 
 /** The class manages contact between two shapes. A contact exists for each overlapping AABB in the broad-phase (except if
@@ -28,10 +27,10 @@ public class Contact {
 	final WorldManifold worldManifold = new WorldManifold();
 	final org.jbox2d.collision.WorldManifold worldManifold2 = new org.jbox2d.collision.WorldManifold();
 
-	Contact(World world) {
+	Contact (World world) {
 		this.world = world;
 	}
-	
+
 	protected Contact (World world, org.jbox2d.dynamics.contacts.Contact contact) {
 		this.world = world;
 		this.contact = contact;
@@ -42,7 +41,7 @@ public class Contact {
 		worldManifold.normal.set(worldManifold2.normal.x, worldManifold2.normal.y);
 		// FIXME jbox2d doesn't tell us the number of world manifold points :/
 		worldManifold.numContactPoints = worldManifold2.points.length;
-		for(int i = 0; i < worldManifold.points.length; i++) {
+		for (int i = 0; i < worldManifold.points.length; i++) {
 			worldManifold.points[i] = new Vector2(worldManifold2.points[i].x, worldManifold2.points[i].y);
 		}
 		return worldManifold;

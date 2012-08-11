@@ -57,8 +57,7 @@ public abstract class FloatBuffer extends Buffer implements Comparable<FloatBuff
 
 	/** Creates a new float buffer by wrapping the given float array.
 	 * <p>
-	 * The new buffer's position will be {@code start}, limit will be {@code start + len}, capacity will be the length of the
-	 * array.
+	 * The new buffer's position will be {@code start}, limit will be {@code start + len}, capacity will be the length of the array.
 	 * </p>
 	 * 
 	 * @param array the float array which the new buffer will be based on.
