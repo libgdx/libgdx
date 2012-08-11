@@ -8,8 +8,6 @@ gen/
 bin/
 /dist
 .gwt/
-war/assets/
-war/com.*
 
 # Compiled Files
 libgdx*.zip
