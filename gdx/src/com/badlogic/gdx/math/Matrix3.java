@@ -17,7 +17,6 @@
 package com.badlogic.gdx.math;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -50,8 +49,15 @@ public class Matrix3 implements Serializable {
 	/** Sets this matrix to the identity matrix
 	 * @return this matrix */
 	public Matrix3 idt () {
-		Arrays.fill(val, 0);
-		val[M00] = val[M11] = val[M22] = 1;
+		val[M00] = 1;
+		val[M10] = 0;
+		val[M20] = 0;
+		val[M01] = 0;
+		val[M11] = 1;
+		val[M21] = 0;
+		val[M02] = 0;
+		val[M12] = 0;
+		val[M22] = 1;
 		return this;
 	}
 
@@ -132,11 +138,15 @@ public class Matrix3 implements Serializable {
 	 * @param scaleY the scale in y
 	 * @return this matrix */
 	public Matrix3 setToScaling (float scaleX, float scaleY) {
-		Arrays.fill(val, 0);
-		this.val[M00] = scaleX;
-		this.val[M11] = scaleY;
-		this.val[M22] = 1;
-
+		val[M00] = scaleX;
+		val[M10] = 0;
+		val[M20] = 0;
+		val[M01] = 0;
+		val[M11] = scaleY;
+		val[M21] = 0;
+		val[M02] = 0;
+		val[M12] = 0;
+		val[M22] = 1;
 		return this;
 	}
 
@@ -276,9 +286,14 @@ public class Matrix3 implements Serializable {
 	 * @param scaleY
 	 * @return this matrix for chaining */
 	public Matrix3 scale (float scaleX, float scaleY) {
-		Arrays.fill(tmp, 0);
 		tmp[M00] = scaleX;
+		tmp[M10] = 0;
+		tmp[M20] = 0;
+		tmp[M01] = 0;
 		tmp[M11] = scaleY;
+		tmp[M21] = 0;
+		tmp[M02] = 0;
+		tmp[M12] = 0;
 		tmp[M22] = 1;
 		mul(val, tmp);
 		return this;
