@@ -16,8 +16,9 @@
 
 package com.badlogic.gdx.backends.gwt.widgets;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
-import com.sun.org.apache.xalan.internal.xsltc.DOM;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.Widget;
 
 /** A widget that displays progress on an arbitrary scale.
  * 

@@ -26,6 +26,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.ImageElement;
 
 public class Preloader {
 	public interface PreloaderCallback {

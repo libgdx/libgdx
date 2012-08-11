@@ -16,6 +16,8 @@
 
 package com.google.gwt.typedarrays.client;
 
+import com.google.gwt.core.client.JsArrayNumber;
+
 /** The typed array view types represent a view of an ArrayBuffer that allows for indexing and manipulation. The length of each of
  * these is fixed.
  * 

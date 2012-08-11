@@ -16,6 +16,8 @@
 
 package com.badlogic.gwtref.client;
 
+import com.google.gwt.core.client.EntryPoint;
+
 public class Test implements EntryPoint {
 	public static enum Enu {
 		Winter, Summer, Bleh;

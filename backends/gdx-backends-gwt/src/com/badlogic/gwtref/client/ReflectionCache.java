@@ -18,6 +18,8 @@ package com.badlogic.gwtref.client;
 
 import java.util.Collection;
 
+import com.google.gwt.core.client.GWT;
+
 public class ReflectionCache {
 	public static IReflectionCache instance = GWT.create(IReflectionCache.class);
 

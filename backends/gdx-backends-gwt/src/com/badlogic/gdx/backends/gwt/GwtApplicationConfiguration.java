@@ -16,8 +16,8 @@
 
 package com.badlogic.gdx.backends.gwt;
 
-import java.awt.Panel;
-import java.awt.TextArea;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.TextArea;
 
 public class GwtApplicationConfiguration {
 	/** the width of the drawing area in pixels **/

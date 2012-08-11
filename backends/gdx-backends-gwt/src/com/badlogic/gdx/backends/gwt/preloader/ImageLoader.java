@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.backends.gwt.preloader;
 
+import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.NativeEvent;
+
 /** Fugly but does the job.
  * @author mzechner */
 public class ImageLoader {

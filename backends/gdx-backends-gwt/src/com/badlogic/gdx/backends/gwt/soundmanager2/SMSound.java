@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.gwt.soundmanager2;
 
+import com.google.gwt.core.client.JavaScriptObject;
+
 public class SMSound extends JavaScriptObject {
 	protected SMSound () {
 	}
