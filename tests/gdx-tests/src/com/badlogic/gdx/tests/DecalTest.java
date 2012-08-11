@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.util.LinkedList;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
@@ -27,8 +27,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
-import com.badlogic.gdx.graphics.g3d.decals.GroupStrategy;
-import com.badlogic.gdx.graphics.g3d.decals.SimpleOrthoGroupStrategy;
 import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -64,7 +62,7 @@ public class DecalTest extends GdxTest {
 		h = Gdx.graphics.getHeight() / 0.8f;
 		for (int i = 0; i < INITIAL_RENDERED; i++) {
 			toRender.add(makeDecal());
-		}		
+		}
 		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.near = 0.1f;
 		cam.far = 10f;

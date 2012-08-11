@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -87,10 +88,10 @@ public class SimpleDecalTest extends GdxTest {
 			Decal decal = decals.get(i);
 			if (billboard) {
 				// billboarding for ortho cam :)
-//				dir.set(-camera.direction.x, -camera.direction.y, -camera.direction.z);
-//				decal.setRotation(dir, Vector3.Y);
-				
-				// billboarding for perspective cam 
+// dir.set(-camera.direction.x, -camera.direction.y, -camera.direction.z);
+// decal.setRotation(dir, Vector3.Y);
+
+				// billboarding for perspective cam
 				decal.lookAt(camera.position, camera.up);
 			}
 			batch.add(decal);

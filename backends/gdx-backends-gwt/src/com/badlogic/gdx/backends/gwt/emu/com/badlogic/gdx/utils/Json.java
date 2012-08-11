@@ -355,8 +355,10 @@ public class Json {
 			Type knownType = ReflectionCache.getType(knownClass);
 			Type actualType = ReflectionCache.getType(value.getClass());
 
-			if (actualType.isPrimitive() || actualType.getClassOfType() == String.class || actualType.getClassOfType() == Integer.class || actualType.getClassOfType() == Boolean.class
-				|| actualType.getClassOfType() == Float.class || actualType.getClassOfType() == Long.class || actualType.getClassOfType() == Double.class || actualType.getClassOfType() == Short.class
+			if (actualType.isPrimitive() || actualType.getClassOfType() == String.class
+				|| actualType.getClassOfType() == Integer.class || actualType.getClassOfType() == Boolean.class
+				|| actualType.getClassOfType() == Float.class || actualType.getClassOfType() == Long.class
+				|| actualType.getClassOfType() == Double.class || actualType.getClassOfType() == Short.class
 				|| actualType.getClassOfType() == Byte.class || actualType.getClassOfType() == Character.class) {
 				writer.value(value);
 				return;
@@ -697,7 +699,7 @@ public class Json {
 
 	public <T> T readValue (Class<T> clazz, Class elementType, Object jsonData) {
 		if (jsonData == null) return null;
-		
+
 		Type type = ReflectionCache.getType(clazz);
 		if (jsonData instanceof OrderedMap) {
 			OrderedMap<String, Object> jsonMap = (OrderedMap)jsonData;
@@ -978,7 +980,7 @@ public class Json {
 
 		abstract public T read (Json json, Object jsonData, Class type);
 	}
-	
+
 	static public interface Serializable {
 		public void write (Json json);
 

@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.tokamak;
 
-/**
- * See <a href="http://www.tokamakphysics.com/documentation/reference/neTriangleMesh.htm">http://www.tokamakphysics.com/documentation/reference/neTriangleMesh.htm</a>
- * @author mzechner
- *
- */
+/** See <a
+ * href="http://www.tokamakphysics.com/documentation/reference/neTriangleMesh.htm">http://www.tokamakphysics.com/documentation
+ * /reference/neTriangleMesh.htm</a>
+ * @author mzechner */
 public class TriangleMesh extends NativeObject {
-	TriangleMesh(long addr) {
+	TriangleMesh (long addr) {
 		super(addr);
 	}
 }

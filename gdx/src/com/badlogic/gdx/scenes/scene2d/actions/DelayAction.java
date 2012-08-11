@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actions;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-
-/** Delays execution of an action or inserts a pause in a {@link SequenceAction}. 
+/** Delays execution of an action or inserts a pause in a {@link SequenceAction}.
  * @author Nathan Sweet */
 public class DelayAction extends DelegateAction {
 	private float duration, time;

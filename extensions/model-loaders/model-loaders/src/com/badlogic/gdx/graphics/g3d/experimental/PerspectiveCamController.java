@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.experimental;
 
 import com.badlogic.gdx.Input.Keys;
@@ -24,10 +25,10 @@ public class PerspectiveCamController extends InputAdapter {
 
 	static final float MOUSE_SENSITIVITY = 0.25f;
 	static final float MOVE_SPEED = 2;
-	static final float MOVE_SPEED_SQRT = (float) Math.sqrt(MOVE_SPEED);
+	static final float MOVE_SPEED_SQRT = (float)Math.sqrt(MOVE_SPEED);
 
-	static final float NINETY_DEGREE = 89.99f; //gimbal lock prevention 
-	
+	static final float NINETY_DEGREE = 89.99f; // gimbal lock prevention
+
 	PerspectiveCamera cam;
 	int lastX;
 	int lastY;
@@ -36,19 +37,19 @@ public class PerspectiveCamController extends InputAdapter {
 
 	boolean W, A, S, D;
 
-	public PerspectiveCamController(PerspectiveCamera cam) {
+	public PerspectiveCamController (PerspectiveCamera cam) {
 		this.cam = cam;
 	}
 
 	@Override
-	public boolean touchDown(int x, int y, int pointer, int button) {
+	public boolean touchDown (int x, int y, int pointer, int button) {
 		lastX = x;
 		lastY = y;
 		return true;
 	}
 
 	@Override
-	public boolean touchDragged(int x, int y, int pointer) {
+	public boolean touchDragged (int x, int y, int pointer) {
 
 		angleX += (lastX - x) * MOUSE_SENSITIVITY;
 		lastX = x;
@@ -57,8 +58,7 @@ public class PerspectiveCamController extends InputAdapter {
 
 		if (angleY > NINETY_DEGREE)
 			angleY = NINETY_DEGREE;
-		else if (angleY < -NINETY_DEGREE)
-			angleY = -NINETY_DEGREE;
+		else if (angleY < -NINETY_DEGREE) angleY = -NINETY_DEGREE;
 
 		// first rotate around y axel
 		// then rotate up/down, and
@@ -71,14 +71,14 @@ public class PerspectiveCamController extends InputAdapter {
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled (int amount) {
 		cam.fieldOfView -= -amount * 0.1f;
 		cam.update();
 		return true;
 	}
 
 	@Override
-	public boolean keyDown(int keycode) {
+	public boolean keyDown (int keycode) {
 
 		if (keycode == Keys.A)
 			A = true;
@@ -86,31 +86,28 @@ public class PerspectiveCamController extends InputAdapter {
 			D = true;
 		else if (keycode == Keys.S)
 			S = true;
-		else if (keycode == Keys.W)
-			W = true;
+		else if (keycode == Keys.W) W = true;
 
 		return false;
 	}
 
 	@Override
-	public boolean keyUp(int keycode) {
+	public boolean keyUp (int keycode) {
 		if (keycode == Keys.A)
 			A = false;
 		else if (keycode == Keys.D)
 			D = false;
 		else if (keycode == Keys.S)
 			S = false;
-		else if (keycode == Keys.W)
-			W = false;
+		else if (keycode == Keys.W) W = false;
 
 		return false;
 	}
 
-	void update(float delta) {
+	void update (float delta) {
 
 		// if all is false
-		if (!(A | D | W | S))
-			return;
+		if (!(A | D | W | S)) return;
 
 		// is moving diagonal move speed is sqrt of normal
 		if ((A ^ D) & (W ^ S))

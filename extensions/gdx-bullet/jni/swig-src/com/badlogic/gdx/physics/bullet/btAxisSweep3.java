@@ -9,50 +9,51 @@
 package com.badlogic.gdx.physics.bullet;
 
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
 
 public class btAxisSweep3 {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+	private long swigCPtr;
+	protected boolean swigCMemOwn;
 
-  protected btAxisSweep3(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	protected btAxisSweep3 (long cPtr, boolean cMemoryOwn) {
+		swigCMemOwn = cMemoryOwn;
+		swigCPtr = cPtr;
+	}
 
-  public static long getCPtr(btAxisSweep3 obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (btAxisSweep3 obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected void finalize() {
-    delete();
-  }
+	protected void finalize () {
+		delete();
+	}
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btAxisSweep3(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+	public synchronized void delete () {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btAxisSweep3(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+	}
 
-  public btAxisSweep3(Vector3 worldAabbMin, Vector3 worldAabbMax, int maxHandles, btOverlappingPairCache pairCache, boolean disableRaycastAccelerator) {
-    this(gdxBulletJNI.new_btAxisSweep3__SWIG_0(worldAabbMin, worldAabbMax, maxHandles, btOverlappingPairCache.getCPtr(pairCache), pairCache, disableRaycastAccelerator), true);
-  }
+	public btAxisSweep3 (Vector3 worldAabbMin, Vector3 worldAabbMax, int maxHandles, btOverlappingPairCache pairCache,
+		boolean disableRaycastAccelerator) {
+		this(gdxBulletJNI.new_btAxisSweep3__SWIG_0(worldAabbMin, worldAabbMax, maxHandles,
+			btOverlappingPairCache.getCPtr(pairCache), pairCache, disableRaycastAccelerator), true);
+	}
 
-  public btAxisSweep3(Vector3 worldAabbMin, Vector3 worldAabbMax, int maxHandles, btOverlappingPairCache pairCache) {
-    this(gdxBulletJNI.new_btAxisSweep3__SWIG_1(worldAabbMin, worldAabbMax, maxHandles, btOverlappingPairCache.getCPtr(pairCache), pairCache), true);
-  }
+	public btAxisSweep3 (Vector3 worldAabbMin, Vector3 worldAabbMax, int maxHandles, btOverlappingPairCache pairCache) {
+		this(gdxBulletJNI.new_btAxisSweep3__SWIG_1(worldAabbMin, worldAabbMax, maxHandles,
+			btOverlappingPairCache.getCPtr(pairCache), pairCache), true);
+	}
 
-  public btAxisSweep3(Vector3 worldAabbMin, Vector3 worldAabbMax, int maxHandles) {
-    this(gdxBulletJNI.new_btAxisSweep3__SWIG_2(worldAabbMin, worldAabbMax, maxHandles), true);
-  }
+	public btAxisSweep3 (Vector3 worldAabbMin, Vector3 worldAabbMax, int maxHandles) {
+		this(gdxBulletJNI.new_btAxisSweep3__SWIG_2(worldAabbMin, worldAabbMax, maxHandles), true);
+	}
 
-  public btAxisSweep3(Vector3 worldAabbMin, Vector3 worldAabbMax) {
-    this(gdxBulletJNI.new_btAxisSweep3__SWIG_3(worldAabbMin, worldAabbMax), true);
-  }
+	public btAxisSweep3 (Vector3 worldAabbMin, Vector3 worldAabbMax) {
+		this(gdxBulletJNI.new_btAxisSweep3__SWIG_3(worldAabbMin, worldAabbMax), true);
+	}
 
 }

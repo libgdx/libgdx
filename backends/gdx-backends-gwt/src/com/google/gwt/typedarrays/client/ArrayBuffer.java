@@ -13,33 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package com.google.gwt.typedarrays.client;
 
-import com.google.gwt.core.client.JavaScriptObject;
-
-/**
- * The ArrayBuffer type describes a buffer used to store data for the TypedArray
- * interface and its subclasses.
- *
- * Taken from the Khronos TypedArrays Draft Spec as of Aug 30, 2010.
- */
+/** The ArrayBuffer type describes a buffer used to store data for the TypedArray interface and its subclasses.
+ * 
+ * Taken from the Khronos TypedArrays Draft Spec as of Aug 30, 2010. */
 public class ArrayBuffer extends JavaScriptObject {
 
-  /**
-   * Creates a new ArrayBuffer of the given length in bytes. The contents of the
-   * ArrayBuffer are initialized to 0.
-   */
-  public static final native ArrayBuffer create(int length) /*-{
-    return new ArrayBuffer(length);
-  }-*/;
+	/** Creates a new ArrayBuffer of the given length in bytes. The contents of the ArrayBuffer are initialized to 0. */
+	public static final native ArrayBuffer create (int length) /*-{
+																					return new ArrayBuffer(length);
+																					}-*/;
 
-  protected ArrayBuffer() {
-  }
+	protected ArrayBuffer () {
+	}
 
-  /**
-   * The length of the ArrayBuffer in bytes, as fixed at construction time.
-   */
-  public final native int getByteLength() /*-{
-    return this.length;
-  }-*/;
+	/** The length of the ArrayBuffer in bytes, as fixed at construction time. */
+	public final native int getByteLength () /*-{
+															return this.length;
+															}-*/;
 }

@@ -45,6 +45,6 @@ public abstract class JointDef {
 
 	/** Set this flag to true if the attached bodies should collide. **/
 	public boolean collideConnected = false;
-	
-	public abstract org.jbox2d.dynamics.joints.JointDef toJBox2d();
+
+	public abstract org.jbox2d.dynamics.joints.JointDef toJBox2d ();
 }

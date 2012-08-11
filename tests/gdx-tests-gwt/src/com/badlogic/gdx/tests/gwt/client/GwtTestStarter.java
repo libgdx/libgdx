@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.gwt.client;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.badlogic.gdx.tests.TextButtonTest;
-import com.badlogic.gdx.tests.TextButtonTestGL2;
 import com.badlogic.gdx.tests.UITest;
-import com.badlogic.gdx.tests.gwt.GwtTestWrapper;
 
 public class GwtTestStarter extends GwtApplication {
 	@Override

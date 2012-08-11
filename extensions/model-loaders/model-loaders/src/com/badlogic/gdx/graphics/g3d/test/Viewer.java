@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.test;
 
 import java.util.ArrayList;
@@ -59,8 +60,10 @@ public class Viewer implements ApplicationListener {
 	public void create () {
 
 		Texture texture = new Texture(Gdx.files.internal("data/models/ninja.jpg"));
-		Material mat = new Material("mat", new TextureAttribute(texture, 0, "s_tex"), new ColorAttribute(Color.CYAN, ColorAttribute.diffuse));
-		model = new OgreXmlLoader().load(Gdx.files.internal("data/models/ninja.mesh.xml"), Gdx.files.internal("data/models/ninja.skeleton.xml"));
+		Material mat = new Material("mat", new TextureAttribute(texture, 0, "s_tex"), new ColorAttribute(Color.CYAN,
+			ColorAttribute.diffuse));
+		model = new OgreXmlLoader().load(Gdx.files.internal("data/models/ninja.mesh.xml"),
+			Gdx.files.internal("data/models/ninja.skeleton.xml"));
 		model.setMaterial(mat);
 
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

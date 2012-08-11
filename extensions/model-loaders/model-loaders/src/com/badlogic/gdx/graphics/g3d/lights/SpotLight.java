@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.lights;
 
 import com.badlogic.gdx.graphics.Color;
@@ -23,10 +24,10 @@ public class SpotLight {
 	final public Vector3 position = new Vector3();
 	final public Vector3 direction = new Vector3();
 	final public Color color = new Color();
-	//or just
+	// or just
 	// public float r,g,b;
 
 	public float cutOffAngle;
-		
+
 	public float intesity;
 }

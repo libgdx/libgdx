@@ -90,8 +90,8 @@ public class Gdx2DPixmap implements Disposable {
 		this.height = (int)nativeData[2];
 		this.format = (int)nativeData[3];
 	}
-	
-	public Gdx2DPixmap(ByteBuffer pixelPtr, long[] nativeData) {
+
+	public Gdx2DPixmap (ByteBuffer pixelPtr, long[] nativeData) {
 		this.pixelPtr = pixelPtr;
 		this.basePtr = nativeData[0];
 		this.width = (int)nativeData[1];
@@ -231,7 +231,8 @@ public class Gdx2DPixmap implements Disposable {
 			return "unknown";
 		}
 	}
-	
+
+	// @off
 	/*JNI
 	#include <gdx2d/gdx2d.h>
 	#include <stdlib.h>

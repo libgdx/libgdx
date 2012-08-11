@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.test;
 
 /*******************************************************************************
@@ -34,40 +35,26 @@ package com.badlogic.gdx.graphics.g3d.test;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.jogl.JoglApplication;
-import com.badlogic.gdx.graphics.FPSLogger;
-
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.StillModelInstance;
 import com.badlogic.gdx.graphics.g3d.StillModelNode;
-import com.badlogic.gdx.graphics.g3d.experimental.ShaderFactory;
-import com.badlogic.gdx.graphics.g3d.experimental.ShaderLoader;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.LightManager;
 import com.badlogic.gdx.graphics.g3d.lights.LightManager.LightQuality;
 import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dLoader;
-import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter;
-import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
-import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class StillModelViewerGL20 implements ApplicationListener {
@@ -131,7 +118,7 @@ public class StillModelViewerGL20 implements ApplicationListener {
 		for (int i = 0; i < 4; i++) {
 			PointLight l = new PointLight();
 			l.position.set(-MathUtils.random(8) + 4, MathUtils.random(3), -MathUtils.random(6) + 3);
-			
+
 			l.color.r = MathUtils.random();
 			l.color.b = MathUtils.random();
 			l.color.g = MathUtils.random();
@@ -145,7 +132,7 @@ public class StillModelViewerGL20 implements ApplicationListener {
 
 		MaterialAttribute c1 = new ColorAttribute(new Color(0.5f, 0.51f, 0.51f, 1.0f), ColorAttribute.specular);
 		MaterialAttribute c2 = new ColorAttribute(new Color(0.95f, 0.95f, 0.95f, 1.0f), ColorAttribute.diffuse);
-		MaterialAttribute t0 = new TextureAttribute(textures[0], 0, TextureAttribute.diffuseTexture);		
+		MaterialAttribute t0 = new TextureAttribute(textures[0], 0, TextureAttribute.diffuseTexture);
 		Material material = new Material("basic", c1, c2, t0);
 
 		model.setMaterial(material);

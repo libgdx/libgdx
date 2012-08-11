@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -33,19 +34,12 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "submesh")
 public class Submesh {
 
-	@XmlAttribute(required = true)
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	public String material;
-	@XmlAttribute(name = "usesharedvertices")
-	public boolean useSharedVertices;
-	@XmlAttribute(name = "use32bitindexes")
-	public boolean use32Bitindexes;
-	@XmlAttribute
-	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-	protected String operationtype;
+	@XmlAttribute(required = true) @XmlJavaTypeAdapter(NormalizedStringAdapter.class) public String material;
+	@XmlAttribute(name = "usesharedvertices") public boolean useSharedVertices;
+	@XmlAttribute(name = "use32bitindexes") public boolean use32Bitindexes;
+	@XmlAttribute @XmlJavaTypeAdapter(CollapsedStringAdapter.class) protected String operationtype;
 	protected Textures textures;
-	@XmlElement(required = true)
-	protected Faces faces;
+	@XmlElement(required = true) protected Faces faces;
 	protected Geometry geometry;
 	protected Boneassignments boneassignments;
 

@@ -21,8 +21,6 @@ import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
@@ -31,36 +29,37 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap.Keys;
 import com.badlogic.gdx.utils.OrderedMap;
 
-/**
- * Packs {@link Pixmap} instances into one more more {@link Page} instances to generate
- * an atlas of Pixmap instances. Provides means to directly convert the pixmap atlas to a {@link TextureAtlas}. The
- * packer supports padding and border pixel duplication, specified during construction. The packer supports incremental inserts
- * and updates of TextureAtlases generated with this class.</p>
+/** Packs {@link Pixmap} instances into one more more {@link Page} instances to generate an atlas of Pixmap instances. Provides
+ * means to directly convert the pixmap atlas to a {@link TextureAtlas}. The packer supports padding and border pixel duplication,
+ * specified during construction. The packer supports incremental inserts and updates of TextureAtlases generated with this
+ * class.</p>
  * 
- * All methods except {@link #getPage(String)} and {@link #getPages()} are thread safe. The methods {@link #generateTextureAtlas(TextureFilter, TextureFilter, boolean)}
- * and {@link #updateTextureAtlas(TextureAtlas, TextureFilter, TextureFilter, boolean)} need to be called on the rendering thread, all
+ * All methods except {@link #getPage(String)} and {@link #getPages()} are thread safe. The methods
+ * {@link #generateTextureAtlas(TextureFilter, TextureFilter, boolean)} and
+ * {@link #updateTextureAtlas(TextureAtlas, TextureFilter, TextureFilter, boolean)} need to be called on the rendering thread, all
  * other methods can be called from any thread.</p>
  * 
  * One-off usage:
+ * 
  * <pre>
  * // 512x512 pixel pages, RGB565 format, 2 pixels of padding, border duplication
  * PixmapPacker packer = new PixmapPacker(512, 512, Format.RGB565, 2, true);
- * packer.pack("First Pixmap", pixmap1);
- * packer.pack("Second Pixmap", pixmap2);
+ * packer.pack(&quot;First Pixmap&quot;, pixmap1);
+ * packer.pack(&quot;Second Pixmap&quot;, pixmap2);
  * TextureAtlas altas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest);
  * </pre>
  * 
- * Note that you should not dispose the packer in this usage pattern. Instead, dispose the TextureAtlas
- * if no longer needed.
+ * Note that you should not dispose the packer in this usage pattern. Instead, dispose the TextureAtlas if no longer needed.
  * 
  * Incremental usage:
+ * 
  * <pre>
  * // 512x512 pixel pages, RGB565 format, 2 pixels of padding, no border duplication
  * PixmapPacker packer = new PixmapPacker(512, 512, Format.RGB565, 2, false);
  * TextureAtlas incrementalAtlas = new TextureAtlas();
  * 
  * // potentially on a separate thread, e.g. downloading thumbnails
- * packer.pack("thumbnail", thumbnail);
+ * packer.pack(&quot;thumbnail&quot;, thumbnail);
  * 
  * // on the rendering thread, every frame
  * packer.updateTextureAtlas(incrementalAtlas, TextureFilter.Linear, TextureFilter.Linear);
@@ -72,19 +71,19 @@ import com.badlogic.gdx.utils.OrderedMap;
  * </pre>
  * 
  * Pixmap-only usage:
+ * 
  * <pre>
  * PixmapPacker packer = new PixmapPacker(512, 512, Format.RGB565, 2, true);
- * packer.pack("First Pixmap", pixmap1);
- * packer.pack("Second Pixmap", pixmap2);
+ * packer.pack(&quot;First Pixmap&quot;, pixmap1);
+ * packer.pack(&quot;Second Pixmap&quot;, pixmap2);
  * 
- *  // do something interesting with the resulting pages
- *  for(Page page: packer.getPages()) {
- *  }
- *  
- *  // dispose of the packer in this case
- *  packer.dispose();
- * </pre>
- */
+ * // do something interesting with the resulting pages
+ * for (Page page : packer.getPages()) {
+ * }
+ * 
+ * // dispose of the packer in this case
+ * packer.dispose();
+ * </pre> */
 public class PixmapPacker implements Disposable {
 	static final class Node {
 		public Node leftChild;
@@ -103,15 +102,15 @@ public class PixmapPacker implements Disposable {
 			rect = new Rectangle();
 		}
 	}
-	
+
 	public class Page {
 		Node root;
 		OrderedMap<String, Rectangle> rects;
 		Pixmap image;
 		Texture texture;
 		Array<String> addedRects = new Array<String>();
-		
-		public Pixmap getPixmap() {
+
+		public Pixmap getPixmap () {
 			return image;
 		}
 	}
@@ -145,8 +144,8 @@ public class PixmapPacker implements Disposable {
 	}
 
 	/** <p>
-	 * Inserts the given {@link Pixmap}. You can later on retrieve the images position in the output image via the supplied name and the
-	 * method {@link #getRect(String)}.
+	 * Inserts the given {@link Pixmap}. You can later on retrieve the images position in the output image via the supplied name
+	 * and the method {@link #getRect(String)}.
 	 * </p>
 	 * 
 	 * @param name the name of the image
@@ -154,12 +153,13 @@ public class PixmapPacker implements Disposable {
 	 * @return Rectangle describing the area the pixmap was rendered to or null.
 	 * @throws RuntimeException in case the image did not fit due to the page size being to small or providing a duplicate name */
 	public synchronized Rectangle pack (String name, Pixmap image) {
-		if(disposed) return null;
+		if (disposed) return null;
 		if (getRect(name) != null) throw new RuntimeException("Key with name '" + name + "' is already in map");
 		int borderPixels = padding + (duplicateBorder ? 1 : 0);
 		borderPixels <<= 1;
 
-		if(image.getWidth() >= pageWidth + borderPixels|| image.getHeight() >= pageHeight + borderPixels) throw new GdxRuntimeException("page size for '" + name + "' to small");
+		if (image.getWidth() >= pageWidth + borderPixels || image.getHeight() >= pageHeight + borderPixels)
+			throw new GdxRuntimeException("page size for '" + name + "' to small");
 
 		Rectangle rect = new Rectangle(0, 0, image.getWidth() + borderPixels, image.getHeight() + borderPixels);
 		Node node = insert(currPage.root, rect);
@@ -185,31 +185,34 @@ public class PixmapPacker implements Disposable {
 
 		// not terribly efficient (as the rest of the code) but will do :p
 		if (duplicateBorder) {
-			this.currPage.image.drawPixmap(image, (int)rect.x, (int)rect.y - 1, (int)rect.x + (int)rect.width, (int)rect.y, 0, 0, image.getWidth(), 1);
-			this.currPage.image.drawPixmap(image, (int)rect.x, (int)rect.y + (int)rect.height, (int)rect.x + (int)rect.width, (int)rect.y + (int)rect.height + 1, 0,
-				image.getHeight() - 1, image.getWidth(), image.getHeight());
+			this.currPage.image.drawPixmap(image, (int)rect.x, (int)rect.y - 1, (int)rect.x + (int)rect.width, (int)rect.y, 0, 0,
+				image.getWidth(), 1);
+			this.currPage.image.drawPixmap(image, (int)rect.x, (int)rect.y + (int)rect.height, (int)rect.x + (int)rect.width,
+				(int)rect.y + (int)rect.height + 1, 0, image.getHeight() - 1, image.getWidth(), image.getHeight());
 
-			this.currPage.image.drawPixmap(image, (int)rect.x - 1, (int)rect.y, (int)rect.x, (int)rect.y + (int)rect.height, 0, 0, 1, image.getHeight());
-			this.currPage.image.drawPixmap(image, (int)rect.x + (int)rect.width, (int)rect.y, (int)rect.x + (int)rect.width + 1, (int)rect.y + (int)rect.height, image.getWidth() - 1, 0,
-				image.getWidth(), image.getHeight());
+			this.currPage.image.drawPixmap(image, (int)rect.x - 1, (int)rect.y, (int)rect.x, (int)rect.y + (int)rect.height, 0, 0,
+				1, image.getHeight());
+			this.currPage.image.drawPixmap(image, (int)rect.x + (int)rect.width, (int)rect.y, (int)rect.x + (int)rect.width + 1,
+				(int)rect.y + (int)rect.height, image.getWidth() - 1, 0, image.getWidth(), image.getHeight());
 
 			this.currPage.image.drawPixmap(image, (int)rect.x - 1, (int)rect.y - 1, (int)rect.x, (int)rect.y, 0, 0, 1, 1);
-			this.currPage.image.drawPixmap(image, (int)rect.x + (int)rect.width, (int)rect.y - 1, (int)rect.x + (int)rect.width + 1, (int)rect.y, image.getWidth() - 1, 0,
-				image.getWidth(), 1);
+			this.currPage.image.drawPixmap(image, (int)rect.x + (int)rect.width, (int)rect.y - 1, (int)rect.x + (int)rect.width + 1,
+				(int)rect.y, image.getWidth() - 1, 0, image.getWidth(), 1);
 
-			this.currPage.image.drawPixmap(image, (int)rect.x - 1, (int)rect.y + (int)rect.height, (int)rect.x, (int)rect.y + (int)rect.height + 1, 0, image.getHeight() - 1, 1,
-				image.getHeight());
-			this.currPage.image.drawPixmap(image, (int)rect.x + (int)rect.width, (int)rect.y + (int)rect.height, (int)rect.x + (int)rect.width + 1, (int)rect.y + (int)rect.height + 1,
-				image.getWidth() - 1, image.getHeight() - 1, image.getWidth(), image.getHeight());
+			this.currPage.image.drawPixmap(image, (int)rect.x - 1, (int)rect.y + (int)rect.height, (int)rect.x, (int)rect.y
+				+ (int)rect.height + 1, 0, image.getHeight() - 1, 1, image.getHeight());
+			this.currPage.image.drawPixmap(image, (int)rect.x + (int)rect.width, (int)rect.y + (int)rect.height, (int)rect.x
+				+ (int)rect.width + 1, (int)rect.y + (int)rect.height + 1, image.getWidth() - 1, image.getHeight() - 1,
+				image.getWidth(), image.getHeight());
 		}
 		currPage.addedRects.add(name);
 		return rect;
 	}
-	
-	private void newPage() {
+
+	private void newPage () {
 		Page page = new Page();
 		page.image = new Pixmap(pageWidth, pageHeight, pageFormat);
-		page.root =  new Node(0, 0, pageWidth, pageHeight, null, null, null);
+		page.root = new Node(0, 0, pageWidth, pageHeight, null, null, null);
 		page.rects = new OrderedMap<String, Rectangle>();
 		pages.add(page);
 		currPage = page;
@@ -266,56 +269,46 @@ public class PixmapPacker implements Disposable {
 	public Array<Page> getPages () {
 		return pages;
 	}
-	
-	/**
-	 * @param name the name of the image
-	 * @return the rectangle for the image in the page it's stored in or null
-	 */
-	public synchronized Rectangle getRect(String name) {
-		for(Page page: pages) {
+
+	/** @param name the name of the image
+	 * @return the rectangle for the image in the page it's stored in or null */
+	public synchronized Rectangle getRect (String name) {
+		for (Page page : pages) {
 			Rectangle rect = page.rects.get(name);
-			if(rect != null) return rect;
+			if (rect != null) return rect;
 		}
 		return null;
 	}
-	
-	/**
-	 * @param name the name of the image
-	 * @return the page the image is stored in or null
-	 */
-	public synchronized Page getPage(String name) {
-		for(Page page: pages) {
+
+	/** @param name the name of the image
+	 * @return the page the image is stored in or null */
+	public synchronized Page getPage (String name) {
+		for (Page page : pages) {
 			Rectangle rect = page.rects.get(name);
-			if(rect != null) return page;
+			if (rect != null) return page;
 		}
 		return null;
 	}
-	
-	/**
-	 * Disposes all resources, including Pixmap instances for the pages
-	 * created so far. These page Pixmap instances are shared with
+
+	/** Disposes all resources, including Pixmap instances for the pages created so far. These page Pixmap instances are shared with
 	 * any {@link TextureAtlas} generated or updated by either {@link #generateTextureAtlas(TextureFilter, TextureFilter, boolean)}
-	 * or {@link #updateTextureAtlas(TextureAtlas, TextureFilter, TextureFilter, boolean)}. Do
-	 * not call this method if you generated or updated a TextureAtlas, instead
-	 * dispose the TextureAtlas.
-	 */
-	public synchronized void dispose() {
-		for(Page page: pages) {
+	 * or {@link #updateTextureAtlas(TextureAtlas, TextureFilter, TextureFilter, boolean)}. Do not call this method if you
+	 * generated or updated a TextureAtlas, instead dispose the TextureAtlas. */
+	public synchronized void dispose () {
+		for (Page page : pages) {
 			page.image.dispose();
 		}
 		disposed = true;
 	}
 
-	/**
-	 * Generates a new {@link TextureAtlas} from the {@link Pixmap} instances inserted so far.
+	/** Generates a new {@link TextureAtlas} from the {@link Pixmap} instances inserted so far.
 	 * @param minFilter
 	 * @param magFilter
-	 * @return the TextureAtlas
-	 */
+	 * @return the TextureAtlas */
 	public synchronized TextureAtlas generateTextureAtlas (TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps) {
 		TextureAtlas atlas = new TextureAtlas();
-		for(Page page: pages) {
-			if(page.rects.size != 0) {
+		for (Page page : pages) {
+			if (page.rects.size != 0) {
 				Texture texture = new Texture(new ManagedPixmapTextureData(page.image, page.image.getFormat(), useMipMaps)) {
 					@Override
 					public void dispose () {
@@ -324,9 +317,9 @@ public class PixmapPacker implements Disposable {
 					}
 				};
 				texture.setFilter(minFilter, magFilter);
-				
+
 				Keys<String> names = page.rects.keys();
-				for(String name: names) {
+				for (String name : names) {
 					Rectangle rect = page.rects.get(name);
 					TextureRegion region = new TextureRegion(texture, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
 					atlas.addRegion(name, region);
@@ -336,16 +329,15 @@ public class PixmapPacker implements Disposable {
 		return atlas;
 	}
 
-	/**
-	 * Updates the given {@link TextureAtlas}, adding any new {@link Pixmap} instances packed since the last
-	 * call to this method. This can be used to insert Pixmap instances on a separate thread via {@link #pack(String, Pixmap)}
-	 * and update the TextureAtlas on the rendering thread. This method must be called on the rendering thread.
-	 */
-	public synchronized void updateTextureAtlas(TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter, boolean useMipMaps) {
-		for(Page page: pages) {
-			if(page.texture == null) {
-				if(page.rects.size != 0 && page.addedRects.size > 0) {
-					 page.texture = new Texture(new ManagedPixmapTextureData(page.image, page.image.getFormat(), useMipMaps)) {
+	/** Updates the given {@link TextureAtlas}, adding any new {@link Pixmap} instances packed since the last call to this method.
+	 * This can be used to insert Pixmap instances on a separate thread via {@link #pack(String, Pixmap)} and update the
+	 * TextureAtlas on the rendering thread. This method must be called on the rendering thread. */
+	public synchronized void updateTextureAtlas (TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter,
+		boolean useMipMaps) {
+		for (Page page : pages) {
+			if (page.texture == null) {
+				if (page.rects.size != 0 && page.addedRects.size > 0) {
+					page.texture = new Texture(new ManagedPixmapTextureData(page.image, page.image.getFormat(), useMipMaps)) {
 						@Override
 						public void dispose () {
 							super.dispose();
@@ -353,20 +345,22 @@ public class PixmapPacker implements Disposable {
 						}
 					};
 					page.texture.setFilter(minFilter, magFilter);
-					
-					for(String name: page.addedRects) {
+
+					for (String name : page.addedRects) {
 						Rectangle rect = page.rects.get(name);
-						TextureRegion region = new TextureRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
+						TextureRegion region = new TextureRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width,
+							(int)rect.height);
 						atlas.addRegion(name, region);
 					}
 					page.addedRects.clear();
 				}
 			} else {
-				if(page.addedRects.size > 0) {
+				if (page.addedRects.size > 0) {
 					page.texture.load(page.texture.getTextureData());
-					for(String name: page.addedRects) {
+					for (String name : page.addedRects) {
 						Rectangle rect = page.rects.get(name);
-						TextureRegion region = new TextureRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
+						TextureRegion region = new TextureRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width,
+							(int)rect.height);
 						atlas.addRegion(name, region);
 					}
 					page.addedRects.clear();
@@ -375,7 +369,7 @@ public class PixmapPacker implements Disposable {
 			}
 		}
 	}
-	
+
 	public int getPageWidth () {
 		return pageWidth;
 	}
@@ -383,15 +377,15 @@ public class PixmapPacker implements Disposable {
 	public int getPageHeight () {
 		return pageHeight;
 	}
-	
-	public int getPadding() {
+
+	public int getPadding () {
 		return padding;
 	}
-	
-	public boolean duplicateBoarder() {
+
+	public boolean duplicateBoarder () {
 		return duplicateBorder;
 	}
-	
+
 	public class ManagedPixmapTextureData extends PixmapTextureData {
 		public ManagedPixmapTextureData (Pixmap pixmap, Format format, boolean useMipMaps) {
 			super(pixmap, format, useMipMaps, false);

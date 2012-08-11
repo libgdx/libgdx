@@ -72,8 +72,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 
 	/** Creates a new byte buffer by wrapping the given byte array.
 	 * <p>
-	 * The new buffer's position will be {@code start}, limit will be {@code start + len}, capacity will be the length of the
-	 * array.
+	 * The new buffer's position will be {@code start}, limit will be {@code start + len}, capacity will be the length of the array.
 	 * </p>
 	 * 
 	 * @param array the byte array which the new buffer will be based on.

@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import java.lang.reflect.Method;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -73,47 +71,47 @@ public class Skin implements Disposable {
 	TextureAtlas atlas;
 
 	/** Creates an empty skin. */
-    public Skin () {
-    }
+	public Skin () {
+	}
 
-    /** Creates a skin containing the resources in the specified skin JSON file. If a file in the same directory with a ".atlas"
-     * extension exists, it is loaded as a {@link TextureAtlas} and the texture regions added to the skin. The atlas is
-     * automatically disposed when the skin is disposed. */
-    public Skin (FileHandle skinFile) {
-            FileHandle atlasFile = skinFile.sibling(skinFile.nameWithoutExtension() + ".atlas");
-            if (atlasFile.exists()) {
-                    atlas = new TextureAtlas(atlasFile);
-                    addRegions(atlas);
-            }
+	/** Creates a skin containing the resources in the specified skin JSON file. If a file in the same directory with a ".atlas"
+	 * extension exists, it is loaded as a {@link TextureAtlas} and the texture regions added to the skin. The atlas is
+	 * automatically disposed when the skin is disposed. */
+	public Skin (FileHandle skinFile) {
+		FileHandle atlasFile = skinFile.sibling(skinFile.nameWithoutExtension() + ".atlas");
+		if (atlasFile.exists()) {
+			atlas = new TextureAtlas(atlasFile);
+			addRegions(atlas);
+		}
 
-            load(skinFile);
-    }
+		load(skinFile);
+	}
 
-    /** Creates a skin containing the resources in the specified skin JSON file and the texture regions from the specified atlas.
-     * The atlas is automatically disposed when the skin is disposed. */
-    public Skin (FileHandle skinFile, TextureAtlas atlas) {
-            this.atlas = atlas;
-            addRegions(atlas);
-            load(skinFile);
-    }
+	/** Creates a skin containing the resources in the specified skin JSON file and the texture regions from the specified atlas.
+	 * The atlas is automatically disposed when the skin is disposed. */
+	public Skin (FileHandle skinFile, TextureAtlas atlas) {
+		this.atlas = atlas;
+		addRegions(atlas);
+		load(skinFile);
+	}
 
-    /** Adds all resources in the specified skin JSON file. */
-    public void load (FileHandle skinFile) {
-            try {
-                    getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
-            } catch (SerializationException ex) {
-                    throw new SerializationException("Error reading file: " + skinFile, ex);
-            }
-    }
+	/** Adds all resources in the specified skin JSON file. */
+	public void load (FileHandle skinFile) {
+		try {
+			getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
+		} catch (SerializationException ex) {
+			throw new SerializationException("Error reading file: " + skinFile, ex);
+		}
+	}
 
-    /** Adds all named txeture regions from the atlas. The atlas will not be automatically disposed when the skin is disposed. */
-    public void addRegions (TextureAtlas atlas) {
-            Array<AtlasRegion> regions = atlas.getRegions();
-            for (int i = 0, n = regions.size; i < n; i++) {
-                    AtlasRegion region = regions.get(i);
-                    add(region.name, region, TextureRegion.class);
-            }
-    }
+	/** Adds all named txeture regions from the atlas. The atlas will not be automatically disposed when the skin is disposed. */
+	public void addRegions (TextureAtlas atlas) {
+		Array<AtlasRegion> regions = atlas.getRegions();
+		for (int i = 0, n = regions.size; i < n; i++) {
+			AtlasRegion region = regions.get(i);
+			add(region.name, region, TextureRegion.class);
+		}
+	}
 
 	private void add (TextureAtlas atlas) {
 		Array<AtlasRegion> regions = atlas.getRegions();
@@ -359,8 +357,10 @@ public class Skin implements Disposable {
 		final Json json = new Json() {
 			@Override
 			public <T> T readValue (Class<T> type, Class elementType, Object jsonData) {
-				// If the JSON is a string but the type is not, look up the actual value by name.				
-				if (jsonData instanceof String && !ReflectionCache.getType(type).isAssignableFrom(ReflectionCache.getType(CharSequence.class))) return get((String)jsonData, type);
+				// If the JSON is a string but the type is not, look up the actual value by name.
+				if (jsonData instanceof String
+					&& !ReflectionCache.getType(type).isAssignableFrom(ReflectionCache.getType(CharSequence.class)))
+					return get((String)jsonData, type);
 				return super.readValue(type, elementType, jsonData);
 			}
 		};

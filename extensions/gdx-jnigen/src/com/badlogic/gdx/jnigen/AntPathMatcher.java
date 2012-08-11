@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.badlogic.gdx.jnigen;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-/**
- * PathMatcher implementation for Ant-style path patterns. Examples are provided
- * below.
+/** PathMatcher implementation for Ant-style path patterns. Examples are provided below.
  * 
  * <p>
- * Part of this mapping code has been kindly borrowed from <a
- * href="http://ant.apache.org">Apache Ant</a>.
+ * Part of this mapping code has been kindly borrowed from <a href="http://ant.apache.org">Apache Ant</a>.
  * 
  * <p>
  * The mapping matches URLs using the following rules:<br>
@@ -40,27 +38,22 @@ import java.util.StringTokenizer;
  * <ul>
  * <li>com/t?st.jsp - matches test.jsp but also tast.jsp or txst.jsp</li>
  * <li>com/*.jsp - matches all .jsp files in the com directory</li>
- * <li>com/&#42;&#42;/test.jsp - matches all test.jsp path underneath the com
- * path</li>
- * <li>org/springframework/&#42;&#42;/*.jsp - matches all .jsp files underneath
- * the org/springframework path</li>
- * <li>org/&#42;&#42;/servlet/bla.jsp - matches
- * org/springframework/servlet/bla.jsp but also
+ * <li>com/&#42;&#42;/test.jsp - matches all test.jsp path underneath the com path</li>
+ * <li>org/springframework/&#42;&#42;/*.jsp - matches all .jsp files underneath the org/springframework path</li>
+ * <li>org/&#42;&#42;/servlet/bla.jsp - matches org/springframework/servlet/bla.jsp but also
  * org/springframework/testing/servlet/bla.jsp and com/servlet/bla.jsp</li>
  * </ul>
  * 
  * @author Alef Arendsen
  * @author Juergen Hoeller
- * @since 16.07.2003
- */
+ * @since 16.07.2003 */
 public class AntPathMatcher {
 
-	public boolean isPattern(String str) {
+	public boolean isPattern (String str) {
 		return (str.indexOf('*') != -1 || str.indexOf('?') != -1);
 	}
 
-	public static String[] tokenizeToStringArray(String str, String delimiters,
-			boolean trimTokens, boolean ignoreEmptyTokens) {
+	public static String[] tokenizeToStringArray (String str, String delimiters, boolean trimTokens, boolean ignoreEmptyTokens) {
 		if (str == null) {
 			return null;
 		}
@@ -77,18 +70,18 @@ public class AntPathMatcher {
 		}
 		return tokens.toArray(new String[tokens.size()]);
 	}
-	
-	public boolean match(String file, String[] patterns) {
-		if(patterns == null || patterns.length == 0) return true;
-		for(String pattern: patterns) {
-			if(match(pattern, file)) {
+
+	public boolean match (String file, String[] patterns) {
+		if (patterns == null || patterns.length == 0) return true;
+		for (String pattern : patterns) {
+			if (match(pattern, file)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public boolean match(String pattern, String str) {
+	public boolean match (String pattern, String str) {
 		if (str.startsWith("/") != pattern.startsWith("/")) {
 			return false;
 		}
@@ -103,11 +96,11 @@ public class AntPathMatcher {
 
 		// Match all elements up to the first **
 		while (patIdxStart <= patIdxEnd && strIdxStart <= strIdxEnd) {
-			String patDir = (String) patDirs[patIdxStart];
+			String patDir = (String)patDirs[patIdxStart];
 			if (patDir.equals("**")) {
 				break;
 			}
-			if (!matchStrings(patDir, (String) strDirs[strIdxStart])) {
+			if (!matchStrings(patDir, (String)strDirs[strIdxStart])) {
 				return false;
 			}
 			patIdxStart++;
@@ -131,11 +124,11 @@ public class AntPathMatcher {
 
 		// up to last '**'
 		while (patIdxStart <= patIdxEnd && strIdxStart <= strIdxEnd) {
-			String patDir = (String) patDirs[patIdxEnd];
+			String patDir = (String)patDirs[patIdxEnd];
 			if (patDir.equals("**")) {
 				break;
 			}
-			if (!matchStrings(patDir, (String) strDirs[strIdxEnd])) {
+			if (!matchStrings(patDir, (String)strDirs[strIdxEnd])) {
 				return false;
 			}
 			patIdxEnd--;
@@ -169,10 +162,11 @@ public class AntPathMatcher {
 			int patLength = (patIdxTmp - patIdxStart - 1);
 			int strLength = (strIdxEnd - strIdxStart + 1);
 			int foundIdx = -1;
-			strLoop: for (int i = 0; i <= strLength - patLength; i++) {
+			strLoop:
+			for (int i = 0; i <= strLength - patLength; i++) {
 				for (int j = 0; j < patLength; j++) {
-					String subPat = (String) patDirs[patIdxStart + j + 1];
-					String subStr = (String) strDirs[strIdxStart + i + j];
+					String subPat = (String)patDirs[patIdxStart + j + 1];
+					String subStr = (String)strDirs[strIdxStart + i + j];
 					if (!matchStrings(subPat, subStr)) {
 						continue strLoop;
 					}
@@ -199,21 +193,14 @@ public class AntPathMatcher {
 		return true;
 	}
 
-	/**
-	 * Tests whether or not a string matches against a pattern. The pattern may
-	 * contain two special characters:<br>
+	/** Tests whether or not a string matches against a pattern. The pattern may contain two special characters:<br>
 	 * '*' means zero or more characters<br>
 	 * '?' means one and only one character
 	 * 
-	 * @param pattern
-	 *            pattern to match against. Must not be <code>null</code>.
-	 * @param str
-	 *            string which must be matched against the pattern. Must not be
-	 *            <code>null</code>.
-	 * @return <code>true</code> if the string matches against the pattern, or
-	 *         <code>false</code> otherwise.
-	 */
-	private boolean matchStrings(String pattern, String str) {
+	 * @param pattern pattern to match against. Must not be <code>null</code>.
+	 * @param str string which must be matched against the pattern. Must not be <code>null</code>.
+	 * @return <code>true</code> if the string matches against the pattern, or <code>false</code> otherwise. */
+	private boolean matchStrings (String pattern, String str) {
 		char[] patArr = pattern.toCharArray();
 		char[] strArr = str.toCharArray();
 		int patIdxStart = 0;
@@ -312,7 +299,8 @@ public class AntPathMatcher {
 			int patLength = (patIdxTmp - patIdxStart - 1);
 			int strLength = (strIdxEnd - strIdxStart + 1);
 			int foundIdx = -1;
-			strLoop: for (int i = 0; i <= strLength - patLength; i++) {
+			strLoop:
+			for (int i = 0; i <= strLength - patLength; i++) {
 				for (int j = 0; j < patLength; j++) {
 					ch = patArr[patIdxStart + j + 1];
 					if (ch != '?') {

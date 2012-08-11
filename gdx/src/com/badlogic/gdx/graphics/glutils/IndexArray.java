@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL11;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.BufferUtils;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class IndexArray implements IndexData {
 	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
@@ -52,8 +49,8 @@ public class IndexArray implements IndexData {
 	}
 
 	/** <p>
-	 * Sets the indices of this IndexArray, discarding the old indices. The count must equal the number of indices to be
-	 * copied to this IndexArray.
+	 * Sets the indices of this IndexArray, discarding the old indices. The count must equal the number of indices to be copied to
+	 * this IndexArray.
 	 * </p>
 	 * 
 	 * <p>

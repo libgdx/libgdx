@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.gwt.preloader;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,8 +35,7 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** Used in PreloaderBundleGenerator to ease my pain. Since we emulate the original FileHandle, i have
- * to make a copy...
+/** Used in PreloaderBundleGenerator to ease my pain. Since we emulate the original FileHandle, i have to make a copy...
  * @author mzechner
  * @author Nathan Sweet */
 public class FileWrapper {
@@ -108,7 +107,8 @@ public class FileWrapper {
 	/** Returns a stream for reading this file as bytes.
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public InputStream read () {
-		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists()) || (type == FileType.Local && !file.exists())) {
+		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists())
+			|| (type == FileType.Local && !file.exists())) {
 			InputStream input = FileWrapper.class.getResourceAsStream("/" + file.getPath().replace('\\', '/'));
 			if (input == null) throw new GdxRuntimeException("File not found: " + file + " (" + type + ")");
 			return input;

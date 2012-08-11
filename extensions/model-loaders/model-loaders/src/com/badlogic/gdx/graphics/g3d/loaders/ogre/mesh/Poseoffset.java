@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,27 +32,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "poseoffset")
 public class Poseoffset {
 
-	@XmlAttribute(required = true)
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	protected String index;
-	@XmlAttribute(required = true)
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	protected String x;
-	@XmlAttribute(required = true)
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	protected String y;
-	@XmlAttribute(required = true)
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	protected String z;
-	@XmlAttribute
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	protected String nx;
-	@XmlAttribute
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	protected String ny;
-	@XmlAttribute
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	protected String nz;
+	@XmlAttribute(required = true) @XmlJavaTypeAdapter(NormalizedStringAdapter.class) protected String index;
+	@XmlAttribute(required = true) @XmlJavaTypeAdapter(NormalizedStringAdapter.class) protected String x;
+	@XmlAttribute(required = true) @XmlJavaTypeAdapter(NormalizedStringAdapter.class) protected String y;
+	@XmlAttribute(required = true) @XmlJavaTypeAdapter(NormalizedStringAdapter.class) protected String z;
+	@XmlAttribute @XmlJavaTypeAdapter(NormalizedStringAdapter.class) protected String nx;
+	@XmlAttribute @XmlJavaTypeAdapter(NormalizedStringAdapter.class) protected String ny;
+	@XmlAttribute @XmlJavaTypeAdapter(NormalizedStringAdapter.class) protected String nz;
 
 	/** Gets the value of the index property.
 	 * 

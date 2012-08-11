@@ -22,6 +22,7 @@ import com.badlogic.gdx.physics.box2d.World;
 /** A distance joint constrains two points on two bodies to remain at a fixed distance from each other. You can view this as a
  * massless, rigid rod. */
 public class DistanceJoint extends Joint {
+	// @off
 	/*JNI
 #include <Box2D/Box2D.h>
 	 */

@@ -52,7 +52,7 @@ public class ContinuousTest extends Box2DTest {
 			shape.set(new Vector2(-10, 0), new Vector2(10, 0));
 			body.createFixture(shape, 0);
 			shape.dispose();
-			
+
 			PolygonShape poly = new PolygonShape();
 			poly.setAsBox(0.2f, 1.0f, new Vector2(0.5f, 1.0f), 0);
 			body.createFixture(poly, 0);

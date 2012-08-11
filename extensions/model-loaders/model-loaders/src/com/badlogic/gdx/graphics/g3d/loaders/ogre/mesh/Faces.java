@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh;
 
 import java.util.ArrayList;
@@ -33,10 +34,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "faces")
 public class Faces {
 
-	@XmlAttribute
-	public int count;
-	@XmlElement(required = true)
-	protected List<Face> face;
+	@XmlAttribute public int count;
+	@XmlElement(required = true) protected List<Face> face;
 
 	/** Gets the value of the face property.
 	 * 

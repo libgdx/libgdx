@@ -16,30 +16,12 @@
 
 package com.badlogic.gdx.backends.openal;
 
-import static org.lwjgl.openal.AL10.AL_BUFFER;
-import static org.lwjgl.openal.AL10.AL_NO_ERROR;
-import static org.lwjgl.openal.AL10.AL_ORIENTATION;
-import static org.lwjgl.openal.AL10.AL_PAUSED;
-import static org.lwjgl.openal.AL10.AL_PLAYING;
-import static org.lwjgl.openal.AL10.AL_POSITION;
-import static org.lwjgl.openal.AL10.AL_SOURCE_STATE;
-import static org.lwjgl.openal.AL10.AL_STOPPED;
-import static org.lwjgl.openal.AL10.AL_VELOCITY;
-import static org.lwjgl.openal.AL10.alDeleteSources;
-import static org.lwjgl.openal.AL10.alGenSources;
-import static org.lwjgl.openal.AL10.alGetError;
-import static org.lwjgl.openal.AL10.alGetSourcei;
-import static org.lwjgl.openal.AL10.alListener;
-import static org.lwjgl.openal.AL10.alSourceStop;
-import static org.lwjgl.openal.AL10.alSourcei;
-
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
-import org.lwjgl.openal.AL11;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.AudioDevice;
@@ -51,6 +33,8 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.ObjectMap;
+
+import static org.lwjgl.openal.AL10.*;
 
 /** @author Nathan Sweet */
 public class OpenALAudio implements Audio {

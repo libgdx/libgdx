@@ -13,47 +13,48 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package java.io;
 
 public class ByteArrayOutputStream extends OutputStream {
 
-  protected int count;
-  protected byte[] buf;
- 
-  public ByteArrayOutputStream() {
-    this(16);
-  }
-  
-  public ByteArrayOutputStream(int initialSize) {
-    buf = new byte[initialSize];
-  }
-  
-  @Override
-  public void write(int b) {
-    if (buf.length == count) {
-      byte[] newBuf = new byte[buf.length * 3 / 2];
-      System.arraycopy(buf, 0, newBuf, 0, count);
-      buf = newBuf;
-    }
-    
-    buf[count++] = (byte) b;
-  }
-  
-  public byte[] toByteArray() {
-    byte[] result = new byte[count];
-    System.arraycopy(buf, 0, result, 0, count);
-    return result;
-  }
+	protected int count;
+	protected byte[] buf;
 
-  
-  public int size() {
-    return count;
-  }
-  
-  public String toString() {
-	  return new String(buf, 0, count);
-  }
-  public String toString(String enc) throws UnsupportedEncodingException {
-	  return new String(buf, 0, count, enc);
-  }  
+	public ByteArrayOutputStream () {
+		this(16);
+	}
+
+	public ByteArrayOutputStream (int initialSize) {
+		buf = new byte[initialSize];
+	}
+
+	@Override
+	public void write (int b) {
+		if (buf.length == count) {
+			byte[] newBuf = new byte[buf.length * 3 / 2];
+			System.arraycopy(buf, 0, newBuf, 0, count);
+			buf = newBuf;
+		}
+
+		buf[count++] = (byte)b;
+	}
+
+	public byte[] toByteArray () {
+		byte[] result = new byte[count];
+		System.arraycopy(buf, 0, result, 0, count);
+		return result;
+	}
+
+	public int size () {
+		return count;
+	}
+
+	public String toString () {
+		return new String(buf, 0, count);
+	}
+
+	public String toString (String enc) throws UnsupportedEncodingException {
+		return new String(buf, 0, count, enc);
+	}
 }

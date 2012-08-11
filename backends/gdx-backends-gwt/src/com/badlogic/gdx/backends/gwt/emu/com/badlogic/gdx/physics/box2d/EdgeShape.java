@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.box2d;
 
 import org.jbox2d.common.Vec2;
@@ -23,7 +24,7 @@ import com.badlogic.gdx.math.Vector2;
  * used to ensure correct contact normals. */
 public class EdgeShape extends Shape {
 	org.jbox2d.collision.shapes.EdgeShape shape;
-	
+
 	public EdgeShape () {
 		super(new org.jbox2d.collision.shapes.EdgeShape());
 		shape = (org.jbox2d.collision.shapes.EdgeShape)super.shape;
@@ -38,7 +39,7 @@ public class EdgeShape extends Shape {
 	public void set (Vector2 v1, Vector2 v2) {
 		set(v1.x, v1.y, v2.x, v2.y);
 	}
-	
+
 	Vec2 tmp = new Vec2();
 	Vec2 tmp2 = new Vec2();
 

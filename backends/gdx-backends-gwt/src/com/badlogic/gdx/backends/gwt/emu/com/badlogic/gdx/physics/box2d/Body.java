@@ -32,7 +32,7 @@ public class Body {
 	final Vec2 tmp2 = new Vec2();
 	final ArrayList<Fixture> fixtures = new ArrayList<Fixture>();
 	final ArrayList<JointEdge> joints = new ArrayList<JointEdge>();
-	
+
 	/** Constructs a new body with the given address
 	 * @param world the world
 	 * @param addr the address */
@@ -61,6 +61,7 @@ public class Body {
 	}
 
 	Transform transform = new Transform();
+
 	/** Get the body transform for the body's origin. */
 	public Transform getTransform () {
 		org.jbox2d.common.Transform trans = body.getTransform();
@@ -72,7 +73,7 @@ public class Body {
 	}
 
 	final Vector2 position = new Vector2();
-	
+
 	/** Get the world body origin position.
 	 * @return the world position of the body's origin. */
 	public Vector2 getPosition () {
@@ -89,6 +90,7 @@ public class Body {
 
 	/** Get the world position of the center of mass. */
 	final Vector2 worldCenter = new Vector2();
+
 	public Vector2 getWorldCenter () {
 		Vec2 wc = body.getWorldCenter();
 		return worldCenter.set(wc.x, wc.y);
@@ -102,7 +104,6 @@ public class Body {
 		localCenter.set(lc.x, lc.y);
 		return localCenter;
 	}
-
 
 	/** Set the linear velocity of the center of mass. */
 	public void setLinearVelocity (Vector2 v) {
@@ -337,18 +338,18 @@ public class Body {
 	/** Set the type of this body. This may alter the mass and velocity. */
 	public void setType (BodyType type) {
 		org.jbox2d.dynamics.BodyType t = org.jbox2d.dynamics.BodyType.DYNAMIC;
-		if(type == BodyType.DynamicBody) t = org.jbox2d.dynamics.BodyType.DYNAMIC;
-		if(type == BodyType.KinematicBody) t = org.jbox2d.dynamics.BodyType.KINEMATIC;
-		if(type == BodyType.StaticBody) t = org.jbox2d.dynamics.BodyType.STATIC;
+		if (type == BodyType.DynamicBody) t = org.jbox2d.dynamics.BodyType.DYNAMIC;
+		if (type == BodyType.KinematicBody) t = org.jbox2d.dynamics.BodyType.KINEMATIC;
+		if (type == BodyType.StaticBody) t = org.jbox2d.dynamics.BodyType.STATIC;
 		body.setType(t);
 	}
-	
+
 	/** Get the type of this body. */
 	public BodyType getType () {
 		org.jbox2d.dynamics.BodyType type = body.getType();
-		if(type == org.jbox2d.dynamics.BodyType.DYNAMIC) return BodyType.DynamicBody;
-		if(type == org.jbox2d.dynamics.BodyType.KINEMATIC) return BodyType.KinematicBody;
-		if(type == org.jbox2d.dynamics.BodyType.STATIC) return BodyType.StaticBody;
+		if (type == org.jbox2d.dynamics.BodyType.DYNAMIC) return BodyType.DynamicBody;
+		if (type == org.jbox2d.dynamics.BodyType.KINEMATIC) return BodyType.KinematicBody;
+		if (type == org.jbox2d.dynamics.BodyType.STATIC) return BodyType.StaticBody;
 		return BodyType.DynamicBody;
 	}
 
@@ -447,7 +448,7 @@ public class Body {
 		fixtures.remove(fixture);
 		world.fixtures.remove(fixture.fixture);
 	}
-	
+
 	/** Get the list of all fixtures attached to this body. Do not modify the list! */
 	public ArrayList<Fixture> getFixtureList () {
 		return fixtures;
@@ -458,7 +459,7 @@ public class Body {
 		// FIXME wow this is bad...
 		org.jbox2d.dynamics.joints.JointEdge jointEdge = body.getJointList();
 		joints.clear();
-		while(jointEdge != null) {
+		while (jointEdge != null) {
 			JointEdge edge = new JointEdge(world.bodies.get(jointEdge.other), world.joints.get(jointEdge.joint));
 			joints.add(edge);
 			jointEdge = jointEdge.next;
@@ -473,7 +474,7 @@ public class Body {
 
 	/** Sets the gravity scale of the body */
 	public void setGravityScale (float scale) {
-			body.setGravityScale(scale);
+		body.setGravityScale(scale);
 	}
 
 	/** Get the parent world of this body. */
@@ -482,7 +483,7 @@ public class Body {
 	}
 
 	private Object userData;
-	
+
 	/** Get the user data */
 	public Object getUserData () {
 		return userData;

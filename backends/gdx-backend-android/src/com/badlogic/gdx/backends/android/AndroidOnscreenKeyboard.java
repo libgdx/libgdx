@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.backends.android;
 
-import com.badlogic.gdx.Input.Peripheral;
+package com.badlogic.gdx.backends.android;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -40,35 +39,30 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-/**
- * Responsible for showing and hiding the Android onscreen keyboard (aka softkeyboard).
- * Uses a dialog with an invisible TextView and injects key down/up and typed events
- * into AndroidInput. Only the delete and back keys will trigger key down/up events.
- * Alphanumeric keys will be directly injected as key typed events which is sufficient
- * to implement things like text fields.
+import com.badlogic.gdx.Input.Peripheral;
+
+/** Responsible for showing and hiding the Android onscreen keyboard (aka softkeyboard). Uses a dialog with an invisible TextView
+ * and injects key down/up and typed events into AndroidInput. Only the delete and back keys will trigger key down/up events.
+ * Alphanumeric keys will be directly injected as key typed events which is sufficient to implement things like text fields.
  * 
- * Since the input mechanism for softkeyboards is a bit complex, we don't directly get
- * key events from the softkeyboard. Instead we intercept calls to the Editable
- * of the invisible TextView which we translate into delete key events and key typed
- * events.
+ * Since the input mechanism for softkeyboards is a bit complex, we don't directly get key events from the softkeyboard. Instead
+ * we intercept calls to the Editable of the invisible TextView which we translate into delete key events and key typed events.
  * 
- * @author mzechner
- *
- */
+ * @author mzechner */
 class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 	final Context context;
 	final Handler handler;
 	final AndroidInput input;
 	Dialog dialog;
 	TextView textView;
-	
-	public AndroidOnscreenKeyboard(Context context, Handler handler, AndroidInput input) {
+
+	public AndroidOnscreenKeyboard (Context context, Handler handler, AndroidInput input) {
 		this.context = context;
 		this.handler = handler;
 		this.input = input;
 	}
-	
-	Dialog createDialog() {
+
+	Dialog createDialog () {
 		textView = createView(context);
 		textView.setOnKeyListener(this);
 		FrameLayout.LayoutParams textBoxLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT,
@@ -88,16 +82,16 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 		dialog.setContentView(layout);
 		return dialog;
 	}
-	
-	public static TextView createView(Context context) {
+
+	public static TextView createView (Context context) {
 		final TextView view = new TextView(context) {
 			Editable editable = new PassThroughEditable();
-			
+
 			@Override
 			protected boolean getDefaultEditable () {
 				return true;
 			}
-			
+
 			@Override
 			public Editable getEditableText () {
 				return editable;
@@ -120,22 +114,22 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 				return super.onKeyUp(keyCode, event);
 			}
 		};
-//		view.setCursorVisible(false);
+// view.setCursorVisible(false);
 		return view;
 	}
-	
-	public void setVisible(boolean visible) {
-		if(visible && dialog != null) {
+
+	public void setVisible (boolean visible) {
+		if (visible && dialog != null) {
 			dialog.dismiss();
 			dialog = null;
 		}
-		if(visible && dialog == null && !input.isPeripheralAvailable(Peripheral.HardwareKeyboard)) {
+		if (visible && dialog == null && !input.isPeripheralAvailable(Peripheral.HardwareKeyboard)) {
 			handler.post(new Runnable() {
 				@Override
 				public void run () {
 					dialog = createDialog();
 					dialog.show();
-					
+
 					handler.post(new Runnable() {
 						@Override
 						public void run () {
@@ -144,7 +138,7 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 							if (input != null) input.showSoftInput(textView, InputMethodManager.SHOW_FORCED);
 						}
 					});
-					
+
 					final View content = dialog.getWindow().findViewById(Window.ID_ANDROID_CONTENT);
 					content.getViewTreeObserver().addOnPreDrawListener(new OnPreDrawListener() {
 						int[] screenloc = new int[2];
@@ -167,12 +161,12 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 				}
 			});
 		} else {
-			if(!visible && dialog != null) {
+			if (!visible && dialog != null) {
 				dialog.dismiss();
 			}
 		}
 	}
-	
+
 	public static class PassThroughEditable implements Editable {
 
 		@Override
@@ -305,7 +299,7 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 		@Override
 		public void setFilters (InputFilter[] filters) {
 			Log.d("Editable", "setFilters");
-		}		
+		}
 	}
 
 	@Override

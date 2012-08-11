@@ -15,7 +15,6 @@ package com.badlogic.gdx.backends.android.surfaceview;
 
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGL11;
@@ -124,6 +123,7 @@ import android.view.SurfaceView;
  * 		return super.onKeyDown(keyCode, event);
  * 	}
  * }
+ * 
  * 
  * 
  * 
@@ -314,7 +314,7 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 	 * after onResume() and before onPause(). */
 	public void requestRender () {
 		GLThread thread = mGLThread;
-		if(thread != null) {
+		if (thread != null) {
 			thread.requestRender();
 		}
 	}
@@ -638,11 +638,11 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 			 * 
 			 * This semaphore ensures that only one instance at a time accesses EGL.
 			 * 
-			 * changed: using a normal monitor instead of a semaphore. see issue
-			 * 704 http://code.google.com/p/libgdx/issues/detail?id=704
+			 * changed: using a normal monitor instead of a semaphore. see issue 704
+			 * http://code.google.com/p/libgdx/issues/detail?id=704
 			 */
 			try {
-				synchronized (sEglLock) {					
+				synchronized (sEglLock) {
 					guardedRun();
 				}
 			} catch (InterruptedException e) {

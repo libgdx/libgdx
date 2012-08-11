@@ -107,7 +107,7 @@ public abstract class Camera {
 	public void rotate (float angle, float axisX, float axisY, float axisZ) {
 		rotate(tmpVec.set(axisX, axisY, axisZ), angle);
 	}
-	
+
 	/** Rotates the direction and up vector of this camera by the given angle around the given axis. The direction and up vector
 	 * will not be orthogonalized.
 	 * 
@@ -126,7 +126,7 @@ public abstract class Camera {
 	public void translate (float x, float y, float z) {
 		position.add(x, y, z);
 	}
-	
+
 	/** Moves the camera by the given vector.
 	 * @param vec the displacement vector */
 	public void translate (Vector3 vec) {

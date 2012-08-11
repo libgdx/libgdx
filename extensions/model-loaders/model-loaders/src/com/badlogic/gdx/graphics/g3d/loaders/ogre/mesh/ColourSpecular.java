@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,9 +32,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "colour_specular")
 public class ColourSpecular {
 
-	@XmlAttribute(required = true)
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	protected String value;
+	@XmlAttribute(required = true) @XmlJavaTypeAdapter(NormalizedStringAdapter.class) protected String value;
 
 	/** Gets the value of the value property.
 	 * 

@@ -21,28 +21,27 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
+
 package org.jbox2d.common;
 
 import com.badlogic.gdx.utils.TimeUtils;
 
-/**
- * Timer for profiling
+/** Timer for profiling
  * 
- * @author Daniel
- */
+ * @author Daniel */
 public class Timer {
 
-  private long resetNanos;
+	private long resetNanos;
 
-  public Timer() {
-    reset();
-  }
+	public Timer () {
+		reset();
+	}
 
-  public void reset() {
-    resetNanos = TimeUtils.nanoTime();
-  }
+	public void reset () {
+		resetNanos = TimeUtils.nanoTime();
+	}
 
-  public float getMilliseconds() {
-    return (TimeUtils.nanoTime() - resetNanos) / 1000 * 1f / 1000;
-  }
+	public float getMilliseconds () {
+		return (TimeUtils.nanoTime() - resetNanos) / 1000 * 1f / 1000;
+	}
 }

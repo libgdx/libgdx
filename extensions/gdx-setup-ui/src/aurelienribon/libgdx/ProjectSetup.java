@@ -1,6 +1,6 @@
+
 package aurelienribon.libgdx;
 
-import aurelienribon.utils.TemplateManager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,20 +10,21 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import res.Res;
 
-/**
- * @author Aurelien Ribon | http://www.aurelienribon.com/
- */
+import res.Res;
+import aurelienribon.utils.TemplateManager;
+
+/** @author Aurelien Ribon | http://www.aurelienribon.com/ */
 public class ProjectSetup {
 	private final ProjectConfiguration cfg;
 	private final File tmpDst = new File("__libgdx_setup_tmp");
 	private final TemplateManager templateManager = new TemplateManager();
 
-	public ProjectSetup(ProjectConfiguration cfg) {
+	public ProjectSetup (ProjectConfiguration cfg) {
 		this.cfg = cfg;
 
 		templateManager.define("PROJECT_NAME", cfg.projectName);
@@ -39,14 +40,15 @@ public class ProjectSetup {
 		if (!cfg.androidMinSdkVersion.equals("")) templateManager.define("ANDROID_MIN_SDK", cfg.androidMinSdkVersion);
 		if (!cfg.androidTargetSdkVersion.equals("")) templateManager.define("ANDROID_TARGET_SDK", cfg.androidTargetSdkVersion);
 		if (!cfg.androidMaxSdkVersion.equals("")) templateManager.define("ANDROID_MAX_SDK", cfg.androidMaxSdkVersion);
-		if (!cfg.androidMinSdkVersion.equals("") || !cfg.androidTargetSdkVersion.equals("") || !cfg.androidMaxSdkVersion.equals("")) templateManager.define("ANDROID_USES_SDK");
+		if (!cfg.androidMinSdkVersion.equals("") || !cfg.androidTargetSdkVersion.equals("") || !cfg.androidMaxSdkVersion.equals(""))
+			templateManager.define("ANDROID_USES_SDK");
 	}
 
 	// -------------------------------------------------------------------------
 	// Public API
 	// -------------------------------------------------------------------------
 
-	public void inflateProjects() throws IOException {
+	public void inflateProjects () throws IOException {
 		FileUtils.forceMkdir(tmpDst);
 		FileUtils.cleanDirectory(tmpDst);
 
@@ -68,7 +70,7 @@ public class ProjectSetup {
 		zis.close();
 	}
 
-	public void inflateLibraries() throws IOException {
+	public void inflateLibraries () throws IOException {
 		File commonPrjLibsDir = new File(tmpDst, "/prj-common/libs");
 		File desktopPrjLibsDir = new File(tmpDst, "/prj-desktop/libs");
 		File androidPrjLibsDir = new File(tmpDst, "/prj-android/libs");
@@ -102,7 +104,7 @@ public class ProjectSetup {
 		}
 	}
 
-	public void configureLibraries() throws IOException {
+	public void configureLibraries () throws IOException {
 		String entriesCommon = "";
 		String entriesDesktop = "";
 		String entriesAndroid = "";
@@ -195,7 +197,7 @@ public class ProjectSetup {
 		templateManager.processOver(new File(tmpDst, "prj-html/src/GwtDefinition.gwt.xml"));
 	}
 
-	public void postProcess() throws IOException {
+	public void postProcess () throws IOException {
 		{
 			File src = new File(tmpDst, "prj-common");
 			File dst = new File(tmpDst, cfg.projectName + cfg.commonSuffix);
@@ -231,7 +233,7 @@ public class ProjectSetup {
 		}
 	}
 
-	public void copy() throws IOException {
+	public void copy () throws IOException {
 		File src = new File(tmpDst, cfg.projectName + cfg.commonSuffix);
 		File dst = new File(cfg.destinationPath);
 		FileUtils.copyDirectoryToDirectory(src, dst);
@@ -252,7 +254,7 @@ public class ProjectSetup {
 		}
 	}
 
-	public void clean() throws IOException {
+	public void clean () throws IOException {
 		FileUtils.deleteDirectory(tmpDst);
 	}
 
@@ -260,7 +262,7 @@ public class ProjectSetup {
 	// Helpers
 	// -------------------------------------------------------------------------
 
-	private void templateDir(File dir) throws IOException {
+	private void templateDir (File dir) throws IOException {
 		if (dir.getName().equals("libs")) return;
 
 		for (File file : dir.listFiles()) {
@@ -273,7 +275,7 @@ public class ProjectSetup {
 		}
 	}
 
-	private void copyEntry(ZipInputStream zis, String name, File dst) throws IOException {
+	private void copyEntry (ZipInputStream zis, String name, File dst) throws IOException {
 		File file = new File(dst, name);
 		file.getParentFile().mkdirs();
 
@@ -282,21 +284,24 @@ public class ProjectSetup {
 		os.close();
 	}
 
-	private void move(File base, String path1, String path2) throws IOException {
+	private void move (File base, String path1, String path2) throws IOException {
 		if (path1.equals(path2)) return;
 		File file1 = new File(base, FilenameUtils.normalize(path1));
 		File file2 = new File(base, FilenameUtils.normalize(path2));
 		FileUtils.deleteQuietly(file2);
-		if (file1.isDirectory()) FileUtils.moveDirectory(file1, file2);
-		else FileUtils.moveFile(file1, file2);
+		if (file1.isDirectory())
+			FileUtils.moveDirectory(file1, file2);
+		else
+			FileUtils.moveFile(file1, file2);
 	}
 
-	private boolean endsWidth(String str, String... ends) {
-		for (String end : ends) if (str.endsWith(end)) return true;
+	private boolean endsWidth (String str, String... ends) {
+		for (String end : ends)
+			if (str.endsWith(end)) return true;
 		return false;
 	}
 
-	private String getSource(List<String> files, String file) {
+	private String getSource (List<String> files, String file) {
 		String path = FilenameUtils.getFullPath(file);
 		String name = FilenameUtils.getBaseName(file);
 		String ext = FilenameUtils.getExtension(file);

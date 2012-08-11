@@ -222,10 +222,8 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 		Gdx.input.setInputProcessor(this);
 	}
 
-	
-	
 	@Override
-	public void resize(int width, int height) {
+	public void resize (int width, int height) {
 		Gdx.app.log("SpriteBatchTest", "resized: " + width + ", " + height);
 	}
 

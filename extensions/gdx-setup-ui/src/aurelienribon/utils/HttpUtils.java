@@ -1,3 +1,4 @@
+
 package aurelienribon.utils;
 
 import java.io.BufferedInputStream;
@@ -7,15 +8,14 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * @author Aurelien Ribon | http://www.aurelienribon.com/
- */
+/** @author Aurelien Ribon | http://www.aurelienribon.com/ */
 public class HttpUtils {
-	public static DownloadTask downloadAsync(URL input, OutputStream output, Callback callback) {
+	public static DownloadTask downloadAsync (URL input, OutputStream output, Callback callback) {
 		final DownloadTask task = new DownloadTask(input, output, callback);
 
 		new Thread(new Runnable() {
-			@Override public void run() {
+			@Override
+			public void run () {
 				task.download();
 			}
 		}).start();
@@ -24,10 +24,17 @@ public class HttpUtils {
 	}
 
 	public static class Callback {
-		public void completed() {}
-		public void canceled() {}
-		public void error(IOException ex) {}
-		public void updated(int length, int totalLength) {}
+		public void completed () {
+		}
+
+		public void canceled () {
+		}
+
+		public void error (IOException ex) {
+		}
+
+		public void updated (int length, int totalLength) {
+		}
 	}
 
 	public static class DownloadTask {
@@ -36,35 +43,35 @@ public class HttpUtils {
 		private final Callback callback;
 		private boolean run = true;
 
-		public DownloadTask(URL input, OutputStream output, Callback callback) {
+		public DownloadTask (URL input, OutputStream output, Callback callback) {
 			this.input = input;
 			this.output = output;
 			this.callback = callback;
 		}
 
-		public void stop() {
+		public void stop () {
 			run = false;
 		}
 
-		public URL getInput() {
+		public URL getInput () {
 			return input;
 		}
 
-		public OutputStream getOutput() {
+		public OutputStream getOutput () {
 			return output;
 		}
 
-		public Callback getCallback() {
+		public Callback getCallback () {
 			return callback;
 		}
 
-		private void download() {
+		private void download () {
 			OutputStream os = null;
 			InputStream is = null;
 			IOException ex = null;
 
 			try {
-				HttpURLConnection connection = (HttpURLConnection) input.openConnection();
+				HttpURLConnection connection = (HttpURLConnection)input.openConnection();
 				connection.setDoInput(true);
 				connection.setDoOutput(false);
 				connection.setUseCaches(true);
@@ -89,13 +96,23 @@ public class HttpUtils {
 				ex = ex1;
 
 			} finally {
-				if (os != null) try {os.flush(); os.close();} catch (IOException ex1) {}
-				if (is != null) try {is.close();} catch (IOException ex1) {}
+				if (os != null) try {
+					os.flush();
+					os.close();
+				} catch (IOException ex1) {
+				}
+				if (is != null) try {
+					is.close();
+				} catch (IOException ex1) {
+				}
 
 				if (callback != null) {
-					if (ex != null) callback.error(ex);
-					else if (run == true) callback.completed();
-					else callback.canceled();
+					if (ex != null)
+						callback.error(ex);
+					else if (run == true)
+						callback.completed();
+					else
+						callback.canceled();
 				}
 			}
 		}

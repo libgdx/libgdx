@@ -1,3 +1,4 @@
+
 package com.badlogic.gdxinvaders.client;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -9,7 +10,7 @@ public class GdxInvadersGwt extends GwtApplication {
 	@Override
 	public GwtApplicationConfiguration getConfig () {
 		GwtApplicationConfiguration config = new GwtApplicationConfiguration(480, 320);
-//		config.useDebugGL = true;
+// config.useDebugGL = true;
 		return config;
 	}
 

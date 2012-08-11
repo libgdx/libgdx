@@ -9,18 +9,19 @@
 package com.badlogic.gdx.physics.bullet;
 
 public class SWIGTYPE_p_f_r_btManifoldPoint_p_q_const__btCollisionObject_int_int_p_q_const__btCollisionObject_int_int__bool {
-  private long swigCPtr;
+	private long swigCPtr;
 
-  protected SWIGTYPE_p_f_r_btManifoldPoint_p_q_const__btCollisionObject_int_int_p_q_const__btCollisionObject_int_int__bool(long cPtr, boolean futureUse) {
-    swigCPtr = cPtr;
-  }
+	protected SWIGTYPE_p_f_r_btManifoldPoint_p_q_const__btCollisionObject_int_int_p_q_const__btCollisionObject_int_int__bool (
+		long cPtr, boolean futureUse) {
+		swigCPtr = cPtr;
+	}
 
-  protected SWIGTYPE_p_f_r_btManifoldPoint_p_q_const__btCollisionObject_int_int_p_q_const__btCollisionObject_int_int__bool() {
-    swigCPtr = 0;
-  }
+	protected SWIGTYPE_p_f_r_btManifoldPoint_p_q_const__btCollisionObject_int_int_p_q_const__btCollisionObject_int_int__bool () {
+		swigCPtr = 0;
+	}
 
-  public static long getCPtr(SWIGTYPE_p_f_r_btManifoldPoint_p_q_const__btCollisionObject_int_int_p_q_const__btCollisionObject_int_int__bool obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (
+		SWIGTYPE_p_f_r_btManifoldPoint_p_q_const__btCollisionObject_int_int_p_q_const__btCollisionObject_int_int__bool obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 }
-

@@ -19,7 +19,6 @@ package com.badlogic.gdx.math;
 import java.io.Serializable;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.StringBuilder;
 
 /** A 3x3 column major matrix for 2D transforms.
  * 

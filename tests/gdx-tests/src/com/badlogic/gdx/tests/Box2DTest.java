@@ -27,7 +27,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
@@ -148,18 +147,13 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		// We also create a simple ChainShape we put above our
 		// ground polygon for extra funkyness.
 		ChainShape chainShape = new ChainShape();
-		chainShape.createLoop(new Vector2[] {
-			new Vector2(-10, 10),
-			new Vector2(-10, 5),
-			new Vector2(10, 5),
-			new Vector2(10, 11),
-		});
+		chainShape.createLoop(new Vector2[] {new Vector2(-10, 10), new Vector2(-10, 5), new Vector2(10, 5), new Vector2(10, 11),});
 		BodyDef chainBodyDef = new BodyDef();
 		chainBodyDef.type = BodyType.StaticBody;
 		Body chainBody = world.createBody(chainBodyDef);
 		chainBody.createFixture(chainShape, 0);
 		chainShape.dispose();
-		
+
 		createBoxes();
 
 		// You can savely ignore the rest of this method :)
@@ -300,6 +294,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	}
 
 	Matrix4 transform = new Matrix4();
+
 	private void renderBox (Body body, float halfWidth, float halfHeight) {
 		// get the bodies center and angle in world coordinates
 		Vector2 pos = body.getWorldCenter();
@@ -315,7 +310,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		renderer.setColor(1, 1, 1, 1);
 		renderer.rect(-halfWidth, -halfHeight, halfWidth * 2, halfHeight * 2);
 		renderer.end();
-	}		
+	}
 
 	/** we instantiate this vector and the callback here so we don't irritate the GC **/
 	Vector3 testPoint = new Vector3();

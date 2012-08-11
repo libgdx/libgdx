@@ -30,7 +30,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
@@ -110,7 +109,7 @@ public class LwjglApplication implements Application {
 		Gdx.input = input;
 		initialize();
 	}
-	
+
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, Canvas canvas) {
 		LwjglNativesLoader.load();
 
@@ -134,7 +133,7 @@ public class LwjglApplication implements Application {
 				graphics.setVSync(graphics.config.vSyncEnabled);
 				try {
 					LwjglApplication.this.mainLoop();
-				} catch(Throwable t) {
+				} catch (Throwable t) {
 					audio.dispose();
 					throw new GdxRuntimeException(t);
 				}
@@ -158,24 +157,23 @@ public class LwjglApplication implements Application {
 		int lastHeight = graphics.getHeight();
 
 		graphics.lastTime = System.nanoTime();
-		while (running) {			
+		while (running) {
 			Display.processMessages();
 			if (Display.isCloseRequested()) {
 				exit();
 			}
-			
+
 			boolean shouldRender = false;
 			synchronized (runnables) {
 				executedRunnables.clear();
 				executedRunnables.addAll(runnables);
 				runnables.clear();
-				
+
 				for (int i = 0; i < executedRunnables.size(); i++) {
 					shouldRender = true;
 					try {
 						executedRunnables.get(i).run();
-					}
-					catch(Throwable t) {
+					} catch (Throwable t) {
 						t.printStackTrace();
 					}
 				}
@@ -198,18 +196,18 @@ public class LwjglApplication implements Application {
 				graphics.config.y = Display.getY();
 				if (graphics.resize || Display.wasResized() || Display.getWidth() != graphics.config.width
 					|| Display.getHeight() != graphics.config.height) {
-					graphics.resize  = false;
+					graphics.resize = false;
 					Gdx.gl.glViewport(0, 0, Display.getWidth(), Display.getHeight());
 					graphics.config.width = Display.getWidth();
 					graphics.config.height = Display.getHeight();
-					if(listener != null) listener.resize(Display.getWidth(), Display.getHeight());
+					if (listener != null) listener.resize(Display.getWidth(), Display.getHeight());
 					graphics.requestRendering();
 				}
 			}
 
 			input.processEvents();
 			audio.update();
-			if(shouldRender) {
+			if (shouldRender) {
 				graphics.updateTime();
 				listener.render();
 				Display.update();
@@ -298,14 +296,14 @@ public class LwjglApplication implements Application {
 			Gdx.graphics.requestRendering();
 		}
 	}
-	
+
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
 			System.out.println(tag + ": " + message);
 		}
 	}
-	
+
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {

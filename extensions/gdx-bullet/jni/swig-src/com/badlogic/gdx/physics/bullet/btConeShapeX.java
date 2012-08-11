@@ -8,39 +8,35 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-
 public class btConeShapeX extends btConeShape {
-  private long swigCPtr;
+	private long swigCPtr;
 
-  protected btConeShapeX(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btConeShapeX_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	protected btConeShapeX (long cPtr, boolean cMemoryOwn) {
+		super(gdxBulletJNI.btConeShapeX_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
 
-  public static long getCPtr(btConeShapeX obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (btConeShapeX obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected void finalize() {
-    delete();
-  }
+	protected void finalize () {
+		delete();
+	}
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btConeShapeX(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+	public synchronized void delete () {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btConeShapeX(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
-  public btConeShapeX(float radius, float height) {
-    this(gdxBulletJNI.new_btConeShapeX(radius, height), true);
-  }
+	public btConeShapeX (float radius, float height) {
+		this(gdxBulletJNI.new_btConeShapeX(radius, height), true);
+	}
 
 }

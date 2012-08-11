@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.skeleton;
 
 import java.util.ArrayList;
@@ -32,8 +33,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "animationlinks")
 public class Animationlinks {
 
-	@XmlElement(required = true)
-	protected List<Animationlink> animationlink;
+	@XmlElement(required = true) protected List<Animationlink> animationlink;
 
 	/** Gets the value of the animationlink property.
 	 * 

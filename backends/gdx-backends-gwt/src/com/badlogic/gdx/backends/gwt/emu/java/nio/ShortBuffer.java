@@ -57,8 +57,7 @@ public abstract class ShortBuffer extends Buffer implements Comparable<ShortBuff
 
 	/** Creates a new short buffer by wrapping the given short array.
 	 * <p>
-	 * The new buffer's position will be {@code start}, limit will be {@code start + len}, capacity will be the length of the
-	 * array.
+	 * The new buffer's position will be {@code start}, limit will be {@code start + len}, capacity will be the length of the array.
 	 * </p>
 	 * 
 	 * @param array the short array which the new buffer will be based on.

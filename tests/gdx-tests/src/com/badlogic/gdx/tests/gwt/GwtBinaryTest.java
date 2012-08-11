@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.gwt;
 
 import java.io.DataInputStream;
@@ -31,7 +32,7 @@ public class GwtBinaryTest extends GdxTest {
 		FileHandle handle = Gdx.files.internal("data/arial.ttf");
 		bytes = new byte[(int)handle.length()];
 		DataInputStream in = new DataInputStream(handle.read());
-		for(int i = 0; i < 100; i++) {
+		for (int i = 0; i < 100; i++) {
 			try {
 				bytes[i] = in.readByte();
 			} catch (IOException e) {

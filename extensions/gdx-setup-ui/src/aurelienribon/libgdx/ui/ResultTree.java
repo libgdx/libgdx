@@ -1,29 +1,31 @@
+
 package aurelienribon.libgdx.ui;
 
-import aurelienribon.libgdx.LibraryDef;
 import java.awt.Component;
 import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
-import org.apache.commons.io.FilenameUtils;
-import res.Res;
 
-/**
- * @author Aurelien Ribon | http://www.aurelienribon.com/
- */
+import org.apache.commons.io.FilenameUtils;
+
+import res.Res;
+import aurelienribon.libgdx.LibraryDef;
+
+/** @author Aurelien Ribon | http://www.aurelienribon.com/ */
 public class ResultTree extends JTree {
 	private final Map<String, DefaultMutableTreeNode> nodes = new TreeMap<String, DefaultMutableTreeNode>();
 	private final DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode();
 
-	public ResultTree() {
+	public ResultTree () {
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setRootVisible(false);
 		setShowsRootHandles(true);
@@ -31,7 +33,8 @@ public class ResultTree extends JTree {
 		setOpaque(false);
 
 		Ctx.listeners.add(new Ctx.Listener() {
-			@Override public void configChanged() {
+			@Override
+			public void configChanged () {
 				update();
 			}
 		});
@@ -40,7 +43,7 @@ public class ResultTree extends JTree {
 		update();
 	}
 
-	private void build() {
+	private void build () {
 		try {
 			ZipInputStream zis = new ZipInputStream(Res.getStream("projects.zip"));
 			ZipEntry entry;
@@ -48,7 +51,7 @@ public class ResultTree extends JTree {
 			while ((entry = zis.getNextEntry()) != null) {
 				String name = entry.getName();
 				name = entry.isDirectory() ? "#DIR#" + name : name; // this makes name sorting easier :p
-				name = entry.isDirectory() ? name.substring(0, name.length()-1) : name;
+				name = entry.isDirectory() ? name.substring(0, name.length() - 1) : name;
 
 				DefaultMutableTreeNode node = new DefaultMutableTreeNode(name);
 				nodes.put(name, node);
@@ -59,13 +62,15 @@ public class ResultTree extends JTree {
 			for (String name : nodes.keySet()) {
 				String pName = name.startsWith("#DIR#") ? name : "#DIR#" + name;
 				pName = FilenameUtils.getPath(pName);
-				pName = pName.endsWith("/") ? pName.substring(0, pName.length()-1) : pName;
+				pName = pName.endsWith("/") ? pName.substring(0, pName.length() - 1) : pName;
 
 				DefaultMutableTreeNode node = nodes.get(name);
 				DefaultMutableTreeNode pNode = nodes.get(pName);
 
-				if (pNode != null) pNode.add(node);
-				else rootNode.add(node);
+				if (pNode != null)
+					pNode.add(node);
+				else
+					rootNode.add(node);
 			}
 
 		} catch (IOException ex) {
@@ -73,7 +78,7 @@ public class ResultTree extends JTree {
 		}
 	}
 
-	private void update() {
+	private void update () {
 		DefaultMutableTreeNode commonPrjNode = nodes.get("#DIR#prj-common");
 		DefaultMutableTreeNode desktopPrjNode = nodes.get("#DIR#prj-desktop");
 		DefaultMutableTreeNode androidPrjNode = nodes.get("#DIR#prj-android");
@@ -91,7 +96,7 @@ public class ResultTree extends JTree {
 		setModel(new DefaultTreeModel(rootNode));
 	}
 
-	private void updateSrc() {
+	private void updateSrc () {
 		DefaultMutableTreeNode previousNode;
 
 		// common
@@ -181,7 +186,7 @@ public class ResultTree extends JTree {
 		}
 	}
 
-	private void updateLibs() {
+	private void updateLibs () {
 		DefaultMutableTreeNode commonLibsNode = nodes.get("#DIR#prj-common/libs");
 		DefaultMutableTreeNode desktopLibsNode = nodes.get("#DIR#prj-desktop/libs");
 		DefaultMutableTreeNode androidLibsNode = nodes.get("#DIR#prj-android/libs");
@@ -195,30 +200,38 @@ public class ResultTree extends JTree {
 		for (String libraryName : Ctx.cfg.libs.getNames()) {
 			if (Ctx.cfg.libs.isUsed(libraryName)) {
 				LibraryDef def = Ctx.cfg.libs.getDef(libraryName);
-				for (String path : def.libsCommon) pathToNodes(path, commonLibsNode);
-				for (String path : def.libsDesktop) pathToNodes(path, desktopLibsNode);
-				for (String path : def.libsAndroid) pathToNodes(path, androidLibsNode);
-				for (String path : def.libsHtml) pathToNodes(path, htmlLibsNode);
+				for (String path : def.libsCommon)
+					pathToNodes(path, commonLibsNode);
+				for (String path : def.libsDesktop)
+					pathToNodes(path, desktopLibsNode);
+				for (String path : def.libsAndroid)
+					pathToNodes(path, androidLibsNode);
+				for (String path : def.libsHtml)
+					pathToNodes(path, htmlLibsNode);
 			}
 		}
 	}
 
-	private void pathToNodes(String path, DefaultMutableTreeNode parentNode) {
-		String parentPath = (String) parentNode.getUserObject();
+	private void pathToNodes (String path, DefaultMutableTreeNode parentNode) {
+		String parentPath = (String)parentNode.getUserObject();
 		String[] names = path.split("/");
 
-		for (int i=0; i<names.length; i++) {
-			if (i == 0) names[i] = parentPath + "/" + names[i];
-			else names[i] = names[i-1] + "/" + names[i];
+		for (int i = 0; i < names.length; i++) {
+			if (i == 0)
+				names[i] = parentPath + "/" + names[i];
+			else
+				names[i] = names[i - 1] + "/" + names[i];
 
-			if (i == names.length-1) names[i] = names[i].replaceFirst("#DIR#", "");
+			if (i == names.length - 1) names[i] = names[i].replaceFirst("#DIR#", "");
 
 			DefaultMutableTreeNode node = nodes.get(names[i]);
 			if (node == null) {
 				node = new DefaultMutableTreeNode(names[i]);
 				nodes.put(names[i], node);
-				if (i == 0) parentNode.add(node);
-				else nodes.get(names[i-1]).add(node);
+				if (i == 0)
+					parentNode.add(node);
+				else
+					nodes.get(names[i - 1]).add(node);
 			} else if (i == 0) {
 				parentNode.add(node);
 			}
@@ -229,10 +242,11 @@ public class ResultTree extends JTree {
 		private final JLabel label = new JLabel();
 
 		@Override
-		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+		public Component getTreeCellRendererComponent (JTree tree, Object value, boolean sel, boolean expanded, boolean leaf,
+			int row, boolean hasFocus) {
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
 			if (node.getUserObject() instanceof String) {
-				String name = (String) node.getUserObject();
+				String name = (String)node.getUserObject();
 				boolean isDir = name.startsWith("#DIR#");
 
 				name = name.replaceFirst("#DIR#", "");

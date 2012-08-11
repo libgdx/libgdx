@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.box2d;
 
 import com.badlogic.gdx.math.Vector2;
 
 public class ChainShape extends Shape {
+	// @off
 	/*JNI
 #include <Box2D/Box2D.h>
 	 */

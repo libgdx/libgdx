@@ -9,18 +9,17 @@
 package com.badlogic.gdx.physics.bullet;
 
 public class SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result {
-  private long swigCPtr;
+	private long swigCPtr;
 
-  protected SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result(long cPtr, boolean futureUse) {
-    swigCPtr = cPtr;
-  }
+	protected SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result (long cPtr, boolean futureUse) {
+		swigCPtr = cPtr;
+	}
 
-  protected SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result() {
-    swigCPtr = 0;
-  }
+	protected SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result () {
+		swigCPtr = 0;
+	}
 
-  public static long getCPtr(SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 }
-

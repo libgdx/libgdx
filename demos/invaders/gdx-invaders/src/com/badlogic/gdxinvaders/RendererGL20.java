@@ -29,7 +29,6 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderOld;
 import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
@@ -77,15 +76,15 @@ public class RendererGL20 implements Renderer {
 	private int lastLives = 0;
 	private int lastWave = 0;
 
-	/** view and transform matrix for text rendering and transforming 3D objects**/
+	/** view and transform matrix for text rendering and transforming 3D objects **/
 	private final Matrix4 viewMatrix = new Matrix4();
 	private final Matrix4 transform = new Matrix4();
 	private final Matrix4 normal = new Matrix4();
 	private final Matrix3 normal3 = new Matrix3();
-	
+
 	/** perspective camera **/
 	private PerspectiveCamera camera;
-	
+
 	/** shaders **/
 	ShaderProgram texShader;
 	ShaderProgram colorShader;
@@ -95,14 +94,17 @@ public class RendererGL20 implements Renderer {
 		try {
 			spriteBatch = new SpriteBatch();
 
-			texShader = new ShaderProgram(Gdx.files.internal("data/shaders/tex-vs.glsl"), Gdx.files.internal("data/shaders/tex-fs.glsl"));
-			colorShader = new ShaderProgram(Gdx.files.internal("data/shaders/color-vs.glsl"), Gdx.files.internal("data/shaders/color-fs.glsl"));
-			lightTexShader = new ShaderProgram(Gdx.files.internal("data/shaders/light-tex-vs.glsl"), Gdx.files.internal("data/shaders/light-tex-fs.glsl"));
-			
-			if(!texShader.isCompiled()) throw new GdxRuntimeException("Couldn't compile tex shader");
-			if(!colorShader.isCompiled()) throw new GdxRuntimeException("Couldn't compile color shader");
-			if(!lightTexShader.isCompiled()) throw new GdxRuntimeException("Couldn't compile light/tex shader");
-			
+			texShader = new ShaderProgram(Gdx.files.internal("data/shaders/tex-vs.glsl"),
+				Gdx.files.internal("data/shaders/tex-fs.glsl"));
+			colorShader = new ShaderProgram(Gdx.files.internal("data/shaders/color-vs.glsl"),
+				Gdx.files.internal("data/shaders/color-fs.glsl"));
+			lightTexShader = new ShaderProgram(Gdx.files.internal("data/shaders/light-tex-vs.glsl"),
+				Gdx.files.internal("data/shaders/light-tex-fs.glsl"));
+
+			if (!texShader.isCompiled()) throw new GdxRuntimeException("Couldn't compile tex shader");
+			if (!colorShader.isCompiled()) throw new GdxRuntimeException("Couldn't compile color shader");
+			if (!lightTexShader.isCompiled()) throw new GdxRuntimeException("Couldn't compile light/tex shader");
+
 			InputStream in = Gdx.files.internal("data/ship.obj").read();
 			shipMesh = ObjLoader.loadObj(in);
 			in.close();
@@ -235,7 +237,7 @@ public class RendererGL20 implements Renderer {
 		normal.idt();
 		normal.rotate(0, 1, 0, 180);
 		normal3.set(normal.toNormalMatrix());
-		lightTexShader.setUniformMatrix("u_normal", normal3); 
+		lightTexShader.setUniformMatrix("u_normal", normal3);
 		shipMesh.render(lightTexShader, GL10.GL_TRIANGLES);
 		lightTexShader.end();
 	}
@@ -245,7 +247,7 @@ public class RendererGL20 implements Renderer {
 		normal.idt();
 		normal.rotate(0, 1, 0, invaderAngle);
 		normal3.set(normal.toNormalMatrix());
-		lightTexShader.setUniformMatrix("u_normal", normal3); 
+		lightTexShader.setUniformMatrix("u_normal", normal3);
 		invaderTexture.bind();
 		for (int i = 0; i < invaders.size(); i++) {
 			Invader invader = invaders.get(i);
@@ -298,7 +300,8 @@ public class RendererGL20 implements Renderer {
 			transform.set(camera.combined);
 			transform.translate(explosion.position.x, explosion.position.y, explosion.position.z);
 			texShader.setUniformMatrix("u_projView", transform);
-			explosionMesh.render(texShader, GL10.GL_TRIANGLE_FAN, (int)(explosion.aliveTime / Explosion.EXPLOSION_LIVE_TIME * 15) * 4, 4);
+			explosionMesh.render(texShader, GL10.GL_TRIANGLE_FAN,
+				(int)(explosion.aliveTime / Explosion.EXPLOSION_LIVE_TIME * 15) * 4, 4);
 		}
 		texShader.end();
 		Gdx.gl.glDisable(GL10.GL_BLEND);

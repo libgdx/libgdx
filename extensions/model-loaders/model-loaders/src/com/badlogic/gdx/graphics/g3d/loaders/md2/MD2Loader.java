@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.md2;
 
 import java.io.ByteArrayInputStream;
@@ -34,7 +35,6 @@ import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.LittleEndianInputStream;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -134,13 +134,13 @@ public class MD2Loader implements KeyframedModelLoader {
 
 		float[] blendedVertices = new float[header.numVertices * 8];
 		MD2Frame frame = frames[0];
-		
+
 		idx = 0;
 		int idxV = 0;
 		int idxT = 0;
 		for (int i = 0; i < header.numVertices; i++) {
 			VertexIndices vIdx = vertCombos.get(i);
-			
+
 			blendedVertices[idx++] = frame.vertices[idxV++];
 			blendedVertices[idx++] = frame.vertices[idxV++];
 			blendedVertices[idx++] = frame.vertices[idxV++];
@@ -150,20 +150,20 @@ public class MD2Loader implements KeyframedModelLoader {
 			blendedVertices[idx++] = uvs[idxT++];
 			blendedVertices[idx++] = uvs[idxT++];
 		}
-		
+
 		ObjectMap<String, KeyframedAnimation> animations = new ObjectMap<String, KeyframedAnimation>();
-		
+
 		String lastName = frames[0].name;
 		int beginFrame = 0;
-		
-		for(int frameNum = 1; frameNum < frames.length; frameNum++) {
-			if(!frames[frameNum].name.equals(lastName) || frameNum == frames.length - 1) {
+
+		for (int frameNum = 1; frameNum < frames.length; frameNum++) {
+			if (!frames[frameNum].name.equals(lastName) || frameNum == frames.length - 1) {
 				int subAnimLen = frameNum - beginFrame;
 				KeyframedAnimation subAnim = new KeyframedAnimation(lastName, frameDuration, new Keyframe[subAnimLen]);
-				
-				for(int subFrame = beginFrame; subFrame < frameNum; subFrame++) {
+
+				for (int subFrame = beginFrame; subFrame < frameNum; subFrame++) {
 					int absFrameNum = subFrame - beginFrame;
-					
+
 					frame = frames[subFrame];
 					float[] vertices = new float[header.numVertices * 6];
 					idx = 0;
@@ -181,7 +181,7 @@ public class MD2Loader implements KeyframedModelLoader {
 					subAnim.keyframes[absFrameNum] = keyFrame;
 					animations.put(subAnim.name, subAnim);
 				}
-				
+
 				lastName = frames[frameNum].name;
 				beginFrame = frameNum;
 			}
@@ -207,12 +207,13 @@ public class MD2Loader implements KeyframedModelLoader {
 			animation.keyframes[frameNum] = keyFrame;
 		}
 
-		Mesh mesh = new Mesh(VertexDataType.VertexArray,false, header.numVertices, indices.length, new VertexAttribute(Usage.Position, 3,
-			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE),
+		Mesh mesh = new Mesh(VertexDataType.VertexArray, false, header.numVertices, indices.length, new VertexAttribute(
+			Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3,
+			ShaderProgram.NORMAL_ATTRIBUTE),
 			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		mesh.setIndices(indices);
 		animations.put("all", animation);
-		
+
 		KeyframedSubMesh subMesh = new KeyframedSubMesh("md2-mesh", mesh, blendedVertices, animations, 6, GL10.GL_TRIANGLES);
 		KeyframedModel model = new KeyframedModel(new KeyframedSubMesh[] {subMesh});
 		model.setAnimation("all", 0, false);
@@ -314,7 +315,7 @@ public class MD2Loader implements KeyframedModelLoader {
 			triangle.texCoords[2] = in.readShort();
 			triangles[i] = triangle;
 		}
-		
+
 		in.close();
 
 		return triangles;

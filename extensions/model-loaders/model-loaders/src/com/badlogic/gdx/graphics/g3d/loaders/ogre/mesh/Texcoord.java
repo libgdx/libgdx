@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -28,12 +29,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "")
 @XmlRootElement(name = "texcoord")
 public class Texcoord {
-	@XmlAttribute(required = true)
-	public float u;
-	@XmlAttribute
-	public float v;
-	@XmlAttribute
-	public float w;
-	@XmlAttribute
-	public float x;
+	@XmlAttribute(required = true) public float u;
+	@XmlAttribute public float v;
+	@XmlAttribute public float w;
+	@XmlAttribute public float x;
 }

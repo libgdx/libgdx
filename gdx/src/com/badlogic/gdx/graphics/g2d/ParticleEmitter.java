@@ -19,12 +19,10 @@ package com.badlogic.gdx.graphics.g2d;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.BitSet;
 
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.BooleanArray;
 
 // BOZO - Javadoc.
 // BOZO - Add a duplicate emitter button.

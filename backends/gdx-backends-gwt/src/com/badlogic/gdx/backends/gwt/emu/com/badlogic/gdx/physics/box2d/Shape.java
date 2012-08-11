@@ -27,10 +27,10 @@ public abstract class Shape {
 	public enum Type {
 		Circle, Polygon, Edge, Chain,
 	};
-	
+
 	public final org.jbox2d.collision.shapes.Shape shape;
-	
-	public Shape(org.jbox2d.collision.shapes.Shape shape) {
+
+	public Shape (org.jbox2d.collision.shapes.Shape shape) {
 		this.shape = shape;
 	}
 
@@ -39,7 +39,7 @@ public abstract class Shape {
 	public abstract Type getType ();
 
 	/** Returns the radius of this shape */
-	public abstract float getRadius();
+	public abstract float getRadius ();
 
 	/** Sets the radius of this shape */
 	public abstract void setRadius (float radius);

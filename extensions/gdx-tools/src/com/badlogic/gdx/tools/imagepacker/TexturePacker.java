@@ -69,43 +69,31 @@ public class TexturePacker {
 	int maxWidth, maxHeight;
 	final Settings settings;
 
-	/**
-	 * Used by squeeze method when ignoreBlankImages is false to add empty
-	 * region for blank input images during the pack.
-	 */
-	BufferedImage emptyImage = new BufferedImage(1, 1,
-			BufferedImage.TYPE_4BYTE_ABGR);
+	/** Used by squeeze method when ignoreBlankImages is false to add empty region for blank input images during the pack. */
+	BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
 
-	public TexturePacker(Settings settings) {
+	public TexturePacker (Settings settings) {
 		this.settings = settings;
 		this.filter = new Filter(Direction.none, null, null, -1, -1, null, null);
 	}
 
-	public TexturePacker(Settings settings, File inputDir, Filter filter,
-			File outputDir, File packFile) throws IOException {
+	public TexturePacker (Settings settings, File inputDir, Filter filter, File outputDir, File packFile) throws IOException {
 		this.settings = settings;
 		this.filter = filter;
 
 		// Collect and squeeze images.
 		File[] files = inputDir.listFiles(filter);
-		if (files == null)
-			return;
+		if (files == null) return;
 		for (File file : files) {
-			if (file.isDirectory())
-				continue;
-			String imageName = file.getAbsolutePath().substring(
-					inputDir.getAbsolutePath().length())
-					+ "\n";
-			if (imageName.startsWith("/") || imageName.startsWith("\\"))
-				imageName = imageName.substring(1);
+			if (file.isDirectory()) continue;
+			String imageName = file.getAbsolutePath().substring(inputDir.getAbsolutePath().length()) + "\n";
+			if (imageName.startsWith("/") || imageName.startsWith("\\")) imageName = imageName.substring(1);
 			int dotIndex = imageName.lastIndexOf('.');
-			if (dotIndex != -1)
-				imageName = imageName.substring(0, dotIndex);
+			if (dotIndex != -1) imageName = imageName.substring(0, dotIndex);
 			addImage(ImageIO.read(file), imageName);
 		}
 
-		if (images.isEmpty())
-			return;
+		if (images.isEmpty()) return;
 
 		log(inputDir.toString());
 		if (filter.format != null)
@@ -115,20 +103,17 @@ public class TexturePacker {
 		if (filter.minFilter != null && filter.magFilter != null)
 			log("Filter: " + filter.minFilter + ", " + filter.magFilter);
 		else
-			log("Filter: " + settings.defaultFilterMin + ", "
-					+ settings.defaultFilterMag + " (default)");
-		if (filter.direction != Direction.none)
-			log("Repeat: " + filter.direction);
+			log("Filter: " + settings.defaultFilterMin + ", " + settings.defaultFilterMag + " (default)");
+		if (filter.direction != Direction.none) log("Repeat: " + filter.direction);
 
 		process(outputDir, packFile, inputDir.getName());
 	}
 
-	static void log(String message) {
-		if (!quiet)
-			System.out.println(message);
+	static void log (String message) {
+		if (!quiet) System.out.println(message);
 	}
 
-	public void addImage(BufferedImage image, String name) {
+	public void addImage (BufferedImage image, String name) {
 		Image squeezed = squeeze(image, name, false);
 		if (squeezed != null) {
 			if (settings.alias) {
@@ -144,10 +129,8 @@ public class TexturePacker {
 		}
 	}
 
-	public void process(File outputDir, File packFile, String prefix)
-			throws IOException {
-		if (images.isEmpty())
-			return;
+	public void process (File outputDir, File packFile, String prefix) throws IOException {
+		if (images.isEmpty()) return;
 
 		minWidth = filter.width != -1 ? filter.width : settings.minWidth;
 		minHeight = filter.height != -1 ? filter.height : settings.minHeight;
@@ -157,22 +140,17 @@ public class TexturePacker {
 			xPadding = !filter.direction.isX() ? settings.padding : 0;
 			yPadding = !filter.direction.isY() ? settings.padding : 0;
 		} else {
-			xPadding = images.size() > 1 && !filter.direction.isX() ? settings.padding
-					: 0;
-			yPadding = images.size() > 1 && !filter.direction.isY() ? settings.padding
-					: 0;
+			xPadding = images.size() > 1 && !filter.direction.isX() ? settings.padding : 0;
+			yPadding = images.size() > 1 && !filter.direction.isY() ? settings.padding : 0;
 		}
 
 		outputDir.mkdirs();
 		writer = new FileWriter(packFile, true);
 		try {
 			while (!images.isEmpty())
-				if (!writePage(prefix, outputDir))
-					break;
+				if (!writePage(prefix, outputDir)) break;
 			if (writer != null) {
-				log("Pixels eliminated: "
-						+ (1 - compressedSize / (float) uncompressedSize) * 100
-						+ "%");
+				log("Pixels eliminated: " + (1 - compressedSize / (float)uncompressedSize) * 100 + "%");
 				log("");
 			}
 		} finally {
@@ -180,7 +158,7 @@ public class TexturePacker {
 		}
 	}
 
-	private boolean writePage(String prefix, File outputDir) throws IOException {
+	private boolean writePage (String prefix, File outputDir) throws IOException {
 		// Try reasonably hard to pack images into the smallest POT size.
 		Comparator bestComparator = null;
 		Comparator secondBestComparator = imageComparators.get(0);
@@ -195,8 +173,7 @@ public class TexturePacker {
 				// Pack as many images as possible, sorting the images different
 				// ways.
 				Collections.sort(images, comparator);
-				int usedPixels = insert(null, new ArrayList(images), width,
-						height);
+				int usedPixels = insert(null, new ArrayList(images), width, height);
 				// Store the best pack, in case not all images fit on the max
 				// texture size.
 				if (usedPixels > bestUsedPixels) {
@@ -214,10 +191,8 @@ public class TexturePacker {
 					}
 				}
 			}
-			if (width == maxWidth && height == maxHeight)
-				break;
-			if (bestComparator != null)
-				break;
+			if (width == maxWidth && height == maxHeight) break;
+			if (bestComparator != null) break;
 			if (settings.pot) {
 				// 64,64 -> 128,64 -> 256,64 etc 64,128 -> 64,256 etc -> 128,128
 				// -> 256,128 etc.
@@ -230,8 +205,7 @@ public class TexturePacker {
 						grownPixels = 0;
 					}
 				} else if (i % 3 == 1) {
-					grownPixels += MathUtils.nextPowerOfTwo(height + 1)
-							- height;
+					grownPixels += MathUtils.nextPowerOfTwo(height + 1) - height;
 					height = MathUtils.nextPowerOfTwo(height + 1);
 					if (height > maxHeight) {
 						i++;
@@ -268,9 +242,7 @@ public class TexturePacker {
 						grownPixels += incr;
 					}
 				} else {
-					if (width == MathUtils.nextPowerOfTwo(width)
-							&& height == MathUtils.nextPowerOfTwo(height))
-						ii++;
+					if (width == MathUtils.nextPowerOfTwo(width) && height == MathUtils.nextPowerOfTwo(height)) ii++;
 					if (ii % 2 == 1)
 						width += incr;
 					else
@@ -295,8 +267,7 @@ public class TexturePacker {
 			height = MathUtils.nextPowerOfTwo(height);
 		}
 		if (width > maxWidth || height > maxHeight) {
-			System.out.println("ERROR: Images do not fit on max size: "
-					+ maxWidth + "x" + maxHeight);
+			System.out.println("ERROR: Images do not fit on max size: " + maxWidth + "x" + maxHeight);
 			return false;
 		}
 
@@ -314,8 +285,7 @@ public class TexturePacker {
 			type = BufferedImage.TYPE_BYTE_GRAY;
 			break;
 		default:
-			throw new RuntimeException(
-					"Luminance Alpha format is not supported.");
+			throw new RuntimeException("Luminance Alpha format is not supported.");
 		}
 
 		FileFormat fileFormat;
@@ -328,11 +298,9 @@ public class TexturePacker {
 		float imageQuality = settings.defaultImageQuality;
 
 		int imageNumber = 1;
-		File outputFile = new File(outputDir, prefix + imageNumber + "."
-				+ getFileExtension(fileFormat));
+		File outputFile = new File(outputDir, prefix + imageNumber + "." + getFileExtension(fileFormat));
 		while (outputFile.exists())
-			outputFile = new File(outputDir, prefix + ++imageNumber + "."
-					+ getFileExtension(fileFormat));
+			outputFile = new File(outputDir, prefix + ++imageNumber + "." + getFileExtension(fileFormat));
 
 		writer.write("\n" + outputFile.getName() + "\n");
 		Format format;
@@ -344,22 +312,18 @@ public class TexturePacker {
 			format = settings.defaultFormat;
 		}
 		if (filter.minFilter == null || filter.magFilter == null)
-			writer.write("filter: " + settings.defaultFilterMin + ","
-					+ settings.defaultFilterMag + "\n");
+			writer.write("filter: " + settings.defaultFilterMin + "," + settings.defaultFilterMag + "\n");
 		else
-			writer.write("filter: " + filter.minFilter + "," + filter.magFilter
-					+ "\n");
+			writer.write("filter: " + filter.minFilter + "," + filter.magFilter + "\n");
 		writer.write("repeat: " + filter.direction + "\n");
 
 		BufferedImage canvas = new BufferedImage(width, height, type);
 		insert(canvas, images, bestWidth, bestHeight);
-		log("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": "
-				+ outputFile);
+		log("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
 
 		if (fileFormat == FileFormat.JPEG) {
-			Iterator<ImageWriter> writers = ImageIO
-					.getImageWritersByFormatName("jpg");
-			ImageWriter writer = (ImageWriter) writers.next();
+			Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+			ImageWriter writer = (ImageWriter)writers.next();
 			ImageWriteParam param = writer.getDefaultWriteParam();
 			param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 			param.setCompressionQuality(imageQuality);
@@ -374,16 +338,14 @@ public class TexturePacker {
 			}
 		} else {
 			ImageIO.write(canvas, getFileExtension(fileFormat), outputFile);
-			if (!settings.pot)
-				ImageIO.write(squeeze(ImageIO.read(outputFile), "", true),
-						getFileExtension(fileFormat), outputFile);
+			if (!settings.pot) ImageIO.write(squeeze(ImageIO.read(outputFile), "", true), getFileExtension(fileFormat), outputFile);
 		}
 
 		compressedSize += canvas.getWidth() * canvas.getHeight();
 		return true;
 	}
 
-	private static String getFileExtension(FileFormat fileFormat) {
+	private static String getFileExtension (FileFormat fileFormat) {
 		String retVal = "";
 
 		switch (fileFormat) {
@@ -399,8 +361,7 @@ public class TexturePacker {
 		return retVal;
 	}
 
-	private int insert(BufferedImage canvas, ArrayList<Image> images,
-			int width, int height) throws IOException {
+	private int insert (BufferedImage canvas, ArrayList<Image> images, int width, int height) throws IOException {
 		if (settings.debug && canvas != null) {
 			Graphics g = canvas.getGraphics();
 			g.setColor(Color.green);
@@ -419,10 +380,8 @@ public class TexturePacker {
 		} else {
 			// Pretend image is larger so padding on right and bottom edges is
 			// ignored.
-			if (!filter.direction.isX())
-				width += xPadding;
-			if (!filter.direction.isY())
-				height += yPadding;
+			if (!filter.direction.isX()) width += xPadding;
+			if (!filter.direction.isY()) height += yPadding;
 		}
 		Node root = new Node(x, y, width, height);
 		int usedPixels = 0;
@@ -430,16 +389,14 @@ public class TexturePacker {
 			Image image = images.get(i);
 			Node node = root.insert(image, false);
 			if (node == null) {
-				if (settings.rotate)
-					node = root.insert(image, true);
-				if (node == null)
-					continue;
+				if (settings.rotate) node = root.insert(image, true);
+				if (node == null) continue;
 			}
 			usedPixels += image.getWidth() * image.getHeight();
 			images.remove(i);
 			if (canvas != null) {
 				node.writePackEntry();
-				Graphics2D g = (Graphics2D) canvas.getGraphics();
+				Graphics2D g = (Graphics2D)canvas.getGraphics();
 				if (image.rotate) {
 					g.translate(node.left, node.top);
 					g.rotate(-90 * MathUtils.degreesToRadians);
@@ -451,30 +408,20 @@ public class TexturePacker {
 					int imageWidth = image.getWidth();
 					int imageHeight = image.getHeight();
 					// Copy corner pixels to fill corners of the padding.
-					g.drawImage(image, node.left - amount, node.top - amount,
-							node.left, node.top, 0, 0, 1, 1, null);
-					g.drawImage(image, node.left + imageWidth, node.top
-							- amount, node.left + imageWidth + amount,
-							node.top, 0, 0, 1, 1, null);
-					g.drawImage(image, node.left - amount, node.top
-							+ imageHeight, node.left, node.top + imageHeight
-							+ amount, 0, 0, 1, 1, null);
-					g.drawImage(image, node.left + imageWidth, node.top
-							+ imageHeight, node.left + imageWidth + amount,
-							node.top + imageHeight + amount, 0, 0, 1, 1, null);
+					g.drawImage(image, node.left - amount, node.top - amount, node.left, node.top, 0, 0, 1, 1, null);
+					g.drawImage(image, node.left + imageWidth, node.top - amount, node.left + imageWidth + amount, node.top, 0, 0, 1,
+						1, null);
+					g.drawImage(image, node.left - amount, node.top + imageHeight, node.left, node.top + imageHeight + amount, 0, 0,
+						1, 1, null);
+					g.drawImage(image, node.left + imageWidth, node.top + imageHeight, node.left + imageWidth + amount, node.top
+						+ imageHeight + amount, 0, 0, 1, 1, null);
 					// Copy edge picels into padding.
-					g.drawImage(image, node.left, node.top - amount, node.left
-							+ imageWidth, node.top, 0, 0, imageWidth, 1, null);
-					g.drawImage(image, node.left, node.top + imageHeight,
-							node.left + imageWidth, node.top + imageHeight
-									+ amount, 0, imageHeight - 1, imageWidth,
-							imageHeight, null);
-					g.drawImage(image, node.left - amount, node.top, node.left,
-							node.top + imageHeight, 0, 0, 1, imageHeight, null);
-					g.drawImage(image, node.left + imageWidth, node.top,
-							node.left + imageWidth + amount, node.top
-									+ imageHeight, imageWidth - 1, 0,
-							imageWidth, imageHeight, null);
+					g.drawImage(image, node.left, node.top - amount, node.left + imageWidth, node.top, 0, 0, imageWidth, 1, null);
+					g.drawImage(image, node.left, node.top + imageHeight, node.left + imageWidth, node.top + imageHeight + amount, 0,
+						imageHeight - 1, imageWidth, imageHeight, null);
+					g.drawImage(image, node.left - amount, node.top, node.left, node.top + imageHeight, 0, 0, 1, imageHeight, null);
+					g.drawImage(image, node.left + imageWidth, node.top, node.left + imageWidth + amount, node.top + imageHeight,
+						imageWidth - 1, 0, imageWidth, imageHeight, null);
 				}
 				g.drawImage(image, node.left, node.top, null);
 				if (image.rotate) {
@@ -488,53 +435,45 @@ public class TexturePacker {
 					int imageWidth = image.getWidth();
 					int imageHeight = image.getHeight();
 					if (image.rotate)
-						g.drawRect(node.left, node.top, imageHeight - 1,
-								imageWidth - 1);
+						g.drawRect(node.left, node.top, imageHeight - 1, imageWidth - 1);
 					else
-						g.drawRect(node.left, node.top, imageWidth - 1,
-								imageHeight - 1);
+						g.drawRect(node.left, node.top, imageWidth - 1, imageHeight - 1);
 				}
 			}
 		}
 		return images.isEmpty() ? -1 : usedPixels;
 	}
 
-	private Image squeeze(BufferedImage source, String name, boolean skipTopLeft) {
-		if (source == null)
-			return null;
-		if (!filter.accept(source))
-			return null;
+	private Image squeeze (BufferedImage source, String name, boolean skipTopLeft) {
+		if (source == null) return null;
+		if (!filter.accept(source)) return null;
 		uncompressedSize += source.getWidth() * source.getHeight();
 		WritableRaster alphaRaster = source.getAlphaRaster();
-		if (alphaRaster == null || !settings.stripWhitespace
-				|| name.contains("_ws"))
-			return new Image(name, source, 0, 0, source.getWidth(),
-					source.getHeight());
+		if (alphaRaster == null || !settings.stripWhitespace || name.contains("_ws"))
+			return new Image(name, source, 0, 0, source.getWidth(), source.getHeight());
 		final byte[] a = new byte[1];
 		int top = 0;
 		int bottom = source.getHeight();
 		if (!filter.direction.isY()) {
 			if (!skipTopLeft) {
-				outer: for (int y = 0; y < source.getHeight(); y++) {
+				outer:
+				for (int y = 0; y < source.getHeight(); y++) {
 					for (int x = 0; x < source.getWidth(); x++) {
 						alphaRaster.getDataElements(x, y, a);
 						int alpha = a[0];
-						if (alpha < 0)
-							alpha += 256;
-						if (alpha > settings.alphaThreshold)
-							break outer;
+						if (alpha < 0) alpha += 256;
+						if (alpha > settings.alphaThreshold) break outer;
 					}
 					top++;
 				}
 			}
-			outer: for (int y = source.getHeight(); --y >= top;) {
+			outer:
+			for (int y = source.getHeight(); --y >= top;) {
 				for (int x = 0; x < source.getWidth(); x++) {
 					alphaRaster.getDataElements(x, y, a);
 					int alpha = a[0];
-					if (alpha < 0)
-						alpha += 256;
-					if (alpha > settings.alphaThreshold)
-						break outer;
+					if (alpha < 0) alpha += 256;
+					if (alpha > settings.alphaThreshold) break outer;
 				}
 				bottom--;
 			}
@@ -543,26 +482,24 @@ public class TexturePacker {
 		int right = source.getWidth();
 		if (!filter.direction.isX()) {
 			if (!skipTopLeft) {
-				outer: for (int x = 0; x < source.getWidth(); x++) {
+				outer:
+				for (int x = 0; x < source.getWidth(); x++) {
 					for (int y = top; y < bottom; y++) {
 						alphaRaster.getDataElements(x, y, a);
 						int alpha = a[0];
-						if (alpha < 0)
-							alpha += 256;
-						if (alpha > settings.alphaThreshold)
-							break outer;
+						if (alpha < 0) alpha += 256;
+						if (alpha > settings.alphaThreshold) break outer;
 					}
 					left++;
 				}
 			}
-			outer: for (int x = source.getWidth(); --x >= left;) {
+			outer:
+			for (int x = source.getWidth(); --x >= left;) {
 				for (int y = top; y < bottom; y++) {
 					alphaRaster.getDataElements(x, y, a);
 					int alpha = a[0];
-					if (alpha < 0)
-						alpha += 256;
-					if (alpha > settings.alphaThreshold)
-						break outer;
+					if (alpha < 0) alpha += 256;
+					if (alpha > settings.alphaThreshold) break outer;
 				}
 				right--;
 			}
@@ -580,7 +517,7 @@ public class TexturePacker {
 		return new Image(name, source, left, top, newWidth, newHeight);
 	}
 
-	static private String hash(BufferedImage image) {
+	static private String hash (BufferedImage image) {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA1");
 			WritableRaster raster = image.getRaster();
@@ -602,24 +539,19 @@ public class TexturePacker {
 		Node child1, child2;
 		Image image;
 
-		public Node(int left, int top, int width, int height) {
+		public Node (int left, int top, int width, int height) {
 			this.left = left;
 			this.top = top;
 			this.width = width;
 			this.height = height;
 		}
 
-		/**
-		 * Returns true if the image was inserted. If canvas != null, an entry
-		 * is written to the pack file.
-		 */
-		public Node insert(Image image, boolean rotate) throws IOException {
-			if (this.image != null)
-				return null;
+		/** Returns true if the image was inserted. If canvas != null, an entry is written to the pack file. */
+		public Node insert (Image image, boolean rotate) throws IOException {
+			if (this.image != null) return null;
 			if (child1 != null) {
 				Node newNode = child1.insert(image, rotate);
-				if (newNode != null)
-					return newNode;
+				if (newNode != null) return newNode;
 				return child2.insert(image, rotate);
 			}
 			int imageWidth = image.getWidth();
@@ -631,8 +563,7 @@ public class TexturePacker {
 			}
 			int neededWidth = imageWidth + xPadding;
 			int neededHeight = imageHeight + yPadding;
-			if (neededWidth > width || neededHeight > height)
-				return null;
+			if (neededWidth > width || neededHeight > height) return null;
 			if (neededWidth == width && neededHeight == height) {
 				this.image = image;
 				image.rotate = rotate;
@@ -642,28 +573,23 @@ public class TexturePacker {
 			int dh = height - neededHeight;
 			if (dw > dh) {
 				child1 = new Node(left, top, neededWidth, height);
-				child2 = new Node(left + neededWidth, top, width - neededWidth,
-						height);
+				child2 = new Node(left + neededWidth, top, width - neededWidth, height);
 			} else {
 				child1 = new Node(left, top, width, neededHeight);
-				child2 = new Node(left, top + neededHeight, width, height
-						- neededHeight);
+				child2 = new Node(left, top + neededHeight, width, height - neededHeight);
 			}
 			return child1.insert(image, rotate);
 		}
 
-		void writePackEntry() throws IOException {
+		void writePackEntry () throws IOException {
 			writePackEntry(image, null);
 			for (Image alias : image.aliases)
 				writePackEntry(alias, image);
 		}
 
-		/**
-		 * @param image The Image to be written to the pack. 
-		 * @param source If the Image is an alias, the source is the original Image, otherwise null is expected.
-		 */
-		private void writePackEntry(Image image, Image source)
-				throws IOException {
+		/** @param image The Image to be written to the pack.
+		 * @param source If the Image is an alias, the source is the original Image, otherwise null is expected. */
+		private void writePackEntry (Image image, Image source) throws IOException {
 			String imageName = image.name;
 			imageName = imageName.replace("\\", "/");
 
@@ -671,27 +597,19 @@ public class TexturePacker {
 
 			Matcher matcher = indexPattern.matcher(imageName);
 			int index = -1;
-			if (matcher.matches())
-				index = Integer.parseInt(matcher.group(1));
+			if (matcher.matches()) index = Integer.parseInt(matcher.group(1));
 
 			int underscoreIndex = imageName.indexOf('_');
-			if (underscoreIndex != -1)
-				imageName = imageName.substring(0, underscoreIndex);
+			if (underscoreIndex != -1) imageName = imageName.substring(0, underscoreIndex);
 
 			boolean rotate = source != null ? source.rotate : image.rotate;
-			
+
 			writer.write(imageName + "\n");
 			writer.write("  rotate: " + rotate + "\n");
 			writer.write("  xy: " + left + ", " + top + "\n");
-			writer.write("  size: " + image.getWidth() + ", "
-					+ image.getHeight() + "\n");
-			writer.write("  orig: " + image.originalWidth + ", "
-					+ image.originalHeight + "\n");
-			writer.write("  offset: "
-					+ image.offsetX
-					+ ", "
-					+ (image.originalHeight - image.getHeight() - image.offsetY)
-					+ "\n");
+			writer.write("  size: " + image.getWidth() + ", " + image.getHeight() + "\n");
+			writer.write("  orig: " + image.originalWidth + ", " + image.originalHeight + "\n");
+			writer.write("  offset: " + image.offsetX + ", " + (image.originalHeight - image.getHeight() - image.offsetY) + "\n");
 			writer.write("  index: " + index + "\n");
 		}
 	}
@@ -703,11 +621,9 @@ public class TexturePacker {
 		boolean rotate;
 		ArrayList<Image> aliases = new ArrayList();
 
-		public Image(String name, BufferedImage src, int left, int top,
-				int newWidth, int newHeight) {
-			super(src.getColorModel(), src.getRaster().createWritableChild(
-					left, top, newWidth, newHeight, 0, 0, null), src
-					.getColorModel().isAlphaPremultiplied(), null);
+		public Image (String name, BufferedImage src, int left, int top, int newWidth, int newHeight) {
+			super(src.getColorModel(), src.getRaster().createWritableChild(left, top, newWidth, newHeight, 0, 0, null), src
+				.getColorModel().isAlphaPremultiplied(), null);
 			this.name = name;
 			offsetX = left;
 			offsetY = top;
@@ -715,7 +631,7 @@ public class TexturePacker {
 			originalHeight = src.getHeight();
 		}
 
-		public String toString() {
+		public String toString () {
 			return name;
 		}
 	}
@@ -723,25 +639,22 @@ public class TexturePacker {
 	static private ArrayList<Comparator> imageComparators = new ArrayList();
 	static {
 		imageComparators.add(new Comparator<Image>() {
-			public int compare(Image image1, Image image2) {
+			public int compare (Image image1, Image image2) {
 				int diff = image1.getHeight() - image2.getHeight();
-				if (diff != 0)
-					return diff;
+				if (diff != 0) return diff;
 				return image1.getWidth() - image2.getWidth();
 			}
 		});
 		imageComparators.add(new Comparator<Image>() {
-			public int compare(Image image1, Image image2) {
+			public int compare (Image image1, Image image2) {
 				int diff = image1.getWidth() - image2.getWidth();
-				if (diff != 0)
-					return diff;
+				if (diff != 0) return diff;
 				return image1.getHeight() - image2.getHeight();
 			}
 		});
 		imageComparators.add(new Comparator<Image>() {
-			public int compare(Image image1, Image image2) {
-				return image1.getWidth() * image1.getHeight()
-						- image2.getWidth() * image2.getHeight();
+			public int compare (Image image1, Image image2) {
+				return image1.getWidth() * image1.getHeight() - image2.getWidth() * image2.getHeight();
 			}
 		});
 	}
@@ -760,9 +673,8 @@ public class TexturePacker {
 		int height = -1;
 		Settings settings;
 
-		public Filter(Direction direction, FileFormat fileFormat,
-				Format format, int width, int height, TextureFilter minFilter,
-				TextureFilter magFilter) {
+		public Filter (Direction direction, FileFormat fileFormat, Format format, int width, int height, TextureFilter minFilter,
+			TextureFilter magFilter) {
 			this.direction = direction;
 			this.fileFormat = fileFormat;
 			this.format = format;
@@ -772,42 +684,33 @@ public class TexturePacker {
 			this.magFilter = magFilter;
 		}
 
-		public boolean accept(File dir, String name) {
+		public boolean accept (File dir, String name) {
 			switch (direction) {
 			case none:
-				if (name.contains("_x") || name.contains("_y"))
-					return false;
+				if (name.contains("_x") || name.contains("_y")) return false;
 				break;
 			case x:
-				if (!name.contains("_x") || name.contains("_xy"))
-					return false;
+				if (!name.contains("_x") || name.contains("_xy")) return false;
 				break;
 			case y:
-				if (!name.contains("_y") || name.contains("_xy"))
-					return false;
+				if (!name.contains("_y") || name.contains("_xy")) return false;
 				break;
 			case xy:
-				if (!name.contains("_xy"))
-					return false;
+				if (!name.contains("_xy")) return false;
 				break;
 			}
 
 			if (format != null) {
-				if (!name.contains("_" + formatToAbbrev.get(format)))
-					return false;
+				if (!name.contains("_" + formatToAbbrev.get(format))) return false;
 			} else {
 				// Return if name has a format.
 				for (String f : formatToAbbrev.values())
-					if (name.contains("_" + f))
-						return false;
+					if (name.contains("_" + f)) return false;
 			}
 
 			if (minFilter != null && magFilter != null) {
-				if (!name.contains("_" + filterToAbbrev.get(minFilter) + ","
-						+ filterToAbbrev.get(magFilter) + ".")
-						&& !name.contains("_" + filterToAbbrev.get(minFilter)
-								+ "," + filterToAbbrev.get(magFilter) + "_"))
-					return false;
+				if (!name.contains("_" + filterToAbbrev.get(minFilter) + "," + filterToAbbrev.get(magFilter) + ".")
+					&& !name.contains("_" + filterToAbbrev.get(minFilter) + "," + filterToAbbrev.get(magFilter) + "_")) return false;
 			} else {
 				// Return if the name has a filter.
 				for (String f : filterToAbbrev.values()) {
@@ -816,9 +719,7 @@ public class TexturePacker {
 					if (tagIndex != -1) {
 						String rest = name.substring(tagIndex + tag.length());
 						for (String f2 : filterToAbbrev.values())
-							if (rest.startsWith(f2 + ".")
-									|| rest.startsWith(f2 + "_"))
-								return false;
+							if (rest.startsWith(f2 + ".") || rest.startsWith(f2 + "_")) return false;
 					}
 				}
 			}
@@ -826,11 +727,9 @@ public class TexturePacker {
 			return true;
 		}
 
-		public boolean accept(BufferedImage image) {
-			if (width != -1 && image.getWidth() != width)
-				return false;
-			if (height != -1 && image.getHeight() != height)
-				return false;
+		public boolean accept (BufferedImage image) {
+			if (width != -1 && image.getWidth() != width) return false;
+			if (height != -1 && image.getHeight() != height) return false;
 			return true;
 		}
 	}
@@ -838,11 +737,11 @@ public class TexturePacker {
 	static private enum Direction {
 		x, y, xy, none;
 
-		public boolean isX() {
+		public boolean isX () {
 			return this == x || this == xy;
 		}
 
-		public boolean isY() {
+		public boolean isY () {
 			return this == y || this == xy;
 		}
 	}
@@ -889,34 +788,26 @@ public class TexturePacker {
 		public boolean alias = true;
 		public boolean edgePadding = true;
 
-		/**
-		 * True if blank images should be ignored when building the texture pack
-		 * or false if empty regions should be created for them.
-		 */
+		/** True if blank images should be ignored when building the texture pack or false if empty regions should be created for
+		 * them. */
 		public boolean ignoreBlankImages = true;
 
-		/**
-		 * Specifies the crc file path used when incremental is enabled, if not
-		 * specified the file is created in the user folder, inside the
-		 * .texturepacker folder.
-		 */
+		/** Specifies the crc file path used when incremental is enabled, if not specified the file is created in the user folder,
+		 * inside the .texturepacker folder. */
 		public String incrementalFilePath = null;
 
 		HashMap<String, Long> crcs = new HashMap();
 		HashMap<String, String> packSections = new HashMap();
 	}
 
-	static private void process(Settings settings, File rootDir, File inputDir,
-			File outputDir, File packFile) throws IOException {
-		if (inputDir.getName().startsWith("."))
-			return;
+	static private void process (Settings settings, File rootDir, File inputDir, File outputDir, File packFile) throws IOException {
+		if (inputDir.getName().startsWith(".")) return;
 
 		// Abort if nothing has changed.
 		boolean skip = false;
 		if (settings.incremental) {
 			File[] files = inputDir.listFiles();
-			if (files == null)
-				return;
+			if (files == null) return;
 			boolean noneHaveChanged = true;
 			int childCountNow = 0;
 
@@ -925,24 +816,20 @@ public class TexturePacker {
 			// specified.
 			boolean useAbsolutePaths = true;
 
-			if (settings.incrementalFilePath != null)
-				useAbsolutePaths = false;
+			if (settings.incrementalFilePath != null) useAbsolutePaths = false;
 
 			for (File file : files) {
-				if (file.isDirectory())
-					continue;
+				if (file.isDirectory()) continue;
 				String path = file.getAbsolutePath();
 
 				if (!useAbsolutePaths) {
 					String rootFolderAbsolutePath = rootDir.getAbsolutePath();
-					if (isSubPath(rootFolderAbsolutePath, path))
-						path = removeSubPath(rootFolderAbsolutePath, path);
+					if (isSubPath(rootFolderAbsolutePath, path)) path = removeSubPath(rootFolderAbsolutePath, path);
 				}
 
 				Long crcOld = settings.crcs.get(path);
 				long crcNow = crc(file);
-				if (crcOld == null || crcOld != crcNow)
-					noneHaveChanged = false;
+				if (crcOld == null || crcOld != crcNow) noneHaveChanged = false;
 
 				settings.crcs.put(path, crcNow);
 				childCountNow++;
@@ -952,14 +839,12 @@ public class TexturePacker {
 
 			if (!useAbsolutePaths) {
 				String rootFolderAbsolutePath = rootDir.getAbsolutePath();
-				if (isSubPath(rootFolderAbsolutePath, path))
-					path = removeSubPath(rootFolderAbsolutePath, path);
+				if (isSubPath(rootFolderAbsolutePath, path)) path = removeSubPath(rootFolderAbsolutePath, path);
 			}
 
 			Long childCountOld = settings.crcs.get(path);
-			if (childCountOld == null || childCountNow != childCountOld)
-				noneHaveChanged = false;
-			settings.crcs.put(path, (long) childCountNow);
+			if (childCountOld == null || childCountNow != childCountOld) noneHaveChanged = false;
+			settings.crcs.put(path, (long)childCountNow);
 
 			if (outputDir.exists()) {
 				boolean foundPage = false;
@@ -970,8 +855,7 @@ public class TexturePacker {
 						break;
 					}
 				}
-				if (!foundPage)
-					noneHaveChanged = false;
+				if (!foundPage) noneHaveChanged = false;
 			}
 
 			String section = settings.packSections.get(inputDir.getName());
@@ -993,11 +877,7 @@ public class TexturePacker {
 				String prefix = inputDir.getName();
 				for (File file : outputDir.listFiles())
 					if (file.getName().startsWith(prefix)
-							&& file.getName()
-									.endsWith(
-											"."
-													+ getFileExtension(settings.defaultFileFormat)))
-						file.delete();
+						&& file.getName().endsWith("." + getFileExtension(settings.defaultFileFormat))) file.delete();
 			}
 
 			// Just check all combinations, because we are extremely lazy.
@@ -1013,39 +893,25 @@ public class TexturePacker {
 					TextureFilter min = filters.get(ii);
 					for (int iii = 0; iii < nn; iii++) {
 						TextureFilter mag = filters.get(iii);
-						if ((min == null && mag != null)
-								|| (min != null && mag == null))
-							continue;
+						if ((min == null && mag != null) || (min != null && mag == null)) continue;
 
-						Filter filter = new Filter(Direction.none,
-								settings.defaultFileFormat, format, -1, -1,
-								min, mag);
-						new TexturePacker(settings, inputDir, filter,
-								outputDir, packFile);
+						Filter filter = new Filter(Direction.none, settings.defaultFileFormat, format, -1, -1, min, mag);
+						new TexturePacker(settings, inputDir, filter, outputDir, packFile);
 
 						for (int width = settings.minWidth; width <= settings.maxWidth; width <<= 1) {
-							filter = new Filter(Direction.x,
-									settings.defaultFileFormat, format, width,
-									-1, min, mag);
-							new TexturePacker(settings, inputDir, filter,
-									outputDir, packFile);
+							filter = new Filter(Direction.x, settings.defaultFileFormat, format, width, -1, min, mag);
+							new TexturePacker(settings, inputDir, filter, outputDir, packFile);
 						}
 
 						for (int height = settings.minHeight; height <= settings.maxHeight; height <<= 1) {
-							filter = new Filter(Direction.y,
-									settings.defaultFileFormat, format, -1,
-									height, min, mag);
-							new TexturePacker(settings, inputDir, filter,
-									outputDir, packFile);
+							filter = new Filter(Direction.y, settings.defaultFileFormat, format, -1, height, min, mag);
+							new TexturePacker(settings, inputDir, filter, outputDir, packFile);
 						}
 
 						for (int width = settings.minWidth; width <= settings.maxWidth; width <<= 1) {
 							for (int height = settings.minHeight; height <= settings.maxHeight; height <<= 1) {
-								filter = new Filter(Direction.xy,
-										settings.defaultFileFormat, format,
-										width, height, min, mag);
-								new TexturePacker(settings, inputDir, filter,
-										outputDir, packFile);
+								filter = new Filter(Direction.xy, settings.defaultFileFormat, format, width, height, min, mag);
+								new TexturePacker(settings, inputDir, filter, outputDir, packFile);
 							}
 						}
 					}
@@ -1055,19 +921,16 @@ public class TexturePacker {
 
 		// Process subdirectories.
 		File[] files = inputDir.listFiles();
-		if (files == null)
-			return;
+		if (files == null) return;
 		for (File file : files)
-			if (file.isDirectory())
-				process(settings, rootDir, file, outputDir, packFile);
+			if (file.isDirectory()) process(settings, rootDir, file, outputDir, packFile);
 	}
 
-	static public void process(Settings settings, String input, String output) {
+	static public void process (Settings settings, String input, String output) {
 		process(settings, input, output, "pack");
 	}
 
-	static public void process(Settings settings, String input, String output,
-			String packFileName) {
+	static public void process (Settings settings, String input, String output, String packFileName) {
 		try {
 			File inputDir = new File(input);
 			File outputDir = new File(output);
@@ -1088,44 +951,33 @@ public class TexturePacker {
 				String incrementalFilePath = settings.incrementalFilePath;
 
 				if (incrementalFilePath == null)
-					incrementalFilePath = System.getProperty("user.home")
-							+ "/.texturepacker/"
-							+ hash(inputDir.getAbsolutePath());
+					incrementalFilePath = System.getProperty("user.home") + "/.texturepacker/" + hash(inputDir.getAbsolutePath());
 
 				incrmentalFile = new File(incrementalFilePath);
 
 				if (incrmentalFile.exists()) {
-					BufferedReader reader = new BufferedReader(new FileReader(
-							incrmentalFile));
+					BufferedReader reader = new BufferedReader(new FileReader(incrmentalFile));
 					while (true) {
 						String path = reader.readLine();
-						if (path == null)
-							break;
+						if (path == null) break;
 						String crc = reader.readLine();
-						if (crc == null)
-							break;
+						if (crc == null) break;
 						settings.crcs.put(path, Long.parseLong(crc));
 					}
 					reader.close();
 				}
 
 				// Store the pack file text for each section.
-				BufferedReader reader = new BufferedReader(new FileReader(
-						packFile));
+				BufferedReader reader = new BufferedReader(new FileReader(packFile));
 				StringBuilder buffer = new StringBuilder(2048);
 				while (true) {
 					String imageName = reader.readLine();
-					if (imageName == null)
-						break;
-					if (imageName.length() == 0)
-						continue;
+					if (imageName == null) break;
+					if (imageName.length() == 0) continue;
 
-					String pageName = imageName.replaceAll("\\d+."
-							+ getFileExtension(settings.defaultFileFormat)
-							+ "$", "");
+					String pageName = imageName.replaceAll("\\d+." + getFileExtension(settings.defaultFileFormat) + "$", "");
 					String section = settings.packSections.get(pageName);
-					if (section != null)
-						buffer.append(section);
+					if (section != null) buffer.append(section);
 
 					// buffer.append("****start\n");
 					buffer.append('\n');
@@ -1133,8 +985,7 @@ public class TexturePacker {
 					buffer.append('\n');
 					while (true) {
 						String line = reader.readLine();
-						if (line == null || line.length() == 0)
-							break;
+						if (line == null || line.length() == 0) break;
 						buffer.append(line);
 						buffer.append('\n');
 					}
@@ -1164,7 +1015,7 @@ public class TexturePacker {
 		}
 	}
 
-	static private String hash(String value) {
+	static private String hash (String value) {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA1");
 			digest.update(value.getBytes());
@@ -1174,15 +1025,14 @@ public class TexturePacker {
 		}
 	}
 
-	static private long crc(File file) {
+	static private long crc (File file) {
 		try {
 			FileInputStream input = new FileInputStream(file);
 			byte[] buffer = new byte[4096];
 			CRC32 crc32 = new CRC32();
 			while (true) {
 				int length = input.read(buffer);
-				if (length == -1)
-					break;
+				if (length == -1) break;
 				crc32.update(buffer, 0, length);
 			}
 			input.close();
@@ -1192,22 +1042,21 @@ public class TexturePacker {
 		}
 	}
 
-	static boolean isSubPath(String path, String subPath) {
-		if (subPath.length() < path.length())
-			return false;
+	static boolean isSubPath (String path, String subPath) {
+		if (subPath.length() < path.length()) return false;
 		String subPathSubString = subPath.substring(0, path.length());
 		return subPathSubString.equals(path);
 	}
 
-	static boolean isAbsolutePath(String path) {
+	static boolean isAbsolutePath (String path) {
 		return new File(path).isAbsolute();
 	}
 
-	static String removeSubPath(String path, String subPath) {
+	static String removeSubPath (String path, String subPath) {
 		return subPath.replace(path, "");
 	}
 
-	static public void main(String[] args) throws Exception {
+	static public void main (String[] args) throws Exception {
 		String input, output;
 		if (args.length != 2) {
 			System.out.println("Usage: INPUTDIR OUTPUTDIR");
@@ -1220,4 +1069,3 @@ public class TexturePacker {
 		process(settings, input, output);
 	}
 }
-

@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 public class TextButtonTestGL2 extends TextButtonTest {
 	@Override
-	public boolean needsGL20() {
+	public boolean needsGL20 () {
 		return true;
 	}
 }

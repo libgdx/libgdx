@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.Files;
@@ -22,14 +23,14 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class GwtFiles implements Files {
 	final Preloader preloader;
-	
-	public GwtFiles(Preloader preloader) {
+
+	public GwtFiles (Preloader preloader) {
 		this.preloader = preloader;
 	}
-	
+
 	@Override
 	public FileHandle getFileHandle (String path, FileType type) {
-		if(type != FileType.Internal) throw new GdxRuntimeException("FileType '" + type + "' not supported in GWT backend");
+		if (type != FileType.Internal) throw new GdxRuntimeException("FileType '" + type + "' not supported in GWT backend");
 		return new GwtFileHandle(preloader, path, type);
 	}
 

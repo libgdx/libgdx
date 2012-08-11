@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.graphics.g3d.materials;
 
-import java.util.Arrays;
-
 import com.badlogic.gdx.graphics.g3d.experimental.MaterialShaderHandler;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;

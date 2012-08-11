@@ -54,7 +54,8 @@ public class KissFFT implements Disposable {
 	public void getImagPart (short[] imag) {
 		getImagPart(addr, imag);
 	}
-	
+
+	// @off
 	/*JNI
 	#include <kiss_fftr.h>
 	#include <stdlib.h>

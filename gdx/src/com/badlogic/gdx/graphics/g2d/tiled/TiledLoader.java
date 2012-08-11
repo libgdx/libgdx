@@ -69,15 +69,15 @@ public class TiledLoader {
 					String name;
 					String points;
 
-					public Polyline( String name ) {
+					public Polyline (String name) {
 						this.name = name;
 					}
 
-					public Polyline() {
+					public Polyline () {
 					}
 				}
 
-				Polyline polyline,polygon;
+				Polyline polyline, polygon;
 
 				class Property {
 					String parentType, name, value;
@@ -126,12 +126,12 @@ public class TiledLoader {
 						return;
 					}
 
-					if( "polyline".equals( name ) ) {
+					if ("polyline".equals(name)) {
 						polyline = new Polyline("polyline");
 						return;
 					}
 
-					if( "polygon".equals( name ) ) {
+					if ("polygon".equals(name)) {
 						polygon = new Polyline("polygon");
 						return;
 					}
@@ -309,16 +309,16 @@ public class TiledLoader {
 						return;
 					}
 
-					if( "polyline".equals( element ) ) {
-						if( "points".equals( name ) ) {
+					if ("polyline".equals(element)) {
+						if ("points".equals(name)) {
 							polyline.points = value;
 							return;
 						}
 						return;
 					}
 
-					if( "polygon".equals( element ) ) {
-						if( "points".equals( name ) ) {
+					if ("polygon".equals(element)) {
+						if ("points".equals(name)) {
 							polygon.points = value;
 							return;
 						}
@@ -367,14 +367,14 @@ public class TiledLoader {
 						return;
 					}
 
-					if( "polyline".equals( element ) ) {
-						putPolyLine( polyline );
+					if ("polyline".equals(element)) {
+						putPolyLine(polyline);
 						polyline = null;
 						return;
 					}
 
-					if( "polygon".equals( element ) ) {
-						putPolyLine( polygon );
+					if ("polygon".equals(element)) {
+						putPolyLine(polygon);
 						polygon = null;
 						return;
 					}
@@ -415,17 +415,17 @@ public class TiledLoader {
 					}
 				}
 
-				private void putPolyLine( Polyline polyLine ) {
-					if( polyLine == null ) {
+				private void putPolyLine (Polyline polyLine) {
+					if (polyLine == null) {
 						return;
 					}
 
-					if( "polyline".equals( polyLine.name ) ) {
+					if ("polyline".equals(polyLine.name)) {
 						currObject.polyline = polyLine.points;
 						return;
 					}
 
-					if( "polygon".equals( polyLine.name ) ) {
+					if ("polygon".equals(polyLine.name)) {
 						currObject.polygon = polyLine.points;
 						return;
 					}

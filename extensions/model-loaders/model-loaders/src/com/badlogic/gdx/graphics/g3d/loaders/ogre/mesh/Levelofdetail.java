@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh;
 
 import java.util.ArrayList;
@@ -37,18 +38,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "levelofdetail")
 public class Levelofdetail {
 
-	@XmlAttribute
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	protected String strategy;
-	@XmlAttribute(required = true)
-	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-	protected String numlevels;
-	@XmlAttribute
-	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-	protected String manual;
+	@XmlAttribute @XmlJavaTypeAdapter(NormalizedStringAdapter.class) protected String strategy;
+	@XmlAttribute(required = true) @XmlJavaTypeAdapter(NormalizedStringAdapter.class) protected String numlevels;
+	@XmlAttribute @XmlJavaTypeAdapter(CollapsedStringAdapter.class) protected String manual;
 	@XmlElements({@XmlElement(name = "lodmanual", required = true, type = Lodmanual.class),
-		@XmlElement(name = "lodgenerated", required = true, type = Lodgenerated.class)})
-	protected List<Object> lodmanualOrLodgenerated;
+		@XmlElement(name = "lodgenerated", required = true, type = Lodgenerated.class)}) protected List<Object> lodmanualOrLodgenerated;
 
 	/** Gets the value of the strategy property.
 	 * 

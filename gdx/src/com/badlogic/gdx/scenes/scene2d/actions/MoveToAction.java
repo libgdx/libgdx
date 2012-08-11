@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actions;
 
-/** Moves an actor from its current position to a specific position. 
+/** Moves an actor from its current position to a specific position.
  * @author Nathan Sweet */
 public class MoveToAction extends TemporalAction {
 	private float startX, startY;

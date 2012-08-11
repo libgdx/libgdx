@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.audio.transform;
 
 import com.badlogic.gdx.utils.Disposable;
@@ -25,63 +26,44 @@ public class SoundTouch implements Disposable {
 	/** Pitch transposer anti-alias filter length (8 .. 128 taps, default = 32) **/
 	public static int SETTING_AA_FILTER_LENGTH = 1;
 
-	/** Enable/disable quick seeking algorithm in tempo changer routine
-	 * (enabling quick seeking lowers CPU utilization but causes a minor sound
-	 * quality compromising) 
-	 */
+	/** Enable/disable quick seeking algorithm in tempo changer routine (enabling quick seeking lowers CPU utilization but causes a
+	 * minor sound quality compromising) */
 	public static int SETTING_USE_QUICKSEEK = 2;
 
-	/** Time-stretch algorithm single processing sequence length in milliseconds. This determines 
-	 * to how long sequences the original sound is chopped in the time-stretch algorithm. 
-	 * See "STTypes.h" or README for more information.
-	 */
+	/** Time-stretch algorithm single processing sequence length in milliseconds. This determines to how long sequences the original
+	 * sound is chopped in the time-stretch algorithm. See "STTypes.h" or README for more information. */
 	public static int SETTING_SEQUENCE_MS = 3;
 
-	/** Time-stretch algorithm seeking window length in milliseconds for algorithm that finds the 
-	 * best possible overlapping location. This determines from how wide window the algorithm 
-	 * may look for an optimal joining location when mixing the sound sequences back together. 
-	 * See "STTypes.h" or README for more information.
-	 */
+	/** Time-stretch algorithm seeking window length in milliseconds for algorithm that finds the best possible overlapping
+	 * location. This determines from how wide window the algorithm may look for an optimal joining location when mixing the sound
+	 * sequences back together. See "STTypes.h" or README for more information. */
 	public static int SETTING_SEEKWINDOW_MS = 4;
 
-	/** Time-stretch algorithm overlap length in milliseconds. When the chopped sound sequences 
-	 * are mixed back together, to form a continuous sound stream, this parameter defines over 
-	 * how long period the two consecutive sequences are let to overlap each other. 
-	 * See "STTypes.h" or README for more information.
-	 */
+	/** Time-stretch algorithm overlap length in milliseconds. When the chopped sound sequences are mixed back together, to form a
+	 * continuous sound stream, this parameter defines over how long period the two consecutive sequences are let to overlap each
+	 * other. See "STTypes.h" or README for more information. */
 	public static int SETTING_OVERLAP_MS = 5;
 
-
-	/** Call "getSetting" with this ID to query nominal average processing sequence
-	 * size in samples. This value tells approcimate value how many input samples 
-	 * SoundTouch needs to gather before it does DSP processing run for the sample batch.
-	 *
-	 * Notices: 
-	 * - This is read-only parameter, i.e. setSetting ignores this parameter
-	 * - Returned value is approximate average value, exact processing batch
-	 *   size may wary from time to time
-	 * - This parameter value is not constant but may change depending on 
-	 *   tempo/pitch/rate/samplerate settings.
-	 */
+	/** Call "getSetting" with this ID to query nominal average processing sequence size in samples. This value tells approcimate
+	 * value how many input samples SoundTouch needs to gather before it does DSP processing run for the sample batch.
+	 * 
+	 * Notices: - This is read-only parameter, i.e. setSetting ignores this parameter - Returned value is approximate average
+	 * value, exact processing batch size may wary from time to time - This parameter value is not constant but may change
+	 * depending on tempo/pitch/rate/samplerate settings. */
 	public static int SETTING_NOMINAL_INPUT_SEQUENCE = 6;
 
-
-	/** Call "getSetting" with this ID to query nominal average processing output 
-	 * size in samples. This value tells approcimate value how many output samples 
-	 * SoundTouch outputs once it does DSP processing run for a batch of input samples.
-	 *	
-	 * Notices: 
-	 * - This is read-only parameter, i.e. setSetting ignores this parameter
-	 * - Returned value is approximate average value, exact processing batch
-	 *   size may wary from time to time
-	 * - This parameter value is not constant but may change depending on 
-	 *   tempo/pitch/rate/samplerate settings.
-	 */
+	/** Call "getSetting" with this ID to query nominal average processing output size in samples. This value tells approcimate
+	 * value how many output samples SoundTouch outputs once it does DSP processing run for a batch of input samples.
+	 * 
+	 * Notices: - This is read-only parameter, i.e. setSetting ignores this parameter - Returned value is approximate average
+	 * value, exact processing batch size may wary from time to time - This parameter value is not constant but may change
+	 * depending on tempo/pitch/rate/samplerate settings. */
 	public static int SETTING_NOMINAL_OUTPUT_SEQUENCE = 7;
 
 	/** the address of the C++ object **/
 	private final long addr;
-	
+
+	// @off
 	/*JNI
 	#include "SoundTouch.h"
 	using namespace soundtouch;

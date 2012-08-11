@@ -131,7 +131,7 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
-//		if (type == VertexDataType.VertexArray && Gdx.graphics.isGL20Available()) type = VertexDataType.VertexBufferObject;
+// if (type == VertexDataType.VertexArray && Gdx.graphics.isGL20Available()) type = VertexDataType.VertexBufferObject;
 
 		if (type == VertexDataType.VertexBufferObject) {
 			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
@@ -382,8 +382,8 @@ public class Mesh implements Disposable {
 	 * @param count number of vertices or indices to use */
 	public void render (ShaderProgram shader, int primitiveType, int offset, int count) {
 		if (!Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
-		if(count == 0) return;
-		
+		if (count == 0) return;
+
 		if (autoBind) bind(shader);
 
 		if (isVertexArray) {

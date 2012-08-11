@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.tokamak;
 
-/**
- * See <a href="http://www.tokamakphysics.com/documentation/reference/negeometry.htm">http://www.tokamakphysics.com/documentation/reference/negeometry.htm</a>
- * @author mzechner
- *
- */
+/** See <a href="http://www.tokamakphysics.com/documentation/reference/negeometry.htm">http://www.tokamakphysics.com/documentation/
+ * reference/negeometry.htm</a>
+ * @author mzechner */
 public class Geometry {
 	long addr;
-	
-	Geometry(long addr) {
+
+	Geometry (long addr) {
 		this.addr = addr;
 	}
 }

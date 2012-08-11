@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android;
 
 import android.media.SoundPool;
@@ -51,10 +52,9 @@ public class AndroidApplicationConfiguration {
 	/** whether to use a {@link WakeLock} or not. In case this is true you have to add the permission "android.permission.WAKE_LOCK"
 	 * to your manifest file. default: false */
 	public boolean useWakelock = false;
-	
+
 	/** the maximum number of {@link Sound} instances that can be played simultaniously, sets the corresponding {@link SoundPool}
-	 * constructor argument.
-	 */
+	 * constructor argument. */
 	public int maxSimultaniousSounds = 16;
 
 	/** the {@link ResolutionStrategy}. default: {@link FillResolutionStrategy} **/

@@ -85,7 +85,6 @@ public class StatusManager implements WorldListener {
 	/** The number of times the player has been hit in this room. */
 	private int playerHits;
 
-
 	/** The number of robots that have been destroyed in this game (including those that have been shot). */
 	private int gameRobotsDestroyed;
 

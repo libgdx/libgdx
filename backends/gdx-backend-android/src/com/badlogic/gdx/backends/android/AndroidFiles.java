@@ -27,14 +27,14 @@ import com.badlogic.gdx.files.FileHandle;
 public class AndroidFiles implements Files {
 	protected final String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
 	protected final String localpath;
-	
+
 	protected final AssetManager assets;
 
 	public AndroidFiles (AssetManager assets) {
 		this.assets = assets;
 		localpath = sdcard;
 	}
-	
+
 	public AndroidFiles (AssetManager assets, String localpath) {
 		this.assets = assets;
 		this.localpath = localpath.endsWith("/") ? localpath : localpath + "/";
@@ -70,7 +70,7 @@ public class AndroidFiles implements Files {
 		path = localpath + path;
 		return new AndroidFileHandle(null, path, FileType.Local);
 	}
-	
+
 	@Override
 	public String getExternalStoragePath () {
 		return sdcard;
@@ -80,7 +80,7 @@ public class AndroidFiles implements Files {
 	public boolean isExternalStorageAvailable () {
 		return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
 	}
-	
+
 	@Override
 	public String getLocalStoragePath () {
 		return localpath;
@@ -89,5 +89,5 @@ public class AndroidFiles implements Files {
 	@Override
 	public boolean isLocalStorageAvailable () {
 		return true;
-	}	
+	}
 }

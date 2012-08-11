@@ -18,7 +18,6 @@ package com.badlogic.gdx.utils;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.regex.Pattern;
 
 /** Builder style API for emitting JSON.
  * @author Nathan Sweet */
@@ -157,28 +156,28 @@ public class JsonWriter extends Writer {
 		minimal;
 
 		// FIXME Avian regex matcher can't do that...
-//		static private Pattern javascriptPattern = Pattern.compile("[a-zA-Z_$][a-zA-Z_$0-9]*");
-//		static private Pattern minimalPattern = Pattern.compile("[a-zA-Z_$][^:}\\], ]*");
+// static private Pattern javascriptPattern = Pattern.compile("[a-zA-Z_$][a-zA-Z_$0-9]*");
+// static private Pattern minimalPattern = Pattern.compile("[a-zA-Z_$][^:}\\], ]*");
 
 		public String quoteValue (String value) {
 			value = value.replace("\\", "\\\\");
-//			if (this == OutputType.minimal && !value.equals("true") && !value.equals("false") && !value.equals("null")
-//				&& minimalPattern.matcher(value).matches()) return value;
+// if (this == OutputType.minimal && !value.equals("true") && !value.equals("false") && !value.equals("null")
+// && minimalPattern.matcher(value).matches()) return value;
 			return '"' + value.replace("\"", "\\\"") + '"';
 		}
 
 		public String quoteName (String value) {
 			value = value.replace("\\", "\\\\");
-//			switch (this) {
-//			case minimal:
-//				if (minimalPattern.matcher(value).matches()) return value;
-//				return '"' + value.replace("\"", "\\\"") + '"';
-//			case javascript:
-//				if (javascriptPattern.matcher(value).matches()) return value;
-//				return '"' + value.replace("\"", "\\\"") + '"';
-//			default:
-				return '"' + value.replace("\"", "\\\"") + '"';
-//			}
+// switch (this) {
+// case minimal:
+// if (minimalPattern.matcher(value).matches()) return value;
+// return '"' + value.replace("\"", "\\\"") + '"';
+// case javascript:
+// if (javascriptPattern.matcher(value).matches()) return value;
+// return '"' + value.replace("\"", "\\\"") + '"';
+// default:
+			return '"' + value.replace("\"", "\\\"") + '"';
+// }
 		}
 	}
 }

@@ -24,6 +24,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * * length2 <= constant Yes, the force transmitted is scaled by the ratio. The pulley also enforces a maximum length limit on
  * both sides. This is useful to prevent one side of the pulley hitting the top. */
 public class PulleyJoint extends Joint {
+	// @off
 	/*JNI
 #include <Box2D/Box2D.h> 
 	 */

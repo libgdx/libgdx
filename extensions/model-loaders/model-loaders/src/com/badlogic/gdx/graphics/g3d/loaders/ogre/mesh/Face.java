@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,10 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "face")
 public class Face {
 
-	@XmlAttribute(required = true)
-	public int v1;
-	@XmlAttribute
-	public int v2;
-	@XmlAttribute
-	public int v3;
+	@XmlAttribute(required = true) public int v1;
+	@XmlAttribute public int v2;
+	@XmlAttribute public int v3;
 }

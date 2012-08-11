@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.files;
 
 import java.io.BufferedInputStream;
@@ -42,12 +43,10 @@ public class FileHandle {
 	public String nameWithoutExtension () {
 		throw new GdxRuntimeException("Stub");
 	}
-	
-	/**
-	 * @return the path and filename without the extension, e.g. dir/dir2/file.png -> dir/dir2/file
-	 */
-	public String pathWithoutExtension() {
-	    throw new GdxRuntimeException("Stub");
+
+	/** @return the path and filename without the extension, e.g. dir/dir2/file.png -> dir/dir2/file */
+	public String pathWithoutExtension () {
+		throw new GdxRuntimeException("Stub");
 	}
 
 	public FileType type () {
@@ -223,7 +222,7 @@ public class FileHandle {
 	public FileHandle parent () {
 		throw new GdxRuntimeException("Stub");
 	}
-	
+
 	/** Returns a handle to the sibling with the specified name.
 	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the sibling
 	 *        doesn't exist, or this file is the root. */

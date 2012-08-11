@@ -11,91 +11,91 @@
 package java.io;
 
 public class BufferedReader extends Reader {
-  private final Reader in;
-  private final char[] buffer;
-  private int position;
-  private int limit;
+	private final Reader in;
+	private final char[] buffer;
+	private int position;
+	private int limit;
 
-  public BufferedReader(Reader in, int bufferSize) {
-    this.in = in;
-    this.buffer = new char[bufferSize];
-  }
+	public BufferedReader (Reader in, int bufferSize) {
+		this.in = in;
+		this.buffer = new char[bufferSize];
+	}
 
-  public BufferedReader(Reader in) {
-    this(in, 32);
-  }
-  
-  private void fill() throws IOException {
-    position = 0;
-    limit = in.read(buffer);
-  }
+	public BufferedReader (Reader in) {
+		this(in, 32);
+	}
 
-  public String readLine() throws IOException {
-    StringBuilder sb = new StringBuilder();
-    while (true) {
-      if (position >= limit) {
-        fill();
-      }
+	private void fill () throws IOException {
+		position = 0;
+		limit = in.read(buffer);
+	}
 
-      if (position >= limit) {
-        return sb.length() == 0 ? null : sb.toString();
-      }
+	public String readLine () throws IOException {
+		StringBuilder sb = new StringBuilder();
+		while (true) {
+			if (position >= limit) {
+				fill();
+			}
 
-      for (int i = position; i < limit; ++i) {
-        if(buffer[i] == '\r') {
-          sb.append(buffer, position, i - position);
-          position = i + 1;
-          if(i+1 < limit && buffer[i+1] == '\n') {
-            position = i + 2;
-          }
-          return sb.toString();
-        } else if (buffer[i] == '\n') {
-          sb.append(buffer, position, i - position);
-          position = i + 1;
-          return sb.toString();
-        }
-      }
-      sb.append(buffer, position, limit-position);
-      position = limit;
-    }
-  }
+			if (position >= limit) {
+				return sb.length() == 0 ? null : sb.toString();
+			}
 
-  public int read(char[] b, int offset, int length) throws IOException {
-    int count = 0;
+			for (int i = position; i < limit; ++i) {
+				if (buffer[i] == '\r') {
+					sb.append(buffer, position, i - position);
+					position = i + 1;
+					if (i + 1 < limit && buffer[i + 1] == '\n') {
+						position = i + 2;
+					}
+					return sb.toString();
+				} else if (buffer[i] == '\n') {
+					sb.append(buffer, position, i - position);
+					position = i + 1;
+					return sb.toString();
+				}
+			}
+			sb.append(buffer, position, limit - position);
+			position = limit;
+		}
+	}
 
-    if (position >= limit && length < buffer.length) {
-      fill();
-    }
+	public int read (char[] b, int offset, int length) throws IOException {
+		int count = 0;
 
-    if (position < limit) {
-      int remaining = limit - position;
-      if (remaining > length) {
-        remaining = length;
-      }
+		if (position >= limit && length < buffer.length) {
+			fill();
+		}
 
-      System.arraycopy(buffer, position, b, offset, remaining);
+		if (position < limit) {
+			int remaining = limit - position;
+			if (remaining > length) {
+				remaining = length;
+			}
 
-      count += remaining;
-      position += remaining;
-      offset += remaining;
-      length -= remaining;
-    }
+			System.arraycopy(buffer, position, b, offset, remaining);
 
-    if (length > 0) {
-      int c = in.read(b, offset, length);
-      if (c == -1) {
-        if (count == 0) {
-          count = -1;
-        }
-      } else {
-        count += c;
-      }
-    }
+			count += remaining;
+			position += remaining;
+			offset += remaining;
+			length -= remaining;
+		}
 
-    return count;
-  }
+		if (length > 0) {
+			int c = in.read(b, offset, length);
+			if (c == -1) {
+				if (count == 0) {
+					count = -1;
+				}
+			} else {
+				count += c;
+			}
+		}
 
-  public void close() throws IOException {
-    in.close();
-  }
+		return count;
+	}
+
+	public void close () throws IOException {
+		in.close();
+	}
 }

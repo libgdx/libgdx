@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -31,8 +32,8 @@ public class CustomShaderSpriteBatchTest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch(10);
 		ShaderProgram.pedantic = false;
-		shader = new ShaderProgram(Gdx.files.internal("data/shaders/batch.vert").readString(),
-											Gdx.files.internal("data/shaders/batch.frag").readString());
+		shader = new ShaderProgram(Gdx.files.internal("data/shaders/batch.vert").readString(), Gdx.files.internal(
+			"data/shaders/batch.frag").readString());
 		batch.setShader(shader);
 		texture = new Texture("data/badlogic.jpg");
 	}
@@ -44,7 +45,7 @@ public class CustomShaderSpriteBatchTest extends GdxTest {
 		batch.draw(texture, 0, 0);
 		batch.end();
 	}
-	
+
 	@Override
 	public void dispose () {
 		batch.dispose();

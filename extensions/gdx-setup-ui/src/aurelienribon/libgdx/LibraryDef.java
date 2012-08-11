@@ -1,11 +1,11 @@
+
 package aurelienribon.libgdx;
 
-import aurelienribon.utils.ParseUtils;
 import java.util.List;
 
-/**
- * @author Aurelien Ribon | http://www.aurelienribon.com/
- */
+import aurelienribon.utils.ParseUtils;
+
+/** @author Aurelien Ribon | http://www.aurelienribon.com/ */
 public class LibraryDef {
 	public final String name;
 	public final String author;
@@ -22,7 +22,7 @@ public class LibraryDef {
 	public final List<String> libsAndroid;
 	public final List<String> libsHtml;
 
-	public LibraryDef(String content) {
+	public LibraryDef (String content) {
 		this.name = ParseUtils.parseBlock(content, "name", "<unknown>");
 		this.author = ParseUtils.parseBlock(content, "author", "<unknown>");
 		this.authorWebsite = ParseUtils.parseBlock(content, "author-website", null);

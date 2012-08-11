@@ -13,15 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package java.io;
 
 public class IOException extends Exception {
 
-  public IOException() {
-    super();
-  }
+	public IOException () {
+		super();
+	}
 
-  public IOException(String s) {
-    super(s);
-  }
+	public IOException (String s) {
+		super(s);
+	}
 }

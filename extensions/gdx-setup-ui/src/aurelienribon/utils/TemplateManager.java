@@ -1,3 +1,4 @@
+
 package aurelienribon.utils;
 
 import java.io.File;
@@ -8,41 +9,40 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-/**
- * @author Aurelien Ribon | http://www.aurelienribon.com/
- */
+/** @author Aurelien Ribon | http://www.aurelienribon.com/ */
 public class TemplateManager {
 	private final Map<String, String> replacements = new HashMap<String, String>();
 	private final String varPattern = "[a-zA-Z_][a-zA-Z0-9_]*";
 
-	public void clear() {
+	public void clear () {
 		replacements.clear();
 	}
 
-	public void define(String variable, String replacement) {
+	public void define (String variable, String replacement) {
 		Matcher m = Pattern.compile(varPattern).matcher(variable);
 		if (!m.matches()) throw new RuntimeException("Variable '" + variable + "' contains invalid characters");
 		replacements.put(variable, replacement);
 	}
 
-	public void define(String variable) {
+	public void define (String variable) {
 		define(variable, "");
 	}
 
-	public String process(File file) throws IOException {
+	public String process (File file) throws IOException {
 		String input = FileUtils.readFileToString(file);
 		return process(input);
 	}
 
-	public void processOver(File file) throws IOException {
+	public void processOver (File file) throws IOException {
 		String input = FileUtils.readFileToString(file);
 		FileUtils.writeStringToFile(file, process(input));
 	}
 
-	public String process(URL url) {
+	public String process (URL url) {
 		try {
 			String input = IOUtils.toString(url);
 			return process(input);
@@ -51,7 +51,7 @@ public class TemplateManager {
 		}
 	}
 
-	public String process(InputStream stream) {
+	public String process (InputStream stream) {
 		try {
 			String input = IOUtils.toString(stream);
 			return process(input);
@@ -60,7 +60,7 @@ public class TemplateManager {
 		}
 	}
 
-	public String process(String input) {
+	public String process (String input) {
 		for (String var : replacements.keySet()) {
 			input = input.replaceAll("@\\{" + var + "\\}", replacements.get(var));
 		}
@@ -73,8 +73,10 @@ public class TemplateManager {
 			String var = m.group(1);
 			String content = m.group(2);
 
-			if (replacements.containsKey(var)) m.appendReplacement(sb, content);
-			else m.appendReplacement(sb, "");
+			if (replacements.containsKey(var))
+				m.appendReplacement(sb, content);
+			else
+				m.appendReplacement(sb, "");
 		}
 
 		m.appendTail(sb);

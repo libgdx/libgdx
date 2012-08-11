@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -20,11 +21,8 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-/**
- * Tests playing back audio from the external storage. 
- * @author mzechner
- *
- */
+/** Tests playing back audio from the external storage.
+ * @author mzechner */
 public class ExternalMusicTest extends GdxTest {
 
 	@Override
@@ -33,7 +31,7 @@ public class ExternalMusicTest extends GdxTest {
 		FileHandle src = Gdx.files.internal("data/8.12.mp3");
 		FileHandle dst = Gdx.files.external("8.12.mp3");
 		src.copyTo(dst);
-		
+
 		// create a music instance and start playback
 		Music music = Gdx.audio.newMusic(dst);
 		music.play();

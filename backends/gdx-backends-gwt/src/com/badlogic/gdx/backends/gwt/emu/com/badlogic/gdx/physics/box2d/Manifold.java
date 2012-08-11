@@ -27,13 +27,13 @@ public class Manifold {
 	final int[] tmpInt = new int[2];
 	final float[] tmpFloat = new float[4];
 
-	Manifold() {
+	Manifold () {
 	}
-	
+
 	protected Manifold (org.jbox2d.collision.Manifold manifold) {
 		this.manifold = manifold;
 	}
-	
+
 	public ManifoldType getType () {
 		org.jbox2d.collision.Manifold.ManifoldType type = manifold.type;
 		if (type == org.jbox2d.collision.Manifold.ManifoldType.CIRCLES) return ManifoldType.Circle;
@@ -55,7 +55,7 @@ public class Manifold {
 	}
 
 	public ManifoldPoint[] getPoints () {
-		for(int i = 0; i < manifold.points.length; i++) {
+		for (int i = 0; i < manifold.points.length; i++) {
 			points[i].contactID = manifold.points[i].id.getKey();
 			points[i].localPoint.set(manifold.points[i].localPoint.x, manifold.points[i].localPoint.y);
 			points[i].normalImpulse = manifold.points[i].normalImpulse;

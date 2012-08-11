@@ -111,11 +111,11 @@ public class Plane implements Serializable {
 		else
 			return PlaneSide.Front;
 	}
-	
+
 	/** Returns on which side the given point lies relative to the plane and its normal. PlaneSide.Front refers to the side the
 	 * plane normal points to.
 	 * 
-	 * @param x 
+	 * @param x
 	 * @param y
 	 * @param z
 	 * @return The side the point lies relative to the plane */
@@ -158,10 +158,10 @@ public class Plane implements Serializable {
 		this.normal.set(normal);
 		d = -point.dot(normal);
 	}
-	
-	public void set(float pointX, float pointY, float pointZ, float norX, float norY, float norZ) {
+
+	public void set (float pointX, float pointY, float pointZ, float norX, float norY, float norZ) {
 		this.normal.set(norX, norY, norZ);
-		d = -(pointX * norX +  pointY * norY + pointZ * norZ);
+		d = -(pointX * norX + pointY * norY + pointZ * norZ);
 	}
 
 	/** Sets this plane from the given plane

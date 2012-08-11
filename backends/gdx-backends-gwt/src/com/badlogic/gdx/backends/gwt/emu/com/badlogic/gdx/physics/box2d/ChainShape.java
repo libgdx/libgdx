@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.box2d;
 
 import org.jbox2d.common.Vec2;
@@ -21,13 +22,13 @@ import com.badlogic.gdx.math.Vector2;
 
 public class ChainShape extends Shape {
 	org.jbox2d.collision.shapes.ChainShape shape;
-	
+
 	public ChainShape () {
 		super(new org.jbox2d.collision.shapes.ChainShape());
 		shape = (org.jbox2d.collision.shapes.ChainShape)super.shape;
 	}
-	
-	ChainShape(org.jbox2d.collision.shapes.ChainShape shape) {
+
+	ChainShape (org.jbox2d.collision.shapes.ChainShape shape) {
 		super(shape);
 		this.shape = shape;
 	}
@@ -41,7 +42,7 @@ public class ChainShape extends Shape {
 	 * @param vertices an array of vertices, these are copied */
 	public void createLoop (Vector2[] vertices) {
 		Vec2[] v = new Vec2[vertices.length];
-		for(int i = 0; i < vertices.length; i++) {
+		for (int i = 0; i < vertices.length; i++) {
 			v[i] = new Vec2(vertices[i].x, vertices[i].y);
 		}
 		shape.createLoop(v, v.length);
@@ -51,7 +52,7 @@ public class ChainShape extends Shape {
 	 * @param vertices an array of vertices, these are copied */
 	public void createChain (Vector2[] vertices) {
 		Vec2[] v = new Vec2[vertices.length];
-		for(int i = 0; i < vertices.length; i++) {
+		for (int i = 0; i < vertices.length; i++) {
 			v[i] = new Vec2(vertices[i].x, vertices[i].y);
 		}
 		shape.createChain(v, v.length);

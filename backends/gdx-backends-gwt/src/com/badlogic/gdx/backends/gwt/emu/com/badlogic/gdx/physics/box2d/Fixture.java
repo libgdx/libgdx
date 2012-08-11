@@ -46,10 +46,10 @@ public class Fixture {
 	 * @return the shape type. */
 	public Type getType () {
 		ShapeType type = fixture.getType();
-		if(type == ShapeType.CIRCLE) return Type.Circle;
-		if(type == ShapeType.EDGE) return Type.Edge;
-		if(type == ShapeType.POLYGON) return Type.Polygon;
-		if(type == ShapeType.CHAIN) return Type.Chain;
+		if (type == ShapeType.CIRCLE) return Type.Circle;
+		if (type == ShapeType.EDGE) return Type.Edge;
+		if (type == ShapeType.POLYGON) return Type.Polygon;
+		if (type == ShapeType.CHAIN) return Type.Chain;
 		return Type.Circle;
 	}
 
@@ -58,10 +58,10 @@ public class Fixture {
 		if (shape == null) {
 			org.jbox2d.collision.shapes.Shape shape2 = fixture.getShape();
 			ShapeType type = shape2.getType();
-			if(type == ShapeType.CHAIN) shape = new ChainShape((org.jbox2d.collision.shapes.ChainShape)shape2);
-			if(type == ShapeType.CIRCLE) shape = new CircleShape((org.jbox2d.collision.shapes.CircleShape)shape2);
-			if(type == ShapeType.EDGE) shape = new EdgeShape((org.jbox2d.collision.shapes.EdgeShape)shape2);
-			if(type == ShapeType.POLYGON) shape = new PolygonShape((org.jbox2d.collision.shapes.PolygonShape)shape2);
+			if (type == ShapeType.CHAIN) shape = new ChainShape((org.jbox2d.collision.shapes.ChainShape)shape2);
+			if (type == ShapeType.CIRCLE) shape = new CircleShape((org.jbox2d.collision.shapes.CircleShape)shape2);
+			if (type == ShapeType.EDGE) shape = new EdgeShape((org.jbox2d.collision.shapes.EdgeShape)shape2);
+			if (type == ShapeType.POLYGON) shape = new PolygonShape((org.jbox2d.collision.shapes.PolygonShape)shape2);
 		}
 		return shape;
 	}
@@ -76,7 +76,7 @@ public class Fixture {
 	public boolean isSensor () {
 		return fixture.isSensor();
 	}
-	
+
 	/** Set the contact filtering data. This will not update contacts until the next time step when either parent body is active and
 	 * awake. This automatically calls Refilter. */
 	public void setFilterData (Filter filter) {
@@ -109,6 +109,7 @@ public class Fixture {
 	}
 
 	final Vec2 tmp = new Vec2();
+
 	/** Test a point for containment in this fixture.
 	 * @param p a point in world coordinates. */
 	public boolean testPoint (Vector2 p) {

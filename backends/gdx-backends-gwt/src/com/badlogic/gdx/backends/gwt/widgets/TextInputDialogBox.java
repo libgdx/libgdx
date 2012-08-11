@@ -13,85 +13,80 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
- 
-package com.badlogic.gdx.backends.gwt.widgets;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+package com.badlogic.gdx.backends.gwt.widgets;
 
 public class TextInputDialogBox extends DialogBox {
 	private PlaceholderTextBox textBox;
-	
-    public TextInputDialogBox(String title, String text, String placeholder) {
-   	 // Set the dialog box's caption.
-      setText(title);
 
-      VerticalPanel vPanel = new VerticalPanel();
-      HorizontalPanel hPanel = new HorizontalPanel();
-      
-      // Enable animation.
-      setAnimationEnabled(true);
+	public TextInputDialogBox (String title, String text, String placeholder) {
+		// Set the dialog box's caption.
+		setText(title);
 
-      // Enable glass background.
-      setGlassEnabled(true);
-      
-      // Center this bad boy.
-      center();
-      
-      vPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		VerticalPanel vPanel = new VerticalPanel();
+		HorizontalPanel hPanel = new HorizontalPanel();
 
-      Button ok = new Button("OK");
-      ok.addClickHandler(new ClickHandler() {
-        public void onClick(ClickEvent event) {
-      	  TextInputDialogBox.this.onPositive();
-        }
-      });
-      
-      Button cancel = new Button("Cancel");
-      cancel.addClickHandler(new ClickHandler() {
-        public void onClick(ClickEvent event) {
-      	  TextInputDialogBox.this.onNegative();
-        }
-      });
-      
-      hPanel.add(ok);
-      hPanel.add(cancel);
-      
-      
-      textBox = new PlaceholderTextBox();
-      textBox.setPlaceholder(placeholder);
-      textBox.setWidth("97%");
-      textBox.setText(text);      
-      vPanel.add(textBox);
-      vPanel.add(hPanel);
-      
-      setWidget(vPanel);
-    }
-	
-	private void onPositive() {
+		// Enable animation.
+		setAnimationEnabled(true);
+
+		// Enable glass background.
+		setGlassEnabled(true);
+
+		// Center this bad boy.
+		center();
+
+		vPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+
+		Button ok = new Button("OK");
+		ok.addClickHandler(new ClickHandler() {
+			public void onClick (ClickEvent event) {
+				TextInputDialogBox.this.onPositive();
+			}
+		});
+
+		Button cancel = new Button("Cancel");
+		cancel.addClickHandler(new ClickHandler() {
+			public void onClick (ClickEvent event) {
+				TextInputDialogBox.this.onNegative();
+			}
+		});
+
+		hPanel.add(ok);
+		hPanel.add(cancel);
+
+		textBox = new PlaceholderTextBox();
+		textBox.setPlaceholder(placeholder);
+		textBox.setWidth("97%");
+		textBox.setText(text);
+		vPanel.add(textBox);
+		vPanel.add(hPanel);
+
+		setWidget(vPanel);
+	}
+
+	private void onPositive () {
 		if (listener != null) {
 			listener.onPositive(textBox.getText());
 		}
 		this.hide();
 	}
-	private void onNegative() {
+
+	private void onNegative () {
 		if (listener != null) {
 			listener.onNegative();
 		}
 		this.hide();
 	}
-	
+
 	TextInputDialogListener listener;
-	public void setListener(TextInputDialogListener listener) {
+
+	public void setListener (TextInputDialogListener listener) {
 		this.listener = listener;
 	}
+
 	public interface TextInputDialogListener {
-		void onPositive(String text);
-		void onNegative();
+		void onPositive (String text);
+
+		void onNegative ();
 	}
 }

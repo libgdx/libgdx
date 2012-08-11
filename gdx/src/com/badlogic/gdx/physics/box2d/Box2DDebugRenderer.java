@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
@@ -88,10 +87,9 @@ public class Box2DDebugRenderer {
 		if (drawBodies || drawAABBs) {
 			for (Iterator<Body> iter = world.getBodies(); iter.hasNext();) {
 				Body body = iter.next();
-				
-				if (body.isActive() == false && !drawInactiveBodies)
-					continue;
-				
+
+				if (body.isActive() == false && !drawInactiveBodies) continue;
+
 				Transform transform = body.getTransform();
 				int len = body.getFixtureList().size();
 				List<Fixture> fixtures = body.getFixtureList();
@@ -296,7 +294,7 @@ public class Box2DDebugRenderer {
 		Vector2 point = worldManifold.getPoints()[0];
 		renderer.point(point.x, point.y, 0);
 	}
-	
+
 	public boolean isDrawBodies () {
 		return drawBodies;
 	}

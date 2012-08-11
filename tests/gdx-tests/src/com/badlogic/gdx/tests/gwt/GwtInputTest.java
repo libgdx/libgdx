@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.gwt;
 
 import com.badlogic.gdx.Gdx;
@@ -35,8 +36,10 @@ public class GwtInputTest extends GdxTest {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		renderer.begin(ShapeType.FilledRectangle);
-		if(Gdx.input.isTouched()) renderer.setColor(Color.RED);
-		else renderer.setColor(Color.GREEN);
+		if (Gdx.input.isTouched())
+			renderer.setColor(Color.RED);
+		else
+			renderer.setColor(Color.GREEN);
 		renderer.filledRect(Gdx.input.getX() - 15, Gdx.graphics.getHeight() - Gdx.input.getY() - 15, 30, 30);
 		renderer.end();
 	}

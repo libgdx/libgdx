@@ -16,19 +16,8 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.utils.BufferUtils;
 
 /** <p>
  * A {@link VertexData} implementation based on OpenGL vertex buffer objects.
@@ -66,4 +55,3 @@ public class VertexArray extends VertexBufferObject {
 		super(false, numVertices, attributes);
 	}
 }
-

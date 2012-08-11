@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import java.nio.ShortBuffer;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -28,7 +26,6 @@ import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.BufferUtils;
 
 public class VertexBufferObjectShaderTest extends GdxTest {
 	Texture texture;
@@ -91,7 +88,7 @@ public class VertexBufferObjectShaderTest extends GdxTest {
 
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 	}
-	
+
 	@Override
 	public void resume () {
 		vbo.invalidate();

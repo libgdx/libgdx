@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.box2d.joints;
 
 import com.badlogic.gdx.physics.box2d.Joint;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * You can use a joint limit to restrict the range of motion and a joint motor to drive the rotation or to model rotational
  * friction. This joint is designed for vehicle suspensions. */
 public class WheelJoint extends Joint {
+	// @off
 	/*JNI
 #include <Box2D/Box2D.h> 
 	 */

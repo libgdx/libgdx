@@ -57,8 +57,7 @@ public abstract class LongBuffer extends Buffer implements Comparable<LongBuffer
 
 	/** Creates a new long buffer by wrapping the given long array.
 	 * <p>
-	 * The new buffer's position will be {@code start}, limit will be {@code start + len}, capacity will be the length of the
-	 * array.
+	 * The new buffer's position will be {@code start}, limit will be {@code start + len}, capacity will be the length of the array.
 	 * </p>
 	 * 
 	 * @param array the long array which the new buffer will be based on.

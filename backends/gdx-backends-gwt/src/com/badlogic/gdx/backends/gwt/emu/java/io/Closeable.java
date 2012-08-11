@@ -16,20 +16,14 @@
 
 package java.io;
 
-/***
- * Defines an interface for classes that can (or need to) be closed once they
- * are not used any longer. This usually includes all sorts of
- * {@link InputStream}s and {@link OutputStream}s. Calling the {@code close}
- * method releases resources that the object holds.
- */
+/*** Defines an interface for classes that can (or need to) be closed once they are not used any longer. This usually includes all
+ * sorts of {@link InputStream}s and {@link OutputStream}s. Calling the {@code close} method releases resources that the object
+ * holds. */
 public interface Closeable {
 
-    /***
-     * Closes the object and release any system resources it holds. If the
-     * object has already been closed, then invoking this method has no effect.
-     * 
-     * @throws IOException
-     *             if any error occurs when closing the object.
-     */
-    public void close() throws IOException;
+	/*** Closes the object and release any system resources it holds. If the object has already been closed, then invoking this
+	 * method has no effect.
+	 * 
+	 * @throws IOException if any error occurs when closing the object. */
+	public void close () throws IOException;
 }

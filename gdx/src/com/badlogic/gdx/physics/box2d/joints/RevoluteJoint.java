@@ -24,6 +24,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * lower and upper angle. You can use a motor to drive the relative rotation about the shared point. A maximum motor torque is
  * provided so that infinite forces are not generated. */
 public class RevoluteJoint extends Joint {
+	// @off
 	/*JNI
 #include <Box2D/Box2D.h> 
 	 */

@@ -9,18 +9,17 @@
 package com.badlogic.gdx.physics.bullet;
 
 public class SWIGTYPE_p_p_btTypedConstraint {
-  private long swigCPtr;
+	private long swigCPtr;
 
-  protected SWIGTYPE_p_p_btTypedConstraint(long cPtr, boolean futureUse) {
-    swigCPtr = cPtr;
-  }
+	protected SWIGTYPE_p_p_btTypedConstraint (long cPtr, boolean futureUse) {
+		swigCPtr = cPtr;
+	}
 
-  protected SWIGTYPE_p_p_btTypedConstraint() {
-    swigCPtr = 0;
-  }
+	protected SWIGTYPE_p_p_btTypedConstraint () {
+		swigCPtr = 0;
+	}
 
-  public static long getCPtr(SWIGTYPE_p_p_btTypedConstraint obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (SWIGTYPE_p_p_btTypedConstraint obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 }
-

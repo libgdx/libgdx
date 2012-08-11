@@ -8,39 +8,35 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-
 public class btBroadphaseAabbCallback {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+	private long swigCPtr;
+	protected boolean swigCMemOwn;
 
-  protected btBroadphaseAabbCallback(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	protected btBroadphaseAabbCallback (long cPtr, boolean cMemoryOwn) {
+		swigCMemOwn = cMemoryOwn;
+		swigCPtr = cPtr;
+	}
 
-  public static long getCPtr(btBroadphaseAabbCallback obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public static long getCPtr (btBroadphaseAabbCallback obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected void finalize() {
-    delete();
-  }
+	protected void finalize () {
+		delete();
+	}
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btBroadphaseAabbCallback(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+	public synchronized void delete () {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btBroadphaseAabbCallback(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+	}
 
-  public boolean process(btBroadphaseProxy proxy) {
-    return gdxBulletJNI.btBroadphaseAabbCallback_process(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy), proxy);
-  }
+	public boolean process (btBroadphaseProxy proxy) {
+		return gdxBulletJNI.btBroadphaseAabbCallback_process(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy), proxy);
+	}
 
 }
