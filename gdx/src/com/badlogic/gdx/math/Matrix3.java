@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** A 3x3 column major matrix for 2D transforms.
+/** A 3x3 <a href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> matrix for 2D transforms.
  * 
  * @author mzechner */
 public class Matrix3 implements Serializable {
@@ -296,8 +296,8 @@ public class Matrix3 implements Serializable {
 	}
 
 	/** Postmultiplies this matrix with a scale matrix. Postmultiplication is also used by OpenGL ES' glTranslate/glRotate/glScale.
-	 * @param scaleX
-	 * @param scaleY
+	 * @param scaleX The scale in the x-axis.
+	 * @param scaleY The scale in the y-axis.
 	 * @return this matrix for chaining */
 	public Matrix3 scale (float scaleX, float scaleY) {
 		tmp[0] = scaleX;
@@ -315,22 +315,32 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
+	/** Get the values in this matrix.
+	 * @return The float values that make up this matrix. */
 	public float[] getValues () {
 		return val;
 	}
 
+	/** Scale this matrix using the x and y components of the verctor but leave the rest of the matrix alone.
+	 * @param scale The {@link Vector3} to use to scale this matrix. The z component will be ignored.
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix3 scl (Vector3 scale) {
 		val[M00] *= scale.x;
 		val[M11] *= scale.y;
 		return this;
 	}
 
+	/** Scale the matrix in the both the x and y components by the scalar value.
+	 * @param scale The single value that will be used to scale both the x and y components.
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix3 scl (float scale) {
 		val[M00] *= scale;
 		val[M11] *= scale;
 		return this;
 	}
 
+	/** This will transpose the current matrix.
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix3 transpose () {
 		float v00 = val[M00];
 		float v01 = val[M10];
@@ -353,6 +363,13 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
+	/** This function multiplies matrix a with matrix b in the following manner:
+	 * 
+	 * <pre>
+	 * mul(A, B) => A := AB
+	 * </pre>
+	 * @param mata The float array representing the first matrix. Must have at least 9 elements.
+	 * @param matb The float array representing the second matrix. Must have at least 9 elements. */
 	private static void mul (float[] mata, float[] matb) {
 		float v00 = mata[0] * matb[0] + mata[3] * matb[1] + mata[6] * matb[2];
 		float v01 = mata[0] * matb[3] + mata[3] * matb[4] + mata[6] * matb[5];

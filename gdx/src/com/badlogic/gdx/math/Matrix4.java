@@ -175,9 +175,9 @@ public class Matrix4 implements Serializable {
 
 	/** Adds a translational component to the matrix in the 4th column. The other columns are untouched.
 	 * 
-	 * @param x The x-component of the translation vector
-	 * @param y The y-component of the translation vector
-	 * @param z The z-component of the translation vector
+	 * @param x The x-component of the translation vector.
+	 * @param y The y-component of the translation vector.
+	 * @param z The z-component of the translation vector.
 	 * @return Return this matrix for the purpose of chaining methods together. */
 	public Matrix4 trn (float x, float y, float z) {
 		val[M03] += x;
@@ -191,10 +191,14 @@ public class Matrix4 implements Serializable {
 		return val;
 	}
 
-	/** (Pre-)Multiplies this matrix with the given matrix, storing the result in this matrix. E.g. A.mul(B) results in A := BA.
+	/** (Pre-)Multiplies this matrix with the given matrix, storing the result in this matrix. For example:
 	 * 
-	 * @param matrix The other matrix
-	 * @return This matrix for chaining. */
+	 * <pre>A.mul(B) results in A := BA
+	 * 
+	 * <pre>
+	 * 
+	 * @param matrix The other matrix that will be multiplied with this one.
+	 * @return Return this matrix for the purpose of chaining methods together. */
 	public Matrix4 mul (Matrix4 matrix) {
 		tmp[M00] = val[M00] * matrix.val[M00] + val[M01] * matrix.val[M10] + val[M02] * matrix.val[M20] + val[M03]
 			* matrix.val[M30];
@@ -231,7 +235,7 @@ public class Matrix4 implements Serializable {
 		return this.set(tmp);
 	}
 
-	/** Transposes the matrix
+	/** Transposes the matrix.
 	 * 
 	 * @return Return this matrix for the purpose of chaining methods together. */
 	public Matrix4 tra () {
@@ -254,7 +258,7 @@ public class Matrix4 implements Serializable {
 		return this.set(tmp);
 	}
 
-	/** Sets the matrix to an identity matrix
+	/** Sets the matrix to an identity matrix.
 	 * 
 	 * @return Return this matrix for the purpose of chaining methods together. */
 	public Matrix4 idt () {
@@ -277,7 +281,7 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-	/** Inverts the matrix. Throws a RuntimeException in case the matrix is not invertible. Stores the result in this matrix
+	/** Inverts the matrix. Throws a RuntimeException in case the matrix is not invertible. Stores the result in this matrix.
 	 * 
 	 * @return Return this matrix for the purpose of chaining methods together. */
 	public Matrix4 inv () {
@@ -473,9 +477,9 @@ public class Matrix4 implements Serializable {
 	/** Sets this matrix to a translation matrix, overwriting it first by an identity matrix and then setting the 4th column to the
 	 * translation vector.
 	 * 
-	 * @param x The x-component of the translation vector
-	 * @param y The y-component of the translation vector
-	 * @param z The z-component of the translation vector
+	 * @param x The x-component of the translation vector.
+	 * @param y The y-component of the translation vector.
+	 * @param z The z-component of the translation vector.
 	 * @return Return this matrix for the purpose of chaining methods together. */
 	public Matrix4 setToTranslation (float x, float y, float z) {
 		idt();
