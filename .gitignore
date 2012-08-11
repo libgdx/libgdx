@@ -1,6 +1,15 @@
-gwt-servlet.jar
+# Temporary Files
+*~
+.*.swp
+
+# Generated Folders
 target/
 gen/
 bin/
+/dist
+
+# Compiled Files
+libgdx*.zip
+gwt-servlet.jar
 *.class
 classes/
