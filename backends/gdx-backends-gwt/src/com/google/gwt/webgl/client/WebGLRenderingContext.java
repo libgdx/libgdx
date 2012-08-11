@@ -16,6 +16,13 @@
 
 package com.google.gwt.webgl.client;
 
+import com.google.gwt.canvas.dom.client.ImageData;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.dom.client.CanvasElement;
+import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.VideoElement;
 import com.google.gwt.typedarrays.client.ArrayBuffer;
 import com.google.gwt.typedarrays.client.ArrayBufferView;
 import com.google.gwt.typedarrays.client.ArrayUtils;

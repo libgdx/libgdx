@@ -16,7 +16,13 @@
 
 package com.badlogic.gwtref.gen;
 
-import sun.nio.cs.Surrogate.Generator;
+import com.google.gwt.core.ext.Generator;
+import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.UnableToCompleteException;
+import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import static com.google.gwt.core.ext.TreeLogger.*;
 
 public class ReflectionCacheGenerator extends Generator {
 	@Override

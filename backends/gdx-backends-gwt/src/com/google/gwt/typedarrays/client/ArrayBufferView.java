@@ -16,6 +16,8 @@
 
 package com.google.gwt.typedarrays.client;
 
+import com.google.gwt.core.client.JavaScriptObject;
+
 /** The ArrayBufferView type holds information shared among all of the types of views of ArrayBuffers.
  * 
  * Taken from the Khronos TypedArrays Draft Spec as of Aug 30, 2010. */

@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.graphics;
 
-import java.awt.Canvas;
 import java.nio.Buffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
@@ -27,6 +26,12 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.canvas.dom.client.CanvasPixelArray;
+import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.canvas.dom.client.Context2d.Composite;
+import com.google.gwt.dom.client.CanvasElement;
+import com.google.gwt.dom.client.ImageElement;
 
 public class Pixmap implements Disposable {
 	public static Map<Integer, Pixmap> pixmaps = new HashMap<Integer, Pixmap>();

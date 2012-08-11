@@ -27,6 +27,7 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.typedarrays.client.Float32Array;
 import com.google.gwt.typedarrays.client.Int16Array;
 import com.google.gwt.typedarrays.client.Int32Array;

@@ -16,6 +16,8 @@
 
 package com.google.gwt.typedarrays.client;
 
+import com.google.gwt.core.client.JavaScriptObject;
+
 /** The ArrayBuffer type describes a buffer used to store data for the TypedArray interface and its subclasses.
  * 
  * Taken from the Khronos TypedArrays Draft Spec as of Aug 30, 2010. */

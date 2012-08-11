@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.gwt.widgets;
 
+import com.google.gwt.user.client.ui.TextBox;
+
 public class PlaceholderTextBox extends TextBox {
 
 	String placeholder = "";
