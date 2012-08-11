@@ -61,7 +61,6 @@ public class Table extends WidgetGroup {
 	private Drawable background;
 	private boolean clip;
 	private Skin skin;
-	private boolean disableLayout;
 
 	public Table () {
 		this(null);
@@ -122,14 +121,8 @@ public class Table extends WidgetGroup {
 	}
 
 	public void invalidate () {
-		if (disableLayout) return;
 		layout.invalidate();
 		super.invalidate();
-	}
-
-	public void invalidateHierarchy () {
-		if (disableLayout) return;
-		super.invalidateHierarchy();
 	}
 
 	public float getPrefWidth () {
@@ -425,6 +418,11 @@ public class Table extends WidgetGroup {
 
 	public void setSkin (Skin skin) {
 		this.skin = skin;
+	}
+
+	/** If true (the default), positions and sizes are rounded to integers. */
+	public void setRound (boolean round) {
+		layout.round = round;
 	}
 
 	/** Draws the debug lines for all tables in the stage. If this method is not called each frame, no debug lines will be drawn. If
