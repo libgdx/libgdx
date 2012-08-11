@@ -1,7 +1,16 @@
-gwt-servlet.jar
+# Temporary Files
+*~
+.*.swp
+
+# Generated Folders
 target/
 gen/
 bin/
+
+# Compiled Files
+gwt-servlet.jar
 *.class
 classes/
+
+# Eclipse Files
 .settings
