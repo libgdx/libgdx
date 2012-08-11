@@ -17,6 +17,7 @@
 package com.badlogic.gdx.math;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /** Encapsulates a column major 4 by 4 matrix. You can access the linear array for use with OpenGL via the public
  * {@link Matrix4#val} member. Like the {@link Vector3} class it allows to chain methods by returning a reference to itself.
@@ -250,22 +251,8 @@ public class Matrix4 implements Serializable {
 	 * 
 	 * @return This matrix for chaining */
 	public Matrix4 idt () {
-		val[M00] = 1;
-		val[M01] = 0;
-		val[M02] = 0;
-		val[M03] = 0;
-		val[M10] = 0;
-		val[M11] = 1;
-		val[M12] = 0;
-		val[M13] = 0;
-		val[M20] = 0;
-		val[M21] = 0;
-		val[M22] = 1;
-		val[M23] = 0;
-		val[M30] = 0;
-		val[M31] = 0;
-		val[M32] = 0;
-		val[M33] = 1;
+		Arrays.fill(val, 0);
+		val[M00] = val[M11] = val[M22] = val[M33] = 1;
 		return this;
 	}
 
@@ -455,7 +442,7 @@ public class Matrix4 implements Serializable {
 	 * @param vector The translation vector
 	 * @return This matrix for chaining */
 	public Matrix4 setToTranslation (Vector3 vector) {
-		this.idt();
+		idt();
 		val[M03] = vector.x;
 		val[M13] = vector.y;
 		val[M23] = vector.z;
@@ -506,7 +493,7 @@ public class Matrix4 implements Serializable {
 	 * @return This matrix for chaining */
 	public Matrix4 setToTranslationAndScaling (float translationX, float translationY, float translationZ, float scalingX,
 		float scalingY, float scalingZ) {
-		this.idt();
+		idt();
 		val[M03] = translationX;
 		val[M13] = translationY;
 		val[M23] = translationZ;
@@ -1042,21 +1029,10 @@ public class Matrix4 implements Serializable {
 	 * @param scaleZ
 	 * @return this matrix for chaining */
 	public Matrix4 scale (float scaleX, float scaleY, float scaleZ) {
+		Arrays.fill(tmp, 0);
 		tmp[M00] = scaleX;
-		tmp[M01] = 0;
-		tmp[M02] = 0;
-		tmp[M03] = 0;
-		tmp[M10] = 0;
 		tmp[M11] = scaleY;
-		tmp[M12] = 0;
-		tmp[M13] = 0;
-		tmp[M20] = 0;
-		tmp[M21] = 0;
 		tmp[M22] = scaleZ;
-		tmp[M23] = 0;
-		tmp[M30] = 0;
-		tmp[M31] = 0;
-		tmp[M32] = 0;
 		tmp[M33] = 1;
 
 		mul(val, tmp);
