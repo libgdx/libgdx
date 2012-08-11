@@ -13,6 +13,3 @@ libgdx*.zip
 gwt-servlet.jar
 *.class
 classes/
-
-# Eclipse Files
-.settings
