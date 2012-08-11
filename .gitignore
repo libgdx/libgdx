@@ -6,8 +6,10 @@
 target/
 gen/
 bin/
+/dist
 
 # Compiled Files
+libgdx*.zip
 gwt-servlet.jar
 *.class
 classes/
