@@ -4,3 +4,4 @@ gen/
 bin/
 *.class
 classes/
+.settings
