@@ -13,3 +13,7 @@ libgdx*.zip
 gwt-servlet.jar
 *.class
 classes/
+gwtUnitCache*
+
+# war directories in GWT projects, use quick fix if you import from a fresh clone
+war/
