@@ -22,6 +22,14 @@ public class AnimatedModelNode extends StillModelNode implements AnimatedModelIn
 	public String animation;
 	public float time;
 	public boolean looping;
+	
+	public AnimatedModelNode() {
+		super();
+	}
+	
+	public AnimatedModelNode(Material[] materials) {
+		super(materials);
+	}
 
 	@Override
 	public String getAnimation () {
