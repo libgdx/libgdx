@@ -326,6 +326,10 @@ public class Actions {
 		return action;
 	}
 
+	static public SequenceAction sequence () {
+		return action(SequenceAction.class);
+	}
+
 	static public ParallelAction parallel (Action action1) {
 		ParallelAction action = action(ParallelAction.class);
 		action.addAction(action1);
@@ -371,6 +375,10 @@ public class Actions {
 		for (int i = 0, n = actions.length; i < n; i++)
 			action.addAction(actions[i]);
 		return action;
+	}
+
+	static public ParallelAction parallel () {
+		return action(ParallelAction.class);
 	}
 
 	static public RepeatAction repeat (int count, Action repeatedAction) {

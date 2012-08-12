@@ -59,6 +59,10 @@ public class ParallelAction extends Action {
 		super.setActor(actor);
 	}
 
+	public Array<Action> getActions () {
+		return actions;
+	}
+
 	public String toString () {
 		StringBuilder buffer = new StringBuilder(64);
 		buffer.append(super.toString());

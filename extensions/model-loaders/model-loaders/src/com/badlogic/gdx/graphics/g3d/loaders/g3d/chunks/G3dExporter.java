@@ -26,6 +26,11 @@ import com.badlogic.gdx.graphics.g3d.model.keyframe.Keyframe;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonAnimation;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonJoint;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonKeyframe;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonModel;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonSubMesh;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -197,6 +202,164 @@ public class G3dExporter {
 				out.close();
 			} catch (IOException e) {
 			}
+		}
+	}
+	
+	public static void export (SkeletonModel model, FileHandle file) {
+		ChunkWriter writer = new ChunkWriter();
+
+		// write version info
+		writer.newChunk(G3dConstants.VERSION_INFO);
+		writer.writeByte(G3dConstants.MAJOR_VERSION);
+		writer.writeByte(G3dConstants.MINOR_VERSION);
+		writer.endChunk();
+
+		// write skeleton model
+		writer.newChunk(G3dConstants.SKELETON_MODEL);
+		writer.writeInt(model.subMeshes.length);
+
+		for (SkeletonSubMesh mesh : model.subMeshes) {
+			// writes skeleton submesh
+			writer.newChunk(G3dConstants.SKELETON_SUBMESH);
+			writer.writeString(mesh.name == null ? "" : mesh.name);
+			writer.writeInt(mesh.primitiveType);
+
+			// write vertex attributes
+			writer.newChunk(G3dConstants.VERTEX_ATTRIBUTES);
+			writer.writeInt(mesh.mesh.getVertexAttributes().size());
+			for (int i = 0; i < mesh.mesh.getVertexAttributes().size(); i++) {
+				VertexAttribute attribute = mesh.mesh.getVertexAttributes().get(i);
+				writer.newChunk(G3dConstants.VERTEX_ATTRIBUTE);
+				writer.writeInt(attribute.usage);
+				writer.writeInt(attribute.numComponents);
+				writer.writeString(attribute.alias);
+				writer.endChunk();
+			}
+			writer.endChunk();
+
+			// write static components, sort of like a bind pose mesh
+			writer.newChunk(G3dConstants.VERTEX_LIST);
+			int numFloats = mesh.mesh.getNumVertices() * mesh.mesh.getVertexSize() / 4;
+			writer.writeInt(mesh.mesh.getNumVertices());
+			writer.writeFloats(mesh.vertices);
+			writer.endChunk();
+
+			// write indices
+			writer.newChunk(G3dConstants.INDEX_LIST);
+			int numShorts = mesh.mesh.getNumIndices();
+			writer.writeInt(numShorts);
+			writer.writeShorts(mesh.indices);
+			writer.endChunk();
+			
+			// write bone weight
+			writer.newChunk(G3dConstants.BONE_WEIGHTS);
+			writer.writeInt(mesh.boneWeights.length);
+			for(float array[] : mesh.boneWeights) {
+				writer.newChunk(G3dConstants.BONE_WEIGHT);
+				writer.writeInt(array.length);
+				writer.writeFloats(array);
+				writer.endChunk();
+			}
+			writer.endChunk();
+			
+			// write bone assignment
+			writer.newChunk(G3dConstants.BONE_ASSIGNMENTS);
+			writer.writeInt(mesh.boneAssignments.length);
+			for(int array[] : mesh.boneAssignments) {
+				writer.newChunk(G3dConstants.BONE_ASSIGNMENT);
+				writer.writeInt(array.length);
+				writer.writeInts(array);
+				writer.endChunk();
+			}
+			writer.endChunk();
+
+			// end skeleton submesh
+			writer.endChunk();
+		}
+		
+		//Write Skeleton
+		writer.newChunk(G3dConstants.SKELETON);
+		
+		//Write Skeleton hierarchy
+		writer.newChunk(G3dConstants.SKELETON_HIERARCHY);
+		writer.writeInt(model.skeleton.hierarchy.size);
+		for(SkeletonJoint joint : model.skeleton.hierarchy) {
+			writeSkeletonJoint(writer,joint);
+		}
+		
+		// end Skeleton hierarchy
+		writer.endChunk();
+		
+		//Write Skeleton animations
+		writer.newChunk(G3dConstants.SKELETON_ANIMATIONS);
+		
+		writer.writeInt(model.skeleton.animations.size);
+		for(String animationName : model.skeleton.animations.keys()){
+			writer.newChunk(G3dConstants.SKELETON_ANIMATION);
+			writer.writeString(animationName);
+			SkeletonAnimation animation = model.skeleton.animations.get(animationName);
+			writer.writeFloat(animation.totalDuration);
+			writer.writeInt(animation.perJointkeyFrames.length);
+			for(SkeletonKeyframe array[] : animation.perJointkeyFrames){
+				writer.writeInt(array.length);
+				for(SkeletonKeyframe frame : array) {
+					writer.writeFloat(frame.timeStamp);
+					writer.writeInt(frame.parentIndex);
+					writer.writeFloat(frame.position.x);
+					writer.writeFloat(frame.position.y);
+					writer.writeFloat(frame.position.z);
+					writer.writeFloat(frame.rotation.w);
+					writer.writeFloat(frame.rotation.x);
+					writer.writeFloat(frame.rotation.y);
+					writer.writeFloat(frame.rotation.z);
+					writer.writeFloat(frame.scale.x);
+					writer.writeFloat(frame.scale.y);
+					writer.writeFloat(frame.scale.z);
+				}
+			}
+			writer.endChunk();
+		}
+		
+		// end Skeleton animations
+		writer.endChunk();
+		
+		// end Skeleton
+		writer.endChunk();
+
+		// end skeleton model
+		writer.endChunk();
+
+		// write to file
+		OutputStream out = null;
+		try {
+			out = file.write(false);
+			writer.writeToStream(out);
+		} catch (IOException e) {
+			throw new GdxRuntimeException("An error occured while exporting the still model, " + e.getMessage(), e);
+		} finally {
+			if (out != null) try {
+				out.close();
+			} catch (IOException e) {
+			}
+		}
+	}
+	
+	private static void writeSkeletonJoint(ChunkWriter writer, SkeletonJoint joint) {
+		writer.writeString(joint.name);
+		writer.writeFloat(joint.position.x);
+		writer.writeFloat(joint.position.y);
+		writer.writeFloat(joint.position.z);
+		writer.writeFloat(joint.rotation.w);
+		writer.writeFloat(joint.rotation.x);
+		writer.writeFloat(joint.rotation.y);
+		writer.writeFloat(joint.rotation.z);
+		writer.writeFloat(joint.scale.x);
+		writer.writeFloat(joint.scale.y);
+		writer.writeFloat(joint.scale.z);
+		
+		writer.writeInt(joint.children.size);
+		for(SkeletonJoint child : joint.children) {
+			writeSkeletonJoint(writer,child);
 		}
 	}
 }

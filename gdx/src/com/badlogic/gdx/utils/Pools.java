@@ -46,7 +46,7 @@ public class Pools {
 		pool.free(object);
 	}
 
-	/** Frees all the object from the {@link #get(Class) pool}. */
+	/** Frees the specified objects from the {@link #get(Class) pool}. */
 	static public void free (Array objects) {
 		if (objects == null) throw new IllegalArgumentException("objects cannot be null.");
 		for (int i = 0, n = objects.size; i < n; i++) {

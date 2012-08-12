@@ -1,12 +1,12 @@
 #include <com.badlogic.gdx.physics.box2d.joints.DistanceJoint.h>
 
-//@line:25
+//@line:26
 
 #include <Box2D/Box2D.h>
 	 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_DistanceJoint_jniSetLength(JNIEnv* env, jobject object, jlong addr, jfloat length) {
 
 
-//@line:38
+//@line:39
 
 		b2DistanceJoint* joint = (b2DistanceJoint*)addr;
 		joint->SetLength( length );
@@ -17,7 +17,7 @@
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_DistanceJoint_jniGetLength(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:48
+//@line:49
 
 		b2DistanceJoint* joint = (b2DistanceJoint*)addr;
 		return joint->GetLength();
@@ -28,7 +28,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_DistanceJoin
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_DistanceJoint_jniSetFrequency(JNIEnv* env, jobject object, jlong addr, jfloat hz) {
 
 
-//@line:58
+//@line:59
 
 		b2DistanceJoint* joint = (b2DistanceJoint*)addr;
 		joint->SetFrequency( hz );
@@ -39,7 +39,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_DistanceJoint_
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_DistanceJoint_jniGetFrequency(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:68
+//@line:69
 
 		b2DistanceJoint* joint = (b2DistanceJoint*)addr;
 		return joint->GetFrequency();
@@ -50,7 +50,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_DistanceJoin
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_DistanceJoint_jniSetDampingRatio(JNIEnv* env, jobject object, jlong addr, jfloat ratio) {
 
 
-//@line:78
+//@line:79
 
 		b2DistanceJoint* joint = (b2DistanceJoint*)addr;
 		joint->SetDampingRatio( ratio );
@@ -61,7 +61,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_DistanceJoint_
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_DistanceJoint_jniGetDampingRatio(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:88
+//@line:89
 
 		b2DistanceJoint* joint = (b2DistanceJoint*)addr;
 		return joint->GetDampingRatio();

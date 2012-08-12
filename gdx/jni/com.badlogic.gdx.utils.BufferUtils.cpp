@@ -1,6 +1,6 @@
 #include <com.badlogic.gdx.utils.BufferUtils.h>
 
-//@line:267
+//@line:268
  
 	#include <stdio.h>
 	#include <stdlib.h>
@@ -9,7 +9,7 @@
 	char* buffer = (char*)env->GetDirectBufferAddress(obj_buffer);
 
 
-//@line:305
+//@line:306
 
 		free(buffer);
 	 
@@ -19,7 +19,7 @@
 JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_utils_BufferUtils_newDisposableByteBuffer(JNIEnv* env, jclass clazz, jint numBytes) {
 
 
-//@line:309
+//@line:310
 
 		char* ptr = (char*)malloc(numBytes);
 		return env->NewDirectByteBuffer(ptr, numBytes);
@@ -31,7 +31,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_clear(JNIEnv* env
 	char* buffer = (char*)env->GetDirectBufferAddress(obj_buffer);
 
 
-//@line:315
+//@line:316
 
 		memset(buffer, 0, numBytes);
 	
@@ -43,7 +43,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FLjava
 	float* src = (float*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:319
+//@line:320
 
 		memcpy(dst, src + offset, numFloats << 2 );
 	
@@ -56,7 +56,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3BILjav
 	char* src = (char*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:323
+//@line:324
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -69,7 +69,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3CILjav
 	unsigned short* src = (unsigned short*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:327
+//@line:328
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -82,7 +82,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3SILjav
 	short* src = (short*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:331
+//@line:332
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	 
@@ -95,7 +95,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3IILjav
 	int* src = (int*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:335
+//@line:336
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -108,7 +108,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3JILjav
 	long long* src = (long long*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:339
+//@line:340
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -121,7 +121,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FILjav
 	float* src = (float*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:343
+//@line:344
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -134,7 +134,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3DILjav
 	double* src = (double*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:347
+//@line:348
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -147,7 +147,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni__Ljava_ni
 	unsigned char* dst = (unsigned char*)env->GetDirectBufferAddress(obj_dst);
 
 
-//@line:351
+//@line:352
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
