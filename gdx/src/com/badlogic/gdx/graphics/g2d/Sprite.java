@@ -16,13 +16,16 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.NumberUtils;
-
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
+import com.badlogic.gdx.utils.SpriteBackend;
+import com.badlogic.gdx.utils.Updater;
 
 /** Holds the geometry, color, and texture information for drawing 2D sprites using {@link SpriteBatch}. A Sprite has a position
  * and a size given as width and height. The position is relative to the origin of the coordinate system specified via
@@ -32,11 +35,15 @@ import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
  * its position.
  * @author mzechner
  * @author Nathan Sweet */
-public class Sprite extends TextureRegion {
+public class Sprite extends TextureRegion implements SpriteBackend{
 	static final int VERTEX_SIZE = 2 + 1 + 2;
 	static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
 
+	//	---------------------------------------------------------
+
 	final float[] vertices = new float[SPRITE_SIZE];
+	private final float[] rect = new float[4];
+	
 	private final Color color = new Color(1, 1, 1, 1);
 	private float x, y;
 	float width, height;
@@ -44,8 +51,12 @@ public class Sprite extends TextureRegion {
 	private float rotation;
 	private float scaleX = 1, scaleY = 1;
 	private boolean dirty = true;
-	private Rectangle bounds;
+	private Rectangle bounds = new Rectangle();
+	
+	//	---------------------------------------------------------
 
+	private Updater mUpdater = Updater.instance;
+	
 	/** Creates an uninitialized sprite. The sprite will need a texture, texture region, bounds, and color set before it can be
 	 * drawn. */
 	public Sprite () {
@@ -64,8 +75,8 @@ public class Sprite extends TextureRegion {
 		this(texture, 0, 0, srcWidth, srcHeight);
 	}
 
-	/** Creates a sprite with width, height, and texture region equal to the specified size.
-	 * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
+	/** Creates a sprite with width, height, and texture region equal to the specified size. * @param srcWidth The width of the
+	 * texture region. May be negative to flip the sprite when drawn.
 	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn. */
 	public Sprite (Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
 		if (texture == null) throw new IllegalArgumentException("texture cannot be null.");
@@ -133,7 +144,7 @@ public class Sprite extends TextureRegion {
 
 		float x2 = x + width;
 		float y2 = y + height;
-		float[] vertices = this.vertices;
+		final float[] vertices = this.vertices;
 		vertices[X1] = x;
 		vertices[Y1] = y;
 
@@ -148,7 +159,7 @@ public class Sprite extends TextureRegion {
 
 		if (rotation != 0 || scaleX != 1 || scaleY != 1) dirty = true;
 	}
-
+	
 	/** Sets the size of the sprite when drawn, before scaling and rotation are applied. If origin, rotation, or scale are changed,
 	 * it is slightly more efficient to set the size after those operations. If both position and size are to be changed, it is
 	 * better to use {@link #setBounds(float, float, float, float)}. */
@@ -160,7 +171,7 @@ public class Sprite extends TextureRegion {
 
 		float x2 = x + width;
 		float y2 = y + height;
-		float[] vertices = this.vertices;
+		final float[] vertices = this.vertices;
 		vertices[X1] = x;
 		vertices[Y1] = y;
 
@@ -204,7 +215,7 @@ public class Sprite extends TextureRegion {
 
 		if (dirty) return;
 
-		float[] vertices = this.vertices;
+		final float[] vertices = this.vertices;
 		vertices[X1] += xAmount;
 		vertices[X2] += xAmount;
 		vertices[X3] += xAmount;
@@ -218,7 +229,7 @@ public class Sprite extends TextureRegion {
 
 		if (dirty) return;
 
-		float[] vertices = this.vertices;
+		final float[] vertices = this.vertices;
 		vertices[Y1] += yAmount;
 		vertices[Y2] += yAmount;
 		vertices[Y3] += yAmount;
@@ -233,7 +244,7 @@ public class Sprite extends TextureRegion {
 
 		if (dirty) return;
 
-		float[] vertices = this.vertices;
+		final float[] vertices = this.vertices;
 		vertices[X1] += xAmount;
 		vertices[Y1] += yAmount;
 
@@ -249,25 +260,25 @@ public class Sprite extends TextureRegion {
 
 	public void setColor (Color tint) {
 		float color = tint.toFloatBits();
-		float[] vertices = this.vertices;
+		final float[] vertices = this.vertices;
 		vertices[C1] = color;
 		vertices[C2] = color;
 		vertices[C3] = color;
 		vertices[C4] = color;
 	}
 
+	public void setColor(float color){
+		final float[] vertices = Sprite.this.vertices;
+		vertices[C1] = color;
+		vertices[C2] = color;
+		vertices[C3] = color;
+		vertices[C4] = color;
+	}
+	
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		float color = NumberUtils.intToFloatColor(intBits);
-		float[] vertices = this.vertices;
-		vertices[C1] = color;
-		vertices[C2] = color;
-		vertices[C3] = color;
-		vertices[C4] = color;
-	}
-
-	public void setColor (float color) {
-		float[] vertices = this.vertices;
+		final float[] vertices = this.vertices;
 		vertices[C1] = color;
 		vertices[C2] = color;
 		vertices[C3] = color;
@@ -412,9 +423,12 @@ public class Sprite extends TextureRegion {
 		return vertices;
 	}
 
+	public Circle getBoundingCircle(){
+		return null;
+	}
+	
 	/** Returns the bounding axis aligned {@link Rectangle} that bounds this sprite. The rectangles x and y coordinates describe its
-	 * bottom left corner. If you change the position or size of the sprite, you have to fetch the triangle again for it to be
-	 * recomputed.
+	 * bottom left corner. If you change the position or size of the sprite, you have to fetch the triangle again for it to be recomputed.
 	 * 
 	 * @return the bounding Rectangle */
 	public Rectangle getBoundingRectangle () {
@@ -441,14 +455,52 @@ public class Sprite extends TextureRegion {
 		maxy = maxy < vertices[Y3] ? vertices[Y3] : maxy;
 		maxy = maxy < vertices[Y4] ? vertices[Y4] : maxy;
 
-		if (bounds == null) bounds = new Rectangle();
 		bounds.x = minx;
 		bounds.y = miny;
 		bounds.width = maxx - minx;
 		bounds.height = maxy - miny;
+
 		return bounds;
 	}
+	
+	@Override
+	public float[] getBoundingFloatRect (float offset) {
+		final float[] vertices = getVertices();
 
+		float minx = vertices[X1];
+		float miny = vertices[Y1];
+		float maxx = vertices[X1];
+		float maxy = vertices[Y1];
+
+		minx = minx > vertices[X2] ? vertices[X2] : minx;
+		minx = minx > vertices[X3] ? vertices[X3] : minx;
+		minx = minx > vertices[X4] ? vertices[X4] : minx;
+
+		maxx = maxx < vertices[X2] ? vertices[X2] : maxx;
+		maxx = maxx < vertices[X3] ? vertices[X3] : maxx;
+		maxx = maxx < vertices[X4] ? vertices[X4] : maxx;
+
+		miny = miny > vertices[Y2] ? vertices[Y2] : miny;
+		miny = miny > vertices[Y3] ? vertices[Y3] : miny;
+		miny = miny > vertices[Y4] ? vertices[Y4] : miny;
+
+		maxy = maxy < vertices[Y2] ? vertices[Y2] : maxy;
+		maxy = maxy < vertices[Y3] ? vertices[Y3] : maxy;
+		maxy = maxy < vertices[Y4] ? vertices[Y4] : maxy;
+
+		final float[] rect = Sprite.this.rect;
+		// x
+		rect[0] = minx+offset;
+		// y
+		rect[1] = miny+offset;
+		// width
+		rect[2] = maxx - minx - offset;
+		// height
+		rect[3] = maxy - miny - offset;
+
+		return rect;
+	}
+	
 	public void draw (SpriteBatch spriteBatch) {
 		spriteBatch.draw(texture, getVertices(), 0, SPRITE_SIZE);
 	}
@@ -463,14 +515,60 @@ public class Sprite extends TextureRegion {
 		setColor(color);
 	}
 
+	public void update(float delta){
+		mUpdater.update(this, delta);
+	}
+	
+	public void postUpdater(Updater updater){
+		this.mUpdater= updater;
+	}
+	
+	public void noUpdater(){
+		this.mUpdater = Updater.instance;
+	}
+	
 	public float getX () {
 		return x;
 	}
 
+	public float getCenterX(){
+		final float[] vertices = getVertices();
+
+		float minx = vertices[X1];
+		float maxx = vertices[X1];
+
+		minx = minx > vertices[X2] ? vertices[X2] : minx;
+		minx = minx > vertices[X3] ? vertices[X3] : minx;
+		minx = minx > vertices[X4] ? vertices[X4] : minx;
+
+		maxx = maxx < vertices[X2] ? vertices[X2] : maxx;
+		maxx = maxx < vertices[X3] ? vertices[X3] : maxx;
+		maxx = maxx < vertices[X4] ? vertices[X4] : maxx;
+
+		return (minx + maxx)/2;
+	}
+	
 	public float getY () {
 		return y;
 	}
 
+	public float getCenterY(){
+		final float[] vertices = getVertices();
+
+		float miny = vertices[Y1];
+		float maxy = vertices[Y1];
+
+		miny = miny > vertices[Y2] ? vertices[Y2] : miny;
+		miny = miny > vertices[Y3] ? vertices[Y3] : miny;
+		miny = miny > vertices[Y4] ? vertices[Y4] : miny;
+
+		maxy = maxy < vertices[Y2] ? vertices[Y2] : maxy;
+		maxy = maxy < vertices[Y3] ? vertices[Y3] : maxy;
+		maxy = maxy < vertices[Y4] ? vertices[Y4] : maxy;
+		
+		return (miny + maxy)/2;
+	}
+	
 	public float getWidth () {
 		return width;
 	}
@@ -575,7 +673,7 @@ public class Sprite extends TextureRegion {
 	}
 
 	public void scroll (float xAmount, float yAmount) {
-		float[] vertices = Sprite.this.vertices;
+		final float[] vertices = Sprite.this.vertices;
 		if (xAmount != 0) {
 			float u = (vertices[U1] + xAmount) % 1;
 			float u2 = u + width / texture.getWidth();
@@ -596,5 +694,26 @@ public class Sprite extends TextureRegion {
 			vertices[V3] = v;
 			vertices[V4] = v2;
 		}
+	}
+	
+	public boolean hit(float x,float y){
+		if(x >= this.x && x <= (this.x + width) &&
+		   y >= this.y && y <= (this.y + height)){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void reset () {
+		setSize(0, 0);
+		setPosition(0, 0);
+		setOrigin(0, 0);
+		rotation= 0;
+		scaleX = 1;
+		scaleY = 1;
+		
+		dirty = false;
+		setColor(1,1,1,1);
 	}
 }

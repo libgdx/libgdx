@@ -15,11 +15,17 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
+
+
 /** A convenient 2D circle class.
  * @author mzechner */
 public class Circle implements Serializable {
 	public float x, y;
 	public float radius;
+
+	public Circle (){
+		
+	}
 
 	public Circle (float x, float y, float radius) {
 		this.x = x;
@@ -50,4 +56,34 @@ public class Circle implements Serializable {
 		this.y = y;
 		this.radius = radius;
 	}
+	
+	 public boolean intersects(Circle c) {
+	     return Math.sqrt((x-c.x)*(x-c.x)+(y-c.y)*(y-c.y)) <= radius + c.radius;
+	 }
+	 
+	 public float area()      { return (float) (Math.PI * radius * radius); }
+	 
+	 public float perimeter() { return (float) (2 * Math.PI * radius);      }
+	 
+	 public boolean overlaps(Circle circle){
+		 final float a = this.radius + circle.radius;
+	     final float dx = this.x - circle.x;
+	     final float dy = this.y - circle.y;
+	     return a * a > (dx * dx + dy * dy);
+	 }
+	 
+	 public boolean isOnTheCircle(Vector2 point){
+		 final float r2 = radius * radius;
+		 if(((point.x -x)*(point.x -x) + (point.y-y)*(point.y-y) - r2 ) != 0)
+			 return false;
+		 return true;
+	 }
+	 
+	 public boolean isOnTheCircle(float xPos,float yPos){
+		 final float r2 = radius * radius;
+		 if(((xPos -x)*(xPos -x) + (yPos-y)*(yPos-y) - r2 ) != 0)
+			 return false;
+		 return true;
+	 }
+
 }

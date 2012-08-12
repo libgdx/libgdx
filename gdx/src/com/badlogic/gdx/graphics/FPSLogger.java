@@ -30,10 +30,13 @@ public class FPSLogger {
 	}
 
 	/** Logs the current frames per second to the console. */
-	public void log () {
+	public int log () {
 		if (System.currentTimeMillis() - startTime > 1000) {
-			Gdx.app.log("FPSLogger", "fps: " + Gdx.graphics.getFramesPerSecond());
+			int fps = Gdx.graphics.getFramesPerSecond();
+			Gdx.app.log("FPSLogger", "fps: " + fps);
 			startTime = System.currentTimeMillis();
+			return fps;
 		}
+		return -1;
 	}
 }

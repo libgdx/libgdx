@@ -391,8 +391,12 @@ public class ParticleEmitter {
 			particle.rotationDiff = rotationValue.newHighValue();
 			if (!rotationValue.isRelative()) particle.rotationDiff -= particle.rotation;
 			float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(0);
-			if (aligned) rotation += angle;
-			particle.setRotation(rotation);
+			//trungnt13 fix
+			if (aligned){
+				rotation+=particle.angle+particle.angleDiff;
+			  	particle.setRotation(rotation); 
+			}else
+				particle.setRotation(rotation);
 		}
 
 		if (windValue.active) {

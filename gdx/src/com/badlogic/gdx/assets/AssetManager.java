@@ -27,6 +27,7 @@ import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.MusicLoader;
+import com.badlogic.gdx.assets.loaders.ParticleLoader;
 import com.badlogic.gdx.assets.loaders.PixmapLoader;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.assets.loaders.SoundLoader;
@@ -40,6 +41,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.tiled.TileAtlas;
 import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
@@ -86,6 +88,7 @@ public class AssetManager implements Disposable {
 		setLoader(Skin.class, new SkinLoader(resolver));
 		setLoader(TileAtlas.class, new TileAtlasLoader(resolver));
 		setLoader(TileMapRenderer.class, new TileMapRendererLoader(resolver));
+		setLoader(ParticleEffect.class, new ParticleLoader(resolver));
 		threadPool = Executors.newFixedThreadPool(1, new ThreadFactory() {
 			@Override
 			public Thread newThread (Runnable r) {
