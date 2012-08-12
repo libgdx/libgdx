@@ -3,7 +3,7 @@
 	<property environment="env" />
 	
 	<!-- ndk directory -->
-	<property name="env.NDK_HOME" value="/home/mzechner/android-ndk-r5"/>
+	<property name="env.NDK_HOME" value="/home/trung/android-ndk-r8"/>
 	
 	<!-- library version -->
 	<property name="version" value="0.9.3"/>

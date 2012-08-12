@@ -65,6 +65,7 @@ public class ScrollPane extends WidgetGroup {
 	float fadeAlpha, fadeAlphaSeconds = 1, fadeDelay, fadeDelaySeconds = 1;
 
 	private boolean flickScroll = true;
+	float flingSensitive = 1f;
 	float velocityX, velocityY;
 	float flingTimer;
 	private boolean overscroll = true;
@@ -180,12 +181,12 @@ public class ScrollPane extends WidgetGroup {
 			public void fling (InputEvent event, float x, float y, int pointer, int button) {
 				if (Math.abs(x) > 150) {
 					flingTimer = flingTime;
-					velocityX = x;
+					velocityX = flingSensitive*x;
 					cancelTouchFocusedChild(event);
 				}
 				if (Math.abs(y) > 150) {
 					flingTimer = flingTime;
-					velocityY = -y;
+					velocityY = -flingSensitive*y;
 					cancelTouchFocusedChild(event);
 				}
 			}
@@ -532,7 +533,8 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void setScrollX (float pixels) {
-		this.amountX = MathUtils.clamp(pixels, 0, maxX);
+//		this.amountX = MathUtils.clamp(pixels, 0, maxX);
+		this.amountX = pixels;
 	}
 
 	/** Returns the x scroll position in pixels. */
@@ -541,7 +543,8 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void setScrollY (float pixels) {
-		amountY = MathUtils.clamp(pixels, 0, maxY);
+//		amountY = MathUtils.clamp(pixels, 0, maxY);
+		amountY = pixels;
 	}
 
 	/** Returns the y scroll position in pixels. */
@@ -680,7 +683,14 @@ public class ScrollPane extends WidgetGroup {
 		this.fadeAlphaSeconds = fadeAlphaSeconds;
 		this.fadeDelaySeconds = fadeDelaySeconds;
 	}
-
+	
+	/**
+	 * From 0.0f to 1.0f ( slow to fast)
+	 */
+	public void setFlingSensitive(float sensitive){
+		if(sensitive > 0f  && sensitive <= 1f)
+			flingSensitive = sensitive;
+	}
 	/** The style for a scroll pane, see {@link ScrollPane}.
 	 * @author mzechner
 	 * @author Nathan Sweet */
