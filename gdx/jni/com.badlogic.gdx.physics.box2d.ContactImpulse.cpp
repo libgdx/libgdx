@@ -1,13 +1,13 @@
 #include <com.badlogic.gdx.physics.box2d.ContactImpulse.h>
 
-//@line:23
+//@line:24
 
 #include <Box2D/Box2D.h>
 	 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ContactImpulse_jniGetNormalImpulses(JNIEnv* env, jobject object, jlong addr, jfloatArray obj_values) {
 	float* values = (float*)env->GetPrimitiveArrayCritical(obj_values, 0);
 
 
-//@line:43
+//@line:44
 
 		b2ContactImpulse* contactImpulse = (b2ContactImpulse*)addr;	
 		values[0] = contactImpulse->normalImpulses[0];
@@ -21,7 +21,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ContactImpulse_jniGet
 	float* values = (float*)env->GetPrimitiveArrayCritical(obj_values, 0);
 
 
-//@line:54
+//@line:55
 
 	  	b2ContactImpulse* contactImpulse = (b2ContactImpulse*)addr;	
 		values[0] = contactImpulse->tangentImpulses[0];
@@ -34,7 +34,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ContactImpulse_jniGet
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_ContactImpulse_jniGetCount(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:64
+//@line:65
 
 		b2ContactImpulse* contactImpulse = (b2ContactImpulse*)addr;
 		return contactImpulse->count;

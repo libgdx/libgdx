@@ -18,10 +18,10 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_newPoly
 /*
  * Class:     com_badlogic_gdx_physics_box2d_PolygonShape
  * Method:    jniSet
- * Signature: (J[FI)V
+ * Signature: (J[FII)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniSet
-  (JNIEnv *, jobject, jlong, jfloatArray, jint);
+  (JNIEnv *, jobject, jlong, jfloatArray, jint, jint);
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_PolygonShape
