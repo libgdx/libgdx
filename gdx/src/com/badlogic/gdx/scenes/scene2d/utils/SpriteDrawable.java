@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /** Drawable for a {@link Sprite}.
  * @author Nathan Sweet */
-public class SpriteDrawable extends EmptyDrawable {
+public class SpriteDrawable extends BaseDrawable {
 	private Sprite sprite;
 
 	/** Creates an unitialized SpriteDrawable. The sprite must be set before use. */

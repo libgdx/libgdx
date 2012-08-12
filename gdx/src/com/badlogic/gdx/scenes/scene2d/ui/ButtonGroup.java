@@ -19,7 +19,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.utils.Array;
 
 /** Manages a group of buttons to enforce a minimum and maximum number of checked buttons. This enables "radio button"
- * functionality and more.
+ * functionality and more. A button may only be in one group at a time.
  * @author Nathan Sweet */
 public class ButtonGroup {
 	private final Array<Button> buttons = new Array();
