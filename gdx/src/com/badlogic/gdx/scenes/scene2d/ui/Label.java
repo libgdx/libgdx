@@ -206,7 +206,6 @@ public class Label extends Widget {
 
 		Color.tmp.set(color);
 		if (style.fontColor != null) Color.tmp.mul(style.fontColor);
-		System.out.println(style.fontColor);
 		cache.setColor(Color.tmp);
 		cache.setPosition(getX(), getY());
 		if (scaleX != 1 | scaleY != 1) {
