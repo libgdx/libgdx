@@ -73,6 +73,7 @@ public class PolygonShape extends Shape {
 		b2Vec2* verticesOut = new b2Vec2[numVertices];
 		for(int i = 0; i < numVertices; i++) {
 			verticesOut[i] = b2Vec2(verts[(i<<1) + offset], verts[(i<<1) + offset + 1]);
+		}
 		poly->Set(verticesOut, numVertices);
 		delete verticesOut;
 	 */
