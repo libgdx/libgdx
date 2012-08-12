@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g3d.ModelLoaderHints;
 import com.badlogic.gdx.graphics.g3d.loaders.collada.ColladaLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dLoader.G3dKeyframedModelLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dLoader.G3dStillModelLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dLoader.G3dSkeletonModelLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dtLoader.G3dtKeyframedModelLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dtLoader.G3dtStillModelLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.md2.MD2Loader;
@@ -56,6 +57,7 @@ public class ModelLoaderRegistry {
 		registerLoader("g3dt", new G3dtKeyframedModelLoader(), new ModelLoaderHints(true));
 		registerLoader("g3d", new G3dStillModelLoader(), new ModelLoaderHints(false));
 		registerLoader("g3d", new G3dKeyframedModelLoader(), new ModelLoaderHints(false));
+		registerLoader("g3d", new G3dSkeletonModelLoader(), new ModelLoaderHints(false));
 	}
 
 	/** Registers a new loader with the registry. The extension will be used to match the loader against a file to be loaded. The
