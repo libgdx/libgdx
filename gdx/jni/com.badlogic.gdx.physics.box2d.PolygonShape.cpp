@@ -22,9 +22,8 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniSet(J
 
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		int numVertices = len / 2;
-		printf("wtf\n");
 		b2Vec2* verticesOut = new b2Vec2[numVertices];
-		for(int i = 0; i < numVertices; i++) {
+		for(int i = 0; i < numVertices; i++) { 
 			verticesOut[i] = b2Vec2(verts[(i<<1) + offset], verts[(i<<1) + offset + 1]);
 		}
 		poly->Set(verticesOut, numVertices);
@@ -37,7 +36,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniSet(J
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniSetAsBox__JFF(JNIEnv* env, jobject object, jlong addr, jfloat hx, jfloat hy) {
 
 
-//@line:89
+//@line:88
 
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		poly->SetAsBox(hx, hy);
@@ -48,7 +47,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniSetAs
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniSetAsBox__JFFFFF(JNIEnv* env, jobject object, jlong addr, jfloat hx, jfloat hy, jfloat centerX, jfloat centerY, jfloat angle) {
 
 
-//@line:103
+//@line:102
 
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		poly->SetAsBox( hx, hy, b2Vec2( centerX, centerY ), angle );
@@ -59,7 +58,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniSetAs
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniGetVertexCount(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:113
+//@line:112
 
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		return poly->GetVertexCount();
@@ -71,7 +70,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniGetVe
 	float* verts = (float*)env->GetPrimitiveArrayCritical(obj_verts, 0);
 
 
-//@line:129
+//@line:128
 
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		const b2Vec2 v = poly->GetVertex( index );

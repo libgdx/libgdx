@@ -26,6 +26,7 @@ import cli.System.Drawing.RectangleF;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.Clipboard;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -206,5 +207,19 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	@Override
 	public void exit () {	
 		System.exit(0);
+	}
+
+	@Override
+	public Clipboard getClipboard() {
+		return new Clipboard() {
+			@Override
+			public void setContents(String content) {
+			}
+			
+			@Override
+			public String getContents() {
+				return null;
+			}
+		};
 	}
 }
