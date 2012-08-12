@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -200,9 +201,25 @@ public class Label extends Widget {
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
+		float scaleX = getScaleX();
+		float scaleY = getScaleY();
 		cache.setColor(color);
 		cache.setPosition(getX(), getY());
-		cache.draw(batch, color.a * parentAlpha);
+		if (scaleX != 1 | scaleY != 1) {
+			Matrix4 transform = batch.getTransformMatrix();
+			float x = -getOriginX() * (scaleX - 1);
+			float y = -getOriginY() * (scaleY - 1);
+			batch.end();
+			transform.scl(scaleX, scaleY, 1);
+			transform.trn(x, y, 0);
+			batch.begin();
+			cache.draw(batch, color.a * parentAlpha);
+			batch.end();
+			transform.trn(-x, -y, 0);
+			transform.scl(1 / scaleX, 1 / scaleY, 1);
+			batch.begin();
+		} else
+			cache.draw(batch, color.a * parentAlpha);
 	}
 
 	public float getPrefWidth () {

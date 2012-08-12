@@ -28,9 +28,9 @@ public class TreeTest extends GdxTest {
 
 		final Tree tree = new Tree(skin);
 
-		final Node moo1 = new Node(new TextButton("moo1", skin));
+		final Node moo1 = new Node(new TextButton("left1", skin), new TextButton("moo1", skin));
 		final Node moo2 = new Node(new TextButton("moo2", skin));
-		final Node moo3 = new Node(new TextButton("moo3", skin));
+		final Node moo3 = new Node(new TextButton("left3", skin), new TextButton("moo3", skin));
 		final Node moo4 = new Node(new TextButton("moo4", skin));
 		final Node moo5 = new Node(new TextButton("moo5", skin));
 		tree.add(moo1);
