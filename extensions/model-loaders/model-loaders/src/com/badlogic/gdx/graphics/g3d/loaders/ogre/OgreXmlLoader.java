@@ -387,7 +387,7 @@ public class OgreXmlLoader {
 
 			joint.name = bone.name;
 			joint.position.set(bone.position.x, bone.position.y, bone.position.z);
-			joint.rotation.setFromAxis(bone.rotation.axis.x, bone.rotation.axis.x, bone.rotation.axis.x, MathUtils.radiansToDegrees
+			joint.rotation.setFromAxis(bone.rotation.axis.x, bone.rotation.axis.y, bone.rotation.axis.z, MathUtils.radiansToDegrees
 				* bone.rotation.angle);
 			if (bone.scale != null) {
 				if (bone.scale.factor == 0)
@@ -451,8 +451,7 @@ public class OgreXmlLoader {
 					}
 					jointKeyframe.rotation
 						.setFromAxis(keyFrame.rotate.axis.x, keyFrame.rotate.axis.y, keyFrame.rotate.axis.z,
-							MathUtils.radiansToDegrees * keyFrame.rotate.angle).mulLeft(skel.bindPoseJoints.get(jointIndex).rotation)
-						.nor();
+							MathUtils.radiansToDegrees * keyFrame.rotate.angle).nor();
 					jointKeyframe.parentIndex = skel.bindPoseJoints.get(jointIndex).parentIndex;
 					jointKeyFrames[k] = jointKeyframe;
 
