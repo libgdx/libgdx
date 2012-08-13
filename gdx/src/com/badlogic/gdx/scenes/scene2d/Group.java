@@ -215,7 +215,10 @@ public class Group extends Actor implements Cullable {
 	/** Adds an actor as a child of this group, at a specific index. The actor is first removed from its parent group, if any. */
 	public void addActorAt (int index, Actor actor) {
 		actor.remove();
-		children.insert(index, actor);
+		if (index >= children.size)
+			children.add(actor);
+		else
+			children.insert(index, actor);
 		actor.setParent(this);
 		actor.setStage(getStage());
 		childrenChanged();

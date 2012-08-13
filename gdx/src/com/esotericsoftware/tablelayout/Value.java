@@ -101,7 +101,7 @@ abstract public class Value {
 		return new CellValue() {
 			public float get (Cell cell) {
 				if (cell == null) throw new RuntimeException("minWidth can only be set on a cell property.");
-				Object widget = cell.getWidget();
+				Object widget = cell.widget;
 				if (widget == null) return 0;
 				return Toolkit.instance.getMinWidth(widget);
 			}
@@ -113,7 +113,7 @@ abstract public class Value {
 		return new CellValue() {
 			public float get (Cell cell) {
 				if (cell == null) throw new RuntimeException("minHeight can only be set on a cell property.");
-				Object widget = cell.getWidget();
+				Object widget = cell.widget;
 				if (widget == null) return 0;
 				return Toolkit.instance.getMinHeight(widget);
 			}
@@ -125,7 +125,7 @@ abstract public class Value {
 		return new CellValue() {
 			public float get (Cell cell) {
 				if (cell == null) throw new RuntimeException("prefWidth can only be set on a cell property.");
-				Object widget = cell.getWidget();
+				Object widget = cell.widget;
 				if (widget == null) return 0;
 				return Toolkit.instance.getPrefWidth(widget);
 			}
@@ -137,7 +137,7 @@ abstract public class Value {
 		return new CellValue() {
 			public float get (Cell cell) {
 				if (cell == null) throw new RuntimeException("prefHeight can only be set on a cell property.");
-				Object widget = cell.getWidget();
+				Object widget = cell.widget;
 				if (widget == null) return 0;
 				return Toolkit.instance.getPrefHeight(widget);
 			}
@@ -149,7 +149,7 @@ abstract public class Value {
 		return new CellValue() {
 			public float get (Cell cell) {
 				if (cell == null) throw new RuntimeException("maxWidth can only be set on a cell property.");
-				Object widget = cell.getWidget();
+				Object widget = cell.widget;
 				if (widget == null) return 0;
 				return Toolkit.instance.getMaxWidth(widget);
 			}
@@ -161,7 +161,7 @@ abstract public class Value {
 		return new CellValue() {
 			public float get (Cell cell) {
 				if (cell == null) throw new RuntimeException("maxHeight can only be set on a cell property.");
-				Object widget = cell.getWidget();
+				Object widget = cell.widget;
 				if (widget == null) return 0;
 				return Toolkit.instance.getMaxHeight(widget);
 			}

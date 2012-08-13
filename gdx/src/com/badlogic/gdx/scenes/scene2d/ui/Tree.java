@@ -53,7 +53,10 @@ public class Tree extends WidgetGroup {
 			Node node = nodes.get(i);
 			if (y >= node.rightActor.getY() && y <= node.rightActor.getY() + node.rightActor.getHeight()) {
 				if (x < leftColumnWidth - iconSpacing) return;
-				if (x < node.rightActor.getX()) node.setExpanded(!node.expanded);
+				if (x < node.rightActor.getX()) {
+					node.setExpanded(!node.expanded);
+					return;
+				}
 				Node oldNode = selectedNode;
 				selectedNode = node;
 				ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
@@ -165,20 +168,21 @@ public class Tree extends WidgetGroup {
 
 	private void draw (SpriteBatch batch, Array<Node> nodes, float indent) {
 		Drawable plus = style.plus, minus = style.minus;
+		float x = getX(), y = getY();
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			Actor actor = node.rightActor;
 
 			if (selectedNode == node && style.selection != null) {
 				float rowHeight = actor instanceof Layout ? ((Layout)actor).getPrefHeight() : actor.getHeight();
-				style.selection.draw(batch, 0, actor.getY(), getWidth(), rowHeight);
+				style.selection.draw(batch, x, y + actor.getY(), getWidth(), rowHeight);
 			}
 
 			if (node.children == null || node.children.size == 0) continue;
 
 			Drawable icon = node.expanded ? minus : plus;
 			float iconY = actor.getY() + actor.getHeight() / 2 - icon.getMinHeight() / 2;
-			icon.draw(batch, indent, iconY, icon.getMinWidth(), icon.getMinHeight());
+			icon.draw(batch, x + indent, y + iconY, icon.getMinWidth(), icon.getMinHeight());
 			if (node.expanded) draw(batch, node.children, indent + indentSpacing);
 		}
 	}

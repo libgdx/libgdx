@@ -262,6 +262,11 @@ public class Actor {
 		}
 	}
 
+	/** Returns true if the actor's parent is not null. */
+	public boolean hasParent () {
+		return parent != null;
+	}
+
 	/** Returns the parent actor, or null if not in a stage. */
 	public Group getParent () {
 		return parent;
