@@ -21,7 +21,7 @@ import com.badlogic.gdx.math.Vector2;
 public class PolygonShape extends Shape {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h>
+     #include <Box2D/Box2D.h>
 	 */
 	
 	/** Constructs a new polygon */
@@ -64,7 +64,7 @@ public class PolygonShape extends Shape {
 	/** Copy vertices from the given float array, taking into account the offset and length. It is assumed the vertices are in
 	 * x,y order and define a convex polygon. It is assumed that the exterior is the the right of each edge. */
 	public void set (float[] vertices, int offset, int len) {
-		jniSet(addr, vertices, offset, vertices.length);
+		jniSet(addr, vertices, offset, len);
 	}
 
 	private native void jniSet (long addr, float[] verts, int offset, int len); /*

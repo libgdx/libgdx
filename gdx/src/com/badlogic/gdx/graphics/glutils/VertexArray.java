@@ -63,7 +63,6 @@ public class VertexArray implements VertexData {
 		buffer = byteBuffer.asFloatBuffer();
 		buffer.flip();
 		byteBuffer.flip();
-		Gdx.app.log("VertexArray", "Created");
 	}
 
 	/** {@inheritDoc} */
