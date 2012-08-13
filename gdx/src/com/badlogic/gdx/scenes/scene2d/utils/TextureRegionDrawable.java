@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /** Drawable for a {@link TextureRegion}.
  * @author Nathan Sweet */
-public class TextureRegionDrawable extends EmptyDrawable {
+public class TextureRegionDrawable extends BaseDrawable {
 	private TextureRegion region;
 
 	/** Creates an unitialized TextureRegionDrawable. The texture region must be set before use. */

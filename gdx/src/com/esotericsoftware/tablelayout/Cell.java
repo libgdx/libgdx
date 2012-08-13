@@ -113,9 +113,8 @@ public class Cell<C> {
 		if (cell.uniformY != null) uniformY = cell.uniformY;
 	}
 
-	/** Sets the widget in this cell and adds the widget to the cell's table. */
+	/** Sets the widget in this cell and adds the widget to the cell's table. If null, removes any current widget. */
 	public Cell setWidget (C widget) {
-		if (widget == null) throw new IllegalArgumentException("widget cannot be null.");
 		layout.toolkit.setWidget(layout, this, widget);
 		return this;
 	}
@@ -123,6 +122,11 @@ public class Cell<C> {
 	/** Returns the widget for this cell, or null. */
 	public C getWidget () {
 		return widget;
+	}
+
+	/** Returns true if the cells widget is not null. */
+	public boolean hasWidget () {
+		return widget != null;
 	}
 
 	/** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified value. */
@@ -658,16 +662,32 @@ public class Cell<C> {
 		return widgetX;
 	}
 
+	public void setWidgetX (float widgetX) {
+		this.widgetX = widgetX;
+	}
+
 	public float getWidgetY () {
 		return widgetY;
+	}
+
+	public void setWidgetY (float widgetY) {
+		this.widgetY = widgetY;
 	}
 
 	public float getWidgetWidth () {
 		return widgetWidth;
 	}
 
+	public void setWidgetWidth (float widgetWidth) {
+		this.widgetWidth = widgetWidth;
+	}
+
 	public float getWidgetHeight () {
 		return widgetHeight;
+	}
+
+	public void setWidgetHeight (float widgetHeight) {
+		this.widgetHeight = widgetHeight;
 	}
 
 	public int getColumn () {

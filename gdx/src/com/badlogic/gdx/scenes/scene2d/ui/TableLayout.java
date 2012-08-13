@@ -56,17 +56,32 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 				Cell c = cells.get(i);
 				if (c.getIgnore()) continue;
 				Actor actor = (Actor)c.getWidget();
+				if (actor == null) continue;
+				float widgetWidth = Math.round(c.getWidgetWidth());
 				float widgetHeight = Math.round(c.getWidgetHeight());
-				actor.setBounds(Math.round(c.getWidgetX()), height - Math.round(c.getWidgetY()) - widgetHeight,
-					Math.round(c.getWidgetWidth()), widgetHeight);
+				float widgetX = Math.round(c.getWidgetX());
+				float widgetY = height - Math.round(c.getWidgetY()) - widgetHeight;
+				c.setWidgetX(widgetX);
+				c.setWidgetY(widgetY);
+				c.setWidgetWidth(widgetWidth);
+				c.setWidgetHeight(widgetHeight);
+				actor.setBounds(widgetX, widgetY, widgetWidth, widgetHeight);
 			}
 		} else {
 			for (int i = 0, n = cells.size(); i < n; i++) {
 				Cell c = cells.get(i);
 				if (c.getIgnore()) continue;
 				Actor actor = (Actor)c.getWidget();
+				if (actor == null) continue;
+				float widgetWidth = c.getWidgetWidth();
 				float widgetHeight = c.getWidgetHeight();
-				actor.setBounds(c.getWidgetX(), height - c.getWidgetY() - widgetHeight, c.getWidgetWidth(), widgetHeight);
+				float widgetX = c.getWidgetX();
+				float widgetY = height - c.getWidgetY() - widgetHeight;
+				c.setWidgetX(widgetX);
+				c.setWidgetY(widgetY);
+				c.setWidgetWidth(widgetWidth);
+				c.setWidgetHeight(widgetHeight);
+				actor.setBounds(widgetX, widgetY, widgetWidth, widgetHeight);
 			}
 		}
 		Array<Actor> children = table.getChildren();

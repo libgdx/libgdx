@@ -19,6 +19,9 @@ package com.badlogic.gdx.backends.gwt.preloader;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.google.gwt.xhr.client.ReadyStateChangeHandler;
+import com.google.gwt.xhr.client.XMLHttpRequest;
+
 public class BinaryLoader {
 	private final LoaderCallback<Blob> callback;
 

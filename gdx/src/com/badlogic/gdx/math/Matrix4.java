@@ -467,7 +467,7 @@ public class Matrix4 implements Serializable {
 	 * @param vector The translation vector
 	 * @return Return this matrix for the purpose of chaining methods together. */
 	public Matrix4 setToTranslation (Vector3 vector) {
-		this.idt();
+		idt();
 		val[M03] = vector.x;
 		val[M13] = vector.y;
 		val[M23] = vector.z;
@@ -518,7 +518,7 @@ public class Matrix4 implements Serializable {
 	 * @return Return this matrix for the purpose of chaining methods together. */
 	public Matrix4 setToTranslationAndScaling (float translationX, float translationY, float translationZ, float scalingX,
 		float scalingY, float scalingZ) {
-		this.idt();
+		idt();
 		val[M03] = translationX;
 		val[M13] = translationY;
 		val[M23] = translationZ;
@@ -693,6 +693,13 @@ public class Matrix4 implements Serializable {
 		val[M00] *= scale.x;
 		val[M11] *= scale.y;
 		val[M22] *= scale.z;
+		return this;
+	}
+
+	public Matrix4 scl (float x, float y, float z) {
+		val[M00] *= x;
+		val[M11] *= y;
+		val[M22] *= z;
 		return this;
 	}
 
@@ -976,6 +983,7 @@ public class Matrix4 implements Serializable {
 		return matrix4_det(values);
 	*/
 
+	// @on
 	/** Postmultiplies this matrix by a translation matrix. Postmultiplication is also used by OpenGL ES'
 	 * glTranslate/glRotate/glScale
 	 * @param translation

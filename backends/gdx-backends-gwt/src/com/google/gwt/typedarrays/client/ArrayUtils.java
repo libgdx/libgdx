@@ -16,6 +16,9 @@
 
 package com.google.gwt.typedarrays.client;
 
+import com.google.gwt.core.client.JsArrayInteger;
+import com.google.gwt.core.client.JsArrayNumber;
+
 public class ArrayUtils {
 
 	// TODO(jgw): Get rid of these conversions in web mode.

@@ -1,12 +1,12 @@
 #include <com.badlogic.gdx.physics.box2d.CircleShape.h>
 
-//@line:24
+//@line:25
 
 #include <Box2D/Box2D.h>
 	 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_CircleShape_newCircleShape(JNIEnv* env, jobject object) {
 
 
-//@line:32
+//@line:33
 
 		return (jlong)(new b2CircleShape( ));
 	
@@ -17,7 +17,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_CircleShape_jniGetPos
 	float* position = (float*)env->GetPrimitiveArrayCritical(obj_position, 0);
 
 
-//@line:57
+//@line:58
 
 		b2CircleShape* circle = (b2CircleShape*)addr;
 		position[0] = circle->m_p.x;
@@ -30,7 +30,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_CircleShape_jniGetPos
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_CircleShape_jniSetPosition(JNIEnv* env, jobject object, jlong addr, jfloat positionX, jfloat positionY) {
 
 
-//@line:68
+//@line:69
 
 		b2CircleShape* circle = (b2CircleShape*)addr;
 		circle->m_p.x = positionX;
