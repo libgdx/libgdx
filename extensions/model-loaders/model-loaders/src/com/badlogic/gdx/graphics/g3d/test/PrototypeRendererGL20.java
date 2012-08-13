@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.StillModelInstance;
 import com.badlogic.gdx.graphics.g3d.experimental.MaterialShaderHandler;
 import com.badlogic.gdx.graphics.g3d.lights.LightManager;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.GpuSkinningAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
@@ -139,6 +140,10 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 							// need to be done, shader textureAtribute name could be changed.
 							currentShader.setUniformi(texAtrib.name, texAtrib.unit);
 						}
+					} else if (atrib instanceof GpuSkinningAttribute) {
+						GpuSkinningAttribute gpuAttrib = (GpuSkinningAttribute) atrib;
+						gpuAttrib.setModelMatrix(modelMatrix);
+						gpuAttrib.bind(currentShader);
 					} else {
 						atrib.bind(currentShader);
 					}
@@ -252,6 +257,10 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 							// need to be done, shader textureAtribute name could be changed.
 							currentShader.setUniformi(texAtrib.name, texAtrib.unit);
 						}
+					} else if (atrib instanceof GpuSkinningAttribute) {
+						final GpuSkinningAttribute gpuAtrib = (GpuSkinningAttribute)atrib;
+						gpuAtrib.setModelMatrix(modelMatrix);
+						gpuAtrib.bind(currentShader);
 					} else {
 						atrib.bind(currentShader);
 					}
