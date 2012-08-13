@@ -21,6 +21,7 @@ import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.graphics.g3d.experimental.HybridLightTest;
+import com.badlogic.gdx.graphics.g3d.experimental.SkeletonModelGpuSkinningTest;
 
 public class ModelViewerActivity extends AndroidApplication {
 	/** Called when the activity is first created. */
@@ -38,7 +39,8 @@ public class ModelViewerActivity extends AndroidApplication {
 // initialize(new SkeletonModelViewer("data/ninja.mesh.xml", "data/ninja.jpg"), config);
 // initialize(new StillModelViewerGL20("data/models/basicscene.obj", "data/multipleuvs_1.png", "data/multipleuvs_2.png"),
 // config);
-		initialize(new HybridLightTest(), config);
+		//initialize(new HybridLightTest(), config);
 		// initialize(new Viewer(), config);
+		initialize(new SkeletonModelGpuSkinningTest(),config);
 	}
 }
