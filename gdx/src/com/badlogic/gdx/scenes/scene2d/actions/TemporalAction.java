@@ -26,6 +26,18 @@ abstract public class TemporalAction extends Action {
 	private Interpolation interpolation;
 	private boolean reverse, complete;
 
+	public TemporalAction () {
+	}
+
+	public TemporalAction (float duration) {
+		this.duration = duration;
+	}
+
+	public TemporalAction (float duration, Interpolation interpolation) {
+		this.duration = duration;
+		this.interpolation = interpolation;
+	}
+
 	public boolean act (float delta) {
 		if (complete) return true;
 		if (time == 0) initialize();
@@ -45,7 +57,8 @@ abstract public class TemporalAction extends Action {
 
 	/** Called the first time {@link #act(float)} is called. This is a good place to query the {@link #actor actor's} starting
 	 * state. */
-	abstract protected void initialize ();
+	protected void initialize () {
+	}
 
 	/** Called each frame.
 	 * @param percent The percentage of completion for this action, growing from 0 to 1 over the duration. If
