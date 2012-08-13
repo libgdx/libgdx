@@ -25,7 +25,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner */
 public class Matrix3 implements Serializable {
 	private static final long serialVersionUID = 7907569533774959788L;
-	private final static float DEGREE_TO_RAD = (float)Math.PI / 180;
+	private final static float DEGREE_TO_RAD = MathUtils.PI / 180.0f;
 	public static final int M00 = 0;
 	public static final int M01 = 3;
 	public static final int M02 = 6;
@@ -89,7 +89,7 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/** Sets this matrix to a rotation matrix that will rotate any vector in counter clockwise order around the z-axis.
+	/** Sets this matrix to a rotation matrix that will rotate any vector in counter-clockwise order around the z-axis.
 	 * @param degrees the angle in degrees.
 	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 setToRotation (float degrees) {
@@ -132,7 +132,14 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/** Sets this matrix to a scaling matrix
+	/** Sets this matrix to a translation matrix.
+	 * @param translation The translation vector.
+	 * @return This matrix for the purpose of chaining operations. */
+	public Matrix3 setToTranslation (Vector2 translation) {
+		return setToTranslation(translation.x, translation.y);
+	}
+
+	/** Sets this matrix to a scaling matrix.
 	 * 
 	 * @param scaleX the scale in x
 	 * @param scaleY the scale in y
@@ -167,7 +174,7 @@ public class Matrix3 implements Serializable {
 			* val[M12] * val[M21] - val[M01] * val[M10] * val[M22] - val[M02] * val[M11] * val[M20];
 	}
 
-	/** Inverts this matrix given that the determinant is != 0
+	/** Inverts this matrix given that the determinant is != 0.
 	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 inv () {
 		float det = det();
@@ -198,6 +205,9 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
+	/** Copies the values from the provided matrix to this matrix.
+	 * @param mat The matrix to copy.
+	 * @return This matrix for the purposes of chaining. */
 	public Matrix3 set (Matrix3 mat) {
 		System.arraycopy(mat.val, 0, val, 0, val.length);
 		return this;
@@ -268,6 +278,14 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
+	/** Postmultiplies this matrix by a translation matrix. Postmultiplication is also used by OpenGL ES' 1.x
+	 * glTranslate/glRotate/glScale.
+	 * @param translation The translation vector.
+	 * @return This matrix for the purpose of chaining. */
+	public Matrix3 translate (Vector2 translation) {
+		return translate(translation.x, translation.y);
+	}
+
 	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
 	 * glTranslate/glRotate/glScale.
 	 * @param angle The angle in degrees
@@ -312,6 +330,14 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
+	/** Postmultiplies this matrix with a scale matrix. Postmultiplication is also used by OpenGL ES' 1.x
+	 * glTranslate/glRotate/glScale.
+	 * @param scale The vector to scale the matrix by.
+	 * @return This matrix for the purpose of chaining. */
+	public Matrix3 scale (Vector2 scale) {
+		return scale(scale.x, scale.y);
+	}
+
 	/** Get the values in this matrix.
 	 * @return The float values that make up this matrix in column-major order. */
 	public float[] getValues () {
@@ -345,7 +371,7 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/** This will transpose the current matrix.
+	/** Transposes the current matrix.
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix3 transpose () {
 		// Where MXY you do not have to change MXX
@@ -364,7 +390,7 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/** This function multiplies matrix a with matrix b in the following manner:
+	/** Multiplies matrix a with matrix b in the following manner:
 	 * 
 	 * <pre>
 	 * mul(A, B) => A := AB
