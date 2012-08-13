@@ -118,7 +118,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 			cell.set(cellDefaults);
 		cell.merge(rowDefaults);
 
-		toolkit.addChild(table, widget);
+		if (widget != null) toolkit.addChild(table, widget);
 
 		return cell;
 	}
@@ -179,8 +179,11 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 
 	/** Removes all widgets and cells from the table. */
 	public void clear () {
-		for (int i = cells.size() - 1; i >= 0; i--)
-			toolkit.removeChild(table, (C)cells.get(i).widget);
+		for (int i = cells.size() - 1; i >= 0; i--) {
+			Object widget = cells.get(i).widget;
+			if (widget == null) continue;
+			toolkit.removeChild(table, (C)widget);
+		}
 		cells.clear();
 		rows = 0;
 		columns = 0;
@@ -191,7 +194,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	public Cell getCell (C widget) {
 		for (int i = 0, n = cells.size(); i < n; i++) {
 			Cell c = cells.get(i);
-			if (c.getWidget() == widget) return c;
+			if (c.widget == widget) return c;
 		}
 		return null;
 	}

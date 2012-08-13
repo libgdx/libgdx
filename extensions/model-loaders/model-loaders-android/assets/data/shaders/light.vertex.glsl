@@ -20,6 +20,15 @@ uniform vec3 dirLightCol;
 uniform mat4 u_projectionViewMatrix;
 uniform mat4 u_modelMatrix;
 
+#ifndef gpuSkinningFlag
+#define BONES_NUM 0
+#endif
+#if BONES_NUM >0
+uniform mat4 bones[BONES_NUM];
+attribute vec4 a_boneWeight;
+attribute vec4 a_boneIndex;
+#endif
+
 #ifdef fogColorFlag
 varying float v_fog;
 #endif
@@ -38,13 +47,28 @@ float wrapLight(vec3 nor, vec3 direction){
 }
 void main()
 {
+#if BONES_NUM >0
+	mat4 skinning = bones[int(a_boneIndex.x)]*a_boneWeight.x;
+	skinning += bones[int(a_boneIndex.y)]*a_boneWeight.y;
+	skinning += bones[int(a_boneIndex.z)]*a_boneWeight.z;
+	skinning += bones[int(a_boneIndex.w)]*a_boneWeight.w;
+#endif
+
 #ifdef normalsFlag
+#if BONES_NUM >0
+	v_normal    = (skinning * vec4(a_normal,0.0)).xyz;
+#else
 	v_normal    = u_normalMatrix * normalize(a_normal);
+#endif
 #endif
 
 	v_texCoords = a_texCoord0;
-	
+
+#if BONES_NUM >0	
+	vec4 worldPos = skinning * vec4(a_position,1.0);
+#else
 	vec4 worldPos = u_modelMatrix * vec4(a_position,1.0);
+#endif
 	gl_Position = u_projectionViewMatrix * worldPos; 
 	vec3 pos  = worldPos.xyz;
 	v_pos = pos;

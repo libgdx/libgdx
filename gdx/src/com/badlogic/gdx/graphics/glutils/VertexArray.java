@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.Gdx;
@@ -62,6 +63,7 @@ public class VertexArray implements VertexData {
 		buffer = byteBuffer.asFloatBuffer();
 		buffer.flip();
 		byteBuffer.flip();
+		Gdx.app.log("VertexArray", "Created");
 	}
 
 	/** {@inheritDoc} */
@@ -175,7 +177,7 @@ public class VertexArray implements VertexData {
 		byteBuffer.position(0);
 		isBound = false;
 	}
-
+	
 	public void bind (ShaderProgram shader) {
 		GL20 gl = Gdx.gl20;
 		int numAttributes = attributes.size();
@@ -190,12 +192,11 @@ public class VertexArray implements VertexData {
 				normalize = true;
 			}
 			byteBuffer.position(attribute.offset);
-			shader.setVertexAttribute(attribute.alias, attribute.numComponents, colorType, normalize, attributes.vertexSize,
-				byteBuffer);
+			shader.setVertexAttribute(attribute.alias, attribute.numComponents, colorType, normalize, attributes.vertexSize, byteBuffer);
 		}
 		isBound = true;
 	}
-
+	
 	/** Unbinds this VertexBufferObject.
 	 * 
 	 * @param shader the shader */

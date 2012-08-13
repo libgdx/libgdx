@@ -34,6 +34,7 @@ import android.widget.FrameLayout;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.Clipboard;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -287,6 +288,16 @@ public class AndroidApplication extends Activity implements Application {
 		return new AndroidPreferences(getSharedPreferences(name, Context.MODE_PRIVATE));
 	}
 
+	AndroidClipboard clipboard;
+	
+	@Override
+	public Clipboard getClipboard() {
+		if (clipboard == null) {
+			clipboard = new AndroidClipboard(this);
+		}
+		return clipboard;
+	}
+	
 	@Override
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {

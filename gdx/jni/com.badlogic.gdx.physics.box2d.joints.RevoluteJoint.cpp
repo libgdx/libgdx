@@ -1,12 +1,12 @@
 #include <com.badlogic.gdx.physics.box2d.joints.RevoluteJoint.h>
 
-//@line:27
+//@line:28
 
 #include <Box2D/Box2D.h> 
 	 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniGetJointAngle(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:40
+//@line:41
 
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetJointAngle();
@@ -17,7 +17,7 @@
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniGetJointSpeed(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:50
+//@line:51
 
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetJointSpeed();
@@ -28,7 +28,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoin
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniIsLimitEnabled(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:60
+//@line:61
 
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->IsLimitEnabled();
@@ -39,7 +39,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJo
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniEnableLimit(JNIEnv* env, jobject object, jlong addr, jboolean flag) {
 
 
-//@line:70
+//@line:71
 
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		joint->EnableLimit(flag);
@@ -50,7 +50,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniGetLowerLimit(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:80
+//@line:81
 
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetLowerLimit();
@@ -61,7 +61,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoin
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniGetUpperLimit(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:90
+//@line:91
 
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetUpperLimit();
@@ -72,7 +72,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoin
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniSetLimits(JNIEnv* env, jobject object, jlong addr, jfloat lower, jfloat upper) {
 
 
-//@line:101
+//@line:102
 
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		joint->SetLimits(lower, upper );
@@ -83,7 +83,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniIsMotorEnabled(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:111
+//@line:112
 
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->IsMotorEnabled();
@@ -94,7 +94,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJo
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniEnableMotor(JNIEnv* env, jobject object, jlong addr, jboolean flag) {
 
 
-//@line:121
+//@line:122
 
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		joint->EnableMotor(flag);
@@ -105,7 +105,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniSetMotorSpeed(JNIEnv* env, jobject object, jlong addr, jfloat speed) {
 
 
-//@line:131
+//@line:132
 
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		joint->SetMotorSpeed(speed);
@@ -116,7 +116,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniGetMotorSpeed(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:141
+//@line:142
 
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetMotorSpeed();
@@ -127,7 +127,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoin
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniSetMaxMotorTorque(JNIEnv* env, jobject object, jlong addr, jfloat torque) {
 
 
-//@line:151
+//@line:152
 
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		joint->SetMaxMotorTorque(torque);
@@ -138,7 +138,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniGetMotorTorque(JNIEnv* env, jobject object, jlong addr, jfloat invDt) {
 
 
-//@line:161
+//@line:162
 
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetMotorTorque(invDt);

@@ -60,10 +60,11 @@ public abstract class Toolkit<C, T extends C, L extends BaseTableLayout> {
 	/** Adds a rectangle that should be drawn for debugging. */
 	abstract public void addDebugRectangle (L layout, Debug type, float x, float y, float w, float h);
 
+	/** @param widget May be null. */
 	public void setWidget (L layout, Cell cell, C widget) {
 		removeChild((T)layout.table, (C)cell.widget);
 		cell.widget = widget;
-		addChild((T)layout.table, widget);
+		if (widget != null) addChild((T)layout.table, widget);
 	}
 
 	/** Interprets the specified value as a size. This can be used to scale all sizes applied to a table. The default implementation
