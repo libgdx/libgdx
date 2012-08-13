@@ -52,19 +52,32 @@ public class PolygonShape extends Shape {
 			verts[i] = vertices[j].x;
 			verts[i + 1] = vertices[j].y;
 		}
-		jniSet(addr, verts, verts.length);
+		jniSet(addr, verts, 0, verts.length);
 	}
 
-	private native void jniSet (long addr, float[] verts, int len); /*
+	/** Copy vertices from the given float array. It is assumed the vertices are in x,y order and define a convex polygon. It is
+	 * assumed that the exterior is the the right of each edge. */
+	public void set (float[] vertices) {
+		jniSet(addr, vertices, 0, vertices.length);
+	}
+
+	/** Copy vertices from the given float array, taking into account the offset and length. It is assumed the vertices are in
+	 * x,y order and define a convex polygon. It is assumed that the exterior is the the right of each edge. */
+	public void set (float[] vertices, int offset, int len) {
+		jniSet(addr, vertices, offset, vertices.length);
+	}
+
+	private native void jniSet (long addr, float[] verts, int offset, int len); /*
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		int numVertices = len / 2;
 		b2Vec2* verticesOut = new b2Vec2[numVertices];
-		for(int i = 0; i < numVertices; i++)
-			verticesOut[i] = b2Vec2(verts[i<<1], verts[(i<<1)+1]);
+		for(int i = 0; i < numVertices; i++) {
+			verticesOut[i] = b2Vec2(verts[(i<<1) + offset], verts[(i<<1) + offset + 1]);
+		}
 		poly->Set(verticesOut, numVertices);
 		delete verticesOut;
-	*/
-
+	 */
+	
 	/** Build vertices to represent an axis-aligned box.
 	 * @param hx the half-width.
 	 * @param hy the half-height. */

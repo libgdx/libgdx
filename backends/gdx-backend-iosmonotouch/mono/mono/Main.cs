@@ -39,6 +39,9 @@ namespace mono
 		}
 	
 		public void render () {
+			Gdx.app.log ("Accel", "" + Gdx.input.getAccelerometerX() + ", " +
+			                      Gdx.input.getAccelerometerY() + ", " +
+			             Gdx.input.getAccelerometerZ());
 		}
 		
 		public void dispose () {
@@ -59,7 +62,7 @@ namespace mono
 	{
 		[Register ("AppDelegate")]
 		public class IOSStarter : IOSApplication {
-			public IOSStarter() : base(new TestListener()) {
+			public IOSStarter() : base(new TestListener(), new IOSApplicationConfiguration()) {
 			}
 		}
 		

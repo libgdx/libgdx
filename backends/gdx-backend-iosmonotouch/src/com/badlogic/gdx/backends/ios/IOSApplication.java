@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
 package com.badlogic.gdx.backends.ios;
 
 import cli.MonoTouch.Foundation.NSDictionary;
@@ -37,34 +36,40 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	UIApplication uiApp;
 	UIWindow uiWindow;
 	ApplicationListener listener;
+	IOSApplicationConfiguration config;
 	IOSGraphics graphics;
 	IOSAudio audio;
 	IOSFiles files;
 	IOSInput input;
 	int logLevel = Application.LOG_DEBUG;
 	boolean firstResume;
-
-	/** Should be called in AppDelegate#FinishedLaunching
-	 * @param uiApp */
-	public IOSApplication (ApplicationListener listener) {
+	
+	/**
+	 * Should be called in AppDelegate#FinishedLaunching
+	 * @param uiApp
+	 */
+	public IOSApplication(ApplicationListener listener, IOSApplicationConfiguration config) {
 		this.listener = listener;
+		this.config = config;
 		Gdx.app = this;
 	}
-
+	
 	@Override
-	public boolean FinishedLaunching (UIApplication uiApp, NSDictionary options) {
+	public boolean FinishedLaunching(UIApplication uiApp, NSDictionary options) {
 		this.uiApp = uiApp;
 		RectangleF bounds = UIScreen.get_MainScreen().get_Bounds();
-		this.input = new IOSInput();
+		this.input = new IOSInput(config);
 		this.graphics = new IOSGraphics(bounds, this, input);
 		this.files = new IOSFiles();
 		this.audio = new IOSAudio();
-
+		
 		Gdx.files = this.files;
 		Gdx.graphics = this.graphics;
 		Gdx.audio = this.audio;
 		Gdx.input = this.input;
-
+		
+		this.input.setupPeripherals();
+		
 		this.uiWindow = new UIWindow(bounds);
 		this.uiWindow.Add(graphics);
 		this.graphics.Run();
@@ -74,9 +79,9 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	}
 
 	@Override
-	public void OnActivated (UIApplication uiApp) {
+	public void OnActivated(UIApplication uiApp) {
 		Gdx.app.log("IOSApplication", "resumed");
-		if (!firstResume) {
+		if(!firstResume) {
 			graphics.MakeCurrent();
 			listener.resume();
 			firstResume = true;
@@ -84,7 +89,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	}
 
 	@Override
-	public void OnResignActivation (UIApplication uiApp) {
+	public void OnResignActivation(UIApplication uiApp) {
 		Gdx.app.log("IOSApplication", "paused");
 		graphics.MakeCurrent();
 		listener.pause();
@@ -92,7 +97,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	}
 
 	@Override
-	public void WillTerminate (UIApplication uiApp) {
+	public void WillTerminate(UIApplication uiApp) {
 		Gdx.app.log("IOSApplication", "disposed");
 		graphics.MakeCurrent();
 		listener.dispose();
@@ -121,14 +126,14 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	@Override
 	public void log (String tag, String message) {
-		if (logLevel > LOG_NONE) {
+		if(logLevel > LOG_NONE) {
 			Console.WriteLine("[info] " + tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void log (String tag, String message, Exception exception) {
-		if (logLevel > LOG_NONE) {
+		if(logLevel > LOG_NONE) {
 			Console.WriteLine("[info] " + tag + ": " + message);
 			exception.printStackTrace();
 		}
@@ -136,30 +141,30 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	@Override
 	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) {
-			Console.WriteLine("[error] " + tag + ": " + message);
+		if(logLevel >= LOG_ERROR) {
+			Console.WriteLine("[error] " +  tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) {
-			Console.WriteLine("[error] " + tag + ": " + message);
+		if(logLevel >= LOG_ERROR) {
+			Console.WriteLine("[error] " +  tag + ": " + message);
 			exception.printStackTrace();
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			Console.WriteLine("[debug] " + tag + ": " + message);
+		if(logLevel >= LOG_DEBUG) {
+			Console.WriteLine("[debug] " +  tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			Console.WriteLine("[error] " + tag + ": " + message);
+		if(logLevel >= LOG_DEBUG) {
+			Console.WriteLine("[error] " +  tag + ": " + message);
 			exception.printStackTrace();
 		}
 	}
@@ -199,7 +204,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	}
 
 	@Override
-	public void exit () {
+	public void exit () {	
 		System.exit(0);
 	}
 }

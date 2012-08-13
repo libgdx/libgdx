@@ -1,12 +1,12 @@
 #include <com.badlogic.gdx.physics.box2d.joints.WheelJoint.h>
 
-//@line:11
+//@line:27
 
 #include <Box2D/Box2D.h> 
 	 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniGetJointTranslation(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:24
+//@line:40
 
 	  	b2WheelJoint* joint = (b2WheelJoint*)addr;
 		return joint->GetJointTranslation();
@@ -17,7 +17,7 @@
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniGetJointSpeed(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:34
+//@line:50
 
 	  	b2WheelJoint* joint = (b2WheelJoint*)addr;
 		return joint->GetJointSpeed();
@@ -28,7 +28,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_j
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniIsMotorEnabled(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:44
+//@line:60
 
 	  	b2WheelJoint* joint = (b2WheelJoint*)addr;
 		return joint->IsMotorEnabled();
@@ -39,7 +39,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniEnableMotor(JNIEnv* env, jobject object, jlong addr, jboolean flag) {
 
 
-//@line:54
+//@line:70
 
 	  	b2WheelJoint* joint = (b2WheelJoint*)addr;
 		joint->EnableMotor(flag);
@@ -50,7 +50,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jni
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniSetMotorSpeed(JNIEnv* env, jobject object, jlong addr, jfloat speed) {
 
 
-//@line:64
+//@line:80
 
 	  	b2WheelJoint* joint = (b2WheelJoint*)addr;
 		joint->SetMotorSpeed(speed);
@@ -61,7 +61,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jni
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniGetMotorSpeed(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:74
+//@line:90
 
 	  	b2WheelJoint* joint = (b2WheelJoint*)addr;
 		return joint->GetMotorSpeed();
@@ -72,7 +72,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_j
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniSetMaxMotorTorque(JNIEnv* env, jobject object, jlong addr, jfloat torque) {
 
 
-//@line:84
+//@line:100
 
 	  	b2WheelJoint* joint = (b2WheelJoint*)addr;
 		joint->SetMaxMotorTorque(torque);
@@ -83,7 +83,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jni
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniGetMaxMotorTorque(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:93
+//@line:109
 
 		b2WheelJoint* joint = (b2WheelJoint*)addr;
 		return joint->GetMaxMotorTorque();
@@ -94,7 +94,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_j
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniGetMotorTorque(JNIEnv* env, jobject object, jlong addr, jfloat invDt) {
 
 
-//@line:103
+//@line:119
 
 	  	b2WheelJoint* joint = (b2WheelJoint*)addr;
 		return joint->GetMotorTorque(invDt);
@@ -105,7 +105,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_j
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniSetSpringFrequencyHz(JNIEnv* env, jobject object, jlong addr, jfloat hz) {
 
 
-//@line:113
+//@line:129
 
 		b2WheelJoint* joint = (b2WheelJoint*)addr;
 		joint->SetSpringFrequencyHz(hz);
@@ -116,7 +116,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jni
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniGetSpringFrequencyHz(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:122
+//@line:138
 
 		b2WheelJoint* joint = (b2WheelJoint*)addr;
 		return joint->GetSpringFrequencyHz();
@@ -127,7 +127,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_j
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniSetSpringDampingRatio(JNIEnv* env, jobject object, jlong addr, jfloat ratio) {
 
 
-//@line:132
+//@line:148
 
 		b2WheelJoint* joint = (b2WheelJoint*)addr;
 		joint->SetSpringDampingRatio(ratio);
@@ -138,7 +138,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jni
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniGetSpringDampingRatio(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:141
+//@line:157
 
 		b2WheelJoint* joint = (b2WheelJoint*)addr;
 		return joint->GetSpringDampingRatio();
