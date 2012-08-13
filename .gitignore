@@ -1,11 +1,13 @@
 # Temporary Files
 *~
 .*.swp
+.DS_STORE
 
 # Generated Folders
 target/
 gen/
 bin/
+obj/
 /dist
 .gwt/
 
@@ -13,5 +15,6 @@ bin/
 libgdx*.zip
 gwt-servlet.jar
 *.class
+*.mdb
 classes/
 gwt-unitCache/

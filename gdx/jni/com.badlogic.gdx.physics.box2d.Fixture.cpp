@@ -1,12 +1,12 @@
 #include <com.badlogic.gdx.physics.box2d.Fixture.h>
 
-//@line:24
+//@line:25
 
 #include <Box2D/Box2D.h>
 	 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetType(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:71
+//@line:72
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		b2Shape::Type type = fixture->GetType();
@@ -26,7 +26,7 @@
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetShape(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:113
+//@line:114
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return (jlong)fixture->GetShape();
@@ -37,7 +37,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetShape(
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniSetSensor(JNIEnv* env, jobject object, jlong addr, jboolean sensor) {
 
 
-//@line:123
+//@line:124
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		fixture->SetSensor(sensor);
@@ -48,7 +48,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniSetSensor(
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniIsSensor(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:134
+//@line:135
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return fixture->IsSensor();
@@ -59,7 +59,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniIsSens
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniSetFilterData(JNIEnv* env, jobject object, jlong addr, jshort categoryBits, jshort maskBits, jshort groupIndex) {
 
 
-//@line:145
+//@line:146
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		b2Filter filter;
@@ -75,7 +75,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetFilterD
 	short* filter = (short*)env->GetPrimitiveArrayCritical(obj_filter, 0);
 
 
-//@line:166
+//@line:167
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		unsigned short* filterOut = (unsigned short*)filter;
@@ -91,7 +91,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetFilterD
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniRefilter(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:180
+//@line:181
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		fixture->Refilter();
@@ -102,7 +102,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniRefilter(J
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniTestPoint(JNIEnv* env, jobject object, jlong addr, jfloat x, jfloat y) {
 
 
-//@line:203
+//@line:204
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return fixture->TestPoint( b2Vec2( x, y ) );
@@ -113,7 +113,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniTestPo
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniSetDensity(JNIEnv* env, jobject object, jlong addr, jfloat density) {
 
 
-//@line:238
+//@line:239
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		fixture->SetDensity(density);
@@ -124,7 +124,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniSetDensity
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetDensity(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:248
+//@line:249
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return fixture->GetDensity();
@@ -135,7 +135,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetDensi
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetFriction(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:258
+//@line:259
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return fixture->GetFriction();
@@ -146,7 +146,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetFrict
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniSetFriction(JNIEnv* env, jobject object, jlong addr, jfloat friction) {
 
 
-//@line:268
+//@line:269
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		fixture->SetFriction(friction);
@@ -157,7 +157,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniSetFrictio
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetRestitution(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:278
+//@line:279
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return fixture->GetRestitution();
@@ -168,7 +168,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetResti
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniSetRestitution(JNIEnv* env, jobject object, jlong addr, jfloat restitution) {
 
 
-//@line:288
+//@line:289
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		fixture->SetRestitution(restitution);
