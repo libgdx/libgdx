@@ -1,12 +1,12 @@
 #include <com.badlogic.gdx.physics.box2d.joints.MouseJoint.h>
 
-//@line:27
+//@line:28
 
 #include <Box2D/Box2D.h>
 	 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_MouseJoint_jniSetTarget(JNIEnv* env, jobject object, jlong addr, jfloat x, jfloat y) {
 
 
-//@line:40
+//@line:41
 
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
 		joint->SetTarget( b2Vec2(x, y ) );
@@ -18,7 +18,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_MouseJoint_jni
 	float* target = (float*)env->GetPrimitiveArrayCritical(obj_target, 0);
 
 
-//@line:56
+//@line:57
 
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
 		target[0] = joint->GetTarget().x;
@@ -31,7 +31,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_MouseJoint_jni
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_MouseJoint_jniSetMaxForce(JNIEnv* env, jobject object, jlong addr, jfloat force) {
 
 
-//@line:67
+//@line:68
 
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
 		joint->SetMaxForce( force );
@@ -42,7 +42,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_MouseJoint_jni
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_MouseJoint_jniGetMaxForce(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:77
+//@line:78
 
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
 		return joint->GetMaxForce();
@@ -53,7 +53,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_MouseJoint_j
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_MouseJoint_jniSetFrequency(JNIEnv* env, jobject object, jlong addr, jfloat hz) {
 
 
-//@line:87
+//@line:88
 
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
 		joint->SetFrequency(hz);
@@ -64,7 +64,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_MouseJoint_jni
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_MouseJoint_jniGetFrequency(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:97
+//@line:98
 
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
 		return joint->GetFrequency();
@@ -75,7 +75,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_MouseJoint_j
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_MouseJoint_jniSetDampingRatio(JNIEnv* env, jobject object, jlong addr, jfloat ratio) {
 
 
-//@line:107
+//@line:108
 
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
 		joint->SetDampingRatio( ratio );
@@ -86,7 +86,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_MouseJoint_jni
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_MouseJoint_jniGetDampingRatio(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:117
+//@line:118
 
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
 		return joint->GetDampingRatio();

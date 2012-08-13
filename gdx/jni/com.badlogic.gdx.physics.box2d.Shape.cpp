@@ -1,12 +1,12 @@
 #include <com.badlogic.gdx.physics.box2d.Shape.h>
 
-//@line:25
+//@line:26
 
 #include <Box2D/Box2D.h>
 	 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Shape_jniGetRadius(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:47
+//@line:48
 
 		b2Shape* shape = (b2Shape*)addr;
 		return shape->m_radius;
@@ -17,7 +17,7 @@
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Shape_jniSetRadius(JNIEnv* env, jobject object, jlong addr, jfloat radius) {
 
 
-//@line:57
+//@line:58
 
 		b2Shape* shape = (b2Shape*)addr;
 		shape->m_radius = radius;
@@ -28,7 +28,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Shape_jniSetRadius(JN
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Shape_jniDispose(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:67
+//@line:68
 
 		b2Shape* shape = (b2Shape*)addr;
 		delete shape;
@@ -39,7 +39,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Shape_jniDispose(JNIE
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Shape_jniGetType(JNIEnv* env, jclass clazz, jlong addr) {
 
 
-//@line:72
+//@line:73
 
 		b2Shape* shape = (b2Shape*)addr;
 		switch(shape->m_type) {
@@ -56,7 +56,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Shape_jniGetType(JNIE
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Shape_jniGetChildCount(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:88
+//@line:89
 
 		b2Shape* shape = (b2Shape*)addr;
 		return shape->GetChildCount();

@@ -253,13 +253,18 @@ public class Actor {
 	}
 
 	/** Returns true if the specified actor is this actor or an ancestor of this actor. */
-	public boolean isAncestor (Actor actor) {
+	public boolean isAscendant (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		while (true) {
 			if (actor == null) return false;
 			if (actor == this) return true;
 			actor = actor.getParent();
 		}
+	}
+
+	/** Returns true if the actor's parent is not null. */
+	public boolean hasParent () {
+		return parent != null;
 	}
 
 	/** Returns the parent actor, or null if not in a stage. */

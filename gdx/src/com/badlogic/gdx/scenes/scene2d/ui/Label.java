@@ -201,10 +201,10 @@ public class Label extends Widget {
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
+		cache.setColor(style.fontColor == null ? color : Color.tmp.set(color).mul(style.fontColor));
+		cache.setPosition(getX(), getY());
 		float scaleX = getScaleX();
 		float scaleY = getScaleY();
-		cache.setColor(color);
-		cache.setPosition(getX(), getY());
 		if (scaleX != 1 | scaleY != 1) {
 			Matrix4 transform = batch.getTransformMatrix();
 			float x = -getOriginX() * (scaleX - 1);

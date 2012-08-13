@@ -77,7 +77,7 @@ public class TextButton extends Button {
 			fontColor = style.overFontColor;
 		else
 			fontColor = style.fontColor;
-		if (fontColor != null) label.setColor(fontColor);
+		if (fontColor != null) label.getStyle().fontColor = fontColor;
 		super.draw(batch, parentAlpha);
 	}
 

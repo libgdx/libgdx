@@ -1,13 +1,13 @@
 #include <com.badlogic.gdx.physics.box2d.joints.PulleyJoint.h>
 
-//@line:27
+//@line:28
 
 #include <Box2D/Box2D.h> 
 	 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PulleyJoint_jniGetGroundAnchorA(JNIEnv* env, jobject object, jlong addr, jfloatArray obj_anchor) {
 	float* anchor = (float*)env->GetPrimitiveArrayCritical(obj_anchor, 0);
 
 
-//@line:45
+//@line:46
 
 		b2PulleyJoint* joint = (b2PulleyJoint*)addr;
 		anchor[0] = joint->GetGroundAnchorA().x;
@@ -21,7 +21,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PulleyJoint_jn
 	float* anchor = (float*)env->GetPrimitiveArrayCritical(obj_anchor, 0);
 
 
-//@line:60
+//@line:61
 
 		b2PulleyJoint* joint = (b2PulleyJoint*)addr;
 		anchor[0] = joint->GetGroundAnchorB().x;
@@ -34,7 +34,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PulleyJoint_jn
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PulleyJoint_jniGetLength1(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:71
+//@line:72
 
 		b2PulleyJoint* joint = (b2PulleyJoint*)addr;
 		return joint->GetLengthA();
@@ -45,7 +45,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PulleyJoint_
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PulleyJoint_jniGetLength2(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:81
+//@line:82
 
 		b2PulleyJoint* joint = (b2PulleyJoint*)addr;
 		return joint->GetLengthB();
@@ -56,7 +56,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PulleyJoint_
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PulleyJoint_jniGetRatio(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:91
+//@line:92
 
 		b2PulleyJoint* joint = (b2PulleyJoint*)addr;
 		return joint->GetRatio();
