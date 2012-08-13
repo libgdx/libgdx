@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** A 3x3 <a href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> matrix for 2D transforms.
+/** A 3x3 <a href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> matrix; useful for 2D transforms.
  * 
  * @author mzechner */
 public class Matrix3 implements Serializable {
@@ -47,7 +47,7 @@ public class Matrix3 implements Serializable {
 	}
 
 	/** Sets this matrix to the identity matrix
-	 * @return this matrix */
+	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 idt () {
 		val[M00] = 1;
 		val[M10] = 0;
@@ -62,7 +62,7 @@ public class Matrix3 implements Serializable {
 	}
 
 	/** Multiplies this matrix with the other matrix in the order this * m.
-	 * @return this matrix */
+	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 mul (Matrix3 m) {
 		float v00 = val[M00] * m.val[M00] + val[M01] * m.val[M10] + val[M02] * m.val[M20];
 		float v01 = val[M00] * m.val[M01] + val[M01] * m.val[M11] + val[M02] * m.val[M21];
@@ -91,7 +91,7 @@ public class Matrix3 implements Serializable {
 
 	/** Sets this matrix to a rotation matrix that will rotate any vector in counter clockwise order around the z-axis.
 	 * @param degrees the angle in degrees.
-	 * @return this matrix */
+	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 setToRotation (float degrees) {
 		float angle = DEGREE_TO_RAD * degrees;
 		float cos = (float)Math.cos(angle);
@@ -115,7 +115,7 @@ public class Matrix3 implements Serializable {
 	/** Sets this matrix to a translation matrix.
 	 * @param x the translation in x
 	 * @param y the translation in y
-	 * @return this matrix */
+	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 setToTranslation (float x, float y) {
 		this.val[M00] = 1;
 		this.val[M10] = 0;
@@ -136,7 +136,7 @@ public class Matrix3 implements Serializable {
 	 * 
 	 * @param scaleX the scale in x
 	 * @param scaleY the scale in y
-	 * @return this matrix */
+	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 setToScaling (float scaleX, float scaleY) {
 		val[M00] = scaleX;
 		val[M10] = 0;
@@ -161,14 +161,14 @@ public class Matrix3 implements Serializable {
 			+ max1 + "s, %" + max2 + "s, %" + max3 + "s", (Object[])values);
 	}
 
-	/** @return the determinant of this matrix */
+	/** @return The determinant of this matrix */
 	public float det () {
 		return val[M00] * val[M11] * val[M22] + val[M01] * val[M12] * val[M20] + val[M02] * val[M10] * val[M21] - val[M00]
 			* val[M12] * val[M21] - val[M01] * val[M10] * val[M22] - val[M02] * val[M11] * val[M20];
 	}
 
 	/** Inverts this matrix given that the determinant is != 0
-	 * @return this matrix */
+	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 inv () {
 		float det = det();
 		if (det == 0) throw new GdxRuntimeException("Can't invert a singular matrix");
@@ -203,6 +203,9 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
+	/** Sets this 3x3 matrix to the top left 3x3 corner of the provided 4x4 matrix.
+	 * @param mat The matrix whose top left corner will be copied. This matrix will not be modified.
+	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 set (Matrix4 mat) {
 		val[M00] = mat.val[Matrix4.M00];
 		val[M10] = mat.val[Matrix4.M10];
@@ -217,29 +220,38 @@ public class Matrix3 implements Serializable {
 	}
 
 	/** Adds a translational component to the matrix in the 3rd column. The other columns are untouched.
-	 * @param vector The translation vector
-	 * @return This matrix for chaining */
-	public Matrix3 trn (Vector3 vector) {
+	 * @param vector The translation vector.
+	 * @return This matrix for the purpose of chaining. */
+	public Matrix3 trn (Vector2 vector) {
 		val[M02] += vector.x;
 		val[M12] += vector.y;
 		return this;
 	}
 
 	/** Adds a translational component to the matrix in the 3rd column. The other columns are untouched.
-	 * @param x The x-component of the translation vector
-	 * @param y The y-component of the translation vector
-	 * @return This matrix for chaining */
+	 * @param x The x-component of the translation vector.
+	 * @param y The y-component of the translation vector.
+	 * @return This matrix for the purpose of chaining. */
 	public Matrix3 trn (float x, float y) {
 		val[M02] += x;
 		val[M12] += y;
 		return this;
 	}
 
-	/** Postmultiplies this matrix by a translation matrix. Postmultiplication is also used by OpenGL ES'
-	 * glTranslate/glRotate/glScale
-	 * @param x
-	 * @param y
-	 * @return this matrix for chaining */
+	/** Adds a translational component to the matrix in the 3rd column. The other columns are untouched.
+	 * @param vector The translation vector. (The z-component of the vector is ignored because this is a 3x3 matrix)
+	 * @return This matrix for the purpose of chaining. */
+	public Matrix3 trn (Vector3 vector) {
+		val[M02] += vector.x;
+		val[M12] += vector.y;
+		return this;
+	}
+
+	/** Postmultiplies this matrix by a translation matrix. Postmultiplication is also used by OpenGL ES' 1.x
+	 * glTranslate/glRotate/glScale.
+	 * @param x The x-component of the translation vector.
+	 * @param y The y-component of the translation vector.
+	 * @return This matrix for the purpose of chaining. */
 	public Matrix3 translate (float x, float y) {
 		tmp[M00] = 1;
 		tmp[M10] = 0;
@@ -256,15 +268,15 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES'
-	 * glTranslate/glRotate/glScale
-	 * @param angle the angle in degrees
-	 * @return this matrix for chaining */
+	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
+	 * glTranslate/glRotate/glScale.
+	 * @param angle The angle in degrees
+	 * @return This matrix for the purpose of chaining. */
 	public Matrix3 rotate (float angle) {
 		if (angle == 0) return this;
 		angle = DEGREE_TO_RAD * angle;
-		float cos = (float)Math.cos(angle);
-		float sin = (float)Math.sin(angle);
+		float cos = MathUtils.cos(angle);
+		float sin = MathUtils.sin(angle);
 
 		tmp[M00] = cos;
 		tmp[M10] = sin;
@@ -281,10 +293,11 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/** Postmultiplies this matrix with a scale matrix. Postmultiplication is also used by OpenGL ES' glTranslate/glRotate/glScale.
+	/** Postmultiplies this matrix with a scale matrix. Postmultiplication is also used by OpenGL ES' 1.x
+	 * glTranslate/glRotate/glScale.
 	 * @param scaleX The scale in the x-axis.
 	 * @param scaleY The scale in the y-axis.
-	 * @return this matrix for chaining */
+	 * @return This matrix for the purpose of chaining. */
 	public Matrix3 scale (float scaleX, float scaleY) {
 		tmp[M00] = scaleX;
 		tmp[M10] = 0;
@@ -300,18 +313,9 @@ public class Matrix3 implements Serializable {
 	}
 
 	/** Get the values in this matrix.
-	 * @return The float values that make up this matrix. */
+	 * @return The float values that make up this matrix in column-major order. */
 	public float[] getValues () {
 		return val;
-	}
-
-	/** Scale this matrix using the x and y components of the verctor but leave the rest of the matrix alone.
-	 * @param scale The {@link Vector3} to use to scale this matrix. The z component will be ignored.
-	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix3 scl (Vector3 scale) {
-		val[M00] *= scale.x;
-		val[M11] *= scale.y;
-		return this;
 	}
 
 	/** Scale the matrix in the both the x and y components by the scalar value.
@@ -320,6 +324,24 @@ public class Matrix3 implements Serializable {
 	public Matrix3 scl (float scale) {
 		val[M00] *= scale;
 		val[M11] *= scale;
+		return this;
+	}
+
+	/** Scale this matrix using the x and y components of the vector but leave the rest of the matrix alone.
+	 * @param scale The {@link Vector3} to use to scale this matrix.
+	 * @return This matrix for the purpose of chaining methods together. */
+	public Matrix3 scl (Vector2 scale) {
+		val[M00] *= scale.x;
+		val[M11] *= scale.y;
+		return this;
+	}
+
+	/** Scale this matrix using the x and y components of the vector but leave the rest of the matrix alone.
+	 * @param scale The {@link Vector3} to use to scale this matrix. The z component will be ignored.
+	 * @return This matrix for the purpose of chaining methods together. */
+	public Matrix3 scl (Vector3 scale) {
+		val[M00] *= scale.x;
+		val[M11] *= scale.y;
 		return this;
 	}
 
