@@ -439,12 +439,8 @@ public class TextField extends Widget {
 	 * then removes it. */
 	public void cut () {
 		if (hasSelection) {
-			int minIndex = Math.min(cursor, selectionStart);
-			int maxIndex = Math.max(cursor, selectionStart);
-			clipboard.setContents(text.substring(minIndex, maxIndex));
-			text = text.substring(0, minIndex).concat(text.substring(maxIndex));
-			updateDisplayText();
-			clearSelection();			
+			copy();
+			delete();		
 		}		
 	}
 	/** Pastes the content of the {@link Clipboard} implementation set on this Textfield to this TextField. */
