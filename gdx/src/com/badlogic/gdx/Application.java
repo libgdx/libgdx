@@ -146,6 +146,8 @@ public interface Application {
 	 * @return the preferences. */
 	public Preferences getPreferences (String name);
 
+	public Clipboard getClipboard();
+	
 	/** Posts a {@link Runnable} on the main loop thread.
 	 * 
 	 * @param runnable the runnable. */

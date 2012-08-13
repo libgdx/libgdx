@@ -31,6 +31,7 @@ import org.lwjgl.opengl.PixelFormat;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.Clipboard;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -258,7 +259,12 @@ public class LwjglAWTCanvas implements Application {
 			return prefs;
 		}
 	}
-
+	
+	@Override
+	public Clipboard getClipboard () {
+		return new LwjglClipboard();
+	}
+	
 	@Override
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
@@ -338,4 +344,5 @@ public class LwjglAWTCanvas implements Application {
 			throw new GdxRuntimeException(ex);
 		}
 	}
+
 }
