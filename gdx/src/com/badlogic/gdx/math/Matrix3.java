@@ -61,8 +61,13 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/** Multiplies this matrix with the other matrix in the order this * m.
-	 * @return This matrix for the purpose of chaining operations. */
+	/** Multiplies this matrix with the provided matrix and stores the result in this matrix. For example:
+	 * 
+	 * <pre>
+	 * A.mul(B) results in A := AB
+	 * </pre>
+	 * @param m Matrix to multiply by.
+	 * @return This matrix for the purpose of chaining operations together. */
 	public Matrix3 mul (Matrix3 m) {
 		float v00 = val[M00] * m.val[M00] + val[M01] * m.val[M10] + val[M02] * m.val[M20];
 		float v01 = val[M00] * m.val[M01] + val[M01] * m.val[M11] + val[M02] * m.val[M21];

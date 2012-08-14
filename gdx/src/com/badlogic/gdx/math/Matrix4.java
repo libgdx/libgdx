@@ -194,12 +194,11 @@ public class Matrix4 implements Serializable {
 	/** Multiplies this matrix with the given matrix, storing the result in this matrix. For example:
 	 * 
 	 * <pre>
-	 * A.mul(B) results in A := AB
+	 * A.mul(B) results in A := AB.
+	 * </pre>
 	 * 
-	 * <pre>
-	 * 
-	 * @param matrix The other matrix that will be multiplied with this one.
-	 * @return This matrix for the purpose of chaining methods together. */
+	 * @param matrix The other matrix to multiply by.
+	 * @return This matrix for the purpose of chaining operations together. */
 	public Matrix4 mul (Matrix4 matrix) {
 		tmp[M00] = val[M00] * matrix.val[M00] + val[M01] * matrix.val[M10] + val[M02] * matrix.val[M20] + val[M03]
 			* matrix.val[M30];
