@@ -29,7 +29,7 @@ package com.esotericsoftware.tablelayout;
 
 /** Base class for a table or cell property value. Values are provided a table or cell for context. Eg, the value may compute its
  * size taking into consideration the size of the table or the widget in the cell. Some values may be only valid for use with
- * either a call. If not specified, a value is valid for either a cell or a table.
+ * either call.
  * @author Nathan Sweet */
 abstract public class Value {
 	/** Returns the value in the context of the specified table. */
@@ -57,6 +57,17 @@ abstract public class Value {
 	public float height (Cell cell) {
 		return Toolkit.instance.height(get(cell));
 	}
+
+	/** A value that is always zero. */
+	static public final Value zero = new CellValue() {
+		public float get (Cell cell) {
+			return 0;
+		}
+
+		public float get (Object table) {
+			return 0;
+		}
+	};
 
 	/** A value that is only valid for use with a cell.
 	 * @author Nathan Sweet */
