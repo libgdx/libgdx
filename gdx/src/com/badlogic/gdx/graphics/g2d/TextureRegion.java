@@ -152,7 +152,7 @@ public class TextureRegion {
 	}
 
 	public int getRegionX () {
-		return (int)(u * texture.getWidth());
+		return Math.round(u * texture.getWidth());
 	}
 
 	public void setRegionX (int x) {
@@ -160,7 +160,7 @@ public class TextureRegion {
 	}
 
 	public int getRegionY () {
-		return (int)(v * texture.getHeight());
+		return Math.round(v * texture.getHeight());
 	}
 
 	public void setRegionY (int y) {
