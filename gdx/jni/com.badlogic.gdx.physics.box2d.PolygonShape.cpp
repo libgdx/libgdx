@@ -2,7 +2,7 @@
 
 //@line:23
 
-#include <Box2D/Box2D.h>
+     #include <Box2D/Box2D.h>
 	 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_newPolygonShape(JNIEnv* env, jobject object) {
 
 
@@ -23,7 +23,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniSet(J
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		int numVertices = len / 2;
 		b2Vec2* verticesOut = new b2Vec2[numVertices];
-		for(int i = 0; i < numVertices; i++) {
+		for(int i = 0; i < numVertices; i++) { 
 			verticesOut[i] = b2Vec2(verts[(i<<1) + offset], verts[(i<<1) + offset + 1]);
 		}
 		poly->Set(verticesOut, numVertices);

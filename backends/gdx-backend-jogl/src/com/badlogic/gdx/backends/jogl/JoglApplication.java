@@ -34,6 +34,7 @@ import javax.swing.SwingUtilities;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.Clipboard;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -260,6 +261,11 @@ public final class JoglApplication implements Application {
 		}
 	}
 
+	@Override
+	public Clipboard getClipboard () {
+		return new JoglClipboard();
+	}
+	
 	@Override
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {

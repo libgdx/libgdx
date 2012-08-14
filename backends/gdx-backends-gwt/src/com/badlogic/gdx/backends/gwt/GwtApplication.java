@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.gwt;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.Clipboard;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -376,6 +377,20 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		return pref;
 	}
 
+	@Override
+	public Clipboard getClipboard() {
+		return new Clipboard() {
+			@Override
+			public String getContents () {
+				return null;
+			}
+
+			@Override
+			public void setContents (String content) {
+			}			
+		};		
+	}
+	
 	@Override
 	public void postRunnable (Runnable runnable) {
 		runnables.add(runnable);

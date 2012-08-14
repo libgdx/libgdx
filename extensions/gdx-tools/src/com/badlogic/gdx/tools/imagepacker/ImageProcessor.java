@@ -183,7 +183,7 @@ public class ImageProcessor {
 			raster.getPixel(x, 0, rgba);
 			if (rgba[3] == 0) continue;
 			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
-				throw new RuntimeException("Unknown ninepatch splits pixel:" + x + ",0: " + name);
+				throw new RuntimeException("Invalid ninepatch splits pixel:" + x + ",0: " + name);
 			startX = x;
 			break;
 		}
@@ -192,11 +192,11 @@ public class ImageProcessor {
 			raster.getPixel(endX, 0, rgba);
 			if (rgba[3] == 0) break;
 			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
-				throw new RuntimeException("Unknown ninepatch splits pixel " + endX + ",0: " + name);
+				throw new RuntimeException("Invalid ninepatch splits pixel " + endX + ",0: " + name);
 		}
 		for (int x = endX + 1; x < raster.getWidth() - 1; x++) {
 			raster.getPixel(x, 0, rgba);
-			if (rgba[3] != 0) throw new RuntimeException("Unknown ninepatch splits pixel " + x + ",0: " + name);
+			if (rgba[3] != 0) throw new RuntimeException("Invalid ninepatch splits pixel " + x + ",0: " + name);
 		}
 
 		int startY = 1;
@@ -204,7 +204,7 @@ public class ImageProcessor {
 			raster.getPixel(0, y, rgba);
 			if (rgba[3] == 0) continue;
 			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
-				throw new RuntimeException("Unknown ninepatch splits pixel: 0," + y + ": " + name);
+				throw new RuntimeException("Invalid ninepatch splits pixel: 0," + y + ": " + name);
 			startY = y;
 			break;
 		}
@@ -213,11 +213,11 @@ public class ImageProcessor {
 			raster.getPixel(0, endY, rgba);
 			if (rgba[3] == 0) break;
 			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
-				throw new RuntimeException("Unknown ninepatch splits pixel 0," + endY + ": " + name);
+				throw new RuntimeException("Invalid ninepatch splits pixel 0," + endY + ": " + name);
 		}
 		for (int y = endY + 1; y < raster.getHeight() - 1; y++) {
 			raster.getPixel(0, y, rgba);
-			if (rgba[3] != 0) throw new RuntimeException("Unknown ninepatch splits pixel 0," + y + ": " + name);
+			if (rgba[3] != 0) throw new RuntimeException("Invalid ninepatch splits pixel 0," + y + ": " + name);
 		}
 
 		// No splits, or all splits.

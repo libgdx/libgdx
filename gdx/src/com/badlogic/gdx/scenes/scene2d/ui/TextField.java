@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.Clipboard;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
@@ -29,7 +30,6 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.utils.Clipboard;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
@@ -99,7 +99,7 @@ public class TextField extends Widget {
 
 	public TextField (String text, TextFieldStyle style) {
 		setStyle(style);
-		this.clipboard = Clipboard.getDefaultClipboard();
+		this.clipboard = Gdx.app.getClipboard();
 		setText(text);
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
@@ -149,6 +149,9 @@ public class TextField extends Widget {
 						if (keycode == Keys.V) paste();
 						// copy
 						if (keycode == Keys.C || keycode == Keys.INSERT) copy();
+						
+						if (keycode == Keys.X || keycode == Keys.DEL) cut();
+						
 					} else if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
 						// paste
 						if (keycode == Keys.INSERT) paste();
@@ -432,6 +435,14 @@ public class TextField extends Widget {
 		}
 	}
 
+	/** Copies the selected contents of this TextField to the {@link Clipboard} implementation set on this TextField,
+	 * then removes it. */
+	public void cut () {
+		if (hasSelection) {
+			copy();
+			delete();		
+		}		
+	}
 	/** Pastes the content of the {@link Clipboard} implementation set on this Textfield to this TextField. */
 	void paste () {
 		String content = clipboard.getContents();
