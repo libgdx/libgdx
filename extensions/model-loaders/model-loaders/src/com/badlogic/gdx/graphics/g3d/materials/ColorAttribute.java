@@ -35,7 +35,7 @@ public class ColorAttribute extends MaterialAttribute {
 	protected ColorAttribute () {
 	}
 
-	/** This creates a {@link MaterialAttribute} that is a pure {@link Color}.
+	/** Creates a {@link MaterialAttribute} that is a pure {@link Color}.
 	 * 
 	 * @param color The {@link Colour} that you wish the attribute to represent.
 	 * @param name The name of the uniform in the {@link ShaderProgram} that will have its value set to this color. (A 'name' does

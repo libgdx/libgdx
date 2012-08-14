@@ -25,14 +25,11 @@ public abstract class SubMesh {
 	public Material material;
 	public int primitiveType;
 
-	/** You give this function a {@link BoundingBox} and it will set the internal values of that object to be a bounding box that
-	 * surrounds this {@link SubMesh}.
+	/** Obtain the {@link BoundingBox} of this {@link SubMesh}.
 	 * 
-	 * @param bbox The {@link BoundingBox} that, once this function is called, will contain values that surround this SubMesh. */
+	 * @param bbox This {@link BoundingBox} will be modified so that its contain values that are the bounding box for this SubMesh. */
 	public abstract void getBoundingBox (BoundingBox bbox);
 
-	/** This function returns the {@link Mesh} object that represents this {@link SubMesh}
-	 * 
-	 * @return A valid SubMesh that represents this object. */
+	/** @return The {@link Mesh} that represents this {@link SubMesh}. */
 	public abstract Mesh getMesh ();
 }

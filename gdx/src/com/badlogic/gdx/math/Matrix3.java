@@ -136,7 +136,19 @@ public class Matrix3 implements Serializable {
 	 * @param translation The translation vector.
 	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 setToTranslation (Vector2 translation) {
-		return setToTranslation(translation.x, translation.y);
+		this.val[M00] = 1;
+		this.val[M10] = 0;
+		this.val[M20] = 0;
+
+		this.val[M01] = 0;
+		this.val[M11] = 1;
+		this.val[M21] = 0;
+
+		this.val[M02] = translation.x;
+		this.val[M12] = translation.y;
+		this.val[M22] = 1;
+
+		return this;
 	}
 
 	/** Sets this matrix to a scaling matrix.
@@ -283,7 +295,19 @@ public class Matrix3 implements Serializable {
 	 * @param translation The translation vector.
 	 * @return This matrix for the purpose of chaining. */
 	public Matrix3 translate (Vector2 translation) {
-		return translate(translation.x, translation.y);
+		tmp[M00] = 1;
+		tmp[M10] = 0;
+		tmp[M20] = 0;
+
+		tmp[M01] = 0;
+		tmp[M11] = 1;
+		tmp[M21] = 0;
+
+		tmp[M02] = translation.x;
+		tmp[M12] = translation.y;
+		tmp[M22] = 1;
+		mul(val, tmp);
+		return this;
 	}
 
 	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
@@ -335,7 +359,17 @@ public class Matrix3 implements Serializable {
 	 * @param scale The vector to scale the matrix by.
 	 * @return This matrix for the purpose of chaining. */
 	public Matrix3 scale (Vector2 scale) {
-		return scale(scale.x, scale.y);
+		tmp[M00] = scale.x;
+		tmp[M10] = 0;
+		tmp[M20] = 0;
+		tmp[M01] = 0;
+		tmp[M11] = scale.y;
+		tmp[M21] = 0;
+		tmp[M02] = 0;
+		tmp[M12] = 0;
+		tmp[M22] = 1;
+		mul(val, tmp);
+		return this;
 	}
 
 	/** Get the values in this matrix.
