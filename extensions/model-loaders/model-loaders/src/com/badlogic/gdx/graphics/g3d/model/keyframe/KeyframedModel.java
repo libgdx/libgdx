@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.g3d.model.AnimatedModel;
 import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.graphics.g3d.model.SubMesh;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -131,7 +130,7 @@ public class KeyframedModel implements AnimatedModel, Disposable {
 			if (time < 0 || time > anim.totalDuration)
 				throw new IllegalArgumentException("time must be 0 <= time <= animation duration");
 
-			final int startIndex = MathUtils.floor((time / anim.frameDuration));
+			final int startIndex = (int)Math.floor((time / anim.frameDuration));
 			final Keyframe startFrame = anim.keyframes[startIndex];
 			final Keyframe endFrame = anim.keyframes[anim.keyframes.length - 1 == startIndex ? loop ? 0 : startIndex
 				: startIndex + 1];

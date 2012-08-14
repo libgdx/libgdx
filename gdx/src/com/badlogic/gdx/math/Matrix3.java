@@ -25,7 +25,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner */
 public class Matrix3 implements Serializable {
 	private static final long serialVersionUID = 7907569533774959788L;
-	private final static float DEGREE_TO_RAD = MathUtils.PI / 180.0f;
+	private final static float DEGREE_TO_RAD = (float)Math.PI / 180;
 	public static final int M00 = 0;
 	public static final int M01 = 3;
 	public static final int M02 = 6;
@@ -322,8 +322,8 @@ public class Matrix3 implements Serializable {
 	public Matrix3 rotate (float angle) {
 		if (angle == 0) return this;
 		angle = DEGREE_TO_RAD * angle;
-		float cos = MathUtils.cos(angle);
-		float sin = MathUtils.sin(angle);
+		float cos = (float)Math.cos(angle);
+		float sin = (float)Math.sin(angle);
 
 		tmp[M00] = cos;
 		tmp[M10] = sin;
