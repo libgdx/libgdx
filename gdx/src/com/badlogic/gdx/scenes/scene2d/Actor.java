@@ -41,6 +41,7 @@ public class Actor {
 	private final DelayedRemovalArray<EventListener> captureListeners = new DelayedRemovalArray(0);
 	private final Array<Action> actions = new Array(0);
 
+	private String name;
 	private Touchable touchable = Touchable.enabled;
 	private boolean visible = true;
 	private float x, y;
@@ -463,6 +464,16 @@ public class Actor {
 		return color;
 	}
 
+	public String getName () {
+		return name;
+	}
+
+	/** Sets a name for easier identification of the actor in application code.
+	 * @see Group#findActor(String) */
+	public void setName (String name) {
+		this.name = name;
+	}
+
 	/** Changes the z-order for this actor so it is in front of all siblings. */
 	public void toFront () {
 		setZIndex(Integer.MAX_VALUE);
@@ -596,9 +607,12 @@ public class Actor {
 	}
 
 	public String toString () {
-		String name = getClass().getName();
-		int dotIndex = name.lastIndexOf('.');
-		if (dotIndex != -1) name = name.substring(dotIndex + 1);
+		String name = this.name;
+		if (name == null) {
+			name = getClass().getName();
+			int dotIndex = name.lastIndexOf('.');
+			if (dotIndex != -1) name = name.substring(dotIndex + 1);
+		}
 		return name + " " + x + "," + y + " " + width + "x" + height;
 	}
 }
