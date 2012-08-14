@@ -18,7 +18,7 @@ package com.badlogic.gdx.graphics.g3d.test;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.jogl.JoglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
@@ -219,7 +219,7 @@ public class StillModelViewer implements ApplicationListener {
 // new JoglApplication(new StillModelViewer(argv[0], argv.length==2?argv[1]:null), "StillModel Viewer", 800, 480, false);
 // new JoglApplication(new StillModelViewer("data/qbob/world_blobbie_brushes.g3dt", "data/qbob/world_blobbie_blocks.png"),
 // "StillModel Viewer", 800, 480, false);
-		new JoglApplication(
+		new LwjglApplication(
 			new StillModelViewer("data/models/multipleuvs.g3d", "data/multipleuvs_1.png", "data/multipleuvs_2.png"),
 			"StillModel Viewer", 800, 480, false);
 // new JoglApplication(new StillModelViewer("data/head.obj"), "StillModel Viewer", 800, 480, false);

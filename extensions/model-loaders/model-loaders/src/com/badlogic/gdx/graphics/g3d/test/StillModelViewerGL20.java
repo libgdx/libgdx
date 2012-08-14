@@ -34,7 +34,7 @@ package com.badlogic.gdx.graphics.g3d.test;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.jogl.JoglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
@@ -190,20 +190,8 @@ public class StillModelViewerGL20 implements ApplicationListener {
 	public void dispose () {
 	}
 
-	public static void main (String[] argv) {
-		// if(argv.length != 1 && argv.length != 2) {
-		// System.out.println("StillModelViewer <filename> ?<texture-filename>");
-		// System.exit(-1);
-		// }
-		// new JoglApplication(new StillModelViewer(argv[0],
-		// argv.length==2?argv[1]:null), "StillModel Viewer", 800, 480, false);
-		// new JoglApplication(new
-		// StillModelViewer("data/qbob/world_blobbie_brushes.g3dt",
-		// "data/qbob/world_blobbie_blocks.png"),
-		// "StillModel Viewer", 800, 480, false);
-		new JoglApplication(new StillModelViewerGL20("data/models/basicscene.obj", "data/multipleuvs_1.png",
+	public static void main (String[] argv) {		// 
+		new LwjglApplication(new StillModelViewerGL20("data/models/basicscene.obj", "data/multipleuvs_1.png",
 			"data/multipleuvs_2.png"), "StillModel Viewer gles2.0", 800, 480, true);
-		// new JoglApplication(new StillModelViewer("data/head.obj"),
-		// "StillModel Viewer", 800, 480, false);
 	}
 }

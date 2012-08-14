@@ -18,8 +18,8 @@ package com.badlogic.gdx.graphics.g3d.experimental;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.jogl.JoglApplication;
-import com.badlogic.gdx.backends.jogl.JoglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
@@ -237,14 +237,14 @@ public class HybridLightTest implements ApplicationListener {
 	}
 
 	public static void main (String[] argv) {
-		JoglApplicationConfiguration config = new JoglApplicationConfiguration();
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Hybrid Light";
 		config.width = 800;
 		config.height = 480;
 		config.samples = 8;
 		config.vSyncEnabled = false;
 		config.useGL20 = true;
-		new JoglApplication(new HybridLightTest(), config);
+		new LwjglApplication(new HybridLightTest(), config);
 	}
 
 }

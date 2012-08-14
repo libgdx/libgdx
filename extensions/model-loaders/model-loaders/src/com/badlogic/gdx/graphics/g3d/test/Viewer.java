@@ -21,7 +21,7 @@ import java.util.List;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.jogl.JoglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -41,7 +41,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 public class Viewer implements ApplicationListener {
 
 	public static void main (String[] argv) {
-		new JoglApplication(new Viewer(), "Viewer", 480, 320, false);
+		new LwjglApplication(new Viewer(), "Viewer", 480, 320, false);
 	}
 
 	static final int NUM_INSTANCES = 1;

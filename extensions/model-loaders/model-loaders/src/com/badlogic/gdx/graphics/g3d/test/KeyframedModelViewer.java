@@ -18,7 +18,7 @@ package com.badlogic.gdx.graphics.g3d.test;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.jogl.JoglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -180,7 +180,7 @@ public class KeyframedModelViewer implements ApplicationListener {
 	}
 
 	public static void main (String[] argv) {
-		new JoglApplication(new KeyframedModelViewer("data/models/knight.md2", "data/models/knight.jpg"), "KeframedModel Viewer",
+		new LwjglApplication(new KeyframedModelViewer("data/models/knight.md2", "data/models/knight.jpg"), "KeframedModel Viewer",
 			800, 480, false);
 	}
 }
