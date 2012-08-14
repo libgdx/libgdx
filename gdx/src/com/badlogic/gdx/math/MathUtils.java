@@ -61,20 +61,24 @@ public class MathUtils {
 		}
 	}
 
-	static public final float sin (float rad) {
-		return Sin.table[(int)(rad * radToIndex) & SIN_MASK];
+	/** Returns the sine in radians. */
+	static public final float sin (float radians) {
+		return Sin.table[(int)(radians * radToIndex) & SIN_MASK];
 	}
 
-	static public final float cos (float rad) {
-		return Cos.table[(int)(rad * radToIndex) & SIN_MASK];
+	/** Returns the cosine in radians. */
+	static public final float cos (float radians) {
+		return Cos.table[(int)(radians * radToIndex) & SIN_MASK];
 	}
 
-	static public final float sinDeg (float deg) {
-		return Sin.table[(int)(deg * degToIndex) & SIN_MASK];
+	/** Returns the sine in radians. */
+	static public final float sinDeg (float degrees) {
+		return Sin.table[(int)(degrees * degToIndex) & SIN_MASK];
 	}
 
-	static public final float cosDeg (float deg) {
-		return Cos.table[(int)(deg * degToIndex) & SIN_MASK];
+	/** Returns the cosine in radians. */
+	static public final float cosDeg (float degrees) {
+		return Cos.table[(int)(degrees * degToIndex) & SIN_MASK];
 	}
 
 	// ---
