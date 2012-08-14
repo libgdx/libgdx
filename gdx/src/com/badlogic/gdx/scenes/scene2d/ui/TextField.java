@@ -638,7 +638,10 @@ public class TextField extends Widget {
 
 	public float getPrefHeight () {
 		float prefHeight = textBounds.height;
-		if (style.background != null) prefHeight += style.background.getBottomHeight() + style.background.getTopHeight();
+		if (style.background != null) {
+			prefHeight = Math.max(prefHeight + style.background.getBottomHeight() + style.background.getTopHeight(),
+				style.background.getMinHeight());
+		}
 		return prefHeight;
 	}
 

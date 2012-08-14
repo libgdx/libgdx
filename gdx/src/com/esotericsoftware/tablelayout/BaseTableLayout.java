@@ -538,11 +538,11 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 			if (maxHeight > 0 && prefHeight > maxHeight) prefHeight = maxHeight;
 
 			if (c.colspan == 1) { // Spanned column min and pref width is added later.
-				float hpadding = c.computedPadLeft + c.computedPadRight;
+				float hpadding = Math.max(0, c.computedPadLeft) + Math.max(0, c.computedPadRight);
 				columnPrefWidth[c.column] = Math.max(columnPrefWidth[c.column], prefWidth + hpadding);
 				columnMinWidth[c.column] = Math.max(columnMinWidth[c.column], minWidth + hpadding);
 			}
-			float vpadding = c.computedPadTop + c.computedPadBottom;
+			float vpadding = Math.max(0, c.computedPadTop) + Math.max(0, c.computedPadBottom);
 			rowPrefHeight[c.row] = Math.max(rowPrefHeight[c.row], prefHeight + vpadding);
 			rowMinHeight[c.row] = Math.max(rowMinHeight[c.row], minHeight + vpadding);
 		}
@@ -565,6 +565,17 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		for (int i = 0, n = cells.size(); i < n; i++) {
 			Cell c = cells.get(i);
 			if (c.ignore) continue;
+
+			// Collect uniform sizes.
+			if (c.uniformX != null) {
+				uniformMinWidth = Math.max(uniformMinWidth, columnMinWidth[c.column]);
+				uniformPrefWidth = Math.max(uniformPrefWidth, columnPrefWidth[c.column]);
+			}
+			if (c.uniformY != null) {
+				uniformMinHeight = Math.max(uniformMinHeight, rowMinHeight[c.row]);
+				uniformPrefHeight = Math.max(uniformPrefHeight, rowPrefHeight[c.row]);
+			}
+
 			if (c.colspan == 1) continue;
 
 			float minWidth = w(c.minWidth, c);
@@ -590,16 +601,6 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 				float ratio = totalExpandWidth == 0 ? 1f / c.colspan : expandWidth[column] / totalExpandWidth;
 				columnMinWidth[column] += extraMinWidth * ratio;
 				columnPrefWidth[column] += extraPrefWidth * ratio;
-			}
-
-			// Collect uniform sizes.
-			if (c.uniformX != null) {
-				uniformMinWidth = Math.max(uniformMinWidth, columnMinWidth[c.column]);
-				uniformPrefWidth = Math.max(uniformPrefWidth, columnPrefWidth[c.column]);
-			}
-			if (c.uniformY != null) {
-				uniformMinHeight = Math.max(uniformMinHeight, rowMinHeight[c.row]);
-				uniformPrefHeight = Math.max(uniformPrefHeight, rowPrefHeight[c.row]);
 			}
 		}
 
@@ -715,8 +716,9 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 			if (maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
 			if (maxHeight > 0 && prefHeight > maxHeight) prefHeight = maxHeight;
 
-			c.widgetWidth = Math.min(spannedWeightedWidth - c.computedPadLeft - c.computedPadRight, prefWidth);
-			c.widgetHeight = Math.min(weightedHeight - c.computedPadTop - c.computedPadBottom, prefHeight);
+			c.widgetWidth = Math.min(spannedWeightedWidth - Math.max(0, c.computedPadLeft) - Math.max(0, c.computedPadRight),
+				prefWidth);
+			c.widgetHeight = Math.min(weightedHeight - Math.max(0, c.computedPadTop) - Math.max(0, c.computedPadBottom), prefHeight);
 
 			if (c.colspan == 1) columnWidth[c.column] = Math.max(columnWidth[c.column], spannedWeightedWidth);
 			rowHeight[c.row] = Math.max(rowHeight[c.row], weightedHeight);
@@ -801,7 +803,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 			float spannedCellWidth = 0;
 			for (int column = c.column, nn = column + c.colspan; column < nn; column++)
 				spannedCellWidth += columnWidth[column];
-			spannedCellWidth -= c.computedPadLeft + c.computedPadRight;
+			spannedCellWidth -= Math.max(0, c.computedPadLeft) + Math.max(0, c.computedPadRight);
 
 			currentX += c.computedPadLeft;
 
@@ -811,7 +813,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 				if (maxWidth > 0) c.widgetWidth = Math.min(c.widgetWidth, maxWidth);
 			}
 			if (c.fillY > 0) {
-				c.widgetHeight = rowHeight[c.row] * c.fillY - c.computedPadTop - c.computedPadBottom;
+				c.widgetHeight = rowHeight[c.row] * c.fillY - Math.max(0, c.computedPadTop) - Math.max(0, c.computedPadBottom);
 				float maxHeight = h(c.maxHeight, c);
 				if (maxHeight > 0) c.widgetHeight = Math.min(c.widgetHeight, maxHeight);
 			}
