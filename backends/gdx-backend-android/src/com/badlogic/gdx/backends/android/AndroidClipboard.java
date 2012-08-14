@@ -19,7 +19,7 @@ package com.badlogic.gdx.backends.android;
 import android.content.Context;
 import android.os.Build;
 
-import com.badlogic.gdx.Clipboard;
+import com.badlogic.gdx.utils.Clipboard;
 
 public class AndroidClipboard implements Clipboard {
 	Context context;

@@ -156,14 +156,8 @@ public class Matrix3 implements Serializable {
 	}
 
 	public String toString () {
-		String[] values = {Float.toString(val[M00]), Float.toString(val[M01]), Float.toString(val[M02]), Float.toString(val[M10]),
-			Float.toString(val[M11]), Float.toString(val[M12]), Float.toString(val[M20]), Float.toString(val[M21]),
-			Float.toString(val[M22])};
-		int max1 = Math.max(values[M00].length(), Math.max(values[M01].length(), values[M02].length()));
-		int max2 = Math.max(values[M10].length(), Math.max(values[M11].length(), values[M12].length()));
-		int max3 = Math.max(values[M20].length(), Math.max(values[M21].length(), values[M22].length()));
-		return String.format("%" + max1 + "s, %" + max2 + "s, %" + max3 + "s\n%" + max1 + "s, %" + max2 + "s, %" + max3 + "s\n%"
-			+ max1 + "s, %" + max2 + "s, %" + max3 + "s", (Object[])values);
+		return "[" + val[0] + "|" + val[3] + "|" + val[6] + "]\n" + "[" + val[1] + "|" + val[4] + "|" + val[7] + "]\n" + "["
+				+ val[2] + "|" + val[5] + "|" + val[8] + "]";
 	}
 
 	/** @return the determinant of this matrix */

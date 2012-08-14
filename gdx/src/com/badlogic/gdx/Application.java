@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.utils.Clipboard;
+
 /** <p>
  * An <code>Application</code> is the main entry point of your project. It sets up a window and rendering surface and manages the
  * different aspects of your application, namely {@link Graphics}, {@link Audio}, {@link Input} and {@link Files}. Think of an

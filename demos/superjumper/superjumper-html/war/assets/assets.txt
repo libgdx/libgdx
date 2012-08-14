@@ -1,4 +1,4 @@
-d:
+d:war/
 d:data
 i:data/background.png
 a:data/click.ogg
