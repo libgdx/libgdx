@@ -27,5 +27,6 @@
 		<exclude name="**/WavTest.java"/> <!-- naive -->
 		<exclude name="**/AssetsFileGenerator.java"/> <!-- utility -->
 		<exclude name="**/GdxTests.java"/> <!-- utilty -->
+		<exclude name="**/InternationalFontsTest.java"/> <!-- utilty -->
 	</source>
 </module>

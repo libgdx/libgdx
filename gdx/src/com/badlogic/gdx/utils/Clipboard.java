@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx;
+package com.badlogic.gdx.utils;
 
 /** A very simple clipboard interface for text content.
  * @author mzechner */

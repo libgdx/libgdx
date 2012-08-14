@@ -173,6 +173,7 @@
 		<include name="math/WindowedMean.java"/>
 		<include name="utils/XmlReader.java"/>
 		<include name="utils/XmlWriter.java"/>
+		<include name="utils/Clipboard.java"/>
 		<include name="graphics/g2d/Animation.java"/>
 		<include name="graphics/g3d/Animation.java"/>
 		
@@ -217,12 +218,14 @@
 		<include name="scenes/scene2d/ui/TableLayout.java"/>
 		<include name="scenes/scene2d/ui/TextButton.java"/>
 		<include name="scenes/scene2d/ui/TextField.java"/>
+		<include name="scenes/scene2d/ui/Tree.java"/>
 		<include name="scenes/scene2d/ui/Widget.java"/>
 		<include name="scenes/scene2d/ui/WidgetGroup.java"/>
 		<include name="scenes/scene2d/ui/Window.java"/>
 		<include name="scenes/scene2d/ui/Touchpad.java"/>
 		<include name="scenes/scene2d/utils/ActorGestureListener.java"/>
 		<include name="scenes/scene2d/utils/Align.java"/>
+		<include name="scenes/scene2d/utils/BaseDrawable.java"/>
 		<include name="scenes/scene2d/utils/ChangeListener.java"/>
 		<include name="scenes/scene2d/utils/ClickListener.java"/>
 		<include name="scenes/scene2d/utils/Cullable.java"/>
@@ -234,6 +237,7 @@
 		<include name="scenes/scene2d/utils/ScissorStack.java"/>
 		<include name="scenes/scene2d/utils/SpriteDrawable.java"/>
 		<include name="scenes/scene2d/utils/TextureDrawable.java"/>
-		<include name="scenes/scene2d/utils/TextureRegionDrawable.java"/>
+		<include name="scenes/scene2d/utils/TextureRegionDrawable.java"/>		
+		<include name="scenes/scene2d/utils/TiledDrawable.java"/>
 	</source>
 </module>

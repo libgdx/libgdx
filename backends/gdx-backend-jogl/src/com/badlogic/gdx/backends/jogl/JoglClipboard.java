@@ -24,7 +24,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
-import com.badlogic.gdx.Clipboard;
+import com.badlogic.gdx.utils.Clipboard;
 
 /** Clipboard implementation for desktop that uses the system clipboard via the default AWT {@link Toolkit}.
  * @author mzechner */

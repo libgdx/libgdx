@@ -69,9 +69,7 @@ public class KeyframedModel implements AnimatedModel, Disposable {
 		int len = subMeshes.length;
 		for (int i = 0; i < len; i++) {
 			KeyframedSubMesh subMesh = subMeshes[i];
-			if (i == 0) {
-				subMesh.material.bind();
-			} else if (!subMeshes[i - 1].material.equals(subMesh.material)) {
+			if (i == 0 || !subMeshes[i - 1].material.equals(subMesh.material)) {
 				subMesh.material.bind();
 			}
 			subMesh.mesh.render(subMesh.primitiveType);
@@ -83,9 +81,7 @@ public class KeyframedModel implements AnimatedModel, Disposable {
 		int len = subMeshes.length;
 		for (int i = 0; i < len; i++) {
 			KeyframedSubMesh subMesh = subMeshes[i];
-			if (i == 0) {
-				subMesh.material.bind(program);
-			} else if (!subMeshes[i - 1].material.equals(subMesh.material)) {
+			if (i == 0 || !subMeshes[i - 1].material.equals(subMesh.material)) {
 				subMesh.material.bind(program);
 			}
 			subMesh.mesh.render(program, subMesh.primitiveType);

@@ -18,8 +18,12 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
-/** Encapsulates a column major 4 by 4 matrix. You can access the linear array for use with OpenGL via the public
- * {@link Matrix4#val} member. Like the {@link Vector3} class it allows to chain methods by returning a reference to itself.
+/** Encapsulates a <a href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> 4 by 4 matrix. Like the {@link Vector3}
+ * class it allows the chaining of methods by returning a reference to itself. For example:
+ * 
+ * <pre>
+ * Matrix4 mat = new Matrix4().trn(position).mul(camera.combined);
+ * </pre>
  * 
  * @author badlogicgames@gmail.com */
 public class Matrix4 implements Serializable {
@@ -52,37 +56,40 @@ public class Matrix4 implements Serializable {
 		val[M33] = 1f;
 	}
 
-	/** Constructs a matrix from the given matrix
+	/** Constructs a matrix from the given matrix.
 	 * 
-	 * @param matrix The matrix */
+	 * @param matrix The matrix to copy. (This matrix is not modified) */
 	public Matrix4 (Matrix4 matrix) {
 		this.set(matrix);
 	}
 
-	/** Constructs a matrix from the given float array. The array must have at least 16 elements
-	 * @param values The float array */
+	/** Constructs a matrix from the given float array. The array must have at least 16 elements; the first 16 will be copied.
+	 * @param values The float array to copy. Remember that this matrix is in <a
+	 *           href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order. (The float array is not modified) */
 	public Matrix4 (float[] values) {
 		this.set(values);
 	}
 
-	/** Constructs a rotation matrix from the given {@link Quaternion}
-	 * @param quaternion The quaternion */
+	/** Constructs a rotation matrix from the given {@link Quaternion}.
+	 * @param quaternion The quaternion to be copied. (The quaternion is not modified) */
 	public Matrix4 (Quaternion quaternion) {
 		this.set(quaternion);
 	}
 
 	/** Sets the matrix to the given matrix.
 	 * 
-	 * @param matrix The matrix
-	 * @return This matrix for chaining */
+	 * @param matrix The matrix that is to be copied. (The given matrix is not modified)
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 set (Matrix4 matrix) {
 		return this.set(matrix.val);
 	}
 
-	/** Sets the matrix to the given matrix as a float array. The float array must have at least 16 elements.
+	/** Sets the matrix to the given matrix as a float array. The float array must have at least 16 elements; the first 16 will be
+	 * copied.
 	 * 
-	 * @param values The matrix
-	 * @return This matrix for chaining */
+	 * @param values The matrix, in float form, that is to be copied. Remember that this matrix is in <a
+	 *           href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order.
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 set (float[] values) {
 		System.arraycopy(values, 0, val, 0, val.length);
 		return this;
@@ -90,8 +97,8 @@ public class Matrix4 implements Serializable {
 
 	/** Sets the matrix to a rotation matrix representing the quaternion.
 	 * 
-	 * @param quaternion The quaternion
-	 * @return This matrix for chaining */
+	 * @param quaternion The quaternion that is to be used to set this matrix.
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 set (Quaternion quaternion) {
 		// Compute quaternion factors
 		float l_xx = quaternion.x * quaternion.x;
@@ -126,11 +133,11 @@ public class Matrix4 implements Serializable {
 	/** Sets the four columns of the matrix which correspond to the x-, y- and z-axis of the vector space this matrix creates as
 	 * well as the 4th column representing the translation of any point that is multiplied by this matrix.
 	 * 
-	 * @param xAxis The x-axis
-	 * @param yAxis The y-axis
-	 * @param zAxis The z-axis
-	 * @param pos The translation vector */
-	public void set (Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, Vector3 pos) {
+	 * @param xAxis The x-axis.
+	 * @param yAxis The y-axis.
+	 * @param zAxis The z-axis.
+	 * @param pos The translation vector. */
+	public Matrix4 set (Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, Vector3 pos) {
 		val[M00] = xAxis.x;
 		val[M01] = xAxis.y;
 		val[M02] = xAxis.z;
@@ -147,6 +154,7 @@ public class Matrix4 implements Serializable {
 		val[M31] = 0;
 		val[M32] = 0;
 		val[M33] = 1;
+		return this;
 	}
 
 	/** @return a copy of this matrix */
@@ -156,8 +164,8 @@ public class Matrix4 implements Serializable {
 
 	/** Adds a translational component to the matrix in the 4th column. The other columns are untouched.
 	 * 
-	 * @param vector The translation vector
-	 * @return This matrix for chaining */
+	 * @param vector The translation vector to add to the current matrix. (This vector is not modified)
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 trn (Vector3 vector) {
 		val[M03] += vector.x;
 		val[M13] += vector.y;
@@ -167,10 +175,10 @@ public class Matrix4 implements Serializable {
 
 	/** Adds a translational component to the matrix in the 4th column. The other columns are untouched.
 	 * 
-	 * @param x The x-component of the translation vector
-	 * @param y The y-component of the translation vector
-	 * @param z The z-component of the translation vector
-	 * @return This matrix for chaining */
+	 * @param x The x-component of the translation vector.
+	 * @param y The y-component of the translation vector.
+	 * @param z The z-component of the translation vector.
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 trn (float x, float y, float z) {
 		val[M03] += x;
 		val[M13] += y;
@@ -227,9 +235,9 @@ public class Matrix4 implements Serializable {
 		return this.set(tmp);
 	}
 
-	/** Transposes the matrix
+	/** Transposes the matrix.
 	 * 
-	 * @return This matrix for chaining */
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 tra () {
 		tmp[M00] = val[M00];
 		tmp[M01] = val[M10];
@@ -247,12 +255,12 @@ public class Matrix4 implements Serializable {
 		tmp[M31] = val[M13];
 		tmp[M32] = val[M23];
 		tmp[M33] = val[M33];
-		return this.set(tmp);
+		return set(tmp);
 	}
 
-	/** Sets the matrix to an identity matrix
+	/** Sets the matrix to an identity matrix.
 	 * 
-	 * @return This matrix for chaining */
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 idt () {
 		val[M00] = 1;
 		val[M01] = 0;
@@ -273,9 +281,10 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-	/** Inverts the matrix. Throws a RuntimeException in case the matrix is not invertible. Stores the result in this matrix
+	/** Inverts the matrix. Throws a {@link RuntimeException} in case the matrix is not invertible. Stores the result in this
+	 * matrix.
 	 * 
-	 * @return This matrix for chaining */
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 inv () {
 		float l_det = val[M30] * val[M21] * val[M12] * val[M03] - val[M20] * val[M31] * val[M12] * val[M03] - val[M30] * val[M11]
 			* val[M22] * val[M03] + val[M10] * val[M31] * val[M22] * val[M03] + val[M20] * val[M11] * val[M32] * val[M03] - val[M10]
@@ -358,9 +367,9 @@ public class Matrix4 implements Serializable {
 	 * @param far The far plane
 	 * @param fov The field of view in degrees
 	 * @param aspectRatio The aspect ratio
-	 * @return This matrix for chaining */
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToProjection (float near, float far, float fov, float aspectRatio) {
-		this.idt();
+		idt();
 		float l_fd = (float)(1.0 / Math.tan((fov * (Math.PI / 180)) / 2.0));
 		float l_a1 = (far + near) / (near - far);
 		float l_a2 = (2 * far * near) / (near - far);
@@ -391,7 +400,7 @@ public class Matrix4 implements Serializable {
 	 * @param y The y-coordinate of the origin
 	 * @param width The width
 	 * @param height The height
-	 * @return This matrix for chaining */
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToOrtho2D (float x, float y, float width, float height) {
 		setToOrtho(x, x + width, y, y + height, 0, 1);
 		return this;
@@ -406,7 +415,7 @@ public class Matrix4 implements Serializable {
 	 * @param height The height
 	 * @param near The near plane
 	 * @param far The far plane
-	 * @return This matrix for chaining */
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToOrtho2D (float x, float y, float width, float height, float near, float far) {
 		setToOrtho(x, x + width, y, y + height, near, far);
 		return this;
@@ -421,7 +430,7 @@ public class Matrix4 implements Serializable {
 	 * @param top The top clipping plane
 	 * @param near The near clipping plane
 	 * @param far The far clipping plane
-	 * @return This matrix for chaining */
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToOrtho (float left, float right, float bottom, float top, float near, float far) {
 
 		this.idt();
@@ -457,7 +466,7 @@ public class Matrix4 implements Serializable {
 	 * translation vector.
 	 * 
 	 * @param vector The translation vector
-	 * @return This matrix for chaining */
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToTranslation (Vector3 vector) {
 		idt();
 		val[M03] = vector.x;
@@ -469,10 +478,10 @@ public class Matrix4 implements Serializable {
 	/** Sets this matrix to a translation matrix, overwriting it first by an identity matrix and then setting the 4th column to the
 	 * translation vector.
 	 * 
-	 * @param x The x-component of the translation vector
-	 * @param y The y-component of the translation vector
-	 * @param z The z-component of the translation vector
-	 * @return This matrix for chaining */
+	 * @param x The x-component of the translation vector.
+	 * @param y The y-component of the translation vector.
+	 * @param z The z-component of the translation vector.
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToTranslation (float x, float y, float z) {
 		idt();
 		val[M03] = x;
@@ -486,7 +495,7 @@ public class Matrix4 implements Serializable {
 	 * 
 	 * @param translation The translation vector
 	 * @param scaling The scaling vector
-	 * @return This matrix for chaining */
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToTranslationAndScaling (Vector3 translation, Vector3 scaling) {
 		idt();
 		val[M03] = translation.x;
@@ -507,7 +516,7 @@ public class Matrix4 implements Serializable {
 	 * @param scalingX The x-component of the scaling vector
 	 * @param scalingY The x-component of the scaling vector
 	 * @param scalingZ The x-component of the scaling vector
-	 * @return This matrix for chaining */
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToTranslationAndScaling (float translationX, float translationY, float translationZ, float scalingX,
 		float scalingY, float scalingZ) {
 		idt();
@@ -526,11 +535,11 @@ public class Matrix4 implements Serializable {
 	 * 
 	 * @param axis The axis
 	 * @param angle The angle in degrees
-	 * @return This matrix for chaining */
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToRotation (Vector3 axis, float angle) {
 		idt();
 		if (angle == 0) return this;
-		return this.set(quat.set(axis, angle));
+		return set(quat.set(axis, angle));
 	}
 
 	/** Sets the matrix to a rotation matrix around the given axis.
@@ -539,11 +548,11 @@ public class Matrix4 implements Serializable {
 	 * @param axisY The y-component of the axis
 	 * @param axisZ The z-component of the axis
 	 * @param angle The angle in degrees
-	 * @return This matrix for chaining */
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToRotation (float axisX, float axisY, float axisZ, float angle) {
 		idt();
 		if (angle == 0) return this;
-		return this.set(quat.set(tmpV.set(axisX, axisY, axisZ), angle));
+		return set(quat.set(tmpV.set(axisX, axisY, axisZ), angle));
 	}
 
 	static final Vector3 tmpV = new Vector3();
@@ -552,11 +561,10 @@ public class Matrix4 implements Serializable {
 	 * @param yaw the yaw in degrees
 	 * @param pitch the pitch in degress
 	 * @param roll the roll in degrees
-	 * @return this matrix */
+	 * @return This matrix */
 	public Matrix4 setFromEulerAngles (float yaw, float pitch, float roll) {
-		idt();
 		quat.setEulerAngles(yaw, pitch, roll);
-		return this.set(quat);
+		return idt().set(quat);
 	}
 
 	/** Sets this matrix to a scaling matrix
@@ -594,7 +602,7 @@ public class Matrix4 implements Serializable {
 	 * 
 	 * @param direction The direction vector
 	 * @param up The up vector
-	 * @return This matrix for chaining */
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToLookAt (Vector3 direction, Vector3 up) {
 		l_vez.set(direction).nor();
 		l_vex.set(direction).nor();
@@ -622,7 +630,7 @@ public class Matrix4 implements Serializable {
 	 * @param position the position
 	 * @param target the target
 	 * @param up the up vector
-	 * @return this matrix */
+	 * @return This matrix */
 	public Matrix4 setToLookAt (Vector3 position, Vector3 target, Vector3 up) {
 		tmpVec.set(target).sub(position);
 		setToLookAt(tmpVec, up);
@@ -717,8 +725,7 @@ public class Matrix4 implements Serializable {
 		val[M03] = 0;
 		val[M13] = 0;
 		val[M23] = 0;
-		inv();
-		return tra();
+		return inv().tra();
 	}
 
 	// @off
@@ -979,17 +986,17 @@ public class Matrix4 implements Serializable {
 	/** Postmultiplies this matrix by a translation matrix. Postmultiplication is also used by OpenGL ES'
 	 * glTranslate/glRotate/glScale
 	 * @param translation
-	 * @return this matrix for chaining */
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 translate (Vector3 translation) {
 		return translate(translation.x, translation.y, translation.z);
 	}
 
-	/** Postmultiplies this matrix by a translation matrix. Postmultiplication is also used by OpenGL ES'
-	 * glTranslate/glRotate/glScale
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @return this matrix for chaining */
+	/** Postmultiplies this matrix by a translation matrix. Postmultiplication is also used by OpenGL ES' 1.x
+	 * glTranslate/glRotate/glScale.
+	 * @param x Translation in the x-axis.
+	 * @param y Translation in the y-axis.
+	 * @param z Translation in the z-axis.
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 translate (float x, float y, float z) {
 		tmp[M00] = 1;
 		tmp[M01] = 0;
@@ -1012,47 +1019,48 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES'
-	 * glTranslate/glRotate/glScale
+	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
+	 * glTranslate/glRotate/glScale.
 	 * 
-	 * @param axis
-	 * @param angle the angle in degrees
-	 * @return this matrix for chaining */
+	 * @param axis The vector axis to rotate around.
+	 * @param angle The angle in degrees.
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 rotate (Vector3 axis, float angle) {
 		if (angle == 0) return this;
 		quat.set(axis, angle);
 		return rotate(quat);
 	}
 
-	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES'
+	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
 	 * glTranslate/glRotate/glScale
-	 * @param axisX
-	 * @param axisY
-	 * @param axisZ
-	 * @param angle the angle in degrees
-	 * @return this matrix for chaining */
+	 * @param axisX The x-axis component of the vector to rotate around.
+	 * @param axisY The y-axis component of the vector to rotate around.
+	 * @param axisZ The z-axis component of the vector to rotate around.
+	 * @param angle The angle in degrees
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 rotate (float axisX, float axisY, float axisZ, float angle) {
 		if (angle == 0) return this;
 		quat.set(tmpV.set(axisX, axisY, axisZ), angle);
 		return rotate(quat);
 	}
 
-	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES'
-	 * glTranslate/glRotate/glScale
+	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
+	 * glTranslate/glRotate/glScale.
 	 * 
 	 * @param rotation
-	 * @return this matrix for chaining */
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 rotate (Quaternion rotation) {
 		rotation.toMatrix(tmp);
 		mul(val, tmp);
 		return this;
 	}
 
-	/** Postmultiplies this matrix with a scale matrix. Postmultiplication is also used by OpenGL ES' glTranslate/glRotate/glScale.
-	 * @param scaleX
-	 * @param scaleY
-	 * @param scaleZ
-	 * @return this matrix for chaining */
+	/** Postmultiplies this matrix with a scale matrix. Postmultiplication is also used by OpenGL ES' 1.x
+	 * glTranslate/glRotate/glScale.
+	 * @param scaleX The scale in the x-axis.
+	 * @param scaleY The scale in the y-axis.
+	 * @param scaleZ The scale in the z-axis.
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 scale (float scaleX, float scaleY, float scaleZ) {
 		tmp[M00] = scaleX;
 		tmp[M01] = 0;

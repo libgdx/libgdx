@@ -34,7 +34,6 @@ import javax.swing.SwingUtilities;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
-import com.badlogic.gdx.Clipboard;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -43,6 +42,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.jogl.JoglGraphics.JoglDisplayMode;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
+import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** An implemenation of the {@link Application} interface based on Jogl for Windows, Linux and Mac. Instantiate this class with
