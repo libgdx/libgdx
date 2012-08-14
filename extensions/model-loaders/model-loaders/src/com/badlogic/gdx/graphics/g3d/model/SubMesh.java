@@ -25,7 +25,11 @@ public abstract class SubMesh {
 	public Material material;
 	public int primitiveType;
 
+	/** Obtain the {@link BoundingBox} of this {@link SubMesh}.
+	 * 
+	 * @param bbox This {@link BoundingBox} will be modified so that its contain values that are the bounding box for this SubMesh. */
 	public abstract void getBoundingBox (BoundingBox bbox);
 
+	/** @return The {@link Mesh} that represents this {@link SubMesh}. */
 	public abstract Mesh getMesh ();
 }
