@@ -53,13 +53,16 @@ abstract public class Action implements Poolable {
 	 * {@link #act(float)}. For a {@link TemporalAction}, use TemporalAction#initialize(). */
 	public void setActor (Actor actor) {
 		this.actor = actor;
-		if (actor == null) {
-			if (pool != null) {
-				pool.free(this);
-				pool = null;
-			} else
-				reset();
-		}
+	}
+
+	/** Called when the Action was removed from its Actor. */
+	public void removedFromActor () {
+		if (pool != null) {
+			pool.free(this);
+			pool = null;
+		} else
+			reset();
+		this.actor = null;
 	}
 
 	/** Resets the optional state of this action to as if it were newly created, allowing the action to be pooled and reused. State

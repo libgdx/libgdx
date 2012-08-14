@@ -58,6 +58,14 @@ public class ParallelAction extends Action {
 			actions.get(i).setActor(actor);
 		super.setActor(actor);
 	}
+	
+	@Override
+	public void removedFromActor () {
+		Array<Action> actions = this.actions;
+		for (int i = 0, n = actions.size; i < n; i++)
+			actions.get(i).removedFromActor();
+		super.removedFromActor();
+	}
 
 	public Array<Action> getActions () {
 		return actions;
