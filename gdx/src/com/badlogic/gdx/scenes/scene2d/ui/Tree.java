@@ -250,6 +250,7 @@ public class Tree extends WidgetGroup {
 		}
 
 		void removeFromTree (Tree tree) {
+			if (leftActor != null) tree.removeActor(leftActor);
 			tree.removeActor(rightActor);
 			if (!expanded) return;
 			for (int i = 0, n = children.size; i < n; i++)
