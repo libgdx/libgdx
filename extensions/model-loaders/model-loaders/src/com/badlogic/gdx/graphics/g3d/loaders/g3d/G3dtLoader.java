@@ -175,7 +175,7 @@ public class G3dtLoader {
 		for (int i = 0; i < numAnimations; i++) {
 			String animationName = readString(in);
 			int numKeyframes = readInt(in);
-			float frameDuration = readFloat(in);
+			float frameDuration = readFloat(in); // in seconds
 
 			Keyframe[] keyframes = new Keyframe[numKeyframes];
 			float time = 0;

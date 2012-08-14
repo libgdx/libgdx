@@ -18,6 +18,7 @@ package com.badlogic.gdx.graphics.g3d.materials;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Pool;
 
@@ -34,6 +35,11 @@ public class ColorAttribute extends MaterialAttribute {
 	protected ColorAttribute () {
 	}
 
+	/** Creates a {@link MaterialAttribute} that is a pure {@link Color}.
+	 * 
+	 * @param color The {@link Colour} that you wish the attribute to represent.
+	 * @param name The name of the uniform in the {@link ShaderProgram} that will have its value set to this color. (A 'name' does
+	 *           not matter for a game that uses {@link GL10}). */
 	public ColorAttribute (Color color, String name) {
 		super(name);
 		this.color.set(color);
