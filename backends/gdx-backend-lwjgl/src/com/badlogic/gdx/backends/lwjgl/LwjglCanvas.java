@@ -252,7 +252,7 @@ public class LwjglCanvas implements Application {
 	public Clipboard getClipboard () {
 		return new LwjglClipboard();
 	}
-	
+
 	@Override
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {

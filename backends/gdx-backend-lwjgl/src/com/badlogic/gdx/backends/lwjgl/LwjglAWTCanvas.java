@@ -259,12 +259,12 @@ public class LwjglAWTCanvas implements Application {
 			return prefs;
 		}
 	}
-	
+
 	@Override
 	public Clipboard getClipboard () {
 		return new LwjglClipboard();
 	}
-	
+
 	@Override
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {

@@ -16,11 +16,15 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import static com.badlogic.gdx.utils.GdxNativesLoader.extractLibrary;
+import static com.badlogic.gdx.utils.GdxNativesLoader.isLinux;
+import static com.badlogic.gdx.utils.GdxNativesLoader.isMac;
+import static com.badlogic.gdx.utils.GdxNativesLoader.isWindows;
+import static com.badlogic.gdx.utils.GdxNativesLoader.nativesDir;
+
 import java.lang.reflect.Method;
 
 import com.badlogic.gdx.utils.GdxNativesLoader;
-
-import static com.badlogic.gdx.utils.GdxNativesLoader.*;
 
 final class LwjglNativesLoader {
 	static public boolean load = true;
