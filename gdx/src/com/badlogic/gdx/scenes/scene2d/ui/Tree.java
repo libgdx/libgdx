@@ -25,7 +25,7 @@ public class Tree extends WidgetGroup {
 	TreeStyle style;
 	final Array<Node> rootNodes = new Array();
 	final Array<Node> selectedNodes = new Array();
-	float ySpacing = 4, iconSpacing = 2, indentSpacing;
+	float ySpacing = 4, iconSpacing = 2, padding = 8, indentSpacing;
 	private float leftColumnWidth, prefWidth, prefHeight;
 	private boolean sizeInvalid = true;
 	private Node foundNode;
@@ -48,6 +48,7 @@ public class Tree extends WidgetGroup {
 		addListener(new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
 				Node node = getNodeAt(y);
+				if (node == null) return;
 				float rowX = node.rightActor.getX();
 				if (node.icon != null) rowX -= iconSpacing + node.icon.getMinWidth();
 				// Toggle expanded.
@@ -126,8 +127,8 @@ public class Tree extends WidgetGroup {
 		prefHeight = getHeight();
 		leftColumnWidth = 0;
 		computeSize(rootNodes, indentSpacing);
-		leftColumnWidth += iconSpacing;
-		prefWidth += leftColumnWidth;
+		leftColumnWidth += iconSpacing + padding;
+		prefWidth += leftColumnWidth + padding;
 		prefHeight = getHeight() - (prefHeight + ySpacing);
 	}
 
@@ -224,6 +225,7 @@ public class Tree extends WidgetGroup {
 		}
 	}
 
+	/** @return May be null. */
 	public Node getNodeAt (float y) {
 		foundNode = null;
 		getNodeAt(rootNodes, y, getHeight());
@@ -283,6 +285,10 @@ public class Tree extends WidgetGroup {
 
 	public Node getOverNode () {
 		return overNode;
+	}
+
+	public void setPadding (float padding) {
+		this.padding = padding;
 	}
 
 	public void setYSpacing (float ySpacing) {
