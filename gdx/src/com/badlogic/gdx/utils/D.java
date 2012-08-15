@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public final class D {
 	
@@ -285,6 +286,15 @@ public final class D {
 		D.out(tmp.toString());
 	}
 	
+	public static void out(Vector3... v){
+		if(v[0] == null)
+			D.out("NULL");
+		StringBuilder tmp = new StringBuilder();
+		for(int i = 0;i < v.length;i++){
+			tmp.append("\n Vector3["+ i + "]  : " + v[i].x + "   " + v[i].y + "   " + v[i].z);
+		}
+		D.out(tmp.toString());
+	}
 	/********************************************************************
 	 * 
 	 ********************************************************************/
