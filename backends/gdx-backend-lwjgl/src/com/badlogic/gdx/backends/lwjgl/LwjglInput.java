@@ -49,44 +49,8 @@ import com.badlogic.gdx.utils.Pool;
  * 
  * @author mzechner */
 final class LwjglInput implements Input {
-	class KeyEvent {
-		static final int KEY_DOWN = 0;
-		static final int KEY_UP = 1;
-		static final int KEY_TYPED = 2;
-
-		long timeStamp;
-		int type;
-		int keyCode;
-		char keyChar;
-	}
-
-	class TouchEvent {
-		static final int TOUCH_DOWN = 0;
-		static final int TOUCH_UP = 1;
-		static final int TOUCH_DRAGGED = 2;
-		static final int TOUCH_SCROLLED = 3;
-		static final int TOUCH_MOVED = 4;
-
-		long timeStamp;
-		int type;
-		int x;
-		int y;
-		int scrollAmount;
-		int button;
-		int pointer;
-	}
-
-	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(16, 1000) {
-		protected KeyEvent newObject () {
-			return new KeyEvent();
-		}
-	};
-
-	Pool<TouchEvent> usedTouchEvents = new Pool<TouchEvent>(16, 1000) {
-		protected TouchEvent newObject () {
-			return new TouchEvent();
-		}
-	};
+	static public float keyRepeatInitialTime = 0.4f;
+	static public float keyRepeatTime = 0.1f;
 
 	List<KeyEvent> keyEvents = new ArrayList<KeyEvent>();
 	List<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
@@ -100,6 +64,18 @@ final class LwjglInput implements Input {
 	char lastKeyCharPressed;
 	float keyRepeatTimer;
 	long currentEventTimeStamp;
+
+	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(16, 1000) {
+		protected KeyEvent newObject () {
+			return new KeyEvent();
+		}
+	};
+
+	Pool<TouchEvent> usedTouchEvents = new Pool<TouchEvent>(16, 1000) {
+		protected TouchEvent newObject () {
+			return new TouchEvent();
+		}
+	};
 
 	public LwjglInput () {
 		Keyboard.enableRepeatEvents(false);
@@ -758,7 +734,7 @@ final class LwjglInput implements Input {
 		if (lastKeyCharPressed != 0) {
 			keyRepeatTimer -= Gdx.graphics.getDeltaTime();
 			if (keyRepeatTimer < 0) {
-				keyRepeatTimer = 0.15f;
+				keyRepeatTimer = keyRepeatTime;
 
 				KeyEvent event = usedKeyEvents.obtain();
 				event.keyCode = 0;
@@ -799,7 +775,7 @@ final class LwjglInput implements Input {
 
 					pressedKeys++;
 					lastKeyCharPressed = keyChar;
-					keyRepeatTimer = 0.4f;
+					keyRepeatTimer = keyRepeatInitialTime;
 				} else {
 					int keyCode = LwjglInput.getGdxKeyCode(Keyboard.getEventKey());
 
@@ -947,5 +923,32 @@ final class LwjglInput implements Input {
 	public void getRotationMatrix (float[] matrix) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	class KeyEvent {
+		static final int KEY_DOWN = 0;
+		static final int KEY_UP = 1;
+		static final int KEY_TYPED = 2;
+
+		long timeStamp;
+		int type;
+		int keyCode;
+		char keyChar;
+	}
+
+	class TouchEvent {
+		static final int TOUCH_DOWN = 0;
+		static final int TOUCH_UP = 1;
+		static final int TOUCH_DRAGGED = 2;
+		static final int TOUCH_SCROLLED = 3;
+		static final int TOUCH_MOVED = 4;
+
+		long timeStamp;
+		int type;
+		int x;
+		int y;
+		int scrollAmount;
+		int button;
+		int pointer;
 	}
 }

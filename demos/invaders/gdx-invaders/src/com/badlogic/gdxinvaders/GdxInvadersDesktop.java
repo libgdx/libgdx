@@ -13,10 +13,15 @@
 
 package com.badlogic.gdxinvaders;
 
+<<<<<<< HEAD
 import com.badlogic.gdx.backends.lwjgl.LwjglApplet;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
+=======
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+>>>>>>> upstream/master
 
 /** Entry point for desktop version of Gdx Invaders. Constructs a JoglApplication and registers the renderer.
  * @author mzechner */

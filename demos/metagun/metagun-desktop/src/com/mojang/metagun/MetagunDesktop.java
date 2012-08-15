@@ -1,10 +1,10 @@
 
 package com.mojang.metagun;
 
-import com.badlogic.gdx.backends.jogl.JoglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 
 public class MetagunDesktop {
 	public static void main (String[] argv) {
-		new JoglApplication(new Metagun(), "Metagun", 320, 240, false);
+		new LwjglApplication(new Metagun(), "Metagun", 320, 240, false);
 	}
 }

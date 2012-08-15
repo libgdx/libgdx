@@ -565,6 +565,17 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		for (int i = 0, n = cells.size(); i < n; i++) {
 			Cell c = cells.get(i);
 			if (c.ignore) continue;
+
+			// Collect uniform sizes.
+			if (c.uniformX != null) {
+				uniformMinWidth = Math.max(uniformMinWidth, columnMinWidth[c.column]);
+				uniformPrefWidth = Math.max(uniformPrefWidth, columnPrefWidth[c.column]);
+			}
+			if (c.uniformY != null) {
+				uniformMinHeight = Math.max(uniformMinHeight, rowMinHeight[c.row]);
+				uniformPrefHeight = Math.max(uniformPrefHeight, rowPrefHeight[c.row]);
+			}
+
 			if (c.colspan == 1) continue;
 
 			float minWidth = w(c.minWidth, c);
@@ -590,16 +601,6 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 				float ratio = totalExpandWidth == 0 ? 1f / c.colspan : expandWidth[column] / totalExpandWidth;
 				columnMinWidth[column] += extraMinWidth * ratio;
 				columnPrefWidth[column] += extraPrefWidth * ratio;
-			}
-
-			// Collect uniform sizes.
-			if (c.uniformX != null) {
-				uniformMinWidth = Math.max(uniformMinWidth, columnMinWidth[c.column]);
-				uniformPrefWidth = Math.max(uniformPrefWidth, columnPrefWidth[c.column]);
-			}
-			if (c.uniformY != null) {
-				uniformMinHeight = Math.max(uniformMinHeight, rowMinHeight[c.row]);
-				uniformPrefHeight = Math.max(uniformPrefHeight, rowPrefHeight[c.row]);
 			}
 		}
 

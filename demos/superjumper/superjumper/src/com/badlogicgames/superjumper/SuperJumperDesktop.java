@@ -16,10 +16,10 @@
 
 package com.badlogicgames.superjumper;
 
-import com.badlogic.gdx.backends.jogl.JoglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 
 public class SuperJumperDesktop {
 	public static void main (String[] argv) {
-		new JoglApplication(new SuperJumper(), "Super Jumper", 320, 480, false);
+		new LwjglApplication(new SuperJumper(), "Super Jumper", 320, 480, false);
 	}
 }

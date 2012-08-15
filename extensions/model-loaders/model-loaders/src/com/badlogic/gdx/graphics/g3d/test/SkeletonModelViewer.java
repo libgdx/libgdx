@@ -18,7 +18,7 @@ package com.badlogic.gdx.graphics.g3d.test;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.jogl.JoglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -183,7 +183,7 @@ public class SkeletonModelViewer implements ApplicationListener {
 // System.out.println("KeyframedModelViewer <filename> ?<texture-filename>");
 // System.exit(-1);
 // }
-		new JoglApplication(new SkeletonModelViewer("data/robot-mesh.xml", "data/robot.jpg"), "SkeletonModel Viewer", 800, 480,
+		new LwjglApplication(new SkeletonModelViewer("data/robot-mesh.xml", "data/robot.jpg"), "SkeletonModel Viewer", 800, 480,
 			false);
 	}
 }

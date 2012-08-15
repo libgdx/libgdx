@@ -40,7 +40,7 @@ import org.xml.sax.SAXException;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.jogl.JoglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.tiled.TileAtlas;
 import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
@@ -326,7 +326,7 @@ public class TiledMapPacker {
 		settings.duplicatePadding = true;
 
 		// Create a new JoglApplication so that Gdx stuff works properly
-		new JoglApplication(new ApplicationListener() {
+		new LwjglApplication(new ApplicationListener() {
 			@Override
 			public void create () {
 			}

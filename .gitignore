@@ -130,3 +130,5 @@
 /tests/gdx-tests-lwjgl/bin
 
 /tests/gdx-tests/bin
+
+target/

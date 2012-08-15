@@ -34,6 +34,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 /** A single-line text input field.
  * <p>
@@ -80,7 +82,7 @@ public class TextField extends Widget {
 	final FloatArray glyphPositions = new FloatArray();
 
 	boolean cursorOn = true;
-	private float blinkTime = 0.42f;
+	private float blinkTime = 0.32f;
 	long lastBlink;
 
 	boolean hasSelection;
@@ -88,6 +90,11 @@ public class TextField extends Widget {
 	private float selectionX, selectionWidth;
 
 	private char passwordCharacter = BULLET;
+
+	InputListener inputListener;
+	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
+	float keyRepeatInitialTime = 0.4f;
+	float keyRepeatTime = 0.1f;
 
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
@@ -107,7 +114,7 @@ public class TextField extends Widget {
 	}
 
 	private void initialize () {
-		addListener(new InputListener() {
+		addListener(inputListener = new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == 0 && button != 0) return false;
 				Stage stage = getStage();
@@ -142,16 +149,20 @@ public class TextField extends Widget {
 			public boolean keyDown (InputEvent event, int keycode) {
 				final BitmapFont font = style.font;
 
+				lastBlink = 0;
+				cursorOn = false;
+
 				Stage stage = getStage();
 				if (stage != null && stage.getKeyboardFocus() == TextField.this) {
+					boolean repeat = false;
 					if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
 						// paste
 						if (keycode == Keys.V) paste();
 						// copy
 						if (keycode == Keys.C || keycode == Keys.INSERT) copy();
-						
+
 						if (keycode == Keys.X || keycode == Keys.DEL) cut();
-						
+
 					} else if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
 						// paste
 						if (keycode == Keys.INSERT) paste();
@@ -169,6 +180,7 @@ public class TextField extends Widget {
 								hasSelection = true;
 							}
 							cursor--;
+							repeat = true;
 						}
 						if (keycode == Keys.RIGHT) {
 							if (!hasSelection) {
@@ -176,6 +188,7 @@ public class TextField extends Widget {
 								hasSelection = true;
 							}
 							cursor++;
+							repeat = true;
 						}
 						if (keycode == Keys.HOME) {
 							if (!hasSelection) {
@@ -199,10 +212,12 @@ public class TextField extends Widget {
 						if (keycode == Keys.LEFT) {
 							cursor--;
 							clearSelection();
+							repeat = true;
 						}
 						if (keycode == Keys.RIGHT) {
 							cursor++;
 							clearSelection();
+							repeat = true;
 						}
 						if (keycode == Keys.HOME) {
 							cursor = 0;
@@ -216,13 +231,18 @@ public class TextField extends Widget {
 						cursor = Math.max(0, cursor);
 						cursor = Math.min(text.length(), cursor);
 					}
-
+					if (repeat && (!keyRepeatTask.isScheduled() || keyRepeatTask.keycode != keycode)) {
+						keyRepeatTask.keycode = keycode;
+						keyRepeatTask.cancel();
+						Timer.schedule(keyRepeatTask, keyRepeatInitialTime, keyRepeatTime);
+					}
 					return true;
 				}
 				return false;
 			}
 
 			public boolean keyUp (InputEvent event, int keycode) {
+				keyRepeatTask.cancel();
 				return true;
 			}
 
@@ -435,14 +455,15 @@ public class TextField extends Widget {
 		}
 	}
 
-	/** Copies the selected contents of this TextField to the {@link Clipboard} implementation set on this TextField,
-	 * then removes it. */
+	/** Copies the selected contents of this TextField to the {@link Clipboard} implementation set on this TextField, then removes
+	 * it. */
 	public void cut () {
 		if (hasSelection) {
 			copy();
-			delete();		
-		}		
+			delete();
+		}
 	}
+
 	/** Pastes the content of the {@link Clipboard} implementation set on this Textfield to this TextField. */
 	void paste () {
 		String content = clipboard.getContents();
@@ -617,7 +638,10 @@ public class TextField extends Widget {
 
 	public float getPrefHeight () {
 		float prefHeight = textBounds.height;
-		if (style.background != null) prefHeight += style.background.getBottomHeight() + style.background.getTopHeight();
+		if (style.background != null) {
+			prefHeight = Math.max(prefHeight + style.background.getBottomHeight() + style.background.getTopHeight(),
+				style.background.getMinHeight());
+		}
 		return prefHeight;
 	}
 
@@ -625,6 +649,18 @@ public class TextField extends Widget {
 	 * no affect. */
 	public void setPasswordMode (boolean passwordMode) {
 		this.passwordMode = passwordMode;
+	}
+
+	public void setBlinkTime (float blinkTime) {
+		this.blinkTime = blinkTime;
+	}
+
+	class KeyRepeatTask extends Task {
+		int keycode;
+
+		public void run () {
+			inputListener.keyDown(null, keycode);
+		}
 	}
 
 	/** Interface for listening to typed characters.

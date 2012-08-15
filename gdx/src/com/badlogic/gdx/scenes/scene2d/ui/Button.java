@@ -232,7 +232,7 @@ public class Button extends Table {
 	 * @author mzechner */
 	static public class ButtonStyle {
 		/** Optional. */
-		public Drawable down, up, checked, over, disabled;
+		public Drawable up, down, checked, over, disabled;
 		/** Optional. */
 		public float pressedOffsetX, pressedOffsetY;
 		/** Optional. */
