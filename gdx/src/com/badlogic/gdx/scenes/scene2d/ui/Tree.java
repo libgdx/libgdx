@@ -65,12 +65,14 @@ public class Tree extends WidgetGroup {
 					return;
 				}
 				if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && !Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
-					// Toggle expanded.
-					float rowX = node.rightActor.getX();
-					if (node.icon != null) rowX -= iconSpacing + node.icon.getMinWidth();
-					if (x < rowX) {
-						node.setExpanded(!node.expanded);
-						return;
+					if (node.children.size > 0) {
+						// Toggle expanded.
+						float rowX = node.rightActor.getX();
+						if (node.icon != null) rowX -= iconSpacing + node.icon.getMinWidth();
+						if (x < rowX) {
+							node.setExpanded(!node.expanded);
+							return;
+						}
 					}
 					selectedNodes.clear();
 				}
@@ -159,11 +161,11 @@ public class Tree extends WidgetGroup {
 			actor = node.leftActor;
 			if (actor instanceof Layout) {
 				Layout layout = (Layout)actor;
-				leftColumnWidth = Math.max(leftColumnWidth, layout.getPrefWidth());
+				leftColumnWidth = Math.max(leftColumnWidth, layout.getPrefWidth() + iconSpacing);
 				node.height = Math.max(node.height, layout.getPrefHeight());
 				layout.pack();
 			} else if (actor != null) {
-				leftColumnWidth = Math.max(leftColumnWidth, actor.getWidth());
+				leftColumnWidth = Math.max(leftColumnWidth, actor.getWidth() + iconSpacing);
 				node.height = Math.max(node.height, actor.getHeight());
 			}
 			prefWidth = Math.max(prefWidth, rowWidth);
@@ -187,7 +189,7 @@ public class Tree extends WidgetGroup {
 			if (node.icon != null) x += node.icon.getMinWidth();
 			y -= node.height;
 			node.rightActor.setPosition(x, y);
-			if (node.leftActor != null) node.leftActor.setPosition(0, y);
+			if (node.leftActor != null) node.leftActor.setPosition(padding, y);
 			y -= ySpacing;
 			if (node.expanded) y = layout(node.children, indent + indentSpacing, y);
 		}
@@ -221,7 +223,7 @@ public class Tree extends WidgetGroup {
 					node.icon.getMinWidth(), node.icon.getMinHeight());
 			}
 
-			if (node.children == null || node.children.size == 0) continue;
+			if (node.children.size == 0) continue;
 
 			Drawable expandIcon = node.expanded ? minus : plus;
 			float iconY = actor.getY() + node.height / 2 - expandIcon.getMinHeight() / 2;
@@ -324,14 +326,13 @@ public class Tree extends WidgetGroup {
 		return findNode(rootNodes, object);
 	}
 
-	private Node findNode (Array<Node> nodes, Object object) {
+	static Node findNode (Array<Node> nodes, Object object) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			if (object.equals(node.object)) return node;
 		}
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			if (node.children == null) continue;
 			Node found = findNode(node.children, object);
 			if (found != null) return found;
 		}
@@ -348,7 +349,6 @@ public class Tree extends WidgetGroup {
 	}
 
 	private void collapseAll (Array<Node> nodes) {
-		if (nodes == null) return;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			node.setExpanded(false);
@@ -365,7 +365,6 @@ public class Tree extends WidgetGroup {
 	}
 
 	private void expandAll (Array<Node> nodes) {
-		if (nodes == null) return;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			node.setExpanded(true);
@@ -384,7 +383,7 @@ public class Tree extends WidgetGroup {
 	static public class Node {
 		Actor leftActor, rightActor;
 		Node parent;
-		Array<Node> children;
+		final Array<Node> children = new Array(0);
 		boolean expanded;
 		Drawable icon;
 		float height;
@@ -403,11 +402,10 @@ public class Tree extends WidgetGroup {
 		}
 
 		public void setExpanded (boolean expanded) {
-			if (expanded == this.expanded || children == null || children.size == 0) return;
+			if (expanded == this.expanded || children.size == 0) return;
 			this.expanded = expanded;
-			Group parent = rightActor.getParent();
-			if (!(parent instanceof Tree)) return;
-			Tree tree = (Tree)parent;
+			Tree tree = getTree();
+			if (tree == null) return;
 			if (expanded) {
 				for (int i = 0, n = children.size; i < n; i++)
 					children.get(i).addToTree(tree);
@@ -436,25 +434,37 @@ public class Tree extends WidgetGroup {
 
 		public void add (Node node) {
 			node.parent = this;
-			if (children == null) children = new Array(2);
 			children.add(node);
 			if (!expanded) return;
-			Group parent = rightActor.getParent();
-			if (!(parent instanceof Tree)) return;
-			Tree tree = (Tree)parent;
+			Tree tree = getTree();
+			if (tree == null) return;
 			for (int i = 0, n = children.size; i < n; i++)
 				children.get(i).addToTree(tree);
 		}
 
 		public void remove (Node node) {
-			if (children == null) return;
 			children.removeValue(node, true);
 			if (!expanded) return;
-			Group parent = rightActor.getParent();
-			if (!(parent instanceof Tree)) return;
-			Tree tree = (Tree)parent;
+			Tree tree = getTree();
+			if (tree == null) return;
 			node.removeFromTree(tree);
 			if (children.size == 0) expanded = false;
+		}
+
+		public void removeAll () {
+			Tree tree = getTree();
+			if (tree != null) {
+				for (int i = 0, n = children.size; i < n; i++)
+					children.get(i).removeFromTree(tree);
+			}
+			children.clear();
+		}
+
+		/** Returns the tree this node is currently in, or null. */
+		public Tree getTree () {
+			Group parent = rightActor.getParent();
+			if (!(parent instanceof Tree)) return null;
+			return (Tree)parent;
 		}
 
 		public Actor getActor () {
@@ -503,6 +513,11 @@ public class Tree extends WidgetGroup {
 
 		public Drawable getIcon () {
 			return icon;
+		}
+
+		public Node findNode (Object object) {
+			if (object == null) throw new IllegalArgumentException("object cannot be null.");
+			return Tree.findNode(children, object);
 		}
 	}
 
