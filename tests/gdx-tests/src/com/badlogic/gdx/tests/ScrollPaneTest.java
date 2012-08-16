@@ -42,7 +42,7 @@ public class ScrollPaneTest extends GdxTest {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		Gdx.input.setInputProcessor(stage);
 
-		Gdx.graphics.setVSync(false);
+		// Gdx.graphics.setVSync(false);
 
 		container = new Table();
 		stage.addActor(container);
@@ -96,10 +96,18 @@ public class ScrollPaneTest extends GdxTest {
 			}
 		});
 
-		container.debug();
-		container.add(scroll).expand().fill().colspan(2);
+		final TextButton smoothButton = new TextButton("Smooth Scrolling", skin.get("toggle", TextButtonStyle.class));
+		smoothButton.setChecked(true);
+		smoothButton.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				scroll.setSmoothScrolling(smoothButton.isChecked());
+			}
+		});
+
+		container.add(scroll).expand().fill().colspan(3);
 		container.row().space(10).padBottom(10);
 		container.add(flickButton).right();
+		container.add(smoothButton);
 		container.add(fadeButton).left();
 	}
 
