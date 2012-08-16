@@ -615,8 +615,8 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 					columnPrefWidth[c.column] = uniformPrefWidth;
 				}
 				if (uniformPrefHeight > 0 && c.uniformY != null) {
-					rowMinHeight[c.column] = uniformMinHeight;
-					rowPrefHeight[c.column] = uniformPrefHeight;
+					rowMinHeight[c.row] = uniformMinHeight;
+					rowPrefHeight[c.row] = uniformPrefHeight;
 				}
 				continue outer;
 			}
