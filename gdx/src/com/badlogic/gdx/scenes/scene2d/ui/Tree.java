@@ -25,7 +25,7 @@ public class Tree extends WidgetGroup {
 	TreeStyle style;
 	final Array<Node> rootNodes = new Array();
 	final Array<Node> selectedNodes = new Array();
-	float ySpacing = 4, iconSpacing = 2, indentSpacing;
+	float ySpacing = 4, iconSpacing = 2, padding = 8, indentSpacing;
 	private float leftColumnWidth, prefWidth, prefHeight;
 	private boolean sizeInvalid = true;
 	private Node foundNode;
@@ -48,13 +48,7 @@ public class Tree extends WidgetGroup {
 		addListener(new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
 				Node node = getNodeAt(y);
-				float rowX = node.rightActor.getX();
-				if (node.icon != null) rowX -= iconSpacing + node.icon.getMinWidth();
-				// Toggle expanded.
-				if (x < rowX) {
-					node.setExpanded(!node.expanded);
-					return;
-				}
+				if (node == null) return;
 				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && !Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT) && selectedNodes.size > 0) {
 					// Select range (shift/ctrl).
 					float low = selectedNodes.first().rightActor.getY();
@@ -65,12 +59,23 @@ public class Tree extends WidgetGroup {
 						selectNodes(rootNodes, high, low);
 					else
 						selectNodes(rootNodes, low, high);
-				} else {
-					// Select single (ctrl).
-					if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && !Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))
-						selectedNodes.clear();
-					if (!selectedNodes.removeValue(node, true)) selectedNodes.add(node);
+					ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+					fire(changeEvent);
+					Pools.free(changeEvent);
+					return;
 				}
+				if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && !Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
+					// Toggle expanded.
+					float rowX = node.rightActor.getX();
+					if (node.icon != null) rowX -= iconSpacing + node.icon.getMinWidth();
+					if (x < rowX) {
+						node.setExpanded(!node.expanded);
+						return;
+					}
+					selectedNodes.clear();
+				}
+				// Select single (ctrl).
+				if (!selectedNodes.removeValue(node, true)) selectedNodes.add(node);
 				ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 				fire(changeEvent);
 				Pools.free(changeEvent);
@@ -83,7 +88,7 @@ public class Tree extends WidgetGroup {
 
 			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
 				super.exit(event, x, y, pointer, toActor);
-				if (x < 0 || x > getWidth()) overNode = null;
+				if (x < 0 || x > getWidth() || y < 0 || y > getHeight()) overNode = null;
 			}
 		});
 	}
@@ -126,8 +131,8 @@ public class Tree extends WidgetGroup {
 		prefHeight = getHeight();
 		leftColumnWidth = 0;
 		computeSize(rootNodes, indentSpacing);
-		leftColumnWidth += iconSpacing;
-		prefWidth += leftColumnWidth;
+		leftColumnWidth += iconSpacing + padding;
+		prefWidth += leftColumnWidth + padding;
 		prefHeight = getHeight() - (prefHeight + ySpacing);
 	}
 
@@ -224,6 +229,7 @@ public class Tree extends WidgetGroup {
 		}
 	}
 
+	/** @return May be null. */
 	public Node getNodeAt (float y) {
 		foundNode = null;
 		getNodeAt(rootNodes, y, getHeight());
@@ -283,6 +289,10 @@ public class Tree extends WidgetGroup {
 
 	public Node getOverNode () {
 		return overNode;
+	}
+
+	public void setPadding (float padding) {
+		this.padding = padding;
 	}
 
 	public void setYSpacing (float ySpacing) {

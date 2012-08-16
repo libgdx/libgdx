@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonSubMesh;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.XmlReader.Element;
@@ -68,5 +69,9 @@ public class Geometry {
 
 	public Mesh getMesh () {
 		return faces.getMesh();
+	}
+	
+	public SkeletonSubMesh getSkeletonSubMesh (Skin skin){
+		return faces.getSkeletonSubMesh(skin);
 	}
 }

@@ -324,8 +324,9 @@ public class Stage extends InputAdapter implements Disposable {
 		if (target == null) target = root;
 
 		target.fire(event);
+		boolean handled = event.isHandled();
 		Pools.free(event);
-		return event.isHandled();
+		return handled;
 	}
 
 	/** Applies a mouse scroll event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the
@@ -337,8 +338,9 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setType(InputEvent.Type.scrolled);
 		event.setScrollAmount(amount);
 		scrollFocus.fire(event);
+		boolean handled = event.isHandled();
 		Pools.free(event);
-		return event.isHandled();
+		return handled;
 	}
 
 	/** Applies a key down event to the actor that has {@link Stage#setKeyboardFocus(Actor) keyboard focus}, if any, and returns
@@ -349,9 +351,10 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setStage(this);
 		event.setType(InputEvent.Type.keyDown);
 		event.setKeyCode(keyCode);
-		boolean handled = keyboardFocus.fire(event);
+		keyboardFocus.fire(event);
+		boolean handled = event.isHandled();
 		Pools.free(event);
-		return event.isHandled();
+		return handled;
 	}
 
 	/** Applies a key up event to the actor that has {@link Stage#setKeyboardFocus(Actor) keyboard focus}, if any, and returns true
@@ -362,9 +365,10 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setStage(this);
 		event.setType(InputEvent.Type.keyUp);
 		event.setKeyCode(keyCode);
-		boolean handled = keyboardFocus.fire(event);
+		keyboardFocus.fire(event);
+		boolean handled = event.isHandled();
 		Pools.free(event);
-		return event.isHandled();
+		return handled;
 	}
 
 	/** Applies a key typed event to the actor that has {@link Stage#setKeyboardFocus(Actor) keyboard focus}, if any, and returns
@@ -375,9 +379,10 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setStage(this);
 		event.setType(InputEvent.Type.keyTyped);
 		event.setCharacter(character);
-		boolean handled = keyboardFocus.fire(event);
+		keyboardFocus.fire(event);
+		boolean handled = event.isHandled();
 		Pools.free(event);
-		return event.isHandled();
+		return handled;
 	}
 
 	/** Adds the listener to be notified for all touchDragged and touchUp events for the specified pointer and button. The actor
@@ -494,22 +499,26 @@ public class Stage extends InputAdapter implements Disposable {
 		if (keyboardFocus == actor) keyboardFocus = null;
 	}
 
-	/** Sets the actor that will receive key events. */
+	/** Sets the actor that will receive key events.
+	 * @param actor May be null. */
 	public void setKeyboardFocus (Actor actor) {
 		this.keyboardFocus = actor;
 	}
 
-	/** Gets the actor that will receive key events. */
+	/** Gets the actor that will receive key events.
+	 * @return May be null. */
 	public Actor getKeyboardFocus () {
 		return keyboardFocus;
 	}
 
-	/** Sets the actor that will receive scroll events. */
+	/** Sets the actor that will receive scroll events.
+	 * @param actor May be null. */
 	public void setScrollFocus (Actor actor) {
 		this.scrollFocus = actor;
 	}
 
-	/** Gets the actor that will receive scroll events. */
+	/** Gets the actor that will receive scroll events.
+	 * @return May be null. */
 	public Actor getScrollFocus () {
 		return scrollFocus;
 	}
