@@ -270,6 +270,11 @@ public class Tree extends WidgetGroup {
 		selectedNodes.clear();
 		selectedNodes.add(node);
 	}
+	
+	public void setSelection (Array<Node> nodes) {
+		selectedNodes.clear();
+		selectedNodes.addAll(nodes);
+	}
 
 	public void addSelection (Node node) {
 		selectedNodes.add(node);
