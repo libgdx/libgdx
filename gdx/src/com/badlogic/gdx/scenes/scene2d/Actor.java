@@ -71,7 +71,7 @@ public class Actor {
 			Action action = actions.get(i);
 			if (action.act(delta)) {
 				actions.removeIndex(i);
-				action.setActor(null);
+				action.removedFromActor();
 				i--;
 				n--;
 			}
@@ -217,7 +217,7 @@ public class Actor {
 	}
 
 	public void removeAction (Action action) {
-		if (actions.removeValue(action, true)) action.setActor(null);
+		if (actions.removeValue(action, true)) action.removedFromActor();
 	}
 
 	public Array<Action> getActions () {
@@ -227,7 +227,7 @@ public class Actor {
 	/** Removes all actions on this actor. */
 	public void clearActions () {
 		for (int i = actions.size - 1; i >= 0; i--)
-			actions.get(i).setActor(null);
+			actions.get(i).removedFromActor();
 		actions.clear();
 	}
 

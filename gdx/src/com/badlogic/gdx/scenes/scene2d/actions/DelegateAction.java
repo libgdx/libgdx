@@ -43,8 +43,13 @@ abstract public class DelegateAction extends Action {
 	}
 
 	public void setActor (Actor actor) {
-		if (action != null) action.setActor(actor);
+		action.setActor(actor);
 		super.setActor(actor);
+	}
+
+	public void removedFromActor () {
+		action.removedFromActor();
+		super.removedFromActor();
 	}
 
 	public String toString () {
