@@ -280,13 +280,13 @@ public class ScrollPane extends WidgetGroup {
 
 		if (smoothScrolling && flingTimer <= 0 && !touchScrollH && !touchScrollV && !panning) {
 			if (visualAmountX < amountX)
-				visualAmountX = Math.min(amountX, visualAmountX + Math.max(60 * delta, (amountX - visualAmountX) * 5 * delta));
+				visualAmountX = Math.min(amountX, visualAmountX + Math.max(150 * delta, (amountX - visualAmountX) * 5 * delta));
 			else
-				visualAmountX = Math.max(amountX, visualAmountX - Math.max(60 * delta, (visualAmountX - amountX) * 5 * delta));
+				visualAmountX = Math.max(amountX, visualAmountX - Math.max(150 * delta, (visualAmountX - amountX) * 5 * delta));
 			if (visualAmountY < amountY)
-				visualAmountY = Math.min(amountY, visualAmountY + Math.max(60 * delta, (amountY - visualAmountY) * 5 * delta));
+				visualAmountY = Math.min(amountY, visualAmountY + Math.max(150 * delta, (amountY - visualAmountY) * 5 * delta));
 			else
-				visualAmountY = Math.max(amountY, visualAmountY - Math.max(60 * delta, (visualAmountY - amountY) * 5 * delta));
+				visualAmountY = Math.max(amountY, visualAmountY - Math.max(150 * delta, (visualAmountY - amountY) * 5 * delta));
 		} else {
 			visualAmountX = amountX;
 			visualAmountY = amountY;
