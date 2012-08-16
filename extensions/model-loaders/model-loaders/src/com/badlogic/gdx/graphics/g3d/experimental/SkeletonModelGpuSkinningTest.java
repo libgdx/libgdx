@@ -94,7 +94,7 @@ public class SkeletonModelGpuSkinningTest implements ApplicationListener {
 		}
 
 		Gdx.gl.glEnable(GL10.GL_CULL_FACE);
-		Gdx.gl.glFrontFace(GL10.GL_CCW);
+		Gdx.gl.glFrontFace(GL10.GL_CW);
 		Gdx.gl.glCullFace(GL10.GL_FRONT);
 
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
@@ -149,21 +149,24 @@ public class SkeletonModelGpuSkinningTest implements ApplicationListener {
 
 		texture = new Texture(Gdx.files.internal("data/models/robot.jpg"), Format.RGB565, true);
 		texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
-
-		//model = ModelLoaderRegistry.loadSkeletonModel(Gdx.files.internal("data/models/robot-mesh.xml"));
 		
-		String fileName = "data/models/robot-mesh.xml.g3d";
+		//String fileName = "data/models/robot-mesh.xml.g3d";
+		
+		String fileName = "data/models/cube.dae";
 		
 		if (!fileName.endsWith(".g3d") && Gdx.app.getType() == ApplicationType.Desktop) {
-			model = new OgreXmlLoader().load(Gdx.files.internal(fileName),
-				Gdx.files.internal(fileName.replace("mesh.xml", "skeleton.xml")));
+			model = ModelLoaderRegistry.loadSkeletonModel(Gdx.files.internal(fileName));
+			if(model == null){
+				model = new OgreXmlLoader().load(Gdx.files.internal(fileName),
+					Gdx.files.internal(fileName.replace("mesh.xml", "skeleton.xml")));
+			}
 		
 			G3dExporter.export(model, Gdx.files.absolute(fileName + ".g3d"));
 			model = G3dLoader.loadSkeletonModel(Gdx.files.absolute(fileName + ".g3d"));
 		}
 		else
 		{
-			model = G3dLoader.loadSkeletonModel(Gdx.files.internal(fileName));
+			model = ModelLoaderRegistry.loadSkeletonModel(Gdx.files.internal(fileName));
 		}
 		
 		if(useGpuSkinning){
@@ -194,7 +197,7 @@ public class SkeletonModelGpuSkinningTest implements ApplicationListener {
 				model.getBoundingBox(box);
 				
 				instance.matrix.trn(-1.75f, 0f, -5.5f);
-				instance.matrix.scale(0.02f, 0.02f, 0.02f);
+				instance.matrix.scale(0.4f, 0.4f, 0.4f);
 				box.mul(instance.matrix);
 				
 				instance.radius = (box.getDimensions().len() / 2);
@@ -232,7 +235,7 @@ public class SkeletonModelGpuSkinningTest implements ApplicationListener {
 		config.width = 800;
 		config.height = 480;
 		config.samples = 8;
-		config.vSyncEnabled = false;
+		config.vSyncEnabled = true;
 		config.useGL20 = true;
 		new JoglApplication(new SkeletonModelGpuSkinningTest(), config);
 	}

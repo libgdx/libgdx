@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonSubMesh;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -35,6 +36,7 @@ public class Faces {
 	protected static final String NORMAL = "NORMAL";
 	protected static final String TANGENT = "TEXTANGENT";
 	protected static final String BITANGENT = "TEXBINORMAL";
+	protected static final String COLOR = "COLOR";
 
 	int count = 0;
 	final Map<String, Source> sourcesMap;
@@ -198,6 +200,71 @@ public class Faces {
 		mesh.setIndices(indices);
 		return mesh;
 	}
+	
+	public SkeletonSubMesh getSkeletonSubMesh (Skin skin) {
+		float[] verts = new float[getVertexSize() * numVertices];
+		short[] indices = new short[numIndices];
+		VertexAttribute[] attributes = getVertexAttributes();
+
+		for (int i = 0; i < numIndices; i++) {
+			VertexIndices vertex = triangles.get(i);
+			if (vertex.index > Short.MAX_VALUE || vertex.index < Short.MIN_VALUE)
+				throw new GdxRuntimeException("index to big for short: " + vertex.index);
+			indices[i] = (short)vertex.index;
+		}
+
+		int idx = 0;
+		int destOffset = 0;
+
+		for (int i = 0; i < vertices.size; i++) {
+			VertexIndices vertex = vertices.get(i);
+
+			for (int j = 0; j < sources.length; j++) {
+				Source source = sources[j];
+				float[] data = source.data;
+				int index = vertex.indices[j];
+				int components = source.components;
+				int sourceOffset = index * components;
+
+				for (int k = 0; k < components; k++) {
+					if ((attributes[j].usage == Usage.TextureCoordinates) && k == 1) {
+						verts[destOffset++] = 1 - data[sourceOffset++];
+					} else {
+						verts[destOffset++] = data[sourceOffset++];
+					}
+				}
+			}
+		}
+
+		Mesh mesh = new Mesh(false, vertices.size, indices.length, attributes);
+		mesh.setVertices(verts);
+		mesh.setIndices(indices);
+		
+		SkeletonSubMesh submesh = new SkeletonSubMesh();
+		submesh.vertices = verts;
+		submesh.indices = indices;
+		submesh.mesh = mesh;
+		
+		submesh.skinnedVertices = new float[submesh.vertices.length];
+		System.arraycopy(submesh.vertices, 0, submesh.skinnedVertices, 0, submesh.vertices.length);
+		
+		submesh.boneAssignments = new int[vertices.size][];
+		submesh.boneWeights = new float[vertices.size][];
+		submesh.primitiveType = GL10.GL_TRIANGLES;
+		
+		for(int i=0;i<skin.boneIndex.length;i++){
+			for(int j=0;j<vertices.size;j++)
+			{
+				//TODO: use lookup for position instead of assuming it is in the first spot
+				if(vertices.get(j).indices[0] ==i){
+					submesh.boneAssignments[j] = skin.boneIndex[i];
+					submesh.boneWeights[j] = skin.boneWeight[i];
+				}
+			}
+		}
+		
+		return submesh;
+	}
 
 	private VertexAttribute[] getVertexAttributes () {
 		VertexAttribute[] attributes = new VertexAttribute[inputs.size];
@@ -238,6 +305,7 @@ public class Faces {
 		if (attribute.equals(NORMAL)) return ShaderProgram.NORMAL_ATTRIBUTE;
 		if (attribute.equals(TANGENT)) return ShaderProgram.TANGENT_ATTRIBUTE;
 		if (attribute.equals(BITANGENT)) return ShaderProgram.BINORMAL_ATTRIBUTE;
+		if (attribute.equals(COLOR)) return ShaderProgram.COLOR_ATTRIBUTE;
 		throw new GdxRuntimeException("can't map semantic '" + attribute
 			+ "' to alias, must be VERTEX, TEXCOORD, NORMAL, TANGENT or BITANGENT");
 	}
