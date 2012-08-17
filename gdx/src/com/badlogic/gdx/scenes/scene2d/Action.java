@@ -50,7 +50,7 @@ abstract public class Action implements Poolable {
 	 * <p>
 	 * This method is not typically a good place for a subclass to query the actor's state because the action may not be executed
 	 * for some time, eg it may be {@link DelayAction delayed}. The actor's state is best queried in the first call to
-	 * {@link #act(float)}. For a {@link TemporalAction}, use TemporalAction#initialize(). */
+	 * {@link #act(float)}. For a {@link TemporalAction}, use TemporalAction#begin(). */
 	public void setActor (Actor actor) {
 		this.actor = actor;
 		if (actor == null) {

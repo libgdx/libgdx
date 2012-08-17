@@ -34,7 +34,7 @@ public class FloatAction extends TemporalAction {
 		this.end = end;
 	}
 
-	protected void initialize () {
+	protected void begin () {
 		value = start;
 	}
 

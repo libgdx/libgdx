@@ -34,7 +34,7 @@ public class IntAction extends TemporalAction {
 		this.end = end;
 	}
 
-	protected void initialize () {
+	protected void begin () {
 		value = start;
 	}
 

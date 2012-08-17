@@ -25,7 +25,7 @@ public class AlphaAction extends TemporalAction {
 	private float start, end;
 	private Color color;
 
-	protected void initialize () {
+	protected void begin () {
 		if (color == null) color = actor.getColor();
 		start = color.a;
 	}
