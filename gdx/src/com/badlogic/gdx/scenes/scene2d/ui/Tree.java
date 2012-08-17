@@ -15,11 +15,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 
-/** A simple tree widget where each node has a left actor, icon, and a right actor.
+/** A tree widget where each node has a left actor, icon, right actor, and child nodes.
  * <p>
  * The preferred size of the tree is determined by the preferred size of the actors for the expanded nodes.
  * <p>
- * {@link ChangeEvent} is fired when the selected node changes. Cancelling the event will select the previously selected node.
+ * {@link ChangeEvent} is fired when the selected node changes.
  * @author Nathan Sweet */
 public class Tree extends WidgetGroup {
 	TreeStyle style;
@@ -299,14 +299,17 @@ public class Tree extends WidgetGroup {
 		return overNode;
 	}
 
+	/** Sets the amount of horizontal space between the nodes and the left and right edges of the tree. */
 	public void setPadding (float padding) {
 		this.padding = padding;
 	}
 
+	/** Sets the amount of vertical space between nodes. */
 	public void setYSpacing (float ySpacing) {
 		this.ySpacing = ySpacing;
 	}
 
+	/** Sets the amount of horizontal space between the node actors and icons. */
 	public void setIconSpacing (float iconSpacing) {
 		this.iconSpacing = iconSpacing;
 	}
@@ -321,6 +324,7 @@ public class Tree extends WidgetGroup {
 		return prefHeight;
 	}
 
+	/** Returns the node with the specified object, or null. */
 	public Node findNode (Object object) {
 		if (object == null) throw new IllegalArgumentException("object cannot be null.");
 		return findNode(rootNodes, object);
@@ -344,6 +348,7 @@ public class Tree extends WidgetGroup {
 			collapseAll(rootNodes.get(i));
 	}
 
+	/** Collapses all nodes under and included the specified node. */
 	public void collapseAll (Node node) {
 		collapseAll(node.children);
 	}
@@ -360,6 +365,7 @@ public class Tree extends WidgetGroup {
 		expandAll(rootNodes);
 	}
 
+	/** Expands all nodes under and included the specified node. */
 	public void expandAll (Node node) {
 		expandAll(node.children);
 	}
@@ -372,6 +378,7 @@ public class Tree extends WidgetGroup {
 		}
 	}
 
+	/** Expands all parent nodes of the specified node. */
 	public void expandTo (Node node) {
 		node = node.parent;
 		while (node != null) {
@@ -483,6 +490,7 @@ public class Tree extends WidgetGroup {
 			return parent;
 		}
 
+		/** Sets an icon that will be drawn to the left of the right actor. */
 		public void setIcon (Drawable icon) {
 			this.icon = icon;
 		}
@@ -507,6 +515,7 @@ public class Tree extends WidgetGroup {
 			return object;
 		}
 
+		/** Sets an application specific object for this node. */
 		public void setObject (Object object) {
 			this.object = object;
 		}
@@ -515,6 +524,7 @@ public class Tree extends WidgetGroup {
 			return icon;
 		}
 
+		/** Returns the child node with the specified object, or null. */
 		public Node findNode (Object object) {
 			if (object == null) throw new IllegalArgumentException("object cannot be null.");
 			return Tree.findNode(children, object);
