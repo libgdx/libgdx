@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
@@ -57,11 +58,12 @@ public class ScrollPane extends WidgetGroup {
 
 	boolean scrollX, scrollY;
 	float amountX, amountY;
+	float visualAmountX, visualAmountY;
 	float maxX, maxY;
 	boolean touchScrollH, touchScrollV;
 	final Vector2 lastPoint = new Vector2();
 	float areaWidth, areaHeight;
-	private boolean fadeScrollBars = true;
+	private boolean fadeScrollBars = true, smoothScrolling = true;
 	float fadeAlpha, fadeAlphaSeconds = 1, fadeDelay, fadeDelaySeconds = 1;
 
 	private boolean flickScroll = true;
@@ -277,6 +279,20 @@ public class ScrollPane extends WidgetGroup {
 			}
 		}
 
+		if (smoothScrolling && flingTimer <= 0 && !touchScrollH && !touchScrollV && !panning) {
+			if (visualAmountX < amountX)
+				visualAmountX = Math.min(amountX, visualAmountX + Math.max(60 * delta, (amountX - visualAmountX) * 5 * delta));
+			else
+				visualAmountX = Math.max(amountX, visualAmountX - Math.max(60 * delta, (visualAmountX - amountX) * 5 * delta));
+			if (visualAmountY < amountY)
+				visualAmountY = Math.min(amountY, visualAmountY + Math.max(60 * delta, (amountY - visualAmountY) * 5 * delta));
+			else
+				visualAmountY = Math.max(amountY, visualAmountY - Math.max(60 * delta, (visualAmountY - amountY) * 5 * delta));
+		} else {
+			visualAmountX = amountX;
+			visualAmountY = amountY;
+		}
+
 		if (overscroll && !panning) {
 			if (amountX < 0) {
 				resetFade();
@@ -436,9 +452,9 @@ public class ScrollPane extends WidgetGroup {
 		if (!scrollY)
 			y -= (int)maxY;
 		else
-			y -= (int)(maxY * (1 - amountY / maxY));
+			y -= (int)(maxY * (1 - visualAmountY / maxY));
 		float x = widgetAreaBounds.x;
-		if (scrollX) x -= (int)(maxX * amountX / maxX);
+		if (scrollX) x -= (int)(maxX * visualAmountX / maxX);
 		widget.setPosition(x, y);
 
 		if (widget instanceof Cullable) {
@@ -691,6 +707,11 @@ public class ScrollPane extends WidgetGroup {
 		if(sensitive > 0f  && sensitive <= 1f)
 			flingSensitive = sensitive;
 	}
+
+	public void setSmoothScrolling (boolean smoothScrolling) {
+		this.smoothScrolling = smoothScrolling;
+	}
+
 	/** The style for a scroll pane, see {@link ScrollPane}.
 	 * @author mzechner
 	 * @author Nathan Sweet */

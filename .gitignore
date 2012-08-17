@@ -132,3 +132,4 @@
 /tests/gdx-tests/bin
 
 target/
+dist/

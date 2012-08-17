@@ -99,6 +99,7 @@ public class Tree extends WidgetGroup {
 	}
 
 	public void add (Node node) {
+		remove(node);
 		node.parent = null;
 		rootNodes.add(node);
 		node.addToTree(this);
@@ -269,6 +270,11 @@ public class Tree extends WidgetGroup {
 	public void setSelection (Node node) {
 		selectedNodes.clear();
 		selectedNodes.add(node);
+	}
+
+	public void setSelection (Array<Node> nodes) {
+		selectedNodes.clear();
+		selectedNodes.addAll(nodes);
 	}
 
 	public void addSelection (Node node) {
