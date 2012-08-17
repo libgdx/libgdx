@@ -26,9 +26,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-/** A table that can be dragged and act as a modal window.
+/** A table that can be dragged and act as a modal window. The top padding is used as the window's title height.
  * <p>
  * The preferred size of a window is the preferred size of the children as layed out by the table. After adding children to the
  * window, it can be convenient to call {@link #pack()} to size the window to the size of the children.
@@ -40,6 +41,7 @@ public class Window extends Table {
 	boolean isMovable = true, isModal;
 	final Vector2 dragOffset = new Vector2();
 	boolean dragging;
+	private int titleAlignment = Align.center;
 
 	public Window (String title, Skin skin) {
 		this(title, skin.get(WindowStyle.class));
@@ -69,7 +71,7 @@ public class Window extends Table {
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0) return false;
-				dragging = isMovable && getHeight() - y <= getTitleBarHeight() && y < getHeight() && x > 0 && x < getWidth();
+				dragging = isMovable && getHeight() - y <= getPadTop() && y < getHeight() && x > 0 && x < getWidth();
 				dragOffset.set(x, y);
 				return dragging;
 			}
@@ -96,21 +98,29 @@ public class Window extends Table {
 		return style;
 	}
 
-	float getTitleBarHeight () {
-		return getPadTop().height(this);
-	}
-
 	public void layout () {
 		super.layout();
-		TextBounds bounds = style.titleFont.getMultiLineBounds(title);
-		titleCache.setMultiLineText(title, getWidth() / 2 - bounds.width / 2, getHeight() - getTitleBarHeight() / 2 + bounds.height
-			/ 2);
+		titleCache.setMultiLineText(title, 0, 0);
 	}
 
 	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
 		super.drawBackground(batch, parentAlpha);
 		// Draw the title without the batch transformed or clipping applied.
-		titleCache.setPosition(getX(), getY());
+		float x = getX(), y = getY() + getHeight();
+		TextBounds bounds = titleCache.getBounds();
+		if ((titleAlignment & Align.left) != 0)
+			x += getPadLeft();
+		else if ((titleAlignment & Align.right) != 0)
+			x += getWidth() - bounds.width - getPadRight();
+		else
+			x += (getWidth() - bounds.width) / 2;
+		if ((titleAlignment & Align.top) == 0) {
+			if ((titleAlignment & Align.bottom) != 0)
+				y -= getPadTop() - bounds.height;
+			else
+				y -= (getPadTop() - bounds.height) / 2;
+		}
+		titleCache.setPosition(x, y);
 		titleCache.draw(batch, parentAlpha);
 	}
 
@@ -126,6 +136,11 @@ public class Window extends Table {
 
 	public String getTitle () {
 		return title;
+	}
+
+	/** @param titleAlignment {@link Align} */
+	public void setTitleAlignment (int titleAlignment) {
+		this.titleAlignment = titleAlignment;
 	}
 
 	public void setMovable (boolean isMovable) {
