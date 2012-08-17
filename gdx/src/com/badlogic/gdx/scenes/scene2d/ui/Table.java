@@ -396,20 +396,36 @@ public class Table extends WidgetGroup {
 		return layout.getDebug();
 	}
 
-	public Value getPadTop () {
+	public Value getPadTopValue () {
 		return layout.getPadTop();
 	}
 
-	public Value getPadLeft () {
+	public float getPadTop () {
+		return layout.getPadTop().height(this);
+	}
+
+	public Value getPadLeftValue () {
 		return layout.getPadLeft();
 	}
 
-	public Value getPadBottom () {
+	public float getPadLeft () {
+		return layout.getPadLeft().width(this);
+	}
+
+	public Value getPadBottomValue () {
 		return layout.getPadBottom();
 	}
 
-	public Value getPadRight () {
+	public float getPadBottom () {
+		return layout.getPadBottom().height(this);
+	}
+
+	public Value getPadRightValue () {
 		return layout.getPadRight();
+	}
+
+	public float getPadRight () {
+		return layout.getPadRight().width(this);
 	}
 
 	public int getAlign () {
