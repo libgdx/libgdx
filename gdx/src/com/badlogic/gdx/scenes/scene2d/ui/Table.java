@@ -111,10 +111,10 @@ public class Table extends WidgetGroup {
 			tableBounds.x = 0;
 			tableBounds.y = 0;
 		} else {
-			tableBounds.x = layout.getPadLeft().width(this);
-			tableBounds.y = layout.getPadBottom().height(this);
-			tableBounds.width -= tableBounds.x + layout.getPadRight().width(this);
-			tableBounds.height -= tableBounds.y + layout.getPadTop().height(this);
+			tableBounds.x = layout.getPadLeft();
+			tableBounds.y = layout.getPadBottom();
+			tableBounds.width -= tableBounds.x + layout.getPadRight();
+			tableBounds.height -= tableBounds.y + layout.getPadTop();
 		}
 		ScissorStack.calculateScissors(getStage().getCamera(), transform, tableBounds, Rectangle.tmp2);
 		return Rectangle.tmp2;
@@ -397,35 +397,35 @@ public class Table extends WidgetGroup {
 	}
 
 	public Value getPadTopValue () {
-		return layout.getPadTop();
+		return layout.getPadTopValue();
 	}
 
 	public float getPadTop () {
-		return layout.getPadTop().height(this);
+		return layout.getPadTop();
 	}
 
 	public Value getPadLeftValue () {
-		return layout.getPadLeft();
+		return layout.getPadLeftValue();
 	}
 
 	public float getPadLeft () {
-		return layout.getPadLeft().width(this);
+		return layout.getPadLeft();
 	}
 
 	public Value getPadBottomValue () {
-		return layout.getPadBottom();
+		return layout.getPadBottomValue();
 	}
 
 	public float getPadBottom () {
-		return layout.getPadBottom().height(this);
+		return layout.getPadBottom();
 	}
 
 	public Value getPadRightValue () {
-		return layout.getPadRight();
+		return layout.getPadRightValue();
 	}
 
 	public float getPadRight () {
-		return layout.getPadRight().width(this);
+		return layout.getPadRight();
 	}
 
 	public int getAlign () {

@@ -424,20 +424,36 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		return debug;
 	}
 
-	public Value getPadTop () {
+	public Value getPadTopValue () {
 		return padTop;
 	}
 
-	public Value getPadLeft () {
+	public float getPadTop () {
+		return padTop == null ? 0 : padTop.height(this);
+	}
+
+	public Value getPadLeftValue () {
 		return padLeft;
 	}
 
-	public Value getPadBottom () {
+	public float getPadLeft () {
+		return padLeft == null ? 0 : padLeft.width(this);
+	}
+
+	public Value getPadBottomValue () {
 		return padBottom;
 	}
 
-	public Value getPadRight () {
+	public float getPadBottom () {
+		return padBottom == null ? 0 : padBottom.height(this);
+	}
+
+	public Value getPadRightValue () {
 		return padRight;
+	}
+
+	public float getPadRight () {
+		return padRight == null ? 0 : padRight.width(this);
 	}
 
 	public int getAlign () {
