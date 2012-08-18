@@ -749,13 +749,13 @@ public class Json {
 
 		if (jsonData instanceof Array) {
 			Array array = (Array)jsonData;
-			if (type == null || type.isAssignableFrom(Array.class)) {
+			if (type == null || Array.class.isAssignableFrom(type)) {
 				Array newArray = new Array(array.size);
 				for (int i = 0, n = array.size; i < n; i++)
 					newArray.add(readValue(elementType, null, array.get(i)));
 				return (T)newArray;
 			}
-			if (type.isAssignableFrom(ArrayList.class)) {
+			if (ArrayList.class.isAssignableFrom(type)) {
 				ArrayList newArray = new ArrayList(array.size);
 				for (int i = 0, n = array.size; i < n; i++)
 					newArray.add(readValue(elementType, null, array.get(i)));

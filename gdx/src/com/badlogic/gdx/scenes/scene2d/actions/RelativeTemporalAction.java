@@ -21,7 +21,7 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 abstract public class RelativeTemporalAction extends TemporalAction {
 	private float lastPercent;
 
-	protected void initialize () {
+	protected void begin () {
 		lastPercent = 0;
 	}
 

@@ -704,7 +704,7 @@ public class Cell<C> {
 	}
 
 	public float getMinWidth () {
-		return minWidth == null ? 0 : minWidth.get(this);
+		return minWidth == null ? 0 : minWidth.width(this);
 	}
 
 	/** @return May be null if this cell is row defaults. */
@@ -713,7 +713,7 @@ public class Cell<C> {
 	}
 
 	public float getMinHeight () {
-		return minHeight == null ? 0 : minHeight.get(this);
+		return minHeight == null ? 0 : minHeight.height(this);
 	}
 
 	/** @return May be null if this cell is row defaults. */
@@ -722,7 +722,7 @@ public class Cell<C> {
 	}
 
 	public float getPrefWidth () {
-		return prefWidth == null ? 0 : prefWidth.get(this);
+		return prefWidth == null ? 0 : prefWidth.width(this);
 	}
 
 	/** @return May be null if this cell is row defaults. */
@@ -731,7 +731,7 @@ public class Cell<C> {
 	}
 
 	public float getPrefHeight () {
-		return prefHeight == null ? 0 : prefHeight.get(this);
+		return prefHeight == null ? 0 : prefHeight.height(this);
 	}
 
 	/** @return May be null if this cell is row defaults. */
@@ -740,7 +740,7 @@ public class Cell<C> {
 	}
 
 	public float getMaxWidth () {
-		return maxWidth == null ? 0 : maxWidth.get(this);
+		return maxWidth == null ? 0 : maxWidth.width(this);
 	}
 
 	/** @return May be null if this cell is row defaults. */
@@ -749,7 +749,7 @@ public class Cell<C> {
 	}
 
 	public float getMaxHeight () {
-		return maxHeight == null ? 0 : maxHeight.get(this);
+		return maxHeight == null ? 0 : maxHeight.height(this);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -758,7 +758,7 @@ public class Cell<C> {
 	}
 
 	public float getSpaceTop () {
-		return spaceTop == null ? 0 : spaceTop.get(this);
+		return spaceTop == null ? 0 : spaceTop.height(this);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -767,7 +767,7 @@ public class Cell<C> {
 	}
 
 	public float getSpaceLeft () {
-		return spaceLeft == null ? 0 : spaceLeft.get(this);
+		return spaceLeft == null ? 0 : spaceLeft.width(this);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -776,7 +776,7 @@ public class Cell<C> {
 	}
 
 	public float getSpaceBottom () {
-		return spaceBottom == null ? 0 : spaceBottom.get(this);
+		return spaceBottom == null ? 0 : spaceBottom.height(this);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -785,7 +785,7 @@ public class Cell<C> {
 	}
 
 	public float getSpaceRight () {
-		return spaceRight == null ? 0 : spaceRight.get(this);
+		return spaceRight == null ? 0 : spaceRight.width(this);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -794,7 +794,7 @@ public class Cell<C> {
 	}
 
 	public float getPadTop () {
-		return padTop == null ? 0 : padTop.get(this);
+		return padTop == null ? 0 : padTop.height(this);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -803,7 +803,7 @@ public class Cell<C> {
 	}
 
 	public float getPadLeft () {
-		return padLeft == null ? 0 : padLeft.get(this);
+		return padLeft == null ? 0 : padLeft.width(this);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -812,7 +812,7 @@ public class Cell<C> {
 	}
 
 	public float getPadBottom () {
-		return padBottom == null ? 0 : padBottom.get(this);
+		return padBottom == null ? 0 : padBottom.height(this);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -821,7 +821,7 @@ public class Cell<C> {
 	}
 
 	public float getPadRight () {
-		return padRight == null ? 0 : padRight.get(this);
+		return padRight == null ? 0 : padRight.width(this);
 	}
 
 	/** @return May be null if this value is not set. */

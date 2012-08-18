@@ -84,6 +84,15 @@ public class UITest extends GdxTest {
 		Button imgButton = new Button(new Image(image), skin);
 		Button imgToggleButton = new Button(new Image(image), skin, "toggle");
 
+		Label myLabel = new Label("this is some text.", skin);
+		myLabel.setWrap(true);
+
+		Table t = new Table();
+		t.row();
+		t.add(myLabel);
+
+		t.layout();
+		
 		CheckBox checkBox = new CheckBox("Check me", skin);
 		final Slider slider = new Slider(0, 10, 1, false, skin);
 		TextField textfield = new TextField("", skin);

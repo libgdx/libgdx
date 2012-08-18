@@ -21,7 +21,7 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 public class RotateToAction extends TemporalAction {
 	private float start, end;
 
-	protected void initialize () {
+	protected void begin () {
 		start = actor.getRotation();
 	}
 

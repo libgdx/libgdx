@@ -118,12 +118,12 @@ public class StringBuilder implements Appendable, CharSequence {
 			throw new ArrayIndexOutOfBoundsException("Length out of bounds: " + length);
 		}
 
-		int newSize = length + length;
+		int newSize = this.length + length;
 		if (newSize > value.length) {
 			enlargeBuffer(newSize);
 		}
-		System.arraycopy(value, offset, value, length, length);
-		length = newSize;
+		System.arraycopy(value, offset, chars, this.length, length);
+		this.length = newSize;
 	}
 
 	final void append0 (char ch) {

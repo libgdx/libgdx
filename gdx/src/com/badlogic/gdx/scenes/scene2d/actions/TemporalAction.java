@@ -40,7 +40,7 @@ abstract public class TemporalAction extends Action {
 
 	public boolean act (float delta) {
 		if (complete) return true;
-		if (time == 0) initialize();
+		if (time == 0) begin();
 		time += delta;
 		complete = time >= duration;
 		float percent;
@@ -50,14 +50,18 @@ abstract public class TemporalAction extends Action {
 			percent = time / duration;
 			if (interpolation != null) percent = interpolation.apply(percent);
 		}
-		if (reverse) percent = 1 - percent;
-		update(percent);
+		update(reverse ? 1 - percent : percent);
+		if (complete) end();
 		return complete;
 	}
 
 	/** Called the first time {@link #act(float)} is called. This is a good place to query the {@link #actor actor's} starting
 	 * state. */
-	protected void initialize () {
+	protected void begin () {
+	}
+
+	/** Called the last time {@link #act(float)} is called. */
+	protected void end () {
 	}
 
 	/** Called each frame.

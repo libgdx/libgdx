@@ -22,7 +22,7 @@ public class SizeToAction extends TemporalAction {
 	private float startWidth, startHeight;
 	private float endWidth, endHeight;
 
-	protected void initialize () {
+	protected void begin () {
 		startWidth = actor.getWidth();
 		startHeight = actor.getHeight();
 	}
