@@ -509,15 +509,16 @@ public class Actor {
 	}
 
 	/** Transforms the specified point in the stage's coordinates to the actor's local coordinate system. */
-	public void stageToLocalCoordinates (Vector2 stageCoords) {
-		if (parent == null) return;
+	public Vector2 stageToLocalCoordinates (Vector2 stageCoords) {
+		if (parent == null) return stageCoords;
 		parent.stageToLocalCoordinates(stageCoords);
 		parentToLocalCoordinates(stageCoords);
+		return stageCoords;
 	}
 
 	/** Transforms the specified point in the actor's coordinates to be in the stage's coordinates. Note this method will ONLY work
 	 * for screen aligned, unrotated, unscaled actors! */
-	public void localToStageCoordinates (Vector2 localCoords) {
+	public Vector2 localToStageCoordinates (Vector2 localCoords) {
 		Actor actor = this;
 		while (actor != null) {
 			if (actor.getRotation() != 0 || actor.getScaleX() != 1 || actor.getScaleY() != 1)
@@ -526,10 +527,21 @@ public class Actor {
 			localCoords.y += actor.getY();
 			actor = actor.getParent();
 		}
+		return localCoords;
+	}
+
+	/** Transforms the specified point in the actor's coordinates to be in the parent's coordinates. Note this method will ONLY work
+	 * for screen aligned, unrotated, unscaled actors! */
+	public Vector2 localToParentCoordinates (Vector2 localCoords) {
+		if (getRotation() != 0 || getScaleX() != 1 || getScaleY() != 1)
+			throw new GdxRuntimeException("Only unrotated and unscaled actors may use this method.");
+		localCoords.x += getX();
+		localCoords.y += getY();
+		return localCoords;
 	}
 
 	/** Converts the coordinates given in the parent's coordinate system to this actor's coordinate system. */
-	public void parentToLocalCoordinates (Vector2 parentCoords) {
+	public Vector2 parentToLocalCoordinates (Vector2 parentCoords) {
 		final float rotation = getRotation();
 		final float scaleX = getScaleX();
 		final float scaleY = getScaleY();
@@ -604,6 +616,7 @@ public class Actor {
 				}
 			}
 		}
+		return parentCoords;
 	}
 
 	public String toString () {
