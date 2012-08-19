@@ -48,8 +48,7 @@ public class InputListener implements EventListener {
 			touchDragged(event, coords.x, coords.y, event.getPointer());
 			return true;
 		case mouseMoved:
-			mouseMoved(event, coords.x, coords.y);
-			return false;
+			return mouseMoved(event, coords.x, coords.y);
 		case enter:
 			enter(event, coords.x, coords.y, event.getPointer(), event.getRelatedActor());
 			return false;
