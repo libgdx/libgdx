@@ -41,6 +41,7 @@ public class Dialog extends Window {
 		row();
 		add(buttonTable = new Table(skin));
 
+		contentTable.defaults().space(6);
 		buttonTable.defaults().space(6);
 
 		buttonTable.addListener(new ChangeListener() {
