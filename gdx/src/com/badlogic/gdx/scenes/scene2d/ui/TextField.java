@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -114,8 +115,13 @@ public class TextField extends Widget {
 	}
 
 	private void initialize () {
-		addListener(inputListener = new InputListener() {
+		addListener(inputListener = new ClickListener() {
+			public void clicked (InputEvent event, float x, float y) {
+				if (getTapCount() > 1) setSelection(0, text.length());
+			}
+
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				if (!super.touchDown(event, x, y, pointer, button)) return false;
 				if (pointer == 0 && button != 0) return false;
 				Stage stage = getStage();
 				if (stage != null) stage.setKeyboardFocus(TextField.this);
@@ -127,6 +133,7 @@ public class TextField extends Widget {
 			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
+				super.touchDragged(event, x, y, pointer);
 				lastBlink = 0;
 				cursorOn = false;
 				setCursorPosition(x);

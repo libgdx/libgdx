@@ -17,17 +17,38 @@
 package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.utils.TimeUtils;
 
 /** Detects a click on an actor. The touch must go down over the actor and go up over the actor or within the
- * {@link #setTapSquareSize(float) tap square} for the click to occur.
+ * {@link #setTapSquareSize(float) tap square} for the click to occur. Double clicks can be detected using {@link #getTapCount()}.
  * @author Nathan Sweet */
 abstract public class ClickListener extends PressedListener {
+	private long tapCountInterval = (long)(0.4f * 1000000000l);
+	private int tapCount;
+	private long lastTapTime;
+
 	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 		boolean validClick = isOver(event.getListenerActor(), x, y);
 		if (validClick && pointer == 0 && button != getButton()) validClick = false;
-		if (validClick) clicked(event, x, y);
+		if (validClick) {
+			long time = TimeUtils.nanoTime();
+			if (time - lastTapTime > tapCountInterval) tapCount = 0;
+			tapCount++;
+			lastTapTime = time;
+			clicked(event, x, y);
+		}
 		super.touchUp(event, x, y, pointer, button);
 	}
 
 	abstract public void clicked (InputEvent event, float x, float y);
+
+	/** @param tapCountInterval time in seconds that must pass for two touch down/up sequences to be detected as consecutive taps. */
+	public void setTapCountInterval (float tapCountInterval) {
+		this.tapCountInterval = (long)(tapCountInterval * 1000000000l);
+	}
+
+	/** Returns the number of taps within the tap count interval for the most recent click event. */
+	public int getTapCount () {
+		return tapCount;
+	}
 }
