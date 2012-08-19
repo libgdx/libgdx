@@ -17,6 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -159,7 +160,8 @@ public class UITest extends GdxTest {
 					protected void clicked (Object object) {
 						System.out.println("Chosen: " + object);
 					}
-				}.text("Are you enjoying this demo?").button("Yes", true).button("No", false).show(stage, 0.4f);
+				}.text("Are you enjoying this demo?").button("Yes", true).button("No", false).key(Keys.ENTER, true)
+					.key(Keys.ESCAPE, false).show(stage, 0.4f);
 			}
 		});
 

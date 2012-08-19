@@ -1,8 +1,11 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -126,6 +129,21 @@ public class Dialog extends Window {
 
 	public void setObject (Actor actor, Object object) {
 		values.put(actor, object);
+	}
+
+	/** If this key is pressed, {@link #clicked(Object)} is called with the specified object.
+	 * @see Keys */
+	public Dialog key (final int keycode, final Object object) {
+		addListener(new InputListener() {
+			public boolean keyDown (InputEvent event, int keycode2) {
+				if (keycode == keycode2) {
+					clicked(object);
+					hide();
+				}
+				return false;
+			}
+		});
+		return this;
 	}
 
 	/** Called when a button is clicked.
