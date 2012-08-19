@@ -579,24 +579,27 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Transforms the screen coordinates to stage coordinates.
 	 * @param screenCoords Stores the result. */
-	public void screenToStageCoordinates (Vector2 screenCoords) {
+	public Vector2 screenToStageCoordinates (Vector2 screenCoords) {
 		camera.unproject(Vector3.tmp.set(screenCoords.x, screenCoords.y, 0));
 		screenCoords.x = Vector3.tmp.x;
 		screenCoords.y = Vector3.tmp.y;
+		return screenCoords;
 	}
 
 	/** Transforms the stage coordinates to screen coordinates. */
-	public void stageToScreenCoordinates (Vector2 stageCoords) {
+	public Vector2 stageToScreenCoordinates (Vector2 stageCoords) {
 		Vector3.tmp.set(stageCoords.x, stageCoords.y, 0);
 		camera.project(Vector3.tmp);
 		stageCoords.x = Vector3.tmp.x;
 		stageCoords.y = Vector3.tmp.y;
+		return stageCoords;
 	}
 
 	/** Transforms the coordinates to screen coordinates. The coordinates can be anywhere in the stage since the transform matrix
 	 * describes how to convert them. The transform matrix is typically obtained from {@link SpriteBatch#getTransformMatrix()}. */
-	public void toScreenCoordinates (Vector2 coords, Matrix4 transformMatrix) {
+	public Vector2 toScreenCoordinates (Vector2 coords, Matrix4 transformMatrix) {
 		ScissorStack.toWindowCoordinates(camera, transformMatrix, coords);
+		return coords;
 	}
 
 	public void dispose () {
