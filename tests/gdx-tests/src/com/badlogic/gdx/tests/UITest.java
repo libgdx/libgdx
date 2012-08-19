@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.MessageBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -92,7 +93,7 @@ public class UITest extends GdxTest {
 		t.add(myLabel);
 
 		t.layout();
-		
+
 		CheckBox checkBox = new CheckBox("Check me", skin);
 		final Slider slider = new Slider(0, 10, 1, false, skin);
 		TextField textfield = new TextField("", skin);
@@ -151,6 +152,17 @@ public class UITest extends GdxTest {
 				Gdx.app.log("UITest", "slider: " + slider.getValue());
 			}
 		});
+
+		iconButton.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				new MessageBox("Some Dialog", skin, "messageBox") {
+					protected void clicked (Object object) {
+						System.out.println("Chosen: " + object);
+					}
+				}.text("Are you enjoying this demo?").button("Yes", true).button("No", false).show(stage, 0.4f);
+			}
+		});
+
 	}
 
 	@Override

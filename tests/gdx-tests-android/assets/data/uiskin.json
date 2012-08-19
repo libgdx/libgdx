@@ -6,6 +6,9 @@ com.badlogic.gdx.graphics.Color: {
 	red: { a: 1, b: 0, g: 0, r: 1 },
 	black: { a: 1, b: 0, g: 0, r: 0 }
 },
+com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
+	messageBoxDim: { name: white, color: { r: 0, g: 0, b: 0, a: 0.45 } }
+},
 com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	default: { down: default-round-down, up: default-round },
 	toggle: { down: default-round-down, checked: default-round-down, up: default-round }
@@ -25,7 +28,8 @@ com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 	default: { vScroll: default-slider, hScrollKnob: default-round-large, background: default-rect, hScroll: default-slider, vScrollKnob: default-round-large }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
-	default: { titleFont: default-font, background: default-window, titleFontColor: white }
+	default: { titleFont: default-font, background: default-window, titleFontColor: white },
+	messageBox: { titleFont: default-font, background: default-window, titleFontColor: white, stageBackground: messageBoxDim }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
 	default-horizontal: { background: default-slider, knob: default-slider-knob }
