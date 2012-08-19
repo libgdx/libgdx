@@ -86,6 +86,8 @@ public class TexturePacker2 {
 				width = MathUtils.nextPowerOfTwo(width);
 				height = MathUtils.nextPowerOfTwo(height);
 			}
+			width = Math.max(settings.minWidth, width);
+			height = Math.max(settings.minHeight, height);
 
 			File outputFile;
 			while (true) {
