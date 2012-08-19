@@ -69,7 +69,7 @@ public class ScrollPane extends WidgetGroup {
 	private boolean flickScroll = true;
 	float velocityX, velocityY;
 	float flingTimer;
-	private boolean overscroll = true;
+	private boolean overscrollX = true, overscrollY = true;
 	float flingTime = 1f;
 	private float overscrollDistance = 50, overscrollSpeedMin = 30, overscrollSpeedMax = 200;
 	private boolean forceOverscrollX, forceOverscrollY;
@@ -226,13 +226,10 @@ public class ScrollPane extends WidgetGroup {
 
 	void clamp () {
 		if (!clamp) return;
-		if (overscroll) {
-			amountX = MathUtils.clamp(amountX, -overscrollDistance, maxX + overscrollDistance);
-			amountY = MathUtils.clamp(amountY, -overscrollDistance, maxY + overscrollDistance);
-		} else {
-			amountX = MathUtils.clamp(amountX, 0, maxX);
-			amountY = MathUtils.clamp(amountY, 0, maxY);
-		}
+		amountX = overscrollX ? MathUtils.clamp(amountX, -overscrollDistance, maxX + overscrollDistance) : MathUtils.clamp(amountX,
+			0, maxX);
+		amountY = overscrollY ? MathUtils.clamp(amountY, -overscrollDistance, maxY + overscrollDistance) : MathUtils.clamp(amountY,
+			0, maxY);
 	}
 
 	public void setStyle (ScrollPaneStyle style) {
@@ -292,26 +289,34 @@ public class ScrollPane extends WidgetGroup {
 			visualAmountY = amountY;
 		}
 
-		if (overscroll && !panning) {
-			if (amountX < 0) {
-				resetFade();
-				amountX += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountX / overscrollDistance) * delta;
-				if (amountX > 0) amountX = 0;
-			} else if (amountX > maxX) {
-				resetFade();
-				amountX -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -(maxX - amountX) / overscrollDistance)
-					* delta;
-				if (amountX < maxX) amountX = maxX;
+		if (!panning) {
+			if (overscrollX) {
+				if (amountX < 0) {
+					resetFade();
+					amountX += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountX / overscrollDistance)
+						* delta;
+					if (amountX > 0) amountX = 0;
+				} else if (amountX > maxX) {
+					resetFade();
+					amountX -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -(maxX - amountX)
+						/ overscrollDistance)
+						* delta;
+					if (amountX < maxX) amountX = maxX;
+				}
 			}
-			if (amountY < 0) {
-				resetFade();
-				amountY += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountY / overscrollDistance) * delta;
-				if (amountY > 0) amountY = 0;
-			} else if (amountY > maxY) {
-				resetFade();
-				amountY -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -(maxY - amountY) / overscrollDistance)
-					* delta;
-				if (amountY < maxY) amountY = maxY;
+			if (overscrollY) {
+				if (amountY < 0) {
+					resetFade();
+					amountY += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountY / overscrollDistance)
+						* delta;
+					if (amountY > 0) amountY = 0;
+				} else if (amountY > maxY) {
+					resetFade();
+					amountY -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -(maxY - amountY)
+						/ overscrollDistance)
+						* delta;
+					if (amountY < maxY) amountY = maxY;
+				}
 			}
 		}
 	}
@@ -656,8 +661,9 @@ public class ScrollPane extends WidgetGroup {
 
 	/** For flick scroll, if true the widget can be scrolled slightly past its bounds and will animate back to its bounds when
 	 * scrolling is stopped. Default is true. */
-	public void setOverscroll (boolean overscroll) {
-		this.overscroll = overscroll;
+	public void setOverscroll (boolean overscrollX, boolean overscrollY) {
+		this.overscrollX = overscrollX;
+		this.overscrollY = overscrollY;
 	}
 
 	/** For flick scroll, sets the overscroll distance in pixels and the speed it returns to the widgets bounds in seconds. Default

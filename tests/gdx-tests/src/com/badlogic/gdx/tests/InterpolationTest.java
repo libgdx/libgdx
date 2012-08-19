@@ -68,7 +68,7 @@ public class InterpolationTest extends GdxTest {
 
 		list = new List(interpolators, skin);
 		ScrollPane scrollPane = new ScrollPane(list, skin);
-		scrollPane.setOverscroll(false);
+		scrollPane.setOverscroll(false, false);
 		scrollPane.setFadeScrollBars(false);
 		root.add(scrollPane).expandY().fillY().prefWidth(110);
 	}
