@@ -297,8 +297,21 @@ public interface GL10 extends GLCommon {
 
 	public void glLightModelfv (int pname, FloatBuffer params);
 
+	/**
+	 * Set light source parameters
+	 * @param light Specifies a light. The number of lights depends on the implementation, but at least eight lights are supported. They are identified by symbolic names of the form GL_LIGHT i, where i ranges from 0 to the value of GL_MAX_LIGHTS - 1.
+	 * @param pname Specifies a single-valued light source parameter for light. GL_SPOT_EXPONENT, GL_SPOT_CUTOFF, GL_CONSTANT_ATTENUATION, GL_LINEAR_ATTENUATION, and GL_QUADRATIC_ATTENUATION are accepted.
+	 * @param param Specifies the value that parameter pname of light source light will be set to.
+	 */
 	public void glLightf (int light, int pname, float param);
 
+	/**
+	 * Set light source parameters
+	 * @param light Specifies a light. The number of lights depends on the implementation, but at least eight lights are supported. They are identified by symbolic names of the form GL_LIGHT i, where i ranges from 0 to the value of GL_MAX_LIGHTS - 1
+	 * @param pname Specifies a light source parameter for light. GL_AMBIENT, GL_DIFFUSE, GL_SPECULAR, GL_POSITION, GL_SPOT_CUTOFF, GL_SPOT_DIRECTION, GL_SPOT_EXPONENT, GL_CONSTANT_ATTENUATION, GL_LINEAR_ATTENUATION, and GL_QUADRATIC_ATTENUATION are accepted
+	 * @param params Specifies a pointer to the value or values that parameter pname of light source light will be set to.
+	 * @param offset 
+	 */
 	public void glLightfv (int light, int pname, float[] params, int offset);
 
 	public void glLightfv (int light, int pname, FloatBuffer params);
@@ -311,6 +324,26 @@ public interface GL10 extends GLCommon {
 
 	public void glLogicOp (int opcode);
 
+	/**
+	 * The glMaterialf function specifies material parameters for the lighting model.<p>
+	 * GL_AMBIENT<p>
+	 * params contains four integer or floating-point values that specify the ambient RGBA reflectance of the material. Integer values are mapped linearly such that the most positive representable value maps to 1.0, and the most negative representable value maps to -1.0 . Floating-point values are mapped directly. Neither integer nor floating-point values are clamped. The initial ambient reflectance for both front- and back-facing materials is (0.2, 0.2, 0.2, 1.0).<p>
+	 * GL_DIFFUSE<p>
+	 * params contains four integer or floating-point values that specify the diffuse RGBA reflectance of the material. Integer values are mapped linearly such that the most positive representable value maps to 1.0, and the most negative representable value maps to -1.0 . Floating-point values are mapped directly. Neither integer nor floating-point values are clamped. The initial diffuse reflectance for both front- and back-facing materials is (0.8, 0.8, 0.8, 1.0).<p>
+	 * GL_SPECULAR<p>
+	 * params contains four integer or floating-point values that specify the specular RGBA reflectance of the material. Integer values are mapped linearly such that the most positive representable value maps to 1.0, and the most negative representable value maps to -1.0 . Floating-point values are mapped directly. Neither integer nor floating-point values are clamped. The initial specular reflectance for both front- and back-facing materials is (0, 0, 0, 1).<p>
+	 * GL_EMISSION<p>
+	 * params contains four integer or floating-point values that specify the RGBA emitted light intensity of the material. Integer values are mapped linearly such that the most positive representable value maps to 1.0, and the most negative representable value maps to -1.0 . Floating-point values are mapped directly. Neither integer nor floating-point values are clamped. The initial emission intensity for both front- and back-facing materials is (0, 0, 0, 1).<p>
+	 * GL_SHININESS<p>
+	 * params is a single integer or floating-point value that specifies the RGBA specular exponent of the material. Integer and floating-point values are mapped directly. Only values in the range 0 128 are accepted. The initial specular exponent for both front- and back-facing materials is 0.<p>
+	 * GL_AMBIENT_AND_DIFFUSE<p>
+	 * Equivalent to calling glMaterial twice with the same parameter values, once with GL_AMBIENT and once with GL_DIFFUSE.<p>
+	 * GL_COLOR_INDEXES<p>
+	 * params contains three integer or floating-point values specifying the color indices for ambient, diffuse, and specular lighting. These three values, and GL_SHININESS, are the only material values used by the color index mode lighting equation. Refer to the glLightModel reference page for a discussion of color index lighting.<p>
+	 * @param face The face or faces that are being updated. Must be one of the following: GL_FRONT, GL_BACK, or GL_FRONT and GL_BACK.
+	 * @param pname Specifies the material parameter of the face or faces that is being updated. Must be one of GL_AMBIENT, GL_DIFFUSE, GL_SPECULAR, GL_EMISSION, GL_SHININESS, GL_AMBIENT_AND_DIFFUSE, or GL_COLOR_INDEXES.
+	 * @param param The value to which parameter GL_SHININESS will be set.
+	 */
 	public void glMaterialf (int face, int pname, float param);
 
 	public void glMaterialfv (int face, int pname, float[] params, int offset);
@@ -343,6 +376,12 @@ public interface GL10 extends GLCommon {
 
 	public void glScalef (float x, float y, float z);
 
+	/**
+	 * Select flat or smooth shading <p>
+	 *  <b>Smooth shading </b>, the default, causes the computed colors of vertices to be interpolated as the primitive is rasterized, typically assigning different colors to each resulting pixel fragment.<p> 
+	 *  <b>Flat shading</b> selects the computed color of just one vertex and assigns it to all the pixel fragments generated by rasterizing a single primitive
+	 * @param mode Specifies a symbolic value representing a shading technique. Accepted values are GL_FLAT and GL_SMOOTH. The initial value is GL_SMOOTH.
+	 */
 	public void glShadeModel (int mode);
 
 	public void glTexCoordPointer (int size, int type, int stride, Buffer pointer);
