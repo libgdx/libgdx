@@ -69,7 +69,7 @@ public class ResolutionFileResolver implements FileHandleResolver {
 		} else {
 			for (int i = 0, n = descriptors.length; i < n; i++) {
 				Resolution other = descriptors[i];
-				if (w >= other.portraitHeight && other.portraitHeight >= best.portraitHeight && w >= other.portraitWidth
+				if (w >= other.portraitHeight && other.portraitHeight >= best.portraitHeight && h >= other.portraitWidth
 					&& other.portraitWidth >= best.portraitWidth) best = descriptors[i];
 			}
 		}
