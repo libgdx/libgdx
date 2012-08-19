@@ -90,7 +90,7 @@ public class Tree extends WidgetGroup {
 
 			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
 				super.exit(event, x, y, pointer, toActor);
-				if (x < 0 || x > getWidth() || y < 0 || y > getHeight()) overNode = null;
+				if (toActor == null || !toActor.isDescendant(Tree.this)) overNode = null;
 			}
 		});
 	}
@@ -440,8 +440,12 @@ public class Tree extends WidgetGroup {
 		}
 
 		public void add (Node node) {
+			insert(children.size, node);
+		}
+
+		public void insert (int index, Node node) {
 			node.parent = this;
-			children.add(node);
+			children.insert(index, node);
 			if (!expanded) return;
 			Tree tree = getTree();
 			if (tree == null) return;
