@@ -443,6 +443,7 @@ public class TextField extends Widget {
 		} else
 			displayText = text;
 		style.font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
+		if (selectionStart > text.length()) selectionStart = text.length();
 	}
 
 	private void blink () {
