@@ -345,7 +345,7 @@ public class BitmapFontCache {
 					lineEnd--;
 				}
 				if (lineEnd == start) {
-					nextStart--;
+					if (nextStart > start + 1) nextStart--;
 					lineEnd = nextStart; // If no characters to break, show all.
 				} else {
 					nextStart = lineEnd;

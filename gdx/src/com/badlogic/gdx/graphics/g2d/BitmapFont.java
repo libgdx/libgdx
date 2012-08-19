@@ -532,7 +532,7 @@ public class BitmapFont implements Disposable {
 					lineEnd--;
 				}
 				if (lineEnd == start) {
-					nextStart--;
+					if (nextStart > start + 1) nextStart--;
 					lineEnd = nextStart; // If no characters to break, show all.
 				} else {
 					nextStart = lineEnd;
@@ -675,7 +675,7 @@ public class BitmapFont implements Disposable {
 					lineEnd--;
 				}
 				if (lineEnd == start) {
-					nextStart--;
+					if (nextStart > start + 1) nextStart--;
 					lineEnd = nextStart; // If no characters to break, show all.
 				} else {
 					nextStart = lineEnd;
