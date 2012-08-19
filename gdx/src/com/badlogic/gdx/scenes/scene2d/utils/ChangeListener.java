@@ -29,6 +29,7 @@ abstract public class ChangeListener implements EventListener {
 		return false;
 	}
 
+	/** @param actor The event target, which is the actor that emitted the change event. */
 	abstract public void changed (ChangeEvent event, Actor actor);
 
 	/** Fired when something in an actor has changed. This is a generic event, exactly what changed in an actor will vary.
