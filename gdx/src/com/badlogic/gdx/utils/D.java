@@ -66,6 +66,10 @@ public final class D {
 	 * 
 	 ********************************************************************/
 	
+	public static void out(Object obj){
+		Gdx.app.log("**Print Out** ", " " + obj);
+	}
+	
 	public static void out(String string){
 		Gdx.app.log("**Print Out** ", " " + string);
 	}

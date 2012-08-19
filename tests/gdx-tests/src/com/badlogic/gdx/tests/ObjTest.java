@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderOld;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ObjTest extends GdxTest implements InputProcessor {

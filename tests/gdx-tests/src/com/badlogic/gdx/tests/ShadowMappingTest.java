@@ -80,7 +80,11 @@ public class ShadowMappingTest extends GdxTest {
 
 	private void setupScene () {
 		plane = new Mesh(true, 4, 4, new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
-		plane.setVertices(new float[] {-10, -1, 10, 10, -1, 10, 10, -1, -10, -10, -1, -10});
+		plane.setVertices(new float[] {
+			-10, -1, 10, 
+			10, -1, 10, 
+			10, -1, -10, 
+			-10, -1, -10});
 		plane.setIndices(new short[] {3, 2, 1, 0});
 		cube = ModelLoaderOld.loadObj(Gdx.files.internal("data/cube.obj").read());
 
