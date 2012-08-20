@@ -118,6 +118,14 @@ public class Tree extends WidgetGroup {
 		invalidateHierarchy();
 	}
 
+	/** Removes all tree nodes. */
+	public void clear () {
+		super.clear();
+		rootNodes.clear();
+		selectedNodes.clear();
+		overNode = null;
+	}
+
 	public Array<Node> getNodes () {
 		return rootNodes;
 	}
@@ -344,16 +352,10 @@ public class Tree extends WidgetGroup {
 	}
 
 	public void collapseAll () {
-		for (int i = 0, n = rootNodes.size; i < n; i++)
-			collapseAll(rootNodes.get(i));
+		collapseAll(rootNodes);
 	}
 
-	/** Collapses all nodes under and included the specified node. */
-	public void collapseAll (Node node) {
-		collapseAll(node.children);
-	}
-
-	private void collapseAll (Array<Node> nodes) {
+	static void collapseAll (Array<Node> nodes) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			node.setExpanded(false);
@@ -365,12 +367,7 @@ public class Tree extends WidgetGroup {
 		expandAll(rootNodes);
 	}
 
-	/** Expands all nodes under and included the specified node. */
-	public void expandAll (Node node) {
-		expandAll(node.children);
-	}
-
-	private void expandAll (Array<Node> nodes) {
+	static void expandAll (Array<Node> nodes) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			node.setExpanded(true);
@@ -532,6 +529,18 @@ public class Tree extends WidgetGroup {
 		public Node findNode (Object object) {
 			if (object == null) throw new IllegalArgumentException("object cannot be null.");
 			return Tree.findNode(children, object);
+		}
+
+		/** Collapses all nodes under and including this node. */
+		public void collapseAll () {
+			setExpanded(false);
+			Tree.collapseAll(children);
+		}
+
+		/** Expands all nodes under and including this node. */
+		public void expandAll () {
+			setExpanded(true);
+			Tree.expandAll(children);
 		}
 	}
 

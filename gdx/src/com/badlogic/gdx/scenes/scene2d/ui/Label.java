@@ -92,7 +92,7 @@ public class Label extends Widget {
 			text.append((StringBuilder)newText);
 		} else {
 			if (newText == null) newText = "";
-			if (isEqual(text.chars, newText)) return;
+			if (textEquals(newText)) return;
 			text.setLength(0);
 			text.append(newText);
 		}
@@ -100,11 +100,12 @@ public class Label extends Widget {
 		invalidateHierarchy();
 	}
 
-	private boolean isEqual (char[] chars, CharSequence text) {
-		int length = chars.length;
-		if (length != text.length()) return false;
+	private boolean textEquals (CharSequence other) {
+		int length = text.length;
+		char[] chars = text.chars;
+		if (length != other.length()) return false;
 		for (int i = 0; i < length; i++)
-			if (chars[i] != text.charAt(i)) return false;
+			if (chars[i] != other.charAt(i)) return false;
 		return true;
 	}
 

@@ -124,11 +124,11 @@ public class TextField extends Widget {
 				if (!super.touchDown(event, x, y, pointer, button)) return false;
 				if (pointer == 0 && button != 0) return false;
 				Stage stage = getStage();
-				if (stage != null) stage.setKeyboardFocus(TextField.this);
 				keyboard.show(true);
 				clearSelection();
 				setCursorPosition(x);
 				selectionStart = cursor;
+				if (stage != null) stage.setKeyboardFocus(TextField.this);
 				return true;
 			}
 
@@ -443,6 +443,7 @@ public class TextField extends Widget {
 		} else
 			displayText = text;
 		style.font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
+		if (selectionStart > text.length()) selectionStart = text.length();
 	}
 
 	private void blink () {
@@ -609,6 +610,10 @@ public class TextField extends Widget {
 		hasSelection = true;
 		this.selectionStart = selectionStart;
 		cursor = selectionEnd;
+	}
+
+	public void selectAll () {
+		setSelection(0, text.length());
 	}
 
 	public void clearSelection () {

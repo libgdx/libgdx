@@ -17,6 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -31,7 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.MessageBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -155,11 +156,12 @@ public class UITest extends GdxTest {
 
 		iconButton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				new MessageBox("Some Dialog", skin, "messageBox") {
+				new Dialog("Some Dialog", skin, "dialog") {
 					protected void clicked (Object object) {
 						System.out.println("Chosen: " + object);
 					}
-				}.text("Are you enjoying this demo?").button("Yes", true).button("No", false).show(stage, 0.4f);
+				}.text("Are you enjoying this demo?").button("Yes", true).button("No", false).key(Keys.ENTER, true)
+					.key(Keys.ESCAPE, false).show(stage, 0.4f);
 			}
 		});
 

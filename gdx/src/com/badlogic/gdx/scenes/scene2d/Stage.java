@@ -29,6 +29,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener.FocusEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -502,7 +503,20 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Sets the actor that will receive key events.
 	 * @param actor May be null. */
 	public void setKeyboardFocus (Actor actor) {
-		this.keyboardFocus = actor;
+		if (keyboardFocus == actor) return;
+		FocusEvent event = Pools.obtain(FocusEvent.class);
+		event.setStage(this);
+		event.setType(FocusEvent.Type.keyboard);
+		if (keyboardFocus != null) {
+			event.setFocused(false);
+			keyboardFocus.fire(event);
+		}
+		keyboardFocus = actor;
+		if (keyboardFocus != null) {
+			event.setFocused(true);
+			keyboardFocus.fire(event);
+		}
+		Pools.free(event);
 	}
 
 	/** Gets the actor that will receive key events.
@@ -514,7 +528,20 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Sets the actor that will receive scroll events.
 	 * @param actor May be null. */
 	public void setScrollFocus (Actor actor) {
-		this.scrollFocus = actor;
+		if (scrollFocus == actor) return;
+		FocusEvent event = Pools.obtain(FocusEvent.class);
+		event.setStage(this);
+		event.setType(FocusEvent.Type.scroll);
+		if (scrollFocus != null) {
+			event.setFocused(false);
+			scrollFocus.fire(event);
+		}
+		scrollFocus = actor;
+		if (scrollFocus != null) {
+			event.setFocused(true);
+			scrollFocus.fire(event);
+		}
+		Pools.free(event);
 	}
 
 	/** Gets the actor that will receive scroll events.
