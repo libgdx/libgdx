@@ -153,6 +153,16 @@ public class Body {
 	public void setTransform (float x, float y, float angle) {
 		jniSetTransform(addr, x, y, angle);
 	}
+	
+	/** Set the position of the body's origin and rotation. This breaks any contacts and wakes the other bodies. Manipulating a
+	 * body's transform may cause non-physical behavior.
+	 * @param x the world position on the x-axis
+	 * @param y the world position on the y-axis
+	 * @param angle the world rotation in radians. 
+	 * @param updateContacts if find contacts should be called internally, true by default. */
+	public void setTransform (float x, float y, float angle, boolean updateContacts) {
+		jniSetTransform(addr, x, y, angle, updateContacts);
+	}
 
 	private native void jniSetTransform (long addr, float positionX, float positionY, float angle); /*
 		b2Body* body = (b2Body*)addr;
