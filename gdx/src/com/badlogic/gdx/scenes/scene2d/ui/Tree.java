@@ -379,15 +379,6 @@ public class Tree extends WidgetGroup {
 		}
 	}
 
-	/** Expands all parent nodes of the specified node. */
-	public void expandTo (Node node) {
-		node = node.parent;
-		while (node != null) {
-			node.setExpanded(true);
-			node = node.parent;
-		}
-	}
-
 	static public class Node {
 		Actor leftActor, rightActor;
 		Node parent;
@@ -552,6 +543,15 @@ public class Tree extends WidgetGroup {
 		public void expandAll () {
 			setExpanded(true);
 			Tree.expandAll(children);
+		}
+
+		/** Expands all parent nodes of this node. */
+		public void expandTo () {
+			Node node = parent;
+			while (node != null) {
+				node.setExpanded(true);
+				node = node.parent;
+			}
 		}
 	}
 
