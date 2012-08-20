@@ -158,6 +158,11 @@ public class Body {
 		b2Body* body = (b2Body*)addr;
 		body->SetTransform(b2Vec2(positionX, positionY), angle);
 	*/
+	
+	private native void jniSetTransform (long addr, float positionX, float positionY, float angle, boolean updateContacts); /*
+		b2Body* body = (b2Body*)addr;
+		body->SetTransform(b2Vec2(positionX, positionY), angle, updateContacts);
+	*/
 
 	/** Get the body transform for the body's origin. */
 	private final Transform transform = new Transform();
