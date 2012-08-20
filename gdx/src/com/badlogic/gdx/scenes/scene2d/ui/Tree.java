@@ -49,7 +49,7 @@ public class Tree extends WidgetGroup {
 			public void clicked (InputEvent event, float x, float y) {
 				Node node = getNodeAt(y);
 				if (node == null) return;
-				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && !Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT) && selectedNodes.size > 0) {
+				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
 					// Select range (shift/ctrl).
 					float low = selectedNodes.first().rightActor.getY();
 					float high = node.rightActor.getY();
@@ -101,9 +101,13 @@ public class Tree extends WidgetGroup {
 	}
 
 	public void add (Node node) {
+		insert(rootNodes.size, node);
+	}
+
+	public void insert (int index, Node node) {
 		remove(node);
 		node.parent = null;
-		rootNodes.add(node);
+		rootNodes.insert(index, node);
 		node.addToTree(this);
 		invalidateHierarchy();
 	}
@@ -450,6 +454,12 @@ public class Tree extends WidgetGroup {
 				children.get(i).addToTree(tree);
 		}
 
+		public void remove () {
+			Tree tree = getTree();
+			if (tree == null) return;
+			tree.remove(this);
+		}
+
 		public void remove (Node node) {
 			children.removeValue(node, true);
 			if (!expanded) return;
@@ -525,9 +535,10 @@ public class Tree extends WidgetGroup {
 			return icon;
 		}
 
-		/** Returns the child node with the specified object, or null. */
+		/** Returns this node or the child node with the specified object, or null. */
 		public Node findNode (Object object) {
 			if (object == null) throw new IllegalArgumentException("object cannot be null.");
+			if (object.equals(this.object)) return this;
 			return Tree.findNode(children, object);
 		}
 
