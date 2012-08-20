@@ -205,6 +205,7 @@
 		<include name="scenes/scene2d/ui/Button.java"/>
 		<include name="scenes/scene2d/ui/ButtonGroup.java"/>
 		<include name="scenes/scene2d/ui/CheckBox.java"/>
+		<include name="scenes/scene2d/ui/Dialog.java"/>
 		<include name="scenes/scene2d/ui/Image.java"/>
 		<include name="scenes/scene2d/ui/ImageButton.java"/>
 		<include name="scenes/scene2d/ui/Label.java"/>		
@@ -231,6 +232,7 @@
 		<include name="scenes/scene2d/utils/Cullable.java"/>
 		<include name="scenes/scene2d/utils/Drawable.java"/>
 		<include name="scenes/scene2d/utils/EmptyDrawable.java"/>
+		<include name="scenes/scene2d/utils/FocusListener.java"/>
 		<include name="scenes/scene2d/utils/Layout.java"/>
 		<include name="scenes/scene2d/utils/NinePatchDrawable.java"/>
 		<include name="scenes/scene2d/utils/PressedListener.java"/>
