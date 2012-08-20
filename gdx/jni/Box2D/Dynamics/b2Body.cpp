@@ -401,6 +401,11 @@ bool b2Body::ShouldCollide(const b2Body* other) const
 
 void b2Body::SetTransform(const b2Vec2& position, float32 angle)
 {
+	this->SetTransform(position, angle, true);
+}
+
+void b2Body::SetTransform(const b2Vec2& position, float32 angle, bool updateContacts)
+{
 	b2Assert(m_world->IsLocked() == false);
 	if (m_world->IsLocked() == true)
 	{
@@ -422,7 +427,8 @@ void b2Body::SetTransform(const b2Vec2& position, float32 angle)
 		f->Synchronize(broadPhase, m_xf, m_xf);
 	}
 
-	m_world->m_contactManager.FindNewContacts();
+	if (updateContacts)
+		m_world->m_contactManager.FindNewContacts();
 }
 
 void b2Body::SynchronizeFixtures()
