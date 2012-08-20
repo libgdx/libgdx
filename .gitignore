@@ -110,6 +110,7 @@
 /extensions/model-loaders/model-loaders-android/gen
 /extensions/model-loaders/model-loaders/bin
 
+/gdx/obj
 /gdx/bin
 /gdx/libs/armeabi
 /gdx/libs/armeabi-v7a
