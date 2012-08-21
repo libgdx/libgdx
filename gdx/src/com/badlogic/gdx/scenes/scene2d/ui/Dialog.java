@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 /** Displays a dialog, which is a modal window containing a content table with a button table underneath it. Methods are provided
  * to add a label to the content table and buttons to the button table, but any widgets can be added. When a button is clicked,
- * {@link #clicked(Object)} is called and the dialog is removed from the stage.
+ * {@link #result(Object)} is called and the dialog is removed from the stage.
  * @author Nathan Sweet */
 public class Dialog extends Window {
 	/** The time in seconds that dialogs will fade in and out. Set to zero to disable fading. */
@@ -59,7 +59,7 @@ public class Dialog extends Window {
 			public void changed (ChangeEvent event, Actor actor) {
 				while (actor.getParent() != buttonTable)
 					actor = actor.getParent();
-				clicked(values.get(actor));
+				result(values.get(actor));
 				hide();
 			}
 		});
@@ -86,14 +86,14 @@ public class Dialog extends Window {
 		return this;
 	}
 
-	/** Adds a text button to the button table. Null will be passed to {@link #clicked(Object)} if this button is clicked. The
-	 * dialog must have been constructed with a skin to use this method. */
+	/** Adds a text button to the button table. Null will be passed to {@link #result(Object)} if this button is clicked. The dialog
+	 * must have been constructed with a skin to use this method. */
 	public Dialog button (String text) {
 		return button(text, null);
 	}
 
 	/** Adds a text button to the button table. The dialog must have been constructed with a skin to use this method.
-	 * @param object The object that will be passed to {@link #clicked(Object)} if this button is clicked. May be null. */
+	 * @param object The object that will be passed to {@link #result(Object)} if this button is clicked. May be null. */
 	public Dialog button (String text, Object object) {
 		if (skin == null)
 			throw new IllegalStateException("This method may only be used if the dialog was constructed with a Skin.");
@@ -101,7 +101,7 @@ public class Dialog extends Window {
 	}
 
 	/** Adds a text button to the button table.
-	 * @param object The object that will be passed to {@link #clicked(Object)} if this button is clicked. May be null. */
+	 * @param object The object that will be passed to {@link #result(Object)} if this button is clicked. May be null. */
 	public Dialog button (String text, Object object, TextButtonStyle buttonStyle) {
 		TextButton button = new TextButton(text, buttonStyle);
 		buttonTable.add(button);
@@ -133,13 +133,13 @@ public class Dialog extends Window {
 		values.put(actor, object);
 	}
 
-	/** If this key is pressed, {@link #clicked(Object)} is called with the specified object.
+	/** If this key is pressed, {@link #result(Object)} is called with the specified object.
 	 * @see Keys */
 	public Dialog key (final int keycode, final Object object) {
 		addListener(new InputListener() {
 			public boolean keyDown (InputEvent event, int keycode2) {
 				if (keycode == keycode2) {
-					clicked(object);
+					result(object);
 					hide();
 				}
 				return false;
@@ -150,6 +150,6 @@ public class Dialog extends Window {
 
 	/** Called when a button is clicked.
 	 * @param object The object specified when the button was added. */
-	protected void clicked (Object object) {
+	protected void result (Object object) {
 	}
 }

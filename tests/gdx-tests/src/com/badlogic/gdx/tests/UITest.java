@@ -157,7 +157,7 @@ public class UITest extends GdxTest {
 		iconButton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				new Dialog("Some Dialog", skin, "dialog") {
-					protected void clicked (Object object) {
+					protected void result (Object object) {
 						System.out.println("Chosen: " + object);
 					}
 				}.text("Are you enjoying this demo?").button("Yes", true).button("No", false).key(Keys.ENTER, true)
