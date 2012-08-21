@@ -336,6 +336,14 @@ public interface GL20 extends GLCommon {
 
 	public void glBindAttribLocation (int program, int index, String name);
 
+	/**
+	 * glBindBuffer — bind a named buffer object
+	 * @param target Specifies the target to which the buffer object is bound. The symbolic constant must be GL_ARRAY_BUFFER, GL_ATOMIC_COUNTER_BUFFER, GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, GL_DRAW_INDIRECT_BUFFER, GL_DISPATCH_INDIRECT_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_PIXEL_PACK_BUFFER, GL_PIXEL_UNPACK_BUFFER, GL_SHADER_STORAGE_BUFFER, GL_TEXTURE_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER, or GL_UNIFORM_BUFFER.
+	 * @param buffer Specifies the integer name of a buffer object.
+	 * @Note <p> 
+	 * GL_VERTEX_BUFFER use for normal,position,color,texcoord store
+	 * GL_ELEMENT_VERTEX_BUFFER use when indices also store in buffer
+	 */
 	public void glBindBuffer (int target, int buffer);
 
 	public void glBindFramebuffer (int target, int framebuffer);
@@ -350,6 +358,22 @@ public interface GL20 extends GLCommon {
 
 	public void glBlendFuncSeparate (int srcRGB, int dstRGB, int srcAlpha, int dstAlpha);
 
+	/**
+	 * glBufferData — creates and initializes a buffer object's data store
+	 * @param target Specifies the target buffer object. The symbolic constant must be GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_PIXEL_PACK_BUFFER, or GL_PIXEL_UNPACK_BUFFER.
+	 * @param size Specifies the size in <b>bytes</b> of the buffer object's new data store.
+	 * @param data Specifies a pointer to data that will be copied into the data store for initialization, or NULL if no data is to be copied.
+	 * @param usage Specifies the expected usage pattern of the data store. The symbolic constant must be GL_STREAM_DRAW, GL_STREAM_READ, GL_STREAM_COPY, GL_STATIC_DRAW, GL_STATIC_READ, GL_STATIC_COPY, GL_DYNAMIC_DRAW, GL_DYNAMIC_READ, or GL_DYNAMIC_COPY.
+	 * @Note the param <b>usage</b> contain two part : <p>
+	 * First part is how often this buffer will be accessed <p>
+	 * Second part is the expected type of access
+	 * @STREAM the data will be modified only one and access few time
+	 * @STATIC the data will be altered once and accessed multiple times
+	 * @DYNAMIC the buffer will be modified a lot and accessed many times
+	 * @DRAW will be altered by the application and used for rendering in openGL
+	 * @READ filled by openGL and read by application
+	 * @COPY modified by openGL and later use for openGL as source for rendering
+	 */
 	public void glBufferData (int target, int size, Buffer data, int usage);
 
 	public void glBufferSubData (int target, int offset, int size, Buffer data);
@@ -362,6 +386,11 @@ public interface GL20 extends GLCommon {
 
 	public int glCreateShader (int type);
 
+	/**
+	 * Deleted a list of vertex buffer object
+	 * @param n the number of buffer name you want to delete
+	 * @param buffers the pointer to buffer that can store all n buffer names
+	 */
 	public void glDeleteBuffers (int n, IntBuffer buffers);
 
 	public void glDeleteFramebuffers (int n, IntBuffer framebuffers);
@@ -384,6 +413,12 @@ public interface GL20 extends GLCommon {
 
 	public void glFramebufferTexture2D (int target, int attachment, int textarget, int texture, int level);
 
+	/**
+	 * Generate a name for vertex buffer object, return a series of integer names that are 
+	 * guaranteed to have never been generated berfore by a previous call glGenBuffers()
+	 * @param n the number of buffer names we want to generate
+	 * @param buffers a pointer to a variableor array that can store n buffer names
+	 */
 	public void glGenBuffers (int n, IntBuffer buffers);
 
 	public void glGenerateMipmap (int target);

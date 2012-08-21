@@ -289,6 +289,15 @@ public interface GL10 extends GLCommon {
 
 	public void glFogfv (int pname, FloatBuffer params);
 
+	/**
+	 * glFrustum — multiply the current matrix by a perspective matrix
+	 * @param left Specify the coordinates for the left and right vertical clipping planes.
+	 * @param right Specify the coordinates for the left and right vertical clipping planes.
+	 * @param bottom Specify the coordinates for the bottom and top horizontal clipping planes.
+	 * @param top Specify the coordinates for the bottom and top horizontal clipping planes.
+	 * @param zNear Specify the distances to the near and far depth clipping planes. Both distances must be positive.
+	 * @param zFar Specify the distances to the near and far depth clipping planes. Both distances must be positive.
+	 */
 	public void glFrustumf (float left, float right, float bottom, float top, float zNear, float zFar);
 
 	public void glGenTextures (int n, int[] textures, int offset);
