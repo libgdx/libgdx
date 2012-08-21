@@ -23,23 +23,28 @@ public class Dialog extends Window {
 	/** The time in seconds that dialogs will fade in and out. Set to zero to disable fading. */
 	static public float fadeDuration = 0.4f;
 
-	final Table contentTable, buttonTable;
+	Table contentTable, buttonTable;
 	private Skin skin;
 	ObjectMap<Actor, Object> values = new ObjectMap();
 
 	public Dialog (String title, Skin skin) {
-		this(title, skin.get(WindowStyle.class));
+		super(title, skin.get(WindowStyle.class));
 		this.skin = skin;
+		initialize();
 	}
 
 	public Dialog (String title, Skin skin, String windowStyleName) {
-		this(title, skin.get(windowStyleName, WindowStyle.class));
+		super(title, skin.get(windowStyleName, WindowStyle.class));
 		this.skin = skin;
+		initialize();
 	}
 
 	public Dialog (String title, WindowStyle windowStyle) {
 		super(title, windowStyle);
+		initialize();
+	}
 
+	private void initialize () {
 		setModal(true);
 
 		defaults().space(6);
@@ -109,7 +114,7 @@ public class Dialog extends Window {
 		stage.setKeyboardFocus(this);
 		stage.setScrollFocus(this);
 		pack();
-		setPosition((stage.getWidth() - getWidth()) / 2, (stage.getHeight() - getHeight()) / 2);
+		setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
 		stage.addActor(this);
 		if (fadeDuration > 0) {
 			getColor().a = 0;
