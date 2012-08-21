@@ -540,6 +540,16 @@ public class Actor {
 		return localCoords;
 	}
 
+	/** Converts coordinates for this actor to those of a parent actor. The ascendant does not need to be a direct parent. */
+	public void localToAscendantCoordinates (Actor ascendant, Vector2 localCoords) {
+		Actor actor = this;
+		while (actor.getParent() != null) {
+			actor.localToParentCoordinates(localCoords);
+			actor = actor.getParent();
+			if (actor == ascendant) break;
+		}
+	}
+
 	/** Converts the coordinates given in the parent's coordinate system to this actor's coordinate system. */
 	public Vector2 parentToLocalCoordinates (Vector2 parentCoords) {
 		final float rotation = getRotation();
