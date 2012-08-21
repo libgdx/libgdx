@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -70,6 +71,7 @@ public class TextField extends Widget {
 	TextFieldListener listener;
 	TextFieldFilter filter;
 	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
+	boolean focusTraversal = true;
 
 	private boolean passwordMode;
 	private StringBuilder passwordBuffer;
@@ -281,7 +283,7 @@ public class TextField extends Widget {
 					if (character != ENTER_DESKTOP && character != ENTER_ANDROID) {
 						if (filter != null && !filter.acceptChar(TextField.this, character)) return true;
 					}
-					if (character == TAB || character == ENTER_ANDROID)
+					if ((character == TAB || character == ENTER_ANDROID) && focusTraversal)
 						next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
 					if (font.containsCharacter(character)) {
 						if (!hasSelection) {
@@ -518,28 +520,36 @@ public class TextField extends Widget {
 	public void next (boolean up) {
 		Stage stage = getStage();
 		if (stage == null) return;
-		TextField textField = findNextTextField(stage.getActors(), null, up);
+		getParent().localToStageCoordinates(Vector2.tmp.set(getX(), getY()));
+		TextField textField = findNextTextField(stage.getActors(), null, Vector2.tmp2, Vector2.tmp, up);
+		if (textField == null) { // Try to wrap around.
+			if (up)
+				Vector2.tmp.set(Float.MIN_VALUE, Float.MIN_VALUE);
+			else
+				Vector2.tmp.set(Float.MAX_VALUE, Float.MAX_VALUE);
+			textField = findNextTextField(getStage().getActors(), null, Vector2.tmp2, Vector2.tmp, up);
+		}
 		if (textField != null)
 			stage.setKeyboardFocus(textField);
 		else
 			Gdx.input.setOnscreenKeyboardVisible(false);
 	}
 
-	private TextField findNextTextField (Array<Actor> actors, TextField best, boolean up) {
-		float x = getX();
-		float y = getY();
+	private TextField findNextTextField (Array<Actor> actors, TextField best, Vector2 bestCoords, Vector2 currentCoords, boolean up) {
 		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
+			if (actor == this) continue;
 			if (actor instanceof TextField) {
-				if (actor == this) continue;
-				float actorY = actor.getY();
-				if (actorY == y) {
-					if (best == null && actor.getX() >= x ^ up) best = (TextField)actor;
-				} else if (actorY < y ^ up && (best == null || actorY - y > best.getY() - y ^ up)) {
-					best = (TextField)actor;
+				Vector2 actorCoords = actor.getParent().localToStageCoordinates(Vector2.tmp3.set(actor.getX(), actor.getY()));
+				if ((actorCoords.y < currentCoords.y || (actorCoords.y == currentCoords.y && actorCoords.x > currentCoords.x)) ^ up) {
+					if (best == null
+						|| (actorCoords.y > bestCoords.y || (actorCoords.y == bestCoords.y && actorCoords.x < bestCoords.x)) ^ up) {
+						best = (TextField)actor;
+						bestCoords.set(actorCoords);
+					}
 				}
 			}
-			if (actor instanceof Group) best = findNextTextField(((Group)actor).getChildren(), best, up);
+			if (actor instanceof Group) best = findNextTextField(((Group)actor).getChildren(), best, bestCoords, currentCoords, up);
 		}
 		return best;
 	}
@@ -552,6 +562,11 @@ public class TextField extends Widget {
 	/** @param filter May be null. */
 	public void setTextFieldFilter (TextFieldFilter filter) {
 		this.filter = filter;
+	}
+
+	/** If true (the default), tab/shift+tab will move to the next text field. */
+	public void setFocusTraversal (boolean focusTraversal) {
+		this.focusTraversal = focusTraversal;
 	}
 
 	/** @return May be null. */
