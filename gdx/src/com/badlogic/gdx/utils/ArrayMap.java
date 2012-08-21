@@ -156,6 +156,14 @@ public class ArrayMap<K, V> {
 		return values[index];
 	}
 
+	public K firstKey () {
+		return keys[0];
+	}
+
+	public V firstValue () {
+		return values[0];
+	}
+
 	public void setKey (int index, K key) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		keys[index] = key;
