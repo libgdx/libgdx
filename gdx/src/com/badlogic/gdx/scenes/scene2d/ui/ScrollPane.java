@@ -549,8 +549,10 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public Actor hit (float x, float y) {
-		if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) return super.hit(x, y);
-		return null;
+		if (x < 0 && x >= getWidth() && y < 0 && y >= getHeight()) return null;
+		if (scrollX && hScrollBounds.contains(x, y)) return this;
+		if (scrollY && vScrollBounds.contains(x, y)) return this;
+		return super.hit(x, y);
 	}
 
 	public void setScrollX (float pixels) {
@@ -601,19 +603,15 @@ public class ScrollPane extends WidgetGroup {
 		invalidate();
 	}
 
-	/** Sets the scroll offset so the specified rectangle is fully in view. */
+	/** Sets the scroll offset so the specified rectangle is fully in view and centered in the scroll pane, if possible. Coordinates
+	 * are in the scroll pane widget's coordinate system. */
 	public void scrollTo (float x, float y, float width, float height) {
-		if (x < amountX)
-			amountX = x;
-		else if (x + width > amountX + areaWidth) //
-			amountX = x + width - areaWidth;
+		float centerX = x - areaWidth / 2 - width / 2;
+		if (amountX < centerX - areaWidth / 4 || amountX > centerX + areaWidth / 4) amountX = centerX;
 		amountX = MathUtils.clamp(amountX, 0, maxX);
 
-		y = getMaxY() + areaHeight - y;
-		if (y > amountY + areaHeight)
-			amountY = y - areaHeight;
-		else if (y - height < amountY) //
-			amountY = y - height;
+		float centerY = maxY + areaHeight - y - areaHeight / 2 - height / 2;
+		if (amountY < centerY - areaHeight / 4 || amountY > centerY + areaHeight / 4) amountY = centerY;
 		amountY = MathUtils.clamp(amountY, 0, maxY);
 	}
 

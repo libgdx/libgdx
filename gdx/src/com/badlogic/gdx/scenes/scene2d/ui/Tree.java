@@ -49,7 +49,7 @@ public class Tree extends WidgetGroup {
 			public void clicked (InputEvent event, float x, float y) {
 				Node node = getNodeAt(y);
 				if (node == null) return;
-				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && !Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT) && selectedNodes.size > 0) {
+				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
 					// Select range (shift/ctrl).
 					float low = selectedNodes.first().rightActor.getY();
 					float high = node.rightActor.getY();
@@ -101,9 +101,13 @@ public class Tree extends WidgetGroup {
 	}
 
 	public void add (Node node) {
+		insert(rootNodes.size, node);
+	}
+
+	public void insert (int index, Node node) {
 		remove(node);
 		node.parent = null;
-		rootNodes.add(node);
+		rootNodes.insert(index, node);
 		node.addToTree(this);
 		invalidateHierarchy();
 	}
@@ -375,15 +379,6 @@ public class Tree extends WidgetGroup {
 		}
 	}
 
-	/** Expands all parent nodes of the specified node. */
-	public void expandTo (Node node) {
-		node = node.parent;
-		while (node != null) {
-			node.setExpanded(true);
-			node = node.parent;
-		}
-	}
-
 	static public class Node {
 		Actor leftActor, rightActor;
 		Node parent;
@@ -448,6 +443,12 @@ public class Tree extends WidgetGroup {
 			if (tree == null) return;
 			for (int i = 0, n = children.size; i < n; i++)
 				children.get(i).addToTree(tree);
+		}
+
+		public void remove () {
+			Tree tree = getTree();
+			if (tree == null) return;
+			tree.remove(this);
 		}
 
 		public void remove (Node node) {
@@ -525,9 +526,10 @@ public class Tree extends WidgetGroup {
 			return icon;
 		}
 
-		/** Returns the child node with the specified object, or null. */
+		/** Returns this node or the child node with the specified object, or null. */
 		public Node findNode (Object object) {
 			if (object == null) throw new IllegalArgumentException("object cannot be null.");
+			if (object.equals(this.object)) return this;
 			return Tree.findNode(children, object);
 		}
 
@@ -541,6 +543,15 @@ public class Tree extends WidgetGroup {
 		public void expandAll () {
 			setExpanded(true);
 			Tree.expandAll(children);
+		}
+
+		/** Expands all parent nodes of this node. */
+		public void expandTo () {
+			Node node = parent;
+			while (node != null) {
+				node.setExpanded(true);
+				node = node.parent;
+			}
 		}
 	}
 
