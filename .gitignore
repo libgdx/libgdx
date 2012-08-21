@@ -55,6 +55,8 @@
 /demos/very-angry-robots/very-angry-robots-android/gen
 /demos/very-angry-robots/very-angry-robots/bin
 
+/extensions/gdx-jnigen/target
+
 /extensions/gdx-audio/bin
 /extensions/gdx-audio/libs/armeabi
 /extensions/gdx-audio/libs/armeabi-v7a
@@ -110,6 +112,8 @@
 /extensions/model-loaders/model-loaders-android/gen
 /extensions/model-loaders/model-loaders/bin
 
+/gdx/target
+/gdx/obj
 /gdx/bin
 /gdx/libs/armeabi
 /gdx/libs/armeabi-v7a
@@ -130,3 +134,7 @@
 /tests/gdx-tests-lwjgl/bin
 
 /tests/gdx-tests/bin
+
+/dist
+
+libgdx-nightlies.zip
