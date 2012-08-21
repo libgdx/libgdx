@@ -25,7 +25,11 @@ public interface GLCommon {
 	public static final int GL_GENERATE_MIPMAP = 0x8191;
 	public static final int GL_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FE;
 	public static final int GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FF;
-
+	
+	/**
+	 * glActiveTexture — select active texture unit
+	 * @param texture Specifies which texture unit to make active. The number of texture units is implementation dependent, but must be at least two. texture must be one of GL_TEXTUREi, where i ranges from 0 to the larger of (GL_MAX_TEXTURE_COORDS - 1) and (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1). The initial value is GL_TEXTURE0.
+	 */
 	public void glActiveTexture (int texture);
 
 	public void glBindTexture (int target, int texture);

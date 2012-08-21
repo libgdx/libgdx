@@ -277,6 +277,10 @@ public interface GL10 extends GLCommon {
 
 	public void glDisableClientState (int array);
 
+	/**
+	 * glEnableClientState — enable or disable client-side capability
+	 * @param array Specifies the capability to enable. Symbolic constants GL_COLOR_ARRAY, GL_EDGE_FLAG_ARRAY, GL_FOG_COORD_ARRAY, GL_INDEX_ARRAY, GL_NORMAL_ARRAY, GL_SECONDARY_COLOR_ARRAY, GL_TEXTURE_COORD_ARRAY, and GL_VERTEX_ARRAY are accepted.
+	 */
 	public void glEnableClientState (int array);
 
 	public void glFogf (int pname, float param);
@@ -386,10 +390,29 @@ public interface GL10 extends GLCommon {
 
 	public void glTexCoordPointer (int size, int type, int stride, Buffer pointer);
 
+	/**
+	 * glTexEnv — set texture environment parameters
+	 * @param target Specifies a texture environment. May be GL_TEXTURE_ENV, GL_TEXTURE_FILTER_CONTROL or GL_POINT_SPRITE.
+	 * @param pname Specifies the symbolic name of a single-valued texture environment parameter. May be either GL_TEXTURE_ENV_MODE, GL_TEXTURE_LOD_BIAS, GL_COMBINE_RGB, GL_COMBINE_ALPHA, GL_SRC0_RGB, GL_SRC1_RGB, GL_SRC2_RGB, GL_SRC0_ALPHA, GL_SRC1_ALPHA, GL_SRC2_ALPHA, GL_OPERAND0_RGB, GL_OPERAND1_RGB, GL_OPERAND2_RGB, GL_OPERAND0_ALPHA, GL_OPERAND1_ALPHA, GL_OPERAND2_ALPHA, GL_RGB_SCALE, GL_ALPHA_SCALE, or GL_COORD_REPLACE.
+	 * @param param Specifies a single symbolic constant, one of GL_ADD, GL_ADD_SIGNED, GL_INTERPOLATE, GL_MODULATE, GL_DECAL, GL_BLEND, GL_REPLACE, GL_SUBTRACT, GL_COMBINE, GL_TEXTURE, GL_CONSTANT, GL_PRIMARY_COLOR, GL_PREVIOUS, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, a single boolean value for the point sprite texture coordinate replacement, a single floating-point value for the texture level-of-detail bias, or 1.0, 2.0, or 4.0 when specifying the GL_RGB_SCALE or GL_ALPHA_SCALE.
+	 */
 	public void glTexEnvf (int target, int pname, float param);
 
+	/**
+	 * glTexEnv — set texture environment parameters
+	 * @param target target Specifies a texture environment. May be either GL_TEXTURE_ENV, or GL_TEXTURE_FILTER_CONTROL.
+	 * @param pname pname Specifies the symbolic name of a texture environment parameter. Accepted values are GL_TEXTURE_ENV_MODE, GL_TEXTURE_ENV_COLOR, or GL_TEXTURE_LOD_BIAS.
+	 * @param params Specifies a pointer to a parameter array that contains either a single symbolic constant, single floating-point number, or an RGBA color.
+	 * @param offset
+	 */
 	public void glTexEnvfv (int target, int pname, float[] params, int offset);
 
+	/**
+	 * glTexEnv — set texture environment parameters
+	 * @param target Specifies a texture environment. May be either GL_TEXTURE_ENV, or GL_TEXTURE_FILTER_CONTROL.
+	 * @param pname Specifies the symbolic name of a texture environment parameter. Accepted values are GL_TEXTURE_ENV_MODE, GL_TEXTURE_ENV_COLOR, or GL_TEXTURE_LOD_BIAS.
+	 * @param params Specifies a pointer to a parameter array that contains either a single symbolic constant, single floating-point number, or an RGBA color.
+	 */
 	public void glTexEnvfv (int target, int pname, FloatBuffer params);
 
 	public void glTranslatef (float x, float y, float z);
