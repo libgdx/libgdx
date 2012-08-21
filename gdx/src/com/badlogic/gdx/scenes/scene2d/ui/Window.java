@@ -150,6 +150,8 @@ public class Window extends Table {
 			else
 				y -= (getPadTop() - bounds.height) / 2;
 		}
+		x = Math.round(x);
+		y = Math.round(y);
 		titleCache.setColor(Color.tmp.set(getColor()).mul(style.titleFontColor));
 		titleCache.setPosition(x, y);
 		titleCache.draw(batch, parentAlpha);
