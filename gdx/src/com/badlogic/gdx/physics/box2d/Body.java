@@ -159,7 +159,9 @@ public class Body {
 	 * @param x the world position on the x-axis
 	 * @param y the world position on the y-axis
 	 * @param angle the world rotation in radians. 
-	 * @param updateContacts if find contacts should be called internally, true by default. */
+	 * @param updateContacts Box2D SetTransform internally calls contactManager.FindNewContacts() method, sometimes multiple 
+	 * bodies are updated and it is undesirable to trigger Box2D to find new contacts each time, updateContacts should be 
+	 * false in those cases, true otherwise. */
 	public void setTransform (float x, float y, float angle, boolean updateContacts) {
 		jniSetTransform(addr, x, y, angle, updateContacts);
 	}

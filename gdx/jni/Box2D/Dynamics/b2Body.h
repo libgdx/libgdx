@@ -165,7 +165,7 @@ public:
 	/// Manipulating a body's transform may cause non-physical behavior.
 	/// @param position the world position of the body's local origin.
 	/// @param angle the world rotation in radians.
-	/// @param updateContacts if contactManager FindNewContacts() should be called or not, true by default.
+	/// @param updateContacts if contactManager FindNewContacts() should be called or not.
 	void SetTransform(const b2Vec2& position, float32 angle, bool updateContacts);
 
 	/// Get the body transform for the body's origin.
