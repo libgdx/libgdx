@@ -186,6 +186,11 @@ public interface GL11 extends GL10 {
 
 	public void glTexParameterfv (int target, int pname, FloatBuffer params);
 
+	/**
+	 * Use buffer  = 0 when you want none of your buffers are binded
+	 * @param target
+	 * @param buffer
+	 */
 	public void glBindBuffer (int target, int buffer);
 
 	public void glBufferData (int target, int size, Buffer data, int usage);
@@ -240,13 +245,26 @@ public interface GL11 extends GL10 {
 
 	public void glPointSizePointerOES (int type, int stride, Buffer pointer);
 
+	/**
+	 *@Note offset of this method is in byte such as type GL_FLOAT and offset 4 will have offset = 3*4  
+	 */
 	public void glVertexPointer (int size, int type, int stride, int pointer);
 
+	/**
+	 *@Note offset of this method is in byte such as type GL_FLOAT and offset 4 will have offset = 3*4  
+	 */
 	public void glColorPointer (int size, int type, int stride, int pointer);
 
 	public void glNormalPointer (int type, int stride, int pointer);
 
 	public void glTexCoordPointer (int size, int type, int stride, int pointer);
-
+	
+	/**
+	 * The indices is the offset of the VRAM GL_ELEMENT_ARRAY_BUFFER 
+	 * @param mode
+	 * @param count
+	 * @param type
+	 * @param indices
+	 */
 	public void glDrawElements (int mode, int count, int type, int indices);
 }

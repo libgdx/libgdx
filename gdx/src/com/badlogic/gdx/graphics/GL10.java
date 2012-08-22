@@ -427,6 +427,11 @@ public interface GL10 extends GLCommon {
 	public void glTranslatef (float x, float y, float z);
 
 	public void glVertexPointer (int size, int type, int stride, Buffer pointer);
-
+	
+	/**
+	 * glPolygonMode — select a polygon rasterization mode
+	 * @param face Specifies the polygons that mode applies to. Must be GL_FRONT for front-facing polygons, GL_BACK for back-facing polygons, or GL_FRONT_AND_BACK for front- and back-facing polygons.
+	 * @param mode Specifies how polygons will be rasterized. Accepted values are GL_POINT, GL_LINE, and GL_FILL. The initial value is GL_FILL for both front- and back-facing polygons.
+	 */
 	public void glPolygonMode (int face, int mode);
 }

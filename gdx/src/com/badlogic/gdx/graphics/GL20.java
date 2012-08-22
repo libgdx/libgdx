@@ -452,6 +452,12 @@ public interface GL20 extends GLCommon {
 
 	public void glGetRenderbufferParameteriv (int target, int pname, IntBuffer params);
 
+	/**
+	 * glGetShaderiv — return a parameter from a shader object
+	 * @param shader Specifies the shader object to be queried.
+	 * @param pname Specifies the object parameter. Accepted symbolic names are GL_SHADER_TYPE, GL_DELETE_STATUS, GL_COMPILE_STATUS, GL_INFO_LOG_LENGTH, GL_SHADER_SOURCE_LENGTH.
+	 * @param params Returns the requested object parameter.
+	 */
 	public void glGetShaderiv (int shader, int pname, IntBuffer params);
 
 	// deviates
@@ -501,7 +507,13 @@ public interface GL20 extends GLCommon {
 
 	public void glShaderBinary (int n, IntBuffer shaders, int binaryformat, Buffer binary, int length);
 
-	// Deviates
+	
+	/**
+	 * glShaderSource — Replaces the source code in a shader object
+	 * @param shader Specifies the handle of the shader object whose source code is to be replaced. (the shader handle id from glCreateShader)
+	 * @param string Specifies an array of pointers to strings containing the source code to be loaded into the shader.
+	 * @Note Deviates
+	 */
 	public void glShaderSource (int shader, String string);
 
 	public void glStencilFuncSeparate (int face, int func, int ref, int mask);
@@ -573,8 +585,26 @@ public interface GL20 extends GLCommon {
 	public void glVertexAttrib4f (int indx, float x, float y, float z, float w);
 
 	public void glVertexAttrib4fv (int indx, FloatBuffer values);
-
+	
+	/**
+	 * glVertexAttribPointer — define an array of generic vertex attribute data
+	 * @param indx Specifies the index of the generic vertex attribute to be modified.
+	 * @param size Specifies the number of components per generic vertex attribute. Must be 1, 2, 3, or 4. The initial value is 4.
+	 * @param type Specifies the data type of each component in the array. Symbolic constants GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT, GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, or GL_DOUBLE are accepted. The initial value is GL_FLOAT.
+	 * @param normalized Specifies whether fixed-point data values should be normalized (GL_TRUE) or converted directly as fixed-point values (GL_FALSE) when they are accessed.
+	 * @param stride Specifies the byte offset between consecutive generic vertex attributes. If stride is 0, the generic vertex attributes are understood to be tightly packed in the array. The initial value is 0.
+	 * @param ptr Specifies a pointer to the first component of the first generic vertex attribute in the array. The initial value is 0.
+	 */
 	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, Buffer ptr);
 
+	/**
+	 * glVertexAttribPointer — define an array of generic vertex attribute data
+	 * @param indx Specifies the index of the generic vertex attribute to be modified.
+	 * @param size Specifies the number of components per generic vertex attribute. Must be 1, 2, 3, or 4. The initial value is 4.
+	 * @param type Specifies the data type of each component in the array. Symbolic constants GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT, GL_UNSIGNED_SHORT, GL_INT, GL_UNSIGNED_INT, GL_FLOAT, or GL_DOUBLE are accepted. The initial value is GL_FLOAT.
+	 * @param normalized Specifies whether fixed-point data values should be normalized (GL_TRUE) or converted directly as fixed-point values (GL_FALSE) when they are accessed.
+	 * @param stride Specifies the byte offset between consecutive generic vertex attributes. If stride is 0, the generic vertex attributes are understood to be tightly packed in the array. The initial value is 0.
+	 * @param ptr Specifies a pointer to the first component of the first generic vertex attribute in the array. The initial value is 0.
+	 */
 	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, int ptr);
 }
