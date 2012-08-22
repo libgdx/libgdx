@@ -44,7 +44,7 @@ public class DragAndDropTest extends GdxTest {
 
 		DragAndDrop dragAndDrop = new DragAndDrop();
 		dragAndDrop.addSource(new Source(sourceImage) {
-			public Payload startDrag (InputEvent event, float x, float y, int pointer) {
+			public Payload dragStart (InputEvent event, float x, float y, int pointer) {
 				Payload payload = new Payload();
 				payload.setObject("Some payload!");
 
@@ -71,7 +71,7 @@ public class DragAndDropTest extends GdxTest {
 				getActor().setColor(Color.WHITE);
 			}
 
-			public void accept (Source source, Payload payload) {
+			public void drop (Source source, Payload payload) {
 				System.out.println("Accepted: " + payload.getObject());
 			}
 		});
@@ -85,7 +85,7 @@ public class DragAndDropTest extends GdxTest {
 				getActor().setColor(Color.WHITE);
 			}
 
-			public void accept (Source source, Payload payload) {
+			public void drop (Source source, Payload payload) {
 			}
 		});
 	}

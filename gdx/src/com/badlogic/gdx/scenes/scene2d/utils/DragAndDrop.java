@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
 /** Manages drag and drop operations through registered drag sources and drop targets.
@@ -18,14 +19,18 @@ public class DragAndDrop {
 	Array<Target> targets = new Array();
 	private float tapSquareSize = 8;
 	private int button;
+	float dragActorX = 14, dragActorY = -20;
 
 	public void addSource (final Source source) {
 		DragListener listener = new DragListener() {
 			public void dragStart (InputEvent event, float x, float y, int pointer) {
-				payload = source.startDrag(event, x, y, pointer);
+				payload = source.dragStart(event, getTouchDownX(), getTouchDownY(), pointer);
+				event.stop();
 			}
 
 			public void drag (InputEvent event, float x, float y, int pointer) {
+				Stage stage = event.getStage();
+
 				// Find target.
 				Target newTarget = null;
 				isValidTarget = false;
@@ -50,14 +55,20 @@ public class DragAndDrop {
 				if (dragActor != actor) {
 					if (dragActor != null) dragActor.remove();
 					dragActor = actor;
-					event.getStage().addActor(actor);
+					stage.addActor(actor);
 				}
-				actor.setPosition(event.getStageX(), event.getStageY() - actor.getHeight());
+				float actorX = event.getStageX() + dragActorX;
+				float actorY = event.getStageY() + dragActorY - actor.getHeight();
+				if (actorX < 0) actorX = 0;
+				if (actorY < 0) actorY = 0;
+				if (actorX + actor.getWidth() > stage.getWidth()) actorX = stage.getWidth() - actor.getWidth();
+				if (actorY + actor.getHeight() > stage.getHeight()) actorY = stage.getHeight() - actor.getHeight();
+				actor.setPosition(actorX, actorY);
 			}
 
 			public void dragStop (InputEvent event, float x, float y, int pointer) {
-				if (isValidTarget) target.accept(source, payload);
-				source.stopDrag(event, x, y, pointer, isValidTarget ? target : null);
+				if (isValidTarget) target.drop(source, payload);
+				source.dragStop(event, x, y, pointer, isValidTarget ? target : null);
 				DragAndDrop.this.source = null;
 				payload = null;
 				if (target != null) target.reset();
@@ -69,7 +80,7 @@ public class DragAndDrop {
 		};
 		listener.setTapSquareSize(tapSquareSize);
 		listener.setButton(button);
-		source.actor.addListener(listener);
+		source.actor.addCaptureListener(listener);
 	}
 
 	public void addTarget (Target target) {
@@ -86,6 +97,11 @@ public class DragAndDrop {
 		this.button = button;
 	}
 
+	public void setDragActorPosition (float dragActorX, float dragActorY) {
+		this.dragActorX = dragActorX;
+		this.dragActorY = dragActorY;
+	}
+
 	/** A target where a payload can be dragged from.
 	 * @author Nathan Sweet */
 	static abstract public class Source {
@@ -96,10 +112,10 @@ public class DragAndDrop {
 		}
 
 		/** @return May be null. */
-		abstract public Payload startDrag (InputEvent event, float x, float y, int pointer);
+		abstract public Payload dragStart (InputEvent event, float x, float y, int pointer);
 
-		/** @param target null if no target accepted the drop. */
-		public void stopDrag (InputEvent event, float x, float y, int pointer, Target target) {
+		/** @param target null if not dropped on a valid target. */
+		public void dragStop (InputEvent event, float x, float y, int pointer, Target target) {
 		}
 
 		public Actor getActor () {
@@ -124,14 +140,15 @@ public class DragAndDrop {
 		public void reset () {
 		}
 
-		abstract public void accept (Source source, Payload payload);
+		abstract public void drop (Source source, Payload payload);
 
 		public Actor getActor () {
 			return actor;
 		}
 	}
 
-	/** The payload of a drag and drop operation. Actors can be provided to follow the cursor and change when over a target. */
+	/** The payload of a drag and drop operation. Actors can be optionally provided to follow the cursor and change when over a
+	 * target. */
 	static public class Payload {
 		Actor dragActor, validDragActor, invalidDragActor;
 		Object object;
