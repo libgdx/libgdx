@@ -24,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 
-/** Detects tap, longPress, fling, pan, zoom, and pinch gestures on an actor.
+/** Detects tap, long press, fling, pan, zoom, and pinch gestures on an actor.
  * @see GestureDetector
  * @author Nathan Sweet */
 public class ActorGestureListener implements EventListener {
