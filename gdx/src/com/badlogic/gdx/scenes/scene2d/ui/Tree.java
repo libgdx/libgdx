@@ -30,6 +30,7 @@ public class Tree extends WidgetGroup {
 	private boolean sizeInvalid = true;
 	private Node foundNode;
 	Node overNode;
+	private ClickListener clickListener;
 
 	public Tree (Skin skin) {
 		this(skin.get(TreeStyle.class));
@@ -45,10 +46,11 @@ public class Tree extends WidgetGroup {
 	}
 
 	private void initialize () {
-		addListener(new ClickListener() {
+		addListener(clickListener = new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
 				Node node = getNodeAt(y);
 				if (node == null) return;
+				if (node != getNodeAt(getTouchDownY())) return;
 				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
 					// Select range (shift/ctrl).
 					float low = selectedNodes.first().rightActor.getY();
@@ -311,6 +313,10 @@ public class Tree extends WidgetGroup {
 		return overNode;
 	}
 
+	public void setOverNode (Node overNode) {
+		this.overNode = overNode;
+	}
+
 	/** Sets the amount of horizontal space between the nodes and the left and right edges of the tree. */
 	public void setPadding (float padding) {
 		this.padding = padding;
@@ -377,6 +383,11 @@ public class Tree extends WidgetGroup {
 			node.setExpanded(true);
 			expandAll(node.children);
 		}
+	}
+
+	/** Returns the click listener the tree uses for clicking on nodes and the over node. */
+	public ClickListener getClickListener () {
+		return clickListener;
 	}
 
 	static public class Node {
