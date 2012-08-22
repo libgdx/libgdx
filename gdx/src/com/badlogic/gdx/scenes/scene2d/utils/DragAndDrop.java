@@ -29,6 +29,7 @@ public class DragAndDrop {
 			}
 
 			public void drag (InputEvent event, float x, float y, int pointer) {
+				if (payload == null) return;
 				Stage stage = event.getStage();
 
 				// Find target.
@@ -67,6 +68,7 @@ public class DragAndDrop {
 			}
 
 			public void dragStop (InputEvent event, float x, float y, int pointer) {
+				if (payload == null) return;
 				if (isValidTarget) target.drop(source, payload);
 				source.dragStop(event, x, y, pointer, isValidTarget ? target : null);
 				DragAndDrop.this.source = null;
