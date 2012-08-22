@@ -49,6 +49,7 @@ public class Tree extends WidgetGroup {
 			public void clicked (InputEvent event, float x, float y) {
 				Node node = getNodeAt(y);
 				if (node == null) return;
+				if (node != getNodeAt(getTouchDownY())) return;
 				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
 					// Select range (shift/ctrl).
 					float low = selectedNodes.first().rightActor.getY();
@@ -309,6 +310,10 @@ public class Tree extends WidgetGroup {
 
 	public Node getOverNode () {
 		return overNode;
+	}
+
+	public void setOverNode (Node overNode) {
+		this.overNode = overNode;
 	}
 
 	/** Sets the amount of horizontal space between the nodes and the left and right edges of the tree. */
