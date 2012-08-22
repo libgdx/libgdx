@@ -30,6 +30,7 @@ public class Tree extends WidgetGroup {
 	private boolean sizeInvalid = true;
 	private Node foundNode;
 	Node overNode;
+	private ClickListener clickListener;
 
 	public Tree (Skin skin) {
 		this(skin.get(TreeStyle.class));
@@ -45,7 +46,7 @@ public class Tree extends WidgetGroup {
 	}
 
 	private void initialize () {
-		addListener(new ClickListener() {
+		addListener(clickListener = new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
 				Node node = getNodeAt(y);
 				if (node == null) return;
@@ -382,6 +383,11 @@ public class Tree extends WidgetGroup {
 			node.setExpanded(true);
 			expandAll(node.children);
 		}
+	}
+
+	/** Returns the click listener the tree uses for clicking on nodes and the over node. */
+	public ClickListener getClickListener () {
+		return clickListener;
 	}
 
 	static public class Node {
