@@ -445,6 +445,12 @@ public interface GL20 extends GLCommon {
 
 	public void glGetFramebufferAttachmentParameteriv (int target, int attachment, int pname, IntBuffer params);
 
+	/**
+	 * glGetProgramiv — return a parameter from a program object
+	 * @param program Specifies the program object to be queried.
+	 * @param pname Specifies the object parameter. Accepted symbolic names are GL_DELETE_STATUS, GL_LINK_STATUS, GL_VALIDATE_STATUS, GL_INFO_LOG_LENGTH, GL_ATTACHED_SHADERS, GL_ACTIVE_ATTRIBUTES, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, GL_ACTIVE_UNIFORMS, GL_ACTIVE_UNIFORM_MAX_LENGTH.
+	 * @param params Returns the requested object parameter.
+	 */
 	public void glGetProgramiv (int program, int pname, IntBuffer params);
 
 	// deviates
@@ -475,6 +481,13 @@ public interface GL20 extends GLCommon {
 
 	public void glGetUniformiv (int program, int location, IntBuffer params);
 
+	/**
+	 * glGetUniformLocation — Returns the location of a uniform variable
+	 * @param program Specifies the program object to be queried.
+	 * @param name Points to a null terminated string containing the name of the uniform variable whose location is to be queried.
+	 * @return the location of a uniform variable
+	 * @Note this is heavy function you should cache your result
+	 */
 	public int glGetUniformLocation (int program, String name);
 
 	public void glGetVertexAttribfv (int index, int pname, FloatBuffer params);
@@ -528,42 +541,143 @@ public interface GL20 extends GLCommon {
 
 	public void glTexParameteriv (int target, int pname, IntBuffer params);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 */
 	public void glUniform1f (int location, float x);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 * @param count Specifies the number of elements that are to be modified. This should be 1 if the targeted uniform variable is not an array, and 1 or more if it is an array.
+	 * @param v Specifies a pointer to an array of count values that will be used to update the specified uniform variable.
+	 */
 	public void glUniform1fv (int location, int count, FloatBuffer v);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 */
 	public void glUniform1i (int location, int x);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 * @param count Specifies the number of elements that are to be modified. This should be 1 if the targeted uniform variable is not an array, and 1 or more if it is an array.
+	 * @param v Specifies a pointer to an array of count values that will be used to update the specified uniform variable.
+	 */
 	public void glUniform1iv (int location, int count, IntBuffer v);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 */
 	public void glUniform2f (int location, float x, float y);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 * @param count Specifies the number of elements that are to be modified. This should be 1 if the targeted uniform variable is not an array, and 1 or more if it is an array.
+	 * @param v Specifies a pointer to an array of count values that will be used to update the specified uniform variable.
+	 */
 	public void glUniform2fv (int location, int count, FloatBuffer v);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 */
 	public void glUniform2i (int location, int x, int y);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 * @param count Specifies the number of elements that are to be modified. This should be 1 if the targeted uniform variable is not an array, and 1 or more if it is an array.
+	 * @param v Specifies a pointer to an array of count values that will be used to update the specified uniform variable.
+	 */
 	public void glUniform2iv (int location, int count, IntBuffer v);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 */
 	public void glUniform3f (int location, float x, float y, float z);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 * @param count Specifies the number of elements that are to be modified. This should be 1 if the targeted uniform variable is not an array, and 1 or more if it is an array.
+	 * @param v Specifies a pointer to an array of count values that will be used to update the specified uniform variable.
+	 */
 	public void glUniform3fv (int location, int count, FloatBuffer v);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 */
 	public void glUniform3i (int location, int x, int y, int z);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 * @param count Specifies the number of elements that are to be modified. This should be 1 if the targeted uniform variable is not an array, and 1 or more if it is an array.
+	 * @param v Specifies a pointer to an array of count values that will be used to update the specified uniform variable.
+	 */
 	public void glUniform3iv (int location, int count, IntBuffer v);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 */
 	public void glUniform4f (int location, float x, float y, float z, float w);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 * @param count Specifies the number of elements that are to be modified. This should be 1 if the targeted uniform variable is not an array, and 1 or more if it is an array.
+	 * @param v Specifies a pointer to an array of count values that will be used to update the specified uniform variable.
+	 */
 	public void glUniform4fv (int location, int count, FloatBuffer v);
-
+	
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 */
 	public void glUniform4i (int location, int x, int y, int z, int w);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location location Specifies the location of the uniform value to be modified.
+	 * @param count Specifies the number of elements that are to be modified. This should be 1 if the targeted uniform variable is not an array, and 1 or more if it is an array.
+	 * @param v Specifies a pointer to an array of count values that will be used to update the specified uniform variable.
+	 */
 	public void glUniform4iv (int location, int count, IntBuffer v);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location Specifies the location of the uniform value to be modified.
+	 * @param count Specifies the number of elements that are to be modified. This should be 1 if the targeted uniform variable is not an array, and 1 or more if it is an array.
+	 * @param transpose Specifies whether to transpose the matrix as the values are loaded into the uniform variable.
+	 * @param value Specifies a pointer to an array of count values that will be used to update the specified uniform variable.
+	 */
 	public void glUniformMatrix2fv (int location, int count, boolean transpose, FloatBuffer value);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location Specifies the location of the uniform value to be modified.
+	 * @param count Specifies the number of elements that are to be modified. This should be 1 if the targeted uniform variable is not an array, and 1 or more if it is an array.
+	 * @param transpose Specifies whether to transpose the matrix as the values are loaded into the uniform variable.
+	 * @param value Specifies a pointer to an array of count values that will be used to update the specified uniform variable.
+	 */
 	public void glUniformMatrix3fv (int location, int count, boolean transpose, FloatBuffer value);
 
+	/**
+	 * glUniform — Specify the value of a uniform variable for the current program object
+	 * @param location Specifies the location of the uniform value to be modified.
+	 * @param count Specifies the number of elements that are to be modified. This should be 1 if the targeted uniform variable is not an array, and 1 or more if it is an array.
+	 * @param transpose Specifies whether to transpose the matrix as the values are loaded into the uniform variable.
+	 * @param value Specifies a pointer to an array of count values that will be used to update the specified uniform variable.
+	 */
 	public void glUniformMatrix4fv (int location, int count, boolean transpose, FloatBuffer value);
 
 	public void glUseProgram (int program);
