@@ -53,8 +53,8 @@ public class Tree extends WidgetGroup {
 				if (node != getNodeAt(getTouchDownY())) return;
 				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
 					// Select range (shift/ctrl).
-					float low = selectedNodes.first().rightActor.getY();
-					float high = node.rightActor.getY();
+					float low = selectedNodes.first().actor.getY();
+					float high = node.actor.getY();
 					if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && !Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))
 						selectedNodes.clear();
 					if (low > high)
@@ -69,7 +69,7 @@ public class Tree extends WidgetGroup {
 				if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && !Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
 					if (node.children.size > 0) {
 						// Toggle expanded.
-						float rowX = node.rightActor.getX();
+						float rowX = node.actor.getX();
 						if (node.icon != null) rowX -= iconSpacing + node.icon.getMinWidth();
 						if (x < rowX) {
 							node.setExpanded(!node.expanded);
@@ -158,7 +158,7 @@ public class Tree extends WidgetGroup {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			float rowWidth = indent + iconSpacing;
-			Actor actor = node.rightActor;
+			Actor actor = node.actor;
 			if (actor instanceof Layout) {
 				Layout layout = (Layout)actor;
 				rowWidth += layout.getPrefWidth();
@@ -171,16 +171,6 @@ public class Tree extends WidgetGroup {
 			if (node.icon != null) {
 				rowWidth += iconSpacing * 2 + node.icon.getMinWidth();
 				node.height = Math.max(node.height, node.icon.getMinHeight());
-			}
-			actor = node.leftActor;
-			if (actor instanceof Layout) {
-				Layout layout = (Layout)actor;
-				leftColumnWidth = Math.max(leftColumnWidth, layout.getPrefWidth() + iconSpacing);
-				node.height = Math.max(node.height, layout.getPrefHeight());
-				layout.pack();
-			} else if (actor != null) {
-				leftColumnWidth = Math.max(leftColumnWidth, actor.getWidth() + iconSpacing);
-				node.height = Math.max(node.height, actor.getHeight());
 			}
 			prefWidth = Math.max(prefWidth, rowWidth);
 			prefHeight -= node.height + ySpacing;
@@ -198,12 +188,11 @@ public class Tree extends WidgetGroup {
 		Drawable plus = style.plus, minus = style.minus;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			Actor actor = node.rightActor;
+			Actor actor = node.actor;
 			float x = indent;
 			if (node.icon != null) x += node.icon.getMinWidth();
 			y -= node.height;
-			node.rightActor.setPosition(x, y);
-			if (node.leftActor != null) node.leftActor.setPosition(padding, y);
+			node.actor.setPosition(x, y);
 			y -= ySpacing;
 			if (node.expanded) y = layout(node.children, indent + indentSpacing, y);
 		}
@@ -224,7 +213,7 @@ public class Tree extends WidgetGroup {
 		float x = getX(), y = getY();
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			Actor actor = node.rightActor;
+			Actor actor = node.actor;
 
 			if (selectedNodes.contains(node, true) && style.selection != null)
 				style.selection.draw(batch, x, y + actor.getY() - ySpacing / 2, getWidth(), node.height + ySpacing);
@@ -233,7 +222,7 @@ public class Tree extends WidgetGroup {
 
 			if (node.icon != null) {
 				float iconY = actor.getY() + node.height / 2 - node.icon.getMinHeight() / 2;
-				node.icon.draw(batch, x + node.rightActor.getX() - iconSpacing - node.icon.getMinWidth(), y + iconY,
+				node.icon.draw(batch, x + node.actor.getX() - iconSpacing - node.icon.getMinWidth(), y + iconY,
 					node.icon.getMinWidth(), node.icon.getMinHeight());
 			}
 
@@ -273,8 +262,8 @@ public class Tree extends WidgetGroup {
 		float ySpacing = this.ySpacing;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			if (node.rightActor.getY() < low) break;
-			if (node.rightActor.getY() <= high) selectedNodes.add(node);
+			if (node.actor.getY() < low) break;
+			if (node.actor.getY() <= high) selectedNodes.add(node);
 			if (node.expanded) selectNodes(node.children, low, high);
 		}
 	}
@@ -391,7 +380,7 @@ public class Tree extends WidgetGroup {
 	}
 
 	static public class Node {
-		Actor leftActor, rightActor;
+		Actor actor;
 		Node parent;
 		final Array<Node> children = new Array(0);
 		boolean expanded;
@@ -401,14 +390,7 @@ public class Tree extends WidgetGroup {
 
 		public Node (Actor rightActor) {
 			if (rightActor == null) throw new IllegalArgumentException("rightActor cannot be null.");
-			this.rightActor = rightActor;
-		}
-
-		/** @@param leftActor May be null. */
-		public Node (Actor leftActor, Actor rightActor) {
-			if (rightActor == null) throw new IllegalArgumentException("rightActor cannot be null.");
-			this.rightActor = rightActor;
-			this.leftActor = leftActor;
+			this.actor = rightActor;
 		}
 
 		public void setExpanded (boolean expanded) {
@@ -427,16 +409,14 @@ public class Tree extends WidgetGroup {
 		}
 
 		void addToTree (Tree tree) {
-			if (leftActor != null) tree.addActor(leftActor);
-			tree.addActor(rightActor);
+			tree.addActor(actor);
 			if (!expanded) return;
 			for (int i = 0, n = children.size; i < n; i++)
 				children.get(i).addToTree(tree);
 		}
 
 		void removeFromTree (Tree tree) {
-			if (leftActor != null) tree.removeActor(leftActor);
-			tree.removeActor(rightActor);
+			tree.removeActor(actor);
 			if (!expanded) return;
 			for (int i = 0, n = children.size; i < n; i++)
 				children.get(i).removeFromTree(tree);
@@ -482,13 +462,13 @@ public class Tree extends WidgetGroup {
 
 		/** Returns the tree this node is currently in, or null. */
 		public Tree getTree () {
-			Group parent = rightActor.getParent();
+			Group parent = actor.getParent();
 			if (!(parent instanceof Tree)) return null;
 			return (Tree)parent;
 		}
 
 		public Actor getActor () {
-			return rightActor;
+			return actor;
 		}
 
 		public boolean isExpanded () {
@@ -506,22 +486,6 @@ public class Tree extends WidgetGroup {
 		/** Sets an icon that will be drawn to the left of the right actor. */
 		public void setIcon (Drawable icon) {
 			this.icon = icon;
-		}
-
-		public Actor getLeftActor () {
-			return leftActor;
-		}
-
-		public void setLeftActor (Actor leftActor) {
-			this.leftActor = leftActor;
-		}
-
-		public Actor getRightActor () {
-			return rightActor;
-		}
-
-		public void setRightActor (Actor rightActor) {
-			this.rightActor = rightActor;
 		}
 
 		public Object getObject () {
