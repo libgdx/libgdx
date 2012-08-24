@@ -452,7 +452,12 @@ public class Hiero extends JFrame {
 				FileDialog dialog = new FileDialog(Hiero.this, "Choose TrueType font file", FileDialog.LOAD);
 				dialog.setLocationRelativeTo(null);
 				dialog.setFile("*.ttf");
+				dialog.setDirectory(prefs.get("dir.font", ""));
 				dialog.setVisible(true);
+				if (dialog.getDirectory() != null) {
+					prefs.put("dir.font", dialog.getDirectory());
+				}
+
 				String fileName = dialog.getFile();
 				if (fileName == null) return;
 				fontFileText.setText(new File(dialog.getDirectory(), fileName).getAbsolutePath());
@@ -507,7 +512,12 @@ public class Hiero extends JFrame {
 				FileDialog dialog = new FileDialog(Hiero.this, "Open Hiero settings file", FileDialog.LOAD);
 				dialog.setLocationRelativeTo(null);
 				dialog.setFile("*.hiero");
+				dialog.setDirectory(prefs.get("dir.open", ""));
 				dialog.setVisible(true);
+				if (dialog.getDirectory() != null) {
+					prefs.put("dir.open", dialog.getDirectory());
+				}
+
 				String fileName = dialog.getFile();
 				if (fileName == null) return;
 				open(new File(dialog.getDirectory(), fileName));
@@ -520,7 +530,12 @@ public class Hiero extends JFrame {
 				FileDialog dialog = new FileDialog(Hiero.this, "Save Hiero settings file", FileDialog.SAVE);
 				dialog.setLocationRelativeTo(null);
 				dialog.setFile("*.hiero");
+				dialog.setDirectory(prefs.get("dir.save", ""));
 				dialog.setVisible(true);
+				if (dialog.getDirectory() != null) {
+					prefs.put("dir.save", dialog.getDirectory());
+				}
+
 				String fileName = dialog.getFile();
 				if (fileName == null) return;
 				if (!fileName.endsWith(".hiero")) fileName += ".hiero";
@@ -539,7 +554,12 @@ public class Hiero extends JFrame {
 				FileDialog dialog = new FileDialog(Hiero.this, "Save BMFont files", FileDialog.SAVE);
 				dialog.setLocationRelativeTo(null);
 				dialog.setFile("*.fnt");
+				dialog.setDirectory(prefs.get("dir.savebm", ""));
 				dialog.setVisible(true);
+				if (dialog.getDirectory() != null) {
+					prefs.put("dir.savebm", dialog.getDirectory());
+				}
+
 				String fileName = dialog.getFile();
 				if (fileName == null) return;
 				saveBmFontFile = new File(dialog.getDirectory(), fileName);
