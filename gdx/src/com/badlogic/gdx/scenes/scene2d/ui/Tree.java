@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 
-/** A tree widget where each node has a left actor, icon, right actor, and child nodes.
+/** A tree widget where each node has an icon, actor, and child nodes.
  * <p>
  * The preferred size of the tree is determined by the preferred size of the actors for the expanded nodes.
  * <p>
@@ -86,13 +86,13 @@ public class Tree extends WidgetGroup {
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
-				overNode = getNodeAt(y);
+				setOverNode(getNodeAt(y));
 				return false;
 			}
 
 			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
 				super.exit(event, x, y, pointer, toActor);
-				if (toActor == null || !toActor.isDescendant(Tree.this)) overNode = null;
+				if (toActor == null || !toActor.isDescendant(Tree.this)) setOverNode(null);
 			}
 		});
 	}
@@ -129,7 +129,7 @@ public class Tree extends WidgetGroup {
 		super.clear();
 		rootNodes.clear();
 		selectedNodes.clear();
-		overNode = null;
+		setOverNode(null);
 	}
 
 	public Array<Node> getNodes () {
@@ -204,7 +204,7 @@ public class Tree extends WidgetGroup {
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if (style.background != null) style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		draw(batch, rootNodes, leftColumnWidth);
-		super.draw(batch, parentAlpha); // Draw left and right actors.
+		super.draw(batch, parentAlpha); // Draw actors.
 	}
 
 	/** Draws selection, icons, and expand icons. */
@@ -388,9 +388,9 @@ public class Tree extends WidgetGroup {
 		float height;
 		Object object;
 
-		public Node (Actor rightActor) {
-			if (rightActor == null) throw new IllegalArgumentException("rightActor cannot be null.");
-			this.actor = rightActor;
+		public Node (Actor actor) {
+			if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
+			this.actor = actor;
 		}
 
 		public void setExpanded (boolean expanded) {
@@ -408,14 +408,16 @@ public class Tree extends WidgetGroup {
 			tree.invalidateHierarchy();
 		}
 
-		void addToTree (Tree tree) {
+		/** Called to add the actor to the tree when the node's parent is expanded. */
+		protected void addToTree (Tree tree) {
 			tree.addActor(actor);
 			if (!expanded) return;
 			for (int i = 0, n = children.size; i < n; i++)
 				children.get(i).addToTree(tree);
 		}
 
-		void removeFromTree (Tree tree) {
+		/** Called to remove the actor from the tree when the node's parent is collapsed. */
+		protected void removeFromTree (Tree tree) {
 			tree.removeActor(actor);
 			if (!expanded) return;
 			for (int i = 0, n = children.size; i < n; i++)
@@ -483,7 +485,7 @@ public class Tree extends WidgetGroup {
 			return parent;
 		}
 
-		/** Sets an icon that will be drawn to the left of the right actor. */
+		/** Sets an icon that will be drawn to the left of the actor. */
 		public void setIcon (Drawable icon) {
 			this.icon = icon;
 		}
