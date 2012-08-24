@@ -16,6 +16,34 @@
 
 package com.badlogic.gdx.tools.hiero;
 
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
+import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_PROJECTION;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_COORD_ARRAY;
+import static org.lwjgl.opengl.GL11.GL_VERTEX_ARRAY;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glClearDepth;
+import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnableClientState;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glMatrixMode;
+import static org.lwjgl.opengl.GL11.glOrtho;
+import static org.lwjgl.opengl.GL11.glScissor;
+import static org.lwjgl.opengl.GL11.glTexCoord2f;
+import static org.lwjgl.opengl.GL11.glVertex3f;
+import static org.lwjgl.opengl.GL11.glViewport;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -102,8 +130,6 @@ import com.badlogic.gdx.tools.hiero.unicodefont.effects.OutlineWobbleEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.OutlineZigzagEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ShadowEffect;
 
-import static org.lwjgl.opengl.GL11.*;
-
 /** A tool to visualize settings for {@link UnicodeFont} and to export BMFont files for use with {@link BitmapFont}.
  * @author Nathan Sweet */
 public class Hiero extends JFrame {
@@ -189,6 +215,7 @@ public class Hiero extends JFrame {
 		new EffectPanel(colorEffect);
 
 		addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowClosed (WindowEvent event) {
 				System.exit(0);
 				// Gdx.app.quit();
@@ -317,6 +344,7 @@ public class Hiero extends JFrame {
 
 	private void initializeEvents () {
 		fontList.addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged (ListSelectionEvent evt) {
 				if (evt.getValueIsAdjusting()) return;
 				prefs.put("system.font", (String)fontList.getSelectedValue());
@@ -325,10 +353,12 @@ public class Hiero extends JFrame {
 		});
 
 		class FontUpdateListener implements ChangeListener, ActionListener {
+			@Override
 			public void stateChanged (ChangeEvent evt) {
 				updateFont();
 			}
 
+			@Override
 			public void actionPerformed (ActionEvent evt) {
 				updateFont();
 			}
@@ -340,6 +370,7 @@ public class Hiero extends JFrame {
 					((JSpinner.DefaultEditor)spinner.getEditor()).getTextField().addKeyListener(new KeyAdapter() {
 						String lastText;
 
+						@Override
 						public void keyReleased (KeyEvent evt) {
 							JFormattedTextField textField = ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField();
 							String text = textField.getText();
@@ -372,25 +403,30 @@ public class Hiero extends JFrame {
 		nativeRadio.addActionListener(listener);
 
 		sampleTextRadio.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent evt) {
 				glyphCachePanel.setVisible(false);
 			}
 		});
 		glyphCacheRadio.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent evt) {
 				glyphCachePanel.setVisible(true);
 			}
 		});
 
 		fontFileText.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
 			public void removeUpdate (DocumentEvent evt) {
 				changed();
 			}
 
+			@Override
 			public void insertUpdate (DocumentEvent evt) {
 				changed();
 			}
 
+			@Override
 			public void changedUpdate (DocumentEvent evt) {
 				changed();
 			}
@@ -404,12 +440,14 @@ public class Hiero extends JFrame {
 		});
 
 		fontFileRadio.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent evt) {
 				if (fontList.isEnabled()) systemFontRadio.setSelected(true);
 			}
 		});
 
 		browseButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent evt) {
 				FileDialog dialog = new FileDialog(Hiero.this, "Choose TrueType font file", FileDialog.LOAD);
 				dialog.setLocationRelativeTo(null);
@@ -422,6 +460,7 @@ public class Hiero extends JFrame {
 		});
 
 		backgroundColorLabel.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked (MouseEvent evt) {
 				java.awt.Color color = JColorChooser.showDialog(null, "Choose a background color",
 					EffectUtil.fromString(prefs.get("background", "000000")));
@@ -433,6 +472,7 @@ public class Hiero extends JFrame {
 		});
 
 		effectsList.addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged (ListSelectionEvent evt) {
 				ConfigurableEffect selectedEffect = (ConfigurableEffect)effectsList.getSelectedValue();
 				boolean enabled = selectedEffect != null;
@@ -448,18 +488,21 @@ public class Hiero extends JFrame {
 		});
 
 		effectsList.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked (MouseEvent evt) {
 				if (evt.getClickCount() == 2 && addEffectButton.isEnabled()) addEffectButton.doClick();
 			}
 		});
 
 		addEffectButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent evt) {
 				new EffectPanel((ConfigurableEffect)effectsList.getSelectedValue());
 			}
 		});
 
 		openMenuItem.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent evt) {
 				FileDialog dialog = new FileDialog(Hiero.this, "Open Hiero settings file", FileDialog.LOAD);
 				dialog.setLocationRelativeTo(null);
@@ -472,6 +515,7 @@ public class Hiero extends JFrame {
 		});
 
 		saveMenuItem.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent evt) {
 				FileDialog dialog = new FileDialog(Hiero.this, "Save Hiero settings file", FileDialog.SAVE);
 				dialog.setLocationRelativeTo(null);
@@ -490,6 +534,7 @@ public class Hiero extends JFrame {
 		});
 
 		saveBMFontMenuItem.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent evt) {
 				FileDialog dialog = new FileDialog(Hiero.this, "Save BMFont files", FileDialog.SAVE);
 				dialog.setLocationRelativeTo(null);
@@ -502,18 +547,21 @@ public class Hiero extends JFrame {
 		});
 
 		exitMenuItem.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent evt) {
 				dispose();
 			}
 		});
 
 		sampleNeheButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent evt) {
 				sampleTextPane.setText(NEHE);
 			}
 		});
 
 		sampleAsciiButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent evt) {
 				StringBuilder buffer = new StringBuilder();
 				buffer.append(NEHE);
@@ -674,6 +722,7 @@ public class Hiero extends JFrame {
 				glyphCachePanel = new JPanel() {
 					private int maxWidth;
 
+					@Override
 					public Dimension getPreferredSize () {
 						// Keep glyphCachePanel width from ever going down so the CanvasGameContainer doesn't change sizes and flicker.
 						Dimension size = super.getPreferredSize();
@@ -951,17 +1000,21 @@ public class Hiero extends JFrame {
 			{
 				JPanel titlePanel = new JPanel();
 				titlePanel.setLayout(new LayoutManager() {
+					@Override
 					public void removeLayoutComponent (Component comp) {
 					}
 
+					@Override
 					public Dimension preferredLayoutSize (Container parent) {
 						return null;
 					}
 
+					@Override
 					public Dimension minimumLayoutSize (Container parent) {
 						return null;
 					}
 
+					@Override
 					public void layoutContainer (Container parent) {
 						Dimension buttonSize = deleteButton.getPreferredSize();
 						deleteButton.setBounds(getWidth() - buttonSize.width - 5, 0, buttonSize.width, buttonSize.height);
@@ -971,6 +1024,7 @@ public class Hiero extends JFrame {
 							labelSize.height);
 					}
 
+					@Override
 					public void addLayoutComponent (String name, Component comp) {
 					}
 				});
@@ -1003,6 +1057,7 @@ public class Hiero extends JFrame {
 			}
 
 			deleteButton.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed (ActionEvent evt) {
 					remove();
 					updateFont();
@@ -1043,14 +1098,17 @@ public class Hiero extends JFrame {
 				valueValueLabel.setText(value.toString());
 
 			valueValueLabel.addMouseListener(new MouseAdapter() {
+				@Override
 				public void mouseEntered (MouseEvent evt) {
 					valueValueLabel.setBackground(selectedColor);
 				}
 
+				@Override
 				public void mouseExited (MouseEvent evt) {
 					valueValueLabel.setBackground(null);
 				}
 
+				@Override
 				public void mouseClicked (MouseEvent evt) {
 					Object oldObject = value.getObject();
 					value.showDialog();
@@ -1067,6 +1125,7 @@ public class Hiero extends JFrame {
 			return effect;
 		}
 
+		@Override
 		public boolean equals (Object obj) {
 			if (this == obj) return true;
 			if (obj == null) return false;
@@ -1096,9 +1155,11 @@ public class Hiero extends JFrame {
 		public void close () {
 			final long endTime = System.currentTimeMillis();
 			new Thread(new Runnable() {
+				@Override
 				public void run () {
 					if (endTime - startTime < minMillis) {
 						addMouseListener(new MouseAdapter() {
+							@Override
 							public void mousePressed (MouseEvent evt) {
 								dispose();
 							}
@@ -1109,6 +1170,7 @@ public class Hiero extends JFrame {
 						}
 					}
 					EventQueue.invokeLater(new Runnable() {
+						@Override
 						public void run () {
 							dispose();
 						}
@@ -1150,6 +1212,7 @@ public class Hiero extends JFrame {
 			glLoadIdentity();
 		}
 
+		@Override
 		public void render () {
 			int viewWidth = Gdx.graphics.getWidth();
 			int viewHeight = Gdx.graphics.getHeight();
