@@ -103,6 +103,10 @@ public class DragAndDrop {
 		this.dragActorX = dragActorX;
 		this.dragActorY = dragActorY;
 	}
+	
+	public boolean isDragging () {
+		return payload != null;
+	}
 
 	/** A target where a payload can be dragged from.
 	 * @author Nathan Sweet */
