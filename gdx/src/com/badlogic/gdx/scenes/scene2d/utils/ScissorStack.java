@@ -64,7 +64,7 @@ public class ScissorStack {
 			scissor.height = Math.max(1, maxY - minY);
 		}
 		scissors.add(scissor);
-		Gdx.gl.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
+		Gdx.gl.glScissor(Math.round(scissor.x), Math.round(scissor.y), Math.round(scissor.width), Math.round(scissor.height));
 		return true;
 	}
 
