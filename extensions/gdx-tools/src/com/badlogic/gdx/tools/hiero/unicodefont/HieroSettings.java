@@ -89,16 +89,16 @@ public class HieroSettings {
 				} else if (name.startsWith("effect.")) {
 					// Set an effect value on the last added effect.
 					name = name.substring(7);
-					// ConfigurableEffect effect = (ConfigurableEffect)effects.get(effects.size() - 1);
-					// List values = effect.getValues();
-					// for (Iterator iter = values.iterator(); iter.hasNext();) {
-					// Value effectValue = (Value)iter.next();
-					// if (effectValue.getName().equals(name)) {
-					// effectValue.setString(value);
-					// break;
-					// }
-					// }
-					// effect.setValues(values);
+					ConfigurableEffect effect = (ConfigurableEffect)effects.get(effects.size() - 1);
+					List values = effect.getValues();
+					for (Iterator iter = values.iterator(); iter.hasNext();) {
+						Value effectValue = (Value)iter.next();
+						if (effectValue.getName().equals(name)) {
+							effectValue.setString(value);
+							break;
+						}
+					}
+					effect.setValues(values);
 				}
 			}
 			reader.close();
