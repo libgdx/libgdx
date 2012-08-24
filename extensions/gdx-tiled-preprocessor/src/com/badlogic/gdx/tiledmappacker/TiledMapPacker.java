@@ -38,9 +38,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.tiled.TileAtlas;
 import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
@@ -89,11 +86,11 @@ public class TiledMapPacker {
 	 *           tileset will be output to "C:\mydir\" and the maps will be in "C:\mydir\maps".
 	 * @param settings the settings used in the TexturePacker */
 	public void processMap (File inputDir, File outputDir, Settings settings) throws IOException {
-		FileHandle inputDirHandle = Gdx.files.absolute(inputDir.getAbsolutePath());
+		FileHandle inputDirHandle = new FileHandle(inputDir.getAbsolutePath());
 		File[] files = inputDir.listFiles(new TmxFilter());
 
 		for (File file : files) {
-			map = TiledLoader.createMap(Gdx.files.absolute(file.getAbsolutePath()));
+			map = TiledLoader.createMap(new FileHandle(file.getAbsolutePath()));
 
 			for (TileSet set : map.tileSets) {
 				if (!processedTileSets.contains(set.imageName)) {
@@ -326,32 +323,6 @@ public class TiledMapPacker {
 		settings.duplicatePadding = true;
 
 		// Create a new JoglApplication so that Gdx stuff works properly
-		new LwjglApplication(new ApplicationListener() {
-			@Override
-			public void create () {
-			}
-
-			@Override
-			public void dispose () {
-			}
-
-			@Override
-			public void pause () {
-			}
-
-			@Override
-			public void render () {
-			}
-
-			@Override
-			public void resize (int width, int height) {
-			}
-
-			@Override
-			public void resume () {
-			}
-		}, "", 0, 0, false);
-
 		TiledMapPacker packer = new TiledMapPacker();
 
 		if (args.length != 2) {
