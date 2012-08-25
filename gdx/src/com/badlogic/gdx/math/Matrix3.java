@@ -45,6 +45,10 @@ public class Matrix3 implements Serializable {
 	public Matrix3 (Matrix3 matrix) {
 		set(matrix);
 	}
+	
+	public Matrix3 (Matrix4 matrix) {
+		set(matrix);
+	}
 
 	/** Sets this matrix to the identity matrix
 	 * @return This matrix for the purpose of chaining operations. */
