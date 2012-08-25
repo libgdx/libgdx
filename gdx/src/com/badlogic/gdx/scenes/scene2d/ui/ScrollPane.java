@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
@@ -457,9 +456,9 @@ public class ScrollPane extends WidgetGroup {
 		if (!scrollY)
 			y -= (int)maxY;
 		else
-			y -= (int)(maxY * (1 - visualAmountY / maxY));
+			y -= (int)(maxY - visualAmountY);
 		float x = widgetAreaBounds.x;
-		if (scrollX) x -= (int)(maxX * visualAmountX / maxX);
+		if (scrollX) x -= (int)visualAmountX;
 		widget.setPosition(x, y);
 
 		if (widget instanceof Cullable) {
@@ -575,6 +574,14 @@ public class ScrollPane extends WidgetGroup {
 		return amountY;
 	}
 
+	public float getVisualScrollX () {
+		return visualAmountX;
+	}
+
+	public float getVisualScrollY () {
+		return visualAmountY;
+	}
+
 	public float getScrollPercentX () {
 		return MathUtils.clamp(amountX / maxX, 0, 1);
 	}
@@ -623,6 +630,14 @@ public class ScrollPane extends WidgetGroup {
 	/** Returns the maximum scroll value in the y direction. */
 	public float getMaxY () {
 		return maxY;
+	}
+
+	public float getScrollBarHeight () {
+		return style.hScrollKnob == null || !scrollX ? 0 : style.hScrollKnob.getMinHeight();
+	}
+
+	public float getVScrollWidth () {
+		return style.vScrollKnob == null || !scrollY ? 0 : style.hScrollKnob.getMinWidth();
 	}
 
 	/** Disables scrolling in a direction. The widget will be sized to the FlickScrollPane in the disabled direction. */

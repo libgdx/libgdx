@@ -49,7 +49,7 @@ public class ETC1 {
 		/** the offset in bytes to the actual compressed data. Might be 16 if this contains a PKM header, 0 otherwise **/
 		public final int dataOffset;
 
-		ETC1Data (int width, int height, ByteBuffer compressedData, int dataOffset) {
+		public ETC1Data (int width, int height, ByteBuffer compressedData, int dataOffset) {
 			this.width = width;
 			this.height = height;
 			this.compressedData = compressedData;
