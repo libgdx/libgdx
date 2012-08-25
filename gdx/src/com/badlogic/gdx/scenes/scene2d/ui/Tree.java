@@ -215,13 +215,17 @@ public class Tree extends WidgetGroup {
 			Node node = nodes.get(i);
 			Actor actor = node.actor;
 
-			if (selectedNodes.contains(node, true) && style.selection != null)
+			if (selectedNodes.contains(node, true) && style.selection != null) {
+				batch.setColor(Color.WHITE);
 				style.selection.draw(batch, x, y + actor.getY() - ySpacing / 2, getWidth(), node.height + ySpacing);
-			else if (node == overNode && style.over != null)
+			} else if (node == overNode && style.over != null) {
+				batch.setColor(Color.WHITE);
 				style.over.draw(batch, x, y + actor.getY() - ySpacing / 2, getWidth(), node.height + ySpacing);
+			}
 
 			if (node.icon != null) {
 				float iconY = actor.getY() + node.height / 2 - node.icon.getMinHeight() / 2;
+				batch.setColor(actor.getColor());
 				node.icon.draw(batch, x + node.actor.getX() - iconSpacing - node.icon.getMinWidth(), y + iconY,
 					node.icon.getMinWidth(), node.icon.getMinHeight());
 			}

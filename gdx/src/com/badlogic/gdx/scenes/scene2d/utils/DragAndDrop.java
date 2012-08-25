@@ -20,10 +20,13 @@ public class DragAndDrop {
 	private float tapSquareSize = 8;
 	private int button;
 	float dragActorX = 14, dragActorY = -20;
+	long dragStartTime;
+	int dragTime = 250;
 
 	public void addSource (final Source source) {
 		DragListener listener = new DragListener() {
 			public void dragStart (InputEvent event, float x, float y, int pointer) {
+				dragStartTime = System.currentTimeMillis();
 				payload = source.dragStart(event, getTouchDownX(), getTouchDownY(), pointer);
 				event.stop();
 			}
@@ -69,6 +72,7 @@ public class DragAndDrop {
 
 			public void dragStop (InputEvent event, float x, float y, int pointer) {
 				if (payload == null) return;
+				if (System.currentTimeMillis() - dragStartTime < dragTime) isValidTarget = false;
 				if (isValidTarget) target.drop(source, payload);
 				source.dragStop(event, x, y, pointer, isValidTarget ? target : null);
 				DragAndDrop.this.source = null;
@@ -103,9 +107,15 @@ public class DragAndDrop {
 		this.dragActorX = dragActorX;
 		this.dragActorY = dragActorY;
 	}
-	
+
 	public boolean isDragging () {
 		return payload != null;
+	}
+
+	/** Time in milliseconds that a drag must take before a drop will be considered valid. This ignores an accidental drag and drop
+	 * that was meant to be a click. Default is 250. */
+	public void setDragTime (int dragMillis) {
+		this.dragTime = dragMillis;
 	}
 
 	/** A target where a payload can be dragged from.

@@ -633,7 +633,7 @@ public class ScrollPane extends WidgetGroup {
 		return style.hScrollKnob == null || !scrollX ? 0 : style.hScrollKnob.getMinHeight();
 	}
 
-	public float getVScrollWidth () {
+	public float getScrollBarWidth () {
 		return style.vScrollKnob == null || !scrollY ? 0 : style.hScrollKnob.getMinWidth();
 	}
 
