@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.VerticalGroup;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -71,6 +72,15 @@ public class Scene2dTest extends GdxTest {
 		});
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+
+		VerticalGroup g = new VerticalGroup();
+		g.setPosition(100, 100);
+		g.setReverse(true);
+		stage.addActor(g);
+		for (int i = 0; i < 10; i++) {
+			g.addActor(new TextButton("button " + i, skin));
+		}
+		g.pack();
 
 		final TextButton button = new TextButton("Fancy Background", skin);
 

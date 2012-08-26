@@ -30,6 +30,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 /** A stack is a container that sizes its children to its size and positions them at 0,0 on top of each other.
  * <p>
@@ -37,10 +38,51 @@ import com.badlogic.gdx.utils.Array;
  * smallest max size of any children.
  * @author Nathan Sweet */
 public class Stack extends WidgetGroup {
+	private float prefWidth, prefHeight, minWidth, minHeight, maxWidth, maxHeight;
+	private boolean sizeInvalid = true;
+
 	public Stack () {
 		setTransform(false);
 		setWidth(150);
 		setHeight(150);
+	}
+
+	public void invalidate () {
+		super.invalidate();
+		sizeInvalid = true;
+	}
+
+	private void computeSize () {
+		sizeInvalid = false;
+		prefWidth = 0;
+		prefHeight = 0;
+		minWidth = 0;
+		minHeight = 0;
+		maxWidth = 0;
+		maxHeight = 0;
+		SnapshotArray<Actor> children = getChildren();
+		for (int i = 0, n = children.size; i < n; i++) {
+			Actor child = children.get(i);
+			float childMaxWidth, childMaxHeight;
+			if (child instanceof Layout) {
+				Layout layout = (Layout)child;
+				prefWidth = Math.max(prefWidth, layout.getPrefWidth());
+				prefHeight = Math.max(prefHeight, layout.getPrefHeight());
+				minWidth = Math.max(minWidth, layout.getMinWidth());
+				minHeight = Math.max(minHeight, layout.getMinHeight());
+				childMaxWidth = layout.getMaxWidth();
+				childMaxHeight = layout.getMaxHeight();
+			} else {
+				prefWidth = Math.max(prefWidth, child.getWidth());
+				prefHeight = Math.max(prefHeight, child.getHeight());
+				minWidth = Math.max(minWidth, child.getWidth());
+				minHeight = Math.max(minHeight, child.getHeight());
+				childMaxWidth = prefWidth;
+				childMaxHeight = prefHeight;
+			}
+			if (childMaxWidth > 0) maxWidth = maxWidth == 0 ? childMaxWidth : Math.min(maxWidth, childMaxWidth);
+			if (childMaxHeight > 0) maxHeight = maxHeight == 0 ? childMaxHeight : Math.min(maxHeight, childMaxHeight);
+		}
 	}
 
 	public void add (Actor actor) {
@@ -61,66 +103,32 @@ public class Stack extends WidgetGroup {
 	}
 
 	public float getPrefWidth () {
-		float width = 0;
-		Array<Actor> children = getChildren();
-		for (int i = 0, n = children.size; i < n; i++) {
-			Actor child = children.get(i);
-			width = Math.max(width, child instanceof Layout ? ((Layout)child).getPrefWidth() : child.getWidth());
-		}
-		return width * getScaleX();
+		if (sizeInvalid) computeSize();
+		return prefWidth;
 	}
 
 	public float getPrefHeight () {
-		float height = 0;
-		Array<Actor> children = getChildren();
-		for (int i = 0, n = children.size; i < n; i++) {
-			Actor child = children.get(i);
-			height = Math.max(height, child instanceof Layout ? ((Layout)child).getPrefHeight() : child.getHeight());
-		}
-		return height * getScaleY();
-	}
-
-	public float getMaxWidth () {
-		Array<Actor> children = getChildren();
-		if (children.size == 0) return 0;
-		float width = 0;
-		for (int i = 0, n = children.size; i < n; i++) {
-			Actor child = children.get(i);
-			float maxWidth = child instanceof Layout ? ((Layout)child).getMaxWidth() : child.getWidth();
-			if (maxWidth > 0) width = width == 0 ? maxWidth : Math.min(width, maxWidth);
-		}
-		return width * getScaleX();
-	}
-
-	public float getMaxHeight () {
-		Array<Actor> children = getChildren();
-		if (children.size == 0) return 0;
-		float height = 0;
-		for (int i = 0, n = children.size; i < n; i++) {
-			Actor child = children.get(i);
-			float maxHeight = child instanceof Layout ? ((Layout)child).getMaxHeight() : child.getHeight();
-			if (maxHeight > 0) height = height == 0 ? maxHeight : Math.min(height, maxHeight);
-		}
-		return height * getScaleY();
+		if (sizeInvalid) computeSize();
+		return prefHeight;
 	}
 
 	public float getMinWidth () {
-		float width = 0;
-		Array<Actor> children = getChildren();
-		for (int i = 0, n = children.size; i < n; i++) {
-			Actor child = children.get(i);
-			width = Math.max(width, child instanceof Layout ? ((Layout)child).getMinWidth() : child.getWidth());
-		}
-		return width * getScaleX();
+		if (sizeInvalid) computeSize();
+		return minWidth;
 	}
 
 	public float getMinHeight () {
-		float height = 0;
-		Array<Actor> children = getChildren();
-		for (int i = 0, n = children.size; i < n; i++) {
-			Actor child = children.get(i);
-			height = Math.max(height, child instanceof Layout ? ((Layout)child).getMinHeight() : child.getHeight());
-		}
-		return height * getScaleY();
+		if (sizeInvalid) computeSize();
+		return minHeight;
+	}
+
+	public float getMaxWidth () {
+		if (sizeInvalid) computeSize();
+		return maxWidth;
+	}
+
+	public float getMaxHeight () {
+		if (sizeInvalid) computeSize();
+		return maxHeight;
 	}
 }
