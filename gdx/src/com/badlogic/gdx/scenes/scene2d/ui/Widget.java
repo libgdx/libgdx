@@ -115,8 +115,8 @@ public abstract class Widget extends Actor implements Layout {
 			setWidth(newWidth);
 			setHeight(newHeight);
 			invalidate();
-			validate();
 		}
+		validate();
 	}
 
 	public void setFillParent (boolean fillParent) {

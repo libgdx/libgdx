@@ -123,8 +123,8 @@ public abstract class WidgetGroup extends Group implements Layout {
 			setWidth(newWidth);
 			setHeight(newHeight);
 			invalidate();
-			validate();
 		}
+		validate();
 	}
 
 	public void setFillParent (boolean fillParent) {
