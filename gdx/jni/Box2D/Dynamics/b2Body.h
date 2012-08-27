@@ -160,6 +160,14 @@ public:
 	/// @param angle the world rotation in radians.
 	void SetTransform(const b2Vec2& position, float32 angle);
 
+	/// Set the position of the body's origin and rotation.
+	/// This breaks any contacts and wakes the other bodies.
+	/// Manipulating a body's transform may cause non-physical behavior.
+	/// @param position the world position of the body's local origin.
+	/// @param angle the world rotation in radians.
+	/// @param updateContacts if contactManager FindNewContacts() should be called or not.
+	void SetTransform(const b2Vec2& position, float32 angle, bool updateContacts);
+
 	/// Get the body transform for the body's origin.
 	/// @return the world transform of the body's origin.
 	const b2Transform& GetTransform() const;
