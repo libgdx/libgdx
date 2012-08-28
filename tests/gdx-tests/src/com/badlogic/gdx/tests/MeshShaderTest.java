@@ -66,12 +66,12 @@ public class MeshShaderTest extends GdxTest {
 		angle += Gdx.graphics.getDeltaTime() * 45;
 		matrix.setToRotation(axis, angle);
 
-		Gdx.graphics.getGL20().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		Gdx.graphics.getGL20().glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.graphics.getGL20().glEnable(GL20.GL_TEXTURE_2D);
-		Gdx.graphics.getGL20().glEnable(GL10.GL_BLEND);
-		Gdx.graphics.getGL20().glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl20.glClearColor(0.2f, 0.2f, 0.2f, 1);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl20.glEnable(GL20.GL_TEXTURE_2D);
+		Gdx.gl20.glEnable(GL10.GL_BLEND);
+		Gdx.gl20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		texture.bind();
 		shader.begin();
 		shader.setUniformMatrix("u_worldView", matrix);
