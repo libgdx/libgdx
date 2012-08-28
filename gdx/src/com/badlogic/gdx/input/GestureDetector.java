@@ -62,12 +62,12 @@ public class GestureDetector extends InputAdapter {
 	}
 
 	/** @param halfTapSquareSize half width in pixels of the square around an initial touch event, see
-	 *           {@link GestureListener#tap(float, float, int, int, int)}.
+	 *           {@link GestureListener#tap(float, float, int, int)}.
 	 * @param tapCountInterval time in seconds that must pass for two touch down/up sequences to be detected as consecutive taps.
 	 * @param longPressDuration time in seconds that must pass for the detector to fire a
 	 *           {@link GestureListener#longPress(float, float)} event.
 	 * @param maxFlingDelay time in seconds the finger must have been dragged for a fling event to be fired, see
-	 *           {@link GestureListener#fling(float, float, int, int)}
+	 *           {@link GestureListener#fling(float, float, int)}
 	 * @param listener May be null if the listener will be set later. */
 	public GestureDetector (float halfTapSquareSize, float tapCountInterval, float longPressDuration, float maxFlingDelay,
 		GestureListener listener) {
@@ -115,7 +115,7 @@ public class GestureDetector extends InputAdapter {
 			initialPointer2.set(pointer2);
 			longPressTask.cancel();
 		}
-		return listener.touchDown(x, y, pointer);
+		return listener.touchDown(x, y, pointer, button);
 	}
 
 	@Override
@@ -180,7 +180,7 @@ public class GestureDetector extends InputAdapter {
 			tapCount++;
 			lastTapTime = TimeUtils.nanoTime();
 			gestureStartTime = 0;
-			return listener.tap(x, y, tapCount, pointer, button);
+			return listener.tap(x, y, tapCount, button);
 		} else if (pinching) {
 			// handle pinch end
 			pinching = false;
@@ -199,7 +199,7 @@ public class GestureDetector extends InputAdapter {
 			long time = Gdx.input.getCurrentEventTime();
 			if (time - tracker.lastTime < maxFlingDelay) {
 				tracker.update(x, y, time);
-				return listener.fling(tracker.getVelocityX(), tracker.getVelocityY(), pointer, button);
+				return listener.fling(tracker.getVelocityX(), tracker.getVelocityY(), button);
 			}
 		}
 		return false;
@@ -250,13 +250,13 @@ public class GestureDetector extends InputAdapter {
 	 * @author mzechner */
 	public static interface GestureListener {
 		/** Called when a finger went down on the screen or a mouse button was pressed. */
-		public boolean touchDown (float x, float y, int pointer);
+		public boolean touchDown (float x, float y, int pointer, int button);
 
 		/** Called when a tap occured. A tap happens if a touch went down on the screen and was lifted again without moving outside
 		 * of the tap square. The tap square is a rectangular area around the initial touch position as specified on construction
 		 * time of the {@link GestureDetector}.
 		 * @param count the number of taps. */
-		public boolean tap (float x, float y, int count, int pointer, int button);
+		public boolean tap (float x, float y, int count, int button);
 
 		public boolean longPress (float x, float y);
 
@@ -264,7 +264,7 @@ public class GestureDetector extends InputAdapter {
 		 * pixels per second.
 		 * @param velocityX velocity on x in seconds
 		 * @param velocityY velocity on y in seconds */
-		public boolean fling (float velocityX, float velocityY, int pointer, int button);
+		public boolean fling (float velocityX, float velocityY, int button);
 
 		/** Called when the user drags a finger over the screen.
 		 * @param x
@@ -291,11 +291,11 @@ public class GestureDetector extends InputAdapter {
 	/** Derrive from this if you only want to implement a subset of {@link GestureListener}.
 	 * @author mzechner */
 	public static class GestureAdapter implements GestureListener {
-		public boolean touchDown (float x, float y, int pointer) {
+		public boolean touchDown (float x, float y, int pointer, int button) {
 			return false;
 		}
 
-		public boolean tap (float x, float y, int count, int pointer, int button) {
+		public boolean tap (float x, float y, int count, int button) {
 			return false;
 		}
 
@@ -303,7 +303,7 @@ public class GestureDetector extends InputAdapter {
 			return false;
 		}
 
-		public boolean fling (float velocityX, float velocityY, int pointer, int button) {
+		public boolean fling (float velocityX, float velocityY, int button) {
 			return false;
 		}
 
