@@ -359,16 +359,20 @@ public class ScrollPane extends WidgetGroup {
 
 		boolean fade = flickScroll && fadeScrollBars;
 		if (!fade) {
-			if (scrollX) areaHeight -= hScrollKnob.getMinHeight();
-			if (scrollY) areaWidth -= vScrollKnob.getMinWidth();
 			// Check again, now taking into account the area that's taken up by any enabled scrollbars.
-			if (!scrollX && scrollY && vScrollKnob != null && widgetWidth > areaWidth && !disableX) {
-				scrollX = true;
-				areaHeight -= hScrollKnob.getMinHeight();
-			}
-			if (!scrollY && scrollX && hScrollKnob != null && widgetHeight > areaHeight && !disableY) {
-				scrollY = true;
+			if (vScrollKnob != null && scrollY) {
 				areaWidth -= vScrollKnob.getMinWidth();
+				if (!scrollX && widgetWidth > areaWidth && !disableX) {
+					scrollX = true;
+					areaHeight -= hScrollKnob.getMinHeight();
+				}
+			}
+			if (hScrollKnob != null && scrollX) {
+				areaHeight -= hScrollKnob.getMinHeight();
+				if (!scrollY && widgetHeight > areaHeight && !disableY) {
+					scrollY = true;
+					areaWidth -= vScrollKnob.getMinWidth();
+				}
 			}
 		}
 
