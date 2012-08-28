@@ -641,6 +641,14 @@ public class ScrollPane extends WidgetGroup {
 		return style.vScrollKnob == null || !scrollY ? 0 : style.vScrollKnob.getMinWidth();
 	}
 
+	public boolean isScrollX () {
+		return scrollX;
+	}
+
+	public boolean isScrollY () {
+		return scrollY;
+	}
+
 	/** Disables scrolling in a direction. The widget will be sized to the FlickScrollPane in the disabled direction. */
 	public void setScrollingDisabled (boolean x, boolean y) {
 		disableX = x;
