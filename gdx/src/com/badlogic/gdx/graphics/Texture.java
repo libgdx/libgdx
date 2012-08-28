@@ -38,6 +38,7 @@ import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.D;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -244,6 +245,11 @@ public class Texture implements Disposable {
 		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
 	}
 
+	public void active () {
+		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0 + glHandle);
+		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
+	}
+	
 	/** Draws the given {@link Pixmap} to the texture at position x, y. No clipping is performed so you have to make sure that you
 	 * draw only inside the texture region. Note that this will only draw to mipmap level 0!
 	 * 
