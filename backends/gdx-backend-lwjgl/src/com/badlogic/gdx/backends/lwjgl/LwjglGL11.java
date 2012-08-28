@@ -127,7 +127,7 @@ final class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graphics.GL1
 
 	public void glGenBuffers (int n, int[] buffers, int offset) {
 		for (int i = offset; i < offset + n; i++)
-			buffers[offset] = GL15.glGenBuffers();
+			buffers[i] = GL15.glGenBuffers();
 	}
 
 	public void glGenBuffers (int n, IntBuffer buffers) {

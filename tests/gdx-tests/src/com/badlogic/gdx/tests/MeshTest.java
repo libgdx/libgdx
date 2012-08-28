@@ -32,9 +32,9 @@ public class MeshTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-		Gdx.graphics.getGL10().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		Gdx.graphics.getGL10().glEnable(GL10.GL_TEXTURE_2D);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
 		texture.bind();
 		mesh.render(GL10.GL_TRIANGLES, 3, 3);
 	}
