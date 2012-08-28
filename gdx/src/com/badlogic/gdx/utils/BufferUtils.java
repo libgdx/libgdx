@@ -293,6 +293,21 @@ public class BufferUtils {
 		}
 		return buffer;
 	}
+	
+	/**
+	 * Registers the given ByteBuffer as an unsafe ByteBuffer. The ByteBuffer must have been 
+	 * allocated in native code, pointing to a memory region allocated via malloc. Needs to 
+	 * be disposed with {@link #freeMemory(ByteBuffer)}.
+	 * @param buffer the {@link ByteBuffer} to register
+	 * @return the ByteBuffer passed to the method
+	 */
+	public static ByteBuffer newUnsafeByteBuffer(ByteBuffer buffer) {
+		allocatedUnsafe += buffer.capacity();
+		synchronized(unsafeBuffers) {
+			unsafeBuffers.add(buffer);
+		}
+		return buffer;
+	}
 
 	/**
 	 * @return the number of bytes allocated with {@link #newUnsafeByteBuffer(int)}
