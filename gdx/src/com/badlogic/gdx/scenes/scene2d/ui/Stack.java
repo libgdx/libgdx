@@ -28,6 +28,7 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -45,6 +46,7 @@ public class Stack extends WidgetGroup {
 		setTransform(false);
 		setWidth(150);
 		setHeight(150);
+		setTouchable(Touchable.childrenOnly);
 	}
 
 	public void invalidate () {

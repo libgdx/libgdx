@@ -304,6 +304,11 @@ public class Skin implements Disposable {
 	}
 
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
+	public Drawable newDrawable (String name, float r, float g, float b, float a) {
+		return newDrawable(name, new Color(r, g, b, a));
+	}
+
+	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
 	public Drawable newDrawable (String name, Color tint) {
 		Drawable drawable = getDrawable(name);
 		if (drawable instanceof TextureRegionDrawable) {

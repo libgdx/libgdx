@@ -780,7 +780,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 			float extraWidth = 0;
 			for (int column = c.column, nn = column + c.colspan; column < nn; column++)
 				extraWidth += columnWeightedWidth[column] - columnWidth[column];
-			extraWidth -= c.computedPadLeft + c.computedPadRight;
+			extraWidth -= Math.max(0, c.computedPadLeft + c.computedPadRight);
 
 			extraWidth /= c.colspan;
 			if (extraWidth > 0) {
