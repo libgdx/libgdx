@@ -220,7 +220,7 @@ public class ScrollPane extends WidgetGroup {
 
 	void cancelTouchFocusedChild (InputEvent event) {
 		Stage stage = getStage();
-		stage.cancelTouchFocus(gestureListener, this);
+		if(stage != null) stage.cancelTouchFocus(gestureListener, this);
 	}
 
 	void clamp () {
