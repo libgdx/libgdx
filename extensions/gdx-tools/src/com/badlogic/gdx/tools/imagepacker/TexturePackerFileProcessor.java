@@ -34,17 +34,17 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		addInputSuffix(".png", ".jpg");
 	}
 
-	public ArrayList<InputFile> process (File inputFile, File outputRoot) throws Exception {
+	public ArrayList<Entry> process (File inputFile, File outputRoot) throws Exception {
 		root = inputFile;
 		return super.process(inputFile, outputRoot);
 	}
 
-	public ArrayList<InputFile> process (File[] files, File outputRoot) throws Exception {
+	public ArrayList<Entry> process (File[] files, File outputRoot) throws Exception {
 		// Delete pack file and images.
 		if (outputRoot.exists()) {
 			new File(outputRoot, packFileName).delete();
 			FileProcessor deleteProcessor = new FileProcessor() {
-				protected void processFile (InputFile inputFile) throws Exception {
+				protected void processFile (Entry inputFile) throws Exception {
 					inputFile.inputFile.delete();
 				}
 			};
@@ -60,7 +60,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 		return super.process(files, outputRoot);
 	}
 
-	protected void processDir (InputFile inputDir, ArrayList<InputFile> files) throws Exception {
+	protected void processDir (Entry inputDir, ArrayList<Entry> files) throws Exception {
 		// Start with a copy of a parent dir's settings or the default settings.
 		Settings settings = null;
 		File parent = inputDir.inputFile;
@@ -82,7 +82,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 
 		// Pack.
 		TexturePacker2 packer = new TexturePacker2(root, settings);
-		for (InputFile file : files)
+		for (Entry file : files)
 			packer.addImage(file.inputFile);
 		packer.pack(inputDir.outputDir, packFileName);
 	}

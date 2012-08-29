@@ -36,9 +36,9 @@ public class ETC1Compressor {
 		}
 
 		@Override
-		protected void processFile (InputFile inputFile) throws Exception {
-			System.out.println("Processing " + inputFile.inputFile);
-			Pixmap pixmap = new Pixmap(new FileHandle(inputFile.inputFile));
+		protected void processFile (Entry entry) throws Exception {
+			System.out.println("Processing " + entry.inputFile);
+			Pixmap pixmap = new Pixmap(new FileHandle(entry.inputFile));
 			if (pixmap.getFormat() != Format.RGB888 && pixmap.getFormat() != Format.RGB565) {
 				System.out.println("Converting from " + pixmap.getFormat() + " to RGB888!");
 				Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGB888);
@@ -46,15 +46,15 @@ public class ETC1Compressor {
 				pixmap.dispose();
 				pixmap = tmp;
 			}
-			ETC1.encodeImagePKM(pixmap).write(new FileHandle(inputFile.outputFile));
+			ETC1.encodeImagePKM(pixmap).write(new FileHandle(entry.outputFile));
 			pixmap.dispose();
 		}
 
 		@Override
-		protected void processDir (InputFile inputDir, ArrayList<InputFile> value) throws Exception {
-			if (!inputDir.outputDir.exists()) {
-				if (!inputDir.outputDir.mkdirs())
-					throw new Exception("Couldn't create output directory '" + inputDir.outputDir + "'");
+		protected void processDir (Entry entryDir, ArrayList<Entry> value) throws Exception {
+			if (!entryDir.outputDir.exists()) {
+				if (!entryDir.outputDir.mkdirs())
+					throw new Exception("Couldn't create output directory '" + entryDir.outputDir + "'");
 			}
 		}
 	}
