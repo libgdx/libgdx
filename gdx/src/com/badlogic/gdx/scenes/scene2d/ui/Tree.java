@@ -25,7 +25,7 @@ public class Tree extends WidgetGroup {
 	TreeStyle style;
 	final Array<Node> rootNodes = new Array();
 	final Array<Node> selectedNodes = new Array();
-	float ySpacing = 4, iconSpacing = 2, padding = 8, indentSpacing;
+	float ySpacing = 4, iconSpacing = 2, padding = 0, indentSpacing;
 	private float leftColumnWidth, prefWidth, prefHeight;
 	private boolean sizeInvalid = true;
 	private Node foundNode;
@@ -51,7 +51,7 @@ public class Tree extends WidgetGroup {
 				Node node = getNodeAt(y);
 				if (node == null) return;
 				if (node != getNodeAt(getTouchDownY())) return;
-				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
+				if (selectedNodes.size > 0 && (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) {
 					// Select range (shift/ctrl).
 					float low = selectedNodes.first().actor.getY();
 					float high = node.actor.getY();
@@ -201,8 +201,11 @@ public class Tree extends WidgetGroup {
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (style.background != null) style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
+		if (style.background != null) {
+			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
+			batch.setColor(Color.WHITE);
+		}
 		draw(batch, rootNodes, leftColumnWidth);
 		super.draw(batch, parentAlpha); // Draw actors.
 	}
@@ -216,24 +219,23 @@ public class Tree extends WidgetGroup {
 			Actor actor = node.actor;
 
 			if (selectedNodes.contains(node, true) && style.selection != null) {
-				batch.setColor(Color.WHITE);
 				style.selection.draw(batch, x, y + actor.getY() - ySpacing / 2, getWidth(), node.height + ySpacing);
 			} else if (node == overNode && style.over != null) {
-				batch.setColor(Color.WHITE);
 				style.over.draw(batch, x, y + actor.getY() - ySpacing / 2, getWidth(), node.height + ySpacing);
 			}
 
 			if (node.icon != null) {
-				float iconY = actor.getY() + node.height / 2 - node.icon.getMinHeight() / 2;
+				float iconY = actor.getY() + Math.round((node.height - node.icon.getMinHeight()) / 2);
 				batch.setColor(actor.getColor());
 				node.icon.draw(batch, x + node.actor.getX() - iconSpacing - node.icon.getMinWidth(), y + iconY,
 					node.icon.getMinWidth(), node.icon.getMinHeight());
+				batch.setColor(Color.WHITE);
 			}
 
 			if (node.children.size == 0) continue;
 
 			Drawable expandIcon = node.expanded ? minus : plus;
-			float iconY = actor.getY() + node.height / 2 - expandIcon.getMinHeight() / 2;
+			float iconY = actor.getY() + Math.round((node.height - expandIcon.getMinHeight()) / 2);
 			expandIcon.draw(batch, x + indent - iconSpacing, y + iconY, expandIcon.getMinWidth(), expandIcon.getMinHeight());
 			if (node.expanded) draw(batch, node.children, indent + indentSpacing);
 		}

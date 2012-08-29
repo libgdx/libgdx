@@ -156,7 +156,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}. */
 	public void act () {
-		act(Gdx.graphics.getDeltaTime());
+		act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 	}
 
 	/** Calls the {@link Actor#act(float)} method on each actor in the stage. Typically called each frame. This method also fires

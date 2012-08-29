@@ -296,7 +296,21 @@ public class Skin implements Disposable {
 
 	/** Returns a copy of a drawable found in the skin via {@link #getDrawable(String)}. */
 	public Drawable newDrawable (String name) {
-		Drawable drawable = getDrawable(name);
+		return newDrawable(getDrawable(name));
+	}
+
+	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
+	public Drawable newDrawable (String name, float r, float g, float b, float a) {
+		return newDrawable(getDrawable(name), new Color(r, g, b, a));
+	}
+
+	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
+	public Drawable newDrawable (String name, Color tint) {
+		return newDrawable(getDrawable(name), tint);
+	}
+
+	/** Returns a copy of the specified drawable. */
+	public Drawable newDrawable (Drawable drawable) {
 		if (drawable instanceof TextureRegionDrawable) return new TextureRegionDrawable((TextureRegionDrawable)drawable);
 		if (drawable instanceof NinePatchDrawable) return new NinePatchDrawable((NinePatchDrawable)drawable);
 		if (drawable instanceof SpriteDrawable) return new SpriteDrawable((SpriteDrawable)drawable);
@@ -304,13 +318,12 @@ public class Skin implements Disposable {
 	}
 
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
-	public Drawable newDrawable (String name, float r, float g, float b, float a) {
-		return newDrawable(name, new Color(r, g, b, a));
+	public Drawable newDrawable (Drawable drawable, float r, float g, float b, float a) {
+		return newDrawable(drawable, new Color(r, g, b, a));
 	}
 
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
-	public Drawable newDrawable (String name, Color tint) {
-		Drawable drawable = getDrawable(name);
+	public Drawable newDrawable (Drawable drawable, Color tint) {
 		if (drawable instanceof TextureRegionDrawable) {
 			Sprite sprite = new Sprite(((TextureRegionDrawable)drawable).getRegion());
 			sprite.setColor(tint);

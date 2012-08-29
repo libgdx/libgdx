@@ -161,7 +161,7 @@ public class Body {
 	 * @param angle the world rotation in radians. 
 	 * @param updateContacts Box2D SetTransform internally calls contactManager.FindNewContacts() method, sometimes multiple 
 	 * bodies are updated and it is undesirable to trigger Box2D to find new contacts each time, updateContacts should be 
-	 * false in those cases, true otherwise. */
+	 * false in those cases, true otherwise, more information at <a href="http://box2d.org/forum/viewtopic.php?f=3&t=8757">Box2d forums</a>. */
 	public void setTransform (float x, float y, float angle, boolean updateContacts) {
 		jniSetTransform(addr, x, y, angle, updateContacts);
 	}
