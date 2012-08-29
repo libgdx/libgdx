@@ -107,7 +107,7 @@ public class Slider extends Widget {
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		final Drawable knob = style.knob;
-		final Drawable slider = style.background;
+		final Drawable bg = style.background;
 
 		Color color = getColor();
 		float x = getX();
@@ -118,18 +118,22 @@ public class Slider extends Widget {
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 
 		if (vertical) {
+			bg.draw(batch, x + (int)((width - bg.getMinWidth()) * 0.5f), y, bg.getMinWidth(), height);
+
+			height -= bg.getTopHeight() + bg.getBottomHeight();
 			sliderPos = (value - min) / (max - min) * (height - knob.getMinHeight());
 			sliderPos = Math.max(0, sliderPos);
-			sliderPos = Math.min(height - knob.getMinHeight(), sliderPos);
+			sliderPos = Math.min(height - knob.getMinHeight(), sliderPos) + bg.getBottomHeight();
 
-			slider.draw(batch, x + (int)((width - slider.getMinWidth()) * 0.5f), y, slider.getMinWidth(), height);
 			knob.draw(batch, x + (int)((width - knob.getMinWidth()) * 0.5f), y + sliderPos, knob.getMinWidth(), knob.getMinHeight());
 		} else {
+			bg.draw(batch, x, y + (int)((height - bg.getMinHeight()) * 0.5f), width, bg.getMinHeight());
+
+			width -= bg.getLeftWidth() + bg.getRightWidth();
 			sliderPos = (value - min) / (max - min) * (width - knob.getMinWidth());
 			sliderPos = Math.max(0, sliderPos);
-			sliderPos = Math.min(width - knob.getMinWidth(), sliderPos);
+			sliderPos = Math.min(width - knob.getMinWidth(), sliderPos) + bg.getLeftWidth();
 
-			slider.draw(batch, x, y + (int)((height - slider.getMinHeight()) * 0.5f), width, slider.getMinHeight());
 			knob.draw(batch, x + sliderPos, y + (int)((height - knob.getMinHeight()) * 0.5f), knob.getMinWidth(),
 				knob.getMinHeight());
 		}
@@ -137,12 +141,13 @@ public class Slider extends Widget {
 
 	void calculatePositionAndValue (float x, float y) {
 		final Drawable knob = style.knob;
+		final Drawable bg = style.background;
 
 		float value;
 		float oldPosition = sliderPos;
 
 		if (vertical) {
-			float height = getHeight();
+			float height = getHeight() - bg.getTopHeight() - bg.getBottomHeight();
 			sliderPos = y - knob.getMinHeight() * 0.5f;
 			sliderPos = Math.max(0, sliderPos);
 			sliderPos = Math.min(height - knob.getMinHeight(), sliderPos);
