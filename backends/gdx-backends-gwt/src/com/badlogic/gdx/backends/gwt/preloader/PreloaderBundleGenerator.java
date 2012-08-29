@@ -17,9 +17,9 @@
 package com.badlogic.gdx.backends.gwt.preloader;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.core.ext.BadPropertyValueException;
 import com.google.gwt.core.ext.ConfigurationProperty;
@@ -70,7 +70,7 @@ public class PreloaderBundleGenerator extends Generator {
 		if (target.exists()) {
 			if (!target.deleteDirectory()) throw new RuntimeException("Couldn't clean target path '" + target + "'");
 		}
-		Array<Asset> assets = new Array<Asset>();
+		ArrayList<Asset> assets = new ArrayList<Asset>();
 		copyDirectory(source, target, assetFilter, assets);
 
 		StringBuffer buffer = new StringBuffer();
@@ -87,7 +87,7 @@ public class PreloaderBundleGenerator extends Generator {
 		return createDummyClass(logger, context);
 	}
 
-	private void copyFile (FileWrapper source, FileWrapper dest, AssetFilter filter, Array<Asset> assets) {
+	private void copyFile (FileWrapper source, FileWrapper dest, AssetFilter filter, ArrayList<Asset> assets) {
 		if (filter.accept(dest.path(), false))
 		;
 		try {
@@ -99,7 +99,7 @@ public class PreloaderBundleGenerator extends Generator {
 		}
 	}
 
-	private void copyDirectory (FileWrapper sourceDir, FileWrapper destDir, AssetFilter filter, Array<Asset> assets) {
+	private void copyDirectory (FileWrapper sourceDir, FileWrapper destDir, AssetFilter filter, ArrayList<Asset> assets) {
 		if (!filter.accept(destDir.path(), true)) return;
 		assets.add(new Asset(destDir, AssetType.Directory));
 		destDir.mkdirs();
