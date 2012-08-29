@@ -153,7 +153,17 @@ public final class D {
 	/********************************************************************
 	 * 
 	 ********************************************************************/
+	public static void out(short[] i){
+		int leng = i.length;
+		StringBuilder tmp = new StringBuilder();
+		for(int j = 0; j <  leng;j++){
+			tmp.append(" ");
+			tmp.append(i[j]);
+		}
+		Gdx.app.log("**Print Out** ", " " + tmp.toString());
+	}
 
+	
 	public static void out(int[] i){
 		int leng = i.length;
 		StringBuilder tmp = new StringBuilder();
