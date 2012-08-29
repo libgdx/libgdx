@@ -74,6 +74,7 @@ public class ScrollPane extends WidgetGroup {
 	private boolean forceOverscrollX, forceOverscrollY;
 	private boolean disableX, disableY;
 	private boolean clamp = true;
+	private boolean scrollbarsOnTop;
 
 	/** @param widget May be null. */
 	public ScrollPane (Actor widget) {
@@ -336,6 +337,13 @@ public class ScrollPane extends WidgetGroup {
 		float width = getWidth();
 		float height = getHeight();
 
+		float scrollbarHeight = 0;
+		if (hScrollKnob != null) scrollbarHeight = hScrollKnob.getMinHeight();
+		if (style.hScroll != null) scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
+		float scrollbarWidth = 0;
+		if (vScrollKnob != null) scrollbarWidth = vScrollKnob.getMinWidth();
+		if (style.vScroll != null) scrollbarWidth = Math.max(scrollbarWidth, style.vScroll.getMinWidth());
+
 		// Get available space size by subtracting background's padded area.
 		areaWidth = width - bgLeftWidth - bgRightWidth;
 		areaHeight = height - bgTopHeight - bgBottomHeight;
@@ -360,18 +368,17 @@ public class ScrollPane extends WidgetGroup {
 		boolean fade = flickScroll && fadeScrollBars;
 		if (!fade) {
 			// Check again, now taking into account the area that's taken up by any enabled scrollbars.
-			if (vScrollKnob != null && scrollY) {
-				areaWidth -= vScrollKnob.getMinWidth();
+			if (scrollY) {
+				areaWidth -= scrollbarWidth;
 				if (!scrollX && widgetWidth > areaWidth && !disableX) {
 					scrollX = true;
-					areaHeight -= hScrollKnob.getMinHeight();
 				}
 			}
-			if (hScrollKnob != null && scrollX) {
-				areaHeight -= hScrollKnob.getMinHeight();
+			if (scrollX) {
+				areaHeight -= scrollbarHeight;
 				if (!scrollY && widgetHeight > areaHeight && !disableY) {
 					scrollY = true;
-					areaWidth -= vScrollKnob.getMinWidth();
+					areaWidth -= scrollbarWidth;
 				}
 			}
 		}
@@ -380,12 +387,18 @@ public class ScrollPane extends WidgetGroup {
 		widgetAreaBounds.set(bgLeftWidth, bgBottomHeight, areaWidth, areaHeight);
 
 		if (fade) {
-			// Make sure widgets are drawn under fading scrollbars.
-			if (scrollX && hScrollKnob != null) areaHeight -= hScrollKnob.getMinHeight();
-			if (scrollY && vScrollKnob != null) areaWidth -= vScrollKnob.getMinWidth();
+			// Make sure widget is drawn under fading scrollbars.
+			if (scrollX) areaHeight -= scrollbarHeight;
+			if (scrollY) areaWidth -= scrollbarWidth;
 		} else {
-			// Offset widget area y for horizontal scrollbar.
-			if (scrollX && hScrollKnob != null) widgetAreaBounds.y += hScrollKnob.getMinHeight();
+			if (scrollbarsOnTop) {
+				// Make sure widget is drawn under non-fading scrollbars.
+				if (scrollX) widgetAreaBounds.height += scrollbarHeight;
+				if (scrollY) widgetAreaBounds.width += scrollbarWidth;
+			} else {
+				// Offset widget area y for horizontal scrollbar.
+				if (scrollX) widgetAreaBounds.y += scrollbarHeight;
+			}
 		}
 
 		// If the widget is smaller than the available space, make it take up the available space.
@@ -398,10 +411,10 @@ public class ScrollPane extends WidgetGroup {
 
 		maxX = widgetWidth - areaWidth;
 		maxY = widgetHeight - areaHeight;
-		// Make sure widgets are drawn under fading scrollbars.
 		if (fade) {
-			if (scrollX && hScrollKnob != null) maxY -= hScrollKnob.getMinHeight();
-			if (scrollY && vScrollKnob != null) maxX -= vScrollKnob.getMinWidth();
+			// Make sure widget is drawn under fading scrollbars.
+			if (scrollX) maxY -= scrollbarHeight;
+			if (scrollY) maxX -= scrollbarWidth;
 		}
 		amountX = MathUtils.clamp(amountX, 0, maxX);
 		amountY = MathUtils.clamp(amountY, 0, maxY);
@@ -409,7 +422,8 @@ public class ScrollPane extends WidgetGroup {
 		// Set the bounds and scroll knob sizes if scrollbars are needed.
 		if (scrollX) {
 			if (hScrollKnob != null) {
-				hScrollBounds.set(bgLeftWidth, bgBottomHeight, areaWidth, hScrollKnob.getMinHeight());
+				float hScrollHeight = style.hScroll != null ? style.hScroll.getMinHeight() : hScrollKnob.getMinHeight();
+				hScrollBounds.set(bgLeftWidth, bgBottomHeight, areaWidth, hScrollHeight);
 				hKnobBounds.width = Math.max(hScrollKnob.getMinWidth(), (int)(hScrollBounds.width * areaWidth / widget.getWidth()));
 				hKnobBounds.height = hScrollKnob.getMinHeight();
 				hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getScrollPercentX());
@@ -421,12 +435,12 @@ public class ScrollPane extends WidgetGroup {
 		}
 		if (scrollY) {
 			if (vScrollKnob != null) {
-				vScrollBounds.set(width - bgRightWidth - vScrollKnob.getMinWidth(), height - bgTopHeight - areaHeight,
-					vScrollKnob.getMinWidth(), areaHeight);
+				float vScrollWidth = style.vScroll != null ? style.vScroll.getMinWidth() : vScrollKnob.getMinWidth();
+				vScrollBounds.set(width - bgRightWidth - vScrollWidth, height - bgTopHeight - areaHeight, vScrollWidth, areaHeight);
 				vKnobBounds.width = vScrollKnob.getMinWidth();
 				vKnobBounds.height = Math.max(vScrollKnob.getMinHeight(),
 					(int)(vScrollBounds.height * areaHeight / widget.getHeight()));
-				vKnobBounds.x = vScrollBounds.x;
+				vKnobBounds.x = width - bgRightWidth - vScrollKnob.getMinWidth();
 				vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getScrollPercentY()));
 			} else {
 				vScrollBounds.set(0, 0, 0, 0);
@@ -460,6 +474,14 @@ public class ScrollPane extends WidgetGroup {
 			y -= (int)maxY;
 		else
 			y -= (int)(maxY - visualAmountY);
+
+		if (scrollbarsOnTop && scrollX) {
+			float scrollbarHeight = 0;
+			if (style.hScrollKnob != null) scrollbarHeight = style.hScrollKnob.getMinHeight();
+			if (style.hScroll != null) scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
+			y += scrollbarHeight;
+		}
+
 		float x = widgetAreaBounds.x;
 		if (scrollX) x -= (int)visualAmountX;
 		widget.setPosition(x, y);
@@ -490,6 +512,12 @@ public class ScrollPane extends WidgetGroup {
 
 		// Render scrollbars and knobs on top.
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha * Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds));
+		if (scrollX && scrollY) {
+			if (style.corner != null) {
+				style.corner
+					.draw(batch, hScrollBounds.x + hScrollBounds.width, hScrollBounds.y, vScrollBounds.width, vScrollBounds.y);
+			}
+		}
 		if (scrollX) {
 			if (style.hScroll != null)
 				style.hScroll.draw(batch, hScrollBounds.x, hScrollBounds.y, hScrollBounds.width, hScrollBounds.height);
@@ -576,11 +604,11 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public float getVisualScrollX () {
-		return visualAmountX;
+		return !scrollX ? 0 : visualAmountX;
 	}
 
 	public float getVisualScrollY () {
-		return visualAmountY;
+		return !scrollY ? 0 : visualAmountY;
 	}
 
 	public float getScrollPercentX () {
@@ -691,7 +719,7 @@ public class ScrollPane extends WidgetGroup {
 		this.overscrollY = overscrollY;
 	}
 
-	/** For flick scroll, sets the overscroll distance in pixels and the speed it returns to the widgets bounds in seconds. Default
+	/** For flick scroll, sets the overscroll distance in pixels and the speed it returns to the widget's bounds in seconds. Default
 	 * is 50, 30, 200. */
 	public void setupOverscroll (float distance, float speedMin, float speedMax) {
 		overscrollDistance = distance;
@@ -716,6 +744,7 @@ public class ScrollPane extends WidgetGroup {
 		this.clamp = clamp;
 	}
 
+	/** For flick scroll, when true the scroll bars fade out after some time of not being used. */
 	public void setFadeScrollBars (boolean fadeScrollBars) {
 		if (this.fadeScrollBars == fadeScrollBars) return;
 		this.fadeScrollBars = fadeScrollBars;
@@ -732,12 +761,20 @@ public class ScrollPane extends WidgetGroup {
 		this.smoothScrolling = smoothScrolling;
 	}
 
+	/** When false (the default), the widget is clipped so it is not drawn under the scrollbars. When true, the widget is clipped to
+	 * the entire scroll pane bounds and the scrollbars are drawn on top of the widget. If {@link #setFadeScrollBars(boolean)} is
+	 * true, the scroll bars are always drawn on top. */
+	public void setScrollbarsOnTop (boolean scrollbarsOnTop) {
+		this.scrollbarsOnTop = scrollbarsOnTop;
+		invalidate();
+	}
+
 	/** The style for a scroll pane, see {@link ScrollPane}.
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class ScrollPaneStyle {
 		/** Optional. */
-		public Drawable background;
+		public Drawable background, corner;
 		/** Optional. */
 		public Drawable hScroll, hScrollKnob;
 		/** Optional. */
