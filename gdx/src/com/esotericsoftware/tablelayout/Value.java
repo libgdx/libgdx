@@ -107,77 +107,65 @@ abstract public class Value {
 		}
 	}
 
-	/** Returns a value for a cell that is the minWidth of the widget in the cell. */
-	static public Value minWidth () {
-		return new CellValue() {
-			public float get (Cell cell) {
-				if (cell == null) throw new RuntimeException("minWidth can only be set on a cell property.");
-				Object widget = cell.widget;
-				if (widget == null) return 0;
-				return Toolkit.instance.getMinWidth(widget);
-			}
-		};
-	}
+	/** Value for a cell that is the minWidth of the widget in the cell. */
+	static public Value minWidth = new CellValue() {
+		public float get (Cell cell) {
+			if (cell == null) throw new RuntimeException("minWidth can only be set on a cell property.");
+			Object widget = cell.widget;
+			if (widget == null) return 0;
+			return Toolkit.instance.getMinWidth(widget);
+		}
+	};
 
-	/** Returns a value for a cell that is the minHeight of the widget in the cell. */
-	static public Value minHeight () {
-		return new CellValue() {
-			public float get (Cell cell) {
-				if (cell == null) throw new RuntimeException("minHeight can only be set on a cell property.");
-				Object widget = cell.widget;
-				if (widget == null) return 0;
-				return Toolkit.instance.getMinHeight(widget);
-			}
-		};
-	}
+	/** Value for a cell that is the minHeight of the widget in the cell. */
+	static public Value minHeight = new CellValue() {
+		public float get (Cell cell) {
+			if (cell == null) throw new RuntimeException("minHeight can only be set on a cell property.");
+			Object widget = cell.widget;
+			if (widget == null) return 0;
+			return Toolkit.instance.getMinHeight(widget);
+		}
+	};
 
-	/** Returns a value for a cell that is the prefWidth of the widget in the cell. */
-	static public Value prefWidth () {
-		return new CellValue() {
-			public float get (Cell cell) {
-				if (cell == null) throw new RuntimeException("prefWidth can only be set on a cell property.");
-				Object widget = cell.widget;
-				if (widget == null) return 0;
-				return Toolkit.instance.getPrefWidth(widget);
-			}
-		};
-	}
+	/** Value for a cell that is the prefWidth of the widget in the cell. */
+	static public Value prefWidth = new CellValue() {
+		public float get (Cell cell) {
+			if (cell == null) throw new RuntimeException("prefWidth can only be set on a cell property.");
+			Object widget = cell.widget;
+			if (widget == null) return 0;
+			return Toolkit.instance.getPrefWidth(widget);
+		}
+	};
 
-	/** Returns a value for a cell that is the prefHeight of the widget in the cell. */
-	static public Value prefHeight () {
-		return new CellValue() {
-			public float get (Cell cell) {
-				if (cell == null) throw new RuntimeException("prefHeight can only be set on a cell property.");
-				Object widget = cell.widget;
-				if (widget == null) return 0;
-				return Toolkit.instance.getPrefHeight(widget);
-			}
-		};
-	}
+	/** Value for a cell that is the prefHeight of the widget in the cell. */
+	static public Value prefHeight = new CellValue() {
+		public float get (Cell cell) {
+			if (cell == null) throw new RuntimeException("prefHeight can only be set on a cell property.");
+			Object widget = cell.widget;
+			if (widget == null) return 0;
+			return Toolkit.instance.getPrefHeight(widget);
+		}
+	};
 
-	/** Returns a value for a cell that is the maxWidth of the widget in the cell. */
-	static public Value maxWidth () {
-		return new CellValue() {
-			public float get (Cell cell) {
-				if (cell == null) throw new RuntimeException("maxWidth can only be set on a cell property.");
-				Object widget = cell.widget;
-				if (widget == null) return 0;
-				return Toolkit.instance.getMaxWidth(widget);
-			}
-		};
-	}
+	/** Value for a cell that is the maxWidth of the widget in the cell. */
+	static public Value maxWidth = new CellValue() {
+		public float get (Cell cell) {
+			if (cell == null) throw new RuntimeException("maxWidth can only be set on a cell property.");
+			Object widget = cell.widget;
+			if (widget == null) return 0;
+			return Toolkit.instance.getMaxWidth(widget);
+		}
+	};
 
-	/** Returns a value for a cell that is the maxHeight of the widget in the cell. */
-	static public Value maxHeight () {
-		return new CellValue() {
-			public float get (Cell cell) {
-				if (cell == null) throw new RuntimeException("maxHeight can only be set on a cell property.");
-				Object widget = cell.widget;
-				if (widget == null) return 0;
-				return Toolkit.instance.getMaxHeight(widget);
-			}
-		};
-	}
+	/** Value for a cell that is the maxHeight of the widget in the cell. */
+	static public Value maxHeight = new CellValue() {
+		public float get (Cell cell) {
+			if (cell == null) throw new RuntimeException("maxHeight can only be set on a cell property.");
+			Object widget = cell.widget;
+			if (widget == null) return 0;
+			return Toolkit.instance.getMaxHeight(widget);
+		}
+	};
 
 	/** Returns a value that is a percentage of the table's width. */
 	static public Value percentWidth (final float percent) {
