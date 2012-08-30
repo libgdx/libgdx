@@ -105,6 +105,7 @@ public class FileProcessor {
 	 * @param outputRoot May be null if there is no output from processing the files.
 	 * @return the processed files added with {@link #addProcessedFile(Entry)}. */
 	public ArrayList<Entry> process (File[] files, File outputRoot) throws Exception {
+		if (outputRoot == null) outputRoot = new File("");
 		outputFiles.clear();
 
 		LinkedHashMap<File, ArrayList<Entry>> dirToEntries = new LinkedHashMap();
@@ -123,7 +124,8 @@ public class FileProcessor {
 			Entry entry = new Entry();
 			entry.inputFile = mapEntry.getKey();
 			entry.outputDir = newOutputDir;
-			entry.outputFile = newOutputDir == null ? null : new File(newOutputDir, outputName);
+			if (newOutputDir != null)
+				entry.outputFile = newOutputDir.length() == 0 ? new File(outputName) : new File(newOutputDir, outputName);
 
 			try {
 				processDir(entry, dirEntries);
@@ -170,8 +172,13 @@ public class FileProcessor {
 				entry.depth = depth;
 				entry.inputFile = file;
 				entry.outputDir = outputDir;
-				if (outputRoot != null)
-					entry.outputFile = flattenOutput ? new File(outputRoot, outputName) : new File(outputDir, outputName);
+
+				if (flattenOutput) {
+					entry.outputFile = outputRoot.length() == 0 ? new File(outputName) : new File(outputRoot, outputName);
+				} else {
+					entry.outputFile = outputDir.length() == 0 ? new File(outputName) : new File(outputDir, outputName);
+				}
+
 				ArrayList<Entry> entries = dirToEntries.get(dir);
 				if (entries == null) {
 					entries = new ArrayList();
@@ -179,8 +186,10 @@ public class FileProcessor {
 				}
 				entries.add(entry);
 			}
-			if (recursive && file.isDirectory())
-				process(file.listFiles(inputFilter), outputRoot, new File(outputDir, file.getName()), dirToEntries, depth + 1);
+			if (recursive && file.isDirectory()) {
+				File subdir = outputDir.getPath().length() == 0 ? new File(file.getName()) : new File(outputDir, file.getName());
+				process(file.listFiles(inputFilter), outputRoot, subdir, dirToEntries, depth + 1);
+			}
 		}
 	}
 
