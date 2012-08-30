@@ -212,7 +212,8 @@ public class Group extends Actor implements Cullable {
 		childrenChanged();
 	}
 
-	/** Adds an actor as a child of this group, at a specific index. The actor is first removed from its parent group, if any. */
+	/** Adds an actor as a child of this group, at a specific index. The actor is first removed from its parent group, if any.
+	 * @param index May be greater than the number of children. */
 	public void addActorAt (int index, Actor actor) {
 		actor.remove();
 		if (index >= children.size)

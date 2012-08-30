@@ -55,8 +55,6 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 			for (int i = 0, n = cells.size(); i < n; i++) {
 				Cell c = cells.get(i);
 				if (c.getIgnore()) continue;
-				Actor actor = (Actor)c.getWidget();
-				if (actor == null) continue;
 				float widgetWidth = Math.round(c.getWidgetWidth());
 				float widgetHeight = Math.round(c.getWidgetHeight());
 				float widgetX = Math.round(c.getWidgetX());
@@ -65,14 +63,13 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 				c.setWidgetY(widgetY);
 				c.setWidgetWidth(widgetWidth);
 				c.setWidgetHeight(widgetHeight);
-				actor.setBounds(widgetX, widgetY, widgetWidth, widgetHeight);
+				Actor actor = (Actor)c.getWidget();
+				if (actor != null) actor.setBounds(widgetX, widgetY, widgetWidth, widgetHeight);
 			}
 		} else {
 			for (int i = 0, n = cells.size(); i < n; i++) {
 				Cell c = cells.get(i);
 				if (c.getIgnore()) continue;
-				Actor actor = (Actor)c.getWidget();
-				if (actor == null) continue;
 				float widgetWidth = c.getWidgetWidth();
 				float widgetHeight = c.getWidgetHeight();
 				float widgetX = c.getWidgetX();
@@ -81,7 +78,8 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 				c.setWidgetY(widgetY);
 				c.setWidgetWidth(widgetWidth);
 				c.setWidgetHeight(widgetHeight);
-				actor.setBounds(widgetX, widgetY, widgetWidth, widgetHeight);
+				Actor actor = (Actor)c.getWidget();
+				if (actor != null) actor.setBounds(widgetX, widgetY, widgetWidth, widgetHeight);
 			}
 		}
 		Array<Actor> children = table.getChildren();
