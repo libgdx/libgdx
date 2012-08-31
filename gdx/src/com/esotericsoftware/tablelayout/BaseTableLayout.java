@@ -181,8 +181,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	public void clear () {
 		for (int i = cells.size() - 1; i >= 0; i--) {
 			Object widget = cells.get(i).widget;
-			if (widget == null) continue;
-			toolkit.removeChild(table, (C)widget);
+			if (widget != null) toolkit.removeChild(table, (C)widget);
 		}
 		cells.clear();
 		rows = 0;

@@ -375,8 +375,7 @@ public class Tree extends WidgetGroup {
 	static void expandAll (Array<Node> nodes) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			node.setExpanded(true);
-			expandAll(node.children);
+			node.expandAll();
 		}
 	}
 

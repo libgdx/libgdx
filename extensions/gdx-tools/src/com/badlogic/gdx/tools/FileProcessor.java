@@ -16,28 +16,36 @@
 
 package com.badlogic.gdx.tools;
 
+import com.badlogic.gdx.utils.Array;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
-import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import com.badlogic.gdx.utils.Array;
-
+/** Collects files recursively, filtering by file name. Callbacks are provided to process files and the results are collected,
+ * either {@link #processFile(Entry)} or {@link #processDir(Entry, ArrayList)} can be overridden, or both. The entries provided to
+ * the callbacks have the original file, the output directory, and the output file. If {@link #setFlattenOutput(boolean)} is
+ * false, the output will match the directory structure of the input.
+ * @author Nathan Sweet */
 public class FileProcessor {
 	FilenameFilter inputFilter;
-	Comparator<File> comparator;
+	Comparator<File> comparator = new Comparator<File>() {
+		public int compare (File o1, File o2) {
+			return o1.getName().compareTo(o2.getName());
+		}
+	};
 	Array<Pattern> inputRegex = new Array();
 	String outputSuffix;
-	ArrayList<InputFile> outputFiles = new ArrayList();
+	ArrayList<Entry> outputFiles = new ArrayList();
 	boolean recursive = true;
 	boolean flattenOutput;
 
-	Comparator<InputFile> inputFileComparator = new Comparator<InputFile>() {
-		public int compare (InputFile o1, InputFile o2) {
+	Comparator<Entry> entryComparator = new Comparator<Entry>() {
+		public int compare (Entry o1, Entry o2) {
 			return comparator.compare(o1.inputFile, o2.inputFile);
 		}
 	};
@@ -47,6 +55,7 @@ public class FileProcessor {
 		return this;
 	}
 
+	/** Sets the comparator for {@link #processDir(Entry, ArrayList)}. By default the files are sorted by alpha. */
 	public FileProcessor setComparator (Comparator<File> comparator) {
 		this.comparator = comparator;
 		return this;
@@ -58,12 +67,13 @@ public class FileProcessor {
 		return this;
 	}
 
-	public FileProcessor addInputRegex (String... regexex) {
-		for (String regex : regexex)
+	public FileProcessor addInputRegex (String... regexes) {
+		for (String regex : regexes)
 			inputRegex.add(Pattern.compile(regex));
 		return this;
 	}
 
+	/** Sets the suffix for output files, replacing the extension of the input file. */
 	public FileProcessor setOutputSuffix (String outputSuffix) {
 		this.outputSuffix = outputSuffix;
 		return this;
@@ -74,14 +84,16 @@ public class FileProcessor {
 		return this;
 	}
 
+	/** Default is true. */
 	public FileProcessor setRecursive (boolean recursive) {
 		this.recursive = recursive;
 		return this;
 	}
 
-	/** @param outputRoot May be null.
-	 * @return the processed files added with {@link #addProcessedFile(InputFile)}. */
-	public ArrayList<InputFile> process (File inputFile, File outputRoot) throws Exception {
+	/** Processes the specified input file or directory.
+	 * @param outputRoot May be null if there is no output from processing the files.
+	 * @return the processed files added with {@link #addProcessedFile(Entry)}. */
+	public ArrayList<Entry> process (File inputFile, File outputRoot) throws Exception {
 		if (!inputFile.exists()) throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
 		if (inputFile.isFile())
 			return process(new File[] {inputFile}, outputRoot);
@@ -89,49 +101,53 @@ public class FileProcessor {
 			return process(inputFile.listFiles(), outputRoot);
 	}
 
-	/** @return the processed files added with {@link #addProcessedFile(InputFile)}. */
-	public ArrayList<InputFile> process (File[] files, File outputRoot) throws Exception {
+	/** Processes the specified input files.
+	 * @param outputRoot May be null if there is no output from processing the files.
+	 * @return the processed files added with {@link #addProcessedFile(Entry)}. */
+	public ArrayList<Entry> process (File[] files, File outputRoot) throws Exception {
+		if (outputRoot == null) outputRoot = new File("");
 		outputFiles.clear();
 
-		LinkedHashMap<File, ArrayList<InputFile>> dirToEntries = new LinkedHashMap();
+		LinkedHashMap<File, ArrayList<Entry>> dirToEntries = new LinkedHashMap();
 		process(files, outputRoot, outputRoot, dirToEntries, 0);
 
-		ArrayList<InputFile> allInputFiles = new ArrayList();
-		for (Entry<File, ArrayList<InputFile>> entry : dirToEntries.entrySet()) {
-			ArrayList<InputFile> dirInputFiles = entry.getValue();
-			if (comparator != null) Collections.sort(dirInputFiles, inputFileComparator);
+		ArrayList<Entry> allEntries = new ArrayList();
+		for (java.util.Map.Entry<File, ArrayList<Entry>> mapEntry : dirToEntries.entrySet()) {
+			ArrayList<Entry> dirEntries = mapEntry.getValue();
+			if (comparator != null) Collections.sort(dirEntries, entryComparator);
 
-			File inputDir = entry.getKey();
-			File newOutputDir = flattenOutput ? outputRoot : dirInputFiles.get(0).outputDir;
+			File inputDir = mapEntry.getKey();
+			File newOutputDir = flattenOutput ? outputRoot : dirEntries.get(0).outputDir;
 			String outputName = inputDir.getName();
 			if (outputSuffix != null) outputName = outputName.replaceAll("(.*)\\..*", "$1") + outputSuffix;
 
-			InputFile inputFile = new InputFile();
-			inputFile.inputFile = entry.getKey();
-			inputFile.outputDir = newOutputDir;
-			inputFile.outputFile = newOutputDir == null ? null : new File(newOutputDir, outputName);
+			Entry entry = new Entry();
+			entry.inputFile = mapEntry.getKey();
+			entry.outputDir = newOutputDir;
+			if (newOutputDir != null)
+				entry.outputFile = newOutputDir.length() == 0 ? new File(outputName) : new File(newOutputDir, outputName);
 
 			try {
-				processDir(inputFile, dirInputFiles);
+				processDir(entry, dirEntries);
 			} catch (Exception ex) {
-				throw new Exception("Error processing directory: " + inputFile.inputFile.getAbsolutePath(), ex);
+				throw new Exception("Error processing directory: " + entry.inputFile.getAbsolutePath(), ex);
 			}
-			allInputFiles.addAll(dirInputFiles);
+			allEntries.addAll(dirEntries);
 		}
 
-		if (comparator != null) Collections.sort(allInputFiles, inputFileComparator);
-		for (InputFile inputFile : allInputFiles) {
+		if (comparator != null) Collections.sort(allEntries, entryComparator);
+		for (Entry entry : allEntries) {
 			try {
-				processFile(inputFile);
+				processFile(entry);
 			} catch (Exception ex) {
-				throw new Exception("Error processing file: " + inputFile.inputFile.getAbsolutePath(), ex);
+				throw new Exception("Error processing file: " + entry.inputFile.getAbsolutePath(), ex);
 			}
 		}
 
 		return outputFiles;
 	}
 
-	private void process (File[] files, File outputRoot, File outputDir, LinkedHashMap<File, ArrayList<InputFile>> dirToEntries,
+	private void process (File[] files, File outputRoot, File outputDir, LinkedHashMap<File, ArrayList<Entry>> dirToEntries,
 		int depth) {
 		for (File file : files) {
 			if (file.isFile()) {
@@ -152,44 +168,57 @@ public class FileProcessor {
 				String outputName = file.getName();
 				if (outputSuffix != null) outputName = outputName.replaceAll("(.*)\\..*", "$1") + outputSuffix;
 
-				InputFile inputFile = new InputFile();
-				inputFile.depth = depth;
-				inputFile.inputFile = file;
-				inputFile.outputDir = outputDir;
-				if (outputRoot != null)
-					inputFile.outputFile = flattenOutput ? new File(outputRoot, outputName) : new File(outputDir, outputName);
-				ArrayList<InputFile> inputFiles = dirToEntries.get(dir);
-				if (inputFiles == null) {
-					inputFiles = new ArrayList();
-					dirToEntries.put(dir, inputFiles);
+				Entry entry = new Entry();
+				entry.depth = depth;
+				entry.inputFile = file;
+				entry.outputDir = outputDir;
+
+				if (flattenOutput) {
+					entry.outputFile = outputRoot.length() == 0 ? new File(outputName) : new File(outputRoot, outputName);
+				} else {
+					entry.outputFile = outputDir.length() == 0 ? new File(outputName) : new File(outputDir, outputName);
 				}
-				inputFiles.add(inputFile);
+
+				ArrayList<Entry> entries = dirToEntries.get(dir);
+				if (entries == null) {
+					entries = new ArrayList();
+					dirToEntries.put(dir, entries);
+				}
+				entries.add(entry);
 			}
-			if (recursive && file.isDirectory())
-				process(file.listFiles(inputFilter), outputRoot, new File(outputDir, file.getName()), dirToEntries, depth + 1);
+			if (recursive && file.isDirectory()) {
+				File subdir = outputDir.getPath().length() == 0 ? new File(file.getName()) : new File(outputDir, file.getName());
+				process(file.listFiles(inputFilter), outputRoot, subdir, dirToEntries, depth + 1);
+			}
 		}
 	}
 
-	protected void processFile (InputFile inputFile) throws Exception {
+	/** Called with each input file. */
+	protected void processFile (Entry entry) throws Exception {
 	}
 
-	protected void processDir (InputFile inputDir, ArrayList<InputFile> files) throws Exception {
+	/** Called for each input directory. The files will be {@link #setComparator(Comparator) sorted}. */
+	protected void processDir (Entry entryDir, ArrayList<Entry> files) throws Exception {
 	}
 
-	protected void addProcessedFile (InputFile inputFile) {
-		outputFiles.add(inputFile);
+	/** This method should be called by {@link #processFile(Entry)} or {@link #processDir(Entry, ArrayList)} if the return value of
+	 * {@link #process(File, File)} or {@link #process(File[], File)} should return all the processed files. */
+	protected void addProcessedFile (Entry entry) {
+		outputFiles.add(entry);
 	}
 
-	static public class InputFile {
+	/** @author Nathan Sweet */
+	static public class Entry {
 		public File inputFile;
+		/** May be null. */
 		public File outputDir;
 		public File outputFile;
 		public int depth;
 
-		public InputFile () {
+		public Entry () {
 		}
 
-		public InputFile (File inputFile, File outputFile) {
+		public Entry (File inputFile, File outputFile) {
 			this.inputFile = inputFile;
 			this.outputFile = outputFile;
 		}
