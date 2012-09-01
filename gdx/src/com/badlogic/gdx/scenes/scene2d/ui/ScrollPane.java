@@ -221,7 +221,7 @@ public class ScrollPane extends WidgetGroup {
 
 	void cancelTouchFocusedChild (InputEvent event) {
 		Stage stage = getStage();
-		if(stage != null) stage.cancelTouchFocus(gestureListener, this);
+		if (stage != null) stage.cancelTouchFocus(gestureListener, this);
 	}
 
 	void clamp () {
@@ -639,14 +639,26 @@ public class ScrollPane extends WidgetGroup {
 		invalidate();
 	}
 
-	/** Sets the scroll offset so the specified rectangle is fully in view and centered in the scroll pane, if possible. Coordinates
-	 * are in the scroll pane widget's coordinate system. */
+	/** Sets the scroll offset so the specified rectangle is fully in view, if possible. Coordinates are in the scroll pane widget's
+	 * coordinate system. */
 	public void scrollTo (float x, float y, float width, float height) {
-		float centerX = x - areaWidth / 2 - width / 2;
-		if (amountX < centerX - areaWidth / 4 || amountX > centerX + areaWidth / 4) amountX = centerX;
+		if (x + width > amountX + areaWidth) amountX = x + width - areaWidth;
+		if (x < amountX) amountX = x;
 		amountX = MathUtils.clamp(amountX, 0, maxX);
 
-		float centerY = maxY + areaHeight - y - areaHeight / 2 - height / 2;
+		if (amountY > maxY - y - height + areaHeight) amountY = maxY - y - height + areaHeight;
+		if (amountY < maxY - y) amountY = maxY - y;
+		amountY = MathUtils.clamp(amountY, 0, maxY);
+	}
+
+	/** Sets the scroll offset so the specified rectangle is fully in view and centered vertically in the scroll pane, if possible.
+	 * Coordinates are in the scroll pane widget's coordinate system. */
+	public void scrollToCenter (float x, float y, float width, float height) {
+		if (x + width > amountX + areaWidth) amountX = x + width - areaWidth;
+		if (x < amountX) amountX = x;
+		amountX = MathUtils.clamp(amountX, 0, maxX);
+
+		float centerY = maxY - y + areaHeight / 2 - height / 2;
 		if (amountY < centerY - areaHeight / 4 || amountY > centerY + areaHeight / 4) amountY = centerY;
 		amountY = MathUtils.clamp(amountY, 0, maxY);
 	}
