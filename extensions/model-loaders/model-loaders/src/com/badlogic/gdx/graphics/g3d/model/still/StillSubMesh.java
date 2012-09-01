@@ -21,21 +21,14 @@ import com.badlogic.gdx.graphics.g3d.model.SubMesh;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class StillSubMesh extends SubMesh {
-	final public Mesh mesh;
 
-	public StillSubMesh (String name, Mesh mesh, int primitiveType) {
-		this.name = name;
-		this.mesh = mesh;
-		this.primitiveType = primitiveType;
+   public StillSubMesh (String name, Mesh mesh, int primitiveType) {
+		super(name, mesh, primitiveType);
 	}
-
+	
 	@Override
 	public void getBoundingBox (BoundingBox bbox) {
 		mesh.calculateBoundingBox(bbox);
 	}
 
-	@Override
-	public Mesh getMesh () {
-		return mesh;
-	}
 }

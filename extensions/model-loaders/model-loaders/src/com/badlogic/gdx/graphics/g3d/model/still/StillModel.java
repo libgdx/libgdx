@@ -27,8 +27,11 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 public class StillModel implements Model {
 	final public StillSubMesh[] subMeshes;
 
-	public StillModel (StillSubMesh[] subMeshes) {
-		this.subMeshes = subMeshes;
+	public StillModel (SubMesh[] subMeshes) {
+		this.subMeshes = new StillSubMesh[subMeshes.length];
+		for (int i = 0; i < subMeshes.length ; ++i) {
+			this.subMeshes[i] = (StillSubMesh)subMeshes[i];
+		}	
 	}
 
 	@Override
