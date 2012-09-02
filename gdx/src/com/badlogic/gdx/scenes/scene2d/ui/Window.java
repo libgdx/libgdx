@@ -157,8 +157,8 @@ public class Window extends Table {
 		titleCache.draw(batch, parentAlpha);
 	}
 
-	public Actor hit (float x, float y) {
-		Actor hit = super.hit(x, y);
+	public Actor hit (float x, float y, boolean touchable) {
+		Actor hit = super.hit(x, y, touchable);
 		if (hit == null && isModal) return this;
 		return hit;
 	}

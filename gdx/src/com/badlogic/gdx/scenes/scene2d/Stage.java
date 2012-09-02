@@ -196,7 +196,7 @@ public class Stage extends InputAdapter implements Disposable {
 	private Actor fireEnterAndExit (Actor overLast, int screenX, int screenY, int pointer) {
 		// Find the actor under the point.
 		screenToStageCoordinates(stageCoords.set(screenX, screenY));
-		Actor over = hit(stageCoords.x, stageCoords.y);
+		Actor over = hit(stageCoords.x, stageCoords.y, false);
 		if (over == overLast) return overLast;
 
 		InputEvent event = Pools.obtain(InputEvent.class);
@@ -236,7 +236,7 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setPointer(pointer);
 		event.setButton(button);
 
-		Actor target = hit(stageCoords.x, stageCoords.y);
+		Actor target = hit(stageCoords.x, stageCoords.y, true);
 		if (target == null) target = root;
 
 		target.fire(event);
@@ -334,7 +334,7 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setStageX(stageCoords.x);
 		event.setStageY(stageCoords.y);
 
-		Actor target = hit(stageCoords.x, stageCoords.y);
+		Actor target = hit(stageCoords.x, stageCoords.y, true);
 		if (target == null) target = root;
 
 		target.fire(event);
@@ -610,11 +610,12 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Returns the {@link Actor} at the specified location in stage coordinates. Hit testing is performed in the order the actors
 	 * were inserted into the stage, last inserted actors being tested first. To get stage coordinates from screen coordinates, use
 	 * {@link #screenToStageCoordinates(Vector2)}.
+	 * @param touchable If true, the hit detection will respect the {@link Actor#setTouchable(Touchable) touchability}.
 	 * @return May be null if no actor was hit. */
-	public Actor hit (float stageX, float stageY) {
+	public Actor hit (float stageX, float stageY, boolean touchable) {
 		Vector2 actorCoords = Vector2.tmp;
 		root.parentToLocalCoordinates(actorCoords.set(stageX, stageY));
-		return root.hit(actorCoords.x, actorCoords.y);
+		return root.hit(actorCoords.x, actorCoords.y, touchable);
 	}
 
 	/** Transforms the screen coordinates to stage coordinates.
