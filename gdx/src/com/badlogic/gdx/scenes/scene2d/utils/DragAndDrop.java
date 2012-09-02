@@ -47,7 +47,7 @@ public class DragAndDrop {
 					break;
 				}
 				if (newTarget != target) {
-					if (target != null) target.reset();
+					if (target != null) target.reset(source, payload);
 					target = newTarget;
 				}
 
@@ -76,9 +76,9 @@ public class DragAndDrop {
 				if (dragActor != null) dragActor.remove();
 				if (isValidTarget) target.drop(source, payload);
 				source.dragStop(event, x, y, pointer, isValidTarget ? target : null);
+				if (target != null) target.reset(source, payload);
 				DragAndDrop.this.source = null;
 				payload = null;
-				if (target != null) target.reset();
 				target = null;
 				isValidTarget = false;
 				dragActor = null;
@@ -159,8 +159,8 @@ public class DragAndDrop {
 		 * @return true if this is a valid target for the object. */
 		abstract public boolean drag (Source source, Payload payload, float x, float y, int pointer);
 
-		/** Called when the object is no longer over the target. */
-		public void reset () {
+		/** Called when the object is no longer over the target, whether because the touch was moved or a drop occurred. */
+		public void reset (Source source, Payload payload) {
 		}
 
 		abstract public void drop (Source source, Payload payload);

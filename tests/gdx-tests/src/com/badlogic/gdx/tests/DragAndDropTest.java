@@ -67,7 +67,7 @@ public class DragAndDropTest extends GdxTest {
 				return true;
 			}
 
-			public void reset () {
+			public void reset (Source source, Payload payload) {
 				getActor().setColor(Color.WHITE);
 			}
 
@@ -81,7 +81,7 @@ public class DragAndDropTest extends GdxTest {
 				return false;
 			}
 
-			public void reset () {
+			public void reset (Source source, Payload payload) {
 				getActor().setColor(Color.WHITE);
 			}
 
