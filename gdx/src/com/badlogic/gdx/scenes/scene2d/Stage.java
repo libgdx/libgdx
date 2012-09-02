@@ -55,9 +55,13 @@ public class Stage extends InputAdapter implements Disposable {
 	private Camera camera;
 	private final SpriteBatch batch;
 	private final boolean ownsBatch;
-	private final Group root;
+	private Group root;
 	private final Vector2 stageCoords = new Vector2();
 	private Actor[] pointerOverActors = new Actor[20];
+	private boolean[] pointerTouched = new boolean[20];
+	private int[] pointerScreenX = new int[20];
+	private int[] pointerScreenY = new int[20];
+	private int mouseScreenX, mouseScreenY;
 	private Actor mouseOverActor;
 	private Actor keyboardFocus, scrollFocus;
 	private SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
@@ -71,17 +75,9 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Creates a stage with the specified {@link #setViewport(float, float, boolean) viewport}. The stage will use its own
 	 * {@link SpriteBatch}, which will be disposed when the stage is disposed. */
 	public Stage (float width, float height, boolean stretch) {
-		this.width = width;
-		this.height = height;
-
-		ownsBatch = true;
 		batch = new SpriteBatch();
-
-		root = new Group();
-		root.setStage(this);
-
-		camera = new OrthographicCamera();
-		setViewport(width, height, stretch);
+		ownsBatch = true;
+		initialize(width, height, stretch);
 	}
 
 	/** Creates a stage with the specified {@link #setViewport(float, float, boolean) viewport} and {@link SpriteBatch}. This can be
@@ -89,11 +85,14 @@ public class Stage extends InputAdapter implements Disposable {
 	 * life time.
 	 * @param batch Will not be disposed if {@link #dispose()} is called. Handle disposal yourself. */
 	public Stage (float width, float height, boolean stretch, SpriteBatch batch) {
-		this.width = width;
-		this.height = height;
-
 		this.batch = batch;
 		ownsBatch = false;
+		initialize(width, height, stretch);
+	}
+
+	private void initialize (float width, float height, boolean stretch) {
+		this.width = width;
+		this.height = height;
 
 		root = new Group();
 		root.setStage(this);
@@ -163,14 +162,14 @@ public class Stage extends InputAdapter implements Disposable {
 	 * enter and exit events.
 	 * @param delta Time in seconds since the last frame. */
 	public void act (float delta) {
-		// Update over actors.
+		// Update over actors. Done in act() because actors may change position, which can fire enter/exit without an input event.
 		for (int pointer = 0, n = pointerOverActors.length; pointer < n; pointer++) {
 			Actor overLast = pointerOverActors[pointer];
 			// Check if pointer is gone.
-			if (!Gdx.input.isTouched(pointer)) {
+			if (!pointerTouched[pointer]) {
 				if (overLast != null) {
 					pointerOverActors[pointer] = null;
-					screenToStageCoordinates(stageCoords.set(Gdx.input.getX(pointer), Gdx.input.getY(pointer)));
+					screenToStageCoordinates(stageCoords.set(pointerScreenX[pointer], pointerScreenY[pointer]));
 					// Exit over last.
 					InputEvent event = Pools.obtain(InputEvent.class);
 					event.setType(InputEvent.Type.exit);
@@ -185,11 +184,11 @@ public class Stage extends InputAdapter implements Disposable {
 				continue;
 			}
 			// Update over actor for the pointer.
-			pointerOverActors[pointer] = fireEnterAndExit(overLast, Gdx.input.getX(pointer), Gdx.input.getY(pointer), pointer);
+			pointerOverActors[pointer] = fireEnterAndExit(overLast, pointerScreenX[pointer], pointerScreenY[pointer], pointer);
 		}
 		// Update over actor for the mouse on the desktop.
 		if (Gdx.app.getType() == ApplicationType.Desktop)
-			mouseOverActor = fireEnterAndExit(mouseOverActor, Gdx.input.getX(), Gdx.input.getY(), -1);
+			mouseOverActor = fireEnterAndExit(mouseOverActor, mouseScreenX, mouseScreenY, -1);
 
 		root.act(delta);
 	}
@@ -223,6 +222,10 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Applies a touch down event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event. */
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+		pointerTouched[pointer] = true;
+		pointerScreenX[pointer] = screenX;
+		pointerScreenY[pointer] = screenY;
+
 		screenToStageCoordinates(stageCoords.set(screenX, screenY));
 
 		InputEvent event = Pools.obtain(InputEvent.class);
@@ -245,6 +248,9 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Applies a touch moved event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event.
 	 * Only {@link InputListener listeners} that returned true for touchDown will receive this event. */
 	public boolean touchDragged (int screenX, int screenY, int pointer) {
+		pointerScreenX[pointer] = screenX;
+		pointerScreenY[pointer] = screenY;
+
 		if (touchFocuses.size == 0) return false;
 
 		screenToStageCoordinates(stageCoords.set(screenX, screenY));
@@ -275,6 +281,10 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Applies a touch up event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event.
 	 * Only {@link InputListener listeners} that returned true for touchDown will receive this event. */
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
+		pointerTouched[pointer] = false;
+		pointerScreenX[pointer] = screenX;
+		pointerScreenY[pointer] = screenY;
+
 		if (touchFocuses.size == 0) return false;
 
 		screenToStageCoordinates(stageCoords.set(screenX, screenY));
@@ -313,6 +323,9 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Applies a mouse moved event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event.
 	 * This event only occurs on the desktop. */
 	public boolean mouseMoved (int screenX, int screenY) {
+		mouseScreenX = screenX;
+		mouseScreenY = screenY;
+
 		screenToStageCoordinates(stageCoords.set(screenX, screenY));
 
 		InputEvent event = Pools.obtain(InputEvent.class);
