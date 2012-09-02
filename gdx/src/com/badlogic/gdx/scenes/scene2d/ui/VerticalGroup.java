@@ -1,9 +1,10 @@
 
-package com.badlogic.gdx.scenes.scene2d.utils;
+package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.SnapshotArray;
 
 /** A group that lays out its children on top of each other in a single column. This can be easier than using {@link Table} when
@@ -17,6 +18,10 @@ public class VerticalGroup extends WidgetGroup {
 	private boolean sizeInvalid = true;
 	private int alignment;
 	private boolean reverse;
+
+	public VerticalGroup () {
+		setTouchable(Touchable.childrenOnly);
+	}
 
 	/** Sets the horizontal alignment of the children. Default is center.
 	 * @see Align */

@@ -98,6 +98,7 @@ public class TextField extends Widget {
 	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
 	float keyRepeatInitialTime = 0.4f;
 	float keyRepeatTime = 0.1f;
+	boolean rightAligned;
 
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
@@ -164,15 +165,25 @@ public class TextField extends Widget {
 				Stage stage = getStage();
 				if (stage != null && stage.getKeyboardFocus() == TextField.this) {
 					boolean repeat = false;
-					if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
+					boolean ctrl = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
+					if (ctrl) {
 						// paste
-						if (keycode == Keys.V) paste();
+						if (keycode == Keys.V) {
+							paste();
+							return true;
+						}
 						// copy
-						if (keycode == Keys.C || keycode == Keys.INSERT) copy();
-
-						if (keycode == Keys.X || keycode == Keys.DEL) cut();
-
-					} else if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
+						if (keycode == Keys.C || keycode == Keys.INSERT) {
+							copy();
+							return true;
+						}
+						// cut
+						if (keycode == Keys.X || keycode == Keys.DEL) {
+							cut();
+							return true;
+						}
+					}
+					if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
 						// paste
 						if (keycode == Keys.INSERT) paste();
 						// cut
@@ -188,7 +199,13 @@ public class TextField extends Widget {
 								selectionStart = cursor;
 								hasSelection = true;
 							}
-							cursor--;
+							while (--cursor > 0 && ctrl) {
+								char c = text.charAt(cursor);
+								if (c >= 'A' && c <= 'Z') continue;
+								if (c >= 'a' && c <= 'z') continue;
+								if (c >= '0' && c <= '9') continue;
+								break;
+							}
 							repeat = true;
 						}
 						if (keycode == Keys.RIGHT) {
@@ -196,7 +213,14 @@ public class TextField extends Widget {
 								selectionStart = cursor;
 								hasSelection = true;
 							}
-							cursor++;
+							int length = text.length();
+							while (++cursor < length && ctrl) {
+								char c = text.charAt(cursor - 1);
+								if (c >= 'A' && c <= 'Z') continue;
+								if (c >= 'a' && c <= 'z') continue;
+								if (c >= '0' && c <= '9') continue;
+								break;
+							}
 							repeat = true;
 						}
 						if (keycode == Keys.HOME) {
@@ -219,12 +243,25 @@ public class TextField extends Widget {
 					} else {
 						// cursor movement or other keys (kill selection)
 						if (keycode == Keys.LEFT) {
-							cursor--;
+							while (cursor-- > 1 && ctrl) {
+								char c = text.charAt(cursor - 1);
+								if (c >= 'A' && c <= 'Z') continue;
+								if (c >= 'a' && c <= 'z') continue;
+								if (c >= '0' && c <= '9') continue;
+								break;
+							}
 							clearSelection();
 							repeat = true;
 						}
 						if (keycode == Keys.RIGHT) {
-							cursor++;
+							int length = text.length();
+							while (++cursor < length && ctrl) {
+								char c = text.charAt(cursor - 1);
+								if (c >= 'A' && c <= 'Z') continue;
+								if (c >= 'a' && c <= 'z') continue;
+								if (c >= '0' && c <= '9') continue;
+								break;
+							}
 							clearSelection();
 							repeat = true;
 						}
@@ -265,6 +302,7 @@ public class TextField extends Widget {
 							text = text.substring(0, cursor - 1) + text.substring(cursor);
 							updateDisplayText();
 							cursor--;
+							renderOffset = 0;
 						} else {
 							delete();
 						}
@@ -328,22 +366,19 @@ public class TextField extends Widget {
 	}
 
 	private void calculateOffsets () {
-		float position = glyphPositions.get(cursor);
-		float distance = position - Math.abs(renderOffset);
 		float visibleWidth = getWidth();
 		if (style.background != null) visibleWidth -= style.background.getLeftWidth() + style.background.getRightWidth();
 
-		// check whether the cursor left the left or right side of
-		// the visible area and adjust renderoffset.
+		// Check if the cursor has gone out the left or right side of the visible area and adjust renderoffset.
+		float position = glyphPositions.get(cursor);
+		float distance = position - Math.abs(renderOffset);
 		if (distance <= 0) {
 			if (cursor > 0)
 				renderOffset = -glyphPositions.get(cursor - 1);
 			else
 				renderOffset = 0;
-		} else {
-			if (distance > visibleWidth) {
-				renderOffset -= distance - visibleWidth;
-			}
+		} else if (distance > visibleWidth) {
+			renderOffset -= distance - visibleWidth;
 		}
 
 		// calculate first visible char based on render offset
@@ -356,7 +391,7 @@ public class TextField extends Widget {
 			if (glyphPositions.items[i] >= start) {
 				visibleTextStart = i;
 				startPos = glyphPositions.items[i];
-				textOffset = glyphPositions.items[visibleTextStart] - start;
+				textOffset = startPos - start;
 				break;
 			}
 		}
@@ -372,10 +407,15 @@ public class TextField extends Widget {
 		if (hasSelection) {
 			int minIndex = Math.min(cursor, selectionStart);
 			int maxIndex = Math.max(cursor, selectionStart);
-			float minX = Math.max(glyphPositions.get(minIndex), glyphPositions.get(visibleTextStart));
+			float minX = Math.max(glyphPositions.get(minIndex), startPos);
 			float maxX = Math.min(glyphPositions.get(maxIndex), glyphPositions.get(visibleTextEnd));
 			selectionX = minX;
 			selectionWidth = maxX - minX;
+		}
+
+		if (rightAligned) {
+			textOffset = visibleWidth - (glyphPositions.items[visibleTextEnd] - startPos);
+			if (hasSelection) selectionX += textOffset;
 		}
 	}
 
@@ -426,8 +466,9 @@ public class TextField extends Widget {
 		if (focused) {
 			blink();
 			if (cursorOn && cursorPatch != null) {
-				cursorPatch.draw(batch, x + bgLeftWidth + glyphPositions.get(cursor) + renderOffset - 1, y + textY
-					- textBounds.height - font.getDescent(), cursorPatch.getMinWidth(), textBounds.height + font.getDescent() / 2);
+				cursorPatch.draw(batch, x + textOffset + glyphPositions.get(cursor) - glyphPositions.items[visibleTextStart] + 1, y
+					+ textY - textBounds.height - font.getDescent(), cursorPatch.getMinWidth(), textBounds.height + font.getDescent()
+					/ 2);
 			}
 		}
 	}
@@ -670,6 +711,10 @@ public class TextField extends Widget {
 				style.background.getMinHeight());
 		}
 		return prefHeight;
+	}
+
+	public void setRightAligned (boolean rightAligned) {
+		this.rightAligned = rightAligned;
 	}
 
 	/** If true, the text in this text field will be shown as bullet characters. The font must have character 149 or this will have

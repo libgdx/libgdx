@@ -895,12 +895,12 @@ public class Cell<C> {
 
 	static Cell defaults (BaseTableLayout layout) {
 		Cell defaults = new Cell(layout);
-		defaults.minWidth = Value.minWidth();
-		defaults.minHeight = Value.minHeight();
-		defaults.prefWidth = Value.prefWidth();
-		defaults.prefHeight = Value.prefHeight();
-		defaults.maxWidth = Value.maxWidth();
-		defaults.maxHeight = Value.maxHeight();
+		defaults.minWidth = Value.minWidth;
+		defaults.minHeight = Value.minHeight;
+		defaults.prefWidth = Value.prefWidth;
+		defaults.prefHeight = Value.prefHeight;
+		defaults.maxWidth = Value.maxWidth;
+		defaults.maxHeight = Value.maxHeight;
 		defaults.spaceTop = Value.zero;
 		defaults.spaceLeft = Value.zero;
 		defaults.spaceBottom = Value.zero;

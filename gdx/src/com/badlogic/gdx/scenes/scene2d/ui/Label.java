@@ -29,6 +29,10 @@ import com.badlogic.gdx.utils.StringBuilder;
 
 /** A text label, with optional word wrapping.
  * <p>
+ * Unlike most scene2d.ui widgets, label can be scaled and rotated using the actor's scale, rotation, and origin. This only
+ * affects drawing, other scene2d.ui widgets will still use the unscaled and unrotated bounds of the label. Note that a scaled or
+ * rotated label causes a SpriteBatch flush when it is drawn, so should be used relatively sparingly.
+ * <p>
  * The preferred size of the label is determined by the actual text bounds, unless {@link #setWrap(boolean) word wrap} is enabled.
  * @author Nathan Sweet */
 public class Label extends Widget {
@@ -206,18 +210,23 @@ public class Label extends Widget {
 		cache.setPosition(getX(), getY());
 		float scaleX = getScaleX();
 		float scaleY = getScaleY();
-		if (scaleX != 1 | scaleY != 1) {
+		float rotation = getRotation();
+		if (scaleX != 1 || scaleY != 1 || rotation != 0) {
 			Matrix4 transform = batch.getTransformMatrix();
-			float x = -getOriginX() * (scaleX - 1);
-			float y = -getOriginY() * (scaleY - 1);
 			batch.end();
-			transform.scl(scaleX, scaleY, 1);
+			float x = getOriginX();
+			float y = getOriginY();
 			transform.trn(x, y, 0);
+			if (rotation != 0) transform.rotate(0, 0, 1, rotation);
+			if (scaleX != 1 || scaleY != 1) transform.scale(scaleX, scaleY, 1);
+			transform.translate(-x, -y, 0);
 			batch.begin();
 			cache.draw(batch, color.a * parentAlpha);
 			batch.end();
+			transform.translate(x, y, 0);
+			if (scaleX != 1 || scaleY != 1) transform.scale(1 / scaleX, 1 / scaleY, 1);
+			if (rotation != 0) transform.rotate(0, 0, 1, -rotation);
 			transform.trn(-x, -y, 0);
-			transform.scl(1 / scaleX, 1 / scaleY, 1);
 			batch.begin();
 		} else
 			cache.draw(batch, color.a * parentAlpha);

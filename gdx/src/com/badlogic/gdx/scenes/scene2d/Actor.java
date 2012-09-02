@@ -541,13 +541,14 @@ public class Actor {
 	}
 
 	/** Converts coordinates for this actor to those of a parent actor. The ascendant does not need to be a direct parent. */
-	public void localToAscendantCoordinates (Actor ascendant, Vector2 localCoords) {
+	public Vector2 localToAscendantCoordinates (Actor ascendant, Vector2 localCoords) {
 		Actor actor = this;
 		while (actor.getParent() != null) {
 			actor.localToParentCoordinates(localCoords);
 			actor = actor.getParent();
 			if (actor == ascendant) break;
 		}
+		return localCoords;
 	}
 
 	/** Converts the coordinates given in the parent's coordinate system to this actor's coordinate system. */

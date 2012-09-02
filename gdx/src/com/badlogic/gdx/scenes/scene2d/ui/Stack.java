@@ -28,6 +28,7 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -45,6 +46,7 @@ public class Stack extends WidgetGroup {
 		setTransform(false);
 		setWidth(150);
 		setHeight(150);
+		setTouchable(Touchable.childrenOnly);
 	}
 
 	public void invalidate () {
@@ -77,8 +79,8 @@ public class Stack extends WidgetGroup {
 				prefHeight = Math.max(prefHeight, child.getHeight());
 				minWidth = Math.max(minWidth, child.getWidth());
 				minHeight = Math.max(minHeight, child.getHeight());
-				childMaxWidth = prefWidth;
-				childMaxHeight = prefHeight;
+				childMaxWidth = 0;
+				childMaxHeight = 0;
 			}
 			if (childMaxWidth > 0) maxWidth = maxWidth == 0 ? childMaxWidth : Math.min(maxWidth, childMaxWidth);
 			if (childMaxHeight > 0) maxHeight = maxHeight == 0 ? childMaxHeight : Math.min(maxHeight, childMaxHeight);
@@ -90,10 +92,12 @@ public class Stack extends WidgetGroup {
 	}
 
 	public void layout () {
+		if (sizeInvalid) computeSize();
+		float width = getWidth(), height = getHeight();
 		Array<Actor> children = getChildren();
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
-			child.setBounds(0, 0, getWidth(), getHeight());
+			child.setBounds(0, 0, width, height);
 			if (child instanceof Layout) {
 				Layout layout = (Layout)child;
 				layout.invalidate();

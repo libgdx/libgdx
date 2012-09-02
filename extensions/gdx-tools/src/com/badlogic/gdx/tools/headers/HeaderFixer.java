@@ -36,7 +36,7 @@ public class HeaderFixer {
 		}
 
 		@Override
-		protected void processFile (InputFile inputFile) throws Exception {
+		protected void processFile (Entry inputFile) throws Exception {
 			String content = new FileHandle(inputFile.inputFile).readString();
 			content = content.trim();
 			if (content.startsWith("package")) {
@@ -48,7 +48,7 @@ public class HeaderFixer {
 		}
 
 		@Override
-		protected void processDir (InputFile inputDir, ArrayList<InputFile> value) throws Exception {
+		protected void processDir (Entry inputDir, ArrayList<Entry> value) throws Exception {
 		}
 	}
 

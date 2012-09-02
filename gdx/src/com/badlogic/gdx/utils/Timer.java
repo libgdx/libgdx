@@ -128,7 +128,7 @@ public class Timer {
 	}
 
 	/** Schedules a task on {@link #instance}.
-	 * @see #schedule(Task) */
+	 * @see #scheduleTask(Task) */
 	static public void schedule (Task task) {
 		instance.scheduleTask(task);
 	}

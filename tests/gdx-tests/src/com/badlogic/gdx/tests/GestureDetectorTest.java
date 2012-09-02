@@ -39,14 +39,14 @@ public class GestureDetectorTest extends GdxTest implements ApplicationListener 
 		boolean flinging = false;
 		float initialScale = 1;
 
-		public boolean touchDown (float x, float y, int pointer) {
+		public boolean touchDown (float x, float y, int pointer, int button) {
 			flinging = false;
 			initialScale = camera.zoom;
 			return false;
 		}
 
 		@Override
-		public boolean tap (float x, float y, int count, int pointer, int button) {
+		public boolean tap (float x, float y, int count, int button) {
 			Gdx.app.log("GestureDetectorTest", "tap at " + x + ", " + y + ", count: " + count);
 			return false;
 		}
@@ -58,7 +58,7 @@ public class GestureDetectorTest extends GdxTest implements ApplicationListener 
 		}
 
 		@Override
-		public boolean fling (float velocityX, float velocityY, int pointer, int button) {
+		public boolean fling (float velocityX, float velocityY, int button) {
 			flinging = true;
 			velX = camera.zoom * velocityX * 0.5f;
 			velY = camera.zoom * velocityY * 0.5f;

@@ -104,11 +104,19 @@ public class ScrollPaneTest extends GdxTest {
 			}
 		});
 
-		container.add(scroll).expand().fill().colspan(3);
+		final TextButton onTopButton = new TextButton("Scrollbars On Top", skin.get("toggle", TextButtonStyle.class));
+		onTopButton.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				scroll.setScrollbarsOnTop(onTopButton.isChecked());
+			}
+		});
+
+		container.add(scroll).expand().fill().colspan(4);
 		container.row().space(10).padBottom(10);
-		container.add(flickButton).right();
+		container.add(flickButton).right().expandX();
+		container.add(onTopButton);
 		container.add(smoothButton);
-		container.add(fadeButton).left();
+		container.add(fadeButton).left().expandX();
 	}
 
 	public void render () {

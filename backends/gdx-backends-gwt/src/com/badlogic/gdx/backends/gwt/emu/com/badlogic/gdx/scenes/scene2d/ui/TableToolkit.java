@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gwtref.client.Method;
 import com.badlogic.gwtref.client.ReflectionCache;
 import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
 import com.esotericsoftware.tablelayout.Toolkit;
@@ -34,7 +35,8 @@ class TableToolkit extends Toolkit<Actor, Table, TableLayout> {
 	public void addChild (Actor parent, Actor child) {
 		child.remove();
 		try {
-			ReflectionCache.getType(parent.getClass()).getMethod("setWidget", Actor.class).invoke(parent, child);
+			Method method = ReflectionCache.getType(parent.getClass()).getMethod("setWidget", Actor.class);
+			method.invoke(parent, child);
 			return;
 		} catch (Exception ignored) {
 			// FIXME this is bad

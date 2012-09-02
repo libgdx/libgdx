@@ -236,6 +236,7 @@ public class OpenALAudio implements Audio {
 		int sourceId = soundIdToSource.get(soundId);
 
 		AL10.alSource3f(sourceId, AL10.AL_POSITION, pan, 0, 0);
+		AL10.alSourcef(sourceId, AL10.AL_GAIN, volume);
 	}
 
 	public void dispose () {

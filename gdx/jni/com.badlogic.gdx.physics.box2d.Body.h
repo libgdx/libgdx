@@ -36,8 +36,16 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniDestroyFixtur
  * Method:    jniSetTransform
  * Signature: (JFFF)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetTransform
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetTransform__JFFF
   (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Body
+ * Method:    jniSetTransform
+ * Signature: (JFFFZ)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetTransform__JFFFZ
+  (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat, jboolean);
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Body

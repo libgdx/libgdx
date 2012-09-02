@@ -147,7 +147,7 @@ public class Method {
 	}
 
 	boolean match (String name, Class... types) {
-		if (!name.equals(name)) return false;
+		if (!this.name.equals(name)) return false;
 		if (types.length != parameters.length) return false;
 		for (int i = 0; i < types.length; i++) {
 			Type t1 = ReflectionCache.instance.forName(parameters[i].getType().getName());

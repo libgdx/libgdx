@@ -73,6 +73,7 @@ public class DragAndDrop {
 			public void dragStop (InputEvent event, float x, float y, int pointer) {
 				if (payload == null) return;
 				if (System.currentTimeMillis() - dragStartTime < dragTime) isValidTarget = false;
+				if (dragActor != null) dragActor.remove();
 				if (isValidTarget) target.drop(source, payload);
 				source.dragStop(event, x, y, pointer, isValidTarget ? target : null);
 				DragAndDrop.this.source = null;
@@ -80,7 +81,6 @@ public class DragAndDrop {
 				if (target != null) target.reset();
 				target = null;
 				isValidTarget = false;
-				if (dragActor != null) dragActor.remove();
 				dragActor = null;
 			}
 		};
@@ -110,6 +110,11 @@ public class DragAndDrop {
 
 	public boolean isDragging () {
 		return payload != null;
+	}
+
+	/** Returns the current drag actor, or null. */
+	public Actor getDragActor () {
+		return dragActor;
 	}
 
 	/** Time in milliseconds that a drag must take before a drop will be considered valid. This ignores an accidental drag and drop

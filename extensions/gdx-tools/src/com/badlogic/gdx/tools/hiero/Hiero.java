@@ -160,6 +160,7 @@ public class Hiero extends JFrame {
 	JMenuItem exitMenuItem;
 	JMenuItem saveBMFontMenuItem;
 	File saveBmFontFile;
+	String lastSaveFilename = "", lastSaveBMFilename = "", lastOpenFilename = "";
 
 	public Hiero () {
 		super("Hiero v3.0 - Bitmap Font Tool");
@@ -276,6 +277,7 @@ public class Hiero extends JFrame {
 		settings.setPaddingAdvanceY(((Integer)padAdvanceYSpinner.getValue()).intValue());
 		settings.setGlyphPageWidth(((Integer)glyphPageWidthCombo.getSelectedItem()).intValue());
 		settings.setGlyphPageHeight(((Integer)glyphPageHeightCombo.getSelectedItem()).intValue());
+		settings.setGlyphText(sampleTextPane.getText());
 		for (Iterator iter = effectPanels.iterator(); iter.hasNext();) {
 			EffectPanel panel = (EffectPanel)iter.next();
 			settings.getEffects().add(panel.getEffect());
@@ -300,6 +302,11 @@ public class Hiero extends JFrame {
 		padAdvanceYSpinner.setValue(new Integer(settings.getPaddingAdvanceY()));
 		glyphPageWidthCombo.setSelectedItem(new Integer(settings.getGlyphPageWidth()));
 		glyphPageHeightCombo.setSelectedItem(new Integer(settings.getGlyphPageHeight()));
+		String gt = settings.getGlyphText();
+		if (gt.length() > 0) {
+			sampleTextPane.setText(settings.getGlyphText());
+		}
+
 		for (Iterator iter = settings.getEffects().iterator(); iter.hasNext();) {
 			ConfigurableEffect settingsEffect = (ConfigurableEffect)iter.next();
 			for (int i = 0, n = effectsListModel.getSize(); i < n; i++) {
@@ -414,7 +421,12 @@ public class Hiero extends JFrame {
 				FileDialog dialog = new FileDialog(Hiero.this, "Choose TrueType font file", FileDialog.LOAD);
 				dialog.setLocationRelativeTo(null);
 				dialog.setFile("*.ttf");
+				dialog.setDirectory(prefs.get("dir.font", ""));
 				dialog.setVisible(true);
+				if (dialog.getDirectory() != null) {
+					prefs.put("dir.font", dialog.getDirectory());
+				}
+
 				String fileName = dialog.getFile();
 				if (fileName == null) return;
 				fontFileText.setText(new File(dialog.getDirectory(), fileName).getAbsolutePath());
@@ -464,9 +476,15 @@ public class Hiero extends JFrame {
 				FileDialog dialog = new FileDialog(Hiero.this, "Open Hiero settings file", FileDialog.LOAD);
 				dialog.setLocationRelativeTo(null);
 				dialog.setFile("*.hiero");
+				dialog.setDirectory(prefs.get("dir.open", ""));
 				dialog.setVisible(true);
+				if (dialog.getDirectory() != null) {
+					prefs.put("dir.open", dialog.getDirectory());
+				}
+
 				String fileName = dialog.getFile();
 				if (fileName == null) return;
+				lastOpenFilename = fileName;
 				open(new File(dialog.getDirectory(), fileName));
 			}
 		});
@@ -476,10 +494,24 @@ public class Hiero extends JFrame {
 				FileDialog dialog = new FileDialog(Hiero.this, "Save Hiero settings file", FileDialog.SAVE);
 				dialog.setLocationRelativeTo(null);
 				dialog.setFile("*.hiero");
+				dialog.setDirectory(prefs.get("dir.save", ""));
+
+				if (lastSaveFilename.length() > 0) {
+					dialog.setFile(lastSaveFilename);
+				} else if (lastOpenFilename.length() > 0) {
+					dialog.setFile(lastOpenFilename);
+				}
+
 				dialog.setVisible(true);
+
+				if (dialog.getDirectory() != null) {
+					prefs.put("dir.save", dialog.getDirectory());
+				}
+
 				String fileName = dialog.getFile();
 				if (fileName == null) return;
 				if (!fileName.endsWith(".hiero")) fileName += ".hiero";
+				lastSaveFilename = fileName;
 				File file = new File(dialog.getDirectory(), fileName);
 				try {
 					save(file);
@@ -494,9 +526,22 @@ public class Hiero extends JFrame {
 				FileDialog dialog = new FileDialog(Hiero.this, "Save BMFont files", FileDialog.SAVE);
 				dialog.setLocationRelativeTo(null);
 				dialog.setFile("*.fnt");
+				dialog.setDirectory(prefs.get("dir.savebm", ""));
+
+				if (lastSaveBMFilename.length() > 0) {
+					dialog.setFile(lastSaveBMFilename);
+				} else if (lastOpenFilename.length() > 0) {
+					dialog.setFile(lastOpenFilename.replace(".hiero", ".fnt"));
+				}
+
 				dialog.setVisible(true);
+				if (dialog.getDirectory() != null) {
+					prefs.put("dir.savebm", dialog.getDirectory());
+				}
+
 				String fileName = dialog.getFile();
 				if (fileName == null) return;
+				lastSaveBMFilename = fileName;
 				saveBmFontFile = new File(dialog.getDirectory(), fileName);
 			}
 		});

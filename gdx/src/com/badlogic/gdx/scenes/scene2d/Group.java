@@ -212,7 +212,8 @@ public class Group extends Actor implements Cullable {
 		childrenChanged();
 	}
 
-	/** Adds an actor as a child of this group, at a specific index. The actor is first removed from its parent group, if any. */
+	/** Adds an actor as a child of this group, at a specific index. The actor is first removed from its parent group, if any.
+	 * @param index May be greater than the number of children. */
 	public void addActorAt (int index, Actor actor) {
 		actor.remove();
 		if (index >= children.size)
@@ -335,12 +336,13 @@ public class Group extends Actor implements Cullable {
 
 	/** Converts coordinates for this group to those of a descendant actor. The descendant does not need to be a direct child.
 	 * @throws IllegalArgumentException if the specified actor is not a descendant of this group. */
-	public void localToDescendantCoordinates (Actor descendant, Vector2 localCoords) {
+	public Vector2 localToDescendantCoordinates (Actor descendant, Vector2 localCoords) {
 		Group parent = descendant.getParent();
 		if (parent == null) throw new IllegalArgumentException("Child is not a descendant: " + descendant);
 		// First convert to the actor's parent coordinates.
 		if (parent != this) localToDescendantCoordinates(parent, localCoords);
 		// Then from each parent down to the descendant.
 		descendant.parentToLocalCoordinates(localCoords);
+		return localCoords;
 	}
 }

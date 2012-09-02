@@ -73,7 +73,9 @@ public class ImageButton extends Button {
 
 	private void updateImage () {
 		boolean isPressed = isPressed();
-		if (isPressed && style.imageDown != null)
+		if (isDisabled && style.imageDisabled != null)
+			image.setDrawable(style.imageDisabled);
+		else if (isPressed && style.imageDown != null)
 			image.setDrawable(style.imageDown);
 		else if (isChecked && style.imageChecked != null)
 			image.setDrawable(style.imageChecked);
@@ -97,7 +99,8 @@ public class ImageButton extends Button {
 	/** The style for an image button, see {@link ImageButton}.
 	 * @author Nathan Sweet */
 	static public class ImageButtonStyle extends ButtonStyle {
-		public Drawable imageUp, imageDown, imageChecked;
+		/** Optional. */
+		public Drawable imageUp, imageDown, imageChecked, imageDisabled;
 
 		public ImageButtonStyle () {
 		}

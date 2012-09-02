@@ -183,10 +183,12 @@ public class Actions {
 		return color(color, 0, null);
 	}
 
+	/** Transitions from the color at the time this action starts to the specified color. */
 	static public ColorAction color (Color color, float duration) {
 		return color(color, duration, null);
 	}
 
+	/** Transitions from the color at the time this action starts to the specified color. */
 	static public ColorAction color (Color color, float duration, Interpolation interpolation) {
 		ColorAction action = action(ColorAction.class);
 		action.setEndColor(color);
@@ -200,10 +202,12 @@ public class Actions {
 		return alpha(a, 0, null);
 	}
 
+	/** Transitions from the alpha at the time this action starts to the specified alpha. */
 	static public AlphaAction alpha (float a, float duration) {
 		return alpha(a, duration, null);
 	}
 
+	/** Transitions from the alpha at the time this action starts to the specified alpha. */
 	static public AlphaAction alpha (float a, float duration, Interpolation interpolation) {
 		AlphaAction action = action(AlphaAction.class);
 		action.setAlpha(a);
@@ -212,10 +216,12 @@ public class Actions {
 		return action;
 	}
 
+	/** Transitions from the alpha at the time this action starts to an alpha of 0. */
 	static public AlphaAction fadeOut (float duration) {
 		return alpha(0, duration, null);
 	}
 
+	/** Transitions from the alpha at the time this action starts to an alpha of 0. */
 	static public AlphaAction fadeOut (float duration, Interpolation interpolation) {
 		AlphaAction action = action(AlphaAction.class);
 		action.setAlpha(0);
@@ -224,10 +230,12 @@ public class Actions {
 		return action;
 	}
 
+	/** Transitions from the alpha at the time this action starts to an alpha of 1. */
 	static public AlphaAction fadeIn (float duration) {
 		return alpha(1, duration, null);
 	}
 
+	/** Transitions from the alpha at the time this action starts to an alpha of 1. */
 	static public AlphaAction fadeIn (float duration, Interpolation interpolation) {
 		AlphaAction action = action(AlphaAction.class);
 		action.setAlpha(1);
