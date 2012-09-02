@@ -140,6 +140,7 @@ class TimSort<T> {
 
 		this.a = null;
 		this.c = null;
+		T[] tmp = this.tmp;
 		for (int i = 0, n = tmpCount; i < n; i++)
 			tmp[i] = null;
 	}
