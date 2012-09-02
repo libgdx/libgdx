@@ -41,7 +41,7 @@ public class DragAndDrop {
 				for (int i = 0, n = targets.size; i < n; i++) {
 					Target target = targets.get(i);
 					target.actor.stageToLocalCoordinates(Vector2.tmp.set(event.getStageX(), event.getStageY()));
-					if (target.actor.hit(Vector2.tmp.x, Vector2.tmp.y) == null) continue;
+					if (target.actor.hit(Vector2.tmp.x, Vector2.tmp.y, false) == null) continue;
 					newTarget = target;
 					isValidTarget = target.drag(source, payload, Vector2.tmp.x, Vector2.tmp.y, pointer);
 					break;
@@ -129,6 +129,7 @@ public class DragAndDrop {
 		final Actor actor;
 
 		public Source (Actor actor) {
+			if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 			this.actor = actor;
 		}
 
@@ -150,6 +151,7 @@ public class DragAndDrop {
 		final Actor actor;
 
 		public Target (Actor actor) {
+			if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 			this.actor = actor;
 		}
 

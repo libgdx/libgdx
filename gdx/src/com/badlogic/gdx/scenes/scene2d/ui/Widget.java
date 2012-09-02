@@ -32,7 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
  * {@link #invalidate()} or {@link #invalidateHierarchy()} as needed.
  * @author mzechner
  * @author Nathan Sweet */
-public abstract class Widget extends Actor implements Layout {
+public class Widget extends Actor implements Layout {
 	private boolean needsLayout = true;
 	private boolean fillParent;
 	private boolean layoutEnabled = true;

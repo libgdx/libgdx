@@ -168,9 +168,12 @@ public class Actor {
 	 * <p>
 	 * This method is used to delegate touchDown events. If this method returns null, touchDown will not occur.
 	 * <p>
-	 * The default implementation returns this actor if the point is within this actor's bounds. */
-	public Actor hit (float x, float y) {
-		return touchable == Touchable.enabled && x >= 0 && x < width && y >= 0 && y < height ? this : null;
+	 * The default implementation returns this actor if the point is within this actor's bounds.
+	 * @param touchable If true, the hit detection will respect the {@link #setTouchable(Touchable) touchability}.
+	 * @see Touchable */
+	public Actor hit (float x, float y, boolean touchable) {
+		if (touchable && this.touchable != Touchable.enabled) return null;
+		return x >= 0 && x < width && y >= 0 && y < height ? this : null;
 	}
 
 	/** Removes this actor from its parent, if it has a parent.

@@ -308,6 +308,19 @@ public class AssetManager implements Disposable {
 		}
 	}
 
+	/** Updates the AssetManager continuously for the specified number of milliseconds, yeilding the CPU to the loading thread
+	 * between updates. This may block for less time if all loading tasks are complete. This may block for more time if the portion
+	 * of a single task that happens in the GL thread takes a long time.
+	 * @return true if all loading is finished. */
+	public synchronized boolean update (int millis) {
+		long endTime = System.nanoTime() + millis * 1000;
+		while (true) {
+			boolean done = update();
+			if (done || System.currentTimeMillis() > endTime) return done;
+			Thread.yield();
+		}
+	}
+
 	/** blocks until all assets are loaded. */
 	public void finishLoading () {
 		log.debug("Waiting for loading to complete...");

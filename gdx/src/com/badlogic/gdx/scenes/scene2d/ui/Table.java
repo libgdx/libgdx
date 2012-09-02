@@ -164,11 +164,11 @@ public class Table extends WidgetGroup {
 		return background;
 	}
 
-	public Actor hit (float x, float y) {
+	public Actor hit (float x, float y, boolean touchable) {
 		if (clip) {
 			if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
 		}
-		return super.hit(x, y);
+		return super.hit(x, y, touchable);
 	}
 
 	/** Causes the contents to be clipped if they exceed the table widget bounds. Enabling clipping will set

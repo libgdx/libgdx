@@ -112,7 +112,7 @@ public class Touchpad extends Widget {
 	}
 
 	@Override
-	public Actor hit (float x, float y) {
+	public Actor hit (float x, float y, boolean touchable) {
 		return padBounds.contains(x, y) ? this : null;
 	}
 

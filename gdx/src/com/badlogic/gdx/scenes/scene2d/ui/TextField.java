@@ -165,15 +165,25 @@ public class TextField extends Widget {
 				Stage stage = getStage();
 				if (stage != null && stage.getKeyboardFocus() == TextField.this) {
 					boolean repeat = false;
-					if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
+					boolean ctrl = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
+					if (ctrl) {
 						// paste
-						if (keycode == Keys.V) paste();
+						if (keycode == Keys.V) {
+							paste();
+							return true;
+						}
 						// copy
-						if (keycode == Keys.C || keycode == Keys.INSERT) copy();
-
-						if (keycode == Keys.X || keycode == Keys.DEL) cut();
-
-					} else if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
+						if (keycode == Keys.C || keycode == Keys.INSERT) {
+							copy();
+							return true;
+						}
+						// cut
+						if (keycode == Keys.X || keycode == Keys.DEL) {
+							cut();
+							return true;
+						}
+					}
+					if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
 						// paste
 						if (keycode == Keys.INSERT) paste();
 						// cut
@@ -189,7 +199,13 @@ public class TextField extends Widget {
 								selectionStart = cursor;
 								hasSelection = true;
 							}
-							cursor--;
+							while (--cursor > 0 && ctrl) {
+								char c = text.charAt(cursor);
+								if (c >= 'A' && c <= 'Z') continue;
+								if (c >= 'a' && c <= 'z') continue;
+								if (c >= '0' && c <= '9') continue;
+								break;
+							}
 							repeat = true;
 						}
 						if (keycode == Keys.RIGHT) {
@@ -197,7 +213,14 @@ public class TextField extends Widget {
 								selectionStart = cursor;
 								hasSelection = true;
 							}
-							cursor++;
+							int length = text.length();
+							while (++cursor < length && ctrl) {
+								char c = text.charAt(cursor - 1);
+								if (c >= 'A' && c <= 'Z') continue;
+								if (c >= 'a' && c <= 'z') continue;
+								if (c >= '0' && c <= '9') continue;
+								break;
+							}
 							repeat = true;
 						}
 						if (keycode == Keys.HOME) {
@@ -220,12 +243,25 @@ public class TextField extends Widget {
 					} else {
 						// cursor movement or other keys (kill selection)
 						if (keycode == Keys.LEFT) {
-							cursor--;
+							while (cursor-- > 1 && ctrl) {
+								char c = text.charAt(cursor - 1);
+								if (c >= 'A' && c <= 'Z') continue;
+								if (c >= 'a' && c <= 'z') continue;
+								if (c >= '0' && c <= '9') continue;
+								break;
+							}
 							clearSelection();
 							repeat = true;
 						}
 						if (keycode == Keys.RIGHT) {
-							cursor++;
+							int length = text.length();
+							while (++cursor < length && ctrl) {
+								char c = text.charAt(cursor - 1);
+								if (c >= 'A' && c <= 'Z') continue;
+								if (c >= 'a' && c <= 'z') continue;
+								if (c >= '0' && c <= '9') continue;
+								break;
+							}
 							clearSelection();
 							repeat = true;
 						}
