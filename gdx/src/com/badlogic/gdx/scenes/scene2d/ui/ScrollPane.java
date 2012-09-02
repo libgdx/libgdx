@@ -173,7 +173,7 @@ public class ScrollPane extends WidgetGroup {
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
-				// if (!flickScroll) resetFade();
+				if (!flickScroll) resetFade();
 				return false;
 			}
 		});
