@@ -257,11 +257,11 @@ public class ScrollPane extends WidgetGroup {
 
 		boolean panning = gestureListener.getGestureDetector().isPanning();
 
-		if (fadeScrollBars && !panning && !touchScrollH && !touchScrollV) {
+		if (fadeAlpha > 0 && fadeScrollBars && !panning && !touchScrollH && !touchScrollV) {
 			fadeDelay -= fadeDelaySeconds * delta;
 			if (fadeDelay <= 0) fadeAlpha = Math.max(0, fadeAlpha - fadeAlphaSeconds * delta);
 		}
-		System.out.println(fadeDelay);
+
 		if (flingTimer > 0) {
 			resetFade();
 
@@ -640,10 +640,8 @@ public class ScrollPane extends WidgetGroup {
 		this.flickScroll = flickScroll;
 		if (flickScroll)
 			addListener(gestureListener);
-		else {
+		else
 			removeListener(gestureListener);
-			fadeAlpha = 1;
-		}
 		invalidate();
 	}
 
@@ -768,7 +766,7 @@ public class ScrollPane extends WidgetGroup {
 	public void setFadeScrollBars (boolean fadeScrollBars) {
 		if (this.fadeScrollBars == fadeScrollBars) return;
 		this.fadeScrollBars = fadeScrollBars;
-		if (!fadeScrollBars) fadeAlpha = 1;
+		if (!fadeScrollBars) fadeAlpha = fadeAlphaSeconds;
 		invalidate();
 	}
 
