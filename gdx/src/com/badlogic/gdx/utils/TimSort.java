@@ -71,6 +71,7 @@ class TimSort<T> {
 
 	/** Temp storage for merges. */
 	private T[] tmp; // Actual runtime type will be Object[], regardless of T
+	private int tmpCount;
 
 	/** A stack of pending runs yet to be merged. Run i starts at address base[i] and extends for len[i] elements. It's always true
 	 * (so long as the indices are in bounds) that:
@@ -107,6 +108,7 @@ class TimSort<T> {
 
 		this.a = a;
 		this.c = c;
+		tmpCount = 0;
 
 		/** March over the array once, left to right, finding natural runs, extending short natural runs to minRun elements, and
 		 * merging runs to maintain stack invariant. */
@@ -135,6 +137,11 @@ class TimSort<T> {
 		if (DEBUG) assert lo == hi;
 		mergeForceCollapse();
 		if (DEBUG) assert stackSize == 1;
+
+		this.a = null;
+		this.c = null;
+		for (int i = 0, n = tmpCount; i < n; i++)
+			tmp[i] = null;
 	}
 
 	/** Creates a TimSort instance to maintain the state of an ongoing sort.
@@ -790,6 +797,7 @@ class TimSort<T> {
 	 * @param minCapacity the minimum required capacity of the tmp array
 	 * @return tmp, whether or not it grew */
 	private T[] ensureCapacity (int minCapacity) {
+		tmpCount = Math.max(tmpCount, minCapacity);
 		if (tmp.length < minCapacity) {
 			// Compute smallest power of 2 > minCapacity
 			int newSize = minCapacity;
