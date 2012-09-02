@@ -74,6 +74,7 @@ public class ClickListener extends InputListener {
 			}
 			pressed = false;
 			pressedPointer = -1;
+			over = false;
 			cancelled = false;
 		}
 	}
@@ -108,7 +109,7 @@ public class ClickListener extends InputListener {
 
 	/** Returns true if the specified position is over the specified actor or within the tap square. */
 	public boolean isOver (Actor actor, float x, float y) {
-		Actor hit = actor.hit(x, y);
+		Actor hit = actor.hit(x, y, true);
 		if (hit == null || !hit.isDescendant(actor)) {
 			if (touchDownX == -1 && touchDownY == -1) return false;
 			return Math.abs(x - touchDownX) < tapSquareSize && Math.abs(y - touchDownY) < tapSquareSize;

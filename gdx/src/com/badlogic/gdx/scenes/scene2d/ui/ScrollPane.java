@@ -65,7 +65,7 @@ public class ScrollPane extends WidgetGroup {
 	private boolean fadeScrollBars = true, smoothScrolling = true;
 	float fadeAlpha, fadeAlphaSeconds = 1, fadeDelay, fadeDelaySeconds = 1;
 
-	private boolean flickScroll = true;
+	boolean flickScroll = true;
 	float velocityX, velocityY;
 	float flingTimer;
 	private boolean overscrollX = true, overscrollY = true;
@@ -110,6 +110,9 @@ public class ScrollPane extends WidgetGroup {
 				if (draggingPointer != -1) return false;
 				if (pointer == 0 && button != 0) return false;
 				getStage().setScrollFocus(ScrollPane.this);
+
+				if (!flickScroll) resetFade();
+
 				if (fadeAlpha == 0) return false;
 
 				if (scrollX && hScrollBounds.contains(x, y)) {
@@ -168,6 +171,11 @@ public class ScrollPane extends WidgetGroup {
 					lastPoint.set(x, y);
 				}
 			}
+
+			public boolean mouseMoved (InputEvent event, float x, float y) {
+				if (!flickScroll) resetFade();
+				return false;
+			}
 		});
 
 		gestureListener = new ActorGestureListener() {
@@ -179,7 +187,7 @@ public class ScrollPane extends WidgetGroup {
 				cancelTouchFocusedChild(event);
 			}
 
-			public void fling (InputEvent event, float x, float y, int pointer, int button) {
+			public void fling (InputEvent event, float x, float y, int button) {
 				if (Math.abs(x) > 150) {
 					flingTimer = flingTime;
 					velocityX = x;
@@ -249,7 +257,7 @@ public class ScrollPane extends WidgetGroup {
 
 		boolean panning = gestureListener.getGestureDetector().isPanning();
 
-		if (fadeScrollBars && flickScroll && !panning && !touchScrollH && !touchScrollV) {
+		if (fadeAlpha > 0 && fadeScrollBars && !panning && !touchScrollH && !touchScrollV) {
 			fadeDelay -= fadeDelaySeconds * delta;
 			if (fadeDelay <= 0) fadeAlpha = Math.max(0, fadeAlpha - fadeAlphaSeconds * delta);
 		}
@@ -290,7 +298,7 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		if (!panning) {
-			if (overscrollX) {
+			if (overscrollX && scrollX) {
 				if (amountX < 0) {
 					resetFade();
 					amountX += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountX / overscrollDistance)
@@ -304,7 +312,7 @@ public class ScrollPane extends WidgetGroup {
 					if (amountX < maxX) amountX = maxX;
 				}
 			}
-			if (overscrollY) {
+			if (overscrollY && scrollY) {
 				if (amountY < 0) {
 					resetFade();
 					amountY += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountY / overscrollDistance)
@@ -365,7 +373,7 @@ public class ScrollPane extends WidgetGroup {
 		scrollX = forceOverscrollX || (widgetWidth > areaWidth && !disableX);
 		scrollY = forceOverscrollY || (widgetHeight > areaHeight && !disableY);
 
-		boolean fade = flickScroll && fadeScrollBars;
+		boolean fade = fadeScrollBars;
 		if (!fade) {
 			// Check again, now taking into account the area that's taken up by any enabled scrollbars.
 			if (scrollY) {
@@ -578,11 +586,11 @@ public class ScrollPane extends WidgetGroup {
 		return true;
 	}
 
-	public Actor hit (float x, float y) {
+	public Actor hit (float x, float y, boolean touchable) {
 		if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
 		if (scrollX && hScrollBounds.contains(x, y)) return this;
 		if (scrollY && vScrollBounds.contains(x, y)) return this;
-		return super.hit(x, y);
+		return super.hit(x, y, touchable);
 	}
 
 	public void setScrollX (float pixels) {
@@ -632,10 +640,8 @@ public class ScrollPane extends WidgetGroup {
 		this.flickScroll = flickScroll;
 		if (flickScroll)
 			addListener(gestureListener);
-		else {
+		else
 			removeListener(gestureListener);
-			fadeAlpha = 1;
-		}
 		invalidate();
 	}
 
@@ -756,11 +762,11 @@ public class ScrollPane extends WidgetGroup {
 		this.clamp = clamp;
 	}
 
-	/** For flick scroll, when true the scroll bars fade out after some time of not being used. */
+	/** When true the scroll bars fade out after some time of not being used. */
 	public void setFadeScrollBars (boolean fadeScrollBars) {
 		if (this.fadeScrollBars == fadeScrollBars) return;
 		this.fadeScrollBars = fadeScrollBars;
-		if (!fadeScrollBars) fadeAlpha = 1;
+		if (!fadeScrollBars) fadeAlpha = fadeAlphaSeconds;
 		invalidate();
 	}
 
