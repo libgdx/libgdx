@@ -150,7 +150,7 @@ public class Tree extends WidgetGroup {
 		computeSize(rootNodes, indentSpacing);
 		leftColumnWidth += iconSpacing + padding;
 		prefWidth += leftColumnWidth + padding;
-		prefHeight = getHeight() - (prefHeight + ySpacing);
+		prefHeight = getHeight() - prefHeight;
 	}
 
 	private void computeSize (Array<Node> nodes, float indent) {
@@ -180,7 +180,7 @@ public class Tree extends WidgetGroup {
 
 	public void layout () {
 		if (sizeInvalid) computeSize();
-		layout(rootNodes, leftColumnWidth + indentSpacing, getHeight());
+		layout(rootNodes, leftColumnWidth + indentSpacing, getHeight() - ySpacing / 2);
 	}
 
 	private float layout (Array<Node> nodes, float indent, float y) {
