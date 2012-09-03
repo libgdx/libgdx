@@ -32,6 +32,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -323,6 +324,11 @@ public class BitmapFont implements Disposable {
 		float invTexHeight = 1.0f / region.getTexture().getHeight();
 		float u = region.u;
 		float v = region.v;
+		if (region instanceof AtlasRegion) {
+			AtlasRegion atlasRegion = (AtlasRegion)region;
+			u -= atlasRegion.offsetX * invTexWidth;
+			v -= (atlasRegion.originalHeight - atlasRegion.packedHeight - atlasRegion.offsetY) * invTexHeight;
+		}
 
 		for (Glyph[] page : data.glyphs) {
 			if (page == null) continue;
