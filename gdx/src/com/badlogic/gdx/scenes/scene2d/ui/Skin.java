@@ -325,7 +325,12 @@ public class Skin implements Disposable {
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
 	public Drawable newDrawable (Drawable drawable, Color tint) {
 		if (drawable instanceof TextureRegionDrawable) {
-			Sprite sprite = new Sprite(((TextureRegionDrawable)drawable).getRegion());
+			TextureRegion region = ((TextureRegionDrawable)drawable).getRegion();
+			Sprite sprite;
+			if (region instanceof AtlasRegion)
+				sprite = new AtlasSprite((AtlasRegion)region);
+			else
+				sprite = new Sprite(region);
 			sprite.setColor(tint);
 			return new SpriteDrawable(sprite);
 		}
@@ -336,7 +341,11 @@ public class Skin implements Disposable {
 		}
 		if (drawable instanceof SpriteDrawable) {
 			SpriteDrawable spriteDrawable = new SpriteDrawable((SpriteDrawable)drawable);
-			Sprite sprite = new Sprite(spriteDrawable.getSprite());
+			Sprite sprite = spriteDrawable.getSprite();
+			if (sprite instanceof AtlasSprite)
+				sprite = new AtlasSprite((AtlasSprite)sprite);
+			else
+				sprite = new Sprite(sprite);
 			sprite.setColor(tint);
 			spriteDrawable.setSprite(sprite);
 			return spriteDrawable;
