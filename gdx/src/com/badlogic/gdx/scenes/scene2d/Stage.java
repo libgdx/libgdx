@@ -196,7 +196,7 @@ public class Stage extends InputAdapter implements Disposable {
 	private Actor fireEnterAndExit (Actor overLast, int screenX, int screenY, int pointer) {
 		// Find the actor under the point.
 		screenToStageCoordinates(stageCoords.set(screenX, screenY));
-		Actor over = hit(stageCoords.x, stageCoords.y, false);
+		Actor over = hit(stageCoords.x, stageCoords.y, true);
 		if (over == overLast) return overLast;
 
 		InputEvent event = Pools.obtain(InputEvent.class);
