@@ -146,6 +146,6 @@ public class WidgetGroup extends Group implements Layout {
 	 * out. */
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
-		super.drawChildren(batch, parentAlpha);
+		super.draw(batch, parentAlpha);
 	}
 }
