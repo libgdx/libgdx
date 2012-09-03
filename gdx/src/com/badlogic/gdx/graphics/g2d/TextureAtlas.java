@@ -77,8 +77,8 @@ public class TextureAtlas implements Disposable {
 			public Page page;
 			public int index;
 			public String name;
-			public int offsetX;
-			public int offsetY;
+			public float offsetX;
+			public float offsetY;
 			public int originalWidth;
 			public int originalHeight;
 			public boolean rotate;
@@ -450,11 +450,11 @@ public class TextureAtlas implements Disposable {
 		public String name;
 
 		/** The offset from the left of the original image to the left of the packed image, after whitespace was removed for packing. */
-		public int offsetX;
+		public float offsetX;
 
 		/** The offset from the bottom of the original image to the bottom of the packed image, after whitespace was removed for
 		 * packing. */
-		public int offsetY;
+		public float offsetY;
 
 		/** The width of the image, after whitespace was removed for packing. */
 		public int packedWidth;
@@ -507,7 +507,7 @@ public class TextureAtlas implements Disposable {
 	 * had not been stripped. */
 	static public class AtlasSprite extends Sprite {
 		final AtlasRegion region;
-		int originalOffsetX, originalOffsetY;
+		float originalOffsetX, originalOffsetY;
 
 		public AtlasSprite (AtlasRegion region) {
 			this.region = new AtlasRegion(region);
@@ -539,8 +539,8 @@ public class TextureAtlas implements Disposable {
 		public void setBounds (float x, float y, float width, float height) {
 			float widthRatio = width / region.originalWidth;
 			float heightRatio = height / region.originalHeight;
-			region.offsetX = Math.round(originalOffsetX * widthRatio);
-			region.offsetY = Math.round(originalOffsetY * heightRatio);
+			region.offsetX = originalOffsetX * widthRatio;
+			region.offsetY = originalOffsetY * heightRatio;
 			int packedWidth = region.rotate ? region.packedHeight : region.packedWidth;
 			int packedHeight = region.rotate ? region.packedWidth : region.packedHeight;
 			super.setBounds(x + region.offsetX, y + region.offsetY, packedWidth * widthRatio, packedHeight * heightRatio);
@@ -585,17 +585,17 @@ public class TextureAtlas implements Disposable {
 
 			float oldOriginX = getOriginX();
 			float oldOriginY = getOriginY();
-			int oldOffsetX = region.offsetX;
-			int oldOffsetY = region.offsetY;
+			float oldOffsetX = region.offsetX;
+			float oldOffsetY = region.offsetY;
 
 			float widthRatio = getWidth() / region.originalWidth;
 			float heightRatio = getHeight() / region.originalHeight;
 
 			if (clockwise) {
 				region.offsetX = oldOffsetY;
-				region.offsetY = Math.round(region.originalHeight * heightRatio - oldOffsetX - region.packedWidth * widthRatio);
+				region.offsetY = region.originalHeight * heightRatio - oldOffsetX - region.packedWidth * widthRatio;
 			} else {
-				region.offsetX = Math.round(region.originalWidth * widthRatio - oldOffsetY - region.packedHeight * heightRatio);
+				region.offsetX = region.originalWidth * widthRatio - oldOffsetY - region.packedHeight * heightRatio;
 				region.offsetY = oldOffsetX;
 			}
 
