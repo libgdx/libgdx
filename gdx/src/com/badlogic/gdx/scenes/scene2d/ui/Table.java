@@ -78,7 +78,6 @@ public class Table extends WidgetGroup {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
 		drawBackground(batch, parentAlpha);
-
 		if (isTransform()) {
 			applyTransform(batch, computeTransform());
 			if (clip) {

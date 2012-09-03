@@ -149,9 +149,9 @@ public class Group extends Actor implements Cullable {
 			localTransform.setToTranslation(originX, originY);
 		else
 			localTransform.idt();
-		if (rotation != 0) localTransform.mul(temp.setToRotation(rotation));
-		if (scaleX != 1 || scaleY != 1) localTransform.mul(temp.setToScaling(scaleX, scaleY));
-		if (originX != 0 || originY != 0) localTransform.mul(temp.setToTranslation(-originX, -originY));
+		if (rotation != 0) localTransform.rotate(rotation);
+		if (scaleX != 1 || scaleY != 1) localTransform.scale(scaleX, scaleY);
+		if (originX != 0 || originY != 0) localTransform.translate(-originX, -originY);
 		localTransform.trn(getX(), getY());
 
 		// Find the first parent that transforms.
