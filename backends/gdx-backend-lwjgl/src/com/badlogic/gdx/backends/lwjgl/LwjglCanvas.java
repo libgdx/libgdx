@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class LwjglCanvas implements Application {
 	final List<Runnable> executedRunnables = new ArrayList<Runnable>();
 	boolean running = true;
 	int logLevel = LOG_INFO;
+	Cursor cursor;
 
 	public LwjglCanvas (ApplicationListener listener, boolean useGL2) {
 		LwjglNativesLoader.load();
@@ -168,7 +170,7 @@ public class LwjglCanvas implements Application {
 
 			public void run () {
 				if (!running) return;
-				canvas.setCursor(null);
+				canvas.setCursor(cursor);
 				graphics.updateTime();
 				synchronized (runnables) {
 					executedRunnables.clear();
@@ -323,5 +325,10 @@ public class LwjglCanvas implements Application {
 				System.exit(-1);
 			}
 		});
+	}
+
+	/** @param cursor May be null. */
+	public void setCursor (Cursor cursor) {
+		this.cursor = cursor;
 	}
 }
