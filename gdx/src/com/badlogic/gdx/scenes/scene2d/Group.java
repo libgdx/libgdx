@@ -64,41 +64,46 @@ public class Group extends Actor implements Cullable {
 	 * {@link #setCullingArea(Rectangle) culling area}, if set. */
 	protected void drawChildren (SpriteBatch batch, float parentAlpha) {
 		parentAlpha *= getColor().a;
+		SnapshotArray<Actor> children = this.children;
 		Actor[] actors = children.begin();
+		Rectangle cullingArea = this.cullingArea;
 		if (cullingArea != null) {
 			// Draw children only if inside culling area.
+			float cullLeft = cullingArea.x;
+			float cullRight = cullLeft + cullingArea.width;
+			float cullBottom = cullingArea.y;
+			float cullTop = cullBottom + cullingArea.height;
 			if (transform) {
 				for (int i = 0, n = children.size; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
-					float x = child.getX();
-					float y = child.getY();
-					if (x <= cullingArea.x + cullingArea.width && y <= cullingArea.y + cullingArea.height
-						&& x + child.getWidth() >= cullingArea.x && y + child.getHeight() >= cullingArea.y) {
+					float x = child.getX(), y = child.getY();
+					if (x <= cullRight && y <= cullTop && x + child.getWidth() >= cullLeft && y + child.getHeight() >= cullBottom)
 						child.draw(batch, parentAlpha);
-					}
 				}
 				batch.flush();
 			} else {
 				// No transform for this group, offset each child.
-				float offsetX = getX();
-				float offsetY = getY();
-				setPosition(0, 0);
+				float offsetX = getX(), offsetY = getY();
+				setX(0);
+				setY(0);
 				for (int i = 0, n = children.size; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
-					float x = child.getX();
-					float y = child.getY();
-					if (x <= cullingArea.x + cullingArea.width && y <= cullingArea.y + cullingArea.height
-						&& x + child.getWidth() >= cullingArea.x && y + child.getHeight() >= cullingArea.y) {
-						child.translate(offsetX, offsetY);
+					float x = child.getX(), y = child.getY();
+					if (x <= cullRight && y <= cullTop && x + child.getWidth() >= cullLeft && y + child.getHeight() >= cullBottom) {
+						child.setX(x + offsetX);
+						child.setY(y + offsetY);
 						child.draw(batch, parentAlpha);
-						child.setPosition(x, y);
+						child.setX(x);
+						child.setY(y);
 					}
 				}
-				setPosition(offsetX, offsetY);
+				setX(offsetX);
+				setY(offsetY);
 			}
 		} else {
+			// No culling, draw all children.
 			if (transform) {
 				for (int i = 0, n = children.size; i < n; i++) {
 					Actor child = actors[i];
@@ -108,19 +113,21 @@ public class Group extends Actor implements Cullable {
 				batch.flush();
 			} else {
 				// No transform for this group, offset each child.
-				float offsetX = getX();
-				float offsetY = getY();
-				setPosition(0, 0);
+				float offsetX = getX(), offsetY = getY();
+				setX(0);
+				setY(0);
 				for (int i = 0, n = children.size; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
-					float x = child.getX();
-					float y = child.getY();
-					child.translate(offsetX, offsetY);
+					float x = child.getX(), y = child.getY();
+					child.setX(x + offsetX);
+					child.setY(y + offsetY);
 					child.draw(batch, parentAlpha);
-					child.setPosition(x, y);
+					child.setX(x);
+					child.setY(y);
 				}
-				setPosition(offsetX, offsetY);
+				setX(offsetX);
+				setY(offsetY);
 			}
 		}
 		children.end();
