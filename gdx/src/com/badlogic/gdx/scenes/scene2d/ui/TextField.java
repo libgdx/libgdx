@@ -466,9 +466,9 @@ public class TextField extends Widget {
 		if (focused) {
 			blink();
 			if (cursorOn && cursorPatch != null) {
-				cursorPatch.draw(batch, x + textOffset + glyphPositions.get(cursor) - glyphPositions.items[visibleTextStart] + 1, y
-					+ textY - textBounds.height - font.getDescent(), cursorPatch.getMinWidth(), textBounds.height + font.getDescent()
-					/ 2);
+				cursorPatch.draw(batch, x + bgLeftWidth + textOffset + glyphPositions.get(cursor)
+					- glyphPositions.items[visibleTextStart] - 1, y + textY - textBounds.height - font.getDescent(),
+					cursorPatch.getMinWidth(), textBounds.height + font.getDescent() / 2);
 			}
 		}
 	}
