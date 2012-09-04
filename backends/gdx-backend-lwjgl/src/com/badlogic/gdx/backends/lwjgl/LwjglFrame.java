@@ -55,7 +55,7 @@ public class LwjglFrame extends JFrame {
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run () {
-				Runtime.getRuntime().halt(0); // Because fuck you, Swing shutdown hooks.
+				Runtime.getRuntime().halt(0); // Because fuck you, deadlock causing Swing shutdown hooks.
 			}
 		});
 

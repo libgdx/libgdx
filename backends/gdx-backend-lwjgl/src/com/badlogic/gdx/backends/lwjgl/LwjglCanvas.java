@@ -50,8 +50,8 @@ public class LwjglCanvas implements Application {
 	final LwjglInput input;
 	final ApplicationListener listener;
 	final Canvas canvas;
-	final List<Runnable> runnables = new ArrayList<Runnable>();
-	final List<Runnable> executedRunnables = new ArrayList<Runnable>();
+	final List<Runnable> runnables = new ArrayList();
+	final List<Runnable> executedRunnables = new ArrayList();
 	boolean running = true;
 	int logLevel = LOG_INFO;
 	Cursor cursor;
@@ -196,11 +196,13 @@ public class LwjglCanvas implements Application {
 					listener.resize(width, height);
 				}
 				input.processEvents();
-				listener.render();
-				audio.update();
-				Display.update();
-				canvas.setCursor(cursor);
-				if (graphics.vsync) Display.sync(60);
+				if (running) {
+					listener.render();
+					audio.update();
+					Display.update();
+					canvas.setCursor(cursor);
+					if (graphics.vsync) Display.sync(60);
+				}
 				if (running && !Display.isCloseRequested())
 					EventQueue.invokeLater(this);
 				else
