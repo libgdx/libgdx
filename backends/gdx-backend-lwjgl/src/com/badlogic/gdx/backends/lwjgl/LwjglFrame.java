@@ -16,11 +16,12 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import com.badlogic.gdx.ApplicationListener;
+
 import java.awt.Dimension;
+import java.awt.Point;
 
 import javax.swing.JFrame;
-
-import com.badlogic.gdx.ApplicationListener;
 
 /** Wraps an {@link LwjglCanvas} in a resizable {@link JFrame}. */
 public class LwjglFrame extends JFrame {
@@ -61,8 +62,10 @@ public class LwjglFrame extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setPreferredSize(new Dimension(width, height));
 		initialize();
-		pack();
-		setLocationRelativeTo(null);
+		Dimension size = getSize();
+		if (size.width == 0 && size.height == 0) pack();
+		Point location = getLocation();
+		if (location.x == 0 && location.y == 0) setLocationRelativeTo(null);
 		setVisible(true);
 		lwjglCanvas.getCanvas().requestFocus();
 	}
