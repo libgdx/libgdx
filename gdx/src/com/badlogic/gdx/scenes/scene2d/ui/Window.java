@@ -157,7 +157,7 @@ public class Window extends Table {
 
 	public Actor hit (float x, float y, boolean touchable) {
 		Actor hit = super.hit(x, y, touchable);
-		if (hit == null && isModal) return this;
+		if (hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled)) return this;
 		return hit;
 	}
 
