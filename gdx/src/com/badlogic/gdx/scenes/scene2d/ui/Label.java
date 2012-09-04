@@ -40,11 +40,12 @@ public class Label extends Widget {
 	private final TextBounds bounds = new TextBounds();
 	private final StringBuilder text = new StringBuilder();
 	private BitmapFontCache cache;
-	private float prefWidth, prefHeight;
 	private int labelAlign = Align.left;
 	private HAlignment lineAlign = HAlignment.LEFT;
 	private boolean wrap;
 	private float lastPrefHeight;
+	private boolean sizeInvalid = true;
+	private float fontScaleX = 1, fontScaleY = 1;
 
 	public Label (CharSequence text, Skin skin) {
 		this(text, skin.get(LabelStyle.class));
@@ -78,7 +79,6 @@ public class Label extends Widget {
 		if (style.font == null) throw new IllegalArgumentException("Missing LabelStyle font.");
 		this.style = style;
 		cache = new BitmapFontCache(style.font, style.font.usesIntegerPositions());
-		computeBounds();
 		invalidateHierarchy();
 	}
 
@@ -100,7 +100,6 @@ public class Label extends Widget {
 			text.setLength(0);
 			text.append(newText);
 		}
-		computeBounds();
 		invalidateHierarchy();
 	}
 
@@ -117,51 +116,23 @@ public class Label extends Widget {
 		return text;
 	}
 
-	public TextBounds getTextBounds () {
-		return bounds;
+	public void invalidate () {
+		super.invalidate();
+		sizeInvalid = true;
 	}
 
-	/** If false, the text will only wrap where it contains newlines (\n). The preferred size of the label will be the text bounds.
-	 * If true, the text will word wrap using the width of the label. The preferred width of the label will be 0, it is expected
-	 * that the something external will set the width of the label. Default is false. */
-	public void setWrap (boolean wrap) {
-		this.wrap = wrap;
-		computeBounds();
-		invalidateHierarchy();
-	}
-
-	/** @param wrapAlign Aligns each line of text horizontally and all the text vertically.
-	 * @see Align */
-	public void setAlignment (int wrapAlign) {
-		setAlignment(wrapAlign, wrapAlign);
-	}
-
-	/** @param labelAlign Aligns all the text with the label widget.
-	 * @param lineAlign Aligns each line of text (left, right, or center).
-	 * @see Align */
-	public void setAlignment (int labelAlign, int lineAlign) {
-		this.labelAlign = labelAlign;
-
-		if ((lineAlign & Align.left) != 0)
-			this.lineAlign = HAlignment.LEFT;
-		else if ((lineAlign & Align.right) != 0)
-			this.lineAlign = HAlignment.RIGHT;
-		else
-			this.lineAlign = HAlignment.CENTER;
-
-		invalidate();
-	}
-
-	private void computeBounds () {
+	private void computeSize () {
+		sizeInvalid = false;
 		if (wrap)
 			bounds.set(cache.getFont().getWrappedBounds(text, getWidth()));
 		else
 			bounds.set(cache.getFont().getMultiLineBounds(text));
+		bounds.width *= fontScaleX;
+		bounds.height *= fontScaleY;
 	}
 
-	@Override
 	public void layout () {
-		computeBounds();
+		if (sizeInvalid) computeSize();
 
 		if (wrap) {
 			float prefHeight = getPrefHeight();
@@ -170,6 +141,11 @@ public class Label extends Widget {
 				invalidateHierarchy();
 			}
 		}
+
+		BitmapFont font = cache.getFont();
+		float oldScaleX = font.getScaleX();
+		float oldScaleY = font.getScaleY();
+		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(fontScaleX, fontScaleY);
 
 		float height = getHeight();
 
@@ -196,9 +172,10 @@ public class Label extends Widget {
 			cache.setWrappedText(text, x, y, bounds.width, lineAlign);
 		else
 			cache.setMultiLineText(text, x, y, bounds.width, lineAlign);
+
+		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(oldScaleX, oldScaleY);
 	}
 
-	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
 		Color color = getColor();
@@ -213,11 +190,78 @@ public class Label extends Widget {
 
 	public float getPrefWidth () {
 		if (wrap) return 0;
+		if (sizeInvalid) computeSize();
 		return bounds.width;
 	}
 
 	public float getPrefHeight () {
+		if (sizeInvalid) computeSize();
 		return bounds.height - style.font.getDescent() * 2;
+	}
+
+	public TextBounds getTextBounds () {
+		if (sizeInvalid) computeSize();
+		return bounds;
+	}
+
+	/** If false, the text will only wrap where it contains newlines (\n). The preferred size of the label will be the text bounds.
+	 * If true, the text will word wrap using the width of the label. The preferred width of the label will be 0, it is expected
+	 * that the something external will set the width of the label. Default is false. */
+	public void setWrap (boolean wrap) {
+		this.wrap = wrap;
+		invalidateHierarchy();
+	}
+
+	/** @param wrapAlign Aligns each line of text horizontally and all the text vertically.
+	 * @see Align */
+	public void setAlignment (int wrapAlign) {
+		setAlignment(wrapAlign, wrapAlign);
+	}
+
+	/** @param labelAlign Aligns all the text with the label widget.
+	 * @param lineAlign Aligns each line of text (left, right, or center).
+	 * @see Align */
+	public void setAlignment (int labelAlign, int lineAlign) {
+		this.labelAlign = labelAlign;
+
+		if ((lineAlign & Align.left) != 0)
+			this.lineAlign = HAlignment.LEFT;
+		else if ((lineAlign & Align.right) != 0)
+			this.lineAlign = HAlignment.RIGHT;
+		else
+			this.lineAlign = HAlignment.CENTER;
+
+		invalidate();
+	}
+
+	public void setFontScale (float fontScale) {
+		this.fontScaleX = fontScale;
+		this.fontScaleY = fontScale;
+		invalidateHierarchy();
+	}
+
+	public void setFontScale (float fontScaleX, float fontScaleY) {
+		this.fontScaleX = fontScaleX;
+		this.fontScaleY = fontScaleY;
+		invalidateHierarchy();
+	}
+
+	public float getFontScaleX () {
+		return fontScaleX;
+	}
+
+	public void setFontScaleX (float fontScaleX) {
+		this.fontScaleX = fontScaleX;
+		invalidateHierarchy();
+	}
+
+	public float getFontScaleY () {
+		return fontScaleY;
+	}
+
+	public void setFontScaleY (float fontScaleY) {
+		this.fontScaleY = fontScaleY;
+		invalidateHierarchy();
 	}
 
 	/** The style for a label, see {@link Label}.

@@ -65,6 +65,7 @@ import com.badlogic.gdx.tests.InverseKinematicsTest;
 import com.badlogic.gdx.tests.IsoCamTest;
 import com.badlogic.gdx.tests.IsometricTileTest;
 import com.badlogic.gdx.tests.KinematicBodyTest;
+import com.badlogic.gdx.tests.LabelScaleTest;
 import com.badlogic.gdx.tests.LabelTest;
 import com.badlogic.gdx.tests.LifeCycleTest;
 import com.badlogic.gdx.tests.MeshShaderTest;
@@ -450,6 +451,10 @@ public class GwtTestWrapper extends GdxTest {
 	}, new Instancer() {
 		public GdxTest instance () {
 			return new DecalTest();
+		}
+	}, new Instancer() {
+		public GdxTest instance () {
+			return new LabelScaleTest();
 		}
 	}, new Instancer() {
 		public GdxTest instance () {
