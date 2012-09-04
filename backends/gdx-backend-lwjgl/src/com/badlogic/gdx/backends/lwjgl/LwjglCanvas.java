@@ -50,6 +50,7 @@ public class LwjglCanvas implements Application {
 	final ApplicationListener listener;
 	final Canvas canvas;
 	final List<Runnable> runnables = new ArrayList<Runnable>();
+	final List<Runnable> executedRunnables = new ArrayList<Runnable>();
 	boolean running = true;
 	int logLevel = LOG_INFO;
 
@@ -170,14 +171,17 @@ public class LwjglCanvas implements Application {
 				canvas.setCursor(null);
 				graphics.updateTime();
 				synchronized (runnables) {
-					for (int i = 0; i < runnables.size(); i++) {
+					executedRunnables.clear();
+					executedRunnables.addAll(runnables);
+					runnables.clear();
+
+					for (int i = 0; i < executedRunnables.size(); i++) {
 						try {
-							runnables.get(i).run();
+							executedRunnables.get(i).run();
 						} catch (Throwable t) {
 							t.printStackTrace();
 						}
 					}
-					runnables.clear();
 				}
 				input.update();
 
@@ -252,7 +256,7 @@ public class LwjglCanvas implements Application {
 	public Clipboard getClipboard () {
 		return new LwjglClipboard();
 	}
-	
+
 	@Override
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {

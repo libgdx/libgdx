@@ -28,10 +28,6 @@ public class LwjglFrame extends JFrame {
 
 	public LwjglFrame (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
 		super(title);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		getContentPane().setPreferredSize(new Dimension(width, height));
-		pack();
-		setLocationRelativeTo(null);
 
 		lwjglCanvas = new LwjglCanvas(listener, useGL2) {
 			protected void stopped () {
@@ -62,8 +58,17 @@ public class LwjglFrame extends JFrame {
 			}
 		});
 
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		getContentPane().setPreferredSize(new Dimension(width, height));
+		initialize();
+		pack();
+		setLocationRelativeTo(null);
 		setVisible(true);
 		lwjglCanvas.getCanvas().requestFocus();
+	}
+
+	/** Allows a subclass to initialize the JFrame before it is shown. */
+	protected void initialize () {
 	}
 
 	public void updateSize (int width, int height) {
