@@ -425,21 +425,25 @@ public class TextField extends Widget {
 		final Color fontColor = style.fontColor;
 		final Drawable selection = style.selection;
 		final Drawable cursorPatch = style.cursor;
+		final Drawable background = style.background;
 
 		Color color = getColor();
 		float x = getX();
 		float y = getY();
 		float width = getWidth();
 		float height = getHeight();
+		float textY = textBounds.height / 2 + font.getDescent();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		float bgLeftWidth = 0;
-		if (style.background != null) {
-			style.background.draw(batch, x, y, width, height);
-			bgLeftWidth = style.background.getLeftWidth();
-		}
+		if (background != null) {
+			background.draw(batch, x, y, width, height);
+			bgLeftWidth = background.getLeftWidth();
+			float bottom = background.getBottomHeight();
+			textY = (int)(textY + (height - background.getTopHeight() - bottom) / 2 + bottom);
+		} else
+			textY = (int)(textY + height / 2);
 
-		float textY = (int)(height / 2 + textBounds.height / 2 + font.getDescent());
 		calculateOffsets();
 
 		Stage stage = getStage();
