@@ -170,7 +170,6 @@ public class LwjglCanvas implements Application {
 
 			public void run () {
 				if (!running) return;
-				canvas.setCursor(cursor);
 				graphics.updateTime();
 				synchronized (runnables) {
 					executedRunnables.clear();
@@ -200,6 +199,7 @@ public class LwjglCanvas implements Application {
 				listener.render();
 				audio.update();
 				Display.update();
+				canvas.setCursor(cursor);
 				if (graphics.vsync) Display.sync(60);
 				if (running && !Display.isCloseRequested())
 					EventQueue.invokeLater(this);
