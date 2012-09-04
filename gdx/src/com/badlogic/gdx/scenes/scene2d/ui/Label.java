@@ -157,7 +157,7 @@ public class Label extends Widget {
 			y = cache.getFont().isFlipped() ? height - bounds.height : 0;
 			y -= style.font.getDescent();
 		} else
-			y = (height - bounds.height) / 2;
+			y = (int)((height - bounds.height) / 2);
 		if (!cache.getFont().isFlipped()) y += bounds.height;
 
 		float x;
@@ -166,7 +166,7 @@ public class Label extends Widget {
 		else if ((labelAlign & Align.right) != 0) {
 			x = getWidth() - bounds.width;
 		} else
-			x = (getWidth() - bounds.width) / 2;
+			x = (int)((getWidth() - bounds.width) / 2);
 
 		if (wrap)
 			cache.setWrappedText(text, x, y, bounds.width, lineAlign);
