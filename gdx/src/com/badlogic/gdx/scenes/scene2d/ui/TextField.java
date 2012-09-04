@@ -146,7 +146,7 @@ public class TextField extends Widget {
 			private void setCursorPosition (float x) {
 				lastBlink = 0;
 				cursorOn = false;
-				x -= renderOffset;
+				x -= renderOffset + textOffset;
 				for (int i = 0; i < glyphPositions.size; i++) {
 					if (glyphPositions.items[i] > x) {
 						cursor = Math.max(0, i - 1);
