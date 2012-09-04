@@ -56,14 +56,12 @@ public class ParticleEmitter {
 	private SpawnShapeValue spawnShapeValue = new SpawnShapeValue();
 
 	private float accumulator;
-	private Sprite sprite;
-	private Particle[] particles;
 	private int minParticleCount, maxParticleCount = 4;
 	private float x, y;
 	private String name;
 	private String imagePath;
 	private int activeCount;
-	private boolean[] active;
+	
 	private boolean firstUpdate;
 	private boolean flipX, flipY;
 	private int updateFlags;
@@ -82,6 +80,11 @@ public class ParticleEmitter {
 	private boolean aligned;
 	private boolean behind;
 	private boolean additive = true;
+	
+	// Unserialized variables
+	private transient Particle[] particles;
+	private transient boolean[] active;
+	private transient Sprite sprite;
 
 	public ParticleEmitter () {
 		initialize();

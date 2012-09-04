@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Json;
 
 /** See <a href="http://www.badlogicgames.com/wordpress/?p=1255">http://www.badlogicgames.com/wordpress/?p=1255</a>
  * @author mzechner */
@@ -110,26 +111,39 @@ public class ParticleEffect implements Disposable {
 		}
 		return null;
 	}
+	
+	Json json = new Json();
 
 	public void save (File file) {
-		Writer output = null;
+//		Writer output = null;
+//		try {
+//			output = new FileWriter(file);
+//			int index = 0;
+//			for (int i = 0, n = emitters.size; i < n; i++) {
+//				ParticleEmitter emitter = emitters.get(i);
+//				if (index++ > 0) output.write("\n\n");
+//				emitter.save(output);
+//				output.write("- Image Path -\n");
+//				output.write(emitter.getImagePath() + "\n");
+//			}
+//		} catch (IOException ex) {
+//			throw new GdxRuntimeException("Error saving effect: " + file, ex);
+//		} finally {
+//			try {
+//				if (output != null) output.close();
+//			} catch (IOException ex) {
+//			}
+//		}
+		ParticleEffectModel m = new ParticleEffectModel();
+		m.emitters = emitters;
+		m.filename = file.getName();
+		Writer output;
 		try {
-			output = new FileWriter(file);
-			int index = 0;
-			for (int i = 0, n = emitters.size; i < n; i++) {
-				ParticleEmitter emitter = emitters.get(i);
-				if (index++ > 0) output.write("\n\n");
-				emitter.save(output);
-				output.write("- Image Path -\n");
-				output.write(emitter.getImagePath() + "\n");
-			}
-		} catch (IOException ex) {
-			throw new GdxRuntimeException("Error saving effect: " + file, ex);
-		} finally {
-			try {
-				if (output != null) output.close();
-			} catch (IOException ex) {
-			}
+			output = new  FileWriter(file);
+			output.write(json.toJson(m));
+			output.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -144,27 +158,34 @@ public class ParticleEffect implements Disposable {
 	}
 
 	public void loadEmitters (FileHandle effectFile) {
-		InputStream input = effectFile.read();
+//		InputStream input = effectFile.read();
 		emitters.clear();
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(input), 512);
-			while (true) {
-				ParticleEmitter emitter = new ParticleEmitter(reader);
-				reader.readLine();
-				emitter.setImagePath(reader.readLine());
-				emitters.add(emitter);
-				if (reader.readLine() == null) break;
-				if (reader.readLine() == null) break;
-			}
-		} catch (IOException ex) {
-			throw new GdxRuntimeException("Error loading effect: " + effectFile, ex);
-		} finally {
-			try {
-				if (reader != null) reader.close();
-			} catch (IOException ex) {
-			}
+//		BufferedReader reader = null;
+//		try {
+//			reader = new BufferedReader(new InputStreamReader(input), 512);
+//			while (true) {
+//				ParticleEmitter emitter = new ParticleEmitter(reader);
+//				reader.readLine();
+//				emitter.setImagePath(reader.readLine());
+//				emitters.add(emitter);
+//				if (reader.readLine() == null) break;
+//				if (reader.readLine() == null) break;
+//			}
+//		} catch (IOException ex) {
+//			throw new GdxRuntimeException("Error loading effect: " + effectFile, ex);
+//		} finally {
+//			try {
+//				if (reader != null) reader.close();
+//			} catch (IOException ex) {
+//			}
+//		}
+		ParticleEffectModel m = json.fromJson(ParticleEffectModel.class, effectFile.readString());
+		for (int i = 0; i < m.emitters.size; i++) {
+			ParticleEmitter em = m.emitters.get(i);
+			em.setMaxParticleCount(em.getMaxParticleCount());
 		}
+		
+		emitters.addAll(m.emitters);
 	}
 
 	public void loadEmitterImages (TextureAtlas atlas) {
@@ -202,4 +223,14 @@ public class ParticleEffect implements Disposable {
 			emitter.getSprite().getTexture().dispose();
 		}
 	}
+	
+	public static class ParticleEffectModel {
+		public Array<ParticleEmitter> emitters;
+		public String filename;
+		
+		public ParticleEffectModel() {
+			
+		}
+	}
+	
 }
