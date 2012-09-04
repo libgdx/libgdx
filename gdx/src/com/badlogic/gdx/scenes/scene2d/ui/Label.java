@@ -208,28 +208,7 @@ public class Label extends Widget {
 		}
 		cache.setColor(style.fontColor == null ? color : Color.tmp.set(color).mul(style.fontColor));
 		cache.setPosition(getX(), getY());
-		float scaleX = getScaleX();
-		float scaleY = getScaleY();
-		float rotation = getRotation();
-		if (scaleX != 1 || scaleY != 1 || rotation != 0) {
-			Matrix4 transform = batch.getTransformMatrix();
-			batch.end();
-			float x = getOriginX();
-			float y = getOriginY();
-			transform.trn(x, y, 0);
-			if (rotation != 0) transform.rotate(0, 0, 1, rotation);
-			if (scaleX != 1 || scaleY != 1) transform.scale(scaleX, scaleY, 1);
-			transform.translate(-x, -y, 0);
-			batch.begin();
-			cache.draw(batch, color.a * parentAlpha);
-			batch.end();
-			transform.translate(x, y, 0);
-			if (scaleX != 1 || scaleY != 1) transform.scale(1 / scaleX, 1 / scaleY, 1);
-			if (rotation != 0) transform.rotate(0, 0, 1, -rotation);
-			transform.trn(-x, -y, 0);
-			batch.begin();
-		} else
-			cache.draw(batch, color.a * parentAlpha);
+		cache.draw(batch, color.a * parentAlpha);
 	}
 
 	public float getPrefWidth () {
