@@ -4,6 +4,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -63,6 +64,12 @@ public class Dialog extends Window {
 				hide();
 			}
 		});
+	}
+
+	public void draw (SpriteBatch batch, float parentAlpha) {
+		Stage stage = getStage();
+		if (stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
+		super.draw(batch, parentAlpha);
 	}
 
 	public Table getContentTable () {
