@@ -203,6 +203,18 @@ public class Table extends WidgetGroup {
 		return add(new Label(text, skin.get(labelStyleName, LabelStyle.class)));
 	}
 
+	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
+	public Cell add (String text, String fontName, Color color) {
+		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
+		return add(new Label(text, new LabelStyle(skin.getFont(fontName), color)));
+	}
+
+	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
+	public Cell add (String text, String fontName, String colorName) {
+		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
+		return add(new Label(text, new LabelStyle(skin.getFont(fontName), skin.getColor(colorName))));
+	}
+
 	/** Adds a cell without a widget. */
 	public Cell add () {
 		return layout.add(null);

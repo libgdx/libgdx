@@ -92,7 +92,7 @@ public class Tree extends WidgetGroup {
 
 			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
 				super.exit(event, x, y, pointer, toActor);
-				if (toActor == null || !toActor.isDescendant(Tree.this)) setOverNode(null);
+				if (toActor == null || !toActor.isDescendantOf(Tree.this)) setOverNode(null);
 			}
 		});
 	}

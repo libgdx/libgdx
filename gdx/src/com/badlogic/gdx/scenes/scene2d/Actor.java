@@ -245,8 +245,8 @@ public class Actor {
 		this.stage = stage;
 	}
 
-	/** Returns true if the specified actor is this actor or a descendant of this actor. */
-	public boolean isDescendant (Actor actor) {
+	/** Returns true if this actor is the same as or is the descendant of the specified actor. */
+	public boolean isDescendantOf (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		Actor parent = this;
 		while (true) {
@@ -256,8 +256,8 @@ public class Actor {
 		}
 	}
 
-	/** Returns true if the specified actor is this actor or an ancestor of this actor. */
-	public boolean isAscendant (Actor actor) {
+	/** Returns true if this actor is the same as or is the ascendant of the specified actor. */
+	public boolean isAscendantOf (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		while (true) {
 			if (actor == null) return false;
