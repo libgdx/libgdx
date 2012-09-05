@@ -42,7 +42,6 @@ import com.badlogic.gdx.tests.AssetManagerTest;
 import com.badlogic.gdx.tests.AtlasIssueTest;
 import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
 import com.badlogic.gdx.tests.BitmapFontFlipTest;
-import com.badlogic.gdx.tests.BitmapFontMetricsTest;
 import com.badlogic.gdx.tests.BitmapFontTest;
 import com.badlogic.gdx.tests.BlitTest;
 import com.badlogic.gdx.tests.Box2DCharacterControllerTest;
@@ -419,11 +418,7 @@ public class GwtTestWrapper extends GdxTest {
 		public GdxTest instance () {
 			return new BitmapFontTest();
 		}
-	}, new Instancer() {
-		public GdxTest instance () {
-			return new BitmapFontMetricsTest();
-		}
-	}, new Instancer() {
+	},  new Instancer() {
 		public GdxTest instance () {
 			return new BlitTest();
 		}

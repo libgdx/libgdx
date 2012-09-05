@@ -65,7 +65,7 @@ public class ScrollPane extends WidgetGroup {
 	private boolean fadeScrollBars = true, smoothScrolling = true;
 	float fadeAlpha, fadeAlphaSeconds = 1, fadeDelay, fadeDelaySeconds = 1;
 
-	private boolean flickScroll = true;
+	boolean flickScroll = true;
 	float flingSensitive = 1f;
 	float velocityX, velocityY;
 	float flingTimer;

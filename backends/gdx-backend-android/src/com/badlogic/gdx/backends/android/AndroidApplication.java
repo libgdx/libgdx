@@ -45,6 +45,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
+import com.badlogic.gdx.utils.D;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 /** An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class. In
@@ -362,4 +363,5 @@ public class AndroidApplication extends Activity implements Application {
 	public void setLogLevel (int logLevel) {
 		this.logLevel = logLevel;
 	}
+
 }

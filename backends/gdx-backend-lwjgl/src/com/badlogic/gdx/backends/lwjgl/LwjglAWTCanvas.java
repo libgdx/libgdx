@@ -38,6 +38,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
 import com.badlogic.gdx.utils.Clipboard;
+import com.badlogic.gdx.utils.D;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. All OpenGL calls are done on the

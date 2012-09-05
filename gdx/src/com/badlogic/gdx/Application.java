@@ -158,4 +158,5 @@ public interface Application {
 	/** Exits the application. This will cause a call to pause() and dispose() some time in the loadFuture, it will not immediately
 	 * finish your application! */
 	public void exit ();
+
 }
