@@ -74,7 +74,6 @@ public class ClickListener extends InputListener {
 			}
 			pressed = false;
 			pressedPointer = -1;
-			over = false;
 			cancelled = false;
 		}
 	}
