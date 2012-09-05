@@ -60,7 +60,14 @@ public class CheckBox extends TextButton {
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		image.setDrawable(isChecked ? style.checkboxOn : style.checkboxOff);
+		Drawable checkbox;
+		if (isChecked && style.checkboxOn != null)
+			checkbox = style.checkboxOn;
+		else if (isOver() && style.checkboxOver != null)
+			checkbox = style.checkboxOver;
+		else
+			checkbox = style.checkboxOff;
+		image.setDrawable(checkbox);
 		super.draw(batch, parentAlpha);
 	}
 
@@ -72,6 +79,8 @@ public class CheckBox extends TextButton {
 	 * @author Nathan Sweet */
 	static public class CheckBoxStyle extends TextButtonStyle {
 		public Drawable checkboxOn, checkboxOff;
+		/** Optional. */
+		public Drawable checkboxOver;
 
 		public CheckBoxStyle () {
 		}

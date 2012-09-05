@@ -412,8 +412,8 @@ public class BitmapFont implements Disposable {
 		Glyph lastGlyph = null;
 		if (data.scaleX == 1 && data.scaleY == 1) {
 			if (integer) {
-				y = (int)y;
-				x = (int)x;
+				y = Math.round(y);
+				x = Math.round(x);
 			}
 			while (start < end) {
 				lastGlyph = data.getGlyph(str.charAt(start++));
@@ -431,7 +431,7 @@ public class BitmapFont implements Disposable {
 				Glyph g = data.getGlyph(ch);
 				if (g == null) continue;
 				x += lastGlyph.getKerning(ch);
-				if (integer) x = (int)x;
+				if (integer) x = Math.round(x);
 				lastGlyph = g;
 				spriteBatch.draw(texture, //
 					x + lastGlyph.xoffset, y + lastGlyph.yoffset, //
@@ -453,10 +453,10 @@ public class BitmapFont implements Disposable {
 							lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 					} else {
 						spriteBatch.draw(texture, //
-							(int)(x + lastGlyph.xoffset * scaleX), //
-							(int)(y + lastGlyph.yoffset * scaleY), //
-							(int)(lastGlyph.width * scaleX), //
-							(int)(lastGlyph.height * scaleY), //
+							Math.round(x + lastGlyph.xoffset * scaleX), //
+							Math.round(y + lastGlyph.yoffset * scaleY), //
+							Math.round(lastGlyph.width * scaleX), //
+							Math.round(lastGlyph.height * scaleY), //
 							lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 					}
 					x += lastGlyph.xadvance * scaleX;
@@ -478,10 +478,10 @@ public class BitmapFont implements Disposable {
 						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 				} else {
 					spriteBatch.draw(texture, //
-						(int)(x + lastGlyph.xoffset * scaleX), //
-						(int)(y + lastGlyph.yoffset * scaleY), //
-						(int)(lastGlyph.width * scaleX), //
-						(int)(lastGlyph.height * scaleY), //
+						Math.round(x + lastGlyph.xoffset * scaleX), //
+						Math.round(y + lastGlyph.yoffset * scaleY), //
+						Math.round(lastGlyph.width * scaleX), //
+						Math.round(lastGlyph.height * scaleY), //
 						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 				}
 				x += g.xadvance * scaleX;

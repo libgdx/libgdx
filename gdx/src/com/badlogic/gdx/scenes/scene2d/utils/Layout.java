@@ -23,19 +23,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 /** Provides methods for an actor to participate in layout and to provide a minimum, preferred, and maximum size.
  * @author Nathan Sweet */
 public interface Layout {
-	/** Computes and caches any information needed for drawing and, if this actor has children, positions and sizes each child and
-	 * calls {@link #validate()} on each one. Usually this should not be called directly, instead {@link #validate()} should be
-	 * used. */
+	/** Computes and caches any information needed for drawing and, if this actor has children, positions and sizes each child,
+	 * calls {@link #invalidate()} any each child whose width or height has changed, and calls {@link #validate()} on each child.
+	 * This method should almost never be called directly, instead {@link #validate()} should be used. */
 	public void layout ();
 
-	/** Invalidates this actor's layout, causing {@link #layout()} to be called the next time {@link #validate()} is called. This
-	 * should be done when state changes in the actor that requires a layout but does not change the minimum, preferred, maximum,
-	 * or actual size of the actor (meaning it does not affect the parent actor's layout). */
+	/** Invalidates this actor's layout, causing {@link #layout()} to happen the next time {@link #validate()} is called. This
+	 * method should be called when state changes in the actor that requires a layout but does not change the minimum, preferred,
+	 * maximum, or actual size of the actor (meaning it does not affect the parent actor's layout). */
 	public void invalidate ();
 
 	/** Invalidates this actor and all its parents, calling {@link #invalidate()} on all involved actors. This method should be
 	 * called when state changes in the actor that affects the minimum, preferred, maximum, or actual size of the actor (meaning it
-	 * potentially affects the parent actor's layout). */
+	 * it potentially affects the parent actor's layout). */
 	public void invalidateHierarchy ();
 
 	/** Ensures the actor has been laid out. Calls {@link #layout()} if {@link #invalidate()} has called since the last time
@@ -43,13 +43,13 @@ public interface Layout {
 	 * {@link Actor#draw(SpriteBatch, float)} before drawing is performed. */
 	public void validate ();
 
-	/** Sizes this actor to its preferred width and height and, if its size was changed, causes the actor to be laid out by calling
-	 * {@link #validate()}.
+	/** Sizes this actor to its preferred width and height and, if this changed the size, causes the actor to be laid out by calling
+	 * {@link #invalidate()} then {@link #validate()}.
 	 * <p>
-	 * Generally this method should not be called in a constructor because it calls {@link #layout()}, which means a subclass would
-	 * have layout() called before the subclass' constructor. Instead, in a constructor simply sets the actors width and height to
-	 * {@link #getPrefWidth()} and {@link #getPrefHeight()}. This allows the actor to have a size at construction time for more
-	 * convenient use outside of a {@link Table}. */
+	 * Generally this method should not be called in an actor's constructor because it calls {@link #layout()}, which means a
+	 * subclass would have layout() called before the subclass' constructor. Instead, in constructors, simply set the actors width
+	 * and height to {@link #getPrefWidth()} and {@link #getPrefHeight()}. This allows the actor to have a size at construction
+	 * time for more convenient use outside of a {@link Table}. */
 	public void pack ();
 
 	/** If true, this actor will be sized to the parent in {@link #validate()}. If the parent is the stage, the actor will be sized

@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
@@ -52,11 +53,13 @@ public class LwjglAWTCanvas implements Application {
 	final LwjglAWTInput input;
 	final ApplicationListener listener;
 	final AWTGLCanvas canvas;
-	final List<Runnable> runnables = new ArrayList<Runnable>();
+	final List<Runnable> runnables = new ArrayList();
+	final List<Runnable> executedRunnables = new ArrayList();
 	boolean running = true;
 	int lastWidth;
 	int lastHeight;
 	int logLevel = LOG_INFO;
+	private Cursor cursor;
 
 	public LwjglAWTCanvas (ApplicationListener listener, boolean useGL2) {
 		this(listener, useGL2, null);
@@ -195,17 +198,20 @@ public class LwjglAWTCanvas implements Application {
 
 	void render () {
 		setGlobals();
-		canvas.setCursor(null);
+		canvas.setCursor(cursor);
 		graphics.updateTime();
 		synchronized (runnables) {
-			for (int i = 0; i < runnables.size(); i++) {
+			executedRunnables.clear();
+			executedRunnables.addAll(runnables);
+			runnables.clear();
+
+			for (int i = 0; i < executedRunnables.size(); i++) {
 				try {
-					runnables.get(i).run();
+					executedRunnables.get(i).run();
 				} catch (Throwable t) {
 					t.printStackTrace();
 				}
 			}
-			runnables.clear();
 		}
 
 		int width = Math.max(1, graphics.getWidth());
@@ -218,9 +224,11 @@ public class LwjglAWTCanvas implements Application {
 			listener.resize(width, height);
 		}
 		input.processEvents();
-		listener.render();
-		if (audio != null) {
-			audio.update();
+		if (running) {
+			listener.render();
+			if (audio != null) {
+				audio.update();
+			}
 		}
 	}
 
@@ -346,4 +354,8 @@ public class LwjglAWTCanvas implements Application {
 		}
 	}
 
+	/** @param cursor May be null. */
+	public void setCursor (Cursor cursor) {
+		this.cursor = cursor;
+	}
 }

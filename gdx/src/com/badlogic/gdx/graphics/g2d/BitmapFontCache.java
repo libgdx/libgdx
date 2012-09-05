@@ -61,8 +61,8 @@ public class BitmapFontCache {
 	public void translate (float xAmount, float yAmount) {
 		if (xAmount == 0 && yAmount == 0) return;
 		if (integer) {
-			xAmount = (int)xAmount;
-			yAmount = (int)yAmount;
+			xAmount = Math.round(xAmount);
+			yAmount = Math.round(yAmount);
 		}
 		x += xAmount;
 		y += yAmount;
@@ -204,10 +204,10 @@ public class BitmapFontCache {
 		final float[] vertices = this.vertices;
 
 		if (integer) {
-			x = (int)x;
-			y = (int)y;
-			x2 = (int)x2;
-			y2 = (int)y2;
+			x = Math.round(x);
+			y = Math.round(y);
+			x2 = Math.round(x2);
+			y2 = Math.round(y2);
 		}
 
 		vertices[idx++] = x;

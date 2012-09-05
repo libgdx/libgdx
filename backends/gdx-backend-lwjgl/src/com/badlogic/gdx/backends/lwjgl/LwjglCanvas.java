@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.util.ArrayList;
@@ -50,9 +51,11 @@ public class LwjglCanvas implements Application {
 	final LwjglInput input;
 	final ApplicationListener listener;
 	final Canvas canvas;
-	final List<Runnable> runnables = new ArrayList<Runnable>();
+	final List<Runnable> runnables = new ArrayList();
+	final List<Runnable> executedRunnables = new ArrayList();
 	boolean running = true;
 	int logLevel = LOG_INFO;
+	Cursor cursor;
 
 	public LwjglCanvas (ApplicationListener listener, boolean useGL2) {
 		LwjglNativesLoader.load();
@@ -168,17 +171,19 @@ public class LwjglCanvas implements Application {
 
 			public void run () {
 				if (!running) return;
-				canvas.setCursor(null);
 				graphics.updateTime();
 				synchronized (runnables) {
-					for (int i = 0; i < runnables.size(); i++) {
+					executedRunnables.clear();
+					executedRunnables.addAll(runnables);
+					runnables.clear();
+
+					for (int i = 0; i < executedRunnables.size(); i++) {
 						try {
-							runnables.get(i).run();
+							executedRunnables.get(i).run();
 						} catch (Throwable t) {
 							t.printStackTrace();
 						}
 					}
-					runnables.clear();
 				}
 				input.update();
 
@@ -192,10 +197,13 @@ public class LwjglCanvas implements Application {
 					listener.resize(width, height);
 				}
 				input.processEvents();
-				listener.render();
-				audio.update();
-				Display.update();
-				if (graphics.vsync) Display.sync(60);
+				if (running) {
+					listener.render();
+					audio.update();
+					Display.update();
+					canvas.setCursor(cursor);
+					if (graphics.vsync) Display.sync(60);
+				}
 				if (running && !Display.isCloseRequested())
 					EventQueue.invokeLater(this);
 				else
@@ -322,4 +330,8 @@ public class LwjglCanvas implements Application {
 		});
 	}
 
+	/** @param cursor May be null. */
+	public void setCursor (Cursor cursor) {
+		this.cursor = cursor;
+	}
 }
