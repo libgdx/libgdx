@@ -27,7 +27,10 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import java.util.List;
+import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
+import com.esotericsoftware.tablelayout.Cell;
+import com.esotericsoftware.tablelayout.Toolkit;
+import com.esotericsoftware.tablelayout.Value;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -42,10 +45,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
-import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
-import com.esotericsoftware.tablelayout.Cell;
-import com.esotericsoftware.tablelayout.Toolkit;
-import com.esotericsoftware.tablelayout.Value;
+
+import java.util.List;
 
 /** A group that sizes and positions children using table constraints. By default, {@link #getTouchable()} is
  * {@link Touchable#childrenOnly}.
@@ -432,6 +433,16 @@ public class Table extends WidgetGroup {
 
 	public float getPadRight () {
 		return layout.getPadRight();
+	}
+
+	/** Returns {@link #getPadLeft()} plus {@link #getPadRight()}. */
+	public float getPadX () {
+		return layout.getPadLeft() + layout.getPadRight();
+	}
+
+	/** Returns {@link #getPadTop()} plus {@link #getPadBottom()}. */
+	public float getPadY () {
+		return layout.getPadTop() + layout.getPadBottom();
 	}
 
 	public int getAlign () {
