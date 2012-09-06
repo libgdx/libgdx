@@ -253,10 +253,9 @@ public class Tree extends WidgetGroup {
 	}
 
 	private float getNodeAt (Array<Node> nodes, float y, float rowY) {
-		y += iconSpacing / 2;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			if (y > rowY - node.height - ySpacing / 2 && y <= rowY + ySpacing / 2) {
+			if (y >= rowY - node.height - ySpacing && y < rowY) {
 				foundNode = node;
 				return -1;
 			}
