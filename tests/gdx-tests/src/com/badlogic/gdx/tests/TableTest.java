@@ -83,9 +83,11 @@ public class TableTest extends GdxTest {
 
 		TextButton button = new TextButton("Text Button", skin);
 		Table table2 = new Table();
-		table2.setScaleX(2);
-		table2.setTransform(true);
+		// table2.debug()
 		table2.add(button);
+		table2.setTransform(true);
+		table2.setScaleX(1.5f);
+		table2.setOrigin(table2.getPrefWidth() / 2, table2.getPrefHeight() / 2);
 
 		root.setPosition(10, 10);
 		// root.debug();

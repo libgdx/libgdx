@@ -16,9 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
-/** A simple linked list that pools its nodes. This is a highly specialized class used in a couple of 2D scene graph classes. I
- * wouldn't use it if i was you :)
- * 
+/** A simple linked list that pools its nodes.
  * @author mzechner */
 public class PooledLinkedList<T> {
 	static final class Item<T> {
