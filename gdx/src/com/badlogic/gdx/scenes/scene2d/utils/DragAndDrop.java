@@ -45,7 +45,7 @@ public class DragAndDrop {
 				if (hit != null) {
 					for (int i = 0, n = targets.size; i < n; i++) {
 						Target target = targets.get(i);
-						if (!target.actor.isAscendant(hit)) continue;
+						if (!target.actor.isAscendantOf(hit)) continue;
 						newTarget = target;
 						target.actor.stageToLocalCoordinates(Vector2.tmp.set(event.getStageX(), event.getStageY()));
 						isValidTarget = target.drag(source, payload, Vector2.tmp.x, Vector2.tmp.y, pointer);
