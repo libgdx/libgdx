@@ -50,6 +50,10 @@ public class LwjglFrame extends JFrame {
 			protected void resize (int width, int height) {
 				updateSize(width, height);
 			}
+
+			protected void start () {
+				LwjglFrame.this.start();
+			}
 		};
 		getContentPane().add(lwjglCanvas.getCanvas());
 
@@ -70,10 +74,15 @@ public class LwjglFrame extends JFrame {
 		lwjglCanvas.getCanvas().requestFocus();
 	}
 
-	/** Allows a subclass to initialize the JFrame before it is shown. */
+	/** Called before the JFrame is shown. */
 	protected void initialize () {
 	}
 
+	/** Called after {@link ApplicationListener} create and resize, but before the game loop iteration. */
+	protected void start () {
+	}
+
+	/** Called when the canvas size changes. */
 	public void updateSize (int width, int height) {
 	}
 
