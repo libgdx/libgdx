@@ -32,10 +32,12 @@ public class TextButton extends Button {
 
 	public TextButton (String text, Skin skin) {
 		this(text, skin.get(TextButtonStyle.class));
+		setSkin(skin);
 	}
 
 	public TextButton (String text, Skin skin, String styleName) {
 		this(text, skin.get(styleName, TextButtonStyle.class));
+		setSkin(skin);
 	}
 
 	public TextButton (String text, TextButtonStyle style) {

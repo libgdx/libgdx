@@ -19,6 +19,7 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -108,6 +109,7 @@ public class BitmapFontAlignmentTest extends GdxTest {
 
 		// Obviously you wouldn't set the cache text every frame in real code.
 		TextBounds bounds = cache.setMultiLineText(text, 0, 0);
+		cache.setColor(Color.BLUE, 1, 4);
 
 		x += width / 2 - bounds.width / 2;
 		y += height / 2 + bounds.height / 2;
