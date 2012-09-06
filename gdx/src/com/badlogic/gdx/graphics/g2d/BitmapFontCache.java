@@ -100,6 +100,15 @@ public class BitmapFontCache {
 			vertices[i] = color;
 	}
 
+	/** Sets the color of the specified characters. This may only be called after {@link #setText(CharSequence, float, float)} and
+	 * is reset every time setText is called. */
+	public void setColor (Color tint, int start, int end) {
+		final float color = tint.toFloatBits();
+		float[] vertices = this.vertices;
+		for (int i = start * 20 + 2, n = end * 20; i < n; i += 5)
+			vertices[i] = color;
+	}
+
 	public void draw (SpriteBatch spriteBatch) {
 		spriteBatch.draw(font.getRegion().getTexture(), vertices, 0, idx);
 	}
@@ -404,5 +413,9 @@ public class BitmapFontCache {
 	/** @return whether this font uses integer positions for drawing. */
 	public boolean usesIntegerPositions () {
 		return integer;
+	}
+
+	public float[] getVertices () {
+		return vertices;
 	}
 }
