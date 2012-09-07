@@ -17,7 +17,7 @@
 	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m64 -std=c99 -DFT2_BUILD_LIBRARY"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
-				<include name="freetype-2.4.8/src/base/ftsystem.c"/>
+		<include name="freetype-2.4.8/src/base/ftsystem.c"/>
 		<include name="freetype-2.4.8/src/base/ftinit.c"/>
 		<include name="freetype-2.4.8/src/base/ftdebug.c"/>
 		<include name="freetype-2.4.8/src/base/ftbase.c"/>
@@ -62,7 +62,6 @@
 		<include name="freetype-2.4.8/src/pshinter/pshinter.c"/>
 		<include name="freetype-2.4.8/src/psnames/psnames.c"/>
 
-		
 	</fileset>
 	
 	<!-- define g++ compiler, options and files to compile -->
@@ -70,8 +69,7 @@
 	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m64 -std=c99 -DFT2_BUILD_LIBRARY"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
-				<include name="**/*.cpp"/>
-
+		<include name="**/*.cpp"/>
 		
 	</fileset>
 
@@ -88,10 +86,26 @@
 	</target>
 	
 	<target name="precompile">
-		
+                <condition property="compiler-found">
+                        <and>
+                                <or>
+                                        <!-- Windows might be either; Linux the first -->
+                                        <available file="${g++}" filepath="${env.PATH}"/>
+                                        <available file="${g++}" filepath="${env.Path}"/>
+                                </or>
+                                <or>
+                                        <!-- Windows might be either; Linux the first -->
+                                        <available file="${gcc}" filepath="${env.PATH}"/>
+                                        <available file="${gcc}" filepath="${env.Path}"/>
+                                </or>
+                        </and>
+                </condition>
+                <condition property="has-compiler">
+                        <equals arg1="${compiler-found}" arg2="true"/>
+                </condition>
 	</target>
 	
-	<target name="create-build-dir" depends="precompile">
+	<target name="create-build-dir" depends="precompile" if="has-compiler">
 		<!-- FIXME this is pretty nasty :/ -->
 		<copy todir="${buildDir}">
 			<fileset refid="g++-files"/>
@@ -106,15 +120,14 @@
 	</target>
 
 	<!-- compiles all C and C++ files to object files in the build directory -->
-	<target name="compile" depends="create-build-dir" >
+	<target name="compile" depends="create-build-dir" if="has-compiler">
 		<mkdir dir="${buildDir}"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
 			<arg line="${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Ifreetype-2.4.8/include"/>
-
+			<arg value="-Ifreetype-2.4.8/include"/>
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>
@@ -128,8 +141,7 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Ifreetype-2.4.8/include"/>
-
+			<arg value="-Ifreetype-2.4.8/include"/>
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>
@@ -141,7 +153,7 @@
 	</target>	
 
 	<!-- links the shared library based on the previously compiled object files -->	
-	<target name="link" depends="compile">
+	<target name="link" depends="compile" if="has-compiler">
 		<mkdir dir="${libsDir}"/>
 		<apply failonerror="true" executable="${linker}" parallel="true" dir="${buildDir}">
 			<arg line="${linker-opts}"/>

@@ -17,9 +17,8 @@
 	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse -fmessage-length=0 -m64 -fPIC"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
-				<include name="**/*.c"/>
-
-				<exclude name="src/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
+		<include name="**/*.c"/>
+		<exclude name="src/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
 
 	</fileset>
 	
@@ -28,9 +27,8 @@
 	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse -fmessage-length=0 -m64 -fPIC -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
-				<include name="**/*.cpp"/>
-
-				<exclude name="src/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
+		<include name="**/*.cpp"/>
+		<exclude name="src/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
 
 	</fileset>
 
@@ -47,10 +45,26 @@
 	</target>
 	
 	<target name="precompile">
-		
+                <condition property="compiler-found">
+                        <and>
+                                <or>
+                                        <!-- Windows might be either; Linux the first -->
+                                        <available file="${g++}" filepath="${env.PATH}"/>
+                                        <available file="${g++}" filepath="${env.Path}"/>
+                                </or>
+                                <or>
+                                        <!-- Windows might be either; Linux the first -->
+                                        <available file="${gcc}" filepath="${env.PATH}"/>
+                                        <available file="${gcc}" filepath="${env.Path}"/>
+                                </or>
+                        </and>
+                </condition>
+                <condition property="has-compiler">
+                        <equals arg1="${compiler-found}" arg2="true"/>
+                </condition>
 	</target>
 	
-	<target name="create-build-dir" depends="precompile">
+	<target name="create-build-dir" depends="precompile" if="has-compiler">
 		<!-- FIXME this is pretty nasty :/ -->
 		<copy todir="${buildDir}">
 			<fileset refid="g++-files"/>
@@ -65,15 +79,14 @@
 	</target>
 
 	<!-- compiles all C and C++ files to object files in the build directory -->
-	<target name="compile" depends="create-build-dir" >
+	<target name="compile" depends="create-build-dir" if="has-compiler">
 		<mkdir dir="${buildDir}"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
 			<arg line="${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/"/>
-
+			<arg value="-Isrc/"/>
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>
@@ -87,8 +100,7 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/"/>
-
+			<arg value="-Isrc/"/>
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>
@@ -100,7 +112,7 @@
 	</target>	
 
 	<!-- links the shared library based on the previously compiled object files -->	
-	<target name="link" depends="compile">
+	<target name="link" depends="compile" if="has-compiler">
 		<mkdir dir="${libsDir}"/>
 		<apply failonerror="true" executable="${linker}" parallel="true" dir="${buildDir}">
 			<arg line="${linker-opts}"/>
