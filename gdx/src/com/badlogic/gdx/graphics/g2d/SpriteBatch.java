@@ -170,9 +170,10 @@ public class SpriteBatch implements Disposable {
 		this.buffers = new Mesh[buffers];
 
 		for (int i = 0; i < buffers; i++) {
-			this.buffers[i] = new Mesh(VertexDataType.VertexArray, false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2,
-				ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
-				new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+			this.buffers[i] = new Mesh(VertexDataType.VertexArray, false, size * 4, size * 6, 
+																					 new VertexAttribute(Usage.Position, 2,ShaderProgram.POSITION_ATTRIBUTE), 
+																					 new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
+																					 new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		}
 
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
