@@ -28,43 +28,53 @@ import com.badlogic.gdx.math.MathUtils;
 // BOZO - Add a duplicate emitter button.
 
 public class ParticleEmitter {
-	static private final int UPDATE_SCALE = 1 << 0;
-	static private final int UPDATE_ANGLE = 1 << 1;
-	static private final int UPDATE_ROTATION = 1 << 2;
-	static private final int UPDATE_VELOCITY = 1 << 3;
-	static private final int UPDATE_WIND = 1 << 4;
-	static private final int UPDATE_GRAVITY = 1 << 5;
-	static private final int UPDATE_TINT = 1 << 6;
+	
+	// Variables which will not be serialized.
+	static transient private final int UPDATE_SCALE = 1 << 0;
+	static transient private final int UPDATE_ANGLE = 1 << 1;
+	static transient private final int UPDATE_ROTATION = 1 << 2;
+	static transient private final int UPDATE_VELOCITY = 1 << 3;
+	static transient private final int UPDATE_WIND = 1 << 4;
+	static transient private final int UPDATE_GRAVITY = 1 << 5;
+	static transient private final int UPDATE_TINT = 1 << 6;
+	
+	private transient Particle[] particles;
+	private transient boolean[] active;
+	private transient Sprite sprite;
+	
+	private transient float x, y;
+	private transient float accumulator;
+	private transient int updateFlags;
+	private transient int activeCount;
+	public transient float duration = 1, durationTimer;
 
-	private RangedNumericValue delayValue = new RangedNumericValue();
-	private ScaledNumericValue lifeOffsetValue = new ScaledNumericValue();
-	private RangedNumericValue durationValue = new RangedNumericValue();
-	private ScaledNumericValue lifeValue = new ScaledNumericValue();
-	private ScaledNumericValue emissionValue = new ScaledNumericValue();
-	private ScaledNumericValue scaleValue = new ScaledNumericValue();
-	private ScaledNumericValue rotationValue = new ScaledNumericValue();
-	private ScaledNumericValue velocityValue = new ScaledNumericValue();
-	private ScaledNumericValue angleValue = new ScaledNumericValue();
-	private ScaledNumericValue windValue = new ScaledNumericValue();
-	private ScaledNumericValue gravityValue = new ScaledNumericValue();
-	private ScaledNumericValue transparencyValue = new ScaledNumericValue();
-	private GradientColorValue tintValue = new GradientColorValue();
-	private RangedNumericValue xOffsetValue = new ScaledNumericValue();
-	private RangedNumericValue yOffsetValue = new ScaledNumericValue();
-	private ScaledNumericValue spawnWidthValue = new ScaledNumericValue();
-	private ScaledNumericValue spawnHeightValue = new ScaledNumericValue();
-	private SpawnShapeValue spawnShapeValue = new SpawnShapeValue();
+	// Variables which will be serialized.
+	private RangedNumericValue delayValue;
+	private ScaledNumericValue lifeOffsetValue;
+	private RangedNumericValue durationValue;
+	private ScaledNumericValue lifeValue;
+	private ScaledNumericValue emissionValue;
+	private ScaledNumericValue scaleValue;
+	private ScaledNumericValue rotationValue;
+	private ScaledNumericValue velocityValue;
+	private ScaledNumericValue angleValue;
+	private ScaledNumericValue initialAngleValue;
+	private ScaledNumericValue windValue;
+	private ScaledNumericValue gravityValue;
+	private ScaledNumericValue transparencyValue;
+	private GradientColorValue tintValue;
+	private RangedNumericValue xOffsetValue;
+	private RangedNumericValue yOffsetValue;
+	private ScaledNumericValue spawnWidthValue;
+	private ScaledNumericValue spawnHeightValue; 
+	private SpawnShapeValue spawnShapeValue;
 
-	private float accumulator;
 	private int minParticleCount, maxParticleCount = 4;
-	private float x, y;
 	private String name;
 	private String imagePath;
-	private int activeCount;
 	
 	private boolean firstUpdate;
 	private boolean flipX, flipY;
-	private int updateFlags;
 	private boolean allowCompletion;
 
 	private int emission, emissionDiff, emissionDelta;
@@ -72,7 +82,6 @@ public class ParticleEmitter {
 	private int life, lifeDiff;
 	private float spawnWidth, spawnWidthDiff;
 	private float spawnHeight, spawnHeightDiff;
-	public float duration = 1, durationTimer;
 	private float delay, delayTimer;
 
 	private boolean attached;
@@ -81,20 +90,25 @@ public class ParticleEmitter {
 	private boolean behind;
 	private boolean additive = true;
 	
-	// Unserialized variables
-	private transient Particle[] particles;
-	private transient boolean[] active;
-	private transient Sprite sprite;
-
+	/** Empty constructor which will be invoked when de-serializing from JSON. */
 	public ParticleEmitter () {
-		initialize();
 	}
-
+	
+	/** Constructor for creating a default {@link ParticleEmitter}.
+	 * @param init Whether to initialize this {@link ParticleEmitter} or not. */
+	public ParticleEmitter (boolean init) {
+		if(init) initialize();
+	}
+	
+	/** Constructor will be invoked when reading a file using the old format. 
+	 * @param reader The {@link BufferedReader} which has opened the file. */
 	public ParticleEmitter (BufferedReader reader) throws IOException {
 		initialize();
 		load(reader);
 	}
-
+	
+	/** Create a {@link ParticleEmitter} using an existing {@link ParticleEmitter}.
+	 * @param emitter The {@link ParticleEmitter} to "copy". */
 	public ParticleEmitter (ParticleEmitter emitter) {
 		sprite = emitter.sprite;
 		name = emitter.name;
@@ -124,8 +138,30 @@ public class ParticleEmitter {
 		behind = emitter.behind;
 		additive = emitter.additive;
 	}
-
+	
+	/** Instantiate important variables for this {@link ParticleEmitter}. */
 	private void initialize () {
+		delayValue = new RangedNumericValue();
+		lifeOffsetValue = new ScaledNumericValue();
+		durationValue = new RangedNumericValue();
+		lifeValue = new ScaledNumericValue();
+		emissionValue = new ScaledNumericValue();
+		scaleValue = new ScaledNumericValue();
+		rotationValue = new ScaledNumericValue();
+		velocityValue = new ScaledNumericValue();
+		angleValue = new ScaledNumericValue();
+		initialAngleValue = new ScaledNumericValue();
+		windValue = new ScaledNumericValue();
+		gravityValue = new ScaledNumericValue();
+		transparencyValue = new ScaledNumericValue();
+		tintValue = new GradientColorValue();
+		xOffsetValue = new ScaledNumericValue();
+		yOffsetValue = new ScaledNumericValue();
+		spawnWidthValue = new ScaledNumericValue();
+		spawnHeightValue = new ScaledNumericValue();
+		spawnShapeValue = new SpawnShapeValue();
+		
+		
 		durationValue.setAlwaysActive(true);
 		emissionValue.setAlwaysActive(true);
 		lifeValue.setAlwaysActive(true);

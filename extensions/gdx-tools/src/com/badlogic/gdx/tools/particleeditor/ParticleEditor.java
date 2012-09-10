@@ -421,7 +421,6 @@ public class ParticleEditor extends JFrame {
 		private void loadImage (ParticleEmitter emitter) {
 			final String imagePath = emitter.getImagePath();
 			String imageName = new File(imagePath.replace('\\', '/')).getName();
-			System.out.println(imageName);
 			try {
 				FileHandle file;
 				if (imagePath.equals("particle.png"))

@@ -31,10 +31,13 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 
+<<<<<<< HEAD
 /** See <a href="http://www.badlogicgames.com/wordpress/?p=1255">http://www.badlogicgames.com/wordpress/?p=1255</a>
  * @author mzechner */
+
 public class ParticleEffect implements Disposable {
 	private final Array<ParticleEmitter> emitters;
+	private Json json = new Json();
 
 	public ParticleEffect () {
 		emitters = new Array(8);
@@ -88,6 +91,13 @@ public class ParticleEffect implements Disposable {
 			emitter.durationTimer = 0;
 		}
 	}
+	
+	public void setContinous(boolean continuous) {
+		for (int i = 0, n = emitters.size; i < n; i++) {
+			ParticleEmitter emitter = emitters.get(i);
+			emitter.setContinuous(continuous);
+		}
+	}
 
 	public void setPosition (float x, float y) {
 		for (int i = 0, n = emitters.size; i < n; i++)
@@ -103,7 +113,7 @@ public class ParticleEffect implements Disposable {
 		return emitters;
 	}
 
-	/** Returns the emitter with the specified name, or null. */
+	/** Returns the {@link ParticleEmitter} with the specified name, or null. */
 	public ParticleEmitter findEmitter (String name) {
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
@@ -112,35 +122,13 @@ public class ParticleEffect implements Disposable {
 		return null;
 	}
 	
-	Json json = new Json();
-
+	/** Saves this {@link ParticleEffect} to the specified file.
+	 * @param file File to save to. */
 	public void save (File file) {
-//		Writer output = null;
-//		try {
-//			output = new FileWriter(file);
-//			int index = 0;
-//			for (int i = 0, n = emitters.size; i < n; i++) {
-//				ParticleEmitter emitter = emitters.get(i);
-//				if (index++ > 0) output.write("\n\n");
-//				emitter.save(output);
-//				output.write("- Image Path -\n");
-//				output.write(emitter.getImagePath() + "\n");
-//			}
-//		} catch (IOException ex) {
-//			throw new GdxRuntimeException("Error saving effect: " + file, ex);
-//		} finally {
-//			try {
-//				if (output != null) output.close();
-//			} catch (IOException ex) {
-//			}
-//		}
-		ParticleEffectModel m = new ParticleEffectModel();
-		m.emitters = emitters;
-		m.filename = file.getName();
 		Writer output;
 		try {
 			output = new  FileWriter(file);
-			output.write(json.toJson(m));
+			output.write(json.toJson(emitters));
 			output.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -156,36 +144,46 @@ public class ParticleEffect implements Disposable {
 		loadEmitters(effectFile);
 		loadEmitterImages(atlas);
 	}
-
+	
+	/** Backward compatibility for loading a {@link ParticleEffect}. 
+	 * @deprecated This de-serializes a {@link ParticleEffect} from the old textual format. */
 	public void loadEmitters (FileHandle effectFile) {
-//		InputStream input = effectFile.read();
+		InputStream input = effectFile.read();
 		emitters.clear();
-//		BufferedReader reader = null;
-//		try {
-//			reader = new BufferedReader(new InputStreamReader(input), 512);
-//			while (true) {
-//				ParticleEmitter emitter = new ParticleEmitter(reader);
-//				reader.readLine();
-//				emitter.setImagePath(reader.readLine());
-//				emitters.add(emitter);
-//				if (reader.readLine() == null) break;
-//				if (reader.readLine() == null) break;
-//			}
-//		} catch (IOException ex) {
-//			throw new GdxRuntimeException("Error loading effect: " + effectFile, ex);
-//		} finally {
-//			try {
-//				if (reader != null) reader.close();
-//			} catch (IOException ex) {
-//			}
-//		}
-		ParticleEffectModel m = json.fromJson(ParticleEffectModel.class, effectFile.readString());
-		for (int i = 0; i < m.emitters.size; i++) {
-			ParticleEmitter em = m.emitters.get(i);
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(input), 512);
+			while (true) {
+				ParticleEmitter emitter = new ParticleEmitter(reader);
+				reader.readLine();
+				emitter.setImagePath(reader.readLine());
+				emitters.add(emitter);
+				if (reader.readLine() == null) break;
+				if (reader.readLine() == null) break;
+			}
+		} catch (IOException ex) {
+			throw new GdxRuntimeException("Error loading effect: " + effectFile, ex);
+		} finally {
+			try {
+				if (reader != null) reader.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	
+	/** Loads the {@link ParticleEmitter} for the specified {@link ParticleEffect}. 
+	 * @param effectFile The file containing the serialized JSON. */
+	public void loadEmittersJSON (FileHandle effectFile) {
+		emitters.clear();
+		Array<ParticleEmitter> jsonEmitters = json.fromJson(Array.class, ParticleEmitter.class, effectFile.readString());
+		
+		for (int i = 0; i <jsonEmitters.size; i++) {
+			ParticleEmitter em = jsonEmitters.get(i);
 			em.setMaxParticleCount(em.getMaxParticleCount());
 		}
-		
-		emitters.addAll(m.emitters);
+
+		emitters.addAll(jsonEmitters);
 	}
 
 	public void loadEmitterImages (TextureAtlas atlas) {
@@ -223,14 +221,4 @@ public class ParticleEffect implements Disposable {
 			emitter.getSprite().getTexture().dispose();
 		}
 	}
-	
-	public static class ParticleEffectModel {
-		public Array<ParticleEmitter> emitters;
-		public String filename;
-		
-		public ParticleEffectModel() {
-			
-		}
-	}
-	
 }
