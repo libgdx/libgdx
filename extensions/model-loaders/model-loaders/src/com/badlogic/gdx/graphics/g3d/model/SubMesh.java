@@ -24,11 +24,7 @@ public abstract class SubMesh {
 	public String name;
 	public Material material;
 	public int primitiveType;
-	
 	public Mesh mesh;
-	public short[] indices;
-	public float[] vertices;
-	public float[] skinnedVertices;
 
 
 	public SubMesh (String name, Mesh mesh, int primitiveType) {
@@ -42,10 +38,11 @@ public abstract class SubMesh {
 	 * @param bbox This {@link BoundingBox} will be modified so that its contain values that are the bounding box for this SubMesh. */
 	public abstract void getBoundingBox (BoundingBox bbox);
 
-	public Mesh getMesh () {
+	public Mesh getMesh() {
 		return mesh;
 	}
 
-	public void setMesh (Mesh mesh) {
+	public void setMesh(Mesh mesh) {
 		this.mesh = mesh;
-	}}
+	}
+}

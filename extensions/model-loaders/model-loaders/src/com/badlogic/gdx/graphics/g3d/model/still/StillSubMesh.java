@@ -22,10 +22,10 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class StillSubMesh extends SubMesh {
 
-   public StillSubMesh (String name, Mesh mesh, int primitiveType) {
+	public StillSubMesh (String name, Mesh mesh, int primitiveType) {
 		super(name, mesh, primitiveType);
 	}
-	
+
 	@Override
 	public void getBoundingBox (BoundingBox bbox) {
 		mesh.calculateBoundingBox(bbox);

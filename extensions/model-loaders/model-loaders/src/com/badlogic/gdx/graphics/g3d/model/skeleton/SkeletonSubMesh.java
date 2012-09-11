@@ -26,12 +26,24 @@ public class SkeletonSubMesh extends SubMesh {
 		super(name, mesh, primitiveType);
 	}
 
+	public short[] indices;
+	public float[] vertices;
+	public float[] skinnedVertices;
+
 	public int[][] boneAssignments;
 	public float[][] boneWeights;
 
 	@Override
 	public void getBoundingBox (BoundingBox bbox) {
 		mesh.calculateBoundingBox(bbox);
+	}
+
+	public void setVertices (float[] vertices) {
+		this.vertices = vertices;
+	}
+
+	public void setIndices (short[] indices) {
+		this.indices = indices;
 	}
 
 }

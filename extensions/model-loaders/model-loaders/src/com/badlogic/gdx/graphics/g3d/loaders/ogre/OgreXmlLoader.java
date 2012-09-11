@@ -311,13 +311,15 @@ public class OgreXmlLoader {
 			}
 			
 			// FIXME ? subMesh.materialName = ogreSubmesh.material;
-			subMesh.vertices = vertices;
-			subMesh.skinnedVertices = new float[vertices.length];
-			System.arraycopy(subMesh.vertices, 0, subMesh.skinnedVertices, 0, subMesh.vertices.length);
-			subMesh.indices = indices;
+
 
 			if (hasSkeleton) {
-				loadBones(ogreSubmesh, (SkeletonSubMesh)subMesh);
+				SkeletonSubMesh subSkelMesh = (SkeletonSubMesh) subMesh;
+				subSkelMesh.setVertices(vertices);
+				subSkelMesh.setIndices(indices);
+				subSkelMesh.skinnedVertices = new float[vertices.length];
+				System.arraycopy(subSkelMesh.vertices, 0, subSkelMesh.skinnedVertices, 0, subSkelMesh.vertices.length);
+				loadBones(ogreSubmesh, subSkelMesh);
 			}
 
 			if (ogreSubmesh.getOperationtype().equals("triangle_list")) subMesh.primitiveType = GL10.GL_TRIANGLES;
