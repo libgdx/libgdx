@@ -175,11 +175,11 @@ public class Button extends Table {
 			offsetX = style.pressedOffsetX;
 			offsetY = style.pressedOffsetY;
 		} else {
-			if (isDisabled && style.disabled != null)
+			if (isDisabled() && style.disabled != null)
 				background = style.disabled;
-			else if (isChecked && style.checked != null)
+			else if (isChecked() && style.checked != null)
 				background = style.checked;
-			else if (clickListener.isOver() && style.over != null)
+			else if (isOver() && style.over != null)
 				background = style.over;
 			else
 				background = style.up;
