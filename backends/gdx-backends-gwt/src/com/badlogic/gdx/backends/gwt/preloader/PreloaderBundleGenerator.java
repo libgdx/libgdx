@@ -164,7 +164,7 @@ public class PreloaderBundleGenerator extends Generator {
 			return null;
 		}
 		String path = assetPathProperty.getValues().get(0);
-		if ( !path.endsWith("/")){
+		if (path != null && !path.endsWith("/")){
 			path += "/";
 		}			
 		return path;
