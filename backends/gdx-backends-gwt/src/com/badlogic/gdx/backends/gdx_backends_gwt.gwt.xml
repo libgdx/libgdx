@@ -21,6 +21,7 @@
 	
 	<define-configuration-property name="gdx.assetpath" is-multi-valued="false"/>
 	<define-configuration-property name="gdx.assetfilterclass" is-multi-valued="false"/>
+	<define-configuration-property name="gdx.assetoutputpath" is-multi-valued="false"/>
 	
 	<generate-with class="com.badlogic.gdx.backends.gwt.preloader.PreloaderBundleGenerator">
 		<when-type-assignable class="com.badlogic.gdx.backends.gwt.preloader.PreloaderBundle"/>
