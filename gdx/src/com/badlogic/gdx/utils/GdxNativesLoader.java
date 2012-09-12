@@ -87,8 +87,7 @@ public class GdxNativesLoader {
 	/** Loads the libgdx native libraries. */
 	static public void load () {
 		if (disableNativesLoading) {
-			System.out
-				.println("So you don't like our native lib loading? Good, you are on your own now. We don't give support from here on out");
+			System.out.println("So you don't like our native lib loading? Good, you are on your own now. We don't give support from here on out");
 			return;
 		}
 		if (nativesLoaded) return;
