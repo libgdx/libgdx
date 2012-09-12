@@ -443,6 +443,11 @@ public class Tree extends WidgetGroup {
 			insert(children.size, node);
 		}
 
+		public void addAll (Array<Node> nodes) {
+			for (int i = 0, n = nodes.size; i < n; i++)
+				insert(children.size, nodes.get(i));
+		}
+
 		public void insert (int index, Node node) {
 			node.parent = this;
 			children.insert(index, node);
