@@ -220,13 +220,4 @@ public class ParticleEffect implements Disposable {
 			emitter.getSprite().getTexture().dispose();
 		}
 	}
-	
-	/** Compares this {@link ParticleEffect} with the one provided */
-	public int cmp(ParticleEffect effect) {
-		int failed = 0;
-		for (int i = 0; i < getEmitters().size; i++) {
-			failed += getEmitters().get(i).cmp(effect.getEmitters().get(i));
-		}
-		return failed;
-	}
 }

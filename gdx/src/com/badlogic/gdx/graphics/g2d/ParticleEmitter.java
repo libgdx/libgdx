@@ -172,36 +172,6 @@ public class ParticleEmitter {
 		spawnHeightValue.setAlwaysActive(true);
 	}
 
-	/** Compares this {@link ParticleEmitter} with the one given as argument. */
-	public int cmp(ParticleEmitter em) {
-		
-		System.out.println("Comparing emitter:");
-		int valueTests = getDelay().cmp(em.getDelay()) + getLifeOffset().cmp(em.getLifeOffset()) + getDuration().cmp(em.getDuration()) + getLife().cmp(em.getLife())
-			+ getEmission().cmp(em.getEmission()) + getScale().cmp(em.getScale()) + getRotation().cmp(em.getRotation()) + getVelocity().cmp(em.getVelocity())
-			+ getAngle().cmp(em.getAngle()) + getInitialAngle().cmp(em.getInitialAngle()) + getWind().cmp(em.getWind()) + getGravity().cmp(em.getGravity())
-			+ getTransparency().cmp(em.getTransparency()) + getTint().cmp(em.getTint()) + getXOffsetValue().cmp(em.getXOffsetValue()) + getYOffsetValue().cmp(em.getYOffsetValue())
-			+ getSpawnWidth().cmp(em.getSpawnWidth()) + getSpawnHeight().cmp(em.getSpawnHeight()) + getSpawnShape().cmp(em.getSpawnShape());
-		
-		System.out.println("	Value comparison failed: " + valueTests);
-		
-		int failed = 0;
-			
-		if(getMaxParticleCount() != em.getMaxParticleCount()) failed++;
-		if(getMinParticleCount() != em.getMinParticleCount()) failed++;
-		if(!getName().equals(em.getName())) failed++;
-		if(!getImagePath().equals(em.getImagePath())) failed++;
-		if(isAttached() != em.isAttached()) failed++;
-		if(isContinuous() != em.isContinuous()) failed++;
-		if(isAligned() != em.isAligned()) failed++;
-		if(isBehind() != em.isBehind()) failed++;
-		if(isAdditive() != em.isAdditive()) failed++;
-		
-		System.out.println("	General comparisons failed: " + failed);
-		System.out.println("	Total failed: " + (failed + valueTests));
-		
-		return (failed + valueTests);
-	}
-
 	public void setMaxParticleCount (int maxParticleCount) {
 		this.maxParticleCount = maxParticleCount;
 		active = new boolean[maxParticleCount];
@@ -928,16 +898,6 @@ public class ParticleEmitter {
 		boolean active;
 		boolean alwaysActive;
 		
-		public int cmp(ParticleValue value) {
-			int failed = 0;
-			if(isActive() != value.isActive()) failed++;
-			if(isAlwaysActive() != value.isAlwaysActive()) failed++;
-			printFailed(failed);
-			
-			return failed;
-			
-		}
-
 		public void setAlwaysActive (boolean alwaysActive) {
 			this.alwaysActive = alwaysActive;
 		}
@@ -965,25 +925,11 @@ public class ParticleEmitter {
 			active = value.active;
 			alwaysActive = value.alwaysActive;
 		}
-		
-		public void printFailed(int failed) {
-			if(failed > 0) {
-				System.out.println(this.getClass().getName() +" failed: " + failed);
-			}
-		}
-		
 	}
 
 	static public class NumericValue extends ParticleValue {
 		private float value;
 		
-		public int cmp(NumericValue value) {
-			int failed = 0;
-			if(getValue() != value.getValue()) failed++;
-			printFailed(failed);
-			return failed;
-		}
-
 		public float getValue () {
 			return value;
 		}
@@ -1007,14 +953,6 @@ public class ParticleEmitter {
 	static public class RangedNumericValue extends ParticleValue {
 		private float lowMin, lowMax;
 		
-		public int cmp(RangedNumericValue value) {
-			int failed = 0;
-			if(getLowMin() != value.getLowMin()) failed++;
-			if(getLowMax() != value.getLowMax()) failed++;
-			printFailed(failed);
-			return failed;
-		}
-
 		public float newLowValue () {
 			return lowMin + (lowMax - lowMin) * MathUtils.random();
 		}
@@ -1065,30 +1003,6 @@ public class ParticleEmitter {
 		private float highMin, highMax;
 		private boolean relative;
 		
-		public int cmp(ScaledNumericValue value) {
-			int failed = 0;
-			if(value.getHighMax() != getHighMax()) failed++;
-			if(value.getHighMin() != getHighMin()) failed++;
-			if(value.isRelative() != isRelative()) failed++;
-			
-			if(getScaling().length != value.getScaling().length) failed++;
-			else {
-				for (int i = 0; i < getScaling().length; i++) {
-					if(value.getScaling()[i] != scaling[i]) failed++;
-				}
-			}
-			
-			if(getTimeline().length != value.getTimeline().length) failed++;
-			else {
-				for (int i = 0; i < getTimeline().length; i++) {
-					if(value.getTimeline()[i] != getTimeline()[i]) failed++;
-				}
-			}
-			printFailed(failed);
-			
-			return failed;
-		}
-
 		public float newHighValue () {
 			return highMin + (highMax - highMin) * MathUtils.random();
 		}
@@ -1194,27 +1108,6 @@ public class ParticleEmitter {
 		private float[] colors = {1, 1, 1};
 		float[] timeline = {0};
 		
-		public int cmp(GradientColorValue value) {
-			int failed = 0;
-			
-			if(getColors().length != value.getColors().length) failed++;
-			else {
-				for (int i = 0; i < getColors().length; i++) {
-					if(value.getColors()[i] != getColors()[i]) failed++;
-				}
-			}
-			
-			if(getTimeline().length != value.getTimeline().length) failed++;
-			else {
-				for (int i = 0; i < getTimeline().length; i++) {
-					if(value.getTimeline()[i] != getTimeline()[i]) failed++;
-				}
-			}
-			printFailed(failed);
-			
-			return failed;
-		}
-
 		public GradientColorValue () {
 			alwaysActive = true;
 		}
@@ -1291,17 +1184,6 @@ public class ParticleEmitter {
 		boolean edges;
 		SpawnEllipseSide side = SpawnEllipseSide.both;
 		
-		public int cmp(SpawnShapeValue value) {
-			int failed = 0;
-			if(!getShape().equals(value.getShape())) failed++;
-			if(isEdges() != value.isEdges()) failed++;
-			if(!getSide().equals(value.getSide())) failed++;
-			
-			printFailed(failed);
-			
-			return failed;
-		}
-
 		public SpawnShape getShape () {
 			return shape;
 		}
