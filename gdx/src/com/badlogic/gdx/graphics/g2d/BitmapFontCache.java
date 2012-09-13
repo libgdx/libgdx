@@ -138,6 +138,12 @@ public class BitmapFontCache {
 		return color;
 	}
 
+	public void clear () {
+		x = 0;
+		y = 0;
+		idx = 0;
+	}
+
 	private void reset (int glyphCount) {
 		x = 0;
 		y = 0;
@@ -264,6 +270,21 @@ public class BitmapFontCache {
 		textBounds.width = addToCache(str, x, y, start, end);
 		textBounds.height = font.data.capHeight;
 		return textBounds;
+	}
+
+	public void addText (CharSequence str, float x, float y) {
+		addText(str, x, y, 0, str.length());
+	}
+
+	public void addText (CharSequence str, float x, float y, int start, int end) {
+		int glyphCount = end - start;
+		int vertexCount = idx + glyphCount * 20;
+		if (vertices == null || vertices.length < vertexCount) {
+			float[] newVertices = new float[vertexCount];
+			System.arraycopy(vertices, 0, newVertices, 0, idx);
+			vertices = newVertices;
+		}
+		addToCache(str, x, y, start, end);
 	}
 
 	/** Caches a string, which may contain newlines (\n), with the specified position.
