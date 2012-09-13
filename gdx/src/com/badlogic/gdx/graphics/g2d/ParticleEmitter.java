@@ -1193,6 +1193,27 @@ public class ParticleEmitter {
 
 		private float[] colors = {1, 1, 1};
 		float[] timeline = {0};
+		
+		public int cmp(GradientColorValue value) {
+			int failed = 0;
+			
+			if(getColors().length != value.getColors().length) failed++;
+			else {
+				for (int i = 0; i < getColors().length; i++) {
+					if(value.getColors()[i] != getColors()[i]) failed++;
+				}
+			}
+			
+			if(getTimeline().length != value.getTimeline().length) failed++;
+			else {
+				for (int i = 0; i < getTimeline().length; i++) {
+					if(value.getTimeline()[i] != getTimeline()[i]) failed++;
+				}
+			}
+			printFailed(failed);
+			
+			return failed;
+		}
 
 		public GradientColorValue () {
 			alwaysActive = true;
@@ -1269,6 +1290,17 @@ public class ParticleEmitter {
 		SpawnShape shape = SpawnShape.point;
 		boolean edges;
 		SpawnEllipseSide side = SpawnEllipseSide.both;
+		
+		public int cmp(SpawnShapeValue value) {
+			int failed = 0;
+			if(!getShape().equals(value.getShape())) failed++;
+			if(isEdges() != value.isEdges()) failed++;
+			if(!getSide().equals(value.getSide())) failed++;
+			
+			printFailed(failed);
+			
+			return failed;
+		}
 
 		public SpawnShape getShape () {
 			return shape;
