@@ -61,6 +61,7 @@ public class Table extends WidgetGroup {
 	private final TableLayout layout;
 	private Drawable background;
 	private boolean clip;
+	private Rectangle scissorBounds;
 	private Skin skin;
 
 	public Table () {
@@ -116,8 +117,9 @@ public class Table extends WidgetGroup {
 			tableBounds.width -= tableBounds.x + layout.getPadRight();
 			tableBounds.height -= tableBounds.y + layout.getPadTop();
 		}
-		ScissorStack.calculateScissors(getStage().getCamera(), transform, tableBounds, Rectangle.tmp2);
-		return Rectangle.tmp2;
+		if (scissorBounds == null) scissorBounds = new Rectangle();
+		ScissorStack.calculateScissors(getStage().getCamera(), transform, tableBounds, scissorBounds);
+		return scissorBounds;
 	}
 
 	public void invalidate () {
