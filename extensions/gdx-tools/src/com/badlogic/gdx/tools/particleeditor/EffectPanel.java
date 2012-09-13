@@ -129,43 +129,55 @@ class EffectPanel extends JPanel {
 	
 	/** Loads an existing {@link ParticleEffect} from disk. */
 	void openEffect () {
-		fc.setApproveButtonText("Open");
-		int option = fc.showOpenDialog(editor);
+//		fc.setApproveButtonText("Open");
+//		int option = fc.showOpenDialog(editor);
+//		
+//		if (option == JFileChooser.APPROVE_OPTION) {
+//			File file = fc.getSelectedFile();
+//			
+//			if (file == null) return;
+//			ParticleEffect effect = new ParticleEffect();
+//			
+//			try {
+//				effect.loadEmittersJSON(Gdx.files.absolute(file.getAbsolutePath()));
+//			} catch (SerializationException e) {
+//				System.out.println("Error serializing effect: " + file.getAbsolutePath());
+//				try {
+//					effect.loadEmitters(new FileHandle(file));
+//				} catch(Exception ex) {
+//					ex.printStackTrace();
+//				}
+//			} catch (Exception e) {
+//				System.out.println("Error loading effect: " + file.getAbsolutePath());
+//				e.printStackTrace();
+//				JOptionPane.showMessageDialog(editor, "Error opening effect.");
+//				return;
+//			}
+//			editor.effect = effect;
+//			emitterTableModel.getDataVector().removeAllElements();
+//			editor.particleData.clear();
+//			
+//			for (ParticleEmitter emitter : effect.getEmitters()) {
+//				emitter.setPosition(editor.worldCamera.viewportWidth / 2, editor.worldCamera.viewportHeight / 2);
+//				emitterTableModel.addRow(new Object[] {emitter.getName(), true});
+//			}
+//			
+//			editIndex = 0;
+//			emitterTable.getSelectionModel().setSelectionInterval(editIndex, editIndex);
+//			editor.reloadRows();
+//		}
 		
-		if (option == JFileChooser.APPROVE_OPTION) {
-			File file = fc.getSelectedFile();
-			
-			if (file == null) return;
-			ParticleEffect effect = new ParticleEffect();
-			
-			try {
-				effect.loadEmittersJSON(Gdx.files.absolute(file.getAbsolutePath()));
-			} catch (SerializationException e) {
-				System.out.println("Error serializing effect: " + file.getAbsolutePath());
-				try {
-					effect.loadEmitters(new FileHandle(file));
-				} catch(Exception ex) {
-					ex.printStackTrace();
-				}
-			} catch (Exception e) {
-				System.out.println("Error loading effect: " + file.getAbsolutePath());
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(editor, "Error opening effect.");
-				return;
-			}
-			editor.effect = effect;
-			emitterTableModel.getDataVector().removeAllElements();
-			editor.particleData.clear();
-			
-			for (ParticleEmitter emitter : effect.getEmitters()) {
-				emitter.setPosition(editor.worldCamera.viewportWidth / 2, editor.worldCamera.viewportHeight / 2);
-				emitterTableModel.addRow(new Object[] {emitter.getName(), true});
-			}
-			
-			editIndex = 0;
-			emitterTable.getSelectionModel().setSelectionInterval(editIndex, editIndex);
-			editor.reloadRows();
-		}
+		ParticleEffect effect0 = new ParticleEffect();
+		ParticleEffect effect1 = new ParticleEffect();
+		
+		effect0.loadEmitters(new FileHandle("/path/to/old_format"));
+		effect1.loadEmittersJSON(new FileHandle("/path/to/json_format"));
+		System.out.println("Running test..");
+		
+		int failed = effect0.cmp(effect0);
+		System.out.println("Total failed: " + failed);
+		System.out.println("Test finished!");
+		
 	}
 	
 	/** Saves a {@link ParticleEffect} into a JSON serialized file. */
