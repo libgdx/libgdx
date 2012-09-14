@@ -127,6 +127,9 @@
     <Reference Include="gdx-backend-ios">
       <HintPath>..\..\libs\gdx-backend-ios.dll</HintPath>
     </Reference>
+    <Reference Include="test-assembly">
+      <HintPath>..\..\..\..\..\..\Projects\test-assembly\test-assembly\bin\Debug\test-assembly.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -381,9 +384,6 @@
     </Content>
     <Content Include="..\..\..\..\tests\gdx-tests-android\assets\data\egg.png">
       <Link>data\egg.png</Link>
-    </Content>
-    <Content Include="..\..\..\..\tests\gdx-tests-android\assets\data\environment.jpg">
-      <Link>data\environment.jpg</Link>
     </Content>
     <Content Include="..\..\..\..\tests\gdx-tests-android\assets\data\font.png">
       <Link>data\font.png</Link>
