@@ -64,41 +64,46 @@ public class Group extends Actor implements Cullable {
 	 * {@link #setCullingArea(Rectangle) culling area}, if set. */
 	protected void drawChildren (SpriteBatch batch, float parentAlpha) {
 		parentAlpha *= getColor().a;
+		SnapshotArray<Actor> children = this.children;
 		Actor[] actors = children.begin();
+		Rectangle cullingArea = this.cullingArea;
 		if (cullingArea != null) {
 			// Draw children only if inside culling area.
+			float cullLeft = cullingArea.x;
+			float cullRight = cullLeft + cullingArea.width;
+			float cullBottom = cullingArea.y;
+			float cullTop = cullBottom + cullingArea.height;
 			if (transform) {
 				for (int i = 0, n = children.size; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
-					float x = child.getX();
-					float y = child.getY();
-					if (x <= cullingArea.x + cullingArea.width && y <= cullingArea.y + cullingArea.height
-						&& x + child.getWidth() >= cullingArea.x && y + child.getHeight() >= cullingArea.y) {
+					float x = child.getX(), y = child.getY();
+					if (x <= cullRight && y <= cullTop && x + child.getWidth() >= cullLeft && y + child.getHeight() >= cullBottom)
 						child.draw(batch, parentAlpha);
-					}
 				}
 				batch.flush();
 			} else {
 				// No transform for this group, offset each child.
-				float offsetX = getX();
-				float offsetY = getY();
-				setPosition(0, 0);
+				float offsetX = getX(), offsetY = getY();
+				setX(0);
+				setY(0);
 				for (int i = 0, n = children.size; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
-					float x = child.getX();
-					float y = child.getY();
-					if (x <= cullingArea.x + cullingArea.width && y <= cullingArea.y + cullingArea.height
-						&& x + child.getWidth() >= cullingArea.x && y + child.getHeight() >= cullingArea.y) {
-						child.translate(offsetX, offsetY);
+					float x = child.getX(), y = child.getY();
+					if (x <= cullRight && y <= cullTop && x + child.getWidth() >= cullLeft && y + child.getHeight() >= cullBottom) {
+						child.setX(x + offsetX);
+						child.setY(y + offsetY);
 						child.draw(batch, parentAlpha);
-						child.setPosition(x, y);
+						child.setX(x);
+						child.setY(y);
 					}
 				}
-				setPosition(offsetX, offsetY);
+				setX(offsetX);
+				setY(offsetY);
 			}
 		} else {
+			// No culling, draw all children.
 			if (transform) {
 				for (int i = 0, n = children.size; i < n; i++) {
 					Actor child = actors[i];
@@ -108,19 +113,21 @@ public class Group extends Actor implements Cullable {
 				batch.flush();
 			} else {
 				// No transform for this group, offset each child.
-				float offsetX = getX();
-				float offsetY = getY();
-				setPosition(0, 0);
+				float offsetX = getX(), offsetY = getY();
+				setX(0);
+				setY(0);
 				for (int i = 0, n = children.size; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
-					float x = child.getX();
-					float y = child.getY();
-					child.translate(offsetX, offsetY);
+					float x = child.getX(), y = child.getY();
+					child.setX(x + offsetX);
+					child.setY(y + offsetY);
 					child.draw(batch, parentAlpha);
-					child.setPosition(x, y);
+					child.setX(x);
+					child.setY(y);
 				}
-				setPosition(offsetX, offsetY);
+				setX(offsetX);
+				setY(offsetY);
 			}
 		}
 		children.end();
@@ -149,9 +156,9 @@ public class Group extends Actor implements Cullable {
 			localTransform.setToTranslation(originX, originY);
 		else
 			localTransform.idt();
-		if (rotation != 0) localTransform.mul(temp.setToRotation(rotation));
-		if (scaleX != 1 || scaleY != 1) localTransform.mul(temp.setToScaling(scaleX, scaleY));
-		if (originX != 0 || originY != 0) localTransform.mul(temp.setToTranslation(-originX, -originY));
+		if (rotation != 0) localTransform.rotate(rotation);
+		if (scaleX != 1 || scaleY != 1) localTransform.scale(scaleX, scaleY);
+		if (originX != 0 || originY != 0) localTransform.translate(-originX, -originY);
 		localTransform.trn(getX(), getY());
 
 		// Find the first parent that transforms.
@@ -186,17 +193,17 @@ public class Group extends Actor implements Cullable {
 		this.cullingArea = cullingArea;
 	}
 
-	public Actor hit (float x, float y) {
-		if (getTouchable() == Touchable.disabled) return null;
+	public Actor hit (float x, float y, boolean touchable) {
+		if (touchable && getTouchable() == Touchable.disabled) return null;
 		Array<Actor> children = this.children;
 		for (int i = children.size - 1; i >= 0; i--) {
 			Actor child = children.get(i);
 			if (!child.isVisible()) continue;
 			child.parentToLocalCoordinates(point.set(x, y));
-			Actor hit = child.hit(point.x, point.y);
+			Actor hit = child.hit(point.x, point.y, touchable);
 			if (hit != null) return hit;
 		}
-		return super.hit(x, y);
+		return super.hit(x, y, touchable);
 	}
 
 	/** Called when actors are added to or removed from the group. */
@@ -212,7 +219,8 @@ public class Group extends Actor implements Cullable {
 		childrenChanged();
 	}
 
-	/** Adds an actor as a child of this group, at a specific index. The actor is first removed from its parent group, if any. */
+	/** Adds an actor as a child of this group, at a specific index. The actor is first removed from its parent group, if any.
+	 * @param index May be greater than the number of children. */
 	public void addActorAt (int index, Actor actor) {
 		actor.remove();
 		if (index >= children.size)
@@ -335,12 +343,13 @@ public class Group extends Actor implements Cullable {
 
 	/** Converts coordinates for this group to those of a descendant actor. The descendant does not need to be a direct child.
 	 * @throws IllegalArgumentException if the specified actor is not a descendant of this group. */
-	public void localToDescendantCoordinates (Actor descendant, Vector2 localPoint) {
+	public Vector2 localToDescendantCoordinates (Actor descendant, Vector2 localCoords) {
 		Group parent = descendant.getParent();
 		if (parent == null) throw new IllegalArgumentException("Child is not a descendant: " + descendant);
 		// First convert to the actor's parent coordinates.
-		if (parent != this) localToDescendantCoordinates(parent, localPoint);
+		if (parent != this) localToDescendantCoordinates(parent, localCoords);
 		// Then from each parent down to the descendant.
-		descendant.parentToLocalCoordinates(localPoint);
+		descendant.parentToLocalCoordinates(localCoords);
+		return localCoords;
 	}
 }

@@ -45,8 +45,8 @@ public class LwjglApplication implements Application {
 	final ApplicationListener listener;
 	Thread mainLoopThread;
 	boolean running = true;
-	List<Runnable> runnables = new ArrayList<Runnable>();
-	List<Runnable> executedRunnables = new ArrayList<Runnable>();
+	final List<Runnable> runnables = new ArrayList();
+	final List<Runnable> executedRunnables = new ArrayList();
 	int logLevel = LOG_INFO;
 
     public LwjglApplication (ApplicationListener listener, String title, int width, int height, boolean useGL2) {

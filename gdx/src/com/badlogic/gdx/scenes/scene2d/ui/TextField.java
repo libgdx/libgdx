@@ -24,11 +24,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -69,6 +71,7 @@ public class TextField extends Widget {
 	TextFieldListener listener;
 	TextFieldFilter filter;
 	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
+	boolean focusTraversal = true;
 
 	private boolean passwordMode;
 	private StringBuilder passwordBuffer;
@@ -95,6 +98,7 @@ public class TextField extends Widget {
 	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
 	float keyRepeatInitialTime = 0.4f;
 	float keyRepeatTime = 0.1f;
+	boolean rightAligned;
 
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
@@ -114,19 +118,25 @@ public class TextField extends Widget {
 	}
 
 	private void initialize () {
-		addListener(inputListener = new InputListener() {
+		addListener(inputListener = new ClickListener() {
+			public void clicked (InputEvent event, float x, float y) {
+				if (getTapCount() > 1) setSelection(0, text.length());
+			}
+
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				if (!super.touchDown(event, x, y, pointer, button)) return false;
 				if (pointer == 0 && button != 0) return false;
 				Stage stage = getStage();
-				if (stage != null) stage.setKeyboardFocus(TextField.this);
 				keyboard.show(true);
 				clearSelection();
 				setCursorPosition(x);
 				selectionStart = cursor;
+				if (stage != null) stage.setKeyboardFocus(TextField.this);
 				return true;
 			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
+				super.touchDragged(event, x, y, pointer);
 				lastBlink = 0;
 				cursorOn = false;
 				setCursorPosition(x);
@@ -136,7 +146,7 @@ public class TextField extends Widget {
 			private void setCursorPosition (float x) {
 				lastBlink = 0;
 				cursorOn = false;
-				x -= renderOffset;
+				x -= renderOffset + textOffset;
 				for (int i = 0; i < glyphPositions.size; i++) {
 					if (glyphPositions.items[i] > x) {
 						cursor = Math.max(0, i - 1);
@@ -155,15 +165,25 @@ public class TextField extends Widget {
 				Stage stage = getStage();
 				if (stage != null && stage.getKeyboardFocus() == TextField.this) {
 					boolean repeat = false;
-					if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
+					boolean ctrl = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
+					if (ctrl) {
 						// paste
-						if (keycode == Keys.V) paste();
+						if (keycode == Keys.V) {
+							paste();
+							return true;
+						}
 						// copy
-						if (keycode == Keys.C || keycode == Keys.INSERT) copy();
-
-						if (keycode == Keys.X || keycode == Keys.DEL) cut();
-
-					} else if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
+						if (keycode == Keys.C || keycode == Keys.INSERT) {
+							copy();
+							return true;
+						}
+						// cut
+						if (keycode == Keys.X || keycode == Keys.DEL) {
+							cut();
+							return true;
+						}
+					}
+					if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
 						// paste
 						if (keycode == Keys.INSERT) paste();
 						// cut
@@ -179,7 +199,13 @@ public class TextField extends Widget {
 								selectionStart = cursor;
 								hasSelection = true;
 							}
-							cursor--;
+							while (--cursor > 0 && ctrl) {
+								char c = text.charAt(cursor);
+								if (c >= 'A' && c <= 'Z') continue;
+								if (c >= 'a' && c <= 'z') continue;
+								if (c >= '0' && c <= '9') continue;
+								break;
+							}
 							repeat = true;
 						}
 						if (keycode == Keys.RIGHT) {
@@ -187,7 +213,14 @@ public class TextField extends Widget {
 								selectionStart = cursor;
 								hasSelection = true;
 							}
-							cursor++;
+							int length = text.length();
+							while (++cursor < length && ctrl) {
+								char c = text.charAt(cursor - 1);
+								if (c >= 'A' && c <= 'Z') continue;
+								if (c >= 'a' && c <= 'z') continue;
+								if (c >= '0' && c <= '9') continue;
+								break;
+							}
 							repeat = true;
 						}
 						if (keycode == Keys.HOME) {
@@ -210,12 +243,25 @@ public class TextField extends Widget {
 					} else {
 						// cursor movement or other keys (kill selection)
 						if (keycode == Keys.LEFT) {
-							cursor--;
+							while (cursor-- > 1 && ctrl) {
+								char c = text.charAt(cursor - 1);
+								if (c >= 'A' && c <= 'Z') continue;
+								if (c >= 'a' && c <= 'z') continue;
+								if (c >= '0' && c <= '9') continue;
+								break;
+							}
 							clearSelection();
 							repeat = true;
 						}
 						if (keycode == Keys.RIGHT) {
-							cursor++;
+							int length = text.length();
+							while (++cursor < length && ctrl) {
+								char c = text.charAt(cursor - 1);
+								if (c >= 'A' && c <= 'Z') continue;
+								if (c >= 'a' && c <= 'z') continue;
+								if (c >= '0' && c <= '9') continue;
+								break;
+							}
 							clearSelection();
 							repeat = true;
 						}
@@ -256,6 +302,7 @@ public class TextField extends Widget {
 							text = text.substring(0, cursor - 1) + text.substring(cursor);
 							updateDisplayText();
 							cursor--;
+							renderOffset = 0;
 						} else {
 							delete();
 						}
@@ -274,7 +321,7 @@ public class TextField extends Widget {
 					if (character != ENTER_DESKTOP && character != ENTER_ANDROID) {
 						if (filter != null && !filter.acceptChar(TextField.this, character)) return true;
 					}
-					if (character == TAB || character == ENTER_ANDROID)
+					if ((character == TAB || character == ENTER_ANDROID) && focusTraversal)
 						next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
 					if (font.containsCharacter(character)) {
 						if (!hasSelection) {
@@ -319,22 +366,19 @@ public class TextField extends Widget {
 	}
 
 	private void calculateOffsets () {
-		float position = glyphPositions.get(cursor);
-		float distance = position - Math.abs(renderOffset);
 		float visibleWidth = getWidth();
 		if (style.background != null) visibleWidth -= style.background.getLeftWidth() + style.background.getRightWidth();
 
-		// check whether the cursor left the left or right side of
-		// the visible area and adjust renderoffset.
+		// Check if the cursor has gone out the left or right side of the visible area and adjust renderoffset.
+		float position = glyphPositions.get(cursor);
+		float distance = position - Math.abs(renderOffset);
 		if (distance <= 0) {
 			if (cursor > 0)
 				renderOffset = -glyphPositions.get(cursor - 1);
 			else
 				renderOffset = 0;
-		} else {
-			if (distance > visibleWidth) {
-				renderOffset -= distance - visibleWidth;
-			}
+		} else if (distance > visibleWidth) {
+			renderOffset -= distance - visibleWidth;
 		}
 
 		// calculate first visible char based on render offset
@@ -347,7 +391,7 @@ public class TextField extends Widget {
 			if (glyphPositions.items[i] >= start) {
 				visibleTextStart = i;
 				startPos = glyphPositions.items[i];
-				textOffset = glyphPositions.items[visibleTextStart] - start;
+				textOffset = startPos - start;
 				break;
 			}
 		}
@@ -363,10 +407,15 @@ public class TextField extends Widget {
 		if (hasSelection) {
 			int minIndex = Math.min(cursor, selectionStart);
 			int maxIndex = Math.max(cursor, selectionStart);
-			float minX = Math.max(glyphPositions.get(minIndex), glyphPositions.get(visibleTextStart));
+			float minX = Math.max(glyphPositions.get(minIndex), startPos);
 			float maxX = Math.min(glyphPositions.get(maxIndex), glyphPositions.get(visibleTextEnd));
 			selectionX = minX;
 			selectionWidth = maxX - minX;
+		}
+
+		if (rightAligned) {
+			textOffset = visibleWidth - (glyphPositions.items[visibleTextEnd] - startPos);
+			if (hasSelection) selectionX += textOffset;
 		}
 	}
 
@@ -376,21 +425,25 @@ public class TextField extends Widget {
 		final Color fontColor = style.fontColor;
 		final Drawable selection = style.selection;
 		final Drawable cursorPatch = style.cursor;
+		final Drawable background = style.background;
 
 		Color color = getColor();
 		float x = getX();
 		float y = getY();
 		float width = getWidth();
 		float height = getHeight();
+		float textY = textBounds.height / 2 + font.getDescent();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		float bgLeftWidth = 0;
-		if (style.background != null) {
-			style.background.draw(batch, x, y, width, height);
-			bgLeftWidth = style.background.getLeftWidth();
-		}
+		if (background != null) {
+			background.draw(batch, x, y, width, height);
+			bgLeftWidth = background.getLeftWidth();
+			float bottom = background.getBottomHeight();
+			textY = (int)(textY + (height - background.getTopHeight() - bottom) / 2 + bottom);
+		} else
+			textY = (int)(textY + height / 2);
 
-		float textY = (int)(height / 2 + textBounds.height / 2 + font.getDescent());
 		calculateOffsets();
 
 		Stage stage = getStage();
@@ -417,8 +470,9 @@ public class TextField extends Widget {
 		if (focused) {
 			blink();
 			if (cursorOn && cursorPatch != null) {
-				cursorPatch.draw(batch, x + bgLeftWidth + glyphPositions.get(cursor) + renderOffset - 1, y + textY
-					- textBounds.height - font.getDescent(), cursorPatch.getMinWidth(), textBounds.height + font.getDescent() / 2);
+				cursorPatch.draw(batch, x + bgLeftWidth + textOffset + glyphPositions.get(cursor)
+					- glyphPositions.items[visibleTextStart] - 1, y + textY - textBounds.height - font.getDescent(),
+					cursorPatch.getMinWidth(), textBounds.height + font.getDescent() / 2);
 			}
 		}
 	}
@@ -436,6 +490,7 @@ public class TextField extends Widget {
 		} else
 			displayText = text;
 		style.font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
+		if (selectionStart > text.length()) selectionStart = text.length();
 	}
 
 	private void blink () {
@@ -510,28 +565,36 @@ public class TextField extends Widget {
 	public void next (boolean up) {
 		Stage stage = getStage();
 		if (stage == null) return;
-		TextField textField = findNextTextField(stage.getActors(), null, up);
+		getParent().localToStageCoordinates(Vector2.tmp.set(getX(), getY()));
+		TextField textField = findNextTextField(stage.getActors(), null, Vector2.tmp2, Vector2.tmp, up);
+		if (textField == null) { // Try to wrap around.
+			if (up)
+				Vector2.tmp.set(Float.MIN_VALUE, Float.MIN_VALUE);
+			else
+				Vector2.tmp.set(Float.MAX_VALUE, Float.MAX_VALUE);
+			textField = findNextTextField(getStage().getActors(), null, Vector2.tmp2, Vector2.tmp, up);
+		}
 		if (textField != null)
 			stage.setKeyboardFocus(textField);
 		else
 			Gdx.input.setOnscreenKeyboardVisible(false);
 	}
 
-	private TextField findNextTextField (Array<Actor> actors, TextField best, boolean up) {
-		float x = getX();
-		float y = getY();
+	private TextField findNextTextField (Array<Actor> actors, TextField best, Vector2 bestCoords, Vector2 currentCoords, boolean up) {
 		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
+			if (actor == this) continue;
 			if (actor instanceof TextField) {
-				if (actor == this) continue;
-				float actorY = actor.getY();
-				if (actorY == y) {
-					if (best == null && actor.getX() >= x ^ up) best = (TextField)actor;
-				} else if (actorY < y ^ up && (best == null || actorY - y > best.getY() - y ^ up)) {
-					best = (TextField)actor;
+				Vector2 actorCoords = actor.getParent().localToStageCoordinates(Vector2.tmp3.set(actor.getX(), actor.getY()));
+				if ((actorCoords.y < currentCoords.y || (actorCoords.y == currentCoords.y && actorCoords.x > currentCoords.x)) ^ up) {
+					if (best == null
+						|| (actorCoords.y > bestCoords.y || (actorCoords.y == bestCoords.y && actorCoords.x < bestCoords.x)) ^ up) {
+						best = (TextField)actor;
+						bestCoords.set(actorCoords);
+					}
 				}
 			}
-			if (actor instanceof Group) best = findNextTextField(((Group)actor).getChildren(), best, up);
+			if (actor instanceof Group) best = findNextTextField(((Group)actor).getChildren(), best, bestCoords, currentCoords, up);
 		}
 		return best;
 	}
@@ -544,6 +607,11 @@ public class TextField extends Widget {
 	/** @param filter May be null. */
 	public void setTextFieldFilter (TextFieldFilter filter) {
 		this.filter = filter;
+	}
+
+	/** If true (the default), tab/shift+tab will move to the next text field. */
+	public void setFocusTraversal (boolean focusTraversal) {
+		this.focusTraversal = focusTraversal;
 	}
 
 	/** @return May be null. */
@@ -604,6 +672,10 @@ public class TextField extends Widget {
 		cursor = selectionEnd;
 	}
 
+	public void selectAll () {
+		setSelection(0, text.length());
+	}
+
 	public void clearSelection () {
 		hasSelection = false;
 	}
@@ -643,6 +715,10 @@ public class TextField extends Widget {
 				style.background.getMinHeight());
 		}
 		return prefHeight;
+	}
+
+	public void setRightAligned (boolean rightAligned) {
+		this.rightAligned = rightAligned;
 	}
 
 	/** If true, the text in this text field will be shown as bullet characters. The font must have character 149 or this will have

@@ -15,21 +15,23 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 
-/** A simple tree widget where each node has a left actor, icon, and a right actor.
+/** A tree widget where each node has an icon, actor, and child nodes.
  * <p>
  * The preferred size of the tree is determined by the preferred size of the actors for the expanded nodes.
  * <p>
- * {@link ChangeEvent} is fired when the selected node changes. Cancelling the event will select the previously selected node.
+ * {@link ChangeEvent} is fired when the selected node changes.
  * @author Nathan Sweet */
 public class Tree extends WidgetGroup {
 	TreeStyle style;
 	final Array<Node> rootNodes = new Array();
 	final Array<Node> selectedNodes = new Array();
-	float ySpacing = 4, iconSpacing = 2, padding = 8, indentSpacing;
+	float ySpacing = 4, iconSpacing = 2, padding = 0, indentSpacing;
 	private float leftColumnWidth, prefWidth, prefHeight;
 	private boolean sizeInvalid = true;
+	boolean multiSelect = true;
 	private Node foundNode;
 	Node overNode;
+	private ClickListener clickListener;
 
 	public Tree (Skin skin) {
 		this(skin.get(TreeStyle.class));
@@ -45,14 +47,16 @@ public class Tree extends WidgetGroup {
 	}
 
 	private void initialize () {
-		addListener(new ClickListener() {
+		addListener(clickListener = new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
 				Node node = getNodeAt(y);
 				if (node == null) return;
-				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && !Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT) && selectedNodes.size > 0) {
+				if (node != getNodeAt(getTouchDownY())) return;
+				if (multiSelect && selectedNodes.size > 0
+					&& (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) {
 					// Select range (shift/ctrl).
-					float low = selectedNodes.first().rightActor.getY();
-					float high = node.rightActor.getY();
+					float low = selectedNodes.first().actor.getY();
+					float high = node.actor.getY();
 					if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && !Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))
 						selectedNodes.clear();
 					if (low > high)
@@ -64,16 +68,20 @@ public class Tree extends WidgetGroup {
 					Pools.free(changeEvent);
 					return;
 				}
-				if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && !Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
-					// Toggle expanded.
-					float rowX = node.rightActor.getX();
-					if (node.icon != null) rowX -= iconSpacing + node.icon.getMinWidth();
-					if (x < rowX) {
-						node.setExpanded(!node.expanded);
-						return;
+				if (!multiSelect || (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && !Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))) {
+					if (node.children.size > 0) {
+						// Toggle expanded.
+						float rowX = node.actor.getX();
+						if (node.icon != null) rowX -= iconSpacing + node.icon.getMinWidth();
+						if (x < rowX) {
+							node.setExpanded(!node.expanded);
+							return;
+						}
 					}
+					if (!node.isSelectable()) return;
 					selectedNodes.clear();
-				}
+				} else if (!node.isSelectable()) //
+					return;
 				// Select single (ctrl).
 				if (!selectedNodes.removeValue(node, true)) selectedNodes.add(node);
 				ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
@@ -82,13 +90,13 @@ public class Tree extends WidgetGroup {
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
-				overNode = getNodeAt(y);
+				setOverNode(getNodeAt(y));
 				return false;
 			}
 
 			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
 				super.exit(event, x, y, pointer, toActor);
-				if (x < 0 || x > getWidth() || y < 0 || y > getHeight()) overNode = null;
+				if (toActor == null || !toActor.isDescendantOf(Tree.this)) setOverNode(null);
 			}
 		});
 	}
@@ -99,8 +107,13 @@ public class Tree extends WidgetGroup {
 	}
 
 	public void add (Node node) {
+		insert(rootNodes.size, node);
+	}
+
+	public void insert (int index, Node node) {
+		remove(node);
 		node.parent = null;
-		rootNodes.add(node);
+		rootNodes.insert(index, node);
 		node.addToTree(this);
 		invalidateHierarchy();
 	}
@@ -113,6 +126,14 @@ public class Tree extends WidgetGroup {
 		rootNodes.removeValue(node, true);
 		node.removeFromTree(this);
 		invalidateHierarchy();
+	}
+
+	/** Removes all tree nodes. */
+	public void clear () {
+		super.clear();
+		rootNodes.clear();
+		selectedNodes.clear();
+		setOverNode(null);
 	}
 
 	public Array<Node> getNodes () {
@@ -133,7 +154,7 @@ public class Tree extends WidgetGroup {
 		computeSize(rootNodes, indentSpacing);
 		leftColumnWidth += iconSpacing + padding;
 		prefWidth += leftColumnWidth + padding;
-		prefHeight = getHeight() - (prefHeight + ySpacing);
+		prefHeight = getHeight() - prefHeight;
 	}
 
 	private void computeSize (Array<Node> nodes, float indent) {
@@ -141,7 +162,7 @@ public class Tree extends WidgetGroup {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			float rowWidth = indent + iconSpacing;
-			Actor actor = node.rightActor;
+			Actor actor = node.actor;
 			if (actor instanceof Layout) {
 				Layout layout = (Layout)actor;
 				rowWidth += layout.getPrefWidth();
@@ -155,16 +176,6 @@ public class Tree extends WidgetGroup {
 				rowWidth += iconSpacing * 2 + node.icon.getMinWidth();
 				node.height = Math.max(node.height, node.icon.getMinHeight());
 			}
-			actor = node.leftActor;
-			if (actor instanceof Layout) {
-				Layout layout = (Layout)actor;
-				leftColumnWidth = Math.max(leftColumnWidth, layout.getPrefWidth());
-				node.height = Math.max(node.height, layout.getPrefHeight());
-				layout.pack();
-			} else if (actor != null) {
-				leftColumnWidth = Math.max(leftColumnWidth, actor.getWidth());
-				node.height = Math.max(node.height, actor.getHeight());
-			}
 			prefWidth = Math.max(prefWidth, rowWidth);
 			prefHeight -= node.height + ySpacing;
 			if (node.expanded) computeSize(node.children, indent + indentSpacing);
@@ -173,7 +184,7 @@ public class Tree extends WidgetGroup {
 
 	public void layout () {
 		if (sizeInvalid) computeSize();
-		layout(rootNodes, leftColumnWidth + indentSpacing, getHeight());
+		layout(rootNodes, leftColumnWidth + indentSpacing, getHeight() - ySpacing / 2);
 	}
 
 	private float layout (Array<Node> nodes, float indent, float y) {
@@ -181,12 +192,11 @@ public class Tree extends WidgetGroup {
 		Drawable plus = style.plus, minus = style.minus;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			Actor actor = node.rightActor;
+			Actor actor = node.actor;
 			float x = indent;
 			if (node.icon != null) x += node.icon.getMinWidth();
 			y -= node.height;
-			node.rightActor.setPosition(x, y);
-			if (node.leftActor != null) node.leftActor.setPosition(0, y);
+			node.actor.setPosition(x, y);
 			y -= ySpacing;
 			if (node.expanded) y = layout(node.children, indent + indentSpacing, y);
 		}
@@ -195,10 +205,13 @@ public class Tree extends WidgetGroup {
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (style.background != null) style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
+		if (style.background != null) {
+			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
+			batch.setColor(Color.WHITE);
+		}
 		draw(batch, rootNodes, leftColumnWidth);
-		super.draw(batch, parentAlpha); // Draw left and right actors.
+		super.draw(batch, parentAlpha); // Draw actors.
 	}
 
 	/** Draws selection, icons, and expand icons. */
@@ -207,23 +220,26 @@ public class Tree extends WidgetGroup {
 		float x = getX(), y = getY();
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			Actor actor = node.rightActor;
+			Actor actor = node.actor;
 
-			if (selectedNodes.contains(node, true) && style.selection != null)
+			if (selectedNodes.contains(node, true) && style.selection != null) {
 				style.selection.draw(batch, x, y + actor.getY() - ySpacing / 2, getWidth(), node.height + ySpacing);
-			else if (node == overNode && style.over != null)
+			} else if (node == overNode && style.over != null) {
 				style.over.draw(batch, x, y + actor.getY() - ySpacing / 2, getWidth(), node.height + ySpacing);
-
-			if (node.icon != null) {
-				float iconY = actor.getY() + node.height / 2 - node.icon.getMinHeight() / 2;
-				node.icon.draw(batch, x + node.rightActor.getX() - iconSpacing - node.icon.getMinWidth(), y + iconY,
-					node.icon.getMinWidth(), node.icon.getMinHeight());
 			}
 
-			if (node.children == null || node.children.size == 0) continue;
+			if (node.icon != null) {
+				float iconY = actor.getY() + Math.round((node.height - node.icon.getMinHeight()) / 2);
+				batch.setColor(actor.getColor());
+				node.icon.draw(batch, x + node.actor.getX() - iconSpacing - node.icon.getMinWidth(), y + iconY,
+					node.icon.getMinWidth(), node.icon.getMinHeight());
+				batch.setColor(Color.WHITE);
+			}
+
+			if (node.children.size == 0) continue;
 
 			Drawable expandIcon = node.expanded ? minus : plus;
-			float iconY = actor.getY() + node.height / 2 - expandIcon.getMinHeight() / 2;
+			float iconY = actor.getY() + Math.round((node.height - expandIcon.getMinHeight()) / 2);
 			expandIcon.draw(batch, x + indent - iconSpacing, y + iconY, expandIcon.getMinWidth(), expandIcon.getMinHeight());
 			if (node.expanded) draw(batch, node.children, indent + indentSpacing);
 		}
@@ -239,7 +255,7 @@ public class Tree extends WidgetGroup {
 	private float getNodeAt (Array<Node> nodes, float y, float rowY) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			if (y > rowY - node.height - ySpacing / 2 && y <= rowY + ySpacing / 2) {
+			if (y >= rowY - node.height - ySpacing && y < rowY) {
 				foundNode = node;
 				return -1;
 			}
@@ -256,8 +272,9 @@ public class Tree extends WidgetGroup {
 		float ySpacing = this.ySpacing;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			if (node.rightActor.getY() < low) break;
-			if (node.rightActor.getY() <= high) selectedNodes.add(node);
+			if (node.actor.getY() < low) break;
+			if (!node.isSelectable()) continue;
+			if (node.actor.getY() <= high) selectedNodes.add(node);
 			if (node.expanded) selectNodes(node.children, low, high);
 		}
 	}
@@ -269,6 +286,11 @@ public class Tree extends WidgetGroup {
 	public void setSelection (Node node) {
 		selectedNodes.clear();
 		selectedNodes.add(node);
+	}
+
+	public void setSelection (Array<Node> nodes) {
+		selectedNodes.clear();
+		selectedNodes.addAll(nodes);
 	}
 
 	public void addSelection (Node node) {
@@ -291,14 +313,21 @@ public class Tree extends WidgetGroup {
 		return overNode;
 	}
 
+	public void setOverNode (Node overNode) {
+		this.overNode = overNode;
+	}
+
+	/** Sets the amount of horizontal space between the nodes and the left and right edges of the tree. */
 	public void setPadding (float padding) {
 		this.padding = padding;
 	}
 
+	/** Sets the amount of vertical space between nodes. */
 	public void setYSpacing (float ySpacing) {
 		this.ySpacing = ySpacing;
 	}
 
+	/** Sets the amount of horizontal space between the node actors and icons. */
 	public void setIconSpacing (float iconSpacing) {
 		this.iconSpacing = iconSpacing;
 	}
@@ -313,19 +342,19 @@ public class Tree extends WidgetGroup {
 		return prefHeight;
 	}
 
+	/** Returns the node with the specified object, or null. */
 	public Node findNode (Object object) {
 		if (object == null) throw new IllegalArgumentException("object cannot be null.");
 		return findNode(rootNodes, object);
 	}
 
-	private Node findNode (Array<Node> nodes, Object object) {
+	static Node findNode (Array<Node> nodes, Object object) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			if (object.equals(node.object)) return node;
 		}
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			if (node.children == null) continue;
 			Node found = findNode(node.children, object);
 			if (found != null) return found;
 		}
@@ -333,16 +362,10 @@ public class Tree extends WidgetGroup {
 	}
 
 	public void collapseAll () {
-		for (int i = 0, n = rootNodes.size; i < n; i++)
-			collapseAll(rootNodes.get(i));
+		collapseAll(rootNodes);
 	}
 
-	public void collapseAll (Node node) {
-		collapseAll(node.children);
-	}
-
-	private void collapseAll (Array<Node> nodes) {
-		if (nodes == null) return;
+	static void collapseAll (Array<Node> nodes) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			node.setExpanded(false);
@@ -354,54 +377,42 @@ public class Tree extends WidgetGroup {
 		expandAll(rootNodes);
 	}
 
-	public void expandAll (Node node) {
-		expandAll(node.children);
-	}
-
-	private void expandAll (Array<Node> nodes) {
-		if (nodes == null) return;
+	static void expandAll (Array<Node> nodes) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			node.setExpanded(true);
-			expandAll(node.children);
+			node.expandAll();
 		}
 	}
 
-	public void expandTo (Node node) {
-		node = node.parent;
-		while (node != null) {
-			node.setExpanded(true);
-			node = node.parent;
-		}
+	/** Returns the click listener the tree uses for clicking on nodes and the over node. */
+	public ClickListener getClickListener () {
+		return clickListener;
+	}
+
+	public void setMultiSelect (boolean multiSelect) {
+		this.multiSelect = multiSelect;
 	}
 
 	static public class Node {
-		Actor leftActor, rightActor;
+		Actor actor;
 		Node parent;
-		Array<Node> children;
+		final Array<Node> children = new Array(0);
+		boolean selectable = true;
 		boolean expanded;
 		Drawable icon;
 		float height;
 		Object object;
 
-		public Node (Actor rightActor) {
-			if (rightActor == null) throw new IllegalArgumentException("rightActor cannot be null.");
-			this.rightActor = rightActor;
-		}
-
-		/** @@param leftActor May be null. */
-		public Node (Actor leftActor, Actor rightActor) {
-			if (rightActor == null) throw new IllegalArgumentException("rightActor cannot be null.");
-			this.rightActor = rightActor;
-			this.leftActor = leftActor;
+		public Node (Actor actor) {
+			if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
+			this.actor = actor;
 		}
 
 		public void setExpanded (boolean expanded) {
-			if (expanded == this.expanded || children == null || children.size == 0) return;
+			if (expanded == this.expanded || children.size == 0) return;
 			this.expanded = expanded;
-			Group parent = rightActor.getParent();
-			if (!(parent instanceof Tree)) return;
-			Tree tree = (Tree)parent;
+			Tree tree = getTree();
+			if (tree == null) return;
 			if (expanded) {
 				for (int i = 0, n = children.size; i < n; i++)
 					children.get(i).addToTree(tree);
@@ -412,47 +423,74 @@ public class Tree extends WidgetGroup {
 			tree.invalidateHierarchy();
 		}
 
-		void addToTree (Tree tree) {
-			if (leftActor != null) tree.addActor(leftActor);
-			tree.addActor(rightActor);
+		/** Called to add the actor to the tree when the node's parent is expanded. */
+		protected void addToTree (Tree tree) {
+			tree.addActor(actor);
 			if (!expanded) return;
 			for (int i = 0, n = children.size; i < n; i++)
 				children.get(i).addToTree(tree);
 		}
 
-		void removeFromTree (Tree tree) {
-			if (leftActor != null) tree.removeActor(leftActor);
-			tree.removeActor(rightActor);
+		/** Called to remove the actor from the tree when the node's parent is collapsed. */
+		protected void removeFromTree (Tree tree) {
+			tree.removeActor(actor);
 			if (!expanded) return;
 			for (int i = 0, n = children.size; i < n; i++)
 				children.get(i).removeFromTree(tree);
 		}
 
 		public void add (Node node) {
+			insert(children.size, node);
+		}
+
+		public void addAll (Array<Node> nodes) {
+			for (int i = 0, n = nodes.size; i < n; i++)
+				insert(children.size, nodes.get(i));
+		}
+
+		public void insert (int index, Node node) {
 			node.parent = this;
-			if (children == null) children = new Array(2);
-			children.add(node);
+			children.insert(index, node);
 			if (!expanded) return;
-			Group parent = rightActor.getParent();
-			if (!(parent instanceof Tree)) return;
-			Tree tree = (Tree)parent;
+			Tree tree = getTree();
+			if (tree == null) return;
 			for (int i = 0, n = children.size; i < n; i++)
 				children.get(i).addToTree(tree);
 		}
 
+		public void remove () {
+			Tree tree = getTree();
+			if (tree == null) return;
+			tree.remove(this);
+		}
+
 		public void remove (Node node) {
-			if (children == null) return;
 			children.removeValue(node, true);
 			if (!expanded) return;
-			Group parent = rightActor.getParent();
-			if (!(parent instanceof Tree)) return;
-			Tree tree = (Tree)parent;
+			Tree tree = getTree();
+			if (tree == null) return;
 			node.removeFromTree(tree);
 			if (children.size == 0) expanded = false;
 		}
 
+		public void removeAll () {
+			Tree tree = getTree();
+			if (tree != null) {
+				for (int i = 0, n = children.size; i < n; i++)
+					children.get(i).removeFromTree(tree);
+			}
+			children.clear();
+		}
+
+		/** Returns the tree this node is currently in, or null. */
+		public Tree getTree () {
+			Group parent = actor.getParent();
+			if (!(parent instanceof Tree)) return null;
+			return (Tree)parent;
+		}
+
 		public Actor getActor () {
-			return rightActor;
+			return actor;
 		}
 
 		public boolean isExpanded () {
@@ -467,36 +505,58 @@ public class Tree extends WidgetGroup {
 			return parent;
 		}
 
+		/** Sets an icon that will be drawn to the left of the actor. */
 		public void setIcon (Drawable icon) {
 			this.icon = icon;
-		}
-
-		public Actor getLeftActor () {
-			return leftActor;
-		}
-
-		public void setLeftActor (Actor leftActor) {
-			this.leftActor = leftActor;
-		}
-
-		public Actor getRightActor () {
-			return rightActor;
-		}
-
-		public void setRightActor (Actor rightActor) {
-			this.rightActor = rightActor;
 		}
 
 		public Object getObject () {
 			return object;
 		}
 
+		/** Sets an application specific object for this node. */
 		public void setObject (Object object) {
 			this.object = object;
 		}
 
 		public Drawable getIcon () {
 			return icon;
+		}
+
+		/** Returns this node or the child node with the specified object, or null. */
+		public Node findNode (Object object) {
+			if (object == null) throw new IllegalArgumentException("object cannot be null.");
+			if (object.equals(this.object)) return this;
+			return Tree.findNode(children, object);
+		}
+
+		/** Collapses all nodes under and including this node. */
+		public void collapseAll () {
+			setExpanded(false);
+			Tree.collapseAll(children);
+		}
+
+		/** Expands all nodes under and including this node. */
+		public void expandAll () {
+			setExpanded(true);
+			Tree.expandAll(children);
+		}
+
+		/** Expands all parent nodes of this node. */
+		public void expandTo () {
+			Node node = parent;
+			while (node != null) {
+				node.setExpanded(true);
+				node = node.parent;
+			}
+		}
+
+		public boolean isSelectable () {
+			return selectable;
+		}
+
+		public void setSelectable (boolean selectable) {
+			this.selectable = selectable;
 		}
 	}
 

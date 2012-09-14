@@ -22,20 +22,21 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.NumberUtils;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 /** Renders bitmap fonts. The font consists of 2 files: an image file or {@link TextureRegion} containing the glyphs and a file in
  * the AngleCode BMFont text format that describes where each glyph is on the image. Currently only a single image of glyphs is
@@ -48,7 +49,7 @@ import com.badlogic.gdx.utils.NumberUtils;
  * longer needed. A BitmapFont loaded using a {@link TextureRegion} is managed if the region's texture is managed. Disposing the
  * BitmapFont disposes the region's texture, which may not be desirable if the texture is still being used elsewhere.<br>
  * <br>
- * The code is based on Matthias Mann's TWL BitmapFont class. Thanks for sharing, Matthias! :)
+ * The code was originally based on Matthias Mann's TWL BitmapFont class. Thanks for sharing, Matthias! :)
  * @author Nathan Sweet
  * @author Matthias Mann */
 public class BitmapFont implements Disposable {
@@ -324,18 +325,63 @@ public class BitmapFont implements Disposable {
 		float u = region.u;
 		float v = region.v;
 
+		float offsetX = 0, offsetY = 0;
+		float regionWidth = region.getRegionWidth();
+		float regionHeight = region.getRegionHeight();
+		if (region instanceof AtlasRegion) {
+			// Compensate for whitespace stripped from left and top edges.
+			AtlasRegion atlasRegion = (AtlasRegion)region;
+			offsetX = atlasRegion.offsetX;
+			offsetY = atlasRegion.originalHeight - atlasRegion.packedHeight - atlasRegion.offsetY;
+		}
+
 		for (Glyph[] page : data.glyphs) {
 			if (page == null) continue;
 			for (Glyph glyph : page) {
 				if (glyph == null) continue;
-				glyph.u = u + glyph.srcX * invTexWidth;
-				glyph.u2 = u + (glyph.srcX + glyph.width) * invTexWidth;
+
+				float x = glyph.srcX;
+				float x2 = glyph.srcX + glyph.width;
+				float y = glyph.srcY;
+				float y2 = glyph.srcY + glyph.height;
+
+				// Shift glyph for left and top edge stripped whitespace. Clip glyph for right and bottom edge stripped whitespace.
+				if (offsetX > 0) {
+					x -= offsetX;
+					if (x < 0) {
+						glyph.width += x;
+						glyph.xoffset -= x;
+						x = 0;
+					}
+					x2 -= offsetX;
+					if (x2 > regionWidth) {
+						glyph.width -= x2 - regionWidth;
+						x2 = regionWidth;
+					}
+				}
+				if (offsetY > 0) {
+					y -= offsetY;
+					if (y < 0) {
+						glyph.height += y;
+						y = 0;
+					}
+					y2 -= offsetY;
+					if (y2 > regionHeight) {
+						float amount = y2 - regionHeight;
+						glyph.height -= amount;
+						glyph.yoffset += amount;
+						y2 = regionHeight;
+					}
+				}
+
+				glyph.u = u + x * invTexWidth;
+				glyph.u2 = u + x2 * invTexWidth;
 				if (data.flipped) {
-					glyph.v = v + glyph.srcY * invTexHeight;
-					glyph.v2 = v + (glyph.srcY + glyph.height) * invTexHeight;
+					glyph.v = v + y * invTexHeight;
+					glyph.v2 = v + y2 * invTexHeight;
 				} else {
-					glyph.v2 = v + glyph.srcY * invTexHeight;
-					glyph.v = v + (glyph.srcY + glyph.height) * invTexHeight;
+					glyph.v2 = v + y * invTexHeight;
+					glyph.v = v + y2 * invTexHeight;
 				}
 			}
 		}
@@ -366,8 +412,8 @@ public class BitmapFont implements Disposable {
 		Glyph lastGlyph = null;
 		if (data.scaleX == 1 && data.scaleY == 1) {
 			if (integer) {
-				y = (int)y;
-				x = (int)x;
+				y = Math.round(y);
+				x = Math.round(x);
 			}
 			while (start < end) {
 				lastGlyph = data.getGlyph(str.charAt(start++));
@@ -385,7 +431,7 @@ public class BitmapFont implements Disposable {
 				Glyph g = data.getGlyph(ch);
 				if (g == null) continue;
 				x += lastGlyph.getKerning(ch);
-				if (integer) x = (int)x;
+				if (integer) x = Math.round(x);
 				lastGlyph = g;
 				spriteBatch.draw(texture, //
 					x + lastGlyph.xoffset, y + lastGlyph.yoffset, //
@@ -407,10 +453,10 @@ public class BitmapFont implements Disposable {
 							lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 					} else {
 						spriteBatch.draw(texture, //
-							(int)(x + lastGlyph.xoffset * scaleX), //
-							(int)(y + lastGlyph.yoffset * scaleY), //
-							(int)(lastGlyph.width * scaleX), //
-							(int)(lastGlyph.height * scaleY), //
+							Math.round(x + lastGlyph.xoffset * scaleX), //
+							Math.round(y + lastGlyph.yoffset * scaleY), //
+							Math.round(lastGlyph.width * scaleX), //
+							Math.round(lastGlyph.height * scaleY), //
 							lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 					}
 					x += lastGlyph.xadvance * scaleX;
@@ -432,10 +478,10 @@ public class BitmapFont implements Disposable {
 						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 				} else {
 					spriteBatch.draw(texture, //
-						(int)(x + lastGlyph.xoffset * scaleX), //
-						(int)(y + lastGlyph.yoffset * scaleY), //
-						(int)(lastGlyph.width * scaleX), //
-						(int)(lastGlyph.height * scaleY), //
+						Math.round(x + lastGlyph.xoffset * scaleX), //
+						Math.round(y + lastGlyph.yoffset * scaleY), //
+						Math.round(lastGlyph.width * scaleX), //
+						Math.round(lastGlyph.height * scaleY), //
 						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 				}
 				x += g.xadvance * scaleX;
@@ -532,7 +578,7 @@ public class BitmapFont implements Disposable {
 					lineEnd--;
 				}
 				if (lineEnd == start) {
-					nextStart--;
+					if (nextStart > start + 1) nextStart--;
 					lineEnd = nextStart; // If no characters to break, show all.
 				} else {
 					nextStart = lineEnd;
@@ -675,7 +721,7 @@ public class BitmapFont implements Disposable {
 					lineEnd--;
 				}
 				if (lineEnd == start) {
-					nextStart--;
+					if (nextStart > start + 1) nextStart--;
 					lineEnd = nextStart; // If no characters to break, show all.
 				} else {
 					nextStart = lineEnd;

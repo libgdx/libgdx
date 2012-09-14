@@ -118,6 +118,8 @@ public class Skin implements Disposable {
 			resources.put(type, typeResources);
 		}
 		typeResources.put(name, resource);
+		if (name.equals("tree-collapse-up")) System.out.println();
+
 	}
 
 	public <T> T get (Class<T> type) {
@@ -246,6 +248,8 @@ public class Skin implements Disposable {
 	/** Returns a registered drawable. If no drawable is found but a region, ninepatch, or sprite exists with the name, then the
 	 * appropriate drawable is created and stored in the skin. */
 	public Drawable getDrawable (String name) {
+		if (name.equals("tree-collapse-up")) System.out.println();
+
 		Drawable drawable = optional(name, Drawable.class);
 		if (drawable != null) return drawable;
 
@@ -296,7 +300,21 @@ public class Skin implements Disposable {
 
 	/** Returns a copy of a drawable found in the skin via {@link #getDrawable(String)}. */
 	public Drawable newDrawable (String name) {
-		Drawable drawable = getDrawable(name);
+		return newDrawable(getDrawable(name));
+	}
+
+	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
+	public Drawable newDrawable (String name, float r, float g, float b, float a) {
+		return newDrawable(getDrawable(name), new Color(r, g, b, a));
+	}
+
+	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
+	public Drawable newDrawable (String name, Color tint) {
+		return newDrawable(getDrawable(name), tint);
+	}
+
+	/** Returns a copy of the specified drawable. */
+	public Drawable newDrawable (Drawable drawable) {
 		if (drawable instanceof TextureRegionDrawable) return new TextureRegionDrawable((TextureRegionDrawable)drawable);
 		if (drawable instanceof NinePatchDrawable) return new NinePatchDrawable((NinePatchDrawable)drawable);
 		if (drawable instanceof SpriteDrawable) return new SpriteDrawable((SpriteDrawable)drawable);
@@ -304,10 +322,19 @@ public class Skin implements Disposable {
 	}
 
 	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
-	public Drawable newDrawable (String name, Color tint) {
-		Drawable drawable = getDrawable(name);
+	public Drawable newDrawable (Drawable drawable, float r, float g, float b, float a) {
+		return newDrawable(drawable, new Color(r, g, b, a));
+	}
+
+	/** Returns a tinted copy of a drawable found in the skin via {@link #getDrawable(String)}. */
+	public Drawable newDrawable (Drawable drawable, Color tint) {
 		if (drawable instanceof TextureRegionDrawable) {
-			Sprite sprite = new Sprite(((TextureRegionDrawable)drawable).getRegion());
+			TextureRegion region = ((TextureRegionDrawable)drawable).getRegion();
+			Sprite sprite;
+			if (region instanceof AtlasRegion)
+				sprite = new AtlasSprite((AtlasRegion)region);
+			else
+				sprite = new Sprite(region);
 			sprite.setColor(tint);
 			return new SpriteDrawable(sprite);
 		}
@@ -318,7 +345,11 @@ public class Skin implements Disposable {
 		}
 		if (drawable instanceof SpriteDrawable) {
 			SpriteDrawable spriteDrawable = new SpriteDrawable((SpriteDrawable)drawable);
-			Sprite sprite = new Sprite(spriteDrawable.getSprite());
+			Sprite sprite = spriteDrawable.getSprite();
+			if (sprite instanceof AtlasSprite)
+				sprite = new AtlasSprite((AtlasSprite)sprite);
+			else
+				sprite = new Sprite(sprite);
 			sprite.setColor(tint);
 			spriteDrawable.setSprite(sprite);
 			return spriteDrawable;
@@ -454,6 +485,7 @@ public class Skin implements Disposable {
 			public Object read (Json json, Object jsonData, Class type) {
 				String name = json.readValue("name", String.class, jsonData);
 				Color color = json.readValue("color", Color.class, jsonData);
+				if (name.equals("tree-collapse")) System.out.println();
 				return newDrawable(name, color);
 			}
 		});

@@ -153,10 +153,27 @@ public class Body {
 	public void setTransform (float x, float y, float angle) {
 		jniSetTransform(addr, x, y, angle);
 	}
+	
+	/** Set the position of the body's origin and rotation. This breaks any contacts and wakes the other bodies. Manipulating a
+	 * body's transform may cause non-physical behavior.
+	 * @param x the world position on the x-axis
+	 * @param y the world position on the y-axis
+	 * @param angle the world rotation in radians. 
+	 * @param updateContacts Box2D SetTransform internally calls contactManager.FindNewContacts() method, sometimes multiple 
+	 * bodies are updated and it is undesirable to trigger Box2D to find new contacts each time, updateContacts should be 
+	 * false in those cases, true otherwise, more information at <a href="http://box2d.org/forum/viewtopic.php?f=3&t=8757">Box2d forums</a>. */
+	public void setTransform (float x, float y, float angle, boolean updateContacts) {
+		jniSetTransform(addr, x, y, angle, updateContacts);
+	}
 
 	private native void jniSetTransform (long addr, float positionX, float positionY, float angle); /*
 		b2Body* body = (b2Body*)addr;
 		body->SetTransform(b2Vec2(positionX, positionY), angle);
+	*/
+	
+	private native void jniSetTransform (long addr, float positionX, float positionY, float angle, boolean updateContacts); /*
+		b2Body* body = (b2Body*)addr;
+		body->SetTransform(b2Vec2(positionX, positionY), angle, updateContacts);
 	*/
 
 	/** Get the body transform for the body's origin. */

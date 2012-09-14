@@ -22,7 +22,7 @@ public class MoveToAction extends TemporalAction {
 	private float startX, startY;
 	private float endX, endY;
 
-	protected void initialize () {
+	protected void begin () {
 		startX = actor.getX();
 		startY = actor.getY();
 	}

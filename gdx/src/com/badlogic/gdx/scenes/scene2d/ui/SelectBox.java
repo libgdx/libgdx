@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -27,10 +29,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
-
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 /** A select box (aka a drop-down list) allows a user to choose one of a number of values from a list. When inactive, the selected
  * value is displayed. When activated, it shows the list of values that may be selected.
@@ -49,6 +50,7 @@ public class SelectBox extends Widget {
 	final Vector2 screenCoords = new Vector2();
 	SelectList list;
 	private float prefWidth, prefHeight;
+	private ClickListener clickListener;
 
 	public SelectBox (Object[] items, Skin skin) {
 		this(items, skin.get(SelectBoxStyle.class));
@@ -64,7 +66,7 @@ public class SelectBox extends Widget {
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
 
-		addListener(new InputListener() {
+		addListener(clickListener = new ClickListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == 0 && button != 0) return false;
 				if (list != null && list.getParent() != null) {
@@ -119,13 +121,21 @@ public class SelectBox extends Widget {
 		for (int i = 0; i < items.length; i++)
 			max = Math.max(font.getBounds(items[i]).width, max);
 		prefWidth = bg.getLeftWidth() + bg.getRightWidth() + max;
+		prefWidth = Math.max(prefWidth, max + style.listBackground.getLeftWidth() + style.listBackground.getRightWidth() + 2
+			* style.itemSpacing);
 
 		invalidateHierarchy();
 	}
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		final Drawable background = style.background;
+		Drawable background;
+		if (list != null && list.getParent() != null && style.backgroundOpen != null)
+			background = style.backgroundOpen;
+		else if (clickListener.isOver() && style.backgroundOver != null)
+			background = style.backgroundOver;
+		else
+			background = style.background;
 		final BitmapFont font = style.font;
 		final Color fontColor = style.fontColor;
 
@@ -141,7 +151,8 @@ public class SelectBox extends Widget {
 			float availableWidth = width - background.getLeftWidth() - background.getRightWidth();
 			int numGlyphs = font.computeVisibleGlyphs(items[selectedIndex], 0, items[selectedIndex].length(), availableWidth);
 			bounds.set(font.getBounds(items[selectedIndex]));
-			float textY = (int)(height / 2) + (int)(bounds.height / 2);
+			height -= background.getBottomHeight() + background.getTopHeight();
+			float textY = (int)(height / 2 + background.getBottomHeight() + bounds.height / 2);
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
 			font.draw(batch, items[selectedIndex], x + background.getLeftWidth(), y + textY, 0, numGlyphs);
 		}
@@ -223,7 +234,7 @@ public class SelectBox extends Widget {
 				x = Vector2.tmp.x;
 				y = Vector2.tmp.y;
 				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
-					listSelectedIndex = (int)((getHeight() - y) / itemHeight);
+					listSelectedIndex = (int)((getHeight() - style.listBackground.getTopHeight() - y) / itemHeight);
 					listSelectedIndex = Math.max(0, listSelectedIndex);
 					listSelectedIndex = Math.min(items.length - 1, listSelectedIndex);
 				}
@@ -249,27 +260,16 @@ public class SelectBox extends Widget {
 		private void layout () {
 			final BitmapFont font = style.font;
 			final Drawable listSelection = style.listSelection;
-
-			float prefWidth = 0;
-			float prefHeight = 0;
-
-			for (int i = 0; i < items.length; i++) {
-				String item = items[i];
-				TextBounds bounds = font.getBounds(item);
-				prefWidth = Math.max(bounds.width, prefWidth);
-			}
+			final Drawable listBackground = style.listBackground;
 
 			itemHeight = font.getCapHeight() + -font.getDescent() * 2 + style.itemSpacing;
 			itemHeight += listSelection.getTopHeight() + listSelection.getBottomHeight();
-			itemHeight *= SelectBox.this.getParent().getScaleY();
-			prefWidth += listSelection.getLeftWidth() + listSelection.getRightWidth() + 2 * style.itemSpacing;
-			prefHeight = items.length * itemHeight;
+
 			textOffsetX = listSelection.getLeftWidth() + style.itemSpacing;
 			textOffsetY = listSelection.getTopHeight() + -font.getDescent() + style.itemSpacing / 2;
 
-			float width = Math.max(prefWidth, SelectBox.this.getWidth());
-			setWidth(width * SelectBox.this.getParent().getScaleX());
-			setHeight(prefHeight);
+			setWidth(SelectBox.this.getWidth());
+			setHeight(items.length * itemHeight + listBackground.getTopHeight() + listBackground.getBottomHeight());
 		}
 
 		@Override
@@ -283,27 +283,26 @@ public class SelectBox extends Widget {
 			float y = getY();
 			float width = getWidth();
 			float height = getHeight();
-			float scaleX = SelectBox.this.getParent().getScaleX();
-			float scaleY = SelectBox.this.getParent().getScaleY();
 
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			listBackground.draw(batch, x, y, width, height);
-			float posY = height;
+
+			width -= listBackground.getLeftWidth() + listBackground.getRightWidth();
+			x += listBackground.getLeftWidth();
+			float posY = height - listBackground.getTopHeight();
 			for (int i = 0; i < items.length; i++) {
 				if (listSelectedIndex == i) {
 					listSelection.draw(batch, x, y + posY - itemHeight, width, itemHeight);
 				}
 				font.setColor(fontColor.r, fontColor.g, fontColor.b, color.a * fontColor.a * parentAlpha);
-				font.setScale(scaleX, scaleY);
 				font.draw(batch, items[i], x + textOffsetX, y + posY - textOffsetY);
-				font.setScale(1, 1);
 				posY -= itemHeight;
 			}
 		}
 
 		@Override
-		public Actor hit (float x, float y) {
+		public Actor hit (float x, float y, boolean touchable) {
 			return this;
 		}
 
@@ -318,6 +317,8 @@ public class SelectBox extends Widget {
 	 * @author Nathan Sweet */
 	static public class SelectBoxStyle {
 		public Drawable background;
+		/** Optional. */
+		public Drawable backgroundOver, backgroundOpen;
 		public Drawable listBackground;
 		public Drawable listSelection;
 		public BitmapFont font;

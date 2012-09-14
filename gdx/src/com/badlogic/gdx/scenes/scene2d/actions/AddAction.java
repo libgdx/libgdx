@@ -31,6 +31,10 @@ public class AddAction extends Action {
 		this.action = action;
 	}
 
+	public void restart () {
+		if (action != null) action.restart();
+	}
+
 	public void reset () {
 		super.reset();
 		targetActor = null;

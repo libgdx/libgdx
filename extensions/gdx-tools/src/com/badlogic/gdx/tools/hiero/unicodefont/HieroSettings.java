@@ -38,6 +38,7 @@ public class HieroSettings {
 	private boolean bold = false, italic = false;
 	private int paddingTop, paddingLeft, paddingBottom, paddingRight, paddingAdvanceX, paddingAdvanceY;
 	private int glyphPageWidth = 512, glyphPageHeight = 512;
+	private String glyphText = "";
 	private final List effects = new ArrayList();
 	private boolean nativeRendering;
 
@@ -80,6 +81,8 @@ public class HieroSettings {
 					glyphPageHeight = Integer.parseInt(value);
 				} else if (name.equals("glyph.native.rendering")) {
 					nativeRendering = Boolean.parseBoolean(value);
+				} else if (name.equals("glyph.text")) {
+					glyphText = value;
 				} else if (name.equals("effect.class")) {
 					try {
 						effects.add(Class.forName(value).newInstance());
@@ -89,16 +92,16 @@ public class HieroSettings {
 				} else if (name.startsWith("effect.")) {
 					// Set an effect value on the last added effect.
 					name = name.substring(7);
-					// ConfigurableEffect effect = (ConfigurableEffect)effects.get(effects.size() - 1);
-					// List values = effect.getValues();
-					// for (Iterator iter = values.iterator(); iter.hasNext();) {
-					// Value effectValue = (Value)iter.next();
-					// if (effectValue.getName().equals(name)) {
-					// effectValue.setString(value);
-					// break;
-					// }
-					// }
-					// effect.setValues(values);
+					ConfigurableEffect effect = (ConfigurableEffect)effects.get(effects.size() - 1);
+					List values = effect.getValues();
+					for (Iterator iter = values.iterator(); iter.hasNext();) {
+						Value effectValue = (Value)iter.next();
+						if (effectValue.getName().equals(name)) {
+							effectValue.setString(value);
+							break;
+						}
+					}
+					effect.setValues(values);
 				}
 			}
 			reader.close();
@@ -236,6 +239,14 @@ public class HieroSettings {
 		this.nativeRendering = nativeRendering;
 	}
 
+	public String getGlyphText () {
+		return this.glyphText.replace("\\n", "\n");
+	}
+
+	public void setGlyphText (String text) {
+		this.glyphText = text.replace("\n", "\\n");
+	}
+
 	/** Saves the settings to a file.
 	 * @throws IOException if the file could not be saved. */
 	public void save (File file) throws IOException {
@@ -254,6 +265,7 @@ public class HieroSettings {
 		out.println("glyph.native.rendering=" + nativeRendering);
 		out.println("glyph.page.width=" + glyphPageWidth);
 		out.println("glyph.page.height=" + glyphPageHeight);
+		out.println("glyph.text=" + glyphText);
 		out.println();
 		for (Iterator iter = effects.iterator(); iter.hasNext();) {
 			ConfigurableEffect effect = (ConfigurableEffect)iter.next();

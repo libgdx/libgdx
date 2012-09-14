@@ -19,13 +19,14 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-/** Sets the alpha for an actor's color (or a specified color), from the current alpha to the new alpha.
+/** Sets the alpha for an actor's color (or a specified color), from the current alpha to the new alpha. Note this action
+ * transitions from the alpha at the time the action starts to the specified alpha.
  * @author Nathan Sweet */
 public class AlphaAction extends TemporalAction {
 	private float start, end;
 	private Color color;
 
-	protected void initialize () {
+	protected void begin () {
 		if (color == null) color = actor.getColor();
 		start = color.a;
 	}

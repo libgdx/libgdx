@@ -148,14 +148,14 @@ public interface Application {
 	 * @return the preferences. */
 	public Preferences getPreferences (String name);
 
-	public Clipboard getClipboard();
-	
+	public Clipboard getClipboard ();
+
 	/** Posts a {@link Runnable} on the main loop thread.
 	 * 
 	 * @param runnable the runnable. */
 	public void postRunnable (Runnable runnable);
 
-	/** Exits the application. This will cause a call to pause() and dispose() some time in the loadFuture, it will not immediately
-	 * finish your application! */
+	/** Exits the application. On android, this will cause a call to pause() and dispose() some time in the future, it will not
+	 * immediately finish your application. */
 	public void exit ();
 }

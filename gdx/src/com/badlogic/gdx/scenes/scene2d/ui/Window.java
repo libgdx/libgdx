@@ -16,22 +16,26 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-/** A table that can be dragged and act as a modal window.
+/** A table that can be dragged and act as a modal window. The top padding is used as the window's title height.
  * <p>
- * The preferred size of a window is the preferred size of the children as layed out by the table. After adding children to the
- * window, it can be convenient to call {@link #pack()} to size the window to the size of the children.
+ * The preferred size of a window is the preferred size of the title text and the children as layed out by the table. After adding
+ * children to the window, it can be convenient to call {@link #pack()} to size the window to the size of the children.
  * @author Nathan Sweet */
 public class Window extends Table {
 	private WindowStyle style;
@@ -40,6 +44,7 @@ public class Window extends Table {
 	boolean isMovable = true, isModal;
 	final Vector2 dragOffset = new Vector2();
 	boolean dragging;
+	private int titleAlignment = Align.center;
 
 	public Window (String title, Skin skin) {
 		this(title, skin.get(WindowStyle.class));
@@ -59,24 +64,46 @@ public class Window extends Table {
 		setStyle(style);
 		setWidth(150);
 		setHeight(150);
+		setTitle(title);
 
 		addCaptureListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (pointer == 0) toFront();
+				toFront();
 				return false;
 			}
 		});
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (pointer != 0) return false;
-				dragging = isMovable && getHeight() - y <= getTitleBarHeight() && y < getHeight() && x > 0 && x < getWidth();
-				dragOffset.set(x, y);
-				return dragging;
+				if (button == 0) {
+					dragging = isMovable && getHeight() - y <= getPadTop() && y < getHeight() && x > 0 && x < getWidth();
+					dragOffset.set(x, y);
+				}
+				return dragging || isModal;
 			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				if (!dragging) return;
 				translate(x - dragOffset.x, y - dragOffset.y);
+			}
+
+			public boolean mouseMoved (InputEvent event, float x, float y) {
+				return isModal;
+			}
+
+			public boolean scrolled (InputEvent event, int amount) {
+				return isModal;
+			}
+
+			public boolean keyDown (InputEvent event, int keycode) {
+				return isModal;
+			}
+
+			public boolean keyUp (InputEvent event, int keycode) {
+				return isModal;
+			}
+
+			public boolean keyTyped (InputEvent event, char character) {
+				return isModal;
 			}
 		});
 	}
@@ -87,6 +114,7 @@ public class Window extends Table {
 		setBackground(style.background);
 		titleCache = new BitmapFontCache(style.titleFont);
 		titleCache.setColor(style.titleFontColor);
+		if (title != null) setTitle(title);
 		invalidateHierarchy();
 	}
 
@@ -96,36 +124,55 @@ public class Window extends Table {
 		return style;
 	}
 
-	float getTitleBarHeight () {
-		return getPadTop().height(this);
-	}
-
-	public void layout () {
-		super.layout();
-		TextBounds bounds = style.titleFont.getMultiLineBounds(title);
-		titleCache.setMultiLineText(title, getWidth() / 2 - bounds.width / 2, getHeight() - getTitleBarHeight() / 2 + bounds.height
-			/ 2);
-	}
-
 	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
+		if (style.stageBackground != null) {
+			Color color = getColor();
+			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			Stage stage = getStage();
+			Vector2 position = stageToLocalCoordinates(Vector2.tmp.set(0, 0));
+			Vector2 size = stageToLocalCoordinates(Vector2.tmp2.set(stage.getWidth(), stage.getHeight()));
+			style.stageBackground.draw(batch, getX() + position.x, getY() + position.y, getX() + size.x, getY() + size.y);
+		}
+
 		super.drawBackground(batch, parentAlpha);
 		// Draw the title without the batch transformed or clipping applied.
-		titleCache.setPosition(getX(), getY());
+		float x = getX(), y = getY() + getHeight();
+		TextBounds bounds = titleCache.getBounds();
+		if ((titleAlignment & Align.left) != 0)
+			x += getPadLeft();
+		else if ((titleAlignment & Align.right) != 0)
+			x += getWidth() - bounds.width - getPadRight();
+		else
+			x += (getWidth() - bounds.width) / 2;
+		if ((titleAlignment & Align.top) == 0) {
+			if ((titleAlignment & Align.bottom) != 0)
+				y -= getPadTop() - bounds.height;
+			else
+				y -= (getPadTop() - bounds.height) / 2;
+		}
+		titleCache.setColor(Color.tmp.set(getColor()).mul(style.titleFontColor));
+		titleCache.setPosition((int)x, (int)y);
 		titleCache.draw(batch, parentAlpha);
 	}
 
-	public Actor hit (float x, float y) {
-		Actor hit = super.hit(x, y);
-		if (hit == null && isModal) return this;
+	public Actor hit (float x, float y, boolean touchable) {
+		Actor hit = super.hit(x, y, touchable);
+		if (hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled)) return this;
 		return hit;
 	}
 
 	public void setTitle (String title) {
 		this.title = title;
+		titleCache.setMultiLineText(title, 0, 0);
 	}
 
 	public String getTitle () {
 		return title;
+	}
+
+	/** @param titleAlignment {@link Align} */
+	public void setTitleAlignment (int titleAlignment) {
+		this.titleAlignment = titleAlignment;
 	}
 
 	public void setMovable (boolean isMovable) {
@@ -140,12 +187,20 @@ public class Window extends Table {
 		return dragging;
 	}
 
+	public float getPrefWidth () {
+		return Math.max(super.getPrefWidth(), titleCache.getBounds().width + getPadLeft() + getPadRight());
+	}
+
 	/** The style for a window, see {@link Window}.
 	 * @author Nathan Sweet */
 	static public class WindowStyle {
+		/** Optional. */
 		public Drawable background;
 		public BitmapFont titleFont;
+		/** Optional. */
 		public Color titleFontColor = new Color(1, 1, 1, 1);
+		/** Optional. */
+		public Drawable stageBackground;
 
 		public WindowStyle () {
 		}

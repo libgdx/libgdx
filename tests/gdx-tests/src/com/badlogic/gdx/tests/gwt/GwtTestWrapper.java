@@ -42,6 +42,7 @@ import com.badlogic.gdx.tests.AssetManagerTest;
 import com.badlogic.gdx.tests.AtlasIssueTest;
 import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
 import com.badlogic.gdx.tests.BitmapFontFlipTest;
+import com.badlogic.gdx.tests.BitmapFontMetricsTest;
 import com.badlogic.gdx.tests.BitmapFontTest;
 import com.badlogic.gdx.tests.BlitTest;
 import com.badlogic.gdx.tests.Box2DCharacterControllerTest;
@@ -64,6 +65,7 @@ import com.badlogic.gdx.tests.InverseKinematicsTest;
 import com.badlogic.gdx.tests.IsoCamTest;
 import com.badlogic.gdx.tests.IsometricTileTest;
 import com.badlogic.gdx.tests.KinematicBodyTest;
+import com.badlogic.gdx.tests.LabelScaleTest;
 import com.badlogic.gdx.tests.LabelTest;
 import com.badlogic.gdx.tests.LifeCycleTest;
 import com.badlogic.gdx.tests.MeshShaderTest;
@@ -420,6 +422,10 @@ public class GwtTestWrapper extends GdxTest {
 		}
 	}, new Instancer() {
 		public GdxTest instance () {
+			return new BitmapFontMetricsTest();
+		}
+	}, new Instancer() {
+		public GdxTest instance () {
 			return new BlitTest();
 		}
 	}, new Instancer() {
@@ -445,6 +451,10 @@ public class GwtTestWrapper extends GdxTest {
 	}, new Instancer() {
 		public GdxTest instance () {
 			return new DecalTest();
+		}
+	}, new Instancer() {
+		public GdxTest instance () {
+			return new LabelScaleTest();
 		}
 	}, new Instancer() {
 		public GdxTest instance () {

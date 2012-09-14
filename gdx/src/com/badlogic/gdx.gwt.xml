@@ -64,6 +64,7 @@
 		<include name="graphics/glutils/ImmediateModeRenderer20.java"/>
 		<include name="graphics/glutils/IndexBufferObjectSubData.java"/>
 		<include name="graphics/glutils/IndexData.java"/>
+		<include name="graphics/glutils/ShaderProgram.java"/>
 		<include name="Input.java"/>
 		<include name="InputAdapter.java"/>
 		<include name="InputMultiplexer.java"/>
@@ -205,6 +206,7 @@
 		<include name="scenes/scene2d/ui/Button.java"/>
 		<include name="scenes/scene2d/ui/ButtonGroup.java"/>
 		<include name="scenes/scene2d/ui/CheckBox.java"/>
+		<include name="scenes/scene2d/ui/Dialog.java"/>
 		<include name="scenes/scene2d/ui/Image.java"/>
 		<include name="scenes/scene2d/ui/ImageButton.java"/>
 		<include name="scenes/scene2d/ui/Label.java"/>		
@@ -219,6 +221,7 @@
 		<include name="scenes/scene2d/ui/TextButton.java"/>
 		<include name="scenes/scene2d/ui/TextField.java"/>
 		<include name="scenes/scene2d/ui/Tree.java"/>
+		<include name="scenes/scene2d/ui/VerticalGroup.java"/>
 		<include name="scenes/scene2d/ui/Widget.java"/>
 		<include name="scenes/scene2d/ui/WidgetGroup.java"/>
 		<include name="scenes/scene2d/ui/Window.java"/>
@@ -231,6 +234,7 @@
 		<include name="scenes/scene2d/utils/Cullable.java"/>
 		<include name="scenes/scene2d/utils/Drawable.java"/>
 		<include name="scenes/scene2d/utils/EmptyDrawable.java"/>
+		<include name="scenes/scene2d/utils/FocusListener.java"/>
 		<include name="scenes/scene2d/utils/Layout.java"/>
 		<include name="scenes/scene2d/utils/NinePatchDrawable.java"/>
 		<include name="scenes/scene2d/utils/PressedListener.java"/>
@@ -239,5 +243,7 @@
 		<include name="scenes/scene2d/utils/TextureDrawable.java"/>
 		<include name="scenes/scene2d/utils/TextureRegionDrawable.java"/>		
 		<include name="scenes/scene2d/utils/TiledDrawable.java"/>
+		<include name="scenes/scene2d/utils/DragAndDrop.java"/>
+		<include name="scenes/scene2d/utils/DragListener.java"/>
 	</source>
 </module>

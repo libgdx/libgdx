@@ -61,8 +61,8 @@ public class BitmapFontCache {
 	public void translate (float xAmount, float yAmount) {
 		if (xAmount == 0 && yAmount == 0) return;
 		if (integer) {
-			xAmount = (int)xAmount;
-			yAmount = (int)yAmount;
+			xAmount = Math.round(xAmount);
+			yAmount = Math.round(yAmount);
 		}
 		x += xAmount;
 		y += yAmount;
@@ -100,6 +100,15 @@ public class BitmapFontCache {
 			vertices[i] = color;
 	}
 
+	/** Sets the color of the specified characters. This may only be called after {@link #setText(CharSequence, float, float)} and
+	 * is reset every time setText is called. */
+	public void setColor (Color tint, int start, int end) {
+		final float color = tint.toFloatBits();
+		float[] vertices = this.vertices;
+		for (int i = start * 20 + 2, n = end * 20; i < n; i += 5)
+			vertices[i] = color;
+	}
+
 	public void draw (SpriteBatch spriteBatch) {
 		spriteBatch.draw(font.getRegion().getTexture(), vertices, 0, idx);
 	}
@@ -127,6 +136,12 @@ public class BitmapFontCache {
 		color.b = ((intBits >>> 16) & 0xff) / 255f;
 		color.a = ((intBits >>> 24) & 0xff) / 255f;
 		return color;
+	}
+
+	public void clear () {
+		x = 0;
+		y = 0;
+		idx = 0;
 	}
 
 	private void reset (int glyphCount) {
@@ -204,10 +219,10 @@ public class BitmapFontCache {
 		final float[] vertices = this.vertices;
 
 		if (integer) {
-			x = (int)x;
-			y = (int)y;
-			x2 = (int)x2;
-			y2 = (int)y2;
+			x = Math.round(x);
+			y = Math.round(y);
+			x2 = Math.round(x2);
+			y2 = Math.round(y2);
 		}
 
 		vertices[idx++] = x;
@@ -255,6 +270,21 @@ public class BitmapFontCache {
 		textBounds.width = addToCache(str, x, y, start, end);
 		textBounds.height = font.data.capHeight;
 		return textBounds;
+	}
+
+	public void addText (CharSequence str, float x, float y) {
+		addText(str, x, y, 0, str.length());
+	}
+
+	public void addText (CharSequence str, float x, float y, int start, int end) {
+		int glyphCount = end - start;
+		int vertexCount = idx + glyphCount * 20;
+		if (vertices == null || vertices.length < vertexCount) {
+			float[] newVertices = new float[vertexCount];
+			System.arraycopy(vertices, 0, newVertices, 0, idx);
+			vertices = newVertices;
+		}
+		addToCache(str, x, y, start, end);
 	}
 
 	/** Caches a string, which may contain newlines (\n), with the specified position.
@@ -345,7 +375,7 @@ public class BitmapFontCache {
 					lineEnd--;
 				}
 				if (lineEnd == start) {
-					nextStart--;
+					if (nextStart > start + 1) nextStart--;
 					lineEnd = nextStart; // If no characters to break, show all.
 				} else {
 					nextStart = lineEnd;
@@ -404,5 +434,9 @@ public class BitmapFontCache {
 	/** @return whether this font uses integer positions for drawing. */
 	public boolean usesIntegerPositions () {
 		return integer;
+	}
+
+	public float[] getVertices () {
+		return vertices;
 	}
 }

@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.util.ArrayList;
@@ -49,9 +50,11 @@ public class LwjglCanvas implements Application {
 	final LwjglInput input;
 	final ApplicationListener listener;
 	final Canvas canvas;
-	final List<Runnable> runnables = new ArrayList<Runnable>();
+	final List<Runnable> runnables = new ArrayList();
+	final List<Runnable> executedRunnables = new ArrayList();
 	boolean running = true;
 	int logLevel = LOG_INFO;
+	Cursor cursor;
 
 	public LwjglCanvas (ApplicationListener listener, boolean useGL2) {
 		LwjglNativesLoader.load();
@@ -63,7 +66,7 @@ public class LwjglCanvas implements Application {
 				super.addNotify();
 				EventQueue.invokeLater(new Runnable() {
 					public void run () {
-						start();
+						create();
 					}
 				});
 			}
@@ -150,12 +153,14 @@ public class LwjglCanvas implements Application {
 		return 0;
 	}
 
-	void start () {
+	void create () {
 		try {
 			graphics.setupDisplay();
 
 			listener.create();
 			listener.resize(Math.max(1, graphics.getWidth()), Math.max(1, graphics.getHeight()));
+
+			start();
 		} catch (Exception ex) {
 			stopped();
 			throw new GdxRuntimeException(ex);
@@ -166,18 +171,24 @@ public class LwjglCanvas implements Application {
 			int lastHeight = Math.max(1, graphics.getHeight());
 
 			public void run () {
-				if (!running) return;
-				canvas.setCursor(null);
+				if (!running || Display.isCloseRequested()) {
+					running = false;
+					stopped();
+					return;
+				}
 				graphics.updateTime();
 				synchronized (runnables) {
-					for (int i = 0; i < runnables.size(); i++) {
+					executedRunnables.clear();
+					executedRunnables.addAll(runnables);
+					runnables.clear();
+
+					for (int i = 0; i < executedRunnables.size(); i++) {
 						try {
-							runnables.get(i).run();
+							executedRunnables.get(i).run();
 						} catch (Throwable t) {
 							t.printStackTrace();
 						}
 					}
-					runnables.clear();
 				}
 				input.update();
 
@@ -194,31 +205,35 @@ public class LwjglCanvas implements Application {
 				listener.render();
 				audio.update();
 				Display.update();
+				canvas.setCursor(cursor);
 				if (graphics.vsync) Display.sync(60);
-				if (running && !Display.isCloseRequested())
-					EventQueue.invokeLater(this);
-				else
-					stopped();
+				EventQueue.invokeLater(this);
 			}
 		});
 	}
 
+	/** Called after {@link ApplicationListener} create and resize, but before the game loop iteration. */
+	protected void start () {
+	}
+
+	/** Called when the canvas size changes. */
 	protected void resize (int width, int height) {
 	}
 
+	/** Called when the game loop has stopped. */
 	protected void stopped () {
 	}
 
 	public void stop () {
-		if (!running) return;
-		running = false;
-		try {
-			Display.destroy();
-			audio.dispose();
-		} catch (Throwable ignored) {
-		}
 		EventQueue.invokeLater(new Runnable() {
 			public void run () {
+				if (!running) return;
+				running = false;
+				try {
+					Display.destroy();
+					audio.dispose();
+				} catch (Throwable ignored) {
+				}
 				listener.pause();
 				listener.dispose();
 			}
@@ -252,7 +267,7 @@ public class LwjglCanvas implements Application {
 	public Clipboard getClipboard () {
 		return new LwjglClipboard();
 	}
-	
+
 	@Override
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
@@ -319,5 +334,10 @@ public class LwjglCanvas implements Application {
 				System.exit(-1);
 			}
 		});
+	}
+
+	/** @param cursor May be null. */
+	public void setCursor (Cursor cursor) {
+		this.cursor = cursor;
 	}
 }

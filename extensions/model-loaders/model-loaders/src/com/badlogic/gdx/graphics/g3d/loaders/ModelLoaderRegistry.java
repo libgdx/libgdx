@@ -22,6 +22,7 @@ import java.util.Map;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.ModelLoaderHints;
 import com.badlogic.gdx.graphics.g3d.loaders.collada.ColladaLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.collada.ColladaLoaderSkeleton;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dLoader.G3dKeyframedModelLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dLoader.G3dStillModelLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dLoader.G3dSkeletonModelLoader;
@@ -51,6 +52,7 @@ public class ModelLoaderRegistry {
 	// registering the default loaders here
 	static {
 		registerLoader("dae", new ColladaLoader(), new ModelLoaderHints(false));
+		registerLoader("dae", new ColladaLoaderSkeleton(), new ModelLoaderHints(false));
 		registerLoader("obj", new ObjLoader(), new ModelLoaderHints(false));
 		registerLoader("md2", new MD2Loader(), new MD2LoaderHints(0.2f));
 		registerLoader("g3dt", new G3dtStillModelLoader(), new ModelLoaderHints(true));

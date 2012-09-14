@@ -16,6 +16,10 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.esotericsoftware.tablelayout.BaseTableLayout;
+import com.esotericsoftware.tablelayout.Cell;
+import com.esotericsoftware.tablelayout.Toolkit;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -28,9 +32,6 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.TableToolkit.DebugRect;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
-import com.esotericsoftware.tablelayout.BaseTableLayout;
-import com.esotericsoftware.tablelayout.Cell;
-import com.esotericsoftware.tablelayout.Toolkit;
 
 /** The libgdx implementation to apply a table layout.
  * @author Nathan Sweet */
@@ -55,8 +56,6 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 			for (int i = 0, n = cells.size(); i < n; i++) {
 				Cell c = cells.get(i);
 				if (c.getIgnore()) continue;
-				Actor actor = (Actor)c.getWidget();
-				if (actor == null) continue;
 				float widgetWidth = Math.round(c.getWidgetWidth());
 				float widgetHeight = Math.round(c.getWidgetHeight());
 				float widgetX = Math.round(c.getWidgetX());
@@ -65,14 +64,25 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 				c.setWidgetY(widgetY);
 				c.setWidgetWidth(widgetWidth);
 				c.setWidgetHeight(widgetHeight);
-				actor.setBounds(widgetX, widgetY, widgetWidth, widgetHeight);
+				Actor actor = (Actor)c.getWidget();
+				if (actor != null) {
+					actor.setX(widgetX);
+					actor.setY(widgetY);
+					if (actor.getWidth() != widgetWidth || actor.getHeight() != widgetHeight) {
+						actor.setWidth(widgetWidth);
+						actor.setHeight(widgetHeight);
+						if (actor instanceof Layout) {
+							Layout layout = (Layout)actor;
+							layout.invalidate();
+							layout.validate();
+						}
+					}
+				}
 			}
 		} else {
 			for (int i = 0, n = cells.size(); i < n; i++) {
 				Cell c = cells.get(i);
 				if (c.getIgnore()) continue;
-				Actor actor = (Actor)c.getWidget();
-				if (actor == null) continue;
 				float widgetWidth = c.getWidgetWidth();
 				float widgetHeight = c.getWidgetHeight();
 				float widgetX = c.getWidgetX();
@@ -81,16 +91,20 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 				c.setWidgetY(widgetY);
 				c.setWidgetWidth(widgetWidth);
 				c.setWidgetHeight(widgetHeight);
-				actor.setBounds(widgetX, widgetY, widgetWidth, widgetHeight);
-			}
-		}
-		Array<Actor> children = table.getChildren();
-		for (int i = 0, n = children.size; i < n; i++) {
-			Actor child = children.get(i);
-			if (child instanceof Layout) {
-				Layout layout = (Layout)child;
-				layout.invalidate();
-				layout.validate();
+				Actor actor = (Actor)c.getWidget();
+				if (actor != null) {
+					actor.setX(widgetX);
+					actor.setY(widgetY);
+					if (actor.getWidth() != widgetWidth || actor.getHeight() != widgetHeight) {
+						actor.setWidth(widgetWidth);
+						actor.setHeight(widgetHeight);
+						if (actor instanceof Layout) {
+							Layout layout = (Layout)actor;
+							layout.invalidate();
+							layout.validate();
+						}
+					}
+				}
 			}
 		}
 	}

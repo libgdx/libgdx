@@ -27,7 +27,10 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import java.util.List;
+import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
+import com.esotericsoftware.tablelayout.Cell;
+import com.esotericsoftware.tablelayout.Toolkit;
+import com.esotericsoftware.tablelayout.Value;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -42,10 +45,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
-import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
-import com.esotericsoftware.tablelayout.Cell;
-import com.esotericsoftware.tablelayout.Toolkit;
-import com.esotericsoftware.tablelayout.Value;
+
+import java.util.List;
 
 /** A group that sizes and positions children using table constraints. By default, {@link #getTouchable()} is
  * {@link Touchable#childrenOnly}.
@@ -60,6 +61,7 @@ public class Table extends WidgetGroup {
 	private final TableLayout layout;
 	private Drawable background;
 	private boolean clip;
+	private Rectangle scissorBounds;
 	private Skin skin;
 
 	public Table () {
@@ -78,7 +80,6 @@ public class Table extends WidgetGroup {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
 		drawBackground(batch, parentAlpha);
-
 		if (isTransform()) {
 			applyTransform(batch, computeTransform());
 			if (clip) {
@@ -111,13 +112,14 @@ public class Table extends WidgetGroup {
 			tableBounds.x = 0;
 			tableBounds.y = 0;
 		} else {
-			tableBounds.x = layout.getPadLeft().width(this);
-			tableBounds.y = layout.getPadBottom().height(this);
-			tableBounds.width -= tableBounds.x + layout.getPadRight().width(this);
-			tableBounds.height -= tableBounds.y + layout.getPadTop().height(this);
+			tableBounds.x = layout.getPadLeft();
+			tableBounds.y = layout.getPadBottom();
+			tableBounds.width -= tableBounds.x + layout.getPadRight();
+			tableBounds.height -= tableBounds.y + layout.getPadTop();
 		}
-		ScissorStack.calculateScissors(getStage().getCamera(), transform, tableBounds, Rectangle.tmp2);
-		return Rectangle.tmp2;
+		if (scissorBounds == null) scissorBounds = new Rectangle();
+		ScissorStack.calculateScissors(getStage().getCamera(), transform, tableBounds, scissorBounds);
+		return scissorBounds;
 	}
 
 	public void invalidate () {
@@ -164,6 +166,13 @@ public class Table extends WidgetGroup {
 		return background;
 	}
 
+	public Actor hit (float x, float y, boolean touchable) {
+		if (clip) {
+			if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
+		}
+		return super.hit(x, y, touchable);
+	}
+
 	/** Causes the contents to be clipped if they exceed the table widget bounds. Enabling clipping will set
 	 * {@link #setTransform(boolean)} to true. */
 	public void setClip (boolean enabled) {
@@ -194,6 +203,18 @@ public class Table extends WidgetGroup {
 	public Cell add (String text, String labelStyleName) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, skin.get(labelStyleName, LabelStyle.class)));
+	}
+
+	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
+	public Cell add (String text, String fontName, Color color) {
+		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
+		return add(new Label(text, new LabelStyle(skin.getFont(fontName), color)));
+	}
+
+	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
+	public Cell add (String text, String fontName, String colorName) {
+		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
+		return add(new Label(text, new LabelStyle(skin.getFont(fontName), skin.getColor(colorName))));
 	}
 
 	/** Adds a cell without a widget. */
@@ -396,20 +417,46 @@ public class Table extends WidgetGroup {
 		return layout.getDebug();
 	}
 
-	public Value getPadTop () {
+	public Value getPadTopValue () {
+		return layout.getPadTopValue();
+	}
+
+	public float getPadTop () {
 		return layout.getPadTop();
 	}
 
-	public Value getPadLeft () {
+	public Value getPadLeftValue () {
+		return layout.getPadLeftValue();
+	}
+
+	public float getPadLeft () {
 		return layout.getPadLeft();
 	}
 
-	public Value getPadBottom () {
+	public Value getPadBottomValue () {
+		return layout.getPadBottomValue();
+	}
+
+	public float getPadBottom () {
 		return layout.getPadBottom();
 	}
 
-	public Value getPadRight () {
+	public Value getPadRightValue () {
+		return layout.getPadRightValue();
+	}
+
+	public float getPadRight () {
 		return layout.getPadRight();
+	}
+
+	/** Returns {@link #getPadLeft()} plus {@link #getPadRight()}. */
+	public float getPadX () {
+		return layout.getPadLeft() + layout.getPadRight();
+	}
+
+	/** Returns {@link #getPadTop()} plus {@link #getPadBottom()}. */
+	public float getPadY () {
+		return layout.getPadTop() + layout.getPadBottom();
 	}
 
 	public int getAlign () {

@@ -37,7 +37,7 @@ import com.badlogic.gdx.tests.utils.OrthoCamController;
 /** @author David Fraska */
 public class TiledMapTest extends GdxTest {
 
-	private static final boolean automove = true;
+	private static final boolean automove = false;
 
 	private static final int[] layersList = {2, 3};
 
@@ -112,8 +112,8 @@ public class TiledMapTest extends GdxTest {
 
 		spriteBatch = new SpriteBatch();
 
-		final String path = "data/tiledmap/";
-		final String mapname = "tilemap csv";
+		final String path = "data/tiledmap/flip_rotate/";
+		final String mapname = "flip_rotate";
 
 		FileHandle mapHandle = Gdx.files.internal(path + mapname + ".tmx");
 		FileHandle baseDir = Gdx.files.internal(path);
@@ -125,12 +125,12 @@ public class TiledMapTest extends GdxTest {
 
 		atlas = new TileAtlas(map, baseDir);
 
-		int blockWidth = 10;
-		int blockHeight = 12;
+		int blockWidth = 15;
+		int blockHeight = 10;
 
 		startTime = System.currentTimeMillis();
 
-		tileMapRenderer = new TileMapRenderer(map, atlas, blockWidth, blockHeight, 5, 5);
+		tileMapRenderer = new TileMapRenderer(map, atlas, blockWidth, blockHeight, 16, 16);
 		endTime = System.currentTimeMillis();
 		System.out.println("Created cache in " + (endTime - startTime) + "mS");
 

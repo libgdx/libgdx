@@ -46,8 +46,7 @@ public class Sprite extends TextureRegion {
 	private boolean dirty = true;
 	private Rectangle bounds;
 
-	/** Creates an uninitialized sprite. The sprite will need a texture, texture region, bounds, and color set before it can be
-	 * drawn. */
+	/** Creates an uninitialized sprite. The sprite will need a texture region and bounds set before it can be drawn. */
 	public Sprite () {
 		setColor(1, 1, 1, 1);
 	}

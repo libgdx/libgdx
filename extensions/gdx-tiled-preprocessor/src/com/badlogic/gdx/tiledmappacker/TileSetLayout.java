@@ -51,8 +51,12 @@ public class TileSetLayout extends TileSet {
 		int x, y, tile = 0;
 		numRows = 0;
 		numCols = 0;
-		for (y = tileSet.margin; y < image.getHeight() - tileSet.margin; y += tileSet.tileHeight + tileSet.spacing) {
-			for (x = tileSet.margin; x < image.getWidth() - tileSet.margin; x += tileSet.tileWidth + tileSet.spacing) {
+		
+		int stopWidth = image.getWidth() - tileSet.tileWidth;
+		int stopHeight = image.getHeight() - tileSet.tileHeight;
+		
+		for (y = tileSet.margin; y <= stopHeight; y += tileSet.tileHeight + tileSet.spacing) {
+			for (x = tileSet.margin; x <= stopWidth; x += tileSet.tileWidth + tileSet.spacing) {
 				if (y == tileSet.margin) numCols++;
 				imageTilePositions.put(tile, new Vector2(x, y));
 				tile++;

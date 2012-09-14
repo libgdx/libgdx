@@ -168,9 +168,12 @@ public class Actor {
 	 * <p>
 	 * This method is used to delegate touchDown events. If this method returns null, touchDown will not occur.
 	 * <p>
-	 * The default implementation returns this actor if the point is within this actor's bounds. */
-	public Actor hit (float x, float y) {
-		return touchable == Touchable.enabled && x >= 0 && x < width && y >= 0 && y < height ? this : null;
+	 * The default implementation returns this actor if the point is within this actor's bounds.
+	 * @param touchable If true, the hit detection will respect the {@link #setTouchable(Touchable) touchability}.
+	 * @see Touchable */
+	public Actor hit (float x, float y, boolean touchable) {
+		if (touchable && this.touchable != Touchable.enabled) return null;
+		return x >= 0 && x < width && y >= 0 && y < height ? this : null;
 	}
 
 	/** Removes this actor from its parent, if it has a parent.
@@ -242,8 +245,8 @@ public class Actor {
 		this.stage = stage;
 	}
 
-	/** Returns true if the specified actor is this actor or a descendant of this actor. */
-	public boolean isDescendant (Actor actor) {
+	/** Returns true if this actor is the same as or is the descendant of the specified actor. */
+	public boolean isDescendantOf (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		Actor parent = this;
 		while (true) {
@@ -253,8 +256,8 @@ public class Actor {
 		}
 	}
 
-	/** Returns true if the specified actor is this actor or an ancestor of this actor. */
-	public boolean isAscendant (Actor actor) {
+	/** Returns true if this actor is the same as or is the ascendant of the specified actor. */
+	public boolean isAscendantOf (Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		while (true) {
 			if (actor == null) return false;
@@ -509,15 +512,16 @@ public class Actor {
 	}
 
 	/** Transforms the specified point in the stage's coordinates to the actor's local coordinate system. */
-	public void stageToLocalCoordinates (Vector2 stageCoords) {
-		if (parent == null) return;
+	public Vector2 stageToLocalCoordinates (Vector2 stageCoords) {
+		if (parent == null) return stageCoords;
 		parent.stageToLocalCoordinates(stageCoords);
 		parentToLocalCoordinates(stageCoords);
+		return stageCoords;
 	}
 
 	/** Transforms the specified point in the actor's coordinates to be in the stage's coordinates. Note this method will ONLY work
 	 * for screen aligned, unrotated, unscaled actors! */
-	public void localToStageCoordinates (Vector2 localCoords) {
+	public Vector2 localToStageCoordinates (Vector2 localCoords) {
 		Actor actor = this;
 		while (actor != null) {
 			if (actor.getRotation() != 0 || actor.getScaleX() != 1 || actor.getScaleY() != 1)
@@ -526,10 +530,32 @@ public class Actor {
 			localCoords.y += actor.getY();
 			actor = actor.getParent();
 		}
+		return localCoords;
+	}
+
+	/** Transforms the specified point in the actor's coordinates to be in the parent's coordinates. Note this method will ONLY work
+	 * for screen aligned, unrotated, unscaled actors! */
+	public Vector2 localToParentCoordinates (Vector2 localCoords) {
+		if (getRotation() != 0 || getScaleX() != 1 || getScaleY() != 1)
+			throw new GdxRuntimeException("Only unrotated and unscaled actors may use this method.");
+		localCoords.x += getX();
+		localCoords.y += getY();
+		return localCoords;
+	}
+
+	/** Converts coordinates for this actor to those of a parent actor. The ascendant does not need to be a direct parent. */
+	public Vector2 localToAscendantCoordinates (Actor ascendant, Vector2 localCoords) {
+		Actor actor = this;
+		while (actor.getParent() != null) {
+			actor.localToParentCoordinates(localCoords);
+			actor = actor.getParent();
+			if (actor == ascendant) break;
+		}
+		return localCoords;
 	}
 
 	/** Converts the coordinates given in the parent's coordinate system to this actor's coordinate system. */
-	public void parentToLocalCoordinates (Vector2 parentCoords) {
+	public Vector2 parentToLocalCoordinates (Vector2 parentCoords) {
 		final float rotation = getRotation();
 		final float scaleX = getScaleX();
 		final float scaleY = getScaleY();
@@ -604,6 +630,7 @@ public class Actor {
 				}
 			}
 		}
+		return parentCoords;
 	}
 
 	public String toString () {

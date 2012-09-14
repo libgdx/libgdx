@@ -65,7 +65,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** Creates an ordered array with {@link #items} of the specified type and a capacity of 16. */
 	public Array (Class<T> arrayType) {
-		this(false, 16, arrayType);
+		this(true, 16, arrayType);
 	}
 
 	/** Creates a new array containing the elements in the specified array. The new array will have the same type of backing array
@@ -178,6 +178,18 @@ public class Array<T> implements Iterable<T> {
 		return -1;
 	}
 
+	public int lastIndexOf (T value, boolean identity) {
+		T[] items = this.items;
+		if (identity || value == null) {
+			for (int i = size - 1; i >= 0; i--)
+				if (items[i] == value) return i;
+		} else {
+			for (int i = size - 1; i >= 0; i--)
+				if (value.equals(items[i])) return i;
+		}
+		return -1;
+	}
+
 	public boolean removeValue (T value, boolean identity) {
 		T[] items = this.items;
 		if (identity || value == null) {
@@ -225,6 +237,11 @@ public class Array<T> implements Iterable<T> {
 		return items[size - 1];
 	}
 
+	/** Returns the first item. */
+	public T first () {
+		return items[0];
+	}	
+	
 	public void clear () {
 		T[] items = this.items;
 		for (int i = 0, n = size; i < n; i++)
@@ -249,8 +266,8 @@ public class Array<T> implements Iterable<T> {
 
 	protected T[] resize (int newSize) {
 		T[] items = this.items;
-		T[] newItems = (T[])new Object[newSize];
-		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
+		T[] newItems = (T[])ReflectionCache.newArray(items.getClass().getComponentType(), newSize);
+		System.arraycopy(items, 0, newItems, 0, Math.min(size, newItems.length));
 		this.items = newItems;
 		return newItems;
 	}
@@ -287,8 +304,10 @@ public class Array<T> implements Iterable<T> {
 	/** Returns an iterator for the items in the array. Remove is supported. Note that the same iterator instance is returned each
 	 * time this method is called. Use the {@link ArrayIterator} constructor for nested or multithreaded iteration. */
 	public Iterator<T> iterator () {
-		if (iterator == null) iterator = new ArrayIterator(this);
-		iterator.index = 0;
+		if (iterator == null)
+			iterator = new ArrayIterator(this);
+		else
+			iterator.index = 0;
 		return iterator;
 	}
 
@@ -312,7 +331,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public <V> V[] toArray (Class<V> type) {
-		V[] result = (V[])new Object[size];
+		V[] result = (V[])ReflectionCache.newArray(type, size);
 		System.arraycopy(items, 0, result, 0, size);
 		return result;
 	}

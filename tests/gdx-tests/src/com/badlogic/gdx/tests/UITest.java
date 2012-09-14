@@ -17,6 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -31,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -83,6 +85,15 @@ public class UITest extends GdxTest {
 		Button buttonMulti = new TextButton("Multi\nLine\nToggle", skin, "toggle");
 		Button imgButton = new Button(new Image(image), skin);
 		Button imgToggleButton = new Button(new Image(image), skin, "toggle");
+
+		Label myLabel = new Label("this is some text.", skin);
+		myLabel.setWrap(true);
+
+		Table t = new Table();
+		t.row();
+		t.add(myLabel);
+
+		t.layout();
 
 		CheckBox checkBox = new CheckBox("Check me", skin);
 		final Slider slider = new Slider(0, 10, 1, false, skin);
@@ -142,6 +153,18 @@ public class UITest extends GdxTest {
 				Gdx.app.log("UITest", "slider: " + slider.getValue());
 			}
 		});
+
+		iconButton.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				new Dialog("Some Dialog", skin, "dialog") {
+					protected void result (Object object) {
+						System.out.println("Chosen: " + object);
+					}
+				}.text("Are you enjoying this demo?").button("Yes", true).button("No", false).key(Keys.ENTER, true)
+					.key(Keys.ESCAPE, false).show(stage);
+			}
+		});
+
 	}
 
 	@Override

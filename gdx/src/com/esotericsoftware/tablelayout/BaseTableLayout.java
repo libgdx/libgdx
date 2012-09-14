@@ -181,8 +181,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	public void clear () {
 		for (int i = cells.size() - 1; i >= 0; i--) {
 			Object widget = cells.get(i).widget;
-			if (widget == null) continue;
-			toolkit.removeChild(table, (C)widget);
+			if (widget != null) toolkit.removeChild(table, (C)widget);
 		}
 		cells.clear();
 		rows = 0;
@@ -424,20 +423,36 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		return debug;
 	}
 
-	public Value getPadTop () {
+	public Value getPadTopValue () {
 		return padTop;
 	}
 
-	public Value getPadLeft () {
+	public float getPadTop () {
+		return padTop == null ? 0 : padTop.height(this);
+	}
+
+	public Value getPadLeftValue () {
 		return padLeft;
 	}
 
-	public Value getPadBottom () {
+	public float getPadLeft () {
+		return padLeft == null ? 0 : padLeft.width(this);
+	}
+
+	public Value getPadBottomValue () {
 		return padBottom;
 	}
 
-	public Value getPadRight () {
+	public float getPadBottom () {
+		return padBottom == null ? 0 : padBottom.height(this);
+	}
+
+	public Value getPadRightValue () {
 		return padRight;
+	}
+
+	public float getPadRight () {
+		return padRight == null ? 0 : padRight.width(this);
 	}
 
 	public int getAlign () {
@@ -615,8 +630,8 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 					columnPrefWidth[c.column] = uniformPrefWidth;
 				}
 				if (uniformPrefHeight > 0 && c.uniformY != null) {
-					rowMinHeight[c.column] = uniformMinHeight;
-					rowPrefHeight[c.column] = uniformPrefHeight;
+					rowMinHeight[c.row] = uniformMinHeight;
+					rowPrefHeight[c.row] = uniformPrefHeight;
 				}
 				continue outer;
 			}
@@ -764,7 +779,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 			float extraWidth = 0;
 			for (int column = c.column, nn = column + c.colspan; column < nn; column++)
 				extraWidth += columnWeightedWidth[column] - columnWidth[column];
-			extraWidth -= c.computedPadLeft + c.computedPadRight;
+			extraWidth -= Math.max(0, c.computedPadLeft + c.computedPadRight);
 
 			extraWidth /= c.colspan;
 			if (extraWidth > 0) {

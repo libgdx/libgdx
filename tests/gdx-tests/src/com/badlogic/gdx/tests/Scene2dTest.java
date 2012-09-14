@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
@@ -72,6 +73,15 @@ public class Scene2dTest extends GdxTest {
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
+		VerticalGroup g = new VerticalGroup();
+		g.setPosition(100, 100);
+		g.setReverse(true);
+		stage.addActor(g);
+		for (int i = 0; i < 10; i++) {
+			g.addActor(new TextButton("button " + i, skin));
+		}
+		g.pack();
+
 		final TextButton button = new TextButton("Fancy Background", skin);
 
 // button.addListener(new ClickListener() {
@@ -86,7 +96,7 @@ public class Scene2dTest extends GdxTest {
 				return true;
 			}
 
-			public void fling (InputEvent event, float velocityX, float velocityY, int pointer, int button) {
+			public void fling (InputEvent event, float velocityX, float velocityY, int button) {
 				System.out.println("fling " + velocityX + ", " + velocityY);
 			}
 
