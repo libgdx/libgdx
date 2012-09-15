@@ -49,7 +49,7 @@ public class Box2DParticleFactory implements ParticleFactory {
      */
     private final static float EPSILON = 0.001f;
     /**
-     * default visibility to prevent synthetic accesor creation
+     * default visibility to prevent synthetic accessor creation
      */
     private final RayCastCallback rayCallBack = new RayCastCallback() {
         @Override
