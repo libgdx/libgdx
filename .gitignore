@@ -8,6 +8,13 @@
 /backends/gdx-backend-android/bin
 
 /backends/gdx-backend-iosmonotouch/bin
+/backends/gdx-backend-iosmonotouch/libs/gdx-backend-ios.dll
+/backends/gdx-backend-iosmonotouch/libs/gdx.dll
+/backends/gdx-backend-iosmonotouch/mono/mono.userprefs
+/backends/gdx-backend-iosmonotouch/mono/mono/bin
+/backends/gdx-backend-iosmonotouch/mono/mono/obj
+/backends/gdx-backend-iosmonotouch/natives/build
+/backends/gdx-backend-iosmonotouch/target/
 
 /backends/gdx-backend-jogl/bin
 
@@ -43,6 +50,9 @@
 /demos/superjumper/superjumper-html/gwt-unitCache
 /demos/superjumper/superjumper-html/war
 /demos/superjumper/superjumper/bin
+/demos/superjumper/superjumper-ios/superjumper-ios/bin
+/demos/superjumper/superjumper-ios/superjumper-ios/obj
+/demos/superjumper/superjumper-ios/superjumper-ios/target
 
 /demos/vector-pinball/gdx-vectorpinball-android/bin
 /demos/vector-pinball/gdx-vectorpinball-android/gen

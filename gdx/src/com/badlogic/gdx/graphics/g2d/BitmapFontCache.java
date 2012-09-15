@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -32,7 +33,7 @@ public class BitmapFontCache {
 	private int idx;
 	private float x, y;
 	private float color = Color.WHITE.toFloatBits();
-	private final Color tmpColor = new Color(Color.WHITE);
+	private final Color tempColor = new Color(Color.WHITE);
 	private final TextBounds textBounds = new TextBounds();
 	private boolean integer = true;
 
@@ -130,7 +131,7 @@ public class BitmapFontCache {
 	public Color getColor () {
 		float floatBits = color;
 		int intBits = NumberUtils.floatToIntColor(color);
-		Color color = tmpColor;
+		Color color = tempColor;
 		color.r = (intBits & 0xff) / 255f;
 		color.g = ((intBits >>> 8) & 0xff) / 255f;
 		color.b = ((intBits >>> 16) & 0xff) / 255f;
@@ -138,22 +139,30 @@ public class BitmapFontCache {
 		return color;
 	}
 
-	private void reset (int glyphCount) {
+	/** Removes all glyphs in the cache. */
+	public void clear () {
 		x = 0;
 		y = 0;
 		idx = 0;
+	}
 
-		int vertexCount = glyphCount * 20;
-		if (vertices == null || vertices.length < vertexCount) vertices = new float[vertexCount];
+	private void require (int glyphCount) {
+		int vertexCount = idx + glyphCount * 20;
+		if (vertices == null || vertices.length < vertexCount) {
+			float[] newVertices = new float[vertexCount];
+			System.arraycopy(vertices, 0, newVertices, 0, idx);
+			vertices = newVertices;
+		}
 	}
 
 	private float addToCache (CharSequence str, float x, float y, int start, int end) {
 		float startX = x;
 		BitmapFont font = this.font;
 		Glyph lastGlyph = null;
-		if (font.data.scaleX == 1 && font.data.scaleY == 1) {
+		BitmapFontData data = font.data;
+		if (data.scaleX == 1 && data.scaleY == 1) {
 			while (start < end) {
-				lastGlyph = font.data.getGlyph(str.charAt(start++));
+				lastGlyph = data.getGlyph(str.charAt(start++));
 				if (lastGlyph != null) {
 					addGlyph(lastGlyph, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height);
 					x += lastGlyph.xadvance;
@@ -162,7 +171,7 @@ public class BitmapFontCache {
 			}
 			while (start < end) {
 				char ch = str.charAt(start++);
-				Glyph g = font.data.getGlyph(ch);
+				Glyph g = data.getGlyph(ch);
 				if (g != null) {
 					x += lastGlyph.getKerning(ch);
 					lastGlyph = g;
@@ -171,9 +180,9 @@ public class BitmapFontCache {
 				}
 			}
 		} else {
-			float scaleX = font.data.scaleX, scaleY = font.data.scaleY;
+			float scaleX = data.scaleX, scaleY = data.scaleY;
 			while (start < end) {
-				lastGlyph = font.data.getGlyph(str.charAt(start++));
+				lastGlyph = data.getGlyph(str.charAt(start++));
 				if (lastGlyph != null) {
 					addGlyph(lastGlyph, //
 						x + lastGlyph.xoffset * scaleX, //
@@ -186,7 +195,7 @@ public class BitmapFontCache {
 			}
 			while (start < end) {
 				char ch = str.charAt(start++);
-				Glyph g = font.data.getGlyph(ch);
+				Glyph g = data.getGlyph(ch);
 				if (g != null) {
 					x += lastGlyph.getKerning(ch) * scaleX;
 					lastGlyph = g;
@@ -219,6 +228,9 @@ public class BitmapFontCache {
 			y2 = Math.round(y2);
 		}
 
+		int idx = this.idx;
+		this.idx += 20;
+
 		vertices[idx++] = x;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
@@ -244,46 +256,71 @@ public class BitmapFontCache {
 		vertices[idx++] = v;
 	}
 
-	/** Caches a string with the specified position.
-	 * @param x The x position for the left most character.
-	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
-	 * @return The bounds of the cached string (the height is the distance from y to the baseline). */
+	/** Clears any cached glyphs and adds glyphs for the specified text.
+	 * @see #addText(CharSequence, float, float, int, int) */
 	public TextBounds setText (CharSequence str, float x, float y) {
-		return setText(str, x, y, 0, str.length());
+		clear();
+		return addText(str, x, y, 0, str.length());
 	}
 
-	/** Caches a substring with the specified position.
+	/** Clears any cached glyphs and adds glyphs for the specified text.
+	 * @see #addText(CharSequence, float, float, int, int) */
+	public TextBounds setText (CharSequence str, float x, float y, int start, int end) {
+		clear();
+		return addText(str, x, y, start, end);
+	}
+
+	/** Adds glyphs for the specified text.
+	 * @see #addText(CharSequence, float, float, int, int) */
+	public TextBounds addText (CharSequence str, float x, float y) {
+		return addText(str, x, y, 0, str.length());
+	}
+
+	/** Adds glyphs for the the specified text.
 	 * @param x The x position for the left most character.
 	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
 	 * @param start The first character of the string to draw.
 	 * @param end The last character of the string to draw (exclusive).
 	 * @return The bounds of the cached string (the height is the distance from y to the baseline). */
-	public TextBounds setText (CharSequence str, float x, float y, int start, int end) {
-		reset(end - start);
+	public TextBounds addText (CharSequence str, float x, float y, int start, int end) {
+		require(end - start);
 		y += font.data.ascent;
 		textBounds.width = addToCache(str, x, y, start, end);
 		textBounds.height = font.data.capHeight;
 		return textBounds;
 	}
 
-	/** Caches a string, which may contain newlines (\n), with the specified position.
-	 * @param x The x position for the left most character.
-	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
-	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line). */
+	/** Clears any cached glyphs and adds glyphs for the specified text, which may contain newlines (\n).
+	 * @see #addMultiLineText(CharSequence, float, float, float, HAlignment) */
 	public TextBounds setMultiLineText (CharSequence str, float x, float y) {
-		return setMultiLineText(str, x, y, 0, HAlignment.LEFT);
+		clear();
+		return addMultiLineText(str, x, y, 0, HAlignment.LEFT);
 	}
 
-	/** Caches a string, which may contain newlines (\n), with the specified position and alignment. Each line is aligned
-	 * horizontally within a rectangle of the specified width.
+	/** Clears any cached glyphs and adds glyphs for the specified text, which may contain newlines (\n).
+	 * @see #addMultiLineText(CharSequence, float, float, float, HAlignment) */
+	public TextBounds setMultiLineText (CharSequence str, float x, float y, float alignmentWidth, HAlignment alignment) {
+		clear();
+		return addMultiLineText(str, x, y, alignmentWidth, alignment);
+	}
+
+	/** Adds glyphs for the specified text, which may contain newlines (\n).
+	 * @see #addMultiLineText(CharSequence, float, float, float, HAlignment) */
+	public TextBounds addMultiLineText (CharSequence str, float x, float y) {
+		return addMultiLineText(str, x, y, 0, HAlignment.LEFT);
+	}
+
+	/** Adds glyphs for the specified text, which may contain newlines (\n). Each line is aligned horizontally within a rectangle of
+	 * the specified width.
 	 * @param x The x position for the left most character.
 	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
+	 * @param alignment The horizontal alignment of wrapped line.
 	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line). */
-	public TextBounds setMultiLineText (CharSequence str, float x, float y, float alignmentWidth, HAlignment alignment) {
+	public TextBounds addMultiLineText (CharSequence str, float x, float y, float alignmentWidth, HAlignment alignment) {
 		BitmapFont font = this.font;
 
 		int length = str.length();
-		reset(length);
+		require(length);
 
 		y += font.data.ascent;
 		float down = font.data.down;
@@ -311,25 +348,38 @@ public class BitmapFontCache {
 		return textBounds;
 	}
 
-	/** Caches a string, which may contain newlines (\n), with the specified position. Each line is automatically wrapped to keep it
-	 * within a rectangle of the specified width.
-	 * @param x The x position for the left most character.
-	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
-	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line). */
+	/** Clears any cached glyphs and adds glyphs for the specified text, which may contain newlines (\n) and is automatically
+	 * wrapped within the specified width.
+	 * @see #addWrappedText(CharSequence, float, float, float, HAlignment) */
 	public TextBounds setWrappedText (CharSequence str, float x, float y, float wrapWidth) {
-		return setWrappedText(str, x, y, wrapWidth, HAlignment.LEFT);
+		clear();
+		return addWrappedText(str, x, y, wrapWidth, HAlignment.LEFT);
 	}
 
-	/** Caches a string, which may contain newlines (\n), with the specified position. Each line is automatically wrapped to keep it
-	 * within a rectangle of the specified width, and aligned horizontally within that rectangle.
+	/** Clears any cached glyphs and adds glyphs for the specified text, which may contain newlines (\n) and is automatically
+	 * wrapped within the specified width.
+	 * @see #addWrappedText(CharSequence, float, float, float, HAlignment) */
+	public TextBounds setWrappedText (CharSequence str, float x, float y, float wrapWidth, HAlignment alignment) {
+		clear();
+		return addWrappedText(str, x, y, wrapWidth, alignment);
+	}
+
+	/** Adds glyphs for the specified text, which may contain newlines (\n) and is automatically wrapped within the specified width.
+	 * @see #addWrappedText(CharSequence, float, float, float, HAlignment) */
+	public TextBounds addWrappedText (CharSequence str, float x, float y, float wrapWidth) {
+		return addWrappedText(str, x, y, wrapWidth, HAlignment.LEFT);
+	}
+
+	/** Adds glyphs for the specified text, which may contain newlines (\n) and is automatically wrapped within the specified width.
 	 * @param x The x position for the left most character.
 	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
+	 * @param alignment The horizontal alignment of wrapped line.
 	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line). */
-	public TextBounds setWrappedText (CharSequence str, float x, float y, float wrapWidth, HAlignment alignment) {
+	public TextBounds addWrappedText (CharSequence str, float x, float y, float wrapWidth, HAlignment alignment) {
 		BitmapFont font = this.font;
 
 		int length = str.length();
-		reset(length);
+		require(length);
 
 		y += font.data.ascent;
 		float down = font.data.down;

@@ -38,6 +38,13 @@ public class ClickListener extends InputListener {
 	private int tapCount;
 	private long lastTapTime;
 
+	public ClickListener () {
+	}
+
+	public ClickListener (int button) {
+		this.button = button;
+	}
+
 	public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 		if (pressed) return false;
 		if (pointer == 0 && this.button != -1 && button != this.button) return false;

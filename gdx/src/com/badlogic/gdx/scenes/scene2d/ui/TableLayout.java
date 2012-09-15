@@ -71,11 +71,7 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 					if (actor.getWidth() != widgetWidth || actor.getHeight() != widgetHeight) {
 						actor.setWidth(widgetWidth);
 						actor.setHeight(widgetHeight);
-						if (actor instanceof Layout) {
-							Layout layout = (Layout)actor;
-							layout.invalidate();
-							layout.validate();
-						}
+						if (actor instanceof Layout) ((Layout)actor).invalidate();
 					}
 				}
 			}
@@ -98,14 +94,16 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 					if (actor.getWidth() != widgetWidth || actor.getHeight() != widgetHeight) {
 						actor.setWidth(widgetWidth);
 						actor.setHeight(widgetHeight);
-						if (actor instanceof Layout) {
-							Layout layout = (Layout)actor;
-							layout.invalidate();
-							layout.validate();
-						}
+						if (actor instanceof Layout) ((Layout)actor).invalidate();
 					}
 				}
 			}
+		}
+		// Validate children separately from sizing actors to ensure actors without a cell are validated.
+		Array<Actor> children = table.getChildren();
+		for (int i = 0, n = children.size; i < n; i++) {
+			Actor child = children.get(i);
+			if (child instanceof Layout) ((Layout)child).validate();
 		}
 	}
 
