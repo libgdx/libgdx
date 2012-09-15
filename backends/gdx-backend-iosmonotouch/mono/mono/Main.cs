@@ -13,7 +13,6 @@ using java.io;
 using java.nio;
 using System.IO;
 using com.badlogic.gdx.backends.ios;
-using testassembly;
 
 namespace mono
 {
