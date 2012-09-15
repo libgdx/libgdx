@@ -202,13 +202,17 @@ public class BitmapFont implements Disposable {
 	/** Draws a string at the specified position.
 	 * @see BitmapFontCache#addText(CharSequence, float, float, int, int) */
 	public TextBounds draw (SpriteBatch spriteBatch, CharSequence str, float x, float y) {
-		return draw(spriteBatch, str, x, y, 0, str.length());
+		cache.clear();
+		TextBounds bounds = cache.addText(str, x, y, 0, str.length());
+		cache.draw(spriteBatch);
+		return bounds;
 	}
 
 	/** Draws a string at the specified position.
 	 * @see BitmapFontCache#addText(CharSequence, float, float, int, int) */
 	public TextBounds draw (SpriteBatch spriteBatch, CharSequence str, float x, float y, int start, int end) {
-		TextBounds bounds = cache.setText(str, x, y);
+		cache.clear();
+		TextBounds bounds = cache.addText(str, x, y, start, end);
 		cache.draw(spriteBatch);
 		return bounds;
 	}
@@ -216,14 +220,18 @@ public class BitmapFont implements Disposable {
 	/** Draws a string, which may contain newlines (\n), at the specified position.
 	 * @see BitmapFontCache#addMultiLineText(CharSequence, float, float, float, HAlignment) */
 	public TextBounds drawMultiLine (SpriteBatch spriteBatch, CharSequence str, float x, float y) {
-		return drawMultiLine(spriteBatch, str, x, y, 0, HAlignment.LEFT);
+		cache.clear();
+		TextBounds bounds = cache.addMultiLineText(str, x, y, 0, HAlignment.LEFT);
+		cache.draw(spriteBatch);
+		return bounds;
 	}
 
 	/** Draws a string, which may contain newlines (\n), at the specified position.
 	 * @see BitmapFontCache#addMultiLineText(CharSequence, float, float, float, HAlignment) */
 	public TextBounds drawMultiLine (SpriteBatch spriteBatch, CharSequence str, float x, float y, float alignmentWidth,
 		HAlignment alignment) {
-		TextBounds bounds = cache.setMultiLineText(str, x, y, alignmentWidth, alignment);
+		cache.clear();
+		TextBounds bounds = cache.addMultiLineText(str, x, y, alignmentWidth, alignment);
 		cache.draw(spriteBatch);
 		return bounds;
 	}
@@ -232,7 +240,10 @@ public class BitmapFont implements Disposable {
 	 * specified width.
 	 * @see BitmapFontCache#addWrappedText(CharSequence, float, float, float, HAlignment) */
 	public TextBounds drawWrapped (SpriteBatch spriteBatch, CharSequence str, float x, float y, float wrapWidth) {
-		return drawWrapped(spriteBatch, str, x, y, wrapWidth, HAlignment.LEFT);
+		cache.clear();
+		TextBounds bounds = cache.addWrappedText(str, x, y, wrapWidth, HAlignment.LEFT);
+		cache.draw(spriteBatch);
+		return bounds;
 	}
 
 	/** Draws a string, which may contain newlines (\n), with the specified position. Each line is automatically wrapped within the
@@ -240,7 +251,8 @@ public class BitmapFont implements Disposable {
 	 * @see BitmapFontCache#addWrappedText(CharSequence, float, float, float, HAlignment) */
 	public TextBounds drawWrapped (SpriteBatch spriteBatch, CharSequence str, float x, float y, float wrapWidth,
 		HAlignment alignment) {
-		TextBounds bounds = cache.setWrappedText(str, x, y, wrapWidth, alignment);
+		cache.clear();
+		TextBounds bounds = cache.addWrappedText(str, x, y, wrapWidth, alignment);
 		cache.draw(spriteBatch);
 		return bounds;
 	}
