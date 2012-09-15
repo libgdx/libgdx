@@ -36,8 +36,6 @@ namespace mono
 	public class TestListener: com.badlogic.gdx.ApplicationListener {
 		public void create () {
 			Gdx.input.setInputProcessor(new MyInputAdapter());
-			var myClass = new MyClass();
-			myClass.add(10, 20);
 		}
 	
 		public void render () {
