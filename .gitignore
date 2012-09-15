@@ -8,8 +8,9 @@
 /backends/gdx-backend-android/bin
 
 /backends/gdx-backend-iosmonotouch/bin
-/backends/gdx-backend-iosmonotouch/libs/gdx-backend-ios.dll
-/backends/gdx-backend-iosmonotouch/libs/gdx.dll
+/backends/gdx-backend-iosmonotouch/libs/gdx-backend-ios.*
+/backends/gdx-backend-iosmonotouch/libs/gdx.*
+/backends/gdx-backend-iosmonotouch/libs/libgdx.a
 /backends/gdx-backend-iosmonotouch/mono/mono.userprefs
 /backends/gdx-backend-iosmonotouch/mono/mono/bin
 /backends/gdx-backend-iosmonotouch/mono/mono/obj
