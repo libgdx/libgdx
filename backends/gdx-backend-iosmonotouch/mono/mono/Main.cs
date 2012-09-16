@@ -13,6 +13,7 @@ using java.io;
 using java.nio;
 using System.IO;
 using com.badlogic.gdx.backends.ios;
+using com.badlogic.gdx.physics.box2d;
 
 namespace mono
 {
@@ -36,6 +37,7 @@ namespace mono
 	public class TestListener: com.badlogic.gdx.ApplicationListener {
 		public void create () {
 			Gdx.input.setInputProcessor(new MyInputAdapter());
+			World world = new World(new Vector2(0, -10), true);
 		}
 	
 		public void render () {

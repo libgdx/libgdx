@@ -40,6 +40,10 @@
 /demos/invaders/gdx-invaders-html5/gwt-unitCache
 /demos/invaders/gdx-invaders-html5/war
 /demos/invaders/gdx-invaders/bin
+/demos/invaders/gdx-invaders-ios/gdx-invaders-ios/bin
+/demos/invaders/gdx-invaders-ios/gdx-invaders-ios/obj
+/demos/invaders/gdx-invaders-ios/gdx-invaders-ios/target
+/demos/invaders/gdx-invaders-ios/gdx-invaders-ios/invaders.dll
 
 /demos/metagun/metagun-android/bin
 /demos/metagun/metagun-android/gen
@@ -62,6 +66,10 @@
 /demos/vector-pinball/gdx-vectorpinball-html5/gwt-unitCache
 /demos/vector-pinball/gdx-vectorpinball-html5/war
 /demos/vector-pinball/gdx-vectorpinball/bin
+/demos/vector-pinball/gdx-vectorpinball-ios/gdx-vectorpinball-ios/bin
+/demos/vector-pinball/gdx-vectorpinball-ios/gdx-vectorpinball-ios/obj
+/demos/vector-pinball/gdx-vectorpinball-ios/gdx-vectorpinball-ios/target
+/demos/vector-pinball/gdx-vectorpinball-ios/gdx-vectorpinball-ios/vectorpinball.dll
 
 /demos/very-angry-robots/very-angry-robots-android/bin
 /demos/very-angry-robots/very-angry-robots-android/gen
