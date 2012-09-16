@@ -17,13 +17,13 @@
  */
 package com.badlogic.gdx.graphics.g2d.particle;
 
+import java.io.*;
 import java.util.BitSet;
 
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.particle.emitterattributs.*;
 import com.badlogic.gdx.math.MathUtils;
 //TODO - Javadoc.
 //TODO - Add a duplicate emitter button.
@@ -35,7 +35,6 @@ import com.badlogic.gdx.math.MathUtils;
 public class ParticleEmitter implements Cloneable {
 
     private static class StandardParticleFactory implements ParticleFactory {
-
         @Override
         public Particle createParticle(Sprite sprite) {
             return new Particle(sprite);
@@ -61,8 +60,8 @@ public class ParticleEmitter implements Cloneable {
     private ScaledNumericValue gravityValue = new ScaledNumericValue();
     private ScaledNumericValue transparencyValue = new ScaledNumericValue();
     private GradientColorValue tintValue = new GradientColorValue();
-    private RangedNumericValue xOffsetValue = new RangedNumericValue();
-    private RangedNumericValue yOffsetValue = new RangedNumericValue();
+    private RangedNumericValue xOffsetValue = new ScaledNumericValue();
+    private RangedNumericValue yOffsetValue = new ScaledNumericValue();
     private ScaledNumericValue spawnWidthValue = new ScaledNumericValue();
     private ScaledNumericValue spawnHeightValue = new ScaledNumericValue();
     private SpawnShapeValue spawnShapeValue = new SpawnShapeValue();
@@ -90,6 +89,7 @@ public class ParticleEmitter implements Cloneable {
     private boolean aligned;
     private boolean behind;
     private boolean additive = true;
+    
     private final ParticleFactory factory;
 
     public ParticleEmitter() {
@@ -108,19 +108,19 @@ public class ParticleEmitter implements Cloneable {
         n.name = name;
         n.setMaxParticleCount(maxParticleCount);
         n.minParticleCount = minParticleCount;
-        n.delayValue = delayValue.clone();
-        n.durationValue = durationValue.clone();
-        n.emissionValue = emissionValue.clone();
-        n.lifeValue = lifeValue.clone();
-        n.lifeOffsetValue = lifeOffsetValue.clone();
-        n.scaleValue = scaleValue.clone();
-        n.rotationValue = rotationValue.clone();
-        n.velocityValue = velocityValue.clone();
-        n.angleValue = angleValue.clone();
-        n.windValue = windValue.clone();
-        n.gravityValue = gravityValue.clone();
-        n.transparencyValue = transparencyValue.clone();
-        n.tintValue = tintValue.clone();
+        n.delayValue.load(delayValue);
+        n.durationValue.load(durationValue);
+        n.emissionValue.load(emissionValue);
+        n.lifeValue.load(lifeValue);
+        n.lifeOffsetValue.load(lifeOffsetValue);
+        n.scaleValue.load(scaleValue);
+        n.rotationValue.load(rotationValue);
+        n.velocityValue.load(velocityValue);
+        n.angleValue.load(angleValue);
+        n.windValue.load(windValue);
+        n.gravityValue.load(gravityValue);
+        n.transparencyValue.load(transparencyValue);
+        n.tintValue.load(tintValue);
         return n;
     }
 
@@ -160,16 +160,13 @@ public class ParticleEmitter implements Cloneable {
     }
 
     public void update(float delta) {
-        //this hole timeing code does not provide any benefit
-        accumulator += Math.min(delta * 1000, 250);//TODO bullshit to do this
+        accumulator += Math.min(delta * 1000, 250);
         if (accumulator < 1) {
             return;
         }
         int deltaMillis = (int) accumulator;
         accumulator -= deltaMillis;
 
-
-        //
         for (int i = 0; i < maxParticleCount; i++) {
             if (active.get(i) && !updateParticle(particles[i], delta, deltaMillis)) {
                 active.clear(i);
@@ -311,11 +308,11 @@ public class ParticleEmitter implements Cloneable {
     }
 
     private void restart() {
-        delay = delayValue.isActive() ? delayValue.newValue() : 0;
+        delay = delayValue.active ? delayValue.newLowValue() : 0;
         delayTimer = 0;
 
         durationTimer -= duration;
-        duration = durationValue.newValue();
+        duration = durationValue.newLowValue();
 
         emission = (int) emissionValue.newLowValue();
         emissionDiff = (int) emissionValue.newHighValue();
@@ -329,7 +326,7 @@ public class ParticleEmitter implements Cloneable {
             lifeDiff -= life;
         }
 
-        lifeOffset = lifeOffsetValue.isActive() ? (int) lifeOffsetValue.newLowValue() : 0;
+        lifeOffset = lifeOffsetValue.active ? (int) lifeOffsetValue.newLowValue() : 0;
         lifeOffsetDiff = (int) lifeOffsetValue.newHighValue();
         if (!lifeOffsetValue.isRelative()) {
             lifeOffsetDiff -= lifeOffset;
@@ -348,25 +345,25 @@ public class ParticleEmitter implements Cloneable {
         }
 
         updateFlags = 0;
-        if (angleValue.isActive() && angleValue.getTimeLineCount() > 1) {
+        if (angleValue.active && angleValue.timeline.length > 1) {
             updateFlags |= UPDATE_ANGLE;
         }
-        if (velocityValue.isActive() && velocityValue.isActive()) {
+        if (velocityValue.active && velocityValue.active) {
             updateFlags |= UPDATE_VELOCITY;
         }
-        if (scaleValue.getTimeLineCount() > 1) {
+        if (scaleValue.timeline.length > 1) {
             updateFlags |= UPDATE_SCALE;
         }
-        if (rotationValue.isActive() && rotationValue.getTimeLineCount() > 1) {
+        if (rotationValue.active && rotationValue.timeline.length > 1) {
             updateFlags |= UPDATE_ROTATION;
         }
-        if (windValue.isActive()) {
+        if (windValue.active) {
             updateFlags |= UPDATE_WIND;
         }
-        if (gravityValue.isActive()) {
+        if (gravityValue.active) {
             updateFlags |= UPDATE_GRAVITY;
         }
-        if (tintValue.getTimeLineCount() > 1) {
+        if (tintValue.timeline.length > 1) {
             updateFlags |= UPDATE_TINT;
         }
     }
@@ -383,7 +380,7 @@ public class ParticleEmitter implements Cloneable {
 
         particle.currentLife = particle.life = life + (int) (lifeDiff * lifeValue.getScale(percent));
 
-        if (velocityValue.isActive()) {
+        if (velocityValue.active) {
             particle.velocity = velocityValue.newLowValue();
             particle.velocityDiff = velocityValue.newHighValue();
             if (!velocityValue.isRelative()) {
@@ -412,7 +409,7 @@ public class ParticleEmitter implements Cloneable {
         }
         particle.setScale(particle.scale + particle.scaleDiff * scaleValue.getScale(0));
 
-        if (rotationValue.isActive()) {
+        if (rotationValue.active) {
             particle.rotation = rotationValue.newLowValue();
             particle.rotationDiff = rotationValue.newHighValue();
             if (!rotationValue.isRelative()) {
@@ -425,7 +422,7 @@ public class ParticleEmitter implements Cloneable {
             particle.setRotation(rotation);
         }
 
-        if (windValue.isActive()) {
+        if (windValue.active) {
             particle.wind = windValue.newLowValue();
             particle.windDiff = windValue.newHighValue();
             if (!windValue.isRelative()) {
@@ -433,7 +430,7 @@ public class ParticleEmitter implements Cloneable {
             }
         }
 
-        if (gravityValue.isActive()) {
+        if (gravityValue.active) {
             particle.gravity = gravityValue.newLowValue();
             particle.gravityDiff = gravityValue.newHighValue();
             if (!gravityValue.isRelative()) {
@@ -455,14 +452,14 @@ public class ParticleEmitter implements Cloneable {
 
         // Spawn.
         float x = this.x;
-        if (xOffsetValue.isActive()) {
-            x += xOffsetValue.newValue();
+        if (xOffsetValue.active) {
+            x += xOffsetValue.newLowValue();
         }
         float y = this.y;
-        if (yOffsetValue.isActive()) {
-            y += yOffsetValue.newValue();
+        if (yOffsetValue.active) {
+            y += yOffsetValue.newLowValue();
         }
-        switch (spawnShapeValue.getShape()) {
+        switch (spawnShapeValue.shape) {
             case square: {
                 float width = spawnWidth + (spawnWidthDiff * spawnWidthValue.getScale(percent));
                 float height = spawnHeight + (spawnHeightDiff * spawnHeightValue.getScale(percent));
@@ -479,9 +476,9 @@ public class ParticleEmitter implements Cloneable {
                     break;
                 }
                 float scaleY = radiusX / (float) radiusY;
-                if (spawnShapeValue.isEdges()) {
+                if (spawnShapeValue.edges) {
                     float spawnAngle;
-                    switch (spawnShapeValue.getSide()) {
+                    switch (spawnShapeValue.side) {
                         case top:
                             spawnAngle = -MathUtils.random(179f);
                             break;
@@ -543,31 +540,30 @@ public class ParticleEmitter implements Cloneable {
         active.set(index);
     }
 
-    /**
-     * @return false if the particles lifetime exceeded
-     */
     private boolean updateParticle(Particle particle, float delta, int deltaMillis) {
-        particle.currentLife -= deltaMillis;
-        if (particle.currentLife <= 0) {
+        int life = particle.currentLife - deltaMillis;
+        if (life <= 0) {
             return false;
         }
+        particle.currentLife = life;
 
-        float lostLifePercent = 1 - particle.currentLife / (float) particle.life;
+        float percent = 1 - particle.currentLife / (float) particle.life;
+        int updateFlags = this.updateFlags;
 
         if ((updateFlags & UPDATE_SCALE) != 0) {
-            particle.setScale(particle.scale + particle.scaleDiff * scaleValue.getScale(lostLifePercent));
+            particle.setScale(particle.scale + particle.scaleDiff * scaleValue.getScale(percent));
         }
 
         if ((updateFlags & UPDATE_VELOCITY) != 0) {
-            float velocity = (particle.velocity + particle.velocityDiff * velocityValue.getScale(lostLifePercent)) * delta;
+            float velocity = (particle.velocity + particle.velocityDiff * velocityValue.getScale(percent)) * delta;
 
             float velocityX, velocityY;
             if ((updateFlags & UPDATE_ANGLE) != 0) {
-                float angle = particle.angle + particle.angleDiff * angleValue.getScale(lostLifePercent);
+                float angle = particle.angle + particle.angleDiff * angleValue.getScale(percent);
                 velocityX = velocity * MathUtils.cosDeg(angle);
                 velocityY = velocity * MathUtils.sinDeg(angle);
                 if ((updateFlags & UPDATE_ROTATION) != 0) {
-                    float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(lostLifePercent);
+                    float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
                     if (aligned) {
                         rotation += angle;
                     }
@@ -577,7 +573,7 @@ public class ParticleEmitter implements Cloneable {
                 velocityX = velocity * particle.angleCos;
                 velocityY = velocity * particle.angleSin;
                 if (aligned || (updateFlags & UPDATE_ROTATION) != 0) {
-                    float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(lostLifePercent);
+                    float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
                     if (aligned) {
                         rotation += particle.angle;
                     }
@@ -586,28 +582,28 @@ public class ParticleEmitter implements Cloneable {
             }
 
             if ((updateFlags & UPDATE_WIND) != 0) {
-                velocityX += (particle.wind + particle.windDiff * windValue.getScale(lostLifePercent)) * delta;
+                velocityX += (particle.wind + particle.windDiff * windValue.getScale(percent)) * delta;
             }
 
             if ((updateFlags & UPDATE_GRAVITY) != 0) {
-                velocityY += (particle.gravity + particle.gravityDiff * gravityValue.getScale(lostLifePercent)) * delta;
+                velocityY += (particle.gravity + particle.gravityDiff * gravityValue.getScale(percent)) * delta;
             }
 
             particle.translate(velocityX, velocityY);
         } else {
             if ((updateFlags & UPDATE_ROTATION) != 0) {
-                particle.setRotation(particle.rotation + particle.rotationDiff * rotationValue.getScale(lostLifePercent));
+                particle.setRotation(particle.rotation + particle.rotationDiff * rotationValue.getScale(percent));
             }
         }
 
         float[] color;
         if ((updateFlags & UPDATE_TINT) != 0) {
-            color = tintValue.getColor(lostLifePercent);
+            color = tintValue.getColor(percent);
         } else {
             color = particle.tint;
         }
         particle.setColor(color[0], color[1], color[2],
-                          particle.transparency + particle.transparencyDiff * transparencyValue.getScale(lostLifePercent));
+                          particle.transparency + particle.transparencyDiff * transparencyValue.getScale(percent));
 
         return true;
     }
@@ -836,128 +832,563 @@ public class ParticleEmitter implements Cloneable {
             }
         }
     }
-//    public void save(Writer output) throws IOException {
-//        output.write(name + "\n");
-//        output.write("- Delay -\n");
-//        delayValue.save(output);
-//        output.write("- Duration - \n");
-//        durationValue.save(output);
-//        output.write("- Count - \n");
-//        output.write("min: " + minParticleCount + "\n");
-//        output.write("max: " + maxParticleCount + "\n");
-//        output.write("- Emission - \n");
-//        emissionValue.save(output);
-//        output.write("- Life - \n");
-//        lifeValue.save(output);
-//        output.write("- Life Offset - \n");
-//        lifeOffsetValue.save(output);
-//        output.write("- X Offset - \n");
-//        xOffsetValue.save(output);
-//        output.write("- Y Offset - \n");
-//        yOffsetValue.save(output);
-//        output.write("- Spawn Shape - \n");
-//        spawnShapeValue.save(output);
-//        output.write("- Spawn Width - \n");
-//        spawnWidthValue.save(output);
-//        output.write("- Spawn Height - \n");
-//        spawnHeightValue.save(output);
-//        output.write("- Scale - \n");
-//        scaleValue.save(output);
-//        output.write("- Velocity - \n");
-//        velocityValue.save(output);
-//        output.write("- Angle - \n");
-//        angleValue.save(output);
-//        output.write("- Rotation - \n");
-//        rotationValue.save(output);
-//        output.write("- Wind - \n");
-//        windValue.save(output);
-//        output.write("- Gravity - \n");
-//        gravityValue.save(output);
-//        output.write("- Tint - \n");
-//        tintValue.save(output);
-//        output.write("- Transparency - \n");
-//        transparencyValue.save(output);
-//        output.write("- Options - \n");
-//        output.write("attached: " + attached + "\n");
-//        output.write("continuous: " + continuous + "\n");
-//        output.write("aligned: " + aligned + "\n");
-//        output.write("additive: " + additive + "\n");
-//        output.write("behind: " + behind + "\n");
-//    }
-//
-//    public void load(BufferedReader reader) throws IOException {
-//        try {
-//            name = readString(reader, "name");
-//            reader.readLine();
-//            delayValue.load(reader);
-//            reader.readLine();
-//            durationValue.load(reader);
-//            reader.readLine();
-//            setMinParticleCount(readInt(reader, "minParticleCount"));
-//            setMaxParticleCount(readInt(reader, "maxParticleCount"));
-//            reader.readLine();
-//            emissionValue.load(reader);
-//            reader.readLine();
-//            lifeValue.load(reader);
-//            reader.readLine();
-//            lifeOffsetValue.load(reader);
-//            reader.readLine();
-//            xOffsetValue.load(reader);
-//            reader.readLine();
-//            yOffsetValue.load(reader);
-//            reader.readLine();
-//            spawnShapeValue.load(reader);
-//            reader.readLine();
-//            spawnWidthValue.load(reader);
-//            reader.readLine();
-//            spawnHeightValue.load(reader);
-//            reader.readLine();
-//            scaleValue.load(reader);
-//            reader.readLine();
-//            velocityValue.load(reader);
-//            reader.readLine();
-//            angleValue.load(reader);
-//            reader.readLine();
-//            rotationValue.load(reader);
-//            reader.readLine();
-//            windValue.load(reader);
-//            reader.readLine();
-//            gravityValue.load(reader);
-//            reader.readLine();
-//            tintValue.load(reader);
-//            reader.readLine();
-//            transparencyValue.load(reader);
-//            reader.readLine();
-//            attached = readBoolean(reader, "attached");
-//            continuous = readBoolean(reader, "continuous");
-//            aligned = readBoolean(reader, "aligned");
-//            additive = readBoolean(reader, "additive");
-//            behind = readBoolean(reader, "behind");
-//        } catch (RuntimeException ex) {
-//            if (name == null) {
-//                throw ex;
-//            }
-//            throw new RuntimeException("Error parsing emitter: " + name, ex);
-//        }
-//    }
-//
-//    static String readString(BufferedReader reader, String name) throws IOException {
-//        String line = reader.readLine();
-//        if (line == null) {
-//            throw new IOException("Missing value: " + name);
-//        }
-//        return line.substring(line.indexOf(":") + 1).trim();
-//    }
-//
-//    static boolean readBoolean(BufferedReader reader, String name) throws IOException {
-//        return Boolean.parseBoolean(readString(reader, name));
-//    }
-//
-//    static int readInt(BufferedReader reader, String name) throws IOException {
-//        return Integer.parseInt(readString(reader, name));
-//    }
-//
-//    static float readFloat(BufferedReader reader, String name) throws IOException {
-//        return Float.parseFloat(readString(reader, name));
-//    }
+
+    public void save(Writer output) throws IOException {
+        output.write(name + "\n");
+        output.write("- Delay -\n");
+        delayValue.save(output);
+        output.write("- Duration - \n");
+        durationValue.save(output);
+        output.write("- Count - \n");
+        output.write("min: " + minParticleCount + "\n");
+        output.write("max: " + maxParticleCount + "\n");
+        output.write("- Emission - \n");
+        emissionValue.save(output);
+        output.write("- Life - \n");
+        lifeValue.save(output);
+        output.write("- Life Offset - \n");
+        lifeOffsetValue.save(output);
+        output.write("- X Offset - \n");
+        xOffsetValue.save(output);
+        output.write("- Y Offset - \n");
+        yOffsetValue.save(output);
+        output.write("- Spawn Shape - \n");
+        spawnShapeValue.save(output);
+        output.write("- Spawn Width - \n");
+        spawnWidthValue.save(output);
+        output.write("- Spawn Height - \n");
+        spawnHeightValue.save(output);
+        output.write("- Scale - \n");
+        scaleValue.save(output);
+        output.write("- Velocity - \n");
+        velocityValue.save(output);
+        output.write("- Angle - \n");
+        angleValue.save(output);
+        output.write("- Rotation - \n");
+        rotationValue.save(output);
+        output.write("- Wind - \n");
+        windValue.save(output);
+        output.write("- Gravity - \n");
+        gravityValue.save(output);
+        output.write("- Tint - \n");
+        tintValue.save(output);
+        output.write("- Transparency - \n");
+        transparencyValue.save(output);
+        output.write("- Options - \n");
+        output.write("attached: " + attached + "\n");
+        output.write("continuous: " + continuous + "\n");
+        output.write("aligned: " + aligned + "\n");
+        output.write("additive: " + additive + "\n");
+        output.write("behind: " + behind + "\n");
+    }
+
+    public void load(BufferedReader reader) throws IOException {
+        try {
+            name = readString(reader, "name");
+            reader.readLine();
+            delayValue.load(reader);
+            reader.readLine();
+            durationValue.load(reader);
+            reader.readLine();
+            setMinParticleCount(readInt(reader, "minParticleCount"));
+            setMaxParticleCount(readInt(reader, "maxParticleCount"));
+            reader.readLine();
+            emissionValue.load(reader);
+            reader.readLine();
+            lifeValue.load(reader);
+            reader.readLine();
+            lifeOffsetValue.load(reader);
+            reader.readLine();
+            xOffsetValue.load(reader);
+            reader.readLine();
+            yOffsetValue.load(reader);
+            reader.readLine();
+            spawnShapeValue.load(reader);
+            reader.readLine();
+            spawnWidthValue.load(reader);
+            reader.readLine();
+            spawnHeightValue.load(reader);
+            reader.readLine();
+            scaleValue.load(reader);
+            reader.readLine();
+            velocityValue.load(reader);
+            reader.readLine();
+            angleValue.load(reader);
+            reader.readLine();
+            rotationValue.load(reader);
+            reader.readLine();
+            windValue.load(reader);
+            reader.readLine();
+            gravityValue.load(reader);
+            reader.readLine();
+            tintValue.load(reader);
+            reader.readLine();
+            transparencyValue.load(reader);
+            reader.readLine();
+            attached = readBoolean(reader, "attached");
+            continuous = readBoolean(reader, "continuous");
+            aligned = readBoolean(reader, "aligned");
+            additive = readBoolean(reader, "additive");
+            behind = readBoolean(reader, "behind");
+        } catch (RuntimeException ex) {
+            if (name == null) {
+                throw ex;
+            }
+            throw new RuntimeException("Error parsing emitter: " + name, ex);
+        }
+    }
+
+    static String readString(BufferedReader reader, String name) throws IOException {
+        String line = reader.readLine();
+        if (line == null) {
+            throw new IOException("Missing value: " + name);
+        }
+        return line.substring(line.indexOf(":") + 1).trim();
+    }
+
+    static boolean readBoolean(BufferedReader reader, String name) throws IOException {
+        return Boolean.parseBoolean(readString(reader, name));
+    }
+
+    static int readInt(BufferedReader reader, String name) throws IOException {
+        return Integer.parseInt(readString(reader, name));
+    }
+
+    static float readFloat(BufferedReader reader, String name) throws IOException {
+        return Float.parseFloat(readString(reader, name));
+    }
+
+    public static class ParticleValue {
+
+        boolean active;
+        boolean alwaysActive;
+
+        public void setAlwaysActive(boolean alwaysActive) {
+            this.alwaysActive = alwaysActive;
+        }
+
+        public boolean isAlwaysActive() {
+            return alwaysActive;
+        }
+
+        public boolean isActive() {
+            return alwaysActive || active;
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
+        }
+
+        public void save(Writer output) throws IOException {
+            if (!alwaysActive) {
+                output.write("active: " + active + "\n");
+            } else {
+                active = true;
+            }
+        }
+
+        public void load(BufferedReader reader) throws IOException {
+            if (!alwaysActive) {
+                active = readBoolean(reader, "active");
+            } else {
+                active = true;
+            }
+        }
+
+        public void load(ParticleValue value) {
+            active = value.active;
+            alwaysActive = value.alwaysActive;
+        }
+    }
+
+    static public class NumericValue extends ParticleValue {
+
+        private float value;
+
+        public float getValue() {
+            return value;
+        }
+
+        public void setValue(float value) {
+            this.value = value;
+        }
+
+        public void save(Writer output) throws IOException {
+            super.save(output);
+            if (!active) {
+                return;
+            }
+            output.write("value: " + value + "\n");
+        }
+
+        public void load(BufferedReader reader) throws IOException {
+            super.load(reader);
+            if (!active) {
+                return;
+            }
+            value = readFloat(reader, "value");
+        }
+
+        public void load(NumericValue value) {
+            super.load(value);
+            this.value = value.value;
+        }
+    }
+
+    static public class RangedNumericValue extends ParticleValue {
+
+        private float lowMin, lowMax;
+
+        public float newLowValue() {
+            return lowMin + (lowMax - lowMin) * MathUtils.random();
+        }
+
+        public void setLow(float value) {
+            lowMin = value;
+            lowMax = value;
+        }
+
+        public void setLow(float min, float max) {
+            lowMin = min;
+            lowMax = max;
+        }
+
+        public float getLowMin() {
+            return lowMin;
+        }
+
+        public void setLowMin(float lowMin) {
+            this.lowMin = lowMin;
+        }
+
+        public float getLowMax() {
+            return lowMax;
+        }
+
+        public void setLowMax(float lowMax) {
+            this.lowMax = lowMax;
+        }
+
+        public void save(Writer output) throws IOException {
+            super.save(output);
+            if (!active) {
+                return;
+            }
+            output.write("lowMin: " + lowMin + "\n");
+            output.write("lowMax: " + lowMax + "\n");
+        }
+
+        public void load(BufferedReader reader) throws IOException {
+            super.load(reader);
+            if (!active) {
+                return;
+            }
+            lowMin = readFloat(reader, "lowMin");
+            lowMax = readFloat(reader, "lowMax");
+        }
+
+        public void load(RangedNumericValue value) {
+            super.load(value);
+            lowMax = value.lowMax;
+            lowMin = value.lowMin;
+        }
+    }
+
+    static public class ScaledNumericValue extends RangedNumericValue {
+
+        private float[] scaling = {1};
+        float[] timeline = {0};
+        private float highMin, highMax;
+        private boolean relative;
+
+        public float newHighValue() {
+            return highMin + (highMax - highMin) * MathUtils.random();
+        }
+
+        public void setHigh(float value) {
+            highMin = value;
+            highMax = value;
+        }
+
+        public void setHigh(float min, float max) {
+            highMin = min;
+            highMax = max;
+        }
+
+        public float getHighMin() {
+            return highMin;
+        }
+
+        public void setHighMin(float highMin) {
+            this.highMin = highMin;
+        }
+
+        public float getHighMax() {
+            return highMax;
+        }
+
+        public void setHighMax(float highMax) {
+            this.highMax = highMax;
+        }
+
+        public float[] getScaling() {
+            return scaling;
+        }
+
+        public void setScaling(float[] values) {
+            this.scaling = values;
+        }
+
+        public float[] getTimeline() {
+            return timeline;
+        }
+
+        public void setTimeline(float[] timeline) {
+            this.timeline = timeline;
+        }
+
+        public boolean isRelative() {
+            return relative;
+        }
+
+        public void setRelative(boolean relative) {
+            this.relative = relative;
+        }
+
+        public float getScale(float percent) {
+            int endIndex = -1;
+            float[] timeline = this.timeline;
+            int n = timeline.length;
+            for (int i = 1; i < n; i++) {
+                float t = timeline[i];
+                if (t > percent) {
+                    endIndex = i;
+                    break;
+                }
+            }
+            if (endIndex == -1) {
+                return scaling[n - 1];
+            }
+            float[] scaling = this.scaling;
+            int startIndex = endIndex - 1;
+            float startValue = scaling[startIndex];
+            float startTime = timeline[startIndex];
+            return startValue + (scaling[endIndex] - startValue) * ((percent - startTime) / (timeline[endIndex] - startTime));
+        }
+
+        public void save(Writer output) throws IOException {
+            super.save(output);
+            if (!active) {
+                return;
+            }
+            output.write("highMin: " + highMin + "\n");
+            output.write("highMax: " + highMax + "\n");
+            output.write("relative: " + relative + "\n");
+            output.write("scalingCount: " + scaling.length + "\n");
+            for (int i = 0; i < scaling.length; i++) {
+                output.write("scaling" + i + ": " + scaling[i] + "\n");
+            }
+            output.write("timelineCount: " + timeline.length + "\n");
+            for (int i = 0; i < timeline.length; i++) {
+                output.write("timeline" + i + ": " + timeline[i] + "\n");
+            }
+        }
+
+        public void load(BufferedReader reader) throws IOException {
+            super.load(reader);
+            if (!active) {
+                return;
+            }
+            highMin = readFloat(reader, "highMin");
+            highMax = readFloat(reader, "highMax");
+            relative = readBoolean(reader, "relative");
+            scaling = new float[readInt(reader, "scalingCount")];
+            for (int i = 0; i < scaling.length; i++) {
+                scaling[i] = readFloat(reader, "scaling" + i);
+            }
+            timeline = new float[readInt(reader, "timelineCount")];
+            for (int i = 0; i < timeline.length; i++) {
+                timeline[i] = readFloat(reader, "timeline" + i);
+            }
+        }
+
+        public void load(ScaledNumericValue value) {
+            super.load(value);
+            highMax = value.highMax;
+            highMin = value.highMin;
+            scaling = new float[value.scaling.length];
+            System.arraycopy(value.scaling, 0, scaling, 0, scaling.length);
+            timeline = new float[value.timeline.length];
+            System.arraycopy(value.timeline, 0, timeline, 0, timeline.length);
+            relative = value.relative;
+        }
+    }
+
+    static public class GradientColorValue extends ParticleValue {
+
+        static private float[] temp = new float[4];
+        private float[] colors = {1, 1, 1};
+        float[] timeline = {0};
+
+        public GradientColorValue() {
+            alwaysActive = true;
+        }
+
+        public float[] getTimeline() {
+            return timeline;
+        }
+
+        public void setTimeline(float[] timeline) {
+            this.timeline = timeline;
+        }
+
+        public float[] getColors() {
+            return colors;
+        }
+
+        public void setColors(float[] colors) {
+            this.colors = colors;
+        }
+
+        public float[] getColor(float percent) {
+            int startIndex = 0, endIndex = -1;
+            float[] timeline = this.timeline;
+            int n = timeline.length;
+            for (int i = 1; i < n; i++) {
+                float t = timeline[i];
+                if (t > percent) {
+                    endIndex = i;
+                    break;
+                }
+                startIndex = i;
+            }
+            float startTime = timeline[startIndex];
+            startIndex *= 3;
+            float r1 = colors[startIndex];
+            float g1 = colors[startIndex + 1];
+            float b1 = colors[startIndex + 2];
+            if (endIndex == -1) {
+                temp[0] = r1;
+                temp[1] = g1;
+                temp[2] = b1;
+                return temp;
+            }
+            float factor = (percent - startTime) / (timeline[endIndex] - startTime);
+            endIndex *= 3;
+            temp[0] = r1 + (colors[endIndex] - r1) * factor;
+            temp[1] = g1 + (colors[endIndex + 1] - g1) * factor;
+            temp[2] = b1 + (colors[endIndex + 2] - b1) * factor;
+            return temp;
+        }
+
+        public void save(Writer output) throws IOException {
+            super.save(output);
+            if (!active) {
+                return;
+            }
+            output.write("colorsCount: " + colors.length + "\n");
+            for (int i = 0; i < colors.length; i++) {
+                output.write("colors" + i + ": " + colors[i] + "\n");
+            }
+            output.write("timelineCount: " + timeline.length + "\n");
+            for (int i = 0; i < timeline.length; i++) {
+                output.write("timeline" + i + ": " + timeline[i] + "\n");
+            }
+        }
+
+        public void load(BufferedReader reader) throws IOException {
+            super.load(reader);
+            if (!active) {
+                return;
+            }
+            colors = new float[readInt(reader, "colorsCount")];
+            for (int i = 0; i < colors.length; i++) {
+                colors[i] = readFloat(reader, "colors" + i);
+            }
+            timeline = new float[readInt(reader, "timelineCount")];
+            for (int i = 0; i < timeline.length; i++) {
+                timeline[i] = readFloat(reader, "timeline" + i);
+            }
+        }
+
+        public void load(GradientColorValue value) {
+            super.load(value);
+            colors = new float[value.colors.length];
+            System.arraycopy(value.colors, 0, colors, 0, colors.length);
+            timeline = new float[value.timeline.length];
+            System.arraycopy(value.timeline, 0, timeline, 0, timeline.length);
+        }
+    }
+
+    static public class SpawnShapeValue extends ParticleValue {
+
+        SpawnShape shape = SpawnShape.point;
+        boolean edges;
+        SpawnEllipseSide side = SpawnEllipseSide.both;
+
+        public SpawnShape getShape() {
+            return shape;
+        }
+
+        public void setShape(SpawnShape shape) {
+            this.shape = shape;
+        }
+
+        public boolean isEdges() {
+            return edges;
+        }
+
+        public void setEdges(boolean edges) {
+            this.edges = edges;
+        }
+
+        public SpawnEllipseSide getSide() {
+            return side;
+        }
+
+        public void setSide(SpawnEllipseSide side) {
+            this.side = side;
+        }
+
+        public void save(Writer output) throws IOException {
+            super.save(output);
+            if (!active) {
+                return;
+            }
+            output.write("shape: " + shape + "\n");
+            if (shape == SpawnShape.ellipse) {
+                output.write("edges: " + edges + "\n");
+                output.write("side: " + side + "\n");
+            }
+        }
+
+        public void load(BufferedReader reader) throws IOException {
+            super.load(reader);
+            if (!active) {
+                return;
+            }
+            shape = SpawnShape.valueOf(readString(reader, "shape"));
+            if (shape == SpawnShape.ellipse) {
+                edges = readBoolean(reader, "edges");
+                side = SpawnEllipseSide.valueOf(readString(reader, "side"));
+            }
+        }
+
+        public void load(SpawnShapeValue value) {
+            super.load(value);
+            shape = value.shape;
+            edges = value.edges;
+            side = value.side;
+        }
+    }
+
+    static public enum SpawnShape {
+
+        point, line, square, ellipse
+    }
+
+    static public enum SpawnEllipseSide {
+
+        both, top, bottom
+    }
 }
