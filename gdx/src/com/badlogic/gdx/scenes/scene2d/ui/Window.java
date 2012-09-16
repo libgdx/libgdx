@@ -90,7 +90,7 @@ public class Window extends Table {
 				return isModal;
 			}
 
-			public boolean scrolled (InputEvent event, int amount) {
+			public boolean scrolled (InputEvent event, float x, float y, int amount) {
 				return isModal;
 			}
 

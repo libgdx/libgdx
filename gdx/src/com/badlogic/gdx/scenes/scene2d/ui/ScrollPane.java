@@ -211,7 +211,7 @@ public class ScrollPane extends WidgetGroup {
 		addListener(gestureListener);
 
 		addListener(new InputListener() {
-			public boolean scrolled (InputEvent event, int amount) {
+			public boolean scrolled (InputEvent event, float x, float y, int amount) {
 				resetFade();
 				if (scrollY)
 					setScrollY(amountY + Math.max(areaHeight * 0.9f, maxY * 0.1f) / 4 * amount);

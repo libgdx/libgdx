@@ -348,10 +348,15 @@ public class Stage extends InputAdapter implements Disposable {
 	 * event. This event only occurs on the desktop. */
 	public boolean scrolled (int amount) {
 		if (scrollFocus == null) return false;
+
+		screenToStageCoordinates(stageCoords.set(mouseScreenX, mouseScreenY));
+
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setStage(this);
 		event.setType(InputEvent.Type.scrolled);
 		event.setScrollAmount(amount);
+		event.setStageX(stageCoords.x);
+		event.setStageY(stageCoords.y);
 		scrollFocus.fire(event);
 		boolean handled = event.isHandled();
 		Pools.free(event);

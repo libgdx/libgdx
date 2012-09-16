@@ -29,6 +29,7 @@ public class DragListener extends InputListener {
 	private int pressedPointer = -1;
 	private int button;
 	private boolean dragging;
+	private float deltaX, deltaY;
 
 	public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 		if (pressedPointer != -1) return false;
@@ -44,8 +45,16 @@ public class DragListener extends InputListener {
 		if (!dragging && (Math.abs(touchDownX - x) > tapSquareSize || Math.abs(touchDownY - y) > tapSquareSize)) {
 			dragging = true;
 			dragStart(event, x, y, pointer);
+			deltaX = x;
+			deltaY = y;
 		}
-		if (dragging) drag(event, x, y, pointer);
+		if (dragging) {
+			deltaX -= x;
+			deltaY -= y;
+			drag(event, x, y, pointer);
+			deltaX = x;
+			deltaY = y;
+		}
 	}
 
 	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -84,6 +93,16 @@ public class DragListener extends InputListener {
 
 	public float getTouchDownY () {
 		return touchDownY;
+	}
+
+	/** Returns the amount on the x axis that the touch has been dragged since the last drag event. */
+	public float getDeltaX () {
+		return deltaX;
+	}
+
+	/** Returns the amount on the y axis that the touch has been dragged since the last drag event. */
+	public float getDeltaY () {
+		return deltaY;
 	}
 
 	public int getButton () {
