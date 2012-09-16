@@ -13,7 +13,8 @@ namespace superjumperios
 	{
 		[Register ("AppDelegate")]
 		public partial class AppDelegate : IOSApplication {
-			public AppDelegate(): base (new SuperJumper()) {
+			public AppDelegate(): base(new SuperJumper(), new IOSApplicationConfiguration()) {
+
 			}
 		}
 		

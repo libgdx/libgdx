@@ -39,9 +39,10 @@ namespace mono
 		}
 	
 		public void render () {
-			Gdx.app.log ("Accel", "" + Gdx.input.getAccelerometerX() + ", " +
-			                      Gdx.input.getAccelerometerY() + ", " +
-			             Gdx.input.getAccelerometerZ());
+			if(Gdx.input.justTouched()) {
+				Gdx.app.log ("Touch", "just touched");
+			}
+
 		}
 		
 		public void dispose () {
