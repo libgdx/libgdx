@@ -16,6 +16,10 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.esotericsoftware.tablelayout.BaseTableLayout;
+import com.esotericsoftware.tablelayout.Cell;
+import com.esotericsoftware.tablelayout.Toolkit;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -28,9 +32,6 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.TableToolkit.DebugRect;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
-import com.esotericsoftware.tablelayout.BaseTableLayout;
-import com.esotericsoftware.tablelayout.Cell;
-import com.esotericsoftware.tablelayout.Toolkit;
 
 /** The libgdx implementation to apply a table layout.
  * @author Nathan Sweet */
@@ -64,7 +65,15 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 				c.setWidgetWidth(widgetWidth);
 				c.setWidgetHeight(widgetHeight);
 				Actor actor = (Actor)c.getWidget();
-				if (actor != null) actor.setBounds(widgetX, widgetY, widgetWidth, widgetHeight);
+				if (actor != null) {
+					actor.setX(widgetX);
+					actor.setY(widgetY);
+					if (actor.getWidth() != widgetWidth || actor.getHeight() != widgetHeight) {
+						actor.setWidth(widgetWidth);
+						actor.setHeight(widgetHeight);
+						if (actor instanceof Layout) ((Layout)actor).invalidate();
+					}
+				}
 			}
 		} else {
 			for (int i = 0, n = cells.size(); i < n; i++) {
@@ -79,17 +88,22 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 				c.setWidgetWidth(widgetWidth);
 				c.setWidgetHeight(widgetHeight);
 				Actor actor = (Actor)c.getWidget();
-				if (actor != null) actor.setBounds(widgetX, widgetY, widgetWidth, widgetHeight);
+				if (actor != null) {
+					actor.setX(widgetX);
+					actor.setY(widgetY);
+					if (actor.getWidth() != widgetWidth || actor.getHeight() != widgetHeight) {
+						actor.setWidth(widgetWidth);
+						actor.setHeight(widgetHeight);
+						if (actor instanceof Layout) ((Layout)actor).invalidate();
+					}
+				}
 			}
 		}
+		// Validate children separately from sizing actors to ensure actors without a cell are validated.
 		Array<Actor> children = table.getChildren();
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
-			if (child instanceof Layout) {
-				Layout layout = (Layout)child;
-				layout.invalidate();
-				layout.validate();
-			}
+			if (child instanceof Layout) ((Layout)child).validate();
 		}
 	}
 

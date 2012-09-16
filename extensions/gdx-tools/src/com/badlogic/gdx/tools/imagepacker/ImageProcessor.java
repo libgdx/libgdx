@@ -172,6 +172,11 @@ public class ImageProcessor {
 		return new Rect(source, left, top, newWidth, newHeight);
 	}
 
+	private String splitError (int x, int y, int[] rgba, String name) {
+		throw new RuntimeException("Invalid " + name + " ninepatch split pixel at " + x + ", " + y + ", rgba: " + rgba[0] + ", "
+			+ rgba[1] + ", " + rgba[2] + ", " + rgba[3]);
+	}
+
 	/** Returns the splits, or null if the image had no splits or the splits were only a single region. Splits are an int[4] that
 	 * has left, right, top, bottom. */
 	private int[] getSplits (BufferedImage image, String name) {
@@ -182,8 +187,7 @@ public class ImageProcessor {
 		for (int x = 1; x < raster.getWidth() - 1; x++) {
 			raster.getPixel(x, 0, rgba);
 			if (rgba[3] == 0) continue;
-			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
-				throw new RuntimeException("Invalid ninepatch splits pixel:" + x + ",0: " + name);
+			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255) splitError(x, 0, rgba, name);
 			startX = x;
 			break;
 		}
@@ -191,20 +195,18 @@ public class ImageProcessor {
 		for (endX = startX; endX < raster.getWidth() - 1; endX++) {
 			raster.getPixel(endX, 0, rgba);
 			if (rgba[3] == 0) break;
-			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
-				throw new RuntimeException("Invalid ninepatch splits pixel " + endX + ",0: " + name);
+			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255) splitError(endX, 0, rgba, name);
 		}
 		for (int x = endX + 1; x < raster.getWidth() - 1; x++) {
 			raster.getPixel(x, 0, rgba);
-			if (rgba[3] != 0) throw new RuntimeException("Invalid ninepatch splits pixel " + x + ",0: " + name);
+			if (rgba[3] != 0) splitError(x, 0, rgba, name);
 		}
 
 		int startY = 1;
 		for (int y = 1; y < raster.getHeight() - 1; y++) {
 			raster.getPixel(0, y, rgba);
 			if (rgba[3] == 0) continue;
-			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
-				throw new RuntimeException("Invalid ninepatch splits pixel: 0," + y + ": " + name);
+			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255) splitError(0, y, rgba, name);
 			startY = y;
 			break;
 		}
@@ -212,12 +214,11 @@ public class ImageProcessor {
 		for (endY = startY; endY < raster.getHeight() - 1; endY++) {
 			raster.getPixel(0, endY, rgba);
 			if (rgba[3] == 0) break;
-			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
-				throw new RuntimeException("Invalid ninepatch splits pixel 0," + endY + ": " + name);
+			if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255) splitError(0, endY, rgba, name);
 		}
 		for (int y = endY + 1; y < raster.getHeight() - 1; y++) {
 			raster.getPixel(0, y, rgba);
-			if (rgba[3] != 0) throw new RuntimeException("Invalid ninepatch splits pixel 0," + y + ": " + name);
+			if (rgba[3] != 0) splitError(0, y, rgba, name);
 		}
 
 		// No splits, or all splits.

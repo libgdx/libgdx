@@ -40,11 +40,12 @@ public class Label extends Widget {
 	private final TextBounds bounds = new TextBounds();
 	private final StringBuilder text = new StringBuilder();
 	private BitmapFontCache cache;
-	private float prefWidth, prefHeight;
 	private int labelAlign = Align.left;
 	private HAlignment lineAlign = HAlignment.LEFT;
 	private boolean wrap;
 	private float lastPrefHeight;
+	private boolean sizeInvalid = true;
+	private float fontScaleX = 1, fontScaleY = 1;
 
 	public Label (CharSequence text, Skin skin) {
 		this(text, skin.get(LabelStyle.class));
@@ -78,7 +79,6 @@ public class Label extends Widget {
 		if (style.font == null) throw new IllegalArgumentException("Missing LabelStyle font.");
 		this.style = style;
 		cache = new BitmapFontCache(style.font, style.font.usesIntegerPositions());
-		computeBounds();
 		invalidateHierarchy();
 	}
 
@@ -100,7 +100,6 @@ public class Label extends Widget {
 			text.setLength(0);
 			text.append(newText);
 		}
-		computeBounds();
 		invalidateHierarchy();
 	}
 
@@ -117,7 +116,91 @@ public class Label extends Widget {
 		return text;
 	}
 
+	public void invalidate () {
+		super.invalidate();
+		sizeInvalid = true;
+	}
+
+	private void computeSize () {
+		sizeInvalid = false;
+		if (wrap)
+			bounds.set(cache.getFont().getWrappedBounds(text, getWidth()));
+		else
+			bounds.set(cache.getFont().getMultiLineBounds(text));
+		bounds.width *= fontScaleX;
+		bounds.height *= fontScaleY;
+	}
+
+	public void layout () {
+		if (sizeInvalid) computeSize();
+
+		if (wrap) {
+			float prefHeight = getPrefHeight();
+			if (prefHeight != lastPrefHeight) {
+				lastPrefHeight = prefHeight;
+				invalidateHierarchy();
+			}
+		}
+
+		BitmapFont font = cache.getFont();
+		float oldScaleX = font.getScaleX();
+		float oldScaleY = font.getScaleY();
+		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(fontScaleX, fontScaleY);
+
+		float height = getHeight();
+
+		float y;
+		if ((labelAlign & Align.top) != 0) {
+			y = cache.getFont().isFlipped() ? 0 : height - bounds.height;
+			y += style.font.getDescent();
+		} else if ((labelAlign & Align.bottom) != 0) {
+			y = cache.getFont().isFlipped() ? height - bounds.height : 0;
+			y -= style.font.getDescent();
+		} else
+			y = (int)((height - bounds.height) / 2);
+		if (!cache.getFont().isFlipped()) y += bounds.height;
+
+		float x;
+		if ((labelAlign & Align.left) != 0)
+			x = 0;
+		else if ((labelAlign & Align.right) != 0) {
+			x = getWidth() - bounds.width;
+		} else
+			x = (int)((getWidth() - bounds.width) / 2);
+
+		if (wrap)
+			cache.setWrappedText(text, x, y, bounds.width, lineAlign);
+		else
+			cache.setMultiLineText(text, x, y, bounds.width, lineAlign);
+
+		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(oldScaleX, oldScaleY);
+	}
+
+	public void draw (SpriteBatch batch, float parentAlpha) {
+		validate();
+		Color color = getColor();
+		if (style.background != null) {
+			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
+		}
+		cache.setColor(style.fontColor == null ? color : Color.tmp.set(color).mul(style.fontColor));
+		cache.setPosition(getX(), getY());
+		cache.draw(batch, color.a * parentAlpha);
+	}
+
+	public float getPrefWidth () {
+		if (wrap) return 0;
+		if (sizeInvalid) computeSize();
+		return bounds.width;
+	}
+
+	public float getPrefHeight () {
+		if (sizeInvalid) computeSize();
+		return bounds.height - style.font.getDescent() * 2;
+	}
+
 	public TextBounds getTextBounds () {
+		if (sizeInvalid) computeSize();
 		return bounds;
 	}
 
@@ -126,7 +209,6 @@ public class Label extends Widget {
 	 * that the something external will set the width of the label. Default is false. */
 	public void setWrap (boolean wrap) {
 		this.wrap = wrap;
-		computeBounds();
 		invalidateHierarchy();
 	}
 
@@ -152,93 +234,34 @@ public class Label extends Widget {
 		invalidate();
 	}
 
-	private void computeBounds () {
-		if (wrap)
-			bounds.set(cache.getFont().getWrappedBounds(text, getWidth()));
-		else
-			bounds.set(cache.getFont().getMultiLineBounds(text));
+	public void setFontScale (float fontScale) {
+		this.fontScaleX = fontScale;
+		this.fontScaleY = fontScale;
+		invalidateHierarchy();
 	}
 
-	@Override
-	public void layout () {
-		computeBounds();
-
-		if (wrap) {
-			float prefHeight = getPrefHeight();
-			if (prefHeight != lastPrefHeight) {
-				lastPrefHeight = prefHeight;
-				invalidateHierarchy();
-			}
-		}
-
-		float height = getHeight();
-
-		float y;
-		if ((labelAlign & Align.top) != 0) {
-			y = cache.getFont().isFlipped() ? 0 : height - bounds.height;
-			y += style.font.getDescent();
-		} else if ((labelAlign & Align.bottom) != 0) {
-			y = cache.getFont().isFlipped() ? height - bounds.height : 0;
-			y -= style.font.getDescent();
-		} else
-			y = (height - bounds.height) / 2;
-		if (!cache.getFont().isFlipped()) y += bounds.height;
-
-		float x;
-		if ((labelAlign & Align.left) != 0)
-			x = 0;
-		else if ((labelAlign & Align.right) != 0) {
-			x = getWidth() - bounds.width;
-		} else
-			x = (getWidth() - bounds.width) / 2;
-
-		if (wrap)
-			cache.setWrappedText(text, x, y, bounds.width, lineAlign);
-		else
-			cache.setMultiLineText(text, x, y, bounds.width, lineAlign);
+	public void setFontScale (float fontScaleX, float fontScaleY) {
+		this.fontScaleX = fontScaleX;
+		this.fontScaleY = fontScaleY;
+		invalidateHierarchy();
 	}
 
-	@Override
-	public void draw (SpriteBatch batch, float parentAlpha) {
-		validate();
-		Color color = getColor();
-		if (style.background != null) {
-			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
-		}
-		cache.setColor(style.fontColor == null ? color : Color.tmp.set(color).mul(style.fontColor));
-		cache.setPosition(getX(), getY());
-		float scaleX = getScaleX();
-		float scaleY = getScaleY();
-		float rotation = getRotation();
-		if (scaleX != 1 || scaleY != 1 || rotation != 0) {
-			Matrix4 transform = batch.getTransformMatrix();
-			batch.end();
-			float x = getOriginX();
-			float y = getOriginY();
-			transform.trn(x, y, 0);
-			if (rotation != 0) transform.rotate(0, 0, 1, rotation);
-			if (scaleX != 1 || scaleY != 1) transform.scale(scaleX, scaleY, 1);
-			transform.translate(-x, -y, 0);
-			batch.begin();
-			cache.draw(batch, color.a * parentAlpha);
-			batch.end();
-			transform.translate(x, y, 0);
-			if (scaleX != 1 || scaleY != 1) transform.scale(1 / scaleX, 1 / scaleY, 1);
-			if (rotation != 0) transform.rotate(0, 0, 1, -rotation);
-			transform.trn(-x, -y, 0);
-			batch.begin();
-		} else
-			cache.draw(batch, color.a * parentAlpha);
+	public float getFontScaleX () {
+		return fontScaleX;
 	}
 
-	public float getPrefWidth () {
-		if (wrap) return 0;
-		return bounds.width;
+	public void setFontScaleX (float fontScaleX) {
+		this.fontScaleX = fontScaleX;
+		invalidateHierarchy();
 	}
 
-	public float getPrefHeight () {
-		return bounds.height - style.font.getDescent() * 2;
+	public float getFontScaleY () {
+		return fontScaleY;
+	}
+
+	public void setFontScaleY (float fontScaleY) {
+		this.fontScaleY = fontScaleY;
+		invalidateHierarchy();
 	}
 
 	/** The style for a label, see {@link Label}.

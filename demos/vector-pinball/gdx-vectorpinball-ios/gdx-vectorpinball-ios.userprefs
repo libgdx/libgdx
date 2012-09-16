@@ -1,0 +1,15 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="../../../../ikvm/ikvm-monotouch/runtime/TypeWrapper.cs">
+    <Files>
+      <File FileName="../../superjumper/superjumper-ios/superjumper-ios/Main.cs" Line="27" Column="1" />
+      <File FileName="gdx-vectorpinball-ios/Main.cs" Line="10" Column="17" />
+      <File FileName="../../../backends/gdx-backend-iosmonotouch/mono/mono/Main.cs" Line="38" Column="26" />
+      <File FileName="../../../../ikvm/ikvm-monotouch/runtime/TypeWrapper.cs" Line="1893" Column="3" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

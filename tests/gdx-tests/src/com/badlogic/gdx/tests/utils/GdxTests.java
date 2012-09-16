@@ -44,7 +44,7 @@ public class GdxTests {
 	public static final Class[] tests = {AnimationTest.class, AccelerometerTest.class, ActionTest.class, ActionSequenceTest.class,
 		GroupTest.class, AlphaTest.class, AtlasIssueTest.class, AssetManagerTest.class, FilterPerformanceTest.class,
 		AudioDeviceTest.class, AudioRecorderTest.class, BitmapFontAlignmentTest.class, BitmapFontFlipTest.class,
-		GroupCullingTest.class, GestureDetectorTest.class, LabelTest.class, BitmapFontTest.class, BlitTest.class, TableTest.class,
+		GroupCullingTest.class, GestureDetectorTest.class, LabelTest.class, BitmapFontMetricsTest.class, BlitTest.class, TableTest.class,
 		BobTest.class, ImageScaleTest.class, TableLayoutTest.class, Box2DTest.class, InterpolationTest.class, TouchpadTest.class,
 		Box2DTestCollection.class, BufferUtilsTest.class, ImageTest.class, CompassTest.class, ComplexActionTest.class,
 		CullTest.class, DeltaTimeTest.class, EdgeDetectionTest.class, ETC1Test.class, ExitTest.class, FilesTest.class,
@@ -69,7 +69,7 @@ public class GdxTests {
 		SimpleVertexShader.class, ShapeRendererTest.class, MoveSpriteExample.class, SoundTouchTest.class, Mpg123Test.class,
 		WavTest.class, TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, FreeTypeTest.class, YDownTest.class,
-		ScreenCaptureTest.class, InternationalFontsTest.class};
+		ScreenCaptureTest.class, InternationalFontsTest.class, BitmapFontTest.class, LabelScaleTest.class};
 
 	public static String[] getNames () {
 		List<String> names = new ArrayList<String>();

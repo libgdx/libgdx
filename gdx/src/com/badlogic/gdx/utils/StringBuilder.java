@@ -102,7 +102,7 @@ public class StringBuilder implements Appendable, CharSequence {
 
 	final void append0 (char[] value) {
 		int newSize = length + value.length;
-		if (newSize > value.length) {
+		if (newSize > chars.length) {
 			enlargeBuffer(newSize);
 		}
 		System.arraycopy(value, 0, value, length, value.length);
@@ -119,7 +119,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 
 		int newSize = this.length + length;
-		if (newSize > value.length) {
+		if (newSize > chars.length) {
 			enlargeBuffer(newSize);
 		}
 		System.arraycopy(value, offset, chars, this.length, length);

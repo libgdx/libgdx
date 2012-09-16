@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
@@ -240,6 +241,11 @@ public class TileMapRenderer implements Disposable {
 		}
 	}
 
+	private static final int FLAG_FLIP_X = 0x80000000;
+	private static final int FLAG_FLIP_Y = 0x40000000;
+	private static final int FLAG_ROTATE = 0x20000000;		
+	private static final int MASK_CLEAR  = 0xE0000000;
+	
 	private int addBlock (int[][] layer, int blockRow, int blockCol, boolean blended) {
 		cache.beginCache();
 
@@ -251,20 +257,81 @@ public class TileMapRenderer implements Disposable {
 		for (int row = firstRow; row < lastRow && row < layer.length; row++) {
 			for (int col = firstCol; col < lastCol && col < layer[row].length; col++) {
 				int tile = layer[row][col];
+				
+				boolean flipX = ((tile & FLAG_FLIP_X) != 0);
+				boolean flipY = ((tile & FLAG_FLIP_Y) != 0);
+				boolean rotate = ((tile & FLAG_ROTATE) != 0);
+				
+				tile = tile & ~MASK_CLEAR;
+				
 				if (tile != 0) {
 					if (blended == blendedTiles.contains(tile)) {
 						TextureRegion reg = atlas.getRegion(tile);
 						if (reg != null) {
-							if (!isSimpleTileAtlas) {
-								AtlasRegion region = (AtlasRegion)reg;
-								cache.add(region, col * unitsPerTileX, (layer.length - row - 1) * unitsPerTileY, (float)region.offsetX
-									* unitsPerTileX / tileWidth, (float)(region.offsetY) * unitsPerTileY / (float)tileHeight,
-									region.packedWidth, region.packedHeight, unitsPerTileX / (float)tileWidth, unitsPerTileY
-										/ (float)tileHeight, (region.rotate) ? 90 : 0);
+							
+							float x = col * unitsPerTileX;
+							float y = (layer.length - row - 1) * unitsPerTileY;
+							float width = reg.getRegionWidth();
+							float height = reg.getRegionHeight();							
+							float originX = width * 0.5f;
+							float originY = height * 0.5f;
+							float scaleX = unitsPerTileX / tileWidth;
+							float scaleY = unitsPerTileY / tileHeight;
+							float rotation = 0;
+							int sourceX = reg.getRegionX();
+							int sourceY = reg.getRegionY();
+							int sourceWidth = reg.getRegionWidth();
+							int sourceHeight = reg.getRegionHeight();
+							
+							if (rotate) {
+								if (flipX && flipY) {
+									rotation = -90;
+									sourceX += sourceWidth;
+									sourceWidth = -sourceWidth;									
+								}
+								else
+								if (flipX && !flipY) {
+									rotation = -90;
+								}
+								else
+								if (flipY && !flipX) {
+									rotation = +90;
+								}
+								else
+								if (!flipY && !flipX) {
+									rotation = -90;
+									sourceY += sourceHeight;
+									sourceHeight = -sourceHeight;									
+								}
 							} else {
-								cache.add(reg, col * unitsPerTileX, (layer.length - row - 1) * unitsPerTileY, 0, 0, reg.getRegionWidth(),
-									reg.getRegionHeight(), unitsPerTileX / tileWidth, unitsPerTileY / tileHeight, 0);
+								if (flipX) {
+									sourceX += sourceWidth;
+									sourceWidth = -sourceWidth;
+								}
+								if (flipY) {
+									sourceY += sourceHeight;
+									sourceHeight = -sourceHeight;
+								}
 							}
+							
+							cache.add(
+								reg.getTexture(),
+								x,
+								y,
+								originX,
+								originY,
+								width,
+								height,
+								scaleX,
+								scaleY,
+								rotation,
+								sourceX,
+								sourceY,
+								sourceWidth,
+								sourceHeight,
+								false,
+								false
+							);
 						}
 					}
 				}

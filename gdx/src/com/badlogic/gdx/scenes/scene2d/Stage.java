@@ -187,7 +187,8 @@ public class Stage extends InputAdapter implements Disposable {
 			pointerOverActors[pointer] = fireEnterAndExit(overLast, pointerScreenX[pointer], pointerScreenY[pointer], pointer);
 		}
 		// Update over actor for the mouse on the desktop.
-		if (Gdx.app.getType() == ApplicationType.Desktop)
+		ApplicationType type = Gdx.app.getType();
+		if (type == ApplicationType.Desktop || type == ApplicationType.Applet || type == ApplicationType.WebGL)
 			mouseOverActor = fireEnterAndExit(mouseOverActor, mouseScreenX, mouseScreenY, -1);
 
 		root.act(delta);
@@ -196,7 +197,7 @@ public class Stage extends InputAdapter implements Disposable {
 	private Actor fireEnterAndExit (Actor overLast, int screenX, int screenY, int pointer) {
 		// Find the actor under the point.
 		screenToStageCoordinates(stageCoords.set(screenX, screenY));
-		Actor over = hit(stageCoords.x, stageCoords.y, false);
+		Actor over = hit(stageCoords.x, stageCoords.y, true);
 		if (over == overLast) return overLast;
 
 		InputEvent event = Pools.obtain(InputEvent.class);
@@ -462,6 +463,12 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @see Group#addActor(Actor) */
 	public void addActor (Actor actor) {
 		root.addActor(actor);
+	}
+
+	/** Adds an action to the root of the stage.
+	 * @see Group#addAction(Action) */
+	public void addAction (Action action) {
+		root.addAction(action);
 	}
 
 	/** Returns the root's child actors.

@@ -8,6 +8,14 @@
 /backends/gdx-backend-android/bin
 
 /backends/gdx-backend-iosmonotouch/bin
+/backends/gdx-backend-iosmonotouch/libs/gdx-backend-ios.*
+/backends/gdx-backend-iosmonotouch/libs/gdx.*
+/backends/gdx-backend-iosmonotouch/libs/libgdx.a
+/backends/gdx-backend-iosmonotouch/mono/mono.userprefs
+/backends/gdx-backend-iosmonotouch/mono/mono/bin
+/backends/gdx-backend-iosmonotouch/mono/mono/obj
+/backends/gdx-backend-iosmonotouch/natives/build
+/backends/gdx-backend-iosmonotouch/target/
 
 /backends/gdx-backend-jogl/bin
 
@@ -32,6 +40,10 @@
 /demos/invaders/gdx-invaders-html5/gwt-unitCache
 /demos/invaders/gdx-invaders-html5/war
 /demos/invaders/gdx-invaders/bin
+/demos/invaders/gdx-invaders-ios/gdx-invaders-ios/bin
+/demos/invaders/gdx-invaders-ios/gdx-invaders-ios/obj
+/demos/invaders/gdx-invaders-ios/gdx-invaders-ios/target
+/demos/invaders/gdx-invaders-ios/gdx-invaders-ios/invaders.dll
 
 /demos/metagun/metagun-android/bin
 /demos/metagun/metagun-android/gen
@@ -43,6 +55,10 @@
 /demos/superjumper/superjumper-html/gwt-unitCache
 /demos/superjumper/superjumper-html/war
 /demos/superjumper/superjumper/bin
+/demos/superjumper/superjumper-ios/superjumper-ios/bin
+/demos/superjumper/superjumper-ios/superjumper-ios/obj
+/demos/superjumper/superjumper-ios/superjumper-ios/target
+/demos/superjumper/superjumper-ios/superjumper-ios/superjumper.dll
 
 /demos/vector-pinball/gdx-vectorpinball-android/bin
 /demos/vector-pinball/gdx-vectorpinball-android/gen
@@ -50,6 +66,10 @@
 /demos/vector-pinball/gdx-vectorpinball-html5/gwt-unitCache
 /demos/vector-pinball/gdx-vectorpinball-html5/war
 /demos/vector-pinball/gdx-vectorpinball/bin
+/demos/vector-pinball/gdx-vectorpinball-ios/gdx-vectorpinball-ios/bin
+/demos/vector-pinball/gdx-vectorpinball-ios/gdx-vectorpinball-ios/obj
+/demos/vector-pinball/gdx-vectorpinball-ios/gdx-vectorpinball-ios/target
+/demos/vector-pinball/gdx-vectorpinball-ios/gdx-vectorpinball-ios/vectorpinball.dll
 
 /demos/very-angry-robots/very-angry-robots-android/bin
 /demos/very-angry-robots/very-angry-robots-android/gen
@@ -137,4 +157,4 @@
 
 /dist
 
-libgdx-nightlies.zip
+libgdx-*.zip

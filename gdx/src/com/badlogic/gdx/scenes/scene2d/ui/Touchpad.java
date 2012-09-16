@@ -25,6 +25,7 @@ public class Touchpad extends Widget {
 	boolean touched;
 	private float deadzoneRadius;
 	private final Circle padBounds = new Circle(0, 0, 0);
+	private final Circle touchBounds = new Circle(0, 0, 0);
 	private final Circle deadzoneBounds = new Circle(0, 0, 0);
 	private final Vector2 knobPosition = new Vector2();
 	private final Vector2 knobPercent = new Vector2();
@@ -113,18 +114,21 @@ public class Touchpad extends Widget {
 
 	@Override
 	public Actor hit (float x, float y, boolean touchable) {
-		return padBounds.contains(x, y) ? this : null;
+		return touchBounds.contains(x, y) ? this : null;
 	}
 
 	@Override
 	public void layout () {
 		// Recalc pad and deadzone bounds
-		float radius = Math.min(getWidth(), getHeight()) / 2;
+		float halfWidth = getWidth() / 2;
+		float halfHeight = getHeight() / 2;
+		float radius = Math.min(halfWidth, halfHeight);
+		touchBounds.set(halfWidth, halfHeight, radius);
 		if (style.knob != null) radius -= Math.max(style.knob.getMinWidth(), style.knob.getMinHeight()) / 2;
-		padBounds.set(getWidth() / 2f, getHeight() / 2f, radius);
-		deadzoneBounds.set(getWidth() / 2f, getHeight() / 2f, deadzoneRadius);
+		padBounds.set(halfWidth, halfHeight, radius);
+		deadzoneBounds.set(halfWidth, halfHeight, deadzoneRadius);
 		// Recalc pad values and knob position
-		knobPosition.set(getWidth() / 2f, getHeight() / 2f);
+		knobPosition.set(halfWidth, halfHeight);
 		knobPercent.set(0, 0);
 	}
 

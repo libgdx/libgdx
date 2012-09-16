@@ -16,11 +16,12 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import com.badlogic.gdx.ApplicationListener;
+
 import java.awt.Dimension;
+import java.awt.Point;
 
 import javax.swing.JFrame;
-
-import com.badlogic.gdx.ApplicationListener;
 
 /** Wraps an {@link LwjglCanvas} in a resizable {@link JFrame}. */
 public class LwjglFrame extends JFrame {
@@ -28,10 +29,6 @@ public class LwjglFrame extends JFrame {
 
 	public LwjglFrame (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
 		super(title);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		getContentPane().setPreferredSize(new Dimension(width, height));
-		pack();
-		setLocationRelativeTo(null);
 
 		lwjglCanvas = new LwjglCanvas(listener, useGL2) {
 			protected void stopped () {
@@ -53,19 +50,39 @@ public class LwjglFrame extends JFrame {
 			protected void resize (int width, int height) {
 				updateSize(width, height);
 			}
+
+			protected void start () {
+				LwjglFrame.this.start();
+			}
 		};
 		getContentPane().add(lwjglCanvas.getCanvas());
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run () {
-				Runtime.getRuntime().halt(0); // Because fuck you, Swing shutdown hooks.
+				Runtime.getRuntime().halt(0); // Because fuck you, deadlock causing Swing shutdown hooks.
 			}
 		});
 
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		getContentPane().setPreferredSize(new Dimension(width, height));
+		initialize();
+		Dimension size = getSize();
+		if (size.width == 0 && size.height == 0) pack();
+		Point location = getLocation();
+		if (location.x == 0 && location.y == 0) setLocationRelativeTo(null);
 		setVisible(true);
 		lwjglCanvas.getCanvas().requestFocus();
 	}
 
+	/** Called before the JFrame is shown. */
+	protected void initialize () {
+	}
+
+	/** Called after {@link ApplicationListener} create and resize, but before the game loop iteration. */
+	protected void start () {
+	}
+
+	/** Called when the canvas size changes. */
 	public void updateSize (int width, int height) {
 	}
 

@@ -33,7 +33,7 @@ public abstract class Interpolation {
 
 	static public final Interpolation fade = new Interpolation() {
 		public float apply (float a) {
-			return a * a * a * (a * (a * 6 - 15) + 10);
+			return MathUtils.clamp(a * a * a * (a * (a * 6 - 15) + 10), 0, 1);
 		}
 	};
 

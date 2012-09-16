@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasSprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.utils.Array;
@@ -522,6 +523,13 @@ public class TextureAtlas implements Disposable {
 			} else
 				super.setBounds(region.offsetX, region.offsetY, width, height);
 			setColor(1, 1, 1, 1);
+		}
+
+		public AtlasSprite (AtlasSprite sprite) {
+			region = sprite.region;
+			this.originalOffsetX = sprite.originalOffsetX;
+			this.originalOffsetY = sprite.originalOffsetY;
+			set(sprite);
 		}
 
 		public void setPosition (float x, float y) {

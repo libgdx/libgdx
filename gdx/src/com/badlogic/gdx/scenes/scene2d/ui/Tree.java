@@ -28,6 +28,7 @@ public class Tree extends WidgetGroup {
 	float ySpacing = 4, iconSpacing = 2, padding = 0, indentSpacing;
 	private float leftColumnWidth, prefWidth, prefHeight;
 	private boolean sizeInvalid = true;
+	boolean multiSelect = true;
 	private Node foundNode;
 	Node overNode;
 	private ClickListener clickListener;
@@ -51,7 +52,8 @@ public class Tree extends WidgetGroup {
 				Node node = getNodeAt(y);
 				if (node == null) return;
 				if (node != getNodeAt(getTouchDownY())) return;
-				if (selectedNodes.size > 0 && (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) {
+				if (multiSelect && selectedNodes.size > 0
+					&& (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) {
 					// Select range (shift/ctrl).
 					float low = selectedNodes.first().actor.getY();
 					float high = node.actor.getY();
@@ -66,7 +68,7 @@ public class Tree extends WidgetGroup {
 					Pools.free(changeEvent);
 					return;
 				}
-				if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && !Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
+				if (!multiSelect || (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && !Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))) {
 					if (node.children.size > 0) {
 						// Toggle expanded.
 						float rowX = node.actor.getX();
@@ -76,8 +78,10 @@ public class Tree extends WidgetGroup {
 							return;
 						}
 					}
+					if (!node.isSelectable()) return;
 					selectedNodes.clear();
-				}
+				} else if (!node.isSelectable()) //
+					return;
 				// Select single (ctrl).
 				if (!selectedNodes.removeValue(node, true)) selectedNodes.add(node);
 				ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
@@ -92,7 +96,7 @@ public class Tree extends WidgetGroup {
 
 			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
 				super.exit(event, x, y, pointer, toActor);
-				if (toActor == null || !toActor.isDescendant(Tree.this)) setOverNode(null);
+				if (toActor == null || !toActor.isDescendantOf(Tree.this)) setOverNode(null);
 			}
 		});
 	}
@@ -150,7 +154,7 @@ public class Tree extends WidgetGroup {
 		computeSize(rootNodes, indentSpacing);
 		leftColumnWidth += iconSpacing + padding;
 		prefWidth += leftColumnWidth + padding;
-		prefHeight = getHeight() - (prefHeight + ySpacing);
+		prefHeight = getHeight() - prefHeight;
 	}
 
 	private void computeSize (Array<Node> nodes, float indent) {
@@ -180,7 +184,7 @@ public class Tree extends WidgetGroup {
 
 	public void layout () {
 		if (sizeInvalid) computeSize();
-		layout(rootNodes, leftColumnWidth + indentSpacing, getHeight());
+		layout(rootNodes, leftColumnWidth + indentSpacing, getHeight() - ySpacing / 2);
 	}
 
 	private float layout (Array<Node> nodes, float indent, float y) {
@@ -251,7 +255,7 @@ public class Tree extends WidgetGroup {
 	private float getNodeAt (Array<Node> nodes, float y, float rowY) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			if (y > rowY - node.height - ySpacing / 2 && y <= rowY + ySpacing / 2) {
+			if (y >= rowY - node.height - ySpacing && y < rowY) {
 				foundNode = node;
 				return -1;
 			}
@@ -269,6 +273,7 @@ public class Tree extends WidgetGroup {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			if (node.actor.getY() < low) break;
+			if (!node.isSelectable()) continue;
 			if (node.actor.getY() <= high) selectedNodes.add(node);
 			if (node.expanded) selectNodes(node.children, low, high);
 		}
@@ -384,10 +389,15 @@ public class Tree extends WidgetGroup {
 		return clickListener;
 	}
 
+	public void setMultiSelect (boolean multiSelect) {
+		this.multiSelect = multiSelect;
+	}
+
 	static public class Node {
 		Actor actor;
 		Node parent;
 		final Array<Node> children = new Array(0);
+		boolean selectable = true;
 		boolean expanded;
 		Drawable icon;
 		float height;
@@ -431,6 +441,11 @@ public class Tree extends WidgetGroup {
 
 		public void add (Node node) {
 			insert(children.size, node);
+		}
+
+		public void addAll (Array<Node> nodes) {
+			for (int i = 0, n = nodes.size; i < n; i++)
+				insert(children.size, nodes.get(i));
 		}
 
 		public void insert (int index, Node node) {
@@ -534,6 +549,14 @@ public class Tree extends WidgetGroup {
 				node.setExpanded(true);
 				node = node.parent;
 			}
+		}
+
+		public boolean isSelectable () {
+			return selectable;
+		}
+
+		public void setSelectable (boolean selectable) {
+			this.selectable = selectable;
 		}
 	}
 

@@ -412,10 +412,6 @@ public class ScrollPane extends WidgetGroup {
 		// If the widget is smaller than the available space, make it take up the available space.
 		widgetWidth = disableX ? width : Math.max(areaWidth, widgetWidth);
 		widgetHeight = disableY ? height : Math.max(areaHeight, widgetHeight);
-		if (widget.getWidth() != widgetWidth || widget.getHeight() != widgetHeight) {
-			widget.setWidth(widgetWidth);
-			widget.setHeight(widgetHeight);
-		}
 
 		maxX = widgetWidth - areaWidth;
 		maxY = widgetHeight - areaHeight;
@@ -446,8 +442,7 @@ public class ScrollPane extends WidgetGroup {
 				float vScrollWidth = style.vScroll != null ? style.vScroll.getMinWidth() : vScrollKnob.getMinWidth();
 				vScrollBounds.set(width - bgRightWidth - vScrollWidth, height - bgTopHeight - areaHeight, vScrollWidth, areaHeight);
 				vKnobBounds.width = vScrollKnob.getMinWidth();
-				vKnobBounds.height = Math.max(vScrollKnob.getMinHeight(),
-					(int)(vScrollBounds.height * areaHeight / widget.getHeight()));
+				vKnobBounds.height = Math.max(vScrollKnob.getMinHeight(), (int)(vScrollBounds.height * areaHeight / widgetHeight));
 				vKnobBounds.x = width - bgRightWidth - vScrollKnob.getMinWidth();
 				vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getScrollPercentY()));
 			} else {
@@ -456,10 +451,16 @@ public class ScrollPane extends WidgetGroup {
 			}
 		}
 
-		if (widget instanceof Layout) {
-			Layout layout = (Layout)widget;
-			layout.invalidate();
-			layout.validate();
+		if (widget.getWidth() != widgetWidth || widget.getHeight() != widgetHeight) {
+			widget.setWidth(widgetWidth);
+			widget.setHeight(widgetHeight);
+			if (widget instanceof Layout) {
+				Layout layout = (Layout)widget;
+				layout.invalidate();
+				layout.validate();
+			}
+		} else {
+			if (widget instanceof Layout) ((Layout)widget).validate();
 		}
 	}
 

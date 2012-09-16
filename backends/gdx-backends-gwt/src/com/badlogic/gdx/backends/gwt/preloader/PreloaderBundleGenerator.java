@@ -48,6 +48,10 @@ public class PreloaderBundleGenerator extends Generator {
 	@Override
 	public String generate (TreeLogger logger, GeneratorContext context, String typeName) throws UnableToCompleteException {
 		String assetPath = getAssetPath(context);
+		String assetOutputPath = getAssetOutputPath(context);
+		if ( assetOutputPath == null ){
+			assetOutputPath = "war/";
+		}
 		AssetFilter assetFilter = getAssetFilter(context);
 
 		FileWrapper source = new FileWrapper(assetPath);
@@ -60,12 +64,12 @@ public class PreloaderBundleGenerator extends Generator {
 		if (!source.isDirectory())
 			throw new RuntimeException("assets path '" + assetPath
 				+ "' is not a directory. Check your gdx.assetpath property in your GWT project's module gwt.xml file");
-		System.out.println("Copying resources from " + assetPath + " to war/");
+		System.out.println("Copying resources from " + assetPath + " to " + assetOutputPath );
 		System.out.println(source.file.getAbsolutePath());
 		FileWrapper target = new FileWrapper("assets/"); // this should always be the war/ directory of the GWT project.
 		System.out.println(target.file.getAbsolutePath());
-		if (!target.file.getAbsolutePath().replace("\\", "/").endsWith("war/assets")) {
-			target = new FileWrapper("war/assets/");
+		if (!target.file.getAbsolutePath().replace("\\", "/").endsWith(assetOutputPath + "assets")) {
+			target = new FileWrapper(assetOutputPath + "assets/");
 		}
 		if (target.exists()) {
 			if (!target.deleteDirectory()) throw new RuntimeException("Couldn't clean target path '" + target + "'");
@@ -75,7 +79,7 @@ public class PreloaderBundleGenerator extends Generator {
 
 		StringBuffer buffer = new StringBuffer();
 		for (Asset asset : assets) {
-			String path = asset.file.path().replace('\\', '/').replace("war/assets/", "").replaceFirst("assets", "");
+			String path = asset.file.path().replace('\\', '/').replace(assetOutputPath + "assets/", "").replaceFirst("assets", "");
 			if (path.startsWith("/")) path = path.substring(1);
 			buffer.append(asset.type.code);
 			buffer.append(":");
@@ -147,6 +151,23 @@ public class PreloaderBundleGenerator extends Generator {
 				"No gdx.assetpath defined. Add <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> to your GWT projects gwt.xml file");
 		}
 		return assetPathProperty.getValues().get(0);
+	}
+	
+	private String getAssetOutputPath (GeneratorContext context) {
+		ConfigurationProperty assetPathProperty = null;
+		try {
+			assetPathProperty = context.getPropertyOracle().getConfigurationProperty("gdx.assetoutputpath");
+		} catch (BadPropertyValueException e) {
+			return null;
+		}
+		if (assetPathProperty.getValues().size() == 0) {
+			return null;
+		}
+		String path = assetPathProperty.getValues().get(0);
+		if (path != null && !path.endsWith("/")){
+			path += "/";
+		}			
+		return path;
 	}
 
 	private String createDummyClass (TreeLogger logger, GeneratorContext context) {

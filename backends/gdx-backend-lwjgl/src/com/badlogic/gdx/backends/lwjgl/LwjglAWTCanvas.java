@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
@@ -51,11 +52,13 @@ public class LwjglAWTCanvas implements Application {
 	final LwjglAWTInput input;
 	final ApplicationListener listener;
 	final AWTGLCanvas canvas;
-	final List<Runnable> runnables = new ArrayList<Runnable>();
+	final List<Runnable> runnables = new ArrayList();
+	final List<Runnable> executedRunnables = new ArrayList();
 	boolean running = true;
 	int lastWidth;
 	int lastHeight;
 	int logLevel = LOG_INFO;
+	private Cursor cursor;
 
 	public LwjglAWTCanvas (ApplicationListener listener, boolean useGL2) {
 		this(listener, useGL2, null);
@@ -76,7 +79,7 @@ public class LwjglAWTCanvas implements Application {
 
 				@Override
 				public void initGL () {
-					start();
+					create();
 				}
 
 				@Override
@@ -178,7 +181,7 @@ public class LwjglAWTCanvas implements Application {
 		Gdx.input = input;
 	}
 
-	void start () {
+	void create () {
 		try {
 			setGlobals();
 			graphics.initiateGLInstances();
@@ -186,6 +189,7 @@ public class LwjglAWTCanvas implements Application {
 			lastWidth = Math.max(1, graphics.getWidth());
 			lastHeight = Math.max(1, graphics.getHeight());
 			listener.resize(lastWidth, lastHeight);
+			start();
 		} catch (Exception ex) {
 			stopped();
 			throw new GdxRuntimeException(ex);
@@ -194,17 +198,20 @@ public class LwjglAWTCanvas implements Application {
 
 	void render () {
 		setGlobals();
-		canvas.setCursor(null);
+		canvas.setCursor(cursor);
 		graphics.updateTime();
 		synchronized (runnables) {
-			for (int i = 0; i < runnables.size(); i++) {
+			executedRunnables.clear();
+			executedRunnables.addAll(runnables);
+			runnables.clear();
+
+			for (int i = 0; i < executedRunnables.size(); i++) {
 				try {
-					runnables.get(i).run();
+					executedRunnables.get(i).run();
 				} catch (Throwable t) {
 					t.printStackTrace();
 				}
 			}
-			runnables.clear();
 		}
 
 		int width = Math.max(1, graphics.getWidth());
@@ -217,15 +224,23 @@ public class LwjglAWTCanvas implements Application {
 			listener.resize(width, height);
 		}
 		input.processEvents();
-		listener.render();
-		if (audio != null) {
-			audio.update();
+		if (running) {
+			listener.render();
+			if (audio != null) {
+				audio.update();
+			}
 		}
 	}
 
+	/** Called after {@link ApplicationListener} create and resize, but before the game loop iteration. */
+	protected void start () {
+	}
+
+	/** Called when the canvas size changes. */
 	protected void resize (int width, int height) {
 	}
 
+	/** Called when the game loop has stopped. */
 	protected void stopped () {
 	}
 
@@ -259,12 +274,12 @@ public class LwjglAWTCanvas implements Application {
 			return prefs;
 		}
 	}
-	
+
 	@Override
 	public Clipboard getClipboard () {
 		return new LwjglClipboard();
 	}
-	
+
 	@Override
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
@@ -345,4 +360,8 @@ public class LwjglAWTCanvas implements Application {
 		}
 	}
 
+	/** @param cursor May be null. */
+	public void setCursor (Cursor cursor) {
+		this.cursor = cursor;
+	}
 }

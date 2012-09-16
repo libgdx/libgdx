@@ -27,7 +27,10 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import java.util.List;
+import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
+import com.esotericsoftware.tablelayout.Cell;
+import com.esotericsoftware.tablelayout.Toolkit;
+import com.esotericsoftware.tablelayout.Value;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -42,10 +45,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
-import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
-import com.esotericsoftware.tablelayout.Cell;
-import com.esotericsoftware.tablelayout.Toolkit;
-import com.esotericsoftware.tablelayout.Value;
+
+import java.util.List;
 
 /** A group that sizes and positions children using table constraints. By default, {@link #getTouchable()} is
  * {@link Touchable#childrenOnly}.
@@ -60,6 +61,7 @@ public class Table extends WidgetGroup {
 	private final TableLayout layout;
 	private Drawable background;
 	private boolean clip;
+	private Rectangle scissorBounds;
 	private Skin skin;
 
 	public Table () {
@@ -78,7 +80,6 @@ public class Table extends WidgetGroup {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
 		drawBackground(batch, parentAlpha);
-
 		if (isTransform()) {
 			applyTransform(batch, computeTransform());
 			if (clip) {
@@ -116,8 +117,9 @@ public class Table extends WidgetGroup {
 			tableBounds.width -= tableBounds.x + layout.getPadRight();
 			tableBounds.height -= tableBounds.y + layout.getPadTop();
 		}
-		ScissorStack.calculateScissors(getStage().getCamera(), transform, tableBounds, Rectangle.tmp2);
-		return Rectangle.tmp2;
+		if (scissorBounds == null) scissorBounds = new Rectangle();
+		ScissorStack.calculateScissors(getStage().getCamera(), transform, tableBounds, scissorBounds);
+		return scissorBounds;
 	}
 
 	public void invalidate () {
@@ -201,6 +203,18 @@ public class Table extends WidgetGroup {
 	public Cell add (String text, String labelStyleName) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, skin.get(labelStyleName, LabelStyle.class)));
+	}
+
+	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
+	public Cell add (String text, String fontName, Color color) {
+		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
+		return add(new Label(text, new LabelStyle(skin.getFont(fontName), color)));
+	}
+
+	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
+	public Cell add (String text, String fontName, String colorName) {
+		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
+		return add(new Label(text, new LabelStyle(skin.getFont(fontName), skin.getColor(colorName))));
 	}
 
 	/** Adds a cell without a widget. */
@@ -433,6 +447,16 @@ public class Table extends WidgetGroup {
 
 	public float getPadRight () {
 		return layout.getPadRight();
+	}
+
+	/** Returns {@link #getPadLeft()} plus {@link #getPadRight()}. */
+	public float getPadX () {
+		return layout.getPadLeft() + layout.getPadRight();
+	}
+
+	/** Returns {@link #getPadTop()} plus {@link #getPadBottom()}. */
+	public float getPadY () {
+		return layout.getPadTop() + layout.getPadBottom();
 	}
 
 	public int getAlign () {

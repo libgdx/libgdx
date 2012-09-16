@@ -1,3 +1,9 @@
+== folders ==
+libs/ikvm-monotouch   ... contains the MonoTouch comaptible IVKM binaries
+libs/monotouch-jars   ... contains the jar files for the MonoTouch APIs
+          
+
+
 == IKVM ==
 The libs/ folder contains precompiled assemblies and executables for mono. These can be build
 by following the instructions at https://github.com/samskivert/ikvm-monotouch. The one's in
