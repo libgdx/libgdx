@@ -5,12 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{631D9B6C-AD06-4427-9A1D-F4508FCE7230}</ProjectGuid>
+    <ProjectGuid>{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}</ProjectGuid>
     <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
-    <RootNamespace>gdxinvadersios</RootNamespace>
-    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>gdxinvadersios</AssemblyName>
+    <RootNamespace>superjumperios</RootNamespace>
+    <AssemblyName>superjumperios</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>True</DebugSymbols>
@@ -24,13 +23,13 @@
     <MtouchDebug>True</MtouchDebug>
     <MtouchProfiling>True</MtouchProfiling>
     <MtouchLink>None</MtouchLink>
+    <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
+    <MtouchI18n>west</MtouchI18n>
     <CustomCommands>
       <CustomCommands>
         <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../gdx-invaders/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;invaders.dll&quot; -DEXCLUDE=&quot;**/GdxInvadersDesktop.java&quot; -v" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
-    <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
-    <MtouchI18n />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -40,6 +39,9 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <MtouchLink>None</MtouchLink>
+    <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
+    <MtouchI18n>west</MtouchI18n>
+    <MtouchUseLlvm>True</MtouchUseLlvm>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>True</DebugSymbols>
@@ -51,7 +53,8 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
-    <MtouchI18n />
+    <MtouchDebug>True</MtouchDebug>
+    <MtouchProfiling>True</MtouchProfiling>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -61,6 +64,9 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchUseLlvm>True</MtouchUseLlvm>
+    <IpaPackageName />
+    <MtouchI18n>west</MtouchI18n>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
@@ -86,6 +92,12 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
+    <Reference Include="gdx">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\gdx.dll</HintPath>
+    </Reference>
+    <Reference Include="gdx-backend-ios">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\gdx-backend-ios.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -116,12 +128,6 @@
     <Reference Include="IKVM.Runtime">
       <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="gdx">
-      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\gdx.dll</HintPath>
-    </Reference>
-    <Reference Include="gdx-backend-ios">
-      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\gdx-backend-ios.dll</HintPath>
-    </Reference>
     <Reference Include="invaders">
       <HintPath>invaders.dll</HintPath>
     </Reference>
@@ -139,98 +145,36 @@
     <Folder Include="data\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\gdx-invaders-android\assets\data\droid.png">
-      <Link>data\droid.png</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\explode.png">
-      <Link>data\explode.png</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\font10.png">
-      <Link>data\font10.png</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\font16.png">
-      <Link>data\font16.png</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\invader.png">
-      <Link>data\invader.png</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\knight.jpg">
-      <Link>data\knight.jpg</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\planet.jpg">
-      <Link>data\planet.jpg</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\ship.png">
-      <Link>data\ship.png</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\title.png">
-      <Link>data\title.png</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\8.12.mp3">
-      <Link>data\8.12.mp3</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\block.obj">
-      <Link>data\block.obj</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\block.wings">
-      <Link>data\block.wings</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\explosion.ogg">
-      <Link>data\explosion.ogg</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\font.ttf">
-      <Link>data\font.ttf</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\font10.fnt">
-      <Link>data\font10.fnt</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\font16.fnt">
-      <Link>data\font16.fnt</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\invader.obj">
-      <Link>data\invader.obj</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\invader.wings">
-      <Link>data\invader.wings</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\knight.md2">
-      <Link>data\knight.md2</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\playfield.wings">
-      <Link>data\playfield.wings</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\ship.obj">
-      <Link>data\ship.obj</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\ship.wings">
-      <Link>data\ship.wings</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\shot.obj">
-      <Link>data\shot.obj</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\shot.ogg">
-      <Link>data\shot.ogg</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\shot.wings">
-      <Link>data\shot.wings</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\shaders\color-fs.glsl">
-      <Link>data\shaders\color-fs.glsl</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\shaders\color-vs.glsl">
-      <Link>data\shaders\color-vs.glsl</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\shaders\light-tex-fs.glsl">
-      <Link>data\shaders\light-tex-fs.glsl</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\shaders\light-tex-vs.glsl">
-      <Link>data\shaders\light-tex-vs.glsl</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\shaders\tex-fs.glsl">
-      <Link>data\shaders\tex-fs.glsl</Link>
-    </Content>
-    <Content Include="..\..\gdx-invaders-android\assets\data\shaders\tex-vs.glsl">
-      <Link>data\shaders\tex-vs.glsl</Link>
-    </Content>
+    <Content Include="data\droid.png" />
+    <Content Include="data\explode.png" />
+    <Content Include="data\font10.png" />
+    <Content Include="data\font16.png" />
+    <Content Include="data\invader.png" />
+    <Content Include="data\knight.jpg" />
+    <Content Include="data\planet.jpg" />
+    <Content Include="data\ship.png" />
+    <Content Include="data\title.png" />
+    <Content Include="data\8.12.mp3" />
+    <Content Include="data\block.obj" />
+    <Content Include="data\block.wings" />
+    <Content Include="data\explosion.ogg" />
+    <Content Include="data\font.ttf" />
+    <Content Include="data\font10.fnt" />
+    <Content Include="data\font16.fnt" />
+    <Content Include="data\invader.obj" />
+    <Content Include="data\invader.wings" />
+    <Content Include="data\knight.md2" />
+    <Content Include="data\playfield.wings" />
+    <Content Include="data\ship.obj" />
+    <Content Include="data\ship.wings" />
+    <Content Include="data\shot.obj" />
+    <Content Include="data\shot.ogg" />
+    <Content Include="data\shot.wings" />
+    <Content Include="data\shaders\color-fs.glsl" />
+    <Content Include="data\shaders\color-vs.glsl" />
+    <Content Include="data\shaders\light-tex-fs.glsl" />
+    <Content Include="data\shaders\light-tex-vs.glsl" />
+    <Content Include="data\shaders\tex-fs.glsl" />
+    <Content Include="data\shaders\tex-vs.glsl" />
   </ItemGroup>
 </Project>

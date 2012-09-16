@@ -1,9 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gdx-invaders-ios", "gdx-invaders-ios\gdx-invaders-ios.csproj", "{631D9B6C-AD06-4427-9A1D-F4508FCE7230}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "superjumper-ios", "..\..\superjumper\superjumper-ios\superjumper-ios\superjumper-ios.csproj", "{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gdx-invaders-ios", "gdx-invaders-ios\gdx-invaders-ios.csproj", "{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +13,6 @@ Global
 		AppStore|iPhone = AppStore|iPhone
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{631D9B6C-AD06-4427-9A1D-F4508FCE7230}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
-		{631D9B6C-AD06-4427-9A1D-F4508FCE7230}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
-		{631D9B6C-AD06-4427-9A1D-F4508FCE7230}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
-		{631D9B6C-AD06-4427-9A1D-F4508FCE7230}.AppStore|iPhone.Build.0 = AppStore|iPhone
-		{631D9B6C-AD06-4427-9A1D-F4508FCE7230}.Debug|iPhone.ActiveCfg = Debug|iPhone
-		{631D9B6C-AD06-4427-9A1D-F4508FCE7230}.Debug|iPhone.Build.0 = Debug|iPhone
-		{631D9B6C-AD06-4427-9A1D-F4508FCE7230}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
-		{631D9B6C-AD06-4427-9A1D-F4508FCE7230}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
-		{631D9B6C-AD06-4427-9A1D-F4508FCE7230}.Release|iPhone.ActiveCfg = Release|iPhone
-		{631D9B6C-AD06-4427-9A1D-F4508FCE7230}.Release|iPhone.Build.0 = Release|iPhone
-		{631D9B6C-AD06-4427-9A1D-F4508FCE7230}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
-		{631D9B6C-AD06-4427-9A1D-F4508FCE7230}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
 		{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
 		{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
 		{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
