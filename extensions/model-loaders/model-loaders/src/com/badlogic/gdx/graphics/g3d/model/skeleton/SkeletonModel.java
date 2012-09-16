@@ -31,9 +31,13 @@ public class SkeletonModel implements AnimatedModel {
 	public final Skeleton skeleton;
 	public final SkeletonSubMesh[] subMeshes;
 
-	public SkeletonModel (Skeleton skeleton, SkeletonSubMesh[] subMeshes) {
+	public SkeletonModel (Skeleton skeleton, SubMesh[] subMeshes) {
 		this.skeleton = skeleton;
-		this.subMeshes = subMeshes;
+		this.subMeshes = new SkeletonSubMesh[subMeshes.length];
+		
+		for (int i=0; i < subMeshes.length; ++i) {
+			this.subMeshes[i] = (SkeletonSubMesh)subMeshes[i];
+		}
 		setMaterial(new Material("default"));
 	}
 

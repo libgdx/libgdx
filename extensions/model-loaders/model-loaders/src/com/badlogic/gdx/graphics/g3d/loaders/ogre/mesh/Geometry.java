@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {"vertexbuffer"})
 @XmlRootElement(name = "geometry")
-public class Geometry {
+public class Geometry implements BaseGeometry {
 
 	@XmlAttribute public int vertexcount;
 	@XmlElement(required = true) protected List<Vertexbuffer> vertexbuffer;
@@ -59,6 +59,12 @@ public class Geometry {
 			vertexbuffer = new ArrayList<Vertexbuffer>();
 		}
 		return this.vertexbuffer;
+	}
+
+	@Override
+	public int getVertexCount () {
+		// TODO Auto-generated method stub
+		return vertexcount;
 	}
 
 }
