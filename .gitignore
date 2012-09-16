@@ -149,6 +149,11 @@
 /tests/gdx-tests-gwt/gwt-unitCache
 /tests/gdx-tests-gwt/war
 
+/tests/gdx-tests-iosmonotouch/gdx-tests-iosmonotouch/bin
+/tests/gdx-tests-iosmonotouch/gdx-tests-iosmonotouch/target
+/tests/gdx-tests-iosmonotouch/gdx-tests-iosmonotouch/obj
+/tests/gdx-tests-iosmonotouch/gdx-tests-iosmonotouch/gdx-tests.dll
+
 /tests/gdx-tests-jogl/bin
 
 /tests/gdx-tests-lwjgl/bin

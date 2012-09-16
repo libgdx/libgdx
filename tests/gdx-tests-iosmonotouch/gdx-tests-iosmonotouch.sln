@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gdx-tests-iosmonotouch", "gdx-tests-iosmonotouch\gdx-tests-iosmonotouch.csproj", "{D4C6163A-37F9-48B5-9A04-6362E83D4F67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "superjumper-ios", "..\..\demos\superjumper\superjumper-ios\superjumper-ios\superjumper-ios.csproj", "{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+		Release|iPhone = Release|iPhone
+		Ad-Hoc|iPhone = Ad-Hoc|iPhone
+		AppStore|iPhone = AppStore|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D4C6163A-37F9-48B5-9A04-6362E83D4F67}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
+		{D4C6163A-37F9-48B5-9A04-6362E83D4F67}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
+		{D4C6163A-37F9-48B5-9A04-6362E83D4F67}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
+		{D4C6163A-37F9-48B5-9A04-6362E83D4F67}.AppStore|iPhone.Build.0 = AppStore|iPhone
+		{D4C6163A-37F9-48B5-9A04-6362E83D4F67}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{D4C6163A-37F9-48B5-9A04-6362E83D4F67}.Debug|iPhone.Build.0 = Debug|iPhone
+		{D4C6163A-37F9-48B5-9A04-6362E83D4F67}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{D4C6163A-37F9-48B5-9A04-6362E83D4F67}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{D4C6163A-37F9-48B5-9A04-6362E83D4F67}.Release|iPhone.ActiveCfg = Release|iPhone
+		{D4C6163A-37F9-48B5-9A04-6362E83D4F67}.Release|iPhone.Build.0 = Release|iPhone
+		{D4C6163A-37F9-48B5-9A04-6362E83D4F67}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{D4C6163A-37F9-48B5-9A04-6362E83D4F67}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
+		{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
+		{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
+		{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}.AppStore|iPhone.Build.0 = AppStore|iPhone
+		{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}.Debug|iPhone.Build.0 = Debug|iPhone
+		{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}.Release|iPhone.ActiveCfg = Release|iPhone
+		{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}.Release|iPhone.Build.0 = Release|iPhone
+		{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{E9434FE8-789E-4EF9-AD1E-40F73DBA497B}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = gdx-tests-iosmonotouch\gdx-tests-iosmonotouch.csproj
+	EndGlobalSection
+EndGlobal
