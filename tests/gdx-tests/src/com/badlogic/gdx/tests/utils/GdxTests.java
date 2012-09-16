@@ -65,11 +65,13 @@ public class GdxTests {
 		TextureDownloadTest.class, TextureFormatTest.class, TextureAtlasTest.class, TextInputDialogTest.class,
 		TextureRenderTest.class, TiledMapTest.class, TileTest.class, UITest.class, VBOVATest.class, VertexArrayTest.class,
 		VertexBufferObjectTest.class, VertexArrayClassTest.class, VertexBufferObjectClassTest.class, LetterBoxTest2.class,
-		VertexBufferObjectShaderTest.class, VibratorTest.class, VorbisTest.class, WaterRipples.class, HelloTriangle.class,
-		SimpleVertexShader.class, ShapeRendererTest.class, MoveSpriteExample.class, SoundTouchTest.class, Mpg123Test.class,
-		WavTest.class, TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
-		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, FreeTypeTest.class, YDownTest.class,
-		ScreenCaptureTest.class, InternationalFontsTest.class, BitmapFontTest.class, LabelScaleTest.class};
+		VertexBufferObjectShaderTest.class, VibratorTest.class, WaterRipples.class, HelloTriangle.class,
+		SimpleVertexShader.class, ShapeRendererTest.class, MoveSpriteExample.class, 
+		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
+		// InternationalFontsTest.class, VorbisTest.class
+		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
+		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
+		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class};
 
 	public static String[] getNames () {
 		List<String> names = new ArrayList<String>();

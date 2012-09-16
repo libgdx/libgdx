@@ -22,19 +22,17 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class KeyframedSubMesh extends SubMesh {
-	public final String name;
-	public final Mesh mesh;
 	public final float[] blendedVertices;
 	public final int animatedComponents;
 	public final ObjectMap<String, KeyframedAnimation> animations;
 
 	public KeyframedSubMesh (String name, Mesh mesh, float[] blendedVertices, ObjectMap<String, KeyframedAnimation> animations,
 		int animatedComponents, int primitiveType) {
-		this.name = name;
-		this.mesh = mesh;
+		
+		super(name, mesh, primitiveType);
+		
 		this.blendedVertices = blendedVertices;
 		this.animations = animations;
-		this.primitiveType = primitiveType;
 		this.animatedComponents = animatedComponents;
 	}
 
@@ -43,8 +41,4 @@ public class KeyframedSubMesh extends SubMesh {
 		mesh.calculateBoundingBox(bbox);
 	}
 
-	@Override
-	public Mesh getMesh () {
-		return mesh;
-	}
 }

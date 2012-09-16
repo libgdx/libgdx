@@ -274,24 +274,22 @@ public class IOSInput implements Input {
 	void processEvents() {
 		synchronized(touchEvents) {
 			justTouched = false;
-			if(inputProcessor != null) {
-				for(TouchEvent event: touchEvents) {
-					currentEvent = event;
-					switch(event.phase) {
-					case UITouchPhase.Began:
-						inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
-						if(numTouched == 1)
-							justTouched = true;
-						break;
-					case UITouchPhase.Cancelled:
-					case UITouchPhase.Ended:
-						inputProcessor.touchUp(event.x, event.y, event.pointer, Buttons.LEFT);
-						break;
-					case UITouchPhase.Moved:
-					case UITouchPhase.Stationary:
-						inputProcessor.touchDragged(event.x, event.y, event.pointer);
-						break;
-					}
+			for(TouchEvent event: touchEvents) {
+				currentEvent = event;
+				switch(event.phase) {
+				case UITouchPhase.Began:
+					if(inputProcessor != null) inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
+					if(numTouched == 1)
+						justTouched = true;
+					break;
+				case UITouchPhase.Cancelled:
+				case UITouchPhase.Ended:
+					if(inputProcessor != null) inputProcessor.touchUp(event.x, event.y, event.pointer, Buttons.LEFT);
+					break;
+				case UITouchPhase.Moved:
+				case UITouchPhase.Stationary:
+					if(inputProcessor != null) inputProcessor.touchDragged(event.x, event.y, event.pointer);
+					break;
 				}
 			}
 			touchEventPool.free(touchEvents);

@@ -3,6 +3,18 @@
 	<property name="MONO_HOME" value="/Developer/MonoTouch/usr/lib/mono/2.1"/>
 	<property name="IN" value="-recurse:target/core/*.class"/>
 	<property name="OUT" value="gdx.dll"/>
+	<property name="SRC" value="src/"/>
+	<property name="CLASSPATH" value=""/>
+	<property name="EXCLUDE" value=""/>
+
+	<target name="compile">
+		<delete dir="target"/>
+		<mkdir dir="target"/>
+		<javac srcdir="${SRC}" destdir="target" classpath="${CLASSPATH}">
+			<include name="**/*.java"/>
+			<exclude name="${EXCLUDE}"/>
+		</javac>
+	</target>
 
 	<target name="convert">
 		<exec executable="mono">

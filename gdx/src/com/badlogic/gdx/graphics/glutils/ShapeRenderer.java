@@ -87,6 +87,8 @@ public class ShapeRenderer {
 		FilledCircle(GL10.GL_TRIANGLES), //
 		Triangle(GL10.GL_LINES), //
 		FilledTriangle(GL10.GL_TRIANGLES), //
+		Cone(GL10.GL_LINES), //
+		FilledCone(GL10.GL_TRIANGLES), //
 		;
 
 		private final int glType;
@@ -505,6 +507,86 @@ public class ShapeRenderer {
 		renderer.vertex(x2, y2, 0);
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x3, y3, 0);
+	}
+
+	public void cone (float x, float y, float z, float radius, float height) {
+		cone(x, y, z, radius, height, (int)(6 * (float)Math.cbrt(radius)));
+	}
+
+	public void cone (float x, float y, float z, float radius, float height, int segments) {
+		if (currType != ShapeType.Cone) throw new GdxRuntimeException("Must call begin(ShapeType.Cone)");
+		checkDirty();
+		checkFlush(segments * 4 + 2);
+		float angle = 2 * 3.1415926f / segments;
+		float cos = MathUtils.cos(angle);
+		float sin = MathUtils.sin(angle);
+		float cx = radius, cy = 0;
+		for (int i = 0; i < segments; i++) {
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + cx, y + cy, z);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x, y, z + height);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + cx, y + cy, z);
+			float temp = cx;
+			cx = cos * cx - sin * cy;
+			cy = sin * temp + cos * cy;
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + cx, y + cy, z);
+		}
+		// Ensure the last segment is identical to the first.
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + cx, y + cy, z);
+		float temp = cx;
+		cx = radius;
+		cy = 0;
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + cx, y + cy, z);
+	}
+
+	/** Calls {@link #filledCone(float, float, float, float, float, int)} by estimating the number of segments needed for a smooth circular base. */
+	public void filledCone (float x, float y, float z, float radius, float height) {
+		filledCone(x, y, z, radius, height, (int)(4 * (float)Math.sqrt(radius)));
+	}
+
+	public void filledCone (float x, float y, float z, float radius, float height, int segments) {
+		if (segments <= 0) throw new IllegalArgumentException("segments must be >= 0.");
+		if (currType != ShapeType.FilledCone) throw new GdxRuntimeException("Must call begin(ShapeType.FilledCone)");
+		checkDirty();
+		checkFlush(segments * 6 + 3);
+		int inc = 360 / segments;
+		float angle = 2 * 3.1415926f / segments;
+		float cos = MathUtils.cos(angle);
+		float sin = MathUtils.sin(angle);
+		float cx = radius, cy = 0;
+		segments--;
+		for (int i = 0; i < segments; i++) {
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x, y, z);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + cx, y + cy, z);
+			float temp = cx;
+			float temp2 = cy;
+			cx = cos * cx - sin * cy;
+			cy = sin * temp + cos * cy;
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + cx, y + cy, z);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + temp, y + temp2, z);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + cx, y + cy, z);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x, y, z + height);
+		}
+		// Ensure the last segment is identical to the first.
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x, y, z);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + cx, y + cy, z);
+		cx = radius;
+		cy = 0;
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + cx, y + cy, z);
 	}
 
 	private void checkDirty () {
