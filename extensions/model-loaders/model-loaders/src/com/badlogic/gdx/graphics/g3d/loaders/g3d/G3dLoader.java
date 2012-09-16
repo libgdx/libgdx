@@ -265,13 +265,8 @@ public class G3dLoader {
 				throw new GdxRuntimeException("Number of submeshes not equal to number specified in still model chunk, expected "
 					+ numSubMeshes + ", got " + meshChunks.length);
 			for (int i = 0; i < numSubMeshes; i++) {
-				SkeletonSubMesh subMesh = new SkeletonSubMesh();
-				
-				// read submesh name and primitive type
 				Chunk subMeshChunk = meshChunks[i];
-				subMesh.name = subMeshChunk.readString();
-				subMesh.primitiveType = subMeshChunk.readInt();
-
+				
 				// read attributes
 				Chunk attributes = subMeshChunk.getChild(G3dConstants.VERTEX_ATTRIBUTES);
 				if (attributes == null) throw new GdxRuntimeException("No vertex attribute chunk given");
@@ -289,12 +284,12 @@ public class G3dLoader {
 				// read static components, sort of like a bind pose mesh
 				Chunk vertices = subMeshChunk.getChild(G3dConstants.VERTEX_LIST);
 				int numVertices = vertices.readInt();
-				subMesh.vertices = vertices.readFloats();
+				float[] meshVertices = vertices.readFloats();
 
 				// read indices
 				Chunk indices = subMeshChunk.getChild(G3dConstants.INDEX_LIST);
 				int numIndices = indices.readInt();
-				subMesh.indices = indices.readShorts();
+				short[] meshIndices = indices.readShorts();
 				
 				//read bone weight
 				Chunk boneWeights = subMeshChunk.getChild(G3dConstants.BONE_WEIGHTS);
@@ -303,10 +298,10 @@ public class G3dLoader {
 				if (attributeChunks.length != numAttributes)
 					new GdxRuntimeException("Number of bone weights not equal to number specified in bone weights chunk, expected "
 						+ numBonesWeights + ", got " + boneWeightChunks.length);
-				subMesh.boneWeights = new float[numBonesWeights][];
+				float[][] meshBoneWeights = new float[numBonesWeights][];
 				for(int j=0;j<numBonesWeights;j++) {
 					int count = boneWeightChunks[j].readInt();
-					subMesh.boneWeights[j] = boneWeightChunks[j].readFloats();
+					meshBoneWeights[j] = boneWeightChunks[j].readFloats();
 				}
 
 				//read bone assignment
@@ -316,13 +311,20 @@ public class G3dLoader {
 				if (boneAssignmentChunks.length != numBoneAssignments)
 					new GdxRuntimeException("Number of bone assignment not equal to number specified in bone assignment chunk, expected "
 						+ numBoneAssignments + ", got " + boneAssignmentChunks.length);
-				subMesh.boneAssignments = new int[numBoneAssignments][];
+				int[][] meshBoneAssignments = new int[numBoneAssignments][];
 				for(int j=0;j<numBoneAssignments;j++) {
 					int count = boneAssignmentChunks[j].readInt();
-					subMesh.boneAssignments[j] = boneAssignmentChunks[j].readInts();
+					meshBoneAssignments[j] = boneAssignmentChunks[j].readInts();
 				}
-
-				subMesh.mesh = new Mesh(false, numVertices, numIndices, vertAttribs);
+				
+				SkeletonSubMesh subMesh = new SkeletonSubMesh(subMeshChunk.readString(), new Mesh(false, numVertices, numIndices, vertAttribs),
+					subMeshChunk.readInt());
+				
+				subMesh.indices = meshIndices;
+				subMesh.boneAssignments = meshBoneAssignments;
+				subMesh.boneWeights = meshBoneWeights;
+				subMesh.vertices = meshVertices;
+				
 				subMesh.mesh.setVertices(subMesh.vertices);
 				subMesh.mesh.setIndices(subMesh.indices);
 				subMesh.skinnedVertices = new float[subMesh.vertices.length];

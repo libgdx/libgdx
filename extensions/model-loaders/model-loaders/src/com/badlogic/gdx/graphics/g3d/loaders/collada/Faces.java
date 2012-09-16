@@ -240,17 +240,15 @@ public class Faces {
 		mesh.setVertices(verts);
 		mesh.setIndices(indices);
 		
-		SkeletonSubMesh submesh = new SkeletonSubMesh();
+		SkeletonSubMesh submesh = new SkeletonSubMesh("", mesh, GL10.GL_TRIANGLES);
 		submesh.vertices = verts;
 		submesh.indices = indices;
-		submesh.mesh = mesh;
 		
 		submesh.skinnedVertices = new float[submesh.vertices.length];
 		System.arraycopy(submesh.vertices, 0, submesh.skinnedVertices, 0, submesh.vertices.length);
 		
 		submesh.boneAssignments = new int[vertices.size][];
 		submesh.boneWeights = new float[vertices.size][];
-		submesh.primitiveType = GL10.GL_TRIANGLES;
 		
 		for(int i=0;i<skin.boneIndex.length;i++){
 			for(int j=0;j<vertices.size;j++)
