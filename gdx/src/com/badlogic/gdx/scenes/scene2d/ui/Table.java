@@ -27,10 +27,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
-import com.esotericsoftware.tablelayout.Cell;
-import com.esotericsoftware.tablelayout.Toolkit;
-import com.esotericsoftware.tablelayout.Value;
+import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -45,8 +42,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
-
-import java.util.List;
+import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
+import com.esotericsoftware.tablelayout.Cell;
+import com.esotericsoftware.tablelayout.Toolkit;
+import com.esotericsoftware.tablelayout.Value;
 
 /** A group that sizes and positions children using table constraints. By default, {@link #getTouchable()} is
  * {@link Touchable#childrenOnly}.

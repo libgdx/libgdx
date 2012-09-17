@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import static com.badlogic.gdx.graphics.Texture.TextureWrap.ClampToEdge;
+import static com.badlogic.gdx.graphics.Texture.TextureWrap.Repeat;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,15 +33,12 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasSprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
-
-import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
 
 /** Loads images from texture atlases created by TexturePacker.<br>
  * <br>

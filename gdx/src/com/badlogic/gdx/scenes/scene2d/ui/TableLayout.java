@@ -16,10 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.esotericsoftware.tablelayout.BaseTableLayout;
-import com.esotericsoftware.tablelayout.Cell;
-import com.esotericsoftware.tablelayout.Toolkit;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,6 +28,9 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.TableToolkit.DebugRect;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
+import com.esotericsoftware.tablelayout.BaseTableLayout;
+import com.esotericsoftware.tablelayout.Cell;
+import com.esotericsoftware.tablelayout.Toolkit;
 
 /** The libgdx implementation to apply a table layout.
  * @author Nathan Sweet */

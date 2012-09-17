@@ -38,7 +38,6 @@ import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.BufferUtils;
-import com.badlogic.gdx.utils.D;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 

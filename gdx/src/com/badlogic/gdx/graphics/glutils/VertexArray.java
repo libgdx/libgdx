@@ -17,7 +17,6 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.Gdx;

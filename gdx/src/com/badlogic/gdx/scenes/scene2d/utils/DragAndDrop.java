@@ -8,8 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
-import javax.swing.tree.DefaultTreeCellEditor.EditorContainer;
-
 /** Manages drag and drop operations through registered drag sources and drop targets.
  * @author Nathan Sweet */
 public class DragAndDrop {
