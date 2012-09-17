@@ -8,18 +8,18 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-public class SWIGTYPE_p_f_p_void__bool {
+public class SWIGTYPE_p_btCollisionObjectWrapper {
   private long swigCPtr;
 
-  protected SWIGTYPE_p_f_p_void__bool(long cPtr, boolean futureUse) {
+  protected SWIGTYPE_p_btCollisionObjectWrapper(long cPtr, boolean futureUse) {
     swigCPtr = cPtr;
   }
 
-  protected SWIGTYPE_p_f_p_void__bool() {
+  protected SWIGTYPE_p_btCollisionObjectWrapper() {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_f_p_void__bool obj) {
+  public static long getCPtr(SWIGTYPE_p_btCollisionObjectWrapper obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }
