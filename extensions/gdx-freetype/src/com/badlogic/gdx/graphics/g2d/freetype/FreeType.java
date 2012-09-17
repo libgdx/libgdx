@@ -354,7 +354,7 @@ public class FreeType {
 				//              FreeType sets FT_Bitmap::buffer to NULL when the bitmap is empty (e.g. for ' ')
 				//              JNICheck is on by default on emulators and might have a point anyway...
 				//              So let's avoid this and just return a dummy non-null non-zero buffer
-				return ByteBuffer.allocate(1);
+				return BufferUtils.newByteBuffer(1);
 			return getBuffer(address);
 		}
 		
