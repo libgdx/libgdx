@@ -20,12 +20,14 @@
 /backends/gdx-backend-jogl/bin
 
 /backends/gdx-backend-lwjgl/bin
+/backends/gdx-backend-lwjgl/target
 
 /backends/gdx-backends-gwt/.gwt
 /backends/gdx-backends-gwt/gwt-unitCache
 /backends/gdx-backends-gwt/war
 
 /backends/gdx-openal/bin
+/backends/gdx-openal/target
 
 /demos/cuboc/cuboc-android/bin
 /demos/cuboc/cuboc-android/gen
