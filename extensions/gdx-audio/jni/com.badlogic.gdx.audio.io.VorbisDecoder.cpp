@@ -1,6 +1,6 @@
 #include <com.badlogic.gdx.audio.io.VorbisDecoder.h>
 
-//@line:75
+//@line:90
 
 	#include <ogg.h>
 	#include <ivorbiscodec.h>
@@ -21,7 +21,7 @@
 	 static inline jlong wrapped_Java_com_badlogic_gdx_audio_io_VorbisDecoder_openFile
 (JNIEnv* env, jclass clazz, jstring obj_filename, char* filename) {
 
-//@line:94
+//@line:109
 
 		OggVorbis_File* ogg = new OggVorbis_File();
 		FILE* file = fopen(filename, "rb" );
@@ -67,7 +67,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_openFile(JN
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_getNumChannels(JNIEnv* env, jclass clazz, jlong handle) {
 
 
-//@line:125
+//@line:140
 
 		OggFile* file = (OggFile*)handle;
 		return file->channels;
@@ -78,7 +78,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_getNumChanne
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_getRate(JNIEnv* env, jclass clazz, jlong handle) {
 
 
-//@line:130
+//@line:145
 
 		OggFile* file = (OggFile*)handle;
 		return file->rate;
@@ -89,7 +89,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_getRate(JNIE
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_getLength(JNIEnv* env, jclass clazz, jlong handle) {
 
 
-//@line:135
+//@line:150
 
 		OggFile* file = (OggFile*)handle;
 		return file->length;
@@ -100,7 +100,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_getLength(
 static inline jint wrapped_Java_com_badlogic_gdx_audio_io_VorbisDecoder_readSamples
 (JNIEnv* env, jclass clazz, jlong handle, jshortArray obj_samples, jint offset, jint numSamples, short* samples) {
 
-//@line:140
+//@line:155
 
 		OggFile* file = (OggFile*)handle;
 		int toRead = 2 * numSamples;
@@ -134,7 +134,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_readSamples(
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_skipSamples(JNIEnv* env, jclass clazz, jlong handle, jint numSamples) {
 
 
-//@line:159
+//@line:174
 
 		OggFile* file = (OggFile*)handle;
 		int toRead = 2 * numSamples;
@@ -158,7 +158,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_skipSamples(
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_closeFile(JNIEnv* env, jclass clazz, jlong handle) {
 
 
-//@line:177
+//@line:192
 
 		OggFile* file = (OggFile*)handle;
 		ov_clear(file->ogg);
