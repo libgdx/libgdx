@@ -31,7 +31,9 @@ public class AudioTools {
 	static {
 		new SharedLibraryLoader().load("gdx-audio");
 	}
-
+	
+	// @off
+	
 	/** Converts the 16-bit signed PCM data given in source to 32-bit float PCM in the range [-1,1]. It is assumed that there's
 	 * numSamples elements available in both buffers. Source and target get read and written to from offset 0. All buffers must be
 	 * direct.
@@ -40,15 +42,17 @@ public class AudioTools {
 	 * @param target the target buffer
 	 * @param numSamples the number of samples */
 	public static native void convertToFloat (ShortBuffer source, FloatBuffer target, int numSamples); /*
-																																		 * float inv = 1 / 32767.0f;
-																																		 * for( int i = 0; i <
-																																		 * numSamples; i++,
-																																		 * source++, target++ ) {
-																																		 * float val = (*source *
-																																		 * inv); if( val < -1 ) val
-																																		 * = -1; if( val > 1 ) val =
-																																		 * 1;target = val; }
-																																		 */
+		float inv = 1 / 32767.0f;
+		for( int i = 0; i < numSamples; i++, source++, target++ )
+		{
+			float val = (*source * inv);
+			if( val < -1 )
+				val = -1;
+			if( val > 1 )
+				val = 1;
+			*target = val;
+		}
+	*/
 
 	/** Converts the 32-bit float PCM data given in source to 16-bit signed PCM in the range [-1,1]. It is assumed that there's
 	 * numSamples elements available in both buffers. Source and target get read and written to from offset 0. All buffers must be
@@ -58,12 +62,9 @@ public class AudioTools {
 	 * @param target the target buffer
 	 * @param numSamples the number of samples */
 	public static native void convertToShort (FloatBuffer source, ShortBuffer target, int numSamples); /*
-																																		 * for( int i = 0; i <
-																																		 * numSamples; i++,
-																																		 * source++, target++ )
-																																		 * target = (short)(*source
-																																		 * * 32767);
-																																		 */
+		for( int i = 0; i < numSamples; i++, source++, target++ )
+		*target = (short)(*source * 32767);
+	*/
 
 	/** Converts the samples in source which are assumed to be interleaved left/right stereo samples to mono, writting the converted
 	 * samples to target. Source is assumed to hold numSamples samples, target should hold numSamples / 2. Samples are read and
@@ -73,13 +74,14 @@ public class AudioTools {
 	 * @param target the target buffer
 	 * @param numSamples the number of samples to convert (target will have numSamples /2 filled after a call to this) */
 	public static native void convertToMonoShort (ShortBuffer source, ShortBuffer target, int numSamples); /*
-																																			 * for( int i = 0; i <
-																																			 * numSamples / 2; i++ )
-																																			 * { int val =
-																																			 * *(source++); val +=
-																																			 * *(source++); val >>=
-																																			 * 1;target++ = val; }
-																																			 */
+		for( int i = 0; i < numSamples / 2; i++ )
+		{
+			int val = *(source++);
+			val += *(source++);
+			val >>= 1;
+			*target++ = val;
+		}
+	*/
 
 	/** Converts the samples in source which are assumed to be interleaved left/right stereo samples to mono, writting the converted
 	 * samples to target. Source is assumed to hold numSamples samples, target should hold numSamples / 2. Samples are read and
@@ -89,13 +91,14 @@ public class AudioTools {
 	 * @param target the target buffer
 	 * @param numSamples the number of samples to convert (target will have numSamples /2 filled after a call to this) */
 	public static native void convertToMonoFloat (FloatBuffer source, FloatBuffer target, int numSamples); /*
-																																			 * for( int i = 0; i <
-																																			 * numSamples / 2; i++ )
-																																			 * { float val =
-																																			 * *(source++); val +=
-																																			 * *(source++); val /= 2;
-																																			 * target++ = val; }
-																																			 */
+		for( int i = 0; i < numSamples / 2; i++ )
+		{
+			float val = *(source++);
+			val += *(source++);
+			val /= 2;
+			*target++ = val;
+		}
+	*/
 
 	/** Calculates the spectral flux between the two given spectra. Both buffers are assumed to hold numSamples elements. Spectrum B
 	 * is the current spectrum spectrum A the last spectrum. All buffers must be direct.
@@ -105,19 +108,15 @@ public class AudioTools {
 	 * @param numSamples the number of elements
 	 * @return the spectral flux */
 	public static native float spectralFlux (FloatBuffer spectrumA, FloatBuffer spectrumB, int numSamples); /*
-																																				 * float flux = 0;
-																																				 * for( int i = 0; i <
-																																				 * numSamples; i++ ) {
-																																				 * float value =
-																																				 * *spectrumB++ -
-																																				 * *spectrumA++; flux
-																																				 * += value < 0? 0:
-																																				 * value; } // no
-																																				 * cleanup required as
-																																				 * we have direct
-																																				 * buffers return
-																																				 * flux;
-																																				 */
+		float flux = 0;
+		for( int i = 0; i < numSamples; i++ )
+		{
+			float value = *spectrumB++ - *spectrumA++;
+			flux += value < 0? 0: value;
+		}
+		// no cleanup required as we have direct buffers
+		return flux;
+	*/
 
 	/** Allcoates a direct buffer for the given number of samples and channels. The final numer of samples is numSamples *
 	 * numChannels.
@@ -167,40 +166,49 @@ public class AudioTools {
 		for (int i = offsetSrc, ii = offsetDst; i < numBytes; i++, ii++)
 			dst[i] = src[ii] * scale;
 	}
-
-	/** Generates a mono PCM sample buffer for the given frequency and length in samples for use with AudioMixer.
+	
+	/**
+	 * Generates a mono PCM sample buffer for the given frequency and length in
+	 * samples for use with AudioMixer.
 	 * 
 	 * @param frequency
 	 * @param numSamples
-	 * @return PCM data for a sine wave */
-	public static short[] generate (int samplingRate, int frequency, int numSamples) {
+	 * @return PCM data for a sine wave
+	 */
+	public static short[] generate(int samplingRate, int frequency, int numSamples) {
 		short[] samples = new short[numSamples];
-		float increment = (float)(2 * Math.PI) * frequency / (float)samplingRate;
+		float increment = (float) (2 * Math.PI) * frequency / (float)samplingRate;
 		float angle = 0;
 
 		for (int i = 0; i < numSamples; i++) {
 			samples[i] = (short)(Math.sin(angle) * Short.MAX_VALUE);
 			angle += increment;
 		}
-
+		
 		return samples;
 	}
-
-	/** Generates a mono PCM sample buffer for the given frequency and length in seconds for use with AudioMixer.
+	
+	/**
+	 * Generates a mono PCM sample buffer for the given frequency and length in
+	 * seconds for use with AudioMixer.
 	 * 
 	 * @param frequency
-	 * @param length */
-	public static short[] generate (int samplingRate, int frequency, float length) {
-		int numSamples = (int)(samplingRate * length);
+	 * @param length
+	 */
+	public static short[] generate(int samplingRate, int frequency, float length) {
+		int numSamples = (int) (samplingRate * length);
 		return generate(samplingRate, frequency, numSamples);
 	}
-
-	/** Generates a mono PCM sample buffer for the given frequency and length in seconds for use with AudioMixer.
+	
+	/**
+	 * Generates a mono PCM sample buffer for the given frequency and length in
+	 * seconds for use with AudioMixer.
 	 * 
-	 * @param frequency */
-	public static float[] generateFloat (int samplingRate, int frequency, int numSamples) {
+	 * @param frequency
+	 */
+	public static float[] generateFloat(int samplingRate, int frequency, int numSamples) {
 		float[] samples = new float[numSamples];
-		float increment = (float)(2 * Math.PI) * frequency / (float)samplingRate;
+		float increment = (float) (2 * Math.PI) * frequency / (float)samplingRate;
 		float angle = 0;
 
 		for (int i = 0; i < numSamples; i++) {
@@ -209,13 +217,16 @@ public class AudioTools {
 		}
 		return samples;
 	}
-
-	/** Generates a mono PCM sample buffer for the given frequency and length in seconds for use with AudioMixer.
+	
+	/**
+	 * Generates a mono PCM sample buffer for the given frequency and length in
+	 * seconds for use with AudioMixer.
 	 * 
 	 * @param frequency
-	 * @param length */
-	public static float[] generateFloat (int samplingRate, int frequency, float length) {
-		int numSamples = (int)(samplingRate * length);
+	 * @param length
+	 */
+	public static float[] generateFloat(int samplingRate, int frequency, float length) {
+		int numSamples = (int) (samplingRate * length);
 		return generateFloat(samplingRate, frequency, numSamples);
 	}
 }

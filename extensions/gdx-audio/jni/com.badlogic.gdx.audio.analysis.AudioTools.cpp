@@ -4,7 +4,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_AudioTools_convertTo
 	float* target = (float*)env->GetDirectBufferAddress(obj_target);
 
 
-//@line:42
+//@line:44
 
 		float inv = 1 / 32767.0f;
 		for( int i = 0; i < numSamples; i++, source++, target++ )
@@ -25,7 +25,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_AudioTools_convertTo
 	short* target = (short*)env->GetDirectBufferAddress(obj_target);
 
 
-//@line:62
+//@line:64
 
 		for( int i = 0; i < numSamples; i++, source++, target++ )
 		*target = (short)(*source * 32767);
@@ -38,7 +38,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_AudioTools_convertTo
 	short* target = (short*)env->GetDirectBufferAddress(obj_target);
 
 
-//@line:74
+//@line:76
 
 		for( int i = 0; i < numSamples / 2; i++ )
 		{
@@ -56,7 +56,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_AudioTools_convertTo
 	float* target = (float*)env->GetDirectBufferAddress(obj_target);
 
 
-//@line:91
+//@line:93
 
 		for( int i = 0; i < numSamples / 2; i++ )
 		{
@@ -72,7 +72,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_AudioTools_convertTo
 static inline jfloat wrapped_Java_com_badlogic_gdx_audio_analysis_AudioTools_spectralFlux
 (JNIEnv* env, jclass clazz, jobject obj_spectrumA, jobject obj_spectrumB, jint numSamples, float* spectrumA, float* spectrumB) {
 
-//@line:108
+//@line:110
 
 		float flux = 0;
 		for( int i = 0; i < numSamples; i++ )

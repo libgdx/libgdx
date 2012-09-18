@@ -1,13 +1,13 @@
 #include <com.badlogic.gdx.audio.transform.SoundTouch.h>
 
-//@line:70
+//@line:67
 
 	#include "SoundTouch.h"
 	using namespace soundtouch;
 	 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_newSoundTouchJni(JNIEnv* env, jobject object) {
 
 
-//@line:83
+//@line:80
 
 		return (jlong)(new SoundTouch());
 	
@@ -17,7 +17,7 @@
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_disposeJni(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:92
+//@line:89
 
 		delete (SoundTouch*)addr;
 	
@@ -27,7 +27,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_disposeJ
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setRateJni(JNIEnv* env, jobject object, jlong addr, jfloat newRate) {
 
 
-//@line:103
+//@line:100
 
     	((SoundTouch*)addr)->setRate(newRate);
     
@@ -37,7 +37,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setRateJ
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setTempoJni(JNIEnv* env, jobject object, jlong addr, jfloat newTempo) {
 
 
-//@line:114
+//@line:111
 
     	((SoundTouch*)addr)->setTempo(newTempo);
     
@@ -47,7 +47,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setTempo
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setRateChangeJni(JNIEnv* env, jobject object, jlong addr, jfloat newRate) {
 
 
-//@line:125
+//@line:122
 
     	((SoundTouch*)addr)->setRateChange(newRate);
     
@@ -57,7 +57,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setRateC
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setTempoChange(JNIEnv* env, jobject object, jlong addr, jfloat newTempo) {
 
 
-//@line:136
+//@line:133
 
     	((SoundTouch*)addr)->setTempoChange(newTempo);
     
@@ -67,7 +67,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setTempo
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setPitchJni(JNIEnv* env, jobject object, jlong addr, jfloat newPitch) {
 
 
-//@line:147
+//@line:144
 
 		((SoundTouch*)addr)->setPitch(newPitch);
     
@@ -77,7 +77,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setPitch
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setPitchOctavesJni(JNIEnv* env, jobject object, jlong addr, jfloat newPitch) {
 
 
-//@line:157
+//@line:154
 
     	((SoundTouch*)addr)->setPitchOctaves(newPitch);
     
@@ -87,7 +87,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setPitch
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setPitchSemiTonesJni__JI(JNIEnv* env, jobject object, jlong addr, jint newPitch) {
 
 
-//@line:168
+//@line:165
 
     	((SoundTouch*)addr)->setPitchSemiTones((int)newPitch);
     
@@ -97,7 +97,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setPitch
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setPitchSemiTonesJni__JF(JNIEnv* env, jobject object, jlong addr, jfloat newPitch) {
 
 
-//@line:179
+//@line:176
 
     	((SoundTouch*)addr)->setPitchSemiTones((float)newPitch);
     
@@ -107,7 +107,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setPitch
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setChannelsJni(JNIEnv* env, jobject object, jlong addr, jint numChannels) {
 
 
-//@line:188
+//@line:185
 
     	((SoundTouch*)addr)->setChannels(numChannels);
     
@@ -117,7 +117,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setChann
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setSampleRateJni(JNIEnv* env, jobject object, jlong addr, jint srate) {
 
 
-//@line:197
+//@line:194
 
     	((SoundTouch*)addr)->setSampleRate(srate);
     
@@ -127,7 +127,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setSampl
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_flushJni(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:213
+//@line:210
 
     	((SoundTouch*)addr)->flush();
     
@@ -138,7 +138,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_putSampl
 	short* samples = (short*)env->GetPrimitiveArrayCritical(obj_samples, 0);
 
 
-//@line:227
+//@line:224
 
     	((SoundTouch*)addr)->putSamples((const SAMPLETYPE *)samples + offset, numSamples);
 	
@@ -149,7 +149,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_putSampl
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_clearJni(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:238
+//@line:235
 
     	((SoundTouch*)addr)->clear();
     
@@ -159,7 +159,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_clearJni
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setSettingJni(JNIEnv* env, jobject object, jlong addr, jint settingId, jint value) {
 
 
-//@line:251
+//@line:248
 
     	return (jboolean)((SoundTouch*)addr)->setSetting(settingId, value);
     
@@ -169,7 +169,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_setS
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_getSettingJni(JNIEnv* env, jobject object, jlong addr, jint settingId) {
 
 
-//@line:264
+//@line:261
 
     	return ((SoundTouch*)addr)->getSetting(settingId);
     
@@ -179,7 +179,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_getSetti
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_numUnprocessedSamplesJni(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:273
+//@line:270
 
 		return ((SoundTouch*)addr)->numUnprocessedSamples();
 	
@@ -189,7 +189,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_numUnpro
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_numSamplesJni(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:282
+//@line:279
 
 		return ((SoundTouch*)addr)->numSamples();
 	
@@ -199,7 +199,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_transform_SoundTouch_numSampl
 static inline jint wrapped_Java_com_badlogic_gdx_audio_transform_SoundTouch_receiveSamplesJni
 (JNIEnv* env, jobject object, jlong addr, jshortArray obj_samples, jint offset, jint maxSamples, short* samples) {
 
-//@line:290
+//@line:287
 
 		return ((SoundTouch*)addr)->receiveSamples((SAMPLETYPE *)samples + offset, maxSamples);
 	

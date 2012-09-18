@@ -88,8 +88,8 @@ public class BuildTarget {
 		if (type == TargetOs.Windows && !is64Bit) {
 			// Windows 32-Bit
 			return new BuildTarget(TargetOs.Windows, false, new String[] {"**/*.c"}, new String[0], new String[] {"**/*.cpp"},
-				new String[0], new String[0], "i586-mingw32msvc-", "-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32",
-				"-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32", "-Wl,--kill-at -shared -m32");
+				new String[0], new String[0], "i686-w64-mingw32-", "-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32",
+				"-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32", "-Wl,--kill-at -shared -m32 -static-libgcc -static-libstdc++");
 		}
 
 		if (type == TargetOs.Windows && is64Bit) {

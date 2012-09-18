@@ -72,6 +72,6 @@ public class ImageBuild {
 
 		// build natives
 // BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
-		BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
+		//BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
 	}
 }
