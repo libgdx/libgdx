@@ -967,8 +967,10 @@ public class Json {
 				Type[] actualTypes = ((ParameterizedType)genericType).getActualTypeArguments();
 				if (actualTypes.length == 1) {
 					Type actualType = actualTypes[0];
-					if (actualType instanceof Class) elementType = (Class)actualType;
-					if (actualType instanceof ParameterizedType) elementType = (Class)((ParameterizedType)actualType).getRawType();
+					if (actualType instanceof Class)
+						elementType = (Class)actualType;
+					else if (actualType instanceof ParameterizedType)
+						elementType = (Class)((ParameterizedType)actualType).getRawType();
 				}
 			}
 		}

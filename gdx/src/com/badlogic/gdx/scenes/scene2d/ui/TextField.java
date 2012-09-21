@@ -72,6 +72,7 @@ public class TextField extends Widget {
 	TextFieldFilter filter;
 	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 	boolean focusTraversal = true;
+	boolean disabled;
 
 	private boolean passwordMode;
 	private StringBuilder passwordBuffer;
@@ -126,11 +127,12 @@ public class TextField extends Widget {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (!super.touchDown(event, x, y, pointer, button)) return false;
 				if (pointer == 0 && button != 0) return false;
-				Stage stage = getStage();
+				if (disabled) return true;
 				keyboard.show(true);
 				clearSelection();
 				setCursorPosition(x);
 				selectionStart = cursor;
+				Stage stage = getStage();
 				if (stage != null) stage.setKeyboardFocus(TextField.this);
 				return true;
 			}
@@ -157,6 +159,8 @@ public class TextField extends Widget {
 			}
 
 			public boolean keyDown (InputEvent event, int keycode) {
+				if (disabled) return false;
+
 				final BitmapFont font = style.font;
 
 				lastBlink = 0;
@@ -288,11 +292,14 @@ public class TextField extends Widget {
 			}
 
 			public boolean keyUp (InputEvent event, int keycode) {
+				if (disabled) return false;
 				keyRepeatTask.cancel();
 				return true;
 			}
 
 			public boolean keyTyped (InputEvent event, char character) {
+				if (disabled) return false;
+
 				final BitmapFont font = style.font;
 
 				Stage stage = getStage();
@@ -467,7 +474,7 @@ public class TextField extends Widget {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
 			font.draw(batch, displayText, x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
 		}
-		if (focused) {
+		if (focused && !disabled) {
 			blink();
 			if (cursorOn && cursorPatch != null) {
 				cursorPatch.draw(batch, x + bgLeftWidth + textOffset + glyphPositions.get(cursor)
@@ -729,6 +736,14 @@ public class TextField extends Widget {
 
 	public void setBlinkTime (float blinkTime) {
 		this.blinkTime = blinkTime;
+	}
+
+	public void setDisabled (boolean disabled) {
+		this.disabled = disabled;
+	}
+
+	public boolean isDisabled () {
+		return disabled;
 	}
 
 	class KeyRepeatTask extends Task {
