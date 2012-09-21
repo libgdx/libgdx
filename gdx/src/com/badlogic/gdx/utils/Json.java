@@ -16,6 +16,10 @@
 
 package com.badlogic.gdx.utils;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -24,16 +28,14 @@ import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.JsonWriter.OutputType;
-import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 /** Reads/writes Java objects to/from JSON, automatically.
  * @author Nathan Sweet */
@@ -954,11 +956,21 @@ public class Json {
 	}
 
 	static private class FieldMetadata {
-		public Field field;
-		public Class elementType;
+		Field field;
+		Class elementType;
 
 		public FieldMetadata (Field field) {
 			this.field = field;
+
+			Type genericType = field.getGenericType();
+			if (genericType instanceof ParameterizedType) {
+				Type[] actualTypes = ((ParameterizedType)genericType).getActualTypeArguments();
+				if (actualTypes.length == 1) {
+					Type actualType = actualTypes[0];
+					if (actualType instanceof Class) elementType = (Class)actualType;
+					if (actualType instanceof ParameterizedType) elementType = (Class)((ParameterizedType)actualType).getRawType();
+				}
+			}
 		}
 	}
 
