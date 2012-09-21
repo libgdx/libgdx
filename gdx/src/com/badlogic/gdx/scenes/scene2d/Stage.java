@@ -347,7 +347,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Applies a mouse scroll event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the
 	 * event. This event only occurs on the desktop. */
 	public boolean scrolled (int amount) {
-		if (scrollFocus == null) return false;
+		Actor target = scrollFocus == null ? root : scrollFocus;
 
 		screenToStageCoordinates(stageCoords.set(mouseScreenX, mouseScreenY));
 
@@ -357,7 +357,7 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setScrollAmount(amount);
 		event.setStageX(stageCoords.x);
 		event.setStageY(stageCoords.y);
-		scrollFocus.fire(event);
+		target.fire(event);
 		boolean handled = event.isHandled();
 		Pools.free(event);
 		return handled;
@@ -366,12 +366,12 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Applies a key down event to the actor that has {@link Stage#setKeyboardFocus(Actor) keyboard focus}, if any, and returns
 	 * true if the event was {@link Event#handle() handled}. */
 	public boolean keyDown (int keyCode) {
-		if (keyboardFocus == null) return false;
+		Actor target = keyboardFocus == null ? root : keyboardFocus;
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setStage(this);
 		event.setType(InputEvent.Type.keyDown);
 		event.setKeyCode(keyCode);
-		keyboardFocus.fire(event);
+		target.fire(event);
 		boolean handled = event.isHandled();
 		Pools.free(event);
 		return handled;
@@ -380,12 +380,12 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Applies a key up event to the actor that has {@link Stage#setKeyboardFocus(Actor) keyboard focus}, if any, and returns true
 	 * if the event was {@link Event#handle() handled}. */
 	public boolean keyUp (int keyCode) {
-		if (keyboardFocus == null) return false;
+		Actor target = keyboardFocus == null ? root : keyboardFocus;
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setStage(this);
 		event.setType(InputEvent.Type.keyUp);
 		event.setKeyCode(keyCode);
-		keyboardFocus.fire(event);
+		target.fire(event);
 		boolean handled = event.isHandled();
 		Pools.free(event);
 		return handled;
@@ -394,12 +394,12 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Applies a key typed event to the actor that has {@link Stage#setKeyboardFocus(Actor) keyboard focus}, if any, and returns
 	 * true if the event was {@link Event#handle() handled}. */
 	public boolean keyTyped (char character) {
-		if (keyboardFocus == null) return false;
+		Actor target = keyboardFocus == null ? root : keyboardFocus;
 		InputEvent event = Pools.obtain(InputEvent.class);
 		event.setStage(this);
 		event.setType(InputEvent.Type.keyTyped);
 		event.setCharacter(character);
-		keyboardFocus.fire(event);
+		target.fire(event);
 		boolean handled = event.isHandled();
 		Pools.free(event);
 		return handled;
