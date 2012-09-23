@@ -464,7 +464,7 @@ public class TiledLoader {
 					StringTokenizer st = new StringTokenizer(dataString.trim(), ",");
 					for (int row = 0; row < currLayerHeight; row++) {
 						for (int col = 0; col < currLayerWidth; col++) {
-							currLayer.tiles[row][col] = Integer.parseInt(st.nextToken().trim());
+							currLayer.tiles[row][col] = (int) Long.parseLong(st.nextToken().trim());
 						}
 					}
 				}
