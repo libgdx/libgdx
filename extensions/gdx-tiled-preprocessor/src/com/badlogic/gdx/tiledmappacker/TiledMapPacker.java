@@ -110,7 +110,7 @@ public class TiledMapPacker {
 				for (TiledLayer layer : map.layers) {
 					for (int y = 0; y < layer.tiles.length; ++y) {
 						for (int x = 0; x < layer.tiles[y].length; ++x) {
-							usedIds.add(layer.tiles[y][x]);
+							usedIds.add(layer.tiles[y][x] & ~0xE0000000);
 						}
 					}
 				}
