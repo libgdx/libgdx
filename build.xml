@@ -30,10 +30,10 @@
 		</ant>
 	</target>
 	
-	<!-- gdx setup, custom target -->
+	<!-- gdx setup ui, custom target -->
 	<target name="gdx-setup-ui">
 		<ant antfile="build.xml" dir="extensions/gdx-setup-ui/"/>
-		<copy tofile="${distDir}/gdx-setup-ui.jar" file="extensions/gdx-setup-ui/libgdx-setup.jar"/>
+		<copy tofile="${distDir}/gdx-setup-ui.jar" file="extensions/gdx-setup-ui/gdx-setup-ui.jar"/>
 	</target>
 	
 	<!-- gdx core -->

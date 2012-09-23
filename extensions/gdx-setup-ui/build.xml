@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="libgdx-setup" default="all" basedir=".">
+<project name="gdx-setup-ui" default="all" basedir=".">
     <!-- ****************************************************************** -->
 	<!-- Definitions -->
 	<!-- ****************************************************************** -->
 
-	<property name="name" value="libgdx-setup" />
+	<property name="version" value="3.0.0" />
+	<property name="name" value="gdx-setup-ui" />
+	<property name="mainClass" value="aurelienribon.gdxsetupui.ui.Main" />
 
 	<!-- ****************************************************************** -->
 	<!-- Build tasks -->
@@ -28,13 +30,13 @@
 		<copy todir="bin/res/"><fileset dir="src/res/" excludes="**/*.java"/></copy>
 		
 		<pathconvert property="classpath" pathsep=" ">
-			<path><fileset dir="." includes="libs/**/*.jar" /></path>
+			<path><fileset dir="." includes="libs/**/*.jar" excludes="libs/**/*-sources.jar" /></path>
 			<chainedmapper><flattenmapper /><globmapper from="*" to="libs/*" /></chainedmapper>
 		</pathconvert>
 		
 		<jar destfile="${name}.jar" basedir="bin/">
 			<manifest>
-				<attribute name="Main-Class" value="Main" />
+				<attribute name="Main-Class" value="${mainClass}" />
 				<attribute name="Class-Path" value="${classpath}" />
 			</manifest>
 		</jar>
@@ -43,8 +45,8 @@
 	<target name="bundle" depends="jar">
         <jar destfile="${name}-tmp.jar" filesetmanifest="skip">
             <zipgroupfileset dir="." includes="${name}.jar"/>
-            <zipgroupfileset dir="libs/" includes="*.jar"/>
-            <manifest><attribute name="Main-Class" value="Main"/></manifest>
+            <zipgroupfileset dir="libs/" includes="*.jar" excludes="*-sources.jar"/>
+            <manifest><attribute name="Main-Class" value="${mainClass}"/></manifest>
         </jar>
 
         <zip destfile="${name}.jar">
@@ -60,6 +62,10 @@
 
 	<target name="all" depends="bundle">
 		<antcall target="clean"/>
+	</target>
+	
+	<target name="zip" depends="all">
+		<zip destfile="${name}-${version}.zip" basedir="." includes="${name}.jar"/>
 	</target>
 	
 </project>
