@@ -98,38 +98,38 @@
     <Reference Include="gdx-backend-ios">
       <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\gdx-backend-ios.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Beans">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.OpenJDK.Beans.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Charsets">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.OpenJDK.Charsets.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Core">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.OpenJDK.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Misc">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.OpenJDK.Misc.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Text">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.OpenJDK.Text.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Util">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.OpenJDK.Util.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Reflection">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.Reflection.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Runtime.JNI">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.Runtime.JNI.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Runtime">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.Runtime.dll</HintPath>
-    </Reference>
     <Reference Include="vectorpinball">
       <HintPath>vectorpinball.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Beans">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.OpenJDK.Beans.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Charsets">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.OpenJDK.Charsets.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Core">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.OpenJDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Misc">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.OpenJDK.Misc.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Text">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.OpenJDK.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Util">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.OpenJDK.Util.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Reflection">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime.JNI">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.Runtime.JNI.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
