@@ -1,0 +1,41 @@
+OpenJDK Trademark Notice
+Version 1.1, 2008/3/10
+
+OpenJDK (the "Name") is a trademark of Sun Microsystems, Inc. (the "Owner").
+Owner permits any person obtaining a copy of this software (the "Software")
+which is based on original software retrieved from one of the following
+websites: http://download.java.net/openjdk, http://hg.openjdk.java.net/jdk6,
+or http://openjdk.java.net (each a "Website", with the original software made
+available by the Owner on a Website being known as the "Website Software") to
+use the Name in package names and version strings of the Software subject to
+the following conditions:
+
+  - The Software is a substantially complete implementation of the OpenJDK
+    development kit or runtime environment code made available by Owner on a
+    Website, and the vast majority of the Software code is identical to the
+    upstream Website Software;
+
+  - No permission is hereby granted to use the Name in any other manner,
+    unless such use constitutes "fair use."
+
+  - The Owner makes no warranties of any kind respecting the Name and all
+    representations and warranties, including any implied warranty of
+    merchantability, fitness for a particular purpose or non-infringement
+    are hereby disclaimed; and
+
+  - This notice and the following legend are included in all copies of the
+    Software or portions of it:
+
+        OpenJDK is a trademark or registered trademark of Sun Microsystems,
+        Inc. in the United States and other countries.
+
+The Name may also be used in connection with descriptions of the Software that
+constitute "fair use," such as "derived from the OpenJDK code base" or "based
+on the OpenJDK source code."
+
+Owner intends to revise this Notice as necessary in order to meet the needs of
+the OpenJDK Community.  Please send questions or comments about this Notice to
+Sun Microsystems at openjdk-tm@sun.com.  Revisions to this Notice will be
+announced on the public mailing list announce@openjdk.java.net, to which you
+may subscribe by visiting http://mail.openjdk.java.net.  The latest version of
+this Notice may be found at http://openjdk.java.net/legal.
