@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
+import java.util.regex.*;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -473,9 +473,15 @@ public class MD5Loader {
 
 	private static void tokenize (String line, List<String> tokens) {
 		tokens.clear();
-		StringTokenizer tokenizer = new StringTokenizer(line);
-		while (tokenizer.hasMoreTokens())
-			tokens.add(tokenizer.nextToken());
+		String regex = "\"([^\"]*)\"|(\\S+)";
+		Matcher m = Pattern.compile(regex).matcher(line);
+		while (m.find()) {
+			if (m.group(1) != null) {
+				tokens.add(m.group(1));
+			} else {
+				tokens.add(m.group(2));
+			}
+		}
 	}
 
 	static class JointInfo {
