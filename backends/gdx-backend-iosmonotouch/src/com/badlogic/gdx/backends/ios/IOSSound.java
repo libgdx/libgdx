@@ -15,24 +15,35 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.ios;
 
+import cli.MonoTouch.AVFoundation.AVAudioPlayer;
+
 import com.badlogic.gdx.audio.Sound;
 
 public class IOSSound implements Sound {
 
+	private AVAudioPlayer player;
+
+	
+	public IOSSound(AVAudioPlayer player) {
+		this.player = player;
+	}
+
 	@Override
 	public long play() {
-		// TODO Auto-generated method stub
-		return 0;
+		return play(1.0f);
 	}
 
 	@Override
 	public long play(float volume) {
-		// TODO Auto-generated method stub
-		return 0;
+		return play(volume, 1.0f, 0.5f);
 	}
 
 	@Override
 	public long play(float volume, float pitch, float pan) {
+		player.set_Volume(volume);
+		player.set_Pan(pan);
+		player.Play();
+		
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -57,14 +68,12 @@ public class IOSSound implements Sound {
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-		
+		player.Stop();
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
+		player.Dispose();
 	}
 
 	@Override
@@ -96,5 +105,4 @@ public class IOSSound implements Sound {
 		// TODO Auto-generated method stub
 		
 	}
-
 }
