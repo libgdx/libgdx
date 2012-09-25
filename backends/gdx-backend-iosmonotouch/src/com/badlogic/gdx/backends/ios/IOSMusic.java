@@ -15,38 +15,42 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.ios;
 
+import cli.MonoTouch.AVFoundation.AVAudioPlayer;
+
 import com.badlogic.gdx.audio.Music;
 
 public class IOSMusic implements Music {
 
+	private AVAudioPlayer player;
+	
+	
+	public IOSMusic(AVAudioPlayer player) {
+		this.player = player;
+	}
+	
 	@Override
 	public void play() {
-		// TODO Auto-generated method stub
-		
+		player.Play();
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-		
+		player.Pause();
 	}
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-		
+		player.Stop();
 	}
 
 	@Override
 	public boolean isPlaying() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.get_Playing();
 	}
 
 	@Override
 	public void setLooping(boolean isLooping) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 
 	@Override
@@ -57,8 +61,7 @@ public class IOSMusic implements Music {
 
 	@Override
 	public void setVolume(float volume) {
-		// TODO Auto-generated method stub
-		
+		player.set_Volume(volume);
 	}
 
 	@Override
@@ -69,8 +72,6 @@ public class IOSMusic implements Music {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
+		player.Dispose();
 	}
-
 }
