@@ -20,11 +20,9 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
@@ -254,6 +252,9 @@ public class TileMapRenderer implements Disposable {
 		int lastCol = firstCol + tilesPerBlockX;
 		int lastRow = firstRow + tilesPerBlockY;
 
+		float offsetX =  ((tileWidth - unitsPerTileX) / 2);
+		float offsetY =  ((tileHeight - unitsPerTileY) / 2);
+		
 		for (int row = firstRow; row < lastRow && row < layer.length; row++) {
 			for (int col = firstCol; col < lastCol && col < layer[row].length; col++) {
 				int tile = layer[row][col];
@@ -269,8 +270,8 @@ public class TileMapRenderer implements Disposable {
 						TextureRegion reg = atlas.getRegion(tile);
 						if (reg != null) {
 							
-							float x = col * unitsPerTileX;
-							float y = (layer.length - row - 1) * unitsPerTileY;
+							float x = col * unitsPerTileX - offsetX;
+							float y = (layer.length - row - 1) * unitsPerTileY - offsetY;
 							float width = reg.getRegionWidth();
 							float height = reg.getRegionHeight();							
 							float originX = width * 0.5f;

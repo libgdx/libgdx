@@ -39,6 +39,13 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <MtouchLink>None</MtouchLink>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="ant -f build.xml compile-backend" workingdir="../.." />
+      </CustomCommands>
+    </CustomCommands>
+    <MtouchI18n>west</MtouchI18n>
+    <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>True</DebugSymbols>
@@ -68,6 +75,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchI18n />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
@@ -78,6 +86,7 @@
     <ConsolePause>False</ConsolePause>
     <BuildIpa>True</BuildIpa>
     <CodesignKey>iPhone Distribution</CodesignKey>
+    <MtouchI18n />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
     <DebugType>none</DebugType>
@@ -100,35 +109,35 @@
     <Reference Include="gdx-backend-ios">
       <HintPath>..\..\libs\gdx-backend-ios.dll</HintPath>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Core">
-      <HintPath>..\..\..\..\..\ikvm\ikvm-monotouch\bin\IKVM.OpenJDK.Core.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\..\libs\ikvm\bin\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Beans">
-      <HintPath>..\..\..\..\..\ikvm\ikvm-monotouch\bin\IKVM.OpenJDK.Beans.dll</HintPath>
+      <HintPath>..\..\libs\ikvm\bin\IKVM.OpenJDK.Beans.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Charsets">
-      <HintPath>..\..\..\..\..\ikvm\ikvm-monotouch\bin\IKVM.OpenJDK.Charsets.dll</HintPath>
+      <HintPath>..\..\libs\ikvm\bin\IKVM.OpenJDK.Charsets.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Core">
+      <HintPath>..\..\libs\ikvm\bin\IKVM.OpenJDK.Core.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Misc">
-      <HintPath>..\..\..\..\..\ikvm\ikvm-monotouch\bin\IKVM.OpenJDK.Misc.dll</HintPath>
+      <HintPath>..\..\libs\ikvm\bin\IKVM.OpenJDK.Misc.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Text">
-      <HintPath>..\..\..\..\..\ikvm\ikvm-monotouch\bin\IKVM.OpenJDK.Text.dll</HintPath>
+      <HintPath>..\..\libs\ikvm\bin\IKVM.OpenJDK.Text.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Util">
-      <HintPath>..\..\..\..\..\ikvm\ikvm-monotouch\bin\IKVM.OpenJDK.Util.dll</HintPath>
+      <HintPath>..\..\libs\ikvm\bin\IKVM.OpenJDK.Util.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.Reflection">
-      <HintPath>..\..\..\..\..\ikvm\ikvm-monotouch\bin\IKVM.Reflection.dll</HintPath>
+      <HintPath>..\..\libs\ikvm\bin\IKVM.Reflection.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.Runtime.JNI">
-      <HintPath>..\..\..\..\..\ikvm\ikvm-monotouch\bin\IKVM.Runtime.JNI.dll</HintPath>
+      <HintPath>..\..\libs\ikvm\bin\IKVM.Runtime.JNI.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.Runtime">
-      <HintPath>..\..\..\..\..\ikvm\ikvm-monotouch\bin\IKVM.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\..\..\..\..\ikvm\ikvm-monotouch\bin\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\..\libs\ikvm\bin\IKVM.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

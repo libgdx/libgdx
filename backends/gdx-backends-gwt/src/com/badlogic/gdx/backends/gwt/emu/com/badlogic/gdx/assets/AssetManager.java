@@ -557,4 +557,14 @@ public class AssetManager implements Disposable {
 		while (!update())
 			;
 	}
+
+	/** @return the file names of all loaded assets. */
+	public synchronized Array<String> getAssetNames() {
+		return assetTypes.keys().toArray();
+	}
+	/** @return the dependencies of an asset or null if the asset has no dependencies. */
+	public synchronized Array<String> getDependencies(String fileName) {
+		return assetDependencies.get(fileName);
+	}
+	
 }
