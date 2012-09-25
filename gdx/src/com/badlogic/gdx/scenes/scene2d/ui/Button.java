@@ -170,7 +170,7 @@ public class Button extends Table {
 
 		Drawable background = null;
 		float offsetX = 0, offsetY = 0;
-		if (clickListener.isPressed() && !isDisabled) {
+		if (isPressed() && !isDisabled) {
 			background = style.down == null ? style.up : style.down;
 			offsetX = style.pressedOffsetX;
 			offsetY = style.pressedOffsetY;
@@ -178,8 +178,8 @@ public class Button extends Table {
 			if (isDisabled && style.disabled != null)
 				background = style.disabled;
 			else if (isChecked && style.checked != null)
-				background = style.checked;
-			else if (clickListener.isOver() && style.over != null)
+				background = (isOver() && style.checkedOver != null) ? style.checkedOver : style.checked;
+			else if (isOver() && style.over != null)
 				background = style.over;
 			else
 				background = style.up;
@@ -232,7 +232,7 @@ public class Button extends Table {
 	 * @author mzechner */
 	static public class ButtonStyle {
 		/** Optional. */
-		public Drawable up, down, checked, over, disabled;
+		public Drawable up, down, over, checked, checkedOver, disabled;
 		/** Optional. */
 		public float pressedOffsetX, pressedOffsetY;
 		/** Optional. */
@@ -242,16 +242,17 @@ public class Button extends Table {
 		}
 
 		public ButtonStyle (Drawable up, Drawable down, Drawable checked) {
-			this.down = down;
 			this.up = up;
+			this.down = down;
 			this.checked = checked;
 		}
 
 		public ButtonStyle (ButtonStyle style) {
-			this.down = style.down;
 			this.up = style.up;
-			this.checked = style.checked;
+			this.down = style.down;
 			this.over = style.over;
+			this.checked = style.checked;
+			this.checkedOver = style.checkedOver;
 			this.disabled = style.disabled;
 			this.pressedOffsetX = style.pressedOffsetX;
 			this.pressedOffsetY = style.pressedOffsetY;
