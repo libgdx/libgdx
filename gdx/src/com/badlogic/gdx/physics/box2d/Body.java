@@ -176,8 +176,9 @@ public class Body {
 		body->SetTransform(b2Vec2(positionX, positionY), angle, updateContacts);
 	*/
 
-	/** Get the body transform for the body's origin. */
 	private final Transform transform = new Transform();
+	
+	/** Get the body transform for the body's origin. */
 	public Transform getTransform () {
 		jniGetTransform(addr, transform.vals);
 		return transform;
@@ -221,9 +222,9 @@ public class Body {
 		return body->GetAngle();
 	*/
 
-	/** Get the world position of the center of mass. */
 	private final Vector2 worldCenter = new Vector2();
-
+	
+	/** Get the world position of the center of mass. */
 	public Vector2 getWorldCenter () {
 		jniGetWorldCenter(addr, tmp);
 		worldCenter.x = tmp[0];
@@ -238,9 +239,9 @@ public class Body {
 		worldCenter[1] = w.y;
 	*/
 
-	/** Get the local position of the center of mass. */
 	private final Vector2 localCenter = new Vector2();
-
+	
+	/** Get the local position of the center of mass. */
 	public Vector2 getLocalCenter () {
 		jniGetLocalCenter(addr, tmp);
 		localCenter.x = tmp[0];
@@ -270,9 +271,9 @@ public class Body {
 		body->SetLinearVelocity(b2Vec2(x, y));
 	*/
 
-	/** Get the linear velocity of the center of mass. */
 	private final Vector2 linearVelocity = new Vector2();
-
+	
+	/** Get the linear velocity of the center of mass. */
 	public Vector2 getLinearVelocity () {
 		jniGetLinearVelocity(addr, tmp);
 		linearVelocity.x = tmp[0];
