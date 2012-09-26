@@ -91,8 +91,8 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
 		
-		fps++;
-		if(time - framesStart >= 1000000000l) {
+		frames++;
+		if (time - framesStart >= 1000000000l) {
 			framesStart = time;
 			fps = frames;
 			frames = 0;
