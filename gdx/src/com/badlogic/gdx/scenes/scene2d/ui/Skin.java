@@ -118,8 +118,6 @@ public class Skin implements Disposable {
 			resources.put(type, typeResources);
 		}
 		typeResources.put(name, resource);
-		if (name.equals("tree-collapse-up")) System.out.println();
-
 	}
 
 	public <T> T get (Class<T> type) {
@@ -248,8 +246,6 @@ public class Skin implements Disposable {
 	/** Returns a registered drawable. If no drawable is found but a region, ninepatch, or sprite exists with the name, then the
 	 * appropriate drawable is created and stored in the skin. */
 	public Drawable getDrawable (String name) {
-		if (name.equals("tree-collapse-up")) System.out.println();
-
 		Drawable drawable = optional(name, Drawable.class);
 		if (drawable != null) return drawable;
 
@@ -485,7 +481,6 @@ public class Skin implements Disposable {
 			public Object read (Json json, Object jsonData, Class type) {
 				String name = json.readValue("name", String.class, jsonData);
 				Color color = json.readValue("color", Color.class, jsonData);
-				if (name.equals("tree-collapse")) System.out.println();
 				return newDrawable(name, color);
 			}
 		});
