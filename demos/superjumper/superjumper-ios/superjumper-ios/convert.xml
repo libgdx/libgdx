@@ -1,5 +1,6 @@
 <project name="gdx" default="convert" basedir=".">
-	<property name="IKVM_HOME" value="${user.home}/ikvm-monotouch"/>
+	<property environment="env"/>
+	<property name="IKVM_HOME" value="${env.IKVM_HOME}"/>
 	<property name="MONO_HOME" value="/Developer/MonoTouch/usr/lib/mono/2.1"/>
 	<property name="IN" value="-recurse:target/core/*.class"/>
 	<property name="OUT" value="gdx.dll"/>
