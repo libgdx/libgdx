@@ -19,6 +19,14 @@ import cli.MonoTouch.AVFoundation.AVAudioPlayer;
 
 import com.badlogic.gdx.audio.Music;
 
+/**
+ * A music player, suitable for background music. Supports MP3 and WAV
+ * files which are played via hardware on iOS.
+ * <p>
+ * Limitations: does not play OGG.
+ * 
+ * @author noblemaster
+ */
 public class IOSMusic implements Music {
 
 	private AVAudioPlayer player;
@@ -49,14 +57,13 @@ public class IOSMusic implements Music {
 	}
 
 	@Override
-	public void setLooping(boolean isLooping) {
-		// TODO Auto-generated method stub		
+	public void setLooping(boolean isLooping) {		
+		player.set_NumberOfLoops(isLooping ? -1 : 0);  // Note: -1 for looping!
 	}
 
 	@Override
-	public boolean isLooping() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isLooping() {	
+		return player.get_NumberOfLoops() == -1;  // Note: -1 for looping!
 	}
 
 	@Override
@@ -66,8 +73,7 @@ public class IOSMusic implements Music {
 
 	@Override
 	public float getPosition() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (float)(player.get_CurrentTime() * 1000);  // Note: player returns seconds => x1000 to convert to millis!
 	}
 
 	@Override
