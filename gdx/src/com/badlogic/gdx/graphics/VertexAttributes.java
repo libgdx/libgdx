@@ -53,6 +53,23 @@ public final class VertexAttributes {
 		vertexSize = calculateOffsets();
 	}
 
+	/** Returns the offset for the first VertexAttribute with the specified usage.
+	 * @param usage The usage of the VertexAttribute. */
+	public int getOffset (int usage) {
+		VertexAttribute vertexAttribute = findByUsage(usage);
+		if (vertexAttribute == null) return 0;
+		return vertexAttribute.offset / 4;
+	}
+
+	/** Returns the first VertexAttribute for the given usage.
+	 * @param usage The usage of the VertexAttribute to find. */
+	public VertexAttribute findByUsage (int usage) {
+		int len = size();
+		for (int i = 0; i < len; i++)
+			if (get(i).usage == usage) return get(i);
+		return null;
+	}
+
 	private int calculateOffsets () {
 		int count = 0;
 		for (int i = 0; i < attributes.length; i++) {

@@ -21,7 +21,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -48,7 +49,7 @@ public class MD5Loader {
 			int currMesh = 0;
 
 			while ((line = reader.readLine()) != null) {
-				tokenize(line, tokens);
+				MD5Tokenizer.tokenize(line, tokens);
 				if (tokens.size() == 0) continue;
 
 				//
@@ -85,7 +86,7 @@ public class MD5Loader {
 				if (tokens.get(0).equals("joints")) {
 					for (int i = 0; i < model.baseSkeleton.numJoints; i++) {
 						line = reader.readLine();
-						tokenize(line, tokens);
+						MD5Tokenizer.tokenize(line, tokens);
 						if (tokens.size() == 0) {
 							i--;
 							continue;
@@ -128,7 +129,7 @@ public class MD5Loader {
 
 					while (!line.contains("}")) {
 						line = reader.readLine();
-						tokenize(line, tokens);
+						MD5Tokenizer.tokenize(line, tokens);
 						if (tokens.size() == 0) continue;
 
 						if (tokens.get(0).equals("shader")) {
@@ -203,15 +204,13 @@ public class MD5Loader {
 			float[] animFrameData = null;
 
 			while ((line = reader.readLine()) != null) {
-				tokenize(line, tokens);
+				MD5Tokenizer.tokenize(line, tokens);
 				if (tokens.size() == 0) continue;
-
 				if (tokens.get(0).equals("MD5Version")) {
 					if (!tokens.get(1).equals("10"))
 						throw new IllegalArgumentException("Not a valid MD5 animation file, version is " + tokens.get(1)
 							+ ", expected 10");
-				}
-
+				}				
 				if (tokens.get(0).equals("numFrames")) {
 					int numFrames = parseInt(tokens.get(1));
 					animation.frames = new MD5Joints[numFrames];
@@ -245,7 +244,7 @@ public class MD5Loader {
 				if (tokens.get(0).equals("hierarchy")) {
 					for (int i = 0; i < jointInfos.length; i++) {
 						line = reader.readLine();
-						tokenize(line, tokens);
+						MD5Tokenizer.tokenize(line, tokens);
 						if (tokens.size() == 0 || tokens.get(0).equals("//")) {
 							i--;
 							continue;
@@ -264,7 +263,7 @@ public class MD5Loader {
 				if (tokens.get(0).equals("bounds")) {
 					for (int i = 0; i < animation.bounds.length; i++) {
 						line = reader.readLine();
-						tokenize(line, tokens);
+						MD5Tokenizer.tokenize(line, tokens);
 						if (tokens.size() == 0) {
 							i--;
 							continue;
@@ -286,7 +285,7 @@ public class MD5Loader {
 				if (tokens.get(0).equals("baseframe")) {
 					for (int i = 0; i < baseFrame.length; i++) {
 						line = reader.readLine();
-						tokenize(line, tokens);
+						MD5Tokenizer.tokenize(line, tokens);
 						if (tokens.size() == 0) {
 							i--;
 							continue;
@@ -311,19 +310,18 @@ public class MD5Loader {
 
 					int i = 0;
 					line = reader.readLine();
-					tokenize(line, tokens);
+					MD5Tokenizer.tokenize(line, tokens);
 					while (tokens.get(0).equals("}") == false) {
 						for (int j = 0; j < tokens.size(); j++)
 							animFrameData[i++] = parseFloat(tokens.get(j));
 
 						line = reader.readLine();
-						tokenize(line, tokens);
+						MD5Tokenizer.tokenize(line, tokens);
 					}
 
 					buildFrameSkeleton(jointInfos, baseFrame, animFrameData, animation, frameIndex);
 				}
 			}
-
 			return animation;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -470,14 +468,7 @@ public class MD5Loader {
 			}
 		}
 	}
-
-	private static void tokenize (String line, List<String> tokens) {
-		tokens.clear();
-		StringTokenizer tokenizer = new StringTokenizer(line);
-		while (tokenizer.hasMoreTokens())
-			tokens.add(tokenizer.nextToken());
-	}
-
+	
 	static class JointInfo {
 		public String name;
 		public int parent;
