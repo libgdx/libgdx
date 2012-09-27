@@ -80,7 +80,6 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		super.OnLoad(arg0);
 		MakeCurrent();
 		app.listener.create();
-		app.listener.resize(0, 0); // FIXME
 	}
 
 	@Override
@@ -105,10 +104,11 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	}
 
 	@Override
-	protected void OnResize(EventArgs arg0) {
-		super.OnResize(arg0);
-		MakeCurrent();
-		app.listener.resize(0, 0); // FIXME
+	protected void OnResize(EventArgs event) {
+		super.OnResize(event);
+
+		// noblemaster: I don't think this method will get called on iOS!? (at least not as of 2012-09-27)
+		Gdx.app.error("IOSGraphics", "OnResize(...) is not implement.");
 	}
 
 	@ExportAttribute.Annotation("layerClass")
