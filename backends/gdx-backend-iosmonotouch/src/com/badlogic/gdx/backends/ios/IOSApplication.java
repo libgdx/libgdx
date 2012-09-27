@@ -35,7 +35,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.ios.IOSApplicationConfiguration.SupportedOrientation;
 import com.badlogic.gdx.utils.Clipboard;
 
 public class IOSApplication extends UIApplicationDelegate implements Application {
@@ -58,7 +57,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	 */
 	public IOSApplication(ApplicationListener listener, IOSApplicationConfiguration config) {
 		this.listener = listener;
-		this.config = config;
+		this.config = config; 
 		Gdx.app = this;
 	}
 	
@@ -85,12 +84,10 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 				switch (orientation.Value) { 
 					case UIInterfaceOrientation.LandscapeLeft: 
 					case UIInterfaceOrientation.LandscapeRight: 
-					   return config.supportedOrientation == SupportedOrientation.LANDSCAPE ||
-					          config.supportedOrientation == SupportedOrientation.BOTH;
+					   return config.orientationLandscape;
 					default: 
 						// assume portrait
-					   return config.supportedOrientation == SupportedOrientation.PORTRAIT ||
-			                config.supportedOrientation == SupportedOrientation.BOTH;
+					   return config.orientationPortrait;
 				} 
 			}
 		};
