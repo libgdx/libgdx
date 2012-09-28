@@ -18,10 +18,13 @@ package com.badlogic.gdx.backends.ios;
 import cli.MonoTouch.Foundation.ExportAttribute;
 import cli.MonoTouch.Foundation.NSSet;
 import cli.MonoTouch.CoreAnimation.CAEAGLLayer;
+import cli.MonoTouch.ObjCRuntime.Selector;
 import cli.MonoTouch.OpenGLES.EAGLColorFormat;
 import cli.MonoTouch.OpenGLES.EAGLRenderingAPI;
+import cli.MonoTouch.UIKit.UIDevice;
 import cli.MonoTouch.UIKit.UIEvent;
 import cli.MonoTouch.UIKit.UIScreen;
+import cli.MonoTouch.UIKit.UIUserInterfaceIdiom;
 import cli.OpenTK.FrameEventArgs;
 import cli.OpenTK.Platform.iPhoneOS.iPhoneOSGameView;
 import cli.System.EventArgs;
@@ -48,8 +51,16 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	int frames;
 	int fps;
 
+	private float ppiX = 0;
+	private float ppiY = 0;
+	private float ppcX = 0;
+	private float ppcY = 0;
+	private float density = 1;
+
 	public IOSGraphics(RectangleF bounds, IOSApplication app, IOSInput input) {
 		super(bounds);
+		
+		// setup view and OpenGL
 		width = (int)bounds.get_Width();
 		height = (int)bounds.get_Height();
 		app.log("IOSGraphics", bounds.get_Width() + "x" + bounds.get_Height() + ", " + UIScreen.get_MainScreen().get_Scale());
@@ -65,6 +76,32 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
 		
+		// determine display density and PPI (PPI values via Wikipedia!)
+		if ((UIScreen.get_MainScreen().RespondsToSelector(new Selector("scale:"))) &&
+		    (UIScreen.get_MainScreen().get_Scale() == 2.0f)) {
+			// Retina display!
+			density = 2.0f;
+		}
+		else {
+			// regular display
+			density = 1.0f;
+		}
+		int ppi;  
+		if (UIDevice.get_CurrentDevice().get_UserInterfaceIdiom().Value == UIUserInterfaceIdiom.Pad) {
+			// iPad
+			ppi = Math.round(density * 132);
+		}
+		else {
+			// iPhone or iPodTouch
+			ppi = Math.round(density * 163);
+		}
+		ppiX = ppi;
+		ppiY = ppi;
+		ppcX = ppiX / 2.54f;
+		ppcY = ppcY / 2.54f;
+		app.log("IOSGraphics", "Display: ppi=" + ppi + ", density=" + density);
+		
+		// time + FPS
 		lastFrameTime = System.nanoTime();
 		framesStart = lastFrameTime;
 	}
@@ -80,7 +117,6 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		super.OnLoad(arg0);
 		MakeCurrent();
 		app.listener.create();
-		app.listener.resize(0, 0); // FIXME
 	}
 
 	@Override
@@ -105,10 +141,11 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	}
 
 	@Override
-	protected void OnResize(EventArgs arg0) {
-		super.OnResize(arg0);
-		MakeCurrent();
-		app.listener.resize(0, 0); // FIXME
+	protected void OnResize(EventArgs event) {
+		super.OnResize(event);
+
+		// noblemaster: I don't think this method will get called on iOS!? (at least not as of 2012-09-27)
+		Gdx.app.error("IOSGraphics", "OnResize(...) is not implement.");
 	}
 
 	@ExportAttribute.Annotation("layerClass")
@@ -182,28 +219,33 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	}
 
 	@Override
-	public float getPpiX() {
-		return 0;
+	public float getPpiX () {
+		return ppiX;
 	}
 
 	@Override
-	public float getPpiY() {
-		return 0;
+	public float getPpiY () {
+		return ppiY;
 	}
 
 	@Override
-	public float getPpcX() {
-		return 0;
+	public float getPpcX () {
+		return ppcX;
 	}
 
 	@Override
-	public float getPpcY() {
-		return 0;
+	public float getPpcY () {
+		return ppcY;
 	}
 
+	/**
+	 * Returns the display density.
+	 * 
+	 * @return 1.0f for non-retina devices, 2.0f for retina devices.
+	 */
 	@Override
-	public float getDensity() {
-		return 0;
+	public float getDensity () {
+		return density;
 	}
 
 	@Override

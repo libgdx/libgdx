@@ -50,12 +50,14 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	boolean firstResume;
 	
 	/**
-	 * Should be called in AppDelegate#FinishedLaunching
-	 * @param uiApp
+	 * Should be called in AppDelegate#FinishedLaunching.
+	 * 
+	 * @param listener  Our application (aka game) to run.
+	 * @param config  The desired iOS configuration.
 	 */
 	public IOSApplication(ApplicationListener listener, IOSApplicationConfiguration config) {
 		this.listener = listener;
-		this.config = config;
+		this.config = config; 
 		Gdx.app = this;
 	}
 	
@@ -67,17 +69,26 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		this.uiWindow = new UIWindow(UIScreen.get_MainScreen().get_Bounds());	
 		UIViewController uiViewController = new UIViewController() {	
 			@Override
-			public void DidRotate (UIInterfaceOrientation arg0) {
+			public void DidRotate (UIInterfaceOrientation orientation) {
 				// get the view size and update graphics
+				// FIXME: supporting BOTH (landscape+portrait at same time) is currently not working correctly (needs fix)
 				RectangleF bounds = getBounds(this);
 				graphics.width = (int)bounds.get_Width();
 				graphics.height = (int)bounds.get_Height();
-				graphics.MakeCurrent();
+				graphics.MakeCurrent();  // not sure if that's needed?
 				listener.resize(graphics.width, graphics.height);
 			}
 			@Override
-			public boolean ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation arg0) {
-				return true;  // TODO: need to check if orientation is supported!!!
+			public boolean ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {
+				// we return "true" if we support the orientation
+				switch (orientation.Value) { 
+					case UIInterfaceOrientation.LandscapeLeft: 
+					case UIInterfaceOrientation.LandscapeRight: 
+					   return config.orientationLandscape;
+					default: 
+						// assume portrait
+					   return config.orientationPortrait;
+				} 
 			}
 		};
 		this.uiWindow.set_RootViewController(uiViewController);
@@ -103,7 +114,13 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		return true;
 	}
 
-	private RectangleF getBounds(UIViewController viewController) {
+	/**
+	 * Returns our real display dimension based on screen orientation.
+	 * 
+	 * @param viewController  The view controller.
+	 * @return  Or real display dimension.
+	 */
+	RectangleF getBounds(UIViewController viewController) {
 		// or screen size (always portrait)
 		RectangleF bounds = UIScreen.get_MainScreen().get_Bounds();
 
