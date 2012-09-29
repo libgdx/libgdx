@@ -75,6 +75,7 @@ public class ScrollPane extends WidgetGroup {
 	private boolean disableX, disableY;
 	private boolean clamp = true;
 	private boolean scrollbarsOnTop;
+	int draggingPointer = -1;
 
 	/** @param widget May be null. */
 	public ScrollPane (Actor widget) {
@@ -104,7 +105,6 @@ public class ScrollPane extends WidgetGroup {
 
 		addCaptureListener(new InputListener() {
 			private float handlePosition;
-			private int draggingPointer = -1;
 
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (draggingPointer != -1) return false;
@@ -234,10 +234,10 @@ public class ScrollPane extends WidgetGroup {
 
 	void clamp () {
 		if (!clamp) return;
-		amountX = overscrollX ? MathUtils.clamp(amountX, -overscrollDistance, maxX + overscrollDistance) : MathUtils.clamp(amountX,
-			0, maxX);
-		amountY = overscrollY ? MathUtils.clamp(amountY, -overscrollDistance, maxY + overscrollDistance) : MathUtils.clamp(amountY,
-			0, maxY);
+		scrollX(overscrollX ? MathUtils.clamp(amountX, -overscrollDistance, maxX + overscrollDistance) : MathUtils.clamp(amountX,
+			0, maxX));
+		scrollY(overscrollY ? MathUtils.clamp(amountY, -overscrollDistance, maxY + overscrollDistance) : MathUtils.clamp(amountY,
+			0, maxY));
 	}
 
 	public void setStyle (ScrollPaneStyle style) {
@@ -284,17 +284,21 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		if (smoothScrolling && flingTimer <= 0 && !touchScrollH && !touchScrollV && !panning) {
-			if (visualAmountX < amountX)
-				visualAmountX = Math.min(amountX, visualAmountX + Math.max(150 * delta, (amountX - visualAmountX) * 5 * delta));
-			else
-				visualAmountX = Math.max(amountX, visualAmountX - Math.max(150 * delta, (visualAmountX - amountX) * 5 * delta));
-			if (visualAmountY < amountY)
-				visualAmountY = Math.min(amountY, visualAmountY + Math.max(150 * delta, (amountY - visualAmountY) * 5 * delta));
-			else
-				visualAmountY = Math.max(amountY, visualAmountY - Math.max(150 * delta, (visualAmountY - amountY) * 5 * delta));
+			if (visualAmountX != amountX) {
+				if (visualAmountX < amountX)
+					visualScrollX(Math.min(amountX, visualAmountX + Math.max(150 * delta, (amountX - visualAmountX) * 5 * delta)));
+				else
+					visualScrollX(Math.max(amountX, visualAmountX - Math.max(150 * delta, (visualAmountX - amountX) * 5 * delta)));
+			}
+			if (visualAmountY != amountY) {
+				if (visualAmountY < amountY)
+					visualScrollY(Math.min(amountY, visualAmountY + Math.max(150 * delta, (amountY - visualAmountY) * 5 * delta)));
+				else
+					visualScrollY(Math.max(amountY, visualAmountY - Math.max(150 * delta, (visualAmountY - amountY) * 5 * delta)));
+			}
 		} else {
-			visualAmountX = amountX;
-			visualAmountY = amountY;
+			if (visualAmountX != amountX) visualScrollX(amountX);
+			if (visualAmountY != amountY) visualScrollY(amountY);
 		}
 
 		if (!panning) {
@@ -303,13 +307,13 @@ public class ScrollPane extends WidgetGroup {
 					resetFade();
 					amountX += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountX / overscrollDistance)
 						* delta;
-					if (amountX > 0) amountX = 0;
+					if (amountX > 0) scrollX(0);
 				} else if (amountX > maxX) {
 					resetFade();
 					amountX -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -(maxX - amountX)
 						/ overscrollDistance)
 						* delta;
-					if (amountX < maxX) amountX = maxX;
+					if (amountX < maxX) scrollX(maxX);
 				}
 			}
 			if (overscrollY && scrollY) {
@@ -420,7 +424,7 @@ public class ScrollPane extends WidgetGroup {
 			if (scrollX) maxY -= scrollbarHeight;
 			if (scrollY) maxX -= scrollbarWidth;
 		}
-		amountX = MathUtils.clamp(amountX, 0, maxX);
+		scrollX(MathUtils.clamp(amountX, 0, maxX));
 		amountY = MathUtils.clamp(amountY, 0, maxY);
 
 		// Set the bounds and scroll knob sizes if scrollbars are needed.
@@ -594,8 +598,28 @@ public class ScrollPane extends WidgetGroup {
 		return super.hit(x, y, touchable);
 	}
 
+	/** Called whenever the x scroll amount is changed. */
+	protected void scrollX (float pixelsX) {
+		this.amountX = pixelsX;
+	}
+
+	/** Called whenever the y scroll amount is changed. */
+	protected void scrollY (float pixelsY) {
+		this.amountY = pixelsY;
+	}
+
+	/** Called whenever the visual x scroll amount is changed. */
+	protected void visualScrollX (float pixelsX) {
+		this.visualAmountX = pixelsX;
+	}
+
+	/** Called whenever the visual y scroll amount is changed. */
+	protected void visualScrollY (float pixelsY) {
+		this.visualAmountY = pixelsY;
+	}
+
 	public void setScrollX (float pixels) {
-		this.amountX = MathUtils.clamp(pixels, 0, maxX);
+		scrollX(MathUtils.clamp(pixels, 0, maxX));
 	}
 
 	/** Returns the x scroll position in pixels. */
@@ -625,7 +649,7 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void setScrollPercentX (float percentX) {
-		amountX = maxX * MathUtils.clamp(percentX, 0, 1);
+		scrollX(maxX * MathUtils.clamp(percentX, 0, 1));
 	}
 
 	public float getScrollPercentY () {
@@ -649,25 +673,29 @@ public class ScrollPane extends WidgetGroup {
 	/** Sets the scroll offset so the specified rectangle is fully in view, if possible. Coordinates are in the scroll pane widget's
 	 * coordinate system. */
 	public void scrollTo (float x, float y, float width, float height) {
+		float amountX = this.amountX;
 		if (x + width > amountX + areaWidth) amountX = x + width - areaWidth;
 		if (x < amountX) amountX = x;
-		amountX = MathUtils.clamp(amountX, 0, maxX);
+		scrollX(MathUtils.clamp(amountX, 0, maxX));
 
+		float amountY = this.amountY;
 		if (amountY > maxY - y - height + areaHeight) amountY = maxY - y - height + areaHeight;
 		if (amountY < maxY - y) amountY = maxY - y;
-		amountY = MathUtils.clamp(amountY, 0, maxY);
+		scrollY(MathUtils.clamp(amountY, 0, maxY));
 	}
 
 	/** Sets the scroll offset so the specified rectangle is fully in view and centered vertically in the scroll pane, if possible.
 	 * Coordinates are in the scroll pane widget's coordinate system. */
 	public void scrollToCenter (float x, float y, float width, float height) {
+		float amountX = this.amountX;
 		if (x + width > amountX + areaWidth) amountX = x + width - areaWidth;
 		if (x < amountX) amountX = x;
-		amountX = MathUtils.clamp(amountX, 0, maxX);
+		scrollX(MathUtils.clamp(amountX, 0, maxX));
 
+		float amountY = this.amountY;
 		float centerY = maxY - y + areaHeight / 2 - height / 2;
 		if (amountY < centerY - areaHeight / 4 || amountY > centerY + areaHeight / 4) amountY = centerY;
-		amountY = MathUtils.clamp(amountY, 0, maxY);
+		scrollY(MathUtils.clamp(amountY, 0, maxY));
 	}
 
 	/** Returns the maximum scroll value in the x direction. */
@@ -700,6 +728,10 @@ public class ScrollPane extends WidgetGroup {
 	public void setScrollingDisabled (boolean x, boolean y) {
 		disableX = x;
 		disableY = y;
+	}
+
+	public boolean isDragging () {
+		return draggingPointer != -1;
 	}
 
 	public boolean isPanning () {
