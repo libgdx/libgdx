@@ -26,6 +26,11 @@ import com.badlogic.gdxinvaders.screens.InvadersScreen;
 import com.badlogic.gdxinvaders.screens.MainMenu;
 
 public class GdxInvaders extends Game {
+	
+	/** Music needs to be a class property to prevent being disposed. */
+	private Music music;
+	
+	
 	@Override
 	public void render () {
 		InvadersScreen currentScreen = getScreen();
@@ -37,6 +42,10 @@ public class GdxInvaders extends Game {
 		// next screen. Ideally the screen transitions are handled
 		// in the screen itself or in a proper state machine.
 		if (currentScreen.isDone()) {
+			// dispose music
+			music.dispose();
+			music = null;
+			
 			// dispose the resources of the current screen
 			currentScreen.dispose();
 
@@ -69,7 +78,7 @@ public class GdxInvaders extends Game {
 	@Override
 	public void create () {
 		setScreen(new MainMenu());
-		Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/8.12.mp3", FileType.Internal));
+		music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/8.12.mp3", FileType.Internal));
 		music.setLooping(true);
 		music.play();
 		Gdx.input.setInputProcessor(new InputAdapter() {

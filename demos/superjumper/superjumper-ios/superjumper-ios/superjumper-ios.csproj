@@ -152,51 +152,67 @@
   <ItemGroup>
     <Content Include="..\..\superjumper-android\assets\data\background.png">
       <Link>data\background.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\superjumper-android\assets\data\font.png">
       <Link>data\font.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\superjumper-android\assets\data\help.png">
       <Link>data\help.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\superjumper-android\assets\data\help1.png">
       <Link>data\help1.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\superjumper-android\assets\data\help2.png">
       <Link>data\help2.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\superjumper-android\assets\data\help3.png">
       <Link>data\help3.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\superjumper-android\assets\data\help4.png">
       <Link>data\help4.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\superjumper-android\assets\data\help5.png">
       <Link>data\help5.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\superjumper-android\assets\data\items.png">
       <Link>data\items.png</Link>
-    </Content>
-    <Content Include="..\..\superjumper-android\assets\data\click.ogg">
-      <Link>data\click.ogg</Link>
-    </Content>
-    <Content Include="..\..\superjumper-android\assets\data\coin.ogg">
-      <Link>data\coin.ogg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\superjumper-android\assets\data\font.fnt">
       <Link>data\font.fnt</Link>
-    </Content>
-    <Content Include="..\..\superjumper-android\assets\data\highjump.ogg">
-      <Link>data\highjump.ogg</Link>
-    </Content>
-    <Content Include="..\..\superjumper-android\assets\data\hit.ogg">
-      <Link>data\hit.ogg</Link>
-    </Content>
-    <Content Include="..\..\superjumper-android\assets\data\jump.ogg">
-      <Link>data\jump.ogg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\superjumper-android\assets\data\music.mp3">
       <Link>data\music.mp3</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\superjumper-android\assets\data\click.wav">
+      <Link>data\click.wav</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\superjumper-android\assets\data\coin.wav">
+      <Link>data\coin.wav</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\superjumper-android\assets\data\highjump.wav">
+      <Link>data\highjump.wav</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\superjumper-android\assets\data\hit.wav">
+      <Link>data\hit.wav</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\superjumper-android\assets\data\jump.wav">
+      <Link>data\jump.wav</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 </Project>
