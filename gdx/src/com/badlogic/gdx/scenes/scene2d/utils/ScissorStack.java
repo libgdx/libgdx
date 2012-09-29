@@ -64,7 +64,7 @@ public class ScissorStack {
 			scissor.height = Math.max(1, maxY - minY);
 		}
 		scissors.add(scissor);
-		Gdx.gl.glScissor(Math.round(scissor.x), Math.round(scissor.y), Math.round(scissor.width), Math.round(scissor.height));
+		Gdx.gl.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
 		return true;
 	}
 
@@ -81,6 +81,10 @@ public class ScissorStack {
 	}
 
 	private static void fix (Rectangle rect) {
+		rect.x = Math.round(rect.x);
+		rect.y = Math.round(rect.y);
+		rect.width = Math.round(rect.width);
+		rect.height = Math.round(rect.height);
 		if (rect.width < 0) {
 			rect.width = -rect.width;
 			rect.x -= rect.width;
