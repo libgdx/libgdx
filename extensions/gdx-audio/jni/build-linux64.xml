@@ -65,7 +65,7 @@
 
 	<!-- define linker and options -->
 	<property name="linker" value="${compilerPrefix}g++"/>
-	<property name="linker-opts" value="-shared -m64 -static-libgcc -static-libstdc++"/>
+	<property name="linker-opts" value="-shared -m64"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
