@@ -45,6 +45,18 @@ public class IOSFileHandle extends FileHandle {
 		return new IOSFileHandle(parent, type);
 	}
 
+	/**
+	 * This overrides the original method in FileHandle to prevent crashes on iOS. The original method
+	 * has a fallback to FileType.Classpath when FileType.Internal is used. FileType.Classpath is not
+	 * supported on iOS.
+	 * 
+	 * @return  True if the file exists.
+	 */
+	@Override
+	public boolean exists () {
+		return file.exists();
+	}
+
 	public File file () {
 		if (type == FileType.External) return new File(IOSFiles.externalPath, file.getPath());
 		if (type == FileType.Local) return new File(IOSFiles.localPath, file.getPath());
