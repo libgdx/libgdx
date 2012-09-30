@@ -23,6 +23,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
@@ -59,6 +60,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private GwtApplicationConfiguration config;
 	private GwtGraphics graphics;
 	private GwtInput input;
+	private GwtNet net;
 	private Panel root = null;
 	private TextArea log = null;
 	private int logLevel = LOG_ERROR;
@@ -160,6 +162,8 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.files = new GwtFiles(preloader);
 		this.input = new GwtInput(graphics.canvas);
 		Gdx.input = this.input;
+		this.net = new GwtNet();
+		Gdx.net = this.net;
 
 		// tell listener about app creation
 		try {
@@ -260,6 +264,11 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	@Override
 	public Files getFiles () {
 		return Gdx.files;
+	}
+	
+	@Override
+	public Net getNet() {
+		return Gdx.net;
 	}
 
 	private void checkLogLabel () {

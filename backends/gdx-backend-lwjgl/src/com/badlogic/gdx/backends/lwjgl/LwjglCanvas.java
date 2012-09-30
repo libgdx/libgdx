@@ -34,6 +34,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
 import com.badlogic.gdx.utils.Clipboard;
@@ -48,6 +49,7 @@ public class LwjglCanvas implements Application {
 	final OpenALAudio audio;
 	final LwjglFiles files;
 	final LwjglInput input;
+	final LwjglNet net;
 	final ApplicationListener listener;
 	final Canvas canvas;
 	final List<Runnable> runnables = new ArrayList();
@@ -104,6 +106,7 @@ public class LwjglCanvas implements Application {
 		audio = new OpenALAudio();
 		files = new LwjglFiles();
 		input = new LwjglInput();
+		net = new LwjglNet();
 		this.listener = listener;
 
 		Gdx.app = this;
@@ -111,6 +114,7 @@ public class LwjglCanvas implements Application {
 		Gdx.audio = audio;
 		Gdx.files = files;
 		Gdx.input = input;
+		Gdx.net = net;
 	}
 
 	protected void setDisplayMode (int width, int height) {
@@ -143,6 +147,11 @@ public class LwjglCanvas implements Application {
 		return input;
 	}
 
+	@Override
+	public Net getNet() {
+		return net;
+	}
+	
 	@Override
 	public ApplicationType getType () {
 		return ApplicationType.Desktop;
