@@ -193,6 +193,9 @@ public class TexturePacker2 {
 		if (rect.splits != null) {
 			writer
 				.write("  split: " + rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
+			if (rect.pads != null) {
+				writer.write("  pads: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
+			}
 		}
 		writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
 		writer.write("  offset: " + rect.offsetX + ", " + (rect.originalHeight - rect.image.getHeight() - rect.offsetY) + "\n");
@@ -239,6 +242,7 @@ public class TexturePacker2 {
 		public boolean rotated;
 		public ArrayList<Rect> aliases = new ArrayList();
 		public int[] splits;
+		public int[] pads;
 		public boolean canRotate = true;
 
 		int score1, score2;
@@ -283,6 +287,7 @@ public class TexturePacker2 {
 			rotated = rect.rotated;
 			aliases = rect.aliases;
 			splits = rect.splits;
+			pads = rect.pads;
 			canRotate = rect.canRotate;
 			score1 = rect.score1;
 			score2 = rect.score2;
