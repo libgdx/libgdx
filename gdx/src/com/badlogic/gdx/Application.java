@@ -72,6 +72,11 @@ import com.badlogic.gdx.utils.Clipboard;
  * </p>
  * 
  * <p>
+ * {@link Net} offers you various methods to perform network operations, such as performing HTTP requests, or creating server and
+ * client sockets for more elaborate network programming.
+ * </p>
+ * 
+ * <p>
  * The <code>Application</code> also has a set of methods that you can use to query specific information such as the operating
  * system the application is currently running on and so forth. This allows you to have operating system dependent code paths. It
  * is however not recommended to use this facilities.
@@ -107,6 +112,9 @@ public interface Application {
 
 	/** @return the {@link Files} instance */
 	public Files getFiles ();
+	
+	/** @return the {@link Net} instance */
+	public Net getNet();
 
 	/** Logs a message to the console or logcat */
 	public void log (String tag, String message);

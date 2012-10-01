@@ -38,6 +38,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
@@ -61,6 +62,7 @@ public class AndroidApplication extends Activity implements Application {
 	protected AndroidInput input;
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
+	protected AndroidNet net;
 	protected ApplicationListener listener;
 	protected Handler handler;
 	protected boolean firstResume = true;
@@ -99,6 +101,7 @@ public class AndroidApplication extends Activity implements Application {
 		input = new AndroidInput(this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
+		net = new AndroidNet();
 		this.listener = listener;
 		this.handler = new Handler();
 
@@ -107,6 +110,7 @@ public class AndroidApplication extends Activity implements Application {
 		Gdx.audio = this.getAudio();
 		Gdx.files = this.getFiles();
 		Gdx.graphics = this.getGraphics();
+		Gdx.net = this.getNet();
 
 		try {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -259,6 +263,11 @@ public class AndroidApplication extends Activity implements Application {
 	@Override
 	public Input getInput () {
 		return input;
+	}
+	
+	@Override
+	public Net getNet () {
+		return net;
 	}
 
 	/** {@inheritDoc} */
