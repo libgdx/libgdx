@@ -511,6 +511,13 @@ public class Actor {
 		return parent.getChildren().indexOf(this, true);
 	}
 
+	/** Transforms the specified point in screen coordinates to the actor's local coordinate system. */
+	public Vector2 screenToLocalCoordinates (Vector2 screenCoords) {
+		Stage stage = getStage();
+		if (stage == null) return screenCoords;
+		return stageToLocalCoordinates(stage.screenToStageCoordinates(screenCoords));
+	}
+
 	/** Transforms the specified point in the stage's coordinates to the actor's local coordinate system. */
 	public Vector2 stageToLocalCoordinates (Vector2 stageCoords) {
 		if (parent == null) return stageCoords;
