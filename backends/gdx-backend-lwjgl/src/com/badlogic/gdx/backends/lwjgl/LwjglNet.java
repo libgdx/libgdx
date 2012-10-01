@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *	 http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,6 +23,7 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 
 public class LwjglNet implements Net {
+	
 	@Override
 	public HttpResult httpGet (String url, String... parameters) {
 		throw new UnsupportedOperationException("Not implemented");
@@ -35,11 +36,11 @@ public class LwjglNet implements Net {
 
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
-		throw new UnsupportedOperationException("Not implemented");
+		return new LwjglServerSocket(protocol, port, hints);
 	}
-
+	
 	@Override
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
-		throw new UnsupportedOperationException("Not implemented");
+		return new LwjglSocket(protocol, host, port, hints);
 	}
 }

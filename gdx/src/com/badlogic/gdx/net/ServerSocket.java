@@ -16,6 +16,7 @@
 package com.badlogic.gdx.net;
 
 import com.badlogic.gdx.Net.Protocol;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -24,9 +25,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * should preferably be called in a separate thread as it is blocking.
  * 
  * @author mzechner
- *
+ * @author noblemaster
  */
-public interface ServerSocket {
+public interface ServerSocket extends Disposable {
+	
 	/**
 	 * @return the Protocol used by this socket
 	 */
@@ -37,7 +39,8 @@ public interface ServerSocket {
 	 * given hints will be applied to the accepted socket. Blocking, call
 	 * on a separate thread.
 	 * 
-	 * @param hints additional {@link SocketHints} applied to the accepted {@link Socket}
+	 * @param hints additional {@link SocketHints} applied to the accepted {@link Socket}. Input null to
+	 *        use the default setting provided by the system.
 	 * @return the accepted {@link Socket}
 	 * @throws GdxRuntimeException in case an error ocurred
 	 */
