@@ -148,7 +148,6 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 						@Override
 						public boolean onPreDraw () {
 							content.getLocationOnScreen(screenloc);
-							System.out.println(screenloc[1]);
 							keyboardHeight = Math.abs(screenloc[1]);
 							if (keyboardHeight > 0) keyboardShowing = true;
 							if (keyboardHeight == 0 && keyboardShowing) {

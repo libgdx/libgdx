@@ -36,6 +36,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
 import com.badlogic.gdx.utils.Clipboard;
@@ -50,6 +51,7 @@ public class LwjglAWTCanvas implements Application {
 	final OpenALAudio audio;
 	final LwjglFiles files;
 	final LwjglAWTInput input;
+	final LwjglNet net;
 	final ApplicationListener listener;
 	final AWTGLCanvas canvas;
 	final List<Runnable> runnables = new ArrayList();
@@ -127,6 +129,12 @@ public class LwjglAWTCanvas implements Application {
 		} else {
 			files = null;
 		}
+		if(Gdx.net == null) {
+			net = new LwjglNet();
+			Gdx.net = net;
+		} else {
+			net = null;
+		}
 		input = new LwjglAWTInput(canvas);
 		this.listener = listener;
 
@@ -162,6 +170,11 @@ public class LwjglAWTCanvas implements Application {
 	public Input getInput () {
 		return input;
 	}
+	
+	@Override
+	public Net getNet () {
+		return net;
+	}
 
 	@Override
 	public ApplicationType getType () {
@@ -177,6 +190,7 @@ public class LwjglAWTCanvas implements Application {
 		Gdx.app = this;
 		if (audio != null) Gdx.audio = audio;
 		if (files != null) Gdx.files = files;
+		if (net != null) Gdx.net = net;
 		Gdx.graphics = graphics;
 		Gdx.input = input;
 	}

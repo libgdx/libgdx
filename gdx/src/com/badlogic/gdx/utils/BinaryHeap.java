@@ -17,10 +17,10 @@
 package com.badlogic.gdx.utils;
 
 /** @author Nathan Sweet */
-public class BinaryHeap<T> {
+public class BinaryHeap<T extends BinaryHeap.Node> {
 	public int size = 0;
 
-	private Node<T>[] nodes;
+	private Node[] nodes;
 	private final boolean isMaxHeap;
 
 	public BinaryHeap () {
@@ -32,7 +32,7 @@ public class BinaryHeap<T> {
 		nodes = new Node[capacity];
 	}
 
-	public Node add (Node node) {
+	public T add (T node) {
 		// Expand if necessary.
 		if (size == nodes.length) {
 			Node[] newNodes = new Node[size << 1];
@@ -46,16 +46,16 @@ public class BinaryHeap<T> {
 		return node;
 	}
 
-	public Node pop () {
+	public T pop () {
 		Node[] nodes = this.nodes;
 		Node popped = nodes[0];
 		nodes[0] = nodes[--size];
 		nodes[size] = null;
 		if (size > 0) down(0);
-		return popped;
+		return (T)popped;
 	}
 
-	public void setValue (Node node, float value) {
+	public void setValue (T node, float value) {
 		float oldValue = node.value;
 		node.value = value;
 		if (value < oldValue ^ isMaxHeap)
@@ -142,12 +142,16 @@ public class BinaryHeap<T> {
 	}
 
 	/** @author Nathan Sweet */
-	static public class Node<T> {
+	static public class Node {
 		float value;
 		int index;
 
 		public Node (float value) {
 			this.value = value;
+		}
+
+		public float getValue () {
+			return value;
 		}
 	}
 }
