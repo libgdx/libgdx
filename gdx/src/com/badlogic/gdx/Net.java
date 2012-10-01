@@ -44,9 +44,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * that waits for an incoming connection.
  * 
  * @author mzechner
- *
+ * @author noblemaster
  */
 public interface Net {
+	
 	/**
 	 * {@link Future} like interface used with the HTTP get
 	 * and post methods. Allows to cancel the operation, 
@@ -130,7 +131,8 @@ public interface Net {
 	 * waiting for incoming connections.
 	 * 
 	 * @param port the port to listen on
-	 * @param hints additional {@link ServerSocketHints} used to create the socket
+	 * @param hints additional {@link ServerSocketHints} used to create the socket. Input null to
+	 *        use the default setting provided by the system.
 	 * @return the {@link ServerSocket}
 	 * @throws GdxRuntimeException in case the socket couldn't be opened
 	 */
@@ -141,7 +143,8 @@ public interface Net {
 	 * 
 	 * @param host the host address
 	 * @param port the port
-	 * @param hints additional {@link SocketHints} used to create the socket
+	 * @param hints additional {@link SocketHints} used to create the socket. Input null to
+	 *        use the default setting provided by the system.
 	 * @return GdxRuntimeException in case the socket couldn't be opened
 	 */
 	public Socket newClientSocket(Protocol protocol, String host, int port, SocketHints hints);
