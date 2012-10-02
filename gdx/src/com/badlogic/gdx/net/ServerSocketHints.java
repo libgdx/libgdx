@@ -23,7 +23,12 @@ package com.badlogic.gdx.net;
  */
 public class ServerSocketHints {
 
-	/** The listen backlog length. Needs to be greater than 0, otherwise the default is used. */
+	/** 
+	 * The listen backlog length. Needs to be greater than 0, otherwise the system default is used. 
+	 * backlog is the maximum queue length for incoming connection, i.e. maximum number of connections
+	 * waiting for accept(...). If a connection indication arrives when the queue 
+	 * is full, the connection is refused. 
+	 */
 	public int backlog = 16;
 	
 	/**
@@ -38,7 +43,9 @@ public class ServerSocketHints {
 	 * time, then it could invoke this method with the values (0, 1, 2).
 	 */
 	public int performancePrefConnectionTime = 0;
+	/** See performancePrefConnectionTime for details. */
 	public int performancePrefLatency = 1;   // low latency
+	/** See performancePrefConnectionTime for details. */
 	public int performancePrefBandwidth = 0;
 	/** Enable/disable the SO_REUSEADDR socket option. */
 	public boolean reuseAddress = true;
