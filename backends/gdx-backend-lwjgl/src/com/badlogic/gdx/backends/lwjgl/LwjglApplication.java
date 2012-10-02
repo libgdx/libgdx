@@ -151,6 +151,11 @@ public class LwjglApplication implements Application {
 					}
 				}
 			}
+			
+			// if one of the runnables set running in false, for example after an exit().
+			if (!running)
+				break;
+			
 			input.update();
 			shouldRender |= graphics.shouldRender();
 
