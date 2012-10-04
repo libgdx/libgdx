@@ -211,7 +211,13 @@ public class Skin implements Disposable {
 			TextureRegion region = getRegion(name);
 			if (region instanceof AtlasRegion) {
 				int[] splits = ((AtlasRegion)region).splits;
-				if (splits != null) patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
+				if (splits != null) {
+					patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
+					int[] pads = ((AtlasRegion)region).pads;
+					if (pads != null) {
+						patch.setPadding(pads[0], pads[1], pads[2], pads[3]);
+					}
+				}
 			}
 			if (patch == null) patch = new NinePatch(region);
 			add(name, patch, NinePatch.class);
