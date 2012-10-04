@@ -24,6 +24,9 @@ import com.badlogic.gdx.net.SocketHints;
 
 public class LwjglNet implements Net {
 	
+	// IMPORTANT: The Gdx.net classes are a currently duplicated for LWJGL + Android!
+	//            If you make changes here, make changes in the other backend as well.
+	
 	@Override
 	public HttpResult httpGet (String url, String... parameters) {
 		throw new UnsupportedOperationException("Not implemented");
