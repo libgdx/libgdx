@@ -367,8 +367,4 @@ public class NinePatch {
 	public float getTotalHeight () {
 		return topHeight + middleHeight + bottomHeight;
 	}
-	
-	public Texture getTexture () {
-		return texture;
-	}
 }
