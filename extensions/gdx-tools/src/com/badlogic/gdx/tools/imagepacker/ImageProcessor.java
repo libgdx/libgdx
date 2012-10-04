@@ -243,20 +243,30 @@ public class ImageProcessor {
 			return null;
 		}
 
-		// Subtraction here is because the coordinates were computed before the 1px border was stripped.
-		if (startX > 0) {
-			startX--;
-			endX = raster.getWidth() - 2 - (endX - 1);
+		// -2 here is because the coordinates were computed before the 1px border was stripped.
+		if (startX == 0 && endX == 0) {
+			startX = -1;
+			endX = -1;
 		} else {
-			// If no start point was ever found, we assume full stretch.
-			endX = raster.getWidth() - 2;
+			if (startX > 0) {
+				startX--;
+				endX = raster.getWidth() - 2 - (endX - 1);
+			} else {
+				// If no start point was ever found, we assume full stretch.
+				endX = raster.getWidth() - 2;
+			}
 		}
-		if (startY > 0) {
-			startY--;
-			endY = raster.getHeight() - 2 - (endY - 1);
+		if (startY == 0 && endY == 0) {
+			startY = -1;
+			endY = -1;
 		} else {
-			// If no start point was ever found, we assume full stretch.
-			endY = raster.getHeight() - 2;
+			if (startY > 0) {
+				startY--;
+				endY = raster.getHeight() - 2 - (endY - 1);
+			} else {
+				// If no start point was ever found, we assume full stretch.
+				endY = raster.getHeight() - 2;
+			}
 		}
 
 		int[] pads = new int[] {startX, endX, startY, endY};
