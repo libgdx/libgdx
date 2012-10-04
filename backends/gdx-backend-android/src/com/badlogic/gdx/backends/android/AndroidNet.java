@@ -25,6 +25,10 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 
 public class AndroidNet implements Net {
+	
+	// IMPORTANT: The Gdx.net classes are a currently duplicated for LWJGL + Android!
+	//            If you make changes here, make changes in the other backend as well.
+
 	@Override
 	public HttpResult httpGet (String url, String... parameters) {
 		throw new UnsupportedOperationException("Not implemented");
@@ -37,11 +41,11 @@ public class AndroidNet implements Net {
 
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
-		throw new UnsupportedOperationException("Not implemented");
+		return new AndroidServerSocket(protocol, port, hints);
 	}
 
 	@Override
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
-		throw new UnsupportedOperationException("Not implemented");
+		return new AndroidSocket(protocol, host, port, hints);
 	}
 }
