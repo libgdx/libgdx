@@ -14,7 +14,12 @@
 #define __GDX2D__
 
 #include <stdint.h>
+
+#ifndef NOJNI
 #include <jni.h>
+#else
+#define JNIEXPORT
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,10 +65,6 @@ typedef struct {
 	uint32_t format;
 	const unsigned char* pixels;
 } gdx2d_pixmap;
-
-#ifdef NOJNI
-#define JNIEXPORT
-#endif
 
 JNIEXPORT gdx2d_pixmap* gdx2d_load (const unsigned char *buffer, uint32_t len, uint32_t req_format);
 JNIEXPORT gdx2d_pixmap* gdx2d_new  (uint32_t width, uint32_t height, uint32_t format);
