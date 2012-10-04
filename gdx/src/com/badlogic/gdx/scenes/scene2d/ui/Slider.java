@@ -148,13 +148,13 @@ public class Slider extends Widget {
 
 		if (vertical) {
 			float height = getHeight() - bg.getTopHeight() - bg.getBottomHeight();
-			sliderPos = y - knob.getMinHeight() * 0.5f;
+			sliderPos = y- bg.getBottomHeight() - knob.getMinHeight() * 0.5f;
 			sliderPos = Math.max(0, sliderPos);
 			sliderPos = Math.min(height - knob.getMinHeight(), sliderPos);
 			value = min + (max - min) * (sliderPos / (height - knob.getMinHeight()));
 		} else {
-			float width = getWidth();
-			sliderPos = x - knob.getMinWidth() * 0.5f;
+			float width = getWidth() - bg.getLeftWidth() - bg.getRightWidth();
+			sliderPos = x - bg.getLeftWidth() - knob.getMinWidth() * 0.5f;
 			sliderPos = Math.max(0, sliderPos);
 			sliderPos = Math.min(width - knob.getMinWidth(), sliderPos);
 			value = min + (max - min) * (sliderPos / (width - knob.getMinWidth()));
