@@ -214,9 +214,7 @@ public class Skin implements Disposable {
 				if (splits != null) {
 					patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
 					int[] pads = ((AtlasRegion)region).pads;
-					if (pads != null) {
-						patch.setPadding(pads[0], pads[1], pads[2], pads[3]);
-					}
+					if (pads != null) patch.setPadding(pads[0], pads[1], pads[2], pads[3]);
 				}
 			}
 			if (patch == null) patch = new NinePatch(region);

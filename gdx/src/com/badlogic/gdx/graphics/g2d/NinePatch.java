@@ -20,6 +20,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/** A 3x3 grid of texture regions. Any of the regions may be omitted. Padding may be set as a hint on how to inset content on top
+ * of the ninepatch. */
 public class NinePatch {
 	public static final int TOP_LEFT = 0;
 	public static final int TOP_CENTER = 1;
@@ -41,13 +43,8 @@ public class NinePatch {
 	private float[] vertices = new float[9 * 4 * 5];
 	private int idx;
 	private final Color color = new Color(Color.WHITE);
-	
-	/** Padding overrides are stored by NinePatch for use by elements such as tables that use
-	 *  a NinePatch for their background.   If these values are not set, the width/height of 
-	 *  border patches are used (eg. leftWidth, rightWidth, topHeight, and bottomHeight).
-	 */
 	private int padLeft = -1, padRight = -1, padTop = -1, padBottom = -1;
-	
+
 	public NinePatch (Texture texture, int left, int right, int top, int bottom) {
 		this(new TextureRegion(texture), left, right, top, bottom);
 	}
@@ -373,51 +370,55 @@ public class NinePatch {
 	public float getTotalHeight () {
 		return topHeight + middleHeight + bottomHeight;
 	}
-	
-	public void setPadding(int left, int right, int top, int bottom) {
+
+	public void setPadding (int left, int right, int top, int bottom) {
 		this.padLeft = left;
 		this.padRight = right;
 		this.padTop = top;
 		this.padBottom = bottom;
 	}
-	
-	public void setPadLeft(int left) {
+
+	/** Returns the left padding if set, else returns {@link #getLeftWidth()}. */
+	public float getPadLeft () {
+		if (padLeft == -1) return getLeftWidth();
+		return padLeft;
+	}
+
+	public void setPadLeft (int left) {
 		this.padLeft = left;
 	}
-	
-	public void setPadRight(int right) {
+
+	/** Returns the right padding if set, else returns {@link #getRightWidth()}. */
+	public float getPadRight () {
+		if (padRight == -1) return getRightWidth();
+		return padRight;
+	}
+
+	public void setPadRight (int right) {
 		this.padRight = right;
 	}
-	
-	public void setPadTop(int top) {
+
+	/** Returns the top padding if set, else returns {@link #getTopHeight()}. */
+	public float getPadTop () {
+		if (padTop == -1) return getTopHeight();
+		return padTop;
+	}
+
+	public void setPadTop (int top) {
 		this.padTop = top;
 	}
-	
-	public void setPadBottom(int bottom) {
+
+	/** Returns the bottom padding if set, else returns {@link #getBottomHeight()}. */
+	public float getPadBottom () {
+		if (padBottom == -1) return getBottomHeight();
+		return padBottom;
+	}
+
+	public void setPadBottom (int bottom) {
 		this.padBottom = bottom;
 	}
-	
-	public float getPadLeft() {
-		if (this.padLeft == -1)
-			return this.getLeftWidth();
-		return this.padLeft;
+
+	public Texture getTexture () {
+		return texture;
 	}
-	
-	public float getPadRight() {
-		if (this.padRight == -1)
-			return this.getRightWidth();
-		return this.padRight;
-	}
-	
-	public float getPadTop() {
-		if (this.padTop == -1)
-			return this.getTopHeight();
-		return this.padTop;
-	}
-	
-	public float getPadBottom() {
-		if (this.padBottom == -1)
-			return this.getBottomHeight();
-		return this.padBottom;
-	}	
 }

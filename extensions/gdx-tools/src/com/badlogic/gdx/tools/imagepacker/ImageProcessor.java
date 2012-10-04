@@ -1,6 +1,10 @@
 
 package com.badlogic.gdx.tools.imagepacker;
 
+import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Rect;
+import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
+import com.badlogic.gdx.utils.Array;
+
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
@@ -14,10 +18,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
-
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Rect;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
-import com.badlogic.gdx.utils.Array;
 
 public class ImageProcessor {
 	static private final BufferedImage emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
@@ -185,19 +185,18 @@ public class ImageProcessor {
 	 * has left, right, top, bottom. */
 	private int[] getSplits (BufferedImage image, String name) {
 		WritableRaster raster = image.getRaster();
-		
+
 		int startX = getSplitPoint(raster, name, 1, 0, true, true);
 		int endX = getSplitPoint(raster, name, startX, 0, false, true);
 		int startY = getSplitPoint(raster, name, 0, 1, true, false);
 		int endY = getSplitPoint(raster, name, 0, startY, false, false);
 
 		// Ensure pixels after the end are not invalid.
-		getSplitPoint(raster, name, endX+1, 0, true, true);
-		getSplitPoint(raster, name, 0, endY+1, true, false);
-		
+		getSplitPoint(raster, name, endX + 1, 0, true, true);
+		getSplitPoint(raster, name, 0, endY + 1, true, false);
+
 		// No splits, or all splits.
-		if (startX == 0 && endX == 0 && startY == 0 && endY == 0) 
-			return null;
+		if (startX == 0 && endX == 0 && startY == 0 && endY == 0) return null;
 
 		// Subtraction here is because the coordinates were computed before the 1px border was stripped.
 		if (startX != 0) {
@@ -214,37 +213,35 @@ public class ImageProcessor {
 			// If no start point was ever found, we assume full stretch.
 			endY = raster.getHeight() - 2;
 		}
-		
+
 		return new int[] {startX, endX, startY, endY};
 	}
-	
-	/** Returns the pads, or null if the image had no pads or the pads match the splits. Pads are an int[4] that
-	 * has left, right, top, bottom. */
+
+	/** Returns the pads, or null if the image had no pads or the pads match the splits. Pads are an int[4] that has left, right,
+	 * top, bottom. */
 	private int[] getPads (BufferedImage image, String name, int[] splits) {
 		WritableRaster raster = image.getRaster();
-		
+
 		int bottom = raster.getHeight() - 1;
 		int right = raster.getWidth() - 1;
-		
+
 		int startX = getSplitPoint(raster, name, 1, bottom, true, true);
 		int startY = getSplitPoint(raster, name, right, 1, true, false);
-		
+
 		// No need to hunt for the end if a start was never found.
 		int endX = 0;
 		int endY = 0;
-		if (startX != 0)
-			endX = getSplitPoint(raster, name, startX+1, bottom, false, true);
-		if (startY != 0)
-			endY = getSplitPoint(raster, name, right, startY+1, false, false);
-		
+		if (startX != 0) endX = getSplitPoint(raster, name, startX + 1, bottom, false, true);
+		if (startY != 0) endY = getSplitPoint(raster, name, right, startY + 1, false, false);
+
 		// Ensure pixels after the end are not invalid.
-		getSplitPoint(raster, name, endX+1, bottom, true, true);
-		getSplitPoint(raster, name, right, endY+1, true, false);
-		
+		getSplitPoint(raster, name, endX + 1, bottom, true, true);
+		getSplitPoint(raster, name, right, endY + 1, true, false);
+
 		// No pads.
 		if (startX == 0 && endX == 0 && startY == 0 && endY == 0) {
 			return null;
-		}		
+		}
 
 		// Subtraction here is because the coordinates were computed before the 1px border was stripped.
 		if (startX > 0) {
@@ -261,28 +258,27 @@ public class ImageProcessor {
 			// If no start point was ever found, we assume full stretch.
 			endY = raster.getHeight() - 2;
 		}
-		
+
 		int[] pads = new int[] {startX, endX, startY, endY};
-		
-		if ((splits != null) && Arrays.equals(pads, splits)) {
+
+		if (splits != null && Arrays.equals(pads, splits)) {
 			return null;
 		}
-		
+
 		return pads;
 	}
-	
-	/** Hunts for the start or end of a sequence of split pixels.  Begins searching at (startX, startY) then follows
-	 * along the x or y axis (depending on value of xAxis) for the first non-transparent pixel if startPoint is true,
-	 * or the first transparent pixel if startPoint is false.  Returns 0 if none found, as 0 is considered an invalid
-	 * split point being in the outer border which will be stripped. */
-	private int getSplitPoint(WritableRaster raster, String name, int startX, int startY, boolean startPoint, boolean xAxis) 
-	{
+
+	/** Hunts for the start or end of a sequence of split pixels. Begins searching at (startX, startY) then follows along the x or y
+	 * axis (depending on value of xAxis) for the first non-transparent pixel if startPoint is true, or the first transparent pixel
+	 * if startPoint is false. Returns 0 if none found, as 0 is considered an invalid split point being in the outer border which
+	 * will be stripped. */
+	private int getSplitPoint (WritableRaster raster, String name, int startX, int startY, boolean startPoint, boolean xAxis) {
 		int[] rgba = new int[4];
 
 		int next = xAxis ? startX : startY;
 		int end = xAxis ? raster.getWidth() : raster.getHeight();
 		int breakA = startPoint ? 255 : 0;
-		
+
 		int x = startX;
 		int y = startY;
 		while (next != end) {
@@ -290,17 +286,15 @@ public class ImageProcessor {
 				x = next;
 			else
 				y = next;
-			
+
 			raster.getPixel(x, y, rgba);
-			if (rgba[3] == breakA)
-				return next;
-			
-			if (!startPoint && (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255))
-				splitError(x, y, rgba, name);
-			
+			if (rgba[3] == breakA) return next;
+
+			if (!startPoint && (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255)) splitError(x, y, rgba, name);
+
 			next++;
 		}
-		
+
 		return 0;
 	}
 
