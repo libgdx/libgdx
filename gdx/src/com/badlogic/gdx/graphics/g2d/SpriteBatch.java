@@ -1068,12 +1068,16 @@ public class SpriteBatch implements Disposable {
 
 	/** Disables blending for drawing sprites. */
 	public void disableBlending () {
+		if (blendingDisabled)
+			return;
 		renderMesh();
 		blendingDisabled = true;
 	}
 
 	/** Enables blending for sprites */
 	public void enableBlending () {
+		if (!blendingDisabled)
+			return;
 		renderMesh();
 		blendingDisabled = false;
 	}
