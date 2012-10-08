@@ -78,6 +78,7 @@
     <MtouchI18n>west</MtouchI18n>
     <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
     <AssemblyName>superjumperios</AssemblyName>
+    <MtouchArch>ARMv7</MtouchArch>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
@@ -148,8 +149,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
-    <None Include="libgdx.a" />
     <None Include="libikvm-natives.a" />
+    <None Include="libgdx.a" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

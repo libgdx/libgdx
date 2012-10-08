@@ -70,11 +70,10 @@ public class IOSInput implements Input {
 
 				@Override
 				public void DidAccelerate(UIAccelerometer accelerometer, UIAcceleration values) {
-					super.DidAccelerate(accelerometer, values);
+					//super.DidAccelerate(accelerometer, values);
 					acceleration[0] = (float)values.get_X();
 					acceleration[1] = (float)values.get_Y();
 					acceleration[2] = (float)values.get_Z();
-					Gdx.app.log("Input", "accel");
 				}
 			});
 			UIAccelerometer.get_SharedAccelerometer().set_UpdateInterval(config.accelerometerUpdate);
