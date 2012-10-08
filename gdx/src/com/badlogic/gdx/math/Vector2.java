@@ -152,6 +152,18 @@ public class Vector2 implements Serializable {
 		return this;
 	}
 
+	public Vector2 div (float value) {
+		return this.mul(1/value);
+	}
+
+	public Vector2 div (float vx, float vy) {
+		return this.mul(1/vx, 1/vy);
+	}
+
+	public Vector2 div (Vector2 other) {
+		return this.mul(1/other.x, 1/other.y);
+	}
+
 	/** @param v The other vector
 	 * @return the distance between this and the other vector */
 	public float dst (Vector2 v) {
