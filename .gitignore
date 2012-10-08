@@ -3,10 +3,9 @@
 .*.swp
 .DS_STORE
 *.mdb
-
 # per project ignores, it's cumbersome, but reduces the risk of missing something
 /backends/gdx-backend-android/bin
-
+*/*/target
 /backends/gdx-backend-iosmonotouch/bin
 /backends/gdx-backend-iosmonotouch/libs/gdx-backend-ios.*
 /backends/gdx-backend-iosmonotouch/libs/gdx.*
