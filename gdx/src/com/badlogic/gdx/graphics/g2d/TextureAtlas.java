@@ -16,12 +16,7 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
+import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -30,7 +25,6 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasSprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.utils.Array;
@@ -38,7 +32,12 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 /** Loads images from texture atlases created by TexturePacker.<br>
  * <br>
@@ -88,6 +87,7 @@ public class TextureAtlas implements Disposable {
 			public int height;
 			public boolean flip;
 			public int[] splits;
+			public int[] pads;
 		}
 
 		final Array<Page> pages = new Array<Page>();
@@ -148,7 +148,13 @@ public class TextureAtlas implements Disposable {
 						if (readTuple(reader) == 4) { // split is optional
 							region.splits = new int[] {Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
 								Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3])};
-							readTuple(reader);
+
+							if (readTuple(reader) == 4) { // pad is optional, but only present with splits
+								region.pads = new int[] {Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
+									Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3])};
+
+								readTuple(reader);
+							}
 						}
 
 						region.originalWidth = Integer.parseInt(tuple[0]);
@@ -250,6 +256,7 @@ public class TextureAtlas implements Disposable {
 			atlasRegion.originalWidth = region.originalWidth;
 			atlasRegion.rotate = region.rotate;
 			atlasRegion.splits = region.splits;
+			atlasRegion.pads = region.pads;
 			if (region.flip) atlasRegion.flip(false, true);
 			regions.add(atlasRegion);
 		}
@@ -381,7 +388,9 @@ public class TextureAtlas implements Disposable {
 			if (region.name.equals(name)) {
 				int[] splits = region.splits;
 				if (splits == null) throw new IllegalArgumentException("Region does not have ninepatch splits: " + name);
-				return new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
+				NinePatch patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
+				if (region.pads != null) patch.setPadding(region.pads[0], region.pads[1], region.pads[2], region.pads[3]);
+				return patch;
 			}
 		}
 		return null;
@@ -473,6 +482,9 @@ public class TextureAtlas implements Disposable {
 
 		/** The ninepatch splits, or null if not a ninepatch. Has 4 elements: left, right, top, bottom. */
 		public int[] splits;
+
+		/** The ninepatch pads, or null if not a ninepatch or the has no padding. Has 4 elements: left, right, top, bottom. */
+		public int[] pads;
 
 		public AtlasRegion (Texture texture, int x, int y, int width, int height) {
 			super(texture, x, y, width, height);

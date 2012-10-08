@@ -20,6 +20,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/** A 3x3 grid of texture regions. Any of the regions may be omitted. Padding may be set as a hint on how to inset content on top
+ * of the ninepatch. */
 public class NinePatch {
 	public static final int TOP_LEFT = 0;
 	public static final int TOP_CENTER = 1;
@@ -41,6 +43,7 @@ public class NinePatch {
 	private float[] vertices = new float[9 * 4 * 5];
 	private int idx;
 	private final Color color = new Color(Color.WHITE);
+	private int padLeft = -1, padRight = -1, padTop = -1, padBottom = -1;
 
 	public NinePatch (Texture texture, int left, int right, int top, int bottom) {
 		this(new TextureRegion(texture), left, right, top, bottom);
@@ -366,5 +369,56 @@ public class NinePatch {
 
 	public float getTotalHeight () {
 		return topHeight + middleHeight + bottomHeight;
+	}
+
+	public void setPadding (int left, int right, int top, int bottom) {
+		this.padLeft = left;
+		this.padRight = right;
+		this.padTop = top;
+		this.padBottom = bottom;
+	}
+
+	/** Returns the left padding if set, else returns {@link #getLeftWidth()}. */
+	public float getPadLeft () {
+		if (padLeft == -1) return getLeftWidth();
+		return padLeft;
+	}
+
+	public void setPadLeft (int left) {
+		this.padLeft = left;
+	}
+
+	/** Returns the right padding if set, else returns {@link #getRightWidth()}. */
+	public float getPadRight () {
+		if (padRight == -1) return getRightWidth();
+		return padRight;
+	}
+
+	public void setPadRight (int right) {
+		this.padRight = right;
+	}
+
+	/** Returns the top padding if set, else returns {@link #getTopHeight()}. */
+	public float getPadTop () {
+		if (padTop == -1) return getTopHeight();
+		return padTop;
+	}
+
+	public void setPadTop (int top) {
+		this.padTop = top;
+	}
+
+	/** Returns the bottom padding if set, else returns {@link #getBottomHeight()}. */
+	public float getPadBottom () {
+		if (padBottom == -1) return getBottomHeight();
+		return padBottom;
+	}
+
+	public void setPadBottom (int bottom) {
+		this.padBottom = bottom;
+	}
+
+	public Texture getTexture () {
+		return texture;
 	}
 }

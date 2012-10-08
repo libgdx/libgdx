@@ -34,6 +34,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Clipboard;
 
@@ -46,6 +47,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	IOSAudio audio;
 	IOSFiles files;
 	IOSInput input;
+	IOSNet net;
 	int logLevel = Application.LOG_DEBUG;
 	boolean firstResume;
 	
@@ -189,6 +191,11 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	@Override
 	public Files getFiles () {
 		return files;
+	}
+	
+	@Override
+	public Net getNet() {
+		return net;
 	}
 
 	@Override

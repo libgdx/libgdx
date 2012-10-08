@@ -30,6 +30,7 @@ public class InputEvent extends Event {
 	public void reset () {
 		super.reset();
 		relatedActor = null;
+		button = -1;
 	}
 
 	/** The stage x coordinate where the event occured. Valid for: touchDown, touchDragged, touchUp, mouseMoved, enter, and exit. */

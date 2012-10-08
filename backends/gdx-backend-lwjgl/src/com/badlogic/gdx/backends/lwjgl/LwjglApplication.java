@@ -30,6 +30,7 @@ import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
 import com.badlogic.gdx.utils.Array;
@@ -38,10 +39,11 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** An OpenGL surface fullscreen or in a lightweight window. */
 public class LwjglApplication implements Application {
-	protected LwjglGraphics graphics;
-	protected OpenALAudio audio;
-	protected LwjglFiles files;
-	protected LwjglInput input;
+	protected final LwjglGraphics graphics;
+	protected final OpenALAudio audio;
+	protected final LwjglFiles files;
+	protected final LwjglInput input;
+	protected final LwjglNet net;
 	protected final ApplicationListener listener;
 	protected Thread mainLoopThread;
 	protected boolean running = true;
@@ -76,6 +78,7 @@ public class LwjglApplication implements Application {
 		audio = new OpenALAudio(16, config.audioDeviceBufferCount, config.audioDeviceBufferSize);
 		files = new LwjglFiles();
 		input = new LwjglInput();
+		net = new LwjglNet();
 		this.listener = listener;
 
 		Gdx.app = this;
@@ -83,6 +86,7 @@ public class LwjglApplication implements Application {
 		Gdx.audio = audio;
 		Gdx.files = files;
 		Gdx.input = input;
+		Gdx.net = net;
 		initialize();
 	}
 
@@ -147,6 +151,11 @@ public class LwjglApplication implements Application {
 					}
 				}
 			}
+			
+			// if one of the runnables set running in false, for example after an exit().
+			if (!running)
+				break;
+			
 			input.update();
 			shouldRender |= graphics.shouldRender();
 
@@ -215,6 +224,11 @@ public class LwjglApplication implements Application {
 	@Override
 	public Input getInput () {
 		return input;
+	}
+	
+	@Override
+	public Net getNet() {
+		return net;
 	}
 
 	@Override
