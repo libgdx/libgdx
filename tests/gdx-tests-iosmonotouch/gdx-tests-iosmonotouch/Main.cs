@@ -24,7 +24,7 @@ namespace superjumperios
 	{
 		[Register ("AppDelegate")]
 		public partial class AppDelegate : IOSApplication {
-			public AppDelegate(): base(new UITest(), new IOSApplicationConfiguration()) {
+			public AppDelegate(): base(new FilesTest(), new IOSApplicationConfiguration()) {
 				
 			}
 		}
