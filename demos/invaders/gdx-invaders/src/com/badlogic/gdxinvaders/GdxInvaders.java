@@ -42,10 +42,6 @@ public class GdxInvaders extends Game {
 		// next screen. Ideally the screen transitions are handled
 		// in the screen itself or in a proper state machine.
 		if (currentScreen.isDone()) {
-			// dispose music
-			music.dispose();
-			music = null;
-			
 			// dispose the resources of the current screen
 			currentScreen.dispose();
 
