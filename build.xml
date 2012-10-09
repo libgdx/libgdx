@@ -197,7 +197,7 @@
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="clean">
 		<javadoc destdir="${distDir}/docs/api" author="true" version="true" use="true"
-		windowtitle="libgdx API" doctitle="libgdx API" footer="libgdx API">
+		windowtitle="libgdx API" doctitle="libgdx API" footer="libgdx API" useexternalfile="true">
 			<header><![CDATA[
 				libgdx API
 				<style>
