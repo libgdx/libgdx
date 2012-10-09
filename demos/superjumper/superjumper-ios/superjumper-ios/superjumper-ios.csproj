@@ -225,8 +225,5 @@
       <Link>data\jump.wav</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\superjumper-android\assets\data\items.ugh">
-      <Link>data\items.ugh</Link>
-    </Content>
   </ItemGroup>
 </Project>
