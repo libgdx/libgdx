@@ -1,8 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|iPhone" />
   <MonoDevelop.Ide.Workbench ActiveDocument="gdx-vectorpinball-ios/Main.cs">
     <Files>
-      <File FileName="gdx-vectorpinball-ios/Main.cs" Line="8" Column="11" />
+      <File FileName="gdx-vectorpinball-ios/Main.cs" Line="25" Column="18" />
+      <File FileName="gdx-vectorpinball-ios/Info.plist" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
