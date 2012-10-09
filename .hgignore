@@ -1,2 +1,7 @@
 syntax:glob
 bin/*
+*.class
+backends/gdx-backends-gwt/*
+*/R.java
+*/BuildConfig.java
+*/*.gwt.xml
