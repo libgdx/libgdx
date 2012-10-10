@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdxinvaders.screens.GameLoop;
 import com.badlogic.gdxinvaders.screens.GameOver;
 import com.badlogic.gdxinvaders.screens.InvadersScreen;
@@ -29,7 +30,7 @@ public class GdxInvaders extends Game {
 	
 	/** Music needs to be a class property to prevent being disposed. */
 	private Music music;
-	
+	private FPSLogger fps;
 	
 	@Override
 	public void render () {
@@ -42,10 +43,6 @@ public class GdxInvaders extends Game {
 		// next screen. Ideally the screen transitions are handled
 		// in the screen itself or in a proper state machine.
 		if (currentScreen.isDone()) {
-			// dispose music
-			music.dispose();
-			music = null;
-			
 			// dispose the resources of the current screen
 			currentScreen.dispose();
 
@@ -73,6 +70,8 @@ public class GdxInvaders extends Game {
 			} catch (InterruptedException e) {
 			}
 		}
+		
+		fps.log();
 	}
 
 	@Override
@@ -90,6 +89,8 @@ public class GdxInvaders extends Game {
 				return true;
 			}
 		});
+		
+		fps = new FPSLogger();
 	}
 
 	/** For this game each of our screens is an instance of InvadersScreen.

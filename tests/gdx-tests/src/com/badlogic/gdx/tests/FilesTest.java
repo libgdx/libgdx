@@ -39,7 +39,7 @@ public class FilesTest extends GdxTest {
 
 	@Override
 	public void create () {
-		font = new BitmapFont();
+		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 		batch = new SpriteBatch();
 
 		if (Gdx.files.isExternalStorageAvailable()) {
@@ -177,6 +177,8 @@ public class FilesTest extends GdxTest {
 	}
 
 	private void testClasspath () throws IOException {
+		// no classpath support on ios
+		if(Gdx.app.getType() == ApplicationType.iOS) return;
 		FileHandle handle = Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png");
 		if (!handle.exists()) fail();
 		if (handle.isDirectory()) fail();
@@ -207,16 +209,16 @@ public class FilesTest extends GdxTest {
 
 	private void testInternal () throws IOException {
 		FileHandle handle = Gdx.files.internal("data/badlogic.jpg");
-		if (!handle.exists()) fail();
-		if (handle.isDirectory()) fail();
+		if (!handle.exists()) fail("Couldn't find internal file");
+		if (handle.isDirectory()) fail("Internal file shouldn't be a directory");
 		try {
 			handle.delete();
-			fail();
+			fail("Shouldn't be able to delete internal file");
 		} catch (Exception expected) {
 		}
-		if (handle.list().length != 0) fail();
+		if (handle.list().length != 0) fail("File length shouldn't be 0");
 		if (Gdx.app.getType() != ApplicationType.Android) {
-			if (!handle.parent().exists()) fail();
+			if (!handle.parent().exists()) fail("Parent doesn't exist");
 		}
 		try {
 			handle.read().close();
@@ -224,7 +226,7 @@ public class FilesTest extends GdxTest {
 		} catch (Exception ignored) {
 		}
 		FileHandle dir;
-		if (Gdx.app.getType() == ApplicationType.Android)
+		if (Gdx.app.getType() == ApplicationType.Android || Gdx.app.getType() == ApplicationType.iOS)
 			dir = Gdx.files.internal("data");
 		else
 			dir = Gdx.files.internal("../gdx-tests-android/assets/data");
@@ -464,6 +466,10 @@ public class FilesTest extends GdxTest {
 
 	private void fail () {
 		throw new RuntimeException();
+	}
+	
+	private void fail(String msg) {
+		throw new RuntimeException(msg);
 	}
 
 	@Override

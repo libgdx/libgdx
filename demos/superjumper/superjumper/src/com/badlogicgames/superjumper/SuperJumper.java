@@ -18,15 +18,24 @@ package com.badlogicgames.superjumper;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.FPSLogger;
 
 public class SuperJumper extends Game {
 	boolean firstTimeCreate = true;
+	FPSLogger fps;
 
 	@Override
 	public void create () {
 		Settings.load();
 		Assets.load();
 		setScreen(new MainMenuScreen(this));
+		fps = new FPSLogger();
+	}
+	
+	@Override
+	public void render() {
+		super.render();
+		fps.log();
 	}
 
 	/** {@link Game#dispose()} only calls {@link Screen#hide()} so you need to override {@link Game#dispose()} in order to call

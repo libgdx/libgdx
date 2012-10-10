@@ -60,7 +60,7 @@ public class MainMenu extends InvadersScreen {
 
 	@Override
 	public void update (float delta) {
-		if (Gdx.input.isTouched()) {
+		if (Gdx.input.justTouched()) {
 			isDone = true;
 		}
 	}
