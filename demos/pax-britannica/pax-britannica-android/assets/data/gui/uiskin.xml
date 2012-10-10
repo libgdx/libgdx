@@ -1,0 +1,258 @@
+<skin>
+	<library>
+		<ninepatch name="default-round">
+			<region x="0" y="0" width="5" height="5"/>
+			<region x="5" y="0" width="2" height="5"/>
+			<region x="7" y="0" width="5" height="5"/>
+			
+			<region x="0" y="5" width="5" height="11"/>			
+			<region x="5" y="5" width="2" height="11"/>
+			<region x="7" y="5" width="5" height="11"/>
+			
+			<region x="0" y="16" width="5" height="5"/>
+			<region x="5" y="16" width="2" height="5"/>
+			<region x="7" y="16" width="5" height="5"/>
+		</ninepatch>			
+		
+		<ninepatch name="default-round-down">
+			<region x="12" y="0" width="5" height="5"/>
+			<region x="17" y="0" width="2" height="5"/>
+			<region x="19" y="0" width="5" height="5"/>
+			
+			<region x="12" y="5" width="5" height="11"/>			
+			<region x="17" y="5" width="2" height="11"/>
+			<region x="19" y="5" width="5" height="11"/>
+			
+			<region x="12" y="16" width="5" height="5"/>
+			<region x="17" y="16" width="2" height="5"/>
+			<region x="19" y="16" width="5" height="5"/>
+		</ninepatch>			
+		
+		<ninepatch name="default-rect">
+			<region x="31" y="0" width="1" height="1"/>
+			<region x="32" y="0" width="1" height="1"/>
+			<region x="33" y="0" width="1" height="1"/>
+			
+			<region x="31" y="1" width="1" height="1"/>			
+			<region x="32" y="1" width="1" height="1"/>
+			<region x="33" y="1" width="1" height="1"/>
+			
+			<region x="31" y="2" width="1" height="1"/>
+			<region x="32" y="2" width="1" height="1"/>
+			<region x="33" y="2" width="1" height="1"/>
+		</ninepatch>
+		
+		<ninepatch name="default-rect-pad">
+			<region x="25" y="0" width="2" height="1"/>
+			<region x="27" y="0" width="1" height="1"/>
+			<region x="28" y="0" width="2" height="1"/>
+			
+			<region x="25" y="1" width="2" height="1"/>			
+			<region x="27" y="1" width="1" height="1"/>
+			<region x="28" y="1" width="2" height="1"/>
+			
+			<region x="25" y="2" width="2" height="1"/>
+			<region x="27" y="2" width="1" height="1"/>
+			<region x="28" y="2" width="2" height="1"/>
+		</ninepatch>
+		
+		<ninepatch name="default-pane">
+			<region x="25" y="4" width="2" height="1"/>
+			<region x="27" y="4" width="1" height="1"/>
+			<region x="28" y="4" width="2" height="1"/>
+			
+			<region x="25" y="5" width="2" height="1"/>			
+			<region x="27" y="5" width="1" height="1"/>
+			<region x="28" y="5" width="2" height="1"/>
+			
+			<region x="25" y="6" width="2" height="1"/>
+			<region x="27" y="6" width="1" height="1"/>
+			<region x="28" y="6" width="2" height="1"/>
+		</ninepatch>
+		
+		<ninepatch name="default-pane-noborder">
+			<region x="105" y="1" width="1" height="1"/>
+			<region x="105" y="1" width="1" height="1"/>
+			<region x="105" y="1" width="1" height="1"/>
+			
+			<region x="105" y="1" width="1" height="1"/>
+			<region x="105" y="1" width="1" height="1"/>
+			<region x="105" y="1" width="1" height="1"/>
+			
+			<region x="105" y="1" width="1" height="1"/>
+			<region x="105" y="1" width="1" height="1"/>
+			<region x="105" y="1" width="1" height="1"/>
+		</ninepatch>
+		
+		<ninepatch name="default-rect-down">
+			<region x="31" y="4" width="1" height="1"/>
+			<region x="32" y="4" width="1" height="1"/>
+			<region x="33" y="4" width="1" height="1"/>
+			
+			<region x="31" y="5" width="1" height="1"/>			
+			<region x="32" y="5" width="1" height="1"/>
+			<region x="33" y="5" width="1" height="1"/>
+			
+			<region x="31" y="6" width="1" height="1"/>
+			<region x="32" y="6" width="1" height="1"/>
+			<region x="33" y="6" width="1" height="1"/>
+		</ninepatch>
+		
+		<ninepatch name="default-slider-knob">
+			<region x="71" y="0" width="3" height="3"/>
+			<region x="74" y="0" width="2" height="3"/>
+			<region x="76" y="0" width="3" height="3"/>
+			
+			<region x="71" y="3" width="3" height="2"/>			
+			<region x="74" y="3" width="2" height="2"/>
+			<region x="76" y="3" width="3" height="2"/>
+			
+			<region x="71" y="5" width="3" height="3"/>
+			<region x="74" y="5" width="2" height="3"/>
+			<region x="76" y="5" width="3" height="3"/>
+		</ninepatch>
+		
+		<ninepatch name="default-slider">
+			<region x="80" y="0" width="3" height="3"/>
+			<region x="83" y="0" width="2" height="3"/>
+			<region x="85" y="0" width="3" height="3"/>
+			
+			<region x="80" y="3" width="3" height="2"/>			
+			<region x="83" y="3" width="2" height="2"/>
+			<region x="85" y="3" width="3" height="2"/>
+			
+			<region x="80" y="5" width="3" height="3"/>
+			<region x="83" y="5" width="2" height="3"/>
+			<region x="85" y="5" width="3" height="3"/>
+		</ninepatch>
+		
+		<ninepatch name="default-splitpane">
+			<region x="91" y="0" width="2" height="1"/>
+			<region x="93" y="0" width="1" height="1"/>
+			<region x="94" y="0" width="2" height="1"/>
+			
+			<region x="91" y="1" width="2" height="1"/>
+			<region x="93" y="1" width="1" height="1"/>
+			<region x="94" y="1" width="2" height="1"/>
+			
+			<region x="91" y="2" width="2" height="1"/>
+			<region x="93" y="2" width="1" height="1"/>
+			<region x="94" y="2" width="2" height="1"/>
+		</ninepatch>
+		
+		<ninepatch name="default-splitpane-vertical">
+			<region x="97" y="0" width="1" height="2"/>
+			<region x="98" y="0" width="1" height="2"/>
+			<region x="99" y="0" width="1" height="2"/>
+			
+			<region x="97" y="1" width="1" height="1"/>
+			<region x="98" y="1" width="1" height="1"/>
+			<region x="99" y="1" width="1" height="1"/>
+			
+			<region x="97" y="2" width="1" height="2"/>
+			<region x="98" y="2" width="1" height="2"/>
+			<region x="99" y="2" width="1" height="2"/>
+		</ninepatch>
+		
+		<ninepatch name="textfield">
+			<region x="51" y="0" width="4" height="3"/>
+			<region x="55" y="0" width="6" height="3"/>
+			<region x="61" y="0" width="4" height="3"/>
+			
+			<region x="51" y="4" width="4" height="7"/>
+			<region x="55" y="4" width="6" height="7"/>
+			<region x="61" y="4" width="4" height="7"/>
+			
+			<region x="51" y="11" width="4" height="3"/>
+			<region x="55" y="11" width="6" height="3"/>
+			<region x="61" y="11" width="4" height="3"/>
+		</ninepatch>
+		
+		<ninepatch name="cursor">
+			<region x="66" y="0" width="1" height="1"/>
+			<region x="67" y="0" width="1" height="1"/>
+			<region x="68" y="0" width="1" height="1"/>
+			
+			<region x="66" y="1" width="1" height="1"/>
+			<region x="67" y="1" width="1" height="1"/>
+			<region x="68" y="1" width="1" height="1"/>
+			
+			<region x="66" y="2" width="1" height="1"/>
+			<region x="67" y="2" width="1" height="1"/>
+			<region x="68" y="2" width="1" height="1"/>
+		</ninepatch>
+		
+		<ninepatch name="default-combo">
+			<region x="1" y="23" width="4" height="3"/>
+			<region x="5" y="23" width="8" height="3"/>
+			<region x="13" y="23" width="15" height="3"/>
+			
+			<region x="1" y="26" width="4" height="14"/>
+			<region x="5" y="26" width="8" height="14"/>
+			<region x="13" y="26" width="15" height="14"/>
+			
+			<region x="1" y="40" width="4" height="3"/>
+			<region x="5" y="40" width="8" height="3"/>
+			<region x="13" y="40" width="15" height="3"/>
+		</ninepatch>
+		
+		<ninepatch name="default-combo-selection">
+			<region x="110" y="0" width="1" height="1"/>
+			<region x="111" y="0" width="1" height="1"/>
+			<region x="112" y="0" width="1" height="1"/>
+			
+			<region x="110" y="1" width="1" height="1"/>
+			<region x="111" y="1" width="1" height="1"/>
+			<region x="112" y="1" width="1" height="1"/>
+			
+			<region x="110" y="2" width="1" height="1"/>
+			<region x="111" y="2" width="1" height="1"/>
+			<region x="112" y="2" width="1" height="1"/>
+		</ninepatch>
+		
+		<ninepatch name="default-window">
+			<region x="45" y="18" width="3" height="20"/>
+			<region x="48" y="18" width="21" height="20"/>
+			<region x="69" y="18" width="3" height="20"/>
+			
+			<region x="45" y="38" width="3" height="6"/>
+			<region x="48" y="38" width="21" height="6"/>
+			<region x="69" y="38" width="3" height="6"/>
+			
+			<region x="45" y="44" width="3" height="3"/>
+			<region x="48" y="44" width="21" height="3"/>
+			<region x="69" y="44" width="3" height="3"/>
+		</ninepatch>
+		
+		<region name="default-slider-knob" x="71" y="0" width="8" height="8"/>
+		<region name="check-off" x="51" y="0" width="14" height="14"/>				
+		<region name="check-on" x="36" y="0" width="14" height="14"/>
+		<region name="selection" x="102" y="0" width="1" height="1"/>
+		
+		<color name="white" r="1" g="1" b="1" a="1"/>
+		<color name="red" r="1" g="0" b="0" a="1"/>
+		<color name="green" r="0" g="1" b="0" a="1"/>
+		<color name="black" r="0" g="0" b="0" a="1"/>		
+		
+		<font name="default-font" file="data/default.fnt"/>
+	</library>
+	
+	<widgetStyles>
+		<button name="default" down="default-round-down" up="default-round" font="default-font" fontColor="white"/>		
+		<imagebutton name="default" down="default-round-down" up="default-round"/>
+		<togglebutton name="default" down="default-round-down" up="default-round" font="default-font" fontColor="white"/>
+		<checkbox name="default" font="default-font" fontColor="white" checked="check-on" unchecked="check-off"/>
+		<label name="default" font="default-font" fontColor="white"/>
+		<slider name="default" slider="default-slider" knob="default-slider-knob"/>
+		<list name="default" font="default-font" fontColorUnselected="white" fontColorSelected="white" selected="default-rect-pad"/>
+		<pane name="default" background="default-round"/>
+		<pane name="default-rect" background="default-rect"/>
+		<pane name="noborder" background="default-pane-noborder"/>
+		<scrollpane name="default" background="default-rect" hScroll="default-slider" hScrollKnob="default-slider-knob" vScroll="default-slider" vScrollKnob="default-slider-knob"/>
+		<splitpane name="default-horizontal" handle="default-splitpane"/>
+		<splitpane name="default-vertical" handle="default-splitpane-vertical"/>
+		<textfield name="default" font="default-font" fontColor="white" cursor="cursor" selection="selection" background="textfield"/>
+		<combobox name="default" font="default-font" fontColor="white" background="default-combo" listBackground="default-rect" listSelection="default-combo-selection"/>
+		<window name="default" titleFont="default-font" titleFontColor="white" background="default-window"/>
+	</widgetStyles>
+</skin>

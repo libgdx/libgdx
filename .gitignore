@@ -77,6 +77,17 @@
 /demos/very-angry-robots/very-angry-robots-android/gen
 /demos/very-angry-robots/very-angry-robots/bin
 
+/demos/pax-britannica/pax-britannica-android/bin
+/demos/pax-britannica/pax-britannica-android/gen
+/demos/pax-britannica/pax-britannica-html/.gwt
+/demos/pax-britannica/pax-britannica-html/gwt-unitCache
+/demos/pax-britannica/pax-britannica-html/war
+/demos/pax-britannica/pax-britannica/bin
+/demos/pax-britannica/pax-britannica-ios/pax-britannica-ios/bin
+/demos/pax-britannica/pax-britannica-ios/pax-britannica-ios/obj
+/demos/pax-britannica/pax-britannica-ios/pax-britannica-ios/target
+/demos/pax-britannica/pax-britannica-ios/pax-britannica-ios/paxbritannica.dll
+
 /extensions/gdx-jnigen/target
 
 /extensions/gdx-audio/bin
