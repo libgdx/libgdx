@@ -17,7 +17,7 @@ public class Resources {
 	// public AtlasRegion region = atlas.findRegion("imagename");
 	// Sprite sprite = atlas.createSprite("otherimagename");
 
-	public Music music = Gdx.audio.newMusic(Gdx.files.internal("data/audio/music.ogg"));
+	public Music music = Gdx.audio.newMusic(Gdx.files.internal("data/audio/music.mp3"));
 
 	public Sprite factoryP1 = atlas.createSprite("factoryp1");
 	public Sprite factoryP2 = atlas.createSprite("factoryp2");
@@ -150,9 +150,9 @@ public class Resources {
 				music.stop();
 				music.dispose();
 			} 
-			music = Gdx.audio.newMusic(Gdx.files.internal("data/audio/music.ogg"));
+			music = Gdx.audio.newMusic(Gdx.files.internal("data/audio/music.mp3"));
 		} catch (Exception e) {
-			music = Gdx.audio.newMusic(Gdx.files.internal("data/audio/music.ogg"));
+			music = Gdx.audio.newMusic(Gdx.files.internal("data/audio/music.mp3"));
 		}
 
 		factoryP1 = atlas.createSprite("factoryp1");
