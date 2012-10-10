@@ -38,11 +38,63 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class IOSSound implements Sound {
 
 	/** The maximum number of players to instantiate to support simultaneous playback. Bigger? */
-	private static final int MAX_PLAYERS = 10;
+	private static final int MAX_PLAYERS = 8;
 	
 	/** Our sound players. More than one to support simultaneous playback. */
 	private AVAudioPlayer[] players;
-
+	/** The next player we think should be available for play - we circling through them to find a free one. */
+	private int playerIndex;
+	
+	// one single thread will play sounds outside the rendering low (otherwise our FPS drops!)
+	private static class PlayThread extends Thread {
+		@Override
+		public void run () {
+			Gdx.app.debug("IOSSound", "Sound player is running.");
+			
+			// get the latest play thread
+			Thread playThread;
+			synchronized (IOSSound.sync) {
+				playThread = IOSSound.playThread;
+			}
+			
+			// our temp player list
+			List<AVAudioPlayer> playQueueCopy = new ArrayList<AVAudioPlayer>(64);
+			
+			// our play loop which will continue as long as we are the active thread
+			Thread currentThread = Thread.currentThread();
+			while (currentThread == playThread) {
+				// play songs queued via our own copy to not impact rendering performance
+				synchronized (IOSSound.sync) {
+					playQueueCopy.addAll(playQueue);
+					playQueue.clear();
+				}
+				for (int i = 0; i < playQueueCopy.size(); i++) {
+					playQueueCopy.get(i).Play();
+				}
+				playQueueCopy.clear();
+				
+				// sleep 
+				try {
+					Thread.sleep(5);
+				}
+				catch (InterruptedException e) {
+					Gdx.app.error("IOSSound", "Error in sound player thread.", e);
+				}
+				
+				// get the latest play thread
+				synchronized (IOSSound.sync) {
+					playThread = IOSSound.playThread;
+				}
+			}
+			
+			Gdx.app.debug("IOSSound", "Sound player is disposed.");
+		}		
+	}
+	private static final Object sync = new Object();
+	private static PlayThread playThread = null;
+	private static int soundCounter = 0;
+	private static List<AVAudioPlayer> playQueue = new ArrayList<AVAudioPlayer>(64);
+	
 	
 	/**
 	 * Creates a new sound object. We are creating several AVAudioPlayer objects to
@@ -65,6 +117,19 @@ public class IOSSound implements Sound {
 				throw new GdxRuntimeException("Error creating audio player (index: " + i + "): " + error[0].ToString());
 			}
 		}
+		playerIndex = 0;
+		
+		// create the play thread if it doesn't exist yet
+		synchronized (sync) {
+			soundCounter++;
+			
+			// create play thread as needed: plays sounds outside the rendering loop (smoother rendering)
+			if (playThread == null) {
+				playThread = new PlayThread();
+				playThread.setPriority(Thread.MIN_PRIORITY);
+				playThread.start();
+			}
+		}
 	}
 
 	/**
@@ -74,7 +139,12 @@ public class IOSSound implements Sound {
 	 */
 	private int findAvailablePlayer() {
 		for (int i = 0; i < players.length; i++) {
-			if (!players[i].get_Playing()) {
+			int index = (playerIndex + i) % players.length;
+			if (!players[index].get_Playing()) {
+				// point to the next likely free player
+				playerIndex = (index + 1) % players.length; 
+				
+				// return the free player
 				return i;
 			}
 		}
@@ -111,7 +181,11 @@ public class IOSSound implements Sound {
 			player.set_NumberOfLoops(looping ? -1 : 0);  // Note: -1 for looping!
 			player.set_Volume(volume);
 			player.set_Pan(pan);
-			player.Play();
+			
+			// we let the thread play our song as not to impact rendering performance (FPS)
+			synchronized (sync) {
+				playQueue.add(player);
+			}
 		}
 		
 		// and return the index/id of the player
@@ -135,6 +209,11 @@ public class IOSSound implements Sound {
 
 	@Override
 	public void stop() {
+		synchronized (sync) {
+			// we clear the player queue so no song is player after call to stop!
+			playQueue.clear();
+		}
+		
 		// stop all players
 		for (int i = 0; i < players.length; i++) {
 			players[i].Stop();
@@ -147,6 +226,16 @@ public class IOSSound implements Sound {
 		for (int i = 0; i < players.length; i++) {
 			players[i].Dispose();
 			players[i] = null;
+		}
+		
+		// dispose play thread if no more sounds are available
+		synchronized (sync) {
+			soundCounter--;
+			
+			// no more sounds?
+			if (soundCounter == 0) {
+				playThread = null;
+			}
 		}
 	}
 
