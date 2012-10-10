@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.android;
 
 import android.content.Intent;
+import android.net.Uri;
 
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpResult;
@@ -58,6 +59,12 @@ public class AndroidNet implements Net {
 	
 	@Override
 	public void openURI(String URI) {
-		app.startActivity(new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(URI)));
+		final Uri uri = Uri.parse(URI);
+		app.runOnUiThread(new Runnable(){
+			@Override
+			public void run () {
+				app.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+			}
+		});
 	}
 }
