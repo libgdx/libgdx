@@ -63,7 +63,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		// setup view and OpenGL
 		width = (int)bounds.get_Width();
 		height = (int)bounds.get_Height();
-		app.log("IOSGraphics", bounds.get_Width() + "x" + bounds.get_Height() + ", " + UIScreen.get_MainScreen().get_Scale());
+		app.debug("IOSGraphics", bounds.get_Width() + "x" + bounds.get_Height() + ", " + UIScreen.get_MainScreen().get_Scale());
 		this.app = app;
 		this.input = input;
 		set_LayerRetainsBacking(false);
@@ -99,7 +99,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		ppiY = ppi;
 		ppcX = ppiX / 2.54f;
 		ppcY = ppcY / 2.54f;
-		app.log("IOSGraphics", "Display: ppi=" + ppi + ", density=" + density);
+		app.debug("IOSGraphics", "Display: ppi=" + ppi + ", density=" + density);
 		
 		// time + FPS
 		lastFrameTime = System.nanoTime();
@@ -144,8 +144,8 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	protected void OnResize(EventArgs event) {
 		super.OnResize(event);
 
-		// noblemaster: I don't think this method will get called on iOS!? (at least not as of 2012-09-27)
-		Gdx.app.error("IOSGraphics", "OnResize(...) is not implement.");
+		// not used on iOS
+		Gdx.app.debug("IOSGraphics", "iOS OnResize(...) is not implement (don't think it is needed?).");
 	}
 
 	@ExportAttribute.Annotation("layerClass")
