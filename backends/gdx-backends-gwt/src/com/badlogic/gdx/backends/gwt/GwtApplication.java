@@ -65,7 +65,6 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private TextArea log = null;
 	private int logLevel = LOG_ERROR;
 	private Array<Runnable> runnables = new Array<Runnable>();
-	private Array<Runnable> runnablesHelper = new Array<Runnable>();
 	private int lastWidth, lastHeight;
 	private Preloader preloader;
 	private static AgentInfo agentInfo;
@@ -188,12 +187,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 						lastHeight = graphics.getHeight();
 						Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
 					}
-					runnablesHelper.addAll(runnables);
-					runnables.clear();
-					for (int i = 0; i < runnablesHelper.size; i++) {
-						runnablesHelper.get(i).run();
+					for (int i = 0; i < runnables.size; i++) {
+						runnables.get(i).run();
 					}
-					runnablesHelper.clear();
+					runnables.clear();
 					listener.render();
 					input.justTouched = false;
 				} catch (Throwable t) {
