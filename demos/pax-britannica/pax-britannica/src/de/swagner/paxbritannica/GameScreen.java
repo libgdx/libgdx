@@ -47,8 +47,6 @@ public class GameScreen extends DefaultScreen implements InputProcessor {
 	SpriteBatch fadeBatch;
 	SpriteBatch gameBatch;
 
-	BitmapFont font;
-
 	FactoryProduction playerProduction;
 	FactoryProduction enemyProduction;
 
@@ -198,7 +196,6 @@ public class GameScreen extends DefaultScreen implements InputProcessor {
 		gameBatch = new SpriteBatch();
 		gameBatch.getProjectionMatrix().set(cam.combined);
 
-		font = new BitmapFont();
 
 		// init player positions
 //		Array<Vector2> positons = generatePositions(numPlayers + 1);

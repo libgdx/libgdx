@@ -1,0 +1,37 @@
+<project name="gdx" default="convert" basedir=".">
+	<property environment="env"/>
+	<property name="IKVM_HOME" value="${env.IKVM_HOME}"/>
+	<property name="MONO_HOME" value="/Developer/MonoTouch/usr/lib/mono/2.1"/>
+	<property name="IN" value="-recurse:target/core/*.class"/>
+	<property name="OUT" value="gdx.dll"/>
+	<property name="SRC" value="src/"/>
+	<property name="CLASSPATH" value=""/>
+	<property name="EXCLUDE" value=""/>
+
+	<target name="compile">
+		<delete dir="target"/>
+		<mkdir dir="target"/>
+		<javac srcdir="${SRC}" destdir="target" classpath="${CLASSPATH}">
+			<include name="**/*.java"/>
+			<exclude name="${EXCLUDE}"/>
+		</javac>
+	</target>
+
+	<target name="convert">
+		<exec executable="mono">
+			<arg value="${IKVM_HOME}/bin/ikvmc.exe"/>
+			<arg value="-nostdlib"/>
+			<arg value="-target:library"/>
+			<arg value="-debug"/>
+			<arg value="-out:${OUT}"/>
+			<arg value="-r:${MONO_HOME}/mscorlib.dll"/>
+			<arg value="-r:${MONO_HOME}/System.dll"/>
+			<arg value="-r:${MONO_HOME}/System.Core.dll"/>
+			<arg value="-r:${MONO_HOME}/System.Data.dll"/>
+			<arg value="-r:${MONO_HOME}/OpenTK.dll"/>
+			<arg value="-r:${MONO_HOME}/monotouch.dll"/>
+			<arg value="-r:${MONO_HOME}/Mono.Data.Sqlite.dll"/>
+			<arg line="${IN}"/>
+		</exec>
+	</target>
+</project>

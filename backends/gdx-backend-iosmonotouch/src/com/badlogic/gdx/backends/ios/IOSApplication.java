@@ -270,7 +270,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	@Override
 	public Preferences getPreferences (String name) {
-		return null;
+		return new IOSPreferences();
 	}
 
 	@Override

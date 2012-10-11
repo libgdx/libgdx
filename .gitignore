@@ -91,10 +91,10 @@ extensions/gdx-tools/target/
 /demos/pax-britannica/pax-britannica-html/gwt-unitCache
 /demos/pax-britannica/pax-britannica-html/war
 /demos/pax-britannica/pax-britannica/bin
-/demos/pax-britannica/pax-britannica-ios/pax-britannica-ios/bin
-/demos/pax-britannica/pax-britannica-ios/pax-britannica-ios/obj
-/demos/pax-britannica/pax-britannica-ios/pax-britannica-ios/target
-/demos/pax-britannica/pax-britannica-ios/pax-britannica-ios/paxbritannica.dll
+/demos/pax-britannica/pax-britannica-iosmonotouch/pax-britannica-iosmonotouch/bin
+/demos/pax-britannica/pax-britannica-iosmonotouch/pax-britannica-iosmonotouch/obj
+/demos/pax-britannica/pax-britannica-iosmonotouch/pax-britannica-iosmonotouch/target
+/demos/pax-britannica/pax-britannica-iosmonotouch/pax-britannica-iosmonotouch/paxbritannica.dll
 
 /extensions/gdx-jnigen/target
 
