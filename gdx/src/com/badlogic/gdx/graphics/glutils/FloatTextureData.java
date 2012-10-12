@@ -30,8 +30,12 @@ import com.badlogic.gdx.graphics.glutils.ETC1.ETC1Data;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/**
+ * A {@link TextureData} implementation which should be used to create float textures.
+ *
+ */
 public class FloatTextureData implements TextureData {
-
+	
 	int width = 0;
 	int height = 0;
 	boolean isPrepared = false;
@@ -63,8 +67,24 @@ public class FloatTextureData implements TextureData {
 	public void consumeCompressedData () {
 		if (!Gdx.graphics.supportsExtension("texture_float"))
 			throw new GdxRuntimeException("Extension OES_TEXTURE_FLOAT not supported!");
-		Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, GL10.GL_RGBA, width, height, 0,
+		
+		//this is a const from GL 3.0, used only on desktops
+		final int GL_RGBA32F = 34836;
+		
+		//GLES and WebGL defines texture format by 3rd and 8th argument,
+		//so to get a float texture one needs to supply GL_RGBA and GL_FLOAT there.
+		if (Gdx.app.getType() == ApplicationType.Android
+			|| Gdx.app.getType() == ApplicationType.iOS
+			|| Gdx.app.getType() == ApplicationType.WebGL) {
+			Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, GL10.GL_RGBA, width, height, 0,
+						GL10.GL_RGBA, GL10.GL_FLOAT, buffer);
+		}
+		else {
+			//in desktop OpenGL the texture format is defined only by the third argument,
+			//hence we need to use GL_RGBA32F there (this constant is unavailable in GLES/WebGL)
+		    Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0,
 				GL10.GL_RGBA, GL10.GL_FLOAT, buffer);
+		}
 	}
 
 	@Override
@@ -89,7 +109,7 @@ public class FloatTextureData implements TextureData {
 
 	@Override
 	public Format getFormat () {
-		return Format.Float;
+		return Format.RGBA8888; //it's not true, but FloatTextureData.getFormat() isn't used anywhere
 	}
 
 	@Override

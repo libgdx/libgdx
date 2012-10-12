@@ -148,9 +148,7 @@ public class Texture implements Disposable {
 	}
 
 	public Texture (int width, int height, Format format) {
-		this(format == Format.Float ? 
-				new FloatTextureData(width, height)
-			: new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
+		this(new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
 	}
 
 	public Texture (TextureData data) {

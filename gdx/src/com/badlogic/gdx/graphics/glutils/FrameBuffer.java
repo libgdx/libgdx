@@ -57,7 +57,7 @@ public class FrameBuffer implements Disposable {
 	private final static Map<Application, List<FrameBuffer>> buffers = new HashMap<Application, List<FrameBuffer>>();
 
 	/** the color buffer texture **/
-	private Texture colorTexture;
+	protected Texture colorTexture;
 
 	/** the default framebuffer handle, a.k.a screen. */
 	private static int defaultFramebufferHandle;
@@ -71,16 +71,16 @@ public class FrameBuffer implements Disposable {
 	private int depthbufferHandle;
 
 	/** width **/
-	private final int width;
+	protected final int width;
 
 	/** height **/
-	private final int height;
+	protected final int height;
 
 	/** depth **/
-	private final boolean hasDepth;
+	protected final boolean hasDepth;
 
 	/** format **/
-	private final Pixmap.Format format;
+	protected final Pixmap.Format format;
 
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
 	 * 
@@ -97,6 +97,15 @@ public class FrameBuffer implements Disposable {
 		build();
 
 		addManagedFrameBuffer(Gdx.app, this);
+	}
+	
+	/**
+	 * Override this method in a derived class to set up the backing texture as you like.
+	 */
+	protected void setupTexture() {
+		colorTexture = new Texture(width, height, format);
+		colorTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		colorTexture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 	}
 
 	private void build () {
@@ -117,9 +126,7 @@ public class FrameBuffer implements Disposable {
 		   }
 		}
 		
-		colorTexture = new Texture(width, height, format);
-		colorTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		colorTexture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		setupTexture();
 
 		IntBuffer handle = BufferUtils.newIntBuffer(1);
 		gl.glGenFramebuffers(1, handle);
