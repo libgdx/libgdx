@@ -62,7 +62,7 @@ public class TableList<T> extends Table {
 		setHeight(getPrefHeight());
 		setAdapter(adapter);
 		
-		defaults().expand().fill();
+		defaults().expandX().fillX();
 		setItems(items);
 	}
 
