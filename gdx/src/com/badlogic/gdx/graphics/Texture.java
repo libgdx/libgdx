@@ -34,6 +34,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.TextureData.TextureDataType;
 import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
+import com.badlogic.gdx.graphics.glutils.FloatTextureData;
 import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.math.MathUtils;
@@ -183,6 +184,13 @@ public class Texture implements Disposable {
 		}
 
 		if (data.getType() == TextureDataType.Compressed) {
+			Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
+			data.consumeCompressedData();
+			setFilter(minFilter, magFilter);
+			setWrap(uWrap, vWrap);
+		}
+		
+		if (data.getType() == TextureDataType.Float) {
 			Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
 			data.consumeCompressedData();
 			setFilter(minFilter, magFilter);
