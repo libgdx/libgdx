@@ -1,0 +1,180 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
+package com.badlogic.gdx.scenes.scene2d.ui;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Pools;
+
+/** A list of tables, highlighting the currently selected item. An {@link ListAdapter} 
+ * can be attached to the list, in order to customize the row layout.
+ * <p>
+ * {@link ChangeEvent} is fired when the list selection changes.
+ * <p>
+ *  * @author aspic */
+public class TableList<T> extends Table {
+	private TableListStyle style;
+	private T[] items;
+	private ListAdapter adapter;
+
+	Table selected;
+	int selectedIndex;
+
+	public TableList (T[] items, Skin skin) {
+		this(items, skin.get(TableListStyle.class));
+	}
+
+	public TableList (T[] items, Skin skin, String styleName) {
+		this(items, skin.get(styleName, TableListStyle.class));
+	}
+
+	public TableList (T[] items, TableListStyle style) {
+		setStyle(style);
+		setItems(items);
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
+		
+		defaults().expand().fill();
+	}
+
+	public void setStyle (TableListStyle style) {
+		if (style == null) throw new IllegalArgumentException("style cannot be null.");
+		this.style = style;
+		if (items != null)
+			setItems(items);
+		else
+			invalidateHierarchy();
+	}
+
+	/** Returns the list's style. Modifying the returned style may not have an effect until {@link #setStyle(TableListStyle)} is called. */
+	public TableListStyle getStyle () {
+		return style;
+	}
+	
+	/** @return The index of the currently selected item. The top item has an index of 0. */
+	public int getSelectedIndex () {
+		return selectedIndex;
+	}
+
+	/** @return The text of the currently selected item or null if the list is empty. */
+	public T getSelection () {
+		return items[selectedIndex];
+	}
+
+	/** Clears and sets new items for this list. */
+	public void setItems (T[] items) {
+		if (items == null) throw new IllegalArgumentException("items cannot be null.");
+		this.items = items;
+		clear();
+		for (int i = 0; i < items.length; i++) {
+			
+			// Le hack?
+			final int currentIndex = i;
+			
+			// Create a row
+			final Table row;
+			if(adapter != null) {
+				row = adapter.setupRow(items[i]);
+				if(row == null) throw new IllegalArgumentException("A table must be returned.");
+			} else {
+				row = new Table();
+			}
+			row.setBackground(style.unselected);
+			
+			row.addListener(new ClickListener() {
+				// Assign 
+				int index = currentIndex;
+				
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					if(selectedIndex != index || selected == null) {
+						if(selected != null) selected.setBackground(style.unselected);
+						selectedIndex = index;
+						
+						ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+						fire(changeEvent);
+						Pools.free(changeEvent);
+						
+						selected = row;
+						row.setBackground(style.selection);
+					}
+				}
+			});
+			
+			add(row);
+			row();
+		}
+	}
+	/** Returns the items for this list instance. */
+	public T[] getItems () {
+		return items;
+	}
+
+	public float getPrefWidth () {
+		return 140;
+	}
+
+	public float getPrefHeight () {
+		return 140;
+	}
+	
+	/** Add an adapter which sets up items properly. */
+	public void setAdapter(ListAdapter adapter) {
+		this.adapter = adapter;
+	}
+	
+	/** Interface for setting the row layout. An object will be provided,
+	 * and it expects a table to be returned. */
+	public interface ListAdapter<T> {
+		public Table setupRow(T item);
+	}
+
+	/** The style for a list, see {@link TableList}.
+	 * @author mzechner
+	 * @author Nathan Sweet */
+	static public class TableListStyle {
+		public Drawable selection;
+		public Drawable unselected;
+
+		public TableListStyle () {
+		}
+
+		public TableListStyle (Drawable selection, Drawable unselected) {
+			this.selection = selection;
+			this.unselected = selection;
+		}
+
+		public TableListStyle (TableListStyle style) {
+			this.selection = style.selection;
+			this.unselected = style.unselected;
+		}
+	}
+}
