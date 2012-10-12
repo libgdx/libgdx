@@ -24,6 +24,7 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 
 public class IOSNet implements Net {
+	
 	@Override
 	public HttpResult httpGet (String url, String... parameters) {
 		throw new UnsupportedOperationException("Not implemented");
@@ -36,11 +37,11 @@ public class IOSNet implements Net {
 
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
-		throw new UnsupportedOperationException("Not implemented");
+		return new IOSServerSocket(protocol, port, hints);
 	}
 
 	@Override
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
-		throw new UnsupportedOperationException("Not implemented");
+		return new IOSSocket(protocol, host, port, hints);
 	}
 }

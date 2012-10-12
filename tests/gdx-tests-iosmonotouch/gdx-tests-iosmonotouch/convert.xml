@@ -11,7 +11,7 @@
 	<target name="compile">
 		<delete dir="target"/>
 		<mkdir dir="target"/>
-		<javac srcdir="${SRC}" destdir="target" classpath="${CLASSPATH}">
+		<javac srcdir="${SRC}" destdir="target" classpath="${CLASSPATH}" debug="true" debuglevel="lines, vars, and source">
 			<include name="**/*.java"/>
 			<exclude name="${EXCLUDE}"/>
 		</javac>

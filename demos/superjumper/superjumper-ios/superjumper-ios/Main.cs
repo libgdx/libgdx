@@ -13,8 +13,16 @@ namespace superjumperios
 	{
 		[Register ("AppDelegate")]
 		public partial class AppDelegate : IOSApplication {
-			public AppDelegate(): base(new SuperJumper(), new IOSApplicationConfiguration()) {
+			public AppDelegate(): base(new SuperJumper(), getConfig()) {
 
+			}
+
+			internal static IOSApplicationConfiguration getConfig() {
+				IOSApplicationConfiguration config = new IOSApplicationConfiguration();
+				config.orientationLandscape = false;
+				config.orientationPortrait = true;
+				config.useAccelerometer = true;
+				return config;
 			}
 		}
 		

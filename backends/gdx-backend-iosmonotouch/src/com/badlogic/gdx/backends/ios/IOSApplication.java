@@ -112,7 +112,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		uiViewController.set_View(graphics);
 		this.graphics.Run();
 		this.uiWindow.MakeKeyAndVisible();
-		Gdx.app.log("IOSApplication", "created");
+		Gdx.app.debug("IOSApplication", "created");
 		return true;
 	}
 
@@ -141,7 +141,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 				width = (int)bounds.get_Width();
 			   height = (int)bounds.get_Height();
 		} 
-		Gdx.app.log("IOSApplication", "View: " + orientation.toString() + " " + width + "x" + height);
+		Gdx.app.debug("IOSApplication", "View: " + orientation.toString() + " " + width + "x" + height);
 		
 		// return resulting view size (based on orientation)
 		return new RectangleF(0, 0, width, height);
@@ -149,7 +149,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	
 	@Override
 	public void OnActivated(UIApplication uiApp) {
-		Gdx.app.log("IOSApplication", "resumed");
+		Gdx.app.debug("IOSApplication", "resumed");
 		if(!firstResume) {
 			graphics.MakeCurrent();
 			listener.resume();
@@ -159,7 +159,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	@Override
 	public void OnResignActivation(UIApplication uiApp) {
-		Gdx.app.log("IOSApplication", "paused");
+		Gdx.app.debug("IOSApplication", "paused");
 		graphics.MakeCurrent();
 		listener.pause();
 		Gdx.gl.glFlush();
@@ -167,7 +167,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	@Override
 	public void WillTerminate(UIApplication uiApp) {
-		Gdx.app.log("IOSApplication", "disposed");
+		Gdx.app.debug("IOSApplication", "disposed");
 		graphics.MakeCurrent();
 		listener.dispose();
 		Gdx.gl.glFlush();
@@ -270,7 +270,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	@Override
 	public Preferences getPreferences (String name) {
-		return null;
+		return new IOSPreferences();
 	}
 
 	@Override

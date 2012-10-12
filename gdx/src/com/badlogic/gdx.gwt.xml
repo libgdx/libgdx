@@ -245,5 +245,11 @@
 		<include name="scenes/scene2d/utils/TiledDrawable.java"/>
 		<include name="scenes/scene2d/utils/DragAndDrop.java"/>
 		<include name="scenes/scene2d/utils/DragListener.java"/>
+		
+		<include name="Net.java"/>
+		<include name="net/ServerSocket.java"/>
+		<include name="net/ServerSocketHints.java"/>
+		<include name="net/Socket.java"/>
+		<include name="net/SocketHints.java"/>
 	</source>
 </module>

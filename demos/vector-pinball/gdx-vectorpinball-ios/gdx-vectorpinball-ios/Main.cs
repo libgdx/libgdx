@@ -13,9 +13,16 @@ namespace bouncy
 	{
 		[Register ("AppDelegate")]
 		public partial class AppDelegate : IOSApplication {
-			public AppDelegate(): base(new Bouncy(), new IOSApplicationConfiguration()) {
+			public AppDelegate(): base(new Bouncy(), getConfig()) {
 				
 			}
+		}
+
+		internal static IOSApplicationConfiguration getConfig() {
+			IOSApplicationConfiguration config = new IOSApplicationConfiguration();
+			config.orientationLandscape = false;
+			config.orientationPortrait = true;
+			return config;
 		}
 		
 		static void Main (string[] args)
