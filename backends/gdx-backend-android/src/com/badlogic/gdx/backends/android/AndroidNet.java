@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.content.Intent;
+import android.net.Uri;
+
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpResult;
 import com.badlogic.gdx.Net.Protocol;
@@ -28,7 +31,12 @@ public class AndroidNet implements Net {
 	
 	// IMPORTANT: The Gdx.net classes are a currently duplicated for LWJGL + Android!
 	//            If you make changes here, make changes in the other backend as well.
-
+	final AndroidApplication app;
+	
+	public AndroidNet(AndroidApplication activity) {
+		app = activity;
+	}
+	
 	@Override
 	public HttpResult httpGet (String url, String... parameters) {
 		throw new UnsupportedOperationException("Not implemented");
@@ -47,5 +55,16 @@ public class AndroidNet implements Net {
 	@Override
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
 		return new AndroidSocket(protocol, host, port, hints);
+	}
+	
+	@Override
+	public void openURI(String URI) {
+		final Uri uri = Uri.parse(URI);
+		app.runOnUiThread(new Runnable(){
+			@Override
+			public void run () {
+				app.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+			}
+		});
 	}
 }
