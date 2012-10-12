@@ -488,7 +488,7 @@ public class BitmapFont implements Disposable {
 		BitmapFontData data = this.data;
 		float x = scaleX / data.scaleX;
 		float y = scaleY / data.scaleY;
-		data.lineHeight = data.lineHeight * x;
+		data.lineHeight = data.lineHeight * y;
 		data.spaceWidth = data.spaceWidth * x;
 		data.xHeight = data.xHeight * y;
 		data.capHeight = data.capHeight * y;
