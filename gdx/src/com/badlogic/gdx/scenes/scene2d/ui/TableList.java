@@ -48,21 +48,22 @@ public class TableList<T> extends Table {
 	Table selected;
 	int selectedIndex;
 
-	public TableList (T[] items, Skin skin) {
-		this(items, skin.get(TableListStyle.class));
+	public TableList (ListAdapter adapter, T[] items, Skin skin) {
+		this(adapter, items, skin.get(TableListStyle.class));
 	}
 
-	public TableList (T[] items, Skin skin, String styleName) {
-		this(items, skin.get(styleName, TableListStyle.class));
+	public TableList (ListAdapter adapter, T[] items, Skin skin, String styleName) {
+		this(adapter, items, skin.get(styleName, TableListStyle.class));
 	}
 
-	public TableList (T[] items, TableListStyle style) {
+	public TableList (ListAdapter adapter, T[] items, TableListStyle style) {
 		setStyle(style);
-		setItems(items);
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
+		setAdapter(adapter);
 		
 		defaults().expand().fill();
+		setItems(items);
 	}
 
 	public void setStyle (TableListStyle style) {
@@ -91,7 +92,8 @@ public class TableList<T> extends Table {
 
 	/** Clears and sets new items for this list. */
 	public void setItems (T[] items) {
-		if (items == null) throw new IllegalArgumentException("items cannot be null.");
+		if (items == null ) throw new IllegalArgumentException("items cannot be null.");
+		else if(adapter == null) throw new IllegalArgumentException("no adapter attached, use setAdapter");
 		this.items = items;
 		clear();
 		for (int i = 0; i < items.length; i++) {
@@ -100,13 +102,7 @@ public class TableList<T> extends Table {
 			final int currentIndex = i;
 			
 			// Create a row
-			final Table row;
-			if(adapter != null) {
-				row = adapter.setupRow(items[i]);
-				if(row == null) throw new IllegalArgumentException("A table must be returned.");
-			} else {
-				row = new Table();
-			}
+			final Table row = adapter.setupRow(items[i]);
 			row.setBackground(style.unselected);
 			
 			row.addListener(new ClickListener() {
