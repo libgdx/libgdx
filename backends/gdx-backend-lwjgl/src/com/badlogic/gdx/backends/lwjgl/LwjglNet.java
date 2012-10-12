@@ -16,11 +16,15 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import java.awt.Desktop;
+import java.net.URI;
+
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class LwjglNet implements Net {
 	
@@ -45,5 +49,22 @@ public class LwjglNet implements Net {
 	@Override
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
 		return new LwjglSocket(protocol, host, port, hints);
+	}
+	
+	@Override
+	public void openURI(String URI) {
+		if (!Desktop.isDesktopSupported()) 
+			return;
+		
+		Desktop desktop = Desktop.getDesktop();
+		
+		if (!desktop.isSupported(Desktop.Action.BROWSE))
+			return;
+		
+		try {
+			desktop.browse(new java.net.URI(URI));
+		} catch (Exception e) {
+			throw new GdxRuntimeException(e);
+		}
 	}
 }
