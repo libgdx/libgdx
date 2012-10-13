@@ -1,4 +1,5 @@
 syntax:glob
+dist/*
 bin/*
 *.class
 backends/gdx-backends-gwt/*
