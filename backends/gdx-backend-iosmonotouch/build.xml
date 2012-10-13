@@ -14,7 +14,7 @@
 			<exclude name="**/Desktop*.java"/>
 		</javac>
 		<ant antfile="convert.xml" dir=".">
-			<property name="IN" value="-recurse:target/core/*.class"/>
+			<property name="IN" value="-srcpath:../../gdx/src -recurse:target/core/*.class"/>
 			<property name="OUT" value="libs/gdx.dll"/>
 		</ant>
 		<exec executable="sh" dir="natives">
@@ -25,7 +25,7 @@
 	<target name="compile-backend">
 		<delete dir="target/backend"/>
 		<mkdir dir="target/backend" />
-		<javac sourcepath="" debug="on" debuglevel="source" srcdir="src" destdir="target/backend" >
+		<javac sourcepath="" debug="on" srcdir="src" destdir="target/backend" >
 			<include name="**/*.java"/>		
 			<classpath>
 			<fileset dir="libs/monotouch-jars">
@@ -35,7 +35,7 @@
 			</classpath>
 		</javac>
 		<ant antfile="convert.xml" dir=".">
-			<property name="IN" value="-r:libs/gdx.dll -recurse:target/backend/*.class"/>
+			<property name="IN" value="-srcpath:src -r:libs/gdx.dll -recurse:target/backend/*.class"/>
 			<property name="OUT" value="libs/gdx-backend-ios.dll"/>
 		</ant>
 	</target>
