@@ -78,6 +78,8 @@ public class IOSMusic implements Music {
 
 	@Override
 	public void dispose() {
+		stop();
 		player.Dispose();
+		player = null;
 	}
 }
