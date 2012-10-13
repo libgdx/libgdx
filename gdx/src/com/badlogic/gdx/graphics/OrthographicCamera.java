@@ -109,14 +109,7 @@ public class OrthographicCamera extends Camera {
 
 	@Override
 	public void update () {
-		projection.setToOrtho(zoom * -viewportWidth / 2, zoom * viewportWidth / 2, zoom * -viewportHeight / 2, zoom
-			* viewportHeight / 2, Math.abs(near), Math.abs(far));
-		view.setToLookAt(position, tmp.set(position).add(direction), up);
-		combined.set(projection);
-		Matrix4.mul(combined.val, view.val);
-		invProjectionView.set(combined);
-		Matrix4.inv(invProjectionView.val);
-		frustum.update(invProjectionView);
+		update(true);
 	}
 
 	@Override

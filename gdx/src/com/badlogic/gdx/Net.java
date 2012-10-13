@@ -148,4 +148,14 @@ public interface Net {
 	 * @return GdxRuntimeException in case the socket couldn't be opened
 	 */
 	public Socket newClientSocket(Protocol protocol, String host, int port, SocketHints hints);
+	
+	/**
+	 * Launches the default browser to display a URI. If the default browser is not able
+	 * to handle the specified URI, the application registered for handling URIs of the
+	 * specified type is invoked. The application is determined from the protocol
+	 * and path of the URI.
+	 * 
+	 * @param URI the URI to be opened.
+	 */
+	public void openURI(String URI);
 }

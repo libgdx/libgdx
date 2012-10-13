@@ -39,7 +39,7 @@ public interface TextureData {
 	/** The type of this {@link TextureData}.
 	 * @author mzechner */
 	public enum TextureDataType {
-		Pixmap, Compressed,
+		Pixmap, Compressed, Float,
 	}
 
 	/** @return the {@link TextureDataType} */
