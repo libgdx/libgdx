@@ -7,7 +7,7 @@
 		<delete file="libs/gdx.dll"/>
 		<delete file="libs/libgdx.a"/>
 		<mkdir dir="target/core" />
-		<javac sourcepath="" srcdir="../../gdx/src" destdir="target/core" >
+		<javac sourcepath="" debug="on" srcdir="../../gdx/src" destdir="target/core" >
 			<include name="**/*.java"/>
 			<exclude name="**/*Build.java"/>
 			<exclude name="**/Remote*.java"/>
