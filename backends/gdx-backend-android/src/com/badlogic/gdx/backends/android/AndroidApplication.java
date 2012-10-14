@@ -198,6 +198,7 @@ public class AndroidApplication extends Activity implements Application {
 		Gdx.net = this.getNet();
 
 		createWakeLock(config);
+		hideStatusBar(config);
 		return graphics.getView();
 	}
 
