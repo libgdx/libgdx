@@ -142,12 +142,7 @@ public class AndroidApplication extends Activity implements Application {
 		if (!config.hideStatusBar || getVersion() < 14)
 			return;
 
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-			}
-		});
+		getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
 	}
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
