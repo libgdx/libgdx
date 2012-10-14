@@ -121,6 +121,7 @@ public class AndroidApplication extends Activity implements Application {
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 		setContentView(graphics.getView(), createLayoutParams());
 		createWakeLock(config);
+		hideStatusBar(config);
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -135,6 +136,18 @@ public class AndroidApplication extends Activity implements Application {
 			PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
 			wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "libgdx wakelock");
 		}
+	}
+
+	protected void hideStatusBar (AndroidApplicationConfiguration config) {
+		if (!config.hideStatusBar || getVersion() < 14)
+			return;
+
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+			}
+		});
 	}
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
