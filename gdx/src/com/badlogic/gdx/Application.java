@@ -145,6 +145,9 @@ public interface Application {
 	/** @return the Android API level on Android or 0 on the desktop. */
 	public int getVersion ();
 
+	/** Hide status bar buttons. Only for Android 4 and higher. */
+	public void hideStatusBar ();
+
 	/** @return the Java heap memory use in bytes */
 	public long getJavaHeap ();
 
