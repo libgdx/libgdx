@@ -222,15 +222,16 @@ public class IOSSound implements Sound {
 
 	@Override
 	public void dispose() {
-		// dispose all players
-		for (int i = 0; i < players.length; i++) {
-			players[i].Dispose();
-			players[i] = null;
-		}
-		
 		// dispose play thread if no more sounds are available
 		synchronized (sync) {
 			soundCounter--;
+			
+			// dispose all players
+			stop();
+			for (int i = 0; i < players.length; i++) {
+				players[i].Dispose();
+			}
+			players = null;
 			
 			// no more sounds?
 			if (soundCounter == 0) {
