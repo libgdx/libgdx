@@ -11,7 +11,7 @@
 	<target name="compile">
 		<delete dir="target"/>
 		<mkdir dir="target"/>
-		<javac srcdir="${SRC}" destdir="target" classpath="${CLASSPATH}">
+		<javac srcdir="${SRC}" debug="on" destdir="target" classpath="${CLASSPATH}">
 			<include name="**/*.java"/>
 			<exclude name="${EXCLUDE}"/>
 		</javac>
@@ -23,6 +23,7 @@
 			<arg value="-nostdlib"/>
 			<arg value="-target:library"/>
 			<arg value="-debug"/>
+			<arg value="-srcpath:${SRC}"/>
 			<arg value="-out:${OUT}"/>
 			<arg value="-r:${MONO_HOME}/mscorlib.dll"/>
 			<arg value="-r:${MONO_HOME}/System.dll"/>
