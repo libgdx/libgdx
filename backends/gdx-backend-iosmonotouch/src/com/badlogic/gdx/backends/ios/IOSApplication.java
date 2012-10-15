@@ -74,10 +74,11 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 			public void DidRotate (UIInterfaceOrientation orientation) {
 				// get the view size and update graphics
 				// FIXME: supporting BOTH (landscape+portrait at same time) is currently not working correctly (needs fix)
+				// FIXME screen orientation needs to be stored for Input#getNativeOrientation
 				RectangleF bounds = getBounds(this);
 				graphics.width = (int)bounds.get_Width();
 				graphics.height = (int)bounds.get_Height();
-				graphics.MakeCurrent();  // not sure if that's needed?
+				graphics.MakeCurrent();  // not sure if that's needed? badlogic: yes it is, so resize can do OpenGL stuff, not sure if it's on the correct thread though
 				listener.resize(graphics.width, graphics.height);
 			}
 			@Override
@@ -257,16 +258,19 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	@Override
 	public int getVersion () {
+		// FIXME return iOS version
 		return 0;
 	}
 
 	@Override
 	public long getJavaHeap () {
+		// FIXME check what mono offers
 		return 0;
 	}
 
 	@Override
 	public long getNativeHeap () {
+		// FIXME check what mono offers
 		return 0;
 	}
 
@@ -277,6 +281,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	@Override
 	public void postRunnable (Runnable runnable) {
+		// FIXME implement this
 	}
 
 	@Override
@@ -286,6 +291,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	@Override
 	public Clipboard getClipboard() {
+		// FIXME implement clipboard
 		return new Clipboard() {
 			@Override
 			public void setContents(String content) {

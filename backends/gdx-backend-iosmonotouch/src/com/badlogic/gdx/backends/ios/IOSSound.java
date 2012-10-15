@@ -34,6 +34,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * rate playback).
  * 
  * @author noblemaster
+ * 
+ * FIXME rewrite using OpenAL!
  */
 public class IOSSound implements Sound {
 
@@ -257,6 +259,7 @@ public class IOSSound implements Sound {
 	@Override
 	public void setPitch(long soundId, float pitch) {
 		if (soundId >= 0) {
+			// FIXME implement this by figuring out how to make MonoTouch support this...
 			// NOTE: It's odd, AVAudioPlayer supports variable rate playing, but is not
 			// available via MonoTouch!? Let's put out a warning...
 			Gdx.app.debug("IOSSound", "Warning: setting a pitch not supported on iOS.");

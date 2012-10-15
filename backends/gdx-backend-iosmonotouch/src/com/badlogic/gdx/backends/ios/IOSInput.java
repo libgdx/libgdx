@@ -71,9 +71,10 @@ public class IOSInput implements Input {
 				@Override
 				public void DidAccelerate(UIAccelerometer accelerometer, UIAcceleration values) {
 					//super.DidAccelerate(accelerometer, values);
-					acceleration[0] = (float)values.get_X();
-					acceleration[1] = (float)values.get_Y();
-					acceleration[2] = (float)values.get_Z();
+					// FIXME take orientation into account, these values here get flipped by iOS...
+					acceleration[0] = (float)values.get_X() * 10;
+					acceleration[1] = (float)values.get_Y() * 10;
+					acceleration[2] = (float)values.get_Z() * 10;
 				}
 			});
 			UIAccelerometer.get_SharedAccelerometer().set_UpdateInterval(config.accelerometerUpdate);
@@ -97,21 +98,25 @@ public class IOSInput implements Input {
 
 	@Override
 	public float getAzimuth() {
+		// FIXME implement this
 		return 0;
 	}
 
 	@Override
 	public float getPitch() {
+		// FIXME implement this
 		return 0;
 	}
 
 	@Override
 	public float getRoll() {
+		// FIXME implement this
 		return 0;
 	}
 
 	@Override
 	public void getRotationMatrix(float[] matrix) {
+		// FIXME implement this
 	}
 
 	@Override
@@ -181,10 +186,12 @@ public class IOSInput implements Input {
 
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text) {
+		// FIXME implement this
 	}
 
 	@Override
 	public void getPlaceholderTextInput(TextInputListener listener, String title, String placeholder) {
+		// FIXME implement this
 	}
 
 	@Override
@@ -193,14 +200,17 @@ public class IOSInput implements Input {
 
 	@Override
 	public void vibrate(int milliseconds) {
+		// FIXME implement this
 	}
 
 	@Override
 	public void vibrate(long[] pattern, int repeat) {
+		// FIXME implement this
 	}
 
 	@Override
 	public void cancelVibrate() {
+		// FIXME implement this
 	}
 
 	@Override
@@ -230,18 +240,23 @@ public class IOSInput implements Input {
 	public boolean isPeripheralAvailable(Peripheral peripheral) {
 		if(peripheral == Peripheral.Accelerometer && config.useAccelerometer) return true;
 		if(peripheral == Peripheral.MultitouchScreen) return true;
-		if(peripheral == Peripheral.OnscreenKeyboard) return true;
+		// FIXME implement this (not sure if possible)
+//		if(peripheral == Peripheral.OnscreenKeyboard) return true;
+		// FIXME implement this
+//		if(peripheral == Peripheral.Compass) return true;
 		
 		return false;
 	}
 
 	@Override
 	public int getRotation() {
+		// FIXME implement this
 		return 0;
 	}
 
 	@Override
 	public Orientation getNativeOrientation() {
+		// FIXME implement this
 		return null;
 	}
 

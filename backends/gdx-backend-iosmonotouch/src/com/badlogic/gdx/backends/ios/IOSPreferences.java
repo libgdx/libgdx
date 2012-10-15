@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Preferences;
 
+// FIXME implement this
 public class IOSPreferences implements Preferences {
 
 	@Override
