@@ -372,6 +372,25 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h"
 
+%extend btIndexedMesh {
+	void setTriangleIndexBase(short data[], unsigned long size) {
+		short *indices = new short[size];
+		memcpy(indices, (short*)data, size*sizeof(short));
+		$self->m_triangleIndexBase = (unsigned char*)indices;
+	}
+	void setVertexBase(float data[], unsigned long size) {
+		float *vertices = new float[size];
+		memcpy(vertices, (float*)data, size*sizeof(float));
+		$self->m_vertexBase = (unsigned char*)vertices;
+	}
+	void dispose() {
+		short *indices = (short*)$self->m_triangleIndexBase;
+		delete[] indices;
+		float *vertices = (float*)$self->m_vertexBase;
+		delete[] vertices;
+	}
+};
+
 %{
 #include <BulletCollision/CollisionShapes/btMaterial.h>
 %}
@@ -783,22 +802,20 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
  * btWheelInfo doesn't compile because it doesnt have a 0-arg constructor for 
  * btAlignedObjectArray to call, so I disabled the vehicle stuff.
  */
-/*
+ 
 %{
 #include <BulletDynamics/Vehicle/btVehicleRaycaster.h>
 %}
 %include "BulletDynamics/Vehicle/btVehicleRaycaster.h"
 
 %{
-#include <BulletDynamics/Vehicle/btRaycastVehicle.h>
-%}
-%include "BulletDynamics/Vehicle/btRaycastVehicle.h"
-
-%{
 #include <BulletDynamics/Vehicle/btWheelInfo.h>
 %}
 %include "BulletDynamics/Vehicle/btWheelInfo.h"
-*/
+
+/* Has nested classes or structs */
+%include "custom/btRaycastVehicle.i"
+
 
 /*
  * Because C++ templates are compile-time, we must pre-define all the
