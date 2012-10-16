@@ -109,4 +109,16 @@ public class btIndexedMesh {
     this(gdxBulletJNI.new_btIndexedMesh(), true);
   }
 
+  public void setTriangleIndexBase(short[] data, long size) {
+    gdxBulletJNI.btIndexedMesh_setTriangleIndexBase(swigCPtr, this, data, size);
+  }
+
+  public void setVertexBase(float[] data, long size) {
+    gdxBulletJNI.btIndexedMesh_setVertexBase(swigCPtr, this, data, size);
+  }
+
+  public void dispose() {
+    gdxBulletJNI.btIndexedMesh_dispose(swigCPtr, this);
+  }
+
 }

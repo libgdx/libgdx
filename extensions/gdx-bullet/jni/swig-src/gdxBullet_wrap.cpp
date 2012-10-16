@@ -1555,6 +1555,22 @@ typedef btDiscreteCollisionDetectorInterface::ClosestPointInput ClosestPointInpu
 
 #include <BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h>
 
+SWIGINTERN void btIndexedMesh_setTriangleIndexBase(btIndexedMesh *self,short data[],unsigned long size){
+		short *indices = new short[size];
+		memcpy(indices, (short*)data, size*sizeof(short));
+		self->m_triangleIndexBase = (unsigned char*)indices;
+	}
+SWIGINTERN void btIndexedMesh_setVertexBase(btIndexedMesh *self,float data[],unsigned long size){
+		float *vertices = new float[size];
+		memcpy(vertices, (float*)data, size*sizeof(float));
+		self->m_vertexBase = (unsigned char*)vertices;
+	}
+SWIGINTERN void btIndexedMesh_dispose(btIndexedMesh *self){
+		short *indices = (short*)self->m_triangleIndexBase;
+		delete[] indices;
+		float *vertices = (float*)self->m_vertexBase;
+		delete[] vertices;
+	}
 
 #include <BulletCollision/CollisionShapes/btMaterial.h>
 
@@ -1815,6 +1831,18 @@ typedef btTypedConstraint::btConstraintInfo2 btConstraintInfo2;
 
 
 #include <BulletDynamics/ConstraintSolver/btHinge2Constraint.h>
+
+
+#include <BulletDynamics/Vehicle/btVehicleRaycaster.h>
+
+
+#include <BulletDynamics/Vehicle/btWheelInfo.h>
+
+
+#include <BulletDynamics/Vehicle/btRaycastVehicle.h>
+
+
+typedef btRaycastVehicle::btVehicleTuning btVehicleTuning;
 
 
 
@@ -25857,6 +25885,53 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1
   result = (btIndexedMesh *)new btIndexedMesh();
   *(btIndexedMesh **)&jresult = result; 
   return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIndexedMesh_1setTriangleIndexBase(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jshortArray jarg2, jlong jarg3) {
+  btIndexedMesh *arg1 = (btIndexedMesh *) 0 ;
+  short *arg2 ;
+  unsigned long arg3 ;
+  jshort *jarr2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btIndexedMesh **)&jarg1; 
+  if (!SWIG_JavaArrayInShort(jenv, &jarr2, (short **)&arg2, jarg2)) return ; 
+  arg3 = (unsigned long)jarg3; 
+  btIndexedMesh_setTriangleIndexBase(arg1,arg2,arg3);
+  SWIG_JavaArrayArgoutShort(jenv, jarr2, (short *)arg2, jarg2); 
+  delete [] arg2; 
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIndexedMesh_1setVertexBase(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloatArray jarg2, jlong jarg3) {
+  btIndexedMesh *arg1 = (btIndexedMesh *) 0 ;
+  float *arg2 ;
+  unsigned long arg3 ;
+  jfloat *jarr2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btIndexedMesh **)&jarg1; 
+  if (!SWIG_JavaArrayInFloat(jenv, &jarr2, (float **)&arg2, jarg2)) return ; 
+  arg3 = (unsigned long)jarg3; 
+  btIndexedMesh_setVertexBase(arg1,arg2,arg3);
+  SWIG_JavaArrayArgoutFloat(jenv, jarr2, (float *)arg2, jarg2); 
+  delete [] arg2; 
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIndexedMesh_1dispose(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btIndexedMesh *arg1 = (btIndexedMesh *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btIndexedMesh **)&jarg1; 
+  btIndexedMesh_dispose(arg1);
 }
 
 
@@ -56344,6 +56419,1954 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btVehicleRaycaster(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btVehicleRaycaster *arg1 = (btVehicleRaycaster *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btVehicleRaycaster **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btVehicleRaycaster_1castRay(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3, jlong jarg4) {
+  jlong jresult = 0 ;
+  btVehicleRaycaster *arg1 = (btVehicleRaycaster *) 0 ;
+  btVector3 *arg2 = 0 ;
+  btVector3 *arg3 = 0 ;
+  btVehicleRaycaster::btVehicleRaycasterResult *arg4 = 0 ;
+  void *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btVehicleRaycaster **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setBtVector3FromGdxVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btVector3 local_arg3;
+  gdx_setBtVector3FromGdxVector3(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitVector3 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  arg4 = *(btVehicleRaycaster::btVehicleRaycasterResult **)&jarg4;
+  if (!arg4) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btVehicleRaycaster::btVehicleRaycasterResult & reference is null");
+    return 0;
+  } 
+  result = (void *)(arg1)->castRay((btVector3 const &)*arg2,(btVector3 const &)*arg3,*arg4);
+  *(void **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1chassisConnectionCS_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_chassisConnectionCS = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1chassisConnectionCS_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_chassisConnectionCS);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1wheelDirectionCS_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_wheelDirectionCS = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1wheelDirectionCS_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_wheelDirectionCS);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1wheelAxleCS_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_wheelAxleCS = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1wheelAxleCS_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_wheelAxleCS);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1suspensionRestLength_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_suspensionRestLength = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1suspensionRestLength_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_suspensionRestLength);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1maxSuspensionTravelCm_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_maxSuspensionTravelCm = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1maxSuspensionTravelCm_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_maxSuspensionTravelCm);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1wheelRadius_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_wheelRadius = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1wheelRadius_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_wheelRadius);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1suspensionStiffness_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_suspensionStiffness = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1suspensionStiffness_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_suspensionStiffness);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1wheelsDampingCompression_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_wheelsDampingCompression = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1wheelsDampingCompression_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_wheelsDampingCompression);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1wheelsDampingRelaxation_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_wheelsDampingRelaxation = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1wheelsDampingRelaxation_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_wheelsDampingRelaxation);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1frictionSlip_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_frictionSlip = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1frictionSlip_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_frictionSlip);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1maxSuspensionForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_maxSuspensionForce = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1maxSuspensionForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_maxSuspensionForce);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1bIsFrontWheel_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  bool arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  arg2 = jarg2 ? true : false; 
+  if (arg1) (arg1)->m_bIsFrontWheel = arg2;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfoConstructionInfo_1m_1bIsFrontWheel_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  result = (bool) ((arg1)->m_bIsFrontWheel);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btWheelInfoConstructionInfo(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btWheelInfoConstructionInfo *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btWheelInfoConstructionInfo *)new btWheelInfoConstructionInfo();
+  *(btWheelInfoConstructionInfo **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btWheelInfoConstructionInfo(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btWheelInfoConstructionInfo *arg1 = (btWheelInfoConstructionInfo *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1raycastInfo_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btWheelInfo::RaycastInfo *arg2 = (btWheelInfo::RaycastInfo *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = *(btWheelInfo::RaycastInfo **)&jarg2; 
+  if (arg1) (arg1)->m_raycastInfo = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1raycastInfo_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btWheelInfo::RaycastInfo *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btWheelInfo::RaycastInfo *)& ((arg1)->m_raycastInfo);
+  *(btWheelInfo::RaycastInfo **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1worldTransform_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btTransform *arg2 = (btTransform *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = *(btTransform **)&jarg2; 
+  if (arg1) (arg1)->m_worldTransform = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1worldTransform_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btTransform *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btTransform *)& ((arg1)->m_worldTransform);
+  *(btTransform **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1chassisConnectionPointCS_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_chassisConnectionPointCS = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1chassisConnectionPointCS_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_chassisConnectionPointCS);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1wheelDirectionCS_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_wheelDirectionCS = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1wheelDirectionCS_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_wheelDirectionCS);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1wheelAxleCS_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btVector3 *arg2 = (btVector3 *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2; 
+  if (arg1) (arg1)->m_wheelAxleCS = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1wheelAxleCS_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btVector3 *)& ((arg1)->m_wheelAxleCS);
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1suspensionRestLength1_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_suspensionRestLength1 = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1suspensionRestLength1_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_suspensionRestLength1);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1maxSuspensionTravelCm_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_maxSuspensionTravelCm = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1maxSuspensionTravelCm_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_maxSuspensionTravelCm);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1getSuspensionRestLength(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar)((btWheelInfo const *)arg1)->getSuspensionRestLength();
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1wheelsRadius_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_wheelsRadius = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1wheelsRadius_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_wheelsRadius);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1suspensionStiffness_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_suspensionStiffness = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1suspensionStiffness_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_suspensionStiffness);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1wheelsDampingCompression_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_wheelsDampingCompression = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1wheelsDampingCompression_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_wheelsDampingCompression);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1wheelsDampingRelaxation_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_wheelsDampingRelaxation = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1wheelsDampingRelaxation_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_wheelsDampingRelaxation);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1frictionSlip_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_frictionSlip = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1frictionSlip_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_frictionSlip);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1steering_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_steering = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1steering_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_steering);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1rotation_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_rotation = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1rotation_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_rotation);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1deltaRotation_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_deltaRotation = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1deltaRotation_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_deltaRotation);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1rollInfluence_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_rollInfluence = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1rollInfluence_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_rollInfluence);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1maxSuspensionForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_maxSuspensionForce = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1maxSuspensionForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_maxSuspensionForce);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1engineForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_engineForce = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1engineForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_engineForce);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1brake_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_brake = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1brake_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_brake);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1bIsFrontWheel_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  bool arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = jarg2 ? true : false; 
+  if (arg1) (arg1)->m_bIsFrontWheel = arg2;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1bIsFrontWheel_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (bool) ((arg1)->m_bIsFrontWheel);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1clientInfo_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  void *arg2 = (void *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = *(void **)&jarg2; 
+  if (arg1) (arg1)->m_clientInfo = arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1clientInfo_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  void *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (void *) ((arg1)->m_clientInfo);
+  *(void **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btWheelInfo_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btWheelInfoConstructionInfo *arg1 = 0 ;
+  btWheelInfo *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfoConstructionInfo **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btWheelInfoConstructionInfo & reference is null");
+    return 0;
+  } 
+  result = (btWheelInfo *)new btWheelInfo(*arg1);
+  *(btWheelInfo **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btWheelInfo_1_1SWIG_11(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btWheelInfo *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btWheelInfo *)new btWheelInfo();
+  *(btWheelInfo **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1updateWheel(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btRigidBody *arg2 = 0 ;
+  btWheelInfo::RaycastInfo *arg3 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = *(btRigidBody **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btRigidBody const & reference is null");
+    return ;
+  } 
+  arg3 = *(btWheelInfo::RaycastInfo **)&jarg3;
+  if (!arg3) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btWheelInfo::RaycastInfo & reference is null");
+    return ;
+  } 
+  (arg1)->updateWheel((btRigidBody const &)*arg2,*arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1clippedInvContactDotSuspension_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_clippedInvContactDotSuspension = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1clippedInvContactDotSuspension_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_clippedInvContactDotSuspension);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1suspensionRelativeVelocity_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_suspensionRelativeVelocity = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1suspensionRelativeVelocity_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_suspensionRelativeVelocity);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1wheelsSuspensionForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_wheelsSuspensionForce = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1wheelsSuspensionForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_wheelsSuspensionForce);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1skidInfo_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_skidInfo = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btWheelInfo_1m_1skidInfo_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_skidInfo);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btWheelInfo(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btWheelInfo *arg1 = (btWheelInfo *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btWheelInfo **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btVehicleTuning(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btVehicleTuning *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btVehicleTuning *)new btVehicleTuning();
+  *(btVehicleTuning **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btVehicleTuning_1m_1suspensionStiffness_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btVehicleTuning *arg1 = (btVehicleTuning *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btVehicleTuning **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_suspensionStiffness = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btVehicleTuning_1m_1suspensionStiffness_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btVehicleTuning *arg1 = (btVehicleTuning *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btVehicleTuning **)&jarg1; 
+  result = (btScalar) ((arg1)->m_suspensionStiffness);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btVehicleTuning_1m_1suspensionCompression_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btVehicleTuning *arg1 = (btVehicleTuning *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btVehicleTuning **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_suspensionCompression = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btVehicleTuning_1m_1suspensionCompression_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btVehicleTuning *arg1 = (btVehicleTuning *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btVehicleTuning **)&jarg1; 
+  result = (btScalar) ((arg1)->m_suspensionCompression);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btVehicleTuning_1m_1suspensionDamping_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btVehicleTuning *arg1 = (btVehicleTuning *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btVehicleTuning **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_suspensionDamping = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btVehicleTuning_1m_1suspensionDamping_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btVehicleTuning *arg1 = (btVehicleTuning *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btVehicleTuning **)&jarg1; 
+  result = (btScalar) ((arg1)->m_suspensionDamping);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btVehicleTuning_1m_1maxSuspensionTravelCm_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btVehicleTuning *arg1 = (btVehicleTuning *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btVehicleTuning **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_maxSuspensionTravelCm = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btVehicleTuning_1m_1maxSuspensionTravelCm_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btVehicleTuning *arg1 = (btVehicleTuning *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btVehicleTuning **)&jarg1; 
+  result = (btScalar) ((arg1)->m_maxSuspensionTravelCm);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btVehicleTuning_1m_1frictionSlip_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btVehicleTuning *arg1 = (btVehicleTuning *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btVehicleTuning **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_frictionSlip = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btVehicleTuning_1m_1frictionSlip_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btVehicleTuning *arg1 = (btVehicleTuning *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btVehicleTuning **)&jarg1; 
+  result = (btScalar) ((arg1)->m_frictionSlip);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btVehicleTuning_1m_1maxSuspensionForce_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btVehicleTuning *arg1 = (btVehicleTuning *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btVehicleTuning **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_maxSuspensionForce = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btVehicleTuning_1m_1maxSuspensionForce_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btVehicleTuning *arg1 = (btVehicleTuning *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btVehicleTuning **)&jarg1; 
+  result = (btScalar) ((arg1)->m_maxSuspensionForce);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btVehicleTuning(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btVehicleTuning *arg1 = (btVehicleTuning *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btVehicleTuning **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btRaycastVehicle(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
+  jlong jresult = 0 ;
+  btVehicleTuning *arg1 = 0 ;
+  btRigidBody *arg2 = (btRigidBody *) 0 ;
+  btVehicleRaycaster *arg3 = (btVehicleRaycaster *) 0 ;
+  btRaycastVehicle *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  (void)jarg3_;
+  arg1 = *(btVehicleTuning **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btVehicleTuning const & reference is null");
+    return 0;
+  } 
+  arg2 = *(btRigidBody **)&jarg2; 
+  arg3 = *(btVehicleRaycaster **)&jarg3; 
+  result = (btRaycastVehicle *)new btRaycastVehicle((btVehicleTuning const &)*arg1,arg2,arg3);
+  *(btRaycastVehicle **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btRaycastVehicle(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1getChassisWorldTransform(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btTransform *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  result = (btTransform *) &((btRaycastVehicle const *)arg1)->getChassisWorldTransform();
+  *(btTransform **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1rayCast(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jfloat jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btWheelInfo *arg2 = 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = *(btWheelInfo **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btWheelInfo & reference is null");
+    return 0;
+  } 
+  result = (btScalar)(arg1)->rayCast(*arg2);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1updateVehicle(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  (arg1)->updateVehicle(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1resetSuspension(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  (arg1)->resetSuspension();
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1getSteeringValue(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jfloat jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  int arg2 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (btScalar)((btRaycastVehicle const *)arg1)->getSteeringValue(arg2);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1setSteeringValue(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2, jint jarg3) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btScalar arg2 ;
+  int arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  arg3 = (int)jarg3; 
+  (arg1)->setSteeringValue(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1applyEngineForce(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2, jint jarg3) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btScalar arg2 ;
+  int arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  arg3 = (int)jarg3; 
+  (arg1)->applyEngineForce(arg2,arg3);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1getWheelTransformWS(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jlong jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  int arg2 ;
+  btTransform *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (btTransform *) &((btRaycastVehicle const *)arg1)->getWheelTransformWS(arg2);
+  *(btTransform **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1updateWheelTransform_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jboolean jarg3) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  int arg2 ;
+  bool arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = jarg3 ? true : false; 
+  (arg1)->updateWheelTransform(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1updateWheelTransform_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->updateWheelTransform(arg2);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1addWheel(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3, jobject jarg4, jfloat jarg5, jfloat jarg6, jlong jarg7, jobject jarg7_, jboolean jarg8) {
+  jlong jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btVector3 *arg2 = 0 ;
+  btVector3 *arg3 = 0 ;
+  btVector3 *arg4 = 0 ;
+  btScalar arg5 ;
+  btScalar arg6 ;
+  btVehicleTuning *arg7 = 0 ;
+  bool arg8 ;
+  btWheelInfo *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg7_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setBtVector3FromGdxVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btVector3 local_arg3;
+  gdx_setBtVector3FromGdxVector3(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitVector3 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  btVector3 local_arg4;
+  gdx_setBtVector3FromGdxVector3(jenv, local_arg4, jarg4);
+  arg4 = &local_arg4;
+  gdxAutoCommitVector3 auto_commit_arg4(jenv, jarg4, &local_arg4);
+  arg5 = (btScalar)jarg5; 
+  arg6 = (btScalar)jarg6; 
+  arg7 = *(btVehicleTuning **)&jarg7;
+  if (!arg7) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btVehicleTuning const & reference is null");
+    return 0;
+  } 
+  arg8 = jarg8 ? true : false; 
+  result = (btWheelInfo *) &(arg1)->addWheel((btVector3 const &)*arg2,(btVector3 const &)*arg3,(btVector3 const &)*arg4,arg5,arg6,(btVehicleTuning const &)*arg7,arg8);
+  *(btWheelInfo **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1getNumWheels(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  result = (int)((btRaycastVehicle const *)arg1)->getNumWheels();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1m_1wheelInfo_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btAlignedObjectArray< btWheelInfo > *arg2 = (btAlignedObjectArray< btWheelInfo > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = *(btAlignedObjectArray< btWheelInfo > **)&jarg2; 
+  if (arg1) (arg1)->m_wheelInfo = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1m_1wheelInfo_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btAlignedObjectArray< btWheelInfo > *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  result = (btAlignedObjectArray< btWheelInfo > *)& ((arg1)->m_wheelInfo);
+  *(btAlignedObjectArray< btWheelInfo > **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1getWheelInfo_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jlong jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  int arg2 ;
+  btWheelInfo *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (btWheelInfo *) &((btRaycastVehicle const *)arg1)->getWheelInfo(arg2);
+  *(btWheelInfo **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1updateWheelTransformsWS_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jboolean jarg3) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btWheelInfo *arg2 = 0 ;
+  bool arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = *(btWheelInfo **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btWheelInfo & reference is null");
+    return ;
+  } 
+  arg3 = jarg3 ? true : false; 
+  (arg1)->updateWheelTransformsWS(*arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1updateWheelTransformsWS_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btWheelInfo *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = *(btWheelInfo **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btWheelInfo & reference is null");
+    return ;
+  } 
+  (arg1)->updateWheelTransformsWS(*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1setBrake(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2, jint jarg3) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btScalar arg2 ;
+  int arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  arg3 = (int)jarg3; 
+  (arg1)->setBrake(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1setPitchControl(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  (arg1)->setPitchControl(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1updateSuspension(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  (arg1)->updateSuspension(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1updateFriction(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  (arg1)->updateFriction(arg2);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1getRigidBody_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btRigidBody *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  result = (btRigidBody *)(arg1)->getRigidBody();
+  *(btRigidBody **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1getRightAxis(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  result = (int)((btRaycastVehicle const *)arg1)->getRightAxis();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1getUpAxis(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  result = (int)((btRaycastVehicle const *)arg1)->getUpAxis();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1getForwardAxis(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  result = (int)((btRaycastVehicle const *)arg1)->getForwardAxis();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1getForwardVector(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btVector3 result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  result = ((btRaycastVehicle const *)arg1)->getForwardVector();
+  jresult = gdx_getReturnVector3(jenv);
+  gdx_setGdxVector3FromBtVector3(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1getCurrentSpeedKmHour(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  result = (btScalar)((btRaycastVehicle const *)arg1)->getCurrentSpeedKmHour();
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1setCoordinateSystem(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3, jint jarg4) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  int arg4 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  (arg1)->setCoordinateSystem(arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1getUserConstraintType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  result = (int)((btRaycastVehicle const *)arg1)->getUserConstraintType();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1setUserConstraintType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->setUserConstraintType(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1setUserConstraintId(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->setUserConstraintId(arg2);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1getUserConstraintId(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btRaycastVehicle *arg1 = (btRaycastVehicle *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRaycastVehicle **)&jarg1; 
+  result = (int)((btRaycastVehicle const *)arg1)->getUserConstraintId();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btDefaultVehicleRaycaster(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btDynamicsWorld *arg1 = (btDynamicsWorld *) 0 ;
+  btDefaultVehicleRaycaster *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btDynamicsWorld **)&jarg1; 
+  result = (btDefaultVehicleRaycaster *)new btDefaultVehicleRaycaster(arg1);
+  *(btDefaultVehicleRaycaster **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btDefaultVehicleRaycaster(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btDefaultVehicleRaycaster *arg1 = (btDefaultVehicleRaycaster *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btDefaultVehicleRaycaster **)&jarg1; 
+  delete arg1;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btCollisionObjectArray_1_1SWIG_10(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   btAlignedObjectArray< btCollisionObject * > *result = 0 ;
@@ -57456,6 +59479,22 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btHin
     (void)jenv;
     (void)jcls;
     *(btGeneric6DofSpringConstraint **)&baseptr = *(btHinge2Constraint **)&jarg1;
+    return baseptr;
+}
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRaycastVehicle_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(btActionInterface **)&baseptr = *(btRaycastVehicle **)&jarg1;
+    return baseptr;
+}
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDefaultVehicleRaycaster_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(btVehicleRaycaster **)&baseptr = *(btDefaultVehicleRaycaster **)&jarg1;
     return baseptr;
 }
 
