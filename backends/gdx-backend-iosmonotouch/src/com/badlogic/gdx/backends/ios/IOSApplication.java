@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.ios;
+
+import java.util.ArrayList;
 
 import cli.MonoTouch.Foundation.NSDictionary;
 import cli.MonoTouch.UIKit.UIApplication;
 import cli.MonoTouch.UIKit.UIApplicationDelegate;
-import cli.MonoTouch.UIKit.UIDevice;
-import cli.MonoTouch.UIKit.UIDeviceOrientation;
 import cli.MonoTouch.UIKit.UIInterfaceOrientation;
 import cli.MonoTouch.UIKit.UIScreen;
 import cli.MonoTouch.UIKit.UIViewController;
@@ -50,26 +51,27 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	IOSNet net;
 	int logLevel = Application.LOG_DEBUG;
 	boolean firstResume;
-	
-	/**
-	 * Should be called in AppDelegate#FinishedLaunching.
+
+	ArrayList<Runnable> runnables = new ArrayList<Runnable>();
+	ArrayList<Runnable> executedRunnables = new ArrayList<Runnable>();
+
+	/** Should be called in AppDelegate#FinishedLaunching.
 	 * 
-	 * @param listener  Our application (aka game) to run.
-	 * @param config  The desired iOS configuration.
-	 */
-	public IOSApplication(ApplicationListener listener, IOSApplicationConfiguration config) {
+	 * @param listener Our application (aka game) to run.
+	 * @param config The desired iOS configuration. */
+	public IOSApplication (ApplicationListener listener, IOSApplicationConfiguration config) {
 		this.listener = listener;
-		this.config = config; 
+		this.config = config;
 		Gdx.app = this;
 	}
-	
+
 	@Override
-	public boolean FinishedLaunching(UIApplication uiApp, NSDictionary options) {
+	public boolean FinishedLaunching (UIApplication uiApp, NSDictionary options) {
 		this.uiApp = uiApp;
-			
+
 		// Create: Window -> ViewController-> GameView (controller takes care of rotation)
-		this.uiWindow = new UIWindow(UIScreen.get_MainScreen().get_Bounds());	
-		UIViewController uiViewController = new UIViewController() {	
+		this.uiWindow = new UIWindow(UIScreen.get_MainScreen().get_Bounds());
+		UIViewController uiViewController = new UIViewController() {
 			@Override
 			public void DidRotate (UIInterfaceOrientation orientation) {
 				// get the view size and update graphics
@@ -78,20 +80,22 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 				RectangleF bounds = getBounds(this);
 				graphics.width = (int)bounds.get_Width();
 				graphics.height = (int)bounds.get_Height();
-				graphics.MakeCurrent();  // not sure if that's needed? badlogic: yes it is, so resize can do OpenGL stuff, not sure if it's on the correct thread though
+				graphics.MakeCurrent(); // not sure if that's needed? badlogic: yes it is, so resize can do OpenGL stuff, not sure if
+// it's on the correct thread though
 				listener.resize(graphics.width, graphics.height);
 			}
+
 			@Override
 			public boolean ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {
 				// we return "true" if we support the orientation
-				switch (orientation.Value) { 
-					case UIInterfaceOrientation.LandscapeLeft: 
-					case UIInterfaceOrientation.LandscapeRight: 
-					   return config.orientationLandscape;
-					default: 
-						// assume portrait
-					   return config.orientationPortrait;
-				} 
+				switch (orientation.Value) {
+				case UIInterfaceOrientation.LandscapeLeft:
+				case UIInterfaceOrientation.LandscapeRight:
+					return config.orientationLandscape;
+				default:
+					// assume portrait
+					return config.orientationPortrait;
+				}
 			}
 		};
 		this.uiWindow.set_RootViewController(uiViewController);
@@ -102,13 +106,13 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		this.files = new IOSFiles();
 		this.audio = new IOSAudio();
 		this.net = new IOSNet(this);
-		
+
 		Gdx.files = this.files;
 		Gdx.graphics = this.graphics;
 		Gdx.audio = this.audio;
 		Gdx.input = this.input;
 		Gdx.net = this.net;
-		
+
 		this.input.setupPeripherals();
 
 		// attach our view to window+controller and make it visible
@@ -119,13 +123,11 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		return true;
 	}
 
-	/**
-	 * Returns our real display dimension based on screen orientation.
+	/** Returns our real display dimension based on screen orientation.
 	 * 
-	 * @param viewController  The view controller.
-	 * @return  Or real display dimension.
-	 */
-	RectangleF getBounds(UIViewController viewController) {
+	 * @param viewController The view controller.
+	 * @return Or real display dimension. */
+	RectangleF getBounds (UIViewController viewController) {
 		// or screen size (always portrait)
 		RectangleF bounds = UIScreen.get_MainScreen().get_Bounds();
 
@@ -133,27 +135,27 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		UIInterfaceOrientation orientation = viewController.get_InterfaceOrientation();
 		int width;
 		int height;
-		switch (orientation.Value) { 
-			case UIInterfaceOrientation.LandscapeLeft: 
-			case UIInterfaceOrientation.LandscapeRight: 
-			   height = (int)bounds.get_Width();
-			   width = (int)bounds.get_Height();
-			   break;
-			default: 
-				// assume portrait
-				width = (int)bounds.get_Width();
-			   height = (int)bounds.get_Height();
-		} 
+		switch (orientation.Value) {
+		case UIInterfaceOrientation.LandscapeLeft:
+		case UIInterfaceOrientation.LandscapeRight:
+			height = (int)bounds.get_Width();
+			width = (int)bounds.get_Height();
+			break;
+		default:
+			// assume portrait
+			width = (int)bounds.get_Width();
+			height = (int)bounds.get_Height();
+		}
 		Gdx.app.debug("IOSApplication", "View: " + orientation.toString() + " " + width + "x" + height);
-		
+
 		// return resulting view size (based on orientation)
 		return new RectangleF(0, 0, width, height);
 	}
-	
+
 	@Override
-	public void OnActivated(UIApplication uiApp) {
+	public void OnActivated (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "resumed");
-		if(!firstResume) {
+		if (!firstResume) {
 			graphics.MakeCurrent();
 			listener.resume();
 			firstResume = true;
@@ -161,7 +163,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	}
 
 	@Override
-	public void OnResignActivation(UIApplication uiApp) {
+	public void OnResignActivation (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "paused");
 		graphics.MakeCurrent();
 		listener.pause();
@@ -169,7 +171,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	}
 
 	@Override
-	public void WillTerminate(UIApplication uiApp) {
+	public void WillTerminate (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "disposed");
 		graphics.MakeCurrent();
 		listener.dispose();
@@ -195,22 +197,22 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	public Files getFiles () {
 		return files;
 	}
-	
+
 	@Override
-	public Net getNet() {
+	public Net getNet () {
 		return net;
 	}
 
 	@Override
 	public void log (String tag, String message) {
-		if(logLevel > LOG_NONE) {
+		if (logLevel > LOG_NONE) {
 			Console.WriteLine("[info] " + tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void log (String tag, String message, Exception exception) {
-		if(logLevel > LOG_NONE) {
+		if (logLevel > LOG_NONE) {
 			Console.WriteLine("[info] " + tag + ": " + message);
 			exception.printStackTrace();
 		}
@@ -218,30 +220,30 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	@Override
 	public void error (String tag, String message) {
-		if(logLevel >= LOG_ERROR) {
-			Console.WriteLine("[error] " +  tag + ": " + message);
+		if (logLevel >= LOG_ERROR) {
+			Console.WriteLine("[error] " + tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
-		if(logLevel >= LOG_ERROR) {
-			Console.WriteLine("[error] " +  tag + ": " + message);
+		if (logLevel >= LOG_ERROR) {
+			Console.WriteLine("[error] " + tag + ": " + message);
 			exception.printStackTrace();
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message) {
-		if(logLevel >= LOG_DEBUG) {
-			Console.WriteLine("[debug] " +  tag + ": " + message);
+		if (logLevel >= LOG_DEBUG) {
+			Console.WriteLine("[debug] " + tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
-		if(logLevel >= LOG_DEBUG) {
-			Console.WriteLine("[error] " +  tag + ": " + message);
+		if (logLevel >= LOG_DEBUG) {
+			Console.WriteLine("[error] " + tag + ": " + message);
 			exception.printStackTrace();
 		}
 	}
@@ -281,24 +283,41 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	@Override
 	public void postRunnable (Runnable runnable) {
-		// FIXME implement this
+		synchronized (runnables) {
+			runnables.add(runnable);
+		}
+	}
+
+	public void processRunnables () {
+		synchronized (runnables) {
+			executedRunnables.clear();
+			executedRunnables.addAll(runnables);
+			runnables.clear();
+		}
+		for (int i = 0; i < executedRunnables.size(); i++) {
+			try {
+				executedRunnables.get(i).run();
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+		}
 	}
 
 	@Override
-	public void exit () {	
+	public void exit () {
 		System.exit(0);
 	}
 
 	@Override
-	public Clipboard getClipboard() {
+	public Clipboard getClipboard () {
 		// FIXME implement clipboard
 		return new Clipboard() {
 			@Override
-			public void setContents(String content) {
+			public void setContents (String content) {
 			}
-			
+
 			@Override
-			public String getContents() {
+			public String getContents () {
 				return null;
 			}
 		};
