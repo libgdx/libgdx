@@ -2,7 +2,9 @@
  *	Extra Java methods.
  */
  
-%module btMotionState
+%module(directors="1") btMotionState
+
+%feature("director") btMotionState;
 
 /* newDerivedObject() required for down cast support (gdxDownCast.i). */
 

@@ -15,6 +15,9 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.ios;
 
+import cli.MonoTouch.Foundation.NSUrl;
+import cli.MonoTouch.UIKit.UIApplication;
+
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpResult;
 import com.badlogic.gdx.Net.Protocol;
@@ -25,13 +28,21 @@ import com.badlogic.gdx.net.SocketHints;
 
 public class IOSNet implements Net {
 	
+	final UIApplication uiApp;
+	
+	public IOSNet(IOSApplication app) {
+		uiApp = app.uiApp;
+	}
+	
 	@Override
 	public HttpResult httpGet (String url, String... parameters) {
+		// FIXME implement this
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	@Override
 	public HttpResult httpPost (String url, String contentType, byte[] content) {
+		// FIXME implement this
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
@@ -43,5 +54,10 @@ public class IOSNet implements Net {
 	@Override
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
 		return new IOSSocket(protocol, host, port, hints);
+	}
+	
+	@Override
+	public void openURI(String URI) {
+		uiApp.OpenUrl(new NSUrl(URI));
 	}
 }

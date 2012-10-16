@@ -20,6 +20,7 @@ import java.io.File;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 
+// FIXME see if we can get classpath files to work
 public class IOSFileHandle extends FileHandle {
 	public IOSFileHandle (String fileName, FileType type) {
 		super(fileName, type);

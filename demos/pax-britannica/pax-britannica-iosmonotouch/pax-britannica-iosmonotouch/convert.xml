@@ -11,7 +11,7 @@
 	<target name="compile">
 		<delete dir="target"/>
 		<mkdir dir="target"/>
-		<javac srcdir="${SRC}" destdir="target" classpath="${CLASSPATH}">
+		<javac srcdir="${SRC}" debug="on" destdir="target" classpath="${CLASSPATH}">
 			<include name="**/*.java"/>
 			<exclude name="${EXCLUDE}"/>
 		</javac>
@@ -31,6 +31,7 @@
 			<arg value="-r:${MONO_HOME}/OpenTK.dll"/>
 			<arg value="-r:${MONO_HOME}/monotouch.dll"/>
 			<arg value="-r:${MONO_HOME}/Mono.Data.Sqlite.dll"/>
+			<arg value="-srcpath:${SRC}"/>
 			<arg line="${IN}"/>
 		</exec>
 	</target>

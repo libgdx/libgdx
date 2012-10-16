@@ -32,6 +32,7 @@ import cli.System.Drawing.RectangleF;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
@@ -39,6 +40,7 @@ import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Pixmap;
 
+// FIXME add GL 1.x support by ripping Android's classes
 public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	IOSApplication app;
 	IOSInput input;
@@ -50,6 +52,8 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	long framesStart;
 	int frames;
 	int fps;
+	BufferFormat bufferFormat;
+	String extensions;
 
 	private float ppiX = 0;
 	private float ppiY = 0;
@@ -72,6 +76,8 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		set_AutoResize(false);
 		set_LayerColorFormat(EAGLColorFormat.RGB565);
 		set_ContextRenderingApi(EAGLRenderingAPI.wrap(EAGLRenderingAPI.OpenGLES2));
+		// FIXME fix this if we add rgba/depth/stencil flags to IOSApplicationConfiguration
+		bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
 		gl20 = new IOSGLES20();
 		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
@@ -145,6 +151,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		super.OnResize(event);
 
 		// not used on iOS
+		// FIXME resize could happen if app supports both portrait and landscape, so this should be implemented
 		Gdx.app.debug("IOSGraphics", "iOS OnResize(...) is not implement (don't think it is needed?).");
 	}
 
@@ -185,6 +192,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 
 	@Override
 	public GLU getGLU() {
+		// FIXME implement this
 		return null;
 	}
 
@@ -255,12 +263,18 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 
 	@Override
 	public DisplayMode[] getDisplayModes() {
-		return null;
+		return new DisplayMode[] { getDesktopDisplayMode() };
 	}
 
 	@Override
 	public DisplayMode getDesktopDisplayMode() {
-		return null;
+		return new IOSDisplayMode(getWidth(), getHeight(), 60, 0);
+	}
+	
+	private static class IOSDisplayMode extends DisplayMode {
+		protected IOSDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
+			super(width, height, refreshRate, bitsPerPixel);
+		}
 	}
 
 	@Override
@@ -283,25 +297,29 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 
 	@Override
 	public BufferFormat getBufferFormat() {
-		return null;
+		return bufferFormat;
 	}
 
 	@Override
 	public boolean supportsExtension(String extension) {
-		return false;
+		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
+		return extensions.contains(extension);
 	}
 
 	@Override
 	public void setContinuousRendering(boolean isContinuous) {
+		// FIXME implement this if possible
 	}
 
 	@Override
 	public boolean isContinuousRendering() {
-		return false;
+		// FIXME implement this if possible
+		return true;
 	}
 
 	@Override
 	public void requestRendering() {
+		// FIXME implement this if possible
 	}
 
 	@Override

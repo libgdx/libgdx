@@ -101,7 +101,7 @@ public class AndroidApplication extends Activity implements Application {
 		input = new AndroidInput(this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-		net = new AndroidNet();
+		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
 
@@ -173,6 +173,7 @@ public class AndroidApplication extends Activity implements Application {
 		input = new AndroidInput(this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
+		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
 
@@ -181,6 +182,7 @@ public class AndroidApplication extends Activity implements Application {
 		Gdx.audio = this.getAudio();
 		Gdx.files = this.getFiles();
 		Gdx.graphics = this.getGraphics();
+		Gdx.net = this.getNet();
 
 		createWakeLock(config);
 		return graphics.getView();
@@ -221,6 +223,7 @@ public class AndroidApplication extends Activity implements Application {
 		Gdx.audio = this.getAudio();
 		Gdx.files = this.getFiles();
 		Gdx.graphics = this.getGraphics();
+		Gdx.net = this.getNet();
 
 		((AndroidInput)getInput()).registerSensorListeners();
 

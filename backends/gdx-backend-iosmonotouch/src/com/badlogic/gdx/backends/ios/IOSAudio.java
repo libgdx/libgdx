@@ -33,11 +33,13 @@ public class IOSAudio implements Audio {
 
 	@Override
 	public AudioDevice newAudioDevice(int samplingRate, boolean isMono) {
+		// FIXME implement via OpenAL if possible
 		return null;
 	}
 
 	@Override
 	public AudioRecorder newAudioRecorder(int samplingRate, boolean isMono) {
+		// FIXME see what MonoTouch offers
 		return null;
 	}
 
@@ -66,7 +68,8 @@ public class IOSAudio implements Audio {
 		// verify file format (make sure we don't have an OGG file)
 		verify(fileHandle);
 				
-		// create audio player - from byte array
+		// create audio player - from byte array 
+		// FIXME check if there's a faster way to load files
 		NSData data = NSData.FromArray(fileHandle.readBytes());
 	   return new IOSSound(data);
 	}

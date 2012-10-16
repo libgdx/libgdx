@@ -72,6 +72,7 @@ public class IOSFiles implements Files {
 
 	@Override
 	public String getLocalStoragePath() {
+		// FIXME this doesn't seem to work
 		return localPath;
 	}
 

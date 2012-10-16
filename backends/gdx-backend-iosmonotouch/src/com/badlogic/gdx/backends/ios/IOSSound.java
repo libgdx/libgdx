@@ -34,6 +34,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * rate playback).
  * 
  * @author noblemaster
+ * 
+ * FIXME rewrite using OpenAL!
  */
 public class IOSSound implements Sound {
 
@@ -222,15 +224,16 @@ public class IOSSound implements Sound {
 
 	@Override
 	public void dispose() {
-		// dispose all players
-		for (int i = 0; i < players.length; i++) {
-			players[i].Dispose();
-			players[i] = null;
-		}
-		
 		// dispose play thread if no more sounds are available
 		synchronized (sync) {
 			soundCounter--;
+			
+			// dispose all players
+			stop();
+			for (int i = 0; i < players.length; i++) {
+				players[i].Dispose();
+			}
+			players = null;
 			
 			// no more sounds?
 			if (soundCounter == 0) {
@@ -256,6 +259,7 @@ public class IOSSound implements Sound {
 	@Override
 	public void setPitch(long soundId, float pitch) {
 		if (soundId >= 0) {
+			// FIXME implement this by figuring out how to make MonoTouch support this...
 			// NOTE: It's odd, AVAudioPlayer supports variable rate playing, but is not
 			// available via MonoTouch!? Let's put out a warning...
 			Gdx.app.debug("IOSSound", "Warning: setting a pitch not supported on iOS.");
