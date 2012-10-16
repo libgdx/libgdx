@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.lang.reflect.Method;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -121,6 +123,7 @@ public class AndroidApplication extends Activity implements Application {
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 		setContentView(graphics.getView(), createLayoutParams());
 		createWakeLock(config);
+		hideStatusBar(config);
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -134,6 +137,21 @@ public class AndroidApplication extends Activity implements Application {
 		if (config.useWakelock) {
 			PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
 			wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "libgdx wakelock");
+		}
+	}
+
+	protected void hideStatusBar (AndroidApplicationConfiguration config) {
+		if (!config.hideStatusBar || getVersion() < 11)
+			return;
+
+		View rootView = getWindow().getDecorView();
+
+		try {
+			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
+			m.invoke(rootView, 0x0);
+			m.invoke(rootView, 0x1);
+		} catch (Exception e) {
+			log("AndroidApplication", "Can't hide status bar", e);
 		}
 	}
 
@@ -185,6 +203,7 @@ public class AndroidApplication extends Activity implements Application {
 		Gdx.net = this.getNet();
 
 		createWakeLock(config);
+		hideStatusBar(config);
 		return graphics.getView();
 	}
 
