@@ -315,8 +315,9 @@ public class ObjLoader implements StillModelLoader {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(file.read()), 4096);
 			try {
 				while ((line = reader.readLine()) != null) {
+					
 					if(line.length()>0 && line.charAt(0)=='\t')
-						line = line.substring(1);
+						line = line.substring(1).trim();
 					
 					tokens = line.split("\\s+");
 
@@ -329,7 +330,7 @@ public class ObjLoader implements StillModelLoader {
 						Material mat;
 						Texture texture;
 						if(textureName.length() > 0)
-							texture = new Texture(textureDir.child(textureName));  //Gdx.files.internal(TEXTURE_PATH + textureName));
+							texture = new Texture(textureDir.child(textureName));
 						else
 							texture = new Texture(1, 1, Format.RGB888); // create default texture
 						mat = new Material(curMatName, new TextureAttribute(texture, 0, "s_tex"), 
