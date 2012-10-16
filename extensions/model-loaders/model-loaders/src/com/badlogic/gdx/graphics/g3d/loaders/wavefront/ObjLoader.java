@@ -45,8 +45,6 @@ import com.badlogic.gdx.utils.FloatArray;
  * 
  * @author mzechner, espitz */
 public class ObjLoader implements StillModelLoader {
-	public static String TEXTURE_PATH = "data/textures/"; 
-	
 	final FloatArray verts;
 	final FloatArray norms;
 	final FloatArray uvs;
@@ -66,15 +64,25 @@ public class ObjLoader implements StillModelLoader {
 		return loadObj(file, false);
 	}
 
+	
 	/** Loads a Wavefront OBJ file from a given file handle.
 	 * 
 	 * @param file the FileHandle
 	 * @param flipV whether to flip the v texture coordinate (Blender, Wings3D, et al) */
 	public StillModel loadObj (FileHandle file, boolean flipV) {
+		return loadObj(file, file.parent(), flipV);
+	}
+	
+	/** Loads a Wavefront OBJ file from a given file handle.
+	 * 
+	 * @param file the FileHandle
+	 * @param textureDir
+	 * @param flipV whether to flip the v texture coordinate (Blender, Wings3D, et al) */
+	public StillModel loadObj (FileHandle file, FileHandle textureDir, boolean flipV) {
 		String line;
 		String[] tokens;
 		char firstChar;
-		MtlLoader mtl = new MtlLoader();
+		MtlLoader mtl = new MtlLoader(textureDir);
 		
 		// Create a "default" Group and set it as the active group, in case
 		// there are no groups or objects defined in the OBJ file.
@@ -147,7 +155,7 @@ public class ObjLoader implements StillModelLoader {
 					mtl.load(path + tokens[1]);
 				} else if (tokens[0].equals("usemtl"))
 				{
-					if(mtl == null || tokens.length == 1)
+					if(tokens.length == 1)
 						activeGroup.materialName = "default";
 					else
 						activeGroup.materialName = tokens[1]; 
@@ -279,13 +287,12 @@ public class ObjLoader implements StillModelLoader {
 
 	private class MtlLoader
 	{
-		ArrayList<Material> materials = new ArrayList<Material>();
+		private ArrayList<Material> materials = new ArrayList<Material>();
+		private FileHandle textureDir;
 		
-		public MtlLoader () 
+		public MtlLoader (FileHandle textureDir) 
 		{
-			materials.clear();
-			Material mat = new Material("default");
-			materials.add(mat);
+			this.textureDir = textureDir;
 		}
 
 		/**
@@ -322,20 +329,12 @@ public class ObjLoader implements StillModelLoader {
 						Material mat;
 						Texture texture;
 						if(textureName.length() > 0)
-						{
-							texture = new Texture(Gdx.files.internal(TEXTURE_PATH + textureName));
-							mat = new Material(curMatName, new TextureAttribute(texture, 0, "s_tex"), 
-								new ColorAttribute(difcolor, ColorAttribute.diffuse),
-								new ColorAttribute(speccolor, ColorAttribute.specular));
-						}
+							texture = new Texture(textureDir.child(textureName));  //Gdx.files.internal(TEXTURE_PATH + textureName));
 						else
-						{
-							// create default texture
-							texture = new Texture(1, 1, Format.RGB888);
-							mat = new Material(curMatName, new TextureAttribute(texture, 0, "s_tex"), 
-								new ColorAttribute(difcolor, ColorAttribute.diffuse),
-								new ColorAttribute(speccolor, ColorAttribute.specular));
-						}
+							texture = new Texture(1, 1, Format.RGB888); // create default texture
+						mat = new Material(curMatName, new TextureAttribute(texture, 0, "s_tex"), 
+							new ColorAttribute(difcolor, ColorAttribute.diffuse),
+							new ColorAttribute(speccolor, ColorAttribute.specular));
 						materials.add(mat);
 						
 						curMatName=tokens[1];
@@ -379,20 +378,13 @@ public class ObjLoader implements StillModelLoader {
 			// last material
 			Material mat;
 			Texture texture;
-			if(textureName.length()>0)
-			{
-				texture = new Texture(Gdx.files.internal(TEXTURE_PATH + textureName));
-				mat = new Material(curMatName, new TextureAttribute(texture, 0, "s_tex"), 
-					new ColorAttribute(difcolor, ColorAttribute.diffuse),
-					new ColorAttribute(speccolor, ColorAttribute.specular));
-			}
+			if(textureName.length() > 0)
+				texture = new Texture(textureDir.child(textureName));
 			else
-			{
-				texture = new Texture(1, 1, Format.RGB888);
-				mat = new Material(curMatName, new TextureAttribute(texture, 0, "s_tex"), 
-					new ColorAttribute(difcolor, ColorAttribute.diffuse),
-					new ColorAttribute(speccolor, ColorAttribute.specular));
-			}
+				texture = new Texture(1, 1, Format.RGB888); // create default texture
+			mat = new Material(curMatName, new TextureAttribute(texture, 0, "s_tex"), 
+				new ColorAttribute(difcolor, ColorAttribute.diffuse),
+				new ColorAttribute(speccolor, ColorAttribute.specular));
 			materials.add(mat);
 						
 			return;
