@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.backends.ios;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -70,40 +71,35 @@ public class IOSPreferences implements Preferences {
 	@Override
 	public boolean getBoolean (String key) {
 		NSNumber value = (NSNumber)nsDictionary.get_Item(convertKey(key));
-		if (value == null)
-			return false;
+		if (value == null) return false;
 		return value.get_BoolValue();
 	}
 
 	@Override
 	public int getInteger (String key) {
 		NSNumber value = (NSNumber)nsDictionary.get_Item(convertKey(key));
-		if (value == null)
-			return 0;
+		if (value == null) return 0;
 		return value.get_Int32Value();
 	}
 
 	@Override
 	public long getLong (String key) {
 		NSNumber value = (NSNumber)nsDictionary.get_Item(convertKey(key));
-		if (value == null)
-			return 0L;
+		if (value == null) return 0L;
 		return value.get_Int64Value();
 	}
 
 	@Override
 	public float getFloat (String key) {
 		NSNumber value = (NSNumber)nsDictionary.get_Item(convertKey(key));
-		if (value == null)
-			return 0f;
+		if (value == null) return 0f;
 		return value.get_FloatValue();
 	}
 
 	@Override
 	public String getString (String key) {
 		NSString value = (NSString)nsDictionary.get_Item(convertKey(key));
-		if (value == null)
-			return "";
+		if (value == null) return "";
 		return value.ToString();
 	}
 
@@ -139,23 +135,13 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public Map<String, ?> get () {
-		// Map<String, Object> map = new HashMap<String, Object>();
-		//
-		// NSObject[] keys = nsDictionary.get_Keys();
-		// for (NSObject nsObject : keys) {
-		// map.put(((NSString)key).ToString(), get)
-		// }
-		//
-		// for (Entry<Object, Object> val : properties.entrySet()) {
-		// if (val.getValue() instanceof Boolean)
-		// map.put((String)val.getKey(), (Boolean)Boolean.parseBoolean((String)val.getValue()));
-		// if (val.getValue() instanceof Integer) map.put((String)val.getKey(), (Integer)Integer.parseInt((String)val.getValue()));
-		// if (val.getValue() instanceof Long) map.put((String)val.getKey(), (Long)Long.parseLong((String)val.getValue()));
-		// if (val.getValue() instanceof String) map.put((String)val.getKey(), (String)val.getValue());
-		// if (val.getValue() instanceof Float) map.put((String)val.getKey(), (Float)Float.parseFloat((String)val.getValue()));
-		// }
-		// return map;
-		throw new UnsupportedOperationException("not implemented yet");
+		 Map<String, Object> map = new HashMap<String, Object>();
+		 NSObject[] keys = nsDictionary.get_Keys();
+		 for (NSObject key : keys) {
+			 NSObject value = nsDictionary.get_Item(key);
+			 map.put(key.ToString(), value.ToString());
+		 }
+		 return map;
 	}
 
 	@Override
@@ -182,7 +168,7 @@ public class IOSPreferences implements Preferences {
 		boolean fileWritten = nsDictionary.WriteToFile(filePath, false);
 		if (fileWritten)
 			Gdx.app.debug("IOSPreferences", "NSDictionary file written");
-		else 
+		else
 			Gdx.app.debug("IOSPreferences", "Failed to write NSDictionary to file " + filePath);
 	}
 
