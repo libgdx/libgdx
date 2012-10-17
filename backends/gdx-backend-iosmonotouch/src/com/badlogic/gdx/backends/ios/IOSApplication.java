@@ -331,15 +331,6 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		return new IOSPreferences(nsDictionary, finalPath);
 	}
 
-	private String stringByAppendingPathComponent (String path) {
-		// we should try to use the stringByAppendingPathComponent from NSString but it is not mapped in MonoTouch
-		// example:
-		// NSString *finalPath = [settingsBundlePath stringByAppendingPathComponent:@"Root.plist"];
-		String pathSeparator = "/";
-		if (path.endsWith(pathSeparator)) return path;
-		return path + pathSeparator;
-	}
-
 	@Override
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
