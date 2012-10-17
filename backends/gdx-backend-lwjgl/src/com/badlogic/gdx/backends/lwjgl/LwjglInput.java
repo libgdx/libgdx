@@ -326,6 +326,34 @@ final class LwjglInput implements Input {
 
 	public static int getGdxKeyCode (int lwjglKeyCode) {
 		switch (lwjglKeyCode) {
+		case Keyboard.KEY_LBRACKET:
+			return Input.Keys.LEFT_BRACKET;
+		case Keyboard.KEY_RBRACKET:
+			return Input.Keys.RIGHT_BRACKET;
+		case Keyboard.KEY_GRAVE:
+			return Input.Keys.GRAVE;
+		case Keyboard.KEY_MULTIPLY:
+			return Input.Keys.STAR;
+		case Keyboard.KEY_NUMLOCK:
+			return Input.Keys.NUM;
+		case Keyboard.KEY_DECIMAL:
+			return Input.Keys.PERIOD;
+		case Keyboard.KEY_DIVIDE:
+			return Input.Keys.SLASH;
+		case Keyboard.KEY_LMETA:
+			return Input.Keys.SYM;
+		case Keyboard.KEY_RMETA:
+			return Input.Keys.SYM;
+		case Keyboard.KEY_NUMPADEQUALS:
+			return Input.Keys.EQUALS;
+		case Keyboard.KEY_AT:
+			return Input.Keys.AT;
+		case Keyboard.KEY_EQUALS:
+			return Input.Keys.EQUALS;
+		case Keyboard.KEY_NUMPADCOMMA:
+			return Input.Keys.COMMA;
+		case Keyboard.KEY_NUMPADENTER:
+			return Input.Keys.ENTER;
 		case Keyboard.KEY_0:
 			return Input.Keys.NUM_0;
 		case Keyboard.KEY_1:
@@ -511,6 +539,22 @@ final class LwjglInput implements Input {
 
 	public static int getLwjglKeyCode (int gdxKeyCode) {
 		switch (gdxKeyCode) {
+		case Input.Keys.LEFT_BRACKET:
+			return Keyboard.KEY_LBRACKET;
+		case Input.Keys.RIGHT_BRACKET:
+			return Keyboard.KEY_RBRACKET;
+		case Input.Keys.GRAVE:
+			return Keyboard.KEY_GRAVE;
+		case Input.Keys.STAR:
+			return Keyboard.KEY_MULTIPLY;
+		case Input.Keys.NUM:
+			return Keyboard.KEY_NUMLOCK;
+		case Input.Keys.AT:
+			return Keyboard.KEY_AT;
+		case Input.Keys.EQUALS:
+			return Keyboard.KEY_EQUALS;
+		case Input.Keys.SYM:
+			return Keyboard.KEY_LMETA;
 		case Input.Keys.NUM_0:
 			return Keyboard.KEY_0;
 		case Input.Keys.NUM_1:
@@ -924,7 +968,7 @@ final class LwjglInput implements Input {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	class KeyEvent {
 		static final int KEY_DOWN = 0;
 		static final int KEY_UP = 1;
