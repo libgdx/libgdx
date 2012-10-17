@@ -36,6 +36,7 @@ import com.badlogic.gdx.utils.Pool;
 public class IOSInput implements Input {
 	static final int MAX_TOUCHES = 20;
 
+	IOSApplication app;
 	IOSApplicationConfiguration config;
 	int[] deltaX = new int[MAX_TOUCHES];
 	int[] deltaY = new int[MAX_TOUCHES];
@@ -56,8 +57,9 @@ public class IOSInput implements Input {
 	float[] acceleration = new float[3];
 	InputProcessor inputProcessor = null;
 	
-	public IOSInput(IOSApplicationConfiguration config) {
-		this.config = config;
+	public IOSInput(IOSApplication app) {
+		this.app = app;
+		this.config = app.config;
 	}
 	
 	void setupPeripherals() {
@@ -317,8 +319,8 @@ public class IOSInput implements Input {
 			PointF loc = touch.LocationInView(touch.get_View());
 			synchronized(touchEvents) {
 				TouchEvent event = touchEventPool.obtain();
-				event.x = (int)loc.get_X();
-				event.y = (int)loc.get_Y();
+				event.x = (int)(loc.get_X() * app.displayScaleFactor);
+				event.y = (int)(loc.get_Y() * app.displayScaleFactor);
 				event.phase = touch.get_Phase().Value;
 				event.timestamp = (long)(touch.get_Timestamp() * 1000000000);
 				touchEvents.add(event);
