@@ -18,7 +18,11 @@ package com.badlogic.gdx.backends.ios;
 
 import java.util.ArrayList;
 
+import cli.MonoTouch.Foundation.NSBundle;
 import cli.MonoTouch.Foundation.NSDictionary;
+import cli.MonoTouch.Foundation.NSPropertyListFormat;
+import cli.MonoTouch.Foundation.NSString;
+import cli.MonoTouch.Foundation.NSUserDefaults;
 import cli.MonoTouch.UIKit.UIApplication;
 import cli.MonoTouch.UIKit.UIApplicationDelegate;
 import cli.MonoTouch.UIKit.UIDevice;
@@ -53,7 +57,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	IOSNet net;
 	int logLevel = Application.LOG_DEBUG;
 	boolean firstResume;
-	
+
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
 	float displayScaleFactor;
 
@@ -73,23 +77,21 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	@Override
 	public boolean FinishedLaunching (UIApplication uiApp, NSDictionary options) {
 		this.uiApp = uiApp;
-		
+
 		// enable or disable screen dimming
 		UIApplication.get_SharedApplication().set_IdleTimerDisabled(config.preventScreenDimming);
-		
+
 		// fix the scale factor if we have a retina device
 		if (UIScreen.get_MainScreen().get_Scale() == 2.0f) {
 			// we have a retina device!
 			if (UIDevice.get_CurrentDevice().get_UserInterfaceIdiom().Value == UIUserInterfaceIdiom.Pad) {
 				// it's an iPad!
 				displayScaleFactor = config.displayScaleLargeScreenIfRetina;
-			}
-			else {
+			} else {
 				// it's an iPod or iPhone
 				displayScaleFactor = config.displayScaleSmallScreenIfRetina;
 			}
-		}
-		else {
+		} else {
 			// no retina screen: no scaling!
 			displayScaleFactor = 1.0f;
 		}
@@ -105,7 +107,8 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 				RectangleF bounds = getBounds(this);
 				graphics.width = (int)bounds.get_Width();
 				graphics.height = (int)bounds.get_Height();
-				graphics.MakeCurrent(); // not sure if that's needed? badlogic: yes it is, so resize can do OpenGL stuff, not sure if it's on the correct thread though
+				graphics.MakeCurrent(); // not sure if that's needed? badlogic: yes it is, so resize can do OpenGL stuff, not sure if
+// it's on the correct thread though
 				listener.resize(graphics.width, graphics.height);
 			}
 
@@ -123,7 +126,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 			}
 		};
 		this.uiWindow.set_RootViewController(uiViewController);
-		
+
 		// setup libgdx
 		this.input = new IOSInput(this);
 		this.graphics = new IOSGraphics(getBounds(uiViewController), this, input);
@@ -138,7 +141,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		Gdx.net = this.net;
 
 		this.input.setupPeripherals();
-		
+
 		// attach our view to window+controller and make it visible
 		uiViewController.set_View(graphics);
 		this.graphics.Run();
@@ -159,22 +162,22 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		UIInterfaceOrientation orientation = viewController.get_InterfaceOrientation();
 		int width;
 		int height;
-		switch (orientation.Value) { 
-			case UIInterfaceOrientation.LandscapeLeft: 
-			case UIInterfaceOrientation.LandscapeRight: 
-			   height = (int)bounds.get_Width();
-			   width = (int)bounds.get_Height();
-			   break;
-			default: 
-				// assume portrait
-				width = (int)bounds.get_Width();
-			   height = (int)bounds.get_Height();
-		} 
-		
+		switch (orientation.Value) {
+		case UIInterfaceOrientation.LandscapeLeft:
+		case UIInterfaceOrientation.LandscapeRight:
+			height = (int)bounds.get_Width();
+			width = (int)bounds.get_Height();
+			break;
+		default:
+			// assume portrait
+			width = (int)bounds.get_Width();
+			height = (int)bounds.get_Height();
+		}
+
 		// fix for retina coordinates if desired
 		width *= displayScaleFactor;
 		height *= displayScaleFactor;
-		
+
 		// log screen dimensions
 		Gdx.app.debug("IOSApplication", "View: " + orientation.toString() + " " + width + "x" + height);
 
@@ -308,7 +311,27 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	@Override
 	public Preferences getPreferences (String name) {
-		return new IOSPreferences();
+		NSBundle mainBundle = NSBundle.get_MainBundle();
+		String bundlePath = mainBundle.get_BundlePath();
+		String settingsBundlePath = bundlePath + stringByAppendingPathComponent(bundlePath) + "Library";
+		String finalPath = settingsBundlePath + stringByAppendingPathComponent(settingsBundlePath) + name + ".plist";
+		NSDictionary nsDictionary = NSDictionary.FromFile(finalPath);
+
+		// if it fails to get an existing dictionary, create a new one.
+		if (nsDictionary == null) {
+			nsDictionary = new NSDictionary();
+			nsDictionary.WriteToFile(finalPath, true);
+		}
+		return new IOSPreferences(nsDictionary, finalPath);
+	}
+
+	private String stringByAppendingPathComponent (String path) {
+		// we should try to use the stringByAppendingPathComponent from NSString but it is not mapped in MonoTouch
+		// example:
+		// NSString *finalPath = [settingsBundlePath stringByAppendingPathComponent:@"Root.plist"];
+		String pathSeparator = "/";
+		if (path.endsWith(pathSeparator)) return path;
+		return path + pathSeparator;
 	}
 
 	@Override
