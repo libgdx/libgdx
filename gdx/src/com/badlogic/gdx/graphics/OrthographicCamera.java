@@ -99,8 +99,7 @@ public class OrthographicCamera extends Camera {
 	private Vector3 calculateDirection (float angle) {
 		Matrix4 transform = new Matrix4();
 		Vector3 dir = new Vector3(-1, 0, 1).nor();
-		float rotAngle = (float)Math.toDegrees(Math.asin(Math.tan(Math.toRadians(angle))));
-		transform.setToRotation(new Vector3(1, 0, 1).nor(), rotAngle);
+		transform.setToRotation(new Vector3(1, 0, 1).nor(), angle);
 		dir.mul(transform).nor();
 		return dir;
 	}
