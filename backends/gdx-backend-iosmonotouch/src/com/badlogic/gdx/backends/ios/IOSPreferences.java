@@ -1,53 +1,51 @@
 
 package com.badlogic.gdx.backends.ios;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
-import cli.MonoTouch.Foundation.NSBundle;
 import cli.MonoTouch.Foundation.NSDictionary;
+import cli.MonoTouch.Foundation.NSMutableDictionary;
 import cli.MonoTouch.Foundation.NSNumber;
 import cli.MonoTouch.Foundation.NSObject;
 import cli.MonoTouch.Foundation.NSString;
-import cli.MonoTouch.Foundation.NSUserDefaults;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
 public class IOSPreferences implements Preferences {
 
-	NSDictionary nsDictionary;
+	NSMutableDictionary nsDictionary;
 	String filePath;
 
-	public IOSPreferences (NSDictionary nsDictionary, String filePath) {
+	public IOSPreferences (NSMutableDictionary nsDictionary, String filePath) {
 		this.nsDictionary = nsDictionary;
 		this.filePath = filePath;
 	}
 
 	@Override
 	public void putBoolean (String key, boolean val) {
-		nsDictionary.Add(key, NSNumber.FromBoolean(val));
+		nsDictionary.Add(convertKey(key), NSNumber.FromBoolean(val));
 	}
 
 	@Override
 	public void putInteger (String key, int val) {
-		nsDictionary.Add(key, NSNumber.FromInt32(val));
+		nsDictionary.Add(convertKey(key), NSNumber.FromInt32(val));
 	}
 
 	@Override
 	public void putLong (String key, long val) {
-		nsDictionary.Add(key, NSNumber.FromInt64(val));
+		nsDictionary.Add(convertKey(key), NSNumber.FromInt64(val));
 	}
 
 	@Override
 	public void putFloat (String key, float val) {
-		nsDictionary.Add(key, NSNumber.FromFloat(val));
+		nsDictionary.Add(convertKey(key), NSNumber.FromFloat(val));
 	}
 
 	@Override
 	public void putString (String key, String val) {
-		nsDictionary.Add(key, new NSString(val));
+		nsDictionary.Add(convertKey(key), new NSString(val));
 	}
 
 	@Override
@@ -71,31 +69,41 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public boolean getBoolean (String key) {
-		NSNumber value = (NSNumber)nsDictionary.get_Item(key);
+		NSNumber value = (NSNumber)nsDictionary.get_Item(convertKey(key));
+		if (value == null)
+			return false;
 		return value.get_BoolValue();
 	}
 
 	@Override
 	public int getInteger (String key) {
-		NSNumber value = (NSNumber)nsDictionary.get_Item(key);
+		NSNumber value = (NSNumber)nsDictionary.get_Item(convertKey(key));
+		if (value == null)
+			return 0;
 		return value.get_Int32Value();
 	}
 
 	@Override
 	public long getLong (String key) {
-		NSNumber value = (NSNumber)nsDictionary.get_Item(key);
+		NSNumber value = (NSNumber)nsDictionary.get_Item(convertKey(key));
+		if (value == null)
+			return 0L;
 		return value.get_Int64Value();
 	}
 
 	@Override
 	public float getFloat (String key) {
-		NSNumber value = (NSNumber)nsDictionary.get_Item(key);
+		NSNumber value = (NSNumber)nsDictionary.get_Item(convertKey(key));
+		if (value == null)
+			return 0f;
 		return value.get_FloatValue();
 	}
 
 	@Override
 	public String getString (String key) {
-		NSString value = (NSString)nsDictionary.get_Item(key);
+		NSString value = (NSString)nsDictionary.get_Item(convertKey(key));
+		if (value == null)
+			return "";
 		return value.ToString();
 	}
 
@@ -152,7 +160,7 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public boolean contains (String key) {
-		return nsDictionary.Contains(key);
+		return nsDictionary.Contains(convertKey(key));
 	}
 
 	@Override
@@ -162,12 +170,20 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public void remove (String key) {
-		nsDictionary.Remove(key);
+		nsDictionary.Remove(convertKey(key));
+	}
+
+	private NSObject convertKey (String key) {
+		return NSString.FromObject(key);
 	}
 
 	@Override
 	public void flush () {
-		nsDictionary.WriteToFile(filePath, true);
+		boolean fileWritten = nsDictionary.WriteToFile(filePath, false);
+		if (fileWritten)
+			Gdx.app.debug("IOSPreferences", "NSDictionary file written");
+		else 
+			Gdx.app.debug("IOSPreferences", "Failed to write NSDictionary to file " + filePath);
 	}
 
 }

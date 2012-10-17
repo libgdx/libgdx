@@ -20,9 +20,7 @@ import java.util.ArrayList;
 
 import cli.MonoTouch.Foundation.NSBundle;
 import cli.MonoTouch.Foundation.NSDictionary;
-import cli.MonoTouch.Foundation.NSPropertyListFormat;
-import cli.MonoTouch.Foundation.NSString;
-import cli.MonoTouch.Foundation.NSUserDefaults;
+import cli.MonoTouch.Foundation.NSMutableDictionary;
 import cli.MonoTouch.UIKit.UIApplication;
 import cli.MonoTouch.UIKit.UIApplicationDelegate;
 import cli.MonoTouch.UIKit.UIDevice;
@@ -32,7 +30,9 @@ import cli.MonoTouch.UIKit.UIUserInterfaceIdiom;
 import cli.MonoTouch.UIKit.UIViewController;
 import cli.MonoTouch.UIKit.UIWindow;
 import cli.System.Console;
+import cli.System.Environment;
 import cli.System.Drawing.RectangleF;
+import cli.System.IO.Path;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -311,16 +311,22 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	@Override
 	public Preferences getPreferences (String name) {
-		NSBundle mainBundle = NSBundle.get_MainBundle();
-		String bundlePath = mainBundle.get_BundlePath();
-		String settingsBundlePath = bundlePath + stringByAppendingPathComponent(bundlePath) + "Library";
-		String finalPath = settingsBundlePath + stringByAppendingPathComponent(settingsBundlePath) + name + ".plist";
-		NSDictionary nsDictionary = NSDictionary.FromFile(finalPath);
+		String applicationPath = Environment.GetFolderPath (Environment.SpecialFolder.wrap(Environment.SpecialFolder.MyDocuments));
+		String libraryPath = Path.Combine(applicationPath, "..", "Library");
+		String finalPath = Path.Combine(libraryPath, name + ".plist");
+		
+		Gdx.app.debug("IOSApplication", "Loading NSDictionary from file " + finalPath);
+		NSMutableDictionary nsDictionary = NSMutableDictionary.FromFile(finalPath);
 
 		// if it fails to get an existing dictionary, create a new one.
 		if (nsDictionary == null) {
-			nsDictionary = new NSDictionary();
-			nsDictionary.WriteToFile(finalPath, true);
+			Gdx.app.debug("IOSApplication", "NSDictionary not found, creating a new one");
+			nsDictionary = new NSMutableDictionary();
+			boolean fileWritten = nsDictionary.WriteToFile(finalPath, false);
+			if (fileWritten)
+				Gdx.app.debug("IOSApplication", "NSDictionary file written");
+			else 
+				Gdx.app.debug("IOSApplication", "Failed to write NSDictionary to file " + finalPath);
 		}
 		return new IOSPreferences(nsDictionary, finalPath);
 	}
