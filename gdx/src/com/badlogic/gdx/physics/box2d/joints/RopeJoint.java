@@ -42,4 +42,14 @@ public class RopeJoint extends Joint {
 		b2RopeJoint* rope = (b2RopeJoint*)addr;
 		return rope->GetMaxLength();
 	*/
+
+	/** Set the maximum length of the rope. */
+	public void setMaxLength (float length) {
+		jniSetMaxLength(addr, length);
+	}
+
+	private native float jniSetMaxLength (long addr, float length); /*
+		b2RopeJoint* rope = (b2RopeJoint*)addr;
+		rope->SetMaxLength(length);
+	*/
 }
