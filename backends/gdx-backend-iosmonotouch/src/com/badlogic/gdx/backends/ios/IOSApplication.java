@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import cli.MonoTouch.Foundation.NSDictionary;
 import cli.MonoTouch.UIKit.UIApplication;
 import cli.MonoTouch.UIKit.UIApplicationDelegate;
+import cli.MonoTouch.UIKit.UIDevice;
 import cli.MonoTouch.UIKit.UIInterfaceOrientation;
 import cli.MonoTouch.UIKit.UIScreen;
+import cli.MonoTouch.UIKit.UIUserInterfaceIdiom;
 import cli.MonoTouch.UIKit.UIViewController;
 import cli.MonoTouch.UIKit.UIWindow;
 import cli.System.Console;
@@ -51,6 +53,9 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	IOSNet net;
 	int logLevel = Application.LOG_DEBUG;
 	boolean firstResume;
+	
+	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
+	float displayScaleFactor;
 
 	ArrayList<Runnable> runnables = new ArrayList<Runnable>();
 	ArrayList<Runnable> executedRunnables = new ArrayList<Runnable>();
@@ -68,6 +73,26 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	@Override
 	public boolean FinishedLaunching (UIApplication uiApp, NSDictionary options) {
 		this.uiApp = uiApp;
+		
+		// enable or disable screen dimming
+		UIApplication.get_SharedApplication().set_IdleTimerDisabled(config.preventScreenDimming);
+		
+		// fix the scale factor if we have a retina device
+		if (UIScreen.get_MainScreen().get_Scale() == 2.0f) {
+			// we have a retina device!
+			if (UIDevice.get_CurrentDevice().get_UserInterfaceIdiom().Value == UIUserInterfaceIdiom.Pad) {
+				// it's an iPad!
+				displayScaleFactor = config.displayScaleLargeScreenIfRetina;
+			}
+			else {
+				// it's an iPod or iPhone
+				displayScaleFactor = config.displayScaleSmallScreenIfRetina;
+			}
+		}
+		else {
+			// no retina screen: no scaling!
+			displayScaleFactor = 1.0f;
+		}
 
 		// Create: Window -> ViewController-> GameView (controller takes care of rotation)
 		this.uiWindow = new UIWindow(UIScreen.get_MainScreen().get_Bounds());
@@ -80,8 +105,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 				RectangleF bounds = getBounds(this);
 				graphics.width = (int)bounds.get_Width();
 				graphics.height = (int)bounds.get_Height();
-				graphics.MakeCurrent(); // not sure if that's needed? badlogic: yes it is, so resize can do OpenGL stuff, not sure if
-// it's on the correct thread though
+				graphics.MakeCurrent(); // not sure if that's needed? badlogic: yes it is, so resize can do OpenGL stuff, not sure if it's on the correct thread though
 				listener.resize(graphics.width, graphics.height);
 			}
 
@@ -99,9 +123,9 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 			}
 		};
 		this.uiWindow.set_RootViewController(uiViewController);
-
+		
 		// setup libgdx
-		this.input = new IOSInput(config);
+		this.input = new IOSInput(this);
 		this.graphics = new IOSGraphics(getBounds(uiViewController), this, input);
 		this.files = new IOSFiles();
 		this.audio = new IOSAudio();
@@ -114,7 +138,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		Gdx.net = this.net;
 
 		this.input.setupPeripherals();
-
+		
 		// attach our view to window+controller and make it visible
 		uiViewController.set_View(graphics);
 		this.graphics.Run();
@@ -135,17 +159,23 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		UIInterfaceOrientation orientation = viewController.get_InterfaceOrientation();
 		int width;
 		int height;
-		switch (orientation.Value) {
-		case UIInterfaceOrientation.LandscapeLeft:
-		case UIInterfaceOrientation.LandscapeRight:
-			height = (int)bounds.get_Width();
-			width = (int)bounds.get_Height();
-			break;
-		default:
-			// assume portrait
-			width = (int)bounds.get_Width();
-			height = (int)bounds.get_Height();
-		}
+		switch (orientation.Value) { 
+			case UIInterfaceOrientation.LandscapeLeft: 
+			case UIInterfaceOrientation.LandscapeRight: 
+			   height = (int)bounds.get_Width();
+			   width = (int)bounds.get_Height();
+			   break;
+			default: 
+				// assume portrait
+				width = (int)bounds.get_Width();
+			   height = (int)bounds.get_Height();
+		} 
+		
+		// fix for retina coordinates if desired
+		width *= displayScaleFactor;
+		height *= displayScaleFactor;
+		
+		// log screen dimensions
 		Gdx.app.debug("IOSApplication", "View: " + orientation.toString() + " " + width + "x" + height);
 
 		// return resulting view size (based on orientation)
