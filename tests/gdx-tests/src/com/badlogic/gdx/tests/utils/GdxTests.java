@@ -73,12 +73,12 @@ public class GdxTests {
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
 		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class};
 
-	public static String[] getNames () {
-		List<String> names = new ArrayList<String>();
+	public static List<String> getNames () {
+		List<String> names = new ArrayList<String>(tests.length);
 		for (Class clazz : tests)
 			names.add(clazz.getSimpleName());
 		Collections.sort(names);
-		return names.toArray(new String[names.size()]);
+		return names;
 	}
 
 	private static Class<? extends GdxTest> forName (String name)
