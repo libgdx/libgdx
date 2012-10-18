@@ -66,7 +66,7 @@ public class GdxTests {
 		TextureRenderTest.class, TiledMapTest.class, TileTest.class, UITest.class, VBOVATest.class, VertexArrayTest.class,
 		VertexBufferObjectTest.class, VertexArrayClassTest.class, VertexBufferObjectClassTest.class, LetterBoxTest2.class,
 		VertexBufferObjectShaderTest.class, VibratorTest.class, WaterRipples.class, HelloTriangle.class,
-		SimpleVertexShader.class, ShapeRendererTest.class, MoveSpriteExample.class, 
+		SimpleVertexShader.class, ShapeRendererTest.class, MoveSpriteExample.class,
 		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
 		// InternationalFontsTest.class, VorbisTest.class
 		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
@@ -81,23 +81,22 @@ public class GdxTests {
 		return names.toArray(new String[names.size()]);
 	}
 
+	private static Class<? extends GdxTest> forName (String name)
+	{
+		for (Class clazz : tests)
+			if (clazz.getSimpleName().equals(name))
+				return clazz;
+		return null;
+	}
+
 	public static GdxTest newTest (String testName) {
 		try {
-			Class clazz = Class.forName("com.badlogic.gdx.tests." + testName);
-			return (GdxTest)clazz.newInstance();
-		} catch (Exception e1) {
-			try {
-				Class clazz = Class.forName("com.badlogic.gdx.tests.gles2." + testName);
-				return (GdxTest)clazz.newInstance();
-			} catch (Exception e2) {
-				try {
-					Class clazz = Class.forName("com.badlogic.gdx.tests.examples." + testName);
-					return (GdxTest)clazz.newInstance();
-				} catch (Exception e3) {
-					e3.printStackTrace();
-					return null;
-				}
-			}
+			return forName(testName).newInstance();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
+		return null;
 	}
 }
