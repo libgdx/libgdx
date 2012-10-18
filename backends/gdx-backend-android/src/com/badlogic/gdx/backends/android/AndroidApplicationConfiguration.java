@@ -53,13 +53,13 @@ public class AndroidApplicationConfiguration {
 	 * to your manifest file. default: false */
 	public boolean useWakelock = false;
 
-	/** hide status bar buttons on Android 4.x and higher (API 14+). Doesn't work if "android:targetSdkVersion" less 11 or if
-	 * API less 14. default: false **/
+	/** hide status bar buttons on Android 4.x and higher (API 14+). Doesn't work if "android:targetSdkVersion" less 11 or if API
+	 * less 14. default: false **/
 	public boolean hideStatusBar = false;
 
-	/** the maximum number of {@link Sound} instances that can be played simultaniously, sets the corresponding {@link SoundPool}
+	/** the maximum number of {@link Sound} instances that can be played simultaneously, sets the corresponding {@link SoundPool}
 	 * constructor argument. */
-	public int maxSimultaniousSounds = 16;
+	public int maxSimultaneousSounds = 16;
 
 	/** the {@link ResolutionStrategy}. default: {@link FillResolutionStrategy} **/
 	public ResolutionStrategy resolutionStrategy = new FillResolutionStrategy();
