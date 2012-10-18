@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -56,13 +57,17 @@ public class SpritePerformanceTest extends GdxTest {
 		Mesh.forceVBO = false;
 		cache = new SpriteCache();
 
+		float width = Gdx.graphics.getWidth() - 32;
+		float height= Gdx.graphics.getHeight() - 32;
+		
 		sprites = new Sprite[SPRITES];
 		for (int i = 0; i < SPRITES; i++) {
-			int x = (int)(Math.random() * (Gdx.graphics.getWidth() - 32));
-			int y = (int)(Math.random() * (Gdx.graphics.getHeight() - 32));
+			float x = MathUtils.random() * width;
+			float y = MathUtils.random() * height;
 
-			sprites[i] = new Sprite(texture);
-			sprites[i].setPosition(x, y);
+			Sprite sprite = new Sprite(texture);
+			sprite.setPosition(x, y);
+			sprites[i] = sprite;
 		}
 
 		cache.beginCache();
