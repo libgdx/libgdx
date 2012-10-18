@@ -29,6 +29,7 @@
 package com.badlogic.gdx.tests.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,7 +42,8 @@ import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
  * 
  * @author badlogicgames@gmail.com */
 public class GdxTests {
-	public static final Class[] tests = {AnimationTest.class, AccelerometerTest.class, ActionTest.class, ActionSequenceTest.class,
+	public static final List<Class<? extends GdxTest>> tests = new ArrayList<Class<? extends GdxTest>>(Arrays.asList(
+		AnimationTest.class, AccelerometerTest.class, ActionTest.class, ActionSequenceTest.class,
 		GroupTest.class, AlphaTest.class, AtlasIssueTest.class, AssetManagerTest.class, FilterPerformanceTest.class,
 		AudioDeviceTest.class, AudioRecorderTest.class, BitmapFontAlignmentTest.class, BitmapFontFlipTest.class,
 		GroupCullingTest.class, GestureDetectorTest.class, LabelTest.class, BitmapFontMetricsTest.class, BlitTest.class, TableTest.class,
@@ -71,10 +73,10 @@ public class GdxTests {
 		// InternationalFontsTest.class, VorbisTest.class
 		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
-		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class};
-
+		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class));
+	
 	public static List<String> getNames () {
-		List<String> names = new ArrayList<String>(tests.length);
+		List<String> names = new ArrayList<String>(tests.size());
 		for (Class clazz : tests)
 			names.add(clazz.getSimpleName());
 		Collections.sort(names);

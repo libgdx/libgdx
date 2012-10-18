@@ -37,8 +37,8 @@ public class AndroidTestStarter extends ListActivity {
 	@Override
 	public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		GdxTests.tests.add(MatrixTest.class);
 		List<String> testNames = GdxTests.getNames();
-		testNames.add(MatrixTest.class.getSimpleName());
 		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, testNames));
 
 		prefs = getSharedPreferences("libgdx-tests", Context.MODE_PRIVATE);
