@@ -1,7 +1,7 @@
 #! /usr/bin/env sh
 # Execute this in the root directory of the trunk to update all jars and natives from 
 # the CI server.
-wget http://libgdx.badlogicgames.com/nightlies/libgdx-nightly-latest.zip -O libgdx-nightlies.zip
+#wget http://libgdx.badlogicgames.com/nightlies/libgdx-nightly-latest.zip -O libgdx-nightlies.zip
 unzip libgdx-nightlies.zip -d nightlies
 unzip nightlies/gdx-natives.jar -d nightlies/libs
 
@@ -26,13 +26,15 @@ cp -rf nightlies/extensions/armeabi/libgdx-freetype.so extensions/gdx-freetype/l
 cp -rf nightlies/extensions/armeabi-v7a/libgdx-freetype.so extensions/gdx-freetype/libs/armeabi-v7a
 
 # gdx-bullet natives
-cp -rf nightlies/extensions/gdx-bullet-natives.jar extensions/gdx-bullet/libs
-cp -rf nightlies/extensions/armeabi/libgdx-bullet.so extensions/gdx-bullet/libs/armeabi
-cp -rf nightlies/extensions/armeabi-v7a/libgdx-bullet.so extensions/gdx-bullet/libs/armeabi-v7a
+cp -rf nightlies/extensions/gdx-bullet/gdx-bullet-natives.jar extensions/gdx-bullet/libs
+cp -rf nightlies/extensions/gdx-bullet/armeabi/libgdx-bullet.so extensions/gdx-bullet/libs/armeabi
+cp -rf nightlies/extensions/gdx-bullet/armeabi-v7a/libgdx-bullet.so extensions/gdx-bullet/libs/armeabi-v7a
 
 # copy android natives to tests
 cp -rf nightlies/armeabi nightlies/armeabi-v7a tests/gdx-tests-android/libs
 cp -rf nightlies/extensions/armeabi nightlies/extensions/armeabi-v7a tests/gdx-tests-android/libs
+cp -rf nightlies/extensions/gdx-bullet/armeabi/libgdx-bullet.so tests/gdx-tests-android/libs/armeabi
+cp -rf nightlies/extensions/gdx-bullet/armeabi-v7a/libgdx-bullet.so tests/gdx-tests-android/libs/armeabi-v7a
 
 # copy jars and natives to demos
 cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/invaders/gdx-invaders-android/libs
@@ -47,4 +49,4 @@ cp -rf nightlies/armeabi nightlies/armeabi-v7a extensions/gdx-remote/libs
 
 # remove temporary directory
 rm -rf nightlies
-rm libgdx-nightlies.zip
+//rm libgdx-nightlies.zip

@@ -16,19 +16,12 @@
 
 package com.badlogic.gdx.tests.lwjgl;
 
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.tests.BulletTest;
-import com.badlogic.gdx.tests.InputTest;
-import com.badlogic.gdx.tests.ProjectiveTextureTest;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.tests.ShapeRendererTest;
-import com.badlogic.gdx.tests.TextureDownloadTest;
-import com.badlogic.gdx.tests.extensions.FreeTypeTest;
-import com.badlogic.gdx.tests.extensions.InternationalFontsTest;
-import com.badlogic.gdx.tests.extensions.JpegTest;
-import com.badlogic.gdx.tests.extensions.Mpg123Test;
-import com.badlogic.gdx.tests.extensions.VorbisTest;
-import com.badlogic.gdx.tests.gwt.GwtTestWrapper;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
@@ -44,9 +37,28 @@ public class LwjglDebugStarter {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 640;
 		config.height = 640;
-		config.useGL20 = true;
+		config.useGL20 = false; // test.needsGL20();
 		config.vSyncEnabled = true;
 		config.resizable = true;
-		new LwjglApplication(test, config);
+		new LwjglApplication(new ApplicationAdapter()
+	    {
+	        @Override
+	        public void resize(int width, int height)
+	        {
+	            Gdx.gl10.glClearColor((float)Math.random(),(float)Math.random(),(float)Math.random(),1f);
+	        }
+
+	        @Override
+	        public void render()
+	        {
+	            Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT);
+	        }
+
+	        @Override
+	        public void create()
+	        {
+	            Gdx.graphics.setContinuousRendering(false);
+	        }
+	    }, config);
 	}
 }
