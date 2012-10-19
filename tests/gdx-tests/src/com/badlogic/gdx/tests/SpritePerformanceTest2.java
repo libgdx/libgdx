@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class SpritePerformanteTest2 extends GdxTest {
+public class SpritePerformanceTest2 extends GdxTest {
 	static final int SPRITES = 50000;
 	Texture image;
 	Texture image2;
