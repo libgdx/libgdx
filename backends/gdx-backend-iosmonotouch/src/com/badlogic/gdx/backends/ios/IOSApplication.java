@@ -81,19 +81,26 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		// enable or disable screen dimming
 		UIApplication.get_SharedApplication().set_IdleTimerDisabled(config.preventScreenDimming);
 
-		// fix the scale factor if we have a retina device
+		// fix the scale factor if we have a retina device (NOTE: iOS screen sizes are in "points" not pixels by default!)
 		if (UIScreen.get_MainScreen().get_Scale() == 2.0f) {
 			// we have a retina device!
 			if (UIDevice.get_CurrentDevice().get_UserInterfaceIdiom().Value == UIUserInterfaceIdiom.Pad) {
 				// it's an iPad!
-				displayScaleFactor = config.displayScaleLargeScreenIfRetina;
+				displayScaleFactor = config.displayScaleLargeScreenIfRetina * 2.0f;
 			} else {
 				// it's an iPod or iPhone
-				displayScaleFactor = config.displayScaleSmallScreenIfRetina;
+				displayScaleFactor = config.displayScaleSmallScreenIfRetina * 2.0f;
 			}
-		} else {
+		} 
+		else {
 			// no retina screen: no scaling!
-			displayScaleFactor = 1.0f;
+			if (UIDevice.get_CurrentDevice().get_UserInterfaceIdiom().Value == UIUserInterfaceIdiom.Pad) {
+				// it's an iPad!
+				displayScaleFactor = config.displayScaleLargeScreenIfNonRetina;
+			} else {
+				// it's an iPod or iPhone
+				displayScaleFactor = config.displayScaleSmallScreenIfNonRetina;
+			}
 		}
 
 		// Create: Window -> ViewController-> GameView (controller takes care of rotation)
@@ -174,7 +181,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 			height = (int)bounds.get_Height();
 		}
 
-		// fix for retina coordinates if desired
+		// update width/height depending on display scaling selected 
 		width *= displayScaleFactor;
 		height *= displayScaleFactor;
 
