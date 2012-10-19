@@ -21,6 +21,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.tests.BulletTest;
 import com.badlogic.gdx.tests.ShapeRendererTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
@@ -33,32 +34,13 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-image/libs/gdx-image-natives.jar").load("gdx-image");
 		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
 
-		GdxTest test = new ShapeRendererTest();
+		GdxTest test = new BulletTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 640;
 		config.height = 640;
-		config.useGL20 = false; // test.needsGL20();
+		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;
 		config.resizable = true;
-		new LwjglApplication(new ApplicationAdapter()
-	    {
-	        @Override
-	        public void resize(int width, int height)
-	        {
-	            Gdx.gl10.glClearColor((float)Math.random(),(float)Math.random(),(float)Math.random(),1f);
-	        }
-
-	        @Override
-	        public void render()
-	        {
-	            Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT);
-	        }
-
-	        @Override
-	        public void create()
-	        {
-	            Gdx.graphics.setContinuousRendering(false);
-	        }
-	    }, config);
+		new LwjglApplication(test, config);
 	}
 }
