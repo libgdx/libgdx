@@ -23,8 +23,10 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -35,27 +37,31 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.SerializationException;
 
 class EffectPanel extends JPanel {
 	ParticleEditor editor;
 	JTable emitterTable;
 	DefaultTableModel emitterTableModel;
+	JFileChooser fc;
 	int editIndex;
-	String lastDir;
 
 	public EffectPanel (ParticleEditor editor) {
 		this.editor = editor;
+		fc = new JFileChooser();
 		initializeComponents();
 	}
 
 	public ParticleEmitter newEmitter (String name, boolean select) {
-		final ParticleEmitter emitter = new ParticleEmitter();
+		final ParticleEmitter emitter = new ParticleEmitter(true);
 
 		emitter.getDuration().setLow(3000);
 
@@ -120,53 +126,63 @@ class EffectPanel extends JPanel {
 		editIndex = row;
 		editor.reloadRows();
 	}
-
+	
+	/** Loads an existing {@link ParticleEffect} from disk. */
 	void openEffect () {
-		FileDialog dialog = new FileDialog(editor, "Open Effect", FileDialog.LOAD);
-		if (lastDir != null) dialog.setDirectory(lastDir);
-		dialog.setVisible(true);
-		final String file = dialog.getFile();
-		final String dir = dialog.getDirectory();
-		if (dir == null || file == null || file.trim().length() == 0) return;
-		lastDir = dir;
-		ParticleEffect effect = new ParticleEffect();
-		try {
-			effect.loadEmitters(Gdx.files.absolute(new File(dir, file).getAbsolutePath()));
+		fc.setApproveButtonText("Open");
+		int option = fc.showOpenDialog(editor);
+		
+		if (option == JFileChooser.APPROVE_OPTION) {
+			File file = fc.getSelectedFile();
+			
+			if (file == null) return;
+			ParticleEffect effect = new ParticleEffect();
+			
+			try {
+				effect.loadEmittersJSON(Gdx.files.absolute(file.getAbsolutePath()));
+			} catch (SerializationException e) {
+				System.out.println("Error serializing effect: " + file.getAbsolutePath());
+				try {
+					effect.loadEmitters(new FileHandle(file));
+				} catch(Exception ex) {
+					ex.printStackTrace();
+				}
+			} catch (Exception e) {
+				System.out.println("Error loading effect: " + file.getAbsolutePath());
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(editor, "Error opening effect.");
+				return;
+			}
 			editor.effect = effect;
 			emitterTableModel.getDataVector().removeAllElements();
 			editor.particleData.clear();
-		} catch (Exception ex) {
-			System.out.println("Error loading effect: " + new File(dir, file).getAbsolutePath());
-			ex.printStackTrace();
-			JOptionPane.showMessageDialog(editor, "Error opening effect.");
-			return;
+			
+			for (ParticleEmitter emitter : effect.getEmitters()) {
+				emitter.setPosition(editor.worldCamera.viewportWidth / 2, editor.worldCamera.viewportHeight / 2);
+				emitterTableModel.addRow(new Object[] {emitter.getName(), true});
+			}
+			
+			editIndex = 0;
+			emitterTable.getSelectionModel().setSelectionInterval(editIndex, editIndex);
+			editor.reloadRows();
 		}
-		for (ParticleEmitter emitter : effect.getEmitters()) {
-			emitter.setPosition(editor.worldCamera.viewportWidth / 2, editor.worldCamera.viewportHeight / 2);
-			emitterTableModel.addRow(new Object[] {emitter.getName(), true});
-		}
-		editIndex = 0;
-		emitterTable.getSelectionModel().setSelectionInterval(editIndex, editIndex);
-		editor.reloadRows();
 	}
-
+	
+	/** Saves a {@link ParticleEffect} into a JSON serialized file. */
 	void saveEffect () {
-		FileDialog dialog = new FileDialog(editor, "Save Effect", FileDialog.SAVE);
-		if (lastDir != null) dialog.setDirectory(lastDir);
-		dialog.setVisible(true);
-		String file = dialog.getFile();
-		String dir = dialog.getDirectory();
-		if (dir == null || file == null || file.trim().length() == 0) return;
-		lastDir = dir;
-		int index = 0;
-		for (ParticleEmitter emitter : editor.effect.getEmitters())
-			emitter.setName((String)emitterTableModel.getValueAt(index++, 0));
-		try {
-			editor.effect.save(new File(dir, file));
-		} catch (Exception ex) {
-			System.out.println("Error saving effect: " + new File(dir, file).getAbsolutePath());
-			ex.printStackTrace();
-			JOptionPane.showMessageDialog(editor, "Error saving effect.");
+		fc.setApproveButtonText("Save");
+		int option = fc.showOpenDialog(editor);
+		if (option == JFileChooser.APPROVE_OPTION) {
+			// Assign the names
+			int index = 0;
+			for (ParticleEmitter emitter : editor.effect.getEmitters())
+            emitter.setName((String)emitterTableModel.getValueAt(index++, 0));
+			
+			// Write the file
+			if (fc.getSelectedFile() != null) {
+				File fileToSave = fc.getSelectedFile();
+				editor.effect.save(fileToSave);
+			}
 		}
 	}
 
