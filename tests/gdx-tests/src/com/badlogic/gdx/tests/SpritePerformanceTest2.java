@@ -22,9 +22,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class SpritePerformanteTest2 extends GdxTest {
+public class SpritePerformanceTest2 extends GdxTest {
 	static final int SPRITES = 50000;
 	Texture image;
 	Texture image2;
@@ -40,10 +41,16 @@ public class SpritePerformanteTest2 extends GdxTest {
 		image2 = new Texture(Gdx.files.internal("data/bobargb8888-32x32.png"));
 		image2.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
+		float width = Gdx.graphics.getWidth() - 32;
+		float height = Gdx.graphics.getHeight() - 32;
+		
 		sprites = new Sprite[SPRITES];
 		for (int i = 0; i < SPRITES; i++) {
+			float x = MathUtils.random() * width;
+			float y = MathUtils.random() * height;
+			
 			Sprite sprite = new Sprite(i < SPRITES / 2 ? image : image2);
-			sprite.setPosition((float)Math.random() * 800, (float)Math.random() * 600);
+			sprite.setPosition(x, y);
 			sprites[i] = sprite;
 		}
 
