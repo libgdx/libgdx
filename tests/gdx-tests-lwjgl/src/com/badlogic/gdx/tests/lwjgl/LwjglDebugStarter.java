@@ -21,6 +21,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tests.BulletTest;
 import com.badlogic.gdx.tests.InputTest;
 import com.badlogic.gdx.tests.ProjectiveTextureTest;
+import com.badlogic.gdx.tests.ShapeRendererTest;
 import com.badlogic.gdx.tests.TextureDownloadTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeTest;
 import com.badlogic.gdx.tests.extensions.InternationalFontsTest;
@@ -39,11 +40,11 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-image/libs/gdx-image-natives.jar").load("gdx-image");
 		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
 
-		GdxTest test = new BulletTest();
+		GdxTest test = new ShapeRendererTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 640;
 		config.height = 640;
-		config.useGL20 = test.needsGL20();
+		config.useGL20 = true;
 		config.vSyncEnabled = true;
 		config.resizable = true;
 		new LwjglApplication(test, config);
