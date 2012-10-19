@@ -20,6 +20,9 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  */
 public class IOSSocket implements Socket {
 
+	/** Our server if the socket was created via server socket. null if it's a client socket only. */
+	private IOSServerSocket server;
+
 	/** Our client or null for disposed, aka closed. */
 	private TcpClient client;
 	
@@ -34,12 +37,7 @@ public class IOSSocket implements Socket {
 				// create and connect the socket
 				// NOTE: there is no connection timeout setting available - will assume there is some sort of default!?
 				client = new TcpClient(host, port);
-				applyHints(hints);  // better to call BEFORE socket is connected!
-				
-				// create our streams!
-				stream = client.GetStream();
-				inputStream = new IOSStreamInput(stream, false);
-				outputStream = new IOSStreamOutput(stream, false);
+				setupConnection(hints); 
 			}
 			catch (Exception e) {
 				throw new GdxRuntimeException("Error making a socket connection to " + host + ":" + port, e);
@@ -50,12 +48,14 @@ public class IOSSocket implements Socket {
 		}
 	}
 	
-	public IOSSocket(TcpClient client, SocketHints hints) {
+	public IOSSocket(IOSServerSocket server, TcpClient client, SocketHints hints) {
+		this.server = server;
 		this.client = client;
-		applyHints(hints);
+		setupConnection(hints);
 	}
 	
-	private void applyHints(SocketHints hints) {
+	private void setupConnection(SocketHints hints) {
+		// apply hints as needed
 		if (hints != null) {
 			try {	
 				// NOTE: traffic parameter settings/class cannot be set via iOS
@@ -70,6 +70,11 @@ public class IOSSocket implements Socket {
 				throw new GdxRuntimeException("Error setting socket hints." , e);
 			}
 		}
+		
+		// create our streams!
+		stream = client.GetStream();
+		inputStream = new IOSStreamInput(stream, false);
+		outputStream = new IOSStreamOutput(stream, false);
 	}
 	
 	@Override
@@ -94,8 +99,8 @@ public class IOSSocket implements Socket {
 
 	@Override
 	public void dispose() {
-		if (client != null) {
-			// close stream
+		// close stream
+	   if (stream != null) {
 			try {
 				stream.Close();
 			}
@@ -103,8 +108,21 @@ public class IOSSocket implements Socket {
 				throw new GdxRuntimeException("Error closing stream.", e);
 			}
 			stream = null;
+	   }
+		   
+		// remove from server as needed
+		if (server != null) {
+			try {
+				server.dispose(this);
+			}
+			catch (Exception e) {
+				throw new GdxRuntimeException("Error closing socket on server.", e);
+			}
+			server = null;
+		}
 			
-			// close connection
+		// dispose client
+		if (client != null) {
 			try {
 				client.Close();
 				client.Dispose();
