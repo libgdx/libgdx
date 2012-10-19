@@ -31,7 +31,8 @@ public class MultitouchTest extends GdxTest {
 	OrthographicCamera camera;
 	long startTime = TimeUtils.nanoTime();
 
-	Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.WHITE};
+	Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.WHITE, Color.PINK, Color.ORANGE, 
+		Color.YELLOW, Color.MAGENTA, Color.CYAN, Color.LIGHT_GRAY, Color.GRAY, Color.DARK_GRAY};
 
 	@Override
 	public void render () {
@@ -45,7 +46,8 @@ public class MultitouchTest extends GdxTest {
 
 			float x = Gdx.input.getX(i);
 			float y = Gdx.graphics.getHeight() - Gdx.input.getY(i) - 1;
-			Color col = colors[i % colors.length];
+			Color color = colors[i % colors.length];
+			renderer.setColor(color);
 			renderer.filledTriangle(x, y + size, x + size, y - size, x - size, y - size);
 		}
 		renderer.end();

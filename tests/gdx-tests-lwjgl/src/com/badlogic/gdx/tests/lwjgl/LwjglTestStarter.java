@@ -60,7 +60,7 @@ public class LwjglTestStarter extends JFrame {
 
 			final JButton button = new JButton("Run Test");
 
-			final JList list = new JList(GdxTests.getNames());
+			final JList list = new JList(GdxTests.getNames().toArray());
 			JScrollPane pane = new JScrollPane(list);
 
 			DefaultListSelectionModel m = new DefaultListSelectionModel();
