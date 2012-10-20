@@ -41,6 +41,7 @@ import com.badlogic.gdx.physics.bullet.btTransform;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** @author xoppa */
@@ -50,13 +51,6 @@ public class BulletTest extends GdxTest {
 		new SharedLibraryLoader().load("gdx-bullet");
 	}
 
-	btDefaultCollisionConfiguration collisionConfiguration;
-	btCollisionDispatcher dispatcher;
-	btDbvtBroadphase broadphase;
-	btSequentialImpulseConstraintSolver solver;
-	btDiscreteDynamicsWorld dynamicsWorld;
-	final Vector3 gravity = new Vector3(0, -10, 0);
-
 	final int BOXCOUNT_X = 5;
 	final int BOXCOUNT_Y = 5;
 	final int BOXCOUNT_Z = 1;
@@ -65,16 +59,12 @@ public class BulletTest extends GdxTest {
 	final float BOXOFFSET_Y = 0.5f;
 	final float BOXOFFSET_Z = 0f;
 
-	Entity.ConstructInfo groundInfo;
-	Entity.ConstructInfo boxInfo;
-
-	Array<Entity> entities = new Array<Entity>(BOXCOUNT_X * BOXCOUNT_Y * BOXCOUNT_Z + 10);
-
 	final float lightAmbient[] = new float[] {0.4f, 0.4f, 0.4f, 1f};
 	final float lightPosition[] = new float[] {10f, 10f, 0f, 100f};
 	final float lightDiffuse[] = new float[] {1f, 1f, 1f, 1f};
 
 	PerspectiveCamera camera;
+	World world;
 
 	@Override
 	public void resize (int width, int height) {
@@ -90,9 +80,6 @@ public class BulletTest extends GdxTest {
 
 	@Override
 	public void render () {
-		dynamicsWorld.stepSimulation(Gdx.graphics.getDeltaTime(), 5);
-
-		camera.apply(Gdx.gl10);
 		GL10 gl = Gdx.gl10;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
@@ -104,17 +91,15 @@ public class BulletTest extends GdxTest {
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
 
-		for (int i = 0; i < entities.size; i++) {
-			final Entity body = entities.get(i);
-			gl.glPushMatrix();
-			gl.glMultMatrixf(body.transform.val, 0);
-			body.mesh.render(GL10.GL_TRIANGLE_STRIP);
-			gl.glPopMatrix();
-		}
+		camera.apply(Gdx.gl10);
+		
+		world.update();
 	}
 
 	@Override
 	public void create () {
+		world = new World();
+		
 		Gdx.input.setInputProcessor(this);
 
 		// Create some simple meshes
@@ -140,29 +125,17 @@ public class BulletTest extends GdxTest {
 			0, 1, 4, 4, 5, 1 // right
 			});
 
-		// Init the physics
-		collisionConfiguration = new btDefaultCollisionConfiguration();
-		dispatcher = new btCollisionDispatcher(collisionConfiguration);
-		broadphase = new btDbvtBroadphase();
-		solver = new btSequentialImpulseConstraintSolver();
-		dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-		dynamicsWorld.setGravity(gravity);
+		// Add the constructers
+		world.constructors.put("ground", new Entity.ConstructInfo(groundMesh, 0f)); // mass = 0: static body
+		world.constructors.put("box", new Entity.ConstructInfo(boxMesh, 1f)); // mass = 1kg: dynamic body
 
-		// Init the construct info
-		groundInfo = new Entity.ConstructInfo(groundMesh, 0f); // mass = 0: static body
-		boxInfo = new Entity.ConstructInfo(boxMesh, 1f); // mass = 1kg: dynamic body
-
-		// Create the bodies
-		Entity entity = new Entity(groundInfo, 0f, 0f, 0f);
-		entities.add(entity);
-		dynamicsWorld.addRigidBody(entity.body);
+		// Create the entities
+		world.add("ground", 0f, 0f, 0f);
 
 		for (int x = 0; x < BOXCOUNT_X; x++) {
 			for (int y = 0; y < BOXCOUNT_Y; y++) {
 				for (int z = 0; z < BOXCOUNT_Z; z++) {
-					entity = new Entity(boxInfo, BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z);
-					entities.add(entity);
-					dynamicsWorld.addRigidBody(entity.body);
+					world.add("box", BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z);
 				}
 			}
 		}
@@ -172,9 +145,7 @@ public class BulletTest extends GdxTest {
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 		// Shoot a box
 		Ray ray = camera.getPickRay(screenX, screenY);
-		Entity entity = new Entity(boxInfo, ray.origin.x, ray.origin.y, ray.origin.z);
-		entities.add(entity);
-		dynamicsWorld.addRigidBody(entity.body);
+		Entity entity = world.add("box", ray.origin.x, ray.origin.y, ray.origin.z);
 		entity.body.applyCentralImpulse(ray.direction.mul(30f));
 
 		return super.touchUp(screenX, screenY, pointer, button);
@@ -182,35 +153,81 @@ public class BulletTest extends GdxTest {
 
 	@Override
 	public void dispose () {
+		world.dispose();
+		
 		super.dispose();
-		// Don't rely on the GC to finalize
-		for (int i = 0; i < entities.size; i++) {
-			final Entity entity = entities.get(i);
-			dynamicsWorld.removeRigidBody(entity.body);
-			entity.dispose();
-		}
-		entities.clear();
-
-		groundInfo.dispose();
-		groundInfo = null;
-		boxInfo.dispose();
-		boxInfo = null;
-
-		dynamicsWorld.delete();
-		dynamicsWorld = null;
-		solver.delete();
-		solver = null;
-		broadphase.delete();
-		broadphase = null;
-		dispatcher.delete();
-		dispatcher = null;
-		collisionConfiguration.delete();
-		collisionConfiguration = null;
 	}
 
 	@Override
 	public boolean needsGL20 () {
 		return false;
+	}
+	
+	static class World implements Disposable {
+		public ObjectMap<String, Entity.ConstructInfo> constructors = new ObjectMap<String, Entity.ConstructInfo>();
+		public Array<Entity> entities = new Array<Entity>();
+		
+		private final btDefaultCollisionConfiguration collisionConfiguration;
+		private final btCollisionDispatcher dispatcher;
+		private final btDbvtBroadphase broadphase;
+		private final btSequentialImpulseConstraintSolver solver;
+		public final btDiscreteDynamicsWorld dynamicsWorld;
+		final Vector3 gravity = new Vector3(0, -10, 0);
+		
+		public World() {
+			collisionConfiguration = new btDefaultCollisionConfiguration();
+			dispatcher = new btCollisionDispatcher(collisionConfiguration);
+			broadphase = new btDbvtBroadphase();
+			solver = new btSequentialImpulseConstraintSolver();
+			dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+			dynamicsWorld.setGravity(gravity);
+		}
+		
+		public void add(final Entity entity) {
+			entities.add(entity);
+			dynamicsWorld.addRigidBody(entity.body);
+		}
+		
+		public Entity add(final String type, float x, float y, float z) {
+			final Entity entity = new Entity(constructors.get(type), x, y, z);
+			add(entity);
+			return entity;
+		}
+		
+		public void update () {
+			dynamicsWorld.stepSimulation(Gdx.graphics.getDeltaTime(), 5);
+
+			GL10 gl = Gdx.gl10;
+
+			for (int i = 0; i < entities.size; i++) {
+				final Entity body = entities.get(i);
+				gl.glPushMatrix();
+				gl.glMultMatrixf(body.transform.val, 0);
+				body.mesh.render(GL10.GL_TRIANGLE_STRIP);
+				gl.glPopMatrix();
+			}
+		}
+		
+		@Override
+		public void dispose () {
+			for (int i = 0; i < entities.size; i++) {
+				final Entity entity = entities.get(i);
+				dynamicsWorld.removeRigidBody(entity.body);
+				entity.dispose();
+			}
+			entities.clear();
+			
+			for (Entity.ConstructInfo constructor : constructors.values()) {
+				constructor.dispose();
+			}
+			constructors.clear();
+			
+			dynamicsWorld.delete();
+			solver.delete();
+			broadphase.delete();
+			dispatcher.delete();
+			collisionConfiguration.delete();
+		}
 	}
 
 	static class Entity extends btMotionState implements Disposable {
