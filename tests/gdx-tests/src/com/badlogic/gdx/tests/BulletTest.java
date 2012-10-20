@@ -200,10 +200,10 @@ public class BulletTest extends GdxTest {
 			GL10 gl = Gdx.gl10;
 
 			for (int i = 0; i < entities.size; i++) {
-				final Entity body = entities.get(i);
+				final Entity entity = entities.get(i);
 				gl.glPushMatrix();
-				gl.glMultMatrixf(body.transform.val, 0);
-				body.mesh.render(GL10.GL_TRIANGLE_STRIP);
+				gl.glMultMatrixf(entity.transform.val, 0);
+				entity.mesh.render(GL10.GL_TRIANGLE_STRIP);
 				gl.glPopMatrix();
 			}
 		}
