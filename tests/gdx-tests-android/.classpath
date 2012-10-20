@@ -10,5 +10,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-audio"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-freetype"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-image"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-bullet"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

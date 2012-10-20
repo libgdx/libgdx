@@ -21,14 +21,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.ModelLoaderHints;
 import com.badlogic.gdx.graphics.g3d.loaders.StillModelLoader;
+import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -62,9 +70,19 @@ public class ObjLoader implements StillModelLoader {
 	 * @param file the FileHandle
 	 * @param flipV whether to flip the v texture coordinate (Blender, Wings3D, et al) */
 	public StillModel loadObj (FileHandle file, boolean flipV) {
+		return loadObj(file, file.parent(), flipV);
+	}
+
+	/** Loads a Wavefront OBJ file from a given file handle.
+	 * 
+	 * @param file the FileHandle
+	 * @param textureDir
+	 * @param flipV whether to flip the v texture coordinate (Blender, Wings3D, et al) */
+	public StillModel loadObj (FileHandle file, FileHandle textureDir, boolean flipV) {
 		String line;
 		String[] tokens;
 		char firstChar;
+		MtlLoader mtl = new MtlLoader();
 
 		// Create a "default" Group and set it as the active group, in case
 		// there are no groups or objects defined in the OBJ file.
@@ -127,6 +145,17 @@ public class ObjLoader implements StillModelLoader {
 						activeGroup = setActiveGroup(tokens[1]);
 					else
 						activeGroup = setActiveGroup("default");
+				} else if (tokens[0].equals("mtllib")) {
+					String path = "";
+					if (file.path().contains("/")) {
+						path = file.path().substring(0, file.path().lastIndexOf('/') + 1);
+					}
+					mtl.load(path + tokens[1], textureDir);
+				} else if (tokens[0].equals("usemtl")) {
+					if (tokens.length == 1)
+						activeGroup.materialName = "default";
+					else
+						activeGroup.materialName = tokens[1];
 				}
 			}
 			reader.close();
@@ -198,7 +227,7 @@ public class ObjLoader implements StillModelLoader {
 			if (numIndices > 0) mesh.setIndices(finalIndices);
 
 			StillSubMesh subMesh = new StillSubMesh(group.name, mesh, GL10.GL_TRIANGLES);
-			subMesh.material = new Material("default");
+			subMesh.material = mtl.getMaterial(group.materialName);
 			model.subMeshes[g] = subMesh;
 
 		}
@@ -237,6 +266,7 @@ public class ObjLoader implements StillModelLoader {
 
 	private class Group {
 		final String name;
+		String materialName;
 		ArrayList<Integer> faces;
 		int numFaces;
 		boolean hasNorms;
@@ -248,6 +278,105 @@ public class ObjLoader implements StillModelLoader {
 			this.faces = new ArrayList<Integer>(200);
 			this.numFaces = 0;
 			this.mat = new Material("");
+			this.materialName = "default";
+		}
+	}
+
+	private class MtlLoader {
+		private ArrayList<Material> materials = new ArrayList<Material>();
+		private final AssetManager assetManager;
+
+		public MtlLoader () {
+			assetManager = new AssetManager();
+		}
+
+		/** loads .mtl file
+		 * @param name */
+		public void load (String name, FileHandle textureDir) {
+			String line;
+			String[] tokens;
+			String curMatName = "default";
+			Color difcolor = Color.WHITE;
+			Color speccolor = Color.WHITE;
+			Texture texture = new Texture(1, 1, Format.RGB888);
+
+			FileHandle file = Gdx.files.internal(name);
+			if (file == null || file.exists() == false) return;
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(file.read()), 4096);
+			try {
+				while ((line = reader.readLine()) != null) {
+
+					if (line.length() > 0 && line.charAt(0) == '\t') line = line.substring(1).trim();
+
+					tokens = line.split("\\s+");
+
+					if (tokens[0].length() == 0) {
+						continue;
+					} else if (tokens[0].charAt(0) == '#')
+						continue;
+					else if (tokens[0].toLowerCase().equals("newmtl")) {
+						Material mat = new Material(curMatName, new TextureAttribute(texture, 0, "s_tex"), new ColorAttribute(difcolor,
+							ColorAttribute.diffuse), new ColorAttribute(speccolor, ColorAttribute.specular));
+						materials.add(mat);
+
+						if (tokens.length > 1) {
+							curMatName = tokens[1];
+							curMatName = curMatName.replace('.', '_');
+						} else
+							curMatName = "default";
+
+						difcolor = Color.WHITE;
+						speccolor = Color.WHITE;
+					} else if (tokens[0].toLowerCase().equals("kd") || tokens[0].toLowerCase().equals("ks")) // diffuse or specular
+// color
+					{
+						float r = Float.parseFloat(tokens[1]);
+						float g = Float.parseFloat(tokens[2]);
+						float b = Float.parseFloat(tokens[3]);
+						float a = 1;
+						if (tokens.length > 4) a = Float.parseFloat(tokens[4]);
+
+						if (tokens[0].toLowerCase().equals("kd")) {
+							difcolor = new Color();
+							difcolor.set(r, g, b, a);
+						} else {
+							speccolor = new Color();
+							speccolor.set(r, g, b, a);
+						}
+					} else if (tokens[0].toLowerCase().equals("map_kd")) {
+						String textureName = tokens[1];
+						if (textureName.length() > 0) {
+							String texname = textureDir.child(textureName).toString();
+							assetManager.load(texname, Texture.class);
+							assetManager.finishLoading();
+							texture = assetManager.get(texname, Texture.class);
+							texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+						} else
+							texture = new Texture(1, 1, Format.RGB888);
+
+					}
+
+				}
+				reader.close();
+			} catch (IOException e) {
+				return;
+			}
+
+			// last material
+			Material mat = new Material(curMatName, new TextureAttribute(texture, 0, "s_tex"), new ColorAttribute(difcolor,
+				ColorAttribute.diffuse), new ColorAttribute(speccolor, ColorAttribute.specular));
+			materials.add(mat);
+
+			return;
+		}
+
+		public Material getMaterial (String name) {
+			name = name.replace('.', '_');
+			for (Material mat : materials) {
+				if (mat.getName().equals(name)) return mat;
+			}
+			return new Material("default");
 		}
 	}
 

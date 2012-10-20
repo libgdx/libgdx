@@ -29,6 +29,7 @@
 package com.badlogic.gdx.tests.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,11 +42,12 @@ import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
  * 
  * @author badlogicgames@gmail.com */
 public class GdxTests {
-	public static final Class[] tests = {AnimationTest.class, AccelerometerTest.class, ActionTest.class, ActionSequenceTest.class,
+	public static final List<Class<? extends GdxTest>> tests = new ArrayList<Class<? extends GdxTest>>(Arrays.asList(
+		AnimationTest.class, AccelerometerTest.class, ActionTest.class, ActionSequenceTest.class,
 		GroupTest.class, AlphaTest.class, AtlasIssueTest.class, AssetManagerTest.class, FilterPerformanceTest.class,
 		AudioDeviceTest.class, AudioRecorderTest.class, BitmapFontAlignmentTest.class, BitmapFontFlipTest.class,
 		GroupCullingTest.class, GestureDetectorTest.class, LabelTest.class, BitmapFontMetricsTest.class, BlitTest.class, TableTest.class,
-		BobTest.class, ImageScaleTest.class, TableLayoutTest.class, Box2DTest.class, InterpolationTest.class, TouchpadTest.class,
+		BobTest.class, ImageScaleTest.class, TableLayoutTest.class, Box2DTest.class, BulletTest.class, InterpolationTest.class, TouchpadTest.class,
 		Box2DTestCollection.class, BufferUtilsTest.class, ImageTest.class, CompassTest.class, ComplexActionTest.class,
 		CullTest.class, DeltaTimeTest.class, EdgeDetectionTest.class, ETC1Test.class, ExitTest.class, FilesTest.class,
 		ScrollPaneTest.class, FloatTest.class, FloatTextureTest.class, FrameBufferTest.class, FramebufferToTextureTest.class, FrustumTest.class,
@@ -61,43 +63,42 @@ public class GdxTests {
 		ShaderMultitextureTest.class, ShadowMappingTest.class, SplineTest.class, SimpleAnimationTest.class, SimpleDecalTest.class,
 		SimpleStageCullingTest.class, SoundTest.class, SpriteCacheTest.class, SpriteCacheOffsetTest.class, LetterBoxTest.class,
 		SpriteBatchRotationTest.class, SpriteBatchShaderTest.class, SpriteBatchTest.class, SpritePerformanceTest.class,
-		SpritePerformanteTest2.class, StagePerformanceTest.class, StageTest.class, TerrainTest.class, TextureDataTest.class,
+		SpritePerformanceTest2.class, StagePerformanceTest.class, StageTest.class, TerrainTest.class, TextureDataTest.class,
 		TextureDownloadTest.class, TextureFormatTest.class, TextureAtlasTest.class, TextInputDialogTest.class,
 		TextureRenderTest.class, TiledMapTest.class, TileTest.class, UITest.class, VBOVATest.class, VertexArrayTest.class,
 		VertexBufferObjectTest.class, VertexArrayClassTest.class, VertexBufferObjectClassTest.class, LetterBoxTest2.class,
 		VertexBufferObjectShaderTest.class, VibratorTest.class, WaterRipples.class, HelloTriangle.class,
-		SimpleVertexShader.class, ShapeRendererTest.class, MoveSpriteExample.class, 
+		SimpleVertexShader.class, ShapeRendererTest.class, MoveSpriteExample.class,
 		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
 		// InternationalFontsTest.class, VorbisTest.class
 		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
-		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class};
-
-	public static String[] getNames () {
-		List<String> names = new ArrayList<String>();
+		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class));
+	
+	public static List<String> getNames () {
+		List<String> names = new ArrayList<String>(tests.size());
 		for (Class clazz : tests)
 			names.add(clazz.getSimpleName());
 		Collections.sort(names);
-		return names.toArray(new String[names.size()]);
+		return names;
+	}
+
+	private static Class<? extends GdxTest> forName (String name)
+	{
+		for (Class clazz : tests)
+			if (clazz.getSimpleName().equals(name))
+				return clazz;
+		return null;
 	}
 
 	public static GdxTest newTest (String testName) {
 		try {
-			Class clazz = Class.forName("com.badlogic.gdx.tests." + testName);
-			return (GdxTest)clazz.newInstance();
-		} catch (Exception e1) {
-			try {
-				Class clazz = Class.forName("com.badlogic.gdx.tests.gles2." + testName);
-				return (GdxTest)clazz.newInstance();
-			} catch (Exception e2) {
-				try {
-					Class clazz = Class.forName("com.badlogic.gdx.tests.examples." + testName);
-					return (GdxTest)clazz.newInstance();
-				} catch (Exception e3) {
-					e3.printStackTrace();
-					return null;
-				}
-			}
+			return forName(testName).newInstance();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
+		return null;
 	}
 }
