@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.btBoxShape;
 import com.badlogic.gdx.physics.bullet.btCollisionDispatcher;
@@ -64,18 +65,16 @@ public class BulletTest extends GdxTest {
 	final float BOXOFFSET_Y = 0.5f;
 	final float BOXOFFSET_Z = 0f;
 
-	BulletBody.ConstructInfo groundInfo;
-	BulletBody.ConstructInfo boxInfo;
+	Entity.ConstructInfo groundInfo;
+	Entity.ConstructInfo boxInfo;
 
-	Array<BulletBody> bodies = new Array<BulletBody>(BOXCOUNT_X * BOXCOUNT_Y * BOXCOUNT_Z);
+	Array<Entity> entities = new Array<Entity>(BOXCOUNT_X * BOXCOUNT_Y * BOXCOUNT_Z + 10);
 
 	final float lightAmbient[] = new float[] {0.4f, 0.4f, 0.4f, 1f};
 	final float lightPosition[] = new float[] {10f, 10f, 0f, 100f};
 	final float lightDiffuse[] = new float[] {1f, 1f, 1f, 1f};
 
 	PerspectiveCamera camera;
-	Mesh groundMesh;
-	Mesh boxMesh;
 
 	@Override
 	public void resize (int width, int height) {
@@ -105,8 +104,8 @@ public class BulletTest extends GdxTest {
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
 
-		for (int i = 0; i < bodies.size; i++) {
-			final BulletBody body = bodies.get(i);
+		for (int i = 0; i < entities.size; i++) {
+			final Entity body = entities.get(i);
 			gl.glPushMatrix();
 			gl.glMultMatrixf(body.transform.val, 0);
 			body.mesh.render(GL10.GL_TRIANGLE_STRIP);
@@ -119,14 +118,14 @@ public class BulletTest extends GdxTest {
 		Gdx.input.setInputProcessor(this);
 
 		// Create some simple meshes
-		groundMesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
+		final Mesh groundMesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
 			Usage.ColorPacked, 4, "a_color"));
 		groundMesh.setVertices(new float[] {20f, 0f, 20f, Color.toFloatBits(128, 128, 128, 255), 20f, 0f, -20f,
 			Color.toFloatBits(128, 128, 128, 255), -20f, 0f, 20f, Color.toFloatBits(128, 128, 128, 255), -20f, 0f, -20f,
 			Color.toFloatBits(128, 128, 128, 255)});
 		groundMesh.setIndices(new short[] {0, 1, 2, 1, 2, 3});
 
-		boxMesh = new Mesh(true, 8, 36, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
+		final Mesh boxMesh = new Mesh(true, 8, 36, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
 			Usage.ColorPacked, 4, "a_color"));
 		boxMesh.setVertices(new float[] {0.5f, 0.5f, 0.5f, Color.toFloatBits(255, 0, 0, 255), 0.5f, 0.5f, -0.5f,
 			Color.toFloatBits(255, 0, 0, 255), -0.5f, 0.5f, 0.5f, Color.toFloatBits(255, 0, 0, 255), -0.5f, 0.5f, -0.5f,
@@ -150,20 +149,20 @@ public class BulletTest extends GdxTest {
 		dynamicsWorld.setGravity(gravity);
 
 		// Init the construct info
-		groundInfo = new BulletBody.ConstructInfo(0f, 40f, 0f, 40f);
-		boxInfo = new BulletBody.ConstructInfo(1f, 1f, 1f, 1f);
+		groundInfo = new Entity.ConstructInfo(groundMesh, 0f); // mass = 0: static body
+		boxInfo = new Entity.ConstructInfo(boxMesh, 1f); // mass = 1kg: dynamic body
 
 		// Create the bodies
-		BulletBody body = new BulletBody(groundMesh, groundInfo, 0f, 0f, 0f);
-		bodies.add(body);
-		dynamicsWorld.addRigidBody(body.body);
+		Entity entity = new Entity(groundInfo, 0f, 0f, 0f);
+		entities.add(entity);
+		dynamicsWorld.addRigidBody(entity.body);
 
 		for (int x = 0; x < BOXCOUNT_X; x++) {
 			for (int y = 0; y < BOXCOUNT_Y; y++) {
 				for (int z = 0; z < BOXCOUNT_Z; z++) {
-					body = new BulletBody(boxMesh, boxInfo, BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z);
-					bodies.add(body);
-					dynamicsWorld.addRigidBody(body.body);
+					entity = new Entity(boxInfo, BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z);
+					entities.add(entity);
+					dynamicsWorld.addRigidBody(entity.body);
 				}
 			}
 		}
@@ -173,10 +172,10 @@ public class BulletTest extends GdxTest {
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 		// Shoot a box
 		Ray ray = camera.getPickRay(screenX, screenY);
-		BulletBody body = new BulletBody(boxMesh, boxInfo, ray.origin.x, ray.origin.y, ray.origin.z);
-		bodies.add(body);
-		dynamicsWorld.addRigidBody(body.body);
-		body.body.applyCentralImpulse(ray.direction.mul(30f));
+		Entity entity = new Entity(boxInfo, ray.origin.x, ray.origin.y, ray.origin.z);
+		entities.add(entity);
+		dynamicsWorld.addRigidBody(entity.body);
+		entity.body.applyCentralImpulse(ray.direction.mul(30f));
 
 		return super.touchUp(screenX, screenY, pointer, button);
 	}
@@ -185,12 +184,12 @@ public class BulletTest extends GdxTest {
 	public void dispose () {
 		super.dispose();
 		// Don't rely on the GC to finalize
-		for (int i = 0; i < bodies.size; i++) {
-			final BulletBody body = bodies.get(i);
-			dynamicsWorld.removeRigidBody(body.body);
-			body.dispose();
+		for (int i = 0; i < entities.size; i++) {
+			final Entity entity = entities.get(i);
+			dynamicsWorld.removeRigidBody(entity.body);
+			entity.dispose();
 		}
-		bodies.clear();
+		entities.clear();
 
 		groundInfo.dispose();
 		groundInfo = null;
@@ -214,27 +213,34 @@ public class BulletTest extends GdxTest {
 		return false;
 	}
 
-	static class BulletBody extends btMotionState implements Disposable {
+	static class Entity extends btMotionState implements Disposable {
 		public final Matrix4 transform = new Matrix4();
 		public btRigidBody body;
 		public Mesh mesh;
 
-		public BulletBody (final Mesh mesh, final btRigidBodyConstructionInfo bodyInfo, final float x, final float y, final float z) {
+		public Entity (final Mesh mesh, final btRigidBodyConstructionInfo bodyInfo, final float x, final float y, final float z) {
 			this.mesh = mesh;
 			transform.idt().translate(x, y, z);
 			body = new btRigidBody(bodyInfo);
 			body.setMotionState(this);
 		}
 
-		public BulletBody (final Mesh mesh, final ConstructInfo constructInfo, final float x, final float y, final float z) {
-			this(mesh, constructInfo.bodyInfo, x, y, z);
+		public Entity (final ConstructInfo constructInfo, final float x, final float y, final float z) {
+			this(constructInfo.mesh, constructInfo.bodyInfo, x, y, z);
 		}
 
+		/**
+		 * For dynamic and static bodies this method is called by bullet once to get the initial state of the body.
+		 * For kinematic bodies this method is called on every update.
+		 */
 		@Override
 		public void getWorldTransform (final btTransform worldTrans) {
 			worldTrans.setFromOpenGLMatrix(transform.val);
 		}
 
+		/**
+		 * For dynamic bodies this method is called by bullet every update to inform about the new position and rotation.
+		 */
 		@Override
 		public void setWorldTransform (final btTransform worldTrans) {
 			worldTrans.getOpenGLMatrix(transform.val);
@@ -252,21 +258,37 @@ public class BulletTest extends GdxTest {
 		public static class ConstructInfo implements Disposable {
 			public btRigidBodyConstructionInfo bodyInfo;
 			public btCollisionShape shape;
-
-			public ConstructInfo (final float mass, final float width, final float height, final float depth) {
-				// We can safely use tmp to pass the dimensions
+			public Mesh mesh;
+			
+			private void create (final Mesh mesh, final float mass, final float width, final float height, final float depth) {
+				this.mesh = mesh;
+				
+				// Create a simple boxshape
 				shape = new btBoxShape(Vector3.tmp.set(width * 0.5f, height * 0.5f, depth * 0.5f));
+				
+				// Calculate the local inertia, bodies with no mass are static
 				Vector3 localInertia;
 				if (mass == 0)
 					localInertia = Vector3.Zero;
 				else {
-					// Again we can safely use tmp to pass the local inertia
 					shape.calculateLocalInertia(mass, Vector3.tmp);
 					localInertia = Vector3.tmp;
 				}
-				// For now just pass null as the motionstate, we'll add that in the body itself
+				
+				// For now just pass null as the motionstate, we'll add that to the body in the entity itself
 				bodyInfo = new btRigidBodyConstructionInfo(mass, null, shape, localInertia);
 			}
+			
+			public ConstructInfo (final Mesh mesh, final float mass, final float width, final float height, final float depth) {
+				create(mesh, mass, width, height, depth);
+			}
+			
+			public ConstructInfo (final Mesh mesh, final float mass) {
+				final BoundingBox boundingBox = mesh.calculateBoundingBox();
+				final Vector3 dimensions = boundingBox.getDimensions();
+				create(mesh, mass, dimensions.x, dimensions.y, dimensions.z);
+			}
+
 
 			@Override
 			public void dispose () {
