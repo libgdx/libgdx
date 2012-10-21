@@ -13,6 +13,7 @@ extensions/gdx-freetype/target/
 extensions/gdx-image/target/
 extensions/gdx-tiled-preprocessor/target/
 extensions/gdx-tools/target/
+extensions/gdx-bullet/target/
 
 /backends/gdx-backend-android/bin
 /backends/gdx-backend-iosmonotouch/bin
