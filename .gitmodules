@@ -1,3 +1,0 @@
-[submodule "extensions/gdx-mavenizer"]
-	path = extensions/gdx-mavenizer
-	url = https://github.com/gemserk/libgdxmavenizer.git
