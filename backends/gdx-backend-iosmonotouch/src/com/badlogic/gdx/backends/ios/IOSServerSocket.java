@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cli.MonoTouch.ObjCRuntime.Arch;
 import cli.System.AsyncCallback;
 import cli.System.IAsyncResult;
 import cli.System.Net.Dns;
@@ -59,7 +60,10 @@ public class IOSServerSocket implements ServerSocket {
 					// get local IP to connect with
 					IPAddress ipAddress = null;
 					String host = Dns.GetHostName(); 
-					host = host + ".local"; // the ".local" might not be needed on the simulator!?
+					if (cli.MonoTouch.ObjCRuntime.Runtime.Arch.Value == Arch.DEVICE) {
+						// the ".local" is not added on the simulator!
+						host = host + ".local"; 
+					}
 					IPAddress[] ips = Dns.GetHostAddresses(host);
 					for (int i = 0; i < ips.length; i++) {
 						IPAddress ip = ips[i];
