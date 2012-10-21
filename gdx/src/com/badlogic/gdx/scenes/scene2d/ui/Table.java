@@ -76,6 +76,24 @@ public class Table extends WidgetGroup {
 		setTransform(false);
 		setTouchable(Touchable.childrenOnly);
 	}
+	
+	public Table(Skin skin, String styleName)
+	{
+		this(skin);
+		setStyle(skin.get(styleName, TableStyle.class));
+	}
+	
+	public Table(Skin skin, TableStyle style)
+	{
+		this(skin);
+		setStyle(style);
+	}
+	
+	public void setStyle(TableStyle style)
+	{
+		if(style != null)
+			setBackground(style.background);
+	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
@@ -487,4 +505,22 @@ public class Table extends WidgetGroup {
 			if (actor instanceof Group) drawDebug(((Group)actor).getChildren(), batch);
 		}
 	}
+	
+	/** The style for a table, see {@link Table}.*/
+	static public class TableStyle {
+		/** Optional. */
+		public Drawable background;
+
+		public TableStyle () {
+		}
+
+		public TableStyle (Drawable background) {
+			this.background = background;
+		}
+
+		public TableStyle (TableStyle tableBackground) {
+			this.background = tableBackground.background;
+		}
+	}
+	
 }

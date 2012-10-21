@@ -3,6 +3,7 @@
 .*.swp
 .DS_STORE
 *.mdb
+.metadata
 # per project ignores, it's cumbersome, but reduces the risk of missing something
 
 # target directories:
