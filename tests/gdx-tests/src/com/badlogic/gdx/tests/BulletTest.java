@@ -203,7 +203,7 @@ public class BulletTest extends GdxTest {
 				final Entity entity = entities.get(i);
 				gl.glPushMatrix();
 				gl.glMultMatrixf(entity.transform.val, 0);
-				entity.mesh.render(GL10.GL_TRIANGLE_STRIP);
+				entity.mesh.render(GL10.GL_TRIANGLES);
 				gl.glPopMatrix();
 			}
 		}
