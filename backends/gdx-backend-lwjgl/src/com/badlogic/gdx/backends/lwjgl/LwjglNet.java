@@ -20,6 +20,7 @@ import java.awt.Desktop;
 import java.net.URI;
 
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
@@ -27,12 +28,17 @@ import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class LwjglNet implements Net {
-	
+
 	// IMPORTANT: The Gdx.net classes are a currently duplicated for LWJGL + Android!
-	//            If you make changes here, make changes in the other backend as well.
-	
+	// If you make changes here, make changes in the other backend as well.
+
 	@Override
-	public HttpResult httpGet (String url, String... parameters) {
+	public HttpRequest createHttpRequest () {
+		return null;
+	}
+
+	@Override
+	public HttpResult httpRequest (HttpRequest httpRequest) {
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
@@ -45,22 +51,20 @@ public class LwjglNet implements Net {
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
 		return new LwjglServerSocket(protocol, port, hints);
 	}
-	
+
 	@Override
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
 		return new LwjglSocket(protocol, host, port, hints);
 	}
-	
+
 	@Override
-	public void openURI(String URI) {
-		if (!Desktop.isDesktopSupported()) 
-			return;
-		
+	public void openURI (String URI) {
+		if (!Desktop.isDesktopSupported()) return;
+
 		Desktop desktop = Desktop.getDesktop();
-		
-		if (!desktop.isSupported(Desktop.Action.BROWSE))
-			return;
-		
+
+		if (!desktop.isSupported(Desktop.Action.BROWSE)) return;
+
 		try {
 			desktop.browse(new java.net.URI(URI));
 		} catch (Exception e) {

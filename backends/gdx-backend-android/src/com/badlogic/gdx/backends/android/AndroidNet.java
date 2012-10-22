@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResult;
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.ServerSocket;
@@ -38,7 +39,12 @@ public class AndroidNet implements Net {
 	}
 	
 	@Override
-	public HttpResult httpGet (String url, String... parameters) {
+	public HttpRequest createHttpRequest () {
+		return null;
+	}
+	
+	@Override
+	public HttpResult httpRequest (HttpRequest httpRequest) {
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
@@ -67,4 +73,5 @@ public class AndroidNet implements Net {
 			}
 		});
 	}
+
 }

@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.Future;
 
+import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.ServerSocket;
@@ -29,7 +30,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * Provides methods to perform networking operations, such as simple HTTP get and post
  * requests, and TCP server/client socket communication.</p> 
  * 
- * To perform an HTTP Get or Post request, invoke the methods {@link #httpGet(String, String...)}
+ * To perform an HTTP Get or Post request, invoke the methods {@link #httpRequest(HttpRequest)}
  * and {@link #httpPost(String, String, byte[])}. Both methods return a {@link HttpResult} which
  * provides methods to query the progress and data returned by the operations. The {@link HttpResult}
  * works like a {@link Future} in that the operation is executed asynchronously, while the API client
@@ -91,18 +92,41 @@ public interface Net {
 		 * @return the result as a string or null in case of a timeout or if the operation was canceled/terminated abnormally.
 		 */
 		public String getResultAsString(int timeOut);
+		
+		/**
+		 * Returns the status code of the HTTP request in case the logic could depend on the result.
+		 */
+		public int getStatusCode();
+		
 	}
+	
+	public static enum HttpMethod { Get, Post }
+
+	public static interface HttpRequest {
+
+		void setUrl(String url);
+		
+		void setHeader(String name, String value);
+		
+		void setMethod(HttpMethod httpMethod);
+		
+		void setContentType(String contentType);
+		
+		void setContent(byte[] content);
+
+	}
+	
+	public HttpRequest createHttpRequest();
 	
 	/**
 	 * Performs an HTTP Get request using the given URL and parameters. The
 	 * parameters are passed in as an array where two subsequent entries are
 	 * a key/value pair. The keys and values are URL encoded automatically.
+	 * @param httpRequest TODO
 	 * 
-	 * @param url the URL to perform the Get request on
-	 * @param parameters the parameters
 	 * @return the {@link HttpResult}
 	 */
-	public HttpResult httpGet(String url, String ... parameters);
+	public HttpResult httpRequest(HttpRequest httpRequest);
 	
 	/**
 	 * Performs an HTTP Put request using the given URL and content. A

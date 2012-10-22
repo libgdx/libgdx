@@ -17,8 +17,11 @@ package com.badlogic.gdx.backends.ios;
 
 import cli.MonoTouch.Foundation.NSUrl;
 import cli.MonoTouch.UIKit.UIApplication;
+import cli.System.Uri;
+import cli.System.Net.HttpWebRequest;
 
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResult;
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.ServerSocket;
@@ -35,7 +38,12 @@ public class IOSNet implements Net {
 	}
 	
 	@Override
-	public HttpResult httpGet (String url, String... parameters) {
+	public HttpRequest createHttpRequest () {
+		return null;
+	}
+	
+	@Override
+	public HttpResult httpRequest (HttpRequest httpRequest) {
 		// FIXME implement this
 		throw new UnsupportedOperationException("Not implemented");
 	}
