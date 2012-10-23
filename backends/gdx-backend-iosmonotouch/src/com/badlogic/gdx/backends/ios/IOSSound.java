@@ -280,4 +280,9 @@ public class IOSSound implements Sound {
 			players[(int)soundId].set_Volume(volume);
 		}
 	}
+
+	@Override
+	public void setPriority (long soundId, int priority) {
+		// FIXME
+	}
 }
