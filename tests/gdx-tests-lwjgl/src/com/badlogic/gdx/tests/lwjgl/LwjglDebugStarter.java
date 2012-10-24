@@ -36,11 +36,12 @@ public class LwjglDebugStarter {
 
 		GdxTest test = new BulletTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 640;
-		config.height = 640;
+		config.width = 800;
+		config.height = 600;
 		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;
 		config.resizable = true;
+		config.fullscreen = true;
 		new LwjglApplication(test, config);
 	}
 }
