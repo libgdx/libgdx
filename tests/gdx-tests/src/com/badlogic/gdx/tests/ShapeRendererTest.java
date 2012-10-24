@@ -29,7 +29,6 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.PerspectiveCamController;
 
 public class ShapeRendererTest extends GdxTest {
-
 	@Override
 	public boolean needsGL20 () {
 		return true;

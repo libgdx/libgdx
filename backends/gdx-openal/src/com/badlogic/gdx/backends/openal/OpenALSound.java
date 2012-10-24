@@ -145,4 +145,9 @@ public class OpenALSound implements Sound {
 	public float duration () {
 		return duration;
 	}
+
+	@Override
+	public void setPriority (long soundId, int priority) {
+		// TODO Auto-generated method stub
+	}
 }

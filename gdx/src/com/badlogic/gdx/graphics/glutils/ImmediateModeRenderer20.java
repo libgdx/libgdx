@@ -177,7 +177,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 		for (int i = 0; i < numTexCoords; i++) {
 			shader += "   v_tex" + i + " = " + ShaderProgram.TEXCOORD_ATTRIBUTE + i + ";\n";
 		}
-
+		shader += "   gl_PointSize = 1.0;\n";
 		shader += "}\n";
 
 		return shader;

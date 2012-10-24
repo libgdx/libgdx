@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.ios;
 
 import cli.MonoTouch.Foundation.ExportAttribute;
@@ -61,9 +62,9 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	private float ppcY = 0;
 	private float density = 1;
 
-	public IOSGraphics(RectangleF bounds, IOSApplication app, IOSInput input) {
+	public IOSGraphics (RectangleF bounds, IOSApplication app, IOSInput input) {
 		super(bounds);
-		
+
 		// setup view and OpenGL
 		width = (int)bounds.get_Width();
 		height = (int)bounds.get_Height();
@@ -81,23 +82,21 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		gl20 = new IOSGLES20();
 		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
-		
+
 		// determine display density and PPI (PPI values via Wikipedia!)
-		if ((UIScreen.get_MainScreen().RespondsToSelector(new Selector("scale:"))) &&
-		    (UIScreen.get_MainScreen().get_Scale() == 2.0f)) {
+		if ((UIScreen.get_MainScreen().RespondsToSelector(new Selector("scale:")))
+			&& (UIScreen.get_MainScreen().get_Scale() == 2.0f)) {
 			// Retina display!
 			density = 2.0f;
-		}
-		else {
+		} else {
 			// regular display
 			density = 1.0f;
 		}
-		int ppi;  
+		int ppi;
 		if (UIDevice.get_CurrentDevice().get_UserInterfaceIdiom().Value == UIUserInterfaceIdiom.Pad) {
 			// iPad
 			ppi = Math.round(density * 132);
-		}
-		else {
+		} else {
 			// iPhone or iPodTouch
 			ppi = Math.round(density * 163);
 		}
@@ -106,40 +105,40 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		ppcX = ppiX / 2.54f;
 		ppcY = ppcY / 2.54f;
 		app.debug("IOSGraphics", "Display: ppi=" + ppi + ", density=" + density);
-		
+
 		// time + FPS
 		lastFrameTime = System.nanoTime();
 		framesStart = lastFrameTime;
 	}
 
 	@Override
-	protected void ConfigureLayer(CAEAGLLayer layer) {
+	protected void ConfigureLayer (CAEAGLLayer layer) {
 		layer.set_Opaque(true);
 		super.ConfigureLayer(layer);
 	}
 
 	@Override
-	protected void OnLoad(EventArgs arg0) {
+	protected void OnLoad (EventArgs arg0) {
 		super.OnLoad(arg0);
 		MakeCurrent();
 		app.listener.create();
 	}
 
 	@Override
-	protected void OnRenderFrame(FrameEventArgs arg0) {
+	protected void OnRenderFrame (FrameEventArgs arg0) {
 		super.OnRenderFrame(arg0);
-		
+
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
-		
+
 		frames++;
 		if (time - framesStart >= 1000000000l) {
 			framesStart = time;
 			fps = frames;
 			frames = 0;
 		}
-		
+
 		MakeCurrent();
 		((IOSInput)Gdx.input).processEvents();
 		app.listener.render();
@@ -147,7 +146,13 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	}
 
 	@Override
-	protected void OnResize(EventArgs event) {
+	protected void OnUpdateFrame (FrameEventArgs frameEventArgs) {
+		super.OnUpdateFrame(frameEventArgs);
+		app.processRunnables();
+	}
+
+	@Override
+	protected void OnResize (EventArgs event) {
 		super.OnResize(event);
 
 		// not used on iOS
@@ -156,73 +161,73 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	}
 
 	@ExportAttribute.Annotation("layerClass")
-	static cli.MonoTouch.ObjCRuntime.Class LayerClass() {
+	static cli.MonoTouch.ObjCRuntime.Class LayerClass () {
 		return iPhoneOSGameView.GetLayerClass();
 	}
 
 	@Override
-	public boolean isGL11Available() {
+	public boolean isGL11Available () {
 		return false;
 	}
 
 	@Override
-	public boolean isGL20Available() {
+	public boolean isGL20Available () {
 		return true;
 	}
 
 	@Override
-	public GLCommon getGLCommon() {
+	public GLCommon getGLCommon () {
 		return gl20;
 	}
 
 	@Override
-	public GL10 getGL10() {
+	public GL10 getGL10 () {
 		return null;
 	}
 
 	@Override
-	public GL11 getGL11() {
+	public GL11 getGL11 () {
 		return null;
 	}
 
 	@Override
-	public GL20 getGL20() {
+	public GL20 getGL20 () {
 		return gl20;
 	}
 
 	@Override
-	public GLU getGLU() {
+	public GLU getGLU () {
 		// FIXME implement this
 		return null;
 	}
 
 	@Override
-	public int getWidth() {
+	public int getWidth () {
 		return width;
 	}
 
 	@Override
-	public int getHeight() {
+	public int getHeight () {
 		return height;
 	}
 
 	@Override
-	public float getDeltaTime() {
+	public float getDeltaTime () {
 		return deltaTime;
 	}
 
 	@Override
-	public float getRawDeltaTime() {
+	public float getRawDeltaTime () {
 		return deltaTime;
 	}
 
 	@Override
-	public int getFramesPerSecond() {
+	public int getFramesPerSecond () {
 		return fps;
 	}
 
 	@Override
-	public GraphicsType getType() {
+	public GraphicsType getType () {
 		return GraphicsType.iOSGL;
 	}
 
@@ -246,31 +251,29 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		return ppcY;
 	}
 
-	/**
-	 * Returns the display density.
+	/** Returns the display density.
 	 * 
-	 * @return 1.0f for non-retina devices, 2.0f for retina devices.
-	 */
+	 * @return 1.0f for non-retina devices, 2.0f for retina devices. */
 	@Override
 	public float getDensity () {
 		return density;
 	}
 
 	@Override
-	public boolean supportsDisplayModeChange() {
+	public boolean supportsDisplayModeChange () {
 		return false;
 	}
 
 	@Override
-	public DisplayMode[] getDisplayModes() {
-		return new DisplayMode[] { getDesktopDisplayMode() };
+	public DisplayMode[] getDisplayModes () {
+		return new DisplayMode[] {getDesktopDisplayMode()};
 	}
 
 	@Override
-	public DisplayMode getDesktopDisplayMode() {
+	public DisplayMode getDesktopDisplayMode () {
 		return new IOSDisplayMode(getWidth(), getHeight(), 60, 0);
 	}
-	
+
 	private static class IOSDisplayMode extends DisplayMode {
 		protected IOSDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
 			super(width, height, refreshRate, bitsPerPixel);
@@ -278,75 +281,75 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	}
 
 	@Override
-	public boolean setDisplayMode(DisplayMode displayMode) {
+	public boolean setDisplayMode (DisplayMode displayMode) {
 		return false;
 	}
 
 	@Override
-	public boolean setDisplayMode(int width, int height, boolean fullscreen) {
+	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
 		return false;
 	}
 
 	@Override
-	public void setTitle(String title) {
+	public void setTitle (String title) {
 	}
 
 	@Override
-	public void setVSync(boolean vsync) {
+	public void setVSync (boolean vsync) {
 	}
 
 	@Override
-	public BufferFormat getBufferFormat() {
+	public BufferFormat getBufferFormat () {
 		return bufferFormat;
 	}
 
 	@Override
-	public boolean supportsExtension(String extension) {
+	public boolean supportsExtension (String extension) {
 		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
 	}
 
 	@Override
-	public void setContinuousRendering(boolean isContinuous) {
+	public void setContinuousRendering (boolean isContinuous) {
 		// FIXME implement this if possible
 	}
 
 	@Override
-	public boolean isContinuousRendering() {
+	public boolean isContinuousRendering () {
 		// FIXME implement this if possible
 		return true;
 	}
 
 	@Override
-	public void requestRendering() {
+	public void requestRendering () {
 		// FIXME implement this if possible
 	}
 
 	@Override
-	public boolean isFullscreen() {
+	public boolean isFullscreen () {
 		return true;
 	}
 
 	@Override
-	public void TouchesBegan(NSSet touches, UIEvent event) {
+	public void TouchesBegan (NSSet touches, UIEvent event) {
 		super.TouchesBegan(touches, event);
 		input.touchDown(touches, event);
 	}
 
 	@Override
-	public void TouchesCancelled(NSSet touches, UIEvent event) {
+	public void TouchesCancelled (NSSet touches, UIEvent event) {
 		super.TouchesCancelled(touches, event);
 		input.touchUp(touches, event);
 	}
 
 	@Override
-	public void TouchesEnded(NSSet touches, UIEvent event) {
+	public void TouchesEnded (NSSet touches, UIEvent event) {
 		super.TouchesEnded(touches, event);
 		input.touchUp(touches, event);
 	}
 
 	@Override
-	public void TouchesMoved(NSSet touches, UIEvent event) {
+	public void TouchesMoved (NSSet touches, UIEvent event) {
 		super.TouchesMoved(touches, event);
 		input.touchMoved(touches, event);
 	}
