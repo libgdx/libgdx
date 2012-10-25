@@ -145,7 +145,7 @@ public class GestureDetector extends InputAdapter {
 		tracker.update(x, y, Gdx.input.getCurrentEventTime());
 
 		// check if we are still tapping.
-		if (inTapSquare && isOutsideOfTapSquare(x, y)) {
+		if (inTapSquare && !isWithinTapSquare(x, y)) {
 			longPressTask.cancel();
 			inTapSquare = false;
 		}
@@ -168,7 +168,7 @@ public class GestureDetector extends InputAdapter {
 		if (pointer > 1) return false;
 
 		// check if we are still tapping.
-		if (inTapSquare && isOutsideOfTapSquare(x, y)) inTapSquare = false;
+		if (inTapSquare && !isWithinTapSquare(x, y)) inTapSquare = false;
 
 		longPressTask.cancel();
 		panning = false;
@@ -226,8 +226,8 @@ public class GestureDetector extends InputAdapter {
 		inTapSquare = false;
 	}
 
-	private boolean isOutsideOfTapSquare (float x, float y) {
-		return Math.abs(x - tapSquareCenterX) >= tapSquareSize || Math.abs(y - tapSquareCenterY) >= tapSquareSize;
+	private boolean isWithinTapSquare (float x, float y) {
+		return Math.abs(x - tapSquareCenterX) < tapSquareSize && Math.abs(y - tapSquareCenterY) < tapSquareSize;
 	}
 
 	public void setTapSquareSize (int tapSquareSize) {
