@@ -34,7 +34,7 @@ public class Pools {
 
 	/** Obtains an object from the {@link #get(Class) pool}. */
 	static public <T> T obtain (Class<T> type) {
-		return (T)get(type).obtain();
+		return get(type).obtain();
 	}
 
 	/** Frees an object from the {@link #get(Class) pool}. */
