@@ -34,7 +34,7 @@ public class Pools {
 
 	/** Obtains an object from the {@link #get(Class) pool}. */
 	static public <T> T obtain (Class<T> type) {
-		return (T)get(type).obtain();
+		return get(type).obtain();
 	}
 
 	/** Frees an object from the {@link #get(Class) pool}. */
@@ -44,18 +44,6 @@ public class Pools {
 		if (pool == null)
 			throw new IllegalArgumentException("No objects have been obtained of type: " + object.getClass().getName());
 		pool.free(object);
-	}
-
-	/** Frees the specified objects from the {@link #get(Class) pool}. */
-	static public void free (Array objects) {
-		if (objects == null) throw new IllegalArgumentException("objects cannot be null.");
-		for (int i = 0, n = objects.size; i < n; i++) {
-			Object object = objects.get(i);
-			ReflectionPool pool = typePools.get(object.getClass());
-			if (pool == null)
-				throw new IllegalArgumentException("No objects have been obtained of type: " + object.getClass().getName());
-			pool.free(object);
-		}
 	}
 
 	private Pools () {
