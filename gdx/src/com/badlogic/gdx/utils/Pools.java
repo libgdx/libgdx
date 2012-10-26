@@ -34,7 +34,7 @@ public class Pools {
 
 	/** Obtains an object from the {@link #get(Class) pool}. */
 	static public <T> T obtain (Class<T> type) {
-		return (T)get(type).obtain();
+		return get(type).obtain();
 	}
 
 	/** Frees an object from the {@link #get(Class) pool}. */
@@ -46,8 +46,8 @@ public class Pools {
 		pool.free(object);
 	}
 
-	/** Frees the specified objects from the {@link #get(Class) pool}. */
-	static public void free (Array objects) {
+	/** Frees the contained objects from the {@link #get(Class) pool}. */
+	static public void freeAll (Array objects) {
 		if (objects == null) throw new IllegalArgumentException("objects cannot be null.");
 		for (int i = 0, n = objects.size; i < n; i++) {
 			Object object = objects.get(i);
