@@ -28,6 +28,7 @@ public class PolygonRegionTest extends GdxTest {
 	Texture texture;
 	OrthographicCamera camera;
 	PolygonRegion region;
+	PolygonRegion region2;
 
 	boolean usePolygonBatch = true;
 
@@ -35,11 +36,13 @@ public class PolygonRegionTest extends GdxTest {
 	public void create () {
 		texture = new Texture(Gdx.files.internal("data/tree.png"));
 		region = new PolygonRegion(new TextureRegion(texture), Gdx.files.internal("data/tree.psh"));
+		
+		// create a region from an arbitrary set of vertices (a triangle in this case)
+		region2 = new PolygonRegion(new TextureRegion(texture), new float[] {0,0,100,100,0,100});
 
-		camera = new OrthographicCamera(480, 320);
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.x = 0;
 		camera.position.y = 0;
-		camera.update();
 
 		batch = new PolygonSpriteBatch();
 		debugRenderer = new PolygonRegionDebugRenderer();
@@ -47,6 +50,13 @@ public class PolygonRegionTest extends GdxTest {
 		Gdx.input.setInputProcessor(this);
 	}
 
+	@Override
+	public void resize (int width, int height) {
+		camera.viewportWidth = width;
+		camera.viewportHeight = height;
+		camera.update();
+	}
+	
 	@Override
 	public void render () {
 		GL10 gl = Gdx.gl10;
@@ -59,12 +69,17 @@ public class PolygonRegionTest extends GdxTest {
 
 		batch.begin();
 
-		batch.draw(region, -128, -128, 256, 256);
+		// draw bot regions side-by-side
+		float width = 256;
+		float x = -width;
+		batch.draw(region, x, -128, 256, 256);
+		batch.draw(region2, x + width + 10, -128, 256, 256);
 
 		batch.end();
 
 		debugRenderer.setProjectionMatrix(camera.combined);
-		debugRenderer.draw(region, -128, -128, 0, 0, 256, 256, 1, 1, 0);
+		debugRenderer.draw(region, x, -128, 0, 0, 256, 256, 1, 1, 0);
+		debugRenderer.draw(region2, x + width + 10, -128, 0, 0, 256, 256, 1, 1, 0);
 	}
 
 	@Override
