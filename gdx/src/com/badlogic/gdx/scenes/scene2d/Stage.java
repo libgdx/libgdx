@@ -464,24 +464,6 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 		touchFocuses.end();
 
-// SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
-// outer:
-// while (true) {
-// for (int i = 0, n = touchFocuses.size; i < n; i++) {
-// TouchFocus focus = touchFocuses.get(i);
-// if (focus.listener == listener && focus.listenerActor == actor) continue;
-// event.setTarget(focus.target);
-// event.setListenerActor(focus.listenerActor);
-// event.setPointer(focus.pointer);
-// event.setButton(focus.button);
-// touchFocuses.removeIndex(i);
-// focus.listener.handle(event);
-// continue outer;
-// // Cannot return TouchFocus to pool, as it may still be in use (eg if cancelTouchFocus is called from touchDragged).
-// }
-// break;
-// }
-
 		Pools.free(event);
 	}
 
