@@ -202,7 +202,7 @@ public class BulletTest extends GdxTest {
 			for (int i = 0; i < entities.size; i++) {
 				final Entity entity = entities.get(i);
 				gl.glPushMatrix();
-				gl.glMultMatrixf(entity.transform.val, 0);
+				gl.glMultMatrixf(entity.worldTransform.transform.val, 0);
 				entity.mesh.render(GL10.GL_TRIANGLES);
 				gl.glPopMatrix();
 			}
@@ -230,46 +230,57 @@ public class BulletTest extends GdxTest {
 		}
 	}
 
-	static class Entity extends btMotionState implements Disposable {
-		public final Matrix4 transform = new Matrix4();
+	static class Entity implements Disposable {
+		public WorldTransform worldTransform;
 		public btRigidBody body;
 		public Mesh mesh;
 
 		public Entity (final Mesh mesh, final btRigidBodyConstructionInfo bodyInfo, final float x, final float y, final float z) {
 			this.mesh = mesh;
-			transform.idt().translate(x, y, z);
+			worldTransform = new WorldTransform();
+			worldTransform.transform.idt().translate(x, y, z);
 			body = new btRigidBody(bodyInfo);
-			body.setMotionState(this);
+			body.setMotionState(worldTransform);
 		}
 
 		public Entity (final ConstructInfo constructInfo, final float x, final float y, final float z) {
 			this(constructInfo.mesh, constructInfo.bodyInfo, x, y, z);
 		}
 
-		/**
-		 * For dynamic and static bodies this method is called by bullet once to get the initial state of the body.
-		 * For kinematic bodies this method is called on every update.
-		 */
-		@Override
-		public void getWorldTransform (final btTransform worldTrans) {
-			worldTrans.setFromOpenGLMatrix(transform.val);
-		}
-
-		/**
-		 * For dynamic bodies this method is called by bullet every update to inform about the new position and rotation.
-		 */
-		@Override
-		public void setWorldTransform (final btTransform worldTrans) {
-			worldTrans.getOpenGLMatrix(transform.val);
-		}
-
 		@Override
 		public void dispose () {
 			// Don't rely on the GC
-			delete();
+			if (worldTransform != null) worldTransform.dispose();
 			if (body != null) body.delete();
 			// And remove the reference
+			worldTransform = null;
 			body = null;
+		}
+		
+		public static class WorldTransform extends btMotionState implements Disposable {
+			public final Matrix4 transform = new Matrix4();
+			
+			/**
+			 * For dynamic and static bodies this method is called by bullet once to get the initial state of the body.
+			 * For kinematic bodies this method is called on every update.
+			 */
+			@Override
+			public void getWorldTransform (final btTransform worldTrans) {
+				worldTrans.setFromOpenGLMatrix(transform.val);
+			}
+
+			/**
+			 * For dynamic bodies this method is called by bullet every update to inform about the new position and rotation.
+			 */
+			@Override
+			public void setWorldTransform (final btTransform worldTrans) {
+				worldTrans.getOpenGLMatrix(transform.val);
+			}
+			
+			@Override
+			public void dispose () {
+				delete();
+			}
 		}
 
 		public static class ConstructInfo implements Disposable {
