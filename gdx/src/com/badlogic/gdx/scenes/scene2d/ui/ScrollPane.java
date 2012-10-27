@@ -488,7 +488,7 @@ public class ScrollPane extends WidgetGroup {
 		else
 			y -= (int)(maxY - visualAmountY);
 
-		if (scrollbarsOnTop && scrollX) {
+		if (!fadeScrollBars && scrollbarsOnTop && scrollX) {
 			float scrollbarHeight = 0;
 			if (style.hScrollKnob != null) scrollbarHeight = style.hScrollKnob.getMinHeight();
 			if (style.hScroll != null) scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
