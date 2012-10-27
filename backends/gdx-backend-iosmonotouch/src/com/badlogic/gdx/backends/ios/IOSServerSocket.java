@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cli.MonoTouch.ObjCRuntime.Arch;
 import cli.System.AsyncCallback;
 import cli.System.IAsyncResult;
 import cli.System.Net.Dns;
@@ -34,33 +35,19 @@ public class IOSServerSocket implements ServerSocket {
 	public int port;
 	private ServerSocketHints hints;
 	
-	/** Our listeners we have created. Will prevent "address already in use" errors if used more than once. */
+	/** Our listeners we have created (1 per port). Will prevent "address already in use" errors if used more than once. */
 	static Map<Integer, TcpListener> listeners = new HashMap<Integer, TcpListener>();
 	/** Our clients that we have accepted or null for none (1 per port). We'll constantly poll in background. */
-	Map<Integer, TcpClient> clients = new HashMap<Integer, TcpClient>();
+	static Map<Integer, TcpClient> clients = new HashMap<Integer, TcpClient>();
 	/** Our accept callbacks instantiated (1 per port). */
-	Map<Integer, AsyncCallback> clientCallbacks = new HashMap<Integer, AsyncCallback>();
-	/** Our accept callback method (so we can do accept timeouts!). */
-	final AsyncCallback.Method clientCallbackMethod = new AsyncCallback.Method() {		
-		@Override
-		public void Invoke (IAsyncResult ar) {
-		    // Get the listener that handles the client request.
-		    TcpListener listener = (TcpListener)ar.get_AsyncState();
-		
-		    // End the operation and display the received data on the console.
-		    clients.put(port, listener.EndAcceptTcpClient(ar));
-		
-		    // Process the connection here. (Add the client to a  server table, read data, etc.)
-		    Gdx.app.debug("IOSServerSocket", "Client connected");
-		}
-	};
+	static Map<Integer, AsyncCallback> clientCallbacks = new HashMap<Integer, AsyncCallback>();
 	
 
 	/** The sockets that are connected. Will need to keep them to dispose. */
 	private List<IOSSocket> sockets = new ArrayList<IOSSocket>();
 	
 	
-	public IOSServerSocket(Protocol protocol, int port, final ServerSocketHints hints) {
+	public IOSServerSocket(Protocol protocol, final int port, final ServerSocketHints hints) {
 		if (protocol == Protocol.TCP) {
 			this.protocol = protocol;
 			this.port = port;
@@ -73,7 +60,10 @@ public class IOSServerSocket implements ServerSocket {
 					// get local IP to connect with
 					IPAddress ipAddress = null;
 					String host = Dns.GetHostName(); 
-					host = host + ".local"; // the ".local" might not be needed on the simulator!?
+					if (cli.MonoTouch.ObjCRuntime.Runtime.Arch.Value == Arch.DEVICE) {
+						// the ".local" is not added on the simulator!
+						host = host + ".local"; 
+					}
 					IPAddress[] ips = Dns.GetHostAddresses(host);
 					for (int i = 0; i < ips.length; i++) {
 						IPAddress ip = ips[i];
@@ -102,7 +92,19 @@ public class IOSServerSocket implements ServerSocket {
 					
 					// our accept listener (runs in background and waits for the next connection)
 					// NOTE: listener.Pending() wasn't working, so we use async callbacks instead
-					AsyncCallback clientCallback = new AsyncCallback(clientCallbackMethod);
+					AsyncCallback clientCallback = new AsyncCallback(new AsyncCallback.Method() {		
+						@Override
+						public void Invoke (IAsyncResult ar) {
+						    // Get the listener that handles the client request.
+						    TcpListener listener = (TcpListener)ar.get_AsyncState();
+						
+						    // End the operation and display the received data on the console.
+						    clients.put(port, listener.EndAcceptTcpClient(ar));
+						
+						    // Process the connection here. (Add the client to a  server table, read data, etc.)
+						    Gdx.app.debug("IOSServerSocket", "Client connected");
+						}
+					});
 					clientCallbacks.put(port, clientCallback);
 					listener.BeginAcceptTcpClient(clientCallback, listener);
 				}

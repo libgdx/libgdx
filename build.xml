@@ -172,7 +172,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-jnigen.jar"/>
 		</path>
-		<ant antfile="../../build-template.xml" dir="extensions/gdx-bullet">
+		<ant antfile="../../build-template-bullet.xml" dir="extensions/gdx-bullet">
 			<property name="distDir" value="${distDir}/extensions/gdx-bullet"/>
 			<property name="jar" value="gdx-bullet"/>
 			<reference refid="classpath"/>
