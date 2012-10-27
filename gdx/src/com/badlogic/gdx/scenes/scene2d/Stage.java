@@ -303,18 +303,13 @@ public class Stage extends InputAdapter implements Disposable {
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {
 			TouchFocus focus = focuses[i];
 			if (focus.pointer != pointer || focus.button != button) continue;
+			if (!touchFocuses.removeValue(focus, true)) continue; // Touch focus already gone.
 			event.setTarget(focus.target);
 			event.setListenerActor(focus.listenerActor);
 			if (focus.listener.handle(event)) event.handle();
-		}
-		touchFocuses.end();
-
-		for (int i = touchFocuses.size - 1; i >= 0; i--) {
-			TouchFocus focus = touchFocuses.get(i);
-			if (focus.pointer != pointer || focus.button != button) continue;
-			touchFocuses.removeIndex(i);
 			Pools.free(focus);
 		}
+		touchFocuses.end();
 
 		boolean handled = event.isHandled();
 		Pools.free(event);
@@ -448,7 +443,8 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setStageX(Integer.MIN_VALUE);
 		event.setStageY(Integer.MIN_VALUE);
 
-		// Cancel all current touch focuses except for the specified listener while allowing for concurrent modification.
+		// Cancel all current touch focuses except for the specified listener, allowing for concurrent modification, and never
+		// cancel the same focus twice.
 		SnapshotArray<TouchFocus> touchFocuses = this.touchFocuses;
 		TouchFocus[] items = touchFocuses.begin();
 		for (int i = 0, n = touchFocuses.size; i < n; i++) {
