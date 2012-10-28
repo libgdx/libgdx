@@ -102,7 +102,7 @@ public class TableList<T> extends Table {
 			final int currentIndex = i;
 			
 			// Create a row
-			final Table row = adapter.setupRow(items[i]);
+			final Table row = adapter.setupRow(items[i], currentIndex);
 			row.setBackground(style.unselected);
 			
 			row.addListener(new ClickListener() {
@@ -121,6 +121,10 @@ public class TableList<T> extends Table {
 						
 						selected = row;
 						row.setBackground(style.selection);
+					} else if(selectedIndex == index) {
+						selected = null;
+						selectedIndex = -1;
+						row.setBackground(style.unselected);
 					}
 				}
 			});
@@ -133,14 +137,6 @@ public class TableList<T> extends Table {
 	public T[] getItems () {
 		return items;
 	}
-
-	public float getPrefWidth () {
-		return 140;
-	}
-
-	public float getPrefHeight () {
-		return 140;
-	}
 	
 	/** Add an adapter which sets up items properly. */
 	public void setAdapter(ListAdapter adapter) {
@@ -150,7 +146,8 @@ public class TableList<T> extends Table {
 	/** Interface for setting the row layout. An object will be provided,
 	 * and it expects a table to be returned. */
 	public interface ListAdapter<T> {
-		public Table setupRow(T item);
+		/** Provides the object to be added, as well as the current index. */
+		public Table setupRow(T item, int index);
 	}
 
 	/** The style for a list, see {@link TableList}.
