@@ -37,6 +37,7 @@ public class TextureAttribute extends MaterialAttribute {
 	public int magFilter;
 	public int uWrap;
 	public int vWrap;
+	public int guid;
 
 	protected TextureAttribute () {
 	}
@@ -48,6 +49,7 @@ public class TextureAttribute extends MaterialAttribute {
 
 	public TextureAttribute (Texture texture, int unit, String name, int minFilter, int magFilter, int uWrap, int vWrap) {
 		super(name);
+		guid = ShaderProgram.getGlobalUniformID(name);
 		this.texture = texture;
 		if (unit > MAX_TEXTURE_UNITS) throw new RuntimeException(MAX_TEXTURE_UNITS + " is max texture units supported");
 		this.unit = unit;
@@ -77,7 +79,7 @@ public class TextureAttribute extends MaterialAttribute {
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, magFilter);
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, uWrap);
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, vWrap);
-		program.setUniformi(name, unit);
+		program.setUniformiByGUID(guid, unit);
 	}
 
 	@Override
@@ -124,5 +126,14 @@ public class TextureAttribute extends MaterialAttribute {
 	@Override
 	public void free () {
 		if (isPooled) pool.free(this);
+	}
+	
+	@Override
+	public boolean equals(final Object obj) {
+		if (obj instanceof TextureAttribute) {
+			final TextureAttribute ta = (TextureAttribute)obj;
+			return texturePortionEquals(ta) && name.equals(ta.name) && (guid == ta.guid);
+		}
+		return super.equals(obj);
 	}
 }
