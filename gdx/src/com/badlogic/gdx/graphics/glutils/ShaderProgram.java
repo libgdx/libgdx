@@ -195,7 +195,7 @@ public class ShaderProgram implements Disposable {
 	/** reference count **/
 	private int refCount = 0;
 
-	/** Constructs a new JOglShaderProgram and immediately compiles it.
+	/** Constructs a new ShaderProgram and immediately compiles it.
 	 * 
 	 * @param vertexShader the vertex shader
 	 * @param fragmentShader the fragment shader */
