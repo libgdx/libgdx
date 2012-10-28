@@ -183,7 +183,7 @@ public class VertexArray implements VertexData {
 		byteBuffer.limit(buffer.limit() * 4);
 		for (int i = 0; i < numAttributes; i++) {
 			VertexAttribute attribute = attributes.get(i);
-			shader.enableVertexAttribute(attribute.alias);
+			shader.enableVertexAttributeByGUID(attribute.guid);
 			int colorType = GL20.GL_FLOAT;
 			boolean normalize = false;
 			if (attribute.usage == Usage.ColorPacked) {
@@ -191,7 +191,7 @@ public class VertexArray implements VertexData {
 				normalize = true;
 			}
 			byteBuffer.position(attribute.offset);
-			shader.setVertexAttribute(attribute.alias, attribute.numComponents, colorType, normalize, attributes.vertexSize, byteBuffer);
+			shader.setVertexAttributeByGUID(attribute.guid, attribute.numComponents, colorType, normalize, attributes.vertexSize, byteBuffer);
 		}
 		isBound = true;
 	}
@@ -204,7 +204,7 @@ public class VertexArray implements VertexData {
 		int numAttributes = attributes.size();
 		for (int i = 0; i < numAttributes; i++) {
 			VertexAttribute attribute = attributes.get(i);
-			shader.disableVertexAttribute(attribute.alias);
+			shader.disableVertexAttributeByGUID(attribute.guid);
 		}
 		isBound = false;
 	}
