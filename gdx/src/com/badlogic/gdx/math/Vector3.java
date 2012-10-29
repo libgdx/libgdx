@@ -46,6 +46,8 @@ public class Vector3 implements Serializable {
 	public final static Vector3 Y = new Vector3(0, 1, 0);
 	public final static Vector3 Z = new Vector3(0, 0, 1);
 	public final static Vector3 Zero = new Vector3(0, 0, 0);
+	
+	private final static Matrix4 tmpMat = new Matrix4();
 
 	/** Constructs a vector at (0,0,0) */
 	public Vector3 () {
@@ -318,13 +320,33 @@ public class Vector3 implements Serializable {
 		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M01] + z * l_mat[Matrix4.M02], x * l_mat[Matrix4.M10] + y
 			* l_mat[Matrix4.M11] + z * l_mat[Matrix4.M12], x * l_mat[Matrix4.M20] + y * l_mat[Matrix4.M21] + z * l_mat[Matrix4.M22]);
 	}
+	
+	/** Rotates this vector by the given angle around the given axis.
+	 * 
+	 * @param axisX the x-component of the axis
+	 * @param axisY the y-component of the axis
+	 * @param axisZ the z-component of the axis
+	 * @return This vector for chaining */
+	public Vector3 rotate (float angle, float axisX, float axisY, float axisZ) {
+		return rotate(tmp.set(axisX, axisY, axisZ), angle);
+	}
+	
+	/** Rotates this vector by the given angle around the given axis.
+	 * 
+	 * @param axis
+	 * @param angle the angle
+	 * @return This vector for chaining */
+	public Vector3 rotate (Vector3 axis, float angle) {
+		tmpMat.setToRotation(axis, angle);
+		return this.mul(tmpMat);
+	}
 
-	/** @return Wether this vector is a unit length vector */
+	/** @return Whether this vector is a unit length vector */
 	public boolean isUnit () {
 		return this.len() == 1;
 	}
 
-	/** @return Wether this vector is a zero vector */
+	/** @return Whether this vector is a zero vector */
 	public boolean isZero () {
 		return x == 0 && y == 0 && z == 0;
 	}

@@ -118,6 +118,21 @@ public abstract class Camera {
 		direction.mul(tmpMat).nor();
 		up.mul(tmpMat).nor();
 	}
+	
+	/** Rotates the direction and up vector of this camera by the given angle around the given axis, with the axis attached to given point. 
+	 * The direction and up vector will not be orthogonalized.
+	 * 
+	 * @param point
+	 * @param axis
+	 * @param angle the angle */
+	public void rotateAround (Vector3 point, Vector3 axis, float angle) {
+		tmpVec.set(point);
+		tmpVec.sub(position);
+		translate(tmpVec);
+		rotate(axis, angle);
+		tmpVec.rotate(axis, angle);
+		translate(tmpVec.mul(-1));
+	}
 
 	/** Moves the camera by the given amount on each axis.
 	 * @param x the displacement on the x-axis
