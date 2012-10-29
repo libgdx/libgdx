@@ -99,10 +99,8 @@ public class ShaderProgram implements Disposable {
 
 	/** the list of currently available shaders **/
 	private final static ObjectMap<Application, List<ShaderProgram>> shaders = new ObjectMap<Application, List<ShaderProgram>>();
-	/** the global list of all attribute names **/ 
-	private final static Array<String> globalAttributeNames = new Array<String>();
-	/** the global list of all uniform names **/
-	private final static Array<String> globalUniformNames = new Array<String>();
+	/** the global list of all parameter names **/ 
+	private final static Array<String> globalParameterNames = new Array<String>();
 	
 	/**
 	 * Returns the global id of the attribute. If the attribute doesn't exists, it's added
@@ -110,11 +108,11 @@ public class ShaderProgram implements Disposable {
 	 * @return The global id of the attribute
 	 */
 	public static int getGlobalAttributeID(final String name) {
-		for (int i = 0; i < globalAttributeNames.size; i++)
-			if (globalAttributeNames.get(i).compareTo(name) == 0)
+		for (int i = 0; i < globalParameterNames.size; i++)
+			if (globalParameterNames.get(i).compareTo(name) == 0)
 				return i;
-		globalAttributeNames.add(name);
-		return globalAttributeNames.size - 1; 
+		globalParameterNames.add(name);
+		return globalParameterNames.size - 1; 
 	}
 	
 	/**
@@ -123,7 +121,7 @@ public class ShaderProgram implements Disposable {
 	 * @return The name of the global attribute
 	 */
 	public static String getGlobalAttributeName(final int id) {
-		return globalAttributeNames.get(id);
+		return globalParameterNames.get(id);
 	}
 	
 	/**
@@ -132,11 +130,11 @@ public class ShaderProgram implements Disposable {
 	 * @return The global id of the uniform
 	 */
 	public static int getGlobalUniformID(final String name) {
-		for (int i = 0; i < globalUniformNames.size; i++)
-			if (globalUniformNames.get(i).compareTo(name) == 0)
+		for (int i = 0; i < globalParameterNames.size; i++)
+			if (globalParameterNames.get(i).compareTo(name) == 0)
 				return i;
-		globalUniformNames.add(name);
-		return globalUniformNames.size - 1; 
+		globalParameterNames.add(name);
+		return globalParameterNames.size - 1; 
 	}
 	
 	/**
@@ -145,7 +143,7 @@ public class ShaderProgram implements Disposable {
 	 * @return The name of the global uniform
 	 */
 	public static String getGlobalUniformName(final int id) {
-		return globalUniformNames.get(id);
+		return globalParameterNames.get(id);
 	}
 	
 	/** the log **/
