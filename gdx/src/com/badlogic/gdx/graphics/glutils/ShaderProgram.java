@@ -317,7 +317,10 @@ public class ShaderProgram implements Disposable {
 	}
 
 	private int fetchAttributeLocation (String name) {
-		return fetchAttributeLocation(getGlobalAttributeID(name));
+		for (int i = 0; i < attributeNames.length; i++)
+			if (attributeNames[i].compareTo(name)==0)
+				return attributes[i].location;
+		return -1;
 	}
 	
 	private int fetchAttributeLocation (int guid) {
@@ -328,7 +331,10 @@ public class ShaderProgram implements Disposable {
 	}
 
 	private int fetchUniformLocation (String name) {
-		return fetchUniformLocation(getGlobalUniformID(name));
+		for (int i = 0; i < uniformNames.length; i++)
+			if (uniformNames[i].compareTo(name)==0)
+				return uniforms[i].location;
+		return -1;
 	}
 	
 	private int fetchUniformLocation (int guid) {
