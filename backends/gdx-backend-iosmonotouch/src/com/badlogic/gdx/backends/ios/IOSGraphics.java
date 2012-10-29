@@ -43,6 +43,9 @@ import com.badlogic.gdx.graphics.Pixmap;
 
 // FIXME add GL 1.x support by ripping Android's classes
 public class IOSGraphics extends iPhoneOSGameView implements Graphics {
+
+	private static final String tag = "IOSGraphics";
+
 	IOSApplication app;
 	IOSInput input;
 	IOSGLES20 gl20;
@@ -68,7 +71,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		// setup view and OpenGL
 		width = (int)bounds.get_Width();
 		height = (int)bounds.get_Height();
-		app.debug("IOSGraphics", bounds.get_Width() + "x" + bounds.get_Height() + ", " + UIScreen.get_MainScreen().get_Scale());
+		app.debug(tag, bounds.get_Width() + "x" + bounds.get_Height() + ", " + UIScreen.get_MainScreen().get_Scale());
 		this.app = app;
 		this.input = input;
 		set_LayerRetainsBacking(false);
@@ -84,14 +87,14 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		Gdx.gl20 = gl20;
 
 		// determine display density and PPI (PPI values via Wikipedia!)
-		if ((UIScreen.get_MainScreen().RespondsToSelector(new Selector("scale:")))
-			&& (UIScreen.get_MainScreen().get_Scale() == 2.0f)) {
-			// Retina display!
-			density = 2.0f;
-		} else {
-			// regular display
-			density = 1.0f;
+		density = 1f;
+
+		if ((UIScreen.get_MainScreen().RespondsToSelector(new Selector("scale")))) {
+			float scale = UIScreen.get_MainScreen().get_Scale();
+			app.debug(tag, "Calculating density, UIScreen.mainScreen.scale: " + scale);
+			if (scale == 2f) density = 2f;
 		}
+
 		int ppi;
 		if (UIDevice.get_CurrentDevice().get_UserInterfaceIdiom().Value == UIUserInterfaceIdiom.Pad) {
 			// iPad
@@ -104,7 +107,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		ppiY = ppi;
 		ppcX = ppiX / 2.54f;
 		ppcY = ppcY / 2.54f;
-		app.debug("IOSGraphics", "Display: ppi=" + ppi + ", density=" + density);
+		app.debug(tag, "Display: ppi=" + ppi + ", density=" + density);
 
 		// time + FPS
 		lastFrameTime = System.nanoTime();
