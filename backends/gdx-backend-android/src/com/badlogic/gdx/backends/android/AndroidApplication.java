@@ -55,38 +55,8 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
  * configuration for the GLSurfaceView.
  * 
  * @author mzechner */
-public class AndroidApplication extends Activity implements Application {
-	static {
-		GdxNativesLoader.load();
-	}
-
-	protected AndroidGraphics graphics;
-	protected AndroidInput input;
-	protected AndroidAudio audio;
-	protected AndroidFiles files;
-	protected AndroidNet net;
-	protected ApplicationListener listener;
-	protected Handler handler;
-	protected boolean firstResume = true;
-	protected final Array<Runnable> runnables = new Array<Runnable>();
-	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected WakeLock wakeLock = null;
-	protected int logLevel = LOG_INFO;
-
-	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
-	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. Uses a default {@link AndroidApplicationConfiguration}.
-	 * 
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available. */
-	public void initialize (ApplicationListener listener, boolean useGL2IfAvailable) {
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = useGL2IfAvailable;
-		initialize(listener, config);
-	}
-
+public class AndroidApplication extends AndroidApplicationBase {
+	
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. If config.useGL20 is set the AndroidApplication will try to create an OpenGL ES 2.0
 	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
@@ -100,7 +70,7 @@ public class AndroidApplication extends Activity implements Application {
 	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
-		input = new AndroidInput(this, graphics.view, config);
+		input = new AndroidInput(this, ((AndroidGraphics)graphics).view, config);
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		net = new AndroidNet(this);
@@ -121,7 +91,7 @@ public class AndroidApplication extends Activity implements Application {
 		}
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-		setContentView(graphics.getView(), createLayoutParams());
+		setContentView(((AndroidGraphics)graphics).getView(), createLayoutParams());
 		createWakeLock(config);
 		hideStatusBar(config);
 	}
@@ -137,21 +107,6 @@ public class AndroidApplication extends Activity implements Application {
 		if (config.useWakelock) {
 			PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
 			wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "libgdx wakelock");
-		}
-	}
-
-	protected void hideStatusBar (AndroidApplicationConfiguration config) {
-		if (!config.hideStatusBar || getVersion() < 11)
-			return;
-
-		View rootView = getWindow().getDecorView();
-
-		try {
-			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			m.invoke(rootView, 0x0);
-			m.invoke(rootView, 0x1);
-		} catch (Exception e) {
-			log("AndroidApplication", "Can't hide status bar", e);
 		}
 	}
 
@@ -188,7 +143,7 @@ public class AndroidApplication extends Activity implements Application {
 	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
-		input = new AndroidInput(this, graphics.view, config);
+		input = new AndroidInput(this, ((AndroidGraphics)graphics).view, config);
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		net = new AndroidNet(this);
@@ -204,7 +159,7 @@ public class AndroidApplication extends Activity implements Application {
 
 		createWakeLock(config);
 		hideStatusBar(config);
-		return graphics.getView();
+		return ((AndroidGraphics)graphics).getView();
 	}
 
 	@Override
@@ -226,12 +181,12 @@ public class AndroidApplication extends Activity implements Application {
 		}
 		graphics.setContinuousRendering(isContinuous);
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onPause();
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
+		if (graphics != null && ((AndroidGraphics)graphics).view != null) {
+			if (((AndroidGraphics)graphics).view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)((AndroidGraphics)graphics).view).onPause();
+			if (((AndroidGraphics)graphics).view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)((AndroidGraphics)graphics).view).onPause();
 		}
 
-		super.onPause();
+		super.forwardOnPause();
 	}
 
 	@Override
@@ -246,89 +201,29 @@ public class AndroidApplication extends Activity implements Application {
 
 		((AndroidInput)getInput()).registerSensorListeners();
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onResume();
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
+		if (graphics != null && ((AndroidGraphics)graphics).view != null) {
+			if (((AndroidGraphics)graphics).view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)((AndroidGraphics)graphics).view).onResume();
+			if (((AndroidGraphics)graphics).view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)((AndroidGraphics)graphics).view).onResume();
 		}
 
 		if (!firstResume) {
 			graphics.resume();
 		} else
 			firstResume = false;
-		super.onResume();
+		super.forwardOnResume();
 	}
 
 	@Override
 	protected void onDestroy () {
-		super.onDestroy();
+		super.forwardOnDestroy();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public Audio getAudio () {
-		return audio;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Files getFiles () {
-		return files;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Graphics getGraphics () {
-		return graphics;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Input getInput () {
-		return input;
-	}
-	
-	@Override
-	public Net getNet () {
-		return net;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public ApplicationType getType () {
-		return ApplicationType.Android;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int getVersion () {
-		return Integer.parseInt(android.os.Build.VERSION.SDK);
-	}
-
-	@Override
-	public long getJavaHeap () {
-		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-	}
-
-	@Override
-	public long getNativeHeap () {
-		return Debug.getNativeHeapAllocatedSize();
-	}
 
 	@Override
 	public Preferences getPreferences (String name) {
 		return new AndroidPreferences(getSharedPreferences(name, Context.MODE_PRIVATE));
 	}
 
-	AndroidClipboard clipboard;
-	
-	@Override
-	public Clipboard getClipboard() {
-		if (clipboard == null) {
-			clipboard = new AndroidClipboard(this);
-		}
-		return clipboard;
-	}
-	
 	@Override
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
@@ -355,42 +250,4 @@ public class AndroidApplication extends Activity implements Application {
 		});
 	}
 
-	@Override
-	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message);
-		}
-	}
-
-	@Override
-	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message, exception);
-		}
-	}
-
-	@Override
-	public void log (String tag, String message) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message);
-	}
-
-	@Override
-	public void log (String tag, String message, Exception exception) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message, exception);
-	}
-
-	@Override
-	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message);
-	}
-
-	@Override
-	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message, exception);
-	}
-
-	@Override
-	public void setLogLevel (int logLevel) {
-		this.logLevel = logLevel;
-	}
 }

@@ -19,7 +19,7 @@ package com.badlogic.gdx.backends.android;
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.android.AndroidInput.TouchEvent;
+import com.badlogic.gdx.backends.android.AndroidInputBase.TouchEvent;
 
 /** Multitouch handler for devices running Android >= 2.0. If device is capable of (fake) multitouch this will report additional
  * pointers.

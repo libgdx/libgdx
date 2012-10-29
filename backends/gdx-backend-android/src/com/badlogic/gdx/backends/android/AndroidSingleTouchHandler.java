@@ -19,7 +19,7 @@ package com.badlogic.gdx.backends.android;
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.android.AndroidInput.TouchEvent;
+import com.badlogic.gdx.backends.android.AndroidInputBase.TouchEvent;
 
 /** Single touch handler for devices running <= 1.6
  * 

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
@@ -50,6 +51,12 @@ public final class AndroidAudio implements Audio {
 		context.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 	}
 
+	public AndroidAudio(Service context){
+      soundPool = new SoundPool(16, AudioManager.STREAM_MUSIC, 100);
+      manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+      // context.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+  }
+	
 	protected void pause () {
 		synchronized (musics) {
 			for (AndroidMusic music : musics) {
