@@ -26,167 +26,116 @@ import com.badlogic.gdx.backends.android.AndroidInputLW;
 import com.badlogic.gdx.backends.android.surfaceview.GLBaseSurfaceViewLW;
 
 public abstract class LibgdxWallpaperService extends WallpaperService {
-
 	private final String TAG = "GDX-LW-Service";
-
 	private LibgdxWallpaperEngine previousEngine;
+	private static boolean DEBUG = false;
 
-	private boolean DEBUG = false;
-
-	public LibgdxWallpaperService() {
+	public LibgdxWallpaperService () {
 		super();
 	}
 
 	@Override
-	public void onCreate() {
-		if (DEBUG)
-			Log.d(TAG, " > LibdgxWallpaperService - onCreate()");
+	public void onCreate () {
+		if (DEBUG) Log.d(TAG, " > LibdgxWallpaperService - onCreate()");
 		super.onCreate();
 	}
 
 	@Override
-	abstract public Engine onCreateEngine();
+	abstract public Engine onCreateEngine ();
 
 	@Override
-	public void onDestroy() {
-		if (DEBUG)
-			Log.d(TAG, " > LibdgxWallpaperService - onDestroy()");
+	public void onDestroy () {
+		if (DEBUG) Log.d(TAG, " > LibdgxWallpaperService - onDestroy()");
 		super.onDestroy();
 	}
 
-	// ~~~~~~~~ MyEngine ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 	public abstract class LibgdxWallpaperEngine extends Engine {
-		
 		protected AndroidApplicationLW app;
-		
 		protected LibgdxWallpaperListener wallpaperListener;
-		
 		protected GLBaseSurfaceViewLW view;
-		
-		abstract protected void initialize(AndroidApplicationLW app);
 
-		public LibgdxWallpaperEngine(
-				final LibgdxWallpaperService libgdxWallpaperService) {
+		abstract protected void initialize (AndroidApplicationLW app);
+
+		public LibgdxWallpaperEngine (final LibgdxWallpaperService libgdxWallpaperService) {
 			super();
 
-			if (DEBUG)
-				Log.d(TAG, " > MyEngine() " + hashCode());
-
+			if (DEBUG) Log.d(TAG, " > MyEngine() " + hashCode());
 			app = new AndroidApplicationLW(libgdxWallpaperService, this);
-			
 			initialize(app);
-
-			view = ((AndroidGraphicsLW) app.getGraphics()).getView();
-
+			view = ((AndroidGraphicsLW)app.getGraphics()).getView();
 		}
-		
-		public void setWallpaperListener(LibgdxWallpaperListener wallpaperListener) {
-			this.wallpaperListener = wallpaperListener ;
+
+		public void setWallpaperListener (LibgdxWallpaperListener wallpaperListener) {
+			this.wallpaperListener = wallpaperListener;
 		}
 
 		@Override
-		public Bundle onCommand(final String pAction, final int pX,
-				final int pY, final int pZ, final Bundle pExtras,
-				final boolean pResultRequested) {
+		public Bundle onCommand (final String pAction, final int pX, final int pY, final int pZ, final Bundle pExtras,
+			final boolean pResultRequested) {
 
 			if (DEBUG)
-				Log.d(TAG, " > onCommand(" + pAction + " " + pX + " " + pY
-						+ " " + pZ + " " + pExtras + " " + pResultRequested
-						+ ")");
+				Log.d(TAG, " > onCommand(" + pAction + " " + pX + " " + pY + " " + pZ + " " + pExtras + " " + pResultRequested + ")");
 
 			if (pAction.equals(WallpaperManager.COMMAND_TAP)) {
-				((AndroidInputLW) app.getInput()).onTap(pX, pY);
+				((AndroidInputLW)app.getInput()).onTap(pX, pY);
 			} else if (pAction.equals(WallpaperManager.COMMAND_DROP)) {
-				((AndroidInputLW) app.getInput()).onDrop(pX, pY);
+				((AndroidInputLW)app.getInput()).onDrop(pX, pY);
 			}
-
-			return super.onCommand(pAction, pX, pY, pZ, pExtras,
-					pResultRequested);
+			return super.onCommand(pAction, pX, pY, pZ, pExtras, pResultRequested);
 		}
 
 		@Override
-		public void onCreate(final SurfaceHolder surfaceHolder) {
-
-			if (DEBUG)
-				Log.d(TAG, " > onCreate() " + hashCode());
-
+		public void onCreate (final SurfaceHolder surfaceHolder) {
+			if (DEBUG) Log.d(TAG, " > onCreate() " + hashCode());
 			super.onCreate(surfaceHolder);
-
 			if (previousEngine != null) {
 				previousEngine.view.onPause();
 			}
 			previousEngine = this;
-
 			wallpaperListener.setIsPreview(this.isPreview());
 		}
 
 		@Override
-		public void onDestroy() {
-
-			if (DEBUG)
-				Log.d(TAG, " > onDestroy() " + hashCode());
-
+		public void onDestroy () {
+			if (DEBUG) Log.d(TAG, " > onDestroy() " + hashCode());
 			view.onDestroy();
 			app.onDestroy();
 			super.onDestroy();
 		}
 
-		public void onPause() {
-
-			if (DEBUG)
-				Log.d(TAG, " > onPause() " + hashCode());
-
+		public void onPause () {
+			if (DEBUG) Log.d(TAG, " > onPause() " + hashCode());
 			app.onPause();
 			view.onPause();
-
 		}
 
-		public void onResume() {
-
-			if (DEBUG)
-				Log.d(TAG, " > onResume() " + hashCode());
-
+		public void onResume () {
+			if (DEBUG) Log.d(TAG, " > onResume() " + hashCode());
 			app.onResume();
 			view.onResume();
 		}
 
 		@Override
-		public void onSurfaceChanged(final SurfaceHolder holder,
-				final int format, final int width, final int height) {
-
-			if (DEBUG)
-				Log.d(TAG, " > onSurfaceChanged() " + isPreview() + " "
-						+ hashCode());
-
+		public void onSurfaceChanged (final SurfaceHolder holder, final int format, final int width, final int height) {
+			if (DEBUG) Log.d(TAG, " > onSurfaceChanged() " + isPreview() + " " + hashCode());
 			super.onSurfaceChanged(holder, format, width, height);
 		}
 
 		@Override
-		public void onSurfaceCreated(final SurfaceHolder holder) {
-
-			if (DEBUG)
-				Log.d(TAG, " > onSurfaceCreated() " + hashCode());
-
+		public void onSurfaceCreated (final SurfaceHolder holder) {
+			if (DEBUG) Log.d(TAG, " > onSurfaceCreated() " + hashCode());
 			super.onSurfaceCreated(holder);
 		}
 
 		@Override
-		public void onSurfaceDestroyed(final SurfaceHolder holder) {
-
-			if (DEBUG)
-				Log.d(TAG, " > onSurfaceDestroyed() " + hashCode());
-
+		public void onSurfaceDestroyed (final SurfaceHolder holder) {
+			if (DEBUG) Log.d(TAG, " > onSurfaceDestroyed() " + hashCode());
 			super.onSurfaceDestroyed(holder);
 		}
 
 		@Override
-		public void onVisibilityChanged(final boolean visible) {
-
-			if (DEBUG)
-				Log.d(TAG, " > onVisibilityChanged(" + visible + ") "
-						+ hashCode());
-
+		public void onVisibilityChanged (final boolean visible) {
+			if (DEBUG) Log.d(TAG, " > onVisibilityChanged(" + visible + ") " + hashCode());
 			if (visible) {
 				onResume();
 			} else {
@@ -194,27 +143,18 @@ public abstract class LibgdxWallpaperService extends WallpaperService {
 			}
 
 			super.onVisibilityChanged(visible);
-
 		}
 
 		@Override
-		public void onOffsetsChanged(float xOffset, float yOffset,
-				float xOffsetStep, float yOffsetStep, int xPixelOffset,
-				int yPixelOffset) {
+		public void onOffsetsChanged (float xOffset, float yOffset, float xOffsetStep, float yOffsetStep, int xPixelOffset,
+			int yPixelOffset) {
 
 			if (DEBUG)
-				Log.d(TAG, " > onVisibilityChanged(" + xOffset + " " + yOffset
-						+ " " + xOffsetStep + " " + yOffsetStep + " "
-						+ xPixelOffset + " " + yPixelOffset + ") " + hashCode());
+				Log.d(TAG, " > onVisibilityChanged(" + xOffset + " " + yOffset + " " + xOffsetStep + " " + yOffsetStep + " "
+					+ xPixelOffset + " " + yPixelOffset + ") " + hashCode());
 
-			wallpaperListener.offsetChange(xOffset, yOffset, xOffsetStep,
-					yOffsetStep, xPixelOffset, yPixelOffset);
-
-			super.onOffsetsChanged(xOffset, yOffset, xOffsetStep, yOffsetStep,
-					xPixelOffset, yPixelOffset);
-
+			wallpaperListener.offsetChange(xOffset, yOffset, xOffsetStep, yOffsetStep, xPixelOffset, yPixelOffset);
+			super.onOffsetsChanged(xOffset, yOffset, xOffsetStep, yOffsetStep, xPixelOffset, yPixelOffset);
 		}
-
 	}
-
 }

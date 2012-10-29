@@ -21,6 +21,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
@@ -28,6 +29,7 @@ import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
 import android.service.wallpaper.WallpaperService.Engine;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout.LayoutParams;
 
 import com.badlogic.gdx.Application;
@@ -86,7 +88,6 @@ public class AndroidApplicationLW extends AndroidApplicationBase {
 		audio = new AndroidAudio(this.getService());
 		files = new AndroidFiles(this.getService().getAssets());
 		this.listener = listener;
-		this.handler = new Handler();
 		
 		Gdx.app = this;
 		Gdx.input = this.getInput();
@@ -156,11 +157,9 @@ public class AndroidApplicationLW extends AndroidApplicationBase {
 		}
 	}
 
-    @Override
-    protected LayoutParams createLayoutParams()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
+	@Override
+	public void exit () {
+		// TODO Auto-generated method stub
+		
+	}
 }

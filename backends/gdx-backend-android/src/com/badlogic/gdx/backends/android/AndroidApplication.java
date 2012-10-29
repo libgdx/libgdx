@@ -56,6 +56,9 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
  * 
  * @author mzechner */
 public class AndroidApplication extends AndroidApplicationBase {
+	private WakeLock wakeLock;
+	private Handler handler;
+	
 	
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. If config.useGL20 is set the AndroidApplication will try to create an OpenGL ES 2.0
@@ -161,6 +164,21 @@ public class AndroidApplication extends AndroidApplicationBase {
 		hideStatusBar(config);
 		return ((AndroidGraphics)graphics).getView();
 	}
+	
+	protected void hideStatusBar (AndroidApplicationConfiguration config) {
+		if (!config.hideStatusBar || getVersion() < 11)
+			return;
+
+		View rootView = getWindow().getDecorView();
+
+		try {
+			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
+			m.invoke(rootView, 0x0);
+			m.invoke(rootView, 0x1);
+		} catch (Exception e) {
+			log("AndroidApplication", "Can't hide status bar", e);
+		}
+	}
 
 	@Override
 	protected void onPause () {
@@ -186,7 +204,7 @@ public class AndroidApplication extends AndroidApplicationBase {
 			if (((AndroidGraphics)graphics).view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)((AndroidGraphics)graphics).view).onPause();
 		}
 
-		super.forwardOnPause();
+		super.onPause();
 	}
 
 	@Override
@@ -210,18 +228,7 @@ public class AndroidApplication extends AndroidApplicationBase {
 			graphics.resume();
 		} else
 			firstResume = false;
-		super.forwardOnResume();
-	}
-
-	@Override
-	protected void onDestroy () {
-		super.forwardOnDestroy();
-	}
-
-
-	@Override
-	public Preferences getPreferences (String name) {
-		return new AndroidPreferences(getSharedPreferences(name, Context.MODE_PRIVATE));
+		super.onResume();
 	}
 
 	@Override
@@ -249,5 +256,4 @@ public class AndroidApplication extends AndroidApplicationBase {
 			}
 		});
 	}
-
 }

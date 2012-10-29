@@ -66,11 +66,9 @@ public abstract class AndroidApplicationBase extends Activity implements Applica
 	protected AndroidFiles files;
 	protected AndroidNet net;
 	protected ApplicationListener listener;
-	protected Handler handler;
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected WakeLock wakeLock = null;
 	protected int logLevel = LOG_INFO;
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
@@ -98,85 +96,7 @@ public abstract class AndroidApplicationBase extends Activity implements Applica
 	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
 	 *           etc.). */
 	public abstract void initialize (ApplicationListener listener, AndroidApplicationConfiguration config);
-	
-	protected FrameLayout.LayoutParams createLayoutParams () {
-		return null;
-	}
 
-	protected void createWakeLock (AndroidApplicationConfiguration config) {
-	}
-
-	protected void hideStatusBar (AndroidApplicationConfiguration config) {
-		if (!config.hideStatusBar || getVersion() < 11)
-			return;
-
-		View rootView = getWindow().getDecorView();
-
-		try {
-			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			m.invoke(rootView, 0x0);
-			m.invoke(rootView, 0x1);
-		} catch (Exception e) {
-			log("AndroidApplication", "Can't hide status bar", e);
-		}
-	}
-
-	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
-	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. Uses a default {@link AndroidApplicationConfiguration}.
-	 * <p/>
-	 * Note: you have to add the returned view to your layout!
-	 * 
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
-	 * @return the GLSurfaceView of the application */
-	public View initializeForView (ApplicationListener listener, boolean useGL2IfAvailable) {
-		return null;
-	}
-
-	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If config.useGL20 is set the AndroidApplication will try to create an OpenGL ES 2.0
-	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. You can configure other aspects of the application with the rest of the fields in
-	 * the {@link AndroidApplicationConfiguration} instance.
-	 * <p/>
-	 * Note: you have to add the returned view to your layout!
-	 * 
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
-	 *           etc.).
-	 * @return the GLSurfaceView of the application */
-	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
-		return null;
-	}
-
-	@Override
-	protected abstract void onPause ();
-	
-   protected void forwardOnPause(){
-      super.onPause();
-  }
-	
-	@Override
-	protected abstract void onResume ();
-	
-   protected void forwardOnResume(){
-      super.onResume();
-   }
-
-
-	@Override
-	protected void onDestroy () {
-		super.onDestroy();
-	}
-
-   protected void forwardOnDestroy(){
-      super.onDestroy();
-  }
-	
 	/** {@inheritDoc} */
 	@Override
 	public Audio getAudio () {
@@ -243,17 +163,6 @@ public abstract class AndroidApplicationBase extends Activity implements Applica
 		return clipboard;
 	}
 	
-	@Override
-	public abstract void postRunnable (Runnable runnable);
-
-	@Override
-	public void onConfigurationChanged (Configuration config) {
-	}
-
-	@Override
-	public void exit () {
-	}
-
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
