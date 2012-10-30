@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.Future;
 
+import com.badlogic.gdx.Net.HttpMethod;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
@@ -26,160 +28,130 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * Provides methods to perform networking operations, such as simple HTTP get and post
- * requests, and TCP server/client socket communication.</p> 
+/** Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
+ * communication.</p>
  * 
- * To perform an HTTP Get or Post request, invoke the methods {@link #httpRequest(HttpRequest)}
- * and {@link #httpPost(String, String, byte[])}. Both methods return a {@link HttpResult} which
- * provides methods to query the progress and data returned by the operations. The {@link HttpResult}
- * works like a {@link Future} in that the operation is executed asynchronously, while the API client
- * can use the {@link HttpResult} to poll for the status and result of the operation.</p>
+ * To perform an HTTP Get or Post request, invoke the methods {@link #processHttpRequest(HttpRequest)} and
+ * {@link #httpPost(String, String, byte[])}. Both methods return a {@link HttpResult} which provides methods to query the
+ * progress and data returned by the operations. The {@link HttpResult} works like a {@link Future} in that the operation is
+ * executed asynchronously, while the API client can use the {@link HttpResult} to poll for the status and result of the
+ * operation.</p>
  * 
- * To create a TCP client socket to communicate with a remote TCP server, invoke the {@link #newClientSocket(Protocol, String, int, SocketHints)}
- * method. The returned {@link Socket} offers an {@link InputStream} and {@link OutputStream} to
- * communicate with the end point.</p>
+ * To create a TCP client socket to communicate with a remote TCP server, invoke the
+ * {@link #newClientSocket(Protocol, String, int, SocketHints)} method. The returned {@link Socket} offers an {@link InputStream}
+ * and {@link OutputStream} to communicate with the end point.</p>
  * 
- * To create a TCP server socket that waits for incoming connections, invoke the {@link #newServerSocket(Protocol, int, ServerSocketHints)}
- * method. The returned {@link ServerSocket} offers an {@link ServerSocket#accept(SocketHints options)} method
- * that waits for an incoming connection.
+ * To create a TCP server socket that waits for incoming connections, invoke the
+ * {@link #newServerSocket(Protocol, int, ServerSocketHints)} method. The returned {@link ServerSocket} offers an
+ * {@link ServerSocket#accept(SocketHints options)} method that waits for an incoming connection.
  * 
  * @author mzechner
- * @author noblemaster
- */
+ * @author noblemaster */
 public interface Net {
-	
-	/**
-	 * {@link Future} like interface used with the HTTP get
-	 * and post methods. Allows to cancel the operation, 
-	 * get it's current progress and return the result
-	 * as a byte array or string. Implementations must be thread-safe.
-	 * 
-	 * @author mzechner
-	 */
-	public interface HttpResult {
-		/**
-		 * @return true in case the operation was completed normally or abnormally (cancelled, exception). 
-		 */
-		public boolean isDone();
-		
-		/**
-		 * @return true in case the operation was cancelled or terminated abnormally, e.g. due to an exception.
-		 */
-		public boolean isAborted();
-		
-		/**
-		 * @return an estimate of the progress as a number between 0.0 and 1.0. This estimate might be unreliable.
-		 */
-		public float getProgress();
-		
-		/**
-		 * Cancels the operation. If the operation was already
-		 * canceled or completed, this method has no effect. The
-		 * operation will not block. This method may or may not 
-		 * work depending on the implementation of the operation.
-		 */
-		public void cancel();
-		
-		/**
-		 * @param timeOut the number of milliseconds to wait before giving up, 0 to block until the operation is done
-		 * @return the result as a byte array or null in case of a timeout or if the operation was canceled/terminated abnormally.
-		 */
-		public byte[] getResult(int timeOut);
-		
-		/**
-		 * @param timeOut the number of milliseconds to wait before giving up, 0 to block until the operation is done
-		 * @return the result as a string or null in case of a timeout or if the operation was canceled/terminated abnormally.
-		 */
-		public String getResultAsString(int timeOut);
-		
-		/**
-		 * Returns the status code of the HTTP request in case the logic could depend on the result.
-		 */
-		public int getStatusCode();
-		
-	}
-	
-	public static enum HttpMethod { Get, Post }
 
+	/** {@link Future} like interface used with the HTTP get and post methods. Allows to cancel the operation, get it's current
+	 * progress and return the result as a byte array or string. Implementations must be thread-safe.
+	 * 
+	 * @author mzechner */
+	public interface HttpResult {
+		/** @return true in case the operation was completed normally or abnormally (cancelled, exception). */
+		public boolean isDone ();
+
+		/** @return true in case the operation was cancelled or terminated abnormally, e.g. due to an exception. */
+		public boolean isAborted ();
+
+		/** @return an estimate of the progress as a number between 0.0 and 1.0. This estimate might be unreliable. */
+		public float getProgress ();
+
+		/** Cancels the operation. If the operation was already canceled or completed, this method has no effect. The operation will
+		 * not block. This method may or may not work depending on the implementation of the operation. */
+		public void cancel ();
+
+		/** @param timeOut the number of milliseconds to wait before giving up, 0 to block until the operation is done
+		 * @return the result as a byte array or null in case of a timeout or if the operation was canceled/terminated abnormally. */
+		public byte[] getResult (int timeOut);
+
+		/** @param timeOut the number of milliseconds to wait before giving up, 0 to block until the operation is done
+		 * @return the result as a string or null in case of a timeout or if the operation was canceled/terminated abnormally. */
+		public String getResultAsString (int timeOut);
+
+		/** Returns the status code of the HTTP request in case the logic could depend on the result. */
+		public int getStatusCode ();
+
+	}
+
+	public static enum HttpMethod {
+		Get, Post
+	}
+
+	/** Abstracts the concept of different types of HTTP Request, create it using {@link Net}:
+	 * 
+	 * <pre>
+	 * HttpRequest httpGet = Gdx.net.createHttpRequest (HttpMethod.Get);
+	 * httpGet.setUrl("http://somewhere.net");
+	 * ...
+	 * HttpResponse httpResponse = Gdx.net.processHttpRequest (httpGet);
+	 * </pre> */
 	public static interface HttpRequest {
 
-		void setUrl(String url);
-		
-		void setHeader(String name, String value);
-		
-		void setMethod(HttpMethod httpMethod);
-		
-		void setContentType(String contentType);
-		
-		void setContent(byte[] content);
+		/** Sets the URL of the HTTP request.
+		 * @param url The URL to set. */
+		void setUrl (String url);
+
+		/** Adds a header to this HTTP request. Headers definition could be found at <a
+		 * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP/1.1: Header Field Definitions</a> document.
+		 * @param name the name of the header.
+		 * @param value the value of the header. */
+		void setHeader (String name, String value);
+
+		/** In case the HttpRequest method is POST you can set the content to send with it.
+		 * @param content The content to send with the HTTP POST. */
+		void setContent (byte[] content);
+
+		/** Returns the HTTP method of the HttpRequest. */
+		HttpMethod getMethod ();
 
 	}
-	
-	public HttpRequest createHttpRequest();
-	
-	/**
-	 * Performs an HTTP Get request using the given URL and parameters. The
-	 * parameters are passed in as an array where two subsequent entries are
-	 * a key/value pair. The keys and values are URL encoded automatically.
-	 * @param httpRequest TODO
-	 * 
-	 * @return the {@link HttpResult}
-	 */
-	public HttpResult httpRequest(HttpRequest httpRequest);
-	
-	/**
-	 * Performs an HTTP Put request using the given URL and content. A
-	 * <a href="http://en.wikipedia.org/wiki/MIME_type">MIME-type</a> has
-	 * to be given for the content.
-	 * 
-	 * @param url the URL to perform the Post request on
-	 * @param contentType the MIME type of the content send to the server
-	 * @param content the content
-	 * @return the {@link HttpResult}
-	 */
-	public HttpResult httpPost(String url, String contentType, byte[] content);
-	
-	/**
-	 * Protocol used by {@link Net#newServerSocket(Protocol, int, ServerSocketHints)} and
+
+	/** Returns a new {@link HttpRequest} for the given HTTP method.
+	 * @param httpMethod The {@link HttpMethod} to use to create the HTTP request.
+	 * @return a new instance of a {@link HttpRequest} for the given HTTP method. */
+	public HttpRequest createHttpRequest (HttpMethod httpMethod);
+
+	/** Process the specified HttpRequest.
+	 * @param httpRequest The {@link HttpRequest} to be performed.
+	 * @return the {@link HttpResult} */
+	public HttpResult processHttpRequest (HttpRequest httpRequest);
+
+	/** Protocol used by {@link Net#newServerSocket(Protocol, int, ServerSocketHints)} and
 	 * {@link Net#newClientSocket(Protocol, String, int, SocketHints)}.
-	 * @author mzechner
-	 *
-	 */
+	 * @author mzechner */
 	public enum Protocol {
 		TCP
 	}
-	
-	/**
-	 * Creates a new server socket on the given port, using the given {@link Protocol}, 
-	 * waiting for incoming connections.
+
+	/** Creates a new server socket on the given port, using the given {@link Protocol}, waiting for incoming connections.
 	 * 
 	 * @param port the port to listen on
-	 * @param hints additional {@link ServerSocketHints} used to create the socket. Input null to
-	 *        use the default setting provided by the system.
+	 * @param hints additional {@link ServerSocketHints} used to create the socket. Input null to use the default setting provided
+	 *           by the system.
 	 * @return the {@link ServerSocket}
-	 * @throws GdxRuntimeException in case the socket couldn't be opened
-	 */
-	public ServerSocket newServerSocket(Protocol protocol, int port, ServerSocketHints hints);
-	
-	/**
-	 * Creates a new TCP client socket that connects to the given host and port. 
+	 * @throws GdxRuntimeException in case the socket couldn't be opened */
+	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints);
+
+	/** Creates a new TCP client socket that connects to the given host and port.
 	 * 
 	 * @param host the host address
 	 * @param port the port
-	 * @param hints additional {@link SocketHints} used to create the socket. Input null to
-	 *        use the default setting provided by the system.
-	 * @return GdxRuntimeException in case the socket couldn't be opened
-	 */
-	public Socket newClientSocket(Protocol protocol, String host, int port, SocketHints hints);
-	
-	/**
-	 * Launches the default browser to display a URI. If the default browser is not able
-	 * to handle the specified URI, the application registered for handling URIs of the
-	 * specified type is invoked. The application is determined from the protocol
+	 * @param hints additional {@link SocketHints} used to create the socket. Input null to use the default setting provided by the
+	 *           system.
+	 * @return GdxRuntimeException in case the socket couldn't be opened */
+	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints);
+
+	/** Launches the default browser to display a URI. If the default browser is not able to handle the specified URI, the
+	 * application registered for handling URIs of the specified type is invoked. The application is determined from the protocol
 	 * and path of the URI.
 	 * 
-	 * @param URI the URI to be opened.
-	 */
-	public void openURI(String URI);
+	 * @param URI the URI to be opened. */
+	public void openURI (String URI);
 }

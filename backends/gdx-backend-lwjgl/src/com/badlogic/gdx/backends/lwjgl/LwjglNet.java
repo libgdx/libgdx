@@ -20,6 +20,7 @@ import java.awt.Desktop;
 import java.net.URI;
 
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.HttpMethod;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
@@ -33,17 +34,12 @@ public class LwjglNet implements Net {
 	// If you make changes here, make changes in the other backend as well.
 
 	@Override
-	public HttpRequest createHttpRequest () {
+	public HttpRequest createHttpRequest (HttpMethod httpMethod) {
 		return null;
 	}
 
 	@Override
-	public HttpResult httpRequest (HttpRequest httpRequest) {
-		throw new UnsupportedOperationException("Not implemented");
-	}
-
-	@Override
-	public HttpResult httpPost (String url, String contentType, byte[] content) {
+	public HttpResult processHttpRequest (HttpRequest httpRequest) {
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
