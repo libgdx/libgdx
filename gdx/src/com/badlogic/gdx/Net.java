@@ -31,11 +31,11 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
  * communication.</p>
  * 
- * To perform an HTTP Get or Post request, invoke the methods {@link #processHttpRequest(HttpRequest)} and
- * {@link #httpPost(String, String, byte[])}. Both methods return a {@link HttpResult} which provides methods to query the
- * progress and data returned by the operations. The {@link HttpResult} works like a {@link Future} in that the operation is
- * executed asynchronously, while the API client can use the {@link HttpResult} to poll for the status and result of the
- * operation.</p>
+ * To perform an HTTP GET or POST request first create a {@link HttpRequest} using {@link #createHttpRequest(HttpMethod)}
+ * specifying the corresponding {@link HttpMethod} you want to use and then invoke the method
+ * {@link #processHttpRequest(HttpRequest)}. This will return a {@link HttpResult} which provides methods to query the progress
+ * and data returned by the operations. The {@link HttpResult} works like a {@link Future} in that the operation is executed
+ * asynchronously, while the API client can use the {@link HttpResult} to poll for the status and result of the operation.</p>
  * 
  * To create a TCP client socket to communicate with a remote TCP server, invoke the
  * {@link #newClientSocket(Protocol, String, int, SocketHints)} method. The returned {@link Socket} offers an {@link InputStream}
@@ -80,6 +80,7 @@ public interface Net {
 
 	}
 
+	/** The HTTP method to use with a HTTP Request. */
 	public static enum HttpMethod {
 		Get, Post
 	}
