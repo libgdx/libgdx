@@ -247,22 +247,12 @@ public class Sprite extends TextureRegion {
 	}
 
 	public void setColor (Color tint) {
-		float color = tint.toFloatBits();
-		float[] vertices = this.vertices;
-		vertices[C1] = color;
-		vertices[C2] = color;
-		vertices[C3] = color;
-		vertices[C4] = color;
+		setColor(tint.toFloatBits());
 	}
 
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		float color = NumberUtils.intToFloatColor(intBits);
-		float[] vertices = this.vertices;
-		vertices[C1] = color;
-		vertices[C2] = color;
-		vertices[C3] = color;
-		vertices[C4] = color;
+		setColor(NumberUtils.intToFloatColor(intBits));
 	}
 
 	public void setColor (float color) {
