@@ -53,7 +53,7 @@ public class ScrollPane extends WidgetGroup {
 	private final Rectangle widgetAreaBounds = new Rectangle();
 	private final Rectangle widgetCullingArea = new Rectangle();
 	private final Rectangle scissorBounds = new Rectangle();
-	private ActorGestureListener gestureListener;
+	private ActorGestureListener flickScrollListener;
 
 	boolean scrollX, scrollY;
 	float amountX, amountY;
@@ -64,6 +64,7 @@ public class ScrollPane extends WidgetGroup {
 	float areaWidth, areaHeight;
 	private boolean fadeScrollBars = true, smoothScrolling = true;
 	float fadeAlpha, fadeAlphaSeconds = 1, fadeDelay, fadeDelaySeconds = 1;
+	boolean cancelTouchFocus = true;
 
 	boolean flickScroll = true;
 	float velocityX, velocityY;
@@ -178,7 +179,7 @@ public class ScrollPane extends WidgetGroup {
 			}
 		});
 
-		gestureListener = new ActorGestureListener() {
+		flickScrollListener = new ActorGestureListener() {
 			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
 				resetFade();
 				amountX -= deltaX;
@@ -208,7 +209,7 @@ public class ScrollPane extends WidgetGroup {
 				return false;
 			}
 		};
-		addListener(gestureListener);
+		addListener(flickScrollListener);
 
 		addListener(new InputListener() {
 			public boolean scrolled (InputEvent event, float x, float y, int amount) {
@@ -228,8 +229,9 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	void cancelTouchFocusedChild (InputEvent event) {
+		if (!cancelTouchFocus) return;
 		Stage stage = getStage();
-		if (stage != null) stage.cancelTouchFocus(gestureListener, this);
+		if (stage != null) stage.cancelTouchFocus(flickScrollListener, this);
 	}
 
 	void clamp () {
@@ -255,7 +257,7 @@ public class ScrollPane extends WidgetGroup {
 	public void act (float delta) {
 		super.act(delta);
 
-		boolean panning = gestureListener.getGestureDetector().isPanning();
+		boolean panning = flickScrollListener.getGestureDetector().isPanning();
 
 		if (fadeAlpha > 0 && fadeScrollBars && !panning && !touchScrollH && !touchScrollV) {
 			fadeDelay -= fadeDelaySeconds * delta;
@@ -664,9 +666,9 @@ public class ScrollPane extends WidgetGroup {
 		if (this.flickScroll == flickScroll) return;
 		this.flickScroll = flickScroll;
 		if (flickScroll)
-			addListener(gestureListener);
+			addListener(flickScrollListener);
 		else
-			removeListener(gestureListener);
+			removeListener(flickScrollListener);
 		invalidate();
 	}
 
@@ -735,7 +737,7 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public boolean isPanning () {
-		return gestureListener.getGestureDetector().isPanning();
+		return flickScrollListener.getGestureDetector().isPanning();
 	}
 
 	public boolean isFlinging () {
@@ -818,6 +820,12 @@ public class ScrollPane extends WidgetGroup {
 	public void setScrollbarsOnTop (boolean scrollbarsOnTop) {
 		this.scrollbarsOnTop = scrollbarsOnTop;
 		invalidate();
+	}
+
+	/** When true (default), the {@link Stage#cancelTouchFocus()} touch focus} is cancelled when flick scrolling begins. This causes
+	 * widgets inside the scrollpane that have received touchDown to receive touchUp when flick scrolling begins. */
+	public void setCancelTouchFocus (boolean cancelTouchFocus) {
+		this.cancelTouchFocus = cancelTouchFocus;
 	}
 
 	/** The style for a scroll pane, see {@link ScrollPane}.
