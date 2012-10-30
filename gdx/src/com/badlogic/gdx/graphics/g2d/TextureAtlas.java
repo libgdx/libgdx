@@ -471,7 +471,7 @@ public class TextureAtlas implements Disposable {
 		/** The height of the image, after whitespace was removed for packing. */
 		public int packedHeight;
 
-		/** The width of the image, before whitespace was removed for packing. */
+		/** The width of the image, before whitespace was removed and rotation was applied for packing. */
 		public int originalWidth;
 
 		/** The height of the image, before whitespace was removed for packing. */
@@ -506,12 +506,23 @@ public class TextureAtlas implements Disposable {
 			splits = region.splits;
 		}
 
-		/** Flips the region, adjusting the offset so the image appears to be flipped as if no whitespace has been removed for
-		 * packing. */
+		/** Flips the region, adjusting the offset so the image appears to be flip as if no whitespace has been removed for packing. */
 		public void flip (boolean x, boolean y) {
 			super.flip(x, y);
-			if (x) offsetX = originalWidth - offsetX - packedWidth;
-			if (y) offsetY = originalHeight - offsetY - packedHeight;
+			if (x) offsetX = originalWidth - offsetX - getRotatedPackedWidth();
+			if (y) offsetY = originalHeight - offsetY - getRotatedPackedHeight();
+		}
+
+		/** Returns the packed width considering the rotate value, if it is true then it returns the packedHeight, otherwise it
+		 * returns the packedWidth. */
+		public float getRotatedPackedWidth () {
+			return rotate ? packedHeight : packedWidth;
+		}
+
+		/** Returns the packed height considering the rotate value, if it is true then it returns the packedWidth, otherwise it
+		 * returns the packedHeight. */
+		public float getRotatedPackedHeight () {
+			return rotate ? packedWidth : packedHeight;
 		}
 	}
 
@@ -568,6 +579,7 @@ public class TextureAtlas implements Disposable {
 
 		public void flip (boolean x, boolean y) {
 			// Flip texture.
+
 			super.flip(x, y);
 
 			float oldOriginX = getOriginX();
@@ -575,8 +587,8 @@ public class TextureAtlas implements Disposable {
 			float oldOffsetX = region.offsetX;
 			float oldOffsetY = region.offsetY;
 
-			float widthRatio = getWidth() / region.originalWidth;
-			float heightRatio = getHeight() / region.originalHeight;
+			float widthRatio = getWidthRatio();
+			float heightRatio = getHeightRatio();
 
 			region.offsetX = originalOffsetX;
 			region.offsetY = originalOffsetY;
@@ -600,8 +612,8 @@ public class TextureAtlas implements Disposable {
 			float oldOffsetX = region.offsetX;
 			float oldOffsetY = region.offsetY;
 
-			float widthRatio = getWidth() / region.originalWidth;
-			float heightRatio = getHeight() / region.originalHeight;
+			float widthRatio = getWidthRatio();
+			float heightRatio = getHeightRatio();
 
 			if (clockwise) {
 				region.offsetX = oldOffsetY;
@@ -633,13 +645,19 @@ public class TextureAtlas implements Disposable {
 		}
 
 		public float getWidth () {
-			float packedWidth = region.rotate ? region.packedHeight : region.packedWidth;
-			return super.getWidth() / packedWidth * region.originalWidth;
+			return super.getWidth() / region.getRotatedPackedWidth() * region.originalWidth;
 		}
 
 		public float getHeight () {
-			float packedHeight = region.rotate ? region.packedWidth : region.packedHeight;
-			return super.getHeight() / packedHeight * region.originalHeight;
+			return super.getHeight() / region.getRotatedPackedHeight() * region.originalHeight;
+		}
+
+		public float getWidthRatio () {
+			return super.getWidth() / region.getRotatedPackedWidth();
+		}
+
+		public float getHeightRatio () {
+			return super.getHeight() / region.getRotatedPackedHeight();
 		}
 
 		public AtlasRegion getAtlasRegion () {
