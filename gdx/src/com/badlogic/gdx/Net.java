@@ -18,6 +18,8 @@ package com.badlogic.gdx;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Future;
 
 import com.badlogic.gdx.Net.HttpMethod;
@@ -93,24 +95,44 @@ public interface Net {
 	 * ...
 	 * HttpResponse httpResponse = Gdx.net.processHttpRequest (httpGet);
 	 * </pre> */
-	public static interface HttpRequest {
+	public static class HttpRequest {
+
+		private final HttpMethod httpMethod;
+		private String url;
+		private byte[] content;
+		private Map<String, String> headers;
+
+		public HttpRequest (HttpMethod httpMethod) {
+			this.httpMethod = httpMethod;
+			this.headers = new HashMap<String, String>();
+		}
 
 		/** Sets the URL of the HTTP request.
 		 * @param url The URL to set. */
-		void setUrl (String url);
+		public void setUrl (String url) {
+			this.url = url;
+		}
 
 		/** Adds a header to this HTTP request. Headers definition could be found at <a
 		 * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP/1.1: Header Field Definitions</a> document.
 		 * @param name the name of the header.
 		 * @param value the value of the header. */
-		void setHeader (String name, String value);
+		public void setHeader (String name, String value) {
+			headers.put(name, value);
+		}
 
 		/** In case the HttpRequest method is POST you can set the content to send with it.
 		 * @param content The content to send with the HTTP POST. */
-		void setContent (byte[] content);
+		public void setContent (byte[] content) {
+			if (httpMethod == HttpMethod.Get)
+				throw new IllegalStateException("Cannot set content to a HTTP GET request");
+			this.content = content;
+		}
 
 		/** Returns the HTTP method of the HttpRequest. */
-		HttpMethod getMethod ();
+		public HttpMethod getMethod () {
+			return httpMethod;
+		}
 
 	}
 
