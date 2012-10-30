@@ -27,10 +27,10 @@
 
 package com.esotericsoftware.tablelayout;
 
+import com.esotericsoftware.tablelayout.Value.FixedValue;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.esotericsoftware.tablelayout.Value.FixedValue;
 
 // BOZO - Support inserting cells/rows.
 
@@ -566,32 +566,17 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		outer:
 		for (int i = 0, n = cells.size(); i < n; i++) {
 			Cell c = cells.get(i);
-			if (c.ignore) continue;
-			if (c.expandX == 0) continue;
+			if (c.ignore || c.expandX == 0) continue;
 			for (int column = c.column, nn = column + c.colspan; column < nn; column++)
 				if (expandWidth[column] != 0) continue outer;
 			for (int column = c.column, nn = column + c.colspan; column < nn; column++)
 				expandWidth[column] = c.expandX;
 		}
 
-		// Distribute any additional min and pref width added by colspanned cells to the columns spanned. Collect uniform size.
-		float uniformMinWidth = 0, uniformMinHeight = 0;
-		float uniformPrefWidth = 0, uniformPrefHeight = 0;
+		// Distribute any additional min and pref width added by colspanned cells to the columns spanned.
 		for (int i = 0, n = cells.size(); i < n; i++) {
 			Cell c = cells.get(i);
-			if (c.ignore) continue;
-
-			// Collect uniform sizes.
-			if (c.uniformX != null) {
-				uniformMinWidth = Math.max(uniformMinWidth, columnMinWidth[c.column]);
-				uniformPrefWidth = Math.max(uniformPrefWidth, columnPrefWidth[c.column]);
-			}
-			if (c.uniformY != null) {
-				uniformMinHeight = Math.max(uniformMinHeight, rowMinHeight[c.row]);
-				uniformPrefHeight = Math.max(uniformPrefHeight, rowPrefHeight[c.row]);
-			}
-
-			if (c.colspan == 1) continue;
+			if (c.ignore || c.colspan == 1) continue;
 
 			float minWidth = w(c.minWidth, c);
 			float prefWidth = w(c.prefWidth, c);
@@ -619,21 +604,37 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 			}
 		}
 
+		// Collect uniform size.
+		float uniformMinWidth = 0, uniformMinHeight = 0;
+		float uniformPrefWidth = 0, uniformPrefHeight = 0;
+		for (int i = 0, n = cells.size(); i < n; i++) {
+			Cell c = cells.get(i);
+			if (c.ignore) continue;
+
+			// Collect uniform sizes.
+			if (c.uniformX == Boolean.TRUE && c.colspan == 1) {
+				uniformMinWidth = Math.max(uniformMinWidth, columnMinWidth[c.column]);
+				uniformPrefWidth = Math.max(uniformPrefWidth, columnPrefWidth[c.column]);
+			}
+			if (c.uniformY == Boolean.TRUE) {
+				uniformMinHeight = Math.max(uniformMinHeight, rowMinHeight[c.row]);
+				uniformPrefHeight = Math.max(uniformPrefHeight, rowPrefHeight[c.row]);
+			}
+		}
+
 		// Size uniform cells to the same width/height.
 		if (uniformPrefWidth > 0 || uniformPrefHeight > 0) {
-			outer:
 			for (int i = 0, n = cells.size(); i < n; i++) {
 				Cell c = cells.get(i);
 				if (c.ignore) continue;
-				if (uniformPrefWidth > 0 && c.uniformX != null) {
+				if (uniformPrefWidth > 0 && c.uniformX == Boolean.TRUE && c.colspan == 1) {
 					columnMinWidth[c.column] = uniformMinWidth;
 					columnPrefWidth[c.column] = uniformPrefWidth;
 				}
-				if (uniformPrefHeight > 0 && c.uniformY != null) {
+				if (uniformPrefHeight > 0 && c.uniformY == Boolean.TRUE) {
 					rowMinHeight[c.row] = uniformMinHeight;
 					rowPrefHeight[c.row] = uniformPrefHeight;
 				}
-				continue outer;
 			}
 		}
 

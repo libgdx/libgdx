@@ -1155,17 +1155,10 @@ public class SpriteBatch implements Disposable {
 	}
 
 	private void switchTexture (Texture texture) {
-		if (Gdx.graphics.isGL20Available()) {
-			renderMesh();
-			lastTexture = texture;
-			invTexWidth = 1.0f / texture.getWidth();
-			invTexHeight = 1.0f / texture.getHeight();
-		} else {
-			renderMesh();
-			lastTexture = texture;
-			invTexWidth = 1.0f / texture.getWidth();
-			invTexHeight = 1.0f / texture.getHeight();
-		}
+		renderMesh();
+		lastTexture = texture;
+		invTexWidth = 1.0f / texture.getWidth();
+		invTexHeight = 1.0f / texture.getHeight();
 	}
 
 	/** Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture

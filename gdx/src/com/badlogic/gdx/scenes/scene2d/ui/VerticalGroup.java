@@ -42,6 +42,7 @@ public class VerticalGroup extends WidgetGroup {
 	private void computeSize () {
 		sizeInvalid = false;
 		prefWidth = 0;
+		prefHeight = 0;
 		SnapshotArray<Actor> children = getChildren();
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
@@ -79,8 +80,9 @@ public class VerticalGroup extends WidgetGroup {
 				x = groupWidth - width;
 			else
 				x = (groupWidth - width) / 2;
+			if (!reverse) y += height * dir;
 			child.setBounds(x, y, width, height);
-			y += height * dir;
+			if (reverse) y += height * dir;
 		}
 	}
 

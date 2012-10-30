@@ -100,7 +100,7 @@ public class AndroidApplication extends Activity implements Application {
 	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
-		input = new AndroidInput(this, graphics.view, config);
+		input = new AndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		net = new AndroidNet(this);
@@ -188,7 +188,7 @@ public class AndroidApplication extends Activity implements Application {
 	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
-		input = new AndroidInput(this, graphics.view, config);
+		input = new AndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		net = new AndroidNet(this);
