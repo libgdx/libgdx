@@ -31,17 +31,19 @@ public class ColorAttribute extends MaterialAttribute {
 	static final public String fog = "fogColor";
 
 	public final Color color = new Color();
+	public int guid;
 
 	protected ColorAttribute () {
 	}
 
 	/** Creates a {@link MaterialAttribute} that is a pure {@link Color}.
 	 * 
-	 * @param color The {@link Colour} that you wish the attribute to represent.
+	 * @param color The {@link Color} that you wish the attribute to represent.
 	 * @param name The name of the uniform in the {@link ShaderProgram} that will have its value set to this color. (A 'name' does
 	 *           not matter for a game that uses {@link GL10}). */
 	public ColorAttribute (Color color, String name) {
 		super(name);
+		guid = ShaderProgram.getGlobalUniformID(name);
 		this.color.set(color);
 	}
 
@@ -56,7 +58,7 @@ public class ColorAttribute extends MaterialAttribute {
 
 	@Override
 	public void bind (ShaderProgram program) {
-		program.setUniformf(name, color.r, color.g, color.b, color.a);
+		program.setUniformfByGUID(guid, color.r, color.g, color.b, color.a);
 	}
 
 	@Override
@@ -68,6 +70,7 @@ public class ColorAttribute extends MaterialAttribute {
 	public void set (MaterialAttribute attr) {
 		ColorAttribute colAttr = (ColorAttribute)attr;
 		name = colAttr.name;
+		guid = colAttr.guid;
 		final Color c = colAttr.color;
 		color.r = c.r;
 		color.g = c.g;
@@ -92,5 +95,14 @@ public class ColorAttribute extends MaterialAttribute {
 	@Override
 	public void free () {
 		if (isPooled) pool.free(this);
+	}
+	
+	@Override
+	public boolean equals (Object obj) {
+		if (obj instanceof ColorAttribute) {
+			final ColorAttribute ca = (ColorAttribute)obj;
+			return (ca.guid == guid) && color.equals(ca.color) && ca.name.equals(name);
+		}
+		return super.equals(obj);
 	}
 }

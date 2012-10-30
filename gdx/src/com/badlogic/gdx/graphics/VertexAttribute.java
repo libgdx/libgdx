@@ -34,6 +34,8 @@ public final class VertexAttribute {
 	public int offset;
 	/** the alias for the attribute used in a {@link ShaderProgram} **/
 	public String alias;
+	/** the guid for the attribute used in a {@link ShaderProgram} **/
+	public int guid;
 
 	/** Constructs a new VertexAttribute.
 	 * 
@@ -45,6 +47,7 @@ public final class VertexAttribute {
 		this.usage = usage;
 		this.numComponents = numComponents;
 		this.alias = alias;
+		this.guid = ShaderProgram.getGlobalAttributeID(alias);
 	}
 
 	public static VertexAttribute Position () {
