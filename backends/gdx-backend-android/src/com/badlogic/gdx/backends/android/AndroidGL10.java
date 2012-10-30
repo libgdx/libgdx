@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.GL10;
 
 /** An implementation of the {@link GL10} interface for Android.
  * @author mzechner */
-class AndroidGL10 implements GL10 {
+public class AndroidGL10 implements GL10 {
 	final javax.microedition.khronos.opengles.GL10 gl;
 
 	public AndroidGL10 (javax.microedition.khronos.opengles.GL10 gl) {
