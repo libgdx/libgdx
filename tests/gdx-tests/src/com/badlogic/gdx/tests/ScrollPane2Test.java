@@ -19,6 +19,8 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -36,11 +38,23 @@ public class ScrollPane2Test extends GdxTest {
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
+		ScrollPane pane2 = new ScrollPane(new Image(new Texture("data/group-debug.png")), skin);
+		pane2.setScrollingDisabled(false, true);
+		// pane2.setCancelTouchFocus(false);
+		pane2.addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				event.stop();
+				return true;
+			}
+		});
+
 		Table mytable = new Table();
 		mytable.debug();
 		mytable.add(new Image(new Texture("data/group-debug.png")));
 		mytable.row();
 		mytable.add(new Image(new Texture("data/group-debug.png")));
+		mytable.row();
+		mytable.add(pane2).size(100);
 		mytable.row();
 		mytable.add(new Image(new Texture("data/group-debug.png")));
 		mytable.row();
@@ -48,6 +62,7 @@ public class ScrollPane2Test extends GdxTest {
 
 		ScrollPane pane = new ScrollPane(mytable, skin);
 		pane.setScrollingDisabled(true, false);
+		// pane.setCancelTouchFocus(false);
 		if (false) {
 			// This sizes the pane to the size of it's contents.
 			pane.pack();

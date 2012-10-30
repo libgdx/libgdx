@@ -444,7 +444,7 @@ public class LwjglGraphics implements Graphics {
 		synchronized (this) {
 			boolean rq = requestRendering;
 			requestRendering = false;
-			return rq || isContinuous;
+			return rq || isContinuous || Display.isDirty();
 		}
 	}
 

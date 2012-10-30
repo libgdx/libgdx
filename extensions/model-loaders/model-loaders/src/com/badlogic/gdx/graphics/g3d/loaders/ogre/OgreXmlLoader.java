@@ -33,11 +33,13 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh.BaseGeometry;
+import com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh.Boneassignments;
 import com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh.ColourDiffuse;
 import com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh.Face;
 import com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh.Geometry;
 import com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh.Mesh;
 import com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh.Submesh;
+import com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh.Submeshname;
 import com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh.Texcoord;
 import com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh.Vertex;
 import com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh.Vertexboneassignment;
@@ -300,26 +302,33 @@ public class OgreXmlLoader {
 				indices.length, attribs);
 			mesh.setIndices(indices);
 			mesh.setVertices(vertices);
+			
+			String meshName = "";
+			List<Submeshname> names = ogreMesh.getSubmeshnames().getSubmeshname();
+			for(int n = 0; n < names.size(); ++n) {
+				if(Integer.parseInt(names.get(n).getIndex()) == i)
+					meshName = names.get(n).getName();
+			}
 
 			SubMesh subMesh;
-			boolean hasSkeleton = ogreSubmesh.getBoneassignments() != null;
-
-			if (hasSkeleton) {
-				subMesh = new SkeletonSubMesh("", mesh, GL10.GL_TRIANGLES);
+			Boneassignments boneAssigments = (ogreSubmesh.getBoneassignments() != null)? ogreSubmesh.getBoneassignments() : ogreMesh.getBoneassignments();			
+			
+			if (boneAssigments != null) {
+				subMesh = new SkeletonSubMesh(meshName, mesh, GL10.GL_TRIANGLES);
 			} else {
-				subMesh = new StillSubMesh("", mesh, GL10.GL_TRIANGLES);
+				subMesh = new StillSubMesh(meshName, mesh, GL10.GL_TRIANGLES);
 			}
 			
 			// FIXME ? subMesh.materialName = ogreSubmesh.material;
 
 
-			if (hasSkeleton) {
+			if (boneAssigments != null) {
 				SkeletonSubMesh subSkelMesh = (SkeletonSubMesh) subMesh;
 				subSkelMesh.setVertices(vertices);
 				subSkelMesh.setIndices(indices);
 				subSkelMesh.skinnedVertices = new float[vertices.length];
 				System.arraycopy(subSkelMesh.vertices, 0, subSkelMesh.skinnedVertices, 0, subSkelMesh.vertices.length);
-				loadBones(ogreSubmesh, subSkelMesh);
+				loadBones(boneAssigments, subSkelMesh);
 			}
 
 			if (ogreSubmesh.getOperationtype().equals("triangle_list")) subMesh.primitiveType = GL10.GL_TRIANGLES;
@@ -331,7 +340,7 @@ public class OgreXmlLoader {
 		return submeshes;
 	}
 
-	private void loadBones (Submesh ogreSubmesh, SkeletonSubMesh subMesh) {
+	private void loadBones (Boneassignments boneAssigments, SkeletonSubMesh subMesh) {
 		Array<IntArray> boneAssignments = new Array<IntArray>();
 		Array<FloatArray> boneWeights = new Array<FloatArray>();
 		
@@ -340,7 +349,7 @@ public class OgreXmlLoader {
 			boneWeights.add(new FloatArray(4));
 		}
 		
-		List<Vertexboneassignment> vertexboneassignment = ogreSubmesh.getBoneassignments().getVertexboneassignment();
+		List<Vertexboneassignment> vertexboneassignment = boneAssigments.getVertexboneassignment();
 		for (int j = 0; j < vertexboneassignment.size(); j++) {
 			Vertexboneassignment assignment = vertexboneassignment.get(j);
 			int boneIndex = assignment.boneindex;
@@ -505,7 +514,7 @@ public class OgreXmlLoader {
 			}
 
 			for (int j = 0; j < perJointkeyFrames.length; j++) {
-				if (perJointkeyFrames[i] == null) throw new IllegalArgumentException("No track for bone " + skel.jointNames.get(j));
+				if (perJointkeyFrames[j] == null) throw new IllegalArgumentException("No track for bone " + skel.jointNames.get(j));
 			}
 
 			skel.animations.put(animation.name, new SkeletonAnimation(animation.name, animation.length, perJointkeyFrames));

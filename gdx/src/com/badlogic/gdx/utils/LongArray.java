@@ -258,6 +258,17 @@ public class LongArray {
 		return array;
 	}
 
+	public boolean equals (Object object) {
+		if (object == this) return true;
+		if (!(object instanceof LongArray)) return false;
+		LongArray array = (LongArray)object;
+		int n = size;
+		if (n != array.size) return false;
+		for (int i = 0; i < n; i++)
+			if (items[i] != array.items[i]) return false;
+		return true;
+	}
+	
 	public String toString () {
 		if (size == 0) return "[]";
 		long[] items = this.items;
