@@ -180,9 +180,7 @@ public class Group extends Actor implements Cullable {
 	/** Restores the SpriteBatch transform to what it was before {@link #applyTransform(SpriteBatch, Matrix4)}. Note this causes the
 	 * batch to be flushed. */
 	protected void resetTransform (SpriteBatch batch) {
-		batch.end();
 		batch.setTransformMatrix(oldBatchTransform);
-		batch.begin();
 	}
 
 	/** Children completely outside of this rectangle will not be drawn. This is only valid for use with unrotated and unscaled
