@@ -258,6 +258,17 @@ public class FloatArray {
 		return array;
 	}
 
+	public boolean equals (Object object) {
+		if (object == this) return true;
+		if (!(object instanceof FloatArray)) return false;
+		FloatArray array = (FloatArray)object;
+		int n = size;
+		if (n != array.size) return false;
+		for (int i = 0; i < n; i++)
+			if (items[i] != array.items[i]) return false;
+		return true;
+	}
+
 	public String toString () {
 		if (size == 0) return "[]";
 		float[] items = this.items;

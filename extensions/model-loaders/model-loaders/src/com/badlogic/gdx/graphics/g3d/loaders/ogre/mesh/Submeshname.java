@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
-@XmlRootElement(name = "submeshname")
+@XmlRootElement(name = "submesh")
 public class Submeshname {
 
 	@XmlAttribute(required = true) @XmlJavaTypeAdapter(NormalizedStringAdapter.class) protected String name;

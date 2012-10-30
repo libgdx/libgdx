@@ -460,6 +460,7 @@ public class TextField extends Widget {
 				selectionWidth, textBounds.height + font.getDescent() / 2);
 		}
 
+		float yOffset = font.isFlipped() ? -textBounds.height : 0;
 		if (displayText.length() == 0) {
 			if (!focused && messageText != null) {
 				if (style.messageFontColor != null) {
@@ -468,11 +469,11 @@ public class TextField extends Widget {
 				} else
 					font.setColor(0.7f, 0.7f, 0.7f, parentAlpha);
 				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
-				font.draw(batch, messageText, x + bgLeftWidth, y + textY);
+				font.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset);
 			}
 		} else {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			font.draw(batch, displayText, x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
+			font.draw(batch, displayText, x + bgLeftWidth + textOffset, y + textY + yOffset, visibleTextStart, visibleTextEnd);
 		}
 		if (focused && !disabled) {
 			blink();
