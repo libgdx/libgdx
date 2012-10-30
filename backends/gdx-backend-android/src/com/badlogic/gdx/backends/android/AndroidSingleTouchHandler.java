@@ -16,10 +16,11 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.content.Context;
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.android.AndroidInputBase.TouchEvent;
+import com.badlogic.gdx.backends.android.AndroidInput.TouchEvent;
 
 /** Single touch handler for devices running <= 1.6
  * 
@@ -70,7 +71,7 @@ public class AndroidSingleTouchHandler implements AndroidTouchHandler {
 		Gdx.app.getGraphics().requestRendering();
 	}
 
-	public boolean supportsMultitouch (AndroidApplication activity) {
+	public boolean supportsMultitouch (Context activity) {
 		return false;
 	}
 }
