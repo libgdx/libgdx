@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.content.Context;
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.Gdx;
@@ -35,9 +36,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		int realPointerIndex = 0;
 
 		long timeStamp = System.nanoTime();
-// long timeStamp = event.getEventTime() * 1000000;
-		// logAction(action, pointerId);
-		synchronized (input) { // FUCK
+		synchronized (input) {
 			switch (action) {
 			case MotionEvent.ACTION_DOWN:
 			case MotionEvent.ACTION_POINTER_DOWN:
@@ -113,7 +112,6 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 	}
 
 	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer, long timeStamp) {
-// long timeStamp = System.nanoTime();
 		TouchEvent event = input.usedTouchEvents.obtain();
 		event.timeStamp = timeStamp;
 		event.pointer = pointer;
@@ -123,7 +121,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		input.touchEvents.add(event);
 	}
 
-	public boolean supportsMultitouch (AndroidApplication activity) {
+	public boolean supportsMultitouch (Context activity) {
 		return activity.getPackageManager().hasSystemFeature("android.hardware.touchscreen.multitouch");
 	}
 }
