@@ -22,7 +22,7 @@ import android.net.Uri;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpMethod;
 import com.badlogic.gdx.Net.HttpRequest;
-import com.badlogic.gdx.Net.HttpResult;
+import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
@@ -30,22 +30,27 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 
 public class AndroidNet implements Net {
-	
+
 	// IMPORTANT: The Gdx.net classes are a currently duplicated for LWJGL + Android!
-	//            If you make changes here, make changes in the other backend as well.
+	// If you make changes here, make changes in the other backend as well.
 	final AndroidApplication app;
-	
-	public AndroidNet(AndroidApplication activity) {
+
+	public AndroidNet (AndroidApplication activity) {
 		app = activity;
 	}
-	
+
 	@Override
 	public HttpRequest createHttpRequest (HttpMethod httpMethod) {
 		return null;
 	}
-	
+
 	@Override
-	public HttpResult processHttpRequest (HttpRequest httpRequest) {
+	public void processHttpRequest (HttpRequest httpRequest) {
+		throw new UnsupportedOperationException("Not implemented");
+	}
+
+	@Override
+	public void processHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResultListener) {
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
@@ -58,11 +63,11 @@ public class AndroidNet implements Net {
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
 		return new AndroidSocket(protocol, host, port, hints);
 	}
-	
+
 	@Override
-	public void openURI(String URI) {
+	public void openURI (String URI) {
 		final Uri uri = Uri.parse(URI);
-		app.runOnUiThread(new Runnable(){
+		app.runOnUiThread(new Runnable() {
 			@Override
 			public void run () {
 				app.startActivity(new Intent(Intent.ACTION_VIEW, uri));

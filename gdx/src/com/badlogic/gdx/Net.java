@@ -24,6 +24,7 @@ import java.util.concurrent.Future;
 
 import com.badlogic.gdx.Net.HttpMethod;
 import com.badlogic.gdx.Net.HttpRequest;
+import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.ServerSocket;
@@ -35,9 +36,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * To perform an HTTP GET or POST request first create a {@link HttpRequest} using {@link #createHttpRequest(HttpMethod)}
  * specifying the corresponding {@link HttpMethod} you want to use and then invoke the method
- * {@link #processHttpRequest(HttpRequest)}. This will return a {@link HttpResult} which provides methods to query the progress
- * and data returned by the operations. The {@link HttpResult} works like a {@link Future} in that the operation is executed
- * asynchronously, while the API client can use the {@link HttpResult} to poll for the status and result of the operation.</p>
+ * {@link #processHttpRequest(HttpRequest, HttpResponseListener)}. This will return a {@link HttpResponse} which provides methods
+ * to query the progress and data returned by the operations. The {@link HttpResponse} works like a {@link Future} in that the
+ * operation is executed asynchronously, while the API client can use the {@link HttpResponse} to poll for the status and result
+ * of the operation.</p>
  * 
  * To create a TCP client socket to communicate with a remote TCP server, invoke the
  * {@link #newClientSocket(Protocol, String, int, SocketHints)} method. The returned {@link Socket} offers an {@link InputStream}
@@ -55,7 +57,7 @@ public interface Net {
 	 * progress and return the result as a byte array or string. Implementations must be thread-safe.
 	 * 
 	 * @author mzechner */
-	public interface HttpResult {
+	public interface HttpResponse {
 		/** @return true in case the operation was completed normally or abnormally (cancelled, exception). */
 		public boolean isDone ();
 
@@ -124,8 +126,6 @@ public interface Net {
 		/** In case the HttpRequest method is POST you can set the content to send with it.
 		 * @param content The content to send with the HTTP POST. */
 		public void setContent (byte[] content) {
-			if (httpMethod == HttpMethod.Get)
-				throw new IllegalStateException("Cannot set content to a HTTP GET request");
 			this.content = content;
 		}
 
@@ -136,15 +136,32 @@ public interface Net {
 
 	}
 
+	/** Listener to be able to do custom logic once the HTTP response is ready to be processed, register it with
+	 * {@link Net#processHttpRequest(HttpRequest, HttpResponseListener)}.
+	 * @author acoppes */
+	public static interface HttpResponseListener {
+
+		/** Called when the HTTP request has data to be processed.
+		 * @param httpResponse The {@link HttpResponse} with information to be used. */
+		void handleHttpResponse (HttpResponse httpResponse);
+
+	}
+
 	/** Returns a new {@link HttpRequest} for the given HTTP method.
 	 * @param httpMethod The {@link HttpMethod} to use to create the HTTP request.
 	 * @return a new instance of a {@link HttpRequest} for the given HTTP method. */
 	public HttpRequest createHttpRequest (HttpMethod httpMethod);
 
-	/** Process the specified HttpRequest.
+	/** Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified {@link HttpResponseListener}
+	 * .
 	 * @param httpRequest The {@link HttpRequest} to be performed.
-	 * @return the {@link HttpResult} */
-	public HttpResult processHttpRequest (HttpRequest httpRequest);
+	 * @param httpResponseListener The {@link HttpResponseListener} to call once the HTTP response is ready to be processed. Could
+	 *           be null, in that case no listener is called. */
+	public void processHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener);
+
+	/** Process the specified {@link HttpRequest}.
+	 * @param httpRequest The {@link HttpRequest} to be performed. */
+	public void processHttpRequest (HttpRequest httpRequest);
 
 	/** Protocol used by {@link Net#newServerSocket(Protocol, int, ServerSocketHints)} and
 	 * {@link Net#newClientSocket(Protocol, String, int, SocketHints)}.

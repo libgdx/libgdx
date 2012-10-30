@@ -3,7 +3,7 @@ package com.badlogic.gdx.backends.gwt;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpMethod;
 import com.badlogic.gdx.Net.HttpRequest;
-import com.badlogic.gdx.Net.HttpResult;
+import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
@@ -19,7 +19,12 @@ public class GwtNet implements Net {
 	}
 	
 	@Override
-	public HttpResult processHttpRequest (HttpRequest httpRequest) {
+	public void processHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResultListener) {
+		throw new UnsupportedOperationException("Not implemented");
+	}
+	
+	@Override
+	public void processHttpRequest (HttpRequest httpRequest) {
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
