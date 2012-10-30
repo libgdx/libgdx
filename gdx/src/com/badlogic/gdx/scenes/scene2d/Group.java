@@ -136,10 +136,8 @@ public class Group extends Actor implements Cullable {
 	/** Set the SpriteBatch's transformation matrix, often with the result of {@link #computeTransform()}. Note this causes the
 	 * batch to be flushed. {@link #resetTransform(SpriteBatch)} will restore the transform to what it was before this call. */
 	protected void applyTransform (SpriteBatch batch, Matrix4 transform) {
-		batch.end();
 		oldBatchTransform.set(batch.getTransformMatrix());
 		batch.setTransformMatrix(transform);
-		batch.begin();
 	}
 
 	/** Returns the transform for this group's coordinate system. */
@@ -182,9 +180,7 @@ public class Group extends Actor implements Cullable {
 	/** Restores the SpriteBatch transform to what it was before {@link #applyTransform(SpriteBatch, Matrix4)}. Note this causes the
 	 * batch to be flushed. */
 	protected void resetTransform (SpriteBatch batch) {
-		batch.end();
 		batch.setTransformMatrix(oldBatchTransform);
-		batch.begin();
 	}
 
 	/** Children completely outside of this rectangle will not be drawn. This is only valid for use with unrotated and unscaled
