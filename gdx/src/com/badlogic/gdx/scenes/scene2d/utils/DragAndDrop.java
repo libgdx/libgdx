@@ -6,9 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Array;
-
-import javax.swing.tree.DefaultTreeCellEditor.EditorContainer;
 
 /** Manages drag and drop operations through registered drag sources and drop targets.
  * @author Nathan Sweet */
@@ -37,6 +36,12 @@ public class DragAndDrop {
 				if (payload == null) return;
 				Stage stage = event.getStage();
 
+				Touchable dragActorTouchable = null;
+				if (dragActor != null) {
+					dragActorTouchable = dragActor.getTouchable();
+					dragActor.setTouchable(Touchable.disabled);
+				}
+
 				// Find target.
 				Target newTarget = null;
 				isValidTarget = false;
@@ -56,6 +61,8 @@ public class DragAndDrop {
 					if (target != null) target.reset(source, payload);
 					target = newTarget;
 				}
+
+				if (dragActor != null) dragActor.setTouchable(dragActorTouchable);
 
 				// Add/remove and position the drag actor.
 				Actor actor = null;
@@ -80,7 +87,7 @@ public class DragAndDrop {
 				if (payload == null) return;
 				if (System.currentTimeMillis() - dragStartTime < dragTime) isValidTarget = false;
 				if (dragActor != null) dragActor.remove();
-				if (isValidTarget) target.drop(source, payload);
+				if (isValidTarget) target.drop(source, payload, x, y, pointer);
 				source.dragStop(event, x, y, pointer, isValidTarget ? target : null);
 				if (target != null) target.reset(source, payload);
 				DragAndDrop.this.source = null;
@@ -169,7 +176,7 @@ public class DragAndDrop {
 		public void reset (Source source, Payload payload) {
 		}
 
-		abstract public void drop (Source source, Payload payload);
+		abstract public void drop (Source source, Payload payload, float x, float y, int pointer);
 
 		public Actor getActor () {
 			return actor;

@@ -19,7 +19,9 @@ package com.badlogicgames.superjumper;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GLCommon;
@@ -127,8 +129,11 @@ public class GameScreen implements Screen {
 				return;
 			}
 		}
-
-		if (Gdx.app.getType() == Application.ApplicationType.Android) {
+		
+		ApplicationType appType = Gdx.app.getType();
+		
+		// should work also with Gdx.input.isPeripheralAvailable(Peripheral.Accelerometer)
+		if (appType == ApplicationType.Android || appType == ApplicationType.iOS) {
 			world.update(deltaTime, Gdx.input.getAccelerometerX());
 		} else {
 			float accel = 0;

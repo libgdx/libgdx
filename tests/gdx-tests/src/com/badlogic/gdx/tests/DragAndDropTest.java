@@ -71,7 +71,7 @@ public class DragAndDropTest extends GdxTest {
 				getActor().setColor(Color.WHITE);
 			}
 
-			public void drop (Source source, Payload payload) {
+			public void drop (Source source, Payload payload, float x, float y, int pointer) {
 				System.out.println("Accepted: " + payload.getObject());
 			}
 		});
@@ -85,7 +85,7 @@ public class DragAndDropTest extends GdxTest {
 				getActor().setColor(Color.WHITE);
 			}
 
-			public void drop (Source source, Payload payload) {
+			public void drop (Source source, Payload payload, float x, float y, int pointer) {
 			}
 		});
 	}
