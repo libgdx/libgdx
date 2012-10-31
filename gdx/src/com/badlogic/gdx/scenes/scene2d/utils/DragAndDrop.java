@@ -87,7 +87,7 @@ public class DragAndDrop {
 				if (payload == null) return;
 				if (System.currentTimeMillis() - dragStartTime < dragTime) isValidTarget = false;
 				if (dragActor != null) dragActor.remove();
-				if (isValidTarget) target.drop(source, payload);
+				if (isValidTarget) target.drop(source, payload, x, y, pointer);
 				source.dragStop(event, x, y, pointer, isValidTarget ? target : null);
 				if (target != null) target.reset(source, payload);
 				DragAndDrop.this.source = null;
@@ -176,7 +176,7 @@ public class DragAndDrop {
 		public void reset (Source source, Payload payload) {
 		}
 
-		abstract public void drop (Source source, Payload payload);
+		abstract public void drop (Source source, Payload payload, float x, float y, int pointer);
 
 		public Actor getActor () {
 			return actor;
