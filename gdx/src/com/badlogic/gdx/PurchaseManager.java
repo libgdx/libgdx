@@ -1,7 +1,7 @@
 package com.badlogic.gdx;
 
 /**
- * An IAP purchase manager. Items for purchase are referenced by an item identifier string. Make sure
+ * An IAP purchase manager (client). Items for purchase are referenced by an item identifier string. Make sure
  * to register the same identifier on all the IAP services desired for easy porting. The same identifier 
  * should be registered in the IAP item setup screen of each IAP service (Google Play IAP, Amazon IAP, iOS IAP,
  * Apple Mac Store IAP etc).
@@ -14,25 +14,22 @@ package com.badlogic.gdx;
  * <p>
  * 1. How to Setup IAP in your Application
  * <pre>
- *   // platform-dependent code (setup the purchase manager in the configuration)
- *   configuration.purchaseManager = new SomePurchaseManager(parameters);
+ *   // platform-dependent code (setup the purchase manager in your code)
+ *   MyGame myGame = ... // for example your game class (or store the manager somewhere else)
+ *   myGame.setPurchaseManager(new SomePurchaseManager(parameters));
  *   
- *   // platform-independent code (register an observer - REQUIRED!)
- *   PurchaseManager manager = Gdx.net.getPurchaseManager();
- *   manager.register(new PurchaseManager.Processor() {
- *     @Override
+ *   // platform-independent code (register an listener - REQUIRED!)
+ *   PurchaseManager manager = myGame.getPurchaseManager();
+ *   manager.register(new PurchaseManager.Listener() {
  *     public void handleRequestPurchase(PurchasedItem item) {
  *       // handle successful purchases...
  *     }
- *     @Override
  *     public void handleRequestPurchaseFailure(String identifier, Failure e) {
  *       // handle failed purchases due to e.g. non-existing identifier/network problems; display dialog!
  *     }
- *     @Override
  *     public void handleRestore(PurchasedItem[] items) {
  *       // handle restores...
  *     }
- *     @Override
  *     public void handleRestoreFailure(Failure e) {
  *       // handle restore failures due to e.g. network problems; display dialog!
  *     }
@@ -42,25 +39,25 @@ package com.badlogic.gdx;
  * 2. How to Make a Purchase
  * <pre>
  *   // platform-independent code (purchase)
- *   PurchaseManager manager = Gdx.net.getPurchaseManager();
+ *   PurchaseManager manager = myGame.getPurchaseManager();
  *   String identifier = ...   // your product identifier that is registered in the IAP service
  *   manager.purchase(identifier);
  * </pre>
- * Will call the observer once completed.
+ * Will call the listener once completed.
  * <p>
  * 3. How to Restore Purchases (e.g. new device/re-install - REQUIRED: display [Restore] button)
  * <pre>
  *   // platform-independent code (restore purchases)
- *   PurchaseManager manager = Gdx.net.getPurchaseManager();
+ *   PurchaseManager manager = myGame.getPurchaseManager();
  *   manager.restore();
  * </pre>
- * Will call the observer once completed.
+ * Will call the listener once completed.
  * 
  * @author noblemaster
  */
 public interface PurchaseManager {
 
-  public static interface Observer {
+  public static interface Listener {
     
     /**
      * The item that was successfully purchased.
@@ -100,11 +97,11 @@ public interface PurchaseManager {
   public boolean available();
               
   /**
-   * Register a transaction observer. 
+   * Register a transaction listener. 
    * 
-   * @param observer  The observer.
+   * @param listener  The listener.
    */
-  public void register(Observer observer);
+  public void register(Listener listener);
   
   /**
    * Request to purchase an item. 

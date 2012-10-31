@@ -1,39 +1,37 @@
 package com.badlogic.gdx;
 
+import java.util.Date;
+
 /**
  * An item purchased via IAP.
  * 
  * @author noblemaster
  */
-public interface PurchasedItem {
+public class PurchasedItem {
 
-  /** The item status. */
-  public static enum Information {
+	/** The item identifier that matches the item id in the IAP service. */
+	public String identifier;
   
-    /** Valid: purchased and non-expired/non-refunded etc. - aka still valid. */
-    VALID, 
-    /** Invalid: e.g. refunded item, expired subscription, etc. */
-    INVALID;
-  }
-  
-  /**
-   * The item identifier.
-   * 
-   * @return  The item identifier.
-   */
-  public String getIdentifier();
-      
-  /**
-   * The original transaction identifier.
-   * 
-   * @return  The transaction identifier which is unique for each purchase.
-   */
-  public String getTransation();
-  
-  /**
-   * Returns the item status.
-   * 
-   * @return  The item status if valid (purchased/non-expired etc.) or invalid (expired/refunded etc.).
-   */
-  public Information getInformation();
+	/** 
+	 * Is set to true if the purchase is valid (non-expired/non-refunded) or false if the purchase
+	 * has been refunded or has expired, e.g. subscription (?). 
+	 */
+	public boolean valid;
+
+	/** 
+	 * The original transaction identifier which is unique for each purchase (doesn't change). 
+	 * It represents an unique ID for the purchase on the corresponding IAP system.
+	 */
+	public String transactionId;
+	
+	/** 
+	 * The original transaction date, i.e. when the product was first purchased (doesn't change). 
+	 */
+	public Date transactionDate;
+	
+	/** 
+	 *  A transaction receipt that can be used for postback validation if you have setup a server
+	 *  to make sure the purchased item is genuine.  
+	 */
+	public String transactionReceipt;
 }
