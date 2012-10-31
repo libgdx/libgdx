@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import com.badlogic.gdx.Net.HttpMethod;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.net.ServerSocketHints;
@@ -34,8 +33,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
  * communication.</p>
  * 
- * To perform an HTTP GET or POST request first create a {@link HttpRequest} using {@link #createHttpRequest(HttpMethod)}
- * specifying the corresponding {@link HttpMethod} you want to use and then invoke the method
+ * To perform an HTTP GET or POST request first create a {@link HttpRequest} using {@link #createHttpRequest(String)} specifying
+ * the corresponding HTTP method (see {@link HttpMethods} for common methods) you want to use and then invoke the method
  * {@link #processHttpRequest(HttpRequest, HttpResponseListener)}. This will return a {@link HttpResponse} which provides methods
  * to query the progress and data returned by the operations. The {@link HttpResponse} works like a {@link Future} in that the
  * operation is executed asynchronously, while the API client can use the {@link HttpResponse} to poll for the status and result
@@ -85,26 +84,29 @@ public interface Net {
 	}
 
 	/** The HTTP method to use with a HTTP Request. */
-	public static enum HttpMethod {
-		Get, Post
+	public static interface HttpMethods {
+
+		public static final String GET = "GET";
+		public static final String POST = "POST";
+
 	}
 
 	/** Abstracts the concept of different types of HTTP Request, create it using {@link Net}:
 	 * 
 	 * <pre>
-	 * HttpRequest httpGet = Gdx.net.createHttpRequest (HttpMethod.Get);
+	 * HttpRequest httpGet = Gdx.net.createHttpRequest (HttpMethods.Get);
 	 * httpGet.setUrl("http://somewhere.net");
 	 * ...
 	 * HttpResponse httpResponse = Gdx.net.processHttpRequest (httpGet);
 	 * </pre> */
 	public static class HttpRequest {
 
-		private final HttpMethod httpMethod;
+		private final String httpMethod;
 		private String url;
 		private byte[] content;
 		private Map<String, String> headers;
 
-		public HttpRequest (HttpMethod httpMethod) {
+		public HttpRequest (String httpMethod) {
 			this.httpMethod = httpMethod;
 			this.headers = new HashMap<String, String>();
 		}
@@ -130,7 +132,7 @@ public interface Net {
 		}
 
 		/** Returns the HTTP method of the HttpRequest. */
-		public HttpMethod getMethod () {
+		public String getMethod () {
 			return httpMethod;
 		}
 
@@ -148,9 +150,9 @@ public interface Net {
 	}
 
 	/** Returns a new {@link HttpRequest} for the given HTTP method.
-	 * @param httpMethod The {@link HttpMethod} to use to create the HTTP request.
+	 * @param httpMethod The String representing the HTTP method for the HTTP request (see {@link HttpMethods} for common methods).
 	 * @return a new instance of a {@link HttpRequest} for the given HTTP method. */
-	public HttpRequest createHttpRequest (HttpMethod httpMethod);
+	public HttpRequest createHttpRequest (String httpMethod);
 
 	/** Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified {@link HttpResponseListener}
 	 * .

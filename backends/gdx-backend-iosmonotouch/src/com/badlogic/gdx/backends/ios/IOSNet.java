@@ -17,14 +17,8 @@ package com.badlogic.gdx.backends.ios;
 
 import cli.MonoTouch.Foundation.NSUrl;
 import cli.MonoTouch.UIKit.UIApplication;
-import cli.System.Uri;
-import cli.System.Net.HttpWebRequest;
 
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Net.HttpMethod;
-import com.badlogic.gdx.Net.HttpRequest;
-import com.badlogic.gdx.Net.HttpResponseListener;
-import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
@@ -39,7 +33,7 @@ public class IOSNet implements Net {
 	}
 	
 	@Override
-	public HttpRequest createHttpRequest (HttpMethod httpMethod) {
+	public HttpRequest createHttpRequest (String httpMethod) {
 		return null;
 	}
 	

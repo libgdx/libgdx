@@ -1,10 +1,6 @@
 package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Net.HttpMethod;
-import com.badlogic.gdx.Net.HttpRequest;
-import com.badlogic.gdx.Net.HttpResponseListener;
-import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
@@ -14,7 +10,7 @@ import com.google.gwt.user.client.Window;
 public class GwtNet implements Net {
 	
 	@Override
-	public HttpRequest createHttpRequest (HttpMethod httpMethod) {
+	public HttpRequest createHttpRequest (String httpMethod) {
 		return null;
 	}
 	
