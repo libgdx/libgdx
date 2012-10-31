@@ -91,7 +91,7 @@ public interface Net {
 
 	}
 
-	/** Abstracts the concept of different types of HTTP Request, create it using {@link Net}:
+	/** Abstracts the concept of different types of HTTP Request, create it using {@link Net#createHttpRequest(String)}:
 	 * 
 	 * <pre>
 	 * HttpRequest httpGet = Gdx.net.createHttpRequest (HttpMethods.Get);
