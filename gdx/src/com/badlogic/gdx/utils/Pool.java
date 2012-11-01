@@ -57,7 +57,7 @@ abstract public class Pool<T> {
 
 	/** Puts the specified objects in the pool.
 	 * @see #free(Object) */
-	public void free (Array<T> objects) {
+	public void freeAll (Array<T> objects) {
 		for (int i = 0, n = Math.min(objects.size, max - freeObjects.size); i < n; i++) {
 			T object = objects.get(i);
 			freeObjects.add(object);
