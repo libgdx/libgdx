@@ -87,7 +87,10 @@ public class DragAndDrop {
 				if (payload == null) return;
 				if (System.currentTimeMillis() - dragStartTime < dragTime) isValidTarget = false;
 				if (dragActor != null) dragActor.remove();
-				if (isValidTarget) target.drop(source, payload, x, y, pointer);
+				if (isValidTarget) {
+					target.actor.stageToLocalCoordinates(Vector2.tmp.set(event.getStageX(), event.getStageY()));
+					target.drop(source, payload, Vector2.tmp.x, Vector2.tmp.y, pointer);
+				}
 				source.dragStop(event, x, y, pointer, isValidTarget ? target : null);
 				if (target != null) target.reset(source, payload);
 				DragAndDrop.this.source = null;
