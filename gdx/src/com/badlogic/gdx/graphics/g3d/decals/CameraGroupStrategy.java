@@ -150,7 +150,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 			}
 
 			materialGroups.clear();
-			arrayPool.free(usedArrays);
+			arrayPool.freeAll(usedArrays);
 			usedArrays.clear();
 		}
 	}
