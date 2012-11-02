@@ -72,7 +72,7 @@ public class DragAndDropTest extends GdxTest {
 			}
 
 			public void drop (Source source, Payload payload, float x, float y, int pointer) {
-				System.out.println("Accepted: " + payload.getObject());
+				System.out.println("Accepted: " + payload.getObject() + " " + x + ", " + y);
 			}
 		});
 		dragAndDrop.addTarget(new Target(invalidTargetImage) {

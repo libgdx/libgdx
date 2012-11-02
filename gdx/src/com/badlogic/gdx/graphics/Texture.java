@@ -68,7 +68,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author badlogicgames@gmail.com */
 public class Texture implements Disposable {
 	static private boolean enforcePotImages = true;
-	static private boolean useHWMipMap = true;
 	private static AssetManager assetManager;
 	final static Map<Application, List<Texture>> managedTextures = new HashMap<Application, List<Texture>>();
 

@@ -308,7 +308,6 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	}
 
 	public AndroidGraphicsLiveWallpaper (AndroidLiveWallpaper app, boolean useGL2IfAvailable, ResolutionStrategy resolutionStrategy) {
-
 		view = createGLSurfaceView(app, useGL2IfAvailable, resolutionStrategy);
 		this.app = app;
 
