@@ -455,7 +455,7 @@
             <string>data/braid</string>
         </Property>
         <Property Name="atlas" Type="string" Description="">
-            <string>data/tiles.txt</string>
+            <string>data/gleedtiles.txt</string>
         </Property>
     </CustomProperties>
     <EditorRelated>
