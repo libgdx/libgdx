@@ -91,37 +91,7 @@ public class Box2DDebugRenderer {
 		if (drawBodies || drawAABBs) {
 			for (Iterator<Body> iter = world.getBodies(); iter.hasNext();) {
 				Body body = iter.next();
-
-				if (body.isActive() == false && !drawInactiveBodies) continue;
-
-				Transform transform = body.getTransform();
-				int len = body.getFixtureList().size();
-				List<Fixture> fixtures = body.getFixtureList();
-				for (int i = 0; i < len; i++) {
-					Fixture fixture = fixtures.get(i);
-
-					if (drawBodies) {
-						if (body.isActive() == false)
-							drawShape(fixture, transform, SHAPE_NOT_ACTIVE);
-						else if (body.getType() == BodyType.StaticBody)
-							drawShape(fixture, transform, SHAPE_STATIC);
-						else if (body.getType() == BodyType.KinematicBody)
-							drawShape(fixture, transform, SHAPE_KINEMATIC);
-						else if (body.isAwake() == false)
-							drawShape(fixture, transform, SHAPE_NOT_AWAKE);
-						else
-							drawShape(fixture, transform, SHAPE_AWAKE);
-
-						if (drawVelocities) {
-							Vector2 position = body.getPosition();
-							drawSegment(position, body.getLinearVelocity().add(position), VELOCITY_COLOR);
-						}
-					}
-
-					if (drawAABBs) {
-						drawAABB(fixture, transform);
-					}
-				}
+				if (body.isActive() || drawInactiveBodies) renderBody(body);
 			}
 		}
 
@@ -140,6 +110,37 @@ public class Box2DDebugRenderer {
 			drawContact(world.getContactList().get(i));
 		renderer.end();
 		if (Gdx.gl10 != null) Gdx.gl10.glPointSize(1);
+	}
+
+	protected void renderBody (Body body) {
+		Transform transform = body.getTransform();
+		int len = body.getFixtureList().size();
+		List<Fixture> fixtures = body.getFixtureList();
+		for (int i = 0; i < len; i++) {
+			Fixture fixture = fixtures.get(i);
+
+			if (drawBodies) {
+				if (body.isActive() == false)
+					drawShape(fixture, transform, SHAPE_NOT_ACTIVE);
+				else if (body.getType() == BodyType.StaticBody)
+					drawShape(fixture, transform, SHAPE_STATIC);
+				else if (body.getType() == BodyType.KinematicBody)
+					drawShape(fixture, transform, SHAPE_KINEMATIC);
+				else if (body.isAwake() == false)
+					drawShape(fixture, transform, SHAPE_NOT_AWAKE);
+				else
+					drawShape(fixture, transform, SHAPE_AWAKE);
+
+				if (drawVelocities) {
+					Vector2 position = body.getPosition();
+					drawSegment(position, body.getLinearVelocity().add(position), VELOCITY_COLOR);
+				}
+			}
+
+			if (drawAABBs) {
+				drawAABB(fixture, transform);
+			}
+		}
 	}
 
 	private void drawAABB (Fixture fixture, Transform transform) {
