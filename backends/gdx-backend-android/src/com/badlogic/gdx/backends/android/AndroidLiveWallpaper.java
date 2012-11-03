@@ -114,6 +114,10 @@ class AndroidLiveWallpaper implements Application {
 		else
 			firstResume = false;
 	}
+	
+	public void onDestroy() {
+		graphics.destroy();
+	}
 
 	public WallpaperService getService() {
 		return service;
