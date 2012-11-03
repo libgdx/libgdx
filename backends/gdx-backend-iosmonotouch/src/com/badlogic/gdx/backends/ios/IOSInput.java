@@ -308,7 +308,7 @@ public class IOSInput implements Input {
 					break;
 				}
 			}
-			touchEventPool.free(touchEvents);
+			touchEventPool.freeAll(touchEvents);
 			touchEvents.clear();
 		}
 	}

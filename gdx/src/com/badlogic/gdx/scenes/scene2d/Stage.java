@@ -74,23 +74,23 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Creates a stage with the specified {@link #setViewport(float, float, boolean) viewport}. The stage will use its own
 	 * {@link SpriteBatch}, which will be disposed when the stage is disposed. */
-	public Stage (float width, float height, boolean stretch) {
+	public Stage (float width, float height, boolean keepAspectRatio) {
 		batch = new SpriteBatch();
 		ownsBatch = true;
-		initialize(width, height, stretch);
+		initialize(width, height, keepAspectRatio);
 	}
 
 	/** Creates a stage with the specified {@link #setViewport(float, float, boolean) viewport} and {@link SpriteBatch}. This can be
 	 * used to avoid creating a new SpriteBatch (which can be somewhat slow) if multiple stages are used during an applications
 	 * life time.
 	 * @param batch Will not be disposed if {@link #dispose()} is called. Handle disposal yourself. */
-	public Stage (float width, float height, boolean stretch, SpriteBatch batch) {
+	public Stage (float width, float height, boolean keepAspectRatio, SpriteBatch batch) {
 		this.batch = batch;
 		ownsBatch = false;
-		initialize(width, height, stretch);
+		initialize(width, height, keepAspectRatio);
 	}
 
-	private void initialize (float width, float height, boolean stretch) {
+	private void initialize (float width, float height, boolean keepAspectRatio) {
 		this.width = width;
 		this.height = height;
 
@@ -98,7 +98,7 @@ public class Stage extends InputAdapter implements Disposable {
 		root.setStage(this);
 
 		camera = new OrthographicCamera();
-		setViewport(width, height, stretch);
+		setViewport(width, height, keepAspectRatio);
 	}
 
 	/** Sets the dimensions of the stage's viewport. The viewport covers the entire screen. If keepAspectRatio is false, the
