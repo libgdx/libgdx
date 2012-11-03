@@ -7,5 +7,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-freetype"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-image"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-bullet"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-gleed"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
