@@ -37,6 +37,7 @@ public class GestureDetector extends InputAdapter {
 	private boolean inTapSquare;
 	private int tapCount;
 	private long lastTapTime;
+	private float lastTapX, lastTapY;
 	boolean longPressFired;
 	private boolean pinching;
 	private boolean panning;
@@ -145,7 +146,7 @@ public class GestureDetector extends InputAdapter {
 		tracker.update(x, y, Gdx.input.getCurrentEventTime());
 
 		// check if we are still tapping.
-		if (inTapSquare && !isWithinTapSquare(x, y)) {
+		if (inTapSquare && !isWithinTapSquare(x, y, tapSquareCenterX, tapSquareCenterY)) {
 			longPressTask.cancel();
 			inTapSquare = false;
 		}
@@ -168,16 +169,18 @@ public class GestureDetector extends InputAdapter {
 		if (pointer > 1) return false;
 
 		// check if we are still tapping.
-		if (inTapSquare && !isWithinTapSquare(x, y)) inTapSquare = false;
+		if (inTapSquare && !isWithinTapSquare(x, y, tapSquareCenterX, tapSquareCenterY)) inTapSquare = false;
 
 		longPressTask.cancel();
 		panning = false;
 		if (longPressFired) return false;
 		if (inTapSquare) {
 			// handle taps
-			if (TimeUtils.nanoTime() - lastTapTime > tapCountInterval) tapCount = 0;
+			if (TimeUtils.nanoTime() - lastTapTime > tapCountInterval || !isWithinTapSquare(x, y, lastTapX, lastTapY)) tapCount = 0;
 			tapCount++;
 			lastTapTime = TimeUtils.nanoTime();
+			lastTapX = x;
+			lastTapY = y;
 			gestureStartTime = 0;
 			return listener.tap(x, y, tapCount, button);
 		} else if (pinching) {
@@ -226,8 +229,8 @@ public class GestureDetector extends InputAdapter {
 		inTapSquare = false;
 	}
 
-	private boolean isWithinTapSquare (float x, float y) {
-		return Math.abs(x - tapSquareCenterX) < tapSquareSize && Math.abs(y - tapSquareCenterY) < tapSquareSize;
+	private boolean isWithinTapSquare (float x, float y, float centerX, float centerY) {
+		return Math.abs(x - centerX) < tapSquareSize && Math.abs(y - centerY) < tapSquareSize;
 	}
 
 	public void setTapSquareSize (int tapSquareSize) {

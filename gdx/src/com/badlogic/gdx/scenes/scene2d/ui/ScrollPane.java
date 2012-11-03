@@ -323,13 +323,13 @@ public class ScrollPane extends WidgetGroup {
 					resetFade();
 					amountY += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountY / overscrollDistance)
 						* delta;
-					if (amountY > 0) amountY = 0;
+					if (amountY > 0) scrollY(0);
 				} else if (amountY > maxY) {
 					resetFade();
 					amountY -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -(maxY - amountY)
 						/ overscrollDistance)
 						* delta;
-					if (amountY < maxY) amountY = maxY;
+					if (amountY < maxY) scrollY(maxY);
 				}
 			}
 		}
@@ -427,14 +427,14 @@ public class ScrollPane extends WidgetGroup {
 			if (scrollY) maxX -= scrollbarWidth;
 		}
 		scrollX(MathUtils.clamp(amountX, 0, maxX));
-		amountY = MathUtils.clamp(amountY, 0, maxY);
+		scrollY(MathUtils.clamp(amountY, 0, maxY));
 
 		// Set the bounds and scroll knob sizes if scrollbars are needed.
 		if (scrollX) {
 			if (hScrollKnob != null) {
 				float hScrollHeight = style.hScroll != null ? style.hScroll.getMinHeight() : hScrollKnob.getMinHeight();
 				hScrollBounds.set(bgLeftWidth, bgBottomHeight, areaWidth, hScrollHeight);
-				hKnobBounds.width = Math.max(hScrollKnob.getMinWidth(), (int)(hScrollBounds.width * areaWidth / widget.getWidth()));
+				hKnobBounds.width = Math.max(hScrollKnob.getMinWidth(), (int)(hScrollBounds.width * areaWidth / widgetWidth));
 				hKnobBounds.height = hScrollKnob.getMinHeight();
 				hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getScrollPercentX());
 				hKnobBounds.y = hScrollBounds.y;
@@ -630,7 +630,7 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void setScrollY (float pixels) {
-		amountY = MathUtils.clamp(pixels, 0, maxY);
+		scrollY(MathUtils.clamp(pixels, 0, maxY));
 	}
 
 	/** Returns the y scroll position in pixels. */
@@ -659,7 +659,7 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void setScrollPercentY (float percentY) {
-		amountY = maxY * MathUtils.clamp(percentY, 0, 1);
+		scrollY(maxY * MathUtils.clamp(percentY, 0, 1));
 	}
 
 	public void setFlickScroll (boolean flickScroll) {

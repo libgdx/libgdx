@@ -189,7 +189,7 @@ public class DecalBatch implements Disposable {
 	/** Remove all decals from batch */
 	protected void clear () {
 		groupList.clear();
-		groupPool.free(usedGroups);
+		groupPool.freeAll(usedGroups);
 		usedGroups.clear();
 	}
 

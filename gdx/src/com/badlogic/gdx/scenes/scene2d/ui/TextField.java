@@ -429,7 +429,7 @@ public class TextField extends Widget {
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		final BitmapFont font = style.font;
-		final Color fontColor = style.fontColor;
+		final Color fontColor = disabled ? style.disabledFontColor : style.fontColor;
 		final Drawable selection = style.selection;
 		final Drawable cursorPatch = style.cursor;
 		final Drawable background = style.background;
@@ -799,7 +799,7 @@ public class TextField extends Widget {
 	 * @author Nathan Sweet */
 	static public class TextFieldStyle {
 		public BitmapFont font;
-		public Color fontColor;
+		public Color fontColor, disabledFontColor;
 		/** Optional. */
 		public Drawable background, cursor, selection;
 		/** Optional. */
@@ -825,6 +825,7 @@ public class TextField extends Widget {
 			this.cursor = style.cursor;
 			this.font = style.font;
 			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
+			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
 			this.selection = style.selection;
 		}
 	}

@@ -27,7 +27,7 @@ public class Pools {
 	 * @param array the array of items to free.
 	 * @param pool the pool that the items are to be released to. */
 	public static <T> void freeArrayToPool (Array<T> array, Pool<T> pool) {
-		pool.free(array);
+		pool.freeAll(array);
 		array.clear();
 	}
 
@@ -36,7 +36,7 @@ public class Pools {
 	 * @param array the array of items to (re)create.
 	 * @param pool the pool that the items are to be allocated from / released to.
 	 * @param size the array's capacity.
-	 * @return */
+	 * @return the input array */
 	@SuppressWarnings("unchecked")
 	public static <T> Array<T> makeArrayFromPool (Array<T> array, Pool<T> pool, int size) {
 		if (array == null) {
