@@ -1,4 +1,4 @@
-tiles.png
+gleed.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
