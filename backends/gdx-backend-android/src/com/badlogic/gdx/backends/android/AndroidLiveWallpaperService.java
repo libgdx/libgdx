@@ -29,7 +29,7 @@ import android.view.SurfaceHolder;
 public abstract class AndroidLiveWallpaperService extends WallpaperService {
 	final String TAG = "AndroidLiveWallpaperService";
 	AndroidWallpaperEngine previousEngine;
-	static boolean DEBUG = false;
+	static boolean DEBUG = true;
 
 	public AndroidLiveWallpaperService () {
 		super();
