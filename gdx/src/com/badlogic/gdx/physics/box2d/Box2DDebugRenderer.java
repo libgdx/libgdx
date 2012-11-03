@@ -45,12 +45,14 @@ public class Box2DDebugRenderer {
 	private boolean drawJoints;
 	private boolean drawAABBs;
 	private boolean drawInactiveBodies;
+	private boolean drawVelocities;
 
 	public Box2DDebugRenderer () {
-		this(true, true, false, true);
+		this(true, true, false, true, false);
 	}
 
-	public Box2DDebugRenderer (boolean drawBodies, boolean drawJoints, boolean drawAABBs, boolean drawInactiveBodies) {
+	public Box2DDebugRenderer (boolean drawBodies, boolean drawJoints, boolean drawAABBs, boolean drawInactiveBodies,
+		boolean drawVelocities) {
 		// next we setup the immediate mode renderer
 		renderer = new ShapeRenderer();
 
@@ -65,6 +67,7 @@ public class Box2DDebugRenderer {
 		this.drawJoints = drawJoints;
 		this.drawAABBs = drawAABBs;
 		this.drawInactiveBodies = drawInactiveBodies;
+		this.drawVelocities = drawVelocities;
 	}
 
 	/** This assumes that the projection matrix has already been set. */
@@ -80,6 +83,7 @@ public class Box2DDebugRenderer {
 	private final Color SHAPE_AWAKE = new Color(0.9f, 0.7f, 0.7f, 1);
 	private final Color JOINT_COLOR = new Color(0.5f, 0.8f, 0.8f, 1);
 	private final Color AABB_COLOR = new Color(1.0f, 0, 1.0f, 1f);
+	private final Color VELOCITY_COLOR = new Color(1.0f, 0, 0f, 1f);
 
 	private void renderBodies (World world) {
 		renderer.begin(ShapeType.Line);
@@ -107,6 +111,11 @@ public class Box2DDebugRenderer {
 							drawShape(fixture, transform, SHAPE_NOT_AWAKE);
 						else
 							drawShape(fixture, transform, SHAPE_AWAKE);
+
+						if (drawVelocities) {
+							Vector2 position = body.getPosition();
+							drawSegment(position, body.getLinearVelocity().add(position), VELOCITY_COLOR);
+						}
 					}
 
 					if (drawAABBs) {
@@ -325,6 +334,14 @@ public class Box2DDebugRenderer {
 
 	public void setDrawInactiveBodies (boolean drawInactiveBodies) {
 		this.drawInactiveBodies = drawInactiveBodies;
+	}
+
+	public boolean isDrawVelocities () {
+		return drawVelocities;
+	}
+
+	public void setDrawVelocities (boolean drawVelocities) {
+		this.drawVelocities = drawVelocities;
 	}
 
 	public static Vector2 getAxis () {
