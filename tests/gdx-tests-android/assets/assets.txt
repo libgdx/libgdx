@@ -108,6 +108,8 @@ b:data/uiskin.json
 i:data/uiskin.png
 t:data/verdana39.fnt
 i:data/verdana39.png
+t:data/verdana39distancefield.fnt
+i:data/verdana39distancefield.png
 b:data/walk1.md5anim
 i:data/walkanim.png
 i:data/wheel.png
