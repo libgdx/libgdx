@@ -95,6 +95,7 @@ import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ColorEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ConfigurableEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ConfigurableEffect.Value;
+import com.badlogic.gdx.tools.hiero.unicodefont.effects.DistanceFieldEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.EffectUtil;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.GradientEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.OutlineEffect;
@@ -187,6 +188,7 @@ public class Hiero extends JFrame {
 		effectsListModel.addElement(new OutlineWobbleEffect());
 		effectsListModel.addElement(new OutlineZigzagEffect());
 		effectsListModel.addElement(new ShadowEffect());
+		effectsListModel.addElement(new DistanceFieldEffect());
 		new EffectPanel(colorEffect);
 
 		addWindowListener(new WindowAdapter() {
@@ -894,7 +896,7 @@ public class Hiero extends JFrame {
 					effectsList = new JList();
 					effectsScroll.setViewportView(effectsList);
 					effectsList.setModel(effectsListModel);
-					effectsList.setVisibleRowCount(6);
+					effectsList.setVisibleRowCount(7);
 					effectsScroll.setMinimumSize(effectsList.getPreferredScrollableViewportSize());
 				}
 			}
