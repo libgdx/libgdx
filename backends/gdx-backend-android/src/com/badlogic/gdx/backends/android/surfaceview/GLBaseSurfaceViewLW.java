@@ -1197,7 +1197,7 @@ public class GLBaseSurfaceViewLW
 		}
 	}
 
-	static class GLThreadManager {
+	class GLThreadManager {
 
 		public synchronized void threadExiting (GLThread thread) {
 			if (LOG_THREADS) {
@@ -1216,7 +1216,7 @@ public class GLBaseSurfaceViewLW
 		 * 
 		 * @return true if the right to use an EGL surface was acquired.
 		 */
-		public boolean tryAcquireEglSurfaceLocked (GLThread thread) {
+		public synchronized boolean tryAcquireEglSurfaceLocked (GLThread thread) {
 			if (mEglOwner == thread || mEglOwner == null) {
 				mEglOwner = thread;
 				notifyAll();
@@ -1228,7 +1228,7 @@ public class GLBaseSurfaceViewLW
 		/*
 		 * Releases the EGL surface. Requires that we are already in the sGLThreadManager monitor when this is called.
 		 */
-		public void releaseEglSurfaceLocked (GLThread thread) {
+		public synchronized void releaseEglSurfaceLocked (GLThread thread) {
 			if (mEglOwner == thread) {
 				mEglOwner = null;
 			}
@@ -1238,7 +1238,7 @@ public class GLBaseSurfaceViewLW
 		private GLThread mEglOwner;
 	}
 
-	static final GLThreadManager sGLThreadManager = new GLThreadManager();
+	final GLThreadManager sGLThreadManager = new GLThreadManager();
 	boolean mSizeChanged = true;
 
 	private GLThread mGLThread;

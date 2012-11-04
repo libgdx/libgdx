@@ -308,7 +308,6 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	}
 
 	public AndroidGraphicsLiveWallpaper (AndroidLiveWallpaper app, boolean useGL2IfAvailable, ResolutionStrategy resolutionStrategy) {
-
 		view = createGLSurfaceView(app, useGL2IfAvailable, resolutionStrategy);
 		this.app = app;
 
@@ -388,11 +387,13 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			this.gl = gl10;
 			if (gl instanceof javax.microedition.khronos.opengles.GL11) {
 				String renderer = gl.glGetString(GL10.GL_RENDERER);
-				if (!renderer.toLowerCase().contains("pixelflinger")
-					&& !(android.os.Build.MODEL.equals("MB200") || android.os.Build.MODEL.equals("MB220") || android.os.Build.MODEL
-						.contains("Behold"))) {
-					gl11 = new AndroidGL11((javax.microedition.khronos.opengles.GL11)gl);
-					gl10 = gl11;
+				if(renderer != null) {
+					if (!renderer.toLowerCase().contains("pixelflinger")
+						&& !(android.os.Build.MODEL.equals("MB200") || android.os.Build.MODEL.equals("MB220") || android.os.Build.MODEL
+							.contains("Behold"))) {
+						gl11 = new AndroidGL11((javax.microedition.khronos.opengles.GL11)gl);
+						gl10 = gl11;
+					}
 				}
 			}
 		}

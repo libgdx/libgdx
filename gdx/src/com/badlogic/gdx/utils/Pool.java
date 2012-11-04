@@ -48,19 +48,21 @@ abstract public class Pool<T> {
 	}
 
 	/** Puts the specified object in the pool, making it eligible to be returned by {@link #obtain()}. If the pool already contains
-	 * {@link #max} free objects, the specified object is ignored. */
+	 * {@link #max} free objects, the specified object is reset but not added to the pool. */
 	public void free (T object) {
 		if (object == null) throw new IllegalArgumentException("object cannot be null.");
 		if (freeObjects.size < max) freeObjects.add(object);
 		if (object instanceof Poolable) ((Poolable)object).reset();
 	}
 
-	/** Puts the specified objects in the pool.
+	/** Puts the specified objects in the pool. Null objects within the array are silently ignored.
 	 * @see #free(Object) */
-	public void free (Array<T> objects) {
-		for (int i = 0, n = Math.min(objects.size, max - freeObjects.size); i < n; i++) {
+	public void freeAll (Array<T> objects) {
+		if (objects == null) throw new IllegalArgumentException("object cannot be null.");
+		for (int i = 0; i < objects.size; i++) {
 			T object = objects.get(i);
-			freeObjects.add(object);
+			if (object == null) continue;
+			if (freeObjects.size < max) freeObjects.add(object);
 			if (object instanceof Poolable) ((Poolable)object).reset();
 		}
 	}

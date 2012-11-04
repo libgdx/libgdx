@@ -29,6 +29,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.service.wallpaper.WallpaperService.Engine;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
@@ -42,6 +43,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService.AndroidWallpaperEngine;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.Pool;
 
@@ -125,14 +127,17 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	private SensorEventListener accelerometerListener;
 	private SensorEventListener compassListener;
 
-	public AndroidInput (Application activity, Context context, View view, AndroidApplicationConfiguration config) {
-		if(view != null) {
-			view.setOnKeyListener(this);
-			view.setOnTouchListener(this);
-			view.setFocusable(true);
-			view.setFocusableInTouchMode(true);
-			view.requestFocus();
-			view.requestFocusFromTouch();
+	public AndroidInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
+		// we hook into View, for LWPs we call onTouch below directly from
+		// within the AndroidLivewallpaperEngine#onTouchEvent() method.
+		if(view instanceof View) {
+			View v = (View)view;
+			v.setOnKeyListener(this);
+			v.setOnTouchListener(this);
+			v.setFocusable(true);
+			v.setFocusableInTouchMode(true);
+			v.requestFocus();
+			v.requestFocusFromTouch();
 		}
 		this.config = config;
 		this.onscreenKeyboard = new AndroidOnscreenKeyboard(context, new Handler(), this);
@@ -386,7 +391,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	@Override
 	public boolean onTouch (View view, MotionEvent event) {
-		if (requestFocus) {
+		if (requestFocus && view != null) {
 			view.requestFocus();
 			view.requestFocusFromTouch();
 			requestFocus = false;
@@ -402,6 +407,45 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Called in {@link AndroidLiveWallpaperService} on tap
+	 * @param x
+	 * @param y
+	 */
+	public void onTap(int x, int y) {
+		postTap(x, y);
+	}
+	
+	/**
+	 * Called in {@link AndroidLiveWallpaperService} on drop
+	 * @param x
+	 * @param y
+	 */
+	public void onDrop(int x, int y) {
+		postTap(x, y);
+	}
+	
+	protected void postTap(int x, int y) {
+		synchronized (this) {
+			TouchEvent event = usedTouchEvents.obtain();
+			event.timeStamp = System.nanoTime();
+			event.pointer = 0;
+			event.x = x;
+			event.y = y;
+			event.type = TouchEvent.TOUCH_DOWN;
+			touchEvents.add(event);
+			
+			event = usedTouchEvents.obtain();
+			event.timeStamp = System.nanoTime();
+			event.pointer = 0;
+			event.x = x;
+			event.y = y;
+			event.type = TouchEvent.TOUCH_UP;
+			touchEvents.add(event);
+		}
+		Gdx.app.getGraphics().requestRendering();
 	}
 
 	@Override

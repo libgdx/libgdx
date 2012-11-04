@@ -23,6 +23,9 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.tests.BulletTest;
 import com.badlogic.gdx.tests.ShapeRendererTest;
+import com.badlogic.gdx.tests.SpriteBatchShaderTest;
+import com.badlogic.gdx.tests.extensions.FreeTypeTest;
+import com.badlogic.gdx.tests.extensions.GLEEDTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
@@ -34,14 +37,9 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-image/libs/gdx-image-natives.jar").load("gdx-image");
 		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
 
-		GdxTest test = new BulletTest();
+		GdxTest test = new SpriteBatchShaderTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 800;
-		config.height = 600;
 		config.useGL20 = test.needsGL20();
-		config.vSyncEnabled = true;
-		config.resizable = true;
-		config.fullscreen = true;
 		new LwjglApplication(test, config);
 	}
 }

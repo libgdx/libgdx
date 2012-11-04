@@ -50,15 +50,13 @@ import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 /**
- * An implementation of the {@link Application} interface for Android. Create an
- * {@link Activity} that derives from this class. In the
- * {@link Activity#onCreate(Bundle)} method call the
- * {@link #initialize(ApplicationListener, boolean)} method specifying the
- * configuration for the GLSurfaceView.
+ * An implementation of the {@link Application} interface to be used with an
+ * AndroidLiveWallpaperService. Not directly constructable, instead the
+ * {@link AndroidLiveWallpaperService} will create this class internally.
  * 
  * @author mzechner
  */
-public class AndroidLiveWallpaper implements Application {
+class AndroidLiveWallpaper implements Application {
 	static {
 		GdxNativesLoader.load();
 	}
@@ -81,36 +79,6 @@ public class AndroidLiveWallpaper implements Application {
 		this.engine = engine;
 	}
 	
-	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
-	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. Uses a default {@link AndroidApplicationConfiguration}.
-	 * 
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available. */
-	public void initialize (ApplicationListener listener, boolean useGL2IfAvailable) {
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = useGL2IfAvailable;
-		initialize(listener, config);
-	}
-
-	/**
-	 * This method has to be called in the {@link Activity#onCreate(Bundle)}
-	 * method. It sets up all the things necessary to get input, render via
-	 * OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication
-	 * will try to create an OpenGL ES 2.0 context which can then be used via
-	 * {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces
-	 * should not be used when OpenGL ES 2.0 is enabled. To query whether
-	 * enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. sleepTime specifies the number
-	 * of milliseconds to sleep in the touch event handler. This may be used on
-	 * <= 1.6 Android devices. Note that it will not solve the CPU usage problem
-	 * of the event handler of the Android system. Things will still slow down.
-	 * 
-	 * @param listener
-	 *            the {@link ApplicationListener} implementing the program logic
-	 */
 	public void initialize(ApplicationListener listener, AndroidApplicationConfiguration config) {
 		graphics = new AndroidGraphicsLiveWallpaper(this, config.useGL20, config.resolutionStrategy==null?new FillResolutionStrategy():config.resolutionStrategy);
 		input = new AndroidInput(this, this.getService(), null, config);
@@ -145,6 +113,10 @@ public class AndroidLiveWallpaper implements Application {
 			graphics.resume();
 		else
 			firstResume = false;
+	}
+	
+	public void onDestroy() {
+		graphics.destroy();
 	}
 
 	public WallpaperService getService() {

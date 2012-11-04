@@ -63,4 +63,7 @@ public class AndroidApplicationConfiguration {
 
 	/** the {@link ResolutionStrategy}. default: {@link FillResolutionStrategy} **/
 	public ResolutionStrategy resolutionStrategy = new FillResolutionStrategy();
+	
+	/** if the app is a livewallpaper, whether it should get full touch events **/
+	public boolean getTouchEventsForLiveWallpaper = false; 
 }
