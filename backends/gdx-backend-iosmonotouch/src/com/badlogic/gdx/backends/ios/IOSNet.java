@@ -33,21 +33,11 @@ public class IOSNet implements Net {
 	}
 	
 	@Override
-	public HttpRequest createHttpRequest (String httpMethod) {
-		return null;
-	}
-	
-	@Override
-	public void processHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResultListener) {
+	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResultListener) {
 		// FIXME implement this
 		throw new UnsupportedOperationException("Not implemented");
 	}
 	
-	@Override
-	public void processHttpRequest (HttpRequest httpRequest) {
-		throw new UnsupportedOperationException("Not implemented");
-	}
-
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
 		return new IOSServerSocket(protocol, port, hints);

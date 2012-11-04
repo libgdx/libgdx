@@ -33,12 +33,11 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
  * communication.</p>
  * 
- * To perform an HTTP GET or POST request first create a {@link HttpRequest} using {@link #createHttpRequest(String)} specifying
- * the corresponding HTTP method (see {@link HttpMethods} for common methods) you want to use and then invoke the method
- * {@link #processHttpRequest(HttpRequest, HttpResponseListener)}. This will return a {@link HttpResponse} which provides methods
- * to query the progress and data returned by the operations. The {@link HttpResponse} works like a {@link Future} in that the
- * operation is executed asynchronously, while the API client can use the {@link HttpResponse} to poll for the status and result
- * of the operation.</p>
+ * To perform an HTTP GET or POST request first create a {@link HttpRequest} specifying the corresponding HTTP method (see
+ * {@link HttpMethods} for common methods)and then invoke the method {@link #sendHttpRequest(HttpRequest, HttpResponseListener)}.
+ * This will return a {@link HttpResponse} which provides methods to query the progress and data returned by the operations. The
+ * {@link HttpResponse} works like a {@link Future} in that the operation is executed asynchronously, while the API client can use
+ * the {@link HttpResponse} to poll for the status and result of the operation.</p>
  * 
  * To create a TCP client socket to communicate with a remote TCP server, invoke the
  * {@link #newClientSocket(Protocol, String, int, SocketHints)} method. The returned {@link Socket} offers an {@link InputStream}
@@ -49,7 +48,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * {@link ServerSocket#accept(SocketHints options)} method that waits for an incoming connection.
  * 
  * @author mzechner
- * @author noblemaster */
+ * @author noblemaster
+ * @author acoppes */
 public interface Net {
 
 	/** {@link Future} like interface used with the HTTP get and post methods. Allows to cancel the operation, get it's current
@@ -57,29 +57,19 @@ public interface Net {
 	 * 
 	 * @author mzechner */
 	public interface HttpResponse {
-		/** @return true in case the operation was completed normally or abnormally (cancelled, exception). */
-		public boolean isDone ();
-
-		/** @return true in case the operation was cancelled or terminated abnormally, e.g. due to an exception. */
-		public boolean isAborted ();
-
-		/** @return an estimate of the progress as a number between 0.0 and 1.0. This estimate might be unreliable. */
-		public float getProgress ();
-
-		/** Cancels the operation. If the operation was already canceled or completed, this method has no effect. The operation will
-		 * not block. This method may or may not work depending on the implementation of the operation. */
-		public void cancel ();
-
 		/** @param timeOut the number of milliseconds to wait before giving up, 0 to block until the operation is done
 		 * @return the result as a byte array or null in case of a timeout or if the operation was canceled/terminated abnormally. */
-		public byte[] getResult (int timeOut);
+		byte[] getResult (int timeOut);
 
 		/** @param timeOut the number of milliseconds to wait before giving up, 0 to block until the operation is done
 		 * @return the result as a string or null in case of a timeout or if the operation was canceled/terminated abnormally. */
-		public String getResultAsString (int timeOut);
+		String getResultAsString (int timeOut);
+
+		/** @return An {@link InputStream} with the {@link HttpResponse} data. */
+		InputStream getResultAsStream ();
 
 		/** Returns the status code of the HTTP request in case the logic could depend on the result. */
-		public int getStatusCode ();
+		int getStatusCode ();
 
 	}
 
@@ -91,20 +81,23 @@ public interface Net {
 
 	}
 
-	/** Abstracts the concept of different types of HTTP Request, create it using {@link Net#createHttpRequest(String)}:
+	/** Abstracts the concept of a HTTP Request:
 	 * 
 	 * <pre>
-	 * HttpRequest httpGet = Gdx.net.createHttpRequest (HttpMethods.Get);
+	 * HttpRequest httpGet = new HttpRequest(HttpMethods.Get);
 	 * httpGet.setUrl("http://somewhere.net");
 	 * ...
-	 * HttpResponse httpResponse = Gdx.net.processHttpRequest (httpGet);
+	 * HttpResponse httpResponse = Gdx.net.sendHttpRequest (httpGet);
 	 * </pre> */
 	public static class HttpRequest {
 
 		private final String httpMethod;
 		private String url;
-		private byte[] content;
 		private Map<String, String> headers;
+		private long timeOut;
+
+		private byte[] content;
+		private InputStream contentStream;
 
 		public HttpRequest (String httpMethod) {
 			this.httpMethod = httpMethod;
@@ -131,6 +124,16 @@ public interface Net {
 			this.content = content;
 		}
 
+		public void setContent (InputStream contentStream) {
+			this.contentStream = contentStream;
+		}
+
+		/** Sets the time to wait for the HTTP request to be processed, use 0 block until it is done.
+		 * @param timeOut the number of milliseconds to wait before giving up, 0 to block until the operation is done */
+		public void setTimeOut (long timeOut) {
+			this.timeOut = timeOut;
+		}
+
 		/** Returns the HTTP method of the HttpRequest. */
 		public String getMethod () {
 			return httpMethod;
@@ -139,31 +142,25 @@ public interface Net {
 	}
 
 	/** Listener to be able to do custom logic once the HTTP response is ready to be processed, register it with
-	 * {@link Net#processHttpRequest(HttpRequest, HttpResponseListener)}.
+	 * {@link Net#sendHttpRequest(HttpRequest, HttpResponseListener)}.
 	 * @author acoppes */
 	public static interface HttpResponseListener {
 
-		/** Called when the HTTP request has data to be processed.
+		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready.
 		 * @param httpResponse The {@link HttpResponse} with information to be used. */
 		void handleHttpResponse (HttpResponse httpResponse);
 
-	}
+		/** Called if the {@link HttpRequest} was cancelled, probably because of a timeout. */
+		void cancelled ();
 
-	/** Returns a new {@link HttpRequest} for the given HTTP method.
-	 * @param httpMethod The String representing the HTTP method for the HTTP request (see {@link HttpMethods} for common methods).
-	 * @return a new instance of a {@link HttpRequest} for the given HTTP method. */
-	public HttpRequest createHttpRequest (String httpMethod);
+	}
 
 	/** Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified {@link HttpResponseListener}
 	 * .
 	 * @param httpRequest The {@link HttpRequest} to be performed.
 	 * @param httpResponseListener The {@link HttpResponseListener} to call once the HTTP response is ready to be processed. Could
 	 *           be null, in that case no listener is called. */
-	public void processHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener);
-
-	/** Process the specified {@link HttpRequest}.
-	 * @param httpRequest The {@link HttpRequest} to be performed. */
-	public void processHttpRequest (HttpRequest httpRequest);
+	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener);
 
 	/** Protocol used by {@link Net#newServerSocket(Protocol, int, ServerSocketHints)} and
 	 * {@link Net#newClientSocket(Protocol, String, int, SocketHints)}.

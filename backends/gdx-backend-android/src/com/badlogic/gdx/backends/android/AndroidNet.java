@@ -36,17 +36,7 @@ public class AndroidNet implements Net {
 	}
 
 	@Override
-	public HttpRequest createHttpRequest (String httpMethod) {
-		return null;
-	}
-
-	@Override
-	public void processHttpRequest (HttpRequest httpRequest) {
-		throw new UnsupportedOperationException("Not implemented");
-	}
-
-	@Override
-	public void processHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResultListener) {
+	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResultListener) {
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
