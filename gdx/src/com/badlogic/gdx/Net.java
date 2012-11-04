@@ -52,25 +52,23 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author acoppes */
 public interface Net {
 
-	/** {@link Future} like interface used with the HTTP get and post methods. Allows to cancel the operation, get it's current
-	 * progress and return the result as a byte array or string. Implementations must be thread-safe.
-	 * 
+	/** HTTP response interface with methods to get the response data as a byte[], a {@link String} or an {@link InputStream}.
 	 * @author mzechner */
 	public interface HttpResponse {
-		/** @param timeOut the number of milliseconds to wait before giving up, 0 to block until the operation is done
-		 * @return the result as a byte array or null in case of a timeout or if the operation was canceled/terminated abnormally. */
-		byte[] getResult (int timeOut);
+		/** Returns the data of the HTTP response as a byte[].
+		 * @return the result as a byte[] or null in case of a timeout or if the operation was canceled/terminated abnormally. */
+		byte[] getResult ();
 
-		/** @param timeOut the number of milliseconds to wait before giving up, 0 to block until the operation is done
+		/** Returns the data of the HTTP response as a {@link String}.
 		 * @return the result as a string or null in case of a timeout or if the operation was canceled/terminated abnormally. */
-		String getResultAsString (int timeOut);
+		String getResultAsString ();
 
-		/** @return An {@link InputStream} with the {@link HttpResponse} data. */
+		/** Returns the data of the HTTP response as an {@link InputStream}.
+		 * @return An {@link InputStream} with the {@link HttpResponse} data. */
 		InputStream getResultAsStream ();
 
 		/** Returns the status code of the HTTP request in case the logic could depend on the result. */
 		int getStatusCode ();
-
 	}
 
 	/** The HTTP method to use with a HTTP Request. */
@@ -142,13 +140,16 @@ public interface Net {
 	}
 
 	/** Listener to be able to do custom logic once the HTTP response is ready to be processed, register it with
-	 * {@link Net#sendHttpRequest(HttpRequest, HttpResponseListener)}.
-	 * @author acoppes */
+	 * {@link Net#sendHttpRequest(HttpRequest, HttpResponseListener)}. */
 	public static interface HttpResponseListener {
 
 		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready.
 		 * @param httpResponse The {@link HttpResponse} with information to be used. */
 		void handleHttpResponse (HttpResponse httpResponse);
+
+		/** Called if there was an error (statusCode 4xx or 5xx) when processing the {@link HttpRequest}.
+		 * @param httpResponse The {@link HttpResponse} with information about the HTTP response, included the statusCode. */
+		void error (HttpResponse httpResponse);
 
 		/** Called if the {@link HttpRequest} was cancelled, probably because of a timeout. */
 		void cancelled ();
