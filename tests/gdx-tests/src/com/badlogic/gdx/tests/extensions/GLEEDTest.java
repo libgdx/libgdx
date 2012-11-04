@@ -35,6 +35,7 @@ public class GLEEDTest extends GdxTest {
 		manager = new AssetManager();
 		camera = new OrthographicCamera(640, 480);
 		camera.setToOrtho(false, 640, 480);
+		camera.zoom = 2.0f;
 		LevelLoader.setLoggingLevel(Logger.INFO);
 		manager.setLoader(Level.class, new LevelLoader(new InternalFileHandleResolver()));
 		manager.load("data/gleedtest.xml", Level.class);
@@ -54,24 +55,24 @@ public class GLEEDTest extends GdxTest {
 			renderer.render(camera);
 			
 			if (Gdx.input.isKeyPressed(Keys.UP)) {
-				camera.position.y += 0.2f;
+				camera.position.y += 5.0f;
 			}
 			else if (Gdx.input.isKeyPressed(Keys.DOWN)) {
-				camera.position.y -= 0.2f;
+				camera.position.y -= 5.0f;
 			}
 			
 			if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-				camera.position.x += 0.2f;
+				camera.position.x += 5.0f;
 			}
 			else if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-				camera.position.x -= 0.2f;
+				camera.position.x -= 5.0f;
 			}
 			
 			if (Gdx.input.isKeyPressed(Keys.A)) {
-				camera.zoom += 0.2f;
+				camera.zoom += 0.05f;
 			}
 			else if (Gdx.input.isKeyPressed(Keys.S)) {
-				camera.zoom -= 0.2f;
+				camera.zoom -= 0.05f;
 			}
 		}
 	}
