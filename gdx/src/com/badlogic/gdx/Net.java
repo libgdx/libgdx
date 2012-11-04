@@ -66,9 +66,6 @@ public interface Net {
 		/** Returns the data of the HTTP response as an {@link InputStream}.
 		 * @return An {@link InputStream} with the {@link HttpResponse} data. */
 		InputStream getResultAsStream ();
-
-		/** Returns the status code of the HTTP request in case the logic could depend on the result. */
-		int getStatusCode ();
 	}
 
 	/** The HTTP method to use with a HTTP Request. */
@@ -144,12 +141,12 @@ public interface Net {
 	public static interface HttpResponseListener {
 
 		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready.
-		 * @param httpResponse The {@link HttpResponse} with information to be used. */
-		void handleHttpResponse (HttpResponse httpResponse);
-
-		/** Called if there was an error (statusCode 4xx or 5xx) when processing the {@link HttpRequest}.
-		 * @param httpResponse The {@link HttpResponse} with information about the HTTP response, included the statusCode. */
-		void error (HttpResponse httpResponse);
+		 * @param httpResponse The {@link HttpResponse} with the HTTP response values.
+		 * @param statusCode Indicates the status code of the HTTP response (see <a
+		 *           href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">HTTP/1.1: Status Code Definitions</a> for more
+		 *           information about possible status codes). To simplify, 4xx and 5xx indicates client and server errors,
+		 *           respectively and 2xx status codes indicates success. */
+		void handleHttpResponse (HttpResponse httpResponse, int statusCode);
 
 		/** Called if the {@link HttpRequest} was cancelled, probably because of a timeout. */
 		void cancelled ();
