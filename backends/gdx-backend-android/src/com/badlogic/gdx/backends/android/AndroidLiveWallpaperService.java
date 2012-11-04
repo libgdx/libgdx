@@ -100,11 +100,12 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 				Log.d(TAG, " > onCommand(" + pAction + " " + pX + " " + pY + " " + pZ + " " + pExtras + " "
 					+ pResultRequested + ")");
 
-			if (pAction.equals(WallpaperManager.COMMAND_TAP)) {
-				app.input.onTap(pX, pY);
-			} else if (pAction.equals(WallpaperManager.COMMAND_DROP)) {
-				app.input.onDrop(pX, pY);
-			}
+			// FIXME
+//			if (pAction.equals(WallpaperManager.COMMAND_TAP)) {
+//				app.input.onTap(pX, pY);
+//			} else if (pAction.equals(WallpaperManager.COMMAND_DROP)) {
+//				app.input.onDrop(pX, pY);
+//			}
 			return super.onCommand(pAction, pX, pY, pZ, pExtras, pResultRequested);
 		}
 
