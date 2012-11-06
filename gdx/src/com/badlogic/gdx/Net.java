@@ -142,6 +142,21 @@ public interface Net {
 			return url;
 		}
 
+		/** Returns the content as byte[], if it was set. */
+		public byte[] getContent () {
+			return content;
+		}
+
+		/** Returns the content as stream, if it was set. */
+		public InputStream getContentStream () {
+			return contentStream;
+		}
+
+		/** Returns a Map<String, String> with the headers of the HTTP request. */
+		public Map<String, String> getHeaders () {
+			return headers;
+		}
+
 	}
 
 	/** Listener to be able to do custom logic once the {@link HttpResponse} is ready to be processed, register it with
@@ -156,8 +171,10 @@ public interface Net {
 		 *           information about HTTP status codes). */
 		void handleHttpResponse (HttpResponse httpResponse, int statusCode);
 
-		/** Called if the {@link HttpRequest} was cancelled, probably because of a timeout. */
-		void cancelled ();
+		/** Called if the {@link HttpRequest} failed because an exception when processing the HTTP request, could be a timeout any
+		 * other reason (not an HTTP error).
+		 * @param t If the HTTP request failed because an Exception, t encapsulates it to give more information. */
+		void failed (Throwable t);
 
 	}
 
