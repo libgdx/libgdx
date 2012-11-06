@@ -27,12 +27,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.box2d.Box2DTest;
 import com.badlogic.gdx.tests.bullet.BulletTest;
 import com.badlogic.gdx.tests.bullet.ConstraintsTest;
+import com.badlogic.gdx.tests.bullet.MeshShapeTest;
 import com.badlogic.gdx.tests.bullet.ShootTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** @author xoppa */
 public class BulletTestCollection extends GdxTest implements InputProcessor, GestureListener {
-	private final BulletTest[] tests = {new ShootTest(), new ConstraintsTest()};
+	private final BulletTest[] tests = {new ShootTest(), new ConstraintsTest(), new MeshShapeTest()};
 	
 	private int testIndex = 0;
 	
@@ -62,6 +63,8 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 	public void next() {
 		app.log("TestCollection", "disposing test '" + tests[testIndex].getClass().getName());
 		tests[testIndex].dispose();
+		// This would be a good time for GC to kick in.
+		System.gc();
 		testIndex++;
 		if (testIndex >= tests.length) testIndex = 0;
 		tests[testIndex].create();
