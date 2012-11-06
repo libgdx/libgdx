@@ -21,6 +21,11 @@ public class Circle implements Serializable {
 	public float x, y;
 	public float radius;
 
+	/** Constructs a new circle with all values set to zero */
+	public Circle () {
+
+	}
+
 	public Circle (float x, float y, float radius) {
 		this.x = x;
 		this.y = y;
