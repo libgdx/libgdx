@@ -33,11 +33,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
  * communication.</p>
  * 
- * To perform an HTTP GET or POST request first create a {@link HttpRequest} specifying the corresponding HTTP method (see
- * {@link HttpMethods} for common methods)and then invoke the method {@link #sendHttpRequest(HttpRequest, HttpResponseListener)}.
- * This will return a {@link HttpResponse} which provides methods to query the progress and data returned by the operations. The
- * {@link HttpResponse} works like a {@link Future} in that the operation is executed asynchronously, while the API client can use
- * the {@link HttpResponse} to poll for the status and result of the operation.</p>
+ * To perform an HTTP request create a {@link HttpRequest} with the HTTP method (see {@link HttpMethods} for common methods) and
+ * invoke {@link #sendHttpRequest(HttpRequest, HttpResponseListener)} with it and a {@link HttpResponseListener}. After the HTTP
+ * request was processed, the {@link HttpResponseListener} is called with a {@link HttpResponse} with the HTTP response values and
+ * an status code to determine if the request was successful or not.
  * 
  * To create a TCP client socket to communicate with a remote TCP server, invoke the
  * {@link #newClientSocket(Protocol, String, int, SocketHints)} method. The returned {@link Socket} offers an {@link InputStream}
@@ -52,15 +51,16 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author acoppes */
 public interface Net {
 
-	/** HTTP response interface with methods to get the response data as a byte[], a {@link String} or an {@link InputStream}.
-	 * @author mzechner */
+	/** HTTP response interface with methods to get the response data as a byte[], a {@link String} or an {@link InputStream}. */
 	public interface HttpResponse {
 		/** Returns the data of the HTTP response as a byte[].
-		 * @return the result as a byte[] or null in case of a timeout or if the operation was canceled/terminated abnormally. */
+		 * @return the result as a byte[] or null in case of a timeout or if the operation was canceled/terminated abnormally. The
+		 *         timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(long)} */
 		byte[] getResult ();
 
 		/** Returns the data of the HTTP response as a {@link String}.
-		 * @return the result as a string or null in case of a timeout or if the operation was canceled/terminated abnormally. */
+		 * @return the result as a string or null in case of a timeout or if the operation was canceled/terminated abnormally. The
+		 *         timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(long)} */
 		String getResultAsString ();
 
 		/** Returns the data of the HTTP response as an {@link InputStream}.
@@ -68,10 +68,11 @@ public interface Net {
 		InputStream getResultAsStream ();
 	}
 
-	/** The HTTP method to use with a HTTP Request. */
+	/** Provides common HTTP methods to use when creating a {@link HttpRequest}. */
 	public static interface HttpMethods {
 
 		public static final String GET = "GET";
+
 		public static final String POST = "POST";
 
 	}
@@ -105,7 +106,7 @@ public interface Net {
 			this.url = url;
 		}
 
-		/** Adds a header to this HTTP request. Headers definition could be found at <a
+		/** Sets a header to this HTTP request. Headers definition could be found at <a
 		 * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP/1.1: Header Field Definitions</a> document.
 		 * @param name the name of the header.
 		 * @param value the value of the header. */
@@ -119,6 +120,8 @@ public interface Net {
 			this.content = content;
 		}
 
+		/** In case the HttpRequest method is POST you can set the content to send with it.
+		 * @param contentStream An {@link InputStream} containing the data to send with the HTTP POST request. */
 		public void setContent (InputStream contentStream) {
 			this.contentStream = contentStream;
 		}
@@ -134,18 +137,23 @@ public interface Net {
 			return httpMethod;
 		}
 
+		/** Returns the URL of the HTTP request. */
+		public String getUrl () {
+			return url;
+		}
+
 	}
 
-	/** Listener to be able to do custom logic once the HTTP response is ready to be processed, register it with
+	/** Listener to be able to do custom logic once the {@link HttpResponse} is ready to be processed, register it with
 	 * {@link Net#sendHttpRequest(HttpRequest, HttpResponseListener)}. */
 	public static interface HttpResponseListener {
 
 		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready.
 		 * @param httpResponse The {@link HttpResponse} with the HTTP response values.
-		 * @param statusCode Indicates the status code of the HTTP response (see <a
+		 * @param statusCode Indicates the status code of the HTTP response, normally 2xx status codes indicate success while 4xx
+		 *           and 5xx indicate client and server errors, respectively (see <a
 		 *           href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">HTTP/1.1: Status Code Definitions</a> for more
-		 *           information about possible status codes). To simplify, 4xx and 5xx indicates client and server errors,
-		 *           respectively and 2xx status codes indicates success. */
+		 *           information about HTTP status codes). */
 		void handleHttpResponse (HttpResponse httpResponse, int statusCode);
 
 		/** Called if the {@link HttpRequest} was cancelled, probably because of a timeout. */
