@@ -49,7 +49,7 @@ public class ConstraintsTest extends BaseBulletTest {
 		
 		// Create the entities
 		world.add("ground", 0f, 0f, 0f)
-			.color.set(0.5f * (float)Math.random(), 0.5f * (float)Math.random(), 0.5f * (float)Math.random(), 1f);
+			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		Entity bar = world.add("bar", 0f, 7f, 0f);
 		bar.color.set(0.75f + 0.25f * (float)Math.random(), 0.75f + 0.25f * (float)Math.random(), 0.75f + 0.25f * (float)Math.random(), 1f);

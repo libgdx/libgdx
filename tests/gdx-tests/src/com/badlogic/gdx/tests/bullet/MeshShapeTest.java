@@ -50,41 +50,30 @@ import com.badlogic.gdx.utils.XmlReader.Element;
 /** @author xoppa */
 public class MeshShapeTest extends BaseBulletTest {
 
-	Mesh sphere;
-	Mesh scene;
-	
 	@Override
 	public void create () {
 		super.create();
 		
-		sphere = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
-		sphere.scale(0.25f, 0.25f, 0.25f);
+		final Mesh sphereMesh = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
+		sphereMesh.scale(0.25f, 0.25f, 0.25f);
 
-		scene = ObjLoader.loadObj(Gdx.files.internal("data/scene.obj").read(), true, true); // we need indices for this test
+		final Mesh sceneMesh = ObjLoader.loadObj(Gdx.files.internal("data/scene.obj").read(), true, true); // we need indices for this test
 		
-		world.constructors.put("sphere", new Entity.ConstructInfo(sphere, 1f, new btSphereShape(sphere.calculateBoundingBox().getDimensions().x * 0.5f)));
-		world.constructors.put("scene", new Entity.ConstructInfo(scene, 0f, createMeshShape(scene)));
+		world.constructors.put("sphere", new Entity.ConstructInfo(sphereMesh, 1f, new btSphereShape(sphereMesh.calculateBoundingBox().getDimensions().x * 0.5f)));
+		world.constructors.put("scene", new Entity.ConstructInfo(sceneMesh, 0f, createMeshShape(sceneMesh)));
 		
-		Entity s = world.add("scene", 0f, 3f, 0f);
-		s.color.set(0.5f * (float)Math.random(), 0.5f * (float)Math.random(), 0.5f * (float)Math.random(), 1f);
-		s.worldTransform.transform.rotate(Vector3.Y, -90);
+		Entity scene = world.add("scene", 0f, 3f, 0f);
+		scene.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+		scene.worldTransform.transform.rotate(Vector3.Y, -90);
 		// Since the transform is changed, it's needed to apply it again.
-		s.body.setMotionState(s.worldTransform);
-		
+		scene.body.setMotionState(scene.worldTransform);
+
 		for (float x = -3; x < 7; x++) {
 			for (float z = -5; z < 5; z++) {
 				world.add("sphere", x, 10f, z)
 					.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 			}
 		}
-	}
-
-	@Override
-	public void render () {
-		super.render();
-		
-		//sphere.render(GL10.GL_TRIANGLES);
-		//scene.render(GL10.GL_TRIANGLES);
 	}
 	
 	@Override

@@ -38,7 +38,7 @@ public class ShootTest extends BaseBulletTest {
 
 		// Create the entities
 		world.add("ground", 0f, 0f, 0f)
-			.color.set(0.5f * (float)Math.random(), 0.5f * (float)Math.random(), 0.5f * (float)Math.random(), 1f);
+			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 
 		for (int x = 0; x < BOXCOUNT_X; x++) {
 			for (int y = 0; y < BOXCOUNT_Y; y++) {
