@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.tests;
+package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -38,37 +38,30 @@ import com.badlogic.gdx.physics.bullet.btRigidBody;
 import com.badlogic.gdx.physics.bullet.btRigidBodyConstructionInfo;
 import com.badlogic.gdx.physics.bullet.btSequentialImpulseConstraintSolver;
 import com.badlogic.gdx.physics.bullet.btTransform;
-import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** @author xoppa */
-public class BulletTest extends GdxTest {
-
+public class BaseBulletTest extends BulletTest {
 	static {
 		new SharedLibraryLoader().load("gdx-bullet");
 	}
-
-	final int BOXCOUNT_X = 5;
-	final int BOXCOUNT_Y = 5;
-	final int BOXCOUNT_Z = 1;
-
-	final float BOXOFFSET_X = -2.5f;
-	final float BOXOFFSET_Y = 0.5f;
-	final float BOXOFFSET_Z = 0f;
-
+	
 	final float lightAmbient[] = new float[] {0.4f, 0.4f, 0.4f, 1f};
 	final float lightPosition[] = new float[] {10f, 10f, 0f, 100f};
 	final float lightDiffuse[] = new float[] {1f, 1f, 1f, 1f};
 
 	PerspectiveCamera camera;
 	World world;
-
+	
 	@Override
-	public void resize (int width, int height) {
-		super.resize(width, height);
+	public void create () {
+		world = new World();
+
+		final float width = Gdx.graphics.getWidth();
+		final float height = Gdx.graphics.getHeight();
 		if (width > height)
 			camera = new PerspectiveCamera(67f, 3f * width / height, 3f);
 		else
@@ -76,32 +69,7 @@ public class BulletTest extends GdxTest {
 		camera.position.set(10f, 10f, 10f);
 		camera.lookAt(0, 0, 0);
 		camera.update();
-	}
-
-	@Override
-	public void render () {
-		GL10 gl = Gdx.gl10;
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		gl.glEnable(GL10.GL_DEPTH_TEST);
-		gl.glDepthFunc(GL10.GL_LEQUAL);
-		gl.glEnable(GL10.GL_COLOR_MATERIAL);
-		gl.glEnable(GL10.GL_LIGHTING);
-		gl.glEnable(GL10.GL_LIGHT0);
-		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
-		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);
-		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
-
-		camera.apply(Gdx.gl10);
 		
-		world.update();
-	}
-
-	@Override
-	public void create () {
-		world = new World();
-		
-		Gdx.input.setInputProcessor(this);
-
 		// Create some simple meshes
 		final Mesh groundMesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
 			Usage.ColorPacked, 4, "a_color"));
@@ -128,42 +96,41 @@ public class BulletTest extends GdxTest {
 		// Add the constructers
 		world.constructors.put("ground", new Entity.ConstructInfo(groundMesh, 0f)); // mass = 0: static body
 		world.constructors.put("box", new Entity.ConstructInfo(boxMesh, 1f)); // mass = 1kg: dynamic body
-
-		// Create the entities
-		world.add("ground", 0f, 0f, 0f);
-
-		for (int x = 0; x < BOXCOUNT_X; x++) {
-			for (int y = 0; y < BOXCOUNT_Y; y++) {
-				for (int z = 0; z < BOXCOUNT_Z; z++) {
-					world.add("box", BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z);
-				}
-			}
-		}
 	}
-
-	@Override
-	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-		// Shoot a box
-		Ray ray = camera.getPickRay(screenX, screenY);
-		Entity entity = world.add("box", ray.origin.x, ray.origin.y, ray.origin.z);
-		entity.body.applyCentralImpulse(ray.direction.mul(30f));
-
-		return super.touchUp(screenX, screenY, pointer, button);
-	}
-
+	
 	@Override
 	public void dispose () {
 		world.dispose();
 		
 		super.dispose();
 	}
-
+	
 	@Override
-	public boolean needsGL20 () {
-		return false;
+	public void render () {
+		GL10 gl = Gdx.gl10;
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		gl.glEnable(GL10.GL_DEPTH_TEST);
+		gl.glDepthFunc(GL10.GL_LEQUAL);
+		gl.glEnable(GL10.GL_COLOR_MATERIAL);
+		gl.glEnable(GL10.GL_LIGHTING);
+		gl.glEnable(GL10.GL_LIGHT0);
+		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
+		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);
+		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
+
+		camera.apply(Gdx.gl10);
+		
+		world.update();
 	}
 	
-	static class World implements Disposable {
+	public void shoot(final float x, final float y) {
+		// Shoot a box
+		Ray ray = camera.getPickRay(x, y);
+		Entity entity = world.add("box", ray.origin.x, ray.origin.y, ray.origin.z);
+		entity.body.applyCentralImpulse(ray.direction.mul(30f));
+	}
+	
+	public static class World implements Disposable {
 		public ObjectMap<String, Entity.ConstructInfo> constructors = new ObjectMap<String, Entity.ConstructInfo>();
 		public Array<Entity> entities = new Array<Entity>();
 		
@@ -230,7 +197,7 @@ public class BulletTest extends GdxTest {
 		}
 	}
 
-	static class Entity implements Disposable {
+	public static class Entity implements Disposable {
 		public WorldTransform worldTransform;
 		public btRigidBody body;
 		public Mesh mesh;
