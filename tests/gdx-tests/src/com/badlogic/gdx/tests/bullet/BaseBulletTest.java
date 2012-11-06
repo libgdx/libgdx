@@ -71,20 +71,13 @@ public class BaseBulletTest extends BulletTest {
 		camera.update();
 		
 		// Create some simple meshes
-		final Mesh groundMesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
-			Usage.ColorPacked, 4, "a_color"));
-		groundMesh.setVertices(new float[] {20f, 0f, 20f, Color.toFloatBits(128, 128, 128, 255), 20f, 0f, -20f,
-			Color.toFloatBits(128, 128, 128, 255), -20f, 0f, 20f, Color.toFloatBits(128, 128, 128, 255), -20f, 0f, -20f,
-			Color.toFloatBits(128, 128, 128, 255)});
+		final Mesh groundMesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_position"));
+		groundMesh.setVertices(new float[] {20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f});
 		groundMesh.setIndices(new short[] {0, 1, 2, 1, 2, 3});
 
-		final Mesh boxMesh = new Mesh(true, 8, 36, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
-			Usage.ColorPacked, 4, "a_color"));
-		boxMesh.setVertices(new float[] {0.5f, 0.5f, 0.5f, Color.toFloatBits(255, 0, 0, 255), 0.5f, 0.5f, -0.5f,
-			Color.toFloatBits(255, 0, 0, 255), -0.5f, 0.5f, 0.5f, Color.toFloatBits(255, 0, 0, 255), -0.5f, 0.5f, -0.5f,
-			Color.toFloatBits(255, 0, 0, 255), 0.5f, -0.5f, 0.5f, Color.toFloatBits(255, 0, 0, 255), 0.5f, -0.5f, -0.5f,
-			Color.toFloatBits(255, 0, 0, 255), -0.5f, -0.5f, 0.5f, Color.toFloatBits(255, 0, 0, 255), -0.5f, -0.5f, -0.5f,
-			Color.toFloatBits(255, 0, 0, 255)});
+		final Mesh boxMesh = new Mesh(true, 8, 36, new VertexAttribute(Usage.Position, 3, "a_position"));
+		boxMesh.setVertices(new float[] {0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f,
+			0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, -0.5f});
 		boxMesh.setIndices(new short[] {0, 1, 2, 1, 2, 3, // top
 			4, 5, 6, 5, 6, 7, // bottom
 			0, 2, 4, 4, 6, 2, // front
@@ -101,6 +94,7 @@ public class BaseBulletTest extends BulletTest {
 	@Override
 	public void dispose () {
 		world.dispose();
+		world = null;
 		
 		super.dispose();
 	}
@@ -127,6 +121,7 @@ public class BaseBulletTest extends BulletTest {
 		// Shoot a box
 		Ray ray = camera.getPickRay(x, y);
 		Entity entity = world.add("box", ray.origin.x, ray.origin.y, ray.origin.z);
+		entity.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 		entity.body.applyCentralImpulse(ray.direction.mul(30f));
 	}
 	
@@ -170,6 +165,7 @@ public class BaseBulletTest extends BulletTest {
 				final Entity entity = entities.get(i);
 				gl.glPushMatrix();
 				gl.glMultMatrixf(entity.worldTransform.transform.val, 0);
+				gl.glColor4f(entity.color.r, entity.color.g, entity.color.b, entity.color.a);
 				entity.mesh.render(GL10.GL_TRIANGLES);
 				gl.glPopMatrix();
 			}
@@ -201,6 +197,7 @@ public class BaseBulletTest extends BulletTest {
 		public WorldTransform worldTransform;
 		public btRigidBody body;
 		public Mesh mesh;
+		public Color color = new Color(1f, 1f, 1f, 1f);
 
 		public Entity (final Mesh mesh, final btRigidBodyConstructionInfo bodyInfo, final float x, final float y, final float z) {
 			this.mesh = mesh;
@@ -255,11 +252,9 @@ public class BaseBulletTest extends BulletTest {
 			public btCollisionShape shape;
 			public Mesh mesh;
 			
-			private void create (final Mesh mesh, final float mass, final float width, final float height, final float depth) {
+			private void create(final Mesh mesh, final float mass, final btCollisionShape shape) {
 				this.mesh = mesh;
-				
-				// Create a simple boxshape
-				shape = new btBoxShape(Vector3.tmp.set(width * 0.5f, height * 0.5f, depth * 0.5f));
+				this.shape = shape;
 				
 				// Calculate the local inertia, bodies with no mass are static
 				Vector3 localInertia;
@@ -274,6 +269,15 @@ public class BaseBulletTest extends BulletTest {
 				bodyInfo = new btRigidBodyConstructionInfo(mass, null, shape, localInertia);
 			}
 			
+			private void create (final Mesh mesh, final float mass, final float width, final float height, final float depth) {			
+				// Create a simple boxshape
+				create(mesh, mass, new btBoxShape(Vector3.tmp.set(width * 0.5f, height * 0.5f, depth * 0.5f)));
+			}
+			
+			public ConstructInfo (final Mesh mesh, final float mass, final btCollisionShape shape) {
+				create(mesh, mass, shape);
+			}
+			
 			public ConstructInfo (final Mesh mesh, final float mass, final float width, final float height, final float depth) {
 				create(mesh, mass, width, height, depth);
 			}
@@ -283,7 +287,6 @@ public class BaseBulletTest extends BulletTest {
 				final Vector3 dimensions = boundingBox.getDimensions();
 				create(mesh, mass, dimensions.x, dimensions.y, dimensions.z);
 			}
-
 
 			@Override
 			public void dispose () {
