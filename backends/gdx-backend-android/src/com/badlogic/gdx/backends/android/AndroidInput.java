@@ -33,6 +33,7 @@ import android.service.wallpaper.WallpaperService.Engine;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
