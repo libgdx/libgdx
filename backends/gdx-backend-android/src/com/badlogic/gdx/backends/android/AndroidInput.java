@@ -701,12 +701,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		if (context instanceof Activity) {
 			orientation = ((Activity) context).getWindowManager().getDefaultDisplay().getOrientation();
 		} else {
-			final DisplayMetrics metrics = new DisplayMetrics();
-			final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-
-			display.getMetrics(metrics);
-
-			orientation = display.getOrientation();
+			orientation = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
 		}
 
 		switch (orientation) {
