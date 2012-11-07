@@ -48,7 +48,7 @@ public class GdxTests {
 		GroupTest.class, AlphaTest.class, AtlasIssueTest.class, AssetManagerTest.class, FilterPerformanceTest.class,
 		AudioDeviceTest.class, AudioRecorderTest.class, BitmapFontAlignmentTest.class, BitmapFontDistanceFieldTest.class, BitmapFontFlipTest.class,
 		GroupCullingTest.class, GestureDetectorTest.class, LabelTest.class, BitmapFontMetricsTest.class, BlitTest.class, TableTest.class,
-		BobTest.class, ImageScaleTest.class, TableLayoutTest.class, Box2DTest.class, BulletTest.class, InterpolationTest.class, TouchpadTest.class,
+		BobTest.class, ImageScaleTest.class, TableLayoutTest.class, Box2DTest.class, BulletTestCollection.class, InterpolationTest.class, TouchpadTest.class,
 		Box2DTestCollection.class, BufferUtilsTest.class, ImageTest.class, CompassTest.class, ComplexActionTest.class,
 		CullTest.class, DeltaTimeTest.class, EdgeDetectionTest.class, ETC1Test.class, ExitTest.class, FilesTest.class,
 		ScrollPaneTest.class, FloatTest.class, FloatTextureTest.class, FrameBufferTest.class, FramebufferToTextureTest.class, FrustumTest.class,
