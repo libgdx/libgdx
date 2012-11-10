@@ -306,7 +306,7 @@ public class ParticleEmitter {
 
 	public void reset () {
 		emissionDelta = 0;
-		durationTimer = 0;
+		durationTimer = duration;
 		start();
 	}
 
