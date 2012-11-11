@@ -84,22 +84,6 @@ public class Window extends Table {
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				if (!dragging) return;
 				translate(x - dragOffset.x, y - dragOffset.y);
-				if (keepWithinParent) {
-					float parentWidth, parentHeight;
-					Group parent = getParent();
-					Stage stage = getStage();
-					if (parent == stage.getRoot()) {
-						parentWidth = stage.getWidth();
-						parentHeight = stage.getHeight();
-					} else {
-						parentWidth = parent.getWidth();
-						parentHeight = parent.getHeight();
-					}
-					if (getX() < 0) setX(0);
-					if (getRight() > parentWidth) setX(parentWidth - getWidth());
-					if (getY() < 0) setY(0);
-					if (getTop() > parentHeight) setY(parentHeight - getHeight());
-				}
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
@@ -138,6 +122,26 @@ public class Window extends Table {
 	 * called. */
 	public WindowStyle getStyle () {
 		return style;
+	}
+
+	public void draw (SpriteBatch batch, float parentAlpha) {
+		if (keepWithinParent) {
+			float parentWidth, parentHeight;
+			Group parent = getParent();
+			Stage stage = getStage();
+			if (parent == stage.getRoot()) {
+				parentWidth = stage.getWidth();
+				parentHeight = stage.getHeight();
+			} else {
+				parentWidth = parent.getWidth();
+				parentHeight = parent.getHeight();
+			}
+			if (getX() < 0) setX(0);
+			if (getRight() > parentWidth) setX(parentWidth - getWidth());
+			if (getY() < 0) setY(0);
+			if (getTop() > parentHeight) setY(parentHeight - getHeight());
+		}
+		super.draw(batch, parentAlpha);
 	}
 
 	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
