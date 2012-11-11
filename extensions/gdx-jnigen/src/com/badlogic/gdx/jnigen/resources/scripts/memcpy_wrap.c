@@ -1,6 +1,6 @@
 #ifndef __ANDROID__
 #ifdef __linux__
-#ifdef__x86_64__
+#ifdef __x86_64__
 
 #include <stdio.h>
 #include <stdlib.h>
