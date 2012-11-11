@@ -74,7 +74,6 @@ LOCAL_SRC_FILES := com.badlogic.gdx.physics.box2d.joints.FrictionJoint.cpp\
 	etc1/etc1_utils.cpp\
 	com.badlogic.gdx.physics.box2d.Shape.cpp\
 	com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.cpp\
-	test.c\
 	com.badlogic.gdx.physics.box2d.joints.WheelJoint.cpp\
 	com.badlogic.gdx.physics.box2d.PolygonShape.cpp\
 	com.badlogic.gdx.graphics.glutils.ETC1.cpp\
