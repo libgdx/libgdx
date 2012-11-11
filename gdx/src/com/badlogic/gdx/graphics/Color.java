@@ -162,15 +162,8 @@ public class Color {
 	public boolean equals (Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-
 		Color color = (Color)o;
-
-		if (Float.compare(color.a, a) != 0) return false;
-		if (Float.compare(color.b, b) != 0) return false;
-		if (Float.compare(color.g, g) != 0) return false;
-		if (Float.compare(color.r, r) != 0) return false;
-
-		return true;
+		return toIntBits() == color.toIntBits();
 	}
 
 	@Override
