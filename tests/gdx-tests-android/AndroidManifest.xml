@@ -26,7 +26,11 @@
 				  android:screenOrientation="landscape"/>
 		
 		<activity android:name=".LivewallpaperSettings" 
-				  android:label="Livewallpaper Settings"/>
+				  android:label="Livewallpaper Settings">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+		</activity>
 		
 		<service android:name=".LiveWallpaper"
             android:label="@string/app_name"
