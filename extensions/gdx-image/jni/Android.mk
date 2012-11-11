@@ -9,7 +9,8 @@ LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__
 LOCAL_LDLIBS := -lm
 LOCAL_ARM_MODE  := arm
  
-LOCAL_SRC_FILES := libjpeg/jcinit.c\
+LOCAL_SRC_FILES := memcpy_wrap.c\
+	libjpeg/jcinit.c\
 	libjpeg/rdrle.c\
 	libjpeg/jchuff.c\
 	libjpeg/jdcoefct.c\

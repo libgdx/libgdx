@@ -11,6 +11,7 @@ LOCAL_ARM_MODE  := arm
  
 LOCAL_SRC_FILES := com.badlogic.gdx.physics.box2d.joints.FrictionJoint.cpp\
 	com.badlogic.gdx.physics.box2d.joints.PulleyJoint.cpp\
+	memcpy_wrap.c\
 	com.badlogic.gdx.physics.box2d.Fixture.cpp\
 	gdx2d/stb_image.c\
 	gdx2d/gdx2d.c\

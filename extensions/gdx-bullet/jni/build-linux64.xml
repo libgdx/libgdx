@@ -36,7 +36,7 @@
 
 	<!-- define linker and options -->
 	<property name="linker" value="${compilerPrefix}g++"/>
-	<property name="linker-opts" value="-shared -m64"/>
+	<property name="linker-opts" value="-shared -m64 -Wl,-wrap,memcpy"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">

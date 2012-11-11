@@ -9,7 +9,8 @@ LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__ -fno-strict-
 LOCAL_LDLIBS := -lm
 LOCAL_ARM_MODE  := arm
  
-LOCAL_SRC_FILES := src/BulletSoftBody/btSoftRigidCollisionAlgorithm.cpp\
+LOCAL_SRC_FILES := memcpy_wrap.c\
+	src/BulletSoftBody/btSoftRigidCollisionAlgorithm.cpp\
 	src/BulletSoftBody/btSoftSoftCollisionAlgorithm.cpp\
 	src/BulletSoftBody/btSoftBody.cpp\
 	src/BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.cpp\
