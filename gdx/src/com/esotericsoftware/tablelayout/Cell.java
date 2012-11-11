@@ -889,6 +889,10 @@ public class Cell<C> {
 		return computedPadRight;
 	}
 
+	public Cell row () {
+		return layout.row();
+	}
+
 	public BaseTableLayout getLayout () {
 		return layout;
 	}

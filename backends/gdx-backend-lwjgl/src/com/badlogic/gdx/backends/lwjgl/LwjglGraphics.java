@@ -416,10 +416,6 @@ public class LwjglGraphics implements Graphics {
 		return extensions.contains(extension);
 	}
 
-	public LwjglApplicationConfiguration getConfig () {
-		return config;
-	}
-
 	volatile boolean isContinuous = true;
 	volatile boolean requestRendering = false;
 

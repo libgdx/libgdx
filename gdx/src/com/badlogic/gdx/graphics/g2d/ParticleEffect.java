@@ -50,6 +50,11 @@ public class ParticleEffect implements Disposable {
 			emitters.get(i).start();
 	}
 
+	public void reset () {
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).reset();
+	}
+
 	public void update (float delta) {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).update(delta);
@@ -96,6 +101,11 @@ public class ParticleEffect implements Disposable {
 	public void setFlip (boolean flipX, boolean flipY) {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).setFlip(flipX, flipY);
+	}
+
+	public void flipY () {
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).flipY();
 	}
 
 	public Array<ParticleEmitter> getEmitters () {
