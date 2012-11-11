@@ -85,11 +85,9 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			this.app.initialize(listener, config);
 			this.listener = listener;
 			this.view = ((AndroidGraphicsLiveWallpaper)app.getGraphics()).getView();
-			// FIXME this seems to crash on ICS, and is unnecessary it seems if you
-			// overwrite onTouchEvent
-//			if(config.getTouchEventsForLiveWallpaper) {
-//				this.setTouchEventsEnabled(true);
-//			}
+
+			if (config.getTouchEventsForLiveWallpaper && Integer.parseInt(android.os.Build.VERSION.SDK) < 9)
+				this.setTouchEventsEnabled(true);
 		}
 
 		@Override
