@@ -48,11 +48,30 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * @author mzechner
  * @author noblemaster
- * @author acoppes */
+ * @author arielsan */
 public interface Net {
 
+	/** Contains information about the HTTP status line returned with the {@link HttpResponse} after a {@link HttpRequest} was
+	 * performed. */
+	public static class HttpStatus {
+
+		int statusCode;
+
+		/** Returns the status code of the HTTP response, normally 2xx status codes indicate success while 4xx and 5xx indicate
+		 * client and server errors, respectively (see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">HTTP/1.1:
+		 * Status Code Definitions</a> for more information about HTTP status codes). */
+		public int getStatusCode () {
+			return statusCode;
+		}
+
+		public HttpStatus (int statusCode) {
+			this.statusCode = statusCode;
+		}
+
+	}
+
 	/** HTTP response interface with methods to get the response data as a byte[], a {@link String} or an {@link InputStream}. */
-	public interface HttpResponse {
+	public static interface HttpResponse {
 		/** Returns the data of the HTTP response as a byte[].
 		 * @return the result as a byte[] or null in case of a timeout or if the operation was canceled/terminated abnormally. The
 		 *         timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(long)} */
@@ -66,6 +85,9 @@ public interface Net {
 		/** Returns the data of the HTTP response as an {@link InputStream}.
 		 * @return An {@link InputStream} with the {@link HttpResponse} data. */
 		InputStream getResultAsStream ();
+
+		/** Returns the {@link HttpStatus} containing the statusCode of the HTTP response. */
+		HttpStatus getStatus ();
 	}
 
 	/** Provides common HTTP methods to use when creating a {@link HttpRequest}. */
@@ -163,13 +185,25 @@ public interface Net {
 	 * {@link Net#sendHttpRequest(HttpRequest, HttpResponseListener)}. */
 	public static interface HttpResponseListener {
 
-		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready.
-		 * @param httpResponse The {@link HttpResponse} with the HTTP response values.
-		 * @param statusCode Indicates the status code of the HTTP response, normally 2xx status codes indicate success while 4xx
-		 *           and 5xx indicate client and server errors, respectively (see <a
-		 *           href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">HTTP/1.1: Status Code Definitions</a> for more
-		 *           information about HTTP status codes). */
-		void handleHttpResponse (HttpResponse httpResponse, int statusCode);
+		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready. {@link HttpResponse}
+		 * contains the {@link HttpStatus} and should be used to determine if the request was successful or not (see more info at
+		 * {@link HttpStatus#getStatusCode()}). For example:
+		 * 
+		 * <pre>
+		 *  HttpResponseListener listener = new HttpResponseListener() {
+		 *  	public void handleHttpResponse (HttpResponse httpResponse) {
+		 *  		HttpStatus status = httpResponse.getStatus();
+		 *  		if (status.getStatusCode() >= 200 && status.getStatusCode() < 300) {
+		 *  			// it was successful
+		 *  		} else {
+		 *  			// do something else
+		 *  		}
+		 *  	}
+		 *  }
+		 * </pre>
+		 * 
+		 * @param httpResponse The {@link HttpResponse} with the HTTP response values. */
+		void handleHttpResponse (HttpResponse httpResponse);
 
 		/** Called if the {@link HttpRequest} failed because an exception when processing the HTTP request, could be a timeout any
 		 * other reason (not an HTTP error).

@@ -34,6 +34,7 @@ import org.apache.http.util.EntityUtils;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
@@ -46,9 +47,11 @@ public class AndroidNet implements Net {
 	private final class HttpClientResponse implements HttpResponse {
 
 		private org.apache.http.HttpResponse httpResponse;
+		private HttpStatus httpStatus;
 
 		public HttpClientResponse (org.apache.http.HttpResponse httpResponse) {
 			this.httpResponse = httpResponse;
+			this.httpStatus = new HttpStatus(httpResponse.getStatusLine().getStatusCode());
 		}
 
 		@Override
@@ -73,6 +76,12 @@ public class AndroidNet implements Net {
 		public byte[] getResult () {
 			throw new UnsupportedOperationException("get result as byte[] is not implemented");
 		}
+
+		@Override
+		public HttpStatus getStatus () {
+			return httpStatus;
+		}
+		
 	}
 
 	// IMPORTANT: The Gdx.net classes are a currently duplicated for LWJGL + Android!
@@ -80,7 +89,7 @@ public class AndroidNet implements Net {
 	final AndroidApplication app;
 
 	private final ExecutorService executorService;
-	
+
 	HttpClient httpClient;
 
 	public AndroidNet (AndroidApplication activity) {
@@ -94,17 +103,29 @@ public class AndroidNet implements Net {
 		if (httpRequest.getUrl() == null) throw new GdxRuntimeException("can't process a HTTP request without URL set");
 
 		final HttpUriRequest httpClientRequest = getHttpClientRequest(httpRequest);
+
 		// Don't know where to use the timeout exactly yet :)
 
 		executorService.submit(new Runnable() {
 			@Override
 			public void run () {
 				try {
-					org.apache.http.HttpResponse httpResponse = httpClient.execute(httpClientRequest);
-					httpResultListener.handleHttpResponse(new HttpClientResponse(httpResponse), httpResponse.getStatusLine()
-						.getStatusCode());
-				} catch (Exception e) {
-					httpResultListener.failed(e);
+					final org.apache.http.HttpResponse httpResponse = httpClient.execute(httpClientRequest);
+					// post a runnable to sync the handler with the main thread
+					Gdx.app.postRunnable(new Runnable() {
+						@Override
+						public void run () {
+							httpResultListener.handleHttpResponse(new HttpClientResponse(httpResponse));
+						}
+					});
+				} catch (final Exception e) {
+					// post a runnable to sync the handler with the main thread
+					Gdx.app.postRunnable(new Runnable() {
+						@Override
+						public void run () {
+							httpResultListener.failed(e);
+						}
+					});
 				}
 			}
 		});
@@ -114,7 +135,7 @@ public class AndroidNet implements Net {
 		if (httpRequest.getMethod() == null) throw new GdxRuntimeException("HTTP method can't be null");
 
 		HttpUriRequest httpClientRequest = convertHttpClientRequest(httpRequest);
-		
+
 		Map<String, String> headers = httpRequest.getHeaders();
 		Set<String> keySet = headers.keySet();
 		for (String name : keySet) {
