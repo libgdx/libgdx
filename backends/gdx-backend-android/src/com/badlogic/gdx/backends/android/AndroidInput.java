@@ -33,6 +33,7 @@ import android.service.wallpaper.WallpaperService.Engine;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
@@ -696,9 +697,15 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	@Override
 	public int getRotation () {
-		if(context instanceof Activity) {
-			int orientation = ((Activity)context).getWindowManager().getDefaultDisplay().getOrientation();
-			switch (orientation) {
+		int orientation = 0;
+
+		if (context instanceof Activity) {
+			orientation = ((Activity) context).getWindowManager().getDefaultDisplay().getOrientation();
+		} else {
+			orientation = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+		}
+
+		switch (orientation) {
 			case Surface.ROTATION_0:
 				return 0;
 			case Surface.ROTATION_90:
@@ -709,10 +716,6 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				return 270;
 			default:
 				return 0;
-			}
-		} else {
-			// FIXME livewallpaper support
-			return 0;
 		}
 	}
 

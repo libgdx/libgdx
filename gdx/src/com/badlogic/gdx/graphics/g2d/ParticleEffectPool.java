@@ -33,7 +33,7 @@ public class ParticleEffectPool extends Pool<PooledEffect> {
 
 	public PooledEffect obtain () {
 		PooledEffect effect = super.obtain();
-		effect.start();
+		effect.reset();
 		return effect;
 	}
 

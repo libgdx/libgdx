@@ -162,15 +162,8 @@ public class Color {
 	public boolean equals (Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-
 		Color color = (Color)o;
-
-		if (Float.compare(color.a, a) != 0) return false;
-		if (Float.compare(color.b, b) != 0) return false;
-		if (Float.compare(color.g, g) != 0) return false;
-		if (Float.compare(color.r, r) != 0) return false;
-
-		return true;
+		return toIntBits() == color.toIntBits();
 	}
 
 	@Override
@@ -183,7 +176,10 @@ public class Color {
 	}
 
 	public String toString () {
-		return Integer.toHexString(toIntBits());
+		String value = Integer.toHexString(toIntBits());
+		while (value.length() < 8)
+			value = "0" + value;
+		return value;
 	}
 
 	/** Packs the four color components which should be in the range 0-255 into a 32-bit integer and then converts it to a float.
