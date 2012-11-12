@@ -484,6 +484,7 @@ public class Table extends WidgetGroup {
 	static private void drawDebug (Array<Actor> actors, SpriteBatch batch) {
 		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
+			if (!actor.isVisible()) continue;
 			if (actor instanceof Table) ((Table)actor).layout.drawDebug(batch);
 			if (actor instanceof Group) drawDebug(((Group)actor).getChildren(), batch);
 		}

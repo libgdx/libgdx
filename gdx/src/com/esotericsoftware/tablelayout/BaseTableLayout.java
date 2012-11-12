@@ -528,12 +528,11 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 
 			// Compute combined padding/spacing for cells.
 			// Spacing between widgets isn't additive, the larger is used. Also, no spacing around edges.
-			c.computedPadLeft = w(c.padLeft, c) + (c.column == 0 ? 0 : Math.max(0, w(c.spaceLeft, c)) - spaceRightLast);
-			if (c.cellAboveIndex == -1)
-				c.computedPadTop = h(c.padTop, c);
-			else {
+			c.computedPadLeft = w(c.padLeft, c) + (c.column == 0 ? 0 : Math.max(0, w(c.spaceLeft, c) - spaceRightLast));
+			c.computedPadTop = h(c.padTop, c);
+			if (c.cellAboveIndex != -1) {
 				Cell above = cells.get(c.cellAboveIndex);
-				c.computedPadTop = h(c.padTop, c) + Math.max(0, h(c.spaceTop, c) - h(above.spaceBottom, above));
+				c.computedPadTop += Math.max(0, h(c.spaceTop, c) - h(above.spaceBottom, above));
 			}
 			float spaceRight = w(c.spaceRight, c);
 			c.computedPadRight = w(c.padRight, c) + ((c.column + c.colspan) == columns ? 0 : spaceRight);
