@@ -147,9 +147,9 @@ public class SkeletonModelGpuSkinningTest implements ApplicationListener {
 		texture = new Texture(Gdx.files.internal("data/models/robot.jpg"), Format.RGB565, true);
 		texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 		
-		//String fileName = "data/models/robot-mesh.xml.g3d";
+		String fileName = "data/models/robot-mesh.xml.g3d";
 		
-		String fileName = "data/models/cube.dae";
+//		String fileName = "data/models/cube.dae";
 		
 		if (!fileName.endsWith(".g3d") && Gdx.app.getType() == ApplicationType.Desktop) {
 			model = ModelLoaderRegistry.loadSkeletonModel(Gdx.files.internal(fileName));
@@ -194,7 +194,7 @@ public class SkeletonModelGpuSkinningTest implements ApplicationListener {
 				model.getBoundingBox(box);
 				
 				instance.matrix.trn(-1.75f, 0f, -5.5f);
-				instance.matrix.scale(0.4f, 0.4f, 0.4f);
+				instance.matrix.scale(0.01f, 0.01f, 0.01f);
 				box.mul(instance.matrix);
 				
 				instance.radius = (box.getDimensions().len() / 2);
