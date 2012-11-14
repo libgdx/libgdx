@@ -89,7 +89,7 @@ public class ShapeRenderer {
 		FilledTriangle(GL10.GL_TRIANGLES), //
 		Cone(GL10.GL_LINES), //
 		FilledCone(GL10.GL_TRIANGLES), //
-		Curve(GL10.GL_LINE_STRIP), //
+		Curve(GL10.GL_LINES), //
 		;
 
 		private final int glType;
@@ -267,7 +267,7 @@ public class ShapeRenderer {
 	public void curve (float x1, float y1, float cx1, float cy1, float cx2, float cy2, float x2, float y2, int segments) {
 		if (currType != ShapeType.Curve) throw new GdxRuntimeException("Must call begin(ShapeType.Curve)");
 		checkDirty();
-		checkFlush(segments + 1);
+		checkFlush(segments * 2 + 2);
 
 		// Algorithm from: http://www.antigrain.com/research/bezier_interpolation/index.html#PAGE_BEZIER_INTERPOLATION
 		float dx1 = cx1 - x1;
@@ -304,9 +304,9 @@ public class ShapeRenderer {
 		float dddfx = tmp2x * pre5;
 		float dddfy = tmp2y * pre5;
 
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x1, y1, 0);
 		while (segments-- > 0) {
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(fx, fy, 0);
 			fx += dfx;
 			fy += dfy;
 			dfx += ddfx;
@@ -316,6 +316,8 @@ public class ShapeRenderer {
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(fx, fy, 0);
 		}
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(fx, fy, 0);
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x2, y2, 0);
 	}
