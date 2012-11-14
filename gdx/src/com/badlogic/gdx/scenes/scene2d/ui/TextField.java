@@ -534,7 +534,7 @@ public class TextField extends Widget {
 			StringBuilder builder = new StringBuilder();
 			for (int i = 0; i < content.length(); i++) {
 				char c = content.charAt(i);
-				if (style.font.containsCharacter(c)) builder.append(c);
+				if (style.font.containsCharacter(c) && (filter == null || filter.acceptChar(this, c))) builder.append(c);
 			}
 			content = builder.toString();
 
@@ -641,7 +641,7 @@ public class TextField extends Widget {
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
-			if (font.containsCharacter(c)) buffer.append(c);
+			if (font.containsCharacter(c) && (filter == null || filter.acceptChar(this, c))) buffer.append(c);
 		}
 
 		this.text = buffer.toString();
