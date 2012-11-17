@@ -16,9 +16,9 @@
 
 package com.badlogic.gdx.utils;
 
-import java.util.BitSet;
-
 import com.badlogic.gdx.math.MathUtils;
+
+import java.util.BitSet;
 
 /** A resizable, ordered or unordered boolean array. Avoids the boxing that occurs with ArrayList<Boolean>. It is less memory
  * efficient than {@link BitSet}, except for very small sizes. It more CPU efficient than {@link BitSet}, except for very large
@@ -221,6 +221,17 @@ public class BooleanArray {
 		boolean[] array = new boolean[size];
 		System.arraycopy(items, 0, array, 0, size);
 		return array;
+	}
+
+	public boolean equals (Object object) {
+		if (object == this) return true;
+		if (!(object instanceof BooleanArray)) return false;
+		BooleanArray array = (BooleanArray)object;
+		int n = size;
+		if (n != array.size) return false;
+		for (int i = 0; i < n; i++)
+			if (items[i] != array.items[i]) return false;
+		return true;
 	}
 
 	public String toString () {

@@ -416,10 +416,6 @@ public class LwjglGraphics implements Graphics {
 		return extensions.contains(extension);
 	}
 
-	public LwjglApplicationConfiguration getConfig () {
-		return config;
-	}
-
 	volatile boolean isContinuous = true;
 	volatile boolean requestRendering = false;
 
@@ -444,7 +440,7 @@ public class LwjglGraphics implements Graphics {
 		synchronized (this) {
 			boolean rq = requestRendering;
 			requestRendering = false;
-			return rq || isContinuous;
+			return rq || isContinuous || Display.isDirty();
 		}
 	}
 

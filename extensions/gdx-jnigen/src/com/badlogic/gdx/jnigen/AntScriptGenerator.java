@@ -71,6 +71,10 @@ public class AntScriptGenerator {
 
 		// copy jni headers
 		copyJniHeaders(config.jniDir.path());
+		
+		// copy export.map file for linux 64
+		new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/memcpy_wrap.c", FileType.Classpath).copyTo(
+			config.jniDir.child("memcpy_wrap.c"));
 
 		ArrayList<String> buildFiles = new ArrayList<String>();
 		ArrayList<String> libsDirs = new ArrayList<String>();

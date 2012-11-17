@@ -62,6 +62,7 @@ public interface Preferences {
 
 	public String getString (String key, String defValue);
 
+	/** Returns a read only Map<String, Object> with all the key, objects of the preferences. */
 	public Map<String, ?> get ();
 
 	public boolean contains (String key);

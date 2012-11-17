@@ -1,11 +1,22 @@
 package com.badlogic.gdx.backends.ios;
 
-import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import cli.MonoTouch.ObjCRuntime.Arch;
+import cli.System.AsyncCallback;
+import cli.System.IAsyncResult;
 import cli.System.Net.Dns;
 import cli.System.Net.IPAddress;
+import cli.System.Net.Sockets.AddressFamily;
+import cli.System.Net.Sockets.TcpClient;
 import cli.System.Net.Sockets.TcpListener;
+import cli.System.Threading.ManualResetEvent;
+import cli.System.Threading.Timeout;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
@@ -21,32 +32,81 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class IOSServerSocket implements ServerSocket {
 
 	private Protocol protocol;
+	public int port;
+	private ServerSocketHints hints;
 	
-	/** Our listener or null for disposed, aka closed. */
-	private TcpListener listener;
+	/** Our listeners we have created (1 per port). Will prevent "address already in use" errors if used more than once. */
+	static Map<Integer, TcpListener> listeners = new HashMap<Integer, TcpListener>();
+	/** Our clients that we have accepted or null for none (1 per port). We'll constantly poll in background. */
+	static Map<Integer, TcpClient> clients = new HashMap<Integer, TcpClient>();
+	/** Our accept callbacks instantiated (1 per port). */
+	static Map<Integer, AsyncCallback> clientCallbacks = new HashMap<Integer, AsyncCallback>();
+	
 
+	/** The sockets that are connected. Will need to keep them to dispose. */
+	private List<IOSSocket> sockets = new ArrayList<IOSSocket>();
 	
-	public IOSServerSocket(Protocol protocol, int port, ServerSocketHints hints) {
+	
+	public IOSServerSocket(Protocol protocol, final int port, final ServerSocketHints hints) {
 		if (protocol == Protocol.TCP) {
 			this.protocol = protocol;
+			this.port = port;
+			this.hints = hints;
 			
 			// create the server socket
 			try {
-				// initialize
-				IPAddress ipAddress = Dns.GetHostEntry("localhost").get_AddressList()[0];
-				listener = new TcpListener(ipAddress, port);
-				if (hints != null) {
-					// NOTE: most server socket hints are not available on iOS - no performance parameters!
-					listener.set_ExclusiveAddressUse(!hints.reuseAddress);
-				}
-				
-				// and bind the server...
-				InetSocketAddress address = new InetSocketAddress(port);
-				if (hints != null) {
-					listener.Start(hints.backlog);
-				}
-				else {
-					listener.Start();
+				// we only create a new listener if one does not exist yet
+				if (listeners.get(port) == null) {
+					// get local IP to connect with
+					IPAddress ipAddress = null;
+					String host = Dns.GetHostName(); 
+					if (cli.MonoTouch.ObjCRuntime.Runtime.Arch.Value == Arch.DEVICE) {
+						// the ".local" is not added on the simulator!
+						host = host + ".local"; 
+					}
+					IPAddress[] ips = Dns.GetHostAddresses(host);
+					for (int i = 0; i < ips.length; i++) {
+						IPAddress ip = ips[i];
+						if (ip.get_AddressFamily().Value == AddressFamily.InterNetwork) {
+							ipAddress = ip;
+							break;
+						}
+					}
+					Gdx.app.debug("IOSServerSocket", "Binding server to " + ipAddress.ToString() + ":" + port);
+					
+					// initialize server		
+					TcpListener listener = new TcpListener(ipAddress, port);
+					listeners.put(port, listener);
+					if (hints != null) {
+						// NOTE: most server socket hints are not available on iOS - no performance parameters!
+						listener.get_Server().set_ReceiveBufferSize(hints.receiveBufferSize);
+					}
+					
+					// and bind the server...
+					if (hints != null) {
+						listener.Start(hints.backlog);
+					}
+					else {
+						listener.Start();
+					}
+					
+					// our accept listener (runs in background and waits for the next connection)
+					// NOTE: listener.Pending() wasn't working, so we use async callbacks instead
+					AsyncCallback clientCallback = new AsyncCallback(new AsyncCallback.Method() {		
+						@Override
+						public void Invoke (IAsyncResult ar) {
+						    // Get the listener that handles the client request.
+						    TcpListener listener = (TcpListener)ar.get_AsyncState();
+						
+						    // End the operation and display the received data on the console.
+						    clients.put(port, listener.EndAcceptTcpClient(ar));
+						
+						    // Process the connection here. (Add the client to a  server table, read data, etc.)
+						    Gdx.app.debug("IOSServerSocket", "Client connected");
+						}
+					});
+					clientCallbacks.put(port, clientCallback);
+					listener.BeginAcceptTcpClient(clientCallback, listener);
 				}
 			}
 			catch (Exception e) {
@@ -64,25 +124,97 @@ public class IOSServerSocket implements ServerSocket {
 	}
 
 	@Override
-	public Socket accept (SocketHints hints) {
-		try {
-			return new IOSSocket(listener.AcceptTcpClient(), hints);
+	public synchronized Socket accept (SocketHints hints) {
+		// our listener
+		TcpListener listener = listeners.get(port);
+		
+		// accept with timeout as needed (not as well supported via C# as via Java - needs special impl. in C#)
+		int timeout;
+		if (IOSServerSocket.this.hints != null) {
+			timeout = IOSServerSocket.this.hints.acceptTimeout;
+			if (timeout == 0) {
+				timeout = Timeout.Infinite;
+			}
 		}
-		catch (Exception e) {
-			throw new GdxRuntimeException("Error accepting socket.", e);
+		else {
+			timeout = Timeout.Infinite;
 		}
+		
+	    // check if we found a client previously
+		TcpClient client = clients.get(port);
+		if (client == null) {
+			// Start to listen for connections from a client.
+			Gdx.app.debug("IOSServerSocket", "Waiting for client connect...");
+			
+			// Waits for a connection or until the timeout is reached
+		   int loopPause = 10;
+		   int loops;
+		   if (timeout == Timeout.Infinite) {
+		   	loops = Integer.MAX_VALUE;
+		   }
+		   else {
+		   	loops = timeout / loopPause;
+		   }
+		   for (int i = 0; i < loops; i++) {
+		   	// client found?
+		   	if (clients.get(port) != null) {
+		   		break;
+		   	}
+		   	
+		   	// server disposed?
+		   	if (sockets == null) {
+		   		throw new GdxRuntimeException("Server disposed: cannot accept any new clients.");
+		   	}
+		   	
+		   	// wait for next check
+		   	try {
+		   		Thread.sleep(loopPause);
+		   	}
+		   	catch (InterruptedException e) {
+		   		throw new GdxRuntimeException("Error in Thread.sleep.", e);
+		   	}
+		   }
+		   
+		   // try to get the client
+		   client = clients.get(port);
+		}
+		
+	   // connection received?
+	   if (client != null) {
+	   	// remove our found client from the list and start the callback again
+	   	clients.remove(port);
+	   	listener.BeginAcceptTcpClient(clientCallbacks.get(port), listener);
+	   	
+	   	// socket connection function
+			Gdx.app.debug("IOSServerSocket", "Socket connected.");
+			IOSSocket socket = new IOSSocket(this, client, hints);
+			sockets.add(socket);
+			return socket;
+		}
+	   else {
+	   	// timeout reached
+	   	throw new GdxRuntimeException("No socket connections received (timeout).");
+	   }
 	}
 
 	@Override
 	public void dispose () {
-		if (listener != null) {
-			try {
-				listener.Stop();
-				listener = null;
+		// stop all our sockets
+		if (sockets != null) {
+			for (int i = 0; i < sockets.size(); i++) {
+				IOSSocket socket = sockets.get(i);
+				try {
+					socket.dispose();
+				}
+				catch (Exception e) {
+					Gdx.app.debug("IOSServerSocket", "Error disposing socket.", e);
+				}
 			}
-			catch (Exception e) {
-				throw new GdxRuntimeException("Error closing listener.", e);
-			}
+			sockets = null;
 		}
+	}
+	
+	void dispose(IOSSocket socket) {
+		sockets.remove(socket);
 	}
 }

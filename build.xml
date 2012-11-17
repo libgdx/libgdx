@@ -172,7 +172,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-jnigen.jar"/>
 		</path>
-		<ant antfile="../../build-template.xml" dir="extensions/gdx-bullet">
+		<ant antfile="../../build-template-bullet.xml" dir="extensions/gdx-bullet">
 			<property name="distDir" value="${distDir}/extensions/gdx-bullet"/>
 			<property name="jar" value="gdx-bullet"/>
 			<reference refid="classpath"/>
@@ -235,7 +235,7 @@
 	</target>
 	
 	<target name="all" 
-depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-image,gdx-audio,gdx-freetype,docs">
+depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,docs">
 		<!-- copy distribution files (licences etc.) -->
 		<copy tofile="${distDir}/README" file="gdx/dist/README"/>
 		<copy tofile="${distDir}/LICENSE" file="gdx/dist/LICENSE"/>

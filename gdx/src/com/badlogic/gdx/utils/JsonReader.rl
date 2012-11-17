@@ -177,13 +177,14 @@ public class JsonReader {
 
 			numberChars = '-'? [0-9]+ ('.' [0-9]+)? ([eE] [+\-]? [0-9]+)?;
 			quotedChars = (^["\\] | ('\\' ["\\/bfnrtu] >needsUnescape))*;
-			unquotedChars = [a-zA-Z_$] ^([:}\],] | space)*;
-			name = ('"' quotedChars >buffer %name '"') | unquotedChars >buffer %name | numberChars >buffer %name;
+			unquotedNameChars = [a-zA-Z0-9_$] ^([:}\],] | space)*;
+			unquotedValueChars = [a-zA-Z_$] ^([:}\],] | space)*;
+			name = ('"' quotedChars >buffer %name '"') | unquotedNameChars >buffer %name | numberChars >buffer %name;
 
 			startObject = '{' @startObject;
 			startArray = '[' @startArray;
 			string = '"' quotedChars >buffer %string '"';
-			unquotedString = unquotedChars >buffer %string;
+			unquotedString = unquotedValueChars >buffer %string;
 			number = numberChars >buffer %number;
 			nullValue = 'null' %null;
 			booleanValue = 'true' %trueValue | 'false' %falseValue;

@@ -25,9 +25,16 @@ cp -rf nightlies/extensions/gdx-freetype-natives.jar extensions/gdx-freetype/lib
 cp -rf nightlies/extensions/armeabi/libgdx-freetype.so extensions/gdx-freetype/libs/armeabi
 cp -rf nightlies/extensions/armeabi-v7a/libgdx-freetype.so extensions/gdx-freetype/libs/armeabi-v7a
 
+# gdx-bullet natives
+cp -rf nightlies/extensions/gdx-bullet/gdx-bullet-natives.jar extensions/gdx-bullet/libs
+cp -rf nightlies/extensions/gdx-bullet/armeabi/libgdx-bullet.so extensions/gdx-bullet/libs/armeabi
+cp -rf nightlies/extensions/gdx-bullet/armeabi-v7a/libgdx-bullet.so extensions/gdx-bullet/libs/armeabi-v7a
+
 # copy android natives to tests
 cp -rf nightlies/armeabi nightlies/armeabi-v7a tests/gdx-tests-android/libs
 cp -rf nightlies/extensions/armeabi nightlies/extensions/armeabi-v7a tests/gdx-tests-android/libs
+cp -rf nightlies/extensions/gdx-bullet/armeabi/libgdx-bullet.so tests/gdx-tests-android/libs/armeabi
+cp -rf nightlies/extensions/gdx-bullet/armeabi-v7a/libgdx-bullet.so tests/gdx-tests-android/libs/armeabi-v7a
 
 # copy jars and natives to demos
 cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/invaders/gdx-invaders-android/libs
@@ -35,6 +42,7 @@ cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/vector-pinball/gdx-vectorpi
 cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/superjumper/superjumper-android/libs
 cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/metagun/metagun-android/libs
 cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/cuboc/cuboc-android/libs
+cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/pax-britannica/pax-britannica-android/libs
 cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/very-angry-robots/very-angry-robots-android/libs
 cp -rf nightlies/armeabi nightlies/armeabi-v7a extensions/model-loaders/model-loaders-android/libs
 cp -rf nightlies/armeabi nightlies/armeabi-v7a extensions/gdx-remote/libs

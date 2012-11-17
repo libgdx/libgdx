@@ -125,7 +125,7 @@ public class SkeletonModelViewer implements ApplicationListener {
 
 		angle += 45 * Gdx.graphics.getDeltaTime();
 		Gdx.gl10.glRotatef(angle, 0, 1, 0);
-		animTime += Gdx.graphics.getDeltaTime();
+		animTime += Gdx.graphics.getDeltaTime() / 10;
 		if (animTime > anim.totalDuration) {
 			animTime = 0;
 		}

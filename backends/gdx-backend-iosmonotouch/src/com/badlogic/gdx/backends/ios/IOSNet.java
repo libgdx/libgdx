@@ -36,11 +36,13 @@ public class IOSNet implements Net {
 	
 	@Override
 	public HttpResult httpGet (String url, String... parameters) {
+		// FIXME implement this
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	@Override
 	public HttpResult httpPost (String url, String contentType, byte[] content) {
+		// FIXME implement this
 		throw new UnsupportedOperationException("Not implemented");
 	}
 

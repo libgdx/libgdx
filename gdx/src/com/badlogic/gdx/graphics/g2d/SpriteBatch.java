@@ -207,7 +207,7 @@ public class SpriteBatch implements Disposable {
 		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
 			+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
-			+ "uniform mat4 u_projectionViewMatrix;\n" //
+			+ "uniform mat4 u_projTrans;\n" //
 			+ "varying vec4 v_color;\n" //
 			+ "varying vec2 v_texCoords;\n" //
 			+ "\n" //
@@ -215,7 +215,7 @@ public class SpriteBatch implements Disposable {
 			+ "{\n" //
 			+ "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
 			+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
-			+ "   gl_Position =  u_projectionViewMatrix * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
+			+ "   gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";
 		String fragmentShader = "#ifdef GL_ES\n" //
 			+ "#define LOWP lowp\n" //
@@ -1143,36 +1143,26 @@ public class SpriteBatch implements Disposable {
 		} else {
 			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 			if (customShader != null) {
-				customShader.setUniformMatrix("u_proj", projectionMatrix);
-				customShader.setUniformMatrix("u_trans", transformMatrix);
 				customShader.setUniformMatrix("u_projTrans", combinedMatrix);
 				customShader.setUniformi("u_texture", 0);
 			} else {
-				shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
+				shader.setUniformMatrix("u_projTrans", combinedMatrix);
 				shader.setUniformi("u_texture", 0);
 			}
 		}
 	}
 
 	private void switchTexture (Texture texture) {
-		if (Gdx.graphics.isGL20Available()) {
-			renderMesh();
-			lastTexture = texture;
-			invTexWidth = 1.0f / texture.getWidth();
-			invTexHeight = 1.0f / texture.getHeight();
-		} else {
-			renderMesh();
-			lastTexture = texture;
-			invTexWidth = 1.0f / texture.getWidth();
-			invTexHeight = 1.0f / texture.getHeight();
-		}
+		renderMesh();
+		lastTexture = texture;
+		invTexWidth = 1.0f / texture.getWidth();
+		invTexHeight = 1.0f / texture.getHeight();
 	}
 
 	/** Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture
 	 * coordinates attribute is called called "a_texCoords0", the color attribute is called "a_color". See
 	 * {@link ShaderProgram#POSITION_ATTRIBUTE}, {@link ShaderProgram#COLOR_ATTRIBUTE} and {@link ShaderProgram#TEXCOORD_ATTRIBUTE}
-	 * which gets "0" appened to indicate the use of the first texture unit. The projection matrix is uploaded via a mat4 uniform
-	 * called "u_proj", the transform matrix is uploaded via a uniform called "u_trans", the combined transform and projection
+	 * which gets "0" appened to indicate the use of the first texture unit. The combined transform and projection
 	 * matrx is is uploaded via a mat4 uniform called "u_projTrans". The texture sampler is passed via a uniform called
 	 * "u_texture".</p>
 	 * 

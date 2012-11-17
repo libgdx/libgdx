@@ -49,12 +49,14 @@ public class Box2DDebugRenderer {
 	private boolean drawJoints;
 	private boolean drawAABBs;
 	private boolean drawInactiveBodies;
+	private boolean drawVelocities;
 
 	public Box2DDebugRenderer () {
-		this(true, true, false, true);
+		this(true, true, false, true, false);
 	}
 
-	public Box2DDebugRenderer (boolean drawBodies, boolean drawJoints, boolean drawAABBs, boolean drawInactiveBodies) {
+	public Box2DDebugRenderer (boolean drawBodies, boolean drawJoints, boolean drawAABBs, boolean drawInactiveBodies,
+		boolean drawVelocities) {
 		// next we setup the immediate mode renderer
 		renderer = new ShapeRenderer();
 
@@ -72,6 +74,7 @@ public class Box2DDebugRenderer {
 		this.drawJoints = drawJoints;
 		this.drawAABBs = drawAABBs;
 		this.drawInactiveBodies = drawInactiveBodies;
+		this.drawVelocities = drawVelocities;
 	}
 
 	/** This assumes that the projection matrix has already been set. */
@@ -87,6 +90,7 @@ public class Box2DDebugRenderer {
 	private final Color SHAPE_AWAKE = new Color(0.9f, 0.7f, 0.7f, 1);
 	private final Color JOINT_COLOR = new Color(0.5f, 0.8f, 0.8f, 1);
 	private final Color AABB_COLOR = new Color(1.0f, 0, 1.0f, 1f);
+	private final Color VELOCITY_COLOR = new Color(1.0f, 0, 0f, 1f);
 
 	private void renderBodies (World world) {
 		renderer.begin(ShapeType.Line);
@@ -94,29 +98,7 @@ public class Box2DDebugRenderer {
 		if (drawBodies || drawAABBs) {
 			for (Iterator<Body> iter = world.getBodies(); iter.hasNext();) {
 				Body body = iter.next();
-				Transform transform = body.getTransform();
-				int len = body.getFixtureList().size();
-				List<Fixture> fixtures = body.getFixtureList();
-				for (int i = 0; i < len; i++) {
-					Fixture fixture = fixtures.get(i);
-
-					if (drawBodies) {
-						if (body.isActive() == false && drawInactiveBodies)
-							drawShape(fixture, transform, SHAPE_NOT_ACTIVE);
-						else if (body.getType() == BodyType.StaticBody)
-							drawShape(fixture, transform, SHAPE_STATIC);
-						else if (body.getType() == BodyType.KinematicBody)
-							drawShape(fixture, transform, SHAPE_KINEMATIC);
-						else if (body.isAwake() == false)
-							drawShape(fixture, transform, SHAPE_NOT_AWAKE);
-						else
-							drawShape(fixture, transform, SHAPE_AWAKE);
-					}
-
-					if (drawAABBs) {
-						drawAABB(fixture, transform);
-					}
-				}
+				if (body.isActive() || drawInactiveBodies) renderBody(body);
 			}
 		}
 
@@ -135,6 +117,32 @@ public class Box2DDebugRenderer {
 			drawContact(world.getContactList().get(i));
 		renderer.end();
 		if (Gdx.gl10 != null) Gdx.gl10.glPointSize(1);
+	}
+
+	protected void renderBody (Body body) {
+		Transform transform = body.getTransform();
+		int len = body.getFixtureList().size();
+		List<Fixture> fixtures = body.getFixtureList();
+		for (int i = 0; i < len; i++) {
+			Fixture fixture = fixtures.get(i);
+
+			if (drawBodies) {
+				if (body.isActive() == false && drawInactiveBodies)
+					drawShape(fixture, transform, SHAPE_NOT_ACTIVE);
+				else if (body.getType() == BodyType.StaticBody)
+					drawShape(fixture, transform, SHAPE_STATIC);
+				else if (body.getType() == BodyType.KinematicBody)
+					drawShape(fixture, transform, SHAPE_KINEMATIC);
+				else if (body.isAwake() == false)
+					drawShape(fixture, transform, SHAPE_NOT_AWAKE);
+				else
+					drawShape(fixture, transform, SHAPE_AWAKE);
+			}
+
+			if (drawAABBs) {
+				drawAABB(fixture, transform);
+			}
+		}
 	}
 
 	private void drawAABB (Fixture fixture, Transform transform) {
@@ -329,6 +337,14 @@ public class Box2DDebugRenderer {
 
 	public void setDrawInactiveBodies (boolean drawInactiveBodies) {
 		this.drawInactiveBodies = drawInactiveBodies;
+	}
+
+	public boolean isDrawVelocities () {
+		return drawVelocities;
+	}
+
+	public void setDrawVelocities (boolean drawVelocities) {
+		this.drawVelocities = drawVelocities;
 	}
 
 	public static Vector2 getAxis () {

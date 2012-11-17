@@ -129,7 +129,7 @@ public class LwjglAWTCanvas implements Application {
 		} else {
 			files = null;
 		}
-		if(Gdx.net == null) {
+		if (Gdx.net == null) {
 			net = new LwjglNet();
 			Gdx.net = net;
 		} else {
@@ -170,7 +170,7 @@ public class LwjglAWTCanvas implements Application {
 	public Input getInput () {
 		return input;
 	}
-	
+
 	@Override
 	public Net getNet () {
 		return net;

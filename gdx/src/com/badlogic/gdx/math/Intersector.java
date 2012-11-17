@@ -699,7 +699,7 @@ public final class Intersector {
 				}
 			}
 
-			if (!((min1 < min2 && max1 > min2) || (min2 < min1 && max2 > min1))) {
+			if (!((min1 <= min2 && max1 >= min2) || (min2 <= min1 && max2 >= min1))) {
 				return false;
 			} else {
 				float o = Math.min(max1, max2) - Math.max(min1, min2);
@@ -764,7 +764,7 @@ public final class Intersector {
 				}
 			}
 
-			if (!((min1 < min2 && max1 > min2) || (min2 < min1 && max2 > min1))) {
+			if (!((min1 <= min2 && max1 >= min2) || (min2 <= min1 && max2 >= min1))) {
 				return false;
 			} else {
 				float o = Math.min(max1, max2) - Math.max(min1, min2);

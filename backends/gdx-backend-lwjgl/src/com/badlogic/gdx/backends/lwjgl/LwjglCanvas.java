@@ -148,10 +148,10 @@ public class LwjglCanvas implements Application {
 	}
 
 	@Override
-	public Net getNet() {
+	public Net getNet () {
 		return net;
 	}
-	
+
 	@Override
 	public ApplicationType getType () {
 		return ApplicationType.Desktop;
@@ -185,37 +185,42 @@ public class LwjglCanvas implements Application {
 					stopped();
 					return;
 				}
-				graphics.updateTime();
-				synchronized (runnables) {
-					executedRunnables.clear();
-					executedRunnables.addAll(runnables);
-					runnables.clear();
+				try {
+					graphics.updateTime();
+					synchronized (runnables) {
+						executedRunnables.clear();
+						executedRunnables.addAll(runnables);
+						runnables.clear();
 
-					for (int i = 0; i < executedRunnables.size(); i++) {
-						try {
-							executedRunnables.get(i).run();
-						} catch (Throwable t) {
-							t.printStackTrace();
+						for (int i = 0; i < executedRunnables.size(); i++) {
+							try {
+								executedRunnables.get(i).run();
+							} catch (Throwable t) {
+								t.printStackTrace();
+							}
 						}
 					}
-				}
-				input.update();
+					input.update();
 
-				int width = Math.max(1, graphics.getWidth());
-				int height = Math.max(1, graphics.getHeight());
-				if (lastWidth != width || lastHeight != height) {
-					lastWidth = width;
-					lastHeight = height;
-					Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
-					resize(width, height);
-					listener.resize(width, height);
+					int width = Math.max(1, graphics.getWidth());
+					int height = Math.max(1, graphics.getHeight());
+					if (lastWidth != width || lastHeight != height) {
+						lastWidth = width;
+						lastHeight = height;
+						Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
+						resize(width, height);
+						listener.resize(width, height);
+					}
+					input.processEvents();
+					listener.render();
+					audio.update();
+					Display.update();
+					canvas.setCursor(cursor);
+					if (graphics.vsync) Display.sync(60);
+				} catch (Throwable t) {
+					t.printStackTrace();
+					stop();
 				}
-				input.processEvents();
-				listener.render();
-				audio.update();
-				Display.update();
-				canvas.setCursor(cursor);
-				if (graphics.vsync) Display.sync(60);
 				EventQueue.invokeLater(this);
 			}
 		});
