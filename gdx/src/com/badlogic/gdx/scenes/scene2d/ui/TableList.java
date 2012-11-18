@@ -23,9 +23,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -33,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.TimeUtils;
 
 /** A list of tables, highlighting the currently selected item. An {@link ListAdapter} 
  * can be attached to the list, in order to customize the row layout.
@@ -58,10 +61,7 @@ public class TableList<T> extends Table {
 
 	public TableList (ListAdapter adapter, T[] items, TableListStyle style) {
 		setStyle(style);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
 		setAdapter(adapter);
-		
 		defaults().expandX().fillX();
 		setItems(items);
 	}
@@ -84,6 +84,10 @@ public class TableList<T> extends Table {
 	public int getSelectedIndex () {
 		return selectedIndex;
 	}
+	
+	public Table getSelectedRow() {
+		return (Table)getChildren().get(selectedIndex);
+	}
 
 	/** @return The text of the currently selected item or null if the list is empty. */
 	public T getSelection () {
@@ -104,6 +108,7 @@ public class TableList<T> extends Table {
 			// Create a row
 			final Table row = adapter.setupRow(items[i], currentIndex);
 			row.setBackground(style.unselected);
+			row.setTouchable(Touchable.enabled);
 			
 			row.addListener(new ClickListener() {
 				// Assign 
@@ -112,7 +117,6 @@ public class TableList<T> extends Table {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					if(selectedIndex != index || selected == null) {
-						if(selected != null) selected.setBackground(style.unselected);
 						selectedIndex = index;
 						
 						ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
@@ -120,17 +124,31 @@ public class TableList<T> extends Table {
 						Pools.free(changeEvent);
 						
 						selected = row;
-						row.setBackground(style.selection);
 					} else if(selectedIndex == index) {
 						selected = null;
 						selectedIndex = -1;
-						row.setBackground(style.unselected);
 					}
 				}
+
+				@Override
+				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+					row.setBackground(style.selection);
+					return super.touchDown(event, currentIndex, y, pointer, button);
+				}
+				@Override
+				public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+					row.setBackground(style.unselected);
+					super.touchUp(event, currentIndex, y, pointer, button);
+				}
+
+				
 			});
-			
-			add(row);
-			row();
+			// Expand last
+			if(i == items.length - 1) add(row).expand();
+			else {
+				add(row);
+				row();
+			}
 		}
 	}
 	/** Returns the items for this list instance. */
