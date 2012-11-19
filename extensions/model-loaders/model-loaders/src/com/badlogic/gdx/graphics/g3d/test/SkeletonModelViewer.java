@@ -75,7 +75,7 @@ public class SkeletonModelViewer implements ApplicationListener {
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(bounds.getCenter().cpy().add(len, len, len));
 		cam.lookAt(bounds.getCenter().x, bounds.getCenter().y, bounds.getCenter().z);
-		cam.near = 0.1f;
+		cam.near = 1f;
 		cam.far = 1000;
 
 		renderer = new ImmediateModeRenderer10();
