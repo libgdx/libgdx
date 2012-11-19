@@ -38,6 +38,7 @@ public class GestureDetector extends InputAdapter {
 	private int tapCount;
 	private long lastTapTime;
 	private float lastTapX, lastTapY;
+	private int lastTapButton, lastTapPointer;
 	boolean longPressFired;
 	private boolean pinching;
 	private boolean panning;
@@ -176,11 +177,14 @@ public class GestureDetector extends InputAdapter {
 		if (longPressFired) return false;
 		if (inTapSquare) {
 			// handle taps
-			if (TimeUtils.nanoTime() - lastTapTime > tapCountInterval || !isWithinTapSquare(x, y, lastTapX, lastTapY)) tapCount = 0;
+			if (lastTapButton != button || lastTapPointer != pointer || TimeUtils.nanoTime() - lastTapTime > tapCountInterval
+				|| !isWithinTapSquare(x, y, lastTapX, lastTapY)) tapCount = 0;
 			tapCount++;
 			lastTapTime = TimeUtils.nanoTime();
 			lastTapX = x;
 			lastTapY = y;
+			lastTapButton = button;
+			lastTapPointer = pointer;
 			gestureStartTime = 0;
 			return listener.tap(x, y, tapCount, button);
 		} else if (pinching) {
