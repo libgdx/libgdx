@@ -175,6 +175,36 @@ public class IntArray {
 			items[index] = items[size];
 		return value;
 	}
+	
+	/** Removes from this Array all of its elements that are contained in the other specified Array.
+	 * 
+	 * @param otherArray Array containing elements to be removed from this Array
+	 * @param identify Checks to see if you want to use equals() (true) or == (false)
+	 * @return {@code true} if this Array changed as a result of the call */
+	public boolean removeAll (IntArray otherArray, boolean identity) {
+		boolean modified = false;
+		for (int i = 0; i < otherArray.size; i++) {
+			for (int j = 0; j < size; j++) {
+				if (identity) {
+					if (otherArray.get(i).equals(items[j])) {
+						removeIndex(j);
+						j--;
+						modified = true;
+						break;
+					}
+				}
+				else {
+					if (otherArray.get(i) == items[j])) {
+						removeIndex(j);
+						j--;
+						modified = true;
+						break;
+					}
+				}
+			}
+		}
+		return modified;
+	}
 
 	/** Removes and returns the last item. */
 	public int pop () {
