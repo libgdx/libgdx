@@ -270,13 +270,6 @@ public class ShapeRenderer {
 		checkFlush(segments * 2 + 2);
 
 		// Algorithm from: http://www.antigrain.com/research/bezier_interpolation/index.html#PAGE_BEZIER_INTERPOLATION
-		float dx1 = cx1 - x1;
-		float dy1 = cy1 - y1;
-		float dx2 = cx2 - cx1;
-		float dy2 = cy2 - cy1;
-		float dx3 = x2 - cx2;
-		float dy3 = y2 - cy2;
-
 		float subdiv_step = 1f / segments;
 		float subdiv_step2 = subdiv_step * subdiv_step;
 		float subdiv_step3 = subdiv_step * subdiv_step * subdiv_step;
