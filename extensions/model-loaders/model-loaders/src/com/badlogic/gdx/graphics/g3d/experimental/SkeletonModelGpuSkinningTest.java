@@ -147,7 +147,7 @@ public class SkeletonModelGpuSkinningTest implements ApplicationListener {
 		texture = new Texture(Gdx.files.internal("data/models/robot.jpg"), Format.RGB565, true);
 		texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 		
-		String fileName = "data/models/robot-mesh.xml.g3d";
+		String fileName = "data/models/ninja.mesh.xml";
 		
 //		String fileName = "data/models/cube.dae";
 		

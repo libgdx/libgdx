@@ -183,7 +183,7 @@ public class SkeletonModelViewer implements ApplicationListener {
 // System.out.println("KeyframedModelViewer <filename> ?<texture-filename>");
 // System.exit(-1);
 // }
-		new LwjglApplication(new SkeletonModelViewer("data/models/robot-mesh.xml", "data/models/robot.jpg"), "SkeletonModel Viewer", 800, 480,
+		new LwjglApplication(new SkeletonModelViewer("data/models/ninja.mesh.xml", "data/models/ninja.jpg"), "SkeletonModel Viewer", 800, 480,
 			false);
 	}
 }
