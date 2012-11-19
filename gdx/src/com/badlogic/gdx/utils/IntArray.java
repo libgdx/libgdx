@@ -185,7 +185,7 @@ public class IntArray {
 		boolean modified = false;
 		for (int i = 0; i < otherArray.size; i++) {
 			for (int j = 0; j < size; j++) {
-				if (identity || value == null) {
+				if (identity) {
 					if (otherArray.get(i).equals(items[j])) {
 						removeIndex(j);
 						j--;
