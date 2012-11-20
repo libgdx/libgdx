@@ -509,9 +509,6 @@ public class OgreXmlLoader {
 
 					transform.getTranslation(jointKeyframe.position);
 					transform.getRotation(jointKeyframe.rotation);
-					jointKeyframe.rotation.x *= -1;
-					jointKeyframe.rotation.y *= -1;
-					jointKeyframe.rotation.z *= -1;
 				}
 			}
 
