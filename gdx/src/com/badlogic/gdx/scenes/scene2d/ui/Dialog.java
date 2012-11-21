@@ -90,7 +90,12 @@ public class Dialog extends Window {
 
 	/** Adds a label to the content table. */
 	public Dialog text (String text, LabelStyle labelStyle) {
-		contentTable.add(new Label(text, labelStyle));
+		return text(new Label(text, labelStyle));
+	}
+
+	/** Adds the given Label to the content table */
+	public Dialog text (Label label) {
+		contentTable.add(label);
 		return this;
 	}
 
@@ -111,10 +116,7 @@ public class Dialog extends Window {
 	/** Adds a text button to the button table.
 	 * @param object The object that will be passed to {@link #result(Object)} if this button is clicked. May be null. */
 	public Dialog button (String text, Object object, TextButtonStyle buttonStyle) {
-		TextButton button = new TextButton(text, buttonStyle);
-		buttonTable.add(button);
-		setObject(button, object);
-		return this;
+		return button(new TextButton(text, buttonStyle), object);
 	}
 
 	/** Adds the given button to the button table.
