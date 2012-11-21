@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -89,7 +90,12 @@ public class Dialog extends Window {
 
 	/** Adds a label to the content table. */
 	public Dialog text (String text, LabelStyle labelStyle) {
-		contentTable.add(new Label(text, labelStyle));
+		return text(new Label(text, labelStyle));
+	}
+
+	/** Adds the given Label to the content table */
+	public Dialog text (Label label) {
+		contentTable.add(label);
 		return this;
 	}
 
@@ -110,7 +116,17 @@ public class Dialog extends Window {
 	/** Adds a text button to the button table.
 	 * @param object The object that will be passed to {@link #result(Object)} if this button is clicked. May be null. */
 	public Dialog button (String text, Object object, TextButtonStyle buttonStyle) {
-		TextButton button = new TextButton(text, buttonStyle);
+		return button(new TextButton(text, buttonStyle), object);
+	}
+
+	/** Adds the given button to the button table. */
+	public Dialog button (Button button) {
+		return button(button, null);
+	}
+
+	/** Adds the given button to the button table.
+	 * @param object The object that will be passed to {@link #result(Object)} if this button is clicked. May be null. */
+	public Dialog button (Button button, Object object) {
 		buttonTable.add(button);
 		setObject(button, object);
 		return this;
