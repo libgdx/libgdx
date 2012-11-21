@@ -119,6 +119,11 @@ public class Dialog extends Window {
 		return button(new TextButton(text, buttonStyle), object);
 	}
 
+	/** Adds the given button to the button table. */
+	public Dialog button (Button button) {
+		return button(button, null);
+	}
+
 	/** Adds the given button to the button table.
 	 * @param object The object that will be passed to {@link #result(Object)} if this button is clicked. May be null. */
 	public Dialog button (Button button, Object object) {
