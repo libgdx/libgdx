@@ -223,37 +223,37 @@ public class Array<T> implements Iterable<T> {
 		return value;
 	}
 
-	/** Removes from this Array all of its elements that are contained in the other specified Array.
-	 * 
-	 * @param otherArray Array containing elements to be removed from this Array
-	 * @param identify Checks to see if you want to use equals() (true) or == (false)
-	 * @return {@code true} if this Array changed as a result of the call */
-	public boolean removeAll (Array<T> otherArray, boolean identity) {
-		boolean modified = false;
+	/** Removes from this array all of elements contained in the specified array.
+	 * @param identity True to use ==, false to use .equals().
+	 * @return true if this array was modified. */
+	public boolean removeAll (Array<T> array, boolean identity) {
+		int size = this.size;
+		int startSize = size;
+		T[] items = this.items;
 		if (identity) {
-			for (int i = 0; i < otherArray.size; i++) {
-				for (int j = 0; j < size; j++) {
-					if (otherArray.get(i).equals(items[j])) {
-						removeIndex(j);
-						j--;
-						modified = true;
+			for (int i = 0, n = array.size; i < n; i++) {
+				T item = array.get(i);
+				for (int ii = 0, nn = size; ii < nn; ii++) {
+					if (item.equals(items[ii])) {
+						removeIndex(ii);
+						size--;
 						break;
 					}
 				}
 			}
-		}else {
-			for (int i = 0; i < otherArray.size; i++) {
-				for (int j = 0; j < size; j++) {
-					if (otherArray.get(i) == items[j])) {
-						removeIndex(j);
-						j--;
-						modified = true;
+		} else {
+			for (int i = 0, n = array.size; i < n; i++) {
+				T item = array.get(i);
+				for (int ii = 0, nn = size; ii < nn; ii++) {
+					if (item == items[ii]) {
+						removeIndex(ii);
+						size--;
 						break;
 					}
 				}
 			}
 		}
-		return modified;
+		return size != startSize;
 	}
 
 	/** Removes and returns the last item. */

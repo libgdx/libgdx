@@ -176,38 +176,23 @@ public class LongArray {
 		return value;
 	}
 
-	/** Removes from this Array all of its elements that are contained in the other specified Array.
-	 * 
-	 * @param otherArray Array containing elements to be removed from this Array
-	 * @param identify Checks to see if you want to use equals() (true) or == (false)
-	 * @return {@code true} if this Array changed as a result of the call */
-	public boolean removeAll (LongArray otherArray, boolean identity) {
-		boolean modified = false;
-		if (identity) {
-			for (int i = 0; i < otherArray.size; i++) {
-				for (int j = 0; j < size;j++) {
-					if (otherArray.get(i).equals(items[j])) {
-						removeIndex(j);
-						j--;
-						modified = true;
-						break;
-					}
+	/** Removes from this array all of elements contained in the specified array.
+	 * @return true if this array was modified. */
+	public boolean removeAll (LongArray array) {
+		int size = this.size;
+		int startSize = size;
+		long[] items = this.items;
+		for (int i = 0, n = array.size; i < n; i++) {
+			long item = array.get(i);
+			for (int ii = 0, nn = size; ii < nn; ii++) {
+				if (item == items[ii]) {
+					removeIndex(ii);
+					size--;
+					break;
 				}
 			}
 		}
-		else {
-			for (int i = 0; i < otherArray.size; i++) {
-				for (int j = 0; j < size; j++) {
-					if (otherArray.get(i) == items[j])) {
-						removeIndex(j);
-						j--;
-						modified = true;
-						break;
-					}
-				}
-			}
-		}
-		return modified;
+		return size != startSize;
 	}
 
 	/** Removes and returns the last item. */
@@ -302,7 +287,7 @@ public class LongArray {
 			if (items[i] != array.items[i]) return false;
 		return true;
 	}
-	
+
 	public String toString () {
 		if (size == 0) return "[]";
 		long[] items = this.items;

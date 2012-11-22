@@ -128,6 +128,11 @@ public class SnapshotArray<T> extends Array<T> {
 		return super.removeIndex(index);
 	}
 
+	public boolean removeAll (Array<T> array, boolean identity) {
+		modified();
+		return super.removeAll(array, identity);
+	}
+	
 	public T pop () {
 		modified();
 		return super.pop();
