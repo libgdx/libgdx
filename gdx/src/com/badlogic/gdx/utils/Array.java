@@ -237,7 +237,7 @@ public class Array<T> implements Iterable<T> {
 						removeIndex(j);
 						j--;
 						modified = true;
-					break;
+						break;
 					}
 				}
 			}
