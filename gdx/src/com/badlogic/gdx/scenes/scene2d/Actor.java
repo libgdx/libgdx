@@ -532,7 +532,9 @@ public class Actor {
 		Stage stage = getStage();
 		Rectangle scissorBounds = Pools.obtain(Rectangle.class);
 		ScissorStack.calculateScissors(stage.getCamera(), stage.getSpriteBatch().getTransformMatrix(), tableBounds, scissorBounds);
-		return ScissorStack.pushScissors(scissorBounds);
+		if (ScissorStack.pushScissors(scissorBounds)) return true;
+		Pools.free(scissorBounds);
+		return false;
 	}
 
 	/** Ends clipping begun by {@link #clipBegin(float, float, float, float)}. */
