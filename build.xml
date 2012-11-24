@@ -240,7 +240,7 @@
 				<include name="*.dll"/>
 				<include name="*.dll.mdb"/>
 				<include name="*.a"/>
-				<include name="/ikvm/bin/*.a"/>
+				<include name="ikvm/bin/*.a"/>
 			</fileset>
 		</copy>
 	</target>
