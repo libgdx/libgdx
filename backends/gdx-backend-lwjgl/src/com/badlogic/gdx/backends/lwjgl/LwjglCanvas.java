@@ -217,13 +217,17 @@ public class LwjglCanvas implements Application {
 					Display.update();
 					canvas.setCursor(cursor);
 					if (graphics.vsync) Display.sync(60);
-				} catch (Throwable t) {
-					t.printStackTrace();
-					stop();
+				} catch (Throwable ex) {
+					exception(ex);
 				}
 				EventQueue.invokeLater(this);
 			}
 		});
+	}
+
+	protected void exception (Throwable ex) {
+		ex.printStackTrace();
+		stop();
 	}
 
 	/** Called after {@link ApplicationListener} create and resize, but before the game loop iteration. */
