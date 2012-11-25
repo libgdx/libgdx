@@ -176,6 +176,25 @@ public class FloatArray {
 		return value;
 	}
 
+	/** Removes from this array all of elements contained in the specified array.
+	 * @return true if this array was modified. */
+	public boolean removeAll (FloatArray array) {
+		int size = this.size;
+		int startSize = size;
+		float[] items = this.items;
+		for (int i = 0, n = array.size; i < n; i++) {
+			float item = array.get(i);
+			for (int ii = 0, nn = size; ii < nn; ii++) {
+				if (item == items[ii]) {
+					removeIndex(ii);
+					size--;
+					break;
+				}
+			}
+		}
+		return size != startSize;
+	}
+
 	/** Removes and returns the last item. */
 	public float pop () {
 		return items[--size];

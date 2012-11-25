@@ -110,6 +110,7 @@ extensions/gdx-bullet/target/
 
 /extensions/gdx-bullet/bin
 /extensions/gdx-bullet/jni/target
+/extensions/gdx-bullet/obj/local
 /extensions/gdx-bullet/libs/armeabi
 /extensions/gdx-bullet/libs/armeabi-v7a
 /extensions/gdx-bullet/libs/linux32

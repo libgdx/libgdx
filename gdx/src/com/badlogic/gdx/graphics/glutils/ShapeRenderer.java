@@ -89,7 +89,7 @@ public class ShapeRenderer {
 		FilledTriangle(GL10.GL_TRIANGLES), //
 		Cone(GL10.GL_LINES), //
 		FilledCone(GL10.GL_TRIANGLES), //
-		Curve(GL10.GL_LINE_STRIP), //
+		Curve(GL10.GL_LINES), //
 		;
 
 		private final int glType;
@@ -251,32 +251,25 @@ public class ShapeRenderer {
 
 	/** Calls {@link #curve(float, float, float, float, float, float, float, float, int)} by estimating the number of segments
 	 * needed for a smooth curve. */
-	public void curve (float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
-		float dx1 = x2 - x1;
-		float dy1 = y2 - y1;
-		float dx2 = x3 - x2;
-		float dy2 = y3 - y2;
-		float dx3 = x4 - x3;
-		float dy3 = y4 - y3;
+	public void curve (float x1, float y1, float cx1, float cy1, float cx2, float cy2, float x2, float y2) {
+		float dx1 = cx1 - x1;
+		float dy1 = cy1 - y1;
+		float dx2 = cx2 - cx1;
+		float dy2 = cy2 - cy1;
+		float dx3 = x2 - cx2;
+		float dy3 = y2 - cy2;
 		float length = (float)Math.sqrt(dx1 * dx1 + dy1 * dy1) + (float)Math.sqrt(dx2 * dx2 + dy2 * dy2)
 			+ (float)Math.sqrt(dx3 * dx3 + dy3 * dy3);
-		curve(x1, y1, x2, y2, x3, y3, x4, y4, 4 * (int)Math.cbrt(length));
+		curve(x1, y1, cx1, cy1, cx2, cy2, x2, y2, 4 * (int)Math.cbrt(length));
 	}
 
 	/** Draws a curve in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Curve}. */
-	public void curve (float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, int segments) {
+	public void curve (float x1, float y1, float cx1, float cy1, float cx2, float cy2, float x2, float y2, int segments) {
 		if (currType != ShapeType.Curve) throw new GdxRuntimeException("Must call begin(ShapeType.Curve)");
 		checkDirty();
-		checkFlush(segments + 1);
+		checkFlush(segments * 2 + 2);
 
 		// Algorithm from: http://www.antigrain.com/research/bezier_interpolation/index.html#PAGE_BEZIER_INTERPOLATION
-		float dx1 = x2 - x1;
-		float dy1 = y2 - y1;
-		float dx2 = x3 - x2;
-		float dy2 = y3 - y2;
-		float dx3 = x4 - x3;
-		float dy3 = y4 - y3;
-
 		float subdiv_step = 1f / segments;
 		float subdiv_step2 = subdiv_step * subdiv_step;
 		float subdiv_step3 = subdiv_step * subdiv_step * subdiv_step;
@@ -286,17 +279,17 @@ public class ShapeRenderer {
 		float pre4 = 6 * subdiv_step2;
 		float pre5 = 6 * subdiv_step3;
 
-		float tmp1x = x1 - x2 * 2 + x3;
-		float tmp1y = y1 - y2 * 2 + y3;
+		float tmp1x = x1 - cx1 * 2 + cx2;
+		float tmp1y = y1 - cy1 * 2 + cy2;
 
-		float tmp2x = (x2 - x3) * 3 - x1 + x4;
-		float tmp2y = (y2 - y3) * 3 - y1 + y4;
+		float tmp2x = (cx1 - cx2) * 3 - x1 + x2;
+		float tmp2y = (cy1 - cy2) * 3 - y1 + y2;
 
 		float fx = x1;
 		float fy = y1;
 
-		float dfx = (x2 - x1) * pre1 + tmp1x * pre2 + tmp2x * subdiv_step3;
-		float dfy = (y2 - y1) * pre1 + tmp1y * pre2 + tmp2y * subdiv_step3;
+		float dfx = (cx1 - x1) * pre1 + tmp1x * pre2 + tmp2x * subdiv_step3;
+		float dfy = (cy1 - y1) * pre1 + tmp1y * pre2 + tmp2y * subdiv_step3;
 
 		float ddfx = tmp1x * pre4 + tmp2x * pre5;
 		float ddfy = tmp1y * pre4 + tmp2y * pre5;
@@ -304,9 +297,9 @@ public class ShapeRenderer {
 		float dddfx = tmp2x * pre5;
 		float dddfy = tmp2y * pre5;
 
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x1, y1, 0);
 		while (segments-- > 0) {
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(fx, fy, 0);
 			fx += dfx;
 			fy += dfy;
 			dfx += ddfx;
@@ -317,7 +310,9 @@ public class ShapeRenderer {
 			renderer.vertex(fx, fy, 0);
 		}
 		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x4, y4, 0);
+		renderer.vertex(fx, fy, 0);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x2, y2, 0);
 	}
 
 	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The
@@ -511,7 +506,7 @@ public class ShapeRenderer {
 
 	/** Calls {@link #filledCircle(float, float, float, int)} by estimating the number of segments needed for a smooth circle. */
 	public void filledCircle (float x, float y, float radius) {
-		filledCircle(x, y, radius, (int)(4 * (float)Math.sqrt(radius)));
+		filledCircle(x, y, radius, (int)(6 * (float)Math.cbrt(radius)));
 	}
 
 	public void filledCircle (float x, float y, float radius, int segments) {

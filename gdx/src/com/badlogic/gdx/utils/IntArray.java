@@ -16,9 +16,9 @@
 
 package com.badlogic.gdx.utils;
 
-import java.util.Arrays;
-
 import com.badlogic.gdx.math.MathUtils;
+
+import java.util.Arrays;
 
 /** A resizable, ordered or unordered int array. Avoids the boxing that occurs with ArrayList<Integer>. If unordered, this class
  * avoids a memory copy when removing elements (the last element is moved to the removed element's position).
@@ -174,6 +174,25 @@ public class IntArray {
 		else
 			items[index] = items[size];
 		return value;
+	}
+
+	/** Removes from this array all of elements contained in the specified array.
+	 * @return true if this array was modified. */
+	public boolean removeAll (IntArray array) {
+		int size = this.size;
+		int startSize = size;
+		int[] items = this.items;
+		for (int i = 0, n = array.size; i < n; i++) {
+			int item = array.get(i);
+			for (int ii = 0, nn = size; ii < nn; ii++) {
+				if (item == items[ii]) {
+					removeIndex(ii);
+					size--;
+					break;
+				}
+			}
+		}
+		return size != startSize;
 	}
 
 	/** Removes and returns the last item. */

@@ -32,10 +32,10 @@ import com.esotericsoftware.tablelayout.Cell;
 import com.esotericsoftware.tablelayout.Toolkit;
 import com.esotericsoftware.tablelayout.Value;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -43,7 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.List;
@@ -61,7 +60,6 @@ public class Table extends WidgetGroup {
 	private final TableLayout layout;
 	private Drawable background;
 	private boolean clip;
-	private Rectangle scissorBounds;
 	private Skin skin;
 
 	public Table () {
@@ -83,9 +81,12 @@ public class Table extends WidgetGroup {
 		if (isTransform()) {
 			applyTransform(batch, computeTransform());
 			if (clip) {
-				if (ScissorStack.pushScissors(calculateScissors(batch.getTransformMatrix()))) {
+				boolean draw = background == null ? clipBegin(0, 0, getWidth(), getHeight()) : clipBegin(layout.getPadLeft(),
+					layout.getPadBottom(), getWidth() - layout.getPadLeft() - layout.getPadRight(),
+					getHeight() - layout.getPadBottom() - layout.getPadTop());
+				if (draw) {
 					drawChildren(batch, parentAlpha);
-					ScissorStack.popScissors();
+					clipEnd();
 				}
 			} else
 				drawChildren(batch, parentAlpha);
@@ -102,24 +103,6 @@ public class Table extends WidgetGroup {
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
-	}
-
-	private Rectangle calculateScissors (Matrix4 transform) {
-		Rectangle tableBounds = Rectangle.tmp;
-		tableBounds.width = getWidth();
-		tableBounds.height = getHeight();
-		if (background == null) {
-			tableBounds.x = 0;
-			tableBounds.y = 0;
-		} else {
-			tableBounds.x = layout.getPadLeft();
-			tableBounds.y = layout.getPadBottom();
-			tableBounds.width -= tableBounds.x + layout.getPadRight();
-			tableBounds.height -= tableBounds.y + layout.getPadTop();
-		}
-		if (scissorBounds == null) scissorBounds = new Rectangle();
-		ScissorStack.calculateScissors(getStage().getCamera(), transform, tableBounds, scissorBounds);
-		return scissorBounds;
 	}
 
 	public void invalidate () {
@@ -484,6 +467,7 @@ public class Table extends WidgetGroup {
 	static private void drawDebug (Array<Actor> actors, SpriteBatch batch) {
 		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
+			if (!actor.isVisible()) continue;
 			if (actor instanceof Table) ((Table)actor).layout.drawDebug(batch);
 			if (actor instanceof Group) drawDebug(((Group)actor).getChildren(), batch);
 		}

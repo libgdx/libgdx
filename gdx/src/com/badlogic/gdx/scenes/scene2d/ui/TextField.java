@@ -100,6 +100,8 @@ public class TextField extends Widget {
 	float keyRepeatInitialTime = 0.4f;
 	float keyRepeatTime = 0.1f;
 	boolean rightAligned;
+	
+	int maxLength = 0;
 
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
@@ -331,6 +333,9 @@ public class TextField extends Widget {
 					if ((character == TAB || character == ENTER_ANDROID) && focusTraversal)
 						next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
 					if (font.containsCharacter(character)) {
+						if (maxLength > 0 && text.length() + 1 > maxLength) {
+							return true;
+						}
 						if (!hasSelection) {
 							text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
 							updateDisplayText();
@@ -354,6 +359,14 @@ public class TextField extends Widget {
 					return false;
 			}
 		});
+	}
+	
+	public void setMaxLength(int maxLength) {
+		this.maxLength = maxLength;
+	}
+	
+	public int getMaxLength() {
+		return this.maxLength;
 	}
 
 	public void setStyle (TextFieldStyle style) {
@@ -429,7 +442,7 @@ public class TextField extends Widget {
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		final BitmapFont font = style.font;
-		final Color fontColor = style.fontColor;
+		final Color fontColor = disabled ? style.disabledFontColor : style.fontColor;
 		final Drawable selection = style.selection;
 		final Drawable cursorPatch = style.cursor;
 		final Drawable background = style.background;
@@ -533,8 +546,11 @@ public class TextField extends Widget {
 		if (content != null) {
 			StringBuilder builder = new StringBuilder();
 			for (int i = 0; i < content.length(); i++) {
+				if (maxLength > 0 && text.length() + i + 1 > maxLength) {
+					break;
+				}
 				char c = content.charAt(i);
-				if (style.font.containsCharacter(c)) builder.append(c);
+				if (style.font.containsCharacter(c) && (filter == null || filter.acceptChar(this, c))) builder.append(c);
 			}
 			content = builder.toString();
 
@@ -640,8 +656,11 @@ public class TextField extends Widget {
 
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < text.length(); i++) {
+			if (maxLength > 0 && text.length() + i + 1 > maxLength) {
+				break;
+			}
 			char c = text.charAt(i);
-			if (font.containsCharacter(c)) buffer.append(c);
+			if (font.containsCharacter(c) && (filter == null || filter.acceptChar(this, c))) buffer.append(c);
 		}
 
 		this.text = buffer.toString();
@@ -799,7 +818,7 @@ public class TextField extends Widget {
 	 * @author Nathan Sweet */
 	static public class TextFieldStyle {
 		public BitmapFont font;
-		public Color fontColor;
+		public Color fontColor, disabledFontColor;
 		/** Optional. */
 		public Drawable background, cursor, selection;
 		/** Optional. */
@@ -825,6 +844,7 @@ public class TextField extends Widget {
 			this.cursor = style.cursor;
 			this.font = style.font;
 			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
+			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
 			this.selection = style.selection;
 		}
 	}

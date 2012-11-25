@@ -35,6 +35,7 @@ import java.util.List;
 
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
+import com.badlogic.gdx.tests.extensions.GLEEDTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 
@@ -45,9 +46,9 @@ public class GdxTests {
 	public static final List<Class<? extends GdxTest>> tests = new ArrayList<Class<? extends GdxTest>>(Arrays.asList(
 		AnimationTest.class, AccelerometerTest.class, ActionTest.class, ActionSequenceTest.class,
 		GroupTest.class, AlphaTest.class, AtlasIssueTest.class, AssetManagerTest.class, FilterPerformanceTest.class,
-		AudioDeviceTest.class, AudioRecorderTest.class, BitmapFontAlignmentTest.class, BitmapFontFlipTest.class,
+		AudioDeviceTest.class, AudioRecorderTest.class, BitmapFontAlignmentTest.class, BitmapFontDistanceFieldTest.class, BitmapFontFlipTest.class,
 		GroupCullingTest.class, GestureDetectorTest.class, LabelTest.class, BitmapFontMetricsTest.class, BlitTest.class, TableTest.class,
-		BobTest.class, ImageScaleTest.class, TableLayoutTest.class, Box2DTest.class, BulletTest.class, InterpolationTest.class, TouchpadTest.class,
+		BobTest.class, ImageScaleTest.class, TableLayoutTest.class, Box2DTest.class, BulletTestCollection.class, InterpolationTest.class, TouchpadTest.class,
 		Box2DTestCollection.class, BufferUtilsTest.class, ImageTest.class, CompassTest.class, ComplexActionTest.class,
 		CullTest.class, DeltaTimeTest.class, EdgeDetectionTest.class, ETC1Test.class, ExitTest.class, FilesTest.class,
 		ScrollPaneTest.class, FloatTest.class, FloatTextureTest.class, FrameBufferTest.class, FramebufferToTextureTest.class, FrustumTest.class,
@@ -73,7 +74,7 @@ public class GdxTests {
 		// InternationalFontsTest.class, VorbisTest.class
 		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
-		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class));
+		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GLEEDTest.class));
 	
 	public static List<String> getNames () {
 		List<String> names = new ArrayList<String>(tests.size());

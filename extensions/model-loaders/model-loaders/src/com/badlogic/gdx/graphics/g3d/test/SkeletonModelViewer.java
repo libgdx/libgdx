@@ -75,7 +75,7 @@ public class SkeletonModelViewer implements ApplicationListener {
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(bounds.getCenter().cpy().add(len, len, len));
 		cam.lookAt(bounds.getCenter().x, bounds.getCenter().y, bounds.getCenter().z);
-		cam.near = 0.1f;
+		cam.near = 1f;
 		cam.far = 1000;
 
 		renderer = new ImmediateModeRenderer10();
@@ -125,7 +125,7 @@ public class SkeletonModelViewer implements ApplicationListener {
 
 		angle += 45 * Gdx.graphics.getDeltaTime();
 		Gdx.gl10.glRotatef(angle, 0, 1, 0);
-		animTime += Gdx.graphics.getDeltaTime();
+		animTime += Gdx.graphics.getDeltaTime() / 10;
 		if (animTime > anim.totalDuration) {
 			animTime = 0;
 		}
@@ -183,7 +183,7 @@ public class SkeletonModelViewer implements ApplicationListener {
 // System.out.println("KeyframedModelViewer <filename> ?<texture-filename>");
 // System.exit(-1);
 // }
-		new LwjglApplication(new SkeletonModelViewer("data/models/robot-mesh.xml", "data/models/robot.jpg"), "SkeletonModel Viewer", 800, 480,
+		new LwjglApplication(new SkeletonModelViewer("data/models/ninja.mesh.xml", "data/models/ninja.jpg"), "SkeletonModel Viewer", 800, 480,
 			false);
 	}
 }

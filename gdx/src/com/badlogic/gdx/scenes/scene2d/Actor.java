@@ -19,8 +19,10 @@ package com.badlogic.gdx.scenes.scene2d;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -509,6 +511,35 @@ public class Actor {
 		Group parent = getParent();
 		if (parent == null) return -1;
 		return parent.getChildren().indexOf(this, true);
+	}
+
+	/** Calls {@link #clipBegin(float, float, float, float)} to clip this actor's bounds. */
+	public boolean clipBegin () {
+		return clipBegin(getX(), getY(), getWidth(), getHeight());
+	}
+
+	/** Clips the specified screen aligned rectangle, specified relative to the transform matrix of the stage's SpriteBatch. The
+	 * transform matrix and the stage's camera must not have rotational components. Calling this method must be followed by a call
+	 * to {@link #clipEnd()} if true is returned.
+	 * @return false if the clipping area is zero and no drawing should occur.
+	 * @see ScissorStack */
+	public boolean clipBegin (float x, float y, float width, float height) {
+		Rectangle tableBounds = Rectangle.tmp;
+		tableBounds.x = x;
+		tableBounds.y = y;
+		tableBounds.width = width;
+		tableBounds.height = height;
+		Stage stage = getStage();
+		Rectangle scissorBounds = Pools.obtain(Rectangle.class);
+		ScissorStack.calculateScissors(stage.getCamera(), stage.getSpriteBatch().getTransformMatrix(), tableBounds, scissorBounds);
+		if (ScissorStack.pushScissors(scissorBounds)) return true;
+		Pools.free(scissorBounds);
+		return false;
+	}
+
+	/** Ends clipping begun by {@link #clipBegin(float, float, float, float)}. */
+	public void clipEnd () {
+		Pools.free(ScissorStack.popScissors());
 	}
 
 	/** Transforms the specified point in screen coordinates to the actor's local coordinate system. */

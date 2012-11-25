@@ -234,8 +234,24 @@
 		</javadoc>
 	</target>
 	
+	<target name="copy-iosfiles">
+		<copy todir="${distDir}/ios" flatten="true" failonerror="false">
+			<fileset dir="backends/gdx-backend-iosmonotouch/libs/">
+				<include name="*.dll"/>
+				<include name="*.dll.mdb"/>
+				<include name="*.a"/>
+			</fileset>
+		</copy>
+		<copy todir="${distDir}/ios/ikvm" failonerror="false">
+			<fileset dir="backends/gdx-backend-iosmonotouch/libs/ikvm"/>
+		</copy>
+		<copy todir="${distDir}/ios/monotouch-jars" failonerror="false">
+			<fileset dir="backends/gdx-backend-iosmonotouch/libs/monotouch-jars"/>
+		</copy>
+	</target>
+	
 	<target name="all" 
-depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,docs">
+depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,docs,copy-iosfiles">
 		<!-- copy distribution files (licences etc.) -->
 		<copy tofile="${distDir}/README" file="gdx/dist/README"/>
 		<copy tofile="${distDir}/LICENSE" file="gdx/dist/LICENSE"/>

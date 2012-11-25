@@ -34,6 +34,7 @@
 			<pathelement path="target/core"/>
 			</classpath>
 		</javac>
+		<jar destfile="libs/gdx-backend-ios.jar" basedir="target/backend" />
 		<ant antfile="convert.xml" dir=".">
 			<property name="IN" value="-srcpath:src -r:libs/gdx.dll -recurse:target/backend/*.class"/>
 			<property name="OUT" value="libs/gdx-backend-ios.dll"/>

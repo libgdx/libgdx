@@ -57,8 +57,8 @@ public class FreeTypeTest extends GdxTest {
 
 		batch.begin();
 		font.setColor(Color.RED);
-		font.drawMultiLine(batch, "This is a test\nAnd another line\n()§$%&/!12390#", 100, 112);
-		ftFont.drawMultiLine(batch, "This is a test\nAnd another line\n()§$%&/!12390#", 100, 112);
+		font.drawMultiLine(batch, "This is a test\nAnd another line\n()Â§$%&/!12390#", 100, 112);
+		ftFont.drawMultiLine(batch, "This is a test\nAnd another line\n()Â§$%&/!12390#", 100, 112);
 // batch.disableBlending();
 		batch.draw(ftFont.getRegion(), 300, 0);
 // batch.enableBlending();

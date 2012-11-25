@@ -223,6 +223,39 @@ public class Array<T> implements Iterable<T> {
 		return value;
 	}
 
+	/** Removes from this array all of elements contained in the specified array.
+	 * @param identity True to use ==, false to use .equals().
+	 * @return true if this array was modified. */
+	public boolean removeAll (Array<T> array, boolean identity) {
+		int size = this.size;
+		int startSize = size;
+		T[] items = this.items;
+		if (identity) {
+			for (int i = 0, n = array.size; i < n; i++) {
+				T item = array.get(i);
+				for (int ii = 0, nn = size; ii < nn; ii++) {
+					if (item.equals(items[ii])) {
+						removeIndex(ii);
+						size--;
+						break;
+					}
+				}
+			}
+		} else {
+			for (int i = 0, n = array.size; i < n; i++) {
+				T item = array.get(i);
+				for (int ii = 0, nn = size; ii < nn; ii++) {
+					if (item == items[ii]) {
+						removeIndex(ii);
+						size--;
+						break;
+					}
+				}
+			}
+		}
+		return size != startSize;
+	}
+
 	/** Removes and returns the last item. */
 	public T pop () {
 		--size;
