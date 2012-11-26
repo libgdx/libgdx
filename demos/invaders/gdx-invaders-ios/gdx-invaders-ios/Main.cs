@@ -10,14 +10,11 @@ using com.badlogic.gdx;
 
 namespace gdxinvaders
 {		
-	class AppListener: ApplicationAdapter {
-	}
-
 	public class Application
 	{
 		[Register ("AppDelegate")]
 		public partial class AppDelegate : IOSApplication {
-			public AppDelegate(): base(new AppListener(), new IOSApplicationConfiguration()) {
+			public AppDelegate(): base(new GdxInvaders(), new IOSApplicationConfiguration()) {
 				
 			}
 		}

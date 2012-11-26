@@ -34,6 +34,14 @@ default-round-large
   orig: 20, 20
   offset: 0, 0
   index: -1
+default-scroll
+  rotate: false
+  xy: 78, 29
+  size: 20, 20
+  split: 2, 2, 2, 2
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
 default-slider-knob
   rotate: false
   xy: 1, 1
@@ -43,7 +51,7 @@ default-slider-knob
   index: -1
 default-round-down
   rotate: false
-  xy: 78, 29
+  xy: 99, 29
   size: 12, 20
   split: 5, 5, 5, 4
   orig: 12, 20
@@ -51,9 +59,10 @@ default-round-down
   index: -1
 default-round
   rotate: false
-  xy: 91, 29
+  xy: 112, 29
   size: 12, 20
   split: 5, 5, 5, 4
+  pad: 4, 4, 1, 1
   orig: 12, 20
   offset: 0, 0
   index: -1
@@ -74,21 +83,21 @@ textfield
   index: -1
 check-on
   rotate: false
-  xy: 104, 35
+  xy: 125, 35
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 tree-minus
   rotate: false
-  xy: 119, 35
+  xy: 140, 35
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 tree-plus
   rotate: false
-  xy: 134, 35
+  xy: 155, 35
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
@@ -135,7 +144,7 @@ cursor
   index: -1
 default-splitpane-vertical
   rotate: false
-  xy: 104, 29
+  xy: 125, 29
   size: 3, 5
   split: 0, 0, 0, 5
   orig: 3, 5
@@ -143,7 +152,7 @@ default-splitpane-vertical
   index: -1
 default-rect-down
   rotate: false
-  xy: 149, 46
+  xy: 170, 46
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -167,7 +176,7 @@ default-select-selection
   index: -1
 default-pane-noborder
   rotate: false
-  xy: 108, 33
+  xy: 129, 33
   size: 1, 1
   split: 0, 0, 0, 0
   orig: 1, 1
@@ -175,14 +184,14 @@ default-pane-noborder
   index: -1
 selection
   rotate: false
-  xy: 149, 44
+  xy: 170, 44
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 white
   rotate: false
-  xy: 153, 48
+  xy: 174, 48
   size: 1, 1
   orig: 1, 1
   offset: 0, 0

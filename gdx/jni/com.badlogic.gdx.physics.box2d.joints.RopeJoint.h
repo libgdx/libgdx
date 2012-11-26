@@ -15,6 +15,14 @@ extern "C" {
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RopeJoint_jniGetMaxLength
   (JNIEnv *, jobject, jlong);
 
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_RopeJoint
+ * Method:    jniSetMaxLength
+ * Signature: (JF)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RopeJoint_jniSetMaxLength
+  (JNIEnv *, jobject, jlong, jfloat);
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,0 +1,9 @@
+		float h = 280;
+		float k = 185;
+		float r = 350;
+		
+		float a = 10;
+		float b = 1;
+		
+		position = new Vector2(h + r * MathUtils.sin( timeAlive - MathUtils.atan2(a, b)), 
+				k - r * MathUtils.cos( timeAlive - MathUtils.atan2(a, b))/2.f);

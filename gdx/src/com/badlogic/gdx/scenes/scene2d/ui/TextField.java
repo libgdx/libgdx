@@ -72,6 +72,7 @@ public class TextField extends Widget {
 	TextFieldFilter filter;
 	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 	boolean focusTraversal = true;
+	boolean disabled;
 
 	private boolean passwordMode;
 	private StringBuilder passwordBuffer;
@@ -99,6 +100,8 @@ public class TextField extends Widget {
 	float keyRepeatInitialTime = 0.4f;
 	float keyRepeatTime = 0.1f;
 	boolean rightAligned;
+	
+	int maxLength = 0;
 
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
@@ -126,11 +129,12 @@ public class TextField extends Widget {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (!super.touchDown(event, x, y, pointer, button)) return false;
 				if (pointer == 0 && button != 0) return false;
-				Stage stage = getStage();
+				if (disabled) return true;
 				keyboard.show(true);
 				clearSelection();
 				setCursorPosition(x);
 				selectionStart = cursor;
+				Stage stage = getStage();
 				if (stage != null) stage.setKeyboardFocus(TextField.this);
 				return true;
 			}
@@ -157,6 +161,8 @@ public class TextField extends Widget {
 			}
 
 			public boolean keyDown (InputEvent event, int keycode) {
+				if (disabled) return false;
+
 				final BitmapFont font = style.font;
 
 				lastBlink = 0;
@@ -288,11 +294,14 @@ public class TextField extends Widget {
 			}
 
 			public boolean keyUp (InputEvent event, int keycode) {
+				if (disabled) return false;
 				keyRepeatTask.cancel();
 				return true;
 			}
 
 			public boolean keyTyped (InputEvent event, char character) {
+				if (disabled) return false;
+
 				final BitmapFont font = style.font;
 
 				Stage stage = getStage();
@@ -324,6 +333,9 @@ public class TextField extends Widget {
 					if ((character == TAB || character == ENTER_ANDROID) && focusTraversal)
 						next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
 					if (font.containsCharacter(character)) {
+						if (maxLength > 0 && text.length() + 1 > maxLength) {
+							return true;
+						}
 						if (!hasSelection) {
 							text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
 							updateDisplayText();
@@ -347,6 +359,14 @@ public class TextField extends Widget {
 					return false;
 			}
 		});
+	}
+	
+	public void setMaxLength(int maxLength) {
+		this.maxLength = maxLength;
+	}
+	
+	public int getMaxLength() {
+		return this.maxLength;
 	}
 
 	public void setStyle (TextFieldStyle style) {
@@ -422,7 +442,7 @@ public class TextField extends Widget {
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		final BitmapFont font = style.font;
-		final Color fontColor = style.fontColor;
+		final Color fontColor = disabled ? style.disabledFontColor : style.fontColor;
 		final Drawable selection = style.selection;
 		final Drawable cursorPatch = style.cursor;
 		final Drawable background = style.background;
@@ -453,6 +473,7 @@ public class TextField extends Widget {
 				selectionWidth, textBounds.height + font.getDescent() / 2);
 		}
 
+		float yOffset = font.isFlipped() ? -textBounds.height : 0;
 		if (displayText.length() == 0) {
 			if (!focused && messageText != null) {
 				if (style.messageFontColor != null) {
@@ -461,13 +482,13 @@ public class TextField extends Widget {
 				} else
 					font.setColor(0.7f, 0.7f, 0.7f, parentAlpha);
 				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
-				font.draw(batch, messageText, x + bgLeftWidth, y + textY);
+				font.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset);
 			}
 		} else {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			font.draw(batch, displayText, x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
+			font.draw(batch, displayText, x + bgLeftWidth + textOffset, y + textY + yOffset, visibleTextStart, visibleTextEnd);
 		}
-		if (focused) {
+		if (focused && !disabled) {
 			blink();
 			if (cursorOn && cursorPatch != null) {
 				cursorPatch.draw(batch, x + bgLeftWidth + textOffset + glyphPositions.get(cursor)
@@ -525,8 +546,11 @@ public class TextField extends Widget {
 		if (content != null) {
 			StringBuilder builder = new StringBuilder();
 			for (int i = 0; i < content.length(); i++) {
+				if (maxLength > 0 && text.length() + i + 1 > maxLength) {
+					break;
+				}
 				char c = content.charAt(i);
-				if (style.font.containsCharacter(c)) builder.append(c);
+				if (style.font.containsCharacter(c) && (filter == null || filter.acceptChar(this, c))) builder.append(c);
 			}
 			content = builder.toString();
 
@@ -632,8 +656,11 @@ public class TextField extends Widget {
 
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < text.length(); i++) {
+			if (maxLength > 0 && text.length() + i + 1 > maxLength) {
+				break;
+			}
 			char c = text.charAt(i);
-			if (font.containsCharacter(c)) buffer.append(c);
+			if (font.containsCharacter(c) && (filter == null || filter.acceptChar(this, c))) buffer.append(c);
 		}
 
 		this.text = buffer.toString();
@@ -731,6 +758,14 @@ public class TextField extends Widget {
 		this.blinkTime = blinkTime;
 	}
 
+	public void setDisabled (boolean disabled) {
+		this.disabled = disabled;
+	}
+
+	public boolean isDisabled () {
+		return disabled;
+	}
+
 	class KeyRepeatTask extends Task {
 		int keycode;
 
@@ -783,7 +818,7 @@ public class TextField extends Widget {
 	 * @author Nathan Sweet */
 	static public class TextFieldStyle {
 		public BitmapFont font;
-		public Color fontColor;
+		public Color fontColor, disabledFontColor;
 		/** Optional. */
 		public Drawable background, cursor, selection;
 		/** Optional. */
@@ -809,6 +844,7 @@ public class TextField extends Widget {
 			this.cursor = style.cursor;
 			this.font = style.font;
 			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
+			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
 			this.selection = style.selection;
 		}
 	}

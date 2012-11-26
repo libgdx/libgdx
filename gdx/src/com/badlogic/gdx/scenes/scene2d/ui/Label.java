@@ -22,7 +22,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -147,26 +146,31 @@ public class Label extends Widget {
 		float oldScaleY = font.getScaleY();
 		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(fontScaleX, fontScaleY);
 
-		float height = getHeight();
-
-		float y;
+		Drawable background = style.background;
+		float width = getWidth(), height = getHeight();
+		float x = 0, y = 0;
+		if (background != null) {
+			x = background.getLeftWidth();
+			y = background.getBottomHeight();
+			width -= background.getLeftWidth() + background.getRightWidth();
+			height -= background.getBottomHeight() + background.getTopHeight();
+		}
 		if ((labelAlign & Align.top) != 0) {
-			y = cache.getFont().isFlipped() ? 0 : height - bounds.height;
+			y += cache.getFont().isFlipped() ? 0 : height - bounds.height;
 			y += style.font.getDescent();
 		} else if ((labelAlign & Align.bottom) != 0) {
-			y = cache.getFont().isFlipped() ? height - bounds.height : 0;
+			y += cache.getFont().isFlipped() ? height - bounds.height : 0;
 			y -= style.font.getDescent();
 		} else
-			y = (int)((height - bounds.height) / 2);
+			y += (int)((height - bounds.height) / 2);
 		if (!cache.getFont().isFlipped()) y += bounds.height;
 
-		float x;
-		if ((labelAlign & Align.left) != 0)
-			x = 0;
-		else if ((labelAlign & Align.right) != 0) {
-			x = getWidth() - bounds.width;
-		} else
-			x = (int)((getWidth() - bounds.width) / 2);
+		if ((labelAlign & Align.left) == 0) {
+			if ((labelAlign & Align.right) != 0)
+				x += width - bounds.width;
+			else
+				x += (int)((width - bounds.width) / 2);
+		}
 
 		if (wrap)
 			cache.setWrappedText(text, x, y, bounds.width, lineAlign);
@@ -191,12 +195,18 @@ public class Label extends Widget {
 	public float getPrefWidth () {
 		if (wrap) return 0;
 		if (sizeInvalid) computeSize();
-		return bounds.width;
+		float width = bounds.width;
+		Drawable background = style.background;
+		if (background != null) width += background.getLeftWidth() + background.getRightWidth();
+		return width;
 	}
 
 	public float getPrefHeight () {
 		if (sizeInvalid) computeSize();
-		return bounds.height - style.font.getDescent() * 2;
+		float height = bounds.height - style.font.getDescent() * 2;
+		Drawable background = style.background;
+		if (background != null) height += background.getTopHeight() + background.getBottomHeight();
+		return height;
 	}
 
 	public TextBounds getTextBounds () {

@@ -36,8 +36,8 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 		simulation = new Simulation();
 		simulation.listener = this;
 		renderer = Gdx.graphics.isGL20Available() ? new RendererGL20() : new RendererGL10();
-		explosion = Gdx.audio.newSound(Gdx.files.internal("data/explosion.ogg"));
-		shot = Gdx.audio.newSound(Gdx.files.internal("data/shot.ogg"));
+		explosion = Gdx.audio.newSound(Gdx.files.internal("data/explosion.wav"));
+		shot = Gdx.audio.newSound(Gdx.files.internal("data/shot.wav"));
 	}
 
 	@Override

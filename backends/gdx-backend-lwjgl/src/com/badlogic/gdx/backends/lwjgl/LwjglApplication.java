@@ -19,7 +19,6 @@ package com.badlogic.gdx.backends.lwjgl;
 import java.awt.Canvas;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.LWJGLException;
@@ -31,70 +30,75 @@ import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** An OpenGL surface fullscreen or in a lightweight window. */
 public class LwjglApplication implements Application {
-	LwjglGraphics graphics;
-	OpenALAudio audio;
-	LwjglFiles files;
-	LwjglInput input;
-	final ApplicationListener listener;
-	Thread mainLoopThread;
-	boolean running = true;
-	final List<Runnable> runnables = new ArrayList();
-	final List<Runnable> executedRunnables = new ArrayList();
-	int logLevel = LOG_INFO;
+	protected final LwjglGraphics graphics;
+	protected final OpenALAudio audio;
+	protected final LwjglFiles files;
+	protected final LwjglInput input;
+	protected final LwjglNet net;
+	protected final ApplicationListener listener;
+	protected Thread mainLoopThread;
+	protected boolean running = true;
+	protected final Array<Runnable> runnables = new Array();
+	protected final Array<Runnable> executedRunnables = new Array();
+	protected int logLevel = LOG_INFO;
 
-    public LwjglApplication (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
-        this(listener, createConfig(title, width, height, useGL2));
-    }
+	public LwjglApplication (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
+		this(listener, createConfig(title, width, height, useGL2));
+	}
 
-    public LwjglApplication (ApplicationListener listener) {
-        this(listener, new LwjglApplicationConfiguration());
-    }
+	public LwjglApplication (ApplicationListener listener) {
+		this(listener, new LwjglApplicationConfiguration());
+	}
 
-    public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config) {
-        this(listener, config, new LwjglGraphics(config));
-    }
+	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config) {
+		this(listener, config, new LwjglGraphics(config));
+	}
 
-    public LwjglApplication (ApplicationListener listener, boolean useGL2, Canvas canvas) {
-        this(listener, new LwjglApplicationConfiguration(), new LwjglGraphics(canvas, useGL2));
-    }
+	public LwjglApplication (ApplicationListener listener, boolean useGL2, Canvas canvas) {
+		this(listener, new LwjglApplicationConfiguration(), new LwjglGraphics(canvas, useGL2));
+	}
 
-    public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, Canvas canvas) {
-        this(listener, config, new LwjglGraphics(canvas, config));
-    }
+	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, Canvas canvas) {
+		this(listener, config, new LwjglGraphics(canvas, config));
+	}
 
-    public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, LwjglGraphics graphics) {
-        LwjglNativesLoader.load();
+	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, LwjglGraphics graphics) {
+		LwjglNativesLoader.load();
 
-        this.graphics = graphics;
-        audio = new OpenALAudio(16, config.audioDeviceBufferCount, config.audioDeviceBufferSize);
-        files = new LwjglFiles();
-        input = new LwjglInput();
-        this.listener = listener;
+		this.graphics = graphics;
+		audio = new OpenALAudio(16, config.audioDeviceBufferCount, config.audioDeviceBufferSize);
+		files = new LwjglFiles();
+		input = new LwjglInput();
+		net = new LwjglNet();
+		this.listener = listener;
 
-        Gdx.app = this;
-        Gdx.graphics = graphics;
-        Gdx.audio = audio;
-        Gdx.files = files;
-        Gdx.input = input;
-        initialize();
-    }
+		Gdx.app = this;
+		Gdx.graphics = graphics;
+		Gdx.audio = audio;
+		Gdx.files = files;
+		Gdx.input = input;
+		Gdx.net = net;
+		initialize();
+	}
 
-    private static LwjglApplicationConfiguration createConfig(String title, int width, int height, boolean useGL2) {
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = title;
-        config.width = width;
-        config.height = height;
-        config.useGL20 = useGL2;
-        config.vSyncEnabled = true;
-        return config;
-    }
+	private static LwjglApplicationConfiguration createConfig (String title, int width, int height, boolean useGL2) {
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.title = title;
+		config.width = width;
+		config.height = height;
+		config.useGL20 = useGL2;
+		config.vSyncEnabled = true;
+		return config;
+	}
 
 	private void initialize () {
 		mainLoopThread = new Thread("LWJGL Application") {
@@ -138,7 +142,7 @@ public class LwjglApplication implements Application {
 				executedRunnables.addAll(runnables);
 				runnables.clear();
 
-				for (int i = 0; i < executedRunnables.size(); i++) {
+				for (int i = 0; i < executedRunnables.size; i++) {
 					shouldRender = true;
 					try {
 						executedRunnables.get(i).run();
@@ -147,6 +151,11 @@ public class LwjglApplication implements Application {
 					}
 				}
 			}
+			
+			// if one of the runnables set running in false, for example after an exit().
+			if (!running)
+				break;
+			
 			input.update();
 			shouldRender |= graphics.shouldRender();
 
@@ -215,6 +224,11 @@ public class LwjglApplication implements Application {
 	@Override
 	public Input getInput () {
 		return input;
+	}
+	
+	@Override
+	public Net getNet() {
+		return net;
 	}
 
 	@Override

@@ -31,10 +31,6 @@ public class TiledLayer {
 	/** Contains the tile ids, addressed as [row][column]. */
 	public int[][] tiles;
 
-	/** Constructs a new TiledLayer, used by {@link TiledLoader} */
-	TiledLayer () {
-	}
-
 	public int getWidth () {
 		if (tiles[0] == null) return 0;
 		return tiles[0].length;

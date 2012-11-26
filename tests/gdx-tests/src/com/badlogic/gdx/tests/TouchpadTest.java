@@ -10,6 +10,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class TouchpadTest extends GdxTest {
 	Stage stage;
+	Touchpad touchpad;
 
 	public void create () {
 		stage = new Stage();
@@ -17,13 +18,13 @@ public class TouchpadTest extends GdxTest {
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		Touchpad touchpad = new Touchpad(20, skin);
+		touchpad = new Touchpad(20, skin);
 		touchpad.setBounds(15, 15, 100, 100);
 		stage.addActor(touchpad);
 	}
 
 	public void render () {
-		// System.out.println(meow.getValue());
+		//System.out.println(touchpad.getKnobPercentX() + " " + touchpad.getKnobPercentY());
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();

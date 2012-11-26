@@ -150,7 +150,7 @@ public class TexturePacker2 {
 			try {
 				if (settings.outputFormat.equalsIgnoreCase("jpg")) {
 					Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
-					ImageWriter writer = (ImageWriter)writers.next();
+					ImageWriter writer = writers.next();
 					ImageWriteParam param = writer.getDefaultWriteParam();
 					param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 					param.setCompressionQuality(settings.jpegQuality);
@@ -193,6 +193,10 @@ public class TexturePacker2 {
 		if (rect.splits != null) {
 			writer
 				.write("  split: " + rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
+		}
+		if (rect.pads != null) {
+			if (rect.splits == null) writer.write("  split: 0, 0, 0, 0\n");
+			writer.write("  pad: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
 		}
 		writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
 		writer.write("  offset: " + rect.offsetX + ", " + (rect.originalHeight - rect.image.getHeight() - rect.offsetY) + "\n");
@@ -239,6 +243,7 @@ public class TexturePacker2 {
 		public boolean rotated;
 		public ArrayList<Rect> aliases = new ArrayList();
 		public int[] splits;
+		public int[] pads;
 		public boolean canRotate = true;
 
 		int score1, score2;
@@ -283,11 +288,13 @@ public class TexturePacker2 {
 			rotated = rect.rotated;
 			aliases = rect.aliases;
 			splits = rect.splits;
+			pads = rect.pads;
 			canRotate = rect.canRotate;
 			score1 = rect.score1;
 			score2 = rect.score2;
 		}
 
+		@Override
 		public boolean equals (Object obj) {
 			if (this == obj) return true;
 			if (obj == null) return false;
@@ -299,6 +306,7 @@ public class TexturePacker2 {
 			return true;
 		}
 
+		@Override
 		public String toString () {
 			return name + "[" + x + "," + y + " " + width + "x" + height + "]";
 		}
@@ -370,6 +378,28 @@ public class TexturePacker2 {
 		} catch (Exception ex) {
 			throw new RuntimeException("Error packing files.", ex);
 		}
+	}
+
+	/** @return true if the output file does not yet exist or its last modification date is before the last modification date of the
+	 *         input file */
+	static public boolean isModified (String input, String output, String packFileName) {
+		String packFullFileName = output;
+		if (!packFullFileName.endsWith("/")) packFullFileName += "/";
+		packFullFileName += packFileName;
+		File outputFile = new File(packFullFileName);
+		if (!outputFile.exists()) return true;
+
+		File inputFile = new File(input);
+		if (!inputFile.exists()) throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
+		return inputFile.lastModified() > outputFile.lastModified();
+	}
+
+	static public void processIfModified (String input, String output, String packFileName) {
+		if (isModified(input, output, packFileName)) process(input, output, packFileName);
+	}
+
+	static public void processIfModified (Settings settings, String input, String output, String packFileName) {
+		if (isModified(input, output, packFileName)) process(settings, input, output, packFileName);
 	}
 
 	public static void main (String[] args) throws Exception {

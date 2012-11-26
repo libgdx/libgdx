@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
+import com.badlogic.gdx.math.MathUtils;
+
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import com.badlogic.gdx.math.MathUtils;
 
 /** A resizable, ordered or unordered array of objects. If unordered, this class avoids a memory copy when removing elements (the
  * last element is moved to the removed element's position).
@@ -223,6 +223,39 @@ public class Array<T> implements Iterable<T> {
 		return value;
 	}
 
+	/** Removes from this array all of elements contained in the specified array.
+	 * @param identity True to use ==, false to use .equals().
+	 * @return true if this array was modified. */
+	public boolean removeAll (Array<T> array, boolean identity) {
+		int size = this.size;
+		int startSize = size;
+		T[] items = this.items;
+		if (identity) {
+			for (int i = 0, n = array.size; i < n; i++) {
+				T item = array.get(i);
+				for (int ii = 0, nn = size; ii < nn; ii++) {
+					if (item.equals(items[ii])) {
+						removeIndex(ii);
+						size--;
+						break;
+					}
+				}
+			}
+		} else {
+			for (int i = 0, n = array.size; i < n; i++) {
+				T item = array.get(i);
+				for (int ii = 0, nn = size; ii < nn; ii++) {
+					if (item == items[ii]) {
+						removeIndex(ii);
+						size--;
+						break;
+					}
+				}
+			}
+		}
+		return size != startSize;
+	}
+
 	/** Removes and returns the last item. */
 	public T pop () {
 		--size;
@@ -334,6 +367,22 @@ public class Array<T> implements Iterable<T> {
 		V[] result = (V[])java.lang.reflect.Array.newInstance(type, size);
 		System.arraycopy(items, 0, result, 0, size);
 		return result;
+	}
+
+	public boolean equals (Object object) {
+		if (object == this) return true;
+		if (!(object instanceof Array)) return false;
+		Array array = (Array)object;
+		int n = size;
+		if (n != array.size) return false;
+		Object[] items1 = this.items;
+		Object[] items2 = array.items;
+		for (int i = 0; i < n; i++) {
+			Object o1 = items1[i];
+			Object o2 = items2[i];
+			if (!(o1 == null ? o2 == null : o1.equals(o2))) return false;
+		}
+		return true;
 	}
 
 	public String toString () {

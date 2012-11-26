@@ -97,6 +97,19 @@ public class AssetManager implements Disposable {
 	}
 
 	/** @param fileName the asset file name
+	 * @return the asset */
+	public synchronized <T> T get (String fileName) {
+		Class<T> type = assetTypes.get(fileName);
+		ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
+		if (assetsByType == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
+		RefCountedContainer assetContainer = assetsByType.get(fileName);
+		if (assetContainer == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
+		T asset = assetContainer.getObject(type);
+		if (asset == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
+		return asset;
+	}
+
+	/** @param fileName the asset file name
 	 * @param type the asset type
 	 * @return the asset */
 	public synchronized <T> T get (String fileName, Class<T> type) {
@@ -594,4 +607,20 @@ public class AssetManager implements Disposable {
 		}
 		return buffer.toString();
 	}
+
+	/** @return the file names of all loaded assets. */
+	public synchronized Array<String> getAssetNames () {
+		return assetTypes.keys().toArray();
+	}
+
+	/** @return the dependencies of an asset or null if the asset has no dependencies. */
+	public synchronized Array<String> getDependencies (String fileName) {
+		return assetDependencies.get(fileName);
+	}
+
+	/** @return the type of a loaded asset. */
+	public synchronized Class getAssetType (String fileName) {
+		return assetTypes.get(fileName);
+	}
+
 }

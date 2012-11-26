@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0106234D-B8C4-4A79-A179-F60F22298C34}</ProjectGuid>
+    <ProjectGuid>{3D6A15CB-C4D0-4F6D-B152-EBF9D66064E5}</ProjectGuid>
     <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
     <RootNamespace>gdxvectorpinballios</RootNamespace>
@@ -24,13 +24,13 @@
     <MtouchDebug>True</MtouchDebug>
     <MtouchProfiling>True</MtouchProfiling>
     <MtouchLink>None</MtouchLink>
-    <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
-    <MtouchI18n />
     <CustomCommands>
       <CustomCommands>
         <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../gdx-vectorpinball/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;vectorpinball.dll&quot; -DEXCLUDE=&quot;**/BouncyDesktop.java&quot; -v" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
+    <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
+    <MtouchI18n>west</MtouchI18n>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -40,6 +40,13 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <MtouchLink>None</MtouchLink>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../gdx-vectorpinball/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;vectorpinball.dll&quot; -DEXCLUDE=&quot;**/BouncyDesktop.java&quot; -v" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
+    <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
+    <MtouchI18n>west</MtouchI18n>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>True</DebugSymbols>
@@ -53,6 +60,15 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>True</MtouchDebug>
     <MtouchProfiling>True</MtouchProfiling>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../gdx-vectorpinball/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;vectorpinball.dll&quot; -DEXCLUDE=&quot;**/BouncyDesktop.java&quot; -v" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
+    <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
+    <MtouchI18n>west</MtouchI18n>
+    <MtouchArch>ARMv7</MtouchArch>
+    <MtouchUseSGen>True</MtouchUseSGen>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -62,6 +78,15 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../gdx-vectorpinball/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;vectorpinball.dll&quot; -DEXCLUDE=&quot;**/BouncyDesktop.java&quot; -v" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
+    <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
+    <MtouchI18n>west</MtouchI18n>
+    <MtouchArch>ARMv7</MtouchArch>
+    <MtouchUseSGen>True</MtouchUseSGen>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
@@ -87,35 +112,8 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Beans">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.OpenJDK.Beans.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Charsets">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.OpenJDK.Charsets.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Core">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.OpenJDK.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Misc">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.OpenJDK.Misc.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Text">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.OpenJDK.Text.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.OpenJDK.Util">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.OpenJDK.Util.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Reflection">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.Reflection.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Runtime.JNI">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.Runtime.JNI.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Runtime">
-      <HintPath>..\..\..\..\..\..\ikvm-monotouch\bin\IKVM.Runtime.dll</HintPath>
+    <Reference Include="vectorpinball">
+      <HintPath>vectorpinball.dll</HintPath>
     </Reference>
     <Reference Include="gdx">
       <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\gdx.dll</HintPath>
@@ -123,8 +121,35 @@
     <Reference Include="gdx-backend-ios">
       <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\gdx-backend-ios.dll</HintPath>
     </Reference>
-    <Reference Include="vectorpinball">
-      <HintPath>vectorpinball.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Beans">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.OpenJDK.Beans.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Charsets">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.OpenJDK.Charsets.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Core">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.OpenJDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Misc">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.OpenJDK.Misc.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Text">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.OpenJDK.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Util">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.OpenJDK.Util.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Reflection">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime.JNI">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.Runtime.JNI.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

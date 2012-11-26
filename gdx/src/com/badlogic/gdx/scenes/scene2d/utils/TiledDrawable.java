@@ -22,7 +22,7 @@ public class TiledDrawable extends TextureRegionDrawable {
 
 	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
 		TextureRegion region = getRegion();
-		float regionWidth = region.getRegionWidth(), regionHeight = region.getRegionWidth();
+		float regionWidth = region.getRegionWidth(), regionHeight = region.getRegionHeight();
 		float remainingX = width % regionWidth, remainingY = height % regionHeight;
 		float startX = x, startY = y;
 		float endX = x + width - remainingX, endY = y + height - remainingY;

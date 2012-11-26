@@ -31,8 +31,6 @@ public class InputListener implements EventListener {
 			return keyUp(event, event.getKeyCode());
 		case keyTyped:
 			return keyTyped(event, event.getCharacter());
-		case scrolled:
-			return scrolled(event, event.getScrollAmount());
 		}
 
 		Vector2 coords = Vector2.tmp.set(event.getStageX(), event.getStageY());
@@ -49,6 +47,8 @@ public class InputListener implements EventListener {
 			return true;
 		case mouseMoved:
 			return mouseMoved(event, coords.x, coords.y);
+		case scrolled:
+			return scrolled(event, coords.x, coords.y, event.getScrollAmount());
 		case enter:
 			enter(event, coords.x, coords.y, event.getPointer(), event.getRelatedActor());
 			return false;
@@ -99,7 +99,7 @@ public class InputListener implements EventListener {
 	}
 
 	/** Called when the mouse wheel has been scrolled. When true is returned, the event is {@link Event#handle() handled}. */
-	public boolean scrolled (InputEvent event, int amount) {
+	public boolean scrolled (InputEvent event, float x, float y, int amount) {
 		return false;
 	}
 

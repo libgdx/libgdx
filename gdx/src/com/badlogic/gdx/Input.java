@@ -240,7 +240,7 @@ public interface Input {
 	/** @return The value of the accelerometer on its y-axis. ranges between [-10,10]. */
 	public float getAccelerometerZ ();
 
-	/** @return the last touch x coordinate in screen coordinates. The screen origin is the top left corner. */
+	/** @return the last touch x coordinate for the first pointer in screen coordinates. The screen origin is the top left corner. */
 	public int getX ();
 
 	/** Returns the x coordinate in screen coordinates of the given pointer. Pointers are indexed from 0 to n. The pointer id
@@ -258,7 +258,7 @@ public interface Input {
 	/** @return the different between the current pointer location and the last pointer location on the x-axis. */
 	public int getDeltaX (int pointer);
 
-	/** @return the last touch y coordinate in screen coordinates. The screen origin is the top left corner. */
+	/** @return the last touch y coordinate for the first pointer in screen coordinates. The screen origin is the top left corner. */
 	public int getY ();
 
 	/** Returns the y coordinate in screen coordinates of the given pointer. Pointers are indexed from 0 to n. The pointer id

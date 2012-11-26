@@ -4,8 +4,12 @@ package com.badlogic.gdx.graphics.g2d;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.EarClippingTriangulator;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Defines a polygon shape on top of a #TextureRegion for minimising pixel drawing. Can either be constructed through a .psh file
@@ -20,7 +24,7 @@ public class PolygonRegion {
 	// pixel coordinates relative to source image.
 	private float[] localVertices;
 	// the underlying TextureRegion
-	private TextureRegion region;
+	private final TextureRegion region;
 
 	/** Creates a PolygonRegion by reading in the vertices and texture coordinates from the external file. TextureRegion can come
 	 * from an atlas.
@@ -39,7 +43,29 @@ public class PolygonRegion {
 	 * @param region the region used for drawing
 	 * @param vertices contains 2D polygon coordinates in pixels relative to source region */
 	public PolygonRegion (TextureRegion region, float[] vertices) {
+		this.region = region;
 
+		EarClippingTriangulator ect = new EarClippingTriangulator();
+
+		List<Vector2> polygonVectors = new ArrayList<Vector2>();
+		for (int i = 0; i < vertices.length; i += 2) {
+			polygonVectors.add(new Vector2(vertices[i], vertices[i + 1]));
+		}
+
+		List<Vector2> triangulatedVectors = ect.computeTriangles(polygonVectors);
+
+		localVertices = new float[triangulatedVectors.size() * 2];
+		texCoords = new float[triangulatedVectors.size() * 2];
+
+		float uvWidth = region.u2 - region.u;
+		float uvHeight = region.v2 - region.v;
+
+		for (int i = 0; i < triangulatedVectors.size(); i++) {
+			localVertices[i * 2] = triangulatedVectors.get(i).x;
+			localVertices[i * 2 + 1] = triangulatedVectors.get(i).y;
+			texCoords[i * 2] = region.u + (localVertices[i * 2] - region.getRegionX()) / region.getRegionWidth();
+			texCoords[i * 2 + 1] = region.v + (1 - (localVertices[i * 2 + 1] - region.getRegionY()) / region.getRegionHeight());
+		}
 	}
 
 	/** Loads the vertices and texture data from an external file. The file should look something like this:
@@ -97,8 +123,8 @@ public class PolygonRegion {
 		float uvHeight = this.region.v2 - this.region.v;
 
 		for (int i = 0; i < localTexCoords.length; i += 2) {
-			localTexCoords[i] = this.region.u + (localTexCoords[i] * uvWidth);
-			localTexCoords[i + 1] = this.region.v + (localTexCoords[i + 1] * uvHeight);
+			localTexCoords[i] = this.region.u + localTexCoords[i] * uvWidth;
+			localTexCoords[i + 1] = this.region.v + localTexCoords[i + 1] * uvHeight;
 		}
 
 		return localTexCoords;

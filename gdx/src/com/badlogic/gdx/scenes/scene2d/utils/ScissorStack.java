@@ -64,23 +64,28 @@ public class ScissorStack {
 			scissor.height = Math.max(1, maxY - minY);
 		}
 		scissors.add(scissor);
-		Gdx.gl.glScissor(Math.round(scissor.x), Math.round(scissor.y), Math.round(scissor.width), Math.round(scissor.height));
+		Gdx.gl.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
 		return true;
 	}
 
 	/** Pops the current scissor rectangle from the stack and sets the new scissor area to the new top of stack rectangle. In case
 	 * no more rectangles are on the stack, {@link GL10#GL_SCISSOR_TEST} is disabled. */
-	public static void popScissors () {
-		scissors.pop();
+	public static Rectangle popScissors () {
+		Rectangle old = scissors.pop();
 		if (scissors.size == 0)
 			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 		else {
 			Rectangle scissor = scissors.peek();
 			Gdx.gl.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
 		}
+		return old;
 	}
 
 	private static void fix (Rectangle rect) {
+		rect.x = Math.round(rect.x);
+		rect.y = Math.round(rect.y);
+		rect.width = Math.round(rect.width);
+		rect.height = Math.round(rect.height);
 		if (rect.width < 0) {
 			rect.width = -rect.width;
 			rect.x -= rect.width;

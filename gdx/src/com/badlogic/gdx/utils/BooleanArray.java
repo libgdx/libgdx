@@ -16,9 +16,9 @@
 
 package com.badlogic.gdx.utils;
 
-import java.util.BitSet;
-
 import com.badlogic.gdx.math.MathUtils;
+
+import java.util.BitSet;
 
 /** A resizable, ordered or unordered boolean array. Avoids the boxing that occurs with ArrayList<Boolean>. It is less memory
  * efficient than {@link BitSet}, except for very small sizes. It more CPU efficient than {@link BitSet}, except for very large
@@ -145,6 +145,25 @@ public class BooleanArray {
 		return value;
 	}
 
+	/** Removes from this array all of elements contained in the specified array.
+	 * @return true if this array was modified. */
+	public boolean removeAll (BooleanArray array) {
+		int size = this.size;
+		int startSize = size;
+		boolean[] items = this.items;
+		for (int i = 0, n = array.size; i < n; i++) {
+			boolean item = array.get(i);
+			for (int ii = 0, nn = size; ii < nn; ii++) {
+				if (item == items[ii]) {
+					removeIndex(ii);
+					size--;
+					break;
+				}
+			}
+		}
+		return size != startSize;
+	}
+
 	/** Removes and returns the last item. */
 	public boolean pop () {
 		return items[--size];
@@ -221,6 +240,17 @@ public class BooleanArray {
 		boolean[] array = new boolean[size];
 		System.arraycopy(items, 0, array, 0, size);
 		return array;
+	}
+
+	public boolean equals (Object object) {
+		if (object == this) return true;
+		if (!(object instanceof BooleanArray)) return false;
+		BooleanArray array = (BooleanArray)object;
+		int n = size;
+		if (n != array.size) return false;
+		for (int i = 0; i < n; i++)
+			if (items[i] != array.items[i]) return false;
+		return true;
 	}
 
 	public String toString () {

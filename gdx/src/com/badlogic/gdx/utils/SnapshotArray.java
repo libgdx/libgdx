@@ -19,11 +19,11 @@ package com.badlogic.gdx.utils;
 import java.util.Comparator;
 
 /** Guarantees that array entries provided by {@link #begin()} between indexes 0 and {@link #size} at the time begin was called
- * will not be modified until {@link #end()} is called. If modification does occur, the backing array is copied prior to the
- * modification, ensuring that the backing array returned by {@link #begin()} is unaffected. To avoid allocation, an attempt is
- * made to reuse the extra array created as a result of this copy on subsequent copies.
+ * will not be modified until {@link #end()} is called. If modification of the SnapshotArray occurs between begin/end, the backing
+ * array is copied prior to the modification, ensuring that the backing array that was returned by {@link #begin()} is unaffected.
+ * To avoid allocation, an attempt is made to reuse any extra array created as a result of this copy on subsequent copies.
  * <p>
- * It is suggested iteration be done in this way:
+ * It is suggested iteration be done in this specific way:
  * 
  * <pre>
  * SnapshotArray array = new SnapshotArray();

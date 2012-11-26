@@ -28,50 +28,59 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
  * @see GestureDetector
  * @author Nathan Sweet */
 public class ActorGestureListener implements EventListener {
-	private final GestureDetector detector = new GestureDetector(new GestureAdapter() {
-		private final Vector2 initialPointer1 = new Vector2(), initialPointer2 = new Vector2();
-		private final Vector2 pointer1 = new Vector2(), pointer2 = new Vector2();
-
-		public boolean tap (float stageX, float stageY, int count, int button) {
-			actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
-			ActorGestureListener.this.tap(event, Vector2.tmp.x, Vector2.tmp.y, count, button);
-			return true;
-		}
-
-		public boolean longPress (float stageX, float stageY) {
-			actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
-			return ActorGestureListener.this.longPress(actor, Vector2.tmp.x, Vector2.tmp.y);
-		}
-
-		public boolean fling (float velocityX, float velocityY, int button) {
-			ActorGestureListener.this.fling(event, velocityX, velocityY, button);
-			return true;
-		}
-
-		public boolean pan (float stageX, float stageY, float deltaX, float deltaY) {
-			actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
-			ActorGestureListener.this.pan(event, Vector2.tmp.x, Vector2.tmp.y, deltaX, deltaY);
-			return true;
-		}
-
-		public boolean zoom (float initialDistance, float distance) {
-			ActorGestureListener.this.zoom(event, initialDistance, distance);
-			return true;
-		}
-
-		public boolean pinch (Vector2 stageInitialPointer1, Vector2 stageInitialPointer2, Vector2 stagePointer1,
-			Vector2 stagePointer2) {
-			actor.stageToLocalCoordinates(initialPointer1.set(stageInitialPointer1));
-			actor.stageToLocalCoordinates(initialPointer2.set(stageInitialPointer2));
-			actor.stageToLocalCoordinates(pointer1.set(stagePointer1));
-			actor.stageToLocalCoordinates(pointer2.set(stagePointer2));
-			ActorGestureListener.this.pinch(event, initialPointer1, initialPointer2, pointer1, pointer2);
-			return true;
-		}
-	});
-
+	private final GestureDetector detector;
 	InputEvent event;
 	Actor actor, touchDownTarget;
+
+	/** @see GestureDetector#GestureDetector(com.badlogic.gdx.input.GestureDetector.GestureListener) */
+	public ActorGestureListener () {
+		this(20, 0.4f, 1.1f, 0.15f);
+	}
+
+	/** @see GestureDetector#GestureDetector(float, float, float, float, com.badlogic.gdx.input.GestureDetector.GestureListener) */
+	public ActorGestureListener (float halfTapSquareSize, float tapCountInterval, float longPressDuration, float maxFlingDelay) {
+		detector = new GestureDetector(halfTapSquareSize, tapCountInterval, longPressDuration, maxFlingDelay, new GestureAdapter() {
+			private final Vector2 initialPointer1 = new Vector2(), initialPointer2 = new Vector2();
+			private final Vector2 pointer1 = new Vector2(), pointer2 = new Vector2();
+
+			public boolean tap (float stageX, float stageY, int count, int button) {
+				actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
+				ActorGestureListener.this.tap(event, Vector2.tmp.x, Vector2.tmp.y, count, button);
+				return true;
+			}
+
+			public boolean longPress (float stageX, float stageY) {
+				actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
+				return ActorGestureListener.this.longPress(actor, Vector2.tmp.x, Vector2.tmp.y);
+			}
+
+			public boolean fling (float velocityX, float velocityY, int button) {
+				ActorGestureListener.this.fling(event, velocityX, velocityY, button);
+				return true;
+			}
+
+			public boolean pan (float stageX, float stageY, float deltaX, float deltaY) {
+				actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
+				ActorGestureListener.this.pan(event, Vector2.tmp.x, Vector2.tmp.y, deltaX, deltaY);
+				return true;
+			}
+
+			public boolean zoom (float initialDistance, float distance) {
+				ActorGestureListener.this.zoom(event, initialDistance, distance);
+				return true;
+			}
+
+			public boolean pinch (Vector2 stageInitialPointer1, Vector2 stageInitialPointer2, Vector2 stagePointer1,
+				Vector2 stagePointer2) {
+				actor.stageToLocalCoordinates(initialPointer1.set(stageInitialPointer1));
+				actor.stageToLocalCoordinates(initialPointer2.set(stageInitialPointer2));
+				actor.stageToLocalCoordinates(pointer1.set(stagePointer1));
+				actor.stageToLocalCoordinates(pointer2.set(stagePointer2));
+				ActorGestureListener.this.pinch(event, initialPointer1, initialPointer2, pointer1, pointer2);
+				return true;
+			}
+		});
+	}
 
 	public boolean handle (Event e) {
 		if (!(e instanceof InputEvent)) return false;

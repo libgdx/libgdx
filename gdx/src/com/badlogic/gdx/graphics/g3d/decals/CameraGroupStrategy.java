@@ -93,18 +93,24 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 
 	Camera camera;
 	ShaderProgram shader;
-	private final Comparator<Decal> cameraSorter = new Comparator<Decal>() {
-		@Override
-		public int compare (Decal o1, Decal o2) {
-			float dist1 = camera.position.dst2(o1.position);
-			float dist2 = camera.position.dst2(o2.position);
-			return (int)Math.signum(dist2 - dist1);
-		}
-	};
+	private final Comparator<Decal> cameraSorter;
 
-	public CameraGroupStrategy (Camera camera) {
+	public CameraGroupStrategy (final Camera camera) {
+		this(camera, new Comparator<Decal>() {
+			@Override
+			public int compare (Decal o1, Decal o2) {
+				float dist1 = camera.position.dst(o1.position);
+				float dist2 = camera.position.dst(o2.position);
+				return (int)Math.signum(dist2 - dist1);
+			}
+		});
+	}
+	
+	public CameraGroupStrategy(Camera camera, Comparator<Decal> sorter) {
 		this.camera = camera;
+		this.cameraSorter = sorter;
 		createDefaultShader();
+		
 	}
 
 	public void setCamera (Camera camera) {
@@ -144,7 +150,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 			}
 
 			materialGroups.clear();
-			arrayPool.free(usedArrays);
+			arrayPool.freeAll(usedArrays);
 			usedArrays.clear();
 		}
 	}

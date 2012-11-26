@@ -1,13 +1,13 @@
 #include <com.badlogic.gdx.graphics.glutils.ETC1.h>
 
-//@line:189
+//@line:191
 
 	#include <etc1/etc1_utils.h>
 	#include <stdlib.h>
 	 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_getCompressedDataSize(JNIEnv* env, jclass clazz, jint width, jint height) {
 
 
-//@line:197
+//@line:199
 
 		return etc1_get_encoded_data_size(width, height);
 	
@@ -18,7 +18,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_formatHeader(
 	char* header = (char*)env->GetDirectBufferAddress(obj_header);
 
 
-//@line:207
+//@line:209
 
 		etc1_pkm_format_header((etc1_byte*)header + offset, width, height);
 	
@@ -28,7 +28,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_formatHeader(
 static inline jint wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_getWidthPKM
 (JNIEnv* env, jclass clazz, jobject obj_header, jint offset, char* header) {
 
-//@line:214
+//@line:216
 
 		return etc1_pkm_get_width((etc1_byte*)header + offset);
 	
@@ -46,7 +46,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_getWidthPKM(J
 static inline jint wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_getHeightPKM
 (JNIEnv* env, jclass clazz, jobject obj_header, jint offset, char* header) {
 
-//@line:221
+//@line:223
 
 		return etc1_pkm_get_height((etc1_byte*)header + offset);
 	
@@ -64,7 +64,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_getHeightPKM(
 static inline jboolean wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_isValidPKM
 (JNIEnv* env, jclass clazz, jobject obj_header, jint offset, char* header) {
 
-//@line:228
+//@line:230
 
 		return etc1_pkm_is_valid((etc1_byte*)header + offset) != 0?true:false;
 	
@@ -84,7 +84,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_decodeImage(J
 	char* decodedData = (char*)env->GetDirectBufferAddress(obj_decodedData);
 
 
-//@line:242
+//@line:244
 
 		etc1_decode_image((etc1_byte*)compressedData + offset, (etc1_byte*)decodedData + offsetDec, width, height, pixelSize, width * pixelSize);
 	
@@ -94,7 +94,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_decodeImage(J
 static inline jobject wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_encodeImage
 (JNIEnv* env, jclass clazz, jobject obj_imageData, jint offset, jint width, jint height, jint pixelSize, char* imageData) {
 
-//@line:253
+//@line:255
 
 		int compressedSize = etc1_get_encoded_data_size(width, height);
 		etc1_byte* compressedData = (etc1_byte*)malloc(compressedSize);
@@ -115,7 +115,7 @@ JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_glutils_ETC1_encodeImag
 static inline jobject wrapped_Java_com_badlogic_gdx_graphics_glutils_ETC1_encodeImagePKM
 (JNIEnv* env, jclass clazz, jobject obj_imageData, jint offset, jint width, jint height, jint pixelSize, char* imageData) {
 
-//@line:267
+//@line:269
 
 		int compressedSize = etc1_get_encoded_data_size(width, height);
 		etc1_byte* compressed = (etc1_byte*)malloc(compressedSize + ETC_PKM_HEADER_SIZE);

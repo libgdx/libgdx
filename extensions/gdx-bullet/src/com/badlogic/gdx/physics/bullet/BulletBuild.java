@@ -94,8 +94,8 @@ public class BulletBuild {
 
 		// build natives
 		// BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
-		BuildExecutor.executeAnt("jni/build-linux64.xml", "");
-		BuildExecutor.executeAnt("jni/build-android32.xml", "");
-		BuildExecutor.executeAnt("jni/build.xml", "pack-natives");
+//		BuildExecutor.executeAnt("jni/build-linux64.xml", "");
+//		BuildExecutor.executeAnt("jni/build-android32.xml", "");
+//		BuildExecutor.executeAnt("jni/build.xml", "pack-natives");
 	}
 }

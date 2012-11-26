@@ -5,8 +5,9 @@
 javax-swing-JButton {
 	-swing-horizontalalignment: left;
 	-swing-verticalalignment: center;
-	-swing-margin: 2 3;
+	-swing-margin: 2 5;
 	-swing-opaque: false;
+	-swing-focusable: false;
 }
 
 javax-swing-JScrollPane {
@@ -14,12 +15,48 @@ javax-swing-JScrollPane {
 }
 
 javax-swing-JCheckBox,
+javax-swing-JRadioButton,
 javax-swing-JToolBar {
 	-swing-opaque: false;
 }
 
 javax-swing-JToolBar > javax-swing-JButton {
 	-swing-margin: 1;
+}
+
+aurelienribon-ui-components-Button {
+	-ar-fill: lineargradient(0, 0, 0, 1, 0.49, #eceff2, 0.5, #d4dfe7);
+	-ar-stroke: #96a5bb;
+	-ar-strokethickness: 1;
+	-ar-cornerradius: 0;
+	-swing-foreground: #242b36;
+	-swing-horizontalalignment: left;
+	-swing-margin: 2 5;
+	-swing-focusable: false;
+}
+
+aurelienribon-ui-components-Button:disabled {
+	-ar-fill: lineargradient(0, 0, 0, 1, 0.49, #EEE, 0.5, #DDD);
+	-ar-stroke: #888;
+	-swing-foreground: #888;
+}
+
+aurelienribon-ui-components-Button:hover {
+	-ar-stroke: #384557;
+}
+
+aurelienribon-ui-components-Button:active {
+	-ar-fill: #7B8999;
+}
+
+aurelienribon-ui-CompactCheckBox {
+	-ar-stroke: #617795;
+	-ar-fill: #FFF;
+}
+
+aurelienribon-ui-CompactCheckBox:disabled {
+	-ar-stroke: #AAA;
+	-ar-fill: #FFF;
 }
 
 /*******************************************************************************
@@ -36,24 +73,22 @@ javax-swing-JToolBar > javax-swing-JButton {
 	-ar-border-header-fill: lineargradient(0, 0, 0, 1, 0, #4D6082, 1, #3D5277);
 	-ar-border-margin: 3 6;
 	-ar-border-foreground: #FFF;
-	-ar-border-font: Sans bold 14;
+	-ar-border-font: SquareFont plain 14;
 }
 
-#configPanel {
-	-ar-border-title: "Configuration";
-}
-
-#librarySetupPanel {
-	-ar-border-title: "Library selection";
-}
-
-#resultPanel {
-	-ar-border-title: "Overview";
-}
-
-#goPanel {
-	-ar-border-title: "Generation";
-}
+#configSetupPanel {-ar-border-title: "Configuration";}
+#configUpdatePanel {-ar-border-title: "Project Selection";}
+#librarySelectionPanel {-ar-border-title: "Library Selection";}
+#previewPanel {-ar-border-title: "Overview";}
+#goPanel {-ar-border-title: "Generation";}
+#advancedSettingsPanel {-ar-border-title: "Advanced Settings";}
+#libraryInfoPanel {-ar-border-title: "Library information";}
+#classpathsPanel {-ar-border-title: "Classpaths Review";}
+#processSetupPanel {-ar-border-title: "Launch";}
+#processUpdatePanel {-ar-border-title: "Progress Report";}
+#aboutPanel {-ar-border-title: "About";}
+#helpImportPanel {-ar-border-title: "How-to: Import Projects";}
+#helpFixHtmlPanel {-ar-border-title: "How-to: Fix GWT Error";}
 
 /*******************************************************************************
  * Root panels
@@ -92,37 +127,11 @@ javax-swing-JToolBar > javax-swing-JButton {
  ******************************************************************************/
 
 .optionGroupPanel {
-	-ar-fill: #3FFF;
-	-swing-opaque: false;
+	-ar-fill: #BBC8D8;
 }
 
 .optionGroupPanel > javax-swing-JLabel {
-	-swing-foreground: #FFF;
-}
-
-/*******************************************************************************
- * Dialogs
- ******************************************************************************/
-
-.titleLabel {
-	-swing-font: Arial bold 20;
-	-swing-border: matteborder(0, 0, 1, 0, #FFF);
-}
-
-.questionLabel:hover {
-	-swing-foreground: #88F;
-}
-
-/*******************************************************************************
- * Links
- ******************************************************************************/
-
-.linkLabel {
-	-swing-foreground: #008;
-}
-
-.linkLabel:hover {
-	-swing-foreground: #55F;
+	-swing-foreground: #3D5277;
 }
 
 /*******************************************************************************
@@ -135,69 +144,100 @@ javax-swing-JToolBar > javax-swing-JButton {
 	-swing-foreground: #888;
 }
 
-.legendPanel {
+/*******************************************************************************
+ * Task Bar
+ ******************************************************************************/
+
+.taskBar {
+	-swing-background: #FFF;
+}
+
+.taskBar .tile {
 	-swing-background: #BBC8D8;
-}
-
-.legendPanel javax-swing-JLabel {
-	-swing-font-size: 10;
 	-swing-foreground: #3D5277;
+	-swing-font-size: 10;
 }
 
-.legendLabel {
-	-swing-border: emptyborder(5, 5, 5, 5);
+.taskBar .tile:error {
+	-swing-background: #F55;
+	-swing-foreground: #500;
 }
 
 /*******************************************************************************
- * LibInfo dialog
+ * Start Screen
  ******************************************************************************/
 
-.libInfoDescLabel {
-	-swing-font-size: 14;
-}
-
-.libInfoUrlLabel {
-	-swing-foreground: #CCF;
-}
-
-.libInfoUrlLabel:hover {
+.startQuestionLabel {
+	-swing-font-size: 20;
 	-swing-foreground: #FFF;
 }
 
-/*******************************************************************************
- * Go dialog
- ******************************************************************************/
+.startButton {
+	-ar-fill: lineargradient(0, 0, 0, 1, 0.49, #CED5DE, 0.5, #A5B7CD);
+	-ar-stroke: #FFF;
+	-ar-strokethickness: 2;
+	-ar-cornerradius: 15;
+	-swing-font-size: 26;
+	-swing-horizontalalignment: center;
+}
 
-.progressArea {
-	-swing-margin: 5 10;
-	-swing-font-size: 11;
+.startButton:hover {
+	-ar-stroke: #7B8999;
+}
+
+.startButton:active {
+	-ar-fill: #7B8999;
 }
 
 /*******************************************************************************
  * Misc
  ******************************************************************************/
 
-.versionLabel {
-	-swing-foreground: #FFF;
+.linkLabel {-swing-foreground: #008;}
+.linkLabel:hover {-swing-foreground: #55F;}
+
+.libInfoDescLabel {-swing-font-size: 13;}
+.libInfoTitleLabel {
+	-swing-foreground: #3D5277;
+	-swing-font-size: 20;
 	-swing-font-style: bold;
+	-swing-border: matteborder(0, 0, 1, 0, #3D5277);
 }
 
 .helpNumber {
 	-swing-font-size: 30;
+	-swing-horizontalalignment: center;
+	-swing-verticalalignment: center;
+	-swing-opaque: true;
+	-swing-background: #CED5DE;
+	-swing-foreground: #242b36;
 }
 
-.versionLabelError {
-	-swing-foreground: #FAA;
+.progressArea {
+	-swing-margin: 5 10;
+	-swing-font-size: 11;
 }
 
-.versionLabelNoUpdate {
-	-swing-foreground: #AFA;
-}
+.statusLabel:error {-swing-foreground: #800;}
+.statusLabel:valid {-swing-foreground: #080;}
+.statusLabel:notfound {-swing-foreground: #800; -swing-text: "Not found";}
+.statusLabel:found {-swing-foreground: #080; -swing-text: "Found";}
 
-.versionLabelUpdateFound {
-	-swing-foreground: #FFA;
-}
+.frame {-swing-border: lineborder(#3D5277, 1);}
+.bold {-swing-font-style: bold;}
+.center {-swing-horizontalalignment: center;}
 
-.versionLabelUpdateFound:hover {
-	-swing-foreground: #FFF;
+.versionLabel {
+	-swing-background: #FFF;
+	-swing-foreground: #000;
+	-swing-font-size: 10;
+	-swing-opaque: true;
+	-swing-border: emptyborder(1, 10, 1, 10);
+}
+.versionLabel:error {-swing-foreground: #800;}
+.versionLabel:newVersion {-swing-foreground: #080;}
+
+.aboutTitleLabel {
+	-swing-font-size: 30;
+	-swing-font-style: bold;
 }

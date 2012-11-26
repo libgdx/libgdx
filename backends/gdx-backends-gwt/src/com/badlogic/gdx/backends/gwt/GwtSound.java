@@ -98,4 +98,9 @@ public class GwtSound implements Sound {
 	public long loop (float volume, float pitch, float pan) {
 		return loop(volume);
 	}
+
+	@Override
+	public void setPriority (long soundId, int priority) {
+		// FIXME
+	}
 }

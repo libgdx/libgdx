@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.lang.reflect.Method;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -38,6 +40,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
@@ -61,6 +64,7 @@ public class AndroidApplication extends Activity implements Application {
 	protected AndroidInput input;
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
+	protected AndroidNet net;
 	protected ApplicationListener listener;
 	protected Handler handler;
 	protected boolean firstResume = true;
@@ -96,9 +100,10 @@ public class AndroidApplication extends Activity implements Application {
 	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
-		input = new AndroidInput(this, graphics.view, config);
+		input = new AndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
+		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
 
@@ -107,6 +112,7 @@ public class AndroidApplication extends Activity implements Application {
 		Gdx.audio = this.getAudio();
 		Gdx.files = this.getFiles();
 		Gdx.graphics = this.getGraphics();
+		Gdx.net = this.getNet();
 
 		try {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -117,6 +123,7 @@ public class AndroidApplication extends Activity implements Application {
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 		setContentView(graphics.getView(), createLayoutParams());
 		createWakeLock(config);
+		hideStatusBar(config);
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -130,6 +137,21 @@ public class AndroidApplication extends Activity implements Application {
 		if (config.useWakelock) {
 			PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
 			wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "libgdx wakelock");
+		}
+	}
+
+	protected void hideStatusBar (AndroidApplicationConfiguration config) {
+		if (!config.hideStatusBar || getVersion() < 11)
+			return;
+
+		View rootView = getWindow().getDecorView();
+
+		try {
+			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
+			m.invoke(rootView, 0x0);
+			m.invoke(rootView, 0x1);
+		} catch (Exception e) {
+			log("AndroidApplication", "Can't hide status bar", e);
 		}
 	}
 
@@ -166,9 +188,10 @@ public class AndroidApplication extends Activity implements Application {
 	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
-		input = new AndroidInput(this, graphics.view, config);
+		input = new AndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
+		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
 
@@ -177,8 +200,10 @@ public class AndroidApplication extends Activity implements Application {
 		Gdx.audio = this.getAudio();
 		Gdx.files = this.getFiles();
 		Gdx.graphics = this.getGraphics();
+		Gdx.net = this.getNet();
 
 		createWakeLock(config);
+		hideStatusBar(config);
 		return graphics.getView();
 	}
 
@@ -217,6 +242,7 @@ public class AndroidApplication extends Activity implements Application {
 		Gdx.audio = this.getAudio();
 		Gdx.files = this.getFiles();
 		Gdx.graphics = this.getGraphics();
+		Gdx.net = this.getNet();
 
 		((AndroidInput)getInput()).registerSensorListeners();
 
@@ -259,6 +285,11 @@ public class AndroidApplication extends Activity implements Application {
 	@Override
 	public Input getInput () {
 		return input;
+	}
+	
+	@Override
+	public Net getNet () {
+		return net;
 	}
 
 	/** {@inheritDoc} */

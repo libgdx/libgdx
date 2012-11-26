@@ -40,14 +40,16 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * @author mzechner */
 public final class AndroidAudio implements Audio {
-	private SoundPool soundPool;
+	private final SoundPool soundPool;
 	private final AudioManager manager;
 	protected final List<AndroidMusic> musics = new ArrayList<AndroidMusic>();
 
-	public AndroidAudio (Activity context, AndroidApplicationConfiguration config) {
-		soundPool = new SoundPool(config.maxSimultaniousSounds, AudioManager.STREAM_MUSIC, 100);
+	public AndroidAudio (Context context, AndroidApplicationConfiguration config) {
+		soundPool = new SoundPool(config.maxSimultaneousSounds, AudioManager.STREAM_MUSIC, 100);
 		manager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-		context.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		if(context instanceof Activity) {
+			((Activity)context).setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		}
 	}
 
 	protected void pause () {

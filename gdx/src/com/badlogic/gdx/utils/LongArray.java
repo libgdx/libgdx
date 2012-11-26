@@ -176,6 +176,25 @@ public class LongArray {
 		return value;
 	}
 
+	/** Removes from this array all of elements contained in the specified array.
+	 * @return true if this array was modified. */
+	public boolean removeAll (LongArray array) {
+		int size = this.size;
+		int startSize = size;
+		long[] items = this.items;
+		for (int i = 0, n = array.size; i < n; i++) {
+			long item = array.get(i);
+			for (int ii = 0, nn = size; ii < nn; ii++) {
+				if (item == items[ii]) {
+					removeIndex(ii);
+					size--;
+					break;
+				}
+			}
+		}
+		return size != startSize;
+	}
+
 	/** Removes and returns the last item. */
 	public long pop () {
 		return items[--size];
@@ -256,6 +275,17 @@ public class LongArray {
 		long[] array = new long[size];
 		System.arraycopy(items, 0, array, 0, size);
 		return array;
+	}
+
+	public boolean equals (Object object) {
+		if (object == this) return true;
+		if (!(object instanceof LongArray)) return false;
+		LongArray array = (LongArray)object;
+		int n = size;
+		if (n != array.size) return false;
+		for (int i = 0; i < n; i++)
+			if (items[i] != array.items[i]) return false;
+		return true;
 	}
 
 	public String toString () {

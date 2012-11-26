@@ -20,12 +20,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdxinvaders.screens.GameLoop;
 import com.badlogic.gdxinvaders.screens.GameOver;
 import com.badlogic.gdxinvaders.screens.InvadersScreen;
 import com.badlogic.gdxinvaders.screens.MainMenu;
 
 public class GdxInvaders extends Game {
+	
+	/** Music needs to be a class property to prevent being disposed. */
+	private Music music;
+	private FPSLogger fps;
+	
 	@Override
 	public void render () {
 		InvadersScreen currentScreen = getScreen();
@@ -64,12 +70,14 @@ public class GdxInvaders extends Game {
 			} catch (InterruptedException e) {
 			}
 		}
+		
+		fps.log();
 	}
 
 	@Override
 	public void create () {
 		setScreen(new MainMenu());
-		Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/8.12.mp3", FileType.Internal));
+		music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/8.12.mp3", FileType.Internal));
 		music.setLooping(true);
 		music.play();
 		Gdx.input.setInputProcessor(new InputAdapter() {
@@ -81,6 +89,8 @@ public class GdxInvaders extends Game {
 				return true;
 			}
 		});
+		
+		fps = new FPSLogger();
 	}
 
 	/** For this game each of our screens is an instance of InvadersScreen.

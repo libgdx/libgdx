@@ -69,6 +69,7 @@ public class HighscoresScreen implements Screen {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		guiCam.update();
 
+		batcher.setProjectionMatrix(guiCam.combined);
 		batcher.disableBlending();
 		batcher.begin();
 		batcher.draw(Assets.backgroundRegion, 0, 0, 320, 480);

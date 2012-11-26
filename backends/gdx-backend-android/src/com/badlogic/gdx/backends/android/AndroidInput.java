@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.android;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,18 +29,22 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.service.wallpaper.WallpaperService.Engine;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService.AndroidWallpaperEngine;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.Pool;
 
@@ -47,8 +52,8 @@ import com.badlogic.gdx.utils.Pool;
  * 
  * @author mzechner */
 /** @author jshapcot */
-public final class AndroidInput implements Input, OnKeyListener, OnTouchListener {
-	class KeyEvent {
+public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
+	static class KeyEvent {
 		static final int KEY_DOWN = 0;
 		static final int KEY_UP = 1;
 		static final int KEY_TYPED = 2;
@@ -59,7 +64,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		char keyChar;
 	}
 
-	class TouchEvent {
+	static class TouchEvent {
 		static final int TOUCH_DOWN = 0;
 		static final int TOUCH_UP = 1;
 		static final int TOUCH_DRAGGED = 2;
@@ -99,12 +104,13 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	private String text = null;
 	private TextInputListener textListener = null;
 	private Handler handle;
-	final AndroidApplication app;
+	final Application app;
+	final Context context;
 	private final AndroidTouchHandler touchHandler;
 	private int sleepTime = 0;
 	private boolean catchBack = false;
 	private boolean catchMenu = false;
-	private final Vibrator vibrator;
+	protected final Vibrator vibrator;
 	private boolean compassAvailable = false;
 	boolean keyboardAvailable;
 	private final float[] magneticFieldValues = new float[3];
@@ -122,32 +128,38 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	private SensorEventListener accelerometerListener;
 	private SensorEventListener compassListener;
 
-	public AndroidInput (AndroidApplication activity, View view, AndroidApplicationConfiguration config) {
-		view.setOnKeyListener(this);
-		view.setOnTouchListener(this);
-		view.setFocusable(true);
-		view.setFocusableInTouchMode(true);
-		view.requestFocus();
-		view.requestFocusFromTouch();
+	public AndroidInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
+		// we hook into View, for LWPs we call onTouch below directly from
+		// within the AndroidLivewallpaperEngine#onTouchEvent() method.
+		if(view instanceof View) {
+			View v = (View)view;
+			v.setOnKeyListener(this);
+			v.setOnTouchListener(this);
+			v.setFocusable(true);
+			v.setFocusableInTouchMode(true);
+			v.requestFocus();
+			v.requestFocusFromTouch();
+		}
 		this.config = config;
-		this.onscreenKeyboard = new AndroidOnscreenKeyboard(activity, new Handler(), this);
+		this.onscreenKeyboard = new AndroidOnscreenKeyboard(context, new Handler(), this);
 
 		for (int i = 0; i < realId.length; i++)
 			realId[i] = -1;
 		handle = new Handler();
 		this.app = activity;
+		this.context = context;
 		this.sleepTime = config.touchSleepTime;
 		int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
 		if (sdkVersion >= 5)
 			touchHandler = new AndroidMultiTouchHandler();
 		else
 			touchHandler = new AndroidSingleTouchHandler();
-		hasMultitouch = touchHandler.supportsMultitouch(app);
+		hasMultitouch = touchHandler.supportsMultitouch(context);
 
-		vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);
+		vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
 
 		int rotation = getRotation();
-		DisplayMode mode = app.graphics.getDesktopDisplayMode();
+		DisplayMode mode = app.getGraphics().getDesktopDisplayMode();
 		if (((rotation == 0 || rotation == 180) && (mode.width >= mode.height))
 			|| ((rotation == 90 || rotation == 270) && (mode.width <= mode.height))) {
 			nativeOrientation = Orientation.Landscape;
@@ -175,9 +187,9 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	public void getTextInput (final TextInputListener listener, final String title, final String text) {
 		handle.post(new Runnable() {
 			public void run () {
-				AlertDialog.Builder alert = new AlertDialog.Builder(AndroidInput.this.app);
+				AlertDialog.Builder alert = new AlertDialog.Builder(context);
 				alert.setTitle(title);
-				final EditText input = new EditText(AndroidInput.this.app);
+				final EditText input = new EditText(context);
 				input.setText(text);
 				input.setSingleLine();
 				alert.setView(input);
@@ -220,9 +232,9 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	public void getPlaceholderTextInput (final TextInputListener listener, final String title, final String placeholder) {
 		handle.post(new Runnable() {
 			public void run () {
-				AlertDialog.Builder alert = new AlertDialog.Builder(AndroidInput.this.app);
+				AlertDialog.Builder alert = new AlertDialog.Builder(context);
 				alert.setTitle(title);
-				final EditText input = new EditText(AndroidInput.this.app);
+				final EditText input = new EditText(context);
 				input.setHint(placeholder);
 				input.setSingleLine();
 				alert.setView(input);
@@ -380,7 +392,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	@Override
 	public boolean onTouch (View view, MotionEvent event) {
-		if (requestFocus) {
+		if (requestFocus && view != null) {
 			view.requestFocus();
 			view.requestFocusFromTouch();
 			requestFocus = false;
@@ -396,6 +408,45 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Called in {@link AndroidLiveWallpaperService} on tap
+	 * @param x
+	 * @param y
+	 */
+	public void onTap(int x, int y) {
+		postTap(x, y);
+	}
+	
+	/**
+	 * Called in {@link AndroidLiveWallpaperService} on drop
+	 * @param x
+	 * @param y
+	 */
+	public void onDrop(int x, int y) {
+		postTap(x, y);
+	}
+	
+	protected void postTap(int x, int y) {
+		synchronized (this) {
+			TouchEvent event = usedTouchEvents.obtain();
+			event.timeStamp = System.nanoTime();
+			event.pointer = 0;
+			event.x = x;
+			event.y = y;
+			event.type = TouchEvent.TOUCH_DOWN;
+			touchEvents.add(event);
+			
+			event = usedTouchEvents.obtain();
+			event.timeStamp = System.nanoTime();
+			event.pointer = 0;
+			event.x = x;
+			event.y = y;
+			event.type = TouchEvent.TOUCH_UP;
+			touchEvents.add(event);
+		}
+		Gdx.app.getGraphics().requestRendering();
 	}
 
 	@Override
@@ -460,7 +511,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 // onscreenKeyboard.setVisible(visible);
 		handle.post(new Runnable() {
 			public void run () {
-				InputMethodManager manager = (InputMethodManager)app.getSystemService(Context.INPUT_METHOD_SERVICE);
+				InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
 				if (visible) {
 					View view = ((AndroidGraphics)app.getGraphics()).getView();
 					view.setFocusable(true);
@@ -558,7 +609,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	void registerSensorListeners () {
 		if (config.useAccelerometer) {
-			manager = (SensorManager)app.getSystemService(Context.SENSOR_SERVICE);
+			manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 			if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() == 0) {
 				accelerometerAvailable = false;
 			} else {
@@ -571,7 +622,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			accelerometerAvailable = false;
 
 		if (config.useCompass) {
-			if (manager == null) manager = (SensorManager)app.getSystemService(Context.SENSOR_SERVICE);
+			if (manager == null) manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 			Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 			if (sensor != null) {
 				compassAvailable = accelerometerAvailable;
@@ -646,18 +697,25 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	@Override
 	public int getRotation () {
-		int orientation = app.getWindowManager().getDefaultDisplay().getOrientation();
+		int orientation = 0;
+
+		if (context instanceof Activity) {
+			orientation = ((Activity) context).getWindowManager().getDefaultDisplay().getOrientation();
+		} else {
+			orientation = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+		}
+
 		switch (orientation) {
-		case Surface.ROTATION_0:
-			return 0;
-		case Surface.ROTATION_90:
-			return 90;
-		case Surface.ROTATION_180:
-			return 180;
-		case Surface.ROTATION_270:
-			return 270;
-		default:
-			return 0;
+			case Surface.ROTATION_0:
+				return 0;
+			case Surface.ROTATION_90:
+				return 90;
+			case Surface.ROTATION_180:
+				return 180;
+			case Surface.ROTATION_270:
+				return 270;
+			default:
+				return 0;
 		}
 	}
 

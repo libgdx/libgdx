@@ -94,11 +94,11 @@ public class Assets {
 		music.setLooping(true);
 		music.setVolume(0.5f);
 		if (Settings.soundEnabled) music.play();
-		jumpSound = Gdx.audio.newSound(Gdx.files.internal("data/jump.ogg"));
-		highJumpSound = Gdx.audio.newSound(Gdx.files.internal("data/highjump.ogg"));
-		hitSound = Gdx.audio.newSound(Gdx.files.internal("data/hit.ogg"));
-		coinSound = Gdx.audio.newSound(Gdx.files.internal("data/coin.ogg"));
-		clickSound = Gdx.audio.newSound(Gdx.files.internal("data/click.ogg"));
+		jumpSound = Gdx.audio.newSound(Gdx.files.internal("data/jump.wav"));
+		highJumpSound = Gdx.audio.newSound(Gdx.files.internal("data/highjump.wav"));
+		hitSound = Gdx.audio.newSound(Gdx.files.internal("data/hit.wav"));
+		coinSound = Gdx.audio.newSound(Gdx.files.internal("data/coin.wav"));
+		clickSound = Gdx.audio.newSound(Gdx.files.internal("data/click.wav"));
 	}
 
 	public static void playSound (Sound sound) {

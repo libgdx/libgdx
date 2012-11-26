@@ -152,6 +152,18 @@ public class Vector2 implements Serializable {
 		return this;
 	}
 
+	public Vector2 div (float value) {
+		return this.mul(1/value);
+	}
+
+	public Vector2 div (float vx, float vy) {
+		return this.mul(1/vx, 1/vy);
+	}
+
+	public Vector2 div (Vector2 other) {
+		return this.mul(1/other.x, 1/other.y);
+	}
+
 	/** @param v The other vector
 	 * @return the distance between this and the other vector */
 	public float dst (Vector2 v) {
@@ -241,6 +253,13 @@ public class Vector2 implements Serializable {
 		float angle = (float)Math.atan2(y, x) * MathUtils.radiansToDegrees;
 		if (angle < 0) angle += 360;
 		return angle;
+	}
+	
+	/** Sets the angle of the vector.
+	 * @param angle The angle to set. */
+	public void setAngle (float angle) {
+		this.set(len(), 0f);
+		this.rotate(angle);
 	}
 
 	/** Rotates the Vector2 by the given angle, counter-clockwise.

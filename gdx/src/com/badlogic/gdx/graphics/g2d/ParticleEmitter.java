@@ -306,7 +306,7 @@ public class ParticleEmitter {
 
 	public void reset () {
 		emissionDelta = 0;
-		durationTimer = 0;
+		durationTimer = duration;
 		start();
 	}
 
@@ -760,6 +760,22 @@ public class ParticleEmitter {
 			Particle particle = particles[i];
 			if (particle != null) particle.flip(flipX, flipY);
 		}
+	}
+
+	public void flipY () {
+		angleValue.setHigh(-angleValue.getHighMin(), -angleValue.getHighMax());
+		angleValue.setLow(-angleValue.getLowMin(), -angleValue.getLowMax());
+
+		gravityValue.setHigh(-gravityValue.getHighMin(), -gravityValue.getHighMax());
+		gravityValue.setLow(-gravityValue.getLowMin(), -gravityValue.getLowMax());
+
+		windValue.setHigh(-windValue.getHighMin(), -windValue.getHighMax());
+		windValue.setLow(-windValue.getLowMin(), -windValue.getLowMax());
+
+		rotationValue.setHigh(-rotationValue.getHighMin(), -rotationValue.getHighMax());
+		rotationValue.setLow(-rotationValue.getLowMin(), -rotationValue.getLowMax());
+
+		yOffsetValue.setLow(-yOffsetValue.getLowMin(), -yOffsetValue.getLowMax());
 	}
 
 	public void save (Writer output) throws IOException {

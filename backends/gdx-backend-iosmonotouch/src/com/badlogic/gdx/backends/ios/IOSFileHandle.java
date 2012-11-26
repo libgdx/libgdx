@@ -20,6 +20,7 @@ import java.io.File;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 
+// FIXME see if we can get classpath files to work
 public class IOSFileHandle extends FileHandle {
 	public IOSFileHandle (String fileName, FileType type) {
 		super(fileName, type);
@@ -43,6 +44,18 @@ public class IOSFileHandle extends FileHandle {
 				parent = new File("");
 		}
 		return new IOSFileHandle(parent, type);
+	}
+
+	/**
+	 * This overrides the original method in FileHandle to prevent crashes on iOS. The original method
+	 * has a fallback to FileType.Classpath when FileType.Internal is used. FileType.Classpath is not
+	 * supported on iOS.
+	 * 
+	 * @return  True if the file exists.
+	 */
+	@Override
+	public boolean exists () {
+		return file().exists();
 	}
 
 	public File file () {

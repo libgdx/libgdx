@@ -38,6 +38,7 @@ public class Gdx {
 	public static Audio audio;
 	public static Input input;
 	public static Files files;
+	public static Net net;
 
 	public static GLCommon gl;
 	public static GL10 gl10;

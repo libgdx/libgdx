@@ -16,15 +16,14 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -45,6 +44,7 @@ public class Window extends Table {
 	final Vector2 dragOffset = new Vector2();
 	boolean dragging;
 	private int titleAlignment = Align.center;
+	boolean keepWithinParent = true;
 
 	public Window (String title, Skin skin) {
 		this(title, skin.get(WindowStyle.class));
@@ -90,7 +90,7 @@ public class Window extends Table {
 				return isModal;
 			}
 
-			public boolean scrolled (InputEvent event, int amount) {
+			public boolean scrolled (InputEvent event, float x, float y, int amount) {
 				return isModal;
 			}
 
@@ -122,6 +122,26 @@ public class Window extends Table {
 	 * called. */
 	public WindowStyle getStyle () {
 		return style;
+	}
+
+	public void draw (SpriteBatch batch, float parentAlpha) {
+		if (keepWithinParent) {
+			float parentWidth, parentHeight;
+			Group parent = getParent();
+			Stage stage = getStage();
+			if (parent == stage.getRoot()) {
+				parentWidth = stage.getWidth();
+				parentHeight = stage.getHeight();
+			} else {
+				parentWidth = parent.getWidth();
+				parentHeight = parent.getHeight();
+			}
+			if (getX() < 0) setX(0);
+			if (getRight() > parentWidth) setX(parentWidth - getWidth());
+			if (getY() < 0) setY(0);
+			if (getTop() > parentHeight) setY(parentHeight - getHeight());
+		}
+		super.draw(batch, parentAlpha);
 	}
 
 	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
@@ -181,6 +201,10 @@ public class Window extends Table {
 
 	public void setModal (boolean isModal) {
 		this.isModal = isModal;
+	}
+
+	public void setKeepWithinParent (boolean keepWithinParent) {
+		this.keepWithinParent = keepWithinParent;
 	}
 
 	public boolean isDragging () {

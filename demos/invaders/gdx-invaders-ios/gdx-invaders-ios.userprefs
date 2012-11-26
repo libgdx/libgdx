@@ -1,11 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|iPhone" />
   <MonoDevelop.Ide.Workbench ActiveDocument="gdx-invaders-ios/Main.cs">
     <Files>
-      <File FileName="../../superjumper/superjumper-ios/superjumper-ios/Main.cs" Line="16" Column="46" />
-      <File FileName="gdx-invaders-ios/Main.cs" Line="12" Column="4" />
-      <File FileName="../../superjumper/superjumper-ios/superjumper-ios/Info.plist" />
-      <File FileName="gdx-invaders-ios/Info.plist" />
+      <File FileName="gdx-invaders-ios/Main.cs" Line="9" Column="24" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

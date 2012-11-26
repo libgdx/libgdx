@@ -34,6 +34,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
 import com.badlogic.gdx.utils.Clipboard;
@@ -48,6 +49,7 @@ public class LwjglCanvas implements Application {
 	final OpenALAudio audio;
 	final LwjglFiles files;
 	final LwjglInput input;
+	final LwjglNet net;
 	final ApplicationListener listener;
 	final Canvas canvas;
 	final List<Runnable> runnables = new ArrayList();
@@ -104,6 +106,7 @@ public class LwjglCanvas implements Application {
 		audio = new OpenALAudio();
 		files = new LwjglFiles();
 		input = new LwjglInput();
+		net = new LwjglNet();
 		this.listener = listener;
 
 		Gdx.app = this;
@@ -111,6 +114,7 @@ public class LwjglCanvas implements Application {
 		Gdx.audio = audio;
 		Gdx.files = files;
 		Gdx.input = input;
+		Gdx.net = net;
 	}
 
 	protected void setDisplayMode (int width, int height) {
@@ -141,6 +145,11 @@ public class LwjglCanvas implements Application {
 	@Override
 	public Input getInput () {
 		return input;
+	}
+
+	@Override
+	public Net getNet () {
+		return net;
 	}
 
 	@Override
@@ -176,37 +185,42 @@ public class LwjglCanvas implements Application {
 					stopped();
 					return;
 				}
-				graphics.updateTime();
-				synchronized (runnables) {
-					executedRunnables.clear();
-					executedRunnables.addAll(runnables);
-					runnables.clear();
+				try {
+					graphics.updateTime();
+					synchronized (runnables) {
+						executedRunnables.clear();
+						executedRunnables.addAll(runnables);
+						runnables.clear();
 
-					for (int i = 0; i < executedRunnables.size(); i++) {
-						try {
-							executedRunnables.get(i).run();
-						} catch (Throwable t) {
-							t.printStackTrace();
+						for (int i = 0; i < executedRunnables.size(); i++) {
+							try {
+								executedRunnables.get(i).run();
+							} catch (Throwable t) {
+								t.printStackTrace();
+							}
 						}
 					}
-				}
-				input.update();
+					input.update();
 
-				int width = Math.max(1, graphics.getWidth());
-				int height = Math.max(1, graphics.getHeight());
-				if (lastWidth != width || lastHeight != height) {
-					lastWidth = width;
-					lastHeight = height;
-					Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
-					resize(width, height);
-					listener.resize(width, height);
+					int width = Math.max(1, graphics.getWidth());
+					int height = Math.max(1, graphics.getHeight());
+					if (lastWidth != width || lastHeight != height) {
+						lastWidth = width;
+						lastHeight = height;
+						Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
+						resize(width, height);
+						listener.resize(width, height);
+					}
+					input.processEvents();
+					listener.render();
+					audio.update();
+					Display.update();
+					canvas.setCursor(cursor);
+					if (graphics.vsync) Display.sync(60);
+				} catch (Throwable t) {
+					t.printStackTrace();
+					stop();
 				}
-				input.processEvents();
-				listener.render();
-				audio.update();
-				Display.update();
-				canvas.setCursor(cursor);
-				if (graphics.vsync) Display.sync(60);
 				EventQueue.invokeLater(this);
 			}
 		});

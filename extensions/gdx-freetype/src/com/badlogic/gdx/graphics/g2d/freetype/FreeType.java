@@ -348,6 +348,13 @@ public class FreeType {
 		*/
 		
 		public ByteBuffer getBuffer() {
+			if (getRows() == 0)
+				// Issue #768 - CheckJNI frowns upon env->NewDirectByteBuffer with NULL buffer or capacity 0
+				//                  "JNI WARNING: invalid values for address (0x0) or capacity (0)"
+				//              FreeType sets FT_Bitmap::buffer to NULL when the bitmap is empty (e.g. for ' ')
+				//              JNICheck is on by default on emulators and might have a point anyway...
+				//              So let's avoid this and just return a dummy non-null non-zero buffer
+				return BufferUtils.newByteBuffer(1);
 			return getBuffer(address);
 		}
 		

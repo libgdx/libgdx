@@ -71,7 +71,6 @@ public class ParticleEffect implements Disposable {
 	public boolean isComplete () {
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
-			if (emitter.isContinuous()) return false;
 			if (!emitter.isComplete()) return false;
 		}
 		return true;
@@ -176,6 +175,7 @@ public class ParticleEffect implements Disposable {
 	}
 
 	/** Disposes the texture for each sprite for each ParticleEmitter. */
+	@Override
 	public void dispose () {
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);

@@ -99,7 +99,6 @@ public class OrthographicCamera extends Camera {
 	private Vector3 calculateDirection (float angle) {
 		Matrix4 transform = new Matrix4();
 		Vector3 dir = new Vector3(-1, 0, 1).nor();
-		float rotAngle = (float)Math.toDegrees(Math.asin(Math.tan(Math.toRadians(angle))));
 		transform.setToRotation(new Vector3(1, 0, 1).nor(), angle);
 		dir.mul(transform).nor();
 		return dir;
@@ -109,14 +108,7 @@ public class OrthographicCamera extends Camera {
 
 	@Override
 	public void update () {
-		projection.setToOrtho(zoom * -viewportWidth / 2, zoom * viewportWidth / 2, zoom * -viewportHeight / 2, zoom
-			* viewportHeight / 2, Math.abs(near), Math.abs(far));
-		view.setToLookAt(position, tmp.set(position).add(direction), up);
-		combined.set(projection);
-		Matrix4.mul(combined.val, view.val);
-		invProjectionView.set(combined);
-		Matrix4.inv(invProjectionView.val);
-		frustum.update(invProjectionView);
+		update(true);
 	}
 
 	@Override

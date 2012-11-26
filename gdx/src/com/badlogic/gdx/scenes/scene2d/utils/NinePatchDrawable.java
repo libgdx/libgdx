@@ -52,10 +52,10 @@ public class NinePatchDrawable extends BaseDrawable {
 		this.patch = patch;
 		setMinWidth(patch.getTotalWidth());
 		setMinHeight(patch.getTotalHeight());
-		setTopHeight(patch.getTopHeight());
-		setRightWidth(patch.getRightWidth());
-		setBottomHeight(patch.getBottomHeight());
-		setLeftWidth(patch.getLeftWidth());
+		setTopHeight(patch.getPadTop());
+		setRightWidth(patch.getPadRight());
+		setBottomHeight(patch.getPadBottom());
+		setLeftWidth(patch.getPadLeft());
 	}
 
 	public NinePatch getPatch () {

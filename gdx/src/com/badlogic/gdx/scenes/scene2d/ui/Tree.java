@@ -378,10 +378,8 @@ public class Tree extends WidgetGroup {
 	}
 
 	static void expandAll (Array<Node> nodes) {
-		for (int i = 0, n = nodes.size; i < n; i++) {
-			Node node = nodes.get(i);
-			node.expandAll();
-		}
+		for (int i = 0, n = nodes.size; i < n; i++)
+			nodes.get(i).expandAll();
 	}
 
 	/** Returns the click listener the tree uses for clicking on nodes and the over node. */
@@ -409,8 +407,9 @@ public class Tree extends WidgetGroup {
 		}
 
 		public void setExpanded (boolean expanded) {
-			if (expanded == this.expanded || children.size == 0) return;
+			if (expanded == this.expanded) return;
 			this.expanded = expanded;
+			if (children.size == 0) return;
 			Tree tree = getTree();
 			if (tree == null) return;
 			if (expanded) {
@@ -539,7 +538,7 @@ public class Tree extends WidgetGroup {
 		/** Expands all nodes under and including this node. */
 		public void expandAll () {
 			setExpanded(true);
-			Tree.expandAll(children);
+			if (children.size > 0) Tree.expandAll(children);
 		}
 
 		/** Expands all parent nodes of this node. */
