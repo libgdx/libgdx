@@ -17,7 +17,8 @@
 	<property name="gcc-opts" value="-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5 -std=c99 -DFT2_BUILD_LIBRARY"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
-				<include name="freetype-2.4.10/src/base/ftsystem.c"/>
+				<include name="memcpy_wrap.c"/>
+		<include name="freetype-2.4.10/src/base/ftsystem.c"/>
 		<include name="freetype-2.4.10/src/base/ftinit.c"/>
 		<include name="freetype-2.4.10/src/base/ftdebug.c"/>
 		<include name="freetype-2.4.10/src/base/ftbase.c"/>
