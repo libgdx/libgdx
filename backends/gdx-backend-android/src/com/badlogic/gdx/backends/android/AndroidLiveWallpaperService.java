@@ -26,11 +26,11 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 public abstract class AndroidLiveWallpaperService extends WallpaperService {
-	
+
 	private static final String TAG = "AndroidLiveWallpaperService";
 	private static final String ENGINE_TAG = "AndroidWallpaperEngine";
-	
-	static boolean DEBUG = true;
+
+	public static boolean DEBUG = false;
 	protected static volatile int runningEngines = 0;
 
 	public static interface PreviewListener {
@@ -101,14 +101,15 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			final boolean pResultRequested) {
 
 			if (AndroidLiveWallpaperService.DEBUG)
-				Log.d(ENGINE_TAG, hashCode() + " - onCommand(" + pAction + " " + pX + " " + pY + " " + pZ + " " + pExtras + " " + pResultRequested + ")");
+				Log.d(ENGINE_TAG, hashCode() + " - onCommand(" + pAction + " " + pX + " " + pY + " " + pZ + " " + pExtras + " "
+					+ pResultRequested + ")");
 
 			// FIXME
-// if (pAction.equals(WallpaperManager.COMMAND_TAP)) {
-// app.input.onTap(pX, pY);
-// } else if (pAction.equals(WallpaperManager.COMMAND_DROP)) {
-// app.input.onDrop(pX, pY);
-// }
+			// if (pAction.equals(WallpaperManager.COMMAND_TAP)) {
+			// app.input.onTap(pX, pY);
+			// } else if (pAction.equals(WallpaperManager.COMMAND_DROP)) {
+			// app.input.onDrop(pX, pY);
+			// }
 			return super.onCommand(pAction, pX, pY, pZ, pExtras, pResultRequested);
 		}
 
@@ -124,23 +125,24 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		@Override
 		public void onDestroy () {
 			runningEngines--;
-			if (AndroidLiveWallpaperService.DEBUG)
-				Log.d(ENGINE_TAG, hashCode() + " - onDestroy(), running: " + runningEngines);
+			if (AndroidLiveWallpaperService.DEBUG) Log.d(ENGINE_TAG, hashCode() + " - onDestroy(), running: " + runningEngines);
 			view.onDestroy();
-			// app.onDestroy();
+			// as the graphics.onDrawFrame() is not being called anymore then the listener is never disposed(), so we
+			// have to call it here, don't like the solution but graphics has no API to call the dispose() logic inside the
+			// onDrawFrame().
+			listener.dispose();
+			app.onDestroy();
 			super.onDestroy();
 		}
 
 		public void onPause () {
-			if (AndroidLiveWallpaperService.DEBUG)
-				Log.d(ENGINE_TAG, hashCode() + " - onPause(), running: " + runningEngines);
+			if (AndroidLiveWallpaperService.DEBUG) Log.d(ENGINE_TAG, hashCode() + " - onPause(), running: " + runningEngines);
 			app.onPause();
 			view.onPause();
 		}
 
 		public void onResume () {
-			if (AndroidLiveWallpaperService.DEBUG)
-				Log.d(ENGINE_TAG, hashCode() + " - onResume(), running: " + runningEngines);
+			if (AndroidLiveWallpaperService.DEBUG) Log.d(ENGINE_TAG, hashCode() + " - onResume(), running: " + runningEngines);
 			app.onResume();
 			view.onResume();
 		}
@@ -148,8 +150,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		@Override
 		public void onSurfaceChanged (final SurfaceHolder holder, final int format, final int width, final int height) {
 			if (AndroidLiveWallpaperService.DEBUG)
-				Log.d(ENGINE_TAG, hashCode() + " - onSurfaceChanged() " + isPreview() + ", running: "
-					+ runningEngines);
+				Log.d(ENGINE_TAG, hashCode() + " - onSurfaceChanged() " + isPreview() + ", running: " + runningEngines);
 			super.onSurfaceChanged(holder, format, width, height);
 		}
 
@@ -169,8 +170,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 
 		@Override
 		public void onVisibilityChanged (final boolean visible) {
-			if (AndroidLiveWallpaperService.DEBUG)
-				Log.d(ENGINE_TAG, hashCode() + " - onVisibilityChanged(" + visible + ")");
+			if (AndroidLiveWallpaperService.DEBUG) Log.d(ENGINE_TAG, hashCode() + " - onVisibilityChanged(" + visible + ")");
 			if (visible) {
 				onResume();
 			} else {
@@ -189,9 +189,11 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		public void onOffsetsChanged (final float xOffset, final float yOffset, final float xOffsetStep, final float yOffsetStep,
 			final int xPixelOffset, final int yPixelOffset) {
 
-//			if (AndroidLiveWallpaperService.DEBUG)
-//				Log.d(AndroidLiveWallpaperService.this.TAG, hashCode() + " - onOffsetChanged(" + xOffset + " " + yOffset + " " + xOffsetStep + " "
-//					+ yOffsetStep + " " + xPixelOffset + " " + yPixelOffset + ")");
+			// this log is really annoying.
+			// if (AndroidLiveWallpaperService.DEBUG)
+			// Log.d(AndroidLiveWallpaperService.this.TAG, hashCode() + " - onOffsetChanged(" + xOffset + " " + yOffset + " " + xOffsetStep +
+			// " "
+			// + yOffsetStep + " " + xPixelOffset + " " + yPixelOffset + ")");
 
 			app.postRunnable(new Runnable() {
 				@Override
