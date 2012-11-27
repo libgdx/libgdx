@@ -28,7 +28,7 @@ import android.view.SurfaceHolder;
 
 public abstract class AndroidLiveWallpaperService extends WallpaperService {
 	final String TAG = "AndroidLiveWallpaperService";
-	static boolean DEBUG = false;
+	static boolean DEBUG = true;
 	protected static volatile int runningEngines = 0;
 
 	public AndroidLiveWallpaperService () {
@@ -43,13 +43,13 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 
 	@Override
 	public Engine onCreateEngine () {
-		return new AndroidWallpaperEngine(createListener(), createConfig());
+		return new AndroidWallpaperEngine(createConfig());
 	}
 	
 	/**
 	 * @return a new {@link ApplicationListener} that implements the live wallpaper
 	 */
-	public abstract ApplicationListener createListener(); 
+	public abstract ApplicationListener createListener(boolean isPreview); 
 	
 	/**
 	 * @return a new {@link AndroidApplicationConfiguration} that specifies the config to be used for the live wall paper
@@ -79,7 +79,8 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		protected final ApplicationListener listener;
 		protected GLBaseSurfaceViewLW view;
 
-		public AndroidWallpaperEngine (ApplicationListener listener, AndroidApplicationConfiguration config) {
+		public AndroidWallpaperEngine (AndroidApplicationConfiguration config) {
+			ApplicationListener listener = createListener(this.isPreview());
 			if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.this.TAG, " > MyEngine() " + hashCode());
 			this.app = new AndroidLiveWallpaper(AndroidLiveWallpaperService.this, this);
 			this.app.initialize(listener, config);
@@ -120,8 +121,8 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		public void onDestroy () {
 			runningEngines--;
 			if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.this.TAG, " > onDestroy() " + hashCode() + ", running: " + runningEngines);
-//			app.onDestroy();
 			view.onDestroy();
+			//app.onDestroy();
 			super.onDestroy();
 		}
 
