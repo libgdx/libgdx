@@ -119,7 +119,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			runningEngines--;
 			if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.this.TAG, " > onDestroy() " + hashCode() + ", running: " + runningEngines);
 			view.onDestroy();
-			//app.onDestroy();
+			// app.onDestroy();
 			super.onDestroy();
 		}
 
