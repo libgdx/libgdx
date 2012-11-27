@@ -25,11 +25,19 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
-
 public abstract class AndroidLiveWallpaperService extends WallpaperService {
-	final String TAG = "AndroidLiveWallpaperService";
-	static boolean DEBUG = true;
+
+	private static final String TAG = "AndroidLiveWallpaperService";
+	private static final String ENGINE_TAG = "AndroidWallpaperEngine";
+
+	public static boolean DEBUG = false;
 	protected static volatile int runningEngines = 0;
+
+	public static interface PreviewListener {
+
+		void setIsPreview (boolean preview);
+
+	}
 
 	public AndroidLiveWallpaperService () {
 		super();
@@ -37,51 +45,48 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 
 	@Override
 	public void onCreate () {
-		if (DEBUG) Log.d(TAG, " > LibdgxWallpaperService - onCreate()");
+		if (DEBUG) Log.d(TAG, " - onCreate()");
 		super.onCreate();
 	}
 
 	@Override
 	public Engine onCreateEngine () {
-		return new AndroidWallpaperEngine(createConfig());
+		if (DEBUG) Log.d(TAG, " - onCreateEngine()");
+		ApplicationListener listener = createListener();
+		Engine engine = new AndroidWallpaperEngine(listener, createConfig());
+		if (listener instanceof PreviewListener) ((PreviewListener)listener).setIsPreview(engine.isPreview());
+		return engine;
 	}
-	
-	/**
-	 * @return a new {@link ApplicationListener} that implements the live wallpaper
-	 */
-	public abstract ApplicationListener createListener(boolean isPreview); 
-	
-	/**
-	 * @return a new {@link AndroidApplicationConfiguration} that specifies the config to be used for the live wall paper
-	 */
-	public abstract AndroidApplicationConfiguration createConfig();
-	
-	/**
-	 * Called when the live wallpaper's offset changed. This method will be called
-	 * on the rendering thread.
+
+	/** @return a new {@link ApplicationListener} that implements the live wallpaper */
+	public abstract ApplicationListener createListener ();
+
+	/** @return a new {@link AndroidApplicationConfiguration} that specifies the config to be used for the live wall paper */
+	public abstract AndroidApplicationConfiguration createConfig ();
+
+	/** Called when the live wallpaper's offset changed. This method will be called on the rendering thread.
 	 * @param xOffset
 	 * @param yOffset
 	 * @param xOffsetStep
 	 * @param yOffsetStep
 	 * @param xPixelOffset
-	 * @param yPixelOffset
-	 */
-	public abstract void offsetChange (ApplicationListener listener, float xOffset, float yOffset, float xOffsetStep, float yOffsetStep, int xPixelOffset, int yPixelOffset);
-	
+	 * @param yPixelOffset */
+	public abstract void offsetChange (ApplicationListener listener, float xOffset, float yOffset, float xOffsetStep,
+		float yOffsetStep, int xPixelOffset, int yPixelOffset);
+
 	@Override
 	public void onDestroy () {
-		if (DEBUG) Log.d(TAG, " > LibdgxWallpaperService - onDestroy()");
+		if (DEBUG) Log.d(TAG, " - onDestroy()");
 		super.onDestroy();
 	}
-	
+
 	public class AndroidWallpaperEngine extends Engine {
 		protected final AndroidLiveWallpaper app;
 		protected final ApplicationListener listener;
 		protected GLBaseSurfaceViewLW view;
 
-		public AndroidWallpaperEngine (AndroidApplicationConfiguration config) {
-			ApplicationListener listener = createListener(this.isPreview());
-			if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.this.TAG, " > MyEngine() " + hashCode());
+		public AndroidWallpaperEngine (ApplicationListener listener, AndroidApplicationConfiguration config) {
+			if (AndroidLiveWallpaperService.DEBUG) Log.d(ENGINE_TAG, hashCode() + " - AndroidWallpaperEngine()");
 			this.app = new AndroidLiveWallpaper(AndroidLiveWallpaperService.this, this);
 			this.app.initialize(listener, config);
 			this.listener = listener;
@@ -96,44 +101,48 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			final boolean pResultRequested) {
 
 			if (AndroidLiveWallpaperService.DEBUG)
-				Log.d(TAG, " > onCommand(" + pAction + " " + pX + " " + pY + " " + pZ + " " + pExtras + " "
+				Log.d(ENGINE_TAG, hashCode() + " - onCommand(" + pAction + " " + pX + " " + pY + " " + pZ + " " + pExtras + " "
 					+ pResultRequested + ")");
 
 			// FIXME
-//			if (pAction.equals(WallpaperManager.COMMAND_TAP)) {
-//				app.input.onTap(pX, pY);
-//			} else if (pAction.equals(WallpaperManager.COMMAND_DROP)) {
-//				app.input.onDrop(pX, pY);
-//			}
+			// if (pAction.equals(WallpaperManager.COMMAND_TAP)) {
+			// app.input.onTap(pX, pY);
+			// } else if (pAction.equals(WallpaperManager.COMMAND_DROP)) {
+			// app.input.onDrop(pX, pY);
+			// }
 			return super.onCommand(pAction, pX, pY, pZ, pExtras, pResultRequested);
 		}
 
 		@Override
 		public void onCreate (final SurfaceHolder surfaceHolder) {
 			runningEngines++;
-			if (AndroidLiveWallpaperService.DEBUG) Log.d(TAG, " > onCreate() " + hashCode() + ", running: " + runningEngines);
+			if (AndroidLiveWallpaperService.DEBUG) Log.d(ENGINE_TAG, hashCode() + " - onCreate(), running: " + runningEngines);
 			super.onCreate(surfaceHolder);
-			
+
 			// wallpaperListener.setIsPreview(this.isPreview());
 		}
 
 		@Override
 		public void onDestroy () {
 			runningEngines--;
-			if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.this.TAG, " > onDestroy() " + hashCode() + ", running: " + runningEngines);
+			if (AndroidLiveWallpaperService.DEBUG) Log.d(ENGINE_TAG, hashCode() + " - onDestroy(), running: " + runningEngines);
 			view.onDestroy();
-			//app.onDestroy();
+			// as the graphics.onDrawFrame() is not being called anymore then the listener is never disposed(), so we
+			// have to call it here, don't like the solution but graphics has no API to call the dispose() logic inside the
+			// onDrawFrame().
+			listener.dispose();
+			app.onDestroy();
 			super.onDestroy();
 		}
 
 		public void onPause () {
-			if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.this.TAG, " > onPause() " + hashCode() + ", running: " + runningEngines);
+			if (AndroidLiveWallpaperService.DEBUG) Log.d(ENGINE_TAG, hashCode() + " - onPause(), running: " + runningEngines);
 			app.onPause();
 			view.onPause();
 		}
 
 		public void onResume () {
-			if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.this.TAG, " > onResume() " + hashCode() + ", running: " + runningEngines);
+			if (AndroidLiveWallpaperService.DEBUG) Log.d(ENGINE_TAG, hashCode() + " - onResume(), running: " + runningEngines);
 			app.onResume();
 			view.onResume();
 		}
@@ -141,26 +150,27 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		@Override
 		public void onSurfaceChanged (final SurfaceHolder holder, final int format, final int width, final int height) {
 			if (AndroidLiveWallpaperService.DEBUG)
-				Log.d(AndroidLiveWallpaperService.this.TAG, " > onSurfaceChanged() " + isPreview() + " " + hashCode() + ", running: " + runningEngines);
+				Log.d(ENGINE_TAG, hashCode() + " - onSurfaceChanged() " + isPreview() + ", running: " + runningEngines);
 			super.onSurfaceChanged(holder, format, width, height);
 		}
 
 		@Override
 		public void onSurfaceCreated (final SurfaceHolder holder) {
-			if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.this.TAG, " > onSurfaceCreated() " + hashCode() + ", running: " + runningEngines);
+			if (AndroidLiveWallpaperService.DEBUG)
+				Log.d(ENGINE_TAG, hashCode() + " - onSurfaceCreated(), running: " + runningEngines);
 			super.onSurfaceCreated(holder);
 		}
 
 		@Override
 		public void onSurfaceDestroyed (final SurfaceHolder holder) {
-			if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.this.TAG, " > onSurfaceDestroyed() " + hashCode()  + ", running: " + runningEngines);
+			if (AndroidLiveWallpaperService.DEBUG)
+				Log.d(ENGINE_TAG, hashCode() + " - onSurfaceDestroyed(), running: " + runningEngines);
 			super.onSurfaceDestroyed(holder);
 		}
 
 		@Override
 		public void onVisibilityChanged (final boolean visible) {
-			if (AndroidLiveWallpaperService.DEBUG)
-				Log.d(AndroidLiveWallpaperService.this.TAG, " > onVisibilityChanged(" + visible + ") " + hashCode());
+			if (AndroidLiveWallpaperService.DEBUG) Log.d(ENGINE_TAG, hashCode() + " - onVisibilityChanged(" + visible + ")");
 			if (visible) {
 				onResume();
 			} else {
@@ -176,20 +186,23 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		}
 
 		@Override
-		public void onOffsetsChanged (final float xOffset, final float yOffset, final float xOffsetStep, final float yOffsetStep, final int xPixelOffset,
-			final int yPixelOffset) {
+		public void onOffsetsChanged (final float xOffset, final float yOffset, final float xOffsetStep, final float yOffsetStep,
+			final int xPixelOffset, final int yPixelOffset) {
 
-			if (AndroidLiveWallpaperService.DEBUG)
-				Log.d(AndroidLiveWallpaperService.this.TAG, " > onOffsetChanged(" + xOffset + " " + yOffset + " " + xOffsetStep + " "
-					+ yOffsetStep + " " + xPixelOffset + " " + yPixelOffset + ") " + hashCode());
+			// this log is really annoying.
+			// if (AndroidLiveWallpaperService.DEBUG)
+			// Log.d(AndroidLiveWallpaperService.this.TAG, hashCode() + " - onOffsetChanged(" + xOffset + " " + yOffset + " " + xOffsetStep +
+			// " "
+			// + yOffsetStep + " " + xPixelOffset + " " + yPixelOffset + ")");
 
 			app.postRunnable(new Runnable() {
 				@Override
 				public void run () {
-					AndroidLiveWallpaperService.this.offsetChange(listener, xOffset, yOffset, xOffsetStep, yOffsetStep, xPixelOffset, yPixelOffset);	
+					AndroidLiveWallpaperService.this.offsetChange(listener, xOffset, yOffset, xOffsetStep, yOffsetStep, xPixelOffset,
+						yPixelOffset);
 				}
 			});
 			super.onOffsetsChanged(xOffset, yOffset, xOffsetStep, yOffsetStep, xPixelOffset, yPixelOffset);
 		}
-	}	
+	}
 }
