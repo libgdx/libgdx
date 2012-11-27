@@ -80,7 +80,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		protected GLBaseSurfaceViewLW view;
 
 		public AndroidWallpaperEngine (AndroidApplicationConfiguration config) {
-			ApplicationListener listener = createListener(this.isPreview());
+			ApplicationListener listener = createListener(false);
 			if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.this.TAG, " > MyEngine() " + hashCode());
 			this.app = new AndroidLiveWallpaper(AndroidLiveWallpaperService.this, this);
 			this.app.initialize(listener, config);
