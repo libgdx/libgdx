@@ -8,17 +8,20 @@ import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.Box2DTest;
+import com.badlogic.gdx.tests.MeshShaderTest;
 import com.badlogic.gdx.tests.WaterRipples;
 
 public class LiveWallpaper extends AndroidLiveWallpaperService {
 	@Override
-	public ApplicationListener createListener () {
-		return new WaterRipples();
+	public ApplicationListener createListener (boolean isPreview) {
+		return new MeshShaderTest();
 	}
 
 	@Override
 	public AndroidApplicationConfiguration createConfig () {
-		return new AndroidApplicationConfiguration();
+		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		config.useGL20 = true;
+		return config;
 	}
 
 	@Override
