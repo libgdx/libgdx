@@ -16,17 +16,22 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.util.ArrayList;
-
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.util.ArrayList;
+
 public class LwjglApplicationConfiguration {
+	/** If true, OpenAL will not be used. This means {@link Application#getAudio()} returns null and the gdx-openal.jar and OpenAL
+	 * natives are not needed. */
+	static public boolean disableAudio;
+
 	/** whether to use OpenGL ES 2.0 or not. default: false **/
 	public boolean useGL20 = false;
 	/** number of bits per color channel **/
