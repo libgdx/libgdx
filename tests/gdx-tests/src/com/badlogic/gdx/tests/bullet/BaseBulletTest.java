@@ -49,9 +49,9 @@ public class BaseBulletTest extends BulletTest {
 		new SharedLibraryLoader().load("gdx-bullet");
 	}
 	
-	final float lightAmbient[] = new float[] {0.3f, 0.3f, 0.3f, 1f};
-	final float lightPosition[] = new float[] {10f, 5f, 5f, 1f};
-	final float lightDiffuse[] = new float[] {0.7f, 0.7f, 0.7f, 1f};
+	final float lightAmbient[] = new float[] {0.5f, 0.5f, 0.5f, 1f};
+	final float lightPosition[] = new float[] {10f, 10f, 10f, 1f};
+	final float lightDiffuse[] = new float[] {0.5f, 0.5f, 0.5f, 1f};
 
 	PerspectiveCamera camera;
 	World world;
