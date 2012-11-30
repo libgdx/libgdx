@@ -8,18 +8,18 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-public class SWIGTYPE_p_btCollisionWorld__ConvexResultCallback {
+public class SWIGTYPE_p_btAlignedObjectArrayT_float_t {
   private long swigCPtr;
 
-  protected SWIGTYPE_p_btCollisionWorld__ConvexResultCallback(long cPtr, boolean futureUse) {
+  protected SWIGTYPE_p_btAlignedObjectArrayT_float_t(long cPtr, boolean futureUse) {
     swigCPtr = cPtr;
   }
 
-  protected SWIGTYPE_p_btCollisionWorld__ConvexResultCallback() {
+  protected SWIGTYPE_p_btAlignedObjectArrayT_float_t() {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btCollisionWorld__ConvexResultCallback obj) {
+  public static long getCPtr(SWIGTYPE_p_btAlignedObjectArrayT_float_t obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

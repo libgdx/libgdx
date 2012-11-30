@@ -8,7 +8,7 @@
  * Allow public access to the CPtr methods on proxy classes and wrappers.
  * 
  * public was the default in SWIG <= 2.0.4, but changed to protected in
- * 2.0.5. Getitng pointers to native Bullet objects can be useful (for 
+ * 2.0.5. Getting pointers to native Bullet objects can be useful (for 
  * instance, to map them back to associated Java scene objects), so make
  * the getCPtr method public.
  */
@@ -28,7 +28,7 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %include "gdxMathTypes.i"
 
 /* Map "void *" to "jlong". */
-/* %include "gdxVoidPointer.i"; */
+// %include "gdxVoidPointer.i";
 
 /* Use "unsafe" enums (plain integer constants) instead of typesafe enum classes. */
 %include "enumtypeunsafe.swg"
@@ -547,10 +547,11 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "BulletCollision/CollisionDispatch/btGhostObject.h"
 
-%{
-#include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
-%}
-%include "BulletCollision/CollisionDispatch/btCollisionWorld.h"
+//%{
+//#include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
+//%}
+//%include "BulletCollision/CollisionDispatch/btCollisionWorld.h"
+%include "custom/btCollisionWorld.i"
 
 %{
 #include <BulletCollision/CollisionDispatch/btConvex2dConvex2dAlgorithm.h>
