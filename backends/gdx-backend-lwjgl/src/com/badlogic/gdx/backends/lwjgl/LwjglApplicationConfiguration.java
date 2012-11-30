@@ -32,7 +32,7 @@ public class LwjglApplicationConfiguration {
 	 * natives are not needed. */
 	static public boolean disableAudio;
 
-	/** whether to use OpenGL ES 2.0 or not. default: false **/
+	/** whether to attempt to use OpenGL ES 2.0. Note GL2 may not be available even if this is true. default: false **/
 	public boolean useGL20 = false;
 	/** number of bits per color channel **/
 	public int r = 8, g = 8, b = 8, a = 8;
@@ -46,7 +46,7 @@ public class LwjglApplicationConfiguration {
 	public int x = -1, y = -1;
 	/** fullscreen **/
 	public boolean fullscreen = false;
-	/** whether to use CPU synching or not. If this is false display vsynching is used, which might not work in windowed mode **/
+	/** whether to use CPU synching. If this is false display vsynching is used, which might not work in windowed mode **/
 	public boolean useCPUSynch = true;
 	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
 	public boolean vSyncEnabled = true;

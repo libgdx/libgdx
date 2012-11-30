@@ -234,7 +234,6 @@ public class LwjglGraphics implements Graphics {
 			gl20 = new LwjglGL20();
 			gl = gl20;
 		} else {
-			if (config.useGL20) throw new GdxRuntimeException("OpenGL 2.0 is not supported by the video driver.");
 			gl20 = null;
 			if (major == 1 && minor < 5) {
 				gl10 = new LwjglGL10();
