@@ -24,6 +24,7 @@ import cli.MonoTouch.Foundation.NSError;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -60,7 +61,7 @@ public class IOSSound implements Sound {
 			}
 			
 			// our temp player list
-			List<AVAudioPlayer> playQueueCopy = new ArrayList<AVAudioPlayer>(64);
+//			List<AVAudioPlayer> playQueueCopy = new ArrayList<AVAudioPlayer>(64);
 			
 			// our play loop which will continue as long as we are the active thread
 			Thread currentThread = Thread.currentThread();
@@ -70,7 +71,7 @@ public class IOSSound implements Sound {
 					playQueueCopy.addAll(playQueue);
 					playQueue.clear();
 				}
-				for (int i = 0; i < playQueueCopy.size(); i++) {
+				for (int i = 0; i < playQueueCopy.size; i++) {
 					playQueueCopy.get(i).Play();
 				}
 				playQueueCopy.clear();
@@ -95,7 +96,8 @@ public class IOSSound implements Sound {
 	private static final Object sync = new Object();
 	private static PlayThread playThread = null;
 	private static int soundCounter = 0;
-	private static List<AVAudioPlayer> playQueue = new ArrayList<AVAudioPlayer>(64);
+	private static Array<AVAudioPlayer> playQueue = new Array<AVAudioPlayer>(64);
+	private static Array<AVAudioPlayer> playQueueCopy = new Array<AVAudioPlayer>(64);
 	
 	
 	/**
@@ -140,15 +142,21 @@ public class IOSSound implements Sound {
 	 * @return  The index of the player or -1 if none is available.
 	 */
 	private int findAvailablePlayer() {
+		int index = playerIndex + 1;
 		for (int i = 0; i < players.length; i++) {
-			int index = (playerIndex + i) % players.length;
+			if (index >= players.length)
+			{
+				index = 0;
+			}
+			
 			if (!players[index].get_Playing()) {
 				// point to the next likely free player
-				playerIndex = (index + 1) % players.length; 
+				playerIndex = index; 
 				
 				// return the free player
-				return i;
+				return index;
 			}
+			index++;
 		}
 		
 		// all are busy playing... :/
@@ -183,6 +191,7 @@ public class IOSSound implements Sound {
 			player.set_NumberOfLoops(looping ? -1 : 0);  // Note: -1 for looping!
 			player.set_Volume(volume);
 			player.set_Pan(pan);
+			player.set_CurrentTime(0);
 			
 			// we let the thread play our song as not to impact rendering performance (FPS)
 			synchronized (sync) {
@@ -218,7 +227,7 @@ public class IOSSound implements Sound {
 		
 		// stop all players
 		for (int i = 0; i < players.length; i++) {
-			players[i].Stop();
+			players[i].Pause();
 		}
 	}
 
@@ -245,7 +254,7 @@ public class IOSSound implements Sound {
 	@Override
 	public void stop(long soundId) {
 		if (soundId >= 0) {
-			players[(int)soundId].Stop();
+			players[(int)soundId].Pause();
 		}
 	}
 
