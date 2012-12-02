@@ -233,7 +233,7 @@ public class Array<T> implements Iterable<T> {
 		if (identity) {
 			for (int i = 0, n = array.size; i < n; i++) {
 				T item = array.get(i);
-				for (int ii = 0, nn = size; ii < nn; ii++) {
+				for (int ii = 0; ii < size; ii++) {
 					if (item.equals(items[ii])) {
 						removeIndex(ii);
 						size--;
@@ -244,7 +244,7 @@ public class Array<T> implements Iterable<T> {
 		} else {
 			for (int i = 0, n = array.size; i < n; i++) {
 				T item = array.get(i);
-				for (int ii = 0, nn = size; ii < nn; ii++) {
+				for (int ii = 0; ii < size; ii++) {
 					if (item == items[ii]) {
 						removeIndex(ii);
 						size--;
