@@ -3,7 +3,7 @@
  * methods are useful.
  */
  
-/*
+
 %typemap(jni) 				void * 	"jlong"
 %typemap(jstype) 			void *	"long"
 %typemap(jtype) 			void *	"long"
@@ -15,4 +15,3 @@
 %typemap(javadirectorout)	void *	"/f* gram *f/ $javacall"
 %typemap(directorin)		void *	"/f* fump *f/ $input = (jlong) $1;"
 %typemap(directorout)		void *	"/f* pree *f/ $result = (jlong) $input;"
-*/

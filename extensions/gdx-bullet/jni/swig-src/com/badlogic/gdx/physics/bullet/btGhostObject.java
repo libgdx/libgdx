@@ -43,16 +43,16 @@ public class btGhostObject extends btCollisionObject {
     this(gdxBulletJNI.new_btGhostObject(), true);
   }
 
-  public void convexSweepTest(btConvexShape castShape, btTransform convexFromWorld, btTransform convexToWorld, SWIGTYPE_p_btCollisionWorld__ConvexResultCallback resultCallback, float allowedCcdPenetration) {
-    gdxBulletJNI.btGhostObject_convexSweepTest__SWIG_0(swigCPtr, this, btConvexShape.getCPtr(castShape), castShape, btTransform.getCPtr(convexFromWorld), convexFromWorld, btTransform.getCPtr(convexToWorld), convexToWorld, SWIGTYPE_p_btCollisionWorld__ConvexResultCallback.getCPtr(resultCallback), allowedCcdPenetration);
+  public void convexSweepTest(btConvexShape castShape, btTransform convexFromWorld, btTransform convexToWorld, ConvexResultCallback resultCallback, float allowedCcdPenetration) {
+    gdxBulletJNI.btGhostObject_convexSweepTest__SWIG_0(swigCPtr, this, btConvexShape.getCPtr(castShape), castShape, btTransform.getCPtr(convexFromWorld), convexFromWorld, btTransform.getCPtr(convexToWorld), convexToWorld, ConvexResultCallback.getCPtr(resultCallback), resultCallback, allowedCcdPenetration);
   }
 
-  public void convexSweepTest(btConvexShape castShape, btTransform convexFromWorld, btTransform convexToWorld, SWIGTYPE_p_btCollisionWorld__ConvexResultCallback resultCallback) {
-    gdxBulletJNI.btGhostObject_convexSweepTest__SWIG_1(swigCPtr, this, btConvexShape.getCPtr(castShape), castShape, btTransform.getCPtr(convexFromWorld), convexFromWorld, btTransform.getCPtr(convexToWorld), convexToWorld, SWIGTYPE_p_btCollisionWorld__ConvexResultCallback.getCPtr(resultCallback));
+  public void convexSweepTest(btConvexShape castShape, btTransform convexFromWorld, btTransform convexToWorld, ConvexResultCallback resultCallback) {
+    gdxBulletJNI.btGhostObject_convexSweepTest__SWIG_1(swigCPtr, this, btConvexShape.getCPtr(castShape), castShape, btTransform.getCPtr(convexFromWorld), convexFromWorld, btTransform.getCPtr(convexToWorld), convexToWorld, ConvexResultCallback.getCPtr(resultCallback), resultCallback);
   }
 
-  public void rayTest(Vector3 rayFromWorld, Vector3 rayToWorld, SWIGTYPE_p_btCollisionWorld__RayResultCallback resultCallback) {
-    gdxBulletJNI.btGhostObject_rayTest(swigCPtr, this, rayFromWorld, rayToWorld, SWIGTYPE_p_btCollisionWorld__RayResultCallback.getCPtr(resultCallback));
+  public void rayTest(Vector3 rayFromWorld, Vector3 rayToWorld, RayResultCallback resultCallback) {
+    gdxBulletJNI.btGhostObject_rayTest(swigCPtr, this, rayFromWorld, rayToWorld, RayResultCallback.getCPtr(resultCallback), resultCallback);
   }
 
   public void addOverlappingObjectInternal(btBroadphaseProxy otherProxy, btBroadphaseProxy thisProxy) {
