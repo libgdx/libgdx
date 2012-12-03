@@ -128,6 +128,12 @@ public class Table extends WidgetGroup {
 		return layout.getMinHeight();
 	}
 
+	/** Sets the background drawable from the skin. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)}
+	 * was used. */
+	public void setBackground (String drawableName) {
+		setBackground(skin.getDrawable(drawableName));
+	}
+
 	/** Sets the background drawable and sets the table's padding to {@link Drawable#getBottomHeight()} ,
 	 * {@link Drawable#getTopHeight()}, {@link Drawable#getLeftWidth()}, and {@link Drawable#getRightWidth()}.
 	 * @param background If null, the background will be cleared and all padding is removed. */
