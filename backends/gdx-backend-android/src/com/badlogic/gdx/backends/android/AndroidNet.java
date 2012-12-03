@@ -16,35 +16,154 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.io.InputStream;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import android.content.Intent;
 import android.net.Uri;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Net.HttpResult;
-import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class AndroidNet implements Net {
-	
-	// IMPORTANT: The Gdx.net classes are a currently duplicated for LWJGL + Android!
-	//            If you make changes here, make changes in the other backend as well.
-	final AndroidApplication app;
-	
-	public AndroidNet(AndroidApplication activity) {
-		app = activity;
+
+	private final class HttpClientResponse implements HttpResponse {
+
+		private org.apache.http.HttpResponse httpResponse;
+		private HttpStatus httpStatus;
+
+		public HttpClientResponse (org.apache.http.HttpResponse httpResponse) {
+			this.httpResponse = httpResponse;
+			this.httpStatus = new HttpStatus(httpResponse.getStatusLine().getStatusCode());
+		}
+
+		@Override
+		public String getResultAsString () {
+			try {
+				return EntityUtils.toString(httpResponse.getEntity());
+			} catch (Exception e) {
+				throw new GdxRuntimeException("Failed to get HTTP response as string", e);
+			}
+		}
+
+		@Override
+		public InputStream getResultAsStream () {
+			try {
+				return httpResponse.getEntity().getContent();
+			} catch (Exception e) {
+				throw new GdxRuntimeException("Failed to get HTTP response as stream", e);
+			}
+		}
+
+		@Override
+		public byte[] getResult () {
+			throw new UnsupportedOperationException("get result as byte[] is not implemented");
+		}
+
+		@Override
+		public HttpStatus getStatus () {
+			return httpStatus;
+		}
+		
 	}
-	
-	@Override
-	public HttpResult httpGet (String url, String... parameters) {
-		throw new UnsupportedOperationException("Not implemented");
+
+	// IMPORTANT: The Gdx.net classes are a currently duplicated for LWJGL + Android!
+	// If you make changes here, make changes in the other backend as well.
+	final AndroidApplication app;
+
+	private final ExecutorService executorService;
+
+	HttpClient httpClient;
+
+	public AndroidNet (AndroidApplication activity) {
+		app = activity;
+		executorService = Executors.newCachedThreadPool();
+		httpClient = new DefaultHttpClient();
 	}
 
 	@Override
-	public HttpResult httpPost (String url, String contentType, byte[] content) {
-		throw new UnsupportedOperationException("Not implemented");
+	public void sendHttpRequest (HttpRequest httpRequest, final HttpResponseListener httpResultListener) {
+		if (httpRequest.getUrl() == null) throw new GdxRuntimeException("can't process a HTTP request without URL set");
+
+		final HttpUriRequest httpClientRequest = getHttpClientRequest(httpRequest);
+
+		// Don't know where to use the timeout exactly yet :)
+
+		executorService.submit(new Runnable() {
+			@Override
+			public void run () {
+				try {
+					final org.apache.http.HttpResponse httpResponse = httpClient.execute(httpClientRequest);
+					// post a runnable to sync the handler with the main thread
+					Gdx.app.postRunnable(new Runnable() {
+						@Override
+						public void run () {
+							httpResultListener.handleHttpResponse(new HttpClientResponse(httpResponse));
+						}
+					});
+				} catch (final Exception e) {
+					// post a runnable to sync the handler with the main thread
+					Gdx.app.postRunnable(new Runnable() {
+						@Override
+						public void run () {
+							httpResultListener.failed(e);
+						}
+					});
+				}
+			}
+		});
+	}
+
+	private HttpUriRequest getHttpClientRequest (HttpRequest httpRequest) {
+		if (httpRequest.getMethod() == null) throw new GdxRuntimeException("HTTP method can't be null");
+
+		HttpUriRequest httpClientRequest = convertHttpClientRequest(httpRequest);
+
+		Map<String, String> headers = httpRequest.getHeaders();
+		Set<String> keySet = headers.keySet();
+		for (String name : keySet) {
+			httpClientRequest.setHeader(name, headers.get(name));
+		}
+
+		return httpClientRequest;
+	}
+
+	private HttpUriRequest convertHttpClientRequest (HttpRequest httpRequest) {
+		if (httpRequest.getMethod().equalsIgnoreCase(HttpMethods.GET)) {
+			// process specific HTTP GET logic
+			return new HttpGet(httpRequest.getUrl());
+		} else if (httpRequest.getMethod().equalsIgnoreCase(HttpMethods.POST)) {
+			// process specific HTTP POST logic
+			HttpPost httpPost = new HttpPost(httpRequest.getUrl());
+
+			byte[] contentAsByteArray = httpRequest.getContent();
+			InputStream contentStream = httpRequest.getContentStream();
+
+			if (contentAsByteArray != null)
+				httpPost.setEntity(new ByteArrayEntity(contentAsByteArray));
+			else if (contentStream != null) httpPost.setEntity(new InputStreamEntity(contentStream, -1));
+
+			return httpPost;
+		} else {
+			throw new GdxRuntimeException("Android implementation of Net API can't support other HTTP methods yet.");
+		}
 	}
 
 	@Override
@@ -56,15 +175,16 @@ public class AndroidNet implements Net {
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
 		return new AndroidSocket(protocol, host, port, hints);
 	}
-	
+
 	@Override
-	public void openURI(String URI) {
+	public void openURI (String URI) {
 		final Uri uri = Uri.parse(URI);
-		app.runOnUiThread(new Runnable(){
+		app.runOnUiThread(new Runnable() {
 			@Override
 			public void run () {
 				app.startActivity(new Intent(Intent.ACTION_VIEW, uri));
 			}
 		});
 	}
+
 }

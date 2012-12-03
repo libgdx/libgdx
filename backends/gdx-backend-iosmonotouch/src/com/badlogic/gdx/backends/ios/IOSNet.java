@@ -19,8 +19,6 @@ import cli.MonoTouch.Foundation.NSUrl;
 import cli.MonoTouch.UIKit.UIApplication;
 
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Net.HttpResult;
-import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
@@ -35,17 +33,11 @@ public class IOSNet implements Net {
 	}
 	
 	@Override
-	public HttpResult httpGet (String url, String... parameters) {
+	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResultListener) {
 		// FIXME implement this
 		throw new UnsupportedOperationException("Not implemented");
 	}
-
-	@Override
-	public HttpResult httpPost (String url, String contentType, byte[] content) {
-		// FIXME implement this
-		throw new UnsupportedOperationException("Not implemented");
-	}
-
+	
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
 		return new IOSServerSocket(protocol, port, hints);
