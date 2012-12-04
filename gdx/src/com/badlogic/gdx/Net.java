@@ -90,7 +90,8 @@ public interface Net {
 		HttpStatus getStatus ();
 	}
 
-	/** Provides common HTTP methods to use when creating a {@link HttpRequest}. */
+	/** Provides common HTTP methods to use when creating a {@link HttpRequest}. 
+	 * <ul><li>GET</li><li>POST</li></ul>*/
 	public static interface HttpMethods {
 
 		public static final String GET = "GET";
@@ -99,7 +100,15 @@ public interface Net {
 
 	}
 
-	/** Abstracts the concept of a HTTP Request:
+	/** 
+	 * Contains getters and setters for the following parameters: 
+	 * <ul><li><strong>httpMethod:</strong> GET or POST are most common, can use {@link Net.HttpMethods HttpMethods} for static references</li>
+	 * <li><strong>url:</strong> the url</li>
+	 * <li><strong>headers:</strong> a map of the headers, setter can be called multiple times</li>
+	 * <li><strong>timeout:</strong> time spent trying to connect before giving up</li>
+	 * <li><strong>content or contentStream:</strong> for POST you can set the content as either a byte[] or a stream</li></ul>
+	 * 
+	 * Abstracts the concept of a HTTP Request:
 	 * 
 	 * <pre>
 	 * HttpRequest httpGet = new HttpRequest(HttpMethods.Get);
@@ -112,7 +121,7 @@ public interface Net {
 		private final String httpMethod;
 		private String url;
 		private Map<String, String> headers;
-		private long timeOut;
+		private int timeOut = -1;
 
 		private byte[] content;
 		private InputStream contentStream;
@@ -127,7 +136,7 @@ public interface Net {
 		public void setUrl (String url) {
 			this.url = url;
 		}
-
+		
 		/** Sets a header to this HTTP request. Headers definition could be found at <a
 		 * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP/1.1: Header Field Definitions</a> document.
 		 * @param name the name of the header.
@@ -148,9 +157,11 @@ public interface Net {
 			this.contentStream = contentStream;
 		}
 
-		/** Sets the time to wait for the HTTP request to be processed, use 0 block until it is done.
+		/** Sets the time to wait for the HTTP request to be processed, use 0 block until it is done. The timeout defaults
+		 * to 30000 milliseconds, and is used for both the timeout when establishing TCP connection, and the timeout until
+		 * the first byte of data is received. 
 		 * @param timeOut the number of milliseconds to wait before giving up, 0 to block until the operation is done */
-		public void setTimeOut (long timeOut) {
+		public void setTimeOut (int timeOut) {
 			this.timeOut = timeOut;
 		}
 
@@ -177,6 +188,11 @@ public interface Net {
 		/** Returns a Map<String, String> with the headers of the HTTP request. */
 		public Map<String, String> getHeaders () {
 			return headers;
+		}
+		
+		/** Returns the timeOut set for this httpRequest. If not set, defaults to 30000 milliseconds */
+		public int getTimeout () {
+			return (timeOut<=0)? 30000 : timeOut;
 		}
 
 	}

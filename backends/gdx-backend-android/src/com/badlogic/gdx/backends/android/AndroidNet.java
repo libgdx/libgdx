@@ -29,6 +29,9 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import android.content.Intent;
@@ -90,7 +93,7 @@ public class AndroidNet implements Net {
 
 	private final ExecutorService executorService;
 
-	HttpClient httpClient;
+	DefaultHttpClient httpClient;
 
 	public AndroidNet (AndroidApplication activity) {
 		app = activity;
@@ -104,8 +107,13 @@ public class AndroidNet implements Net {
 
 		final HttpUriRequest httpClientRequest = getHttpClientRequest(httpRequest);
 
-		// Don't know where to use the timeout exactly yet :)
-
+		final HttpParams httpParams = new BasicHttpParams();
+		
+		// Sets the timeout for time until TCP connection is established and timeout until first byte received to request timeout value 
+		HttpConnectionParams.setConnectionTimeout(httpParams, httpRequest.getTimeout());
+		HttpConnectionParams.setSoTimeout(httpParams, httpRequest.getTimeout());
+		httpClient.setParams(httpParams);
+		
 		executorService.submit(new Runnable() {
 			@Override
 			public void run () {
