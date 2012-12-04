@@ -93,7 +93,7 @@ public class AndroidNet implements Net {
 
 	private final ExecutorService executorService;
 
-	DefaultHttpClient httpClient;
+	DefaultHttpClient httpClient; 
 
 	public AndroidNet (AndroidApplication activity) {
 		app = activity;
