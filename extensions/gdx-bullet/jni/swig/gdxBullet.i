@@ -554,6 +554,16 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %include "custom/btCollisionWorld.i"
 
 %{
+#include <../swig/custom/ClosestNotMeConvexResultCallback.h>
+%}
+%include "../swig/custom/ClosestNotMeConvexResultCallback.h"
+
+%{
+#include <../swig/custom/ClosestNotMeRayResultCallback.h>
+%}
+%include "../swig/custom/ClosestNotMeRayResultCallback.h"
+
+%{
 #include <BulletCollision/CollisionDispatch/btConvex2dConvex2dAlgorithm.h>
 %}
 %include "BulletCollision/CollisionDispatch/btConvex2dConvex2dAlgorithm.h"
