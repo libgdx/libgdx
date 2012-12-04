@@ -106,7 +106,7 @@ public interface Net {
 	 * <li><strong>url:</strong> the url</li>
 	 * <li><strong>headers:</strong> a map of the headers, setter can be called multiple times</li>
 	 * <li><strong>timeout:</strong> time spent trying to connect before giving up</li>
-	 * <li><strong>content or contentStream:</strong> for POST you can set the content as either a byte[] or a stream</li></ul>
+	 * <li><strong>content:</strong> for POST you can set the content as either a byte[], an InputStream, or a String</li></ul>
 	 * 
 	 * Abstracts the concept of a HTTP Request:
 	 * 
@@ -125,10 +125,33 @@ public interface Net {
 
 		private byte[] content;
 		private InputStream contentStream;
-
+		private String contentString;
+		
+		/**
+		 * When this is created, if POST or GET are selected as the httpMethod, this will set up the following default parameters:
+		 * <br><br><strong>POST:</strong>
+		 * <br><i>headers</i> - Accept=application/x-www-form-urlencoded
+		 * <br><i>headers</i> - Content-Type=application/x-www-form-urlencoded
+		 * <br><i>timeout</i> - 30000 milliseconds (30 seconds)
+		 * <br><br><strong>GET:</strong>
+		 * <br><i>headers</i> - Content-Type=text/html; charset=UTF-8
+		 * <br><i>timeout</i> - 30000 milliseconds (30 seconds)
+		 * <br><br>
+		 * @param httpMethod	This is the method for the request, usually HttpMethods.POST or HttpMethods.GET */
 		public HttpRequest (String httpMethod) {
 			this.httpMethod = httpMethod;
 			this.headers = new HashMap<String, String>();
+			
+			// Setting the default parameters for POST and GET
+			if(this.httpMethod == HttpMethods.POST) {
+				setHeader("Accept", "application/x-www-form-urlencoded");
+            setHeader("Content-type", "application/x-www-form-urlencoded");
+            setTimeOut(30000);
+			}
+			else if(this.httpMethod == HttpMethods.GET){
+				setHeader("Content-type", "text/html; charset=UTF-8");
+            setTimeOut(30000);
+			}
 		}
 
 		/** Sets the URL of the HTTP request.
@@ -145,16 +168,20 @@ public interface Net {
 			headers.put(name, value);
 		}
 
-		/** In case the HttpRequest method is POST you can set the content to send with it.
+		/** When the HttpRequest method is POST you can set the content to send with it.
 		 * @param content The content to send with the HTTP POST. */
 		public void setContent (byte[] content) {
 			this.content = content;
 		}
 
-		/** In case the HttpRequest method is POST you can set the content to send with it.
+		/** When the HttpRequest method is POST you can set the content to send with it.
 		 * @param contentStream An {@link InputStream} containing the data to send with the HTTP POST request. */
 		public void setContent (InputStream contentStream) {
 			this.contentStream = contentStream;
+		}
+		
+		public void setContent (String content) {
+			this.contentString = content;
 		}
 
 		/** Sets the time to wait for the HTTP request to be processed, use 0 block until it is done. The timeout defaults
@@ -183,6 +210,11 @@ public interface Net {
 		/** Returns the content as stream, if it was set. */
 		public InputStream getContentStream () {
 			return contentStream;
+		}
+		
+		/** Returns the content as string, if it was set. */
+		public String getContentString() {
+			return contentString;
 		}
 
 		/** Returns a Map<String, String> with the headers of the HTTP request. */

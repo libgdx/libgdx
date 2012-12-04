@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.android;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -28,6 +29,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -77,7 +79,11 @@ public class AndroidNet implements Net {
 
 		@Override
 		public byte[] getResult () {
-			throw new UnsupportedOperationException("get result as byte[] is not implemented");
+			try {
+				return EntityUtils.toByteArray(httpResponse.getEntity());
+			} catch (Exception e) {
+				throw new GdxRuntimeException("Failed to retrieve byte array from response", e);
+			}
 		}
 
 		@Override
@@ -163,11 +169,19 @@ public class AndroidNet implements Net {
 
 			byte[] contentAsByteArray = httpRequest.getContent();
 			InputStream contentStream = httpRequest.getContentStream();
-
+			String contentString = httpRequest.getContentString();
+			
 			if (contentAsByteArray != null)
 				httpPost.setEntity(new ByteArrayEntity(contentAsByteArray));
-			else if (contentStream != null) httpPost.setEntity(new InputStreamEntity(contentStream, -1));
-
+			else if (contentStream != null) 
+				httpPost.setEntity(new InputStreamEntity(contentStream, -1));
+			else if (contentString != null) {
+				try {
+					httpPost.setEntity(new StringEntity(contentString));
+				} catch (UnsupportedEncodingException e) {
+					return httpPost;
+				}
+			}
 			return httpPost;
 		} else {
 			throw new GdxRuntimeException("Android implementation of Net API can't support other HTTP methods yet.");
