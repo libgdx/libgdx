@@ -2295,6 +2295,14 @@ public class gdxBulletJNI {
   public final static native boolean btCollisionWorld_getForceUpdateAllAabbs(long jarg1, btCollisionWorld jarg1_);
   public final static native void btCollisionWorld_setForceUpdateAllAabbs(long jarg1, btCollisionWorld jarg1_, boolean jarg2);
   public final static native void btCollisionWorld_serialize(long jarg1, btCollisionWorld jarg1_, long jarg2);
+  public final static native void ClosestNotMeConvexResultCallback_m_me_set(long jarg1, ClosestNotMeConvexResultCallback jarg1_, long jarg2, btCollisionObject jarg2_);
+  public final static native long ClosestNotMeConvexResultCallback_m_me_get(long jarg1, ClosestNotMeConvexResultCallback jarg1_);
+  public final static native void ClosestNotMeConvexResultCallback_m_allowedPenetration_set(long jarg1, ClosestNotMeConvexResultCallback jarg1_, float jarg2);
+  public final static native float ClosestNotMeConvexResultCallback_m_allowedPenetration_get(long jarg1, ClosestNotMeConvexResultCallback jarg1_);
+  public final static native long new_ClosestNotMeConvexResultCallback(long jarg1, btCollisionObject jarg1_, Vector3 jarg2, Vector3 jarg3);
+  public final static native void delete_ClosestNotMeConvexResultCallback(long jarg1);
+  public final static native long new_ClosestNotMeRayResultCallback(long jarg1, btCollisionObject jarg1_);
+  public final static native void delete_ClosestNotMeRayResultCallback(long jarg1);
   public final static native long new_btConvex2dConvex2dAlgorithm(long jarg1, btPersistentManifold jarg1_, long jarg2, btCollisionAlgorithmConstructionInfo jarg2_, long jarg3, long jarg4, long jarg5, long jarg6, btConvexPenetrationDepthSolver jarg6_, int jarg7, int jarg8);
   public final static native void delete_btConvex2dConvex2dAlgorithm(long jarg1);
   public final static native void btConvex2dConvex2dAlgorithm_setLowLevelOfDetail(long jarg1, btConvex2dConvex2dAlgorithm jarg1_, boolean jarg2);
@@ -3671,6 +3679,8 @@ public class gdxBulletJNI {
   public final static native long ClosestRayResultCallback_SWIGUpcast(long jarg1);
   public final static native long AllHitsRayResultCallback_SWIGUpcast(long jarg1);
   public final static native long ClosestConvexResultCallback_SWIGUpcast(long jarg1);
+  public final static native long ClosestNotMeConvexResultCallback_SWIGUpcast(long jarg1);
+  public final static native long ClosestNotMeRayResultCallback_SWIGUpcast(long jarg1);
   public final static native long btConvex2dConvex2dAlgorithm_SWIGUpcast(long jarg1);
   public final static native long btSphereBoxCollisionAlgorithm_SWIGUpcast(long jarg1);
   public final static native long btCollisionDispatcher_SWIGUpcast(long jarg1);

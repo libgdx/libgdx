@@ -1700,6 +1700,12 @@ typedef btCollisionWorld::ClosestConvexResultCallback ClosestConvexResultCallbac
 typedef btCollisionWorld::ContactResultCallback ContactResultCallback;
 
 
+#include <../swig/custom/ClosestNotMeConvexResultCallback.h>
+
+
+#include <../swig/custom/ClosestNotMeRayResultCallback.h>
+
+
 #include <BulletCollision/CollisionDispatch/btConvex2dConvex2dAlgorithm.h>
 
 
@@ -39136,6 +39142,123 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btColl
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ClosestNotMeConvexResultCallback_1m_1me_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  ClosestNotMeConvexResultCallback *arg1 = (ClosestNotMeConvexResultCallback *) 0 ;
+  btCollisionObject *arg2 = (btCollisionObject *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(ClosestNotMeConvexResultCallback **)&jarg1; 
+  arg2 = *(btCollisionObject **)&jarg2; 
+  if (arg1) (arg1)->m_me = arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ClosestNotMeConvexResultCallback_1m_1me_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  ClosestNotMeConvexResultCallback *arg1 = (ClosestNotMeConvexResultCallback *) 0 ;
+  btCollisionObject *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ClosestNotMeConvexResultCallback **)&jarg1; 
+  result = (btCollisionObject *) ((arg1)->m_me);
+  *(btCollisionObject **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ClosestNotMeConvexResultCallback_1m_1allowedPenetration_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  ClosestNotMeConvexResultCallback *arg1 = (ClosestNotMeConvexResultCallback *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ClosestNotMeConvexResultCallback **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_allowedPenetration = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ClosestNotMeConvexResultCallback_1m_1allowedPenetration_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  ClosestNotMeConvexResultCallback *arg1 = (ClosestNotMeConvexResultCallback *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ClosestNotMeConvexResultCallback **)&jarg1; 
+  result = (btScalar) ((arg1)->m_allowedPenetration);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1ClosestNotMeConvexResultCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3) {
+  jlong jresult = 0 ;
+  btCollisionObject *arg1 = (btCollisionObject *) 0 ;
+  btVector3 *arg2 = 0 ;
+  btVector3 *arg3 = 0 ;
+  ClosestNotMeConvexResultCallback *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btCollisionObject **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setBtVector3FromGdxVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btVector3 local_arg3;
+  gdx_setBtVector3FromGdxVector3(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitVector3 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  result = (ClosestNotMeConvexResultCallback *)new ClosestNotMeConvexResultCallback(arg1,(btVector3 const &)*arg2,(btVector3 const &)*arg3);
+  *(ClosestNotMeConvexResultCallback **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1ClosestNotMeConvexResultCallback(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  ClosestNotMeConvexResultCallback *arg1 = (ClosestNotMeConvexResultCallback *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(ClosestNotMeConvexResultCallback **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1ClosestNotMeRayResultCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btCollisionObject *arg1 = (btCollisionObject *) 0 ;
+  ClosestNotMeRayResultCallback *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btCollisionObject **)&jarg1; 
+  result = (ClosestNotMeRayResultCallback *)new ClosestNotMeRayResultCallback(arg1);
+  *(ClosestNotMeRayResultCallback **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1ClosestNotMeRayResultCallback(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  ClosestNotMeRayResultCallback *arg1 = (ClosestNotMeRayResultCallback *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(ClosestNotMeRayResultCallback **)&jarg1; 
+  delete arg1;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btConvex2dConvex2dAlgorithm(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jlong jarg4, jlong jarg5, jlong jarg6, jobject jarg6_, jint jarg7, jint jarg8) {
   jlong jresult = 0 ;
   btPersistentManifold *arg1 = (btPersistentManifold *) 0 ;
@@ -60702,6 +60825,22 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_Close
     (void)jenv;
     (void)jcls;
     *(ConvexResultCallback **)&baseptr = *(ClosestConvexResultCallback **)&jarg1;
+    return baseptr;
+}
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ClosestNotMeConvexResultCallback_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(ClosestConvexResultCallback **)&baseptr = *(ClosestNotMeConvexResultCallback **)&jarg1;
+    return baseptr;
+}
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ClosestNotMeRayResultCallback_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(ClosestRayResultCallback **)&baseptr = *(ClosestNotMeRayResultCallback **)&jarg1;
     return baseptr;
 }
 
