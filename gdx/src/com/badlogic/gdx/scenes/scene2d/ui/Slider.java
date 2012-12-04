@@ -195,6 +195,12 @@ public class Slider extends Widget {
 		setValue(min);
 	}
 
+	/** Sets the step size of the slider */
+	public void setStepSize (float stepSize) {
+		if (stepSize <= 0) throw new IllegalArgumentException("steps must be > 0: " + stepSize);
+		this.stepSize = stepSize;
+	}
+	
 	public float getPrefWidth () {
 		if (vertical)
 			return Math.max(style.knob.getMinWidth(), style.background.getMinWidth());
@@ -215,6 +221,10 @@ public class Slider extends Widget {
 
 	public float getMaxValue () {
 		return this.max;
+	}
+	
+	public float getStepSize () {
+		return this.stepSize;
 	}
 
 	/** The style for a slider, see {@link Slider}.
