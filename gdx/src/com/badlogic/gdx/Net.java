@@ -123,9 +123,7 @@ public interface Net {
 		private Map<String, String> headers;
 		private int timeOut = -1;
 
-		private byte[] content;
-		private InputStream contentStream;
-		private String contentString;
+		private Map<String, Object> content;
 		
 		/**
 		 * When this is created, if POST or GET are selected as the httpMethod, this will set up the following default parameters:
@@ -141,6 +139,7 @@ public interface Net {
 		public HttpRequest (String httpMethod) {
 			this.httpMethod = httpMethod;
 			this.headers = new HashMap<String, String>();
+			this.content = new HashMap<String, Object>();
 			
 			// Setting the default parameters for POST and GET
 			if(this.httpMethod == HttpMethods.POST) {
@@ -168,22 +167,14 @@ public interface Net {
 			headers.put(name, value);
 		}
 
-		/** When the HttpRequest method is POST you can set the content to send with it.
-		 * @param content The content to send with the HTTP POST. */
-		public void setContent (byte[] content) {
-			this.content = content;
-		}
-
-		/** When the HttpRequest method is POST you can set the content to send with it.
-		 * @param contentStream An {@link InputStream} containing the data to send with the HTTP POST request. */
-		public void setContent (InputStream contentStream) {
-			this.contentStream = contentStream;
+		/** Adds name->value to the content. Can be called multiple times. 
+		 * @param name the name of the content, Example: "password"
+		 * @param value the value of the content, Example: "P4ssw0rd!1234"
+		 */
+		public void setContent (String name, Object value) {
+			content.put(name, value);
 		}
 		
-		public void setContent (String content) {
-			this.contentString = content;
-		}
-
 		/** Sets the time to wait for the HTTP request to be processed, use 0 block until it is done. The timeout defaults
 		 * to 30000 milliseconds, and is used for both the timeout when establishing TCP connection, and the timeout until
 		 * the first byte of data is received. 
@@ -202,19 +193,9 @@ public interface Net {
 			return url;
 		}
 
-		/** Returns the content as byte[], if it was set. */
-		public byte[] getContent () {
+		/** Returns the content as a HashMap<String,Object> */
+		public Map<String,Object> getContent () {
 			return content;
-		}
-
-		/** Returns the content as stream, if it was set. */
-		public InputStream getContentStream () {
-			return contentStream;
-		}
-		
-		/** Returns the content as string, if it was set. */
-		public String getContentString() {
-			return contentString;
 		}
 
 		/** Returns a Map<String, String> with the headers of the HTTP request. */

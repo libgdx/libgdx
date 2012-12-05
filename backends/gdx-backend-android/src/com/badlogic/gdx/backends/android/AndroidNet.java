@@ -162,25 +162,27 @@ public class AndroidNet implements Net {
 	private HttpUriRequest convertHttpClientRequest (HttpRequest httpRequest) {
 		if (httpRequest.getMethod().equalsIgnoreCase(HttpMethods.GET)) {
 			// process specific HTTP GET logic
-			return new HttpGet(httpRequest.getUrl());
+			Map<String,Object> content = httpRequest.getContent();
+			Set<String> keySet = content.keySet();
+			String appendUrl = "?";
+			for (String name : keySet) {
+				appendUrl += name+"="+content.get(name)+"&";
+			}
+			return new HttpGet(httpRequest.getUrl().concat(appendUrl));
 		} else if (httpRequest.getMethod().equalsIgnoreCase(HttpMethods.POST)) {
 			// process specific HTTP POST logic
 			HttpPost httpPost = new HttpPost(httpRequest.getUrl());
 
-			byte[] contentAsByteArray = httpRequest.getContent();
-			InputStream contentStream = httpRequest.getContentStream();
-			String contentString = httpRequest.getContentString();
-			
-			if (contentAsByteArray != null)
-				httpPost.setEntity(new ByteArrayEntity(contentAsByteArray));
-			else if (contentStream != null) 
-				httpPost.setEntity(new InputStreamEntity(contentStream, -1));
-			else if (contentString != null) {
-				try {
-					httpPost.setEntity(new StringEntity(contentString));
-				} catch (UnsupportedEncodingException e) {
-					return httpPost;
-				}
+			Map<String,Object> content = httpRequest.getContent();
+			Set<String> keySet = content.keySet();
+			String appendUrl = "";
+			for (String name : keySet) {
+				appendUrl += name+"="+content.get(name)+"&";
+			}
+			try {
+				httpPost.setEntity(new StringEntity(appendUrl));
+			} catch (UnsupportedEncodingException e) {
+				return httpPost;
 			}
 			return httpPost;
 		} else {
