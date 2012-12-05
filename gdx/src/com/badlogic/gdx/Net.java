@@ -97,6 +97,8 @@ public interface Net {
 		public static final String GET = "GET";
 
 		public static final String POST = "POST";
+		
+		public static final String JSON = "JSON";
 
 	}
 
@@ -106,16 +108,38 @@ public interface Net {
 	 * <li><strong>url:</strong> the url</li>
 	 * <li><strong>headers:</strong> a map of the headers, setter can be called multiple times</li>
 	 * <li><strong>timeout:</strong> time spent trying to connect before giving up</li>
-	 * <li><strong>content:</strong> for POST you can set the content as either a byte[], an InputStream, or a String</li></ul>
+	 * <li><strong>content:</strong> Map used for both POST, GET, or JSON. </li></ul>
 	 * 
 	 * Abstracts the concept of a HTTP Request:
 	 * 
 	 * <pre>
 	 * HttpRequest httpGet = new HttpRequest(HttpMethods.Get);
 	 * httpGet.setUrl("http://somewhere.net");
+	 * httpGet.setContent("user", "MyUsername");
+	 * httpGet.setContent("password", "P4ssw0rd!1234")
 	 * ...
-	 * HttpResponse httpResponse = Gdx.net.sendHttpRequest (httpGet);
-	 * </pre> */
+	 * Gdx.net.sendHttpRequest (httpGet, new HttpResponseListener() {
+	 * 	public void handleHttpResponse(HttpResponse httpResponse) {
+	 * 		status = httpResponse.getResultAsString();
+	 * 		//do stuff here based on response
+	 * 	}
+	 * 
+	 * 	public void failed(Throwable t) {
+	 * 		status = "failed";
+	 * 		//do stuff here based on the failed attempt
+	 * 	}
+	 * });
+	 * </pre> 
+	 * 
+	 * PHP for POST should store values in $_POST,<br>
+	 * PHP for GET should store values in $_GET,<br>
+	 * PHP to retrieve JSON is as follows:
+	 * <pre>
+	 * $requestBody = file_get_contents('php://input');
+	 * $requestBody = json_decode($requestBody);
+	 * // and to access variable "user"
+	 * $requestBody->user
+	 * </pre>*/
 	public static class HttpRequest {
 
 		private final String httpMethod;
@@ -131,6 +155,10 @@ public interface Net {
 		 * <br><i>headers</i> - Accept=application/x-www-form-urlencoded
 		 * <br><i>headers</i> - Content-Type=application/x-www-form-urlencoded
 		 * <br><i>timeout</i> - 30000 milliseconds (30 seconds)
+		 * <br><br><strong>JSON:</strong>
+		 * <br><i>headers</i> - Accept=application/json
+		 * <br><i>headers</i> - Content-Type=application/json
+		 * <br><i>timeout</i> - 30000 milliseconds (30 seconds)
 		 * <br><br><strong>GET:</strong>
 		 * <br><i>headers</i> - Content-Type=text/html; charset=UTF-8
 		 * <br><i>timeout</i> - 30000 milliseconds (30 seconds)
@@ -141,10 +169,15 @@ public interface Net {
 			this.headers = new HashMap<String, String>();
 			this.content = new HashMap<String, Object>();
 			
-			// Setting the default parameters for POST and GET
+			// Setting the default parameters for POST, JSON, and GET
 			if(this.httpMethod == HttpMethods.POST) {
 				setHeader("Accept", "application/x-www-form-urlencoded");
             setHeader("Content-type", "application/x-www-form-urlencoded");
+            setTimeOut(30000);
+			} 
+			else if(this.httpMethod == HttpMethods.JSON) {
+				setHeader("Accept", "application/json");
+            setHeader("Content-type", "application/json");
             setTimeOut(30000);
 			}
 			else if(this.httpMethod == HttpMethods.GET){

@@ -16,7 +16,9 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Set;
@@ -46,6 +48,7 @@ import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.JsonWriter;
 
 public class AndroidNet implements Net {
 
@@ -185,11 +188,51 @@ public class AndroidNet implements Net {
 				return httpPost;
 			}
 			return httpPost;
+		} else if (httpRequest.getMethod().equalsIgnoreCase(HttpMethods.JSON)){
+			HttpPost httpPost = new HttpPost(httpRequest.getUrl());
+			
+			StringWriter jsonText = new StringWriter();
+			JsonWriter writer = new JsonWriter(jsonText);
+			try {
+				createJson(httpRequest.getContent(),"",writer);
+				httpPost.setEntity(new StringEntity(jsonText.toString()));
+			} catch (IOException e) {
+				return httpPost;
+			}
+			return httpPost;
 		} else {
 			throw new GdxRuntimeException("Android implementation of Net API can't support other HTTP methods yet.");
 		}
 	}
 
+	private static void createJson(Object content, String name, JsonWriter writer) throws IOException {
+		if(content instanceof Map){
+			if(name == "")
+				writer.object();
+			else 
+				writer.object(name);
+			Set<String> keySet = ((Map<String,?>) content).keySet();
+			for(String key : keySet){
+				createJson(((Map)content).get(key), key, writer);
+			}
+			writer.pop();
+		} else if (content instanceof Object[]){
+			if(name == "")
+				writer.array();
+			else 
+				writer.array(name);
+			for(Object key : (Object[])content) {
+				createJson(key, "", writer);
+			}
+			writer.pop();
+		} else {
+			if(name == "")
+				writer.value(content);
+			else
+				writer.set(name, content);
+		}
+	}
+	
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
 		return new AndroidServerSocket(protocol, port, hints);
