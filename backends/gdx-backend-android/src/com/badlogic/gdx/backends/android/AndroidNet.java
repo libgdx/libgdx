@@ -90,7 +90,7 @@ public class AndroidNet implements Net {
 
 	private final ExecutorService executorService;
 
-	HttpClient httpClient;
+	DefaultHttpClient httpClient;
 
 	public AndroidNet (AndroidApplication activity) {
 		app = activity;
@@ -103,9 +103,9 @@ public class AndroidNet implements Net {
 		if (httpRequest.getUrl() == null) throw new GdxRuntimeException("can't process a HTTP request without URL set");
 
 		final HttpUriRequest httpClientRequest = getHttpClientRequest(httpRequest);
-
+		
 		// Don't know where to use the timeout exactly yet :)
-
+		
 		executorService.submit(new Runnable() {
 			@Override
 			public void run () {

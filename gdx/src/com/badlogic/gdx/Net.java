@@ -153,6 +153,10 @@ public interface Net {
 		public void setTimeOut (long timeOut) {
 			this.timeOut = timeOut;
 		}
+		
+		public long getTimeOut () {
+			return timeOut;
+		}
 
 		/** Returns the HTTP method of the HttpRequest. */
 		public String getMethod () {
