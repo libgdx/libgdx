@@ -166,43 +166,22 @@ public class AndroidNet implements Net {
 	}
 
 	private HttpUriRequest convertHttpClientRequest (HttpRequest httpRequest) {
+		String content = httpRequest.convertHttpRequest();
+		
 		if (httpRequest.getMethod().equalsIgnoreCase(HttpMethods.GET)) {
-			// process specific HTTP GET logic
-			Map<String,Object> content = httpRequest.getContent();
-			Set<String> keySet = content.keySet();
-			String appendUrl = "?";
-			for (String name : keySet) {
-				appendUrl += name+"="+content.get(name)+"&";
-			}
-			return new HttpGet(httpRequest.getUrl().concat(appendUrl));
-		} else if (httpRequest.getMethod().equalsIgnoreCase(HttpMethods.POST)) {
+			return new HttpGet(httpRequest.getUrl().concat(content));
+		} 
+		else if (httpRequest.getMethod().equalsIgnoreCase(HttpMethods.POST) || 
+			httpRequest.getMethod().equalsIgnoreCase(HttpMethods.JSON)) {
 			// process specific HTTP POST logic
 			HttpPost httpPost = new HttpPost(httpRequest.getUrl());
-
-			Map<String,Object> content = httpRequest.getContent();
-			Set<String> keySet = content.keySet();
-			String appendUrl = "";
-			for (String name : keySet) {
-				appendUrl += name+"="+content.get(name)+"&";
-			}
+			
 			try {
-				httpPost.setEntity(new StringEntity(appendUrl));
+				httpPost.setEntity(new StringEntity(content));
+				return httpPost;
 			} catch (UnsupportedEncodingException e) {
 				return httpPost;
 			}
-			return httpPost;
-		} else if (httpRequest.getMethod().equalsIgnoreCase(HttpMethods.JSON)){
-			HttpPost httpPost = new HttpPost(httpRequest.getUrl());
-			
-			StringWriter jsonText = new StringWriter();
-			JsonWriter writer = new JsonWriter(jsonText);
-			try {
-				httpRequest.createJson(httpRequest.getContent(),"",writer);
-				httpPost.setEntity(new StringEntity(jsonText.toString()));
-			} catch (IOException e) {
-				return httpPost;
-			}
-			return httpPost;
 		} else {
 			throw new GdxRuntimeException("Android implementation of Net API can't support other HTTP methods yet.");
 		}

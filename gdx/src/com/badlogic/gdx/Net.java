@@ -19,6 +19,7 @@ package com.badlogic.gdx;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -244,8 +245,37 @@ public interface Net {
 			return (timeOut<=0)? 30000 : timeOut;
 		}
 
+		/** This function takes the set content and converts it into a string based on the request method. 
+		 * @param httpRequest An HttpRequest ready to be executed
+		 * @return String formatted in the style based on httpRequest.getMethod()
+		 * @throws IOException
+		 */
+		public String convertHttpRequest() {
+			if (this.getMethod().equalsIgnoreCase(HttpMethods.GET) || this.getMethod().equalsIgnoreCase(HttpMethods.POST)) {
+				Map<String,Object> content = this.getContent();
+				Set<String> keySet = content.keySet();
+				String appendUrl = "";
+				for (String name : keySet) {
+					appendUrl += name+"="+content.get(name)+"&";
+				}
+				return appendUrl;
+			} 
+			else if (this.getMethod().equalsIgnoreCase(HttpMethods.JSON)){
+				StringWriter jsonText = new StringWriter();
+				JsonWriter writer = new JsonWriter(jsonText);
+				
+				try {
+					this.createJson(this.getContent(), "", writer);
+				} catch (IOException e) {
+					return "";
+				}
+				return jsonText.toString();
+			}
+			return null;
+		}
+		
 		/** Run this to fill writer with JSON based on the content */
-		public void createJson (Object content, String name, JsonWriter writer) throws IOException {
+		private void createJson (Object content, String name, JsonWriter writer) throws IOException {
 			if(content instanceof Map){
 				if(name == "")
 					writer.object();

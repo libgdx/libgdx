@@ -125,7 +125,7 @@ public class LwjglNet implements Net {
 		}
 		
 		try {
-			String value = convertHttpRequest(httpRequest);
+			String value = httpRequest.convertHttpRequest();
 			String method = httpRequest.getMethod();
 			
 			URL url;
@@ -140,10 +140,10 @@ public class LwjglNet implements Net {
 			connection.setRequestMethod((method.equalsIgnoreCase(HttpMethods.JSON))? HttpMethods.POST : method);
 			
 			// Headers get set regardless of the method
-			Map<String,?> content = httpRequest.getHeaders();
+			Map<String,String> content = httpRequest.getHeaders();
 			Set<String> keySet = content.keySet();
 			for (String name : keySet) {
-				connection.addRequestProperty(name, (String)content.get(name));
+				connection.addRequestProperty(name, content.get(name));
 			}
 			
 			// Set Timeouts
@@ -192,26 +192,6 @@ public class LwjglNet implements Net {
 			httpResultListener.failed(e);
 			return;
 		}
-	}
-	
-	private String convertHttpRequest(HttpRequest httpRequest) throws IOException {
-		if (httpRequest.getMethod().equalsIgnoreCase(HttpMethods.GET) || httpRequest.getMethod().equalsIgnoreCase(HttpMethods.POST)) {
-			Map<String,Object> content = httpRequest.getContent();
-			Set<String> keySet = content.keySet();
-			String appendUrl = "";
-			for (String name : keySet) {
-				appendUrl += name+"="+content.get(name)+"&";
-			}
-			return appendUrl;
-		} 
-		else if (httpRequest.getMethod().equalsIgnoreCase(HttpMethods.JSON)){
-			StringWriter jsonText = new StringWriter();
-			JsonWriter writer = new JsonWriter(jsonText);
-			
-			httpRequest.createJson(httpRequest.getContent(), "", writer);
-			return jsonText.toString();
-		}
-		return "";
 	}
 	
 	@Override
