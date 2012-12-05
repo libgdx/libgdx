@@ -112,7 +112,10 @@ public class AndroidNet implements Net {
 
 	@Override
 	public void sendHttpRequest (HttpRequest httpRequest, final HttpResponseListener httpResultListener) {
-		if (httpRequest.getUrl() == null) throw new GdxRuntimeException("can't process a HTTP request without URL set");
+		if (httpRequest.getUrl() == null) { 
+			httpResultListener.failed(new GdxRuntimeException("can't process a HTTP request without URL set"));
+			return;
+		}
 
 		final HttpUriRequest httpClientRequest = getHttpClientRequest(httpRequest);
 
@@ -194,7 +197,7 @@ public class AndroidNet implements Net {
 			StringWriter jsonText = new StringWriter();
 			JsonWriter writer = new JsonWriter(jsonText);
 			try {
-				createJson(httpRequest.getContent(),"",writer);
+				httpRequest.createJson(httpRequest.getContent(),"",writer);
 				httpPost.setEntity(new StringEntity(jsonText.toString()));
 			} catch (IOException e) {
 				return httpPost;
@@ -205,34 +208,6 @@ public class AndroidNet implements Net {
 		}
 	}
 
-	private static void createJson(Object content, String name, JsonWriter writer) throws IOException {
-		if(content instanceof Map){
-			if(name == "")
-				writer.object();
-			else 
-				writer.object(name);
-			Set<String> keySet = ((Map<String,?>) content).keySet();
-			for(String key : keySet){
-				createJson(((Map)content).get(key), key, writer);
-			}
-			writer.pop();
-		} else if (content instanceof Object[]){
-			if(name == "")
-				writer.array();
-			else 
-				writer.array(name);
-			for(Object key : (Object[])content) {
-				createJson(key, "", writer);
-			}
-			writer.pop();
-		} else {
-			if(name == "")
-				writer.value(content);
-			else
-				writer.set(name, content);
-		}
-	}
-	
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
 		return new AndroidServerSocket(protocol, port, hints);

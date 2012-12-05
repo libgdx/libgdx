@@ -16,10 +16,12 @@
 
 package com.badlogic.gdx;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Future;
 
 import com.badlogic.gdx.Net.HttpRequest;
@@ -29,6 +31,7 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.JsonWriter;
 
 /** Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
  * communication.</p>
@@ -241,6 +244,34 @@ public interface Net {
 			return (timeOut<=0)? 30000 : timeOut;
 		}
 
+		/** Run this to fill writer with JSON based on the content */
+		public void createJson (Object content, String name, JsonWriter writer) throws IOException {
+			if(content instanceof Map){
+				if(name == "")
+					writer.object();
+				else 
+					writer.object(name);
+				Set<String> keySet = ((Map<String,?>) content).keySet();
+				for(String key : keySet){
+					createJson(((Map)content).get(key), key, writer);
+				}
+				writer.pop();
+			} else if (content instanceof Object[]){
+				if(name == "")
+					writer.array();
+				else 
+					writer.array(name);
+				for(Object key : (Object[])content) {
+					createJson(key, "", writer);
+				}
+				writer.pop();
+			} else {
+				if(name == "")
+					writer.value(content);
+				else
+					writer.set(name, content);
+			}
+		}
 	}
 
 	/** Listener to be able to do custom logic once the {@link HttpResponse} is ready to be processed, register it with
