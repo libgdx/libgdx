@@ -22,11 +22,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.StringWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Set;
@@ -35,14 +33,12 @@ import java.util.concurrent.Executors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Net.HttpMethods;
-import com.badlogic.gdx.Net.HttpResponse;
+import com.badlogic.gdx.StreamUtils;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.JsonWriter;
 
 public class LwjglNet implements Net {
 
@@ -143,30 +139,39 @@ public class LwjglNet implements Net {
 			connection.setRequestMethod(method);
 
 			// Headers get set regardless of the method
-			Map<String, String> content = httpRequest.getHeaders();
-			Set<String> keySet = content.keySet();
-			for (String name : keySet) {
-				connection.addRequestProperty(name, content.get(name));
-			}
+			Map<String, String> headers = httpRequest.getHeaders();
+			Set<String> keySet = headers.keySet();
+			for (String name : keySet)
+				connection.addRequestProperty(name, headers.get(name));
 
 			// Set Timeouts
 			connection.setConnectTimeout(httpRequest.getTimeOut());
 			connection.setReadTimeout(httpRequest.getTimeOut());
-			
-			// Set the content for POST (GET has the information embedded in the URL)
-			if (method.equalsIgnoreCase(HttpMethods.POST)) {
-				// we probably need to use the content as stream here instead of using it as a string.
-				String value = httpRequest.getContent();
-				OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
-				wr.write(value);
-				wr.flush();
-				wr.close();
-			}
 
 			executorService.submit(new Runnable() {
 				@Override
 				public void run () {
 					try {
+
+						// Set the content for POST (GET has the information embedded in the URL)
+						if (method.equalsIgnoreCase(HttpMethods.POST)) {
+							// we probably need to use the content as stream here instead of using it as a string.
+							String contentAsString = httpRequest.getContent();
+							InputStream contentAsStream = httpRequest.getContentStream();
+
+							OutputStream outputStream = connection.getOutputStream();
+							if (contentAsString != null) {
+								OutputStreamWriter writer = new OutputStreamWriter(outputStream);
+								writer.write(contentAsString);
+								writer.flush();
+								writer.close();
+							} else if (contentAsStream != null) {
+								StreamUtils.copyStream(contentAsStream, outputStream);
+								outputStream.flush();
+								outputStream.close();
+							}
+						}
+
 						connection.connect();
 
 						// post a runnable to sync the handler with the main thread

@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.ios;
 
 import cli.MonoTouch.Foundation.NSUrl;
 import cli.MonoTouch.UIKit.UIApplication;
+import cli.System.Uri;
+import cli.System.Net.HttpWebRequest;
 
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.ServerSocket;
@@ -25,19 +28,20 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 
 public class IOSNet implements Net {
-	
+
 	final UIApplication uiApp;
-	
-	public IOSNet(IOSApplication app) {
+
+	public IOSNet (IOSApplication app) {
 		uiApp = app.uiApp;
 	}
-	
+
 	@Override
 	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResultListener) {
-		// FIXME implement this
+// String url = httpRequest.getUrl();
+// HttpWebRequest httpWebRequest = new HttpWebRequest(new Uri(url));
 		throw new UnsupportedOperationException("Not implemented");
 	}
-	
+
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
 		return new IOSServerSocket(protocol, port, hints);
@@ -47,9 +51,9 @@ public class IOSNet implements Net {
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
 		return new IOSSocket(protocol, host, port, hints);
 	}
-	
+
 	@Override
-	public void openURI(String URI) {
+	public void openURI (String URI) {
 		uiApp.OpenUrl(new NSUrl(URI));
 	}
 }
