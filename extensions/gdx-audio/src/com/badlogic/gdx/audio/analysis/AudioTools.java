@@ -164,7 +164,7 @@ public class AudioTools {
 	static public void toFloat (short[] src, int offsetSrc, float[] dst, int offsetDst, int numBytes) {
 		float scale = 1.0f / Short.MAX_VALUE;
 		for (int i = offsetSrc, ii = offsetDst; i < numBytes; i++, ii++)
-			dst[i] = src[ii] * scale;
+			dst[ii] = src[i] * scale;
 	}
 	
 	/**
