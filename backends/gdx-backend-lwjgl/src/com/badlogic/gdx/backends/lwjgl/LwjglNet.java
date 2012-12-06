@@ -125,7 +125,8 @@ public class LwjglNet implements Net {
 		}
 		
 		try {
-			String value = httpRequest.convertHttpRequest();
+//			String value = httpRequest.convertHttpRequest();
+			String value = httpRequest.getContent();
 			String method = httpRequest.getMethod();
 			
 			URL url;
@@ -137,7 +138,7 @@ public class LwjglNet implements Net {
 			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
-			connection.setRequestMethod((method.equalsIgnoreCase(HttpMethods.JSON))? HttpMethods.POST : method);
+			connection.setRequestMethod(method);
 			
 			// Headers get set regardless of the method
 			Map<String,String> content = httpRequest.getHeaders();
@@ -147,8 +148,8 @@ public class LwjglNet implements Net {
 			}
 			
 			// Set Timeouts
-			connection.setConnectTimeout(httpRequest.getTimeout());
-			connection.setReadTimeout(httpRequest.getTimeout());
+			connection.setConnectTimeout(httpRequest.getTimeOut());
+			connection.setReadTimeout(httpRequest.getTimeOut());
 			
 			// Set the content for JSON or POST (GET has the information embedded in the URL)
 			if(!method.equalsIgnoreCase(HttpMethods.GET)) {
