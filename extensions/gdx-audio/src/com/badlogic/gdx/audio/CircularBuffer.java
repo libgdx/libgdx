@@ -18,6 +18,7 @@ package com.badlogic.gdx.audio;
 
 import com.badlogic.gdx.math.MathUtils;
 
+/** @author Nathan Sweet */
 public class CircularBuffer {
 	private final short[] buffer;
 	private int writePosition, readPosition;
