@@ -130,8 +130,14 @@ public class AndroidNet implements Net {
 
 		// Sets the timeout for time until TCP connection is established and timeout until first byte received to request timeout
 		// value
-		HttpConnectionParams.setConnectionTimeout(httpParams, httpRequest.getTimeOut());
-		HttpConnectionParams.setSoTimeout(httpParams, httpRequest.getTimeOut());
+		
+		int timeout = httpRequest.getTimeOut();
+		
+		if (timeout > 0) {
+			HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
+			HttpConnectionParams.setSoTimeout(httpParams, timeout);
+		}
+		
 		httpClient.setParams(httpParams);
 
 		executorService.submit(new Runnable() {

@@ -113,16 +113,18 @@ public interface Net {
 	 * <li><strong>url:</strong> the url</li>
 	 * <li><strong>headers:</strong> a map of the headers, setter can be called multiple times</li>
 	 * <li><strong>timeout:</strong> time spent trying to connect before giving up</li>
-	 * <li><strong>content:</strong> Map used for both POST, GET, or JSON.</li>
+	 * <li><strong>content:</strong> A string containing the data to be used when processing the HTTP request.</li>
 	 * </ul>
 	 * 
 	 * Abstracts the concept of a HTTP Request:
 	 * 
 	 * <pre>
+	 * Map<String, String> parameters = new HashMap<String, String>();
+	 * parameters.put("user", "myuser");
+	 * 
 	 * HttpRequest httpGet = new HttpRequest(HttpMethods.Get);
 	 * httpGet.setUrl("http://somewhere.net");
-	 * httpGet.setContent("user", "MyUsername");
-	 * httpGet.setContent("password", "P4ssw0rd!1234")
+	 * httpGet.setContent(HttpParametersUtils.convertHttpParameters(parameters));
 	 * ...
 	 * Gdx.net.sendHttpRequest (httpGet, new HttpResponseListener() {
 	 * 	public void handleHttpResponse(HttpResponse httpResponse) {
@@ -135,24 +137,13 @@ public interface Net {
 	 * 		//do stuff here based on the failed attempt
 	 * 	}
 	 * });
-	 * </pre>
-	 * 
-	 * PHP for POST should store values in $_POST,<br>
-	 * PHP for GET should store values in $_GET,<br>
-	 * PHP to retrieve JSON is as follows:
-	 * 
-	 * <pre>
-	 * $requestBody = file_get_contents('php://input');
-	 * $requestBody = json_decode($requestBody);
-	 * // and to access variable "user"
-	 * $requestBody->user
 	 * </pre> */
 	public static class HttpRequest {
 
 		private final String httpMethod;
 		private String url;
 		private Map<String, String> headers;
-		private int timeOut = -1;
+		private int timeOut = 0;
 		private String content;
 
 		/** Creates a new HTTP request with the specified HTTP method, see {@link HttpMethods}.
@@ -179,19 +170,14 @@ public interface Net {
 		/** Sets the content to be used in the HTTP request.
 		 * @param content A string encoded in the corresponding Content-Encoding set in the headers, with the data to send with the
 		 *           HTTP request. For example, in case of HTTP GET, the content is used as the query string of the GET while on a
-		 *           HTTP POST it is used to send the POST data.
-		 * 
-		 * <pre>
-		 * 
-		 * </pre> */
+		 *           HTTP POST it is used to send the POST data. */
 		public void setContent (String content) {
 			this.content = content;
 		}
 
-		/** Sets the time to wait for the HTTP request to be processed, use 0 block until it is done. The timeout defaults to 30000
-		 * milliseconds, and is used for both the timeout when establishing TCP connection, and the timeout until the first byte of
-		 * data is received.
-		 * @param timeOut the number of milliseconds to wait before giving up, 0 to block until the operation is done */
+		/** Sets the time to wait for the HTTP request to be processed, use 0 block until it is done. The timeout is used for both
+		 * the timeout when establishing TCP connection, and the timeout until the first byte of data is received.
+		 * @param timeOut the number of milliseconds to wait before giving up, 0 or negative to block until the operation is done */
 		public void setTimeOut (int timeOut) {
 			this.timeOut = timeOut;
 		}
