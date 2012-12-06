@@ -181,14 +181,21 @@ public class AndroidNet implements Net {
 
 		String method = httpRequest.getMethod();
 
+		String contentAsString = httpRequest.getContent();
 		if (method.equalsIgnoreCase(HttpMethods.GET)) {
-			return new HttpGet(URIUtils.resolve(URI.create(httpRequest.getUrl()), "?" + httpRequest.getContent()));
+			return new HttpGet(URIUtils.resolve(URI.create(httpRequest.getUrl()), "?" + contentAsString));
 		} else if (method.equalsIgnoreCase(HttpMethods.POST)) {
 			// process specific HTTP POST logic
 			HttpPost httpPost = new HttpPost(httpRequest.getUrl());
 
 			try {
-				httpPost.setEntity(new StringEntity(httpRequest.getContent()));
+				InputStream contentAsStream = httpRequest.getContentStream();
+				
+				if (contentAsString != null)
+					httpPost.setEntity(new StringEntity(contentAsString));
+				else if (contentAsStream != null)
+					httpPost.setEntity(new InputStreamEntity(contentAsStream, httpRequest.getContentLength()));
+				
 				return httpPost;
 			} catch (UnsupportedEncodingException e) {
 				return httpPost;

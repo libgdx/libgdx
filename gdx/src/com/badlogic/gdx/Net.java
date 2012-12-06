@@ -144,14 +144,16 @@ public interface Net {
 		private String url;
 		private Map<String, String> headers;
 		private int timeOut = 0;
+
 		private String content;
+		private InputStream contentStream;
+		private long contentLength;
 
 		/** Creates a new HTTP request with the specified HTTP method, see {@link HttpMethods}.
 		 * @param httpMethod This is the HTTP method for the request, see {@link HttpMethods} */
 		public HttpRequest (String httpMethod) {
 			this.httpMethod = httpMethod;
 			this.headers = new HashMap<String, String>();
-			this.content = "";
 		}
 
 		/** Sets the URL of the HTTP request.
@@ -174,6 +176,13 @@ public interface Net {
 		 *           HTTP POST it is used to send the POST data. */
 		public void setContent (String content) {
 			this.content = content;
+		}
+
+		/** Sets the content as a stream to be used for a POST for example, to transmit custom data.
+		 * @param contentStream The stream with the content data. */
+		public void setContent (InputStream contentStream, long contentLength) {
+			this.contentStream = contentStream;
+			this.contentLength = contentLength;
 		}
 
 		/** Sets the time to wait for the HTTP request to be processed, use 0 block until it is done. The timeout is used for both
@@ -202,6 +211,16 @@ public interface Net {
 		/** Returns the content string to be used for the HTTP request. */
 		public String getContent () {
 			return content;
+		}
+
+		/** Returns the content stream. */
+		public InputStream getContentStream () {
+			return contentStream;
+		}
+
+		/** Returns the content length in case content is a stream. */
+		public long getContentLength () {
+			return contentLength;
 		}
 
 		/** Returns a Map<String, String> with the headers of the HTTP request. */
