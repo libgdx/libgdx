@@ -151,6 +151,7 @@ public interface Net {
 		public HttpRequest (String httpMethod) {
 			this.httpMethod = httpMethod;
 			this.headers = new HashMap<String, String>();
+			this.content = "";
 		}
 
 		/** Sets the URL of the HTTP request.

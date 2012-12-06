@@ -117,21 +117,25 @@ public class LwjglNet implements Net {
 	}
 
 	@Override
-	public void sendHttpRequest (HttpRequest httpRequest, final HttpResponseListener httpResultListener) {
+	public void sendHttpRequest (final HttpRequest httpRequest, final HttpResponseListener httpResultListener) {
 		if (httpRequest.getUrl() == null) {
 			httpResultListener.failed(new GdxRuntimeException("can't process a HTTP request without URL set"));
 			return;
 		}
 
 		try {
-			String value = httpRequest.getContent();
-			String method = httpRequest.getMethod();
+			final String method = httpRequest.getMethod();
 
 			URL url;
-			if (method.equalsIgnoreCase(HttpMethods.GET))
-				url = new URL(httpRequest.getUrl() + "?" + value);
-			else
+
+			if (method.equalsIgnoreCase(HttpMethods.GET)) {
+				String queryString = "";
+				String value = httpRequest.getContent();
+				if (value != null && !"".equals(value)) queryString = "?" + value;
+				url = new URL(httpRequest.getUrl() + queryString);
+			} else {
 				url = new URL(httpRequest.getUrl());
+			}
 
 			final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			connection.setDoOutput(true);
@@ -148,9 +152,11 @@ public class LwjglNet implements Net {
 			// Set Timeouts
 			connection.setConnectTimeout(httpRequest.getTimeOut());
 			connection.setReadTimeout(httpRequest.getTimeOut());
-
-			// Set the content for JSON or POST (GET has the information embedded in the URL)
-			if (!method.equalsIgnoreCase(HttpMethods.GET)) {
+			
+			// Set the content for POST (GET has the information embedded in the URL)
+			if (method.equalsIgnoreCase(HttpMethods.POST)) {
+				// we probably need to use the content as stream here instead of using it as a string.
+				String value = httpRequest.getContent();
 				OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
 				wr.write(value);
 				wr.flush();
@@ -162,6 +168,7 @@ public class LwjglNet implements Net {
 				public void run () {
 					try {
 						connection.connect();
+
 						// post a runnable to sync the handler with the main thread
 						Gdx.app.postRunnable(new Runnable() {
 							@Override
@@ -183,6 +190,8 @@ public class LwjglNet implements Net {
 								connection.disconnect();
 							}
 						});
+					} finally {
+						connection.disconnect();
 					}
 				}
 			});
