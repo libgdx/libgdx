@@ -130,8 +130,8 @@ public class AndroidNet implements Net {
 
 		// Sets the timeout for time until TCP connection is established and timeout until first byte received to request timeout
 		// value
-		HttpConnectionParams.setConnectionTimeout(httpParams, httpRequest.getTimeout());
-		HttpConnectionParams.setSoTimeout(httpParams, httpRequest.getTimeout());
+		HttpConnectionParams.setConnectionTimeout(httpParams, httpRequest.getTimeOut());
+		HttpConnectionParams.setSoTimeout(httpParams, httpRequest.getTimeOut());
 		httpClient.setParams(httpParams);
 
 		executorService.submit(new Runnable() {
@@ -174,29 +174,17 @@ public class AndroidNet implements Net {
 	}
 
 	private HttpUriRequest convertHttpClientRequest (HttpRequest httpRequest) {
-		String content = httpRequest.convertHttpRequest();
 
 		String method = httpRequest.getMethod();
 
 		if (method.equalsIgnoreCase(HttpMethods.GET)) {
-
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-
-			Map<String, Object> httpContent = httpRequest.getContent();
-
-			// adds all the content parameters to the query string of the HTTP GET.
-			for (String key : httpContent.keySet())
-				params.add(new BasicNameValuePair(key, httpContent.get(key).toString()));
-
-			// encodes the parameters as part of the HTTP GET URL.
-			String encodedParams = URLEncodedUtils.format(params, "UTF-8");
-			return new HttpGet(URIUtils.resolve(URI.create(httpRequest.getUrl()), "?" + encodedParams));
-		} else if (method.equalsIgnoreCase(HttpMethods.POST) || method.equalsIgnoreCase(HttpMethods.JSON)) {
+			return new HttpGet(URIUtils.resolve(URI.create(httpRequest.getUrl()), "?" + httpRequest.getContent()));
+		} else if (method.equalsIgnoreCase(HttpMethods.POST)) {
 			// process specific HTTP POST logic
 			HttpPost httpPost = new HttpPost(httpRequest.getUrl());
 
 			try {
-				httpPost.setEntity(new StringEntity(content));
+				httpPost.setEntity(new StringEntity(httpRequest.getContent()));
 				return httpPost;
 			} catch (UnsupportedEncodingException e) {
 				return httpPost;
