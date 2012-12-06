@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.backends.gwt;
 
 import java.io.InputStream;
@@ -25,17 +26,17 @@ import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
 
 public class GwtNet implements Net {
-	
+
 	private final class HttpClientResponse implements HttpResponse {
-		
+
 		private Response response;
 		private HttpStatus status;
-		
-		public HttpClientResponse(Response response) {
+
+		public HttpClientResponse (Response response) {
 			this.response = response;
 			this.status = new HttpStatus(response.getStatusCode());
 		}
-		
+
 		@Override
 		public byte[] getResult () {
 			return null;
@@ -55,39 +56,38 @@ public class GwtNet implements Net {
 		public HttpStatus getStatus () {
 			return status;
 		}
-		
+
 	}
-	
+
 	@Override
 	public void sendHttpRequest (HttpRequest httpRequest, final HttpResponseListener httpResultListener) {
 		if (httpRequest.getUrl() == null) {
 			httpResultListener.failed(new GdxRuntimeException("can't process a HTTP request without URL set"));
 			return;
 		}
-		
-		final boolean is_get = (httpRequest.getMethod()==HttpMethods.GET);
+
+		final boolean is_get = (httpRequest.getMethod() == HttpMethods.GET);
 		final String value = httpRequest.getContent();
-		
-		final RequestBuilder builder = is_get? new RequestBuilder(RequestBuilder.GET, httpRequest.getUrl()+"?"+value) : 
-			new RequestBuilder(RequestBuilder.POST, httpRequest.getUrl());
-		
-		Map<String,String> content = httpRequest.getHeaders();
+
+		final RequestBuilder builder = is_get ? new RequestBuilder(RequestBuilder.GET, httpRequest.getUrl() + "?" + value)
+			: new RequestBuilder(RequestBuilder.POST, httpRequest.getUrl());
+
+		Map<String, String> content = httpRequest.getHeaders();
 		Set<String> keySet = content.keySet();
 		for (String name : keySet) {
 			builder.setHeader(name, content.get(name));
 		}
-		
+
 		builder.setTimeoutMillis(httpRequest.getTimeOut());
-		
-	
-		try {		
+
+		try {
 			// post a runnable to sync the handler with the main thread
 			Gdx.app.postRunnable(new Runnable() {
 				@Override
 				public void run () {
 					try {
-						builder.sendRequest(is_get? null : value, new RequestCallback() {
-							
+						builder.sendRequest(is_get ? null : value, new RequestCallback() {
+
 							@Override
 							public void onResponseReceived (Request request, Response response) {
 								httpResultListener.handleHttpResponse(new HttpClientResponse(response));
@@ -113,7 +113,7 @@ public class GwtNet implements Net {
 			});
 		}
 	}
-	
+
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
 		throw new UnsupportedOperationException("Not implemented");
@@ -123,9 +123,9 @@ public class GwtNet implements Net {
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
 		throw new UnsupportedOperationException("Not implemented");
 	}
-	
+
 	@Override
-	public void openURI(String URI) {
+	public void openURI (String URI) {
 		Window.open(URI, "_blank", null);
 	}
 }
