@@ -260,8 +260,8 @@ public class ScrollPane extends WidgetGroup {
 		boolean panning = flickScrollListener.getGestureDetector().isPanning();
 
 		if (fadeAlpha > 0 && fadeScrollBars && !panning && !touchScrollH && !touchScrollV) {
-			fadeDelay -= fadeDelaySeconds * delta;
-			if (fadeDelay <= 0) fadeAlpha = Math.max(0, fadeAlpha - fadeAlphaSeconds * delta);
+			fadeDelay -= delta;
+			if (fadeDelay <= 0) fadeAlpha = Math.max(0, fadeAlpha - delta);
 		}
 
 		if (flingTimer > 0) {

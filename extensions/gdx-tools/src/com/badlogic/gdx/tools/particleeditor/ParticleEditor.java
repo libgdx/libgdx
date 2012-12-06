@@ -386,7 +386,6 @@ public class ParticleEditor extends JFrame {
 				if (enabled) {
 					if (emitter.getSprite() != null) emitter.draw(spriteBatch, delta);
 					activeCount += emitter.getActiveCount();
-					if (emitter.isContinuous()) complete = false;
 					if (!emitter.isComplete()) complete = false;
 				}
 			}

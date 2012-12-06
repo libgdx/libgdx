@@ -16,10 +16,13 @@
 
 package com.badlogic.gdx;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Future;
 
 import com.badlogic.gdx.Net.HttpRequest;
@@ -29,6 +32,7 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.JsonWriter;
 
 /** Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
  * communication.</p>
@@ -90,36 +94,100 @@ public interface Net {
 		HttpStatus getStatus ();
 	}
 
-	/** Provides common HTTP methods to use when creating a {@link HttpRequest}. */
+	/** Provides common HTTP methods to use when creating a {@link HttpRequest}. 
+	 * <ul><li>GET</li><li>POST</li></ul>*/
 	public static interface HttpMethods {
 
 		public static final String GET = "GET";
 
 		public static final String POST = "POST";
+		
+		public static final String JSON = "JSON";
 
 	}
 
-	/** Abstracts the concept of a HTTP Request:
+	/** 
+	 * Contains getters and setters for the following parameters: 
+	 * <ul><li><strong>httpMethod:</strong> GET or POST are most common, can use {@link Net.HttpMethods HttpMethods} for static references</li>
+	 * <li><strong>url:</strong> the url</li>
+	 * <li><strong>headers:</strong> a map of the headers, setter can be called multiple times</li>
+	 * <li><strong>timeout:</strong> time spent trying to connect before giving up</li>
+	 * <li><strong>content:</strong> Map used for both POST, GET, or JSON. </li></ul>
+	 * 
+	 * Abstracts the concept of a HTTP Request:
 	 * 
 	 * <pre>
 	 * HttpRequest httpGet = new HttpRequest(HttpMethods.Get);
 	 * httpGet.setUrl("http://somewhere.net");
+	 * httpGet.setContent("user", "MyUsername");
+	 * httpGet.setContent("password", "P4ssw0rd!1234")
 	 * ...
-	 * HttpResponse httpResponse = Gdx.net.sendHttpRequest (httpGet);
-	 * </pre> */
+	 * Gdx.net.sendHttpRequest (httpGet, new HttpResponseListener() {
+	 * 	public void handleHttpResponse(HttpResponse httpResponse) {
+	 * 		status = httpResponse.getResultAsString();
+	 * 		//do stuff here based on response
+	 * 	}
+	 * 
+	 * 	public void failed(Throwable t) {
+	 * 		status = "failed";
+	 * 		//do stuff here based on the failed attempt
+	 * 	}
+	 * });
+	 * </pre> 
+	 * 
+	 * PHP for POST should store values in $_POST,<br>
+	 * PHP for GET should store values in $_GET,<br>
+	 * PHP to retrieve JSON is as follows:
+	 * <pre>
+	 * $requestBody = file_get_contents('php://input');
+	 * $requestBody = json_decode($requestBody);
+	 * // and to access variable "user"
+	 * $requestBody->user
+	 * </pre>*/
 	public static class HttpRequest {
 
 		private final String httpMethod;
 		private String url;
 		private Map<String, String> headers;
-		private long timeOut;
+		private int timeOut = -1;
 
-		private byte[] content;
-		private InputStream contentStream;
-
+		private Map<String, Object> content;
+		
+		/**
+		 * When this is created, if POST or GET are selected as the httpMethod, this will set up the following default parameters:
+		 * <br><br><strong>POST:</strong>
+		 * <br><i>headers</i> - Accept=application/x-www-form-urlencoded
+		 * <br><i>headers</i> - Content-Type=application/x-www-form-urlencoded
+		 * <br><i>timeout</i> - 30000 milliseconds (30 seconds)
+		 * <br><br><strong>JSON:</strong>
+		 * <br><i>headers</i> - Accept=application/json
+		 * <br><i>headers</i> - Content-Type=application/json
+		 * <br><i>timeout</i> - 30000 milliseconds (30 seconds)
+		 * <br><br><strong>GET:</strong>
+		 * <br><i>headers</i> - Content-Type=text/html; charset=UTF-8
+		 * <br><i>timeout</i> - 30000 milliseconds (30 seconds)
+		 * <br><br>
+		 * @param httpMethod	This is the method for the request, usually HttpMethods.POST or HttpMethods.GET */
 		public HttpRequest (String httpMethod) {
 			this.httpMethod = httpMethod;
 			this.headers = new HashMap<String, String>();
+			this.content = new HashMap<String, Object>();
+			
+			// Setting the default parameters for POST, JSON, and GET
+			if(this.httpMethod == HttpMethods.POST) {
+				setHeader("Accept", "application/x-www-form-urlencoded");
+            setHeader("Content-type", "application/x-www-form-urlencoded");
+            setTimeOut(30000);
+			} 
+			else if(this.httpMethod == HttpMethods.JSON) {
+				setHeader("Accept", "application/json");
+            setHeader("Content-type", "application/json");
+            setTimeOut(30000);
+			}
+			else if(this.httpMethod == HttpMethods.GET){
+				setHeader("Content-type", "text/html; charset=UTF-8");
+            setTimeOut(30000);
+			}
 		}
 
 		/** Sets the URL of the HTTP request.
@@ -127,7 +195,7 @@ public interface Net {
 		public void setUrl (String url) {
 			this.url = url;
 		}
-
+		
 		/** Sets a header to this HTTP request. Headers definition could be found at <a
 		 * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP/1.1: Header Field Definitions</a> document.
 		 * @param name the name of the header.
@@ -136,21 +204,19 @@ public interface Net {
 			headers.put(name, value);
 		}
 
-		/** In case the HttpRequest method is POST you can set the content to send with it.
-		 * @param content The content to send with the HTTP POST. */
-		public void setContent (byte[] content) {
-			this.content = content;
+		/** Adds name->value to the content. Can be called multiple times. 
+		 * @param name the name of the content, Example: "password"
+		 * @param value the value of the content, Example: "P4ssw0rd!1234"
+		 */
+		public void setContent (String name, Object value) {
+			content.put(name, value);
 		}
-
-		/** In case the HttpRequest method is POST you can set the content to send with it.
-		 * @param contentStream An {@link InputStream} containing the data to send with the HTTP POST request. */
-		public void setContent (InputStream contentStream) {
-			this.contentStream = contentStream;
-		}
-
-		/** Sets the time to wait for the HTTP request to be processed, use 0 block until it is done.
+		
+		/** Sets the time to wait for the HTTP request to be processed, use 0 block until it is done. The timeout defaults
+		 * to 30000 milliseconds, and is used for both the timeout when establishing TCP connection, and the timeout until
+		 * the first byte of data is received. 
 		 * @param timeOut the number of milliseconds to wait before giving up, 0 to block until the operation is done */
-		public void setTimeOut (long timeOut) {
+		public void setTimeOut (int timeOut) {
 			this.timeOut = timeOut;
 		}
 		
@@ -168,21 +234,78 @@ public interface Net {
 			return url;
 		}
 
-		/** Returns the content as byte[], if it was set. */
-		public byte[] getContent () {
+		/** Returns the content as a HashMap<String,Object> */
+		public Map<String,Object> getContent () {
 			return content;
-		}
-
-		/** Returns the content as stream, if it was set. */
-		public InputStream getContentStream () {
-			return contentStream;
 		}
 
 		/** Returns a Map<String, String> with the headers of the HTTP request. */
 		public Map<String, String> getHeaders () {
 			return headers;
 		}
+		
+		/** Returns the timeOut set for this httpRequest. If not set, defaults to 30000 milliseconds */
+		public int getTimeout () {
+			return (timeOut<=0)? 30000 : timeOut;
+		}
 
+		/** This function takes the set content and converts it into a string based on the request method. 
+		 * @param httpRequest An HttpRequest ready to be executed
+		 * @return String formatted in the style based on httpRequest.getMethod()
+		 * @throws IOException
+		 */
+		public String convertHttpRequest() {
+			if (this.getMethod().equalsIgnoreCase(HttpMethods.GET) || this.getMethod().equalsIgnoreCase(HttpMethods.POST)) {
+				Map<String,Object> content = this.getContent();
+				Set<String> keySet = content.keySet();
+				String appendUrl = "";
+				for (String name : keySet) {
+					appendUrl += name+"="+content.get(name)+"&";
+				}
+				return appendUrl;
+			} 
+			else if (this.getMethod().equalsIgnoreCase(HttpMethods.JSON)){
+				StringWriter jsonText = new StringWriter();
+				JsonWriter writer = new JsonWriter(jsonText);
+				
+				try {
+					this.createJson(this.getContent(), "", writer);
+				} catch (IOException e) {
+					return "";
+				}
+				return jsonText.toString();
+			}
+			return null;
+		}
+		
+		/** Run this to fill writer with JSON based on the content */
+		private void createJson (Object content, String name, JsonWriter writer) throws IOException {
+			if(content instanceof Map){
+				if(name == "")
+					writer.object();
+				else 
+					writer.object(name);
+				Set<String> keySet = ((Map<String,?>) content).keySet();
+				for(String key : keySet){
+					createJson(((Map)content).get(key), key, writer);
+				}
+				writer.pop();
+			} else if (content instanceof Object[]){
+				if(name == "")
+					writer.array();
+				else 
+					writer.array(name);
+				for(Object key : (Object[])content) {
+					createJson(key, "", writer);
+				}
+				writer.pop();
+			} else {
+				if(name == "")
+					writer.value(content);
+				else
+					writer.set(name, content);
+			}
+		}
 	}
 
 	/** Listener to be able to do custom logic once the {@link HttpResponse} is ready to be processed, register it with

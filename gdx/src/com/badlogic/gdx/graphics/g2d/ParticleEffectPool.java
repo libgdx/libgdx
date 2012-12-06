@@ -41,6 +41,13 @@ public class ParticleEffectPool extends Pool<PooledEffect> {
 		PooledEffect (ParticleEffect effect) {
 			super(effect);
 		}
+		
+		
+
+		@Override
+		public void reset () {
+			super.reset();
+		}
 
 		public void free () {
 			ParticleEffectPool.this.free(this);

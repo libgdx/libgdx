@@ -274,7 +274,9 @@ public class Mesh implements Disposable {
 	 * 
 	 * @param shader the shader (does not unbind the shader) */
 	public void unbind (ShaderProgram shader) {
-		if (!Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
+		if (!Gdx.graphics.isGL20Available()) {
+			throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
+		}
 
 		vertices.unbind(shader);
 		if (indices.getNumIndices() > 0) indices.unbind();

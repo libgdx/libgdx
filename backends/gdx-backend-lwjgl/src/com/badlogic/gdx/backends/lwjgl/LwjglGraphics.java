@@ -16,14 +16,6 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import java.awt.Canvas;
-import java.awt.Toolkit;
-import java.nio.ByteBuffer;
-
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.PixelFormat;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.GL10;
@@ -34,6 +26,14 @@ import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.awt.Canvas;
+import java.awt.Toolkit;
+import java.nio.ByteBuffer;
+
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.PixelFormat;
 
 /** An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner */
@@ -207,18 +207,22 @@ public class LwjglGraphics implements Graphics {
 				Display.destroy();
 				try {
 					Display.create(new PixelFormat());
-					if (getDesktopDisplayMode().bitsPerPixel == 16) {
-						bufferFormat = new BufferFormat(5, 6, 5, 0, 8, 0, 0, false);
-					}
-					if (getDesktopDisplayMode().bitsPerPixel == 24) {
-						bufferFormat = new BufferFormat(8, 8, 8, 0, 8, 0, 0, false);
-					}
-					if (getDesktopDisplayMode().bitsPerPixel == 32) {
-						bufferFormat = new BufferFormat(8, 8, 8, 8, 8, 0, 0, false);
-					}
 				} catch (Exception ex3) {
-					if (ex3.getMessage().contains("Pixel format not accelerated"))
-						throw new GdxRuntimeException("OpenGL is not supported by the video driver.", ex3);
+					try {
+						Display.create();
+					} catch (Exception ex4) {
+						if (ex4.getMessage().contains("Pixel format not accelerated"))
+							throw new GdxRuntimeException("OpenGL is not supported by the video driver.", ex4);
+					}
+				}
+				if (getDesktopDisplayMode().bitsPerPixel == 16) {
+					bufferFormat = new BufferFormat(5, 6, 5, 0, 8, 0, 0, false);
+				}
+				if (getDesktopDisplayMode().bitsPerPixel == 24) {
+					bufferFormat = new BufferFormat(8, 8, 8, 0, 8, 0, 0, false);
+				}
+				if (getDesktopDisplayMode().bitsPerPixel == 32) {
+					bufferFormat = new BufferFormat(8, 8, 8, 8, 8, 0, 0, false);
 				}
 			}
 		}

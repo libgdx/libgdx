@@ -28,12 +28,13 @@ import com.badlogic.gdx.tests.box2d.Box2DTest;
 import com.badlogic.gdx.tests.bullet.BulletTest;
 import com.badlogic.gdx.tests.bullet.ConstraintsTest;
 import com.badlogic.gdx.tests.bullet.MeshShapeTest;
+import com.badlogic.gdx.tests.bullet.RayCastTest;
 import com.badlogic.gdx.tests.bullet.ShootTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** @author xoppa */
 public class BulletTestCollection extends GdxTest implements InputProcessor, GestureListener {
-	private final BulletTest[] tests = {new ShootTest(), new ConstraintsTest(), new MeshShapeTest()};
+	private final BulletTest[] tests = {new ShootTest(), new ConstraintsTest(), new MeshShapeTest(), new RayCastTest()};
 	
 	private int testIndex = 0;
 	

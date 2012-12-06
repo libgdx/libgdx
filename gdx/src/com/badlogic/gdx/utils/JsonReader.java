@@ -19,12 +19,12 @@
 
 package com.badlogic.gdx.utils;
 
+import com.badlogic.gdx.files.FileHandle;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-
-import com.badlogic.gdx.files.FileHandle;
 
 /** Lightweight JSON parser.<br>
  * <br>
@@ -398,7 +398,7 @@ public class JsonReader {
 				}
 			}
 
-			// line 202 "JsonReader.rl"
+			// line 203 "JsonReader.rl"
 
 		} catch (RuntimeException ex) {
 			parseRuntimeEx = ex;
@@ -495,9 +495,9 @@ public class JsonReader {
 
 	private static byte[] init__json_trans_targs_0 () {
 		return new byte[] {1, 2, 77, 5, 76, 77, 81, 86, 90, 76, 1, 78, 77, 77, 0, 76, 4, 3, 76, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0,
-			78, 0, 79, 0, 8, 8, 80, 0, 80, 0, 9, 10, 18, 17, 19, 18, 94, 9, 20, 18, 18, 0, 12, 48, 11, 12, 48, 11, 12, 13, 12, 0,
+			78, 0, 79, 0, 8, 8, 80, 0, 80, 0, 9, 10, 18, 17, 19, 18, 94, 9, 18, 18, 18, 0, 12, 48, 11, 12, 48, 11, 12, 13, 12, 0,
 			13, 14, 27, 28, 16, 27, 35, 40, 44, 16, 13, 29, 27, 27, 0, 16, 26, 15, 16, 26, 15, 16, 17, 94, 16, 0, 17, 10, 18, 19,
-			18, 94, 17, 20, 18, 18, 0, 12, 0, 13, 0, 0, 12, 18, 20, 0, 12, 21, 13, 23, 23, 12, 20, 0, 22, 0, 12, 13, 23, 23, 12, 22,
+			18, 94, 17, 18, 18, 18, 0, 12, 0, 13, 0, 0, 12, 18, 20, 0, 12, 21, 13, 23, 23, 12, 20, 0, 22, 0, 12, 13, 23, 23, 12, 22,
 			0, 24, 24, 25, 0, 25, 0, 12, 13, 12, 25, 0, 15, 15, 15, 15, 15, 15, 15, 15, 0, 16, 17, 0, 0, 94, 16, 27, 29, 0, 16, 17,
 			30, 32, 32, 94, 16, 29, 0, 31, 0, 16, 17, 32, 32, 94, 16, 31, 0, 33, 33, 34, 0, 34, 0, 16, 17, 94, 16, 34, 0, 16, 17, 0,
 			0, 36, 94, 16, 27, 16, 17, 0, 0, 37, 94, 16, 27, 16, 17, 0, 0, 38, 94, 16, 27, 16, 17, 0, 0, 39, 94, 16, 27, 16, 17, 0,
@@ -556,7 +556,7 @@ public class JsonReader {
 	static final int json_en_array = 49;
 	static final int json_en_main = 1;
 
-	// line 226 "JsonReader.rl"
+	// line 227 "JsonReader.rl"
 
 	private final Array elements = new Array(8);
 	private Object root, current;

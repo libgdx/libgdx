@@ -25,9 +25,9 @@ import com.badlogic.gdx.utils.Clipboard;
  * </p>
  * 
  * <p>
- * An application can either be a desktop application JoglApplication, LwjglApplication found in gdx-backends-jogl.jar and
- * gdx-backends-lwjgl.jar respectively), or an Android application AndroidApplication found in gdx-backends-android.jar). Each
- * application class has it's own startup and initialization methods. Please refer to their documentation for more information.
+ * An application can either be a desktop application (LwjglApplication found in gdx-backends-lwjgl.jar), or an Android
+ * application (AndroidApplication found in gdx-backends-android.jar). Each application class has it's own startup and
+ * initialization methods. Please refer to their documentation for more information.
  * </p>
  * 
  * <p>
@@ -112,9 +112,9 @@ public interface Application {
 
 	/** @return the {@link Files} instance */
 	public Files getFiles ();
-	
+
 	/** @return the {@link Net} instance */
-	public Net getNet();
+	public Net getNet ();
 
 	/** Logs a message to the console or logcat */
 	public void log (String tag, String message);

@@ -206,7 +206,8 @@ public class Group extends Actor implements Cullable {
 	protected void childrenChanged () {
 	}
 
-	/** Adds an actor as a child of this group. The actor is first removed from its parent group, if any. */
+	/** Adds an actor as a child of this group. The actor is first removed from its parent group, if any.
+	 * @see #remove() */
 	public void addActor (Actor actor) {
 		actor.remove();
 		children.add(actor);

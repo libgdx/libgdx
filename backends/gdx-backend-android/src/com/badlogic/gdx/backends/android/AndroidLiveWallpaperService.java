@@ -43,13 +43,13 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 
 	@Override
 	public Engine onCreateEngine () {
-		return new AndroidWallpaperEngine(createListener(), createConfig());
+		return new AndroidWallpaperEngine();
 	}
 	
 	/**
 	 * @return a new {@link ApplicationListener} that implements the live wallpaper
 	 */
-	public abstract ApplicationListener createListener(); 
+	public abstract ApplicationListener createListener(boolean isPreview); 
 	
 	/**
 	 * @return a new {@link AndroidApplicationConfiguration} that specifies the config to be used for the live wall paper
@@ -75,19 +75,12 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 	}
 	
 	public class AndroidWallpaperEngine extends Engine {
-		protected final AndroidLiveWallpaper app;
-		protected final ApplicationListener listener;
+		protected AndroidLiveWallpaper app;
+		protected ApplicationListener listener;
 		protected GLBaseSurfaceViewLW view;
 
-		public AndroidWallpaperEngine (ApplicationListener listener, AndroidApplicationConfiguration config) {
+		public AndroidWallpaperEngine () {
 			if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.this.TAG, " > MyEngine() " + hashCode());
-			this.app = new AndroidLiveWallpaper(AndroidLiveWallpaperService.this, this);
-			this.app.initialize(listener, config);
-			this.listener = listener;
-			this.view = ((AndroidGraphicsLiveWallpaper)app.getGraphics()).getView();
-
-			if (config.getTouchEventsForLiveWallpaper && Integer.parseInt(android.os.Build.VERSION.SDK) < 9)
-				this.setTouchEventsEnabled(true);
 		}
 
 		@Override
@@ -112,16 +105,24 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			runningEngines++;
 			if (AndroidLiveWallpaperService.DEBUG) Log.d(TAG, " > onCreate() " + hashCode() + ", running: " + runningEngines);
 			super.onCreate(surfaceHolder);
-			
-			// wallpaperListener.setIsPreview(this.isPreview());
+			this.app = new AndroidLiveWallpaper(AndroidLiveWallpaperService.this, this);
+			AndroidApplicationConfiguration config = createConfig();
+			listener = createListener(isPreview());
+			this.app.initialize(listener, config);
+			this.view = ((AndroidGraphicsLiveWallpaper)app.getGraphics()).getView();
+
+			if (config.getTouchEventsForLiveWallpaper && Integer.parseInt(android.os.Build.VERSION.SDK) < 9)
+				this.setTouchEventsEnabled(true);
 		}
 
 		@Override
 		public void onDestroy () {
 			runningEngines--;
 			if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.this.TAG, " > onDestroy() " + hashCode() + ", running: " + runningEngines);
-//			app.onDestroy();
 			view.onDestroy();
+			if (listener != null)
+				listener.dispose();
+			app.onDestroy();
 			super.onDestroy();
 		}
 

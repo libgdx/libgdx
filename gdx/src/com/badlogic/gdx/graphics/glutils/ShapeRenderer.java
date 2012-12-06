@@ -24,8 +24,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** Renders points, lines, rectangles, filled rectangles and boxes. This class is not meant to be used for performance sensitive
- * applications but more oriented towards debugging.</p>
+/** Renders points, lines, rectangles, filled rectangles and boxes.</p>
  * 
  * This class works with OpenGL ES 1.x and 2.0. In its base configuration a 2D orthographic projection with the origin in the
  * lower left corner is used. Units are given in screen pixels.</p>
@@ -89,7 +88,7 @@ public class ShapeRenderer {
 		FilledTriangle(GL10.GL_TRIANGLES), //
 		Cone(GL10.GL_LINES), //
 		FilledCone(GL10.GL_TRIANGLES), //
-		Curve(GL10.GL_LINE_STRIP), //
+		Curve(GL10.GL_LINES), //
 		;
 
 		private final int glType;
@@ -267,16 +266,9 @@ public class ShapeRenderer {
 	public void curve (float x1, float y1, float cx1, float cy1, float cx2, float cy2, float x2, float y2, int segments) {
 		if (currType != ShapeType.Curve) throw new GdxRuntimeException("Must call begin(ShapeType.Curve)");
 		checkDirty();
-		checkFlush(segments + 1);
+		checkFlush(segments * 2 + 2);
 
 		// Algorithm from: http://www.antigrain.com/research/bezier_interpolation/index.html#PAGE_BEZIER_INTERPOLATION
-		float dx1 = cx1 - x1;
-		float dy1 = cy1 - y1;
-		float dx2 = cx2 - cx1;
-		float dy2 = cy2 - cy1;
-		float dx3 = x2 - cx2;
-		float dy3 = y2 - cy2;
-
 		float subdiv_step = 1f / segments;
 		float subdiv_step2 = subdiv_step * subdiv_step;
 		float subdiv_step3 = subdiv_step * subdiv_step * subdiv_step;
@@ -304,9 +296,9 @@ public class ShapeRenderer {
 		float dddfx = tmp2x * pre5;
 		float dddfy = tmp2y * pre5;
 
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x1, y1, 0);
 		while (segments-- > 0) {
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(fx, fy, 0);
 			fx += dfx;
 			fy += dfy;
 			dfx += ddfx;
@@ -316,6 +308,8 @@ public class ShapeRenderer {
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(fx, fy, 0);
 		}
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(fx, fy, 0);
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x2, y2, 0);
 	}
@@ -511,7 +505,7 @@ public class ShapeRenderer {
 
 	/** Calls {@link #filledCircle(float, float, float, int)} by estimating the number of segments needed for a smooth circle. */
 	public void filledCircle (float x, float y, float radius) {
-		filledCircle(x, y, radius, (int)(4 * (float)Math.sqrt(radius)));
+		filledCircle(x, y, radius, (int)(6 * (float)Math.cbrt(radius)));
 	}
 
 	public void filledCircle (float x, float y, float radius, int segments) {

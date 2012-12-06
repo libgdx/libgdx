@@ -59,15 +59,18 @@ public class MeshShapeTest extends BaseBulletTest {
 
 		final Mesh sceneMesh = ObjLoader.loadObj(Gdx.files.internal("data/scene.obj").read(), true, true); // we need indices for this test
 		
-		world.constructors.put("sphere", new Entity.ConstructInfo(sphereMesh, 1f, new btSphereShape(sphereMesh.calculateBoundingBox().getDimensions().x * 0.5f)));
+		world.constructors.put("sphere", new Entity.ConstructInfo(sphereMesh, 0.25f, new btSphereShape(sphereMesh.calculateBoundingBox().getDimensions().x * 0.5f)));
 		world.constructors.put("scene", new Entity.ConstructInfo(sceneMesh, 0f, createMeshShape(sceneMesh)));
 		
-		Entity scene = world.add("scene", 0f, 3f, 0f);
+		Entity scene = world.add("scene", 0f, 2f, 0f);
 		scene.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		scene.worldTransform.transform.rotate(Vector3.Y, -90);
 		// Since the transform is changed, it's needed to apply it again.
 		scene.body.setMotionState(scene.worldTransform);
 
+		world.add("ground", 0f, 0f, 0f)
+			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+		
 		for (float x = -3; x < 7; x++) {
 			for (float z = -5; z < 5; z++) {
 				world.add("sphere", x, 10f, z)

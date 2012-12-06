@@ -29,7 +29,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL15;
 
-/** An implementation of the {@link GL11} interface based on Jogl. Fixed point vertex arrays are emulated. Some glGetXXX methods
+/** An implementation of the {@link GL11} interface based on LWJGL. Fixed point vertex arrays are emulated. Some glGetXXX methods
  * are not implemented.
  * 
  * @author mzechner */

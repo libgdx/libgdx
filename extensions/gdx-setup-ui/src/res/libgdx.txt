@@ -22,10 +22,10 @@ http://libgdx.badlogicgames.com/
 http://libgdx.googlecode.com/svn/trunk/extensions/gdx-setup-ui/config/libgdx-logo.png
 
 [stable-version]
-0.9.6
+0.9.7
 
 [stable-url]
-http://libgdx.googlecode.com/files/libgdx-0.9.6.zip
+http://libgdx.googlecode.com/files/libgdx-0.9.7.zip
 
 [latest-url]
 http://libgdx.badlogicgames.com/nightlies/libgdx-nightly-latest.zip
