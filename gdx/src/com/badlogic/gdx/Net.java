@@ -94,25 +94,30 @@ public interface Net {
 		HttpStatus getStatus ();
 	}
 
-	/** Provides common HTTP methods to use when creating a {@link HttpRequest}. 
-	 * <ul><li>GET</li><li>POST</li></ul>*/
+	/** Provides common HTTP methods to use when creating a {@link HttpRequest}.
+	 * <ul>
+	 * <li>GET</li>
+	 * <li>POST</li>
+	 * </ul> */
 	public static interface HttpMethods {
 
 		public static final String GET = "GET";
 
 		public static final String POST = "POST";
-		
+
 		public static final String JSON = "JSON";
 
 	}
 
-	/** 
-	 * Contains getters and setters for the following parameters: 
-	 * <ul><li><strong>httpMethod:</strong> GET or POST are most common, can use {@link Net.HttpMethods HttpMethods} for static references</li>
+	/** Contains getters and setters for the following parameters:
+	 * <ul>
+	 * <li><strong>httpMethod:</strong> GET or POST are most common, can use {@link Net.HttpMethods HttpMethods} for static
+	 * references</li>
 	 * <li><strong>url:</strong> the url</li>
 	 * <li><strong>headers:</strong> a map of the headers, setter can be called multiple times</li>
 	 * <li><strong>timeout:</strong> time spent trying to connect before giving up</li>
-	 * <li><strong>content:</strong> Map used for both POST, GET, or JSON. </li></ul>
+	 * <li><strong>content:</strong> Map used for both POST, GET, or JSON.</li>
+	 * </ul>
 	 * 
 	 * Abstracts the concept of a HTTP Request:
 	 * 
@@ -133,17 +138,18 @@ public interface Net {
 	 * 		//do stuff here based on the failed attempt
 	 * 	}
 	 * });
-	 * </pre> 
+	 * </pre>
 	 * 
 	 * PHP for POST should store values in $_POST,<br>
 	 * PHP for GET should store values in $_GET,<br>
 	 * PHP to retrieve JSON is as follows:
+	 * 
 	 * <pre>
 	 * $requestBody = file_get_contents('php://input');
 	 * $requestBody = json_decode($requestBody);
 	 * // and to access variable "user"
 	 * $requestBody->user
-	 * </pre>*/
+	 * </pre> */
 	public static class HttpRequest {
 
 		private final String httpMethod;
@@ -152,41 +158,41 @@ public interface Net {
 		private int timeOut = -1;
 
 		private Map<String, Object> content;
-		
-		/**
-		 * When this is created, if POST or GET are selected as the httpMethod, this will set up the following default parameters:
-		 * <br><br><strong>POST:</strong>
-		 * <br><i>headers</i> - Accept=application/x-www-form-urlencoded
-		 * <br><i>headers</i> - Content-Type=application/x-www-form-urlencoded
-		 * <br><i>timeout</i> - 30000 milliseconds (30 seconds)
-		 * <br><br><strong>JSON:</strong>
-		 * <br><i>headers</i> - Accept=application/json
-		 * <br><i>headers</i> - Content-Type=application/json
-		 * <br><i>timeout</i> - 30000 milliseconds (30 seconds)
-		 * <br><br><strong>GET:</strong>
-		 * <br><i>headers</i> - Content-Type=text/html; charset=UTF-8
-		 * <br><i>timeout</i> - 30000 milliseconds (30 seconds)
-		 * <br><br>
-		 * @param httpMethod	This is the method for the request, usually HttpMethods.POST or HttpMethods.GET */
+
+		/** When this is created, if POST or GET are selected as the httpMethod, this will set up the following default parameters: <br>
+		 * <br>
+		 * <strong>POST:</strong> <br>
+		 * <i>headers</i> - Accept=application/x-www-form-urlencoded <br>
+		 * <i>headers</i> - Content-Type=application/x-www-form-urlencoded <br>
+		 * <i>timeout</i> - 30000 milliseconds (30 seconds) <br>
+		 * <br>
+		 * <strong>JSON:</strong> <br>
+		 * <i>headers</i> - Accept=application/json <br>
+		 * <i>headers</i> - Content-Type=application/json <br>
+		 * <i>timeout</i> - 30000 milliseconds (30 seconds) <br>
+		 * <br>
+		 * <strong>GET:</strong> <br>
+		 * <i>headers</i> - Content-Type=text/html; charset=UTF-8 <br>
+		 * <i>timeout</i> - 30000 milliseconds (30 seconds) <br>
+		 * <br>
+		 * @param httpMethod This is the method for the request, usually HttpMethods.POST or HttpMethods.GET */
 		public HttpRequest (String httpMethod) {
 			this.httpMethod = httpMethod;
 			this.headers = new HashMap<String, String>();
 			this.content = new HashMap<String, Object>();
-			
+
 			// Setting the default parameters for POST, JSON, and GET
-			if(this.httpMethod == HttpMethods.POST) {
+			if (this.httpMethod == HttpMethods.POST) {
 				setHeader("Accept", "application/x-www-form-urlencoded");
-            setHeader("Content-type", "application/x-www-form-urlencoded");
-            setTimeOut(30000);
-			} 
-			else if(this.httpMethod == HttpMethods.JSON) {
+				setHeader("Content-type", "application/x-www-form-urlencoded");
+				setTimeOut(30000);
+			} else if (this.httpMethod == HttpMethods.JSON) {
 				setHeader("Accept", "application/json");
-            setHeader("Content-type", "application/json");
-            setTimeOut(30000);
-			}
-			else if(this.httpMethod == HttpMethods.GET){
+				setHeader("Content-type", "application/json");
+				setTimeOut(30000);
+			} else if (this.httpMethod == HttpMethods.GET) {
 				setHeader("Content-type", "text/html; charset=UTF-8");
-            setTimeOut(30000);
+				setTimeOut(30000);
 			}
 		}
 
@@ -195,7 +201,7 @@ public interface Net {
 		public void setUrl (String url) {
 			this.url = url;
 		}
-		
+
 		/** Sets a header to this HTTP request. Headers definition could be found at <a
 		 * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP/1.1: Header Field Definitions</a> document.
 		 * @param name the name of the header.
@@ -204,22 +210,21 @@ public interface Net {
 			headers.put(name, value);
 		}
 
-		/** Adds name->value to the content. Can be called multiple times. 
+		/** Adds name->value to the content. Can be called multiple times.
 		 * @param name the name of the content, Example: "password"
-		 * @param value the value of the content, Example: "P4ssw0rd!1234"
-		 */
+		 * @param value the value of the content, Example: "P4ssw0rd!1234" */
 		public void setContent (String name, Object value) {
 			content.put(name, value);
 		}
-		
-		/** Sets the time to wait for the HTTP request to be processed, use 0 block until it is done. The timeout defaults
-		 * to 30000 milliseconds, and is used for both the timeout when establishing TCP connection, and the timeout until
-		 * the first byte of data is received. 
+
+		/** Sets the time to wait for the HTTP request to be processed, use 0 block until it is done. The timeout defaults to 30000
+		 * milliseconds, and is used for both the timeout when establishing TCP connection, and the timeout until the first byte of
+		 * data is received.
 		 * @param timeOut the number of milliseconds to wait before giving up, 0 to block until the operation is done */
 		public void setTimeOut (int timeOut) {
 			this.timeOut = timeOut;
 		}
-		
+
 		public long getTimeOut () {
 			return timeOut;
 		}
@@ -235,7 +240,7 @@ public interface Net {
 		}
 
 		/** Returns the content as a HashMap<String,Object> */
-		public Map<String,Object> getContent () {
+		public Map<String, Object> getContent () {
 			return content;
 		}
 
@@ -243,31 +248,29 @@ public interface Net {
 		public Map<String, String> getHeaders () {
 			return headers;
 		}
-		
+
 		/** Returns the timeOut set for this httpRequest. If not set, defaults to 30000 milliseconds */
 		public int getTimeout () {
-			return (timeOut<=0)? 30000 : timeOut;
+			return (timeOut <= 0) ? 30000 : timeOut;
 		}
 
-		/** This function takes the set content and converts it into a string based on the request method. 
+		/** This function takes the set content and converts it into a string based on the request method.
 		 * @param httpRequest An HttpRequest ready to be executed
 		 * @return String formatted in the style based on httpRequest.getMethod()
-		 * @throws IOException
-		 */
-		public String convertHttpRequest() {
+		 * @throws IOException */
+		public String convertHttpRequest () {
 			if (this.getMethod().equalsIgnoreCase(HttpMethods.GET) || this.getMethod().equalsIgnoreCase(HttpMethods.POST)) {
-				Map<String,Object> content = this.getContent();
+				Map<String, Object> content = this.getContent();
 				Set<String> keySet = content.keySet();
 				String appendUrl = "";
 				for (String name : keySet) {
-					appendUrl += name+"="+content.get(name)+"&";
+					appendUrl += name + "=" + content.get(name) + "&";
 				}
 				return appendUrl;
-			} 
-			else if (this.getMethod().equalsIgnoreCase(HttpMethods.JSON)){
+			} else if (this.getMethod().equalsIgnoreCase(HttpMethods.JSON)) {
 				StringWriter jsonText = new StringWriter();
 				JsonWriter writer = new JsonWriter(jsonText);
-				
+
 				try {
 					this.createJson(this.getContent(), "", writer);
 				} catch (IOException e) {
@@ -277,30 +280,30 @@ public interface Net {
 			}
 			return null;
 		}
-		
+
 		/** Run this to fill writer with JSON based on the content */
 		private void createJson (Object content, String name, JsonWriter writer) throws IOException {
-			if(content instanceof Map){
-				if(name == "")
+			if (content instanceof Map) {
+				if (name == "")
 					writer.object();
-				else 
+				else
 					writer.object(name);
-				Set<String> keySet = ((Map<String,?>) content).keySet();
-				for(String key : keySet){
+				Set<String> keySet = ((Map<String, ?>)content).keySet();
+				for (String key : keySet) {
 					createJson(((Map)content).get(key), key, writer);
 				}
 				writer.pop();
-			} else if (content instanceof Object[]){
-				if(name == "")
+			} else if (content instanceof Object[]) {
+				if (name == "")
 					writer.array();
-				else 
+				else
 					writer.array(name);
-				for(Object key : (Object[])content) {
+				for (Object key : (Object[])content) {
 					createJson(key, "", writer);
 				}
 				writer.pop();
 			} else {
-				if(name == "")
+				if (name == "")
 					writer.value(content);
 				else
 					writer.set(name, content);
