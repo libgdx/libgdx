@@ -47,22 +47,22 @@ import com.badlogic.gdx.utils.JsonWriter;
 public class LwjglNet implements Net {
 
 	private final class HttpClientResponse implements HttpResponse {
-		
+
 		private HttpURLConnection connection;
 		private HttpStatus status;
 		private InputStream inputStream;
-		
-		public HttpClientResponse(HttpURLConnection connection) throws IOException {
+
+		public HttpClientResponse (HttpURLConnection connection) throws IOException {
 			this.connection = connection;
 			this.inputStream = connection.getInputStream();
-			
+
 			try {
 				this.status = new HttpStatus(connection.getResponseCode());
 			} catch (IOException e) {
 				this.status = new HttpStatus(-1);
 			}
 		}
-		
+
 		@Override
 		public byte[] getResult () {
 			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -72,7 +72,7 @@ public class LwjglNet implements Net {
 
 			try {
 				while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
-				  buffer.write(data, 0, nRead);
+					buffer.write(data, 0, nRead);
 				}
 				buffer.flush();
 			} catch (IOException e) {
@@ -86,7 +86,7 @@ public class LwjglNet implements Net {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 			String tmp, line = "";
 			try {
-				while((tmp=reader.readLine()) != null)
+				while ((tmp = reader.readLine()) != null)
 					line += tmp;
 				reader.close();
 				return line;
@@ -104,61 +104,59 @@ public class LwjglNet implements Net {
 		public HttpStatus getStatus () {
 			return status;
 		}
-		
+
 	}
-	
-	
+
 	// IMPORTANT: The Gdx.net classes are a currently duplicated for LWJGL + Android!
 	// If you make changes here, make changes in the other backend as well.
 
 	private final ExecutorService executorService;
-	
-	public LwjglNet() {
+
+	public LwjglNet () {
 		executorService = Executors.newCachedThreadPool();
 	}
-	
+
 	@Override
 	public void sendHttpRequest (HttpRequest httpRequest, final HttpResponseListener httpResultListener) {
 		if (httpRequest.getUrl() == null) {
 			httpResultListener.failed(new GdxRuntimeException("can't process a HTTP request without URL set"));
 			return;
 		}
-		
+
 		try {
-//			String value = httpRequest.convertHttpRequest();
 			String value = httpRequest.getContent();
 			String method = httpRequest.getMethod();
-			
+
 			URL url;
-			if(method.equalsIgnoreCase(HttpMethods.GET))
-				url = new URL(httpRequest.getUrl()+"?"+value);
+			if (method.equalsIgnoreCase(HttpMethods.GET))
+				url = new URL(httpRequest.getUrl() + "?" + value);
 			else
 				url = new URL(httpRequest.getUrl());
-			
-			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+			final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
 			connection.setRequestMethod(method);
-			
+
 			// Headers get set regardless of the method
-			Map<String,String> content = httpRequest.getHeaders();
+			Map<String, String> content = httpRequest.getHeaders();
 			Set<String> keySet = content.keySet();
 			for (String name : keySet) {
 				connection.addRequestProperty(name, content.get(name));
 			}
-			
+
 			// Set Timeouts
 			connection.setConnectTimeout(httpRequest.getTimeOut());
 			connection.setReadTimeout(httpRequest.getTimeOut());
-			
+
 			// Set the content for JSON or POST (GET has the information embedded in the URL)
-			if(!method.equalsIgnoreCase(HttpMethods.GET)) {
-				OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream ());
+			if (!method.equalsIgnoreCase(HttpMethods.GET)) {
+				OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
 				wr.write(value);
 				wr.flush();
 				wr.close();
 			}
-			
+
 			executorService.submit(new Runnable() {
 				@Override
 				public void run () {
@@ -188,13 +186,13 @@ public class LwjglNet implements Net {
 					}
 				}
 			});
-			
+
 		} catch (Exception e) {
 			httpResultListener.failed(e);
 			return;
 		}
 	}
-	
+
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
 		return new LwjglServerSocket(protocol, port, hints);
