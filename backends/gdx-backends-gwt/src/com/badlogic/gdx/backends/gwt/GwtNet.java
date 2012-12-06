@@ -66,7 +66,7 @@ public class GwtNet implements Net {
 		}
 		
 		final boolean is_get = (httpRequest.getMethod()==HttpMethods.GET);
-		final String value = httpRequest.convertHttpRequest();
+		final String value = httpRequest.getContent();
 		
 		final RequestBuilder builder = is_get? new RequestBuilder(RequestBuilder.GET, httpRequest.getUrl()+"?"+value) : 
 			new RequestBuilder(RequestBuilder.POST, httpRequest.getUrl());
@@ -77,7 +77,7 @@ public class GwtNet implements Net {
 			builder.setHeader(name, content.get(name));
 		}
 		
-		builder.setTimeoutMillis(httpRequest.getTimeout());
+		builder.setTimeoutMillis(httpRequest.getTimeOut());
 		
 	
 		try {		
