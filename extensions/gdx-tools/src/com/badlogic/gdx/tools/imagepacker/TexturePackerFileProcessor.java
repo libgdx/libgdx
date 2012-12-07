@@ -61,6 +61,8 @@ public class TexturePackerFileProcessor extends FileProcessor {
 	}
 
 	protected void processDir (Entry inputDir, ArrayList<Entry> files) throws Exception {
+		System.out.println(inputDir.inputFile.getName());
+
 		// Start with a copy of a parent dir's settings or the default settings.
 		Settings settings = null;
 		File parent = inputDir.inputFile;

@@ -172,6 +172,7 @@ public class LwjglCanvas implements Application {
 			start();
 		} catch (Exception ex) {
 			stopped();
+			exception(ex);
 			throw new GdxRuntimeException(ex);
 		}
 
