@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btPersistentManifold extends btTypedObject {
   private long swigCPtr;
@@ -125,8 +126,8 @@ public class btPersistentManifold extends btTypedObject {
     return gdxBulletJNI.btPersistentManifold_validContactDistance(swigCPtr, this, btManifoldPoint.getCPtr(pt), pt);
   }
 
-  public void refreshContactPoints(btTransform trA, btTransform trB) {
-    gdxBulletJNI.btPersistentManifold_refreshContactPoints(swigCPtr, this, btTransform.getCPtr(trA), trA, btTransform.getCPtr(trB), trB);
+  public void refreshContactPoints(Matrix4 trA, Matrix4 trB) {
+    gdxBulletJNI.btPersistentManifold_refreshContactPoints(swigCPtr, this, trA, trB);
   }
 
   public void clearManifold() {

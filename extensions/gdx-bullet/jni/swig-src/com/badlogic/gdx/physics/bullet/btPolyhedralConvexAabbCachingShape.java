@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btPolyhedralConvexAabbCachingShape extends btPolyhedralConvexShape {
   private long swigCPtr;
@@ -39,8 +40,8 @@ public class btPolyhedralConvexAabbCachingShape extends btPolyhedralConvexShape 
     super.delete();
   }
 
-  public void getNonvirtualAabb(btTransform trans, Vector3 aabbMin, Vector3 aabbMax, float margin) {
-    gdxBulletJNI.btPolyhedralConvexAabbCachingShape_getNonvirtualAabb(swigCPtr, this, btTransform.getCPtr(trans), trans, aabbMin, aabbMax, margin);
+  public void getNonvirtualAabb(Matrix4 trans, Vector3 aabbMin, Vector3 aabbMax, float margin) {
+    gdxBulletJNI.btPolyhedralConvexAabbCachingShape_getNonvirtualAabb(swigCPtr, this, trans, aabbMin, aabbMax, margin);
   }
 
   public void recalcLocalAabb() {

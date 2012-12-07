@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btIDebugDraw {
   private long swigCPtr;
@@ -62,8 +63,8 @@ public class btIDebugDraw {
     if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawLine__SWIG_1(swigCPtr, this, from, to, fromColor, toColor); else gdxBulletJNI.btIDebugDraw_drawLineSwigExplicitbtIDebugDraw__SWIG_1(swigCPtr, this, from, to, fromColor, toColor);
   }
 
-  public void drawSphere(float radius, btTransform transform, Vector3 color) {
-    if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawSphere__SWIG_0(swigCPtr, this, radius, btTransform.getCPtr(transform), transform, color); else gdxBulletJNI.btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_0(swigCPtr, this, radius, btTransform.getCPtr(transform), transform, color);
+  public void drawSphere(float radius, Matrix4 transform, Vector3 color) {
+    if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawSphere__SWIG_0(swigCPtr, this, radius, transform, color); else gdxBulletJNI.btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_0(swigCPtr, this, radius, transform, color);
   }
 
   public void drawSphere(Vector3 p, float radius, Vector3 color) {
@@ -102,8 +103,8 @@ public class btIDebugDraw {
     if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawAabb(swigCPtr, this, from, to, color); else gdxBulletJNI.btIDebugDraw_drawAabbSwigExplicitbtIDebugDraw(swigCPtr, this, from, to, color);
   }
 
-  public void drawTransform(btTransform transform, float orthoLen) {
-    if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawTransform(swigCPtr, this, btTransform.getCPtr(transform), transform, orthoLen); else gdxBulletJNI.btIDebugDraw_drawTransformSwigExplicitbtIDebugDraw(swigCPtr, this, btTransform.getCPtr(transform), transform, orthoLen);
+  public void drawTransform(Matrix4 transform, float orthoLen) {
+    if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawTransform(swigCPtr, this, transform, orthoLen); else gdxBulletJNI.btIDebugDraw_drawTransformSwigExplicitbtIDebugDraw(swigCPtr, this, transform, orthoLen);
   }
 
   public void drawArc(Vector3 center, Vector3 normal, Vector3 axis, float radiusA, float radiusB, float minAngle, float maxAngle, Vector3 color, boolean drawSect, float stepDegrees) {
@@ -126,24 +127,24 @@ public class btIDebugDraw {
     if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawBox__SWIG_0(swigCPtr, this, bbMin, bbMax, color); else gdxBulletJNI.btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_0(swigCPtr, this, bbMin, bbMax, color);
   }
 
-  public void drawBox(Vector3 bbMin, Vector3 bbMax, btTransform trans, Vector3 color) {
-    if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawBox__SWIG_1(swigCPtr, this, bbMin, bbMax, btTransform.getCPtr(trans), trans, color); else gdxBulletJNI.btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_1(swigCPtr, this, bbMin, bbMax, btTransform.getCPtr(trans), trans, color);
+  public void drawBox(Vector3 bbMin, Vector3 bbMax, Matrix4 trans, Vector3 color) {
+    if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawBox__SWIG_1(swigCPtr, this, bbMin, bbMax, trans, color); else gdxBulletJNI.btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_1(swigCPtr, this, bbMin, bbMax, trans, color);
   }
 
-  public void drawCapsule(float radius, float halfHeight, int upAxis, btTransform transform, Vector3 color) {
-    if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawCapsule(swigCPtr, this, radius, halfHeight, upAxis, btTransform.getCPtr(transform), transform, color); else gdxBulletJNI.btIDebugDraw_drawCapsuleSwigExplicitbtIDebugDraw(swigCPtr, this, radius, halfHeight, upAxis, btTransform.getCPtr(transform), transform, color);
+  public void drawCapsule(float radius, float halfHeight, int upAxis, Matrix4 transform, Vector3 color) {
+    if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawCapsule(swigCPtr, this, radius, halfHeight, upAxis, transform, color); else gdxBulletJNI.btIDebugDraw_drawCapsuleSwigExplicitbtIDebugDraw(swigCPtr, this, radius, halfHeight, upAxis, transform, color);
   }
 
-  public void drawCylinder(float radius, float halfHeight, int upAxis, btTransform transform, Vector3 color) {
-    if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawCylinder(swigCPtr, this, radius, halfHeight, upAxis, btTransform.getCPtr(transform), transform, color); else gdxBulletJNI.btIDebugDraw_drawCylinderSwigExplicitbtIDebugDraw(swigCPtr, this, radius, halfHeight, upAxis, btTransform.getCPtr(transform), transform, color);
+  public void drawCylinder(float radius, float halfHeight, int upAxis, Matrix4 transform, Vector3 color) {
+    if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawCylinder(swigCPtr, this, radius, halfHeight, upAxis, transform, color); else gdxBulletJNI.btIDebugDraw_drawCylinderSwigExplicitbtIDebugDraw(swigCPtr, this, radius, halfHeight, upAxis, transform, color);
   }
 
-  public void drawCone(float radius, float height, int upAxis, btTransform transform, Vector3 color) {
-    if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawCone(swigCPtr, this, radius, height, upAxis, btTransform.getCPtr(transform), transform, color); else gdxBulletJNI.btIDebugDraw_drawConeSwigExplicitbtIDebugDraw(swigCPtr, this, radius, height, upAxis, btTransform.getCPtr(transform), transform, color);
+  public void drawCone(float radius, float height, int upAxis, Matrix4 transform, Vector3 color) {
+    if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawCone(swigCPtr, this, radius, height, upAxis, transform, color); else gdxBulletJNI.btIDebugDraw_drawConeSwigExplicitbtIDebugDraw(swigCPtr, this, radius, height, upAxis, transform, color);
   }
 
-  public void drawPlane(Vector3 planeNormal, float planeConst, btTransform transform, Vector3 color) {
-    if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawPlane(swigCPtr, this, planeNormal, planeConst, btTransform.getCPtr(transform), transform, color); else gdxBulletJNI.btIDebugDraw_drawPlaneSwigExplicitbtIDebugDraw(swigCPtr, this, planeNormal, planeConst, btTransform.getCPtr(transform), transform, color);
+  public void drawPlane(Vector3 planeNormal, float planeConst, Matrix4 transform, Vector3 color) {
+    if (getClass() == btIDebugDraw.class) gdxBulletJNI.btIDebugDraw_drawPlane(swigCPtr, this, planeNormal, planeConst, transform, color); else gdxBulletJNI.btIDebugDraw_drawPlaneSwigExplicitbtIDebugDraw(swigCPtr, this, planeNormal, planeConst, transform, color);
   }
 
   public btIDebugDraw() {
