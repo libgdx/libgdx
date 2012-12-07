@@ -1683,9 +1683,6 @@ typedef btDiscreteCollisionDetectorInterface::ClosestPointInput ClosestPointInpu
 #include <BulletCollision/CollisionShapes/btTriangleShape.h>
 
 
-#include <BulletCollision/CollisionShapes/btShapeHull.h>
-
-
 #include <BulletCollision/CollisionShapes/btSphereShape.h>
 
 
@@ -1741,6 +1738,16 @@ SWIGINTERN void delete_btIndexedMesh(btIndexedMesh *self){
 
 #include <BulletCollision/CollisionShapes/btConvexHullShape.h>
 
+
+#include <BulletCollision/CollisionShapes/btShapeHull.h>
+
+SWIGINTERN btConvexHullShape *btShapeHull_createConvexHullShape(btShapeHull *self){
+		btConvexHullShape *result = new btConvexHullShape();
+		for (int i = 0; i < self->numVertices(); i++) {
+			result->addPoint(self->getVertexPointer()[i]);
+		}
+		return result;
+	}
 
 #include <BulletCollision/CollisionShapes/btTriangleIndexVertexMaterialArray.h>
 
@@ -23194,123 +23201,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btShapeHull(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btConvexShape *arg1 = (btConvexShape *) 0 ;
-  btShapeHull *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btConvexShape **)&jarg1; 
-  result = (btShapeHull *)new btShapeHull((btConvexShape const *)arg1);
-  *(btShapeHull **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btShapeHull(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  btShapeHull *arg1 = (btShapeHull *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(btShapeHull **)&jarg1; 
-  delete arg1;
-}
-
-
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1buildHull(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
-  jboolean jresult = 0 ;
-  btShapeHull *arg1 = (btShapeHull *) 0 ;
-  btScalar arg2 ;
-  bool result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btShapeHull **)&jarg1; 
-  arg2 = (btScalar)jarg2; 
-  result = (bool)(arg1)->buildHull(arg2);
-  jresult = (jboolean)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1numTriangles(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
-  btShapeHull *arg1 = (btShapeHull *) 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btShapeHull **)&jarg1; 
-  result = (int)((btShapeHull const *)arg1)->numTriangles();
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1numVertices(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
-  btShapeHull *arg1 = (btShapeHull *) 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btShapeHull **)&jarg1; 
-  result = (int)((btShapeHull const *)arg1)->numVertices();
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1numIndices(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
-  btShapeHull *arg1 = (btShapeHull *) 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btShapeHull **)&jarg1; 
-  result = (int)((btShapeHull const *)arg1)->numIndices();
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1getVertexPointer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btShapeHull *arg1 = (btShapeHull *) 0 ;
-  btVector3 *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btShapeHull **)&jarg1; 
-  result = (btVector3 *)((btShapeHull const *)arg1)->getVertexPointer();
-  *(btVector3 **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1getIndexPointer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btShapeHull *arg1 = (btShapeHull *) 0 ;
-  unsigned int *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btShapeHull **)&jarg1; 
-  result = (unsigned int *)((btShapeHull const *)arg1)->getIndexPointer();
-  *(unsigned int **)&jresult = result; 
-  return jresult;
-}
-
-
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btSphereShape(JNIEnv *jenv, jclass jcls, jfloat jarg1) {
   jlong jresult = 0 ;
   btScalar arg1 ;
@@ -26943,6 +26833,138 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete
   (void)jcls;
   arg1 = *(btConvexHullShapeData **)&jarg1; 
   delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btShapeHull(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btConvexShape *arg1 = (btConvexShape *) 0 ;
+  btShapeHull *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btConvexShape **)&jarg1; 
+  result = (btShapeHull *)new btShapeHull((btConvexShape const *)arg1);
+  *(btShapeHull **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btShapeHull(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btShapeHull **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1buildHull(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  jboolean jresult = 0 ;
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  btScalar arg2 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btShapeHull **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  result = (bool)(arg1)->buildHull(arg2);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1numTriangles(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btShapeHull **)&jarg1; 
+  result = (int)((btShapeHull const *)arg1)->numTriangles();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1numVertices(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btShapeHull **)&jarg1; 
+  result = (int)((btShapeHull const *)arg1)->numVertices();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1numIndices(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btShapeHull **)&jarg1; 
+  result = (int)((btShapeHull const *)arg1)->numIndices();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1getVertexPointer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btShapeHull **)&jarg1; 
+  result = (btVector3 *)((btShapeHull const *)arg1)->getVertexPointer();
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1getIndexPointer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  unsigned int *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btShapeHull **)&jarg1; 
+  result = (unsigned int *)((btShapeHull const *)arg1)->getIndexPointer();
+  *(unsigned int **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1createConvexHullShape(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  btConvexHullShape *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btShapeHull **)&jarg1; 
+  result = (btConvexHullShape *)btShapeHull_createConvexHullShape(arg1);
+  *(btConvexHullShape **)&jresult = result; 
+  return jresult;
 }
 
 

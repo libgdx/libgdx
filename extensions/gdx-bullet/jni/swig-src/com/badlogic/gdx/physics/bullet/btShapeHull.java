@@ -70,4 +70,9 @@ public class btShapeHull {
     return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_int(cPtr, false);
   }
 
+  public btConvexHullShape createConvexHullShape() {
+    long cPtr = gdxBulletJNI.btShapeHull_createConvexHullShape(swigCPtr, this);
+    return (cPtr == 0) ? null : new btConvexHullShape(cPtr, false);
+  }
+
 }

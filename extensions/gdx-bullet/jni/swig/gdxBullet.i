@@ -327,10 +327,7 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "BulletCollision/CollisionShapes/btTriangleShape.h"
 
-%{
-#include <BulletCollision/CollisionShapes/btShapeHull.h>
-%}
-%include "BulletCollision/CollisionShapes/btShapeHull.h"
+
 
 %{
 #include <BulletCollision/CollisionShapes/btSphereShape.h>
@@ -368,24 +365,6 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %include "BulletCollision/CollisionShapes/btTriangleBuffer.h"
 
 %include "custom/btTriangleIndexVertexArray.i"
-/*%extend btIndexedMesh {
-	void setTriangleIndexBase(short data[], unsigned long size) {
-		short *indices = new short[size];
-		memcpy(indices, (short*)data, size*sizeof(short));
-		$self->m_triangleIndexBase = (unsigned char*)indices;
-	}
-	void setVertexBase(float data[], unsigned long size) {
-		float *vertices = new float[size];
-		memcpy(vertices, (float*)data, size*sizeof(float));
-		$self->m_vertexBase = (unsigned char*)vertices;
-	}
-	void dispose() {
-		short *indices = (short*)$self->m_triangleIndexBase;
-		delete[] indices;
-		float *vertices = (float*)$self->m_vertexBase;
-		delete[] vertices;
-	}
-};*/
 
 %{
 #include <BulletCollision/CollisionShapes/btMaterial.h>
@@ -401,6 +380,8 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 #include <BulletCollision/CollisionShapes/btConvexHullShape.h>
 %}
 %include "BulletCollision/CollisionShapes/btConvexHullShape.h"
+
+%include "custom/btShapeHull.i"
 
 %{
 #include <BulletCollision/CollisionShapes/btTriangleIndexVertexMaterialArray.h>
