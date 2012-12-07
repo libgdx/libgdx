@@ -90,15 +90,13 @@ public class MeshShapeTest extends BaseBulletTest {
 		return true;
 	}
 	
-	// NOTE: The following is subject to change as it involves some nasty memory management and overriding JNI classes.
-	
 	// Create a TriangleMeshShape based on a Mesh
 	public btCollisionShape createMeshShape(Mesh mesh) {
 		short[] indices = new short[mesh.getNumIndices()];
 		float[] vertices = new float[mesh.getNumVertices()*mesh.getVertexSize()/4];
 		mesh.getIndices(indices);
 		mesh.getVertices(vertices);
-		btIndexedMesh indexedMesh = new TestIndexedMesh();
+		btIndexedMesh indexedMesh = new btIndexedMesh();
 		indexedMesh.setM_indexType(PHY_ScalarType.PHY_SHORT);
 		indexedMesh.setM_numTriangles(mesh.getNumIndices()/3);
 		indexedMesh.setM_numVertices(mesh.getNumVertices());
@@ -112,20 +110,10 @@ public class MeshShapeTest extends BaseBulletTest {
 		return new TestBvhTriangleMeshShape(meshInterface,true);
 	}
 	
-	// Need to free memory (created for holding a copy of the indices and vertices)
-	class TestIndexedMesh extends btIndexedMesh {
-		boolean disposed = false;
-		@Override
-		public synchronized void delete() {
-			if (!disposed) {
-				dispose();
-				disposed = true;
-			}
-			super.delete();
-		}
-	}
-	
-	// Need to keep reference to the meshes to avoid memory being freed too early.
+	/** 
+	 * Convenience class that keeps a reference of the sub meshes.
+	 * Don't use this method if the btIndexedMesh instances are shared amongst other btTriangleIndexVertexArray instances.
+	 */
 	class TestTriangleIndexVertexArray extends btTriangleIndexVertexArray {
 		Array<btIndexedMesh> meshes = new Array<btIndexedMesh>();
 		
@@ -144,7 +132,10 @@ public class MeshShapeTest extends BaseBulletTest {
 		}
 	}
 	
-	// Need to keep reference to meshInterface to avoid memory being freed too early.
+	/** 
+	 * Convenience class that keeps a reference of the mesh interface 
+	 * Don't use this method if the btStridingMeshInterface is shared amongst other btBvhTriangleMeshShape instances. 
+	 */
 	class TestBvhTriangleMeshShape extends btBvhTriangleMeshShape {
 		btStridingMeshInterface meshInterface;
 		public TestBvhTriangleMeshShape(btStridingMeshInterface meshInterface, boolean useQuantizedAabbCompression) {
