@@ -66,7 +66,7 @@ public class MeshShapeTest extends BaseBulletTest {
 		scene.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		scene.worldTransform.transform.rotate(Vector3.Y, -90);
 		// Since the transform is changed, it's needed to apply it again.
-		scene.body.setMotionState(scene.worldTransform);
+		scene.body.setWorldTransform(scene.worldTransform.transform);
 
 		world.add("ground", 0f, 0f, 0f)
 			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
@@ -91,7 +91,7 @@ public class MeshShapeTest extends BaseBulletTest {
 	}
 	
 	// Create a TriangleMeshShape based on a Mesh
-	public btCollisionShape createMeshShape(Mesh mesh) {
+	public static btCollisionShape createMeshShape(Mesh mesh) {
 		short[] indices = new short[mesh.getNumIndices()];
 		float[] vertices = new float[mesh.getNumVertices()*mesh.getVertexSize()/4];
 		mesh.getIndices(indices);
@@ -114,7 +114,7 @@ public class MeshShapeTest extends BaseBulletTest {
 	 * Convenience class that keeps a reference of the sub meshes.
 	 * Don't use this method if the btIndexedMesh instances are shared amongst other btTriangleIndexVertexArray instances.
 	 */
-	class TestTriangleIndexVertexArray extends btTriangleIndexVertexArray {
+	public static class TestTriangleIndexVertexArray extends btTriangleIndexVertexArray {
 		Array<btIndexedMesh> meshes = new Array<btIndexedMesh>();
 		
 		@Override
@@ -136,7 +136,7 @@ public class MeshShapeTest extends BaseBulletTest {
 	 * Convenience class that keeps a reference of the mesh interface 
 	 * Don't use this method if the btStridingMeshInterface is shared amongst other btBvhTriangleMeshShape instances. 
 	 */
-	class TestBvhTriangleMeshShape extends btBvhTriangleMeshShape {
+	public static class TestBvhTriangleMeshShape extends btBvhTriangleMeshShape {
 		btStridingMeshInterface meshInterface;
 		public TestBvhTriangleMeshShape(btStridingMeshInterface meshInterface, boolean useQuantizedAabbCompression) {
 			super(meshInterface, useQuantizedAabbCompression);
