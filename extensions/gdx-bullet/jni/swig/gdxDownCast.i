@@ -6,8 +6,7 @@
  
 /* Add more types to the list as needed. */
 
-%typemap(javaout) 	btCollisionShape *, const btCollisionShape *,
-					btMotionState *, const btMotionState * {
+%typemap(javaout) 	btCollisionShape *, const btCollisionShape * {
     long cPtr = $jnicall;
     return (cPtr == 0) ? null : $*javaclassname.newDerivedObject(cPtr, $owner);
   }
