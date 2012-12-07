@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.g3d.decals;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Quaternion;
@@ -72,6 +73,10 @@ public class Decal {
 		vertices[C2] = color;
 		vertices[C3] = color;
 		vertices[C4] = color;
+	}
+	
+	public void setColor (Color color){
+		setColor(color.r, color.g, color.b, color.a);
 	}
 	
 	/** Sets the rotation on the local X axis to the specified angle
