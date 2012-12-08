@@ -546,7 +546,7 @@ public class TextField extends Widget {
 		if (content != null) {
 			StringBuilder builder = new StringBuilder();
 			for (int i = 0; i < content.length(); i++) {
-				if (maxLength > 0 && text.length() + i + 1 > maxLength) {
+				if (maxLength > 0 && text.length() + builder.length() + 1 > maxLength) {
 					break;
 				}
 				char c = content.charAt(i);
@@ -656,7 +656,7 @@ public class TextField extends Widget {
 
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < text.length(); i++) {
-			if (maxLength > 0 && text.length() + i + 1 > maxLength) {
+			if (maxLength > 0 && buffer.length() + 1 > maxLength) {
 				break;
 			}
 			char c = text.charAt(i);
