@@ -25,6 +25,9 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %include "gdxBuffers.i"
 %include "gdxEnableBuffers.i"
 
+%include "gdxPool.i"
+%include "gdxPooledTypemap.i"
+
 /* Prefer libgdx's linear math types (Vector3, Matrix3, etc.). */
 %include "gdxMathTypes.i"
 

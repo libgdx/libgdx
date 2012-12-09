@@ -16,33 +16,35 @@ import com.badlogic.gdx.utils.Pool;
 
 public class gdxBulletJNI {
 
-
-  // Used to avoid allocation when returning from Java
-  private final static Vector3 _RET_VECTOR3 = new Vector3(0, 0, 0);
-  private final static Quaternion _RET_QUATERNION = new Quaternion(0, 0, 0, 0);
-  private final static Matrix3 _RET_MATRIX3 = new Matrix3();
-  private final static Matrix4 _RET_MATRIX4 = new Matrix4();
-  
-  // Used to avoid allocation for parameters in director calls into Java
-  public static final Pool<Vector3> _DIR_VECTOR3 = new Pool<Vector3>() {
+  private final static Vector3 staticVector3 = new Vector3();
+  public static final Pool<Vector3> poolVector3 = new Pool<Vector3>() {
     @Override
 	protected Vector3 newObject() {
       return new Vector3();
 	}
   };
-  public static final Pool<Quaternion> _DIR_QUATERNION = new Pool<Quaternion>() {
+
+
+  private final static Quaternion staticQuaternion = new Quaternion();
+  public static final Pool<Quaternion> poolQuaternion = new Pool<Quaternion>() {
     @Override
 	protected Quaternion newObject() {
-      return new Quaternion(0, 0, 0, 0);
+      return new Quaternion();
 	}
   };
-  public static final Pool<Matrix3> _DIR_MATRIX3 = new Pool<Matrix3>() {
+
+
+  private final static Matrix3 staticMatrix3 = new Matrix3();
+  public static final Pool<Matrix3> poolMatrix3 = new Pool<Matrix3>() {
     @Override
 	protected Matrix3 newObject() {
       return new Matrix3();
 	}
   };
-  public static final Pool<Matrix4> _DIR_MATRIX4 = new Pool<Matrix4>() {
+
+
+  private final static Matrix4 staticMatrix4 = new Matrix4();
+  public static final Pool<Matrix4> poolMatrix4 = new Pool<Matrix4>() {
     @Override
 	protected Matrix4 newObject() {
       return new Matrix4();
