@@ -48,6 +48,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class IOSApplication extends UIApplicationDelegate implements Application {
 	UIApplication uiApp;
 	UIWindow uiWindow;
+	UIViewController uiViewController;
 	ApplicationListener listener;
 	IOSApplicationConfiguration config;
 	IOSGraphics graphics;
@@ -105,7 +106,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 		// Create: Window -> ViewController-> GameView (controller takes care of rotation)
 		this.uiWindow = new UIWindow(UIScreen.get_MainScreen().get_Bounds());
-		UIViewController uiViewController = new UIViewController() {
+		uiViewController = new UIViewController() {
 			@Override
 			public void DidRotate (UIInterfaceOrientation orientation) {
 				// get the view size and update graphics
@@ -241,6 +242,16 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	@Override
 	public Net getNet () {
 		return net;
+	}
+	
+	public UIWindow getWindow()
+	{
+		return uiWindow;
+	}
+	
+	public UIViewController getViewController()
+	{
+		return uiViewController;
 	}
 
 	@Override
