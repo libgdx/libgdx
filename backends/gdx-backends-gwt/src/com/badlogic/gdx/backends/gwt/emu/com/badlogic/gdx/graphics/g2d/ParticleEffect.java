@@ -99,6 +99,11 @@ public class ParticleEffect implements Disposable {
 			emitters.get(i).setFlip(flipX, flipY);
 	}
 
+	public void flipY () {
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).flipY();
+	}
+
 	public Array<ParticleEmitter> getEmitters () {
 		return emitters;
 	}
