@@ -414,6 +414,12 @@ namespace Swig {
   }
 }
 
+#include <LinearMath/btVector3.h>
+#include <LinearMath/btQuaternion.h>
+#include <LinearMath/btMatrix3x3.h>
+#include <LinearMath/btTransform.h>
+
+
 #if defined(SWIG_NOINCLUDE) || defined(SWIG_NOARRAYS)
 
 
@@ -1035,13 +1041,7 @@ static jdoubleArray SWIG_JavaArrayOutDouble (JNIEnv *jenv, double *result, jsize
 #endif
 
 
-#include <LinearMath/btVector3.h>
-#include <LinearMath/btQuaternion.h>
-#include <LinearMath/btMatrix3x3.h>
 #include <LinearMath/btTransform.h>
-
-
-#include <LinearMath/btVector3.h>
 
 
 
@@ -1517,6 +1517,9 @@ public:
 
 
 
+#include <LinearMath/btVector3.h>
+
+
 #include <LinearMath/btQuadWord.h>
 
 
@@ -1536,9 +1539,6 @@ public:
 
 
 #include <LinearMath/btRandom.h>
-
-
-#include <LinearMath/btTransform.h>
 
 
 #include <LinearMath/btTransformUtil.h>
@@ -1706,28 +1706,11 @@ typedef btDiscreteCollisionDetectorInterface::ClosestPointInput ClosestPointInpu
 
 #include <BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h>
 
-SWIGINTERN void btIndexedMesh_setTriangleIndexBase(btIndexedMesh *self,short data[],unsigned long size){
-		short *indices = new short[size];
-		memcpy(indices, (short*)data, size*sizeof(short));
-		self->m_triangleIndexBase = (unsigned char*)indices;
+SWIGINTERN void btIndexedMesh_setTriangleIndexBase(btIndexedMesh *self,short *data){
+		self->m_triangleIndexBase = (unsigned char*)data;
 	}
-SWIGINTERN void btIndexedMesh_setVertexBase(btIndexedMesh *self,float data[],unsigned long size){
-		float *vertices = new float[size];
-		memcpy(vertices, (float*)data, size*sizeof(float));
-		self->m_vertexBase = (unsigned char*)vertices;
-	}
-SWIGINTERN void delete_btIndexedMesh(btIndexedMesh *self){
-		if (self->m_triangleIndexBase != NULL) {
-			short *indices = (short*)self->m_triangleIndexBase;
-			delete[] indices;			
-			self->m_triangleIndexBase = NULL;
-		}
-		if (self->m_vertexBase != NULL) {
-			float *vertices = (float*)self->m_vertexBase;
-			delete[] vertices;
-			self->m_vertexBase = NULL;
-		}
-		delete self;
+SWIGINTERN void btIndexedMesh_setVertexBase(btIndexedMesh *self,float *data){
+		self->m_vertexBase = (unsigned char*)data;
 	}
 
 #include <BulletCollision/CollisionShapes/btMaterial.h>
@@ -1736,16 +1719,16 @@ SWIGINTERN void delete_btIndexedMesh(btIndexedMesh *self){
 #include <BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
 
 
-#include <BulletCollision/CollisionShapes/btConvexHullShape.h>
-
-
 #include <BulletCollision/CollisionShapes/btShapeHull.h>
 
-SWIGINTERN btConvexHullShape *btShapeHull_createConvexHullShape(btShapeHull *self){
-		btConvexHullShape *result = new btConvexHullShape();
-		for (int i = 0; i < self->numVertices(); i++) {
-			result->addPoint(self->getVertexPointer()[i]);
-		}
+
+#include <BulletCollision/CollisionShapes/btConvexHullShape.h>
+
+SWIGINTERN btConvexHullShape *new_btConvexHullShape__SWIG_4(btShapeHull const *hull){
+		btConvexHullShape *result = new btConvexHullShape(); 
+		for (int i = 0; i < hull->numVertices(); i++) {
+			result->addPoint(hull->getVertexPointer()[i]);
+		}		
 		return result;
 	}
 
@@ -3417,28 +3400,40 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btUn
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btSwapEndianDouble(JNIEnv *jenv, jclass jcls, jdouble jarg1, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btSwapEndianDouble(JNIEnv *jenv, jclass jcls, jdouble jarg1, jobject jarg2) {
   double arg1 ;
   unsigned char *arg2 = (unsigned char *) 0 ;
   
   (void)jenv;
   (void)jcls;
   arg1 = (double)jarg1; 
-  arg2 = *(unsigned char **)&jarg2; 
+  {
+    arg2 = (unsigned char*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   btSwapEndianDouble(arg1,arg2);
+  
 }
 
 
-SWIGEXPORT jdouble JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btUnswapEndianDouble(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+SWIGEXPORT jdouble JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btUnswapEndianDouble(JNIEnv *jenv, jclass jcls, jobject jarg1) {
   jdouble jresult = 0 ;
   unsigned char *arg1 = (unsigned char *) 0 ;
   double result;
   
   (void)jenv;
   (void)jcls;
-  arg1 = *(unsigned char **)&jarg1; 
+  {
+    arg1 = (unsigned char*)jenv->GetDirectBufferAddress(jarg1);
+    if (arg1 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   result = (double)btUnswapEndianDouble((unsigned char const *)arg1);
   jresult = (jdouble)result; 
+  
   return jresult;
 }
 
@@ -3520,6 +3515,614 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete
   (void)jenv;
   (void)jcls;
   arg1 = *(btTypedObject **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransform_1_1SWIG_10(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btTransform *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btTransform *)new btTransform();
+  *(btTransform **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransform_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jobject jarg1, jobject jarg2) {
+  jlong jresult = 0 ;
+  btQuaternion *arg1 = 0 ;
+  btVector3 *arg2 = 0 ;
+  btTransform *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  btQuaternion local_arg1;
+  gdx_setBtQuaternionFromGdxQuaternion(jenv, local_arg1, jarg1);
+  arg1 = &local_arg1;
+  gdxAutoCommitQuaternion auto_commit_arg1(jenv, jarg1, &local_arg1);
+  btVector3 local_arg2;
+  gdx_setBtVector3FromGdxVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  result = (btTransform *)new btTransform((btQuaternion const &)*arg1,(btVector3 const &)*arg2);
+  *(btTransform **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransform_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jobject jarg1) {
+  jlong jresult = 0 ;
+  btQuaternion *arg1 = 0 ;
+  btTransform *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  btQuaternion local_arg1;
+  gdx_setBtQuaternionFromGdxQuaternion(jenv, local_arg1, jarg1);
+  arg1 = &local_arg1;
+  gdxAutoCommitQuaternion auto_commit_arg1(jenv, jarg1, &local_arg1);
+  result = (btTransform *)new btTransform((btQuaternion const &)*arg1);
+  *(btTransform **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransform_1_1SWIG_13(JNIEnv *jenv, jclass jcls, jobject jarg1, jobject jarg2) {
+  jlong jresult = 0 ;
+  btMatrix3x3 *arg1 = 0 ;
+  btVector3 *arg2 = 0 ;
+  btTransform *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  btMatrix3x3 local_arg1;
+  gdx_setBtMatrix3x3FromGdxMatrix3(jenv, local_arg1, jarg1);
+  arg1 = &local_arg1;
+  gdxAutoCommitMatrix3 auto_commit_arg1(jenv, jarg1, &local_arg1);
+  btVector3 local_arg2;
+  gdx_setBtVector3FromGdxVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  result = (btTransform *)new btTransform((btMatrix3x3 const &)*arg1,(btVector3 const &)*arg2);
+  *(btTransform **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransform_1_1SWIG_14(JNIEnv *jenv, jclass jcls, jobject jarg1) {
+  jlong jresult = 0 ;
+  btMatrix3x3 *arg1 = 0 ;
+  btTransform *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  btMatrix3x3 local_arg1;
+  gdx_setBtMatrix3x3FromGdxMatrix3(jenv, local_arg1, jarg1);
+  arg1 = &local_arg1;
+  gdxAutoCommitMatrix3 auto_commit_arg1(jenv, jarg1, &local_arg1);
+  result = (btTransform *)new btTransform((btMatrix3x3 const &)*arg1);
+  *(btTransform **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransform_1_1SWIG_15(JNIEnv *jenv, jclass jcls, jobject jarg1) {
+  jlong jresult = 0 ;
+  btTransform *arg1 = 0 ;
+  btTransform *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  btTransform local_arg1;
+  gdx_setBtTransformFromGdxMatrix4(jenv, local_arg1, jarg1);
+  arg1 = &local_arg1;
+  gdxAutoCommitMatrix4 auto_commit_arg1(jenv, jarg1, &local_arg1);
+  result = (btTransform *)new btTransform((btTransform const &)*arg1);
+  *(btTransform **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1mult(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3) {
+  btTransform *arg1 = (btTransform *) 0 ;
+  btTransform *arg2 = 0 ;
+  btTransform *arg3 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransform **)&jarg1; 
+  btTransform local_arg2;
+  gdx_setBtTransformFromGdxMatrix4(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitMatrix4 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btTransform local_arg3;
+  gdx_setBtTransformFromGdxMatrix4(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitMatrix4 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  (arg1)->mult((btTransform const &)*arg2,(btTransform const &)*arg3);
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1getBasis_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btTransform *arg1 = (btTransform *) 0 ;
+  btMatrix3x3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransform **)&jarg1; 
+  result = (btMatrix3x3 *) &(arg1)->getBasis();
+  jresult = gdx_getReturnMatrix3(jenv);
+  gdx_setGdxMatrix3FromBtMatrix3x3(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1getOrigin_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btTransform *arg1 = (btTransform *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransform **)&jarg1; 
+  result = (btVector3 *) &(arg1)->getOrigin();
+  jresult = gdx_getReturnVector3(jenv);
+  gdx_setGdxVector3FromBtVector3(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1getRotation(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btTransform *arg1 = (btTransform *) 0 ;
+  btQuaternion result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransform **)&jarg1; 
+  result = ((btTransform const *)arg1)->getRotation();
+  jresult = gdx_getReturnQuaternion(jenv);
+  gdx_setGdxQuaternionFromBtQuaternion(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1setFromOpenGLMatrix(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloatArray jarg2) {
+  btTransform *arg1 = (btTransform *) 0 ;
+  btScalar *arg2 = (btScalar *) 0 ;
+  jfloat *jarr2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransform **)&jarg1; 
+  if (!SWIG_JavaArrayInFloat(jenv, &jarr2, (float **)&arg2, jarg2)) return ; 
+  (arg1)->setFromOpenGLMatrix((btScalar const *)arg2);
+  SWIG_JavaArrayArgoutFloat(jenv, jarr2, (float *)arg2, jarg2); 
+  delete [] arg2; 
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1getOpenGLMatrix(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloatArray jarg2) {
+  btTransform *arg1 = (btTransform *) 0 ;
+  btScalar *arg2 = (btScalar *) 0 ;
+  jfloat *jarr2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransform **)&jarg1; 
+  if (!SWIG_JavaArrayInFloat(jenv, &jarr2, (float **)&arg2, jarg2)) return ; 
+  ((btTransform const *)arg1)->getOpenGLMatrix(arg2);
+  SWIG_JavaArrayArgoutFloat(jenv, jarr2, (float *)arg2, jarg2); 
+  delete [] arg2; 
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1setOrigin(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btTransform *arg1 = (btTransform *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransform **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setBtVector3FromGdxVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->setOrigin((btVector3 const &)*arg2);
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1invXform(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  jobject jresult = 0 ;
+  btTransform *arg1 = (btTransform *) 0 ;
+  btVector3 *arg2 = 0 ;
+  btVector3 result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransform **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setBtVector3FromGdxVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  result = ((btTransform const *)arg1)->invXform((btVector3 const &)*arg2);
+  jresult = gdx_getReturnVector3(jenv);
+  gdx_setGdxVector3FromBtVector3(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1setBasis(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btTransform *arg1 = (btTransform *) 0 ;
+  btMatrix3x3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransform **)&jarg1; 
+  btMatrix3x3 local_arg2;
+  gdx_setBtMatrix3x3FromGdxMatrix3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitMatrix3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->setBasis((btMatrix3x3 const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1setRotation(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btTransform *arg1 = (btTransform *) 0 ;
+  btQuaternion *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransform **)&jarg1; 
+  btQuaternion local_arg2;
+  gdx_setBtQuaternionFromGdxQuaternion(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitQuaternion auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->setRotation((btQuaternion const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1setIdentity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btTransform *arg1 = (btTransform *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransform **)&jarg1; 
+  (arg1)->setIdentity();
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1inverse(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btTransform *arg1 = (btTransform *) 0 ;
+  btTransform result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransform **)&jarg1; 
+  result = ((btTransform const *)arg1)->inverse();
+  jresult = gdx_getReturnMatrix4(jenv);
+  gdx_setGdxMatrix4FromBtTransform(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1inverseTimes(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  jobject jresult = 0 ;
+  btTransform *arg1 = (btTransform *) 0 ;
+  btTransform *arg2 = 0 ;
+  btTransform result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransform **)&jarg1; 
+  btTransform local_arg2;
+  gdx_setBtTransformFromGdxMatrix4(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitMatrix4 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  result = ((btTransform const *)arg1)->inverseTimes((btTransform const &)*arg2);
+  jresult = gdx_getReturnMatrix4(jenv);
+  gdx_setGdxMatrix4FromBtTransform(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1getIdentity(JNIEnv *jenv, jclass jcls) {
+  jobject jresult = 0 ;
+  btTransform *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btTransform *) &btTransform::getIdentity();
+  jresult = gdx_getReturnMatrix4(jenv);
+  gdx_setGdxMatrix4FromBtTransform(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1serialize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTransform *arg1 = (btTransform *) 0 ;
+  btTransformFloatData *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTransform **)&jarg1; 
+  arg2 = *(btTransformFloatData **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTransformFloatData & reference is null");
+    return ;
+  } 
+  ((btTransform const *)arg1)->serialize(*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1serializeFloat(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTransform *arg1 = (btTransform *) 0 ;
+  btTransformFloatData *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTransform **)&jarg1; 
+  arg2 = *(btTransformFloatData **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTransformFloatData & reference is null");
+    return ;
+  } 
+  ((btTransform const *)arg1)->serializeFloat(*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1deSerialize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTransform *arg1 = (btTransform *) 0 ;
+  btTransformFloatData *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTransform **)&jarg1; 
+  arg2 = *(btTransformFloatData **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTransformFloatData const & reference is null");
+    return ;
+  } 
+  (arg1)->deSerialize((btTransformFloatData const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1deSerializeDouble(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTransform *arg1 = (btTransform *) 0 ;
+  btTransformDoubleData *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTransform **)&jarg1; 
+  arg2 = *(btTransformDoubleData **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTransformDoubleData const & reference is null");
+    return ;
+  } 
+  (arg1)->deSerializeDouble((btTransformDoubleData const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1deSerializeFloat(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTransform *arg1 = (btTransform *) 0 ;
+  btTransformFloatData *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTransform **)&jarg1; 
+  arg2 = *(btTransformFloatData **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTransformFloatData const & reference is null");
+    return ;
+  } 
+  (arg1)->deSerializeFloat((btTransformFloatData const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btTransform(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btTransform *arg1 = (btTransform *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btTransform **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformFloatData_1m_1basis_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  btTransformFloatData *arg1 = (btTransformFloatData *) 0 ;
+  btMatrix3x3FloatData arg2 ;
+  btMatrix3x3FloatData *argp2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransformFloatData **)&jarg1; 
+  argp2 = *(btMatrix3x3FloatData **)&jarg2; 
+  if (!argp2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null btMatrix3x3FloatData");
+    return ;
+  }
+  arg2 = *argp2; 
+  if (arg1) (arg1)->m_basis = arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformFloatData_1m_1basis_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTransformFloatData *arg1 = (btTransformFloatData *) 0 ;
+  btMatrix3x3FloatData result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransformFloatData **)&jarg1; 
+  result =  ((arg1)->m_basis);
+  *(btMatrix3x3FloatData **)&jresult = new btMatrix3x3FloatData((const btMatrix3x3FloatData &)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformFloatData_1m_1origin_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTransformFloatData *arg1 = (btTransformFloatData *) 0 ;
+  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTransformFloatData **)&jarg1; 
+  arg2 = *(btVector3FloatData **)&jarg2; 
+  if (arg1) (arg1)->m_origin = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformFloatData_1m_1origin_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTransformFloatData *arg1 = (btTransformFloatData *) 0 ;
+  btVector3FloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransformFloatData **)&jarg1; 
+  result = (btVector3FloatData *)& ((arg1)->m_origin);
+  *(btVector3FloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransformFloatData(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btTransformFloatData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btTransformFloatData *)new btTransformFloatData();
+  *(btTransformFloatData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btTransformFloatData(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btTransformFloatData *arg1 = (btTransformFloatData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btTransformFloatData **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformDoubleData_1m_1basis_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  btTransformDoubleData *arg1 = (btTransformDoubleData *) 0 ;
+  btMatrix3x3DoubleData arg2 ;
+  btMatrix3x3DoubleData *argp2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransformDoubleData **)&jarg1; 
+  argp2 = *(btMatrix3x3DoubleData **)&jarg2; 
+  if (!argp2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null btMatrix3x3DoubleData");
+    return ;
+  }
+  arg2 = *argp2; 
+  if (arg1) (arg1)->m_basis = arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformDoubleData_1m_1basis_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTransformDoubleData *arg1 = (btTransformDoubleData *) 0 ;
+  btMatrix3x3DoubleData result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransformDoubleData **)&jarg1; 
+  result =  ((arg1)->m_basis);
+  *(btMatrix3x3DoubleData **)&jresult = new btMatrix3x3DoubleData((const btMatrix3x3DoubleData &)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformDoubleData_1m_1origin_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btTransformDoubleData *arg1 = (btTransformDoubleData *) 0 ;
+  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btTransformDoubleData **)&jarg1; 
+  arg2 = *(btVector3DoubleData **)&jarg2; 
+  if (arg1) (arg1)->m_origin = *arg2;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformDoubleData_1m_1origin_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btTransformDoubleData *arg1 = (btTransformDoubleData *) 0 ;
+  btVector3DoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btTransformDoubleData **)&jarg1; 
+  result = (btVector3DoubleData *)& ((arg1)->m_origin);
+  *(btVector3DoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransformDoubleData(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btTransformDoubleData *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btTransformDoubleData *)new btTransformDoubleData();
+  *(btTransformDoubleData **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btTransformDoubleData(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btTransformDoubleData *arg1 = (btTransformDoubleData *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btTransformDoubleData **)&jarg1; 
   delete arg1;
 }
 
@@ -5779,7 +6382,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTran
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_testQuantizedAabbAgainstQuantizedAabb(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jlong jarg3, jlong jarg4) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_testQuantizedAabbAgainstQuantizedAabb(JNIEnv *jenv, jclass jcls, jobject jarg1, jobject jarg2, jobject jarg3, jobject jarg4) {
   jlong jresult = 0 ;
   unsigned short *arg1 = (unsigned short *) 0 ;
   unsigned short *arg2 = (unsigned short *) 0 ;
@@ -5789,12 +6392,36 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_testQ
   
   (void)jenv;
   (void)jcls;
-  arg1 = *(unsigned short **)&jarg1; 
-  arg2 = *(unsigned short **)&jarg2; 
-  arg3 = *(unsigned short **)&jarg3; 
-  arg4 = *(unsigned short **)&jarg4; 
+  {
+    arg1 = (unsigned short*)jenv->GetDirectBufferAddress(jarg1);
+    if (arg1 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  {
+    arg2 = (unsigned short*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  {
+    arg3 = (unsigned short*)jenv->GetDirectBufferAddress(jarg3);
+    if (arg3 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  {
+    arg4 = (unsigned short*)jenv->GetDirectBufferAddress(jarg4);
+    if (arg4 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   result = (unsigned int)testQuantizedAabbAgainstQuantizedAabb((unsigned short const *)arg1,(unsigned short const *)arg2,(unsigned short const *)arg3,(unsigned short const *)arg4);
   jresult = (jlong)result; 
+  
+  
+  
+  
   return jresult;
 }
 
@@ -7194,614 +7821,6 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_GEN_1
   result = (unsigned int)GEN_rand();
   jresult = (jlong)result; 
   return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransform_1_1SWIG_10(JNIEnv *jenv, jclass jcls) {
-  jlong jresult = 0 ;
-  btTransform *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  result = (btTransform *)new btTransform();
-  *(btTransform **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransform_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jobject jarg1, jobject jarg2) {
-  jlong jresult = 0 ;
-  btQuaternion *arg1 = 0 ;
-  btVector3 *arg2 = 0 ;
-  btTransform *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  btQuaternion local_arg1;
-  gdx_setBtQuaternionFromGdxQuaternion(jenv, local_arg1, jarg1);
-  arg1 = &local_arg1;
-  gdxAutoCommitQuaternion auto_commit_arg1(jenv, jarg1, &local_arg1);
-  btVector3 local_arg2;
-  gdx_setBtVector3FromGdxVector3(jenv, local_arg2, jarg2);
-  arg2 = &local_arg2;
-  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
-  result = (btTransform *)new btTransform((btQuaternion const &)*arg1,(btVector3 const &)*arg2);
-  *(btTransform **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransform_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jobject jarg1) {
-  jlong jresult = 0 ;
-  btQuaternion *arg1 = 0 ;
-  btTransform *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  btQuaternion local_arg1;
-  gdx_setBtQuaternionFromGdxQuaternion(jenv, local_arg1, jarg1);
-  arg1 = &local_arg1;
-  gdxAutoCommitQuaternion auto_commit_arg1(jenv, jarg1, &local_arg1);
-  result = (btTransform *)new btTransform((btQuaternion const &)*arg1);
-  *(btTransform **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransform_1_1SWIG_13(JNIEnv *jenv, jclass jcls, jobject jarg1, jobject jarg2) {
-  jlong jresult = 0 ;
-  btMatrix3x3 *arg1 = 0 ;
-  btVector3 *arg2 = 0 ;
-  btTransform *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  btMatrix3x3 local_arg1;
-  gdx_setBtMatrix3x3FromGdxMatrix3(jenv, local_arg1, jarg1);
-  arg1 = &local_arg1;
-  gdxAutoCommitMatrix3 auto_commit_arg1(jenv, jarg1, &local_arg1);
-  btVector3 local_arg2;
-  gdx_setBtVector3FromGdxVector3(jenv, local_arg2, jarg2);
-  arg2 = &local_arg2;
-  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
-  result = (btTransform *)new btTransform((btMatrix3x3 const &)*arg1,(btVector3 const &)*arg2);
-  *(btTransform **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransform_1_1SWIG_14(JNIEnv *jenv, jclass jcls, jobject jarg1) {
-  jlong jresult = 0 ;
-  btMatrix3x3 *arg1 = 0 ;
-  btTransform *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  btMatrix3x3 local_arg1;
-  gdx_setBtMatrix3x3FromGdxMatrix3(jenv, local_arg1, jarg1);
-  arg1 = &local_arg1;
-  gdxAutoCommitMatrix3 auto_commit_arg1(jenv, jarg1, &local_arg1);
-  result = (btTransform *)new btTransform((btMatrix3x3 const &)*arg1);
-  *(btTransform **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransform_1_1SWIG_15(JNIEnv *jenv, jclass jcls, jobject jarg1) {
-  jlong jresult = 0 ;
-  btTransform *arg1 = 0 ;
-  btTransform *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  btTransform local_arg1;
-  gdx_setBtTransformFromGdxMatrix4(jenv, local_arg1, jarg1);
-  arg1 = &local_arg1;
-  gdxAutoCommitMatrix4 auto_commit_arg1(jenv, jarg1, &local_arg1);
-  result = (btTransform *)new btTransform((btTransform const &)*arg1);
-  *(btTransform **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1mult(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3) {
-  btTransform *arg1 = (btTransform *) 0 ;
-  btTransform *arg2 = 0 ;
-  btTransform *arg3 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransform **)&jarg1; 
-  btTransform local_arg2;
-  gdx_setBtTransformFromGdxMatrix4(jenv, local_arg2, jarg2);
-  arg2 = &local_arg2;
-  gdxAutoCommitMatrix4 auto_commit_arg2(jenv, jarg2, &local_arg2);
-  btTransform local_arg3;
-  gdx_setBtTransformFromGdxMatrix4(jenv, local_arg3, jarg3);
-  arg3 = &local_arg3;
-  gdxAutoCommitMatrix4 auto_commit_arg3(jenv, jarg3, &local_arg3);
-  (arg1)->mult((btTransform const &)*arg2,(btTransform const &)*arg3);
-}
-
-
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1getBasis_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jobject jresult = 0 ;
-  btTransform *arg1 = (btTransform *) 0 ;
-  btMatrix3x3 *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransform **)&jarg1; 
-  result = (btMatrix3x3 *) &(arg1)->getBasis();
-  jresult = gdx_getReturnMatrix3(jenv);
-  gdx_setGdxMatrix3FromBtMatrix3x3(jenv, jresult, result);
-  return jresult;
-}
-
-
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1getOrigin_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jobject jresult = 0 ;
-  btTransform *arg1 = (btTransform *) 0 ;
-  btVector3 *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransform **)&jarg1; 
-  result = (btVector3 *) &(arg1)->getOrigin();
-  jresult = gdx_getReturnVector3(jenv);
-  gdx_setGdxVector3FromBtVector3(jenv, jresult, result);
-  return jresult;
-}
-
-
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1getRotation(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jobject jresult = 0 ;
-  btTransform *arg1 = (btTransform *) 0 ;
-  btQuaternion result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransform **)&jarg1; 
-  result = ((btTransform const *)arg1)->getRotation();
-  jresult = gdx_getReturnQuaternion(jenv);
-  gdx_setGdxQuaternionFromBtQuaternion(jenv, jresult, result);
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1setFromOpenGLMatrix(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloatArray jarg2) {
-  btTransform *arg1 = (btTransform *) 0 ;
-  btScalar *arg2 = (btScalar *) 0 ;
-  jfloat *jarr2 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransform **)&jarg1; 
-  if (!SWIG_JavaArrayInFloat(jenv, &jarr2, (float **)&arg2, jarg2)) return ; 
-  (arg1)->setFromOpenGLMatrix((btScalar const *)arg2);
-  SWIG_JavaArrayArgoutFloat(jenv, jarr2, (float *)arg2, jarg2); 
-  delete [] arg2; 
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1getOpenGLMatrix(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloatArray jarg2) {
-  btTransform *arg1 = (btTransform *) 0 ;
-  btScalar *arg2 = (btScalar *) 0 ;
-  jfloat *jarr2 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransform **)&jarg1; 
-  if (!SWIG_JavaArrayInFloat(jenv, &jarr2, (float **)&arg2, jarg2)) return ; 
-  ((btTransform const *)arg1)->getOpenGLMatrix(arg2);
-  SWIG_JavaArrayArgoutFloat(jenv, jarr2, (float *)arg2, jarg2); 
-  delete [] arg2; 
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1setOrigin(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
-  btTransform *arg1 = (btTransform *) 0 ;
-  btVector3 *arg2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransform **)&jarg1; 
-  btVector3 local_arg2;
-  gdx_setBtVector3FromGdxVector3(jenv, local_arg2, jarg2);
-  arg2 = &local_arg2;
-  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
-  (arg1)->setOrigin((btVector3 const &)*arg2);
-}
-
-
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1invXform(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
-  jobject jresult = 0 ;
-  btTransform *arg1 = (btTransform *) 0 ;
-  btVector3 *arg2 = 0 ;
-  btVector3 result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransform **)&jarg1; 
-  btVector3 local_arg2;
-  gdx_setBtVector3FromGdxVector3(jenv, local_arg2, jarg2);
-  arg2 = &local_arg2;
-  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
-  result = ((btTransform const *)arg1)->invXform((btVector3 const &)*arg2);
-  jresult = gdx_getReturnVector3(jenv);
-  gdx_setGdxVector3FromBtVector3(jenv, jresult, result);
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1setBasis(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
-  btTransform *arg1 = (btTransform *) 0 ;
-  btMatrix3x3 *arg2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransform **)&jarg1; 
-  btMatrix3x3 local_arg2;
-  gdx_setBtMatrix3x3FromGdxMatrix3(jenv, local_arg2, jarg2);
-  arg2 = &local_arg2;
-  gdxAutoCommitMatrix3 auto_commit_arg2(jenv, jarg2, &local_arg2);
-  (arg1)->setBasis((btMatrix3x3 const &)*arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1setRotation(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
-  btTransform *arg1 = (btTransform *) 0 ;
-  btQuaternion *arg2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransform **)&jarg1; 
-  btQuaternion local_arg2;
-  gdx_setBtQuaternionFromGdxQuaternion(jenv, local_arg2, jarg2);
-  arg2 = &local_arg2;
-  gdxAutoCommitQuaternion auto_commit_arg2(jenv, jarg2, &local_arg2);
-  (arg1)->setRotation((btQuaternion const &)*arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1setIdentity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  btTransform *arg1 = (btTransform *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransform **)&jarg1; 
-  (arg1)->setIdentity();
-}
-
-
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1inverse(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jobject jresult = 0 ;
-  btTransform *arg1 = (btTransform *) 0 ;
-  btTransform result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransform **)&jarg1; 
-  result = ((btTransform const *)arg1)->inverse();
-  jresult = gdx_getReturnMatrix4(jenv);
-  gdx_setGdxMatrix4FromBtTransform(jenv, jresult, result);
-  return jresult;
-}
-
-
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1inverseTimes(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
-  jobject jresult = 0 ;
-  btTransform *arg1 = (btTransform *) 0 ;
-  btTransform *arg2 = 0 ;
-  btTransform result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransform **)&jarg1; 
-  btTransform local_arg2;
-  gdx_setBtTransformFromGdxMatrix4(jenv, local_arg2, jarg2);
-  arg2 = &local_arg2;
-  gdxAutoCommitMatrix4 auto_commit_arg2(jenv, jarg2, &local_arg2);
-  result = ((btTransform const *)arg1)->inverseTimes((btTransform const &)*arg2);
-  jresult = gdx_getReturnMatrix4(jenv);
-  gdx_setGdxMatrix4FromBtTransform(jenv, jresult, result);
-  return jresult;
-}
-
-
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1getIdentity(JNIEnv *jenv, jclass jcls) {
-  jobject jresult = 0 ;
-  btTransform *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  result = (btTransform *) &btTransform::getIdentity();
-  jresult = gdx_getReturnMatrix4(jenv);
-  gdx_setGdxMatrix4FromBtTransform(jenv, jresult, result);
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1serialize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  btTransform *arg1 = (btTransform *) 0 ;
-  btTransformFloatData *arg2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btTransform **)&jarg1; 
-  arg2 = *(btTransformFloatData **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTransformFloatData & reference is null");
-    return ;
-  } 
-  ((btTransform const *)arg1)->serialize(*arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1serializeFloat(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  btTransform *arg1 = (btTransform *) 0 ;
-  btTransformFloatData *arg2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btTransform **)&jarg1; 
-  arg2 = *(btTransformFloatData **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTransformFloatData & reference is null");
-    return ;
-  } 
-  ((btTransform const *)arg1)->serializeFloat(*arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1deSerialize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  btTransform *arg1 = (btTransform *) 0 ;
-  btTransformFloatData *arg2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btTransform **)&jarg1; 
-  arg2 = *(btTransformFloatData **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTransformFloatData const & reference is null");
-    return ;
-  } 
-  (arg1)->deSerialize((btTransformFloatData const &)*arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1deSerializeDouble(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  btTransform *arg1 = (btTransform *) 0 ;
-  btTransformDoubleData *arg2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btTransform **)&jarg1; 
-  arg2 = *(btTransformDoubleData **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTransformDoubleData const & reference is null");
-    return ;
-  } 
-  (arg1)->deSerializeDouble((btTransformDoubleData const &)*arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransform_1deSerializeFloat(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  btTransform *arg1 = (btTransform *) 0 ;
-  btTransformFloatData *arg2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btTransform **)&jarg1; 
-  arg2 = *(btTransformFloatData **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btTransformFloatData const & reference is null");
-    return ;
-  } 
-  (arg1)->deSerializeFloat((btTransformFloatData const &)*arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btTransform(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  btTransform *arg1 = (btTransform *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(btTransform **)&jarg1; 
-  delete arg1;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformFloatData_1m_1basis_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
-  btTransformFloatData *arg1 = (btTransformFloatData *) 0 ;
-  btMatrix3x3FloatData arg2 ;
-  btMatrix3x3FloatData *argp2 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransformFloatData **)&jarg1; 
-  argp2 = *(btMatrix3x3FloatData **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null btMatrix3x3FloatData");
-    return ;
-  }
-  arg2 = *argp2; 
-  if (arg1) (arg1)->m_basis = arg2;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformFloatData_1m_1basis_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btTransformFloatData *arg1 = (btTransformFloatData *) 0 ;
-  btMatrix3x3FloatData result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransformFloatData **)&jarg1; 
-  result =  ((arg1)->m_basis);
-  *(btMatrix3x3FloatData **)&jresult = new btMatrix3x3FloatData((const btMatrix3x3FloatData &)result); 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformFloatData_1m_1origin_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  btTransformFloatData *arg1 = (btTransformFloatData *) 0 ;
-  btVector3FloatData *arg2 = (btVector3FloatData *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btTransformFloatData **)&jarg1; 
-  arg2 = *(btVector3FloatData **)&jarg2; 
-  if (arg1) (arg1)->m_origin = *arg2;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformFloatData_1m_1origin_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btTransformFloatData *arg1 = (btTransformFloatData *) 0 ;
-  btVector3FloatData *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransformFloatData **)&jarg1; 
-  result = (btVector3FloatData *)& ((arg1)->m_origin);
-  *(btVector3FloatData **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransformFloatData(JNIEnv *jenv, jclass jcls) {
-  jlong jresult = 0 ;
-  btTransformFloatData *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  result = (btTransformFloatData *)new btTransformFloatData();
-  *(btTransformFloatData **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btTransformFloatData(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  btTransformFloatData *arg1 = (btTransformFloatData *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(btTransformFloatData **)&jarg1; 
-  delete arg1;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformDoubleData_1m_1basis_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
-  btTransformDoubleData *arg1 = (btTransformDoubleData *) 0 ;
-  btMatrix3x3DoubleData arg2 ;
-  btMatrix3x3DoubleData *argp2 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransformDoubleData **)&jarg1; 
-  argp2 = *(btMatrix3x3DoubleData **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null btMatrix3x3DoubleData");
-    return ;
-  }
-  arg2 = *argp2; 
-  if (arg1) (arg1)->m_basis = arg2;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformDoubleData_1m_1basis_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btTransformDoubleData *arg1 = (btTransformDoubleData *) 0 ;
-  btMatrix3x3DoubleData result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransformDoubleData **)&jarg1; 
-  result =  ((arg1)->m_basis);
-  *(btMatrix3x3DoubleData **)&jresult = new btMatrix3x3DoubleData((const btMatrix3x3DoubleData &)result); 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformDoubleData_1m_1origin_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  btTransformDoubleData *arg1 = (btTransformDoubleData *) 0 ;
-  btVector3DoubleData *arg2 = (btVector3DoubleData *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btTransformDoubleData **)&jarg1; 
-  arg2 = *(btVector3DoubleData **)&jarg2; 
-  if (arg1) (arg1)->m_origin = *arg2;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTransformDoubleData_1m_1origin_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btTransformDoubleData *arg1 = (btTransformDoubleData *) 0 ;
-  btVector3DoubleData *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btTransformDoubleData **)&jarg1; 
-  result = (btVector3DoubleData *)& ((arg1)->m_origin);
-  *(btVector3DoubleData **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTransformDoubleData(JNIEnv *jenv, jclass jcls) {
-  jlong jresult = 0 ;
-  btTransformDoubleData *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  result = (btTransformDoubleData *)new btTransformDoubleData();
-  *(btTransformDoubleData **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btTransformDoubleData(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  btTransformDoubleData *arg1 = (btTransformDoubleData *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(btTransformDoubleData **)&jarg1; 
-  delete arg1;
 }
 
 
@@ -9822,8 +9841,8 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btPool
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btPoolAllocator_1getPoolAddress_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btPoolAllocator_1getPoolAddress_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
   btPoolAllocator *arg1 = (btPoolAllocator *) 0 ;
   unsigned char *result = 0 ;
   
@@ -9921,7 +9940,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCon
 }
 
 
-SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btConvexHullComputer_1compute_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jint jarg3, jint jarg4, jfloat jarg5, jfloat jarg6) {
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btConvexHullComputer_1compute_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jint jarg3, jint jarg4, jfloat jarg5, jfloat jarg6) {
   jfloat jresult = 0 ;
   btConvexHullComputer *arg1 = (btConvexHullComputer *) 0 ;
   float *arg2 = (float *) 0 ;
@@ -9935,18 +9954,24 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCo
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btConvexHullComputer **)&jarg1; 
-  arg2 = *(float **)&jarg2; 
+  {
+    arg2 = (float*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
   arg5 = (btScalar)jarg5; 
   arg6 = (btScalar)jarg6; 
   result = (btScalar)(arg1)->compute((float const *)arg2,arg3,arg4,arg5,arg6);
   jresult = (jfloat)result; 
+  
   return jresult;
 }
 
 
-SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btConvexHullComputer_1compute_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jint jarg3, jint jarg4, jfloat jarg5, jfloat jarg6) {
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btConvexHullComputer_1compute_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jint jarg3, jint jarg4, jfloat jarg5, jfloat jarg6) {
   jfloat jresult = 0 ;
   btConvexHullComputer *arg1 = (btConvexHullComputer *) 0 ;
   double *arg2 = (double *) 0 ;
@@ -9960,13 +9985,19 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCo
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btConvexHullComputer **)&jarg1; 
-  arg2 = *(double **)&jarg2; 
+  {
+    arg2 = (double*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
   arg5 = (btScalar)jarg5; 
   arg6 = (btScalar)jarg6; 
   result = (btScalar)(arg1)->compute((double const *)arg2,arg3,arg4,arg5,arg6);
   jresult = (jfloat)result; 
+  
   return jresult;
 }
 
@@ -10631,7 +10662,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btBlo
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btBlock_1address_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btBlock_1address_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   btBlock *arg1 = (btBlock *) 0 ;
   unsigned char *arg2 = (unsigned char *) 0 ;
   
@@ -10639,13 +10670,25 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btBloc
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btBlock **)&jarg1; 
-  arg2 = *(unsigned char **)&jarg2; 
-  if (arg1) (arg1)->address = arg2;
+  {
+    arg2 = (unsigned char*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  {
+    if (arg2) {
+      arg1->address = arg2;
+    } else {
+      arg1->address = 0;
+    }
+  }
+  
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btBlock_1address_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btBlock_1address_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
   btBlock *arg1 = (btBlock *) 0 ;
   unsigned char *result = 0 ;
   
@@ -10744,8 +10787,8 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btStac
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btStackAlloc_1allocate(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
-  jlong jresult = 0 ;
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btStackAlloc_1allocate(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+  jobject jresult = 0 ;
   btStackAlloc *arg1 = (btStackAlloc *) 0 ;
   unsigned int arg2 ;
   unsigned char *result = 0 ;
@@ -13394,13 +13437,12 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt_1collideKDOP(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jfloatArray jarg3, jint jarg4, jlong jarg5) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt_1collideKDOP(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jint jarg4, jlong jarg5) {
   btDbvtNode *arg1 = (btDbvtNode *) 0 ;
   btVector3 *arg2 = (btVector3 *) 0 ;
   btScalar *arg3 = (btScalar *) 0 ;
   int arg4 ;
   btDbvt::ICollide *arg5 = 0 ;
-  jfloat *jarr3 ;
   
   (void)jenv;
   (void)jcls;
@@ -13408,7 +13450,12 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt
   (void)jarg2_;
   arg1 = *(btDbvtNode **)&jarg1; 
   arg2 = *(btVector3 **)&jarg2; 
-  if (!SWIG_JavaArrayInFloat(jenv, &jarr3, (float **)&arg3, jarg3)) return ; 
+  {
+    arg3 = (btScalar*)jenv->GetDirectBufferAddress(jarg3);
+    if (arg3 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   arg4 = (int)jarg4; 
   arg5 = *(btDbvt::ICollide **)&jarg5;
   if (!arg5) {
@@ -13416,12 +13463,11 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt
     return ;
   } 
   btDbvt::collideKDOP((btDbvtNode const *)arg1,(btVector3 const *)arg2,(float const *)arg3,arg4,*arg5);
-  SWIG_JavaArrayArgoutFloat(jenv, jarr3, (float *)arg3, jarg3); 
-  delete [] arg3; 
+  
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt_1collideOCL_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jfloatArray jarg3, jobject jarg4, jint jarg5, jlong jarg6, jboolean jarg7) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt_1collideOCL_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jobject jarg4, jint jarg5, jlong jarg6, jboolean jarg7) {
   btDbvtNode *arg1 = (btDbvtNode *) 0 ;
   btVector3 *arg2 = (btVector3 *) 0 ;
   btScalar *arg3 = (btScalar *) 0 ;
@@ -13429,7 +13475,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt
   int arg5 ;
   btDbvt::ICollide *arg6 = 0 ;
   bool arg7 ;
-  jfloat *jarr3 ;
   
   (void)jenv;
   (void)jcls;
@@ -13437,7 +13482,12 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt
   (void)jarg2_;
   arg1 = *(btDbvtNode **)&jarg1; 
   arg2 = *(btVector3 **)&jarg2; 
-  if (!SWIG_JavaArrayInFloat(jenv, &jarr3, (float **)&arg3, jarg3)) return ; 
+  {
+    arg3 = (btScalar*)jenv->GetDirectBufferAddress(jarg3);
+    if (arg3 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   btVector3 local_arg4;
   gdx_setBtVector3FromGdxVector3(jenv, local_arg4, jarg4);
   arg4 = &local_arg4;
@@ -13450,19 +13500,17 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt
   } 
   arg7 = jarg7 ? true : false; 
   btDbvt::collideOCL((btDbvtNode const *)arg1,(btVector3 const *)arg2,(float const *)arg3,(btVector3 const &)*arg4,arg5,*arg6,arg7);
-  SWIG_JavaArrayArgoutFloat(jenv, jarr3, (float *)arg3, jarg3); 
-  delete [] arg3; 
+  
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt_1collideOCL_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jfloatArray jarg3, jobject jarg4, jint jarg5, jlong jarg6) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt_1collideOCL_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jobject jarg4, jint jarg5, jlong jarg6) {
   btDbvtNode *arg1 = (btDbvtNode *) 0 ;
   btVector3 *arg2 = (btVector3 *) 0 ;
   btScalar *arg3 = (btScalar *) 0 ;
   btVector3 *arg4 = 0 ;
   int arg5 ;
   btDbvt::ICollide *arg6 = 0 ;
-  jfloat *jarr3 ;
   
   (void)jenv;
   (void)jcls;
@@ -13470,7 +13518,12 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt
   (void)jarg2_;
   arg1 = *(btDbvtNode **)&jarg1; 
   arg2 = *(btVector3 **)&jarg2; 
-  if (!SWIG_JavaArrayInFloat(jenv, &jarr3, (float **)&arg3, jarg3)) return ; 
+  {
+    arg3 = (btScalar*)jenv->GetDirectBufferAddress(jarg3);
+    if (arg3 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   btVector3 local_arg4;
   gdx_setBtVector3FromGdxVector3(jenv, local_arg4, jarg4);
   arg4 = &local_arg4;
@@ -13482,8 +13535,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt
     return ;
   } 
   btDbvt::collideOCL((btDbvtNode const *)arg1,(btVector3 const *)arg2,(float const *)arg3,(btVector3 const &)*arg4,arg5,*arg6);
-  SWIG_JavaArrayArgoutFloat(jenv, jarr3, (float *)arg3, jarg3); 
-  delete [] arg3; 
+  
 }
 
 
@@ -13504,7 +13556,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt
 }
 
 
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt_1nearest(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jfloat jarg3, jint jarg4, jint jarg5) {
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt_1nearest(JNIEnv *jenv, jclass jcls, jobject jarg1, jlong jarg2, jfloat jarg3, jint jarg4, jint jarg5) {
   jint jresult = 0 ;
   int *arg1 = (int *) 0 ;
   btDbvt::sStkNPS *arg2 = (btDbvt::sStkNPS *) 0 ;
@@ -13515,13 +13567,19 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDbvt
   
   (void)jenv;
   (void)jcls;
-  arg1 = *(int **)&jarg1; 
+  {
+    arg1 = (int*)jenv->GetDirectBufferAddress(jarg1);
+    if (arg1 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   arg2 = *(btDbvt::sStkNPS **)&jarg2; 
   arg3 = (btScalar)jarg3; 
   arg4 = (int)jarg4; 
   arg5 = (int)jarg5; 
   result = (int)btDbvt::nearest((int const *)arg1,(btDbvt::sStkNPS const *)arg2,arg3,arg4,arg5);
   jresult = (jint)result; 
+  
   return jresult;
 }
 
@@ -14361,7 +14419,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btQuan
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btQuantizedBvh_1quantize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg3, jint jarg4) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btQuantizedBvh_1quantize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3, jint jarg4) {
   btQuantizedBvh *arg1 = (btQuantizedBvh *) 0 ;
   unsigned short *arg2 = (unsigned short *) 0 ;
   btVector3 *arg3 = 0 ;
@@ -14371,17 +14429,23 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btQuan
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btQuantizedBvh **)&jarg1; 
-  arg2 = *(unsigned short **)&jarg2; 
+  {
+    arg2 = (unsigned short*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   btVector3 local_arg3;
   gdx_setBtVector3FromGdxVector3(jenv, local_arg3, jarg3);
   arg3 = &local_arg3;
   gdxAutoCommitVector3 auto_commit_arg3(jenv, jarg3, &local_arg3);
   arg4 = (int)jarg4; 
   ((btQuantizedBvh const *)arg1)->quantize(arg2,(btVector3 const &)*arg3,arg4);
+  
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btQuantizedBvh_1quantizeWithClamp(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg3, jint jarg4) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btQuantizedBvh_1quantizeWithClamp(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3, jint jarg4) {
   btQuantizedBvh *arg1 = (btQuantizedBvh *) 0 ;
   unsigned short *arg2 = (unsigned short *) 0 ;
   btVector3 *arg3 = 0 ;
@@ -14391,17 +14455,23 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btQuan
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btQuantizedBvh **)&jarg1; 
-  arg2 = *(unsigned short **)&jarg2; 
+  {
+    arg2 = (unsigned short*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   btVector3 local_arg3;
   gdx_setBtVector3FromGdxVector3(jenv, local_arg3, jarg3);
   arg3 = &local_arg3;
   gdxAutoCommitVector3 auto_commit_arg3(jenv, jarg3, &local_arg3);
   arg4 = (int)jarg4; 
   ((btQuantizedBvh const *)arg1)->quantizeWithClamp(arg2,(btVector3 const &)*arg3,arg4);
+  
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btQuantizedBvh_1unQuantize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btQuantizedBvh_1unQuantize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   jobject jresult = 0 ;
   btQuantizedBvh *arg1 = (btQuantizedBvh *) 0 ;
   unsigned short *arg2 = (unsigned short *) 0 ;
@@ -14411,10 +14481,16 @@ SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btQ
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btQuantizedBvh **)&jarg1; 
-  arg2 = *(unsigned short **)&jarg2; 
+  {
+    arg2 = (unsigned short*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   result = ((btQuantizedBvh const *)arg1)->unQuantize((unsigned short const *)arg2);
   jresult = gdx_getReturnVector3(jenv);
   gdx_setGdxVector3FromBtVector3(jenv, jresult, result);
+  
   return jresult;
 }
 
@@ -21151,7 +21227,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTriangleInfoMapData_1m_1hashTablePtr_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTriangleInfoMapData_1m_1hashTablePtr_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   btTriangleInfoMapData *arg1 = (btTriangleInfoMapData *) 0 ;
   int *arg2 = (int *) 0 ;
   
@@ -21159,13 +21235,25 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTria
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btTriangleInfoMapData **)&jarg1; 
-  arg2 = *(int **)&jarg2; 
-  if (arg1) (arg1)->m_hashTablePtr = arg2;
+  {
+    arg2 = (int*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  {
+    if (arg2) {
+      arg1->m_hashTablePtr = arg2;
+    } else {
+      arg1->m_hashTablePtr = 0;
+    }
+  }
+  
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTriangleInfoMapData_1m_1hashTablePtr_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTriangleInfoMapData_1m_1hashTablePtr_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
   btTriangleInfoMapData *arg1 = (btTriangleInfoMapData *) 0 ;
   int *result = 0 ;
   
@@ -21179,7 +21267,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTri
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTriangleInfoMapData_1m_1nextPtr_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTriangleInfoMapData_1m_1nextPtr_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   btTriangleInfoMapData *arg1 = (btTriangleInfoMapData *) 0 ;
   int *arg2 = (int *) 0 ;
   
@@ -21187,13 +21275,25 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTria
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btTriangleInfoMapData **)&jarg1; 
-  arg2 = *(int **)&jarg2; 
-  if (arg1) (arg1)->m_nextPtr = arg2;
+  {
+    arg2 = (int*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  {
+    if (arg2) {
+      arg1->m_nextPtr = arg2;
+    } else {
+      arg1->m_nextPtr = 0;
+    }
+  }
+  
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTriangleInfoMapData_1m_1nextPtr_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTriangleInfoMapData_1m_1nextPtr_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
   btTriangleInfoMapData *arg1 = (btTriangleInfoMapData *) 0 ;
   int *result = 0 ;
   
@@ -21236,7 +21336,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTri
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTriangleInfoMapData_1m_1keyArrayPtr_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTriangleInfoMapData_1m_1keyArrayPtr_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   btTriangleInfoMapData *arg1 = (btTriangleInfoMapData *) 0 ;
   int *arg2 = (int *) 0 ;
   
@@ -21244,13 +21344,25 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTria
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btTriangleInfoMapData **)&jarg1; 
-  arg2 = *(int **)&jarg2; 
-  if (arg1) (arg1)->m_keyArrayPtr = arg2;
+  {
+    arg2 = (int*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  {
+    if (arg2) {
+      arg1->m_keyArrayPtr = arg2;
+    } else {
+      arg1->m_keyArrayPtr = 0;
+    }
+  }
+  
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTriangleInfoMapData_1m_1keyArrayPtr_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btTriangleInfoMapData_1m_1keyArrayPtr_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
   btTriangleInfoMapData *arg1 = (btTriangleInfoMapData *) 0 ;
   int *result = 0 ;
   
@@ -23253,24 +23365,27 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btMultiSphereShape(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloatArray jarg2, jint jarg3) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btMultiSphereShape(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jint jarg3) {
   jlong jresult = 0 ;
   btVector3 *arg1 = (btVector3 *) 0 ;
   btScalar *arg2 = (btScalar *) 0 ;
   int arg3 ;
-  jfloat *jarr2 ;
   btMultiSphereShape *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btVector3 **)&jarg1; 
-  if (!SWIG_JavaArrayInFloat(jenv, &jarr2, (float **)&arg2, jarg2)) return 0; 
+  {
+    arg2 = (btScalar*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   arg3 = (int)jarg3; 
   result = (btMultiSphereShape *)new btMultiSphereShape((btVector3 const *)arg1,(btScalar const *)arg2,arg3);
   *(btMultiSphereShape **)&jresult = result; 
-  SWIG_JavaArrayArgoutFloat(jenv, jarr2, (float *)arg2, jarg2); 
-  delete [] arg2; 
+  
   return jresult;
 }
 
@@ -25678,7 +25793,7 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btInde
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIndexedMesh_1m_1triangleIndexBase_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIndexedMesh_1m_1triangleIndexBase_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   btIndexedMesh *arg1 = (btIndexedMesh *) 0 ;
   unsigned char *arg2 = (unsigned char *) 0 ;
   
@@ -25686,13 +25801,25 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btInde
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btIndexedMesh **)&jarg1; 
-  arg2 = *(unsigned char **)&jarg2; 
-  if (arg1) (arg1)->m_triangleIndexBase = (unsigned char const *)arg2;
+  {
+    arg2 = (unsigned char*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  {
+    if (arg2) {
+      arg1->m_triangleIndexBase = arg2;
+    } else {
+      arg1->m_triangleIndexBase = 0;
+    }
+  }
+  
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIndexedMesh_1m_1triangleIndexBase_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIndexedMesh_1m_1triangleIndexBase_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
   btIndexedMesh *arg1 = (btIndexedMesh *) 0 ;
   unsigned char *result = 0 ;
   
@@ -25762,7 +25889,7 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btInde
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIndexedMesh_1m_1vertexBase_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIndexedMesh_1m_1vertexBase_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   btIndexedMesh *arg1 = (btIndexedMesh *) 0 ;
   unsigned char *arg2 = (unsigned char *) 0 ;
   
@@ -25770,13 +25897,25 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btInde
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btIndexedMesh **)&jarg1; 
-  arg2 = *(unsigned char **)&jarg2; 
-  if (arg1) (arg1)->m_vertexBase = (unsigned char const *)arg2;
+  {
+    arg2 = (unsigned char*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  {
+    if (arg2) {
+      arg1->m_vertexBase = arg2;
+    } else {
+      arg1->m_vertexBase = 0;
+    }
+  }
+  
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIndexedMesh_1m_1vertexBase_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIndexedMesh_1m_1vertexBase_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
   btIndexedMesh *arg1 = (btIndexedMesh *) 0 ;
   unsigned char *result = 0 ;
   
@@ -25886,39 +26025,41 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIndexedMesh_1setTriangleIndexBase(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jshortArray jarg2, jlong jarg3) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIndexedMesh_1setTriangleIndexBase(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   btIndexedMesh *arg1 = (btIndexedMesh *) 0 ;
-  short *arg2 ;
-  unsigned long arg3 ;
-  jshort *jarr2 ;
+  short *arg2 = (short *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btIndexedMesh **)&jarg1; 
-  if (!SWIG_JavaArrayInShort(jenv, &jarr2, (short **)&arg2, jarg2)) return ; 
-  arg3 = (unsigned long)jarg3; 
-  btIndexedMesh_setTriangleIndexBase(arg1,arg2,arg3);
-  SWIG_JavaArrayArgoutShort(jenv, jarr2, (short *)arg2, jarg2); 
-  delete [] arg2; 
+  {
+    arg2 = (short*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  btIndexedMesh_setTriangleIndexBase(arg1,arg2);
+  
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIndexedMesh_1setVertexBase(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloatArray jarg2, jlong jarg3) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btIndexedMesh_1setVertexBase(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   btIndexedMesh *arg1 = (btIndexedMesh *) 0 ;
-  float *arg2 ;
-  unsigned long arg3 ;
-  jfloat *jarr2 ;
+  float *arg2 = (float *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btIndexedMesh **)&jarg1; 
-  if (!SWIG_JavaArrayInFloat(jenv, &jarr2, (float **)&arg2, jarg2)) return ; 
-  arg3 = (unsigned long)jarg3; 
-  btIndexedMesh_setVertexBase(arg1,arg2,arg3);
-  SWIG_JavaArrayArgoutFloat(jenv, jarr2, (float *)arg2, jarg2); 
-  delete [] arg2; 
+  {
+    arg2 = (float*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  btIndexedMesh_setVertexBase(arg1,arg2);
+  
 }
 
 
@@ -25928,7 +26069,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete
   (void)jenv;
   (void)jcls;
   arg1 = *(btIndexedMesh **)&jarg1; 
-  delete_btIndexedMesh(arg1);
+  delete arg1;
 }
 
 
@@ -25954,7 +26095,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTriangleIndexVertexArray_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jint jarg1, jlong jarg2, jint jarg3, jint jarg4, jfloatArray jarg5, jint jarg6) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTriangleIndexVertexArray_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jint jarg1, jobject jarg2, jint jarg3, jint jarg4, jobject jarg5, jint jarg6) {
   jlong jresult = 0 ;
   int arg1 ;
   int *arg2 = (int *) 0 ;
@@ -25962,21 +26103,30 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1
   int arg4 ;
   btScalar *arg5 = (btScalar *) 0 ;
   int arg6 ;
-  jfloat *jarr5 ;
   btTriangleIndexVertexArray *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   arg1 = (int)jarg1; 
-  arg2 = *(int **)&jarg2; 
+  {
+    arg2 = (int*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
-  if (!SWIG_JavaArrayInFloat(jenv, &jarr5, (float **)&arg5, jarg5)) return 0; 
+  {
+    arg5 = (btScalar*)jenv->GetDirectBufferAddress(jarg5);
+    if (arg5 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   arg6 = (int)jarg6; 
   result = (btTriangleIndexVertexArray *)new btTriangleIndexVertexArray(arg1,arg2,arg3,arg4,arg5,arg6);
   *(btTriangleIndexVertexArray **)&jresult = result; 
-  SWIG_JavaArrayArgoutFloat(jenv, jarr5, (float *)arg5, jarg5); 
-  delete [] arg5; 
+  
+  
   return jresult;
 }
 
@@ -26500,59 +26650,185 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btConvexHullShape_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jfloatArray jarg1, jint jarg2, jint jarg3) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btShapeHull(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btConvexShape *arg1 = (btConvexShape *) 0 ;
+  btShapeHull *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btConvexShape **)&jarg1; 
+  result = (btShapeHull *)new btShapeHull((btConvexShape const *)arg1);
+  *(btShapeHull **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btShapeHull(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btShapeHull **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1buildHull(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  jboolean jresult = 0 ;
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  btScalar arg2 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btShapeHull **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  result = (bool)(arg1)->buildHull(arg2);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1numTriangles(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btShapeHull **)&jarg1; 
+  result = (int)((btShapeHull const *)arg1)->numTriangles();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1numVertices(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btShapeHull **)&jarg1; 
+  result = (int)((btShapeHull const *)arg1)->numVertices();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1numIndices(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btShapeHull **)&jarg1; 
+  result = (int)((btShapeHull const *)arg1)->numIndices();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1getVertexPointer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btShapeHull **)&jarg1; 
+  result = (btVector3 *)((btShapeHull const *)arg1)->getVertexPointer();
+  *(btVector3 **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1getIndexPointer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  unsigned int *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btShapeHull **)&jarg1; 
+  result = (unsigned int *)((btShapeHull const *)arg1)->getIndexPointer();
+  *(unsigned int **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btConvexHullShape_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jobject jarg1, jint jarg2, jint jarg3) {
   jlong jresult = 0 ;
   btScalar *arg1 = (btScalar *) 0 ;
   int arg2 ;
   int arg3 ;
-  jfloat *jarr1 ;
   btConvexHullShape *result = 0 ;
   
   (void)jenv;
   (void)jcls;
-  if (!SWIG_JavaArrayInFloat(jenv, &jarr1, (float **)&arg1, jarg1)) return 0; 
+  {
+    arg1 = (btScalar*)jenv->GetDirectBufferAddress(jarg1);
+    if (arg1 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   arg2 = (int)jarg2; 
   arg3 = (int)jarg3; 
   result = (btConvexHullShape *)new btConvexHullShape((btScalar const *)arg1,arg2,arg3);
   *(btConvexHullShape **)&jresult = result; 
-  SWIG_JavaArrayArgoutFloat(jenv, jarr1, (float *)arg1, jarg1); 
-  delete [] arg1; 
+  
   return jresult;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btConvexHullShape_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jfloatArray jarg1, jint jarg2) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btConvexHullShape_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jobject jarg1, jint jarg2) {
   jlong jresult = 0 ;
   btScalar *arg1 = (btScalar *) 0 ;
   int arg2 ;
-  jfloat *jarr1 ;
   btConvexHullShape *result = 0 ;
   
   (void)jenv;
   (void)jcls;
-  if (!SWIG_JavaArrayInFloat(jenv, &jarr1, (float **)&arg1, jarg1)) return 0; 
+  {
+    arg1 = (btScalar*)jenv->GetDirectBufferAddress(jarg1);
+    if (arg1 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   arg2 = (int)jarg2; 
   result = (btConvexHullShape *)new btConvexHullShape((btScalar const *)arg1,arg2);
   *(btConvexHullShape **)&jresult = result; 
-  SWIG_JavaArrayArgoutFloat(jenv, jarr1, (float *)arg1, jarg1); 
-  delete [] arg1; 
+  
   return jresult;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btConvexHullShape_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jfloatArray jarg1) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btConvexHullShape_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jobject jarg1) {
   jlong jresult = 0 ;
   btScalar *arg1 = (btScalar *) 0 ;
-  jfloat *jarr1 ;
   btConvexHullShape *result = 0 ;
   
   (void)jenv;
   (void)jcls;
-  if (!SWIG_JavaArrayInFloat(jenv, &jarr1, (float **)&arg1, jarg1)) return 0; 
+  {
+    arg1 = (btScalar*)jenv->GetDirectBufferAddress(jarg1);
+    if (arg1 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   result = (btConvexHullShape *)new btConvexHullShape((btScalar const *)arg1);
   *(btConvexHullShape **)&jresult = result; 
-  SWIG_JavaArrayArgoutFloat(jenv, jarr1, (float *)arg1, jarg1); 
-  delete [] arg1; 
+  
   return jresult;
 }
 
@@ -26644,6 +26920,21 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btConv
   arg1 = *(btConvexHullShape **)&jarg1; 
   result = (int)((btConvexHullShape const *)arg1)->getNumPoints();
   jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btConvexHullShape_1_1SWIG_14(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btShapeHull *arg1 = (btShapeHull *) 0 ;
+  btConvexHullShape *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btShapeHull **)&jarg1; 
+  result = (btConvexHullShape *)new_btConvexHullShape__SWIG_4((btShapeHull const *)arg1);
+  *(btConvexHullShape **)&jresult = result; 
   return jresult;
 }
 
@@ -26836,138 +27127,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btShapeHull(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btConvexShape *arg1 = (btConvexShape *) 0 ;
-  btShapeHull *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btConvexShape **)&jarg1; 
-  result = (btShapeHull *)new btShapeHull((btConvexShape const *)arg1);
-  *(btShapeHull **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btShapeHull(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  btShapeHull *arg1 = (btShapeHull *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(btShapeHull **)&jarg1; 
-  delete arg1;
-}
-
-
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1buildHull(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
-  jboolean jresult = 0 ;
-  btShapeHull *arg1 = (btShapeHull *) 0 ;
-  btScalar arg2 ;
-  bool result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btShapeHull **)&jarg1; 
-  arg2 = (btScalar)jarg2; 
-  result = (bool)(arg1)->buildHull(arg2);
-  jresult = (jboolean)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1numTriangles(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
-  btShapeHull *arg1 = (btShapeHull *) 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btShapeHull **)&jarg1; 
-  result = (int)((btShapeHull const *)arg1)->numTriangles();
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1numVertices(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
-  btShapeHull *arg1 = (btShapeHull *) 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btShapeHull **)&jarg1; 
-  result = (int)((btShapeHull const *)arg1)->numVertices();
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1numIndices(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
-  btShapeHull *arg1 = (btShapeHull *) 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btShapeHull **)&jarg1; 
-  result = (int)((btShapeHull const *)arg1)->numIndices();
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1getVertexPointer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btShapeHull *arg1 = (btShapeHull *) 0 ;
-  btVector3 *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btShapeHull **)&jarg1; 
-  result = (btVector3 *)((btShapeHull const *)arg1)->getVertexPointer();
-  *(btVector3 **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1getIndexPointer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btShapeHull *arg1 = (btShapeHull *) 0 ;
-  unsigned int *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btShapeHull **)&jarg1; 
-  result = (unsigned int *)((btShapeHull const *)arg1)->getIndexPointer();
-  *(unsigned int **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btShapeHull_1createConvexHullShape(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btShapeHull *arg1 = (btShapeHull *) 0 ;
-  btConvexHullShape *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btShapeHull **)&jarg1; 
-  result = (btConvexHullShape *)btShapeHull_createConvexHullShape(arg1);
-  *(btConvexHullShape **)&jresult = result; 
-  return jresult;
-}
-
-
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btMaterialProperties_1m_1numMaterials_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   btMaterialProperties *arg1 = (btMaterialProperties *) 0 ;
   int arg2 ;
@@ -26996,7 +27155,7 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btMate
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btMaterialProperties_1m_1materialBase_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btMaterialProperties_1m_1materialBase_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   btMaterialProperties *arg1 = (btMaterialProperties *) 0 ;
   unsigned char *arg2 = (unsigned char *) 0 ;
   
@@ -27004,13 +27163,25 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btMate
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btMaterialProperties **)&jarg1; 
-  arg2 = *(unsigned char **)&jarg2; 
-  if (arg1) (arg1)->m_materialBase = (unsigned char const *)arg2;
+  {
+    arg2 = (unsigned char*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  {
+    if (arg2) {
+      arg1->m_materialBase = arg2;
+    } else {
+      arg1->m_materialBase = 0;
+    }
+  }
+  
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btMaterialProperties_1m_1materialBase_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btMaterialProperties_1m_1materialBase_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
   btMaterialProperties *arg1 = (btMaterialProperties *) 0 ;
   unsigned char *result = 0 ;
   
@@ -27108,7 +27279,7 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btMate
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btMaterialProperties_1m_1triangleMaterialsBase_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btMaterialProperties_1m_1triangleMaterialsBase_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   btMaterialProperties *arg1 = (btMaterialProperties *) 0 ;
   unsigned char *arg2 = (unsigned char *) 0 ;
   
@@ -27116,13 +27287,25 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btMate
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btMaterialProperties **)&jarg1; 
-  arg2 = *(unsigned char **)&jarg2; 
-  if (arg1) (arg1)->m_triangleMaterialsBase = (unsigned char const *)arg2;
+  {
+    arg2 = (unsigned char*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  {
+    if (arg2) {
+      arg1->m_triangleMaterialsBase = arg2;
+    } else {
+      arg1->m_triangleMaterialsBase = 0;
+    }
+  }
+  
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btMaterialProperties_1m_1triangleMaterialsBase_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btMaterialProperties_1m_1triangleMaterialsBase_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
   btMaterialProperties *arg1 = (btMaterialProperties *) 0 ;
   unsigned char *result = 0 ;
   
@@ -27226,7 +27409,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTriangleIndexVertexMaterialArray_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jint jarg1, jlong jarg2, jint jarg3, jint jarg4, jfloatArray jarg5, jint jarg6, jint jarg7, jlong jarg8, jint jarg9, jlong jarg10, jint jarg11) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btTriangleIndexVertexMaterialArray_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jint jarg1, jobject jarg2, jint jarg3, jint jarg4, jobject jarg5, jint jarg6, jint jarg7, jobject jarg8, jint jarg9, jobject jarg10, jint jarg11) {
   jlong jresult = 0 ;
   int arg1 ;
   int *arg2 = (int *) 0 ;
@@ -27239,26 +27422,47 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1
   int arg9 ;
   int *arg10 = (int *) 0 ;
   int arg11 ;
-  jfloat *jarr5 ;
   btTriangleIndexVertexMaterialArray *result = 0 ;
   
   (void)jenv;
   (void)jcls;
   arg1 = (int)jarg1; 
-  arg2 = *(int **)&jarg2; 
+  {
+    arg2 = (int*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
-  if (!SWIG_JavaArrayInFloat(jenv, &jarr5, (float **)&arg5, jarg5)) return 0; 
+  {
+    arg5 = (btScalar*)jenv->GetDirectBufferAddress(jarg5);
+    if (arg5 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   arg6 = (int)jarg6; 
   arg7 = (int)jarg7; 
-  arg8 = *(unsigned char **)&jarg8; 
+  {
+    arg8 = (unsigned char*)jenv->GetDirectBufferAddress(jarg8);
+    if (arg8 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   arg9 = (int)jarg9; 
-  arg10 = *(int **)&jarg10; 
+  {
+    arg10 = (int*)jenv->GetDirectBufferAddress(jarg10);
+    if (arg10 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   arg11 = (int)jarg11; 
   result = (btTriangleIndexVertexMaterialArray *)new btTriangleIndexVertexMaterialArray(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11);
   *(btTriangleIndexVertexMaterialArray **)&jresult = result; 
-  SWIG_JavaArrayArgoutFloat(jenv, jarr5, (float *)arg5, jarg5); 
-  delete [] arg5; 
+  
+  
+  
+  
   return jresult;
 }
 
@@ -28967,18 +29171,22 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btComp
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCompoundShape_1calculatePrincipalAxisTransform(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloatArray jarg2, jobject jarg3, jobject jarg4) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCompoundShape_1calculatePrincipalAxisTransform(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jobject jarg3, jobject jarg4) {
   btCompoundShape *arg1 = (btCompoundShape *) 0 ;
   btScalar *arg2 = (btScalar *) 0 ;
   btTransform *arg3 = 0 ;
   btVector3 *arg4 = 0 ;
-  jfloat *jarr2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btCompoundShape **)&jarg1; 
-  if (!SWIG_JavaArrayInFloat(jenv, &jarr2, (float **)&arg2, jarg2)) return ; 
+  {
+    arg2 = (btScalar*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
   btTransform local_arg3;
   gdx_setBtTransformFromGdxMatrix4(jenv, local_arg3, jarg3);
   arg3 = &local_arg3;
@@ -28988,8 +29196,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btComp
   arg4 = &local_arg4;
   gdxAutoCommitVector3 auto_commit_arg4(jenv, jarg4, &local_arg4);
   ((btCompoundShape const *)arg1)->calculatePrincipalAxisTransform(arg2,*arg3,*arg4);
-  SWIG_JavaArrayArgoutFloat(jenv, jarr2, (float *)arg2, jarg2); 
-  delete [] arg2; 
+  
 }
 
 

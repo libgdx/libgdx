@@ -50,13 +50,11 @@ public class ConvexHullTest extends BaseBulletTest {
 	}
 	
 	public static btConvexHullShape createConvexHullShape(final Mesh mesh) {
-		final float[] vertices = new float[mesh.getNumVertices()*mesh.getVertexSize()/4];
-		mesh.getVertices(vertices);
-		final btConvexHullShape shape = new btConvexHullShape(vertices, mesh.getNumVertices(), mesh.getVertexSize());
+		final btConvexHullShape shape = new btConvexHullShape(mesh.getVerticesBuffer(), mesh.getNumVertices(), mesh.getVertexSize());
 		// now optimize the shape
 		final btShapeHull hull = new btShapeHull(shape);
 		hull.buildHull(shape.getMargin());
-		final btConvexHullShape result = hull.createConvexHullShape();
+		final btConvexHullShape result = new btConvexHullShape(hull);
 		// delete the temporary shape
 		shape.delete();
 		return result;

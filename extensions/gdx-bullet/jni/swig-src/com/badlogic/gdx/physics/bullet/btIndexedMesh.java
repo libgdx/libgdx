@@ -48,14 +48,16 @@ public class btIndexedMesh {
     return gdxBulletJNI.btIndexedMesh_m_numTriangles_get(swigCPtr, this);
   }
 
-  public void setM_triangleIndexBase(SWIGTYPE_p_unsigned_char value) {
-    gdxBulletJNI.btIndexedMesh_m_triangleIndexBase_set(swigCPtr, this, SWIGTYPE_p_unsigned_char.getCPtr(value));
+  public void setM_triangleIndexBase(java.nio.ByteBuffer value) {
+    assert value.isDirect() : "Buffer must be allocated direct.";
+    {
+      gdxBulletJNI.btIndexedMesh_m_triangleIndexBase_set(swigCPtr, this, value);
+    }
   }
 
-  public SWIGTYPE_p_unsigned_char getM_triangleIndexBase() {
-    long cPtr = gdxBulletJNI.btIndexedMesh_m_triangleIndexBase_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_char(cPtr, false);
-  }
+  public java.nio.ByteBuffer getM_triangleIndexBase() {
+    return gdxBulletJNI.btIndexedMesh_m_triangleIndexBase_get(swigCPtr, this);
+}
 
   public void setM_triangleIndexStride(int value) {
     gdxBulletJNI.btIndexedMesh_m_triangleIndexStride_set(swigCPtr, this, value);
@@ -73,14 +75,16 @@ public class btIndexedMesh {
     return gdxBulletJNI.btIndexedMesh_m_numVertices_get(swigCPtr, this);
   }
 
-  public void setM_vertexBase(SWIGTYPE_p_unsigned_char value) {
-    gdxBulletJNI.btIndexedMesh_m_vertexBase_set(swigCPtr, this, SWIGTYPE_p_unsigned_char.getCPtr(value));
+  public void setM_vertexBase(java.nio.ByteBuffer value) {
+    assert value.isDirect() : "Buffer must be allocated direct.";
+    {
+      gdxBulletJNI.btIndexedMesh_m_vertexBase_set(swigCPtr, this, value);
+    }
   }
 
-  public SWIGTYPE_p_unsigned_char getM_vertexBase() {
-    long cPtr = gdxBulletJNI.btIndexedMesh_m_vertexBase_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_char(cPtr, false);
-  }
+  public java.nio.ByteBuffer getM_vertexBase() {
+    return gdxBulletJNI.btIndexedMesh_m_vertexBase_get(swigCPtr, this);
+}
 
   public void setM_vertexStride(int value) {
     gdxBulletJNI.btIndexedMesh_m_vertexStride_set(swigCPtr, this, value);
@@ -110,12 +114,18 @@ public class btIndexedMesh {
     this(gdxBulletJNI.new_btIndexedMesh(), true);
   }
 
-  public void setTriangleIndexBase(short[] data, long size) {
-    gdxBulletJNI.btIndexedMesh_setTriangleIndexBase(swigCPtr, this, data, size);
+  public void setTriangleIndexBase(java.nio.ShortBuffer data) {
+    assert data.isDirect() : "Buffer must be allocated direct.";
+    {
+      gdxBulletJNI.btIndexedMesh_setTriangleIndexBase(swigCPtr, this, data);
+    }
   }
 
-  public void setVertexBase(float[] data, long size) {
-    gdxBulletJNI.btIndexedMesh_setVertexBase(swigCPtr, this, data, size);
+  public void setVertexBase(java.nio.FloatBuffer data) {
+    assert data.isDirect() : "Buffer must be allocated direct.";
+    {
+      gdxBulletJNI.btIndexedMesh_setVertexBase(swigCPtr, this, data);
+    }
   }
 
 }

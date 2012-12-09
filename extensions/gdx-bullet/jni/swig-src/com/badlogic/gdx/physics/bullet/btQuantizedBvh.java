@@ -72,17 +72,26 @@ public class btQuantizedBvh {
     gdxBulletJNI.btQuantizedBvh_reportBoxCastOverlappingNodex(swigCPtr, this, btNodeOverlapCallback.getCPtr(nodeCallback), nodeCallback, raySource, rayTarget, aabbMin, aabbMax);
   }
 
-  public void quantize(SWIGTYPE_p_unsigned_short out, Vector3 point, int isMax) {
-    gdxBulletJNI.btQuantizedBvh_quantize(swigCPtr, this, SWIGTYPE_p_unsigned_short.getCPtr(out), point, isMax);
+  public void quantize(java.nio.IntBuffer out, Vector3 point, int isMax) {
+    assert out.isDirect() : "Buffer must be allocated direct.";
+    {
+      gdxBulletJNI.btQuantizedBvh_quantize(swigCPtr, this, out, point, isMax);
+    }
   }
 
-  public void quantizeWithClamp(SWIGTYPE_p_unsigned_short out, Vector3 point2, int isMax) {
-    gdxBulletJNI.btQuantizedBvh_quantizeWithClamp(swigCPtr, this, SWIGTYPE_p_unsigned_short.getCPtr(out), point2, isMax);
+  public void quantizeWithClamp(java.nio.IntBuffer out, Vector3 point2, int isMax) {
+    assert out.isDirect() : "Buffer must be allocated direct.";
+    {
+      gdxBulletJNI.btQuantizedBvh_quantizeWithClamp(swigCPtr, this, out, point2, isMax);
+    }
   }
 
-  public Vector3 unQuantize(SWIGTYPE_p_unsigned_short vecIn) {
-	return gdxBulletJNI.btQuantizedBvh_unQuantize(swigCPtr, this, SWIGTYPE_p_unsigned_short.getCPtr(vecIn));
+  public Vector3 unQuantize(java.nio.IntBuffer vecIn) {
+    assert vecIn.isDirect() : "Buffer must be allocated direct.";
+    {
+	return gdxBulletJNI.btQuantizedBvh_unQuantize(swigCPtr, this, vecIn);
 }
+  }
 
   public void setTraversalMode(int traversalMode) {
     gdxBulletJNI.btQuantizedBvh_setTraversalMode(swigCPtr, this, traversalMode);

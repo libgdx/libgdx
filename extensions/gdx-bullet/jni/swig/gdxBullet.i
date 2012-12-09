@@ -19,10 +19,11 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %include "gdxDownCast.i"
 
 /*
- * Use Java float[] where Bullet wants btScalar *.  This gets disabled
+ * Use java.nio.Buffer where Bullet wants btScalar * and alike.  This gets disabled
  * for some types (and re-enabled right after).
  */
-%include "gdxEnableArrays.i"
+%include "gdxBuffers.i"
+%include "gdxEnableBuffers.i"
 
 /* Prefer libgdx's linear math types (Vector3, Matrix3, etc.). */
 %include "gdxMathTypes.i"
@@ -110,11 +111,6 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 #include <LinearMath/btRandom.h>
 %}
 %include "LinearMath/btRandom.h"
-
-%{
-#include <LinearMath/btTransform.h>
-%}
-%include "LinearMath/btTransform.h"
 
 %{
 #include <LinearMath/btTransformUtil.h>
@@ -377,11 +373,11 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %include "BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h"
 
 %{
-#include <BulletCollision/CollisionShapes/btConvexHullShape.h>
+#include <BulletCollision/CollisionShapes/btShapeHull.h>
 %}
-%include "BulletCollision/CollisionShapes/btConvexHullShape.h"
+%include "BulletCollision/CollisionShapes/btShapeHull.h"
 
-%include "custom/btShapeHull.i"
+%include "custom/btConvexHullShape.i"
 
 %{
 #include <BulletCollision/CollisionShapes/btTriangleIndexVertexMaterialArray.h>
@@ -773,7 +769,7 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "BulletDynamics/ConstraintSolver/btHinge2Constraint.h"
 
-/* DISABLED STUFF BELOW HERE */
+/* DISABLED STUFF BELOW HERE (TODO: CHECK THIS) */
 
 /*
  * btSerializer needs some typemap customization for sBulletDNAstr and friends.

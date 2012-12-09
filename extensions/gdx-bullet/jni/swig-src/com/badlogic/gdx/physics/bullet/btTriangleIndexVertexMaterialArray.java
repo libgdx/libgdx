@@ -44,8 +44,16 @@ public class btTriangleIndexVertexMaterialArray extends btTriangleIndexVertexArr
     this(gdxBulletJNI.new_btTriangleIndexVertexMaterialArray__SWIG_0(), true);
   }
 
-  public btTriangleIndexVertexMaterialArray(int numTriangles, SWIGTYPE_p_int triangleIndexBase, int triangleIndexStride, int numVertices, float[] vertexBase, int vertexStride, int numMaterials, SWIGTYPE_p_unsigned_char materialBase, int materialStride, SWIGTYPE_p_int triangleMaterialsBase, int materialIndexStride) {
-    this(gdxBulletJNI.new_btTriangleIndexVertexMaterialArray__SWIG_1(numTriangles, SWIGTYPE_p_int.getCPtr(triangleIndexBase), triangleIndexStride, numVertices, vertexBase, vertexStride, numMaterials, SWIGTYPE_p_unsigned_char.getCPtr(materialBase), materialStride, SWIGTYPE_p_int.getCPtr(triangleMaterialsBase), materialIndexStride), true);
+  static private long SwigConstructbtTriangleIndexVertexMaterialArray(int numTriangles, java.nio.IntBuffer triangleIndexBase, int triangleIndexStride, int numVertices, java.nio.FloatBuffer vertexBase, int vertexStride, int numMaterials, java.nio.ByteBuffer materialBase, int materialStride, java.nio.IntBuffer triangleMaterialsBase, int materialIndexStride) {
+    assert triangleIndexBase.isDirect() : "Buffer must be allocated direct.";
+    assert vertexBase.isDirect() : "Buffer must be allocated direct.";
+    assert materialBase.isDirect() : "Buffer must be allocated direct.";
+    assert triangleMaterialsBase.isDirect() : "Buffer must be allocated direct.";
+    return gdxBulletJNI.new_btTriangleIndexVertexMaterialArray__SWIG_1(numTriangles, triangleIndexBase, triangleIndexStride, numVertices, vertexBase, vertexStride, numMaterials, materialBase, materialStride, triangleMaterialsBase, materialIndexStride);
+  }
+
+  public btTriangleIndexVertexMaterialArray(int numTriangles, java.nio.IntBuffer triangleIndexBase, int triangleIndexStride, int numVertices, java.nio.FloatBuffer vertexBase, int vertexStride, int numMaterials, java.nio.ByteBuffer materialBase, int materialStride, java.nio.IntBuffer triangleMaterialsBase, int materialIndexStride) {
+    this(btTriangleIndexVertexMaterialArray.SwigConstructbtTriangleIndexVertexMaterialArray(numTriangles, triangleIndexBase, triangleIndexStride, numVertices, vertexBase, vertexStride, numMaterials, materialBase, materialStride, triangleMaterialsBase, materialIndexStride), true);
   }
 
   public void addMaterialProperties(btMaterialProperties mat, int triangleType) {

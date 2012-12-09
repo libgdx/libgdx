@@ -138,12 +138,18 @@ public class gdxBullet implements gdxBulletConstants {
     return gdxBulletJNI.btUnswapEndianFloat(a);
   }
 
-  public static void btSwapEndianDouble(double d, SWIGTYPE_p_unsigned_char dst) {
-    gdxBulletJNI.btSwapEndianDouble(d, SWIGTYPE_p_unsigned_char.getCPtr(dst));
+  public static void btSwapEndianDouble(double d, java.nio.ByteBuffer dst) {
+    assert dst.isDirect() : "Buffer must be allocated direct.";
+    {
+      gdxBulletJNI.btSwapEndianDouble(d, dst);
+    }
   }
 
-  public static double btUnswapEndianDouble(SWIGTYPE_p_unsigned_char src) {
-    return gdxBulletJNI.btUnswapEndianDouble(SWIGTYPE_p_unsigned_char.getCPtr(src));
+  public static double btUnswapEndianDouble(java.nio.ByteBuffer src) {
+    assert src.isDirect() : "Buffer must be allocated direct.";
+    {
+      return gdxBulletJNI.btUnswapEndianDouble(src);
+    }
   }
 
   public static float btNormalizeAngle(float angleInRadians) {
@@ -258,8 +264,14 @@ public class gdxBullet implements gdxBulletConstants {
     gdxBulletJNI.btTransformAabb__SWIG_1(localAabbMin, localAabbMax, margin, trans, aabbMinOut, aabbMaxOut);
   }
 
-  public static long testQuantizedAabbAgainstQuantizedAabb(SWIGTYPE_p_unsigned_short aabbMin1, SWIGTYPE_p_unsigned_short aabbMax1, SWIGTYPE_p_unsigned_short aabbMin2, SWIGTYPE_p_unsigned_short aabbMax2) {
-    return gdxBulletJNI.testQuantizedAabbAgainstQuantizedAabb(SWIGTYPE_p_unsigned_short.getCPtr(aabbMin1), SWIGTYPE_p_unsigned_short.getCPtr(aabbMax1), SWIGTYPE_p_unsigned_short.getCPtr(aabbMin2), SWIGTYPE_p_unsigned_short.getCPtr(aabbMax2));
+  public static long testQuantizedAabbAgainstQuantizedAabb(java.nio.IntBuffer aabbMin1, java.nio.IntBuffer aabbMax1, java.nio.IntBuffer aabbMin2, java.nio.IntBuffer aabbMax2) {
+    assert aabbMin1.isDirect() : "Buffer must be allocated direct.";
+    assert aabbMax1.isDirect() : "Buffer must be allocated direct.";
+    assert aabbMin2.isDirect() : "Buffer must be allocated direct.";
+    assert aabbMax2.isDirect() : "Buffer must be allocated direct.";
+    {
+      return gdxBulletJNI.testQuantizedAabbAgainstQuantizedAabb(aabbMin1, aabbMax1, aabbMin2, aabbMax2);
+    }
   }
 
   public static void GEN_srand(long seed) {
