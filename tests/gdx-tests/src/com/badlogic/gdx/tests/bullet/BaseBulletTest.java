@@ -89,6 +89,7 @@ public class BaseBulletTest extends BulletTest {
 		// Add the constructers
 		world.constructors.put("ground", new Entity.ConstructInfo(groundMesh, 0f)); // mass = 0: static body
 		world.constructors.put("box", new Entity.ConstructInfo(boxMesh, 1f)); // mass = 1kg: dynamic body
+		world.constructors.put("staticbox", new Entity.ConstructInfo(boxMesh, 0f)); // mass = 0: static body
 	}
 	
 	@Override

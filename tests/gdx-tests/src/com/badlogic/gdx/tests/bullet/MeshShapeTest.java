@@ -92,10 +92,6 @@ public class MeshShapeTest extends BaseBulletTest {
 	
 	// Create a TriangleMeshShape based on a Mesh
 	public static btCollisionShape createMeshShape(Mesh mesh) {
-		short[] indices = new short[mesh.getNumIndices()];
-		float[] vertices = new float[mesh.getNumVertices()*mesh.getVertexSize()/4];
-		mesh.getIndices(indices);
-		mesh.getVertices(vertices);
 		btIndexedMesh indexedMesh = new btIndexedMesh();
 		indexedMesh.setM_indexType(PHY_ScalarType.PHY_SHORT);
 		indexedMesh.setM_numTriangles(mesh.getNumIndices()/3);
@@ -103,8 +99,8 @@ public class MeshShapeTest extends BaseBulletTest {
 		indexedMesh.setM_triangleIndexStride(6);
 		indexedMesh.setM_vertexStride(mesh.getVertexSize());
 		indexedMesh.setM_vertexType(PHY_ScalarType.PHY_FLOAT);
-		indexedMesh.setTriangleIndexBase(indices, indices.length);
-		indexedMesh.setVertexBase(vertices, vertices.length);
+		indexedMesh.setTriangleIndexBase(mesh.getIndicesBuffer());
+		indexedMesh.setVertexBase(mesh.getVerticesBuffer());
 		btTriangleIndexVertexArray meshInterface = new TestTriangleIndexVertexArray();
 		meshInterface.addIndexedMesh(indexedMesh, PHY_ScalarType.PHY_SHORT);
 		return new TestBvhTriangleMeshShape(meshInterface,true);

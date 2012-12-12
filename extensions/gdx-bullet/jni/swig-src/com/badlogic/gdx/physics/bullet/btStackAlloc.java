@@ -56,10 +56,9 @@ public class btStackAlloc {
     return gdxBulletJNI.btStackAlloc_getAvailableMemory(swigCPtr, this);
   }
 
-  public SWIGTYPE_p_unsigned_char allocate(long size) {
-    long cPtr = gdxBulletJNI.btStackAlloc_allocate(swigCPtr, this, size);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_char(cPtr, false);
-  }
+  public java.nio.ByteBuffer allocate(long size) {
+    return gdxBulletJNI.btStackAlloc_allocate(swigCPtr, this, size);
+}
 
   public btBlock beginBlock() {
     long cPtr = gdxBulletJNI.btStackAlloc_beginBlock(swigCPtr, this);

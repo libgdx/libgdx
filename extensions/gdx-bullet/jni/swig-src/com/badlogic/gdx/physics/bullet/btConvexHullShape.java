@@ -40,16 +40,31 @@ public class btConvexHullShape extends btPolyhedralConvexAabbCachingShape {
     super.delete();
   }
 
-  public btConvexHullShape(float[] points, int numPoints, int stride) {
-    this(gdxBulletJNI.new_btConvexHullShape__SWIG_0(points, numPoints, stride), true);
+  static private long SwigConstructbtConvexHullShape(java.nio.FloatBuffer points, int numPoints, int stride) {
+    assert points.isDirect() : "Buffer must be allocated direct.";
+    return gdxBulletJNI.new_btConvexHullShape__SWIG_0(points, numPoints, stride);
   }
 
-  public btConvexHullShape(float[] points, int numPoints) {
-    this(gdxBulletJNI.new_btConvexHullShape__SWIG_1(points, numPoints), true);
+  public btConvexHullShape(java.nio.FloatBuffer points, int numPoints, int stride) {
+    this(btConvexHullShape.SwigConstructbtConvexHullShape(points, numPoints, stride), true);
   }
 
-  public btConvexHullShape(float[] points) {
-    this(gdxBulletJNI.new_btConvexHullShape__SWIG_2(points), true);
+  static private long SwigConstructbtConvexHullShape(java.nio.FloatBuffer points, int numPoints) {
+    assert points.isDirect() : "Buffer must be allocated direct.";
+    return gdxBulletJNI.new_btConvexHullShape__SWIG_1(points, numPoints);
+  }
+
+  public btConvexHullShape(java.nio.FloatBuffer points, int numPoints) {
+    this(btConvexHullShape.SwigConstructbtConvexHullShape(points, numPoints), true);
+  }
+
+  static private long SwigConstructbtConvexHullShape(java.nio.FloatBuffer points) {
+    assert points.isDirect() : "Buffer must be allocated direct.";
+    return gdxBulletJNI.new_btConvexHullShape__SWIG_2(points);
+  }
+
+  public btConvexHullShape(java.nio.FloatBuffer points) {
+    this(btConvexHullShape.SwigConstructbtConvexHullShape(points), true);
   }
 
   public btConvexHullShape() {
@@ -76,6 +91,10 @@ public class btConvexHullShape extends btPolyhedralConvexAabbCachingShape {
 
   public int getNumPoints() {
     return gdxBulletJNI.btConvexHullShape_getNumPoints(swigCPtr, this);
+  }
+
+  public btConvexHullShape(btShapeHull hull) {
+    this(gdxBulletJNI.new_btConvexHullShape__SWIG_4(btShapeHull.getCPtr(hull), hull), true);
   }
 
 }
