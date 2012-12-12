@@ -65,9 +65,8 @@ public class btShapeHull {
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public SWIGTYPE_p_unsigned_int getIndexPointer() {
-    long cPtr = gdxBulletJNI.btShapeHull_getIndexPointer(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_int(cPtr, false);
-  }
+  public java.nio.LongBuffer getIndexPointer() {
+    return gdxBulletJNI.btShapeHull_getIndexPointer(swigCPtr, this);
+}
 
 }
