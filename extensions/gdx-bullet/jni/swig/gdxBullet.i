@@ -19,10 +19,14 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %include "gdxDownCast.i"
 
 /*
- * Use Java float[] where Bullet wants btScalar *.  This gets disabled
+ * Use java.nio.Buffer where Bullet wants btScalar * and alike.  This gets disabled
  * for some types (and re-enabled right after).
  */
-%include "gdxEnableArrays.i"
+%include "gdxBuffers.i"
+%include "gdxEnableBuffers.i"
+
+%include "gdxPool.i"
+%include "gdxPooledTypemap.i"
 
 /* Prefer libgdx's linear math types (Vector3, Matrix3, etc.). */
 %include "gdxMathTypes.i"
@@ -110,11 +114,6 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 #include <LinearMath/btRandom.h>
 %}
 %include "LinearMath/btRandom.h"
-
-%{
-#include <LinearMath/btTransform.h>
-%}
-%include "LinearMath/btTransform.h"
 
 %{
 #include <LinearMath/btTransformUtil.h>
@@ -327,10 +326,7 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "BulletCollision/CollisionShapes/btTriangleShape.h"
 
-%{
-#include <BulletCollision/CollisionShapes/btShapeHull.h>
-%}
-%include "BulletCollision/CollisionShapes/btShapeHull.h"
+
 
 %{
 #include <BulletCollision/CollisionShapes/btSphereShape.h>
@@ -367,29 +363,7 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "BulletCollision/CollisionShapes/btTriangleBuffer.h"
 
-%{
-#include <BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h>
-%}
-%include "BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h"
-
-%extend btIndexedMesh {
-	void setTriangleIndexBase(short data[], unsigned long size) {
-		short *indices = new short[size];
-		memcpy(indices, (short*)data, size*sizeof(short));
-		$self->m_triangleIndexBase = (unsigned char*)indices;
-	}
-	void setVertexBase(float data[], unsigned long size) {
-		float *vertices = new float[size];
-		memcpy(vertices, (float*)data, size*sizeof(float));
-		$self->m_vertexBase = (unsigned char*)vertices;
-	}
-	void dispose() {
-		short *indices = (short*)$self->m_triangleIndexBase;
-		delete[] indices;
-		float *vertices = (float*)$self->m_vertexBase;
-		delete[] vertices;
-	}
-};
+%include "custom/btTriangleIndexVertexArray.i"
 
 %{
 #include <BulletCollision/CollisionShapes/btMaterial.h>
@@ -402,9 +376,11 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %include "BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h"
 
 %{
-#include <BulletCollision/CollisionShapes/btConvexHullShape.h>
+#include <BulletCollision/CollisionShapes/btShapeHull.h>
 %}
-%include "BulletCollision/CollisionShapes/btConvexHullShape.h"
+%include "BulletCollision/CollisionShapes/btShapeHull.h"
+
+%include "custom/btConvexHullShape.i"
 
 %{
 #include <BulletCollision/CollisionShapes/btTriangleIndexVertexMaterialArray.h>
@@ -552,6 +528,16 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 //%}
 //%include "BulletCollision/CollisionDispatch/btCollisionWorld.h"
 %include "custom/btCollisionWorld.i"
+
+%{
+#include <../swig/custom/ClosestNotMeConvexResultCallback.h>
+%}
+%include "../swig/custom/ClosestNotMeConvexResultCallback.h"
+
+%{
+#include <../swig/custom/ClosestNotMeRayResultCallback.h>
+%}
+%include "../swig/custom/ClosestNotMeRayResultCallback.h"
 
 %{
 #include <BulletCollision/CollisionDispatch/btConvex2dConvex2dAlgorithm.h>
@@ -786,7 +772,7 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "BulletDynamics/ConstraintSolver/btHinge2Constraint.h"
 
-/* DISABLED STUFF BELOW HERE */
+/* DISABLED STUFF BELOW HERE (TODO: CHECK THIS) */
 
 /*
  * btSerializer needs some typemap customization for sBulletDNAstr and friends.

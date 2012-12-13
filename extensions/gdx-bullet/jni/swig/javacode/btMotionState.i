@@ -8,6 +8,7 @@
 
 /* newDerivedObject() required for down cast support (gdxDownCast.i). */
 
+/*
 %typemap(javacode) btMotionState %{
 
   public static btMotionState newDerivedObject(long swigCPtr, boolean owner) {
@@ -19,3 +20,4 @@
     return new btDefaultMotionState(swigCPtr, owner);
   }
 %}
+*/

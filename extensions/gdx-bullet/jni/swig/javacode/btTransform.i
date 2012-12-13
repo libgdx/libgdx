@@ -4,6 +4,14 @@
  
 %module btTransform
 
+%include "../gdxDisableBuffers.i"
+%include "../gdxEnableArrays.i"
+
+%{
+#include <LinearMath/btTransform.h>
+%}
+%include "LinearMath/btTransform.h"
+
 %typemap(javacode) btTransform %{
 
   /**
@@ -19,3 +27,5 @@
     return getOrigin() + "\n" + getBasis();
   }
 %}
+%include "../gdxDisableArrays.i"
+%include "../gdxEnableBuffers.i"

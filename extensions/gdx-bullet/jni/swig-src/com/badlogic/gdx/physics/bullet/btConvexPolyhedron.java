@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btConvexPolyhedron {
   private long swigCPtr;
@@ -122,8 +123,8 @@ public class btConvexPolyhedron {
     return gdxBulletJNI.btConvexPolyhedron_testContainment(swigCPtr, this);
   }
 
-  public void project(btTransform trans, Vector3 dir, SWIGTYPE_p_float min, SWIGTYPE_p_float max) {
-    gdxBulletJNI.btConvexPolyhedron_project(swigCPtr, this, btTransform.getCPtr(trans), trans, dir, SWIGTYPE_p_float.getCPtr(min), SWIGTYPE_p_float.getCPtr(max));
+  public void project(Matrix4 trans, Vector3 dir, SWIGTYPE_p_float min, SWIGTYPE_p_float max) {
+    gdxBulletJNI.btConvexPolyhedron_project(swigCPtr, this, trans, dir, SWIGTYPE_p_float.getCPtr(min), SWIGTYPE_p_float.getCPtr(max));
   }
 
 }

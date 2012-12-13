@@ -66,7 +66,7 @@ public class MeshShapeTest extends BaseBulletTest {
 		scene.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		scene.worldTransform.transform.rotate(Vector3.Y, -90);
 		// Since the transform is changed, it's needed to apply it again.
-		scene.body.setMotionState(scene.worldTransform);
+		scene.body.setWorldTransform(scene.worldTransform.transform);
 
 		world.add("ground", 0f, 0f, 0f)
 			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
@@ -90,43 +90,27 @@ public class MeshShapeTest extends BaseBulletTest {
 		return true;
 	}
 	
-	// NOTE: The following is subject to change as it involves some nasty memory management and overriding JNI classes.
-	
 	// Create a TriangleMeshShape based on a Mesh
-	public btCollisionShape createMeshShape(Mesh mesh) {
-		short[] indices = new short[mesh.getNumIndices()];
-		float[] vertices = new float[mesh.getNumVertices()*mesh.getVertexSize()/4];
-		mesh.getIndices(indices);
-		mesh.getVertices(vertices);
-		btIndexedMesh indexedMesh = new TestIndexedMesh();
+	public static btCollisionShape createMeshShape(Mesh mesh) {
+		btIndexedMesh indexedMesh = new btIndexedMesh();
 		indexedMesh.setM_indexType(PHY_ScalarType.PHY_SHORT);
 		indexedMesh.setM_numTriangles(mesh.getNumIndices()/3);
 		indexedMesh.setM_numVertices(mesh.getNumVertices());
 		indexedMesh.setM_triangleIndexStride(6);
 		indexedMesh.setM_vertexStride(mesh.getVertexSize());
 		indexedMesh.setM_vertexType(PHY_ScalarType.PHY_FLOAT);
-		indexedMesh.setTriangleIndexBase(indices, indices.length);
-		indexedMesh.setVertexBase(vertices, vertices.length);
+		indexedMesh.setTriangleIndexBase(mesh.getIndicesBuffer());
+		indexedMesh.setVertexBase(mesh.getVerticesBuffer());
 		btTriangleIndexVertexArray meshInterface = new TestTriangleIndexVertexArray();
 		meshInterface.addIndexedMesh(indexedMesh, PHY_ScalarType.PHY_SHORT);
 		return new TestBvhTriangleMeshShape(meshInterface,true);
 	}
 	
-	// Need to free memory (created for holding a copy of the indices and vertices)
-	class TestIndexedMesh extends btIndexedMesh {
-		boolean disposed = false;
-		@Override
-		public synchronized void delete() {
-			if (!disposed) {
-				dispose();
-				disposed = true;
-			}
-			super.delete();
-		}
-	}
-	
-	// Need to keep reference to the meshes to avoid memory being freed too early.
-	class TestTriangleIndexVertexArray extends btTriangleIndexVertexArray {
+	/** 
+	 * Convenience class that keeps a reference of the sub meshes.
+	 * Don't use this method if the btIndexedMesh instances are shared amongst other btTriangleIndexVertexArray instances.
+	 */
+	public static class TestTriangleIndexVertexArray extends btTriangleIndexVertexArray {
 		Array<btIndexedMesh> meshes = new Array<btIndexedMesh>();
 		
 		@Override
@@ -144,8 +128,11 @@ public class MeshShapeTest extends BaseBulletTest {
 		}
 	}
 	
-	// Need to keep reference to meshInterface to avoid memory being freed too early.
-	class TestBvhTriangleMeshShape extends btBvhTriangleMeshShape {
+	/** 
+	 * Convenience class that keeps a reference of the mesh interface 
+	 * Don't use this method if the btStridingMeshInterface is shared amongst other btBvhTriangleMeshShape instances. 
+	 */
+	public static class TestBvhTriangleMeshShape extends btBvhTriangleMeshShape {
 		btStridingMeshInterface meshInterface;
 		public TestBvhTriangleMeshShape(btStridingMeshInterface meshInterface, boolean useQuantizedAabbCompression) {
 			super(meshInterface, useQuantizedAabbCompression);

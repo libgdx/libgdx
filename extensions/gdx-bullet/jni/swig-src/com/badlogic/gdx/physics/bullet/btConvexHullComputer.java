@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btConvexHullComputer {
   private long swigCPtr;
@@ -66,12 +67,18 @@ public class btConvexHullComputer {
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_int_t(cPtr, false);
   }
 
-  public float compute(SWIGTYPE_p_float coords, int stride, int count, float shrink, float shrinkClamp) {
-    return gdxBulletJNI.btConvexHullComputer_compute__SWIG_0(swigCPtr, this, SWIGTYPE_p_float.getCPtr(coords), stride, count, shrink, shrinkClamp);
+  public float compute(java.nio.FloatBuffer coords, int stride, int count, float shrink, float shrinkClamp) {
+    assert coords.isDirect() : "Buffer must be allocated direct.";
+    {
+      return gdxBulletJNI.btConvexHullComputer_compute__SWIG_0(swigCPtr, this, coords, stride, count, shrink, shrinkClamp);
+    }
   }
 
-  public float compute(SWIGTYPE_p_double coords, int stride, int count, float shrink, float shrinkClamp) {
-    return gdxBulletJNI.btConvexHullComputer_compute__SWIG_1(swigCPtr, this, SWIGTYPE_p_double.getCPtr(coords), stride, count, shrink, shrinkClamp);
+  public float compute(java.nio.DoubleBuffer coords, int stride, int count, float shrink, float shrinkClamp) {
+    assert coords.isDirect() : "Buffer must be allocated direct.";
+    {
+      return gdxBulletJNI.btConvexHullComputer_compute__SWIG_1(swigCPtr, this, coords, stride, count, shrink, shrinkClamp);
+    }
   }
 
   public btConvexHullComputer() {

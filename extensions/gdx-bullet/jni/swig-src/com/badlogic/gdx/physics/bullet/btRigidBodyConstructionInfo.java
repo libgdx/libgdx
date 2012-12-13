@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btRigidBodyConstructionInfo {
   private long swigCPtr;
@@ -53,7 +54,7 @@ public class btRigidBodyConstructionInfo {
 
   public btMotionState getM_motionState() {
     long cPtr = gdxBulletJNI.btRigidBodyConstructionInfo_m_motionState_get(swigCPtr, this);
-    return (cPtr == 0) ? null : btMotionState.newDerivedObject(cPtr, false);
+    return (cPtr == 0) ? null : new btMotionState(cPtr, false);
   }
 
   public void setM_startWorldTransform(btTransform value) {

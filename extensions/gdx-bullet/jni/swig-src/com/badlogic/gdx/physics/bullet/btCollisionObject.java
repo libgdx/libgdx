@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btCollisionObject {
   private long swigCPtr;
@@ -153,12 +154,12 @@ public class btCollisionObject {
     return gdxBulletJNI.btCollisionObject_getInternalType(swigCPtr, this);
   }
 
-  public btTransform getWorldTransform() {
-    return new btTransform(gdxBulletJNI.btCollisionObject_getWorldTransform__SWIG_0(swigCPtr, this), false);
-  }
+  public Matrix4 getWorldTransform() {
+	return gdxBulletJNI.btCollisionObject_getWorldTransform__SWIG_0(swigCPtr, this);
+}
 
-  public void setWorldTransform(btTransform worldTrans) {
-    gdxBulletJNI.btCollisionObject_setWorldTransform(swigCPtr, this, btTransform.getCPtr(worldTrans), worldTrans);
+  public void setWorldTransform(Matrix4 worldTrans) {
+    gdxBulletJNI.btCollisionObject_setWorldTransform(swigCPtr, this, worldTrans);
   }
 
   public btBroadphaseProxy getBroadphaseHandle() {
@@ -170,12 +171,12 @@ public class btCollisionObject {
     gdxBulletJNI.btCollisionObject_setBroadphaseHandle(swigCPtr, this, btBroadphaseProxy.getCPtr(handle), handle);
   }
 
-  public btTransform getInterpolationWorldTransform() {
-    return new btTransform(gdxBulletJNI.btCollisionObject_getInterpolationWorldTransform__SWIG_0(swigCPtr, this), false);
-  }
+  public Matrix4 getInterpolationWorldTransform() {
+	return gdxBulletJNI.btCollisionObject_getInterpolationWorldTransform__SWIG_0(swigCPtr, this);
+}
 
-  public void setInterpolationWorldTransform(btTransform trans) {
-    gdxBulletJNI.btCollisionObject_setInterpolationWorldTransform(swigCPtr, this, btTransform.getCPtr(trans), trans);
+  public void setInterpolationWorldTransform(Matrix4 trans) {
+    gdxBulletJNI.btCollisionObject_setInterpolationWorldTransform(swigCPtr, this, trans);
   }
 
   public void setInterpolationLinearVelocity(Vector3 linvel) {
@@ -275,12 +276,12 @@ public class btCollisionObject {
     gdxBulletJNI.btCollisionObject_getAnisotropicFriction__SWIG_1(swigCPtr, this, out);
   }
 
-  public void getWorldTransform(btTransform out) {
-    gdxBulletJNI.btCollisionObject_getWorldTransform__SWIG_2(swigCPtr, this, btTransform.getCPtr(out), out);
+  public void getWorldTransform(Matrix4 out) {
+    gdxBulletJNI.btCollisionObject_getWorldTransform__SWIG_2(swigCPtr, this, out);
   }
 
-  public void getInterpolationWorldTransform(btTransform out) {
-    gdxBulletJNI.btCollisionObject_getInterpolationWorldTransform__SWIG_2(swigCPtr, this, btTransform.getCPtr(out), out);
+  public void getInterpolationWorldTransform(Matrix4 out) {
+    gdxBulletJNI.btCollisionObject_getInterpolationWorldTransform__SWIG_2(swigCPtr, this, out);
   }
 
   public void getInterpolationLinearVelocity(Vector3 out) {

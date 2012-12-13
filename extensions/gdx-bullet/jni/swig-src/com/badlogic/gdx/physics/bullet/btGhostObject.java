@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btGhostObject extends btCollisionObject {
   private long swigCPtr;
@@ -43,12 +44,12 @@ public class btGhostObject extends btCollisionObject {
     this(gdxBulletJNI.new_btGhostObject(), true);
   }
 
-  public void convexSweepTest(btConvexShape castShape, btTransform convexFromWorld, btTransform convexToWorld, ConvexResultCallback resultCallback, float allowedCcdPenetration) {
-    gdxBulletJNI.btGhostObject_convexSweepTest__SWIG_0(swigCPtr, this, btConvexShape.getCPtr(castShape), castShape, btTransform.getCPtr(convexFromWorld), convexFromWorld, btTransform.getCPtr(convexToWorld), convexToWorld, ConvexResultCallback.getCPtr(resultCallback), resultCallback, allowedCcdPenetration);
+  public void convexSweepTest(btConvexShape castShape, Matrix4 convexFromWorld, Matrix4 convexToWorld, ConvexResultCallback resultCallback, float allowedCcdPenetration) {
+    gdxBulletJNI.btGhostObject_convexSweepTest__SWIG_0(swigCPtr, this, btConvexShape.getCPtr(castShape), castShape, convexFromWorld, convexToWorld, ConvexResultCallback.getCPtr(resultCallback), resultCallback, allowedCcdPenetration);
   }
 
-  public void convexSweepTest(btConvexShape castShape, btTransform convexFromWorld, btTransform convexToWorld, ConvexResultCallback resultCallback) {
-    gdxBulletJNI.btGhostObject_convexSweepTest__SWIG_1(swigCPtr, this, btConvexShape.getCPtr(castShape), castShape, btTransform.getCPtr(convexFromWorld), convexFromWorld, btTransform.getCPtr(convexToWorld), convexToWorld, ConvexResultCallback.getCPtr(resultCallback), resultCallback);
+  public void convexSweepTest(btConvexShape castShape, Matrix4 convexFromWorld, Matrix4 convexToWorld, ConvexResultCallback resultCallback) {
+    gdxBulletJNI.btGhostObject_convexSweepTest__SWIG_1(swigCPtr, this, btConvexShape.getCPtr(castShape), castShape, convexFromWorld, convexToWorld, ConvexResultCallback.getCPtr(resultCallback), resultCallback);
   }
 
   public void rayTest(Vector3 rayFromWorld, Vector3 rayToWorld, RayResultCallback resultCallback) {
