@@ -38,14 +38,13 @@ public class Color {
 	public static final Color MAGENTA = new Color(1, 0, 1, 1);
 	public static final Color CYAN = new Color(0, 1, 1, 1);
 
+	public static Color tmp = new Color();
+
 	/** the red, green, blue and alpha components **/
 	public float r, g, b, a;
 
-	public static Color tmp = new Color();
-
 	/** Constructs a new Color with all components set to 0. */
 	public Color () {
-
 	}
 
 	/** Constructor, sets the components of the color

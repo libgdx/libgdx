@@ -1068,16 +1068,14 @@ public class SpriteBatch implements Disposable {
 
 	/** Disables blending for drawing sprites. */
 	public void disableBlending () {
-		if (blendingDisabled)
-			return;
+		if (blendingDisabled) return;
 		renderMesh();
 		blendingDisabled = true;
 	}
 
 	/** Enables blending for sprites */
 	public void enableBlending () {
-		if (!blendingDisabled)
-			return;
+		if (!blendingDisabled) return;
 		renderMesh();
 		blendingDisabled = false;
 	}
@@ -1160,11 +1158,10 @@ public class SpriteBatch implements Disposable {
 	}
 
 	/** Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture
-	 * coordinates attribute is called called "a_texCoords0", the color attribute is called "a_color". See
+	 * coordinates attribute is called called "a_texCoord0", the color attribute is called "a_color". See
 	 * {@link ShaderProgram#POSITION_ATTRIBUTE}, {@link ShaderProgram#COLOR_ATTRIBUTE} and {@link ShaderProgram#TEXCOORD_ATTRIBUTE}
-	 * which gets "0" appened to indicate the use of the first texture unit. The combined transform and projection
-	 * matrx is is uploaded via a mat4 uniform called "u_projTrans". The texture sampler is passed via a uniform called
-	 * "u_texture".</p>
+	 * which gets "0" appened to indicate the use of the first texture unit. The combined transform and projection matrx is is
+	 * uploaded via a mat4 uniform called "u_projTrans". The texture sampler is passed via a uniform called "u_texture".</p>
 	 * 
 	 * Call this method with a null argument to use the default shader.</p>
 	 * 
