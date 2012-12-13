@@ -33,9 +33,14 @@ public class BoundingBox implements Serializable {
 	public final Vector3 max = new Vector3();
 	final Vector3 cnt = new Vector3();
 	final Vector3 dim = new Vector3();
+	final Vector3 ext = new Vector3();
 	boolean crn_dirty = true;
 
-	/** @return the center of the bounding box */
+	/** 
+	 * Return the current center of this bounding box. If this vector is changed manually, then call
+	 * {@linkplain #updateFromCenter()} to recalculate the bounds.
+	 * @return the center of the bounding box 
+	 */
 	public Vector3 getCenter () {
 		return cnt;
 	}
@@ -63,6 +68,11 @@ public class BoundingBox implements Serializable {
 	/** @return The dimensions of this bounding box on all three axis */
 	public Vector3 getDimensions () {
 		return dim;
+	}
+	
+	/** @return The extend from center of this bounding box on all three axis */
+	public Vector3 getExtend () {
+		return ext;
 	}
 
 	/** @return The minimum vector */
@@ -125,6 +135,7 @@ public class BoundingBox implements Serializable {
 			minimum.z > maximum.z ? minimum.z : maximum.z);
 		cnt.set(min).add(max).mul(0.5f);
 		dim.set(max).sub(min);
+		ext.set(dim).mul(0.5f);
 		crn_dirty = true;
 		return this;
 	}
@@ -161,6 +172,7 @@ public class BoundingBox implements Serializable {
 		max.set(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
 		cnt.set(0, 0, 0);
 		dim.set(0, 0, 0);
+		ext.set(0, 0, 0);
 		crn_dirty = true;
 		return this;
 	}
@@ -245,6 +257,7 @@ public class BoundingBox implements Serializable {
 		return true;
 	}
 
+	@Override
 	public String toString () {
 		return "[" + min + "|" + max + "]";
 	}
@@ -258,6 +271,16 @@ public class BoundingBox implements Serializable {
 	public BoundingBox ext (float x, float y, float z) {
 		crn_dirty = true;
 		return this.set(min.set(min(min.x, x), min(min.y, y), min(min.z, z)), max.set(max(max.x, x), max(max.y, y), max(max.z, z)));
+	}
+	
+	/**
+	 * Recalculate the bounding box with the current center and 
+	 * the extend value.
+	 */
+	public void updateFromCenter() {
+			min.set(cnt).sub(ext);
+			max.set(cnt).add(ext);
+			crn_dirty = true;
 	}
 
 	static float min (float a, float b) {
