@@ -359,7 +359,7 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glReadPixels (int x, int y, int width, int height, int format, int type, Buffer pixels) {
 		// verify request
-		if ((format != WebGLRenderingContext.UNSIGNED_BYTE) || (type != WebGLRenderingContext.RGBA)) {
+		if ((format != WebGLRenderingContext.RGBA) || (type != WebGLRenderingContext.UNSIGNED_BYTE)) {
 			throw new GdxRuntimeException("Only format UNSIGNED_BYTE for type RGBA is currently supported.");
 		}
 		if (!(pixels instanceof ByteBuffer)) {
