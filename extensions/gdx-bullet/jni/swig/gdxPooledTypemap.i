@@ -18,20 +18,20 @@
 	}
 	
 	/* Sets the data in the Bullet type from the Gdx type. */
-	SWIGINTERN inline void gdx_set##CTYPE##From##JTYPE(JNIEnv * jenv, CTYPE & target, jobject source) {
+	SWIGINTERN inline void gdx_set##CTYPE##From##JTYPE(JNIEnv * jenv, CTYPE & target, jobject *source) {
 		FROMJTOC(jenv, target, source);
 	}
 
-	SWIGINTERN inline void gdx_set##CTYPE##From##JTYPE(JNIEnv * jenv, CTYPE * target, jobject source) {
+	SWIGINTERN inline void gdx_set##CTYPE##From##JTYPE(JNIEnv * jenv, CTYPE * target, jobject *source) {
 		gdx_set##CTYPE##From##JTYPE(jenv, *target, source);
 	}
 
 	/* Sets the data in the Gdx type from the Bullet type. */
-	SWIGINTERN inline void gdx_set##JTYPE##From##CTYPE(JNIEnv * jenv, jobject target, const CTYPE & source) {
+	SWIGINTERN inline void gdx_set##JTYPE##From##CTYPE(JNIEnv * jenv, jobject *target, const CTYPE & source) {
 		FROMCTOJ(jenv, target, source);
 	}
 
-	SWIGINTERN inline void gdx_set##JTYPE##From##CTYPE(JNIEnv * jenv, jobject target, const CTYPE * source) {
+	SWIGINTERN inline void gdx_set##JTYPE##From##CTYPE(JNIEnv * jenv, jobject *target, const CTYPE * source) {
 		gdx_set##JTYPE##From##CTYPE(jenv, target, *source);
 	}
 
@@ -41,30 +41,32 @@
 	class gdxAutoCommit##JTYPE {
 	private:
 	  JNIEnv * jenv;
-	  jobject gdxV3;
+	  jobject *gdxV3;
 	  CTYPE & btV3;
 	public:
-	  gdxAutoCommit##JTYPE(JNIEnv * jenv, jobject gdxV3, CTYPE & btV3) : 
+	  gdxAutoCommit##JTYPE(JNIEnv * jenv, jobject *gdxV3, CTYPE & btV3) : 
 	    jenv(jenv), gdxV3(gdxV3), btV3(btV3) { };
-	  gdxAutoCommit##JTYPE(JNIEnv * jenv, jobject gdxV3, CTYPE * btV3) : 
+	  gdxAutoCommit##JTYPE(JNIEnv * jenv, jobject *gdxV3, CTYPE * btV3) : 
 	    jenv(jenv), gdxV3(gdxV3), btV3(*btV3) { };
 	  virtual ~gdxAutoCommit##JTYPE() {
 	    gdx_set##JTYPE##From##CTYPE(this->jenv, this->gdxV3, this->btV3);
 	  };
 	};
 
-	class gdxAutoCommit##CTYPE {
+	class gdxAutoCommit##CTYPE##AndRelease##JTYPE {
 	private:
 	  JNIEnv * jenv;
-	  jobject gdxV3;
+	  jobject * gdxV3;
 	  CTYPE & btV3;
+	  const char * poolName;
 	public:
-	  gdxAutoCommit##CTYPE(JNIEnv * jenv, jobject gdxV3, CTYPE & btV3) : 
-	    jenv(jenv), gdxV3(gdxV3), btV3(btV3) { };
-	  gdxAutoCommit##CTYPE(JNIEnv * jenv, jobject gdxV3, CTYPE * btV3) : 
-	    jenv(jenv), gdxV3(gdxV3), btV3(*btV3) { };
-	  virtual ~gdxAutoCommit##CTYPE() {
+	  gdxAutoCommit##CTYPE##AndRelease##JTYPE(JNIEnv * jenv, jobject *gdxV3, CTYPE & btV3, const char *poolName) : 
+	    jenv(jenv), gdxV3(gdxV3), btV3(btV3), poolName(poolName) { };
+	  gdxAutoCommit##CTYPE##AndRelease##JTYPE(JNIEnv * jenv, jobject *gdxV3, CTYPE * btV3, const char *poolName) : 
+	    jenv(jenv), gdxV3(gdxV3), btV3(*btV3), poolName(poolName) { };
+	  virtual ~gdxAutoCommit##CTYPE##AndRelease##JTYPE() {
 	    gdx_set##CTYPE##From##JTYPE(this->jenv, this->btV3, this->gdxV3);
+	    gdx_releasePoolObject(this->jenv, this->poolName, *(this->gdxV3));
 	  };
 	};
 }
@@ -87,40 +89,39 @@
 %typemap(jni) 				CTYPE, CTYPE &, const CTYPE & 	"jobject"
 
 %typemap(in, fragment="gdxBulletHelpers##JTYPE", noblock=1)		CTYPE	{
-	gdx_set##CTYPE##From##JTYPE(jenv, $1, $input);
+	gdx_set##CTYPE##From##JTYPE(jenv, $1, &$input);
 }
 %typemap(in, fragment="gdxBulletHelpers##JTYPE", noblock=1)		CTYPE &, const CTYPE &	{
 	CTYPE local_$1;
-	gdx_set##CTYPE##From##JTYPE(jenv, local_$1, $input);
+	gdx_set##CTYPE##From##JTYPE(jenv, local_$1, &$input);
 	$1 = &local_$1;
-	gdxAutoCommit##JTYPE auto_commit_$1(jenv, $input, &local_$1);
+	gdxAutoCommit##JTYPE auto_commit_$1(jenv, &$input, &local_$1);
 }
 %typemap(directorin, fragment="gdxBulletHelpers##JTYPE", descriptor=JCLASS, noblock=1)	const CTYPE & {
 	$input = gdx_takePoolObject(jenv, TOSTRING##JTYPE(pool##JTYPE));
-	gdxPoolAutoRelease autoRelease_$input(jenv, TOSTRING##JTYPE(pool##JTYPE), $input);
-	gdx_set##JTYPE##From##CTYPE(jenv, $input, $1);
+	gdx_set##JTYPE##From##CTYPE(jenv, &$input, $1);
+	//gdxPoolAutoRelease autoRelease_$input(jenv, TOSTRING##JTYPE(pool##JTYPE), &$input);
 }
 %typemap(directorin, fragment="gdxBulletHelpers##JTYPE", descriptor=JCLASS, noblock=1)	CTYPE, CTYPE & {
 	$input = gdx_takePoolObject(jenv, TOSTRING##JTYPE(pool##JTYPE));
-	gdxPoolAutoRelease autoRelease_$input(jenv, TOSTRING##JTYPE(pool##JTYPE), $input);
-	gdx_set##JTYPE##From##CTYPE(jenv, $input, $1);
-	gdxAutoCommit##CTYPE auto_commit_$1(jenv, $input, &$1);
+	gdx_set##JTYPE##From##CTYPE(jenv, &$input, $1);
+	gdxAutoCommit##CTYPE##AndRelease##JTYPE auto_commit_$1(jenv, &$input, &$1, TOSTRING##JTYPE(pool##JTYPE));
 }
 
 %typemap(out, fragment="gdxBulletHelpers##JTYPE", noblock=1)		CTYPE, CTYPE &, const CTYPE &	{
 	$result = gdx_getReturn##JTYPE(jenv);
-	gdx_set##JTYPE##From##CTYPE(jenv, $result, $1);
+	gdx_set##JTYPE##From##CTYPE(jenv, &$result, $1);
 }
 %typemap(javaout)		CTYPE, CTYPE &, const CTYPE &	{
 	return $jnicall;
 }
 %typemap(directorout, fragment="gdxBulletHelpers##JTYPE", descriptor=JCLASS, noblock=1) 	CTYPE {
-	gdx_set##CTYPE##From##JTYPE(jenv, $result, $input);
+	gdx_set##CTYPE##From##JTYPE(jenv, $result, &$input);
 }
 /* allocate a local so we don't write to static default */
 %typemap(directorout, fragment="gdxBulletHelpers##JTYPE", descriptor=JCLASS, noblock=1) 	CTYPE &, const CTYPE & {
 	CTYPE local_$result;
-	gdx_set##CTYPE##From##JTYPE(jenv, local_$result, $input);
+	gdx_set##CTYPE##From##JTYPE(jenv, local_$result, &$input);
 	$result = &local_$result;
 }
 %enddef
