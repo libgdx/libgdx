@@ -1048,7 +1048,7 @@ public class SpriteBatch implements Disposable {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
 		} else {
 			Gdx.gl.glEnable(GL20.GL_BLEND);
-			Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
+			if (blendSrcFunc != -1) Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
 		}
 
 		if (Gdx.graphics.isGL20Available()) {
@@ -1082,7 +1082,7 @@ public class SpriteBatch implements Disposable {
 
 	/** Sets the blending function to be used when rendering sprites.
 	 * 
-	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA
+	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA. If set to -1, SpriteBatch won't change the blending function.
 	 * @param dstFunc the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA */
 	public void setBlendFunction (int srcFunc, int dstFunc) {
 		renderMesh();
