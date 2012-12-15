@@ -84,12 +84,12 @@
 	private:
 	  JNIEnv * jenv;
 	  const char * poolName;
-	  jobject *obj;
+	  jobject obj;
 	public:
-	  gdxPoolAutoRelease(JNIEnv * jenv, const char * poolName, jobject *obj) : 
+	  gdxPoolAutoRelease(JNIEnv * jenv, const char * poolName, jobject obj) : 
 		jenv(jenv), poolName(poolName), obj(obj) { };
 	  virtual ~gdxPoolAutoRelease() {
-		gdx_releasePoolObject(this->jenv, this->poolName, *(this->obj));
+		gdx_releasePoolObject(this->jenv, this->poolName, this->obj);
 	  };
 	};
 
