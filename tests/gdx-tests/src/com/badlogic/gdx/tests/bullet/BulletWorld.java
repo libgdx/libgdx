@@ -20,6 +20,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.physics.bullet.btBroadphaseInterface;
+import com.badlogic.gdx.physics.bullet.btIDebugDraw;
 import com.badlogic.gdx.physics.bullet.btCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.btCollisionDispatcher;
 import com.badlogic.gdx.physics.bullet.btConstraintSolver;
@@ -27,6 +28,7 @@ import com.badlogic.gdx.physics.bullet.btDbvtBroadphase;
 import com.badlogic.gdx.physics.bullet.btDefaultCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.btDiscreteDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.btIDebugDraw.DebugDrawModes;
 import com.badlogic.gdx.physics.bullet.btRigidBody;
 import com.badlogic.gdx.physics.bullet.btSequentialImpulseConstraintSolver;
 
@@ -125,7 +127,7 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 	}
 	
 	public void setDebugMode(final int mode, final Matrix4 projMatrix) {
-		if (mode <= 0 && debugDrawer == null)
+		if (mode == btIDebugDraw.DebugDrawModes.DBG_NoDebug && debugDrawer == null)
 			return;
 		if (debugDrawer == null)
 			dynamicsWorld.setDebugDrawer(debugDrawer = new DebugDrawer());

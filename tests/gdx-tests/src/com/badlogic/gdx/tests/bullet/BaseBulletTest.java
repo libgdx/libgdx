@@ -26,6 +26,8 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.btIDebugDraw;
+import com.badlogic.gdx.physics.bullet.btIDebugDraw.DebugDrawModes;
 import com.badlogic.gdx.physics.bullet.btTransform;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
@@ -137,13 +139,13 @@ public class BaseBulletTest extends BulletTest {
 	}
 	
 	public void toggleDebugMode() {
-		if (world.getDebugMode() == 0)
-			setDebugMode(1);
+		if (world.getDebugMode() == DebugDrawModes.DBG_NoDebug)
+			setDebugMode(DebugDrawModes.DBG_DrawWireframe);
 		else if (world.renderMeshes)
 			world.renderMeshes = false;
 		else {
 			world.renderMeshes = true;
-			setDebugMode(0);
+			setDebugMode(DebugDrawModes.DBG_NoDebug);
 		}
 	}
 	
