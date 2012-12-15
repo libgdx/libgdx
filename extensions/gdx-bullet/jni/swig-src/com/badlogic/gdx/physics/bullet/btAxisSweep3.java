@@ -13,12 +13,11 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btAxisSweep3 {
+public class btAxisSweep3 extends btAxisSweep3InternalShort {
   private long swigCPtr;
-  protected boolean swigCMemOwn;
 
   protected btAxisSweep3(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
+    super(gdxBulletJNI.btAxisSweep3_SWIGUpcast(cPtr), cMemoryOwn);
     swigCPtr = cPtr;
   }
 
@@ -38,6 +37,7 @@ public class btAxisSweep3 {
       }
       swigCPtr = 0;
     }
+    super.delete();
   }
 
   public btAxisSweep3(Vector3 worldAabbMin, Vector3 worldAabbMax, int maxHandles, btOverlappingPairCache pairCache, boolean disableRaycastAccelerator) {
