@@ -49,9 +49,9 @@ public class LocalRayResult {
   }
 
   public btCollisionObject getM_collisionObject() {
-    long cPtr = gdxBulletJNI.LocalRayResult_m_collisionObject_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObject(cPtr, false);
-  }
+	long cPtr = gdxBulletJNI.LocalRayResult_m_collisionObject_get(swigCPtr, this);
+	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+}
 
   public void setM_localShapeInfo(LocalShapeInfo value) {
     gdxBulletJNI.LocalRayResult_m_localShapeInfo_set(swigCPtr, this, LocalShapeInfo.getCPtr(value), value);

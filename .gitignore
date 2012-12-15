@@ -117,6 +117,12 @@ extensions/gdx-bullet/target/
 /extensions/gdx-bullet/libs/linux64
 /extensions/gdx-bullet/libs/windows32
 /extensions/gdx-bullet/libs/windows64
+/extensions/gdx-bullet/jni/vs/gdxBullet/gdxBullet.sdf
+/extensions/gdx-bullet/jni/vs/gdxBullet/x64
+/extensions/gdx-bullet/jni/vs/gdxBullet/Debug
+/extensions/gdx-bullet/jni/vs/gdxBullet/ipch
+/extensions/gdx-bullet/jni/vs/gdxBullet/gdxBullet/Debug
+/extensions/gdx-bullet/jni/vs/gdxBullet/gdxBullet/x64
 
 /extensions/gdx-freetype/bin
 /extensions/gdx-freetype/jni/target

@@ -23,7 +23,6 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.btPoint2PointConstraint;
 import com.badlogic.gdx.physics.bullet.btTypedConstraint;
-import com.badlogic.gdx.tests.bullet.BaseBulletTest.Entity;
 import com.badlogic.gdx.utils.Array;
 
 /** @author xoppa */
@@ -45,21 +44,21 @@ public class ConstraintsTest extends BaseBulletTest {
 			2, 3, 6, 6, 7, 3, // left
 			0, 1, 4, 4, 5, 1 // right
 			});
-		world.constructors.put("bar", new Entity.ConstructInfo(barMesh, 0f)); // mass = 0: static body
+		world.constructors.put("bar", new BulletConstructor(barMesh, 0f)); // mass = 0: static body
 		
 		// Create the entities
 		world.add("ground", 0f, 0f, 0f)
 			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
-		Entity bar = world.add("bar", 0f, 7f, 0f);
+		BulletEntity bar = world.add("bar", 0f, 7f, 0f);
 		bar.color.set(0.75f + 0.25f * (float)Math.random(), 0.75f + 0.25f * (float)Math.random(), 0.75f + 0.25f * (float)Math.random(), 1f);
 		
-		Entity box1 = world.add("box", -4.5f, 6f, 0f);
+		BulletEntity box1 = world.add("box", -4.5f, 6f, 0f);
 		box1.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 		btPoint2PointConstraint constraint = new btPoint2PointConstraint(bar.body, box1.body, Vector3.tmp.set(-5, -0.5f, -0.5f), Vector3.tmp2.set(-0.5f, 0.5f, -0.5f));
 		world.dynamicsWorld.addConstraint(constraint, false);
 		constraints.add(constraint);
-		Entity box2 = null;
+		BulletEntity box2 = null;
 		for (int i = 0; i < 10; i++) {
 			if (i % 2 == 0) {
 				box2 = world.add("box", -3.5f + (float)i, 6f, 0f);

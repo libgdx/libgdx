@@ -85,8 +85,8 @@ public class ClosestConvexResultCallback extends ConvexResultCallback {
   }
 
   public btCollisionObject getM_hitCollisionObject() {
-    long cPtr = gdxBulletJNI.ClosestConvexResultCallback_m_hitCollisionObject_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObject(cPtr, false);
-  }
+	long cPtr = gdxBulletJNI.ClosestConvexResultCallback_m_hitCollisionObject_get(swigCPtr, this);
+	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+}
 
 }
