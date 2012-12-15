@@ -73,14 +73,14 @@ public class btPersistentManifold extends btTypedObject {
   }
 
   public btCollisionObject getBody0() {
-    long cPtr = gdxBulletJNI.btPersistentManifold_getBody0(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObject(cPtr, false);
-  }
+	long cPtr = gdxBulletJNI.btPersistentManifold_getBody0(swigCPtr, this);
+	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+}
 
   public btCollisionObject getBody1() {
-    long cPtr = gdxBulletJNI.btPersistentManifold_getBody1(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObject(cPtr, false);
-  }
+	long cPtr = gdxBulletJNI.btPersistentManifold_getBody1(swigCPtr, this);
+	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+}
 
   public void setBodies(btCollisionObject body0, btCollisionObject body1) {
     gdxBulletJNI.btPersistentManifold_setBodies(swigCPtr, this, btCollisionObject.getCPtr(body0), body0, btCollisionObject.getCPtr(body1), body1);

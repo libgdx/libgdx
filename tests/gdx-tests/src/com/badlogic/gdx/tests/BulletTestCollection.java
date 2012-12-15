@@ -21,9 +21,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.tests.box2d.Box2DTest;
 import com.badlogic.gdx.tests.bullet.BulletTest;
 import com.badlogic.gdx.tests.bullet.ConstraintsTest;
@@ -42,9 +47,20 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 	
 	private Application app = null;
 	
+	private BitmapFont font;
+	private Stage hud;
+	private Label fpsLabel;
+	private Label titleLabel;
+	private int loading = 0;
+	
 	@Override
 	public void render () {
+		if ((loading > 0) && (++loading > 2))
+			loadnext();
+			
 		tests[testIndex].render();
+		fpsLabel.setText(tests[testIndex].performance);
+		hud.draw();
 	}
 	
 	@Override
@@ -55,6 +71,13 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		}
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(this, new GestureDetector(this)));
+		
+		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		hud = new Stage(480, 320, true);
+		hud.addActor(fpsLabel = new Label(" ", new Label.LabelStyle(font, Color.WHITE)));
+		fpsLabel.setPosition(0, 0);
+		hud.addActor(titleLabel = new Label(tests[testIndex].getClass().getSimpleName(), new Label.LabelStyle(font, Color.WHITE)));
+		titleLabel.setY(hud.getHeight()-titleLabel.getHeight());
 	}
 	
 	@Override
@@ -64,14 +87,22 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 	}
 	
 	public void next() {
-		app.log("TestCollection", "disposing test '" + tests[testIndex].getClass().getName());
+		titleLabel.setText("Loading...");
+		loading = 1;
+	}
+	
+	public void loadnext() {
+		app.log("TestCollection", "disposing test '" + tests[testIndex].getClass().getName() + "'");
 		tests[testIndex].dispose();
 		// This would be a good time for GC to kick in.
 		System.gc();
 		testIndex++;
 		if (testIndex >= tests.length) testIndex = 0;
 		tests[testIndex].create();
-		app.log("TestCollection", "created test '" + tests[testIndex].getClass().getName());
+		app.log("TestCollection", "created test '" + tests[testIndex].getClass().getName() + "'");
+		
+		titleLabel.setText(tests[testIndex].getClass().getSimpleName());
+		loading = 0;
 	}
 	
 	@Override

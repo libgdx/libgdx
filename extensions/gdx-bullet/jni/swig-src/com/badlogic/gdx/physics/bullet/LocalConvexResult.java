@@ -49,9 +49,9 @@ public class LocalConvexResult {
   }
 
   public btCollisionObject getM_hitCollisionObject() {
-    long cPtr = gdxBulletJNI.LocalConvexResult_m_hitCollisionObject_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObject(cPtr, false);
-  }
+	long cPtr = gdxBulletJNI.LocalConvexResult_m_hitCollisionObject_get(swigCPtr, this);
+	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+}
 
   public void setM_localShapeInfo(LocalShapeInfo value) {
     gdxBulletJNI.LocalConvexResult_m_localShapeInfo_set(swigCPtr, this, LocalShapeInfo.getCPtr(value), value);

@@ -765,8 +765,12 @@ public class TextField extends Widget {
 	public boolean isDisabled () {
 		return disabled;
 	}
+	
+	public boolean isPasswordMode(){
+		return passwordMode;
+	}
 
-	class KeyRepeatTask extends Task {
+ 	class KeyRepeatTask extends Task {
 		int keycode;
 
 		public void run () {
