@@ -100,10 +100,14 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "LinearMath/btAabbUtil2.h"
 
+DISABLE_POOLED_TYPEMAP(btTransform);
+DISABLE_POOLED_TYPEMAP(btVector3);
 %{
 #include <LinearMath/btIDebugDraw.h>
 %}
 %include "LinearMath/btIDebugDraw.h"
+ENABLE_POOLED_TYPEMAP(btVector3, Vector3, "Lcom/badlogic/gdx/math/Vector3;");
+ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 
 %{
 #include <LinearMath/btGeometryUtil.h>
@@ -774,7 +778,53 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "BulletDynamics/ConstraintSolver/btHinge2Constraint.h"
 
-/* Experimental code (not suitable for Android)
+/* DISABLED STUFF BELOW HERE (TODO: CHECK THIS) */
+
+/*
+ * btSerializer needs some typemap customization for sBulletDNAstr and friends.
+ * SWIG doesn't know how to pass the unsized arrays back.
+ */
+/* 
+%{
+#include <LinearMath/btSerializer.h>
+%}
+%include "LinearMath/btSerializer.h"
+*/
+
+/* 
+ * btWheelInfo doesn't compile because it doesnt have a 0-arg constructor for 
+ * btAlignedObjectArray to call, so I disabled the vehicle stuff.
+ */
+ 
+%{
+#include <BulletDynamics/Vehicle/btVehicleRaycaster.h>
+%}
+%include "BulletDynamics/Vehicle/btVehicleRaycaster.h"
+
+%{
+#include <BulletDynamics/Vehicle/btWheelInfo.h>
+%}
+%include "BulletDynamics/Vehicle/btWheelInfo.h"
+
+/* Has nested classes or structs */
+%include "custom/btRaycastVehicle.i"
+
+
+/*
+ * Because C++ templates are compile-time, we must pre-define all the
+ * template classes to generate in Java.  This is at the bottom
+ * so we can reference all the other types.
+ */
+ 
+%template(btCollisionObjectArray) btAlignedObjectArray<btCollisionObject *>;
+
+/*
+ * Include dummy methods for ones Bullet declares but doesn't
+ * implement.  At the bottom so we can reference other types.
+ */
+%include "gdxMissingBulletMethods.i"
+
+/* SoftBody code (not suitable for Android)
 %{
 #include <BulletSoftBody/btSoftBodySolvers.h>
 %}
@@ -837,49 +887,3 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "BulletSoftBody/btSoftSoftCollisionAlgorithm.h"
 */
-
-/* DISABLED STUFF BELOW HERE (TODO: CHECK THIS) */
-
-/*
- * btSerializer needs some typemap customization for sBulletDNAstr and friends.
- * SWIG doesn't know how to pass the unsized arrays back.
- */
-/* 
-%{
-#include <LinearMath/btSerializer.h>
-%}
-%include "LinearMath/btSerializer.h"
-*/
-
-/* 
- * btWheelInfo doesn't compile because it doesnt have a 0-arg constructor for 
- * btAlignedObjectArray to call, so I disabled the vehicle stuff.
- */
- 
-%{
-#include <BulletDynamics/Vehicle/btVehicleRaycaster.h>
-%}
-%include "BulletDynamics/Vehicle/btVehicleRaycaster.h"
-
-%{
-#include <BulletDynamics/Vehicle/btWheelInfo.h>
-%}
-%include "BulletDynamics/Vehicle/btWheelInfo.h"
-
-/* Has nested classes or structs */
-%include "custom/btRaycastVehicle.i"
-
-
-/*
- * Because C++ templates are compile-time, we must pre-define all the
- * template classes to generate in Java.  This is at the bottom
- * so we can reference all the other types.
- */
- 
-%template(btCollisionObjectArray) btAlignedObjectArray<btCollisionObject *>;
-
-/*
- * Include dummy methods for ones Bullet declares but doesn't
- * implement.  At the bottom so we can reference other types.
- */
-%include "gdxMissingBulletMethods.i"
