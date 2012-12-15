@@ -173,7 +173,6 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		debug = Debug.none;
 		cellDefaults.set(Cell.defaults(this));
 		columnDefaults.clear();
-		rowDefaults = null;
 	}
 
 	/** Removes all widgets and cells from the table. */
@@ -185,6 +184,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		cells.clear();
 		rows = 0;
 		columns = 0;
+		rowDefaults = null;
 		invalidate();
 	}
 
