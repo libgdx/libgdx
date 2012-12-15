@@ -219,6 +219,10 @@ public class ShaderProgram implements Disposable {
 
 		gl.glAttachShader(program, vertexShaderHandle);
 		gl.glAttachShader(program, fragmentShaderHandle);
+		// gushiku-- add
+		gl.glDeleteShader(vertexShaderHandle);
+		gl.glDeleteShader(fragmentShaderHandle);
+		// gushiku-- endadd
 		gl.glLinkProgram(program);
 
 		ByteBuffer tmp = ByteBuffer.allocateDirect(4);
@@ -698,8 +702,8 @@ public class ShaderProgram implements Disposable {
 	public void dispose () {
 		GL20 gl = Gdx.graphics.getGL20();
 		gl.glUseProgram(0);
-		gl.glDeleteShader(vertexShaderHandle);
-		gl.glDeleteShader(fragmentShaderHandle);
+//		gl.glDeleteShader(vertexShaderHandle);
+//		gl.glDeleteShader(fragmentShaderHandle);
 		gl.glDeleteProgram(program);
 		if (shaders.get(Gdx.app) != null) shaders.get(Gdx.app).remove(this);
 	}

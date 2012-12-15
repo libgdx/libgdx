@@ -154,6 +154,7 @@ public class IOSSound implements Sound {
 			player.set_NumberOfLoops(looping ? -1 : 0);  // Note: -1 for looping!
 			player.set_Volume(volume);
 			player.set_Pan(pan);
+			player.set_CurrentTime(0);
 			
 			// we let the thread play our song as not to impact rendering performance (FPS)
 			playQueue.offer(player);
@@ -185,7 +186,7 @@ public class IOSSound implements Sound {
 		
 		// stop all players
 		for (int i = 0; i < players.length; i++) {
-			players[i].Stop();
+			players[i].Pause();
 		}
 	}
 
@@ -212,7 +213,7 @@ public class IOSSound implements Sound {
 	@Override
 	public void stop(long soundId) {
 		if (soundId >= 0) {
-			players[(int)soundId].Stop();
+			players[(int)soundId].Pause();
 		}
 	}
 
