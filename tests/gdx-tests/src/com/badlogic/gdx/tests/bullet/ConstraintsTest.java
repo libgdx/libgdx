@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.Array;
 /** @author xoppa */
 public class ConstraintsTest extends BaseBulletTest {
 
-	Array<btTypedConstraint> constraints = new Array<btTypedConstraint>(); 
+	final Array<btTypedConstraint> constraints = new Array<btTypedConstraint>(); 
 	
 	@Override
 	public void create () {

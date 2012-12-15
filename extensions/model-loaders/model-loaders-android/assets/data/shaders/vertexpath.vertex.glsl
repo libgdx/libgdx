@@ -4,9 +4,15 @@
 //#define diffuseColorFlag
 //#define translucentFlag
 //#define fogColorFlag
+//#define lightmapTextureFlag
 //#define LIGHTS_NUM 4
 attribute vec3 a_position; 
 attribute vec2 a_texCoord0;
+
+#ifdef lightmapTextureFlag
+attribute vec2 a_texCoord1;
+varying vec2 v_texCoords1;
+#endif
 
 #ifdef normalsFlag
 attribute vec3 a_normal;
@@ -61,6 +67,10 @@ float wrapLight(vec3 nor, vec3 direction){
 void main()
 {	
 	v_texCoords = a_texCoord0;
+#ifdef lightmapTextureFlag
+	v_texCoords1 = a_texCoord1;
+#endif	
+
 	vec4 worldPos = u_modelMatrix * vec4(a_position,1.0);
 	gl_Position = u_projectionViewMatrix * worldPos; 
 	vec3 pos  = worldPos.xyz;

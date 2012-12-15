@@ -16,17 +16,6 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import java.awt.Canvas;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.lwjgl.opengl.Display;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
@@ -40,13 +29,24 @@ import com.badlogic.gdx.backends.openal.OpenALAudio;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import java.awt.Canvas;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.lwjgl.opengl.Display;
+
 /** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. All OpenGL calls are done on the
  * EDT. This is slightly less efficient then a dedicated thread, but greatly simplifies synchronization. Note that you may need to
  * call {@link #stop()} or a Swing application may deadlock on System.exit due to how LWJGL and/or Swing deal with shutdown hooks.
  * @author Nathan Sweet */
 public class LwjglCanvas implements Application {
 	final LwjglGraphics graphics;
-	final OpenALAudio audio;
+	OpenALAudio audio;
 	final LwjglFiles files;
 	final LwjglInput input;
 	final LwjglNet net;
@@ -103,7 +103,7 @@ public class LwjglCanvas implements Application {
 			}
 		};
 		graphics.setVSync(true);
-		audio = new OpenALAudio();
+		if (!LwjglApplicationConfiguration.disableAudio) audio = new OpenALAudio();
 		files = new LwjglFiles();
 		input = new LwjglInput();
 		net = new LwjglNet();
@@ -172,6 +172,7 @@ public class LwjglCanvas implements Application {
 			start();
 		} catch (Exception ex) {
 			stopped();
+			exception(ex);
 			throw new GdxRuntimeException(ex);
 		}
 
@@ -213,7 +214,7 @@ public class LwjglCanvas implements Application {
 					}
 					input.processEvents();
 					listener.render();
-					audio.update();
+					if (audio != null) audio.update();
 					Display.update();
 					canvas.setCursor(cursor);
 					if (graphics.vsync) Display.sync(60);
@@ -249,7 +250,7 @@ public class LwjglCanvas implements Application {
 				running = false;
 				try {
 					Display.destroy();
-					audio.dispose();
+					if (audio != null) audio.dispose();
 				} catch (Throwable ignored) {
 				}
 				listener.pause();

@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btMultiSphereShape extends btConvexInternalAabbCachingShape {
   private long swigCPtr;
@@ -39,8 +40,13 @@ public class btMultiSphereShape extends btConvexInternalAabbCachingShape {
     super.delete();
   }
 
-  public btMultiSphereShape(btVector3 positions, float[] radi, int numSpheres) {
-    this(gdxBulletJNI.new_btMultiSphereShape(btVector3.getCPtr(positions), positions, radi, numSpheres), true);
+  static private long SwigConstructbtMultiSphereShape(btVector3 positions, java.nio.FloatBuffer radi, int numSpheres) {
+    assert radi.isDirect() : "Buffer must be allocated direct.";
+    return gdxBulletJNI.new_btMultiSphereShape(btVector3.getCPtr(positions), positions, radi, numSpheres);
+  }
+
+  public btMultiSphereShape(btVector3 positions, java.nio.FloatBuffer radi, int numSpheres) {
+    this(btMultiSphereShape.SwigConstructbtMultiSphereShape(positions, radi, numSpheres), true);
   }
 
   public int getSphereCount() {

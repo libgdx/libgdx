@@ -216,6 +216,7 @@ public class ShadowMappingTest extends GdxTest {
 		}
 
 		fpsLabel.setText("fps: " + Gdx.graphics.getFramesPerSecond());
+		ui.act();
 		ui.draw();
 		Table.drawDebug(ui);
 	}

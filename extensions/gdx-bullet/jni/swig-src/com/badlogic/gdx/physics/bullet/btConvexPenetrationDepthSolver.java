@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btConvexPenetrationDepthSolver {
   private long swigCPtr;
@@ -39,8 +40,8 @@ public class btConvexPenetrationDepthSolver {
     }
   }
 
-  public boolean calcPenDepth(SWIGTYPE_p_btSimplexSolverInterface simplexSolver, btConvexShape convexA, btConvexShape convexB, btTransform transA, btTransform transB, Vector3 v, Vector3 pa, Vector3 pb, btIDebugDraw debugDraw, btStackAlloc stackAlloc) {
-    return gdxBulletJNI.btConvexPenetrationDepthSolver_calcPenDepth(swigCPtr, this, SWIGTYPE_p_btSimplexSolverInterface.getCPtr(simplexSolver), btConvexShape.getCPtr(convexA), convexA, btConvexShape.getCPtr(convexB), convexB, btTransform.getCPtr(transA), transA, btTransform.getCPtr(transB), transB, v, pa, pb, btIDebugDraw.getCPtr(debugDraw), debugDraw, btStackAlloc.getCPtr(stackAlloc), stackAlloc);
+  public boolean calcPenDepth(SWIGTYPE_p_btSimplexSolverInterface simplexSolver, btConvexShape convexA, btConvexShape convexB, Matrix4 transA, Matrix4 transB, Vector3 v, Vector3 pa, Vector3 pb, btIDebugDraw debugDraw, btStackAlloc stackAlloc) {
+    return gdxBulletJNI.btConvexPenetrationDepthSolver_calcPenDepth(swigCPtr, this, SWIGTYPE_p_btSimplexSolverInterface.getCPtr(simplexSolver), btConvexShape.getCPtr(convexA), convexA, btConvexShape.getCPtr(convexB), convexB, transA, transB, v, pa, pb, btIDebugDraw.getCPtr(debugDraw), debugDraw, btStackAlloc.getCPtr(stackAlloc), stackAlloc);
   }
 
 }

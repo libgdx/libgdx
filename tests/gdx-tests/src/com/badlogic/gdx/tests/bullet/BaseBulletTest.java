@@ -27,6 +27,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.btBoxShape;
 import com.badlogic.gdx.physics.bullet.btCollisionDispatcher;
 import com.badlogic.gdx.physics.bullet.btCollisionShape;
@@ -45,19 +46,18 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** @author xoppa */
 public class BaseBulletTest extends BulletTest {
-	static {
-		new SharedLibraryLoader().load("gdx-bullet");
-	}
-	
-	final float lightAmbient[] = new float[] {0.3f, 0.3f, 0.3f, 1f};
-	final float lightPosition[] = new float[] {10f, 5f, 5f, 1f};
-	final float lightDiffuse[] = new float[] {0.7f, 0.7f, 0.7f, 1f};
+	final float lightAmbient[] = new float[] {0.5f, 0.5f, 0.5f, 1f};
+	final float lightPosition[] = new float[] {10f, 10f, 10f, 1f};
+	final float lightDiffuse[] = new float[] {0.5f, 0.5f, 0.5f, 1f};
 
 	PerspectiveCamera camera;
 	World world;
 	
 	@Override
 	public void create () {
+		// Need to initialize bullet before using it.
+		Bullet.init();
+		
 		world = new World();
 
 		final float width = Gdx.graphics.getWidth();
@@ -89,6 +89,7 @@ public class BaseBulletTest extends BulletTest {
 		// Add the constructers
 		world.constructors.put("ground", new Entity.ConstructInfo(groundMesh, 0f)); // mass = 0: static body
 		world.constructors.put("box", new Entity.ConstructInfo(boxMesh, 1f)); // mass = 1kg: dynamic body
+		world.constructors.put("staticbox", new Entity.ConstructInfo(boxMesh, 0f)); // mass = 0: static body
 	}
 	
 	@Override
@@ -229,16 +230,16 @@ public class BaseBulletTest extends BulletTest {
 			 * For kinematic bodies this method is called on every update.
 			 */
 			@Override
-			public void getWorldTransform (final btTransform worldTrans) {
-				worldTrans.setFromOpenGLMatrix(transform.val);
+			public void getWorldTransform (Matrix4 worldTrans) {
+				worldTrans.set(transform);
 			}
 
 			/**
 			 * For dynamic bodies this method is called by bullet every update to inform about the new position and rotation.
 			 */
 			@Override
-			public void setWorldTransform (final btTransform worldTrans) {
-				worldTrans.getOpenGLMatrix(transform.val);
+			public void setWorldTransform (Matrix4 worldTrans) {
+				transform.set(worldTrans);
 			}
 			
 			@Override

@@ -1048,7 +1048,7 @@ public class SpriteBatch implements Disposable {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
 		} else {
 			Gdx.gl.glEnable(GL20.GL_BLEND);
-			Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
+			if (blendSrcFunc != -1) Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
 		}
 
 		if (Gdx.graphics.isGL20Available()) {
@@ -1068,23 +1068,21 @@ public class SpriteBatch implements Disposable {
 
 	/** Disables blending for drawing sprites. */
 	public void disableBlending () {
-		if (blendingDisabled)
-			return;
+		if (blendingDisabled) return;
 		renderMesh();
 		blendingDisabled = true;
 	}
 
 	/** Enables blending for sprites */
 	public void enableBlending () {
-		if (!blendingDisabled)
-			return;
+		if (!blendingDisabled) return;
 		renderMesh();
 		blendingDisabled = false;
 	}
 
 	/** Sets the blending function to be used when rendering sprites.
 	 * 
-	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA
+	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA. If set to -1, SpriteBatch won't change the blending function.
 	 * @param dstFunc the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA */
 	public void setBlendFunction (int srcFunc, int dstFunc) {
 		renderMesh();
@@ -1160,11 +1158,10 @@ public class SpriteBatch implements Disposable {
 	}
 
 	/** Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture
-	 * coordinates attribute is called called "a_texCoords0", the color attribute is called "a_color". See
+	 * coordinates attribute is called called "a_texCoord0", the color attribute is called "a_color". See
 	 * {@link ShaderProgram#POSITION_ATTRIBUTE}, {@link ShaderProgram#COLOR_ATTRIBUTE} and {@link ShaderProgram#TEXCOORD_ATTRIBUTE}
-	 * which gets "0" appened to indicate the use of the first texture unit. The combined transform and projection
-	 * matrx is is uploaded via a mat4 uniform called "u_projTrans". The texture sampler is passed via a uniform called
-	 * "u_texture".</p>
+	 * which gets "0" appened to indicate the use of the first texture unit. The combined transform and projection matrx is is
+	 * uploaded via a mat4 uniform called "u_projTrans". The texture sampler is passed via a uniform called "u_texture".</p>
 	 * 
 	 * Call this method with a null argument to use the default shader.</p>
 	 * 

@@ -107,7 +107,8 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			super.onCreate(surfaceHolder);
 			this.app = new AndroidLiveWallpaper(AndroidLiveWallpaperService.this, this);
 			AndroidApplicationConfiguration config = createConfig();
-			this.app.initialize(createListener(isPreview()), config);
+			listener = createListener(isPreview());
+			this.app.initialize(listener, config);
 			this.view = ((AndroidGraphicsLiveWallpaper)app.getGraphics()).getView();
 
 			if (config.getTouchEventsForLiveWallpaper && Integer.parseInt(android.os.Build.VERSION.SDK) < 9)
@@ -119,7 +120,9 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			runningEngines--;
 			if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.this.TAG, " > onDestroy() " + hashCode() + ", running: " + runningEngines);
 			view.onDestroy();
-			// app.onDestroy();
+			if (listener != null)
+				listener.dispose();
+			app.onDestroy();
 			super.onDestroy();
 		}
 
