@@ -74,7 +74,7 @@ public class LwjglFrame extends JFrame {
 		if (size.width == 0 && size.height == 0) pack();
 		Point location = getLocation();
 		if (location.x == 0 && location.y == 0) setLocationRelativeTo(null);
-		setVisible(true);
+		setVisible(true); // Has to happen on OSX before display is created.
 		lwjglCanvas.getCanvas().requestFocus();
 	}
 

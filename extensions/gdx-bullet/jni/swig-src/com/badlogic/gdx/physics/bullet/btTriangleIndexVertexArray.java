@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btTriangleIndexVertexArray extends btStridingMeshInterface {
   private long swigCPtr;
@@ -43,8 +44,14 @@ public class btTriangleIndexVertexArray extends btStridingMeshInterface {
     this(gdxBulletJNI.new_btTriangleIndexVertexArray__SWIG_0(), true);
   }
 
-  public btTriangleIndexVertexArray(int numTriangles, SWIGTYPE_p_int triangleIndexBase, int triangleIndexStride, int numVertices, float[] vertexBase, int vertexStride) {
-    this(gdxBulletJNI.new_btTriangleIndexVertexArray__SWIG_1(numTriangles, SWIGTYPE_p_int.getCPtr(triangleIndexBase), triangleIndexStride, numVertices, vertexBase, vertexStride), true);
+  static private long SwigConstructbtTriangleIndexVertexArray(int numTriangles, java.nio.IntBuffer triangleIndexBase, int triangleIndexStride, int numVertices, java.nio.FloatBuffer vertexBase, int vertexStride) {
+    assert triangleIndexBase.isDirect() : "Buffer must be allocated direct.";
+    assert vertexBase.isDirect() : "Buffer must be allocated direct.";
+    return gdxBulletJNI.new_btTriangleIndexVertexArray__SWIG_1(numTriangles, triangleIndexBase, triangleIndexStride, numVertices, vertexBase, vertexStride);
+  }
+
+  public btTriangleIndexVertexArray(int numTriangles, java.nio.IntBuffer triangleIndexBase, int triangleIndexStride, int numVertices, java.nio.FloatBuffer vertexBase, int vertexStride) {
+    this(btTriangleIndexVertexArray.SwigConstructbtTriangleIndexVertexArray(numTriangles, triangleIndexBase, triangleIndexStride, numVertices, vertexBase, vertexStride), true);
   }
 
   public void addIndexedMesh(btIndexedMesh mesh, int indexType) {

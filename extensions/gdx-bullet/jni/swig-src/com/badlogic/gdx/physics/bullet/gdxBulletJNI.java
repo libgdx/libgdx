@@ -11,33 +11,43 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Pool;
 
 public class gdxBulletJNI {
 
-
-  // Used to avoid allocation when returning from Java
-  private final static Vector3 _RET_VECTOR3 = new Vector3(0, 0, 0);
-  private final static Quaternion _RET_QUATERNION = new Quaternion(0, 0, 0, 0);
-  private final static Matrix3 _RET_MATRIX3 = new Matrix3();
-  
-  // Used to avoid allocation for parameters in director calls into Java
-  public static final Pool<Vector3> _DIR_VECTOR3 = new Pool<Vector3>() {
+  private final static Vector3 staticVector3 = new Vector3();
+  public static final Pool<Vector3> poolVector3 = new Pool<Vector3>() {
     @Override
 	protected Vector3 newObject() {
       return new Vector3();
 	}
   };
-  public static final Pool<Quaternion> _DIR_QUATERNION = new Pool<Quaternion>() {
+
+
+  private final static Quaternion staticQuaternion = new Quaternion();
+  public static final Pool<Quaternion> poolQuaternion = new Pool<Quaternion>() {
     @Override
 	protected Quaternion newObject() {
-      return new Quaternion(0, 0, 0, 0);
+      return new Quaternion();
 	}
   };
-  public static final Pool<Matrix3> _DIR_MATRIX3 = new Pool<Matrix3>() {
+
+
+  private final static Matrix3 staticMatrix3 = new Matrix3();
+  public static final Pool<Matrix3> poolMatrix3 = new Pool<Matrix3>() {
     @Override
 	protected Matrix3 newObject() {
       return new Matrix3();
+	}
+  };
+
+
+  private final static Matrix4 staticMatrix4 = new Matrix4();
+  public static final Pool<Matrix4> poolMatrix4 = new Pool<Matrix4>() {
+    @Override
+	protected Matrix4 newObject() {
+      return new Matrix4();
 	}
   };
 
@@ -72,14 +82,52 @@ public class gdxBulletJNI {
   public final static native int btSwapEndian__SWIG_3(short jarg1);
   public final static native long btSwapEndianFloat(float jarg1);
   public final static native float btUnswapEndianFloat(long jarg1);
-  public final static native void btSwapEndianDouble(double jarg1, long jarg2);
-  public final static native double btUnswapEndianDouble(long jarg1);
+  public final static native void btSwapEndianDouble(double jarg1, java.nio.ByteBuffer jarg2);
+  public final static native double btUnswapEndianDouble(java.nio.ByteBuffer jarg1);
   public final static native float btNormalizeAngle(float jarg1);
   public final static native long new_btTypedObject(int jarg1);
   public final static native void btTypedObject_m_objectType_set(long jarg1, btTypedObject jarg1_, int jarg2);
   public final static native int btTypedObject_m_objectType_get(long jarg1, btTypedObject jarg1_);
   public final static native int btTypedObject_getObjectType(long jarg1, btTypedObject jarg1_);
   public final static native void delete_btTypedObject(long jarg1);
+  public final static native long new_btTransform__SWIG_0();
+  public final static native long new_btTransform__SWIG_1(Quaternion jarg1, Vector3 jarg2);
+  public final static native long new_btTransform__SWIG_2(Quaternion jarg1);
+  public final static native long new_btTransform__SWIG_3(Matrix3 jarg1, Vector3 jarg2);
+  public final static native long new_btTransform__SWIG_4(Matrix3 jarg1);
+  public final static native long new_btTransform__SWIG_5(Matrix4 jarg1);
+  public final static native void btTransform_mult(long jarg1, btTransform jarg1_, Matrix4 jarg2, Matrix4 jarg3);
+  public final static native Matrix3 btTransform_getBasis__SWIG_0(long jarg1, btTransform jarg1_);
+  public final static native Vector3 btTransform_getOrigin__SWIG_0(long jarg1, btTransform jarg1_);
+  public final static native Quaternion btTransform_getRotation(long jarg1, btTransform jarg1_);
+  public final static native void btTransform_setFromOpenGLMatrix(long jarg1, btTransform jarg1_, float[] jarg2);
+  public final static native void btTransform_getOpenGLMatrix(long jarg1, btTransform jarg1_, float[] jarg2);
+  public final static native void btTransform_setOrigin(long jarg1, btTransform jarg1_, Vector3 jarg2);
+  public final static native Vector3 btTransform_invXform(long jarg1, btTransform jarg1_, Vector3 jarg2);
+  public final static native void btTransform_setBasis(long jarg1, btTransform jarg1_, Matrix3 jarg2);
+  public final static native void btTransform_setRotation(long jarg1, btTransform jarg1_, Quaternion jarg2);
+  public final static native void btTransform_setIdentity(long jarg1, btTransform jarg1_);
+  public final static native Matrix4 btTransform_inverse(long jarg1, btTransform jarg1_);
+  public final static native Matrix4 btTransform_inverseTimes(long jarg1, btTransform jarg1_, Matrix4 jarg2);
+  public final static native Matrix4 btTransform_getIdentity();
+  public final static native void btTransform_serialize(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
+  public final static native void btTransform_serializeFloat(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
+  public final static native void btTransform_deSerialize(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
+  public final static native void btTransform_deSerializeDouble(long jarg1, btTransform jarg1_, long jarg2, btTransformDoubleData jarg2_);
+  public final static native void btTransform_deSerializeFloat(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
+  public final static native void delete_btTransform(long jarg1);
+  public final static native void btTransformFloatData_m_basis_set(long jarg1, btTransformFloatData jarg1_, long jarg2);
+  public final static native long btTransformFloatData_m_basis_get(long jarg1, btTransformFloatData jarg1_);
+  public final static native void btTransformFloatData_m_origin_set(long jarg1, btTransformFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
+  public final static native long btTransformFloatData_m_origin_get(long jarg1, btTransformFloatData jarg1_);
+  public final static native long new_btTransformFloatData();
+  public final static native void delete_btTransformFloatData(long jarg1);
+  public final static native void btTransformDoubleData_m_basis_set(long jarg1, btTransformDoubleData jarg1_, long jarg2);
+  public final static native long btTransformDoubleData_m_basis_get(long jarg1, btTransformDoubleData jarg1_);
+  public final static native void btTransformDoubleData_m_origin_set(long jarg1, btTransformDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
+  public final static native long btTransformDoubleData_m_origin_get(long jarg1, btTransformDoubleData jarg1_);
+  public final static native long new_btTransformDoubleData();
+  public final static native void delete_btTransformDoubleData(long jarg1);
   public final static native void btVector3_m_floats_set(long jarg1, btVector3 jarg1_, float[] jarg2);
   public final static native float[] btVector3_m_floats_get(long jarg1, btVector3 jarg1_);
   public final static native long new_btVector3__SWIG_0();
@@ -195,15 +243,15 @@ public class gdxBulletJNI {
   public final static native int btOutcode(Vector3 jarg1, Vector3 jarg2);
   public final static native boolean btRayAabb2(Vector3 jarg1, Vector3 jarg2, long[] jarg3, long jarg4, btVector3 jarg4_, long jarg5, float jarg6, float jarg7);
   public final static native boolean btRayAabb(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, long jarg5, Vector3 jarg6);
-  public final static native void btTransformAabb__SWIG_0(Vector3 jarg1, float jarg2, long jarg3, btTransform jarg3_, Vector3 jarg4, Vector3 jarg5);
-  public final static native void btTransformAabb__SWIG_1(Vector3 jarg1, Vector3 jarg2, float jarg3, long jarg4, btTransform jarg4_, Vector3 jarg5, Vector3 jarg6);
-  public final static native long testQuantizedAabbAgainstQuantizedAabb(long jarg1, long jarg2, long jarg3, long jarg4);
+  public final static native void btTransformAabb__SWIG_0(Vector3 jarg1, float jarg2, Matrix4 jarg3, Vector3 jarg4, Vector3 jarg5);
+  public final static native void btTransformAabb__SWIG_1(Vector3 jarg1, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6);
+  public final static native long testQuantizedAabbAgainstQuantizedAabb(java.nio.IntBuffer jarg1, java.nio.IntBuffer jarg2, java.nio.IntBuffer jarg3, java.nio.IntBuffer jarg4);
   public final static native void delete_btIDebugDraw(long jarg1);
   public final static native void btIDebugDraw_drawLine__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
   public final static native void btIDebugDraw_drawLine__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5);
   public final static native void btIDebugDraw_drawLineSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5);
-  public final static native void btIDebugDraw_drawSphere__SWIG_0(long jarg1, btIDebugDraw jarg1_, float jarg2, long jarg3, btTransform jarg3_, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, float jarg2, long jarg3, btTransform jarg3_, Vector3 jarg4);
+  public final static native void btIDebugDraw_drawSphere__SWIG_0(long jarg1, btIDebugDraw jarg1_, float jarg2, Matrix4 jarg3, Vector3 jarg4);
+  public final static native void btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, float jarg2, Matrix4 jarg3, Vector3 jarg4);
   public final static native void btIDebugDraw_drawSphere__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Vector3 jarg4);
   public final static native void btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Vector3 jarg4);
   public final static native void btIDebugDraw_drawTriangle__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, float jarg9);
@@ -217,8 +265,8 @@ public class gdxBulletJNI {
   public final static native int btIDebugDraw_getDebugMode(long jarg1, btIDebugDraw jarg1_);
   public final static native void btIDebugDraw_drawAabb(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
   public final static native void btIDebugDraw_drawAabbSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawTransform(long jarg1, btIDebugDraw jarg1_, long jarg2, btTransform jarg2_, float jarg3);
-  public final static native void btIDebugDraw_drawTransformSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, long jarg2, btTransform jarg2_, float jarg3);
+  public final static native void btIDebugDraw_drawTransform(long jarg1, btIDebugDraw jarg1_, Matrix4 jarg2, float jarg3);
+  public final static native void btIDebugDraw_drawTransformSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, Matrix4 jarg2, float jarg3);
   public final static native void btIDebugDraw_drawArc__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10, float jarg11);
   public final static native void btIDebugDraw_drawArcSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10, float jarg11);
   public final static native void btIDebugDraw_drawArc__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10);
@@ -229,16 +277,16 @@ public class gdxBulletJNI {
   public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10);
   public final static native void btIDebugDraw_drawBox__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
   public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawBox__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, btTransform jarg4_, Vector3 jarg5);
-  public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, btTransform jarg4_, Vector3 jarg5);
-  public final static native void btIDebugDraw_drawCapsule(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawCapsuleSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawCylinder(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawCylinderSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawCone(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawConeSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawPlane(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, long jarg4, btTransform jarg4_, Vector3 jarg5);
-  public final static native void btIDebugDraw_drawPlaneSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, long jarg4, btTransform jarg4_, Vector3 jarg5);
+  public final static native void btIDebugDraw_drawBox__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Matrix4 jarg4, Vector3 jarg5);
+  public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Matrix4 jarg4, Vector3 jarg5);
+  public final static native void btIDebugDraw_drawCapsule(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
+  public final static native void btIDebugDraw_drawCapsuleSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
+  public final static native void btIDebugDraw_drawCylinder(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
+  public final static native void btIDebugDraw_drawCylinderSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
+  public final static native void btIDebugDraw_drawCone(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
+  public final static native void btIDebugDraw_drawConeSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
+  public final static native void btIDebugDraw_drawPlane(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5);
+  public final static native void btIDebugDraw_drawPlaneSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5);
   public final static native long new_btIDebugDraw();
   public final static native void btIDebugDraw_director_connect(btIDebugDraw obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void btIDebugDraw_change_ownership(btIDebugDraw obj, long cptr, boolean take_or_release);
@@ -251,60 +299,22 @@ public class gdxBulletJNI {
   public final static native void delete_btGeometryUtil(long jarg1);
   public final static native void GEN_srand(long jarg1);
   public final static native long GEN_rand();
-  public final static native long new_btTransform__SWIG_0();
-  public final static native long new_btTransform__SWIG_1(Quaternion jarg1, Vector3 jarg2);
-  public final static native long new_btTransform__SWIG_2(Quaternion jarg1);
-  public final static native long new_btTransform__SWIG_3(Matrix3 jarg1, Vector3 jarg2);
-  public final static native long new_btTransform__SWIG_4(Matrix3 jarg1);
-  public final static native long new_btTransform__SWIG_5(long jarg1, btTransform jarg1_);
-  public final static native void btTransform_mult(long jarg1, btTransform jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_);
-  public final static native Matrix3 btTransform_getBasis__SWIG_0(long jarg1, btTransform jarg1_);
-  public final static native Vector3 btTransform_getOrigin__SWIG_0(long jarg1, btTransform jarg1_);
-  public final static native Quaternion btTransform_getRotation(long jarg1, btTransform jarg1_);
-  public final static native void btTransform_setFromOpenGLMatrix(long jarg1, btTransform jarg1_, float[] jarg2);
-  public final static native void btTransform_getOpenGLMatrix(long jarg1, btTransform jarg1_, float[] jarg2);
-  public final static native void btTransform_setOrigin(long jarg1, btTransform jarg1_, Vector3 jarg2);
-  public final static native Vector3 btTransform_invXform(long jarg1, btTransform jarg1_, Vector3 jarg2);
-  public final static native void btTransform_setBasis(long jarg1, btTransform jarg1_, Matrix3 jarg2);
-  public final static native void btTransform_setRotation(long jarg1, btTransform jarg1_, Quaternion jarg2);
-  public final static native void btTransform_setIdentity(long jarg1, btTransform jarg1_);
-  public final static native long btTransform_inverse(long jarg1, btTransform jarg1_);
-  public final static native long btTransform_inverseTimes(long jarg1, btTransform jarg1_, long jarg2, btTransform jarg2_);
-  public final static native long btTransform_getIdentity();
-  public final static native void btTransform_serialize(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native void btTransform_serializeFloat(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native void btTransform_deSerialize(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native void btTransform_deSerializeDouble(long jarg1, btTransform jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native void btTransform_deSerializeFloat(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native void delete_btTransform(long jarg1);
-  public final static native void btTransformFloatData_m_basis_set(long jarg1, btTransformFloatData jarg1_, long jarg2);
-  public final static native long btTransformFloatData_m_basis_get(long jarg1, btTransformFloatData jarg1_);
-  public final static native void btTransformFloatData_m_origin_set(long jarg1, btTransformFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btTransformFloatData_m_origin_get(long jarg1, btTransformFloatData jarg1_);
-  public final static native long new_btTransformFloatData();
-  public final static native void delete_btTransformFloatData(long jarg1);
-  public final static native void btTransformDoubleData_m_basis_set(long jarg1, btTransformDoubleData jarg1_, long jarg2);
-  public final static native long btTransformDoubleData_m_basis_get(long jarg1, btTransformDoubleData jarg1_);
-  public final static native void btTransformDoubleData_m_origin_set(long jarg1, btTransformDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btTransformDoubleData_m_origin_get(long jarg1, btTransformDoubleData jarg1_);
-  public final static native long new_btTransformDoubleData();
-  public final static native void delete_btTransformDoubleData(long jarg1);
   public final static native Vector3 btAabbSupport(Vector3 jarg1, Vector3 jarg2);
-  public final static native void btTransformUtil_integrateTransform(long jarg1, btTransform jarg1_, Vector3 jarg2, Vector3 jarg3, float jarg4, long jarg5, btTransform jarg5_);
+  public final static native void btTransformUtil_integrateTransform(Matrix4 jarg1, Vector3 jarg2, Vector3 jarg3, float jarg4, Matrix4 jarg5);
   public final static native void btTransformUtil_calculateVelocityQuaternion(Vector3 jarg1, Vector3 jarg2, Quaternion jarg3, Quaternion jarg4, float jarg5, Vector3 jarg6, Vector3 jarg7);
   public final static native void btTransformUtil_calculateDiffAxisAngleQuaternion(Quaternion jarg1, Quaternion jarg2, Vector3 jarg3, long jarg4);
-  public final static native void btTransformUtil_calculateVelocity(long jarg1, btTransform jarg1_, long jarg2, btTransform jarg2_, float jarg3, Vector3 jarg4, Vector3 jarg5);
-  public final static native void btTransformUtil_calculateDiffAxisAngle(long jarg1, btTransform jarg1_, long jarg2, btTransform jarg2_, Vector3 jarg3, long jarg4);
+  public final static native void btTransformUtil_calculateVelocity(Matrix4 jarg1, Matrix4 jarg2, float jarg3, Vector3 jarg4, Vector3 jarg5);
+  public final static native void btTransformUtil_calculateDiffAxisAngle(Matrix4 jarg1, Matrix4 jarg2, Vector3 jarg3, long jarg4);
   public final static native long new_btTransformUtil();
   public final static native void delete_btTransformUtil(long jarg1);
   public final static native long new_btConvexSeparatingDistanceUtil(float jarg1, float jarg2);
   public final static native float btConvexSeparatingDistanceUtil_getConservativeSeparatingDistance(long jarg1, btConvexSeparatingDistanceUtil jarg1_);
-  public final static native void btConvexSeparatingDistanceUtil_updateSeparatingDistance(long jarg1, btConvexSeparatingDistanceUtil jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_);
-  public final static native void btConvexSeparatingDistanceUtil_initSeparatingDistance(long jarg1, btConvexSeparatingDistanceUtil jarg1_, Vector3 jarg2, float jarg3, long jarg4, btTransform jarg4_, long jarg5, btTransform jarg5_);
+  public final static native void btConvexSeparatingDistanceUtil_updateSeparatingDistance(long jarg1, btConvexSeparatingDistanceUtil jarg1_, Matrix4 jarg2, Matrix4 jarg3);
+  public final static native void btConvexSeparatingDistanceUtil_initSeparatingDistance(long jarg1, btConvexSeparatingDistanceUtil jarg1_, Vector3 jarg2, float jarg3, Matrix4 jarg4, Matrix4 jarg5);
   public final static native void delete_btConvexSeparatingDistanceUtil(long jarg1);
   public final static native void delete_btMotionState(long jarg1);
-  public final static native void btMotionState_getWorldTransform(long jarg1, btMotionState jarg1_, long jarg2, btTransform jarg2_);
-  public final static native void btMotionState_setWorldTransform(long jarg1, btMotionState jarg1_, long jarg2, btTransform jarg2_);
+  public final static native void btMotionState_getWorldTransform(long jarg1, btMotionState jarg1_, Matrix4 jarg2);
+  public final static native void btMotionState_setWorldTransform(long jarg1, btMotionState jarg1_, Matrix4 jarg2);
   public final static native long new_btMotionState();
   public final static native void btMotionState_director_connect(btMotionState obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void btMotionState_change_ownership(btMotionState obj, long cptr, boolean take_or_release);
@@ -316,12 +326,12 @@ public class gdxBulletJNI {
   public final static native long btDefaultMotionState_m_startWorldTrans_get(long jarg1, btDefaultMotionState jarg1_);
   public final static native void btDefaultMotionState_m_userPointer_set(long jarg1, btDefaultMotionState jarg1_, long jarg2);
   public final static native long btDefaultMotionState_m_userPointer_get(long jarg1, btDefaultMotionState jarg1_);
-  public final static native long new_btDefaultMotionState__SWIG_0(long jarg1, btTransform jarg1_, long jarg2, btTransform jarg2_);
-  public final static native long new_btDefaultMotionState__SWIG_1(long jarg1, btTransform jarg1_);
+  public final static native long new_btDefaultMotionState__SWIG_0(Matrix4 jarg1, Matrix4 jarg2);
+  public final static native long new_btDefaultMotionState__SWIG_1(Matrix4 jarg1);
   public final static native long new_btDefaultMotionState__SWIG_2();
-  public final static native void btDefaultMotionState_getGraphicsWorldTrans(long jarg1, btDefaultMotionState jarg1_, long jarg2, btTransform jarg2_);
-  public final static native void btDefaultMotionState_getCenterOfMassOffset(long jarg1, btDefaultMotionState jarg1_, long jarg2, btTransform jarg2_);
-  public final static native void btDefaultMotionState_getStartWorldTrans(long jarg1, btDefaultMotionState jarg1_, long jarg2, btTransform jarg2_);
+  public final static native void btDefaultMotionState_getGraphicsWorldTrans(long jarg1, btDefaultMotionState jarg1_, Matrix4 jarg2);
+  public final static native void btDefaultMotionState_getCenterOfMassOffset(long jarg1, btDefaultMotionState jarg1_, Matrix4 jarg2);
+  public final static native void btDefaultMotionState_getStartWorldTrans(long jarg1, btDefaultMotionState jarg1_, Matrix4 jarg2);
   public final static native void delete_btDefaultMotionState(long jarg1);
   public final static native long new_HullResult();
   public final static native void HullResult_mPolygons_set(long jarg1, HullResult jarg1_, boolean jarg2);
@@ -423,15 +433,15 @@ public class gdxBulletJNI {
   public final static native boolean btPoolAllocator_validPtr(long jarg1, btPoolAllocator jarg1_, long jarg2);
   public final static native void btPoolAllocator_freeMemory(long jarg1, btPoolAllocator jarg1_, long jarg2);
   public final static native int btPoolAllocator_getElementSize(long jarg1, btPoolAllocator jarg1_);
-  public final static native long btPoolAllocator_getPoolAddress__SWIG_0(long jarg1, btPoolAllocator jarg1_);
+  public final static native java.nio.ByteBuffer btPoolAllocator_getPoolAddress__SWIG_0(long jarg1, btPoolAllocator jarg1_);
   public final static native void btConvexHullComputer_vertices_set(long jarg1, btConvexHullComputer jarg1_, long jarg2);
   public final static native long btConvexHullComputer_vertices_get(long jarg1, btConvexHullComputer jarg1_);
   public final static native void btConvexHullComputer_edges_set(long jarg1, btConvexHullComputer jarg1_, long jarg2);
   public final static native long btConvexHullComputer_edges_get(long jarg1, btConvexHullComputer jarg1_);
   public final static native void btConvexHullComputer_faces_set(long jarg1, btConvexHullComputer jarg1_, long jarg2);
   public final static native long btConvexHullComputer_faces_get(long jarg1, btConvexHullComputer jarg1_);
-  public final static native float btConvexHullComputer_compute__SWIG_0(long jarg1, btConvexHullComputer jarg1_, long jarg2, int jarg3, int jarg4, float jarg5, float jarg6);
-  public final static native float btConvexHullComputer_compute__SWIG_1(long jarg1, btConvexHullComputer jarg1_, long jarg2, int jarg3, int jarg4, float jarg5, float jarg6);
+  public final static native float btConvexHullComputer_compute__SWIG_0(long jarg1, btConvexHullComputer jarg1_, java.nio.FloatBuffer jarg2, int jarg3, int jarg4, float jarg5, float jarg6);
+  public final static native float btConvexHullComputer_compute__SWIG_1(long jarg1, btConvexHullComputer jarg1_, java.nio.DoubleBuffer jarg2, int jarg3, int jarg4, float jarg5, float jarg6);
   public final static native long new_btConvexHullComputer();
   public final static native void delete_btConvexHullComputer(long jarg1);
   public final static native long new_btGEN_Link__SWIG_0();
@@ -477,8 +487,8 @@ public class gdxBulletJNI {
   public final static native void delete_btHashPtr(long jarg1);
   public final static native void btBlock_previous_set(long jarg1, btBlock jarg1_, long jarg2, btBlock jarg2_);
   public final static native long btBlock_previous_get(long jarg1, btBlock jarg1_);
-  public final static native void btBlock_address_set(long jarg1, btBlock jarg1_, long jarg2);
-  public final static native long btBlock_address_get(long jarg1, btBlock jarg1_);
+  public final static native void btBlock_address_set(long jarg1, btBlock jarg1_, java.nio.ByteBuffer jarg2);
+  public final static native java.nio.ByteBuffer btBlock_address_get(long jarg1, btBlock jarg1_);
   public final static native long new_btBlock();
   public final static native void delete_btBlock(long jarg1);
   public final static native long new_btStackAlloc(long jarg1);
@@ -486,7 +496,7 @@ public class gdxBulletJNI {
   public final static native void btStackAlloc_create(long jarg1, btStackAlloc jarg1_, long jarg2);
   public final static native void btStackAlloc_destroy(long jarg1, btStackAlloc jarg1_);
   public final static native int btStackAlloc_getAvailableMemory(long jarg1, btStackAlloc jarg1_);
-  public final static native long btStackAlloc_allocate(long jarg1, btStackAlloc jarg1_, long jarg2);
+  public final static native java.nio.ByteBuffer btStackAlloc_allocate(long jarg1, btStackAlloc jarg1_, long jarg2);
   public final static native long btStackAlloc_beginBlock(long jarg1, btStackAlloc jarg1_);
   public final static native void btStackAlloc_endBlock(long jarg1, btStackAlloc jarg1_, long jarg2, btBlock jarg2_);
   public final static native void delete_Result(long jarg1);
@@ -642,11 +652,11 @@ public class gdxBulletJNI {
   public final static native void btDbvt_collideTV(long jarg1, btDbvt jarg1_, long jarg2, btDbvtNode jarg2_, long jarg3, btDbvtAabbMm jarg3_, long jarg4);
   public final static native void btDbvt_rayTest(long jarg1, btDbvtNode jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4);
   public final static native void btDbvt_rayTestInternal(long jarg1, btDbvt jarg1_, long jarg2, btDbvtNode jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, long[] jarg6, float jarg7, Vector3 jarg8, Vector3 jarg9, long jarg10);
-  public final static native void btDbvt_collideKDOP(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, float[] jarg3, int jarg4, long jarg5);
-  public final static native void btDbvt_collideOCL__SWIG_0(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, float[] jarg3, Vector3 jarg4, int jarg5, long jarg6, boolean jarg7);
-  public final static native void btDbvt_collideOCL__SWIG_1(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, float[] jarg3, Vector3 jarg4, int jarg5, long jarg6);
+  public final static native void btDbvt_collideKDOP(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, int jarg4, long jarg5);
+  public final static native void btDbvt_collideOCL__SWIG_0(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6, boolean jarg7);
+  public final static native void btDbvt_collideOCL__SWIG_1(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6);
   public final static native void btDbvt_collideTU(long jarg1, btDbvtNode jarg1_, long jarg2);
-  public final static native int btDbvt_nearest(long jarg1, long jarg2, float jarg3, int jarg4, int jarg5);
+  public final static native int btDbvt_nearest(java.nio.IntBuffer jarg1, long jarg2, float jarg3, int jarg4, int jarg5);
   public final static native int btDbvt_allocate(long jarg1, long jarg2, long jarg3);
   public final static native void btQuantizedBvhNode_m_quantizedAabbMin_set(long jarg1, btQuantizedBvhNode jarg1_, int[] jarg2);
   public final static native int[] btQuantizedBvhNode_m_quantizedAabbMin_get(long jarg1, btQuantizedBvhNode jarg1_);
@@ -698,9 +708,9 @@ public class gdxBulletJNI {
   public final static native void btQuantizedBvh_reportAabbOverlappingNodex(long jarg1, btQuantizedBvh jarg1_, long jarg2, btNodeOverlapCallback jarg2_, Vector3 jarg3, Vector3 jarg4);
   public final static native void btQuantizedBvh_reportRayOverlappingNodex(long jarg1, btQuantizedBvh jarg1_, long jarg2, btNodeOverlapCallback jarg2_, Vector3 jarg3, Vector3 jarg4);
   public final static native void btQuantizedBvh_reportBoxCastOverlappingNodex(long jarg1, btQuantizedBvh jarg1_, long jarg2, btNodeOverlapCallback jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6);
-  public final static native void btQuantizedBvh_quantize(long jarg1, btQuantizedBvh jarg1_, long jarg2, Vector3 jarg3, int jarg4);
-  public final static native void btQuantizedBvh_quantizeWithClamp(long jarg1, btQuantizedBvh jarg1_, long jarg2, Vector3 jarg3, int jarg4);
-  public final static native Vector3 btQuantizedBvh_unQuantize(long jarg1, btQuantizedBvh jarg1_, long jarg2);
+  public final static native void btQuantizedBvh_quantize(long jarg1, btQuantizedBvh jarg1_, java.nio.IntBuffer jarg2, Vector3 jarg3, int jarg4);
+  public final static native void btQuantizedBvh_quantizeWithClamp(long jarg1, btQuantizedBvh jarg1_, java.nio.IntBuffer jarg2, Vector3 jarg3, int jarg4);
+  public final static native Vector3 btQuantizedBvh_unQuantize(long jarg1, btQuantizedBvh jarg1_, java.nio.IntBuffer jarg2);
   public final static native void btQuantizedBvh_setTraversalMode(long jarg1, btQuantizedBvh jarg1_, int jarg2);
   public final static native long btQuantizedBvh_getQuantizedNodeArray(long jarg1, btQuantizedBvh jarg1_);
   public final static native long btQuantizedBvh_getSubtreeInfoArray(long jarg1, btQuantizedBvh jarg1_);
@@ -1008,11 +1018,11 @@ public class gdxBulletJNI {
   public final static native long new_btNullPairCache();
   public final static native void delete_btNullPairCache(long jarg1);
   public final static native void delete_btCollisionShape(long jarg1);
-  public final static native void btCollisionShape_getAabb(long jarg1, btCollisionShape jarg1_, long jarg2, btTransform jarg2_, Vector3 jarg3, Vector3 jarg4);
+  public final static native void btCollisionShape_getAabb(long jarg1, btCollisionShape jarg1_, Matrix4 jarg2, Vector3 jarg3, Vector3 jarg4);
   public final static native void btCollisionShape_getBoundingSphere(long jarg1, btCollisionShape jarg1_, Vector3 jarg2, long jarg3);
   public final static native float btCollisionShape_getAngularMotionDisc(long jarg1, btCollisionShape jarg1_);
   public final static native float btCollisionShape_getContactBreakingThreshold(long jarg1, btCollisionShape jarg1_, float jarg2);
-  public final static native void btCollisionShape_calculateTemporalAabb(long jarg1, btCollisionShape jarg1_, long jarg2, btTransform jarg2_, Vector3 jarg3, Vector3 jarg4, float jarg5, Vector3 jarg6, Vector3 jarg7);
+  public final static native void btCollisionShape_calculateTemporalAabb(long jarg1, btCollisionShape jarg1_, Matrix4 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, Vector3 jarg6, Vector3 jarg7);
   public final static native boolean btCollisionShape_isPolyhedral(long jarg1, btCollisionShape jarg1_);
   public final static native boolean btCollisionShape_isConvex2d(long jarg1, btCollisionShape jarg1_);
   public final static native boolean btCollisionShape_isConvex(long jarg1, btCollisionShape jarg1_);
@@ -1047,10 +1057,10 @@ public class gdxBulletJNI {
   public final static native Vector3 btConvexShape_localGetSupportVertexWithoutMarginNonVirtual(long jarg1, btConvexShape jarg1_, Vector3 jarg2);
   public final static native Vector3 btConvexShape_localGetSupportVertexNonVirtual(long jarg1, btConvexShape jarg1_, Vector3 jarg2);
   public final static native float btConvexShape_getMarginNonVirtual(long jarg1, btConvexShape jarg1_);
-  public final static native void btConvexShape_getAabbNonVirtual(long jarg1, btConvexShape jarg1_, long jarg2, btTransform jarg2_, Vector3 jarg3, Vector3 jarg4);
-  public final static native void btConvexShape_project(long jarg1, btConvexShape jarg1_, long jarg2, btTransform jarg2_, Vector3 jarg3, long jarg4, long jarg5);
+  public final static native void btConvexShape_getAabbNonVirtual(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, Vector3 jarg3, Vector3 jarg4);
+  public final static native void btConvexShape_project(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, Vector3 jarg3, long jarg4, long jarg5);
   public final static native void btConvexShape_batchedUnitVectorGetSupportingVertexWithoutMargin(long jarg1, btConvexShape jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, int jarg4);
-  public final static native void btConvexShape_getAabbSlow(long jarg1, btConvexShape jarg1_, long jarg2, btTransform jarg2_, Vector3 jarg3, Vector3 jarg4);
+  public final static native void btConvexShape_getAabbSlow(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, Vector3 jarg3, Vector3 jarg4);
   public final static native int btConvexShape_getNumPreferredPenetrationDirections(long jarg1, btConvexShape jarg1_);
   public final static native void btConvexShape_getPreferredPenetrationDirection(long jarg1, btConvexShape jarg1_, int jarg2, Vector3 jarg3);
   public final static native void delete_btConvexInternalShape(long jarg1);
@@ -1086,7 +1096,7 @@ public class gdxBulletJNI {
   public final static native int btPolyhedralConvexShape_getNumPlanes(long jarg1, btPolyhedralConvexShape jarg1_);
   public final static native void btPolyhedralConvexShape_getPlane(long jarg1, btPolyhedralConvexShape jarg1_, Vector3 jarg2, Vector3 jarg3, int jarg4);
   public final static native boolean btPolyhedralConvexShape_isInside(long jarg1, btPolyhedralConvexShape jarg1_, Vector3 jarg2, float jarg3);
-  public final static native void btPolyhedralConvexAabbCachingShape_getNonvirtualAabb(long jarg1, btPolyhedralConvexAabbCachingShape jarg1_, long jarg2, btTransform jarg2_, Vector3 jarg3, Vector3 jarg4, float jarg5);
+  public final static native void btPolyhedralConvexAabbCachingShape_getNonvirtualAabb(long jarg1, btPolyhedralConvexAabbCachingShape jarg1_, Matrix4 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5);
   public final static native void btPolyhedralConvexAabbCachingShape_recalcLocalAabb(long jarg1, btPolyhedralConvexAabbCachingShape jarg1_);
   public final static native void delete_btPolyhedralConvexAabbCachingShape(long jarg1);
   public final static native void delete_btConcaveShape(long jarg1);
@@ -1132,14 +1142,14 @@ public class gdxBulletJNI {
   public final static native float btTriangleInfoData_m_edgeV2V0Angle_get(long jarg1, btTriangleInfoData jarg1_);
   public final static native long new_btTriangleInfoData();
   public final static native void delete_btTriangleInfoData(long jarg1);
-  public final static native void btTriangleInfoMapData_m_hashTablePtr_set(long jarg1, btTriangleInfoMapData jarg1_, long jarg2);
-  public final static native long btTriangleInfoMapData_m_hashTablePtr_get(long jarg1, btTriangleInfoMapData jarg1_);
-  public final static native void btTriangleInfoMapData_m_nextPtr_set(long jarg1, btTriangleInfoMapData jarg1_, long jarg2);
-  public final static native long btTriangleInfoMapData_m_nextPtr_get(long jarg1, btTriangleInfoMapData jarg1_);
+  public final static native void btTriangleInfoMapData_m_hashTablePtr_set(long jarg1, btTriangleInfoMapData jarg1_, java.nio.IntBuffer jarg2);
+  public final static native java.nio.IntBuffer btTriangleInfoMapData_m_hashTablePtr_get(long jarg1, btTriangleInfoMapData jarg1_);
+  public final static native void btTriangleInfoMapData_m_nextPtr_set(long jarg1, btTriangleInfoMapData jarg1_, java.nio.IntBuffer jarg2);
+  public final static native java.nio.IntBuffer btTriangleInfoMapData_m_nextPtr_get(long jarg1, btTriangleInfoMapData jarg1_);
   public final static native void btTriangleInfoMapData_m_valueArrayPtr_set(long jarg1, btTriangleInfoMapData jarg1_, long jarg2, btTriangleInfoData jarg2_);
   public final static native long btTriangleInfoMapData_m_valueArrayPtr_get(long jarg1, btTriangleInfoMapData jarg1_);
-  public final static native void btTriangleInfoMapData_m_keyArrayPtr_set(long jarg1, btTriangleInfoMapData jarg1_, long jarg2);
-  public final static native long btTriangleInfoMapData_m_keyArrayPtr_get(long jarg1, btTriangleInfoMapData jarg1_);
+  public final static native void btTriangleInfoMapData_m_keyArrayPtr_set(long jarg1, btTriangleInfoMapData jarg1_, java.nio.IntBuffer jarg2);
+  public final static native java.nio.IntBuffer btTriangleInfoMapData_m_keyArrayPtr_get(long jarg1, btTriangleInfoMapData jarg1_);
   public final static native void btTriangleInfoMapData_m_convexEpsilon_set(long jarg1, btTriangleInfoMapData jarg1_, float jarg2);
   public final static native float btTriangleInfoMapData_m_convexEpsilon_get(long jarg1, btTriangleInfoMapData jarg1_);
   public final static native void btTriangleInfoMapData_m_planarEpsilon_set(long jarg1, btTriangleInfoMapData jarg1_, float jarg2);
@@ -1264,19 +1274,11 @@ public class gdxBulletJNI {
   public final static native void btTriangleShape_calcNormal(long jarg1, btTriangleShape jarg1_, Vector3 jarg2);
   public final static native void btTriangleShape_getPlaneEquation(long jarg1, btTriangleShape jarg1_, int jarg2, Vector3 jarg3, Vector3 jarg4);
   public final static native void delete_btTriangleShape(long jarg1);
-  public final static native long new_btShapeHull(long jarg1, btConvexShape jarg1_);
-  public final static native void delete_btShapeHull(long jarg1);
-  public final static native boolean btShapeHull_buildHull(long jarg1, btShapeHull jarg1_, float jarg2);
-  public final static native int btShapeHull_numTriangles(long jarg1, btShapeHull jarg1_);
-  public final static native int btShapeHull_numVertices(long jarg1, btShapeHull jarg1_);
-  public final static native int btShapeHull_numIndices(long jarg1, btShapeHull jarg1_);
-  public final static native long btShapeHull_getVertexPointer(long jarg1, btShapeHull jarg1_);
-  public final static native long btShapeHull_getIndexPointer(long jarg1, btShapeHull jarg1_);
   public final static native long new_btSphereShape(float jarg1);
   public final static native float btSphereShape_getRadius(long jarg1, btSphereShape jarg1_);
   public final static native void btSphereShape_setUnscaledRadius(long jarg1, btSphereShape jarg1_, float jarg2);
   public final static native void delete_btSphereShape(long jarg1);
-  public final static native long new_btMultiSphereShape(long jarg1, btVector3 jarg1_, float[] jarg2, int jarg3);
+  public final static native long new_btMultiSphereShape(long jarg1, btVector3 jarg1_, java.nio.FloatBuffer jarg2, int jarg3);
   public final static native int btMultiSphereShape_getSphereCount(long jarg1, btMultiSphereShape jarg1_);
   public final static native Vector3 btMultiSphereShape_getSpherePosition(long jarg1, btMultiSphereShape jarg1_, int jarg2);
   public final static native float btMultiSphereShape_getSphereRadius(long jarg1, btMultiSphereShape jarg1_, int jarg2);
@@ -1367,10 +1369,10 @@ public class gdxBulletJNI {
   public final static native long new_btStridingMeshInterfaceData();
   public final static native void delete_btStridingMeshInterfaceData(long jarg1);
   public final static native long new_btMinkowskiSumShape(long jarg1, btConvexShape jarg1_, long jarg2, btConvexShape jarg2_);
-  public final static native void btMinkowskiSumShape_setTransformA(long jarg1, btMinkowskiSumShape jarg1_, long jarg2, btTransform jarg2_);
-  public final static native void btMinkowskiSumShape_setTransformB(long jarg1, btMinkowskiSumShape jarg1_, long jarg2, btTransform jarg2_);
-  public final static native long btMinkowskiSumShape_getTransformA(long jarg1, btMinkowskiSumShape jarg1_);
-  public final static native long btMinkowskiSumShape_GetTransformB(long jarg1, btMinkowskiSumShape jarg1_);
+  public final static native void btMinkowskiSumShape_setTransformA(long jarg1, btMinkowskiSumShape jarg1_, Matrix4 jarg2);
+  public final static native void btMinkowskiSumShape_setTransformB(long jarg1, btMinkowskiSumShape jarg1_, Matrix4 jarg2);
+  public final static native Matrix4 btMinkowskiSumShape_getTransformA(long jarg1, btMinkowskiSumShape jarg1_);
+  public final static native Matrix4 btMinkowskiSumShape_GetTransformB(long jarg1, btMinkowskiSumShape jarg1_);
   public final static native long btMinkowskiSumShape_getShapeA(long jarg1, btMinkowskiSumShape jarg1_);
   public final static native long btMinkowskiSumShape_getShapeB(long jarg1, btMinkowskiSumShape jarg1_);
   public final static native void delete_btMinkowskiSumShape(long jarg1);
@@ -1400,7 +1402,7 @@ public class gdxBulletJNI {
   public final static native long btConvexPolyhedron_mE_get(long jarg1, btConvexPolyhedron jarg1_);
   public final static native void btConvexPolyhedron_initialize(long jarg1, btConvexPolyhedron jarg1_);
   public final static native boolean btConvexPolyhedron_testContainment(long jarg1, btConvexPolyhedron jarg1_);
-  public final static native void btConvexPolyhedron_project(long jarg1, btConvexPolyhedron jarg1_, long jarg2, btTransform jarg2_, Vector3 jarg3, long jarg4, long jarg5);
+  public final static native void btConvexPolyhedron_project(long jarg1, btConvexPolyhedron jarg1_, Matrix4 jarg2, Vector3 jarg3, long jarg4, long jarg5);
   public final static native long new_btOptimizedBvh();
   public final static native void delete_btOptimizedBvh(long jarg1);
   public final static native void btOptimizedBvh_build(long jarg1, btOptimizedBvh jarg1_, long jarg2, btStridingMeshInterface jarg2_, boolean jarg3, Vector3 jarg4, Vector3 jarg5);
@@ -1428,14 +1430,14 @@ public class gdxBulletJNI {
   public final static native void delete_btTriangleBuffer(long jarg1);
   public final static native void btIndexedMesh_m_numTriangles_set(long jarg1, btIndexedMesh jarg1_, int jarg2);
   public final static native int btIndexedMesh_m_numTriangles_get(long jarg1, btIndexedMesh jarg1_);
-  public final static native void btIndexedMesh_m_triangleIndexBase_set(long jarg1, btIndexedMesh jarg1_, long jarg2);
-  public final static native long btIndexedMesh_m_triangleIndexBase_get(long jarg1, btIndexedMesh jarg1_);
+  public final static native void btIndexedMesh_m_triangleIndexBase_set(long jarg1, btIndexedMesh jarg1_, java.nio.ByteBuffer jarg2);
+  public final static native java.nio.ByteBuffer btIndexedMesh_m_triangleIndexBase_get(long jarg1, btIndexedMesh jarg1_);
   public final static native void btIndexedMesh_m_triangleIndexStride_set(long jarg1, btIndexedMesh jarg1_, int jarg2);
   public final static native int btIndexedMesh_m_triangleIndexStride_get(long jarg1, btIndexedMesh jarg1_);
   public final static native void btIndexedMesh_m_numVertices_set(long jarg1, btIndexedMesh jarg1_, int jarg2);
   public final static native int btIndexedMesh_m_numVertices_get(long jarg1, btIndexedMesh jarg1_);
-  public final static native void btIndexedMesh_m_vertexBase_set(long jarg1, btIndexedMesh jarg1_, long jarg2);
-  public final static native long btIndexedMesh_m_vertexBase_get(long jarg1, btIndexedMesh jarg1_);
+  public final static native void btIndexedMesh_m_vertexBase_set(long jarg1, btIndexedMesh jarg1_, java.nio.ByteBuffer jarg2);
+  public final static native java.nio.ByteBuffer btIndexedMesh_m_vertexBase_get(long jarg1, btIndexedMesh jarg1_);
   public final static native void btIndexedMesh_m_vertexStride_set(long jarg1, btIndexedMesh jarg1_, int jarg2);
   public final static native int btIndexedMesh_m_vertexStride_get(long jarg1, btIndexedMesh jarg1_);
   public final static native void btIndexedMesh_m_indexType_set(long jarg1, btIndexedMesh jarg1_, int jarg2);
@@ -1443,13 +1445,12 @@ public class gdxBulletJNI {
   public final static native void btIndexedMesh_m_vertexType_set(long jarg1, btIndexedMesh jarg1_, int jarg2);
   public final static native int btIndexedMesh_m_vertexType_get(long jarg1, btIndexedMesh jarg1_);
   public final static native long new_btIndexedMesh();
-  public final static native void btIndexedMesh_setTriangleIndexBase(long jarg1, btIndexedMesh jarg1_, short[] jarg2, long jarg3);
-  public final static native void btIndexedMesh_setVertexBase(long jarg1, btIndexedMesh jarg1_, float[] jarg2, long jarg3);
-  public final static native void btIndexedMesh_dispose(long jarg1, btIndexedMesh jarg1_);
+  public final static native void btIndexedMesh_setTriangleIndexBase(long jarg1, btIndexedMesh jarg1_, java.nio.ShortBuffer jarg2);
+  public final static native void btIndexedMesh_setVertexBase(long jarg1, btIndexedMesh jarg1_, java.nio.FloatBuffer jarg2);
   public final static native void delete_btIndexedMesh(long jarg1);
   public final static native long new_btTriangleIndexVertexArray__SWIG_0();
   public final static native void delete_btTriangleIndexVertexArray(long jarg1);
-  public final static native long new_btTriangleIndexVertexArray__SWIG_1(int jarg1, long jarg2, int jarg3, int jarg4, float[] jarg5, int jarg6);
+  public final static native long new_btTriangleIndexVertexArray__SWIG_1(int jarg1, java.nio.IntBuffer jarg2, int jarg3, int jarg4, java.nio.FloatBuffer jarg5, int jarg6);
   public final static native void btTriangleIndexVertexArray_addIndexedMesh__SWIG_0(long jarg1, btTriangleIndexVertexArray jarg1_, long jarg2, btIndexedMesh jarg2_, int jarg3);
   public final static native void btTriangleIndexVertexArray_addIndexedMesh__SWIG_1(long jarg1, btTriangleIndexVertexArray jarg1_, long jarg2, btIndexedMesh jarg2_);
   public final static native void btTriangleIndexVertexArray_getLockedVertexIndexBase__SWIG_0(long jarg1, btTriangleIndexVertexArray jarg1_, long jarg2, long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, long jarg8, long jarg9, int jarg10);
@@ -1475,15 +1476,24 @@ public class gdxBulletJNI {
   public final static native long btScaledTriangleMeshShapeData_m_localScaling_get(long jarg1, btScaledTriangleMeshShapeData jarg1_);
   public final static native long new_btScaledTriangleMeshShapeData();
   public final static native void delete_btScaledTriangleMeshShapeData(long jarg1);
-  public final static native long new_btConvexHullShape__SWIG_0(float[] jarg1, int jarg2, int jarg3);
-  public final static native long new_btConvexHullShape__SWIG_1(float[] jarg1, int jarg2);
-  public final static native long new_btConvexHullShape__SWIG_2(float[] jarg1);
+  public final static native long new_btShapeHull(long jarg1, btConvexShape jarg1_);
+  public final static native void delete_btShapeHull(long jarg1);
+  public final static native boolean btShapeHull_buildHull(long jarg1, btShapeHull jarg1_, float jarg2);
+  public final static native int btShapeHull_numTriangles(long jarg1, btShapeHull jarg1_);
+  public final static native int btShapeHull_numVertices(long jarg1, btShapeHull jarg1_);
+  public final static native int btShapeHull_numIndices(long jarg1, btShapeHull jarg1_);
+  public final static native long btShapeHull_getVertexPointer(long jarg1, btShapeHull jarg1_);
+  public final static native java.nio.LongBuffer btShapeHull_getIndexPointer(long jarg1, btShapeHull jarg1_);
+  public final static native long new_btConvexHullShape__SWIG_0(java.nio.FloatBuffer jarg1, int jarg2, int jarg3);
+  public final static native long new_btConvexHullShape__SWIG_1(java.nio.FloatBuffer jarg1, int jarg2);
+  public final static native long new_btConvexHullShape__SWIG_2(java.nio.FloatBuffer jarg1);
   public final static native long new_btConvexHullShape__SWIG_3();
   public final static native void btConvexHullShape_addPoint(long jarg1, btConvexHullShape jarg1_, Vector3 jarg2);
   public final static native long btConvexHullShape_getUnscaledPoints__SWIG_0(long jarg1, btConvexHullShape jarg1_);
   public final static native long btConvexHullShape_getPoints(long jarg1, btConvexHullShape jarg1_);
   public final static native Vector3 btConvexHullShape_getScaledPoint(long jarg1, btConvexHullShape jarg1_, int jarg2);
   public final static native int btConvexHullShape_getNumPoints(long jarg1, btConvexHullShape jarg1_);
+  public final static native long new_btConvexHullShape__SWIG_4(long jarg1, btShapeHull jarg1_);
   public final static native void delete_btConvexHullShape(long jarg1);
   public final static native void btConvexHullShapeData_m_convexInternalShapeData_set(long jarg1, btConvexHullShapeData jarg1_, long jarg2, btConvexInternalShapeData jarg2_);
   public final static native long btConvexHullShapeData_m_convexInternalShapeData_get(long jarg1, btConvexHullShapeData jarg1_);
@@ -1499,16 +1509,16 @@ public class gdxBulletJNI {
   public final static native void delete_btConvexHullShapeData(long jarg1);
   public final static native void btMaterialProperties_m_numMaterials_set(long jarg1, btMaterialProperties jarg1_, int jarg2);
   public final static native int btMaterialProperties_m_numMaterials_get(long jarg1, btMaterialProperties jarg1_);
-  public final static native void btMaterialProperties_m_materialBase_set(long jarg1, btMaterialProperties jarg1_, long jarg2);
-  public final static native long btMaterialProperties_m_materialBase_get(long jarg1, btMaterialProperties jarg1_);
+  public final static native void btMaterialProperties_m_materialBase_set(long jarg1, btMaterialProperties jarg1_, java.nio.ByteBuffer jarg2);
+  public final static native java.nio.ByteBuffer btMaterialProperties_m_materialBase_get(long jarg1, btMaterialProperties jarg1_);
   public final static native void btMaterialProperties_m_materialStride_set(long jarg1, btMaterialProperties jarg1_, int jarg2);
   public final static native int btMaterialProperties_m_materialStride_get(long jarg1, btMaterialProperties jarg1_);
   public final static native void btMaterialProperties_m_materialType_set(long jarg1, btMaterialProperties jarg1_, int jarg2);
   public final static native int btMaterialProperties_m_materialType_get(long jarg1, btMaterialProperties jarg1_);
   public final static native void btMaterialProperties_m_numTriangles_set(long jarg1, btMaterialProperties jarg1_, int jarg2);
   public final static native int btMaterialProperties_m_numTriangles_get(long jarg1, btMaterialProperties jarg1_);
-  public final static native void btMaterialProperties_m_triangleMaterialsBase_set(long jarg1, btMaterialProperties jarg1_, long jarg2);
-  public final static native long btMaterialProperties_m_triangleMaterialsBase_get(long jarg1, btMaterialProperties jarg1_);
+  public final static native void btMaterialProperties_m_triangleMaterialsBase_set(long jarg1, btMaterialProperties jarg1_, java.nio.ByteBuffer jarg2);
+  public final static native java.nio.ByteBuffer btMaterialProperties_m_triangleMaterialsBase_get(long jarg1, btMaterialProperties jarg1_);
   public final static native void btMaterialProperties_m_triangleMaterialStride_set(long jarg1, btMaterialProperties jarg1_, int jarg2);
   public final static native int btMaterialProperties_m_triangleMaterialStride_get(long jarg1, btMaterialProperties jarg1_);
   public final static native void btMaterialProperties_m_triangleType_set(long jarg1, btMaterialProperties jarg1_, int jarg2);
@@ -1516,7 +1526,7 @@ public class gdxBulletJNI {
   public final static native long new_btMaterialProperties();
   public final static native void delete_btMaterialProperties(long jarg1);
   public final static native long new_btTriangleIndexVertexMaterialArray__SWIG_0();
-  public final static native long new_btTriangleIndexVertexMaterialArray__SWIG_1(int jarg1, long jarg2, int jarg3, int jarg4, float[] jarg5, int jarg6, int jarg7, long jarg8, int jarg9, long jarg10, int jarg11);
+  public final static native long new_btTriangleIndexVertexMaterialArray__SWIG_1(int jarg1, java.nio.IntBuffer jarg2, int jarg3, int jarg4, java.nio.FloatBuffer jarg5, int jarg6, int jarg7, java.nio.ByteBuffer jarg8, int jarg9, java.nio.IntBuffer jarg10, int jarg11);
   public final static native void delete_btTriangleIndexVertexMaterialArray(long jarg1);
   public final static native void btTriangleIndexVertexMaterialArray_addMaterialProperties__SWIG_0(long jarg1, btTriangleIndexVertexMaterialArray jarg1_, long jarg2, btMaterialProperties jarg2_, int jarg3);
   public final static native void btTriangleIndexVertexMaterialArray_addMaterialProperties__SWIG_1(long jarg1, btTriangleIndexVertexMaterialArray jarg1_, long jarg2, btMaterialProperties jarg2_);
@@ -1568,7 +1578,7 @@ public class gdxBulletJNI {
   public final static native long new_btConvexTriangleMeshShape__SWIG_0(long jarg1, btStridingMeshInterface jarg1_, boolean jarg2);
   public final static native long new_btConvexTriangleMeshShape__SWIG_1(long jarg1, btStridingMeshInterface jarg1_);
   public final static native long btConvexTriangleMeshShape_getMeshInterface__SWIG_0(long jarg1, btConvexTriangleMeshShape jarg1_);
-  public final static native void btConvexTriangleMeshShape_calculatePrincipalAxisTransform(long jarg1, btConvexTriangleMeshShape jarg1_, long jarg2, btTransform jarg2_, Vector3 jarg3, long jarg4);
+  public final static native void btConvexTriangleMeshShape_calculatePrincipalAxisTransform(long jarg1, btConvexTriangleMeshShape jarg1_, Matrix4 jarg2, Vector3 jarg3, long jarg4);
   public final static native void delete_btConvexTriangleMeshShape(long jarg1);
   public final static native long new_btEmptyShape();
   public final static native void delete_btEmptyShape(long jarg1);
@@ -1606,19 +1616,19 @@ public class gdxBulletJNI {
   public final static native long new_btCompoundShape__SWIG_0(boolean jarg1);
   public final static native long new_btCompoundShape__SWIG_1();
   public final static native void delete_btCompoundShape(long jarg1);
-  public final static native void btCompoundShape_addChildShape(long jarg1, btCompoundShape jarg1_, long jarg2, btTransform jarg2_, long jarg3, btCollisionShape jarg3_);
+  public final static native void btCompoundShape_addChildShape(long jarg1, btCompoundShape jarg1_, Matrix4 jarg2, long jarg3, btCollisionShape jarg3_);
   public final static native void btCompoundShape_removeChildShape(long jarg1, btCompoundShape jarg1_, long jarg2, btCollisionShape jarg2_);
   public final static native void btCompoundShape_removeChildShapeByIndex(long jarg1, btCompoundShape jarg1_, int jarg2);
   public final static native int btCompoundShape_getNumChildShapes(long jarg1, btCompoundShape jarg1_);
   public final static native long btCompoundShape_getChildShape__SWIG_0(long jarg1, btCompoundShape jarg1_, int jarg2);
-  public final static native long btCompoundShape_getChildTransform__SWIG_0(long jarg1, btCompoundShape jarg1_, int jarg2);
-  public final static native void btCompoundShape_updateChildTransform__SWIG_0(long jarg1, btCompoundShape jarg1_, int jarg2, long jarg3, btTransform jarg3_, boolean jarg4);
-  public final static native void btCompoundShape_updateChildTransform__SWIG_1(long jarg1, btCompoundShape jarg1_, int jarg2, long jarg3, btTransform jarg3_);
+  public final static native Matrix4 btCompoundShape_getChildTransform__SWIG_0(long jarg1, btCompoundShape jarg1_, int jarg2);
+  public final static native void btCompoundShape_updateChildTransform__SWIG_0(long jarg1, btCompoundShape jarg1_, int jarg2, Matrix4 jarg3, boolean jarg4);
+  public final static native void btCompoundShape_updateChildTransform__SWIG_1(long jarg1, btCompoundShape jarg1_, int jarg2, Matrix4 jarg3);
   public final static native long btCompoundShape_getChildList(long jarg1, btCompoundShape jarg1_);
   public final static native void btCompoundShape_recalculateLocalAabb(long jarg1, btCompoundShape jarg1_);
   public final static native long btCompoundShape_getDynamicAabbTree__SWIG_0(long jarg1, btCompoundShape jarg1_);
   public final static native void btCompoundShape_createAabbTreeFromChildren(long jarg1, btCompoundShape jarg1_);
-  public final static native void btCompoundShape_calculatePrincipalAxisTransform(long jarg1, btCompoundShape jarg1_, float[] jarg2, long jarg3, btTransform jarg3_, Vector3 jarg4);
+  public final static native void btCompoundShape_calculatePrincipalAxisTransform(long jarg1, btCompoundShape jarg1_, java.nio.FloatBuffer jarg2, Matrix4 jarg3, Vector3 jarg4);
   public final static native int btCompoundShape_getUpdateRevision(long jarg1, btCompoundShape jarg1_);
   public final static native void btCompoundShapeChildData_m_transform_set(long jarg1, btCompoundShapeChildData jarg1_, long jarg2, btTransformFloatData jarg2_);
   public final static native long btCompoundShapeChildData_m_transform_get(long jarg1, btCompoundShapeChildData jarg1_);
@@ -1682,12 +1692,12 @@ public class gdxBulletJNI {
   public final static native void btCollisionObject_setFriction(long jarg1, btCollisionObject jarg1_, float jarg2);
   public final static native float btCollisionObject_getFriction(long jarg1, btCollisionObject jarg1_);
   public final static native int btCollisionObject_getInternalType(long jarg1, btCollisionObject jarg1_);
-  public final static native long btCollisionObject_getWorldTransform__SWIG_0(long jarg1, btCollisionObject jarg1_);
-  public final static native void btCollisionObject_setWorldTransform(long jarg1, btCollisionObject jarg1_, long jarg2, btTransform jarg2_);
+  public final static native Matrix4 btCollisionObject_getWorldTransform__SWIG_0(long jarg1, btCollisionObject jarg1_);
+  public final static native void btCollisionObject_setWorldTransform(long jarg1, btCollisionObject jarg1_, Matrix4 jarg2);
   public final static native long btCollisionObject_getBroadphaseHandle__SWIG_0(long jarg1, btCollisionObject jarg1_);
   public final static native void btCollisionObject_setBroadphaseHandle(long jarg1, btCollisionObject jarg1_, long jarg2, btBroadphaseProxy jarg2_);
-  public final static native long btCollisionObject_getInterpolationWorldTransform__SWIG_0(long jarg1, btCollisionObject jarg1_);
-  public final static native void btCollisionObject_setInterpolationWorldTransform(long jarg1, btCollisionObject jarg1_, long jarg2, btTransform jarg2_);
+  public final static native Matrix4 btCollisionObject_getInterpolationWorldTransform__SWIG_0(long jarg1, btCollisionObject jarg1_);
+  public final static native void btCollisionObject_setInterpolationWorldTransform(long jarg1, btCollisionObject jarg1_, Matrix4 jarg2);
   public final static native void btCollisionObject_setInterpolationLinearVelocity(long jarg1, btCollisionObject jarg1_, Vector3 jarg2);
   public final static native void btCollisionObject_setInterpolationAngularVelocity(long jarg1, btCollisionObject jarg1_, Vector3 jarg2);
   public final static native Vector3 btCollisionObject_getInterpolationLinearVelocity__SWIG_0(long jarg1, btCollisionObject jarg1_);
@@ -1712,8 +1722,8 @@ public class gdxBulletJNI {
   public final static native String btCollisionObject_serialize(long jarg1, btCollisionObject jarg1_, long jarg2, long jarg3);
   public final static native void btCollisionObject_serializeSingleObject(long jarg1, btCollisionObject jarg1_, long jarg2);
   public final static native void btCollisionObject_getAnisotropicFriction__SWIG_1(long jarg1, btCollisionObject jarg1_, Vector3 jarg2);
-  public final static native void btCollisionObject_getWorldTransform__SWIG_2(long jarg1, btCollisionObject jarg1_, long jarg2, btTransform jarg2_);
-  public final static native void btCollisionObject_getInterpolationWorldTransform__SWIG_2(long jarg1, btCollisionObject jarg1_, long jarg2, btTransform jarg2_);
+  public final static native void btCollisionObject_getWorldTransform__SWIG_2(long jarg1, btCollisionObject jarg1_, Matrix4 jarg2);
+  public final static native void btCollisionObject_getInterpolationWorldTransform__SWIG_2(long jarg1, btCollisionObject jarg1_, Matrix4 jarg2);
   public final static native void btCollisionObject_getInterpolationLinearVelocity__SWIG_1(long jarg1, btCollisionObject jarg1_, Vector3 jarg2);
   public final static native void btCollisionObject_getInterpolationAngularVelocity__SWIG_1(long jarg1, btCollisionObject jarg1_, Vector3 jarg2);
   public final static native void btCollisionObjectDoubleData_m_broadphaseHandle_set(long jarg1, btCollisionObjectDoubleData jarg1_, long jarg2);
@@ -1857,9 +1867,9 @@ public class gdxBulletJNI {
   public final static native long new_btRigidBody__SWIG_1(float jarg1, long jarg2, btMotionState jarg2_, long jarg3, btCollisionShape jarg3_, Vector3 jarg4);
   public final static native long new_btRigidBody__SWIG_2(float jarg1, long jarg2, btMotionState jarg2_, long jarg3, btCollisionShape jarg3_);
   public final static native void delete_btRigidBody(long jarg1);
-  public final static native void btRigidBody_proceedToTransform(long jarg1, btRigidBody jarg1_, long jarg2, btTransform jarg2_);
+  public final static native void btRigidBody_proceedToTransform(long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
   public final static native long btRigidBody_upcast__SWIG_0(long jarg1, btCollisionObject jarg1_);
-  public final static native void btRigidBody_predictIntegratedTransform(long jarg1, btRigidBody jarg1_, float jarg2, long jarg3, btTransform jarg3_);
+  public final static native void btRigidBody_predictIntegratedTransform(long jarg1, btRigidBody jarg1_, float jarg2, Matrix4 jarg3);
   public final static native void btRigidBody_saveKinematicState(long jarg1, btRigidBody jarg1_, float jarg2);
   public final static native void btRigidBody_applyGravity(long jarg1, btRigidBody jarg1_);
   public final static native void btRigidBody_setGravity(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
@@ -1877,7 +1887,7 @@ public class gdxBulletJNI {
   public final static native float btRigidBody_getInvMass(long jarg1, btRigidBody jarg1_);
   public final static native Matrix3 btRigidBody_getInvInertiaTensorWorld(long jarg1, btRigidBody jarg1_);
   public final static native void btRigidBody_integrateVelocities(long jarg1, btRigidBody jarg1_, float jarg2);
-  public final static native void btRigidBody_setCenterOfMassTransform(long jarg1, btRigidBody jarg1_, long jarg2, btTransform jarg2_);
+  public final static native void btRigidBody_setCenterOfMassTransform(long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
   public final static native void btRigidBody_applyCentralForce(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
   public final static native Vector3 btRigidBody_getTotalForce(long jarg1, btRigidBody jarg1_);
   public final static native Vector3 btRigidBody_getTotalTorque(long jarg1, btRigidBody jarg1_);
@@ -1893,7 +1903,7 @@ public class gdxBulletJNI {
   public final static native void btRigidBody_updateInertiaTensor(long jarg1, btRigidBody jarg1_);
   public final static native Vector3 btRigidBody_getCenterOfMassPosition(long jarg1, btRigidBody jarg1_);
   public final static native Quaternion btRigidBody_getOrientation(long jarg1, btRigidBody jarg1_);
-  public final static native long btRigidBody_getCenterOfMassTransform(long jarg1, btRigidBody jarg1_);
+  public final static native Matrix4 btRigidBody_getCenterOfMassTransform(long jarg1, btRigidBody jarg1_);
   public final static native Vector3 btRigidBody_getLinearVelocity(long jarg1, btRigidBody jarg1_);
   public final static native Vector3 btRigidBody_getAngularVelocity(long jarg1, btRigidBody jarg1_);
   public final static native void btRigidBody_setLinearVelocity(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
@@ -2148,9 +2158,9 @@ public class gdxBulletJNI {
   public final static native void btSimulationIslandManager_setSplitIslands(long jarg1, btSimulationIslandManager jarg1_, boolean jarg2);
   public final static native long new_btGhostObject();
   public final static native void delete_btGhostObject(long jarg1);
-  public final static native void btGhostObject_convexSweepTest__SWIG_0(long jarg1, btGhostObject jarg1_, long jarg2, btConvexShape jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, long jarg5, float jarg6);
-  public final static native void btGhostObject_convexSweepTest__SWIG_1(long jarg1, btGhostObject jarg1_, long jarg2, btConvexShape jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, long jarg5);
-  public final static native void btGhostObject_rayTest(long jarg1, btGhostObject jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4);
+  public final static native void btGhostObject_convexSweepTest__SWIG_0(long jarg1, btGhostObject jarg1_, long jarg2, btConvexShape jarg2_, Matrix4 jarg3, Matrix4 jarg4, long jarg5, ConvexResultCallback jarg5_, float jarg6);
+  public final static native void btGhostObject_convexSweepTest__SWIG_1(long jarg1, btGhostObject jarg1_, long jarg2, btConvexShape jarg2_, Matrix4 jarg3, Matrix4 jarg4, long jarg5, ConvexResultCallback jarg5_);
+  public final static native void btGhostObject_rayTest(long jarg1, btGhostObject jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, RayResultCallback jarg4_);
   public final static native void btGhostObject_addOverlappingObjectInternal__SWIG_0(long jarg1, btGhostObject jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btBroadphaseProxy jarg3_);
   public final static native void btGhostObject_addOverlappingObjectInternal__SWIG_1(long jarg1, btGhostObject jarg1_, long jarg2, btBroadphaseProxy jarg2_);
   public final static native void btGhostObject_removeOverlappingObjectInternal__SWIG_0(long jarg1, btGhostObject jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btDispatcher jarg3_, long jarg4, btBroadphaseProxy jarg4_);
@@ -2168,6 +2178,101 @@ public class gdxBulletJNI {
   public final static native long btPairCachingGhostObject_getOverlappingPairCache(long jarg1, btPairCachingGhostObject jarg1_);
   public final static native long new_btGhostPairCallback();
   public final static native void delete_btGhostPairCallback(long jarg1);
+  public final static native void LocalShapeInfo_m_shapePart_set(long jarg1, LocalShapeInfo jarg1_, int jarg2);
+  public final static native int LocalShapeInfo_m_shapePart_get(long jarg1, LocalShapeInfo jarg1_);
+  public final static native void LocalShapeInfo_m_triangleIndex_set(long jarg1, LocalShapeInfo jarg1_, int jarg2);
+  public final static native int LocalShapeInfo_m_triangleIndex_get(long jarg1, LocalShapeInfo jarg1_);
+  public final static native long new_LocalShapeInfo();
+  public final static native void delete_LocalShapeInfo(long jarg1);
+  public final static native long new_LocalRayResult(long jarg1, btCollisionObject jarg1_, long jarg2, LocalShapeInfo jarg2_, Vector3 jarg3, float jarg4);
+  public final static native void LocalRayResult_m_collisionObject_set(long jarg1, LocalRayResult jarg1_, long jarg2, btCollisionObject jarg2_);
+  public final static native long LocalRayResult_m_collisionObject_get(long jarg1, LocalRayResult jarg1_);
+  public final static native void LocalRayResult_m_localShapeInfo_set(long jarg1, LocalRayResult jarg1_, long jarg2, LocalShapeInfo jarg2_);
+  public final static native long LocalRayResult_m_localShapeInfo_get(long jarg1, LocalRayResult jarg1_);
+  public final static native void LocalRayResult_m_hitNormalLocal_set(long jarg1, LocalRayResult jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long LocalRayResult_m_hitNormalLocal_get(long jarg1, LocalRayResult jarg1_);
+  public final static native void LocalRayResult_m_hitFraction_set(long jarg1, LocalRayResult jarg1_, float jarg2);
+  public final static native float LocalRayResult_m_hitFraction_get(long jarg1, LocalRayResult jarg1_);
+  public final static native void delete_LocalRayResult(long jarg1);
+  public final static native void RayResultCallback_m_closestHitFraction_set(long jarg1, RayResultCallback jarg1_, float jarg2);
+  public final static native float RayResultCallback_m_closestHitFraction_get(long jarg1, RayResultCallback jarg1_);
+  public final static native void RayResultCallback_m_collisionObject_set(long jarg1, RayResultCallback jarg1_, long jarg2, btCollisionObject jarg2_);
+  public final static native long RayResultCallback_m_collisionObject_get(long jarg1, RayResultCallback jarg1_);
+  public final static native void RayResultCallback_m_collisionFilterGroup_set(long jarg1, RayResultCallback jarg1_, short jarg2);
+  public final static native short RayResultCallback_m_collisionFilterGroup_get(long jarg1, RayResultCallback jarg1_);
+  public final static native void RayResultCallback_m_collisionFilterMask_set(long jarg1, RayResultCallback jarg1_, short jarg2);
+  public final static native short RayResultCallback_m_collisionFilterMask_get(long jarg1, RayResultCallback jarg1_);
+  public final static native void RayResultCallback_m_flags_set(long jarg1, RayResultCallback jarg1_, long jarg2);
+  public final static native long RayResultCallback_m_flags_get(long jarg1, RayResultCallback jarg1_);
+  public final static native void delete_RayResultCallback(long jarg1);
+  public final static native boolean RayResultCallback_hasHit(long jarg1, RayResultCallback jarg1_);
+  public final static native boolean RayResultCallback_needsCollision(long jarg1, RayResultCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_);
+  public final static native float RayResultCallback_addSingleResult(long jarg1, RayResultCallback jarg1_, long jarg2, LocalRayResult jarg2_, boolean jarg3);
+  public final static native long new_ClosestRayResultCallback(Vector3 jarg1, Vector3 jarg2);
+  public final static native void ClosestRayResultCallback_m_rayFromWorld_set(long jarg1, ClosestRayResultCallback jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long ClosestRayResultCallback_m_rayFromWorld_get(long jarg1, ClosestRayResultCallback jarg1_);
+  public final static native void ClosestRayResultCallback_m_rayToWorld_set(long jarg1, ClosestRayResultCallback jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long ClosestRayResultCallback_m_rayToWorld_get(long jarg1, ClosestRayResultCallback jarg1_);
+  public final static native void ClosestRayResultCallback_m_hitNormalWorld_set(long jarg1, ClosestRayResultCallback jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long ClosestRayResultCallback_m_hitNormalWorld_get(long jarg1, ClosestRayResultCallback jarg1_);
+  public final static native void ClosestRayResultCallback_m_hitPointWorld_set(long jarg1, ClosestRayResultCallback jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long ClosestRayResultCallback_m_hitPointWorld_get(long jarg1, ClosestRayResultCallback jarg1_);
+  public final static native void delete_ClosestRayResultCallback(long jarg1);
+  public final static native long new_AllHitsRayResultCallback(Vector3 jarg1, Vector3 jarg2);
+  public final static native void AllHitsRayResultCallback_m_collisionObjects_set(long jarg1, AllHitsRayResultCallback jarg1_, long jarg2);
+  public final static native long AllHitsRayResultCallback_m_collisionObjects_get(long jarg1, AllHitsRayResultCallback jarg1_);
+  public final static native void AllHitsRayResultCallback_m_rayFromWorld_set(long jarg1, AllHitsRayResultCallback jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long AllHitsRayResultCallback_m_rayFromWorld_get(long jarg1, AllHitsRayResultCallback jarg1_);
+  public final static native void AllHitsRayResultCallback_m_rayToWorld_set(long jarg1, AllHitsRayResultCallback jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long AllHitsRayResultCallback_m_rayToWorld_get(long jarg1, AllHitsRayResultCallback jarg1_);
+  public final static native void AllHitsRayResultCallback_m_hitNormalWorld_set(long jarg1, AllHitsRayResultCallback jarg1_, long jarg2);
+  public final static native long AllHitsRayResultCallback_m_hitNormalWorld_get(long jarg1, AllHitsRayResultCallback jarg1_);
+  public final static native void AllHitsRayResultCallback_m_hitPointWorld_set(long jarg1, AllHitsRayResultCallback jarg1_, long jarg2);
+  public final static native long AllHitsRayResultCallback_m_hitPointWorld_get(long jarg1, AllHitsRayResultCallback jarg1_);
+  public final static native void AllHitsRayResultCallback_m_hitFractions_set(long jarg1, AllHitsRayResultCallback jarg1_, long jarg2);
+  public final static native long AllHitsRayResultCallback_m_hitFractions_get(long jarg1, AllHitsRayResultCallback jarg1_);
+  public final static native void delete_AllHitsRayResultCallback(long jarg1);
+  public final static native long new_LocalConvexResult(long jarg1, btCollisionObject jarg1_, long jarg2, LocalShapeInfo jarg2_, Vector3 jarg3, Vector3 jarg4, float jarg5);
+  public final static native void LocalConvexResult_m_hitCollisionObject_set(long jarg1, LocalConvexResult jarg1_, long jarg2, btCollisionObject jarg2_);
+  public final static native long LocalConvexResult_m_hitCollisionObject_get(long jarg1, LocalConvexResult jarg1_);
+  public final static native void LocalConvexResult_m_localShapeInfo_set(long jarg1, LocalConvexResult jarg1_, long jarg2, LocalShapeInfo jarg2_);
+  public final static native long LocalConvexResult_m_localShapeInfo_get(long jarg1, LocalConvexResult jarg1_);
+  public final static native void LocalConvexResult_m_hitNormalLocal_set(long jarg1, LocalConvexResult jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long LocalConvexResult_m_hitNormalLocal_get(long jarg1, LocalConvexResult jarg1_);
+  public final static native void LocalConvexResult_m_hitPointLocal_set(long jarg1, LocalConvexResult jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long LocalConvexResult_m_hitPointLocal_get(long jarg1, LocalConvexResult jarg1_);
+  public final static native void LocalConvexResult_m_hitFraction_set(long jarg1, LocalConvexResult jarg1_, float jarg2);
+  public final static native float LocalConvexResult_m_hitFraction_get(long jarg1, LocalConvexResult jarg1_);
+  public final static native void delete_LocalConvexResult(long jarg1);
+  public final static native void ConvexResultCallback_m_closestHitFraction_set(long jarg1, ConvexResultCallback jarg1_, float jarg2);
+  public final static native float ConvexResultCallback_m_closestHitFraction_get(long jarg1, ConvexResultCallback jarg1_);
+  public final static native void ConvexResultCallback_m_collisionFilterGroup_set(long jarg1, ConvexResultCallback jarg1_, short jarg2);
+  public final static native short ConvexResultCallback_m_collisionFilterGroup_get(long jarg1, ConvexResultCallback jarg1_);
+  public final static native void ConvexResultCallback_m_collisionFilterMask_set(long jarg1, ConvexResultCallback jarg1_, short jarg2);
+  public final static native short ConvexResultCallback_m_collisionFilterMask_get(long jarg1, ConvexResultCallback jarg1_);
+  public final static native void delete_ConvexResultCallback(long jarg1);
+  public final static native boolean ConvexResultCallback_hasHit(long jarg1, ConvexResultCallback jarg1_);
+  public final static native boolean ConvexResultCallback_needsCollision(long jarg1, ConvexResultCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_);
+  public final static native float ConvexResultCallback_addSingleResult(long jarg1, ConvexResultCallback jarg1_, long jarg2, LocalConvexResult jarg2_, boolean jarg3);
+  public final static native long new_ClosestConvexResultCallback(Vector3 jarg1, Vector3 jarg2);
+  public final static native void ClosestConvexResultCallback_m_convexFromWorld_set(long jarg1, ClosestConvexResultCallback jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long ClosestConvexResultCallback_m_convexFromWorld_get(long jarg1, ClosestConvexResultCallback jarg1_);
+  public final static native void ClosestConvexResultCallback_m_convexToWorld_set(long jarg1, ClosestConvexResultCallback jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long ClosestConvexResultCallback_m_convexToWorld_get(long jarg1, ClosestConvexResultCallback jarg1_);
+  public final static native void ClosestConvexResultCallback_m_hitNormalWorld_set(long jarg1, ClosestConvexResultCallback jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long ClosestConvexResultCallback_m_hitNormalWorld_get(long jarg1, ClosestConvexResultCallback jarg1_);
+  public final static native void ClosestConvexResultCallback_m_hitPointWorld_set(long jarg1, ClosestConvexResultCallback jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long ClosestConvexResultCallback_m_hitPointWorld_get(long jarg1, ClosestConvexResultCallback jarg1_);
+  public final static native void ClosestConvexResultCallback_m_hitCollisionObject_set(long jarg1, ClosestConvexResultCallback jarg1_, long jarg2, btCollisionObject jarg2_);
+  public final static native long ClosestConvexResultCallback_m_hitCollisionObject_get(long jarg1, ClosestConvexResultCallback jarg1_);
+  public final static native void delete_ClosestConvexResultCallback(long jarg1);
+  public final static native void ContactResultCallback_m_collisionFilterGroup_set(long jarg1, ContactResultCallback jarg1_, short jarg2);
+  public final static native short ContactResultCallback_m_collisionFilterGroup_get(long jarg1, ContactResultCallback jarg1_);
+  public final static native void ContactResultCallback_m_collisionFilterMask_set(long jarg1, ContactResultCallback jarg1_, short jarg2);
+  public final static native short ContactResultCallback_m_collisionFilterMask_get(long jarg1, ContactResultCallback jarg1_);
+  public final static native void delete_ContactResultCallback(long jarg1);
+  public final static native boolean ContactResultCallback_needsCollision(long jarg1, ContactResultCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_);
+  public final static native float ContactResultCallback_addSingleResult(long jarg1, ContactResultCallback jarg1_, long jarg2, btManifoldPoint jarg2_, long jarg3, int jarg4, int jarg5, long jarg6, int jarg7, int jarg8);
   public final static native long new_btCollisionWorld(long jarg1, btDispatcher jarg1_, long jarg2, btBroadphaseInterface jarg2_, long jarg3, btCollisionConfiguration jarg3_);
   public final static native void delete_btCollisionWorld(long jarg1);
   public final static native void btCollisionWorld_setBroadphase(long jarg1, btCollisionWorld jarg1_, long jarg2, btBroadphaseInterface jarg2_);
@@ -2179,17 +2284,17 @@ public class gdxBulletJNI {
   public final static native void btCollisionWorld_setDebugDrawer(long jarg1, btCollisionWorld jarg1_, long jarg2, btIDebugDraw jarg2_);
   public final static native long btCollisionWorld_getDebugDrawer(long jarg1, btCollisionWorld jarg1_);
   public final static native void btCollisionWorld_debugDrawWorld(long jarg1, btCollisionWorld jarg1_);
-  public final static native void btCollisionWorld_debugDrawObject(long jarg1, btCollisionWorld jarg1_, long jarg2, btTransform jarg2_, long jarg3, btCollisionShape jarg3_, Vector3 jarg4);
+  public final static native void btCollisionWorld_debugDrawObject(long jarg1, btCollisionWorld jarg1_, Matrix4 jarg2, long jarg3, btCollisionShape jarg3_, Vector3 jarg4);
   public final static native int btCollisionWorld_getNumCollisionObjects(long jarg1, btCollisionWorld jarg1_);
-  public final static native void btCollisionWorld_rayTest(long jarg1, btCollisionWorld jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4);
-  public final static native void btCollisionWorld_convexSweepTest__SWIG_0(long jarg1, btCollisionWorld jarg1_, long jarg2, btConvexShape jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, long jarg5, float jarg6);
-  public final static native void btCollisionWorld_convexSweepTest__SWIG_1(long jarg1, btCollisionWorld jarg1_, long jarg2, btConvexShape jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, long jarg5);
-  public final static native void btCollisionWorld_contactTest(long jarg1, btCollisionWorld jarg1_, long jarg2, btCollisionObject jarg2_, long jarg3);
-  public final static native void btCollisionWorld_contactPairTest(long jarg1, btCollisionWorld jarg1_, long jarg2, btCollisionObject jarg2_, long jarg3, btCollisionObject jarg3_, long jarg4);
-  public final static native void btCollisionWorld_rayTestSingle(long jarg1, btTransform jarg1_, long jarg2, btTransform jarg2_, long jarg3, btCollisionObject jarg3_, long jarg4, btCollisionShape jarg4_, long jarg5, btTransform jarg5_, long jarg6);
-  public final static native void btCollisionWorld_rayTestSingleInternal(long jarg1, btTransform jarg1_, long jarg2, btTransform jarg2_, long jarg3, long jarg4);
-  public final static native void btCollisionWorld_objectQuerySingle(long jarg1, btConvexShape jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_, long jarg4, btCollisionObject jarg4_, long jarg5, btCollisionShape jarg5_, long jarg6, btTransform jarg6_, long jarg7, float jarg8);
-  public final static native void btCollisionWorld_objectQuerySingleInternal(long jarg1, btConvexShape jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_, long jarg4, long jarg5, float jarg6);
+  public final static native void btCollisionWorld_rayTest(long jarg1, btCollisionWorld jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, RayResultCallback jarg4_);
+  public final static native void btCollisionWorld_convexSweepTest__SWIG_0(long jarg1, btCollisionWorld jarg1_, long jarg2, btConvexShape jarg2_, Matrix4 jarg3, Matrix4 jarg4, long jarg5, ConvexResultCallback jarg5_, float jarg6);
+  public final static native void btCollisionWorld_convexSweepTest__SWIG_1(long jarg1, btCollisionWorld jarg1_, long jarg2, btConvexShape jarg2_, Matrix4 jarg3, Matrix4 jarg4, long jarg5, ConvexResultCallback jarg5_);
+  public final static native void btCollisionWorld_contactTest(long jarg1, btCollisionWorld jarg1_, long jarg2, btCollisionObject jarg2_, long jarg3, ContactResultCallback jarg3_);
+  public final static native void btCollisionWorld_contactPairTest(long jarg1, btCollisionWorld jarg1_, long jarg2, btCollisionObject jarg2_, long jarg3, btCollisionObject jarg3_, long jarg4, ContactResultCallback jarg4_);
+  public final static native void btCollisionWorld_rayTestSingle(Matrix4 jarg1, Matrix4 jarg2, long jarg3, btCollisionObject jarg3_, long jarg4, btCollisionShape jarg4_, Matrix4 jarg5, long jarg6, RayResultCallback jarg6_);
+  public final static native void btCollisionWorld_rayTestSingleInternal(Matrix4 jarg1, Matrix4 jarg2, long jarg3, long jarg4, RayResultCallback jarg4_);
+  public final static native void btCollisionWorld_objectQuerySingle(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, Matrix4 jarg3, long jarg4, btCollisionObject jarg4_, long jarg5, btCollisionShape jarg5_, Matrix4 jarg6, long jarg7, ConvexResultCallback jarg7_, float jarg8);
+  public final static native void btCollisionWorld_objectQuerySingleInternal(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, Matrix4 jarg3, long jarg4, long jarg5, ConvexResultCallback jarg5_, float jarg6);
   public final static native void btCollisionWorld_addCollisionObject__SWIG_0(long jarg1, btCollisionWorld jarg1_, long jarg2, btCollisionObject jarg2_, short jarg3, short jarg4);
   public final static native void btCollisionWorld_addCollisionObject__SWIG_1(long jarg1, btCollisionWorld jarg1_, long jarg2, btCollisionObject jarg2_, short jarg3);
   public final static native void btCollisionWorld_addCollisionObject__SWIG_2(long jarg1, btCollisionWorld jarg1_, long jarg2, btCollisionObject jarg2_);
@@ -2200,6 +2305,14 @@ public class gdxBulletJNI {
   public final static native boolean btCollisionWorld_getForceUpdateAllAabbs(long jarg1, btCollisionWorld jarg1_);
   public final static native void btCollisionWorld_setForceUpdateAllAabbs(long jarg1, btCollisionWorld jarg1_, boolean jarg2);
   public final static native void btCollisionWorld_serialize(long jarg1, btCollisionWorld jarg1_, long jarg2);
+  public final static native void ClosestNotMeConvexResultCallback_m_me_set(long jarg1, ClosestNotMeConvexResultCallback jarg1_, long jarg2, btCollisionObject jarg2_);
+  public final static native long ClosestNotMeConvexResultCallback_m_me_get(long jarg1, ClosestNotMeConvexResultCallback jarg1_);
+  public final static native void ClosestNotMeConvexResultCallback_m_allowedPenetration_set(long jarg1, ClosestNotMeConvexResultCallback jarg1_, float jarg2);
+  public final static native float ClosestNotMeConvexResultCallback_m_allowedPenetration_get(long jarg1, ClosestNotMeConvexResultCallback jarg1_);
+  public final static native long new_ClosestNotMeConvexResultCallback(long jarg1, btCollisionObject jarg1_, Vector3 jarg2, Vector3 jarg3);
+  public final static native void delete_ClosestNotMeConvexResultCallback(long jarg1);
+  public final static native long new_ClosestNotMeRayResultCallback(long jarg1, btCollisionObject jarg1_);
+  public final static native void delete_ClosestNotMeRayResultCallback(long jarg1);
   public final static native long new_btConvex2dConvex2dAlgorithm(long jarg1, btPersistentManifold jarg1_, long jarg2, btCollisionAlgorithmConstructionInfo jarg2_, long jarg3, long jarg4, long jarg5, long jarg6, btConvexPenetrationDepthSolver jarg6_, int jarg7, int jarg8);
   public final static native void delete_btConvex2dConvex2dAlgorithm(long jarg1);
   public final static native void btConvex2dConvex2dAlgorithm_setLowLevelOfDetail(long jarg1, btConvex2dConvex2dAlgorithm jarg1_, boolean jarg2);
@@ -2245,12 +2358,12 @@ public class gdxBulletJNI {
   public final static native long new_btCompoundCollisionAlgorithm(long jarg1, btCollisionAlgorithmConstructionInfo jarg1_, long jarg2, long jarg3, boolean jarg4);
   public final static native void delete_btCompoundCollisionAlgorithm(long jarg1);
   public final static native void delete_btConvexCast(long jarg1);
-  public final static native boolean btConvexCast_calcTimeOfImpact(long jarg1, btConvexCast jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, long jarg5, btTransform jarg5_, long jarg6);
+  public final static native boolean btConvexCast_calcTimeOfImpact(long jarg1, btConvexCast jarg1_, Matrix4 jarg2, Matrix4 jarg3, Matrix4 jarg4, Matrix4 jarg5, long jarg6);
   public final static native long new_btSubsimplexConvexCast(long jarg1, btConvexShape jarg1_, long jarg2, btConvexShape jarg2_, long jarg3);
   public final static native void delete_btSubsimplexConvexCast(long jarg1);
-  public final static native void btPolyhedralContactClipping_clipHullAgainstHull(Vector3 jarg1, long jarg2, btConvexPolyhedron jarg2_, long jarg3, btConvexPolyhedron jarg3_, long jarg4, btTransform jarg4_, long jarg5, btTransform jarg5_, float jarg6, float jarg7, long jarg8);
-  public final static native void btPolyhedralContactClipping_clipFaceAgainstHull(Vector3 jarg1, long jarg2, btConvexPolyhedron jarg2_, long jarg3, btTransform jarg3_, long jarg4, float jarg5, float jarg6, long jarg7);
-  public final static native boolean btPolyhedralContactClipping_findSeparatingAxis(long jarg1, btConvexPolyhedron jarg1_, long jarg2, btConvexPolyhedron jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, Vector3 jarg5);
+  public final static native void btPolyhedralContactClipping_clipHullAgainstHull(Vector3 jarg1, long jarg2, btConvexPolyhedron jarg2_, long jarg3, btConvexPolyhedron jarg3_, Matrix4 jarg4, Matrix4 jarg5, float jarg6, float jarg7, long jarg8);
+  public final static native void btPolyhedralContactClipping_clipFaceAgainstHull(Vector3 jarg1, long jarg2, btConvexPolyhedron jarg2_, Matrix4 jarg3, long jarg4, float jarg5, float jarg6, long jarg7);
+  public final static native boolean btPolyhedralContactClipping_findSeparatingAxis(long jarg1, btConvexPolyhedron jarg1_, long jarg2, btConvexPolyhedron jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5);
   public final static native void btPolyhedralContactClipping_clipFace(long jarg1, long jarg2, Vector3 jarg3, float jarg4);
   public final static native long new_btPolyhedralContactClipping();
   public final static native void delete_btPolyhedralContactClipping(long jarg1);
@@ -2281,7 +2394,7 @@ public class gdxBulletJNI {
   public final static native void btPersistentManifold_removeContactPoint(long jarg1, btPersistentManifold jarg1_, int jarg2);
   public final static native void btPersistentManifold_replaceContactPoint(long jarg1, btPersistentManifold jarg1_, long jarg2, btManifoldPoint jarg2_, int jarg3);
   public final static native boolean btPersistentManifold_validContactDistance(long jarg1, btPersistentManifold jarg1_, long jarg2, btManifoldPoint jarg2_);
-  public final static native void btPersistentManifold_refreshContactPoints(long jarg1, btPersistentManifold jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_);
+  public final static native void btPersistentManifold_refreshContactPoints(long jarg1, btPersistentManifold jarg1_, Matrix4 jarg2, Matrix4 jarg3);
   public final static native void btPersistentManifold_clearManifold(long jarg1, btPersistentManifold jarg1_);
   public final static native void delete_btPersistentManifold(long jarg1);
   public final static native void btGjkPairDetector_m_lastUsedMethod_set(long jarg1, btGjkPairDetector jarg1_, int jarg2);
@@ -2306,7 +2419,7 @@ public class gdxBulletJNI {
   public final static native void btGjkPairDetector_setPenetrationDepthSolver(long jarg1, btGjkPairDetector jarg1_, long jarg2, btConvexPenetrationDepthSolver jarg2_);
   public final static native void btGjkPairDetector_setIgnoreMargin(long jarg1, btGjkPairDetector jarg1_, boolean jarg2);
   public final static native void delete_btConvexPenetrationDepthSolver(long jarg1);
-  public final static native boolean btConvexPenetrationDepthSolver_calcPenDepth(long jarg1, btConvexPenetrationDepthSolver jarg1_, long jarg2, long jarg3, btConvexShape jarg3_, long jarg4, btConvexShape jarg4_, long jarg5, btTransform jarg5_, long jarg6, btTransform jarg6_, Vector3 jarg7, Vector3 jarg8, Vector3 jarg9, long jarg10, btIDebugDraw jarg10_, long jarg11, btStackAlloc jarg11_);
+  public final static native boolean btConvexPenetrationDepthSolver_calcPenDepth(long jarg1, btConvexPenetrationDepthSolver jarg1_, long jarg2, long jarg3, btConvexShape jarg3_, long jarg4, btConvexShape jarg4_, Matrix4 jarg5, Matrix4 jarg6, Vector3 jarg7, Vector3 jarg8, Vector3 jarg9, long jarg10, btIDebugDraw jarg10_, long jarg11, btStackAlloc jarg11_);
   public final static native long new_btMinkowskiPenetrationDepthSolver();
   public final static native void delete_btMinkowskiPenetrationDepthSolver(long jarg1);
   public final static native long new_btGjkConvexCast(long jarg1, btConvexShape jarg1_, long jarg2, btConvexShape jarg2_, long jarg3);
@@ -2414,11 +2527,11 @@ public class gdxBulletJNI {
   public final static native float btTriangleConvexcastCallback_reportHit(long jarg1, btTriangleConvexcastCallback jarg1_, Vector3 jarg2, Vector3 jarg3, float jarg4, int jarg5, int jarg6);
   public final static native void delete_btTriangleConvexcastCallback(long jarg1);
   public final static native int btGjkEpaSolver2_StackSizeRequirement();
-  public final static native boolean btGjkEpaSolver2_Distance(long jarg1, btConvexShape jarg1_, long jarg2, btTransform jarg2_, long jarg3, btConvexShape jarg3_, long jarg4, btTransform jarg4_, Vector3 jarg5, long jarg6);
-  public final static native boolean btGjkEpaSolver2_Penetration__SWIG_0(long jarg1, btConvexShape jarg1_, long jarg2, btTransform jarg2_, long jarg3, btConvexShape jarg3_, long jarg4, btTransform jarg4_, Vector3 jarg5, long jarg6, boolean jarg7);
-  public final static native boolean btGjkEpaSolver2_Penetration__SWIG_1(long jarg1, btConvexShape jarg1_, long jarg2, btTransform jarg2_, long jarg3, btConvexShape jarg3_, long jarg4, btTransform jarg4_, Vector3 jarg5, long jarg6);
-  public final static native float btGjkEpaSolver2_SignedDistance__SWIG_0(Vector3 jarg1, float jarg2, long jarg3, btConvexShape jarg3_, long jarg4, btTransform jarg4_, long jarg5);
-  public final static native boolean btGjkEpaSolver2_SignedDistance__SWIG_1(long jarg1, btConvexShape jarg1_, long jarg2, btTransform jarg2_, long jarg3, btConvexShape jarg3_, long jarg4, btTransform jarg4_, Vector3 jarg5, long jarg6);
+  public final static native boolean btGjkEpaSolver2_Distance(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, long jarg3, btConvexShape jarg3_, Matrix4 jarg4, Vector3 jarg5, long jarg6);
+  public final static native boolean btGjkEpaSolver2_Penetration__SWIG_0(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, long jarg3, btConvexShape jarg3_, Matrix4 jarg4, Vector3 jarg5, long jarg6, boolean jarg7);
+  public final static native boolean btGjkEpaSolver2_Penetration__SWIG_1(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, long jarg3, btConvexShape jarg3_, Matrix4 jarg4, Vector3 jarg5, long jarg6);
+  public final static native float btGjkEpaSolver2_SignedDistance__SWIG_0(Vector3 jarg1, float jarg2, long jarg3, btConvexShape jarg3_, Matrix4 jarg4, long jarg5);
+  public final static native boolean btGjkEpaSolver2_SignedDistance__SWIG_1(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, long jarg3, btConvexShape jarg3_, Matrix4 jarg4, Vector3 jarg5, long jarg6);
   public final static native long new_btGjkEpaSolver2();
   public final static native void delete_btGjkEpaSolver2(long jarg1);
   public final static native long new_btGjkEpaPenetrationDepthSolver();
@@ -2789,16 +2902,16 @@ public class gdxBulletJNI {
   public final static native void btSolverBodyObsolete_writebackVelocity__SWIG_1(long jarg1, btSolverBodyObsolete jarg1_, float jarg2);
   public final static native long new_btSolverBodyObsolete();
   public final static native void delete_btSolverBodyObsolete(long jarg1);
-  public final static native long new_btSliderConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, boolean jarg5);
-  public final static native long new_btSliderConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, long jarg2, btTransform jarg2_, boolean jarg3);
+  public final static native long new_btSliderConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4, boolean jarg5);
+  public final static native long new_btSliderConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, Matrix4 jarg2, boolean jarg3);
   public final static native void btSliderConstraint_getInfo1NonVirtual(long jarg1, btSliderConstraint jarg1_, long jarg2);
-  public final static native void btSliderConstraint_getInfo2NonVirtual(long jarg1, btSliderConstraint jarg1_, long jarg2, btConstraintInfo2 jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, Vector3 jarg5, Vector3 jarg6, float jarg7, float jarg8);
+  public final static native void btSliderConstraint_getInfo2NonVirtual(long jarg1, btSliderConstraint jarg1_, long jarg2, btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6, float jarg7, float jarg8);
   public final static native long btSliderConstraint_getRigidBodyA(long jarg1, btSliderConstraint jarg1_);
   public final static native long btSliderConstraint_getRigidBodyB(long jarg1, btSliderConstraint jarg1_);
-  public final static native long btSliderConstraint_getCalculatedTransformA(long jarg1, btSliderConstraint jarg1_);
-  public final static native long btSliderConstraint_getCalculatedTransformB(long jarg1, btSliderConstraint jarg1_);
-  public final static native long btSliderConstraint_getFrameOffsetA__SWIG_0(long jarg1, btSliderConstraint jarg1_);
-  public final static native long btSliderConstraint_getFrameOffsetB__SWIG_0(long jarg1, btSliderConstraint jarg1_);
+  public final static native Matrix4 btSliderConstraint_getCalculatedTransformA(long jarg1, btSliderConstraint jarg1_);
+  public final static native Matrix4 btSliderConstraint_getCalculatedTransformB(long jarg1, btSliderConstraint jarg1_);
+  public final static native Matrix4 btSliderConstraint_getFrameOffsetA__SWIG_0(long jarg1, btSliderConstraint jarg1_);
+  public final static native Matrix4 btSliderConstraint_getFrameOffsetB__SWIG_0(long jarg1, btSliderConstraint jarg1_);
   public final static native float btSliderConstraint_getLowerLinLimit(long jarg1, btSliderConstraint jarg1_);
   public final static native void btSliderConstraint_setLowerLinLimit(long jarg1, btSliderConstraint jarg1_, float jarg2);
   public final static native float btSliderConstraint_getUpperLinLimit(long jarg1, btSliderConstraint jarg1_);
@@ -2862,14 +2975,14 @@ public class gdxBulletJNI {
   public final static native float btSliderConstraint_getLinDepth(long jarg1, btSliderConstraint jarg1_);
   public final static native boolean btSliderConstraint_getSolveAngLimit(long jarg1, btSliderConstraint jarg1_);
   public final static native float btSliderConstraint_getAngDepth(long jarg1, btSliderConstraint jarg1_);
-  public final static native void btSliderConstraint_calculateTransforms(long jarg1, btSliderConstraint jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_);
+  public final static native void btSliderConstraint_calculateTransforms(long jarg1, btSliderConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
   public final static native void btSliderConstraint_testLinLimits(long jarg1, btSliderConstraint jarg1_);
   public final static native void btSliderConstraint_testAngLimits(long jarg1, btSliderConstraint jarg1_);
   public final static native Vector3 btSliderConstraint_getAncorInA(long jarg1, btSliderConstraint jarg1_);
   public final static native Vector3 btSliderConstraint_getAncorInB(long jarg1, btSliderConstraint jarg1_);
   public final static native boolean btSliderConstraint_getUseFrameOffset(long jarg1, btSliderConstraint jarg1_);
   public final static native void btSliderConstraint_setUseFrameOffset(long jarg1, btSliderConstraint jarg1_, boolean jarg2);
-  public final static native void btSliderConstraint_setFrames(long jarg1, btSliderConstraint jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_);
+  public final static native void btSliderConstraint_setFrames(long jarg1, btSliderConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
   public final static native void btSliderConstraint_setParam__SWIG_0(long jarg1, btSliderConstraint jarg1_, int jarg2, float jarg3, int jarg4);
   public final static native void btSliderConstraint_setParam__SWIG_1(long jarg1, btSliderConstraint jarg1_, int jarg2, float jarg3);
   public final static native float btSliderConstraint_getParam__SWIG_0(long jarg1, btSliderConstraint jarg1_, int jarg2, int jarg3);
@@ -2910,7 +3023,7 @@ public class gdxBulletJNI {
   public final static native long new_btPoint2PointConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4);
   public final static native long new_btPoint2PointConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, Vector3 jarg2);
   public final static native void btPoint2PointConstraint_getInfo1NonVirtual(long jarg1, btPoint2PointConstraint jarg1_, long jarg2);
-  public final static native void btPoint2PointConstraint_getInfo2NonVirtual(long jarg1, btPoint2PointConstraint jarg1_, long jarg2, btConstraintInfo2 jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_);
+  public final static native void btPoint2PointConstraint_getInfo2NonVirtual(long jarg1, btPoint2PointConstraint jarg1_, long jarg2, btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4);
   public final static native void btPoint2PointConstraint_updateRHS(long jarg1, btPoint2PointConstraint jarg1_, float jarg2);
   public final static native void btPoint2PointConstraint_setPivotA(long jarg1, btPoint2PointConstraint jarg1_, Vector3 jarg2);
   public final static native void btPoint2PointConstraint_setPivotB(long jarg1, btPoint2PointConstraint jarg1_, Vector3 jarg2);
@@ -3041,21 +3154,21 @@ public class gdxBulletJNI {
   public final static native void delete_btTranslationalLimitMotor(long jarg1);
   public final static native void btGeneric6DofConstraint_m_useSolveConstraintObsolete_set(long jarg1, btGeneric6DofConstraint jarg1_, boolean jarg2);
   public final static native boolean btGeneric6DofConstraint_m_useSolveConstraintObsolete_get(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native long new_btGeneric6DofConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, boolean jarg5);
-  public final static native long new_btGeneric6DofConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, long jarg2, btTransform jarg2_, boolean jarg3);
-  public final static native void btGeneric6DofConstraint_calculateTransforms__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_);
+  public final static native long new_btGeneric6DofConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4, boolean jarg5);
+  public final static native long new_btGeneric6DofConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, Matrix4 jarg2, boolean jarg3);
+  public final static native void btGeneric6DofConstraint_calculateTransforms__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
   public final static native void btGeneric6DofConstraint_calculateTransforms__SWIG_1(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native long btGeneric6DofConstraint_getCalculatedTransformA(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native long btGeneric6DofConstraint_getCalculatedTransformB(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native long btGeneric6DofConstraint_getFrameOffsetA__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native long btGeneric6DofConstraint_getFrameOffsetB__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_);
+  public final static native Matrix4 btGeneric6DofConstraint_getCalculatedTransformA(long jarg1, btGeneric6DofConstraint jarg1_);
+  public final static native Matrix4 btGeneric6DofConstraint_getCalculatedTransformB(long jarg1, btGeneric6DofConstraint jarg1_);
+  public final static native Matrix4 btGeneric6DofConstraint_getFrameOffsetA__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_);
+  public final static native Matrix4 btGeneric6DofConstraint_getFrameOffsetB__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_);
   public final static native void btGeneric6DofConstraint_getInfo1NonVirtual(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2);
-  public final static native void btGeneric6DofConstraint_getInfo2NonVirtual(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, btConstraintInfo2 jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8);
+  public final static native void btGeneric6DofConstraint_getInfo2NonVirtual(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8);
   public final static native void btGeneric6DofConstraint_updateRHS(long jarg1, btGeneric6DofConstraint jarg1_, float jarg2);
   public final static native Vector3 btGeneric6DofConstraint_getAxis(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2);
   public final static native float btGeneric6DofConstraint_getAngle(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2);
   public final static native float btGeneric6DofConstraint_getRelativePivotPosition(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2);
-  public final static native void btGeneric6DofConstraint_setFrames(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_);
+  public final static native void btGeneric6DofConstraint_setFrames(long jarg1, btGeneric6DofConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
   public final static native boolean btGeneric6DofConstraint_testAngularLimitMotor(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2);
   public final static native void btGeneric6DofConstraint_setLinearLowerLimit(long jarg1, btGeneric6DofConstraint jarg1_, Vector3 jarg2);
   public final static native void btGeneric6DofConstraint_getLinearLowerLimit(long jarg1, btGeneric6DofConstraint jarg1_, Vector3 jarg2);
@@ -3070,8 +3183,8 @@ public class gdxBulletJNI {
   public final static native void btGeneric6DofConstraint_setLimit(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2, float jarg3, float jarg4);
   public final static native boolean btGeneric6DofConstraint_isLimited(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2);
   public final static native void btGeneric6DofConstraint_calcAnchorPos(long jarg1, btGeneric6DofConstraint jarg1_);
-  public final static native int btGeneric6DofConstraint_get_limit_motor_info2__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, btRotationalLimitMotor jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, long jarg9, btConstraintInfo2 jarg9_, int jarg10, Vector3 jarg11, int jarg12, int jarg13);
-  public final static native int btGeneric6DofConstraint_get_limit_motor_info2__SWIG_1(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, btRotationalLimitMotor jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, long jarg9, btConstraintInfo2 jarg9_, int jarg10, Vector3 jarg11, int jarg12);
+  public final static native int btGeneric6DofConstraint_get_limit_motor_info2__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, btRotationalLimitMotor jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, long jarg9, btConstraintInfo2 jarg9_, int jarg10, Vector3 jarg11, int jarg12, int jarg13);
+  public final static native int btGeneric6DofConstraint_get_limit_motor_info2__SWIG_1(long jarg1, btGeneric6DofConstraint jarg1_, long jarg2, btRotationalLimitMotor jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, long jarg9, btConstraintInfo2 jarg9_, int jarg10, Vector3 jarg11, int jarg12);
   public final static native boolean btGeneric6DofConstraint_getUseFrameOffset(long jarg1, btGeneric6DofConstraint jarg1_);
   public final static native void btGeneric6DofConstraint_setUseFrameOffset(long jarg1, btGeneric6DofConstraint jarg1_, boolean jarg2);
   public final static native void btGeneric6DofConstraint_setParam__SWIG_0(long jarg1, btGeneric6DofConstraint jarg1_, int jarg2, float jarg3, int jarg4);
@@ -3116,10 +3229,10 @@ public class gdxBulletJNI {
   public final static native void delete_btContactConstraint(long jarg1);
   public final static native float resolveSingleCollision(long jarg1, btRigidBody jarg1_, long jarg2, btCollisionObject jarg2_, Vector3 jarg3, Vector3 jarg4, long jarg5, btContactSolverInfo jarg5_, float jarg6);
   public final static native void resolveSingleBilateral(long jarg1, btRigidBody jarg1_, Vector3 jarg2, long jarg3, btRigidBody jarg3_, Vector3 jarg4, float jarg5, Vector3 jarg6, long jarg7, float jarg8);
-  public final static native long new_btConeTwistConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_);
-  public final static native long new_btConeTwistConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, long jarg2, btTransform jarg2_);
+  public final static native long new_btConeTwistConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4);
+  public final static native long new_btConeTwistConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
   public final static native void btConeTwistConstraint_getInfo1NonVirtual(long jarg1, btConeTwistConstraint jarg1_, long jarg2);
-  public final static native void btConeTwistConstraint_getInfo2NonVirtual(long jarg1, btConeTwistConstraint jarg1_, long jarg2, btConstraintInfo2 jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, Matrix3 jarg5, Matrix3 jarg6);
+  public final static native void btConeTwistConstraint_getInfo2NonVirtual(long jarg1, btConeTwistConstraint jarg1_, long jarg2, btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Matrix3 jarg5, Matrix3 jarg6);
   public final static native void btConeTwistConstraint_updateRHS(long jarg1, btConeTwistConstraint jarg1_, float jarg2);
   public final static native long btConeTwistConstraint_getRigidBodyA(long jarg1, btConeTwistConstraint jarg1_);
   public final static native long btConeTwistConstraint_getRigidBodyB(long jarg1, btConeTwistConstraint jarg1_);
@@ -3129,13 +3242,13 @@ public class gdxBulletJNI {
   public final static native void btConeTwistConstraint_setLimit__SWIG_2(long jarg1, btConeTwistConstraint jarg1_, float jarg2, float jarg3, float jarg4, float jarg5, float jarg6);
   public final static native void btConeTwistConstraint_setLimit__SWIG_3(long jarg1, btConeTwistConstraint jarg1_, float jarg2, float jarg3, float jarg4, float jarg5);
   public final static native void btConeTwistConstraint_setLimit__SWIG_4(long jarg1, btConeTwistConstraint jarg1_, float jarg2, float jarg3, float jarg4);
-  public final static native long btConeTwistConstraint_getAFrame(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native long btConeTwistConstraint_getBFrame(long jarg1, btConeTwistConstraint jarg1_);
+  public final static native Matrix4 btConeTwistConstraint_getAFrame(long jarg1, btConeTwistConstraint jarg1_);
+  public final static native Matrix4 btConeTwistConstraint_getBFrame(long jarg1, btConeTwistConstraint jarg1_);
   public final static native int btConeTwistConstraint_getSolveTwistLimit(long jarg1, btConeTwistConstraint jarg1_);
   public final static native int btConeTwistConstraint_getSolveSwingLimit(long jarg1, btConeTwistConstraint jarg1_);
   public final static native float btConeTwistConstraint_getTwistLimitSign(long jarg1, btConeTwistConstraint jarg1_);
   public final static native void btConeTwistConstraint_calcAngleInfo(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native void btConeTwistConstraint_calcAngleInfo2(long jarg1, btConeTwistConstraint jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_, Matrix3 jarg4, Matrix3 jarg5);
+  public final static native void btConeTwistConstraint_calcAngleInfo2(long jarg1, btConeTwistConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3, Matrix3 jarg4, Matrix3 jarg5);
   public final static native float btConeTwistConstraint_getSwingSpan1(long jarg1, btConeTwistConstraint jarg1_);
   public final static native float btConeTwistConstraint_getSwingSpan2(long jarg1, btConeTwistConstraint jarg1_);
   public final static native float btConeTwistConstraint_getTwistSpan(long jarg1, btConeTwistConstraint jarg1_);
@@ -3152,9 +3265,9 @@ public class gdxBulletJNI {
   public final static native Vector3 btConeTwistConstraint_GetPointForAngle(long jarg1, btConeTwistConstraint jarg1_, float jarg2, float jarg3);
   public final static native void btConeTwistConstraint_setParam__SWIG_0(long jarg1, btConeTwistConstraint jarg1_, int jarg2, float jarg3, int jarg4);
   public final static native void btConeTwistConstraint_setParam__SWIG_1(long jarg1, btConeTwistConstraint jarg1_, int jarg2, float jarg3);
-  public final static native void btConeTwistConstraint_setFrames(long jarg1, btConeTwistConstraint jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_);
-  public final static native long btConeTwistConstraint_getFrameOffsetA(long jarg1, btConeTwistConstraint jarg1_);
-  public final static native long btConeTwistConstraint_getFrameOffsetB(long jarg1, btConeTwistConstraint jarg1_);
+  public final static native void btConeTwistConstraint_setFrames(long jarg1, btConeTwistConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
+  public final static native Matrix4 btConeTwistConstraint_getFrameOffsetA(long jarg1, btConeTwistConstraint jarg1_);
+  public final static native Matrix4 btConeTwistConstraint_getFrameOffsetB(long jarg1, btConeTwistConstraint jarg1_);
   public final static native float btConeTwistConstraint_getParam__SWIG_0(long jarg1, btConeTwistConstraint jarg1_, int jarg2, int jarg3);
   public final static native float btConeTwistConstraint_getParam__SWIG_1(long jarg1, btConeTwistConstraint jarg1_, int jarg2);
   public final static native void delete_btConeTwistConstraint(long jarg1);
@@ -3182,8 +3295,8 @@ public class gdxBulletJNI {
   public final static native String btConeTwistConstraintData_m_pad_get(long jarg1, btConeTwistConstraintData jarg1_);
   public final static native long new_btConeTwistConstraintData();
   public final static native void delete_btConeTwistConstraintData(long jarg1);
-  public final static native long new_btGeneric6DofSpringConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, boolean jarg5);
-  public final static native long new_btGeneric6DofSpringConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, long jarg2, btTransform jarg2_, boolean jarg3);
+  public final static native long new_btGeneric6DofSpringConstraint__SWIG_0(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4, boolean jarg5);
+  public final static native long new_btGeneric6DofSpringConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, Matrix4 jarg2, boolean jarg3);
   public final static native void btGeneric6DofSpringConstraint_enableSpring(long jarg1, btGeneric6DofSpringConstraint jarg1_, int jarg2, boolean jarg3);
   public final static native void btGeneric6DofSpringConstraint_setStiffness(long jarg1, btGeneric6DofSpringConstraint jarg1_, int jarg2, float jarg3);
   public final static native void btGeneric6DofSpringConstraint_setDamping(long jarg1, btGeneric6DofSpringConstraint jarg1_, int jarg2, float jarg3);
@@ -3208,20 +3321,20 @@ public class gdxBulletJNI {
   public final static native long new_btHingeConstraint__SWIG_1(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6);
   public final static native long new_btHingeConstraint__SWIG_2(long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3, boolean jarg4);
   public final static native long new_btHingeConstraint__SWIG_3(long jarg1, btRigidBody jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native long new_btHingeConstraint__SWIG_4(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, boolean jarg5);
-  public final static native long new_btHingeConstraint__SWIG_5(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_);
-  public final static native long new_btHingeConstraint__SWIG_6(long jarg1, btRigidBody jarg1_, long jarg2, btTransform jarg2_, boolean jarg3);
-  public final static native long new_btHingeConstraint__SWIG_7(long jarg1, btRigidBody jarg1_, long jarg2, btTransform jarg2_);
+  public final static native long new_btHingeConstraint__SWIG_4(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4, boolean jarg5);
+  public final static native long new_btHingeConstraint__SWIG_5(long jarg1, btRigidBody jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, Matrix4 jarg4);
+  public final static native long new_btHingeConstraint__SWIG_6(long jarg1, btRigidBody jarg1_, Matrix4 jarg2, boolean jarg3);
+  public final static native long new_btHingeConstraint__SWIG_7(long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
   public final static native void btHingeConstraint_getInfo1NonVirtual(long jarg1, btHingeConstraint jarg1_, long jarg2);
-  public final static native void btHingeConstraint_getInfo2NonVirtual(long jarg1, btHingeConstraint jarg1_, long jarg2, btConstraintInfo2 jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, Vector3 jarg5, Vector3 jarg6);
-  public final static native void btHingeConstraint_getInfo2Internal(long jarg1, btHingeConstraint jarg1_, long jarg2, btConstraintInfo2 jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, Vector3 jarg5, Vector3 jarg6);
-  public final static native void btHingeConstraint_getInfo2InternalUsingFrameOffset(long jarg1, btHingeConstraint jarg1_, long jarg2, btConstraintInfo2 jarg2_, long jarg3, btTransform jarg3_, long jarg4, btTransform jarg4_, Vector3 jarg5, Vector3 jarg6);
+  public final static native void btHingeConstraint_getInfo2NonVirtual(long jarg1, btHingeConstraint jarg1_, long jarg2, btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6);
+  public final static native void btHingeConstraint_getInfo2Internal(long jarg1, btHingeConstraint jarg1_, long jarg2, btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6);
+  public final static native void btHingeConstraint_getInfo2InternalUsingFrameOffset(long jarg1, btHingeConstraint jarg1_, long jarg2, btConstraintInfo2 jarg2_, Matrix4 jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6);
   public final static native void btHingeConstraint_updateRHS(long jarg1, btHingeConstraint jarg1_, float jarg2);
   public final static native long btHingeConstraint_getRigidBodyA__SWIG_0(long jarg1, btHingeConstraint jarg1_);
   public final static native long btHingeConstraint_getRigidBodyB__SWIG_0(long jarg1, btHingeConstraint jarg1_);
-  public final static native long btHingeConstraint_getFrameOffsetA(long jarg1, btHingeConstraint jarg1_);
-  public final static native long btHingeConstraint_getFrameOffsetB(long jarg1, btHingeConstraint jarg1_);
-  public final static native void btHingeConstraint_setFrames(long jarg1, btHingeConstraint jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_);
+  public final static native Matrix4 btHingeConstraint_getFrameOffsetA(long jarg1, btHingeConstraint jarg1_);
+  public final static native Matrix4 btHingeConstraint_getFrameOffsetB(long jarg1, btHingeConstraint jarg1_);
+  public final static native void btHingeConstraint_setFrames(long jarg1, btHingeConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
   public final static native void btHingeConstraint_setAngularOnly(long jarg1, btHingeConstraint jarg1_, boolean jarg2);
   public final static native void btHingeConstraint_enableAngularMotor(long jarg1, btHingeConstraint jarg1_, boolean jarg2, float jarg3, float jarg4);
   public final static native void btHingeConstraint_enableMotor(long jarg1, btHingeConstraint jarg1_, boolean jarg2);
@@ -3236,10 +3349,10 @@ public class gdxBulletJNI {
   public final static native float btHingeConstraint_getLowerLimit(long jarg1, btHingeConstraint jarg1_);
   public final static native float btHingeConstraint_getUpperLimit(long jarg1, btHingeConstraint jarg1_);
   public final static native float btHingeConstraint_getHingeAngle__SWIG_0(long jarg1, btHingeConstraint jarg1_);
-  public final static native float btHingeConstraint_getHingeAngle__SWIG_1(long jarg1, btHingeConstraint jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_);
-  public final static native void btHingeConstraint_testLimit(long jarg1, btHingeConstraint jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_);
-  public final static native long btHingeConstraint_getAFrame__SWIG_0(long jarg1, btHingeConstraint jarg1_);
-  public final static native long btHingeConstraint_getBFrame__SWIG_0(long jarg1, btHingeConstraint jarg1_);
+  public final static native float btHingeConstraint_getHingeAngle__SWIG_1(long jarg1, btHingeConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
+  public final static native void btHingeConstraint_testLimit(long jarg1, btHingeConstraint jarg1_, Matrix4 jarg2, Matrix4 jarg3);
+  public final static native Matrix4 btHingeConstraint_getAFrame__SWIG_0(long jarg1, btHingeConstraint jarg1_);
+  public final static native Matrix4 btHingeConstraint_getBFrame__SWIG_0(long jarg1, btHingeConstraint jarg1_);
   public final static native int btHingeConstraint_getSolveLimit(long jarg1, btHingeConstraint jarg1_);
   public final static native float btHingeConstraint_getLimitSign(long jarg1, btHingeConstraint jarg1_);
   public final static native boolean btHingeConstraint_getAngularOnly(long jarg1, btHingeConstraint jarg1_);
@@ -3450,14 +3563,14 @@ public class gdxBulletJNI {
   public final static native void delete_btVehicleTuning(long jarg1);
   public final static native long new_btRaycastVehicle(long jarg1, btVehicleTuning jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btVehicleRaycaster jarg3_);
   public final static native void delete_btRaycastVehicle(long jarg1);
-  public final static native long btRaycastVehicle_getChassisWorldTransform(long jarg1, btRaycastVehicle jarg1_);
+  public final static native Matrix4 btRaycastVehicle_getChassisWorldTransform(long jarg1, btRaycastVehicle jarg1_);
   public final static native float btRaycastVehicle_rayCast(long jarg1, btRaycastVehicle jarg1_, long jarg2, btWheelInfo jarg2_);
   public final static native void btRaycastVehicle_updateVehicle(long jarg1, btRaycastVehicle jarg1_, float jarg2);
   public final static native void btRaycastVehicle_resetSuspension(long jarg1, btRaycastVehicle jarg1_);
   public final static native float btRaycastVehicle_getSteeringValue(long jarg1, btRaycastVehicle jarg1_, int jarg2);
   public final static native void btRaycastVehicle_setSteeringValue(long jarg1, btRaycastVehicle jarg1_, float jarg2, int jarg3);
   public final static native void btRaycastVehicle_applyEngineForce(long jarg1, btRaycastVehicle jarg1_, float jarg2, int jarg3);
-  public final static native long btRaycastVehicle_getWheelTransformWS(long jarg1, btRaycastVehicle jarg1_, int jarg2);
+  public final static native Matrix4 btRaycastVehicle_getWheelTransformWS(long jarg1, btRaycastVehicle jarg1_, int jarg2);
   public final static native void btRaycastVehicle_updateWheelTransform__SWIG_0(long jarg1, btRaycastVehicle jarg1_, int jarg2, boolean jarg3);
   public final static native void btRaycastVehicle_updateWheelTransform__SWIG_1(long jarg1, btRaycastVehicle jarg1_, int jarg2);
   public final static native long btRaycastVehicle_addWheel(long jarg1, btRaycastVehicle jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, long jarg7, btVehicleTuning jarg7_, boolean jarg8);
@@ -3573,6 +3686,11 @@ public class gdxBulletJNI {
   public final static native long btGhostObject_SWIGUpcast(long jarg1);
   public final static native long btPairCachingGhostObject_SWIGUpcast(long jarg1);
   public final static native long btGhostPairCallback_SWIGUpcast(long jarg1);
+  public final static native long ClosestRayResultCallback_SWIGUpcast(long jarg1);
+  public final static native long AllHitsRayResultCallback_SWIGUpcast(long jarg1);
+  public final static native long ClosestConvexResultCallback_SWIGUpcast(long jarg1);
+  public final static native long ClosestNotMeConvexResultCallback_SWIGUpcast(long jarg1);
+  public final static native long ClosestNotMeRayResultCallback_SWIGUpcast(long jarg1);
   public final static native long btConvex2dConvex2dAlgorithm_SWIGUpcast(long jarg1);
   public final static native long btSphereBoxCollisionAlgorithm_SWIGUpcast(long jarg1);
   public final static native long btCollisionDispatcher_SWIGUpcast(long jarg1);
@@ -3612,8 +3730,8 @@ public class gdxBulletJNI {
   public static void SwigDirector_btIDebugDraw_drawLine__SWIG_1(btIDebugDraw self, Vector3 from, Vector3 to, Vector3 fromColor, Vector3 toColor) {
     self.drawLine(from, to, fromColor, toColor);
   }
-  public static void SwigDirector_btIDebugDraw_drawSphere__SWIG_0(btIDebugDraw self, float radius, long transform, Vector3 color) {
-    self.drawSphere(radius, new btTransform(transform, false), color);
+  public static void SwigDirector_btIDebugDraw_drawSphere__SWIG_0(btIDebugDraw self, float radius, Matrix4 transform, Vector3 color) {
+    self.drawSphere(radius, transform, color);
   }
   public static void SwigDirector_btIDebugDraw_drawSphere__SWIG_1(btIDebugDraw self, Vector3 p, float radius, Vector3 color) {
     self.drawSphere(p, radius, color);
@@ -3642,8 +3760,8 @@ public class gdxBulletJNI {
   public static void SwigDirector_btIDebugDraw_drawAabb(btIDebugDraw self, Vector3 from, Vector3 to, Vector3 color) {
     self.drawAabb(from, to, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawTransform(btIDebugDraw self, long transform, float orthoLen) {
-    self.drawTransform(new btTransform(transform, false), orthoLen);
+  public static void SwigDirector_btIDebugDraw_drawTransform(btIDebugDraw self, Matrix4 transform, float orthoLen) {
+    self.drawTransform(transform, orthoLen);
   }
   public static void SwigDirector_btIDebugDraw_drawArc__SWIG_0(btIDebugDraw self, Vector3 center, Vector3 normal, Vector3 axis, float radiusA, float radiusB, float minAngle, float maxAngle, Vector3 color, boolean drawSect, float stepDegrees) {
     self.drawArc(center, normal, axis, radiusA, radiusB, minAngle, maxAngle, color, drawSect, stepDegrees);
@@ -3660,26 +3778,26 @@ public class gdxBulletJNI {
   public static void SwigDirector_btIDebugDraw_drawBox__SWIG_0(btIDebugDraw self, Vector3 bbMin, Vector3 bbMax, Vector3 color) {
     self.drawBox(bbMin, bbMax, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawBox__SWIG_1(btIDebugDraw self, Vector3 bbMin, Vector3 bbMax, long trans, Vector3 color) {
-    self.drawBox(bbMin, bbMax, new btTransform(trans, false), color);
+  public static void SwigDirector_btIDebugDraw_drawBox__SWIG_1(btIDebugDraw self, Vector3 bbMin, Vector3 bbMax, Matrix4 trans, Vector3 color) {
+    self.drawBox(bbMin, bbMax, trans, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawCapsule(btIDebugDraw self, float radius, float halfHeight, int upAxis, long transform, Vector3 color) {
-    self.drawCapsule(radius, halfHeight, upAxis, new btTransform(transform, false), color);
+  public static void SwigDirector_btIDebugDraw_drawCapsule(btIDebugDraw self, float radius, float halfHeight, int upAxis, Matrix4 transform, Vector3 color) {
+    self.drawCapsule(radius, halfHeight, upAxis, transform, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawCylinder(btIDebugDraw self, float radius, float halfHeight, int upAxis, long transform, Vector3 color) {
-    self.drawCylinder(radius, halfHeight, upAxis, new btTransform(transform, false), color);
+  public static void SwigDirector_btIDebugDraw_drawCylinder(btIDebugDraw self, float radius, float halfHeight, int upAxis, Matrix4 transform, Vector3 color) {
+    self.drawCylinder(radius, halfHeight, upAxis, transform, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawCone(btIDebugDraw self, float radius, float height, int upAxis, long transform, Vector3 color) {
-    self.drawCone(radius, height, upAxis, new btTransform(transform, false), color);
+  public static void SwigDirector_btIDebugDraw_drawCone(btIDebugDraw self, float radius, float height, int upAxis, Matrix4 transform, Vector3 color) {
+    self.drawCone(radius, height, upAxis, transform, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawPlane(btIDebugDraw self, Vector3 planeNormal, float planeConst, long transform, Vector3 color) {
-    self.drawPlane(planeNormal, planeConst, new btTransform(transform, false), color);
+  public static void SwigDirector_btIDebugDraw_drawPlane(btIDebugDraw self, Vector3 planeNormal, float planeConst, Matrix4 transform, Vector3 color) {
+    self.drawPlane(planeNormal, planeConst, transform, color);
   }
-  public static void SwigDirector_btMotionState_getWorldTransform(btMotionState self, long worldTrans) {
-    self.getWorldTransform(new btTransform(worldTrans, false));
+  public static void SwigDirector_btMotionState_getWorldTransform(btMotionState self, Matrix4 worldTrans) {
+    self.getWorldTransform(worldTrans);
   }
-  public static void SwigDirector_btMotionState_setWorldTransform(btMotionState self, long worldTrans) {
-    self.setWorldTransform(new btTransform(worldTrans, false));
+  public static void SwigDirector_btMotionState_setWorldTransform(btMotionState self, Matrix4 worldTrans) {
+    self.setWorldTransform(worldTrans);
   }
 
   private final static native void swig_module_init();

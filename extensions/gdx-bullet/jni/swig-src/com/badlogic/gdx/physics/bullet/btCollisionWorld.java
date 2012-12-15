@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btCollisionWorld {
   private long swigCPtr;
@@ -83,48 +84,48 @@ public class btCollisionWorld {
     gdxBulletJNI.btCollisionWorld_debugDrawWorld(swigCPtr, this);
   }
 
-  public void debugDrawObject(btTransform worldTransform, btCollisionShape shape, Vector3 color) {
-    gdxBulletJNI.btCollisionWorld_debugDrawObject(swigCPtr, this, btTransform.getCPtr(worldTransform), worldTransform, btCollisionShape.getCPtr(shape), shape, color);
+  public void debugDrawObject(Matrix4 worldTransform, btCollisionShape shape, Vector3 color) {
+    gdxBulletJNI.btCollisionWorld_debugDrawObject(swigCPtr, this, worldTransform, btCollisionShape.getCPtr(shape), shape, color);
   }
 
   public int getNumCollisionObjects() {
     return gdxBulletJNI.btCollisionWorld_getNumCollisionObjects(swigCPtr, this);
   }
 
-  public void rayTest(Vector3 rayFromWorld, Vector3 rayToWorld, SWIGTYPE_p_btCollisionWorld__RayResultCallback resultCallback) {
-    gdxBulletJNI.btCollisionWorld_rayTest(swigCPtr, this, rayFromWorld, rayToWorld, SWIGTYPE_p_btCollisionWorld__RayResultCallback.getCPtr(resultCallback));
+  public void rayTest(Vector3 rayFromWorld, Vector3 rayToWorld, RayResultCallback resultCallback) {
+    gdxBulletJNI.btCollisionWorld_rayTest(swigCPtr, this, rayFromWorld, rayToWorld, RayResultCallback.getCPtr(resultCallback), resultCallback);
   }
 
-  public void convexSweepTest(btConvexShape castShape, btTransform from, btTransform to, SWIGTYPE_p_btCollisionWorld__ConvexResultCallback resultCallback, float allowedCcdPenetration) {
-    gdxBulletJNI.btCollisionWorld_convexSweepTest__SWIG_0(swigCPtr, this, btConvexShape.getCPtr(castShape), castShape, btTransform.getCPtr(from), from, btTransform.getCPtr(to), to, SWIGTYPE_p_btCollisionWorld__ConvexResultCallback.getCPtr(resultCallback), allowedCcdPenetration);
+  public void convexSweepTest(btConvexShape castShape, Matrix4 from, Matrix4 to, ConvexResultCallback resultCallback, float allowedCcdPenetration) {
+    gdxBulletJNI.btCollisionWorld_convexSweepTest__SWIG_0(swigCPtr, this, btConvexShape.getCPtr(castShape), castShape, from, to, ConvexResultCallback.getCPtr(resultCallback), resultCallback, allowedCcdPenetration);
   }
 
-  public void convexSweepTest(btConvexShape castShape, btTransform from, btTransform to, SWIGTYPE_p_btCollisionWorld__ConvexResultCallback resultCallback) {
-    gdxBulletJNI.btCollisionWorld_convexSweepTest__SWIG_1(swigCPtr, this, btConvexShape.getCPtr(castShape), castShape, btTransform.getCPtr(from), from, btTransform.getCPtr(to), to, SWIGTYPE_p_btCollisionWorld__ConvexResultCallback.getCPtr(resultCallback));
+  public void convexSweepTest(btConvexShape castShape, Matrix4 from, Matrix4 to, ConvexResultCallback resultCallback) {
+    gdxBulletJNI.btCollisionWorld_convexSweepTest__SWIG_1(swigCPtr, this, btConvexShape.getCPtr(castShape), castShape, from, to, ConvexResultCallback.getCPtr(resultCallback), resultCallback);
   }
 
-  public void contactTest(btCollisionObject colObj, SWIGTYPE_p_btCollisionWorld__ContactResultCallback resultCallback) {
-    gdxBulletJNI.btCollisionWorld_contactTest(swigCPtr, this, btCollisionObject.getCPtr(colObj), colObj, SWIGTYPE_p_btCollisionWorld__ContactResultCallback.getCPtr(resultCallback));
+  public void contactTest(btCollisionObject colObj, ContactResultCallback resultCallback) {
+    gdxBulletJNI.btCollisionWorld_contactTest(swigCPtr, this, btCollisionObject.getCPtr(colObj), colObj, ContactResultCallback.getCPtr(resultCallback), resultCallback);
   }
 
-  public void contactPairTest(btCollisionObject colObjA, btCollisionObject colObjB, SWIGTYPE_p_btCollisionWorld__ContactResultCallback resultCallback) {
-    gdxBulletJNI.btCollisionWorld_contactPairTest(swigCPtr, this, btCollisionObject.getCPtr(colObjA), colObjA, btCollisionObject.getCPtr(colObjB), colObjB, SWIGTYPE_p_btCollisionWorld__ContactResultCallback.getCPtr(resultCallback));
+  public void contactPairTest(btCollisionObject colObjA, btCollisionObject colObjB, ContactResultCallback resultCallback) {
+    gdxBulletJNI.btCollisionWorld_contactPairTest(swigCPtr, this, btCollisionObject.getCPtr(colObjA), colObjA, btCollisionObject.getCPtr(colObjB), colObjB, ContactResultCallback.getCPtr(resultCallback), resultCallback);
   }
 
-  public static void rayTestSingle(btTransform rayFromTrans, btTransform rayToTrans, btCollisionObject collisionObject, btCollisionShape collisionShape, btTransform colObjWorldTransform, SWIGTYPE_p_btCollisionWorld__RayResultCallback resultCallback) {
-    gdxBulletJNI.btCollisionWorld_rayTestSingle(btTransform.getCPtr(rayFromTrans), rayFromTrans, btTransform.getCPtr(rayToTrans), rayToTrans, btCollisionObject.getCPtr(collisionObject), collisionObject, btCollisionShape.getCPtr(collisionShape), collisionShape, btTransform.getCPtr(colObjWorldTransform), colObjWorldTransform, SWIGTYPE_p_btCollisionWorld__RayResultCallback.getCPtr(resultCallback));
+  public static void rayTestSingle(Matrix4 rayFromTrans, Matrix4 rayToTrans, btCollisionObject collisionObject, btCollisionShape collisionShape, Matrix4 colObjWorldTransform, RayResultCallback resultCallback) {
+    gdxBulletJNI.btCollisionWorld_rayTestSingle(rayFromTrans, rayToTrans, btCollisionObject.getCPtr(collisionObject), collisionObject, btCollisionShape.getCPtr(collisionShape), collisionShape, colObjWorldTransform, RayResultCallback.getCPtr(resultCallback), resultCallback);
   }
 
-  public static void rayTestSingleInternal(btTransform rayFromTrans, btTransform rayToTrans, SWIGTYPE_p_btCollisionObjectWrapper collisionObjectWrap, SWIGTYPE_p_btCollisionWorld__RayResultCallback resultCallback) {
-    gdxBulletJNI.btCollisionWorld_rayTestSingleInternal(btTransform.getCPtr(rayFromTrans), rayFromTrans, btTransform.getCPtr(rayToTrans), rayToTrans, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(collisionObjectWrap), SWIGTYPE_p_btCollisionWorld__RayResultCallback.getCPtr(resultCallback));
+  public static void rayTestSingleInternal(Matrix4 rayFromTrans, Matrix4 rayToTrans, SWIGTYPE_p_btCollisionObjectWrapper collisionObjectWrap, RayResultCallback resultCallback) {
+    gdxBulletJNI.btCollisionWorld_rayTestSingleInternal(rayFromTrans, rayToTrans, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(collisionObjectWrap), RayResultCallback.getCPtr(resultCallback), resultCallback);
   }
 
-  public static void objectQuerySingle(btConvexShape castShape, btTransform rayFromTrans, btTransform rayToTrans, btCollisionObject collisionObject, btCollisionShape collisionShape, btTransform colObjWorldTransform, SWIGTYPE_p_btCollisionWorld__ConvexResultCallback resultCallback, float allowedPenetration) {
-    gdxBulletJNI.btCollisionWorld_objectQuerySingle(btConvexShape.getCPtr(castShape), castShape, btTransform.getCPtr(rayFromTrans), rayFromTrans, btTransform.getCPtr(rayToTrans), rayToTrans, btCollisionObject.getCPtr(collisionObject), collisionObject, btCollisionShape.getCPtr(collisionShape), collisionShape, btTransform.getCPtr(colObjWorldTransform), colObjWorldTransform, SWIGTYPE_p_btCollisionWorld__ConvexResultCallback.getCPtr(resultCallback), allowedPenetration);
+  public static void objectQuerySingle(btConvexShape castShape, Matrix4 rayFromTrans, Matrix4 rayToTrans, btCollisionObject collisionObject, btCollisionShape collisionShape, Matrix4 colObjWorldTransform, ConvexResultCallback resultCallback, float allowedPenetration) {
+    gdxBulletJNI.btCollisionWorld_objectQuerySingle(btConvexShape.getCPtr(castShape), castShape, rayFromTrans, rayToTrans, btCollisionObject.getCPtr(collisionObject), collisionObject, btCollisionShape.getCPtr(collisionShape), collisionShape, colObjWorldTransform, ConvexResultCallback.getCPtr(resultCallback), resultCallback, allowedPenetration);
   }
 
-  public static void objectQuerySingleInternal(btConvexShape castShape, btTransform convexFromTrans, btTransform convexToTrans, SWIGTYPE_p_btCollisionObjectWrapper colObjWrap, SWIGTYPE_p_btCollisionWorld__ConvexResultCallback resultCallback, float allowedPenetration) {
-    gdxBulletJNI.btCollisionWorld_objectQuerySingleInternal(btConvexShape.getCPtr(castShape), castShape, btTransform.getCPtr(convexFromTrans), convexFromTrans, btTransform.getCPtr(convexToTrans), convexToTrans, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(colObjWrap), SWIGTYPE_p_btCollisionWorld__ConvexResultCallback.getCPtr(resultCallback), allowedPenetration);
+  public static void objectQuerySingleInternal(btConvexShape castShape, Matrix4 convexFromTrans, Matrix4 convexToTrans, SWIGTYPE_p_btCollisionObjectWrapper colObjWrap, ConvexResultCallback resultCallback, float allowedPenetration) {
+    gdxBulletJNI.btCollisionWorld_objectQuerySingleInternal(btConvexShape.getCPtr(castShape), castShape, convexFromTrans, convexToTrans, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(colObjWrap), ConvexResultCallback.getCPtr(resultCallback), resultCallback, allowedPenetration);
   }
 
   public void addCollisionObject(btCollisionObject collisionObject, short collisionFilterGroup, short collisionFilterMask) {

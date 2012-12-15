@@ -45,7 +45,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Pool;
 
-/** An implementation of the {@link Input} interface hooking a Jogl panel for input.
+/** An implementation of the {@link Input} interface hooking a LWJGL panel for input.
  * 
  * @author mzechner */
 final class LwjglInput implements Input {

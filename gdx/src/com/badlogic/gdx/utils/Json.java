@@ -322,16 +322,21 @@ public class Json {
 		}
 	}
 
+	/** @param value May be null. */
 	public void writeValue (String name, Object value) {
 		try {
 			writer.name(name);
 		} catch (IOException ex) {
 			throw new SerializationException(ex);
 		}
-		writeValue(value, value.getClass(), null);
+		if (value == null)
+			writeValue(value, null, null);
+		else
+			writeValue(value, value.getClass(), null);
 	}
 
-	/** @param knownType May be null if the type is unknown. */
+	/** @param value May be null.
+	 * @param knownType May be null if the type is unknown. */
 	public void writeValue (String name, Object value, Class knownType) {
 		try {
 			writer.name(name);
@@ -341,7 +346,8 @@ public class Json {
 		writeValue(value, knownType, null);
 	}
 
-	/** @param knownType May be null if the type is unknown.
+	/** @param value May be null.
+	 * @param knownType May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown. */
 	public void writeValue (String name, Object value, Class knownType, Class elementType) {
 		try {
@@ -352,16 +358,22 @@ public class Json {
 		writeValue(value, knownType, elementType);
 	}
 
+	/** @param value May be null. */
 	public void writeValue (Object value) {
-		writeValue(value, value.getClass(), null);
+		if (value == null)
+			writeValue(value, null, null);
+		else
+			writeValue(value, value.getClass(), null);
 	}
 
-	/** @param knownType May be null if the type is unknown. */
+	/** @param value May be null.
+	 * @param knownType May be null if the type is unknown. */
 	public void writeValue (Object value, Class knownType) {
 		writeValue(value, knownType, null);
 	}
 
-	/** @param knownType May be null if the type is unknown.
+	/** @param value May be null.
+	 * @param knownType May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown. */
 	public void writeValue (Object value, Class knownType, Class elementType) {
 		try {
@@ -566,29 +578,34 @@ public class Json {
 		if (debug) System.out.println("Writing type: " + type.getName());
 	}
 
-	/** @param type May be null if the type is unknown. */
+	/** @param type May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, Reader reader) {
 		return (T)readValue(type, null, new JsonReader().parse(reader));
 	}
 
 	/** @param type May be null if the type is unknown.
-	 * @param elementType May be null if the type is unknown. */
+	 * @param elementType May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, Class elementType, Reader reader) {
 		return (T)readValue(type, elementType, new JsonReader().parse(reader));
 	}
 
-	/** @param type May be null if the type is unknown. */
+	/** @param type May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, InputStream input) {
 		return (T)readValue(type, null, new JsonReader().parse(input));
 	}
 
 	/** @param type May be null if the type is unknown.
-	 * @param elementType May be null if the type is unknown. */
+	 * @param elementType May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, Class elementType, InputStream input) {
 		return (T)readValue(type, elementType, new JsonReader().parse(input));
 	}
 
-	/** @param type May be null if the type is unknown. */
+	/** @param type May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, FileHandle file) {
 		try {
 			return (T)readValue(type, null, new JsonReader().parse(file));
@@ -598,7 +615,8 @@ public class Json {
 	}
 
 	/** @param type May be null if the type is unknown.
-	 * @param elementType May be null if the type is unknown. */
+	 * @param elementType May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, Class elementType, FileHandle file) {
 		try {
 			return (T)readValue(type, elementType, new JsonReader().parse(file));
@@ -607,23 +625,27 @@ public class Json {
 		}
 	}
 
-	/** @param type May be null if the type is unknown. */
+	/** @param type May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, char[] data, int offset, int length) {
 		return (T)readValue(type, null, new JsonReader().parse(data, offset, length));
 	}
 
 	/** @param type May be null if the type is unknown.
-	 * @param elementType May be null if the type is unknown. */
+	 * @param elementType May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, Class elementType, char[] data, int offset, int length) {
 		return (T)readValue(type, elementType, new JsonReader().parse(data, offset, length));
 	}
 
-	/** @param type May be null if the type is unknown. */
+	/** @param type May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, String json) {
 		return (T)readValue(type, null, new JsonReader().parse(json));
 	}
 
-	/** @param type May be null if the type is unknown. */
+	/** @param type May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, Class elementType, String json) {
 		return (T)readValue(type, elementType, new JsonReader().parse(json));
 	}
@@ -697,13 +719,15 @@ public class Json {
 		}
 	}
 
-	/** @param type May be null if the type is unknown. */
+	/** @param type May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T readValue (String name, Class<T> type, Object jsonData) {
 		OrderedMap jsonMap = (OrderedMap)jsonData;
 		return (T)readValue(type, null, jsonMap.get(name));
 	}
 
-	/** @param type May be null if the type is unknown. */
+	/** @param type May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T readValue (String name, Class<T> type, T defaultValue, Object jsonData) {
 		OrderedMap jsonMap = (OrderedMap)jsonData;
 		Object jsonValue = jsonMap.get(name);
@@ -712,14 +736,16 @@ public class Json {
 	}
 
 	/** @param type May be null if the type is unknown.
-	 * @param elementType May be null if the type is unknown. */
+	 * @param elementType May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T readValue (String name, Class<T> type, Class elementType, Object jsonData) {
 		OrderedMap jsonMap = (OrderedMap)jsonData;
 		return (T)readValue(type, elementType, jsonMap.get(name));
 	}
 
 	/** @param type May be null if the type is unknown.
-	 * @param elementType May be null if the type is unknown. */
+	 * @param elementType May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T readValue (String name, Class<T> type, Class elementType, T defaultValue, Object jsonData) {
 		OrderedMap jsonMap = (OrderedMap)jsonData;
 		Object jsonValue = jsonMap.get(name);
@@ -728,18 +754,21 @@ public class Json {
 	}
 
 	/** @param type May be null if the type is unknown.
-	 * @param elementType May be null if the type is unknown. */
+	 * @param elementType May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T readValue (Class<T> type, Class elementType, T defaultValue, Object jsonData) {
 		return (T)readValue(type, elementType, jsonData);
 	}
 
-	/** @param type May be null if the type is unknown. */
+	/** @param type May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T readValue (Class<T> type, Object jsonData) {
 		return (T)readValue(type, null, jsonData);
 	}
 
 	/** @param type May be null if the type is unknown.
-	 * @param elementType May be null if the type is unknown. */
+	 * @param elementType May be null if the type is unknown.
+	 * @return May be null. */
 	public <T> T readValue (Class<T> type, Class elementType, Object jsonData) {
 		if (jsonData == null) return null;
 

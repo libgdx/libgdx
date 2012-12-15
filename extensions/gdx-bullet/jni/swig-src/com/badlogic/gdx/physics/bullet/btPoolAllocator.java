@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btPoolAllocator {
   private long swigCPtr;
@@ -72,9 +73,8 @@ public class btPoolAllocator {
     return gdxBulletJNI.btPoolAllocator_getElementSize(swigCPtr, this);
   }
 
-  public SWIGTYPE_p_unsigned_char getPoolAddress() {
-    long cPtr = gdxBulletJNI.btPoolAllocator_getPoolAddress__SWIG_0(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_char(cPtr, false);
-  }
+  public java.nio.ByteBuffer getPoolAddress() {
+    return gdxBulletJNI.btPoolAllocator_getPoolAddress__SWIG_0(swigCPtr, this);
+}
 
 }

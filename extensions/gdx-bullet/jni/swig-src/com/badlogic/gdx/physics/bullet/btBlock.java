@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btBlock {
   private long swigCPtr;
@@ -48,14 +49,16 @@ public class btBlock {
     return (cPtr == 0) ? null : new btBlock(cPtr, false);
   }
 
-  public void setAddress(SWIGTYPE_p_unsigned_char value) {
-    gdxBulletJNI.btBlock_address_set(swigCPtr, this, SWIGTYPE_p_unsigned_char.getCPtr(value));
+  public void setAddress(java.nio.ByteBuffer value) {
+    assert value.isDirect() : "Buffer must be allocated direct.";
+    {
+      gdxBulletJNI.btBlock_address_set(swigCPtr, this, value);
+    }
   }
 
-  public SWIGTYPE_p_unsigned_char getAddress() {
-    long cPtr = gdxBulletJNI.btBlock_address_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_char(cPtr, false);
-  }
+  public java.nio.ByteBuffer getAddress() {
+    return gdxBulletJNI.btBlock_address_get(swigCPtr, this);
+}
 
   public btBlock() {
     this(gdxBulletJNI.new_btBlock(), true);

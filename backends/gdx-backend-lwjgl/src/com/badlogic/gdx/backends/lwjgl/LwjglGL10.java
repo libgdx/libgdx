@@ -31,7 +31,7 @@ import org.lwjgl.opengl.GL13;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** An implementation of the {@link GL10} interface based on Jogl. Fixed point vertex arrays are emulated.
+/** An implementation of the {@link GL10} interface based on LWJGL. Fixed point vertex arrays are emulated.
  * 
  * @author mzechner */
 class LwjglGL10 implements GL10 {

@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class gdxBullet implements gdxBulletConstants {
   public static int btGetVersion() {
@@ -137,12 +138,18 @@ public class gdxBullet implements gdxBulletConstants {
     return gdxBulletJNI.btUnswapEndianFloat(a);
   }
 
-  public static void btSwapEndianDouble(double d, SWIGTYPE_p_unsigned_char dst) {
-    gdxBulletJNI.btSwapEndianDouble(d, SWIGTYPE_p_unsigned_char.getCPtr(dst));
+  public static void btSwapEndianDouble(double d, java.nio.ByteBuffer dst) {
+    assert dst.isDirect() : "Buffer must be allocated direct.";
+    {
+      gdxBulletJNI.btSwapEndianDouble(d, dst);
+    }
   }
 
-  public static double btUnswapEndianDouble(SWIGTYPE_p_unsigned_char src) {
-    return gdxBulletJNI.btUnswapEndianDouble(SWIGTYPE_p_unsigned_char.getCPtr(src));
+  public static double btUnswapEndianDouble(java.nio.ByteBuffer src) {
+    assert src.isDirect() : "Buffer must be allocated direct.";
+    {
+      return gdxBulletJNI.btUnswapEndianDouble(src);
+    }
   }
 
   public static float btNormalizeAngle(float angleInRadians) {
@@ -249,16 +256,22 @@ public class gdxBullet implements gdxBulletConstants {
     return gdxBulletJNI.btRayAabb(rayFrom, rayTo, aabbMin, aabbMax, SWIGTYPE_p_float.getCPtr(param), normal);
   }
 
-  public static void btTransformAabb(Vector3 halfExtents, float margin, btTransform t, Vector3 aabbMinOut, Vector3 aabbMaxOut) {
-    gdxBulletJNI.btTransformAabb__SWIG_0(halfExtents, margin, btTransform.getCPtr(t), t, aabbMinOut, aabbMaxOut);
+  public static void btTransformAabb(Vector3 halfExtents, float margin, Matrix4 t, Vector3 aabbMinOut, Vector3 aabbMaxOut) {
+    gdxBulletJNI.btTransformAabb__SWIG_0(halfExtents, margin, t, aabbMinOut, aabbMaxOut);
   }
 
-  public static void btTransformAabb(Vector3 localAabbMin, Vector3 localAabbMax, float margin, btTransform trans, Vector3 aabbMinOut, Vector3 aabbMaxOut) {
-    gdxBulletJNI.btTransformAabb__SWIG_1(localAabbMin, localAabbMax, margin, btTransform.getCPtr(trans), trans, aabbMinOut, aabbMaxOut);
+  public static void btTransformAabb(Vector3 localAabbMin, Vector3 localAabbMax, float margin, Matrix4 trans, Vector3 aabbMinOut, Vector3 aabbMaxOut) {
+    gdxBulletJNI.btTransformAabb__SWIG_1(localAabbMin, localAabbMax, margin, trans, aabbMinOut, aabbMaxOut);
   }
 
-  public static long testQuantizedAabbAgainstQuantizedAabb(SWIGTYPE_p_unsigned_short aabbMin1, SWIGTYPE_p_unsigned_short aabbMax1, SWIGTYPE_p_unsigned_short aabbMin2, SWIGTYPE_p_unsigned_short aabbMax2) {
-    return gdxBulletJNI.testQuantizedAabbAgainstQuantizedAabb(SWIGTYPE_p_unsigned_short.getCPtr(aabbMin1), SWIGTYPE_p_unsigned_short.getCPtr(aabbMax1), SWIGTYPE_p_unsigned_short.getCPtr(aabbMin2), SWIGTYPE_p_unsigned_short.getCPtr(aabbMax2));
+  public static long testQuantizedAabbAgainstQuantizedAabb(java.nio.IntBuffer aabbMin1, java.nio.IntBuffer aabbMax1, java.nio.IntBuffer aabbMin2, java.nio.IntBuffer aabbMax2) {
+    assert aabbMin1.isDirect() : "Buffer must be allocated direct.";
+    assert aabbMax1.isDirect() : "Buffer must be allocated direct.";
+    assert aabbMin2.isDirect() : "Buffer must be allocated direct.";
+    assert aabbMax2.isDirect() : "Buffer must be allocated direct.";
+    {
+      return gdxBulletJNI.testQuantizedAabbAgainstQuantizedAabb(aabbMin1, aabbMax1, aabbMin2, aabbMax2);
+    }
   }
 
   public static void GEN_srand(long seed) {

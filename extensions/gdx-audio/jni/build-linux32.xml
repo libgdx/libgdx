@@ -17,7 +17,8 @@
 	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse -fmessage-length=0 -m32 -fPIC -DFIXED_POINT -DMPG123_NO_CONFIGURE -DOPT_GENERIC -DHAVE_STRERROR -DMPG123_NO_LARGENAME"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
-				<include name="kissfft/*.c"/>
+				<include name="memcpy_wrap.c"/>
+		<include name="kissfft/*.c"/>
 		<include name="vorbis/*.c"/>
 		<include name="libmpg123/equalizer.c"/>
 		<include name="libmpg123/index.c"/>

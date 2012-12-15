@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btMaterialProperties {
   private long swigCPtr;
@@ -47,14 +48,16 @@ public class btMaterialProperties {
     return gdxBulletJNI.btMaterialProperties_m_numMaterials_get(swigCPtr, this);
   }
 
-  public void setM_materialBase(SWIGTYPE_p_unsigned_char value) {
-    gdxBulletJNI.btMaterialProperties_m_materialBase_set(swigCPtr, this, SWIGTYPE_p_unsigned_char.getCPtr(value));
+  public void setM_materialBase(java.nio.ByteBuffer value) {
+    assert value.isDirect() : "Buffer must be allocated direct.";
+    {
+      gdxBulletJNI.btMaterialProperties_m_materialBase_set(swigCPtr, this, value);
+    }
   }
 
-  public SWIGTYPE_p_unsigned_char getM_materialBase() {
-    long cPtr = gdxBulletJNI.btMaterialProperties_m_materialBase_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_char(cPtr, false);
-  }
+  public java.nio.ByteBuffer getM_materialBase() {
+    return gdxBulletJNI.btMaterialProperties_m_materialBase_get(swigCPtr, this);
+}
 
   public void setM_materialStride(int value) {
     gdxBulletJNI.btMaterialProperties_m_materialStride_set(swigCPtr, this, value);
@@ -80,14 +83,16 @@ public class btMaterialProperties {
     return gdxBulletJNI.btMaterialProperties_m_numTriangles_get(swigCPtr, this);
   }
 
-  public void setM_triangleMaterialsBase(SWIGTYPE_p_unsigned_char value) {
-    gdxBulletJNI.btMaterialProperties_m_triangleMaterialsBase_set(swigCPtr, this, SWIGTYPE_p_unsigned_char.getCPtr(value));
+  public void setM_triangleMaterialsBase(java.nio.ByteBuffer value) {
+    assert value.isDirect() : "Buffer must be allocated direct.";
+    {
+      gdxBulletJNI.btMaterialProperties_m_triangleMaterialsBase_set(swigCPtr, this, value);
+    }
   }
 
-  public SWIGTYPE_p_unsigned_char getM_triangleMaterialsBase() {
-    long cPtr = gdxBulletJNI.btMaterialProperties_m_triangleMaterialsBase_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_char(cPtr, false);
-  }
+  public java.nio.ByteBuffer getM_triangleMaterialsBase() {
+    return gdxBulletJNI.btMaterialProperties_m_triangleMaterialsBase_get(swigCPtr, this);
+}
 
   public void setM_triangleMaterialStride(int value) {
     gdxBulletJNI.btMaterialProperties_m_triangleMaterialStride_set(swigCPtr, this, value);

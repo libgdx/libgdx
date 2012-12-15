@@ -506,8 +506,10 @@ public class Matrix4 implements Serializable {
 	 * @param angle The angle in degrees
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToRotation (Vector3 axis, float angle) {
-		idt();
-		if (angle == 0) return this;
+		if (angle == 0) {
+			idt();
+			return this;
+		}
 		return set(quat.set(axis, angle));
 	}
 
@@ -519,8 +521,10 @@ public class Matrix4 implements Serializable {
 	 * @param angle The angle in degrees
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToRotation (float axisX, float axisY, float axisZ, float angle) {
-		idt();
-		if (angle == 0) return this;
+		if (angle == 0) {
+			idt();
+			return this;
+		}
 		return set(quat.set(tmpV.set(axisX, axisY, axisZ), angle));
 	}
 
@@ -533,7 +537,7 @@ public class Matrix4 implements Serializable {
 	 * @return This matrix */
 	public Matrix4 setFromEulerAngles (float yaw, float pitch, float roll) {
 		quat.setEulerAngles(yaw, pitch, roll);
-		return idt().set(quat);
+		return set(quat);
 	}
 
 	/** Sets this matrix to a scaling matrix
