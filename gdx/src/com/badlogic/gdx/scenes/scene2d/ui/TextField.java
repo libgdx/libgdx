@@ -769,6 +769,10 @@ public class TextField extends Widget {
 	public boolean isPasswordMode(){
 		return passwordMode;
 	}
+	
+	public TextFieldFilter getTextFieldFilter(){
+		return filter;
+	}
 
  	class KeyRepeatTask extends Task {
 		int keycode;
