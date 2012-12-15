@@ -100,10 +100,14 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "LinearMath/btAabbUtil2.h"
 
+DISABLE_POOLED_TYPEMAP(btTransform);
+DISABLE_POOLED_TYPEMAP(btVector3);
 %{
 #include <LinearMath/btIDebugDraw.h>
 %}
 %include "LinearMath/btIDebugDraw.h"
+ENABLE_POOLED_TYPEMAP(btVector3, Vector3, "Lcom/badlogic/gdx/math/Vector3;");
+ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 
 %{
 #include <LinearMath/btGeometryUtil.h>
@@ -231,6 +235,8 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "BulletCollision/BroadphaseCollision/btOverlappingPairCallback.h"
 
+%ignore btAxisSweep3Internal<unsigned short>::processAllOverlappingPairs;
+%ignore btAxisSweep3Internal<unsigned int>::processAllOverlappingPairs;
 %{
 #include <BulletCollision/BroadphaseCollision/btAxisSweep3.h>
 %}
@@ -817,3 +823,67 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
  * implement.  At the bottom so we can reference other types.
  */
 %include "gdxMissingBulletMethods.i"
+
+/* SoftBody code (not suitable for Android)
+%{
+#include <BulletSoftBody/btSoftBodySolvers.h>
+%}
+%include "BulletSoftBody/btSoftBodySolvers.h"
+
+%{
+#include <BulletSoftBody/btDefaultSoftBodySolver.h>
+%}
+%include "BulletSoftBody/btDefaultSoftBodySolver.h"
+
+%{
+#include <BulletSoftBody/btSparseSDF.h>
+%}
+%include "BulletSoftBody/btSparseSDF.h"
+
+%include "custom/btSoftBody.i"
+
+%{
+#include <BulletSoftBody/btSoftBodyConcaveCollisionAlgorithm.h>
+%}
+%include "BulletSoftBody/btSoftBodyConcaveCollisionAlgorithm.h"
+
+%{
+#include <BulletSoftBody/btSoftBodyData.h>
+%}
+%include "BulletSoftBody/btSoftBodyData.h"
+
+%{
+#include <BulletSoftBody/btSoftBodyHelpers.h>
+%}
+%include "BulletSoftBody/btSoftBodyHelpers.h"
+
+%{
+#include <BulletSoftBody/btSoftBodyInternals.h>
+%}
+%include "BulletSoftBody/btSoftBodyInternals.h"
+
+%{
+#include <BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h>
+%}
+%include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
+
+%{
+#include <BulletSoftBody/btSoftBodySolverVertexBuffer.h>
+%}
+%include "BulletSoftBody/btSoftBodySolverVertexBuffer.h"
+
+%{
+#include <BulletSoftBody/btSoftRigidCollisionAlgorithm.h>
+%}
+%include "BulletSoftBody/btSoftRigidCollisionAlgorithm.h"
+
+%{
+#include <BulletSoftBody/btSoftRigidDynamicsWorld.h>
+%}
+%include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
+
+%{
+#include <BulletSoftBody/btSoftSoftCollisionAlgorithm.h>
+%}
+%include "BulletSoftBody/btSoftSoftCollisionAlgorithm.h"
+*/

@@ -92,13 +92,13 @@ public class btManifoldResult {
   }
 
   public btCollisionObject getBody0Internal() {
-    long cPtr = gdxBulletJNI.btManifoldResult_getBody0Internal(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObject(cPtr, false);
-  }
+	long cPtr = gdxBulletJNI.btManifoldResult_getBody0Internal(swigCPtr, this);
+	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+}
 
   public btCollisionObject getBody1Internal() {
-    long cPtr = gdxBulletJNI.btManifoldResult_getBody1Internal(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObject(cPtr, false);
-  }
+	long cPtr = gdxBulletJNI.btManifoldResult_getBody1Internal(swigCPtr, this);
+	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+}
 
 }
