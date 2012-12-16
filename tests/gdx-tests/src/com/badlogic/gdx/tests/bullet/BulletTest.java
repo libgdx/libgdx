@@ -24,6 +24,8 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** @author xoppa */
 public class BulletTest implements ApplicationListener, InputProcessor, GestureListener {
+	public StringBuilder performance = new StringBuilder();
+	
 	@Override
 	public boolean keyDown (int keycode) {
 		return false;

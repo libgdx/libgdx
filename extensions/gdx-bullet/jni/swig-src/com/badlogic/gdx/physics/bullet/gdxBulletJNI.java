@@ -16,33 +16,35 @@ import com.badlogic.gdx.utils.Pool;
 
 public class gdxBulletJNI {
 
-
-  // Used to avoid allocation when returning from Java
-  private final static Vector3 _RET_VECTOR3 = new Vector3(0, 0, 0);
-  private final static Quaternion _RET_QUATERNION = new Quaternion(0, 0, 0, 0);
-  private final static Matrix3 _RET_MATRIX3 = new Matrix3();
-  private final static Matrix4 _RET_MATRIX4 = new Matrix4();
-  
-  // Used to avoid allocation for parameters in director calls into Java
-  public static final Pool<Vector3> _DIR_VECTOR3 = new Pool<Vector3>() {
+  private final static Vector3 staticVector3 = new Vector3();
+  public static final Pool<Vector3> poolVector3 = new Pool<Vector3>() {
     @Override
 	protected Vector3 newObject() {
       return new Vector3();
 	}
   };
-  public static final Pool<Quaternion> _DIR_QUATERNION = new Pool<Quaternion>() {
+
+
+  private final static Quaternion staticQuaternion = new Quaternion();
+  public static final Pool<Quaternion> poolQuaternion = new Pool<Quaternion>() {
     @Override
 	protected Quaternion newObject() {
-      return new Quaternion(0, 0, 0, 0);
+      return new Quaternion();
 	}
   };
-  public static final Pool<Matrix3> _DIR_MATRIX3 = new Pool<Matrix3>() {
+
+
+  private final static Matrix3 staticMatrix3 = new Matrix3();
+  public static final Pool<Matrix3> poolMatrix3 = new Pool<Matrix3>() {
     @Override
 	protected Matrix3 newObject() {
       return new Matrix3();
 	}
   };
-  public static final Pool<Matrix4> _DIR_MATRIX4 = new Pool<Matrix4>() {
+
+
+  private final static Matrix4 staticMatrix4 = new Matrix4();
+  public static final Pool<Matrix4> poolMatrix4 = new Pool<Matrix4>() {
     @Override
 	protected Matrix4 newObject() {
       return new Matrix4();
@@ -80,14 +82,52 @@ public class gdxBulletJNI {
   public final static native int btSwapEndian__SWIG_3(short jarg1);
   public final static native long btSwapEndianFloat(float jarg1);
   public final static native float btUnswapEndianFloat(long jarg1);
-  public final static native void btSwapEndianDouble(double jarg1, long jarg2);
-  public final static native double btUnswapEndianDouble(long jarg1);
+  public final static native void btSwapEndianDouble(double jarg1, java.nio.ByteBuffer jarg2);
+  public final static native double btUnswapEndianDouble(java.nio.ByteBuffer jarg1);
   public final static native float btNormalizeAngle(float jarg1);
   public final static native long new_btTypedObject(int jarg1);
   public final static native void btTypedObject_m_objectType_set(long jarg1, btTypedObject jarg1_, int jarg2);
   public final static native int btTypedObject_m_objectType_get(long jarg1, btTypedObject jarg1_);
   public final static native int btTypedObject_getObjectType(long jarg1, btTypedObject jarg1_);
   public final static native void delete_btTypedObject(long jarg1);
+  public final static native long new_btTransform__SWIG_0();
+  public final static native long new_btTransform__SWIG_1(Quaternion jarg1, Vector3 jarg2);
+  public final static native long new_btTransform__SWIG_2(Quaternion jarg1);
+  public final static native long new_btTransform__SWIG_3(Matrix3 jarg1, Vector3 jarg2);
+  public final static native long new_btTransform__SWIG_4(Matrix3 jarg1);
+  public final static native long new_btTransform__SWIG_5(Matrix4 jarg1);
+  public final static native void btTransform_mult(long jarg1, btTransform jarg1_, Matrix4 jarg2, Matrix4 jarg3);
+  public final static native Matrix3 btTransform_getBasis__SWIG_0(long jarg1, btTransform jarg1_);
+  public final static native Vector3 btTransform_getOrigin__SWIG_0(long jarg1, btTransform jarg1_);
+  public final static native Quaternion btTransform_getRotation(long jarg1, btTransform jarg1_);
+  public final static native void btTransform_setFromOpenGLMatrix(long jarg1, btTransform jarg1_, float[] jarg2);
+  public final static native void btTransform_getOpenGLMatrix(long jarg1, btTransform jarg1_, float[] jarg2);
+  public final static native void btTransform_setOrigin(long jarg1, btTransform jarg1_, Vector3 jarg2);
+  public final static native Vector3 btTransform_invXform(long jarg1, btTransform jarg1_, Vector3 jarg2);
+  public final static native void btTransform_setBasis(long jarg1, btTransform jarg1_, Matrix3 jarg2);
+  public final static native void btTransform_setRotation(long jarg1, btTransform jarg1_, Quaternion jarg2);
+  public final static native void btTransform_setIdentity(long jarg1, btTransform jarg1_);
+  public final static native Matrix4 btTransform_inverse(long jarg1, btTransform jarg1_);
+  public final static native Matrix4 btTransform_inverseTimes(long jarg1, btTransform jarg1_, Matrix4 jarg2);
+  public final static native Matrix4 btTransform_getIdentity();
+  public final static native void btTransform_serialize(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
+  public final static native void btTransform_serializeFloat(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
+  public final static native void btTransform_deSerialize(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
+  public final static native void btTransform_deSerializeDouble(long jarg1, btTransform jarg1_, long jarg2, btTransformDoubleData jarg2_);
+  public final static native void btTransform_deSerializeFloat(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
+  public final static native void delete_btTransform(long jarg1);
+  public final static native void btTransformFloatData_m_basis_set(long jarg1, btTransformFloatData jarg1_, long jarg2);
+  public final static native long btTransformFloatData_m_basis_get(long jarg1, btTransformFloatData jarg1_);
+  public final static native void btTransformFloatData_m_origin_set(long jarg1, btTransformFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
+  public final static native long btTransformFloatData_m_origin_get(long jarg1, btTransformFloatData jarg1_);
+  public final static native long new_btTransformFloatData();
+  public final static native void delete_btTransformFloatData(long jarg1);
+  public final static native void btTransformDoubleData_m_basis_set(long jarg1, btTransformDoubleData jarg1_, long jarg2);
+  public final static native long btTransformDoubleData_m_basis_get(long jarg1, btTransformDoubleData jarg1_);
+  public final static native void btTransformDoubleData_m_origin_set(long jarg1, btTransformDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
+  public final static native long btTransformDoubleData_m_origin_get(long jarg1, btTransformDoubleData jarg1_);
+  public final static native long new_btTransformDoubleData();
+  public final static native void delete_btTransformDoubleData(long jarg1);
   public final static native void btVector3_m_floats_set(long jarg1, btVector3 jarg1_, float[] jarg2);
   public final static native float[] btVector3_m_floats_get(long jarg1, btVector3 jarg1_);
   public final static native long new_btVector3__SWIG_0();
@@ -205,48 +245,48 @@ public class gdxBulletJNI {
   public final static native boolean btRayAabb(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, long jarg5, Vector3 jarg6);
   public final static native void btTransformAabb__SWIG_0(Vector3 jarg1, float jarg2, Matrix4 jarg3, Vector3 jarg4, Vector3 jarg5);
   public final static native void btTransformAabb__SWIG_1(Vector3 jarg1, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6);
-  public final static native long testQuantizedAabbAgainstQuantizedAabb(long jarg1, long jarg2, long jarg3, long jarg4);
+  public final static native long testQuantizedAabbAgainstQuantizedAabb(java.nio.IntBuffer jarg1, java.nio.IntBuffer jarg2, java.nio.IntBuffer jarg3, java.nio.IntBuffer jarg4);
   public final static native void delete_btIDebugDraw(long jarg1);
-  public final static native void btIDebugDraw_drawLine__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawLine__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5);
-  public final static native void btIDebugDraw_drawLineSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5);
-  public final static native void btIDebugDraw_drawSphere__SWIG_0(long jarg1, btIDebugDraw jarg1_, float jarg2, Matrix4 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, float jarg2, Matrix4 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawSphere__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawTriangle__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, float jarg9);
-  public final static native void btIDebugDraw_drawTriangleSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, float jarg9);
-  public final static native void btIDebugDraw_drawTriangle__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, float jarg6);
-  public final static native void btIDebugDraw_drawTriangleSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, float jarg6);
-  public final static native void btIDebugDraw_drawContactPoint(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, float jarg4, int jarg5, Vector3 jarg6);
+  public final static native void btIDebugDraw_drawLine__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
+  public final static native void btIDebugDraw_drawLine__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, long jarg5, btVector3 jarg5_);
+  public final static native void btIDebugDraw_drawLineSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, long jarg5, btVector3 jarg5_);
+  public final static native void btIDebugDraw_drawSphere__SWIG_0(long jarg1, btIDebugDraw jarg1_, float jarg2, long jarg3, btTransform jarg3_, long jarg4, btVector3 jarg4_);
+  public final static native void btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, float jarg2, long jarg3, btTransform jarg3_, long jarg4, btVector3 jarg4_);
+  public final static native void btIDebugDraw_drawSphere__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, float jarg3, long jarg4, btVector3 jarg4_);
+  public final static native void btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, float jarg3, long jarg4, btVector3 jarg4_);
+  public final static native void btIDebugDraw_drawTriangle__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, long jarg5, btVector3 jarg5_, long jarg6, btVector3 jarg6_, long jarg7, btVector3 jarg7_, long jarg8, btVector3 jarg8_, float jarg9);
+  public final static native void btIDebugDraw_drawTriangleSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, long jarg5, btVector3 jarg5_, long jarg6, btVector3 jarg6_, long jarg7, btVector3 jarg7_, long jarg8, btVector3 jarg8_, float jarg9);
+  public final static native void btIDebugDraw_drawTriangle__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, long jarg5, btVector3 jarg5_, float jarg6);
+  public final static native void btIDebugDraw_drawTriangleSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, long jarg5, btVector3 jarg5_, float jarg6);
+  public final static native void btIDebugDraw_drawContactPoint(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, float jarg4, int jarg5, long jarg6, btVector3 jarg6_);
   public final static native void btIDebugDraw_reportErrorWarning(long jarg1, btIDebugDraw jarg1_, String jarg2);
-  public final static native void btIDebugDraw_draw3dText(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, String jarg3);
+  public final static native void btIDebugDraw_draw3dText(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, String jarg3);
   public final static native void btIDebugDraw_setDebugMode(long jarg1, btIDebugDraw jarg1_, int jarg2);
   public final static native int btIDebugDraw_getDebugMode(long jarg1, btIDebugDraw jarg1_);
-  public final static native void btIDebugDraw_drawAabb(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawAabbSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawTransform(long jarg1, btIDebugDraw jarg1_, Matrix4 jarg2, float jarg3);
-  public final static native void btIDebugDraw_drawTransformSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, Matrix4 jarg2, float jarg3);
-  public final static native void btIDebugDraw_drawArc__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10, float jarg11);
-  public final static native void btIDebugDraw_drawArcSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10, float jarg11);
-  public final static native void btIDebugDraw_drawArc__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10);
-  public final static native void btIDebugDraw_drawArcSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10);
-  public final static native void btIDebugDraw_drawSpherePatch__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10, float jarg11);
-  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10, float jarg11);
-  public final static native void btIDebugDraw_drawSpherePatch__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10);
-  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10);
-  public final static native void btIDebugDraw_drawBox__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
-  public final static native void btIDebugDraw_drawBox__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Matrix4 jarg4, Vector3 jarg5);
-  public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Matrix4 jarg4, Vector3 jarg5);
-  public final static native void btIDebugDraw_drawCapsule(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawCapsuleSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawCylinder(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawCylinderSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawCone(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawConeSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
-  public final static native void btIDebugDraw_drawPlane(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5);
-  public final static native void btIDebugDraw_drawPlaneSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5);
+  public final static native void btIDebugDraw_drawAabb(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
+  public final static native void btIDebugDraw_drawAabbSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
+  public final static native void btIDebugDraw_drawTransform(long jarg1, btIDebugDraw jarg1_, long jarg2, btTransform jarg2_, float jarg3);
+  public final static native void btIDebugDraw_drawTransformSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, long jarg2, btTransform jarg2_, float jarg3);
+  public final static native void btIDebugDraw_drawArc__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, long jarg9, btVector3 jarg9_, boolean jarg10, float jarg11);
+  public final static native void btIDebugDraw_drawArcSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, long jarg9, btVector3 jarg9_, boolean jarg10, float jarg11);
+  public final static native void btIDebugDraw_drawArc__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, long jarg9, btVector3 jarg9_, boolean jarg10);
+  public final static native void btIDebugDraw_drawArcSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, long jarg9, btVector3 jarg9_, boolean jarg10);
+  public final static native void btIDebugDraw_drawSpherePatch__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_, float jarg11);
+  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_, float jarg11);
+  public final static native void btIDebugDraw_drawSpherePatch__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_);
+  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_);
+  public final static native void btIDebugDraw_drawBox__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
+  public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
+  public final static native void btIDebugDraw_drawBox__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btTransform jarg4_, long jarg5, btVector3 jarg5_);
+  public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btTransform jarg4_, long jarg5, btVector3 jarg5_);
+  public final static native void btIDebugDraw_drawCapsule(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, long jarg6, btVector3 jarg6_);
+  public final static native void btIDebugDraw_drawCapsuleSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, long jarg6, btVector3 jarg6_);
+  public final static native void btIDebugDraw_drawCylinder(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, long jarg6, btVector3 jarg6_);
+  public final static native void btIDebugDraw_drawCylinderSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, long jarg6, btVector3 jarg6_);
+  public final static native void btIDebugDraw_drawCone(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, long jarg6, btVector3 jarg6_);
+  public final static native void btIDebugDraw_drawConeSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, long jarg6, btVector3 jarg6_);
+  public final static native void btIDebugDraw_drawPlane(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, float jarg3, long jarg4, btTransform jarg4_, long jarg5, btVector3 jarg5_);
+  public final static native void btIDebugDraw_drawPlaneSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, float jarg3, long jarg4, btTransform jarg4_, long jarg5, btVector3 jarg5_);
   public final static native long new_btIDebugDraw();
   public final static native void btIDebugDraw_director_connect(btIDebugDraw obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void btIDebugDraw_change_ownership(btIDebugDraw obj, long cptr, boolean take_or_release);
@@ -259,44 +299,6 @@ public class gdxBulletJNI {
   public final static native void delete_btGeometryUtil(long jarg1);
   public final static native void GEN_srand(long jarg1);
   public final static native long GEN_rand();
-  public final static native long new_btTransform__SWIG_0();
-  public final static native long new_btTransform__SWIG_1(Quaternion jarg1, Vector3 jarg2);
-  public final static native long new_btTransform__SWIG_2(Quaternion jarg1);
-  public final static native long new_btTransform__SWIG_3(Matrix3 jarg1, Vector3 jarg2);
-  public final static native long new_btTransform__SWIG_4(Matrix3 jarg1);
-  public final static native long new_btTransform__SWIG_5(Matrix4 jarg1);
-  public final static native void btTransform_mult(long jarg1, btTransform jarg1_, Matrix4 jarg2, Matrix4 jarg3);
-  public final static native Matrix3 btTransform_getBasis__SWIG_0(long jarg1, btTransform jarg1_);
-  public final static native Vector3 btTransform_getOrigin__SWIG_0(long jarg1, btTransform jarg1_);
-  public final static native Quaternion btTransform_getRotation(long jarg1, btTransform jarg1_);
-  public final static native void btTransform_setFromOpenGLMatrix(long jarg1, btTransform jarg1_, float[] jarg2);
-  public final static native void btTransform_getOpenGLMatrix(long jarg1, btTransform jarg1_, float[] jarg2);
-  public final static native void btTransform_setOrigin(long jarg1, btTransform jarg1_, Vector3 jarg2);
-  public final static native Vector3 btTransform_invXform(long jarg1, btTransform jarg1_, Vector3 jarg2);
-  public final static native void btTransform_setBasis(long jarg1, btTransform jarg1_, Matrix3 jarg2);
-  public final static native void btTransform_setRotation(long jarg1, btTransform jarg1_, Quaternion jarg2);
-  public final static native void btTransform_setIdentity(long jarg1, btTransform jarg1_);
-  public final static native Matrix4 btTransform_inverse(long jarg1, btTransform jarg1_);
-  public final static native Matrix4 btTransform_inverseTimes(long jarg1, btTransform jarg1_, Matrix4 jarg2);
-  public final static native Matrix4 btTransform_getIdentity();
-  public final static native void btTransform_serialize(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native void btTransform_serializeFloat(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native void btTransform_deSerialize(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native void btTransform_deSerializeDouble(long jarg1, btTransform jarg1_, long jarg2, btTransformDoubleData jarg2_);
-  public final static native void btTransform_deSerializeFloat(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
-  public final static native void delete_btTransform(long jarg1);
-  public final static native void btTransformFloatData_m_basis_set(long jarg1, btTransformFloatData jarg1_, long jarg2);
-  public final static native long btTransformFloatData_m_basis_get(long jarg1, btTransformFloatData jarg1_);
-  public final static native void btTransformFloatData_m_origin_set(long jarg1, btTransformFloatData jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btTransformFloatData_m_origin_get(long jarg1, btTransformFloatData jarg1_);
-  public final static native long new_btTransformFloatData();
-  public final static native void delete_btTransformFloatData(long jarg1);
-  public final static native void btTransformDoubleData_m_basis_set(long jarg1, btTransformDoubleData jarg1_, long jarg2);
-  public final static native long btTransformDoubleData_m_basis_get(long jarg1, btTransformDoubleData jarg1_);
-  public final static native void btTransformDoubleData_m_origin_set(long jarg1, btTransformDoubleData jarg1_, long jarg2, btVector3DoubleData jarg2_);
-  public final static native long btTransformDoubleData_m_origin_get(long jarg1, btTransformDoubleData jarg1_);
-  public final static native long new_btTransformDoubleData();
-  public final static native void delete_btTransformDoubleData(long jarg1);
   public final static native Vector3 btAabbSupport(Vector3 jarg1, Vector3 jarg2);
   public final static native void btTransformUtil_integrateTransform(Matrix4 jarg1, Vector3 jarg2, Vector3 jarg3, float jarg4, Matrix4 jarg5);
   public final static native void btTransformUtil_calculateVelocityQuaternion(Vector3 jarg1, Vector3 jarg2, Quaternion jarg3, Quaternion jarg4, float jarg5, Vector3 jarg6, Vector3 jarg7);
@@ -431,15 +433,15 @@ public class gdxBulletJNI {
   public final static native boolean btPoolAllocator_validPtr(long jarg1, btPoolAllocator jarg1_, long jarg2);
   public final static native void btPoolAllocator_freeMemory(long jarg1, btPoolAllocator jarg1_, long jarg2);
   public final static native int btPoolAllocator_getElementSize(long jarg1, btPoolAllocator jarg1_);
-  public final static native long btPoolAllocator_getPoolAddress__SWIG_0(long jarg1, btPoolAllocator jarg1_);
+  public final static native java.nio.ByteBuffer btPoolAllocator_getPoolAddress__SWIG_0(long jarg1, btPoolAllocator jarg1_);
   public final static native void btConvexHullComputer_vertices_set(long jarg1, btConvexHullComputer jarg1_, long jarg2);
   public final static native long btConvexHullComputer_vertices_get(long jarg1, btConvexHullComputer jarg1_);
   public final static native void btConvexHullComputer_edges_set(long jarg1, btConvexHullComputer jarg1_, long jarg2);
   public final static native long btConvexHullComputer_edges_get(long jarg1, btConvexHullComputer jarg1_);
   public final static native void btConvexHullComputer_faces_set(long jarg1, btConvexHullComputer jarg1_, long jarg2);
   public final static native long btConvexHullComputer_faces_get(long jarg1, btConvexHullComputer jarg1_);
-  public final static native float btConvexHullComputer_compute__SWIG_0(long jarg1, btConvexHullComputer jarg1_, long jarg2, int jarg3, int jarg4, float jarg5, float jarg6);
-  public final static native float btConvexHullComputer_compute__SWIG_1(long jarg1, btConvexHullComputer jarg1_, long jarg2, int jarg3, int jarg4, float jarg5, float jarg6);
+  public final static native float btConvexHullComputer_compute__SWIG_0(long jarg1, btConvexHullComputer jarg1_, java.nio.FloatBuffer jarg2, int jarg3, int jarg4, float jarg5, float jarg6);
+  public final static native float btConvexHullComputer_compute__SWIG_1(long jarg1, btConvexHullComputer jarg1_, java.nio.DoubleBuffer jarg2, int jarg3, int jarg4, float jarg5, float jarg6);
   public final static native long new_btConvexHullComputer();
   public final static native void delete_btConvexHullComputer(long jarg1);
   public final static native long new_btGEN_Link__SWIG_0();
@@ -485,8 +487,8 @@ public class gdxBulletJNI {
   public final static native void delete_btHashPtr(long jarg1);
   public final static native void btBlock_previous_set(long jarg1, btBlock jarg1_, long jarg2, btBlock jarg2_);
   public final static native long btBlock_previous_get(long jarg1, btBlock jarg1_);
-  public final static native void btBlock_address_set(long jarg1, btBlock jarg1_, long jarg2);
-  public final static native long btBlock_address_get(long jarg1, btBlock jarg1_);
+  public final static native void btBlock_address_set(long jarg1, btBlock jarg1_, java.nio.ByteBuffer jarg2);
+  public final static native java.nio.ByteBuffer btBlock_address_get(long jarg1, btBlock jarg1_);
   public final static native long new_btBlock();
   public final static native void delete_btBlock(long jarg1);
   public final static native long new_btStackAlloc(long jarg1);
@@ -494,7 +496,7 @@ public class gdxBulletJNI {
   public final static native void btStackAlloc_create(long jarg1, btStackAlloc jarg1_, long jarg2);
   public final static native void btStackAlloc_destroy(long jarg1, btStackAlloc jarg1_);
   public final static native int btStackAlloc_getAvailableMemory(long jarg1, btStackAlloc jarg1_);
-  public final static native long btStackAlloc_allocate(long jarg1, btStackAlloc jarg1_, long jarg2);
+  public final static native java.nio.ByteBuffer btStackAlloc_allocate(long jarg1, btStackAlloc jarg1_, long jarg2);
   public final static native long btStackAlloc_beginBlock(long jarg1, btStackAlloc jarg1_);
   public final static native void btStackAlloc_endBlock(long jarg1, btStackAlloc jarg1_, long jarg2, btBlock jarg2_);
   public final static native void delete_Result(long jarg1);
@@ -650,11 +652,11 @@ public class gdxBulletJNI {
   public final static native void btDbvt_collideTV(long jarg1, btDbvt jarg1_, long jarg2, btDbvtNode jarg2_, long jarg3, btDbvtAabbMm jarg3_, long jarg4);
   public final static native void btDbvt_rayTest(long jarg1, btDbvtNode jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4);
   public final static native void btDbvt_rayTestInternal(long jarg1, btDbvt jarg1_, long jarg2, btDbvtNode jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, long[] jarg6, float jarg7, Vector3 jarg8, Vector3 jarg9, long jarg10);
-  public final static native void btDbvt_collideKDOP(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, float[] jarg3, int jarg4, long jarg5);
-  public final static native void btDbvt_collideOCL__SWIG_0(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, float[] jarg3, Vector3 jarg4, int jarg5, long jarg6, boolean jarg7);
-  public final static native void btDbvt_collideOCL__SWIG_1(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, float[] jarg3, Vector3 jarg4, int jarg5, long jarg6);
+  public final static native void btDbvt_collideKDOP(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, int jarg4, long jarg5);
+  public final static native void btDbvt_collideOCL__SWIG_0(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6, boolean jarg7);
+  public final static native void btDbvt_collideOCL__SWIG_1(long jarg1, btDbvtNode jarg1_, long jarg2, btVector3 jarg2_, java.nio.FloatBuffer jarg3, Vector3 jarg4, int jarg5, long jarg6);
   public final static native void btDbvt_collideTU(long jarg1, btDbvtNode jarg1_, long jarg2);
-  public final static native int btDbvt_nearest(long jarg1, long jarg2, float jarg3, int jarg4, int jarg5);
+  public final static native int btDbvt_nearest(java.nio.IntBuffer jarg1, long jarg2, float jarg3, int jarg4, int jarg5);
   public final static native int btDbvt_allocate(long jarg1, long jarg2, long jarg3);
   public final static native void btQuantizedBvhNode_m_quantizedAabbMin_set(long jarg1, btQuantizedBvhNode jarg1_, int[] jarg2);
   public final static native int[] btQuantizedBvhNode_m_quantizedAabbMin_get(long jarg1, btQuantizedBvhNode jarg1_);
@@ -706,9 +708,9 @@ public class gdxBulletJNI {
   public final static native void btQuantizedBvh_reportAabbOverlappingNodex(long jarg1, btQuantizedBvh jarg1_, long jarg2, btNodeOverlapCallback jarg2_, Vector3 jarg3, Vector3 jarg4);
   public final static native void btQuantizedBvh_reportRayOverlappingNodex(long jarg1, btQuantizedBvh jarg1_, long jarg2, btNodeOverlapCallback jarg2_, Vector3 jarg3, Vector3 jarg4);
   public final static native void btQuantizedBvh_reportBoxCastOverlappingNodex(long jarg1, btQuantizedBvh jarg1_, long jarg2, btNodeOverlapCallback jarg2_, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6);
-  public final static native void btQuantizedBvh_quantize(long jarg1, btQuantizedBvh jarg1_, long jarg2, Vector3 jarg3, int jarg4);
-  public final static native void btQuantizedBvh_quantizeWithClamp(long jarg1, btQuantizedBvh jarg1_, long jarg2, Vector3 jarg3, int jarg4);
-  public final static native Vector3 btQuantizedBvh_unQuantize(long jarg1, btQuantizedBvh jarg1_, long jarg2);
+  public final static native void btQuantizedBvh_quantize(long jarg1, btQuantizedBvh jarg1_, java.nio.IntBuffer jarg2, Vector3 jarg3, int jarg4);
+  public final static native void btQuantizedBvh_quantizeWithClamp(long jarg1, btQuantizedBvh jarg1_, java.nio.IntBuffer jarg2, Vector3 jarg3, int jarg4);
+  public final static native Vector3 btQuantizedBvh_unQuantize(long jarg1, btQuantizedBvh jarg1_, java.nio.IntBuffer jarg2);
   public final static native void btQuantizedBvh_setTraversalMode(long jarg1, btQuantizedBvh jarg1_, int jarg2);
   public final static native long btQuantizedBvh_getQuantizedNodeArray(long jarg1, btQuantizedBvh jarg1_);
   public final static native long btQuantizedBvh_getSubtreeInfoArray(long jarg1, btQuantizedBvh jarg1_);
@@ -923,6 +925,44 @@ public class gdxBulletJNI {
   public final static native void btOverlappingPairCallback_removeOverlappingPairsContainingProxy(long jarg1, btOverlappingPairCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btDispatcher jarg3_);
   public final static native void gOverlappingPairs_set(int jarg1);
   public final static native int gOverlappingPairs_get();
+  public final static native long new_btAxisSweep3InternalShort__SWIG_0(Vector3 jarg1, Vector3 jarg2, int jarg3, int jarg4, int jarg5, long jarg6, btOverlappingPairCache jarg6_, boolean jarg7);
+  public final static native long new_btAxisSweep3InternalShort__SWIG_1(Vector3 jarg1, Vector3 jarg2, int jarg3, int jarg4, int jarg5, long jarg6, btOverlappingPairCache jarg6_);
+  public final static native long new_btAxisSweep3InternalShort__SWIG_2(Vector3 jarg1, Vector3 jarg2, int jarg3, int jarg4, int jarg5);
+  public final static native long new_btAxisSweep3InternalShort__SWIG_3(Vector3 jarg1, Vector3 jarg2, int jarg3, int jarg4);
+  public final static native void delete_btAxisSweep3InternalShort(long jarg1);
+  public final static native int btAxisSweep3InternalShort_getNumHandles(long jarg1, btAxisSweep3InternalShort jarg1_);
+  public final static native int btAxisSweep3InternalShort_addHandle(long jarg1, btAxisSweep3InternalShort jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, short jarg5, short jarg6, long jarg7, btDispatcher jarg7_, long jarg8);
+  public final static native void btAxisSweep3InternalShort_removeHandle(long jarg1, btAxisSweep3InternalShort jarg1_, int jarg2, long jarg3, btDispatcher jarg3_);
+  public final static native void btAxisSweep3InternalShort_updateHandle(long jarg1, btAxisSweep3InternalShort jarg1_, int jarg2, Vector3 jarg3, Vector3 jarg4, long jarg5, btDispatcher jarg5_);
+  public final static native long btAxisSweep3InternalShort_getHandle(long jarg1, btAxisSweep3InternalShort jarg1_, int jarg2);
+  public final static native void btAxisSweep3InternalShort_rayTest__SWIG_0(long jarg1, btAxisSweep3InternalShort jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, btBroadphaseRayCallback jarg4_, Vector3 jarg5, Vector3 jarg6);
+  public final static native void btAxisSweep3InternalShort_rayTest__SWIG_1(long jarg1, btAxisSweep3InternalShort jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, btBroadphaseRayCallback jarg4_, Vector3 jarg5);
+  public final static native void btAxisSweep3InternalShort_rayTest__SWIG_2(long jarg1, btAxisSweep3InternalShort jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, btBroadphaseRayCallback jarg4_);
+  public final static native void btAxisSweep3InternalShort_quantize(long jarg1, btAxisSweep3InternalShort jarg1_, java.nio.IntBuffer jarg2, Vector3 jarg3, int jarg4);
+  public final static native void btAxisSweep3InternalShort_unQuantize(long jarg1, btAxisSweep3InternalShort jarg1_, long jarg2, btBroadphaseProxy jarg2_, Vector3 jarg3, Vector3 jarg4);
+  public final static native boolean btAxisSweep3InternalShort_testAabbOverlap(long jarg1, btAxisSweep3InternalShort jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btBroadphaseProxy jarg3_);
+  public final static native long btAxisSweep3InternalShort_getOverlappingPairCache__SWIG_0(long jarg1, btAxisSweep3InternalShort jarg1_);
+  public final static native void btAxisSweep3InternalShort_setOverlappingPairUserCallback(long jarg1, btAxisSweep3InternalShort jarg1_, long jarg2, btOverlappingPairCallback jarg2_);
+  public final static native long btAxisSweep3InternalShort_getOverlappingPairUserCallback(long jarg1, btAxisSweep3InternalShort jarg1_);
+  public final static native long new_btAxisSweep3InternalInt__SWIG_0(Vector3 jarg1, Vector3 jarg2, long jarg3, long jarg4, long jarg5, long jarg6, btOverlappingPairCache jarg6_, boolean jarg7);
+  public final static native long new_btAxisSweep3InternalInt__SWIG_1(Vector3 jarg1, Vector3 jarg2, long jarg3, long jarg4, long jarg5, long jarg6, btOverlappingPairCache jarg6_);
+  public final static native long new_btAxisSweep3InternalInt__SWIG_2(Vector3 jarg1, Vector3 jarg2, long jarg3, long jarg4, long jarg5);
+  public final static native long new_btAxisSweep3InternalInt__SWIG_3(Vector3 jarg1, Vector3 jarg2, long jarg3, long jarg4);
+  public final static native void delete_btAxisSweep3InternalInt(long jarg1);
+  public final static native long btAxisSweep3InternalInt_getNumHandles(long jarg1, btAxisSweep3InternalInt jarg1_);
+  public final static native long btAxisSweep3InternalInt_addHandle(long jarg1, btAxisSweep3InternalInt jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, short jarg5, short jarg6, long jarg7, btDispatcher jarg7_, long jarg8);
+  public final static native void btAxisSweep3InternalInt_removeHandle(long jarg1, btAxisSweep3InternalInt jarg1_, long jarg2, long jarg3, btDispatcher jarg3_);
+  public final static native void btAxisSweep3InternalInt_updateHandle(long jarg1, btAxisSweep3InternalInt jarg1_, long jarg2, Vector3 jarg3, Vector3 jarg4, long jarg5, btDispatcher jarg5_);
+  public final static native long btAxisSweep3InternalInt_getHandle(long jarg1, btAxisSweep3InternalInt jarg1_, long jarg2);
+  public final static native void btAxisSweep3InternalInt_rayTest__SWIG_0(long jarg1, btAxisSweep3InternalInt jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, btBroadphaseRayCallback jarg4_, Vector3 jarg5, Vector3 jarg6);
+  public final static native void btAxisSweep3InternalInt_rayTest__SWIG_1(long jarg1, btAxisSweep3InternalInt jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, btBroadphaseRayCallback jarg4_, Vector3 jarg5);
+  public final static native void btAxisSweep3InternalInt_rayTest__SWIG_2(long jarg1, btAxisSweep3InternalInt jarg1_, Vector3 jarg2, Vector3 jarg3, long jarg4, btBroadphaseRayCallback jarg4_);
+  public final static native void btAxisSweep3InternalInt_quantize(long jarg1, btAxisSweep3InternalInt jarg1_, java.nio.LongBuffer jarg2, Vector3 jarg3, int jarg4);
+  public final static native void btAxisSweep3InternalInt_unQuantize(long jarg1, btAxisSweep3InternalInt jarg1_, long jarg2, btBroadphaseProxy jarg2_, Vector3 jarg3, Vector3 jarg4);
+  public final static native boolean btAxisSweep3InternalInt_testAabbOverlap(long jarg1, btAxisSweep3InternalInt jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btBroadphaseProxy jarg3_);
+  public final static native long btAxisSweep3InternalInt_getOverlappingPairCache__SWIG_0(long jarg1, btAxisSweep3InternalInt jarg1_);
+  public final static native void btAxisSweep3InternalInt_setOverlappingPairUserCallback(long jarg1, btAxisSweep3InternalInt jarg1_, long jarg2, btOverlappingPairCallback jarg2_);
+  public final static native long btAxisSweep3InternalInt_getOverlappingPairUserCallback(long jarg1, btAxisSweep3InternalInt jarg1_);
   public final static native long new_btAxisSweep3__SWIG_0(Vector3 jarg1, Vector3 jarg2, int jarg3, long jarg4, btOverlappingPairCache jarg4_, boolean jarg5);
   public final static native long new_btAxisSweep3__SWIG_1(Vector3 jarg1, Vector3 jarg2, int jarg3, long jarg4, btOverlappingPairCache jarg4_);
   public final static native long new_btAxisSweep3__SWIG_2(Vector3 jarg1, Vector3 jarg2, int jarg3);
@@ -1140,14 +1180,14 @@ public class gdxBulletJNI {
   public final static native float btTriangleInfoData_m_edgeV2V0Angle_get(long jarg1, btTriangleInfoData jarg1_);
   public final static native long new_btTriangleInfoData();
   public final static native void delete_btTriangleInfoData(long jarg1);
-  public final static native void btTriangleInfoMapData_m_hashTablePtr_set(long jarg1, btTriangleInfoMapData jarg1_, long jarg2);
-  public final static native long btTriangleInfoMapData_m_hashTablePtr_get(long jarg1, btTriangleInfoMapData jarg1_);
-  public final static native void btTriangleInfoMapData_m_nextPtr_set(long jarg1, btTriangleInfoMapData jarg1_, long jarg2);
-  public final static native long btTriangleInfoMapData_m_nextPtr_get(long jarg1, btTriangleInfoMapData jarg1_);
+  public final static native void btTriangleInfoMapData_m_hashTablePtr_set(long jarg1, btTriangleInfoMapData jarg1_, java.nio.IntBuffer jarg2);
+  public final static native java.nio.IntBuffer btTriangleInfoMapData_m_hashTablePtr_get(long jarg1, btTriangleInfoMapData jarg1_);
+  public final static native void btTriangleInfoMapData_m_nextPtr_set(long jarg1, btTriangleInfoMapData jarg1_, java.nio.IntBuffer jarg2);
+  public final static native java.nio.IntBuffer btTriangleInfoMapData_m_nextPtr_get(long jarg1, btTriangleInfoMapData jarg1_);
   public final static native void btTriangleInfoMapData_m_valueArrayPtr_set(long jarg1, btTriangleInfoMapData jarg1_, long jarg2, btTriangleInfoData jarg2_);
   public final static native long btTriangleInfoMapData_m_valueArrayPtr_get(long jarg1, btTriangleInfoMapData jarg1_);
-  public final static native void btTriangleInfoMapData_m_keyArrayPtr_set(long jarg1, btTriangleInfoMapData jarg1_, long jarg2);
-  public final static native long btTriangleInfoMapData_m_keyArrayPtr_get(long jarg1, btTriangleInfoMapData jarg1_);
+  public final static native void btTriangleInfoMapData_m_keyArrayPtr_set(long jarg1, btTriangleInfoMapData jarg1_, java.nio.IntBuffer jarg2);
+  public final static native java.nio.IntBuffer btTriangleInfoMapData_m_keyArrayPtr_get(long jarg1, btTriangleInfoMapData jarg1_);
   public final static native void btTriangleInfoMapData_m_convexEpsilon_set(long jarg1, btTriangleInfoMapData jarg1_, float jarg2);
   public final static native float btTriangleInfoMapData_m_convexEpsilon_get(long jarg1, btTriangleInfoMapData jarg1_);
   public final static native void btTriangleInfoMapData_m_planarEpsilon_set(long jarg1, btTriangleInfoMapData jarg1_, float jarg2);
@@ -1272,19 +1312,11 @@ public class gdxBulletJNI {
   public final static native void btTriangleShape_calcNormal(long jarg1, btTriangleShape jarg1_, Vector3 jarg2);
   public final static native void btTriangleShape_getPlaneEquation(long jarg1, btTriangleShape jarg1_, int jarg2, Vector3 jarg3, Vector3 jarg4);
   public final static native void delete_btTriangleShape(long jarg1);
-  public final static native long new_btShapeHull(long jarg1, btConvexShape jarg1_);
-  public final static native void delete_btShapeHull(long jarg1);
-  public final static native boolean btShapeHull_buildHull(long jarg1, btShapeHull jarg1_, float jarg2);
-  public final static native int btShapeHull_numTriangles(long jarg1, btShapeHull jarg1_);
-  public final static native int btShapeHull_numVertices(long jarg1, btShapeHull jarg1_);
-  public final static native int btShapeHull_numIndices(long jarg1, btShapeHull jarg1_);
-  public final static native long btShapeHull_getVertexPointer(long jarg1, btShapeHull jarg1_);
-  public final static native long btShapeHull_getIndexPointer(long jarg1, btShapeHull jarg1_);
   public final static native long new_btSphereShape(float jarg1);
   public final static native float btSphereShape_getRadius(long jarg1, btSphereShape jarg1_);
   public final static native void btSphereShape_setUnscaledRadius(long jarg1, btSphereShape jarg1_, float jarg2);
   public final static native void delete_btSphereShape(long jarg1);
-  public final static native long new_btMultiSphereShape(long jarg1, btVector3 jarg1_, float[] jarg2, int jarg3);
+  public final static native long new_btMultiSphereShape(long jarg1, btVector3 jarg1_, java.nio.FloatBuffer jarg2, int jarg3);
   public final static native int btMultiSphereShape_getSphereCount(long jarg1, btMultiSphereShape jarg1_);
   public final static native Vector3 btMultiSphereShape_getSpherePosition(long jarg1, btMultiSphereShape jarg1_, int jarg2);
   public final static native float btMultiSphereShape_getSphereRadius(long jarg1, btMultiSphereShape jarg1_, int jarg2);
@@ -1436,14 +1468,14 @@ public class gdxBulletJNI {
   public final static native void delete_btTriangleBuffer(long jarg1);
   public final static native void btIndexedMesh_m_numTriangles_set(long jarg1, btIndexedMesh jarg1_, int jarg2);
   public final static native int btIndexedMesh_m_numTriangles_get(long jarg1, btIndexedMesh jarg1_);
-  public final static native void btIndexedMesh_m_triangleIndexBase_set(long jarg1, btIndexedMesh jarg1_, long jarg2);
-  public final static native long btIndexedMesh_m_triangleIndexBase_get(long jarg1, btIndexedMesh jarg1_);
+  public final static native void btIndexedMesh_m_triangleIndexBase_set(long jarg1, btIndexedMesh jarg1_, java.nio.ByteBuffer jarg2);
+  public final static native java.nio.ByteBuffer btIndexedMesh_m_triangleIndexBase_get(long jarg1, btIndexedMesh jarg1_);
   public final static native void btIndexedMesh_m_triangleIndexStride_set(long jarg1, btIndexedMesh jarg1_, int jarg2);
   public final static native int btIndexedMesh_m_triangleIndexStride_get(long jarg1, btIndexedMesh jarg1_);
   public final static native void btIndexedMesh_m_numVertices_set(long jarg1, btIndexedMesh jarg1_, int jarg2);
   public final static native int btIndexedMesh_m_numVertices_get(long jarg1, btIndexedMesh jarg1_);
-  public final static native void btIndexedMesh_m_vertexBase_set(long jarg1, btIndexedMesh jarg1_, long jarg2);
-  public final static native long btIndexedMesh_m_vertexBase_get(long jarg1, btIndexedMesh jarg1_);
+  public final static native void btIndexedMesh_m_vertexBase_set(long jarg1, btIndexedMesh jarg1_, java.nio.ByteBuffer jarg2);
+  public final static native java.nio.ByteBuffer btIndexedMesh_m_vertexBase_get(long jarg1, btIndexedMesh jarg1_);
   public final static native void btIndexedMesh_m_vertexStride_set(long jarg1, btIndexedMesh jarg1_, int jarg2);
   public final static native int btIndexedMesh_m_vertexStride_get(long jarg1, btIndexedMesh jarg1_);
   public final static native void btIndexedMesh_m_indexType_set(long jarg1, btIndexedMesh jarg1_, int jarg2);
@@ -1451,12 +1483,12 @@ public class gdxBulletJNI {
   public final static native void btIndexedMesh_m_vertexType_set(long jarg1, btIndexedMesh jarg1_, int jarg2);
   public final static native int btIndexedMesh_m_vertexType_get(long jarg1, btIndexedMesh jarg1_);
   public final static native long new_btIndexedMesh();
-  public final static native void btIndexedMesh_setTriangleIndexBase(long jarg1, btIndexedMesh jarg1_, short[] jarg2, long jarg3);
-  public final static native void btIndexedMesh_setVertexBase(long jarg1, btIndexedMesh jarg1_, float[] jarg2, long jarg3);
+  public final static native void btIndexedMesh_setTriangleIndexBase(long jarg1, btIndexedMesh jarg1_, java.nio.ShortBuffer jarg2);
+  public final static native void btIndexedMesh_setVertexBase(long jarg1, btIndexedMesh jarg1_, java.nio.FloatBuffer jarg2);
   public final static native void delete_btIndexedMesh(long jarg1);
   public final static native long new_btTriangleIndexVertexArray__SWIG_0();
   public final static native void delete_btTriangleIndexVertexArray(long jarg1);
-  public final static native long new_btTriangleIndexVertexArray__SWIG_1(int jarg1, long jarg2, int jarg3, int jarg4, float[] jarg5, int jarg6);
+  public final static native long new_btTriangleIndexVertexArray__SWIG_1(int jarg1, java.nio.IntBuffer jarg2, int jarg3, int jarg4, java.nio.FloatBuffer jarg5, int jarg6);
   public final static native void btTriangleIndexVertexArray_addIndexedMesh__SWIG_0(long jarg1, btTriangleIndexVertexArray jarg1_, long jarg2, btIndexedMesh jarg2_, int jarg3);
   public final static native void btTriangleIndexVertexArray_addIndexedMesh__SWIG_1(long jarg1, btTriangleIndexVertexArray jarg1_, long jarg2, btIndexedMesh jarg2_);
   public final static native void btTriangleIndexVertexArray_getLockedVertexIndexBase__SWIG_0(long jarg1, btTriangleIndexVertexArray jarg1_, long jarg2, long jarg3, long jarg4, long jarg5, long jarg6, long jarg7, long jarg8, long jarg9, int jarg10);
@@ -1482,15 +1514,24 @@ public class gdxBulletJNI {
   public final static native long btScaledTriangleMeshShapeData_m_localScaling_get(long jarg1, btScaledTriangleMeshShapeData jarg1_);
   public final static native long new_btScaledTriangleMeshShapeData();
   public final static native void delete_btScaledTriangleMeshShapeData(long jarg1);
-  public final static native long new_btConvexHullShape__SWIG_0(float[] jarg1, int jarg2, int jarg3);
-  public final static native long new_btConvexHullShape__SWIG_1(float[] jarg1, int jarg2);
-  public final static native long new_btConvexHullShape__SWIG_2(float[] jarg1);
+  public final static native long new_btShapeHull(long jarg1, btConvexShape jarg1_);
+  public final static native void delete_btShapeHull(long jarg1);
+  public final static native boolean btShapeHull_buildHull(long jarg1, btShapeHull jarg1_, float jarg2);
+  public final static native int btShapeHull_numTriangles(long jarg1, btShapeHull jarg1_);
+  public final static native int btShapeHull_numVertices(long jarg1, btShapeHull jarg1_);
+  public final static native int btShapeHull_numIndices(long jarg1, btShapeHull jarg1_);
+  public final static native long btShapeHull_getVertexPointer(long jarg1, btShapeHull jarg1_);
+  public final static native java.nio.LongBuffer btShapeHull_getIndexPointer(long jarg1, btShapeHull jarg1_);
+  public final static native long new_btConvexHullShape__SWIG_0(java.nio.FloatBuffer jarg1, int jarg2, int jarg3);
+  public final static native long new_btConvexHullShape__SWIG_1(java.nio.FloatBuffer jarg1, int jarg2);
+  public final static native long new_btConvexHullShape__SWIG_2(java.nio.FloatBuffer jarg1);
   public final static native long new_btConvexHullShape__SWIG_3();
   public final static native void btConvexHullShape_addPoint(long jarg1, btConvexHullShape jarg1_, Vector3 jarg2);
   public final static native long btConvexHullShape_getUnscaledPoints__SWIG_0(long jarg1, btConvexHullShape jarg1_);
   public final static native long btConvexHullShape_getPoints(long jarg1, btConvexHullShape jarg1_);
   public final static native Vector3 btConvexHullShape_getScaledPoint(long jarg1, btConvexHullShape jarg1_, int jarg2);
   public final static native int btConvexHullShape_getNumPoints(long jarg1, btConvexHullShape jarg1_);
+  public final static native long new_btConvexHullShape__SWIG_4(long jarg1, btShapeHull jarg1_);
   public final static native void delete_btConvexHullShape(long jarg1);
   public final static native void btConvexHullShapeData_m_convexInternalShapeData_set(long jarg1, btConvexHullShapeData jarg1_, long jarg2, btConvexInternalShapeData jarg2_);
   public final static native long btConvexHullShapeData_m_convexInternalShapeData_get(long jarg1, btConvexHullShapeData jarg1_);
@@ -1506,16 +1547,16 @@ public class gdxBulletJNI {
   public final static native void delete_btConvexHullShapeData(long jarg1);
   public final static native void btMaterialProperties_m_numMaterials_set(long jarg1, btMaterialProperties jarg1_, int jarg2);
   public final static native int btMaterialProperties_m_numMaterials_get(long jarg1, btMaterialProperties jarg1_);
-  public final static native void btMaterialProperties_m_materialBase_set(long jarg1, btMaterialProperties jarg1_, long jarg2);
-  public final static native long btMaterialProperties_m_materialBase_get(long jarg1, btMaterialProperties jarg1_);
+  public final static native void btMaterialProperties_m_materialBase_set(long jarg1, btMaterialProperties jarg1_, java.nio.ByteBuffer jarg2);
+  public final static native java.nio.ByteBuffer btMaterialProperties_m_materialBase_get(long jarg1, btMaterialProperties jarg1_);
   public final static native void btMaterialProperties_m_materialStride_set(long jarg1, btMaterialProperties jarg1_, int jarg2);
   public final static native int btMaterialProperties_m_materialStride_get(long jarg1, btMaterialProperties jarg1_);
   public final static native void btMaterialProperties_m_materialType_set(long jarg1, btMaterialProperties jarg1_, int jarg2);
   public final static native int btMaterialProperties_m_materialType_get(long jarg1, btMaterialProperties jarg1_);
   public final static native void btMaterialProperties_m_numTriangles_set(long jarg1, btMaterialProperties jarg1_, int jarg2);
   public final static native int btMaterialProperties_m_numTriangles_get(long jarg1, btMaterialProperties jarg1_);
-  public final static native void btMaterialProperties_m_triangleMaterialsBase_set(long jarg1, btMaterialProperties jarg1_, long jarg2);
-  public final static native long btMaterialProperties_m_triangleMaterialsBase_get(long jarg1, btMaterialProperties jarg1_);
+  public final static native void btMaterialProperties_m_triangleMaterialsBase_set(long jarg1, btMaterialProperties jarg1_, java.nio.ByteBuffer jarg2);
+  public final static native java.nio.ByteBuffer btMaterialProperties_m_triangleMaterialsBase_get(long jarg1, btMaterialProperties jarg1_);
   public final static native void btMaterialProperties_m_triangleMaterialStride_set(long jarg1, btMaterialProperties jarg1_, int jarg2);
   public final static native int btMaterialProperties_m_triangleMaterialStride_get(long jarg1, btMaterialProperties jarg1_);
   public final static native void btMaterialProperties_m_triangleType_set(long jarg1, btMaterialProperties jarg1_, int jarg2);
@@ -1523,7 +1564,7 @@ public class gdxBulletJNI {
   public final static native long new_btMaterialProperties();
   public final static native void delete_btMaterialProperties(long jarg1);
   public final static native long new_btTriangleIndexVertexMaterialArray__SWIG_0();
-  public final static native long new_btTriangleIndexVertexMaterialArray__SWIG_1(int jarg1, long jarg2, int jarg3, int jarg4, float[] jarg5, int jarg6, int jarg7, long jarg8, int jarg9, long jarg10, int jarg11);
+  public final static native long new_btTriangleIndexVertexMaterialArray__SWIG_1(int jarg1, java.nio.IntBuffer jarg2, int jarg3, int jarg4, java.nio.FloatBuffer jarg5, int jarg6, int jarg7, java.nio.ByteBuffer jarg8, int jarg9, java.nio.IntBuffer jarg10, int jarg11);
   public final static native void delete_btTriangleIndexVertexMaterialArray(long jarg1);
   public final static native void btTriangleIndexVertexMaterialArray_addMaterialProperties__SWIG_0(long jarg1, btTriangleIndexVertexMaterialArray jarg1_, long jarg2, btMaterialProperties jarg2_, int jarg3);
   public final static native void btTriangleIndexVertexMaterialArray_addMaterialProperties__SWIG_1(long jarg1, btTriangleIndexVertexMaterialArray jarg1_, long jarg2, btMaterialProperties jarg2_);
@@ -1625,7 +1666,7 @@ public class gdxBulletJNI {
   public final static native void btCompoundShape_recalculateLocalAabb(long jarg1, btCompoundShape jarg1_);
   public final static native long btCompoundShape_getDynamicAabbTree__SWIG_0(long jarg1, btCompoundShape jarg1_);
   public final static native void btCompoundShape_createAabbTreeFromChildren(long jarg1, btCompoundShape jarg1_);
-  public final static native void btCompoundShape_calculatePrincipalAxisTransform(long jarg1, btCompoundShape jarg1_, float[] jarg2, Matrix4 jarg3, Vector3 jarg4);
+  public final static native void btCompoundShape_calculatePrincipalAxisTransform(long jarg1, btCompoundShape jarg1_, java.nio.FloatBuffer jarg2, Matrix4 jarg3, Vector3 jarg4);
   public final static native int btCompoundShape_getUpdateRevision(long jarg1, btCompoundShape jarg1_);
   public final static native void btCompoundShapeChildData_m_transform_set(long jarg1, btCompoundShapeChildData jarg1_, long jarg2, btTransformFloatData jarg2_);
   public final static native long btCompoundShapeChildData_m_transform_get(long jarg1, btCompoundShapeChildData jarg1_);
@@ -3625,6 +3666,10 @@ public class gdxBulletJNI {
   public final static native long btSimpleBroadphaseProxy_SWIGUpcast(long jarg1);
   public final static native long btSimpleBroadphase_SWIGUpcast(long jarg1);
   public final static native long btMultiSapBroadphase_SWIGUpcast(long jarg1);
+  public final static native long btAxisSweep3InternalShort_SWIGUpcast(long jarg1);
+  public final static native long btAxisSweep3InternalInt_SWIGUpcast(long jarg1);
+  public final static native long btAxisSweep3_SWIGUpcast(long jarg1);
+  public final static native long bt32BitAxisSweep3_SWIGUpcast(long jarg1);
   public final static native long btOverlappingPairCache_SWIGUpcast(long jarg1);
   public final static native long btHashedOverlappingPairCache_SWIGUpcast(long jarg1);
   public final static native long btSortedOverlappingPairCache_SWIGUpcast(long jarg1);
@@ -3721,32 +3766,32 @@ public class gdxBulletJNI {
   public final static native long btRaycastVehicle_SWIGUpcast(long jarg1);
   public final static native long btDefaultVehicleRaycaster_SWIGUpcast(long jarg1);
 
-  public static void SwigDirector_btIDebugDraw_drawLine__SWIG_0(btIDebugDraw self, Vector3 from, Vector3 to, Vector3 color) {
-    self.drawLine(from, to, color);
+  public static void SwigDirector_btIDebugDraw_drawLine__SWIG_0(btIDebugDraw self, long from, long to, long color) {
+    self.drawLine(new btVector3(from, false), new btVector3(to, false), new btVector3(color, false));
   }
-  public static void SwigDirector_btIDebugDraw_drawLine__SWIG_1(btIDebugDraw self, Vector3 from, Vector3 to, Vector3 fromColor, Vector3 toColor) {
-    self.drawLine(from, to, fromColor, toColor);
+  public static void SwigDirector_btIDebugDraw_drawLine__SWIG_1(btIDebugDraw self, long from, long to, long fromColor, long toColor) {
+    self.drawLine(new btVector3(from, false), new btVector3(to, false), new btVector3(fromColor, false), new btVector3(toColor, false));
   }
-  public static void SwigDirector_btIDebugDraw_drawSphere__SWIG_0(btIDebugDraw self, float radius, Matrix4 transform, Vector3 color) {
-    self.drawSphere(radius, transform, color);
+  public static void SwigDirector_btIDebugDraw_drawSphere__SWIG_0(btIDebugDraw self, float radius, long transform, long color) {
+    self.drawSphere(radius, new btTransform(transform, false), new btVector3(color, false));
   }
-  public static void SwigDirector_btIDebugDraw_drawSphere__SWIG_1(btIDebugDraw self, Vector3 p, float radius, Vector3 color) {
-    self.drawSphere(p, radius, color);
+  public static void SwigDirector_btIDebugDraw_drawSphere__SWIG_1(btIDebugDraw self, long p, float radius, long color) {
+    self.drawSphere(new btVector3(p, false), radius, new btVector3(color, false));
   }
-  public static void SwigDirector_btIDebugDraw_drawTriangle__SWIG_0(btIDebugDraw self, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 arg3, Vector3 arg4, Vector3 arg5, Vector3 color, float alpha) {
-    self.drawTriangle(v0, v1, v2, arg3, arg4, arg5, color, alpha);
+  public static void SwigDirector_btIDebugDraw_drawTriangle__SWIG_0(btIDebugDraw self, long v0, long v1, long v2, long arg3, long arg4, long arg5, long color, float alpha) {
+    self.drawTriangle(new btVector3(v0, false), new btVector3(v1, false), new btVector3(v2, false), new btVector3(arg3, false), new btVector3(arg4, false), new btVector3(arg5, false), new btVector3(color, false), alpha);
   }
-  public static void SwigDirector_btIDebugDraw_drawTriangle__SWIG_1(btIDebugDraw self, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 color, float arg4) {
-    self.drawTriangle(v0, v1, v2, color, arg4);
+  public static void SwigDirector_btIDebugDraw_drawTriangle__SWIG_1(btIDebugDraw self, long v0, long v1, long v2, long color, float arg4) {
+    self.drawTriangle(new btVector3(v0, false), new btVector3(v1, false), new btVector3(v2, false), new btVector3(color, false), arg4);
   }
-  public static void SwigDirector_btIDebugDraw_drawContactPoint(btIDebugDraw self, Vector3 PointOnB, Vector3 normalOnB, float distance, int lifeTime, Vector3 color) {
-    self.drawContactPoint(PointOnB, normalOnB, distance, lifeTime, color);
+  public static void SwigDirector_btIDebugDraw_drawContactPoint(btIDebugDraw self, long PointOnB, long normalOnB, float distance, int lifeTime, long color) {
+    self.drawContactPoint(new btVector3(PointOnB, false), new btVector3(normalOnB, false), distance, lifeTime, new btVector3(color, false));
   }
   public static void SwigDirector_btIDebugDraw_reportErrorWarning(btIDebugDraw self, String warningString) {
     self.reportErrorWarning(warningString);
   }
-  public static void SwigDirector_btIDebugDraw_draw3dText(btIDebugDraw self, Vector3 location, String textString) {
-    self.draw3dText(location, textString);
+  public static void SwigDirector_btIDebugDraw_draw3dText(btIDebugDraw self, long location, String textString) {
+    self.draw3dText(new btVector3(location, false), textString);
   }
   public static void SwigDirector_btIDebugDraw_setDebugMode(btIDebugDraw self, int debugMode) {
     self.setDebugMode(debugMode);
@@ -3754,41 +3799,41 @@ public class gdxBulletJNI {
   public static int SwigDirector_btIDebugDraw_getDebugMode(btIDebugDraw self) {
     return self.getDebugMode();
   }
-  public static void SwigDirector_btIDebugDraw_drawAabb(btIDebugDraw self, Vector3 from, Vector3 to, Vector3 color) {
-    self.drawAabb(from, to, color);
+  public static void SwigDirector_btIDebugDraw_drawAabb(btIDebugDraw self, long from, long to, long color) {
+    self.drawAabb(new btVector3(from, false), new btVector3(to, false), new btVector3(color, false));
   }
-  public static void SwigDirector_btIDebugDraw_drawTransform(btIDebugDraw self, Matrix4 transform, float orthoLen) {
-    self.drawTransform(transform, orthoLen);
+  public static void SwigDirector_btIDebugDraw_drawTransform(btIDebugDraw self, long transform, float orthoLen) {
+    self.drawTransform(new btTransform(transform, false), orthoLen);
   }
-  public static void SwigDirector_btIDebugDraw_drawArc__SWIG_0(btIDebugDraw self, Vector3 center, Vector3 normal, Vector3 axis, float radiusA, float radiusB, float minAngle, float maxAngle, Vector3 color, boolean drawSect, float stepDegrees) {
-    self.drawArc(center, normal, axis, radiusA, radiusB, minAngle, maxAngle, color, drawSect, stepDegrees);
+  public static void SwigDirector_btIDebugDraw_drawArc__SWIG_0(btIDebugDraw self, long center, long normal, long axis, float radiusA, float radiusB, float minAngle, float maxAngle, long color, boolean drawSect, float stepDegrees) {
+    self.drawArc(new btVector3(center, false), new btVector3(normal, false), new btVector3(axis, false), radiusA, radiusB, minAngle, maxAngle, new btVector3(color, false), drawSect, stepDegrees);
   }
-  public static void SwigDirector_btIDebugDraw_drawArc__SWIG_1(btIDebugDraw self, Vector3 center, Vector3 normal, Vector3 axis, float radiusA, float radiusB, float minAngle, float maxAngle, Vector3 color, boolean drawSect) {
-    self.drawArc(center, normal, axis, radiusA, radiusB, minAngle, maxAngle, color, drawSect);
+  public static void SwigDirector_btIDebugDraw_drawArc__SWIG_1(btIDebugDraw self, long center, long normal, long axis, float radiusA, float radiusB, float minAngle, float maxAngle, long color, boolean drawSect) {
+    self.drawArc(new btVector3(center, false), new btVector3(normal, false), new btVector3(axis, false), radiusA, radiusB, minAngle, maxAngle, new btVector3(color, false), drawSect);
   }
-  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_0(btIDebugDraw self, Vector3 center, Vector3 up, Vector3 axis, float radius, float minTh, float maxTh, float minPs, float maxPs, Vector3 color, float stepDegrees) {
-    self.drawSpherePatch(center, up, axis, radius, minTh, maxTh, minPs, maxPs, color, stepDegrees);
+  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_0(btIDebugDraw self, long center, long up, long axis, float radius, float minTh, float maxTh, float minPs, float maxPs, long color, float stepDegrees) {
+    self.drawSpherePatch(new btVector3(center, false), new btVector3(up, false), new btVector3(axis, false), radius, minTh, maxTh, minPs, maxPs, new btVector3(color, false), stepDegrees);
   }
-  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_1(btIDebugDraw self, Vector3 center, Vector3 up, Vector3 axis, float radius, float minTh, float maxTh, float minPs, float maxPs, Vector3 color) {
-    self.drawSpherePatch(center, up, axis, radius, minTh, maxTh, minPs, maxPs, color);
+  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_1(btIDebugDraw self, long center, long up, long axis, float radius, float minTh, float maxTh, float minPs, float maxPs, long color) {
+    self.drawSpherePatch(new btVector3(center, false), new btVector3(up, false), new btVector3(axis, false), radius, minTh, maxTh, minPs, maxPs, new btVector3(color, false));
   }
-  public static void SwigDirector_btIDebugDraw_drawBox__SWIG_0(btIDebugDraw self, Vector3 bbMin, Vector3 bbMax, Vector3 color) {
-    self.drawBox(bbMin, bbMax, color);
+  public static void SwigDirector_btIDebugDraw_drawBox__SWIG_0(btIDebugDraw self, long bbMin, long bbMax, long color) {
+    self.drawBox(new btVector3(bbMin, false), new btVector3(bbMax, false), new btVector3(color, false));
   }
-  public static void SwigDirector_btIDebugDraw_drawBox__SWIG_1(btIDebugDraw self, Vector3 bbMin, Vector3 bbMax, Matrix4 trans, Vector3 color) {
-    self.drawBox(bbMin, bbMax, trans, color);
+  public static void SwigDirector_btIDebugDraw_drawBox__SWIG_1(btIDebugDraw self, long bbMin, long bbMax, long trans, long color) {
+    self.drawBox(new btVector3(bbMin, false), new btVector3(bbMax, false), new btTransform(trans, false), new btVector3(color, false));
   }
-  public static void SwigDirector_btIDebugDraw_drawCapsule(btIDebugDraw self, float radius, float halfHeight, int upAxis, Matrix4 transform, Vector3 color) {
-    self.drawCapsule(radius, halfHeight, upAxis, transform, color);
+  public static void SwigDirector_btIDebugDraw_drawCapsule(btIDebugDraw self, float radius, float halfHeight, int upAxis, long transform, long color) {
+    self.drawCapsule(radius, halfHeight, upAxis, new btTransform(transform, false), new btVector3(color, false));
   }
-  public static void SwigDirector_btIDebugDraw_drawCylinder(btIDebugDraw self, float radius, float halfHeight, int upAxis, Matrix4 transform, Vector3 color) {
-    self.drawCylinder(radius, halfHeight, upAxis, transform, color);
+  public static void SwigDirector_btIDebugDraw_drawCylinder(btIDebugDraw self, float radius, float halfHeight, int upAxis, long transform, long color) {
+    self.drawCylinder(radius, halfHeight, upAxis, new btTransform(transform, false), new btVector3(color, false));
   }
-  public static void SwigDirector_btIDebugDraw_drawCone(btIDebugDraw self, float radius, float height, int upAxis, Matrix4 transform, Vector3 color) {
-    self.drawCone(radius, height, upAxis, transform, color);
+  public static void SwigDirector_btIDebugDraw_drawCone(btIDebugDraw self, float radius, float height, int upAxis, long transform, long color) {
+    self.drawCone(radius, height, upAxis, new btTransform(transform, false), new btVector3(color, false));
   }
-  public static void SwigDirector_btIDebugDraw_drawPlane(btIDebugDraw self, Vector3 planeNormal, float planeConst, Matrix4 transform, Vector3 color) {
-    self.drawPlane(planeNormal, planeConst, transform, color);
+  public static void SwigDirector_btIDebugDraw_drawPlane(btIDebugDraw self, long planeNormal, float planeConst, long transform, long color) {
+    self.drawPlane(new btVector3(planeNormal, false), planeConst, new btTransform(transform, false), new btVector3(color, false));
   }
   public static void SwigDirector_btMotionState_getWorldTransform(btMotionState self, Matrix4 worldTrans) {
     self.getWorldTransform(worldTrans);

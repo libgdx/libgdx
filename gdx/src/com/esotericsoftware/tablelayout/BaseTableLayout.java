@@ -111,11 +111,11 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		}
 		cells.add(cell);
 
+		cell.set(cellDefaults);
 		if (cell.column < columnDefaults.size()) {
 			Cell columnDefaults = this.columnDefaults.get(cell.column);
-			cell.set(columnDefaults != null ? columnDefaults : cellDefaults);
-		} else
-			cell.set(cellDefaults);
+			if (columnDefaults != null) cell.merge(columnDefaults);
+		}
 		cell.merge(rowDefaults);
 
 		if (widget != null) toolkit.addChild(table, widget);
@@ -150,7 +150,6 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		Cell cell = columnDefaults.size() > column ? columnDefaults.get(column) : null;
 		if (cell == null) {
 			cell = new Cell(this);
-			cell.set(cellDefaults);
 			if (column >= columnDefaults.size()) {
 				for (int i = columnDefaults.size(); i < column; i++)
 					columnDefaults.add(null);
@@ -174,7 +173,6 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		debug = Debug.none;
 		cellDefaults.set(Cell.defaults(this));
 		columnDefaults.clear();
-		rowDefaults = null;
 	}
 
 	/** Removes all widgets and cells from the table. */
@@ -186,6 +184,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		cells.clear();
 		rows = 0;
 		columns = 0;
+		rowDefaults = null;
 		invalidate();
 	}
 

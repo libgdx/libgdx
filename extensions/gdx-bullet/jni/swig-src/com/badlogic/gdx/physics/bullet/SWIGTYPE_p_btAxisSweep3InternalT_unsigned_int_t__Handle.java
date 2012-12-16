@@ -8,18 +8,18 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-public class SWIGTYPE_p_unsigned_char {
+public class SWIGTYPE_p_btAxisSweep3InternalT_unsigned_int_t__Handle {
   private long swigCPtr;
 
-  protected SWIGTYPE_p_unsigned_char(long cPtr, boolean futureUse) {
+  protected SWIGTYPE_p_btAxisSweep3InternalT_unsigned_int_t__Handle(long cPtr, boolean futureUse) {
     swigCPtr = cPtr;
   }
 
-  protected SWIGTYPE_p_unsigned_char() {
+  protected SWIGTYPE_p_btAxisSweep3InternalT_unsigned_int_t__Handle() {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_unsigned_char obj) {
+  public static long getCPtr(SWIGTYPE_p_btAxisSweep3InternalT_unsigned_int_t__Handle obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

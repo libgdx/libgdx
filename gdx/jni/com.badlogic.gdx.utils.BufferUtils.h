@@ -25,6 +25,14 @@ JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_utils_BufferUtils_newDisposableB
 
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    getByteBufferAddress
+ * Signature: (Ljava/nio/ByteBuffer;)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_utils_BufferUtils_getByteBufferAddress
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
  * Method:    clear
  * Signature: (Ljava/nio/ByteBuffer;I)V
  */

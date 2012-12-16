@@ -5,11 +5,11 @@
 %module btTypedConstraint
 
 /*
- * Disable btScalar * <-> float[] for this struct, because SWIG can't guess
+ * Disable btScalar * <-> FloatBuffer for this struct, because SWIG can't guess
  * how big these arrays are and I wasn't bothered to measure them and
  * tweak the typemaps.  Re-enabled at bottom of file.
  */
-%include "../gdxDisableArrays.i"
+%include "../gdxDisableBuffers.i"
 
 // Nested struct or class copied from Bullet header
 struct btConstraintInfo2 {
@@ -60,4 +60,4 @@ typedef btTypedConstraint::btConstraintInfo2 btConstraintInfo2;
 %}
 
 /* Re-enable */
-%include "../gdxEnableArrays.i"
+%include "../gdxEnableBuffers.i"

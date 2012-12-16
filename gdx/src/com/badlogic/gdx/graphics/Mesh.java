@@ -35,6 +35,9 @@ import com.badlogic.gdx.graphics.glutils.VertexArray;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObjectSubData;
 import com.badlogic.gdx.graphics.glutils.VertexData;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -148,6 +151,106 @@ public class Mesh implements Disposable {
 		}
 		addManagedMesh(Gdx.app, this);
 	}
+	
+	/**
+	 * Create a new Mesh that is a combination of transformations of the supplied base mesh.
+	 * Not all primitive types, like line strip and triangle strip, can be combined.
+	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
+	 * @param transformations the transformations to apply to the meshes 
+	 * @return the combined mesh
+	 */
+	public static Mesh create(boolean isStatic, final Mesh base, final Matrix4[] transformations) {
+		final VertexAttribute posAttr = base.getVertexAttribute(Usage.Position);
+		final int offset = posAttr.offset / 4;
+		final int numComponents = posAttr.numComponents;
+		final int numVertices = base.getNumVertices();
+		final int vertexSize = base.getVertexSize() / 4;
+		final int baseSize = numVertices * vertexSize;
+		final int numIndices = base.getNumIndices();
+		
+		final float vertices[] = new float[numVertices * vertexSize * transformations.length];
+		final short indices[] = new short[numIndices * transformations.length];
+		
+		base.getIndices(indices);
+		
+		for (int i = 0; i < transformations.length; i++) {
+			base.getVertices(0, baseSize, vertices, baseSize * i);
+			transform(transformations[i], vertices, vertexSize, offset, numComponents, numVertices * i, numVertices);
+			if (i > 0)
+			for (int j = 0; j < numIndices; j++)
+				indices[(numIndices * i) + j] = (short)(indices[j] + (numVertices * i)); 
+		}
+		
+		final Mesh result = new Mesh(isStatic, vertices.length/vertexSize, indices.length, base.getVertexAttributes());
+		result.setVertices(vertices);
+		result.setIndices(indices);
+		return result;
+	}
+	
+	/**
+	 * Create a new Mesh that is a combination of the supplied meshes. The meshes must have the same VertexAttributes signature.
+	 * Not all primitive types, like line strip and triangle strip, can be combined.
+	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
+	 * @param meshes the meshes to combine
+	 * @return the combined mesh
+	 */
+	public static Mesh create(boolean isStatic, final Mesh[] meshes) {
+		return create(isStatic, meshes, null);
+	}
+
+	/**
+	 * Create a new Mesh that is a combination of the supplied meshes. The meshes must have the same VertexAttributes signature.
+	 * If transformations is supplied, it must have the same length as meshes. 
+	 * Not all primitive types, like line strip and triangle strip, can be combined.
+	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
+	 * @param meshes the meshes to combine
+	 * @param transformations the transformations to apply to the meshes 
+	 * @return the combined mesh
+	 */
+	public static Mesh create(boolean isStatic, final Mesh[] meshes, final Matrix4[] transformations) {
+		if (transformations != null && transformations.length < meshes.length)
+			throw new IllegalArgumentException("Not enough transformations specified");
+		final VertexAttributes attributes = meshes[0].getVertexAttributes();
+		int vertCount = meshes[0].getNumVertices();
+		int idxCount = meshes[0].getNumIndices();
+		for (int i = 1; i < meshes.length; i++) {
+			if (!meshes[i].getVertexAttributes().equals(attributes))
+				throw new IllegalArgumentException("Inconsistent VertexAttributes");
+			vertCount += meshes[i].getNumVertices();
+			idxCount += meshes[i].getNumIndices();
+		}
+		final VertexAttribute posAttr = meshes[0].getVertexAttribute(Usage.Position);
+		final int offset = posAttr.offset / 4;
+		final int numComponents = posAttr.numComponents;
+		final int vertexSize = attributes.vertexSize / 4;
+		
+		final float vertices[] = new float[vertCount * vertexSize];
+		final short indices[] = new short[idxCount];
+		
+		meshes[0].getVertices(vertices);
+		meshes[0].getIndices(indices);
+		
+		int voffset = meshes[0].getNumVertices() * vertexSize;
+		int ioffset = meshes[0].getNumIndices();
+		for (int i = 1; i < meshes.length; i++) {
+			final Mesh mesh = meshes[i];
+			final int vsize = mesh.getNumVertices() * vertexSize;
+			final int isize = mesh.getNumIndices();
+			mesh.getVertices(0, vsize, vertices, voffset);
+			if (transformations != null)
+				transform(transformations[i], vertices, vertexSize, offset, numComponents, voffset / vertexSize, vsize / vertexSize);
+			mesh.getIndices(indices, ioffset);
+			for (int j = 0; j < isize; i++)
+				indices[ioffset+j] = (short)(indices[ioffset+j] + voffset);
+			voffset += vsize;
+			ioffset += isize;
+		}
+		
+		final Mesh result = new Mesh(isStatic, vertices.length/vertexSize, indices.length, attributes);
+		result.setVertices(vertices);
+		result.setIndices(indices);
+		return result;
+	}
 
 	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format. If this mesh is configured to use
 	 * fixed point an IllegalArgumentException will be thrown.
@@ -170,12 +273,44 @@ public class Mesh implements Disposable {
 	/** Copies the vertices from the Mesh to the float array. The float array must be large enough to hold all the Mesh's vertices.
 	 * @param vertices the array to copy the vertices to */
 	public void getVertices (float[] vertices) {
-		if (vertices.length < getNumVertices() * getVertexSize() / 4)
-			throw new IllegalArgumentException("not enough room in vertices array, has " + vertices.length + " floats, needs "
-				+ getNumVertices() * getVertexSize() / 4);
+		getVertices(0, -1, vertices);
+	}
+	
+	/** Copies the the remaining vertices from the Mesh to the float array. The float array must be large enough to hold the remaining vertices.
+	 * @param srcOffset the offset (in number of floats) of the vertices in the mesh to copy
+	 * @param vertices the array to copy the vertices to */
+	public void getVertices (int srcOffset, float[] vertices) {
+		getVertices(srcOffset, -1, vertices);
+	}
+
+	/** Copies the specified vertices from the Mesh to the float array. The float array must be large enough to hold count vertices.
+	 * @param srcOffset the offset (in number of floats) of the vertices in the mesh to copy
+	 * @param count the amount of floats to copy
+	 * @param vertices the array to copy the vertices to */
+	public void getVertices (int srcOffset, int count, float[] vertices) {
+		getVertices(srcOffset, count, vertices, 0);
+	}
+	
+	/** Copies the specified vertices from the Mesh to the float array. The float array must be large enough to hold destOffset+count vertices.
+	 * @param srcOffset the offset (in number of floats) of the vertices in the mesh to copy
+	 * @param count the amount of floats to copy
+	 * @param vertices the array to copy the vertices to
+	 * @param destOffset the offset (in floats) in the vertices array to start copying */
+	public void getVertices (int srcOffset, int count, float[] vertices, int destOffset) {
+		// TODO: Perhaps this method should be vertexSize aware??
+		final int max = getNumVertices() * getVertexSize() / 4;
+		if (count == -1) {
+			count = max - srcOffset;
+			if (count > vertices.length - destOffset)
+				count = vertices.length - destOffset;
+		}
+		if (srcOffset < 0 || count <= 0 || (srcOffset + count) > max || destOffset < 0 || destOffset >= vertices.length)
+			throw new IndexOutOfBoundsException();
+		if ((vertices.length - destOffset) < count)
+			throw new IllegalArgumentException("not enough room in vertices array, has " + vertices.length + " floats, needs " + count);
 		int pos = getVerticesBuffer().position();
-		getVerticesBuffer().position(0);
-		getVerticesBuffer().get(vertices, 0, getNumVertices() * getVertexSize() / 4);
+		getVerticesBuffer().position(srcOffset);
+		getVerticesBuffer().get(vertices, destOffset, count);
 		getVerticesBuffer().position(pos);
 	}
 
@@ -198,12 +333,19 @@ public class Mesh implements Disposable {
 	/** Copies the indices from the Mesh to the short array. The short array must be large enough to hold all the Mesh's indices.
 	 * @param indices the array to copy the indices to */
 	public void getIndices (short[] indices) {
-		if (indices.length < getNumIndices())
+		getIndices(indices, 0);
+	}
+
+	/** Copies the indices from the Mesh to the short array. The short array must be large enough to hold destOffset + all the Mesh's indices.
+	 * @param indices the array to copy the indices to 
+	 * @param destOffset the offset in the indices array to start copying */
+	public void getIndices(short[] indices, int destOffset) {
+		if ((indices.length - destOffset) < getNumIndices())
 			throw new IllegalArgumentException("not enough room in indices array, has " + indices.length + " floats, needs "
 				+ getNumIndices());
 		int pos = getIndicesBuffer().position();
 		getIndicesBuffer().position(0);
-		getIndicesBuffer().get(indices, 0, getNumIndices());
+		getIndicesBuffer().get(indices, destOffset, getNumIndices());
 		getIndicesBuffer().position(pos);
 	}
 
@@ -537,13 +679,13 @@ public class Mesh implements Disposable {
 	 * @param scaleY scale on y
 	 * @param scaleZ scale on z */
 	public void scale (float scaleX, float scaleY, float scaleZ) {
-		VertexAttribute posAttr = getVertexAttribute(Usage.Position);
-		int offset = posAttr.offset / 4;
-		int numComponents = posAttr.numComponents;
-		int numVertices = getNumVertices();
-		int vertexSize = getVertexSize() / 4;
+		final VertexAttribute posAttr = getVertexAttribute(Usage.Position);
+		final int offset = posAttr.offset / 4;
+		final int numComponents = posAttr.numComponents;
+		final int numVertices = getNumVertices();
+		final int vertexSize = getVertexSize() / 4;
 
-		float[] vertices = new float[numVertices * vertexSize];
+		final float[] vertices = new float[numVertices * vertexSize];
 		getVertices(vertices);
 
 		int idx = offset;
@@ -572,5 +714,77 @@ public class Mesh implements Disposable {
 		}
 
 		setVertices(vertices);
+	}
+	
+	/** 
+	 * Method to transform the positions in the mesh. Normals will be kept as is. This is a potentially slow operation, use with care.
+	 * It will also create a temporary float[] which will be garbage collected.
+	 * 
+	 * @param matrix the transformation matrix */
+	public void transform(final Matrix4 matrix) {
+		transform(matrix, 0, getNumVertices());
+	}
+	
+	// TODO: Protected for now, because transforming a portion works but still copies all vertices
+	protected void transform(final Matrix4 matrix, final int start, final int count) {
+		final VertexAttribute posAttr = getVertexAttribute(Usage.Position);
+		final int offset = posAttr.offset / 4;
+		final int vertexSize = getVertexSize() / 4;
+		final int numComponents = posAttr.numComponents;
+		final int numVertices = getNumVertices();
+		
+		final float[] vertices = new float[numVertices * vertexSize];
+		// TODO: getVertices(vertices, start * vertexSize, count * vertexSize);
+		getVertices(0, vertices.length, vertices);
+		transform(matrix, vertices, vertexSize, offset, numComponents, start, count);
+		setVertices(vertices, 0, vertices.length);
+		// TODO: setVertices(start * vertexSize, vertices, 0, vertices.length);
+	}
+	
+	/**
+	 * Method to transform the positions in the float array. Normals will be kept as is. This is a potentially slow operation, use with care.
+	 * @param matrix the transformation matrix
+	 * @param vertices the float array
+	 * @param vertexSize the number of floats in each vertex
+	 * @param offset the offset within a vertex to the position
+	 * @param dimensions the size of the position
+	 * @param start the vertex to start with
+	 * @param count the amount of vertices to transform
+	 */
+	public static void transform(final Matrix4 matrix, final float[] vertices, int vertexSize, int offset, int dimensions, int start, int count) {
+		if (offset < 0 || dimensions < 1 || (offset + dimensions) > vertexSize)
+			throw new IndexOutOfBoundsException();
+		if (start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length)
+			throw new IndexOutOfBoundsException("start = "+start+", count = "+count+", vertexSize = "+vertexSize+", length = "+vertices.length);
+		
+		final Vector3 tmp = Vector3.tmp;
+		
+		int idx = offset + (start * vertexSize);
+		switch(dimensions) {
+		case 1:
+			for (int i = 0; i < count; i++) {
+				tmp.set(vertices[idx], 0, 0).mul(matrix);
+				vertices[idx] = tmp.x;
+				idx += vertexSize;
+			}
+			break;
+		case 2:
+			for (int i = 0; i < count; i++) {
+				tmp.set(vertices[idx], vertices[idx + 1], 0).mul(matrix);
+				vertices[idx] = tmp.x;
+				vertices[idx+1] = tmp.y;
+				idx += vertexSize;
+			}
+			break;
+		case 3:
+			for (int i = 0; i < count; i++) {
+				tmp.set(vertices[idx], vertices[idx + 1], vertices[idx + 2]).mul(matrix);
+				vertices[idx] = tmp.x;
+				vertices[idx+1] = tmp.y;
+				vertices[idx+2] = tmp.z;
+				idx += vertexSize;
+			}
+			break;
+		}
 	}
 }
