@@ -15,11 +15,17 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 	<property name="jni" value="jni"/>
 	<property name="target" value="target" />
 	<property name="libs" value="libs" />
+
+	<!-- define if native sources should be generated using jnigen or not, default false -->
+	<property name="generateJni" value="false" />
+
+	<!-- defines the class to invoke if generateJni is true -->
+	<property name="jniBuildClass" value="" />
 	<path id="classpath"/>
 	<zipfileset id="jarfiles" dir="." excludes="**"/>
-	
-	<!-- clean output directories -->	
-	<target name="clean">		
+
+	<!-- clean output directories -->
+	<target name="clean">
 		<delete dir="${target}" />
 	</target>
 
@@ -33,7 +39,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<mkdir dir="${libs}/macosx32" />
 		<mkdir dir="${libs}/windows32" />
 		<mkdir dir="${libs}/windows64" />
-		
+
 		<mkdir dir="${target}" />
 		<mkdir dir="${target}/java" />
 		<!-- need to copy the internal font to target if compiling the gdx core :/ -->
@@ -66,9 +72,21 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		</javac>
 	</target>
 
+	<target name="checkGenerateJniEnabled">
+		<condition property="generateJniEnabled">
+			<equals arg1="${generateJni}" arg2="true"/>
+		</condition>
+	</target>
+
+
+	<target name="generate-jni" depends="checkGenerateJniEnabled, compile" if="generateJniEnabled">
+		<java classname="${jniBuildClass}" classpathref="classpath" dir="${basedir}" fork="true" >
+			<classpath id="classes" path="${target}/java" />
+		</java>
+	</target>
 
 	<!-- compile native code if available -->
-	<target name="check-natives">
+	<target name="check-natives" depends="generate-jni">
 		<condition property="natives-present">
 			<and>
 				<available file="${jni}/build.xml"/>
@@ -92,13 +110,13 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 			</fileset>
 		</copy>
 	</target>
-	
+
 	<!-- create source and class jar -->
 	<target name="all" depends="compile,compile-natives">
 		<!-- source jar -->
 		<mkdir dir="${distDir}/sources" />
 		<jar destfile="${distDir}/sources/${jar}-sources.jar" basedir="${src}" />
-		
+
 		<!-- copy shared libs for desktop -->
 		<copy failonerror="false" todir="${distDir}">
 			<fileset dir="${libs}">
@@ -106,7 +124,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 				<exclude name="**/test-natives.jar"/>
 			</fileset>
 		</copy>
-		
+
 		<!-- copy shared libs for android -->
 		<copy failonerror="false" todir="${distDir}/armeabi">
 			<fileset dir="${libs}/armeabi">
@@ -118,7 +136,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 				<include name="**/*.so"/>
 			</fileset>
 		</copy>
-		
+
 		<!-- class jar -->
 		<jar destfile="${distDir}/${jar}.jar">
 			<fileset dir="${target}/java"/>

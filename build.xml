@@ -43,6 +43,8 @@
 		</path>
 		<ant antfile="../build-template.xml" dir="gdx">
 			<property name="jar" value="gdx"/>
+			<property name="generateJni" value="true"/>
+			<property name="jniBuildClass" value="com.badlogic.gdx.utils.GdxBuild" />
 			<reference refid="classpath"/>
 		</ant>
 		<!-- the ndk clean process deletes all shared libs in libs/armeabi(-v7a), need to copy
