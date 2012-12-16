@@ -11,18 +11,16 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 -->
 <project name="template" default="all" basedir=".">
 	<!-- default values -->
-	<property name="src" value="src"/>
-	<property name="jni" value="jni"/>
+	<property name="src" value="src" />
+	<property name="jni" value="jni" />
 	<property name="target" value="target" />
 	<property name="libs" value="libs" />
-
 	<!-- define if native sources should be generated using jnigen or not, default false -->
 	<property name="generateJni" value="false" />
-
 	<!-- defines the class to invoke if generateJni is true -->
 	<property name="jniBuildClass" value="" />
-	<path id="classpath"/>
-	<zipfileset id="jarfiles" dir="." excludes="**"/>
+	<path id="classpath" />
+	<zipfileset id="jarfiles" dir="." excludes="**" />
 
 	<!-- clean output directories -->
 	<target name="clean">
@@ -72,15 +70,16 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		</javac>
 	</target>
 
+	<!-- checks to see if jni generation is enabled or not -->
 	<target name="checkGenerateJniEnabled">
 		<condition property="generateJniEnabled">
-			<equals arg1="${generateJni}" arg2="true"/>
+			<equals arg1="${generateJni}" arg2="true" />
 		</condition>
 	</target>
 
-
+	<!-- if jni generation is enabled, then generates all the native code to be compiled later by invoking the specified build class -->
 	<target name="generate-jni" depends="checkGenerateJniEnabled, compile" if="generateJniEnabled">
-		<java classname="${jniBuildClass}" classpathref="classpath" dir="${basedir}" fork="true" >
+		<java classname="${jniBuildClass}" classpathref="classpath" dir="${basedir}" fork="true">
 			<classpath id="classes" path="${target}/java" />
 		</java>
 	</target>
