@@ -32,7 +32,7 @@ static inline jlong wrapped_Java_com_badlogic_gdx_utils_BufferUtils_getByteBuffe
 
 //@line:343
 
-	    return (long) env->GetDirectBufferAddress(buffer);
+	    return (long) buffer;
 	
 }
 
