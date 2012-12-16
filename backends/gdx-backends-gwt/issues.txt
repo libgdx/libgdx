@@ -5,7 +5,6 @@ DIFFERENCES TO MAIN APIs/UNSUSPECTED BEHAVIOUR
 - getters are not implemented, some are not supported by WebGL
 - uniform location id allocation returns multiple ids if one queries for one uniform multiple times. Not an issue as long
   as you don't start comparing those ids to each other.
-- glReadPixels does not work.
 
 [GwtInput]
 - mapping of a couple of (minor) keys is bad, see FIXMEs

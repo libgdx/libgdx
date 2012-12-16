@@ -54,6 +54,10 @@ public class LwjglFrame extends JFrame {
 			protected void start () {
 				LwjglFrame.this.start();
 			}
+
+			protected void exception (Throwable t) {
+				LwjglFrame.this.exception(t);
+			}
 		};
 		getContentPane().add(lwjglCanvas.getCanvas());
 
@@ -70,8 +74,13 @@ public class LwjglFrame extends JFrame {
 		if (size.width == 0 && size.height == 0) pack();
 		Point location = getLocation();
 		if (location.x == 0 && location.y == 0) setLocationRelativeTo(null);
-		setVisible(true);
+		setVisible(true); // Has to happen on OSX before display is created.
 		lwjglCanvas.getCanvas().requestFocus();
+	}
+
+	protected void exception (Throwable ex) {
+		ex.printStackTrace();
+		lwjglCanvas.stop();
 	}
 
 	/** Called before the JFrame is shown. */

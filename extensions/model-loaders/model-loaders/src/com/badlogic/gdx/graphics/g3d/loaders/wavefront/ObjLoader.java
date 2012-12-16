@@ -27,6 +27,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -282,106 +283,112 @@ public class ObjLoader implements StillModelLoader {
 		}
 	}
 
-	private class MtlLoader {
-		private ArrayList<Material> materials = new ArrayList<Material>();
-		private final AssetManager assetManager;
-
-		public MtlLoader () {
-			assetManager = new AssetManager();
-		}
-
-		/** loads .mtl file
-		 * @param name */
-		public void load (String name, FileHandle textureDir) {
-			String line;
-			String[] tokens;
-			String curMatName = "default";
-			Color difcolor = Color.WHITE;
-			Color speccolor = Color.WHITE;
-			Texture texture = new Texture(1, 1, Format.RGB888);
-
-			FileHandle file = Gdx.files.internal(name);
-			if (file == null || file.exists() == false) return;
-
-			BufferedReader reader = new BufferedReader(new InputStreamReader(file.read()), 4096);
-			try {
-				while ((line = reader.readLine()) != null) {
-
-					if (line.length() > 0 && line.charAt(0) == '\t') line = line.substring(1).trim();
-
-					tokens = line.split("\\s+");
-
-					if (tokens[0].length() == 0) {
-						continue;
-					} else if (tokens[0].charAt(0) == '#')
-						continue;
-					else if (tokens[0].toLowerCase().equals("newmtl")) {
-						Material mat = new Material(curMatName, new TextureAttribute(texture, 0, "s_tex"), new ColorAttribute(difcolor,
-							ColorAttribute.diffuse), new ColorAttribute(speccolor, ColorAttribute.specular));
-						materials.add(mat);
-
-						if (tokens.length > 1) {
-							curMatName = tokens[1];
-							curMatName = curMatName.replace('.', '_');
-						} else
-							curMatName = "default";
-
-						difcolor = Color.WHITE;
-						speccolor = Color.WHITE;
-					} else if (tokens[0].toLowerCase().equals("kd") || tokens[0].toLowerCase().equals("ks")) // diffuse or specular
-// color
-					{
-						float r = Float.parseFloat(tokens[1]);
-						float g = Float.parseFloat(tokens[2]);
-						float b = Float.parseFloat(tokens[3]);
-						float a = 1;
-						if (tokens.length > 4) a = Float.parseFloat(tokens[4]);
-
-						if (tokens[0].toLowerCase().equals("kd")) {
-							difcolor = new Color();
-							difcolor.set(r, g, b, a);
-						} else {
-							speccolor = new Color();
-							speccolor.set(r, g, b, a);
-						}
-					} else if (tokens[0].toLowerCase().equals("map_kd")) {
-						String textureName = tokens[1];
-						if (textureName.length() > 0) {
-							String texname = textureDir.child(textureName).toString();
-							assetManager.load(texname, Texture.class);
-							assetManager.finishLoading();
-							texture = assetManager.get(texname, Texture.class);
-							texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-						} else
-							texture = new Texture(1, 1, Format.RGB888);
-
-					}
-
-				}
-				reader.close();
-			} catch (IOException e) {
-				return;
-			}
-
-			// last material
-			Material mat = new Material(curMatName, new TextureAttribute(texture, 0, "s_tex"), new ColorAttribute(difcolor,
-				ColorAttribute.diffuse), new ColorAttribute(speccolor, ColorAttribute.specular));
-			materials.add(mat);
-
-			return;
-		}
-
-		public Material getMaterial (String name) {
-			name = name.replace('.', '_');
-			for (Material mat : materials) {
-				if (mat.getName().equals(name)) return mat;
-			}
-			return new Material("default");
-		}
-	}
-
 	@Override
 	public StillModel load (FileHandle handle, ModelLoaderHints hints) {
 		return loadObj(handle, hints.flipV);
+	}
+}
+
+class MtlLoader {
+	private ArrayList<Material> materials = new ArrayList<Material>();
+	private static AssetManager assetManager;
+	private static Texture emptyTexture = null;
+
+	public MtlLoader () {
+		if (emptyTexture == null) {
+			assetManager = new AssetManager();
+			Pixmap pm = new Pixmap(1, 1, Format.RGB888);
+			pm.setColor(0.5f, 0.5f, 0.5f, 1);
+			pm.fill();
+			emptyTexture = new Texture(pm, false);
+		}
+	}
+
+	/** loads .mtl file
+	 * @param name */
+	public void load (String name, FileHandle textureDir) {
+		String line;
+		String[] tokens;
+		String curMatName = "default";
+		Color difcolor = Color.WHITE;
+		Color speccolor = Color.WHITE;
+		Texture texture = emptyTexture;
+
+		FileHandle file = Gdx.files.internal(name);
+		if (file == null || file.exists() == false) return;
+
+		BufferedReader reader = new BufferedReader(new InputStreamReader(file.read()), 4096);
+		try {
+			while ((line = reader.readLine()) != null) {
+
+				if (line.length() > 0 && line.charAt(0) == '\t') line = line.substring(1).trim();
+
+				tokens = line.split("\\s+");
+
+				if (tokens[0].length() == 0) {
+					continue;
+				} else if (tokens[0].charAt(0) == '#')
+					continue;
+				else if (tokens[0].toLowerCase().equals("newmtl")) {
+					Material mat = new Material(curMatName, new TextureAttribute(texture, 0, TextureAttribute.diffuseTexture),
+						new ColorAttribute(difcolor, ColorAttribute.diffuse), new ColorAttribute(speccolor, ColorAttribute.specular));
+					materials.add(mat);
+
+					if (tokens.length > 1) {
+						curMatName = tokens[1];
+						curMatName = curMatName.replace('.', '_');
+					} else
+						curMatName = "default";
+
+					difcolor = Color.WHITE;
+					speccolor = Color.WHITE;
+				} else if (tokens[0].toLowerCase().equals("kd") || tokens[0].toLowerCase().equals("ks")) // diffuse or specular
+				{
+					float r = Float.parseFloat(tokens[1]);
+					float g = Float.parseFloat(tokens[2]);
+					float b = Float.parseFloat(tokens[3]);
+					float a = 1;
+					if (tokens.length > 4) a = Float.parseFloat(tokens[4]);
+
+					if (tokens[0].toLowerCase().equals("kd")) {
+						difcolor = new Color();
+						difcolor.set(r, g, b, a);
+					} else {
+						speccolor = new Color();
+						speccolor.set(r, g, b, a);
+					}
+				} else if (tokens[0].toLowerCase().equals("map_kd")) {
+					String textureName = tokens[1];
+					if (textureName.length() > 0) {
+						String texname = textureDir.child(textureName).toString();
+						assetManager.load(texname, Texture.class);
+						assetManager.finishLoading();
+						texture = assetManager.get(texname, Texture.class);
+						texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+					} else
+						texture = emptyTexture;
+
+				}
+
+			}
+			reader.close();
+		} catch (IOException e) {
+			return;
+		}
+
+		// last material
+		Material mat = new Material(curMatName, new TextureAttribute(texture, 0, TextureAttribute.diffuseTexture),
+			new ColorAttribute(difcolor, ColorAttribute.diffuse), new ColorAttribute(speccolor, ColorAttribute.specular));
+		materials.add(mat);
+
+		return;
+	}
+
+	public Material getMaterial (String name) {
+		name = name.replace('.', '_');
+		for (Material mat : materials) {
+			if (mat.getName().equals(name)) return mat;
+		}
+		return new Material("default");
 	}
 }

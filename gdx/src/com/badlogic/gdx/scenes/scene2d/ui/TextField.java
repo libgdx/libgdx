@@ -100,6 +100,8 @@ public class TextField extends Widget {
 	float keyRepeatInitialTime = 0.4f;
 	float keyRepeatTime = 0.1f;
 	boolean rightAligned;
+	
+	int maxLength = 0;
 
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
@@ -127,13 +129,13 @@ public class TextField extends Widget {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (!super.touchDown(event, x, y, pointer, button)) return false;
 				if (pointer == 0 && button != 0) return false;
-				if (disabled) return true;
-				keyboard.show(true);
+				if (disabled) return true;				
 				clearSelection();
 				setCursorPosition(x);
 				selectionStart = cursor;
 				Stage stage = getStage();
 				if (stage != null) stage.setKeyboardFocus(TextField.this);
+				keyboard.show(true);
 				return true;
 			}
 
@@ -331,6 +333,9 @@ public class TextField extends Widget {
 					if ((character == TAB || character == ENTER_ANDROID) && focusTraversal)
 						next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
 					if (font.containsCharacter(character)) {
+						if (maxLength > 0 && text.length() + 1 > maxLength) {
+							return true;
+						}
 						if (!hasSelection) {
 							text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
 							updateDisplayText();
@@ -354,6 +359,14 @@ public class TextField extends Widget {
 					return false;
 			}
 		});
+	}
+	
+	public void setMaxLength(int maxLength) {
+		this.maxLength = maxLength;
+	}
+	
+	public int getMaxLength() {
+		return this.maxLength;
 	}
 
 	public void setStyle (TextFieldStyle style) {
@@ -533,8 +546,11 @@ public class TextField extends Widget {
 		if (content != null) {
 			StringBuilder builder = new StringBuilder();
 			for (int i = 0; i < content.length(); i++) {
+				if (maxLength > 0 && text.length() + builder.length() + 1 > maxLength) {
+					break;
+				}
 				char c = content.charAt(i);
-				if (style.font.containsCharacter(c)) builder.append(c);
+				if (style.font.containsCharacter(c) && (filter == null || filter.acceptChar(this, c))) builder.append(c);
 			}
 			content = builder.toString();
 
@@ -640,8 +656,11 @@ public class TextField extends Widget {
 
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < text.length(); i++) {
+			if (maxLength > 0 && buffer.length() + 1 > maxLength) {
+				break;
+			}
 			char c = text.charAt(i);
-			if (font.containsCharacter(c)) buffer.append(c);
+			if (font.containsCharacter(c) && (filter == null || filter.acceptChar(this, c))) buffer.append(c);
 		}
 
 		this.text = buffer.toString();
@@ -746,8 +765,12 @@ public class TextField extends Widget {
 	public boolean isDisabled () {
 		return disabled;
 	}
+	
+	public boolean isPasswordMode(){
+		return passwordMode;
+	}
 
-	class KeyRepeatTask extends Task {
+ 	class KeyRepeatTask extends Task {
 		int keycode;
 
 		public void run () {

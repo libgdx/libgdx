@@ -374,6 +374,7 @@ public class Cell<C> {
 
 	/** Sets the spaceTop, spaceLeft, spaceBottom, and spaceRight to the specified value. */
 	public Cell space (float space) {
+		if (space < 0) throw new IllegalArgumentException("space cannot be < 0.");
 		Value value = new FixedValue(space);
 		spaceTop = value;
 		spaceLeft = value;
@@ -383,6 +384,10 @@ public class Cell<C> {
 	}
 
 	public Cell space (float top, float left, float bottom, float right) {
+		if (top < 0) throw new IllegalArgumentException("top cannot be < 0.");
+		if (left < 0) throw new IllegalArgumentException("left cannot be < 0.");
+		if (bottom < 0) throw new IllegalArgumentException("bottom cannot be < 0.");
+		if (right < 0) throw new IllegalArgumentException("right cannot be < 0.");
 		spaceTop = new FixedValue(top);
 		spaceLeft = new FixedValue(left);
 		spaceBottom = new FixedValue(bottom);
@@ -391,21 +396,25 @@ public class Cell<C> {
 	}
 
 	public Cell spaceTop (float spaceTop) {
+		if (spaceTop < 0) throw new IllegalArgumentException("spaceTop cannot be < 0.");
 		this.spaceTop = new FixedValue(spaceTop);
 		return this;
 	}
 
 	public Cell spaceLeft (float spaceLeft) {
+		if (spaceLeft < 0) throw new IllegalArgumentException("spaceLeft cannot be < 0.");
 		this.spaceLeft = new FixedValue(spaceLeft);
 		return this;
 	}
 
 	public Cell spaceBottom (float spaceBottom) {
+		if (spaceBottom < 0) throw new IllegalArgumentException("spaceBottom cannot be < 0.");
 		this.spaceBottom = new FixedValue(spaceBottom);
 		return this;
 	}
 
 	public Cell spaceRight (float spaceRight) {
+		if (spaceRight < 0) throw new IllegalArgumentException("spaceRight cannot be < 0.");
 		this.spaceRight = new FixedValue(spaceRight);
 		return this;
 	}
@@ -887,6 +896,10 @@ public class Cell<C> {
 	/** The actual amount of combined padding and spacing from the last layout. */
 	public float getComputedPadRight () {
 		return computedPadRight;
+	}
+
+	public Cell row () {
+		return layout.row();
 	}
 
 	public BaseTableLayout getLayout () {

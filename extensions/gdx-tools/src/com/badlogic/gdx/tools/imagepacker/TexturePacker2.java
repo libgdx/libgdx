@@ -1,12 +1,6 @@
 
 package com.badlogic.gdx.tools.imagepacker;
 
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -21,6 +15,12 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 
 /** @author Nathan Sweet */
 public class TexturePacker2 {
@@ -150,7 +150,7 @@ public class TexturePacker2 {
 			try {
 				if (settings.outputFormat.equalsIgnoreCase("jpg")) {
 					Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
-					ImageWriter writer = (ImageWriter)writers.next();
+					ImageWriter writer = writers.next();
 					ImageWriteParam param = writer.getDefaultWriteParam();
 					param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 					param.setCompressionQuality(settings.jpegQuality);
@@ -294,6 +294,7 @@ public class TexturePacker2 {
 			score2 = rect.score2;
 		}
 
+		@Override
 		public boolean equals (Object obj) {
 			if (this == obj) return true;
 			if (obj == null) return false;
@@ -305,6 +306,7 @@ public class TexturePacker2 {
 			return true;
 		}
 
+		@Override
 		public String toString () {
 			return name + "[" + x + "," + y + " " + width + "x" + height + "]";
 		}
@@ -376,6 +378,28 @@ public class TexturePacker2 {
 		} catch (Exception ex) {
 			throw new RuntimeException("Error packing files.", ex);
 		}
+	}
+
+	/** @return true if the output file does not yet exist or its last modification date is before the last modification date of the
+	 *         input file */
+	static public boolean isModified (String input, String output, String packFileName) {
+		String packFullFileName = output;
+		if (!packFullFileName.endsWith("/")) packFullFileName += "/";
+		packFullFileName += packFileName;
+		File outputFile = new File(packFullFileName);
+		if (!outputFile.exists()) return true;
+
+		File inputFile = new File(input);
+		if (!inputFile.exists()) throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
+		return inputFile.lastModified() > outputFile.lastModified();
+	}
+
+	static public void processIfModified (String input, String output, String packFileName) {
+		if (isModified(input, output, packFileName)) process(input, output, packFileName);
+	}
+
+	static public void processIfModified (Settings settings, String input, String output, String packFileName) {
+		if (isModified(input, output, packFileName)) process(settings, input, output, packFileName);
 	}
 
 	public static void main (String[] args) throws Exception {

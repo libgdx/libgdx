@@ -17,7 +17,8 @@
 	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse -fmessage-length=0 -m64 -fPIC -std=c99 -DFT2_BUILD_LIBRARY"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
-				<include name="freetype-2.4.10/src/base/ftsystem.c"/>
+				<include name="memcpy_wrap.c"/>
+		<include name="freetype-2.4.10/src/base/ftsystem.c"/>
 		<include name="freetype-2.4.10/src/base/ftinit.c"/>
 		<include name="freetype-2.4.10/src/base/ftdebug.c"/>
 		<include name="freetype-2.4.10/src/base/ftbase.c"/>
@@ -77,7 +78,7 @@
 
 	<!-- define linker and options -->
 	<property name="linker" value="${compilerPrefix}g++"/>
-	<property name="linker-opts" value="-shared -m64"/>
+	<property name="linker-opts" value="-shared -m64 -Wl,-wrap,memcpy"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">

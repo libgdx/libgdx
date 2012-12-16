@@ -18,6 +18,7 @@ uniform sampler2D diffuseTexture;
 
 #ifdef lightmapTextureFlag
 uniform sampler2D lightmapTexture;
+varying vec2 v_texCoords1;
 #endif
 
 #ifdef fogColorFlag
@@ -32,7 +33,7 @@ void main()
 	vec4 light = v_diffuse;
 	
 	#ifdef lightmapTextureFlag
-	light *= texture2D(lightmapTexture, v_texCoords);
+	light *= texture2D(lightmapTexture, v_texCoords1);
 	#endif
 	
 	#ifdef diffuseTextureFlag

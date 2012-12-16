@@ -245,6 +245,7 @@ public class NinePatch {
 		final float v = region.v2;
 		final float u2 = region.u2;
 		final float v2 = region.v;
+		final float[] vertices = this.vertices;
 
 		idx += 2;
 		vertices[idx++] = color;
@@ -269,6 +270,7 @@ public class NinePatch {
 	private void set (int idx, float x, float y, float width, float height, float color) {
 		final float fx2 = x + width;
 		final float fy2 = y + height;
+		final float[] vertices = this.vertices;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
 		vertices[idx] = color;

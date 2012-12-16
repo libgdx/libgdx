@@ -116,7 +116,8 @@ class AndroidLiveWallpaper implements Application {
 	}
 	
 	public void onDestroy() {
-		graphics.destroy();
+		graphics.clearManagedCaches();
+		// graphics.destroy();
 	}
 
 	public WallpaperService getService() {

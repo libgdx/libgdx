@@ -127,10 +127,15 @@ public class Quaternion implements Serializable {
 		float num7 = yaw * 0.5f;
 		float num2 = (float)Math.sin(num7);
 		float num = (float)Math.cos(num7);
-		x = ((num * num4) * num5) + ((num2 * num3) * num6);
-		y = ((num2 * num3) * num5) - ((num * num4) * num6);
-		z = ((num * num3) * num6) - ((num2 * num4) * num5);
-		w = ((num * num3) * num5) + ((num2 * num4) * num6);
+		float f1 = num * num4;
+		float f2 = num2 * num3;
+		float f3 = num * num3;
+		float f4 = num2 * num4;
+
+		x = (f1 * num5) + (f2 * num6);
+		y = (f2 * num5) - (f1 * num6);
+		z = (f3 * num6) - (f4 * num5);
+		w = (f3 * num5) + (f4 * num6);
 		return this;
 	}
 

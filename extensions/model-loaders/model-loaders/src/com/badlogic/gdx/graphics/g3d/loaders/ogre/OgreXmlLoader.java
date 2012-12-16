@@ -304,10 +304,12 @@ public class OgreXmlLoader {
 			mesh.setVertices(vertices);
 			
 			String meshName = "";
-			List<Submeshname> names = ogreMesh.getSubmeshnames().getSubmeshname();
-			for(int n = 0; n < names.size(); ++n) {
-				if(Integer.parseInt(names.get(n).getIndex()) == i)
-					meshName = names.get(n).getName();
+			if(ogreMesh.getSubmeshnames() != null) {
+				List<Submeshname> names = ogreMesh.getSubmeshnames().getSubmeshname();
+				for(int n = 0; n < names.size(); ++n) {
+					if(Integer.parseInt(names.get(n).getIndex()) == i)
+						meshName = names.get(n).getName();
+				}
 			}
 
 			SubMesh subMesh;
@@ -507,9 +509,6 @@ public class OgreXmlLoader {
 
 					transform.getTranslation(jointKeyframe.position);
 					transform.getRotation(jointKeyframe.rotation);
-					jointKeyframe.rotation.x *= -1;
-					jointKeyframe.rotation.y *= -1;
-					jointKeyframe.rotation.z *= -1;
 				}
 			}
 

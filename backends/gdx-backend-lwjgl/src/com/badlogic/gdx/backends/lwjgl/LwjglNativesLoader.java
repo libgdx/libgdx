@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
 
 import static com.badlogic.gdx.utils.GdxNativesLoader.*;
 
-final class LwjglNativesLoader {
+public final class LwjglNativesLoader {
 	static public boolean load = true;
 
 	static {
@@ -37,7 +37,7 @@ final class LwjglNativesLoader {
 		}
 	}
 
-	static void load () {
+	static public void load () {
 		GdxNativesLoader.load();
 		if (GdxNativesLoader.disableNativesLoading) return;
 		if (!load) return;

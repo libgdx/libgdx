@@ -60,6 +60,17 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 	float[] vertices;
 
 	@Override
+	public void dispose () {
+		super.dispose();
+		mesh.dispose();
+		mesh = null;
+		batch.dispose();
+		batch = null;
+		texture.dispose();
+		texture = null;
+	}
+
+	@Override
 	public void create () {
 
 		camera = new PerspectiveCamera(90, Gdx.graphics.getWidth(), Gdx.graphics.getWidth());

@@ -253,7 +253,7 @@ public class BitmapFontCache {
 		vertices[idx++] = y;
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
-		vertices[idx++] = v;
+		vertices[idx] = v;
 	}
 
 	/** Clears any cached glyphs and adds glyphs for the specified text.

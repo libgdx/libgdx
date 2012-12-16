@@ -37,7 +37,7 @@ public class ColorAttribute extends MaterialAttribute {
 
 	/** Creates a {@link MaterialAttribute} that is a pure {@link Color}.
 	 * 
-	 * @param color The {@link Colour} that you wish the attribute to represent.
+	 * @param color The {@link Color} that you wish the attribute to represent.
 	 * @param name The name of the uniform in the {@link ShaderProgram} that will have its value set to this color. (A 'name' does
 	 *           not matter for a game that uses {@link GL10}). */
 	public ColorAttribute (Color color, String name) {

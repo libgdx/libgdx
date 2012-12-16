@@ -53,6 +53,7 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class SkeletonModelGpuSkinningTest implements ApplicationListener {
 
@@ -106,7 +107,7 @@ public class SkeletonModelGpuSkinningTest implements ApplicationListener {
 			for (int j = 0; j < gridSize; j++) {
 				AnimatedModelNode instance = animInstance[i][j];
 				instance.time += MathUtils.clamp(delta, 0, 0.1f)*0.5f;
-				if (instance.time > model.getAnimations()[currAnimIdx].totalDuration) {
+				if (instance.time >= model.getAnimations()[currAnimIdx].totalDuration) {
 					instance.time = 0;
 				}
 				instance.matrix.val[12] = -i * 2 + 8;
@@ -147,12 +148,15 @@ public class SkeletonModelGpuSkinningTest implements ApplicationListener {
 		texture = new Texture(Gdx.files.internal("data/models/robot.jpg"), Format.RGB565, true);
 		texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 		
-		//String fileName = "data/models/robot-mesh.xml.g3d";
+		String fileName = "data/models/ninja.mesh.xml";
 		
-		String fileName = "data/models/cube.dae";
+//		String fileName = "data/models/cube.dae";
 		
 		if (!fileName.endsWith(".g3d") && Gdx.app.getType() == ApplicationType.Desktop) {
-			model = ModelLoaderRegistry.loadSkeletonModel(Gdx.files.internal(fileName));
+			try {
+				model = ModelLoaderRegistry.loadSkeletonModel(Gdx.files.internal(fileName));
+			} catch(GdxRuntimeException e) {
+			}
 			if(model == null){
 				model = new OgreXmlLoader().load(Gdx.files.internal(fileName),
 					Gdx.files.internal(fileName.replace("mesh.xml", "skeleton.xml")));
@@ -194,7 +198,7 @@ public class SkeletonModelGpuSkinningTest implements ApplicationListener {
 				model.getBoundingBox(box);
 				
 				instance.matrix.trn(-1.75f, 0f, -5.5f);
-				instance.matrix.scale(0.4f, 0.4f, 0.4f);
+				instance.matrix.scale(0.01f, 0.01f, 0.01f);
 				box.mul(instance.matrix);
 				
 				instance.radius = (box.getDimensions().len() / 2);

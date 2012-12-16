@@ -9,7 +9,7 @@ WebGL enabled browser and soon iOS.
 #### [Wiki (Google Code)][4]
 
 #### [Forum][5] Come here to ask questions about Libgdx
-#### Join us on irc.freenode.net, #badlogic
+#### Join us on irc.freenode.net, #libgdx
 #### Follow us on Twitter [@badlogicgames][6]
 #### Follow our [blog][2] for the latest updates
 

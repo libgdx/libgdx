@@ -111,11 +111,11 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		}
 		cells.add(cell);
 
+		cell.set(cellDefaults);
 		if (cell.column < columnDefaults.size()) {
 			Cell columnDefaults = this.columnDefaults.get(cell.column);
-			cell.set(columnDefaults != null ? columnDefaults : cellDefaults);
-		} else
-			cell.set(cellDefaults);
+			if (columnDefaults != null) cell.merge(columnDefaults);
+		}
 		cell.merge(rowDefaults);
 
 		if (widget != null) toolkit.addChild(table, widget);
@@ -150,7 +150,6 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		Cell cell = columnDefaults.size() > column ? columnDefaults.get(column) : null;
 		if (cell == null) {
 			cell = new Cell(this);
-			cell.set(cellDefaults);
 			if (column >= columnDefaults.size()) {
 				for (int i = columnDefaults.size(); i < column; i++)
 					columnDefaults.add(null);
@@ -174,7 +173,6 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		debug = Debug.none;
 		cellDefaults.set(Cell.defaults(this));
 		columnDefaults.clear();
-		rowDefaults = null;
 	}
 
 	/** Removes all widgets and cells from the table. */
@@ -186,6 +184,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		cells.clear();
 		rows = 0;
 		columns = 0;
+		rowDefaults = null;
 		invalidate();
 	}
 
@@ -528,12 +527,11 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 
 			// Compute combined padding/spacing for cells.
 			// Spacing between widgets isn't additive, the larger is used. Also, no spacing around edges.
-			c.computedPadLeft = w(c.padLeft, c) + (c.column == 0 ? 0 : Math.max(0, w(c.spaceLeft, c)) - spaceRightLast);
-			if (c.cellAboveIndex == -1)
-				c.computedPadTop = h(c.padTop, c);
-			else {
+			c.computedPadLeft = w(c.padLeft, c) + (c.column == 0 ? 0 : Math.max(0, w(c.spaceLeft, c) - spaceRightLast));
+			c.computedPadTop = h(c.padTop, c);
+			if (c.cellAboveIndex != -1) {
 				Cell above = cells.get(c.cellAboveIndex);
-				c.computedPadTop = h(c.padTop, c) + Math.max(0, h(c.spaceTop, c) - h(above.spaceBottom, above));
+				c.computedPadTop += Math.max(0, h(c.spaceTop, c) - h(above.spaceBottom, above));
 			}
 			float spaceRight = w(c.spaceRight, c);
 			c.computedPadRight = w(c.padRight, c) + ((c.column + c.colspan) == columns ? 0 : spaceRight);
@@ -613,12 +611,14 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 
 			// Collect uniform sizes.
 			if (c.uniformX == Boolean.TRUE && c.colspan == 1) {
-				uniformMinWidth = Math.max(uniformMinWidth, columnMinWidth[c.column]);
-				uniformPrefWidth = Math.max(uniformPrefWidth, columnPrefWidth[c.column]);
+				float hpadding = c.computedPadLeft + c.computedPadRight;
+				uniformMinWidth = Math.max(uniformMinWidth, columnMinWidth[c.column] - hpadding);
+				uniformPrefWidth = Math.max(uniformPrefWidth, columnPrefWidth[c.column] - hpadding);
 			}
 			if (c.uniformY == Boolean.TRUE) {
-				uniformMinHeight = Math.max(uniformMinHeight, rowMinHeight[c.row]);
-				uniformPrefHeight = Math.max(uniformPrefHeight, rowPrefHeight[c.row]);
+				float vpadding = c.computedPadTop + c.computedPadBottom;
+				uniformMinHeight = Math.max(uniformMinHeight, rowMinHeight[c.row] - vpadding);
+				uniformPrefHeight = Math.max(uniformPrefHeight, rowPrefHeight[c.row] - vpadding);
 			}
 		}
 
@@ -628,12 +628,14 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 				Cell c = cells.get(i);
 				if (c.ignore) continue;
 				if (uniformPrefWidth > 0 && c.uniformX == Boolean.TRUE && c.colspan == 1) {
-					columnMinWidth[c.column] = uniformMinWidth;
-					columnPrefWidth[c.column] = uniformPrefWidth;
+					float hpadding = c.computedPadLeft + c.computedPadRight;
+					columnMinWidth[c.column] = uniformMinWidth + hpadding;
+					columnPrefWidth[c.column] = uniformPrefWidth + hpadding;
 				}
 				if (uniformPrefHeight > 0 && c.uniformY == Boolean.TRUE) {
-					rowMinHeight[c.row] = uniformMinHeight;
-					rowPrefHeight[c.row] = uniformPrefHeight;
+					float vpadding = c.computedPadTop + c.computedPadBottom;
+					rowMinHeight[c.row] = uniformMinHeight + vpadding;
+					rowPrefHeight[c.row] = uniformPrefHeight + vpadding;
 				}
 			}
 		}

@@ -48,6 +48,10 @@ public class ParticleEffect implements Disposable {
 			emitters.get(i).start();
 	}
 
+	public void reset () {
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).reset();
+	}
 	public void update (float delta) {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).update(delta);
@@ -71,7 +75,6 @@ public class ParticleEffect implements Disposable {
 	public boolean isComplete () {
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
-			if (emitter.isContinuous()) return false;
 			if (!emitter.isComplete()) return false;
 		}
 		return true;
@@ -94,6 +97,11 @@ public class ParticleEffect implements Disposable {
 	public void setFlip (boolean flipX, boolean flipY) {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).setFlip(flipX, flipY);
+	}
+
+	public void flipY () {
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).flipY();
 	}
 
 	public Array<ParticleEmitter> getEmitters () {
@@ -176,6 +184,7 @@ public class ParticleEffect implements Disposable {
 	}
 
 	/** Disposes the texture for each sprite for each ParticleEmitter. */
+	@Override
 	public void dispose () {
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);

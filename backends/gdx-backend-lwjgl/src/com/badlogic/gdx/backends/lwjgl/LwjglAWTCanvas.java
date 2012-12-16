@@ -117,7 +117,7 @@ public class LwjglAWTCanvas implements Application {
 				return true;
 			}
 		};
-		if (Gdx.audio == null) {
+		if (!LwjglApplicationConfiguration.disableAudio && Gdx.audio == null) {
 			audio = new OpenALAudio();
 			Gdx.audio = audio;
 		} else {
