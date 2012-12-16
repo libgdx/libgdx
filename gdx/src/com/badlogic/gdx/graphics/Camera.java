@@ -131,7 +131,7 @@ public abstract class Camera {
 		translate(tmpVec);
 		rotate(axis, angle);
 		tmpVec.rotate(axis, angle);
-		translate(tmpVec.set(-tmpVec.x, -tmpVec.y, -tmpVec.z));
+		translate(-tmpVec.x, -tmpVec.y, -tmpVec.z);
 	}
 
 	/** Moves the camera by the given amount on each axis.
