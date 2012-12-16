@@ -341,7 +341,7 @@ public class BufferUtils {
 	*/
 	
 	private static native long getByteBufferAddress (ByteBuffer buffer); /*
-	    return env->GetDirectBufferAddress(buffer);
+	    return (long) env->GetDirectBufferAddress(buffer);
 	*/
 	
 	/** Writes the specified number of zeros to the buffer. This is generally faster than reallocating a new buffer. */
