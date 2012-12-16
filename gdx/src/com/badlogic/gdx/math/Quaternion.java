@@ -351,6 +351,28 @@ public class Quaternion implements Serializable {
 
 		return set((float)x, (float)y, (float)z, (float)w);
 	}
+	
+	/** Set this quaternion to the rotation between two vectors.
+	 * @param v1 The base vector
+	 * @param v2 The target vector
+	 * @return This quaternion for chaining */
+	public Quaternion setFromCross (final Vector3 v1, final Vector3 v2) {
+		final float dot = MathUtils.clamp(Vector3.tmp.set(v1).nor().dot(Vector3.tmp2.set(v2).nor()), -1f, 1f);
+		return setFromAxis(Vector3.tmp.crs(Vector3.tmp2), (float)Math.acos(dot));
+	}
+	
+	/** Set this quaternion to the rotation between two vectors.
+	 * @param x1 The base vectors x value
+	 * @param y1 The base vectors y value
+	 * @param z1 The base vectors z value
+	 * @param x2 The target vector x value
+	 * @param y2 The target vector y value
+	 * @param z2 The target vector z value
+	 * @return This quaternion for chaining */
+	public Quaternion setFromCross (final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
+		final float dot = MathUtils.clamp(Vector3.tmp.set(x1, y1, z1).nor().dot(Vector3.tmp2.set(x2, y2, z2).nor()), -1f, 1f);
+		return setFromAxis(Vector3.tmp.crs(Vector3.tmp2), (float)Math.acos(dot));
+	}
 
 	/** Spherical linear interpolation between this quaternion and the other quaternion, based on the alpha value in the range
 	 * [0,1]. Taken from. Taken from Bones framework for JPCT, see http://www.aptalkarga.com/bones/
