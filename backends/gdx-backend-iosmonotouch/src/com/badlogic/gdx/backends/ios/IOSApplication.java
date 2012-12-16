@@ -46,6 +46,35 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Clipboard;
 
 public class IOSApplication extends UIApplicationDelegate implements Application {
+	
+	class IOSUIViewController extends UIViewController {
+		@Override
+		public void DidRotate (UIInterfaceOrientation orientation) {
+			// get the view size and update graphics
+			// FIXME: supporting BOTH (landscape+portrait at same time) is currently not working correctly (needs fix)
+			// FIXME screen orientation needs to be stored for Input#getNativeOrientation
+			RectangleF bounds = getBounds(this);
+			graphics.width = (int)bounds.get_Width();
+			graphics.height = (int)bounds.get_Height();
+			graphics.MakeCurrent(); // not sure if that's needed? badlogic: yes it is, so resize can do OpenGL stuff, not sure if
+// it's on the correct thread though
+			listener.resize(graphics.width, graphics.height);
+		}
+
+		@Override
+		public boolean ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {
+			// we return "true" if we support the orientation
+			switch (orientation.Value) {
+			case UIInterfaceOrientation.LandscapeLeft:
+			case UIInterfaceOrientation.LandscapeRight:
+				return config.orientationLandscape;
+			default:
+				// assume portrait
+				return config.orientationPortrait;
+			}
+		}
+	}
+
 	UIApplication uiApp;
 	UIWindow uiWindow;
 	ApplicationListener listener;
@@ -105,33 +134,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 		// Create: Window -> ViewController-> GameView (controller takes care of rotation)
 		this.uiWindow = new UIWindow(UIScreen.get_MainScreen().get_Bounds());
-		UIViewController uiViewController = new UIViewController() {
-			@Override
-			public void DidRotate (UIInterfaceOrientation orientation) {
-				// get the view size and update graphics
-				// FIXME: supporting BOTH (landscape+portrait at same time) is currently not working correctly (needs fix)
-				// FIXME screen orientation needs to be stored for Input#getNativeOrientation
-				RectangleF bounds = getBounds(this);
-				graphics.width = (int)bounds.get_Width();
-				graphics.height = (int)bounds.get_Height();
-				graphics.MakeCurrent(); // not sure if that's needed? badlogic: yes it is, so resize can do OpenGL stuff, not sure if
-// it's on the correct thread though
-				listener.resize(graphics.width, graphics.height);
-			}
-
-			@Override
-			public boolean ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {
-				// we return "true" if we support the orientation
-				switch (orientation.Value) {
-				case UIInterfaceOrientation.LandscapeLeft:
-				case UIInterfaceOrientation.LandscapeRight:
-					return config.orientationLandscape;
-				default:
-					// assume portrait
-					return config.orientationPortrait;
-				}
-			}
-		};
+		UIViewController uiViewController = new IOSUIViewController();
 		this.uiWindow.set_RootViewController(uiViewController);
 
 		// setup libgdx
