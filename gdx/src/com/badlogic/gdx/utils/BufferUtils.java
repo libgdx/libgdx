@@ -301,7 +301,7 @@ public class BufferUtils {
 	 */
 	public static long getUnsafeByteBufferAddress(ByteBuffer buffer) {
 		synchronized(unsafeBuffers) {
-			if (unsafeBuffers.contains(buffer, true))
+			if (!unsafeBuffers.contains(buffer, true))
 				return 0;
 		}
 		return getByteBufferAddress(buffer);
