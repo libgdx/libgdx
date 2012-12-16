@@ -55,9 +55,9 @@ public final class WindowedMean {
 	 * @param value The value to add */
 	public void addValue (float value) {
 		added_values++;
+		mean += (value - values[last_value]) / values.length;
 		values[last_value++] = value;
 		if (last_value > values.length - 1) last_value = 0;
-		dirty = true;
 	}
 
 	/** returns the mean of the samples added to this instance. only returns meaningfull results when at least window_size samples
