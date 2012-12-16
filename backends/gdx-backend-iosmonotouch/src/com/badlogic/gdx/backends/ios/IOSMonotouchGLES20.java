@@ -17,29 +17,35 @@
 package com.badlogic.gdx.backends.ios;
 
 import java.nio.Buffer;
-import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import cli.OpenTK.Graphics.ES20.BeginMode;
 import cli.OpenTK.Graphics.ES20.BlendingFactorDest;
 import cli.OpenTK.Graphics.ES20.BlendingFactorSrc;
 import cli.OpenTK.Graphics.ES20.ClearBufferMask;
 import cli.OpenTK.Graphics.ES20.CullFaceMode;
 import cli.OpenTK.Graphics.ES20.DepthFunction;
+import cli.OpenTK.Graphics.ES20.DrawElementsType;
 import cli.OpenTK.Graphics.ES20.EnableCap;
+import cli.OpenTK.Graphics.ES20.FrontFaceDirection;
 import cli.OpenTK.Graphics.ES20.GL;
+import cli.OpenTK.Graphics.ES20.GetPName;
+import cli.OpenTK.Graphics.ES20.HintMode;
+import cli.OpenTK.Graphics.ES20.HintTarget;
+import cli.OpenTK.Graphics.ES20.PixelFormat;
 import cli.OpenTK.Graphics.ES20.PixelInternalFormat;
+import cli.OpenTK.Graphics.ES20.PixelStoreParameter;
 import cli.OpenTK.Graphics.ES20.ShaderType;
+import cli.OpenTK.Graphics.ES20.StringName;
 import cli.OpenTK.Graphics.ES20.TextureTarget;
 import cli.OpenTK.Graphics.ES20.TextureUnit;
 import cli.System.IntPtr;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.utils.BufferUtils;
-import com.sun.org.apache.xerces.internal.parsers.IntegratedParserConfiguration;
 
 public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
@@ -86,16 +92,15 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glCompressedTexImage2D (int target, int level, int internalformat, int width, int height, int border,
 		int imageSize, Buffer data) {
-		// GL.CompressedTexImage2D(TextureTarget.wrap(target), level, PixelInternalFormat.wrap(internalformat), //
-		// width, height, border, imageSize, null);
-		throw new UnsupportedOperationException();
+		GL.CompressedTexImage2D(TextureTarget.wrap(target), level, PixelInternalFormat.wrap(internalformat), //
+			width, height, border, imageSize, IntPtr.op_Explicit(BufferUtils.getUnsafeByteBufferAddress((ByteBuffer)data)));
 	}
 
 	@Override
 	public void glCompressedTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format,
 		int imageSize, Buffer data) {
-		// IntPtr.op_Explicit(BufferUtils.getBufferPointer(data));
-		throw new UnsupportedOperationException();
+		GL.CompressedTexSubImage2D(TextureTarget.wrap(target), level, xoffset, yoffset, width, height, PixelFormat.wrap(format),
+			imageSize, IntPtr.op_Explicit(BufferUtils.getUnsafeByteBufferAddress((ByteBuffer)data)));
 	}
 
 	@Override
@@ -135,20 +140,18 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glDisable (int cap) {
-		// TODO Auto-generated function stub
-
+		GL.Disable(EnableCap.wrap(cap));
 	}
 
 	@Override
 	public void glDrawArrays (int mode, int first, int count) {
-		// TODO Auto-generated function stub
-
+		GL.DrawArrays(BeginMode.wrap(mode), first, count);
 	}
 
 	@Override
 	public void glDrawElements (int mode, int count, int type, Buffer indices) {
-		// TODO Auto-generated function stub
-
+		GL.DrawElements(BeginMode.wrap(mode), count, DrawElementsType.wrap(type), // 
+			IntPtr.op_Explicit(BufferUtils.getUnsafeByteBufferAddress((ByteBuffer)indices)));
 	}
 
 	@Override
@@ -168,14 +171,12 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glFrontFace (int mode) {
-		// TODO Auto-generated function stub
-
+		GL.FrontFace(FrontFaceDirection.wrap(mode));
 	}
 
 	@Override
 	public void glGenTextures (int n, IntBuffer textures) {
-		// TODO Auto-generated function stub
-
+		GL.GenTextures(n, textures.array());
 	}
 
 	@Override
@@ -185,31 +186,27 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glGetIntegerv (int pname, IntBuffer params) {
-		// TODO Auto-generated function stub
+		GL.GetInteger(GetPName.wrap(pname), params.array());
 	}
 
 	@Override
 	public String glGetString (int name) {
-		// TODO Auto-generated function stub
-		return "";
+		return GL.GetString(StringName.wrap(name));
 	}
 
 	@Override
 	public void glHint (int target, int mode) {
-		// TODO Auto-generated function stub
-
+		GL.Hint(HintTarget.wrap(target), HintMode.wrap(mode));
 	}
 
 	@Override
 	public void glLineWidth (float width) {
-		// TODO Auto-generated function stub
-
+		GL.LineWidth(width);
 	}
 
 	@Override
 	public void glPixelStorei (int pname, int param) {
-		// TODO Auto-generated function stub
-
+		GL.PixelStore(PixelStoreParameter.wrap(pname), param);
 	}
 
 	@Override
