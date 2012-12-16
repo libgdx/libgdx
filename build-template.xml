@@ -21,6 +21,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 	<property name="jniBuildClass" value="" />
 	<path id="classpath" />
 	<zipfileset id="jarfiles" dir="." excludes="**" />
+	<property name="targetClasses" value="${target}/java" />
 
 	<!-- clean output directories -->
 	<target name="clean">
@@ -39,18 +40,18 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<mkdir dir="${libs}/windows64" />
 
 		<mkdir dir="${target}" />
-		<mkdir dir="${target}/java" />
+		<mkdir dir="${targetClasses}" />
 		<!-- need to copy the internal font to target if compiling the gdx core :/ -->
 		<copy failonerror="false" tofile="${target}/java/com/badlogic/gdx/utils/arial-15.png" file="src/com/badlogic/gdx/utils/arial-15.png" />
 		<copy failonerror="false" tofile="${target}/java/com/badlogic/gdx/utils/arial-15.fnt" file="src/com/badlogic/gdx/utils/arial-15.fnt" />
 		<!-- need to copy jni headers for gdx-jnigen -->
-		<copy failonerror="false" todir="${target}/java">
+		<copy failonerror="false" todir="${targetClasses}">
 			<fileset dir="src">
 				<include name="**/*.h"/>
 				<include name="**/*.template"/>
 			</fileset>
 		</copy>
-		<copy failonerror="false" todir="${target}/java">
+		<copy failonerror="false" todir="${targetClasses}">
 			<fileset dir="src">
 				<include name="**/*.gwt.xml"/>
 			</fileset>
@@ -59,7 +60,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 
 	<!-- compiles the java code -->
 	<target name="compile" depends="init">
-		<javac debug="on" encoding="utf-8" srcdir="${src}" destdir="${target}/java">
+		<javac debug="on" encoding="utf-8" srcdir="${src}" destdir="${targetClasses}">
 			<classpath>
 				<path refid="classpath"/>
 				<fileset file="${libs}/*.jar">
@@ -80,7 +81,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 	<!-- if jni generation is enabled, then generates all the native code to be compiled later by invoking the specified build class -->
 	<target name="generate-jni" depends="checkGenerateJniEnabled, compile" if="generateJniEnabled">
 		<java classname="${jniBuildClass}" classpathref="classpath" dir="${basedir}" fork="true">
-			<classpath id="classes" path="${target}/java" />
+			<classpath id="classes" path="${targetClasses}" />
 		</java>
 	</target>
 
