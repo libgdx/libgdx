@@ -48,7 +48,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 
 	IOSApplication app;
 	IOSInput input;
-	IOSGLES20 gl20;
+	GL20 gl20;
 	int width;
 	int height;
 	long lastFrameTime;
