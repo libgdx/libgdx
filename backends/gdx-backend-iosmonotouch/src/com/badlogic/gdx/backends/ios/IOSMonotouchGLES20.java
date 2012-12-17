@@ -30,6 +30,7 @@ import cli.OpenTK.Graphics.ES20.CullFaceMode;
 import cli.OpenTK.Graphics.ES20.DepthFunction;
 import cli.OpenTK.Graphics.ES20.DrawElementsType;
 import cli.OpenTK.Graphics.ES20.EnableCap;
+import cli.OpenTK.Graphics.ES20.FramebufferTarget;
 import cli.OpenTK.Graphics.ES20.FrontFaceDirection;
 import cli.OpenTK.Graphics.ES20.GL;
 import cli.OpenTK.Graphics.ES20.GetPName;
@@ -40,9 +41,13 @@ import cli.OpenTK.Graphics.ES20.PixelInternalFormat;
 import cli.OpenTK.Graphics.ES20.PixelStoreParameter;
 import cli.OpenTK.Graphics.ES20.PixelType;
 import cli.OpenTK.Graphics.ES20.ProgramParameter;
+import cli.OpenTK.Graphics.ES20.RenderbufferTarget;
 import cli.OpenTK.Graphics.ES20.ShaderParameter;
 import cli.OpenTK.Graphics.ES20.ShaderType;
+import cli.OpenTK.Graphics.ES20.StencilFunction;
+import cli.OpenTK.Graphics.ES20.StencilOp;
 import cli.OpenTK.Graphics.ES20.StringName;
+import cli.OpenTK.Graphics.ES20.TextureParameterName;
 import cli.OpenTK.Graphics.ES20.TextureTarget;
 import cli.OpenTK.Graphics.ES20.TextureUnit;
 import cli.System.IntPtr;
@@ -52,7 +57,7 @@ import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.utils.BufferUtils;
 
 public class IOSMonotouchGLES20 implements GL20, GLCommon {
-	
+
 	private final int[] buffer1 = new int[1];
 
 	@Override
@@ -126,7 +131,8 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glDeleteTextures (int n, IntBuffer textures) {
-		GL.DeleteTextures(n, textures.array());
+		buffer1[0] = textures.get(0);
+		GL.DeleteTextures(n, buffer1);
 	}
 
 	@Override
@@ -183,7 +189,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glGenTextures (int n, IntBuffer textures) {
 		GL.GenTextures(n, buffer1);
-		textures.put(buffer1, 0, 1);
+		textures.put(buffer1, 0, buffer1.length);
 	}
 
 	@Override
@@ -193,6 +199,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glGetIntegerv (int pname, IntBuffer params) {
+		// uses it directly since it should be a direct buffer?...
 		GL.GetInteger(GetPName.wrap(pname), params.array());
 	}
 
@@ -229,26 +236,22 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glScissor (int x, int y, int width, int height) {
-		// TODO Auto-generated function stub
-
+		GL.Scissor(x, y, width, height);
 	}
 
 	@Override
 	public void glStencilFunc (int func, int ref, int mask) {
-		// TODO Auto-generated function stub
-
+		GL.StencilFunc(StencilFunction.wrap(func), ref, mask);
 	}
 
 	@Override
 	public void glStencilMask (int mask) {
-		// TODO Auto-generated function stub
-
+		GL.StencilMask(mask);
 	}
 
 	@Override
 	public void glStencilOp (int fail, int zfail, int zpass) {
-		// TODO Auto-generated function stub
-
+		GL.StencilOp(StencilOp.wrap(fail), StencilOp.wrap(zfail), StencilOp.wrap(zpass));
 	}
 
 	@Override
@@ -261,15 +264,14 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glTexParameterf (int target, int pname, float param) {
-		// TODO Auto-generated function stub
-
+		GL.TexParameter(TextureTarget.wrap(target), TextureParameterName.wrap(pname), param);
 	}
 
 	@Override
 	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
 		Buffer pixels) {
-		// TODO Auto-generated function stub
-
+		GL.TexSubImage2D(TextureTarget.wrap(target), level, xoffset, yoffset, width, height, PixelFormat.wrap(format),
+			PixelType.wrap(type), IntPtr.op_Explicit(BufferUtils.getUnsafeByteBufferAddress((ByteBuffer)pixels)));
 	}
 
 	@Override
@@ -294,12 +296,12 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glBindFramebuffer (int target, int framebuffer) {
-		// TODO Auto-generated function stub
+		GL.BindFramebuffer(FramebufferTarget.wrap(target), framebuffer);
 	}
 
 	@Override
 	public void glBindRenderbuffer (int target, int renderbuffer) {
-		// TODO Auto-generated function stub
+		GL.BindRenderbuffer(RenderbufferTarget.wrap(target), renderbuffer);
 	}
 
 	@Override
@@ -517,7 +519,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 		// TODO Auto-generated function stub
 
 	}
-	
+
 	@Override
 	public void glGetShaderiv (int shader, int pname, IntBuffer params) {
 		GL.GetShader(shader, ShaderParameter.wrap(pname), buffer1);
