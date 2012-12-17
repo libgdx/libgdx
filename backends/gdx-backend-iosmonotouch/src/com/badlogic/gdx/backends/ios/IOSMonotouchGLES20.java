@@ -28,6 +28,7 @@ import cli.OpenTK.Graphics.ES20.BlendEquationMode;
 import cli.OpenTK.Graphics.ES20.BlendingFactorDest;
 import cli.OpenTK.Graphics.ES20.BlendingFactorSrc;
 import cli.OpenTK.Graphics.ES20.BufferTarget;
+import cli.OpenTK.Graphics.ES20.BufferUsage;
 import cli.OpenTK.Graphics.ES20.ClearBufferMask;
 import cli.OpenTK.Graphics.ES20.CullFaceMode;
 import cli.OpenTK.Graphics.ES20.DepthFunction;
@@ -196,6 +197,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glGenTextures (int n, IntBuffer textures) {
 		GL.GenTextures(n, intArray);
+		textures.position(0);
 		textures.put(intArray, 0, n);
 	}
 
@@ -207,6 +209,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glGetIntegerv (int pname, IntBuffer buffer) {
 		GL.GetInteger(GetPName.wrap(pname), intArray);
+		buffer.position(0);
 		buffer.put(intArray, 0, buffer.remaining());
 	}
 
@@ -333,14 +336,14 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glBufferData (int target, int size, Buffer data, int usage) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("OpenTK API expects an IntPtr for the size which seems to be wrong");
+		GL.BufferData(BufferTarget.wrap(target), IntPtr.op_Explicit(size),
+			IntPtr.op_Explicit(BufferUtils.getUnsafeBufferAddress(data)), BufferUsage.wrap(usage));
 	}
 
 	@Override
 	public void glBufferSubData (int target, int offset, int size, Buffer data) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("OpenTK API expects an IntPtr for the size and offset which seems to be wrong");
+		GL.BufferSubData(BufferTarget.wrap(target), IntPtr.op_Explicit(offset), IntPtr.op_Explicit(size),
+			IntPtr.op_Explicit(BufferUtils.getUnsafeBufferAddress(data)));
 	}
 
 	@Override
@@ -426,6 +429,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glGenBuffers (int n, IntBuffer buffers) {
 		GL.GenBuffers(n, intArray);
+		buffers.position(0);
 		buffers.put(intArray, 0, n);
 	}
 
@@ -437,12 +441,14 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glGenFramebuffers (int n, IntBuffer buffers) {
 		GL.GenFramebuffers(n, intArray);
+		buffers.position(0);
 		buffers.put(intArray, 0, n);
 	}
 
 	@Override
 	public void glGenRenderbuffers (int n, IntBuffer buffers) {
 		GL.GenRenderbuffers(n, intArray);
+		buffers.position(0);
 		buffers.put(intArray, 0, n);
 	}
 
