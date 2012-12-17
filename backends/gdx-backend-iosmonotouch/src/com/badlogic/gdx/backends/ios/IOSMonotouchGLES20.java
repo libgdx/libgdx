@@ -21,6 +21,8 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import cli.OpenTK.Graphics.ES20.ActiveAttribType;
+import cli.OpenTK.Graphics.ES20.ActiveUniformType;
 import cli.OpenTK.Graphics.ES20.BeginMode;
 import cli.OpenTK.Graphics.ES20.BlendEquationMode;
 import cli.OpenTK.Graphics.ES20.BlendingFactorDest;
@@ -445,16 +447,36 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 		buffers.put(intArray, 0, n);
 	}
 
+	private final ActiveAttribType[] activeAttribTypes = new ActiveAttribType[1];
+
 	@Override
 	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		String activeAttrib = GL.GetActiveAttrib(program, index, intArray, activeAttribTypes);
+		size.put(intArray, 0, size.remaining());
+		if (type instanceof IntBuffer) {
+			IntBuffer intBuffer = (IntBuffer)type;
+			for (int i = 0; i < activeAttribTypes.length; i++)
+				intBuffer.put(activeAttribTypes[i].Value);
+			return activeAttrib;
+		} else {
+			throw new UnsupportedOperationException("expected IntBuffer for type parameter");
+		}
 	}
+	
+	private final ActiveUniformType[] activeUniformTypes = new ActiveUniformType[1];
 
 	@Override
 	public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		String activeUniform = GL.GetActiveUniform(program, index, intArray, activeUniformTypes);
+		size.put(intArray, 0, size.remaining());
+		if (type instanceof IntBuffer) {
+			IntBuffer intBuffer = (IntBuffer)type;
+			for (int i = 0; i < activeUniformTypes.length; i++)
+				intBuffer.put(activeUniformTypes[i].Value);
+			return activeUniform;
+		} else {
+			throw new UnsupportedOperationException("expected IntBuffer for type parameter");
+		}
 	}
 
 	@Override
