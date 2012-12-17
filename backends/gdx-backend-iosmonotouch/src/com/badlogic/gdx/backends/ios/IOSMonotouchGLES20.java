@@ -43,6 +43,7 @@ import cli.OpenTK.Graphics.ES20.PixelInternalFormat;
 import cli.OpenTK.Graphics.ES20.PixelStoreParameter;
 import cli.OpenTK.Graphics.ES20.PixelType;
 import cli.OpenTK.Graphics.ES20.ProgramParameter;
+import cli.OpenTK.Graphics.ES20.RenderbufferInternalFormat;
 import cli.OpenTK.Graphics.ES20.RenderbufferTarget;
 import cli.OpenTK.Graphics.ES20.ShaderParameter;
 import cli.OpenTK.Graphics.ES20.ShaderType;
@@ -332,20 +333,18 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glBufferData (int target, int size, Buffer data, int usage) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("OpenTK API expects an IntPtr for the size which seems to be wrong");
 	}
 
 	@Override
 	public void glBufferSubData (int target, int offset, int size, Buffer data) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("OpenTK API expects an IntPtr for the size and offset which seems to be wrong");
 	}
 
 	@Override
 	public int glCheckFramebufferStatus (int target) {
-		// TODO Auto-generated function stub
-		return 0;
-
+		return GL.CheckFramebufferStatus(FramebufferTarget.wrap(target)).Value;
 	}
 
 	@Override
@@ -419,83 +418,78 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glFramebufferTexture2D (int target, int attachment, int textarget, int texture, int level) {
-		// TODO Auto-generated function stub
-
+		GL.FramebufferTexture2D(FramebufferTarget.wrap(target), FramebufferSlot.wrap(attachment), TextureTarget.wrap(textarget),
+			texture, level);
 	}
 
 	@Override
 	public void glGenBuffers (int n, IntBuffer buffers) {
-		// TODO Auto-generated function stub
-
+		GL.GenBuffers(n, intArray);
+		buffers.put(intArray, 0, n);
 	}
 
 	@Override
 	public void glGenerateMipmap (int target) {
-		// TODO Auto-generated function stub
-
+		GL.GenerateMipmap(TextureTarget.wrap(target));
 	}
 
 	@Override
-	public void glGenFramebuffers (int n, IntBuffer framebuffers) {
-		// TODO Auto-generated function stub
-
+	public void glGenFramebuffers (int n, IntBuffer buffers) {
+		GL.GenFramebuffers(n, intArray);
+		buffers.put(intArray, 0, n);
 	}
 
 	@Override
-	public void glGenRenderbuffers (int n, IntBuffer renderbuffers) {
-		// TODO Auto-generated function stub
-
+	public void glGenRenderbuffers (int n, IntBuffer buffers) {
+		GL.GenRenderbuffers(n, intArray);
+		buffers.put(intArray, 0, n);
 	}
 
 	@Override
 	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
 		// TODO Auto-generated function stub
-		return null;
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
 	public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type) {
 		// TODO Auto-generated function stub
-		return null;
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
 	public void glGetAttachedShaders (int program, int maxcount, Buffer count, IntBuffer shaders) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
 	public int glGetAttribLocation (int program, String name) {
-		// TODO Auto-generated function stub
-		return 0;
-
+		return GL.GetAttribLocation(program, name);
 	}
 
 	@Override
 	public void glGetBooleanv (int pname, Buffer params) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
 	public void glGetBufferParameteriv (int target, int pname, IntBuffer params) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
 	public void glGetFloatv (int pname, FloatBuffer params) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
 	public void glGetFramebufferAttachmentParameteriv (int target, int attachment, int pname, IntBuffer params) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
@@ -512,7 +506,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glGetRenderbufferParameteriv (int target, int pname, IntBuffer params) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
@@ -529,37 +523,37 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glGetShaderPrecisionFormat (int shadertype, int precisiontype, IntBuffer range, IntBuffer precision) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
 	public void glGetShaderSource (int shader, int bufsize, Buffer length, String source) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
 	public void glGetTexParameterfv (int target, int pname, FloatBuffer params) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
 	public void glGetTexParameteriv (int target, int pname, IntBuffer params) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
 	public void glGetUniformfv (int program, int location, FloatBuffer params) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
 	public void glGetUniformiv (int program, int location, IntBuffer params) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
@@ -570,40 +564,34 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glGetVertexAttribfv (int index, int pname, FloatBuffer params) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
 	public void glGetVertexAttribiv (int index, int pname, IntBuffer params) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
 	public void glGetVertexAttribPointerv (int index, int pname, Buffer pointer) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
 	public boolean glIsBuffer (int buffer) {
-		// TODO Auto-generated function stub
-		return false;
-
+		return GL.IsBuffer(buffer);
 	}
 
 	@Override
 	public boolean glIsEnabled (int cap) {
-		// TODO Auto-generated function stub
-		return false;
-
+		return GL.IsEnabled(EnableCap.wrap(cap));
 	}
 
 	@Override
 	public boolean glIsFramebuffer (int framebuffer) {
-		// TODO Auto-generated function stub
-		return false;
-
+		return GL.IsFramebuffer(framebuffer);
 	}
 
 	@Override
@@ -615,23 +603,17 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public boolean glIsRenderbuffer (int renderbuffer) {
-		// TODO Auto-generated function stub
-		return false;
-
+		return GL.IsRenderbuffer(renderbuffer);
 	}
 
 	@Override
 	public boolean glIsShader (int shader) {
-		// TODO Auto-generated function stub
-		return false;
-
+		return GL.IsShader(shader);
 	}
 
 	@Override
 	public boolean glIsTexture (int texture) {
-		// TODO Auto-generated function stub
-		return false;
-
+		return GL.IsTexture(texture);
 	}
 
 	@Override
@@ -641,26 +623,23 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glReleaseShaderCompiler () {
-		// TODO Auto-generated function stub
-
+		GL.ReleaseShaderCompiler();
 	}
 
 	@Override
 	public void glRenderbufferStorage (int target, int internalformat, int width, int height) {
-		// TODO Auto-generated function stub
-
+		GL.RenderbufferStorage(RenderbufferTarget.wrap(target), RenderbufferInternalFormat.wrap(internalformat), width, height);
 	}
 
 	@Override
 	public void glSampleCoverage (float value, boolean invert) {
-		// TODO Auto-generated function stub
-
+		GL.SampleCoverage(value, invert);
 	}
 
 	@Override
 	public void glShaderBinary (int n, IntBuffer shaders, int binaryformat, Buffer binary, int length) {
 		// TODO Auto-generated function stub
-
+		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override
@@ -670,20 +649,17 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glStencilFuncSeparate (int face, int func, int ref, int mask) {
-		// TODO Auto-generated function stub
-
+		GL.StencilFuncSeparate(CullFaceMode.wrap(face), StencilFunction.wrap(func), ref, mask);
 	}
 
 	@Override
 	public void glStencilMaskSeparate (int face, int mask) {
-		// TODO Auto-generated function stub
-
+		GL.StencilMaskSeparate(CullFaceMode.wrap(face), mask);
 	}
 
 	@Override
 	public void glStencilOpSeparate (int face, int fail, int zfail, int zpass) {
-		// TODO Auto-generated function stub
-
+		GL.StencilOpSeparate(CullFaceMode.wrap(face), StencilOp.wrap(fail), StencilOp.wrap(zfail), StencilOp.wrap(zpass));
 	}
 
 	@Override
