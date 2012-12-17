@@ -31,6 +31,7 @@
 	 
 %}
 CREATE_POOLED_TYPEMAP(btVector3, Vector3, "Lcom/badlogic/gdx/math/Vector3;", Vector3_to_btVector3, btVector3_to_Vector3);
+ENABLE_POOLED_TYPEMAP(btVector3, Vector3, "Lcom/badlogic/gdx/math/Vector3;");
 
 // Quaternion:
 %{
@@ -47,10 +48,10 @@ SWIGINTERN inline void Quaternion_to_btQuaternion(JNIEnv * jenv, btQuaternion & 
 	}
 	
 	target.setValue(
-	jenv->GetFloatField(source, xField),
-	jenv->GetFloatField(source, yField),
-	jenv->GetFloatField(source, zField),
-	jenv->GetFloatField(source, wField));
+			jenv->GetFloatField(source, xField),
+			jenv->GetFloatField(source, yField),
+			jenv->GetFloatField(source, zField),
+			jenv->GetFloatField(source, wField));
 }
 
 SWIGINTERN inline void btQuaternion_to_Quaternion(JNIEnv * jenv, jobject target, const btQuaternion & source) {
@@ -71,7 +72,7 @@ SWIGINTERN inline void btQuaternion_to_Quaternion(JNIEnv * jenv, jobject target,
 }
 %}
 CREATE_POOLED_TYPEMAP(btQuaternion, Quaternion, "Lcom/badlogic/gdx/math/Quaternion;", Quaternion_to_btQuaternion, btQuaternion_to_Quaternion);
-
+ENABLE_POOLED_TYPEMAP(btQuaternion, Quaternion, "Lcom/badlogic/gdx/math/Quaternion;");
 
 // Matrix3:
 %{
@@ -123,6 +124,7 @@ SWIGINTERN inline void btMatrix3_to_Matrix3(JNIEnv * jenv, jobject target, const
 }
 %}
 CREATE_POOLED_TYPEMAP(btMatrix3x3, Matrix3, "Lcom/badlogic/gdx/math/Matrix3;", Matrix3_to_btMatrix3, btMatrix3_to_Matrix3);
+ENABLE_POOLED_TYPEMAP(btMatrix3x3, Matrix3, "Lcom/badlogic/gdx/math/Matrix3;");
 
 // Matrix4:
 %{
@@ -154,11 +156,12 @@ SWIGINTERN inline void btTransform_to_Matrix4(JNIEnv * jenv, jobject target, con
 	
 	jfloatArray valArray = (jfloatArray) jenv->GetObjectField(target, valField);
 	jfloat * elements = jenv->GetFloatArrayElements(valArray, NULL);
-	
+
 	source.getOpenGLMatrix(elements);
 	
-	jenv->ReleaseFloatArrayElements(valArray, elements, 0);  
+	jenv->ReleaseFloatArrayElements(valArray, elements, 0);
 	jenv->DeleteLocalRef(valArray);
 }
 %}
 CREATE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;", Matrix4_to_btTransform, btTransform_to_Matrix4);
+ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");

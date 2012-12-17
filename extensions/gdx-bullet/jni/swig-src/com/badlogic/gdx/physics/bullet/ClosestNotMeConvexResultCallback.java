@@ -45,9 +45,9 @@ public class ClosestNotMeConvexResultCallback extends ClosestConvexResultCallbac
   }
 
   public btCollisionObject getM_me() {
-    long cPtr = gdxBulletJNI.ClosestNotMeConvexResultCallback_m_me_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObject(cPtr, false);
-  }
+	long cPtr = gdxBulletJNI.ClosestNotMeConvexResultCallback_m_me_get(swigCPtr, this);
+	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+}
 
   public void setM_allowedPenetration(float value) {
     gdxBulletJNI.ClosestNotMeConvexResultCallback_m_allowedPenetration_set(swigCPtr, this, value);

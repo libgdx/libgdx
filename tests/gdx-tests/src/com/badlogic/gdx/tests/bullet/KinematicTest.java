@@ -24,11 +24,12 @@ import com.badlogic.gdx.physics.bullet.gdxBullet;
 
 /** @author xoppa */
 public class KinematicTest extends BaseBulletTest {
-	Entity kinematicBox, kinematicBox1, kinematicBox2, kinematicBox3;
+	BulletEntity kinematicBox, kinematicBox1, kinematicBox2, kinematicBox3;
 	Vector3 position;
 	final static Vector3 position1 = new Vector3(5f, 0.5f, 0f);
 	final static Vector3 position2 = new Vector3(8f, 0.5f, 0f);
 	final static Vector3 position3 = new Vector3(10f, 0.5f, 0f);
+	float angle;
 	
 	@Override
 	public void create () {
@@ -49,24 +50,31 @@ public class KinematicTest extends BaseBulletTest {
 		kinematicBox3.body.setCollisionFlags(kinematicBox3.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);;
 		// This makes bullet call btMotionState#getWorldTransform on every update:
 		kinematicBox3.body.setActivationState(gdxBullet.DISABLE_DEACTIVATION);
+		angle = 360f;
 	}
 	
-	private float angle = 360f;
 	@Override
 	public void render () {
 		angle = angle + Gdx.graphics.getDeltaTime() * 360f / 5f;
-		kinematicBox3.worldTransform.transform.idt().rotate(Vector3.Y, 360f - 2f * angle).translate(position3);
+		kinematicBox3.transform.idt().rotate(Vector3.Y, 360f - 2f * angle).translate(position3);
 		
 		if (angle >= 360f) {
 			angle = 0;
 			kinematicBox = (kinematicBox == kinematicBox1) ? kinematicBox2 : kinematicBox1;
 			position = (position == position1) ? position2 : position1;
 		}
-		kinematicBox.worldTransform.transform.idt().rotate(Vector3.Y, angle).translate(position);
+		kinematicBox.transform.idt().rotate(Vector3.Y, angle).translate(position);
 		// This makes bullet call btMotionState#getWorldTransform once:
 		kinematicBox.body.setActivationState(gdxBullet.ACTIVE_TAG);
 		
 		super.render();
+	}
+	
+	@Override
+	public void dispose () {
+		kinematicBox = kinematicBox1 = kinematicBox2 = kinematicBox3 = null;
+		position = null;
+		super.dispose();
 	}
 	
 	@Override
