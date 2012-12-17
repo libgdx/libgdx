@@ -39,6 +39,8 @@ import cli.OpenTK.Graphics.ES20.PixelFormat;
 import cli.OpenTK.Graphics.ES20.PixelInternalFormat;
 import cli.OpenTK.Graphics.ES20.PixelStoreParameter;
 import cli.OpenTK.Graphics.ES20.PixelType;
+import cli.OpenTK.Graphics.ES20.ProgramParameter;
+import cli.OpenTK.Graphics.ES20.ShaderParameter;
 import cli.OpenTK.Graphics.ES20.ShaderType;
 import cli.OpenTK.Graphics.ES20.StringName;
 import cli.OpenTK.Graphics.ES20.TextureTarget;
@@ -50,6 +52,8 @@ import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.utils.BufferUtils;
 
 public class IOSMonotouchGLES20 implements GL20, GLCommon {
+	
+	private final int[] buffer1 = new int[1];
 
 	@Override
 	public void glActiveTexture (int texture) {
@@ -178,7 +182,8 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glGenTextures (int n, IntBuffer textures) {
-		GL.GenTextures(n, textures.array());
+		GL.GenTextures(n, buffer1);
+		textures.put(buffer1, 0, 1);
 	}
 
 	@Override
@@ -370,7 +375,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glDeleteProgram (int program) {
 		// TODO Auto-generated function stub
-		
+
 	}
 
 	@Override
@@ -498,15 +503,13 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glGetProgramiv (int program, int pname, IntBuffer params) {
-		// TODO Auto-generated function stub
-
+		GL.GetProgram(program, ProgramParameter.wrap(pname), buffer1);
+		params.put(buffer1, 0, buffer1.length);
 	}
 
 	@Override
 	public String glGetProgramInfoLog (int program) {
-		// TODO Auto-generated function stub
-		return null;
-
+		return GL.GetProgramInfoLog(program);
 	}
 
 	@Override
@@ -514,18 +517,16 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 		// TODO Auto-generated function stub
 
 	}
-
+	
 	@Override
 	public void glGetShaderiv (int shader, int pname, IntBuffer params) {
-		// TODO Auto-generated function stub
-
+		GL.GetShader(shader, ShaderParameter.wrap(pname), buffer1);
+		params.put(buffer1, 0, buffer1.length);
 	}
 
 	@Override
 	public String glGetShaderInfoLog (int shader) {
-		// TODO Auto-generated function stub
-		return null;
-
+		return GL.GetShaderInfoLog(shader);
 	}
 
 	@Override
@@ -566,9 +567,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public int glGetUniformLocation (int program, String name) {
-		// TODO Auto-generated function stub
-		return 0;
-
+		return GL.GetUniformLocation(program, name);
 	}
 
 	@Override
@@ -640,8 +639,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glLinkProgram (int program) {
-		// TODO Auto-generated function stub
-
+		GL.LinkProgram(program);
 	}
 
 	@Override
@@ -670,8 +668,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glShaderSource (int shader, String string) {
-		// TODO Auto-generated function stub
-
+		GL.ShaderSource(shader, string);
 	}
 
 	@Override
@@ -712,122 +709,102 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform1f (int location, float x) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform1(location, x);
 	}
 
 	@Override
 	public void glUniform1fv (int location, int count, FloatBuffer v) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform1(location, count, v.array());
 	}
 
 	@Override
 	public void glUniform1i (int location, int x) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform1(location, x);
 	}
 
 	@Override
 	public void glUniform1iv (int location, int count, IntBuffer v) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform1(location, count, v.array());
 	}
 
 	@Override
 	public void glUniform2f (int location, float x, float y) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform2(location, x, y);
 	}
 
 	@Override
 	public void glUniform2fv (int location, int count, FloatBuffer v) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform2(location, count, v.array());
 	}
 
 	@Override
 	public void glUniform2i (int location, int x, int y) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform2(location, x, y);
 	}
 
 	@Override
 	public void glUniform2iv (int location, int count, IntBuffer v) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform2(location, count, v.array());
 	}
 
 	@Override
 	public void glUniform3f (int location, float x, float y, float z) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform3(location, x, y, z);
 	}
 
 	@Override
 	public void glUniform3fv (int location, int count, FloatBuffer v) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform3(location, count, v.array());
 	}
 
 	@Override
 	public void glUniform3i (int location, int x, int y, int z) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform3(location, x, y, z);
 	}
 
 	@Override
 	public void glUniform3iv (int location, int count, IntBuffer v) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform3(location, count, v.array());
 	}
 
 	@Override
 	public void glUniform4f (int location, float x, float y, float z, float w) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform4(location, x, y, z, w);
 	}
 
 	@Override
 	public void glUniform4fv (int location, int count, FloatBuffer v) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform4(location, count, v.array());
 	}
 
 	@Override
 	public void glUniform4i (int location, int x, int y, int z, int w) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform4(location, x, y, z, w);
 	}
 
 	@Override
 	public void glUniform4iv (int location, int count, IntBuffer v) {
-		// TODO Auto-generated function stub
-
+		GL.Uniform4(location, count, v.array());
 	}
 
 	@Override
 	public void glUniformMatrix2fv (int location, int count, boolean transpose, FloatBuffer value) {
-		// TODO Auto-generated function stub
-
+		GL.UniformMatrix2(location, count, transpose, value.array());
 	}
 
 	@Override
 	public void glUniformMatrix3fv (int location, int count, boolean transpose, FloatBuffer value) {
-		// TODO Auto-generated function stub
-
+		GL.UniformMatrix3(location, count, transpose, value.array());
 	}
 
 	@Override
 	public void glUniformMatrix4fv (int location, int count, boolean transpose, FloatBuffer value) {
-		// TODO Auto-generated function stub
-
+		GL.UniformMatrix4(location, count, transpose, value.array());
 	}
 
 	@Override
 	public void glUseProgram (int program) {
-		// TODO Auto-generated function stub
-
+		GL.UseProgram(program);
 	}
 
 	@Override
