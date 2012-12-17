@@ -48,6 +48,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<copy failonerror="false" todir="${targetClasses}">
 			<fileset dir="src">
 				<include name="**/*.h"/>
+				<include name="**/*.c"/>
 				<include name="**/*.template"/>
 			</fileset>
 		</copy>
@@ -139,7 +140,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 
 		<!-- class jar -->
 		<jar destfile="${distDir}/${jar}.jar">
-			<fileset dir="${target}/java"/>
+			<fileset dir="${targetClasses}"/>
 			<!-- merge dependencies found in libs/ folder, exclude native, debug and android/gwt jars -->
 			<zipgroupfileset file="${libs}/*.jar">
 				<exclude name="*-natives.jar"/>
