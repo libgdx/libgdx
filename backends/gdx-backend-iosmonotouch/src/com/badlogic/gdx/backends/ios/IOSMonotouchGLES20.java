@@ -111,14 +111,14 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	public void glCompressedTexImage2D (int target, int level, int internalformat, int width, int height, int border,
 		int imageSize, Buffer data) {
 		GL.CompressedTexImage2D(TextureTarget.wrap(target), level, PixelInternalFormat.wrap(internalformat), //
-			width, height, border, imageSize, IntPtr.op_Explicit(BufferUtils.getUnsafeByteBufferAddress((ByteBuffer)data)));
+			width, height, border, imageSize, IntPtr.op_Explicit(BufferUtils.getUnsafeBufferAddress(data)));
 	}
 
 	@Override
 	public void glCompressedTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format,
 		int imageSize, Buffer data) {
 		GL.CompressedTexSubImage2D(TextureTarget.wrap(target), level, xoffset, yoffset, width, height, PixelFormat.wrap(format),
-			imageSize, IntPtr.op_Explicit(BufferUtils.getUnsafeByteBufferAddress((ByteBuffer)data)));
+			imageSize, IntPtr.op_Explicit(BufferUtils.getUnsafeBufferAddress(data)));
 	}
 
 	@Override
@@ -170,7 +170,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glDrawElements (int mode, int count, int type, Buffer indices) {
 		GL.DrawElements(BeginMode.wrap(mode), count, DrawElementsType.wrap(type), //
-			IntPtr.op_Explicit(BufferUtils.getUnsafeByteBufferAddress((ByteBuffer)indices)));
+			IntPtr.op_Explicit(BufferUtils.getUnsafeBufferAddress(indices)));
 	}
 
 	@Override
@@ -238,7 +238,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glReadPixels (int x, int y, int width, int height, int format, int type, Buffer pixels) {
 		GL.ReadPixels(x, y, width, height, PixelFormat.wrap(format), PixelType.wrap(type), //
-			IntPtr.op_Explicit(BufferUtils.getUnsafeByteBufferAddress((ByteBuffer)pixels)));
+			IntPtr.op_Explicit(BufferUtils.getUnsafeBufferAddress(pixels)));
 	}
 
 	@Override
@@ -265,8 +265,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
 		Buffer pixels) {
 		GL.TexImage2D(TextureTarget.wrap(target), level, PixelInternalFormat.wrap(internalformat), width, height, border,
-			PixelFormat.wrap(format), PixelType.wrap(type),
-			IntPtr.op_Explicit(BufferUtils.getUnsafeByteBufferAddress((ByteBuffer)pixels)));
+			PixelFormat.wrap(format), PixelType.wrap(type), IntPtr.op_Explicit(BufferUtils.getUnsafeBufferAddress(pixels)));
 	}
 
 	@Override
@@ -278,7 +277,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
 		Buffer pixels) {
 		GL.TexSubImage2D(TextureTarget.wrap(target), level, xoffset, yoffset, width, height, PixelFormat.wrap(format),
-			PixelType.wrap(type), IntPtr.op_Explicit(BufferUtils.getUnsafeByteBufferAddress((ByteBuffer)pixels)));
+			PixelType.wrap(type), IntPtr.op_Explicit(BufferUtils.getUnsafeBufferAddress(pixels)));
 	}
 
 	@Override
@@ -462,7 +461,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 			throw new UnsupportedOperationException("expected IntBuffer for type parameter");
 		}
 	}
-	
+
 	private final ActiveUniformType[] activeUniformTypes = new ActiveUniformType[1];
 
 	@Override
@@ -864,7 +863,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, Buffer ptr) {
 		GL.VertexAttribPointer(indx, size, VertexAttribPointerType.wrap(type), normalized, stride,
-			IntPtr.op_Explicit(BufferUtils.getUnsafeByteBufferAddress((ByteBuffer)ptr)));
+			IntPtr.op_Explicit(BufferUtils.getUnsafeBufferAddress(ptr)));
 	}
 
 	@Override
