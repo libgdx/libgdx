@@ -177,6 +177,7 @@ extensions/gdx-bullet/target/
 /gdx/jni/build*.xml
 /gdx/jni/com*.cpp
 /gdx/jni/com*.h
+/gdx/jni/Android.mk
 
 /tests/gdx-tests-android/bin
 /tests/gdx-tests-android/gen
