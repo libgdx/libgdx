@@ -64,8 +64,8 @@ import com.badlogic.gdx.utils.BufferUtils;
 
 public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
-	private final int[] intArray = new int[32];
-	private final float[] floatArray = new float[32];
+	private final int[] intArray = new int[64];
+	private final float[] floatArray = new float[64];
 
 	@Override
 	public void glActiveTexture (int texture) {
@@ -138,7 +138,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glDeleteTextures (int n, IntBuffer buffer) {
-		buffer.get(intArray, 0, buffer.remaining());
+		buffer.get(intArray, 0, n);
 		GL.DeleteTextures(n, intArray);
 	}
 
@@ -196,7 +196,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glGenTextures (int n, IntBuffer textures) {
 		GL.GenTextures(n, intArray);
-		textures.put(intArray, 0, textures.remaining());
+		textures.put(intArray, 0, n);
 	}
 
 	@Override
@@ -205,9 +205,9 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	}
 
 	@Override
-	public void glGetIntegerv (int pname, IntBuffer params) {
-		// uses it directly since it should be a direct buffer?...
-		GL.GetInteger(GetPName.wrap(pname), params.array());
+	public void glGetIntegerv (int pname, IntBuffer buffer) {
+		GL.GetInteger(GetPName.wrap(pname), intArray);
+		buffer.put(intArray, 0, buffer.remaining());
 	}
 
 	@Override
