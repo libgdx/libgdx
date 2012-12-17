@@ -22,6 +22,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import cli.OpenTK.Graphics.ES20.BeginMode;
+import cli.OpenTK.Graphics.ES20.BlendEquationMode;
 import cli.OpenTK.Graphics.ES20.BlendingFactorDest;
 import cli.OpenTK.Graphics.ES20.BlendingFactorSrc;
 import cli.OpenTK.Graphics.ES20.BufferTarget;
@@ -30,6 +31,7 @@ import cli.OpenTK.Graphics.ES20.CullFaceMode;
 import cli.OpenTK.Graphics.ES20.DepthFunction;
 import cli.OpenTK.Graphics.ES20.DrawElementsType;
 import cli.OpenTK.Graphics.ES20.EnableCap;
+import cli.OpenTK.Graphics.ES20.FramebufferSlot;
 import cli.OpenTK.Graphics.ES20.FramebufferTarget;
 import cli.OpenTK.Graphics.ES20.FrontFaceDirection;
 import cli.OpenTK.Graphics.ES20.GL;
@@ -50,6 +52,7 @@ import cli.OpenTK.Graphics.ES20.StringName;
 import cli.OpenTK.Graphics.ES20.TextureParameterName;
 import cli.OpenTK.Graphics.ES20.TextureTarget;
 import cli.OpenTK.Graphics.ES20.TextureUnit;
+import cli.OpenTK.Graphics.ES20.VertexAttribPointerType;
 import cli.System.IntPtr;
 
 import com.badlogic.gdx.graphics.GL20;
@@ -58,7 +61,8 @@ import com.badlogic.gdx.utils.BufferUtils;
 
 public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
-	private final int[] buffer1 = new int[1];
+	private final int[] intArray = new int[32];
+	private final float[] floatArray = new float[32];
 
 	@Override
 	public void glActiveTexture (int texture) {
@@ -130,9 +134,9 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	}
 
 	@Override
-	public void glDeleteTextures (int n, IntBuffer textures) {
-		buffer1[0] = textures.get(0);
-		GL.DeleteTextures(n, buffer1);
+	public void glDeleteTextures (int n, IntBuffer buffer) {
+		buffer.get(intArray, 0, buffer.remaining());
+		GL.DeleteTextures(n, intArray);
 	}
 
 	@Override
@@ -188,8 +192,8 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glGenTextures (int n, IntBuffer textures) {
-		GL.GenTextures(n, buffer1);
-		textures.put(buffer1, 0, buffer1.length);
+		GL.GenTextures(n, intArray);
+		textures.put(intArray, 0, textures.remaining());
 	}
 
 	@Override
@@ -306,26 +310,23 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glBlendColor (float red, float green, float blue, float alpha) {
-		// TODO Auto-generated function stub
-
+		GL.BlendColor(red, green, blue, alpha);
 	}
 
 	@Override
 	public void glBlendEquation (int mode) {
-		// TODO Auto-generated function stub
-
+		GL.BlendEquation(BlendEquationMode.wrap(mode));
 	}
 
 	@Override
 	public void glBlendEquationSeparate (int modeRGB, int modeAlpha) {
-		// TODO Auto-generated function stub
-
+		GL.BlendEquationSeparate(BlendEquationMode.wrap(modeRGB), BlendEquationMode.wrap(modeAlpha));
 	}
 
 	@Override
 	public void glBlendFuncSeparate (int srcRGB, int dstRGB, int srcAlpha, int dstAlpha) {
-		// TODO Auto-generated function stub
-
+		GL.BlendFuncSeparate(BlendingFactorSrc.wrap(srcRGB), BlendingFactorDest.wrap(dstRGB), BlendingFactorSrc.wrap(srcAlpha),
+			BlendingFactorDest.wrap(dstAlpha));
 	}
 
 	@Override
@@ -363,63 +364,57 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	}
 
 	@Override
-	public void glDeleteBuffers (int n, IntBuffer buffers) {
-		// TODO Auto-generated function stub
-
+	public void glDeleteBuffers (int n, IntBuffer buffer) {
+		buffer.get(intArray, 0, buffer.remaining());
+		GL.DeleteBuffers(n, intArray);
 	}
 
 	@Override
-	public void glDeleteFramebuffers (int n, IntBuffer framebuffers) {
-		// TODO Auto-generated function stub
-
+	public void glDeleteFramebuffers (int n, IntBuffer buffer) {
+		buffer.get(intArray, 0, buffer.remaining());
+		GL.DeleteFramebuffers(n, intArray);
 	}
 
 	@Override
 	public void glDeleteProgram (int program) {
-		// TODO Auto-generated function stub
-
+		GL.DeleteProgram(program);
 	}
 
 	@Override
-	public void glDeleteRenderbuffers (int n, IntBuffer renderbuffers) {
-		// TODO Auto-generated function stub
-
+	public void glDeleteRenderbuffers (int n, IntBuffer buffer) {
+		buffer.get(intArray, 0, buffer.remaining());
+		GL.DeleteRenderbuffers(n, intArray);
 	}
 
 	@Override
 	public void glDeleteShader (int shader) {
-		// TODO Auto-generated function stub
-
+		GL.DeleteShader(shader);
 	}
 
 	@Override
 	public void glDetachShader (int program, int shader) {
-		// TODO Auto-generated function stub
-
+		GL.DetachShader(program, shader);
 	}
 
 	@Override
 	public void glDisableVertexAttribArray (int index) {
-		// TODO Auto-generated function stub
-
+		GL.DisableVertexAttribArray(index);
 	}
 
 	@Override
 	public void glDrawElements (int mode, int count, int type, int indices) {
-		// TODO Auto-generated function stub
-
+		GL.DrawElements(BeginMode.wrap(mode), count, DrawElementsType.wrap(type), indices);
 	}
 
 	@Override
 	public void glEnableVertexAttribArray (int index) {
-		// TODO Auto-generated function stub
-
+		GL.EnableVertexAttribArray(index);
 	}
 
 	@Override
 	public void glFramebufferRenderbuffer (int target, int attachment, int renderbuffertarget, int renderbuffer) {
-		// TODO Auto-generated function stub
-
+		GL.FramebufferRenderbuffer(FramebufferTarget.wrap(target), FramebufferSlot.wrap(attachment),
+			RenderbufferTarget.wrap(renderbuffertarget), renderbuffer);
 	}
 
 	@Override
@@ -505,8 +500,8 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glGetProgramiv (int program, int pname, IntBuffer params) {
-		GL.GetProgram(program, ProgramParameter.wrap(pname), buffer1);
-		params.put(buffer1, 0, buffer1.length);
+		GL.GetProgram(program, ProgramParameter.wrap(pname), intArray);
+		params.put(intArray, 0, params.remaining());
 	}
 
 	@Override
@@ -522,8 +517,8 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glGetShaderiv (int shader, int pname, IntBuffer params) {
-		GL.GetShader(shader, ShaderParameter.wrap(pname), buffer1);
-		params.put(buffer1, 0, buffer1.length);
+		GL.GetShader(shader, ShaderParameter.wrap(pname), intArray);
+		params.put(intArray, 0, params.remaining());
 	}
 
 	@Override
@@ -693,20 +688,19 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glTexParameterfv (int target, int pname, FloatBuffer params) {
-		// TODO Auto-generated function stub
-
+		params.get(floatArray, 0, params.remaining());
+		GL.TexParameter(TextureTarget.wrap(target), TextureParameterName.wrap(pname), floatArray);
 	}
 
 	@Override
 	public void glTexParameteri (int target, int pname, int param) {
-		// TODO Auto-generated function stub
-
+		GL.TexParameter(TextureTarget.wrap(target), TextureParameterName.wrap(pname), param);
 	}
 
 	@Override
 	public void glTexParameteriv (int target, int pname, IntBuffer params) {
-		// TODO Auto-generated function stub
-
+		params.get(intArray, 0, params.remaining());
+		GL.TexParameter(TextureTarget.wrap(target), TextureParameterName.wrap(pname), intArray);
 	}
 
 	@Override
@@ -716,7 +710,8 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform1fv (int location, int count, FloatBuffer v) {
-		GL.Uniform1(location, count, v.array());
+		v.get(floatArray, 0, v.remaining());
+		GL.Uniform1(location, count, floatArray);
 	}
 
 	@Override
@@ -726,7 +721,8 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform1iv (int location, int count, IntBuffer v) {
-		GL.Uniform1(location, count, v.array());
+		v.get(intArray, 0, v.remaining());
+		GL.Uniform1(location, count, intArray);
 	}
 
 	@Override
@@ -736,7 +732,8 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform2fv (int location, int count, FloatBuffer v) {
-		GL.Uniform2(location, count, v.array());
+		v.get(floatArray, 0, v.remaining());
+		GL.Uniform2(location, count, floatArray);
 	}
 
 	@Override
@@ -746,7 +743,8 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform2iv (int location, int count, IntBuffer v) {
-		GL.Uniform2(location, count, v.array());
+		v.get(intArray, 0, v.remaining());
+		GL.Uniform2(location, count, intArray);
 	}
 
 	@Override
@@ -756,7 +754,8 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform3fv (int location, int count, FloatBuffer v) {
-		GL.Uniform3(location, count, v.array());
+		v.get(floatArray, 0, v.remaining());
+		GL.Uniform3(location, count, floatArray);
 	}
 
 	@Override
@@ -766,7 +765,8 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform3iv (int location, int count, IntBuffer v) {
-		GL.Uniform3(location, count, v.array());
+		v.get(intArray, 0, v.remaining());
+		GL.Uniform3(location, count, intArray);
 	}
 
 	@Override
@@ -776,7 +776,8 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform4fv (int location, int count, FloatBuffer v) {
-		GL.Uniform4(location, count, v.array());
+		v.get(floatArray, 0, v.remaining());
+		GL.Uniform4(location, count, floatArray);
 	}
 
 	@Override
@@ -786,22 +787,26 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform4iv (int location, int count, IntBuffer v) {
-		GL.Uniform4(location, count, v.array());
+		v.get(intArray, 0, v.remaining());
+		GL.Uniform4(location, count, intArray);
 	}
 
 	@Override
-	public void glUniformMatrix2fv (int location, int count, boolean transpose, FloatBuffer value) {
-		GL.UniformMatrix2(location, count, transpose, value.array());
+	public void glUniformMatrix2fv (int location, int count, boolean transpose, FloatBuffer v) {
+		v.get(floatArray, 0, v.remaining());
+		GL.UniformMatrix2(location, count, transpose, floatArray);
 	}
 
 	@Override
-	public void glUniformMatrix3fv (int location, int count, boolean transpose, FloatBuffer value) {
-		GL.UniformMatrix3(location, count, transpose, value.array());
+	public void glUniformMatrix3fv (int location, int count, boolean transpose, FloatBuffer v) {
+		v.get(floatArray, 0, v.remaining());
+		GL.UniformMatrix3(location, count, transpose, floatArray);
 	}
 
 	@Override
-	public void glUniformMatrix4fv (int location, int count, boolean transpose, FloatBuffer value) {
-		GL.UniformMatrix4(location, count, transpose, value.array());
+	public void glUniformMatrix4fv (int location, int count, boolean transpose, FloatBuffer v) {
+		v.get(floatArray, 0, v.remaining());
+		GL.UniformMatrix4(location, count, transpose, floatArray);
 	}
 
 	@Override
@@ -811,68 +816,62 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glValidateProgram (int program) {
-		// TODO Auto-generated function stub
-
+		GL.ValidateProgram(program);
 	}
 
 	@Override
 	public void glVertexAttrib1f (int indx, float x) {
-		// TODO Auto-generated function stub
-
+		GL.VertexAttrib1(indx, x);
 	}
 
 	@Override
-	public void glVertexAttrib1fv (int indx, FloatBuffer values) {
-		// TODO Auto-generated function stub
-
+	public void glVertexAttrib1fv (int indx, FloatBuffer v) {
+		v.get(floatArray, 0, v.remaining());
+		GL.VertexAttrib1(indx, floatArray);
 	}
 
 	@Override
 	public void glVertexAttrib2f (int indx, float x, float y) {
-		// TODO Auto-generated function stub
-
+		GL.VertexAttrib2(indx, x, y);
 	}
 
 	@Override
-	public void glVertexAttrib2fv (int indx, FloatBuffer values) {
-		// TODO Auto-generated function stub
-
+	public void glVertexAttrib2fv (int indx, FloatBuffer v) {
+		v.get(floatArray, 0, v.remaining());
+		GL.VertexAttrib2(indx, floatArray);
 	}
 
 	@Override
 	public void glVertexAttrib3f (int indx, float x, float y, float z) {
-		// TODO Auto-generated function stub
-
+		GL.VertexAttrib3(indx, x, y, z);
 	}
 
 	@Override
-	public void glVertexAttrib3fv (int indx, FloatBuffer values) {
-		// TODO Auto-generated function stub
-
+	public void glVertexAttrib3fv (int indx, FloatBuffer v) {
+		v.get(floatArray, 0, v.remaining());
+		GL.VertexAttrib3(indx, floatArray);
 	}
 
 	@Override
 	public void glVertexAttrib4f (int indx, float x, float y, float z, float w) {
-		// TODO Auto-generated function stub
-
+		GL.VertexAttrib4(indx, x, y, z, w);
 	}
 
 	@Override
-	public void glVertexAttrib4fv (int indx, FloatBuffer values) {
-		// TODO Auto-generated function stub
-
+	public void glVertexAttrib4fv (int indx, FloatBuffer v) {
+		v.get(floatArray, 0, v.remaining());
+		GL.VertexAttrib4(indx, floatArray);
 	}
 
 	@Override
 	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, Buffer ptr) {
-		// TODO Auto-generated function stub
-
+		GL.VertexAttribPointer(indx, size, VertexAttribPointerType.wrap(type), normalized, stride,
+			IntPtr.op_Explicit(BufferUtils.getUnsafeByteBufferAddress((ByteBuffer)ptr)));
 	}
 
 	@Override
 	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, int ptr) {
-		// TODO Auto-generated function stub
-
+		GL.VertexAttribPointer(indx, size, VertexAttribPointerType.wrap(type), normalized, stride, ptr);
 	}
 
 }
