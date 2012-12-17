@@ -300,7 +300,7 @@ public class BufferUtils {
 	 * @return the address of the Buffer.
 	 */
 	public static long getUnsafeBufferAddress(Buffer buffer) {
-		return getBufferAddress(buffer);
+		return getBufferAddress(buffer) + buffer.position();
 	}
 	
 	/**
