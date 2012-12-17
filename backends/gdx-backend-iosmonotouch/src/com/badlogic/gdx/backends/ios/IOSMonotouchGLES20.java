@@ -24,6 +24,7 @@ import java.nio.IntBuffer;
 import cli.OpenTK.Graphics.ES20.BeginMode;
 import cli.OpenTK.Graphics.ES20.BlendingFactorDest;
 import cli.OpenTK.Graphics.ES20.BlendingFactorSrc;
+import cli.OpenTK.Graphics.ES20.BufferTarget;
 import cli.OpenTK.Graphics.ES20.ClearBufferMask;
 import cli.OpenTK.Graphics.ES20.CullFaceMode;
 import cli.OpenTK.Graphics.ES20.DepthFunction;
@@ -37,6 +38,7 @@ import cli.OpenTK.Graphics.ES20.HintTarget;
 import cli.OpenTK.Graphics.ES20.PixelFormat;
 import cli.OpenTK.Graphics.ES20.PixelInternalFormat;
 import cli.OpenTK.Graphics.ES20.PixelStoreParameter;
+import cli.OpenTK.Graphics.ES20.PixelType;
 import cli.OpenTK.Graphics.ES20.ShaderType;
 import cli.OpenTK.Graphics.ES20.StringName;
 import cli.OpenTK.Graphics.ES20.TextureTarget;
@@ -150,7 +152,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glDrawElements (int mode, int count, int type, Buffer indices) {
-		GL.DrawElements(BeginMode.wrap(mode), count, DrawElementsType.wrap(type), // 
+		GL.DrawElements(BeginMode.wrap(mode), count, DrawElementsType.wrap(type), //
 			IntPtr.op_Explicit(BufferUtils.getUnsafeByteBufferAddress((ByteBuffer)indices)));
 	}
 
@@ -211,14 +213,13 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glPolygonOffset (float factor, float units) {
-		// TODO Auto-generated function stub
-
+		GL.PolygonOffset(factor, units);
 	}
 
 	@Override
 	public void glReadPixels (int x, int y, int width, int height, int format, int type, Buffer pixels) {
-		// TODO Auto-generated function stub
-
+		GL.ReadPixels(x, y, width, height, PixelFormat.wrap(format), PixelType.wrap(type), //
+			IntPtr.op_Explicit(BufferUtils.getUnsafeByteBufferAddress((ByteBuffer)pixels)));
 	}
 
 	@Override
@@ -248,8 +249,9 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
 		Buffer pixels) {
-		// TODO Auto-generated function stub
-
+		GL.TexImage2D(TextureTarget.wrap(target), level, PixelInternalFormat.wrap(internalformat), width, height, border,
+			PixelFormat.wrap(format), PixelType.wrap(type),
+			IntPtr.op_Explicit(BufferUtils.getUnsafeByteBufferAddress((ByteBuffer)pixels)));
 	}
 
 	@Override
@@ -267,38 +269,32 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glViewport (int x, int y, int width, int height) {
-		// TODO Auto-generated function stub
-
+		GL.Viewport(x, y, width, height);
 	}
 
 	@Override
 	public void glAttachShader (int program, int shader) {
-		// TODO Auto-generated function stub
-
+		GL.AttachShader(program, shader);
 	}
 
 	@Override
 	public void glBindAttribLocation (int program, int index, String name) {
-		// TODO Auto-generated function stub
-
+		GL.BindAttribLocation(program, index, name);
 	}
 
 	@Override
 	public void glBindBuffer (int target, int buffer) {
-		// TODO Auto-generated function stub
-
+		GL.BindBuffer(BufferTarget.wrap(target), buffer);
 	}
 
 	@Override
 	public void glBindFramebuffer (int target, int framebuffer) {
 		// TODO Auto-generated function stub
-
 	}
 
 	@Override
 	public void glBindRenderbuffer (int target, int renderbuffer) {
 		// TODO Auto-generated function stub
-
 	}
 
 	@Override
@@ -346,8 +342,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glCompileShader (int shader) {
-		// TODO Auto-generated function stub
-
+		GL.CompileShader(shader);
 	}
 
 	@Override
@@ -375,7 +370,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glDeleteProgram (int program) {
 		// TODO Auto-generated function stub
-
+		
 	}
 
 	@Override

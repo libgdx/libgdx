@@ -82,7 +82,8 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		set_ContextRenderingApi(EAGLRenderingAPI.wrap(EAGLRenderingAPI.OpenGLES2));
 		// FIXME fix this if we add rgba/depth/stencil flags to IOSApplicationConfiguration
 		bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
-		gl20 = new IOSGLES20();
+		// gl20 = new IOSGLES20();
+		gl20 = new IOSMonotouchGLES20();
 		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
 
