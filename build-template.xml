@@ -11,15 +11,20 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 -->
 <project name="template" default="all" basedir=".">
 	<!-- default values -->
-	<property name="src" value="src"/>
-	<property name="jni" value="jni"/>
+	<property name="src" value="src" />
+	<property name="jni" value="jni" />
 	<property name="target" value="target" />
 	<property name="libs" value="libs" />
-	<path id="classpath"/>
-	<zipfileset id="jarfiles" dir="." excludes="**"/>
-	
-	<!-- clean output directories -->	
-	<target name="clean">		
+	<!-- define if native sources should be generated using jnigen or not, default false -->
+	<property name="generateJni" value="false" />
+	<!-- defines the class to invoke if generateJni is true -->
+	<property name="jniBuildClass" value="" />
+	<path id="classpath" />
+	<zipfileset id="jarfiles" dir="." excludes="**" />
+	<property name="targetClasses" value="${target}/java" />
+
+	<!-- clean output directories -->
+	<target name="clean">
 		<delete dir="${target}" />
 	</target>
 
@@ -33,20 +38,21 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<mkdir dir="${libs}/macosx32" />
 		<mkdir dir="${libs}/windows32" />
 		<mkdir dir="${libs}/windows64" />
-		
+
 		<mkdir dir="${target}" />
-		<mkdir dir="${target}/java" />
+		<mkdir dir="${targetClasses}" />
 		<!-- need to copy the internal font to target if compiling the gdx core :/ -->
 		<copy failonerror="false" tofile="${target}/java/com/badlogic/gdx/utils/arial-15.png" file="src/com/badlogic/gdx/utils/arial-15.png" />
 		<copy failonerror="false" tofile="${target}/java/com/badlogic/gdx/utils/arial-15.fnt" file="src/com/badlogic/gdx/utils/arial-15.fnt" />
 		<!-- need to copy jni headers for gdx-jnigen -->
-		<copy failonerror="false" todir="${target}/java">
+		<copy failonerror="false" todir="${targetClasses}">
 			<fileset dir="src">
 				<include name="**/*.h"/>
+				<include name="**/*.c"/>
 				<include name="**/*.template"/>
 			</fileset>
 		</copy>
-		<copy failonerror="false" todir="${target}/java">
+		<copy failonerror="false" todir="${targetClasses}">
 			<fileset dir="src">
 				<include name="**/*.gwt.xml"/>
 			</fileset>
@@ -55,7 +61,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 
 	<!-- compiles the java code -->
 	<target name="compile" depends="init">
-		<javac debug="on" encoding="utf-8" srcdir="${src}" destdir="${target}/java">
+		<javac debug="on" encoding="utf-8" srcdir="${src}" destdir="${targetClasses}">
 			<classpath>
 				<path refid="classpath"/>
 				<fileset file="${libs}/*.jar">
@@ -66,9 +72,22 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		</javac>
 	</target>
 
+	<!-- checks to see if jni generation is enabled or not -->
+	<target name="checkGenerateJniEnabled">
+		<condition property="generateJniEnabled">
+			<equals arg1="${generateJni}" arg2="true" />
+		</condition>
+	</target>
+
+	<!-- if jni generation is enabled, then generates all the native code to be compiled later by invoking the specified build class -->
+	<target name="generate-jni" depends="checkGenerateJniEnabled, compile" if="generateJniEnabled">
+		<java classname="${jniBuildClass}" classpathref="classpath" dir="${basedir}" fork="true">
+			<classpath id="classes" path="${targetClasses}" />
+		</java>
+	</target>
 
 	<!-- compile native code if available -->
-	<target name="check-natives">
+	<target name="check-natives" depends="generate-jni">
 		<condition property="natives-present">
 			<and>
 				<available file="${jni}/build.xml"/>
@@ -92,13 +111,13 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 			</fileset>
 		</copy>
 	</target>
-	
+
 	<!-- create source and class jar -->
 	<target name="all" depends="compile,compile-natives">
 		<!-- source jar -->
 		<mkdir dir="${distDir}/sources" />
 		<jar destfile="${distDir}/sources/${jar}-sources.jar" basedir="${src}" />
-		
+
 		<!-- copy shared libs for desktop -->
 		<copy failonerror="false" todir="${distDir}">
 			<fileset dir="${libs}">
@@ -106,7 +125,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 				<exclude name="**/test-natives.jar"/>
 			</fileset>
 		</copy>
-		
+
 		<!-- copy shared libs for android -->
 		<copy failonerror="false" todir="${distDir}/armeabi">
 			<fileset dir="${libs}/armeabi">
@@ -118,10 +137,10 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 				<include name="**/*.so"/>
 			</fileset>
 		</copy>
-		
+
 		<!-- class jar -->
 		<jar destfile="${distDir}/${jar}.jar">
-			<fileset dir="${target}/java"/>
+			<fileset dir="${targetClasses}"/>
 			<!-- merge dependencies found in libs/ folder, exclude native, debug and android/gwt jars -->
 			<zipgroupfileset file="${libs}/*.jar">
 				<exclude name="*-natives.jar"/>
