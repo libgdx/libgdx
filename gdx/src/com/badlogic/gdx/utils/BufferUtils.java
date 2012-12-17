@@ -295,16 +295,12 @@ public class BufferUtils {
 	}
 	
 	/**
-	 * Returns the address of the ByteBuffer.
-	 * @param buffer The ByteBuffer to ask the address for.
-	 * @return the address of the ByteBuffer.
+	 * Returns the address of the Buffer, it assumes it is an unsafe buffer.
+	 * @param buffer The Buffer to ask the address for.
+	 * @return the address of the Buffer.
 	 */
-	public static long getUnsafeByteBufferAddress(ByteBuffer buffer) {
-		synchronized(unsafeBuffers) {
-			if (!unsafeBuffers.contains(buffer, true))
-				return 0;
-		}
-		return getByteBufferAddress(buffer);
+	public static long getUnsafeBufferAddress(Buffer buffer) {
+		return getBufferAddress(buffer);
 	}
 	
 	/**
@@ -340,7 +336,7 @@ public class BufferUtils {
 		return env->NewDirectByteBuffer(ptr, numBytes);
 	*/
 	
-	private static native long getByteBufferAddress (ByteBuffer buffer); /*
+	private static native long getBufferAddress (Buffer buffer); /*
 	    return (long) buffer;
 	*/
 	
