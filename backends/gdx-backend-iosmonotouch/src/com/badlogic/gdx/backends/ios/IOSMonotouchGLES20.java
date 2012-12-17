@@ -139,6 +139,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glDeleteTextures (int n, IntBuffer buffer) {
+		buffer.position(0);
 		buffer.get(intArray, 0, n);
 		GL.DeleteTextures(n, intArray);
 	}
@@ -368,13 +369,15 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glDeleteBuffers (int n, IntBuffer buffer) {
-		buffer.get(intArray, 0, buffer.remaining());
+		buffer.position(0);
+		buffer.get(intArray, 0, n);
 		GL.DeleteBuffers(n, intArray);
 	}
 
 	@Override
 	public void glDeleteFramebuffers (int n, IntBuffer buffer) {
-		buffer.get(intArray, 0, buffer.remaining());
+		buffer.position(0);
+		buffer.get(intArray, 0, n);
 		GL.DeleteFramebuffers(n, intArray);
 	}
 
@@ -385,7 +388,8 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glDeleteRenderbuffers (int n, IntBuffer buffer) {
-		buffer.get(intArray, 0, buffer.remaining());
+		buffer.position(0);
+		buffer.get(intArray, 0, n);
 		GL.DeleteRenderbuffers(n, intArray);
 	}
 
@@ -457,9 +461,11 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
 		String activeAttrib = GL.GetActiveAttrib(program, index, intArray, activeAttribTypes);
+		size.position(0);
 		size.put(intArray, 0, size.remaining());
 		if (type instanceof IntBuffer) {
 			IntBuffer intBuffer = (IntBuffer)type;
+			intBuffer.position(0);
 			for (int i = 0; i < activeAttribTypes.length; i++)
 				intBuffer.put(activeAttribTypes[i].Value);
 			return activeAttrib;
@@ -473,9 +479,11 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type) {
 		String activeUniform = GL.GetActiveUniform(program, index, intArray, activeUniformTypes);
+		size.position(0);
 		size.put(intArray, 0, size.remaining());
 		if (type instanceof IntBuffer) {
 			IntBuffer intBuffer = (IntBuffer)type;
+			intBuffer.position(0);
 			for (int i = 0; i < activeUniformTypes.length; i++)
 				intBuffer.put(activeUniformTypes[i].Value);
 			return activeUniform;
@@ -522,6 +530,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glGetProgramiv (int program, int pname, IntBuffer params) {
 		GL.GetProgram(program, ProgramParameter.wrap(pname), intArray);
+		params.position(0);
 		params.put(intArray, 0, params.remaining());
 	}
 
@@ -539,6 +548,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glGetShaderiv (int shader, int pname, IntBuffer params) {
 		GL.GetShader(shader, ShaderParameter.wrap(pname), intArray);
+		params.position(0);
 		params.put(intArray, 0, params.remaining());
 	}
 
@@ -691,6 +701,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glTexParameterfv (int target, int pname, FloatBuffer params) {
+		params.position(0);
 		params.get(floatArray, 0, params.remaining());
 		GL.TexParameter(TextureTarget.wrap(target), TextureParameterName.wrap(pname), floatArray);
 	}
@@ -702,6 +713,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glTexParameteriv (int target, int pname, IntBuffer params) {
+		params.position(0);
 		params.get(intArray, 0, params.remaining());
 		GL.TexParameter(TextureTarget.wrap(target), TextureParameterName.wrap(pname), intArray);
 	}
@@ -713,6 +725,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform1fv (int location, int count, FloatBuffer v) {
+		v.position(0);
 		v.get(floatArray, 0, v.remaining());
 		GL.Uniform1(location, count, floatArray);
 	}
@@ -724,6 +737,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform1iv (int location, int count, IntBuffer v) {
+		v.position(0);
 		v.get(intArray, 0, v.remaining());
 		GL.Uniform1(location, count, intArray);
 	}
@@ -735,6 +749,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform2fv (int location, int count, FloatBuffer v) {
+		v.position(0);
 		v.get(floatArray, 0, v.remaining());
 		GL.Uniform2(location, count, floatArray);
 	}
@@ -746,6 +761,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform2iv (int location, int count, IntBuffer v) {
+		v.position(0);
 		v.get(intArray, 0, v.remaining());
 		GL.Uniform2(location, count, intArray);
 	}
@@ -757,6 +773,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform3fv (int location, int count, FloatBuffer v) {
+		v.position(0);
 		v.get(floatArray, 0, v.remaining());
 		GL.Uniform3(location, count, floatArray);
 	}
@@ -768,6 +785,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform3iv (int location, int count, IntBuffer v) {
+		v.position(0);
 		v.get(intArray, 0, v.remaining());
 		GL.Uniform3(location, count, intArray);
 	}
@@ -779,6 +797,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform4fv (int location, int count, FloatBuffer v) {
+		v.position(0);
 		v.get(floatArray, 0, v.remaining());
 		GL.Uniform4(location, count, floatArray);
 	}
@@ -790,24 +809,28 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glUniform4iv (int location, int count, IntBuffer v) {
+		v.position(0);
 		v.get(intArray, 0, v.remaining());
 		GL.Uniform4(location, count, intArray);
 	}
 
 	@Override
 	public void glUniformMatrix2fv (int location, int count, boolean transpose, FloatBuffer v) {
+		v.position(0);
 		v.get(floatArray, 0, v.remaining());
 		GL.UniformMatrix2(location, count, transpose, floatArray);
 	}
 
 	@Override
 	public void glUniformMatrix3fv (int location, int count, boolean transpose, FloatBuffer v) {
+		v.position(0);
 		v.get(floatArray, 0, v.remaining());
 		GL.UniformMatrix3(location, count, transpose, floatArray);
 	}
 
 	@Override
 	public void glUniformMatrix4fv (int location, int count, boolean transpose, FloatBuffer v) {
+		v.position(0);
 		v.get(floatArray, 0, v.remaining());
 		GL.UniformMatrix4(location, count, transpose, floatArray);
 	}
@@ -829,6 +852,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glVertexAttrib1fv (int indx, FloatBuffer v) {
+		v.position(0);
 		v.get(floatArray, 0, v.remaining());
 		GL.VertexAttrib1(indx, floatArray);
 	}
@@ -840,6 +864,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glVertexAttrib2fv (int indx, FloatBuffer v) {
+		v.position(0);
 		v.get(floatArray, 0, v.remaining());
 		GL.VertexAttrib2(indx, floatArray);
 	}
@@ -851,6 +876,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glVertexAttrib3fv (int indx, FloatBuffer v) {
+		v.position(0);
 		v.get(floatArray, 0, v.remaining());
 		GL.VertexAttrib3(indx, floatArray);
 	}
@@ -862,6 +888,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glVertexAttrib4fv (int indx, FloatBuffer v) {
+		v.position(0);
 		v.get(floatArray, 0, v.remaining());
 		GL.VertexAttrib4(indx, floatArray);
 	}
