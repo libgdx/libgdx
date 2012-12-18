@@ -43,6 +43,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Clipboard;
 
 public class IOSApplication extends UIApplicationDelegate implements Application {
@@ -137,9 +138,14 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		UIViewController uiViewController = new IOSUIViewController();
 		this.uiWindow.set_RootViewController(uiViewController);
 
+		GL20 gl20 = config.useMonotouchOpenTK ? new IOSMonotouchGLES20() : new IOSGLES20();
+		
+		Gdx.gl = gl20;
+		Gdx.gl20 = gl20;
+		
 		// setup libgdx
 		this.input = new IOSInput(this);
-		this.graphics = new IOSGraphics(getBounds(uiViewController), this, input);
+		this.graphics = new IOSGraphics(getBounds(uiViewController), this, input, gl20);
 		this.files = new IOSFiles();
 		this.audio = new IOSAudio();
 		this.net = new IOSNet(this);

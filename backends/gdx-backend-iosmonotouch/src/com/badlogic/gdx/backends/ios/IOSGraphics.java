@@ -65,7 +65,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	private float ppcY = 0;
 	private float density = 1;
 
-	public IOSGraphics (RectangleF bounds, IOSApplication app, IOSInput input) {
+	public IOSGraphics (RectangleF bounds, IOSApplication app, IOSInput input, GL20 gl20) {
 		super(bounds);
 
 		// setup view and OpenGL
@@ -82,10 +82,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		set_ContextRenderingApi(EAGLRenderingAPI.wrap(EAGLRenderingAPI.OpenGLES2));
 		// FIXME fix this if we add rgba/depth/stencil flags to IOSApplicationConfiguration
 		bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
-		// gl20 = new IOSGLES20();
-		gl20 = new IOSMonotouchGLES20();
-		Gdx.gl = gl20;
-		Gdx.gl20 = gl20;
+		this.gl20 = gl20;
 
 		// determine display density and PPI (PPI values via Wikipedia!)
 		density = 1f;
