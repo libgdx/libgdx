@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.ios;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -27,6 +28,7 @@ import cli.OpenTK.Graphics.ES20.BeginMode;
 import cli.OpenTK.Graphics.ES20.BlendEquationMode;
 import cli.OpenTK.Graphics.ES20.BlendingFactorDest;
 import cli.OpenTK.Graphics.ES20.BlendingFactorSrc;
+import cli.OpenTK.Graphics.ES20.BufferParameterName;
 import cli.OpenTK.Graphics.ES20.BufferTarget;
 import cli.OpenTK.Graphics.ES20.BufferUsage;
 import cli.OpenTK.Graphics.ES20.ClearBufferMask;
@@ -34,11 +36,13 @@ import cli.OpenTK.Graphics.ES20.CullFaceMode;
 import cli.OpenTK.Graphics.ES20.DepthFunction;
 import cli.OpenTK.Graphics.ES20.DrawElementsType;
 import cli.OpenTK.Graphics.ES20.EnableCap;
+import cli.OpenTK.Graphics.ES20.FramebufferParameterName;
 import cli.OpenTK.Graphics.ES20.FramebufferSlot;
 import cli.OpenTK.Graphics.ES20.FramebufferTarget;
 import cli.OpenTK.Graphics.ES20.FrontFaceDirection;
 import cli.OpenTK.Graphics.ES20.GL;
 import cli.OpenTK.Graphics.ES20.GetPName;
+import cli.OpenTK.Graphics.ES20.GetTextureParameter;
 import cli.OpenTK.Graphics.ES20.HintMode;
 import cli.OpenTK.Graphics.ES20.HintTarget;
 import cli.OpenTK.Graphics.ES20.PixelFormat;
@@ -47,8 +51,11 @@ import cli.OpenTK.Graphics.ES20.PixelStoreParameter;
 import cli.OpenTK.Graphics.ES20.PixelType;
 import cli.OpenTK.Graphics.ES20.ProgramParameter;
 import cli.OpenTK.Graphics.ES20.RenderbufferInternalFormat;
+import cli.OpenTK.Graphics.ES20.RenderbufferParameterName;
 import cli.OpenTK.Graphics.ES20.RenderbufferTarget;
+import cli.OpenTK.Graphics.ES20.ShaderBinaryFormat;
 import cli.OpenTK.Graphics.ES20.ShaderParameter;
+import cli.OpenTK.Graphics.ES20.ShaderPrecision;
 import cli.OpenTK.Graphics.ES20.ShaderType;
 import cli.OpenTK.Graphics.ES20.StencilFunction;
 import cli.OpenTK.Graphics.ES20.StencilOp;
@@ -56,8 +63,11 @@ import cli.OpenTK.Graphics.ES20.StringName;
 import cli.OpenTK.Graphics.ES20.TextureParameterName;
 import cli.OpenTK.Graphics.ES20.TextureTarget;
 import cli.OpenTK.Graphics.ES20.TextureUnit;
+import cli.OpenTK.Graphics.ES20.VertexAttribParameter;
+import cli.OpenTK.Graphics.ES20.VertexAttribPointerParameter;
 import cli.OpenTK.Graphics.ES20.VertexAttribPointerType;
 import cli.System.IntPtr;
+import cli.System.Text.StringBuilder;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
@@ -492,10 +502,21 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 		}
 	}
 
+	private final int[] shadersIntArray = new int[64];
+
 	@Override
 	public void glGetAttachedShaders (int program, int maxcount, Buffer count, IntBuffer shaders) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		GL.GetAttachedShaders(program, maxcount, intArray, shadersIntArray);
+		shaders.position(0);
+		shaders.put(shadersIntArray, 0, shaders.remaining());
+
+		if (count instanceof IntBuffer) {
+			IntBuffer intBuffer = (IntBuffer)count;
+			intBuffer.position(0);
+			intBuffer.put(intArray, 0, intBuffer.remaining());
+		} else {
+			throw new UnsupportedOperationException("expected IntBuffer for count parameter");
+		}
 	}
 
 	@Override
@@ -503,28 +524,43 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 		return GL.GetAttribLocation(program, name);
 	}
 
+	private final boolean[] booleanArray = new boolean[64];
+	private final byte FALSE = 0x00;
+	private final byte TRUE = 0x01;
+
 	@Override
 	public void glGetBooleanv (int pname, Buffer params) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		GL.GetBoolean(GetPName.wrap(pname), booleanArray);
+		if (params instanceof ByteBuffer) {
+			ByteBuffer byteBuffer = (ByteBuffer)params;
+			byteBuffer.position(0);
+			for (int i = 0; i < booleanArray.length; i++)
+				byteBuffer.put(booleanArray[i] ? TRUE : FALSE);
+		} else {
+			throw new UnsupportedOperationException("expected ByteBuffer for params buffer");
+		}
 	}
 
 	@Override
 	public void glGetBufferParameteriv (int target, int pname, IntBuffer params) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		GL.GetBufferParameter(BufferTarget.wrap(target), BufferParameterName.wrap(pname), intArray);
+		params.position(0);
+		params.put(intArray, 0, params.remaining());
 	}
 
 	@Override
 	public void glGetFloatv (int pname, FloatBuffer params) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		GL.GetFloat(GetPName.wrap(pname), floatArray);
+		params.position(0);
+		params.put(floatArray, 0, params.remaining());
 	}
 
 	@Override
 	public void glGetFramebufferAttachmentParameteriv (int target, int attachment, int pname, IntBuffer params) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		GL.GetFramebufferAttachmentParameter(FramebufferTarget.wrap(target), FramebufferSlot.wrap(attachment),
+			FramebufferParameterName.wrap(pname), intArray);
+		params.position(0);
+		params.put(intArray, 0, params.remaining());
 	}
 
 	@Override
@@ -541,8 +577,9 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glGetRenderbufferParameteriv (int target, int pname, IntBuffer params) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		GL.GetRenderbufferParameter(RenderbufferTarget.wrap(target), RenderbufferParameterName.wrap(pname), intArray);
+		params.position(0);
+		params.put(intArray, 0, params.remaining());
 	}
 
 	@Override
@@ -557,40 +594,50 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 		return GL.GetShaderInfoLog(shader);
 	}
 
+	private final int[] rangeIntArray = new int[2];
+
 	@Override
 	public void glGetShaderPrecisionFormat (int shadertype, int precisiontype, IntBuffer range, IntBuffer precision) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		GL.GetShaderPrecisionFormat(ShaderType.wrap(shadertype), ShaderPrecision.wrap(precisiontype), rangeIntArray, intArray);
+		range.position(0);
+		range.put(rangeIntArray, 0, range.remaining());
+		precision.position(0);
+		precision.put(intArray, 0, precision.remaining());
 	}
 
 	@Override
 	public void glGetShaderSource (int shader, int bufsize, Buffer length, String source) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		// FIXME: we can't even delegate to native implementation of iosgles20.cpp since it is not implemented there either.
+		throw new UnsupportedOperationException(
+			"Can't implement if source is not a modifiable string, we need a char* for the source");
 	}
 
 	@Override
 	public void glGetTexParameterfv (int target, int pname, FloatBuffer params) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		GL.GetTexParameter(TextureTarget.wrap(target), GetTextureParameter.wrap(pname), floatArray);
+		params.position(0);
+		params.put(floatArray, 0, params.remaining());
 	}
 
 	@Override
 	public void glGetTexParameteriv (int target, int pname, IntBuffer params) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		GL.GetTexParameter(TextureTarget.wrap(target), GetTextureParameter.wrap(pname), intArray);
+		params.position(0);
+		params.put(intArray, 0, params.remaining());
 	}
 
 	@Override
 	public void glGetUniformfv (int program, int location, FloatBuffer params) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		GL.GetUniform(program, location, floatArray);
+		params.position(0);
+		params.put(floatArray, 0, params.remaining());
 	}
 
 	@Override
 	public void glGetUniformiv (int program, int location, IntBuffer params) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		GL.GetUniform(program, location, intArray);
+		params.position(0);
+		params.put(intArray, 0, params.remaining());
 	}
 
 	@Override
@@ -600,20 +647,22 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glGetVertexAttribfv (int index, int pname, FloatBuffer params) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		GL.GetVertexAttrib(index, VertexAttribParameter.wrap(pname), floatArray);
+		params.position(0);
+		params.put(floatArray, 0, params.remaining());
 	}
 
 	@Override
 	public void glGetVertexAttribiv (int index, int pname, IntBuffer params) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		GL.GetVertexAttrib(index, VertexAttribParameter.wrap(pname), intArray);
+		params.position(0);
+		params.put(intArray, 0, params.remaining());
 	}
 
 	@Override
 	public void glGetVertexAttribPointerv (int index, int pname, Buffer pointer) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		GL.GetVertexAttribPointer(index, VertexAttribPointerParameter.wrap(pname),
+			IntPtr.op_Explicit(BufferUtils.getUnsafeBufferAddress(pointer)));
 	}
 
 	@Override
@@ -633,9 +682,7 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public boolean glIsProgram (int program) {
-		// TODO Auto-generated function stub
-		return false;
-
+		return GL.IsProgram(program);
 	}
 
 	@Override
@@ -675,8 +722,10 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 
 	@Override
 	public void glShaderBinary (int n, IntBuffer shaders, int binaryformat, Buffer binary, int length) {
-		// TODO Auto-generated function stub
-		throw new UnsupportedOperationException("not implemented yet");
+		shaders.position(0);
+		shaders.get(intArray, 0, shaders.remaining());
+		GL.ShaderBinary(n, intArray, ShaderBinaryFormat.wrap(binaryformat),
+			IntPtr.op_Explicit(BufferUtils.getUnsafeBufferAddress(binary)), length);
 	}
 
 	@Override
