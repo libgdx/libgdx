@@ -43,7 +43,6 @@ import com.badlogic.gdx.physics.bullet.btSphereShape;
 import com.badlogic.gdx.physics.bullet.btStridingMeshInterface;
 import com.badlogic.gdx.physics.bullet.btTriangleIndexVertexArray;
 import com.badlogic.gdx.physics.bullet.btTypedConstraint;
-import com.badlogic.gdx.tests.bullet.BaseBulletTest.Entity;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
@@ -59,21 +58,25 @@ public class MeshShapeTest extends BaseBulletTest {
 
 		final Mesh sceneMesh = ObjLoader.loadObj(Gdx.files.internal("data/scene.obj").read(), true, true); // we need indices for this test
 		
-		world.constructors.put("sphere", new Entity.ConstructInfo(sphereMesh, 0.25f, new btSphereShape(sphereMesh.calculateBoundingBox().getDimensions().x * 0.5f)));
-		world.constructors.put("scene", new Entity.ConstructInfo(sceneMesh, 0f, createMeshShape(sceneMesh)));
+		final BulletConstructor sphereConstructor = new BulletConstructor(sphereMesh, 0.25f, new btSphereShape(sphereMesh.calculateBoundingBox().getDimensions().x * 0.5f));
+		sphereConstructor.bodyInfo.setM_restitution(1f);
+		world.constructors.put("sphere", sphereConstructor);
+		final BulletConstructor sceneConstructor = new BulletConstructor(sceneMesh, 0f, createMeshShape(sceneMesh));
+		sceneConstructor.bodyInfo.setM_restitution(0.25f);
+		world.constructors.put("scene", sceneConstructor);
 		
-		Entity scene = world.add("scene", 0f, 2f, 0f);
+		BulletEntity scene = world.add("scene", 0f, 2f, 0f);
 		scene.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
-		scene.worldTransform.transform.rotate(Vector3.Y, -90);
+		scene.transform.rotate(Vector3.Y, -90);
 		// Since the transform is changed, it's needed to apply it again.
-		scene.body.setWorldTransform(scene.worldTransform.transform);
+		scene.body.setWorldTransform(scene.transform);
 
 		world.add("ground", 0f, 0f, 0f)
 			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		for (float x = -3; x < 7; x++) {
 			for (float z = -5; z < 5; z++) {
-				world.add("sphere", x, 10f, z)
+				world.add("sphere", x, 10f + (float)Math.random() * 0.1f, z)
 					.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 			}
 		}
@@ -92,10 +95,6 @@ public class MeshShapeTest extends BaseBulletTest {
 	
 	// Create a TriangleMeshShape based on a Mesh
 	public static btCollisionShape createMeshShape(Mesh mesh) {
-		short[] indices = new short[mesh.getNumIndices()];
-		float[] vertices = new float[mesh.getNumVertices()*mesh.getVertexSize()/4];
-		mesh.getIndices(indices);
-		mesh.getVertices(vertices);
 		btIndexedMesh indexedMesh = new btIndexedMesh();
 		indexedMesh.setM_indexType(PHY_ScalarType.PHY_SHORT);
 		indexedMesh.setM_numTriangles(mesh.getNumIndices()/3);
@@ -103,8 +102,8 @@ public class MeshShapeTest extends BaseBulletTest {
 		indexedMesh.setM_triangleIndexStride(6);
 		indexedMesh.setM_vertexStride(mesh.getVertexSize());
 		indexedMesh.setM_vertexType(PHY_ScalarType.PHY_FLOAT);
-		indexedMesh.setTriangleIndexBase(indices, indices.length);
-		indexedMesh.setVertexBase(vertices, vertices.length);
+		indexedMesh.setTriangleIndexBase(mesh.getIndicesBuffer());
+		indexedMesh.setVertexBase(mesh.getVerticesBuffer());
 		btTriangleIndexVertexArray meshInterface = new TestTriangleIndexVertexArray();
 		meshInterface.addIndexedMesh(indexedMesh, PHY_ScalarType.PHY_SHORT);
 		return new TestBvhTriangleMeshShape(meshInterface,true);

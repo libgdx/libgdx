@@ -99,8 +99,11 @@ public class btCompoundShape extends btCollisionShape {
     gdxBulletJNI.btCompoundShape_createAabbTreeFromChildren(swigCPtr, this);
   }
 
-  public void calculatePrincipalAxisTransform(float[] masses, Matrix4 principal, Vector3 inertia) {
-    gdxBulletJNI.btCompoundShape_calculatePrincipalAxisTransform(swigCPtr, this, masses, principal, inertia);
+  public void calculatePrincipalAxisTransform(java.nio.FloatBuffer masses, Matrix4 principal, Vector3 inertia) {
+    assert masses.isDirect() : "Buffer must be allocated direct.";
+    {
+      gdxBulletJNI.btCompoundShape_calculatePrincipalAxisTransform(swigCPtr, this, masses, principal, inertia);
+    }
   }
 
   public int getUpdateRevision() {

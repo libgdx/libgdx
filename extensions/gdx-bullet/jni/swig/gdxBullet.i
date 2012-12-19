@@ -19,10 +19,14 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %include "gdxDownCast.i"
 
 /*
- * Use Java float[] where Bullet wants btScalar *.  This gets disabled
+ * Use java.nio.Buffer where Bullet wants btScalar * and alike.  This gets disabled
  * for some types (and re-enabled right after).
  */
-%include "gdxEnableArrays.i"
+%include "gdxBuffers.i"
+%include "gdxEnableBuffers.i"
+
+%include "gdxPool.i"
+%include "gdxPooledTypemap.i"
 
 /* Prefer libgdx's linear math types (Vector3, Matrix3, etc.). */
 %include "gdxMathTypes.i"
@@ -96,10 +100,14 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "LinearMath/btAabbUtil2.h"
 
+DISABLE_POOLED_TYPEMAP(btTransform);
+DISABLE_POOLED_TYPEMAP(btVector3);
 %{
 #include <LinearMath/btIDebugDraw.h>
 %}
 %include "LinearMath/btIDebugDraw.h"
+ENABLE_POOLED_TYPEMAP(btVector3, Vector3, "Lcom/badlogic/gdx/math/Vector3;");
+ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 
 %{
 #include <LinearMath/btGeometryUtil.h>
@@ -110,11 +118,6 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 #include <LinearMath/btRandom.h>
 %}
 %include "LinearMath/btRandom.h"
-
-%{
-#include <LinearMath/btTransform.h>
-%}
-%include "LinearMath/btTransform.h"
 
 %{
 #include <LinearMath/btTransformUtil.h>
@@ -232,6 +235,8 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "BulletCollision/BroadphaseCollision/btOverlappingPairCallback.h"
 
+%ignore btAxisSweep3Internal<unsigned short>::processAllOverlappingPairs;
+%ignore btAxisSweep3Internal<unsigned int>::processAllOverlappingPairs;
 %{
 #include <BulletCollision/BroadphaseCollision/btAxisSweep3.h>
 %}
@@ -327,10 +332,7 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "BulletCollision/CollisionShapes/btTriangleShape.h"
 
-%{
-#include <BulletCollision/CollisionShapes/btShapeHull.h>
-%}
-%include "BulletCollision/CollisionShapes/btShapeHull.h"
+
 
 %{
 #include <BulletCollision/CollisionShapes/btSphereShape.h>
@@ -368,24 +370,6 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %include "BulletCollision/CollisionShapes/btTriangleBuffer.h"
 
 %include "custom/btTriangleIndexVertexArray.i"
-/*%extend btIndexedMesh {
-	void setTriangleIndexBase(short data[], unsigned long size) {
-		short *indices = new short[size];
-		memcpy(indices, (short*)data, size*sizeof(short));
-		$self->m_triangleIndexBase = (unsigned char*)indices;
-	}
-	void setVertexBase(float data[], unsigned long size) {
-		float *vertices = new float[size];
-		memcpy(vertices, (float*)data, size*sizeof(float));
-		$self->m_vertexBase = (unsigned char*)vertices;
-	}
-	void dispose() {
-		short *indices = (short*)$self->m_triangleIndexBase;
-		delete[] indices;
-		float *vertices = (float*)$self->m_vertexBase;
-		delete[] vertices;
-	}
-};*/
 
 %{
 #include <BulletCollision/CollisionShapes/btMaterial.h>
@@ -398,9 +382,11 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %include "BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h"
 
 %{
-#include <BulletCollision/CollisionShapes/btConvexHullShape.h>
+#include <BulletCollision/CollisionShapes/btShapeHull.h>
 %}
-%include "BulletCollision/CollisionShapes/btConvexHullShape.h"
+%include "BulletCollision/CollisionShapes/btShapeHull.h"
+
+%include "custom/btConvexHullShape.i"
 
 %{
 #include <BulletCollision/CollisionShapes/btTriangleIndexVertexMaterialArray.h>
@@ -792,7 +778,7 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "BulletDynamics/ConstraintSolver/btHinge2Constraint.h"
 
-/* DISABLED STUFF BELOW HERE */
+/* DISABLED STUFF BELOW HERE (TODO: CHECK THIS) */
 
 /*
  * btSerializer needs some typemap customization for sBulletDNAstr and friends.
@@ -837,3 +823,67 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
  * implement.  At the bottom so we can reference other types.
  */
 %include "gdxMissingBulletMethods.i"
+
+/* SoftBody code (not suitable for Android)
+%{
+#include <BulletSoftBody/btSoftBodySolvers.h>
+%}
+%include "BulletSoftBody/btSoftBodySolvers.h"
+
+%{
+#include <BulletSoftBody/btDefaultSoftBodySolver.h>
+%}
+%include "BulletSoftBody/btDefaultSoftBodySolver.h"
+
+%{
+#include <BulletSoftBody/btSparseSDF.h>
+%}
+%include "BulletSoftBody/btSparseSDF.h"
+
+%include "custom/btSoftBody.i"
+
+%{
+#include <BulletSoftBody/btSoftBodyConcaveCollisionAlgorithm.h>
+%}
+%include "BulletSoftBody/btSoftBodyConcaveCollisionAlgorithm.h"
+
+%{
+#include <BulletSoftBody/btSoftBodyData.h>
+%}
+%include "BulletSoftBody/btSoftBodyData.h"
+
+%{
+#include <BulletSoftBody/btSoftBodyHelpers.h>
+%}
+%include "BulletSoftBody/btSoftBodyHelpers.h"
+
+%{
+#include <BulletSoftBody/btSoftBodyInternals.h>
+%}
+%include "BulletSoftBody/btSoftBodyInternals.h"
+
+%{
+#include <BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h>
+%}
+%include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
+
+%{
+#include <BulletSoftBody/btSoftBodySolverVertexBuffer.h>
+%}
+%include "BulletSoftBody/btSoftBodySolverVertexBuffer.h"
+
+%{
+#include <BulletSoftBody/btSoftRigidCollisionAlgorithm.h>
+%}
+%include "BulletSoftBody/btSoftRigidCollisionAlgorithm.h"
+
+%{
+#include <BulletSoftBody/btSoftRigidDynamicsWorld.h>
+%}
+%include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
+
+%{
+#include <BulletSoftBody/btSoftSoftCollisionAlgorithm.h>
+%}
+%include "BulletSoftBody/btSoftSoftCollisionAlgorithm.h"
+*/
