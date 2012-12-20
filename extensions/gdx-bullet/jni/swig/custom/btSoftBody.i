@@ -77,6 +77,44 @@ struct	btSoftBodyFace : btSoftBodyFeature
 %}
 %include "BulletSoftBody/btSoftBody.h"
 
+%extend btSoftBody {
+	int getNodeCount() {
+		return $self->m_nodes.size();
+	}
+	/*
+	 * buffer: must be at least vertexCount*vertexSize big
+	 * vertexCount: the amount of vertices to copy (must be equal to or less than getNodeCount())
+	 * vertexSize: the size in byes of one vertex (must be dividable by sizeof(btScalar))
+	 * posOffset: the offset within a vertex to the position (must be dividable by sizeof(btScalar))
+	 */
+	void getVertices(btScalar *buffer, int vertexCount, int vertexSize, int posOffset) {
+		int offset = posOffset / (sizeof(btScalar));
+		int size = vertexSize / (sizeof(btScalar));
+		for (int i = 0; i < vertexCount; i++) {
+			const int o = i*size+offset;
+			const float *src = $self->m_nodes[i].m_x.m_floats;
+			buffer[o] = src[0];
+			buffer[o+1] = src[1];
+			buffer[o+2] = src[2];
+		}
+	}
+	
+	int getFaceCount() {
+		return $self->m_faces.size();
+	}
+	
+	void getIndices(short *buffer, int triangleCount) {
+		const size_t nodeSize = sizeof(btSoftBody::Node);
+		const intptr_t nodeOffset = (long)(&self->m_nodes[0]);
+		for (int i = 0; i < triangleCount; i++) {
+			const int idx = i * 3;
+			buffer[idx] = ((intptr_t)(self->m_faces[i].m_n[0]) - nodeOffset) / nodeSize;
+			buffer[idx+1] = ((intptr_t)(self->m_faces[i].m_n[1]) - nodeOffset) / nodeSize;
+			buffer[idx+2] = ((intptr_t)(self->m_faces[i].m_n[2]) - nodeOffset) / nodeSize;
+		}
+	}
+};
+
 /*
 %{
 	typedef btSoftBody::sCti btSoftBodysCti;
