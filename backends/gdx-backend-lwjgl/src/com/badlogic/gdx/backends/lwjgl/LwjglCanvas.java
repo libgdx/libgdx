@@ -188,6 +188,17 @@ public class LwjglCanvas implements Application {
 				}
 				try {
 					graphics.updateTime();
+
+					int width = Math.max(1, graphics.getWidth());
+					int height = Math.max(1, graphics.getHeight());
+					if (lastWidth != width || lastHeight != height) {
+						lastWidth = width;
+						lastHeight = height;
+						Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
+						resize(width, height);
+						listener.resize(width, height);
+					}
+
 					synchronized (runnables) {
 						executedRunnables.clear();
 						executedRunnables.addAll(runnables);
@@ -201,17 +212,8 @@ public class LwjglCanvas implements Application {
 							}
 						}
 					}
-					input.update();
 
-					int width = Math.max(1, graphics.getWidth());
-					int height = Math.max(1, graphics.getHeight());
-					if (lastWidth != width || lastHeight != height) {
-						lastWidth = width;
-						lastHeight = height;
-						Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
-						resize(width, height);
-						listener.resize(width, height);
-					}
+					input.update();
 					input.processEvents();
 					listener.render();
 					if (audio != null) audio.update();
