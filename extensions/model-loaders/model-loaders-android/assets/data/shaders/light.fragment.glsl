@@ -7,6 +7,7 @@
 //#define specularTextureFlag
 //#define translucentFlag
 //#define fogColorFlag
+//#define normalTextureFlag
 #define normalsFlag
 
 #ifdef GL_ES
@@ -49,6 +50,10 @@ uniform sampler2D lightmapTexture;
 
 #ifdef specularTextureFlag
 uniform sampler2D specularTexture;
+#endif
+
+#ifdef normalTextureFlag
+uniform sampler2D normalTexture;
 #endif
 
 #ifdef fogColorFlag
@@ -100,8 +105,15 @@ void main()
 	
 	#ifdef normalsFlag
 		vec3 lightDirection = v_lightDir * invLength;	
-	
 		vec3 surfaceNormal = normalize( v_normal );
+	
+		#ifdef normalTextureFlag
+			vec3 detailNormal = texture2D(normalTexture, v_texCoords).rgb;
+		         // convert values between -1 and 1
+		     	 detailNormal = normalize((detailNormal * 2.0) - 1.0);
+		     	 surfaceNormal = mix(surfaceNormal,detailNormal, 0.5);
+		#endif
+		
 		//lambert phong
     	float lambert = wrapLight(surfaceNormal, lightDirection);
    		vec3 diffuseLight = intensity * lambert;
