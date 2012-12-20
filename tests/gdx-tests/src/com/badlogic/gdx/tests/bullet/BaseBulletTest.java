@@ -34,7 +34,7 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 /** @author xoppa */
 public class BaseBulletTest extends BulletTest {
 	// Set this to the path of the lib to use it on desktop instead of default lib. 
-	private final static String customDesktopLib = null; //"D:\\Data\\code\\android\\libs\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\x64\\Debug\\gdxBullet.dll";
+	private final static String customDesktopLib = "D:\\Data\\code\\android\\libs\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\x64\\Debug\\gdxBullet.dll";
 	
 	private static boolean initialized = false;
 	private static void init() {
@@ -90,10 +90,10 @@ public class BaseBulletTest extends BulletTest {
 			0, 1, 4, 4, 5, 1 // right
 			});
 
-		// Add the constructers
-		world.constructors.put("ground", new BulletConstructor(groundMesh, 0f)); // mass = 0: static body
-		world.constructors.put("box", new BulletConstructor(boxMesh, 1f)); // mass = 1kg: dynamic body
-		world.constructors.put("staticbox", new BulletConstructor(boxMesh, 0f)); // mass = 0: static body
+		// Add the constructors
+		world.addConstructor("ground", new BulletConstructor(groundMesh, 0f)); // mass = 0: static body
+		world.addConstructor("box", new BulletConstructor(boxMesh, 1f)); // mass = 1kg: dynamic body
+		world.addConstructor("staticbox", new BulletConstructor(boxMesh, 0f)); // mass = 0: static body
 	}
 	
 	@Override

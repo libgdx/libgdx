@@ -60,10 +60,10 @@ public class MeshShapeTest extends BaseBulletTest {
 		
 		final BulletConstructor sphereConstructor = new BulletConstructor(sphereMesh, 0.25f, new btSphereShape(sphereMesh.calculateBoundingBox().getDimensions().x * 0.5f));
 		sphereConstructor.bodyInfo.setM_restitution(1f);
-		world.constructors.put("sphere", sphereConstructor);
+		world.addConstructor("sphere", sphereConstructor);
 		final BulletConstructor sceneConstructor = new BulletConstructor(sceneMesh, 0f, createMeshShape(sceneMesh));
 		sceneConstructor.bodyInfo.setM_restitution(0.25f);
-		world.constructors.put("scene", sceneConstructor);
+		world.addConstructor("scene", sceneConstructor);
 		
 		BulletEntity scene = world.add("scene", 0f, 2f, 0f);
 		scene.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
