@@ -62,4 +62,5 @@ public interface gdxBulletConstants {
   public final static int BT_6DOF_FLAGS_AXIS_SHIFT = 3;
   public final static int _BT_USE_CENTER_LIMIT_ = 1;
   public final static String btHingeConstraintDataName = "btHingeConstraintFloatData";
+  public final static String btSoftBodyDataName = "btSoftBodyFloatData";
 }

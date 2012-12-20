@@ -446,4 +446,124 @@ public class gdxBullet implements gdxBulletConstants {
     gdxBulletJNI.resolveSingleBilateral(btRigidBody.getCPtr(body1), body1, pos1, btRigidBody.getCPtr(body2), body2, pos2, distance, normal, SWIGTYPE_p_float.getCPtr(impulse), timeStep);
   }
 
+  public static Matrix3 Lerp(Matrix3 a, Matrix3 b, float t) {
+	return gdxBulletJNI.Lerp(a, b, t);
+}
+
+  public static Vector3 Clamp(Vector3 v, float maxlength) {
+	return gdxBulletJNI.Clamp(v, maxlength);
+}
+
+  public static float ClusterMetric(Vector3 x, Vector3 y) {
+    return gdxBulletJNI.ClusterMetric(x, y);
+  }
+
+  public static Matrix3 ScaleAlongAxis(Vector3 a, float s) {
+	return gdxBulletJNI.ScaleAlongAxis(a, s);
+}
+
+  public static Matrix3 Cross(Vector3 v) {
+	return gdxBulletJNI.Cross(v);
+}
+
+  public static Matrix3 Diagonal(float x) {
+	return gdxBulletJNI.Diagonal(x);
+}
+
+  public static Matrix3 Add(Matrix3 a, Matrix3 b) {
+	return gdxBulletJNI.Add(a, b);
+}
+
+  public static Matrix3 Sub(Matrix3 a, Matrix3 b) {
+	return gdxBulletJNI.Sub(a, b);
+}
+
+  public static Matrix3 Mul(Matrix3 a, float b) {
+	return gdxBulletJNI.Mul(a, b);
+}
+
+  public static void Orthogonalize(Matrix3 m) {
+    gdxBulletJNI.Orthogonalize(m);
+  }
+
+  public static Matrix3 MassMatrix(float im, Matrix3 iwi, Vector3 r) {
+	return gdxBulletJNI.MassMatrix(im, iwi, r);
+}
+
+  public static Matrix3 ImpulseMatrix(float dt, float ima, float imb, Matrix3 iwi, Vector3 r) {
+	return gdxBulletJNI.ImpulseMatrix__SWIG_0(dt, ima, imb, iwi, r);
+}
+
+  public static Matrix3 ImpulseMatrix(float ima, Matrix3 iia, Vector3 ra, float imb, Matrix3 iib, Vector3 rb) {
+	return gdxBulletJNI.ImpulseMatrix__SWIG_1(ima, iia, ra, imb, iib, rb);
+}
+
+  public static Matrix3 AngularImpulseMatrix(Matrix3 iia, Matrix3 iib) {
+	return gdxBulletJNI.AngularImpulseMatrix(iia, iib);
+}
+
+  public static Vector3 ProjectOnAxis(Vector3 v, Vector3 a) {
+	return gdxBulletJNI.ProjectOnAxis(v, a);
+}
+
+  public static Vector3 ProjectOnPlane(Vector3 v, Vector3 a) {
+	return gdxBulletJNI.ProjectOnPlane(v, a);
+}
+
+  public static void ProjectOrigin(Vector3 a, Vector3 b, Vector3 prj, SWIGTYPE_p_float sqd) {
+    gdxBulletJNI.ProjectOrigin__SWIG_0(a, b, prj, SWIGTYPE_p_float.getCPtr(sqd));
+  }
+
+  public static void ProjectOrigin(Vector3 a, Vector3 b, Vector3 c, Vector3 prj, SWIGTYPE_p_float sqd) {
+    gdxBulletJNI.ProjectOrigin__SWIG_1(a, b, c, prj, SWIGTYPE_p_float.getCPtr(sqd));
+  }
+
+  public static Vector3 BaryCoord(Vector3 a, Vector3 b, Vector3 c, Vector3 p) {
+	return gdxBulletJNI.BaryCoord(a, b, c, p);
+}
+
+  public static float ImplicitSolve(SWIGTYPE_p_btSoftBody__ImplicitFn fn, Vector3 a, Vector3 b, float accuracy, int maxiterations) {
+    return gdxBulletJNI.ImplicitSolve__SWIG_0(SWIGTYPE_p_btSoftBody__ImplicitFn.getCPtr(fn), a, b, accuracy, maxiterations);
+  }
+
+  public static float ImplicitSolve(SWIGTYPE_p_btSoftBody__ImplicitFn fn, Vector3 a, Vector3 b, float accuracy) {
+    return gdxBulletJNI.ImplicitSolve__SWIG_1(SWIGTYPE_p_btSoftBody__ImplicitFn.getCPtr(fn), a, b, accuracy);
+  }
+
+  public static Vector3 NormalizeAny(Vector3 v) {
+	return gdxBulletJNI.NormalizeAny(v);
+}
+
+  public static btDbvtAabbMm VolumeOf(SWIGTYPE_p_btSoftBody__Face f, float margin) {
+    return new btDbvtAabbMm(gdxBulletJNI.VolumeOf__SWIG_0(SWIGTYPE_p_btSoftBody__Face.getCPtr(f), margin), true);
+  }
+
+  public static Vector3 CenterOf(SWIGTYPE_p_btSoftBody__Face f) {
+	return gdxBulletJNI.CenterOf(SWIGTYPE_p_btSoftBody__Face.getCPtr(f));
+}
+
+  public static float AreaOf(Vector3 x0, Vector3 x1, Vector3 x2) {
+    return gdxBulletJNI.AreaOf(x0, x1, x2);
+  }
+
+  public static float VolumeOf(Vector3 x0, Vector3 x1, Vector3 x2, Vector3 x3) {
+    return gdxBulletJNI.VolumeOf__SWIG_1(x0, x1, x2, x3);
+  }
+
+  public static void EvaluateMedium(btSoftBodyWorldInfo wfi, Vector3 x, SWIGTYPE_p_btSoftBody__sMedium medium) {
+    gdxBulletJNI.EvaluateMedium(btSoftBodyWorldInfo.getCPtr(wfi), wfi, x, SWIGTYPE_p_btSoftBody__sMedium.getCPtr(medium));
+  }
+
+  public static void ApplyClampedForce(SWIGTYPE_p_btSoftBody__Node n, Vector3 f, float dt) {
+    gdxBulletJNI.ApplyClampedForce(SWIGTYPE_p_btSoftBody__Node.getCPtr(n), f, dt);
+  }
+
+  public static int MatchEdge(SWIGTYPE_p_btSoftBody__Node a, SWIGTYPE_p_btSoftBody__Node b, SWIGTYPE_p_btSoftBody__Node ma, SWIGTYPE_p_btSoftBody__Node mb) {
+    return gdxBulletJNI.MatchEdge(SWIGTYPE_p_btSoftBody__Node.getCPtr(a), SWIGTYPE_p_btSoftBody__Node.getCPtr(b), SWIGTYPE_p_btSoftBody__Node.getCPtr(ma), SWIGTYPE_p_btSoftBody__Node.getCPtr(mb));
+  }
+
+  public static int PolarDecompose(Matrix3 m, Matrix3 q, Matrix3 s) {
+    return gdxBulletJNI.PolarDecompose(m, q, s);
+  }
+
 }
