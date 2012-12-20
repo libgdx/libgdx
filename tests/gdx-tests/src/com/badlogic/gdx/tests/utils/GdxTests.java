@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.badlogic.gdx.tests.*;
+import com.badlogic.gdx.tests.bullet.MeshShapeTest;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
 import com.badlogic.gdx.tests.extensions.GLEEDTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;

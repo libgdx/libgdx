@@ -6,6 +6,7 @@
 #include <LinearMath/btVector3.h>
 #include <LinearMath/btQuaternion.h>
 #include <LinearMath/btMatrix3x3.h>
+#include <LinearMath/btTransform.h>
 %}
 
 %fragment("gdxBulletHelpers", "header") {
@@ -51,6 +52,18 @@ SWIGINTERN inline jobject gdx_getReturnMatrix3(JNIEnv * jenv) {
   }
   return ret;
 }
+
+/* Gets a global reference to the temp class's Return Matrix4.  Do not release this. */
+SWIGINTERN inline jobject gdx_getReturnMatrix4(JNIEnv * jenv) {
+  static jobject ret = NULL;
+  if (ret == NULL) {
+    jclass tempClass = gdx_getTempClass(jenv);
+    jfieldID field = jenv->GetStaticFieldID(tempClass, "_RET_MATRIX4", "Lcom/badlogic/gdx/math/Matrix4;");
+    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(tempClass, field));
+  }
+  return ret;
+}
+
 
 SWIGINTERN inline jobject gdx_takePoolObject(JNIEnv * jenv, const char * poolName) {
   jclass tempClass = gdx_getTempClass(jenv);
@@ -252,6 +265,52 @@ SWIGINTERN inline void gdx_setGdxMatrix3FromBtMatrix3x3(JNIEnv * jenv, jobject t
   gdx_setGdxMatrix3FromBtMatrix3x3(jenv, target, *source);
 }
 
+/* Sets the data in the Bullet type from the Gdx type. */
+SWIGINTERN inline void gdx_setBtTransformFromGdxMatrix4(JNIEnv * jenv, btTransform & target, jobject source) {
+  jclass sourceClass = jenv->GetObjectClass(source); 
+  
+  static jfieldID valField = NULL;
+  if (valField == NULL) {
+    valField = jenv->GetFieldID(sourceClass, "val", "[F");
+  }
+  
+  jfloatArray valArray = (jfloatArray) jenv->GetObjectField(source, valField);
+  jfloat * elements = jenv->GetFloatArrayElements(valArray, NULL);
+  
+  target.setFromOpenGLMatrix(elements);
+  
+  jenv->ReleaseFloatArrayElements(valArray, elements, JNI_ABORT);
+  jenv->DeleteLocalRef(valArray);
+  jenv->DeleteLocalRef(sourceClass);
+}
+
+SWIGINTERN inline void gdx_setBtTransformFromGdxMatrix4(JNIEnv * jenv, btTransform * target, jobject source) {
+  gdx_setBtTransformFromGdxMatrix4(jenv, *target, source);
+}
+
+/* Sets the data in the Gdx type from the Bullet type. */
+SWIGINTERN inline void gdx_setGdxMatrix4FromBtTransform(JNIEnv * jenv, jobject target, const btTransform & source) {
+  jclass targetClass = jenv->GetObjectClass(target);
+  
+  static jfieldID valField = NULL;
+  if (valField == NULL) {
+    valField = jenv->GetFieldID(targetClass, "val", "[F");
+  }
+  
+  jfloatArray valArray = (jfloatArray) jenv->GetObjectField(target, valField);
+  jfloat * elements = jenv->GetFloatArrayElements(valArray, NULL);
+
+  source.getOpenGLMatrix(elements);
+
+  jenv->ReleaseFloatArrayElements(valArray, elements, 0);  
+  jenv->DeleteLocalRef(valArray);
+  jenv->DeleteLocalRef(targetClass);
+}
+
+SWIGINTERN inline void gdx_setGdxMatrix4FromBtTransform(JNIEnv * jenv, jobject target, const btTransform * source) {
+  gdx_setGdxMatrix4FromBtTransform(jenv, target, *source);
+}
+
 /*
  * A simple RAII wrapper to release jobjects we obtain from pools in 
  * directorin typemaps.  SWIG doesn't have hooks to release them after
@@ -290,6 +349,25 @@ public:
 };
 
 /*
+ * RAII wrapper to commit changes made to a local Gdx Vector3 back to 
+ * the btVector3.
+ */
+class gdxAutoCommitBtVector3 {
+private:
+  JNIEnv * jenv;
+  jobject gdxV3;
+  btVector3 & btV3;
+public:
+  gdxAutoCommitBtVector3(JNIEnv * jenv, jobject gdxV3, btVector3 & btV3) : 
+    jenv(jenv), gdxV3(gdxV3), btV3(btV3) { };
+  gdxAutoCommitBtVector3(JNIEnv * jenv, jobject gdxV3, btVector3 * btV3) : 
+    jenv(jenv), gdxV3(gdxV3), btV3(*btV3) { };
+  virtual ~gdxAutoCommitBtVector3() {
+    gdx_setBtVector3FromGdxVector3(this->jenv, this->btV3, this->gdxV3);
+  };
+};
+
+/*
  * RAII wrapper to commit changes made to a local btQuaternion back to 
  * the Gdx Quaternion.
  */
@@ -305,6 +383,25 @@ public:
     jenv(jenv), gdxQ(gdxQ), btQ(*btQ) { };
   virtual ~gdxAutoCommitQuaternion() {
     gdx_setGdxQuaternionFromBtQuaternion(this->jenv, this->gdxQ, this->btQ);
+  };
+};
+
+/*
+ * RAII wrapper to commit changes made to a local Gdx Quaternion back to 
+ * the btQuaternion.
+ */
+class gdxAutoCommitBtQuaternion {
+private:
+  JNIEnv * jenv;
+  jobject gdxQ;
+  btQuaternion & btQ;
+public:
+  gdxAutoCommitBtQuaternion(JNIEnv * jenv, jobject gdxQ, btQuaternion & btQ) : 
+    jenv(jenv), gdxQ(gdxQ), btQ(btQ) { };
+  gdxAutoCommitBtQuaternion(JNIEnv * jenv, jobject gdxQ, btQuaternion * btQ) : 
+    jenv(jenv), gdxQ(gdxQ), btQ(*btQ) { };
+  virtual ~gdxAutoCommitBtQuaternion() {
+    gdx_setBtQuaternionFromGdxQuaternion(this->jenv, this->btQ, this->gdxQ);
   };
 };
 
@@ -327,6 +424,63 @@ public:
   };
 };
 
+/*
+ * RAII wrapper to commit changes made to a local Gdx Matrix3 back to 
+ * the btMatrix3x3.
+ */
+class gdxAutoCommitBtMatrix3x3 {
+private:
+  JNIEnv * jenv;
+  jobject gdxM;
+  btMatrix3x3 & btM;
+public:
+  gdxAutoCommitBtMatrix3x3(JNIEnv * jenv, jobject gdxM, btMatrix3x3 & btM) : 
+    jenv(jenv), gdxM(gdxM), btM(btM) { };
+  gdxAutoCommitBtMatrix3x3(JNIEnv * jenv, jobject gdxM, btMatrix3x3 * btM) : 
+    jenv(jenv), gdxM(gdxM), btM(*btM) { };
+  virtual ~gdxAutoCommitBtMatrix3x3() {
+    gdx_setBtMatrix3x3FromGdxMatrix3(this->jenv, this->btM, this->gdxM);
+  };
+};
+
+/*
+ * RAII wrapper to commit changes made to a local btTransform back to 
+ * the Gdx Matrix4.
+ */
+class gdxAutoCommitMatrix4 {
+private:
+  JNIEnv * jenv;
+  jobject gdxM;
+  btTransform & btM;
+public:
+  gdxAutoCommitMatrix4(JNIEnv * jenv, jobject gdxM, btTransform & btM) : 
+    jenv(jenv), gdxM(gdxM), btM(btM) { };
+  gdxAutoCommitMatrix4(JNIEnv * jenv, jobject gdxM, btTransform * btM) : 
+    jenv(jenv), gdxM(gdxM), btM(*btM) { };
+  virtual ~gdxAutoCommitMatrix4() {
+    gdx_setGdxMatrix4FromBtTransform(this->jenv, this->gdxM, this->btM);
+  };
+};
+
+/*
+ * RAII wrapper to commit changes made to a local Gdx Matrix4 back to 
+ * the btTransform.
+ */
+class gdxAutoCommitBtTransform {
+private:
+  JNIEnv * jenv;
+  jobject gdxM;
+  btTransform & btM;
+public:
+  gdxAutoCommitBtTransform(JNIEnv * jenv, jobject gdxM, btTransform & btM) : 
+    jenv(jenv), gdxM(gdxM), btM(btM) { };
+  gdxAutoCommitBtTransform(JNIEnv * jenv, jobject gdxM, btTransform * btM) : 
+    jenv(jenv), gdxM(gdxM), btM(*btM) { };
+  virtual ~gdxAutoCommitBtTransform() {
+    gdx_setBtTransformFromGdxMatrix4(this->jenv, this->btM, this->gdxM);
+  };
+};
+
 }
 
 /* 
@@ -339,6 +493,7 @@ public:
   private final static Vector3 _RET_VECTOR3 = new Vector3(0, 0, 0);
   private final static Quaternion _RET_QUATERNION = new Quaternion(0, 0, 0, 0);
   private final static Matrix3 _RET_MATRIX3 = new Matrix3();
+  private final static Matrix4 _RET_MATRIX4 = new Matrix4();
   
   // Used to avoid allocation for parameters in director calls into Java
   public static final Pool<Vector3> _DIR_VECTOR3 = new Pool<Vector3>() {
@@ -357,6 +512,12 @@ public:
     @Override
 	protected Matrix3 newObject() {
       return new Matrix3();
+	}
+  };
+  public static final Pool<Matrix4> _DIR_MATRIX4 = new Pool<Matrix4>() {
+    @Override
+	protected Matrix4 newObject() {
+      return new Matrix4();
 	}
   };
 %}
@@ -382,10 +543,16 @@ public:
 	$1 = &local_$1;
 	gdxAutoCommitVector3 auto_commit_$1(jenv, $input, &local_$1);
 }
-%typemap(directorin, fragment="gdxBulletHelpers", descriptor="Lcom/badlogic/gdx/math/Vector3;", noblock=1)	btVector3, btVector3 &, const btVector3 &	{
+%typemap(directorin, fragment="gdxBulletHelpers", descriptor="Lcom/badlogic/gdx/math/Vector3;", noblock=1)	const btVector3 & {
 	$input = gdx_takePoolObject(jenv, "_DIR_VECTOR3");
 	gdxPoolAutoRelease autoRelease_$input(jenv, "_DIR_VECTOR3", $input);
 	gdx_setGdxVector3FromBtVector3(jenv, $input, $1);
+}
+%typemap(directorin, fragment="gdxBulletHelpers", descriptor="Lcom/badlogic/gdx/math/Vector3;", noblock=1)	btVector3, btVector3 & {
+	$input = gdx_takePoolObject(jenv, "_DIR_VECTOR3");
+	gdxPoolAutoRelease autoRelease_$input(jenv, "_DIR_VECTOR3", $input);
+	gdx_setGdxVector3FromBtVector3(jenv, $input, $1);
+	gdxAutoCommitBtVector3 auto_commit_$1(jenv, $input, &$1);
 }
 
 %typemap(out, fragment="gdxBulletHelpers", noblock=1)		btVector3, btVector3 &, const btVector3 &	{
@@ -426,10 +593,16 @@ public:
 	$1 = &local_$1;
 	gdxAutoCommitQuaternion auto_commit_$1(jenv, $input, &local_$1);
 }
-%typemap(directorin, fragment="gdxBulletHelpers", descriptor="Lcom/badlogic/gdx/math/Quaternion;", noblock=1)	btQuaternion, btQuaternion &, const btQuaternion &	{
+%typemap(directorin, fragment="gdxBulletHelpers", descriptor="Lcom/badlogic/gdx/math/Quaternion;", noblock=1)	const btQuaternion & {
 	$input = gdx_takePoolObject(jenv, "_DIR_QUATERNION");
 	gdxPoolAutoRelease autoRelease_$input(jenv, "_DIR_QUATERNION", $input);
 	gdx_setGdxQuaternionFromBtQuaternion(jenv, $input, $1);
+}
+%typemap(directorin, fragment="gdxBulletHelpers", descriptor="Lcom/badlogic/gdx/math/Quaternion;", noblock=1)	btQuaternion, btQuaternion & {
+	$input = gdx_takePoolObject(jenv, "_DIR_QUATERNION");
+	gdxPoolAutoRelease autoRelease_$input(jenv, "_DIR_QUATERNION", $input);
+	gdx_setGdxQuaternionFromBtQuaternion(jenv, $input, $1);
+	gdxAutoCommitBtQuaternion auto_commit_$1(jenv, $input, &$1);
 }
 
 %typemap(out, fragment="gdxBulletHelpers", noblock=1)		btQuaternion, btQuaternion &, const btQuaternion &	{
@@ -470,12 +643,17 @@ public:
 	$1 = &local_$1;
 	gdxAutoCommitMatrix3 auto_commit_$1(jenv, $input, &local_$1);
 }
-%typemap(directorin, fragment="gdxBulletHelpers", descriptor="Lcom/badlogic/gdx/math/Matrix3;", noblock=1)	btMatrix3x3, btMatrix3x3 &, const btMatrix3x3 &	{
+%typemap(directorin, fragment="gdxBulletHelpers", descriptor="Lcom/badlogic/gdx/math/Matrix3;", noblock=1)	const btMatrix3x3 &{
 	$input = gdx_takePoolObject(jenv, "_DIR_MATRIX3"); 
 	gdxPoolAutoRelease autoRelease_$input(jenv, "_DIR_MATRIX3", $input);
 	gdx_setGdxMatrix3FromBtMatrix3x3(jenv, $input, $1);
 }
-
+%typemap(directorin, fragment="gdxBulletHelpers", descriptor="Lcom/badlogic/gdx/math/Matrix3;", noblock=1)	btMatrix3x3, btMatrix3x3 &	{
+	$input = gdx_takePoolObject(jenv, "_DIR_MATRIX3"); 
+	gdxPoolAutoRelease autoRelease_$input(jenv, "_DIR_MATRIX3", $input);
+	gdx_setGdxMatrix3FromBtMatrix3x3(jenv, $input, $1);
+	gdxAutoCommitBtMatrix3x3 auto_commit_$1(jenv, $input, &$1);
+}
 %typemap(out, fragment="gdxBulletHelpers", noblock=1)		btMatrix3x3, btMatrix3x3 &, const btMatrix3x3 &	{
 	$result = gdx_getReturnMatrix3(jenv);
 	gdx_setGdxMatrix3FromBtMatrix3x3(jenv, $result, $1);
@@ -490,5 +668,55 @@ public:
 %typemap(directorout, fragment="gdxBulletHelpers", descriptor="Lcom/badlogic/gdx/math/Matrix3;", noblock=1) 	btMatrix3x3 &, const btMatrix3x3 & {
 	btMatrix3x3 local_$result;
 	gdx_setBtMatrix3x3FromGdxMatrix3(jenv, local_$result, $input);
+	$result = &local_$result;
+}
+
+/* 
+ * Use Matrix4 instead of btTransform.  To avoid allocation on return,
+ * the native code writes into a static field in the Java proxy class.
+ */
+
+%typemap(jstype) 			btTransform, btTransform &, const btTransform & 	"Matrix4"
+%typemap(jtype) 			btTransform, btTransform &, const btTransform & 	"Matrix4"
+%typemap(javain)			btTransform, btTransform &, const btTransform &		"$javainput"
+%typemap(javadirectorin)	btTransform, btTransform &, const btTransform &		"$1"
+%typemap(javadirectorout)	btTransform, btTransform &, const btTransform &		"$javacall"
+%typemap(jni) 				btTransform, btTransform &, const btTransform & 	"jobject"
+
+%typemap(in, noblock=1)		btTransform	{
+	gdx_setBtTransformromGdxMatrix4(jenv, $1, $input);
+}
+%typemap(in, noblock=1)		btTransform &, const btTransform &	{
+	btTransform local_$1;
+	gdx_setBtTransformFromGdxMatrix4(jenv, local_$1, $input);
+	$1 = &local_$1;
+	gdxAutoCommitMatrix4 auto_commit_$1(jenv, $input, &local_$1);
+}
+%typemap(directorin, fragment="gdxBulletHelpers", descriptor="Lcom/badlogic/gdx/math/Matrix4;", noblock=1)	const btTransform & {
+	$input = gdx_takePoolObject(jenv, "_DIR_MATRIX4"); 
+	gdxPoolAutoRelease autoRelease_$input(jenv, "_DIR_MATRIX4", $input);
+	gdx_setGdxMatrix4FromBtTransform(jenv, $input, $1);
+}
+%typemap(directorin, fragment="gdxBulletHelpers", descriptor="Lcom/badlogic/gdx/math/Matrix4;", noblock=1)	btTransform, btTransform &	{
+	$input = gdx_takePoolObject(jenv, "_DIR_MATRIX4"); 
+	gdxPoolAutoRelease autoRelease_$input(jenv, "_DIR_MATRIX4", $input);
+	gdx_setGdxMatrix4FromBtTransform(jenv, $input, $1);
+	gdxAutoCommitBtTransform auto_commit_$1(jenv, $input, &$1);
+}
+
+%typemap(out, fragment="gdxBulletHelpers", noblock=1)		btTransform, btTransform &, const btTransform &	{
+	$result = gdx_getReturnMatrix4(jenv);
+	gdx_setGdxMatrix4FromBtTransform(jenv, $result, $1);
+}
+%typemap(javaout)	btTransform, btTransform &, const btTransform &	{
+	return $jnicall;
+}
+%typemap(directorout, fragment="gdxBulletHelpers", descriptor="Lcom/badlogic/gdx/math/Matrix4;", noblock=1) 	btTransform {
+	gdx_setBtTransformFromGdxMatrix4(jenv, $result, $input);
+}
+/* allocate a local so we don't write to static default */
+%typemap(directorout, fragment="gdxBulletHelpers", descriptor="Lcom/badlogic/gdx/math/Matrix4;", noblock=1) 	btTransform &, const btTransform & {
+	btTransform local_$result;
+	gdx_setBtTransformFromGdxMatrix4(jenv, local_$result, $input);
 	$result = &local_$result;
 }

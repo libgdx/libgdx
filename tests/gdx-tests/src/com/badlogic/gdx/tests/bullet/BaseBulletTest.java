@@ -27,6 +27,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.btBoxShape;
 import com.badlogic.gdx.physics.bullet.btCollisionDispatcher;
 import com.badlogic.gdx.physics.bullet.btCollisionShape;
@@ -45,10 +46,6 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** @author xoppa */
 public class BaseBulletTest extends BulletTest {
-	static {
-		new SharedLibraryLoader().load("gdx-bullet");
-	}
-	
 	final float lightAmbient[] = new float[] {0.5f, 0.5f, 0.5f, 1f};
 	final float lightPosition[] = new float[] {10f, 10f, 10f, 1f};
 	final float lightDiffuse[] = new float[] {0.5f, 0.5f, 0.5f, 1f};
@@ -58,6 +55,9 @@ public class BaseBulletTest extends BulletTest {
 	
 	@Override
 	public void create () {
+		// Need to initialize bullet before using it.
+		Bullet.init();
+		
 		world = new World();
 
 		final float width = Gdx.graphics.getWidth();
@@ -229,16 +229,16 @@ public class BaseBulletTest extends BulletTest {
 			 * For kinematic bodies this method is called on every update.
 			 */
 			@Override
-			public void getWorldTransform (final btTransform worldTrans) {
-				worldTrans.setFromOpenGLMatrix(transform.val);
+			public void getWorldTransform (Matrix4 worldTrans) {
+				worldTrans.set(transform);
 			}
 
 			/**
 			 * For dynamic bodies this method is called by bullet every update to inform about the new position and rotation.
 			 */
 			@Override
-			public void setWorldTransform (final btTransform worldTrans) {
-				worldTrans.getOpenGLMatrix(transform.val);
+			public void setWorldTransform (Matrix4 worldTrans) {
+				transform.set(worldTrans);
 			}
 			
 			@Override

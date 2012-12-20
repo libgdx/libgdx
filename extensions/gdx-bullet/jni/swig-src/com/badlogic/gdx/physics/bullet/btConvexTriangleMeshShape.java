@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class btConvexTriangleMeshShape extends btPolyhedralConvexAabbCachingShape {
   private long swigCPtr;
@@ -52,8 +53,8 @@ public class btConvexTriangleMeshShape extends btPolyhedralConvexAabbCachingShap
     return (cPtr == 0) ? null : new btStridingMeshInterface(cPtr, false);
   }
 
-  public void calculatePrincipalAxisTransform(btTransform principal, Vector3 inertia, SWIGTYPE_p_float volume) {
-    gdxBulletJNI.btConvexTriangleMeshShape_calculatePrincipalAxisTransform(swigCPtr, this, btTransform.getCPtr(principal), principal, inertia, SWIGTYPE_p_float.getCPtr(volume));
+  public void calculatePrincipalAxisTransform(Matrix4 principal, Vector3 inertia, SWIGTYPE_p_float volume) {
+    gdxBulletJNI.btConvexTriangleMeshShape_calculatePrincipalAxisTransform(swigCPtr, this, principal, inertia, SWIGTYPE_p_float.getCPtr(volume));
   }
 
 }

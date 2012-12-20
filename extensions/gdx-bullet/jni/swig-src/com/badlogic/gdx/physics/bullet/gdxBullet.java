@@ -11,6 +11,7 @@ package com.badlogic.gdx.physics.bullet;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 
 public class gdxBullet implements gdxBulletConstants {
   public static int btGetVersion() {
@@ -249,12 +250,12 @@ public class gdxBullet implements gdxBulletConstants {
     return gdxBulletJNI.btRayAabb(rayFrom, rayTo, aabbMin, aabbMax, SWIGTYPE_p_float.getCPtr(param), normal);
   }
 
-  public static void btTransformAabb(Vector3 halfExtents, float margin, btTransform t, Vector3 aabbMinOut, Vector3 aabbMaxOut) {
-    gdxBulletJNI.btTransformAabb__SWIG_0(halfExtents, margin, btTransform.getCPtr(t), t, aabbMinOut, aabbMaxOut);
+  public static void btTransformAabb(Vector3 halfExtents, float margin, Matrix4 t, Vector3 aabbMinOut, Vector3 aabbMaxOut) {
+    gdxBulletJNI.btTransformAabb__SWIG_0(halfExtents, margin, t, aabbMinOut, aabbMaxOut);
   }
 
-  public static void btTransformAabb(Vector3 localAabbMin, Vector3 localAabbMax, float margin, btTransform trans, Vector3 aabbMinOut, Vector3 aabbMaxOut) {
-    gdxBulletJNI.btTransformAabb__SWIG_1(localAabbMin, localAabbMax, margin, btTransform.getCPtr(trans), trans, aabbMinOut, aabbMaxOut);
+  public static void btTransformAabb(Vector3 localAabbMin, Vector3 localAabbMax, float margin, Matrix4 trans, Vector3 aabbMinOut, Vector3 aabbMaxOut) {
+    gdxBulletJNI.btTransformAabb__SWIG_1(localAabbMin, localAabbMax, margin, trans, aabbMinOut, aabbMaxOut);
   }
 
   public static long testQuantizedAabbAgainstQuantizedAabb(SWIGTYPE_p_unsigned_short aabbMin1, SWIGTYPE_p_unsigned_short aabbMax1, SWIGTYPE_p_unsigned_short aabbMin2, SWIGTYPE_p_unsigned_short aabbMax2) {

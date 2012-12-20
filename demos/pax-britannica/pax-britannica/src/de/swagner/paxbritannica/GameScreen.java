@@ -8,7 +8,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Intersector;
@@ -77,9 +76,9 @@ public class GameScreen extends DefaultScreen implements InputProcessor {
 	
 	Ray collisionRay;
 
-	private Array<Vector2> POSITIONS = new Array<Vector2>();
+	private final Array<Vector2> POSITIONS = new Array<Vector2>();
 
-	private Vector2 CENTER = new Vector2(300, 180);
+	private final Vector2 CENTER = new Vector2(300, 180);
 	
 	private int width = 800;
 	private int height = 480;

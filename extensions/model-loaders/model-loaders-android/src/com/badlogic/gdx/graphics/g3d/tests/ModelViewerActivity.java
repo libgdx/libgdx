@@ -20,8 +20,7 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.badlogic.gdx.graphics.g3d.experimental.HybridLightTest;
-import com.badlogic.gdx.graphics.g3d.experimental.SkeletonModelGpuSkinningTest;
+import com.badlogic.gdx.graphics.g3d.test.StillModelViewerGL20;
 
 public class ModelViewerActivity extends AndroidApplication {
 	/** Called when the activity is first created. */
@@ -41,6 +40,7 @@ public class ModelViewerActivity extends AndroidApplication {
 // config);
 		//initialize(new HybridLightTest(), config);
 		// initialize(new Viewer(), config);
-		initialize(new SkeletonModelGpuSkinningTest(),config);
+		initialize(new StillModelViewerGL20("data/models/basicscene.obj", "data/multipleuvs_1.png",
+			"data/multipleuvs_2.png"),config);
 	}
 }
