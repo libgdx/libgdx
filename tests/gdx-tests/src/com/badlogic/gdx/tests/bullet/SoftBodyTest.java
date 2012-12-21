@@ -107,7 +107,12 @@ public class SoftBodyTest extends BaseBulletTest {
 	
 	@Override
 	public void dispose () {
+		((btSoftRigidDynamicsWorld)(world.dynamicsWorld)).removeSoftBody(softBody);
+		softBody.delete();
+		softBody = null;
+		
 		super.dispose();
+				
 		worldInfo.delete();
 		worldInfo = null;
 		mesh.dispose();
