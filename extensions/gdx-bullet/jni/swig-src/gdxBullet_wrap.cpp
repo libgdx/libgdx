@@ -2056,7 +2056,7 @@ SWIGINTERN int btSoftBody_getFaceCount(btSoftBody *self){
 	}
 SWIGINTERN void btSoftBody_getIndices(btSoftBody *self,short *buffer,int triangleCount){
 		const size_t nodeSize = sizeof(btSoftBody::Node);
-		const intptr_t nodeOffset = (long)(&self->m_nodes[0]);
+		const intptr_t nodeOffset = (intptr_t)(&self->m_nodes[0]);
 		for (int i = 0; i < triangleCount; i++) {
 			const int idx = i * 3;
 			buffer[idx] = ((intptr_t)(self->m_faces[i].m_n[0]) - nodeOffset) / nodeSize;
