@@ -277,7 +277,7 @@ public class MD2Loader implements KeyframedModelLoader {
 		int len = 0;
 		for (int i = 0; i < charBuffer.length; i++)
 			if (charBuffer[i] == 0) {
-				len = i - 1;
+				len = i;
 				break;
 			}
 
