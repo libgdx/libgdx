@@ -114,14 +114,14 @@ public class Animation {
 	 * @param stateTime
 	 * @return the TextureRegion representing the frame of animation for the given state time. */
 	public TextureRegion getKeyFrame (float stateTime) {
-		int frameNumber = getCurrentFrameNumber (stateTime);
+		int frameNumber = getKeyFrameIndex (stateTime);
 		return keyFrames[frameNumber];
 	}
 	
 	/** Returns the current frame number.
 	 * @param stateTime
 	 * @return current frame number */
-	public int getCurrentFrameNumber (float stateTime) {
+	public int getKeyFrameIndex (float stateTime) {
 		int frameNumber = (int)(stateTime / frameDuration);
 
 		switch (playMode) {
