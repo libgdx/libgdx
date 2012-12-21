@@ -20,8 +20,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -43,9 +45,9 @@ import com.badlogic.gdx.physics.bullet.btSoftRigidDynamicsWorld;
 public class SoftBodyTest extends BaseBulletTest {
 	btSoftBodyWorldInfo worldInfo;
 	btSoftBody softBody;
+	Texture texture;
 	Mesh mesh;
 	Matrix4 tmpM = new Matrix4();
-	Color color = new Color(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 	
 	@Override
 	public BulletWorld createWorld () {
@@ -81,15 +83,26 @@ public class SoftBodyTest extends BaseBulletTest {
 		softBody.setTotalMass(100f);
 		((btSoftRigidDynamicsWorld)(world.dynamicsWorld)).addSoftBody(softBody);
 		
-		int vertCount = softBody.getNodeCount();
-		int faceCount = softBody.getFaceCount(); 
-		mesh = new Mesh(false, vertCount, faceCount*3,  new VertexAttribute(Usage.Position, 3, "a_position"));
+		final int vertCount = softBody.getNodeCount();
+		final int faceCount = softBody.getFaceCount(); 
+		mesh = new Mesh(false, vertCount, faceCount*3,  new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+		final int vertSize = mesh.getVertexSize() / 4;
 		mesh.getVerticesBuffer().position(0);
-		mesh.getVerticesBuffer().limit(vertCount * mesh.getVertexSize() / 4);
+		mesh.getVerticesBuffer().limit(vertCount * vertSize);
 		mesh.getIndicesBuffer().position(0);
 		mesh.getIndicesBuffer().limit(faceCount * 3);
 		softBody.getVertices(mesh.getVerticesBuffer(), vertCount, mesh.getVertexSize(), 0);
 		softBody.getIndices(mesh.getIndicesBuffer(), faceCount);
+		
+		final float[] verts = new float[vertCount * vertSize];
+		final int uvOffset = mesh.getVertexAttribute(Usage.TextureCoordinates).offset / 4;
+		mesh.getVertices(verts);
+		for (int i = 0; i < vertCount; i++) {
+			verts[i*vertSize+uvOffset] = (verts[i*vertSize] - x0) / (x1 - x0);
+			verts[i*vertSize+uvOffset+1] = (verts[i*vertSize+2] - z0) / (z1 - z0);
+		}
+		mesh.setVertices(verts);
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 	}
 	
 	@Override
@@ -99,26 +112,31 @@ public class SoftBodyTest extends BaseBulletTest {
 		worldInfo = null;
 		mesh.dispose();
 		mesh = null;
+		texture.dispose();
+		texture = null;
 	}
 	
 	@Override
 	public void render () {
 		super.render();
 		if (world.renderMeshes) {
+			Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
+			texture.bind(0);
 			softBody.getVertices(mesh.getVerticesBuffer(), softBody.getNodeCount(), mesh.getVertexSize(), 0);
 			softBody.getWorldTransform(tmpM);
 			Gdx.gl10.glPushMatrix();
 			Gdx.gl10.glMultMatrixf(tmpM.val, 0);
-			Gdx.gl10.glColor4f(color.r, color.g, color.b, color.a);
+			Gdx.gl10.glColor4f(1f, 1f, 1f, 1f);
 			mesh.render(GL10.GL_TRIANGLES);
 			Gdx.gl10.glPopMatrix();
+			Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
 		}
 		
 	}
 	
 	@Override
 	public boolean tap (float x, float y, int count, int button) {
-		shoot(x, y);
+		shoot(x, y, 20f);
 		return true;
 	}
 }
