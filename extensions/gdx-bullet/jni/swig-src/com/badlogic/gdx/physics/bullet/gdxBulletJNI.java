@@ -2812,6 +2812,19 @@ public class gdxBulletJNI {
   public final static native void btDynamicsWorld_removeVehicle(long jarg1, btDynamicsWorld jarg1_, long jarg2, btActionInterface jarg2_);
   public final static native void btDynamicsWorld_addCharacter(long jarg1, btDynamicsWorld jarg1_, long jarg2, btActionInterface jarg2_);
   public final static native void btDynamicsWorld_removeCharacter(long jarg1, btDynamicsWorld jarg1_, long jarg2, btActionInterface jarg2_);
+  public final static native void InternalTickCallback_CB(long jarg1, btDynamicsWorld jarg1_, float jarg2);
+  public final static native long new_InternalTickCallback__SWIG_0(long jarg1, btDynamicsWorld jarg1_, boolean jarg2);
+  public final static native long new_InternalTickCallback__SWIG_1(long jarg1, btDynamicsWorld jarg1_);
+  public final static native long new_InternalTickCallback__SWIG_2();
+  public final static native void InternalTickCallback_onInternalTick(long jarg1, InternalTickCallback jarg1_, long jarg2, btDynamicsWorld jarg2_, float jarg3);
+  public final static native void InternalTickCallback_onInternalTickSwigExplicitInternalTickCallback(long jarg1, InternalTickCallback jarg1_, long jarg2, btDynamicsWorld jarg2_, float jarg3);
+  public final static native void InternalTickCallback_detach__SWIG_0(long jarg1, InternalTickCallback jarg1_);
+  public final static native void InternalTickCallback_attach__SWIG_0(long jarg1, InternalTickCallback jarg1_, long jarg2, btDynamicsWorld jarg2_, boolean jarg3);
+  public final static native void InternalTickCallback_attach__SWIG_1(long jarg1, InternalTickCallback jarg1_);
+  public final static native void InternalTickCallback_detach__SWIG_1(long jarg1, btDynamicsWorld jarg1_, boolean jarg2);
+  public final static native void delete_InternalTickCallback(long jarg1);
+  public final static native void InternalTickCallback_director_connect(InternalTickCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void InternalTickCallback_change_ownership(InternalTickCallback obj, long cptr, boolean take_or_release);
   public final static native long new_btSimpleDynamicsWorld(long jarg1, btDispatcher jarg1_, long jarg2, btBroadphaseInterface jarg2_, long jarg3, btConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_);
   public final static native void delete_btSimpleDynamicsWorld(long jarg1);
   public final static native int btSimpleDynamicsWorld_stepSimulation__SWIG_0(long jarg1, btSimpleDynamicsWorld jarg1_, float jarg2, int jarg3, float jarg4);
@@ -4526,6 +4539,9 @@ public class gdxBulletJNI {
   }
   public static void SwigDirector_btMotionState_setWorldTransform(btMotionState self, Matrix4 worldTrans) {
     self.setWorldTransform(worldTrans);
+  }
+  public static void SwigDirector_InternalTickCallback_onInternalTick(InternalTickCallback self, long dynamicsWorld, float timeStep) {
+    self.onInternalTick((dynamicsWorld == 0) ? null : new btDynamicsWorld(dynamicsWorld, false), timeStep);
   }
 
   private final static native void swig_module_init();

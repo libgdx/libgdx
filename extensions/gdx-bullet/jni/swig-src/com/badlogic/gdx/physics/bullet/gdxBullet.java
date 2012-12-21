@@ -438,6 +438,10 @@ public class gdxBullet implements gdxBulletConstants {
     return gdxBulletJNI.btAdjustAngleToLimits(angleInRadians, angleLowerLimitInRadians, angleUpperLimitInRadians);
   }
 
+  public static void InternalTickCallback_CB(btDynamicsWorld world, float timeStep) {
+    gdxBulletJNI.InternalTickCallback_CB(btDynamicsWorld.getCPtr(world), world, timeStep);
+  }
+
   public static float resolveSingleCollision(btRigidBody body1, btCollisionObject colObj2, Vector3 contactPositionWorld, Vector3 contactNormalOnB, btContactSolverInfo solverInfo, float distance) {
     return gdxBulletJNI.resolveSingleCollision(btRigidBody.getCPtr(body1), body1, btCollisionObject.getCPtr(colObj2), colObj2, contactPositionWorld, contactNormalOnB, btContactSolverInfo.getCPtr(solverInfo), solverInfo, distance);
   }

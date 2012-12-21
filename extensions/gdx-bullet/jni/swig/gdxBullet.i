@@ -65,6 +65,7 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 
 /* Configure directors for types with virtual methods that need Java implementations */
 %feature("director") btIDebugDraw;
+%feature("director") InternalTickCallback;
 
 /*
  * The rest of the types (some are disabled, commented out at the bottom).
@@ -672,6 +673,11 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 #include <BulletDynamics/Dynamics/btDynamicsWorld.h>
 %}
 %include "BulletDynamics/Dynamics/btDynamicsWorld.h"
+
+%{
+#include <../swig/custom/InternalTickCallback.h>
+%}
+%include "../swig/custom/InternalTickCallback.h"
 
 %{
 #include <BulletDynamics/Dynamics/btSimpleDynamicsWorld.h>

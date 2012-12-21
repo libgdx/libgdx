@@ -410,7 +410,7 @@ namespace Swig {
 namespace Swig {
   namespace {
     jclass jclass_gdxBulletJNI = NULL;
-    jmethodID director_methids[25];
+    jmethodID director_methids[26];
   }
 }
 
@@ -1960,6 +1960,9 @@ typedef btTypedConstraint::btConstraintInfo2 btConstraintInfo2;
 #include <BulletDynamics/Dynamics/btDynamicsWorld.h>
 
 
+#include <../swig/custom/InternalTickCallback.h>
+
+
 #include <BulletDynamics/Dynamics/btSimpleDynamicsWorld.h>
 
 
@@ -2901,6 +2904,68 @@ void SwigDirector_btMotionState::swig_connect_director(JNIEnv *jenv, jobject jse
     }
     bool derived = (jenv->IsSameObject(baseclass, jcls) ? false : true);
     for (int i = 0; i < 2; ++i) {
+      if (!methods[i].base_methid) {
+        methods[i].base_methid = jenv->GetMethodID(baseclass, methods[i].mname, methods[i].mdesc);
+        if (!methods[i].base_methid) return;
+      }
+      swig_override[i] = false;
+      if (derived) {
+        jmethodID methid = jenv->GetMethodID(jcls, methods[i].mname, methods[i].mdesc);
+        swig_override[i] = (methid != methods[i].base_methid);
+        jenv->ExceptionClear();
+      }
+    }
+  }
+}
+
+
+SwigDirector_InternalTickCallback::SwigDirector_InternalTickCallback(JNIEnv *jenv, btDynamicsWorld *dynamicsWorld, bool isPreTick) : InternalTickCallback(dynamicsWorld, isPreTick), Swig::Director(jenv) {
+}
+
+void SwigDirector_InternalTickCallback::onInternalTick(btDynamicsWorld *dynamicsWorld, btScalar timeStep) {
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  jlong jdynamicsWorld = 0 ;
+  jfloat jtimeStep  ;
+  
+  if (!swig_override[0]) {
+    InternalTickCallback::onInternalTick(dynamicsWorld,timeStep);
+    return;
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    *((btDynamicsWorld **)&jdynamicsWorld) = (btDynamicsWorld *) dynamicsWorld; 
+    jtimeStep = (jfloat) timeStep;
+    jenv->CallStaticVoidMethod(Swig::jclass_gdxBulletJNI, Swig::director_methids[25], swigjobj, jdynamicsWorld, jtimeStep);
+    if (jenv->ExceptionCheck() == JNI_TRUE) return ;
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+}
+
+void SwigDirector_InternalTickCallback::swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global) {
+  static struct {
+    const char *mname;
+    const char *mdesc;
+    jmethodID base_methid;
+  } methods[] = {
+    {
+      "onInternalTick", "(Lcom/badlogic/gdx/physics/bullet/btDynamicsWorld;F)V", NULL 
+    }
+  };
+  
+  static jclass baseclass = 0 ;
+  
+  if (swig_set_self(jenv, jself, swig_mem_own, weak_global)) {
+    if (!baseclass) {
+      baseclass = jenv->FindClass("com/badlogic/gdx/physics/bullet/InternalTickCallback");
+      if (!baseclass) return;
+      baseclass = (jclass) jenv->NewGlobalRef(baseclass);
+    }
+    bool derived = (jenv->IsSameObject(baseclass, jcls) ? false : true);
+    for (int i = 0; i < 1; ++i) {
       if (!methods[i].base_methid) {
         methods[i].base_methid = jenv->GetMethodID(baseclass, methods[i].mname, methods[i].mdesc);
         if (!methods[i].base_methid) return;
@@ -48013,6 +48078,176 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDyna
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_InternalTickCallback_1CB(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btDynamicsWorld *arg1 = (btDynamicsWorld *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btDynamicsWorld **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  InternalTickCallback_CB(arg1,arg2);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1InternalTickCallback_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  jlong jresult = 0 ;
+  btDynamicsWorld *arg1 = (btDynamicsWorld *) 0 ;
+  bool arg2 ;
+  InternalTickCallback *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btDynamicsWorld **)&jarg1; 
+  arg2 = jarg2 ? true : false; 
+  result = (InternalTickCallback *)new SwigDirector_InternalTickCallback(jenv,arg1,arg2);
+  *(InternalTickCallback **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1InternalTickCallback_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btDynamicsWorld *arg1 = (btDynamicsWorld *) 0 ;
+  InternalTickCallback *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btDynamicsWorld **)&jarg1; 
+  result = (InternalTickCallback *)new SwigDirector_InternalTickCallback(jenv,arg1);
+  *(InternalTickCallback **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1InternalTickCallback_1_1SWIG_12(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  InternalTickCallback *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (InternalTickCallback *)new SwigDirector_InternalTickCallback(jenv);
+  *(InternalTickCallback **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_InternalTickCallback_1onInternalTick(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jfloat jarg3) {
+  InternalTickCallback *arg1 = (InternalTickCallback *) 0 ;
+  btDynamicsWorld *arg2 = (btDynamicsWorld *) 0 ;
+  btScalar arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(InternalTickCallback **)&jarg1; 
+  arg2 = *(btDynamicsWorld **)&jarg2; 
+  arg3 = (btScalar)jarg3; 
+  (arg1)->onInternalTick(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_InternalTickCallback_1onInternalTickSwigExplicitInternalTickCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jfloat jarg3) {
+  InternalTickCallback *arg1 = (InternalTickCallback *) 0 ;
+  btDynamicsWorld *arg2 = (btDynamicsWorld *) 0 ;
+  btScalar arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(InternalTickCallback **)&jarg1; 
+  arg2 = *(btDynamicsWorld **)&jarg2; 
+  arg3 = (btScalar)jarg3; 
+  (arg1)->InternalTickCallback::onInternalTick(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_InternalTickCallback_1detach_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  InternalTickCallback *arg1 = (InternalTickCallback *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(InternalTickCallback **)&jarg1; 
+  (arg1)->detach();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_InternalTickCallback_1attach_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jboolean jarg3) {
+  InternalTickCallback *arg1 = (InternalTickCallback *) 0 ;
+  btDynamicsWorld *arg2 = (btDynamicsWorld *) 0 ;
+  bool arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(InternalTickCallback **)&jarg1; 
+  arg2 = *(btDynamicsWorld **)&jarg2; 
+  arg3 = jarg3 ? true : false; 
+  (arg1)->attach(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_InternalTickCallback_1attach_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  InternalTickCallback *arg1 = (InternalTickCallback *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(InternalTickCallback **)&jarg1; 
+  (arg1)->attach();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_InternalTickCallback_1detach_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  btDynamicsWorld *arg1 = (btDynamicsWorld *) 0 ;
+  bool arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btDynamicsWorld **)&jarg1; 
+  arg2 = jarg2 ? true : false; 
+  InternalTickCallback::detach(arg1,arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1InternalTickCallback(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  InternalTickCallback *arg1 = (InternalTickCallback *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(InternalTickCallback **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_InternalTickCallback_1director_1connect(JNIEnv *jenv, jclass jcls, jobject jself, jlong objarg, jboolean jswig_mem_own, jboolean jweak_global) {
+  InternalTickCallback *obj = *((InternalTickCallback **)&objarg);
+  (void)jcls;
+  SwigDirector_InternalTickCallback *director = (SwigDirector_InternalTickCallback *)(obj);
+  if (director) {
+    director->swig_connect_director(jenv, jself, jenv->GetObjectClass(jself), (jswig_mem_own == JNI_TRUE), (jweak_global == JNI_TRUE));
+  }
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_InternalTickCallback_1change_1ownership(JNIEnv *jenv, jclass jcls, jobject jself, jlong objarg, jboolean jtake_or_release) {
+  InternalTickCallback *obj = *((InternalTickCallback **)&objarg);
+  SwigDirector_InternalTickCallback *director = (SwigDirector_InternalTickCallback *)(obj);
+  (void)jcls;
+  if (director) {
+    director->swig_java_change_ownership(jenv, jself, jtake_or_release ? true : false);
+  }
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btSimpleDynamicsWorld(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_) {
   jlong jresult = 0 ;
   btDispatcher *arg1 = (btDispatcher *) 0 ;
@@ -73212,7 +73447,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_swig_1
   static struct {
     const char *method;
     const char *signature;
-  } methods[25] = {
+  } methods[26] = {
     {
       "SwigDirector_btIDebugDraw_drawLine__SWIG_0", "(Lcom/badlogic/gdx/physics/bullet/btIDebugDraw;JJJ)V" 
     },
@@ -73287,6 +73522,9 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_swig_1
     },
     {
       "SwigDirector_btMotionState_setWorldTransform", "(Lcom/badlogic/gdx/physics/bullet/btMotionState;Lcom/badlogic/gdx/math/Matrix4;)V" 
+    },
+    {
+      "SwigDirector_InternalTickCallback_onInternalTick", "(Lcom/badlogic/gdx/physics/bullet/InternalTickCallback;JF)V" 
     }
   };
   Swig::jclass_gdxBulletJNI = (jclass) jenv->NewGlobalRef(jcls);
