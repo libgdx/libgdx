@@ -40,11 +40,12 @@ import com.badlogic.gdx.tests.bullet.RayPickRagdollTest;
 import com.badlogic.gdx.tests.bullet.RayCastTest;
 import com.badlogic.gdx.tests.bullet.ShootTest;
 import com.badlogic.gdx.tests.bullet.SoftBodyTest;
+import com.badlogic.gdx.tests.bullet.SoftMeshTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** @author xoppa */
 public class BulletTestCollection extends GdxTest implements InputProcessor, GestureListener {
-	private final BulletTest[] tests = {new ShootTest(), new KinematicTest(), new ConstraintsTest(), new MeshShapeTest(), new ConvexHullTest(), new RayCastTest(), new RayPickRagdollTest(), new InternalTickTest(), new SoftBodyTest()};
+	private final BulletTest[] tests = {new ShootTest(), new KinematicTest(), new ConstraintsTest(), new MeshShapeTest(), new ConvexHullTest(), new RayCastTest(), new RayPickRagdollTest(), new InternalTickTest(), new SoftBodyTest(), new SoftMeshTest()};
 	
 	private int testIndex = 0;
 	
