@@ -538,12 +538,12 @@ public class gdxBullet implements gdxBulletConstants {
 	return gdxBulletJNI.NormalizeAny(v);
 }
 
-  public static btDbvtAabbMm VolumeOf(SWIGTYPE_p_btSoftBody__Face f, float margin) {
-    return new btDbvtAabbMm(gdxBulletJNI.VolumeOf__SWIG_0(SWIGTYPE_p_btSoftBody__Face.getCPtr(f), margin), true);
+  public static btDbvtAabbMm VolumeOf(Face f, float margin) {
+    return new btDbvtAabbMm(gdxBulletJNI.VolumeOf__SWIG_0(Face.getCPtr(f), f, margin), true);
   }
 
-  public static Vector3 CenterOf(SWIGTYPE_p_btSoftBody__Face f) {
-	return gdxBulletJNI.CenterOf(SWIGTYPE_p_btSoftBody__Face.getCPtr(f));
+  public static Vector3 CenterOf(Face f) {
+	return gdxBulletJNI.CenterOf(Face.getCPtr(f), f);
 }
 
   public static float AreaOf(Vector3 x0, Vector3 x1, Vector3 x2) {
@@ -554,16 +554,16 @@ public class gdxBullet implements gdxBulletConstants {
     return gdxBulletJNI.VolumeOf__SWIG_1(x0, x1, x2, x3);
   }
 
-  public static void EvaluateMedium(btSoftBodyWorldInfo wfi, Vector3 x, SWIGTYPE_p_btSoftBody__sMedium medium) {
-    gdxBulletJNI.EvaluateMedium(btSoftBodyWorldInfo.getCPtr(wfi), wfi, x, SWIGTYPE_p_btSoftBody__sMedium.getCPtr(medium));
+  public static void EvaluateMedium(btSoftBodyWorldInfo wfi, Vector3 x, sMedium medium) {
+    gdxBulletJNI.EvaluateMedium(btSoftBodyWorldInfo.getCPtr(wfi), wfi, x, sMedium.getCPtr(medium), medium);
   }
 
-  public static void ApplyClampedForce(SWIGTYPE_p_btSoftBody__Node n, Vector3 f, float dt) {
-    gdxBulletJNI.ApplyClampedForce(SWIGTYPE_p_btSoftBody__Node.getCPtr(n), f, dt);
+  public static void ApplyClampedForce(Node n, Vector3 f, float dt) {
+    gdxBulletJNI.ApplyClampedForce(Node.getCPtr(n), n, f, dt);
   }
 
-  public static int MatchEdge(SWIGTYPE_p_btSoftBody__Node a, SWIGTYPE_p_btSoftBody__Node b, SWIGTYPE_p_btSoftBody__Node ma, SWIGTYPE_p_btSoftBody__Node mb) {
-    return gdxBulletJNI.MatchEdge(SWIGTYPE_p_btSoftBody__Node.getCPtr(a), SWIGTYPE_p_btSoftBody__Node.getCPtr(b), SWIGTYPE_p_btSoftBody__Node.getCPtr(ma), SWIGTYPE_p_btSoftBody__Node.getCPtr(mb));
+  public static int MatchEdge(Node a, Node b, Node ma, Node mb) {
+    return gdxBulletJNI.MatchEdge(Node.getCPtr(a), a, Node.getCPtr(b), b, Node.getCPtr(ma), ma, Node.getCPtr(mb), mb);
   }
 
   public static int PolarDecompose(Matrix3 m, Matrix3 q, Matrix3 s) {

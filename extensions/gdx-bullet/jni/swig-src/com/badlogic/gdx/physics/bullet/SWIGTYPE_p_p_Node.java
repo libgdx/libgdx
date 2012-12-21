@@ -8,18 +8,18 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-public class SWIGTYPE_p_btSoftBody__Node {
+public class SWIGTYPE_p_p_Node {
   private long swigCPtr;
 
-  protected SWIGTYPE_p_btSoftBody__Node(long cPtr, boolean futureUse) {
+  protected SWIGTYPE_p_p_Node(long cPtr, boolean futureUse) {
     swigCPtr = cPtr;
   }
 
-  protected SWIGTYPE_p_btSoftBody__Node() {
+  protected SWIGTYPE_p_p_Node() {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btSoftBody__Node obj) {
+  public static long getCPtr(SWIGTYPE_p_p_Node obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }
