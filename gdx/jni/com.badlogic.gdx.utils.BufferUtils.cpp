@@ -32,7 +32,7 @@ static inline jlong wrapped_Java_com_badlogic_gdx_utils_BufferUtils_getBufferAdd
 
 //@line:339
 
-	    return (long) buffer;
+	    return (jlong) buffer;
 	
 }
 
