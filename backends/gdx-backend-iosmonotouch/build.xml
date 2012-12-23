@@ -31,6 +31,9 @@
 			<fileset dir="libs/monotouch-jars">
 				<include name="**/*.jar"/>
 			</fileset>
+			<fileset dir="libs/objectal">
+				<include name="**/*.jar"/>
+			</fileset>
 			<pathelement path="target/core"/>
 			</classpath>
 		</javac>
