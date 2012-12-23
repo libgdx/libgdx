@@ -6,3 +6,7 @@ backends/gdx-backends-gwt/*
 */R.java
 */BuildConfig.java
 */*.gwt.xml
+build/*
+.DS_Store
+Debug/*
+obj/*
