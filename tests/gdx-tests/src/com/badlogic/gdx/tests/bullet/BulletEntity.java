@@ -26,15 +26,20 @@ import com.badlogic.gdx.utils.Disposable;
  * Renderable BaseEntity with a bullet physics body. 
  */
 public class BulletEntity extends BaseEntity {
+	private final static Matrix4 tmpM = new Matrix4();
 	public BulletEntity.MotionState motionState;
 	public btRigidBody body;
 
 	public BulletEntity (final Mesh mesh, final btRigidBodyConstructionInfo bodyInfo, final float x, final float y, final float z) {
+		this(mesh, bodyInfo, tmpM.setToTranslation(x, y, z));
+	}
+	
+	public BulletEntity (final Mesh mesh, final btRigidBodyConstructionInfo bodyInfo, final Matrix4 transform) {
 		this.mesh = mesh;
-		this.transform.idt().translate(x, y, z);
+		this.transform.set(transform);
 		
 		if (bodyInfo != null) {
-			this.motionState = new MotionState(transform);
+			this.motionState = new MotionState(this.transform);
 			this.body = new btRigidBody(bodyInfo);
 			this.body.setMotionState(motionState);
 		}
@@ -42,6 +47,10 @@ public class BulletEntity extends BaseEntity {
 
 	public BulletEntity (final BulletConstructor constructInfo, final float x, final float y, final float z) {
 		this(constructInfo.mesh, constructInfo.bodyInfo, x, y, z);
+	}
+	
+	public BulletEntity (final BulletConstructor constructInfo, final Matrix4 transform) {
+		this(constructInfo.mesh, constructInfo.bodyInfo, transform);
 	}
 
 	@Override
