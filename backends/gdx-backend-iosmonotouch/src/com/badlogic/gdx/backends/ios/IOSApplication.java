@@ -204,6 +204,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	@Override
 	public void OnActivated (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "resumed");
+		graphics.resume();
 		if (!firstResume) {
 			graphics.MakeCurrent();
 			listener.resume();
@@ -215,6 +216,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	public void OnResignActivation (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "paused");
 		graphics.MakeCurrent();
+		graphics.pause();
 		listener.pause();
 		Gdx.gl.glFlush();
 	}
