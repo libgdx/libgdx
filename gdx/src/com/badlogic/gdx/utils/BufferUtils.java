@@ -337,7 +337,7 @@ public class BufferUtils {
 	*/
 	
 	private static native long getBufferAddress (Buffer buffer); /*
-	    return (long) buffer;
+	    return (jlong) buffer;
 	*/
 	
 	/** Writes the specified number of zeros to the buffer. This is generally faster than reallocating a new buffer. */
