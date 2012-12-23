@@ -162,7 +162,7 @@ public class MaxRectsPacker {
 		public int reset () {
 			low = min;
 			high = max;
-			current = low + (high - low) / 2;
+			current = (low + high) >>> 1;
 			return pot ? (int)Math.pow(2, current) : current;
 		}
 
@@ -172,7 +172,7 @@ public class MaxRectsPacker {
 				low = current + 1;
 			else
 				high = current - 1;
-			current = low + (high - low) / 2;
+			current = (low + high) >>> 1;
 			if (Math.abs(low - high) < fuzziness) return -1;
 			return pot ? (int)Math.pow(2, current) : current;
 		}
