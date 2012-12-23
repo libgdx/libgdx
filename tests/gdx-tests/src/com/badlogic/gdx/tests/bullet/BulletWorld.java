@@ -50,6 +50,7 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 	private WindowedMean mean = new WindowedMean(5);
 	public float bulletTime;
 	public float bulletLoad;
+	public int maxSubSteps = 5;
 	
 	public BulletWorld(final btCollisionConfiguration collisionConfiguration, final btCollisionDispatcher dispatcher,
 		final btBroadphaseInterface broadphase, final btConstraintSolver solver, final btDynamicsWorld dynamicsWorld,  
@@ -97,7 +98,7 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 		bulletLoad = (dt > 1f) ? load : dt * load + (1f - dt) * bulletLoad;
 		
 		final long start = System.nanoTime();
-		dynamicsWorld.stepSimulation(dt, 5);
+		dynamicsWorld.stepSimulation(dt, maxSubSteps);
 		mean.addValue((System.nanoTime() - start) / 1000000000.0f);
 
 		if (debugDrawer != null && debugDrawer.getDebugMode() > 0) {
