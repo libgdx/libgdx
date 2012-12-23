@@ -50,7 +50,7 @@ public class Dialog extends Window {
 		setModal(true);
 
 		defaults().space(6);
-		add(contentTable = new Table(skin)).expand();
+		add(contentTable = new Table(skin)).expand().fill();
 		row();
 		add(buttonTable = new Table(skin));
 
