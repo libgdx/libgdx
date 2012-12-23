@@ -33,10 +33,22 @@ import cli.objectal.*;
 
 public class IOSAudio implements Audio {
 	
+	private boolean useObjectAL;
+	
 	public IOSAudio()
 	{
-		OALSimpleAudio.sharedInstance().set_allowIpod(false);
-		OALSimpleAudio.sharedInstance().set_honorSilentSwitch(true);
+
+	}
+	
+	public IOSAudio(boolean useObjectAL)
+	{
+		this.useObjectAL = useObjectAL;
+		
+		if (useObjectAL)
+		{
+			OALSimpleAudio.sharedInstance().set_allowIpod(false);
+			OALSimpleAudio.sharedInstance().set_honorSilentSwitch(true);
+		}
 	}
 	
 	@Override
@@ -69,34 +81,27 @@ public class IOSAudio implements Audio {
 	 * @return  The new sound object.
 	 * @throws GdxRuntimeException  If we are unable to load the file for some reason.
 	 */
-	public Sound newSound(FileHandle fileHandle, int maxVoices)
+	@Override
+	public Sound newSound(FileHandle fileHandle)
 	{
-		return new IOSSound(fileHandle);
-//	// verify file format (make sure we don't have an OGG file)
-//			NSError error = new NSError();
-//			verify(fileHandle);
-//					
-//			// create audio player - from byte array 
-//			// FIXME check if there's a faster way to load files
-////			NSData data = NSData.FromArray(fileHandle.readBytes());
-////		   return new IOSSound(data);
-//			UInt32 voices = cli.System.Convert.ToUInt32(maxVoices);
-//			FISound sound = soundFactory.loadSoundNamed(fileHandle.name(), voices, error);
-//			if (error == null)
-//			{
-//				throw new GdxRuntimeException("Error creating newSound: " + error.ToString());
-//			}
-//			else
-//			{
-//				return new IOSSound(sound);
-//			}
+		if (useObjectAL)
+		{
+			// let OALSimpleAudio report error if there is a problem loading the sound file.
+			return new IOSObjectALSound(fileHandle);
+		}
+		else
+		{
+			
+			// verify file format (make sure we don't have an OGG file)
+			verify(fileHandle);
+
+			// create audio player - from byte array 
+			// FIXME check if there's a faster way to load files
+			NSData data = NSData.FromArray(fileHandle.readBytes());
+			return new IOSSound(data);
+		}
 	}
 	
-	@Override
-	public Sound newSound(FileHandle fileHandle) {
-		return newSound(fileHandle, 1);
-	}
-
 	/**
 	 * Returns a new music object. We are playing directly from file, a.k.a. suited for
 	 * background music.
