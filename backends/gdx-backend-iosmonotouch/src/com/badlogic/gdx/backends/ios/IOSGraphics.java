@@ -26,10 +26,8 @@ import cli.MonoTouch.UIKit.UIDevice;
 import cli.MonoTouch.UIKit.UIEvent;
 import cli.MonoTouch.UIKit.UIScreen;
 import cli.MonoTouch.UIKit.UIUserInterfaceIdiom;
-import cli.MonoTouch.UIKit.UIWindow;
 import cli.OpenTK.FrameEventArgs;
 import cli.OpenTK.Platform.iPhoneOS.iPhoneOSGameView;
-import cli.System.Console;
 import cli.System.EventArgs;
 import cli.System.Drawing.RectangleF;
 
@@ -116,33 +114,17 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 
 	@Override
 	protected void ConfigureLayer (CAEAGLLayer layer) {
-		Gdx.app.debug(tag,"ConfigureLayer");
 		layer.set_Opaque(true);
 		super.ConfigureLayer(layer);
-	}
-	
-	@Override
-	protected void Dispose(boolean arg0)
-	{
-		Gdx.app.debug(tag,"Dispose");
-		super.Dispose(arg0);
-	}
-	
-	@Override
-	protected void OnDisposed(EventArgs arg0)
-	{
-		Gdx.app.debug(tag,"OnDisposed");
-		super.OnDisposed(arg0);
 	}
 
 	@Override
 	protected void OnLoad (EventArgs arg0) {
-		Gdx.app.debug(tag,"OnLoad");
 		super.OnLoad(arg0);
 		MakeCurrent();
 		app.listener.create();
 	}
-	
+
 	@Override
 	protected void OnRenderFrame (FrameEventArgs arg0) {
 		super.OnRenderFrame(arg0);
@@ -180,8 +162,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	}
 
 	@ExportAttribute.Annotation("layerClass")
-	public static cli.MonoTouch.ObjCRuntime.Class GetLayerClass () {
-		Gdx.app.debug(tag,"GetLayerClass");
+	static cli.MonoTouch.ObjCRuntime.Class LayerClass () {
 		return iPhoneOSGameView.GetLayerClass();
 	}
 
