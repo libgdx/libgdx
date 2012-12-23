@@ -28,18 +28,24 @@ import cli.MonoTouch.AVFoundation.AVAudioPlayer;
 import cli.MonoTouch.Foundation.NSData;
 import cli.MonoTouch.Foundation.NSError;
 import cli.MonoTouch.Foundation.NSUrl;
+import cli.System.UInt32;
+import cli.objectal.*;
 
 public class IOSAudio implements Audio {
-
+	
+	public IOSAudio()
+	{
+		OALSimpleAudio.sharedInstance().set_allowIpod(false);
+		OALSimpleAudio.sharedInstance().set_honorSilentSwitch(true);
+	}
+	
 	@Override
 	public AudioDevice newAudioDevice(int samplingRate, boolean isMono) {
-		// FIXME implement via OpenAL if possible
 		return null;
 	}
 
 	@Override
 	public AudioRecorder newAudioRecorder(int samplingRate, boolean isMono) {
-		// FIXME see what MonoTouch offers
 		return null;
 	}
 
@@ -50,9 +56,9 @@ public class IOSAudio implements Audio {
 	 * @throws GdxRuntimeException  If we are using a OGG file (not supported under iOS).
 	 */
 	private void verify(FileHandle fileHandle) {
-		if (fileHandle.extension().equalsIgnoreCase("ogg")) {  
+		if (fileHandle.extension().equalsIgnoreCase("wav") == false) {  
 			// Ogg is not supported on iOS (return a sound object that does nothing)
-			throw new GdxRuntimeException("Audio format .ogg is not supported on iOS. Cannot load: " + fileHandle.path());
+			throw new GdxRuntimeException("Uncompressed Audio format is only supported on iOS. Cannot load: " + fileHandle.path());
 		}
 	}
 	
@@ -63,15 +69,32 @@ public class IOSAudio implements Audio {
 	 * @return  The new sound object.
 	 * @throws GdxRuntimeException  If we are unable to load the file for some reason.
 	 */
+	public Sound newSound(FileHandle fileHandle, int maxVoices)
+	{
+		return new IOSSound(fileHandle);
+//	// verify file format (make sure we don't have an OGG file)
+//			NSError error = new NSError();
+//			verify(fileHandle);
+//					
+//			// create audio player - from byte array 
+//			// FIXME check if there's a faster way to load files
+////			NSData data = NSData.FromArray(fileHandle.readBytes());
+////		   return new IOSSound(data);
+//			UInt32 voices = cli.System.Convert.ToUInt32(maxVoices);
+//			FISound sound = soundFactory.loadSoundNamed(fileHandle.name(), voices, error);
+//			if (error == null)
+//			{
+//				throw new GdxRuntimeException("Error creating newSound: " + error.ToString());
+//			}
+//			else
+//			{
+//				return new IOSSound(sound);
+//			}
+	}
+	
 	@Override
 	public Sound newSound(FileHandle fileHandle) {
-		// verify file format (make sure we don't have an OGG file)
-		verify(fileHandle);
-				
-		// create audio player - from byte array 
-		// FIXME check if there's a faster way to load files
-		NSData data = NSData.FromArray(fileHandle.readBytes());
-	   return new IOSSound(data);
+		return newSound(fileHandle, 1);
 	}
 
 	/**
