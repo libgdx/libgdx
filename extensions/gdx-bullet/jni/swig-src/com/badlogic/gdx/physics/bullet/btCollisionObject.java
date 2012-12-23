@@ -32,6 +32,14 @@ public class btCollisionObject {
 		instances.put(cPtr, this);
 	}
 	
+	public void takeOwnership() {
+		swigCMemOwn = true;
+	}
+	
+	public void releaseOwnership() {
+		swigCMemOwn = false;
+	}
+	
 	public static long getCPtr(btCollisionObject obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

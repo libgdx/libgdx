@@ -44,7 +44,7 @@ public class ConstraintsTest extends BaseBulletTest {
 			2, 3, 6, 6, 7, 3, // left
 			0, 1, 4, 4, 5, 1 // right
 			});
-		world.constructors.put("bar", new BulletConstructor(barMesh, 0f)); // mass = 0: static body
+		world.addConstructor("bar", new BulletConstructor(barMesh, 0f)); // mass = 0: static body
 		
 		// Create the entities
 		world.add("ground", 0f, 0f, 0f)
