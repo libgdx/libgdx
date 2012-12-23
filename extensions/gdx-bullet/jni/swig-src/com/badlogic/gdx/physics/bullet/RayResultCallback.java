@@ -53,9 +53,9 @@ public class RayResultCallback {
   }
 
   public btCollisionObject getM_collisionObject() {
-    long cPtr = gdxBulletJNI.RayResultCallback_m_collisionObject_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObject(cPtr, false);
-  }
+	long cPtr = gdxBulletJNI.RayResultCallback_m_collisionObject_get(swigCPtr, this);
+	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+}
 
   public void setM_collisionFilterGroup(short value) {
     gdxBulletJNI.RayResultCallback_m_collisionFilterGroup_set(swigCPtr, this, value);

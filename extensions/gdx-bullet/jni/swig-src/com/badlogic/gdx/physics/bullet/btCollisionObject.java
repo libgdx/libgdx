@@ -14,17 +14,35 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btCollisionObject {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
-
-  protected btCollisionObject(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
-
-  public static long getCPtr(btCollisionObject obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+	public final static com.badlogic.gdx.utils.LongMap<btCollisionObject> instances = new com.badlogic.gdx.utils.LongMap<btCollisionObject>();
+	
+	public static btCollisionObject getInstance(final long swigCPtr, boolean owner) {
+		btCollisionObject result = instances.get(swigCPtr);
+		if (result == null)
+			result = new btCollisionObject(swigCPtr, owner);
+		return result;
+	}
+	
+	private long swigCPtr;
+	protected boolean swigCMemOwn;
+	
+	protected btCollisionObject(long cPtr, boolean cMemoryOwn) {
+		swigCMemOwn = cMemoryOwn;
+		swigCPtr = cPtr;
+		instances.put(cPtr, this);
+	}
+	
+	public void takeOwnership() {
+		swigCMemOwn = true;
+	}
+	
+	public void releaseOwnership() {
+		swigCMemOwn = false;
+	}
+	
+	public static long getCPtr(btCollisionObject obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
   protected void finalize() {
     delete();

@@ -214,6 +214,17 @@ public class LwjglAWTCanvas implements Application {
 		setGlobals();
 		canvas.setCursor(cursor);
 		graphics.updateTime();
+
+		int width = Math.max(1, graphics.getWidth());
+		int height = Math.max(1, graphics.getHeight());
+		if (lastWidth != width || lastHeight != height) {
+			lastWidth = width;
+			lastHeight = height;
+			Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
+			resize(width, height);
+			listener.resize(width, height);
+		}
+
 		synchronized (runnables) {
 			executedRunnables.clear();
 			executedRunnables.addAll(runnables);
@@ -228,15 +239,6 @@ public class LwjglAWTCanvas implements Application {
 			}
 		}
 
-		int width = Math.max(1, graphics.getWidth());
-		int height = Math.max(1, graphics.getHeight());
-		if (lastWidth != width || lastHeight != height) {
-			lastWidth = width;
-			lastHeight = height;
-			Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
-			resize(width, height);
-			listener.resize(width, height);
-		}
 		input.processEvents();
 		if (running) {
 			listener.render();

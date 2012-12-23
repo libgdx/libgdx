@@ -528,8 +528,30 @@ public class Matrix4 implements Serializable {
 		return set(quat.set(tmpV.set(axisX, axisY, axisZ), angle));
 	}
 
+	/** Set the matrix to a rotation matrix between two vectors.
+	 * @param v1 The base vector
+	 * @param v2 The target vector
+	 * @return This matrix for the purpose of chaining methods together */
+	public Matrix4 setToRotation (final Vector3 v1, final Vector3 v2) {
+		idt();
+		return set(quat.setFromCross(v1, v2));
+	}
+	
+	/** Set the matrix to a rotation matrix between two vectors.
+	 * @param x1 The base vectors x value
+	 * @param y1 The base vectors y value
+	 * @param z1 The base vectors z value
+	 * @param x2 The target vector x value
+	 * @param y2 The target vector y value
+	 * @param z2 The target vector z value
+	 * @return This matrix for the purpose of chaining methods together */
+		public Matrix4 setToRotation (final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
+		idt();
+		return set(quat.setFromCross(x1, y1, z1, x2, y2, z2));
+	}
+	
 	static final Vector3 tmpV = new Vector3();
-
+	
 	/** Sets this matrix to a rotation matrix from the given euler angles.
 	 * @param yaw the yaw in degrees
 	 * @param pitch the pitch in degress

@@ -65,6 +65,7 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 
 /* Configure directors for types with virtual methods that need Java implementations */
 %feature("director") btIDebugDraw;
+%feature("director") InternalTickCallback;
 
 /*
  * The rest of the types (some are disabled, commented out at the bottom).
@@ -100,10 +101,14 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "LinearMath/btAabbUtil2.h"
 
+DISABLE_POOLED_TYPEMAP(btTransform);
+DISABLE_POOLED_TYPEMAP(btVector3);
 %{
 #include <LinearMath/btIDebugDraw.h>
 %}
 %include "LinearMath/btIDebugDraw.h"
+ENABLE_POOLED_TYPEMAP(btVector3, Vector3, "Lcom/badlogic/gdx/math/Vector3;");
+ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 
 %{
 #include <LinearMath/btGeometryUtil.h>
@@ -231,6 +236,8 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %}
 %include "BulletCollision/BroadphaseCollision/btOverlappingPairCallback.h"
 
+%ignore btAxisSweep3Internal<unsigned short>::processAllOverlappingPairs;
+%ignore btAxisSweep3Internal<unsigned int>::processAllOverlappingPairs;
 %{
 #include <BulletCollision/BroadphaseCollision/btAxisSweep3.h>
 %}
@@ -668,6 +675,11 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %include "BulletDynamics/Dynamics/btDynamicsWorld.h"
 
 %{
+#include <../swig/custom/InternalTickCallback.h>
+%}
+%include "../swig/custom/InternalTickCallback.h"
+
+%{
 #include <BulletDynamics/Dynamics/btSimpleDynamicsWorld.h>
 %}
 %include "BulletDynamics/Dynamics/btSimpleDynamicsWorld.h"
@@ -771,6 +783,69 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 #include <BulletDynamics/ConstraintSolver/btHinge2Constraint.h>
 %}
 %include "BulletDynamics/ConstraintSolver/btHinge2Constraint.h"
+
+%{
+#include <BulletSoftBody/btSoftBodySolvers.h>
+%}
+%include "BulletSoftBody/btSoftBodySolvers.h"
+
+%{
+#include <BulletSoftBody/btDefaultSoftBodySolver.h>
+%}
+%include "BulletSoftBody/btDefaultSoftBodySolver.h"
+
+%{
+#include <BulletSoftBody/btSparseSDF.h>
+%}
+%include "BulletSoftBody/btSparseSDF.h"
+
+%include "custom/btSoftBody.i"
+
+%{
+#include <BulletSoftBody/btSoftBodyConcaveCollisionAlgorithm.h>
+%}
+%include "BulletSoftBody/btSoftBodyConcaveCollisionAlgorithm.h"
+
+%{
+#include <BulletSoftBody/btSoftBodyData.h>
+%}
+%include "BulletSoftBody/btSoftBodyData.h"
+
+%{
+#include <BulletSoftBody/btSoftBodyHelpers.h>
+%}
+%include "BulletSoftBody/btSoftBodyHelpers.h"
+
+%{
+#include <BulletSoftBody/btSoftBodyInternals.h>
+%}
+%include "BulletSoftBody/btSoftBodyInternals.h"
+
+%{
+#include <BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h>
+%}
+%include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
+
+%{
+#include <BulletSoftBody/btSoftBodySolverVertexBuffer.h>
+%}
+%include "BulletSoftBody/btSoftBodySolverVertexBuffer.h"
+
+%{
+#include <BulletSoftBody/btSoftRigidCollisionAlgorithm.h>
+%}
+%include "BulletSoftBody/btSoftRigidCollisionAlgorithm.h"
+
+%{
+#include <BulletSoftBody/btSoftRigidDynamicsWorld.h>
+%}
+%include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
+
+%{
+#include <BulletSoftBody/btSoftSoftCollisionAlgorithm.h>
+%}
+%include "BulletSoftBody/btSoftSoftCollisionAlgorithm.h"
+
 
 /* DISABLED STUFF BELOW HERE (TODO: CHECK THIS) */
 

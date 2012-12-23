@@ -74,7 +74,8 @@ public class LwjglApplication implements Application {
 		LwjglNativesLoader.load();
 
 		this.graphics = graphics;
-		if (!LwjglApplicationConfiguration.disableAudio) audio = new OpenALAudio(16, config.audioDeviceBufferCount, config.audioDeviceBufferSize);
+		if (!LwjglApplicationConfiguration.disableAudio)
+			audio = new OpenALAudio(16, config.audioDeviceBufferCount, config.audioDeviceBufferSize);
 		files = new LwjglFiles();
 		input = new LwjglInput();
 		net = new LwjglNet();
@@ -136,26 +137,6 @@ public class LwjglApplication implements Application {
 			}
 
 			boolean shouldRender = false;
-			synchronized (runnables) {
-				executedRunnables.clear();
-				executedRunnables.addAll(runnables);
-				runnables.clear();
-
-				for (int i = 0; i < executedRunnables.size; i++) {
-					shouldRender = true;
-					try {
-						executedRunnables.get(i).run();
-					} catch (Throwable t) {
-						t.printStackTrace();
-					}
-				}
-			}
-
-			// if one of the runnables set running in false, for example after an exit().
-			if (!running) break;
-
-			input.update();
-			shouldRender |= graphics.shouldRender();
 
 			if (graphics.canvas != null) {
 				int width = graphics.canvas.getWidth();
@@ -181,6 +162,26 @@ public class LwjglApplication implements Application {
 				}
 			}
 
+			synchronized (runnables) {
+				executedRunnables.clear();
+				executedRunnables.addAll(runnables);
+				runnables.clear();
+
+				for (int i = 0; i < executedRunnables.size; i++) {
+					shouldRender = true;
+					try {
+						executedRunnables.get(i).run();
+					} catch (Throwable t) {
+						t.printStackTrace();
+					}
+				}
+			}
+
+			// If one of the runnables set running in false, for example after an exit().
+			if (!running) break;
+
+			input.update();
+			shouldRender |= graphics.shouldRender();
 			input.processEvents();
 			if (audio != null) audio.update();
 			if (shouldRender) {

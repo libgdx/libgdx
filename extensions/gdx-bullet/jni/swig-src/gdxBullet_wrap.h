@@ -62,5 +62,19 @@ protected:
     bool swig_override[2];
 };
 
+class SwigDirector_InternalTickCallback : public InternalTickCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_InternalTickCallback(JNIEnv *jenv, btDynamicsWorld *dynamicsWorld = NULL, bool isPreTick = false);
+    virtual void onInternalTick(btDynamicsWorld *dynamicsWorld, btScalar timeStep);
+public:
+    bool swig_overrides(int n) {
+      return (n < 1 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[1];
+};
+
 
 #endif
