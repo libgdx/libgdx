@@ -36,13 +36,11 @@ public class DragScrollListener extends DragListener {
 
 		scrollUp = new Task() {
 			public void run () {
-				System.out.println(getScrollPixels());
 				scroll.setScrollY(scroll.getScrollY() - getScrollPixels());
 			}
 		};
 		scrollDown = new Task() {
 			public void run () {
-				System.out.println(getScrollPixels());
 				scroll.setScrollY(scroll.getScrollY() + getScrollPixels());
 			}
 		};
