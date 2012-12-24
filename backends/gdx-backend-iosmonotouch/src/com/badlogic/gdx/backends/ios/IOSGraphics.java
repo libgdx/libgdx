@@ -65,7 +65,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	private float ppcY = 0;
 	private float density = 1;
 	
-	boolean paused;
+	volatile boolean paused;
 
 	public IOSGraphics (RectangleF bounds, IOSApplication app, IOSInput input, GL20 gl20) {
 		super(bounds);
