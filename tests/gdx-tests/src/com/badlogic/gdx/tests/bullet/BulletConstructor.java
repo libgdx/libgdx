@@ -16,6 +16,7 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.btBoxShape;
@@ -89,5 +90,10 @@ public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
 	@Override
 	public BulletEntity construct (float x, float y, float z) {
 		return new BulletEntity(this, x, y, z);
+	}
+	
+	@Override
+	public BulletEntity construct (final Matrix4 transform) {
+		return new BulletEntity(this, transform);
 	}
 }

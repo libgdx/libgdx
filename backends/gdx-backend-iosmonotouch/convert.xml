@@ -28,7 +28,7 @@
 			<arg value="-r:${MONO_HOME}/System.dll"/>
 			<arg value="-r:${MONO_HOME}/System.Core.dll"/>
 			<arg value="-r:${MONO_HOME}/System.Data.dll"/>
-			<arg value="-r:${MONO_HOME}/OpenTK.dll"/>
+			<arg value="-r:${MONO_HOME}/OpenTK-1.0.dll"/>
 			<arg value="-r:${MONO_HOME}/monotouch.dll"/>
 			<arg value="-r:${MONO_HOME}/Mono.Data.Sqlite.dll"/>
 			<arg line="${IN}"/>

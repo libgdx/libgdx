@@ -31,10 +31,22 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 	public static abstract class Constructor<T extends BaseEntity> implements Disposable {
 		public Mesh mesh = null;
 		public abstract T construct(final float x, final float y, final float z);
+		public abstract T construct(final Matrix4 transform);
 	}	
 	
-	public ObjectMap<String, Constructor<T>> constructors = new ObjectMap<String, Constructor<T>>();
-	public Array<T> entities = new Array<T>();
+	private final ObjectMap<String, Constructor<T>> constructors = new ObjectMap<String, Constructor<T>>();
+	protected final Array<T> entities = new Array<T>();
+	private final Array<Mesh> meshes = new Array<Mesh>();
+	
+	public void addConstructor(final String name, final Constructor<T> constructor) {
+		constructors.put(name, constructor);
+		if (constructor.mesh != null && !meshes.contains(constructor.mesh, true))
+			meshes.add(constructor.mesh);
+	}
+	
+	public Constructor<T> getConstructor(final String name) {
+		return constructors.get(name);
+	}
 	
 	public void add(final T entity) {
 		entities.add(entity);
@@ -42,6 +54,12 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 	
 	public T add(final String type, float x, float y, float z) {
 		final T entity = constructors.get(type).construct(x, y, z);
+		add(entity);
+		return entity;
+	}
+	
+	public T add(final String type, final Matrix4 transform) {
+		final T entity = constructors.get(type).construct(transform);
 		add(entity);
 		return entity;
 	}
@@ -67,7 +85,10 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 		
 		for (Constructor<T> constructor : constructors.values())
 			constructor.dispose();
-		
 		constructors.clear();
+		
+		for (int i = 0; i < meshes.size; i++)
+			meshes.get(i).dispose();
+		meshes.clear();
 	}
 }

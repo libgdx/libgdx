@@ -56,4 +56,7 @@ public class IOSApplicationConfiguration {
 	public boolean useAccelerometer = true;
 	/** the update interval to poll the accelerometer with, in seconds **/
 	public float accelerometerUpdate = 0.05f;
+	
+	/** whether Monotouch GL20 implementation should be used or not, false by default, so native iosgles20 is used. */
+	public boolean useMonotouchOpenTK = false;
 }

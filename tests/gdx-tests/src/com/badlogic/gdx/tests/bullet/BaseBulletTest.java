@@ -90,10 +90,10 @@ public class BaseBulletTest extends BulletTest {
 			0, 1, 4, 4, 5, 1 // right
 			});
 
-		// Add the constructers
-		world.constructors.put("ground", new BulletConstructor(groundMesh, 0f)); // mass = 0: static body
-		world.constructors.put("box", new BulletConstructor(boxMesh, 1f)); // mass = 1kg: dynamic body
-		world.constructors.put("staticbox", new BulletConstructor(boxMesh, 0f)); // mass = 0: static body
+		// Add the constructors
+		world.addConstructor("ground", new BulletConstructor(groundMesh, 0f)); // mass = 0: static body
+		world.addConstructor("box", new BulletConstructor(boxMesh, 1f)); // mass = 1kg: dynamic body
+		world.addConstructor("staticbox", new BulletConstructor(boxMesh, 0f)); // mass = 0: static body
 	}
 	
 	@Override
@@ -127,11 +127,19 @@ public class BaseBulletTest extends BulletTest {
 	}
 	
 	public void shoot(final float x, final float y) {
+		shoot(x,y,30f);
+	}
+	
+	public void shoot(final float x, final float y, final float impulse) {
+		shoot("box", x, y, impulse);
+	}
+	
+	public void shoot(final String what, final float x, final float y, final float impulse) {
 		// Shoot a box
 		Ray ray = camera.getPickRay(x, y);
-		BulletEntity entity = world.add("box", ray.origin.x, ray.origin.y, ray.origin.z);
+		BulletEntity entity = world.add(what, ray.origin.x, ray.origin.y, ray.origin.z);
 		entity.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
-		entity.body.applyCentralImpulse(ray.direction.mul(30f));
+		entity.body.applyCentralImpulse(ray.direction.mul(impulse));
 	}
 	
 	public void setDebugMode(final int mode) {

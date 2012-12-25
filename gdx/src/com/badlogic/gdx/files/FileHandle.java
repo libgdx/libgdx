@@ -523,6 +523,20 @@ public class FileHandle {
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot delete an internal file: " + file);
 		return deleteDirectory(file());
 	}
+	
+	/** Deletes all children of this directory, recursively.
+	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
+	public void emptyDirectory () {
+		emptyDirectory(false);
+	}
+	
+	/** Deletes all children of this directory, recursively. Optionally preserving the folder structure.
+	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
+	public void emptyDirectory (boolean preserveTree) {
+		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot delete a classpath file: " + file);
+		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot delete an internal file: " + file);
+		emptyDirectory(file(), preserveTree);
+	}
 
 	/** Copies this file or directory to the specified file or directory. If this handle is a file, then 1) if the destination is a
 	 * file, it is overwritten, or 2) if the destination is a directory, this file is copied into it, or 3) if the destination
@@ -608,18 +622,24 @@ public class FileHandle {
 		}
 	}
 
-	static private boolean deleteDirectory (File file) {
+	static private void emptyDirectory (File file, boolean preserveTree) {
 		if (file.exists()) {
 			File[] files = file.listFiles();
 			if (files != null) {
 				for (int i = 0, n = files.length; i < n; i++) {
-					if (files[i].isDirectory())
-						deleteDirectory(files[i]);
-					else
+					if (!files[i].isDirectory())
 						files[i].delete();
+					else if (preserveTree)
+						emptyDirectory(files[i], true);
+					else
+						deleteDirectory(files[i]);
 				}
 			}
 		}
+	}
+
+	static private boolean deleteDirectory (File file) {
+		emptyDirectory(file, false);
 		return file.delete();
 	}
 

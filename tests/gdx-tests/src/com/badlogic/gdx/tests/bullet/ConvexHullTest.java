@@ -28,11 +28,9 @@ public class ConvexHullTest extends BaseBulletTest {
 	@Override
 	public void create () {
 		super.create();
-		Gdx.app.log("ConvexHullTest", "Start ObjLoader.loadObj();");
+
 		final Mesh sceneMesh = ObjLoader.loadObj(Gdx.files.internal("data/car.obj").read(), true, true);
-		Gdx.app.log("ConvexHullTest", "Start createConvexHullShape();");
-		world.constructors.put("car", new BulletConstructor(sceneMesh, 5f, createConvexHullShape(sceneMesh)));
-		Gdx.app.log("ConvexHullTest", "Done");
+		world.addConstructor("car", new BulletConstructor(sceneMesh, 5f, createConvexHullShape(sceneMesh)));
 
 		// Create the entities
 		world.add("ground", 0f, 0f, 0f)
