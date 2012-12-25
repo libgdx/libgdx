@@ -115,7 +115,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		framesStart = lastFrameTime;
 		
 		paused = false;
-		wasPaused = false;
+		wasPaused = true;
 	}
 
 	@Override
