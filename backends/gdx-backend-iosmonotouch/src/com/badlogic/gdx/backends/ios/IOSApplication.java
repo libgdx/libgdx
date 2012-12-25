@@ -204,12 +204,13 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	@Override
 	public void OnActivated (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "resumed");
+		graphics.MakeCurrent();
 		graphics.resume();
-		if (!firstResume) {
-			graphics.MakeCurrent();
-			listener.resume();
-			firstResume = true;
-		}
+
+// if (!firstResume) {
+// // listener.resume();
+// firstResume = true;
+// }
 	}
 
 	@Override
@@ -217,7 +218,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		Gdx.app.debug("IOSApplication", "paused");
 		graphics.MakeCurrent();
 		graphics.pause();
-		listener.pause();
+		// listener.pause();
 		Gdx.gl.glFlush();
 	}
 
