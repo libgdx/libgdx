@@ -51,7 +51,7 @@ import com.badlogic.gdx.math.WindowedMean;
 /** An implementation of {@link Graphics} for Android.
  * 
  * @author mzechner */
-public final class AndroidDaydreamGraphics implements Graphics, Renderer {
+public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 	final View view;
 	int width;
 	int height;
@@ -87,7 +87,7 @@ public final class AndroidDaydreamGraphics implements Graphics, Renderer {
 	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
 	private boolean isContinuous = true;
 
-	public AndroidDaydreamGraphics (AndroidDaydream daydream, AndroidApplicationConfiguration config,
+	public AndroidGraphicsDaydream (AndroidDaydream daydream, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy) {
 		this.config = config;
 		view = createGLSurfaceView(daydream, config.useGL20, resolutionStrategy);

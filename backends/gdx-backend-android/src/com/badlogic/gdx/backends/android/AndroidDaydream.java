@@ -59,7 +59,7 @@ public class AndroidDaydream extends DreamService implements Application {
 		GdxNativesLoader.load();
 	}
 
-	protected AndroidDaydreamGraphics graphics;
+	protected AndroidGraphicsDaydream graphics;
 	protected AndroidInput input;
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
@@ -97,7 +97,7 @@ public class AndroidDaydream extends DreamService implements Application {
 	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
 	 *           etc.). */
 	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
-		graphics = new AndroidDaydreamGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
+		graphics = new AndroidGraphicsDaydream(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = new AndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
@@ -180,7 +180,7 @@ public class AndroidDaydream extends DreamService implements Application {
 	 *           etc.).
 	 * @return the GLSurfaceView of the application */
 	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
-		graphics = new AndroidDaydreamGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
+		graphics = new AndroidGraphicsDaydream(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = new AndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
