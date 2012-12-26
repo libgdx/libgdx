@@ -10,3 +10,5 @@ build/*
 .DS_Store
 Debug/*
 obj/*
+*.dll
+*.mdb
