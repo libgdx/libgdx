@@ -98,9 +98,7 @@ public class ScrollPane extends WidgetGroup {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.widget = widget;
 		this.style = style;
-		if (widget != null) {
-			setWidget(widget);
-		}
+		if (widget != null) setWidget(widget);
 		setWidth(150);
 		setHeight(150);
 
@@ -573,6 +571,11 @@ public class ScrollPane extends WidgetGroup {
 		if (this.widget != null) super.removeActor(this.widget);
 		this.widget = widget;
 		if (widget != null) super.addActor(widget);
+	}
+
+	/** Returns the actor embedded in this scroll pane, or null. */
+	public Actor getWidget () {
+		return widget;
 	}
 
 	public void addActor (Actor actor) {
