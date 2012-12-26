@@ -105,7 +105,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		if (newSize > chars.length) {
 			enlargeBuffer(newSize);
 		}
-		System.arraycopy(value, 0, value, length, value.length);
+		System.arraycopy(value, 0, chars, length, value.length);
 		length = newSize;
 	}
 
