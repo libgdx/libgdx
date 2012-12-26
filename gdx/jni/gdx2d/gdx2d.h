@@ -73,6 +73,7 @@ JNIEXPORT void 		 gdx2d_free (const gdx2d_pixmap* pixmap);
 JNIEXPORT void gdx2d_set_blend	  (uint32_t blend);
 JNIEXPORT void gdx2d_set_scale	  (uint32_t scale);
 
+JNIEXPORT const char*   gdx2d_get_failure_reason(void);
 JNIEXPORT void		gdx2d_clear	   	  (const gdx2d_pixmap* pixmap, uint32_t col);
 JNIEXPORT void		gdx2d_set_pixel   (const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t col);
 JNIEXPORT uint32_t gdx2d_get_pixel	  (const gdx2d_pixmap* pixmap, int32_t x, int32_t y);

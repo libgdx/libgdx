@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.utils;
 
+import com.badlogic.gdx.math.MathUtils;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import com.badlogic.gdx.math.MathUtils;
 
 /** An unordered map. This implementation is a cuckoo hash map using 3 hashes, random walking, and a small stash for problematic
  * keys. Null keys are not allowed. Null values are allowed. No allocation is done except when growing the table size. <br>
@@ -292,6 +292,27 @@ public class ObjectMap<K, V> {
 		for (int i = capacity, n = i + stashSize; i < n; i++)
 			if (key.equals(keyTable[i])) return valueTable[i];
 		return null;
+	}
+
+	/** Returns the value for the specified key, or the default value if the key is not in the map. */
+	public V get (K key, V defaultValue) {
+		int hashCode = key.hashCode();
+		int index = hashCode & mask;
+		if (!key.equals(keyTable[index])) {
+			index = hash2(hashCode);
+			if (!key.equals(keyTable[index])) {
+				index = hash3(hashCode);
+				if (!key.equals(keyTable[index])) return getStash(key, defaultValue);
+			}
+		}
+		return valueTable[index];
+	}
+
+	private V getStash (K key, V defaultValue) {
+		K[] keyTable = this.keyTable;
+		for (int i = capacity, n = i + stashSize; i < n; i++)
+			if (key.equals(keyTable[i])) return valueTable[i];
+		return defaultValue;
 	}
 
 	public V remove (K key) {

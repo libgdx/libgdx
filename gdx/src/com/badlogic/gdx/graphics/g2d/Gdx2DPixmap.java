@@ -54,7 +54,7 @@ public class Gdx2DPixmap implements Disposable {
 
 	public Gdx2DPixmap (byte[] encodedData, int offset, int len, int requestedFormat) throws IOException {
 		pixelPtr = load(nativeData, encodedData, offset, len, requestedFormat);
-		if (pixelPtr == null) throw new IOException("couldn't load pixmap");
+		if (pixelPtr == null) throw new IOException("couldn't load pixmap " + getFailureReason());
 
 		basePtr = nativeData[0];
 		width = (int)nativeData[1];
@@ -73,7 +73,7 @@ public class Gdx2DPixmap implements Disposable {
 
 		buffer = bytes.toByteArray();
 		pixelPtr = load(nativeData, buffer, 0, buffer.length, requestedFormat);
-		if (pixelPtr == null) throw new IOException("couldn't load pixmap");
+		if (pixelPtr == null) throw new IOException("couldn't load pixmap " + getFailureReason());
 
 		basePtr = nativeData[0];
 		width = (int)nativeData[1];
@@ -321,4 +321,8 @@ public class Gdx2DPixmap implements Disposable {
 	public static native void setScale (int scale); /*
 		gdx2d_set_scale(scale);
 	*/
+
+        public static native String getFailureReason (); /*
+	        gdx2d_get_failure_reason(void);
+        */
 }
