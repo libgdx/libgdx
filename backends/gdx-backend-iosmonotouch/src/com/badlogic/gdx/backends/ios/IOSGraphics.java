@@ -64,6 +64,9 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	private float ppcX = 0;
 	private float ppcY = 0;
 	private float density = 1;
+	
+	volatile boolean paused;
+	boolean wasPaused;
 
 	public IOSGraphics (RectangleF bounds, IOSApplication app, IOSInput input, GL20 gl20) {
 		super(bounds);
@@ -110,6 +113,9 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		// time + FPS
 		lastFrameTime = System.nanoTime();
 		framesStart = lastFrameTime;
+		
+		paused = false;
+		wasPaused = true;
 	}
 
 	@Override
@@ -124,10 +130,31 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		MakeCurrent();
 		app.listener.create();
 	}
+	
+	public void resume() {
+		paused = false;
+	}
+	
+	public void pause() {
+		paused = true;
+	}
 
 	@Override
 	protected void OnRenderFrame (FrameEventArgs arg0) {
 		super.OnRenderFrame(arg0);
+		
+		if (paused) {
+			if (!wasPaused) {
+				app.listener.pause();
+				wasPaused = true;
+			}
+			return;
+		} else {
+			if (wasPaused) {
+				app.listener.resume();
+				wasPaused = false;
+			}
+		}
 
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
@@ -145,7 +172,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		app.listener.render();
 		SwapBuffers();
 	}
-
+	
 	@Override
 	protected void OnUpdateFrame (FrameEventArgs frameEventArgs) {
 		super.OnUpdateFrame(frameEventArgs);

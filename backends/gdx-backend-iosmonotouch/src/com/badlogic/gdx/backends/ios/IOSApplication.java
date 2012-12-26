@@ -87,7 +87,6 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	IOSInput input;
 	IOSNet net;
 	int logLevel = Application.LOG_DEBUG;
-	boolean firstResume;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
 	float displayScaleFactor;
@@ -205,18 +204,15 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	@Override
 	public void OnActivated (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "resumed");
-		if (!firstResume) {
-			graphics.MakeCurrent();
-			listener.resume();
-			firstResume = true;
-		}
+		graphics.MakeCurrent();
+		graphics.resume();
 	}
 
 	@Override
 	public void OnResignActivation (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "paused");
 		graphics.MakeCurrent();
-		listener.pause();
+		graphics.pause();
 		Gdx.gl.glFlush();
 	}
 
