@@ -49,6 +49,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class IOSApplication extends UIApplicationDelegate implements Application {
 	
 	class IOSUIViewController extends UIViewController {
+		
 		@Override
 		public void DidRotate (UIInterfaceOrientation orientation) {
 			// get the view size and update graphics
@@ -135,7 +136,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 		// Create: Window -> ViewController-> GameView (controller takes care of rotation)
 		this.uiWindow = new UIWindow(UIScreen.get_MainScreen().get_Bounds());
-		UIViewController uiViewController = new IOSUIViewController();
+		uiViewController = new IOSUIViewController();
 		this.uiWindow.set_RootViewController(uiViewController);
 
 		GL20 gl20 = config.useMonotouchOpenTK ? new IOSMonotouchGLES20() : new IOSGLES20();
@@ -162,7 +163,6 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		uiViewController.set_View(graphics);
 		this.graphics.Run();
 		this.uiWindow.MakeKeyAndVisible();
-		Gdx.app.debug("IOSApplication", "created");
 		return true;
 	}
 
@@ -207,7 +207,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		graphics.MakeCurrent();
 		graphics.resume();
 	}
-
+	
 	@Override
 	public void OnResignActivation (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "paused");
