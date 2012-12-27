@@ -1,14 +1,17 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
- * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 
 package com.badlogic.gdx.math;
@@ -39,19 +42,26 @@ public class Rectangle implements Serializable {
 	 * @param width The width
 	 * @param height The height */
 	public Rectangle (float x, float y, float width, float height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+		set(x, y, width, height);
 	}
 
 	/** Constructs a rectangle based on the given rectangle
 	 * @param rect The rectangle */
 	public Rectangle (Rectangle rect) {
-		x = rect.x;
-		y = rect.y;
-		width = rect.width;
-		height = rect.height;
+		set(rect);
+	}
+
+	/** Sets the values of the given rectangle to this rectangle.
+	 * @param rect the other rectangle */
+	public void set (Rectangle rect) {
+		set(rect.x, rect.y, rect.width, rect.height);
+	}
+
+	public void set (float x, float y, float width, float height) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
 	}
 
 	/** @return the x-coordinate of the bottom left corner */
@@ -98,6 +108,17 @@ public class Rectangle implements Serializable {
 		this.height = height;
 	}
 
+	/** @param x point x coordinate
+	 * @param y point y coordinate
+	 * @return whether the point is contained in the rectangle */
+	public boolean containsPoint (float x, float y) {
+		return (this.x < x && this.x + this.width > x && this.y < y && this.y + this.height > y);
+	}
+
+	public boolean contains (float x, float y) {
+		return containsPoint(x, y);
+	}
+
 	/** @param rectangle the other {@link Rectangle}.
 	 * @return whether the other rectangle is contained in this rectangle. */
 	public boolean contains (Rectangle rectangle) {
@@ -114,30 +135,7 @@ public class Rectangle implements Serializable {
 	/** @param rectangle the other {@link Rectangle}
 	 * @return whether this rectangle overlaps the other rectangle. */
 	public boolean overlaps (Rectangle rectangle) {
-		return !(x > rectangle.x + rectangle.width || x + width < rectangle.x || y > rectangle.y + rectangle.height || y + height < rectangle.y);
-	}
-
-	public void set (float x, float y, float width, float height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-	}
-
-	/** @param x point x coordinate
-	 * @param y point y coordinate
-	 * @return whether the point is contained in the rectangle */
-	public boolean contains (float x, float y) {
-		return this.x < x && this.x + this.width > x && this.y < y && this.y + this.height > y;
-	}
-
-	/** Sets the values of the given rectangle to this rectangle.
-	 * @param rect the other rectangle */
-	public void set (Rectangle rect) {
-		this.x = rect.x;
-		this.y = rect.y;
-		this.width = rect.width;
-		this.height = rect.height;
+		return Intersector.intersectRectangles(this, rectangle);
 	}
 
 	/** Merges this rectangle with the other rectangle.
