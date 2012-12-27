@@ -46,4 +46,28 @@ public class NumberUtils {
 	public static double longBitsToDouble (long value) {
 		return Double.longBitsToDouble(value);
 	}
+	
+	private static final char[] chars = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+
+	/** zero-allocation int to CharSequence conversion. clears the given StringBuilder and appends chars to it that represent the
+	 * given int, then returns the same StringBuilder */
+	public static StringBuilder intToText (int n, StringBuilder sb) {
+		sb.setLength(0);
+		if (n == Integer.MIN_VALUE) return sb.append("-2147483648");
+		if (n < 0) {
+			sb.append('-');
+			n = Math.abs(n);
+		}
+		if (n >= 1000000000) sb.append(chars[(int)((long)n % 10000000000L / 1000000000L)]);
+		if (n >= 100000000) sb.append(chars[n % 1000000000 / 100000000]);
+		if (n >= 10000000) sb.append(chars[n % 100000000 / 10000000]);
+		if (n >= 1000000) sb.append(chars[n % 10000000 / 1000000]);
+		if (n >= 100000) sb.append(chars[n % 1000000 / 100000]);
+		if (n >= 10000) sb.append(chars[n % 100000 / 10000]);
+		if (n >= 1000) sb.append(chars[n % 10000 / 1000]);
+		if (n >= 100) sb.append(chars[n % 1000 / 100]);
+		if (n >= 10) sb.append(chars[n % 100 / 10]);
+		sb.append(chars[n % 10]);
+		return sb;
+	}
 }
