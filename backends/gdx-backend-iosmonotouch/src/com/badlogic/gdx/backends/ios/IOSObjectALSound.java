@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.ios;
 
 import cli.objectal.ALBuffer;
@@ -22,27 +23,23 @@ import cli.objectal.OALSimpleAudio;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 
-/**
- * @author tescott
+/** @author tescott
  * 
- * First pass at implementing OALSimpleAudio support.
- * 
- */
+ *         First pass at implementing OALSimpleAudio support. */
 public class IOSObjectALSound implements Sound {
 
 	private ALSource soundSource;
 	private ALBuffer soundBuffer;
 	private String soundPath;
-	
-	public IOSObjectALSound(FileHandle filePath)
-	{
+
+	public IOSObjectALSound (FileHandle filePath) {
 		soundPath = filePath.path();
 		soundBuffer = OALSimpleAudio.sharedInstance().preloadEffect(soundPath);
 	}
-	
+
 	@Override
 	public long play () {
-		return play(1,1,1,false);
+		return play(1, 1, 1, false);
 	}
 
 	@Override
@@ -54,34 +51,30 @@ public class IOSObjectALSound implements Sound {
 	public long play (float volume, float pitch, float pan) {
 		return play(volume, pitch, pan, false);
 	}
-	
-	public long play (float volume, float pitch, float pan, boolean loop)
-	{
+
+	public long play (float volume, float pitch, float pan, boolean loop) {
 		soundSource = OALSimpleAudio.sharedInstance().playEffect(soundPath, volume, pitch, pan, loop);
 		return 0;
 	}
 
 	@Override
 	public long loop () {
-		return play(1,1,1,true);
+		return play(1, 1, 1, true);
 	}
 
 	@Override
 	public long loop (float volume) {
-		return play(volume,1,1,true);
+		return play(volume, 1, 1, true);
 	}
 
 	@Override
 	public long loop (float volume, float pitch, float pan) {
-		return play(volume,pitch,pan,true);
+		return play(volume, pitch, pan, true);
 	}
 
 	@Override
 	public void stop () {
-		if (soundSource != null)
-		{
-			soundSource.stop();
-		}
+		if (soundSource != null) soundSource.stop();
 	}
 
 	@Override
@@ -91,7 +84,8 @@ public class IOSObjectALSound implements Sound {
 
 	@Override
 	public void stop (long soundId) {
-		// TODO Auto-generated method stub
+		// we should do something to give an id for each sound.
+		stop();
 	}
 
 	@Override
@@ -102,24 +96,24 @@ public class IOSObjectALSound implements Sound {
 	@Override
 	public void setPitch (long soundId, float pitch) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setVolume (long soundId, float volume) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setPan (long soundId, float pan, float volume) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setPriority (long soundId, int priority) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
