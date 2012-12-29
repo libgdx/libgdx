@@ -32,4 +32,10 @@ public interface DeviceInfo {
 	public String getSerial();
 	/** @return The user-visible version string. */
 	public String getVersion();
+	/** @return The architecture name of the CPU, if available. */
+	public String getCpuArchitecture();
+	/** @return The number of CPU (cores) available. */
+	public int getCpuCount();
+	/** @return The approximated speed (in MIPS) of the CPU, if available. */
+	public float getCpuSpeed();
 }
