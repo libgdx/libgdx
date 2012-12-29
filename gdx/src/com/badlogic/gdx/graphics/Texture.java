@@ -92,7 +92,7 @@ public class Texture implements Disposable {
 	}
 
 	public enum TextureWrap {
-		ClampToEdge(GL10.GL_CLAMP_TO_EDGE), Repeat(GL10.GL_REPEAT);
+		MirroredRepeat(GL20.GL_MIRRORED_REPEAT),ClampToEdge(GL10.GL_CLAMP_TO_EDGE), Repeat(GL10.GL_REPEAT);
 
 		final int glEnum;
 
