@@ -25,6 +25,10 @@ import com.badlogic.gdx.utils.NumberUtils;
  * Thanks to Riven on JavaGaming.org for the basis of sin/cos/atan2/floor/ceil.
  * @author Nathan Sweet */
 public class MathUtils {
+	static public final float nanoToSec = 1 / 1000000000f;
+
+	// ---
+
 	static public final float PI = 3.1415927f;
 
 	static private final int SIN_BITS = 13; // Adjust for accuracy.

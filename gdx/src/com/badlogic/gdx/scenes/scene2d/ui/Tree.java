@@ -317,7 +317,7 @@ public class Tree extends WidgetGroup {
 		this.overNode = overNode;
 	}
 
-	/** Sets the amount of horizontal space between the nodes and the left and right edges of the tree. */
+	/** Sets the amount of horizontal space between the nodes and the left/right edges of the tree. */
 	public void setPadding (float padding) {
 		this.padding = padding;
 	}

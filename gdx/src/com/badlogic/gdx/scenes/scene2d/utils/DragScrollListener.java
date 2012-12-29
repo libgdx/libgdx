@@ -28,8 +28,8 @@ public class DragScrollListener extends DragListener {
 	private ScrollPane scroll;
 	private Task scrollUp, scrollDown;
 	Interpolation interpolation = Interpolation.exp5In;
-	float minSpeed = 15, maxSpeed = 60, tickSecs = 0.05f;
-	long startTime, rampTime = 2500;
+	float minSpeed = 15, maxSpeed = 75, tickSecs = 0.05f;
+	long startTime, rampTime = 1750;
 
 	public DragScrollListener (final ScrollPane scroll) {
 		this.scroll = scroll;
