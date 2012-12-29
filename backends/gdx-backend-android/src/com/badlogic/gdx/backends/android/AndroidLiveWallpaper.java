@@ -35,6 +35,7 @@ import android.widget.FrameLayout.LayoutParams;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.DeviceInfo;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -42,8 +43,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Application.ApplicationType;
-import com.badlogic.gdx.Application.DeviceInfo;
-import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
@@ -70,7 +69,7 @@ class AndroidLiveWallpaper implements Application {
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
 	protected AndroidNet net;
-	protected AndroidApplication.AndroidDeviceInfo deviceInfo;
+	protected AndroidDeviceInfo deviceInfo;
 	protected ApplicationListener listener;
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
@@ -180,7 +179,7 @@ class AndroidLiveWallpaper implements Application {
 	/** {@inheritDoc} */
 	public DeviceInfo getDeviceInfo() {
 		if (deviceInfo == null)
-			deviceInfo = new AndroidApplication.AndroidDeviceInfo(getService());
+			deviceInfo = new AndroidDeviceInfo(getService());
 		return deviceInfo;
 	}
 

@@ -37,6 +37,7 @@ import cli.System.IO.Path;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.DeviceInfo;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -315,7 +316,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	
 	/** {@inheritDoc} */
 	@Override
-	public Application.DeviceInfo getDeviceInfo() {
+	public DeviceInfo getDeviceInfo() {
 		// FIXME add hardwareinfo
 		return null;
 	}

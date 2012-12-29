@@ -96,23 +96,6 @@ public interface Application {
 		Android, Desktop, Applet, WebGL, iOS
 	}
 	
-	public interface DeviceInfo {
-		/** @return The manufacturer of the product/hardware. */
-		public String getManufacturer();
-		/** @return The brand (e.g., carrier) the device (software) is customized for, if any. */
-		public String getBrand();
-		/** @return The name of the industrial design. */
-		public String getDevice();
-		/** @return The name of the overall product. */
-		public String getProduct();
-		/** @return The end-user-visible name for the end product. */
-		public String getModel();
-		/** @return A hardware serial number, if available. */
-		public String getSerial();
-		/** @return The user-visible version string. */
-		public String getVersion();
-	}
-
 	public static final int LOG_NONE = 0;
 	public static final int LOG_DEBUG = 3;
 	public static final int LOG_INFO = 2;
