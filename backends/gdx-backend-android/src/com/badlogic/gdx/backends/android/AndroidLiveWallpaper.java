@@ -176,7 +176,7 @@ class AndroidLiveWallpaper implements Application {
 		return Integer.parseInt(android.os.Build.VERSION.SDK);
 	}
 	
-	/** {@inheritDoc} */
+	@Override
 	public DeviceInfo getDeviceInfo() {
 		if (deviceInfo == null)
 			deviceInfo = new AndroidDeviceInfo(getService());

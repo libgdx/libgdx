@@ -314,10 +314,9 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		return 0;
 	}
 	
-	/** {@inheritDoc} */
 	@Override
 	public DeviceInfo getDeviceInfo() {
-		// FIXME add hardwareinfo
+		// FIXME add deviceInfo
 		return null;
 	}
 

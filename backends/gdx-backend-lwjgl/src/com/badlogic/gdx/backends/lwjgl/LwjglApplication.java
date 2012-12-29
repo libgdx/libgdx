@@ -241,7 +241,6 @@ public class LwjglApplication implements Application {
 		return 0;
 	}
 	
-	/** {@inheritDoc} */
 	@Override
 	public DeviceInfo getDeviceInfo() {
 		return null;

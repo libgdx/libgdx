@@ -265,25 +265,21 @@ public class AndroidApplication extends Activity implements Application {
 		super.onDestroy();
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Audio getAudio () {
 		return audio;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Files getFiles () {
 		return files;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Graphics getGraphics () {
 		return graphics;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Input getInput () {
 		return input;
@@ -294,20 +290,17 @@ public class AndroidApplication extends Activity implements Application {
 		return net;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public ApplicationType getType () {
 		return ApplicationType.Android;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int getVersion () {
 		// FIXME Should use SDK_INT? (see: http://developer.android.com/reference/android/os/Build.VERSION.html)
 		return Integer.parseInt(android.os.Build.VERSION.SDK);
 	}
 	
-	/** {@inheritDoc} */
 	@Override
 	public DeviceInfo getDeviceInfo() {
 		if (deviceInfo == null)
