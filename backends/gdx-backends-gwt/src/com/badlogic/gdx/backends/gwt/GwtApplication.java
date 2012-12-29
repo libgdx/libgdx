@@ -368,6 +368,11 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public int getVersion () {
 		return 0;
 	}
+	
+	@Override
+	public Application.DeviceInfo getDeviceInfo () {
+		return null;
+	}
 
 	@Override
 	public long getJavaHeap () {

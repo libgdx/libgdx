@@ -239,6 +239,12 @@ public class LwjglApplication implements Application {
 	public int getVersion () {
 		return 0;
 	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public DeviceInfo getDeviceInfo() {
+		return null;
+	}
 
 	public void stop () {
 		running = false;

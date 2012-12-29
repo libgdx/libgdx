@@ -161,6 +161,12 @@ public class LwjglCanvas implements Application {
 	public int getVersion () {
 		return 0;
 	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public DeviceInfo getDeviceInfo() {
+		return null;
+	}
 
 	void create () {
 		try {

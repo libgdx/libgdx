@@ -42,6 +42,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Application.DeviceInfo;
+import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
@@ -68,6 +70,7 @@ class AndroidLiveWallpaper implements Application {
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
 	protected AndroidNet net;
+	protected AndroidApplication.AndroidDeviceInfo deviceInfo;
 	protected ApplicationListener listener;
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
@@ -172,6 +175,13 @@ class AndroidLiveWallpaper implements Application {
 	@Override
 	public int getVersion () {
 		return Integer.parseInt(android.os.Build.VERSION.SDK);
+	}
+	
+	/** {@inheritDoc} */
+	public DeviceInfo getDeviceInfo() {
+		if (deviceInfo == null)
+			deviceInfo = new AndroidApplication.AndroidDeviceInfo(getService());
+		return deviceInfo;
 	}
 
 	@Override

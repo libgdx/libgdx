@@ -312,6 +312,13 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		// FIXME return iOS version
 		return 0;
 	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public Application.DeviceInfo getDeviceInfo() {
+		// FIXME add hardwareinfo
+		return null;
+	}
 
 	@Override
 	public long getJavaHeap () {

@@ -95,6 +95,23 @@ public interface Application {
 	public enum ApplicationType {
 		Android, Desktop, Applet, WebGL, iOS
 	}
+	
+	public interface DeviceInfo {
+		/** @return The manufacturer of the product/hardware. */
+		public String getManufacturer();
+		/** @return The brand (e.g., carrier) the device (software) is customized for, if any. */
+		public String getBrand();
+		/** @return The name of the industrial design. */
+		public String getDevice();
+		/** @return The name of the overall product. */
+		public String getProduct();
+		/** @return The end-user-visible name for the end product. */
+		public String getModel();
+		/** @return A hardware serial number, if available. */
+		public String getSerial();
+		/** @return The user-visible version string. */
+		public String getVersion();
+	}
 
 	public static final int LOG_NONE = 0;
 	public static final int LOG_DEBUG = 3;
@@ -144,6 +161,9 @@ public interface Application {
 
 	/** @return the Android API level on Android or 0 on the desktop. */
 	public int getVersion ();
+	
+	/** @return the device hardware information or null if not available */
+	public DeviceInfo getDeviceInfo();
 
 	/** @return the Java heap memory use in bytes */
 	public long getJavaHeap ();

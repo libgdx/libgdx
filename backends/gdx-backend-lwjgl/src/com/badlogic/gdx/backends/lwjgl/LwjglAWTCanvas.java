@@ -186,6 +186,12 @@ public class LwjglAWTCanvas implements Application {
 		return 0;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public DeviceInfo getDeviceInfo() {
+		return null;
+	}
+	
 	void setGlobals () {
 		Gdx.app = this;
 		if (audio != null) Gdx.audio = audio;

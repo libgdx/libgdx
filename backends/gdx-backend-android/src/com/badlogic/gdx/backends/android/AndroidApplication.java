@@ -26,6 +26,7 @@ import android.os.Debug;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.provider.Settings.Secure;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -42,6 +43,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Application.DeviceInfo;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.graphics.GL10;
@@ -59,12 +61,63 @@ public class AndroidApplication extends Activity implements Application {
 	static {
 		GdxNativesLoader.load();
 	}
+	
+	public static class AndroidDeviceInfo implements Application.DeviceInfo {
+		public final Context context;
+		public AndroidDeviceInfo(final Context context) {
+			this.context = context;
+		}
+		/** {@inheritDoc} */
+		@Override
+		public String getManufacturer () {
+			return android.os.Build.MANUFACTURER;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public String getBrand () {
+			return android.os.Build.BRAND;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public String getDevice () {
+			return android.os.Build.DEVICE;
+		}
+		
+		/** {@inheritDoc} */
+		@Override
+		public String getProduct () {
+			return android.os.Build.PRODUCT;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public String getModel () {
+			return android.os.Build.MODEL;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public String getSerial () {
+			return context == null ? "" : Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
+			// For API 9 and above:
+			// return android.os.Build.SERIAL;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public String getVersion () {
+			return android.os.Build.VERSION.RELEASE;
+		}
+	}
 
 	protected AndroidGraphics graphics;
 	protected AndroidInput input;
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
 	protected AndroidNet net;
+	protected AndroidDeviceInfo deviceInfo;
 	protected ApplicationListener listener;
 	protected Handler handler;
 	protected boolean firstResume = true;
@@ -301,7 +354,16 @@ public class AndroidApplication extends Activity implements Application {
 	/** {@inheritDoc} */
 	@Override
 	public int getVersion () {
+		// FIXME Should use SDK_INT? (see: http://developer.android.com/reference/android/os/Build.VERSION.html)
 		return Integer.parseInt(android.os.Build.VERSION.SDK);
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public DeviceInfo getDeviceInfo() {
+		if (deviceInfo == null)
+			deviceInfo = new AndroidDeviceInfo(this);
+		return deviceInfo;
 	}
 
 	@Override
