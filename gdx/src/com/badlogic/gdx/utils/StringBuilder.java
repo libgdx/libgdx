@@ -718,14 +718,16 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		if (i < 0) {
 			append0('-');
-			i = Math.abs(i);
+			i = -i;
 		}
-		if (i >= 1000000000) append0(digits[(int)((long)i % 10000000000L / 1000000000L)]);
-		if (i >= 100000000) append0(digits[i % 1000000000 / 100000000]);
-		if (i >= 10000000) append0(digits[i % 100000000 / 10000000]);
-		if (i >= 1000000) append0(digits[i % 10000000 / 1000000]);
-		if (i >= 100000) append0(digits[i % 1000000 / 100000]);
-		if (i >= 10000) append0(digits[i % 100000 / 10000]);
+		if (i >= 10000) {
+			if (i >= 1000000000) append0(digits[(int)((long)i % 10000000000L / 1000000000L)]);
+			if (i >= 100000000) append0(digits[i % 1000000000 / 100000000]);
+			if (i >= 10000000) append0(digits[i % 100000000 / 10000000]);
+			if (i >= 1000000) append0(digits[i % 10000000 / 1000000]);
+			if (i >= 100000) append0(digits[i % 1000000 / 100000]);
+			if (i >= 10000) append0(digits[i % 100000 / 10000]);
+		}
 		if (i >= 1000) append0(digits[i % 10000 / 1000]);
 		if (i >= 100) append0(digits[i % 1000 / 100]);
 		if (i >= 10) append0(digits[i % 100 / 10]);
@@ -746,23 +748,25 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		if (lng < 0L) {
 			append0('-');
-			lng = Math.abs(lng);
+			lng = -lng;
 		}
-		if (lng >= 1000000000000000000L) append0(digits[(int)(lng % 10000000000000000000D / 1000000000000000000L)]);
-		if (lng >= 100000000000000000L) append0(digits[(int)(lng % 1000000000000000000L / 100000000000000000L)]);
-		if (lng >= 10000000000000000L) append0(digits[(int)(lng % 100000000000000000L / 10000000000000000L)]);
-		if (lng >= 1000000000000000L) append0(digits[(int)(lng % 10000000000000000L / 1000000000000000L)]);
-		if (lng >= 100000000000000L) append0(digits[(int)(lng % 1000000000000000L / 100000000000000L)]);
-		if (lng >= 10000000000000L) append0(digits[(int)(lng % 100000000000000L / 10000000000000L)]);
-		if (lng >= 1000000000000L) append0(digits[(int)(lng % 10000000000000L / 1000000000000L)]);
-		if (lng >= 100000000000L) append0(digits[(int)(lng % 1000000000000L / 100000000000L)]);
-		if (lng >= 10000000000L) append0(digits[(int)(lng % 100000000000L / 10000000000L)]);
-		if (lng >= 1000000000L) append0(digits[(int)(lng % 10000000000L / 1000000000L)]);
-		if (lng >= 100000000L) append0(digits[(int)(lng % 1000000000L / 100000000L)]);
-		if (lng >= 10000000L) append0(digits[(int)(lng % 100000000L / 10000000L)]);
-		if (lng >= 1000000L) append0(digits[(int)(lng % 10000000L / 1000000L)]);
-		if (lng >= 100000L) append0(digits[(int)(lng % 1000000L / 100000L)]);
-		if (lng >= 10000L) append0(digits[(int)(lng % 100000L / 10000L)]);
+		if (lng >= 10000) {
+			if (lng >= 1000000000000000000L) append0(digits[(int)(lng % 10000000000000000000D / 1000000000000000000L)]);
+			if (lng >= 100000000000000000L) append0(digits[(int)(lng % 1000000000000000000L / 100000000000000000L)]);
+			if (lng >= 10000000000000000L) append0(digits[(int)(lng % 100000000000000000L / 10000000000000000L)]);
+			if (lng >= 1000000000000000L) append0(digits[(int)(lng % 10000000000000000L / 1000000000000000L)]);
+			if (lng >= 100000000000000L) append0(digits[(int)(lng % 1000000000000000L / 100000000000000L)]);
+			if (lng >= 10000000000000L) append0(digits[(int)(lng % 100000000000000L / 10000000000000L)]);
+			if (lng >= 1000000000000L) append0(digits[(int)(lng % 10000000000000L / 1000000000000L)]);
+			if (lng >= 100000000000L) append0(digits[(int)(lng % 1000000000000L / 100000000000L)]);
+			if (lng >= 10000000000L) append0(digits[(int)(lng % 100000000000L / 10000000000L)]);
+			if (lng >= 1000000000L) append0(digits[(int)(lng % 10000000000L / 1000000000L)]);
+			if (lng >= 100000000L) append0(digits[(int)(lng % 1000000000L / 100000000L)]);
+			if (lng >= 10000000L) append0(digits[(int)(lng % 100000000L / 10000000L)]);
+			if (lng >= 1000000L) append0(digits[(int)(lng % 10000000L / 1000000L)]);
+			if (lng >= 100000L) append0(digits[(int)(lng % 1000000L / 100000L)]);
+			if (lng >= 10000L) append0(digits[(int)(lng % 100000L / 10000L)]);
+		}
 		if (lng >= 1000L) append0(digits[(int)(lng % 10000L / 1000L)]);
 		if (lng >= 100L) append0(digits[(int)(lng % 1000L / 100L)]);
 		if (lng >= 10L) append0(digits[(int)(lng % 100L / 10L)]);
