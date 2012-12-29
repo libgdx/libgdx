@@ -38,8 +38,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Simple "pluggable" class for loading models. Keeps a list of {@link ModelLoader} instances on a per file suffix basis. Use one
  * of the static methods to load a {@link Model}. The registry will then try out all the registered loaders for that extension and
- * eventually return a Model or throw a {@link GdxRuntimeException}. Per default all loaders of libgdx except the
- * {@link OgreXmlLoader} which won't work on Android due to the JAXB dependency.
+ * eventually return a Model or throw a {@link GdxRuntimeException}.
  * 
  * @author mzechner */
 public class ModelLoaderRegistry {
@@ -201,7 +200,7 @@ public class ModelLoaderRegistry {
 	/** Loads the specified file with one of the loaders registered with this ModelLoaderRegistry. Uses the extension to determine
 	 * which loader to use. The comparison of extensions is done case insensitive. Uses only {@link StillModelLoader} instances.
 	 * @param file the file to be loaded
-	 * @oaram hints the ModelLoaderHints to be used.
+	 * @param hints the ModelLoaderHints to be used.
 	 * @return the {@link Model}
 	 * @throws GdxRuntimeException in case the model could not be loaded. */
 	public static StillModel loadStillModel (FileHandle file, ModelLoaderHints hints) {
