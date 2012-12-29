@@ -376,8 +376,10 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				distance = (int)(PRIORITY_DISCRETE_STEPS * sortCenter.dst(cam.position));
 				if (instance.getMaterials() != null) {
 					for (Material material : instance.getMaterials()) {
+						/* TODO: Readd method in material
 						if (material.getShader() == null) material.generateShader(materialShaderHandler);
-
+						*/
+						
 						final Material copy = materialPool.obtain();
 						copy.setPooled(material);
 						materials.add(copy);
@@ -385,8 +387,10 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				} else {
 					for (SubMesh subMesh : model.getSubMeshes()) {
 						final Material material = subMesh.material;
+						/* TODO: Readd method in material
 						if (material.getShader() == null) material.generateShader(materialShaderHandler);
-
+						*/
+						
 						final Material copy = materialPool.obtain();
 						copy.setPooled(material);
 						materials.add(copy);
