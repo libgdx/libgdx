@@ -32,8 +32,9 @@ public class Timer {
 						float wait = Float.MAX_VALUE;
 						for (int i = 0, n = instances.size; i < n; i++)
 							wait = Math.min(wait, instances.get(i).update(time));
+						long waitMillis = (long)(wait * 1000);
 						try {
-							instances.wait((long)(wait * 1000));
+							if (waitMillis > 0) instances.wait(waitMillis);
 						} catch (InterruptedException ignored) {
 						}
 					}
