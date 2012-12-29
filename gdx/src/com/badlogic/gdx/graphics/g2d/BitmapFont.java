@@ -603,6 +603,23 @@ public class BitmapFont implements Disposable {
 	public BitmapFontData getData () {
 		return data;
 	}
+	
+	/**
+	 * @return whether the texture is owned by the font, font disposes the texture itself if true
+	 */
+	public boolean ownsTexture() {
+		return ownsTexture;
+	}
+	
+	/**
+	 * Sets whether the font owns the texture or not. In case it does,
+	 * the font will also dispose of the texture when {@link #dispose()}
+	 * is called. Use with care!
+	 * @param ownsTexture whether the font owns the texture
+	 */
+	public void setOwnsTexture(boolean ownsTexture) {
+		this.ownsTexture = ownsTexture;
+	}
 
 	public static class Glyph {
 		public int srcX;

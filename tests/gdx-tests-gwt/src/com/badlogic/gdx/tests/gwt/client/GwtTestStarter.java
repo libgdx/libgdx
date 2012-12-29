@@ -30,6 +30,6 @@ public class GwtTestStarter extends GwtApplication {
 
 	@Override
 	public ApplicationListener getApplicationListener () {
-		return new GwtTestWrapper();
+		return new UITest();
 	}
 }
