@@ -40,7 +40,7 @@ public class PerformanceCounters {
 	public void tick() {
 		final long t = System.nanoTime();
 		if (lastTick > 0L)
-			tick((lastTick - t) * nano2seconds);
+			tick((t - lastTick) * nano2seconds);
 		lastTick = t;
 	}
 	
