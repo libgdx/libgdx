@@ -726,7 +726,7 @@ public class StringBuilder implements Appendable, CharSequence {
 			if (i >= 10000000) append0(digits[i % 100000000 / 10000000]);
 			if (i >= 1000000) append0(digits[i % 10000000 / 1000000]);
 			if (i >= 100000) append0(digits[i % 1000000 / 100000]);
-			if (i >= 10000) append0(digits[i % 100000 / 10000]);
+			append0(digits[i % 100000 / 10000]);
 		}
 		if (i >= 1000) append0(digits[i % 10000 / 1000]);
 		if (i >= 100) append0(digits[i % 1000 / 100]);
@@ -765,7 +765,7 @@ public class StringBuilder implements Appendable, CharSequence {
 			if (lng >= 10000000L) append0(digits[(int)(lng % 100000000L / 10000000L)]);
 			if (lng >= 1000000L) append0(digits[(int)(lng % 10000000L / 1000000L)]);
 			if (lng >= 100000L) append0(digits[(int)(lng % 1000000L / 100000L)]);
-			if (lng >= 10000L) append0(digits[(int)(lng % 100000L / 10000L)]);
+			append0(digits[(int)(lng % 100000L / 10000L)]);
 		}
 		if (lng >= 1000L) append0(digits[(int)(lng % 10000L / 1000L)]);
 		if (lng >= 100L) append0(digits[(int)(lng % 1000L / 100L)]);
