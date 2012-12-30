@@ -61,10 +61,10 @@ public class MaterialTest extends GdxTest {
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		
-		if(material.attributes.size == 1)
+		if(material.getNumberOfAttributes() == 1)
 			gl.glEnable(GL10.GL_TEXTURE_2D);
 		
-		if(material.attributes.size == 3){
+		if(material.getNumberOfAttributes() == 3){
 			gl.glDisable(GL10.GL_DEPTH_TEST);
 			gl.glEnable(GL10.GL_BLEND);
 		}
@@ -85,12 +85,12 @@ public class MaterialTest extends GdxTest {
 	@Override
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 		
-		if(material.attributes.size == 0)
-			material.attributes.add(textureAttribute);
-		else if(material.attributes.size == 1)
-			material.attributes.add(colorAttribute);
-		else if(material.attributes.size == 2)
-			material.attributes.add(blendingAttribute);
+		if(material.getNumberOfAttributes() == 0)
+			material.addAttribute(textureAttribute);
+		else if(material.getNumberOfAttributes() == 1)
+			material.addAttribute(colorAttribute);
+		else if(material.getNumberOfAttributes() == 2)
+			material.addAttribute(blendingAttribute);
 		else {
 			GL10 gl = Gdx.gl10;
 			
@@ -99,7 +99,7 @@ public class MaterialTest extends GdxTest {
 			gl.glDisable(GL10.GL_TEXTURE_2D);
 			gl.glDisable(GL10.GL_BLEND);
 			
-			material.attributes.clear();
+			material.clearAttributes();
 		}
 		
 		return super.touchUp(screenX, screenY, pointer, button);

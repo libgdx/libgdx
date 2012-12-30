@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class Material {
 	protected String name;
-	public Array<MaterialAttribute> attributes;
+	private Array<MaterialAttribute> attributes;
 
 	/** This flag is true if material contain blendingAttribute */
 	protected boolean needBlending;
@@ -79,6 +79,35 @@ public class Material {
 
 	public String getName () {
 		return name;
+	}
+	
+	public void addAttribute(MaterialAttribute attribute){
+		if(attribute instanceof BlendingAttribute)
+			needBlending = true;
+		
+		attributes.add(attribute);
+	}
+	
+	public void removeAttribute(MaterialAttribute attribute){
+		if(attribute instanceof BlendingAttribute)
+			needBlending = false;
+		
+		attributes.removeValue(attribute, true);
+	}
+	
+	public void clearAttributes(){
+		attributes.clear();
+		needBlending = false;
+	}
+	
+	public MaterialAttribute getAttribute(int index){
+		if(index < attributes.size)
+			return attributes.get(index);
+		return null;
+	}
+	
+	public int getNumberOfAttributes(){
+		return attributes.size;
 	}
 
 	public Material copy () {
