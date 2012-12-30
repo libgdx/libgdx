@@ -28,7 +28,9 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdxinvaders.simulation.Block;
@@ -44,17 +46,17 @@ public class RendererGL10 implements Renderer {
 	/** sprite batch to draw text **/
 	private SpriteBatch spriteBatch;
 	/** the ship mesh **/
-	private Mesh shipMesh;
+	private StillModel shipMesh;
 	/** the ship texture **/
 	private Texture shipTexture;
 	/** the invader mesh **/
-	private Mesh invaderMesh;
+	private StillModel invaderMesh;
 	/** the invader texture **/
 	private Texture invaderTexture;
 	/** the block mesh **/
-	private Mesh blockMesh;
+	private StillModel blockMesh;
 	/** the shot mesh **/
-	private Mesh shotMesh;
+	private StillModel shotMesh;
 	/** the background texture **/
 	private Texture backgroundTexture;
 	/** the explosion mesh **/
@@ -83,21 +85,10 @@ public class RendererGL10 implements Renderer {
 		try {
 			spriteBatch = new SpriteBatch();
 
-			InputStream in = Gdx.files.internal("data/ship.obj").read();
-			shipMesh = ObjLoader.loadObj(in);
-			in.close();
-
-			in = Gdx.files.internal("data/invader.obj").read();
-			invaderMesh = ObjLoader.loadObj(in);
-			in.close();
-
-			in = Gdx.files.internal("data/block.obj").read();
-			blockMesh = ObjLoader.loadObj(in);
-			in.close();
-
-			in = Gdx.files.internal("data/shot.obj").read();
-			shotMesh = ObjLoader.loadObj(in);
-			in.close();
+			shipMesh = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/ship.obj"));
+			invaderMesh = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/invader.obj"));
+			blockMesh = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/block.obj"));
+			shotMesh = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/shot.obj"));
 
 			shipTexture = new Texture(Gdx.files.internal("data/ship.png"), Format.RGB565, true);
 			shipTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
@@ -238,7 +229,7 @@ public class RendererGL10 implements Renderer {
 		gl.glTranslatef(ship.position.x, ship.position.y, ship.position.z);
 		gl.glRotatef(45 * (-Gdx.input.getAccelerometerY() / 5), 0, 0, 1);
 		gl.glRotatef(180, 0, 1, 0);
-		shipMesh.render(GL10.GL_TRIANGLES);
+		shipMesh.render();
 		gl.glPopMatrix();
 	}
 
@@ -249,7 +240,7 @@ public class RendererGL10 implements Renderer {
 			gl.glPushMatrix();
 			gl.glTranslatef(invader.position.x, invader.position.y, invader.position.z);
 			gl.glRotatef(invaderAngle, 0, 1, 0);
-			invaderMesh.render(GL10.GL_TRIANGLES);
+			invaderMesh.render();
 			gl.glPopMatrix();
 		}
 	}
@@ -262,7 +253,7 @@ public class RendererGL10 implements Renderer {
 			Block block = blocks.get(i);
 			gl.glPushMatrix();
 			gl.glTranslatef(block.position.x, block.position.y, block.position.z);
-			blockMesh.render(GL10.GL_TRIANGLES);
+			blockMesh.render();
 			gl.glPopMatrix();
 		}
 		gl.glColor4f(1, 1, 1, 1);
@@ -275,7 +266,7 @@ public class RendererGL10 implements Renderer {
 			Shot shot = shots.get(i);
 			gl.glPushMatrix();
 			gl.glTranslatef(shot.position.x, shot.position.y, shot.position.z);
-			shotMesh.render(GL10.GL_TRIANGLES);
+			shotMesh.render();
 			gl.glPopMatrix();
 		}
 		gl.glColor4f(1, 1, 1, 1);

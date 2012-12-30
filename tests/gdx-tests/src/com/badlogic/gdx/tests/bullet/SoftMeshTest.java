@@ -20,11 +20,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Material;
@@ -33,12 +32,9 @@ import com.badlogic.gdx.physics.bullet.btCollisionDispatcher;
 import com.badlogic.gdx.physics.bullet.btDefaultCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.btSequentialImpulseConstraintSolver;
 import com.badlogic.gdx.physics.bullet.btSoftBody;
-import com.badlogic.gdx.physics.bullet.btSoftBodyHelpers;
 import com.badlogic.gdx.physics.bullet.btSoftBodyRigidBodyCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.btSoftBodyWorldInfo;
 import com.badlogic.gdx.physics.bullet.btSoftRigidDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.btTransform;
-import com.badlogic.gdx.utils.Array;
 
 /** @author xoppa */
 public class SoftMeshTest extends BaseBulletTest {
@@ -74,7 +70,9 @@ public class SoftMeshTest extends BaseBulletTest {
 		.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		// Note: not every model is suitable for a one on one translation with a soft body, a better model might be added later.
-		mesh = ObjLoader.loadObj(Gdx.files.internal("data/wheel.obj").read(), true, true);
+		
+		final StillModel model = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/wheel.obj"));
+		mesh = model.subMeshes[0].getMesh();
 		mesh.scale(6f, 6f, 6f);
 		
 		softBody = new btSoftBody(worldInfo, mesh.getVerticesBuffer(), mesh.getNumVertices(), mesh.getVertexSize(), mesh.getVertexAttribute(Usage.Position).offset, mesh.getIndicesBuffer(), mesh.getNumIndices()/3);

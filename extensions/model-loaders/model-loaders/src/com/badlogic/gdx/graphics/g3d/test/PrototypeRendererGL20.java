@@ -127,8 +127,8 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 					matrixChanged = false;
 				}
 
-				for (int k = 0, len = material.attributes.size; k < len; k++) {
-					final MaterialAttribute atrib = material.attributes.get(k);
+				for (int k = 0, len = material.getNumberOfAttributes(); k < len; k++) {
+					final MaterialAttribute atrib = material.getAttribute(k);
 
 					// special case for textures. really important to batch these
 					if (atrib instanceof TextureAttribute) {
@@ -236,8 +236,8 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 					matrixChanged = false;
 				}
 
-				for (int k = 0, len = material.attributes.size; k < len; k++) {
-					final MaterialAttribute atrib = material.attributes.get(k);
+				for (int k = 0, len = material.getNumberOfAttributes(); k < len; k++) {
+					final MaterialAttribute atrib = material.getAttribute(k);
 
 					// yet another instanceof. TODO is there any better way to do this? maybe stuffing this to material
 					if (atrib instanceof BlendingAttribute) {
@@ -321,9 +321,12 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				while (drawable.materials.size > 0) {
 					final Material material = drawable.materials.pop();
 
-					while (material.attributes.size > 0) {
-						material.attributes.pop().free();
+					for(int i=0; i<material.getNumberOfAttributes(); i++){
+						MaterialAttribute attribute = material.getAttribute(i);
+						attribute.free();
 					}
+					material.clearAttributes();
+					
 					material.resetShader();
 					materialPool.free(material);
 				}
@@ -376,8 +379,10 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				distance = (int)(PRIORITY_DISCRETE_STEPS * sortCenter.dst(cam.position));
 				if (instance.getMaterials() != null) {
 					for (Material material : instance.getMaterials()) {
+						/* TODO: Readd method in material
 						if (material.getShader() == null) material.generateShader(materialShaderHandler);
-
+						*/
+						
 						final Material copy = materialPool.obtain();
 						copy.setPooled(material);
 						materials.add(copy);
@@ -385,8 +390,10 @@ public class PrototypeRendererGL20 implements ModelRenderer {
 				} else {
 					for (SubMesh subMesh : model.getSubMeshes()) {
 						final Material material = subMesh.material;
+						/* TODO: Readd method in material
 						if (material.getShader() == null) material.generateShader(materialShaderHandler);
-
+						*/
+						
 						final Material copy = materialPool.obtain();
 						copy.setPooled(material);
 						materials.add(copy);
