@@ -297,7 +297,6 @@ public class AndroidApplication extends Activity implements Application {
 
 	@Override
 	public int getVersion () {
-		// FIXME Should use SDK_INT? (see: http://developer.android.com/reference/android/os/Build.VERSION.html)
 		return Integer.parseInt(android.os.Build.VERSION.SDK);
 	}
 	
