@@ -18,7 +18,9 @@ package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.physics.bullet.btConvexHullShape;
 import com.badlogic.gdx.physics.bullet.btShapeHull;
 
@@ -29,7 +31,8 @@ public class ConvexHullTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 
-		final Mesh sceneMesh = ObjLoader.loadObj(Gdx.files.internal("data/car.obj").read(), true, true);
+		final StillModel sceneModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/car.obj"));
+		final Mesh sceneMesh = sceneModel.subMeshes[0].getMesh();
 		world.addConstructor("car", new BulletConstructor(sceneMesh, 5f, createConvexHullShape(sceneMesh)));
 
 		// Create the entities
