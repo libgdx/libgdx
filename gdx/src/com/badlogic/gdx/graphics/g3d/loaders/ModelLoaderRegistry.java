@@ -112,7 +112,7 @@ public class ModelLoaderRegistry {
 			try {
 				model = loader.load(file, hint);
 			} catch (GdxRuntimeException e) {
-				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getSimpleName() + ": "
+				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getName() + ": "
 					+ e.getMessage() + "\n");
 			}
 		}
@@ -147,7 +147,7 @@ public class ModelLoaderRegistry {
 			try {
 				model = loader.load(file, hints);
 			} catch (GdxRuntimeException e) {
-				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getSimpleName() + ": "
+				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getName() + ": "
 					+ e.getMessage() + "\n");
 			}
 		}
@@ -186,7 +186,7 @@ public class ModelLoaderRegistry {
 					model = ((StillModelLoader)loader).load(file, hint);
 				}
 			} catch (GdxRuntimeException e) {
-				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getSimpleName() + ": "
+				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getName() + ": "
 					+ e.getMessage() + "\n");
 			}
 		}
@@ -223,7 +223,7 @@ public class ModelLoaderRegistry {
 					model = ((StillModelLoader)loader).load(file, hints);
 				}
 			} catch (GdxRuntimeException e) {
-				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getSimpleName() + ": "
+				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getName() + ": "
 					+ e.getMessage() + "\n");
 			}
 		}
@@ -263,7 +263,7 @@ public class ModelLoaderRegistry {
 					model = ((KeyframedModelLoader)loader).load(file, hint);
 				}
 			} catch (GdxRuntimeException e) {
-				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getSimpleName() + ": "
+				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getName() + ": "
 					+ e.getMessage() + "\n");
 			}
 		}
@@ -301,7 +301,7 @@ public class ModelLoaderRegistry {
 					model = ((KeyframedModelLoader)loader).load(file, hints);
 				}
 			} catch (GdxRuntimeException e) {
-				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getSimpleName() + ": "
+				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getName() + ": "
 					+ e.getMessage() + "\n");
 			}
 		}
@@ -340,7 +340,7 @@ public class ModelLoaderRegistry {
 					model = ((SkeletonModelLoader)loader).load(file, hint);
 				}
 			} catch (GdxRuntimeException e) {
-				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getSimpleName() + ": "
+				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getName() + ": "
 					+ e.getMessage());
 			}
 		}
@@ -377,7 +377,7 @@ public class ModelLoaderRegistry {
 					model = ((SkeletonModelLoader)loader).load(file, hints);
 				}
 			} catch (GdxRuntimeException e) {
-				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getSimpleName() + ": "
+				errors.append("Couldn't load '" + file.name() + "' with loader of type " + loader.getClass().getName() + ": "
 					+ e.getMessage());
 			}
 		}
