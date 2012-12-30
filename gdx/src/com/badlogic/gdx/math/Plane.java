@@ -102,14 +102,7 @@ public class Plane implements Serializable {
 	 * @param point The point
 	 * @return The side the point lies relative to the plane */
 	public PlaneSide testPoint (Vector3 point) {
-		float dist = normal.dot(point) + d;
-
-		if (dist == 0)
-			return PlaneSide.OnPlane;
-		else if (dist < 0)
-			return PlaneSide.Back;
-		else
-			return PlaneSide.Front;
+		return testPoint(point.x, point.y, point.z);
 	}
 
 	/** Returns on which side the given point lies relative to the plane and its normal. PlaneSide.Front refers to the side the
