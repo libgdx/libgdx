@@ -63,6 +63,7 @@ public class BaseBulletTest extends BulletTest {
 	public void create () {
 		init();
 		world = createWorld();
+		world.performanceCounter = performanceCounter;
 
 		final float width = Gdx.graphics.getWidth();
 		final float height = Gdx.graphics.getHeight();
@@ -123,7 +124,7 @@ public class BaseBulletTest extends BulletTest {
 		
 		performance.setLength(0);
 		performance.append("FPS: ").append(Gdx.graphics.getFramesPerSecond()).append(", Bullet: ")
-			.append((int)(world.bulletLoad*100f)).append("%");
+			.append((int)(performanceCounter.load.value*100f)).append("%");
 	}
 	
 	public void shoot(final float x, final float y) {
@@ -158,7 +159,7 @@ public class BaseBulletTest extends BulletTest {
 	}
 	
 	@Override
-	public boolean fling (float velocityX, float velocityY, int button) {
+	public boolean longPress (float x, float y) {
 		toggleDebugMode();
 		return true;
 	}
