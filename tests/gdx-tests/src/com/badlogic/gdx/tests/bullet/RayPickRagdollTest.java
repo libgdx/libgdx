@@ -46,6 +46,8 @@ public class RayPickRagdollTest extends BaseBulletTest {
 	@Override
 	public void create () {
 		super.create();
+		instructions = "Tap to shoot\nDrag ragdoll to pick\nLong press to toggle debug mode\nSwipe for next test";
+		
 		camera.position.set(4f, 2f, 4f);
 		camera.lookAt(0f, 1f, 0f);
 		camera.update();
