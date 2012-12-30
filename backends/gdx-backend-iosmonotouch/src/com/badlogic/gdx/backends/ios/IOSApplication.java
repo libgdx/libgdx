@@ -37,6 +37,7 @@ import cli.System.IO.Path;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.BaseDeviceInfo;
 import com.badlogic.gdx.DeviceInfo;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -86,6 +87,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	IOSFiles files;
 	IOSInput input;
 	IOSNet net;
+	BaseDeviceInfo deviceInfo;
 	int logLevel = Application.LOG_DEBUG;
 	boolean firstResume;
 
@@ -316,8 +318,12 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	
 	@Override
 	public DeviceInfo getDeviceInfo() {
-		// FIXME add deviceInfo
-		return null;
+		if (deviceInfo == null) {
+			deviceInfo = new BaseDeviceInfo();
+			deviceInfo.put(DeviceInfo.MANUFACTURER, "Apple");
+			// FIXME add deviceInfo
+		}
+		return deviceInfo;
 	}
 
 	@Override

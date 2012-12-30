@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.lwjgl;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.BaseDeviceInfo;
 import com.badlogic.gdx.DeviceInfo;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -44,6 +45,7 @@ public class LwjglApplication implements Application {
 	protected final LwjglFiles files;
 	protected final LwjglInput input;
 	protected final LwjglNet net;
+	protected BaseDeviceInfo deviceInfo;
 	protected final ApplicationListener listener;
 	protected Thread mainLoopThread;
 	protected boolean running = true;
@@ -243,7 +245,9 @@ public class LwjglApplication implements Application {
 	
 	@Override
 	public DeviceInfo getDeviceInfo() {
-		return null;
+		if (deviceInfo == null)
+			deviceInfo = new BaseDeviceInfo();
+		return deviceInfo;
 	}
 
 	public void stop () {

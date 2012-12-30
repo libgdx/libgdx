@@ -25,12 +25,27 @@ import android.provider.Settings.Secure;
 import com.badlogic.gdx.DeviceInfo;
 
 /** @author xoppa */
-public class AndroidDeviceInfo implements DeviceInfo {
+public class AndroidDeviceInfo extends DeviceInfo {
 	public final Context context;
 	
 	protected String CpuArchitecture = null;
 	protected int CpuCount = 0;
 	protected float CpuBogoMIPS = 0f;
+	
+	public AndroidDeviceInfo(final Context context) {
+		this.context = context;
+		
+		data.put(MANUFACTURER, android.os.Build.MANUFACTURER);
+		data.put(BRAND, android.os.Build.BRAND);
+		data.put(DEVICE, android.os.Build.DEVICE);
+		data.put(PRODUCT, android.os.Build.PRODUCT);
+		data.put(MODEL, android.os.Build.MODEL);
+		data.put(SERIAL, context == null ? "" : Secure.getString(context.getContentResolver(), Secure.ANDROID_ID));
+		data.put(VERSION, android.os.Build.VERSION.RELEASE);
+		data.put(CPU_ARCHITECTURE, null);
+		data.put(CPU_COUNT, null);
+		data.put(CPU_SPEED, null);
+	}
 	
 	// Perhaps works for the most part on Linux as well...
 	private void getCpuInfo() {
@@ -70,66 +85,16 @@ public class AndroidDeviceInfo implements DeviceInfo {
 		if (CpuArchitecture == null)
 			CpuArchitecture = "unknown";
 	}
-	
-	public AndroidDeviceInfo(final Context context) {
-		this.context = context;
-	}
 
 	@Override
-	public String getManufacturer () {
-		return android.os.Build.MANUFACTURER;
-	}
-
-	@Override
-	public String getBrand () {
-		return android.os.Build.BRAND;
-	}
-
-	@Override
-	public String getDevice () {
-		return android.os.Build.DEVICE;
-	}
-	
-	@Override
-	public String getProduct () {
-		return android.os.Build.PRODUCT;
-	}
-
-	@Override
-	public String getModel () {
-		return android.os.Build.MODEL;
-	}
-
-	@Override
-	public String getSerial () {
-		return context == null ? "" : Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
-		// For API 9 and above:
-		// return android.os.Build.SERIAL;
-	}
-
-	@Override
-	public String getVersion () {
-		return android.os.Build.VERSION.RELEASE;
-	}
-
-	@Override
-	public String getCpuArchitecture () {
-		if (CpuArchitecture == null)
+	protected Object onNeedValue (int key) {
+		if (key == CPU_ARCHITECTURE || key == CPU_COUNT || key == CPU_SPEED) {
 			getCpuInfo();
-		return CpuArchitecture;
-	}
-
-	@Override
-	public int getCpuCount () {
-		if (CpuArchitecture == null)
-			getCpuInfo();
-		return CpuCount;
-	}
-
-	@Override
-	public float getCpuSpeed () {
-		if (CpuArchitecture == null)
-			getCpuInfo();
-		return CpuBogoMIPS;
+			data.put(CPU_ARCHITECTURE, CpuArchitecture);
+			data.put(CPU_COUNT, new Integer(CpuCount));
+			data.put(CPU_SPEED, new Float(CpuBogoMIPS));
+			return data.get(key);
+		}
+		return "not available";
 	}
 }
