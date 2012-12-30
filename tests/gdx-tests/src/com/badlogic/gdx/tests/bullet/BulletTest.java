@@ -19,6 +19,7 @@ package com.badlogic.gdx.tests.bullet;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.math.FloatCounter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.PerformanceCounter;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
@@ -28,6 +29,7 @@ public class BulletTest implements ApplicationListener, InputProcessor, GestureL
 	public StringBuilder performance = new StringBuilder();
 	public String instructions = "Tap to shoot\nLong press to toggle debug mode\nSwipe for next test";
 	public PerformanceCounter performanceCounter = new PerformanceCounter(this.getClass().getSimpleName());
+	public FloatCounter fpsCounter = new FloatCounter(5);
 	
 	@Override
 	public boolean keyDown (int keycode) {

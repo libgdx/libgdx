@@ -107,6 +107,8 @@ public class BaseBulletTest extends BulletTest {
 	
 	@Override
 	public void render () {
+		fpsCounter.put(Gdx.graphics.getFramesPerSecond());
+		
 		GL10 gl = Gdx.gl10;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
@@ -123,7 +125,7 @@ public class BaseBulletTest extends BulletTest {
 		world.update();
 		
 		performance.setLength(0);
-		performance.append("FPS: ").append(Gdx.graphics.getFramesPerSecond()).append(", Bullet: ")
+		performance.append("FPS: ").append(fpsCounter.value).append(", Bullet: ")
 			.append((int)(performanceCounter.load.value*100f)).append("%");
 	}
 	
