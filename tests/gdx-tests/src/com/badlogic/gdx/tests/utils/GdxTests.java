@@ -56,7 +56,7 @@ public class GdxTests {
 		ImmediateModeRendererAlphaTest.class, IndexBufferObjectClassTest.class, TreeTest.class, IndexBufferObjectShaderTest.class,
 		InputTest.class, IntegerBitmapFontTest.class, InverseKinematicsTest.class, IsoCamTest.class, IsometricTileTest.class,
 		KinematicBodyTest.class, LifeCycleTest.class, LineDrawingTest.class, ScrollPane2Test.class, ManagedTest.class,
-		ManualBindTest.class, MatrixJNITest.class, MD5Test.class, MeshMultitextureTest.class, MeshShaderTest.class, MeshTest.class,
+		ManualBindTest.class, MaterialTest.class, MatrixJNITest.class, MeshMultitextureTest.class, MeshShaderTest.class, MeshTest.class,
 		MipMapTest.class, MultitouchTest.class, MusicTest.class, MyFirstTriangle.class, ObjTest.class, OnscreenKeyboardTest.class,
 		OrthoCamBorderTest.class, ParallaxTest.class, ParticleEmitterTest.class, PickingTest.class, PixelsPerInchTest.class,
 		PixmapBlendingTest.class, PixmapTest.class, PolygonRegionTest.class, PolygonSpriteTest.class, PreferencesTest.class,

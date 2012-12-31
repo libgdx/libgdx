@@ -17,7 +17,7 @@ public class Ctx {
 	public static final ProjectSetupConfiguration cfgSetup = new ProjectSetupConfiguration();
 	public static final ProjectUpdateConfiguration cfgUpdate = new ProjectUpdateConfiguration();
 	public static final List<Listener> listeners = new CopyOnWriteArrayList<Listener>();
-	public static final LibraryManager libs = new LibraryManager("http://libgdx.googlecode.com/svn/trunk/extensions/gdx-setup-ui/config/config.txt");
+	public static final LibraryManager libs = new LibraryManager("https://raw.github.com/libgdx/libgdx/master/extensions/gdx-setup-ui/config/config.txt");
 	public static String testLibUrl = null;
 	public static LibraryDef testLibDef = null;
 

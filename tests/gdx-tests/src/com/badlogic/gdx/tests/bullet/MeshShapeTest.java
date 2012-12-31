@@ -16,35 +16,20 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import java.util.Random;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.ModelLoaderHints;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.PHY_ScalarType;
 import com.badlogic.gdx.physics.bullet.btBvhTriangleMeshShape;
 import com.badlogic.gdx.physics.bullet.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.btIndexedMesh;
-import com.badlogic.gdx.physics.bullet.btPoint2PointConstraint;
 import com.badlogic.gdx.physics.bullet.btSphereShape;
 import com.badlogic.gdx.physics.bullet.btStridingMeshInterface;
 import com.badlogic.gdx.physics.bullet.btTriangleIndexVertexArray;
-import com.badlogic.gdx.physics.bullet.btTypedConstraint;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.XmlReader.Element;
 
 /** @author xoppa */
 public class MeshShapeTest extends BaseBulletTest {
@@ -53,10 +38,14 @@ public class MeshShapeTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 		
-		final Mesh sphereMesh = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
+
+		final StillModel model = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/sphere.obj"));
+		
+		final Mesh sphereMesh = model.subMeshes[0].getMesh();
 		sphereMesh.scale(0.25f, 0.25f, 0.25f);
 
-		final Mesh sceneMesh = ObjLoader.loadObj(Gdx.files.internal("data/scene.obj").read(), true, true); // we need indices for this test
+		final StillModel sceneModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/scene.obj")); // we need indices for this test 
+		final Mesh sceneMesh = sceneModel.subMeshes[0].getMesh();
 		
 		final BulletConstructor sphereConstructor = new BulletConstructor(sphereMesh, 0.25f, new btSphereShape(sphereMesh.calculateBoundingBox().getDimensions().x * 0.5f));
 		sphereConstructor.bodyInfo.setM_restitution(1f);

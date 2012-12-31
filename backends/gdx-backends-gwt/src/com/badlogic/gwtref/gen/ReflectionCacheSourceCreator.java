@@ -225,7 +225,8 @@ public class ReflectionCacheSourceCreator {
 			|| name.contains("java.lang.Character") || name.contains("java.lang.Integer") || name.contains("java.lang.Float")
 			|| name.contains("java.lang.Double") || name.contains("java.lang.CharSequence") || name.contains("java.lang.Object") || !name
 				.contains(".")
-			|| name.contains("com.badlogic.gdx.math"))) {
+			|| name.contains("com.badlogic.gdx.math")
+			|| name.contains("com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute"))) {
 			nesting--;
 			return;
 		}

@@ -124,6 +124,7 @@
 		<include name="utils/PooledLinkedList.java"/>
 		<include name="utils/DelayedRemovalArray.java"/>
 		<include name="utils/Timer.java"/>
+		<include name="utils/LittleEndianInputStream.java"/>
 		<include name="Preferences.java"/>
 		<include name="math/Quaternion.java"/>
 		<include name="math/collision/Ray.java"/>
@@ -252,5 +253,6 @@
 		<include name="net/ServerSocketHints.java"/>
 		<include name="net/Socket.java"/>
 		<include name="net/SocketHints.java"/>
+		<include name="graphics/g3d/**/*"/>
 	</source>
 </module>
