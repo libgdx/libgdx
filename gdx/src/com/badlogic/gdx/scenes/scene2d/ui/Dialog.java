@@ -7,6 +7,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -15,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener.FocusEvent;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** Displays a dialog, which is a modal window containing a content table with a button table underneath it. Methods are provided
@@ -28,6 +31,8 @@ public class Dialog extends Window {
 	Table contentTable, buttonTable;
 	private Skin skin;
 	ObjectMap<Actor, Object> values = new ObjectMap();
+	boolean cancelHide;
+	Actor previousKeyboardFocus, previousScrollFocus;
 
 	public Dialog (String title, Skin skin) {
 		super(title, skin.get(WindowStyle.class));
@@ -62,15 +67,25 @@ public class Dialog extends Window {
 				while (actor.getParent() != buttonTable)
 					actor = actor.getParent();
 				result(values.get(actor));
-				hide();
+				if (!cancelHide) hide();
+				cancelHide = false;
 			}
 		});
-	}
 
-	public void draw (SpriteBatch batch, float parentAlpha) {
-		Stage stage = getStage();
-		if (stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
-		super.draw(batch, parentAlpha);
+		addListener(new FocusListener() {
+			public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
+				if (!focused) {
+					Stage stage = getStage();
+					if (isModal && stage.getRoot().getChildren().peek() == Dialog.this) { // This dialog is the top most actor.
+						if (!event.getRelatedActor().isDescendantOf(Dialog.this)) event.cancel();
+					}
+				}
+			}
+
+			public void scrollFocusChanged (FocusEvent event, Actor actor, boolean focused) {
+
+			}
+		});
 	}
 
 	public Table getContentTable () {
@@ -134,6 +149,8 @@ public class Dialog extends Window {
 
 	/** {@link #pack() Packs} the dialog and adds it to the stage, centered. */
 	public Dialog show (Stage stage) {
+		previousKeyboardFocus = stage.getKeyboardFocus();
+		previousScrollFocus = stage.getScrollFocus();
 		stage.setKeyboardFocus(this);
 		stage.setScrollFocus(this);
 		pack();
@@ -152,6 +169,19 @@ public class Dialog extends Window {
 		addAction(sequence(fadeOut(fadeDuration, Interpolation.fade), Actions.removeActor()));
 	}
 
+	protected void setParent (Group parent) {
+		super.setParent(parent);
+		if (parent == null) {
+			Stage stage = getStage();
+			if (stage != null) {
+				Actor actor = stage.getKeyboardFocus();
+				if (actor == this || actor == null) stage.setKeyboardFocus(previousKeyboardFocus);
+				actor = stage.getScrollFocus();
+				if (actor == this || actor == null) stage.setScrollFocus(previousScrollFocus);
+			}
+		}
+	}
+
 	public void setObject (Actor actor, Object object) {
 		values.put(actor, object);
 	}
@@ -163,7 +193,8 @@ public class Dialog extends Window {
 			public boolean keyDown (InputEvent event, int keycode2) {
 				if (keycode == keycode2) {
 					result(object);
-					hide();
+					if (!cancelHide) hide();
+					cancelHide = false;
 				}
 				return false;
 			}
@@ -171,8 +202,12 @@ public class Dialog extends Window {
 		return this;
 	}
 
-	/** Called when a button is clicked.
+	/** Called when a button is clicked. The dialog will be hidden after this method returns unless {@link #cancel()} is called.
 	 * @param object The object specified when the button was added. */
 	protected void result (Object object) {
+	}
+
+	public void cancel () {
+		cancelHide = true;
 	}
 }
