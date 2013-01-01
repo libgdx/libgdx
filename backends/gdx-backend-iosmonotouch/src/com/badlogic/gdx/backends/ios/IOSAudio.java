@@ -28,18 +28,36 @@ import cli.MonoTouch.AVFoundation.AVAudioPlayer;
 import cli.MonoTouch.Foundation.NSData;
 import cli.MonoTouch.Foundation.NSError;
 import cli.MonoTouch.Foundation.NSUrl;
+import cli.System.UInt32;
+import cli.objectal.*;
 
 public class IOSAudio implements Audio {
+	
+	private boolean useObjectAL;
+	
+	public IOSAudio()
+	{
 
+	}
+	
+	public IOSAudio(boolean useObjectAL)
+	{
+		this.useObjectAL = useObjectAL;
+		
+		if (useObjectAL)
+		{
+			OALSimpleAudio.sharedInstance().set_allowIpod(false);
+			OALSimpleAudio.sharedInstance().set_honorSilentSwitch(true);
+		}
+	}
+	
 	@Override
 	public AudioDevice newAudioDevice(int samplingRate, boolean isMono) {
-		// FIXME implement via OpenAL if possible
 		return null;
 	}
 
 	@Override
 	public AudioRecorder newAudioRecorder(int samplingRate, boolean isMono) {
-		// FIXME see what MonoTouch offers
 		return null;
 	}
 
@@ -50,9 +68,9 @@ public class IOSAudio implements Audio {
 	 * @throws GdxRuntimeException  If we are using a OGG file (not supported under iOS).
 	 */
 	private void verify(FileHandle fileHandle) {
-		if (fileHandle.extension().equalsIgnoreCase("ogg")) {  
+		if (fileHandle.extension().equalsIgnoreCase("wav") == false) {  
 			// Ogg is not supported on iOS (return a sound object that does nothing)
-			throw new GdxRuntimeException("Audio format .ogg is not supported on iOS. Cannot load: " + fileHandle.path());
+			throw new GdxRuntimeException("Uncompressed Audio format is only supported on iOS. Cannot load: " + fileHandle.path());
 		}
 	}
 	
@@ -64,16 +82,26 @@ public class IOSAudio implements Audio {
 	 * @throws GdxRuntimeException  If we are unable to load the file for some reason.
 	 */
 	@Override
-	public Sound newSound(FileHandle fileHandle) {
-		// verify file format (make sure we don't have an OGG file)
-		verify(fileHandle);
-				
-		// create audio player - from byte array 
-		// FIXME check if there's a faster way to load files
-		NSData data = NSData.FromArray(fileHandle.readBytes());
-	   return new IOSSound(data);
-	}
+	public Sound newSound(FileHandle fileHandle)
+	{
+		if (useObjectAL)
+		{
+			// let OALSimpleAudio report error if there is a problem loading the sound file.
+			return new IOSObjectALSound(fileHandle);
+		}
+		else
+		{
+			
+			// verify file format (make sure we don't have an OGG file)
+			verify(fileHandle);
 
+			// create audio player - from byte array 
+			// FIXME check if there's a faster way to load files
+			NSData data = NSData.FromArray(fileHandle.readBytes());
+			return new IOSSound(data);
+		}
+	}
+	
 	/**
 	 * Returns a new music object. We are playing directly from file, a.k.a. suited for
 	 * background music.

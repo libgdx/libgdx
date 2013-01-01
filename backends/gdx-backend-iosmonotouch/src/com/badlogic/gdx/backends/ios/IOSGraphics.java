@@ -16,9 +16,9 @@
 
 package com.badlogic.gdx.backends.ios;
 
+import cli.MonoTouch.CoreAnimation.CAEAGLLayer;
 import cli.MonoTouch.Foundation.ExportAttribute;
 import cli.MonoTouch.Foundation.NSSet;
-import cli.MonoTouch.CoreAnimation.CAEAGLLayer;
 import cli.MonoTouch.ObjCRuntime.Selector;
 import cli.MonoTouch.OpenGLES.EAGLColorFormat;
 import cli.MonoTouch.OpenGLES.EAGLRenderingAPI;
@@ -27,19 +27,22 @@ import cli.MonoTouch.UIKit.UIEvent;
 import cli.MonoTouch.UIKit.UIScreen;
 import cli.MonoTouch.UIKit.UIUserInterfaceIdiom;
 import cli.OpenTK.FrameEventArgs;
+import cli.OpenTK.Graphics.ES11.GL;
 import cli.OpenTK.Platform.iPhoneOS.iPhoneOSGameView;
 import cli.System.EventArgs;
 import cli.System.Drawing.RectangleF;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
-import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 // FIXME add GL 1.x support by ripping Android's classes
 public class IOSGraphics extends iPhoneOSGameView implements Graphics {
@@ -117,6 +120,22 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		paused = false;
 		wasPaused = true;
 	}
+	
+	@Override
+	protected void CreateFrameBuffer()
+	{
+		set_LayerColorFormat(EAGLColorFormat.RGB565);
+		set_ContextRenderingApi(EAGLRenderingAPI.wrap(EAGLRenderingAPI.OpenGLES2));
+		super.CreateFrameBuffer();
+		this.resume();
+	}
+	
+	@Override
+	protected void DestroyFrameBuffer()
+	{
+		super.DestroyFrameBuffer();
+		this.pause();
+	}
 
 	@Override
 	protected void ConfigureLayer (CAEAGLLayer layer) {
@@ -132,10 +151,16 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	}
 	
 	public void resume() {
+		Gdx.app.debug("IOSGraphics", "resumed");
+		Mesh.invalidateAllMeshes(app);
+		Texture.invalidateAllTextures(app);
+		ShaderProgram.invalidateAllShaderPrograms(app);
+		FrameBuffer.invalidateAllFrameBuffers(app);
 		paused = false;
 	}
 	
 	public void pause() {
+	   Gdx.app.debug("IOSGraphics", "paused");
 		paused = true;
 	}
 

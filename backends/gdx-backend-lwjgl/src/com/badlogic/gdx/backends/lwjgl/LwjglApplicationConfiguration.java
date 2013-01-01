@@ -55,7 +55,7 @@ public class LwjglApplicationConfiguration {
 	/** whether to call System.exit() on tear-down. Needed for Webstarts on some versions of Mac OS X it seems **/
 	public boolean forceExit = true;
 	/** whether the window is resizable **/
-	public boolean resizable = true;
+	public boolean resizable = false;
 	/** the audio device buffer size in samples **/
 	public int audioDeviceBufferSize = 512;
 	/** the audio device buffer count **/

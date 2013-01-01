@@ -103,6 +103,8 @@ public class SpriteBatch implements Disposable {
 
 	/** number of rendering calls ever, will not be reset, unless it's done manually **/
 	public int totalRenderCalls = 0;
+	
+	public int textureSwitches = 0;
 
 	/** the maximum number of sprites rendered in one batch so far **/
 	public int maxSpritesInBatch = 0;
@@ -1152,6 +1154,7 @@ public class SpriteBatch implements Disposable {
 
 	private void switchTexture (Texture texture) {
 		renderMesh();
+		textureSwitches++;
 		lastTexture = texture;
 		invTexWidth = 1.0f / texture.getWidth();
 		invTexHeight = 1.0f / texture.getHeight();

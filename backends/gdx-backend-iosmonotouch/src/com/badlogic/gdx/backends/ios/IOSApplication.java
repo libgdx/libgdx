@@ -49,6 +49,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class IOSApplication extends UIApplicationDelegate implements Application {
 	
 	class IOSUIViewController extends UIViewController {
+		
 		@Override
 		public void DidRotate (UIInterfaceOrientation orientation) {
 			// get the view size and update graphics
@@ -78,6 +79,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	UIApplication uiApp;
 	UIWindow uiWindow;
+	UIViewController uiViewController;
 	ApplicationListener listener;
 	IOSApplicationConfiguration config;
 	IOSGraphics graphics;
@@ -134,7 +136,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 		// Create: Window -> ViewController-> GameView (controller takes care of rotation)
 		this.uiWindow = new UIWindow(UIScreen.get_MainScreen().get_Bounds());
-		UIViewController uiViewController = new IOSUIViewController();
+		uiViewController = new IOSUIViewController();
 		this.uiWindow.set_RootViewController(uiViewController);
 
 		GL20 gl20 = config.useMonotouchOpenTK ? new IOSMonotouchGLES20() : new IOSGLES20();
@@ -146,7 +148,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		this.input = new IOSInput(this);
 		this.graphics = new IOSGraphics(getBounds(uiViewController), this, input, gl20);
 		this.files = new IOSFiles();
-		this.audio = new IOSAudio();
+		this.audio = new IOSAudio(config.useObjectAL);
 		this.net = new IOSNet(this);
 
 		Gdx.files = this.files;
@@ -161,7 +163,6 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		uiViewController.set_View(graphics);
 		this.graphics.Run();
 		this.uiWindow.MakeKeyAndVisible();
-		Gdx.app.debug("IOSApplication", "created");
 		return true;
 	}
 
@@ -206,7 +207,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		graphics.MakeCurrent();
 		graphics.resume();
 	}
-
+	
 	@Override
 	public void OnResignActivation (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "paused");
@@ -246,6 +247,16 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	@Override
 	public Net getNet () {
 		return net;
+	}
+	
+	public UIWindow getWindow()
+	{
+		return uiWindow;
+	}
+	
+	public UIViewController getViewController()
+	{
+		return uiViewController;
 	}
 
 	@Override

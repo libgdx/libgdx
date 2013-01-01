@@ -31,6 +31,9 @@
 			<fileset dir="libs/monotouch-jars">
 				<include name="**/*.jar"/>
 			</fileset>
+			<fileset dir="libs/objectal">
+				<include name="**/*.jar"/>
+			</fileset>
 			<pathelement path="target/core"/>
 			</classpath>
 		</javac>
@@ -39,6 +42,7 @@
 			<property name="IN" value="-srcpath:src -r:libs/gdx.dll -recurse:target/backend/*.class"/>
 			<property name="OUT" value="libs/gdx-backend-ios.dll"/>
 		</ant>
+		<copy file="libs/libgdx.a" todir="../../../gushiku/zombieslots-ios/zombieslots-ios/" />
 	</target>
 	
 	<target name="compile" depends="compile-core, compile-backend">

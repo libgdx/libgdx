@@ -94,8 +94,8 @@ public class GlyphPage {
 		int i = 0;
 		for (Iterator iter = getIterator(glyphs); iter.hasNext();) {
 			Glyph glyph = (Glyph)iter.next();
-			int width = Math.min(MAX_GLYPH_SIZE, glyph.getWidth());
-			int height = Math.min(MAX_GLYPH_SIZE, glyph.getHeight());
+			int width = Math.min(MAX_GLYPH_SIZE, glyph.getWidth()+2);
+			int height = Math.min(MAX_GLYPH_SIZE, glyph.getHeight()+2);
 
 			if (rowHeight == 0) {
 				// The first glyph always fits.

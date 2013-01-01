@@ -59,4 +59,7 @@ public class IOSApplicationConfiguration {
 	
 	/** whether Monotouch GL20 implementation should be used or not, false by default, so native iosgles20 is used. */
 	public boolean useMonotouchOpenTK = false;
+	
+	/** whether to use ObjectAL for sound implementation or not.  */
+	public boolean useObjectAL = false;
 }
