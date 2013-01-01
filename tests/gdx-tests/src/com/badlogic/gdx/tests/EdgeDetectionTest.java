@@ -22,12 +22,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
@@ -41,7 +41,7 @@ public class EdgeDetectionTest extends GdxTest {
 
 	FPSLogger logger;
 	ShaderProgram shader;
-	Mesh mesh;
+	StillModel mesh;
 	FrameBuffer fbo;
 	PerspectiveCamera cam;
 	Matrix4 matrix = new Matrix4();
@@ -67,7 +67,7 @@ public class EdgeDetectionTest extends GdxTest {
 			Gdx.app.log("EdgeDetectionTest", "couldn't compile post-processing shader: " + batchShader.getLog());
 		}
 
-		mesh = ObjLoader.loadObj(Gdx.files.internal("data/scene.obj").read());
+		mesh =  ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/scene.obj"));
 		fbo = new FrameBuffer(Format.RGB565, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(0, 0, 10);
@@ -115,7 +115,7 @@ public class EdgeDetectionTest extends GdxTest {
 		shader.begin();
 		shader.setUniformMatrix("u_projView", cam.combined);
 		shader.setUniformf("u_far", cam.far);
-		mesh.render(shader, GL10.GL_TRIANGLES);
+		mesh.render(shader);
 		shader.end();
 		fbo.end();
 

@@ -32,6 +32,13 @@
 			</intent-filter>
 		</activity>
 		
+        <activity android:name=".DaydreamSettings"
+                  android:label="Daydream Settings">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+        </activity>
+		
 		<service android:name=".LiveWallpaper"
             android:label="@string/app_name"
             android:icon="@drawable/icon"
@@ -42,6 +49,18 @@
             <meta-data android:name="android.service.wallpaper"
                 android:resource="@xml/livewallpaper" />
 
-        </service>				  	
+        </service>	
+        
+		<service android:name=".Daydream"
+		     android:label="@string/app_name"
+		     android:icon="@drawable/icon"
+		     android:exported="true">
+		     <intent-filter>
+		         <action android:name="android.service.dreams.DreamService" />
+		         <category android:name="android.intent.category.DEFAULT" />
+		     </intent-filter>
+		     <meta-data android:name="android.service.dream"
+		         android:resource="@xml/daydream" />
+		</service>
 	</application>
 </manifest> 
