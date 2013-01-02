@@ -16,15 +16,53 @@
 
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.utils.IntMap;
+
 /** Base implementation of {@link DeviceInfo}. 
  * @author xoppa */
-public class BaseDeviceInfo extends DeviceInfo {
+public class BaseDeviceInfo implements DeviceInfo {
+	protected IntMap<Object> data = new IntMap<Object>();
+	
 	public void put(int key, Object value) {
 		data.put(key, value);
 	}
 
 	@Override
+	public int[] keys() {
+		IntMap.Keys d = data.keys();
+		d.reset();
+		return d.toArray().toArray();
+	}
+	
+	@Override
+	public boolean contains(int key) {
+		return data.containsKey(key);
+	}
+	
+	/** Override this method to provide values when needed, this method should not return null. */
 	protected Object onNeedValue (int key) {
 		return "not available";
+	}
+	
+	/** Override this method to provide dynamic values */
+	@Override
+	public Object rawValue(int key) {
+		if (data.containsKey(key)) {
+			Object result = data.get(key);
+			if (result == null)
+				data.put(key, result = onNeedValue(key));
+			return result;
+		}
+		return null;
+	}
+	
+	@Override
+	public String value(int key) {
+		Object val = rawValue(key);
+		if (val == null)
+			return null;
+		if (val instanceof String)
+			return (String)val;
+		return val.toString();
 	}
 }

@@ -22,10 +22,10 @@ import java.io.InputStream;
 import android.content.Context;
 import android.provider.Settings.Secure;
 
-import com.badlogic.gdx.DeviceInfo;
+import com.badlogic.gdx.BaseDeviceInfo;
 
 /** @author xoppa */
-public class AndroidDeviceInfo extends DeviceInfo {
+public class AndroidDeviceInfo extends BaseDeviceInfo {
 	public final Context context;
 	
 	protected String CpuArchitecture = null;

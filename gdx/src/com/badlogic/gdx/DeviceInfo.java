@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.IntMap;
 
 /** Contains information about the device. Check {@link #contains(int)} or {@link #keys()} the get which values are available.
  * @author xoppa */
-public abstract class DeviceInfo {
+public interface DeviceInfo {
 	/** The manufacturer of the product/hardware. */
 	public final static int MANUFACTURER = 1;
 	/** The brand (e.g., carrier) the device (software) is customized for, if any. */
@@ -42,39 +42,15 @@ public abstract class DeviceInfo {
 	/** The approximated speed (in MIPS) of the CPU, if available. */
 	public final static int CPU_SPEED = 0x22;
 	
-	protected IntMap<Object> data = new IntMap<Object>();
-	
 	/** @return The keys this device supports */
-	public IntMap.Keys keys() {
-		return data.keys();
-	}
+	public int[] keys();
 	
 	/** @return True if the key is supported, false otherwise. */
-	public boolean contains(int key) {
-		return data.containsKey(key);
-	}
-	
-	/** Implement this method to provide values when needed, this method should not return null. */
-	protected abstract Object onNeedValue(int key);
+	public boolean contains(int key);
 	
 	/** @return The object value of the specified key, or null if not available */
-	public Object rawValue(int key) {
-		if (data.containsKey(key)) {
-			Object result = data.get(key);
-			if (result == null)
-				data.put(key, result = onNeedValue(key));
-			return result;
-		}
-		return null;
-	}
+	public Object rawValue(int key);
 	
 	/** @return The string value of the specified key, or null if not available */
-	public String value(int key) {
-		Object val = rawValue(key);
-		if (val == null)
-			return null;
-		if (val instanceof String)
-			return (String)val;
-		return val.toString();
-	}
+	public String value(int key);
 }
