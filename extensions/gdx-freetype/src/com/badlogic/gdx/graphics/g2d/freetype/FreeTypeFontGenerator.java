@@ -86,6 +86,69 @@ public class FreeTypeFontGenerator implements Disposable {
 	public BitmapFont generateFont (int size) {
 		return generateFont(size, DEFAULT_CHARS, false);
 	}
+	
+	/** Uses ascender and descender of font to calculate real height that makes
+	 *  all glyphs to fit in given pixel size. Source:
+	 *  http://nothings.org/stb/stb_truetype.h / stbtt_ScaleForPixelHeight
+	 */
+	public int scaleForPixelHeight(int size) {
+		if (!FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
+		SizeMetrics fontMetrics = face.getSize().getMetrics();
+		int ascent = FreeType.toInt(fontMetrics.getAscender());
+		int descent = FreeType.toInt(fontMetrics.getDescender());
+		return size * size / (ascent - descent);
+	}
+	
+	public class GlyphAndBitmap {
+		public Glyph glyph;
+		public Bitmap bitmap;
+	}
+	
+	/** Returns null if glyph was not found. If there is nothing to render,
+	 * for example with various space characters, then bitmap is null.
+	 * */
+	public GlyphAndBitmap generateGlyphAndBitmap(int c, int size, boolean flip) {
+		if (!FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
+
+		SizeMetrics fontMetrics = face.getSize().getMetrics();
+		int baseline = FreeType.toInt(fontMetrics.getAscender());
+
+		// Check if character exists in this font
+		if (!FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) {
+			return null;
+		}
+
+		GlyphSlot slot = face.getGlyph();
+		
+		// Try to render to bitmap
+		Bitmap bitmap;
+		if (!FreeType.renderGlyph(slot, FreeType.FT_RENDER_MODE_LIGHT)) {
+			bitmap = null;
+		} else {
+			bitmap = slot.getBitmap();
+		}
+
+		GlyphMetrics metrics = slot.getMetrics();
+
+		Glyph glyph = new Glyph();
+		if (bitmap != null) {
+			glyph.width = bitmap.getWidth();
+			glyph.height = bitmap.getRows();
+		} else {
+			glyph.width = 0;
+			glyph.height = 0;
+		}
+		glyph.xoffset = slot.getBitmapLeft();
+		glyph.yoffset = flip ? -slot.getBitmapTop() + baseline : -(glyph.height - slot.getBitmapTop()) - baseline;
+		glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance());
+		glyph.srcX = 0;
+		glyph.srcY = 0;
+
+		GlyphAndBitmap result = new GlyphAndBitmap();
+		result.glyph = glyph;
+		result.bitmap = bitmap;
+		return result;
+	}
 
 	/** Generates a new {@link BitmapFontData} instance, expert usage only. Throws a GdxRuntimeException in case something went
 	 * wrong.
