@@ -74,16 +74,19 @@ public class Dialog extends Window {
 
 		addListener(new FocusListener() {
 			public void keyboardFocusChanged (FocusEvent event, Actor actor, boolean focused) {
-				if (!focused) {
-					Stage stage = getStage();
-					if (isModal && stage.getRoot().getChildren().peek() == Dialog.this) { // This dialog is the top most actor.
-						if (!event.getRelatedActor().isDescendantOf(Dialog.this)) event.cancel();
-					}
-				}
+				if (!focused) focusChanged(event);
 			}
 
 			public void scrollFocusChanged (FocusEvent event, Actor actor, boolean focused) {
+				if (!focused) focusChanged(event);
+			}
 
+			private void focusChanged (FocusEvent event) {
+				Stage stage = getStage();
+				if (isModal && stage.getRoot().getChildren().peek() == Dialog.this) { // This dialog is the top most actor.
+					Actor newFocusedActor = event.getRelatedActor();
+					if (newFocusedActor == null || !newFocusedActor.isDescendantOf(Dialog.this)) event.cancel();
+				}
 			}
 		});
 	}

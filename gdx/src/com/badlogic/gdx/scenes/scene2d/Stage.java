@@ -563,14 +563,20 @@ public class Stage extends InputAdapter implements Disposable {
 		FocusEvent event = Pools.obtain(FocusEvent.class);
 		event.setStage(this);
 		event.setType(FocusEvent.Type.scroll);
-		if (scrollFocus != null) {
+		Actor oldScrollFocus = keyboardFocus;
+		if (oldScrollFocus != null) {
 			event.setFocused(false);
-			scrollFocus.fire(event);
+			event.setRelatedActor(actor);
+			oldScrollFocus.fire(event);
 		}
-		scrollFocus = actor;
-		if (scrollFocus != null) {
-			event.setFocused(true);
-			scrollFocus.fire(event);
+		if (!event.isCancelled()) {
+			scrollFocus = actor;
+			if (actor != null) {
+				event.setFocused(true);
+				event.setRelatedActor(oldScrollFocus);
+				actor.fire(event);
+				if (event.isCancelled()) setScrollFocus(oldScrollFocus);
+			}
 		}
 		Pools.free(event);
 	}
