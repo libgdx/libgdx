@@ -66,6 +66,22 @@ public final class VertexAttribute {
 	public static VertexAttribute ColorUnpacked () {
 		return new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE);
 	}
+	
+	public static VertexAttribute Tangent() {
+		return new VertexAttribute(Usage.Generic, 3, ShaderProgram.TANGENT_ATTRIBUTE);
+	}
+	
+	public static VertexAttribute Binormal() {
+		return new VertexAttribute(Usage.Generic, 3, ShaderProgram.BINORMAL_ATTRIBUTE);
+	}
+	
+	public static VertexAttribute BoneIds(int numBones) {
+		return new VertexAttribute(Usage.Generic, numBones, "a_boneids");
+	}
+	
+	public static VertexAttribute BoneWeights(int numBones) {
+		return new VertexAttribute(Usage.Generic, numBones, "a_boneWeights");
+	}
 
 	/** Tests to determine if the passed object was created with the same parameters */
 	@Override

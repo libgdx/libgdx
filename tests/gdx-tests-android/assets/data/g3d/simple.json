@@ -1,0 +1,23 @@
+{
+	"version": "1.0",
+	"meshes": [
+		{
+			"id": "triangle",
+			"attributes": ["position", "normal", "uv", "uv"],
+			"vertices": [ -1, -1, 0, 0, 0, -1,   0, 0,   0, 0, 
+						   1, -1, 0, 0, 0, -1,   1, 0,   1, 0,
+						   0,  1, 0, 0, 0, -1, 0.5, 1, 0.5, 1 ],
+			"parts": [
+				{ "id": "tris", "type": "triangle", "indices": [ 0, 1, 2 ] },
+				{ "id": "line", "type": "line", "indices": [ 0, 1 ] },
+				{ "id": "pts", "type": "point", "indices": [0, 1, 2 ] },
+			] 
+		},
+	],
+	
+	"materials": [
+	],
+	
+	"nodes": [
+	]
+}
