@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.loaders.json;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -121,19 +122,21 @@ public class JsonModelLoader implements StillModelLoader {
 	}
 	
 	private int parseType (String type) {
-		if(type.equals("triangle")) {
+		if(type.equals("TRIANGLES")) {
 			return GL10.GL_TRIANGLES;
-		} else if(type.equals("line")) {
+		} else if(type.equals("LINES")) {
 			return GL10.GL_LINES;
-		} else if(type.equals("point")) {
+		} else if(type.equals("POINTS")) {
 			return GL10.GL_POINTS;
-		} else if(type.equals("trianglestrip")) {
+		} else if(type.equals("TRIANGLE_STRIP")) {
 			return GL10.GL_TRIANGLE_STRIP;
-		} else if(type.equals("linestrip")) {
+		} else if(type.equals("LINE_STRIP")) {
 			return GL10.GL_LINE_STRIP;
-		} else if(type.equals("lineloop")) {
-			return GL10.GL_LINE_LOOP;
-		} else {
+		} /* Gameplay encoder doesn't read out line loop
+			else if(type.equals("lineloop")) {
+			return GL10.GL_LINE_LOOP; 
+		} */
+			else { 
 			throw new GdxRuntimeException("Unknown primitive type '" + type + "', should be one of triangle, trianglestrip, line, linestrip, lineloop or point");
 		}
 	}
@@ -143,21 +146,21 @@ public class JsonModelLoader implements StillModelLoader {
 		int unit = 0;
 		for(Object attribute: attributes) {
 			String attr = (String)attribute;
-			if(attr.equals("position")) {
+			if(attr.equals("POSITION")) {
 				vertexAttributes.add(VertexAttribute.Position());
-			} else if(attr.equals("normal")) {
+			} else if(attr.equals("NORMAL")) {
 				vertexAttributes.add(VertexAttribute.Normal());
-			} else if(attr.equals("uv")) {
+			} else if(attr.startsWith("TEXCOORD")) {
 				vertexAttributes.add(VertexAttribute.TexCoords(unit++));
-			} else if(attr.equals("tangent")) {
+			} else if(attr.equals("TANGENT")) {
 				vertexAttributes.add(VertexAttribute.Tangent());
-			} else if(attr.equals("binormal")) {
+			} else if(attr.equals("BINORMAL")) {
 				vertexAttributes.add(VertexAttribute.Binormal());
-			} else if(attr.equals("boneids")) {
+			} else if(attr.equals("BLENDINDICES")) {
 				vertexAttributes.add(VertexAttribute.BoneIds(4));
-			} else if(attr.equals("boneweights")) {
+			} else if(attr.equals("BLENDWEIGHTS")) {
 				vertexAttributes.add(VertexAttribute.BoneWeights(4));
-			} else if(attr.equals("color")) {
+			} else if(attr.equals("COLOR")) {
 				vertexAttributes.add(VertexAttribute.Color());
 			} else {
 				throw new GdxRuntimeException("Unknown vertex attribuet '" + attr + "', should be one of position, normal, uv, tangent or binormal");
