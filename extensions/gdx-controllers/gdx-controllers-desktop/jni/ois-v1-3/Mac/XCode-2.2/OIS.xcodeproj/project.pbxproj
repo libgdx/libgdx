@@ -1,0 +1,1096 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		0043D98F0C356851007ACDF6 /* Build All */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 0043D99A0C356867007ACDF6 /* Build configuration list for PBXAggregateTarget "Build All" */;
+			buildPhases = (
+			);
+			dependencies = (
+				0043D9950C35685A007ACDF6 /* PBXTargetDependency */,
+				0043D9930C35685A007ACDF6 /* PBXTargetDependency */,
+				0043D9910C35685A007ACDF6 /* PBXTargetDependency */,
+				0082F1CF0C82634200E926BE /* PBXTargetDependency */,
+				4AEB091E0D73DB7D007CD406 /* PBXTargetDependency */,
+			);
+			name = "Build All";
+			productName = "Build All";
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		0043D87D0C35664A007ACDF6 /* OIS.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8700C35664A007ACDF6 /* OIS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0043D87E0C35664A007ACDF6 /* OISConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8710C35664A007ACDF6 /* OISConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0043D87F0C35664A007ACDF6 /* OISEffect.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8720C35664A007ACDF6 /* OISEffect.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0043D8800C35664A007ACDF6 /* OISEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8730C35664A007ACDF6 /* OISEvents.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0043D8810C35664A007ACDF6 /* OISException.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8740C35664A007ACDF6 /* OISException.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0043D8820C35664A007ACDF6 /* OISForceFeedback.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8750C35664A007ACDF6 /* OISForceFeedback.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0043D8830C35664A007ACDF6 /* OISInputManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8760C35664A007ACDF6 /* OISInputManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0043D8840C35664A007ACDF6 /* OISInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8770C35664A007ACDF6 /* OISInterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0043D8850C35664A007ACDF6 /* OISJoyStick.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8780C35664A007ACDF6 /* OISJoyStick.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0043D8860C35664A007ACDF6 /* OISKeyboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8790C35664A007ACDF6 /* OISKeyboard.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0043D8870C35664A007ACDF6 /* OISMouse.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D87A0C35664A007ACDF6 /* OISMouse.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0043D8880C35664A007ACDF6 /* OISObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D87B0C35664A007ACDF6 /* OISObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0043D8890C35664A007ACDF6 /* OISPrereqs.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D87C0C35664A007ACDF6 /* OISPrereqs.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0043D8960C3566C1007ACDF6 /* OISEffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8900C3566C1007ACDF6 /* OISEffect.cpp */; };
+		0043D8970C3566C1007ACDF6 /* OISForceFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8910C3566C1007ACDF6 /* OISForceFeedback.cpp */; };
+		0043D8980C3566C1007ACDF6 /* OISInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */; };
+		0043D8990C3566C1007ACDF6 /* OISJoyStick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8930C3566C1007ACDF6 /* OISJoyStick.cpp */; };
+		0043D89A0C3566C1007ACDF6 /* OISKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8940C3566C1007ACDF6 /* OISKeyboard.cpp */; };
+		0043D89B0C3566C1007ACDF6 /* OISObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8950C3566C1007ACDF6 /* OISObject.cpp */; };
+		0043D8A00C3566C9007ACDF6 /* MacHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89C0C3566C9007ACDF6 /* MacHelpers.cpp */; };
+		0043D8A10C3566C9007ACDF6 /* MacInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89D0C3566C9007ACDF6 /* MacInputManager.cpp */; };
+		0043D8A20C3566C9007ACDF6 /* MacKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89E0C3566C9007ACDF6 /* MacKeyboard.cpp */; };
+		0043D8A30C3566C9007ACDF6 /* MacMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89F0C3566C9007ACDF6 /* MacMouse.cpp */; };
+		0043D8C70C35680D007ACDF6 /* OIS.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8700C35664A007ACDF6 /* OIS.h */; };
+		0043D8C80C35680D007ACDF6 /* OISConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8710C35664A007ACDF6 /* OISConfig.h */; };
+		0043D8C90C35680D007ACDF6 /* OISEffect.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8720C35664A007ACDF6 /* OISEffect.h */; };
+		0043D8CA0C35680D007ACDF6 /* OISEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8730C35664A007ACDF6 /* OISEvents.h */; };
+		0043D8CB0C35680D007ACDF6 /* OISException.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8740C35664A007ACDF6 /* OISException.h */; };
+		0043D8CC0C35680D007ACDF6 /* OISForceFeedback.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8750C35664A007ACDF6 /* OISForceFeedback.h */; };
+		0043D8CD0C35680D007ACDF6 /* OISInputManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8760C35664A007ACDF6 /* OISInputManager.h */; };
+		0043D8CE0C35680D007ACDF6 /* OISInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8770C35664A007ACDF6 /* OISInterface.h */; };
+		0043D8CF0C35680D007ACDF6 /* OISJoyStick.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8780C35664A007ACDF6 /* OISJoyStick.h */; };
+		0043D8D00C35680D007ACDF6 /* OISKeyboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8790C35664A007ACDF6 /* OISKeyboard.h */; };
+		0043D8D10C35680D007ACDF6 /* OISMouse.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D87A0C35664A007ACDF6 /* OISMouse.h */; };
+		0043D8D20C35680D007ACDF6 /* OISObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D87B0C35664A007ACDF6 /* OISObject.h */; };
+		0043D8D30C35680D007ACDF6 /* OISPrereqs.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D87C0C35664A007ACDF6 /* OISPrereqs.h */; };
+		0043D8D40C35680D007ACDF6 /* OIS.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8700C35664A007ACDF6 /* OIS.h */; };
+		0043D8D50C35680D007ACDF6 /* OISConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8710C35664A007ACDF6 /* OISConfig.h */; };
+		0043D8D60C35680D007ACDF6 /* OISEffect.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8720C35664A007ACDF6 /* OISEffect.h */; };
+		0043D8D70C35680D007ACDF6 /* OISEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8730C35664A007ACDF6 /* OISEvents.h */; };
+		0043D8D80C35680D007ACDF6 /* OISException.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8740C35664A007ACDF6 /* OISException.h */; };
+		0043D8D90C35680D007ACDF6 /* OISForceFeedback.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8750C35664A007ACDF6 /* OISForceFeedback.h */; };
+		0043D8DA0C35680D007ACDF6 /* OISInputManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8760C35664A007ACDF6 /* OISInputManager.h */; };
+		0043D8DB0C35680D007ACDF6 /* OISInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8770C35664A007ACDF6 /* OISInterface.h */; };
+		0043D8DC0C35680D007ACDF6 /* OISJoyStick.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8780C35664A007ACDF6 /* OISJoyStick.h */; };
+		0043D8DD0C35680D007ACDF6 /* OISKeyboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8790C35664A007ACDF6 /* OISKeyboard.h */; };
+		0043D8DE0C35680D007ACDF6 /* OISMouse.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D87A0C35664A007ACDF6 /* OISMouse.h */; };
+		0043D8DF0C35680D007ACDF6 /* OISObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D87B0C35664A007ACDF6 /* OISObject.h */; };
+		0043D8E00C35680D007ACDF6 /* OISPrereqs.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D87C0C35664A007ACDF6 /* OISPrereqs.h */; };
+		0043D8E10C356819007ACDF6 /* MacHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89C0C3566C9007ACDF6 /* MacHelpers.cpp */; };
+		0043D8E20C356819007ACDF6 /* MacInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89D0C3566C9007ACDF6 /* MacInputManager.cpp */; };
+		0043D8E30C356819007ACDF6 /* MacKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89E0C3566C9007ACDF6 /* MacKeyboard.cpp */; };
+		0043D8E40C356819007ACDF6 /* MacMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89F0C3566C9007ACDF6 /* MacMouse.cpp */; };
+		0043D8E50C356819007ACDF6 /* OISEffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8900C3566C1007ACDF6 /* OISEffect.cpp */; };
+		0043D8E60C356819007ACDF6 /* OISForceFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8910C3566C1007ACDF6 /* OISForceFeedback.cpp */; };
+		0043D8E70C356819007ACDF6 /* OISInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */; };
+		0043D8E80C356819007ACDF6 /* OISJoyStick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8930C3566C1007ACDF6 /* OISJoyStick.cpp */; };
+		0043D8E90C356819007ACDF6 /* OISKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8940C3566C1007ACDF6 /* OISKeyboard.cpp */; };
+		0043D8EA0C356819007ACDF6 /* OISObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8950C3566C1007ACDF6 /* OISObject.cpp */; };
+		0043D8EB0C35681A007ACDF6 /* MacHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89C0C3566C9007ACDF6 /* MacHelpers.cpp */; };
+		0043D8EC0C35681A007ACDF6 /* MacInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89D0C3566C9007ACDF6 /* MacInputManager.cpp */; };
+		0043D8ED0C35681A007ACDF6 /* MacKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89E0C3566C9007ACDF6 /* MacKeyboard.cpp */; };
+		0043D8EE0C35681A007ACDF6 /* MacMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89F0C3566C9007ACDF6 /* MacMouse.cpp */; };
+		0043D8EF0C35681A007ACDF6 /* OISEffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8900C3566C1007ACDF6 /* OISEffect.cpp */; };
+		0043D8F00C35681A007ACDF6 /* OISForceFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8910C3566C1007ACDF6 /* OISForceFeedback.cpp */; };
+		0043D8F10C35681A007ACDF6 /* OISInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */; };
+		0043D8F20C35681A007ACDF6 /* OISJoyStick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8930C3566C1007ACDF6 /* OISJoyStick.cpp */; };
+		0043D8F30C35681A007ACDF6 /* OISKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8940C3566C1007ACDF6 /* OISKeyboard.cpp */; };
+		0043D8F40C35681A007ACDF6 /* OISObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8950C3566C1007ACDF6 /* OISObject.cpp */; };
+		0043D8F50C356828007ACDF6 /* OIS-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0043D85F0C356509007ACDF6 /* OIS-Info.plist */; };
+		0043D8F70C356840007ACDF6 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0043D8F60C356840007ACDF6 /* Carbon.framework */; };
+		0043D8F80C356840007ACDF6 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0043D8F60C356840007ACDF6 /* Carbon.framework */; };
+		0043D8F90C356840007ACDF6 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0043D8F60C356840007ACDF6 /* Carbon.framework */; };
+		0082F2890C827BF500E926BE /* OISConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0082F2880C827BF500E926BE /* OISConsole.cpp */; };
+		249631C71066334D00EFD0E1 /* MacJoyStick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 249631C31066333900EFD0E1 /* MacJoyStick.cpp */; };
+		249631C81066335600EFD0E1 /* MacJoyStick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 249631C31066333900EFD0E1 /* MacJoyStick.cpp */; };
+		249631C91066335D00EFD0E1 /* MacJoyStick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 249631C31066333900EFD0E1 /* MacJoyStick.cpp */; };
+		4A04E1A80CEF6B6B00E2B94E /* OISFactoryCreator.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A04E1A70CEF6B6B00E2B94E /* OISFactoryCreator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4A04E1A90CEF6B6B00E2B94E /* OISFactoryCreator.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A04E1A70CEF6B6B00E2B94E /* OISFactoryCreator.h */; };
+		4A04E1AA0CEF6B6B00E2B94E /* OISFactoryCreator.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A04E1A70CEF6B6B00E2B94E /* OISFactoryCreator.h */; };
+		4A852C42112256D400A0BC84 /* OISMultiTouch.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A852C41112256D400A0BC84 /* OISMultiTouch.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4A852C43112256D400A0BC84 /* OISMultiTouch.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A852C41112256D400A0BC84 /* OISMultiTouch.h */; };
+		4A852C44112256D400A0BC84 /* OISMultiTouch.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A852C41112256D400A0BC84 /* OISMultiTouch.h */; };
+		4ACD7A530CEF903600D72CD9 /* OISException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4ACD7A520CEF903600D72CD9 /* OISException.cpp */; };
+		4ACD7A540CEF903600D72CD9 /* OISException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4ACD7A520CEF903600D72CD9 /* OISException.cpp */; };
+		4ACD7A550CEF903600D72CD9 /* OISException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4ACD7A520CEF903600D72CD9 /* OISException.cpp */; };
+		4ADFD0100CDD948B006031E4 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AC4C3930CDD840500603F93 /* IOKit.framework */; };
+		4ADFD0110CDD948C006031E4 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AC4C3930CDD840500603F93 /* IOKit.framework */; };
+		4ADFD0130CDD94B2006031E4 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AC4C3930CDD840500603F93 /* IOKit.framework */; };
+		4ADFD2660CDE7322006031E4 /* MacHIDManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 4ADFD2650CDE7322006031E4 /* MacHIDManager.h */; };
+		4ADFD2670CDE7322006031E4 /* MacHIDManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 4ADFD2650CDE7322006031E4 /* MacHIDManager.h */; };
+		4ADFD2680CDE7322006031E4 /* MacHIDManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 4ADFD2650CDE7322006031E4 /* MacHIDManager.h */; };
+		4ADFD2A90CDE7BAC006031E4 /* MacHIDManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4ADFD2A80CDE7BAC006031E4 /* MacHIDManager.cpp */; };
+		4ADFD2AA0CDE7BAC006031E4 /* MacHIDManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4ADFD2A80CDE7BAC006031E4 /* MacHIDManager.cpp */; };
+		4ADFD2AB0CDE7BAC006031E4 /* MacHIDManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4ADFD2A80CDE7BAC006031E4 /* MacHIDManager.cpp */; };
+		4AEB08E30D73D9D1007CD406 /* OIS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0043D85D0C356509007ACDF6 /* OIS.framework */; };
+		4AEB08FC0D73DA81007CD406 /* OISConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0082F2880C827BF500E926BE /* OISConsole.cpp */; };
+		4AEB090C0D73DABC007CD406 /* OIS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0043D85D0C356509007ACDF6 /* OIS.framework */; };
+		4AEB09240D73DBC8007CD406 /* OIS.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0043D85D0C356509007ACDF6 /* OIS.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0043D9900C35685A007ACDF6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0043D84E0C3564F8007ACDF6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0043D8BF0C3567B2007ACDF6;
+			remoteInfo = OISstatic;
+		};
+		0043D9920C35685A007ACDF6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0043D84E0C3564F8007ACDF6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0043D8A70C3566F6007ACDF6;
+			remoteInfo = OISdylib;
+		};
+		0043D9940C35685A007ACDF6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0043D84E0C3564F8007ACDF6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0043D85C0C356509007ACDF6;
+			remoteInfo = OIS;
+		};
+		0082F1CE0C82634200E926BE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0043D84E0C3564F8007ACDF6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0082F04C0C824FE100E926BE;
+			remoteInfo = ConsoleDemo;
+		};
+		4AEB091D0D73DB7D007CD406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0043D84E0C3564F8007ACDF6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4AEB08F50D73DA6D007CD406;
+			remoteInfo = ConsoleTest;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4AEB09210D73DBB8007CD406 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				4AEB09240D73DBC8007CD406 /* OIS.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0043D85D0C356509007ACDF6 /* OIS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OIS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0043D85F0C356509007ACDF6 /* OIS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OIS-Info.plist"; sourceTree = "<group>"; };
+		0043D8700C35664A007ACDF6 /* OIS.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OIS.h; path = ../../includes/OIS.h; sourceTree = SOURCE_ROOT; };
+		0043D8710C35664A007ACDF6 /* OISConfig.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OISConfig.h; path = ../../includes/OISConfig.h; sourceTree = SOURCE_ROOT; };
+		0043D8720C35664A007ACDF6 /* OISEffect.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OISEffect.h; path = ../../includes/OISEffect.h; sourceTree = SOURCE_ROOT; };
+		0043D8730C35664A007ACDF6 /* OISEvents.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OISEvents.h; path = ../../includes/OISEvents.h; sourceTree = SOURCE_ROOT; };
+		0043D8740C35664A007ACDF6 /* OISException.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OISException.h; path = ../../includes/OISException.h; sourceTree = SOURCE_ROOT; };
+		0043D8750C35664A007ACDF6 /* OISForceFeedback.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OISForceFeedback.h; path = ../../includes/OISForceFeedback.h; sourceTree = SOURCE_ROOT; };
+		0043D8760C35664A007ACDF6 /* OISInputManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OISInputManager.h; path = ../../includes/OISInputManager.h; sourceTree = SOURCE_ROOT; };
+		0043D8770C35664A007ACDF6 /* OISInterface.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OISInterface.h; path = ../../includes/OISInterface.h; sourceTree = SOURCE_ROOT; };
+		0043D8780C35664A007ACDF6 /* OISJoyStick.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OISJoyStick.h; path = ../../includes/OISJoyStick.h; sourceTree = SOURCE_ROOT; };
+		0043D8790C35664A007ACDF6 /* OISKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OISKeyboard.h; path = ../../includes/OISKeyboard.h; sourceTree = SOURCE_ROOT; };
+		0043D87A0C35664A007ACDF6 /* OISMouse.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OISMouse.h; path = ../../includes/OISMouse.h; sourceTree = SOURCE_ROOT; };
+		0043D87B0C35664A007ACDF6 /* OISObject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OISObject.h; path = ../../includes/OISObject.h; sourceTree = SOURCE_ROOT; };
+		0043D87C0C35664A007ACDF6 /* OISPrereqs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OISPrereqs.h; path = ../../includes/OISPrereqs.h; sourceTree = SOURCE_ROOT; };
+		0043D88A0C35665B007ACDF6 /* MacPrereqs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MacPrereqs.h; path = ../../includes/mac/MacPrereqs.h; sourceTree = SOURCE_ROOT; };
+		0043D88B0C35665B007ACDF6 /* MacInputManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MacInputManager.h; path = ../../includes/mac/MacInputManager.h; sourceTree = SOURCE_ROOT; };
+		0043D88C0C35665B007ACDF6 /* MacHelpers.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MacHelpers.h; path = ../../includes/mac/MacHelpers.h; sourceTree = SOURCE_ROOT; };
+		0043D88D0C35665B007ACDF6 /* MacMouse.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MacMouse.h; path = ../../includes/mac/MacMouse.h; sourceTree = SOURCE_ROOT; };
+		0043D88E0C35665B007ACDF6 /* MacKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MacKeyboard.h; path = ../../includes/mac/MacKeyboard.h; sourceTree = SOURCE_ROOT; };
+		0043D8900C3566C1007ACDF6 /* OISEffect.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = OISEffect.cpp; path = ../../src/OISEffect.cpp; sourceTree = SOURCE_ROOT; };
+		0043D8910C3566C1007ACDF6 /* OISForceFeedback.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = OISForceFeedback.cpp; path = ../../src/OISForceFeedback.cpp; sourceTree = SOURCE_ROOT; };
+		0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = OISInputManager.cpp; path = ../../src/OISInputManager.cpp; sourceTree = SOURCE_ROOT; };
+		0043D8930C3566C1007ACDF6 /* OISJoyStick.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = OISJoyStick.cpp; path = ../../src/OISJoyStick.cpp; sourceTree = SOURCE_ROOT; };
+		0043D8940C3566C1007ACDF6 /* OISKeyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = OISKeyboard.cpp; path = ../../src/OISKeyboard.cpp; sourceTree = SOURCE_ROOT; };
+		0043D8950C3566C1007ACDF6 /* OISObject.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = OISObject.cpp; path = ../../src/OISObject.cpp; sourceTree = SOURCE_ROOT; };
+		0043D89C0C3566C9007ACDF6 /* MacHelpers.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MacHelpers.cpp; path = ../../src/mac/MacHelpers.cpp; sourceTree = SOURCE_ROOT; };
+		0043D89D0C3566C9007ACDF6 /* MacInputManager.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MacInputManager.cpp; path = ../../src/mac/MacInputManager.cpp; sourceTree = SOURCE_ROOT; };
+		0043D89E0C3566C9007ACDF6 /* MacKeyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MacKeyboard.cpp; path = ../../src/mac/MacKeyboard.cpp; sourceTree = SOURCE_ROOT; };
+		0043D89F0C3566C9007ACDF6 /* MacMouse.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MacMouse.cpp; path = ../../src/mac/MacMouse.cpp; sourceTree = SOURCE_ROOT; };
+		0043D8A80C3566F6007ACDF6 /* OIS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = OIS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		0043D8C00C3567B2007ACDF6 /* libOIS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libOIS.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		0043D8F60C356840007ACDF6 /* Carbon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		0082F04D0C824FE100E926BE /* ConsoleDemo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ConsoleDemo; sourceTree = BUILT_PRODUCTS_DIR; };
+		0082F2880C827BF500E926BE /* OISConsole.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = OISConsole.cpp; path = ../../demos/OISConsole.cpp; sourceTree = SOURCE_ROOT; };
+		249631C31066333900EFD0E1 /* MacJoyStick.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MacJoyStick.cpp; path = ../../src/mac/MacJoyStick.cpp; sourceTree = SOURCE_ROOT; };
+		4A04E1A70CEF6B6B00E2B94E /* OISFactoryCreator.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OISFactoryCreator.h; path = ../../includes/OISFactoryCreator.h; sourceTree = SOURCE_ROOT; };
+		4A852C41112256D400A0BC84 /* OISMultiTouch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OISMultiTouch.h; path = ../../includes/OISMultiTouch.h; sourceTree = SOURCE_ROOT; };
+		4AC4C3930CDD840500603F93 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		4ACD7A520CEF903600D72CD9 /* OISException.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = OISException.cpp; path = ../../src/OISException.cpp; sourceTree = SOURCE_ROOT; };
+		4ADFD2650CDE7322006031E4 /* MacHIDManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MacHIDManager.h; path = ../../includes/mac/MacHIDManager.h; sourceTree = SOURCE_ROOT; };
+		4ADFD2A80CDE7BAC006031E4 /* MacHIDManager.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MacHIDManager.cpp; path = ../../src/mac/MacHIDManager.cpp; sourceTree = SOURCE_ROOT; };
+		4AEB08F60D73DA6D007CD406 /* ConsoleTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConsoleTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4AEB08F80D73DA6D007CD406 /* ConsoleTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ConsoleTest-Info.plist"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0043D85B0C356509007ACDF6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0043D8F70C356840007ACDF6 /* Carbon.framework in Frameworks */,
+				4ADFD0130CDD94B2006031E4 /* IOKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0043D8A60C3566F6007ACDF6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0043D8F80C356840007ACDF6 /* Carbon.framework in Frameworks */,
+				4ADFD0100CDD948B006031E4 /* IOKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0043D8BE0C3567B2007ACDF6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0043D8F90C356840007ACDF6 /* Carbon.framework in Frameworks */,
+				4ADFD0110CDD948C006031E4 /* IOKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4AEB08E10D73D9BF007CD406 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4AEB08E30D73D9D1007CD406 /* OIS.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4AEB08F40D73DA6D007CD406 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4AEB090C0D73DABC007CD406 /* OIS.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0043D84C0C3564F8007ACDF6 = {
+			isa = PBXGroup;
+			children = (
+				0043D8670C3565B2007ACDF6 /* Include */,
+				0043D8680C3565B7007ACDF6 /* Source */,
+				0043D8690C3565BD007ACDF6 /* Resources */,
+				0043D86A0C3565C8007ACDF6 /* External Frameworks and Libraries */,
+				0043D85E0C356509007ACDF6 /* Products */,
+				0043D85F0C356509007ACDF6 /* OIS-Info.plist */,
+				4AEB08F80D73DA6D007CD406 /* ConsoleTest-Info.plist */,
+			);
+			sourceTree = "<group>";
+		};
+		0043D85E0C356509007ACDF6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0043D85D0C356509007ACDF6 /* OIS.framework */,
+				0043D8A80C3566F6007ACDF6 /* OIS.dylib */,
+				0043D8C00C3567B2007ACDF6 /* libOIS.a */,
+				0082F04D0C824FE100E926BE /* ConsoleDemo */,
+				4AEB08F60D73DA6D007CD406 /* ConsoleTest.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0043D8670C3565B2007ACDF6 /* Include */ = {
+			isa = PBXGroup;
+			children = (
+				0043D86B0C3565E0007ACDF6 /* OSX */,
+				0043D86C0C3565E5007ACDF6 /* Base */,
+			);
+			name = Include;
+			sourceTree = "<group>";
+		};
+		0043D8680C3565B7007ACDF6 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				0043D86D0C3565F7007ACDF6 /* OSX */,
+				0043D86E0C3565FB007ACDF6 /* Base */,
+				0082F0410C824E1300E926BE /* Demos */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		0043D8690C3565BD007ACDF6 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		0043D86A0C3565C8007ACDF6 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				4AC4C3930CDD840500603F93 /* IOKit.framework */,
+				0043D8F60C356840007ACDF6 /* Carbon.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		0043D86B0C3565E0007ACDF6 /* OSX */ = {
+			isa = PBXGroup;
+			children = (
+				0043D88A0C35665B007ACDF6 /* MacPrereqs.h */,
+				0043D88B0C35665B007ACDF6 /* MacInputManager.h */,
+				0043D88C0C35665B007ACDF6 /* MacHelpers.h */,
+				4ADFD2650CDE7322006031E4 /* MacHIDManager.h */,
+				0043D88E0C35665B007ACDF6 /* MacKeyboard.h */,
+				0043D88D0C35665B007ACDF6 /* MacMouse.h */,
+			);
+			name = OSX;
+			sourceTree = "<group>";
+		};
+		0043D86C0C3565E5007ACDF6 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				4A852C41112256D400A0BC84 /* OISMultiTouch.h */,
+				0043D8700C35664A007ACDF6 /* OIS.h */,
+				0043D8710C35664A007ACDF6 /* OISConfig.h */,
+				0043D8720C35664A007ACDF6 /* OISEffect.h */,
+				0043D8730C35664A007ACDF6 /* OISEvents.h */,
+				0043D8740C35664A007ACDF6 /* OISException.h */,
+				4A04E1A70CEF6B6B00E2B94E /* OISFactoryCreator.h */,
+				0043D8750C35664A007ACDF6 /* OISForceFeedback.h */,
+				0043D8760C35664A007ACDF6 /* OISInputManager.h */,
+				0043D8770C35664A007ACDF6 /* OISInterface.h */,
+				0043D8780C35664A007ACDF6 /* OISJoyStick.h */,
+				0043D8790C35664A007ACDF6 /* OISKeyboard.h */,
+				0043D87A0C35664A007ACDF6 /* OISMouse.h */,
+				0043D87B0C35664A007ACDF6 /* OISObject.h */,
+				0043D87C0C35664A007ACDF6 /* OISPrereqs.h */,
+			);
+			name = Base;
+			sourceTree = "<group>";
+		};
+		0043D86D0C3565F7007ACDF6 /* OSX */ = {
+			isa = PBXGroup;
+			children = (
+				249631C31066333900EFD0E1 /* MacJoyStick.cpp */,
+				0043D89C0C3566C9007ACDF6 /* MacHelpers.cpp */,
+				4ADFD2A80CDE7BAC006031E4 /* MacHIDManager.cpp */,
+				0043D89D0C3566C9007ACDF6 /* MacInputManager.cpp */,
+				0043D89E0C3566C9007ACDF6 /* MacKeyboard.cpp */,
+				0043D89F0C3566C9007ACDF6 /* MacMouse.cpp */,
+			);
+			name = OSX;
+			sourceTree = "<group>";
+		};
+		0043D86E0C3565FB007ACDF6 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				0043D8900C3566C1007ACDF6 /* OISEffect.cpp */,
+				4ACD7A520CEF903600D72CD9 /* OISException.cpp */,
+				0043D8910C3566C1007ACDF6 /* OISForceFeedback.cpp */,
+				0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */,
+				0043D8930C3566C1007ACDF6 /* OISJoyStick.cpp */,
+				0043D8940C3566C1007ACDF6 /* OISKeyboard.cpp */,
+				0043D8950C3566C1007ACDF6 /* OISObject.cpp */,
+			);
+			name = Base;
+			sourceTree = "<group>";
+		};
+		0082F0410C824E1300E926BE /* Demos */ = {
+			isa = PBXGroup;
+			children = (
+				0082F2880C827BF500E926BE /* OISConsole.cpp */,
+			);
+			name = Demos;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		0043D8580C356509007ACDF6 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0043D87D0C35664A007ACDF6 /* OIS.h in Headers */,
+				0043D87E0C35664A007ACDF6 /* OISConfig.h in Headers */,
+				0043D87F0C35664A007ACDF6 /* OISEffect.h in Headers */,
+				0043D8800C35664A007ACDF6 /* OISEvents.h in Headers */,
+				0043D8810C35664A007ACDF6 /* OISException.h in Headers */,
+				0043D8820C35664A007ACDF6 /* OISForceFeedback.h in Headers */,
+				0043D8830C35664A007ACDF6 /* OISInputManager.h in Headers */,
+				0043D8840C35664A007ACDF6 /* OISInterface.h in Headers */,
+				0043D8850C35664A007ACDF6 /* OISJoyStick.h in Headers */,
+				0043D8860C35664A007ACDF6 /* OISKeyboard.h in Headers */,
+				0043D8870C35664A007ACDF6 /* OISMouse.h in Headers */,
+				0043D8880C35664A007ACDF6 /* OISObject.h in Headers */,
+				0043D8890C35664A007ACDF6 /* OISPrereqs.h in Headers */,
+				4ADFD2660CDE7322006031E4 /* MacHIDManager.h in Headers */,
+				4A04E1A80CEF6B6B00E2B94E /* OISFactoryCreator.h in Headers */,
+				4A852C42112256D400A0BC84 /* OISMultiTouch.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0043D8A40C3566F6007ACDF6 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0043D8C70C35680D007ACDF6 /* OIS.h in Headers */,
+				0043D8C80C35680D007ACDF6 /* OISConfig.h in Headers */,
+				0043D8C90C35680D007ACDF6 /* OISEffect.h in Headers */,
+				0043D8CA0C35680D007ACDF6 /* OISEvents.h in Headers */,
+				0043D8CB0C35680D007ACDF6 /* OISException.h in Headers */,
+				0043D8CC0C35680D007ACDF6 /* OISForceFeedback.h in Headers */,
+				0043D8CD0C35680D007ACDF6 /* OISInputManager.h in Headers */,
+				0043D8CE0C35680D007ACDF6 /* OISInterface.h in Headers */,
+				0043D8CF0C35680D007ACDF6 /* OISJoyStick.h in Headers */,
+				0043D8D00C35680D007ACDF6 /* OISKeyboard.h in Headers */,
+				0043D8D10C35680D007ACDF6 /* OISMouse.h in Headers */,
+				0043D8D20C35680D007ACDF6 /* OISObject.h in Headers */,
+				0043D8D30C35680D007ACDF6 /* OISPrereqs.h in Headers */,
+				4ADFD2670CDE7322006031E4 /* MacHIDManager.h in Headers */,
+				4A04E1A90CEF6B6B00E2B94E /* OISFactoryCreator.h in Headers */,
+				4A852C43112256D400A0BC84 /* OISMultiTouch.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0043D8BC0C3567B2007ACDF6 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0043D8D40C35680D007ACDF6 /* OIS.h in Headers */,
+				0043D8D50C35680D007ACDF6 /* OISConfig.h in Headers */,
+				0043D8D60C35680D007ACDF6 /* OISEffect.h in Headers */,
+				0043D8D70C35680D007ACDF6 /* OISEvents.h in Headers */,
+				0043D8D80C35680D007ACDF6 /* OISException.h in Headers */,
+				0043D8D90C35680D007ACDF6 /* OISForceFeedback.h in Headers */,
+				0043D8DA0C35680D007ACDF6 /* OISInputManager.h in Headers */,
+				0043D8DB0C35680D007ACDF6 /* OISInterface.h in Headers */,
+				0043D8DC0C35680D007ACDF6 /* OISJoyStick.h in Headers */,
+				0043D8DD0C35680D007ACDF6 /* OISKeyboard.h in Headers */,
+				0043D8DE0C35680D007ACDF6 /* OISMouse.h in Headers */,
+				0043D8DF0C35680D007ACDF6 /* OISObject.h in Headers */,
+				0043D8E00C35680D007ACDF6 /* OISPrereqs.h in Headers */,
+				4ADFD2680CDE7322006031E4 /* MacHIDManager.h in Headers */,
+				4A04E1AA0CEF6B6B00E2B94E /* OISFactoryCreator.h in Headers */,
+				4A852C44112256D400A0BC84 /* OISMultiTouch.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		0043D85C0C356509007ACDF6 /* OIS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0043D8610C356509007ACDF6 /* Build configuration list for PBXNativeTarget "OIS" */;
+			buildPhases = (
+				0043D8580C356509007ACDF6 /* Headers */,
+				0043D8590C356509007ACDF6 /* Resources */,
+				0043D85A0C356509007ACDF6 /* Sources */,
+				0043D85B0C356509007ACDF6 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OIS;
+			productName = OIS;
+			productReference = 0043D85D0C356509007ACDF6 /* OIS.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		0043D8A70C3566F6007ACDF6 /* OISdylib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0043D8B90C35674D007ACDF6 /* Build configuration list for PBXNativeTarget "OISdylib" */;
+			buildPhases = (
+				0043D8A40C3566F6007ACDF6 /* Headers */,
+				0043D8A50C3566F6007ACDF6 /* Sources */,
+				0043D8A60C3566F6007ACDF6 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OISdylib;
+			productName = OISdylib;
+			productReference = 0043D8A80C3566F6007ACDF6 /* OIS.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		0043D8BF0C3567B2007ACDF6 /* OISstatic */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0043D8C40C356801007ACDF6 /* Build configuration list for PBXNativeTarget "OISstatic" */;
+			buildPhases = (
+				0043D8BC0C3567B2007ACDF6 /* Headers */,
+				0043D8BD0C3567B2007ACDF6 /* Sources */,
+				0043D8BE0C3567B2007ACDF6 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OISstatic;
+			productName = OISstatic;
+			productReference = 0043D8C00C3567B2007ACDF6 /* libOIS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		0082F04C0C824FE100E926BE /* ConsoleDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0082F0530C82502F00E926BE /* Build configuration list for PBXNativeTarget "ConsoleDemo" */;
+			buildPhases = (
+				0082F04A0C824FE100E926BE /* Sources */,
+				4AEB08E10D73D9BF007CD406 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ConsoleDemo;
+			productName = ConsoleDemo;
+			productReference = 0082F04D0C824FE100E926BE /* ConsoleDemo */;
+			productType = "com.apple.product-type.tool";
+		};
+		4AEB08F50D73DA6D007CD406 /* ConsoleTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4AEB08F90D73DA6D007CD406 /* Build configuration list for PBXNativeTarget "ConsoleTest" */;
+			buildPhases = (
+				4AEB08F20D73DA6D007CD406 /* Resources */,
+				4AEB08F30D73DA6D007CD406 /* Sources */,
+				4AEB08F40D73DA6D007CD406 /* Frameworks */,
+				4AEB09210D73DBB8007CD406 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ConsoleTest;
+			productName = ConsoleTest;
+			productReference = 4AEB08F60D73DA6D007CD406 /* ConsoleTest.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0043D84E0C3564F8007ACDF6 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 0043D84F0C3564F8007ACDF6 /* Build configuration list for PBXProject "OIS" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 0043D84C0C3564F8007ACDF6;
+			productRefGroup = 0043D85E0C356509007ACDF6 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0043D98F0C356851007ACDF6 /* Build All */,
+				0043D85C0C356509007ACDF6 /* OIS */,
+				0043D8A70C3566F6007ACDF6 /* OISdylib */,
+				0043D8BF0C3567B2007ACDF6 /* OISstatic */,
+				0082F04C0C824FE100E926BE /* ConsoleDemo */,
+				4AEB08F50D73DA6D007CD406 /* ConsoleTest */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0043D8590C356509007ACDF6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0043D8F50C356828007ACDF6 /* OIS-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4AEB08F20D73DA6D007CD406 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0043D85A0C356509007ACDF6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0043D8960C3566C1007ACDF6 /* OISEffect.cpp in Sources */,
+				0043D8970C3566C1007ACDF6 /* OISForceFeedback.cpp in Sources */,
+				0043D8980C3566C1007ACDF6 /* OISInputManager.cpp in Sources */,
+				0043D8990C3566C1007ACDF6 /* OISJoyStick.cpp in Sources */,
+				0043D89A0C3566C1007ACDF6 /* OISKeyboard.cpp in Sources */,
+				0043D89B0C3566C1007ACDF6 /* OISObject.cpp in Sources */,
+				0043D8A00C3566C9007ACDF6 /* MacHelpers.cpp in Sources */,
+				0043D8A10C3566C9007ACDF6 /* MacInputManager.cpp in Sources */,
+				0043D8A20C3566C9007ACDF6 /* MacKeyboard.cpp in Sources */,
+				0043D8A30C3566C9007ACDF6 /* MacMouse.cpp in Sources */,
+				4ADFD2A90CDE7BAC006031E4 /* MacHIDManager.cpp in Sources */,
+				249631C71066334D00EFD0E1 /* MacJoyStick.cpp in Sources */,
+				4ACD7A530CEF903600D72CD9 /* OISException.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0043D8A50C3566F6007ACDF6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0043D8E10C356819007ACDF6 /* MacHelpers.cpp in Sources */,
+				0043D8E20C356819007ACDF6 /* MacInputManager.cpp in Sources */,
+				0043D8E30C356819007ACDF6 /* MacKeyboard.cpp in Sources */,
+				0043D8E40C356819007ACDF6 /* MacMouse.cpp in Sources */,
+				0043D8E50C356819007ACDF6 /* OISEffect.cpp in Sources */,
+				0043D8E60C356819007ACDF6 /* OISForceFeedback.cpp in Sources */,
+				0043D8E70C356819007ACDF6 /* OISInputManager.cpp in Sources */,
+				0043D8E80C356819007ACDF6 /* OISJoyStick.cpp in Sources */,
+				0043D8E90C356819007ACDF6 /* OISKeyboard.cpp in Sources */,
+				0043D8EA0C356819007ACDF6 /* OISObject.cpp in Sources */,
+				4ADFD2AA0CDE7BAC006031E4 /* MacHIDManager.cpp in Sources */,
+				249631C81066335600EFD0E1 /* MacJoyStick.cpp in Sources */,
+				4ACD7A540CEF903600D72CD9 /* OISException.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0043D8BD0C3567B2007ACDF6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0043D8EB0C35681A007ACDF6 /* MacHelpers.cpp in Sources */,
+				0043D8EC0C35681A007ACDF6 /* MacInputManager.cpp in Sources */,
+				0043D8ED0C35681A007ACDF6 /* MacKeyboard.cpp in Sources */,
+				0043D8EE0C35681A007ACDF6 /* MacMouse.cpp in Sources */,
+				0043D8EF0C35681A007ACDF6 /* OISEffect.cpp in Sources */,
+				0043D8F00C35681A007ACDF6 /* OISForceFeedback.cpp in Sources */,
+				0043D8F10C35681A007ACDF6 /* OISInputManager.cpp in Sources */,
+				0043D8F20C35681A007ACDF6 /* OISJoyStick.cpp in Sources */,
+				0043D8F30C35681A007ACDF6 /* OISKeyboard.cpp in Sources */,
+				0043D8F40C35681A007ACDF6 /* OISObject.cpp in Sources */,
+				4ADFD2AB0CDE7BAC006031E4 /* MacHIDManager.cpp in Sources */,
+				249631C91066335D00EFD0E1 /* MacJoyStick.cpp in Sources */,
+				4ACD7A550CEF903600D72CD9 /* OISException.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0082F04A0C824FE100E926BE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0082F2890C827BF500E926BE /* OISConsole.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4AEB08F30D73DA6D007CD406 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4AEB08FC0D73DA81007CD406 /* OISConsole.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0043D9910C35685A007ACDF6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0043D8BF0C3567B2007ACDF6 /* OISstatic */;
+			targetProxy = 0043D9900C35685A007ACDF6 /* PBXContainerItemProxy */;
+		};
+		0043D9930C35685A007ACDF6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0043D8A70C3566F6007ACDF6 /* OISdylib */;
+			targetProxy = 0043D9920C35685A007ACDF6 /* PBXContainerItemProxy */;
+		};
+		0043D9950C35685A007ACDF6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0043D85C0C356509007ACDF6 /* OIS */;
+			targetProxy = 0043D9940C35685A007ACDF6 /* PBXContainerItemProxy */;
+		};
+		0082F1CF0C82634200E926BE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0082F04C0C824FE100E926BE /* ConsoleDemo */;
+			targetProxy = 0082F1CE0C82634200E926BE /* PBXContainerItemProxy */;
+		};
+		4AEB091E0D73DB7D007CD406 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4AEB08F50D73DA6D007CD406 /* ConsoleTest */;
+			targetProxy = 4AEB091D0D73DB7D007CD406 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0043D8500C3564F8007ACDF6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				COPY_PHASE_STRIP = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				USER_HEADER_SEARCH_PATHS = ../../includes;
+			};
+			name = Debug;
+		};
+		0043D8510C3564F8007ACDF6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				COPY_PHASE_STRIP = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				USER_HEADER_SEARCH_PATHS = ../../includes;
+			};
+			name = Release;
+		};
+		0043D8620C356509007ACDF6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1.0;
+				DYLIB_CURRENT_VERSION = 1.0;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				GCC_VERSION = 4.0;
+				INFOPLIST_FILE = "OIS-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = OIS;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		0043D8630C356509007ACDF6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1.0;
+				DYLIB_CURRENT_VERSION = 1.0;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				GCC_VERSION = 4.0;
+				INFOPLIST_FILE = "OIS-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = OIS;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		0043D8BA0C35674D007ACDF6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1.0;
+				DYLIB_CURRENT_VERSION = 1.0;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				GCC_VERSION = 4.0;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = OIS;
+				ZERO_LINK = NO;
+			};
+			name = Debug;
+		};
+		0043D8BB0C35674D007ACDF6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1.0;
+				DYLIB_CURRENT_VERSION = 1.0;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				GCC_VERSION = 4.0;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = OIS;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		0043D8C50C356801007ACDF6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				GCC_VERSION = 4.0;
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = OIS;
+				ZERO_LINK = NO;
+			};
+			name = Debug;
+		};
+		0043D8C60C356801007ACDF6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				GCC_VERSION = 4.0;
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = OIS;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		0043D99B0C356867007ACDF6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = "Build All";
+			};
+			name = Debug;
+		};
+		0043D99C0C356867007ACDF6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				PRODUCT_NAME = "Build All";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		0082F0540C82502F00E926BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/build/Release\"";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				GCC_VERSION = 4.0;
+				INSTALL_PATH = "$(HOME)/bin";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = ConsoleDemo;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		0082F0550C82502F00E926BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/build/Release\"";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				GCC_VERSION = 4.0;
+				INSTALL_PATH = "$(HOME)/bin";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = ConsoleDemo;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		4AEB08FA0D73DA6D007CD406 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/build/Release\"";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				GCC_VERSION = 4.0;
+				INFOPLIST_FILE = "ConsoleTest-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = ConsoleTest;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		4AEB08FB0D73DA6D007CD406 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/build/Release\"";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				GCC_VERSION = 4.0;
+				INFOPLIST_FILE = "ConsoleTest-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = ConsoleTest;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0043D84F0C3564F8007ACDF6 /* Build configuration list for PBXProject "OIS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0043D8500C3564F8007ACDF6 /* Debug */,
+				0043D8510C3564F8007ACDF6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0043D8610C356509007ACDF6 /* Build configuration list for PBXNativeTarget "OIS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0043D8620C356509007ACDF6 /* Debug */,
+				0043D8630C356509007ACDF6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0043D8B90C35674D007ACDF6 /* Build configuration list for PBXNativeTarget "OISdylib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0043D8BA0C35674D007ACDF6 /* Debug */,
+				0043D8BB0C35674D007ACDF6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0043D8C40C356801007ACDF6 /* Build configuration list for PBXNativeTarget "OISstatic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0043D8C50C356801007ACDF6 /* Debug */,
+				0043D8C60C356801007ACDF6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0043D99A0C356867007ACDF6 /* Build configuration list for PBXAggregateTarget "Build All" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0043D99B0C356867007ACDF6 /* Debug */,
+				0043D99C0C356867007ACDF6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0082F0530C82502F00E926BE /* Build configuration list for PBXNativeTarget "ConsoleDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0082F0540C82502F00E926BE /* Debug */,
+				0082F0550C82502F00E926BE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4AEB08F90D73DA6D007CD406 /* Build configuration list for PBXNativeTarget "ConsoleTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4AEB08FA0D73DA6D007CD406 /* Debug */,
+				4AEB08FB0D73DA6D007CD406 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0043D84E0C3564F8007ACDF6 /* Project object */;
+}
