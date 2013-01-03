@@ -53,4 +53,28 @@ public class InputAdapter implements InputProcessor {
 	public boolean scrolled (int amount) {
 		return false;
 	}
+
+	@Override
+	public boolean buttonDown (int player, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean buttonUp (int player, int button) {
+		
+		return false;
+	}
+
+	@Override
+	public boolean buttonTyped (int player, int button) {
+		
+		return false;
+	}
+
+	@Override
+	public boolean axisMove (int player, int axis, float amount) {
+		
+		return false;
+	}
 }

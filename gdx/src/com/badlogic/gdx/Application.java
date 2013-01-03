@@ -93,14 +93,14 @@ public interface Application {
 	 * 
 	 * @author mzechner */
 	public enum ApplicationType {
-		Android, Desktop, Applet, WebGL, iOS
+		Android, Desktop, Applet, WebGL, iOS, Ouya
 	}
 
 	public static final int LOG_NONE = 0;
 	public static final int LOG_DEBUG = 3;
 	public static final int LOG_INFO = 2;
 	public static final int LOG_ERROR = 1;
-
+  
 	/** @return the {@link Graphics} instance */
 	public Graphics getGraphics ();
 

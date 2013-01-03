@@ -191,6 +191,17 @@ public interface Input {
 		public static final int BUTTON_START = 108;
 		public static final int BUTTON_SELECT = 109;
 		public static final int BUTTON_MODE = 110;
+		public static final int BUTTON_O = 111;
+		public static final int BUTTON_U = 112;
+		public static final int BUTTON_R3 = 113;
+		public static final int BUTTON_L3 = 114;
+		public static final int AXIS_L2 = 115;
+		public static final int AXIS_R2 = 116;
+		public static final int AXIS_LS_X = 117;
+		public static final int AXIS_LS_Y = 118;
+		public static final int AXIS_RS_X = 119;
+		public static final int AXIS_RS_Y = 120;
+		
 
 // public static final int BACKTICK = 0;
 // public static final int TILDE = 0;

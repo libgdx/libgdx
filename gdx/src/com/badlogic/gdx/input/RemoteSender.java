@@ -202,4 +202,28 @@ public class RemoteSender implements InputProcessor {
 			return connected;
 		}
 	}
+
+	@Override
+	public boolean buttonDown (int player, int button) {
+		
+		return false;
+	}
+
+	@Override
+	public boolean buttonUp (int player, int button) {
+		
+		return false;
+	}
+
+	@Override
+	public boolean buttonTyped (int player, int button) {
+		
+		return false;
+	}
+
+	@Override
+	public boolean axisMove (int player, int axis, float amount) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

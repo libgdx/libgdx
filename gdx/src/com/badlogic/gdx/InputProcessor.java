@@ -73,4 +73,10 @@ public interface InputProcessor {
 	 * @param amount the scroll amount, -1 or 1 depending on the direction the wheel was scrolled.
 	 * @return whether the input was processed. */
 	public boolean scrolled (int amount);
+	
+	public boolean buttonDown(int player,int button);
+	public boolean buttonUp(int player,int button);
+	public boolean buttonTyped(int player,int button);
+	public boolean axisMove(int player,int axis,float amount);
+	
 }
