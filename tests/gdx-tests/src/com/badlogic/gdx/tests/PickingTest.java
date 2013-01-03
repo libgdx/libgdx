@@ -22,11 +22,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
@@ -45,7 +45,7 @@ public class PickingTest extends GdxTest {
 	static final int VP_Y = BORDER * 2;
 	static int VP_WIDTH;
 	static int VP_HEIGHT;
-	Mesh sphere;
+	StillModel sphere;
 	Camera cam;
 	Vector3[] positions = new Vector3[100];
 	ImmediateModeRenderer10 renderer;
@@ -56,7 +56,7 @@ public class PickingTest extends GdxTest {
 	public void create () {
 		VP_WIDTH = Gdx.graphics.getWidth() - 4 * BORDER;
 		VP_HEIGHT = Gdx.graphics.getHeight() - 4 * BORDER;
-		sphere = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
+		sphere = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/sphere.obj"));
 		cam = new PerspectiveCamera(45, VP_WIDTH, VP_HEIGHT);
 // cam = new OrthographicCamera(10, 10);
 		cam.far = 200;
@@ -101,7 +101,7 @@ public class PickingTest extends GdxTest {
 			}
 			gl.glPushMatrix();
 			gl.glTranslatef(positions[i].x, positions[i].y, positions[i].z);
-			sphere.render(GL10.GL_TRIANGLES);
+			sphere.render();
 			gl.glPopMatrix();
 		}
 

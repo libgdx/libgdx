@@ -184,7 +184,7 @@ public class Tree extends WidgetGroup {
 
 	public void layout () {
 		if (sizeInvalid) computeSize();
-		layout(rootNodes, leftColumnWidth + indentSpacing, getHeight() - ySpacing / 2);
+		layout(rootNodes, leftColumnWidth + indentSpacing + iconSpacing, getHeight() - ySpacing / 2);
 	}
 
 	private float layout (Array<Node> nodes, float indent, float y) {

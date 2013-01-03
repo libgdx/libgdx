@@ -7,6 +7,6 @@
 1.0.0
 
 [libraries]
-libgdx           = http://libgdx.googlecode.com/svn/trunk/extensions/gdx-setup-ui/config/libgdx.txt
+libgdx           = https://raw.github.com/libgdx/libgdx/master/extensions/gdx-setup-ui/config/libgdx.txt
 tweenengine      = http://www.aurelienribon.com/universal-tween-engine/description.txt
 bodyeditorloader = http://www.aurelienribon.com/physics-body-editor/bodyeditor-loader-definition.txt

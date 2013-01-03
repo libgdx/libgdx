@@ -19,14 +19,14 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderOld;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -39,7 +39,7 @@ public class FramebufferToTextureTest extends GdxTest {
 
 	TextureRegion fbTexture;
 	Texture texture;
-	Mesh mesh;
+	StillModel mesh;
 	PerspectiveCamera cam;
 	SpriteBatch batch;
 	BitmapFont font;
@@ -48,7 +48,7 @@ public class FramebufferToTextureTest extends GdxTest {
 
 	@Override
 	public void create () {
-		mesh = ModelLoaderOld.loadObj(Gdx.files.internal("data/cube.obj").read());
+		mesh =  ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/cube.obj"));
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 
@@ -76,7 +76,7 @@ public class FramebufferToTextureTest extends GdxTest {
 		gl.glPushMatrix();
 		gl.glRotatef(angle, 0, 1, 0);
 		texture.bind();
-		mesh.render(GL10.GL_TRIANGLES);
+		mesh.render();
 		gl.glPopMatrix();
 
 		if (Gdx.input.justTouched() || fbTexture == null) {

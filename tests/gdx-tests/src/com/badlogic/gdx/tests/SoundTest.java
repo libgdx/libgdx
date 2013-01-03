@@ -61,8 +61,10 @@ public class SoundTest extends GdxTest {
 		table.setFillParent(true);
 
 		table.align(Align.center | Align.top);
+		table.columnDefaults(0).expandX().right().uniformX();
+		table.columnDefaults(2).expandX().left().uniformX();
 		table.add(play);
-		table.add(stop);
+		table.add(stop).left();
 		table.row();
 		table.add(new Label("Pitch", skin));
 		table.add(pitch);
