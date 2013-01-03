@@ -33,10 +33,11 @@ public class btTriangleIndexVertexArray extends btStridingMeshInterface {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        gdxBulletJNI.delete_btIndexedMesh(swigCPtr);
+        gdxBulletJNI.delete_btTriangleIndexVertexArray(swigCPtr);
       }
       swigCPtr = 0;
     }
+    super.delete();
 	dispose();
   }
 
