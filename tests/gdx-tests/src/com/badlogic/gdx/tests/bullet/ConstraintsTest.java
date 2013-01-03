@@ -17,9 +17,13 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.btPoint2PointConstraint;
 import com.badlogic.gdx.physics.bullet.btTypedConstraint;
@@ -44,7 +48,8 @@ public class ConstraintsTest extends BaseBulletTest {
 			2, 3, 6, 6, 7, 3, // left
 			0, 1, 4, 4, 5, 1 // right
 			});
-		world.addConstructor("bar", new BulletConstructor(barMesh, 0f)); // mass = 0: static body
+		final StillModel barModel = new StillModel(new StillSubMesh("bar", barMesh, GL10.GL_TRIANGLES, new Material()));
+		world.addConstructor("bar", new BulletConstructor(barModel, 0f)); // mass = 0: static body
 		
 		// Create the entities
 		world.add("ground", 0f, 0f, 0f)

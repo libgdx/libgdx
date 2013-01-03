@@ -17,6 +17,7 @@ package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -25,6 +26,6 @@ import com.badlogic.gdx.utils.Disposable;
  */
 public abstract class BaseEntity implements Disposable {
 	public Matrix4 transform = new Matrix4();
-	public Mesh mesh;
+	public Model model;
 	public Color color = new Color(1f, 1f, 1f, 1f);
 }

@@ -16,6 +16,7 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.bullet.btMotionState;
 import com.badlogic.gdx.physics.bullet.btRigidBody;
@@ -30,12 +31,12 @@ public class BulletEntity extends BaseEntity {
 	public BulletEntity.MotionState motionState;
 	public btRigidBody body;
 
-	public BulletEntity (final Mesh mesh, final btRigidBodyConstructionInfo bodyInfo, final float x, final float y, final float z) {
-		this(mesh, bodyInfo, tmpM.setToTranslation(x, y, z));
+	public BulletEntity (final Model model, final btRigidBodyConstructionInfo bodyInfo, final float x, final float y, final float z) {
+		this(model, bodyInfo, tmpM.setToTranslation(x, y, z));
 	}
 	
-	public BulletEntity (final Mesh mesh, final btRigidBodyConstructionInfo bodyInfo, final Matrix4 transform) {
-		this.mesh = mesh;
+	public BulletEntity (final Model model, final btRigidBodyConstructionInfo bodyInfo, final Matrix4 transform) {
+		this.model = model;
 		this.transform.set(transform);
 		
 		if (bodyInfo != null) {
@@ -46,11 +47,11 @@ public class BulletEntity extends BaseEntity {
 	}
 
 	public BulletEntity (final BulletConstructor constructInfo, final float x, final float y, final float z) {
-		this(constructInfo.mesh, constructInfo.bodyInfo, x, y, z);
+		this(constructInfo.model, constructInfo.bodyInfo, x, y, z);
 	}
 	
 	public BulletEntity (final BulletConstructor constructInfo, final Matrix4 transform) {
-		this(constructInfo.mesh, constructInfo.bodyInfo, transform);
+		this(constructInfo.model, constructInfo.bodyInfo, transform);
 	}
 
 	@Override

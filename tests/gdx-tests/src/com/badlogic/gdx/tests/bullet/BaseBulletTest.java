@@ -24,6 +24,9 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.btIDebugDraw;
@@ -79,6 +82,7 @@ public class BaseBulletTest extends BulletTest {
 		final Mesh groundMesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_position"));
 		groundMesh.setVertices(new float[] {20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f});
 		groundMesh.setIndices(new short[] {0, 1, 2, 1, 2, 3});
+		final StillModel groundModel = new StillModel(new StillSubMesh("ground", groundMesh, GL10.GL_TRIANGLES, new Material()));
 
 		final Mesh boxMesh = new Mesh(true, 8, 36, new VertexAttribute(Usage.Position, 3, "a_position"));
 		boxMesh.setVertices(new float[] {0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f,
@@ -90,11 +94,12 @@ public class BaseBulletTest extends BulletTest {
 			2, 3, 6, 6, 7, 3, // left
 			0, 1, 4, 4, 5, 1 // right
 			});
+		final StillModel boxModel = new StillModel(new StillSubMesh("box", boxMesh, GL10.GL_TRIANGLES, new Material()));
 
 		// Add the constructors
-		world.addConstructor("ground", new BulletConstructor(groundMesh, 0f)); // mass = 0: static body
-		world.addConstructor("box", new BulletConstructor(boxMesh, 1f)); // mass = 1kg: dynamic body
-		world.addConstructor("staticbox", new BulletConstructor(boxMesh, 0f)); // mass = 0: static body
+		world.addConstructor("ground", new BulletConstructor(groundModel, 0f)); // mass = 0: static body
+		world.addConstructor("box", new BulletConstructor(boxModel, 1f)); // mass = 1kg: dynamic body
+		world.addConstructor("staticbox", new BulletConstructor(boxModel, 0f)); // mass = 0: static body
 	}
 	
 	@Override
