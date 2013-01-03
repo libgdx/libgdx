@@ -146,7 +146,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		this.input = new IOSInput(this);
 		this.graphics = new IOSGraphics(getBounds(uiViewController), this, input, gl20);
 		this.files = new IOSFiles();
-		this.audio = new IOSAudio();
+		this.audio = new IOSAudio(config.useObjectAL);
 		this.net = new IOSNet(this);
 
 		Gdx.files = this.files;
