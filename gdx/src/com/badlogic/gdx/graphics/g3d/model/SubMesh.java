@@ -27,10 +27,15 @@ public abstract class SubMesh {
 	public Mesh mesh;
 
 
-	public SubMesh (String name, Mesh mesh, int primitiveType) {
+	public SubMesh (String name, Mesh mesh, int primitiveType, Material material) {
 		this.name = name;
 		this.setMesh(mesh);
 		this.primitiveType = primitiveType;
+		this.material = material;
+	}
+	
+	public SubMesh (String name, Mesh mesh, int primitiveType) {
+		this(name, mesh, primitiveType, null);
 	}
 
 	/** Obtain the {@link BoundingBox} of this {@link SubMesh}.
