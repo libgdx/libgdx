@@ -86,12 +86,12 @@ public class GdxNativesLoader {
 
 	/** Loads the libgdx native libraries. */
 	static public void load () {
+		if (nativesLoaded) return;
 		if (disableNativesLoading) {
-			System.out
-				.println("So you don't like our native lib loading? Good, you are on your own now. We don't give support from here on out");
+			nativesLoaded = true;
+			System.out.println("Native loading is disabled.");
 			return;
 		}
-		if (nativesLoaded) return;
 
 		String vm = System.getProperty("java.vm.name");
 		if (vm == null || !vm.contains("Dalvik")) {
