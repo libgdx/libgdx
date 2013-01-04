@@ -167,6 +167,7 @@
 
 /extensions/gdx-controllers/gdx-controllers/bin
 /extensions/gdx-controllers/gdx-controllers-desktop/bin
+/extensions/gdx-controllers/gdx-controllers-desktop/jni/target
 
 /gdx/target
 /gdx/obj
