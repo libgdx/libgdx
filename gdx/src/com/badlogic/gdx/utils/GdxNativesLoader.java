@@ -65,7 +65,8 @@ public class GdxNativesLoader {
 	static public String extractLibrary (String native32, String native64) {
 		String nativeFileName = is64Bit ? native64 : native32;
 		File nativeFile = new File(nativesDir, nativeFileName);
-		try {
+		if (!nativeFile.exists()) {
+		    try {
 			// Extract native from classpath to temp dir.
 			InputStream input = GdxNativesLoader.class.getResourceAsStream("/" + nativeFileName);
 			if (input == null) return null;
@@ -73,13 +74,14 @@ public class GdxNativesLoader {
 			FileOutputStream output = new FileOutputStream(nativeFile);
 			byte[] buffer = new byte[4096];
 			while (true) {
-				int length = input.read(buffer);
-				if (length == -1) break;
-				output.write(buffer, 0, length);
+			    int length = input.read(buffer);
+			    if (length == -1) break;
+			    output.write(buffer, 0, length);
 			}
 			input.close();
 			output.close();
-		} catch (IOException ex) {
+		    } catch (IOException ex) {
+		    }
 		}
 		return nativeFile.exists() ? nativeFile.getAbsolutePath() : null;
 	}
