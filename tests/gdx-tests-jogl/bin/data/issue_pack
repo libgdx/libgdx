@@ -1,0 +1,33 @@
+
+resource1.jpg
+format: RGBA8888
+filter: MipMapLinearNearest,Nearest
+repeat: none
+map
+  rotate: false
+  xy: 0, 0
+  size: 855, 480
+  orig: 855, 480
+  offset: 0, 0
+  index: -1
+jeep
+  rotate: false
+  xy: 855, 0
+  size: 139, 97
+  orig: 140, 97
+  offset: 0, 0
+  index: -1
+npc
+  rotate: false
+  xy: 0, 480
+  size: 287, 76
+  orig: 288, 78
+  offset: 0, 1
+  index: 91
+boo
+  rotate: false
+  xy: 994, 0
+  size: 24, 35
+  orig: 24, 35
+  offset: 0, 0
+  index: -1

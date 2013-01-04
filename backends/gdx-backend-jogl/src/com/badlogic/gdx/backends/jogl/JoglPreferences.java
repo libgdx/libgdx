@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.jogl;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -33,14 +34,22 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class JoglPreferences implements Preferences {
 	private final String name;
 	private final Properties properties = new Properties();
-
+	private final FileHandle file;
+	
 	JoglPreferences (String name) {
-		this.name = name;
+		this(new JoglFileHandle(new File(".prefs/" + name), FileType.External));
+	}
+
+	public JoglPreferences(FileHandle file) {
+		this.name = file.name();
+		this.file = file;
+		if (!file.exists()) return;
 		InputStream in = null;
 		try {
-			in = new BufferedInputStream(Gdx.files.external(".prefs/" + name).read());
+			in = new BufferedInputStream(file.read());
 			properties.loadFromXML(in);
 		} catch (Throwable t) {
+			t.printStackTrace();
 		} finally {
 			if (in != null) try {
 				in.close();
@@ -162,8 +171,6 @@ public class JoglPreferences implements Preferences {
 
 	@Override
 	public void flush () {
-		if (Gdx.files == null) return;
-		FileHandle file = Gdx.files.external(".prefs/" + name);
 		OutputStream out = null;
 		try {
 			out = new BufferedOutputStream(file.write(false));

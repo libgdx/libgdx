@@ -21,7 +21,7 @@ import com.badlogic.gdx.files.FileHandle;
 
 /** @author mzechner
  * @author Nathan Sweet */
-final class JoglFiles implements Files {
+public final class JoglFiles implements Files {
 	private final String externalPath = System.getProperty("user.home") + "/";
 
 	@Override
