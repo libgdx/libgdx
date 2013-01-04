@@ -4,5 +4,7 @@
 	<classpathentry excluding="**/.svn/*" kind="src" path="src"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-backend-lwjgl"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-jnigen"/>
+	<classpathentry exported="true" kind="lib" path="libs/gdx-controllers-desktop-natives.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
