@@ -62,6 +62,20 @@
 		</ant>
 	</target>
 	
+	<!-- gdx JOGL backend -->
+	<target name="gdx-backend-jogl" depends="gdx-core,gdx-openal">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-openal.jar"/>
+		</path>
+		<zipfileset id="jarfiles" src="${distDir}/gdx-openal.jar"/>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-jogl">
+			<property name="jar" value="gdx-backend-jogl"/>
+			<reference refid="classpath"/>
+			<reference refid="jarfiles"/>
+		</ant>
+	</target>
+	
 	<!-- gdx lwjgl backend -->
 	<target name="gdx-backend-lwjgl" depends="gdx-core,gdx-openal">
 		<path id="classpath">
@@ -251,7 +265,7 @@
 	</target>
 	
 	<target name="all" 
-depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,docs,copy-iosfiles">
+depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,docs,copy-iosfiles">
 		<!-- copy distribution files (licences etc.) -->
 		<copy tofile="${distDir}/README" file="gdx/dist/README"/>
 		<copy tofile="${distDir}/LICENSE" file="gdx/dist/LICENSE"/>
