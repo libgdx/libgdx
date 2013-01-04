@@ -20,7 +20,7 @@ public class DesktopControllersBuild {
 		win32home.cppIncludes = new String[] {
 			"*.cpp",
 			"ois-v1-3/src/*.cpp",
-			"ois-v1-3/src/win32/*.cpp"
+			"ois-v1-3/src/win32/*.cpp",
 		};
 		win32home.headerDirs = new String[] {
 			"ois-v1-3/includes",
@@ -29,7 +29,7 @@ public class DesktopControllersBuild {
 		win32home.cIncludes = new String[0];
 		
 		new AntScriptGenerator().generate(buildConfig, win32home);
-		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-Dhas-compiler clean postcompile -v");
+		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-Dhas-compiler=true clean postcompile -v");
 		BuildExecutor.executeAnt("jni/build.xml", "pack-natives");
 	}
 }

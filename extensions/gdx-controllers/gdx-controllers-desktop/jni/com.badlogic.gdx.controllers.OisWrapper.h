@@ -10,9 +10,9 @@ extern "C" {
 /*
  * Class:     com_badlogic_gdx_controllers_OisWrapper
  * Method:    initialize
- * Signature: (I)V
+ * Signature: (I)I
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_controllers_OisWrapper_initialize
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisWrapper_initialize
   (JNIEnv *, jclass, jint);
 
 #ifdef __cplusplus

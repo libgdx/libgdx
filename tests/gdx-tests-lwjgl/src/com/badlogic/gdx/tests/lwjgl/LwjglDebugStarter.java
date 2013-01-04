@@ -18,10 +18,7 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.tests.BulletTestCollection;
-import com.badlogic.gdx.tests.SoundTest;
-import com.badlogic.gdx.tests.bullet.SoftMeshTest;
-import com.badlogic.gdx.tests.extensions.Mpg123Test;
+import com.badlogic.gdx.tests.YDownTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
@@ -33,7 +30,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new Mpg123Test();
+		GdxTest test = new YDownTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		new LwjglApplication(test, config);
