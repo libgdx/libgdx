@@ -303,10 +303,8 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %}
 %include "BulletCollision/CollisionShapes/btTriangleMeshShape.h"
 
-%{
-#include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
-%}
-%include "BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h"
+
+%include "custom/btBvhTriangleMeshShape.i"
 
 %{
 #include <BulletCollision/CollisionShapes/btBoxShape.h>
@@ -537,14 +535,14 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %include "custom/btCollisionWorld.i"
 
 %{
-#include <../swig/custom/ClosestNotMeConvexResultCallback.h>
+#include <GdxCustom/ClosestNotMeConvexResultCallback.h>
 %}
-%include "../swig/custom/ClosestNotMeConvexResultCallback.h"
+%include "GdxCustom/ClosestNotMeConvexResultCallback.h"
 
 %{
-#include <../swig/custom/ClosestNotMeRayResultCallback.h>
+#include <GdxCustom/ClosestNotMeRayResultCallback.h>
 %}
-%include "../swig/custom/ClosestNotMeRayResultCallback.h"
+%include "GdxCustom/ClosestNotMeRayResultCallback.h"
 
 %{
 #include <BulletCollision/CollisionDispatch/btConvex2dConvex2dAlgorithm.h>
@@ -675,9 +673,9 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %include "BulletDynamics/Dynamics/btDynamicsWorld.h"
 
 %{
-#include <../swig/custom/InternalTickCallback.h>
+#include <GdxCustom/InternalTickCallback.h>
 %}
-%include "../swig/custom/InternalTickCallback.h"
+%include "GdxCustom/InternalTickCallback.h"
 
 %{
 #include <BulletDynamics/Dynamics/btSimpleDynamicsWorld.h>
