@@ -53,6 +53,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public final class JoglApplication implements Application {
 	JoglGraphics graphics;
 	JoglInput input;
+	protected final JoglNet net;
 	JoglFiles files;
 	OpenALAudio audio;
 	JFrame frame;
@@ -72,6 +73,7 @@ public final class JoglApplication implements Application {
 	public JoglApplication (final ApplicationListener listener, final String title, final int width, final int height,
 		final boolean useGL20IfAvailable) {
 		final JoglApplicationConfiguration config = new JoglApplicationConfiguration();
+		net = new JoglNet();
 		config.title = title;
 		config.width = width;
 		config.height = height;
@@ -94,6 +96,7 @@ public final class JoglApplication implements Application {
 	}
 
 	public JoglApplication (final ApplicationListener listener, final JoglApplicationConfiguration config) {
+		net = new JoglNet();
 		if (!SwingUtilities.isEventDispatchThread()) {
 			try {
 				SwingUtilities.invokeAndWait(new Runnable() {
@@ -336,7 +339,6 @@ public final class JoglApplication implements Application {
 
 	@Override
 	public Net getNet() {
-		// TODO
-		return null;
+		return net;
 	}
 }
