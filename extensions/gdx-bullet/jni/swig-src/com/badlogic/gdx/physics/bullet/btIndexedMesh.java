@@ -8,10 +8,9 @@
 
 package com.badlogic.gdx.physics.bullet;
 
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
 public class btIndexedMesh {
   private long swigCPtr;
@@ -39,6 +38,38 @@ public class btIndexedMesh {
       swigCPtr = 0;
     }
   }
+
+	/** Construct a new btIndexedMesh based on the supplied {@link Mesh}
+	 * The specified mesh must be indexed and triangulated and must outlive this btIndexedMesh.
+	 * The buffers for the vertices and indices are shared amonst both. */
+	public btIndexedMesh(final Mesh mesh) {
+		this();
+		set(mesh);
+	}
+	
+	/** Convenience method to set this btIndexedMesh to the specified {@link Mesh} 
+	 * The specified mesh must be indexed and triangulated and must outlive this btIndexedMesh.
+	 * The buffers for the vertices and indices are shared amonst both. */
+	public void set(final Mesh mesh) {
+		final int numIndices = mesh.getNumIndices();
+		if ((numIndices <= 0) || ((numIndices % 3) != 0))
+			throw new com.badlogic.gdx.utils.GdxRuntimeException("Mesh must be indexed and triangulated");
+		java.nio.FloatBuffer buf = mesh.getVerticesBuffer();
+		VertexAttribute posAttr = mesh.getVertexAttribute(Usage.Position);
+		if (posAttr == null)
+			throw new com.badlogic.gdx.utils.GdxRuntimeException("Mesh doesn't have a position attribute");
+		final int pos = buf.position();
+		buf.position(posAttr.offset);
+		setM_indexType(PHY_ScalarType.PHY_SHORT);
+		setM_numTriangles(numIndices/3);
+		setM_numVertices(mesh.getNumVertices());
+		setM_triangleIndexStride(6);
+		setM_vertexStride(mesh.getVertexSize());
+		setM_vertexType(PHY_ScalarType.PHY_FLOAT);
+		setTriangleIndexBase(mesh.getIndicesBuffer());
+		setVertexBase(buf);
+		buf.position(pos);
+	}
 
   public void setM_numTriangles(int value) {
     gdxBulletJNI.btIndexedMesh_m_numTriangles_set(swigCPtr, this, value);

@@ -1875,10 +1875,10 @@ typedef btCollisionWorld::ClosestConvexResultCallback ClosestConvexResultCallbac
 typedef btCollisionWorld::ContactResultCallback ContactResultCallback;
 
 
-#include <../swig/custom/ClosestNotMeConvexResultCallback.h>
+#include <GdxCustom/ClosestNotMeConvexResultCallback.h>
 
 
-#include <../swig/custom/ClosestNotMeRayResultCallback.h>
+#include <GdxCustom/ClosestNotMeRayResultCallback.h>
 
 
 #include <BulletCollision/CollisionDispatch/btConvex2dConvex2dAlgorithm.h>
@@ -1962,7 +1962,7 @@ typedef btTypedConstraint::btConstraintInfo2 btConstraintInfo2;
 #include <BulletDynamics/Dynamics/btDynamicsWorld.h>
 
 
-#include <../swig/custom/InternalTickCallback.h>
+#include <GdxCustom/InternalTickCallback.h>
 
 
 #include <BulletDynamics/Dynamics/btSimpleDynamicsWorld.h>

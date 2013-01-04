@@ -16,6 +16,7 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -33,33 +34,34 @@ public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
 	/**
 	 * Specify null for the shape to use only the renderable part of this entity and not the physics part. 
 	 */
-	public BulletConstructor (final Mesh mesh, final float mass, final btCollisionShape shape) {
-		create(mesh, mass, shape);
+	public BulletConstructor (final Model model, final float mass, final btCollisionShape shape) {
+		create(model, mass, shape);
 	}
 
 	/**
 	 * Creates a btBoxShape with the specified dimensions.
 	 */
-	public BulletConstructor (final Mesh mesh, final float mass, final float width, final float height, final float depth) {
-		create(mesh, mass, width, height, depth);
+	public BulletConstructor (final Model model, final float mass, final float width, final float height, final float depth) {
+		create(model, mass, width, height, depth);
 	}
 	
 	/**
 	 * Creates a btBoxShape with the same dimensions as the shape.
 	 */
-	public BulletConstructor (final Mesh mesh, final float mass) {
-		final BoundingBox boundingBox = mesh.calculateBoundingBox();
+	public BulletConstructor (final Model model, final float mass) {
+		final BoundingBox boundingBox = new BoundingBox(); 
+		model.getBoundingBox(boundingBox);
 		final Vector3 dimensions = boundingBox.getDimensions();
-		create(mesh, mass, dimensions.x, dimensions.y, dimensions.z);
+		create(model, mass, dimensions.x, dimensions.y, dimensions.z);
 	}
 	
-	private void create (final Mesh mesh, final float mass, final float width, final float height, final float depth) {			
+	private void create (final Model model, final float mass, final float width, final float height, final float depth) {			
 		// Create a simple boxshape
-		create(mesh, mass, new btBoxShape(Vector3.tmp.set(width * 0.5f, height * 0.5f, depth * 0.5f)));
+		create(model, mass, new btBoxShape(Vector3.tmp.set(width * 0.5f, height * 0.5f, depth * 0.5f)));
 	}
 	
-	private void create(final Mesh mesh, final float mass, final btCollisionShape shape) {
-		this.mesh = mesh;
+	private void create(final Model model, final float mass, final btCollisionShape shape) {
+		this.model = model;
 		this.shape = shape;
 		
 		if (shape != null) {
