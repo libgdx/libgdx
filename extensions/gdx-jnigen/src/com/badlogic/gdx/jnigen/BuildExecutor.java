@@ -32,7 +32,7 @@ public class BuildExecutor {
 	public static void executeAnt (String buildFile, String params) {
 		FileDescriptor build = new FileDescriptor(buildFile);
 		String ant = System.getProperty("os.name").contains("Windows") ? "ant.bat" : "ant";
-		String command = ant + " -f " + build.name() + " " + params;
+		String command = ant + " -f " + build.file().getAbsolutePath() + " " + params;
 		System.out.println("Executing '" + command + "'");
 		startProcess(command, build.parent().file());
 	}
@@ -47,7 +47,8 @@ public class BuildExecutor {
 
 	private static void startProcess (String command, File directory) {
 		try {
-			final Process process = Runtime.getRuntime().exec(command, null, directory);
+			final Process process = new ProcessBuilder(command.split(" ")).redirectErrorStream(true).start();
+
 			Thread t = new Thread(new Runnable() {
 				@Override
 				public void run () {
@@ -134,7 +135,6 @@ public class BuildExecutor {
 			});
 			t.setDaemon(true);
 			t.start();
-			// FIXME this will hang if Ant detects an error while executing GCC in a process. Why?
 			process.waitFor();
 		} catch (Exception e) {
 			e.printStackTrace();
