@@ -16,21 +16,21 @@
 
 package com.badlogic.gdx.graphics.g3d.materials;
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 
-public class Material {
+public class Material implements Iterable<MaterialAttribute> {
 	protected String name;
 	private Array<MaterialAttribute> attributes;
 
 	/** This flag is true if material contain blendingAttribute */
 	protected boolean needBlending;
+	/** This flag is true if material contain TextureAttribute */
+	protected boolean hasTexture;
 
 	protected ShaderProgram shader;
-
-	public ShaderProgram getShader () {
-		return shader;
-	}
 
 	public Material () {
 		attributes = new Array<MaterialAttribute>(2);
@@ -40,29 +40,23 @@ public class Material {
 		this.name = name;
 		this.attributes = attributes;
 
-		// this way we foresee if blending is needed with this material and rendering can deferred more easily
-		this.needBlending = false;
-		for (int i = 0; i < this.attributes.size; i++) {
-			if (this.attributes.get(i) instanceof BlendingAttribute) {
-				this.needBlending = true;
-				break;
-			}
-		}
+		checkAttributes();
 	}
 
 	public Material (String name, MaterialAttribute... attributes) {
-		this.name = name;
-		this.attributes = new Array<MaterialAttribute>(attributes);
-
+		this(name, new Array<MaterialAttribute>(attributes));
+	}
+	
+	protected void checkAttributes() {
 		// this way we foresee if blending is needed with this material and rendering can deferred more easily
 		this.needBlending = false;
+		this.hasTexture = false;
 		for (int i = 0; i < this.attributes.size; i++) {
-			if (this.attributes.get(i) instanceof BlendingAttribute) {
+			if (!needBlending && this.attributes.get(i) instanceof BlendingAttribute)
 				this.needBlending = true;
-				break;
-			}
-		}
-
+			else if (!hasTexture && this.attributes.get(i) instanceof TextureAttribute)
+				this.hasTexture = true;
+		}		
 	}
 
 	public void bind () {
@@ -81,18 +75,20 @@ public class Material {
 		return name;
 	}
 	
-	public void addAttribute(MaterialAttribute attribute){
-		if(attribute instanceof BlendingAttribute)
-			needBlending = true;
-		
-		attributes.add(attribute);
+	public void addAttribute(MaterialAttribute... attributes){
+		for (int i = 0; i < attributes.length; i++) {
+			if(attributes[i] instanceof BlendingAttribute)
+				needBlending = true;
+			else if (attributes[i] instanceof TextureAttribute)
+				hasTexture = true;
+			this.attributes.add(attributes[i]);
+		}
 	}
 	
-	public void removeAttribute(MaterialAttribute attribute){
-		if(attribute instanceof BlendingAttribute)
-			needBlending = false;
-		
-		attributes.removeValue(attribute, true);
+	public void removeAttribute(MaterialAttribute... attributes){
+		for (int i = 0; i < attributes.length; i++)
+			this.attributes.removeValue(attributes[i], true);
+		checkAttributes();
 	}
 	
 	public void clearAttributes(){
@@ -101,13 +97,31 @@ public class Material {
 	}
 	
 	public MaterialAttribute getAttribute(int index){
-		if(index < attributes.size)
+		if(index >= 0 && index < attributes.size)
 			return attributes.get(index);
 		return null;
 	}
 	
 	public int getNumberOfAttributes(){
 		return attributes.size;
+	}
+	
+	/** @return True if this material contains attribute of the specified type, false otherwise */
+	public <T extends MaterialAttribute> boolean hasAttribute(Class<T> type) {
+		return indexOfAttribute(type) >= 0;
+	}
+	
+	/** @return The index of the first attribute of the specified type or -1 if not available */
+	public <T extends MaterialAttribute> int indexOfAttribute(Class<T> type) {
+		for (int i = 0; i < attributes.size; i++)
+			if (type.isInstance(attributes.get(i)))
+				return i;
+		return -1;
+	}
+	
+	/** @return The first attribute of the specified type, or null if not available */
+	public <T extends MaterialAttribute> T getAttribute(Class<T> type) {
+		return (T)getAttribute(indexOfAttribute(type));
 	}
 
 	public Material copy () {
@@ -172,6 +186,7 @@ public class Material {
 		name = material.name;
 		shader = material.shader;
 		needBlending = material.needBlending;
+		hasTexture = material.hasTexture;
 		attributes.clear();
 		for (int i = 0, len = material.attributes.size; i < len; i++) {
 			attributes.add(material.attributes.get(i).pooledCopy());
@@ -181,9 +196,26 @@ public class Material {
 	public boolean isNeedBlending () {
 		return needBlending;
 	}
+	
+	public boolean hasTexture() {
+		return hasTexture;
+	}
 
+	public ShaderProgram getShader () {
+		return shader;
+	}
+	
+	public void setShader(final ShaderProgram shader) {
+		this.shader = shader;
+	}
+	
 	public void resetShader () {
 		shader = null;
+	}
+
+	@Override
+	public Iterator<MaterialAttribute> iterator () {
+		return attributes.iterator();
 	}
 
 	/* TODO: Sits in Experimental only used for ProtoRenderer
