@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.ios;
 
 import com.badlogic.gdx.Audio;
@@ -28,72 +29,85 @@ import cli.MonoTouch.AVFoundation.AVAudioPlayer;
 import cli.MonoTouch.Foundation.NSData;
 import cli.MonoTouch.Foundation.NSError;
 import cli.MonoTouch.Foundation.NSUrl;
+import cli.objectal.*;
 
 public class IOSAudio implements Audio {
 
+	private boolean useObjectAL;
+
+	public IOSAudio () {
+
+	}
+
+	public IOSAudio (boolean useObjectAL) {
+		this.useObjectAL = useObjectAL;
+
+		if (useObjectAL) {
+			OALSimpleAudio.sharedInstance().set_allowIpod(false);
+			OALSimpleAudio.sharedInstance().set_honorSilentSwitch(true);
+		}
+	}
+
 	@Override
-	public AudioDevice newAudioDevice(int samplingRate, boolean isMono) {
+	public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
 		// FIXME implement via OpenAL if possible
 		return null;
 	}
 
 	@Override
-	public AudioRecorder newAudioRecorder(int samplingRate, boolean isMono) {
+	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono) {
 		// FIXME see what MonoTouch offers
 		return null;
 	}
 
-	/**
-	 * Let's verify the file format. 
+	/** Let's verify the file format.
 	 * 
-	 * @param fileHandle  The file to load.
-	 * @throws GdxRuntimeException  If we are using a OGG file (not supported under iOS).
-	 */
-	private void verify(FileHandle fileHandle) {
-		if (fileHandle.extension().equalsIgnoreCase("ogg")) {  
+	 * @param fileHandle The file to load.
+	 * @throws GdxRuntimeException If we are using a OGG file (not supported under iOS). */
+	private void verify (FileHandle fileHandle) {
+		if (fileHandle.extension().equalsIgnoreCase("ogg")) {
 			// Ogg is not supported on iOS (return a sound object that does nothing)
 			throw new GdxRuntimeException("Audio format .ogg is not supported on iOS. Cannot load: " + fileHandle.path());
 		}
 	}
-	
-	/**
-	 * Returns a new sound object. We are playing from memory, a.k.a. suited for short 
-	 * sound FXs.
+
+	/** Returns a new sound object. We are playing from memory, a.k.a. suited for short sound FXs.
 	 * 
-	 * @return  The new sound object.
-	 * @throws GdxRuntimeException  If we are unable to load the file for some reason.
-	 */
+	 * @return The new sound object.
+	 * @throws GdxRuntimeException If we are unable to load the file for some reason. */
 	@Override
-	public Sound newSound(FileHandle fileHandle) {
-		// verify file format (make sure we don't have an OGG file)
-		verify(fileHandle);
-				
-		// create audio player - from byte array 
-		// FIXME check if there's a faster way to load files
-		NSData data = NSData.FromArray(fileHandle.readBytes());
-	   return new IOSSound(data);
+	public Sound newSound (FileHandle fileHandle) {
+		if (useObjectAL) {
+			// let OALSimpleAudio report error if there is a problem loading the sound file.
+			return new IOSObjectALSound(fileHandle);
+		} else {
+
+			// verify file format (make sure we don't have an OGG file)
+			verify(fileHandle);
+
+			// create audio player - from byte array
+			// FIXME check if there's a faster way to load files
+			NSData data = NSData.FromArray(fileHandle.readBytes());
+			return new IOSSound(data);
+		}
 	}
 
-	/**
-	 * Returns a new music object. We are playing directly from file, a.k.a. suited for
-	 * background music.
+	/** Returns a new music object. We are playing directly from file, a.k.a. suited for background music.
 	 * 
-	 * @return  The new music object.
-	 * @throws GdxRuntimeException  If we are unable to load the file for some reason.
-	 */
+	 * @return The new music object.
+	 * @throws GdxRuntimeException If we are unable to load the file for some reason. */
 	@Override
-	public Music newMusic(FileHandle fileHandle) {
+	public Music newMusic (FileHandle fileHandle) {
 		// verify file format (make sure we don't have an OGG file)
 		verify(fileHandle);
-		
+
 		// create audio player - from file path
 		NSError[] error = new NSError[1];
 		AVAudioPlayer player = AVAudioPlayer.FromUrl(NSUrl.FromFilename(fileHandle.path()), error);
 		if (error[0] == null) {
 			// no error: return the music object
 			return new IOSMusic(player);
-		}
-		else {
+		} else {
 			// throw an exception
 			throw new GdxRuntimeException("Error opening music file at " + fileHandle.path() + ": " + error[0].ToString());
 		}
