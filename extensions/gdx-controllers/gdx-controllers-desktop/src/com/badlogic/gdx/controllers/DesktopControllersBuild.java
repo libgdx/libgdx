@@ -27,7 +27,7 @@ public class DesktopControllersBuild {
 			"dinput/"
 		};
 		win32home.cIncludes = new String[0];
-		win32home.linkerFlags += " "; // FIXME - Needs to be "-shared -o [modules] -ldinput8 -ldxguid".
+		win32home.libraries = "-ldinput8 -ldxguid";
 
 		new AntScriptGenerator().generate(buildConfig, win32home);
 		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-Dhas-compiler=true clean postcompile -v");
