@@ -12,9 +12,12 @@ import org.lwjgl.opengl.Display;
 
 public class DesktopControllers {
 	public static void main (String[] args) throws Exception {
+		//DesktopControllersBuild.main(null);
 		new LwjglFrame(new ApplicationAdapter() {
 			public void create () {
-				System.out.println(getWindowHandle());
+				long hwnd = getWindowHandle();
+				System.out.println("hwnd: " + hwnd);
+				System.out.println("inputManager pointer: " + OisWrapper.initialize(hwnd));
 			}
 
 			long getWindowHandle () {

@@ -15,7 +15,6 @@ public class DesktopControllersBuild {
 		BuildTarget win32home = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32home.buildFileName = "build-windows32home.xml";
 		win32home.is64Bit = false;
-		win32home.excludeFromMasterBuildFile = true;
 		win32home.compilerPrefix = "";
 		win32home.cppIncludes = new String[] {
 			"*.cpp",
