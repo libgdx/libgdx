@@ -31,6 +31,7 @@ import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.btIDebugDraw.DebugDrawModes;
 import com.badlogic.gdx.physics.bullet.btRigidBody;
 import com.badlogic.gdx.physics.bullet.btSequentialImpulseConstraintSolver;
+import com.badlogic.gdx.utils.PerformanceCounter;
 
 /** @author xoppa
  * Bullet physics world that holds all bullet entities and constructors.  
@@ -45,11 +46,9 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 	public final btBroadphaseInterface broadphase;
 	public final btConstraintSolver solver;
 	public final btDynamicsWorld dynamicsWorld;
+	public PerformanceCounter performanceCounter;
 	public final Vector3 gravity;	
 	
-	private WindowedMean mean = new WindowedMean(5);
-	public float bulletTime;
-	public float bulletLoad;
 	public int maxSubSteps = 5;
 	
 	public BulletWorld(final btCollisionConfiguration collisionConfiguration, final btCollisionDispatcher dispatcher,
@@ -92,14 +91,13 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 	
 	@Override
 	public void update () {
-		final float dt = Gdx.graphics.getDeltaTime();
-		bulletTime = mean.getMean();
-		final float load = dt == 0 ? 0 : bulletTime / dt;
-		bulletLoad = (dt > 1f) ? load : dt * load + (1f - dt) * bulletLoad;
-		
-		final long start = System.nanoTime();
-		dynamicsWorld.stepSimulation(dt, maxSubSteps);
-		mean.addValue((System.nanoTime() - start) / 1000000000.0f);
+		if (performanceCounter != null) {
+		performanceCounter.tick();
+		performanceCounter.start();
+		}
+		dynamicsWorld.stepSimulation(Gdx.graphics.getDeltaTime(), maxSubSteps);
+		if (performanceCounter != null)
+			performanceCounter.stop();
 
 		if (debugDrawer != null && debugDrawer.getDebugMode() > 0) {
 			debugDrawer.begin();

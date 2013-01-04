@@ -19,15 +19,16 @@ public class DesktopControllersBuild {
 		win32home.compilerPrefix = "";
 		win32home.cppIncludes = new String[] {
 			"*.cpp",
-			"ois-v1-3/src/*.cpp",
-			"ois-v1-3/src/win32/*.cpp",
+			"ois-v1-4svn/src/*.cpp",
+			"ois-v1-4svn/src/win32/*.cpp"
 		};
 		win32home.headerDirs = new String[] {
-			"ois-v1-3/includes",
+			"ois-v1-4svn/includes",
 			"dinput/"
 		};
 		win32home.cIncludes = new String[0];
-		
+		win32home.linkerFlags += " "; // FIXME - Needs to be "-shared -o [modules] -ldinput8 -ldxguid".
+
 		new AntScriptGenerator().generate(buildConfig, win32home);
 		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-Dhas-compiler=true clean postcompile -v");
 		BuildExecutor.executeAnt("jni/build.xml", "pack-natives");

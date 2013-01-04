@@ -787,4 +787,108 @@ public class Mesh implements Disposable {
 			break;
 		}
 	}
+	
+	/** Copies this mesh optionally removing duplicate vertices and/or reducing the amount of attributes.
+	 * @param isStatic whether the new mesh is static or not. Allows for internal optimizations.
+	 * @param removeDuplicates whether to remove duplicate vertices if possible. Only the vertices specified by usage are checked.
+	 * @param usage which attributes (if available) to copy
+	 * @return the copy of this mesh
+	 */
+	public Mesh copy(boolean isStatic, boolean removeDuplicates, final int[] usage) {
+		// TODO move this to a copy constructor?
+		// TODO duplicate the buffers without double copying the data if possible.
+		// TODO perhaps move this code to JNI if it turns out being too slow.
+		final int vertexSize = getVertexSize() / 4;
+		int numVertices = getNumVertices();
+		float[] vertices = new float[numVertices * vertexSize];
+		getVertices(0, vertices.length, vertices);
+		short[] checks = null;
+		VertexAttribute[] attrs = null;
+		int newVertexSize = 0;
+		if (usage != null) {
+			int size = 0;
+			int as = 0;
+			for (int i = 0; i < usage.length; i++)
+				if (getVertexAttribute(usage[i]) != null) {
+					size += getVertexAttribute(usage[i]).numComponents;
+					as++;
+				}
+			if (size > 0) {
+				attrs = new VertexAttribute[as];
+				checks = new short[size];
+				int idx = -1;
+				int ai = -1;
+				for (int i = 0; i < usage.length; i++) {
+					VertexAttribute a = getVertexAttribute(usage[i]);
+					if (a == null)
+						continue;
+					for (int j = 0; j < a.numComponents; j++)
+						checks[++idx] = (short)(a.offset + j);
+					attrs[++ai] = new VertexAttribute(a.usage, a.numComponents, a.alias);
+					newVertexSize += a.numComponents;
+				}
+			}
+		}
+		if (checks == null) {
+			checks = new short[vertexSize];
+			for (short i = 0; i < vertexSize; i++)
+				checks[i] = i;
+			newVertexSize = vertexSize;
+		}
+		
+		int numIndices = getNumIndices();
+		short[] indices = null;	
+		if (numIndices > 0) {
+			indices = new short[numIndices];
+			getIndices(indices);
+			if (removeDuplicates || newVertexSize != vertexSize) {
+				float[] tmp = new float[vertices.length];
+				int size = 0;
+				for (int i = 0; i < numIndices; i++) {
+					final int idx1 = indices[i] * vertexSize;
+					short newIndex = -1;
+					if (removeDuplicates) {
+						for (short j = 0; j < size && newIndex < 0; j++) {
+							final int idx2 = j*newVertexSize;
+							boolean found = true;
+							for (int k = 0; k < checks.length && found; k++) {
+								if (tmp[idx2+k] != vertices[idx1+checks[k]])
+									found = false;
+							}
+							if (found)
+								newIndex = j;
+						}
+					}
+					if (newIndex > 0)
+						indices[i] = newIndex;
+					else {
+						final int idx = size * newVertexSize;
+						for (int j = 0; j < checks.length; j++)
+							tmp[idx+j] = vertices[idx1+checks[j]];
+						indices[i] = (short)size;
+						size++;
+					}
+				}
+				vertices = tmp;
+				numVertices = size;
+			}
+		}
+		
+		Mesh result;
+		if (attrs == null)
+			result = new Mesh(isStatic, numVertices, indices == null ? 0 : indices.length, getVertexAttributes());
+		else
+			result = new Mesh(isStatic, numVertices, indices == null ? 0 : indices.length, attrs);
+		result.setVertices(vertices, 0, numVertices * newVertexSize);
+		result.setIndices(indices);
+		return result;
+	}
+	
+	/** Copies this mesh.
+	 * @param isStatic whether the new mesh is static or not. Allows for internal optimizations.
+	 * @return the copy of this mesh
+	 */
+	public Mesh copy(boolean isStatic) {
+		return copy(isStatic, false, null);
+	}
 }

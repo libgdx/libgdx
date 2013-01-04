@@ -29,6 +29,7 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.tests.box2d.Box2DTest;
 import com.badlogic.gdx.tests.bullet.BulletTest;
 import com.badlogic.gdx.tests.bullet.ConstraintsTest;
@@ -45,9 +46,11 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** @author xoppa */
 public class BulletTestCollection extends GdxTest implements InputProcessor, GestureListener {
-	private final BulletTest[] tests = {new ShootTest(), new KinematicTest(), new ConstraintsTest(), new MeshShapeTest(), new ConvexHullTest(), new RayCastTest(), new RayPickRagdollTest(), new InternalTickTest(), new SoftBodyTest(), new SoftMeshTest()};
+	protected final BulletTest[] tests = {new ShootTest(), new KinematicTest(), new ConstraintsTest(), 
+		new MeshShapeTest(), new ConvexHullTest(), new RayCastTest(), new RayPickRagdollTest(), new InternalTickTest(), 
+		new SoftBodyTest(), new SoftMeshTest()};
 	
-	private int testIndex = 0;
+	protected int testIndex = 0;
 	
 	private Application app = null;
 	
@@ -55,6 +58,7 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 	private Stage hud;
 	private Label fpsLabel;
 	private Label titleLabel;
+	private Label instructLabel;
 	private int loading = 0;
 	
 	@Override
@@ -82,6 +86,10 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		fpsLabel.setPosition(0, 0);
 		hud.addActor(titleLabel = new Label(tests[testIndex].getClass().getSimpleName(), new Label.LabelStyle(font, Color.WHITE)));
 		titleLabel.setY(hud.getHeight()-titleLabel.getHeight());
+		hud.addActor(instructLabel = new Label("A\nB\nC\nD\nE\nF", new Label.LabelStyle(font, Color.WHITE)));
+		instructLabel.setY(titleLabel.getY() - instructLabel.getHeight());
+		instructLabel.setAlignment(Align.top | Align.left);
+		instructLabel.setText(tests[testIndex].instructions);
 	}
 	
 	@Override
@@ -106,6 +114,7 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		app.log("TestCollection", "created test '" + tests[testIndex].getClass().getName() + "'");
 		
 		titleLabel.setText(tests[testIndex].getClass().getSimpleName());
+		instructLabel.setText(tests[testIndex].instructions);
 		loading = 0;
 	}
 	
@@ -171,14 +180,14 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 
 	@Override
 	public boolean longPress (float x, float y) {
-		if (tests[testIndex].longPress (x, y) == false)
-			next();
-		return true;
+		return tests[testIndex].longPress (x, y);
 	}
 
 	@Override
 	public boolean fling (float velocityX, float velocityY, int button) {
-		return tests[testIndex].fling (velocityX, velocityY, button);
+		if (tests[testIndex].fling (velocityX, velocityY, button) == false)
+			next();
+		return true;
 	}
 
 	@Override

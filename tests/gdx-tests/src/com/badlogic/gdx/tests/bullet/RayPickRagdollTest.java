@@ -16,9 +16,14 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.model.Model;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -46,17 +51,19 @@ public class RayPickRagdollTest extends BaseBulletTest {
 	@Override
 	public void create () {
 		super.create();
+		instructions = "Tap to shoot\nDrag ragdoll to pick\nLong press to toggle debug mode\nSwipe for next test";
+		
 		camera.position.set(4f, 2f, 4f);
 		camera.lookAt(0f, 1f, 0f);
 		camera.update();
 		
-		world.addConstructor("pelvis", new BulletConstructor(createCapsuleMesh(0.15f, 0.2f), 1f, new btCapsuleShape(0.15f, 0.2f)));
-		world.addConstructor("spine", new BulletConstructor(createCapsuleMesh(0.15f, 0.28f), 1f, new btCapsuleShape(0.15f, 0.28f)));
-		world.addConstructor("head", new BulletConstructor(createCapsuleMesh(0.1f, 0.05f), 1f, new btCapsuleShape(0.1f, 0.05f)));
-		world.addConstructor("upperleg", new BulletConstructor(createCapsuleMesh(0.07f, 0.45f), 1f, new btCapsuleShape(0.07f, 0.45f)));
-		world.addConstructor("lowerleg", new BulletConstructor(createCapsuleMesh(0.05f, 0.37f), 1f, new btCapsuleShape(0.05f, 0.37f)));
-		world.addConstructor("upperarm", new BulletConstructor(createCapsuleMesh(0.05f, 0.33f), 1f, new btCapsuleShape(0.05f, 0.33f)));
-		world.addConstructor("lowerarm", new BulletConstructor(createCapsuleMesh(0.04f, 0.25f), 1f, new btCapsuleShape(0.04f, 0.25f)));
+		world.addConstructor("pelvis", new BulletConstructor(createCapsuleModel(0.15f, 0.2f), 1f, new btCapsuleShape(0.15f, 0.2f)));
+		world.addConstructor("spine", new BulletConstructor(createCapsuleModel(0.15f, 0.28f), 1f, new btCapsuleShape(0.15f, 0.28f)));
+		world.addConstructor("head", new BulletConstructor(createCapsuleModel(0.1f, 0.05f), 1f, new btCapsuleShape(0.1f, 0.05f)));
+		world.addConstructor("upperleg", new BulletConstructor(createCapsuleModel(0.07f, 0.45f), 1f, new btCapsuleShape(0.07f, 0.45f)));
+		world.addConstructor("lowerleg", new BulletConstructor(createCapsuleModel(0.05f, 0.37f), 1f, new btCapsuleShape(0.05f, 0.37f)));
+		world.addConstructor("upperarm", new BulletConstructor(createCapsuleModel(0.05f, 0.33f), 1f, new btCapsuleShape(0.05f, 0.33f)));
+		world.addConstructor("lowerarm", new BulletConstructor(createCapsuleModel(0.04f, 0.25f), 1f, new btCapsuleShape(0.04f, 0.25f)));
 		
 		world.add("ground", 0f, 0f, 0f)
 			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
@@ -241,18 +248,18 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		world.dynamicsWorld.addConstraint(hingeC, true);
 	}
 	
-	protected Mesh createCapsuleMesh(float radius, float height) {
+	protected Model createCapsuleModel(float radius, float height) {
 		final float hh = radius + 0.5f * height;
-		final Mesh result = new Mesh(true, 8, 36, new VertexAttribute(Usage.Position, 3, "a_position"));
-		result.setVertices(new float[] {radius, hh, radius, radius, hh, -radius, -radius, hh, radius, -radius, hh, -radius,
+		final Mesh mesh = new Mesh(true, 8, 36, new VertexAttribute(Usage.Position, 3, "a_position"));
+		mesh.setVertices(new float[] {radius, hh, radius, radius, hh, -radius, -radius, hh, radius, -radius, hh, -radius,
 			radius, -hh, radius, radius, -hh, -radius, -radius, -hh, radius, -radius, -hh, -radius});
-		result.setIndices(new short[] {0, 1, 2, 1, 2, 3, // top
+		mesh.setIndices(new short[] {0, 1, 2, 1, 2, 3, // top
 			4, 5, 6, 5, 6, 7, // bottom
 			0, 2, 4, 4, 6, 2, // front
 			1, 3, 5, 5, 7, 3, // back
 			2, 3, 6, 6, 7, 3, // left
 			0, 1, 4, 4, 5, 1 // right
 			});
-		return result;
+		return new StillModel(new StillSubMesh("capsule", mesh, GL10.GL_TRIANGLES, new Material()));
 	}
 }
