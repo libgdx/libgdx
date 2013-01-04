@@ -70,13 +70,12 @@ public class SoftMeshTest extends BaseBulletTest {
 		.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		// Note: not every model is suitable for a one on one translation with a soft body, a better model might be added later.
-		
 		final StillModel model = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/wheel.obj"));
-		mesh = model.subMeshes[0].getMesh();
+		mesh = model.subMeshes[0].getMesh().copy(false, true, new int[] {Usage.Position});
 		mesh.scale(6f, 6f, 6f);
-		
+
 		softBody = new btSoftBody(worldInfo, mesh.getVerticesBuffer(), mesh.getNumVertices(), mesh.getVertexSize(), mesh.getVertexAttribute(Usage.Position).offset, mesh.getIndicesBuffer(), mesh.getNumIndices()/3);
-		// Set mass of 1 one to zero so its unmovable, comment out this line to make it a full dynamic body.
+		// Set mass of the first vertex to zero so its unmovable, comment out this line to make it a full dynamic body.
 		softBody.setMass(0, 0);
 		Material pm = softBody.appendMaterial();
 		pm.setM_kLST(0.2f);
