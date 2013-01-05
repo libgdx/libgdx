@@ -1,37 +1,100 @@
 package com.badlogic.gdx.controllers;
 
 public class OisJoystick {
+	public static enum OisPov {
+		Centered,
+		North,
+		South,
+		East,
+		West,
+		NorthEast,
+		SouthEast,
+		NorthWest,
+		SouthWest
+	}
+	
 	private long joystickPtr;
+	private boolean[] buttons;
+	private int[] axes;
+	private int[] povs;
+	private int[] slidersX;
+	private int[] slidersY;
 
 	public OisJoystick(long joystickPtr) {
 		this.joystickPtr = joystickPtr;
 		initialize(this);
+		this.buttons = new boolean[getNumButtons()];
+		this.axes = new int[getNumAxes()];
+		this.povs = new int[getNumPovs()];
+		this.slidersX = new int[getNumSliders()];
+		this.slidersY = new int[getNumSliders()];
 	}
 	
-	public void povMoved (int pov, int value) {
-		System.out.println("pov moved " + pov + ", " + value);
+	private void povMoved (int pov, int value) {
+		this.povs[pov] = value;
 	}
 
-	public void axisMoved (int axis, int value) {
-		System.out.println("axis moved " + axis + ", " + value);
+	private void axisMoved (int axis, int value) {
+		this.axes[axis] = value;
 	}
 
-	public void sliderMoved (int slider, int x, int y) {
-		System.out.println("slider moved " + slider + ", " + x + ", " + y);
+	private void sliderMoved (int slider, int x, int y) {
+		this.slidersX[slider] = x;
+		this.slidersY[slider] = y;
 	}
 
-	public void buttonPressed (int button) {
-		System.out.println("button pressed " + button);
+	private void buttonPressed (int button) {
+		this.buttons[button] = true;
 	}
 
-	public void buttonReleased (int button) {
-		System.out.println("button released " + button);
+	private void buttonReleased (int button) {
+		this.buttons[button] = false;
 	}
 	
 	public void update() {
 		updateJni(joystickPtr, this);
 	}
 	
+	public int getNumAxes() {
+		return getNumAxesJni(joystickPtr);
+	}
+
+	public int getNumButtons() {
+		return getNumButtonsJni(joystickPtr);
+	}
+	
+	public int getNumPovs() {
+		return getNumPovsJni(joystickPtr);
+	}
+	
+	public int getNumSliders() {
+		return getNumSlidersJni(joystickPtr);
+	}
+	
+	public int getAxis(int axis) {
+		return axes[axis];
+	}
+	
+	public OisPov getPov(int pov) {
+		switch(povs[pov]) {
+			case 0x00000000: return OisPov.Centered;
+			case 0x00000001: return OisPov.North;
+			case 0x00000010: return OisPov.South;
+			case 0x00000100: return OisPov.East;
+			case 0x00001000: return OisPov.West;
+			case 0x00000101: return OisPov.NorthEast;
+			case 0x00000110: return OisPov.SouthEast;
+			case 0x00001001: return OisPov.NorthWest;
+			case 0x00001010: return OisPov.SouthWest;
+			default: 
+				throw new RuntimeException("Unexpected POV value reported by OIS: " + povs[pov]);
+		}
+	}
+	
+	public boolean isButtonPressed(int button) {
+		return buttons[button];
+	}
+
 	// @off
 	/*JNI
 	#include <OISJoyStick.h>
@@ -109,4 +172,24 @@ public class OisJoystick {
 		joystick->setEventCallback(&listener);
 		joystick->capture();
 	*/
+	
+	private native int getNumAxesJni (long joystickPtr); /*
+		OIS::JoyStick* joystick = (OIS::JoyStick*)joystickPtr;
+		return joystick->getNumberOfComponents(OIS::OIS_Axis);
+	*/
+	
+	private native int getNumButtonsJni (long joystickPtr); /*
+		OIS::JoyStick* joystick = (OIS::JoyStick*)joystickPtr;
+		return joystick->getNumberOfComponents(OIS::OIS_Button);
+	*/
+	
+	private native int getNumPovsJni (long joystickPtr); /*
+		OIS::JoyStick* joystick = (OIS::JoyStick*)joystickPtr;
+		return joystick->getNumberOfComponents(OIS::OIS_POV);
+	 */
+	
+	private native int getNumSlidersJni (long joystickPtr); /*
+		OIS::JoyStick* joystick = (OIS::JoyStick*)joystickPtr;
+		return joystick->getNumberOfComponents(OIS::OIS_Slider);
+	 */
 }

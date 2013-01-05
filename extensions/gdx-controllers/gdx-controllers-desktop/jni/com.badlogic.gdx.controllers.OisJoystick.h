@@ -23,6 +23,38 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_initialize
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_updateJni
   (JNIEnv *, jobject, jlong, jobject);
 
+/*
+ * Class:     com_badlogic_gdx_controllers_OisJoystick
+ * Method:    getNumAxesJni
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getNumAxesJni
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_controllers_OisJoystick
+ * Method:    getNumButtonsJni
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getNumButtonsJni
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_controllers_OisJoystick
+ * Method:    getNumPovsJni
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getNumPovsJni
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_controllers_OisJoystick
+ * Method:    getNumSlidersJni
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getNumSlidersJni
+  (JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif
