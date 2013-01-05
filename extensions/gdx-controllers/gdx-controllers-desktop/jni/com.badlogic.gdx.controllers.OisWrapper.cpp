@@ -1,13 +1,36 @@
 #include <com.badlogic.gdx.controllers.OisWrapper.h>
 
-//@line:14
+//@line:15
 
 	#include <OISJoyStick.h>
 	#include <OISInputManager.h>
 	#include <sstream>
+	
+	static jclass callbackClass = 0;
+	static jmethodID povMovedId = 0;
+	static jmethodID axisMovedId = 0;
+	static jmethodID sliderMovedId = 0;
+	static jmethodID buttonPressedId = 0;
+	static jmethodID buttonReleasedId = 0;
+	
+	static void initializeClasses(JNIEnv* env) {
+		// we leak one global ref
+		if(!callbackClass) {
+		}
+	}
 
 	class Listener : public OIS::JoyStickListener {
+		public:
+		
+		Listener(JNIEnv* env, jobject obj) {
+			this->env = env;
+			this->obj = obj;
+		}
+	
 	private:
+		JNIEnv* env;
+		jobject obj;
+		
 		bool povMoved (const OIS::JoyStickEvent &event, int pov);
 		bool axisMoved (const OIS::JoyStickEvent &event, int axis);
 		bool sliderMoved (const OIS::JoyStickEvent &event, int sliderID);
@@ -44,10 +67,39 @@
 		fflush(stdout);
 		return true;
 	}
-	JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_controllers_OisWrapper_initialize(JNIEnv* env, jclass clazz, jlong hwnd) {
+	
+	#ifdef _WIN32
+	#include <windows.h>
+	#endif
+	
+	JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_controllers_OisWrapper_invisibleWindowHack(JNIEnv* env, jclass clazz) {
 
 
-//@line:59
+//@line:93
+
+	#ifdef _WIN32
+		HWND joyHwnd = CreateWindow("Static",               // Class Name (using static so I don't have to register a class)
+                            		 "JoystickWindow",       // Window Name
+                            		 WS_BORDER,   // Window Style
+                            		 0, 0, 0, 0,             // x, y, width, height
+                            0,							 // parent handle
+                            0,                      // Menu handle
+                            0,                      // Instance handle
+                            0);                     // Additional Params
+     printf("hwnd: %d\n", joyHwnd);
+     fflush(stdout);
+     return (jlong)joyHwnd;
+   #else
+   	return 0;
+   #endif
+	
+
+}
+
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_controllers_OisWrapper_initialize(JNIEnv* env, jclass clazz, jlong hwnd) {
+
+
+//@line:111
 
 		std::ostringstream hwndStr;
 		hwndStr << hwnd;
@@ -60,8 +112,8 @@
 		OIS::InputManager *inputManager = OIS::InputManager::createInputSystem(params);
 		printf("OIS version: %i\n", inputManager->getVersionNumber());
 		fflush(stdout);
-
-		//Listener *listener = new Listener();
+		
+		Listener *listener = new Listener(0, 0);
 		int count = inputManager->getNumberOfDevices(OIS::OISJoyStick);
 		printf("joystick count: %i\n", count);
 		fflush(stdout);
@@ -69,11 +121,17 @@
 			try {
 				inputManager->createInputObject(OIS::OISJoyStick, true);
 			} catch (std::exception &ex) {
-				printf("exception!\n%s\n", ex.what());
+				printf("couldn't create input object!\n%s\n", ex.what());
 				fflush(stdout);
 			}
-			//OIS::JoyStick* joystick = static_cast<OIS::JoyStick*>(inputManager->createInputObject(OIS::OISJoyStick, true));
-			//joystick->setEventCallback(listener);
+			
+			try {
+				OIS::JoyStick* joystick = static_cast<OIS::JoyStick*>(inputManager->createInputObject(OIS::OISJoyStick, true));
+				joystick->setEventCallback(listener);
+			} catch(std::exception &ex) {
+				printf("couldn't set listener!\n%s\n", ex.what());
+				fflush(stdout);
+			}
 		}
 		return (jlong)inputManager;
 	
