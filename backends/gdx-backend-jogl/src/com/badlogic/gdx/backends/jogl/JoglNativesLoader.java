@@ -26,10 +26,12 @@ public class JoglNativesLoader {
 
 	/** loads the necessary libraries depending on the operating system */
 	public static void load () {
-//		GdxNativesLoader.load();
-//		if (GdxNativesLoader.disableNativesLoading) return;
-//
-//		if (nativesLoaded) return;
+		GdxNativesLoader.load();
+		if (GdxNativesLoader.disableNativesLoading) return;
+
+		if (nativesLoaded) return;
+
+//  TODO: JOGL2 supports more than three platforms and contains its own native loader
 //
 //		NativeLibLoader.disableLoading();
 //		com.sun.gluegen.runtime.NativeLibLoader.disableLoading();
@@ -58,18 +60,20 @@ public class JoglNativesLoader {
 //			loadLibrary("libjogl-linux32.so", "libjogl-linux64.so");
 //		}
 //
-//		if (isWindows) {
-//			extractLibrary("OpenAL32.dll", "OpenAL64.dll");
-//			extractLibrary("lwjgl.dll", "lwjgl64.dll");
-//		} else if (isMac) {
-//			extractLibrary("openal.dylib", "openal.dylib");
-//			extractLibrary("liblwjgl.jnilib", "liblwjgl.jnilib");
-//		} else if (isLinux) {
-//			extractLibrary("libopenal.so", "libopenal64.so");
-//			extractLibrary("liblwjgl.so", "liblwjgl64.so");
-//		}
-//		System.setProperty("org.lwjgl.librarypath", nativesDir.getAbsolutePath());
-//
-//		nativesLoaded = true;
+		
+//  TODO: Switch to use JogAmp JOAL to support more platforms?
+		if (isWindows) {
+			extractLibrary("OpenAL32.dll", "OpenAL64.dll");
+			extractLibrary("lwjgl.dll", "lwjgl64.dll");
+		} else if (isMac) {
+			extractLibrary("openal.dylib", "openal.dylib");
+			extractLibrary("liblwjgl.jnilib", "liblwjgl.jnilib");
+		} else if (isLinux) {
+			extractLibrary("libopenal.so", "libopenal64.so");
+			extractLibrary("liblwjgl.so", "liblwjgl64.so");
+		}
+		System.setProperty("org.lwjgl.librarypath", nativesDir.getAbsolutePath());
+
+		nativesLoaded = true;
 	}
 }
