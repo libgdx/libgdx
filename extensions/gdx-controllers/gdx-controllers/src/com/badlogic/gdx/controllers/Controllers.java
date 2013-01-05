@@ -31,6 +31,9 @@ public class Controllers {
 		case Android:
 			className = "com.badlogic.gdx.controllers.android.AndroidControllerManager";
 			break;
+		case Desktop:
+			className = "com.badlogic.gdx.controllers.desktop.DesktopControllerManager";
+			break;
 		default:
 			throw new GdxRuntimeException("No controller manager is available for: " + Gdx.app.getType());
 		}

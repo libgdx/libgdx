@@ -8,8 +8,8 @@ public class OisJoystick {
 		Centered, North, South, East, West, NorthEast, SouthEast, NorthWest, SouthWest
 	}
 
-	private String name;
-	private long joystickPtr;
+	private final String name;
+	private final long joystickPtr;
 	private final boolean[] buttons;
 	private final float[] axes;
 	private final int[] povs;
@@ -27,8 +27,8 @@ public class OisJoystick {
 		slidersY = new boolean[getSliderCount()];
 	}
 
-	public void setListener (OisListener callback) {
-		this.listener = callback;
+	public void setListener (OisListener listener) {
+		this.listener = listener;
 	}
 
 	private void buttonPressed (int buttonIndex) {
@@ -52,9 +52,14 @@ public class OisJoystick {
 	}
 
 	private void sliderMoved (int sliderIndex, int x, int y) {
+		boolean xChanged = slidersX[sliderIndex] != (x == 1);
+		boolean yChanged = slidersY[sliderIndex] != (y == 1);
 		slidersX[sliderIndex] = x == 1;
 		slidersY[sliderIndex] = y == 1;
-		if (listener != null) listener.sliderMoved(this, sliderIndex, x == 1, y == 1);
+		if (listener != null) {
+			if (xChanged) listener.xSliderMoved(this, sliderIndex, x == 1);
+			if (yChanged) listener.ySliderMoved(this, sliderIndex, y == 1);
+		}
 	}
 
 	public void update () {

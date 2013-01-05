@@ -1,5 +1,5 @@
 
-package com.badlogic.gdx.controllers;
+package com.badlogic.gdx.controllers.desktop;
 
 import com.badlogic.gdx.jnigen.AntScriptGenerator;
 import com.badlogic.gdx.jnigen.BuildConfig;
@@ -69,7 +69,7 @@ public class DesktopControllersBuild {
 		mac.libraries = ""; // FIXME
 		
 		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac);
-		if(!BuildExecutor.executeAnt("jni/build-linux32.xml", "-Dhas-compiler=true -v postcompile")) {
+		if(!BuildExecutor.executeAnt("jni/build-windows32home.xml", "-Dhas-compiler=true -v postcompile")) {
 			throw new Exception("build failed");
 		}
 		BuildExecutor.executeAnt("jni/build.xml", "pack-natives");

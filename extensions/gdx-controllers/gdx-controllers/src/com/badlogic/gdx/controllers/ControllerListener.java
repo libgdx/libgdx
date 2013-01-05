@@ -11,7 +11,7 @@ public interface ControllerListener {
 
 	public boolean axisMoved (Controller controller, int axisIndex, float value);
 
-	public boolean povMoved (Controller controller, int povId, PovDirection value);
+	public boolean povMoved (Controller controller, int povIndex, PovDirection value);
 
 	public boolean xSliderMoved (Controller controller, int sliderIndex, boolean value);
 

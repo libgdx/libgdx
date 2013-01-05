@@ -14,18 +14,12 @@ public class Ois {
 	private final long inputManagerPtr;
 	private final ArrayList<OisJoystick> joysticks = new ArrayList();
 
-	public Ois () {
-		// hack doesn't work :/ FIXME - Try using hwnd from AWT for LwjglFrame.
-// if(System.getProperty("os.name").toLowerCase().contains("windows")) {
-// inputManager = createInputManager(getWindowHandleWindowsHack());
-// } else {
-		inputManagerPtr = createInputManager(getWindowHandle());
-// }
+	public Ois (long hwnd) {
+		inputManagerPtr = createInputManager(hwnd);
 
 		String[] names = getJoystickNames(inputManagerPtr);
-		for (int i = 0, n = names.length; i < n; i++) {
+		for (int i = 0, n = names.length; i < n; i++)
 			joysticks.add(new OisJoystick(createJoystick(inputManagerPtr), names[i]));
-		}
 	}
 
 	public ArrayList<OisJoystick> getJoysticks () {
@@ -35,21 +29,6 @@ public class Ois {
 	public void update () {
 		for (int i = 0, n = joysticks.size(); i < n; i++)
 			joysticks.get(i).update();
-	}
-
-	/** Returns the window handle from LWJGL needed by OIS. */
-	private long getWindowHandle () {
-		try {
-			Method getImplementation = Display.class.getDeclaredMethod("getImplementation", new Class[0]);
-			getImplementation.setAccessible(true);
-			Object display = getImplementation.invoke(null, (Object[])null);
-			String fieldName = System.getProperty("os.name").toLowerCase().contains("windows") ? "hwnd" : "parent_window";
-			Field field = display.getClass().getDeclaredField(fieldName);
-			field.setAccessible(true);
-			return (Long)field.get(display);
-		} catch (Exception ex) {
-			throw new RuntimeException("Unable to get window handle.", ex);
-		}
 	}
 
 	public int getVersionNumber () {
@@ -69,32 +48,6 @@ public class Ois {
 	#include <OISJoyStick.h>
 	#include <OISInputManager.h>
 	#include <sstream>
-
-	#ifdef _WIN32
-	#include <windows.h>
-	#endif
-	*/
-
-	/**
-	 * Used on Windows32 with LwjglFrame to work around the cooperation level problem. Returns 0 on other platforms.
-	 * FIXME - Doesn't cause errors, but we don't get any input events.
-	 * @return the HWND for the invisible window, to be passed to {@link #createInputManager(long)}
-	 */
-	private native long getWindowHandleWindowsHack(); /*
-	#ifdef _WIN32
-		HWND joyHwnd = CreateWindow(
-			"Static",         // class name (static so we don't have to register a class)
-			"JoystickWindow", // window name
-			WS_BORDER,        // window style
-			0, 0, 0, 0,       // x, y, width, height
-			0,                // parent handle
-			0,                // menu handle
-			0,                // instance handle
-			0);               // additional params
-		return (jlong)joyHwnd;
-	#else
-		return 0;
-	#endif
 	*/
 
 	private native long createInputManager (long hwnd); /*
