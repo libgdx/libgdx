@@ -3,6 +3,7 @@ package com.badlogic.gdx.controllers;
 
 import com.badlogic.gdx.math.Vector3;
 
+/** @author Nathan Sweet */
 public interface Controller {
 	public boolean getButton (int buttonIndex);
 
