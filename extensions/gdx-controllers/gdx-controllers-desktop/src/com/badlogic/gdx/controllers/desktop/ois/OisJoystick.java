@@ -1,5 +1,5 @@
 
-package com.badlogic.gdx.controllers;
+package com.badlogic.gdx.controllers.desktop.ois;
 
 public class OisJoystick {
 	static private final int MIN_AXIS = -32768, MAX_AXIS = 32767;
@@ -13,6 +13,7 @@ public class OisJoystick {
 	private float[] axes;
 	private int[] povs;
 	private boolean[] slidersX, slidersY;
+	private OisCallback callback;
 
 	public OisJoystick (long joystickPtr) {
 		this.joystickPtr = joystickPtr;
@@ -24,25 +25,44 @@ public class OisJoystick {
 		slidersY = new boolean[getSliderCount()];
 	}
 
+	public void setCallback(OisCallback callback) {
+		this.callback = callback;
+	}
+	
 	private void buttonPressed (int buttonIndex) {
 		buttons[buttonIndex] = true;
+		if(callback != null) {
+			callback.buttonPressed(this, buttonIndex);
+		}
 	}
 
 	private void buttonReleased (int buttonIndex) {
 		buttons[buttonIndex] = false;
+		if(callback != null) {
+			callback.buttonReleased(this, buttonIndex);
+		}
 	}
 
 	private void axisMoved (int axisIndex, int value) {
 		axes[axisIndex] = ((value - MIN_AXIS) << 1) / (float)(MAX_AXIS - MIN_AXIS) - 1; // -1 to 1
+		if(callback != null) {
+			callback.axisMoved(this, axisIndex, axes[axisIndex]);
+		}
 	}
 
 	private void povMoved (int povIndex, int value) {
 		povs[povIndex] = value;
+		if(callback != null) {
+			callback.povMoved(this, povIndex, getPov(value));
+		}
 	}
 
 	private void sliderMoved (int sliderIndex, int x, int y) {
 		slidersX[sliderIndex] = x == 1;
 		slidersY[sliderIndex] = y == 1;
+		if(callback != null) {
+			callback.sliderMoved(this, sliderIndex, x == 1, y == 1);
+		}
 	}
 
 	public void update () {
