@@ -158,10 +158,10 @@ public class PixmapPacker implements Disposable {
 		int borderPixels = padding + (duplicateBorder ? 1 : 0);
 		borderPixels <<= 1;
 
-		if (image.getWidth() >= pageWidth + borderPixels || image.getHeight() >= pageHeight + borderPixels)
-			throw new GdxRuntimeException("page size for '" + name + "' to small");
-
 		Rectangle rect = new Rectangle(0, 0, image.getWidth() + borderPixels, image.getHeight() + borderPixels);
+		if (rect.getWidth() > pageWidth || rect.getHeight() > pageHeight)
+			throw new GdxRuntimeException("page size for '" + name + "' to small");
+		
 		Node node = insert(currPage.root, rect);
 
 		if (node == null) {
