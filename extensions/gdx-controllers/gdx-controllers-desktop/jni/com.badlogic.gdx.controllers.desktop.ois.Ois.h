@@ -25,34 +25,10 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_create
 
 /*
  * Class:     com_badlogic_gdx_controllers_desktop_ois_Ois
- * Method:    getJoystickNames
- * Signature: (J)[Ljava/lang/String;
- */
-JNIEXPORT jobjectArray JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_getJoystickNames
-  (JNIEnv *, jobject, jlong);
-
-/*
- * Class:     com_badlogic_gdx_controllers_desktop_ois_Ois
- * Method:    getVersionNumber
+ * Method:    getJoystickCount
  * Signature: (J)I
  */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_getVersionNumber
-  (JNIEnv *, jobject, jlong);
-
-/*
- * Class:     com_badlogic_gdx_controllers_desktop_ois_Ois
- * Method:    getVersionName
- * Signature: (J)Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_getVersionName
-  (JNIEnv *, jobject, jlong);
-
-/*
- * Class:     com_badlogic_gdx_controllers_desktop_ois_Ois
- * Method:    getInputSystemName
- * Signature: (J)Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_getInputSystemName
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_getJoystickCount
   (JNIEnv *, jobject, jlong);
 
 /*

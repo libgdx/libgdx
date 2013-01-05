@@ -24,8 +24,7 @@ public class Ois {
 
 		String[] names = getJoystickNames(inputManagerPtr);
 		for (int i = 0, n = names.length; i < n; i++) {
-			System.out.println(names[i]);
-			joysticks.add(new OisJoystick(createJoystick(inputManagerPtr)));
+			joysticks.add(new OisJoystick(createJoystick(inputManagerPtr), names[i]));
 		}
 	}
 

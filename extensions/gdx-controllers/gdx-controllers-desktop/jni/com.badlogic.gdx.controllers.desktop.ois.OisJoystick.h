@@ -21,42 +21,42 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick
 
 /*
  * Class:     com_badlogic_gdx_controllers_desktop_ois_OisJoystick
- * Method:    update
+ * Method:    updateJni
  * Signature: (JLcom/badlogic/gdx/controllers/desktop/ois/OisJoystick;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_update
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_updateJni
   (JNIEnv *, jobject, jlong, jobject);
 
 /*
  * Class:     com_badlogic_gdx_controllers_desktop_ois_OisJoystick
- * Method:    getAxesCount
+ * Method:    getAxesCountJni
  * Signature: (J)I
  */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getAxesCount
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getAxesCountJni
   (JNIEnv *, jobject, jlong);
 
 /*
  * Class:     com_badlogic_gdx_controllers_desktop_ois_OisJoystick
- * Method:    getButtonCount
+ * Method:    getButtonCountJni
  * Signature: (J)I
  */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getButtonCount
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getButtonCountJni
   (JNIEnv *, jobject, jlong);
 
 /*
  * Class:     com_badlogic_gdx_controllers_desktop_ois_OisJoystick
- * Method:    getPovCount
+ * Method:    getPovCountJni
  * Signature: (J)I
  */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getPovCount
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getPovCountJni
   (JNIEnv *, jobject, jlong);
 
 /*
  * Class:     com_badlogic_gdx_controllers_desktop_ois_OisJoystick
- * Method:    getSliderCount
+ * Method:    getSliderCountJni
  * Signature: (J)I
  */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getSliderCount
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getSliderCountJni
   (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus

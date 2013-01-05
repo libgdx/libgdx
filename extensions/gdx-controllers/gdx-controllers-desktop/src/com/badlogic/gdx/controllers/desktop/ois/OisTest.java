@@ -18,35 +18,40 @@ public class OisTest {
 			@Override
 			public void create () {
 				this.ois = new Ois();
-				System.out.println(ois.getVersionNumber());
-				System.out.println(ois.getVersionName());
-				System.out.println(ois.getInputSystemName());
-				ois.getJoysticks().get(0).setListener(new OisListener() {
-					@Override
-					public void sliderMoved (OisJoystick joystick, int slider, boolean x, boolean y) {
-						System.out.println("slider " + slider + " moved, " + x + ", " + y);
-					}
-
-					@Override
-					public void povMoved (OisJoystick joystick, int pov, OisPov direction) {
-						System.out.println("pov " + pov + " moved, " + direction);
-					}
-
-					@Override
-					public void buttonReleased (OisJoystick joystick, int button) {
-						System.out.println("button " + button + " released");
-					}
-
-					@Override
-					public void buttonPressed (OisJoystick joystick, int button) {
-						System.out.println("button " + button + " pressed");
-					}
-
-					@Override
-					public void axisMoved (OisJoystick joystick, int axis, float value) {
-						System.out.println("axis " + axis + " moved, " + value);
-					}
-				});
+				if(ois.getJoysticks().size() > 0) {
+					ois.getJoysticks().get(0).setListener(new OisListener() {
+						
+						@Override
+						public void sliderMoved (OisJoystick joystick, int slider, boolean x, boolean y) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void povMoved (OisJoystick joystick, int pov, OisPov direction) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void buttonReleased (OisJoystick joystick, int button) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void buttonPressed (OisJoystick joystick, int button) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+						@Override
+						public void axisMoved (OisJoystick joystick, int axis, float value) {
+							// TODO Auto-generated method stub
+							
+						}
+					});
+				}
 			}
 
 			public void render () {

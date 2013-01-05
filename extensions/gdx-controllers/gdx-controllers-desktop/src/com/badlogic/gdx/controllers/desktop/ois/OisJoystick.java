@@ -8,6 +8,7 @@ public class OisJoystick {
 		Centered, North, South, East, West, NorthEast, SouthEast, NorthWest, SouthWest
 	}
 
+	private String name;
 	private long joystickPtr;
 	private final boolean[] buttons;
 	private final float[] axes;
@@ -15,8 +16,9 @@ public class OisJoystick {
 	private final boolean[] slidersX, slidersY;
 	private OisListener listener;
 
-	public OisJoystick (long joystickPtr) {
+	public OisJoystick (long joystickPtr, String name) {
 		this.joystickPtr = joystickPtr;
+		this.name = name;
 		initialize(this);
 		buttons = new boolean[getButtonCount()];
 		axes = new float[getAxisCount()];
@@ -114,6 +116,14 @@ public class OisJoystick {
 
 	public boolean getSliderY (int sliderIndex) {
 		return slidersY[sliderIndex];
+	}
+
+	public String getName () {
+		return name;
+	}
+
+	public String toString () {
+		return name;
 	}
 
 	// @off
