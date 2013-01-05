@@ -18,7 +18,7 @@ public interface Controller {
 
 	public void setAccelerometerSensitivity (float sensitivity);
 
-	public int getComponentCount (ComponentType type);
+	public int getControlCount (ControlType type);
 
 	public String getName ();
 

@@ -1,6 +1,6 @@
 
 package com.badlogic.gdx.controllers;
 
-public enum ComponentType {
+public enum ControlType {
 	button, axis, slider, pov, accelerometer
 }
