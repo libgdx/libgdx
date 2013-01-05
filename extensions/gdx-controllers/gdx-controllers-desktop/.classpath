@@ -6,5 +6,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-backend-lwjgl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-jnigen"/>
 	<classpathentry exported="true" kind="lib" path="libs/gdx-controllers-desktop-natives.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
