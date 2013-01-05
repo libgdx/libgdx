@@ -9,11 +9,11 @@ public class OisJoystick {
 	}
 
 	private long joystickPtr;
-	private boolean[] buttons;
-	private float[] axes;
-	private int[] povs;
-	private boolean[] slidersX, slidersY;
-	private OisCallback callback;
+	private final boolean[] buttons;
+	private final float[] axes;
+	private final int[] povs;
+	private final boolean[] slidersX, slidersY;
+	private OisListener listener;
 
 	public OisJoystick (long joystickPtr) {
 		this.joystickPtr = joystickPtr;
@@ -25,44 +25,34 @@ public class OisJoystick {
 		slidersY = new boolean[getSliderCount()];
 	}
 
-	public void setCallback(OisCallback callback) {
-		this.callback = callback;
+	public void setListener (OisListener callback) {
+		this.listener = callback;
 	}
-	
+
 	private void buttonPressed (int buttonIndex) {
 		buttons[buttonIndex] = true;
-		if(callback != null) {
-			callback.buttonPressed(this, buttonIndex);
-		}
+		if (listener != null) listener.buttonPressed(this, buttonIndex);
 	}
 
 	private void buttonReleased (int buttonIndex) {
 		buttons[buttonIndex] = false;
-		if(callback != null) {
-			callback.buttonReleased(this, buttonIndex);
-		}
+		if (listener != null) listener.buttonReleased(this, buttonIndex);
 	}
 
 	private void axisMoved (int axisIndex, int value) {
 		axes[axisIndex] = ((value - MIN_AXIS) << 1) / (float)(MAX_AXIS - MIN_AXIS) - 1; // -1 to 1
-		if(callback != null) {
-			callback.axisMoved(this, axisIndex, axes[axisIndex]);
-		}
+		if (listener != null) listener.axisMoved(this, axisIndex, axes[axisIndex]);
 	}
 
 	private void povMoved (int povIndex, int value) {
 		povs[povIndex] = value;
-		if(callback != null) {
-			callback.povMoved(this, povIndex, getPov(value));
-		}
+		if (listener != null) listener.povMoved(this, povIndex, getPov(povIndex));
 	}
 
 	private void sliderMoved (int sliderIndex, int x, int y) {
 		slidersX[sliderIndex] = x == 1;
 		slidersY[sliderIndex] = y == 1;
-		if(callback != null) {
-			callback.sliderMoved(this, sliderIndex, x == 1, y == 1);
-		}
+		if (listener != null) listener.sliderMoved(this, sliderIndex, x == 1, y == 1);
 	}
 
 	public void update () {
@@ -85,12 +75,12 @@ public class OisJoystick {
 		return getSliderCountJni(joystickPtr);
 	}
 
-	public float getAxis (int axis) {
-		return axes[axis];
+	public float getAxis (int axisIndex) {
+		return axes[axisIndex];
 	}
 
-	public OisPov getPov (int pov) {
-		switch (povs[pov]) {
+	public OisPov getPov (int povIndex) {
+		switch (povs[povIndex]) {
 		case 0x00000000:
 			return OisPov.Centered;
 		case 0x00000001:
@@ -110,12 +100,20 @@ public class OisJoystick {
 		case 0x00001010:
 			return OisPov.SouthWest;
 		default:
-			throw new RuntimeException("Unexpected POV value reported by OIS: " + povs[pov]);
+			throw new RuntimeException("Unexpected POV value reported by OIS: " + povs[povIndex]);
 		}
 	}
 
-	public boolean isButtonPressed (int button) {
-		return buttons[button];
+	public boolean isButtonPressed (int buttonIndex) {
+		return buttons[buttonIndex];
+	}
+
+	public boolean getSliderX (int sliderIndex) {
+		return slidersX[sliderIndex];
+	}
+
+	public boolean getSliderY (int sliderIndex) {
+		return slidersY[sliderIndex];
 	}
 
 	// @off
