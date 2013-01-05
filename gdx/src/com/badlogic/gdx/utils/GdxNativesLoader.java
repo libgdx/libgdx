@@ -65,33 +65,35 @@ public class GdxNativesLoader {
 	static public String extractLibrary (String native32, String native64) {
 		String nativeFileName = is64Bit ? native64 : native32;
 		File nativeFile = new File(nativesDir, nativeFileName);
-		try {
-			// Extract native from classpath to temp dir.
-			InputStream input = GdxNativesLoader.class.getResourceAsStream("/" + nativeFileName);
-			if (input == null) return null;
-			nativesDir.mkdirs();
-			FileOutputStream output = new FileOutputStream(nativeFile);
-			byte[] buffer = new byte[4096];
-			while (true) {
-				int length = input.read(buffer);
-				if (length == -1) break;
-				output.write(buffer, 0, length);
+		InputStream input = GdxNativesLoader.class.getResourceAsStream("/" + nativeFileName);
+		if (!nativeFile.exists() || nativeFile.length() == 0) {
+			try {
+				// Extract native from classpath to temp dir.
+				if (input == null) return null;
+				nativesDir.mkdirs();
+				FileOutputStream output = new FileOutputStream(nativeFile);
+				byte[] buffer = new byte[4096];
+				while (true) {
+					int length = input.read(buffer);
+					if (length == -1) break;
+					output.write(buffer, 0, length);
+				}
+				input.close();
+				output.close();
+			} catch (IOException ignored) {
 			}
-			input.close();
-			output.close();
-		} catch (IOException ex) {
 		}
 		return nativeFile.exists() ? nativeFile.getAbsolutePath() : null;
 	}
 
 	/** Loads the libgdx native libraries. */
 	static public void load () {
+		if (nativesLoaded) return;
 		if (disableNativesLoading) {
-			System.out
-				.println("So you don't like our native lib loading? Good, you are on your own now. We don't give support from here on out");
+			nativesLoaded = true;
+			System.out.println("Native loading is disabled.");
 			return;
 		}
-		if (nativesLoaded) return;
 
 		String vm = System.getProperty("java.vm.name");
 		if (vm == null || !vm.contains("Dalvik")) {

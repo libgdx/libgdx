@@ -24,6 +24,7 @@
 			<arg value="-target:library"/>
 			<arg value="-debug"/>
 			<arg value="-out:${OUT}"/>
+			<arg value="-r:libs/objectal/libObjectAL.dll"/>
 			<arg value="-r:${MONO_HOME}/mscorlib.dll"/>
 			<arg value="-r:${MONO_HOME}/System.dll"/>
 			<arg value="-r:${MONO_HOME}/System.Core.dll"/>

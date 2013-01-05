@@ -54,6 +54,8 @@ public class BuildTarget {
 	public String preCompileTask;
 	/** Ant Xml executed in a target after compilation **/
 	public String postCompileTask;
+	/** the libraries to be linked to the output, specify via e.g. -ldinput -ldxguid etc. **/
+	public String libraries;
 
 	/** Creates a new build target. See members of this class for a description of the parameters. */
 	public BuildTarget (BuildTarget.TargetOs targetType, boolean is64Bit, String[] cIncludes, String[] cExcludes,
@@ -81,6 +83,7 @@ public class BuildTarget {
 		this.cFlags = cFlags;
 		this.cppFlags = cppFlags;
 		this.linkerFlags = linkerFlags;
+		this.libraries = "";
 	}
 
 	/** Creates a new default BuildTarget for the given OS, using common default values. */

@@ -6,14 +6,14 @@
 # per project ignores, it's cumbersome, but reduces the risk of missing something
 
 # target directories:
-backends/gdx-backend-android/target/
-backends/gdx-backends-gwt/target/
-extensions/gdx-audio/target/
-extensions/gdx-freetype/target/
-extensions/gdx-image/target/
-extensions/gdx-tiled-preprocessor/target/
-extensions/gdx-tools/target/
-extensions/gdx-bullet/target/
+/backends/gdx-backend-android/target/
+/backends/gdx-backends-gwt/target/
+/extensions/gdx-audio/target/
+/extensions/gdx-freetype/target/
+/extensions/gdx-image/target/
+/extensions/gdx-tiled-preprocessor/target/
+/extensions/gdx-tools/target/
+/extensions/gdx-bullet/target/
 
 /backends/gdx-backend-android/bin
 /backends/gdx-backend-iosmonotouch/bin
@@ -164,6 +164,11 @@ extensions/gdx-bullet/target/
 /extensions/model-loaders/model-loaders-android/bin
 /extensions/model-loaders/model-loaders-android/gen
 /extensions/model-loaders/model-loaders/bin
+
+/extensions/gdx-controllers/gdx-controllers/bin
+/extensions/gdx-controllers/gdx-controllers-desktop/bin
+/extensions/gdx-controllers/gdx-controllers-desktop/jni/target
+/extensions/gdx-controllers/gdx-controllers-desktop/libs/windows32
 
 /gdx/target
 /gdx/obj

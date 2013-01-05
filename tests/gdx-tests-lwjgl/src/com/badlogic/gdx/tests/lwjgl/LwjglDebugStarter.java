@@ -18,10 +18,7 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.tests.BulletTestCollection;
-import com.badlogic.gdx.tests.SoundTest;
-import com.badlogic.gdx.tests.bullet.SoftMeshTest;
-import com.badlogic.gdx.tests.extensions.Mpg123Test;
+import com.badlogic.gdx.tests.YDownTest;
 import com.badlogic.gdx.tests.g3d.JsonModelLoaderTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;

@@ -2,12 +2,15 @@ package com.badlogic.gdx.graphics.g3d.loaders.json;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g3d.ModelLoaderHints;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.StillModelLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.json.JsonMaterial.MaterialType;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonReader;
@@ -170,11 +173,101 @@ public class JsonModelLoader implements StillModelLoader {
 	}
 
 	private JsonMaterial[] parseMaterials (JsonModel model, OrderedMap<String, Object> json, ModelLoaderHints hints) {
+		Array<OrderedMap<String, Object>> materials = (Array<OrderedMap<String, Object>>)json.get("materials");
+		if(materials == null) {
+			// we should probably create some default material in this case
+		}
+		else {
+			model.materials = new JsonMaterial[materials.size];
+			
+			int i = 0;
+			for(OrderedMap<String, Object> material: materials) {
+				JsonMaterial jsonMaterial = new JsonMaterial();
+				
+				String id = (String)material.get("id");
+				if(id == null)
+					throw new GdxRuntimeException("Material needs an id.");
+				
+				jsonMaterial.id = id;
+				
+				// Read type
+				String type = (String)material.get("type");
+				if(type == null)
+					throw new GdxRuntimeException("Material needs a type. Lambert|Phong");
+				
+				jsonMaterial.type = type.equals("PHONG") ? MaterialType.Phong : MaterialType.Lambert;
+				
+				// Read material colors
+				jsonMaterial.diffuse = parseColor((Array<Object>)material.get("diffuse"), Color.WHITE);
+				jsonMaterial.ambient = parseColor((Array<Object>)material.get("ambient"), Color.BLACK);
+				jsonMaterial.emissive = parseColor((Array<Object>)material.get("emissive"), Color.WHITE);
+				
+				if(jsonMaterial.type == MaterialType.Phong){
+				   // Read specular
+					jsonMaterial.specular = parseColor((Array<Object>)material.get("specular"), Color.WHITE);
+					
+					// Read shininess
+					float shininess = (Float)material.get("shininess", 1.0f);
+				}
+				
+				// Read textures
+				Array<OrderedMap<String, Object>> textures = (Array<OrderedMap<String, Object>>)material.get("textures");
+				for(OrderedMap<String, Object> texture : textures) {
+					JsonTexture jsonTexture = new JsonTexture();
+					
+					String textureId = (String)texture.get("id");
+					if(textureId == null)
+						throw new GdxRuntimeException("Texture has no id.");
+					jsonTexture.id = textureId;
+					
+					String fileName = (String)texture.get("filename");
+					if(fileName == null)
+						throw new GdxRuntimeException("Texture needs filename.");
+					jsonTexture.fileName = fileName;
+					
+					jsonTexture.uvTranslation = readVector2((Array<Object>)texture.get("uvTranslation"), 0f, 0f);
+					jsonTexture.uvScaling = readVector2((Array<Object>)texture.get("uvScaling"), 1f, 1f);
+					
+					String textureType = (String)texture.get("type");
+					if(type == null)
+						throw new GdxRuntimeException("Texture needs type.");
+					
+					/* Only diffuse textures for now. Most programs don't export texture usage properly ..
+					 	So we probably need to find a workaround. */
+					if(textureType.equals("STANDARD")){
+						if(jsonMaterial.diffuseTextures == null)
+							jsonMaterial.diffuseTextures = new Array<JsonTexture>();
+						jsonMaterial.diffuseTextures.add(jsonTexture);
+					}
+				}
+				model.materials[i++] = jsonMaterial;
+			}
+		}
 		
 		return null;
 	}
 
+	private Color parseColor (Array<Object> colorArray, Color defaultColor) {
+		if(colorArray == null) {
+			return defaultColor;
+		}
+		else if(colorArray.size == 3)
+			return new Color((Float)colorArray.get(0), (Float)colorArray.get(1), (Float)colorArray.get(2), 1.0f);
+		else
+			throw new GdxRuntimeException("Expected Color values <> than three.");
+	}
+
+	private Vector2 readVector2 (Array<Object> vectorArray, float x, float y) {
+		if(vectorArray == null)
+			return new Vector2(x, y);
+		else if(vectorArray.size == 2)
+			return new Vector2((Float)vectorArray.get(0), (Float)vectorArray.get(1));
+		else
+			throw new GdxRuntimeException("Expected Vector2 values <> than two.");
+	}
+
 	private JsonNode[] parseNodes (JsonModel model, OrderedMap<String, Object> json, ModelLoaderHints hints) {
+		
 		return null;
 	}
 }

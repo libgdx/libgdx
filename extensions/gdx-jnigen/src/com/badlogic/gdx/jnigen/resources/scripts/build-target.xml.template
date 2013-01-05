@@ -33,6 +33,7 @@
 	<!-- define linker and options -->
 	<property name="linker" value="${compilerPrefix}g++"/>
 	<property name="linker-opts" value="%linkerFlags%"/>
+	<property name="libraries" value="%libraries%"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
@@ -112,17 +113,20 @@
 
 	<!-- links the shared library based on the previously compiled object files -->	
 	<target name="link" depends="compile" if="has-compiler">
-		<mkdir dir="${libsDir}"/>
-		<apply failonerror="true" executable="${linker}" parallel="true" dir="${buildDir}">
-			<arg line="${linker-opts}"/>
-			<arg value="-o"/>
-			<arg path="${libsDir}/${libName}"/>		
-			<fileset dir="${buildDir}">
-				<patternset>
-					<include name="**/*.o"/>
-				</patternset>
-			</fileset>
-		</apply>
+		<fileset dir="${buildDir}" id="objFileSet">
+			<patternset>
+				<include name="**/*.o" />
+			</patternset>
+		</fileset>
+		<pathconvert pathsep=" " property="objFiles" refid="objFileSet" />
+		<mkdir dir="${libsDir}" />
+		<exec executable="${linker}" failonerror="true" dir="${buildDir}">
+			<arg line="${linker-opts}" />
+			<arg value="-o" />
+			<arg path="${libsDir}/${libName}" />
+			<arg line="${objFiles}"/>
+			<arg line="${libraries}" />
+		</exec>
 	</target>	
 	
 	<target name="postcompile" depends="link">
