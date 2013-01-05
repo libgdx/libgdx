@@ -17,11 +17,12 @@
 package com.badlogic.gdx.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -31,7 +32,24 @@ import java.util.zip.ZipFile;
  * 
  * @author mzechner */
 public class SharedLibraryLoader {
-	private static Set<String> loadedLibraries = new HashSet<String>();
+	static public boolean isWindows = System.getProperty("os.name").contains("Windows");
+	static public boolean isLinux = System.getProperty("os.name").contains("Linux");
+	static public boolean isMac = System.getProperty("os.name").contains("Mac");
+	static public boolean isAndroid = false;
+	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64");
+	static {
+		String vm = System.getProperty("java.vm.name");
+		if (vm != null && vm.contains("Dalvik")) {
+			isAndroid = true;
+			isWindows = false;
+			isLinux = false;
+			isMac = false;
+			is64Bit = false;
+		}
+	}
+
+	static private HashSet<String> loadedLibraries = new HashSet();
+
 	private String nativesJar;
 
 	public SharedLibraryLoader () {
@@ -43,8 +61,8 @@ public class SharedLibraryLoader {
 		this.nativesJar = nativesJar;
 	}
 
-	private String crc (String nativeFile) {
-		InputStream input = SharedLibraryLoader.class.getResourceAsStream("/" + nativeFile);
+	/** Returns a CRC of the remaining bytes in the stream. */
+	public String crc (InputStream input) {
 		if (input == null) return "" + System.nanoTime(); // fallback
 		CRC32 crc = new CRC32();
 		byte[] buffer = new byte[4096];
@@ -63,90 +81,85 @@ public class SharedLibraryLoader {
 		return Long.toString(crc.getValue());
 	}
 
-	private boolean loadLibrary (String sharedLibName) {
-		String path = extractLibrary(sharedLibName);
-		if (path != null) System.load(path);
-		return path != null;
+	/** Maps a platform independent library name to a platform dependent name. */
+	public String mapLibraryName (String libraryName) {
+		if (isWindows) return libraryName + (is64Bit ? "64.dll" : ".dll");
+		if (isLinux) return "lib" + libraryName + (is64Bit ? "64.so" : ".so");
+		if (isMac) return "lib" + libraryName + ".dylib";
+		return libraryName;
 	}
 
-	private String extractLibrary (String sharedLibName) {
-		File nativesDir = new File(System.getProperty("java.io.tmpdir") + "/jnigen/" + crc(sharedLibName));
-		File nativeFile = new File(nativesDir, sharedLibName);
+	/** Loads a shared library for the platform the application is running on.
+	 * @param libraryName The platform independent library name. If not contain a prefix (eg lib) or suffix (eg .dll). */
+	public synchronized void load (String libraryName) {
+		libraryName = mapLibraryName(libraryName);
+		if (loadedLibraries.contains(libraryName)) return;
+
 		try {
-			// Extract native from classpath to temp dir.
-			InputStream input = null;
-			if (nativesJar == null)
-				input = SharedLibraryLoader.class.getResourceAsStream("/" + sharedLibName);
+			if (isAndroid)
+				System.loadLibrary(libraryName);
 			else
-				input = getFromJar(nativesJar, sharedLibName);
-			if (input == null) return null;
-			nativesDir.mkdirs();
-			FileOutputStream output = new FileOutputStream(nativeFile);
-			byte[] buffer = new byte[4096];
-			while (true) {
-				int length = input.read(buffer);
-				if (length == -1) break;
-				output.write(buffer, 0, length);
-			}
-			input.close();
-			output.close();
+				System.load(extractFile(libraryName, null).getAbsolutePath());
+		} catch (Throwable ex) {
+			throw new GdxRuntimeException("Couldn't load shared library '" + libraryName + "' for target: "
+				+ System.getProperty("os.name") + (is64Bit ? ", 64-bit" : ", 32-bit"), ex);
+		}
+		loadedLibraries.add(libraryName);
+	}
+
+	private InputStream readFile (String path) {
+		if (nativesJar == null) return SharedLibraryLoader.class.getResourceAsStream("/" + path);
+
+		// Read from JAR.
+		try {
+			ZipFile file = new ZipFile(nativesJar);
+			ZipEntry entry = file.getEntry(path);
+			if (entry == null) throw new GdxRuntimeException("Couldn't find '" + path + "' in JAR: " + nativesJar);
+			return file.getInputStream(entry);
 		} catch (IOException ex) {
+			throw new GdxRuntimeException("Error reading '" + path + "' in JAR: " + nativesJar, ex);
 		}
-		return nativeFile.exists() ? nativeFile.getAbsolutePath() : null;
 	}
 
-	private InputStream getFromJar (String jarFile, String sharedLibrary) throws IOException {
-		ZipFile file = new ZipFile(nativesJar);
-		ZipEntry entry = file.getEntry(sharedLibrary);
-		if (entry == null) throw new GdxRuntimeException("Couldn't find " + sharedLibrary + " in jar " + jarFile);
-		return file.getInputStream(entry);
-	}
+	/** Extracts the specified file into the temp directory if it does not already exist or the CRC does not match.
+	 * @param sourcePath The file to extract from the classpath or JAR.
+	 * @param dirName The name of the subdirectory where the file will be extracted. If null, the file's CRC will be used.
+	 * @return The extracted file. */
+	public File extractFile (String sourcePath, String dirName) throws IOException {
+		String sourceCrc = crc(readFile(sourcePath));
+		if (dirName == null) dirName = sourceCrc;
 
-	/** Loads a shared library with the given name for the platform the application is running on. The name should not contain a
-	 * prefix (e.g. 'lib') or suffix (e.g. '.dll).
-	 * @param sharedLibName */
-	public synchronized void load (String sharedLibName) {
-		if (loadedLibraries.contains(sharedLibName)) return;
+		File extractedDir = new File(System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/"
+			+ dirName);
+		File extractedFile = new File(extractedDir, new File(sourcePath).getName());
 
-		boolean isWindows = System.getProperty("os.name").contains("Windows");
-		boolean isLinux = System.getProperty("os.name").contains("Linux");
-		boolean isMac = System.getProperty("os.name").contains("Mac");
-		boolean isAndroid = false;
-		boolean is64Bit = System.getProperty("os.arch").equals("amd64");
-		String vm = System.getProperty("java.vm.name");
-		if (vm != null && vm.contains("Dalvik")) {
-			isAndroid = true;
-			isWindows = false;
-			isLinux = false;
-			isMac = false;
-			is64Bit = false;
+		String extractedCrc = null;
+		if (extractedFile.exists()) {
+			try {
+				extractedCrc = crc(new FileInputStream(extractedFile));
+			} catch (FileNotFoundException ignored) {
+			}
 		}
 
-		boolean loaded = false;
-		if (isWindows) {
-			if (!is64Bit)
-				loaded = loadLibrary(sharedLibName + ".dll");
-			else
-				loaded = loadLibrary(sharedLibName + "64.dll");
+		// If file doesn't exist or the CRC doesn't match, extract it to the temp dir.
+		if (extractedCrc == null || !extractedCrc.equals(sourceCrc)) {
+			try {
+				InputStream input = readFile(sourcePath);
+				if (input == null) return null;
+				extractedDir.mkdirs();
+				FileOutputStream output = new FileOutputStream(extractedFile);
+				byte[] buffer = new byte[4096];
+				while (true) {
+					int length = input.read(buffer);
+					if (length == -1) break;
+					output.write(buffer, 0, length);
+				}
+				input.close();
+				output.close();
+			} catch (IOException ex) {
+				throw new GdxRuntimeException("Error extracting file: " + sourcePath, ex);
+			}
 		}
-		if (isLinux) {
-			if (!is64Bit)
-				loaded = loadLibrary("lib" + sharedLibName + ".so");
-			else
-				loaded = loadLibrary("lib" + sharedLibName + "64.so");
-		}
-		if (isMac) {
-			loaded = loadLibrary("lib" + sharedLibName + ".dylib");
-		}
-		if (isAndroid) {
-			System.loadLibrary(sharedLibName);
-			loaded = true;
-		}
-		if (loaded) {
-			loadedLibraries.add(sharedLibName);
-		} else {
-			throw new RuntimeException("Couldn't load shared library '" + sharedLibName + "' for target: "
-				+ System.getProperty("os.name") + ", " + (is64Bit ? "64-bit" : "32-bit"));
-		}
+		return extractedFile.exists() ? extractedFile : null;
 	}
 }
