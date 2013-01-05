@@ -21,6 +21,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import javax.swing.SwingUtilities;
+
 import org.lwjgl.opengl.Display;
 
 /** @author Nathan Sweet */
@@ -188,6 +190,11 @@ public class OisControllers {
 	/** Returns the window handle from LWJGL needed by OIS. */
 	static public long getLwjglWindowHandle () {
 		try {
+			if (Gdx.app instanceof LwjglCanvas) {
+				return (Long)invokeMethod(
+					invokeMethod(SwingUtilities.windowForComponent(((LwjglCanvas)Gdx.app).getCanvas()), "getPeer"), "getHWnd");
+			}
+
 			Method getImplementation = Display.class.getDeclaredMethod("getImplementation", new Class[0]);
 			getImplementation.setAccessible(true);
 			Object display = getImplementation.invoke(null, (Object[])null);
@@ -199,4 +206,11 @@ public class OisControllers {
 			throw new RuntimeException("Unable to get window handle.", ex);
 		}
 	}
+
+	static private Object invokeMethod (Object object, String methodName) throws Exception {
+		for (Method m : object.getClass().getMethods())
+			if (m.getName().equals(methodName)) return m.invoke(object);
+		throw new RuntimeException("Could not find method '" + methodName + "' on class: " + object.getClass());
+	}
+
 }
