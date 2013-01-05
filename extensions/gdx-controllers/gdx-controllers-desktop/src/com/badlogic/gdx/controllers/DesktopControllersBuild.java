@@ -29,7 +29,7 @@ public class DesktopControllersBuild {
 		win32home.libraries = "-ldinput8 -ldxguid";
 
 		new AntScriptGenerator().generate(buildConfig, win32home);
-		if(!BuildExecutor.executeAnt("jni/build-windows32home.xml", "-Dhas-compiler=true postcompile -v")) {
+		if(!BuildExecutor.executeAnt("jni/build-windows32home.xml", "-Dhas-compiler=true -v postcompile")) {
 			throw new Exception("build failed");
 		}
 		BuildExecutor.executeAnt("jni/build.xml", "pack-natives");
