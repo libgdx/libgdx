@@ -2,7 +2,7 @@
 package com.badlogic.gdx.controllers.desktop.ois;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.controllers.desktop.DesktopControllersBuild;
 import com.badlogic.gdx.controllers.desktop.OisControllers;
 import com.badlogic.gdx.controllers.desktop.ois.OisJoystick.OisPov;
