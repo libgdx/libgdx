@@ -114,4 +114,32 @@ public class InputMultiplexer implements InputProcessor {
 			if (processors.get(i).scrolled(amount)) return true;
 		return false;
 	}
+
+	@Override
+	public boolean buttonDown (int player, int button) {
+		for (int i = 0, n = processors.size; i < n; i++)
+			if (processors.get(i).buttonDown(player, button)) return true;
+		return false;
+	}
+
+	@Override
+	public boolean buttonUp (int player, int button) {
+		for (int i = 0, n = processors.size; i < n; i++)
+			if (processors.get(i).buttonUp(player, button)) return true;
+		return false;
+	}
+
+	@Override
+	public boolean buttonTyped (int player, int button) {
+		for (int i = 0, n = processors.size; i < n; i++)
+			if (processors.get(i).buttonTyped(player, button)) return true;
+		return false;
+	}
+
+	@Override
+	public boolean axisMove (int player, int axis, float amount) {
+		for (int i = 0, n = processors.size; i < n; i++)
+			if (processors.get(i).axisMove(player, axis, amount)) return true;
+		return false;
+	}
 }
