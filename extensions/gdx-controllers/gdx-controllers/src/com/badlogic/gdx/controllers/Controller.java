@@ -3,6 +3,7 @@ package com.badlogic.gdx.controllers;
 
 import com.badlogic.gdx.math.Vector3;
 
+/** @author Nathan Sweet */
 public interface Controller {
 	public boolean getButton (int buttonIndex);
 
@@ -18,7 +19,7 @@ public interface Controller {
 
 	public void setAccelerometerSensitivity (float sensitivity);
 
-	public int getComponentCount (ComponentType type);
+	public int getControlCount (ControlType type);
 
 	public String getName ();
 

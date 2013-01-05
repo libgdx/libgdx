@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     com_badlogic_gdx_controllers_OisWrapper
+ * Method:    invisibleWindowHack
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_controllers_OisWrapper_invisibleWindowHack
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_badlogic_gdx_controllers_OisWrapper
  * Method:    initialize
  * Signature: (J)J
  */

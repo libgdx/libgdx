@@ -28,13 +28,14 @@ import java.util.regex.Pattern;
 public class BuildExecutor {
 	/** Execute the Ant script file with the given parameters.
 	 * @param buildFile
-	 * @param params */
-	public static void executeAnt (String buildFile, String params) {
+	 * @param params
+	 * @return whether the Ant succeeded */
+	public static boolean executeAnt (String buildFile, String params) {
 		FileDescriptor build = new FileDescriptor(buildFile);
 		String ant = System.getProperty("os.name").contains("Windows") ? "ant.bat" : "ant";
 		String command = ant + " -f " + build.file().getAbsolutePath() + " " + params;
 		System.out.println("Executing '" + command + "'");
-		startProcess(command, build.parent().file());
+		return startProcess(command, build.parent().file());
 	}
 
 	/** Execute ndk-build in the given directory
@@ -45,7 +46,7 @@ public class BuildExecutor {
 		startProcess(command, build.file());
 	}
 
-	private static void startProcess (String command, File directory) {
+	private static boolean startProcess (String command, File directory) {
 		try {
 			final Process process = new ProcessBuilder(command.split(" ")).redirectErrorStream(true).start();
 
@@ -136,8 +137,10 @@ public class BuildExecutor {
 			t.setDaemon(true);
 			t.start();
 			process.waitFor();
+			return process.exitValue() == 0;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 }

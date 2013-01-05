@@ -169,6 +169,7 @@
 /extensions/gdx-controllers/gdx-controllers-desktop/bin
 /extensions/gdx-controllers/gdx-controllers-desktop/jni/target
 /extensions/gdx-controllers/gdx-controllers-desktop/libs/windows32
+/extensions/gdx-controllers/gdx-controllers-android/bin
 
 /gdx/target
 /gdx/obj

@@ -34,6 +34,7 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.View.OnGenericMotionListener;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
@@ -52,7 +53,7 @@ import com.badlogic.gdx.utils.Pool;
  * 
  * @author mzechner */
 /** @author jshapcot */
-public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
+public class AndroidInput implements Input, OnKeyListener, OnTouchListener, OnGenericMotionListener {
 	static class KeyEvent {
 		static final int KEY_DOWN = 0;
 		static final int KEY_UP = 1;
@@ -88,8 +89,10 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		}
 	};
 
-	ArrayList<KeyEvent> keyEvents = new ArrayList<KeyEvent>();
-	ArrayList<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
+	ArrayList<OnKeyListener> keyListeners = new ArrayList();
+	ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList();
+	ArrayList<KeyEvent> keyEvents = new ArrayList();
+	ArrayList<TouchEvent> touchEvents = new ArrayList();
 	int[] touchX = new int[20];
 	int[] touchY = new int[20];
 	int[] deltaX = new int[20];
@@ -131,10 +134,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	public AndroidInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
 		// we hook into View, for LWPs we call onTouch below directly from
 		// within the AndroidLivewallpaperEngine#onTouchEvent() method.
-		if(view instanceof View) {
+		if (view instanceof View) {
 			View v = (View)view;
 			v.setOnKeyListener(this);
 			v.setOnTouchListener(this);
+			v.setOnGenericMotionListener(this);
 			v.setFocusable(true);
 			v.setFocusableInTouchMode(true);
 			v.requestFocus();
@@ -391,6 +395,13 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	boolean requestFocus = true;
 
 	@Override
+	public boolean onGenericMotion (View view, MotionEvent event) {
+		for (int i = 0, n = genericMotionListeners.size(); i < n; i++)
+			if (genericMotionListeners.get(i).onGenericMotion(view, event)) return true;
+		return false;
+	}
+
+	@Override
 	public boolean onTouch (View view, MotionEvent event) {
 		if (requestFocus && view != null) {
 			view.requestFocus();
@@ -409,26 +420,22 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		}
 		return true;
 	}
-	
-	/**
-	 * Called in {@link AndroidLiveWallpaperService} on tap
+
+	/** Called in {@link AndroidLiveWallpaperService} on tap
 	 * @param x
-	 * @param y
-	 */
-	public void onTap(int x, int y) {
+	 * @param y */
+	public void onTap (int x, int y) {
 		postTap(x, y);
 	}
-	
-	/**
-	 * Called in {@link AndroidLiveWallpaperService} on drop
+
+	/** Called in {@link AndroidLiveWallpaperService} on drop
 	 * @param x
-	 * @param y
-	 */
-	public void onDrop(int x, int y) {
+	 * @param y */
+	public void onDrop (int x, int y) {
 		postTap(x, y);
 	}
-	
-	protected void postTap(int x, int y) {
+
+	protected void postTap (int x, int y) {
 		synchronized (this) {
 			TouchEvent event = usedTouchEvents.obtain();
 			event.timeStamp = System.nanoTime();
@@ -437,7 +444,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			event.y = y;
 			event.type = TouchEvent.TOUCH_DOWN;
 			touchEvents.add(event);
-			
+
 			event = usedTouchEvents.obtain();
 			event.timeStamp = System.nanoTime();
 			event.pointer = 0;
@@ -451,6 +458,9 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	@Override
 	public boolean onKey (View v, int keyCode, android.view.KeyEvent e) {
+		for (int i = 0, n = keyListeners.size(); i < n; i++)
+			keyListeners.get(i).onKey(v, keyCode, e);
+
 		synchronized (this) {
 			char character = (char)e.getUnicodeChar();
 			// Android doesn't report a unicode char for back space. hrm...
@@ -700,22 +710,22 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		int orientation = 0;
 
 		if (context instanceof Activity) {
-			orientation = ((Activity) context).getWindowManager().getDefaultDisplay().getOrientation();
+			orientation = ((Activity)context).getWindowManager().getDefaultDisplay().getOrientation();
 		} else {
-			orientation = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+			orientation = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
 		}
 
 		switch (orientation) {
-			case Surface.ROTATION_0:
-				return 0;
-			case Surface.ROTATION_90:
-				return 90;
-			case Surface.ROTATION_180:
-				return 180;
-			case Surface.ROTATION_270:
-				return 270;
-			default:
-				return 0;
+		case Surface.ROTATION_0:
+			return 0;
+		case Surface.ROTATION_90:
+			return 90;
+		case Surface.ROTATION_180:
+			return 180;
+		case Surface.ROTATION_270:
+			return 270;
+		default:
+			return 0;
 		}
 	}
 
@@ -760,6 +770,14 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	@Override
 	public long getCurrentEventTime () {
 		return currentEventTimeStamp;
+	}
+
+	public void addKeyListener (OnKeyListener listener) {
+		keyListeners.add(listener);
+	}
+
+	public void addGenericMotionListener (OnGenericMotionListener listener) {
+		genericMotionListeners.add(listener);
 	}
 
 	/** Our implementation of SensorEventListener. Because Android doesn't like it when we register more than one Sensor to a single

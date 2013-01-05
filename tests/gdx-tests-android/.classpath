@@ -11,5 +11,8 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-freetype"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-image"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-bullet"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-controllers"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-controllers-android"/>
+	<classpathentry exported="true" kind="lib" path="/gdx-controllers-android/libs/ouya-sdk-0.0.4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
