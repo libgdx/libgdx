@@ -3,6 +3,8 @@ package com.badlogic.gdx.controllers.desktop.ois;
 
 import com.badlogic.gdx.controllers.desktop.ois.OisJoystick.OisPov;
 
+/** @author mzechner
+ * @author Nathan Sweet */
 public interface OisListener {
 	public void buttonPressed (OisJoystick joystick, int buttonIndex);
 

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.opengl.Display;
 
-/** JNI wrapper for the object-oriented input system
+/** JNI wrapper for OIS (Object-oriented Input System).
  * @author mzechner
  * @author Nathan Sweet */
 public class Ois {

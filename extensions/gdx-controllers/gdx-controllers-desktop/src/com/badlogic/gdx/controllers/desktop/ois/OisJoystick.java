@@ -1,6 +1,8 @@
 
 package com.badlogic.gdx.controllers.desktop.ois;
 
+/** @author mzechner
+ * @author Nathan Sweet */
 public class OisJoystick {
 	static private final int MIN_AXIS = -32768, MAX_AXIS = 32767;
 
