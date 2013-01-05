@@ -1,6 +1,9 @@
 
-package com.badlogic.gdx.controllers;
+package com.badlogic.gdx.controllers.desktop;
 
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.ControllerListener;
+import com.badlogic.gdx.controllers.ControllerManager;
 import com.badlogic.gdx.utils.Array;
 
 /** @author Nathan Sweet */

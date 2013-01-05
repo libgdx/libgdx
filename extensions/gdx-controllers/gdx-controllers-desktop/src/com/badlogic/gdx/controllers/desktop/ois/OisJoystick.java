@@ -56,23 +56,23 @@ public class OisJoystick {
 	}
 
 	public void update () {
-		updateJni(joystickPtr, this);
+		update(joystickPtr, this);
 	}
 
 	public int getAxisCount () {
-		return getAxesCountJni(joystickPtr);
+		return getAxesCount(joystickPtr);
 	}
 
 	public int getButtonCount () {
-		return getButtonCountJni(joystickPtr);
+		return getButtonCount(joystickPtr);
 	}
 
 	public int getPovCount () {
-		return getPovCountJni(joystickPtr);
+		return getPovCount(joystickPtr);
 	}
 
 	public int getSliderCount () {
-		return getSliderCountJni(joystickPtr);
+		return getSliderCount(joystickPtr);
 	}
 
 	public float getAxis (int axisIndex) {
@@ -188,29 +188,29 @@ public class OisJoystick {
 		initializeClasses(env, joystick);
 	*/
 	
-	private native void updateJni(long joystickPtr, OisJoystick callback); /*
+	private native void update(long joystickPtr, OisJoystick callback); /*
 		OIS::JoyStick* joystick = (OIS::JoyStick*)joystickPtr;
 		Listener listener(env, callback);
 		joystick->setEventCallback(&listener);
 		joystick->capture();
 	*/
 	
-	private native int getAxesCountJni (long joystickPtr); /*
+	private native int getAxesCount (long joystickPtr); /*
 		OIS::JoyStick* joystick = (OIS::JoyStick*)joystickPtr;
 		return joystick->getNumberOfComponents(OIS::OIS_Axis);
 	*/
 	
-	private native int getButtonCountJni (long joystickPtr); /*
+	private native int getButtonCount (long joystickPtr); /*
 		OIS::JoyStick* joystick = (OIS::JoyStick*)joystickPtr;
 		return joystick->getNumberOfComponents(OIS::OIS_Button);
 	*/
 	
-	private native int getPovCountJni (long joystickPtr); /*
+	private native int getPovCount (long joystickPtr); /*
 		OIS::JoyStick* joystick = (OIS::JoyStick*)joystickPtr;
 		return joystick->getNumberOfComponents(OIS::OIS_POV);
 	*/
 	
-	private native int getSliderCountJni (long joystickPtr); /*
+	private native int getSliderCount (long joystickPtr); /*
 		OIS::JoyStick* joystick = (OIS::JoyStick*)joystickPtr;
 		return joystick->getNumberOfComponents(OIS::OIS_Slider);
 	 */

@@ -76,7 +76,7 @@
 
 }
 
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_updateJni(JNIEnv* env, jobject object, jlong joystickPtr, jobject callback) {
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_update(JNIEnv* env, jobject object, jlong joystickPtr, jobject callback) {
 
 
 //@line:191
@@ -89,7 +89,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick
 
 }
 
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getAxesCountJni(JNIEnv* env, jobject object, jlong joystickPtr) {
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getAxesCount(JNIEnv* env, jobject object, jlong joystickPtr) {
 
 
 //@line:198
@@ -100,7 +100,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick
 
 }
 
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getButtonCountJni(JNIEnv* env, jobject object, jlong joystickPtr) {
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getButtonCount(JNIEnv* env, jobject object, jlong joystickPtr) {
 
 
 //@line:203
@@ -111,7 +111,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick
 
 }
 
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getPovCountJni(JNIEnv* env, jobject object, jlong joystickPtr) {
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getPovCount(JNIEnv* env, jobject object, jlong joystickPtr) {
 
 
 //@line:208
@@ -122,7 +122,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick
 
 }
 
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getSliderCountJni(JNIEnv* env, jobject object, jlong joystickPtr) {
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getSliderCount(JNIEnv* env, jobject object, jlong joystickPtr) {
 
 
 //@line:213

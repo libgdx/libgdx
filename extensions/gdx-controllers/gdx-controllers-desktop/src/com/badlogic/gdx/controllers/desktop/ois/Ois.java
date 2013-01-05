@@ -11,20 +11,21 @@ import org.lwjgl.opengl.Display;
  * @author mzechner
  * @author Nathan Sweet */
 public class Ois {
-	private final long inputManager;
+	private final long inputManagerPtr;
 	private final ArrayList<OisJoystick> joysticks = new ArrayList();
 
 	public Ois () {
-		// hack doesn't work :/
+		// hack doesn't work :/ FIXME - Try using hwnd from AWT for LwjglFrame.
 // if(System.getProperty("os.name").toLowerCase().contains("windows")) {
 // inputManager = createInputManager(getWindowHandleWindowsHack());
 // } else {
-		inputManager = createInputManager(getWindowHandle());
+		inputManagerPtr = createInputManager(getWindowHandle());
 // }
 
-		int count = getJoystickCount(inputManager);
-		for (int i = 0; i < count; i++) {
-			joysticks.add(new OisJoystick(createJoystick(inputManager)));
+		String[] names = getJoystickNames(inputManagerPtr);
+		for (int i = 0, n = names.length; i < n; i++) {
+			System.out.println(names[i]);
+			joysticks.add(new OisJoystick(createJoystick(inputManagerPtr)));
 		}
 	}
 
@@ -33,9 +34,8 @@ public class Ois {
 	}
 
 	public void update () {
-		for (OisJoystick joystick : joysticks) {
-			joystick.update();
-		}
+		for (int i = 0, n = joysticks.size(); i < n; i++)
+			joysticks.get(i).update();
 	}
 
 	/** Returns the window handle from LWJGL needed by OIS. */
@@ -51,6 +51,18 @@ public class Ois {
 		} catch (Exception ex) {
 			throw new RuntimeException("Unable to get window handle.", ex);
 		}
+	}
+
+	public int getVersionNumber () {
+		return getVersionNumber(inputManagerPtr);
+	}
+
+	public String getVersionName () {
+		return getVersionName(inputManagerPtr);
+	}
+
+	public String getInputSystemName () {
+		return getInputSystemName(inputManagerPtr);
 	}
 
 	// @off
@@ -97,10 +109,33 @@ public class Ois {
 		return (jlong)inputManager;
 	*/
 
-	private native int getJoystickCount (long inputManagerPtr); /*
+	private native String[] getJoystickNames (long inputManagerPtr); /*
 		OIS::InputManager* inputManager = (OIS::InputManager*)inputManagerPtr;
-	 	return inputManager->getNumberOfDevices(OIS::OISJoyStick);
+		OIS::DeviceList map = inputManager->listFreeDevices();
+		int joystickCount = inputManager->getNumberOfDevices(OIS::OISJoyStick);
+		jobjectArray names = (jobjectArray)env->NewObjectArray(joystickCount, env->FindClass("java/lang/String"), env->NewStringUTF(""));
+		int index = 0;
+		for (OIS::DeviceList::iterator i = map.begin(); i != map.end(); ++i) {
+			if (i->first != OIS::OISJoyStick) continue;
+			env->SetObjectArrayElement(names, index++, env->NewStringUTF(i->second.c_str()));
+		}
+		return names;
 	*/
+
+	private native int getVersionNumber (long inputManagerPtr); /*
+		OIS::InputManager* inputManager = (OIS::InputManager*)inputManagerPtr;
+	 	return inputManager->getVersionNumber();
+	*/
+	
+	private native String getVersionName (long inputManagerPtr); /*
+		OIS::InputManager* inputManager = (OIS::InputManager*)inputManagerPtr;
+	 	return env->NewStringUTF(inputManager->getVersionName().c_str());
+	 */
+	
+	private native String getInputSystemName (long inputManagerPtr); /*
+		OIS::InputManager* inputManager = (OIS::InputManager*)inputManagerPtr;
+	 	return env->NewStringUTF(inputManager->inputSystemName().c_str());
+	 */
 
 	private native long createJoystick (long inputManagerPtr); /*
 		OIS::InputManager* inputManager = (OIS::InputManager*)inputManagerPtr;

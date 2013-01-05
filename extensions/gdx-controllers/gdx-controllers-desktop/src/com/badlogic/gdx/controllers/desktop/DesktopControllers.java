@@ -1,5 +1,5 @@
 
-package com.badlogic.gdx.controllers;
+package com.badlogic.gdx.controllers.desktop;
 
 import java.awt.Frame;
 import java.lang.reflect.Field;

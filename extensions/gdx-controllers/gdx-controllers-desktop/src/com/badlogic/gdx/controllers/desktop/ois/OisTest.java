@@ -3,7 +3,7 @@ package com.badlogic.gdx.controllers.desktop.ois;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.controllers.DesktopControllersBuild;
+import com.badlogic.gdx.controllers.desktop.DesktopControllersBuild;
 import com.badlogic.gdx.controllers.desktop.ois.OisJoystick.OisPov;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
@@ -18,6 +18,9 @@ public class OisTest {
 			@Override
 			public void create () {
 				this.ois = new Ois();
+				System.out.println(ois.getVersionNumber());
+				System.out.println(ois.getVersionName());
+				System.out.println(ois.getInputSystemName());
 				ois.getJoysticks().get(0).setListener(new OisListener() {
 					@Override
 					public void sliderMoved (OisJoystick joystick, int slider, boolean x, boolean y) {

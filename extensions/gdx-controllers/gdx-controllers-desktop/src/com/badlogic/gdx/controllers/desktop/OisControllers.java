@@ -1,8 +1,15 @@
 
-package com.badlogic.gdx.controllers;
+package com.badlogic.gdx.controllers.desktop;
 
+import com.badlogic.gdx.controllers.ControlType;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.ControllerListener;
+import com.badlogic.gdx.controllers.desktop.ois.Ois;
+import com.badlogic.gdx.controllers.desktop.ois.OisJoystick;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+
+import java.util.ArrayList;
 
 public class OisControllers {
 	private final Ois ois = new Ois();
@@ -15,9 +22,9 @@ public class OisControllers {
 	};
 
 	public OisControllers (DesktopControllerManager manager) {
-		Array<OisJoystick> joysticks = ois.getJoysticks();
-		controllers = new OisController[joysticks.size];
-		for (int i = 0, n = joysticks.size; i < n; i++) {
+		ArrayList<OisJoystick> joysticks = ois.getJoysticks();
+		controllers = new OisController[joysticks.size()];
+		for (int i = 0, n = joysticks.size(); i < n; i++) {
 			OisJoystick joystick = joysticks.get(i);
 			controllers = new OisController(joystick);
 		}
@@ -48,9 +55,11 @@ public class OisControllers {
 		}
 
 		public void addListener (ControllerListener listener) {
+			listeners.add(listener);
 		}
 
 		public void removeListener (ControllerListener listener) {
+			listeners.removeValue(listener, true);
 		}
 
 		public String getName () {
