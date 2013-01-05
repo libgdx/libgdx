@@ -19,6 +19,7 @@ package com.badlogic.gdx.tests.lwjgl;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tests.YDownTest;
+import com.badlogic.gdx.tests.g3d.JsonModelLoaderTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
@@ -30,7 +31,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new YDownTest();
+		GdxTest test = new JsonModelLoaderTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		new LwjglApplication(test, config);
