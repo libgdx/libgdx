@@ -27,6 +27,12 @@ public class OisWrapper {
 	static void initializeClasses(JNIEnv* env) {
 		// we leak one global ref
 		if(!callbackClass) {
+			callbackClass = (jclass)env->NewGlobalRef(env->FindClass("com/badlogic/gdx/controllers/OisCallback"));
+			povMovedId = env->GetMethodID(callbackClass, "povMoved", "()V");
+			axisMovedId = env->GetMethodID(callbackClass, "axisMoved", "()V");
+			sliderMovedId = env->GetMethodID(callbackClass, "sliderMoved", "()V");
+			buttonPressedId = env->GetMethodID(callbackClass, "buttonPressed", "()V");
+			buttonReleasedId = env->GetMethodID(callbackClass, "buttonReleased", "()V");
 		}
 	}
 
@@ -109,6 +115,8 @@ public class OisWrapper {
 	*/
 
 	static public native long initialize (long hwnd); /*
+		initializeClasses(env);
+	
 		std::ostringstream hwndStr;
 		hwndStr << hwnd;
 
@@ -127,17 +135,10 @@ public class OisWrapper {
 		fflush(stdout);
 		for (int i = 0; i < count; i++) {
 			try {
-				inputManager->createInputObject(OIS::OISJoyStick, true);
-			} catch (std::exception &ex) {
-				printf("couldn't create input object!\n%s\n", ex.what());
-				fflush(stdout);
-			}
-			
-			try {
 				OIS::JoyStick* joystick = static_cast<OIS::JoyStick*>(inputManager->createInputObject(OIS::OISJoyStick, true));
 				joystick->setEventCallback(listener);
-			} catch(std::exception &ex) {
-				printf("couldn't set listener!\n%s\n", ex.what());
+			} catch (std::exception &ex) {
+				printf("couldn't create input object!\n%s\n", ex.what());
 				fflush(stdout);
 			}
 		}

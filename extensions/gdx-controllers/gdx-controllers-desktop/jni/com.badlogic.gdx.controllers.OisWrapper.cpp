@@ -16,6 +16,12 @@
 	static void initializeClasses(JNIEnv* env) {
 		// we leak one global ref
 		if(!callbackClass) {
+			callbackClass = (jclass)env->NewGlobalRef(env->FindClass("com/badlogic/gdx/controllers/OisCallback"));
+			povMovedId = env->GetMethodID(callbackClass, "povMoved", "()V");
+			axisMovedId = env->GetMethodID(callbackClass, "axisMoved", "()V");
+			sliderMovedId = env->GetMethodID(callbackClass, "sliderMoved", "()V");
+			buttonPressedId = env->GetMethodID(callbackClass, "buttonPressed", "()V");
+			buttonReleasedId = env->GetMethodID(callbackClass, "buttonReleased", "()V");
 		}
 	}
 
@@ -75,7 +81,7 @@
 	JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_controllers_OisWrapper_invisibleWindowHack(JNIEnv* env, jclass clazz) {
 
 
-//@line:93
+//@line:99
 
 	#ifdef _WIN32
 		HWND joyHwnd = CreateWindow("Static",               // Class Name (using static so I don't have to register a class)
@@ -99,8 +105,10 @@
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_controllers_OisWrapper_initialize(JNIEnv* env, jclass clazz, jlong hwnd) {
 
 
-//@line:111
+//@line:117
 
+		initializeClasses(env);
+	
 		std::ostringstream hwndStr;
 		hwndStr << hwnd;
 
@@ -119,17 +127,10 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_controllers_OisWrapper_initialize(
 		fflush(stdout);
 		for (int i = 0; i < count; i++) {
 			try {
-				inputManager->createInputObject(OIS::OISJoyStick, true);
-			} catch (std::exception &ex) {
-				printf("couldn't create input object!\n%s\n", ex.what());
-				fflush(stdout);
-			}
-			
-			try {
 				OIS::JoyStick* joystick = static_cast<OIS::JoyStick*>(inputManager->createInputObject(OIS::OISJoyStick, true));
 				joystick->setEventCallback(listener);
-			} catch(std::exception &ex) {
-				printf("couldn't set listener!\n%s\n", ex.what());
+			} catch (std::exception &ex) {
+				printf("couldn't create input object!\n%s\n", ex.what());
 				fflush(stdout);
 			}
 		}
