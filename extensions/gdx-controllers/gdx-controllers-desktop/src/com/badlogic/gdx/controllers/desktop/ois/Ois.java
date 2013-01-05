@@ -1,5 +1,5 @@
 
-package com.badlogic.gdx.controllers;
+package com.badlogic.gdx.controllers.desktop.ois;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -30,7 +30,11 @@ public class Ois {
 			joysticks.add(new OisJoystick(createJoystick(inputManager)));
 		}
 	}
-
+	
+	public Array<OisJoystick> getJoysticks() {
+		return joysticks;
+	}
+	
 	public void update() {
 		for(OisJoystick joystick: joysticks) {
 			joystick.update();

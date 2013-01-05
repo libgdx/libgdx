@@ -1,6 +1,6 @@
-#include <com.badlogic.gdx.controllers.OisJoystick.h>
+#include <com.badlogic.gdx.controllers.desktop.ois.OisJoystick.h>
 
-//@line:102
+//@line:122
 
 	#include <OISJoyStick.h>
 	#include <OISInputManager.h>
@@ -66,20 +66,20 @@
 			(jint)event.state.mSliders[sliderId].abX, (jint)event.state.mSliders[sliderId].abY);
 		return true;
 	}
-	 JNIEXPORT void JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_initialize(JNIEnv* env, jobject object, jobject joystick) {
+	 JNIEXPORT void JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_initialize(JNIEnv* env, jobject object, jobject joystick) {
 
 
-//@line:169
+//@line:189
 
 		initializeClasses(env, joystick);
 	
 
 }
 
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_updateJni(JNIEnv* env, jobject object, jlong joystickPtr, jobject callback) {
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_updateJni(JNIEnv* env, jobject object, jlong joystickPtr, jobject callback) {
 
 
-//@line:173
+//@line:193
 
 		OIS::JoyStick* joystick = (OIS::JoyStick*)joystickPtr;
 		Listener listener(env, callback);
@@ -89,10 +89,10 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_updateJni(J
 
 }
 
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getAxesCountJni(JNIEnv* env, jobject object, jlong joystickPtr) {
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getAxesCountJni(JNIEnv* env, jobject object, jlong joystickPtr) {
 
 
-//@line:180
+//@line:200
 
 		OIS::JoyStick* joystick = (OIS::JoyStick*)joystickPtr;
 		return joystick->getNumberOfComponents(OIS::OIS_Axis);
@@ -100,10 +100,10 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getAxesCoun
 
 }
 
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getButtonCountJni(JNIEnv* env, jobject object, jlong joystickPtr) {
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getButtonCountJni(JNIEnv* env, jobject object, jlong joystickPtr) {
 
 
-//@line:185
+//@line:205
 
 		OIS::JoyStick* joystick = (OIS::JoyStick*)joystickPtr;
 		return joystick->getNumberOfComponents(OIS::OIS_Button);
@@ -111,10 +111,10 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getButtonCo
 
 }
 
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getPovCountJni(JNIEnv* env, jobject object, jlong joystickPtr) {
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getPovCountJni(JNIEnv* env, jobject object, jlong joystickPtr) {
 
 
-//@line:190
+//@line:210
 
 		OIS::JoyStick* joystick = (OIS::JoyStick*)joystickPtr;
 		return joystick->getNumberOfComponents(OIS::OIS_POV);
@@ -122,10 +122,10 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getPovCount
 
 }
 
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getSliderCountJni(JNIEnv* env, jobject object, jlong joystickPtr) {
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_OisJoystick_getSliderCountJni(JNIEnv* env, jobject object, jlong joystickPtr) {
 
 
-//@line:195
+//@line:215
 
 		OIS::JoyStick* joystick = (OIS::JoyStick*)joystickPtr;
 		return joystick->getNumberOfComponents(OIS::OIS_Slider);
