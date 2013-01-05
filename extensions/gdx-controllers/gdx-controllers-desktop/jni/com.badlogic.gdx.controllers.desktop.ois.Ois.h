@@ -25,10 +25,10 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_create
 
 /*
  * Class:     com_badlogic_gdx_controllers_desktop_ois_Ois
- * Method:    getNumJoysticks
+ * Method:    getJoystickCount
  * Signature: (J)I
  */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_getNumJoysticks
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_getJoystickCount
   (JNIEnv *, jobject, jlong);
 
 /*

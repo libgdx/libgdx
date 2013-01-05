@@ -183,9 +183,11 @@ public class OuyaControllers {
 		}
 
 		public void addListener (ControllerListener listener) {
+			listeners.add(listener);
 		}
 
 		public void removeListener (ControllerListener listener) {
+			listeners.removeValue(listener, true);
 		}
 
 		public String getName () {
