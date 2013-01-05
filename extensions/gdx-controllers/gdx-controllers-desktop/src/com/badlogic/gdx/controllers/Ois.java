@@ -69,7 +69,7 @@ public class Ois {
 	/**
 	 * Used on Windows32 with LwjglFrame to work around the cooperation
 	 * level problem. Returns 0 on other platforms.
-	 * @return the HWND for the invisible window, to be passed to {@link #initialize(long)}
+	 * @return the HWND for the invisible window, to be passed to {@link #createInputManager(long)}
 	 */
 	private native long getWindowHandleWindowsHack(); /*
 	#ifdef _WIN32
