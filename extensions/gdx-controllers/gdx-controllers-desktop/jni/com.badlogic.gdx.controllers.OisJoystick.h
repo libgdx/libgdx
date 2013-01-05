@@ -7,6 +7,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#undef com_badlogic_gdx_controllers_OisJoystick_MIN_AXIS
+#define com_badlogic_gdx_controllers_OisJoystick_MIN_AXIS -32768L
+#undef com_badlogic_gdx_controllers_OisJoystick_MAX_AXIS
+#define com_badlogic_gdx_controllers_OisJoystick_MAX_AXIS 32767L
 /*
  * Class:     com_badlogic_gdx_controllers_OisJoystick
  * Method:    initialize
@@ -25,36 +29,47 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_updateJni
 
 /*
  * Class:     com_badlogic_gdx_controllers_OisJoystick
- * Method:    getNumAxesJni
+ * Method:    getAxesCountJni
  * Signature: (J)I
  */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getNumAxesJni
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getAxesCountJni
   (JNIEnv *, jobject, jlong);
 
 /*
  * Class:     com_badlogic_gdx_controllers_OisJoystick
- * Method:    getNumButtonsJni
+ * Method:    getButtonCountJni
  * Signature: (J)I
  */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getNumButtonsJni
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getButtonCountJni
   (JNIEnv *, jobject, jlong);
 
 /*
  * Class:     com_badlogic_gdx_controllers_OisJoystick
- * Method:    getNumPovsJni
+ * Method:    getPovCountJni
  * Signature: (J)I
  */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getNumPovsJni
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getPovCountJni
   (JNIEnv *, jobject, jlong);
 
 /*
  * Class:     com_badlogic_gdx_controllers_OisJoystick
- * Method:    getNumSlidersJni
+ * Method:    getSliderCountJni
  * Signature: (J)I
  */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getNumSlidersJni
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_OisJoystick_getSliderCountJni
   (JNIEnv *, jobject, jlong);
 
+#ifdef __cplusplus
+}
+#endif
+#endif
+/* Header for class com_badlogic_gdx_controllers_OisJoystick_OisPov */
+
+#ifndef _Included_com_badlogic_gdx_controllers_OisJoystick_OisPov
+#define _Included_com_badlogic_gdx_controllers_OisJoystick_OisPov
+#ifdef __cplusplus
+extern "C" {
+#endif
 #ifdef __cplusplus
 }
 #endif

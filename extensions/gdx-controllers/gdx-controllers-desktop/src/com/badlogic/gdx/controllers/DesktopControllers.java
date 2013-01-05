@@ -18,7 +18,9 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class DesktopControllers {
-
+	
+	
+	
 
 	public static void main (String[] args) throws Exception {
 		DesktopControllersBuild.main(null);
@@ -34,6 +36,7 @@ public class DesktopControllers {
 			
 			public void render() {
 				ois.update();
+				
 			}
 		};
 

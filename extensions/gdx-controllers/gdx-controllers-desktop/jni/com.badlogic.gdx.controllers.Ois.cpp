@@ -1,6 +1,6 @@
 #include <com.badlogic.gdx.controllers.Ois.h>
 
-//@line:59
+//@line:60
 
 	#include <OISJoyStick.h>
 	#include <OISInputManager.h>
@@ -12,7 +12,7 @@
 	JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_controllers_Ois_getWindowHandleWindowsHack(JNIEnv* env, jobject object) {
 
 
-//@line:74
+//@line:75
 
 	#ifdef _WIN32
 		HWND joyHwnd = CreateWindow(
@@ -37,7 +37,7 @@
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_controllers_Ois_createInputManager(JNIEnv* env, jobject object, jlong hwnd) {
 
 
-//@line:93
+//@line:94
 
 		std::ostringstream hwndStr;
 		hwndStr << hwnd;
@@ -54,7 +54,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_controllers_Ois_createInputManager
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_Ois_getNumJoysticks(JNIEnv* env, jobject object, jlong inputManagerPtr) {
 
 
-//@line:104
+//@line:105
 
 		OIS::InputManager* inputManager = (OIS::InputManager*)inputManagerPtr;
 	 	return inputManager->getNumberOfDevices(OIS::OISJoyStick);
@@ -65,7 +65,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_Ois_getNumJoysticks(JNI
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_controllers_Ois_createJoystick(JNIEnv* env, jobject object, jlong inputManagerPtr) {
 
 
-//@line:109
+//@line:110
 
 		OIS::InputManager* inputManager = (OIS::InputManager*)inputManagerPtr;
 		try {
