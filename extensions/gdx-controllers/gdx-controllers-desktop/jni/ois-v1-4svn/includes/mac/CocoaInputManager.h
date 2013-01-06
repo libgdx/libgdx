@@ -20,58 +20,27 @@
  
  3. This notice may not be removed or altered from any source distribution.
  */
-#ifndef OIS_MacHIDManager_Header
-#define OIS_MacHIDManager_Header
 
-#include "OISPrereqs.h"
-#include "mac/MacPrereqs.h"
+#ifndef OIS_CocoaInputManager_H
+#define OIS_CocoaInputManager_H
+
+#include "OISInputManager.h"
 #include "OISFactoryCreator.h"
-
-#import <CoreFoundation/CFString.h>
-#import <IOKit/IOKitLib.h>
-#import <IOKit/IOCFPlugIn.h>
-#import <IOKit/hid/IOHIDLib.h>
-#import <IOKit/hid/IOHIDKeys.h>
-#import <Kernel/IOKit/hidsystem/IOHIDUsageTables.h>
+#include <Cocoa/Cocoa.h>
 
 namespace OIS
 {
-	//Information needed to create Mac HID Devices
-	class HidInfo
-	{
-	public:
-		HidInfo() : type(OISUnknown), numButtons(0), numHats(0), numAxes(0), inUse(false), interface(0)
-		{
-		}
-
-		//Useful tracking information
-		Type type;
-		std::string vendor;
-		std::string productKey;
-		std::string combinedKey;
-
-		//Retain some count information for recreating devices without having to reparse
-		int numButtons;
-		int numHats;
-		int numAxes;
-		bool inUse;
-
-		//Used for opening a read/write/tracking interface to device
-		IOHIDDeviceInterface **interface;
-	};
-
-	typedef std::vector<HidInfo*> HidInfoList;
-		
-	class MacHIDManager : public FactoryCreator
-	{
-	public:
-		MacHIDManager();
-		~MacHIDManager();
-
-		void initialize();
-		
-		void iterateAndOpenDevices(io_iterator_t iterator);
-		io_iterator_t lookUpDevices(int usage, int page);
+    class MacHIDManager;
+    
+    class CocoaInputManager : public InputManager, public FactoryCreator
+    {
+    public:
+        CocoaInputManager();
+        virtual ~CocoaInputManager();
+        
+		//InputManager Overrides
+		/** @copydoc InputManager::_initialize */
+		void _initialize( ParamList &paramList );
 
 		//FactoryCreator Overrides
 		/** @copydoc FactoryCreator::deviceList */
@@ -92,12 +61,38 @@ namespace OIS
 		/** @copydoc FactoryCreator::destroyObject */
 		void destroyObject(Object* obj);
 
-	private:
-		HidInfo* enumerateDeviceProperties(CFMutableDictionaryRef propertyMap);
-		void parseDeviceProperties(CFDictionaryRef properties);
-		void parseDevicePropertiesGroup(CFDictionaryRef properties);
+		//Internal Items
+		//! Internal method, used for flaggin keyboard as available/unavailable for creation
+		void _setKeyboardUsed(bool used) {keyboardUsed = used; }
 
-		HidInfoList mDeviceList;		
-	};
+		//! Internal method, used for flaggin mouse as available/unavailable for creation
+		void _setMouseUsed(bool used) { mouseUsed = used; }
+
+        //! method for getting window
+        NSWindow * _getWindow() {return mWindow;}
+        
+    protected:        
+        void _parseConfigSettings( ParamList& paramList );
+        
+        void _enumerateDevices();
+        
+        static const std::string iName;
+        
+        // Mac stuff
+		NSWindow *mWindow;
+        
+        // settings
+        bool mHideMouse;
+        bool mUseRepeat;
+
+		//! Used to know if we used up keyboard
+		bool keyboardUsed;
+
+		//! Used to know if we used up mouse
+		bool mouseUsed;
+		
+		//! HID Manager class handling devices other than keyboard/mouse
+		MacHIDManager *mHIDManager;
+    };
 }
 #endif

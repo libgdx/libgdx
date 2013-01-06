@@ -1,0 +1,2559 @@
+Index: Mac/XCode-2.2/OIS.xcodeproj/project.pbxproj
+===================================================================
+--- Mac/XCode-2.2/OIS.xcodeproj/project.pbxproj	(revision 34)
++++ Mac/XCode-2.2/OIS.xcodeproj/project.pbxproj	(working copy)
+@@ -3,7 +3,7 @@
+ 	archiveVersion = 1;
+ 	classes = {
+ 	};
+-	objectVersion = 42;
++	objectVersion = 44;
+ 	objects = {
+ 
+ /* Begin PBXAggregateTarget section */
+@@ -40,12 +40,12 @@
+ 		0043D8890C35664A007ACDF6 /* OISPrereqs.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D87C0C35664A007ACDF6 /* OISPrereqs.h */; settings = {ATTRIBUTES = (Public, ); }; };
+ 		0043D8960C3566C1007ACDF6 /* OISEffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8900C3566C1007ACDF6 /* OISEffect.cpp */; };
+ 		0043D8970C3566C1007ACDF6 /* OISForceFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8910C3566C1007ACDF6 /* OISForceFeedback.cpp */; };
+-		0043D8980C3566C1007ACDF6 /* OISInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */; };
++		0043D8980C3566C1007ACDF6 /* OISInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */; settings = {COMPILER_FLAGS = "-x objective-c++"; }; };
+ 		0043D8990C3566C1007ACDF6 /* OISJoyStick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8930C3566C1007ACDF6 /* OISJoyStick.cpp */; };
+ 		0043D89A0C3566C1007ACDF6 /* OISKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8940C3566C1007ACDF6 /* OISKeyboard.cpp */; };
+ 		0043D89B0C3566C1007ACDF6 /* OISObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8950C3566C1007ACDF6 /* OISObject.cpp */; };
+ 		0043D8A00C3566C9007ACDF6 /* MacHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89C0C3566C9007ACDF6 /* MacHelpers.cpp */; };
+-		0043D8A10C3566C9007ACDF6 /* MacInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89D0C3566C9007ACDF6 /* MacInputManager.cpp */; };
++		0043D8A10C3566C9007ACDF6 /* MacInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89D0C3566C9007ACDF6 /* MacInputManager.cpp */; settings = {COMPILER_FLAGS = "-x objective-c++"; }; };
+ 		0043D8A20C3566C9007ACDF6 /* MacKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89E0C3566C9007ACDF6 /* MacKeyboard.cpp */; };
+ 		0043D8A30C3566C9007ACDF6 /* MacMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89F0C3566C9007ACDF6 /* MacMouse.cpp */; };
+ 		0043D8C70C35680D007ACDF6 /* OIS.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8700C35664A007ACDF6 /* OIS.h */; };
+@@ -80,7 +80,7 @@
+ 		0043D8E40C356819007ACDF6 /* MacMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89F0C3566C9007ACDF6 /* MacMouse.cpp */; };
+ 		0043D8E50C356819007ACDF6 /* OISEffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8900C3566C1007ACDF6 /* OISEffect.cpp */; };
+ 		0043D8E60C356819007ACDF6 /* OISForceFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8910C3566C1007ACDF6 /* OISForceFeedback.cpp */; };
+-		0043D8E70C356819007ACDF6 /* OISInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */; };
++		0043D8E70C356819007ACDF6 /* OISInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */; settings = {COMPILER_FLAGS = "-x objective-c++"; }; };
+ 		0043D8E80C356819007ACDF6 /* OISJoyStick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8930C3566C1007ACDF6 /* OISJoyStick.cpp */; };
+ 		0043D8E90C356819007ACDF6 /* OISKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8940C3566C1007ACDF6 /* OISKeyboard.cpp */; };
+ 		0043D8EA0C356819007ACDF6 /* OISObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8950C3566C1007ACDF6 /* OISObject.cpp */; };
+@@ -90,11 +90,10 @@
+ 		0043D8EE0C35681A007ACDF6 /* MacMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89F0C3566C9007ACDF6 /* MacMouse.cpp */; };
+ 		0043D8EF0C35681A007ACDF6 /* OISEffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8900C3566C1007ACDF6 /* OISEffect.cpp */; };
+ 		0043D8F00C35681A007ACDF6 /* OISForceFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8910C3566C1007ACDF6 /* OISForceFeedback.cpp */; };
+-		0043D8F10C35681A007ACDF6 /* OISInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */; };
++		0043D8F10C35681A007ACDF6 /* OISInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */; settings = {COMPILER_FLAGS = "-x objective-c++"; }; };
+ 		0043D8F20C35681A007ACDF6 /* OISJoyStick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8930C3566C1007ACDF6 /* OISJoyStick.cpp */; };
+ 		0043D8F30C35681A007ACDF6 /* OISKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8940C3566C1007ACDF6 /* OISKeyboard.cpp */; };
+ 		0043D8F40C35681A007ACDF6 /* OISObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8950C3566C1007ACDF6 /* OISObject.cpp */; };
+-		0043D8F50C356828007ACDF6 /* OIS-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0043D85F0C356509007ACDF6 /* OIS-Info.plist */; };
+ 		0043D8F70C356840007ACDF6 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0043D8F60C356840007ACDF6 /* Carbon.framework */; };
+ 		0043D8F80C356840007ACDF6 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0043D8F60C356840007ACDF6 /* Carbon.framework */; };
+ 		0043D8F90C356840007ACDF6 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0043D8F60C356840007ACDF6 /* Carbon.framework */; };
+@@ -124,6 +123,21 @@
+ 		4AEB08FC0D73DA81007CD406 /* OISConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0082F2880C827BF500E926BE /* OISConsole.cpp */; };
+ 		4AEB090C0D73DABC007CD406 /* OIS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0043D85D0C356509007ACDF6 /* OIS.framework */; };
+ 		4AEB09240D73DBC8007CD406 /* OIS.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0043D85D0C356509007ACDF6 /* OIS.framework */; };
++		9C0B132B125E954800E10CB7 /* CocoaInputManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1325125E954800E10CB7 /* CocoaInputManager.mm */; };
++		9C0B132C125E954800E10CB7 /* CocoaJoyStick.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1326125E954800E10CB7 /* CocoaJoyStick.mm */; };
++		9C0B132D125E954800E10CB7 /* CocoaKeyboard.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1327125E954800E10CB7 /* CocoaKeyboard.mm */; };
++		9C0B132E125E954800E10CB7 /* CocoaMouse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1328125E954800E10CB7 /* CocoaMouse.mm */; };
++		9C0B1331125E955000E10CB7 /* CocoaInputManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1325125E954800E10CB7 /* CocoaInputManager.mm */; };
++		9C0B1332125E955000E10CB7 /* CocoaJoyStick.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1326125E954800E10CB7 /* CocoaJoyStick.mm */; };
++		9C0B1333125E955000E10CB7 /* CocoaKeyboard.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1327125E954800E10CB7 /* CocoaKeyboard.mm */; };
++		9C0B1334125E955000E10CB7 /* CocoaMouse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1328125E954800E10CB7 /* CocoaMouse.mm */; };
++		9C0B1337125E955000E10CB7 /* CocoaInputManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1325125E954800E10CB7 /* CocoaInputManager.mm */; };
++		9C0B1338125E955000E10CB7 /* CocoaJoyStick.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1326125E954800E10CB7 /* CocoaJoyStick.mm */; };
++		9C0B1339125E955000E10CB7 /* CocoaKeyboard.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1327125E954800E10CB7 /* CocoaKeyboard.mm */; };
++		9C0B133A125E955000E10CB7 /* CocoaMouse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1328125E954800E10CB7 /* CocoaMouse.mm */; };
++		9C7C9A0D126136E20026234E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C0B12C4125E3B3400E10CB7 /* Cocoa.framework */; };
++		9C7C9A0E126136E30026234E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C0B12C4125E3B3400E10CB7 /* Cocoa.framework */; };
++		9C7C9A0F126136E30026234E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C0B12C4125E3B3400E10CB7 /* Cocoa.framework */; };
+ /* End PBXBuildFile section */
+ 
+ /* Begin PBXContainerItemProxy section */
+@@ -222,6 +236,16 @@
+ 		4ADFD2A80CDE7BAC006031E4 /* MacHIDManager.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MacHIDManager.cpp; path = ../../src/mac/MacHIDManager.cpp; sourceTree = SOURCE_ROOT; };
+ 		4AEB08F60D73DA6D007CD406 /* ConsoleTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConsoleTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+ 		4AEB08F80D73DA6D007CD406 /* ConsoleTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ConsoleTest-Info.plist"; sourceTree = "<group>"; };
++		9C0B12C4125E3B3400E10CB7 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
++		9C0B1325125E954800E10CB7 /* CocoaInputManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CocoaInputManager.mm; path = ../../src/mac/CocoaInputManager.mm; sourceTree = SOURCE_ROOT; };
++		9C0B1326125E954800E10CB7 /* CocoaJoyStick.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CocoaJoyStick.mm; path = ../../src/mac/CocoaJoyStick.mm; sourceTree = SOURCE_ROOT; };
++		9C0B1327125E954800E10CB7 /* CocoaKeyboard.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CocoaKeyboard.mm; path = ../../src/mac/CocoaKeyboard.mm; sourceTree = SOURCE_ROOT; };
++		9C0B1328125E954800E10CB7 /* CocoaMouse.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CocoaMouse.mm; path = ../../src/mac/CocoaMouse.mm; sourceTree = SOURCE_ROOT; };
++		9C0B133B125E959000E10CB7 /* CocoaHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaHelpers.h; path = ../../includes/mac/CocoaHelpers.h; sourceTree = SOURCE_ROOT; };
++		9C0B133D125E959000E10CB7 /* CocoaInputManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaInputManager.h; path = ../../includes/mac/CocoaInputManager.h; sourceTree = SOURCE_ROOT; };
++		9C0B133E125E959000E10CB7 /* CocoaJoyStick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaJoyStick.h; path = ../../includes/mac/CocoaJoyStick.h; sourceTree = SOURCE_ROOT; };
++		9C0B133F125E959000E10CB7 /* CocoaKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaKeyboard.h; path = ../../includes/mac/CocoaKeyboard.h; sourceTree = SOURCE_ROOT; };
++		9C0B1340125E959000E10CB7 /* CocoaMouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaMouse.h; path = ../../includes/mac/CocoaMouse.h; sourceTree = SOURCE_ROOT; };
+ /* End PBXFileReference section */
+ 
+ /* Begin PBXFrameworksBuildPhase section */
+@@ -231,6 +255,7 @@
+ 			files = (
+ 				0043D8F70C356840007ACDF6 /* Carbon.framework in Frameworks */,
+ 				4ADFD0130CDD94B2006031E4 /* IOKit.framework in Frameworks */,
++				9C7C9A0E126136E30026234E /* Cocoa.framework in Frameworks */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
+@@ -240,6 +265,7 @@
+ 			files = (
+ 				0043D8F80C356840007ACDF6 /* Carbon.framework in Frameworks */,
+ 				4ADFD0100CDD948B006031E4 /* IOKit.framework in Frameworks */,
++				9C7C9A0D126136E20026234E /* Cocoa.framework in Frameworks */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
+@@ -249,6 +275,7 @@
+ 			files = (
+ 				0043D8F90C356840007ACDF6 /* Carbon.framework in Frameworks */,
+ 				4ADFD0110CDD948C006031E4 /* IOKit.framework in Frameworks */,
++				9C7C9A0F126136E30026234E /* Cocoa.framework in Frameworks */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
+@@ -327,6 +354,7 @@
+ 			children = (
+ 				4AC4C3930CDD840500603F93 /* IOKit.framework */,
+ 				0043D8F60C356840007ACDF6 /* Carbon.framework */,
++				9C0B12C4125E3B3400E10CB7 /* Cocoa.framework */,
+ 			);
+ 			name = "External Frameworks and Libraries";
+ 			sourceTree = "<group>";
+@@ -334,6 +362,11 @@
+ 		0043D86B0C3565E0007ACDF6 /* OSX */ = {
+ 			isa = PBXGroup;
+ 			children = (
++				9C0B133B125E959000E10CB7 /* CocoaHelpers.h */,
++				9C0B133D125E959000E10CB7 /* CocoaInputManager.h */,
++				9C0B133E125E959000E10CB7 /* CocoaJoyStick.h */,
++				9C0B133F125E959000E10CB7 /* CocoaKeyboard.h */,
++				9C0B1340125E959000E10CB7 /* CocoaMouse.h */,
+ 				0043D88A0C35665B007ACDF6 /* MacPrereqs.h */,
+ 				0043D88B0C35665B007ACDF6 /* MacInputManager.h */,
+ 				0043D88C0C35665B007ACDF6 /* MacHelpers.h */,
+@@ -369,6 +402,10 @@
+ 		0043D86D0C3565F7007ACDF6 /* OSX */ = {
+ 			isa = PBXGroup;
+ 			children = (
++				9C0B1325125E954800E10CB7 /* CocoaInputManager.mm */,
++				9C0B1326125E954800E10CB7 /* CocoaJoyStick.mm */,
++				9C0B1327125E954800E10CB7 /* CocoaKeyboard.mm */,
++				9C0B1328125E954800E10CB7 /* CocoaMouse.mm */,
+ 				249631C31066333900EFD0E1 /* MacJoyStick.cpp */,
+ 				0043D89C0C3566C9007ACDF6 /* MacHelpers.cpp */,
+ 				4ADFD2A80CDE7BAC006031E4 /* MacHIDManager.cpp */,
+@@ -481,7 +518,6 @@
+ 			buildConfigurationList = 0043D8610C356509007ACDF6 /* Build configuration list for PBXNativeTarget "OIS" */;
+ 			buildPhases = (
+ 				0043D8580C356509007ACDF6 /* Headers */,
+-				0043D8590C356509007ACDF6 /* Resources */,
+ 				0043D85A0C356509007ACDF6 /* Sources */,
+ 				0043D85B0C356509007ACDF6 /* Frameworks */,
+ 			);
+@@ -568,8 +604,15 @@
+ 		0043D84E0C3564F8007ACDF6 /* Project object */ = {
+ 			isa = PBXProject;
+ 			buildConfigurationList = 0043D84F0C3564F8007ACDF6 /* Build configuration list for PBXProject "OIS" */;
+-			compatibilityVersion = "Xcode 2.4";
++			compatibilityVersion = "Xcode 3.0";
++			developmentRegion = English;
+ 			hasScannedForEncodings = 0;
++			knownRegions = (
++				English,
++				Japanese,
++				French,
++				German,
++			);
+ 			mainGroup = 0043D84C0C3564F8007ACDF6;
+ 			productRefGroup = 0043D85E0C356509007ACDF6 /* Products */;
+ 			projectDirPath = "";
+@@ -586,14 +629,6 @@
+ /* End PBXProject section */
+ 
+ /* Begin PBXResourcesBuildPhase section */
+-		0043D8590C356509007ACDF6 /* Resources */ = {
+-			isa = PBXResourcesBuildPhase;
+-			buildActionMask = 2147483647;
+-			files = (
+-				0043D8F50C356828007ACDF6 /* OIS-Info.plist in Resources */,
+-			);
+-			runOnlyForDeploymentPostprocessing = 0;
+-		};
+ 		4AEB08F20D73DA6D007CD406 /* Resources */ = {
+ 			isa = PBXResourcesBuildPhase;
+ 			buildActionMask = 2147483647;
+@@ -621,6 +656,10 @@
+ 				4ADFD2A90CDE7BAC006031E4 /* MacHIDManager.cpp in Sources */,
+ 				249631C71066334D00EFD0E1 /* MacJoyStick.cpp in Sources */,
+ 				4ACD7A530CEF903600D72CD9 /* OISException.cpp in Sources */,
++				9C0B132B125E954800E10CB7 /* CocoaInputManager.mm in Sources */,
++				9C0B132C125E954800E10CB7 /* CocoaJoyStick.mm in Sources */,
++				9C0B132D125E954800E10CB7 /* CocoaKeyboard.mm in Sources */,
++				9C0B132E125E954800E10CB7 /* CocoaMouse.mm in Sources */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
+@@ -641,6 +680,10 @@
+ 				4ADFD2AA0CDE7BAC006031E4 /* MacHIDManager.cpp in Sources */,
+ 				249631C81066335600EFD0E1 /* MacJoyStick.cpp in Sources */,
+ 				4ACD7A540CEF903600D72CD9 /* OISException.cpp in Sources */,
++				9C0B1331125E955000E10CB7 /* CocoaInputManager.mm in Sources */,
++				9C0B1332125E955000E10CB7 /* CocoaJoyStick.mm in Sources */,
++				9C0B1333125E955000E10CB7 /* CocoaKeyboard.mm in Sources */,
++				9C0B1334125E955000E10CB7 /* CocoaMouse.mm in Sources */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
+@@ -661,6 +704,10 @@
+ 				4ADFD2AB0CDE7BAC006031E4 /* MacHIDManager.cpp in Sources */,
+ 				249631C91066335D00EFD0E1 /* MacJoyStick.cpp in Sources */,
+ 				4ACD7A550CEF903600D72CD9 /* OISException.cpp in Sources */,
++				9C0B1337125E955000E10CB7 /* CocoaInputManager.mm in Sources */,
++				9C0B1338125E955000E10CB7 /* CocoaJoyStick.mm in Sources */,
++				9C0B1339125E955000E10CB7 /* CocoaKeyboard.mm in Sources */,
++				9C0B133A125E955000E10CB7 /* CocoaMouse.mm in Sources */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
+@@ -714,13 +761,13 @@
+ 		0043D8500C3564F8007ACDF6 /* Debug */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
+-				ARCHS = (
+-					ppc,
+-					i386,
+-				);
++				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
++				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+ 				COPY_PHASE_STRIP = YES;
+ 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
++				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
++				GCC_WARN_UNUSED_VARIABLE = YES;
++				SDKROOT = macosx;
+ 				USER_HEADER_SEARCH_PATHS = ../../includes;
+ 			};
+ 			name = Debug;
+@@ -728,13 +775,12 @@
+ 		0043D8510C3564F8007ACDF6 /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
+-				ARCHS = (
+-					ppc,
+-					i386,
+-				);
++				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
++				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+ 				COPY_PHASE_STRIP = YES;
+ 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
++				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
++				SDKROOT = macosx;
+ 				USER_HEADER_SEARCH_PATHS = ../../includes;
+ 			};
+ 			name = Release;
+@@ -744,16 +790,13 @@
+ 			buildSettings = {
+ 				COPY_PHASE_STRIP = YES;
+ 				DYLIB_COMPATIBILITY_VERSION = 1.0;
+-				DYLIB_CURRENT_VERSION = 1.0;
++				DYLIB_CURRENT_VERSION = 1.3;
+ 				FRAMEWORK_VERSION = A;
+ 				GCC_DYNAMIC_NO_PIC = NO;
+ 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+ 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+ 				GCC_MODEL_TUNING = G5;
+ 				GCC_OPTIMIZATION_LEVEL = 0;
+-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+-				GCC_VERSION = 4.0;
+ 				INFOPLIST_FILE = "OIS-Info.plist";
+ 				INSTALL_PATH = "@executable_path/../Frameworks";
+ 				OTHER_LDFLAGS = (
+@@ -762,6 +805,7 @@
+ 				);
+ 				PREBINDING = NO;
+ 				PRODUCT_NAME = OIS;
++				VALID_ARCHS = "i386 x86_64";
+ 				ZERO_LINK = YES;
+ 			};
+ 			name = Debug;
+@@ -771,14 +815,11 @@
+ 			buildSettings = {
+ 				COPY_PHASE_STRIP = YES;
+ 				DYLIB_COMPATIBILITY_VERSION = 1.0;
+-				DYLIB_CURRENT_VERSION = 1.0;
++				DYLIB_CURRENT_VERSION = 1.3;
+ 				FRAMEWORK_VERSION = A;
+ 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+ 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+ 				GCC_MODEL_TUNING = G5;
+-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+-				GCC_VERSION = 4.0;
+ 				INFOPLIST_FILE = "OIS-Info.plist";
+ 				INSTALL_PATH = "@executable_path/../Frameworks";
+ 				OTHER_LDFLAGS = (
+@@ -802,9 +843,6 @@
+ 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+ 				GCC_MODEL_TUNING = G5;
+ 				GCC_OPTIMIZATION_LEVEL = 0;
+-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+-				GCC_VERSION = 4.0;
+ 				INSTALL_PATH = "@executable_path/../Frameworks";
+ 				OTHER_LDFLAGS = (
+ 					"-framework",
+@@ -825,9 +863,6 @@
+ 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+ 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+ 				GCC_MODEL_TUNING = G5;
+-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+-				GCC_VERSION = 4.0;
+ 				INSTALL_PATH = "@executable_path/../Frameworks";
+ 				OTHER_LDFLAGS = (
+ 					"-framework",
+@@ -848,9 +883,6 @@
+ 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+ 				GCC_MODEL_TUNING = G5;
+ 				GCC_OPTIMIZATION_LEVEL = 0;
+-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+-				GCC_VERSION = 4.0;
+ 				INSTALL_PATH = /usr/local/lib;
+ 				OTHER_LDFLAGS = (
+ 					"-framework",
+@@ -869,9 +901,6 @@
+ 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+ 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+ 				GCC_MODEL_TUNING = G5;
+-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+-				GCC_VERSION = 4.0;
+ 				INSTALL_PATH = /usr/local/lib;
+ 				OTHER_LDFLAGS = (
+ 					"-framework",
+Index: includes/mac/MacMouse.h
+===================================================================
+--- includes/mac/MacMouse.h	(revision 34)
++++ includes/mac/MacMouse.h	(working copy)
+@@ -1,3 +1,26 @@
++/*
++ The zlib/libpng License
++ 
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
++ 
++ This software is provided 'as-is', without any express or implied warranty. In no event will
++ the authors be held liable for any damages arising from the use of this software.
++ 
++ Permission is granted to anyone to use this software for any purpose, including commercial
++ applications, and to alter it and redistribute it freely, subject to the following
++ restrictions:
++ 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
++ not required.
++ 
++ 2. Altered source versions must be plainly marked as such, and must not be
++ misrepresented as being the original software.
++ 
++ 3. This notice may not be removed or altered from any source distribution.
++ */
++
+ #ifndef OIS_MacMouse_H
+ #define OIS_MacMouse_H
+ 
+Index: includes/mac/CocoaMouse.h
+===================================================================
+--- includes/mac/CocoaMouse.h	(revision 0)
++++ includes/mac/CocoaMouse.h	(revision 0)
+@@ -0,0 +1,75 @@
++/*
++ The zlib/libpng License
++ 
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
++ 
++ This software is provided 'as-is', without any express or implied warranty. In no event will
++ the authors be held liable for any damages arising from the use of this software.
++ 
++ Permission is granted to anyone to use this software for any purpose, including commercial
++ applications, and to alter it and redistribute it freely, subject to the following
++ restrictions:
++ 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
++ not required.
++ 
++ 2. Altered source versions must be plainly marked as such, and must not be
++ misrepresented as being the original software.
++ 
++ 3. This notice may not be removed or altered from any source distribution.
++ */
++#ifndef OIS_CocoaMouse_H
++#define OIS_CocoaMouse_H
++
++#include "OISMouse.h"
++#include "mac/CocoaHelpers.h"
++
++#include <Cocoa/Cocoa.h>
++
++@class CocoaMouseView;
++
++using namespace OIS;
++
++namespace OIS
++{
++	class CocoaMouse : public Mouse
++    {
++	public:
++		CocoaMouse( InputManager* creator, bool buffered );
++		virtual ~CocoaMouse();
++		
++		/** @copydoc Object::setBuffered */
++		virtual void setBuffered(bool buffered);
++
++		/** @copydoc Object::capture */
++		virtual void capture();
++
++		/** @copydoc Object::queryInterface */
++		virtual Interface* queryInterface(Interface::IType type) {return 0;}
++
++		/** @copydoc Object::_initialize */
++		virtual void _initialize();
++        
++        MouseState * getMouseStatePtr() { return &(mState); }
++
++	protected:
++        CocoaMouseView *mResponder;
++	};
++}
++
++@interface CocoaMouseView : NSView
++{
++    CocoaMouse *oisMouseObj;
++    MouseState mTempState;
++    bool mNeedsToRegainFocus;
++    bool mMouseWarped;
++}
++
++- (void)setOISMouseObj:(CocoaMouse *)obj;
++- (void)capture;
++
++@end
++
++#endif // OIS_CocoaMouse_H
+Index: includes/mac/CocoaInputManager.h
+===================================================================
+--- includes/mac/CocoaInputManager.h	(revision 0)
++++ includes/mac/CocoaInputManager.h	(revision 0)
+@@ -0,0 +1,98 @@
++/*
++ The zlib/libpng License
++ 
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
++ 
++ This software is provided 'as-is', without any express or implied warranty. In no event will
++ the authors be held liable for any damages arising from the use of this software.
++ 
++ Permission is granted to anyone to use this software for any purpose, including commercial
++ applications, and to alter it and redistribute it freely, subject to the following
++ restrictions:
++ 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
++ not required.
++ 
++ 2. Altered source versions must be plainly marked as such, and must not be
++ misrepresented as being the original software.
++ 
++ 3. This notice may not be removed or altered from any source distribution.
++ */
++
++#ifndef OIS_CocoaInputManager_H
++#define OIS_CocoaInputManager_H
++
++#include "OISInputManager.h"
++#include "OISFactoryCreator.h"
++#include <Cocoa/Cocoa.h>
++
++namespace OIS
++{
++    class MacHIDManager;
++    
++    class CocoaInputManager : public InputManager, public FactoryCreator
++    {
++    public:
++        CocoaInputManager();
++        virtual ~CocoaInputManager();
++        
++		//InputManager Overrides
++		/** @copydoc InputManager::_initialize */
++		void _initialize( ParamList &paramList );
++
++		//FactoryCreator Overrides
++		/** @copydoc FactoryCreator::deviceList */
++		DeviceList freeDeviceList();
++
++		/** @copydoc FactoryCreator::totalDevices */
++		int totalDevices(Type iType);
++
++		/** @copydoc FactoryCreator::freeDevices */
++		int freeDevices(Type iType);
++
++		/** @copydoc FactoryCreator::vendorExist */
++		bool vendorExist(Type iType, const std::string & vendor);
++
++		/** @copydoc FactoryCreator::createObject */
++		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string & vendor = "");
++
++		/** @copydoc FactoryCreator::destroyObject */
++		void destroyObject(Object* obj);
++
++		//Internal Items
++		//! Internal method, used for flaggin keyboard as available/unavailable for creation
++		void _setKeyboardUsed(bool used) {keyboardUsed = used; }
++
++		//! Internal method, used for flaggin mouse as available/unavailable for creation
++		void _setMouseUsed(bool used) { mouseUsed = used; }
++
++        //! method for getting window
++        NSWindow * _getWindow() {return mWindow;}
++        
++    protected:        
++        void _parseConfigSettings( ParamList& paramList );
++        
++        void _enumerateDevices();
++        
++        static const std::string iName;
++        
++        // Mac stuff
++		NSWindow *mWindow;
++        
++        // settings
++        bool mHideMouse;
++        bool mUseRepeat;
++
++		//! Used to know if we used up keyboard
++		bool keyboardUsed;
++
++		//! Used to know if we used up mouse
++		bool mouseUsed;
++		
++		//! HID Manager class handling devices other than keyboard/mouse
++		MacHIDManager *mHIDManager;
++    };
++}
++#endif
+Index: includes/mac/MacHIDManager.h
+===================================================================
+--- includes/mac/MacHIDManager.h	(revision 34)
++++ includes/mac/MacHIDManager.h	(working copy)
+@@ -1,25 +1,25 @@
+ /*
+  The zlib/libpng License
+  
+- Copyright (c) 2007 Phillip
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
+  
+  This software is provided 'as-is', without any express or implied warranty. In no event will
+  the authors be held liable for any damages arising from the use of this software.
+  
+- Permission is granted to anyone to use this software for any purpose, including commercial 
++ Permission is granted to anyone to use this software for any purpose, including commercial
+  applications, and to alter it and redistribute it freely, subject to the following
+  restrictions:
+  
+- 1. The origin of this software must not be misrepresented; you must not claim that 
+- you wrote the original software. If you use this software in a product, 
+- an acknowledgment in the product documentation would be appreciated but is 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
+  not required.
+  
+- 2. Altered source versions must be plainly marked as such, and must not be 
++ 2. Altered source versions must be plainly marked as such, and must not be
+  misrepresented as being the original software.
+  
+  3. This notice may not be removed or altered from any source distribution.
+-*/
++ */
+ #ifndef OIS_MacHIDManager_Header
+ #define OIS_MacHIDManager_Header
+ 
+Index: includes/mac/MacKeyboard.h
+===================================================================
+--- includes/mac/MacKeyboard.h	(revision 34)
++++ includes/mac/MacKeyboard.h	(working copy)
+@@ -1,25 +1,25 @@
+ /*
+  The zlib/libpng License
+  
+- Copyright (c) 2006 Chris Snyder 
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
+  
+  This software is provided 'as-is', without any express or implied warranty. In no event will
+  the authors be held liable for any damages arising from the use of this software.
+  
+- Permission is granted to anyone to use this software for any purpose, including commercial 
++ Permission is granted to anyone to use this software for any purpose, including commercial
+  applications, and to alter it and redistribute it freely, subject to the following
+  restrictions:
+  
+- 1. The origin of this software must not be misrepresented; you must not claim that 
+- you wrote the original software. If you use this software in a product, 
+- an acknowledgment in the product documentation would be appreciated but is 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
+  not required.
+  
+- 2. Altered source versions must be plainly marked as such, and must not be 
++ 2. Altered source versions must be plainly marked as such, and must not be
+  misrepresented as being the original software.
+  
+  3. This notice may not be removed or altered from any source distribution.
+-*/
++ */
+ #ifndef OIS_MacKeyboard_H
+ #define OIS_MacKeyboard_H
+ 
+Index: includes/mac/MacHelpers.h
+===================================================================
+--- includes/mac/MacHelpers.h	(revision 34)
++++ includes/mac/MacHelpers.h	(working copy)
+@@ -57,37 +57,18 @@
+                          MAC_MOUSEMOVED,
+                          MAC_MOUSESCROLL};
+     typedef enum Mac_EventType MacEventType;
+-    
+-    
++
+     // only used by MacKeyboard
+     typedef class Mac_KeyStackEvent
+     {
+         friend class MacKeyboard;
+-        
+-        
++
+     private:
+         Mac_KeyStackEvent( KeyEvent event, MacEventType type ) : Event(event), Type(type) {}
+         
+         MacEventType Type;
+         KeyEvent Event;
+     } MacKeyStackEvent;
+- 
+-    
+-
+-    // only used by MacMouse
+-    typedef class Mac_MouseStackEvent
+-    {
+-        friend class MacMouse;
+-        
+-    private:
+-        Mac_MouseStackEvent( MouseEvent event, MacEventType type,  MouseButtonID button) : Event(event), Type(type), Button(button) {}
+-        
+-        MacEventType Type;
+-        MouseEvent Event;
+-		MouseButtonID Button;
+-        
+-    } MacMouseStackEvent;
+-        
+ }
+ 
+ 
+Index: includes/mac/CocoaJoyStick.h
+===================================================================
+--- includes/mac/CocoaJoyStick.h	(revision 0)
++++ includes/mac/CocoaJoyStick.h	(revision 0)
+@@ -0,0 +1,76 @@
++/*
++ The zlib/libpng License
++ 
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
++ 
++ This software is provided 'as-is', without any express or implied warranty. In no event will
++ the authors be held liable for any damages arising from the use of this software.
++ 
++ Permission is granted to anyone to use this software for any purpose, including commercial
++ applications, and to alter it and redistribute it freely, subject to the following
++ restrictions:
++ 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
++ not required.
++ 
++ 2. Altered source versions must be plainly marked as such, and must not be
++ misrepresented as being the original software.
++ 
++ 3. This notice may not be removed or altered from any source distribution.
++ */
++#ifndef Cocoa_Joystick_H
++#define Cocoa_Joystick_H
++
++#include "OISJoyStick.h"
++#include "mac/MacHIDManager.h"
++
++namespace OIS
++{
++	struct AxisInfo
++	{
++		int min;
++		int max;
++		
++		AxisInfo(int min, int max)
++			: min(min), max(max) {}
++	};
++	
++	typedef struct cookie_struct 
++	{ 
++		std::map<IOHIDElementCookie, AxisInfo> axisCookies; 			
++		std::vector<IOHIDElementCookie> buttonCookies; 
++	} cookie_struct_t; 
++	
++	//class HidDeviceInfo
++	
++	class CocoaJoyStick : public JoyStick
++	{
++	public:
++		CocoaJoyStick(const std::string& vendor, bool buffered, HidInfo* info, InputManager* creator, int devID);
++		
++		virtual ~CocoaJoyStick();
++		
++		/** @copydoc Object::setBuffered */
++		virtual void setBuffered(bool buffered);
++		
++		/** @copydoc Object::capture */
++		virtual void capture();
++		
++		/** @copydoc Object::queryInterface */
++		virtual Interface* queryInterface(Interface::IType type);
++		
++		/** @copydoc Object::_initialize */
++		virtual void _initialize();
++		
++		void _enumerateCookies();
++		
++		IOHIDQueueInterface** _createQueue(unsigned int depth = 8);
++	protected:
++		HidInfo* mInfo;
++		cookie_struct_t mCookies;
++		IOHIDQueueInterface** mQueue;
++	};
++}
++#endif
+Index: includes/mac/CocoaKeyboard.h
+===================================================================
+--- includes/mac/CocoaKeyboard.h	(revision 0)
++++ includes/mac/CocoaKeyboard.h	(revision 0)
+@@ -0,0 +1,117 @@
++/*
++ The zlib/libpng License
++ 
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
++ 
++ This software is provided 'as-is', without any express or implied warranty. In no event will
++ the authors be held liable for any damages arising from the use of this software.
++ 
++ Permission is granted to anyone to use this software for any purpose, including commercial
++ applications, and to alter it and redistribute it freely, subject to the following
++ restrictions:
++ 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
++ not required.
++ 
++ 2. Altered source versions must be plainly marked as such, and must not be
++ misrepresented as being the original software.
++ 
++ 3. This notice may not be removed or altered from any source distribution.
++ */
++
++#ifndef OIS_CocoaKeyboard_H
++#define OIS_CocoaKeyboard_H
++
++#include "OISKeyboard.h"
++#include "mac/CocoaHelpers.h"
++
++#include <list>
++#include <Cocoa/Cocoa.h>
++
++@class CocoaKeyboardView;
++
++using namespace OIS;
++using namespace std;
++
++namespace OIS
++{
++    typedef class Cocoa_KeyStackEvent
++    {
++        friend class CocoaKeyboard;
++        
++    public:
++        Cocoa_KeyStackEvent( KeyEvent event, MacEventType type ) : Event(event), Type(type) {}
++        const MacEventType type()   { return Type; }
++        const KeyEvent event()      { return Event; }
++    private:
++        MacEventType Type;
++        KeyEvent Event;
++    } CocoaKeyStackEvent;
++    
++    class CocoaKeyboard : public Keyboard
++    {
++    public:
++        CocoaKeyboard( InputManager* creator, bool buffered, bool repeat );
++        virtual ~CocoaKeyboard();
++
++        // Sets buffered mode
++        virtual void setBuffered( bool buffered );
++
++        // Unbuffered keydown check
++        virtual bool isKeyDown( KeyCode key ) const;
++
++        // This will send listener events if buffered is on.
++        // Note that in the mac implementation, unbuffered input is
++        // automatically updated without calling this.
++        virtual void capture();
++
++        // Copies the current key buffer
++        virtual void copyKeyStates( char keys[256] ) const;
++
++        // Returns a description of the given key
++        virtual std::string& getAsString( KeyCode key );
++
++        virtual Interface* queryInterface( Interface::IType type ) { return 0; }
++
++        // Public but reserved for internal use:
++        virtual void _initialize();
++        
++        unsigned int & _getModifiers() { return mModifiers; }
++
++    protected:
++        CocoaKeyboardView *mResponder;
++        std::string getString;
++    };
++}
++
++typedef std::map<unsigned short, KeyCode> VirtualtoOIS_KeyMap;
++typedef std::list<OIS::CocoaKeyStackEvent> eventStack;
++
++@interface CocoaKeyboardView : NSResponder
++{
++    CocoaKeyboard *oisKeyboardObj;
++    VirtualtoOIS_KeyMap keyConversion;
++
++    char KeyBuffer[256];
++    NSUInteger prevModMask;
++    
++    // buffered events, fifo stack
++    eventStack pendingEvents;
++    bool useRepeat;
++}
++
++- (void)setOISKeyboardObj:(CocoaKeyboard *)obj;
++- (void)populateKeyConversion;
++- (void)capture;
++- (void)injectEvent:(KeyCode)kc eventTime:(unsigned int)time eventType:(MacEventType)type;
++- (void)injectEvent:(KeyCode)kc eventTime:(unsigned int)time eventType:(MacEventType)type eventText:(unsigned int)txt;
++- (void)copyKeyStates:(char [256])keys;
++- (bool)isKeyDown:(KeyCode)key;
++- (void)setUseRepeat:(bool)repeat;
++- (VirtualtoOIS_KeyMap)keyConversionMap;
++
++@end
++
++#endif
+Index: includes/mac/CocoaHelpers.h
+===================================================================
+--- includes/mac/CocoaHelpers.h	(revision 0)
++++ includes/mac/CocoaHelpers.h	(revision 0)
+@@ -0,0 +1,46 @@
++/*
++ The zlib/libpng License
++ 
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
++ 
++ This software is provided 'as-is', without any express or implied warranty. In no event will
++ the authors be held liable for any damages arising from the use of this software.
++ 
++ Permission is granted to anyone to use this software for any purpose, including commercial
++ applications, and to alter it and redistribute it freely, subject to the following
++ restrictions:
++ 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
++ not required.
++ 
++ 2. Altered source versions must be plainly marked as such, and must not be
++ misrepresented as being the original software.
++ 
++ 3. This notice may not be removed or altered from any source distribution.
++ */
++
++#ifndef OIS_CocoaHelpers_H
++#define OIS_CocoaHelpers_H
++
++#include "OISEvents.h"
++#include "OISKeyboard.h"
++#include "OISMouse.h"
++
++// This is needed for keeping an event stack for keyboard and mouse
++namespace OIS
++{
++    
++    // used in the eventStack to store the type
++    enum Mac_EventType { MAC_KEYUP = 0,
++                         MAC_KEYDOWN = 1,
++                         MAC_KEYREPEAT,
++                         MAC_MOUSEDOWN,
++                         MAC_MOUSEUP,
++                         MAC_MOUSEMOVED,
++                         MAC_MOUSESCROLL};
++    typedef enum Mac_EventType MacEventType;
++}
++
++#endif
+Index: demos/OISConsole.cpp
+===================================================================
+--- demos/OISConsole.cpp	(revision 34)
++++ demos/OISConsole.cpp	(working copy)
+@@ -284,7 +284,7 @@
+ 	//For this demo, show mouse and do not grab (confine to window)
+ //	pl.insert(std::make_pair(std::string("x11_mouse_grab"), std::string("false")));
+ //	pl.insert(std::make_pair(std::string("x11_mouse_hide"), std::string("false")));
+-#elif defined OIS_APPLE_PLATFORM
++#elif defined OIS_APPLE_PLATFORM && !__LP64__
+     // create the window rect in global coords
+     ::Rect windowRect;
+     windowRect.left = 0;
+Index: src/mac/MacKeyboard.cpp
+===================================================================
+--- src/mac/MacKeyboard.cpp	(revision 34)
++++ src/mac/MacKeyboard.cpp	(working copy)
+@@ -1,26 +1,28 @@
+ /*
+  The zlib/libpng License
+  
+- Copyright (c) 2006 Chris Snyder 
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
+  
+  This software is provided 'as-is', without any express or implied warranty. In no event will
+  the authors be held liable for any damages arising from the use of this software.
+  
+- Permission is granted to anyone to use this software for any purpose, including commercial 
++ Permission is granted to anyone to use this software for any purpose, including commercial
+  applications, and to alter it and redistribute it freely, subject to the following
+  restrictions:
+  
+- 1. The origin of this software must not be misrepresented; you must not claim that 
+- you wrote the original software. If you use this software in a product, 
+- an acknowledgment in the product documentation would be appreciated but is 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
+  not required.
+  
+- 2. Altered source versions must be plainly marked as such, and must not be 
++ 2. Altered source versions must be plainly marked as such, and must not be
+  misrepresented as being the original software.
+  
+  3. This notice may not be removed or altered from any source distribution.
+-*/
++ */
+ 
++#ifndef __LP64__
++
+ #include "mac/MacKeyboard.h"
+ #include "mac/MacInputManager.h"
+ #include "mac/MacHelpers.h"
+@@ -141,11 +143,7 @@
+ 	// if not buffered just return, we update the unbuffered automatically
+ 	if ( !mBuffered || !mListener )
+ 		return;
+-	
+-	//If the mListener returns false, that means that we are probably deleted...
+-	//send no more events and just leave as the this pointer is invalid now...
+-	bool ret = true;
+-	
++
+ 	// run through our event stack
+ 	eventStack::iterator cur_it;
+ 	
+@@ -165,8 +163,24 @@
+ //-------------------------------------------------------------------//
+ std::string& MacKeyboard::getAsString( KeyCode key )
+ {
+-	getString = "";
+-	
++    CGKeyCode deviceKeycode;
++    
++    // Convert OIS KeyCode back into device keycode
++    for(VirtualtoOIS_KeyMap::iterator it = keyConversion.begin(); it != keyConversion.end(); ++it)
++    {
++        if(it->second == key)
++            deviceKeycode = it->first;
++    }
++    
++    UniChar unicodeString[1];
++    UniCharCount actualStringLength = 0;
++    
++    CGEventSourceRef sref = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
++    CGEventRef ref = CGEventCreateKeyboardEvent(sref, deviceKeycode, true);
++    CGEventKeyboardGetUnicodeString(ref, sizeof(unicodeString) / sizeof(*unicodeString), &actualStringLength, unicodeString);
++//    NSLog([NSString stringWithFormat:@"%C\n", unicodeString[0]]);
++    getString = unicodeString[0];
++
+ 	return getString;
+ }
+ 
+@@ -206,7 +220,7 @@
+ 		//status = GetEventParameter( theEvent, 'kuni', typeUnicodeText, NULL, 0, &stringsize, NULL);
+ 		//status = GetEventParameter( theEvent, 'kuni', typeUnicodeText, NULL, sizeof(UniChar)*10, NULL, &text );
+ 		status = GetEventParameter( theEvent, 'kuni', typeUnicodeText, NULL, sizeof(UniChar) * 10, &stringsize, &text );
+-		std::cout << "String length: " << stringsize << std::endl;
++//		std::cout << "String length: " << stringsize << std::endl;
+ 		
+ 		//wstring unitext;
+ 		//for (int i=0;i<10;i++) unitext += (wchar_t)text[i];
+@@ -462,6 +476,4 @@
+ 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x75, KC_DELETE)); // del under help key?
+ }
+ 
+-
+-
+-
++#endif
+Index: src/mac/MacHelpers.cpp
+===================================================================
+--- src/mac/MacHelpers.cpp	(revision 34)
++++ src/mac/MacHelpers.cpp	(working copy)
+@@ -1,26 +1,28 @@
+ /*
+  The zlib/libpng License
+  
+- Copyright (c) 2006 Chris Snyder 
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
+  
+  This software is provided 'as-is', without any express or implied warranty. In no event will
+  the authors be held liable for any damages arising from the use of this software.
+  
+- Permission is granted to anyone to use this software for any purpose, including commercial 
++ Permission is granted to anyone to use this software for any purpose, including commercial
+  applications, and to alter it and redistribute it freely, subject to the following
+  restrictions:
+  
+- 1. The origin of this software must not be misrepresented; you must not claim that 
+- you wrote the original software. If you use this software in a product, 
+- an acknowledgment in the product documentation would be appreciated but is 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
+  not required.
+  
+- 2. Altered source versions must be plainly marked as such, and must not be 
++ 2. Altered source versions must be plainly marked as such, and must not be
+  misrepresented as being the original software.
+  
+  3. This notice may not be removed or altered from any source distribution.
+-*/
++ */
+ 
++#ifndef __LP64__
++
+ #include "mac/MacHelpers.h"
+ #include "mac/MacKeyboard.h"
+ #include "mac/MacMouse.h"
+@@ -156,3 +158,5 @@
+     else
+         OIS_EXCEPT(E_General, "MouseWrapper >> Being called by something other than our event handler!");
+ }
++
++#endif
+\ No newline at end of file
+Index: src/mac/CocoaMouse.mm
+===================================================================
+--- src/mac/CocoaMouse.mm	(revision 0)
++++ src/mac/CocoaMouse.mm	(revision 0)
+@@ -0,0 +1,384 @@
++/*
++ The zlib/libpng License
++ 
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
++ 
++ This software is provided 'as-is', without any express or implied warranty. In no event will
++ the authors be held liable for any damages arising from the use of this software.
++ 
++ Permission is granted to anyone to use this software for any purpose, including commercial
++ applications, and to alter it and redistribute it freely, subject to the following
++ restrictions:
++ 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
++ not required.
++ 
++ 2. Altered source versions must be plainly marked as such, and must not be
++ misrepresented as being the original software.
++ 
++ 3. This notice may not be removed or altered from any source distribution.
++ */
++#include "mac/CocoaMouse.h"
++#include "mac/CocoaInputManager.h"
++#include "mac/CocoaHelpers.h"
++#include "OISException.h"
++#include "OISEvents.h"
++
++using namespace OIS;
++
++//-------------------------------------------------------------------//
++CocoaMouse::CocoaMouse( InputManager* creator, bool buffered )
++	: Mouse(creator->inputSystemName(), buffered, 0, creator)
++{
++    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
++
++	CocoaInputManager *man = static_cast<CocoaInputManager*>(mCreator);
++    mResponder = [[CocoaMouseView alloc] initWithFrame:[[man->_getWindow() contentView] frame]];
++    if(!mResponder)
++        OIS_EXCEPT( E_General, "CocoaMouseView::CocoaMouseView >> Error creating event responder" );
++    
++    [[man->_getWindow() contentView] addSubview:mResponder];
++    [mResponder setOISMouseObj:this];
++    
++	static_cast<CocoaInputManager*>(mCreator)->_setMouseUsed(true);
++
++    [pool drain];
++}
++
++CocoaMouse::~CocoaMouse()
++{
++	// Restore Mouse
++//	CGAssociateMouseAndMouseCursorPosition(true);
++	CGDisplayShowCursor(kCGDirectMainDisplay);
++
++    if (mResponder)
++    {
++        [mResponder release];
++        mResponder = nil;
++    }
++    
++	static_cast<CocoaInputManager*>(mCreator)->_setMouseUsed(false);
++}
++
++void CocoaMouse::_initialize()
++{
++	mState.clear();
++	CGAssociateMouseAndMouseCursorPosition(false);
++}
++
++void CocoaMouse::setBuffered( bool buffered )
++{
++	mBuffered = buffered;
++}
++
++void CocoaMouse::capture()
++{
++    [mResponder capture];
++}
++
++@implementation CocoaMouseView
++
++- (id)initWithFrame:(NSRect)frame
++{
++    self = [super initWithFrame:frame];
++    if (self) {
++        mTempState.clear();
++        mMouseWarped = false;
++        mNeedsToRegainFocus = false;
++        
++        // Hide OS Mouse
++        CGDisplayHideCursor(kCGDirectMainDisplay);
++
++        NSRect clipRect = NSMakeRect(0.0f, 0.0f, 0.0f, 0.0f);
++        clipRect = [[[self window] contentView] frame];
++
++        CGPoint warpPoint;
++		warpPoint.x = (((frame.origin.x + frame.size.width) - frame.origin.x) / 2) + frame.origin.x;
++		warpPoint.y = (((frame.origin.y + frame.size.height) - frame.origin.y) / 2) - frame.origin.y;
++//        warpPoint = CGPointMake(clipRect.size.height, clipRect.size.width);
++        CGDisplayMoveCursorToPoint(kCGDirectMainDisplay, warpPoint);
++
++        // Use NSTrackingArea to track mouse move events
++        NSTrackingAreaOptions trackingOptions = 
++            NSTrackingMouseMoved | NSTrackingEnabledDuringMouseDrag | 
++            NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp;
++        
++        NSDictionary *trackerData = [NSDictionary dictionaryWithObjectsAndKeys:
++                                     [NSNumber numberWithInt:0], @"OISMouseTrackingKey", nil];
++        NSTrackingArea *trackingArea = [[NSTrackingArea alloc]
++                                        initWithRect:[self frame]// in our case track the entire view
++                                        options:trackingOptions
++                                        owner:self
++                                        userInfo:trackerData];
++        [self addTrackingArea:trackingArea];
++        [[self window] setAcceptsMouseMovedEvents:YES];
++        [trackingArea release];
++    }
++    return self;
++}
++
++- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
++{
++    return YES;
++}
++
++- (void)setOISMouseObj:(CocoaMouse *)obj
++{
++    oisMouseObj = obj;
++}
++
++- (void)capture
++{
++	MouseState *state = oisMouseObj->getMouseStatePtr();
++    state->X.rel = 0;
++    state->Y.rel = 0;
++    state->Z.rel = 0;
++    
++	if(mTempState.X.rel || mTempState.Y.rel || mTempState.Z.rel)
++	{
++//		NSLog(@"%i %i %i", mTempState.X.rel, mTempState.Y.rel, mTempState.Z.rel);
++        
++		// Set new relative motion values
++		state->X.rel = mTempState.X.rel;
++		state->Y.rel = mTempState.Y.rel;
++		state->Z.rel = mTempState.Z.rel;
++		
++		// Update absolute position
++		state->X.abs += mTempState.X.rel;
++		state->Y.abs += mTempState.Y.rel;
++		
++		if(state->X.abs > state->width)
++			state->X.abs = state->width;
++		else if(state->X.abs < 0)
++			state->X.abs = 0;
++        
++		if(state->Y.abs > state->height)
++			state->Y.abs = state->height;
++		else if(state->Y.abs < 0)
++			state->Y.abs = 0;
++        
++		state->Z.abs += mTempState.Z.rel;
++		
++		//Fire off event
++        if ( oisMouseObj->buffered() && oisMouseObj->getEventCallback() )
++			oisMouseObj->getEventCallback()->mouseMoved(MouseEvent(oisMouseObj, *state));
++	}
++    
++	mTempState.clear();
++}
++
++#pragma mark Left Mouse Event overrides
++- (void)mouseDown:(NSEvent *)theEvent
++{
++    int mouseButton = MB_Left;
++    NSEventType type = [theEvent type];
++    MouseState *state = oisMouseObj->getMouseStatePtr();
++
++    if(mNeedsToRegainFocus)
++        return;
++
++    if((type == NSLeftMouseDown) && ([theEvent modifierFlags] & NSAlternateKeyMask))
++    {
++        mouseButton = MB_Middle;
++    }
++    else if((type == NSLeftMouseDown) && ([theEvent modifierFlags] & NSControlKeyMask))
++    {
++        mouseButton = MB_Right;
++    }
++    else if(type == NSLeftMouseDown)
++    {
++        mouseButton = MB_Left;
++    }
++    state->buttons |= 1 << mouseButton;
++    if ( oisMouseObj->buffered() && oisMouseObj->getEventCallback() )
++        oisMouseObj->getEventCallback()->mousePressed( MouseEvent( oisMouseObj, *state ), (MouseButtonID)mouseButton );
++}
++
++- (void)mouseUp:(NSEvent *)theEvent {
++    int mouseButton = MB_Left;
++    NSEventType type = [theEvent type];
++    MouseState *state = oisMouseObj->getMouseStatePtr();
++
++    if((type == NSLeftMouseUp) && ([theEvent modifierFlags] & NSAlternateKeyMask))
++    {
++        mouseButton = MB_Middle;
++    }
++    else if((type == NSLeftMouseUp) && ([theEvent modifierFlags] & NSControlKeyMask))
++    {
++        mouseButton = MB_Right;
++    }
++    else if(type == NSLeftMouseUp)
++    {
++        mouseButton = MB_Left;
++    }
++    state->buttons &= ~(1 << mouseButton);
++
++    if ( oisMouseObj->buffered() && oisMouseObj->getEventCallback() )
++        oisMouseObj->getEventCallback()->mouseReleased( MouseEvent( oisMouseObj, *state ), (MouseButtonID)mouseButton );
++}
++
++
++- (void)mouseDragged:(NSEvent *)theEvent
++{
++    CGPoint delta = CGPointMake([theEvent deltaX], [theEvent deltaY]);
++    if(mNeedsToRegainFocus)
++        return;
++    
++    // Relative positioning
++    if(!mMouseWarped)
++    {
++        mTempState.X.rel += delta.x;
++        mTempState.Y.rel += delta.y;
++    }
++    
++    mMouseWarped = false;
++}
++
++#pragma mark Right Mouse Event overrides
++- (void)rightMouseDown:(NSEvent *)theEvent
++{
++    int mouseButton = MB_Right;
++    NSEventType type = [theEvent type];
++    MouseState *state = oisMouseObj->getMouseStatePtr();
++    
++    if(mNeedsToRegainFocus)
++        return;
++    
++    if(type == NSRightMouseDown)
++    {	
++        state->buttons |= 1 << mouseButton;
++    }
++
++    if ( oisMouseObj->buffered() && oisMouseObj->getEventCallback() )
++        oisMouseObj->getEventCallback()->mousePressed( MouseEvent( oisMouseObj, *state ), (MouseButtonID)mouseButton );
++}
++
++- (void)rightMouseUp:(NSEvent *)theEvent {
++    int mouseButton = MB_Right;
++    NSEventType type = [theEvent type];
++    MouseState *state = oisMouseObj->getMouseStatePtr();
++    
++    if(type == NSRightMouseUp)
++    {	
++        state->buttons &= ~(1 << mouseButton);
++    }
++
++    if ( oisMouseObj->buffered() && oisMouseObj->getEventCallback() )
++        oisMouseObj->getEventCallback()->mouseReleased( MouseEvent( oisMouseObj, *state ), (MouseButtonID)mouseButton );
++}
++
++- (void)rightMouseDragged:(NSEvent *)theEvent
++{
++    CGPoint delta = CGPointMake([theEvent deltaX], [theEvent deltaY]);
++    if(mNeedsToRegainFocus)
++        return;
++    
++    // Relative positioning
++    if(!mMouseWarped)
++    {
++        mTempState.X.rel += delta.x;
++        mTempState.Y.rel += delta.y;
++    }
++    
++    mMouseWarped = false;
++}
++
++#pragma mark Other Mouse Event overrides
++- (void)otherMouseDown:(NSEvent *)theEvent
++{
++    int mouseButton = MB_Middle;
++    NSEventType type = [theEvent type];
++    MouseState *state = oisMouseObj->getMouseStatePtr();
++    
++    if(mNeedsToRegainFocus)
++        return;
++    
++    if(type == NSOtherMouseDown)
++    {
++        state->buttons |= 1 << mouseButton;
++    }
++
++    if ( oisMouseObj->buffered() && oisMouseObj->getEventCallback() )
++        oisMouseObj->getEventCallback()->mousePressed( MouseEvent( oisMouseObj, *state ), (MouseButtonID)mouseButton );
++}
++
++- (void)otherMouseUp:(NSEvent *)theEvent {
++    int mouseButton = MB_Middle;
++    NSEventType type = [theEvent type];
++    MouseState *state = oisMouseObj->getMouseStatePtr();
++    
++    if(type == NSOtherMouseUp)
++    {
++        state->buttons &= ~(1 << mouseButton);
++    }
++
++    if ( oisMouseObj->buffered() && oisMouseObj->getEventCallback() )
++        oisMouseObj->getEventCallback()->mouseReleased( MouseEvent( oisMouseObj, *state ), (MouseButtonID)mouseButton );
++}
++
++- (void)otherMouseDragged:(NSEvent *)theEvent
++{
++    CGPoint delta = CGPointMake([theEvent deltaX], [theEvent deltaY]);
++    if(mNeedsToRegainFocus)
++        return;
++    
++    // Relative positioning
++    if(!mMouseWarped)
++    {
++        mTempState.X.rel += delta.x;
++        mTempState.Y.rel += delta.y;
++    }
++    
++    mMouseWarped = false;
++}
++
++- (void)scrollWheel:(NSEvent *)theEvent
++{
++    if([theEvent deltaY] != 0.0)
++        mTempState.Z.rel += ([theEvent deltaY] * 60);
++}
++
++- (void)mouseMoved:(NSEvent *)theEvent
++{
++    CGPoint delta = CGPointMake([theEvent deltaX], [theEvent deltaY]);
++    if(mNeedsToRegainFocus)
++        return;
++    
++    // Relative positioning
++    if(!mMouseWarped)
++    {
++        mTempState.X.rel += delta.x;
++        mTempState.Y.rel += delta.y;
++    }
++    
++    mMouseWarped = false;
++}
++
++- (void)mouseEntered:(NSEvent *)theEvent
++{
++	CGDisplayHideCursor(kCGDirectMainDisplay);
++	CGAssociateMouseAndMouseCursorPosition(false);
++    if(!mMouseWarped)
++    {
++        NSPoint pos = [[self window] mouseLocationOutsideOfEventStream];
++        NSRect frame = [[[self window] contentView] frame];
++
++        // Clear the previous mouse state
++        MouseState *state = oisMouseObj->getMouseStatePtr();
++        state->clear();
++
++        // Cocoa's coordinate system has the origin in the bottom left so we need to transform the height
++        mTempState.X.rel = pos.x;
++        mTempState.Y.rel = frame.size.height - pos.y;
++    }
++}
++
++- (void)mouseExited:(NSEvent *)theEvent
++{
++	CGDisplayShowCursor(kCGDirectMainDisplay);
++	CGAssociateMouseAndMouseCursorPosition(true);
++}
++
++@end
+Index: src/mac/CocoaInputManager.mm
+===================================================================
+--- src/mac/CocoaInputManager.mm	(revision 0)
++++ src/mac/CocoaInputManager.mm	(revision 0)
+@@ -0,0 +1,187 @@
++/*
++ The zlib/libpng License
++ 
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
++ 
++ This software is provided 'as-is', without any express or implied warranty. In no event will
++ the authors be held liable for any damages arising from the use of this software.
++ 
++ Permission is granted to anyone to use this software for any purpose, including commercial
++ applications, and to alter it and redistribute it freely, subject to the following
++ restrictions:
++ 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
++ not required.
++ 
++ 2. Altered source versions must be plainly marked as such, and must not be
++ misrepresented as being the original software.
++ 
++ 3. This notice may not be removed or altered from any source distribution.
++ */
++
++#include "mac/CocoaInputManager.h"
++#include "mac/CocoaKeyboard.h"
++#include "mac/CocoaMouse.h"
++#include "mac/MacHIDManager.h"
++#include "OISException.h"
++
++using namespace std;
++using namespace OIS;
++
++//--------------------------------------------------------------------------------//
++CocoaInputManager::CocoaInputManager() : InputManager("Mac OS X Cocoa Input Manager")
++{
++    mHideMouse = true;
++    mUseRepeat = false;
++	mWindow = nil;
++
++	keyboardUsed = mouseUsed = false;
++
++	//Setup our internal factories
++	mFactories.push_back(this);
++
++	mHIDManager = new MacHIDManager();
++	mFactories.push_back(mHIDManager);
++}
++
++//--------------------------------------------------------------------------------//
++CocoaInputManager::~CocoaInputManager()
++{
++	delete mHIDManager;
++}
++
++//--------------------------------------------------------------------------------//
++void CocoaInputManager::_initialize( ParamList &paramList )
++{
++	_parseConfigSettings( paramList );
++    
++	//Enumerate all devices attached
++	_enumerateDevices();
++	
++	mHIDManager->initialize();
++}
++
++//--------------------------------------------------------------------------------//
++void CocoaInputManager::_parseConfigSettings( ParamList &paramList )
++{
++    // Some carbon apps are running in a window, however full screen apps
++	// do not have a window, so we need to account for that too.
++	ParamList::iterator i = paramList.find("WINDOW");
++	if(i != paramList.end())
++	{
++		mWindow = (NSWindow *)strtoul(i->second.c_str(), 0, 10);
++		if(mWindow == 0)
++		{
++			mWindow = nil;
++		}
++    }
++	else
++	{
++		// else get the main active window.. user might not have access to it through some
++		// graphics libraries, if that fails then try at the application level.
++		mWindow = [[NSApplication sharedApplication] keyWindow];
++	}
++	
++	if(mWindow == nil)
++		OIS_EXCEPT( E_General, "CocoaInputManager::_parseConfigSettings >> Unable to find a window or event target" );
++    
++    // Keyboard
++    if(paramList.find("MacAutoRepeatOn") != paramList.end())
++	{
++        if(paramList.find("MacAutoRepeatOn")->second == "true")
++		{
++            mUseRepeat = true;
++        }
++    }
++}
++
++//--------------------------------------------------------------------------------//
++void CocoaInputManager::_enumerateDevices()
++{
++}
++
++//--------------------------------------------------------------------------------//
++DeviceList CocoaInputManager::freeDeviceList()
++{
++	DeviceList ret;
++
++	if( keyboardUsed == false )
++		ret.insert(std::make_pair(OISKeyboard, mInputSystemName));
++
++	if( mouseUsed == false )
++		ret.insert(std::make_pair(OISMouse, mInputSystemName));
++
++	return ret;
++}
++
++//--------------------------------------------------------------------------------//
++int CocoaInputManager::totalDevices(Type iType)
++{
++	switch(iType)
++	{
++	case OISKeyboard: return 1;
++	case OISMouse: return 1;
++	default: return 0;
++	}
++}
++
++//--------------------------------------------------------------------------------//
++int CocoaInputManager::freeDevices(Type iType)
++{
++	switch(iType)
++	{
++	case OISKeyboard: return keyboardUsed ? 0 : 1;
++	case OISMouse: return mouseUsed ? 0 : 1;
++	default: return 0;
++	}
++}
++
++//--------------------------------------------------------------------------------//
++bool CocoaInputManager::vendorExist(Type iType, const std::string & vendor)
++{
++	if( (iType == OISKeyboard || iType == OISMouse) && vendor == mInputSystemName )
++		return true;
++
++	return false;
++}
++
++//--------------------------------------------------------------------------------//
++Object* CocoaInputManager::createObject(InputManager* creator, Type iType, bool bufferMode, 
++									  const std::string & vendor)
++{
++	Object *obj = 0;
++
++	switch(iType)
++	{
++        case OISKeyboard: 
++        {
++            if( keyboardUsed == false )
++                obj = new CocoaKeyboard(this, bufferMode, mUseRepeat);
++            break;
++        }
++        case OISMouse:
++        {
++            if( mouseUsed == false )
++                obj = new CocoaMouse(this, bufferMode);
++            break;
++        }
++        default:
++        {
++            obj = mHIDManager->createObject(creator, iType, bufferMode, vendor);
++            break;
++        }
++	}
++
++	if( obj == 0 )
++		OIS_EXCEPT(E_InputDeviceNonExistant, "No devices match requested type.");
++
++	return obj;
++}
++
++//--------------------------------------------------------------------------------//
++void CocoaInputManager::destroyObject(Object* obj)
++{
++	delete obj;
++}
+Index: src/mac/MacMouse.cpp
+===================================================================
+--- src/mac/MacMouse.cpp	(revision 34)
++++ src/mac/MacMouse.cpp	(working copy)
+@@ -1,3 +1,28 @@
++/*
++ The zlib/libpng License
++ 
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
++ 
++ This software is provided 'as-is', without any express or implied warranty. In no event will
++ the authors be held liable for any damages arising from the use of this software.
++ 
++ Permission is granted to anyone to use this software for any purpose, including commercial
++ applications, and to alter it and redistribute it freely, subject to the following
++ restrictions:
++ 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
++ not required.
++ 
++ 2. Altered source versions must be plainly marked as such, and must not be
++ misrepresented as being the original software.
++ 
++ 3. This notice may not be removed or altered from any source distribution.
++ */
++
++#ifndef __LP64__
++
+ #include "mac/MacMouse.h"
+ #include "mac/MacInputManager.h"
+ #include "mac/MacHelpers.h"
+@@ -165,7 +190,6 @@
+ 
+ void MacMouse::_mouseCallback( EventRef theEvent )
+ {
+-	OSStatus result = eventNotHandledErr;
+     UInt32 kind = GetEventKind (theEvent);
+ 
+ 	switch(kind)
+@@ -344,3 +368,4 @@
+ 			break;
+ 	}    
+ }
++#endif
+Index: src/mac/MacInputManager.cpp
+===================================================================
+--- src/mac/MacInputManager.cpp	(revision 34)
++++ src/mac/MacInputManager.cpp	(working copy)
+@@ -1,25 +1,28 @@
+ /*
+  The zlib/libpng License
+  
+- Copyright (c) 2006 Chris Snyder 
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
+  
+  This software is provided 'as-is', without any express or implied warranty. In no event will
+  the authors be held liable for any damages arising from the use of this software.
+  
+- Permission is granted to anyone to use this software for any purpose, including commercial 
++ Permission is granted to anyone to use this software for any purpose, including commercial
+  applications, and to alter it and redistribute it freely, subject to the following
+  restrictions:
+  
+- 1. The origin of this software must not be misrepresented; you must not claim that 
+- you wrote the original software. If you use this software in a product, 
+- an acknowledgment in the product documentation would be appreciated but is 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
+  not required.
+  
+- 2. Altered source versions must be plainly marked as such, and must not be 
++ 2. Altered source versions must be plainly marked as such, and must not be
+  misrepresented as being the original software.
+  
+  3. This notice may not be removed or altered from any source distribution.
+-*/
++ */
++
++#ifndef __LP64__
++
+ #include "mac/MacInputManager.h"
+ #include "mac/MacKeyboard.h"
+ #include "mac/MacMouse.h"
+@@ -34,7 +37,7 @@
+ using namespace OIS;
+ 
+ //--------------------------------------------------------------------------------//
+-MacInputManager::MacInputManager() : InputManager("Mac OSX Input Manager")
++MacInputManager::MacInputManager() : InputManager("Mac OS X Input Manager")
+ {
+     mHideMouse = true;
+     mUseRepeat = false;
+@@ -204,3 +207,4 @@
+ {
+ 	delete obj;
+ }
++#endif
+Index: src/mac/CocoaJoyStick.mm
+===================================================================
+--- src/mac/CocoaJoyStick.mm	(revision 0)
++++ src/mac/CocoaJoyStick.mm	(revision 0)
+@@ -0,0 +1,325 @@
++/*
++ The zlib/libpng License
++ 
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
++ 
++ This software is provided 'as-is', without any express or implied warranty. In no event will
++ the authors be held liable for any damages arising from the use of this software.
++ 
++ Permission is granted to anyone to use this software for any purpose, including commercial
++ applications, and to alter it and redistribute it freely, subject to the following
++ restrictions:
++ 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
++ not required.
++ 
++ 2. Altered source versions must be plainly marked as such, and must not be
++ misrepresented as being the original software.
++ 
++ 3. This notice may not be removed or altered from any source distribution.
++ */
++
++#include "mac/CocoaJoyStick.h"
++#include "mac/MacHIDManager.h"
++#include "mac/CocoaInputManager.h"
++#include "OISEvents.h"
++#include "OISException.h"
++
++#include <cassert>
++
++using namespace OIS;
++
++//--------------------------------------------------------------------------------------------------//
++CocoaJoyStick::CocoaJoyStick(const std::string &vendor, bool buffered, HidInfo* info, InputManager* creator, int devID) : 
++JoyStick(vendor, buffered, devID, creator), mInfo(info)
++{
++	
++}
++
++//--------------------------------------------------------------------------------------------------//
++CocoaJoyStick::~CocoaJoyStick()
++{
++	//TODO: check if the queue has been started first?
++	//(*mQueue)->stop(mQueue); 
++	(*mQueue)->dispose(mQueue); 
++	(*mQueue)->Release(mQueue); 
++	
++	
++	//TODO: check if the interface has been opened first?
++	(*mInfo->interface)->close(mInfo->interface);
++	(*mInfo->interface)->Release(mInfo->interface); 
++}
++
++//--------------------------------------------------------------------------------------------------//
++void CocoaJoyStick::_initialize()
++{
++	assert(mInfo && "Given HidInfo invalid");
++	assert(mInfo->interface && "Joystick interface invalid");
++	
++	//TODO: Is this necessary?
++	//Clear old state
++	mState.mAxes.clear();
++	
++	if ((*mInfo->interface)->open(mInfo->interface, 0) != KERN_SUCCESS)
++		OIS_EXCEPT(E_General, "CocoaJoyStick::_initialize() >> Could not initialize joy device!");
++	
++	mState.clear();
++	
++	_enumerateCookies();
++	
++	mState.mButtons.resize(mInfo->numButtons);
++	mState.mAxes.resize(mInfo->numAxes);
++	
++	mQueue = _createQueue();
++}
++
++class FindAxisCookie : public std::unary_function<std::pair<IOHIDElementCookie, AxisInfo>&, bool>
++{
++public:
++	FindAxisCookie(IOHIDElementCookie cookie) : m_Cookie(cookie) {}
++	bool operator()(const std::pair<IOHIDElementCookie, AxisInfo>& pair) const
++	{
++		return pair.first == m_Cookie;
++	}
++private:
++	IOHIDElementCookie m_Cookie;
++};
++
++//--------------------------------------------------------------------------------------------------//
++void CocoaJoyStick::capture()
++{
++	assert(mQueue && "Queue must be initialized before calling CocoaJoyStick::capture()");
++	
++	AbsoluteTime zeroTime = {0,0}; 
++	
++	IOHIDEventStruct event; 
++	IOReturn result = (*mQueue)->getNextEvent(mQueue, &event, zeroTime, 0); 
++	while(result == kIOReturnSuccess)
++	{
++		switch(event.type)
++		{
++			case kIOHIDElementTypeInput_Button:
++			{
++				std::vector<IOHIDElementCookie>::iterator buttonIt = std::find(mCookies.buttonCookies.begin(), mCookies.buttonCookies.end(), event.elementCookie);
++				int button = std::distance(mCookies.buttonCookies.begin(), buttonIt);
++				mState.mButtons[button] = (event.value == 1);
++				
++				if(mBuffered && mListener)
++				{
++					if(event.value == 0)
++						mListener->buttonPressed(JoyStickEvent(this, mState), button);
++					else if(event.value == 1)
++						mListener->buttonReleased(JoyStickEvent(this, mState), button);
++				}
++				break;
++			}
++			case kIOHIDElementTypeInput_Misc:
++				//TODO: It's an axis! - kind of - for gamepads - or should this be a pov?
++			case kIOHIDElementTypeInput_Axis:
++				std::map<IOHIDElementCookie, AxisInfo>::iterator axisIt = std::find_if(mCookies.axisCookies.begin(), mCookies.axisCookies.end(), FindAxisCookie(event.elementCookie));
++				int axis = std::distance(mCookies.axisCookies.begin(), axisIt);
++				
++				//Copied from LinuxJoyStickEvents.cpp, line 149
++				const AxisInfo& axisInfo = axisIt->second;
++				float proportion = (float) (event.value - axisInfo.max) / (float) (axisInfo.min - axisInfo.max);
++				mState.mAxes[axis].abs = -JoyStick::MIN_AXIS - (JoyStick::MAX_AXIS * 2 * proportion);
++				
++				if(mBuffered && mListener) mListener->axisMoved(JoyStickEvent(this, mState), axis);
++				break;
++		}
++		
++		result = (*mQueue)->getNextEvent(mQueue, &event, zeroTime, 0);
++	}
++}
++
++//--------------------------------------------------------------------------------------------------//
++void CocoaJoyStick::setBuffered(bool buffered)
++{
++	mBuffered = buffered;
++}
++
++//--------------------------------------------------------------------------------------------------//
++Interface* CocoaJoyStick::queryInterface(Interface::IType type)
++{
++	//Thought about using covariant return type here.. however,
++	//some devices may allow LED light changing, or other interface stuff
++	
++	//f( ff_device && type == Interface::ForceFeedback )
++	//return ff_device;
++	//else
++	return 0;
++}
++
++//--------------------------------------------------------------------------------------------------//
++void CocoaJoyStick::_enumerateCookies()
++{
++	assert(mInfo && "Given HidInfo invalid");
++	assert(mInfo->interface && "Joystick interface invalid");
++	
++	CFTypeRef                               object; 
++	long                                    number; 
++	IOHIDElementCookie                      cookie; 
++	long                                    usage; 
++	long                                    usagePage;
++	int										min;
++	int										max;
++
++	CFDictionaryRef                         element; 
++	
++	// Copy all elements, since we're grabbing most of the elements 
++	// for this device anyway, and thus, it's faster to iterate them 
++	// ourselves. When grabbing only one or two elements, a matching 
++	// dictionary should be passed in here instead of NULL. 
++	CFArrayRef elements; 
++	IOReturn success = reinterpret_cast<IOHIDDeviceInterface122*>(*mInfo->interface)->copyMatchingElements(mInfo->interface, NULL, &elements); 
++	
++	if (success == kIOReturnSuccess)
++	{ 
++		const CFIndex numOfElements = CFArrayGetCount(elements);
++		for (CFIndex i = 0; i < numOfElements; ++i) 
++		{ 
++			element = static_cast<CFDictionaryRef>(CFArrayGetValueAtIndex(elements, i));
++			
++			//Get cookie 
++			object = (CFDictionaryGetValue(element, 
++										   CFSTR(kIOHIDElementCookieKey))); 
++			if (object == 0 || CFGetTypeID(object) != CFNumberGetTypeID()) 
++				continue; 
++			if(!CFNumberGetValue((CFNumberRef) object, kCFNumberLongType, 
++								 &number)) 
++				continue; 
++			cookie = (IOHIDElementCookie) number; 
++			
++			//Get usage 
++			object = CFDictionaryGetValue(element, 
++										  CFSTR(kIOHIDElementUsageKey)); 
++			if (object == 0 || CFGetTypeID(object) != CFNumberGetTypeID()) 
++				continue; 
++			if (!CFNumberGetValue((CFNumberRef) object, kCFNumberLongType, 
++								  &number)) 
++				continue; 
++			usage = number; 
++			
++			//Get min
++			object = CFDictionaryGetValue(element,
++										  CFSTR(kIOHIDElementMinKey)); // kIOHIDElementMinKey or kIOHIDElementScaledMinKey?, no idea ...
++			if (object == 0 || CFGetTypeID(object) != CFNumberGetTypeID())
++				continue;
++			if (!CFNumberGetValue((CFNumberRef) object, kCFNumberIntType,
++								  &number))
++				continue;
++			min = number;
++			
++			//Get max
++			object = CFDictionaryGetValue(element,
++										  CFSTR(kIOHIDElementMaxKey)); // kIOHIDElementMaxKey or kIOHIDElementScaledMaxKey?, no idea ...
++			if (object == 0 || CFGetTypeID(object) != CFNumberGetTypeID())
++				continue;
++			if (!CFNumberGetValue((CFNumberRef) object, kCFNumberIntType,
++								  &number))
++				continue;
++			max = number;			
++			
++			//Get usage page 
++			object = CFDictionaryGetValue(element, 
++										  CFSTR(kIOHIDElementUsagePageKey)); 
++			
++			if (object == 0 || CFGetTypeID(object) != CFNumberGetTypeID()) 
++				continue; 
++			
++			if (!CFNumberGetValue((CFNumberRef) object, kCFNumberLongType, 
++								  &number)) 
++				continue; 
++			
++			usagePage = number;
++			switch(usagePage)
++			{
++				case kHIDPage_GenericDesktop:
++					switch(usage)
++				{
++					case kHIDUsage_GD_Pointer:
++						break;
++					case kHIDUsage_GD_X:
++					case kHIDUsage_GD_Y:
++					case kHIDUsage_GD_Z:
++					case kHIDUsage_GD_Rx:
++					case kHIDUsage_GD_Ry:
++					case kHIDUsage_GD_Rz:
++						mCookies.axisCookies.insert(std::make_pair(cookie, AxisInfo(min, max)));
++						break;
++					case kHIDUsage_GD_Slider:
++					case kHIDUsage_GD_Dial:
++					case kHIDUsage_GD_Wheel:
++						break;
++					case kHIDUsage_GD_Hatswitch:
++						break;
++				}
++					break;
++				case kHIDPage_Button:
++					mCookies.buttonCookies.push_back(cookie);
++					break;
++			}		
++		}
++		
++		mInfo->numButtons = mCookies.buttonCookies.size();
++		mInfo->numAxes = mCookies.axisCookies.size();
++
++	} 
++	else 
++	{ 
++		OIS_EXCEPT(E_General, "JoyStick elements could not be copied: copyMatchingElements failed with error: " + success); 
++	}
++	
++}
++
++//--------------------------------------------------------------------------------------------------//
++IOHIDQueueInterface** CocoaJoyStick::_createQueue(unsigned int depth)
++{	
++	assert(mInfo && "Given HidInfo invalid");
++	assert(mInfo->interface && "Joystick interface invalid");
++	
++	IOHIDQueueInterface** queue = (*mInfo->interface)->allocQueue(mInfo->interface); 
++	
++	if (queue) 
++	{		
++		//create the queue 
++		IOReturn result = (*queue)->create(queue, 0, depth); 
++		
++		if(result == kIOReturnSuccess)
++		{		
++			//add elements to the queue
++			std::map<IOHIDElementCookie, AxisInfo>::iterator axisIt = mCookies.axisCookies.begin();
++			for(; axisIt != mCookies.axisCookies.end(); ++axisIt)
++			{
++				result = (*queue)->addElement(queue, axisIt->first, 0);
++			}
++			
++			std::vector<IOHIDElementCookie>::iterator buttonIt = mCookies.buttonCookies.begin();
++			for(; buttonIt != mCookies.buttonCookies.end(); ++buttonIt)
++			{
++				result = (*queue)->addElement(queue, (*buttonIt), 0);
++			}
++
++			//start data delivery to queue 
++			result = (*queue)->start(queue); 
++			if(result == kIOReturnSuccess)
++			{
++				return queue;
++			}
++			else
++			{
++				OIS_EXCEPT(E_General, "Queue could not be started.");
++			}
++		}
++		else
++		{
++			OIS_EXCEPT(E_General, "Queue could not be created.");
++		}
++	}
++	else
++	{
++		OIS_EXCEPT(E_General, "Queue allocation failed.");
++	}
++}
+Index: src/mac/CocoaKeyboard.mm
+===================================================================
+--- src/mac/CocoaKeyboard.mm	(revision 0)
++++ src/mac/CocoaKeyboard.mm	(revision 0)
+@@ -0,0 +1,433 @@
++/*
++ The zlib/libpng License
++ 
++ Copyright (c) 2005-2007 Phillip Castaneda (pjcast -- www.wreckedgames.com)
++ 
++ This software is provided 'as-is', without any express or implied warranty. In no event will
++ the authors be held liable for any damages arising from the use of this software.
++ 
++ Permission is granted to anyone to use this software for any purpose, including commercial
++ applications, and to alter it and redistribute it freely, subject to the following
++ restrictions:
++ 
++ 1. The origin of this software must not be misrepresented; you must not claim that
++ you wrote the original software. If you use this software in a product,
++ an acknowledgment in the product documentation would be appreciated but is
++ not required.
++ 
++ 2. Altered source versions must be plainly marked as such, and must not be
++ misrepresented as being the original software.
++ 
++ 3. This notice may not be removed or altered from any source distribution.
++ */
++
++#include "mac/CocoaKeyboard.h"
++#include "mac/CocoaInputManager.h"
++#include "mac/CocoaHelpers.h"
++#include "OISException.h"
++#include "OISEvents.h"
++
++#include <Cocoa/Cocoa.h>
++
++#include <list>
++#include <string>
++#include <iostream>
++
++using namespace OIS;
++
++//-------------------------------------------------------------------//
++CocoaKeyboard::CocoaKeyboard( InputManager* creator, bool buffered, bool repeat )
++	: Keyboard(creator->inputSystemName(), buffered, 0, creator)
++{
++	CocoaInputManager *man = static_cast<CocoaInputManager*>(mCreator);
++    mResponder = [[CocoaKeyboardView alloc] init];
++    if(!mResponder)
++        OIS_EXCEPT( E_General, "CocoaKeyboardView::CocoaKeyboardView >> Error creating event responder" );
++
++    [man->_getWindow() makeFirstResponder:mResponder];
++    [mResponder setUseRepeat:repeat];
++    [mResponder setOISKeyboardObj:this];
++
++	static_cast<CocoaInputManager*>(mCreator)->_setKeyboardUsed(true);
++}
++
++//-------------------------------------------------------------------//
++CocoaKeyboard::~CocoaKeyboard()
++{
++    if (mResponder)
++    {
++        [mResponder release];
++        mResponder = nil;
++    }
++
++	// Free the input managers keyboard
++	static_cast<CocoaInputManager*>(mCreator)->_setKeyboardUsed(false);
++}
++
++//-------------------------------------------------------------------//
++void CocoaKeyboard::_initialize()
++{
++	mModifiers = 0;
++}
++
++//-------------------------------------------------------------------//
++bool CocoaKeyboard::isKeyDown( KeyCode key ) const
++{
++	return [mResponder isKeyDown:key];
++}
++
++//-------------------------------------------------------------------//
++void CocoaKeyboard::capture()
++{
++    [mResponder capture];
++}
++
++//-------------------------------------------------------------------//
++std::string& CocoaKeyboard::getAsString( KeyCode key )
++{
++	getString = "";
++    
++    CGKeyCode deviceKeycode;
++    
++    // Convert OIS KeyCode back into device keycode
++    VirtualtoOIS_KeyMap keyMap = [mResponder keyConversionMap];
++    for(VirtualtoOIS_KeyMap::iterator it = keyMap.begin(); it != keyMap.end(); ++it)
++    {
++        if(it->second == key)
++            deviceKeycode = it->first;
++    }
++
++    UniChar unicodeString[1];
++    UniCharCount actualStringLength;
++
++    CGEventSourceRef sref = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
++    CGEventRef ref = CGEventCreateKeyboardEvent(sref, deviceKeycode, true);
++    CGEventKeyboardGetUnicodeString(ref, sizeof(unicodeString) / sizeof(*unicodeString), &actualStringLength, unicodeString);
++    getString = unicodeString[0];
++
++    return getString;
++}
++
++//-------------------------------------------------------------------//
++void CocoaKeyboard::setBuffered( bool buffered )
++{
++	mBuffered = buffered;
++}
++
++//-------------------------------------------------------------------//
++void CocoaKeyboard::copyKeyStates( char keys[256] ) const
++{
++	[mResponder copyKeyStates:keys];
++}
++
++@implementation CocoaKeyboardView
++
++- (id)init
++{
++    self = [super init];
++    if (self) {
++        [self populateKeyConversion];
++        memset( &KeyBuffer, 0, 256 );
++        prevModMask = 0;
++    }
++    return self;
++}
++
++- (BOOL)acceptsFirstResponder
++{
++    return YES;
++}
++
++- (BOOL)canBecomeKeyView
++{
++    return YES;
++}
++
++- (void)setOISKeyboardObj:(CocoaKeyboard *)obj
++{
++    oisKeyboardObj = obj;
++}
++
++- (void)capture
++{
++	// If not buffered just return, we update the unbuffered automatically
++	if ( !oisKeyboardObj->buffered() && !oisKeyboardObj->getEventCallback() )
++		return;
++
++	// Run through our event stack
++	eventStack::iterator cur_it;
++	
++	for (cur_it = pendingEvents.begin(); cur_it != pendingEvents.end(); cur_it++)
++	{
++		if ( (*cur_it).type() == MAC_KEYDOWN || (*cur_it).type() == MAC_KEYREPEAT)
++			oisKeyboardObj->getEventCallback()->keyPressed( (*cur_it).event() );
++		else if ( (*cur_it).type() == MAC_KEYUP )
++			oisKeyboardObj->getEventCallback()->keyReleased( (*cur_it).event() );
++	}
++	
++	pendingEvents.clear();
++}
++
++- (void)setUseRepeat:(bool)repeat
++{
++    useRepeat = repeat;
++}
++
++- (bool)isKeyDown:(KeyCode)key
++{
++    return KeyBuffer[key];
++}
++
++- (void)copyKeyStates:(char [256])keys
++{
++	memcpy( keys, KeyBuffer, 256 );
++}
++
++- (void)populateKeyConversion
++{
++	// Virtual Key Map to KeyCode
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x12, KC_1));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x13, KC_2));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x14, KC_3));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x15, KC_4));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x17, KC_5));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x16, KC_6));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x1A, KC_7));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x1C, KC_8));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x19, KC_9));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x1D, KC_0));
++	
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x33, KC_BACK));  // might be wrong
++	
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x1B, KC_MINUS));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x18, KC_EQUALS));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x31, KC_SPACE));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x2B, KC_COMMA));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x2F, KC_PERIOD));
++	
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x2A, KC_BACKSLASH));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x2C, KC_SLASH));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x21, KC_LBRACKET));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x1E, KC_RBRACKET));
++	
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x35, KC_ESCAPE));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x39, KC_CAPITAL));
++	
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x30, KC_TAB));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x24, KC_RETURN));  // double check return/enter
++	
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_colon, KC_COLON));	 // no colon?
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x29, KC_SEMICOLON));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x27, KC_APOSTROPHE));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x32, KC_GRAVE));
++	
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x0B, KC_B));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x00, KC_A));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x08, KC_C));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x02, KC_D));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x0E, KC_E));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x03, KC_F));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x05, KC_G));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x04, KC_H));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x22, KC_I));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x26, KC_J));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x28, KC_K));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x25, KC_L));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x2E, KC_M));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x2D, KC_N));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x1F, KC_O));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x23, KC_P));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x0C, KC_Q));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x0F, KC_R));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x01, KC_S));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x11, KC_T));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x20, KC_U));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x09, KC_V));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x0D, KC_W));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x07, KC_X));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x10, KC_Y));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x06, KC_Z));
++	
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x7A, KC_F1));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x78, KC_F2));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x63, KC_F3));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x76, KC_F4));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x60, KC_F5));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x61, KC_F6));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x62, KC_F7));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x64, KC_F8));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x65, KC_F9));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x6D, KC_F10));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x67, KC_F11));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x6F, KC_F12));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x69, KC_F13));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x6B, KC_F14));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x71, KC_F15));
++	
++	// Keypad
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x52, KC_NUMPAD0));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x53, KC_NUMPAD1));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x54, KC_NUMPAD2));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x55, KC_NUMPAD3));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x56, KC_NUMPAD4));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x57, KC_NUMPAD5));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x58, KC_NUMPAD6));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x59, KC_NUMPAD7));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x5B, KC_NUMPAD8));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x5C, KC_NUMPAD9));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x45, KC_ADD));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x4E, KC_SUBTRACT));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x41, KC_DECIMAL));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x51, KC_NUMPADEQUALS));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x4B, KC_DIVIDE));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x43, KC_MULTIPLY));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x4C, KC_NUMPADENTER));
++	
++	// Keypad with numlock off
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x73, KC_NUMPAD7));  // not sure of these
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_KP_Up, KC_NUMPAD8)); // check on a non-laptop
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_KP_Page_Up, KC_NUMPAD9));
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_KP_Left, KC_NUMPAD4));
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_KP_Begin, KC_NUMPAD5));
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_KP_Right, KC_NUMPAD6));
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_KP_End, KC_NUMPAD1));
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_KP_Down, KC_NUMPAD2));
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_KP_Page_Down, KC_NUMPAD3));
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_KP_Insert, KC_NUMPAD0));
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_KP_Delete, KC_DECIMAL));
++	
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x7E, KC_UP));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x7D, KC_DOWN));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x7B, KC_LEFT));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x7C, KC_RIGHT));
++	
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x74, KC_PGUP));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x79, KC_PGDOWN));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x73, KC_HOME));
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x77, KC_END));
++	
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_Print, KC_SYSRQ));		// ??
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_Scroll_Lock, KC_SCROLL)); // ??
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_Pause, KC_PAUSE));		// ??
++	
++	
++	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_Insert, KC_INSERT));	  // ??
++	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x75, KC_DELETE)); // del under help key?
++}
++
++- (void)injectEvent:(KeyCode)kc eventTime:(unsigned int)time eventType:(MacEventType)type
++{
++    [self injectEvent:kc eventTime:time eventType:type eventText:0];
++}
++
++- (void)injectEvent:(KeyCode)kc eventTime:(unsigned int)time eventType:(MacEventType)type eventText:(unsigned int)txt
++{
++	// set to 1 if this is either a keydown or repeat
++	KeyBuffer[kc] = ( type == MAC_KEYUP ) ? 0 : 1;
++	
++	if ( oisKeyboardObj->buffered() && oisKeyboardObj->getEventCallback() )
++		pendingEvents.push_back( CocoaKeyStackEvent( KeyEvent(oisKeyboardObj, kc, txt), type) );
++}
++
++#pragma mark Key Event overrides
++- (void)keyDown:(NSEvent *)theEvent
++{
++	unsigned short virtualKey = [theEvent keyCode];
++	unsigned int time = (unsigned int)[theEvent timestamp];
++	KeyCode kc = keyConversion[virtualKey];
++    
++	// Record what kind of text we should pass the KeyEvent
++	unichar text[10];
++	char macChar;
++	if (oisKeyboardObj->getTextTranslation() == OIS::Keyboard::Unicode)
++	{
++		// Get string size
++		NSUInteger stringsize = [[theEvent charactersIgnoringModifiers] length];
++        [[theEvent charactersIgnoringModifiers] getCharacters:text range:NSMakeRange(0, stringsize)];
++//		NSLog(@"Characters: %ls", text);
++//		std::cout << "String length: " << stringsize << std::endl;
++
++		if(stringsize > 0)
++		{
++			// For each unicode char, send an event
++			for ( unsigned int i = 0; i < stringsize; i++ )
++			{
++                [self injectEvent:kc eventTime:time eventType:MAC_KEYDOWN eventText:(unsigned int)text[i]];
++			}
++		}
++	} 
++	else if (oisKeyboardObj->getTextTranslation() == OIS::Keyboard::Ascii)
++	{
++        macChar = [[theEvent charactersIgnoringModifiers] characterAtIndex:0];
++		[self injectEvent:kc eventTime:time eventType:MAC_KEYDOWN eventText:(unsigned int)macChar];
++	}
++	else
++	{
++		[self injectEvent:kc eventTime:time eventType:MAC_KEYDOWN];
++	}
++}
++
++- (void)keyUp:(NSEvent *)theEvent
++{
++    unsigned short virtualKey = [theEvent keyCode];
++
++	KeyCode kc = keyConversion[virtualKey];
++    [self injectEvent:kc eventTime:[theEvent timestamp] eventType:MAC_KEYUP];
++}
++
++- (void)flagsChanged:(NSEvent *)theEvent
++{
++	NSUInteger mods = [theEvent modifierFlags];
++	
++	// Find the changed bit
++	NSUInteger change = prevModMask ^ mods;
++	MacEventType newstate = ((change & prevModMask) > 0) ? MAC_KEYUP : MAC_KEYDOWN;
++	unsigned int time = (unsigned int)[theEvent timestamp];
++	
++	//cout << "preMask: " << hex << prevModMask << endl;
++	//cout << "ModMask: " << hex << mods << endl;
++	//cout << "Change:  " << hex << (change & prevModMask) << endl << endl;
++	
++	// TODO test modifiers on a full keyboard to check if different mask for left/right
++	switch (change)
++	{
++		case (NSShiftKeyMask): // shift
++			oisKeyboardObj->_getModifiers() &= (newstate == MAC_KEYDOWN) ? OIS::Keyboard::Shift : ~OIS::Keyboard::Shift;
++            [self injectEvent:KC_LSHIFT eventTime:time eventType:newstate];
++			break;
++			
++		case (NSAlternateKeyMask): // option (alt)
++			oisKeyboardObj->_getModifiers() &= (newstate == MAC_KEYDOWN) ? OIS::Keyboard::Alt : -OIS::Keyboard::Alt;
++            [self injectEvent:KC_LMENU eventTime:time eventType:newstate];
++			break;
++			
++		case (NSControlKeyMask): // Ctrl
++			oisKeyboardObj->_getModifiers() += (newstate == MAC_KEYDOWN) ? OIS::Keyboard::Ctrl : -OIS::Keyboard::Ctrl;
++            [self injectEvent:KC_LCONTROL eventTime:time eventType:newstate];
++			break;
++            
++		case (NSCommandKeyMask): // apple
++            [self injectEvent:KC_LWIN eventTime:time eventType:newstate];
++			break;
++            
++		case (NSFunctionKeyMask): // fn key
++            [self injectEvent:KC_APPS eventTime:time eventType:newstate];
++			break;
++
++		case (NSAlphaShiftKeyMask): // caps lock
++            [self injectEvent:KC_CAPITAL eventTime:time eventType:newstate];
++			break;
++	}
++    
++    if([theEvent keyCode] == NSClearLineFunctionKey) // numlock
++        [self injectEvent:KC_NUMLOCK eventTime:time eventType:newstate];
++	
++	prevModMask = mods;
++}
++
++- (VirtualtoOIS_KeyMap)keyConversionMap
++{
++    return keyConversion;
++}
++
++@end
+Index: src/OISInputManager.cpp
+===================================================================
+--- src/OISInputManager.cpp	(revision 34)
++++ src/OISInputManager.cpp	(working copy)
+@@ -35,6 +35,7 @@
+ #elif defined OIS_LINUX_PLATFORM
+ #  include "linux/LinuxInputManager.h"
+ #elif defined OIS_APPLE_PLATFORM
++#  include "mac/CocoaInputManager.h"
+ #  include "mac/MacInputManager.h"
+ #elif defined OIS_IPHONE_PLATFORM
+ #  include "iphone/iPhoneInputManager.h"
+@@ -113,7 +114,17 @@
+ #elif defined OIS_LINUX_PLATFORM
+ 	im = new LinuxInputManager();
+ #elif defined OIS_APPLE_PLATFORM
+-	im = new MacInputManager();
++	ParamList::iterator i = paramList.find("WINDOW");
++	if(i != paramList.end())
++    {
++        id obj = (id)strtoul(i->second.c_str(), 0, 10);
++        if(obj && [obj isKindOfClass:[NSWindow class]])
++            im = new CocoaInputManager();
++#ifndef __LP64__
++        else
++            im = new MacInputManager();
++#endif
++    }
+ #elif defined OIS_IPHONE_PLATFORM
+ 	im = new iPhoneInputManager();
+ #else

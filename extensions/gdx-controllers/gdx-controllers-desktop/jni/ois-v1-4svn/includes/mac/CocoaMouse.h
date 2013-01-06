@@ -20,23 +20,25 @@
  
  3. This notice may not be removed or altered from any source distribution.
  */
-
-#ifndef OIS_MacMouse_H
-#define OIS_MacMouse_H
+#ifndef OIS_CocoaMouse_H
+#define OIS_CocoaMouse_H
 
 #include "OISMouse.h"
-#include "mac/MacHelpers.h"
-#include "mac/MacPrereqs.h"
+#include "mac/CocoaHelpers.h"
 
-#include <Carbon/Carbon.h>
+#include <Cocoa/Cocoa.h>
+
+@class CocoaMouseView;
+
+using namespace OIS;
 
 namespace OIS
 {
-	class MacMouse : public Mouse
+	class CocoaMouse : public Mouse
     {
 	public:
-		MacMouse( InputManager* creator, bool buffered );
-		virtual ~MacMouse();
+		CocoaMouse( InputManager* creator, bool buffered );
+		virtual ~CocoaMouse();
 		
 		/** @copydoc Object::setBuffered */
 		virtual void setBuffered(bool buffered);
@@ -50,25 +52,24 @@ namespace OIS
 		/** @copydoc Object::_initialize */
 		virtual void _initialize();
         
-	public:
-        void _mouseCallback( EventRef theEvent );
+        MouseState * getMouseStatePtr() { return &(mState); }
 
 	protected:
-		static OSStatus WindowFocusChanged(EventHandlerCallRef nextHandler, EventRef event, void* macMouse);
-        
-        // "universal procedure pointers" - required reference for callbacks
-		EventHandlerUPP mouseUPP;
-		EventHandlerRef mouseEventRef;
-		
-		EventHandlerUPP mWindowFocusListener;
-		EventHandlerRef mWindowFocusHandler;
-		
-		bool mNeedsToRegainFocus;
-		bool mMouseWarped;
-		
-		MouseState mTempState;
+        CocoaMouseView *mResponder;
 	};
 }
 
+@interface CocoaMouseView : NSView
+{
+    CocoaMouse *oisMouseObj;
+    MouseState mTempState;
+    bool mNeedsToRegainFocus;
+    bool mMouseWarped;
+}
 
-#endif // OIS_MacMouse_H
+- (void)setOISMouseObj:(CocoaMouse *)obj;
+- (void)capture;
+
+@end
+
+#endif // OIS_CocoaMouse_H

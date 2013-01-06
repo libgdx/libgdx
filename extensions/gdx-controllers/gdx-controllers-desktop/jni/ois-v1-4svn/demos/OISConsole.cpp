@@ -284,7 +284,7 @@ void doStartup()
 	//For this demo, show mouse and do not grab (confine to window)
 //	pl.insert(std::make_pair(std::string("x11_mouse_grab"), std::string("false")));
 //	pl.insert(std::make_pair(std::string("x11_mouse_hide"), std::string("false")));
-#elif defined OIS_APPLE_PLATFORM
+#elif defined OIS_APPLE_PLATFORM && !__LP64__
     // create the window rect in global coords
     ::Rect windowRect;
     windowRect.left = 0;

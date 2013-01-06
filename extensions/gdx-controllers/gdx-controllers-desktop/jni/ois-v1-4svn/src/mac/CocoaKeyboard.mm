@@ -21,331 +21,170 @@
  3. This notice may not be removed or altered from any source distribution.
  */
 
-#ifndef __LP64__
-
-#include "mac/MacKeyboard.h"
-#include "mac/MacInputManager.h"
-#include "mac/MacHelpers.h"
+#include "mac/CocoaKeyboard.h"
+#include "mac/CocoaInputManager.h"
+#include "mac/CocoaHelpers.h"
 #include "OISException.h"
 #include "OISEvents.h"
 
-#include <Carbon/Carbon.h>
+#include <Cocoa/Cocoa.h>
 
 #include <list>
 #include <string>
-
-const EventTypeSpec DownSpec[] = {{kEventClassKeyboard, kEventRawKeyDown},	//non - repeats
-							{kEventClassKeyboard, kEventRawKeyRepeat}}; //repeats
-const EventTypeSpec UpSpec = {kEventClassKeyboard, kEventRawKeyUp},
-			  ModSpec = {kEventClassKeyboard, kEventRawKeyModifiersChanged};
-
-const EventTypeSpec AllSpecs[] = {{kEventClassKeyboard, kEventRawKeyDown},
-						  {kEventClassKeyboard, kEventRawKeyRepeat},
-						  {kEventClassKeyboard, kEventRawKeyUp},
-						  {kEventClassKeyboard, kEventRawKeyModifiersChanged}};
+#include <iostream>
 
 using namespace OIS;
 
 //-------------------------------------------------------------------//
-MacKeyboard::MacKeyboard( InputManager* creator, bool buffered, bool repeat )
+CocoaKeyboard::CocoaKeyboard( InputManager* creator, bool buffered, bool repeat )
 	: Keyboard(creator->inputSystemName(), buffered, 0, creator)
 {
-	keyDownEventRef = NULL;
-	keyUpEventRef = NULL;
-	keyModEventRef = NULL;
-	
-	useRepeat = repeat;
+	CocoaInputManager *man = static_cast<CocoaInputManager*>(mCreator);
+    mResponder = [[CocoaKeyboardView alloc] init];
+    if(!mResponder)
+        OIS_EXCEPT( E_General, "CocoaKeyboardView::CocoaKeyboardView >> Error creating event responder" );
 
-	// Get a so-called "Univeral procedure pointer" for our callback
-	keyDownUPP = NewEventHandlerUPP( KeyDownWrapper );
-	keyUpUPP   = NewEventHandlerUPP( KeyUpWrapper );
-	keyModUPP  = NewEventHandlerUPP( KeyModWrapper );
-	
-	// populate the conversion map
-	populateKeyConversion();
+    [man->_getWindow() makeFirstResponder:mResponder];
+    [mResponder setUseRepeat:repeat];
+    [mResponder setOISKeyboardObj:this];
 
-	static_cast<MacInputManager*>(mCreator)->_setKeyboardUsed(true);
+	static_cast<CocoaInputManager*>(mCreator)->_setKeyboardUsed(true);
 }
 
 //-------------------------------------------------------------------//
-MacKeyboard::~MacKeyboard()
+CocoaKeyboard::~CocoaKeyboard()
 {
-	// Remove our handlers so that this instance doesn't get called
-	// after it is deleted
-	if (keyDownEventRef != NULL)
-		RemoveEventHandler(keyDownEventRef);
-		
-	if (keyUpEventRef != NULL)
-		RemoveEventHandler(keyUpEventRef);
-	
-	if (keyModEventRef != NULL)
-		RemoveEventHandler(keyModEventRef);
-	
-	// dispose of our UPPs
-	DisposeEventHandlerUPP(keyDownUPP);
-	DisposeEventHandlerUPP(keyUpUPP);
-	DisposeEventHandlerUPP(keyModUPP);
+    if (mResponder)
+    {
+        [mResponder release];
+        mResponder = nil;
+    }
 
-	//Free the input managers keyboard
-	static_cast<MacInputManager*>(mCreator)->_setKeyboardUsed(false);
+	// Free the input managers keyboard
+	static_cast<CocoaInputManager*>(mCreator)->_setKeyboardUsed(false);
 }
 
 //-------------------------------------------------------------------//
-void MacKeyboard::_initialize()
+void CocoaKeyboard::_initialize()
 {
-	EventTargetRef event = ((MacInputManager*)mCreator)->_getEventTarget();
-
-	memset( &KeyBuffer, 0, 256 );
 	mModifiers = 0;
-	prevModMask = 0;
-	
-	// just in case this gets called after the first time.. better safe
-	if (keyDownEventRef != NULL)
-		RemoveEventHandler(keyDownEventRef);
-		
-	if (keyUpEventRef != NULL)
-		RemoveEventHandler(keyUpEventRef);
-		
-	if (keyModEventRef != NULL)
-		RemoveEventHandler(keyModEventRef);
-   
-	keyDownEventRef = NULL;
-	keyUpEventRef = NULL;
-	keyModEventRef = NULL;
-
-	OSStatus status;
-	// send both elements of downspec array... second index is for repeat events
-	if ( useRepeat )
-		status = InstallEventHandler( event, keyDownUPP, 2, DownSpec, this, &keyDownEventRef );
-	else
-		status = InstallEventHandler( event, keyDownUPP, 1, DownSpec, this, &keyDownEventRef );
-		
-	if (status != noErr)
-		OIS_EXCEPT( E_General, "MacKeyboard::_initialize >> Error loading KeyDown event handler" );
-
-	if (InstallEventHandler( event, keyUpUPP, 1, &UpSpec, this, &keyUpEventRef ) != noErr)
-		OIS_EXCEPT( E_General, "MacKeyboard::_initialize >> Error loading KeyUp event handler" );
-
-	if (InstallEventHandler( event, keyModUPP, 1, &ModSpec, this, &keyModEventRef ) != noErr )
-		OIS_EXCEPT( E_General, "MacKeyboard::_initialize >> Error loading Keymods event handler" );
 }
 
 //-------------------------------------------------------------------//
-bool MacKeyboard::isKeyDown( KeyCode key ) const
+bool CocoaKeyboard::isKeyDown( KeyCode key ) const
 {
-	return (bool)KeyBuffer[key];
+	return [mResponder isKeyDown:key];
 }
 
+//-------------------------------------------------------------------//
+void CocoaKeyboard::capture()
+{
+    [mResponder capture];
+}
 
 //-------------------------------------------------------------------//
-void MacKeyboard::capture()
+std::string& CocoaKeyboard::getAsString( KeyCode key )
 {
-	// if not buffered just return, we update the unbuffered automatically
-	if ( !mBuffered || !mListener )
+	getString = "";
+    
+    CGKeyCode deviceKeycode;
+    
+    // Convert OIS KeyCode back into device keycode
+    VirtualtoOIS_KeyMap keyMap = [mResponder keyConversionMap];
+    for(VirtualtoOIS_KeyMap::iterator it = keyMap.begin(); it != keyMap.end(); ++it)
+    {
+        if(it->second == key)
+            deviceKeycode = it->first;
+    }
+
+    UniChar unicodeString[1];
+    UniCharCount actualStringLength;
+
+    CGEventSourceRef sref = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
+    CGEventRef ref = CGEventCreateKeyboardEvent(sref, deviceKeycode, true);
+    CGEventKeyboardGetUnicodeString(ref, sizeof(unicodeString) / sizeof(*unicodeString), &actualStringLength, unicodeString);
+    getString = unicodeString[0];
+
+    return getString;
+}
+
+//-------------------------------------------------------------------//
+void CocoaKeyboard::setBuffered( bool buffered )
+{
+	mBuffered = buffered;
+}
+
+//-------------------------------------------------------------------//
+void CocoaKeyboard::copyKeyStates( char keys[256] ) const
+{
+	[mResponder copyKeyStates:keys];
+}
+
+@implementation CocoaKeyboardView
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        [self populateKeyConversion];
+        memset( &KeyBuffer, 0, 256 );
+        prevModMask = 0;
+    }
+    return self;
+}
+
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
+}
+
+- (BOOL)canBecomeKeyView
+{
+    return YES;
+}
+
+- (void)setOISKeyboardObj:(CocoaKeyboard *)obj
+{
+    oisKeyboardObj = obj;
+}
+
+- (void)capture
+{
+	// If not buffered just return, we update the unbuffered automatically
+	if ( !oisKeyboardObj->buffered() && !oisKeyboardObj->getEventCallback() )
 		return;
 
-	// run through our event stack
+	// Run through our event stack
 	eventStack::iterator cur_it;
 	
 	for (cur_it = pendingEvents.begin(); cur_it != pendingEvents.end(); cur_it++)
 	{
-		
-		if ( (*cur_it).Type == MAC_KEYDOWN || (*cur_it).Type == MAC_KEYREPEAT)
-			mListener->keyPressed( (*cur_it).Event );
-		else if ( (*cur_it).Type == MAC_KEYUP )
-			mListener->keyReleased( (*cur_it).Event );
+		if ( (*cur_it).type() == MAC_KEYDOWN || (*cur_it).type() == MAC_KEYREPEAT)
+			oisKeyboardObj->getEventCallback()->keyPressed( (*cur_it).event() );
+		else if ( (*cur_it).type() == MAC_KEYUP )
+			oisKeyboardObj->getEventCallback()->keyReleased( (*cur_it).event() );
 	}
 	
 	pendingEvents.clear();
 }
 
-
-//-------------------------------------------------------------------//
-std::string& MacKeyboard::getAsString( KeyCode key )
+- (void)setUseRepeat:(bool)repeat
 {
-    CGKeyCode deviceKeycode;
-    
-    // Convert OIS KeyCode back into device keycode
-    for(VirtualtoOIS_KeyMap::iterator it = keyConversion.begin(); it != keyConversion.end(); ++it)
-    {
-        if(it->second == key)
-            deviceKeycode = it->first;
-    }
-    
-    UniChar unicodeString[1];
-    UniCharCount actualStringLength = 0;
-    
-    CGEventSourceRef sref = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
-    CGEventRef ref = CGEventCreateKeyboardEvent(sref, deviceKeycode, true);
-    CGEventKeyboardGetUnicodeString(ref, sizeof(unicodeString) / sizeof(*unicodeString), &actualStringLength, unicodeString);
-//    NSLog([NSString stringWithFormat:@"%C\n", unicodeString[0]]);
-    getString = unicodeString[0];
-
-	return getString;
+    useRepeat = repeat;
 }
 
-//-------------------------------------------------------------------//
-void MacKeyboard::setBuffered( bool buffered )
+- (bool)isKeyDown:(KeyCode)key
 {
-	mBuffered = buffered;
+    return KeyBuffer[key];
 }
 
-#include <iostream>
-//-------------------------------------------------------------------//
-void MacKeyboard::_keyDownCallback( EventRef theEvent )
-{
-	
-	UInt32 virtualKey;
-	OSStatus status;
-	
-	unsigned int time = (unsigned int)GetEventTime(theEvent);
-	
-	status = GetEventParameter(theEvent,
-					'kcod',			// get it in virtual keycode
-					typeUInt32, NULL,	// desired return type
-					sizeof(UInt32), NULL, 	// bufsize
-					&virtualKey );
-	
-	KeyCode kc = keyConversion[virtualKey];
-
-	// record what kind of text we should pass the KeyEvent
-	UniChar text[10];
-	char macChar;
-	
-	// TODO clean this up
-	if (mTextMode == Unicode)
-	{
-		//get string size
-		UInt32 stringsize;
-		//status = GetEventParameter( theEvent, 'kuni', typeUnicodeText, NULL, 0, &stringsize, NULL);
-		//status = GetEventParameter( theEvent, 'kuni', typeUnicodeText, NULL, sizeof(UniChar)*10, NULL, &text );
-		status = GetEventParameter( theEvent, 'kuni', typeUnicodeText, NULL, sizeof(UniChar) * 10, &stringsize, &text );
-//		std::cout << "String length: " << stringsize << std::endl;
-		
-		//wstring unitext;
-		//for (int i=0;i<10;i++) unitext += (wchar_t)text[i];
-		//wcout << "Unicode out: " << unitext << endl;
-		
-		if(stringsize > 0)
-		{
-			// for each unicode char, send an event
-			stringsize--; // no termination char
-			for ( int i = 0; i < stringsize; i++ )
-			{
-				injectEvent( kc, time, MAC_KEYDOWN, (unsigned int)text[i] );
-			}
-		}
-	} 
-	else if (mTextMode == Ascii)
-	{
-		 
-		status = GetEventParameter( theEvent, 'kchr', typeChar, NULL, sizeof(char), NULL, &macChar );
-		injectEvent( kc, time, MAC_KEYDOWN, (unsigned int)macChar );
-	}
-	else
-	{
-		injectEvent( kc, time, MAC_KEYDOWN );
-	}
-}
-
-//-------------------------------------------------------------------//
-void MacKeyboard::_keyUpCallback( EventRef theEvent )
-{
-	UInt32 virtualKey;
-	
-	OSStatus status;
-	status = GetEventParameter( theEvent, kEventParamKeyCode, typeUInt32,
-								NULL, sizeof(UInt32), NULL, &virtualKey );
-	
-	KeyCode kc = keyConversion[virtualKey];
-	injectEvent( kc, (int)GetEventTime(theEvent), MAC_KEYUP );
-	
-}
-
-//-------------------------------------------------------------------//
-void MacKeyboard::_modChangeCallback( EventRef theEvent )
-{
-	UInt32 mods;
-	
-	OSStatus status;
-	status = GetEventParameter( theEvent, kEventParamKeyModifiers,
-								typeUInt32, NULL, sizeof(UInt32), NULL, &mods );
-	
-	// find the changed bit
-	UInt32 change = prevModMask ^ mods;
-	MacEventType newstate = ((change & prevModMask) > 0) ? MAC_KEYUP : MAC_KEYDOWN;
-	unsigned int time = (int)GetEventTime( theEvent );
-	
-	//cout << "preMask: " << hex << prevModMask << endl;
-	//cout << "ModMask: " << hex << mods << endl;
-	//cout << "Change:  " << hex << (change & prevModMask) << endl << endl;
-	
-	// TODO test modifiers on a full keyboard to check if different mask for left/right
-	switch (change)
-	{
-		case (shiftKey): // shift
-			mModifiers &= (newstate == MAC_KEYDOWN) ? Shift : ~Shift;
-			injectEvent( KC_LSHIFT, time, newstate );
-			//injectEvent( KC_RSHIFT, time, newstate );
-			break;
-			
-		case (optionKey): // option (alt)
-			mModifiers &= (newstate == MAC_KEYDOWN) ? Alt : -Alt;
-			//injectEvent( KC_RMENU, time, newstate );
-			injectEvent( KC_LMENU, time, newstate );
-			break;
-			
-		case (controlKey): // Ctrl
-			mModifiers += (newstate == MAC_KEYDOWN) ? Ctrl : -Ctrl;
-			//injectEvent( KC_RCONTROL, time, newstate );
-			injectEvent( KC_LCONTROL, time, newstate );
-			break;
-	
-		case (cmdKey): // apple
-			//injectEvent( KC_RWIN, time, newstate );
-			injectEvent( KC_LWIN, time, newstate );
-			break;
-	
-		case (kEventKeyModifierFnMask): // fn key
-			injectEvent( KC_APPS, time, newstate );
-			break;
-			
-		case (kEventKeyModifierNumLockMask): // numlock
-			injectEvent( KC_NUMLOCK, time, newstate );
-			break;
-			
-		case (alphaLock): // caps lock
-			injectEvent( KC_CAPITAL, time, newstate );
-			break;
-	}
-	
-	prevModMask = mods;
-}
-
-//-------------------------------------------------------------------//
-void MacKeyboard::injectEvent( KeyCode kc, unsigned int time, MacEventType type, unsigned int txt )
-{
-	// set to 1 if this is either a keydown or repeat
-	KeyBuffer[kc] = ( type == MAC_KEYUP ) ? 0 : 1;
-	
-	if ( mBuffered && mListener )
-		pendingEvents.push_back( MacKeyStackEvent( KeyEvent(this, kc, txt), type) );
-}
-
-
-//-------------------------------------------------------------------//
-void MacKeyboard::copyKeyStates( char keys[256] ) const
+- (void)copyKeyStates:(char [256])keys
 {
 	memcpy( keys, KeyBuffer, 256 );
 }
 
-
-
-//-------------------------------------------------------------------//
-void MacKeyboard::populateKeyConversion()
+- (void)populateKeyConversion
 {
-	// TODO finish the key mapping
-	
 	// Virtual Key Map to KeyCode
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x12, KC_1));
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x13, KC_2));
@@ -425,7 +264,7 @@ void MacKeyboard::populateKeyConversion()
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x6B, KC_F14));
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x71, KC_F15));
 	
-	//Keypad
+	// Keypad
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x52, KC_NUMPAD0));
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x53, KC_NUMPAD1));
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x54, KC_NUMPAD2));
@@ -444,7 +283,7 @@ void MacKeyboard::populateKeyConversion()
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x43, KC_MULTIPLY));
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x4C, KC_NUMPADENTER));
 	
-	//Keypad with numlock off
+	// Keypad with numlock off
 	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x73, KC_NUMPAD7));  // not sure of these
 	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_KP_Up, KC_NUMPAD8)); // check on a non-laptop
 	//keyConversion.insert(VirtualtoOIS_KeyMap::value_type(XK_KP_Page_Up, KC_NUMPAD9));
@@ -476,4 +315,119 @@ void MacKeyboard::populateKeyConversion()
 	keyConversion.insert(VirtualtoOIS_KeyMap::value_type(0x75, KC_DELETE)); // del under help key?
 }
 
-#endif
+- (void)injectEvent:(KeyCode)kc eventTime:(unsigned int)time eventType:(MacEventType)type
+{
+    [self injectEvent:kc eventTime:time eventType:type eventText:0];
+}
+
+- (void)injectEvent:(KeyCode)kc eventTime:(unsigned int)time eventType:(MacEventType)type eventText:(unsigned int)txt
+{
+	// set to 1 if this is either a keydown or repeat
+	KeyBuffer[kc] = ( type == MAC_KEYUP ) ? 0 : 1;
+	
+	if ( oisKeyboardObj->buffered() && oisKeyboardObj->getEventCallback() )
+		pendingEvents.push_back( CocoaKeyStackEvent( KeyEvent(oisKeyboardObj, kc, txt), type) );
+}
+
+#pragma mark Key Event overrides
+- (void)keyDown:(NSEvent *)theEvent
+{
+	unsigned short virtualKey = [theEvent keyCode];
+	unsigned int time = (unsigned int)[theEvent timestamp];
+	KeyCode kc = keyConversion[virtualKey];
+    
+	// Record what kind of text we should pass the KeyEvent
+	unichar text[10];
+	char macChar;
+	if (oisKeyboardObj->getTextTranslation() == OIS::Keyboard::Unicode)
+	{
+		// Get string size
+		NSUInteger stringsize = [[theEvent charactersIgnoringModifiers] length];
+        [[theEvent charactersIgnoringModifiers] getCharacters:text range:NSMakeRange(0, stringsize)];
+//		NSLog(@"Characters: %ls", text);
+//		std::cout << "String length: " << stringsize << std::endl;
+
+		if(stringsize > 0)
+		{
+			// For each unicode char, send an event
+			for ( unsigned int i = 0; i < stringsize; i++ )
+			{
+                [self injectEvent:kc eventTime:time eventType:MAC_KEYDOWN eventText:(unsigned int)text[i]];
+			}
+		}
+	} 
+	else if (oisKeyboardObj->getTextTranslation() == OIS::Keyboard::Ascii)
+	{
+        macChar = [[theEvent charactersIgnoringModifiers] characterAtIndex:0];
+		[self injectEvent:kc eventTime:time eventType:MAC_KEYDOWN eventText:(unsigned int)macChar];
+	}
+	else
+	{
+		[self injectEvent:kc eventTime:time eventType:MAC_KEYDOWN];
+	}
+}
+
+- (void)keyUp:(NSEvent *)theEvent
+{
+    unsigned short virtualKey = [theEvent keyCode];
+
+	KeyCode kc = keyConversion[virtualKey];
+    [self injectEvent:kc eventTime:[theEvent timestamp] eventType:MAC_KEYUP];
+}
+
+- (void)flagsChanged:(NSEvent *)theEvent
+{
+	NSUInteger mods = [theEvent modifierFlags];
+	
+	// Find the changed bit
+	NSUInteger change = prevModMask ^ mods;
+	MacEventType newstate = ((change & prevModMask) > 0) ? MAC_KEYUP : MAC_KEYDOWN;
+	unsigned int time = (unsigned int)[theEvent timestamp];
+	
+	//cout << "preMask: " << hex << prevModMask << endl;
+	//cout << "ModMask: " << hex << mods << endl;
+	//cout << "Change:  " << hex << (change & prevModMask) << endl << endl;
+	
+	// TODO test modifiers on a full keyboard to check if different mask for left/right
+	switch (change)
+	{
+		case (NSShiftKeyMask): // shift
+			oisKeyboardObj->_getModifiers() &= (newstate == MAC_KEYDOWN) ? OIS::Keyboard::Shift : ~OIS::Keyboard::Shift;
+            [self injectEvent:KC_LSHIFT eventTime:time eventType:newstate];
+			break;
+			
+		case (NSAlternateKeyMask): // option (alt)
+			oisKeyboardObj->_getModifiers() &= (newstate == MAC_KEYDOWN) ? OIS::Keyboard::Alt : -OIS::Keyboard::Alt;
+            [self injectEvent:KC_LMENU eventTime:time eventType:newstate];
+			break;
+			
+		case (NSControlKeyMask): // Ctrl
+			oisKeyboardObj->_getModifiers() += (newstate == MAC_KEYDOWN) ? OIS::Keyboard::Ctrl : -OIS::Keyboard::Ctrl;
+            [self injectEvent:KC_LCONTROL eventTime:time eventType:newstate];
+			break;
+            
+		case (NSCommandKeyMask): // apple
+            [self injectEvent:KC_LWIN eventTime:time eventType:newstate];
+			break;
+            
+		case (NSFunctionKeyMask): // fn key
+            [self injectEvent:KC_APPS eventTime:time eventType:newstate];
+			break;
+
+		case (NSAlphaShiftKeyMask): // caps lock
+            [self injectEvent:KC_CAPITAL eventTime:time eventType:newstate];
+			break;
+	}
+    
+    if([theEvent keyCode] == NSClearLineFunctionKey) // numlock
+        [self injectEvent:KC_NUMLOCK eventTime:time eventType:newstate];
+	
+	prevModMask = mods;
+}
+
+- (VirtualtoOIS_KeyMap)keyConversionMap
+{
+    return keyConversion;
+}
+
+@end

@@ -21,28 +21,21 @@
  3. This notice may not be removed or altered from any source distribution.
  */
 
-#ifndef __LP64__
-
-#include "mac/MacInputManager.h"
-#include "mac/MacKeyboard.h"
-#include "mac/MacMouse.h"
+#include "mac/CocoaInputManager.h"
+#include "mac/CocoaKeyboard.h"
+#include "mac/CocoaMouse.h"
 #include "mac/MacHIDManager.h"
 #include "OISException.h"
 
-#include <Carbon/Carbon.h>
-
-#include <iostream>
 using namespace std;
-
 using namespace OIS;
 
 //--------------------------------------------------------------------------------//
-MacInputManager::MacInputManager() : InputManager("Mac OS X Input Manager")
+CocoaInputManager::CocoaInputManager() : InputManager("Mac OS X Cocoa Input Manager")
 {
     mHideMouse = true;
     mUseRepeat = false;
-    mEventTargetRef = NULL;
-	mWindow = NULL;
+	mWindow = nil;
 
 	keyboardUsed = mouseUsed = false;
 
@@ -54,13 +47,13 @@ MacInputManager::MacInputManager() : InputManager("Mac OS X Input Manager")
 }
 
 //--------------------------------------------------------------------------------//
-MacInputManager::~MacInputManager()
+CocoaInputManager::~CocoaInputManager()
 {
 	delete mHIDManager;
 }
 
 //--------------------------------------------------------------------------------//
-void MacInputManager::_initialize( ParamList &paramList )
+void CocoaInputManager::_initialize( ParamList &paramList )
 {
 	_parseConfigSettings( paramList );
     
@@ -71,43 +64,28 @@ void MacInputManager::_initialize( ParamList &paramList )
 }
 
 //--------------------------------------------------------------------------------//
-void MacInputManager::_parseConfigSettings( ParamList &paramList )
+void CocoaInputManager::_parseConfigSettings( ParamList &paramList )
 {
     // Some carbon apps are running in a window, however full screen apps
 	// do not have a window, so we need to account for that too.
 	ParamList::iterator i = paramList.find("WINDOW");
 	if(i != paramList.end())
 	{
-		mWindow = (WindowRef)strtoul(i->second.c_str(), 0, 10);
+		mWindow = (NSWindow *)strtoul(i->second.c_str(), 0, 10);
 		if(mWindow == 0)
 		{
-			mWindow = NULL;
-			mEventTargetRef = GetApplicationEventTarget();
-		}
-		else
-		{
-			//mEventTargetRef = GetWindowEventTarget(mWindow);
-			mEventTargetRef = GetApplicationEventTarget();
+			mWindow = nil;
 		}
     }
 	else
 	{
 		// else get the main active window.. user might not have access to it through some
 		// graphics libraries, if that fails then try at the application level.
-		mWindow = ActiveNonFloatingWindow();
-		if(mWindow == NULL)
-		{
-			mEventTargetRef = GetApplicationEventTarget();
-		}
-		else
-		{
-			//mEventTargetRef = GetWindowEventTarget(mWindow);
-			mEventTargetRef = GetApplicationEventTarget();
-		}
+		mWindow = [[NSApplication sharedApplication] keyWindow];
 	}
 	
-	if(mEventTargetRef == NULL)
-		OIS_EXCEPT( E_General, "MacInputManager::_parseConfigSettings >> Unable to find a window or event target" );
+	if(mWindow == nil)
+		OIS_EXCEPT( E_General, "CocoaInputManager::_parseConfigSettings >> Unable to find a window or event target" );
     
     // Keyboard
     if(paramList.find("MacAutoRepeatOn") != paramList.end())
@@ -120,12 +98,12 @@ void MacInputManager::_parseConfigSettings( ParamList &paramList )
 }
 
 //--------------------------------------------------------------------------------//
-void MacInputManager::_enumerateDevices()
+void CocoaInputManager::_enumerateDevices()
 {
 }
 
 //--------------------------------------------------------------------------------//
-DeviceList MacInputManager::freeDeviceList()
+DeviceList CocoaInputManager::freeDeviceList()
 {
 	DeviceList ret;
 
@@ -139,7 +117,7 @@ DeviceList MacInputManager::freeDeviceList()
 }
 
 //--------------------------------------------------------------------------------//
-int MacInputManager::totalDevices(Type iType)
+int CocoaInputManager::totalDevices(Type iType)
 {
 	switch(iType)
 	{
@@ -150,7 +128,7 @@ int MacInputManager::totalDevices(Type iType)
 }
 
 //--------------------------------------------------------------------------------//
-int MacInputManager::freeDevices(Type iType)
+int CocoaInputManager::freeDevices(Type iType)
 {
 	switch(iType)
 	{
@@ -161,7 +139,7 @@ int MacInputManager::freeDevices(Type iType)
 }
 
 //--------------------------------------------------------------------------------//
-bool MacInputManager::vendorExist(Type iType, const std::string & vendor)
+bool CocoaInputManager::vendorExist(Type iType, const std::string & vendor)
 {
 	if( (iType == OISKeyboard || iType == OISMouse) && vendor == mInputSystemName )
 		return true;
@@ -170,30 +148,30 @@ bool MacInputManager::vendorExist(Type iType, const std::string & vendor)
 }
 
 //--------------------------------------------------------------------------------//
-Object* MacInputManager::createObject(InputManager* creator, Type iType, bool bufferMode, 
+Object* CocoaInputManager::createObject(InputManager* creator, Type iType, bool bufferMode, 
 									  const std::string & vendor)
 {
 	Object *obj = 0;
 
 	switch(iType)
 	{
-	case OISKeyboard: 
-	{
-		if( keyboardUsed == false )
-			obj = new MacKeyboard(this, bufferMode, mUseRepeat);
-		break;
-	}
-	case OISMouse:
-	{
-		if( mouseUsed == false )
-			obj = new MacMouse(this, bufferMode);
-		break;
-	}
-	default:
-	{
-		obj = mHIDManager->createObject(creator, iType, bufferMode, vendor);
-		break;
-	}
+        case OISKeyboard: 
+        {
+            if( keyboardUsed == false )
+                obj = new CocoaKeyboard(this, bufferMode, mUseRepeat);
+            break;
+        }
+        case OISMouse:
+        {
+            if( mouseUsed == false )
+                obj = new CocoaMouse(this, bufferMode);
+            break;
+        }
+        default:
+        {
+            obj = mHIDManager->createObject(creator, iType, bufferMode, vendor);
+            break;
+        }
 	}
 
 	if( obj == 0 )
@@ -203,8 +181,7 @@ Object* MacInputManager::createObject(InputManager* creator, Type iType, bool bu
 }
 
 //--------------------------------------------------------------------------------//
-void MacInputManager::destroyObject(Object* obj)
+void CocoaInputManager::destroyObject(Object* obj)
 {
 	delete obj;
 }
-#endif

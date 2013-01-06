@@ -20,55 +20,57 @@
  
  3. This notice may not be removed or altered from any source distribution.
  */
+#ifndef Cocoa_Joystick_H
+#define Cocoa_Joystick_H
 
-#ifndef OIS_MacMouse_H
-#define OIS_MacMouse_H
-
-#include "OISMouse.h"
-#include "mac/MacHelpers.h"
-#include "mac/MacPrereqs.h"
-
-#include <Carbon/Carbon.h>
+#include "OISJoyStick.h"
+#include "mac/MacHIDManager.h"
 
 namespace OIS
 {
-	class MacMouse : public Mouse
-    {
+	struct AxisInfo
+	{
+		int min;
+		int max;
+		
+		AxisInfo(int min, int max)
+			: min(min), max(max) {}
+	};
+	
+	typedef struct cookie_struct 
+	{ 
+		std::map<IOHIDElementCookie, AxisInfo> axisCookies; 			
+		std::vector<IOHIDElementCookie> buttonCookies; 
+	} cookie_struct_t; 
+	
+	//class HidDeviceInfo
+	
+	class CocoaJoyStick : public JoyStick
+	{
 	public:
-		MacMouse( InputManager* creator, bool buffered );
-		virtual ~MacMouse();
+		CocoaJoyStick(const std::string& vendor, bool buffered, HidInfo* info, InputManager* creator, int devID);
+		
+		virtual ~CocoaJoyStick();
 		
 		/** @copydoc Object::setBuffered */
 		virtual void setBuffered(bool buffered);
-
+		
 		/** @copydoc Object::capture */
 		virtual void capture();
-
+		
 		/** @copydoc Object::queryInterface */
-		virtual Interface* queryInterface(Interface::IType type) {return 0;}
-
+		virtual Interface* queryInterface(Interface::IType type);
+		
 		/** @copydoc Object::_initialize */
 		virtual void _initialize();
-        
-	public:
-        void _mouseCallback( EventRef theEvent );
-
+		
+		void _enumerateCookies();
+		
+		IOHIDQueueInterface** _createQueue(unsigned int depth = 8);
 	protected:
-		static OSStatus WindowFocusChanged(EventHandlerCallRef nextHandler, EventRef event, void* macMouse);
-        
-        // "universal procedure pointers" - required reference for callbacks
-		EventHandlerUPP mouseUPP;
-		EventHandlerRef mouseEventRef;
-		
-		EventHandlerUPP mWindowFocusListener;
-		EventHandlerRef mWindowFocusHandler;
-		
-		bool mNeedsToRegainFocus;
-		bool mMouseWarped;
-		
-		MouseState mTempState;
+		HidInfo* mInfo;
+		cookie_struct_t mCookies;
+		IOHIDQueueInterface** mQueue;
 	};
 }
-
-
-#endif // OIS_MacMouse_H
+#endif
