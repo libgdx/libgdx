@@ -16,12 +16,11 @@
 
 package com.badlogic.gdx.backends.jogl;
 
-import java.awt.Color;
+//import java.awt.Color;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLProfile;
-import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 
@@ -32,11 +31,12 @@ import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
+import com.jogamp.newt.opengl.GLWindow;
 
 public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	static int major, minor;
 
-	GLCanvas canvas;
+	GLWindow canvas;
 	JoglAnimator animator;
 	boolean useGL2;
 	long frameStart = System.nanoTime();
@@ -64,8 +64,8 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 		caps.setSampleBuffers(config.samples > 0);
 		caps.setDoubleBuffered(true);
 
-		canvas = new GLCanvas(caps);
-		canvas.setBackground(Color.BLACK);
+		canvas = GLWindow.create(caps);
+		//canvas.setBackground(Color.BLACK);
 		canvas.addGLEventListener(this);
 		this.useGL2 = config.useGL20;
 		this.glu = new JoglGLU();
@@ -73,7 +73,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 
 	}
 
-	GLCanvas getCanvas () {
+	GLWindow getCanvas () {
 		return canvas;
 	}
 

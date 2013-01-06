@@ -16,31 +16,12 @@
 
 package com.badlogic.gdx.backends.jogl;
 
-import java.awt.AWTException;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.FlowLayout;
-import java.awt.GraphicsEnvironment;
-import java.awt.HeadlessException;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.media.opengl.awt.GLCanvas;
+import javax.media.nativewindow.util.Point;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -58,8 +39,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Pool;
+import com.jogamp.newt.event.KeyListener;
+import com.jogamp.newt.event.MouseEvent;
+import com.jogamp.newt.event.MouseListener;
+import com.jogamp.newt.opengl.GLWindow;
 
-public class JoglInput implements Input, MouseMotionListener, MouseListener, MouseWheelListener, KeyListener {
+public class JoglInput implements Input, MouseListener, KeyListener {
 	class KeyEvent {
 		static final int KEY_DOWN = 0;
 		static final int KEY_UP = 1;
@@ -110,34 +95,21 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	Set<Integer> keys = new HashSet<Integer>();
 	Set<Integer> pressedButtons = new HashSet<Integer>();
 	InputProcessor processor;
-	GLCanvas canvas;
+	GLWindow canvas;
 	boolean catched = false;
-	Robot robot = null;
 	long currentEventTimeStamp;
 
-	public JoglInput (GLCanvas canvas) {
+	public JoglInput (GLWindow canvas) {
 		setListeners(canvas);
-		try {
-			robot = new Robot(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice());
-		} catch (HeadlessException e) {
-		} catch (AWTException e) {
-		}
 	}
 
-	public void setListeners (GLCanvas canvas) {
+	public void setListeners (GLWindow canvas) {
 		if (this.canvas != null) {
 			canvas.removeMouseListener(this);
-			canvas.removeMouseMotionListener(this);
-			canvas.removeMouseWheelListener(this);
 			canvas.removeKeyListener(this);
-			JFrame frame = JoglGraphics.findJFrame(canvas);
-
 		}
 		canvas.addMouseListener(this);
-		canvas.addMouseMotionListener(this);
-		canvas.addMouseWheelListener(this);
 		canvas.addKeyListener(this);
-		canvas.setFocusTraversalKeysEnabled(false);
 		this.canvas = canvas;
 	}
 
@@ -171,8 +143,9 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 		});
 	}
 
+	//TODO move that somewhere else! It has nothing to do in the core
 	public void getPlaceholderTextInput (final TextInputListener listener, final String title, final String placeholder) {
-		SwingUtilities.invokeLater(new Runnable() {
+		/*SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run () {
 				JPanel panel = new JPanel(new FlowLayout());
@@ -257,7 +230,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 				}
 
 			}
-		});
+		});*/
 	}
 
 	@Override
@@ -450,11 +423,13 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	}
 
 	private void checkCatched (MouseEvent e) {
-		if (catched && robot != null && canvas.isShowing()) {
-			int x = Math.max(0, Math.min(e.getX(), canvas.getWidth()) - 1) + canvas.getLocationOnScreen().x;
-			int y = Math.max(0, Math.min(e.getY(), canvas.getHeight()) - 1) + canvas.getLocationOnScreen().y;
+		if (catched && canvas.isVisible()) {
+			Point point=new Point();
+			canvas.getLocationOnScreen(point);
+			int x = Math.max(0, Math.min(e.getX(), canvas.getWidth()) - 1) + point.getX();
+			int y = Math.max(0, Math.min(e.getY(), canvas.getHeight()) - 1) + point.getY();
 			if (e.getX() < 0 || e.getX() >= canvas.getWidth() || e.getY() < 0 || e.getY() >= canvas.getHeight()) {
-				robot.mouseMove(x, y);
+				canvas.warpPointer(x, y);
 			}
 		}
 	}
@@ -511,7 +486,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	}
 
 	@Override
-	public void mouseWheelMoved (MouseWheelEvent e) {
+	public void mouseWheelMoved (MouseEvent e) {
 		synchronized (this) {
 			TouchEvent event = usedTouchEvents.obtain();
 			event.pointer = 0;
@@ -524,7 +499,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	}
 
 	@Override
-	public void keyPressed (java.awt.event.KeyEvent e) {
+	public void keyPressed (com.jogamp.newt.event.KeyEvent e) {
 		synchronized (this) {
 			KeyEvent event = usedKeyEvents.obtain();
 			event.keyChar = 0;
@@ -538,7 +513,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	}
 
 	@Override
-	public void keyReleased (java.awt.event.KeyEvent e) {
+	public void keyReleased (com.jogamp.newt.event.KeyEvent e) {
 		synchronized (this) {
 			KeyEvent event = usedKeyEvents.obtain();
 			event.keyChar = 0;
@@ -552,7 +527,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	}
 
 	@Override
-	public void keyTyped (java.awt.event.KeyEvent e) {
+	public void keyTyped (com.jogamp.newt.event.KeyEvent e) {
 		synchronized (this) {
 			KeyEvent event = usedKeyEvents.obtain();
 			event.keyChar = e.getKeyChar();
@@ -565,94 +540,94 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	}
 
 	protected static int translateKeyCode (int keyCode) {
-		if (keyCode == java.awt.event.KeyEvent.VK_ADD) return Input.Keys.PLUS;
-		if (keyCode == java.awt.event.KeyEvent.VK_SUBTRACT) return Input.Keys.MINUS;
-		if (keyCode == java.awt.event.KeyEvent.VK_0) return Input.Keys.NUM_0;
-		if (keyCode == java.awt.event.KeyEvent.VK_1) return Input.Keys.NUM_1;
-		if (keyCode == java.awt.event.KeyEvent.VK_2) return Input.Keys.NUM_2;
-		if (keyCode == java.awt.event.KeyEvent.VK_3) return Input.Keys.NUM_3;
-		if (keyCode == java.awt.event.KeyEvent.VK_4) return Input.Keys.NUM_4;
-		if (keyCode == java.awt.event.KeyEvent.VK_5) return Input.Keys.NUM_5;
-		if (keyCode == java.awt.event.KeyEvent.VK_6) return Input.Keys.NUM_6;
-		if (keyCode == java.awt.event.KeyEvent.VK_7) return Input.Keys.NUM_7;
-		if (keyCode == java.awt.event.KeyEvent.VK_8) return Input.Keys.NUM_8;
-		if (keyCode == java.awt.event.KeyEvent.VK_9) return Input.Keys.NUM_9;
-		if (keyCode == java.awt.event.KeyEvent.VK_A) return Input.Keys.A;
-		if (keyCode == java.awt.event.KeyEvent.VK_B) return Input.Keys.B;
-		if (keyCode == java.awt.event.KeyEvent.VK_C) return Input.Keys.C;
-		if (keyCode == java.awt.event.KeyEvent.VK_D) return Input.Keys.D;
-		if (keyCode == java.awt.event.KeyEvent.VK_E) return Input.Keys.E;
-		if (keyCode == java.awt.event.KeyEvent.VK_F) return Input.Keys.F;
-		if (keyCode == java.awt.event.KeyEvent.VK_G) return Input.Keys.G;
-		if (keyCode == java.awt.event.KeyEvent.VK_H) return Input.Keys.H;
-		if (keyCode == java.awt.event.KeyEvent.VK_I) return Input.Keys.I;
-		if (keyCode == java.awt.event.KeyEvent.VK_J) return Input.Keys.J;
-		if (keyCode == java.awt.event.KeyEvent.VK_K) return Input.Keys.K;
-		if (keyCode == java.awt.event.KeyEvent.VK_L) return Input.Keys.L;
-		if (keyCode == java.awt.event.KeyEvent.VK_M) return Input.Keys.M;
-		if (keyCode == java.awt.event.KeyEvent.VK_N) return Input.Keys.N;
-		if (keyCode == java.awt.event.KeyEvent.VK_O) return Input.Keys.O;
-		if (keyCode == java.awt.event.KeyEvent.VK_P) return Input.Keys.P;
-		if (keyCode == java.awt.event.KeyEvent.VK_Q) return Input.Keys.Q;
-		if (keyCode == java.awt.event.KeyEvent.VK_R) return Input.Keys.R;
-		if (keyCode == java.awt.event.KeyEvent.VK_S) return Input.Keys.S;
-		if (keyCode == java.awt.event.KeyEvent.VK_T) return Input.Keys.T;
-		if (keyCode == java.awt.event.KeyEvent.VK_U) return Input.Keys.U;
-		if (keyCode == java.awt.event.KeyEvent.VK_V) return Input.Keys.V;
-		if (keyCode == java.awt.event.KeyEvent.VK_W) return Input.Keys.W;
-		if (keyCode == java.awt.event.KeyEvent.VK_X) return Input.Keys.X;
-		if (keyCode == java.awt.event.KeyEvent.VK_Y) return Input.Keys.Y;
-		if (keyCode == java.awt.event.KeyEvent.VK_Z) return Input.Keys.Z;
-		if (keyCode == java.awt.event.KeyEvent.VK_ALT) return Input.Keys.ALT_LEFT;
-		if (keyCode == java.awt.event.KeyEvent.VK_ALT_GRAPH) return Input.Keys.ALT_RIGHT;
-		if (keyCode == java.awt.event.KeyEvent.VK_BACK_SLASH) return Input.Keys.BACKSLASH;
-		if (keyCode == java.awt.event.KeyEvent.VK_COMMA) return Input.Keys.COMMA;
-		if (keyCode == java.awt.event.KeyEvent.VK_DELETE) return Input.Keys.DEL;
-		if (keyCode == java.awt.event.KeyEvent.VK_LEFT) return Input.Keys.DPAD_LEFT;
-		if (keyCode == java.awt.event.KeyEvent.VK_RIGHT) return Input.Keys.DPAD_RIGHT;
-		if (keyCode == java.awt.event.KeyEvent.VK_UP) return Input.Keys.DPAD_UP;
-		if (keyCode == java.awt.event.KeyEvent.VK_DOWN) return Input.Keys.DPAD_DOWN;
-		if (keyCode == java.awt.event.KeyEvent.VK_ENTER) return Input.Keys.ENTER;
-		if (keyCode == java.awt.event.KeyEvent.VK_HOME) return Input.Keys.HOME;
-		if (keyCode == java.awt.event.KeyEvent.VK_MINUS) return Input.Keys.MINUS;
-		if (keyCode == java.awt.event.KeyEvent.VK_PERIOD) return Input.Keys.PERIOD;
-		if (keyCode == java.awt.event.KeyEvent.VK_PLUS) return Input.Keys.PLUS;
-		if (keyCode == java.awt.event.KeyEvent.VK_SEMICOLON) return Input.Keys.SEMICOLON;
-		if (keyCode == java.awt.event.KeyEvent.VK_SHIFT) return Input.Keys.SHIFT_LEFT;
-		if (keyCode == java.awt.event.KeyEvent.VK_SLASH) return Input.Keys.SLASH;
-		if (keyCode == java.awt.event.KeyEvent.VK_SPACE) return Input.Keys.SPACE;
-		if (keyCode == java.awt.event.KeyEvent.VK_TAB) return Input.Keys.TAB;
-		if (keyCode == java.awt.event.KeyEvent.VK_BACK_SPACE) return Input.Keys.DEL;
-		if (keyCode == java.awt.event.KeyEvent.VK_CONTROL) return Input.Keys.CONTROL_LEFT;
-		if (keyCode == java.awt.event.KeyEvent.VK_ESCAPE) return Input.Keys.ESCAPE;
-		if (keyCode == java.awt.event.KeyEvent.VK_END) return Input.Keys.END;
-		if (keyCode == java.awt.event.KeyEvent.VK_INSERT) return Input.Keys.INSERT;
-		if (keyCode == java.awt.event.KeyEvent.VK_NUMPAD5) return Input.Keys.DPAD_CENTER;
-		if (keyCode == java.awt.event.KeyEvent.VK_PAGE_UP) return Input.Keys.PAGE_UP;
-		if (keyCode == java.awt.event.KeyEvent.VK_PAGE_DOWN) return Input.Keys.PAGE_DOWN;
-		if (keyCode == java.awt.event.KeyEvent.VK_F1) return Input.Keys.F1;
-		if (keyCode == java.awt.event.KeyEvent.VK_F2) return Input.Keys.F2;
-		if (keyCode == java.awt.event.KeyEvent.VK_F3) return Input.Keys.F3;
-		if (keyCode == java.awt.event.KeyEvent.VK_F4) return Input.Keys.F4;
-		if (keyCode == java.awt.event.KeyEvent.VK_F5) return Input.Keys.F5;
-		if (keyCode == java.awt.event.KeyEvent.VK_F6) return Input.Keys.F6;
-		if (keyCode == java.awt.event.KeyEvent.VK_F7) return Input.Keys.F7;
-		if (keyCode == java.awt.event.KeyEvent.VK_F8) return Input.Keys.F8;
-		if (keyCode == java.awt.event.KeyEvent.VK_F9) return Input.Keys.F9;
-		if (keyCode == java.awt.event.KeyEvent.VK_F10) return Input.Keys.F10;
-		if (keyCode == java.awt.event.KeyEvent.VK_F11) return Input.Keys.F11;
-		if (keyCode == java.awt.event.KeyEvent.VK_F12) return Input.Keys.F12;
-		if (keyCode == java.awt.event.KeyEvent.VK_COLON) return Input.Keys.COLON;
-		if (keyCode == java.awt.event.KeyEvent.VK_NUMPAD0) return Input.Keys.NUM_0;
-		if (keyCode == java.awt.event.KeyEvent.VK_NUMPAD1) return Input.Keys.NUM_1;
-		if (keyCode == java.awt.event.KeyEvent.VK_NUMPAD2) return Input.Keys.NUM_2;
-		if (keyCode == java.awt.event.KeyEvent.VK_NUMPAD3) return Input.Keys.NUM_3;
-		if (keyCode == java.awt.event.KeyEvent.VK_NUMPAD4) return Input.Keys.NUM_4;
-		if (keyCode == java.awt.event.KeyEvent.VK_NUMPAD5) return Input.Keys.NUM_5;
-		if (keyCode == java.awt.event.KeyEvent.VK_NUMPAD6) return Input.Keys.NUM_6;
-		if (keyCode == java.awt.event.KeyEvent.VK_NUMPAD7) return Input.Keys.NUM_7;
-		if (keyCode == java.awt.event.KeyEvent.VK_NUMPAD8) return Input.Keys.NUM_8;
-		if (keyCode == java.awt.event.KeyEvent.VK_NUMPAD9) return Input.Keys.NUM_9;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_ADD) return Input.Keys.PLUS;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_SUBTRACT) return Input.Keys.MINUS;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_0) return Input.Keys.NUM_0;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_1) return Input.Keys.NUM_1;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_2) return Input.Keys.NUM_2;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_3) return Input.Keys.NUM_3;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_4) return Input.Keys.NUM_4;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_5) return Input.Keys.NUM_5;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_6) return Input.Keys.NUM_6;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_7) return Input.Keys.NUM_7;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_8) return Input.Keys.NUM_8;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_9) return Input.Keys.NUM_9;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_A) return Input.Keys.A;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_B) return Input.Keys.B;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_C) return Input.Keys.C;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_D) return Input.Keys.D;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_E) return Input.Keys.E;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_F) return Input.Keys.F;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_G) return Input.Keys.G;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_H) return Input.Keys.H;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_I) return Input.Keys.I;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_J) return Input.Keys.J;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_K) return Input.Keys.K;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_L) return Input.Keys.L;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_M) return Input.Keys.M;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_N) return Input.Keys.N;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_O) return Input.Keys.O;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_P) return Input.Keys.P;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_Q) return Input.Keys.Q;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_R) return Input.Keys.R;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_S) return Input.Keys.S;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_T) return Input.Keys.T;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_U) return Input.Keys.U;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_V) return Input.Keys.V;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_W) return Input.Keys.W;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_X) return Input.Keys.X;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_Y) return Input.Keys.Y;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_Z) return Input.Keys.Z;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_ALT) return Input.Keys.ALT_LEFT;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_ALT_GRAPH) return Input.Keys.ALT_RIGHT;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_BACK_SLASH) return Input.Keys.BACKSLASH;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_COMMA) return Input.Keys.COMMA;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_DELETE) return Input.Keys.DEL;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_LEFT) return Input.Keys.DPAD_LEFT;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_RIGHT) return Input.Keys.DPAD_RIGHT;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_UP) return Input.Keys.DPAD_UP;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_DOWN) return Input.Keys.DPAD_DOWN;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_ENTER) return Input.Keys.ENTER;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_HOME) return Input.Keys.HOME;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_MINUS) return Input.Keys.MINUS;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_PERIOD) return Input.Keys.PERIOD;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_PLUS) return Input.Keys.PLUS;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_SEMICOLON) return Input.Keys.SEMICOLON;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_SHIFT) return Input.Keys.SHIFT_LEFT;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_SLASH) return Input.Keys.SLASH;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_SPACE) return Input.Keys.SPACE;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_TAB) return Input.Keys.TAB;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_BACK_SPACE) return Input.Keys.DEL;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_CONTROL) return Input.Keys.CONTROL_LEFT;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_ESCAPE) return Input.Keys.ESCAPE;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_END) return Input.Keys.END;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_INSERT) return Input.Keys.INSERT;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_NUMPAD5) return Input.Keys.DPAD_CENTER;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_PAGE_UP) return Input.Keys.PAGE_UP;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_PAGE_DOWN) return Input.Keys.PAGE_DOWN;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_F1) return Input.Keys.F1;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_F2) return Input.Keys.F2;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_F3) return Input.Keys.F3;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_F4) return Input.Keys.F4;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_F5) return Input.Keys.F5;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_F6) return Input.Keys.F6;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_F7) return Input.Keys.F7;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_F8) return Input.Keys.F8;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_F9) return Input.Keys.F9;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_F10) return Input.Keys.F10;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_F11) return Input.Keys.F11;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_F12) return Input.Keys.F12;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_COLON) return Input.Keys.COLON;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_NUMPAD0) return Input.Keys.NUM_0;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_NUMPAD1) return Input.Keys.NUM_1;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_NUMPAD2) return Input.Keys.NUM_2;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_NUMPAD3) return Input.Keys.NUM_3;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_NUMPAD4) return Input.Keys.NUM_4;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_NUMPAD5) return Input.Keys.NUM_5;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_NUMPAD6) return Input.Keys.NUM_6;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_NUMPAD7) return Input.Keys.NUM_7;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_NUMPAD8) return Input.Keys.NUM_8;
+		if (keyCode == com.jogamp.newt.event.KeyEvent.VK_NUMPAD9) return Input.Keys.NUM_9;
 
 		return Input.Keys.UNKNOWN;
 	}
@@ -729,16 +704,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	}
 
 	private void showCursor (boolean visible) {
-		if (!visible) {
-			Toolkit t = Toolkit.getDefaultToolkit();
-			Image i = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-			Cursor noCursor = t.createCustomCursor(i, new Point(0, 0), "none");
-			JFrame frame = JoglGraphics.findJFrame(canvas);
-			frame.setCursor(noCursor);
-		} else {
-			JFrame frame = JoglGraphics.findJFrame(canvas);
-			frame.setCursor(Cursor.getDefaultCursor());
-		}
+		canvas.setPointerVisible(visible);
 	}
 
 	@Override
@@ -770,15 +736,15 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 
 	@Override
 	public void setCursorPosition (int x, int y) {
-		if (robot != null) {
+		/*if (robot != null) {
 			robot.mouseMove(canvas.getLocationOnScreen().x + x, canvas.getLocationOnScreen().y + y);
-		}
+		}*/
+		//TODO use canvas.getLocationOnScreen(Point)?
+		canvas.warpPointer(x, y);
 	}
 
 	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -788,7 +754,5 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 
 	@Override
 	public void getRotationMatrix (float[] matrix) {
-		// TODO Auto-generated method stub
-
 	}
 }

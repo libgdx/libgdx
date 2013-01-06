@@ -16,8 +16,8 @@
 
 package com.badlogic.gdx.backends.jogl;
 
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
+/*import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;*/
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Graphics;
@@ -72,7 +72,8 @@ public class JoglApplicationConfiguration {
 		this.fullscreen = true;
 	}
 
-	public static DisplayMode getDesktopDisplayMode () {
+	//TODO look at CubeMovie example to get all modes
+	/*public static DisplayMode getDesktopDisplayMode () {
 		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice device = genv.getDefaultScreenDevice();
 		java.awt.DisplayMode mode = device.getDisplayMode();
@@ -101,5 +102,5 @@ public class JoglApplicationConfiguration {
 		}
 
 		return modes.toArray(new DisplayMode[modes.size()]);
-	}
+	}*/
 }
