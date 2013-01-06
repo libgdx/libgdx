@@ -291,7 +291,7 @@
 	</target>
 	
 	<target name="all" 
-depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,docs,copy-iosfiles">
+depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,docs,copy-iosfiles">
 		<!-- copy distribution files (licences etc.) -->
 		<copy tofile="${distDir}/README" file="gdx/dist/README"/>
 		<copy tofile="${distDir}/LICENSE" file="gdx/dist/LICENSE"/>
