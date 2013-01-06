@@ -30,6 +30,7 @@ public class TextureAttribute extends MaterialAttribute {
 	static final public String diffuseTexture = "diffuseTexture";
 	static final public String lightmapTexture = "lightmapTexture";
 	static final public String specularTexture = "specularTexture";
+	static final public String normalTexture = "normalTexture";
 
 	public Texture texture;
 	public int unit;

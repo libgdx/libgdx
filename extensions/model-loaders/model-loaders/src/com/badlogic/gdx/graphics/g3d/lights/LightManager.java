@@ -24,7 +24,27 @@ import com.badlogic.gdx.utils.Array;
 public class LightManager {
 
 	public enum LightQuality {
-		VERTEX, FRAGMENT
+		
+		/** calculation per vertex */
+		VERTEX("vertexpath"), 
+		
+		/** calculation per fragment */
+		FRAGMENT("light");
+		
+		/** shader file reference */
+		private final String shader;
+		
+		/**
+		 * @return Get the reference string of the used shader 
+		 */
+		public String getShader () {
+			return shader;
+		}
+
+		private LightQuality(String shader) {
+			this.shader = shader;
+		}
+		
 	};
 
 	public LightQuality quality;
