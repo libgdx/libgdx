@@ -16,38 +16,14 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import java.util.Random;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.physics.bullet.PHY_ScalarType;
 import com.badlogic.gdx.physics.bullet.btBvhTriangleMeshShape;
-import com.badlogic.gdx.physics.bullet.btCollisionShape;
-import com.badlogic.gdx.physics.bullet.btIndexedMesh;
-import com.badlogic.gdx.physics.bullet.btPoint2PointConstraint;
 import com.badlogic.gdx.physics.bullet.btSphereShape;
-import com.badlogic.gdx.physics.bullet.btStridingMeshInterface;
-import com.badlogic.gdx.physics.bullet.btTriangleIndexVertexArray;
-import com.badlogic.gdx.physics.bullet.btTypedConstraint;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.XmlReader.Element;
 
 /** @author xoppa */
 public class MeshShapeTest extends BaseBulletTest {
