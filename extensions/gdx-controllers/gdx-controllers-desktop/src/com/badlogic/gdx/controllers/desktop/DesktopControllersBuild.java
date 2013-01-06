@@ -80,6 +80,7 @@ public class DesktopControllersBuild {
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
 		mac.cppIncludes = macSrc;
 		mac.headerDirs = includes;
+		mac.cppFlags += " -x objective-c++";
 		mac.libraries = "-framework CoreServices -framework Carbon -framework IOKit -framework Cocoa";
 		
 		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac);
