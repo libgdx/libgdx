@@ -413,9 +413,9 @@ Object* MacHIDManager::createObject(InputManager* creator, Type iType, bool buff
 					obj = new MacJoyStick((*it)->combinedKey, bufferMode, *it, creator, devID);
 					(*it)->inUse = true;
 					return obj;
-				case OISTablet:
+//				case OISTablet:
 					//Create MacTablet
-					break;
+					//break;
 				default:
 					break;
 			}
