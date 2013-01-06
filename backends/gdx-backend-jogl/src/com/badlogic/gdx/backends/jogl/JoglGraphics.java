@@ -100,7 +100,6 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	@Override
 	public void reshape (GLAutoDrawable drawable, int x, int y, int width, int height) {
 		listener.resize(width, height);
-		requestRendering();
 	}
 
 	@Override
@@ -279,5 +278,14 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 		setContinuousRendering(true);
         pause();
         destroy();
+	}
+
+	@Override
+	public void setContinuousRendering(boolean isContinuous) {
+	}
+
+	@Override
+	public boolean isContinuousRendering() {
+		return true;
 	}
 }

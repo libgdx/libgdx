@@ -380,7 +380,6 @@ public class JoglInput implements Input, MouseListener, KeyListener {
 			touchX = event.x;
 			touchY = event.y;
 			checkCatched(e);
-			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -400,7 +399,6 @@ public class JoglInput implements Input, MouseListener, KeyListener {
 			touchX = event.x;
 			touchY = event.y;
 			checkCatched(e);
-			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -413,13 +411,11 @@ public class JoglInput implements Input, MouseListener, KeyListener {
 		touchX = e.getX();
 		touchY = e.getY();
 		checkCatched(e);
-		Gdx.graphics.requestRendering();
 	}
 
 	@Override
 	public void mouseExited (MouseEvent e) {
 		checkCatched(e);
-		Gdx.graphics.requestRendering();
 	}
 
 	private void checkCatched (MouseEvent e) {
@@ -459,7 +455,6 @@ public class JoglInput implements Input, MouseListener, KeyListener {
 			touchY = event.y;
 			touchDown = true;
 			pressedButtons.add(event.button);
-			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -481,7 +476,6 @@ public class JoglInput implements Input, MouseListener, KeyListener {
 			touchY = event.y;
 			pressedButtons.remove(event.button);
 			if (pressedButtons.size() == 0) touchDown = false;
-			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -494,7 +488,6 @@ public class JoglInput implements Input, MouseListener, KeyListener {
 			event.scrollAmount = e.getWheelRotation();
 			event.timeStamp = System.nanoTime();
 			touchEvents.add(event);
-			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -508,7 +501,6 @@ public class JoglInput implements Input, MouseListener, KeyListener {
 			event.timeStamp = System.nanoTime();
 			keyEvents.add(event);
 			keys.add(event.keyCode);
-			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -522,7 +514,6 @@ public class JoglInput implements Input, MouseListener, KeyListener {
 			event.timeStamp = System.nanoTime();
 			keyEvents.add(event);
 			keys.remove(event.keyCode);
-			Gdx.graphics.requestRendering();
 		}
 	}
 
@@ -535,7 +526,6 @@ public class JoglInput implements Input, MouseListener, KeyListener {
 			event.type = KeyEvent.KEY_TYPED;
 			event.timeStamp = System.nanoTime();
 			keyEvents.add(event);
-			Gdx.graphics.requestRendering();
 		}
 	}
 

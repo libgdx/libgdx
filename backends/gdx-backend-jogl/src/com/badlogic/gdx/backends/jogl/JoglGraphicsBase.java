@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.backends.jogl;
 
-//import java.awt.Color;
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLProfile;
@@ -32,12 +30,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
 import com.jogamp.newt.opengl.GLWindow;
+import com.jogamp.opengl.util.Animator;
 
 public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	static int major, minor;
 
 	GLWindow canvas;
-	JoglAnimator animator;
+	Animator animator;
 	boolean useGL2;
 	long frameStart = System.nanoTime();
 	long lastFrameTime = System.nanoTime();
@@ -81,7 +80,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 		frameStart = System.nanoTime();
 		lastFrameTime = frameStart;
 		deltaTime = 0;
-		animator = new JoglAnimator(canvas);
+		animator = new Animator(canvas);
 		animator.start();
 	}
 
@@ -97,7 +96,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 		frameStart = System.nanoTime();
 		lastFrameTime = frameStart;
 		deltaTime = 0;
-		animator = new JoglAnimator(canvas);
+		animator.resume();
 		animator.setRunAsFastAsPossible(true);
 		animator.start();
 	}
@@ -206,17 +205,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	}
 
 	@Override
-	public void setContinuousRendering (boolean isContinuous) {
-		animator.setContinuousRendering(isContinuous);
-	}
-
-	@Override
-	public boolean isContinuousRendering () {
-		return animator.isContinuousRendering();
-	}
-
-	@Override
 	public void requestRendering () {
-		animator.requestRendering();
+		canvas.display();
 	}
 }
