@@ -1,6 +1,22 @@
-
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.badlogic.gdx.controllers.desktop.ois;
 
+/** @author mzechner
+ * @author Nathan Sweet */
 public class OisJoystick {
 	static private final int MIN_AXIS = -32768, MAX_AXIS = 32767;
 
@@ -8,8 +24,8 @@ public class OisJoystick {
 		Centered, North, South, East, West, NorthEast, SouthEast, NorthWest, SouthWest
 	}
 
-	private String name;
-	private long joystickPtr;
+	private final String name;
+	private final long joystickPtr;
 	private final boolean[] buttons;
 	private final float[] axes;
 	private final int[] povs;
@@ -27,8 +43,8 @@ public class OisJoystick {
 		slidersY = new boolean[getSliderCount()];
 	}
 
-	public void setListener (OisListener callback) {
-		this.listener = callback;
+	public void setListener (OisListener listener) {
+		this.listener = listener;
 	}
 
 	private void buttonPressed (int buttonIndex) {
@@ -52,9 +68,14 @@ public class OisJoystick {
 	}
 
 	private void sliderMoved (int sliderIndex, int x, int y) {
+		boolean xChanged = slidersX[sliderIndex] != (x == 1);
+		boolean yChanged = slidersY[sliderIndex] != (y == 1);
 		slidersX[sliderIndex] = x == 1;
 		slidersY[sliderIndex] = y == 1;
-		if (listener != null) listener.sliderMoved(this, sliderIndex, x == 1, y == 1);
+		if (listener != null) {
+			if (xChanged) listener.xSliderMoved(this, sliderIndex, x == 1);
+			if (yChanged) listener.ySliderMoved(this, sliderIndex, y == 1);
+		}
 	}
 
 	public void update () {

@@ -57,37 +57,18 @@ namespace OIS
                          MAC_MOUSEMOVED,
                          MAC_MOUSESCROLL};
     typedef enum Mac_EventType MacEventType;
-    
-    
+
     // only used by MacKeyboard
     typedef class Mac_KeyStackEvent
     {
         friend class MacKeyboard;
-        
-        
+
     private:
         Mac_KeyStackEvent( KeyEvent event, MacEventType type ) : Event(event), Type(type) {}
         
         MacEventType Type;
         KeyEvent Event;
     } MacKeyStackEvent;
- 
-    
-
-    // only used by MacMouse
-    typedef class Mac_MouseStackEvent
-    {
-        friend class MacMouse;
-        
-    private:
-        Mac_MouseStackEvent( MouseEvent event, MacEventType type,  MouseButtonID button) : Event(event), Type(type), Button(button) {}
-        
-        MacEventType Type;
-        MouseEvent Event;
-		MouseButtonID Button;
-        
-    } MacMouseStackEvent;
-        
 }
 
 

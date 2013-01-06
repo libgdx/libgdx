@@ -1,5 +1,19 @@
-
-package com.badlogic.gdx.controllers;
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+package com.badlogic.gdx.controllers.desktop;
 
 import com.badlogic.gdx.jnigen.AntScriptGenerator;
 import com.badlogic.gdx.jnigen.BuildConfig;
@@ -25,7 +39,7 @@ public class DesktopControllersBuild {
 		
 		String[] macSrc = { "*.cpp",
 			"ois-v1-4svn/src/*.cpp",
-			"ois-v1-4svn/src/linux/*.cpp"
+			"ois-v1-4svn/src/mac/*.cpp"
 		};
 		
 		String[] includes = new String[] {
@@ -66,10 +80,12 @@ public class DesktopControllersBuild {
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
 		mac.cppIncludes = macSrc;
 		mac.headerDirs = includes;
-		mac.libraries = ""; // FIXME
+		mac.cppFlags = "-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5 -x objective-c++";
+		mac.linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.5";
+		mac.libraries = "-framework CoreServices -framework Carbon -framework IOKit -framework Cocoa";
 		
 		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac);
-		if(!BuildExecutor.executeAnt("jni/build-linux32.xml", "-Dhas-compiler=true -v postcompile")) {
+		if(!BuildExecutor.executeAnt("jni/build-windows32home.xml", "-Dhas-compiler=true -v postcompile")) {
 			throw new Exception("build failed");
 		}
 		BuildExecutor.executeAnt("jni/build.xml", "pack-natives");

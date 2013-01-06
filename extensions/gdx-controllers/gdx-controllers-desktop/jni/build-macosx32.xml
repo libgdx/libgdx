@@ -25,12 +25,12 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++"/>
-	<property name="g++-opts" value="-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5"/>
+	<property name="g++-opts" value="-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5 -x objective-c++"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
 				<include name="*.cpp"/>
 		<include name="ois-v1-4svn/src/*.cpp"/>
-		<include name="ois-v1-4svn/src/linux/*.cpp"/>
+		<include name="ois-v1-4svn/src/mac/*.cpp"/>
 
 		
 	</fileset>
@@ -38,7 +38,7 @@
 	<!-- define linker and options -->
 	<property name="linker" value="${compilerPrefix}g++"/>
 	<property name="linker-opts" value="-shared -arch i386 -arch x86_64 -mmacosx-version-min=10.5"/>
-	<property name="libraries" value=""/>
+	<property name="libraries" value="-framework CoreServices -framework Carbon -framework IOKit -framework Cocoa"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
