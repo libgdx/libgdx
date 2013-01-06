@@ -22,18 +22,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.media.nativewindow.util.Point;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.OverlayLayout;
-import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -130,107 +118,12 @@ public class JoglInput implements Input, MouseListener, KeyListener {
 
 	@Override
 	public void getTextInput (final TextInputListener listener, final String title, final String text) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run () {
-				String output = JOptionPane.showInputDialog(null, title, text);
-				if (output != null)
-					listener.input(output);
-				else
-					listener.canceled();
-
-			}
-		});
+		throw new UnsupportedOperationException("getTextInput not supported by JoglInput, rather use JoglAWTInput");
 	}
 
-	//TODO move that somewhere else! It has nothing to do in the core
+	
 	public void getPlaceholderTextInput (final TextInputListener listener, final String title, final String placeholder) {
-		/*SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run () {
-				JPanel panel = new JPanel(new FlowLayout());
-
-				JPanel textPanel = new JPanel() {
-					public boolean isOptimizedDrawingEnabled () {
-						return false;
-					};
-				};
-
-				textPanel.setLayout(new OverlayLayout(textPanel));
-				panel.add(textPanel);
-
-				final JTextField textField = new JTextField(20);
-				textField.setAlignmentX(0.0f);
-				textPanel.add(textField);
-
-				final JLabel placeholderLabel = new JLabel(placeholder);
-				placeholderLabel.setForeground(Color.GRAY);
-				placeholderLabel.setAlignmentX(0.0f);
-				textPanel.add(placeholderLabel, 0);
-
-				textField.getDocument().addDocumentListener(new DocumentListener() {
-
-					@Override
-					public void removeUpdate (DocumentEvent arg0) {
-						this.updated();
-					}
-
-					@Override
-					public void insertUpdate (DocumentEvent arg0) {
-						this.updated();
-					}
-
-					@Override
-					public void changedUpdate (DocumentEvent arg0) {
-						this.updated();
-					}
-
-					private void updated () {
-						if (textField.getText().length() == 0)
-							placeholderLabel.setVisible(true);
-						else
-							placeholderLabel.setVisible(false);
-					}
-				});
-
-				JOptionPane pane = new JOptionPane(panel, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, null,
-					null);
-
-				pane.setInitialValue(null);
-				pane.setComponentOrientation(JOptionPane.getRootFrame().getComponentOrientation());
-
-				Border border = textField.getBorder();
-				placeholderLabel.setBorder(new EmptyBorder(border.getBorderInsets(textField)));
-
-				JDialog dialog = pane.createDialog(null, title);
-				pane.selectInitialValue();
-
-				dialog.addWindowFocusListener(new WindowFocusListener() {
-
-					@Override
-					public void windowLostFocus (WindowEvent arg0) {
-					}
-
-					@Override
-					public void windowGainedFocus (WindowEvent arg0) {
-						textField.requestFocusInWindow();
-					}
-				});
-
-				dialog.setVisible(true);
-				dialog.dispose();
-
-				Object selectedValue = pane.getValue();
-
-				if (selectedValue != null && (selectedValue instanceof Integer)
-					&& ((Integer)selectedValue).intValue() == JOptionPane.OK_OPTION) {
-					listener.input(textField.getText());
-				} else {
-					listener.canceled();
-				}
-
-			}
-		});*/
+		throw new UnsupportedOperationException("getPlaceholderTextInput not supported by JoglInput, rather use JoglAWTInput");
 	}
 
 	@Override
@@ -726,9 +619,6 @@ public class JoglInput implements Input, MouseListener, KeyListener {
 
 	@Override
 	public void setCursorPosition (int x, int y) {
-		/*if (robot != null) {
-			robot.mouseMove(canvas.getLocationOnScreen().x + x, canvas.getLocationOnScreen().y + y);
-		}*/
 		//TODO use canvas.getLocationOnScreen(Point)?
 		canvas.warpPointer(x, y);
 	}

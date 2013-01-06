@@ -45,7 +45,7 @@ import com.jogamp.newt.opengl.GLWindow;
  * apropriate parameters and then register {@link ApplicationListener} or {@link InputProcessor} instances.
  * 
  * @author mzechner */
-public final class JoglApplication implements Application {
+public class JoglApplication implements Application {
 	JoglGraphics graphics;
 	JoglInput input;
 	protected final JoglNet net;
