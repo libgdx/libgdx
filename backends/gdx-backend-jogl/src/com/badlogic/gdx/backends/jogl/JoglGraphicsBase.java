@@ -103,32 +103,22 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	}
 
 	void initializeGLInstances (GLAutoDrawable drawable) {
-		// special case for Raspberry Pi
-		if (NativeWindowFactory.getNativeWindowType(false) == NativeWindowFactory.TYPE_BCM_VC_IV) {
+		String renderer = drawable.getGL().glGetString(GL.GL_RENDERER);
+		major = drawable.getGL().getContext().getGLVersionMajor();
+		minor = drawable.getGL().getContext().getGLVersionMinor();
+
+		if (useGL2 && drawable.getGLProfile().isGL2ES2()) {
 			gl20 = new JoglGL20();
 			gl = gl20;
-		}
-		else {
-			String version = drawable.getGL().glGetString(GL.GL_VERSION);
-			String renderer = drawable.getGL().glGetString(GL.GL_RENDERER);
-			major = Integer.parseInt("" + version.charAt(0));
-			minor = Integer.parseInt("" + version.charAt(2));
-
-			if (useGL2 && (major >= 2 || version.contains("2.1"))) { // special case for MESA, wtf... {
-				gl20 = new JoglGL20();
-				gl = gl20;
+		} else {
+			if (major == 1 && minor < 5 || renderer.equals("Mirage Graphics3")) {
+				gl10 = new JoglGL10();
 			} else {
-
-				if (major == 1 && minor < 5 || renderer.equals("Mirage Graphics3")) {
-					gl10 = new JoglGL10();
-				} else {
-					gl11 = new JoglGL11();
-					gl10 = gl11;
-				}
-				gl = gl10;
+				gl11 = new JoglGL11();
+				gl10 = gl11;
 			}
+			gl = gl10;
 		}
-		
 		Gdx.gl = gl;
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;
