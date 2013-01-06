@@ -103,9 +103,6 @@ public final class JoglApplication implements Application {
 
 	WindowAdapter windowListener = new WindowAdapter() {
 		public void windowDestroyed(WindowEvent e) {
-		    graphics.setContinuousRendering(true);
-            graphics.pause();
-            graphics.destroy();
             audio.dispose();
 		}
 	};
@@ -240,7 +237,7 @@ public final class JoglApplication implements Application {
 		postRunnable(new Runnable() {
 			@Override
 			public void run () {
-				//FIXME maybe it is a bit brutal
+				//FIXME maybe it is a bit brutal (and useless)
 				graphics.canvas.destroy();
 			}
 		});

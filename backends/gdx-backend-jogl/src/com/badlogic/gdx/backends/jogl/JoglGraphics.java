@@ -69,12 +69,16 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 
 	public void pause () {
 		super.pause();
-		canvas.getContext().makeCurrent();
+		if (!canvas.getContext().isCurrent()) {
+		    canvas.getContext().makeCurrent();
+		}
 		listener.pause();
 	}
 
 	public void resume () {
-		canvas.getContext().makeCurrent();
+		if (!canvas.getContext().isCurrent()) {
+		    canvas.getContext().makeCurrent();
+		}
 		listener.resume();
 		super.resume();
 	}
@@ -126,7 +130,9 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	}
 
 	public void destroy () {
-		canvas.getContext().makeCurrent();
+		if (!canvas.getContext().isCurrent()) {
+		    canvas.getContext().makeCurrent();
+		}
 		listener.dispose();
 		canvas.setFullscreen(false);
 	}
@@ -270,7 +276,8 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 
 	@Override
 	public void dispose(GLAutoDrawable drawable) {
-		//FIXME find a smarter way to do that
-		System.exit(-1);
+		setContinuousRendering(true);
+        pause();
+        destroy();
 	}
 }

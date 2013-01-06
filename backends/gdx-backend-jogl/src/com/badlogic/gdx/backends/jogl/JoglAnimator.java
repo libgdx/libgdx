@@ -235,20 +235,20 @@ public class JoglAnimator {
 		if ((Thread.currentThread() == thread) /*|| EventQueue.isDispatchThread()*/) {
 			return;
 		}
-		while (shouldStop && thread != null) {
+		/*while (shouldStop && thread != null) {
 			try {
 				wait();
 			} catch (InterruptedException ie) {
 			}
-		}
+		}*/
 
 		// added so this is blocking in the libgdx context...
-		while (thread.isAlive()) {
+		/*while (thread.isAlive()) {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
 			}
-		}
+		}*/
 	}
 
 	// Uses RepaintManager APIs to implement more efficient redrawing of
