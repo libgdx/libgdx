@@ -53,7 +53,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	GLU glu;
 
 	void initialize (JoglApplicationConfiguration config) {
-		GLCapabilities caps = new GLCapabilities(GLProfile.getMaxFixedFunc(true));
+		GLCapabilities caps = new GLCapabilities(GLProfile.getDefault());
 		caps.setRedBits(config.r);
 		caps.setGreenBits(config.g);
 		caps.setBlueBits(config.b);
