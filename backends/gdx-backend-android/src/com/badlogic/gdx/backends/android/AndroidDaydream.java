@@ -99,7 +99,7 @@ public class AndroidDaydream extends DreamService implements Application {
 	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
 		graphics = new AndroidGraphicsDaydream(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
-		input = new AndroidInput(this, this, graphics.view, config);
+		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 //		net = new AndroidNet(this);
@@ -182,7 +182,7 @@ public class AndroidDaydream extends DreamService implements Application {
 	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
 		graphics = new AndroidGraphicsDaydream(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
-		input = new AndroidInput(this, this, graphics.view, config);
+		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 //		net = new AndroidNet(this);
