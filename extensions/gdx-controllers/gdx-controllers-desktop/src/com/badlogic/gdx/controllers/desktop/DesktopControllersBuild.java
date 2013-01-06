@@ -80,7 +80,7 @@ public class DesktopControllersBuild {
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
 		mac.cppIncludes = macSrc;
 		mac.headerDirs = includes;
-		mac.libraries = "-framework CoreServices -framework Carbon -framework IOKit";
+		mac.libraries = "-framework CoreServices -framework Carbon -framework IOKit -framework Cocoa";
 		
 		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac);
 		if(!BuildExecutor.executeAnt("jni/build-windows32home.xml", "-Dhas-compiler=true -v postcompile")) {
