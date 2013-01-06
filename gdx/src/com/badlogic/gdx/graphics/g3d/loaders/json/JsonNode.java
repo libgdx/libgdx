@@ -7,7 +7,7 @@ public class JsonNode {
 	public String id;
 	public int boneId = -1;
 	public Vector3 translation;
-	public Quaternion rotation;
+	public Vector3 rotation;
 	public Vector3 scale;
 	public String meshId;
 	public JsonMeshPartMaterial[] meshPartMaterials;

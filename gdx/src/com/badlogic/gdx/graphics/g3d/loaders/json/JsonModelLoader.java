@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g3d.ModelLoaderHints;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoader;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonReader;
@@ -65,11 +67,12 @@ public class JsonModelLoader implements ModelLoader {
 			// simple loader for now. Just diffuse & textures
 			material.addAttribute(new ColorAttribute(jsonMaterial.diffuse, "diffuse"));
 
-			if(jsonMaterial.diffuseTextures.size > 0){
+			if(jsonMaterial.diffuseTextures != null){
 				JsonTexture jsonTexture = jsonMaterial.diffuseTextures.get(0);
 				
 				// one texture unit for now
 				Texture texture = new Texture(Gdx.files.internal(jsonTexture.fileName));
+				texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 				material.addAttribute(new TextureAttribute(texture, 0, "diffuseTexture"));
 			}
 			
@@ -87,8 +90,8 @@ public class JsonModelLoader implements ModelLoader {
 			mesh.setVertices(jsonMesh.vertices);
 			
 			StillSubMesh subMesh = new StillSubMesh(jsonMesh.id, mesh, jsonMeshPart.primitiveType);
-			// Just assumes first material. We need the node tree to work this properly
-			subMesh.material = materials.get(model.materials[0].id);
+			// Just assumes i material. We need the node tree to work this properly
+			subMesh.material = materials.get(model.materials[i].id);
 			stillModel.subMeshes[i] = subMesh;
 		}
 		
@@ -111,7 +114,7 @@ public class JsonModelLoader implements ModelLoader {
 		return model;
 	}
 	
-	private JsonMesh[] parseMeshes (JsonModel model, OrderedMap<String, Object> json, ModelLoaderHints hints) {
+	private void parseMeshes (JsonModel model, OrderedMap<String, Object> json, ModelLoaderHints hints) {
 		Array<OrderedMap<String, Object>> meshes = (Array<OrderedMap<String, Object>>)json.get("meshes");
 		if(meshes == null) {
 			throw new GdxRuntimeException("No meshes found in file");
@@ -183,7 +186,6 @@ public class JsonModelLoader implements ModelLoader {
 			jsonMesh.parts = parts.toArray(JsonMeshPart.class);
 			model.meshes[i++] = jsonMesh;
 		}
-		return model.meshes;
 	}
 	
 	private int parseType (String type) {
@@ -234,7 +236,7 @@ public class JsonModelLoader implements ModelLoader {
 		return vertexAttributes.toArray(VertexAttribute.class);
 	}
 
-	private JsonMaterial[] parseMaterials (JsonModel model, OrderedMap<String, Object> json, ModelLoaderHints hints, String materialDir) {
+	private void parseMaterials (JsonModel model, OrderedMap<String, Object> json, ModelLoaderHints hints, String materialDir) {
 		Array<OrderedMap<String, Object>> materials = (Array<OrderedMap<String, Object>>)json.get("materials");
 		if(materials == null) {
 			// we should probably create some default material in this case
@@ -274,39 +276,40 @@ public class JsonModelLoader implements ModelLoader {
 				
 				// Read textures
 				Array<OrderedMap<String, Object>> textures = (Array<OrderedMap<String, Object>>)material.get("textures");
-				for(OrderedMap<String, Object> texture : textures) {
-					JsonTexture jsonTexture = new JsonTexture();
-					
-					String textureId = (String)texture.get("id");
-					if(textureId == null)
-						throw new GdxRuntimeException("Texture has no id.");
-					jsonTexture.id = textureId;
-					
-					String fileName = (String)texture.get("filename");
-					if(fileName == null)
-						throw new GdxRuntimeException("Texture needs filename.");
-					jsonTexture.fileName = materialDir + "/" + fileName;
-					
-					jsonTexture.uvTranslation = readVector2((Array<Object>)texture.get("uvTranslation"), 0f, 0f);
-					jsonTexture.uvScaling = readVector2((Array<Object>)texture.get("uvScaling"), 1f, 1f);
-					
-					String textureType = (String)texture.get("type");
-					if(type == null)
-						throw new GdxRuntimeException("Texture needs type.");
-					
-					/* Only diffuse textures for now. Most programs don't export texture usage properly ..
-					 	So we probably need to find a workaround. */
-					if(textureType.equals("STANDARD")){
-						if(jsonMaterial.diffuseTextures == null)
-							jsonMaterial.diffuseTextures = new Array<JsonTexture>();
-						jsonMaterial.diffuseTextures.add(jsonTexture);
+				if(textures != null){
+					for(OrderedMap<String, Object> texture : textures) {
+						JsonTexture jsonTexture = new JsonTexture();
+						
+						String textureId = (String)texture.get("id");
+						if(textureId == null)
+							throw new GdxRuntimeException("Texture has no id.");
+						jsonTexture.id = textureId;
+						
+						String fileName = (String)texture.get("filename");
+						if(fileName == null)
+							throw new GdxRuntimeException("Texture needs filename.");
+						jsonTexture.fileName = materialDir + "/" + fileName;
+						
+						jsonTexture.uvTranslation = readVector2((Array<Object>)texture.get("uvTranslation"), 0f, 0f);
+						jsonTexture.uvScaling = readVector2((Array<Object>)texture.get("uvScaling"), 1f, 1f);
+						
+						String textureType = (String)texture.get("type");
+						if(type == null)
+							throw new GdxRuntimeException("Texture needs type.");
+						
+						/* Only diffuse textures for now. Most programs don't export texture usage properly ..
+						 	So we probably need to find a workaround. */
+						if(textureType.equals("STANDARD")){
+							if(jsonMaterial.diffuseTextures == null)
+								jsonMaterial.diffuseTextures = new Array<JsonTexture>();
+							jsonMaterial.diffuseTextures.add(jsonTexture);
+						}
 					}
 				}
+
 				model.materials[i++] = jsonMaterial;
 			}
 		}
-		
-		return null;
 	}
 
 	private Color parseColor (Array<Object> colorArray, Color defaultColor) {
@@ -329,7 +332,77 @@ public class JsonModelLoader implements ModelLoader {
 	}
 
 	private JsonNode[] parseNodes (JsonModel model, OrderedMap<String, Object> json, ModelLoaderHints hints) {
+		Array<OrderedMap<String, Object>> nodes = (Array<OrderedMap<String, Object>>)json.get("nodes");
+		if(nodes == null) {
+			throw new GdxRuntimeException("At least one node is required.");
+		}
 		
-		return null;
+		model.nodes = new JsonNode[nodes.size];
+		
+		int i = 0;
+		for(OrderedMap<String, Object> node : nodes) {
+			model.nodes[i++] = parseNodesRecursively(node, hints);
+		}
+		return model.nodes;
+	}
+	
+	private JsonNode parseNodesRecursively(OrderedMap<String, Object> json, ModelLoaderHints hints){
+		JsonNode jsonNode = new JsonNode();
+		
+		String id = (String)json.get("id");
+		if(id == null)
+			throw new GdxRuntimeException("Node id missing.");
+		jsonNode.id = id;
+		
+		Array<Object> translation = (Array<Object>)json.get("translation");
+		if(translation == null || translation.size != 3)
+			throw new GdxRuntimeException("Node translation missing or incomplete");
+		jsonNode.translation = new Vector3((Float)translation.get(0), (Float)translation.get(1), (Float)translation.get(2));
+		
+		Array<Object> rotation = (Array<Object>)json.get("rotation");
+		if(rotation == null || rotation.size != 3)
+			throw new GdxRuntimeException("Node rotation missing or incomplete");
+		jsonNode.rotation = new Vector3((Float)rotation.get(0), (Float)rotation.get(1), (Float)rotation.get(2));
+		
+		Array<Object> scale = (Array<Object>)json.get("scale");
+		if(scale == null || scale.size != 3)
+			throw new GdxRuntimeException("Node scale missing or incomplete");
+		jsonNode.scale = new Vector3((Float)scale.get(0), (Float)scale.get(1), (Float)scale.get(2));
+		
+		String meshId = (String)json.get("mesh");
+		if(meshId != null)
+			jsonNode.meshId = meshId;
+		
+		Array<OrderedMap<String, Object>> materials = (Array<OrderedMap<String, Object>>)json.get("materials");
+		if(materials != null){
+			jsonNode.meshPartMaterials = new JsonMeshPartMaterial[materials.size];
+			
+			int i = 0;
+			for(OrderedMap<String, Object> material : materials) {
+				JsonMeshPartMaterial meshPartMaterial = new JsonMeshPartMaterial();
+				
+				String meshPartId = (String)material.get("meshpartid");
+				String materialId = (String)material.get("materialid");
+				if(meshPartId == null || materialId == null){
+					throw new GdxRuntimeException("Node material is missing meshPartId or materialId");
+				}
+				meshPartMaterial.materialId = materialId;
+				meshPartMaterial.meshPartId = meshPartId;
+				
+				jsonNode.meshPartMaterials[i++] = meshPartMaterial;
+			}
+		}
+		
+		Array<OrderedMap<String, Object>> children = (Array<OrderedMap<String, Object>>)json.get("children");
+		if(children != null){
+			jsonNode.children = new JsonNode[children.size];
+			
+			int i = 0;
+			for(OrderedMap<String, Object> child : children) {
+				jsonNode.children[i++] = parseNodesRecursively(child, hints);
+			}
+		}
+		
+		return jsonNode;
 	}
 }
