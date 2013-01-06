@@ -1,8 +1,8 @@
 # compiles all the natives for mac os x and ios
-cd gdx-controllers/gdx-controllers-desktop/jni
+cd extensions/gdx-controllers/gdx-controllers-desktop/jni
 ant -f build-macosx32.xml clean
 ant -f build-macosx32.xml
-cd ../../..
+cd ../../../..
 cd gdx/jni
 ant -f build-macosx32.xml clean
 ant -f build-macosx32.xml
