@@ -48,7 +48,7 @@ import com.jogamp.newt.opengl.GLWindow;
 public class JoglApplication implements Application {
 	JoglGraphics graphics;
 	JoglInput input;
-	protected final JoglNet net;
+	protected JoglNet net;
 	JoglFiles files;
 	OpenALAudio audio;
 	List<Runnable> runnables = new ArrayList<Runnable>();
@@ -67,7 +67,6 @@ public class JoglApplication implements Application {
 	public JoglApplication (final ApplicationListener listener, final String title, final int width, final int height,
 		final boolean useGL20IfAvailable) {
 		final JoglApplicationConfiguration config = new JoglApplicationConfiguration();
-		net = new JoglNet();
 		config.title = title;
 		config.width = width;
 		config.height = height;
@@ -76,7 +75,6 @@ public class JoglApplication implements Application {
 	}
 
 	public JoglApplication (final ApplicationListener listener, final JoglApplicationConfiguration config) {
-		net = new JoglNet();
 		initialize(listener, config);
 	}
 
@@ -86,12 +84,13 @@ public class JoglApplication implements Application {
 		input = new JoglInput(graphics.getCanvas());
 		audio = new OpenALAudio(16, config.audioDeviceBufferCount, config.audioDeviceBufferSize);
 		files = new JoglFiles();
-
-		Gdx.app = JoglApplication.this;
-		Gdx.graphics = JoglApplication.this.getGraphics();
-		Gdx.input = JoglApplication.this.getInput();
-		Gdx.audio = JoglApplication.this.getAudio();
-		Gdx.files = JoglApplication.this.getFiles();
+        net = new JoglNet();
+		Gdx.app = this;
+		Gdx.graphics = getGraphics();
+		Gdx.input = getInput();
+		Gdx.audio = getAudio();
+		Gdx.files = getFiles();
+		Gdx.net = getNet();
 		graphics.create();
 		graphics.getCanvas().addWindowListener(windowListener);
 		graphics.getCanvas().setTitle(config.title);

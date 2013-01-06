@@ -16,15 +16,18 @@
 
 package com.badlogic.gdx.backends.jogl;
 
-/*import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;*/
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.jogl.JoglGraphics.JoglDisplayMode;
 
 public class JoglApplicationConfiguration {
+	/** If true, OpenAL will not be used. This means {@link Application#getAudio()} returns null and the gdx-joal.jar and OpenAL
+	 * natives are not needed. */
+	//FIXME not correctly handled
+	public static boolean disableAudio;
 	/** whether to use OpenGL ES 2.0 or not. default: false **/
 	public boolean useGL20 = false;
 	/** number of bits per color channel **/
@@ -71,36 +74,4 @@ public class JoglApplicationConfiguration {
 		}
 		this.fullscreen = true;
 	}
-
-	//TODO look at CubeMovie example to get all modes
-	/*public static DisplayMode getDesktopDisplayMode () {
-		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice device = genv.getDefaultScreenDevice();
-		java.awt.DisplayMode mode = device.getDisplayMode();
-		return new JoglDisplayMode(mode.getWidth(), mode.getHeight(), mode.getRefreshRate(), mode.getBitDepth(), mode);
-	}
-
-	public static DisplayMode[] getDisplayModes () {
-		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice device = genv.getDefaultScreenDevice();
-		java.awt.DisplayMode desktopMode = device.getDisplayMode();
-		java.awt.DisplayMode[] displayModes = device.getDisplayModes();
-		ArrayList<DisplayMode> modes = new ArrayList<DisplayMode>();
-		int idx = 0;
-		for (java.awt.DisplayMode mode : displayModes) {
-			boolean duplicate = false;
-			for (int i = 0; i < modes.size(); i++) {
-				if (modes.get(i).width == mode.getWidth() && modes.get(i).height == mode.getHeight()
-					&& modes.get(i).bitsPerPixel == mode.getBitDepth()) {
-					duplicate = true;
-					break;
-				}
-			}
-			if (duplicate) continue;
-			if (mode.getBitDepth() != desktopMode.getBitDepth()) continue;
-			modes.add(new JoglDisplayMode(mode.getWidth(), mode.getHeight(), mode.getRefreshRate(), mode.getBitDepth(), mode));
-		}
-
-		return modes.toArray(new DisplayMode[modes.size()]);
-	}*/
 }
