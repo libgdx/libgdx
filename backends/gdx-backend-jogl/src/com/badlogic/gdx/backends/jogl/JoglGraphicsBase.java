@@ -108,7 +108,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 		major = Integer.parseInt("" + version.charAt(0));
 		minor = Integer.parseInt("" + version.charAt(2));
 
-		if (useGL2 && major >= 2) {
+		if (useGL2 && (major >= 2 || version.contains("2.1"))) { // special case for MESA, wtf... {
 			gl20 = new JoglGL20();
 			gl = gl20;
 		} else {
