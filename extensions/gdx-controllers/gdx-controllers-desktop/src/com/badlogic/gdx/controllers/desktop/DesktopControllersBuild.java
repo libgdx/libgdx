@@ -39,7 +39,7 @@ public class DesktopControllersBuild {
 		
 		String[] macSrc = { "*.cpp",
 			"ois-v1-4svn/src/*.cpp",
-			"ois-v1-4svn/src/linux/*.cpp"
+			"ois-v1-4svn/src/mac/*.cpp"
 		};
 		
 		String[] includes = new String[] {

@@ -30,7 +30,7 @@
 		<exclude name="target/"/>
 				<include name="*.cpp"/>
 		<include name="ois-v1-4svn/src/*.cpp"/>
-		<include name="ois-v1-4svn/src/linux/*.cpp"/>
+		<include name="ois-v1-4svn/src/mac/*.cpp"/>
 
 		
 	</fileset>
