@@ -403,16 +403,18 @@ Object* MacHIDManager::createObject(InputManager* creator, Type iType, bool buff
 	{
 		if((*it)->inUse == false && (*it)->type == iType && (vendor == "" || (*it)->combinedKey == vendor))
 		{
+			int totalDevs = totalDevices(iType);
+			int freeDevs = freeDevices(iType);
+			int devID = totalDevs - freeDevs;
+
 			switch(iType)
 			{
 				case OISJoyStick:
-					int totalDevs = totalDevices(iType);
-					int freeDevs = freeDevices(iType);
-					int devID = totalDevs - freeDevs;
-					
+				{
 					obj = new MacJoyStick((*it)->combinedKey, bufferMode, *it, creator, devID);
 					(*it)->inUse = true;
 					return obj;
+				}
 				case OISTablet:
 					//Create MacTablet
 					break;

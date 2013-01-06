@@ -7,6 +7,7 @@ public class JsonModel {
 	public JsonMesh[] meshes;
 	public JsonMaterial[] materials;
 	public JsonNode[] nodes;
+	public JsonAnimation[] animations;
 	
 	public void addMesh(JsonMesh mesh) {
 		for(JsonMesh other: meshes) {

@@ -35,6 +35,7 @@ restrictions:
 #elif defined OIS_LINUX_PLATFORM
 #  include "linux/LinuxInputManager.h"
 #elif defined OIS_APPLE_PLATFORM
+#  include "mac/CocoaInputManager.h"
 #  include "mac/MacInputManager.h"
 #elif defined OIS_IPHONE_PLATFORM
 #  include "iphone/iPhoneInputManager.h"
@@ -113,7 +114,17 @@ InputManager* InputManager::createInputSystem( ParamList &paramList )
 #elif defined OIS_LINUX_PLATFORM
 	im = new LinuxInputManager();
 #elif defined OIS_APPLE_PLATFORM
-	im = new MacInputManager();
+	ParamList::iterator i = paramList.find("WINDOW");
+	if(i != paramList.end())
+    {
+        id obj = (id)strtoul(i->second.c_str(), 0, 10);
+        if(obj && [obj isKindOfClass:[NSWindow class]])
+            im = new CocoaInputManager();
+#ifndef __LP64__
+        else
+            im = new MacInputManager();
+#endif
+    }
 #elif defined OIS_IPHONE_PLATFORM
 	im = new iPhoneInputManager();
 #else

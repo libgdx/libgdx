@@ -4,16 +4,25 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g3d.ModelLoaderHints;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoader;
-import com.badlogic.gdx.graphics.g3d.loaders.StillModelLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.json.JsonMaterial.MaterialType;
+import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.model.Model;
+import com.badlogic.gdx.graphics.g3d.model.SubMesh;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.OrderedMap;
 
 /**
@@ -23,14 +32,67 @@ import com.badlogic.gdx.utils.OrderedMap;
  * @author mzechner
  *
  */
-public class JsonModelLoader implements StillModelLoader {
+public class JsonModelLoader implements ModelLoader {
 	public static String VERSION = "1.0";
 	
 	@Override
-	public StillModel load (FileHandle handle, ModelLoaderHints hints) {
-		JsonModel model = parseModel(handle, hints);
+	public Model load (FileHandle handle, ModelLoaderHints hints) {
+		JsonModel jsonModel = parseModel(handle, hints);
+		Model model = null;
 		
+		if(jsonModel.animations == null)
+			model = createStillModel(jsonModel);
+		else // add hints for sampling to keyframed model
+			model = createSkeletonModel(jsonModel);
+		
+		return model;
+	}
+
+	private SkeletonModel createSkeletonModel (JsonModel jsonModel) {
+		// TODO Auto-generated method stub
 		return null;
+	}
+
+	private StillModel createStillModel (JsonModel model) {
+		StillModel stillModel = new StillModel(new SubMesh[model.meshes.length]);
+		
+		// We create the materials first
+		ObjectMap<String, Material> materials = new ObjectMap<String, Material>();
+		for(int i=0; i<model.materials.length; i++){
+			JsonMaterial jsonMaterial = model.materials[i];
+			Material material = new Material(jsonMaterial.id);
+			
+			// simple loader for now. Just diffuse & textures
+			material.addAttribute(new ColorAttribute(jsonMaterial.diffuse, "diffuse"));
+
+			if(jsonMaterial.diffuseTextures.size > 0){
+				JsonTexture jsonTexture = jsonMaterial.diffuseTextures.get(0);
+				
+				// one texture unit for now
+				Texture texture = new Texture(Gdx.files.internal(jsonTexture.fileName));
+				material.addAttribute(new TextureAttribute(texture, 0, "diffuseTexture"));
+			}
+			
+			materials.put(jsonMaterial.id, material);
+		}
+		
+		// Create the meshes and assign materials to them. This is a super hack until we have hierarchy
+		for(int i=0; i<model.meshes.length; i++){
+			JsonMesh jsonMesh = model.meshes[i];
+			// if we have more than one submesh we're screwed for now.
+			JsonMeshPart jsonMeshPart = model.meshes[i].parts[0];
+			
+			Mesh mesh = new Mesh(false, jsonMesh.vertices.length, jsonMeshPart.indices.length, jsonMesh.attributes);
+			mesh.setIndices(jsonMeshPart.indices);
+			mesh.setVertices(jsonMesh.vertices);
+			
+			StillSubMesh subMesh = new StillSubMesh(jsonMesh.id, mesh, jsonMeshPart.primitiveType);
+			// Just assumes first material. We need the node tree to work this properly
+			subMesh.material = materials.get(model.materials[0].id);
+			stillModel.subMeshes[i] = subMesh;
+		}
+		
+		return stillModel;
 	}
 
 	public JsonModel parseModel (FileHandle handle, ModelLoaderHints hints) {
@@ -44,7 +106,7 @@ public class JsonModelLoader implements StillModelLoader {
 		
 		JsonModel model = new JsonModel();
 		parseMeshes(model, json, hints);
-		parseMaterials(model, json, hints);
+		parseMaterials(model, json, hints, handle.parent().path());
 		parseNodes(model, json, hints);
 		return model;
 	}
@@ -172,7 +234,7 @@ public class JsonModelLoader implements StillModelLoader {
 		return vertexAttributes.toArray(VertexAttribute.class);
 	}
 
-	private JsonMaterial[] parseMaterials (JsonModel model, OrderedMap<String, Object> json, ModelLoaderHints hints) {
+	private JsonMaterial[] parseMaterials (JsonModel model, OrderedMap<String, Object> json, ModelLoaderHints hints, String materialDir) {
 		Array<OrderedMap<String, Object>> materials = (Array<OrderedMap<String, Object>>)json.get("materials");
 		if(materials == null) {
 			// we should probably create some default material in this case
@@ -223,7 +285,7 @@ public class JsonModelLoader implements StillModelLoader {
 					String fileName = (String)texture.get("filename");
 					if(fileName == null)
 						throw new GdxRuntimeException("Texture needs filename.");
-					jsonTexture.fileName = fileName;
+					jsonTexture.fileName = materialDir + "/" + fileName;
 					
 					jsonTexture.uvTranslation = readVector2((Array<Object>)texture.get("uvTranslation"), 0f, 0f);
 					jsonTexture.uvScaling = readVector2((Array<Object>)texture.get("uvScaling"), 1f, 1f);

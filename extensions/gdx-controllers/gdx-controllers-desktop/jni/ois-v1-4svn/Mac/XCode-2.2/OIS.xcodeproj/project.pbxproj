@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 44;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -40,12 +40,12 @@
 		0043D8890C35664A007ACDF6 /* OISPrereqs.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D87C0C35664A007ACDF6 /* OISPrereqs.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0043D8960C3566C1007ACDF6 /* OISEffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8900C3566C1007ACDF6 /* OISEffect.cpp */; };
 		0043D8970C3566C1007ACDF6 /* OISForceFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8910C3566C1007ACDF6 /* OISForceFeedback.cpp */; };
-		0043D8980C3566C1007ACDF6 /* OISInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */; };
+		0043D8980C3566C1007ACDF6 /* OISInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */; settings = {COMPILER_FLAGS = "-x objective-c++"; }; };
 		0043D8990C3566C1007ACDF6 /* OISJoyStick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8930C3566C1007ACDF6 /* OISJoyStick.cpp */; };
 		0043D89A0C3566C1007ACDF6 /* OISKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8940C3566C1007ACDF6 /* OISKeyboard.cpp */; };
 		0043D89B0C3566C1007ACDF6 /* OISObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8950C3566C1007ACDF6 /* OISObject.cpp */; };
 		0043D8A00C3566C9007ACDF6 /* MacHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89C0C3566C9007ACDF6 /* MacHelpers.cpp */; };
-		0043D8A10C3566C9007ACDF6 /* MacInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89D0C3566C9007ACDF6 /* MacInputManager.cpp */; };
+		0043D8A10C3566C9007ACDF6 /* MacInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89D0C3566C9007ACDF6 /* MacInputManager.cpp */; settings = {COMPILER_FLAGS = "-x objective-c++"; }; };
 		0043D8A20C3566C9007ACDF6 /* MacKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89E0C3566C9007ACDF6 /* MacKeyboard.cpp */; };
 		0043D8A30C3566C9007ACDF6 /* MacMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89F0C3566C9007ACDF6 /* MacMouse.cpp */; };
 		0043D8C70C35680D007ACDF6 /* OIS.h in Headers */ = {isa = PBXBuildFile; fileRef = 0043D8700C35664A007ACDF6 /* OIS.h */; };
@@ -80,7 +80,7 @@
 		0043D8E40C356819007ACDF6 /* MacMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89F0C3566C9007ACDF6 /* MacMouse.cpp */; };
 		0043D8E50C356819007ACDF6 /* OISEffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8900C3566C1007ACDF6 /* OISEffect.cpp */; };
 		0043D8E60C356819007ACDF6 /* OISForceFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8910C3566C1007ACDF6 /* OISForceFeedback.cpp */; };
-		0043D8E70C356819007ACDF6 /* OISInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */; };
+		0043D8E70C356819007ACDF6 /* OISInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */; settings = {COMPILER_FLAGS = "-x objective-c++"; }; };
 		0043D8E80C356819007ACDF6 /* OISJoyStick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8930C3566C1007ACDF6 /* OISJoyStick.cpp */; };
 		0043D8E90C356819007ACDF6 /* OISKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8940C3566C1007ACDF6 /* OISKeyboard.cpp */; };
 		0043D8EA0C356819007ACDF6 /* OISObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8950C3566C1007ACDF6 /* OISObject.cpp */; };
@@ -90,11 +90,10 @@
 		0043D8EE0C35681A007ACDF6 /* MacMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D89F0C3566C9007ACDF6 /* MacMouse.cpp */; };
 		0043D8EF0C35681A007ACDF6 /* OISEffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8900C3566C1007ACDF6 /* OISEffect.cpp */; };
 		0043D8F00C35681A007ACDF6 /* OISForceFeedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8910C3566C1007ACDF6 /* OISForceFeedback.cpp */; };
-		0043D8F10C35681A007ACDF6 /* OISInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */; };
+		0043D8F10C35681A007ACDF6 /* OISInputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8920C3566C1007ACDF6 /* OISInputManager.cpp */; settings = {COMPILER_FLAGS = "-x objective-c++"; }; };
 		0043D8F20C35681A007ACDF6 /* OISJoyStick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8930C3566C1007ACDF6 /* OISJoyStick.cpp */; };
 		0043D8F30C35681A007ACDF6 /* OISKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8940C3566C1007ACDF6 /* OISKeyboard.cpp */; };
 		0043D8F40C35681A007ACDF6 /* OISObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0043D8950C3566C1007ACDF6 /* OISObject.cpp */; };
-		0043D8F50C356828007ACDF6 /* OIS-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0043D85F0C356509007ACDF6 /* OIS-Info.plist */; };
 		0043D8F70C356840007ACDF6 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0043D8F60C356840007ACDF6 /* Carbon.framework */; };
 		0043D8F80C356840007ACDF6 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0043D8F60C356840007ACDF6 /* Carbon.framework */; };
 		0043D8F90C356840007ACDF6 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0043D8F60C356840007ACDF6 /* Carbon.framework */; };
@@ -124,6 +123,21 @@
 		4AEB08FC0D73DA81007CD406 /* OISConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0082F2880C827BF500E926BE /* OISConsole.cpp */; };
 		4AEB090C0D73DABC007CD406 /* OIS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0043D85D0C356509007ACDF6 /* OIS.framework */; };
 		4AEB09240D73DBC8007CD406 /* OIS.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0043D85D0C356509007ACDF6 /* OIS.framework */; };
+		9C0B132B125E954800E10CB7 /* CocoaInputManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1325125E954800E10CB7 /* CocoaInputManager.mm */; };
+		9C0B132C125E954800E10CB7 /* CocoaJoyStick.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1326125E954800E10CB7 /* CocoaJoyStick.mm */; };
+		9C0B132D125E954800E10CB7 /* CocoaKeyboard.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1327125E954800E10CB7 /* CocoaKeyboard.mm */; };
+		9C0B132E125E954800E10CB7 /* CocoaMouse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1328125E954800E10CB7 /* CocoaMouse.mm */; };
+		9C0B1331125E955000E10CB7 /* CocoaInputManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1325125E954800E10CB7 /* CocoaInputManager.mm */; };
+		9C0B1332125E955000E10CB7 /* CocoaJoyStick.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1326125E954800E10CB7 /* CocoaJoyStick.mm */; };
+		9C0B1333125E955000E10CB7 /* CocoaKeyboard.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1327125E954800E10CB7 /* CocoaKeyboard.mm */; };
+		9C0B1334125E955000E10CB7 /* CocoaMouse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1328125E954800E10CB7 /* CocoaMouse.mm */; };
+		9C0B1337125E955000E10CB7 /* CocoaInputManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1325125E954800E10CB7 /* CocoaInputManager.mm */; };
+		9C0B1338125E955000E10CB7 /* CocoaJoyStick.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1326125E954800E10CB7 /* CocoaJoyStick.mm */; };
+		9C0B1339125E955000E10CB7 /* CocoaKeyboard.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1327125E954800E10CB7 /* CocoaKeyboard.mm */; };
+		9C0B133A125E955000E10CB7 /* CocoaMouse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C0B1328125E954800E10CB7 /* CocoaMouse.mm */; };
+		9C7C9A0D126136E20026234E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C0B12C4125E3B3400E10CB7 /* Cocoa.framework */; };
+		9C7C9A0E126136E30026234E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C0B12C4125E3B3400E10CB7 /* Cocoa.framework */; };
+		9C7C9A0F126136E30026234E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C0B12C4125E3B3400E10CB7 /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -222,6 +236,16 @@
 		4ADFD2A80CDE7BAC006031E4 /* MacHIDManager.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MacHIDManager.cpp; path = ../../src/mac/MacHIDManager.cpp; sourceTree = SOURCE_ROOT; };
 		4AEB08F60D73DA6D007CD406 /* ConsoleTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConsoleTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AEB08F80D73DA6D007CD406 /* ConsoleTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ConsoleTest-Info.plist"; sourceTree = "<group>"; };
+		9C0B12C4125E3B3400E10CB7 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		9C0B1325125E954800E10CB7 /* CocoaInputManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CocoaInputManager.mm; path = ../../src/mac/CocoaInputManager.mm; sourceTree = SOURCE_ROOT; };
+		9C0B1326125E954800E10CB7 /* CocoaJoyStick.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CocoaJoyStick.mm; path = ../../src/mac/CocoaJoyStick.mm; sourceTree = SOURCE_ROOT; };
+		9C0B1327125E954800E10CB7 /* CocoaKeyboard.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CocoaKeyboard.mm; path = ../../src/mac/CocoaKeyboard.mm; sourceTree = SOURCE_ROOT; };
+		9C0B1328125E954800E10CB7 /* CocoaMouse.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CocoaMouse.mm; path = ../../src/mac/CocoaMouse.mm; sourceTree = SOURCE_ROOT; };
+		9C0B133B125E959000E10CB7 /* CocoaHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaHelpers.h; path = ../../includes/mac/CocoaHelpers.h; sourceTree = SOURCE_ROOT; };
+		9C0B133D125E959000E10CB7 /* CocoaInputManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaInputManager.h; path = ../../includes/mac/CocoaInputManager.h; sourceTree = SOURCE_ROOT; };
+		9C0B133E125E959000E10CB7 /* CocoaJoyStick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaJoyStick.h; path = ../../includes/mac/CocoaJoyStick.h; sourceTree = SOURCE_ROOT; };
+		9C0B133F125E959000E10CB7 /* CocoaKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaKeyboard.h; path = ../../includes/mac/CocoaKeyboard.h; sourceTree = SOURCE_ROOT; };
+		9C0B1340125E959000E10CB7 /* CocoaMouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaMouse.h; path = ../../includes/mac/CocoaMouse.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -231,6 +255,7 @@
 			files = (
 				0043D8F70C356840007ACDF6 /* Carbon.framework in Frameworks */,
 				4ADFD0130CDD94B2006031E4 /* IOKit.framework in Frameworks */,
+				9C7C9A0E126136E30026234E /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,6 +265,7 @@
 			files = (
 				0043D8F80C356840007ACDF6 /* Carbon.framework in Frameworks */,
 				4ADFD0100CDD948B006031E4 /* IOKit.framework in Frameworks */,
+				9C7C9A0D126136E20026234E /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,6 +275,7 @@
 			files = (
 				0043D8F90C356840007ACDF6 /* Carbon.framework in Frameworks */,
 				4ADFD0110CDD948C006031E4 /* IOKit.framework in Frameworks */,
+				9C7C9A0F126136E30026234E /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,6 +354,7 @@
 			children = (
 				4AC4C3930CDD840500603F93 /* IOKit.framework */,
 				0043D8F60C356840007ACDF6 /* Carbon.framework */,
+				9C0B12C4125E3B3400E10CB7 /* Cocoa.framework */,
 			);
 			name = "External Frameworks and Libraries";
 			sourceTree = "<group>";
@@ -334,6 +362,11 @@
 		0043D86B0C3565E0007ACDF6 /* OSX */ = {
 			isa = PBXGroup;
 			children = (
+				9C0B133B125E959000E10CB7 /* CocoaHelpers.h */,
+				9C0B133D125E959000E10CB7 /* CocoaInputManager.h */,
+				9C0B133E125E959000E10CB7 /* CocoaJoyStick.h */,
+				9C0B133F125E959000E10CB7 /* CocoaKeyboard.h */,
+				9C0B1340125E959000E10CB7 /* CocoaMouse.h */,
 				0043D88A0C35665B007ACDF6 /* MacPrereqs.h */,
 				0043D88B0C35665B007ACDF6 /* MacInputManager.h */,
 				0043D88C0C35665B007ACDF6 /* MacHelpers.h */,
@@ -369,6 +402,10 @@
 		0043D86D0C3565F7007ACDF6 /* OSX */ = {
 			isa = PBXGroup;
 			children = (
+				9C0B1325125E954800E10CB7 /* CocoaInputManager.mm */,
+				9C0B1326125E954800E10CB7 /* CocoaJoyStick.mm */,
+				9C0B1327125E954800E10CB7 /* CocoaKeyboard.mm */,
+				9C0B1328125E954800E10CB7 /* CocoaMouse.mm */,
 				249631C31066333900EFD0E1 /* MacJoyStick.cpp */,
 				0043D89C0C3566C9007ACDF6 /* MacHelpers.cpp */,
 				4ADFD2A80CDE7BAC006031E4 /* MacHIDManager.cpp */,
@@ -481,7 +518,6 @@
 			buildConfigurationList = 0043D8610C356509007ACDF6 /* Build configuration list for PBXNativeTarget "OIS" */;
 			buildPhases = (
 				0043D8580C356509007ACDF6 /* Headers */,
-				0043D8590C356509007ACDF6 /* Resources */,
 				0043D85A0C356509007ACDF6 /* Sources */,
 				0043D85B0C356509007ACDF6 /* Frameworks */,
 			);
@@ -568,8 +604,15 @@
 		0043D84E0C3564F8007ACDF6 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 0043D84F0C3564F8007ACDF6 /* Build configuration list for PBXProject "OIS" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.0";
+			developmentRegion = English;
 			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 0043D84C0C3564F8007ACDF6;
 			productRefGroup = 0043D85E0C356509007ACDF6 /* Products */;
 			projectDirPath = "";
@@ -586,14 +629,6 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		0043D8590C356509007ACDF6 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				0043D8F50C356828007ACDF6 /* OIS-Info.plist in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		4AEB08F20D73DA6D007CD406 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -621,6 +656,10 @@
 				4ADFD2A90CDE7BAC006031E4 /* MacHIDManager.cpp in Sources */,
 				249631C71066334D00EFD0E1 /* MacJoyStick.cpp in Sources */,
 				4ACD7A530CEF903600D72CD9 /* OISException.cpp in Sources */,
+				9C0B132B125E954800E10CB7 /* CocoaInputManager.mm in Sources */,
+				9C0B132C125E954800E10CB7 /* CocoaJoyStick.mm in Sources */,
+				9C0B132D125E954800E10CB7 /* CocoaKeyboard.mm in Sources */,
+				9C0B132E125E954800E10CB7 /* CocoaMouse.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -641,6 +680,10 @@
 				4ADFD2AA0CDE7BAC006031E4 /* MacHIDManager.cpp in Sources */,
 				249631C81066335600EFD0E1 /* MacJoyStick.cpp in Sources */,
 				4ACD7A540CEF903600D72CD9 /* OISException.cpp in Sources */,
+				9C0B1331125E955000E10CB7 /* CocoaInputManager.mm in Sources */,
+				9C0B1332125E955000E10CB7 /* CocoaJoyStick.mm in Sources */,
+				9C0B1333125E955000E10CB7 /* CocoaKeyboard.mm in Sources */,
+				9C0B1334125E955000E10CB7 /* CocoaMouse.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -661,6 +704,10 @@
 				4ADFD2AB0CDE7BAC006031E4 /* MacHIDManager.cpp in Sources */,
 				249631C91066335D00EFD0E1 /* MacJoyStick.cpp in Sources */,
 				4ACD7A550CEF903600D72CD9 /* OISException.cpp in Sources */,
+				9C0B1337125E955000E10CB7 /* CocoaInputManager.mm in Sources */,
+				9C0B1338125E955000E10CB7 /* CocoaJoyStick.mm in Sources */,
+				9C0B1339125E955000E10CB7 /* CocoaKeyboard.mm in Sources */,
+				9C0B133A125E955000E10CB7 /* CocoaMouse.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -714,13 +761,13 @@
 		0043D8500C3564F8007ACDF6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = YES;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = ../../includes;
 			};
 			name = Debug;
@@ -728,13 +775,12 @@
 		0043D8510C3564F8007ACDF6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = YES;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = ../../includes;
 			};
 			name = Release;
@@ -744,16 +790,13 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.0;
-				DYLIB_CURRENT_VERSION = 1.0;
+				DYLIB_CURRENT_VERSION = 1.3;
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
-				GCC_VERSION = 4.0;
 				INFOPLIST_FILE = "OIS-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_LDFLAGS = (
@@ -762,6 +805,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = OIS;
+				VALID_ARCHS = "i386 x86_64";
 				ZERO_LINK = YES;
 			};
 			name = Debug;
@@ -771,14 +815,11 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1.0;
-				DYLIB_CURRENT_VERSION = 1.0;
+				DYLIB_CURRENT_VERSION = 1.3;
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
-				GCC_VERSION = 4.0;
 				INFOPLIST_FILE = "OIS-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_LDFLAGS = (
@@ -802,9 +843,6 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
-				GCC_VERSION = 4.0;
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -825,9 +863,6 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
-				GCC_VERSION = 4.0;
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -848,9 +883,6 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
-				GCC_VERSION = 4.0;
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -869,9 +901,6 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
-				GCC_VERSION = 4.0;
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = (
 					"-framework",
