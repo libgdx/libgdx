@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -39,10 +40,12 @@ import com.badlogic.gdx.utils.Pools;
 public class Slider extends Widget {
 	private SliderStyle style;
 	private float min, max, stepSize;
-	private float value;
+	private float value, animateFromValue;
 	private float sliderPos;
-	private boolean vertical;
+	private final boolean vertical;
 	int draggingPointer = -1;
+	private float animateDuration, animateTime;
+	private Interpolation animateInterpolation = Interpolation.linear;
 
 	public Slider (float min, float max, float stepSize, boolean vertical, Skin skin) {
 		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), SliderStyle.class));
@@ -104,6 +107,11 @@ public class Slider extends Widget {
 		return style;
 	}
 
+	public void act (float delta) {
+		super.act(delta);
+		animateTime -= delta;
+	}
+
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		final Drawable knob = style.knob;
@@ -118,6 +126,7 @@ public class Slider extends Widget {
 		float height = getHeight();
 		float knobHeight = knob == null ? 0 : knob.getMinHeight();
 		float knobWidth = knob == null ? 0 : knob.getMinWidth();
+		float value = getVisualValue();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 
@@ -198,6 +207,12 @@ public class Slider extends Widget {
 		return value;
 	}
 
+	/** If {@link #setAnimateDuration(float) animating} the slider value, this returns the value current displayed. */
+	public float getVisualValue () {
+		if (animateTime > 0) return animateInterpolation.apply(animateFromValue, value, animateTime / animateDuration);
+		return value;
+	}
+
 	/** Sets the slider position, rounded to the nearest step size and clamped to the minumum and maximim values. */
 	public void setValue (float value) {
 		if (value < min || value > max) throw new IllegalArgumentException("value must be >= min and <= max: " + value);
@@ -206,7 +221,12 @@ public class Slider extends Widget {
 		if (value == oldValue) return;
 		this.value = value;
 		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-		if (fire(changeEvent)) this.value = oldValue;
+		if (fire(changeEvent))
+			this.value = oldValue;
+		else if (animateDuration > 0) {
+			animateTime = animateDuration;
+			animateFromValue = getVisualValue();
+		}
 		Pools.free(changeEvent);
 	}
 
@@ -248,6 +268,17 @@ public class Slider extends Widget {
 
 	public float getStepSize () {
 		return this.stepSize;
+	}
+
+	/** If > 0, changes to the slider value via {@link #setValue(float)} will happen over this duration in seconds. */
+	public void setAnimateDuration (float duration) {
+		this.animateDuration = duration;
+	}
+
+	/** Sets the interpolation to use for {@link #setAnimateDuration(float)}. */
+	public void setAnimateInterpolation (Interpolation animateInterpolation) {
+		if (animateInterpolation == null) throw new IllegalArgumentException("animateInterpolation cannot be null.");
+		this.animateInterpolation = animateInterpolation;
 	}
 
 	/** The style for a slider, see {@link Slider}.
