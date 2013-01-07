@@ -203,6 +203,11 @@ public class OisControllers {
 
 	/** Returns the window handle from LWJGL needed by OIS. */
 	static public long getLwjglWindowHandle () {
+		// don't need a window handle for Mac OS X
+		if(System.getProperty("os.name").toLowerCase().contains("mac")) {
+			return 0;
+		}
+		
 		try {
 			if (Gdx.app instanceof LwjglCanvas) {
 				return (Long)invokeMethod(

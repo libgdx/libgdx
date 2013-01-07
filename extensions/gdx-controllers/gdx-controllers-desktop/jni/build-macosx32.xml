@@ -30,7 +30,9 @@
 		<exclude name="target/"/>
 				<include name="*.cpp"/>
 		<include name="ois-v1-4svn/src/*.cpp"/>
-		<include name="ois-v1-4svn/src/mac/*.cpp"/>
+		<include name="ois-v1-4svn/src/mac/*.mm"/>
+		<include name="ois-v1-4svn/src/mac/MacHIDManager.cpp"/>
+		<include name="ois-v1-4svn/src/mac/MacJoyStick.cpp"/>
 
 		
 	</fileset>
@@ -98,9 +100,10 @@
 			<arg value="-o"/>
 			<targetfile/>
 			<fileset refid="g++-files"/>
-			<chainedmapper>
+			<compositemapper>
 				<mapper type="glob" from="*.cpp" to="*.o"/>
-			</chainedmapper>
+				<mapper type="glob" from="*.mm" to="*.o"/>
+			</compositemapper>
 		</apply>
 		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
 			<arg line="${gcc-opts}"/>
@@ -114,9 +117,9 @@
 			<arg value="-o"/>
 			<targetfile/>
 			<fileset refid="gcc-files"/>
-			<chainedmapper>
+			<compositemapper>
 				<mapper type="glob" from="*.c" to="*.o"/>
-			</chainedmapper>
+			</compositemapper>
 		</apply>
 	</target>	
 
