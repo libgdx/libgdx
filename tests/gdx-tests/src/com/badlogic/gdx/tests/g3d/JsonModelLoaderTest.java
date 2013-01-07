@@ -21,11 +21,12 @@ public class JsonModelLoaderTest extends GdxTest {
 	@Override
 	public void create () {
 		JsonModelLoader loader = new JsonModelLoader();
-		model = loader.load(Gdx.files.internal("data/g3d/test.g3dj"), null);
+		model = loader.load(Gdx.files.internal("data/g3d/head_parented.g3dj"), null);
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.position.set(10, 10, 10);
+		cam.position.set(1f, 1.5f, 1f);
 		cam.direction.set(-1, -1, -1);
+		cam.near = 0.001f;
 		Gdx.input.setInputProcessor(this);
 	}
 
@@ -71,6 +72,13 @@ public class JsonModelLoaderTest extends GdxTest {
 		angleX += (y - touchStartY);
 		touchStartX = x;
 		touchStartY = y;
+		return false;
+	}
+
+	@Override
+	public boolean scrolled (int amount) {
+		cam.fieldOfView -= -amount * Gdx.graphics.getDeltaTime() * 100;
+		cam.update();
 		return false;
 	}
 

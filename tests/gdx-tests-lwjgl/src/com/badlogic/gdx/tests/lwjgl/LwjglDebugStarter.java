@@ -34,6 +34,9 @@ public class LwjglDebugStarter {
 		GdxTest test = new JsonModelLoaderTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
+		config.width = 640;
+		config.height = 480;
+		config.samples = 8;
 		new LwjglApplication(test, config);
 	}
 }
