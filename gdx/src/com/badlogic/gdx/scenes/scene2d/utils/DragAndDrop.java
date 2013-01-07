@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.Input.Buttons;
@@ -183,6 +184,9 @@ public class DragAndDrop {
 		public Target (Actor actor) {
 			if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 			this.actor = actor;
+			Stage stage = actor.getStage();
+			if (stage != null && actor == stage.getRoot())
+				throw new IllegalArgumentException("The stage root cannot be a drag and drop target.");
 		}
 
 		/** Called when the object is dragged over the target. The coordinates are in the target's local coordinate system.
