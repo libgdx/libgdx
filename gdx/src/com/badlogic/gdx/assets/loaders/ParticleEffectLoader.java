@@ -8,6 +8,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.utils.Array;
 
+/** {@link SynchronousAssetLoader} for {@link ParticleEffect} instances. @author antti */
 public class ParticleEffectLoader extends SynchronousAssetLoader<ParticleEffect, ParticleEffectLoader.ParticleEffectParameter> {
 
 	public ParticleEffectLoader (FileHandleResolver resolver) {
