@@ -116,6 +116,8 @@ public class Slider extends Widget {
 		float y = getY();
 		float width = getWidth();
 		float height = getHeight();
+		float knobHeight = knob == null ? 0 : knob.getMinHeight();
+		float knobWidth = knob == null ? 0 : knob.getMinWidth();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 
@@ -123,11 +125,11 @@ public class Slider extends Widget {
 			bg.draw(batch, x + (int)((width - bg.getMinWidth()) * 0.5f), y, bg.getMinWidth(), height);
 
 			float sliderPosHeight = height - (bg.getTopHeight() + bg.getBottomHeight());
-			sliderPos = (value - min) / (max - min) * (sliderPosHeight - knob.getMinHeight());
+			sliderPos = (value - min) / (max - min) * (sliderPosHeight - knobHeight);
 			sliderPos = Math.max(0, sliderPos);
-			sliderPos = Math.min(sliderPosHeight - knob.getMinHeight(), sliderPos) + bg.getBottomHeight();
+			sliderPos = Math.min(sliderPosHeight - knobHeight, sliderPos) + bg.getBottomHeight();
 
-			float knobHeightHalf = knob.getMinHeight() * 0.5f;
+			float knobHeightHalf = knobHeight * 0.5f;
 			if (knobBefore != null) {
 				knobBefore.draw(batch, x + (int)((width - knobBefore.getMinWidth()) * 0.5f), y, knobBefore.getMinWidth(),
 					(int)(sliderPos + knobHeightHalf));
@@ -136,17 +138,16 @@ public class Slider extends Widget {
 				knobAfter.draw(batch, x + (int)((width - knobAfter.getMinWidth()) * 0.5f), y + (int)(sliderPos + knobHeightHalf),
 					knobAfter.getMinWidth(), height - (int)(sliderPos + knobHeightHalf));
 			}
-			knob.draw(batch, x + (int)((width - knob.getMinWidth()) * 0.5f), (int)(y + sliderPos), knob.getMinWidth(),
-				knob.getMinHeight());
+			if (knob != null) knob.draw(batch, x + (int)((width - knobWidth) * 0.5f), (int)(y + sliderPos), knobWidth, knobHeight);
 		} else {
 			bg.draw(batch, x, y + (int)((height - bg.getMinHeight()) * 0.5f), width, bg.getMinHeight());
 
 			float sliderPosWidth = width - (bg.getLeftWidth() + bg.getRightWidth());
-			sliderPos = (value - min) / (max - min) * (sliderPosWidth - knob.getMinWidth());
+			sliderPos = (value - min) / (max - min) * (sliderPosWidth - knobWidth);
 			sliderPos = Math.max(0, sliderPos);
-			sliderPos = Math.min(sliderPosWidth - knob.getMinWidth(), sliderPos) + bg.getLeftWidth();
+			sliderPos = Math.min(sliderPosWidth - knobWidth, sliderPos) + bg.getLeftWidth();
 
-			float knobHeightHalf = knob.getMinHeight() * 0.5f;
+			float knobHeightHalf = knobHeight * 0.5f;
 			if (knobBefore != null) {
 				knobBefore.draw(batch, x, y + (int)((height - knobBefore.getMinHeight()) * 0.5f), (int)(sliderPos + knobHeightHalf),
 					knobBefore.getMinHeight());
@@ -155,8 +156,8 @@ public class Slider extends Widget {
 				knobAfter.draw(batch, x + (int)(sliderPos + knobHeightHalf), y + (int)((height - knobAfter.getMinHeight()) * 0.5f),
 					width - (int)(sliderPos + knobHeightHalf), knobAfter.getMinHeight());
 			}
-			knob.draw(batch, (int)(x + sliderPos), (int)(y + (height - knob.getMinHeight()) * 0.5f), knob.getMinWidth(),
-				knob.getMinHeight());
+			if (knob != null)
+				knob.draw(batch, (int)(x + sliderPos), (int)(y + (height - knobHeight) * 0.5f), knobWidth, knobHeight);
 		}
 	}
 
@@ -169,16 +170,18 @@ public class Slider extends Widget {
 
 		if (vertical) {
 			float height = getHeight() - bg.getTopHeight() - bg.getBottomHeight();
-			sliderPos = y - bg.getBottomHeight() - knob.getMinHeight() * 0.5f;
+			float knobHeight = knob == null ? 0 : knob.getMinHeight();
+			sliderPos = y - bg.getBottomHeight() - knobHeight * 0.5f;
 			sliderPos = Math.max(0, sliderPos);
-			sliderPos = Math.min(height - knob.getMinHeight(), sliderPos);
-			value = min + (max - min) * (sliderPos / (height - knob.getMinHeight()));
+			sliderPos = Math.min(height - knobHeight, sliderPos);
+			value = min + (max - min) * (sliderPos / (height - knobHeight));
 		} else {
 			float width = getWidth() - bg.getLeftWidth() - bg.getRightWidth();
-			sliderPos = x - bg.getLeftWidth() - knob.getMinWidth() * 0.5f;
+			float knobWidth = knob == null ? 0 : knob.getMinWidth();
+			sliderPos = x - bg.getLeftWidth() - knobWidth * 0.5f;
 			sliderPos = Math.max(0, sliderPos);
-			sliderPos = Math.min(width - knob.getMinWidth(), sliderPos);
-			value = min + (max - min) * (sliderPos / (width - knob.getMinWidth()));
+			sliderPos = Math.min(width - knobWidth, sliderPos);
+			value = min + (max - min) * (sliderPos / (width - knobWidth));
 		}
 
 		float oldValue = value;
@@ -223,7 +226,7 @@ public class Slider extends Widget {
 
 	public float getPrefWidth () {
 		if (vertical)
-			return Math.max(style.knob.getMinWidth(), style.background.getMinWidth());
+			return Math.max(style.knob == null ? 0 : style.knob.getMinWidth(), style.background.getMinWidth());
 		else
 			return 140;
 	}
@@ -232,7 +235,7 @@ public class Slider extends Widget {
 		if (vertical)
 			return 140;
 		else
-			return Math.max(style.knob.getMinHeight(), style.background.getMinHeight());
+			return Math.max(style.knob == null ? 0 : style.knob.getMinHeight(), style.background.getMinHeight());
 	}
 
 	public float getMinValue () {
@@ -253,7 +256,7 @@ public class Slider extends Widget {
 	static public class SliderStyle {
 		/** The slider background, stretched only in one direction. */
 		public Drawable background;
-		/** Centered on the background. */
+		/** Optional, centered on the background. */
 		public Drawable knob;
 		/** Optional. */
 		public Drawable knobBefore, knobAfter;
