@@ -18,7 +18,6 @@ package com.badlogic.gdx.backends.ios;
 
 import java.util.ArrayList;
 
-import cli.MonoTouch.Foundation.NSBundle;
 import cli.MonoTouch.Foundation.NSDictionary;
 import cli.MonoTouch.Foundation.NSMutableDictionary;
 import cli.MonoTouch.UIKit.UIApplication;
@@ -78,6 +77,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	UIApplication uiApp;
 	UIWindow uiWindow;
+	UIViewController uiViewController;
 	ApplicationListener listener;
 	IOSApplicationConfiguration config;
 	IOSGraphics graphics;
@@ -134,7 +134,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 		// Create: Window -> ViewController-> GameView (controller takes care of rotation)
 		this.uiWindow = new UIWindow(UIScreen.get_MainScreen().get_Bounds());
-		UIViewController uiViewController = new IOSUIViewController();
+		this.uiViewController = new IOSUIViewController();
 		this.uiWindow.set_RootViewController(uiViewController);
 
 		GL20 gl20 = config.useMonotouchOpenTK ? new IOSMonotouchGLES20() : new IOSGLES20();
