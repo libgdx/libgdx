@@ -9,6 +9,7 @@ import android.view.View.OnKeyListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidInput;
+import com.badlogic.gdx.backends.android.AndroidInputThreePlus;
 import com.badlogic.gdx.controllers.ControlType;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
@@ -33,7 +34,7 @@ public class OuyaControllers {
 
 	public OuyaControllers (final AndroidControllerManager manager) {
 		this.manager = manager;
-		AndroidInput androidInput = (AndroidInput)Gdx.input;
+		AndroidInputThreePlus androidInput = (AndroidInputThreePlus)Gdx.input;
 		androidInput.addKeyListener(new OnKeyListener() {
 			public boolean onKey (View v, int keyCode, KeyEvent event) {
 				boolean handled = false;
