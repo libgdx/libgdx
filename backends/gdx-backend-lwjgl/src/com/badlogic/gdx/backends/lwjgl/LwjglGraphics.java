@@ -56,6 +56,8 @@ public class LwjglGraphics implements Graphics {
 	LwjglApplicationConfiguration config;
 	BufferFormat bufferFormat = new BufferFormat(8, 8, 8, 8, 16, 8, 0, false);
 	String extensions;
+	volatile boolean isContinuous = true;
+	volatile boolean requestRendering = false;
 
 	LwjglGraphics (LwjglApplicationConfiguration config) {
 		this.config = config;
@@ -415,9 +417,6 @@ public class LwjglGraphics implements Graphics {
 		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
 	}
-
-	volatile boolean isContinuous = true;
-	volatile boolean requestRendering = false;
 
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
