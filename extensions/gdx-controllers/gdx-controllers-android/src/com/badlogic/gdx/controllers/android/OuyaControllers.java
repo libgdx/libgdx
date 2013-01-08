@@ -1,6 +1,10 @@
 
 package com.badlogic.gdx.controllers.android;
 
+import tv.ouya.console.api.OuyaController;
+import android.content.Context;
+import android.hardware.input.InputManager;
+import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -8,7 +12,6 @@ import android.view.View.OnGenericMotionListener;
 import android.view.View.OnKeyListener;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.android.AndroidInput;
 import com.badlogic.gdx.backends.android.AndroidInputThreePlus;
 import com.badlogic.gdx.controllers.ControlType;
 import com.badlogic.gdx.controllers.Controller;
@@ -18,8 +21,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
-
-import tv.ouya.console.api.OuyaController;
 
 /** @author Nathan Sweet */
 public class OuyaControllers {
@@ -34,6 +35,18 @@ public class OuyaControllers {
 
 	public OuyaControllers (final AndroidControllerManager manager) {
 		this.manager = manager;
+		
+		InputManager inputManager = (InputManager)((Context)Gdx.app).getSystemService(Context.INPUT_SERVICE);
+		for(int id: inputManager.getInputDeviceIds()) {
+			InputDevice device = inputManager.getInputDevice(id);
+			if(device.getName().toLowerCase().contains("ouya")) {
+				OuyaController ouyaController = OuyaController.getControllerByDeviceId(id);
+				LibgdxOuyaController controller = new LibgdxOuyaController(ouyaController, ouyaController.getPlayerNum());
+				controllers[ouyaController.getPlayerNum()] = controller;
+//				manager.controllers.add(controller);
+			}
+		}
+		
 		AndroidInputThreePlus androidInput = (AndroidInputThreePlus)Gdx.input;
 		androidInput.addKeyListener(new OnKeyListener() {
 			public boolean onKey (View v, int keyCode, KeyEvent event) {
@@ -99,7 +112,7 @@ public class OuyaControllers {
 				LibgdxOuyaController libgdxController = controllers[i];
 				if (libgdxController == null) {
 					controllers[i] = libgdxController = new LibgdxOuyaController(controller, i);
-					manager.controllers.add(libgdxController);
+					//manager.controllers.add(libgdxController);
 				}
 				libgdxController.update();
 			}
@@ -117,7 +130,7 @@ public class OuyaControllers {
 		public LibgdxOuyaController (OuyaController controller, int playerIndex) {
 			this.controller = controller;
 			this.playerIndex = playerIndex;
-			name = "Player " + playerIndex;
+			name = "Ouya Player " + playerIndex;
 		}
 
 		void update () {
