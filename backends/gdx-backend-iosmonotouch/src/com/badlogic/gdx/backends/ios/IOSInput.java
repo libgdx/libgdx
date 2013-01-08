@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.ios;
 
 import cli.MonoTouch.Foundation.NSObject;
@@ -21,12 +22,16 @@ import cli.MonoTouch.Foundation.NSSetEnumerator;
 import cli.MonoTouch.UIKit.UIAcceleration;
 import cli.MonoTouch.UIKit.UIAccelerometer;
 import cli.MonoTouch.UIKit.UIAccelerometerDelegate;
+import cli.MonoTouch.UIKit.UIAlertView;
+import cli.MonoTouch.UIKit.UIAlertViewDelegate;
+import cli.MonoTouch.UIKit.UIAlertViewStyle;
 import cli.MonoTouch.UIKit.UIEvent;
+import cli.MonoTouch.UIKit.UITextField;
 import cli.MonoTouch.UIKit.UITouch;
 import cli.MonoTouch.UIKit.UITouchPhase;
+import cli.MonoTouch.UIKit.UIView;
 import cli.System.Drawing.PointF;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Array;
@@ -187,8 +192,62 @@ public class IOSInput implements Input {
 	}
 
 	@Override
-	public void getTextInput(TextInputListener listener, String title, String text) {
-		// FIXME implement this
+	public void getTextInput(final TextInputListener listener, String title, String text) {
+		final UIAlertView uiAlertView = buildUIAlertView(listener, title, text);
+		app.uiViewController.Add(uiAlertView);
+		uiAlertView.Show();
+	}
+
+	/** Builds a {@link UIAlertView} for inputting text.
+	 * @param listener The TextInputListener.
+	 * @param title The title of the text input dialog.
+	 * @param text The message presented to the user.
+	 * @return UiAlertView */
+	private UIAlertView buildUIAlertView (final TextInputListener listener, String title, String text) {
+		final UIAlertViewDelegate delegate = new UIAlertViewDelegate() {
+			@Override
+			public void Clicked (UIAlertView view, int clicked) {
+				if (clicked == 0) {
+					// clicked Cancel
+					listener.canceled();
+				} else if (clicked == 1) {
+					// clicked Ok
+					UIView[] views = view.get_Subviews();
+					for (UIView uiView : views) {
+						// go through views to find the text field
+						if (uiView != null && uiView instanceof UITextField) {
+							UITextField tf = (UITextField)uiView;
+							listener.input(tf.get_Text());
+						}
+					}
+				}
+				view.Dispose(); // TODO: is dispose needed?
+			}
+
+			@Override
+			public void Canceled (UIAlertView view) {
+				listener.canceled();
+				view.Dispose(); // TODO: is dispose needed?
+			}
+		};
+
+		// construct the actual view with title and two buttons
+		final UIAlertView uiAlertView = new UIAlertView();
+		uiAlertView.set_Title(title);
+		uiAlertView.AddButton("Cancel");
+		uiAlertView.AddButton("Ok");
+		uiAlertView.set_AlertViewStyle(UIAlertViewStyle.wrap(UIAlertViewStyle.PlainTextInput));
+		uiAlertView.set_Delegate(delegate);
+
+		// go through views to find the text field and set text field value
+		for (UIView uiView : uiAlertView.get_Subviews()) {
+			if (uiView != null && uiView instanceof UITextField) {
+				UITextField tf = (UITextField)uiView;
+				tf.set_Text(text);
+			}
+		}
+
+		return uiAlertView;
 	}
 
 	@Override
