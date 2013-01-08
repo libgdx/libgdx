@@ -21,8 +21,9 @@ import com.badlogic.gdx.math.MathUtils;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/** An unordered map where the values are ints. This implementation is a cuckoo hash map using 3 hashes, random walking, and a
- * small stash for problematic keys. Null keys are not allowed. No allocation is done except when growing the table size. <br>
+/** An unordered map where the keys are ints and values are floats. This implementation is a cuckoo hash map using 3 hashes, random
+ * walking, and a small stash for problematic keys. Null keys are not allowed. No allocation is done except when growing the table
+ * size. <br>
  * <br>
  * This map performs very fast get, containsKey, and remove (typically O(1), worst case O(log(n))). Put may be a bit slower,
  * depending on hash collisions. Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the
