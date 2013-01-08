@@ -368,10 +368,8 @@ public class ObjectIntMap<K> {
 
 	public void clear () {
 		K[] keyTable = this.keyTable;
-		int[] valueTable = this.valueTable;
-		for (int i = capacity + stashSize; i-- > 0;) {
+		for (int i = capacity + stashSize; i-- > 0;)
 			keyTable[i] = null;
-		}
 		size = 0;
 		stashSize = 0;
 	}
