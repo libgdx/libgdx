@@ -185,7 +185,6 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	private void createDisplayPixelFormat () {
-		int samples = 0;
 		try {
 			Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
 			bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples,
@@ -208,12 +207,9 @@ public class LwjglGraphics implements Graphics {
 				try {
 					Display.create(new PixelFormat());
 				} catch (Exception ex3) {
-					try {
-						Display.create();
-					} catch (Exception ex4) {
-						if (ex4.getMessage().contains("Pixel format not accelerated"))
-							throw new GdxRuntimeException("OpenGL is not supported by the video driver.", ex4);
-					}
+					if (ex3.getMessage().contains("Pixel format not accelerated"))
+						throw new GdxRuntimeException("OpenGL is not supported by the video driver.", ex3);
+					throw new GdxRuntimeException("Unable to create OpenGL display.", ex3);
 				}
 				if (getDesktopDisplayMode().bitsPerPixel == 16) {
 					bufferFormat = new BufferFormat(5, 6, 5, 0, 8, 0, 0, false);
