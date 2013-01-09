@@ -21,12 +21,16 @@ import cli.MonoTouch.Foundation.NSSetEnumerator;
 import cli.MonoTouch.UIKit.UIAcceleration;
 import cli.MonoTouch.UIKit.UIAccelerometer;
 import cli.MonoTouch.UIKit.UIAccelerometerDelegate;
+import cli.MonoTouch.UIKit.UIAlertView;
+import cli.MonoTouch.UIKit.UIAlertViewDelegate;
+import cli.MonoTouch.UIKit.UIAlertViewStyle;
 import cli.MonoTouch.UIKit.UIEvent;
+import cli.MonoTouch.UIKit.UITextField;
 import cli.MonoTouch.UIKit.UITouch;
 import cli.MonoTouch.UIKit.UITouchPhase;
+import cli.MonoTouch.UIKit.UIView;
 import cli.System.Drawing.PointF;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Array;
@@ -188,7 +192,56 @@ public class IOSInput implements Input {
 
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text) {
-		// FIXME implement this
+		final UIAlertView uiAlertView = buildUIAlertView(listener, title, text);
+		app.uiViewController.Add(uiAlertView);
+		uiAlertView.Show();
+	}
+	
+	/** Builds an {@link UIAlertView} with an added {@link UITextField} for inputting text.
+	 * @param listener Text input listener
+	 * @param title Dialog title
+	 * @param text Text for text field
+	 * @return UiAlertView */
+	private UIAlertView buildUIAlertView (final TextInputListener listener, String title, String text) {
+		UIAlertViewDelegate delegate = new UIAlertViewDelegate() {
+			@Override
+			public void Clicked (UIAlertView view, int clicked) {
+				if (clicked == 0) {
+					listener.canceled();
+				} else if (clicked == 1) {
+					UIView[] views = view.get_Subviews();
+					for (UIView uiView : views) {
+						if (uiView != null && uiView instanceof UITextField) {
+							UITextField tf = (UITextField)uiView;
+							listener.input(tf.get_Text());
+						}
+					}
+				}
+				view.Dispose();
+			}
+
+			@Override
+			public void Canceled (UIAlertView view) {
+				listener.canceled();
+				view.Dispose();
+			}
+		};
+
+		final UIAlertView uiAlertView = new UIAlertView();
+		uiAlertView.set_Title(title);
+		uiAlertView.AddButton("Cancel");
+		uiAlertView.AddButton("Ok");
+		uiAlertView.set_AlertViewStyle(UIAlertViewStyle.wrap(UIAlertViewStyle.PlainTextInput));
+		uiAlertView.set_Delegate(delegate);
+
+		for (UIView uiView : uiAlertView.get_Subviews()) {
+			if (uiView != null && uiView instanceof UITextField) {
+				UITextField tf = (UITextField)uiView;
+				tf.set_Text(text);
+			}
+		}
+
+		return uiAlertView;
 	}
 
 	@Override
