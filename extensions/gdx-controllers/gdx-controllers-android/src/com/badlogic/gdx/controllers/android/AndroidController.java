@@ -1,5 +1,8 @@
 package com.badlogic.gdx.controllers.android;
 
+import android.view.InputDevice;
+import android.view.InputDevice.MotionRange;
+
 import com.badlogic.gdx.controllers.ControlType;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
@@ -15,12 +18,30 @@ public class AndroidController implements Controller {
 	private boolean attached;
 	private final String name;
 	protected final IntIntMap buttons = new IntIntMap();
-	protected final IntFloatMap axes = new IntFloatMap();
+	protected final float[] axes;
+	protected final int[] axesIds;
 	private final Array<ControllerListener> listeners = new Array<ControllerListener>();
 	
 	public AndroidController(int deviceId, String name) {
 		this.deviceId = deviceId;
 		this.name = name;
+		
+		InputDevice device = InputDevice.getDevice(deviceId);
+		int numAxes = 0;
+		for (MotionRange range : device.getMotionRanges()) {
+			if ((range.getSource() & InputDevice.SOURCE_CLASS_JOYSTICK) != 0) {
+				numAxes += 1;
+			}
+		}
+
+		axesIds = new int[numAxes];
+		axes = new float[numAxes];
+		int i = 0;
+		for (MotionRange range : device.getMotionRanges()) {
+			if ((range.getSource() & InputDevice.SOURCE_CLASS_JOYSTICK) != 0) {
+				axesIds[i++] = range.getAxis();
+			}
+		}
 	}
 
 	public boolean isAttached () {
@@ -76,7 +97,7 @@ public class AndroidController implements Controller {
 
 	@Override
 	public float getAxis (int axisIndex) {
-		return axes.get(axisIndex, 0);
+		return axes[axisIndex];
 	}
 
 	@Override

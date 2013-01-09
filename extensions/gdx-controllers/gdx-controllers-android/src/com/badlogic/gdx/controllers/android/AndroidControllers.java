@@ -60,7 +60,6 @@ public class AndroidControllers implements PauseResumeListener, ControllerManage
 			public void run () {
 				synchronized(eventQueue) {
 					for(AndroidControllerEvent event: eventQueue) {
-						Gdx.app.log(TAG, "received event");
 						switch(event.type) {
 							case AndroidControllerEvent.CONNECTED:
 								controllers.add(event.controller);
@@ -96,7 +95,7 @@ public class AndroidControllers implements PauseResumeListener, ControllerManage
 								}
 								break;
 							case AndroidControllerEvent.AXIS:
-								event.controller.axes.put(event.code, event.axisValue);
+								event.controller.axes[event.code] = event.axisValue;
 								for(ControllerListener listener: listeners) {
 									if(listener.axisMoved(event.controller, event.code, event.axisValue)) break;
 								}
@@ -121,19 +120,21 @@ public class AndroidControllers implements PauseResumeListener, ControllerManage
 		if(controller != null) {
 			synchronized(eventQueue) {
 				final int historySize = motionEvent.getHistorySize();
-				InputDevice device = InputDevice.getDevice(controller.getDeviceId());
-				List<MotionRange> motionRanges = device.getMotionRanges();
-            for (int axisIndex = 0; axisIndex < motionRanges.size(); axisIndex++) {
-            	float axisValue = motionEvent.getAxisValue(axisIndex);
+				int axisIndex = 0;
+            for (int axisId: controller.axesIds) {
+            	float axisValue = motionEvent.getAxisValue(axisId);
             	if(controller.getAxis(axisIndex) == axisValue) {
+            		Gdx.app.log(TAG, "skipped axis " + axisIndex + ", " + axisValue);
+            		axisIndex++;
             		continue;
             	}
             	AndroidControllerEvent event = eventPool.obtain();
    				event.type = AndroidControllerEvent.AXIS;
    				event.controller = controller;
    				event.code = axisIndex;
-   				event.axisValue = motionEvent.getAxisValue(axisIndex);
+   				event.axisValue = axisValue;
    				eventQueue.add(event);
+   				axisIndex++;
             }
 			}
 			return true;
