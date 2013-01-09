@@ -125,7 +125,6 @@ public class AndroidControllers implements PauseResumeListener, ControllerManage
             for (int axisId: controller.axesIds) {
             	float axisValue = motionEvent.getAxisValue(axisId);
             	if(controller.getAxis(axisIndex) == axisValue) {
-            		Gdx.app.log(TAG, "skipped axis " + axisIndex + ", " + axisValue);
             		axisIndex++;
             		continue;
             	}

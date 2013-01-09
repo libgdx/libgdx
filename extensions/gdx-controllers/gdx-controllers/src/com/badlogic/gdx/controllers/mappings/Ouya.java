@@ -1,6 +1,7 @@
 package com.badlogic.gdx.controllers.mappings;
 
 public class Ouya {
+	public static final String ID = "OUYA Game Controller";
 	public static final int BUTTON_O = 96;
 	public static final int BUTTON_U = 97;
 	public static final int BUTTON_Y = 98;
