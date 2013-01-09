@@ -1,17 +1,13 @@
 package com.badlogic.gdx.controllers.android;
 
-import android.content.Context;
-import android.hardware.input.InputManager;
-import android.hardware.input.InputManager.InputDeviceListener;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnKeyListener;
 import android.view.View.OnGenericMotionListener;
+import android.view.View.OnKeyListener;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidInput;
 import com.badlogic.gdx.backends.android.AndroidInput.PauseResumeListener;
 import com.badlogic.gdx.backends.android.AndroidInputThreePlus;
@@ -23,9 +19,8 @@ import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
 import com.badlogic.gdx.utils.Pool;
 
-public class AndroidControllers implements PauseResumeListener, InputDeviceListener, ControllerManager, OnKeyListener, OnGenericMotionListener {
+public class AndroidControllers implements PauseResumeListener, ControllerManager, OnKeyListener, OnGenericMotionListener {
 	private final static String TAG = "AndroidControllers";
-	private final InputManager inputManager;
 	private final IntMap<AndroidController> controllerMap = new IntMap<AndroidController>();
 	private final Array<Controller> controllers = new Array<Controller>();
 	private final Array<ControllerListener> listeners = new Array<ControllerListener>();
@@ -38,16 +33,21 @@ public class AndroidControllers implements PauseResumeListener, InputDeviceListe
 	};
 	
 	public AndroidControllers() {
-		this.inputManager = (InputManager)((Context)Gdx.app).getSystemService(Context.INPUT_SERVICE);
-		
-		// register this instance with pause/resume events and call
-		// resume so that the currently attached devices are initialized
 		((AndroidInput)Gdx.input).addPauseResumeListener(this);
-		resume();
+		gatherControllers(false);
 		setupEventQueue();
 		((AndroidInput)Gdx.input).addKeyListener(this);
 		((AndroidInputThreePlus)Gdx.input).addGenericMotionListener(this);
-		Gdx.app.log(TAG, "controllers: " + inputManager.getInputDeviceIds().length);
+		
+		// use InputManager on Android +4.1 to receive (dis-)connect events
+		if(Gdx.app.getVersion() >= 16) {
+			try {
+				String className = "com.badlogic.gdx.controllers.android.ControllerLifeCycleListener";
+				Class.forName(className).getConstructor(AndroidControllers.class).newInstance(this);
+			} catch(Exception e) {
+				Gdx.app.log(TAG, "Couldn't register controller life-cycle listener");
+			}
+		}
 	}
 	
 	private void setupEventQueue() {
@@ -56,10 +56,52 @@ public class AndroidControllers implements PauseResumeListener, InputDeviceListe
 			public void run () {
 				synchronized(eventQueue) {
 					for(AndroidControllerEvent event: eventQueue) {
-						
+						Gdx.app.log(TAG, "received event");
+						switch(event.type) {
+							case AndroidControllerEvent.CONNECTED:
+								controllers.add(event.controller);
+								for(ControllerListener listener: listeners) {
+									listener.connected(event.controller);
+								}
+								break;
+							case AndroidControllerEvent.DISCONNECTED:
+								controllers.removeValue(event.controller, true);
+								for(ControllerListener listener: listeners) {
+									listener.disconnected(event.controller);
+								}
+								for(ControllerListener listener: event.controller.getListeners()) {
+									listener.disconnected(event.controller);
+								}
+								break;
+							case AndroidControllerEvent.BUTTON_DOWN:
+								for(ControllerListener listener: listeners) {
+									if(listener.buttonDown(event.controller, event.code)) break;
+								}
+								for(ControllerListener listener: event.controller.getListeners()) {
+									if(listener.buttonDown(event.controller, event.code)) break;
+								}
+								break;
+							case AndroidControllerEvent.BUTTON_UP:
+								for(ControllerListener listener: listeners) {
+									if(listener.buttonUp(event.controller, event.code)) break;
+								}
+								for(ControllerListener listener: event.controller.getListeners()) {
+									if(listener.buttonUp(event.controller, event.code)) break;
+								}
+								break;
+							case AndroidControllerEvent.AXIS:
+								for(ControllerListener listener: listeners) {
+									if(listener.axisMoved(event.controller, event.code, event.axisValue)) break;
+								}
+								for(ControllerListener listener: event.controller.getListeners()) {
+									if(listener.axisMoved(event.controller, event.code, event.axisValue)) break;
+								}
+								break;
+							default:
+						}
 					}
 					eventPool.freeAll(eventQueue);
-					eventPool.clear();
+					eventQueue.clear();
 				}
 				Gdx.app.postRunnable(this);
 			}
@@ -82,16 +124,18 @@ public class AndroidControllers implements PauseResumeListener, InputDeviceListe
 	public boolean onKey (View view, int keyCode, KeyEvent keyEvent) {
 		AndroidController controller = controllerMap.get(keyEvent.getDeviceId());
 		if(controller != null) {
-			synchronized(eventQueue) {
-				AndroidControllerEvent event = eventPool.obtain();
-				event.controller = controller;
-				if(keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-					event.type = AndroidControllerEvent.BUTTON_DOWN;
-				} else {
-					event.type = AndroidControllerEvent.BUTTON_UP;
+			if(keyEvent.getRepeatCount() == 0) {
+				synchronized(eventQueue) {
+					AndroidControllerEvent event = eventPool.obtain();
+					event.controller = controller;
+					if(keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+						event.type = AndroidControllerEvent.BUTTON_DOWN;
+					} else {
+						event.type = AndroidControllerEvent.BUTTON_UP;
+					}
+					event.code = keyCode;
+					eventQueue.add(event);
 				}
-				event.code = keyCode;
-				eventQueue.add(event);
 			}
 			return true;
 		} else {
@@ -99,52 +143,18 @@ public class AndroidControllers implements PauseResumeListener, InputDeviceListe
 		}
 	}
 	
-	private void addController(int deviceId) {
-		InputDevice device = inputManager.getInputDevice(deviceId);
-		if(!isController(device)) return;
-		String name = device.getName();
-		AndroidController controller = new AndroidController(deviceId, name);
-		controllerMap.put(deviceId, controller);
-		synchronized(eventQueue) {
-			AndroidControllerEvent event = eventPool.obtain();
-			event.type = AndroidControllerEvent.CONNECTED;
-			event.controller = controller;
-			eventQueue.add(event);
-		}
-	}
-	
-	private void removeController(int deviceId) {
-		AndroidController controller = controllerMap.remove(deviceId);
-		if(controller != null) {
-			synchronized(eventQueue) {
-				AndroidControllerEvent event = eventPool.obtain();
-				event.type = AndroidControllerEvent.DISCONNECTED;
-				event.controller = controller;
-				eventQueue.add(event);
-			}
-		}
-	}
-	
-	private boolean isController(InputDevice device) {
-		return ((device.getSources() & InputDevice.SOURCE_GAMEPAD) | 
-				 (device.getSources() & InputDevice.SOURCE_JOYSTICK)) != 0;
-	}
-	
-	@Override
-	public void resume () {
-		inputManager.registerInputDeviceListener(this, ((AndroidApplication)Gdx.app).handler);
-		
+	private void gatherControllers(boolean sendEvent) {
 		// gather all joysticks and gamepads, remove any disconnected ones
 		IntMap<AndroidController> removedControllers = new IntMap<AndroidController>();
 		removedControllers.putAll(controllerMap);
 		
-		for(int deviceId: inputManager.getInputDeviceIds()) {
-			InputDevice device = inputManager.getInputDevice(deviceId);
+		for(int deviceId: InputDevice.getDeviceIds()) {
+			InputDevice device = InputDevice.getDevice(deviceId);
 			AndroidController controller = controllerMap.get(deviceId);
 			if(controller != null) {
 				removedControllers.remove(deviceId);
 			} else {
-				addController(deviceId);
+				addController(deviceId, sendEvent);
 			}
 		}
 		
@@ -153,26 +163,40 @@ public class AndroidControllers implements PauseResumeListener, InputDeviceListe
 		}
 	}
 	
-	@Override
-	public void pause () {
-		inputManager.unregisterInputDeviceListener(this);
-		Gdx.app.log(TAG, "controllers paused");
+	protected void addController(int deviceId, boolean sendEvent) {
+		InputDevice device = InputDevice.getDevice(deviceId);
+		if(!isController(device)) return;
+		String name = device.getName();
+		AndroidController controller = new AndroidController(deviceId, name);
+		controllerMap.put(deviceId, controller);
+		if(sendEvent) {
+			synchronized(eventQueue) {
+				AndroidControllerEvent event = eventPool.obtain();
+				event.type = AndroidControllerEvent.CONNECTED;
+				event.controller = controller;
+				eventQueue.add(event);
+			}
+		} else {
+			controllers.add(controller);
+		}
+		Gdx.app.log(TAG, "added controller '" + name + "'");
 	}
 	
-	@Override
-	public void onInputDeviceAdded (int deviceId) {
-		addController(deviceId);
-		Gdx.app.log(TAG, "device " + deviceId + " added");
-	}
-
-	@Override
-	public void onInputDeviceRemoved (int deviceId) {
-		removeController(deviceId);
-		Gdx.app.log(TAG, "device " + deviceId + " removed");
+	protected void removeController(int deviceId) {
+		AndroidController controller = controllerMap.remove(deviceId);
+		if(controller != null) {
+			synchronized(eventQueue) {
+				AndroidControllerEvent event = eventPool.obtain();
+				event.type = AndroidControllerEvent.DISCONNECTED;
+				event.controller = controller;
+				eventQueue.add(event);
+			}
+			Gdx.app.log(TAG, "removed controller '" + controller.getName() + "'");
+		}
 	}
 	
-	@Override
-	public void onInputDeviceChanged (int deviceId) {
+	private boolean isController(InputDevice device) {
+		return (device.getSources() & InputDevice.SOURCE_JOYSTICK) != 0;
 	}
 
 	@Override
@@ -192,5 +216,16 @@ public class AndroidControllers implements PauseResumeListener, InputDeviceListe
 		synchronized(eventQueue) {
 			listeners.removeValue(listener, true);
 		}
+	}
+
+	@Override
+	public void pause () {
+		Gdx.app.log(TAG, "controllers paused");
+	}
+
+	@Override
+	public void resume () {
+		gatherControllers(true);
+		Gdx.app.log(TAG, "controllers resumed");		
 	}
 }

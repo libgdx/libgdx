@@ -66,6 +66,10 @@ public class AndroidController implements Controller {
 	public void removeListener (ControllerListener listener) {
 		this.listeners.removeValue(listener, true);
 	}
+	
+	public Array<ControllerListener> getListeners() {
+		return this.listeners;
+	}
 
 	@Override
 	public boolean getButton (int buttonIndex) {

@@ -43,7 +43,7 @@ public class Controllers {
 		String className;
 		ApplicationType type = Gdx.app.getType();
 		if(type == ApplicationType.Android) {
-			if(Gdx.app.getVersion() >= 16) {
+			if(Gdx.app.getVersion() >= 12) {
 				className = "com.badlogic.gdx.controllers.android.AndroidControllers";
 			} else {
 				Gdx.app.log("Controllers", "No controller manager is available for Android versions < API level 16");

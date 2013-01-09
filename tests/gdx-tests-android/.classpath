@@ -6,13 +6,11 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-backend-android"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-tests"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-audio"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-freetype"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-image"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-bullet"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-controllers"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-controllers-android"/>
-	<classpathentry exported="true" kind="lib" path="/gdx-controllers-android/libs/ouya-sdk-0.0.4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

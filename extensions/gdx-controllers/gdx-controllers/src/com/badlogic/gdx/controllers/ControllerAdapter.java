@@ -37,4 +37,12 @@ public class ControllerAdapter implements ControllerListener {
 	public boolean accelerometerMoved (Controller controller, int accelerometerIndex, Vector3 value) {
 		return false;
 	}
+
+	@Override
+	public void connected (Controller controller) {
+	}
+
+	@Override
+	public void disconnected (Controller controller) {
+	}
 }
