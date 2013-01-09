@@ -38,11 +38,4 @@ public interface Controller {
 	public void addListener (ControllerListener listener);
 
 	public void removeListener (ControllerListener listener);
-	
-	public static class Ouya {
-//		public static final int BUTTON_O;
-//		public static final int BUTTON_U;
-//		public static final int BUTTON_Y;
-//		public static final int BUTTON_A;
-	}
 }
