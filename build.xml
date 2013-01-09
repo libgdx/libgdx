@@ -71,7 +71,6 @@
 		<ant antfile="../../build-template.xml" dir="backends/gdx-joal">
 			<property name="jar" value="gdx-joal"/>
 			<reference refid="classpath"/>
-			<reference refid="jarfiles"/>
 		</ant>
 	</target>
 	
@@ -86,7 +85,6 @@
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-jogl">
 			<property name="jar" value="gdx-backend-jogl"/>
 			<reference refid="classpath"/>
-			<reference refid="jarfiles"/>
 		</ant>
 	</target>
 	
