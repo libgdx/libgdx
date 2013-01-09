@@ -41,7 +41,7 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glAlphaFunc (int func, float ref) {
-		GLContext.getCurrentGL().getGL2().glAlphaFunc(func, ref);
+		GLContext.getCurrentGL().getGL2ES1().glAlphaFunc(func, ref);
 	}
 
 	@Override
@@ -77,7 +77,7 @@ class JoglGL10 implements GL10 {
 	@Override
 	public final void glClientActiveTexture (int texture) {
 		try {
-			GLContext.getCurrentGL().getGL2().glClientActiveTexture(texture);
+			GLContext.getCurrentGL().getGL2ES1().glClientActiveTexture(texture);
 		} catch (Throwable ex) {
 			// FIXME this is for my lousy netbook...
 		}
@@ -85,7 +85,7 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glColor4f (float red, float green, float blue, float alpha) {
-		GLContext.getCurrentGL().getGL2().glColor4f(red, green, blue, alpha);
+		GLContext.getCurrentGL().getGL2ES1().glColor4f(red, green, blue, alpha);
 	}
 
 	@Override
@@ -95,7 +95,7 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glColorPointer (int size, int type, int stride, Buffer pointer) {
-		GLContext.getCurrentGL().getGL2().glColorPointer(size, type, stride, pointer);
+		GLContext.getCurrentGL().getGL2ES1().glColorPointer(size, type, stride, pointer);
 	}
 
 	@Override
@@ -152,7 +152,7 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glDisableClientState (int array) {
-		GLContext.getCurrentGL().getGL2().glDisableClientState(array);
+		GLContext.getCurrentGL().getGL2ES1().glDisableClientState(array);
 	}
 
 	@Override
@@ -173,7 +173,7 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glEnableClientState (int array) {
-		GLContext.getCurrentGL().getGL2().glEnableClientState(array);
+		GLContext.getCurrentGL().getGL2ES1().glEnableClientState(array);
 	}
 
 	@Override
@@ -188,12 +188,12 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glFogf (int pname, float param) {
-		GLContext.getCurrentGL().getGL2().glFogf(pname, param);
+		GLContext.getCurrentGL().getGL2ES1().glFogf(pname, param);
 	}
 
 	@Override
 	public final void glFogfv (int pname, FloatBuffer params) {
-		GLContext.getCurrentGL().getGL2().glFogfv(pname, params);
+		GLContext.getCurrentGL().getGL2ES1().glFogfv(pname, params);
 	}
 
 	@Override
@@ -203,7 +203,7 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glFrustumf (float left, float right, float bottom, float top, float zNear, float zFar) {
-		GLContext.getCurrentGL().getGL2().glFrustum(left, right, bottom, top, zNear, zFar);
+		GLContext.getCurrentGL().getGL2ES1().glFrustum(left, right, bottom, top, zNear, zFar);
 	}
 
 	@Override
@@ -233,22 +233,22 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glLightModelf (int pname, float param) {
-		GLContext.getCurrentGL().getGL2().glLightModelf(pname, param);
+		GLContext.getCurrentGL().getGL2ES1().glLightModelf(pname, param);
 	}
 
 	@Override
 	public final void glLightModelfv (int pname, FloatBuffer params) {
-		GLContext.getCurrentGL().getGL2().glLightModelfv(pname, params);
+		GLContext.getCurrentGL().getGL2ES1().glLightModelfv(pname, params);
 	}
 
 	@Override
 	public final void glLightf (int light, int pname, float param) {
-		GLContext.getCurrentGL().getGL2().glLightf(light, pname, param);
+		GLContext.getCurrentGL().getGL2ES1().glLightf(light, pname, param);
 	}
 
 	@Override
 	public final void glLightfv (int light, int pname, FloatBuffer params) {
-		GLContext.getCurrentGL().getGL2().glLightfv(light, pname, params);
+		GLContext.getCurrentGL().getGL2ES1().glLightfv(light, pname, params);
 	}
 
 	@Override
@@ -258,57 +258,57 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glLoadIdentity () {
-		GLContext.getCurrentGL().getGL2().glLoadIdentity();
+		GLContext.getCurrentGL().getGL2ES1().glLoadIdentity();
 	}
 
 	@Override
 	public final void glLoadMatrixf (FloatBuffer m) {
-		GLContext.getCurrentGL().getGL2().glLoadMatrixf(m);
+		GLContext.getCurrentGL().getGL2ES1().glLoadMatrixf(m);
 	}
 
 	@Override
 	public final void glLogicOp (int opcode) {
-		GLContext.getCurrentGL().getGL2().glLogicOp(opcode);
+		GLContext.getCurrentGL().getGL2ES1().glLogicOp(opcode);
 	}
 
 	@Override
 	public final void glMaterialf (int face, int pname, float param) {
-		GLContext.getCurrentGL().getGL2().glMaterialf(face, pname, param);
+		GLContext.getCurrentGL().getGL2ES1().glMaterialf(face, pname, param);
 	}
 
 	@Override
 	public final void glMaterialfv (int face, int pname, FloatBuffer params) {
-		GLContext.getCurrentGL().getGL2().glMaterialfv(face, pname, params);
+		GLContext.getCurrentGL().getGL2ES1().glMaterialfv(face, pname, params);
 	}
 
 	@Override
 	public final void glMatrixMode (int mode) {
-		GLContext.getCurrentGL().getGL2().glMatrixMode(mode);
+		GLContext.getCurrentGL().getGL2ES1().glMatrixMode(mode);
 	}
 
 	@Override
 	public final void glMultMatrixf (FloatBuffer m) {
-		GLContext.getCurrentGL().getGL2().glMultMatrixf(m);
+		GLContext.getCurrentGL().getGL2ES1().glMultMatrixf(m);
 	}
 
 	@Override
 	public final void glMultiTexCoord4f (int target, float s, float t, float r, float q) {
-		GLContext.getCurrentGL().getGL2().glMultiTexCoord4f(target, s, t, r, q);
+		GLContext.getCurrentGL().getGL2ES1().glMultiTexCoord4f(target, s, t, r, q);
 	}
 
 	@Override
 	public final void glNormal3f (float nx, float ny, float nz) {
-		GLContext.getCurrentGL().getGL2().glNormal3f(nx, ny, nz);
+		GLContext.getCurrentGL().getGL2ES1().glNormal3f(nx, ny, nz);
 	}
 
 	@Override
 	public final void glNormalPointer (int type, int stride, Buffer pointer) {
-		GLContext.getCurrentGL().getGL2().glNormalPointer(type, stride, pointer);
+		GLContext.getCurrentGL().getGL2ES1().glNormalPointer(type, stride, pointer);
 	}
 
 	@Override
 	public final void glOrthof (float left, float right, float bottom, float top, float zNear, float zFar) {
-		GLContext.getCurrentGL().getGL2().glOrtho(left, right, bottom, top, zNear, zFar);
+		GLContext.getCurrentGL().getGL2ES1().glOrtho(left, right, bottom, top, zNear, zFar);
 	}
 
 	@Override
@@ -318,7 +318,7 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glPointSize (float size) {
-		GLContext.getCurrentGL().getGL2().glPointSize(size);
+		GLContext.getCurrentGL().getGL2ES1().glPointSize(size);
 	}
 
 	@Override
@@ -328,12 +328,12 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glPopMatrix () {
-		GLContext.getCurrentGL().getGL2().glPopMatrix();
+		GLContext.getCurrentGL().getGL2ES1().glPopMatrix();
 	}
 
 	@Override
 	public final void glPushMatrix () {
-		GLContext.getCurrentGL().getGL2().glPushMatrix();
+		GLContext.getCurrentGL().getGL2ES1().glPushMatrix();
 	}
 
 	@Override
@@ -343,7 +343,7 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glRotatef (float angle, float x, float y, float z) {
-		GLContext.getCurrentGL().getGL2().glRotatef(angle, x, y, z);
+		GLContext.getCurrentGL().getGL2ES1().glRotatef(angle, x, y, z);
 	}
 
 	@Override
@@ -353,7 +353,7 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glScalef (float x, float y, float z) {
-		GLContext.getCurrentGL().getGL2().glScalef(x, y, z);
+		GLContext.getCurrentGL().getGL2ES1().glScalef(x, y, z);
 	}
 
 	@Override
@@ -363,7 +363,7 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glShadeModel (int mode) {
-		GLContext.getCurrentGL().getGL2().glShadeModel(mode);
+		GLContext.getCurrentGL().getGL2ES1().glShadeModel(mode);
 	}
 
 	@Override
@@ -383,17 +383,17 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glTexCoordPointer (int size, int type, int stride, Buffer pointer) {
-		GLContext.getCurrentGL().getGL2().glTexCoordPointer(size, type, stride, pointer);
+		GLContext.getCurrentGL().getGL2ES1().glTexCoordPointer(size, type, stride, pointer);
 	}
 
 	@Override
 	public final void glTexEnvf (int target, int pname, float param) {
-		GLContext.getCurrentGL().getGL2().glTexEnvf(target, pname, param);
+		GLContext.getCurrentGL().getGL2ES1().glTexEnvf(target, pname, param);
 	}
 
 	@Override
 	public final void glTexEnvfv (int target, int pname, FloatBuffer params) {
-		GLContext.getCurrentGL().getGL2().glTexEnvfv(target, pname, params);
+		GLContext.getCurrentGL().getGL2ES1().glTexEnvfv(target, pname, params);
 	}
 
 	@Override
@@ -417,12 +417,12 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glTranslatef (float x, float y, float z) {
-		GLContext.getCurrentGL().getGL2().glTranslatef(x, y, z);
+		GLContext.getCurrentGL().getGL2ES1().glTranslatef(x, y, z);
 	}
 
 	@Override
 	public final void glVertexPointer (int size, int type, int stride, Buffer pointer) {
-		GLContext.getCurrentGL().getGL2().glVertexPointer(size, GL10.GL_FLOAT, stride, pointer);
+		GLContext.getCurrentGL().getGL2ES1().glVertexPointer(size, GL10.GL_FLOAT, stride, pointer);
 	}
 
 	@Override
@@ -437,7 +437,7 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glFogfv (int pname, float[] params, int offset) {
-		GLContext.getCurrentGL().getGL2().glFogfv(pname, params, offset);
+		GLContext.getCurrentGL().getGL2ES1().glFogfv(pname, params, offset);
 	}
 
 	@Override
@@ -452,36 +452,37 @@ class JoglGL10 implements GL10 {
 
 	@Override
 	public final void glLightModelfv (int pname, float[] params, int offset) {
-		GLContext.getCurrentGL().getGL2().glLightModelfv(pname, params, offset);
+		GLContext.getCurrentGL().getGL2ES1().glLightModelfv(pname, params, offset);
 	}
 
 	@Override
 	public final void glLightfv (int light, int pname, float[] params, int offset) {
-		GLContext.getCurrentGL().getGL2().glLightfv(light, pname, params, offset);
+		GLContext.getCurrentGL().getGL2ES1().glLightfv(light, pname, params, offset);
 	}
 
 	@Override
 	public final void glLoadMatrixf (float[] m, int offset) {
-		GLContext.getCurrentGL().getGL2().glLoadMatrixf(m, offset);
+		GLContext.getCurrentGL().getGL2ES1().glLoadMatrixf(m, offset);
 	}
 
 	@Override
 	public final void glMaterialfv (int face, int pname, float[] params, int offset) {
-		GLContext.getCurrentGL().getGL2().glMaterialfv(face, pname, params, offset);
+		GLContext.getCurrentGL().getGL2ES1().glMaterialfv(face, pname, params, offset);
 	}
 
 	@Override
 	public final void glMultMatrixf (float[] m, int offset) {
-		GLContext.getCurrentGL().getGL2().glMultMatrixf(m, offset);
+		GLContext.getCurrentGL().getGL2ES1().glMultMatrixf(m, offset);
 	}
 
 	@Override
 	public final void glTexEnvfv (int target, int pname, float[] params, int offset) {
-		GLContext.getCurrentGL().getGL2().glTexEnvfv(target, pname, params, offset);
+		GLContext.getCurrentGL().getGL2ES1().glTexEnvfv(target, pname, params, offset);
 	}
 
 	@Override
 	public void glPolygonMode (int face, int mode) {
+		//TODO GL2ES1
 		GLContext.getCurrentGL().getGL2().glPolygonMode(face, mode);
 	}
 }

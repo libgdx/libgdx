@@ -127,22 +127,22 @@ public final class JoglGL11 extends JoglGL10 implements GL11 {
 
 	@Override
 	public void glGetLightfv (int light, int pname, float[] params, int offset) {
-		GLContext.getCurrentGL().getGL2().glGetLightfv(light, pname, params, offset);
+		GLContext.getCurrentGL().getGL2ES1().glGetLightfv(light, pname, params, offset);
 	}
 
 	@Override
 	public void glGetLightfv (int light, int pname, FloatBuffer params) {
-		GLContext.getCurrentGL().getGL2().glGetLightfv(light, pname, params);
+		GLContext.getCurrentGL().getGL2ES1().glGetLightfv(light, pname, params);
 	}
 
 	@Override
 	public void glGetMaterialfv (int face, int pname, float[] params, int offset) {
-		GLContext.getCurrentGL().getGL2().glGetMaterialfv(face, pname, params, offset);
+		GLContext.getCurrentGL().getGL2ES1().glGetMaterialfv(face, pname, params, offset);
 	}
 
 	@Override
 	public void glGetMaterialfv (int face, int pname, FloatBuffer params) {
-		GLContext.getCurrentGL().getGL2().glGetMaterialfv(face, pname, params);
+		GLContext.getCurrentGL().getGL2ES1().glGetMaterialfv(face, pname, params);
 	}
 
 	@Override
@@ -152,12 +152,12 @@ public final class JoglGL11 extends JoglGL10 implements GL11 {
 
 	@Override
 	public void glGetTexEnviv (int env, int pname, int[] params, int offset) {
-		GLContext.getCurrentGL().getGL2().glGetTexEnviv(env, pname, params, offset);
+		GLContext.getCurrentGL().getGL2ES1().glGetTexEnviv(env, pname, params, offset);
 	}
 
 	@Override
 	public void glGetTexEnviv (int env, int pname, IntBuffer params) {
-		GLContext.getCurrentGL().getGL2().glGetTexEnviv(env, pname, params);
+		GLContext.getCurrentGL().getGL2ES1().glGetTexEnviv(env, pname, params);
 	}
 
 	@Override
@@ -197,17 +197,17 @@ public final class JoglGL11 extends JoglGL10 implements GL11 {
 
 	@Override
 	public void glPointParameterf (int pname, float param) {
-		GLContext.getCurrentGL().getGL2().glPointParameterf(pname, param);
+		GLContext.getCurrentGL().getGL2ES1().glPointParameterf(pname, param);
 	}
 
 	@Override
 	public void glPointParameterfv (int pname, float[] params, int offset) {
-		GLContext.getCurrentGL().getGL2().glPointParameterfv(pname, params, offset);
+		GLContext.getCurrentGL().getGL2ES1().glPointParameterfv(pname, params, offset);
 	}
 
 	@Override
 	public void glPointParameterfv (int pname, FloatBuffer params) {
-		GLContext.getCurrentGL().getGL2().glPointParameterfv(pname, params);
+		GLContext.getCurrentGL().getGL2ES1().glPointParameterfv(pname, params);
 	}
 
 	@Override
@@ -217,17 +217,17 @@ public final class JoglGL11 extends JoglGL10 implements GL11 {
 
 	@Override
 	public void glTexEnvi (int target, int pname, int param) {
-		GLContext.getCurrentGL().getGL2().glTexEnvi(target, pname, param);
+		GLContext.getCurrentGL().getGL2ES1().glTexEnvi(target, pname, param);
 	}
 
 	@Override
 	public void glTexEnviv (int target, int pname, int[] params, int offset) {
-		GLContext.getCurrentGL().getGL2().glTexEnviv(target, pname, params, offset);
+		GLContext.getCurrentGL().getGL2ES1().glTexEnviv(target, pname, params, offset);
 	}
 
 	@Override
 	public void glTexEnviv (int target, int pname, IntBuffer params) {
-		GLContext.getCurrentGL().getGL2().glTexEnviv(target, pname, params);
+		GLContext.getCurrentGL().getGL2ES1().glTexEnviv(target, pname, params);
 	}
 
 	@Override
@@ -257,22 +257,22 @@ public final class JoglGL11 extends JoglGL10 implements GL11 {
 
 	@Override
 	public void glColorPointer (int size, int type, int stride, int pointer) {
-		GLContext.getCurrentGL().getGL2().glColorPointer(size, type, stride, pointer);
+		GLContext.getCurrentGL().getGL2ES1().glColorPointer(size, type, stride, pointer);
 	}
 
 	@Override
 	public void glNormalPointer (int type, int stride, int pointer) {
-		GLContext.getCurrentGL().getGL2().glNormalPointer(type, stride, pointer);
+		GLContext.getCurrentGL().getGL2ES1().glNormalPointer(type, stride, pointer);
 	}
 
 	@Override
 	public void glTexCoordPointer (int size, int type, int stride, int pointer) {
-		GLContext.getCurrentGL().getGL2().glTexCoordPointer(size, type, stride, pointer);
+		GLContext.getCurrentGL().getGL2ES1().glTexCoordPointer(size, type, stride, pointer);
 	}
 
 	@Override
 	public void glVertexPointer (int size, int type, int stride, int pointer) {
-		GLContext.getCurrentGL().getGL2().glVertexPointer(size, type, stride, pointer);
+		GLContext.getCurrentGL().getGL2ES1().glVertexPointer(size, type, stride, pointer);
 	}
 
 	@Override
