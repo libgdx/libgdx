@@ -207,26 +207,30 @@ public class IOSInput implements Input {
 			@Override
 			public void Clicked (UIAlertView view, int clicked) {
 				if (clicked == 0) {
+					// user clicked "Cancel" button
 					listener.canceled();
 				} else if (clicked == 1) {
+					// user clicked "Ok" button
 					UIView[] views = view.get_Subviews();
 					for (UIView uiView : views) {
+						// find text field from sub views
 						if (uiView != null && uiView instanceof UITextField) {
 							UITextField tf = (UITextField)uiView;
 							listener.input(tf.get_Text());
 						}
 					}
 				}
-				view.Dispose();
+				view.Dispose(); // is this necessary?
 			}
 
 			@Override
 			public void Canceled (UIAlertView view) {
 				listener.canceled();
-				view.Dispose();
+				view.Dispose(); // is this necessary?
 			}
 		};
 
+		// build the view
 		final UIAlertView uiAlertView = new UIAlertView();
 		uiAlertView.set_Title(title);
 		uiAlertView.AddButton("Cancel");
@@ -235,6 +239,7 @@ public class IOSInput implements Input {
 		uiAlertView.set_Delegate(delegate);
 
 		for (UIView uiView : uiAlertView.get_Subviews()) {
+			// find text field from sub views and add default text
 			if (uiView != null && uiView instanceof UITextField) {
 				UITextField tf = (UITextField)uiView;
 				tf.set_Text(text);
