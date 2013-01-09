@@ -104,6 +104,9 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 			<fileset dir="${libs}">
 				<include name="**/*-natives.jar"/>
 				<exclude name="**/test-natives.jar"/>
+				<exclude name="**/jogl*natives*.jar"/>
+				<exclude name="**/joal*natives*.jar"/>
+				<exclude name="**/gluegen*natives*.jar"/>
 			</fileset>
 		</copy>
 		
@@ -128,6 +131,9 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 				<exclude name="*-debug.jar"/>
 				<exclude name="android-*.jar"/>
 				<exclude name="gwt*.jar"/>
+				<exclude name="jogl*natives*.jar"/>
+				<exclude name="joal*natives*.jar"/>
+				<exclude name="gluegen*natives*.jar"/>
 			</zipgroupfileset>
 			<!-- merge dependencies specified in parent build.xml -->
 			<zipfileset refid="jarfiles"/>
