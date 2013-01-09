@@ -116,6 +116,7 @@ public class AndroidControllers implements PauseResumeListener, ControllerManage
 	
 	@Override
 	public boolean onGenericMotion (View view, MotionEvent motionEvent) {
+		if((motionEvent.getSource() & InputDevice.SOURCE_CLASS_JOYSTICK) == 0) return false;
 		AndroidController controller = controllerMap.get(motionEvent.getDeviceId());
 		if(controller != null) {
 			synchronized(eventQueue) {
