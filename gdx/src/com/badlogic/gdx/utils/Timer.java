@@ -78,7 +78,9 @@ public class Timer {
 		task.executeTime = System.nanoTime() * MathUtils.nanoToSec + delaySeconds;
 		task.intervalSeconds = intervalSeconds;
 		task.repeatCount = repeatCount;
-		tasks.add(task);
+		synchronized(tasks) {
+			tasks.add(task);
+		}
 		wake();
 	}
 
@@ -100,31 +102,35 @@ public class Timer {
 
 	/** Cancels all tasks. */
 	public void clear () {
-		for (int i = 0, n = tasks.size; i < n; i++)
-			tasks.get(i).cancel();
-		tasks.clear();
+		synchronized(tasks) {
+			for (int i = 0, n = tasks.size; i < n; i++)
+				tasks.get(i).cancel();
+			tasks.clear();
+		}
 	}
 
 	float update (float time) {
 		float wait = Float.MAX_VALUE;
-		for (int i = 0, n = tasks.size; i < n; i++) {
-			Task task = tasks.get(i);
-			if (task.executeTime > time) {
-				wait = Math.min(wait, task.executeTime - time);
-				continue;
-			}
-			if (task.repeatCount != CANCELLED) {
-				if (task.repeatCount == 0) task.repeatCount = CANCELLED; // Set cancelled before run so it may be rescheduled in run.
-				Gdx.app.postRunnable(task);
-			}
-			if (task.repeatCount == CANCELLED) {
-				tasks.removeIndex(i);
-				i--;
-				n--;
-			} else {
-				task.executeTime = time + task.intervalSeconds;
-				wait = Math.min(wait, task.executeTime - time);
-				if (task.repeatCount > 0) task.repeatCount--;
+		synchronized(tasks) {
+			for (int i = 0, n = tasks.size; i < n; i++) {
+				Task task = tasks.get(i);
+				if (task.executeTime > time) {
+					wait = Math.min(wait, task.executeTime - time);
+					continue;
+				}
+				if (task.repeatCount != CANCELLED) {
+					if (task.repeatCount == 0) task.repeatCount = CANCELLED; // Set cancelled before run so it may be rescheduled in run.
+					Gdx.app.postRunnable(task);
+				}
+				if (task.repeatCount == CANCELLED) {
+					tasks.removeIndex(i);
+					i--;
+					n--;
+				} else {
+					task.executeTime = time + task.intervalSeconds;
+					wait = Math.min(wait, task.executeTime - time);
+					if (task.repeatCount > 0) task.repeatCount--;
+				}
 			}
 		}
 		return wait;
