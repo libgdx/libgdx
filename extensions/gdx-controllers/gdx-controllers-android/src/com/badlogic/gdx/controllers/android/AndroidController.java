@@ -7,22 +7,20 @@ import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntFloatMap;
+import com.badlogic.gdx.utils.IntIntMap;
 
 public class AndroidController implements Controller {
 	private final int deviceId;
 	private boolean attached;
 	private final String name;
-	private final boolean[] buttons;
-	private final PovDirection[] povs;
-	private final float[] axes;
+	protected final IntIntMap buttons = new IntIntMap();
+	protected final IntFloatMap axes = new IntFloatMap();
 	private final Array<ControllerListener> listeners = new Array<ControllerListener>();
 	
 	public AndroidController(int deviceId, String name) {
 		this.deviceId = deviceId;
 		this.name = name;
-		this.buttons = new boolean[0];
-		this.povs = new PovDirection[0];
-		this.axes = new float[0];
 	}
 
 	public boolean isAttached () {
@@ -73,17 +71,17 @@ public class AndroidController implements Controller {
 
 	@Override
 	public boolean getButton (int buttonIndex) {
-		return buttons[buttonIndex];
+		return buttons.containsKey(buttonIndex);
 	}
 
 	@Override
 	public float getAxis (int axisIndex) {
-		return axes[axisIndex];
+		return axes.get(axisIndex, 0);
 	}
 
 	@Override
 	public PovDirection getPov (int povIndex) {
-		return povs[povIndex];
+		return PovDirection.center;
 	}
 
 	@Override

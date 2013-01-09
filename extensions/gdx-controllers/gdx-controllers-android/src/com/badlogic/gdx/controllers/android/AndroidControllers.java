@@ -52,6 +52,7 @@ public class AndroidControllers implements PauseResumeListener, ControllerManage
 	
 	private void setupEventQueue() {
 		new Runnable() {
+			@SuppressWarnings("synthetic-access")
 			@Override
 			public void run () {
 				synchronized(eventQueue) {
@@ -74,6 +75,7 @@ public class AndroidControllers implements PauseResumeListener, ControllerManage
 								}
 								break;
 							case AndroidControllerEvent.BUTTON_DOWN:
+								event.controller.buttons.put(event.code, event.code);
 								for(ControllerListener listener: listeners) {
 									if(listener.buttonDown(event.controller, event.code)) break;
 								}
@@ -82,6 +84,7 @@ public class AndroidControllers implements PauseResumeListener, ControllerManage
 								}
 								break;
 							case AndroidControllerEvent.BUTTON_UP:
+								event.controller.buttons.remove(event.code, 0);
 								for(ControllerListener listener: listeners) {
 									if(listener.buttonUp(event.controller, event.code)) break;
 								}
@@ -90,6 +93,7 @@ public class AndroidControllers implements PauseResumeListener, ControllerManage
 								}
 								break;
 							case AndroidControllerEvent.AXIS:
+								event.controller.axes.put(event.code, event.axisValue);
 								for(ControllerListener listener: listeners) {
 									if(listener.axisMoved(event.controller, event.code, event.axisValue)) break;
 								}
