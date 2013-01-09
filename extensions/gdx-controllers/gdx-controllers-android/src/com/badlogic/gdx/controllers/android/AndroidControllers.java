@@ -1,6 +1,9 @@
 package com.badlogic.gdx.controllers.android;
 
+import java.util.List;
+
 import android.view.InputDevice;
+import android.view.InputDevice.MotionRange;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -117,7 +120,21 @@ public class AndroidControllers implements PauseResumeListener, ControllerManage
 		AndroidController controller = controllerMap.get(motionEvent.getDeviceId());
 		if(controller != null) {
 			synchronized(eventQueue) {
-				AndroidControllerEvent event = eventPool.obtain();
+				final int historySize = motionEvent.getHistorySize();
+				InputDevice device = InputDevice.getDevice(controller.getDeviceId());
+				List<MotionRange> motionRanges = device.getMotionRanges();
+            for (int axisIndex = 0; axisIndex < motionRanges.size(); axisIndex++) {
+            	float axisValue = motionEvent.getAxisValue(axisIndex);
+            	if(controller.getAxis(axisIndex) == axisValue) {
+            		continue;
+            	}
+            	AndroidControllerEvent event = eventPool.obtain();
+   				event.type = AndroidControllerEvent.AXIS;
+   				event.controller = controller;
+   				event.code = axisIndex;
+   				event.axisValue = motionEvent.getAxisValue(axisIndex);
+   				eventQueue.add(event);
+            }
 			}
 			return true;
 		}
