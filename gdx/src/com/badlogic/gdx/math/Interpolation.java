@@ -19,8 +19,10 @@ package com.badlogic.gdx.math;
 /** Takes a linear value in the range of 0-1 and outputs a (usually) non-linear, interpolated value.
  * @author Nathan Sweet */
 public abstract class Interpolation {
+	/** @param a Alpha value between 0 and 1. */
 	abstract public float apply (float a);
 
+	/** @param a Alpha value between 0 and 1. */
 	public float apply (float start, float end, float a) {
 		return start + (end - start) * apply(a);
 	}

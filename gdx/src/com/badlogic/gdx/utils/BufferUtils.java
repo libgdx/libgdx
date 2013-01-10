@@ -295,6 +295,15 @@ public class BufferUtils {
 	}
 	
 	/**
+	 * Returns the address of the Buffer, it assumes it is an unsafe buffer.
+	 * @param buffer The Buffer to ask the address for.
+	 * @return the address of the Buffer.
+	 */
+	public static long getUnsafeBufferAddress(Buffer buffer) {
+		return getBufferAddress(buffer) + buffer.position();
+	}
+	
+	/**
 	 * Registers the given ByteBuffer as an unsafe ByteBuffer. The ByteBuffer must have been 
 	 * allocated in native code, pointing to a memory region allocated via malloc. Needs to 
 	 * be disposed with {@link #freeMemory(ByteBuffer)}.
@@ -325,6 +334,10 @@ public class BufferUtils {
 	private static native ByteBuffer newDisposableByteBuffer (int numBytes); /*
 		char* ptr = (char*)malloc(numBytes);
 		return env->NewDirectByteBuffer(ptr, numBytes);
+	*/
+	
+	private static native long getBufferAddress (Buffer buffer); /*
+	    return (jlong) buffer;
 	*/
 	
 	/** Writes the specified number of zeros to the buffer. This is generally faster than reallocating a new buffer. */

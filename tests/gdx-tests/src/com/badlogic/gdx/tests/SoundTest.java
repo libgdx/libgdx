@@ -42,7 +42,7 @@ public class SoundTest extends GdxTest {
 
 	@Override
 	public void create () {
-		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.mp3", FileType.Internal));
+		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.ogg", FileType.Internal));
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
@@ -61,8 +61,10 @@ public class SoundTest extends GdxTest {
 		table.setFillParent(true);
 
 		table.align(Align.center | Align.top);
+		table.columnDefaults(0).expandX().right().uniformX();
+		table.columnDefaults(2).expandX().left().uniformX();
 		table.add(play);
-		table.add(stop);
+		table.add(stop).left();
 		table.row();
 		table.add(new Label("Pitch", skin));
 		table.add(pitch);

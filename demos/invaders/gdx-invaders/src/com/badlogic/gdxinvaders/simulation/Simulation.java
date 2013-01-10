@@ -196,7 +196,7 @@ public class Simulation {
 			populate();
 			ship.position.set(shipPosition);
 			ship.lives = lives;
-			multiplier += 0.1f;
+			multiplier += 0.2f;
 			wave++;
 		}
 	}

@@ -16,10 +16,13 @@
 
 package com.badlogic.gdx.backends.gwt.preloader;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.core.ext.BadPropertyValueException;
 import com.google.gwt.core.ext.ConfigurationProperty;
@@ -47,8 +50,10 @@ public class PreloaderBundleGenerator extends Generator {
 
 	@Override
 	public String generate (TreeLogger logger, GeneratorContext context, String typeName) throws UnableToCompleteException {
+		System.out.println(new File(".").getAbsolutePath());
 		String assetPath = getAssetPath(context);
 		String assetOutputPath = getAssetOutputPath(context);
+		System.out.println("TEST TEST TEST");
 		if ( assetOutputPath == null ){
 			assetOutputPath = "war/";
 		}
@@ -150,7 +155,20 @@ public class PreloaderBundleGenerator extends Generator {
 			throw new RuntimeException(
 				"No gdx.assetpath defined. Add <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> to your GWT projects gwt.xml file");
 		}
-		return assetPathProperty.getValues().get(0);
+		String paths = assetPathProperty.getValues().get(0);
+		if(paths == null) {
+			return null;
+		} else {
+			ArrayList<String> existingPaths = new ArrayList<String>();
+			String[] tokens = paths.split(",");
+			for(String token: tokens) {
+				System.out.println(token);
+				if(new FileWrapper(token).exists() || new FileWrapper("../" + token).exists()) {
+					return token;
+				}
+			}
+			return null;
+		}
 	}
 	
 	private String getAssetOutputPath (GeneratorContext context) {
@@ -163,11 +181,23 @@ public class PreloaderBundleGenerator extends Generator {
 		if (assetPathProperty.getValues().size() == 0) {
 			return null;
 		}
-		String path = assetPathProperty.getValues().get(0);
-		if (path != null && !path.endsWith("/")){
-			path += "/";
-		}			
-		return path;
+		String paths = assetPathProperty.getValues().get(0);
+		if(paths == null) {
+			return null;
+		} else {
+			ArrayList<String> existingPaths = new ArrayList<String>();
+			String[] tokens = paths.split(",");
+			String path = null;
+			for(String token: tokens) {
+				if(new FileWrapper(token).exists()) {
+					path = token;
+				}
+			}
+			if (path != null && !path.endsWith("/")){
+				path += "/";
+			}			
+			return path;
+		}
 	}
 
 	private String createDummyClass (TreeLogger logger, GeneratorContext context) {

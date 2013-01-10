@@ -13,71 +13,71 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.ios;
 
 import cli.MonoTouch.AVFoundation.AVAudioPlayer;
 
 import com.badlogic.gdx.audio.Music;
 
-/**
- * A music player, suitable for background music. Supports MP3 and WAV
- * files which are played via hardware on iOS.
+/** A music player, suitable for background music. Supports MP3 and WAV files which are played via hardware on iOS.
  * <p>
  * Limitations: does not play OGG.
  * 
- * @author noblemaster
- */
+ * @author noblemaster */
 public class IOSMusic implements Music {
 
 	private AVAudioPlayer player;
-	
-	
-	public IOSMusic(AVAudioPlayer player) {
+
+	public IOSMusic (AVAudioPlayer player) {
 		this.player = player;
 	}
-	
+
 	@Override
-	public void play() {
+	public void play () {
 		player.Play();
 	}
 
 	@Override
-	public void pause() {
+	public void pause () {
 		player.Pause();
 	}
 
 	@Override
-	public void stop() {
+	public void stop () {
 		player.Stop();
+		// We need to set currentTime to 0 in order to restart from the beginning the next time, more info at
+		// http://developer.apple.com/library/ios/DOCUMENTATION/AVFoundation/Reference/AVFoundationFramework/_index.html#//apple_ref/occ/instm/AVAudioPlayer/stop
+		player.set_CurrentTime(0);
 	}
 
 	@Override
-	public boolean isPlaying() {
+	public boolean isPlaying () {
 		return player.get_Playing();
 	}
 
 	@Override
-	public void setLooping(boolean isLooping) {		
-		player.set_NumberOfLoops(isLooping ? -1 : 0);  // Note: -1 for looping!
+	public void setLooping (boolean isLooping) {
+		player.set_NumberOfLoops(isLooping ? -1 : 0); // Note: -1 for looping!
 	}
 
 	@Override
-	public boolean isLooping() {	
-		return player.get_NumberOfLoops() == -1;  // Note: -1 for looping!
+	public boolean isLooping () {
+		return player.get_NumberOfLoops() == -1; // Note: -1 for looping!
 	}
 
 	@Override
-	public void setVolume(float volume) {
+	public void setVolume (float volume) {
 		player.set_Volume(volume);
 	}
 
 	@Override
-	public float getPosition() {
-		return (float)(player.get_CurrentTime() * 1000);  // Note: player returns seconds => x1000 to convert to millis!
+	public float getPosition () {
+		return (float)(player.get_CurrentTime() * 1000); // Note: player returns seconds => x1000 to convert to millis!
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose () {
 		stop();
 		player.Dispose();
 		player = null;

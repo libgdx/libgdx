@@ -38,14 +38,13 @@ public class Color {
 	public static final Color MAGENTA = new Color(1, 0, 1, 1);
 	public static final Color CYAN = new Color(0, 1, 1, 1);
 
+	public static Color tmp = new Color();
+
 	/** the red, green, blue and alpha components **/
 	public float r, g, b, a;
 
-	public static Color tmp = new Color();
-
 	/** Constructs a new Color with all components set to 0. */
 	public Color () {
-
 	}
 
 	/** Constructor, sets the components of the color
@@ -175,30 +174,64 @@ public class Color {
 		return result;
 	}
 
+	/** Packs the color components into a 32-bit integer with the format ABGR and then converts it to a float.
+	 * @return the packed color as a 32-bit float
+	 * @see NumberUtils#intToFloatColor(int) */
+	public float toFloatBits () {
+		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
+		return NumberUtils.intToFloatColor(color);
+	}
+
+	/** Packs the color components into a 32-bit integer with the format ABGR.
+	 * @return the packed color as a 32-bit int. */
+	public int toIntBits () {
+		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
+		return color;
+	}
+
+	/** Returns the color encoded as hex string with the format RRGGBBAA. */
 	public String toString () {
-		String value = Integer.toHexString(toIntBits());
+		String value = Integer.toHexString(((int)(255 * r) << 24) | ((int)(255 * g) << 16) | ((int)(255 * b) << 8)
+			| ((int)(255 * a)));
 		while (value.length() < 8)
 			value = "0" + value;
 		return value;
 	}
 
-	/** Packs the four color components which should be in the range 0-255 into a 32-bit integer and then converts it to a float.
-	 * Note that no range checking is performed for higher performance.
-	 * 
+	/** Returns a new color from a hex string with the format RRGGBBAA.
+	 * @see #toString() */
+	public static Color valueOf (String hex) {
+		int r = Integer.valueOf(hex.substring(0, 2), 16);
+		int g = Integer.valueOf(hex.substring(2, 4), 16);
+		int b = Integer.valueOf(hex.substring(4, 6), 16);
+		int a = hex.length() != 8 ? 255 : Integer.valueOf(hex.substring(6, 8), 16);
+		return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+	}
+
+	/** Packs the color components into a 32-bit integer with the format ABGR and then converts it to a float. Note that no range
+	 * checking is performed for higher performance.
 	 * @param r the red component, 0 - 255
 	 * @param g the green component, 0 - 255
 	 * @param b the blue component, 0 - 255
 	 * @param a the alpha component, 0 - 255
-	 * @return the packed color as a float */
+	 * @return the packed color as a float
+	 * @see NumberUtils#intToFloatColor(int) */
 	public static float toFloatBits (int r, int g, int b, int a) {
 		int color = (a << 24) | (b << 16) | (g << 8) | r;
 		float floatColor = NumberUtils.intToFloatColor(color);
 		return floatColor;
 	}
 
-	/** Packs the four color components which should be in the range 0-255 into a 32-bit. Note that no range checking is performed
-	 * for higher performance.
-	 * 
+	/** Packs the color components into a 32-bit integer with the format ABGR and then converts it to a float.
+	 * @return the packed color as a 32-bit float
+	 * @see NumberUtils#intToFloatColor(int) */
+	public static float toFloatBits (float r, float g, float b, float a) {
+		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
+		return NumberUtils.intToFloatColor(color);
+	}
+
+	/** Packs the color components into a 32-bit integer with the format ABGR. Note that no range checking is performed for higher
+	 * performance.
 	 * @param r the red component, 0 - 255
 	 * @param g the green component, 0 - 255
 	 * @param b the blue component, 0 - 255
@@ -206,30 +239,6 @@ public class Color {
 	 * @return the packed color as a 32-bit int */
 	public static int toIntBits (int r, int g, int b, int a) {
 		return (a << 24) | (b << 16) | (g << 8) | r;
-	}
-
-	/** Packs the 4 components of this color into a 32-bit int and returns it as a float.
-	 * 
-	 * @return the packed color as a 32-bit float */
-	public float toFloatBits () {
-		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		return NumberUtils.intToFloatColor(color);
-	}
-
-	/** Packs the 4 components of this color into a 32-bit int.
-	 * 
-	 * @return the packed color as a 32-bit int. */
-	public int toIntBits () {
-		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		return color;
-	}
-
-	/** Packs the 4 components of this color into a 32-bit int and returns it as a float.
-	 * 
-	 * @return the packed color as a 32-bit float */
-	public static float toFloatBits (float r, float g, float b, float a) {
-		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		return NumberUtils.intToFloatColor(color);
 	}
 
 	public static int alpha (float alpha) {

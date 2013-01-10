@@ -32,8 +32,11 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.PHY_ScalarType;
 import com.badlogic.gdx.physics.bullet.btBvhTriangleMeshShape;
 import com.badlogic.gdx.physics.bullet.btCollisionShape;
@@ -43,7 +46,6 @@ import com.badlogic.gdx.physics.bullet.btSphereShape;
 import com.badlogic.gdx.physics.bullet.btStridingMeshInterface;
 import com.badlogic.gdx.physics.bullet.btTriangleIndexVertexArray;
 import com.badlogic.gdx.physics.bullet.btTypedConstraint;
-import com.badlogic.gdx.tests.bullet.BaseBulletTest.Entity;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
@@ -54,26 +56,29 @@ public class MeshShapeTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 		
-		final Mesh sphereMesh = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
-		sphereMesh.scale(0.25f, 0.25f, 0.25f);
-
-		final Mesh sceneMesh = ObjLoader.loadObj(Gdx.files.internal("data/scene.obj").read(), true, true); // we need indices for this test
+		final StillModel sphereModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/sphere.obj"));
+		sphereModel.subMeshes[0].getMesh().scale(0.25f, 0.25f, 0.25f);
+		final BoundingBox sphereBounds = new BoundingBox();
+		sphereModel.getBoundingBox(sphereBounds);
+	
+		final BulletConstructor sphereConstructor = new BulletConstructor(sphereModel, 0.25f, new btSphereShape(sphereBounds.getDimensions().x * 0.5f));
+		sphereConstructor.bodyInfo.setM_restitution(1f);
+		world.addConstructor("sphere", sphereConstructor);
 		
-		world.constructors.put("sphere", new Entity.ConstructInfo(sphereMesh, 0.25f, new btSphereShape(sphereMesh.calculateBoundingBox().getDimensions().x * 0.5f)));
-		world.constructors.put("scene", new Entity.ConstructInfo(sceneMesh, 0f, createMeshShape(sceneMesh)));
+		final StillModel sceneModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/scene.obj"));
+		final BulletConstructor sceneConstructor = new BulletConstructor(sceneModel, 0f, new btBvhTriangleMeshShape(true, sceneModel));
+		sceneConstructor.bodyInfo.setM_restitution(0.25f);
+		world.addConstructor("scene", sceneConstructor);
 		
-		Entity scene = world.add("scene", 0f, 2f, 0f);
-		scene.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
-		scene.worldTransform.transform.rotate(Vector3.Y, -90);
-		// Since the transform is changed, it's needed to apply it again.
-		scene.body.setMotionState(scene.worldTransform);
+		world.add("scene", (new Matrix4()).setToTranslation(0f, 2f, 0f).rotate(Vector3.Y, -90))
+			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 
 		world.add("ground", 0f, 0f, 0f)
 			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		for (float x = -3; x < 7; x++) {
 			for (float z = -5; z < 5; z++) {
-				world.add("sphere", x, 10f, z)
+				world.add("sphere", x, 10f + (float)Math.random() * 0.1f, z)
 					.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 			}
 		}
@@ -88,76 +93,5 @@ public class MeshShapeTest extends BaseBulletTest {
 	public boolean tap (float x, float y, int count, int button) {
 		shoot(x, y);
 		return true;
-	}
-	
-	// NOTE: The following is subject to change as it involves some nasty memory management and overriding JNI classes.
-	
-	// Create a TriangleMeshShape based on a Mesh
-	public btCollisionShape createMeshShape(Mesh mesh) {
-		short[] indices = new short[mesh.getNumIndices()];
-		float[] vertices = new float[mesh.getNumVertices()*mesh.getVertexSize()/4];
-		mesh.getIndices(indices);
-		mesh.getVertices(vertices);
-		btIndexedMesh indexedMesh = new TestIndexedMesh();
-		indexedMesh.setM_indexType(PHY_ScalarType.PHY_SHORT);
-		indexedMesh.setM_numTriangles(mesh.getNumIndices()/3);
-		indexedMesh.setM_numVertices(mesh.getNumVertices());
-		indexedMesh.setM_triangleIndexStride(6);
-		indexedMesh.setM_vertexStride(mesh.getVertexSize());
-		indexedMesh.setM_vertexType(PHY_ScalarType.PHY_FLOAT);
-		indexedMesh.setTriangleIndexBase(indices, indices.length);
-		indexedMesh.setVertexBase(vertices, vertices.length);
-		btTriangleIndexVertexArray meshInterface = new TestTriangleIndexVertexArray();
-		meshInterface.addIndexedMesh(indexedMesh, PHY_ScalarType.PHY_SHORT);
-		return new TestBvhTriangleMeshShape(meshInterface,true);
-	}
-	
-	// Need to free memory (created for holding a copy of the indices and vertices)
-	class TestIndexedMesh extends btIndexedMesh {
-		boolean disposed = false;
-		@Override
-		public synchronized void delete() {
-			if (!disposed) {
-				dispose();
-				disposed = true;
-			}
-			super.delete();
-		}
-	}
-	
-	// Need to keep reference to the meshes to avoid memory being freed too early.
-	class TestTriangleIndexVertexArray extends btTriangleIndexVertexArray {
-		Array<btIndexedMesh> meshes = new Array<btIndexedMesh>();
-		
-		@Override
-		public void addIndexedMesh(btIndexedMesh mesh, int indexType) {
-			super.addIndexedMesh(mesh, indexType);
-			meshes.add(mesh);
-		}
-		
-		@Override
-		public synchronized void delete() {
-			super.delete();
-			for (int i = 0; i < meshes.size; i++)
-				meshes.get(i).delete();
-			meshes.clear();
-		}
-	}
-	
-	// Need to keep reference to meshInterface to avoid memory being freed too early.
-	class TestBvhTriangleMeshShape extends btBvhTriangleMeshShape {
-		btStridingMeshInterface meshInterface;
-		public TestBvhTriangleMeshShape(btStridingMeshInterface meshInterface, boolean useQuantizedAabbCompression) {
-			super(meshInterface, useQuantizedAabbCompression);
-			this.meshInterface = meshInterface;
-		}
-		
-		@Override
-		public synchronized void delete() {
-			super.delete();
-			if (meshInterface != null)
-				meshInterface.delete();
-			meshInterface = null;
-		}
 	}
 }

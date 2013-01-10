@@ -1021,7 +1021,10 @@ void btAxisSweep3Internal<BP_FP_INT_TYPE>::sortMaxUp(int axis, BP_FP_INT_TYPE ed
 }
 
 
-
+#ifdef SWIG
+%template(btAxisSweep3InternalShort) btAxisSweep3Internal<unsigned short int>;
+%template(btAxisSweep3InternalInt) btAxisSweep3Internal<unsigned int>;
+#endif
 ////////////////////////////////////////////////////////////////////
 
 

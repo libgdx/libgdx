@@ -21,28 +21,54 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.tests.box2d.Box2DTest;
 import com.badlogic.gdx.tests.bullet.BulletTest;
 import com.badlogic.gdx.tests.bullet.ConstraintsTest;
+import com.badlogic.gdx.tests.bullet.ConvexHullTest;
+import com.badlogic.gdx.tests.bullet.InternalTickTest;
+import com.badlogic.gdx.tests.bullet.KinematicTest;
 import com.badlogic.gdx.tests.bullet.MeshShapeTest;
+import com.badlogic.gdx.tests.bullet.RayPickRagdollTest;
 import com.badlogic.gdx.tests.bullet.RayCastTest;
 import com.badlogic.gdx.tests.bullet.ShootTest;
+import com.badlogic.gdx.tests.bullet.SoftBodyTest;
+import com.badlogic.gdx.tests.bullet.SoftMeshTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** @author xoppa */
 public class BulletTestCollection extends GdxTest implements InputProcessor, GestureListener {
-	private final BulletTest[] tests = {new ShootTest(), new ConstraintsTest(), new MeshShapeTest(), new RayCastTest()};
+	protected final BulletTest[] tests = {new ShootTest(), new KinematicTest(), new ConstraintsTest(), 
+		new MeshShapeTest(), new ConvexHullTest(), new RayCastTest(), new RayPickRagdollTest(), new InternalTickTest(), 
+		new SoftBodyTest(), new SoftMeshTest()};
 	
-	private int testIndex = 0;
+	protected int testIndex = 0;
 	
 	private Application app = null;
 	
+	private BitmapFont font;
+	private Stage hud;
+	private Label fpsLabel;
+	private Label titleLabel;
+	private Label instructLabel;
+	private int loading = 0;
+	
 	@Override
 	public void render () {
+		if ((loading > 0) && (++loading > 2))
+			loadnext();
+			
 		tests[testIndex].render();
+		fpsLabel.setText(tests[testIndex].performance);
+		hud.draw();
 	}
 	
 	@Override
@@ -53,6 +79,17 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		}
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(this, new GestureDetector(this)));
+		
+		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		hud = new Stage(480, 320, true);
+		hud.addActor(fpsLabel = new Label(" ", new Label.LabelStyle(font, Color.WHITE)));
+		fpsLabel.setPosition(0, 0);
+		hud.addActor(titleLabel = new Label(tests[testIndex].getClass().getSimpleName(), new Label.LabelStyle(font, Color.WHITE)));
+		titleLabel.setY(hud.getHeight()-titleLabel.getHeight());
+		hud.addActor(instructLabel = new Label("A\nB\nC\nD\nE\nF", new Label.LabelStyle(font, Color.WHITE)));
+		instructLabel.setY(titleLabel.getY() - instructLabel.getHeight());
+		instructLabel.setAlignment(Align.top | Align.left);
+		instructLabel.setText(tests[testIndex].instructions);
 	}
 	
 	@Override
@@ -62,14 +99,23 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 	}
 	
 	public void next() {
-		app.log("TestCollection", "disposing test '" + tests[testIndex].getClass().getName());
+		titleLabel.setText("Loading...");
+		loading = 1;
+	}
+	
+	public void loadnext() {
+		app.log("TestCollection", "disposing test '" + tests[testIndex].getClass().getName() + "'");
 		tests[testIndex].dispose();
 		// This would be a good time for GC to kick in.
 		System.gc();
 		testIndex++;
 		if (testIndex >= tests.length) testIndex = 0;
 		tests[testIndex].create();
-		app.log("TestCollection", "created test '" + tests[testIndex].getClass().getName());
+		app.log("TestCollection", "created test '" + tests[testIndex].getClass().getName() + "'");
+		
+		titleLabel.setText(tests[testIndex].getClass().getSimpleName());
+		instructLabel.setText(tests[testIndex].instructions);
+		loading = 0;
 	}
 	
 	@Override
@@ -134,14 +180,14 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 
 	@Override
 	public boolean longPress (float x, float y) {
-		if (tests[testIndex].longPress (x, y) == false)
-			next();
-		return true;
+		return tests[testIndex].longPress (x, y);
 	}
 
 	@Override
 	public boolean fling (float velocityX, float velocityY, int button) {
-		return tests[testIndex].fling (velocityX, velocityY, button);
+		if (tests[testIndex].fling (velocityX, velocityY, button) == false)
+			next();
+		return true;
 	}
 
 	@Override

@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.badlogic.gdx.backends.ios;
 
 import java.util.ArrayList;
@@ -10,6 +25,8 @@ import cli.System.AsyncCallback;
 import cli.System.IAsyncResult;
 import cli.System.Net.Dns;
 import cli.System.Net.IPAddress;
+import cli.System.Net.NetworkInformation.NetworkInterface;
+import cli.System.Net.NetworkInformation.NetworkInterfaceType;
 import cli.System.Net.Sockets.AddressFamily;
 import cli.System.Net.Sockets.TcpClient;
 import cli.System.Net.Sockets.TcpListener;
@@ -59,17 +76,17 @@ public class IOSServerSocket implements ServerSocket {
 				if (listeners.get(port) == null) {
 					// get local IP to connect with
 					IPAddress ipAddress = null;
-					String host = Dns.GetHostName(); 
-					if (cli.MonoTouch.ObjCRuntime.Runtime.Arch.Value == Arch.DEVICE) {
-						// the ".local" is not added on the simulator!
-						host = host + ".local"; 
-					}
-					IPAddress[] ips = Dns.GetHostAddresses(host);
-					for (int i = 0; i < ips.length; i++) {
-						IPAddress ip = ips[i];
-						if (ip.get_AddressFamily().Value == AddressFamily.InterNetwork) {
-							ipAddress = ip;
-							break;
+					NetworkInterface netInterfaces[] = NetworkInterface.GetAllNetworkInterfaces();
+					for (int i = 0; i < netInterfaces.length; i++) {
+						NetworkInterface netInterface = netInterfaces[i];
+						if (netInterface.get_NetworkInterfaceType().Value == NetworkInterfaceType.Wireless80211 ||
+						    netInterface.get_NetworkInterfaceType().Value == NetworkInterfaceType.Ethernet) {
+							for (int k = 0; k < netInterface.GetIPProperties().get_UnicastAddresses().get_Count(); k++) {
+								IPAddress address = netInterface.GetIPProperties().get_UnicastAddresses().get_Item(k).get_Address();
+								if (address.get_AddressFamily().Value == AddressFamily.InterNetwork) {
+									ipAddress = address;
+								}
+							}
 						}
 					}
 					Gdx.app.debug("IOSServerSocket", "Binding server to " + ipAddress.ToString() + ":" + port);

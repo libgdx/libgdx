@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.ios;
 
-import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.List;
 
 import cli.MonoTouch.AVFoundation.AVAudioPlayer;
@@ -53,50 +53,21 @@ public class IOSSound implements Sound {
 		public void run () {
 			Gdx.app.debug("IOSSound", "Sound player is running.");
 			
-			// get the latest play thread
-			Thread playThread;
-			synchronized (IOSSound.sync) {
-				playThread = IOSSound.playThread;
-			}
-			
-			// our temp player list
-			List<AVAudioPlayer> playQueueCopy = new ArrayList<AVAudioPlayer>(64);
-			
 			// our play loop which will continue as long as we are the active thread
-			Thread currentThread = Thread.currentThread();
-			while (currentThread == playThread) {
-				// play songs queued via our own copy to not impact rendering performance
-				synchronized (IOSSound.sync) {
-					playQueueCopy.addAll(playQueue);
-					playQueue.clear();
+			try {
+				while(true) {
+					AVAudioPlayer player = playQueue.take();
+					player.Play();
 				}
-				for (int i = 0; i < playQueueCopy.size(); i++) {
-					playQueueCopy.get(i).Play();
-				}
-				playQueueCopy.clear();
-				
-				// sleep 
-				try {
-					Thread.sleep(5);
-				}
-				catch (InterruptedException e) {
-					Gdx.app.error("IOSSound", "Error in sound player thread.", e);
-				}
-				
-				// get the latest play thread
-				synchronized (IOSSound.sync) {
-					playThread = IOSSound.playThread;
-				}
+			} catch(InterruptedException e) {
+				// Exit player
+				Gdx.app.debug("IOSSound", "Sound player exiting.");
 			}
-			
-			Gdx.app.debug("IOSSound", "Sound player is disposed.");
 		}		
 	}
-	private static final Object sync = new Object();
 	private static PlayThread playThread = null;
 	private static int soundCounter = 0;
-	private static List<AVAudioPlayer> playQueue = new ArrayList<AVAudioPlayer>(64);
-	
+	private static final LinkedBlockingQueue<AVAudioPlayer> playQueue = new LinkedBlockingQueue<AVAudioPlayer>();
 	
 	/**
 	 * Creates a new sound object. We are creating several AVAudioPlayer objects to
@@ -122,7 +93,7 @@ public class IOSSound implements Sound {
 		playerIndex = 0;
 		
 		// create the play thread if it doesn't exist yet
-		synchronized (sync) {
+		synchronized(IOSSound.class) {
 			soundCounter++;
 			
 			// create play thread as needed: plays sounds outside the rendering loop (smoother rendering)
@@ -147,7 +118,7 @@ public class IOSSound implements Sound {
 				playerIndex = (index + 1) % players.length; 
 				
 				// return the free player
-				return i;
+				return index;
 			}
 		}
 		
@@ -185,9 +156,7 @@ public class IOSSound implements Sound {
 			player.set_Pan(pan);
 			
 			// we let the thread play our song as not to impact rendering performance (FPS)
-			synchronized (sync) {
-				playQueue.add(player);
-			}
+			playQueue.offer(player);
 		}
 		
 		// and return the index/id of the player
@@ -211,10 +180,8 @@ public class IOSSound implements Sound {
 
 	@Override
 	public void stop() {
-		synchronized (sync) {
-			// we clear the player queue so no song is player after call to stop!
-			playQueue.clear();
-		}
+		// We clear the player queue so no song is player after call to stop!
+		playQueue.clear();
 		
 		// stop all players
 		for (int i = 0; i < players.length; i++) {
@@ -225,7 +192,7 @@ public class IOSSound implements Sound {
 	@Override
 	public void dispose() {
 		// dispose play thread if no more sounds are available
-		synchronized (sync) {
+		synchronized (IOSSound.class) {
 			soundCounter--;
 			
 			// dispose all players
@@ -237,7 +204,7 @@ public class IOSSound implements Sound {
 			
 			// no more sounds?
 			if (soundCounter == 0) {
-				playThread = null;
+				playThread.interrupt();
 			}
 		}
 	}

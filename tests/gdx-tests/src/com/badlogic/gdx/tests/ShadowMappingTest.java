@@ -24,7 +24,8 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderOld;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -52,7 +53,7 @@ public class ShadowMappingTest extends GdxTest {
 	PerspectiveCamera lightCam;
 	PerspectiveCamera currCam;
 	Mesh plane;
-	Mesh cube;
+	StillModel cube;
 	ShaderProgram flatShader;
 	ShaderProgram shadowGenShader;
 	ShaderProgram shadowMapShader;
@@ -82,7 +83,7 @@ public class ShadowMappingTest extends GdxTest {
 		plane = new Mesh(true, 4, 4, new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
 		plane.setVertices(new float[] {-10, -1, 10, 10, -1, 10, 10, -1, -10, -10, -1, -10});
 		plane.setIndices(new short[] {3, 2, 1, 0});
-		cube = ModelLoaderOld.loadObj(Gdx.files.internal("data/cube.obj").read());
+		cube = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/cube.obj"));
 
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(0, 0, 10);
@@ -173,7 +174,7 @@ public class ShadowMappingTest extends GdxTest {
 			plane.render(currShader, GL20.GL_TRIANGLE_FAN);
 
 			currShader.setUniformf("u_color", 0, 1, 0, 1);
-			cube.render(currShader, GL20.GL_TRIANGLES);
+			cube.render(currShader);
 
 			currShader.end();
 		} else if (currShader == shadowGenShader) {
@@ -181,7 +182,7 @@ public class ShadowMappingTest extends GdxTest {
 			currShader.setUniformMatrix("u_projTrans", currCam.combined);
 
 			plane.render(currShader, GL20.GL_TRIANGLE_FAN);
-			cube.render(currShader, GL20.GL_TRIANGLES);
+			cube.render(currShader);
 
 			currShader.end();
 		} else if (currShader == shadowMapShader) {
@@ -194,7 +195,7 @@ public class ShadowMappingTest extends GdxTest {
 			shadowGenShader.begin();
 			shadowGenShader.setUniformMatrix("u_projTrans", lightCam.combined);
 			plane.render(shadowGenShader, GL20.GL_TRIANGLE_FAN);
-			cube.render(shadowGenShader, GL20.GL_TRIANGLES);
+			cube.render(shadowGenShader);
 			shadowGenShader.end();
 			shadowMap.end();
 			Gdx.gl.glDisable(GL20.GL_CULL_FACE);
@@ -207,7 +208,7 @@ public class ShadowMappingTest extends GdxTest {
 			shadowMapShader.setUniformf("u_color", 1, 0, 0, 1);
 			plane.render(shadowMapShader, GL20.GL_TRIANGLE_FAN);
 			shadowMapShader.setUniformf("u_color", 0, 1, 0, 1);
-			cube.render(shadowMapShader, GL20.GL_TRIANGLES);
+			cube.render(shadowMapShader);
 			shadowMapShader.end();
 
 			ui.getSpriteBatch().begin();

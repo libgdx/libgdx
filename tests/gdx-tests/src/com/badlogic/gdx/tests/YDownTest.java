@@ -17,10 +17,12 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -36,6 +38,7 @@ public class YDownTest extends GdxTest {
 	SpriteBatch batch;
 	BitmapFont font;
 	TextureRegion region;
+	Sprite sprite;
 	TextureAtlas atlas;
 	Stage stage;
 	MyActor image;
@@ -50,9 +53,13 @@ public class YDownTest extends GdxTest {
 		// a texture region, note the flipping on y again
 		region = new TextureRegion(new Texture("data/badlogic.jpg"));
 		region.flip(false, true);
-
+		
 		// a texture atlas, note the boolean
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"), true);
+		
+		// a sprite, created from a region in the atlas
+		sprite = atlas.createSprite("badlogicsmall");
+		sprite.setPosition(0, 0);
 
 		// a sprite batch with which we want to render
 		batch = new SpriteBatch();
@@ -100,6 +107,9 @@ public class YDownTest extends GdxTest {
 		// drawing regions from an atlas, x and y will be the top left corner.
 		// you shouldn't call findRegion every frame, cache the result.
 		batch.draw(atlas.findRegion("badlogicsmall"), 360, 100);
+		// drawing a sprite created from an atlas, FIXME wut?! AtlasSprite#setPosition seems to be wrong
+		sprite.setColor(Color.RED);
+		sprite.draw(batch);
 		// finally we draw our current touch/mouse coordinates
 		font.draw(batch, Gdx.input.getX() + ", " + Gdx.input.getY(), 0, 0);
 		batch.end();

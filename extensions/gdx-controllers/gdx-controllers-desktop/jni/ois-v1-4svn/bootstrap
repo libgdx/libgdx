@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Deal with some gentoo-specific issues
+export WANT_AUTOMAKE='1.7'
+export WANT_AUTOCONF='2.5'
+
+# clean up files which cause confusion when switch versions of auto*
+rm -rf autom4te.cache
+
+# Fire up autotools
+libtoolize --force --copy
+aclocal $ACLOCAL_FLAGS
+autoheader
+automake --include-deps --add-missing --foreign --copy
+autoconf 

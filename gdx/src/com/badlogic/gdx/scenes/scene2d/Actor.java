@@ -278,7 +278,7 @@ public class Actor {
 		return parent;
 	}
 
-	/** Called by the framework when an actor is added to a group.
+	/** Called by the framework when an actor is added to or removed from a group.
 	 * @param parent May be null if the actor has been removed from the parent. */
 	protected void setParent (Group parent) {
 		this.parent = parent;
@@ -464,7 +464,7 @@ public class Actor {
 		color.set(r, g, b, a);
 	}
 
-	/** Returns the actor's color, which is mutable. */
+	/** Returns the color the actor will be tinted when drawn. The returned instance can be modified to change the color. */
 	public Color getColor () {
 		return color;
 	}

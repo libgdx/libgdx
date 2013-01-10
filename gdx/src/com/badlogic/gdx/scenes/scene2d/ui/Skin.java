@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import java.lang.reflect.Method;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -43,6 +41,8 @@ import com.badlogic.gdx.utils.Json.ReadOnlySerializer;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.SerializationException;
+
+import java.lang.reflect.Method;
 
 /** A skin stores resources for UI widgets to use (texture regions, ninepatches, fonts, colors, etc). Resources are named and can
  * be looked up by name and type. Resources can be described in JSON. Skin provides useful conversions, such as allowing access to
@@ -473,6 +473,8 @@ public class Skin implements Disposable {
 			public Color read (Json json, Object jsonData, Class type) {
 				if (jsonData instanceof String) return get((String)jsonData, Color.class);
 				ObjectMap map = (ObjectMap)jsonData;
+				String hex = json.readValue("hex", String.class, (String)null, jsonData);
+				if (hex != null) return Color.valueOf(hex);
 				float r = json.readValue("r", float.class, 0f, jsonData);
 				float g = json.readValue("g", float.class, 0f, jsonData);
 				float b = json.readValue("b", float.class, 0f, jsonData);
