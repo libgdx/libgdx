@@ -2,6 +2,13 @@ package com.badlogic.gdx.controllers.mappings;
 
 import java.lang.reflect.Field;
 
+import com.badlogic.gdx.controllers.Controller;
+
+/**
+ * Button and axis indices for the OUYA {@link Controller}.
+ * @author mzechner
+ *
+ */
 public class Ouya {
 	public static final String ID = "OUYA Game Controller";
 	public static final int BUTTON_O;

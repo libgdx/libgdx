@@ -15,25 +15,99 @@
  ******************************************************************************/
 package com.badlogic.gdx.controllers;
 
+import java.util.ResourceBundle.Control;
+
 import com.badlogic.gdx.math.Vector3;
 
-/** @author Nathan Sweet */
+/** Registered with {@link Controllers} or a specific
+ * {@link Controller} instance to receive controller events
+ * @author Nathan Sweet */
 public interface ControllerListener {
+	/**
+	 * A {@link Controller} got connected.
+	 * @param controller
+	 */
 	public void connected(Controller controller);
 	
+	/**
+	 * A {@link Controller} got disconnected.
+	 * @param controller
+	 */
 	public void disconnected(Controller controller);
 	
+	/**
+	 * A button on the {@link Controller} was pressed. The 
+	 * buttonIndex is controller specific. The <code>com.badlogic.gdx.controllers.mapping</code>
+	 * package hosts button constants for known controllers.
+	 * @param controller
+	 * @param buttonIndex
+	 * @return whether to hand the event to other listeners.
+	 */
 	public boolean buttonDown (Controller controller, int buttonIndex);
 
+	/**
+	 * A button on the {@link Controller} was released. The
+	 * buttonIndex is controller specific. The <code>com.badlogic.gdx.controllers.mapping</code>
+	 * package hosts button constants for known controllers.
+	 * @param controller
+	 * @param buttonIndex
+	 * @return whether to hand the event to other listeners.
+	 */
 	public boolean buttonUp (Controller controller, int buttonIndex);
 
+	/**
+	 * An axis on the {@link Controller} moved. The axisIndex is controller specific.
+	 * The axis value is in the range [-1, 1]. The <code>com.badlogic.gdx.controllers.mapping</code>
+	 * package hosts axes constants for known controllers.
+	 * @param controller
+	 * @param axisIndex
+	 * @param value the axis value, -1 to 1
+	 * @return whether to hand the event to other listeners.
+	 */
 	public boolean axisMoved (Controller controller, int axisIndex, float value);
 
+	/**
+	 * A POV on the {@link Controller} moved. The povIndex is controller specific.
+	 * The <code>com.badlogic.gdx.controllers.mapping</code>
+	 * package hosts POV constants for known controllers.
+	 * @param controller
+	 * @param povIndex
+	 * @param value
+	 * @return whether to hand the event to other listeners.
+	 */
 	public boolean povMoved (Controller controller, int povIndex, PovDirection value);
 
+	/**
+	 * An x-slider on the {@link Controller} moved. The sliderIndex is controller specific.
+	 * The <code>com.badlogic.gdx.controllers.mapping</code>
+	 * package hosts slider constants for known controllers.
+	 * @param controller
+	 * @param sliderIndex
+	 * @param value
+	 * @return whether to hand the event to other listeners.
+	 */
 	public boolean xSliderMoved (Controller controller, int sliderIndex, boolean value);
 
+	/**
+	 * An y-slider on the {@link Controller} moved. The sliderIndex is controller specific.
+	 * The <code>com.badlogic.gdx.controllers.mapping</code>
+	 * package hosts slider constants for known controllers.
+	 * @param controller
+	 * @param sliderIndex
+	 * @param value
+	 * @return whether to hand the event to other listeners.
+	 */
 	public boolean ySliderMoved (Controller controller, int sliderIndex, boolean value);
 
+	/**
+	 * An accelerometer value on the {@link Controller} changed. The accelerometerIndex is
+	 * controller specific. The <code>com.badlogic.gdx.controllers.mapping</code>
+	 * package hosts slider constants for known controllers. The value is a {@link Vector3}
+	 * representing the acceleration on a 3-axis accelerometer in m/s^2.
+	 * @param controller
+	 * @param accelerometerIndex
+	 * @param value
+	 * @return whether to hand the event to other listeners.
+	 */
 	public boolean accelerometerMoved (Controller controller, int accelerometerIndex, Vector3 value);
 }
