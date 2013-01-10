@@ -20,7 +20,7 @@ import java.util.ResourceBundle.Control;
 import com.badlogic.gdx.math.Vector3;
 
 /** Registered with {@link Controllers} or a specific
- * {@link Controller} instance to receive controller events
+ * {@link Controller} instance to receive events.
  * @author Nathan Sweet */
 public interface ControllerListener {
 	/**
@@ -37,77 +37,77 @@ public interface ControllerListener {
 	
 	/**
 	 * A button on the {@link Controller} was pressed. The 
-	 * buttonIndex is controller specific. The <code>com.badlogic.gdx.controllers.mapping</code>
+	 * buttonCode is controller specific. The <code>com.badlogic.gdx.controllers.mapping</code>
 	 * package hosts button constants for known controllers.
 	 * @param controller
-	 * @param buttonIndex
+	 * @param buttonCode
 	 * @return whether to hand the event to other listeners.
 	 */
-	public boolean buttonDown (Controller controller, int buttonIndex);
+	public boolean buttonDown (Controller controller, int buttonCode);
 
 	/**
 	 * A button on the {@link Controller} was released. The
-	 * buttonIndex is controller specific. The <code>com.badlogic.gdx.controllers.mapping</code>
+	 * buttonCode is controller specific. The <code>com.badlogic.gdx.controllers.mapping</code>
 	 * package hosts button constants for known controllers.
 	 * @param controller
-	 * @param buttonIndex
+	 * @param buttonCode
 	 * @return whether to hand the event to other listeners.
 	 */
-	public boolean buttonUp (Controller controller, int buttonIndex);
+	public boolean buttonUp (Controller controller, int buttonCode);
 
 	/**
-	 * An axis on the {@link Controller} moved. The axisIndex is controller specific.
+	 * An axis on the {@link Controller} moved. The axisCode is controller specific.
 	 * The axis value is in the range [-1, 1]. The <code>com.badlogic.gdx.controllers.mapping</code>
 	 * package hosts axes constants for known controllers.
 	 * @param controller
-	 * @param axisIndex
+	 * @param axisCode
 	 * @param value the axis value, -1 to 1
 	 * @return whether to hand the event to other listeners.
 	 */
-	public boolean axisMoved (Controller controller, int axisIndex, float value);
+	public boolean axisMoved (Controller controller, int axisCode, float value);
 
 	/**
-	 * A POV on the {@link Controller} moved. The povIndex is controller specific.
+	 * A POV on the {@link Controller} moved. The povCode is controller specific.
 	 * The <code>com.badlogic.gdx.controllers.mapping</code>
 	 * package hosts POV constants for known controllers.
 	 * @param controller
-	 * @param povIndex
+	 * @param povCode
 	 * @param value
 	 * @return whether to hand the event to other listeners.
 	 */
-	public boolean povMoved (Controller controller, int povIndex, PovDirection value);
+	public boolean povMoved (Controller controller, int povCode, PovDirection value);
 
 	/**
-	 * An x-slider on the {@link Controller} moved. The sliderIndex is controller specific.
+	 * An x-slider on the {@link Controller} moved. The sliderCode is controller specific.
 	 * The <code>com.badlogic.gdx.controllers.mapping</code>
 	 * package hosts slider constants for known controllers.
 	 * @param controller
-	 * @param sliderIndex
+	 * @param sliderCode
 	 * @param value
 	 * @return whether to hand the event to other listeners.
 	 */
-	public boolean xSliderMoved (Controller controller, int sliderIndex, boolean value);
+	public boolean xSliderMoved (Controller controller, int sliderCode, boolean value);
 
 	/**
-	 * An y-slider on the {@link Controller} moved. The sliderIndex is controller specific.
+	 * An y-slider on the {@link Controller} moved. The sliderCode is controller specific.
 	 * The <code>com.badlogic.gdx.controllers.mapping</code>
 	 * package hosts slider constants for known controllers.
 	 * @param controller
-	 * @param sliderIndex
+	 * @param sliderCode
 	 * @param value
 	 * @return whether to hand the event to other listeners.
 	 */
-	public boolean ySliderMoved (Controller controller, int sliderIndex, boolean value);
+	public boolean ySliderMoved (Controller controller, int sliderCode, boolean value);
 
 	/**
-	 * An accelerometer value on the {@link Controller} changed. The accelerometerIndex is
+	 * An accelerometer value on the {@link Controller} changed. The accelerometerCode is
 	 * controller specific. The <code>com.badlogic.gdx.controllers.mapping</code>
 	 * package hosts slider constants for known controllers. The value is a {@link Vector3}
 	 * representing the acceleration on a 3-axis accelerometer in m/s^2.
 	 * @param controller
-	 * @param accelerometerIndex
+	 * @param accelerometerCode
 	 * @param value
 	 * @return whether to hand the event to other listeners.
 	 */
-	public boolean accelerometerMoved (Controller controller, int accelerometerIndex, Vector3 value);
+	public boolean accelerometerMoved (Controller controller, int accelerometerCode, Vector3 value);
 }
