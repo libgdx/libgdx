@@ -62,6 +62,43 @@
 		</ant>
 	</target>
 	
+        <!-- gdx jogamp, for the joal and jogl backend -->
+        <target name="gdx-jogamp">
+                <copy todir="${distDir}/">
+                        <fileset dir="backends/gdx-jogamp/libs">
+                                <include name="*.jar"/>
+                        </fileset>
+                </copy>
+        </target>
+
+	<!-- gdx joal, for the jogl backend -->
+	<target name="gdx-joal" depends="gdx-core, gdx-jogamp">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+                        <pathelement location="${distDir}/gluegen-rt.jar"/>
+		</path>
+		<zipfileset id="jarfiles" src="${distDir}/gdx-joal.jar"/>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-joal">
+			<property name="jar" value="gdx-joal"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+	
+
+	<!-- gdx jogl backend -->
+	<target name="gdx-backend-jogl" depends="gdx-core, gdx-joal, gdx-jogamp">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-joal.jar"/>
+                        <pathelement location="${distDir}/gluegen-rt.jar"/>
+		</path>
+		<zipfileset id="jarfiles" src="${distDir}/gdx-joal.jar"/>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-jogl">
+			<property name="jar" value="gdx-backend-jogl"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+	
 	<!-- gdx lwjgl backend -->
 	<target name="gdx-backend-lwjgl" depends="gdx-core,gdx-openal">
 		<path id="classpath">
@@ -251,7 +288,7 @@
 	</target>
 	
 	<target name="all" 
-depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,docs,copy-iosfiles">
+depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,docs,copy-iosfiles">
 		<!-- copy distribution files (licences etc.) -->
 		<copy tofile="${distDir}/README" file="gdx/dist/README"/>
 		<copy tofile="${distDir}/LICENSE" file="gdx/dist/LICENSE"/>

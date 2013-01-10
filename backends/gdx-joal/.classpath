@@ -4,8 +4,17 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="libs/jorbis.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
+        <classpathentry combineaccessrules="false" kind="src" path="/gdx-jogamp"/>
 	<classpathentry exported="true" kind="lib" path="libs/joal.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/gluegen-rt.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/joal-natives-linux-amd64.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/joal-natives-linux-armv6.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/joal-natives-linux-armv6hf.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/joal-natives-linux-i586.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/joal-natives-macosx-universal.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/joal-natives-solaris-amd64.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/joal-natives-solaris-i586.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/joal-natives-windows-amd64.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/joal-natives-windows-i586.jar"/>
 	<classpathentry kind="lib" path="libs/jlayer-1.0.1-libgdx.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
