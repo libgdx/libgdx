@@ -37,9 +37,11 @@ public class DesktopControllersBuild {
 			"ois-v1-4svn/src/linux/*.cpp"
 		};
 		
-		String[] macSrc = { "*.cpp",
+		String[] mac64Src = { "*.cpp",
 			"ois-v1-4svn/src/*.cpp",
-			"ois-v1-4svn/src/mac/*.cpp"
+			"ois-v1-4svn/src/mac/*.mm",
+			"ois-v1-4svn/src/mac/MacHIDManager.cpp",
+			"ois-v1-4svn/src/mac/MacJoyStick.cpp",
 		};
 		
 		String[] includes = new String[] {
@@ -78,14 +80,13 @@ public class DesktopControllersBuild {
 		lin64.libraries = "-lX11";
 		
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
-		mac.cppIncludes = macSrc;
+		mac.cppIncludes = mac64Src;
 		mac.headerDirs = includes;
-		mac.cppFlags = "-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5 -x objective-c++";
-		mac.linkerFlags = "-shared -arch x86_64 -mmacosx-version-min=10.5";
+		mac.cppFlags += " -x objective-c++";
 		mac.libraries = "-framework CoreServices -framework Carbon -framework IOKit -framework Cocoa";
 		
 		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac);
-		if(!BuildExecutor.executeAnt("jni/build-windows32home.xml", "-Dhas-compiler=true -v postcompile")) {
+		if(!BuildExecutor.executeAnt("jni/build-macosx32.xml", "-Dhas-compiler=true -v postcompile")) {
 			throw new Exception("build failed");
 		}
 		BuildExecutor.executeAnt("jni/build.xml", "pack-natives");

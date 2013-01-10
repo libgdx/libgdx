@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.model.SubMesh;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -235,12 +236,13 @@ public class RendererGL10 implements Renderer {
 
 	private void renderInvaders (GL10 gl, ArrayList<Invader> invaders) {
 		invaderTexture.bind();
+		Mesh mesh = invaderMesh.getSubMeshes()[0].mesh;
 		for (int i = 0; i < invaders.size(); i++) {
 			Invader invader = invaders.get(i);
 			gl.glPushMatrix();
 			gl.glTranslatef(invader.position.x, invader.position.y, invader.position.z);
 			gl.glRotatef(invaderAngle, 0, 1, 0);
-			invaderMesh.render();
+			mesh.render(GL10.GL_TRIANGLES);
 			gl.glPopMatrix();
 		}
 	}

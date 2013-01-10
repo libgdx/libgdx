@@ -15,7 +15,7 @@ public class GdxInvadersAndroid extends AndroidApplication {
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useWakelock = true;
-		config.useGL20 = true;
+		config.useGL20 = false;
 		initialize(new GdxInvaders(), config);
 	}
 }
