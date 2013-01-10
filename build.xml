@@ -62,10 +62,20 @@
 		</ant>
 	</target>
 	
+        <!-- gdx jogamp, for the joal and jogl backend -->
+        <target name="gdx-jogamp">
+                <copy todir="${distDir}/">
+                        <fileset dir="backends/gdx-jogamp/libs">
+                                <include name="*.jar"/>
+                        </fileset>
+                </copy>
+        </target>
+
 	<!-- gdx joal, for the jogl backend -->
-	<target name="gdx-joal" depends="gdx-core">
+	<target name="gdx-joal" depends="gdx-core, gdx-jogamp">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
+                        <pathelement location="${distDir}/gluegen-rt.jar"/>
 		</path>
 		<zipfileset id="jarfiles" src="${distDir}/gdx-joal.jar"/>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-joal">
@@ -76,10 +86,11 @@
 	
 
 	<!-- gdx jogl backend -->
-	<target name="gdx-backend-jogl" depends="gdx-core,gdx-joal">
+	<target name="gdx-backend-jogl" depends="gdx-core, gdx-joal, gdx-jogamp">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/gdx-joal.jar"/>
+                        <pathelement location="${distDir}/gluegen-rt.jar"/>
 		</path>
 		<zipfileset id="jarfiles" src="${distDir}/gdx-joal.jar"/>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-jogl">

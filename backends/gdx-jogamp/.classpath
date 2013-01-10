@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="libs/gluegen-rt.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/gluegen-rt-natives-linux-amd64.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/gluegen-rt-natives-linux-armv6.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/gluegen-rt-natives-linux-armv6hf.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/gluegen-rt-natives-linux-i586.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/gluegen-rt-natives-macosx-universal.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/gluegen-rt-natives-solaris-amd64.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/gluegen-rt-natives-solaris-i586.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/gluegen-rt-natives-windows-amd64.jar"/>
+        <classpathentry exported="true" kind="lib" path="libs/gluegen-rt-natives-windows-i586.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
