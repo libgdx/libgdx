@@ -78,6 +78,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	UIApplication uiApp;
 	UIWindow uiWindow;
+	UIViewController uiViewController;
 	ApplicationListener listener;
 	IOSApplicationConfiguration config;
 	IOSGraphics graphics;
@@ -134,8 +135,8 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 		// Create: Window -> ViewController-> GameView (controller takes care of rotation)
 		this.uiWindow = new UIWindow(UIScreen.get_MainScreen().get_Bounds());
-		UIViewController uiViewController = new IOSUIViewController();
-		this.uiWindow.set_RootViewController(uiViewController);
+		this.uiViewController = new IOSUIViewController();
+		this.uiWindow.set_RootViewController(this.uiViewController);
 
 		GL20 gl20 = config.useMonotouchOpenTK ? new IOSMonotouchGLES20() : new IOSGLES20();
 		
@@ -144,7 +145,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		
 		// setup libgdx
 		this.input = new IOSInput(this);
-		this.graphics = new IOSGraphics(getBounds(uiViewController), this, input, gl20);
+		this.graphics = new IOSGraphics(getBounds(this.uiViewController), this, input, gl20);
 		this.files = new IOSFiles();
 		this.audio = new IOSAudio(config.useObjectAL);
 		this.net = new IOSNet(this);
@@ -158,7 +159,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		this.input.setupPeripherals();
 
 		// attach our view to window+controller and make it visible
-		uiViewController.set_View(graphics);
+		this.uiViewController.set_View(graphics);
 		this.graphics.Run();
 		this.uiWindow.MakeKeyAndVisible();
 		Gdx.app.debug("IOSApplication", "created");
