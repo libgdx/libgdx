@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -166,13 +167,14 @@ public class Dialog extends Window {
 
 	/** {@link #pack() Packs} the dialog and adds it to the stage, centered. */
 	public Dialog show (Stage stage) {
+		clearActions();
 		previousKeyboardFocus = stage.getKeyboardFocus();
 		previousScrollFocus = stage.getScrollFocus();
-		stage.setKeyboardFocus(this);
-		stage.setScrollFocus(this);
 		pack();
 		setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
 		stage.addActor(this);
+		stage.setKeyboardFocus(this);
+		stage.setScrollFocus(this);
 		if (fadeDuration > 0) {
 			getColor().a = 0;
 			addAction(Actions.fadeIn(fadeDuration, Interpolation.fade));

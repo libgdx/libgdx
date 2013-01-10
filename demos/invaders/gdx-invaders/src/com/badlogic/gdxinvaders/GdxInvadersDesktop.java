@@ -23,7 +23,7 @@ public class GdxInvadersDesktop {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Gdx Invaders";
 		config.vSyncEnabled = true;
-		config.useGL20 = true;
+		config.useGL20 = false;
 		new LwjglApplication(new GdxInvaders(), config);
 	}
 }

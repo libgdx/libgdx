@@ -16,6 +16,11 @@ package com.badlogic.gdxinvaders.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.controllers.ControlType;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.ControllerAdapter;
+import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdxinvaders.Renderer;
 import com.badlogic.gdxinvaders.RendererGL10;
 import com.badlogic.gdxinvaders.RendererGL20;
@@ -31,6 +36,8 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 	private final Sound explosion;
 	/** shot sound **/
 	private final Sound shot;
+	/** controller **/
+	private Controller controller;
 
 	public GameLoop () {
 		simulation = new Simulation();
@@ -38,6 +45,15 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 		renderer = Gdx.graphics.isGL20Available() ? new RendererGL20() : new RendererGL10();
 		explosion = Gdx.audio.newSound(Gdx.files.internal("data/explosion.wav"));
 		shot = Gdx.audio.newSound(Gdx.files.internal("data/shot.wav"));
+		
+		// check for attached controllers and if we are on
+		// Ouya.
+		if(Controllers.getControllers().size > 0) {
+			Controller controller = Controllers.getControllers().get(0);
+			if(controller.getName().toLowerCase().contains("ouya")) {
+				this.controller = controller;
+			}
+		}
 	}
 
 	@Override
@@ -66,6 +82,19 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 			simulation.moveShipLeft(delta, Math.abs(accelerometerY) / 10);
 		else
 			simulation.moveShipRight(delta, Math.abs(accelerometerY) / 10);
+		
+		if(controller != null) {
+			// if any button is pressed, we shoot.
+//			for(int i = 0; i < controller.getControlCount(ControlType.button); i++) {
+//				if(controller.getButton(i)) {
+//					simulation.shot();
+//					break;
+//				}
+//			}
+			// if the dpad pov is pressed, move left/right
+			if(controller.getPov(0) == PovDirection.west) simulation.moveShipRight(delta, 0.5f);
+			if(controller.getPov(0) == PovDirection.east) simulation.moveShipRight(delta, 0.5f);
+		}
 
 		if (Gdx.input.isKeyPressed(Keys.DPAD_LEFT) || Gdx.input.isKeyPressed(Keys.A)) simulation.moveShipLeft(delta, 0.5f);
 		if (Gdx.input.isKeyPressed(Keys.DPAD_RIGHT) || Gdx.input.isKeyPressed(Keys.D)) simulation.moveShipRight(delta, 0.5f);

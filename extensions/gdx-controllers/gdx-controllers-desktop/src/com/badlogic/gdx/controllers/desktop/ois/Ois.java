@@ -65,12 +65,13 @@ public class Ois {
 	*/
 
 	private native long createInputManager (long hwnd); /*
-		std::ostringstream hwndStr;
-		hwndStr << hwnd;
 		OIS::ParamList params;
-		params.insert(std::make_pair("WINDOW", hwndStr.str()));
-		//params.insert(std::make_pair("w32_joystick", "DISCL_BACKGROUND"));
-		//params.insert(std::make_pair("w32_joystick", "DISCL_NONEXCLUSIVE"));
+		#ifndef __APPLE__
+			std::ostringstream hwndStr;
+			hwndStr << hwnd;
+			params.insert(std::make_pair("WINDOW", hwndStr.str()));
+		#endif		
+		
 		OIS::InputManager *inputManager = OIS::InputManager::createInputSystem(params);
 		return (jlong)inputManager;
 	*/

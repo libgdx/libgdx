@@ -6,6 +6,7 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-invaders"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-backend-android"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-controllers"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-controllers-android"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
