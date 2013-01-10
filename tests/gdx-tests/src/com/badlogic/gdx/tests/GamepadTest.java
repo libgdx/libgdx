@@ -5,6 +5,7 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
+import com.badlogic.gdx.controllers.mappings.Ouya;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -28,7 +29,7 @@ public class GamepadTest extends GdxTest {
 	@Override
 	public void create () {
 		setupUi();
-		
+		int a = Ouya.BUTTON_A;
 		// print the currently connected controllers to the console
 		print("Controllers: " + Controllers.getControllers().size);
 		int i = 0;
@@ -112,6 +113,8 @@ public class GamepadTest extends GdxTest {
 		System.arraycopy(lines, 0, newLines, 0, lines.length);
 		newLines[newLines.length-1] = message;
 		console.setItems(newLines);
+		scrollPane.invalidate();
+		scrollPane.validate();
 		scrollPane.setScrollPercentY(1.0f);
 	}
 	
