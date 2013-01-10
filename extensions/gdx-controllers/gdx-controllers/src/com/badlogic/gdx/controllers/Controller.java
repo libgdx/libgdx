@@ -19,21 +19,19 @@ import com.badlogic.gdx.math.Vector3;
 
 /** @author Nathan Sweet */
 public interface Controller {
-	public boolean getButton (int buttonIndex);
+	public boolean getButton (int buttonCode);
 
-	public float getAxis (int axisIndex);
+	public float getAxis (int axisCode);
 
-	public PovDirection getPov (int povIndex);
+	public PovDirection getPov (int povCode);
 
-	public boolean getSliderX (int sliderIndex);
+	public boolean getSliderX (int sliderCode);
 
-	public boolean getSliderY (int sliderIndex);
+	public boolean getSliderY (int sliderCode);
 
-	public Vector3 getAccelerometer (int accelerometerIndex);
+	public Vector3 getAccelerometer (int accelerometerCode);
 
 	public void setAccelerometerSensitivity (float sensitivity);
-
-	public int getControlCount (ControlType type);
 
 	public String getName ();
 

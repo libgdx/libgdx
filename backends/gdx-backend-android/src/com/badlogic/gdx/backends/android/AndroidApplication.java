@@ -66,7 +66,7 @@ public class AndroidApplication extends Activity implements Application {
 	protected AndroidFiles files;
 	protected AndroidNet net;
 	protected ApplicationListener listener;
-	protected Handler handler;
+	public Handler handler;
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();

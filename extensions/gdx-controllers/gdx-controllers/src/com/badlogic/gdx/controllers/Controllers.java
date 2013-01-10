@@ -41,16 +41,23 @@ public class Controllers {
 
 	static private void initialize () {
 		String className;
-		switch (Gdx.app.getType()) {
-		case Android:
-			className = "com.badlogic.gdx.controllers.android.AndroidControllerManager";
-			break;
-		case Desktop:
+		ApplicationType type = Gdx.app.getType();
+		if(type == ApplicationType.Android) {
+			if(Gdx.app.getVersion() >= 12) {
+				className = "com.badlogic.gdx.controllers.android.AndroidControllers";
+			} else {
+				Gdx.app.log("Controllers", "No controller manager is available for Android versions < API level 16");
+				manager = new ControllerManagerStub();
+				return;
+			}
+		} else if(type == ApplicationType.Desktop) {
 			className = "com.badlogic.gdx.controllers.desktop.DesktopControllerManager";
-			break;
-		default:
-			throw new GdxRuntimeException("No controller manager is available for: " + Gdx.app.getType());
+		} else {
+			Gdx.app.log("Controllers", "No controller manager is available for: " + Gdx.app.getType());
+			manager = new ControllerManagerStub();
+			return;
 		}
+		
 		try {
 			manager = (ControllerManager)Class.forName(className).newInstance();
 		} catch (Throwable ex) {
