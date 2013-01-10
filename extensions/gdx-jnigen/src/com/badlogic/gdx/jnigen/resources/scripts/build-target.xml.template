@@ -91,9 +91,10 @@
 			<arg value="-o"/>
 			<targetfile/>
 			<fileset refid="g++-files"/>
-			<chainedmapper>
+			<compositemapper>
 				<mapper type="glob" from="*.cpp" to="*.o"/>
-			</chainedmapper>
+				<mapper type="glob" from="*.mm" to="*.o"/>
+			</compositemapper>
 		</apply>
 		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
 			<arg line="${gcc-opts}"/>
@@ -105,9 +106,9 @@
 			<arg value="-o"/>
 			<targetfile/>
 			<fileset refid="gcc-files"/>
-			<chainedmapper>
+			<compositemapper>
 				<mapper type="glob" from="*.c" to="*.o"/>
-			</chainedmapper>
+			</compositemapper>
 		</apply>
 	</target>	
 

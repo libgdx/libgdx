@@ -510,13 +510,18 @@ public class IntMap<V> {
 		int[] keyTable = this.keyTable;
 		V[] valueTable = this.valueTable;
 		int i = keyTable.length;
-		while (i-- > 0) {
-			int key = keyTable[i];
-			if (key == EMPTY) continue;
-			buffer.append(key);
-			buffer.append('=');
-			buffer.append(valueTable[i]);
-			break;
+		if (hasZeroValue) {
+			buffer.append("0=");
+			buffer.append(zeroValue);
+		} else {
+			while (i-- > 0) {
+				int key = keyTable[i];
+				if (key == EMPTY) continue;
+				buffer.append(key);
+				buffer.append('=');
+				buffer.append(valueTable[i]);
+				break;
+			}
 		}
 		while (i-- > 0) {
 			int key = keyTable[i];
@@ -697,7 +702,7 @@ public class IntMap<V> {
 			return key;
 		}
 
-		/** Returns a new array containing the remaining values. */
+		/** Returns a new array containing the remaining keys. */
 		public IntArray toArray () {
 			IntArray array = new IntArray(true, map.size);
 			while (hasNext)

@@ -14,5 +14,7 @@
 	<classpathentry kind="lib" path="/gdx-freetype/libs/gdx-freetype-natives.jar"/>
 	<classpathentry kind="lib" path="/gdx-image/libs/gdx-image-natives.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-freetype"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers-desktop"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -19,6 +19,10 @@ import com.badlogic.gdx.math.Vector3;
 
 /** @author Nathan Sweet */
 public interface ControllerListener {
+	public void connected(Controller controller);
+	
+	public void disconnected(Controller controller);
+	
 	public boolean buttonDown (Controller controller, int buttonIndex);
 
 	public boolean buttonUp (Controller controller, int buttonIndex);

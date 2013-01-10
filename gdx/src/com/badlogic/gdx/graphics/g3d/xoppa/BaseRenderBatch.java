@@ -42,7 +42,6 @@ public class BaseRenderBatch implements RenderBatch {
 
 	@Override
 	public void addMesh (final SubMesh mesh, final Matrix4 transform) {
-		assert camera == null : "Call begin before adding meshes";
 		transform.getTranslation(Vector3.tmp);
 		float dist = Vector3.tmp2.set(Vector3.tmp.x - camera.position.x, Vector3.tmp.y - camera.position.y , Vector3.tmp.z - camera.position.z).len();
 		if (Vector3.tmp2.div(dist).dot(camera.direction) < 0)
@@ -52,15 +51,14 @@ public class BaseRenderBatch implements RenderBatch {
 	
 	@Override
 	public void addMesh (final SubMesh mesh, final Matrix4 transform, float distance) {
-		assert camera == null : "Call begin before adding meshes";
 		final RenderInstance instance = instancePool.obtain();
 		instance.distance = distance;
 		instance.material = mesh.material;
 		instance.mesh = mesh.mesh;
 		instance.primitiveType = mesh.primitiveType;
 		instance.transform = transform;
-		instance.shader = renderer.getShader(instance);
-		instances.add(instance);
+		instance.shader = null;
+		addInstance(instance);
 	}
 
 	@Override
@@ -75,5 +73,12 @@ public class BaseRenderBatch implements RenderBatch {
 		SubMesh[] meshes = model.getSubMeshes();
 		for (int i = 0; i < meshes.length; i++)
 			addMesh(meshes[i], transform, distance);		
+	}
+	
+	public void addInstance(final RenderInstance instance) {
+		if (instance.shader == null)
+			instance.shader =  renderer.getShader(instance);
+		instance.mesh.setAutoBind(false);
+		instances.add(instance);
 	}
 }

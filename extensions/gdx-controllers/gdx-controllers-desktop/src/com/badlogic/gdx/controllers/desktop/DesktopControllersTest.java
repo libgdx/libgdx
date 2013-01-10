@@ -69,6 +69,14 @@ public class DesktopControllersTest {
 						System.out.println("accelerometerMoved: " + accelerometerIndex + ", " + value);
 						return true;
 					}
+
+					@Override
+					public void connected (Controller controller) {
+					}
+
+					@Override
+					public void disconnected (Controller controller) {
+					}
 				});
 			}
 
