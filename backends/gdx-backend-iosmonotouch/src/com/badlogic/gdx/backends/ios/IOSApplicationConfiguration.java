@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.badlogic.gdx.backends.ios;
 
 public class IOSApplicationConfiguration {
@@ -56,4 +71,10 @@ public class IOSApplicationConfiguration {
 	public boolean useAccelerometer = true;
 	/** the update interval to poll the accelerometer with, in seconds **/
 	public float accelerometerUpdate = 0.05f;
+	
+	/** whether Monotouch GL20 implementation should be used or not, false by default, so native iosgles20 is used. */
+	public boolean useMonotouchOpenTK = false;
+	
+	/** whether to use ObjectAL for sound implementation or not.  */
+	public boolean useObjectAL = false;
 }

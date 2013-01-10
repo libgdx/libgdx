@@ -139,6 +139,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setBlend
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setScale
   (JNIEnv *, jclass, jint);
 
+  /*
+   * Class:     com_badlogic_gdx_graphics_g2d_Gdx2DPixmap
+   * Method:    getFailureReason
+   * Signature: (V)S
+   */
+JNIEXPORT jstring JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_getFailureReason
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

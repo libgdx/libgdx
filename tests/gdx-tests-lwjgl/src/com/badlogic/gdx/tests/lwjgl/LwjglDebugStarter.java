@@ -18,7 +18,8 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.tests.SoundTest;
+import com.badlogic.gdx.tests.GamepadTest;
+import com.badlogic.gdx.tests.YDownTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
@@ -28,9 +29,10 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-audio/libs/gdx-audio-natives.jar").load("gdx-audio");
 		new SharedLibraryLoader("../../extensions/gdx-image/libs/gdx-image-natives.jar").load("gdx-image");
 		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
+//		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new SoundTest();
+		GdxTest test = new GamepadTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		new LwjglApplication(test, config);

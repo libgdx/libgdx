@@ -27,7 +27,8 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -37,7 +38,7 @@ public class CullTest extends GdxTest implements ApplicationListener {
 		return false;
 	}
 
-	Mesh sphere;
+	StillModel sphere;
 	Camera cam;
 	SpriteBatch batch;
 	BitmapFont font;
@@ -45,7 +46,7 @@ public class CullTest extends GdxTest implements ApplicationListener {
 
 	@Override
 	public void create () {
-		sphere = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
+		sphere =  ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/sphere.obj"));
 		// cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam = new OrthographicCamera(45, 45 * (Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight()));
 
@@ -84,7 +85,7 @@ public class CullTest extends GdxTest implements ApplicationListener {
 			}
 			gl.glPushMatrix();
 			gl.glTranslatef(positions[i].x, positions[i].y, positions[i].z);
-			sphere.render(GL10.GL_TRIANGLES);
+			sphere.render();
 			gl.glPopMatrix();
 		}
 

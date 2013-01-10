@@ -65,6 +65,7 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 
 /* Configure directors for types with virtual methods that need Java implementations */
 %feature("director") btIDebugDraw;
+%feature("director") InternalTickCallback;
 
 /*
  * The rest of the types (some are disabled, commented out at the bottom).
@@ -302,10 +303,8 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %}
 %include "BulletCollision/CollisionShapes/btTriangleMeshShape.h"
 
-%{
-#include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
-%}
-%include "BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h"
+
+%include "custom/btBvhTriangleMeshShape.i"
 
 %{
 #include <BulletCollision/CollisionShapes/btBoxShape.h>
@@ -536,14 +535,14 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %include "custom/btCollisionWorld.i"
 
 %{
-#include <../swig/custom/ClosestNotMeConvexResultCallback.h>
+#include <GdxCustom/ClosestNotMeConvexResultCallback.h>
 %}
-%include "../swig/custom/ClosestNotMeConvexResultCallback.h"
+%include "GdxCustom/ClosestNotMeConvexResultCallback.h"
 
 %{
-#include <../swig/custom/ClosestNotMeRayResultCallback.h>
+#include <GdxCustom/ClosestNotMeRayResultCallback.h>
 %}
-%include "../swig/custom/ClosestNotMeRayResultCallback.h"
+%include "GdxCustom/ClosestNotMeRayResultCallback.h"
 
 %{
 #include <BulletCollision/CollisionDispatch/btConvex2dConvex2dAlgorithm.h>
@@ -674,6 +673,11 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %include "BulletDynamics/Dynamics/btDynamicsWorld.h"
 
 %{
+#include <GdxCustom/InternalTickCallback.h>
+%}
+%include "GdxCustom/InternalTickCallback.h"
+
+%{
 #include <BulletDynamics/Dynamics/btSimpleDynamicsWorld.h>
 %}
 %include "BulletDynamics/Dynamics/btSimpleDynamicsWorld.h"
@@ -778,53 +782,6 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %}
 %include "BulletDynamics/ConstraintSolver/btHinge2Constraint.h"
 
-/* DISABLED STUFF BELOW HERE (TODO: CHECK THIS) */
-
-/*
- * btSerializer needs some typemap customization for sBulletDNAstr and friends.
- * SWIG doesn't know how to pass the unsized arrays back.
- */
-/* 
-%{
-#include <LinearMath/btSerializer.h>
-%}
-%include "LinearMath/btSerializer.h"
-*/
-
-/* 
- * btWheelInfo doesn't compile because it doesnt have a 0-arg constructor for 
- * btAlignedObjectArray to call, so I disabled the vehicle stuff.
- */
- 
-%{
-#include <BulletDynamics/Vehicle/btVehicleRaycaster.h>
-%}
-%include "BulletDynamics/Vehicle/btVehicleRaycaster.h"
-
-%{
-#include <BulletDynamics/Vehicle/btWheelInfo.h>
-%}
-%include "BulletDynamics/Vehicle/btWheelInfo.h"
-
-/* Has nested classes or structs */
-%include "custom/btRaycastVehicle.i"
-
-
-/*
- * Because C++ templates are compile-time, we must pre-define all the
- * template classes to generate in Java.  This is at the bottom
- * so we can reference all the other types.
- */
- 
-%template(btCollisionObjectArray) btAlignedObjectArray<btCollisionObject *>;
-
-/*
- * Include dummy methods for ones Bullet declares but doesn't
- * implement.  At the bottom so we can reference other types.
- */
-%include "gdxMissingBulletMethods.i"
-
-/* SoftBody code (not suitable for Android)
 %{
 #include <BulletSoftBody/btSoftBodySolvers.h>
 %}
@@ -886,4 +843,50 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 #include <BulletSoftBody/btSoftSoftCollisionAlgorithm.h>
 %}
 %include "BulletSoftBody/btSoftSoftCollisionAlgorithm.h"
+
+
+/* DISABLED STUFF BELOW HERE (TODO: CHECK THIS) */
+
+/*
+ * btSerializer needs some typemap customization for sBulletDNAstr and friends.
+ * SWIG doesn't know how to pass the unsized arrays back.
+ */
+/* 
+%{
+#include <LinearMath/btSerializer.h>
+%}
+%include "LinearMath/btSerializer.h"
 */
+
+/* 
+ * btWheelInfo doesn't compile because it doesnt have a 0-arg constructor for 
+ * btAlignedObjectArray to call, so I disabled the vehicle stuff.
+ */
+ 
+%{
+#include <BulletDynamics/Vehicle/btVehicleRaycaster.h>
+%}
+%include "BulletDynamics/Vehicle/btVehicleRaycaster.h"
+
+%{
+#include <BulletDynamics/Vehicle/btWheelInfo.h>
+%}
+%include "BulletDynamics/Vehicle/btWheelInfo.h"
+
+/* Has nested classes or structs */
+%include "custom/btRaycastVehicle.i"
+
+
+/*
+ * Because C++ templates are compile-time, we must pre-define all the
+ * template classes to generate in Java.  This is at the bottom
+ * so we can reference all the other types.
+ */
+ 
+%template(btCollisionObjectArray) btAlignedObjectArray<btCollisionObject *>;
+
+/*
+ * Include dummy methods for ones Bullet declares but doesn't
+ * implement.  At the bottom so we can reference other types.
+ */
+%include "gdxMissingBulletMethods.i"

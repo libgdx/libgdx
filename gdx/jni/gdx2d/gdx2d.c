@@ -274,6 +274,10 @@ void gdx2d_set_scale (uint32_t scale) {
 	gdx2d_scale = scale;
 }
 
+const char *gdx2d_get_failure_reason(void) {
+  return stbi_failure_reason();
+}
+
 static inline void clear_alpha(const gdx2d_pixmap* pixmap, uint32_t col) {
 	int pixels = pixmap->width * pixmap->height;
 	memset((void*)pixmap->pixels, col, pixels);

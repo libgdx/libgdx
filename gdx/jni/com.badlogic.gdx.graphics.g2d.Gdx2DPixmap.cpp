@@ -167,3 +167,9 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setScale(J
 
 }
 
+JNIEXPORT jstring JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_getFailureReason(JNIEnv* env, jclass clazz) {
+
+  //@line:325
+  
+                return env->NewStringUTF(gdx2d_get_failure_reason());
+}

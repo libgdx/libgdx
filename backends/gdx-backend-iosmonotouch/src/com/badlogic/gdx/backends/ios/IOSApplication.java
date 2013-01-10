@@ -43,9 +43,39 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Clipboard;
 
 public class IOSApplication extends UIApplicationDelegate implements Application {
+	
+	class IOSUIViewController extends UIViewController {
+		@Override
+		public void DidRotate (UIInterfaceOrientation orientation) {
+			// get the view size and update graphics
+			// FIXME: supporting BOTH (landscape+portrait at same time) is currently not working correctly (needs fix)
+			// FIXME screen orientation needs to be stored for Input#getNativeOrientation
+			RectangleF bounds = getBounds(this);
+			graphics.width = (int)bounds.get_Width();
+			graphics.height = (int)bounds.get_Height();
+			graphics.MakeCurrent(); // not sure if that's needed? badlogic: yes it is, so resize can do OpenGL stuff, not sure if
+// it's on the correct thread though
+			listener.resize(graphics.width, graphics.height);
+		}
+
+		@Override
+		public boolean ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {
+			// we return "true" if we support the orientation
+			switch (orientation.Value) {
+			case UIInterfaceOrientation.LandscapeLeft:
+			case UIInterfaceOrientation.LandscapeRight:
+				return config.orientationLandscape;
+			default:
+				// assume portrait
+				return config.orientationPortrait;
+			}
+		}
+	}
+
 	UIApplication uiApp;
 	UIWindow uiWindow;
 	ApplicationListener listener;
@@ -56,7 +86,6 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	IOSInput input;
 	IOSNet net;
 	int logLevel = Application.LOG_DEBUG;
-	boolean firstResume;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
 	float displayScaleFactor;
@@ -105,40 +134,19 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 		// Create: Window -> ViewController-> GameView (controller takes care of rotation)
 		this.uiWindow = new UIWindow(UIScreen.get_MainScreen().get_Bounds());
-		UIViewController uiViewController = new UIViewController() {
-			@Override
-			public void DidRotate (UIInterfaceOrientation orientation) {
-				// get the view size and update graphics
-				// FIXME: supporting BOTH (landscape+portrait at same time) is currently not working correctly (needs fix)
-				// FIXME screen orientation needs to be stored for Input#getNativeOrientation
-				RectangleF bounds = getBounds(this);
-				graphics.width = (int)bounds.get_Width();
-				graphics.height = (int)bounds.get_Height();
-				graphics.MakeCurrent(); // not sure if that's needed? badlogic: yes it is, so resize can do OpenGL stuff, not sure if
-// it's on the correct thread though
-				listener.resize(graphics.width, graphics.height);
-			}
-
-			@Override
-			public boolean ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {
-				// we return "true" if we support the orientation
-				switch (orientation.Value) {
-				case UIInterfaceOrientation.LandscapeLeft:
-				case UIInterfaceOrientation.LandscapeRight:
-					return config.orientationLandscape;
-				default:
-					// assume portrait
-					return config.orientationPortrait;
-				}
-			}
-		};
+		UIViewController uiViewController = new IOSUIViewController();
 		this.uiWindow.set_RootViewController(uiViewController);
 
+		GL20 gl20 = config.useMonotouchOpenTK ? new IOSMonotouchGLES20() : new IOSGLES20();
+		
+		Gdx.gl = gl20;
+		Gdx.gl20 = gl20;
+		
 		// setup libgdx
 		this.input = new IOSInput(this);
-		this.graphics = new IOSGraphics(getBounds(uiViewController), this, input);
+		this.graphics = new IOSGraphics(getBounds(uiViewController), this, input, gl20);
 		this.files = new IOSFiles();
-		this.audio = new IOSAudio();
+		this.audio = new IOSAudio(config.useObjectAL);
 		this.net = new IOSNet(this);
 
 		Gdx.files = this.files;
@@ -195,18 +203,15 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	@Override
 	public void OnActivated (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "resumed");
-		if (!firstResume) {
-			graphics.MakeCurrent();
-			listener.resume();
-			firstResume = true;
-		}
+		graphics.MakeCurrent();
+		graphics.resume();
 	}
 
 	@Override
 	public void OnResignActivation (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "paused");
 		graphics.MakeCurrent();
-		listener.pause();
+		graphics.pause();
 		Gdx.gl.glFlush();
 	}
 

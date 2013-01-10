@@ -22,13 +22,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -39,7 +39,7 @@ public class ProjectTest extends GdxTest {
 		return false;
 	}
 
-	Mesh sphere;
+	StillModel sphere;
 	Camera cam;
 	SpriteBatch batch;
 	BitmapFont font;
@@ -49,7 +49,7 @@ public class ProjectTest extends GdxTest {
 
 	@Override
 	public void create () {
-		sphere = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
+		sphere = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/sphere.obj"));
 		cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.far = 200;
 		Random rand = new Random();
@@ -82,7 +82,7 @@ public class ProjectTest extends GdxTest {
 			}
 			gl.glPushMatrix();
 			gl.glTranslatef(positions[i].x, positions[i].y, positions[i].z);
-			sphere.render(GL10.GL_TRIANGLES);
+			sphere.render();
 			gl.glPopMatrix();
 		}
 

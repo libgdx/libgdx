@@ -56,6 +56,8 @@ public class LwjglGraphics implements Graphics {
 	LwjglApplicationConfiguration config;
 	BufferFormat bufferFormat = new BufferFormat(8, 8, 8, 8, 16, 8, 0, false);
 	String extensions;
+	volatile boolean isContinuous = true;
+	volatile boolean requestRendering = false;
 
 	LwjglGraphics (LwjglApplicationConfiguration config) {
 		this.config = config;
@@ -71,8 +73,6 @@ public class LwjglGraphics implements Graphics {
 
 	LwjglGraphics (Canvas canvas, LwjglApplicationConfiguration config) {
 		this.config = config;
-		this.config.width = canvas.getWidth();
-		this.config.height = canvas.getHeight();
 		this.canvas = canvas;
 	}
 
@@ -185,7 +185,6 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	private void createDisplayPixelFormat () {
-		int samples = 0;
 		try {
 			Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
 			bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples,
@@ -208,12 +207,9 @@ public class LwjglGraphics implements Graphics {
 				try {
 					Display.create(new PixelFormat());
 				} catch (Exception ex3) {
-					try {
-						Display.create();
-					} catch (Exception ex4) {
-						if (ex4.getMessage().contains("Pixel format not accelerated"))
-							throw new GdxRuntimeException("OpenGL is not supported by the video driver.", ex4);
-					}
+					if (ex3.getMessage().contains("Pixel format not accelerated"))
+						throw new GdxRuntimeException("OpenGL is not supported by the video driver.", ex3);
+					throw new GdxRuntimeException("Unable to create OpenGL display.", ex3);
 				}
 				if (getDesktopDisplayMode().bitsPerPixel == 16) {
 					bufferFormat = new BufferFormat(5, 6, 5, 0, 8, 0, 0, false);
@@ -419,9 +415,6 @@ public class LwjglGraphics implements Graphics {
 		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
 	}
-
-	volatile boolean isContinuous = true;
-	volatile boolean requestRendering = false;
 
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
