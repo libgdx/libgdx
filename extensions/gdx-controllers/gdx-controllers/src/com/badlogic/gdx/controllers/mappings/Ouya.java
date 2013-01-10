@@ -31,6 +31,8 @@ public class Ouya {
 	public static final int AXIS_RIGHT_X;
 	public static final int AXIS_RIGHT_Y;
 	public static final int AXIS_RIGHT_TRIGGER;
+	/** whether the app is running on a real Ouya device **/
+	public static final boolean runningOnOuya;
 	
 	static {
 		boolean isOuya = false;
@@ -39,8 +41,8 @@ public class Ouya {
 			Field deviceField = buildClass.getDeclaredField("DEVICE");
 			isOuya = "cardhu".equals(deviceField.get(null));
 		} catch(Exception e) {
-			isOuya = false;
 		}
+		runningOnOuya = isOuya;
 		
 		if(isOuya) {
 			BUTTON_O = 96;
