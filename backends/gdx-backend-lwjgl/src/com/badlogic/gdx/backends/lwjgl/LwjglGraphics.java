@@ -73,8 +73,6 @@ public class LwjglGraphics implements Graphics {
 
 	LwjglGraphics (Canvas canvas, LwjglApplicationConfiguration config) {
 		this.config = config;
-		this.config.width = canvas.getWidth();
-		this.config.height = canvas.getHeight();
 		this.canvas = canvas;
 	}
 
