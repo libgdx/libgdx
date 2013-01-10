@@ -29,7 +29,7 @@ public class GamepadTest extends GdxTest {
 	@Override
 	public void create () {
 		setupUi();
-		int a = Ouya.BUTTON_A;
+		
 		// print the currently connected controllers to the console
 		print("Controllers: " + Controllers.getControllers().size);
 		int i = 0;
