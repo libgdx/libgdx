@@ -220,6 +220,7 @@
 		<include name="scenes/scene2d/ui/Stack.java"/>
 		<include name="scenes/scene2d/ui/Table.java"/>
 		<include name="scenes/scene2d/ui/TableLayout.java"/>
+		<include name="scenes/scene2d/ui/TableList.java"/>
 		<include name="scenes/scene2d/ui/TextButton.java"/>
 		<include name="scenes/scene2d/ui/TextField.java"/>
 		<include name="scenes/scene2d/ui/Tree.java"/>
