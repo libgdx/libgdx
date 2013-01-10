@@ -25,4 +25,13 @@ public class WeldJoint extends Joint {
 	public WeldJoint (World world, long addr) {
 		super(world, addr);
 	}
+	
+	public float getReferenceAngle () {
+		return jniGetReferenceAngle(addr);
+	}
+	
+	private native float jniGetReferenceAngle (long addr); /*
+		b2WeldJoint* joint = (b2WeldJoint*)addr;
+		return joint->GetReferenceAngle();
+	*/
 }
