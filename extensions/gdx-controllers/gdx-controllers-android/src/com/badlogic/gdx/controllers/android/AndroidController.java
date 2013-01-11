@@ -58,22 +58,21 @@ public class AndroidController implements Controller {
 	
 	@Override
 	public boolean getSliderX (int sliderIndex) {
-		throw new GdxRuntimeException("Invalid slider index");
+		return false;
 	}
 
 	@Override
 	public boolean getSliderY (int sliderIndex) {
-		throw new GdxRuntimeException("Invalid slider index");
+		return false;
 	}
 
 	@Override
 	public Vector3 getAccelerometer (int accelerometerIndex) {
-		throw new GdxRuntimeException("Invalid accelerometer index");
+		return Vector3.Zero;
 	}
 
 	@Override
 	public void setAccelerometerSensitivity (float sensitivity) {
-		throw new GdxRuntimeException("Invalid accelerometer index");
 	}
 
 	@Override
@@ -97,6 +96,7 @@ public class AndroidController implements Controller {
 
 	@Override
 	public float getAxis (int axisIndex) {
+		if(axisIndex < 0 || axisIndex >= axes.length) return 0;
 		return axes[axisIndex];
 	}
 

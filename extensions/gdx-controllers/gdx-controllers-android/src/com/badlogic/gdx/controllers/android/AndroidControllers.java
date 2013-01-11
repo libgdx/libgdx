@@ -1,9 +1,6 @@
 package com.badlogic.gdx.controllers.android;
 
-import java.util.List;
-
 import android.view.InputDevice;
-import android.view.InputDevice.MotionRange;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,8 +8,8 @@ import android.view.View.OnGenericMotionListener;
 import android.view.View.OnKeyListener;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.android.AndroidInput;
-import com.badlogic.gdx.backends.android.AndroidInput.PauseResumeListener;
 import com.badlogic.gdx.backends.android.AndroidInputThreePlus;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
@@ -22,7 +19,7 @@ import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
 import com.badlogic.gdx.utils.Pool;
 
-public class AndroidControllers implements PauseResumeListener, ControllerManager, OnKeyListener, OnGenericMotionListener {
+public class AndroidControllers implements LifecycleListener, ControllerManager, OnKeyListener, OnGenericMotionListener {
 	private final static String TAG = "AndroidControllers";
 	private final IntMap<AndroidController> controllerMap = new IntMap<AndroidController>();
 	private final Array<Controller> controllers = new Array<Controller>();
@@ -36,7 +33,7 @@ public class AndroidControllers implements PauseResumeListener, ControllerManage
 	};
 	
 	public AndroidControllers() {
-		((AndroidInput)Gdx.input).addPauseResumeListener(this);
+		Gdx.app.addLifecycleListener(this);
 		gatherControllers(false);
 		setupEventQueue();
 		((AndroidInput)Gdx.input).addKeyListener(this);
@@ -249,5 +246,9 @@ public class AndroidControllers implements PauseResumeListener, ControllerManage
 	public void resume () {
 		gatherControllers(true);
 		Gdx.app.log(TAG, "controllers resumed");		
+	}
+
+	@Override
+	public void dispose () {
 	}
 }

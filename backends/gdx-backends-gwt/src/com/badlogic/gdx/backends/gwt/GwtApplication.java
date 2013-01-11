@@ -23,6 +23,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
@@ -66,6 +67,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private int logLevel = LOG_ERROR;
 	private Array<Runnable> runnables = new Array<Runnable>();
 	private Array<Runnable> runnablesHelper = new Array<Runnable>();
+	private Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	private int lastWidth, lastHeight;
 	private Preloader preloader;
 	private static AgentInfo agentInfo;
@@ -479,5 +481,19 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	public Preloader getPreloader () {
 		return preloader;
+	}
+	
+	@Override
+	public void addLifecycleListener (LifecycleListener listener) {
+		synchronized(lifecycleListeners) {
+			lifecycleListeners.add(listener);
+		}
+	}
+
+	@Override
+	public void removeLifecycleListener (LifecycleListener listener) {
+		synchronized(lifecycleListeners) {
+			lifecycleListeners.removeValue(listener, true);
+		}		
 	}
 }
