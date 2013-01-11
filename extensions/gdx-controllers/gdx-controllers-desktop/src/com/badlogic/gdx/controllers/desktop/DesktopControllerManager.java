@@ -19,6 +19,7 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.ControllerManager;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** @author Nathan Sweet */
 public class DesktopControllerManager implements ControllerManager {
@@ -26,6 +27,7 @@ public class DesktopControllerManager implements ControllerManager {
 	final Array<ControllerListener> listeners = new Array();
 
 	public DesktopControllerManager () {
+		new SharedLibraryLoader().load("gdx-controllers-desktop");
 		new OisControllers(this);
 	}
 

@@ -1,4 +1,4 @@
-package com.badlogic.gdx.graphics.g3d.xoppa;
+package com.badlogic.gdx.graphics.g3d.xoppa.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
@@ -26,6 +26,8 @@ public final class ExclusiveTextures {
 	private final int[] weights;
 	/** The method of binding to use */
 	private final int method;
+	/** Flag to indicate the current texture is reused */
+	private boolean reused;
 	
 	private int reuseCount = 0; // TODO remove debug code
 	private int bindCount = 0; // TODO remove debug code
@@ -59,11 +61,44 @@ public final class ExclusiveTextures {
 	
 	/** Binds the texture if needed and sets it active, returns the unit */
 	public final int bindTexture(final Texture texture) {
-		switch (method) {
-		case ROUNDROBIN: return bindTextureRoundRobin(texture);
-		case WEIGHTED: return bindTextureWeighted(texture); 
+		return bindTexture(texture, false);
+	}
+	
+	/** Force binds the texture and sets it active, returns the unit */
+	public final int rebindTexture(final Texture texture) {
+		return bindTexture(texture, false);
+	}
+	
+	/** Removes the reference to the texture, to assure that it will be rebound at the next bind call */
+	public final void unbindTexture(final Texture texture) {
+		for (int i = 0; i < count; i++) {
+			if (textures[i] == texture) {
+				textures[i] = null;
+				weights[i] = 0;
+				return;
+			}
 		}
-		return -1;
+	}
+	
+	private final int bindTexture(final Texture texture, final boolean rebind) {
+		int result;
+		reused = false;
+		
+		switch (method) {
+		case ROUNDROBIN: result = bindTextureRoundRobin(texture); break;
+		case WEIGHTED: result = bindTextureWeighted(texture); break;
+		default: return -1; 
+		}
+		
+		if (reused) {
+			reuseCount++;
+			if (rebind)
+				texture.bind(result);
+			else
+				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0 + result);
+		} else
+			bindCount++;
+		return result;
 	}
 
 	private int currentTexture = 0;
@@ -71,15 +106,13 @@ public final class ExclusiveTextures {
 		for (int i = 0; i < count; i++) {
 			final int idx = (currentTexture + i) % count;
 			if (textures[idx] == texture) {
-				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0 + offset + idx);
-				reuseCount++;
+				reused = true;
 				return offset + idx;
 			}
 		}
 		currentTexture = (currentTexture + 1) % count;
 		textures[currentTexture] = texture;
 		texture.bind(offset + currentTexture);
-		bindCount++;
 		return offset + currentTexture;
 	}
 	
@@ -100,11 +133,8 @@ public final class ExclusiveTextures {
 			textures[windex] = texture;
 			weights[windex] = 100;
 			texture.bind(result = offset + windex);
-			bindCount++; // TODO remove debug code
-		} else {
-			Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0 + result);
-			reuseCount++; // TODO remove debug code
-		}
+		} else 
+			reused = true;
 		return result;
 	}
 	

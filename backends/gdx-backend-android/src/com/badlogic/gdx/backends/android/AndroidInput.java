@@ -88,7 +88,6 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		}
 	};
 
-	ArrayList<PauseResumeListener> pauseResumeListeners = new ArrayList<AndroidInput.PauseResumeListener>();
 	ArrayList<OnKeyListener> keyListeners = new ArrayList();	
 	ArrayList<KeyEvent> keyEvents = new ArrayList();
 	ArrayList<TouchEvent> touchEvents = new ArrayList();
@@ -636,9 +635,6 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			}
 		} else
 			compassAvailable = false;
-		for(PauseResumeListener listener: pauseResumeListeners) {
-			listener.resume();
-		}
 		Gdx.app.log("AndroidInput", "sensor listener setup");
 	}
 
@@ -653,9 +649,6 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				compassListener = null;
 			}
 			manager = null;
-		}
-		for(PauseResumeListener listener: pauseResumeListeners) {
-			listener.pause();
 		}
 		Gdx.app.log("AndroidInput", "sensor listener tear down");
 	}
@@ -773,10 +766,6 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		keyListeners.add(listener);
 	}
 	
-	public void addPauseResumeListener(PauseResumeListener listener) {
-		pauseResumeListeners.add(listener);
-	}
-
 	/** Our implementation of SensorEventListener. Because Android doesn't like it when we register more than one Sensor to a single
 	 * SensorEventListener, we add one of these for each Sensor. Could use an anonymous class, but I don't see any harm in
 	 * explicitly defining it here. Correct me if I am wrong. */
@@ -811,10 +800,5 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				System.arraycopy(event.values, 0, magneticFieldValues, 0, magneticFieldValues.length);
 			}
 		}
-	}
-	
-	public interface PauseResumeListener {
-		public void pause();
-		public void resume();
 	}
 }
