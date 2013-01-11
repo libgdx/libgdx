@@ -48,6 +48,7 @@ import android.view.View;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
@@ -62,6 +63,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
+import com.badlogic.gdx.utils.Array;
 
 /** An implementation of {@link Graphics} for Android.
  * 
@@ -441,6 +443,12 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 		}
 
 		if (lresume) {
+			Array<LifecycleListener> listeners = app.lifecycleListeners;
+			synchronized(listeners) {
+				for(LifecycleListener listener: listeners) {
+					listener.resume();
+				}
+			}
 			((AndroidDaydream)app).audio.resume();
 			app.listener.resume();
 			Gdx.app.log("AndroidGraphics", "resumed");
@@ -465,12 +473,24 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 		}
 
 		if (lpause) {
+			Array<LifecycleListener> listeners = app.lifecycleListeners;
+			synchronized(listeners) {
+				for(LifecycleListener listener: listeners) {
+					listener.pause();
+				}
+			}
 			app.listener.pause();
 			((AndroidDaydream)app).audio.pause();
 			Gdx.app.log("AndroidGraphics", "paused");
 		}
 
 		if (ldestroy) {
+			Array<LifecycleListener> listeners = app.lifecycleListeners;
+			synchronized(listeners) {
+				for(LifecycleListener listener: listeners) {
+					listener.dispose();
+				}
+			}
 			app.listener.dispose();
 			((AndroidDaydream)app).audio.dispose();
 			((AndroidDaydream)app).audio = null;
