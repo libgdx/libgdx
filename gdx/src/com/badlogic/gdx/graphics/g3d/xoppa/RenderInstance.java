@@ -11,5 +11,5 @@ public class RenderInstance {
 	public int primitiveType;
 	public Matrix4 transform;
 	public float distance;
-	public ShaderProgram shader;
+	public Shader shader;
 }

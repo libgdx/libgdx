@@ -1,4 +1,4 @@
-package com.badlogic.gdx.graphics.g3d.xoppa;
+package com.badlogic.gdx.graphics.g3d.xoppa.test;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -11,10 +11,11 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.xoppa.RenderInstance;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 
-public class BatchRendererGLES11 implements BatchRenderer {
+public class OldBatchRendererGLES11 implements OldBatchRenderer {
 	final float[] lightColor = {1, 1, 1, 0};
 	final float[] lightPosition = {2, 5, 10, 0};
 
@@ -25,7 +26,7 @@ public class BatchRendererGLES11 implements BatchRenderer {
 	public int bindCount = 0;
 	public int reuseCount = 0;
 	
-	public BatchRendererGLES11() {
+	public OldBatchRendererGLES11() {
 		textureCount = Math.min(GL10.GL_MAX_TEXTURE_UNITS, 16) - textureUnitOffset;
 		textures = new Texture[textureCount];
 		textureWeights = new int[textureCount];
