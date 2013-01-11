@@ -1,4 +1,4 @@
-package com.badlogic.gdx.graphics.g3d.xoppa;
+package com.badlogic.gdx.graphics.g3d.xoppa.test;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -10,12 +10,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.xoppa.RenderInstance;
+import com.badlogic.gdx.graphics.g3d.xoppa.utils.ExclusiveTextures;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class BatchRendererGLES20 implements BatchRenderer {
+public class OldBatchRendererGLES20 implements OldBatchRenderer {
 	public final static String PROJECTION_TRANSFORM = "u_projTrans";
 	public final static String MODEL_TRANSFORM = "u_modelTrans";
 	
@@ -47,14 +49,15 @@ public class BatchRendererGLES20 implements BatchRenderer {
 			"}";
 	
 	public final ShaderProgram defaultShader;
-	
+		
 	protected ExclusiveTextures textures;
 	
-	public BatchRendererGLES20(final ExclusiveTextures textures) {
+	public OldBatchRendererGLES20(final ExclusiveTextures textures) {
 		this.textures = textures;
 		defaultShader = new ShaderProgram(DEFAULT_VERTEX_SHADER, DEFAULT_FRAGMENT_SHADER);
 		if (!defaultShader.isCompiled())
 			throw new GdxRuntimeException(defaultShader.getLog());
+		
 	}
 	
 	@Override
@@ -69,38 +72,6 @@ public class BatchRendererGLES20 implements BatchRenderer {
 		return defaultShader;
 	}
 	
-	/* public final int textureUnitOffset = 3;
-	public final int textureCount = 13; // TODO Math.min(GL10.GL_MAX_TEXTURE_UNITS, 16) - textureUnitOffset;
-	final Texture[] textures = new Texture[textureCount];
-	final int[] textureWeights = new int[textureCount];
-	public int bindCount = 0; //DBG
-	public int reuseCount = 0; //DBG
-	private final int bindTexture(final GL20 gl, final Texture texture) {
-		int result = -1;
-		int weight = textureWeights[0];
-		int windex = 0;
-		for (int i = 0; i < textureCount; i++) {
-			if (textures[i] == texture) {
-				result = i;
-				textureWeights[i]++;
-			} else if (textureWeights[i] < 0 || --textureWeights[i] < weight) {
-				weight = textureWeights[i];
-				windex = i;
-			}
-		}
-		if (result < 0) {
-			textures[windex] = texture;
-			textureWeights[windex] = 100;
-			texture.bind(result = textureUnitOffset + windex);
-			bindCount++; //DBG
-		} else {
-			result = textureUnitOffset + result;
-			Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0 + result);
-			reuseCount++; //DBG
-		}
-		return result;
-	} */
-
 	@Override
 	public void render (final Camera camera, final Array<RenderInstance> instances) {
 		// breakdown this method into smaller inline pieces for easy testing
@@ -126,12 +97,12 @@ public class BatchRendererGLES20 implements BatchRenderer {
 		if (currentShader != null)
 			currentShader.end();
 		previousShader = currentShader;
-		currentShader = instance.shader;
+		//currentShader = instance.shader;
 		currentShader.begin();
 		
 		currentShader.setUniformMatrix(PROJECTION_TRANSFORM, camera.combined);
 	}
-	
+
 	/////// bindMaterial /////////
 	Material currentMaterial;
 	private final void bindMaterial(final GL20 gl, final Camera camera, final RenderInstance instance) {
@@ -161,7 +132,7 @@ public class BatchRendererGLES20 implements BatchRenderer {
 		currentShader.setUniformi(TextureAttribute.diffuseTexture, unit);
 		currentTextureAttribute = attribute;
 	}
-	
+
 	/////// renderMesh /////////
 	private Mesh currentMesh;
 	private Matrix4 currentTransform;

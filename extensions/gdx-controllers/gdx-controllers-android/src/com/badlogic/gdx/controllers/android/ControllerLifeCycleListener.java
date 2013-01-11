@@ -5,16 +5,16 @@ import android.hardware.input.InputManager;
 import android.hardware.input.InputManager.InputDeviceListener;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidInput;
-import com.badlogic.gdx.backends.android.AndroidInput.PauseResumeListener;
 
 /**
  * Used on +4.1 to get events on device connects/disconnects.
  * @author mzechner
  *
  */
-public class ControllerLifeCycleListener implements PauseResumeListener, InputDeviceListener {
+public class ControllerLifeCycleListener implements LifecycleListener, InputDeviceListener {
 	private static final String TAG = "ControllerLifeCycleListener";
 	private final InputManager inputManager;
 	private final AndroidControllers controllers;
@@ -22,7 +22,7 @@ public class ControllerLifeCycleListener implements PauseResumeListener, InputDe
 	public ControllerLifeCycleListener(AndroidControllers controllers) {
 		this.controllers = controllers;
 		this.inputManager = (InputManager)((Context)Gdx.app).getSystemService(Context.INPUT_SERVICE);
-		((AndroidInput)Gdx.input).addPauseResumeListener(this);
+		Gdx.app.addLifecycleListener(this);
 		inputManager.registerInputDeviceListener(this, ((AndroidApplication)Gdx.app).handler);
 	}
 
@@ -52,5 +52,9 @@ public class ControllerLifeCycleListener implements PauseResumeListener, InputDe
 	
 	@Override
 	public void onInputDeviceChanged (int deviceId) {
+	}
+
+	@Override
+	public void dispose () {
 	}
 }

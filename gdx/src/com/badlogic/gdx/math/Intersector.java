@@ -358,7 +358,128 @@ public final class Intersector {
 			return true;
 		}
 	}
-
+	/** Intersects a {@link Ray} and a {@link BoundingBox}, returning the intersection point in intersection.
+	 * 
+	 * @param ray The ray
+	 * @param box The box
+	 * @param intersection The intersection point (optional)
+	 * @return Whether an intersection is present. */
+	boolean intersectRayBounds(Ray ray, BoundingBox box, Vector3 intersection)
+	{
+		Vector3.tmp.set(ray.origin);
+		Vector3.tmp2.set(ray.origin);
+		Vector3.tmp.sub(box.min);
+		Vector3.tmp.sub(box.max);
+		if(Vector3.tmp.x > 0 && Vector3.tmp.y > 0 && Vector3.tmp.z > 0 &&
+				Vector3.tmp2.x < 0 && Vector3.tmp2.y < 0 && Vector3.tmp2.z < 0)
+		{
+			return true;
+		}
+		float lowest = 0, t;
+		boolean hit = false;
+		
+		//min x
+		if(ray.origin.x <= box.min.x && ray.direction.x > 0)
+		{
+			t = (box.min.x - ray.origin.x) / ray.direction.x;
+			if(t >= 0)
+			{
+				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				if(Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y &&
+						Vector3.tmp3.z >= box.min.z && Vector3.tmp3.z <= box.max.z &&
+						(!hit || t < lowest))
+				{
+					hit = true;
+					lowest = t;
+				}
+			}
+		}
+		//max x
+		if(ray.origin.x >= box.max.x && ray.direction.x < 0)
+		{
+			t = (box.max.x - ray.origin.x) / ray.direction.x;
+			if(t >= 0)
+			{
+				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				if(Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y &&
+						Vector3.tmp3.z >= box.min.z && Vector3.tmp3.z <= box.max.z &&
+						(!hit || t < lowest))
+				{
+					hit = true;
+					lowest = t;
+				}
+			}
+		}
+		//min y
+		if(ray.origin.y <= box.min.y && ray.direction.y > 0)
+		{
+			t = (box.min.y - ray.origin.y) / ray.direction.y;
+			if(t >= 0)
+			{
+				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				if(Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x &&
+						Vector3.tmp3.z >= box.min.z && Vector3.tmp3.z <= box.max.z &&
+						(!hit || t < lowest))
+				{
+					hit = true;
+					lowest = t;
+				}
+			}
+		}
+		//max y
+		if(ray.origin.y >= box.max.y && ray.direction.y < 0)
+		{
+			t = (box.max.y - ray.origin.y) / ray.direction.y;
+			if(t >= 0)
+			{
+				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				if(Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x &&
+						Vector3.tmp3.z >= box.min.z && Vector3.tmp3.z <= box.max.z &&
+						(!hit || t < lowest))
+				{
+					hit = true;
+					lowest = t;
+				}
+			}
+		}
+		//min z
+		if(ray.origin.z <= box.min.y && ray.direction.z > 0)
+		{
+			t = (box.min.z - ray.origin.z) / ray.direction.z;
+			if(t >= 0)
+			{
+				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				if(Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x &&
+						Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y &&
+						(!hit || t < lowest))
+				{
+					hit = true;
+					lowest = t;
+				}
+			}
+		}
+		//max y
+		if(ray.origin.z >= box.max.z && ray.direction.z < 0)
+		{
+			t = (box.max.z - ray.origin.z) / ray.direction.z;
+			if(t >= 0)
+			{
+				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				if(Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x &&
+						Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y &&
+						(!hit || t < lowest))
+				{
+					hit = true;
+					lowest = t;
+				}
+			}
+		}
+		if(hit && intersection != null)
+		{
+			intersection.set(ray.direction).mul(lowest).add(ray.origin);
+		}
+		return hit;
+	}
 	/** Quick check wheter the given {@link Ray} and {@link BoundingBox} intersect.
 	 * 
 	 * @param ray The ray

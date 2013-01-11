@@ -2,6 +2,13 @@ package com.badlogic.gdx.controllers.mappings;
 
 import java.lang.reflect.Field;
 
+import com.badlogic.gdx.controllers.Controller;
+
+/**
+ * Button and axis indices for the OUYA {@link Controller}.
+ * @author mzechner
+ *
+ */
 public class Ouya {
 	public static final String ID = "OUYA Game Controller";
 	public static final int BUTTON_O;
@@ -24,6 +31,8 @@ public class Ouya {
 	public static final int AXIS_RIGHT_X;
 	public static final int AXIS_RIGHT_Y;
 	public static final int AXIS_RIGHT_TRIGGER;
+	/** whether the app is running on a real Ouya device **/
+	public static final boolean runningOnOuya;
 	
 	static {
 		boolean isOuya = false;
@@ -32,8 +41,8 @@ public class Ouya {
 			Field deviceField = buildClass.getDeclaredField("DEVICE");
 			isOuya = "cardhu".equals(deviceField.get(null));
 		} catch(Exception e) {
-			isOuya = false;
 		}
+		runningOnOuya = isOuya;
 		
 		if(isOuya) {
 			BUTTON_O = 96;

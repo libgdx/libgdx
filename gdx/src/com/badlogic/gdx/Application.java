@@ -166,4 +166,19 @@ public interface Application {
 	/** Exits the application. On android, this will cause a call to pause() and dispose() some time in the future, it will not
 	 * immediately finish your application. */
 	public void exit ();
+	
+	/**
+	 * Adds a new {@link LifecycleListener} to the application. This can be
+	 * used by extensions to hook into the lifecycle more easily. The
+	 * {@link ApplicationListener} methods are sufficient for application
+	 * level development.
+	 * @param listener
+	 */
+	public void addLifecycleListener(LifecycleListener listener);
+	
+	/**
+	 * Removes the {@link LifecycleListener}.
+	 * @param listener
+	 */
+	public void removeLifecycleListener(LifecycleListener listener);
 }

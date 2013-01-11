@@ -322,7 +322,7 @@ public class Gdx2DPixmap implements Disposable {
 		gdx2d_set_scale(scale);
 	*/
 
-        public static native String getFailureReason (); /*
-	        gdx2d_get_failure_reason(void);
-        */
+	public static native String getFailureReason (); /*
+     return env->NewStringUTF(gdx2d_get_failure_reason());
+   */
 }

@@ -13,11 +13,10 @@ import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.graphics.g3d.model.SubMesh;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
-import com.badlogic.gdx.graphics.g3d.xoppa.BaseRenderBatch;
-import com.badlogic.gdx.graphics.g3d.xoppa.BatchRendererGLES11;
-import com.badlogic.gdx.graphics.g3d.xoppa.BatchRendererGLES20;
-import com.badlogic.gdx.graphics.g3d.xoppa.ExclusiveTextures;
 import com.badlogic.gdx.graphics.g3d.xoppa.RenderBatch;
+import com.badlogic.gdx.graphics.g3d.xoppa.test.OldBatchRendererGLES11;
+import com.badlogic.gdx.graphics.g3d.xoppa.test.OldBatchRendererGLES20;
+import com.badlogic.gdx.graphics.g3d.xoppa.utils.ExclusiveTextures;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -37,7 +36,7 @@ public class BatchRenderTest extends GdxTest {
 	Array<Model> models = new Array<Model>();
 	Array<Texture> textures = new Array<Texture>();
 	RenderBatch renderBatch;
-	BatchRendererGLES20 renderer;
+	OldBatchRendererGLES20 renderer;
 	ExclusiveTextures exclusiveTextures;
 	
 	float[] lightColor = {1, 1, 1, 0};
@@ -86,7 +85,7 @@ public class BatchRenderTest extends GdxTest {
 		cam.lookAt(0, 0, 0);
 		cam.update();
 		
-		renderBatch = new BaseRenderBatch(renderer = new BatchRendererGLES20(exclusiveTextures = new ExclusiveTextures(BIND_METHOD, UNIT_OFFSET, MAX_TEXTURES)));
+		renderBatch = new RenderBatch(exclusiveTextures = new ExclusiveTextures(BIND_METHOD, UNIT_OFFSET, MAX_TEXTURES));
 		
 		Gdx.input.setInputProcessor(this);
 	}
