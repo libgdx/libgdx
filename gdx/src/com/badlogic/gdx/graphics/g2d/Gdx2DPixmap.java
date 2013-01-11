@@ -323,6 +323,6 @@ public class Gdx2DPixmap implements Disposable {
 	*/
 
 	public static native String getFailureReason (); /*
-     return return env->NewStringUTF(gdx2d_get_failure_reason());
+     return env->NewStringUTF(gdx2d_get_failure_reason());
    */
 }
