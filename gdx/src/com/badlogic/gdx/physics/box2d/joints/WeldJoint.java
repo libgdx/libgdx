@@ -22,7 +22,21 @@ import com.badlogic.gdx.physics.box2d.World;
 /** A weld joint essentially glues two bodies together. A weld joint may distort somewhat because the island constraint solver is
  * approximate. */
 public class WeldJoint extends Joint {
+	// @off
+	/*JNI
+		#include <Box2D/Box2D.h>
+	 */
+	
 	public WeldJoint (World world, long addr) {
 		super(world, addr);
 	}
+	
+	public float getReferenceAngle () {
+		return jniGetReferenceAngle(addr);
+	}
+	
+	private native float jniGetReferenceAngle (long addr); /*
+		b2WeldJoint* joint = (b2WeldJoint*)addr;
+		return joint->GetReferenceAngle();
+	*/
 }

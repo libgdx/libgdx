@@ -16,20 +16,6 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Audio;
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.openal.OpenALAudio;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.utils.Clipboard;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
 import java.awt.Canvas;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -40,6 +26,21 @@ import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.opengl.Display;
+
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.openal.OpenALAudio;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Clipboard;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. All OpenGL calls are done on the
  * EDT. This is slightly less efficient then a dedicated thread, but greatly simplifies synchronization. Note that you may need to
@@ -55,6 +56,7 @@ public class LwjglCanvas implements Application {
 	Canvas canvas;
 	final List<Runnable> runnables = new ArrayList();
 	final List<Runnable> executedRunnables = new ArrayList();
+	final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	boolean running = true;
 	int logLevel = LOG_INFO;
 	Cursor cursor;
@@ -262,6 +264,13 @@ public class LwjglCanvas implements Application {
 					if (audio != null) audio.dispose();
 				} catch (Throwable ignored) {
 				}
+				Array<LifecycleListener> listeners = lifecycleListeners;
+				synchronized(listeners) {
+					for(LifecycleListener listener: listeners) {
+						listener.pause();
+						listener.dispose();
+					}
+				}
 				listener.pause();
 				listener.dispose();
 			}
@@ -367,5 +376,19 @@ public class LwjglCanvas implements Application {
 	/** @param cursor May be null. */
 	public void setCursor (Cursor cursor) {
 		this.cursor = cursor;
+	}
+	
+	@Override
+	public void addLifecycleListener (LifecycleListener listener) {
+		synchronized(lifecycleListeners) {
+			lifecycleListeners.add(listener);
+		}
+	}
+
+	@Override
+	public void removeLifecycleListener (LifecycleListener listener) {
+		synchronized(lifecycleListeners) {
+			lifecycleListeners.removeValue(listener, true);
+		}		
 	}
 }

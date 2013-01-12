@@ -33,6 +33,7 @@ import cli.System.Drawing.RectangleF;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
@@ -40,6 +41,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.Array;
 
 // FIXME add GL 1.x support by ripping Android's classes
 public class IOSGraphics extends iPhoneOSGameView implements Graphics {
@@ -145,12 +147,24 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		
 		if (paused) {
 			if (!wasPaused) {
+				Array<LifecycleListener> listeners = app.lifecycleListeners;
+				synchronized(listeners) {
+					for(LifecycleListener listener: listeners) {
+						listener.pause();
+					}
+				}
 				app.listener.pause();
 				wasPaused = true;
 			}
 			return;
 		} else {
 			if (wasPaused) {
+				Array<LifecycleListener> listeners = app.lifecycleListeners;
+				synchronized(listeners) {
+					for(LifecycleListener listener: listeners) {
+						listener.resume();
+					}
+				}
 				app.listener.resume();
 				wasPaused = false;
 			}

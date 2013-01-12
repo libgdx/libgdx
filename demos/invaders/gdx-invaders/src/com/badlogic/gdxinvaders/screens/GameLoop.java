@@ -19,8 +19,10 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.ControlType;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
+import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
+import com.badlogic.gdx.controllers.mappings.Ouya;
 import com.badlogic.gdxinvaders.Renderer;
 import com.badlogic.gdxinvaders.RendererGL10;
 import com.badlogic.gdxinvaders.RendererGL20;
@@ -38,6 +40,20 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 	private final Sound shot;
 	/** controller **/
 	private Controller controller;
+	private int buttonsPressed = 0;
+	private ControllerListener listener = new ControllerAdapter() {
+		@Override
+		public boolean buttonDown (Controller controller, int buttonIndex) {
+			buttonsPressed++;
+			return true;
+		}
+
+		@Override
+		public boolean buttonUp (Controller controller, int buttonIndex) {
+			buttonsPressed--;
+			return true;
+		}
+	};
 
 	public GameLoop () {
 		simulation = new Simulation();
@@ -47,11 +63,12 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 		shot = Gdx.audio.newSound(Gdx.files.internal("data/shot.wav"));
 		
 		// check for attached controllers and if we are on
-		// Ouya.
+		// Ouya, take the first controller. Doesn't handle disconnects :D
 		if(Controllers.getControllers().size > 0) {
 			Controller controller = Controllers.getControllers().get(0);
-			if(controller.getName().toLowerCase().contains("ouya")) {
+			if(Ouya.ID.equals(controller.getName())) {
 				this.controller = controller;
+				controller.addListener(listener);
 			}
 		}
 	}
@@ -61,6 +78,7 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 		renderer.dispose();
 		shot.dispose();
 		explosion.dispose();
+		controller.removeListener(listener);
 	}
 
 	@Override
@@ -85,15 +103,17 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 		
 		if(controller != null) {
 			// if any button is pressed, we shoot.
-//			for(int i = 0; i < controller.getControlCount(ControlType.button); i++) {
-//				if(controller.getButton(i)) {
-//					simulation.shot();
-//					break;
-//				}
-//			}
-			// if the dpad pov is pressed, move left/right
-			if(controller.getPov(0) == PovDirection.west) simulation.moveShipRight(delta, 0.5f);
-			if(controller.getPov(0) == PovDirection.east) simulation.moveShipRight(delta, 0.5f);
+			if(buttonsPressed > 0) simulation.shot();
+			
+			// if the left stick moved, move the ship
+			float axisValue = controller.getAxis(Ouya.AXIS_LEFT_X) * 0.5f;
+			if(Math.abs(axisValue) > 0.25f) {
+				if(axisValue > 0) {
+					simulation.moveShipRight(delta, axisValue);
+				} else {
+					simulation.moveShipLeft(delta, -axisValue);
+				}
+			}
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.DPAD_LEFT) || Gdx.input.isKeyPressed(Keys.A)) simulation.moveShipLeft(delta, 0.5f);

@@ -32,6 +32,7 @@ import android.view.WindowManager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Graphics.BufferFormat;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Graphics.GraphicsType;
@@ -51,6 +52,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
+import com.badlogic.gdx.utils.Array;
 
 /** An implementation of {@link Graphics} for Android.
  * 
@@ -504,6 +506,12 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		}
 
 		if (lresume) {
+			Array<LifecycleListener> listeners = app.lifecycleListeners;
+			synchronized(listeners) {
+				for(LifecycleListener listener: listeners) {
+					listener.resume();
+				}
+			}
 			app.getListener().resume();
 			Gdx.app.log("AndroidGraphics", "resumed");
 		}
@@ -524,12 +532,24 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		}
 
 		if (lpause) {
+			Array<LifecycleListener> listeners = app.lifecycleListeners;
+			synchronized(listeners) {
+				for(LifecycleListener listener: listeners) {
+					listener.pause();
+				}
+			}
 			app.getListener().pause();
 			((AndroidAudio)app.getAudio()).pause();
 			Gdx.app.log("AndroidGraphics", "paused");
 		}
 
 		if (ldestroy) {
+			Array<LifecycleListener> listeners = app.lifecycleListeners;
+			synchronized(listeners) {
+				for(LifecycleListener listener: listeners) {
+					listener.dispose();
+				}
+			}
 			app.getListener().dispose();
 			((AndroidAudio)app.getAudio()).dispose();
 			Gdx.app.log("AndroidGraphics", "destroyed");
