@@ -105,6 +105,13 @@ public class Rectangle implements Serializable {
 		this.height = height;
 	}
 
+	/** @param x point x coordinate
+	 * @param y point y coordinate
+	 * @return whether the point is contained in the rectangle */
+	public boolean contains (float x, float y) {
+		return this.x < x && this.x + this.width > x && this.y < y && this.y + this.height > y;
+	}
+
 	/** @param rectangle the other {@link Rectangle}.
 	 * @return whether the other rectangle is contained in this rectangle. */
 	public boolean contains (Rectangle rectangle) {
@@ -116,13 +123,6 @@ public class Rectangle implements Serializable {
 
 		return ((xmin > x && xmin < x + width) && (xmax > x && xmax < x + width))
 			&& ((ymin > y && ymin < y + height) && (ymax > y && ymax < y + height));
-	}
-
-	/** @param x point x coordinate
-	 * @param y point y coordinate
-	 * @return whether the point is contained in the rectangle */
-	public boolean contains (float x, float y) {
-		return this.x < x && this.x + this.width > x && this.y < y && this.y + this.height > y;
 	}
 
 	/** @param r the other {@link Rectangle}
