@@ -34,177 +34,22 @@ import java.util.concurrent.Executors;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.StreamUtils;
+import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/** LWJGL implementation of the {@link Net} API, it could be reused in other Desktop backends since it doesn't depend on LWJGL.
+ * @author acoppes */
 public class LwjglNet implements Net {
 
-	private final class HttpClientResponse implements HttpResponse {
-
-		private HttpURLConnection connection;
-		private HttpStatus status;
-		private InputStream inputStream;
-
-		public HttpClientResponse (HttpURLConnection connection) throws IOException {
-			this.connection = connection;
-			this.inputStream = connection.getInputStream();
-
-			try {
-				this.status = new HttpStatus(connection.getResponseCode());
-			} catch (IOException e) {
-				this.status = new HttpStatus(-1);
-			}
-		}
-
-		@Override
-		public byte[] getResult () {
-			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-			int nRead;
-			byte[] data = new byte[16384];
-
-			try {
-				while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
-					buffer.write(data, 0, nRead);
-				}
-				buffer.flush();
-			} catch (IOException e) {
-				return new byte[0];
-			}
-			return buffer.toByteArray();
-		}
-
-		@Override
-		public String getResultAsString () {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-			String tmp, line = "";
-			try {
-				while ((tmp = reader.readLine()) != null)
-					line += tmp;
-				reader.close();
-				return line;
-			} catch (IOException e) {
-				return "";
-			}
-		}
-
-		@Override
-		public InputStream getResultAsStream () {
-			return inputStream;
-		}
-
-		@Override
-		public HttpStatus getStatus () {
-			return status;
-		}
-
-	}
-
-	// IMPORTANT: The Gdx.net classes are a currently duplicated for LWJGL + Android!
-	// If you make changes here, make changes in the other backend as well.
-
-	private final ExecutorService executorService;
-
-	public LwjglNet () {
-		executorService = Executors.newCachedThreadPool();
-	}
+	NetJavaImpl netJavaImpl = new NetJavaImpl();
 
 	@Override
-	public void sendHttpRequest (final HttpRequest httpRequest, final HttpResponseListener httpResultListener) {
-		if (httpRequest.getUrl() == null) {
-			httpResultListener.failed(new GdxRuntimeException("can't process a HTTP request without URL set"));
-			return;
-		}
-
-		try {
-			final String method = httpRequest.getMethod();
-
-			URL url;
-
-			if (method.equalsIgnoreCase(HttpMethods.GET)) {
-				String queryString = "";
-				String value = httpRequest.getContent();
-				if (value != null && !"".equals(value)) queryString = "?" + value;
-				url = new URL(httpRequest.getUrl() + queryString);
-			} else {
-				url = new URL(httpRequest.getUrl());
-			}
-
-			final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-			connection.setDoOutput(true);
-			connection.setDoInput(true);
-			connection.setRequestMethod(method);
-
-			// Headers get set regardless of the method
-			Map<String, String> headers = httpRequest.getHeaders();
-			Set<String> keySet = headers.keySet();
-			for (String name : keySet)
-				connection.addRequestProperty(name, headers.get(name));
-
-			// Set Timeouts
-			connection.setConnectTimeout(httpRequest.getTimeOut());
-			connection.setReadTimeout(httpRequest.getTimeOut());
-
-			executorService.submit(new Runnable() {
-				@Override
-				public void run () {
-					try {
-
-						// Set the content for POST (GET has the information embedded in the URL)
-						if (method.equalsIgnoreCase(HttpMethods.POST)) {
-							// we probably need to use the content as stream here instead of using it as a string.
-							String contentAsString = httpRequest.getContent();
-							InputStream contentAsStream = httpRequest.getContentStream();
-
-							OutputStream outputStream = connection.getOutputStream();
-							if (contentAsString != null) {
-								OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-								writer.write(contentAsString);
-								writer.flush();
-								writer.close();
-							} else if (contentAsStream != null) {
-								StreamUtils.copyStream(contentAsStream, outputStream);
-								outputStream.flush();
-								outputStream.close();
-							}
-						}
-
-						connection.connect();
-
-						// post a runnable to sync the handler with the main thread
-						Gdx.app.postRunnable(new Runnable() {
-							@Override
-							public void run () {
-								try {
-									httpResultListener.handleHttpResponse(new HttpClientResponse(connection));
-								} catch (IOException e) {
-									httpResultListener.failed(e);
-									connection.disconnect();
-								}
-							}
-						});
-					} catch (final Exception e) {
-						// post a runnable to sync the handler with the main thread
-						Gdx.app.postRunnable(new Runnable() {
-							@Override
-							public void run () {
-								httpResultListener.failed(e);
-								connection.disconnect();
-							}
-						});
-					} finally {
-						connection.disconnect();
-					}
-				}
-			});
-
-		} catch (Exception e) {
-			httpResultListener.failed(e);
-			return;
-		}
+	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener) {
+		netJavaImpl.sendHttpRequest(httpRequest, httpResponseListener);
 	}
 
 	@Override
@@ -231,4 +76,5 @@ public class LwjglNet implements Net {
 			throw new GdxRuntimeException(e);
 		}
 	}
+
 }
