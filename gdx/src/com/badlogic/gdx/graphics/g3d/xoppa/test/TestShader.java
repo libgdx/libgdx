@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.xoppa.RenderContext;
 import com.badlogic.gdx.graphics.g3d.xoppa.RenderInstance;
 import com.badlogic.gdx.graphics.g3d.xoppa.Shader;
 import com.badlogic.gdx.graphics.g3d.xoppa.utils.ExclusiveTextures;
@@ -47,36 +48,23 @@ public class TestShader implements Shader {
 			"}";
 	
 	
-	protected final ExclusiveTextures textures;
 	protected final ShaderProgram program;
 	protected int projTransLoc;
 	protected int modelTransLoc;
 	protected int diffuseTextureLoc;
+	protected RenderContext context;
 	
 	public TestShader() {
-		this((ExclusiveTextures)null);
-	}
-	
-	public TestShader(final ExclusiveTextures textures) {
-		this(textures, DEFAULT_VERTEX_SHADER, DEFAULT_FRAGMENT_SHADER);
+		this(DEFAULT_VERTEX_SHADER, DEFAULT_FRAGMENT_SHADER);
 	}
 
-	public TestShader(final ShaderProgram program) {
-		this((ExclusiveTextures)null, program);
-	}
-	
 	public TestShader(final String vertexShader, final String fragmentShader) {
-		this((ExclusiveTextures)null, vertexShader, fragmentShader);
+		this(new ShaderProgram(vertexShader, fragmentShader));
 	}
 	
-	public TestShader(final ExclusiveTextures textures, final String vertexShader, final String fragmentShader) {
-		this(textures, new ShaderProgram(vertexShader, fragmentShader));
-	}
-	
-	public TestShader(final ExclusiveTextures textures, ShaderProgram program) {
+	public TestShader(ShaderProgram program) {
 		if (!program.isCompiled())
 			throw new GdxRuntimeException(program.getLog());
-		this.textures = textures;
 		this.program = program;
 		this.projTransLoc = program.getUniformLocation(PROJECTION_TRANSFORM);
 		this.modelTransLoc = program.getUniformLocation(MODEL_TRANSFORM);
@@ -111,31 +99,24 @@ public class TestShader implements Shader {
 		return arg0.distance > arg1.distance ? (b1 ? -1 : 1) : (arg0.distance < arg1.distance ? (b1 ? 1 : -1) : 0);
 	}
 
-	private boolean blending;
 	private Mesh currentMesh;
 	private Matrix4 currentTransform;
 	
 	@Override
-	public void begin (final Camera camera) {
+	public void begin (final Camera camera, final RenderContext context) {
+		this.context = context;
 		program.begin();
-		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
-		Gdx.gl.glDepthFunc(GL10.GL_LEQUAL);
-		Gdx.gl.glDisable(GL10.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		blending = false;
+		context.enableDepthTest(GL10.GL_LEQUAL);
 		program.setUniformMatrix(projTransLoc, camera.combined);
 	}
 
 	@Override
 	public void render (final RenderInstance instance) {
 		// Enable/disable blending if needed
-		if (instance.material.isNeedBlending() != blending) {
-			blending = !blending;
-			if (blending)
-				Gdx.gl.glEnable(GL10.GL_BLEND);
-			else
-				Gdx.gl.glDisable(GL10.GL_BLEND);
-		}
+		if (instance.material.isNeedBlending())
+			context.enableBlending(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		else
+			context.disableBlending();
 		// Set the model transform if needed
 		if (currentTransform != instance.transform)
 			program.setUniformMatrix(modelTransLoc, currentTransform = instance.transform);
@@ -182,8 +163,7 @@ public class TestShader implements Shader {
 	private final void bindTextureAttribute(final TextureAttribute attribute) {
 		if (attribute == currentTextureAttribute)
 			return;
-		final int unit = textures.bindTexture(attribute.texture);
-		attribute.texture.bind(unit);
+		final int unit = context.textures.bindTexture(attribute.texture);
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, attribute.minFilter);
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, attribute.magFilter);
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, attribute.uWrap);

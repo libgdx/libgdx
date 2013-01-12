@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
 public class RenderBatch {
+	protected RenderContext context;
 	protected RenderBatchListener listener;
 	protected Camera camera;
 	protected final Array<RenderInstance> instances = new Array<RenderInstance>();
@@ -22,13 +23,14 @@ public class RenderBatch {
 	};
 	
 	/** Construct a BaseRenderBatch with the specified listener */
-	public RenderBatch(RenderBatchListener listener) {
+	public RenderBatch(RenderBatchListener listener, ExclusiveTextures textures) {
 		this.listener = listener;
+		this.context = new RenderContext(textures);
 	}
 	
 	/** Construct a BaseRenderBatch with the default implementation and the specified texture range */
 	public RenderBatch(ExclusiveTextures textures) {
-		this(new RenderBatchAdapter(textures));
+		this(new RenderBatchAdapter(), textures);
 	}
 	
 	/** Construct a BaseRenderBatch with the default implementation */
@@ -42,6 +44,7 @@ public class RenderBatch {
 
 	public void end () {
 		instances.sort(listener);
+		context.begin();
 		Shader currentShader = null;
 		for (int i = 0; i < instances.size; i++) {
 			final RenderInstance instance = instances.get(i);
@@ -49,12 +52,13 @@ public class RenderBatch {
 				if (currentShader != null)
 					currentShader.end();
 				currentShader = instance.shader;
-				currentShader.begin(camera);
+				currentShader.begin(camera, context);
 			}
 			currentShader.render(instance);
 		}
 		if (currentShader != null)
 			currentShader.end();
+		context.end();
 		instancePool.freeAll(instances);
 		instances.clear();
 		camera = null;
