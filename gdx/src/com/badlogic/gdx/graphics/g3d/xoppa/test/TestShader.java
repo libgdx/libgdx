@@ -129,7 +129,7 @@ public class TestShader implements Shader {
 			(currentMesh = instance.mesh).bind(program);
 		}
 		// Render the mesh
-		instance.mesh.render(program, instance.primitiveType);
+		instance.mesh.render(program, instance.primitiveType, instance.meshPartOffset, instance.meshPartSize);
 	}
 
 	@Override

@@ -7,7 +7,7 @@ public class RenderBatchAdapter implements RenderBatchListener {
 	protected Shader defaultShader = null;
 		
 	@Override
-	public int compare (RenderInstance o1, RenderInstance o2) {
+	public int compare (final RenderInstance o1, final RenderInstance o2) {
 		final boolean b1 = o1.material.isNeedBlending();
 		final boolean b2 = o2.material.isNeedBlending();
 		if (b1 != b2) 
@@ -18,7 +18,9 @@ public class RenderBatchAdapter implements RenderBatchListener {
 	}
 
 	@Override
-	public Shader getShader (RenderInstance instance) {
+	public Shader getShader (final RenderInstance instance, final Shader suggestedShader) {
+		if (suggestedShader != null)
+			return suggestedShader;
 		if (defaultShader == null)
 			defaultShader = new DefaultShader();
 		return defaultShader;
