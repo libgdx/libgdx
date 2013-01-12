@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Matrix4;
 
 public class RenderInstance {
 	public Mesh mesh;
+	public int meshPartOffset;
+	public int meshPartSize;
 	public Material material;
 	public int primitiveType;
 	public Matrix4 transform;
