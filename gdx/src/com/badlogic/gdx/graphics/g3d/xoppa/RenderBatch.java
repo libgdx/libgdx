@@ -63,12 +63,17 @@ public class RenderBatch {
 		instances.clear();
 		camera = null;
 	}
-	
-	public void addInstance(final RenderInstance instance) {
-		if (instance.shader == null)
-			instance.shader =  listener.getShader(instance);
+
+	/** Add an instance to render, the shader property of the instance will be overwritten by this method */
+	public void addInstance(final RenderInstance instance, final Shader shader) {
+		instance.shader = listener.getShader(instance, shader);
 		instance.mesh.setAutoBind(false);
 		instances.add(instance);
+	}
+
+	/** Add an instance to render, the shader property of the instance will be overwritten by this method */
+	public void addInstance(final RenderInstance instance) {
+		addInstance(instance, null);
 	}
 	
 	// Helper methods to convert meshes and models to render instances:
@@ -86,6 +91,8 @@ public class RenderBatch {
 		instance.distance = distance;
 		instance.material = mesh.material;
 		instance.mesh = mesh.mesh;
+		instance.meshPartOffset = 0;
+		instance.meshPartSize = mesh.mesh.getMaxIndices() > 0 ? mesh.mesh.getNumIndices() : mesh.mesh.getNumVertices();
 		instance.primitiveType = mesh.primitiveType;
 		instance.transform = transform;
 		instance.shader = null;
