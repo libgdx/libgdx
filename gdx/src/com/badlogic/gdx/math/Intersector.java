@@ -617,16 +617,6 @@ public final class Intersector {
 		}
 	}
 
-	/** Returns whether the two rectangles intersect
-	 * 
-	 * @param a The first rectangle
-	 * @param b The second rectangle
-	 * @return Whether the two rectangles intersect */
-	public static boolean intersectRectangles (Rectangle a, Rectangle b) {
-		return !(a.getX() > b.getX() + b.getWidth() || a.getX() + a.getWidth() < b.getX() || a.getY() > b.getY() + b.getHeight() || a
-			.getY() + a.getHeight() < b.getY());
-	}
-
 	/** Intersects the two lines and returns the intersection point in intersection.
 	 * 
 	 * @param p1 The first point of the first line
