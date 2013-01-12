@@ -38,6 +38,12 @@ public class Circle implements Serializable {
 		this.radius = radius;
 	}
 
+	public void set (float x, float y, float radius) {
+		this.x = x;
+		this.y = y;
+		this.radius = radius;
+	}
+
 	public boolean contains (float x, float y) {
 		x = this.x - x;
 		y = this.y - y;
@@ -45,14 +51,22 @@ public class Circle implements Serializable {
 	}
 
 	public boolean contains (Vector2 point) {
-		float x = this.x - point.x;
-		float y = this.y - point.y;
-		return x * x + y * y <= radius * radius;
+		float dx = x - point.x;
+		float dy = y - point.y;
+		return dx * dx + dy * dy <= radius * radius;
 	}
 
-	public void set (float x, float y, float radius) {
-		this.x = x;
-		this.y = y;
-		this.radius = radius;
+	/** @param c the other {@link Circle}
+	 * @return whether this circle overlaps the other circle. */
+	public boolean overlaps (Circle c) {
+		float dx = x - c.x;
+		float dy = y - c.y;
+		float distance = dx * dx + dy * dy;
+		float radiusSum = radius + c.radius;
+		return distance <= radiusSum * radiusSum;
+	}
+
+	public String toString () {
+		return x + "," + y + "," + radius;
 	}
 }
