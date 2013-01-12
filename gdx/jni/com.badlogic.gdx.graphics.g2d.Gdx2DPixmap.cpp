@@ -172,8 +172,8 @@ JNIEXPORT jstring JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_getFail
 
 //@line:325
 
-	        gdx2d_get_failure_reason(void);
-        
+     return env->NewStringUTF(gdx2d_get_failure_reason());
+   
 
 }
 

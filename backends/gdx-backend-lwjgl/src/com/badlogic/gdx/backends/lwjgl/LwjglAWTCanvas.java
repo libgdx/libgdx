@@ -36,9 +36,11 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -56,6 +58,7 @@ public class LwjglAWTCanvas implements Application {
 	final AWTGLCanvas canvas;
 	final List<Runnable> runnables = new ArrayList();
 	final List<Runnable> executedRunnables = new ArrayList();
+	final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	boolean running = true;
 	int lastWidth;
 	int lastHeight;
@@ -264,6 +267,13 @@ public class LwjglAWTCanvas implements Application {
 		if (!running) return;
 		running = false;
 		setGlobals();
+		Array<LifecycleListener> listeners = lifecycleListeners;
+		synchronized(listeners) {
+			for(LifecycleListener listener: listeners) {
+				listener.pause();
+				listener.dispose();
+			}
+		}
 		listener.pause();
 		listener.dispose();
 	}
@@ -358,6 +368,13 @@ public class LwjglAWTCanvas implements Application {
 			@Override
 			public void run () {
 				setGlobals();
+				Array<LifecycleListener> listeners = lifecycleListeners;
+				synchronized(listeners) {
+					for(LifecycleListener listener: listeners) {
+						listener.pause();
+						listener.dispose();
+					}
+				}
 				LwjglAWTCanvas.this.listener.pause();
 				LwjglAWTCanvas.this.listener.dispose();
 				System.exit(-1);
@@ -379,5 +396,19 @@ public class LwjglAWTCanvas implements Application {
 	/** @param cursor May be null. */
 	public void setCursor (Cursor cursor) {
 		this.cursor = cursor;
+	}
+	
+	@Override
+	public void addLifecycleListener (LifecycleListener listener) {
+		synchronized(lifecycleListeners) {
+			lifecycleListeners.add(listener);
+		}
+	}
+
+	@Override
+	public void removeLifecycleListener (LifecycleListener listener) {
+		synchronized(lifecycleListeners) {
+			lifecycleListeners.removeValue(listener, true);
+		}		
 	}
 }

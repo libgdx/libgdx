@@ -288,6 +288,9 @@
 		<copy todir="${distDir}/ios/monotouch-jars" failonerror="false">
 			<fileset dir="backends/gdx-backend-iosmonotouch/libs/monotouch-jars"/>
 		</copy>
+		<copy todir="${distDir}/ios/objectal" failonerror="false">
+			<fileset dir="backends/gdx-backend-iosmonotouch/libs/objectal"/>
+		</copy>
 	</target>
 
 	<target name="jars" 
