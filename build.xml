@@ -167,6 +167,19 @@
 		</ant>
 	</target>
 	
+	<target name="gdx-controllers-gwt" depends="gdx-core,gdx-backend-gwt,gdx-controllers">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-backend-gwt.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-controllers.jar"/>
+		</path>
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-gwt">
+			<property name="distDir" value="${distDir}/extensions"/>
+			<property name="jar" value="gdx-controllers-gwt"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+	
 	<!-- gdx image -->
 	<target name="gdx-image" depends="gdx-core">
 		<path id="classpath">
@@ -288,10 +301,13 @@
 		<copy todir="${distDir}/ios/monotouch-jars" failonerror="false">
 			<fileset dir="backends/gdx-backend-iosmonotouch/libs/monotouch-jars"/>
 		</copy>
+		<copy todir="${distDir}/ios/objectal" failonerror="false">
+			<fileset dir="backends/gdx-backend-iosmonotouch/libs/objectal"/>
+		</copy>
 	</target>
 
 	<target name="jars" 
-depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-image,gdx-audio,gdx-freetype,gdx-bullet"/>
+depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-image,gdx-audio,gdx-freetype,gdx-bullet"/>
 
 	<target name="all" depends="jars,docs,copy-iosfiles">
 		<!-- copy distribution files (licences etc.) -->

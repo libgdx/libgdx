@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
@@ -185,6 +186,10 @@ public class Actor {
 		return false;
 	}
 
+	/**
+	 * @see InputListener
+	 * @see ClickListener
+	 */
 	public boolean addListener (EventListener listener) {
 		if (!listeners.contains(listener, true)) {
 			listeners.add(listener);

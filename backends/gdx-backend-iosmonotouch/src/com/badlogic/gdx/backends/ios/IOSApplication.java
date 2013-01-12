@@ -18,7 +18,6 @@ package com.badlogic.gdx.backends.ios;
 
 import java.util.ArrayList;
 
-import cli.MonoTouch.Foundation.NSBundle;
 import cli.MonoTouch.Foundation.NSDictionary;
 import cli.MonoTouch.Foundation.NSMutableDictionary;
 import cli.MonoTouch.UIKit.UIApplication;
@@ -41,9 +40,11 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 
 public class IOSApplication extends UIApplicationDelegate implements Application {
@@ -91,8 +92,9 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
 	float displayScaleFactor;
 
-	ArrayList<Runnable> runnables = new ArrayList<Runnable>();
-	ArrayList<Runnable> executedRunnables = new ArrayList<Runnable>();
+	Array<Runnable> runnables = new Array<Runnable>();
+	Array<Runnable> executedRunnables = new Array<Runnable>();
+	Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 
 	/** Should be called in AppDelegate#FinishedLaunching.
 	 * 
@@ -220,6 +222,12 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	public void WillTerminate (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "disposed");
 		graphics.MakeCurrent();
+		Array<LifecycleListener> listeners = lifecycleListeners;
+		synchronized(listeners) {
+			for(LifecycleListener listener: listeners) {
+				listener.pause();
+			}
+		}
 		listener.dispose();
 		Gdx.gl.glFlush();
 	}
@@ -357,7 +365,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 			executedRunnables.addAll(runnables);
 			runnables.clear();
 		}
-		for (int i = 0; i < executedRunnables.size(); i++) {
+		for (int i = 0; i < executedRunnables.size; i++) {
 			try {
 				executedRunnables.get(i).run();
 			} catch (Throwable t) {
@@ -384,5 +392,19 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 				return null;
 			}
 		};
+	}
+	
+	@Override
+	public void addLifecycleListener (LifecycleListener listener) {
+		synchronized(lifecycleListeners) {
+			lifecycleListeners.add(listener);
+		}
+	}
+
+	@Override
+	public void removeLifecycleListener (LifecycleListener listener) {
+		synchronized(lifecycleListeners) {
+			lifecycleListeners.removeValue(listener, true);
+		}		
 	}
 }

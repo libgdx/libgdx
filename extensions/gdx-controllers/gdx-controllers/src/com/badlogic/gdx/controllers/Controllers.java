@@ -15,11 +15,14 @@
  ******************************************************************************/
 package com.badlogic.gdx.controllers;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** Provides access to connected {@link Controller} instances. Query
  * the available controllers via {@link #getControllers()}, add and remove
@@ -31,7 +34,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * @author Nathan Sweet */
 public class Controllers {
-	static private ControllerManager manager;
+	private static final String TAG = "Controllers";
+	static private final ObjectMap<Application, ControllerManager> managers = new ObjectMap<Application, ControllerManager>();
 
 	/**
 	 * Returns an array of connected {@link Controller} instances. This
@@ -40,8 +44,8 @@ public class Controllers {
 	 * @return the connected controllers
 	 */
 	static public Array<Controller> getControllers () {
-		if (manager == null) initialize();
-		return manager.getControllers();
+		initialize();
+		return getManager().getControllers();
 	}
 
 	/**
@@ -51,8 +55,8 @@ public class Controllers {
 	 * @param listener
 	 */
 	static public void addListener (ControllerListener listener) {
-		if (manager == null) initialize();
-		manager.addListener(listener);
+		initialize();
+		getManager().addListener(listener);
 	}
 
 	/**
@@ -61,33 +65,62 @@ public class Controllers {
 	 * @param listener
 	 */
 	static public void removeListener (ControllerListener listener) {
-		if (manager == null) initialize();
-		manager.removeListener(listener);
+		initialize();
+		getManager().removeListener(listener);
+	}
+	
+	static private ControllerManager getManager() {
+		return managers.get(Gdx.app);
 	}
 
 	static private void initialize () {
-		String className;
+		if(managers.containsKey(Gdx.app)) return;
+		
+		String className = null;
 		ApplicationType type = Gdx.app.getType();
+		ControllerManager manager = null;
+		
 		if(type == ApplicationType.Android) {
 			if(Gdx.app.getVersion() >= 12) {
 				className = "com.badlogic.gdx.controllers.android.AndroidControllers";
 			} else {
-				Gdx.app.log("Controllers", "No controller manager is available for Android versions < API level 16");
+				Gdx.app.log(TAG, "No controller manager is available for Android versions < API level 12");
 				manager = new ControllerManagerStub();
-				return;
 			}
 		} else if(type == ApplicationType.Desktop) {
 			className = "com.badlogic.gdx.controllers.desktop.DesktopControllerManager";
 		} else {
-			Gdx.app.log("Controllers", "No controller manager is available for: " + Gdx.app.getType());
+			Gdx.app.log(TAG, "No controller manager is available for: " + Gdx.app.getType());
 			manager = new ControllerManagerStub();
-			return;
 		}
 		
-		try {
-			manager = (ControllerManager)Class.forName(className).newInstance();
-		} catch (Throwable ex) {
-			throw new GdxRuntimeException("Error creating controller manager: " + className, ex);
+		if(manager == null) {
+			try {
+				manager = (ControllerManager)Class.forName(className).newInstance();
+			} catch (Throwable ex) {
+				throw new GdxRuntimeException("Error creating controller manager: " + className, ex);
+			}
 		}
+		
+		managers.put(Gdx.app, manager);
+		final Application app = Gdx.app;
+		Gdx.app.addLifecycleListener(new LifecycleListener() {
+			
+			@Override
+			public void resume () {
+			}
+			
+			@Override
+			public void pause () {
+			}
+			
+			@Override
+			public void dispose () {
+				managers.remove(app);
+				Gdx.app.log(TAG, "removed manager for application, " + managers.size + " managers active");
+
+			}
+		});
+		Gdx.app.log(TAG, "added manager for application, " + managers.size + " managers active");
 	}
 }

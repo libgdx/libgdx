@@ -22,6 +22,7 @@ import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
@@ -48,6 +49,7 @@ public class LwjglApplication implements Application {
 	protected boolean running = true;
 	protected final Array<Runnable> runnables = new Array();
 	protected final Array<Runnable> executedRunnables = new Array();
+	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
 
 	public LwjglApplication (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
@@ -198,6 +200,13 @@ public class LwjglApplication implements Application {
 			}
 		}
 
+		Array<LifecycleListener> listeners = lifecycleListeners;
+		synchronized(listeners) {
+			for(LifecycleListener listener: listeners) {
+				listener.pause();
+				listener.dispose();
+			}
+		}
 		listener.pause();
 		listener.dispose();
 		Display.destroy();
@@ -341,5 +350,19 @@ public class LwjglApplication implements Application {
 				running = false;
 			}
 		});
+	}
+	
+	@Override
+	public void addLifecycleListener (LifecycleListener listener) {
+		synchronized(lifecycleListeners) {
+			lifecycleListeners.add(listener);
+		}
+	}
+
+	@Override
+	public void removeLifecycleListener (LifecycleListener listener) {
+		synchronized(lifecycleListeners) {
+			lifecycleListeners.removeValue(listener, true);
+		}		
 	}
 }

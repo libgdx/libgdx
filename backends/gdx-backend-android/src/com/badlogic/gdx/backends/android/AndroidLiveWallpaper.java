@@ -39,6 +39,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Application.ApplicationType;
@@ -72,6 +73,7 @@ class AndroidLiveWallpaper implements Application {
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
+	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
 
 	public AndroidLiveWallpaper(WallpaperService service, Engine engine) {
@@ -241,5 +243,19 @@ class AndroidLiveWallpaper implements Application {
 	@Override
 	public void exit () {
 		// no-op
+	}
+	
+	@Override
+	public void addLifecycleListener (LifecycleListener listener) {
+		synchronized(lifecycleListeners) {
+			lifecycleListeners.add(listener);
+		}
+	}
+
+	@Override
+	public void removeLifecycleListener (LifecycleListener listener) {
+		synchronized(lifecycleListeners) {
+			lifecycleListeners.removeValue(listener, true);
+		}		
 	}
 }

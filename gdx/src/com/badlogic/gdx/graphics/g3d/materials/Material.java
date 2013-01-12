@@ -106,23 +106,23 @@ public class Material implements Iterable<MaterialAttribute> {
 		return attributes.size;
 	}
 	
-	/** @return True if this material contains attribute of the specified type, false otherwise */
-	public <T extends MaterialAttribute> boolean hasAttribute(Class<T> type) {
-		return indexOfAttribute(type) >= 0;
-	}
-	
-	/** @return The index of the first attribute of the specified type or -1 if not available */
-	public <T extends MaterialAttribute> int indexOfAttribute(Class<T> type) {
-		for (int i = 0; i < attributes.size; i++)
-			if (type.isInstance(attributes.get(i)))
-				return i;
-		return -1;
-	}
-	
-	/** @return The first attribute of the specified type, or null if not available */
-	public <T extends MaterialAttribute> T getAttribute(Class<T> type) {
-		return (T)getAttribute(indexOfAttribute(type));
-	}
+//	/** @return True if this material contains attribute of the specified type, false otherwise */
+//	public <T extends MaterialAttribute> boolean hasAttribute(Class<T> type) {
+//		return indexOfAttribute(type) >= 0;
+//	}
+//	
+//	/** @return The index of the first attribute of the specified type or -1 if not available */
+//	public <T extends MaterialAttribute> int indexOfAttribute(Class<T> type) {
+//		for (int i = 0; i < attributes.size; i++)
+//			if (type.isInstance(attributes.get(i)))
+//				return i;
+//		return -1;
+//	}
+//	
+//	/** @return The first attribute of the specified type, or null if not available */
+//	public <T extends MaterialAttribute> T getAttribute(Class<T> type) {
+//		return (T)getAttribute(indexOfAttribute(type));
+//	}
 
 	public Material copy () {
 		Array<MaterialAttribute> attributes = new Array<MaterialAttribute>(this.attributes.size);
