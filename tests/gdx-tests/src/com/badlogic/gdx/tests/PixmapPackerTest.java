@@ -32,7 +32,7 @@ public class PixmapPackerTest extends GdxTest {
 		Pixmap pixmap2 = new Pixmap(Gdx.files.internal("data/wheel.png"));
 		Pixmap pixmap3 = new Pixmap(Gdx.files.internal("data/egg.png"));
 		
-		PixmapPacker packer =  new PixmapPacker(512, 512, Format.RGBA8888, 2, true);
+		PixmapPacker packer =  new PixmapPacker(1024, 1024, Format.RGBA8888, 2, true);
 		packer.pack("badlogic", pixmap1);
 		packer.pack("wheel", pixmap1);
 		packer.pack("egg", pixmap1);
