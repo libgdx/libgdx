@@ -11,21 +11,6 @@ public class DefaultShader extends TestShader {
 		// TODO Auto-generated constructor stub
 	}
 
-	public DefaultShader (ExclusiveTextures textures, ShaderProgram program) {
-		super(textures, program);
-		// TODO Auto-generated constructor stub
-	}
-
-	public DefaultShader (ExclusiveTextures textures, String vertexShader, String fragmentShader) {
-		super(textures, vertexShader, fragmentShader);
-		// TODO Auto-generated constructor stub
-	}
-
-	public DefaultShader (ExclusiveTextures textures) {
-		super(textures);
-		// TODO Auto-generated constructor stub
-	}
-
 	public DefaultShader (ShaderProgram program) {
 		super(program);
 		// TODO Auto-generated constructor stub

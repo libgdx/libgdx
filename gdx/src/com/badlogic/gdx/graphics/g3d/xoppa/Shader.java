@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Camera;
 
 public interface Shader extends Comparator<RenderInstance> {
 	int compareTo(Shader other); // TODO: probably better to add some weight value to sort on
-	void begin(Camera camera);
+	void begin(Camera camera, RenderContext context);
 	void render(final RenderInstance instance);
 	void end();
 }
