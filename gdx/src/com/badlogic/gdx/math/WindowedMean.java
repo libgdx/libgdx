@@ -36,7 +36,7 @@ public final class WindowedMean {
 		values = new float[window_size];
 	}
 
-	/** @return wheter the value returned will be meaningfull */
+	/** @return whether the value returned will be meaningfull */
 	public boolean hasEnoughData () {
 		return added_values >= values.length;
 	}
