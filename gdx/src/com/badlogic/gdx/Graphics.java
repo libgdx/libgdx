@@ -237,7 +237,7 @@ public interface Graphics {
 	 * @param isContinuous whether the rendering should be continuous or not. */
 	public void setContinuousRendering (boolean isContinuous);
 
-	/** @return wheter rendering is continuous. */
+	/** @return whether rendering is continuous. */
 	public boolean isContinuousRendering ();
 
 	/** Requests a new frame to be rendered if the rendering mode is non-continuous. This method can be called from any thread. */
