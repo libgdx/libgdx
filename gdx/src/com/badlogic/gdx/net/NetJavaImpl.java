@@ -118,7 +118,8 @@ public class NetJavaImpl {
 			}
 
 			final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-			connection.setDoOutput(true);
+			// should be enabled to upload data.
+			connection.setDoOutput(method.equalsIgnoreCase(HttpMethods.POST));
 			connection.setDoInput(true);
 			connection.setRequestMethod(method);
 
@@ -166,6 +167,7 @@ public class NetJavaImpl {
 									httpResponseListener.handleHttpResponse(new HttpClientResponse(connection));
 								} catch (IOException e) {
 									httpResponseListener.failed(e);
+								} finally {
 									connection.disconnect();
 								}
 							}
@@ -175,13 +177,14 @@ public class NetJavaImpl {
 						Gdx.app.postRunnable(new Runnable() {
 							@Override
 							public void run () {
-								httpResponseListener.failed(e);
 								connection.disconnect();
+								httpResponseListener.failed(e);
 							}
 						});
-					} finally {
-						connection.disconnect();
 					}
+// finally {
+// connection.disconnect();
+// }
 				}
 			});
 
