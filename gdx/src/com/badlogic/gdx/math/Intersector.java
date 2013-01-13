@@ -1017,6 +1017,31 @@ public final class Intersector {
 		float[] triangle = {-10, 0, 10, 10, 0, 0, -10, 0, -10};
 		Intersector.splitTriangle(triangle, plane, split);
 		System.out.println(split);
+
+		Circle c1 = new Circle(0, 0, 1);
+		Circle c2 = new Circle(0, 0, 1);
+		Circle c3 = new Circle(2, 0, 1);
+		Circle c4 = new Circle(0, 0, 2);
+		System.out.println(c1.overlaps(c2)); // true
+		System.out.println(c1.overlaps(c3)); // true, should be false?
+		System.out.println(c1.overlaps(c4)); // true
+		System.out.println(c4.overlaps(c1)); // true
+		System.out.println(c1.contains(0, 1)); // true, should be false?
+
+		// IMO Rectangle has the correct behaviour
+		Rectangle r1 = new Rectangle(0, 0, 1, 1);
+		Rectangle r2 = new Rectangle(0, 0, 1, 1);
+		Rectangle r3 = new Rectangle(1, 0, 2, 1);
+		System.out.println(r1.overlaps(r2)); // true
+		System.out.println(r1.overlaps(r3)); // false
+		System.out.println(r1.contains(0, 0)); // false
+
+		BoundingBox b1 = new BoundingBox(Vector3.Zero, new Vector3(1, 1, 1));
+		BoundingBox b2 = new BoundingBox(new Vector3(1, 1, 1), new Vector3(2, 2, 2));
+		System.out.println(b1.contains(Vector3.Zero)); // true, should be false?
+		System.out.println(b1.contains(b2)); // true, should be false?
+
+		// Note, in stage the bottom and left sides are inclusive while the right and top sides are exclusive.
 	}
 
 	public static class SplitTriangle {
