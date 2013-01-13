@@ -28,6 +28,7 @@ import com.badlogic.gdx.StreamUtils;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -111,19 +112,16 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 		textButton.setTouchable(Touchable.enabled);
 		statusLabel.setText("HTTP Request status: " + httpResponse.getStatus().getStatusCode());
 
-		InputStream resultAsStream = httpResponse.getResultAsStream();
+		final InputStream resultAsStream = httpResponse.getResultAsStream();
 		try {
-			FileOutputStream fileOutputStream = new FileOutputStream(new File("/tmp/image.jpg"));
-			StreamUtils.copyStream(resultAsStream, fileOutputStream);
-			fileOutputStream.close();
-
 			Texture.setEnforcePotImages(false);
-			texture = new Texture(Gdx.files.absolute("/tmp/image.jpg"));
+			texture = new Texture(new FileHandle("image.jpg") {
+				@Override
+				public InputStream read () {
+					return resultAsStream;
+				}
+			});
 			Texture.setEnforcePotImages(true);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		} finally {
 			if (resultAsStream != null) try {
 				resultAsStream.close();
