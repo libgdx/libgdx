@@ -51,6 +51,11 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 	TextButton textButton;
 	Label statusLabel;
 	Texture texture;
+	
+	public boolean needsGL20 () {
+		// just because the non pot, we could change the image instead...
+		return true;
+	}
 
 	@Override
 	public void dispose () {
@@ -110,8 +115,14 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 	public void handleHttpResponse (HttpResponse httpResponse) {
 		textButton.setDisabled(false);
 		textButton.setTouchable(Touchable.enabled);
-		statusLabel.setText("HTTP Request status: " + httpResponse.getStatus().getStatusCode());
+		int statusCode = httpResponse.getStatus().getStatusCode();
+		statusLabel.setText("HTTP Request status: " + statusCode);
 
+		if (statusCode != 200) {
+			Gdx.app.log("NetAPITest", "An error ocurred since statusCode is not OK");
+			return;
+		}
+		
 		final InputStream resultAsStream = httpResponse.getResultAsStream();
 		try {
 			Texture.setEnforcePotImages(false);
@@ -126,6 +137,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 			if (resultAsStream != null) try {
 				resultAsStream.close();
 			} catch (IOException e) {
+				
 			}
 		}
 	}
@@ -135,6 +147,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 		textButton.setDisabled(false);
 		textButton.setTouchable(Touchable.enabled);
 		statusLabel.setText("Failed to perform the HTTP Request: " + t.getMessage());
+		t.printStackTrace();
 	}
 
 	@Override
