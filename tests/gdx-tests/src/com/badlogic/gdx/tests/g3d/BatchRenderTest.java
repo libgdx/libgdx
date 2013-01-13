@@ -23,6 +23,14 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 
 public class BatchRenderTest extends GdxTest {
+	int TEXTURE_COUNT = 30;
+	int BOX_COUNT = 500;
+	int UNIT_OFFSET = 2;
+	int MAX_TEXTURES = Math.min(8 /*GL10.GL_MAX_TEXTURE_UNITS*/ - UNIT_OFFSET, ExclusiveTextures.MAX_GLES_UNITS - UNIT_OFFSET);
+	int BIND_METHOD = ExclusiveTextures.WEIGHTED;
+	float MIN_X = -10f, MIN_Y = -10f, MIN_Z = -10f;
+	float SIZE_X = 20f, SIZE_Y = 20f, SIZE_Z = 20f;
+	
 	public static class ModelInstance {
 		public Model model;
 		public Matrix4 transform;
@@ -33,10 +41,13 @@ public class BatchRenderTest extends GdxTest {
 	}
 	PerspectiveCamera cam;
 	Array<ModelInstance> instances = new Array<ModelInstance>();
-	Array<Model> models = new Array<Model>();
+	StillModel sphereModel;
+	StillModel sceneModel;
+	StillModel cubeModel;
+	Model testModel;
+	Array<Model> cubes = new Array<Model>();
 	Array<Texture> textures = new Array<Texture>();
 	RenderBatch renderBatch;
-	OldBatchRendererGLES20 renderer;
 	ExclusiveTextures exclusiveTextures;
 	
 	float[] lightColor = {1, 1, 1, 0};
@@ -48,37 +59,24 @@ public class BatchRenderTest extends GdxTest {
 	public void create () {
 		final JsonModelLoader loader = new JsonModelLoader();
 		
-		float MIN_X = -100f, MIN_Y = -100f, MIN_Z = -100f;
-		float SIZE_X = 200f, SIZE_Y = 200f, SIZE_Z = 200f;
+
 		// need more higher resolution textures for this test...
 		String[] TEXTURES = {"data/badlogic.jpg", "data/egg.png", "data/particle-fire.png", "data/planet_earth.png", "data/planet_heavyclouds.jpg",
 			"data/resource1.jpg", "data/stones.jpg", "data/sys.png", "data/wheel.png"};
-		int TEXTURE_COUNT = 30;
-		int BOX_COUNT = 500;
-		int UNIT_OFFSET = 2;
-		int MAX_TEXTURES = Math.min(8 /*GL10.GL_MAX_TEXTURE_UNITS*/ - UNIT_OFFSET, ExclusiveTextures.MAX_GLES_UNITS - UNIT_OFFSET);
-		int BIND_METHOD = ExclusiveTextures.WEIGHTED;
 		
 		for (int i = 0; i < TEXTURE_COUNT; i++)
 			textures.add(new Texture(Gdx.files.internal(TEXTURES[i%TEXTURES.length])));
 		
-		final StillModel sphereModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/sphere.obj"));
-		final StillModel sceneModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/scene.obj"));
-		final StillModel cubeModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/cube.obj"));
-		final Model testModel = loader.load(Gdx.files.internal("data/g3d/test.g3dj"), null);
+		sphereModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/sphere.obj"));
+		sceneModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/scene.obj"));
+		cubeModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/cube.obj"));
+		testModel = loader.load(Gdx.files.internal("data/g3d/test.g3dj"), null);
 		
 		StillSubMesh mesh = (StillSubMesh)(cubeModel.subMeshes[0]);
 		for (int i = 0; i < textures.size; i++)
-			models.add(new StillModel(new StillSubMesh(mesh.name, mesh.mesh, mesh.primitiveType, new Material("mat", new TextureAttribute(textures.get(i), 0, "")))));
+			cubes.add(new StillModel(new StillSubMesh(mesh.name, mesh.mesh, mesh.primitiveType, new Material("mat", new TextureAttribute(textures.get(i), 0, "")))));
 		
-		/*instances.add(new ModelInstance(sceneModel, new Matrix4()));
-		instances.add(new ModelInstance(testModel, (new Matrix4()).setToTranslation(0, 2, 2)));
-		for (int i = 0; i < 10; i++)
-			instances.add(new ModelInstance(sphereModel, (new Matrix4()).setToTranslation(MIN_X + (float)Math.random() * SIZE_X, MIN_Y + (float)Math.random() * SIZE_Y, MIN_Z + (float)Math.random() * SIZE_Z).scl(0.05f + (float)Math.random())));
-		*/
-		
-		for (int i = 0; i < BOX_COUNT; i++)
-			instances.add(new ModelInstance(models.get((int)(Math.random()*models.size)), (new Matrix4()).setToTranslation(MIN_X + (float)Math.random() * SIZE_X, MIN_Y + (float)Math.random() * SIZE_Y, MIN_Z + (float)Math.random() * SIZE_Z).scl(0.05f + (float)Math.random())));
+		createScene2();
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(10f, 10f, 10f);
@@ -88,6 +86,18 @@ public class BatchRenderTest extends GdxTest {
 		renderBatch = new RenderBatch(exclusiveTextures = new ExclusiveTextures(BIND_METHOD, UNIT_OFFSET, MAX_TEXTURES));
 		
 		Gdx.input.setInputProcessor(this);
+	}
+	
+	public void createScene1() {
+		for (int i = 0; i < BOX_COUNT; i++)
+			instances.add(new ModelInstance(cubes.get((int)(Math.random()*cubes.size)), (new Matrix4()).setToTranslation(MIN_X + (float)Math.random() * SIZE_X, MIN_Y + (float)Math.random() * SIZE_Y, MIN_Z + (float)Math.random() * SIZE_Z).scl(0.05f + (float)Math.random())));
+	}
+	
+	public void createScene2() {
+		instances.add(new ModelInstance(sceneModel, new Matrix4()));
+		instances.add(new ModelInstance(testModel, (new Matrix4()).setToTranslation(0, 2, 2)));
+		for (int i = 0; i < 10; i++)
+			instances.add(new ModelInstance(sphereModel, (new Matrix4()).setToTranslation(MIN_X + (float)Math.random() * SIZE_X, MIN_Y + (float)Math.random() * SIZE_Y, MIN_Z + (float)Math.random() * SIZE_Z).scl(0.05f + (float)Math.random())));		
 	}
 	
 	float dbgTimer = 0f;
