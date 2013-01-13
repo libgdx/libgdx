@@ -29,40 +29,32 @@ public class RenderContext {
 		
 	}
 	
-	public final void enableDepthTest(final int depthFunction) {
-		if (!depthTest) {
-			Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
-			depthTest = true;
+	public final void setDepthTest(final boolean enabled, final int depthFunction) {
+		if (enabled != depthTest) {
+			depthTest = enabled;
+			if (enabled)
+				Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
+			else
+				Gdx.gl.glDisable(GL10.GL_DEPTH_TEST);
 		}
-		if (depthFunc != depthFunction) {
+		if (enabled && depthFunc != depthFunction) {
 			Gdx.gl.glDepthFunc(depthFunction);
 			depthFunc = depthFunction;
 		}
 	}
 	
-	public final void disableDepthTest() {
-		if (depthTest) {
-			Gdx.gl.glDisable(GL10.GL_DEPTH_TEST);
-			depthTest = false;
+	public final void setBlending(final boolean enabled, final int sFactor, final int dFactor) {
+		if (enabled != blending) {
+			blending = enabled;
+			if (enabled)
+				Gdx.gl.glEnable(GL10.GL_BLEND);
+			else
+				Gdx.gl.glDisable(GL10.GL_BLEND);
 		}
-	}
-	
-	public final void enableBlending(final int sFactor, final int dFactor) {
-		if (!blending) {
-			Gdx.gl.glEnable(GL10.GL_BLEND);
-			blending = true;
-		}
-		if (blendSFactor != sFactor || blendDFactor != dFactor) {
+		if (enabled && (blendSFactor != sFactor || blendDFactor != dFactor)) {
 			Gdx.gl.glBlendFunc(sFactor, dFactor);
 			blendSFactor = sFactor;
 			blendDFactor = dFactor;
-		}
-	}
-	
-	public final void disableBlending() {
-		if (blending) {
-			Gdx.gl.glDisable(GL10.GL_BLEND);
-			blending = false;
 		}
 	}
 }
