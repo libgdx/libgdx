@@ -4,6 +4,7 @@
 	<source path="gdx">
 		<include name="graphics/g3d/Animation.java"/>
 		<include name="graphics/g3d/Animator.java"/>
+		<include name="LifecycleListener.java"/>
 		<include name="Application.java"/>
 		<include name="ApplicationAdapter.java"/>
 		<include name="ApplicationListener.java"/>
