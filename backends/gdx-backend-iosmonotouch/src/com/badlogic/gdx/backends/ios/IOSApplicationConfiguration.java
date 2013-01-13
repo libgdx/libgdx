@@ -17,7 +17,7 @@ package com.badlogic.gdx.backends.ios;
 
 public class IOSApplicationConfiguration {
 	// FIXME add compass, framebuffer bit depth, stencil, just like on Android if possible
-	/** wheter to enable screen dimming. */
+	/** whether to enable screen dimming. */
 	public boolean preventScreenDimming = true;
 	/** whether or not portrait orientation is supported. */
 	public boolean orientationPortrait = true;
