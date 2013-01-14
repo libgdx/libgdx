@@ -53,7 +53,12 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	GLU glu;
 
 	void initialize (JoglApplicationConfiguration config) {
-		GLCapabilities caps = new GLCapabilities(GLProfile.getDefault());
+		GLCapabilities caps;
+		if( config.useGL20 ) {
+		    caps = new GLCapabilities(GLProfile.getGL2ES2());
+		} else {
+		    caps = new GLCapabilities(GLProfile.getGL2ES1());
+		}
 		caps.setRedBits(config.r);
 		caps.setGreenBits(config.g);
 		caps.setBlueBits(config.b);
