@@ -3,48 +3,82 @@ package com.badlogic.gdx.graphics.g3d.xoppa.materials;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 
-public interface NewMaterial {
-	/** Returns a bitwise mask indicating the properties of this material */
-	long getMask();
-	
-	public static interface BlendingMaterial extends NewMaterial {
-		public final static long Mask = 1 << 0;
-		public final static String Flag = "blendingFlag";
-		
-		int getBlendSourceFunction();
-		int getBlendDestFunction();
+public class NewMaterial {
+	private static long currentID = 0;
+	protected final static long newMask() { 
+		return 1L << currentID++; 
 	}
 	
-	public static interface DiffuseColorMaterial extends NewMaterial {
-		public final static long Mask = 1 << 1;
-		public final static String Flag = "diffuseColorFlag";
-		public final static String Uniform = "diffuseColor";
-		
-		Color getDiffuseColor();
+	public final static long Blending = newMask();
+	public final static long DiffuseColor = newMask();
+	public final static long SpecularColor = newMask();
+	public final static long EmmisiveColor = newMask();
+	public final static long DiffuseTexture = newMask();
+	
+	protected long mask;
+	
+	protected final void enable(final long mask) {
+		this.mask |= mask; 
+	}
+	protected final void disable(final long mask) {
+		this.mask &= -1 ^ mask;
+	}
+	protected final void toggle(final long mask, boolean enabled) {
+		if (enabled) enable(mask);
+		else disable(mask);
+	}	
+	
+	public final long getMask() {
+		return mask;
+	}
+	/** @return True if this material has the specified property */
+	public final boolean has(final long mask){
+		return (this.mask & mask) == mask;
 	}
 	
-	public static interface SpecularColorMaterial extends NewMaterial {
-		public final static long Mask = 1 << 2;
-		public final static String Flag = "specularColorFlag";
-		public final static String Uniform = "specularColor";
-		
-		Color getSpecularColor();
+	// Blending
+	protected int blendSourceFunction;
+	protected int blendDestFunction;
+	public void setBlending(boolean enabled, int sFunc, int dFunc) {
+		toggle(Blending, enabled);
+		blendSourceFunction = sFunc;
+		blendDestFunction = dFunc;
+	}
+	/** Only applicable if this material {@link #has(long)} {@link #Blending} */
+	public final int getBlendSourceFunction() {
+		return blendSourceFunction;
+	}
+	/** Only applicable if this material {@link #has(long)} {@link #Blending} */
+	public final int getBlendDestFunction() {
+		return blendDestFunction;
 	}
 	
-	public static interface EmmisiveColorMaterial extends NewMaterial {
-		public final static long Mask = 1 << 3;
-		public final static String Flag = "emmisiveColorFlag";
-		public final static String Uniform = "emmisiveColor";
-		
-		Color getEmmisiveColor();
+	// DiffuseColor
+	protected Color diffuseColor = null;
+	public void setDiffuseColor(Color color) {
+		if (color != null) {
+			enable(DiffuseColor);
+			if (diffuseColor == null)
+				diffuseColor = new Color();
+			diffuseColor.set(color);
+		} else
+			disable(DiffuseColor);
+	}
+	/** Only applicable if this material {@link #has(long)} {@link #DiffuseColor} */
+	public final Color getDiffuseColor() {
+		return diffuseColor;
 	}
 	
-	public static interface DiffuseTextureMaterial extends NewMaterial {
-		public final static long Mask = 1 << 4;
-		public final static String Flag = "diffuseTextureFlag";
-		public final static String Uniform = "diffuseTexture";
-		
-		Texture getDiffuseTexture();
+	// DiffuseTexture
+	// TODO add wrap etc.
+	protected Texture diffuseTexture = null;
+	public void setDiffuseTexture(Texture texture) {
+		toggle(DiffuseTexture, texture != null);
+		diffuseTexture = texture;
+	}
+	/** Only applicable if this material {@link #has(long)} {@link #DiffuseTexture} */
+	public final Texture getDiffuseTexture() {
+		return diffuseTexture;
 	}
 	
 	// Etc...
