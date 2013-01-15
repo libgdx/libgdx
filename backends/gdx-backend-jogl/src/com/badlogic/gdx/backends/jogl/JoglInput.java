@@ -57,7 +57,7 @@ public class JoglInput implements Input, MouseListener, KeyListener {
 		int y;
 		int pointer;
 		int button;
-		int scrollAmount;
+		float scrollAmount;
 	}
 
 	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(16, 1000) {
@@ -218,7 +218,7 @@ public class JoglInput implements Input, MouseListener, KeyListener {
 						processor.mouseMoved(e.x, e.y);
 						break;
 					case TouchEvent.TOUCH_SCROLLED:
-						processor.scrolled(e.scrollAmount);
+						processor.scrolled((int) e.scrollAmount);
 						break;
 					}
 					usedTouchEvents.free(e);
@@ -378,7 +378,8 @@ public class JoglInput implements Input, MouseListener, KeyListener {
 			TouchEvent event = usedTouchEvents.obtain();
 			event.pointer = 0;
 			event.type = TouchEvent.TOUCH_SCROLLED;
-			event.scrollAmount = e.getWheelRotation();
+			// JogAmp JOGL NEWT wheel UP == libgdx wheel DOWN
+			event.scrollAmount = -1.0f * e.getWheelRotation();
 			event.timeStamp = System.nanoTime();
 			touchEvents.add(event);
 		}
