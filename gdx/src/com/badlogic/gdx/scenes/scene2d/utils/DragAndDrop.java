@@ -34,7 +34,7 @@ public class DragAndDrop {
 	Target target;
 	boolean isValidTarget;
 	Array<Target> targets = new Array();
-	ObjectMap<Source,DragListener> sourceListeners = new ObjectMap<Source,DragListener>();
+	ObjectMap<Source, DragListener> sourceListeners = new ObjectMap();
 	private float tapSquareSize = 8;
 	private int button;
 	float dragActorX = 14, dragActorY = -20;
@@ -120,10 +120,9 @@ public class DragAndDrop {
 		listener.setTapSquareSize(tapSquareSize);
 		listener.setButton(button);
 		source.actor.addCaptureListener(listener);
-		sourceListeners.put(source,listener);
+		sourceListeners.put(source, listener);
 	}
 
-	/** Deregister the given source. */
 	public void removeSource (Source source) {
 		DragListener dragListener = sourceListeners.remove(source);
 		source.actor.removeCaptureListener(dragListener);
@@ -133,7 +132,6 @@ public class DragAndDrop {
 		targets.add(target);
 	}
 
-	/** Deregister the given target. */
 	public void removeTarget (Target target) {
 		targets.removeValue(target, true);
 	}
