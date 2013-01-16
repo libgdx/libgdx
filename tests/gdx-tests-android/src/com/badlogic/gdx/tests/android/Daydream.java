@@ -28,7 +28,7 @@ public class Daydream extends AndroidDaydream {
 	@Override
 	public void onAttachedToWindow() {
 		super.onAttachedToWindow();
-		
+
 		Log.i("Andrew", "hi");
 
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
