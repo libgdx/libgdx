@@ -3,54 +3,80 @@ package com.badlogic.gdx.graphics.g3d.xoppa.materials;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 
 public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<NewMaterial.Attribute> {
 	/** Extend this class to implement a material attribute.
-	 *  Register the attribute by statically calling the {@link #register(Class)} method, 
-	 *  whose return value should be returned by {@link #getID()} */
+	 *  Register the attribute type by statically calling the {@link #register(String)} method, 
+	 *  whose return value should be used to instantiate the attribute. 
+	 *  A class can implement multiple types*/
 	public static abstract class Attribute {
-		protected final static <T extends Attribute> long register(Class<T> type) {
+		protected static long register(final String type) {
 			return NewMaterial.register(type);
 		}
-		/** @return The ID of this attribute, which is the same for all attributes of the same type */ 
-		protected abstract long getID();
-		protected abstract boolean equals(Attribute other); // Force to implement equals
+		/** The type of this attribute */
+		protected long type;
+		protected Attribute(final long type) {
+			this.type = type;
+		}
+		/** @return The type of material */
+		public final long getType() {
+			return type;
+		}
+		/** @return An exact copy of this attribute */
+		public abstract Attribute copy(); 
+		protected abstract boolean equals(Attribute other);
 		@Override
 		public boolean equals (Object obj) {
 			if (obj == null) return false;
 			if (obj == this) return true;
 			if (!(obj instanceof Attribute)) return false;
 			final Attribute other = (Attribute)obj;
-			if (other.getID() != other.getID()) return false; 
+			if (other.type != other.type) return false; 
 			return equals(other);
 		}
 	}
 	
-	private static Array<Class> registrations = new Array<Class>();
+	/** The registered type aliases */
+	private final static Array<String> types = new Array<String>();
 	
 	/** @return The ID of the specified attribute type, or zero if not available */
-	protected final static <T extends Attribute> long getAttributeID(Class<T> type) {
-		for (int i = 0; i < registrations.size; i++)
-			if (registrations.get(i) == type)
+	protected final static long getAttributeType(final String alias) {
+		for (int i = 0; i < types.size; i++)
+			if (types.get(i).compareTo(alias)==0)
 				return 1L << i;
 		return 0;
 	}
 	
-	/** Use {@link Attribute#register(Class)} instead */ 
-	protected final static <T extends Attribute> long register(Class<T> type) {
-		long result = getAttributeID(type);
+	/** Use {@link Attribute#register(String)} instead */ 
+	protected final static long register(final String alias) {
+		long result = getAttributeType(alias);
 		if (result > 0)
 			return result;
-		registrations.add(type);
-		return 1L << (registrations.size - 1);
+		types.add(alias);
+		return 1L << (types.size - 1);
 	}
 	
 	protected long mask;
 	protected Array<Attribute> attributes = new Array<Attribute>();
 	protected boolean sorted = true;
+	
+	/** Create an empty material */
+	public NewMaterial() {	}
+	/** Create a material with the specified attributes */
+	public NewMaterial(final Attribute... attributes) {
+		add(attributes);
+	}
+	/** Create a material with the specified attributes */
+	public NewMaterial(final Array<Attribute> attributes) {
+		add(attributes);
+	}
+	/** Create a material which is an exact copy of the specified material */
+	public NewMaterial(final NewMaterial copyFrom) {
+		for (Attribute attr : copyFrom)
+			add(attr.copy());
+	}
 	
 	private final void enable(final long mask) {
 		this.mask |= mask; 
@@ -65,23 +91,22 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	}
 	
 	/** @return True if this material has the specified attribute, i.e. material.has(BlendingAttribute.ID); */
-	public final boolean has(final long id) {
-		return id > 0 && (this.mask & id) == id;
+	public final boolean has(final long type) {
+		return type > 0 && (this.mask & type) == type;
 	}
 	
 	/** @deprecated Use {@link #has(long)} instead
 	 * @return True if this material has the specified attribute, i.e. material.has(BlendingAttribute.class); */
-	public final <T extends Attribute> boolean has(final Class<T> type) {
-		return has(getAttributeID(type));
+	public final boolean has(final String type) {
+		return has(getAttributeType(type));
 	}
 	
 	/** Add one or more attributes to this material */
 	public final void add(final Attribute... attributes) {
 		for (int i = 0; i < attributes.length; i++) {
 			final Attribute attr = attributes[i];
-			final long id = attr.getID();
-			if (!has(id)) {
-				enable(id);
+			if (!has(attr.type)) {
+				enable(attr.type);
 				this.attributes.add(attr);
 				sorted = false;
 			}
@@ -92,9 +117,8 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	public final void add(final Array<Attribute> attributes) {
 		for (int i = 0; i < attributes.size; i++) {
 			final Attribute attr = attributes.get(i);
-			final long id = attr.getID();
-			if (!has(id)) {
-				enable(id);
+			if (!has(attr.type)) {
+				enable(attr.type);
 				this.attributes.add(attr);
 				sorted = false;
 			}
@@ -105,10 +129,10 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	 * Can also be used to remove multiple attributes also, i.e. remove(AttributeA.ID | AttributeB.ID); */
 	public final void remove(final long mask) {
 		for (int i = 0; i < attributes.size; i++) {
-			final long id = attributes.get(i).getID();
-			if ((mask & id) == id) {
+			final long type = attributes.get(i).type;
+			if ((mask & type) == type) {
 				attributes.removeIndex(i);
-				disable(id);
+				disable(type);
 				sorted = false;
 			}
 		}
@@ -116,43 +140,36 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	
 	/** @deprecated Use {@link #remove(long)} instead
 	 * Removes the attribute from the material, i.e.: material.remove(BlendingAttribute.class); */
-	public final <T extends Attribute> void remove(final Class<T> type) {
-		final long id = getAttributeID(type);
-		if (has(id)) {
+	public final void remove(final String alias) {
+		final long type = getAttributeType(alias);
+		if (has(type)) {
 			for (int i = 0; i < attributes.size; i++)
-				if (attributes.get(i).getID() == id) {
+				if (attributes.get(i).type == type) {
 					attributes.removeIndex(i);
 					break;
 				}
 			sorted = false;
-			disable(id);
+			disable(type);
 		}
 	}
 	
 	/** Example usage: ((BlendingAttribute)material.get(BlendingAttribute.ID)).sourceFunction;
 	 * @return The attribute (which can safely be cast) if any, otherwise null */
-	public final Attribute get(final long id) {
-		if (has(id))
+	public final Attribute get(final long type) {
+		if (has(type))
 			for (int i = 0; i < attributes.size; i++)
-				if (attributes.get(i).getID() == id)
+				if (attributes.get(i).type == type)
 					return attributes.get(i);
 		return null;
 	}
 	
 	/** Get multiple attributes at once.
 	 * Example: material.get(out, AttributeA.ID | AttributeB.ID | AttributeC.ID); */
-	public final Array<Attribute> get(final Array<Attribute> out, final long id) {
+	public final Array<Attribute> get(final Array<Attribute> out, final long type) {
 		for (int i = 0; i < attributes.size; i++)
-			if ((attributes.get(i).getID() & id) != 0)
+			if ((attributes.get(i).type & type) != 0)
 				out.add(attributes.get(i));
 		return out;
-	}
-	
-	/** @deprecated Use {@link #get(long)} instead
-	 * Example usage: material.get(BlendingAttribute.class).sourceFunction;
-	 * @return The attribute if available, otherwise null */
-	public final <T extends Attribute> T get(final Class<T> type) {
-		return (T)get(getAttributeID(type));
 	}
 	
 	/** Removes all attributes */
@@ -160,11 +177,16 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 		mask = 0;
 		attributes.clear();
 	}
+	
+	/** Create a copy of this material */
+	public final NewMaterial copy() {
+		return new NewMaterial(this); 
+	}
 
 	/** Used for sorting attributes */
 	@Override
 	public final int compare (final Attribute arg0, final Attribute arg1) {
-		return (int)(arg0.getID() - arg1.getID());
+		return (int)(arg0.type - arg1.type);
 	}
 	
 	/** Sort the attributes by their ID */
@@ -204,21 +226,5 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	@Override
 	public final Iterator<Attribute> iterator () {
 		return attributes.iterator();
-	}
-	
-	// Example implementation of an attribute
-	public static class BlendingAttribute extends NewMaterial.Attribute {
-		// The following two lines are required the be implemented in every attribute
-		public final static long ID = register(BlendingAttribute.class);
-		protected final long getID () { return ID; }
-		// Equals is required to be implemented because of comparing materials, param other is guaranteed to be of the same type 
-		@Override
-		protected boolean equals (final Attribute other) {
-			return ((BlendingAttribute)other).sourceFunction == sourceFunction && 
-				((BlendingAttribute)other).destFunction == destFunction; 
-		}
-		// The actual implementation of the attribute
-		public int sourceFunction;
-		public int destFunction;
 	}
 }
