@@ -37,6 +37,7 @@ public class LibraryDef {
 	public final List<String> libsDesktop;
 	public final List<String> libsAndroid;
 	public final List<String> libsHtml;
+	public final List<String> libsIos;
 	public final List<String> data;
 
 	/**
@@ -58,6 +59,7 @@ public class LibraryDef {
 		this.libsDesktop = ParseUtils.parseBlockAsList(content, "libs-desktop");
 		this.libsAndroid = ParseUtils.parseBlockAsList(content, "libs-android");
 		this.libsHtml = ParseUtils.parseBlockAsList(content, "libs-html");
+		this.libsIos = ParseUtils.parseBlockAsList(content, "libs-ios");
 		this.data = ParseUtils.parseBlockAsList(content, "data");
 	}
 }
