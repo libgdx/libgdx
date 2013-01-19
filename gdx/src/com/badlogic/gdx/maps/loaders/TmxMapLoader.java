@@ -212,9 +212,22 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 						TiledMapTile tile = tilesets.getTile(id);
 						if (tile != null) {
 							Cell cell = layer.getCell(x, height - 1 - y);
-							cell.setFlipHorizontally(flipHorizontally);
-							cell.setFlipVertically(flipVertically);
-							cell.setFlipDiagonally(flipDiagonally);
+							if (flipDiagonally) {
+								if (flipHorizontally && flipVertically) {
+									cell.setFlipHorizontally(true);
+									cell.setRotation(-90);
+								} else if (flipHorizontally) {
+									cell.setRotation(-90);
+								} else if (flipVertically) {
+									cell.setRotation(+90);
+								} else {
+									cell.setFlipVertically(true);
+									cell.setRotation(-90);
+								}
+							} else {
+								cell.setFlipHorizontally(flipHorizontally);
+								cell.setFlipVertically(flipVertically);
+							}
 							cell.setTile(tile);
 						}
 					}
@@ -243,9 +256,22 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 								TiledMapTile tile = tilesets.getTile(id);
 								if (tile != null) {
 									Cell cell = layer.getCell(x, height - 1 - y);
-									cell.setFlipHorizontally(flipHorizontally);
-									cell.setFlipVertically(flipVertically);
-									cell.setFlipDiagonally(flipDiagonally);
+									if (flipDiagonally) {
+										if (flipHorizontally && flipVertically) {
+											cell.setFlipHorizontally(true);
+											cell.setRotation(-90);
+										} else if (flipHorizontally) {
+											cell.setRotation(-90);
+										} else if (flipVertically) {
+											cell.setRotation(+90);
+										} else {
+											cell.setFlipVertically(true);
+											cell.setRotation(-90);
+										}
+									} else {
+										cell.setFlipHorizontally(flipHorizontally);
+										cell.setFlipVertically(flipVertically);
+									}
 									cell.setTile(tile);
 								}
 							}
@@ -279,9 +305,22 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 									TiledMapTile tile = tilesets.getTile(id);
 									if (tile != null) {
 										Cell cell = layer.getCell(x, height - 1 - y);
-										cell.setFlipHorizontally(flipHorizontally);
-										cell.setFlipVertically(flipVertically);
-										cell.setFlipDiagonally(flipDiagonally);
+										if (flipDiagonally) {
+											if (flipHorizontally && flipVertically) {
+												cell.setFlipHorizontally(true);
+												cell.setRotation(-90);
+											} else if (flipHorizontally) {
+												cell.setRotation(-90);
+											} else if (flipVertically) {
+												cell.setRotation(+90);
+											} else {
+												cell.setFlipVertically(true);
+												cell.setRotation(-90);
+											}
+										} else {
+											cell.setFlipHorizontally(flipHorizontally);
+											cell.setFlipVertically(flipVertically);
+										}
 										cell.setTile(tile);
 									}
 								} catch (IOException e) {
@@ -316,9 +355,22 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 									TiledMapTile tile = tilesets.getTile(id);
 									if (tile != null) {
 										Cell cell = layer.getCell(x, height - 1 - y);
-										cell.setFlipHorizontally(flipHorizontally);
-										cell.setFlipVertically(flipVertically);
-										cell.setFlipDiagonally(flipDiagonally);
+										if (flipDiagonally) {
+											if (flipHorizontally && flipVertically) {
+												cell.setFlipHorizontally(true);
+												cell.setRotation(-90);
+											} else if (flipHorizontally) {
+												cell.setRotation(-90);
+											} else if (flipVertically) {
+												cell.setRotation(+90);
+											} else {
+												cell.setFlipVertically(true);
+												cell.setRotation(-90);
+											}
+										} else {
+											cell.setFlipHorizontally(flipHorizontally);
+											cell.setFlipVertically(flipVertically);
+										}
 										cell.setTile(tile);
 									}
 			

@@ -59,6 +59,8 @@ public class TiledMapTileLayer extends MapLayer {
 		
 		private boolean flipDiagonally;
 		
+		private float rotation;
+		
 		public TiledMapTile getTile() {
 			return tile;
 		}
@@ -83,14 +85,19 @@ public class TiledMapTileLayer extends MapLayer {
 			this.flipVertically = flipVertically;
 		}
 		
-		public boolean getFlipDiagonally() {
-			return flipDiagonally;
+		
+		public float getRotation() {
+			return rotation;
 		}
 		
-		public void setFlipDiagonally(boolean flipDiagonally) {
-			this.flipDiagonally = flipDiagonally;
+		/**
+		 * Sets the rotation of this cell, in degrees.
+		 * 
+		 * @param rotation
+		 */
+		public void setRotation(float rotation) {
+			this.rotation = rotation;
 		}
-		
 	}
 	
 }

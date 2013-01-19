@@ -154,7 +154,7 @@ public class TiledMapRenderer implements MapRenderer, Disposable {
 							
 							final boolean flipX = cell.getFlipHorizontally();
 							final boolean flipY = cell.getFlipVertically();
-							final boolean rotate = cell.getFlipDiagonally();
+							final float rotate = cell.getRotation();
 							
 							TextureRegion region = tile.getTextureRegion();
 							float drawX = x * layerTileWidth;
@@ -171,33 +171,40 @@ public class TiledMapRenderer implements MapRenderer, Disposable {
 							int sourceWidth = region.getRegionWidth();
 							int sourceHeight = region.getRegionHeight();
 							
-							if (rotate) {
-								if (flipX && flipY) {
-									rotation = -90;
-									sourceX += sourceWidth;
-									sourceWidth = -sourceWidth;
-								} else if (flipX) {
-									rotation = -90;
-									
-								} else if (flipY) {
-									rotation = +90;
-									
-								} else {
-									rotation = -90;
-									sourceY += sourceHeight;
-									sourceHeight = -sourceHeight;
-								}
-							} else {
-								if (flipX) {
-									sourceX += sourceWidth;
-									sourceWidth = -sourceWidth;
-								}
-								if (flipY) {
-									sourceY += sourceHeight;
-									sourceHeight = -sourceHeight;
-								}
+//							if (rotate) {
+//								if (flipX && flipY) {
+//									rotation = -90;
+//									sourceX += sourceWidth;
+//									sourceWidth = -sourceWidth;
+//								} else if (flipX) {
+//									rotation = -90;
+//									
+//								} else if (flipY) {
+//									rotation = +90;
+//									
+//								} else {
+//									rotation = -90;
+//									sourceY += sourceHeight;
+//									sourceHeight = -sourceHeight;
+//								}
+//							} else {
+//								if (flipX) {
+//									sourceX += sourceWidth;
+//									sourceWidth = -sourceWidth;
+//								}
+//								if (flipY) {
+//									sourceY += sourceHeight;
+//									sourceHeight = -sourceHeight;
+//								}
+//							}
+							if (flipX) {
+								sourceX += sourceWidth;
+								sourceWidth = -sourceWidth;
 							}
-
+							if (flipY) {
+								sourceY += sourceHeight;
+								sourceHeight = -sourceHeight;
+							}
 							spriteBatch.draw(
 								region.getTexture(),
 								drawX,
@@ -208,7 +215,7 @@ public class TiledMapRenderer implements MapRenderer, Disposable {
 								height,
 								scaleX,
 								scaleY,
-								rotation,
+								rotate,
 								sourceX,
 								sourceY,
 								sourceWidth,
