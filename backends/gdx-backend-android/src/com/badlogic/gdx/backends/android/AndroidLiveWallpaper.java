@@ -82,7 +82,7 @@ class AndroidLiveWallpaper implements Application {
 	}
 	
 	public void initialize(ApplicationListener listener, AndroidApplicationConfiguration config) {
-		graphics = new AndroidGraphicsLiveWallpaper(this, config.useGL20, config.resolutionStrategy==null?new FillResolutionStrategy():config.resolutionStrategy);
+		graphics = new AndroidGraphicsLiveWallpaper(this, config, config.resolutionStrategy==null?new FillResolutionStrategy():config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, this.getService(), null, config);
 		audio = new AndroidAudio(this.getService(), config);
 		files = new AndroidFiles(this.getService().getAssets(), this.getService().getFilesDir().getAbsolutePath());
