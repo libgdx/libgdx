@@ -57,8 +57,6 @@ public class TiledMapTileLayer extends MapLayer {
 		
 		private boolean flipVertically;
 		
-		private boolean flipDiagonally;
-		
 		private float rotation;
 		
 		public TiledMapTile getTile() {
@@ -84,7 +82,6 @@ public class TiledMapTileLayer extends MapLayer {
 		public void setFlipVertically(boolean flipVertically) {
 			this.flipVertically = flipVertically;
 		}
-		
 		
 		public float getRotation() {
 			return rotation;
