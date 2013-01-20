@@ -29,7 +29,7 @@ public abstract class BaseProjectConfiguration {
 	public boolean isDesktopIncluded = false;
 	public boolean isAndroidIncluded = false;
 	public boolean isHtmlIncluded = false;
-	public boolean isIosIncluded = false;
+	public boolean isIosIncluded = true;
 	public String suffixCommon = "";
 	public String suffixDesktop = "-desktop";
 	public String suffixAndroid = "-android";
