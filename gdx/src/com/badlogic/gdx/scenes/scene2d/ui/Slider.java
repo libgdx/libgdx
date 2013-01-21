@@ -235,7 +235,6 @@ public class Slider extends Widget {
 		if (min >= max) throw new IllegalArgumentException("min must be < max");
 		this.min = min;
 		this.max = max;
-		setValue(min);
 	}
 
 	/** Sets the step size of the slider */
