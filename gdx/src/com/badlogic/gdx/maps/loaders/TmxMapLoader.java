@@ -187,7 +187,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			int width = element.getIntAttribute("width", 0);
 			int height = element.getIntAttribute("height", 0);
 			int tileWidth = element.getParent().getIntAttribute("tilewidth", 0);
-			int tileHeight = element.getParent().getIntAttribute("tilewidth", 0);
+			int tileHeight = element.getParent().getIntAttribute("tileheight", 0);
 			TiledMapTileLayer layer = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
 			layer.setName(name);
 			
@@ -215,14 +215,14 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 							if (flipDiagonally) {
 								if (flipHorizontally && flipVertically) {
 									cell.setFlipHorizontally(true);
-									cell.setRotation(-90);
+									cell.setRotation(Cell.ROTATE_90);
 								} else if (flipHorizontally) {
-									cell.setRotation(-90);
+									cell.setRotation(Cell.ROTATE_90);
 								} else if (flipVertically) {
-									cell.setRotation(+90);
+									cell.setRotation(Cell.ROTATE_270);
 								} else {
 									cell.setFlipVertically(true);
-									cell.setRotation(-90);
+									cell.setRotation(Cell.ROTATE_90);
 								}
 							} else {
 								cell.setFlipHorizontally(flipHorizontally);
@@ -259,14 +259,14 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 									if (flipDiagonally) {
 										if (flipHorizontally && flipVertically) {
 											cell.setFlipHorizontally(true);
-											cell.setRotation(-90);
+											cell.setRotation(Cell.ROTATE_90);
 										} else if (flipHorizontally) {
-											cell.setRotation(-90);
+											cell.setRotation(Cell.ROTATE_90);
 										} else if (flipVertically) {
-											cell.setRotation(+90);
+											cell.setRotation(Cell.ROTATE_270);
 										} else {
 											cell.setFlipVertically(true);
-											cell.setRotation(-90);
+											cell.setRotation(Cell.ROTATE_90);
 										}
 									} else {
 										cell.setFlipHorizontally(flipHorizontally);
@@ -308,14 +308,14 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 										if (flipDiagonally) {
 											if (flipHorizontally && flipVertically) {
 												cell.setFlipHorizontally(true);
-												cell.setRotation(-90);
+												cell.setRotation(Cell.ROTATE_90);
 											} else if (flipHorizontally) {
-												cell.setRotation(-90);
+												cell.setRotation(Cell.ROTATE_90);
 											} else if (flipVertically) {
-												cell.setRotation(+90);
+												cell.setRotation(Cell.ROTATE_270);
 											} else {
 												cell.setFlipVertically(true);
-												cell.setRotation(-90);
+												cell.setRotation(Cell.ROTATE_90);
 											}
 										} else {
 											cell.setFlipHorizontally(flipHorizontally);

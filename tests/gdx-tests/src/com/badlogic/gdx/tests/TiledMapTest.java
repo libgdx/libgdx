@@ -9,16 +9,20 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.loaders.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer2;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer2.IsometricTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class TiledMapTest extends GdxTest {
 	
 	private TiledMap map;
-	private TiledMapRenderer renderer;
+	private TiledMapRenderer2 renderer;
 	private OrthographicCamera camera;
 	private OrthoCamController cameraController;
 	
@@ -48,11 +52,11 @@ public class TiledMapTest extends GdxTest {
 		
 		assetManager = new AssetManager();
 		assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-		assetManager.load("data/maps/tiles.tmx", TiledMap.class);
+		assetManager.load("data/maps/isometric_grass_and_water.tmx", TiledMap.class);
 		assetManager.finishLoading();
-		map = assetManager.get("data/maps/tiles.tmx");
-		renderer = new TiledMapRenderer(map, 1f / 32f);
-
+		map = assetManager.get("data/maps/isometric_grass_and_water.tmx");
+		//renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
+		renderer = new IsometricTiledMapRenderer(map, 1f / 64f);
 	}
 
 	@Override
@@ -64,15 +68,20 @@ public class TiledMapTest extends GdxTest {
 			renderer.setProjectionMatrix(camera.combined);
 			cameraController.dirty = false;
 		}
+		renderer.setViewBounds(camera.position.x - camera.viewportWidth * 0.5f, camera.position.y - camera.viewportHeight * 0.5f, camera.viewportWidth, camera.viewportHeight);
 		renderer.begin();
-		renderer.render(camera);
+		renderer.render();
 		renderer.end();
-		System.out.println("renders: " + renderer.getSpriteBatch().renderCalls);
 		batch.begin();
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20); 
 		batch.end();
 	}
 	
+	@Override
+	public boolean needsGL20 () {
+		return true;
+	}
+
 	public class OrthoCamController extends InputAdapter {
 		final OrthographicCamera camera;
 		final Vector3 curr = new Vector3();
