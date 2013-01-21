@@ -37,7 +37,7 @@ public class TiledMapTest extends GdxTest {
 		float h = Gdx.graphics.getHeight();
 		
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * 320, 320);
+		camera.setToOrtho(false, (w / h) * 10, 10);
 		camera.update();
 		
 		cameraController = new OrthoCamController(camera);
@@ -51,7 +51,7 @@ public class TiledMapTest extends GdxTest {
 		assetManager.load("data/maps/tiles.tmx", TiledMap.class);
 		assetManager.finishLoading();
 		map = assetManager.get("data/maps/tiles.tmx");
-		renderer = new TiledMapRenderer(map);
+		renderer = new TiledMapRenderer(map, 1f / 32f);
 
 	}
 
@@ -67,7 +67,7 @@ public class TiledMapTest extends GdxTest {
 		renderer.begin();
 		renderer.render(camera);
 		renderer.end();
-
+		System.out.println("renders: " + renderer.getSpriteBatch().renderCalls);
 		batch.begin();
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20); 
 		batch.end();

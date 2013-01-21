@@ -159,8 +159,8 @@ public class TiledMapRenderer implements MapRenderer, Disposable {
 							TextureRegion region = tile.getTextureRegion();
 							float drawX = x * layerTileWidth;
 							float drawY = y * layerTileHeight;
-							float width = layerTileWidth;
-							float height = layerTileHeight;
+							float width = region.getRegionWidth() * unitScale;
+							float height = region.getRegionHeight() * unitScale;
 							float originX = width * 0.5f;
 							float originY = height * 0.5f;
 							float scaleX = 1;
@@ -170,33 +170,7 @@ public class TiledMapRenderer implements MapRenderer, Disposable {
 							int sourceY = region.getRegionY();
 							int sourceWidth = region.getRegionWidth();
 							int sourceHeight = region.getRegionHeight();
-							
-//							if (rotate) {
-//								if (flipX && flipY) {
-//									rotation = -90;
-//									sourceX += sourceWidth;
-//									sourceWidth = -sourceWidth;
-//								} else if (flipX) {
-//									rotation = -90;
-//									
-//								} else if (flipY) {
-//									rotation = +90;
-//									
-//								} else {
-//									rotation = -90;
-//									sourceY += sourceHeight;
-//									sourceHeight = -sourceHeight;
-//								}
-//							} else {
-//								if (flipX) {
-//									sourceX += sourceWidth;
-//									sourceWidth = -sourceWidth;
-//								}
-//								if (flipY) {
-//									sourceY += sourceHeight;
-//									sourceHeight = -sourceHeight;
-//								}
-//							}
+
 							if (flipX) {
 								sourceX += sourceWidth;
 								sourceWidth = -sourceWidth;
@@ -205,24 +179,41 @@ public class TiledMapRenderer implements MapRenderer, Disposable {
 								sourceY += sourceHeight;
 								sourceHeight = -sourceHeight;
 							}
-							spriteBatch.draw(
-								region.getTexture(),
-								drawX,
-								drawY,
-								originX,
-								originY,
-								width,
-								height,
-								scaleX,
-								scaleY,
-								rotate,
-								sourceX,
-								sourceY,
-								sourceWidth,
-								sourceHeight,
-								false,
-								false
-							);
+							if (rotation == 0) {
+								spriteBatch.draw(
+									region.getTexture(),
+									drawX,
+									drawY,
+									width,
+									height,
+									sourceX,
+									sourceY,
+									sourceWidth,
+									sourceHeight,
+									false,
+									false
+								);
+							} else {
+								spriteBatch.draw(
+									region.getTexture(),
+									drawX,
+									drawY,
+									originX,
+									originY,
+									width,
+									height,
+									scaleX,
+									scaleY,
+									rotate,
+									sourceX,
+									sourceY,
+									sourceWidth,
+									sourceHeight,
+									false,
+									false
+								);
+							}
+							
 							
 						}
 					}

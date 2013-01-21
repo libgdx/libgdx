@@ -45,6 +45,14 @@ public class TiledMapTileLayer extends MapLayer {
 	public Cell getCell(int x, int y) {
 		return cells[x][y];
 	}
+	
+	/**
+	 * Sets the tile which should be used for the cell in the given location.
+	 * 
+	 * @param x
+	 * @param y
+	 * @param tile
+	 */
 	public void setCell(int x, int y, TiledMapTile tile) {
 		cells[x][y].setTile(tile);
 	}
@@ -59,30 +67,57 @@ public class TiledMapTileLayer extends MapLayer {
 		
 		private float rotation;
 		
+		/**
+		 * @return The tile currently assigned to this cell.
+		 */
 		public TiledMapTile getTile() {
 			return tile;
 		}
 		
+		/**
+		 * Sets the tile to be used for this cell.
+		 * 
+		 * @param tile
+		 */
 		public void setTile(TiledMapTile tile) {
 			this.tile = tile;
 		}
-		
+
+		/**
+		 * @return Whether the tile should be flipped horizontally.
+		 */		
 		public boolean getFlipHorizontally() {
 			return flipHorizontally;
 		}
 		
+		/**
+		 * Sets whether to flip the tile horizontally.
+		 * 
+		 * @param flipHorizontally
+		 */
 		public void setFlipHorizontally(boolean flipHorizontally) {
 			this.flipHorizontally = flipHorizontally;
 		}
 		
+		/**
+		 * @return Whether the tile should be flipped vertically.
+		 */
 		public boolean getFlipVertically() {
 			return flipVertically;
 		}
 		
+		/**
+		 * Sets whether to flip the tile vertically.
+		 * 
+		 * @param flipVertically
+		 */
 		public void setFlipVertically(boolean flipVertically) {
 			this.flipVertically = flipVertically;
 		}
 		
+		/**
+		 * @return The rotation of this cell, in degrees.
+		 */
 		public float getRotation() {
 			return rotation;
 		}
