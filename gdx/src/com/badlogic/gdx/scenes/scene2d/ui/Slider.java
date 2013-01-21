@@ -123,10 +123,11 @@ public class Slider extends Widget {
 			bg.draw(batch, x + (int)((width - bg.getMinWidth()) * 0.5f), y, bg.getMinWidth(), height);
 
 			float sliderPosHeight = height - (bg.getTopHeight() + bg.getBottomHeight());
-			sliderPos = (value - min) / (max - min) * (sliderPosHeight - knob.getMinHeight());
-			sliderPos = Math.max(0, sliderPos);
-			sliderPos = Math.min(sliderPosHeight - knob.getMinHeight(), sliderPos) + bg.getBottomHeight();
-
+			if(min!=max){
+				sliderPos = (value - min) / (max - min) * (sliderPosHeight - knob.getMinHeight());
+				sliderPos = Math.max(0, sliderPos);
+				sliderPos = Math.min(sliderPosHeight - knob.getMinHeight(), sliderPos) + bg.getBottomHeight();
+			}
 			float knobHeightHalf = knob.getMinHeight() * 0.5f;
 			if (knobBefore != null) {
 				knobBefore.draw(batch, x + (int)((width - knobBefore.getMinWidth()) * 0.5f), y, knobBefore.getMinWidth(),
@@ -142,10 +143,12 @@ public class Slider extends Widget {
 			bg.draw(batch, x, y + (int)((height - bg.getMinHeight()) * 0.5f), width, bg.getMinHeight());
 
 			float sliderPosWidth = width - (bg.getLeftWidth() + bg.getRightWidth());
-			sliderPos = (value - min) / (max - min) * (sliderPosWidth - knob.getMinWidth());
-			sliderPos = Math.max(0, sliderPos);
-			sliderPos = Math.min(sliderPosWidth - knob.getMinWidth(), sliderPos) + bg.getLeftWidth();
-
+			if(min != max) {
+				sliderPos = (value - min) / (max - min) * (sliderPosWidth - knob.getMinWidth());
+				sliderPos = Math.max(0, sliderPos);
+				sliderPos = Math.min(sliderPosWidth - knob.getMinWidth(), sliderPos) + bg.getLeftWidth();
+			}
+			
 			float knobHeightHalf = knob.getMinHeight() * 0.5f;
 			if (knobBefore != null) {
 				knobBefore.draw(batch, x, y + (int)((height - knobBefore.getMinHeight()) * 0.5f), (int)(sliderPos + knobHeightHalf),
@@ -209,9 +212,10 @@ public class Slider extends Widget {
 
 	/** Sets the range of this slider. The slider's current value is reset to min. */
 	public void setRange (float min, float max) {
-		if (min >= max) throw new IllegalArgumentException("min must be < max");
+		if (min > max) throw new IllegalArgumentException("min must be <= max");
 		this.min = min;
 		this.max = max;
+		if (value<min || value>max) value = min;
 	}
 
 	/** Sets the step size of the slider */
