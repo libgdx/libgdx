@@ -19,15 +19,22 @@ import java.io.File;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 // FIXME see if we can get classpath files to work
 public class IOSFileHandle extends FileHandle {
 	public IOSFileHandle (String fileName, FileType type) {
 		super(fileName, type);
+		if(type == FileType.Classpath) {
+			throw new GdxRuntimeException("Classpath files are not supported on iOS, this likely happened because you used the default constructor of BitmapFont.");
+		}
 	}
 
 	public IOSFileHandle (File file, FileType type) {
 		super(file, type);
+		if(type == FileType.Classpath) {
+			throw new GdxRuntimeException("Classpath files are not supported on iOS, this likely happened because you used the default constructor of BitmapFont.");
+		}
 	}
 
 	public FileHandle child (String name) {
