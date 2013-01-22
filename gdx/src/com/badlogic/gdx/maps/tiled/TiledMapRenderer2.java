@@ -74,6 +74,7 @@ public interface TiledMapRenderer2 {
 		public BaseTiledMapRenderer(TiledMap map) {
 			this.map = map;
 			this.unitScale = 1;
+			this.spriteBatch = new SpriteBatch();
 			this.viewBounds = new Rectangle();
 		}
 		
@@ -137,27 +138,17 @@ public interface TiledMapRenderer2 {
 		
 		private float[] vertices = new float[20];
 		
-		ShapeRenderer shapeRenderer;
-		
 		public IsometricTiledMapRenderer(TiledMap map) {
 			super(map);
-			shapeRenderer = new ShapeRenderer();
 		}
 		
 		public IsometricTiledMapRenderer(TiledMap map, float unitScale) {
 			super(map, unitScale);
-			shapeRenderer = new ShapeRenderer();
 		}	
 		
 		@Override
 		public void renderObject (MapObject object) {
 			
-		}
-
-		@Override
-		public void setProjectionMatrix (Matrix4 projection) {
-			super.setProjectionMatrix(projection);
-			shapeRenderer.setProjectionMatrix(projection);
 		}
 		
 		@Override
@@ -176,19 +167,12 @@ public interface TiledMapRenderer2 {
 			float halfTileWidth = tileWidth * 0.5f;
 			float halfTileHeight = tileHeight * 0.5f;
 			
-			//shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-			
 			for (int row = row2; row >= row1; row--) {
 				boolean firstCol = true;
 				for (int col = col1; col <= col2; col++) {
 					float x = (col * halfTileWidth) + (row * halfTileWidth);
 					float y = (row * halfTileHeight) - (col * halfTileHeight);
-//					
-//					shapeRenderer.line(x, y + halfTileHeight, x + halfTileWidth, y + tileHeight);
-//					shapeRenderer.line(x + halfTileWidth, y + tileHeight, x + tileWidth, y + halfTileHeight);
-//					shapeRenderer.line(x + tileWidth, y + halfTileHeight, x + halfTileWidth, y);
-//					shapeRenderer.line(x + halfTileWidth, y, x, y + halfTileHeight);
-					
+
 					final TiledMapTileLayer.Cell cell = layer.getCell(col, row);
 					final TiledMapTile tile = cell.getTile();
 					if (tile != null) {
@@ -300,8 +284,6 @@ public interface TiledMapRenderer2 {
 					}					
 				}
 			}
-			
-//			shapeRenderer.end();
 		}
 		
 	}

@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.badlogic.gdx.tests.*;
+import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
 import com.badlogic.gdx.tests.extensions.GLEEDTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
@@ -75,7 +76,7 @@ public class GdxTests {
 		// InternationalFontsTest.class, VorbisTest.class
 		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
-		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GLEEDTest.class, GamepadTest.class, NetAPITest.class, TiledMapTest.class));
+		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GLEEDTest.class, GamepadTest.class, NetAPITest.class, TiledMapTest.class, TiledMapBench.class));
 	
 	public static List<String> getNames () {
 		List<String> names = new ArrayList<String>(tests.size());
