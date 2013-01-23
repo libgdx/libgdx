@@ -11,7 +11,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer2;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer2.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer2.OrthogonalTiledMapRenderer2;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector3;
@@ -20,7 +22,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class TiledMapBench extends GdxTest {
 	
 	private TiledMap map;
-	private OrthogonalTiledMapRenderer renderer;
+	private TiledMapRenderer2 renderer;
 	private OrthographicCamera camera;
 	private OrthoCamController cameraController;
 	
@@ -53,7 +55,7 @@ public class TiledMapBench extends GdxTest {
 			TextureRegion[][] splitTiles = TextureRegion.split(tiles, 32, 32);
 			map = new TiledMap();
 			MapLayers layers = map.getLayers();
-			for (int l = 0; l < 5; l++) {
+			for (int l = 0; l < 20; l++) {
 				TiledMapTileLayer layer = new TiledMapTileLayer(150, 100, 32, 32);
 				for (int x = 0; x < 150; x++) {
 					for (int y = 0; y < 100; y++) {
@@ -66,7 +68,7 @@ public class TiledMapBench extends GdxTest {
 			}
 		}
 		
-		renderer = new OrthogonalTiledMapRenderer(map);
+		renderer = new OrthogonalTiledMapRenderer2(map);
 
 	}
 
@@ -74,10 +76,11 @@ public class TiledMapBench extends GdxTest {
 	public void render() {
 		Gdx.gl.glClearColor(100f / 255f, 100f / 255f, 250f / 255f, 1f);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		camera.update();
 		if (cameraController.dirty) {
+			camera.update();
 			renderer.setProjectionMatrix(camera.combined);
 			cameraController.dirty = false;
+			((OrthogonalTiledMapRenderer2) renderer).recache = true;
 		}
 		renderer.setViewBounds(camera.position.x - camera.viewportWidth * 0.5f, camera.position.y - camera.viewportHeight * 0.5f, camera.viewportWidth, camera.viewportHeight);
 		renderer.begin();
@@ -118,6 +121,12 @@ public class TiledMapBench extends GdxTest {
 			last.set(-1, -1, -1);
 			return false;
 		}
+	}
+
+	@Override
+	public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }
