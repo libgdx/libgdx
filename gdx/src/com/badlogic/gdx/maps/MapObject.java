@@ -1,14 +1,14 @@
 package com.badlogic.gdx.maps;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class MapObject {
 
-	private String name;
-	
-	private float opacity;
-	
-	private boolean visible;
-	
-	private MapProperties properties;
+	private String name = "";
+	private float opacity = 1.0f;
+	private boolean visible = true;
+	private MapProperties properties = new MapProperties();
+	private Color color = Color.WHITE.cpy();
 	
 	public String getName() {
 		return name;
@@ -18,6 +18,14 @@ public class MapObject {
 		this.name = name;
 	}
 	
+	public Color getColor() {
+		return color;
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
 	public float getOpacity() {
 		return opacity;
 	}
@@ -39,8 +47,7 @@ public class MapObject {
 	}
 	
 	public MapObject() {
-		visible = true;
-		properties = new MapProperties();
+		
 	}
 	
 }

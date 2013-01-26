@@ -11,6 +11,10 @@ public class RectangleMapObject extends MapObject {
 		return rectangle;
 	}
 	
+	public RectangleMapObject() {
+		this(0.0f, 0.0f, 1.0f, 1.0f);
+	}
+	
 	public RectangleMapObject(float x, float y, float width, float height) {
 		super();
 		rectangle = new Rectangle(x, y, width, height);

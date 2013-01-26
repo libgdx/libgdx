@@ -2,9 +2,8 @@ package com.badlogic.gdx.maps;
 
 public class Map {
 	
-	private MapLayers layers;
-	
-	private MapProperties properties;
+	private MapLayers layers = new MapLayers();
+	private MapProperties properties = new MapProperties();
 	
 	public MapLayers getLayers() {
 		return layers;
@@ -15,8 +14,7 @@ public class Map {
 	}
 	
 	public Map() {
-		layers = new MapLayers();
-		properties = new MapProperties();
+		
 	}
 	
 }

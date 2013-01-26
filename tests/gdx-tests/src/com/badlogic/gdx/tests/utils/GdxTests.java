@@ -35,7 +35,6 @@ import java.util.List;
 
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
-import com.badlogic.gdx.tests.extensions.GLEEDTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.net.NetAPITest;
