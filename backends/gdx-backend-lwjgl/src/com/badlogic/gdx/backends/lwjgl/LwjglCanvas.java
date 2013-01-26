@@ -41,6 +41,7 @@ import com.badlogic.gdx.backends.openal.OpenALAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. All OpenGL calls are done on the
  * EDT. This is slightly less efficient then a dedicated thread, but greatly simplifies synchronization. Note that you may need to
@@ -79,7 +80,14 @@ public class LwjglCanvas implements Application {
 
 			public final void addNotify () {
 				super.addNotify();
-				create();
+				if (SharedLibraryLoader.isMac) {
+					EventQueue.invokeLater(new Runnable() {
+						public void run () {
+							create();
+						}
+					});
+				} else
+					create();
 			}
 
 			public final void removeNotify () {
@@ -265,8 +273,8 @@ public class LwjglCanvas implements Application {
 				} catch (Throwable ignored) {
 				}
 				Array<LifecycleListener> listeners = lifecycleListeners;
-				synchronized(listeners) {
-					for(LifecycleListener listener: listeners) {
+				synchronized (listeners) {
+					for (LifecycleListener listener : listeners) {
 						listener.pause();
 						listener.dispose();
 					}
@@ -377,18 +385,18 @@ public class LwjglCanvas implements Application {
 	public void setCursor (Cursor cursor) {
 		this.cursor = cursor;
 	}
-	
+
 	@Override
 	public void addLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.add(listener);
 		}
 	}
 
 	@Override
 	public void removeLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
-		}		
+		}
 	}
 }
