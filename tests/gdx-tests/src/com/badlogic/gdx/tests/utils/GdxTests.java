@@ -38,6 +38,7 @@ import com.badlogic.gdx.tests.examples.MoveSpriteExample;
 import com.badlogic.gdx.tests.extensions.GLEEDTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
+import com.badlogic.gdx.tests.net.NetAPITest;
 
 /** List of GdxTest classes. To be used by the test launchers. If you write your own test, add it in here!
  * 
@@ -74,7 +75,8 @@ public class GdxTests {
 		// InternationalFontsTest.class, VorbisTest.class
 		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
-		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GLEEDTest.class, GamepadTest.class));
+		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GLEEDTest.class, GamepadTest.class, NetAPITest.class,
+		RunnablePostTest.class));
 	
 	public static List<String> getNames () {
 		List<String> names = new ArrayList<String>(tests.size());

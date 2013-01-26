@@ -114,12 +114,14 @@ public class PreviewPanel extends javax.swing.JPanel {
 			DefaultMutableTreeNode desktopPrjNode = nodes.get("#DIR#prj-desktop");
 			DefaultMutableTreeNode androidPrjNode = nodes.get("#DIR#prj-android");
 			DefaultMutableTreeNode htmlPrjNode = nodes.get("#DIR#prj-html");
+                        DefaultMutableTreeNode iosPrjNode = nodes.get("#DIR#prj-ios");
 
 			rootNode.removeAllChildren();
 			rootNode.add(commonPrjNode);
 			if (Ctx.cfgSetup.isDesktopIncluded) rootNode.add(desktopPrjNode);
 			if (Ctx.cfgSetup.isAndroidIncluded) rootNode.add(androidPrjNode);
 			if (Ctx.cfgSetup.isHtmlIncluded) rootNode.add(htmlPrjNode);
+                        if (Ctx.cfgSetup.isIosIncluded) rootNode.add(iosPrjNode);
 
 			updateSrc();
 			updateLibs();
@@ -222,6 +224,7 @@ public class PreviewPanel extends javax.swing.JPanel {
 			DefaultMutableTreeNode desktopLibsNode = nodes.get("#DIR#prj-desktop/libs");
 			DefaultMutableTreeNode androidLibsNode = nodes.get("#DIR#prj-android/libs");
 			DefaultMutableTreeNode htmlLibsNode = nodes.get("#DIR#prj-html/war/WEB-INF/lib");
+                        DefaultMutableTreeNode iosLibsNode = nodes.get("#DIR#prj-ios/libs");
 			DefaultMutableTreeNode dataNode = nodes.get("#DIR#prj-android/assets");
 
 			commonLibsNode.removeAllChildren();
@@ -236,7 +239,8 @@ public class PreviewPanel extends javax.swing.JPanel {
 				for (String path : def.libsDesktop) pathToNodes(path, desktopLibsNode);
 				for (String path : def.libsAndroid) pathToNodes(path, androidLibsNode);
 				for (String path : def.libsHtml) pathToNodes(path, htmlLibsNode);
-				for (String path : def.data) pathToNodes(path, dataNode);
+                                for (String path : def.libsIos) pathToNodes(path, iosLibsNode);
+				for (String path : def.data) pathToNodes(path, dataNode);                              
 			}
 		}
 
@@ -279,6 +283,7 @@ public class PreviewPanel extends javax.swing.JPanel {
 					if (isDir && name.equals("prj-desktop")) name = Ctx.cfgSetup.projectName + Ctx.cfgSetup.suffixDesktop;
 					if (isDir && name.equals("prj-android")) name = Ctx.cfgSetup.projectName + Ctx.cfgSetup.suffixAndroid;
 					if (isDir && name.equals("prj-html")) name = Ctx.cfgSetup.projectName + Ctx.cfgSetup.suffixHtml;
+                                        if (isDir && name.equals("prj-ios")) name = Ctx.cfgSetup.projectName + Ctx.cfgSetup.suffixIos;
 
 					label.setText(FilenameUtils.getName(name));
 					label.setIcon(isDir ? Res.getImage("gfx/ic_folder.png") : Res.getImage("gfx/ic_file.png"));
