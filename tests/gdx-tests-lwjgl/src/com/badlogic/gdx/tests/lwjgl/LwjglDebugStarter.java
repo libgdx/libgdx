@@ -40,4 +40,6 @@ public class LwjglDebugStarter {
 		config.useGL20 = test.needsGL20();
 		new LwjglApplication(test, config);
 	}
+	
+	
 }
