@@ -139,6 +139,7 @@ public class Slider extends Widget {
 				sliderPos = Math.max(0, sliderPos);
 				sliderPos = Math.min(sliderPosHeight - knobHeight, sliderPos) + bg.getBottomHeight();
 			}
+
 			float knobHeightHalf = knobHeight * 0.5f;
 			if (knobBefore != null) {
 				knobBefore.draw(batch, x + (int)((width - knobBefore.getMinWidth()) * 0.5f), y, knobBefore.getMinWidth(),
@@ -158,6 +159,7 @@ public class Slider extends Widget {
 				sliderPos = Math.max(0, sliderPos);
 				sliderPos = Math.min(sliderPosWidth - knobWidth, sliderPos) + bg.getLeftWidth();
 			}
+
 			float knobHeightHalf = knobHeight * 0.5f;
 			if (knobBefore != null) {
 				knobBefore.draw(batch, x, y + (int)((height - knobBefore.getMinHeight()) * 0.5f), (int)(sliderPos + knobHeightHalf),
@@ -211,7 +213,7 @@ public class Slider extends Widget {
 
 	/** If {@link #setAnimateDuration(float) animating} the slider value, this returns the value current displayed. */
 	public float getVisualValue () {
-		if (animateTime > 0) return animateInterpolation.apply(animateFromValue, value, animateTime / animateDuration);
+		if (animateTime > 0) return animateInterpolation.apply(animateFromValue, value, 1 - animateTime / animateDuration);
 		return value;
 	}
 
@@ -221,13 +223,14 @@ public class Slider extends Widget {
 		value = MathUtils.clamp(Math.round(value / stepSize) * stepSize, min, max);
 		float oldValue = this.value;
 		if (value == oldValue) return;
+		float oldVisualValue = getVisualValue();
 		this.value = value;
 		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 		if (fire(changeEvent))
 			this.value = oldValue;
 		else if (animateDuration > 0) {
+			animateFromValue = oldVisualValue;
 			animateTime = animateDuration;
-			animateFromValue = getVisualValue();
 		}
 		Pools.free(changeEvent);
 	}
