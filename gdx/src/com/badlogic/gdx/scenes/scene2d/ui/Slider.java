@@ -209,7 +209,7 @@ public class Slider extends Widget {
 
 	/** If {@link #setAnimateDuration(float) animating} the slider value, this returns the value current displayed. */
 	public float getVisualValue () {
-		if (animateTime > 0) return animateInterpolation.apply(animateFromValue, value, animateTime / animateDuration);
+		if (animateTime > 0) return animateInterpolation.apply(animateFromValue, value, 1 - animateTime / animateDuration);
 		return value;
 	}
 
@@ -219,13 +219,14 @@ public class Slider extends Widget {
 		value = MathUtils.clamp(Math.round(value / stepSize) * stepSize, min, max);
 		float oldValue = this.value;
 		if (value == oldValue) return;
+		float oldVisualValue = getVisualValue();
 		this.value = value;
 		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 		if (fire(changeEvent))
 			this.value = oldValue;
 		else if (animateDuration > 0) {
+			animateFromValue = oldVisualValue;
 			animateTime = animateDuration;
-			animateFromValue = getVisualValue();
 		}
 		Pools.free(changeEvent);
 	}
