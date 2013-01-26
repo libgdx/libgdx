@@ -168,18 +168,14 @@ public class LwjglApplication implements Application {
 				executedRunnables.clear();
 				executedRunnables.addAll(runnables);
 				runnables.clear();
-
-				for (int i = 0; i < executedRunnables.size; i++) {
-					shouldRender = true;
-					try {
-						executedRunnables.get(i).run();
-					} catch (Throwable t) {
-						t.printStackTrace();
-					}
-				}
 			}
 
-			// If one of the runnables set running in false, for example after an exit().
+			for (int i = 0; i < executedRunnables.size; i++) {
+				shouldRender = true;
+				executedRunnables.get(i).run(); // calls out to random app code that could do anything ...
+			}
+
+			// If one of the runnables set running to false, for example after an exit().
 			if (!running) break;
 
 			input.update();
