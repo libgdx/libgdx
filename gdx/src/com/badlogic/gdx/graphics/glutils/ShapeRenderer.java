@@ -73,6 +73,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * shapes until they are changed.
  * 
  * @author mzechner */
+/**
+ * @author Stefan
+ *
+ */
 public class ShapeRenderer {
 	/** Shape types to be used with {@link #begin(ShapeType)}.
 	 * @author mzechner */
@@ -679,6 +683,11 @@ public class ShapeRenderer {
 		ShapeType type = currType;
 		end();
 		begin(type);
+	}
+	
+	/** Returns the current {@link ShapeType} used */
+	public ShapeType getCurrentType () {
+		return currType;
 	}
 
 	public void dispose () {
