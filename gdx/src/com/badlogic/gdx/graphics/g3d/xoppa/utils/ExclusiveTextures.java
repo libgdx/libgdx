@@ -21,7 +21,7 @@ public final class ExclusiveTextures {
 	/** The weight added to a texture when its reused */
 	private final int reuseWeight;
 	/** The textures currently exclusive bound */
-	private final Texture[] textures;
+	private final TextureDescription[] textures;
 	/** The weight (reuseWeight * reused - discarded) of the textures */
 	private final int[] weights;
 	/** The method of binding to use */
@@ -54,25 +54,44 @@ public final class ExclusiveTextures {
 		this.method = method;
 		this.offset = offset;
 		this.count = count;
-		this.textures = new Texture[count];
+		this.textures = new TextureDescription[count];
+		for (int i = 0; i < count; i++)
+			this.textures[i] = new TextureDescription();
 		this.reuseWeight = reuseWeight;
 		this.weights = (method == WEIGHTED) ? new int[count] : null;
 	}
+
+	private final TextureDescription tempDesc = new TextureDescription();
+	/** @deprecated
+	 * Binds the texture if needed and sets it active, returns the unit */
+	public final int bindTexture(final Texture texture) {
+		tempDesc.reset();
+		tempDesc.texture = texture;
+		return bindTexture(tempDesc, false);
+	}
 	
 	/** Binds the texture if needed and sets it active, returns the unit */
-	public final int bindTexture(final Texture texture) {
-		return bindTexture(texture, false);
+	public final int bindTexture(final TextureDescription textureDesc) {
+		return bindTexture(textureDesc, false);
+	}
+
+	/** @deprecated 
+	 * Force binds the texture and sets it active, returns the unit */
+	public final int rebindTexture(final Texture texture) {
+		tempDesc.reset();
+		tempDesc.texture = texture;
+		return bindTexture(tempDesc, true);
 	}
 	
 	/** Force binds the texture and sets it active, returns the unit */
-	public final int rebindTexture(final Texture texture) {
-		return bindTexture(texture, false);
+	public final int rebindTexture(final TextureDescription textureDesc) {
+		return bindTexture(textureDesc, true);
 	}
 	
 	/** Removes the reference to the texture, to assure that it will be rebound at the next bind call */
 	public final void unbindTexture(final Texture texture) {
 		for (int i = 0; i < count; i++) {
-			if (textures[i] == texture) {
+			if (textures[i].texture == texture) {
 				textures[i] = null;
 				weights[i] = 0;
 				return;
@@ -80,24 +99,32 @@ public final class ExclusiveTextures {
 		}
 	}
 	
-	private final int bindTexture(final Texture texture, final boolean rebind) {
-		int result;
+	private final int bindTexture(final TextureDescription textureDesc, final boolean rebind) {
+		int idx, result;
 		reused = false;
 		
 		switch (method) {
-		case ROUNDROBIN: result = bindTextureRoundRobin(texture); break;
-		case WEIGHTED: result = bindTextureWeighted(texture); break;
+		case ROUNDROBIN: result = offset + (idx = bindTextureRoundRobin(textureDesc.texture)); break;
+		case WEIGHTED: result = offset + (idx = bindTextureWeighted(textureDesc.texture)); break;
 		default: return -1; 
 		}
 		
 		if (reused) {
 			reuseCount++;
 			if (rebind)
-				texture.bind(result);
+				textureDesc.texture.bind(result);
 			else
 				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0 + result);
 		} else
 			bindCount++;
+		if (textureDesc.minFilter != GL10.GL_INVALID_VALUE && textureDesc.minFilter != textures[idx].minFilter)
+			Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, textures[idx].minFilter = textureDesc.minFilter);
+		if (textureDesc.magFilter != GL10.GL_INVALID_VALUE && textureDesc.magFilter != textures[idx].magFilter)
+			Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, textures[idx].magFilter = textureDesc.magFilter);
+		if (textureDesc.uWrap != GL10.GL_INVALID_VALUE && textureDesc.uWrap != textures[idx].uWrap)
+			Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, textures[idx].uWrap = textureDesc.uWrap);
+		if (textureDesc.vWrap != GL10.GL_INVALID_VALUE && textureDesc.vWrap != textures[idx].vWrap)
+			Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, textures[idx].vWrap = textureDesc.vWrap);
 		return result;
 	}
 
@@ -105,15 +132,15 @@ public final class ExclusiveTextures {
 	private final int bindTextureRoundRobin(final Texture texture) {
 		for (int i = 0; i < count; i++) {
 			final int idx = (currentTexture + i) % count;
-			if (textures[idx] == texture) {
+			if (textures[idx].texture == texture) {
 				reused = true;
-				return offset + idx;
+				return idx;
 			}
 		}
 		currentTexture = (currentTexture + 1) % count;
-		textures[currentTexture] = texture;
+		textures[currentTexture].texture = texture;
 		texture.bind(offset + currentTexture);
-		return offset + currentTexture;
+		return currentTexture;
 	}
 	
 	private final int bindTextureWeighted(final Texture texture) {
@@ -121,8 +148,8 @@ public final class ExclusiveTextures {
 		int weight = weights[0];
 		int windex = 0;
 		for (int i = 0; i < count; i++) {
-			if (textures[i] == texture) {
-				result = offset + i;
+			if (textures[i].texture == texture) {
+				result = i;
 				weights[i]+=reuseWeight;
 			} else if (weights[i] < 0 || --weights[i] < weight) {
 				weight = weights[i];
@@ -130,9 +157,9 @@ public final class ExclusiveTextures {
 			}
 		}
 		if (result < 0) {
-			textures[windex] = texture;
+			textures[windex].texture = texture;
 			weights[windex] = 100;
-			texture.bind(result = offset + windex);
+			texture.bind(offset + (result = windex));
 		} else 
 			reused = true;
 		return result;

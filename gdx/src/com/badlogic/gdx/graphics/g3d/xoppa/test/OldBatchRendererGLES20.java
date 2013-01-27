@@ -106,7 +106,7 @@ public class OldBatchRendererGLES20 implements OldBatchRenderer {
 	/////// bindMaterial /////////
 	Material currentMaterial;
 	private final void bindMaterial(final GL20 gl, final Camera camera, final RenderInstance instance) {
-		if (currentMaterial == instance.material)
+		/*if (currentMaterial == instance.material)
 			return;
 		currentMaterial = instance.material;
 		for (MaterialAttribute attr : currentMaterial) {
@@ -114,7 +114,7 @@ public class OldBatchRendererGLES20 implements OldBatchRenderer {
 				bindTextureAttribute(gl, (TextureAttribute)attr);
 			else
 				attr.bind(currentShader);
-		}
+		}*/
 	}
 
 	/////// bindTextureAttribute /////////
@@ -137,14 +137,14 @@ public class OldBatchRendererGLES20 implements OldBatchRenderer {
 	private Mesh currentMesh;
 	private Matrix4 currentTransform;
 	private final void renderMesh(final GL20 gl, final Camera camera, final RenderInstance instance) {
-		if (currentMesh != instance.mesh || shaderChanged) {
+		if (currentMesh != instance.renderable.mesh || shaderChanged) {
 			if (currentMesh != null)
 				currentMesh.unbind(shaderChanged ? previousShader : currentShader);
-			(currentMesh = instance.mesh).bind(currentShader);
+			(currentMesh = instance.renderable.mesh).bind(currentShader);
 		}
 		if (currentTransform != instance.transform || shaderChanged)
 			currentShader.setUniformMatrix(MODEL_TRANSFORM, currentTransform = instance.transform);
-		instance.mesh.render(currentShader, instance.primitiveType);
+		instance.renderable.mesh.render(currentShader, instance.renderable.primitiveType);
 	}
 
 	/////// begin /////////

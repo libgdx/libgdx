@@ -5,6 +5,10 @@ import com.badlogic.gdx.graphics.g3d.xoppa.materials.NewMaterial.Attribute;
 public class BlendingAttribute extends NewMaterial.Attribute {
 	public final static String Alias = "blended";
 	public final static long Type = register(Alias);
+	
+	public final static boolean is(final long mask) {
+		return (mask & Type) == mask;
+	}
  
 	public int sourceFunction;
 	public int destFunction;
