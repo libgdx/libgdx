@@ -6,12 +6,12 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class DefaultShader extends TestShader {
 // TODO implement a default shader, for now it's just a stub to TestShader
-	public DefaultShader () {
-		super();
+	public DefaultShader (long mask) {
+		super(mask);
 		// TODO Auto-generated constructor stub
 	}
 
-	public DefaultShader (ShaderProgram program) {
+	/* public DefaultShader (ShaderProgram program) {
 		super(program);
 		// TODO Auto-generated constructor stub
 	}
@@ -19,6 +19,6 @@ public class DefaultShader extends TestShader {
 	public DefaultShader (String vertexShader, String fragmentShader) {
 		super(vertexShader, fragmentShader);
 		// TODO Auto-generated constructor stub
-	}
+	}*/
 
 }

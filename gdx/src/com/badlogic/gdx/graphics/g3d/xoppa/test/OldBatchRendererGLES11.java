@@ -126,11 +126,11 @@ public class OldBatchRendererGLES11 implements OldBatchRenderer {
 
 		for (int i = 0; i < instances.size; i++) {
 			final RenderInstance instance = instances.get(i);
-			setMaterial(gl, instance.material);
+			// setMaterial(gl, instance.material);
 			//if (instance.mesh != currentMesh) { // uncomment for GLES20
 				if (currentMesh != null)
 					currentMesh.unbind();
-				currentMesh = instance.mesh;
+				currentMesh = instance.renderable.mesh;
 				VertexAttribute a = currentMesh.getVertexAttribute(Usage.TextureCoordinates);
 				if (a != null)
 					a.alias = ShaderProgram.TEXCOORD_ATTRIBUTE + currentTexture;
@@ -138,7 +138,7 @@ public class OldBatchRendererGLES11 implements OldBatchRenderer {
 			//}
 			gl.glPushMatrix();
 			gl.glMultMatrixf(instance.transform.val, 0);
-			instance.mesh.render(instance.primitiveType);
+			instance.renderable.mesh.render(instance.renderable.primitiveType);
 			gl.glPopMatrix();
 		}
 		if (currentMesh != null) {
