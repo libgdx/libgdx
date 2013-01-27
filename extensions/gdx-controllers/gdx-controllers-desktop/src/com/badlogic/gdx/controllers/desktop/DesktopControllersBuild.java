@@ -86,7 +86,7 @@ public class DesktopControllersBuild {
 		mac.libraries = "-framework CoreServices -framework Carbon -framework IOKit -framework Cocoa";
 		
 		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac);
-		if(!BuildExecutor.executeAnt("jni/build-macosx32.xml", "-Dhas-compiler=true -v clean postcompile")) {
+		if(!BuildExecutor.executeAnt("jni/build-macosx32.xml", "-Dhas-compiler=true -v postcompile")) {
 			throw new Exception("build failed");
 		}
 		BuildExecutor.executeAnt("jni/build.xml", "pack-natives");
