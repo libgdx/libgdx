@@ -13,8 +13,16 @@ public class ColorAttribute extends NewMaterial.Attribute {
 	// Might be useful:...
 	protected static long Mask = Diffuse | Specular;
 	
+	public final static boolean is(final long mask) {
+		return (mask & Mask) != 0;
+	}
+	
 	public final static ColorAttribute createDiffuse(final Color color) {
 		return new ColorAttribute(Diffuse, color);
+	}
+	
+	public final static ColorAttribute createSpecular(final Color color) {
+		return new ColorAttribute(Specular, color);
 	}
 	
 	public final Color color = new Color();
@@ -25,7 +33,7 @@ public class ColorAttribute extends NewMaterial.Attribute {
 	
 	public ColorAttribute(final long type, final Color color) {
 		super(type);
-		if ((Mask & type) != type)
+		if (!is(type))
 			throw new GdxRuntimeException("Invalid type specified");
 		if (color != null)
 			this.color.set(color);
