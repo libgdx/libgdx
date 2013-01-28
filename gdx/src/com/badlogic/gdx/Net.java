@@ -97,7 +97,6 @@ public interface Net {
 	 * <ul>
 	 * <li>GET</li>
 	 * <li>POST</li>
-	 * <li>JSON</li>
 	 * </ul> */
 	public static interface HttpMethods {
 

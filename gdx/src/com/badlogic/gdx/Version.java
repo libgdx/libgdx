@@ -20,6 +20,6 @@ package com.badlogic.gdx;
  * 
  * @author mzechner */
 public class Version {
-	/** the current version of libgdx in the major.minor format **/
+	/** the current version of libgdx in the major.minor.minorer format **/
 	public static String VERSION = "0.9.9";
 }
