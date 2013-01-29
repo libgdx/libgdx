@@ -190,7 +190,7 @@ public class Array<T> implements Iterable<T> {
 	 * Returns an index of last occurrence of value in array or -1 if no such value exists.
 	 * Search is started from the end of an array.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
-	 * @return An index of first occurrence of value in array or -1 if no such value exists
+	 * @return An index of last occurrence of value in array or -1 if no such value exists
 	 */
 	public int lastIndexOf (T value, boolean identity) {
 		T[] items = this.items;
