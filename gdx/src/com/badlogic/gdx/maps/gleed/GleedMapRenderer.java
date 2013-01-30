@@ -1,5 +1,6 @@
 package com.badlogic.gdx.maps.gleed;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -22,7 +23,7 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 	private GleedMap m_map;
 	private SpriteBatch m_batch;
 	private boolean m_ownSpriteBatch;
-	private float m_mpp;
+	private float m_units;
 	
 	// Aux data for fustrum culling
 	private Rectangle m_box = new Rectangle();
@@ -37,9 +38,9 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 		m_ownSpriteBatch = true;
 	}
 	
-	public GleedMapRenderer(GleedMap map, SpriteBatch batch, float mpp) {
+	public GleedMapRenderer(GleedMap map, SpriteBatch batch, float units) {
 		m_map = map;
-		m_mpp = mpp;
+		m_units = units;
 		if (batch != null) {
 			m_batch = batch;
 			m_ownSpriteBatch = false;
@@ -72,7 +73,7 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 		m_cameraRectangle.y = camera.position.y - camera.viewportHeight * 0.5f * camera.zoom;
 		m_cameraRectangle.width = camera.viewportWidth *  camera.zoom;
 		m_cameraRectangle.height = camera.viewportHeight *  camera.zoom;
-
+		
 		setProjectionMatrix(camera.combined);
 		
 		MapLayers layers = m_map.getLayers();
@@ -167,19 +168,19 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 					 texture.getScaleY() == 1.0f) {
 					
 					m_batch.draw(texture.getTextureRegion(),
-									 texture.getX() * m_mpp - texture.getOriginX(),
-									 texture.getY() * m_mpp - texture.getOriginY());
+									 texture.getX() * m_units - texture.getOriginX(),
+									 texture.getY() * m_units - texture.getOriginY());
 				}
 				else {
 					m_batch.draw(texture.getTextureRegion(),
-									 texture.getX() * m_mpp - texture.getOriginX(),
-									 texture.getY() * m_mpp - texture.getOriginY(),
+									 texture.getX() * m_units - texture.getOriginX(),
+									 texture.getY() * m_units - texture.getOriginY(),
 									 texture.getOriginX(),
 									 texture.getOriginY(),
 									 texture.getTextureRegion().getRegionWidth(),
 									 texture.getTextureRegion().getRegionHeight(),
-									 texture.getScaleX() * m_mpp,
-									 texture.getScaleY() * m_mpp,
+									 texture.getScaleX() * m_units,
+									 texture.getScaleY() * m_units,
 									 -MathUtils.radiansToDegrees * texture.getRotation());
 				}
 			}
@@ -189,9 +190,9 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 	private void setBounds(TextureMapObject texture) {
 		TextureRegion region = texture.getTextureRegion();
 		
-		float x1 = -region.getRegionWidth() * 0.5f * m_mpp * texture.getScaleX();
+		float x1 = -region.getRegionWidth() * 0.5f * m_units * texture.getScaleX();
 		float x2 = -x1;
-		float y1 = -region.getRegionHeight() * 0.5f * m_mpp * texture.getScaleY();
+		float y1 = -region.getRegionHeight() * 0.5f * m_units * texture.getScaleY();
 		float y2 = -y1;
 		
 		float rotation = texture.getRotation();
@@ -231,14 +232,14 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 		float posX = texture.getX();
 		float posY = texture.getY();
 		
-		m_a.x += posX * m_mpp;
-		m_a.y += posY * m_mpp;
-		m_b.x += posX * m_mpp;
-		m_b.y += posY * m_mpp;
-		m_c.x += posX * m_mpp;
-		m_c.y += posY * m_mpp;
-		m_d.x += posX * m_mpp;
-		m_d.y += posY * m_mpp;
+		m_a.x += posX * m_units;
+		m_a.y += posY * m_units;
+		m_b.x += posX * m_units;
+		m_b.y += posY * m_units;
+		m_c.x += posX * m_units;
+		m_c.y += posY * m_units;
+		m_d.x += posX * m_units;
+		m_d.y += posY * m_units;
 		
 		float minX = Math.min(Math.min(Math.min(m_a.x, m_b.x), m_c.x), m_d.x);
 		float minY = Math.min(Math.min(Math.min(m_a.y, m_b.y), m_c.y), m_d.y);
