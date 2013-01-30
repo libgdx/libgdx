@@ -26,6 +26,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.gleed.GleedMap;
 import com.badlogic.gdx.maps.gleed.GleedMapRenderer;
 import com.badlogic.gdx.maps.loaders.GleedMapLoader;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Logger;
 
@@ -36,12 +38,17 @@ public class GLEEDTest extends GdxTest {
 		Running
 	}
 	
+	final int VIRTUAL_WIDTH = 1280;
+	final int VIRTUAL_HEIGHT = 720;
+	final float ASPECT_RATIO = (float)VIRTUAL_WIDTH/(float)VIRTUAL_HEIGHT;
+	
 	AssetManager manager;
 	OrthographicCamera camera;
 	GleedMapRenderer renderer;
 	State state = State.Loading;
 	BitmapFont fpsFont;
 	SpriteBatch batch;
+	Rectangle viewport;
 	
 	@Override
 	public boolean needsGL20() {
@@ -52,8 +59,7 @@ public class GLEEDTest extends GdxTest {
 	public void create() {
 		super.create();
 		manager = new AssetManager();
-		camera = new OrthographicCamera(640, 480);
-		camera.setToOrtho(false, 640, 480);
+		camera = new OrthographicCamera(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
 		camera.zoom = 2.0f;
 		GleedMapLoader.setLoggingLevel(Logger.INFO);
 		manager.setLoader(GleedMap.class, new GleedMapLoader(new InternalFileHandleResolver()));
@@ -71,6 +77,10 @@ public class GLEEDTest extends GdxTest {
 	public void render() {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
+		camera.update();
+		
+		Gdx.gl.glViewport((int) viewport.x, (int) viewport.y, (int) viewport.width, (int) viewport.height);
+		
 		if (state == State.Loading && manager.update()) {
 			state = State.Running;
 			renderer = new GleedMapRenderer(manager.get("data/gleedtest.xml", GleedMap.class));
@@ -78,7 +88,6 @@ public class GLEEDTest extends GdxTest {
 		}
 		
 		if (state == State.Running) {
-			camera.update();
 			renderer.begin();
 			renderer.render(camera);
 			renderer.end();
@@ -103,11 +112,52 @@ public class GLEEDTest extends GdxTest {
 			else if (Gdx.input.isKeyPressed(Keys.S)) {
 				camera.zoom -= 0.05f;
 			}
+			
+			if (Gdx.input.isTouched()) {
+				if (Gdx.input.getX() < VIRTUAL_WIDTH * 0.2f) {
+					camera.position.x -= 5.0f;
+				}
+				else if (Gdx.input.getX() > VIRTUAL_WIDTH * 0.8f) {
+					camera.position.x += 5.0f;
+				}
+				
+				if (Gdx.input.getY() < VIRTUAL_HEIGHT * 0.2) {
+					camera.position.y += 5.0f;
+				}
+				else if (Gdx.input.getY() > VIRTUAL_HEIGHT * 0.8f) {
+					camera.position.y -= 5.0f;
+				}
+			}
 
 			batch.begin();
-			fpsFont.draw(batch, "" + Gdx.graphics.getFramesPerSecond(), 610, 470);
+			fpsFont.draw(batch, "" + Gdx.graphics.getFramesPerSecond(), VIRTUAL_WIDTH - 30, VIRTUAL_HEIGHT - 30);
 			batch.end();
 		}
-		
+	}
+	
+	@Override
+	public void resize(int arg0, int arg1) {
+	  float aspectRatio = (float)arg0/(float)arg1;
+	  float scale = 1f;
+	  Vector2 crop = new Vector2(0f, 0f);
+	  
+	  if(aspectRatio > ASPECT_RATIO)
+	  {
+	      scale = (float)arg1 / (float)VIRTUAL_HEIGHT;
+	      crop.x = (arg0 - VIRTUAL_WIDTH * scale) / 2.0f;
+	  }
+	  else if(aspectRatio < ASPECT_RATIO)
+	  {
+	      scale = (float)arg0 / (float)VIRTUAL_WIDTH;
+	      crop.y = (arg1 - VIRTUAL_HEIGHT * scale) / 2.0f;
+	  }
+	  else
+	  {
+	      scale = (float)arg0/(float)VIRTUAL_WIDTH;
+	  }
+	
+	  float w = (float)VIRTUAL_WIDTH * scale;
+	  float h = (float)VIRTUAL_HEIGHT * scale;
+	  viewport = new Rectangle(crop.x, crop.y, w, h);
 	}
 }
