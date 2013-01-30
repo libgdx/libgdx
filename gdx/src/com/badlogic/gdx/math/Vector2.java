@@ -285,9 +285,10 @@ public class Vector2 implements Serializable {
 	 * @param alpha The interpolation coefficient
 	 * @return This vector for chaining. */
 	public Vector2 lerp (Vector2 target, float alpha) {
-		Vector2 r = this.mul(1.0f - alpha);
-		r.add(target.tmp().mul(alpha));
-		return r;
+		final float invAlpha = 1.0f - alpha;
+		this.x = (x * invAlpha) + (target.x * alpha);
+		this.y = (y * invAlpha) + (target.y * alpha);
+		return this;
 	}
 
 	@Override
