@@ -680,6 +680,11 @@ public class ShapeRenderer {
 		end();
 		begin(type);
 	}
+	
+	/** Returns the current {@link ShapeType} used */
+	public ShapeType getCurrentType () {
+		return currType;
+	}
 
 	public void dispose () {
 		renderer.dispose();
