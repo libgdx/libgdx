@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.maps.loaders;
 
 import com.badlogic.gdx.Gdx;
@@ -25,6 +41,12 @@ import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
+/**
+ * @author David Saltares
+ * 
+ * @brief asynchronously Loads GLEED formatted maps 
+ *
+ */
 public class GleedMapLoader  extends AsynchronousAssetLoader<GleedMap, GleedMapLoader.Parameters > {
 
 	static public class Parameters extends AssetLoaderParameters<GleedMap> {
@@ -38,14 +60,27 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<GleedMap, GleedMapL
 	private GleedMap m_map = null;
 	private AssetManager m_assetManager = null;
 	
+	/**
+	 * @param loggingLevel logger level, output more or less information
+	 */
 	public static void setLoggingLevel(int loggingLevel) {
 		s_logger.setLevel(loggingLevel);
 	}
 	
+	/**
+	 * @param resolver
+	 */
 	public GleedMapLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
 	
+	/**
+	 * Asynchronously loads a GleedMap
+	 * 
+	 * @params manager asset manager to load the map
+	 * @params fileName gleed map file
+	 * @params parameters additional parameters, not used for now
+	 */
 	@Override
 	public void loadAsync (AssetManager manager, String fileName, Parameters parameter) {
 		m_assetManager = manager;
@@ -81,11 +116,26 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<GleedMap, GleedMapL
 		}
 	}
 	
+	/**
+	 * Synchronously loads a GleedMap
+	 * 
+	 * @params manager asset manager to load the map
+	 * @params fileName gleed map file
+	 * @params parameters additional parameters, not used for now
+	 * 
+	 * @return gleed map
+	 */
 	@Override
 	public GleedMap loadSync (AssetManager manager, String fileName, Parameters parameter) {
 		return m_map;
 	}
 	
+	/**
+	 * @params fileName gleed map file
+	 * @params parameters additional parameters, not used for now
+	 * 
+	 * @return map dependencies (either texture atlas or several textures)
+	 */
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, Parameters parameter) {
 		s_logger.info("getting asset dependencies for " + fileName);

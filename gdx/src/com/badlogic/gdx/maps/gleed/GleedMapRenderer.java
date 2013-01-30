@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.maps.gleed;
 
 import com.badlogic.gdx.Gdx;
@@ -17,6 +33,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
+/**
+ * @author David Saltares Márquez
+ * 
+ * @brief Renderer for GLEED maps
+ */
 public class GleedMapRenderer implements MapRenderer, Disposable {
 
 	// Renderer data
@@ -33,11 +54,19 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 	private Vector2 m_c = new Vector2();
 	private Vector2 m_d = new Vector2();
 	
+	/**
+	 * @param map map data that will be used to render
+	 */
 	public GleedMapRenderer(GleedMap map) {
 		this(map, new SpriteBatch(), 1.0f);
 		m_ownSpriteBatch = true;
 	}
 	
+	/**
+	 * @param map map data that will be used to render
+	 * @param batch sprite batch to render the map textures
+	 * @param units metres per pixel (used to scale textures, defaults to 1.0f)
+	 */
 	public GleedMapRenderer(GleedMap map, SpriteBatch batch, float units) {
 		m_map = map;
 		m_units = units;
@@ -52,22 +81,36 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 		}
 	}
 	
+	/**
+	 * @param projectionMatrix sets the projection matrix to the map's batch
+	 */
 	@Override
 	public void setProjectionMatrix (Matrix4 projectionMatrix) {
 		m_batch.setProjectionMatrix(projectionMatrix);
 	}
 
+	/**
+	 * Gets the rendering process ready
+	 */
 	@Override
 	public void begin () {
 		m_batch.begin();
 		m_batch.enableBlending();
 	}
 
+	/**
+	 * Finishes the rendering process for that frame
+	 */
 	@Override
 	public void end () {
 		m_batch.end();
 	}
 	
+	/**
+	 * Renders all the map layers
+	 * 
+	 * @param camera 2D camera used to render
+	 */
 	public void render(OrthographicCamera camera) {
 		m_cameraRectangle.x = camera.position.x - camera.viewportWidth * 0.5f * camera.zoom;
 		m_cameraRectangle.y = camera.position.y - camera.viewportHeight * 0.5f * camera.zoom;
@@ -83,6 +126,10 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 		}
 	}
 	
+	/**
+	 * @param camera camera 2D camera used to render
+	 * @param layers layers indices to be rendered
+	 */
 	public void render(OrthographicCamera camera, int[] layers) {
 		m_cameraRectangle.x = camera.position.x - camera.viewportWidth * 0.5f * camera.zoom;
 		m_cameraRectangle.y = camera.position.y - camera.viewportHeight * 0.5f * camera.zoom;
@@ -98,6 +145,14 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 		}
 	}
 	
+	/**
+	 * Renders all the layers
+	 * 
+	 * @param viewboundsX bottom left x coordinate of the frustum
+	 * @param viewboundsY bottom left y coordinate of the frustrum
+	 * @param viewboundsWidth frustum width 
+	 * @param viewboundsHeight frustum height
+	 */
 	@Override
 	public void render (float viewboundsX, float viewboundsY, float viewboundsWidth, float viewboundsHeight) {
 		m_cameraRectangle.x = viewboundsX;
@@ -112,6 +167,13 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 		}
 	}
 
+	/**
+	 * @param viewboundsX bottom left x coordinate of the frustum
+	 * @param viewboundsY bottom left y coordinate of the frustrum
+	 * @param viewboundsWidth frustum width 
+	 * @param viewboundsHeight frustum height
+	 * @param layers layers indices to be rendered
+	 */
 	@Override
 	public void render (float viewboundsX, float viewboundsY, float viewboundsWidth, float viewboundsHeight, int[] layers) {
 		m_cameraRectangle.x = viewboundsX;
@@ -126,6 +188,9 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 		}
 	}
 	
+	/**
+	 * Disposes the sprite batch in case the renderer owns it
+	 */
 	@Override
 	public void dispose () {
 		if (m_ownSpriteBatch) {
