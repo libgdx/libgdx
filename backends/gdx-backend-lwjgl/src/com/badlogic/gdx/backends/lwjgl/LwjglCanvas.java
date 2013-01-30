@@ -37,7 +37,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.lwjgl.database.LwjglDatabaseFactory;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
+import com.badlogic.gdx.database.DatabaseFactory;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -52,6 +54,7 @@ public class LwjglCanvas implements Application {
 	LwjglFiles files;
 	LwjglInput input;
 	LwjglNet net;
+	LwjglDatabaseFactory databaseFactory;
 	ApplicationListener listener;
 	Canvas canvas;
 	final List<Runnable> runnables = new ArrayList();
@@ -116,6 +119,7 @@ public class LwjglCanvas implements Application {
 		files = new LwjglFiles();
 		input = new LwjglInput();
 		net = new LwjglNet();
+		databaseFactory = new LwjglDatabaseFactory();
 		this.listener = listener;
 
 		Gdx.app = this;
@@ -124,6 +128,7 @@ public class LwjglCanvas implements Application {
 		Gdx.files = files;
 		Gdx.input = input;
 		Gdx.net = net;
+		Gdx.databaseFactory = databaseFactory;
 	}
 
 	protected void setDisplayMode (int width, int height) {
@@ -159,6 +164,11 @@ public class LwjglCanvas implements Application {
 	@Override
 	public Net getNet () {
 		return net;
+	}
+	
+	@Override
+	public DatabaseFactory getDatabaseFactory() {
+		return databaseFactory;
 	}
 
 	@Override

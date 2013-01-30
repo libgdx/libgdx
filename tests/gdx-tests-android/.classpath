@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="**/.svn/*" kind="src" path="src"/>
+	<classpathentry excluding="**/.svn/*|com/badlogic/gdx/tests/android/Rafay.java" kind="src" path="src"/>
 	<classpathentry excluding="**/.svn/*" kind="src" path="gen"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-backend-android"/>

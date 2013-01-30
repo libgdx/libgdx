@@ -39,7 +39,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.lwjgl.database.LwjglDatabaseFactory;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
+import com.badlogic.gdx.database.DatabaseFactory;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -54,6 +56,7 @@ public class LwjglAWTCanvas implements Application {
 	final LwjglFiles files;
 	final LwjglAWTInput input;
 	final LwjglNet net;
+	final LwjglDatabaseFactory databaseFactory;
 	final ApplicationListener listener;
 	final AWTGLCanvas canvas;
 	final List<Runnable> runnables = new ArrayList();
@@ -138,6 +141,12 @@ public class LwjglAWTCanvas implements Application {
 		} else {
 			net = null;
 		}
+		if (Gdx.databaseFactory == null) {
+			databaseFactory = new LwjglDatabaseFactory();
+			Gdx.databaseFactory = databaseFactory;
+		} else {
+			databaseFactory = null;
+		}
 		input = new LwjglAWTInput(canvas);
 		this.listener = listener;
 
@@ -178,6 +187,11 @@ public class LwjglAWTCanvas implements Application {
 	public Net getNet () {
 		return net;
 	}
+	
+	@Override
+	public DatabaseFactory getDatabaseFactory() {
+		return databaseFactory;
+	}
 
 	@Override
 	public ApplicationType getType () {
@@ -194,6 +208,7 @@ public class LwjglAWTCanvas implements Application {
 		if (audio != null) Gdx.audio = audio;
 		if (files != null) Gdx.files = files;
 		if (net != null) Gdx.net = net;
+		if (databaseFactory != null) Gdx.databaseFactory = databaseFactory;
 		Gdx.graphics = graphics;
 		Gdx.input = input;
 	}

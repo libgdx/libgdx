@@ -16,6 +16,13 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import java.awt.Canvas;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
@@ -25,17 +32,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.lwjgl.database.LwjglDatabaseFactory;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
+import com.badlogic.gdx.database.DatabaseFactory;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.awt.Canvas;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
 
 /** An OpenGL surface fullscreen or in a lightweight window. */
 public class LwjglApplication implements Application {
@@ -44,6 +46,7 @@ public class LwjglApplication implements Application {
 	protected final LwjglFiles files;
 	protected final LwjglInput input;
 	protected final LwjglNet net;
+	protected final LwjglDatabaseFactory databaseFactory; 
 	protected final ApplicationListener listener;
 	protected Thread mainLoopThread;
 	protected boolean running = true;
@@ -81,6 +84,7 @@ public class LwjglApplication implements Application {
 		files = new LwjglFiles();
 		input = new LwjglInput();
 		net = new LwjglNet();
+		databaseFactory = new LwjglDatabaseFactory();
 		this.listener = listener;
 
 		Gdx.app = this;
@@ -89,6 +93,7 @@ public class LwjglApplication implements Application {
 		Gdx.files = files;
 		Gdx.input = input;
 		Gdx.net = net;
+		Gdx.databaseFactory = databaseFactory;
 		initialize();
 	}
 
@@ -233,6 +238,11 @@ public class LwjglApplication implements Application {
 	@Override
 	public Net getNet () {
 		return net;
+	}
+
+	@Override
+	public DatabaseFactory getDatabaseFactory () {
+		return databaseFactory;
 	}
 
 	@Override

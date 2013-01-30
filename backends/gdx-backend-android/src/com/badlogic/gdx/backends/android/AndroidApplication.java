@@ -36,6 +36,7 @@ import android.widget.FrameLayout;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.DatabaseHandler;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -43,8 +44,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.android.database.AndroidDatabaseFactory;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
+import com.badlogic.gdx.database.DatabaseFactory;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.utils.Array;
@@ -66,6 +69,7 @@ public class AndroidApplication extends Activity implements Application {
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
 	protected AndroidNet net;
+	protected AndroidDatabaseFactory dbHandlerFactory;
 	protected ApplicationListener listener;
 	public Handler handler;
 	protected boolean firstResume = true;
@@ -106,6 +110,7 @@ public class AndroidApplication extends Activity implements Application {
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		net = new AndroidNet(this);
+		dbHandlerFactory = new AndroidDatabaseFactory(this);
 		this.listener = listener;
 		this.handler = new Handler();
 
@@ -115,6 +120,7 @@ public class AndroidApplication extends Activity implements Application {
 		Gdx.files = this.getFiles();
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
+		Gdx.databaseFactory = this.getDatabaseFactory();
 
 		try {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -203,6 +209,7 @@ public class AndroidApplication extends Activity implements Application {
 		Gdx.files = this.getFiles();
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
+		Gdx.databaseFactory = this.getDatabaseFactory();
 
 		createWakeLock(config);
 		hideStatusBar(config);
@@ -245,6 +252,7 @@ public class AndroidApplication extends Activity implements Application {
 		Gdx.files = this.getFiles();
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
+		Gdx.databaseFactory = this.getDatabaseFactory();
 
 		((AndroidInput)getInput()).registerSensorListeners();
 
@@ -292,6 +300,11 @@ public class AndroidApplication extends Activity implements Application {
 	@Override
 	public Net getNet () {
 		return net;
+	}
+	
+	@Override
+	public DatabaseFactory getDatabaseFactory() {
+		return dbHandlerFactory;
 	}
 
 	/** {@inheritDoc} */

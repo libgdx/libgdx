@@ -16,21 +16,11 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Debug;
-import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
 import android.service.wallpaper.WallpaperService.Engine;
 import android.util.Log;
-import android.view.View;
-import android.widget.FrameLayout.LayoutParams;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -42,10 +32,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.backends.android.database.AndroidDatabaseFactory;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.database.DatabaseFactory;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
@@ -69,6 +58,7 @@ class AndroidLiveWallpaper implements Application {
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
 	protected AndroidNet net;
+	protected AndroidDatabaseFactory dbFactory;
 	protected ApplicationListener listener;
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
@@ -164,6 +154,11 @@ class AndroidLiveWallpaper implements Application {
 	@Override
 	public Net getNet () {
 		return net;
+	}
+	
+	@Override
+	public DatabaseFactory getDatabaseFactory() {
+		return dbFactory;
 	}
 
 	@Override
