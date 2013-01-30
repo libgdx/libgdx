@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.database.DatabaseFactory;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
@@ -39,6 +40,7 @@ public class Gdx {
 	public static Input input;
 	public static Files files;
 	public static Net net;
+	public static DatabaseFactory databaseFactory;
 
 	public static GLCommon gl;
 	public static GL10 gl10;

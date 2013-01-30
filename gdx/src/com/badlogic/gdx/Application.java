@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.database.DatabaseFactory;
 import com.badlogic.gdx.utils.Clipboard;
 
 /** <p>
@@ -115,6 +116,8 @@ public interface Application {
 
 	/** @return the {@link Net} instance */
 	public Net getNet ();
+	
+	public DatabaseFactory getDatabaseFactory();
 
 	/** Logs a message to the console or logcat */
 	public void log (String tag, String message);
