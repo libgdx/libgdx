@@ -2,6 +2,8 @@ package com.badlogic.gdx.maps;
 
 import java.util.Iterator;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class MapProperties {
@@ -168,6 +170,76 @@ public class MapProperties {
 		}
 	}
 	
+	public Vector2 getAsVector2(String key) {
+		Object value = properties.get(key);
+		
+		if (value != null && value instanceof Vector2) {
+			return (Vector2)value;
+		}
+		
+		return null;
+	}
+	
+	public Color getAsColor(String key) {
+		Object value = properties.get(key);
+		
+		if (value != null && value instanceof Color) {
+			return (Color)value;
+		}
+		
+		return null;
+	}
+	
+	public Boolean getAsBoolean(String key, Boolean defaultValue) {
+		Boolean value = getAsBoolean(key);
+		return value == null? defaultValue : value;
+	}
+	
+	public Byte getAsByte(String key, Byte defaultValue) {
+		Byte value = getAsByte(key);
+		return value == null? defaultValue : value;
+	}
+	
+	public Double getAsDouble(String key, Double defaultValue) {
+		Double value = getAsDouble(key);
+		return value == null? defaultValue : value;
+	}
+	
+	public Float getAsFloat(String key, Float defaultValue) {
+		Float value = getAsFloat(key);
+		return value == null? defaultValue : value;
+	}
+	
+	public Integer getAsInteger(String key, Integer defaultValue) {
+		Integer value = getAsInteger(key);
+		return value == null? defaultValue : value;
+	}
+	
+	public Long getAsLong(String key, Long defaultValue) {
+		Long value = getAsLong(key);
+		return value == null? defaultValue : value;
+	}
+	
+	public Short getAsShort(String key, Short defaultValue) {
+		Short value = getAsShort(key);
+		return value == null? defaultValue : value;
+	}
+	
+	public String getAsString(String key, String defaultValue) {
+		String value = getAsString(key);
+		return value == null? defaultValue : value;
+	}
+	
+	public Vector2 getAsVector2(String key, Vector2 defaultValue) {
+		Vector2 value = getAsVector2(key);
+		return value == null? defaultValue : value;
+	}
+	
+	public Color getAsColor(String key, Color defaultValue) {
+		Color value = getAsColor(key);
+		return value == null? defaultValue : value;
+	}
+	
 	public void put(String key, Boolean value) {
 		properties.put(key, value);
 	}
@@ -197,6 +269,14 @@ public class MapProperties {
 	}
 	
 	public void put(String key, String value) {
+		properties.put(key, value);
+	}
+	
+	public void put(String key, Vector2 value) {
+		properties.put(key, value);
+	}
+	
+	public void put(String key, Color value) {
 		properties.put(key, value);
 	}
 	

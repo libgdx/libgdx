@@ -2,15 +2,11 @@ package com.badlogic.gdx.maps;
 
 public class MapLayer {
 
-	private String name;
-	
-	private float opacity;
-	
-	private boolean visible;
-	
-	private MapObjects objects;
-
-	private MapProperties properties;
+	private String name = "";
+	private float opacity = 1.0f;
+	private boolean visible = true;
+	private MapObjects objects = new MapObjects();
+	private MapProperties properties = new MapProperties();
 
 	public String getName() {
 		return name;
@@ -45,11 +41,7 @@ public class MapLayer {
 	}
 	
 	public MapLayer() {
-		name = null;
-		opacity = 1.0f;
-		visible = true;
-		objects = new MapObjects();		
-		properties = new MapProperties();
+		
 	}
-	
+
 }

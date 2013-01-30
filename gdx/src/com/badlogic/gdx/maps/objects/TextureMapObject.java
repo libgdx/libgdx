@@ -5,11 +5,14 @@ import com.badlogic.gdx.maps.MapObject;
 
 public class TextureMapObject extends MapObject {
 	
-	private float x;
-	
-	private float y;
-	
-	private TextureRegion textureRegion;
+	private float x = 0.0f;
+	private float y = 0.0f;
+	private float originX = 0.0f;
+	private float originY = 0.0f;
+	private float scaleX = 1.0f;
+	private float scaleY = 1.0f;
+	private float rotation = 0.0f;
+	private TextureRegion textureRegion = null;
 
 	public float getX() {
 		return x;
@@ -26,20 +29,61 @@ public class TextureMapObject extends MapObject {
 	public void setY(float y) {
 		this.y = y;
 	}
+	
+	public float getOriginX() {
+		return originX;
+	}
+
+	public void setOriginX(float x) {
+		this.originX = x;
+	}
+
+	public float getOriginY() {
+		return originY;
+	}
+
+	public void setOriginY(float y) {
+		this.originY = y;
+	}
+	
+	public float getScaleX() {
+		return scaleX;
+	}
+
+	public void setScaleX(float x) {
+		this.scaleX = x;
+	}
+
+	public float getScaleY() {
+		return scaleY;
+	}
+
+	public void setScaleY(float y) {
+		this.scaleY = y;
+	}
+	
+	public float getRotation() {
+		return rotation;
+	}
+	
+	public void setRotation(float rotation) {
+		this.rotation = rotation;
+	}
 
 	public TextureRegion getTextureRegion() {
 		return textureRegion;
 	}
 	
+	public void setTextureRegion(TextureRegion region) {
+		textureRegion = region;
+	}
+	
+	public TextureMapObject() {
+		this(null);
+	}
+	
 	public TextureMapObject(TextureRegion textureRegion) {
 		super();
 		this.textureRegion = textureRegion;
-	}
-	
-	public TextureMapObject(TextureMapObject copy) {
-		super();
-		this.x = copy.x;
-		this.y = copy.y;
-		this.textureRegion = copy.textureRegion;
 	}
 }
