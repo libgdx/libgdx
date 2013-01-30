@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
@@ -41,7 +42,7 @@ import com.badlogic.gdx.utils.Disposable;
 public class GleedMapRenderer implements MapRenderer, Disposable {
 
 	// Renderer data
-	private GleedMap m_map;
+	private Map m_map;
 	private SpriteBatch m_batch;
 	private boolean m_ownSpriteBatch;
 	private float m_units;
@@ -57,7 +58,7 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 	/**
 	 * @param map map data that will be used to render
 	 */
-	public GleedMapRenderer(GleedMap map) {
+	public GleedMapRenderer(Map map) {
 		this(map, new SpriteBatch(), 1.0f);
 		m_ownSpriteBatch = true;
 	}
@@ -67,7 +68,7 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 	 * @param batch sprite batch to render the map textures
 	 * @param units metres per pixel (used to scale textures, defaults to 1.0f)
 	 */
-	public GleedMapRenderer(GleedMap map, SpriteBatch batch, float units) {
+	public GleedMapRenderer(Map map, SpriteBatch batch, float units) {
 		m_map = map;
 		m_units = units;
 		if (batch != null) {

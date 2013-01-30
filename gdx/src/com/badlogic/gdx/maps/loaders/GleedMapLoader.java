@@ -26,10 +26,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.gleed.GleedMap;
 import com.badlogic.gdx.maps.objects.CircleMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -47,9 +47,9 @@ import com.badlogic.gdx.utils.XmlReader.Element;
  * @brief asynchronously Loads GLEED formatted maps 
  *
  */
-public class GleedMapLoader  extends AsynchronousAssetLoader<GleedMap, GleedMapLoader.Parameters > {
+public class GleedMapLoader  extends AsynchronousAssetLoader<Map, GleedMapLoader.Parameters > {
 
-	static public class Parameters extends AssetLoaderParameters<GleedMap> {
+	static public class Parameters extends AssetLoaderParameters<Map> {
 	}
 	
 	static private Logger s_logger = new Logger("GleedMapLoader");
@@ -57,7 +57,7 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<GleedMap, GleedMapL
 	private String m_atlasFile = "";
 	private TextureAtlas m_atlas = null;
 	private String m_pathRoot = "data";
-	private GleedMap m_map = null;
+	private Map m_map = null;
 	private AssetManager m_assetManager = null;
 	
 	/**
@@ -94,7 +94,7 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<GleedMap, GleedMapL
 			s_logger.info("loading level properties");
 			
 			if (m_map == null) {
-				m_map = new GleedMap(root.getAttribute("Name", "Level"));
+				m_map = new Map();
 				loadProperties(root, m_map.getProperties());
 			}
 			
@@ -126,7 +126,7 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<GleedMap, GleedMapL
 	 * @return gleed map
 	 */
 	@Override
-	public GleedMap loadSync (AssetManager manager, String fileName, Parameters parameter) {
+	public Map loadSync (AssetManager manager, String fileName, Parameters parameter) {
 		return m_map;
 	}
 	
@@ -146,7 +146,7 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<GleedMap, GleedMapL
 			Element root = reader.parse(Gdx.files.internal(fileName));
 			
 			if (m_map == null) {
-				m_map = new GleedMap();
+				m_map = new Map();
 				
 				loadProperties(root, m_map.getProperties());
 			}

@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.gleed.GleedMap;
+import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.gleed.GleedMapRenderer;
 import com.badlogic.gdx.maps.loaders.GleedMapLoader;
 import com.badlogic.gdx.math.Rectangle;
@@ -64,8 +64,8 @@ public class GLEEDTest extends GdxTest {
 		camera = new OrthographicCamera(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
 		camera.zoom = 2.0f;
 		GleedMapLoader.setLoggingLevel(Logger.INFO);
-		manager.setLoader(GleedMap.class, new GleedMapLoader(new InternalFileHandleResolver()));
-		manager.load("data/gleedtest.xml", GleedMap.class);
+		manager.setLoader(Map.class, new GleedMapLoader(new InternalFileHandleResolver()));
+		manager.load("data/gleedtest.xml", Map.class);
 		manager.load("data/font.fnt", BitmapFont.class);
 		batch = new SpriteBatch();
 	}
@@ -85,7 +85,7 @@ public class GLEEDTest extends GdxTest {
 		
 		if (state == State.Loading && manager.update()) {
 			state = State.Running;
-			renderer = new GleedMapRenderer(manager.get("data/gleedtest.xml", GleedMap.class));
+			renderer = new GleedMapRenderer(manager.get("data/gleedtest.xml", Map.class));
 			fpsFont = manager.get("data/font.fnt", BitmapFont.class);
 		}
 		
