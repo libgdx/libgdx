@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.imagepacker;
 
 import java.awt.Color;
@@ -103,6 +104,14 @@ public class TexturePacker2 {
 			width = Math.max(settings.minWidth, width);
 			height = Math.max(settings.minHeight, height);
 
+			if (settings.forceSquareOutput) {
+				if (width > height) {
+					height = width;
+				} else {
+					width = height;
+				}
+			}
+
 			File outputFile;
 			while (true) {
 				outputFile = new File(outputDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
@@ -131,8 +140,10 @@ public class TexturePacker2 {
 					int imageHeight = image.getHeight();
 					// Copy corner pixels to fill corners of the padding.
 					g.drawImage(image, rectX - amountX, rectY - amountY, rectX, rectY, 0, 0, 1, 1, null);
-					g.drawImage(image, rectX + imageWidth, rectY - amountY, rectX + imageWidth + amountX, rectY, imageWidth - 1, 0, imageWidth, 1, null);
-					g.drawImage(image, rectX - amountX, rectY + imageHeight, rectX, rectY + imageHeight + amountY, 0, imageHeight - 1, 1, imageHeight, null);
+					g.drawImage(image, rectX + imageWidth, rectY - amountY, rectX + imageWidth + amountX, rectY, imageWidth - 1, 0,
+						imageWidth, 1, null);
+					g.drawImage(image, rectX - amountX, rectY + imageHeight, rectX, rectY + imageHeight + amountY, 0, imageHeight - 1,
+						1, imageHeight, null);
 					g.drawImage(image, rectX + imageWidth, rectY + imageHeight, rectX + imageWidth + amountX, rectY + imageHeight
 						+ amountY, imageWidth - 1, imageHeight - 1, imageWidth, imageHeight, null);
 					// Copy edge pixels into padding.
@@ -335,6 +346,7 @@ public class TexturePacker2 {
 		public boolean rotation;
 		public int minWidth = 16, minHeight = 16;
 		public int maxWidth = 1024, maxHeight = 1024;
+		public boolean forceSquareOutput = false;
 		public boolean stripWhitespaceX, stripWhitespaceY;
 		public int alphaThreshold;
 		public TextureFilter filterMin = TextureFilter.Nearest, filterMag = TextureFilter.Nearest;
