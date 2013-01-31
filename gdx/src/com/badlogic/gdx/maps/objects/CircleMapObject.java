@@ -11,10 +11,12 @@ public class CircleMapObject extends MapObject {
 		return circle;
 	}
 	
-	public CircleMapObject(float x, float y, int radius) {
+	public CircleMapObject() {
+		this(0.0f, 0.0f, 1.0f);
+	}
+	
+	public CircleMapObject(float x, float y, float radius) {
 		super();
 		circle = new Circle(x, y, radius);
 	}
-	
-	
 }

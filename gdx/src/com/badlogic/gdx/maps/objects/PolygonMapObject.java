@@ -14,9 +14,16 @@ public class PolygonMapObject extends MapObject {
 		return polygon;
 	}
 	
+	public void setPolygon(Polygon polygon) {
+		this.polygon = polygon;
+	}
+	
+	public PolygonMapObject() {
+		this(new float[0]);
+	}
+	
 	public PolygonMapObject(float[] vertices) {
 		super();
 		polygon = new Polygon(vertices);
 	}
-	
 }

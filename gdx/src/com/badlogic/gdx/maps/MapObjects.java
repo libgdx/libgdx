@@ -35,6 +35,10 @@ public class MapObjects implements Iterable<MapObject> {
 	public void removeObject(MapObject object) {
 		objects.removeValue(object, true);
 	}
+	
+	public int getNumObjects() {
+		return objects.size;
+	}
 
 	public <T extends MapObject> Array<T> getObjectsByType(Class<T> type) {
 		return getObjectsByType(type, new Array<T>());	

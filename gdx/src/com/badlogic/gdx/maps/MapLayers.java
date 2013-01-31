@@ -6,10 +6,10 @@ import com.badlogic.gdx.utils.Array;
 
 public class MapLayers implements Iterable<MapLayer> {
 	
-	private Array<MapLayer> layers;
+	private Array<MapLayer> layers = new Array<MapLayer>();
 
 	public MapLayers() {
-		layers = new Array<MapLayer>();
+	
 	}
 	
 	public MapLayer getLayer(int index) {

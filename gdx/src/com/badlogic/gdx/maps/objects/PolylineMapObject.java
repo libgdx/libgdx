@@ -11,6 +11,14 @@ public class PolylineMapObject extends MapObject {
 		return polygon;
 	}
 	
+	public void setPolygon(Polygon polygon) {
+		this.polygon = polygon;
+	}
+	
+	public PolylineMapObject() {
+		this(new float[0]);
+	}
+	
 	public PolylineMapObject(float[] vertices) {
 		super();
 		polygon = new Polygon(vertices);
