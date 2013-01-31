@@ -17,23 +17,25 @@
 package com.badlogic.gdx;
 
 /** <p>
- * Interface to the input facilities. This allows to poll the state of the keyboard, touch screen and accelerometer. On the
- * desktop the touch screen is replaced by mouse input, the accelerometer is of course not available.
+ * Interface to the input facilities. This allows polling the state of the keyboard, the touch screen and the accelerometer. On
+ * some backends (desktop, gwt, etc) the touch screen is replaced by mouse input. The accelerometer is of course not available on
+ * all backends.
  * </p>
  * 
  * <p>
- * Additionally one can process events with an {@link InputProcessor} with this module. You can set the InputProcessor via the
+ * Instead of polling for events, one can process all input events with an {@link InputProcessor}. You can set the InputProcessor via the
  * {@link #setInputProcessor(InputProcessor)} method. It will be called before the {@link ApplicationListener#render()} method in
  * each frame.
  * </p>
  * 
  * <p>
- * Keyboard keys are translated to the constants in {@link Keys} transparantely on all systems. Do not use system specific key
+ * Keyboard keys are translated to the constants in {@link Keys} transparently on all systems. Do not use system specific key
  * constants.
  * </p>
  * 
  * <p>
- * The class also offers methods to let the phone vibrate as well as getting compass readings.
+ * The class also offers methods to use (and test for the presence of) other input systems like vibration, compass,
+ * on-screen keyboards, and cursor capture.  Support for simple input dialogs is also provided.
  * </p>
  * 
  * @author mzechner */
