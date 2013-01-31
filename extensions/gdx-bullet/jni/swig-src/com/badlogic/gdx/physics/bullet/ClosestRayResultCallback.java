@@ -40,8 +40,24 @@ public class ClosestRayResultCallback extends RayResultCallback {
     super.delete();
   }
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    gdxBulletJNI.ClosestRayResultCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    gdxBulletJNI.ClosestRayResultCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public ClosestRayResultCallback(Vector3 rayFromWorld, Vector3 rayToWorld) {
     this(gdxBulletJNI.new_ClosestRayResultCallback(rayFromWorld, rayToWorld), true);
+    gdxBulletJNI.ClosestRayResultCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
   public void setM_rayFromWorld(btVector3 value) {
@@ -78,6 +94,10 @@ public class ClosestRayResultCallback extends RayResultCallback {
   public btVector3 getM_hitPointWorld() {
     long cPtr = gdxBulletJNI.ClosestRayResultCallback_m_hitPointWorld_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
+  }
+
+  public float addSingleResult(LocalRayResult rayResult, boolean normalInWorldSpace) {
+    return (getClass() == ClosestRayResultCallback.class) ? gdxBulletJNI.ClosestRayResultCallback_addSingleResult(swigCPtr, this, LocalRayResult.getCPtr(rayResult), rayResult, normalInWorldSpace) : gdxBulletJNI.ClosestRayResultCallback_addSingleResultSwigExplicitClosestRayResultCallback(swigCPtr, this, LocalRayResult.getCPtr(rayResult), rayResult, normalInWorldSpace);
   }
 
 }
