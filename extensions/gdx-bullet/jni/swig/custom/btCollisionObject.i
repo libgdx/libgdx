@@ -22,6 +22,8 @@
 	private long swigCPtr;
 	protected boolean swigCMemOwn;
 	
+	public Object userData;
+	
 	protected btCollisionObject(long cPtr, boolean cMemoryOwn) {
 		swigCMemOwn = cMemoryOwn;
 		swigCPtr = cPtr;

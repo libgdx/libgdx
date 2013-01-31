@@ -736,11 +736,10 @@ public class StringBuilder implements Appendable, CharSequence {
 	}
 
 	/** Appends the string representation of the specified {@code long} value. The {@code long} value is converted to a string
-	 * according to the rule defined by {@link String#valueOf(long)}.
+	 * without memory allocation.
 	 * 
 	 * @param lng the {@code long} value.
-	 * @return this builder.
-	 * @see String#valueOf(long) */
+	 * @return this builder. */
 	public StringBuilder append (long lng) {
 		if (lng == Long.MIN_VALUE) {
 			append0("-9223372036854775808");
@@ -775,11 +774,10 @@ public class StringBuilder implements Appendable, CharSequence {
 	}
 
 	/** Appends the string representation of the specified {@code float} value. The {@code float} value is converted to a string
-	 * according to the rule defined by {@link String#valueOf(float)}.
+	 * without memory allocation.
 	 * 
 	 * @param f the {@code float} value to append.
-	 * @return this builder.
-	 * @see String#valueOf(float) */
+	 * @return this builder. */
 	public StringBuilder append (float f) {
 		append0(Float.toString(f));
 		return this;

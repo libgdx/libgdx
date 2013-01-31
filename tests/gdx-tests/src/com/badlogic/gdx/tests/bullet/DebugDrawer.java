@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.physics.bullet.btIDebugDraw;
 import com.badlogic.gdx.physics.bullet.btVector3;
 import com.badlogic.gdx.physics.bullet.gdxBulletJNI;
 
+/** @author xoppa */
 public class DebugDrawer extends btIDebugDraw {
 	public int debugMode = 0;
 	public ShapeRenderer lineRenderer = new ShapeRenderer();
