@@ -87,12 +87,12 @@ public class SoftMeshTest extends BaseBulletTest {
 		softBody.randomizeConstraints();
 		softBody.setTotalMass(1);
 		softBody.translate(Vector3.tmp.set(1, 5, 1));
-		((btSoftRigidDynamicsWorld)(world.dynamicsWorld)).addSoftBody(softBody);
+		((btSoftRigidDynamicsWorld)(world.collisionWorld)).addSoftBody(softBody);
 	}
 	
 	@Override
 	public void dispose () {
-		((btSoftRigidDynamicsWorld)(world.dynamicsWorld)).removeSoftBody(softBody);
+		((btSoftRigidDynamicsWorld)(world.collisionWorld)).removeSoftBody(softBody);
 		softBody.delete();
 		softBody = null;
 		
