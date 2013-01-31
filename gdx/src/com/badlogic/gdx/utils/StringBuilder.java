@@ -706,7 +706,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	}
 
 	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string
-	 * according to the rule defined by {@link String#valueOf(int)}.
+	 * without memory allocation.
 	 * 
 	 * @param i the {@code int} value to append.
 	 * @return this builder.
@@ -774,7 +774,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	}
 
 	/** Appends the string representation of the specified {@code float} value. The {@code float} value is converted to a string
-	 * without memory allocation.
+	 * according to the rule defined by {@link String#valueOf(float)}.
 	 * 
 	 * @param f the {@code float} value to append.
 	 * @return this builder. */
