@@ -134,9 +134,11 @@ public class Slider extends Widget {
 			bg.draw(batch, x + (int)((width - bg.getMinWidth()) * 0.5f), y, bg.getMinWidth(), height);
 
 			float sliderPosHeight = height - (bg.getTopHeight() + bg.getBottomHeight());
-			sliderPos = (value - min) / (max - min) * (sliderPosHeight - knobHeight);
-			sliderPos = Math.max(0, sliderPos);
-			sliderPos = Math.min(sliderPosHeight - knobHeight, sliderPos) + bg.getBottomHeight();
+			if(min!=max){
+				sliderPos = (value - min) / (max - min) * (sliderPosHeight - knobHeight);
+				sliderPos = Math.max(0, sliderPos);
+				sliderPos = Math.min(sliderPosHeight - knobHeight, sliderPos) + bg.getBottomHeight();
+			}
 
 			float knobHeightHalf = knobHeight * 0.5f;
 			if (knobBefore != null) {
@@ -152,9 +154,11 @@ public class Slider extends Widget {
 			bg.draw(batch, x, y + (int)((height - bg.getMinHeight()) * 0.5f), width, bg.getMinHeight());
 
 			float sliderPosWidth = width - (bg.getLeftWidth() + bg.getRightWidth());
-			sliderPos = (value - min) / (max - min) * (sliderPosWidth - knobWidth);
-			sliderPos = Math.max(0, sliderPos);
-			sliderPos = Math.min(sliderPosWidth - knobWidth, sliderPos) + bg.getLeftWidth();
+			if(min!=max){
+				sliderPos = (value - min) / (max - min) * (sliderPosWidth - knobWidth);
+				sliderPos = Math.max(0, sliderPos);
+				sliderPos = Math.min(sliderPosWidth - knobWidth, sliderPos) + bg.getLeftWidth();
+			}
 
 			float knobHeightHalf = knobHeight * 0.5f;
 			if (knobBefore != null) {
@@ -233,10 +237,11 @@ public class Slider extends Widget {
 
 	/** Sets the range of this slider. The slider's current value is reset to min. */
 	public void setRange (float min, float max) {
-		if (min >= max) throw new IllegalArgumentException("min must be < max");
+		if (min > max) throw new IllegalArgumentException("min must be <= max");
 		this.min = min;
 		this.max = max;
-		setValue(min);
+		if (value<min) setValue(min);
+		else if (value>max) setValue(max);
 	}
 
 	/** Sets the step size of the slider */
