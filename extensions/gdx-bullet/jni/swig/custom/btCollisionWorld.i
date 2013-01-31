@@ -2,7 +2,17 @@
  *	Interface module for a class with inner structs or classes.
  */
  
-%module btCollisionWorld
+%module(directors="1") btCollisionWorld
+
+%feature("director") LocalShapeInfo;
+%feature("director") LocalRayResult;
+%feature("director") RayResultCallback;
+%feature("director") ClosestRayResultCallback;
+%feature("director") AllHitsRayResultCallback;
+%feature("director") LocalConvexResult;
+%feature("director") ConvexResultCallback;
+%feature("director") ClosestConvexResultCallback;
+%feature("director") ContactResultCallback;
 
 	///LocalShapeInfo gives extra information for complex shapes
 	///Currently, only btTriangleMeshShape is available, so it just contains triangleIndex and subpart
