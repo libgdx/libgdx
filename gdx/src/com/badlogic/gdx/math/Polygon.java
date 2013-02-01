@@ -25,6 +25,10 @@ public class Polygon {
 	private float scaleX = 1, scaleY = 1;
 	private boolean dirty = true;
 	private Rectangle bounds;
+	
+	public Polygon () {
+		
+	}
 
 	public Polygon (float[] vertices) {
 		if (vertices.length < 6) throw new IllegalArgumentException("polygons must contain at least 3 points.");
