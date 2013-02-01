@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package aurelienribon.gdxsetupui;
 
 import aurelienribon.utils.Res;
@@ -60,6 +75,7 @@ public class ProjectSetup {
 		if (cfg.isDesktopIncluded) templateManager.define("PRJ_DESKTOP_NAME", cfg.projectName + cfg.suffixDesktop);
 		if (cfg.isAndroidIncluded) templateManager.define("PRJ_ANDROID_NAME", cfg.projectName + cfg.suffixAndroid);
 		if (cfg.isHtmlIncluded) templateManager.define("PRJ_HTML_NAME", cfg.projectName + cfg.suffixHtml);
+		if (cfg.isIosIncluded) templateManager.define("PRJ_IOS_NAME", cfg.projectName + cfg.suffixIos);
 
 		// Android manifest definitions
 		if (!cfg.androidMinSdkVersion.equals("")) templateManager.define("ANDROID_MIN_SDK", cfg.androidMinSdkVersion);
@@ -109,6 +125,7 @@ public class ProjectSetup {
 		File desktopPrjLibsDir = new File(tmpDst, "/prj-desktop/libs");
 		File androidPrjLibsDir = new File(tmpDst, "/prj-android/libs");
 		File htmlPrjLibsDir = new File(tmpDst, "/prj-html/war/WEB-INF/lib");
+		File iosPrjLibsDir = new File(tmpDst, "/prj-ios/libs");
 		File dataDir = new File(tmpDst, "/prj-android/assets");
 
 		for (String library : cfg.libraries) {
@@ -130,6 +147,8 @@ public class ProjectSetup {
 					if (entryName.endsWith(elemName)) copyEntry(zis, elemName, androidPrjLibsDir);
 				for (String elemName : def.libsHtml)
 					if (entryName.endsWith(elemName)) copyEntry(zis, elemName, htmlPrjLibsDir);
+				for (String elemName : def.libsIos)
+					if(entryName.endsWith(elemName)) copyEntry(zis, elemName, iosPrjLibsDir);
 				for (String elemName : def.data)
 					if (entryName.endsWith(elemName)) copyEntry(zis, elemName, dataDir);
 			}
@@ -235,6 +254,15 @@ public class ProjectSetup {
 			templateDir(src);
 			FileUtils.moveDirectory(src, dst);
 		}
+		
+		if(cfg.isIosIncluded) {
+			File src = new File(tmpDst, "prj-ios");
+			File dst = new File(tmpDst, cfg.projectName + cfg.suffixIos);
+			move(src, "my-gdx-game-ios.csproj", cfg.projectName + cfg.suffixIos + ".csproj");
+			move(src, "my-gdx-game-ios.sln", cfg.projectName + cfg.suffixIos + ".sln");
+			templateDir(src);
+			FileUtils.moveDirectory(src, dst);
+		}
 	}
 
 	/**
@@ -260,6 +288,11 @@ public class ProjectSetup {
 			src = new File(tmpDst, cfg.projectName + cfg.suffixHtml);
 			FileUtils.copyDirectoryToDirectory(src, dst);
 		}
+		
+		if(cfg.isIosIncluded) {
+			src = new File(tmpDst, cfg.projectName + cfg.suffixIos);
+			FileUtils.copyDirectoryToDirectory(src, dst);
+		}
 	}
 
 	/**
@@ -280,7 +313,7 @@ public class ProjectSetup {
 			if (file.isDirectory()) {
 				templateDir(file);
 			} else {
-				if (endsWith(file.getName(), ".jar", ".zip", ".png")) continue;
+				if (endsWith(file.getName(), ".jar", ".zip", ".dll", ".a", ".png")) continue;
 				templateManager.processOver(file);
 			}
 		}

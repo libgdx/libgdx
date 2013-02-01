@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="libs/monotouch-jars/system-2.1.jar"/>
 	<classpathentry kind="lib" path="libs/monotouch-jars/system-core-2.1.jar"/>
 	<classpathentry kind="lib" path="libs/monotouch-jars/system-data-2.1.jar"/>
+	<classpathentry kind="lib" path="libs/objectal/libObjectAL.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,10 +1,15 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|iPhone" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" />
   <MonoDevelop.Ide.Workbench ActiveDocument="superjumper-ios/Main.cs">
     <Files>
       <File FileName="superjumper-ios/Main.cs" Line="11" Column="2" />
       <File FileName="superjumper-ios/Info.plist" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State />
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

@@ -92,7 +92,7 @@ public class ReflectionCacheSourceCreator {
 		if (printWriter == null) {
 			return packageName + "." + simpleName;
 		}
-		sw = composer.createSourceWriter(context, printWriter);
+		sw = composer.createSourceWriter(context, printWriter);		
 
 		generateLookups();
 
@@ -112,6 +112,7 @@ public class ReflectionCacheSourceCreator {
 
 		sw.commit(logger);
 		createProxy(type);
+		System.out.println(source.toString());
 		return packageName + "." + simpleName;
 	}
 
@@ -224,7 +225,9 @@ public class ReflectionCacheSourceCreator {
 			|| name.contains("java.lang.Boolean") || name.contains("java.lang.Byte") || name.contains("java.lang.Short")
 			|| name.contains("java.lang.Character") || name.contains("java.lang.Integer") || name.contains("java.lang.Float")
 			|| name.contains("java.lang.Double") || name.contains("java.lang.CharSequence") || name.contains("java.lang.Object") || !name
-				.contains("."))) {
+				.contains(".")
+			|| name.contains("com.badlogic.gdx.math")
+			|| name.contains("com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute"))) {
 			nesting--;
 			return;
 		}

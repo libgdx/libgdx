@@ -22,10 +22,20 @@
 	private long swigCPtr;
 	protected boolean swigCMemOwn;
 	
+	public Object userData;
+	
 	protected btCollisionObject(long cPtr, boolean cMemoryOwn) {
 		swigCMemOwn = cMemoryOwn;
 		swigCPtr = cPtr;
 		instances.put(cPtr, this);
+	}
+	
+	public void takeOwnership() {
+		swigCMemOwn = true;
+	}
+	
+	public void releaseOwnership() {
+		swigCMemOwn = false;
 	}
 	
 	public static long getCPtr($javaclassname obj) {

@@ -23,6 +23,7 @@ public class ChainShape extends Shape {
 	/*JNI
 #include <Box2D/Box2D.h>
 	 */
+	boolean isLooped = false;
 	
 	public ChainShape () {
 		addr = newChainShape();
@@ -50,6 +51,7 @@ public class ChainShape extends Shape {
 			verts[i + 1] = vertices[j].y;
 		}
 		jniCreateLoop(addr, verts, verts.length / 2);
+		isLooped = true;
 	}
 
 	private native void jniCreateLoop (long addr, float[] verts, int numVertices); /*
@@ -70,6 +72,7 @@ public class ChainShape extends Shape {
 			verts[i + 1] = vertices[j].y;
 		}
 		jniCreateChain(addr, verts, verts.length / 2);
+		isLooped = false;
 	}
 
 	private native void jniCreateChain (long addr, float[] verts, int numVertices); /*
@@ -138,6 +141,10 @@ public class ChainShape extends Shape {
 		verts[0] = v.x;
 		verts[1] = v.y;
 	*/
+	
+	public boolean isLooped() {
+		return isLooped;
+	}
 
 // /// Implement b2Shape. Vertices are cloned using b2Alloc.
 // b2Shape* Clone(b2BlockAllocator* allocator) const;

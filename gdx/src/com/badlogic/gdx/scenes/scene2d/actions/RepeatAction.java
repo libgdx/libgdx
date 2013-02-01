@@ -29,7 +29,7 @@ public class RepeatAction extends DelegateAction {
 		if (action.act(delta)) {
 			if (repeatCount > 0) executedCount++;
 			if (executedCount == repeatCount) return true;
-			action.restart();
+			if (action != null) action.restart();
 		}
 		return false;
 	}

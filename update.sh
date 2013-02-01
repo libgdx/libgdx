@@ -30,6 +30,9 @@ cp -rf nightlies/extensions/gdx-bullet/gdx-bullet-natives.jar extensions/gdx-bul
 cp -rf nightlies/extensions/gdx-bullet/armeabi/libgdx-bullet.so extensions/gdx-bullet/libs/armeabi
 cp -rf nightlies/extensions/gdx-bullet/armeabi-v7a/libgdx-bullet.so extensions/gdx-bullet/libs/armeabi-v7a
 
+# gdx-controllers natives
+cp -rf nightlies/extensions/gdx-controllers-desktop-natives.jar extensions/gdx-controllers/gdx-controllers-desktop/libs
+
 # copy android natives to tests
 cp -rf nightlies/armeabi nightlies/armeabi-v7a tests/gdx-tests-android/libs
 cp -rf nightlies/extensions/armeabi nightlies/extensions/armeabi-v7a tests/gdx-tests-android/libs

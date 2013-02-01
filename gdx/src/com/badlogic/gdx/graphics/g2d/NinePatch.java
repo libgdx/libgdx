@@ -45,10 +45,18 @@ public class NinePatch {
 	private final Color color = new Color(Color.WHITE);
 	private int padLeft = -1, padRight = -1, padTop = -1, padBottom = -1;
 
+	/** @param left Pixels from left edge.
+	 * @param right Pixels from right edge.
+	 * @param top Pixels from top edge.
+	 * @param bottom Pixels from bottom edge. */
 	public NinePatch (Texture texture, int left, int right, int top, int bottom) {
 		this(new TextureRegion(texture), left, right, top, bottom);
 	}
 
+	/** @param left Pixels from left edge.
+	 * @param right Pixels from right edge.
+	 * @param top Pixels from top edge.
+	 * @param bottom Pixels from bottom edge. */
 	public NinePatch (TextureRegion region, int left, int right, int top, int bottom) {
 		if (region == null) throw new IllegalArgumentException("region cannot be null.");
 		int middleWidth = region.getRegionWidth() - left - right;

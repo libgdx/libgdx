@@ -20,6 +20,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.physics.bullet.btBroadphaseInterface;
+import com.badlogic.gdx.physics.bullet.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.btCollisionWorld;
 import com.badlogic.gdx.physics.bullet.btIDebugDraw;
 import com.badlogic.gdx.physics.bullet.btCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.btCollisionDispatcher;
@@ -31,6 +33,7 @@ import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.btIDebugDraw.DebugDrawModes;
 import com.badlogic.gdx.physics.bullet.btRigidBody;
 import com.badlogic.gdx.physics.bullet.btSequentialImpulseConstraintSolver;
+import com.badlogic.gdx.utils.PerformanceCounter;
 
 /** @author xoppa
  * Bullet physics world that holds all bullet entities and constructors.  
@@ -44,28 +47,28 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 	public final btCollisionDispatcher dispatcher;
 	public final btBroadphaseInterface broadphase;
 	public final btConstraintSolver solver;
-	public final btDynamicsWorld dynamicsWorld;
+	public final btCollisionWorld collisionWorld;
+	public PerformanceCounter performanceCounter;
 	public final Vector3 gravity;	
 	
-	private WindowedMean mean = new WindowedMean(5);
-	public float bulletTime;
-	public float bulletLoad;
+	public int maxSubSteps = 5;
 	
 	public BulletWorld(final btCollisionConfiguration collisionConfiguration, final btCollisionDispatcher dispatcher,
-		final btBroadphaseInterface broadphase, final btConstraintSolver solver, final btDynamicsWorld dynamicsWorld,  
+		final btBroadphaseInterface broadphase, final btConstraintSolver solver, final btCollisionWorld world,  
 		final Vector3 gravity) {
 		this.collisionConfiguration = collisionConfiguration;
 		this.dispatcher = dispatcher;
 		this.broadphase = broadphase;
 		this.solver = solver;
-		this.dynamicsWorld = dynamicsWorld;
-		this.dynamicsWorld.setGravity(gravity);
+		this.collisionWorld = world;
+		if (world instanceof btDynamicsWorld)
+			((btDynamicsWorld)this.collisionWorld).setGravity(gravity);
 		this.gravity = gravity;
 	}
 	
 	public BulletWorld(final btCollisionConfiguration collisionConfiguration, final btCollisionDispatcher dispatcher,
-		final btBroadphaseInterface broadphase, final btConstraintSolver solver, final btDynamicsWorld dynamicsWorld) {
-		this(collisionConfiguration, dispatcher, broadphase, solver, dynamicsWorld, new Vector3(0, -10, 0));
+		final btBroadphaseInterface broadphase, final btConstraintSolver solver, final btCollisionWorld world) {
+		this(collisionConfiguration, dispatcher, broadphase, solver, world, new Vector3(0, -10, 0));
 	}
 	
 	public BulletWorld(final Vector3 gravity) {
@@ -73,8 +76,8 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 		dispatcher = new btCollisionDispatcher(collisionConfiguration);
 		broadphase = new btDbvtBroadphase();
 		solver = new btSequentialImpulseConstraintSolver();
-		dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-		dynamicsWorld.setGravity(gravity);
+		collisionWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+		((btDynamicsWorld)collisionWorld).setGravity(gravity);
 		this.gravity = gravity;
 	}
 	
@@ -85,24 +88,28 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 	@Override
 	public void add(final BulletEntity entity) {
 		super.add(entity);
-		if (entity.body != null)
-			dynamicsWorld.addRigidBody(entity.body);
+		if (entity.body != null) {
+			if (entity.body instanceof btRigidBody)
+				((btDiscreteDynamicsWorld)collisionWorld).addRigidBody((btRigidBody)entity.body);
+			else
+				collisionWorld.addCollisionObject(entity.body);
+		}
 	}
 	
 	@Override
 	public void update () {
-		final float dt = Gdx.graphics.getDeltaTime();
-		bulletTime = mean.getMean();
-		final float load = dt == 0 ? 0 : bulletTime / dt;
-		bulletLoad = (dt > 1f) ? load : dt * load + (1f - dt) * bulletLoad;
-		
-		final long start = System.nanoTime();
-		dynamicsWorld.stepSimulation(dt, 5);
-		mean.addValue((System.nanoTime() - start) / 1000000000.0f);
+		if (performanceCounter != null) {
+		performanceCounter.tick();
+		performanceCounter.start();
+		}
+		if (collisionWorld instanceof btDynamicsWorld)
+			((btDynamicsWorld)collisionWorld).stepSimulation(Gdx.graphics.getDeltaTime(), maxSubSteps);
+		if (performanceCounter != null)
+			performanceCounter.stop();
 
 		if (debugDrawer != null && debugDrawer.getDebugMode() > 0) {
 			debugDrawer.begin();
-			dynamicsWorld.debugDrawWorld();
+			collisionWorld.debugDrawWorld();
 			debugDrawer.end();
 		}
 		if (renderMeshes)
@@ -112,25 +119,33 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 	@Override
 	public void dispose () {
 		for (int i = 0; i < entities.size; i++) {
-			btRigidBody body = entities.get(i).body;
-			if (body != null)
-				dynamicsWorld.removeRigidBody(body);
+			btCollisionObject body = entities.get(i).body;
+			if (body != null) {
+				if (body instanceof btRigidBody)
+					((btDynamicsWorld)collisionWorld).removeRigidBody((btRigidBody)body);
+				else
+					collisionWorld.removeCollisionObject(body);
+			}
 		}
 		
 		super.dispose();
 		
-		dynamicsWorld.delete();
-		solver.delete();
-		broadphase.delete();
-		dispatcher.delete();
-		collisionConfiguration.delete();
+		collisionWorld.delete();
+		if (solver != null)
+			solver.delete();
+		if (broadphase != null)
+			broadphase.delete();
+		if (dispatcher != null)
+			dispatcher.delete();
+		if (collisionConfiguration != null)
+			collisionConfiguration.delete();
 	}
 	
 	public void setDebugMode(final int mode, final Matrix4 projMatrix) {
 		if (mode == btIDebugDraw.DebugDrawModes.DBG_NoDebug && debugDrawer == null)
 			return;
 		if (debugDrawer == null)
-			dynamicsWorld.setDebugDrawer(debugDrawer = new DebugDrawer());
+			collisionWorld.setDebugDrawer(debugDrawer = new DebugDrawer());
 		debugDrawer.lineRenderer.setProjectionMatrix(projMatrix);
 		debugDrawer.setDebugMode(mode);
 	}

@@ -52,6 +52,9 @@
     <Filter Include="Source Files\LinearMath">
       <UniqueIdentifier>{1893e809-1c71-4462-b0ff-a3c466d47f81}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\BulletSoftBody">
+      <UniqueIdentifier>{28bb29a0-847a-4ac1-a83d-67e8f78b4ef1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\swig-src\gdxBullet_wrap.h">
@@ -415,6 +418,30 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\BulletDynamics\ConstraintSolver\btUniversalConstraint.cpp">
       <Filter>Source Files\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\BulletSoftBody\btSoftRigidCollisionAlgorithm.cpp">
+      <Filter>Source Files\BulletSoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\BulletSoftBody\btSoftRigidDynamicsWorld.cpp">
+      <Filter>Source Files\BulletSoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\BulletSoftBody\btSoftSoftCollisionAlgorithm.cpp">
+      <Filter>Source Files\BulletSoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\BulletSoftBody\btDefaultSoftBodySolver.cpp">
+      <Filter>Source Files\BulletSoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\BulletSoftBody\btSoftBody.cpp">
+      <Filter>Source Files\BulletSoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\BulletSoftBody\btSoftBodyConcaveCollisionAlgorithm.cpp">
+      <Filter>Source Files\BulletSoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\BulletSoftBody\btSoftBodyHelpers.cpp">
+      <Filter>Source Files\BulletSoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\BulletSoftBody\btSoftBodyRigidBodyCollisionConfiguration.cpp">
+      <Filter>Source Files\BulletSoftBody</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

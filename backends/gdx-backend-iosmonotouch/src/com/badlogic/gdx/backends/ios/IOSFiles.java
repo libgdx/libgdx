@@ -20,6 +20,7 @@ import cli.System.IO.Directory;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class IOSFiles implements Files {
 	static final String externalPath = Environment.GetFolderPath(Environment.SpecialFolder.wrap(Environment.SpecialFolder.MyDocuments));
@@ -37,7 +38,7 @@ public class IOSFiles implements Files {
 
 	@Override
 	public FileHandle classpath (String path) {
-		return new IOSFileHandle(path, FileType.Classpath);
+		throw new GdxRuntimeException("Classpath files are not supported on iOS, this likely happened because you used the default constructor of BitmapFont.");
 	}
 
 	@Override

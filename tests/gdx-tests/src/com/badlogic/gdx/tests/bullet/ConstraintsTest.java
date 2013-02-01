@@ -17,11 +17,18 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.btDiscreteDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.btPoint2PointConstraint;
+import com.badlogic.gdx.physics.bullet.btRigidBody;
 import com.badlogic.gdx.physics.bullet.btTypedConstraint;
 import com.badlogic.gdx.utils.Array;
 
@@ -44,7 +51,8 @@ public class ConstraintsTest extends BaseBulletTest {
 			2, 3, 6, 6, 7, 3, // left
 			0, 1, 4, 4, 5, 1 // right
 			});
-		world.constructors.put("bar", new BulletConstructor(barMesh, 0f)); // mass = 0: static body
+		final StillModel barModel = new StillModel(new StillSubMesh("bar", barMesh, GL10.GL_TRIANGLES, new Material()));
+		world.addConstructor("bar", new BulletConstructor(barModel, 0f)); // mass = 0: static body
 		
 		// Create the entities
 		world.add("ground", 0f, 0f, 0f)
@@ -55,32 +63,32 @@ public class ConstraintsTest extends BaseBulletTest {
 		
 		BulletEntity box1 = world.add("box", -4.5f, 6f, 0f);
 		box1.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
-		btPoint2PointConstraint constraint = new btPoint2PointConstraint(bar.body, box1.body, Vector3.tmp.set(-5, -0.5f, -0.5f), Vector3.tmp2.set(-0.5f, 0.5f, -0.5f));
-		world.dynamicsWorld.addConstraint(constraint, false);
+		btPoint2PointConstraint constraint = new btPoint2PointConstraint((btRigidBody)bar.body, (btRigidBody)box1.body, Vector3.tmp.set(-5, -0.5f, -0.5f), Vector3.tmp2.set(-0.5f, 0.5f, -0.5f));
+		((btDynamicsWorld)world.collisionWorld).addConstraint(constraint, false);
 		constraints.add(constraint);
 		BulletEntity box2 = null;
 		for (int i = 0; i < 10; i++) {
 			if (i % 2 == 0) {
 				box2 = world.add("box", -3.5f + (float)i, 6f, 0f);
 				box2.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
-				constraint = new btPoint2PointConstraint(box1.body, box2.body, Vector3.tmp.set(0.5f, -0.5f, 0.5f), Vector3.tmp2.set(-0.5f, -0.5f, 0.5f));
+				constraint = new btPoint2PointConstraint((btRigidBody)box1.body, (btRigidBody)box2.body, Vector3.tmp.set(0.5f, -0.5f, 0.5f), Vector3.tmp2.set(-0.5f, -0.5f, 0.5f));
 			} else {
 				box1 = world.add("box", -3.5f + (float)i, 6f, 0f);
 				box1.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
-				constraint = new btPoint2PointConstraint(box2.body, box1.body, Vector3.tmp.set(0.5f, 0.5f, -0.5f), Vector3.tmp2.set(-0.5f, 0.5f, -0.5f));
+				constraint = new btPoint2PointConstraint((btRigidBody)box2.body, (btRigidBody)box1.body, Vector3.tmp.set(0.5f, 0.5f, -0.5f), Vector3.tmp2.set(-0.5f, 0.5f, -0.5f));
 			}
-			world.dynamicsWorld.addConstraint(constraint, false);
+			((btDynamicsWorld)world.collisionWorld).addConstraint(constraint, false);
 			constraints.add(constraint);
 		}
-		constraint = new btPoint2PointConstraint(bar.body, box1.body, Vector3.tmp.set(5f, -0.5f, -0.5f), Vector3.tmp2.set(0.5f, 0.5f, -0.5f));
-		world.dynamicsWorld.addConstraint(constraint, false);
+		constraint = new btPoint2PointConstraint((btRigidBody)bar.body, (btRigidBody)box1.body, Vector3.tmp.set(5f, -0.5f, -0.5f), Vector3.tmp2.set(0.5f, 0.5f, -0.5f));
+		((btDynamicsWorld)world.collisionWorld).addConstraint(constraint, false);
 		constraints.add(constraint);
 	}
 	
 	@Override
 	public void dispose () {
 		for (int i = 0; i < constraints.size; i++) {
-			world.dynamicsWorld.removeConstraint(constraints.get(i));
+			((btDynamicsWorld)world.collisionWorld).removeConstraint(constraints.get(i));
 			constraints.get(i).delete();
 		}
 		constraints.clear();
