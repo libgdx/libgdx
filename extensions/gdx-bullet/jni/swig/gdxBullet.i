@@ -453,6 +453,8 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 /* Has nested classes or structs */
 %include "custom/btRigidBody.i"
 
+%include "custom/btCollisionObjectWrapper.i"
+
 %{
 #include <BulletCollision/CollisionDispatch/btEmptyCollisionAlgorithm.h>
 %}

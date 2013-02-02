@@ -40,8 +40,8 @@ public class btSphereSphereCollisionAlgorithm extends btActivatingCollisionAlgor
     super.delete();
   }
 
-  public btSphereSphereCollisionAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, SWIGTYPE_p_btCollisionObjectWrapper col0Wrap, SWIGTYPE_p_btCollisionObjectWrapper col1Wrap) {
-    this(gdxBulletJNI.new_btSphereSphereCollisionAlgorithm__SWIG_0(btPersistentManifold.getCPtr(mf), mf, btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(col0Wrap), SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(col1Wrap)), true);
+  public btSphereSphereCollisionAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, btCollisionObjectWrapper col0Wrap, btCollisionObjectWrapper col1Wrap) {
+    this(gdxBulletJNI.new_btSphereSphereCollisionAlgorithm__SWIG_0(btPersistentManifold.getCPtr(mf), mf, btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObjectWrapper.getCPtr(col0Wrap), col0Wrap, btCollisionObjectWrapper.getCPtr(col1Wrap), col1Wrap), true);
   }
 
   public btSphereSphereCollisionAlgorithm(btCollisionAlgorithmConstructionInfo ci) {
