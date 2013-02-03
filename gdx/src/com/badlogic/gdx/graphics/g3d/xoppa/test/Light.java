@@ -18,4 +18,18 @@ public class Light {
 		position.set(x, y, z);
 		this.power = power;
 	}
+	
+	public boolean equals(Light other) {
+		if (other == null) return false;
+		if (other == this) return true;
+		return color.equals(other.color) && position.equals(other.position) && power == other.power;
+	}
+	
+	@Override
+	public boolean equals (Object arg0) {
+		if (arg0 == null) return false;
+		if (arg0 == this) return true;
+		if (!(arg0 instanceof Light)) return false;
+		return equals((Light)arg0);
+	}
 }

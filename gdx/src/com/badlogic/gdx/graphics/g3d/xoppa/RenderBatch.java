@@ -17,6 +17,7 @@ public class RenderBatch {
 	protected RenderContext context;
 	protected RenderBatchListener listener;
 	protected Camera camera;
+	// TODO: perhaps its better to use a sorted list?
 	protected final Array<RenderInstance> instances = new Array<RenderInstance>();
 	/* protected final Pool<RenderInstance> instancePool = new Pool<RenderInstance>() {
 		@Override

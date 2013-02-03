@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g3d.xoppa.RenderContext;
 import com.badlogic.gdx.graphics.g3d.xoppa.RenderInstance;
 import com.badlogic.gdx.graphics.g3d.xoppa.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.xoppa.materials.NewMaterial;
+import com.badlogic.gdx.graphics.g3d.xoppa.test.Light;
 import com.badlogic.gdx.graphics.g3d.xoppa.test.NewModel;
 import com.badlogic.gdx.graphics.g3d.xoppa.test.OldBatchRendererGLES11;
 import com.badlogic.gdx.graphics.g3d.xoppa.test.OldBatchRendererGLES20;
@@ -38,7 +39,7 @@ public class BatchRenderTest extends GdxTest {
 	int TEXTURE_COUNT = 30;
 	int BOX_COUNT = 500;
 	int UNIT_OFFSET = 2;
-	int MAX_TEXTURES = Math.min(30 /*GL10.GL_MAX_TEXTURE_UNITS*/ - UNIT_OFFSET, ExclusiveTextures.MAX_GLES_UNITS - UNIT_OFFSET);
+	int MAX_TEXTURES = Math.min(16 /*GL10.GL_MAX_TEXTURE_UNITS*/ - UNIT_OFFSET, ExclusiveTextures.MAX_GLES_UNITS - UNIT_OFFSET);
 	int BIND_METHOD = ExclusiveTextures.WEIGHTED;
 	float MIN_X = -10f, MIN_Y = -10f, MIN_Z = -10f;
 	float SIZE_X = 20f, SIZE_Y = 20f, SIZE_Z = 20f;
@@ -62,6 +63,7 @@ public class BatchRenderTest extends GdxTest {
 	Array<Texture> textures = new Array<Texture>();
 	RenderBatch renderBatch;
 	ExclusiveTextures exclusiveTextures;
+	Light[] lights;
 	
 	float[] lightColor = {1, 1, 1, 0};
 	float[] lightPosition = {2, 5, 10, 0};
@@ -100,6 +102,12 @@ public class BatchRenderTest extends GdxTest {
 		
 		renderBatch = new RenderBatch(exclusiveTextures = new ExclusiveTextures(BIND_METHOD, UNIT_OFFSET, MAX_TEXTURES));
 		
+		lights = new Light[] {
+			new Light(Color.WHITE, Vector3.tmp.set(-10f, 10f, -10f), 15f),
+			new Light(Color.BLUE, Vector3.tmp.set(10f, 5f, 0f), 10f),
+			new Light(Color.GREEN, Vector3.tmp.set(0f, 10f, 5f), 5f)
+		};
+		
 		Gdx.input.setInputProcessor(this);
 	}
 	
@@ -107,7 +115,7 @@ public class BatchRenderTest extends GdxTest {
 		for (int i = 0; i < BOX_COUNT; i++)
 			instances.add(new ModelInstance(cubes.get((int)(Math.random()*cubes.size)), (new Matrix4()).setToTranslation(MIN_X + (float)Math.random() * SIZE_X, MIN_Y + (float)Math.random() * SIZE_Y, MIN_Z + (float)Math.random() * SIZE_Z).scl(0.05f + (float)Math.random())));
 	}
-	
+
 	public void createScene2() {
 		instances.add(new ModelInstance(sceneModel, new Matrix4()));
 		instances.add(new ModelInstance(testModel, (new Matrix4()).setToTranslation(0, 5, 4)));
@@ -134,7 +142,7 @@ public class BatchRenderTest extends GdxTest {
 		
 		renderBatch.begin(cam);
 		for (int i = 0; i < instances.size; i++)
-			renderBatch.addModel(instances.get(i).model, instances.get(i).transform);
+			renderBatch.addModel(instances.get(i).model, instances.get(i).transform, lights);
 		renderBatch.end();		
 	}
 	
