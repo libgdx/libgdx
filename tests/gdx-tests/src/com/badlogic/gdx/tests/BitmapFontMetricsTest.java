@@ -83,9 +83,9 @@ public class BitmapFontMetricsTest extends GdxTest {
 
 		spriteBatch.end();
 
-		renderer.begin(ShapeType.FilledRectangle);
+		renderer.begin(ShapeType.Filled);
 		renderer.setColor(Color.BLACK);
-		renderer.filledRect(x - 3, y - 3, 6, 6);
+		renderer.rect(x - 3, y - 3, 6, 6);
 		renderer.end();
 
 		float baseline = y - font.getCapHeight();
@@ -104,7 +104,7 @@ public class BitmapFontMetricsTest extends GdxTest {
 		renderer.line(0, y - font.getLineHeight(), 9999, y - font.getLineHeight());
 		renderer.end();
 
-		renderer.begin(ShapeType.Rectangle);
+		renderer.begin(ShapeType.Line);
 		renderer.setColor(Color.BLUE);
 		renderer.rect(x, y, bounds.width, -bounds.height);
 		renderer.end();
