@@ -52,8 +52,8 @@ public class btCollisionAlgorithmCreateFunc {
     this(gdxBulletJNI.new_btCollisionAlgorithmCreateFunc(), true);
   }
 
-  public btCollisionAlgorithm CreateCollisionAlgorithm(btCollisionAlgorithmConstructionInfo arg0, SWIGTYPE_p_btCollisionObjectWrapper body0Wrap, SWIGTYPE_p_btCollisionObjectWrapper body1Wrap) {
-    long cPtr = gdxBulletJNI.btCollisionAlgorithmCreateFunc_CreateCollisionAlgorithm(swigCPtr, this, btCollisionAlgorithmConstructionInfo.getCPtr(arg0), arg0, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body0Wrap), SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body1Wrap));
+  public btCollisionAlgorithm CreateCollisionAlgorithm(btCollisionAlgorithmConstructionInfo arg0, btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap) {
+    long cPtr = gdxBulletJNI.btCollisionAlgorithmCreateFunc_CreateCollisionAlgorithm(swigCPtr, this, btCollisionAlgorithmConstructionInfo.getCPtr(arg0), arg0, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap);
     return (cPtr == 0) ? null : new btCollisionAlgorithm(cPtr, false);
   }
 

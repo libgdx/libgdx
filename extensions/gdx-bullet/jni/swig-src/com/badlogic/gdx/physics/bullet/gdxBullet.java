@@ -400,12 +400,12 @@ public class gdxBullet implements gdxBulletConstants {
     gdxBulletJNI.btGenerateInternalEdgeInfo(btBvhTriangleMeshShape.getCPtr(trimeshShape), trimeshShape, btTriangleInfoMap.getCPtr(triangleInfoMap), triangleInfoMap);
   }
 
-  public static void btAdjustInternalEdgeContacts(btManifoldPoint cp, SWIGTYPE_p_btCollisionObjectWrapper trimeshColObj0Wrap, SWIGTYPE_p_btCollisionObjectWrapper otherColObj1Wrap, int partId0, int index0, int normalAdjustFlags) {
-    gdxBulletJNI.btAdjustInternalEdgeContacts__SWIG_0(btManifoldPoint.getCPtr(cp), cp, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(trimeshColObj0Wrap), SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(otherColObj1Wrap), partId0, index0, normalAdjustFlags);
+  public static void btAdjustInternalEdgeContacts(btManifoldPoint cp, btCollisionObjectWrapper trimeshColObj0Wrap, btCollisionObjectWrapper otherColObj1Wrap, int partId0, int index0, int normalAdjustFlags) {
+    gdxBulletJNI.btAdjustInternalEdgeContacts__SWIG_0(btManifoldPoint.getCPtr(cp), cp, btCollisionObjectWrapper.getCPtr(trimeshColObj0Wrap), trimeshColObj0Wrap, btCollisionObjectWrapper.getCPtr(otherColObj1Wrap), otherColObj1Wrap, partId0, index0, normalAdjustFlags);
   }
 
-  public static void btAdjustInternalEdgeContacts(btManifoldPoint cp, SWIGTYPE_p_btCollisionObjectWrapper trimeshColObj0Wrap, SWIGTYPE_p_btCollisionObjectWrapper otherColObj1Wrap, int partId0, int index0) {
-    gdxBulletJNI.btAdjustInternalEdgeContacts__SWIG_1(btManifoldPoint.getCPtr(cp), cp, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(trimeshColObj0Wrap), SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(otherColObj1Wrap), partId0, index0);
+  public static void btAdjustInternalEdgeContacts(btManifoldPoint cp, btCollisionObjectWrapper trimeshColObj0Wrap, btCollisionObjectWrapper otherColObj1Wrap, int partId0, int index0) {
+    gdxBulletJNI.btAdjustInternalEdgeContacts__SWIG_1(btManifoldPoint.getCPtr(cp), cp, btCollisionObjectWrapper.getCPtr(trimeshColObj0Wrap), trimeshColObj0Wrap, btCollisionObjectWrapper.getCPtr(otherColObj1Wrap), otherColObj1Wrap, partId0, index0);
   }
 
   public static void setGContactBreakingThreshold(float value) {

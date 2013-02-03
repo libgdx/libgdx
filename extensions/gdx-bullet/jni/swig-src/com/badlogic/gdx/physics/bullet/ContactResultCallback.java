@@ -40,6 +40,21 @@ public class ContactResultCallback {
     }
   }
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    gdxBulletJNI.ContactResultCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    gdxBulletJNI.ContactResultCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public void setM_collisionFilterGroup(short value) {
     gdxBulletJNI.ContactResultCallback_m_collisionFilterGroup_set(swigCPtr, this, value);
   }
@@ -56,12 +71,17 @@ public class ContactResultCallback {
     return gdxBulletJNI.ContactResultCallback_m_collisionFilterMask_get(swigCPtr, this);
   }
 
-  public boolean needsCollision(btBroadphaseProxy proxy0) {
-    return gdxBulletJNI.ContactResultCallback_needsCollision(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0);
+  public ContactResultCallback() {
+    this(gdxBulletJNI.new_ContactResultCallback(), true);
+    gdxBulletJNI.ContactResultCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
-  public float addSingleResult(btManifoldPoint cp, SWIGTYPE_p_btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, SWIGTYPE_p_btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
-    return gdxBulletJNI.ContactResultCallback_addSingleResult(swigCPtr, this, btManifoldPoint.getCPtr(cp), cp, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(colObj0Wrap), partId0, index0, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(colObj1Wrap), partId1, index1);
+  public boolean needsCollision(btBroadphaseProxy proxy0) {
+    return (getClass() == ContactResultCallback.class) ? gdxBulletJNI.ContactResultCallback_needsCollision(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0) : gdxBulletJNI.ContactResultCallback_needsCollisionSwigExplicitContactResultCallback(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0);
+  }
+
+  public float addSingleResult(btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
+    return gdxBulletJNI.ContactResultCallback_addSingleResult(swigCPtr, this, btManifoldPoint.getCPtr(cp), cp, btCollisionObjectWrapper.getCPtr(colObj0Wrap), colObj0Wrap, partId0, index0, btCollisionObjectWrapper.getCPtr(colObj1Wrap), colObj1Wrap, partId1, index1);
   }
 
 }

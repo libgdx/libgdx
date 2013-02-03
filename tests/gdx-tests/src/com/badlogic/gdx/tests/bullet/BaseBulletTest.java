@@ -31,6 +31,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.btIDebugDraw;
 import com.badlogic.gdx.physics.bullet.btIDebugDraw.DebugDrawModes;
+import com.badlogic.gdx.physics.bullet.btRigidBody;
 import com.badlogic.gdx.physics.bullet.btTransform;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
@@ -147,7 +148,7 @@ public class BaseBulletTest extends BulletTest {
 		Ray ray = camera.getPickRay(x, y);
 		BulletEntity entity = world.add(what, ray.origin.x, ray.origin.y, ray.origin.z);
 		entity.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
-		entity.body.applyCentralImpulse(ray.direction.mul(impulse));
+		((btRigidBody)entity.body).applyCentralImpulse(ray.direction.mul(impulse));
 	}
 	
 	public void setDebugMode(final int mode) {

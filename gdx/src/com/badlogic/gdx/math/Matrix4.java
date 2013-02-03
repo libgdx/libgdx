@@ -335,7 +335,7 @@ public class Matrix4 implements Serializable {
 	 * @param near The near plane
 	 * @param far The far plane
 	 * @param fov The field of view in degrees
-	 * @param aspectRatio The aspect ratio
+	 * @param aspectRatio The "width over height" aspect ratio
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 setToProjection (float near, float far, float fov, float aspectRatio) {
 		idt();
