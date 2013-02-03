@@ -44,8 +44,8 @@ public class btManifoldResult {
     this(gdxBulletJNI.new_btManifoldResult__SWIG_0(), true);
   }
 
-  public btManifoldResult(SWIGTYPE_p_btCollisionObjectWrapper body0Wrap, SWIGTYPE_p_btCollisionObjectWrapper body1Wrap) {
-    this(gdxBulletJNI.new_btManifoldResult__SWIG_1(SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body0Wrap), SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body1Wrap)), true);
+  public btManifoldResult(btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap) {
+    this(gdxBulletJNI.new_btManifoldResult__SWIG_1(btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap), true);
   }
 
   public void setPersistentManifold(btPersistentManifold manifoldPtr) {
@@ -73,22 +73,22 @@ public class btManifoldResult {
     gdxBulletJNI.btManifoldResult_refreshContactPoints(swigCPtr, this);
   }
 
-  public SWIGTYPE_p_btCollisionObjectWrapper getBody0Wrap() {
+  public btCollisionObjectWrapper getBody0Wrap() {
     long cPtr = gdxBulletJNI.btManifoldResult_getBody0Wrap(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btCollisionObjectWrapper(cPtr, false);
+    return (cPtr == 0) ? null : new btCollisionObjectWrapper(cPtr, false);
   }
 
-  public SWIGTYPE_p_btCollisionObjectWrapper getBody1Wrap() {
+  public btCollisionObjectWrapper getBody1Wrap() {
     long cPtr = gdxBulletJNI.btManifoldResult_getBody1Wrap(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btCollisionObjectWrapper(cPtr, false);
+    return (cPtr == 0) ? null : new btCollisionObjectWrapper(cPtr, false);
   }
 
-  public void setBody0Wrap(SWIGTYPE_p_btCollisionObjectWrapper obj0Wrap) {
-    gdxBulletJNI.btManifoldResult_setBody0Wrap(swigCPtr, this, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(obj0Wrap));
+  public void setBody0Wrap(btCollisionObjectWrapper obj0Wrap) {
+    gdxBulletJNI.btManifoldResult_setBody0Wrap(swigCPtr, this, btCollisionObjectWrapper.getCPtr(obj0Wrap), obj0Wrap);
   }
 
-  public void setBody1Wrap(SWIGTYPE_p_btCollisionObjectWrapper obj1Wrap) {
-    gdxBulletJNI.btManifoldResult_setBody1Wrap(swigCPtr, this, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(obj1Wrap));
+  public void setBody1Wrap(btCollisionObjectWrapper obj1Wrap) {
+    gdxBulletJNI.btManifoldResult_setBody1Wrap(swigCPtr, this, btCollisionObjectWrapper.getCPtr(obj1Wrap), obj1Wrap);
   }
 
   public btCollisionObject getBody0Internal() {

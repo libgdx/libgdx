@@ -81,7 +81,7 @@ public class SoftBodyTest extends BaseBulletTest {
 		softBody = btSoftBodyHelpers.CreatePatch(worldInfo, patch00, patch10, patch01, patch11, 15, 15, 15, false);
 		softBody.takeOwnership();
 		softBody.setTotalMass(100f);
-		((btSoftRigidDynamicsWorld)(world.dynamicsWorld)).addSoftBody(softBody);
+		((btSoftRigidDynamicsWorld)(world.collisionWorld)).addSoftBody(softBody);
 		
 		final int vertCount = softBody.getNodeCount();
 		final int faceCount = softBody.getFaceCount(); 
@@ -107,7 +107,7 @@ public class SoftBodyTest extends BaseBulletTest {
 	
 	@Override
 	public void dispose () {
-		((btSoftRigidDynamicsWorld)(world.dynamicsWorld)).removeSoftBody(softBody);
+		((btSoftRigidDynamicsWorld)(world.collisionWorld)).removeSoftBody(softBody);
 		softBody.delete();
 		softBody = null;
 		

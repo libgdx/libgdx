@@ -83,7 +83,7 @@ public class RayCastTest extends BaseBulletTest {
 		rayTestCB.getM_rayFromWorld().setValue(rayFrom.x, rayFrom.y, rayFrom.z);
 		rayTestCB.getM_rayToWorld().setValue(rayTo.x, rayTo.y, rayTo.z);
 		
-		world.dynamicsWorld.rayTest(rayFrom, rayTo, rayTestCB);
+		world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
 		
 		if (rayTestCB.hasHit()) {
 			final btCollisionObject obj = rayTestCB.getM_collisionObject();

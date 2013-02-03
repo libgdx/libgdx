@@ -6,5 +6,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backends-gwt"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-tests"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers-gwt"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

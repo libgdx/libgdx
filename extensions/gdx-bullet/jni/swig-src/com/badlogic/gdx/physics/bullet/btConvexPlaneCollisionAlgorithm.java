@@ -40,12 +40,12 @@ public class btConvexPlaneCollisionAlgorithm extends btCollisionAlgorithm {
     super.delete();
   }
 
-  public btConvexPlaneCollisionAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, SWIGTYPE_p_btCollisionObjectWrapper body0Wrap, SWIGTYPE_p_btCollisionObjectWrapper body1Wrap, boolean isSwapped, int numPerturbationIterations, int minimumPointsPerturbationThreshold) {
-    this(gdxBulletJNI.new_btConvexPlaneCollisionAlgorithm(btPersistentManifold.getCPtr(mf), mf, btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body0Wrap), SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body1Wrap), isSwapped, numPerturbationIterations, minimumPointsPerturbationThreshold), true);
+  public btConvexPlaneCollisionAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, boolean isSwapped, int numPerturbationIterations, int minimumPointsPerturbationThreshold) {
+    this(gdxBulletJNI.new_btConvexPlaneCollisionAlgorithm(btPersistentManifold.getCPtr(mf), mf, btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, isSwapped, numPerturbationIterations, minimumPointsPerturbationThreshold), true);
   }
 
-  public void collideSingleContact(Quaternion perturbeRot, SWIGTYPE_p_btCollisionObjectWrapper body0Wrap, SWIGTYPE_p_btCollisionObjectWrapper body1Wrap, btDispatcherInfo dispatchInfo, btManifoldResult resultOut) {
-    gdxBulletJNI.btConvexPlaneCollisionAlgorithm_collideSingleContact(swigCPtr, this, perturbeRot, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body0Wrap), SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body1Wrap), btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, btManifoldResult.getCPtr(resultOut), resultOut);
+  public void collideSingleContact(Quaternion perturbeRot, btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, btDispatcherInfo dispatchInfo, btManifoldResult resultOut) {
+    gdxBulletJNI.btConvexPlaneCollisionAlgorithm_collideSingleContact(swigCPtr, this, perturbeRot, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, btManifoldResult.getCPtr(resultOut), resultOut);
   }
 
 }

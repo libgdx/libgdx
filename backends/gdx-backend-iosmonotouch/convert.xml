@@ -1,6 +1,6 @@
 <project name="gdx" default="convert" basedir=".">
-	<property environment="env"/>
-	<property name="IKVM_HOME" value="${env.IKVM_HOME}"/>
+ 	<property environment="env"/>
+	<property name="IKVM_HOME" value="${basedir}/libs/ikvm"/>
 	<property name="MONO_HOME" value="/Developer/MonoTouch/usr/lib/mono/2.1"/>
 	<property name="IN" value="-recurse:target/core/*.class"/>
 	<property name="OUT" value="gdx.dll"/>
@@ -11,7 +11,7 @@
 	<target name="compile">
 		<delete dir="target"/>
 		<mkdir dir="target"/>
-		<javac srcdir="${SRC}" destdir="target" classpath="${CLASSPATH}">
+		<javac target="1.6" srcdir="${SRC}" destdir="target" classpath="${CLASSPATH}">
 			<include name="**/*.java"/>
 			<exclude name="${EXCLUDE}"/>
 		</javac>

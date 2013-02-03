@@ -40,6 +40,21 @@ public class ConvexResultCallback {
     }
   }
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    gdxBulletJNI.ConvexResultCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    gdxBulletJNI.ConvexResultCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public void setM_closestHitFraction(float value) {
     gdxBulletJNI.ConvexResultCallback_m_closestHitFraction_set(swigCPtr, this, value);
   }
@@ -64,12 +79,17 @@ public class ConvexResultCallback {
     return gdxBulletJNI.ConvexResultCallback_m_collisionFilterMask_get(swigCPtr, this);
   }
 
+  public ConvexResultCallback() {
+    this(gdxBulletJNI.new_ConvexResultCallback(), true);
+    gdxBulletJNI.ConvexResultCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
+  }
+
   public boolean hasHit() {
     return gdxBulletJNI.ConvexResultCallback_hasHit(swigCPtr, this);
   }
 
   public boolean needsCollision(btBroadphaseProxy proxy0) {
-    return gdxBulletJNI.ConvexResultCallback_needsCollision(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0);
+    return (getClass() == ConvexResultCallback.class) ? gdxBulletJNI.ConvexResultCallback_needsCollision(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0) : gdxBulletJNI.ConvexResultCallback_needsCollisionSwigExplicitConvexResultCallback(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0);
   }
 
   public float addSingleResult(LocalConvexResult convexResult, boolean normalInWorldSpace) {

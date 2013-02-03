@@ -32,6 +32,7 @@ import cli.System.Console;
 import cli.System.Environment;
 import cli.System.Drawing.RectangleF;
 import cli.System.IO.Path;
+import cli.objectal.OALAudioSession;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -206,6 +207,12 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	@Override
 	public void OnActivated (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "resumed");
+		if (config.useObjectAL)
+		{
+			// workaround for ObjectAL crash problem
+			// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
+			OALAudioSession.sharedInstance().forceEndInterrupt();
+		}
 		graphics.MakeCurrent();
 		graphics.resume();
 	}
