@@ -90,7 +90,7 @@ public class TextureAtlasTest extends GdxTest {
 		// star.draw(batch);
 		// font.draw(batch, "This font was packed!", 26, 65);
 		badlogicSmall.draw(batch);
-		renderer.begin(ShapeType.Rectangle);
+		renderer.begin(ShapeType.Line);
 		renderer.rect(10, 10, 256, 256);
 		renderer.end();
 		// batch.draw(jumpAnimation.getKeyFrame(time, true), 100, 100);

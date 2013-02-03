@@ -44,9 +44,9 @@ public class Vector2dTest extends GdxTest {
 		renderer.setProjectionMatrix(camera.combined);
 		
 		// Render the 'lerp' vector target as a circle
-		renderer.begin(ShapeType.FilledCircle);
+		renderer.begin(ShapeType.Filled);
 		renderer.setColor(1.0f, 0, 0, 0.3f);
-		renderer.filledCircle(-2 + lerpTarget.x, 2 + lerpTarget.y , 0.08f, 16);
+		renderer.circle(-2 + lerpTarget.x, 2 + lerpTarget.y , 0.08f, 16);
 		renderer.end();
 
 		renderer.begin(ShapeType.Line);

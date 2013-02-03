@@ -17,6 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -53,7 +54,7 @@ public class ShapeRendererTest extends GdxTest {
 
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
+
 		cam.update();
 		renderer.setProjectionMatrix(cam.combined);
 		renderer.identity();
@@ -61,136 +62,59 @@ public class ShapeRendererTest extends GdxTest {
 		renderer.translate(-0.5f, -0.5f, 0);
 
 		MathUtils.random.setSeed(0);
-
-		renderer.begin(ShapeType.Line);
-		renderer.setColor(Color.GREEN);
-		for (int i = 0; i < 1000; i++) {
-			renderer.line(MathUtils.random(), MathUtils.random(), MathUtils.random(), MathUtils.random());
-		}
-		renderer.end();
-
+		
 		renderer.begin(ShapeType.Point);
-		renderer.setColor(Color.BLUE);
-		for (int i = 0; i < 1000; i++) {
-			renderer.point(MathUtils.random(), MathUtils.random(), MathUtils.random());
-		}
+		
+		renderer.setColor(Color.PINK);
+		for(int i=0; i<100; i++)
+			renderer.point(MathUtils.random(0.0f, 1.0f), MathUtils.random(0.0f, 1.0f), 0);
+		
 		renderer.end();
 
-		renderer.begin(ShapeType.Rectangle);
-		renderer.setColor(Color.RED);
-		for (int i = 0; i < 20; i++) {
-			float x = MathUtils.random();
-			float y = MathUtils.random();
-			float width = MathUtils.random();
-			float height = MathUtils.random();
-			renderer.identity();
-			renderer.translate(-0.5f + x, -0.5f + y, MathUtils.random());
-			renderer.translate(width / 2, height / 2, 0);
-			renderer.rotate(0, 1, 0, MathUtils.random() * 360);
-			renderer.translate(-width / 2, -height / 2, 0);
-			renderer.rect(0, 0, width, height);
+		if(Gdx.input.isKeyPressed(Keys.F)){
+			renderer.begin(ShapeType.Filled);
+			
+			renderer.setColor(Color.RED);
+			renderer.rect(0, 0, 1, 1);
+			
+			renderer.setColor(Color.BLUE);
+			renderer.circle(0.2f, 0.2f, 0.5f, 40);
+			
+			renderer.setColor(Color.GREEN);
+			renderer.cone(0.6f, 0.6f, 0, 0.3f, 0.75f, 20);
+			
+			renderer.setColor(Color.MAGENTA);
+			renderer.triangle(-0.1f, 0.1f, -0.6f, -0.1f, -0.3f, 0.5f);
+			
+			renderer.end();
 		}
-		renderer.end();
+		else {
+			renderer.begin(ShapeType.Line);
+			
+			renderer.setColor(Color.RED);
+			renderer.rect(0, 0, 1, 1);
+			
+			renderer.setColor(Color.BLUE);
+			renderer.circle(0.2f, 0.2f, 0.5f, 40);
+			
+			renderer.setColor(Color.YELLOW);
+			renderer.line(0, 0, 1, 1);
+			
+			renderer.setColor(Color.WHITE);
+			renderer.box(0.1f, 0.1f, 0.1f, 0.3f, 0.25f, 0.1f);
+			
+			renderer.setColor(Color.GREEN);
+			renderer.cone(0.6f, 0.6f, 0, 0.3f, 0.75f, 20);
+			
+			renderer.setColor(Color.MAGENTA);
+			renderer.triangle(-0.1f, 0.1f, -0.6f, -0.1f, -0.3f, 0.5f);
 
-		renderer.begin(ShapeType.FilledRectangle);
-		renderer.setColor(Color.WHITE);
-		for (int i = 0; i < 20; i++) {
-			float x = MathUtils.random();
-			float y = MathUtils.random();
-			float width = MathUtils.random();
-			float height = MathUtils.random();
-			renderer.identity();
-			renderer.translate(-0.5f + x, -0.5f + y, -MathUtils.random());
-			renderer.translate(width / 2, height / 2, 0);
-			renderer.rotate(0, 1, 0, MathUtils.random() * 360);
-			renderer.translate(-width / 2, -height / 2, 0);
-			renderer.filledRect(0, 0, width, height);
+			renderer.setColor(Color.CYAN);
+			renderer.curve(0.0f, 0.25f, 0.2f, 0.3f, 0.3f, 0.6f, 0.1f, 0.5f, 30);
+			
+			renderer.end();
 		}
-		renderer.end();
-
-		renderer.begin(ShapeType.Box);
-		renderer.setColor(1, 1, 0, 1);
-		for (int i = 0; i < 20; i++) {
-			float x = MathUtils.random();
-			float y = MathUtils.random();
-			float width = MathUtils.random();
-			float height = MathUtils.random();
-			float depth = MathUtils.random();
-			renderer.identity();
-			renderer.translate(-1.5f + x, -0.5f + y, MathUtils.random());
-			renderer.translate(width / 2, height / 2, depth / 2);
-			renderer.rotate(0, 1, 0, MathUtils.random() * 360);
-			renderer.translate(-width / 2, -height / 2, depth / 2);
-			renderer.box(0, 0, 0, width, height, depth);
-		}
-		renderer.end();
-
-		renderer.begin(ShapeType.Circle);
-		renderer.setColor(1, 0, 1, 1);
-		renderer.identity();
-		for (int i = 0; i < 20; i++) {
-			float x = MathUtils.random();
-			float y = MathUtils.random();
-			float radius = MathUtils.random();
-			renderer.circle(x, y, radius, 40);
-		}
-		renderer.end();
-
-		renderer.begin(ShapeType.FilledCircle);
-		renderer.setColor(0, 1, 1, 1);
-		renderer.identity();
-		renderer.rotate(0, 1, 0, 45);
-		for (int i = 0; i < 5; i++) {
-			float x = MathUtils.random();
-			float y = MathUtils.random();
-			float width = MathUtils.random();
-			float height = MathUtils.random();
-			renderer.identity();
-			renderer.translate(0.5f + x, -0.5f + y, -MathUtils.random());
-			renderer.translate(width / 2, height / 2, 0);
-			renderer.rotate(0, 1, 0, MathUtils.random() * 360);
-			renderer.translate(-width / 2, -height / 2, 0);
-			renderer.filledCircle(0, 0, width, 40);
-		}
-		renderer.end();
-
-		renderer.begin(ShapeType.Triangle);
-		renderer.setColor(0, 0, 1, 1);
-		renderer.identity();
-		renderer.rotate(0, 1, 0, 45);
-		for (int i = 0; i < 15; i++) {
-			float x = MathUtils.random();
-			float y = MathUtils.random();
-			float width = MathUtils.random();
-			float height = MathUtils.random();
-			renderer.identity();
-			renderer.translate(-0.5f + x, -0.5f + y, -MathUtils.random());
-			renderer.translate(width / 2, height / 2, 0);
-			renderer.rotate(0, 1, 0, MathUtils.random() * 360);
-			renderer.translate(-width / 2, -height / 2, 0);
-			renderer.triangle(0, 0, width, 0, 0, height);
-		}
-		renderer.end();
-
-		renderer.begin(ShapeType.FilledTriangle);
-		renderer.setColor(0, 0, 1, 1);
-		renderer.identity();
-		renderer.rotate(0, 1, 0, 45);
-		for (int i = 0; i < 15; i++) {
-			float x = MathUtils.random();
-			float y = MathUtils.random();
-			float width = MathUtils.random();
-			float height = MathUtils.random();
-			renderer.identity();
-			renderer.translate(0.5f + x, -0.5f + y, -MathUtils.random());
-			renderer.translate(width / 2, height / 2, 0);
-			renderer.rotate(0, 1, 0, MathUtils.random() * 360);
-			renderer.translate(-width / 2, -height / 2, 0);
-			renderer.filledTriangle(0, 0, width, 0, 0, height);
-		}
-		renderer.end();
-
-		Gdx.gl.glDisable(GL10.GL_DEPTH_TEST);
+		
 		batch.begin();
 		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 0, 20);
 		batch.end();
