@@ -176,9 +176,9 @@ public class PolygonRegionTest extends GdxTest {
 			renderer.end();
 
 			renderer.setColor(Color.BLUE);
-			renderer.begin(ShapeType.FilledCircle);
+			renderer.begin(ShapeType.Filled);
 
-			renderer.filledCircle(worldOriginX, worldOriginY, 4);
+			renderer.circle(worldOriginX, worldOriginY, 4);
 
 			renderer.end();
 

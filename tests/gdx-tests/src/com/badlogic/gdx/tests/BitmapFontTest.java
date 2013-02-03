@@ -76,7 +76,7 @@ public class BitmapFontTest extends GdxTest {
 
 		spriteBatch.end();
 
-		renderer.begin(ShapeType.Rectangle);
+		renderer.begin(ShapeType.Line);
 		renderer.rect(x, viewHeight - y, x + alignmentWidth, 300);
 		renderer.end();
 	}
