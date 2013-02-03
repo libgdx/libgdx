@@ -1,20 +1,24 @@
-<project name="gdx-freetype-Windows-32" basedir="." default="postcompile">
+<project name="gdx-freetype-IOS-32" basedir="." default="postcompile">
 	<!-- include the environment -->
 	<property environment="env"/>	
 	<!-- output directory for temporary object files -->
-	<property name="buildDir" value="target/windows32" />
+	<property name="buildDir" value="target/ios32" />
 	<!-- output directory for the shared library -->
-	<property name="libsDir" value="../libs/windows32" />
+	<property name="libsDir" value="../libs/ios32" />
 	<!-- the name of the shared library -->
-	<property name="libName" value="gdx-freetype.dll"/>
+	<property name="libName" value="libgdx-freetype.a"/>
 	<!-- the jni header jniPlatform to use -->
-	<property name="jniPlatform" value="win32"/>
+	<property name="jniPlatform" value="mac"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->
-	<property name="compilerPrefix" value="i686-w64-mingw32-"/>	
+	<property name="compilerPrefix" value=""/>	
+	<property name="iphoneos-platform" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin"/>
+	<property name="iphoneos-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk/"/>
+	<property name="iphonesimulator-platform" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin"/>
+	<property name="iphonesimulator-sdk" value="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator6.0.sdk/"/>
 	
 	<!-- define gcc compiler, options and files to compile -->
 	<property name="gcc" value="${compilerPrefix}gcc"/>	
-	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32 -std=c99 -DFT2_BUILD_LIBRARY"/>
+	<property name="gcc-opts" value="-c -Wall -O2 -std=c99 -DFT2_BUILD_LIBRARY"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
 				<include name="memcpy_wrap.c"/>
@@ -68,7 +72,7 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++"/>
-	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32 -std=c99 -DFT2_BUILD_LIBRARY"/>
+	<property name="g++-opts" value="-c -Wall -O2 -std=c99 -DFT2_BUILD_LIBRARY"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
@@ -77,8 +81,8 @@
 	</fileset>
 
 	<!-- define linker and options -->
-	<property name="linker" value="${compilerPrefix}g++"/>
-	<property name="linker-opts" value="-Wl,--kill-at -shared -m32 -static-libgcc -static-libstdc++"/>
+	<property name="linker" value="${compilerPrefix}ar"/>
+	<property name="linker-opts" value="rcs"/>
 	<property name="libraries" value=""/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
@@ -89,28 +93,15 @@
 		</delete>
 	</target>
 	
-	<target name="precompile">
-		<condition property="compiler-found">
-			<and>
-				<or>
-					<!-- Include both b/c Windows might be either -->
-					<available file="${g++}" filepath="${env.PATH}"/>
-					<available file="${g++}" filepath="${env.Path}"/>
-				</or>
-				<or>
-					<!-- Include both b/c Windows might be either -->
-					<available file="${gcc}" filepath="${env.PATH}"/>
-					<available file="${gcc}" filepath="${env.Path}"/>
-				</or>
-			</and>
-		</condition>
-		<condition property="has-compiler">
-			<equals arg1="${compiler-found}" arg2="true"/>
-		</condition>
-		
+	<target name="clean-objfiles">
+		<delete>
+			<fileset dir="${buildDir}">
+				<include name="**/*.o"/>
+			</fileset>
+		</delete>
 	</target>
 	
-	<target name="create-build-dir" depends="precompile" if="has-compiler">
+	<target name="create-build-dir">
 		<!-- FIXME this is pretty nasty :/ -->
 		<copy todir="${buildDir}">
 			<fileset refid="g++-files"/>
@@ -124,11 +115,11 @@
 		</delete>
 	</target>
 
-	<!-- compiles all C and C++ files to object files in the build directory -->
-	<target name="compile" depends="create-build-dir" if="has-compiler">
+	<!-- compiles all C and C++ files to object files in the build directory, for 386 builds-->
+	<target name="compile-386" depends="clean,create-build-dir">
 		<mkdir dir="${buildDir}"/>
-		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
-			<arg line="${g++-opts}"/>
+		<apply failonerror="true" executable="${iphonesimulator-platform}/${g++}" dest="${buildDir}" verbose="true">
+			<arg line="-isysroot ${iphonesimulator-sdk} -arch i386 ${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
@@ -143,8 +134,8 @@
 				<mapper type="glob" from="*.mm" to="*.o"/>
 			</compositemapper>
 		</apply>
-		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
-			<arg line="${gcc-opts}"/>
+		<apply failonerror="true" executable="${iphonesimulator-platform}/${gcc}" dest="${buildDir}" verbose="true">
+			<arg line="-isysroot ${iphonesimulator-sdk} -arch i386 ${gcc-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
@@ -160,8 +151,8 @@
 		</apply>
 	</target>	
 
-	<!-- links the shared library based on the previously compiled object files -->	
-	<target name="link" depends="compile" if="has-compiler">
+	<!-- links the shared library based on the previously compiled object files -->
+	<target name="link-386" depends="compile-386">
 		<fileset dir="${buildDir}" id="objFileSet">
 			<patternset>
 				<include name="**/*.o" />
@@ -169,16 +160,74 @@
 		</fileset>
 		<pathconvert pathsep=" " property="objFiles" refid="objFileSet" />
 		<mkdir dir="${libsDir}" />
-		<exec executable="${linker}" failonerror="true" dir="${buildDir}">
+		<exec executable="${iphonesimulator-platform}/${linker}" failonerror="true" dir="${buildDir}">
 			<arg line="${linker-opts}" />
-			<arg value="-o" />
-			<arg path="${libsDir}/${libName}" />
+			<arg path="${libsDir}/${libName}.386" />
 			<arg line="${objFiles}"/>
 			<arg line="${libraries}" />
 		</exec>
-	</target>	
+	</target>
 	
-	<target name="postcompile" depends="link">
+	<!-- compiles all C and C++ files to object files in the build directory, for 386 builds-->
+	<target name="compile-arm" depends="create-build-dir,clean-objfiles">
+		<mkdir dir="${buildDir}"/>
+		<apply failonerror="true" executable="${iphoneos-platform}/${g++}" dest="${buildDir}" verbose="true">
+			<arg line="-isysroot ${iphoneos-sdk} -arch armv7 ${g++-opts}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jniPlatform}"/>
+			<arg value="-I."/>
+						<arg value="-Ifreetype-2.4.10/include"/>
+
+			<srcfile/>
+			<arg value="-o"/>
+			<targetfile/>
+			<fileset refid="g++-files"/>
+			<compositemapper>
+				<mapper type="glob" from="*.cpp" to="*.o"/>
+				<mapper type="glob" from="*.mm" to="*.o"/>
+			</compositemapper>
+		</apply>
+		<apply failonerror="true" executable="${iphoneos-platform}/${gcc}" dest="${buildDir}" verbose="true">
+			<arg line="-isysroot ${iphoneos-sdk} -arch armv7 ${gcc-opts}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jniPlatform}"/>
+			<arg value="-I."/>
+						<arg value="-Ifreetype-2.4.10/include"/>
+
+			<srcfile/>
+			<arg value="-o"/>
+			<targetfile/>
+			<fileset refid="gcc-files"/>
+			<compositemapper>
+				<mapper type="glob" from="*.c" to="*.o"/>
+			</compositemapper>
+		</apply>
+	</target>	
+
+	<!-- links the shared library based on the previously compiled object files -->
+	<target name="link-arm" depends="compile-arm">
+		<fileset dir="${buildDir}" id="objFileSet">
+			<patternset>
+				<include name="**/*.o" />
+			</patternset>
+		</fileset>
+		<pathconvert pathsep=" " property="objFiles" refid="objFileSet" />
+		<mkdir dir="${libsDir}" />
+		<exec executable="${iphoneos-platform}/${linker}" failonerror="true" dir="${buildDir}">
+			<arg line="${linker-opts}" />
+			<arg path="${libsDir}/${libName}.armv7" />
+			<arg line="${objFiles}"/>
+			<arg line="${libraries}" />
+		</exec>
+	</target>
+
+	<target name="link-fat">
+		<exec executable="lipo" failonerror="true" dir="${libsDir}">
+			<arg line="-create -output ${libName} ${libName}.386 ${libName}.armv7"/>
+		</exec>
+	</target>
+
+	<target name="postcompile" depends="link-386,link-arm,link-fat">
 		
 	</target>
 </project>
