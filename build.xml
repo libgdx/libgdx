@@ -99,6 +99,25 @@
 		</ant>
 	</target>
 	
+	<!-- gdx ios-monotouch backend -->
+	<target name="gdx-backend-iosmonotouch" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/monotouch-5.4.0.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/mscorlib-4.0.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/opentk-5.4.0.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/system-2.1.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/system-core-2.1.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/system-data-2.1.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/objectal/libObjectAL.jar"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-iosmonotouch">
+			<property name="jar" value="gdx-backend-iosmonotouch"/>
+			<reference refid="classpath"/>
+			<reference refid="jarfiles"/>
+		</ant>
+	</target>
+	
 	<!-- build the extensions -->
 	<!-- gdx tools -->
 	<target name="gdx-tools" depends="gdx-core,gdx-backend-lwjgl,gdx-backend-lwjgl">
@@ -292,7 +311,7 @@
 	</target>
 
 	<target name="jars" 
-depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-image,gdx-audio,gdx-freetype,gdx-bullet"/>
+depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-backend-iosmonotouch,gdx-tools,gdx-tiled-preprocessor,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-image,gdx-audio,gdx-freetype,gdx-bullet"/>
 
 	<target name="all" depends="jars,docs,copy-iosfiles">
 		<!-- copy distribution files (licences etc.) -->
