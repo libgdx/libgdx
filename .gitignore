@@ -189,6 +189,7 @@
 /gdx/libs/linux64
 /gdx/libs/windows32
 /gdx/libs/windows64
+/gdx/libs/ios32
 
 /tests/gdx-tests-android/bin
 /tests/gdx-tests-android/gen
