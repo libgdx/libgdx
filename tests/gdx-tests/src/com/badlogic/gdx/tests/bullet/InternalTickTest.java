@@ -60,7 +60,7 @@ public class InternalTickTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 		
-		internalTickCallback = new TestInternalTickCallback(world.dynamicsWorld);
+		internalTickCallback = new TestInternalTickCallback((btDynamicsWorld)world.collisionWorld);
 
 		// Create the entities
 		world.add("ground", 0f, 0f, 0f)
