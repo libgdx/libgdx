@@ -89,8 +89,13 @@ public class BulletBuild {
 		android.cExcludes = android.cppExcludes = excludes;
 		android.headerDirs = headers;
 		android.cppFlags += cppFlags;
+		
+		BuildTarget ios = BuildTarget.newDefaultTarget(TargetOs.IOS, false);
+		ios.cExcludes = ios.cppExcludes = excludes;
+		ios.headerDirs = headers;
+		ios.cppFlags += cppFlags;
 
-		new AntScriptGenerator().generate(new BuildConfig("gdx-bullet"), win32home, win32, win64, lin32, lin64, mac, android);
+		new AntScriptGenerator().generate(new BuildConfig("gdx-bullet"), win32home, win32, win64, lin32, lin64, mac, android, ios);
 
 		// build natives
 		// BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");

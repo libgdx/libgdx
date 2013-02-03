@@ -143,18 +143,19 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 	public boolean onKey (View view, int keyCode, KeyEvent keyEvent) {
 		AndroidController controller = controllerMap.get(keyEvent.getDeviceId());
 		if(controller != null) {
-			if(keyEvent.getRepeatCount() == 0) {
-				synchronized(eventQueue) {
-					AndroidControllerEvent event = eventPool.obtain();
-					event.controller = controller;
-					if(keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-						event.type = AndroidControllerEvent.BUTTON_DOWN;
-					} else {
-						event.type = AndroidControllerEvent.BUTTON_UP;
-					}
-					event.code = keyCode;
-					eventQueue.add(event);
+			if(controller.getButton(keyCode) && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+				return true;
+			}
+			synchronized(eventQueue) {
+				AndroidControllerEvent event = eventPool.obtain();
+				event.controller = controller;
+				if(keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+					event.type = AndroidControllerEvent.BUTTON_DOWN;
+				} else {
+					event.type = AndroidControllerEvent.BUTTON_UP;
 				}
+				event.code = keyCode;
+				eventQueue.add(event);
 			}
 			return true;
 		} else {

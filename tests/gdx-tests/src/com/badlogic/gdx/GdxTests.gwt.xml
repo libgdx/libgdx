@@ -28,5 +28,9 @@
 		<exclude name="**/AssetsFileGenerator.java"/> <!-- utility -->
 		<exclude name="**/GdxTests.java"/> <!-- utilty -->
 		<exclude name="**/InternationalFontsTest.java"/> <!-- utilty -->
+		<exclude name="**/BulletTestCollection.java"/> <!-- native -->
+		<exclude name="**/bullet/"/> <!-- native -->
+		<exclude name="**/FloatTextureTest.java"/> <!-- GLES 2.0 extension -->
+		<exclude name="**/GLEEDTest.java"/>
 	</source>
 </module>

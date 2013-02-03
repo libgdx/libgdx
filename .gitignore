@@ -177,6 +177,8 @@
 /extensions/gdx-controllers/gdx-controllers-desktop/libs/macosx32
 /extensions/gdx-controllers/gdx-controllers-android/bin
 /extensions/gdx-controllers/gdx-controllers-android/target
+/extensions/gdx-controllers/gdx-controllers-gwt/bin
+/extensions/gdx-controllers/gdx-controllers-gwt/target
 
 /gdx/target
 /gdx/obj
@@ -187,6 +189,7 @@
 /gdx/libs/linux64
 /gdx/libs/windows32
 /gdx/libs/windows64
+/gdx/libs/ios32
 
 /tests/gdx-tests-android/bin
 /tests/gdx-tests-android/gen

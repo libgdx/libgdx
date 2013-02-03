@@ -108,9 +108,9 @@ void CocoaJoyStick::capture()
 				
 				if(mBuffered && mListener)
 				{
-					if(event.value == 0)
+					if(event.value == 1)
 						mListener->buttonPressed(JoyStickEvent(this, mState), button);
-					else if(event.value == 1)
+					else if(event.value == 0)
 						mListener->buttonReleased(JoyStickEvent(this, mState), button);
 				}
 				break;
