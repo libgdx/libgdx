@@ -44,12 +44,14 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * shapeRenderer.begin(ShapeType.Line);
  * shapeRenderer.color(1, 1, 0, 1);
  * shapeRenderer.line(x, y, x2, y2);
- * shapeRenderer.line(x3, y3, x4, y4);
+ * shapeRenderer.rect(x, y, width, height);
+ * shapeRenderer.circle(x, y, radius);
  * shapeRenderer.end();
  * 
- * shapeRenderer.begin(ShapeType.Box);
+ * shapeRenderer.begin(ShapeType.Filled);
  * shapeRenderer.color(0, 1, 0, 1);
- * shapeRenderer.box(x, y, z, width, height, depth);
+ * shapeRenderer.rect(x, y, width, height);
+ * shapeRenderer.circle(x, y, radius);
  * shapeRenderer.end();
  * }
  * </pre>
@@ -59,7 +61,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * rectangle around its center using the z-axis as the rotation axis and placing it's center at (20, 12, 2):
  * 
  * <pre>
- * shapeRenderer.begin(ShapeType.Rectangle);
+ * shapeRenderer.begin(ShapeType.Line);
  * shapeRenderer.identity();
  * shapeRenderer.translate(20, 12, 2);
  * shapeRenderer.rotate(0, 0, 1, 90);
