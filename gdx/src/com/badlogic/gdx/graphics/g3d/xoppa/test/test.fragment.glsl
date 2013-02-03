@@ -8,6 +8,8 @@ precision mediump float;
 #define LOWP
 #endif
 
+varying vec3 v_normal;
+
 #if defined(diffuseTextureFlag) || defined(specularTextureFlag)
 varying MED vec2 v_texCoords0;
 #endif
@@ -28,7 +30,8 @@ uniform vec4 specularColor;
 uniform sampler2D specularTexture;
 #endif
 
-#if defined(lightsCount) && (lightsCount > 0)
+#if defined(lightsCount)
+#if (lightsCount > 0)
 #define NUM_LIGHTS lightsCount
 struct Light
 {
@@ -37,6 +40,9 @@ struct Light
 	float power;
 };
 uniform Light lights[NUM_LIGHTS];
+
+varying vec3 v_lightLambert;
+#endif
 #endif
 
 void main() {
@@ -59,6 +65,10 @@ void main() {
 	#else
 		vec4 specular = vec4(1.0);
 	#endif
-		
+	
+	#ifdef NUM_LIGHTS
+		diffuse.rgb *= v_lightLambert;
+	#endif
+	
 	gl_FragColor.rgb = diffuse.rgb;
 }

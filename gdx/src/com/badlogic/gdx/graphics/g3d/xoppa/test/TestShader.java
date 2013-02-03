@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.xoppa.materials.NewMaterial;
 import com.badlogic.gdx.graphics.g3d.xoppa.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.xoppa.utils.ExclusiveTextures;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class TestShader implements Shader {
 	public final static String PROJECTION_TRANSFORM = "u_projTrans";
 	public final static String MODEL_TRANSFORM = "u_modelTrans";
+	public final static String NORMAL_TRANSFORM = "u_normalMatrix";
 	
 	private static String defaultVertexShader = null;
 	public final static String getDefaultVertexShader() {
@@ -43,6 +45,7 @@ public class TestShader implements Shader {
 	protected final ShaderProgram program;
 	protected int projTransLoc;
 	protected int modelTransLoc;
+	protected int normalTransLoc;
 	protected int diffuseTextureLoc;
 	protected int diffuseColorLoc;
 	protected int lightsCount = 5;
@@ -50,6 +53,8 @@ public class TestShader implements Shader {
 	protected int lightSize;
 	protected int lightPositionOffset;
 	protected int lightPowerOffset;
+	
+	private Light[] currentLights = new Light[lightsCount];
 	
 	protected RenderContext context;
 	protected long mask;
@@ -88,6 +93,7 @@ public class TestShader implements Shader {
 		
 		projTransLoc = program.getUniformLocation(PROJECTION_TRANSFORM);
 		modelTransLoc = program.getUniformLocation(MODEL_TRANSFORM);
+		normalTransLoc = program.getUniformLocation(NORMAL_TRANSFORM);
 		diffuseTextureLoc = ((mask & TextureAttribute.Diffuse) != TextureAttribute.Diffuse) ? -1 : program.getUniformLocation(TextureAttribute.DiffuseAlias);
 		diffuseColorLoc = ((mask & ColorAttribute.Diffuse) != ColorAttribute.Diffuse) ? -1 : program.getUniformLocation(ColorAttribute.DiffuseAlias);
 		lightsLoc = lightsCount > 0 ? program.getUniformLocation("lights[0].color") : -1;
@@ -131,6 +137,7 @@ public class TestShader implements Shader {
 
 	private Mesh currentMesh;
 	private Matrix4 currentTransform;
+	private Matrix3 normalMatrix = new Matrix3();
 	private Camera camera;
 	
 	@Override
@@ -140,6 +147,8 @@ public class TestShader implements Shader {
 		program.begin();
 		context.setDepthTest(true, GL10.GL_LEQUAL);
 		program.setUniformMatrix(projTransLoc, camera.combined);
+		for (int i = 0; i < currentLights.length; i++)
+			currentLights[i] = null;
 	}
 
 	@Override
@@ -159,8 +168,10 @@ public class TestShader implements Shader {
 	public void render (final RenderInstance instance) {
 		if (!instance.renderable.material.has(BlendingAttribute.Type))
 			context.setBlending(false, GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		if (currentTransform != instance.transform)
+		if (currentTransform != instance.transform) {
 			program.setUniformMatrix(modelTransLoc, currentTransform = instance.transform);
+			program.setUniformMatrix(normalTransLoc, normalMatrix.set(currentTransform));
+		}
 		bindMaterial(instance);
 		if (lightsLoc >= 0)
 			bindLights(instance);
@@ -218,16 +229,23 @@ public class TestShader implements Shader {
 		program.setUniformi(uniform, unit);
 		currentTextureAttribute = attribute;
 	}
-	
+	 
 	private final void bindLights(final RenderInstance instance) {
 		for (int i = 0; i < lightsCount; i++) {
 			final int loc = lightsLoc + i * lightSize;
-			if (instance.lights.length <= i)
-				program.setUniformf(loc + lightPowerOffset, 0f);
+			if (instance.lights.length <= i) {
+				if (currentLights[i] != null) {
+					program.setUniformf(loc + lightPowerOffset, 0f);
+					currentLights[i] = null;
+				}
+			}
 			else {
-				program.setUniformf(loc, instance.lights[i].color);
-				program.setUniformf(loc, instance.lights[i].position);
-				program.setUniformf(loc, instance.lights[i].power);
+				if (currentLights[i] != instance.lights[i]) {
+					program.setUniformf(loc, instance.lights[i].color);
+					program.setUniformf(loc + lightPositionOffset, instance.lights[i].position);
+					program.setUniformf(loc + lightPowerOffset, instance.lights[i].power);
+					currentLights[i] = instance.lights[i];
+				}
 			}
 		}
 	}
