@@ -157,6 +157,30 @@ public class Color {
 		this.a = a;
 	}
 
+	public void add (float r, float g, float b, float a) {
+		this.r += r;
+		this.g += g;
+		this.b += b;
+		this.a += a;
+		clamp();
+	}
+
+	public void sub (float r, float g, float b, float a) {
+		this.r -= r;
+		this.g -= g;
+		this.b -= b;
+		this.a -= a;
+		clamp();
+	}
+
+	public void mul (float r, float g, float b, float a) {
+		this.r *= r;
+		this.g *= g;
+		this.b *= b;
+		this.a *= a;
+		clamp();
+	}
+
 	@Override
 	public boolean equals (Object o) {
 		if (this == o) return true;

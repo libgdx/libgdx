@@ -92,7 +92,7 @@ public class ReflectionCacheSourceCreator {
 		if (printWriter == null) {
 			return packageName + "." + simpleName;
 		}
-		sw = composer.createSourceWriter(context, printWriter);
+		sw = composer.createSourceWriter(context, printWriter);		
 
 		generateLookups();
 
@@ -112,6 +112,7 @@ public class ReflectionCacheSourceCreator {
 
 		sw.commit(logger);
 		createProxy(type);
+		System.out.println(source.toString());
 		return packageName + "." + simpleName;
 	}
 

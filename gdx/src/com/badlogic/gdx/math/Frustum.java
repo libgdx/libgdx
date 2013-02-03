@@ -71,10 +71,10 @@ public class Frustum {
 		planes[5].set(planePoints[4], planePoints[0], planePoints[1]);
 	}
 
-	/** Returns wheter the point is in the frustum.
+	/** Returns whether the point is in the frustum.
 	 * 
 	 * @param point The point
-	 * @return Wheter the point is in the frustum. */
+	 * @return Whether the point is in the frustum. */
 	public boolean pointInFrustum (Vector3 point) {
 		for (int i = 0; i < planes.length; i++) {
 			PlaneSide result = planes[i].testPoint(point);
@@ -83,11 +83,11 @@ public class Frustum {
 		return true;
 	}
 
-	/** Returns wheter the given sphere is in the frustum.
+	/** Returns whether the given sphere is in the frustum.
 	 * 
 	 * @param center The center of the sphere
 	 * @param radius The radius of the sphere
-	 * @return Wheter the sphere is in the frustum */
+	 * @return Whether the sphere is in the frustum */
 	public boolean sphereInFrustum (Vector3 center, float radius) {
 		for (int i = 0; i < 6; i++)
 			if ((planes[i].normal.x * center.x + planes[i].normal.y * center.y + planes[i].normal.z * center.z) < (-radius - planes[i].d))
@@ -95,11 +95,11 @@ public class Frustum {
 		return true;
 	}
 
-	/** Returns wheter the given sphere is in the frustum not checking wheter it is behind the near and far clipping plane.
+	/** Returns whether the given sphere is in the frustum not checking whether it is behind the near and far clipping plane.
 	 * 
 	 * @param center The center of the sphere
 	 * @param radius The radius of the sphere
-	 * @return Wheter the sphere is in the frustum */
+	 * @return Whether the sphere is in the frustum */
 	public boolean sphereInFrustumWithoutNearFar (Vector3 center, float radius) {
 		for (int i = 2; i < 6; i++)
 			if ((planes[i].normal.x * center.x + planes[i].normal.y * center.y + planes[i].normal.z * center.z) < (-radius - planes[i].d))
@@ -107,10 +107,10 @@ public class Frustum {
 		return true;
 	}
 
-	/** Returns wheter the given {@link BoundingBox} is in the frustum.
+	/** Returns whether the given {@link BoundingBox} is in the frustum.
 	 * 
 	 * @param bounds The bounding box
-	 * @return Wheter the bounding box is in the frustum */
+	 * @return Whether the bounding box is in the frustum */
 	public boolean boundsInFrustum (BoundingBox bounds) {
 		Vector3[] corners = bounds.getCorners();
 		int len = corners.length;

@@ -159,7 +159,7 @@ public class Box2DDebugRenderer {
 			vertices[2].set(upper.x, upper.y);
 			vertices[3].set(lower.x, upper.y);
 
-			drawSolidPolygon(vertices, 4, AABB_COLOR);
+			drawSolidPolygon(vertices, 4, AABB_COLOR, true);
 		} else if (fixture.getType() == Type.Polygon) {
 			PolygonShape shape = (PolygonShape)fixture.getShape();
 			int vertexCount = shape.getVertexCount();
@@ -182,7 +182,7 @@ public class Box2DDebugRenderer {
 			vertices[2].set(upper.x, upper.y);
 			vertices[3].set(lower.x, upper.y);
 
-			drawSolidPolygon(vertices, 4, AABB_COLOR);
+			drawSolidPolygon(vertices, 4, AABB_COLOR, true);
 		}
 	}
 
@@ -203,7 +203,7 @@ public class Box2DDebugRenderer {
 			edge.getVertex2(vertices[1]);
 			transform.mul(vertices[0]);
 			transform.mul(vertices[1]);
-			drawSolidPolygon(vertices, 2, color);
+			drawSolidPolygon(vertices, 2, color, true);
 		}
 
 		if (fixture.getType() == Type.Polygon) {
@@ -213,7 +213,7 @@ public class Box2DDebugRenderer {
 				chain.getVertex(i, vertices[i]);
 				transform.mul(vertices[i]);
 			}
-			drawSolidPolygon(vertices, vertexCount, color);
+			drawSolidPolygon(vertices, vertexCount, color, true);
 		}
 
 		if (fixture.getType() == Type.Chain) {
@@ -223,7 +223,7 @@ public class Box2DDebugRenderer {
 				chain.getVertex(i, vertices[i]);
 				transform.mul(vertices[i]);
 			}
-			drawSolidPolygon(vertices, vertexCount, color);
+			drawSolidPolygon(vertices, vertexCount, color, false);
 		}
 	}
 
@@ -249,7 +249,7 @@ public class Box2DDebugRenderer {
 		renderer.line(center.x, center.y, 0, center.x + axis.x * radius, center.y + axis.y * radius, 0);
 	}
 
-	private void drawSolidPolygon (Vector2[] vertices, int vertexCount, Color color) {
+	private void drawSolidPolygon (Vector2[] vertices, int vertexCount, Color color, boolean closed) {
 		renderer.setColor(color.r, color.g, color.b, color.a);
 		for (int i = 0; i < vertexCount; i++) {
 			Vector2 v = vertices[i];
@@ -261,7 +261,7 @@ public class Box2DDebugRenderer {
 			renderer.line(lv.x, lv.y, v.x, v.y);
 			lv.set(v);
 		}
-		renderer.line(f.x, f.y, lv.x, lv.y);
+		if(closed) renderer.line(f.x, f.y, lv.x, lv.y);
 	}
 
 	private void drawJoint (Joint joint) {

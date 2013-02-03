@@ -1,0 +1,5 @@
+<project name="gdx-ios-build" default="all" basedir=".">
+
+	<target name="all">
+	</target>
+</project>

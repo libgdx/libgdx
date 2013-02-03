@@ -88,6 +88,7 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser {
 	public EGLConfig chooseConfig (EGL10 egl, EGLDisplay display, EGLConfig[] configs) {
 		EGLConfig best = null;
 		EGLConfig bestAA = null;
+		EGLConfig safe = null; //default back to 565 when no exact match found
 
 		for (EGLConfig config : configs) {
 			int d = findConfigAttrib(egl, display, config, EGL10.EGL_DEPTH_SIZE, 0);
@@ -102,6 +103,10 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser {
 			int b = findConfigAttrib(egl, display, config, EGL10.EGL_BLUE_SIZE, 0);
 			int a = findConfigAttrib(egl, display, config, EGL10.EGL_ALPHA_SIZE, 0);
 
+			// Match RGB565 as a fallback
+			if (safe == null && r == 5 && g == 6 && b == 5 && a == 0) {
+				safe = config;
+			}
 			// if we have a match, we chose this as our non AA fallback if that one
 			// isn't set already.
 			if (best == null && r == mRedSize && g == mGreenSize && b == mBlueSize && a == mAlphaSize) {
@@ -141,8 +146,10 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser {
 
 		if (bestAA != null)
 			return bestAA;
-		else
+		else if (best!=null)
 			return best;
+		else
+			return safe;
 	}
 
 	private int findConfigAttrib (EGL10 egl, EGLDisplay display, EGLConfig config, int attribute, int defaultValue) {

@@ -40,8 +40,24 @@ public class AllHitsRayResultCallback extends RayResultCallback {
     super.delete();
   }
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    gdxBulletJNI.AllHitsRayResultCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    gdxBulletJNI.AllHitsRayResultCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public AllHitsRayResultCallback(Vector3 rayFromWorld, Vector3 rayToWorld) {
     this(gdxBulletJNI.new_AllHitsRayResultCallback(rayFromWorld, rayToWorld), true);
+    gdxBulletJNI.AllHitsRayResultCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
   public void setM_collisionObjects(SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t value) {
@@ -96,6 +112,10 @@ public class AllHitsRayResultCallback extends RayResultCallback {
   public SWIGTYPE_p_btAlignedObjectArrayT_float_t getM_hitFractions() {
     long cPtr = gdxBulletJNI.AllHitsRayResultCallback_m_hitFractions_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_float_t(cPtr, false);
+  }
+
+  public float addSingleResult(LocalRayResult rayResult, boolean normalInWorldSpace) {
+    return (getClass() == AllHitsRayResultCallback.class) ? gdxBulletJNI.AllHitsRayResultCallback_addSingleResult(swigCPtr, this, LocalRayResult.getCPtr(rayResult), rayResult, normalInWorldSpace) : gdxBulletJNI.AllHitsRayResultCallback_addSingleResultSwigExplicitAllHitsRayResultCallback(swigCPtr, this, LocalRayResult.getCPtr(rayResult), rayResult, normalInWorldSpace);
   }
 
 }
