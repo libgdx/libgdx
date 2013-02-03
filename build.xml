@@ -95,7 +95,6 @@
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backends-gwt">
 			<property name="jar" value="gdx-backend-gwt"/>
 			<reference refid="classpath"/>
-			<reference refid="jarfiles"/>
 		</ant>
 	</target>
 	
@@ -114,7 +113,6 @@
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-iosmonotouch">
 			<property name="jar" value="gdx-backend-iosmonotouch"/>
 			<reference refid="classpath"/>
-			<reference refid="jarfiles"/>
 		</ant>
 	</target>
 	
