@@ -23,8 +23,8 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer2;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer2.ShapeType;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.PerspectiveCamController;
@@ -35,14 +35,14 @@ public class ShapeRendererTest extends GdxTest {
 		return true;
 	}
 
-	ShapeRenderer2 renderer;
+	ShapeRenderer renderer;
 	PerspectiveCamera cam;
 	PerspectiveCamController controller;
 	SpriteBatch batch;
 	BitmapFont font;
 
 	public void create () {
-		renderer = new ShapeRenderer2();
+		renderer = new ShapeRenderer();
 		cam = new PerspectiveCamera(47, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(0, 0, 2);
 		cam.near = 0.1f;

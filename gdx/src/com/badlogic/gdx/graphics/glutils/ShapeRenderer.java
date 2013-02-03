@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -72,25 +73,14 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * The projection and transformation matrices are a state of the ShapeRenderer, just like the color and will be applied to all
  * shapes until they are changed.
  * 
- * @author mzechner */
+ * @author mzechner, stbachmann */
 public class ShapeRenderer {
 	/** Shape types to be used with {@link #begin(ShapeType)}.
-	 * @author mzechner */
+	 * @author mzechner, stbachmann */
 	public enum ShapeType {
-		Point(GL10.GL_POINTS), //
-		Line(GL10.GL_LINES), //
-		Rectangle(GL10.GL_LINES), //
-		FilledRectangle(GL10.GL_TRIANGLES), //
-		Box(GL10.GL_LINES), //
-		Circle(GL10.GL_LINES), //
-		FilledCircle(GL10.GL_TRIANGLES), //
-		Triangle(GL10.GL_LINES), //
-		FilledTriangle(GL10.GL_TRIANGLES), //
-		Cone(GL10.GL_LINES), //
-		FilledCone(GL10.GL_TRIANGLES), //
-		Curve(GL10.GL_LINES), //
-		Polygon(GL10.GL_LINES), //
-		;
+		Point(GL10.GL_POINTS),
+		Line(GL10.GL_LINES),
+		Filled(GL10.GL_TRIANGLES);
 
 		private final int glType;
 
@@ -102,7 +92,7 @@ public class ShapeRenderer {
 			return glType;
 		}
 	}
-
+	
 	ImmediateModeRenderer renderer;
 	boolean matrixDirty = false;
 	Matrix4 projView = new Matrix4();
@@ -124,7 +114,7 @@ public class ShapeRenderer {
 		projView.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		matrixDirty = true;
 	}
-
+	
 	/** Sets the {@link Color} to be used by shapes.
 	 * @param color */
 	public void setColor (Color color) {
@@ -185,7 +175,7 @@ public class ShapeRenderer {
 		transform.scale(scaleX, scaleY, scaleZ);
 		matrixDirty = true;
 	}
-
+	
 	/** Starts a new batch of shapes. All shapes within the batch have to have the type specified. E.g. if {@link ShapeType#Point}
 	 * is specified, only call #point().
 	 * 
@@ -204,12 +194,12 @@ public class ShapeRenderer {
 		}
 		renderer.begin(combined, currType.getGlType());
 	}
-
+	
 	/** Draws a point. The {@link ShapeType} passed to begin has to be {@link ShapeType#Point}.
 	 * @param x
 	 * @param y
 	 * @param z */
-	public void point (float x, float y, float z) {
+	public void point(float x, float y, float z){
 		if (currType != ShapeType.Point) throw new GdxRuntimeException("Must call begin(ShapeType.Point)");
 		checkDirty();
 		checkFlush(1);
@@ -224,7 +214,7 @@ public class ShapeRenderer {
 	 * @param x2
 	 * @param y2
 	 * @param z2 */
-	public void line (float x, float y, float z, float x2, float y2, float z2) {
+	public void line(float x, float y, float z, float x2, float y2, float z2){
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		checkDirty();
 		checkFlush(2);
@@ -233,13 +223,13 @@ public class ShapeRenderer {
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x2, y2, z2);
 	}
-
+	
 	/** Draws a line in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}.
 	 * @param x
 	 * @param y
 	 * @param x2
 	 * @param y2 */
-	public void line (float x, float y, float x2, float y2) {
+	public void line(float x, float y, float x2, float y2){
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		checkDirty();
 		checkFlush(2);
@@ -248,24 +238,9 @@ public class ShapeRenderer {
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x2, y2, 0);
 	}
-
-	/** Calls {@link #curve(float, float, float, float, float, float, float, float, int)} by estimating the number of segments
-	 * needed for a smooth curve. */
-	public void curve (float x1, float y1, float cx1, float cy1, float cx2, float cy2, float x2, float y2) {
-		float dx1 = cx1 - x1;
-		float dy1 = cy1 - y1;
-		float dx2 = cx2 - cx1;
-		float dy2 = cy2 - cy1;
-		float dx3 = x2 - cx2;
-		float dy3 = y2 - cy2;
-		float length = (float)Math.sqrt(dx1 * dx1 + dy1 * dy1) + (float)Math.sqrt(dx2 * dx2 + dy2 * dy2)
-			+ (float)Math.sqrt(dx3 * dx3 + dy3 * dy3);
-		curve(x1, y1, cx1, cy1, cx2, cy2, x2, y2, 4 * (int)Math.cbrt(length));
-	}
-
-	/** Draws a curve in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Curve}. */
-	public void curve (float x1, float y1, float cx1, float cy1, float cx2, float cy2, float x2, float y2, int segments) {
-		if (currType != ShapeType.Curve) throw new GdxRuntimeException("Must call begin(ShapeType.Curve)");
+	
+	public void curve(float x1, float y1, float cx1, float cy1, float cx2, float cy2, float x2, float y2, int segments){
+		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		checkDirty();
 		checkFlush(segments * 2 + 2);
 
@@ -314,101 +289,103 @@ public class ShapeRenderer {
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x2, y2, 0);
 	}
-
+	
+	public void triangle(float x1, float y1, float x2, float y2, float x3, float y3){
+		if (currType != ShapeType.Filled && currType != ShapeType.Line) 
+			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
+		checkDirty();
+		checkFlush(6);
+		if(currType == ShapeType.Line){
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x1, y1, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x2, y2, 0);
+	
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x2, y2, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x3, y3, 0);
+	
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x3, y3, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x1, y1, 0);
+		}
+		else {
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x1, y1, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x2, y2, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x3, y3, 0);
+		}
+	}
+	
 	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The
-	 * {@link ShapeType} passed to begin has to be {@link ShapeType#Rectangle}.
+	 * {@link ShapeType} passed to begin has to be {@link ShapeType#Filled} or  {@link ShapeType#Line}.
 	 * @param x
 	 * @param y
 	 * @param width
 	 * @param height */
-	public void rect (float x, float y, float width, float height) {
-		if (currType != ShapeType.Rectangle) throw new GdxRuntimeException("Must call begin(ShapeType.Rectangle)");
+	public void rect(float x, float y, float width, float height){
+		if (currType != ShapeType.Filled && currType != ShapeType.Line) 
+			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
+		
 		checkDirty();
 		checkFlush(8);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x, y, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x + width, y, 0);
+		
+		if(currType == ShapeType.Line){
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x, y, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + width, y, 0);
+	
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + width, y, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + width, y + height, 0);
+	
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + width, y + height, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x, y + height, 0);
+	
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x, y + height, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x, y, 0);
+		}
+		else {
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x, y, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + width, y, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + width, y + height, 0);
 
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x + width, y, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x + width, y + height, 0);
-
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x + width, y + height, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x, y + height, 0);
-
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x, y + height, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x, y, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + width, y + height, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x, y + height, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x, y, 0);
+		}
 	}
-
-	/** Draws a filled rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The
-	 * {@link ShapeType} passed to begin has to be {@link ShapeType#FilledRectangle}.
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height */
-	public void filledRect (float x, float y, float width, float height) {
-		if (currType != ShapeType.FilledRectangle) throw new GdxRuntimeException("Must call begin(ShapeType.FilledRectangle)");
-		checkDirty();
-		checkFlush(8);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x, y, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x + width, y, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x + width, y + height, 0);
-
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x + width, y + height, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x, y + height, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x, y, 0);
-	}
-
-	/** Draws a filled rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The
-	 * {@link ShapeType} passed to begin has to be {@link ShapeType#FilledRectangle}. The 4 color parameters specify the color for
-	 * the bottom left, bottom right, top right and top left corner of the rectangle, allowing you to create gradients.
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height */
-	public void filledRect (float x, float y, float width, float height, Color c1, Color c2, Color c3, Color c4) {
-		if (currType != ShapeType.FilledRectangle) throw new GdxRuntimeException("Must call begin(ShapeType.FilledRectangle)");
-		checkDirty();
-		checkFlush(8);
-		renderer.color(c1.r, c1.g, c1.b, c1.a);
-		renderer.vertex(x, y, 0);
-		renderer.color(c2.r, c2.g, c2.b, c2.a);
-		renderer.vertex(x + width, y, 0);
-		renderer.color(c3.r, c3.g, c3.b, c3.a);
-		renderer.vertex(x + width, y + height, 0);
-
-		renderer.color(c3.r, c3.g, c3.b, c3.a);
-		renderer.vertex(x + width, y + height, 0);
-		renderer.color(c4.r, c4.g, c4.b, c4.a);
-		renderer.vertex(x, y + height, 0);
-		renderer.color(c1.r, c1.g, c1.b, c1.a);
-		renderer.vertex(x, y, 0);
-	}
-
+	
 	/** Draws a box. The x, y and z coordinate specify the bottom left front corner of the rectangle. The {@link ShapeType} passed
-	 * to begin has to be {@link ShapeType#Box}.
+	 * to begin has to be {@link ShapeType#Line}.
 	 * @param x
 	 * @param y
 	 * @param width
 	 * @param height */
-	public void box (float x, float y, float z, float width, float height, float depth) {
-		if (currType != ShapeType.Box) throw new GdxRuntimeException("Must call begin(ShapeType.Box)");
+	public void box(float x, float y, float z, float width, float height, float depth){
+		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
+		
 		checkDirty();
 		checkFlush(16);
-
+		
 		depth = -depth;
+		
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x, y, z);
 		renderer.color(color.r, color.g, color.b, color.a);
@@ -469,15 +446,16 @@ public class ShapeRenderer {
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x, y + height, z + depth);
 	}
-
+	
 	/** Calls {@link #circle(float, float, float, int)} by estimating the number of segments needed for a smooth circle. */
 	public void circle (float x, float y, float radius) {
 		circle(x, y, radius, (int)(6 * (float)Math.cbrt(radius)));
 	}
-
-	public void circle (float x, float y, float radius, int segments) {
+	
+	public void circle(float x, float y, float radius, int segments){
 		if (segments <= 0) throw new IllegalArgumentException("segments must be >= 0.");
-		if (currType != ShapeType.Circle) throw new GdxRuntimeException("Must call begin(ShapeType.Circle)");
+		if (currType != ShapeType.Filled && currType != ShapeType.Line) 
+			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
 		checkDirty();
 		checkFlush(segments * 2 + 2);
 
@@ -485,171 +463,107 @@ public class ShapeRenderer {
 		float cos = MathUtils.cos(angle);
 		float sin = MathUtils.sin(angle);
 		float cx = radius, cy = 0;
-		for (int i = 0; i < segments; i++) {
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x + cx, y + cy, 0);
-			float temp = cx;
-			cx = cos * cx - sin * cy;
-			cy = sin * temp + cos * cy;
+		if(currType == ShapeType.Line){
+			for (int i = 0; i < segments; i++) {
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x + cx, y + cy, 0);
+				float temp = cx;
+				cx = cos * cx - sin * cy;
+				cy = sin * temp + cos * cy;
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x + cx, y + cy, 0);
+			}
+			// Ensure the last segment is identical to the first.
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(x + cx, y + cy, 0);
 		}
-		// Ensure the last segment is identical to the first.
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x + cx, y + cy, 0);
+		else {
+			segments--;
+			for (int i = 0; i < segments; i++) {
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x, y, 0);
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x + cx, y + cy, 0);
+				float temp = cx;
+				cx = cos * cx - sin * cy;
+				cy = sin * temp + cos * cy;
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x + cx, y + cy, 0);
+			}
+			// Ensure the last segment is identical to the first.
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x, y, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + cx, y + cy, 0);
+		}
+		
 		float temp = cx;
 		cx = radius;
 		cy = 0;
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x + cx, y + cy, 0);
 	}
-
-	/** Calls {@link #filledCircle(float, float, float, int)} by estimating the number of segments needed for a smooth circle. */
-	public void filledCircle (float x, float y, float radius) {
-		filledCircle(x, y, radius, (int)(6 * (float)Math.cbrt(radius)));
-	}
-
-	public void filledCircle (float x, float y, float radius, int segments) {
-		if (segments <= 0) throw new IllegalArgumentException("segments must be >= 0.");
-		if (currType != ShapeType.FilledCircle) throw new GdxRuntimeException("Must call begin(ShapeType.FilledCircle)");
-		checkDirty();
-		checkFlush(segments * 3 + 3);
-
-		int inc = 360 / segments;
-		float angle = 2 * 3.1415926f / segments;
-		float cos = MathUtils.cos(angle);
-		float sin = MathUtils.sin(angle);
-		float cx = radius, cy = 0;
-		segments--;
-		for (int i = 0; i < segments; i++) {
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x, y, 0);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x + cx, y + cy, 0);
-			float temp = cx;
-			cx = cos * cx - sin * cy;
-			cy = sin * temp + cos * cy;
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x + cx, y + cy, 0);
-		}
-		// Ensure the last segment is identical to the first.
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x, y, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x + cx, y + cy, 0);
-		cx = radius;
-		cy = 0;
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x + cx, y + cy, 0);
-	}
-
-	public void triangle (float x1, float y1, float x2, float y2, float x3, float y3) {
-		if (currType != ShapeType.Triangle) throw new GdxRuntimeException("Must call begin(ShapeType.Triangle)");
-		checkDirty();
-		checkFlush(6);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x1, y1, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x2, y2, 0);
-
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x2, y2, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x3, y3, 0);
-
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x3, y3, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x1, y1, 0);
-	}
-
-	public void filledTriangle (float x1, float y1, float x2, float y2, float x3, float y3) {
-		if (currType != ShapeType.FilledTriangle) throw new GdxRuntimeException("Must call begin(ShapeType.FilledTriangle)");
-		checkDirty();
-		checkFlush(3);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x1, y1, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x2, y2, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x3, y3, 0);
-	}
-
+	
+	/** Calls {@link #cone(float, float, float, float, float, int)} by estimating the number of segments needed for a smooth
+	 * circular base. */
 	public void cone (float x, float y, float z, float radius, float height) {
-		cone(x, y, z, radius, height, (int)(6 * (float)Math.cbrt(radius)));
+		cone(x, y, z, radius, height, (int)(4 * (float)Math.sqrt(radius)));
 	}
-
-	public void cone (float x, float y, float z, float radius, float height, int segments) {
-		if (currType != ShapeType.Cone) throw new GdxRuntimeException("Must call begin(ShapeType.Cone)");
+	
+	public void cone(float x, float y, float z, float radius, float height, int segments){
+		if (segments <= 0) throw new IllegalArgumentException("segments must be >= 0.");
+		if (currType != ShapeType.Filled && currType != ShapeType.Line) 
+			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
 		checkDirty();
 		checkFlush(segments * 4 + 2);
 		float angle = 2 * 3.1415926f / segments;
 		float cos = MathUtils.cos(angle);
 		float sin = MathUtils.sin(angle);
 		float cx = radius, cy = 0;
-		for (int i = 0; i < segments; i++) {
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x + cx, y + cy, z);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x, y, z + height);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x + cx, y + cy, z);
-			float temp = cx;
-			cx = cos * cx - sin * cy;
-			cy = sin * temp + cos * cy;
+		if(currType == ShapeType.Line){
+			for (int i = 0; i < segments; i++) {
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x + cx, y + cy, z);
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x, y, z + height);
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x + cx, y + cy, z);
+				float temp = cx;
+				cx = cos * cx - sin * cy;
+				cy = sin * temp + cos * cy;
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x + cx, y + cy, z);
+			}
+			// Ensure the last segment is identical to the first.
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(x + cx, y + cy, z);
 		}
-		// Ensure the last segment is identical to the first.
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x + cx, y + cy, z);
-		float temp = cx;
-		cx = radius;
-		cy = 0;
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x + cx, y + cy, z);
-	}
-
-	/** Calls {@link #filledCone(float, float, float, float, float, int)} by estimating the number of segments needed for a smooth
-	 * circular base. */
-	public void filledCone (float x, float y, float z, float radius, float height) {
-		filledCone(x, y, z, radius, height, (int)(4 * (float)Math.sqrt(radius)));
-	}
-
-	public void filledCone (float x, float y, float z, float radius, float height, int segments) {
-		if (segments <= 0) throw new IllegalArgumentException("segments must be >= 0.");
-		if (currType != ShapeType.FilledCone) throw new GdxRuntimeException("Must call begin(ShapeType.FilledCone)");
-		checkDirty();
-		checkFlush(segments * 6 + 3);
-		int inc = 360 / segments;
-		float angle = 2 * 3.1415926f / segments;
-		float cos = MathUtils.cos(angle);
-		float sin = MathUtils.sin(angle);
-		float cx = radius, cy = 0;
-		segments--;
-		for (int i = 0; i < segments; i++) {
+		else {
+			segments--;
+			for (int i = 0; i < segments; i++) {
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x, y, z);
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x + cx, y + cy, z);
+				float temp = cx;
+				float temp2 = cy;
+				cx = cos * cx - sin * cy;
+				cy = sin * temp + cos * cy;
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x + cx, y + cy, z);
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x + temp, y + temp2, z);
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x + cx, y + cy, z);
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x, y, z + height);
+			}
+			// Ensure the last segment is identical to the first.
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(x, y, z);
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(x + cx, y + cy, z);
-			float temp = cx;
-			float temp2 = cy;
-			cx = cos * cx - sin * cy;
-			cy = sin * temp + cos * cy;
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x + cx, y + cy, z);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x + temp, y + temp2, z);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x + cx, y + cy, z);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x, y, z + height);
 		}
-		// Ensure the last segment is identical to the first.
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x, y, z);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x + cx, y + cy, z);
 		cx = radius;
 		cy = 0;
 		renderer.color(color.r, color.g, color.b, color.a);
@@ -657,10 +571,10 @@ public class ShapeRenderer {
 	}
 	
 	/** Draws a polygon in the x/y plane. The vertices must contain at least 3 points (6 floats x,y). The
-	 * {@link ShapeType} passed to begin has to be {@link ShapeType#Polygon}.
+	 * {@link ShapeType} passed to begin has to be {@link ShapeType#Line}.
 	 * @param vertices */
-	public void polygon (float[] vertices) {
-		if (currType != ShapeType.Polygon) throw new GdxRuntimeException("Must call begin(ShapeType.Polygon)");
+	public void polygon(float[] vertices){
+		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		if (vertices.length < 6) throw new IllegalArgumentException("Polygons must contain at least 3 points.");
 		if (vertices.length % 2 != 0) throw new IllegalArgumentException("Polygons must have a pair number of vertices.");
 		final int numFloats = vertices.length;
@@ -692,7 +606,7 @@ public class ShapeRenderer {
 			renderer.vertex(x2, y2, 0);
 		}
 	}
-
+	
 	private void checkDirty () {
 		if (!matrixDirty) return;
 		ShapeType type = currType;
