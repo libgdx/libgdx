@@ -33,7 +33,7 @@
 		<ant antfile="build-ios32.xml" dir="extensions/gdx-freetype/jni"/>
 		<ant antfile="convert-ikvm.xml" dir=".">
 			<property name="IN" value="-r:gdx/libs/ios32/gdx.dll -srcpath:extensions/gdx-freetype/src/ dist/extensions/gdx-freetype/gdx-freetype.jar"/>
-			<property name="OUT" value="extensions/gdx-freetype/libs/gdx-freetype.dll"/>
+			<property name="OUT" value="extensions/gdx-freetype/libs/ios32/gdx-freetype.dll"/>
 		</ant>
 	</target>
 	
@@ -45,7 +45,7 @@
 		<ant antfile="build-ios32.xml" dir="extensions/gdx-bullet/jni"/>
 		<ant antfile="convert-ikvm.xml" dir=".">
 			<property name="IN" value="-r:gdx/libs/ios32/gdx.dll -srcpath:extensions/gdx-bullet/src/ dist/extensions/gdx-bullet/gdx-bullet.jar"/>
-			<property name="OUT" value="extensions/gdx-bullet/libs/gdx-bullet.dll"/>
+			<property name="OUT" value="extensions/gdx-bullet/libs/ios32/gdx-bullet.dll"/>
 		</ant>
 	</target>
 	

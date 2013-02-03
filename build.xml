@@ -291,8 +291,16 @@
 		</javadoc>
 	</target>
 	
+	<!-- assumes that all the .dll and .a files have been compiled on a Mac and copied on top 
+	of the current libgdx folder -->
 	<target name="copy-iosfiles">
+		<!-- copy dll and .a files as well as IKVM, monotouch and ObjectAL binaries to ios folder-->
 		<copy todir="${distDir}/ios" flatten="true" failonerror="false">
+			<fileset dir="gdx/libs/ios32/">
+				<include name="*.a"/>
+				<include name="*.dll"/>
+				<include name="*.dll.mdb"/>
+			</fileset>
 			<fileset dir="backends/gdx-backend-iosmonotouch/libs/">
 				<include name="*.dll"/>
 				<include name="*.dll.mdb"/>
@@ -307,6 +315,24 @@
 		</copy>
 		<copy todir="${distDir}/ios/objectal" failonerror="false">
 			<fileset dir="backends/gdx-backend-iosmonotouch/libs/objectal"/>
+		</copy>		
+		
+		<!-- copy freetype extension dll and .a files -->
+		<copy todir="${distDir}/extensions/gdx-freetype/ios" failonerror="false">
+			<fileset dir="extensions/gdx-freetype/libs/ios32">
+				<include name="*.a"/>
+				<include name="*.dll"/>
+				<include name="*.dll.mdb"/>
+			</fileset>
+		</copy>
+		
+		<!-- copy bullet extension dll and .a files -->
+		<copy todir="${distDir}/extensions/gdx-bullet/ios" failonerror="false">
+			<fileset dir="extensions/gdx-bullet/libs/ios32">
+				<include name="*.a"/>
+				<include name="*.dll"/>
+				<include name="*.dll.mdb"/>
+			</fileset>
 		</copy>
 	</target>
 
