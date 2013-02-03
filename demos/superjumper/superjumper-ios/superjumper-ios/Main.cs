@@ -22,6 +22,8 @@ namespace superjumperios
 				config.orientationLandscape = false;
 				config.orientationPortrait = true;
 				config.useAccelerometer = true;
+				config.useMonotouchOpenTK = true;
+				config.useObjectAL = true;
 				return config;
 			}
 		}

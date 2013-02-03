@@ -7,7 +7,7 @@
 		<delete file="libs/gdx.dll"/>
 		<delete file="libs/libgdx.a"/>
 		<mkdir dir="target/core" />
-		<javac sourcepath="" debug="on" srcdir="../../gdx/src" destdir="target/core" >
+		<javac target="1.6" sourcepath="" debug="on" srcdir="../../gdx/src" destdir="target/core" >
 			<include name="**/*.java"/>
 			<exclude name="**/*Build.java"/>
 			<exclude name="**/Remote*.java"/>
@@ -25,7 +25,7 @@
 	<target name="compile-backend">
 		<delete dir="target/backend"/>
 		<mkdir dir="target/backend" />
-		<javac sourcepath="" debug="on" srcdir="src" destdir="target/backend" >
+		<javac target="1.6" sourcepath="" debug="on" srcdir="src" destdir="target/backend" >
 			<include name="**/*.java"/>		
 			<classpath>
 			<fileset dir="libs/monotouch-jars">
