@@ -242,10 +242,15 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 		</path>
-		<ant antfile="../../build-template-bullet.xml" dir="extensions/gdx-bullet">
+		<path id="src">
+				<pathelement location="extensions/gdx-bullet/src"/>
+				<pathelement location="extensions/gdx-bullet/jni/swig-src"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="extensions/gdx-bullet">
 			<property name="distDir" value="${distDir}/extensions/gdx-bullet"/>
 			<property name="jar" value="gdx-bullet"/>
 			<reference refid="classpath"/>
+			<reference refid="src"/>
 		</ant>
 	</target>
 	
