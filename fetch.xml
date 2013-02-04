@@ -11,7 +11,8 @@
 		<mkdir dir="tmp/ios"/>
 		
 		<!-- core -->
-		<get src="${domain}/gdx-natives.jar" dest="gdx/libs"/>
+		<mkdir dir="gdx/libs/ios32"/>
+		<get src="${domain}/gdx-natives.jar" dest="gdx/libs/ios32"/>
 		<get src="${domain}/armeabi/libandroidgl20.so" dest="tmp/armeabi"/>
 		<get src="${domain}/armeabi/libgdx.so" dest="tmp/armeabi"/>
 		<get src="${domain}/armeabi-v7a/libandroidgl20.so" dest="tmp/armeabi-v7a"/>
@@ -21,24 +22,29 @@
 		<get src="${domain}/ios/libgdx.a" dest="tmp/ios"/>
 		<get src="${domain}/ios/ikvm/bin/libikvm-natives.a" dest="tmp/ios"/>
 		
-		<!-- ios backend -->		
+		<!-- ios backend -->
+		<mkdir dir="backends/gdx-backend-iosmonotouch/libs/ios32"/>
 		<get src="${domain}/ios/gdx-backend-ios.dll" dest="backends/gdx-backend-iosmonotouch/libs/ios32"/>
 		<get src="${domain}/ios/gdx-backend-ios.dll.mdb" dest="backends/gdx-backend-iosmonotouch/libs/ios32"/>		
 		
 		<!-- audio natives -->
+		<mkdir dir="extensions/gdx-audio/libs/ios32"/>
 		<get src="${domain}/extensions/gdx-audio/gdx-audio-natives.jar" dest="extensions/gdx-audio/libs"/>
 		<get src="${domain}/extensions/gdx-audio/armeabi/libgdx-audio.so" dest="tmp/armeabi"/>
 		<get src="${domain}/extensions/gdx-audio/armeabi-v7a/libgdx-audio.so" dest="tmp/armeabi-v7a"/>
 		
 		<!-- bullet natives -->
+		<mkdir dir="extensions/gdx-bullet/libs/ios32"/>
 		<get src="${domain}/extensions/gdx-bullet/gdx-bullet-natives.jar" dest="extensions/gdx-bullet/libs"/>
 		<get src="${domain}/extensions/gdx-bullet/armeabi/libgdx-bullet.so" dest="tmp/armeabi"/>
 		<get src="${domain}/extensions/gdx-bullet/armeabi-v7a/libgdx-bullet.so" dest="tmp/armeabi-v7a"/>
 		
 		<!-- controllers natives, desktop only -->
+		<mkdir dir="extensions/gdx-controllers/gdx-controllers-desktop/libs/ios32"/>
 		<get src="${domain}/extensions/gdx-controllers/gdx-controllers-desktop-natives.jar" dest="extensions/gdx-controllers/gdx-controllers-desktop/libs"/>
 		
 		<!-- freetype natives -->
+		<mkdir dir="extensions/gdx-freetype/libs/ios32"/>
 		<get src="${domain}/extensions/gdx-freetype/gdx-freetype-natives.jar" dest="extensions/gdx-freetype/libs"/>
 		<get src="${domain}/extensions/gdx-freetype/armeabi/libgdx-freetype.so" dest="tmp/armeabi"/>
 		<get src="${domain}/extensions/gdx-freetype/armeabi-v7a/libgdx-freetype.so" dest="tmp/armeabi-v7a"/>
@@ -47,6 +53,7 @@
 		<get src="${domain}/extensions/gdx-freetype/ios/libgdx-freetype.a" dest="tmp/ios"/>
 		
 		<!-- image natives -->
+		<mkdir dir="extensions/gdx-image/libs/ios32"/>
 		<get src="${domain}/extensions/gdx-image/gdx-image-natives.jar" dest="extensions/gdx-image/libs"/>
 		<get src="${domain}/extensions/gdx-image/armeabi/libgdx-image.so" dest="tmp/armeabi"/>
 		<get src="${domain}/extensions/gdx-image/armeabi-v7a/libgdx-image.so" dest="tmp/armeabi-v7a"/>	
