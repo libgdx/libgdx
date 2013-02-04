@@ -1,0 +1,13 @@
+<!-- Call this to fetch all the natives from the build server -->
+<project name="fetch-natives" default="fetch">
+	<property name="domain" value="http://libgdx.badlogicgames.com/nightlies/dist"/>
+	<target name="fetch">
+		<!-- fetch core & extension native jars for the desktop -->
+		<get src="${domain}/gdx-natives.jar" dest="gdx/libs"/>
+		<get src="${domain}/extensions/gdx-audio/gdx-audio-natives.jar" dest="extensions/gdx-audio/libs"/>
+		<get src="${domain}/extensions/gdx-bullet/gdx-bullet-natives.jar" dest="extensions/gdx-bullet/libs"/>
+		<get src="${domain}/extensions/gdx-controllers/gdx-controllers-desktop-natives.jar" dest="extensions/gdx-controllers/gdx-controllers-desktop/libs"/>
+		<get src="${domain}/extensions/gdx-freetype/gdx-freetype-natives.jar" dest="extensions/gdx-freetype/libs"/>
+		<get src="${domain}/extensions/gdx-image/gdx-image-natives.jar" dest="extensions/gdx-image/libs"/>
+	</target>
+</project>
