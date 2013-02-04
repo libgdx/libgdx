@@ -12,7 +12,7 @@
 		
 		<!-- core -->
 		<mkdir dir="gdx/libs/ios32"/>
-		<get src="${domain}/gdx-natives.jar" dest="gdx/libs/ios32"/>
+		<get src="${domain}/gdx-natives.jar" dest="gdx/libs"/>
 		<get src="${domain}/armeabi/libandroidgl20.so" dest="tmp/armeabi"/>
 		<get src="${domain}/armeabi/libgdx.so" dest="tmp/armeabi"/>
 		<get src="${domain}/armeabi-v7a/libandroidgl20.so" dest="tmp/armeabi-v7a"/>
