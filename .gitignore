@@ -31,3 +31,10 @@ ipch/
 *.sdf
 
 libgdx-*.zip
+
+#extenion libs/ folders
+/extensions/gdx-audio/libs/
+/extensions/gdx-bullet/libs/
+/extensions/gdx-controllers/gdx-controllers-desktop/libs/
+/extensions/gdx-freetype/libs/
+/extensions/gdx-image/libs/
