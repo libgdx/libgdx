@@ -32,7 +32,8 @@ ipch/
 
 libgdx-*.zip
 
-#extenion libs/ folders
+#core & extension libs/ folders that have no 3rd party dependencies in them
+/gdx/libs
 /extensions/gdx-audio/libs/
 /extensions/gdx-bullet/libs/
 /extensions/gdx-controllers/gdx-controllers-desktop/libs/
