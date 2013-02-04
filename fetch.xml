@@ -67,6 +67,11 @@
 		<copy todir="tests/gdx-tests-android/libs/armeabi-v7a">
 			<fileset dir="tmp/armeabi-v7a"/>			
 		</copy>
+		
+		<!-- copy all extension natives to ios tests -->
+		<copy todir="tests/gdx-tests-iosmonotouch/gdx-tests-iosmonotouch">
+			<fileset dir="tmp/ios"/>
+		</copy>
 	
 		<!-- filesets to copy to demos -->
 		<fileset id="gdx-armeabi" dir="tmp/armeabi">
