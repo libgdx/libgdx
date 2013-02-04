@@ -374,6 +374,58 @@ public class ShapeRenderer {
 		}
 	}
 	
+	
+	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The
+	 * {@link ShapeType} passed to begin has to be {@link ShapeType#Filled} or  {@link ShapeType#Line}.
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height */
+	public void rect(float x, float y, float width, float height, Color col1, Color col2, Color col3, Color col4){
+		if (currType != ShapeType.Filled && currType != ShapeType.Line) 
+			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
+		
+		checkDirty();
+		checkFlush(8);
+		
+		if(currType == ShapeType.Line){
+			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.vertex(x, y, 0);
+			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.vertex(x + width, y, 0);
+	
+			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.vertex(x + width, y, 0);
+			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.vertex(x + width, y + height, 0);
+	
+			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.vertex(x + width, y + height, 0);
+			renderer.color(col4.r, col4.g, col4.b, col4.a);
+			renderer.vertex(x, y + height, 0);
+	
+			renderer.color(col4.r, col4.g, col4.b, col4.a);
+			renderer.vertex(x, y + height, 0);
+			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.vertex(x, y, 0);
+		}
+		else {
+			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.vertex(x, y, 0);
+			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.vertex(x + width, y, 0);
+			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.vertex(x + width, y + height, 0);
+
+			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.vertex(x + width, y + height, 0);
+			renderer.color(col4.r, col4.g, col4.b, col4.a);
+			renderer.vertex(x, y + height, 0);
+			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.vertex(x, y, 0);
+		}
+	}
+	
 	/** Draws a box. The x, y and z coordinate specify the bottom left front corner of the rectangle. The {@link ShapeType} passed
 	 * to begin has to be {@link ShapeType#Line}.
 	 * @param x
