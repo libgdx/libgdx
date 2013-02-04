@@ -304,7 +304,7 @@
 				<include name="*.dll"/>
 				<include name="*.dll.mdb"/>
 			</fileset>
-			<fileset dir="backends/gdx-backend-iosmonotouch/libs/">
+			<fileset dir="backends/gdx-backend-iosmonotouch/libs/ios32">
 				<include name="*.dll"/>
 				<include name="*.dll.mdb"/>
 				<include name="*.a"/>
