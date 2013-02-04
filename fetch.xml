@@ -111,6 +111,10 @@
 		<!-- model loaders -->
 		<copy todir="extensions/model-loaders/model-loaders-android/libs/armeabi"><fileset refid="gdx-armeabi"/></copy>
 		<copy todir="extensions/model-loaders/model-loaders-android/libs/armeabi-v7a"><fileset refid="gdx-armeabi-v7a"/></copy>
+		
+		<!-- gdx remote -->
+		<copy todir="extensions/gdx-remote/libs/armeabi"><fileset refid="gdx-armeabi"/></copy>
+		<copy todir="extensions/gdx-remote/libs/armeabi-v7a"><fileset refid="gdx-armeabi-v7a"/></copy>
 	</target>
 	
 	<target name="all" depends="fetch,copy"/>
