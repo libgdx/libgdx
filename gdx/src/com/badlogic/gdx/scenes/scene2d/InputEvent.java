@@ -33,7 +33,7 @@ public class InputEvent extends Event {
 		button = -1;
 	}
 
-	/** The stage x coordinate where the event occured. Valid for: touchDown, touchDragged, touchUp, mouseMoved, enter, and exit. */
+	/** The stage x coordinate where the event occurred. Valid for: touchDown, touchDragged, touchUp, mouseMoved, enter, and exit. */
 	public float getStageX () {
 		return stageX;
 	}
@@ -42,7 +42,7 @@ public class InputEvent extends Event {
 		this.stageX = stageX;
 	}
 
-	/** The stage x coordinate where the event occured. Valid for: touchDown, touchDragged, touchUp, mouseMoved, enter, and exit. */
+	/** The stage x coordinate where the event occurred. Valid for: touchDown, touchDragged, touchUp, mouseMoved, enter, and exit. */
 	public float getStageY () {
 		return stageY;
 	}
@@ -122,7 +122,27 @@ public class InputEvent extends Event {
 		return type.toString();
 	}
 
+	/** Types of low-level input events supported by stage2d. */
 	static public enum Type {
-		touchDown, touchUp, touchDragged, mouseMoved, enter, exit, scrolled, keyDown, keyUp, keyTyped
+		/** A new touch for a pointer on the stage was detected */
+		touchDown, 
+		/** A pointer has stopped touching the stage. */
+		touchUp, 
+		/** A pointer that is touching the stage has moved. */
+		touchDragged, 
+		/** The mouse pointer has moved (without a mouse button being active). */
+		mouseMoved, 
+		/** The mouse pointer or an active touch have entered (i.e., {@link Actor#hit(float, float, boolean) hit}) an actor. */ 
+		enter, 
+		/** The mouse pointer or an active touch have exited an actor. */ 
+		exit, 
+		/** The mouse scroll wheel has changed. */
+		scrolled, 
+		/** A keyboard key has been pressed. */
+		keyDown, 
+		/** A keyboard key has been released. */
+		keyUp, 
+		/** A keyboard key has been pressed and released. */
+		keyTyped
 	}
 }
