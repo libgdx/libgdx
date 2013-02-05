@@ -143,6 +143,13 @@ public class Polygon {
 		return area;
 	}
 
+	/** Returns an axis-aligned bounding box of this polygon.  
+	 * 
+	 * Note the returned Rectangle is cached in this polygon, and will
+	 * be reused if this Polygon is changed.
+	 * 
+	 * @return this polygon's bounding box Rectangle
+	 */
 	public Rectangle getBoundingRectangle () {
 		float[] vertices = getTransformedVertices();
 
