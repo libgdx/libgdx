@@ -16,12 +16,9 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.g3d.model.Model;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.btBoxShape;
-import com.badlogic.gdx.physics.bullet.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.btRigidBodyConstructionInfo;
 
@@ -35,58 +32,36 @@ public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
 	/**
 	 * Specify null for the shape to use only the renderable part of this entity and not the physics part. 
 	 */
-	public BulletConstructor (final Model model, final float mass, final btCollisionShape shape) {
-		create(model, mass, shape);
-	}
-	
-	/**
-	 * Specify null for the shape to use only the renderable part of this entity and not the physics part. 
-	 */
-	public BulletConstructor (final Model model, final btCollisionShape shape) {
-		this(model, -1f, shape);
+	public BulletConstructor (final Mesh mesh, final float mass, final btCollisionShape shape) {
+		create(mesh, mass, shape);
 	}
 
 	/**
 	 * Creates a btBoxShape with the specified dimensions.
 	 */
-	public BulletConstructor (final Model model, final float mass, final float width, final float height, final float depth) {
-		create(model, mass, width, height, depth);
-	}
-	
-	/**
-	 * Creates a btBoxShape with the specified dimensions and NO rigidbody.
-	 */
-	public BulletConstructor (final Model model, final float width, final float height, final float depth) {
-		this(model, -1f, width, height, depth);
+	public BulletConstructor (final Mesh mesh, final float mass, final float width, final float height, final float depth) {
+		create(mesh, mass, width, height, depth);
 	}
 	
 	/**
 	 * Creates a btBoxShape with the same dimensions as the shape.
 	 */
-	public BulletConstructor (final Model model, final float mass) {
-		final BoundingBox boundingBox = new BoundingBox(); 
-		model.getBoundingBox(boundingBox);
+	public BulletConstructor (final Mesh mesh, final float mass) {
+		final BoundingBox boundingBox = mesh.calculateBoundingBox();
 		final Vector3 dimensions = boundingBox.getDimensions();
-		create(model, mass, dimensions.x, dimensions.y, dimensions.z);
+		create(mesh, mass, dimensions.x, dimensions.y, dimensions.z);
 	}
 	
-	/**
-	 * Creates a btBoxShape with the same dimensions as the shape and NO rigidbody.
-	 */
-	public BulletConstructor (final Model model) {
-		this(model, -1f);
-	}
-	
-	private void create (final Model model, final float mass, final float width, final float height, final float depth) {			
+	private void create (final Mesh mesh, final float mass, final float width, final float height, final float depth) {			
 		// Create a simple boxshape
-		create(model, mass, new btBoxShape(Vector3.tmp.set(width * 0.5f, height * 0.5f, depth * 0.5f)));
+		create(mesh, mass, new btBoxShape(Vector3.tmp.set(width * 0.5f, height * 0.5f, depth * 0.5f)));
 	}
 	
-	private void create(final Model model, final float mass, final btCollisionShape shape) {
-		this.model = model;
+	private void create(final Mesh mesh, final float mass, final btCollisionShape shape) {
+		this.mesh = mesh;
 		this.shape = shape;
 		
-		if (shape != null && mass >= 0) {
+		if (shape != null) {
 			// Calculate the local inertia, bodies with no mass are static
 			Vector3 localInertia;
 			if (mass == 0)
@@ -113,21 +88,6 @@ public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
 
 	@Override
 	public BulletEntity construct (float x, float y, float z) {
-		if (bodyInfo == null && shape != null) {
-			btCollisionObject obj = new btCollisionObject();
-			obj.setCollisionShape(shape);
-			return new BulletEntity(model, obj, x, y, z);
-		} else
-			return new BulletEntity(model, bodyInfo, x, y, z);
-	}
-	
-	@Override
-	public BulletEntity construct (final Matrix4 transform) {
-		if (bodyInfo == null && shape != null) {
-			btCollisionObject obj = new btCollisionObject();
-			obj.setCollisionShape(shape);
-			return new BulletEntity(model, obj, transform);
-		} else
-		return new BulletEntity(model, bodyInfo, transform);
+		return new BulletEntity(this, x, y, z);
 	}
 }

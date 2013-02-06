@@ -20,10 +20,11 @@ import com.badlogic.gdx.Input.Buttons;
 
 /** An InputProcessor is used to receive input events from the keyboard and the touch screen (mouse on the desktop). For this it
  * has to be registered with the {@link Input#setInputProcessor(InputProcessor)} method. It will be called each frame before the
- * call to {@link ApplicationListener#render()}. Each method returns a boolean in case you want to use this with the {@link InputMultiplexer}
- * to chain input processors.
+ * call to {@link ApplicationListener#render()}. The methods return a* boolean in case you want to write a multiplexing
+ * InputProcessor that has a chain of child processors that signal whether they processed the event. The {@link InputMultiplexer}
+ * offers you exactly this functionality.
  * 
- * @author mzechner */
+ * @author badlogicgames@gmail.com */
 public interface InputProcessor {
 	/** Called when a key was pressed
 	 * 

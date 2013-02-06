@@ -122,11 +122,9 @@ public class Label extends Widget {
 
 	private void computeSize () {
 		sizeInvalid = false;
-		if (wrap) {
-			float width = getWidth();
-			if (style.background != null) width -= style.background.getLeftWidth() + style.background.getRightWidth();
-			bounds.set(cache.getFont().getWrappedBounds(text, width));
-		} else
+		if (wrap)
+			bounds.set(cache.getFont().getWrappedBounds(text, getWidth()));
+		else
 			bounds.set(cache.getFont().getMultiLineBounds(text));
 		bounds.width *= fontScaleX;
 		bounds.height *= fontScaleY;

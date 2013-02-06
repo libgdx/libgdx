@@ -1,33 +1,16 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
 
 package com.badlogic.gdx.tools.imagepacker;
+
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import com.badlogic.gdx.tools.FileProcessor;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectMap;
-
-import java.io.File;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.regex.Pattern;
 
 /** @author Nathan Sweet */
 public class TexturePackerFileProcessor extends FileProcessor {
@@ -53,41 +36,6 @@ public class TexturePackerFileProcessor extends FileProcessor {
 
 	public ArrayList<Entry> process (File inputFile, File outputRoot) throws Exception {
 		root = inputFile;
-
-		// Collect pack.json setting files.
-		final ArrayList<File> settingsFiles = new ArrayList();
-		FileProcessor settingsProcessor = new FileProcessor() {
-			protected void processFile (Entry inputFile) throws Exception {
-				settingsFiles.add(inputFile.inputFile);
-			}
-		};
-		settingsProcessor.addInputRegex("pack\\.json");
-		settingsProcessor.process(inputFile, null);
-		// Sort parent first.
-		Collections.sort(settingsFiles, new Comparator<File>() {
-			public int compare (File file1, File file2) {
-				return file1.toString().length() - file2.toString().length();
-			}
-		});
-		for (File settingsFile : settingsFiles) {
-			// Find first parent with settings, or use defaults.
-			Settings settings = null;
-			File parent = settingsFile.getParentFile();
-			while (true) {
-				if (parent.equals(root)) break;
-				parent = parent.getParentFile();
-				settings = dirToSettings.get(parent);
-				if (settings != null) {
-					settings = new Settings(settings);
-					break;
-				}
-			}
-			if (settings == null) settings = new Settings(defaultSettings);
-			// Merge settings from current directory.
-			json.readFields(settings, new JsonReader().parse(new FileReader(settingsFile)));
-			dirToSettings.put(settingsFile.getParentFile(), settings);
-		}
-
 		return super.process(inputFile, outputRoot);
 	}
 
@@ -115,16 +63,24 @@ public class TexturePackerFileProcessor extends FileProcessor {
 	protected void processDir (Entry inputDir, ArrayList<Entry> files) throws Exception {
 		System.out.println(inputDir.inputFile.getName());
 
-		// Find first parent with settings, or use defaults.
+		// Start with a copy of a parent dir's settings or the default settings.
 		Settings settings = null;
 		File parent = inputDir.inputFile;
 		while (true) {
 			if (parent.equals(root)) break;
 			parent = parent.getParentFile();
 			settings = dirToSettings.get(parent);
-			if (settings != null) break;
+			if (settings != null) {
+				settings = new Settings(settings);
+				break;
+			}
 		}
-		if (settings == null) settings = defaultSettings;
+		if (settings == null) settings = new Settings(defaultSettings);
+		dirToSettings.put(inputDir.inputFile, settings);
+
+		// Merge settings from pack.json file.
+		File settingsFile = new File(inputDir.inputFile, "pack.json");
+		if (settingsFile.exists()) json.readFields(settings, new JsonReader().parse(new FileReader(settingsFile)));
 
 		// Pack.
 		TexturePacker2 packer = new TexturePacker2(root, settings);

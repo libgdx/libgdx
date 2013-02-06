@@ -45,7 +45,6 @@ public class RayCastTest extends BaseBulletTest {
 	@Override
 	public void create () {
 		super.create();
-		instructions = "Tap a box to ray cast\nLong press to toggle debug mode\nSwipe for next test";
 
 		// Create the entities
 		world.add("ground", -7f, 0f, -7f)
@@ -83,7 +82,7 @@ public class RayCastTest extends BaseBulletTest {
 		rayTestCB.getM_rayFromWorld().setValue(rayFrom.x, rayFrom.y, rayFrom.z);
 		rayTestCB.getM_rayToWorld().setValue(rayTo.x, rayTo.y, rayTo.z);
 		
-		world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
+		world.dynamicsWorld.rayTest(rayFrom, rayTo, rayTestCB);
 		
 		if (rayTestCB.hasHit()) {
 			final btCollisionObject obj = rayTestCB.getM_collisionObject();

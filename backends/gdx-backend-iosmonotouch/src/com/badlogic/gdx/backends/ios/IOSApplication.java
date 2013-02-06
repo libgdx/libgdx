@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.ios;
 
 import java.util.ArrayList;
 
+import cli.MonoTouch.Foundation.NSBundle;
 import cli.MonoTouch.Foundation.NSDictionary;
 import cli.MonoTouch.Foundation.NSMutableDictionary;
 import cli.MonoTouch.UIKit.UIApplication;
@@ -32,7 +33,6 @@ import cli.System.Console;
 import cli.System.Environment;
 import cli.System.Drawing.RectangleF;
 import cli.System.IO.Path;
-import cli.objectal.OALAudioSession;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -41,46 +41,13 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 
 public class IOSApplication extends UIApplicationDelegate implements Application {
-	
-	class IOSUIViewController extends UIViewController {
-		@Override
-		public void DidRotate (UIInterfaceOrientation orientation) {
-			// get the view size and update graphics
-			// FIXME: supporting BOTH (landscape+portrait at same time) is currently not working correctly (needs fix)
-			// FIXME screen orientation needs to be stored for Input#getNativeOrientation
-			RectangleF bounds = getBounds(this);
-			graphics.width = (int)bounds.get_Width();
-			graphics.height = (int)bounds.get_Height();
-			graphics.MakeCurrent(); // not sure if that's needed? badlogic: yes it is, so resize can do OpenGL stuff, not sure if
-// it's on the correct thread though
-			listener.resize(graphics.width, graphics.height);
-		}
-
-		@Override
-		public boolean ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {
-			// we return "true" if we support the orientation
-			switch (orientation.Value) {
-			case UIInterfaceOrientation.LandscapeLeft:
-			case UIInterfaceOrientation.LandscapeRight:
-				return config.orientationLandscape;
-			default:
-				// assume portrait
-				return config.orientationPortrait;
-			}
-		}
-	}
-
 	UIApplication uiApp;
 	UIWindow uiWindow;
-	UIViewController uiViewController;
 	ApplicationListener listener;
 	IOSApplicationConfiguration config;
 	IOSGraphics graphics;
@@ -89,13 +56,13 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	IOSInput input;
 	IOSNet net;
 	int logLevel = Application.LOG_DEBUG;
+	boolean firstResume;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
 	float displayScaleFactor;
 
-	Array<Runnable> runnables = new Array<Runnable>();
-	Array<Runnable> executedRunnables = new Array<Runnable>();
-	Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	ArrayList<Runnable> runnables = new ArrayList<Runnable>();
+	ArrayList<Runnable> executedRunnables = new ArrayList<Runnable>();
 
 	/** Should be called in AppDelegate#FinishedLaunching.
 	 * 
@@ -138,19 +105,40 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 		// Create: Window -> ViewController-> GameView (controller takes care of rotation)
 		this.uiWindow = new UIWindow(UIScreen.get_MainScreen().get_Bounds());
-		this.uiViewController = new IOSUIViewController();
-		this.uiWindow.set_RootViewController(this.uiViewController);
+		UIViewController uiViewController = new UIViewController() {
+			@Override
+			public void DidRotate (UIInterfaceOrientation orientation) {
+				// get the view size and update graphics
+				// FIXME: supporting BOTH (landscape+portrait at same time) is currently not working correctly (needs fix)
+				// FIXME screen orientation needs to be stored for Input#getNativeOrientation
+				RectangleF bounds = getBounds(this);
+				graphics.width = (int)bounds.get_Width();
+				graphics.height = (int)bounds.get_Height();
+				graphics.MakeCurrent(); // not sure if that's needed? badlogic: yes it is, so resize can do OpenGL stuff, not sure if
+// it's on the correct thread though
+				listener.resize(graphics.width, graphics.height);
+			}
 
-		GL20 gl20 = config.useMonotouchOpenTK ? new IOSMonotouchGLES20() : new IOSGLES20();
-		
-		Gdx.gl = gl20;
-		Gdx.gl20 = gl20;
-		
+			@Override
+			public boolean ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {
+				// we return "true" if we support the orientation
+				switch (orientation.Value) {
+				case UIInterfaceOrientation.LandscapeLeft:
+				case UIInterfaceOrientation.LandscapeRight:
+					return config.orientationLandscape;
+				default:
+					// assume portrait
+					return config.orientationPortrait;
+				}
+			}
+		};
+		this.uiWindow.set_RootViewController(uiViewController);
+
 		// setup libgdx
 		this.input = new IOSInput(this);
-		this.graphics = new IOSGraphics(getBounds(this.uiViewController), this, input, gl20);
+		this.graphics = new IOSGraphics(getBounds(uiViewController), this, input);
 		this.files = new IOSFiles();
-		this.audio = new IOSAudio(config.useObjectAL);
+		this.audio = new IOSAudio();
 		this.net = new IOSNet(this);
 
 		Gdx.files = this.files;
@@ -162,7 +150,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		this.input.setupPeripherals();
 
 		// attach our view to window+controller and make it visible
-		this.uiViewController.set_View(graphics);
+		uiViewController.set_View(graphics);
 		this.graphics.Run();
 		this.uiWindow.MakeKeyAndVisible();
 		Gdx.app.debug("IOSApplication", "created");
@@ -215,21 +203,18 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	@Override
 	public void OnActivated (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "resumed");
-		if (config.useObjectAL)
-		{
-			// workaround for ObjectAL crash problem
-			// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
-			OALAudioSession.sharedInstance().forceEndInterrupt();
+		if (!firstResume) {
+			graphics.MakeCurrent();
+			listener.resume();
+			firstResume = true;
 		}
-		graphics.MakeCurrent();
-		graphics.resume();
 	}
 
 	@Override
 	public void OnResignActivation (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "paused");
 		graphics.MakeCurrent();
-		graphics.pause();
+		listener.pause();
 		Gdx.gl.glFlush();
 	}
 
@@ -237,12 +222,6 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	public void WillTerminate (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "disposed");
 		graphics.MakeCurrent();
-		Array<LifecycleListener> listeners = lifecycleListeners;
-		synchronized(listeners) {
-			for(LifecycleListener listener: listeners) {
-				listener.pause();
-			}
-		}
 		listener.dispose();
 		Gdx.gl.glFlush();
 	}
@@ -380,7 +359,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 			executedRunnables.addAll(runnables);
 			runnables.clear();
 		}
-		for (int i = 0; i < executedRunnables.size; i++) {
+		for (int i = 0; i < executedRunnables.size(); i++) {
 			try {
 				executedRunnables.get(i).run();
 			} catch (Throwable t) {
@@ -407,19 +386,5 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 				return null;
 			}
 		};
-	}
-	
-	@Override
-	public void addLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
-			lifecycleListeners.add(listener);
-		}
-	}
-
-	@Override
-	public void removeLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
-			lifecycleListeners.removeValue(listener, true);
-		}		
 	}
 }

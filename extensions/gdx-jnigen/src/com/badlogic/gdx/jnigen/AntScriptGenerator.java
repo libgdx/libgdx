@@ -73,10 +73,8 @@ public class AntScriptGenerator {
 		copyJniHeaders(config.jniDir.path());
 		
 		// copy memcpy_wrap.c, needed if your build platform uses the latest glibc, e.g. Ubuntu 12.10
-		if(config.jniDir.child("memcpy_wrap.c").exists() == false) {
-			new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/memcpy_wrap.c", FileType.Classpath).copyTo(
-				config.jniDir.child("memcpy_wrap.c"));
-		}
+		new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/memcpy_wrap.c", FileType.Classpath).copyTo(
+			config.jniDir.child("memcpy_wrap.c"));
 
 		ArrayList<String> buildFiles = new ArrayList<String>();
 		ArrayList<String> libsDirs = new ArrayList<String>();
@@ -229,7 +227,6 @@ public class AntScriptGenerator {
 		template = template.replace("%cFlags%", target.cFlags);
 		template = template.replace("%cppFlags%", target.cppFlags);
 		template = template.replace("%linkerFlags%", target.linkerFlags);
-		template = template.replace("%libraries%", target.libraries);
 		template = template.replace("%cIncludes%", cIncludes);
 		template = template.replace("%cExcludes%", cExcludes);
 		template = template.replace("%cppIncludes%", cppIncludes);

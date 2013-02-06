@@ -18,12 +18,10 @@ package com.badlogic.gdx.physics.box2d;
 
 import org.jbox2d.common.Vec2;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 public class ChainShape extends Shape {
 	org.jbox2d.collision.shapes.ChainShape shape;
-	boolean isLooped = false;
 
 	public ChainShape () {
 		super(new org.jbox2d.collision.shapes.ChainShape());
@@ -48,7 +46,6 @@ public class ChainShape extends Shape {
 			v[i] = new Vec2(vertices[i].x, vertices[i].y);
 		}
 		shape.createLoop(v, v.length);
-		isLooped = true;
 	}
 
 	/** Create a chain with isolated end vertices.
@@ -59,7 +56,6 @@ public class ChainShape extends Shape {
 			v[i] = new Vec2(vertices[i].x, vertices[i].y);
 		}
 		shape.createChain(v, v.length);
-		isLooped = false;
 	}
 
 	/** Establish connectivity to a vertex that precedes the first vertex. Don't call this for loops. */
@@ -108,9 +104,5 @@ public class ChainShape extends Shape {
 	@Override
 	public int getChildCount () {
 		return shape.getChildCount();
-	}
-
-	public boolean isLooped () {
-		return isLooped;
 	}
 }

@@ -19,32 +19,18 @@ package com.badlogic.gdx.backends.lwjgl;
 import com.badlogic.gdx.ApplicationListener;
 
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Point;
 
 import javax.swing.JFrame;
 
 /** Wraps an {@link LwjglCanvas} in a resizable {@link JFrame}. */
 public class LwjglFrame extends JFrame {
-	LwjglCanvas lwjglCanvas;
+	final LwjglCanvas lwjglCanvas;
 
 	public LwjglFrame (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
 		super(title);
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.title = title;
-		config.width = width;
-		config.height = height;
-		config.useGL20 = useGL2;
-		construct(listener, config);
-	}
 
-	public LwjglFrame (ApplicationListener listener, LwjglApplicationConfiguration config) {
-		super(config.title);
-		construct(listener, config);
-	}
-
-	private void construct (ApplicationListener listener, LwjglApplicationConfiguration config) {
-		lwjglCanvas = new LwjglCanvas(listener, config) {
+		lwjglCanvas = new LwjglCanvas(listener, useGL2) {
 			protected void stopped () {
 				LwjglFrame.this.dispose();
 			}
@@ -73,6 +59,7 @@ public class LwjglFrame extends JFrame {
 				LwjglFrame.this.exception(t);
 			}
 		};
+		getContentPane().add(lwjglCanvas.getCanvas());
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run () {
@@ -81,22 +68,14 @@ public class LwjglFrame extends JFrame {
 		});
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		getContentPane().setPreferredSize(new Dimension(config.width, config.height));
-
+		getContentPane().setPreferredSize(new Dimension(width, height));
 		initialize();
-		pack();
+		Dimension size = getSize();
+		if (size.width == 0 && size.height == 0) pack();
 		Point location = getLocation();
 		if (location.x == 0 && location.y == 0) setLocationRelativeTo(null);
-		lwjglCanvas.getCanvas().setSize(getSize());
-
-		// Finish with invokeLater so any LwjglFrame super constructor has a chance to initialize.
-		EventQueue.invokeLater(new Runnable() {
-			public void run () {
-				addCanvas();
-				setVisible(true);
-				lwjglCanvas.getCanvas().requestFocus();
-			}
-		});
+		setVisible(true); // Has to happen on OSX before display is created.
+		lwjglCanvas.getCanvas().requestFocus();
 	}
 
 	protected void exception (Throwable ex) {
@@ -104,13 +83,8 @@ public class LwjglFrame extends JFrame {
 		lwjglCanvas.stop();
 	}
 
-	/** Called before the JFrame is made displayable. */
+	/** Called before the JFrame is shown. */
 	protected void initialize () {
-	}
-
-	/** Adds the canvas to the content pane. This triggers addNotify and starts the canvas' game loop. */
-	protected void addCanvas () {
-		getContentPane().add(lwjglCanvas.getCanvas());
 	}
 
 	/** Called after {@link ApplicationListener} create and resize, but before the game loop iteration. */

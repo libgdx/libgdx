@@ -42,7 +42,7 @@ public class HeaderFixer {
 			if (content.startsWith("package")) {
 				System.out.println("File '" + inputFile.inputFile + "' header fixed");
 				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileHandle(inputFile.outputFile).write(false)));
-				writer.write(header + "\n\n" + content);
+				writer.write(header + "\n" + content);
 				writer.close();
 			}
 		}

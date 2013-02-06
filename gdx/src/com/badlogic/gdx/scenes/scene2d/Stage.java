@@ -519,10 +519,10 @@ public class Stage extends InputAdapter implements Disposable {
 		cancelTouchFocus();
 	}
 
-	/** Removes the touch, keyboard, and scroll focus for the specified actor and any descendants. */
+	/** Removes the touch, keyboard, and scroll focus for the specified actor. */
 	public void unfocus (Actor actor) {
-		if (scrollFocus != null && scrollFocus.isDescendantOf(actor)) scrollFocus = null;
-		if (keyboardFocus != null && keyboardFocus.isDescendantOf(actor)) keyboardFocus = null;
+		if (scrollFocus == actor) scrollFocus = null;
+		if (keyboardFocus == actor) keyboardFocus = null;
 	}
 
 	/** Sets the actor that will receive key events.
@@ -532,20 +532,14 @@ public class Stage extends InputAdapter implements Disposable {
 		FocusEvent event = Pools.obtain(FocusEvent.class);
 		event.setStage(this);
 		event.setType(FocusEvent.Type.keyboard);
-		Actor oldKeyboardFocus = keyboardFocus;
-		if (oldKeyboardFocus != null) {
+		if (keyboardFocus != null) {
 			event.setFocused(false);
-			event.setRelatedActor(actor);
-			oldKeyboardFocus.fire(event);
+			keyboardFocus.fire(event);
 		}
-		if (!event.isCancelled()) {
-			keyboardFocus = actor;
-			if (actor != null) {
-				event.setFocused(true);
-				event.setRelatedActor(oldKeyboardFocus);
-				actor.fire(event);
-				if (event.isCancelled()) setKeyboardFocus(oldKeyboardFocus);
-			}
+		keyboardFocus = actor;
+		if (keyboardFocus != null) {
+			event.setFocused(true);
+			keyboardFocus.fire(event);
 		}
 		Pools.free(event);
 	}
@@ -563,20 +557,14 @@ public class Stage extends InputAdapter implements Disposable {
 		FocusEvent event = Pools.obtain(FocusEvent.class);
 		event.setStage(this);
 		event.setType(FocusEvent.Type.scroll);
-		Actor oldScrollFocus = keyboardFocus;
-		if (oldScrollFocus != null) {
+		if (scrollFocus != null) {
 			event.setFocused(false);
-			event.setRelatedActor(actor);
-			oldScrollFocus.fire(event);
+			scrollFocus.fire(event);
 		}
-		if (!event.isCancelled()) {
-			scrollFocus = actor;
-			if (actor != null) {
-				event.setFocused(true);
-				event.setRelatedActor(oldScrollFocus);
-				actor.fire(event);
-				if (event.isCancelled()) setScrollFocus(oldScrollFocus);
-			}
+		scrollFocus = actor;
+		if (scrollFocus != null) {
+			event.setFocused(true);
+			scrollFocus.fire(event);
 		}
 		Pools.free(event);
 	}

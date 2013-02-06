@@ -113,7 +113,6 @@ public class InputEvent extends Event {
 		return relatedActor;
 	}
 
-	/** @param relatedActor May be null. */
 	public void setRelatedActor (Actor relatedActor) {
 		this.relatedActor = relatedActor;
 	}

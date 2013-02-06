@@ -32,11 +32,8 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
-import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.PHY_ScalarType;
 import com.badlogic.gdx.physics.bullet.btBvhTriangleMeshShape;
 import com.badlogic.gdx.physics.bullet.btCollisionShape;
@@ -56,22 +53,23 @@ public class MeshShapeTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 		
-		final StillModel sphereModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/sphere.obj"));
-		sphereModel.subMeshes[0].getMesh().scale(0.25f, 0.25f, 0.25f);
-		final BoundingBox sphereBounds = new BoundingBox();
-		sphereModel.getBoundingBox(sphereBounds);
-	
-		final BulletConstructor sphereConstructor = new BulletConstructor(sphereModel, 0.25f, new btSphereShape(sphereBounds.getDimensions().x * 0.5f));
+		final Mesh sphereMesh = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
+		sphereMesh.scale(0.25f, 0.25f, 0.25f);
+
+		final Mesh sceneMesh = ObjLoader.loadObj(Gdx.files.internal("data/scene.obj").read(), true, true); // we need indices for this test
+		
+		final BulletConstructor sphereConstructor = new BulletConstructor(sphereMesh, 0.25f, new btSphereShape(sphereMesh.calculateBoundingBox().getDimensions().x * 0.5f));
 		sphereConstructor.bodyInfo.setM_restitution(1f);
-		world.addConstructor("sphere", sphereConstructor);
-		
-		final StillModel sceneModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/scene.obj"));
-		final BulletConstructor sceneConstructor = new BulletConstructor(sceneModel, 0f, new btBvhTriangleMeshShape(true, sceneModel));
+		world.constructors.put("sphere", sphereConstructor);
+		final BulletConstructor sceneConstructor = new BulletConstructor(sceneMesh, 0f, createMeshShape(sceneMesh));
 		sceneConstructor.bodyInfo.setM_restitution(0.25f);
-		world.addConstructor("scene", sceneConstructor);
+		world.constructors.put("scene", sceneConstructor);
 		
-		world.add("scene", (new Matrix4()).setToTranslation(0f, 2f, 0f).rotate(Vector3.Y, -90))
-			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+		BulletEntity scene = world.add("scene", 0f, 2f, 0f);
+		scene.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+		scene.transform.rotate(Vector3.Y, -90);
+		// Since the transform is changed, it's needed to apply it again.
+		scene.body.setWorldTransform(scene.transform);
 
 		world.add("ground", 0f, 0f, 0f)
 			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
@@ -93,5 +91,63 @@ public class MeshShapeTest extends BaseBulletTest {
 	public boolean tap (float x, float y, int count, int button) {
 		shoot(x, y);
 		return true;
+	}
+	
+	// Create a TriangleMeshShape based on a Mesh
+	public static btCollisionShape createMeshShape(Mesh mesh) {
+		btIndexedMesh indexedMesh = new btIndexedMesh();
+		indexedMesh.setM_indexType(PHY_ScalarType.PHY_SHORT);
+		indexedMesh.setM_numTriangles(mesh.getNumIndices()/3);
+		indexedMesh.setM_numVertices(mesh.getNumVertices());
+		indexedMesh.setM_triangleIndexStride(6);
+		indexedMesh.setM_vertexStride(mesh.getVertexSize());
+		indexedMesh.setM_vertexType(PHY_ScalarType.PHY_FLOAT);
+		indexedMesh.setTriangleIndexBase(mesh.getIndicesBuffer());
+		indexedMesh.setVertexBase(mesh.getVerticesBuffer());
+		btTriangleIndexVertexArray meshInterface = new TestTriangleIndexVertexArray();
+		meshInterface.addIndexedMesh(indexedMesh, PHY_ScalarType.PHY_SHORT);
+		return new TestBvhTriangleMeshShape(meshInterface,true);
+	}
+	
+	/** 
+	 * Convenience class that keeps a reference of the sub meshes.
+	 * Don't use this method if the btIndexedMesh instances are shared amongst other btTriangleIndexVertexArray instances.
+	 */
+	public static class TestTriangleIndexVertexArray extends btTriangleIndexVertexArray {
+		Array<btIndexedMesh> meshes = new Array<btIndexedMesh>();
+		
+		@Override
+		public void addIndexedMesh(btIndexedMesh mesh, int indexType) {
+			super.addIndexedMesh(mesh, indexType);
+			meshes.add(mesh);
+		}
+		
+		@Override
+		public synchronized void delete() {
+			super.delete();
+			for (int i = 0; i < meshes.size; i++)
+				meshes.get(i).delete();
+			meshes.clear();
+		}
+	}
+	
+	/** 
+	 * Convenience class that keeps a reference of the mesh interface 
+	 * Don't use this method if the btStridingMeshInterface is shared amongst other btBvhTriangleMeshShape instances. 
+	 */
+	public static class TestBvhTriangleMeshShape extends btBvhTriangleMeshShape {
+		btStridingMeshInterface meshInterface;
+		public TestBvhTriangleMeshShape(btStridingMeshInterface meshInterface, boolean useQuantizedAabbCompression) {
+			super(meshInterface, useQuantizedAabbCompression);
+			this.meshInterface = meshInterface;
+		}
+		
+		@Override
+		public synchronized void delete() {
+			super.delete();
+			if (meshInterface != null)
+				meshInterface.delete();
+			meshInterface = null;
+		}
 	}
 }

@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.utils.Timer;
@@ -27,56 +26,33 @@ import com.badlogic.gdx.utils.Timer.Task;
 public class DragScrollListener extends DragListener {
 	private ScrollPane scroll;
 	private Task scrollUp, scrollDown;
-	Interpolation interpolation = Interpolation.exp5In;
-	float minSpeed = 15, maxSpeed = 75, tickSecs = 0.05f;
-	long startTime, rampTime = 1750;
 
 	public DragScrollListener (final ScrollPane scroll) {
 		this.scroll = scroll;
 
 		scrollUp = new Task() {
 			public void run () {
-				scroll.setScrollY(scroll.getScrollY() - getScrollPixels());
+				scroll.setScrollY(scroll.getScrollY() - 15);
 			}
 		};
 		scrollDown = new Task() {
 			public void run () {
-				scroll.setScrollY(scroll.getScrollY() + getScrollPixels());
+				scroll.setScrollY(scroll.getScrollY() + 15);
 			}
 		};
 	}
 
-	public void setup (float minSpeedPixels, float maxSpeedPixels, float tickSecs, float rampSecs) {
-		this.minSpeed = minSpeedPixels;
-		this.maxSpeed = maxSpeedPixels;
-		this.tickSecs = tickSecs;
-		rampTime = (long)(rampSecs * 1000);
-	}
-
-	float getScrollPixels () {
-		return interpolation.apply(minSpeed, maxSpeed, Math.min(1, (System.currentTimeMillis() - startTime) / (float)rampTime));
-	}
-
 	public void drag (InputEvent event, float x, float y, int pointer) {
-		if (x >= 0 && x < scroll.getWidth()) {
-			if (y >= scroll.getHeight()) {
-				scrollDown.cancel();
-				if (!scrollUp.isScheduled()) {
-					startTime = System.currentTimeMillis();
-					Timer.schedule(scrollUp, tickSecs, tickSecs);
-				}
-				return;
-			} else if (y < 0) {
-				scrollUp.cancel();
-				if (!scrollDown.isScheduled()) {
-					startTime = System.currentTimeMillis();
-					Timer.schedule(scrollDown, tickSecs, tickSecs);
-				}
-				return;
-			}
+		if (y >= scroll.getHeight()) {
+			scrollDown.cancel();
+			if (!scrollUp.isScheduled()) Timer.schedule(scrollUp, 0.05f, 0.05f);
+		} else if (y < 0) {
+			scrollUp.cancel();
+			if (!scrollDown.isScheduled()) Timer.schedule(scrollDown, 0.05f, 0.05f);
+		} else {
+			scrollUp.cancel();
+			scrollDown.cancel();
 		}
-		scrollUp.cancel();
-		scrollDown.cancel();
 	}
 
 	public void dragStop (InputEvent event, float x, float y, int pointer) {

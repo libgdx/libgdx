@@ -89,7 +89,6 @@ public class ShapeRenderer {
 		Cone(GL10.GL_LINES), //
 		FilledCone(GL10.GL_TRIANGLES), //
 		Curve(GL10.GL_LINES), //
-		Polygon(GL10.GL_LINES), //
 		;
 
 		private final int glType;
@@ -655,43 +654,6 @@ public class ShapeRenderer {
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x + cx, y + cy, z);
 	}
-	
-	/** Draws a polygon in the x/y plane. The vertices must contain at least 3 points (6 floats x,y). The
-	 * {@link ShapeType} passed to begin has to be {@link ShapeType#Polygon}.
-	 * @param vertices */
-	public void polygon (float[] vertices) {
-		if (currType != ShapeType.Polygon) throw new GdxRuntimeException("Must call begin(ShapeType.Polygon)");
-		if (vertices.length < 6) throw new IllegalArgumentException("Polygons must contain at least 3 points.");
-		if (vertices.length % 2 != 0) throw new IllegalArgumentException("Polygons must have a pair number of vertices.");
-		final int numFloats = vertices.length;
-		
-		checkDirty();
-		checkFlush(numFloats);
-		
-		float firstX = vertices[0];
-		float firstY = vertices[1];
-		
-		for (int i = 0; i < numFloats; i += 2) {
-			float x1 = vertices[i];
-			float y1 = vertices[i + 1];
-			
-			float x2;
-			float y2;
-			
-			if(i + 2 >= numFloats){
-				x2 = firstX;
-				y2 = firstY;
-			}else{
-				x2 = vertices[i + 2];
-				y2 = vertices[i + 3];
-			}
-			
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x1, y1, 0);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x2, y2, 0);
-		}
-	}
 
 	private void checkDirty () {
 		if (!matrixDirty) return;
@@ -717,11 +679,6 @@ public class ShapeRenderer {
 		ShapeType type = currType;
 		end();
 		begin(type);
-	}
-	
-	/** Returns the current {@link ShapeType} used */
-	public ShapeType getCurrentType () {
-		return currType;
 	}
 
 	public void dispose () {

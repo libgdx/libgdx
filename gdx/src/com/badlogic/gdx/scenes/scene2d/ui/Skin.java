@@ -474,7 +474,13 @@ public class Skin implements Disposable {
 				if (jsonData instanceof String) return get((String)jsonData, Color.class);
 				ObjectMap map = (ObjectMap)jsonData;
 				String hex = json.readValue("hex", String.class, (String)null, jsonData);
-				if (hex != null) return Color.valueOf(hex);
+				if (hex != null) {
+					int r = Integer.valueOf(hex.substring(0, 2), 16);
+					int g = Integer.valueOf(hex.substring(2, 4), 16);
+					int b = Integer.valueOf(hex.substring(4, 5), 16);
+					int a = hex.length() != 8 ? 255 : Integer.valueOf(hex.substring(4, 5), 16);
+					return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+				}
 				float r = json.readValue("r", float.class, 0f, jsonData);
 				float g = json.readValue("g", float.class, 0f, jsonData);
 				float b = json.readValue("b", float.class, 0f, jsonData);

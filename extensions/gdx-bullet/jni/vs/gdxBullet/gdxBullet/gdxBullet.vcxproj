@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -228,14 +228,6 @@
     <ClCompile Include="..\..\..\src\BulletDynamics\Dynamics\Bullet-C-API.cpp" />
     <ClCompile Include="..\..\..\src\BulletDynamics\Vehicle\btRaycastVehicle.cpp" />
     <ClCompile Include="..\..\..\src\BulletDynamics\Vehicle\btWheelInfo.cpp" />
-    <ClCompile Include="..\..\..\src\BulletSoftBody\btDefaultSoftBodySolver.cpp" />
-    <ClCompile Include="..\..\..\src\BulletSoftBody\btSoftBody.cpp" />
-    <ClCompile Include="..\..\..\src\BulletSoftBody\btSoftBodyConcaveCollisionAlgorithm.cpp" />
-    <ClCompile Include="..\..\..\src\BulletSoftBody\btSoftBodyHelpers.cpp" />
-    <ClCompile Include="..\..\..\src\BulletSoftBody\btSoftBodyRigidBodyCollisionConfiguration.cpp" />
-    <ClCompile Include="..\..\..\src\BulletSoftBody\btSoftRigidCollisionAlgorithm.cpp" />
-    <ClCompile Include="..\..\..\src\BulletSoftBody\btSoftRigidDynamicsWorld.cpp" />
-    <ClCompile Include="..\..\..\src\BulletSoftBody\btSoftSoftCollisionAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\LinearMath\btAlignedAllocator.cpp" />
     <ClCompile Include="..\..\..\src\LinearMath\btConvexHull.cpp" />
     <ClCompile Include="..\..\..\src\LinearMath\btConvexHullComputer.cpp" />

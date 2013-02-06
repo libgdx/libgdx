@@ -237,11 +237,6 @@ public class GestureDetector extends InputAdapter {
 		return Math.abs(x - centerX) < tapSquareSize && Math.abs(y - centerY) < tapSquareSize;
 	}
 
-	/** The tap square will not longer be used for the current touch. */
-	public void invalidateTapSquare () {
-		inTapSquare = false;
-	}
-
 	public void setTapSquareSize (int tapSquareSize) {
 		this.tapSquareSize = tapSquareSize;
 	}

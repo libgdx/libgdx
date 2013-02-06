@@ -1,18 +1,3 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
 package aurelienribon.gdxsetupui;
 
 import aurelienribon.gdxsetupui.Helper.ClasspathEntry;
@@ -67,7 +52,6 @@ public class ProjectUpdate {
 		File desktopPrjLibsDir = new File(Helper.getDesktopPrjPath(cfg) + "libs");
 		File androidPrjLibsDir = new File(Helper.getAndroidPrjPath(cfg) + "libs");
 		File htmlPrjLibsDir = new File(Helper.getHtmlPrjPath(cfg) + "war/WEB-INF/lib");
-		File iosPrjLibsDir = new File(Helper.getIosPrjPath(cfg) + "libs");
 		File dataDir = new File(Helper.getAndroidPrjPath(cfg) + "assets");
 
 		for (String library : cfg.libraries) {
@@ -99,11 +83,6 @@ public class ProjectUpdate {
 				if (cfg.isHtmlIncluded) {
 					for (String elemName : def.libsHtml)
 						if (entryName.endsWith(elemName)) copyEntry(zis, elemName, htmlPrjLibsDir);
-				}
-				
-				if(cfg.isIosIncluded) {
-					for(String elemName : def.libsIos)
-						if (entryName.endsWith(elemName)) copyEntry(zis, elemName, iosPrjLibsDir);
 				}
 			}
 

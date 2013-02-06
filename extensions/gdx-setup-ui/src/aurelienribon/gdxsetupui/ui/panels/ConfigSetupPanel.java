@@ -1,18 +1,3 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
 package aurelienribon.gdxsetupui.ui.panels;
 
 import aurelienribon.gdxsetupui.ui.Ctx;
@@ -70,7 +55,6 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
 		genDesktopPrjChk.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {update();}});
 		genAndroidPrjChk.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {update();}});
 		genHtmlPrjChk.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {update();}});
-                genIosPrjChk.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {update();}});
 
 		advancedSettingsLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		advancedSettingsLabel.addMouseListener(new MouseAdapter() {
@@ -119,7 +103,6 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
 		Ctx.cfgSetup.isDesktopIncluded = genDesktopPrjChk.isSelected();
 		Ctx.cfgSetup.isAndroidIncluded = genAndroidPrjChk.isSelected();
 		Ctx.cfgSetup.isHtmlIncluded = genHtmlPrjChk.isSelected();
-                Ctx.cfgSetup.isIosIncluded = genIosPrjChk.isSelected();
 		Ctx.fireCfgSetupChanged();
 	}
 
@@ -231,7 +214,6 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
         genAndroidPrjChk = new aurelienribon.ui.CompactCheckBox();
         genDesktopPrjChk = new aurelienribon.ui.CompactCheckBox();
         genHtmlPrjChk = new aurelienribon.ui.CompactCheckBox();
-        genIosPrjChk = new aurelienribon.ui.CompactCheckBox();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -291,9 +273,6 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
         genHtmlPrjChk.setSelected(true);
         genHtmlPrjChk.setText("Generate the html project");
 
-        genIosPrjChk.setSelected(true);
-        genIosPrjChk.setText("Generate the ios project");
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -328,8 +307,7 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
                             .addComponent(genCorePrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(genAndroidPrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(genDesktopPrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(genHtmlPrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(genIosPrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(genHtmlPrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -361,9 +339,7 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
                 .addComponent(genDesktopPrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(genHtmlPrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(genIosPrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(advancedSettingsLabel)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -381,7 +357,6 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
     private aurelienribon.ui.CompactCheckBox genCorePrjChk;
     private aurelienribon.ui.CompactCheckBox genDesktopPrjChk;
     private aurelienribon.ui.CompactCheckBox genHtmlPrjChk;
-    private aurelienribon.ui.CompactCheckBox genIosPrjChk;
     private javax.swing.JPanel headerPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

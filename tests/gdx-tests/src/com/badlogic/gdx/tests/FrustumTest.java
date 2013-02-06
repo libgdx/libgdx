@@ -23,8 +23,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderOld;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Frustum;
@@ -43,7 +42,7 @@ public class FrustumTest extends GdxTest {
 	OrthographicCamera camera3;
 	PerspectiveCamController controller;
 	Mesh plane;
-	StillModel sphere;
+	Mesh sphere;
 	ImmediateModeRenderer10 renderer;
 
 	@Override
@@ -72,7 +71,7 @@ public class FrustumTest extends GdxTest {
 
 		plane.setVertices(new float[] {-10, -1, 10, 10, -1, 10, 10, -1, -10, -10, -1, -10});
 		plane.setIndices(new short[] {3, 2, 1, 1, 0, 3});
-		sphere =  ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/sphere.obj"));
+		sphere = ModelLoaderOld.loadObj(Gdx.files.internal("data/sphere.obj").read());
 		renderer = new ImmediateModeRenderer10();
 	}
 
@@ -89,7 +88,7 @@ public class FrustumTest extends GdxTest {
 		Gdx.gl10.glColor4f(1, 0, 0, 1);
 		plane.render(GL10.GL_TRIANGLE_FAN);
 		Gdx.gl10.glColor4f(0, 1, 0, 1);
-		sphere.render();
+		sphere.render(GL10.GL_TRIANGLES);
 
 		renderFrustum(renderer, camera2.frustum);
 		renderFrustum(renderer, camera3.frustum);

@@ -62,6 +62,14 @@ public class GdxInvaders extends Game {
 				}
 			}
 		}
+
+		// sleep on desktop as Jogl backend vsynch is broken...
+		if (Gdx.app.getType() == ApplicationType.Desktop) {
+			try {
+				Thread.sleep(16);
+			} catch (InterruptedException e) {
+			}
+		}
 		
 		fps.log();
 	}

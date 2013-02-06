@@ -825,15 +825,13 @@ public class Json {
 		if (jsonData instanceof Array) {
 			Array array = (Array)jsonData;
 			if (type == null || Array.class.isAssignableFrom(type)) {
-				Array newArray = type == null ? new Array() : (Array)newInstance(type);
-				newArray.ensureCapacity(array.size);
+				Array newArray = new Array(array.size);
 				for (int i = 0, n = array.size; i < n; i++)
 					newArray.add(readValue(elementType, null, array.get(i)));
 				return (T)newArray;
 			}
 			if (ArrayList.class.isAssignableFrom(type)) {
-				ArrayList newArray = type == null ? new ArrayList() : (ArrayList)newInstance(type);
-				newArray.ensureCapacity(array.size);
+				ArrayList newArray = new ArrayList(array.size);
 				for (int i = 0, n = array.size; i < n; i++)
 					newArray.add(readValue(elementType, null, array.get(i)));
 				return (T)newArray;

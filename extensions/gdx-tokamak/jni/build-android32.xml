@@ -1,0 +1,22 @@
+<project name="android-natives" basedir="." default="postcompile">
+	<property environment="env" />
+
+	<target name="clean">
+		<exec executable="${env.NDK_HOME}/ndk-build" failonerror="true">
+			<arg value="clean"/>
+		</exec>
+	</target>
+
+	<target name="precompile">
+		
+	</target>
+
+	<target name="compile-natives" depends="precompile">
+		<echo>ndk_home: ${env.NDK_HOME}</echo>
+		<exec executable="${env.NDK_HOME}/ndk-build" failonerror="true"/>
+	</target>
+	
+	<target name="postcompile" depends="compile-natives">
+		
+	</target>
+</project>

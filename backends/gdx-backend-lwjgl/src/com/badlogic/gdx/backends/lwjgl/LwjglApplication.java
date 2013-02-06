@@ -22,7 +22,6 @@ import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
@@ -49,7 +48,6 @@ public class LwjglApplication implements Application {
 	protected boolean running = true;
 	protected final Array<Runnable> runnables = new Array();
 	protected final Array<Runnable> executedRunnables = new Array();
-	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
 
 	public LwjglApplication (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
@@ -76,8 +74,7 @@ public class LwjglApplication implements Application {
 		LwjglNativesLoader.load();
 
 		this.graphics = graphics;
-		if (!LwjglApplicationConfiguration.disableAudio)
-			audio = new OpenALAudio(16, config.audioDeviceBufferCount, config.audioDeviceBufferSize);
+		if (!LwjglApplicationConfiguration.disableAudio) audio = new OpenALAudio(16, config.audioDeviceBufferCount, config.audioDeviceBufferSize);
 		files = new LwjglFiles();
 		input = new LwjglInput();
 		net = new LwjglNet();
@@ -139,6 +136,26 @@ public class LwjglApplication implements Application {
 			}
 
 			boolean shouldRender = false;
+			synchronized (runnables) {
+				executedRunnables.clear();
+				executedRunnables.addAll(runnables);
+				runnables.clear();
+
+				for (int i = 0; i < executedRunnables.size; i++) {
+					shouldRender = true;
+					try {
+						executedRunnables.get(i).run();
+					} catch (Throwable t) {
+						t.printStackTrace();
+					}
+				}
+			}
+
+			// if one of the runnables set running in false, for example after an exit().
+			if (!running) break;
+
+			input.update();
+			shouldRender |= graphics.shouldRender();
 
 			if (graphics.canvas != null) {
 				int width = graphics.canvas.getWidth();
@@ -164,22 +181,6 @@ public class LwjglApplication implements Application {
 				}
 			}
 
-			synchronized (runnables) {
-				executedRunnables.clear();
-				executedRunnables.addAll(runnables);
-				runnables.clear();
-			}
-
-			for (int i = 0; i < executedRunnables.size; i++) {
-				shouldRender = true;
-				executedRunnables.get(i).run(); // calls out to random app code that could do anything ...
-			}
-
-			// If one of the runnables set running to false, for example after an exit().
-			if (!running) break;
-
-			input.update();
-			shouldRender |= graphics.shouldRender();
 			input.processEvents();
 			if (audio != null) audio.update();
 			if (shouldRender) {
@@ -196,13 +197,6 @@ public class LwjglApplication implements Application {
 			}
 		}
 
-		Array<LifecycleListener> listeners = lifecycleListeners;
-		synchronized(listeners) {
-			for(LifecycleListener listener: listeners) {
-				listener.pause();
-				listener.dispose();
-			}
-		}
 		listener.pause();
 		listener.dispose();
 		Display.destroy();
@@ -346,19 +340,5 @@ public class LwjglApplication implements Application {
 				running = false;
 			}
 		});
-	}
-	
-	@Override
-	public void addLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
-			lifecycleListeners.add(listener);
-		}
-	}
-
-	@Override
-	public void removeLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
-			lifecycleListeners.removeValue(listener, true);
-		}		
 	}
 }

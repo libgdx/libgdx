@@ -32,7 +32,6 @@ import android.view.WindowManager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Graphics.BufferFormat;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Graphics.GraphicsType;
@@ -52,7 +51,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
-import com.badlogic.gdx.utils.Array;
 
 /** An implementation of {@link Graphics} for Android.
  * 
@@ -92,8 +90,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	protected float ppcX = 0;
 	protected float ppcY = 0;
 	protected float density = 1;
-	
-	private final AndroidApplicationConfiguration config;
+
 	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
 	protected boolean isContinuous = true;
 
@@ -310,9 +307,8 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		return true;
 	}
 
-	public AndroidGraphicsLiveWallpaper (AndroidLiveWallpaper app, AndroidApplicationConfiguration config, ResolutionStrategy resolutionStrategy) {
-		this.config = config;
-		view = createGLSurfaceView(app, config.useGL20, resolutionStrategy);
+	public AndroidGraphicsLiveWallpaper (AndroidLiveWallpaper app, boolean useGL2IfAvailable, ResolutionStrategy resolutionStrategy) {
+		view = createGLSurfaceView(app, useGL2IfAvailable, resolutionStrategy);
 		this.app = app;
 
 	}
@@ -323,22 +319,12 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 
 		if (useGL2 && checkGL20()) {
 			GLSurfaceView20LW view = new GLSurfaceView20LW(app.getEngine(), resolutionStrategy);
-			if (configChooser != null) 
-				view.setEGLConfigChooser(configChooser);
-			else
-				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+			if (configChooser != null) view.setEGLConfigChooser(configChooser);
 			view.setRenderer(this);
 			return view;
 		} else {
-			//GL1
-			config.useGL20 = false;
-			configChooser = getEglConfigChooser();
-
 			GLBaseSurfaceViewLW view = new DefaultGLSurfaceViewLW(app.getEngine(), resolutionStrategy);
-			if (configChooser != null) 
-				view.setEGLConfigChooser(configChooser);
-			else
-				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+			if (configChooser != null) view.setEGLConfigChooser(configChooser);
 
 			view.setRenderer(this);
 			return view;
@@ -346,9 +332,6 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	}
 
 	private EGLConfigChooser getEglConfigChooser () {
-	return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples,
-			config.useGL20);
-	/*
 		if (!Build.DEVICE.equalsIgnoreCase("GT-I7500"))
 			return null;
 		else
@@ -365,7 +348,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 					egl.eglChooseConfig(display, attributes, configs, 1, result);
 					return configs[0];
 				}
-			};*/
+			};
 	}
 
 	private void updatePpi () {
@@ -521,12 +504,6 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		}
 
 		if (lresume) {
-			Array<LifecycleListener> listeners = app.lifecycleListeners;
-			synchronized(listeners) {
-				for(LifecycleListener listener: listeners) {
-					listener.resume();
-				}
-			}
 			app.getListener().resume();
 			Gdx.app.log("AndroidGraphics", "resumed");
 		}
@@ -547,24 +524,12 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		}
 
 		if (lpause) {
-			Array<LifecycleListener> listeners = app.lifecycleListeners;
-			synchronized(listeners) {
-				for(LifecycleListener listener: listeners) {
-					listener.pause();
-				}
-			}
 			app.getListener().pause();
 			((AndroidAudio)app.getAudio()).pause();
 			Gdx.app.log("AndroidGraphics", "paused");
 		}
 
 		if (ldestroy) {
-			Array<LifecycleListener> listeners = app.lifecycleListeners;
-			synchronized(listeners) {
-				for(LifecycleListener listener: listeners) {
-					listener.dispose();
-				}
-			}
 			app.getListener().dispose();
 			((AndroidAudio)app.getAudio()).dispose();
 			Gdx.app.log("AndroidGraphics", "destroyed");

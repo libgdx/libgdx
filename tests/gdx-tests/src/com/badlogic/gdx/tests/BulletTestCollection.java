@@ -29,29 +29,21 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.tests.box2d.Box2DTest;
 import com.badlogic.gdx.tests.bullet.BulletTest;
-import com.badlogic.gdx.tests.bullet.CollisionWorldTest;
 import com.badlogic.gdx.tests.bullet.ConstraintsTest;
 import com.badlogic.gdx.tests.bullet.ConvexHullTest;
-import com.badlogic.gdx.tests.bullet.InternalTickTest;
 import com.badlogic.gdx.tests.bullet.KinematicTest;
 import com.badlogic.gdx.tests.bullet.MeshShapeTest;
-import com.badlogic.gdx.tests.bullet.RayPickRagdollTest;
 import com.badlogic.gdx.tests.bullet.RayCastTest;
 import com.badlogic.gdx.tests.bullet.ShootTest;
-import com.badlogic.gdx.tests.bullet.SoftBodyTest;
-import com.badlogic.gdx.tests.bullet.SoftMeshTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** @author xoppa */
 public class BulletTestCollection extends GdxTest implements InputProcessor, GestureListener {
-	protected final BulletTest[] tests = {new ShootTest(), new KinematicTest(), new ConstraintsTest(), 
-		new MeshShapeTest(), new ConvexHullTest(), new RayCastTest(), new RayPickRagdollTest(), new InternalTickTest(), 
-		new CollisionWorldTest(), new SoftBodyTest(), new SoftMeshTest()};
+	private final BulletTest[] tests = {new ShootTest(), new KinematicTest(), new ConstraintsTest(), new MeshShapeTest(), new ConvexHullTest(), new RayCastTest()};
 	
-	protected int testIndex = 0;
+	private int testIndex = 0;
 	
 	private Application app = null;
 	
@@ -59,7 +51,6 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 	private Stage hud;
 	private Label fpsLabel;
 	private Label titleLabel;
-	private Label instructLabel;
 	private int loading = 0;
 	
 	@Override
@@ -87,10 +78,6 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		fpsLabel.setPosition(0, 0);
 		hud.addActor(titleLabel = new Label(tests[testIndex].getClass().getSimpleName(), new Label.LabelStyle(font, Color.WHITE)));
 		titleLabel.setY(hud.getHeight()-titleLabel.getHeight());
-		hud.addActor(instructLabel = new Label("A\nB\nC\nD\nE\nF", new Label.LabelStyle(font, Color.WHITE)));
-		instructLabel.setY(titleLabel.getY() - instructLabel.getHeight());
-		instructLabel.setAlignment(Align.top | Align.left);
-		instructLabel.setText(tests[testIndex].instructions);
 	}
 	
 	@Override
@@ -115,7 +102,6 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		app.log("TestCollection", "created test '" + tests[testIndex].getClass().getName() + "'");
 		
 		titleLabel.setText(tests[testIndex].getClass().getSimpleName());
-		instructLabel.setText(tests[testIndex].instructions);
 		loading = 0;
 	}
 	
@@ -181,14 +167,14 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 
 	@Override
 	public boolean longPress (float x, float y) {
-		return tests[testIndex].longPress (x, y);
+		if (tests[testIndex].longPress (x, y) == false)
+			next();
+		return true;
 	}
 
 	@Override
 	public boolean fling (float velocityX, float velocityY, int button) {
-		if (tests[testIndex].fling (velocityX, velocityY, button) == false)
-			next();
-		return true;
+		return tests[testIndex].fling (velocityX, velocityY, button);
 	}
 
 	@Override

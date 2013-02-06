@@ -61,7 +61,8 @@ public class ClickListener extends InputListener {
 		if (pressed && pointer == 0 && button != -1 && !Gdx.input.isButtonPressed(button)) pressed = false;
 		if (!pressed) {
 			// Once outside the tap square, don't use the tap square anymore.
-			invalidateTapSquare();
+			touchDownX = -1;
+			touchDownY = -1;
 		}
 	}
 
@@ -115,19 +116,11 @@ public class ClickListener extends InputListener {
 	/** Returns true if the specified position is over the specified actor or within the tap square. */
 	public boolean isOver (Actor actor, float x, float y) {
 		Actor hit = actor.hit(x, y, true);
-		if (hit == null || !hit.isDescendantOf(actor)) return inTapSquare(x, y);
+		if (hit == null || !hit.isDescendantOf(actor)) {
+			if (touchDownX == -1 && touchDownY == -1) return false;
+			return Math.abs(x - touchDownX) < tapSquareSize && Math.abs(y - touchDownY) < tapSquareSize;
+		}
 		return true;
-	}
-
-	public boolean inTapSquare (float x, float y) {
-		if (touchDownX == -1 && touchDownY == -1) return false;
-		return Math.abs(x - touchDownX) < tapSquareSize && Math.abs(y - touchDownY) < tapSquareSize;
-	}
-
-	/** The tap square will not longer be used for the current touch. */
-	public void invalidateTapSquare () {
-		touchDownX = -1;
-		touchDownY = -1;
 	}
 
 	/** Returns true if a touch is over the actor or within the tap square. */

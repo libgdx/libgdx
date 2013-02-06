@@ -22,9 +22,9 @@ import com.badlogic.gdx.files.FileHandle;
 
 public class ResolutionFileResolver implements FileHandleResolver {
 	public static class Resolution {
-		public final int portraitWidth;
-		public final int portraitHeight;
-		public final String suffix;
+		int portraitWidth;
+		int portraitHeight;
+		String suffix;
 
 		public Resolution (int portraitWidth, int portraitHeight, String suffix) {
 			this.portraitWidth = portraitWidth;
@@ -33,8 +33,8 @@ public class ResolutionFileResolver implements FileHandleResolver {
 		}
 	}
 
-	protected final FileHandleResolver baseResolver;
-	protected final Resolution[] descriptors;
+	final FileHandleResolver baseResolver;
+	final Resolution[] descriptors;
 
 	public ResolutionFileResolver (FileHandleResolver baseResolver, Resolution... descriptors) {
 		this.baseResolver = baseResolver;

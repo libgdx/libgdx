@@ -35,9 +35,9 @@ public class ShaderFactory {
 		flags.append("\n");
 
 		if (material != null) {
-			for (int i = 0; i < material.getNumberOfAttributes(); i++) {
+			for (int i = 0; i < material.attributes.size; i++) {
 				flags.append(define);
-				flags.append(material.getAttribute(i).getShaderFlag());
+				flags.append(material.attributes.get(i).getShaderFlag());
 				flags.append("\n");
 			}
 		}

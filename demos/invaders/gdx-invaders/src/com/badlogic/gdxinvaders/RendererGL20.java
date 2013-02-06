@@ -13,6 +13,7 @@
 
 package com.badlogic.gdxinvaders;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -28,8 +29,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
@@ -48,17 +48,17 @@ public class RendererGL20 implements Renderer {
 	/** sprite batch to draw text **/
 	private SpriteBatch spriteBatch;
 	/** the ship mesh **/
-	private StillModel shipMesh;
+	private Mesh shipMesh;
 	/** the ship texture **/
 	private Texture shipTexture;
 	/** the invader mesh **/
-	private StillModel invaderMesh;
+	private Mesh invaderMesh;
 	/** the invader texture **/
 	private Texture invaderTexture;
 	/** the block mesh **/
-	private StillModel blockMesh;
+	private Mesh blockMesh;
 	/** the shot mesh **/
-	private StillModel shotMesh;
+	private Mesh shotMesh;
 	/** the background texture **/
 	private Texture backgroundTexture;
 	/** the explosion mesh **/
@@ -105,10 +105,21 @@ public class RendererGL20 implements Renderer {
 			if (!colorShader.isCompiled()) throw new GdxRuntimeException("Couldn't compile color shader");
 			if (!lightTexShader.isCompiled()) throw new GdxRuntimeException("Couldn't compile light/tex shader");
 
-			shipMesh = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/ship.obj"));
-			invaderMesh = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/invader.obj"));
-			blockMesh = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/block.obj"));
-			shotMesh = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/shot.obj"));
+			InputStream in = Gdx.files.internal("data/ship.obj").read();
+			shipMesh = ObjLoader.loadObj(in);
+			in.close();
+
+			in = Gdx.files.internal("data/invader.obj").read();
+			invaderMesh = ObjLoader.loadObj(in);
+			in.close();
+
+			in = Gdx.files.internal("data/block.obj").read();
+			blockMesh = ObjLoader.loadObj(in);
+			in.close();
+
+			in = Gdx.files.internal("data/shot.obj").read();
+			shotMesh = ObjLoader.loadObj(in);
+			in.close();
 
 			shipTexture = new Texture(Gdx.files.internal("data/ship.png"), Format.RGB565, true);
 			shipTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
@@ -227,7 +238,7 @@ public class RendererGL20 implements Renderer {
 		normal.rotate(0, 1, 0, 180);
 		normal3.set(normal.toNormalMatrix());
 		lightTexShader.setUniformMatrix("u_normal", normal3);
-		shipMesh.render(lightTexShader);
+		shipMesh.render(lightTexShader, GL10.GL_TRIANGLES);
 		lightTexShader.end();
 	}
 
@@ -244,7 +255,7 @@ public class RendererGL20 implements Renderer {
 			transform.translate(invader.position.x, invader.position.y, invader.position.z);
 			transform.rotate(0, 1, 0, invaderAngle);
 			lightTexShader.setUniformMatrix("u_projView", transform);
-			invaderMesh.render(lightTexShader);
+			invaderMesh.render(lightTexShader, GL10.GL_TRIANGLES);
 		}
 		lightTexShader.end();
 	}
@@ -259,7 +270,7 @@ public class RendererGL20 implements Renderer {
 			transform.set(camera.combined);
 			transform.translate(block.position.x, block.position.y, block.position.z);
 			colorShader.setUniformMatrix("u_projView", transform);
-			blockMesh.render(colorShader);
+			blockMesh.render(colorShader, GL10.GL_TRIANGLES);
 		}
 		colorShader.end();
 		Gdx.gl.glDisable(GL10.GL_BLEND);
@@ -273,7 +284,7 @@ public class RendererGL20 implements Renderer {
 			transform.set(camera.combined);
 			transform.translate(shot.position.x, shot.position.y, shot.position.z);
 			colorShader.setUniformMatrix("u_projView", transform);
-			shotMesh.render(colorShader);
+			shotMesh.render(colorShader, GL10.GL_TRIANGLES);
 		}
 		colorShader.end();
 	}

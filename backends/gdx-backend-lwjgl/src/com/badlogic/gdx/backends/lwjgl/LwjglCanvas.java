@@ -16,6 +16,19 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.openal.OpenALAudio;
+import com.badlogic.gdx.utils.Clipboard;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
 import java.awt.Canvas;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -27,52 +40,25 @@ import java.util.Map;
 
 import org.lwjgl.opengl.Display;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Audio;
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.LifecycleListener;
-import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.openal.OpenALAudio;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Clipboard;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
-
 /** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. All OpenGL calls are done on the
  * EDT. This is slightly less efficient then a dedicated thread, but greatly simplifies synchronization. Note that you may need to
  * call {@link #stop()} or a Swing application may deadlock on System.exit due to how LWJGL and/or Swing deal with shutdown hooks.
  * @author Nathan Sweet */
 public class LwjglCanvas implements Application {
-	LwjglGraphics graphics;
+	final LwjglGraphics graphics;
 	OpenALAudio audio;
-	LwjglFiles files;
-	LwjglInput input;
-	LwjglNet net;
-	ApplicationListener listener;
-	Canvas canvas;
+	final LwjglFiles files;
+	final LwjglInput input;
+	final LwjglNet net;
+	final ApplicationListener listener;
+	final Canvas canvas;
 	final List<Runnable> runnables = new ArrayList();
 	final List<Runnable> executedRunnables = new ArrayList();
-	final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	boolean running = true;
 	int logLevel = LOG_INFO;
 	Cursor cursor;
 
 	public LwjglCanvas (ApplicationListener listener, boolean useGL2) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = true;
-		initialize(listener, config);
-	}
-
-	public LwjglCanvas (ApplicationListener listener, LwjglApplicationConfiguration config) {
-		initialize(listener, config);
-	}
-
-	private void initialize (ApplicationListener listener, LwjglApplicationConfiguration config) {
 		LwjglNativesLoader.load();
 
 		canvas = new Canvas() {
@@ -80,14 +66,11 @@ public class LwjglCanvas implements Application {
 
 			public final void addNotify () {
 				super.addNotify();
-				if (SharedLibraryLoader.isMac) {
-					EventQueue.invokeLater(new Runnable() {
-						public void run () {
-							create();
-						}
-					});
-				} else
-					create();
+				EventQueue.invokeLater(new Runnable() {
+					public void run () {
+						create();
+					}
+				});
 			}
 
 			public final void removeNotify () {
@@ -101,7 +84,7 @@ public class LwjglCanvas implements Application {
 		};
 		canvas.setIgnoreRepaint(true);
 
-		graphics = new LwjglGraphics(canvas, config) {
+		graphics = new LwjglGraphics(canvas, useGL2) {
 			public void setTitle (String title) {
 				super.setTitle(title);
 				LwjglCanvas.this.setTitle(title);
@@ -119,7 +102,7 @@ public class LwjglCanvas implements Application {
 				return true;
 			}
 		};
-		graphics.setVSync(config.vSyncEnabled);
+		graphics.setVSync(true);
 		if (!LwjglApplicationConfiguration.disableAudio) audio = new OpenALAudio();
 		files = new LwjglFiles();
 		input = new LwjglInput();
@@ -205,17 +188,6 @@ public class LwjglCanvas implements Application {
 				}
 				try {
 					graphics.updateTime();
-
-					int width = Math.max(1, graphics.getWidth());
-					int height = Math.max(1, graphics.getHeight());
-					if (lastWidth != width || lastHeight != height) {
-						lastWidth = width;
-						lastHeight = height;
-						Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
-						resize(width, height);
-						listener.resize(width, height);
-					}
-
 					synchronized (runnables) {
 						executedRunnables.clear();
 						executedRunnables.addAll(runnables);
@@ -229,8 +201,17 @@ public class LwjglCanvas implements Application {
 							}
 						}
 					}
-
 					input.update();
+
+					int width = Math.max(1, graphics.getWidth());
+					int height = Math.max(1, graphics.getHeight());
+					if (lastWidth != width || lastHeight != height) {
+						lastWidth = width;
+						lastHeight = height;
+						Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
+						resize(width, height);
+						listener.resize(width, height);
+					}
 					input.processEvents();
 					listener.render();
 					if (audio != null) audio.update();
@@ -271,13 +252,6 @@ public class LwjglCanvas implements Application {
 					Display.destroy();
 					if (audio != null) audio.dispose();
 				} catch (Throwable ignored) {
-				}
-				Array<LifecycleListener> listeners = lifecycleListeners;
-				synchronized (listeners) {
-					for (LifecycleListener listener : listeners) {
-						listener.pause();
-						listener.dispose();
-					}
 				}
 				listener.pause();
 				listener.dispose();
@@ -384,19 +358,5 @@ public class LwjglCanvas implements Application {
 	/** @param cursor May be null. */
 	public void setCursor (Cursor cursor) {
 		this.cursor = cursor;
-	}
-
-	@Override
-	public void addLifecycleListener (LifecycleListener listener) {
-		synchronized (lifecycleListeners) {
-			lifecycleListeners.add(listener);
-		}
-	}
-
-	@Override
-	public void removeLifecycleListener (LifecycleListener listener) {
-		synchronized (lifecycleListeners) {
-			lifecycleListeners.removeValue(listener, true);
-		}
 	}
 }

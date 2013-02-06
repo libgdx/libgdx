@@ -204,8 +204,27 @@ public class Mpg123Decoder extends Decoder {
 
 	private native int skipSamples (long handle, int numSamples); /*
 		Mp3File* mp3 = (Mp3File*)handle;
-		off_t skipped = mpg123_seek( mp3->handle, numSamples, SEEK_SET );
-		return skipped;
+	
+		int idx = 0;
+		while( idx != numSamples )
+		{
+			if( mp3->leftSamples > 0 )
+			{
+				for( ; idx < numSamples && mp3->offset < mp3->buffer_size / 2; mp3->leftSamples--, mp3->offset++, idx++ );
+			}
+			else
+			{
+				int result = readBuffer( mp3 );
+				if( result == 0 )
+					return 0;
+			}
+	
+		}
+	
+		if( idx > numSamples )
+			return 0;
+	
+		return idx;
 	*/
 
 	private native int getNumChannels (long handle); /*
