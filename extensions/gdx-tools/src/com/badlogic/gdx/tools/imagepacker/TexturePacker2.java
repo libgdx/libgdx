@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.tools.imagepacker;
 
@@ -89,6 +104,14 @@ public class TexturePacker2 {
 			width = Math.max(settings.minWidth, width);
 			height = Math.max(settings.minHeight, height);
 
+			if (settings.forceSquareOutput) {
+				if (width > height) {
+					height = width;
+				} else {
+					width = height;
+				}
+			}
+
 			File outputFile;
 			while (true) {
 				outputFile = new File(outputDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
@@ -117,10 +140,12 @@ public class TexturePacker2 {
 					int imageHeight = image.getHeight();
 					// Copy corner pixels to fill corners of the padding.
 					g.drawImage(image, rectX - amountX, rectY - amountY, rectX, rectY, 0, 0, 1, 1, null);
-					g.drawImage(image, rectX + imageWidth, rectY - amountY, rectX + imageWidth + amountX, rectY, 0, 0, 1, 1, null);
-					g.drawImage(image, rectX - amountX, rectY + imageHeight, rectX, rectY + imageHeight + amountY, 0, 0, 1, 1, null);
+					g.drawImage(image, rectX + imageWidth, rectY - amountY, rectX + imageWidth + amountX, rectY, imageWidth - 1, 0,
+						imageWidth, 1, null);
+					g.drawImage(image, rectX - amountX, rectY + imageHeight, rectX, rectY + imageHeight + amountY, 0, imageHeight - 1,
+						1, imageHeight, null);
 					g.drawImage(image, rectX + imageWidth, rectY + imageHeight, rectX + imageWidth + amountX, rectY + imageHeight
-						+ amountY, 0, 0, 1, 1, null);
+						+ amountY, imageWidth - 1, imageHeight - 1, imageWidth, imageHeight, null);
 					// Copy edge pixels into padding.
 					g.drawImage(image, rectX, rectY - amountY, rectX + imageWidth, rectY, 0, 0, imageWidth, 1, null);
 					g.drawImage(image, rectX, rectY + imageHeight, rectX + imageWidth, rectY + imageHeight + amountY, 0,
@@ -321,6 +346,7 @@ public class TexturePacker2 {
 		public boolean rotation;
 		public int minWidth = 16, minHeight = 16;
 		public int maxWidth = 1024, maxHeight = 1024;
+		public boolean forceSquareOutput = false;
 		public boolean stripWhitespaceX, stripWhitespaceY;
 		public int alphaThreshold;
 		public TextureFilter filterMin = TextureFilter.Nearest, filterMag = TextureFilter.Nearest;

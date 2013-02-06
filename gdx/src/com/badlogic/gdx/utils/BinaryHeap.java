@@ -46,6 +46,11 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		return node;
 	}
 
+	public Node peek () {
+		if (size == 0) throw new IllegalStateException("The heap is empty.");
+		return nodes[0];
+	}
+
 	public T pop () {
 		Node[] nodes = this.nodes;
 		Node popped = nodes[0];

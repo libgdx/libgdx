@@ -62,6 +62,7 @@ public abstract class Toolkit<C, T extends C, L extends BaseTableLayout> {
 
 	/** @param widget May be null. */
 	public void setWidget (L layout, Cell cell, C widget) {
+		if (cell.widget == widget) return;
 		removeChild((T)layout.table, (C)cell.widget);
 		cell.widget = widget;
 		if (widget != null) addChild((T)layout.table, widget);

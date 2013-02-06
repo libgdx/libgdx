@@ -38,6 +38,7 @@ import com.badlogic.gdx.tests.examples.MoveSpriteExample;
 import com.badlogic.gdx.tests.extensions.GLEEDTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
+import com.badlogic.gdx.tests.net.NetAPITest;
 
 /** List of GdxTest classes. To be used by the test launchers. If you write your own test, add it in here!
  * 
@@ -56,10 +57,10 @@ public class GdxTests {
 		ImmediateModeRendererAlphaTest.class, IndexBufferObjectClassTest.class, TreeTest.class, IndexBufferObjectShaderTest.class,
 		InputTest.class, IntegerBitmapFontTest.class, InverseKinematicsTest.class, IsoCamTest.class, IsometricTileTest.class,
 		KinematicBodyTest.class, LifeCycleTest.class, LineDrawingTest.class, ScrollPane2Test.class, ManagedTest.class,
-		ManualBindTest.class, MatrixJNITest.class, MD5Test.class, MeshMultitextureTest.class, MeshShaderTest.class, MeshTest.class,
+		ManualBindTest.class, MaterialTest.class, MatrixJNITest.class, MeshMultitextureTest.class, MeshShaderTest.class, MeshTest.class,
 		MipMapTest.class, MultitouchTest.class, MusicTest.class, MyFirstTriangle.class, ObjTest.class, OnscreenKeyboardTest.class,
 		OrthoCamBorderTest.class, ParallaxTest.class, ParticleEmitterTest.class, PickingTest.class, PixelsPerInchTest.class,
-		PixmapBlendingTest.class, PixmapTest.class, PolygonRegionTest.class, PolygonSpriteTest.class, PreferencesTest.class,
+		PixmapBlendingTest.class, PixmapTest.class, PixmapPackerTest.class, PolygonRegionTest.class, PolygonSpriteTest.class, PreferencesTest.class,
 		ProjectiveTextureTest.class, Pong.class, ProjectTest.class, RemoteTest.class, RotationTest.class, DragAndDropTest.class,
 		ShaderMultitextureTest.class, ShadowMappingTest.class, SplineTest.class, SimpleAnimationTest.class, SimpleDecalTest.class,
 		SimpleStageCullingTest.class, SoundTest.class, SpriteCacheTest.class, SpriteCacheOffsetTest.class, LetterBoxTest.class,
@@ -74,7 +75,8 @@ public class GdxTests {
 		// InternationalFontsTest.class, VorbisTest.class
 		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
-		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GLEEDTest.class));
+		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GLEEDTest.class, GamepadTest.class, NetAPITest.class,
+		RunnablePostTest.class, Vector2dTest.class));
 	
 	public static List<String> getNames () {
 		List<String> names = new ArrayList<String>(tests.size());

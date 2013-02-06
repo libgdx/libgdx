@@ -16,7 +16,10 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.physics.bullet.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.btMotionState;
 import com.badlogic.gdx.physics.bullet.btRigidBody;
 import com.badlogic.gdx.physics.bullet.btRigidBodyConstructionInfo;
@@ -26,22 +29,35 @@ import com.badlogic.gdx.utils.Disposable;
  * Renderable BaseEntity with a bullet physics body. 
  */
 public class BulletEntity extends BaseEntity {
+	private final static Matrix4 tmpM = new Matrix4();
 	public BulletEntity.MotionState motionState;
-	public btRigidBody body;
+	public btCollisionObject body;
 
-	public BulletEntity (final Mesh mesh, final btRigidBodyConstructionInfo bodyInfo, final float x, final float y, final float z) {
-		this.mesh = mesh;
-		this.transform.idt().translate(x, y, z);
-		
-		if (bodyInfo != null) {
-			this.motionState = new MotionState(transform);
-			this.body = new btRigidBody(bodyInfo);
-			this.body.setMotionState(motionState);
-		}
+	public BulletEntity (final Model model, final btRigidBodyConstructionInfo bodyInfo, final float x, final float y, final float z) {
+		this(model, bodyInfo == null ? null : new btRigidBody(bodyInfo), x, y, z);
 	}
-
-	public BulletEntity (final BulletConstructor constructInfo, final float x, final float y, final float z) {
-		this(constructInfo.mesh, constructInfo.bodyInfo, x, y, z);
+	
+	public BulletEntity (final Model model, final btRigidBodyConstructionInfo bodyInfo, final Matrix4 transform) {
+		this(model, bodyInfo == null ? null : new btRigidBody(bodyInfo), transform);
+	}
+	
+	public BulletEntity (final Model model, final btCollisionObject body, final float x, final float y, final float z) {
+		this(model, body, tmpM.setToTranslation(x, y, z));
+	}
+	
+	public BulletEntity (final Model model, final btCollisionObject body, final Matrix4 transform) {
+		this.model = model;
+		this.transform.set(transform);
+		this.body = body;
+		
+		if (body != null) {
+			body.userData = this;
+			if (body instanceof btRigidBody) {
+				this.motionState = new MotionState(this.transform);
+				((btRigidBody)this.body).setMotionState(motionState);
+			} else
+				body.setWorldTransform(transform);
+		}
 	}
 
 	@Override

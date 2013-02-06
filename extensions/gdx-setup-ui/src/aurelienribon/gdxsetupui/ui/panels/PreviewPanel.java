@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package aurelienribon.gdxsetupui.ui.panels;
 
 import aurelienribon.gdxsetupui.LibraryDef;
@@ -99,12 +114,14 @@ public class PreviewPanel extends javax.swing.JPanel {
 			DefaultMutableTreeNode desktopPrjNode = nodes.get("#DIR#prj-desktop");
 			DefaultMutableTreeNode androidPrjNode = nodes.get("#DIR#prj-android");
 			DefaultMutableTreeNode htmlPrjNode = nodes.get("#DIR#prj-html");
+                        DefaultMutableTreeNode iosPrjNode = nodes.get("#DIR#prj-ios");
 
 			rootNode.removeAllChildren();
 			rootNode.add(commonPrjNode);
 			if (Ctx.cfgSetup.isDesktopIncluded) rootNode.add(desktopPrjNode);
 			if (Ctx.cfgSetup.isAndroidIncluded) rootNode.add(androidPrjNode);
 			if (Ctx.cfgSetup.isHtmlIncluded) rootNode.add(htmlPrjNode);
+                        if (Ctx.cfgSetup.isIosIncluded) rootNode.add(iosPrjNode);
 
 			updateSrc();
 			updateLibs();
@@ -207,6 +224,7 @@ public class PreviewPanel extends javax.swing.JPanel {
 			DefaultMutableTreeNode desktopLibsNode = nodes.get("#DIR#prj-desktop/libs");
 			DefaultMutableTreeNode androidLibsNode = nodes.get("#DIR#prj-android/libs");
 			DefaultMutableTreeNode htmlLibsNode = nodes.get("#DIR#prj-html/war/WEB-INF/lib");
+                        DefaultMutableTreeNode iosLibsNode = nodes.get("#DIR#prj-ios/libs");
 			DefaultMutableTreeNode dataNode = nodes.get("#DIR#prj-android/assets");
 
 			commonLibsNode.removeAllChildren();
@@ -221,7 +239,8 @@ public class PreviewPanel extends javax.swing.JPanel {
 				for (String path : def.libsDesktop) pathToNodes(path, desktopLibsNode);
 				for (String path : def.libsAndroid) pathToNodes(path, androidLibsNode);
 				for (String path : def.libsHtml) pathToNodes(path, htmlLibsNode);
-				for (String path : def.data) pathToNodes(path, dataNode);
+                                for (String path : def.libsIos) pathToNodes(path, iosLibsNode);
+				for (String path : def.data) pathToNodes(path, dataNode);                              
 			}
 		}
 
@@ -264,6 +283,7 @@ public class PreviewPanel extends javax.swing.JPanel {
 					if (isDir && name.equals("prj-desktop")) name = Ctx.cfgSetup.projectName + Ctx.cfgSetup.suffixDesktop;
 					if (isDir && name.equals("prj-android")) name = Ctx.cfgSetup.projectName + Ctx.cfgSetup.suffixAndroid;
 					if (isDir && name.equals("prj-html")) name = Ctx.cfgSetup.projectName + Ctx.cfgSetup.suffixHtml;
+                                        if (isDir && name.equals("prj-ios")) name = Ctx.cfgSetup.projectName + Ctx.cfgSetup.suffixIos;
 
 					label.setText(FilenameUtils.getName(name));
 					label.setIcon(isDir ? Res.getImage("gfx/ic_folder.png") : Res.getImage("gfx/ic_file.png"));
