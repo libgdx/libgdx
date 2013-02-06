@@ -21,8 +21,10 @@ import java.util.Collections;
 import java.util.List;
 
 /** A simple implementation of the ear cutting algorithm to triangulate simple polygons without holes. For more information:
- * http://cgm.cs.mcgill.ca/~godfried/teaching/cg-projects/97/Ian/algorithm2.html
- * http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
+ * <ul>
+ * <li><a href="http://cgm.cs.mcgill.ca/~godfried/teaching/cg-projects/97/Ian/algorithm2.html">http://cgm.cs.mcgill.ca/~godfried/teaching/cg-projects/97/Ian/algorithm2.html</a></li>
+ * <li><a href="http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf">http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf</a></li>
+ * </ul>
  * 
  * @author badlogicgames@gmail.com
  * @author Nicolas Gramlich (Improved performance. Collinear edges are now supported.)
