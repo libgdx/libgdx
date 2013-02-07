@@ -25,10 +25,6 @@ import com.badlogic.gdx.utils.NumberUtils;
 public class Vector2 implements Serializable, Vector<Vector2> {
 	private static final long serialVersionUID = 913902788239530931L;
 
-	/** Static temporary vector. Use with care! Use only when sure other code will not also use this.
-	 * @see #tmp() **/
-	public final static Vector2 tmp = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
-
 	public final static Vector2 X = new Vector2(1, 0);
 	public final static Vector2 Y = new Vector2(0, 1);
 	public final static Vector2 Zero = new Vector2(0, 0);
@@ -161,15 +157,15 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 
 	public Vector2 div (float value) {
-		return this.mul(1/value);
+		return this.mul(1 / value);
 	}
 
 	public Vector2 div (float vx, float vy) {
-		return this.mul(1/vx, 1/vy);
+		return this.mul(1 / vx, 1 / vy);
 	}
 
 	public Vector2 div (Vector2 other) {
-		return this.mul(1/other.x, 1/other.y);
+		return this.mul(1 / other.x, 1 / other.y);
 	}
 
 	/** @param v The other vector
@@ -220,15 +216,6 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this;
 	}
 
-	/** NEVER EVER SAVE THIS REFERENCE! Do not use this unless you are aware of the side-effects, e.g. other methods might call this
-	 * as well.
-	 * 
-	 * @return a temporary copy of this vector. Use with care as this is backed by a single static Vector2 instance. v1.tmp().add(
-	 *         v2.tmp() ) will not work! */
-	public Vector2 tmp () {
-		return tmp.set(this);
-	}
-
 	/** Multiplies this vector by the given matrix
 	 * @param mat the matrix
 	 * @return this vector */
@@ -262,7 +249,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		if (angle < 0) angle += 360;
 		return angle;
 	}
-	
+
 	/** Sets the angle of the vector.
 	 * @param angle The angle to set. */
 	public void setAngle (float angle) {
