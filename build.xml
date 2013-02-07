@@ -6,7 +6,7 @@
 	<property name="env.NDK_HOME" value="/home/mzechner/android-ndk-r5"/>
 	
 	<!-- library version -->
-	<property name="version" value="0.9.8"/>
+	<property name="version" value="0.9.9-SNAPSHOT"/>
 	
 	<!-- define distribution/output directory -->
 	<property name="distDir" value="${basedir}/dist"/>
@@ -276,7 +276,7 @@
 			]]></header>
 			<bottom><![CDATA[
 				<div style="font-size:9pt"><i>
-				Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+				Copyright &copy; 2010-2013 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
 				</i></div>
 			]]></bottom>
 			<fileset dir="gdx/src" defaultexcludes="yes">
@@ -291,6 +291,10 @@
 			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglApplet.java"/>
 			<fileset dir="backends" includes="gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplication.java"/>
 			<fileset dir="backends" includes="gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplicationConfiguration.java"/>
+			<fileset dir="backends" includes="gdx-backend-iosmonotouch/src/com/badlogic/gdx/backends/ios/IOSApplication.java"/>
+			<fileset dir="backends" includes="gdx-backend-iosmonotouch/src/com/badlogic/gdx/backends/ios/IOSApplicationConfiguration.java"/>
+			<fileset dir="backends" includes="gdx-backends-gwt/src/com/badlogic/gdx/backends/gwt/GwtApplication.java"/>
+			<fileset dir="backends" includes="gdx-backends-gwt/src/com/badlogic/gdx/backends/gwt/GwtApplicationConfiguration.java"/>
 		</javadoc>
 	</target>
 	
