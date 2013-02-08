@@ -358,6 +358,8 @@ public class TexturePacker2 {
 		public boolean ignoreBlankImages = true;
 		public boolean fast;
 		public boolean debug;
+		public boolean jsonOutput = true;
+		public boolean combineSubdirectories;
 
 		public Settings () {
 		}
