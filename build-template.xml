@@ -20,8 +20,9 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 	<property name="libs" value="libs" />
 	<zipfileset id="jarfiles" dir="." excludes="**"/>
 	
-	<!-- clean output directories -->	
+	<!-- clean output directories, create libs directory -->	
 	<target name="clean">		
+		<mkdir dir="${libs}" />
 		<delete dir="${target}" />
 	</target>
 
