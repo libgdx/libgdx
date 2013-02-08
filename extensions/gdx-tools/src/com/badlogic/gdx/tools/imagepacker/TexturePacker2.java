@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,11 +32,18 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.SerializationException;
 
 /** @author Nathan Sweet */
 public class TexturePacker2 {
@@ -192,7 +200,27 @@ public class TexturePacker2 {
 
 	private void writePackFile (File outputDir, Array<Page> pages, String packFileName) throws IOException {
 		File packFile = new File(outputDir, packFileName);
+
+		if (packFile.exists()) {
+			// Make sure there aren't duplicate names.
+			TextureAtlasData textureAtlasData = new TextureAtlasData(new FileHandle(packFile), new FileHandle(packFile), false);
+			for (Page page : pages) {
+				for (Rect rect : page.outputRects) {
+					String rectName = settings.flattenPaths ? new FileHandle(rect.name).name() : rect.name;
+					System.out.println(rectName);
+					for (Region region : textureAtlasData.getRegions()) {
+						if (region.name.equals(rectName)) {
+							throw new GdxRuntimeException("A region with the name \"" + rectName + "\" has already been packed: "
+								+ rect.name);
+						}
+					}
+				}
+			}
+		}
+
 		FileWriter writer = new FileWriter(packFile, true);
+// if (settings.jsonOutput) {
+// } else {
 		for (Page page : pages) {
 			writer.write("\n" + page.imageName + "\n");
 			writer.write("format: " + settings.format + "\n");
@@ -207,11 +235,13 @@ public class TexturePacker2 {
 				}
 			}
 		}
+// }
 		writer.close();
 	}
 
 	private void writeRect (FileWriter writer, Page page, Rect rect) throws IOException {
-		writer.write(rect.name + "\n");
+		String rectName = settings.flattenPaths ? new FileHandle(rect.name).name() : rect.name;
+		writer.write(rectName + "\n");
 		writer.write("  rotate: " + rect.rotated + "\n");
 		writer.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.height - rect.y) + "\n");
 		writer.write("  size: " + rect.image.getWidth() + ", " + rect.image.getHeight() + "\n");
@@ -358,8 +388,9 @@ public class TexturePacker2 {
 		public boolean ignoreBlankImages = true;
 		public boolean fast;
 		public boolean debug;
-		public boolean jsonOutput = true;
 		public boolean combineSubdirectories;
+		public boolean jsonOutput = true;
+		public boolean flattenPaths;
 
 		public Settings () {
 		}
@@ -389,6 +420,9 @@ public class TexturePacker2 {
 			wrapY = settings.wrapY;
 			duplicatePadding = settings.duplicatePadding;
 			debug = settings.debug;
+			combineSubdirectories = settings.combineSubdirectories;
+			jsonOutput = settings.jsonOutput;
+			flattenPaths = settings.flattenPaths;
 		}
 	}
 
