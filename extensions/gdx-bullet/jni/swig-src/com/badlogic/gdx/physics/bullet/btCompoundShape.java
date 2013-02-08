@@ -8,6 +8,7 @@
 
 package com.badlogic.gdx.physics.bullet;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
@@ -29,7 +30,7 @@ public class btCompoundShape extends btCollisionShape {
     delete();
   }
 
-  public synchronized void delete() {
+  public synchronized void delete()  {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
@@ -38,7 +39,23 @@ public class btCompoundShape extends btCollisionShape {
       swigCPtr = 0;
     }
     super.delete();
+	dispose();
   }
+
+
+	protected Array<btCollisionShape> children = new Array<btCollisionShape>();
+	
+	public void addChildShape(Matrix4 localTransform, btCollisionShape shape, boolean managed) {
+		addChildShape(localTransform, shape);
+		if (managed)
+			children.add(shape);
+	}
+	
+	protected void dispose() {
+		for (int i = 0; i < children.size; i++)
+			children.get(i).delete();
+		children.clear();
+	}
 
   public btCompoundShape(boolean enableDynamicAabbTree) {
     this(gdxBulletJNI.new_btCompoundShape__SWIG_0(enableDynamicAabbTree), true);
