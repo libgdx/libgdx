@@ -34,6 +34,11 @@ public class btCollisionObject {
 		instances.put(cPtr, this);
 	}
 	
+	public void dispose() {
+		instances.remove(swigCPtr);
+		delete();
+	}
+	
 	public void takeOwnership() {
 		swigCMemOwn = true;
 	}
