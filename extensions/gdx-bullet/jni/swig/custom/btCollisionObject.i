@@ -9,6 +9,10 @@
 	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, $owner);
 }
 
+%typemap(javainterfaces) btCollisionObject %{
+	com.badlogic.gdx.utils.Disposable
+%}
+
 %typemap(javabody) btCollisionObject %{
 	public final static com.badlogic.gdx.utils.LongMap<btCollisionObject> instances = new com.badlogic.gdx.utils.LongMap<btCollisionObject>();
 	
@@ -30,6 +34,7 @@
 		instances.put(cPtr, this);
 	}
 	
+	@Override
 	public void dispose() {
 		instances.remove(swigCPtr);
 		delete();
