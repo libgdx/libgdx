@@ -8,7 +8,7 @@
 %}
 
 %typemap(javacode) btBvhTriangleMeshShape %{
-	btStridingMeshInterface meshInterface = null;
+	protected btStridingMeshInterface meshInterface = null;
 	
 	/** @param managed If true this btBvhTriangleMeshShape will keep a reference to the {@link btStridingMeshInterface}
 	 * and deletes it when this btBvhTriangleMeshShape gets deleted. */
