@@ -432,6 +432,7 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %}
 %include "BulletCollision/CollisionShapes/btUniformScalingShape.h"
 
+%include "javacode/btCompoundShape.i"
 %{
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
 %}
