@@ -341,7 +341,7 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<Map, GleedMapLoader
 		
 		Element position = item.getChildByName("Position");
 		rectangle.getRectangle().set(Float.parseFloat(position.getChildByName("X").getText()),
-											  Float.parseFloat(position.getChildByName("Y").getText()),
+											  -Float.parseFloat(position.getChildByName("Y").getText()),
 											  Float.parseFloat(item.getChildByName("Width").getText()),
 											  Float.parseFloat(item.getChildByName("Height").getText()));
 		
