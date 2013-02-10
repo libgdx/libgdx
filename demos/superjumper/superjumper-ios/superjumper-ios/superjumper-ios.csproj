@@ -27,7 +27,7 @@
     <MtouchI18n>west</MtouchI18n>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../superjumper/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;superjumper.dll&quot; -DEXCLUDE=&quot;**/SuperJumperDesktop.java&quot; -v" workingdir="${ProjectDir}" />
+        <Command type="BeforeBuild" command="ant -v -f convert.xml" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
     <MtouchArch>ARMv7</MtouchArch>
@@ -45,7 +45,7 @@
     <MtouchUseLlvm>True</MtouchUseLlvm>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../superjumper/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;superjumper.dll&quot; -DEXCLUDE=&quot;**/SuperJumperDesktop.java&quot; -v" workingdir="${ProjectDir}" />
+        <Command type="BeforeBuild" command="ant -v -f convert.xml" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -67,7 +67,7 @@
     <IpaPackageName />
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../superjumper/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;superjumper.dll&quot; -DEXCLUDE=&quot;**/SuperJumperDesktop.java&quot; -v" workingdir="${ProjectDir}" />
+        <Command type="BeforeBuild" command="ant -v -f convert.xml" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -83,7 +83,7 @@
     <MtouchI18n>west</MtouchI18n>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../superjumper/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;superjumper.dll&quot; -DEXCLUDE=&quot;**/SuperJumperDesktop.java&quot; -v" workingdir="${ProjectDir}" />
+        <Command type="BeforeBuild" command="ant -v -f convert.xml" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
     <MtouchArch>ARMv7</MtouchArch>
