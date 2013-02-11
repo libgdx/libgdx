@@ -41,9 +41,15 @@ public interface Predicate<T> {
 			set(iterator, predicate);
 		}
 		
+		public void set(final Iterable<T> iterable, final Predicate<T> predicate) {
+			set(iterable.iterator(), predicate);
+		}
+		
 		public void set(final Iterator<T> iterator, final Predicate<T> predicate) {
 			this.iterator = iterator;
 			this.predicate = predicate;
+			end = peeked = false;
+			next = null;
 		}
 		
 		@Override
