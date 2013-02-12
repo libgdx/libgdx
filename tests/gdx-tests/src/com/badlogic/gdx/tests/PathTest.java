@@ -83,12 +83,22 @@ public class PathTest extends GdxTest {
 		spriteBatch.end();
 	}
 	
-	@Override
-	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-		t = paths.get(currentPath).approximate(tmpV.set(screenX, Gdx.graphics.getHeight()-screenY));
+	private void touch(int x, int y) {
+		t = paths.get(currentPath).approximate(tmpV.set(x, Gdx.graphics.getHeight()-y));
 		paths.get(currentPath).valueAt(tmpV, t);
 		obj.setPosition(tmpV.x, tmpV.y);
-		wait = 2f;
+		wait = 2f;		
+	}
+	
+	@Override
+	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
+		touch(screenX, screenY);
 		return super.touchUp(screenX, screenY, pointer, button);
+	}
+	
+	@Override
+	public boolean touchDragged (int screenX, int screenY, int pointer) {
+		touch(screenX, screenY);
+		return super.touchDragged(screenX, screenY, pointer);
 	}
 }
