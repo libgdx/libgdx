@@ -152,7 +152,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this;
 	}
 	
-	/** Multiplies this vector by a scalar
+	/** Multiplies this vector by a vector
 	 * @return This vector for chaining */
 	public Vector2 mul (Vector2 v) {
 		this.x *= v.x;
