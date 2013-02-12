@@ -53,7 +53,6 @@ public class PreloaderBundleGenerator extends Generator {
 		System.out.println(new File(".").getAbsolutePath());
 		String assetPath = getAssetPath(context);
 		String assetOutputPath = getAssetOutputPath(context);
-		System.out.println("TEST TEST TEST");
 		if ( assetOutputPath == null ){
 			assetOutputPath = "war/";
 		}

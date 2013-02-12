@@ -35,6 +35,7 @@ public class SharedLibraryLoader {
 	static public boolean isWindows = System.getProperty("os.name").contains("Windows");
 	static public boolean isLinux = System.getProperty("os.name").contains("Linux");
 	static public boolean isMac = System.getProperty("os.name").contains("Mac");
+	static public boolean isIos = false;
 	static public boolean isAndroid = false;
 	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64");
 	static {
@@ -44,6 +45,10 @@ public class SharedLibraryLoader {
 			isWindows = false;
 			isLinux = false;
 			isMac = false;
+			is64Bit = false;
+		}
+		if(!isAndroid && !isWindows && !isLinux && !isMac) {
+			isIos = true;
 			is64Bit = false;
 		}
 	}
@@ -92,6 +97,9 @@ public class SharedLibraryLoader {
 	/** Loads a shared library for the platform the application is running on.
 	 * @param libraryName The platform independent library name. If not contain a prefix (eg lib) or suffix (eg .dll). */
 	public synchronized void load (String libraryName) {
+		// in case of iOS, things have been linked statically to the executable, bail out.
+		if(isIos) return;
+		
 		libraryName = mapLibraryName(libraryName);
 		if (loadedLibraries.contains(libraryName)) return;
 

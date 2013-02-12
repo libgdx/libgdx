@@ -113,9 +113,15 @@ public class FreetypeBuild {
 		android.cIncludes = sources;
 		android.cFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
 		android.cppFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
+		
+		BuildTarget ios = BuildTarget.newDefaultTarget(TargetOs.IOS, false);
+		ios.headerDirs = headers;
+		ios.cIncludes = sources;
+		ios.cFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
+		ios.cppFlags += " -std=c99 -DFT2_BUILD_LIBRARY";
 
 		new NativeCodeGenerator().generate();
-		new AntScriptGenerator().generate(new BuildConfig("gdx-freetype"), win32home, win32, win64, lin32, lin64, mac, android);
+		new AntScriptGenerator().generate(new BuildConfig("gdx-freetype"), win32home, win32, win64, lin32, lin64, mac, android, ios);
 // BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v clean");
 // BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
 //		BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");

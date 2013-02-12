@@ -65,6 +65,10 @@ public class Helper {
 	public static String getHtmlPrjPath(BaseProjectConfiguration cfg) {
 		return FilenameUtils.normalize(cfg.destinationPath + "/" + cfg.projectName + cfg.suffixHtml + "/", true);
 	}
+	
+	public static String getIosPrjPath (ProjectUpdateConfiguration cfg) {
+		return FilenameUtils.normalize(cfg.destinationPath + "/" + cfg.projectName + cfg.suffixIos + "/", true);
+	}
 
 	// -------------------------------------------------------------------------
 	// Classpath

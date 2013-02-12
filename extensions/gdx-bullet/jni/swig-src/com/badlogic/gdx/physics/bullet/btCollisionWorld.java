@@ -116,16 +116,16 @@ public class btCollisionWorld {
     gdxBulletJNI.btCollisionWorld_rayTestSingle(rayFromTrans, rayToTrans, btCollisionObject.getCPtr(collisionObject), collisionObject, btCollisionShape.getCPtr(collisionShape), collisionShape, colObjWorldTransform, RayResultCallback.getCPtr(resultCallback), resultCallback);
   }
 
-  public static void rayTestSingleInternal(Matrix4 rayFromTrans, Matrix4 rayToTrans, SWIGTYPE_p_btCollisionObjectWrapper collisionObjectWrap, RayResultCallback resultCallback) {
-    gdxBulletJNI.btCollisionWorld_rayTestSingleInternal(rayFromTrans, rayToTrans, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(collisionObjectWrap), RayResultCallback.getCPtr(resultCallback), resultCallback);
+  public static void rayTestSingleInternal(Matrix4 rayFromTrans, Matrix4 rayToTrans, btCollisionObjectWrapper collisionObjectWrap, RayResultCallback resultCallback) {
+    gdxBulletJNI.btCollisionWorld_rayTestSingleInternal(rayFromTrans, rayToTrans, btCollisionObjectWrapper.getCPtr(collisionObjectWrap), collisionObjectWrap, RayResultCallback.getCPtr(resultCallback), resultCallback);
   }
 
   public static void objectQuerySingle(btConvexShape castShape, Matrix4 rayFromTrans, Matrix4 rayToTrans, btCollisionObject collisionObject, btCollisionShape collisionShape, Matrix4 colObjWorldTransform, ConvexResultCallback resultCallback, float allowedPenetration) {
     gdxBulletJNI.btCollisionWorld_objectQuerySingle(btConvexShape.getCPtr(castShape), castShape, rayFromTrans, rayToTrans, btCollisionObject.getCPtr(collisionObject), collisionObject, btCollisionShape.getCPtr(collisionShape), collisionShape, colObjWorldTransform, ConvexResultCallback.getCPtr(resultCallback), resultCallback, allowedPenetration);
   }
 
-  public static void objectQuerySingleInternal(btConvexShape castShape, Matrix4 convexFromTrans, Matrix4 convexToTrans, SWIGTYPE_p_btCollisionObjectWrapper colObjWrap, ConvexResultCallback resultCallback, float allowedPenetration) {
-    gdxBulletJNI.btCollisionWorld_objectQuerySingleInternal(btConvexShape.getCPtr(castShape), castShape, convexFromTrans, convexToTrans, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(colObjWrap), ConvexResultCallback.getCPtr(resultCallback), resultCallback, allowedPenetration);
+  public static void objectQuerySingleInternal(btConvexShape castShape, Matrix4 convexFromTrans, Matrix4 convexToTrans, btCollisionObjectWrapper colObjWrap, ConvexResultCallback resultCallback, float allowedPenetration) {
+    gdxBulletJNI.btCollisionWorld_objectQuerySingleInternal(btConvexShape.getCPtr(castShape), castShape, convexFromTrans, convexToTrans, btCollisionObjectWrapper.getCPtr(colObjWrap), colObjWrap, ConvexResultCallback.getCPtr(resultCallback), resultCallback, allowedPenetration);
   }
 
   public void addCollisionObject(btCollisionObject collisionObject, short collisionFilterGroup, short collisionFilterMask) {

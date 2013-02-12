@@ -11,7 +11,7 @@ import java.util.Set;
 
 import com.badlogic.gdx.Net.HttpRequest;
 
-/** Provides utility methods to work streams */
+/** Provides utility methods to copy streams */
 public class StreamUtils {
 
 	/** Copy the data from an {@link InputStream} to an {@link OutputStream}.

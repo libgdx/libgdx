@@ -19,9 +19,10 @@ package com.badlogic.gdx.math;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
-/** Encapsulates a catmull rom spline with n control points, n >= 4. For more information on this type of spline see
- * http://www.mvps.org/directx/articles/catmull/.
+/** Encapsulates a Catmull-Rom spline with n control points, n >= 4. For more information on this type of spline see
+ * <a href="http://www.mvps.org/directx/articles/catmull/">http://www.mvps.org/directx/articles/catmull/</a>
  * 
  * @author badlogicgames@gmail.com */
 public class CatmullRomSpline implements Serializable {
@@ -42,8 +43,12 @@ public class CatmullRomSpline implements Serializable {
 		return controlPoints;
 	}
 
-	/** Returns a path, between every two control points numPoints are generated and the control points themselves are added too.
-	 * The first and the last controlpoint are omitted. if there's less than 4 controlpoints an empty path is returned.
+	/** Returns a path.  Between every pair of consecutive control points numPoints are generated along the path.
+	 * The control points themselves are added to the path too.
+	 * The first and the last control point are omitted.  
+	 * If there are fewer than four control points an empty path is returned.
+	 * 
+	 * <p>This method is not thread-safe.  It uses the global {@link Vector3#tmp()}.  
 	 * 
 	 * @param numPoints number of points returned for a segment
 	 * @return the path */
@@ -86,8 +91,14 @@ public class CatmullRomSpline implements Serializable {
 		return points;
 	}
 
-	/** Returns a path, between every two control points numPoints are generated and the control points themselves are added too.
-	 * The first and the last controlpoint are omitted. if there's less than 4 controlpoints an empty path is returned.
+	/** Returns a path.  Between every pair of consecutive control points numPoints are generated along the path.
+	 * The control points themselves are added to the path too.
+	 * The first and the last control point are omitted.  
+	 * If there are fewer than four control points an empty path is returned.
+	 * 
+	 * <p>The points array must be large enough for all the path points or an exception will be thrown.
+	 * 
+	 * <p>This method is not thread-safe.  It uses the global {@link Vector3#tmp()}.  
 	 * 
 	 * @param points the array of Vector3 instances to store the path in
 	 * @param numPoints number of points returned for a segment */
@@ -125,6 +136,8 @@ public class CatmullRomSpline implements Serializable {
 
 	/** Returns all tangents for the points in a path. Same semantics as getPath.
 	 * 
+	 * <p>This method is not thread-safe.  It uses the global {@link Vector3#tmp()}.
+	 *  
 	 * @param numPoints number of points returned for a segment
 	 * @return the tangents of the points in the path */
 	public List<Vector3> getTangents (int numPoints) {
@@ -169,6 +182,8 @@ public class CatmullRomSpline implements Serializable {
 	/** Returns all tangent's normals in 2D space for the points in a path. The controlpoints have to lie in the x/y plane for this
 	 * to work. Same semantics as getPath.
 	 * 
+	 * <p>This method is not thread-safe.  It uses the global {@link Vector3#tmp()}.
+	 *  
 	 * @param numPoints number of points returned for a segment
 	 * @return the tangents of the points in the path */
 	public List<Vector3> getTangentNormals2D (int numPoints) {

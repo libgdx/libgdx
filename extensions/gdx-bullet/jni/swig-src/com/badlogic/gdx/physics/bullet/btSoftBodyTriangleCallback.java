@@ -48,12 +48,12 @@ public class btSoftBodyTriangleCallback extends btTriangleCallback {
     return gdxBulletJNI.btSoftBodyTriangleCallback_m_triangleCount_get(swigCPtr, this);
   }
 
-  public btSoftBodyTriangleCallback(btDispatcher dispatcher, SWIGTYPE_p_btCollisionObjectWrapper body0Wrap, SWIGTYPE_p_btCollisionObjectWrapper body1Wrap, boolean isSwapped) {
-    this(gdxBulletJNI.new_btSoftBodyTriangleCallback(btDispatcher.getCPtr(dispatcher), dispatcher, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body0Wrap), SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body1Wrap), isSwapped), true);
+  public btSoftBodyTriangleCallback(btDispatcher dispatcher, btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, boolean isSwapped) {
+    this(gdxBulletJNI.new_btSoftBodyTriangleCallback(btDispatcher.getCPtr(dispatcher), dispatcher, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, isSwapped), true);
   }
 
-  public void setTimeStepAndCounters(float collisionMarginTriangle, SWIGTYPE_p_btCollisionObjectWrapper triObjWrap, btDispatcherInfo dispatchInfo, btManifoldResult resultOut) {
-    gdxBulletJNI.btSoftBodyTriangleCallback_setTimeStepAndCounters(swigCPtr, this, collisionMarginTriangle, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(triObjWrap), btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, btManifoldResult.getCPtr(resultOut), resultOut);
+  public void setTimeStepAndCounters(float collisionMarginTriangle, btCollisionObjectWrapper triObjWrap, btDispatcherInfo dispatchInfo, btManifoldResult resultOut) {
+    gdxBulletJNI.btSoftBodyTriangleCallback_setTimeStepAndCounters(swigCPtr, this, collisionMarginTriangle, btCollisionObjectWrapper.getCPtr(triObjWrap), triObjWrap, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, btManifoldResult.getCPtr(resultOut), resultOut);
   }
 
   public void clearCache() {

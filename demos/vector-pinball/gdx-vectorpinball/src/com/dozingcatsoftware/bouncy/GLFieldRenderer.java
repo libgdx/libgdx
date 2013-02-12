@@ -29,12 +29,12 @@ public class GLFieldRenderer implements IFieldRenderer {
 	@Override
 	public void fillCircle (float cx, float cy, float radius, int r, int g, int b) {
 		end();
-		renderer.begin(ShapeType.FilledCircle);
+		renderer.begin(ShapeType.Filled);
 		float fr = r / 255f;
 		float fg = g / 255f;
 		float fb = b / 255f;
 		renderer.setColor(fr, fg, fb, 1);
-		renderer.filledCircle(cx, cy, radius, 20);
+		renderer.circle(cx, cy, radius, 20);
 		end();
 		begin();
 	}
@@ -42,7 +42,7 @@ public class GLFieldRenderer implements IFieldRenderer {
 	@Override
 	public void frameCircle (float cx, float cy, float radius, int r, int g, int b) {
 		end();
-		renderer.begin(ShapeType.Circle);
+		renderer.begin(ShapeType.Line);
 		float fr = r / 255f;
 		float fg = g / 255f;
 		float fb = b / 255f;

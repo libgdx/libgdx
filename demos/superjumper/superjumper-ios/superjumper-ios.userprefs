@@ -1,13 +1,19 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" />
   <MonoDevelop.Ide.Workbench ActiveDocument="superjumper-ios/Main.cs">
     <Files>
-      <File FileName="superjumper-ios/Main.cs" Line="11" Column="2" />
+      <File FileName="superjumper-ios/Main.cs" Line="8" Column="11" />
       <File FileName="superjumper-ios/Info.plist" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State />
+        <State expanded="True">
+          <Node name="superjumper-ios" expanded="True">
+            <Node name="References" expanded="True">
+              <Node name="monotouch, Version=0.0.0.0, Culture=neutral" selected="True" />
+            </Node>
+          </Node>
+        </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
