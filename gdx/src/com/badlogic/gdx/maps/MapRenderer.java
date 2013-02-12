@@ -2,7 +2,9 @@ package com.badlogic.gdx.maps;
 
 import com.badlogic.gdx.math.Matrix4;
 
-
+/**
+ * @brief models a common way of rendering Map objects
+ */
 public interface MapRenderer {
 
 	public void setProjectionMatrix(Matrix4 projectionMatrix);

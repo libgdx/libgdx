@@ -57,6 +57,8 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 	
 	/**
 	 * @param map map data that will be used to render
+	 * 
+	 * Uses its own SpriteBatch
 	 */
 	public GleedMapRenderer(Map map) {
 		this(map, new SpriteBatch(), 1.0f);
