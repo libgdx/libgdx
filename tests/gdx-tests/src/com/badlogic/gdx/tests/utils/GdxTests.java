@@ -73,7 +73,7 @@ public class GdxTests {
 		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
 		// InternationalFontsTest.class, VorbisTest.class
 		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
-		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
+		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class, PathTest.class,
 		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GLEEDTest.class, GamepadTest.class));
 	
 	public static List<String> getNames () {
