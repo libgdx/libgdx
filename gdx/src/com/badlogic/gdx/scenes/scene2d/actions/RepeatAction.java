@@ -25,7 +25,7 @@ public class RepeatAction extends DelegateAction {
 	private boolean finished;
 
 	public boolean act (float delta) {
-		if (executedCount == repeatCount) return true;
+		if (executedCount == repeatCount || finished) return true;
 		if (action.act(delta)) {
 			if (repeatCount > 0) executedCount++;
 			if (executedCount == repeatCount) return true;
