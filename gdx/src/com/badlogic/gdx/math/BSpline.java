@@ -1,7 +1,24 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.math;
 
 import com.badlogic.gdx.utils.Array;
 
+/** @author Xoppa */
 public class BSpline<T extends Vector<T>> implements Path<T> {
 	private final static float d6 = 1f / 6f;
 	
@@ -10,13 +27,14 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	 * @param t The position (0<=t<=1) on the spline
 	 * @param points The control points
 	 * @param continuous If true the b-spline restarts at 0 when reaching 1
+	 * @param tmp A temporary vector used for the calculation
 	 * @return The value of out */
-	public static <T extends Vector<T>> T cubic(final T out, final float t, final T[] points, final boolean continuous) {
+	public static <T extends Vector<T>> T cubic(final T out, final float t, final T[] points, final boolean continuous, final T tmp) {
 		final int n = continuous ? points.length : points.length - 3;
 		float u = t * n;
 		int i = (t >= 1f) ? (n - 1) : (int)u;
 		u -= (float)i;
-		return cubic(out, i, u, points, continuous);
+		return cubic(out, i, u, points, continuous, tmp);
 	}
 	
 	/** Calculates the cubic b-spline value for the given span (i) at the given position (u).
@@ -25,16 +43,17 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	 * @param u The position (0<=u<=1) on the span
 	 * @param points The control points
 	 * @param continuous If true the b-spline restarts at 0 when reaching 1
+	 * @param tmp A temporary vector used for the calculation
 	 * @return The value of out */
-	public static <T extends Vector<T>> T cubic(final T out, final int i, final float u, final T[] points, final boolean continuous) {
+	public static <T extends Vector<T>> T cubic(final T out, final int i, final float u, final T[] points, final boolean continuous, final T tmp) {
 		final int n = points.length;
 		final float dt = 1f - u;
 		final float t2 = u * u;
 		final float t3 = t2 * u;
 		out.set(points[i]).mul((3f * t3 - 6f * t2 + 4f) * d6);
-		if (continuous || i > 0) out.add(points[(n+i-1)%n].tmp().mul(dt * dt * dt * d6));
-		if (continuous || i < (n - 1)) out.add(points[(i + 1)%n].tmp().mul((-3f * t3 + 3f * t2 + 3f * u + 1f) * d6));
-		if (continuous || i < (n - 2)) out.add(points[(i + 2)%n].tmp().mul(t3 * d6));
+		if (continuous || i > 0) out.add(tmp.set(points[(n+i-1)%n]).mul(dt * dt * dt * d6));
+		if (continuous || i < (n - 1)) out.add(tmp.set(points[(i + 1)%n]).mul((-3f * t3 + 3f * t2 + 3f * u + 1f) * d6));
+		if (continuous || i < (n - 2)) out.add(tmp.set(points[(i + 2)%n]).mul(t3 * d6));
 		return out;
 	}
 	
@@ -44,13 +63,14 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	 * @param points The control points
 	 * @param degree The degree of the b-spline
 	 * @param continuous If true the b-spline restarts at 0 when reaching 1
+	 * @param tmp A temporary vector used for the calculation
 	 * @return The value of out */
-	public static <T extends Vector<T>> T calculate(final T out, final float t, final T[] points, final int degree, final boolean continuous) {
+	public static <T extends Vector<T>> T calculate(final T out, final float t, final T[] points, final int degree, final boolean continuous, final T tmp) {
 		final int n = continuous ? points.length : points.length - degree;
 		float u = t * n;
 		int i = (t >= 1f) ? (n - 1) : (int)u;
 		u -= (float)i;
-		return calculate(out, i, u, points, degree, continuous);
+		return calculate(out, i, u, points, degree, continuous, tmp);
 	}
 	
 	/** Calculates the n-degree b-spline value for the given span (i) at the given position (u).
@@ -60,10 +80,11 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	 * @param points The control points
 	 * @param degree The degree of the b-spline
 	 * @param continuous If true the b-spline restarts at 0 when reaching 1
+	 * @param tmp A temporary vector used for the calculation
 	 * @return The value of out */
-	public static <T extends Vector<T>> T calculate(final T out, final int i, final float u, final T[] points, final int degree, final boolean continuous) {
+	public static <T extends Vector<T>> T calculate(final T out, final int i, final float u, final T[] points, final int degree, final boolean continuous, final T tmp) {
 		switch(degree) {
-		case 3: return cubic(out, i, u, points, continuous);
+		case 3: return cubic(out, i, u, points, continuous, tmp);
 		}
 		return out;
 	}
@@ -73,6 +94,7 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	public int degree;
 	public boolean continuous;
 	public int spanCount;
+	private T tmp;
 	
 	public BSpline() { }
 	public BSpline(final T[] controlPoints, final int degree, final boolean continuous) {
@@ -80,6 +102,8 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	}
 	
 	public BSpline set(final T[] controlPoints, final int degree, final boolean continuous) {
+		if (tmp == null)
+			tmp = controlPoints[0].cpy();
 		this.controlPoints = controlPoints;
 		this.degree = degree;
 		this.continuous = continuous;
@@ -91,7 +115,7 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 			knots.ensureCapacity(spanCount);
 		}
 		for (int i = 0; i < spanCount; i++)
-			knots.add(calculate(controlPoints[0].cpy(), continuous ? i : (int)(i + 0.5f * degree), 0f, controlPoints, degree, continuous));
+			knots.add(calculate(controlPoints[0].cpy(), continuous ? i : (int)(i + 0.5f * degree), 0f, controlPoints, degree, continuous, tmp));
 		return this;
 	}
 
@@ -106,7 +130,7 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	
 	/** @return The value of the spline at position u of the specified span */ 
 	public T valueAt(final T out, final int span, final float u) {
-		return calculate(out, continuous ? span : (span + (int)(degree*0.5f)), u, controlPoints, degree, continuous);
+		return calculate(out, continuous ? span : (span + (int)(degree*0.5f)), u, controlPoints, degree, continuous, tmp);
 	}
 	
 	/** @return The span closest to the specified value */ 

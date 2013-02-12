@@ -29,9 +29,10 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 	 * @param t The location (ranging 0..1) on the line.
 	 * @param p0 The start point.
 	 * @param p1 The end point.
+	 * @param tmp A temporary vector to be used by the calculation.
 	 * @return The value specified by out for chaining */
-	public static <T extends Vector<T>> T linear(final T out, final float t, final T p0, final T p1) {
-		return out.set(p0).mul(1f - t).add(p1.tmp().mul(t)); // Could just use lerp...
+	public static <T extends Vector<T>> T linear(final T out, final float t, final T p0, final T p1, final T tmp) {
+		return out.set(p0).mul(1f - t).add(tmp.set(p1).mul(t)); // Could just use lerp...
 	}
 	
 	/** Quadratic Bezier curve 
@@ -40,10 +41,11 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 	 * @param p0 The first bezier point.
 	 * @param p1 The second bezier point.
 	 * @param p2 The third bezier point.
+	 * @param tmp A temporary vector to be used by the calculation.
 	 * @return The value specified by out for chaining */
-	public static <T extends Vector<T>> T quadratic(final T out, final float t, final T p0, final T p1, final T p2) {
+	public static <T extends Vector<T>> T quadratic(final T out, final float t, final T p0, final T p1, final T p2, final T tmp) {
 		final float dt = 1f - t;
-		return out.set(p0).mul(dt*dt).add(p1.tmp().mul(2*dt*t)).add(p2.tmp().mul(t*t));
+		return out.set(p0).mul(dt*dt).add(tmp.set(p1).mul(2*dt*t)).add(tmp.set(p2).mul(t*t));
 	}
 	
 	/** Cubic Bezier curve
@@ -53,15 +55,17 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 	 * @param p1 The second bezier point.
 	 * @param p2 The third bezier point.
 	 * @param p3 The fourth bezier point.
+	 * @param tmp A temporary vector to be used by the calculation.
 	 * @return The value specified by out for chaining */
-	public static <T extends Vector<T>> T cubic(final T out, final float t, final T p0, final T p1, final T p2, final T p3) {
+	public static <T extends Vector<T>> T cubic(final T out, final float t, final T p0, final T p1, final T p2, final T p3, final T tmp) {
 		final float dt = 1f - t;
 		final float dt2 = dt * dt;
 		final float t2 = t * t;
-		return out.set(p0).mul(dt2*dt).add(p1.tmp().mul(3*dt2*t)).add(p2.tmp().mul(3*dt*t2)).add(p3.tmp().mul(t2*t));
+		return out.set(p0).mul(dt2*dt).add(tmp.set(p1).mul(3*dt2*t)).add(tmp.set(p2).mul(3*dt*t2)).add(tmp.set(p3).mul(t2*t));
 	}
 	
 	public Array<T> points = new Array<T>();
+	private T tmp;
 	
 	public Bezier() {	}
 	public Bezier(final T... points) {
@@ -80,6 +84,8 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 	public Bezier set(final T[] points, final int offset, final int length) {
 		if (length < 2 || length > 4)
 			throw new GdxRuntimeException("Only first, second and third degree Bezier curves are supported.");
+		if (tmp == null)
+			tmp = points[0].cpy();
 		this.points.clear();
 		this.points.addAll(points, offset, length);
 		return this;
@@ -87,6 +93,8 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 	public Bezier set(final Array<T> points, final int offset, final int length) {
 		if (length < 2 || length > 4)
 			throw new GdxRuntimeException("Only first, second and third degree Bezier curves are supported.");
+		if (tmp == null)
+			tmp = points.get(0).cpy();
 		this.points.clear();
 		this.points.addAll(points, offset, length);
 		return this;
@@ -95,11 +103,11 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 	public T valueAt(final T out, final float t) {
 		final int n = points.size; 
 		if (n == 2)
-			linear(out, t, points.get(0), points.get(1));
+			linear(out, t, points.get(0), points.get(1), tmp);
 		else if (n == 3)
-			quadratic(out, t, points.get(0), points.get(1), points.get(2));
+			quadratic(out, t, points.get(0), points.get(1), points.get(2), tmp);
 		else if (n == 4)
-			cubic(out, t, points.get(0), points.get(1), points.get(2), points.get(3));
+			cubic(out, t, points.get(0), points.get(1), points.get(2), points.get(3), tmp);
 		return out;
 	}
 	
