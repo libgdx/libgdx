@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.BSpline;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Path;
@@ -31,7 +32,11 @@ import com.badlogic.gdx.utils.Array;
 
 /** @author Xoppa */
 public class PathTest extends GdxTest {
+	int SAMPLE_POINTS = 50;
+	float SAMPLE_POINT_DISTANCE = 1f/SAMPLE_POINTS;
+	
 	SpriteBatch spriteBatch;
+	ImmediateModeRenderer10 renderer;
 	Sprite obj;
 	Array<Path<Vector2>> paths = new Array<Path<Vector2>>();
 	int currentPath = 0;
@@ -46,6 +51,7 @@ public class PathTest extends GdxTest {
 	
 	@Override
 	public void create () {
+		renderer = new ImmediateModeRenderer10();
 		spriteBatch = new SpriteBatch();
 		obj = new Sprite(new Texture(Gdx.files.internal("data/badlogicsmall.jpg")));
 		
@@ -84,8 +90,19 @@ public class PathTest extends GdxTest {
 			paths.get(currentPath).valueAt(tmpV, t);
 			obj.setPosition(tmpV.x, tmpV.y);
 		}
-		
+			
 		spriteBatch.begin();
+		
+		renderer.begin(GL10.GL_LINE_STRIP);
+		float val = 0f;
+		while (val <= 1f) {
+			renderer.color(0f, 0f, 0f, 1f);
+			paths.get(currentPath).valueAt(Vector2.tmp, val);
+			renderer.vertex(Vector2.tmp.x, Vector2.tmp.y, 0);
+			val += SAMPLE_POINT_DISTANCE;
+		}
+		renderer.end();
+		
 		obj.draw(spriteBatch);
 		spriteBatch.end();
 	}
