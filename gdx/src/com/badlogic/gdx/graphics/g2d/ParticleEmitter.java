@@ -899,7 +899,7 @@ public class ParticleEmitter {
 		return Float.parseFloat(readString(reader, name));
 	}
 
-	static class Particle extends Sprite {
+	public static class Particle extends Sprite {
 		int life, currentLife;
 		float scale, scaleDiff;
 		float rotation, rotationDiff;
