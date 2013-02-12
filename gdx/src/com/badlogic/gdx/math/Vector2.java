@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.NumberUtils;
 
 /** Encapsulates a 2D vector. Allows chaining methods by returning a reference to itself
  * @author badlogicgames@gmail.com */
-public class Vector2 implements Serializable {
+public class Vector2 implements Serializable, Vector<Vector2> {
 	private static final long serialVersionUID = 913902788239530931L;
 
 	/** Static temporary vector. Use with care! Use only when sure other code will not also use this.
@@ -149,6 +149,14 @@ public class Vector2 implements Serializable {
 	public Vector2 mul (float x, float y) {
 		this.x *= x;
 		this.y *= y;
+		return this;
+	}
+	
+	/** Multiplies this vector by a scalar
+	 * @return This vector for chaining */
+	public Vector2 mul (Vector2 v) {
+		this.x *= v.x;
+		this.y *= v.y;
 		return this;
 	}
 
