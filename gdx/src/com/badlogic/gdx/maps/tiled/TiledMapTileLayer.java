@@ -2,6 +2,9 @@ package com.badlogic.gdx.maps.tiled;
 
 import com.badlogic.gdx.maps.MapLayer;
 
+/**
+ * @brief Layer for a TiledMap 
+ */
 public class TiledMapTileLayer extends MapLayer {
 
 	private int width;
@@ -12,22 +15,42 @@ public class TiledMapTileLayer extends MapLayer {
 	
 	private Cell[][] cells;
 	
+	/**
+	 * @return layer's witdth in tiles
+	 */
 	public int getWidth() {
 		return width;
 	}
 	
+	/**
+	 * @return layer's height in tiles
+	 */
 	public int getHeight() {
 		return height;
 	}
 	
+	/**
+	 * @return tiles' width in pixels
+	 */
 	public float getTileWidth() {
 		return tileWidth;
 	}
 	
+	/**
+	 * @return tiles' height in pixels
+	 */
 	public float getTileHeight() {
 		return tileHeight;
 	}
 	
+	/**
+	 * Creates TiledMap layer
+	 * 
+	 * @param width layer width in tiles
+	 * @param height layer height in tiles
+	 * @param tileWidth tile width in pixels
+	 * @param tileHeight tile height in pixels 
+	 */
 	public TiledMapTileLayer(int width, int height, int tileWidth, int tileHeight) {
 		super();
 		this.width = width;
@@ -42,6 +65,11 @@ public class TiledMapTileLayer extends MapLayer {
 		}
 	}
 	
+	/**
+	 * @param x
+	 * @param y 
+	 * @return cell at (x, y)
+	 */
 	public Cell getCell(int x, int y) {
 		return cells[x][y];
 	}
@@ -57,6 +85,9 @@ public class TiledMapTileLayer extends MapLayer {
 		cells[x][y].setTile(tile);
 	}
 	
+	/**
+	 * @brief represents a slot in a TiledLayer: TiledMapTile, flip and rotation properties.
+	 */
 	public class Cell {
 		
 		private TiledMapTile tile;

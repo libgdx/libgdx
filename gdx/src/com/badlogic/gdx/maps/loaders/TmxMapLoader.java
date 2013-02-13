@@ -34,6 +34,9 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
+/**
+ * @brief synchronous loader for TMX maps created with the Tiled tool
+ */
 public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.Parameters> {
 
 	public static class Parameters extends AssetLoaderParameters<TiledMap> {
@@ -49,10 +52,23 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	private FileHandle tmx;
 	private XmlReader xml;
 	
+	/**
+	 * Creates loader 
+	 *  
+	 * @param resolver
+	 */
 	public TmxMapLoader(FileHandleResolver resolver) {
 		super(resolver);
 	}
 
+	/**
+	 * Loads a .tmx file
+	 * 
+	 * @param assetManager
+	 * @param fileName
+	 * @param parameter not used for now
+	 * @return loaded TiledMap instance
+	 */
 	@Override
 	public TiledMap load(AssetManager assetManager, String fileName, Parameters parameter) {
 		this.assetManager = assetManager;
@@ -86,6 +102,13 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		return null;
 	}
 
+	/**
+	 * Retrieves TiledMap resource dependencies
+	 * 
+	 * @param fileName
+	 * @param parameter not used for now
+	 * @return dependencies for the given .tmx file
+	 */
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName, Parameters parameter) {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
