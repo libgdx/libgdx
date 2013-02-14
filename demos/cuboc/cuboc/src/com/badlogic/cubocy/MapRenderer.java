@@ -134,7 +134,6 @@ public class MapRenderer {
 			}
 		}
 		cache.end();
-		Gdx.app.debug("Cubocy", "blocks: " + b);
 		stateTime += deltaTime;
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();

@@ -73,8 +73,10 @@ public class AntScriptGenerator {
 		copyJniHeaders(config.jniDir.path());
 		
 		// copy memcpy_wrap.c, needed if your build platform uses the latest glibc, e.g. Ubuntu 12.10
-		new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/memcpy_wrap.c", FileType.Classpath).copyTo(
-			config.jniDir.child("memcpy_wrap.c"));
+		if(config.jniDir.child("memcpy_wrap.c").exists() == false) {
+			new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/memcpy_wrap.c", FileType.Classpath).copyTo(
+				config.jniDir.child("memcpy_wrap.c"));
+		}
 
 		ArrayList<String> buildFiles = new ArrayList<String>();
 		ArrayList<String> libsDirs = new ArrayList<String>();
@@ -96,9 +98,9 @@ public class AntScriptGenerator {
 				+ config.jniDir.child(buildFileName) + "'");
 
 			if (!target.excludeFromMasterBuildFile) {
-				if (target.os != TargetOs.MacOsX) {
+				if (target.os != TargetOs.MacOsX && target.os != TargetOs.IOS) {
 					buildFiles.add(buildFileName);
-				}
+				} 
 				sharedLibFiles.add(getSharedLibFilename(target.os, target.is64Bit, config.sharedLibName));
 				libsDirs.add("../" + libsDir.path().replace('\\', '/'));
 			}
@@ -156,6 +158,10 @@ public class AntScriptGenerator {
 			libPrefix = "lib";
 			libSuffix = ".dylib";
 		}
+		if (os == TargetOs.IOS) {
+			libPrefix = "lib";
+			libSuffix = ".a";
+		}
 		return libPrefix + sharedLibName + libSuffix;
 	}
 
@@ -182,8 +188,14 @@ public class AntScriptGenerator {
 		}
 
 		// read template file from resources
-		String template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/build-target.xml.template",
+		String template = null;
+		if(target.os == TargetOs.IOS) {
+			template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/build-ios.xml.template",
 			FileType.Classpath).readString();
+		} else {
+			template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/build-target.xml.template",
+				FileType.Classpath).readString();
+		}
 
 		// generate shared lib filename and jni platform headers directory name
 		String libName = getSharedLibFilename(target.os, target.is64Bit, config.sharedLibName);
@@ -227,6 +239,7 @@ public class AntScriptGenerator {
 		template = template.replace("%cFlags%", target.cFlags);
 		template = template.replace("%cppFlags%", target.cppFlags);
 		template = template.replace("%linkerFlags%", target.linkerFlags);
+		template = template.replace("%libraries%", target.libraries);
 		template = template.replace("%cIncludes%", cIncludes);
 		template = template.replace("%cExcludes%", cExcludes);
 		template = template.replace("%cppIncludes%", cppIncludes);

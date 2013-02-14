@@ -113,7 +113,7 @@ public class AndroidFileHandle extends FileHandle {
 				throw new GdxRuntimeException("Error listing children: " + file + " (" + type + ")", ex);
 			}
 		}
-		return super.list();
+		return super.list(suffix);
 	}
 
 	public boolean isDirectory () {

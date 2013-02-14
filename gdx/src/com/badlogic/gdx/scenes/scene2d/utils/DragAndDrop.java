@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
@@ -8,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** Manages drag and drop operations through registered drag sources and drop targets.
  * @author Nathan Sweet */
@@ -18,6 +34,7 @@ public class DragAndDrop {
 	Target target;
 	boolean isValidTarget;
 	Array<Target> targets = new Array();
+	ObjectMap<Source, DragListener> sourceListeners = new ObjectMap();
 	private float tapSquareSize = 8;
 	private int button;
 	float dragActorX = 14, dragActorY = -20;
@@ -103,10 +120,20 @@ public class DragAndDrop {
 		listener.setTapSquareSize(tapSquareSize);
 		listener.setButton(button);
 		source.actor.addCaptureListener(listener);
+		sourceListeners.put(source, listener);
+	}
+
+	public void removeSource (Source source) {
+		DragListener dragListener = sourceListeners.remove(source);
+		source.actor.removeCaptureListener(dragListener);
 	}
 
 	public void addTarget (Target target) {
 		targets.add(target);
+	}
+
+	public void removeTarget (Target target) {
+		targets.removeValue(target, true);
 	}
 
 	/** Sets the distance a touch must travel before being considered a drag. */
@@ -169,6 +196,9 @@ public class DragAndDrop {
 		public Target (Actor actor) {
 			if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 			this.actor = actor;
+			Stage stage = actor.getStage();
+			if (stage != null && actor == stage.getRoot())
+				throw new IllegalArgumentException("The stage root cannot be a drag and drop target.");
 		}
 
 		/** Called when the object is dragged over the target. The coordinates are in the target's local coordinate system.

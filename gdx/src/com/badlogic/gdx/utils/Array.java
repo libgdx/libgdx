@@ -17,7 +17,6 @@
 package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.math.MathUtils;
-
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -34,6 +33,7 @@ public class Array<T> implements Iterable<T> {
 	public boolean ordered;
 
 	private ArrayIterator iterator;
+	private Predicate.PredicateIterable<T> predicateIterable;
 
 	/** Creates an ordered array with a capacity of 16. */
 	public Array () {
@@ -151,7 +151,11 @@ public class Array<T> implements Iterable<T> {
 		items[second] = firstValue;
 	}
 
-	/** @param identity If true, == comparison will be used. If false, .equals() comaparison will be used. */
+	/**
+	 * Returns if this array contains value.
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
+	 * @return true if array contains value, false if it doesn't
+	 */
 	public boolean contains (T value, boolean identity) {
 		T[] items = this.items;
 		int i = size - 1;
@@ -165,6 +169,11 @@ public class Array<T> implements Iterable<T> {
 		return false;
 	}
 
+	/**
+	 * Returns an index of first occurrence of value in array or -1 if no such value exists
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
+	 * @return An index of first occurrence of value in array or -1 if no such value exists
+	 */
 	public int indexOf (T value, boolean identity) {
 		T[] items = this.items;
 		if (identity || value == null) {
@@ -177,6 +186,12 @@ public class Array<T> implements Iterable<T> {
 		return -1;
 	}
 
+	/**
+	 * Returns an index of last occurrence of value in array or -1 if no such value exists.
+	 * Search is started from the end of an array.
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
+	 * @return An index of last occurrence of value in array or -1 if no such value exists
+	 */
 	public int lastIndexOf (T value, boolean identity) {
 		T[] items = this.items;
 		if (identity || value == null) {
@@ -189,6 +204,11 @@ public class Array<T> implements Iterable<T> {
 		return -1;
 	}
 
+	/**
+	 * Removes value from an array if it exists.
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
+	 * @return true if value was found and removed, false otherwise
+	 */
 	public boolean removeValue (T value, boolean identity) {
 		T[] items = this.items;
 		if (identity || value == null) {
@@ -342,6 +362,17 @@ public class Array<T> implements Iterable<T> {
 		else
 			iterator.index = 0;
 		return iterator;
+	}
+	
+	/** Returns an iterable for the selected items in the array. Remove is supported, but not between hasNext() and next(). 
+	 * Note that the same iteratable instance is returned each time this method is called. 
+	 * Use the {@link Predicate.PredicateIterable} constructor for nested or multithreaded iteration. */
+	public Iterable<T> select(Predicate<T> predicate) {
+		if (predicateIterable == null)
+			predicateIterable = new Predicate.PredicateIterable<T>(this, predicate);
+		else
+			predicateIterable.set(this, predicate);
+		return predicateIterable;
 	}
 
 	/** Reduces the size of the array to the specified size. If the array is already smaller than the specified size, no action is

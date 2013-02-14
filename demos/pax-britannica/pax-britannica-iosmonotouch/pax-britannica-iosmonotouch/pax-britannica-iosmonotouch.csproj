@@ -26,7 +26,7 @@
     <MtouchLink>None</MtouchLink>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../pax-britannica/src&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;paxbritannica.dll&quot; -DEXCLUDE=&quot;**/*Desktop.java&quot; -v" workingdir="${ProjectDir}" />
+        <Command type="BeforeBuild" command="ant -v -f convert.xml" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
     <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
@@ -42,7 +42,7 @@
     <MtouchLink>None</MtouchLink>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../pax-britannica/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;paxbritannica.dll&quot; -DEXCLUDE=&quot;**/*Desktop.java&quot; -v" workingdir="${ProjectDir}" />
+        <Command type="BeforeBuild" command="ant -v -f convert.xml" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
     <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
@@ -62,7 +62,7 @@
     <MtouchProfiling>True</MtouchProfiling>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../pax-britannica/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;paxbritannica.dll&quot; -DEXCLUDE=&quot;**/*Desktop.java&quot; -v" workingdir="${ProjectDir}" />
+        <Command type="BeforeBuild" command="ant -v -f convert.xml" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
     <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
@@ -80,7 +80,7 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../pax-britannica/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;paxbritannica.dll&quot; -DEXCLUDE=&quot;**/*Desktop.java&quot; -v" workingdir="${ProjectDir}" />
+        <Command type="BeforeBuild" command="ant -v -f convert.xml" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
     <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
@@ -113,10 +113,10 @@
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
     <Reference Include="gdx">
-      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\gdx.dll</HintPath>
+      <HintPath>..\..\..\..\gdx\libs\ios32\gdx.dll</HintPath>
     </Reference>
     <Reference Include="gdx-backend-ios">
-      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\gdx-backend-ios.dll</HintPath>
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ios32\gdx-backend-ios.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -150,6 +150,9 @@
     </Reference>
     <Reference Include="paxbritannica">
       <HintPath>paxbritannica.dll</HintPath>
+    </Reference>
+    <Reference Include="libObjectAL">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\objectal\libObjectAL.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

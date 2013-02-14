@@ -40,8 +40,8 @@ public class btSoftRigidCollisionAlgorithm extends btCollisionAlgorithm {
     super.delete();
   }
 
-  public btSoftRigidCollisionAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, SWIGTYPE_p_btCollisionObjectWrapper col0, SWIGTYPE_p_btCollisionObjectWrapper col1Wrap, boolean isSwapped) {
-    this(gdxBulletJNI.new_btSoftRigidCollisionAlgorithm(btPersistentManifold.getCPtr(mf), mf, btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(col0), SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(col1Wrap), isSwapped), true);
+  public btSoftRigidCollisionAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, btCollisionObjectWrapper col0, btCollisionObjectWrapper col1Wrap, boolean isSwapped) {
+    this(gdxBulletJNI.new_btSoftRigidCollisionAlgorithm(btPersistentManifold.getCPtr(mf), mf, btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObjectWrapper.getCPtr(col0), col0, btCollisionObjectWrapper.getCPtr(col1Wrap), col1Wrap, isSwapped), true);
   }
 
 }

@@ -76,8 +76,8 @@ public class btSoftBodySolver {
     gdxBulletJNI.btSoftBodySolver_updateSoftBodies(swigCPtr, this);
   }
 
-  public void processCollision(btSoftBody arg0, SWIGTYPE_p_btCollisionObjectWrapper arg1) {
-    gdxBulletJNI.btSoftBodySolver_processCollision__SWIG_0(swigCPtr, this, btSoftBody.getCPtr(arg0), arg0, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(arg1));
+  public void processCollision(btSoftBody arg0, btCollisionObjectWrapper arg1) {
+    gdxBulletJNI.btSoftBodySolver_processCollision__SWIG_0(swigCPtr, this, btSoftBody.getCPtr(arg0), arg0, btCollisionObjectWrapper.getCPtr(arg1), arg1);
   }
 
   public void processCollision(btSoftBody arg0, btSoftBody arg1) {

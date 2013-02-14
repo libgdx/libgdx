@@ -109,7 +109,7 @@ public final class Intersector {
 			* (pointX - linePoint1X));
 	}
 
-	/** Checks wheter the given point is in the polygon.
+	/** Checks whether the given point is in the polygon.
 	 * @param polygon The polygon vertices
 	 * @param point The point
 	 * @return true if the point is in the polygon */
@@ -163,13 +163,13 @@ public final class Intersector {
 		return Math.abs((pointX - startX) * (endY - startY) - (pointY - startY) * (endX - startX)) / normalLength;
 	}
 
-	/** Returns wheter the given line segment intersects the given circle.
+	/** Returns whether the given line segment intersects the given circle.
 	 * 
 	 * @param start The start point of the line segment
 	 * @param end The end point of the line segment
 	 * @param center The center of the circle
 	 * @param squareRadius The squared radius of the circle
-	 * @return Wheter the line segment and the circle intersect */
+	 * @return Whether the line segment and the circle intersect */
 	public static boolean intersectSegmentCircle (Vector2 start, Vector2 end, Vector2 center, float squareRadius) {
 		tmp.set(end.x - start.x, end.y - start.y, 0);
 		tmp1.set(center.x - start.x, center.y - start.y, 0);
@@ -190,7 +190,7 @@ public final class Intersector {
 		return x * x + y * y <= squareRadius;
 	}
 
-	/** Checks wheter the line segment and the circle intersect and returns by how much and in what direction the line has to move
+	/** Checks whether the line segment and the circle intersect and returns by how much and in what direction the line has to move
 	 * away from the circle to not intersect.
 	 * 
 	 * @param start The line segment starting point
@@ -358,12 +358,133 @@ public final class Intersector {
 			return true;
 		}
 	}
-
-	/** Quick check wheter the given {@link Ray} and {@link BoundingBox} intersect.
+	/** Intersects a {@link Ray} and a {@link BoundingBox}, returning the intersection point in intersection.
+	 * 
+	 * @param ray The ray
+	 * @param box The box
+	 * @param intersection The intersection point (optional)
+	 * @return Whether an intersection is present. */
+	boolean intersectRayBounds(Ray ray, BoundingBox box, Vector3 intersection)
+	{
+		Vector3.tmp.set(ray.origin);
+		Vector3.tmp2.set(ray.origin);
+		Vector3.tmp.sub(box.min);
+		Vector3.tmp.sub(box.max);
+		if(Vector3.tmp.x > 0 && Vector3.tmp.y > 0 && Vector3.tmp.z > 0 &&
+				Vector3.tmp2.x < 0 && Vector3.tmp2.y < 0 && Vector3.tmp2.z < 0)
+		{
+			return true;
+		}
+		float lowest = 0, t;
+		boolean hit = false;
+		
+		//min x
+		if(ray.origin.x <= box.min.x && ray.direction.x > 0)
+		{
+			t = (box.min.x - ray.origin.x) / ray.direction.x;
+			if(t >= 0)
+			{
+				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				if(Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y &&
+						Vector3.tmp3.z >= box.min.z && Vector3.tmp3.z <= box.max.z &&
+						(!hit || t < lowest))
+				{
+					hit = true;
+					lowest = t;
+				}
+			}
+		}
+		//max x
+		if(ray.origin.x >= box.max.x && ray.direction.x < 0)
+		{
+			t = (box.max.x - ray.origin.x) / ray.direction.x;
+			if(t >= 0)
+			{
+				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				if(Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y &&
+						Vector3.tmp3.z >= box.min.z && Vector3.tmp3.z <= box.max.z &&
+						(!hit || t < lowest))
+				{
+					hit = true;
+					lowest = t;
+				}
+			}
+		}
+		//min y
+		if(ray.origin.y <= box.min.y && ray.direction.y > 0)
+		{
+			t = (box.min.y - ray.origin.y) / ray.direction.y;
+			if(t >= 0)
+			{
+				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				if(Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x &&
+						Vector3.tmp3.z >= box.min.z && Vector3.tmp3.z <= box.max.z &&
+						(!hit || t < lowest))
+				{
+					hit = true;
+					lowest = t;
+				}
+			}
+		}
+		//max y
+		if(ray.origin.y >= box.max.y && ray.direction.y < 0)
+		{
+			t = (box.max.y - ray.origin.y) / ray.direction.y;
+			if(t >= 0)
+			{
+				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				if(Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x &&
+						Vector3.tmp3.z >= box.min.z && Vector3.tmp3.z <= box.max.z &&
+						(!hit || t < lowest))
+				{
+					hit = true;
+					lowest = t;
+				}
+			}
+		}
+		//min z
+		if(ray.origin.z <= box.min.y && ray.direction.z > 0)
+		{
+			t = (box.min.z - ray.origin.z) / ray.direction.z;
+			if(t >= 0)
+			{
+				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				if(Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x &&
+						Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y &&
+						(!hit || t < lowest))
+				{
+					hit = true;
+					lowest = t;
+				}
+			}
+		}
+		//max y
+		if(ray.origin.z >= box.max.z && ray.direction.z < 0)
+		{
+			t = (box.max.z - ray.origin.z) / ray.direction.z;
+			if(t >= 0)
+			{
+				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				if(Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x &&
+						Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y &&
+						(!hit || t < lowest))
+				{
+					hit = true;
+					lowest = t;
+				}
+			}
+		}
+		if(hit && intersection != null)
+		{
+			intersection.set(ray.direction).mul(lowest).add(ray.origin);
+		}
+		return hit;
+	}
+	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.
 	 * 
 	 * @param ray The ray
 	 * @param box The bounding box
-	 * @return Wheter the ray and the bounding box intersect. */
+	 * @return Whether the ray and the bounding box intersect. */
 	static public boolean intersectRayBoundsFast (Ray ray, BoundingBox box) {
 		float a, b;
 		float min, max;
@@ -521,11 +642,11 @@ public final class Intersector {
 		}
 	}
 
-	/** Returns wheter the two rectangles intersect
+	/** Returns whether the two rectangles intersect
 	 * 
 	 * @param a The first rectangle
 	 * @param b The second rectangle
-	 * @return Wheter the two rectangles intersect */
+	 * @return Whether the two rectangles intersect */
 	public static boolean intersectRectangles (Rectangle a, Rectangle b) {
 		return !(a.getX() > b.getX() + b.getWidth() || a.getX() + a.getWidth() < b.getX() || a.getY() > b.getY() + b.getHeight() || a
 			.getY() + a.getHeight() < b.getY());
@@ -596,10 +717,7 @@ public final class Intersector {
 	}
 
 	public static boolean overlapRectangles (Rectangle r1, Rectangle r2) {
-		if (r1.x < r2.x + r2.width && r1.x + r1.width > r2.x && r1.y < r2.y + r2.height && r1.y + r1.height > r2.y)
-			return true;
-		else
-			return false;
+		return r1.overlaps(r2);
 	}
 
 	public static boolean overlapCircleRectangle (Circle c, Rectangle r) {

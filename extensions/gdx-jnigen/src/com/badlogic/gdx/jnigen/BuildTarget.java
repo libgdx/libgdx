@@ -21,7 +21,7 @@ package com.badlogic.gdx.jnigen;
 public class BuildTarget {
 	/** The target operating system of a build target. */
 	public enum TargetOs {
-		Windows, Linux, MacOsX, Android
+		Windows, Linux, MacOsX, Android, IOS
 	}
 
 	/** the target operating system **/
@@ -54,6 +54,8 @@ public class BuildTarget {
 	public String preCompileTask;
 	/** Ant Xml executed in a target after compilation **/
 	public String postCompileTask;
+	/** the libraries to be linked to the output, specify via e.g. -ldinput -ldxguid etc. **/
+	public String libraries;
 
 	/** Creates a new build target. See members of this class for a description of the parameters. */
 	public BuildTarget (BuildTarget.TargetOs targetType, boolean is64Bit, String[] cIncludes, String[] cExcludes,
@@ -81,6 +83,7 @@ public class BuildTarget {
 		this.cFlags = cFlags;
 		this.cppFlags = cppFlags;
 		this.linkerFlags = linkerFlags;
+		this.libraries = "";
 	}
 
 	/** Creates a new default BuildTarget for the given OS, using common default values. */
@@ -129,6 +132,16 @@ public class BuildTarget {
 				new String[] {"**/*.cpp"}, new String[0], new String[0], "", "-O2 -Wall -D__ANDROID__", "-O2 -Wall -D__ANDROID__",
 				"-lm");
 			return android;
+		}
+		
+		if(type == TargetOs.IOS) {
+			// iOS, 386 simulator and armv7a, compiled to fat static lib
+			BuildTarget ios = new BuildTarget(TargetOs.IOS, false, new String[] {"**/*.c"}, new String[0],
+				new String[] {"**/*.cpp"}, new String[0], new String[0], "",
+				"-c -Wall -O2",
+				"-c -Wall -O2",
+				"rcs");
+			return ios;
 		}
 
 		throw new RuntimeException("Unknown target type");

@@ -18,7 +18,6 @@ package com.badlogic.gdx.backends.ios;
 
 import java.util.ArrayList;
 
-import cli.MonoTouch.Foundation.NSBundle;
 import cli.MonoTouch.Foundation.NSDictionary;
 import cli.MonoTouch.Foundation.NSMutableDictionary;
 import cli.MonoTouch.UIKit.UIApplication;
@@ -33,6 +32,7 @@ import cli.System.Console;
 import cli.System.Environment;
 import cli.System.Drawing.RectangleF;
 import cli.System.IO.Path;
+import cli.objectal.OALAudioSession;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -43,9 +43,11 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 
 public class IOSApplication extends UIApplicationDelegate implements Application {
@@ -80,6 +82,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 	UIApplication uiApp;
 	UIWindow uiWindow;
+	UIViewController uiViewController;
 	ApplicationListener listener;
 	IOSApplicationConfiguration config;
 	IOSGraphics graphics;
@@ -89,13 +92,13 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	IOSNet net;
 	BaseDeviceInfo deviceInfo;
 	int logLevel = Application.LOG_DEBUG;
-	boolean firstResume;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
 	float displayScaleFactor;
 
-	ArrayList<Runnable> runnables = new ArrayList<Runnable>();
-	ArrayList<Runnable> executedRunnables = new ArrayList<Runnable>();
+	Array<Runnable> runnables = new Array<Runnable>();
+	Array<Runnable> executedRunnables = new Array<Runnable>();
+	Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 
 	/** Should be called in AppDelegate#FinishedLaunching.
 	 * 
@@ -138,8 +141,8 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 
 		// Create: Window -> ViewController-> GameView (controller takes care of rotation)
 		this.uiWindow = new UIWindow(UIScreen.get_MainScreen().get_Bounds());
-		UIViewController uiViewController = new IOSUIViewController();
-		this.uiWindow.set_RootViewController(uiViewController);
+		this.uiViewController = new IOSUIViewController();
+		this.uiWindow.set_RootViewController(this.uiViewController);
 
 		GL20 gl20 = config.useMonotouchOpenTK ? new IOSMonotouchGLES20() : new IOSGLES20();
 		
@@ -148,9 +151,9 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		
 		// setup libgdx
 		this.input = new IOSInput(this);
-		this.graphics = new IOSGraphics(getBounds(uiViewController), this, input, gl20);
+		this.graphics = new IOSGraphics(getBounds(this.uiViewController), this, input, gl20);
 		this.files = new IOSFiles();
-		this.audio = new IOSAudio();
+		this.audio = new IOSAudio(config.useObjectAL);
 		this.net = new IOSNet(this);
 
 		Gdx.files = this.files;
@@ -162,11 +165,19 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		this.input.setupPeripherals();
 
 		// attach our view to window+controller and make it visible
-		uiViewController.set_View(graphics);
+		this.uiViewController.set_View(graphics);
 		this.graphics.Run();
 		this.uiWindow.MakeKeyAndVisible();
 		Gdx.app.debug("IOSApplication", "created");
 		return true;
+	}
+	
+	/**
+	 * Return the UI view controller of IOSApplication
+	 * @return the view controller of IOSApplication
+	 */
+	public UIViewController getUIViewController(){
+		return uiViewController;
 	}
 
 	/** Returns our real display dimension based on screen orientation.
@@ -207,18 +218,21 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	@Override
 	public void OnActivated (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "resumed");
-		if (!firstResume) {
-			graphics.MakeCurrent();
-			listener.resume();
-			firstResume = true;
+		if (config.useObjectAL)
+		{
+			// workaround for ObjectAL crash problem
+			// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
+			OALAudioSession.sharedInstance().forceEndInterrupt();
 		}
+		graphics.MakeCurrent();
+		graphics.resume();
 	}
 
 	@Override
 	public void OnResignActivation (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "paused");
 		graphics.MakeCurrent();
-		listener.pause();
+		graphics.pause();
 		Gdx.gl.glFlush();
 	}
 
@@ -226,6 +240,12 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	public void WillTerminate (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "disposed");
 		graphics.MakeCurrent();
+		Array<LifecycleListener> listeners = lifecycleListeners;
+		synchronized(listeners) {
+			for(LifecycleListener listener: listeners) {
+				listener.pause();
+			}
+		}
 		listener.dispose();
 		Gdx.gl.glFlush();
 	}
@@ -373,7 +393,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 			executedRunnables.addAll(runnables);
 			runnables.clear();
 		}
-		for (int i = 0; i < executedRunnables.size(); i++) {
+		for (int i = 0; i < executedRunnables.size; i++) {
 			try {
 				executedRunnables.get(i).run();
 			} catch (Throwable t) {
@@ -400,5 +420,19 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 				return null;
 			}
 		};
+	}
+	
+	@Override
+	public void addLifecycleListener (LifecycleListener listener) {
+		synchronized(lifecycleListeners) {
+			lifecycleListeners.add(listener);
+		}
+	}
+
+	@Override
+	public void removeLifecycleListener (LifecycleListener listener) {
+		synchronized(lifecycleListeners) {
+			lifecycleListeners.removeValue(listener, true);
+		}		
 	}
 }

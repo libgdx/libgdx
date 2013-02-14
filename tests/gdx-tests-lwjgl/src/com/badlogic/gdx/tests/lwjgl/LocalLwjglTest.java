@@ -65,7 +65,7 @@ public class LocalLwjglTest extends ApplicationAdapter {
 
 		renderer.setColor(1, 0, 0, 1);
 		renderer.translate(0, -4, 0);
-		renderer.begin(ShapeType.Triangle);
+		renderer.begin(ShapeType.Filled);
 		for (int i = 0; i < triangles.size(); i += 3) {
 			Vector2 v1 = triangles.get(i);
 			Vector2 v2 = triangles.get(i + 1);

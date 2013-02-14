@@ -36,7 +36,6 @@ public class Map {
 		for (int y = 0; y < 35; y++) {
 			for (int x = 0; x < 150; x++) {
 				int pix = (pixmap.getPixel(x, y) >>> 8) & 0xffffff;
-				Gdx.app.log("Map", x + ", " + y + ", " + Integer.toHexString(pix));
 				if (match(pix, START)) {
 					Dispenser dispenser = new Dispenser(x, pixmap.getHeight() - 1 - y);
 					dispensers.add(dispenser);

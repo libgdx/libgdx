@@ -37,15 +37,16 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SnapshotArray;
 
-/** A 2D scenegraph containing hierarchies of {@link Actor actors}. Stage handles the viewport and distributing input events.
+/** A 2D scene graph containing hierarchies of {@link Actor actors}. Stage handles the viewport and distributes input events.
  * <p>
  * A stage fills the whole screen. {@link #setViewport} controls the coordinates used within the stage and sets up the camera used
- * to convert between stage coordinates and screen coordinates. *
+ * to convert between stage coordinates and screen coordinates.
  * <p>
  * A stage must receive input events so it can distribute them to actors. This is typically done by passing the stage to
  * {@link Input#setInputProcessor(com.badlogic.gdx.InputProcessor) Gdx.input.setInputProcessor}. An {@link InputMultiplexer} may be
  * used to handle input events before or after the stage does. If an actor handles an event by returning true from the input
  * method, then the stage's input method will also return true, causing subsequent InputProcessors to not receive the event.
+
  * @author mzechner
  * @author Nathan Sweet */
 public class Stage extends InputAdapter implements Disposable {
@@ -519,10 +520,10 @@ public class Stage extends InputAdapter implements Disposable {
 		cancelTouchFocus();
 	}
 
-	/** Removes the touch, keyboard, and scroll focus for the specified actor. */
+	/** Removes the touch, keyboard, and scroll focus for the specified actor and any descendants. */
 	public void unfocus (Actor actor) {
-		if (scrollFocus == actor) scrollFocus = null;
-		if (keyboardFocus == actor) keyboardFocus = null;
+		if (scrollFocus != null && scrollFocus.isDescendantOf(actor)) scrollFocus = null;
+		if (keyboardFocus != null && keyboardFocus.isDescendantOf(actor)) keyboardFocus = null;
 	}
 
 	/** Sets the actor that will receive key events.
@@ -532,14 +533,20 @@ public class Stage extends InputAdapter implements Disposable {
 		FocusEvent event = Pools.obtain(FocusEvent.class);
 		event.setStage(this);
 		event.setType(FocusEvent.Type.keyboard);
-		if (keyboardFocus != null) {
+		Actor oldKeyboardFocus = keyboardFocus;
+		if (oldKeyboardFocus != null) {
 			event.setFocused(false);
-			keyboardFocus.fire(event);
+			event.setRelatedActor(actor);
+			oldKeyboardFocus.fire(event);
 		}
-		keyboardFocus = actor;
-		if (keyboardFocus != null) {
-			event.setFocused(true);
-			keyboardFocus.fire(event);
+		if (!event.isCancelled()) {
+			keyboardFocus = actor;
+			if (actor != null) {
+				event.setFocused(true);
+				event.setRelatedActor(oldKeyboardFocus);
+				actor.fire(event);
+				if (event.isCancelled()) setKeyboardFocus(oldKeyboardFocus);
+			}
 		}
 		Pools.free(event);
 	}
@@ -557,14 +564,20 @@ public class Stage extends InputAdapter implements Disposable {
 		FocusEvent event = Pools.obtain(FocusEvent.class);
 		event.setStage(this);
 		event.setType(FocusEvent.Type.scroll);
-		if (scrollFocus != null) {
+		Actor oldScrollFocus = keyboardFocus;
+		if (oldScrollFocus != null) {
 			event.setFocused(false);
-			scrollFocus.fire(event);
+			event.setRelatedActor(actor);
+			oldScrollFocus.fire(event);
 		}
-		scrollFocus = actor;
-		if (scrollFocus != null) {
-			event.setFocused(true);
-			scrollFocus.fire(event);
+		if (!event.isCancelled()) {
+			scrollFocus = actor;
+			if (actor != null) {
+				event.setFocused(true);
+				event.setRelatedActor(oldScrollFocus);
+				actor.fire(event);
+				if (event.isCancelled()) setScrollFocus(oldScrollFocus);
+			}
 		}
 		Pools.free(event);
 	}

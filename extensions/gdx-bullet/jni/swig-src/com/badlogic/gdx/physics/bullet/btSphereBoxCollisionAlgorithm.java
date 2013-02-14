@@ -40,12 +40,12 @@ public class btSphereBoxCollisionAlgorithm extends btActivatingCollisionAlgorith
     super.delete();
   }
 
-  public btSphereBoxCollisionAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, SWIGTYPE_p_btCollisionObjectWrapper body0Wrap, SWIGTYPE_p_btCollisionObjectWrapper body1Wrap, boolean isSwapped) {
-    this(gdxBulletJNI.new_btSphereBoxCollisionAlgorithm(btPersistentManifold.getCPtr(mf), mf, btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body0Wrap), SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body1Wrap), isSwapped), true);
+  public btSphereBoxCollisionAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, boolean isSwapped) {
+    this(gdxBulletJNI.new_btSphereBoxCollisionAlgorithm(btPersistentManifold.getCPtr(mf), mf, btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, isSwapped), true);
   }
 
-  public boolean getSphereDistance(SWIGTYPE_p_btCollisionObjectWrapper boxObjWrap, Vector3 v3PointOnBox, Vector3 normal, SWIGTYPE_p_float penetrationDepth, Vector3 v3SphereCenter, float fRadius, float maxContactDistance) {
-    return gdxBulletJNI.btSphereBoxCollisionAlgorithm_getSphereDistance(swigCPtr, this, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(boxObjWrap), v3PointOnBox, normal, SWIGTYPE_p_float.getCPtr(penetrationDepth), v3SphereCenter, fRadius, maxContactDistance);
+  public boolean getSphereDistance(btCollisionObjectWrapper boxObjWrap, Vector3 v3PointOnBox, Vector3 normal, SWIGTYPE_p_float penetrationDepth, Vector3 v3SphereCenter, float fRadius, float maxContactDistance) {
+    return gdxBulletJNI.btSphereBoxCollisionAlgorithm_getSphereDistance(swigCPtr, this, btCollisionObjectWrapper.getCPtr(boxObjWrap), boxObjWrap, v3PointOnBox, normal, SWIGTYPE_p_float.getCPtr(penetrationDepth), v3SphereCenter, fRadius, maxContactDistance);
   }
 
   public float getSpherePenetration(Vector3 boxHalfExtent, Vector3 sphereRelPos, Vector3 closestPoint, Vector3 normal) {

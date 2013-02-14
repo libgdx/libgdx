@@ -16,6 +16,13 @@ package com.badlogic.gdxinvaders.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.controllers.ControlType;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.ControllerAdapter;
+import com.badlogic.gdx.controllers.ControllerListener;
+import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.PovDirection;
+import com.badlogic.gdx.controllers.mappings.Ouya;
 import com.badlogic.gdxinvaders.Renderer;
 import com.badlogic.gdxinvaders.RendererGL10;
 import com.badlogic.gdxinvaders.RendererGL20;
@@ -31,6 +38,22 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 	private final Sound explosion;
 	/** shot sound **/
 	private final Sound shot;
+	/** controller **/
+	private Controller controller;
+	private int buttonsPressed = 0;
+	private ControllerListener listener = new ControllerAdapter() {
+		@Override
+		public boolean buttonDown (Controller controller, int buttonIndex) {
+			buttonsPressed++;
+			return true;
+		}
+
+		@Override
+		public boolean buttonUp (Controller controller, int buttonIndex) {
+			buttonsPressed--;
+			return true;
+		}
+	};
 
 	public GameLoop () {
 		simulation = new Simulation();
@@ -38,6 +61,16 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 		renderer = Gdx.graphics.isGL20Available() ? new RendererGL20() : new RendererGL10();
 		explosion = Gdx.audio.newSound(Gdx.files.internal("data/explosion.wav"));
 		shot = Gdx.audio.newSound(Gdx.files.internal("data/shot.wav"));
+		
+		// check for attached controllers and if we are on
+		// Ouya, take the first controller. Doesn't handle disconnects :D
+		if(Controllers.getControllers().size > 0) {
+			Controller controller = Controllers.getControllers().get(0);
+			if(Ouya.ID.equals(controller.getName())) {
+				this.controller = controller;
+				controller.addListener(listener);
+			}
+		}
 	}
 
 	@Override
@@ -45,6 +78,7 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 		renderer.dispose();
 		shot.dispose();
 		explosion.dispose();
+		controller.removeListener(listener);
 	}
 
 	@Override
@@ -66,6 +100,21 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 			simulation.moveShipLeft(delta, Math.abs(accelerometerY) / 10);
 		else
 			simulation.moveShipRight(delta, Math.abs(accelerometerY) / 10);
+		
+		if(controller != null) {
+			// if any button is pressed, we shoot.
+			if(buttonsPressed > 0) simulation.shot();
+			
+			// if the left stick moved, move the ship
+			float axisValue = controller.getAxis(Ouya.AXIS_LEFT_X) * 0.5f;
+			if(Math.abs(axisValue) > 0.25f) {
+				if(axisValue > 0) {
+					simulation.moveShipRight(delta, axisValue);
+				} else {
+					simulation.moveShipLeft(delta, -axisValue);
+				}
+			}
+		}
 
 		if (Gdx.input.isKeyPressed(Keys.DPAD_LEFT) || Gdx.input.isKeyPressed(Keys.A)) simulation.moveShipLeft(delta, 0.5f);
 		if (Gdx.input.isKeyPressed(Keys.DPAD_RIGHT) || Gdx.input.isKeyPressed(Keys.D)) simulation.moveShipRight(delta, 0.5f);

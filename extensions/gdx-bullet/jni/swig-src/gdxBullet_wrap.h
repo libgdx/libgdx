@@ -62,6 +62,102 @@ protected:
     bool swig_override[2];
 };
 
+struct SwigDirector_RayResultCallback : public RayResultCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_RayResultCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_RayResultCallback();
+    virtual bool needsCollision(btBroadphaseProxy *proxy0) const;
+    virtual btScalar addSingleResult(LocalRayResult &rayResult, bool normalInWorldSpace);
+public:
+    bool swig_overrides(int n) {
+      return (n < 2 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[2];
+};
+
+struct SwigDirector_ClosestRayResultCallback : public ClosestRayResultCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_ClosestRayResultCallback(JNIEnv *jenv, btVector3 const &rayFromWorld, btVector3 const &rayToWorld);
+    virtual ~SwigDirector_ClosestRayResultCallback();
+    virtual bool needsCollision(btBroadphaseProxy *proxy0) const;
+    virtual btScalar addSingleResult(LocalRayResult &rayResult, bool normalInWorldSpace);
+public:
+    bool swig_overrides(int n) {
+      return (n < 2 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[2];
+};
+
+struct SwigDirector_AllHitsRayResultCallback : public AllHitsRayResultCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_AllHitsRayResultCallback(JNIEnv *jenv, btVector3 const &rayFromWorld, btVector3 const &rayToWorld);
+    virtual ~SwigDirector_AllHitsRayResultCallback();
+    virtual bool needsCollision(btBroadphaseProxy *proxy0) const;
+    virtual btScalar addSingleResult(LocalRayResult &rayResult, bool normalInWorldSpace);
+public:
+    bool swig_overrides(int n) {
+      return (n < 2 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[2];
+};
+
+struct SwigDirector_ConvexResultCallback : public ConvexResultCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_ConvexResultCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_ConvexResultCallback();
+    virtual bool needsCollision(btBroadphaseProxy *proxy0) const;
+    virtual btScalar addSingleResult(LocalConvexResult &convexResult, bool normalInWorldSpace);
+public:
+    bool swig_overrides(int n) {
+      return (n < 2 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[2];
+};
+
+struct SwigDirector_ClosestConvexResultCallback : public ClosestConvexResultCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_ClosestConvexResultCallback(JNIEnv *jenv, btVector3 const &convexFromWorld, btVector3 const &convexToWorld);
+    virtual ~SwigDirector_ClosestConvexResultCallback();
+    virtual bool needsCollision(btBroadphaseProxy *proxy0) const;
+    virtual btScalar addSingleResult(LocalConvexResult &convexResult, bool normalInWorldSpace);
+public:
+    bool swig_overrides(int n) {
+      return (n < 2 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[2];
+};
+
+struct SwigDirector_ContactResultCallback : public ContactResultCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_ContactResultCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_ContactResultCallback();
+    virtual bool needsCollision(btBroadphaseProxy *proxy0) const;
+    virtual btScalar addSingleResult(btManifoldPoint &cp, btCollisionObjectWrapper const *colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper const *colObj1Wrap, int partId1, int index1);
+public:
+    bool swig_overrides(int n) {
+      return (n < 2 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[2];
+};
+
 class SwigDirector_InternalTickCallback : public InternalTickCallback, public Swig::Director {
 
 public:

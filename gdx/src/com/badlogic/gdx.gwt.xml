@@ -4,6 +4,7 @@
 	<source path="gdx">
 		<include name="graphics/g3d/Animation.java"/>
 		<include name="graphics/g3d/Animator.java"/>
+		<include name="LifecycleListener.java"/>
 		<include name="Application.java"/>
 		<include name="ApplicationAdapter.java"/>
 		<include name="ApplicationListener.java"/>
@@ -124,6 +125,7 @@
 		<include name="utils/PooledLinkedList.java"/>
 		<include name="utils/DelayedRemovalArray.java"/>
 		<include name="utils/Timer.java"/>
+		<include name="utils/LittleEndianInputStream.java"/>
 		<include name="Preferences.java"/>
 		<include name="math/Quaternion.java"/>
 		<include name="math/collision/Ray.java"/>
@@ -252,5 +254,6 @@
 		<include name="net/ServerSocketHints.java"/>
 		<include name="net/Socket.java"/>
 		<include name="net/SocketHints.java"/>
+		<include name="graphics/g3d/**/*"/>
 	</source>
 </module>

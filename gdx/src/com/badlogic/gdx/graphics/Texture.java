@@ -92,7 +92,7 @@ public class Texture implements Disposable {
 	}
 
 	public enum TextureWrap {
-		ClampToEdge(GL10.GL_CLAMP_TO_EDGE), Repeat(GL10.GL_REPEAT);
+		MirroredRepeat(GL20.GL_MIRRORED_REPEAT),ClampToEdge(GL10.GL_CLAMP_TO_EDGE), Repeat(GL10.GL_REPEAT);
 
 		final int glEnum;
 
@@ -127,7 +127,7 @@ public class Texture implements Disposable {
 	}
 
 	public Texture (FileHandle file, Format format, boolean useMipMaps) {
-		if (file.name().contains(".etc1")) {
+		if (file.name().endsWith(".etc1")) {
 			create(new ETC1TextureData(file, useMipMaps));
 		} else {
 			create(new FileTextureData(file, null, format, useMipMaps));

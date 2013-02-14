@@ -86,7 +86,6 @@ public class AndroidNdkScriptGenerator {
 		template = template.replace("%linkerFlags%", target.linkerFlags);
 		template = template.replace("%srcFiles%", srcFiles);
 
-		System.out.println(template);
 		config.jniDir.child("Android.mk").writeString(template, false);
 	}
 
