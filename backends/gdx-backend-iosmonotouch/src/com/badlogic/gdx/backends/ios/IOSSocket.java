@@ -52,7 +52,14 @@ public class IOSSocket implements Socket {
 				// create and connect the socket
 				// NOTE: there is no connection timeout setting available - will assume there is some sort of default!?
 				client = new TcpClient(host, port);
-				setupConnection(hints); 
+				setupConnection(hints);
+				
+			   // Hack to catch socket exception
+			   // Keep compiler happy and catch the Mono SocketException explicitly.
+			   // This Mono exception is not caught by the java Exception catch.
+			    if (false) throw new cli.System.Net.Sockets.SocketException();
+			  } catch(cli.System.Net.Sockets.SocketException e) {
+			    throw new GdxRuntimeException("Error making a socket connection to " + host + ":" + port, e);
 			}
 			catch (Exception e) {
 				throw new GdxRuntimeException("Error making a socket connection to " + host + ":" + port, e);
