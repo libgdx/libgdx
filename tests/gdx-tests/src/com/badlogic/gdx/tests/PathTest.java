@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.BSpline;
 import com.badlogic.gdx.math.Bezier;
-import com.badlogic.gdx.math.CatmullRomSpline;
+import com.badlogic.gdx.math.CatmullRom;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -69,7 +69,7 @@ public class PathTest extends GdxTest {
 		};
 		paths.add(new BSpline<Vector2>(cp, 3, true));
 		
-		paths.add(new CatmullRomSpline<Vector2>(cp, true));
+		paths.add(new CatmullRom<Vector2>(cp, true));
 		
 		Gdx.input.setInputProcessor(this);
 	}
