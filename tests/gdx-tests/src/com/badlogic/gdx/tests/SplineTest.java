@@ -17,109 +17,115 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.math.BSpline;
+import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.CatmullRomSpline;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Path;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Array;
 
+/** @author Xoppa */
 public class SplineTest extends GdxTest {
+	int SAMPLE_POINTS = 100;
+	float SAMPLE_POINT_DISTANCE = 1f/SAMPLE_POINTS;
+	
+	SpriteBatch spriteBatch;
+	ImmediateModeRenderer10 renderer;
+	Sprite obj;
+	Array<Path<Vector2>> paths = new Array<Path<Vector2>>();
+	int currentPath = 0;
+	float t;
+	float speed = 0.3f;
+	float wait = 0f;
 
 	@Override
 	public boolean needsGL20 () {
 		return false;
 	}
-
-	final int CONTROL_POINTS = 10;
-	OrthographicCamera cam;
-	ImmediateModeRenderer10 renderer;
-	CatmullRomSpline spline;
-	Vector3[] path;
-
+	
 	@Override
 	public void create () {
-		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
 		renderer = new ImmediateModeRenderer10();
-		spline = new CatmullRomSpline();
-		float x = 0;
-		float y = Gdx.graphics.getHeight() / 2;
-		spline.add(new Vector3(x - 50, y, 0));
-		for (int i = 0; i < CONTROL_POINTS; i++) {
-			spline.add(new Vector3(x, y, 0));
-			x += Gdx.graphics.getWidth() / (CONTROL_POINTS - 2);
-		}
-		spline.add(new Vector3(Gdx.graphics.getWidth() + 50, y, 0));
-		path = new Vector3[(CONTROL_POINTS - 2) * 7 - 1];
-		for (int i = 0; i < path.length; i++)
-			path[i] = new Vector3();
-		spline.getPath(path, 5);
+		spriteBatch = new SpriteBatch();
+		obj = new Sprite(new Texture(Gdx.files.internal("data/badlogicsmall.jpg")));
+		
+		float w = Gdx.graphics.getWidth() - obj.getWidth();
+		float h = Gdx.graphics.getHeight() - obj.getHeight();
+		
+		paths.add(new Bezier<Vector2>(new Vector2(0,0), new Vector2(w, h)));
+		paths.add(new Bezier<Vector2>(new Vector2(0,0), new Vector2(0, h), new Vector2(w, h)));
+		paths.add(new Bezier<Vector2>(new Vector2(0,0), new Vector2(w, 0), new Vector2(0, h), new Vector2(w, h)));
+		
+		Vector2 cp[] = new Vector2[]{
+			new Vector2(0, 0), new Vector2(w * 0.25f, h * 0.5f), new Vector2(0, h), new Vector2(w*0.5f, h*0.75f),
+			new Vector2(w, h), new Vector2(w * 0.75f, h * 0.5f), new Vector2(w, 0), new Vector2(w*0.5f, h*0.25f)
+		};
+		paths.add(new BSpline<Vector2>(cp, 3, true));
+		
+		paths.add(new CatmullRomSpline<Vector2>(cp, true));
+		
+		Gdx.input.setInputProcessor(this);
 	}
-
+	
+	final Vector2 tmpV = new Vector2();
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		cam.update();
-		Gdx.gl10.glMatrixMode(GL10.GL_PROJECTION);
-		Gdx.gl10.glLoadMatrixf(cam.projection.val, 0);
-		Gdx.gl10.glMatrixMode(GL10.GL_MODELVIEW);
-		Gdx.gl10.glLoadMatrixf(cam.view.val, 0);
-
-		renderer.begin(GL10.GL_TRIANGLES);
-		for (int i = 0; i < path.length - 1; i++) {
-			Vector3 point1 = path[i];
-			Vector3 point2 = path[i + 1];
-			renderer.color(1, 1, 1, 1);
-			renderer.vertex(point1.x, point1.y, 0);
-			renderer.color(1, 1, 1, 1);
-			renderer.vertex(point1.x, 0, 0);
-			renderer.color(1, 1, 1, 1);
-			renderer.vertex(point2.x, point2.y, 0);
-
-			renderer.color(1, 1, 1, 1);
-			renderer.vertex(point2.x, point2.y, 0);
-			renderer.color(1, 1, 1, 1);
-			renderer.vertex(point1.x, 0, 0);
-			renderer.color(1, 1, 1, 1);
-			renderer.vertex(point2.x, 0, 0);
+		GL10 gl = Gdx.graphics.getGL10();
+		gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		if (wait > 0)
+			wait -= Gdx.graphics.getDeltaTime();
+		else {
+			t += speed * Gdx.graphics.getDeltaTime();
+			while (t >= 1f) {
+				currentPath = (currentPath + 1) % paths.size;
+				t -= 1f;
+			}
+			
+			paths.get(currentPath).valueAt(tmpV, t);
+			obj.setPosition(tmpV.x, tmpV.y);
+		}
+			
+		spriteBatch.begin();
+		
+		renderer.begin(GL10.GL_LINE_STRIP);
+		float val = 0f;
+		while (val <= 1f) {
+			renderer.color(0f, 0f, 0f, 1f);
+			paths.get(currentPath).valueAt(Vector2.tmp, val);
+			renderer.vertex(Vector2.tmp.x, Vector2.tmp.y, 0);
+			val += SAMPLE_POINT_DISTANCE;
 		}
 		renderer.end();
-
-		Gdx.gl10.glPointSize(4);
-		renderer.begin(GL10.GL_POINTS);
-		for (int i = 0; i < spline.getControlPoints().size(); i++) {
-			Vector3 point = spline.getControlPoints().get(i);
-			renderer.color(1, 0, 0, 1);
-			renderer.vertex(point.x, point.y, 0);
-		}
-		renderer.end();
-		Gdx.gl10.glPointSize(1);
-
-		processInput();
+		
+		obj.draw(spriteBatch);
+		spriteBatch.end();
 	}
-
-	Vector3 point = new Vector3();
-
-	private void processInput () {
-// if(Gdx.input.isTouched()) {
-// Vector3 nearest = null;
-// float nearestDist = Float.MAX_VALUE;
-// point.set(cam.getScreenToWorldX(Gdx.input.getX()),
-// cam.getScreenToWorldY(Gdx.input.getY()),
-// 0);
-//
-// for(int i = 0; i < spline.getControlPoints().size(); i++) {
-// Vector3 controlPoint = spline.getControlPoints().get(i);
-// float dist = Math.abs(point.x - controlPoint.x);
-// if(dist < nearestDist) {
-// nearest = controlPoint;
-// nearestDist = dist;
-// }
-// }
-//
-// nearest.y += (point.y - nearest.y) * Gdx.graphics.getDeltaTime();
-// spline.getPath(path, 5);
-// }
+	
+	private void touch(int x, int y) {
+		t = paths.get(currentPath).approximate(tmpV.set(x, Gdx.graphics.getHeight()-y));
+		paths.get(currentPath).valueAt(tmpV, t);
+		obj.setPosition(tmpV.x, tmpV.y);
+		wait = 0.2f;		
+	}
+	
+	@Override
+	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
+		touch(screenX, screenY);
+		return super.touchUp(screenX, screenY, pointer, button);
+	}
+	
+	@Override
+	public boolean touchDragged (int screenX, int screenY, int pointer) {
+		touch(screenX, screenY);
+		return super.touchDragged(screenX, screenY, pointer);
 	}
 }
