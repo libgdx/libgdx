@@ -170,7 +170,7 @@ public class Pong extends GdxTest {
 		ball.add(ballSpeed * ballDirection.x * deltaTime, ballSpeed * ballDirection.y * deltaTime);
 		System.out.println(ball);
 
-		// Next we check wheter the ball left the field to
+		// Next we check whether the ball left the field to
 		// the left or to the right and update the score
 		if (ball.x < -240) {
 			ball.set(0, 0); // reset to center

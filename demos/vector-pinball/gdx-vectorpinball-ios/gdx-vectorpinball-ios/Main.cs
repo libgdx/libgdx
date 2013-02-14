@@ -8,7 +8,7 @@ using com.badlogic.gdx.backends.ios;
 using com.dozingcatsoftware.bouncy;
 
 namespace bouncy
-{		
+{	
 	public class Application
 	{
 		[Register ("AppDelegate")]

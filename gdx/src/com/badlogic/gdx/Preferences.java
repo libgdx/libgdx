@@ -20,12 +20,18 @@ import java.util.Map;
 
 /** <p>
  * A Preference instance is a hash map holding different values. It is stored alongside your application (SharedPreferences on
- * Android, flat file in apps root directory on desktop).
+ * Android, LocalStorage on GWT, on the desktop a Java Preferences file in a ".prefs" directory will be created, 
+ * and on iOS an NSMutableDictonary will be written to the given file). 
  * </p>
  * 
  * <p>
- * On the desktop the file will be located in the user directory. Make sure you give the preferences instance a name that can be
- * used as a filename.
+ * Changes to a preferences instance will be cached in memory until {@link #flush()} is invoked.
+ * </p>
+ * 
+ * <p>
+ * Use {@link Application#getPreferences(String)} to look up a specific preferences instance.  Note that 
+ * on several backends the preferences name will be used as the filename, so make sure the name is valid
+ * for a filename.
  * </p>
  * 
  * @author mzechner */

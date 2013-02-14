@@ -183,7 +183,7 @@ public class BoundingBox implements Serializable {
 		return this.set(min.set(0, 0, 0), max.set(0, 0, 0));
 	}
 
-	/** Returns wheter this bounding box is valid. This means that min != max and min < max.
+	/** Returns whether this bounding box is valid. This means that min != max and min < max.
 	 * 
 	 * @return True in case the bounding box is valid, false otherwise */
 	public boolean isValid () {
@@ -217,9 +217,9 @@ public class BoundingBox implements Serializable {
 		return this.set(min, max);
 	}
 
-	/** Returns wheter the given bounding box is contained in this bounding box.
+	/** Returns whether the given bounding box is contained in this bounding box.
 	 * @param bounds The bounding box
-	 * @return Wheter the given bounding box is contained */
+	 * @return Whether the given bounding box is contained */
 	public boolean contains (BoundingBox bounds) {
 		if (!isValid()) return true;
 		if (min.x > bounds.min.x) return false;
@@ -231,9 +231,9 @@ public class BoundingBox implements Serializable {
 		return true;
 	}
 
-	/** Returns wheter the given vector is contained in this bounding box.
+	/** Returns whether the given vector is contained in this bounding box.
 	 * @param v The vector
-	 * @return Wheter the vector is contained or not. */
+	 * @return Whether the vector is contained or not. */
 	public boolean contains (Vector3 v) {
 		if (min.x > v.x) return false;
 		if (max.x < v.x) return false;

@@ -67,6 +67,7 @@ public class ProjectUpdate {
 		File desktopPrjLibsDir = new File(Helper.getDesktopPrjPath(cfg) + "libs");
 		File androidPrjLibsDir = new File(Helper.getAndroidPrjPath(cfg) + "libs");
 		File htmlPrjLibsDir = new File(Helper.getHtmlPrjPath(cfg) + "war/WEB-INF/lib");
+		File iosPrjLibsDir = new File(Helper.getIosPrjPath(cfg) + "libs");
 		File dataDir = new File(Helper.getAndroidPrjPath(cfg) + "assets");
 
 		for (String library : cfg.libraries) {
@@ -98,6 +99,11 @@ public class ProjectUpdate {
 				if (cfg.isHtmlIncluded) {
 					for (String elemName : def.libsHtml)
 						if (entryName.endsWith(elemName)) copyEntry(zis, elemName, htmlPrjLibsDir);
+				}
+				
+				if(cfg.isIosIncluded) {
+					for(String elemName : def.libsIos)
+						if (entryName.endsWith(elemName)) copyEntry(zis, elemName, iosPrjLibsDir);
 				}
 			}
 

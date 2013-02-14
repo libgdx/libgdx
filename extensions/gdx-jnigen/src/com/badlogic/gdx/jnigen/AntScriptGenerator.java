@@ -98,9 +98,9 @@ public class AntScriptGenerator {
 				+ config.jniDir.child(buildFileName) + "'");
 
 			if (!target.excludeFromMasterBuildFile) {
-				if (target.os != TargetOs.MacOsX) {
+				if (target.os != TargetOs.MacOsX && target.os != TargetOs.IOS) {
 					buildFiles.add(buildFileName);
-				}
+				} 
 				sharedLibFiles.add(getSharedLibFilename(target.os, target.is64Bit, config.sharedLibName));
 				libsDirs.add("../" + libsDir.path().replace('\\', '/'));
 			}
@@ -158,6 +158,10 @@ public class AntScriptGenerator {
 			libPrefix = "lib";
 			libSuffix = ".dylib";
 		}
+		if (os == TargetOs.IOS) {
+			libPrefix = "lib";
+			libSuffix = ".a";
+		}
 		return libPrefix + sharedLibName + libSuffix;
 	}
 
@@ -184,8 +188,14 @@ public class AntScriptGenerator {
 		}
 
 		// read template file from resources
-		String template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/build-target.xml.template",
+		String template = null;
+		if(target.os == TargetOs.IOS) {
+			template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/build-ios.xml.template",
 			FileType.Classpath).readString();
+		} else {
+			template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/build-target.xml.template",
+				FileType.Classpath).readString();
+		}
 
 		// generate shared lib filename and jni platform headers directory name
 		String libName = getSharedLibFilename(target.os, target.is64Bit, config.sharedLibName);

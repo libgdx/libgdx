@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.imagepacker;
+
+import com.badlogic.gdx.tools.FileProcessor;
+import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.SerializationException;
 
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.regex.Pattern;
-
-import com.badlogic.gdx.tools.FileProcessor;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.ObjectMap;
 
 /** @author Nathan Sweet */
 public class TexturePackerFileProcessor extends FileProcessor {
@@ -33,6 +38,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 	private Json json = new Json();
 	private String packFileName;
 	private File root;
+	ArrayList<File> ignoreDirs = new ArrayList();
 
 	public TexturePackerFileProcessor () {
 		this(new Settings(), "pack.atlas");
@@ -50,6 +56,46 @@ public class TexturePackerFileProcessor extends FileProcessor {
 
 	public ArrayList<Entry> process (File inputFile, File outputRoot) throws Exception {
 		root = inputFile;
+
+		// Collect pack.json setting files.
+		final ArrayList<File> settingsFiles = new ArrayList();
+		FileProcessor settingsProcessor = new FileProcessor() {
+			protected void processFile (Entry inputFile) throws Exception {
+				settingsFiles.add(inputFile.inputFile);
+			}
+		};
+		settingsProcessor.addInputRegex("pack\\.json");
+		settingsProcessor.process(inputFile, null);
+		// Sort parent first.
+		Collections.sort(settingsFiles, new Comparator<File>() {
+			public int compare (File file1, File file2) {
+				return file1.toString().length() - file2.toString().length();
+			}
+		});
+		for (File settingsFile : settingsFiles) {
+			// Find first parent with settings, or use defaults.
+			Settings settings = null;
+			File parent = settingsFile.getParentFile();
+			while (true) {
+				if (parent.equals(root)) break;
+				parent = parent.getParentFile();
+				settings = dirToSettings.get(parent);
+				if (settings != null) {
+					settings = new Settings(settings);
+					break;
+				}
+			}
+			if (settings == null) settings = new Settings(defaultSettings);
+			// Merge settings from current directory.
+			try {
+				json.readFields(settings, new JsonReader().parse(new FileReader(settingsFile)));
+			} catch (SerializationException ex) {
+				throw new GdxRuntimeException("Error reading settings file: " + settingsFile, ex);
+			}
+			dirToSettings.put(settingsFile.getParentFile(), settings);
+		}
+
+		// Do actual processing.
 		return super.process(inputFile, outputRoot);
 	}
 
@@ -75,28 +121,36 @@ public class TexturePackerFileProcessor extends FileProcessor {
 	}
 
 	protected void processDir (Entry inputDir, ArrayList<Entry> files) throws Exception {
-		System.out.println(inputDir.inputFile.getName());
+		if (ignoreDirs.contains(inputDir.inputFile)) return;
 
-		// Start with a copy of a parent dir's settings or the default settings.
+		// Find first parent with settings, or use defaults.
 		Settings settings = null;
 		File parent = inputDir.inputFile;
 		while (true) {
+			settings = dirToSettings.get(parent);
+			if (settings != null) break;
 			if (parent.equals(root)) break;
 			parent = parent.getParentFile();
-			settings = dirToSettings.get(parent);
-			if (settings != null) {
-				settings = new Settings(settings);
-				break;
-			}
 		}
-		if (settings == null) settings = new Settings(defaultSettings);
-		dirToSettings.put(inputDir.inputFile, settings);
+		if (settings == null) settings = defaultSettings;
 
-		// Merge settings from pack.json file.
-		File settingsFile = new File(inputDir.inputFile, "pack.json");
-		if (settingsFile.exists()) json.readFields(settings, new JsonReader().parse(new FileReader(settingsFile)));
+		if (settings.combineSubdirectories) {
+			// Collect all files under subdirectories and ignore subdirectories so they won't be packed twice.
+			files = new FileProcessor(this) {
+				protected void processDir (Entry entryDir, ArrayList<Entry> files) {
+					ignoreDirs.add(entryDir.inputFile);
+				}
+
+				protected void processFile (Entry entry) {
+					addProcessedFile(entry);
+				}
+			}.process(inputDir.inputFile, null);
+		}
+
+		if (files.isEmpty()) return;
 
 		// Pack.
+		System.out.println(inputDir.inputFile.getName());
 		TexturePacker2 packer = new TexturePacker2(root, settings);
 		for (Entry file : files)
 			packer.addImage(file.inputFile);

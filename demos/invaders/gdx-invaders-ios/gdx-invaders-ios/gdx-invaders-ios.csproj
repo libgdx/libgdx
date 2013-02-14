@@ -113,7 +113,7 @@
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
     <Reference Include="gdx">
-      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\gdx.dll</HintPath>
+      <HintPath>..\..\..\..\gdx\libs\ios32\gdx.dll</HintPath>
     </Reference>
     <Reference Include="gdx-backend-ios">
       <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\gdx-backend-ios.dll</HintPath>
