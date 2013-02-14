@@ -18,9 +18,11 @@ package com.badlogic.gdx.tools.imagepacker;
 
 import com.badlogic.gdx.tools.FileProcessor;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.SerializationException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -36,6 +38,7 @@ public class TexturePackerFileProcessor extends FileProcessor {
 	private Json json = new Json();
 	private String packFileName;
 	private File root;
+	ArrayList<File> ignoreDirs = new ArrayList();
 
 	public TexturePackerFileProcessor () {
 		this(new Settings(), "pack.atlas");
@@ -84,10 +87,15 @@ public class TexturePackerFileProcessor extends FileProcessor {
 			}
 			if (settings == null) settings = new Settings(defaultSettings);
 			// Merge settings from current directory.
-			json.readFields(settings, new JsonReader().parse(new FileReader(settingsFile)));
+			try {
+				json.readFields(settings, new JsonReader().parse(new FileReader(settingsFile)));
+			} catch (SerializationException ex) {
+				throw new GdxRuntimeException("Error reading settings file: " + settingsFile, ex);
+			}
 			dirToSettings.put(settingsFile.getParentFile(), settings);
 		}
 
+		// Do actual processing.
 		return super.process(inputFile, outputRoot);
 	}
 
@@ -113,20 +121,36 @@ public class TexturePackerFileProcessor extends FileProcessor {
 	}
 
 	protected void processDir (Entry inputDir, ArrayList<Entry> files) throws Exception {
-		System.out.println(inputDir.inputFile.getName());
+		if (ignoreDirs.contains(inputDir.inputFile)) return;
 
 		// Find first parent with settings, or use defaults.
 		Settings settings = null;
 		File parent = inputDir.inputFile;
 		while (true) {
-			if (parent.equals(root)) break;
-			parent = parent.getParentFile();
 			settings = dirToSettings.get(parent);
 			if (settings != null) break;
+			if (parent.equals(root)) break;
+			parent = parent.getParentFile();
 		}
 		if (settings == null) settings = defaultSettings;
 
+		if (settings.combineSubdirectories) {
+			// Collect all files under subdirectories and ignore subdirectories so they won't be packed twice.
+			files = new FileProcessor(this) {
+				protected void processDir (Entry entryDir, ArrayList<Entry> files) {
+					ignoreDirs.add(entryDir.inputFile);
+				}
+
+				protected void processFile (Entry entry) {
+					addProcessedFile(entry);
+				}
+			}.process(inputDir.inputFile, null);
+		}
+
+		if (files.isEmpty()) return;
+
 		// Pack.
+		System.out.println(inputDir.inputFile.getName());
 		TexturePacker2 packer = new TexturePacker2(root, settings);
 		for (Entry file : files)
 			packer.addImage(file.inputFile);

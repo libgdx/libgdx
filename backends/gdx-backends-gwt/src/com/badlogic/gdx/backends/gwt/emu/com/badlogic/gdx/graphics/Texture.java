@@ -170,6 +170,10 @@ public class Texture implements Disposable {
 			pixmap.getGLType(), pixmap.getPixels());
 	}
 
+	static public void setEnforcePotImages (boolean enforcePotImages) {
+		/* doesn't matter on GWT ... hopefully? */
+	}
+	
 	/** @return the width of the texture in pixels */
 	public int getWidth () {
 		return data.getWidth();

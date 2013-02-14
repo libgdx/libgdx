@@ -25,6 +25,10 @@ public class Polygon {
 	private float scaleX = 1, scaleY = 1;
 	private boolean dirty = true;
 	private Rectangle bounds;
+	
+	public Polygon () {
+		this.localVertices = new float[0];
+	}
 
 	public Polygon (float[] vertices) {
 		if (vertices.length < 6) throw new IllegalArgumentException("polygons must contain at least 3 points.");
@@ -143,6 +147,13 @@ public class Polygon {
 		return area;
 	}
 
+	/** Returns an axis-aligned bounding box of this polygon.  
+	 * 
+	 * Note the returned Rectangle is cached in this polygon, and will
+	 * be reused if this Polygon is changed.
+	 * 
+	 * @return this polygon's bounding box Rectangle
+	 */
 	public Rectangle getBoundingRectangle () {
 		float[] vertices = getTransformedVertices();
 

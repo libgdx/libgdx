@@ -16,11 +16,16 @@
 
 package com.badlogic.gdx.math;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
+/**
+ * A truncated rectangular pyramid.  Used to define the viewable region and its projection onto the screen.  
+ * See {@link Camera#frustum}.
+ */
 public class Frustum {
 	protected static final Vector3[] clipSpacePlanePoints = {new Vector3(-1, -1, -1), new Vector3(1, -1, -1),
 		new Vector3(1, 1, -1), new Vector3(-1, 1, -1), // near clip

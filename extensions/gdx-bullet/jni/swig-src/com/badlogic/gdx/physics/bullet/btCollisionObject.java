@@ -13,7 +13,9 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btCollisionObject {
+public class btCollisionObject implements 
+	com.badlogic.gdx.utils.Disposable
+ {
 	public final static com.badlogic.gdx.utils.LongMap<btCollisionObject> instances = new com.badlogic.gdx.utils.LongMap<btCollisionObject>();
 	
 	public static btCollisionObject getInstance(final long swigCPtr, boolean owner) {
@@ -32,6 +34,12 @@ public class btCollisionObject {
 		swigCMemOwn = cMemoryOwn;
 		swigCPtr = cPtr;
 		instances.put(cPtr, this);
+	}
+	
+	@Override
+	public void dispose() {
+		instances.remove(swigCPtr);
+		delete();
 	}
 	
 	public void takeOwnership() {

@@ -26,11 +26,12 @@
 		<exclude name="**/VorbisTest.java"/> <!-- native -->
 		<exclude name="**/WavTest.java"/> <!-- naive -->
 		<exclude name="**/AssetsFileGenerator.java"/> <!-- utility -->
-		<exclude name="**/GdxTests.java"/> <!-- utilty -->
-		<exclude name="**/InternationalFontsTest.java"/> <!-- utilty -->
+		<exclude name="**/GdxTests.java"/> <!-- utility -->
+		<exclude name="**/InternationalFontsTest.java"/> <!-- utility -->
 		<exclude name="**/BulletTestCollection.java"/> <!-- native -->
 		<exclude name="**/bullet/"/> <!-- native -->
 		<exclude name="**/FloatTextureTest.java"/> <!-- GLES 2.0 extension -->
 		<exclude name="**/GLEEDTest.java"/>
+		<exclude name="**/NetAPITest.java"/> <!-- abuses FileHandle() -->
 	</source>
 </module>
