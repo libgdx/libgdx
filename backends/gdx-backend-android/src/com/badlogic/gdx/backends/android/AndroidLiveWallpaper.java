@@ -2,6 +2,7 @@
  * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
  * 
  * Modified by Elijah Cornell
+ * 2013.01 Modified by Jaroslaw Wisniewski <j.wisniewski@appsisle.com>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -22,6 +23,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
@@ -30,6 +32,7 @@ import android.service.wallpaper.WallpaperService;
 import android.service.wallpaper.WallpaperService.Engine;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout.LayoutParams;
 
 import com.badlogic.gdx.Application;
@@ -44,6 +47,10 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
+import com.badlogic.gdx.backends.android.surfaceview.GLBaseSurfaceViewLW;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20LW;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.utils.Array;
@@ -57,13 +64,13 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
  * 
  * @author mzechner
  */
-class AndroidLiveWallpaper implements Application {
+public class AndroidLiveWallpaper implements Application {
 	static {
 		GdxNativesLoader.load();
 	}
+	
+	protected AndroidLiveWallpaperService service;
 
-	protected WallpaperService service;
-	private Engine engine;
 	protected AndroidGraphicsLiveWallpaper graphics;
 	protected AndroidInput input;
 	protected AndroidAudio audio;
@@ -76,16 +83,19 @@ class AndroidLiveWallpaper implements Application {
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
 
-	public AndroidLiveWallpaper(WallpaperService service, Engine engine) {
+	public AndroidLiveWallpaper(AndroidLiveWallpaperService service) {
 		this.service = service;
-		this.engine = engine;
 	}
 	
 	public void initialize(ApplicationListener listener, AndroidApplicationConfiguration config) {
 		graphics = new AndroidGraphicsLiveWallpaper(this, config, config.resolutionStrategy==null?new FillResolutionStrategy():config.resolutionStrategy);
-		input = AndroidInputFactory.newAndroidInput(this, this.getService(), null, config);
+		//input = new AndroidInput(this, this.getService(), null, config);
+		input = AndroidInputFactory.newAndroidInput(this, this.getService(), graphics.view, config);
 		audio = new AndroidAudio(this.getService(), config);
+		
+		// jw: added initialization of android local storage: /data/data/<app package>/files/
 		files = new AndroidFiles(this.getService().getAssets(), this.getService().getFilesDir().getAbsolutePath());
+		
 		this.listener = listener;
 		
 		Gdx.app = this;
@@ -97,8 +107,15 @@ class AndroidLiveWallpaper implements Application {
 
 	public void onPause() {
 		graphics.pause();
-		if (audio != null) audio.pause();
+		//if (audio != null) audio.pause();	// jw: moved to AndroidGraphicsLiveWallpaper.onFrameRender
 		input.unregisterSensorListeners();
+		
+		// jw: moved from AndroidApplication
+		if (graphics != null && graphics.view != null) {
+			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onPause();
+			else if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
+			else throw new RuntimeException("unimplemented");
+		}
 	}
 
 	public void onResume() {
@@ -110,24 +127,57 @@ class AndroidLiveWallpaper implements Application {
 
 		((AndroidInput)getInput()).registerSensorListeners();
 		
-		if (audio != null) audio.resume();		
+		//if (audio != null) audio.resume();	// jw: moved to AndroidGraphicsLiveWallpaper.onFrameRender
 		if (!firstResume)
+		{
+			// jw: moved from AndroidApplication class
+			if (graphics != null && graphics.view != null) {
+				if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onResume();
+				else if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
+				else throw new RuntimeException("unimplemented");
+			}
+
+			
 			graphics.resume();
+		}
 		else
 			firstResume = false;
 	}
 	
 	public void onDestroy() {
-		graphics.clearManagedCaches();
-		// graphics.destroy();
+
+		// jw: do not call this method after onPaused had finished - it needs live gl GLThread and gl context, otherwise it will cause of deadlock
+		if (graphics != null) {
+			graphics.clearManagedCaches();
+			graphics.destroy();
+		}
+		
+		/*
+		// jw: my earlier solution there, but it was never called, it should be called when GLThread is alive (in app.onPause -> but in wallpaper it is not clear if onPause invocation is the last one before shutdown)
+		//graphics.clearManagedCaches();
+		//graphics.destroy();
+		
+		// jw: new solution:
+		if (graphics != null && graphics.view != null)
+		{
+			// do not invoke it there it was already invoked in AndroidLiveWallpaperService.onDestroy or onDeepPauseApplication
+			//graphics.clearManagedCaches();
+			
+			//graphics.destroy();	// will block application because GLBaseSurfaceViewLW.GLThread is stopped/paused already
+			//graphics.requestRendering();  // it doesn't revive GLThread
+			
+			// note: graphics.destroy needs living GLThread to process destroying
+			graphics.view.onDestroy();
+		}
+		*/
 	}
 
-	public WallpaperService getService() {
+	public WindowManager getWindowManager() {
+		return service.getWindowManager();
+	}
+	
+	public AndroidLiveWallpaperService getService() {
 		return service;
-	}
-
-	public Engine getEngine() {
-		return engine;
 	}
 
 	public ApplicationListener getListener() {
