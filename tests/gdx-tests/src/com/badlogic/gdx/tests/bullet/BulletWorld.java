@@ -99,21 +99,24 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 	@Override
 	public void update () {
 		if (performanceCounter != null) {
-		performanceCounter.tick();
-		performanceCounter.start();
+			performanceCounter.tick();
+			performanceCounter.start();
 		}
 		if (collisionWorld instanceof btDynamicsWorld)
 			((btDynamicsWorld)collisionWorld).stepSimulation(Gdx.graphics.getDeltaTime(), maxSubSteps);
 		if (performanceCounter != null)
 			performanceCounter.stop();
-
+	}
+	
+	@Override
+	public void render() {
 		if (debugDrawer != null && debugDrawer.getDebugMode() > 0) {
 			debugDrawer.begin();
 			collisionWorld.debugDrawWorld();
 			debugDrawer.end();
 		}
 		if (renderMeshes)
-			super.update();
+			super.render();
 	}
 	
 	@Override
