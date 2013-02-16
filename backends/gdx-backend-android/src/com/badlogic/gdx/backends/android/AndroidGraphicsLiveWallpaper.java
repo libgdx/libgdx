@@ -490,6 +490,13 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		synchronized (synch) {
 			running = true;
 			resume = true;
+			while (resume) {
+				try {
+					synch.wait();
+				} catch (InterruptedException ignored) {
+					Gdx.app.log("AndroidGraphics", "waiting for resume synchronization failed!");
+				}
+			}
 		}
 	}
 
@@ -546,6 +553,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 
 			if (resume) {
 				resume = false;
+				synch.notifyAll();
 			}
 
 			if (pause) {
