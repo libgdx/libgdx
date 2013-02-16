@@ -73,6 +73,11 @@ public class TiledMapDirectLoaderTest extends GdxTest {
 		return true;
 	}
 
+	@Override
+	public void dispose () {
+		map.dispose();
+	}
+
 	public class OrthoCamController extends InputAdapter {
 		final OrthographicCamera camera;
 		final Vector3 curr = new Vector3();
