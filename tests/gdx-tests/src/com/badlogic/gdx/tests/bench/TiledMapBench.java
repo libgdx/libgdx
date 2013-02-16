@@ -11,9 +11,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer2;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer2.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer2.OrthogonalTiledMapRenderer2;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer.OrthogonalTiledMapRenderer2;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector3;
@@ -22,7 +22,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class TiledMapBench extends GdxTest {
 	
 	private TiledMap map;
-	private TiledMapRenderer2 renderer;
+	private TiledMapRenderer renderer;
 	private OrthographicCamera camera;
 	private OrthoCamController cameraController;
 	
