@@ -9,6 +9,23 @@ import com.badlogic.gdx.maps.MapProperties;
  */
 public interface TiledMapTile {
 
+	public enum BlendMode {
+		NONE,
+		ALPHA
+	}
+
+	/**
+	 * @return the {@link BlendMode} to use for rendering the tile
+	 */	
+	public BlendMode getBlendMode();
+	
+	/**
+	 * Sets the {@link BlendMode} to use for rendering the tile
+	 * 
+	 * @param blendMode the blend mode to use for rendering the tile
+	 */
+	public void setBlendMode(BlendMode blendMode);
+	
 	/**
 	 * @return texture region used to render the tile
 	 */

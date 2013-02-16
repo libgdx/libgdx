@@ -9,15 +9,30 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
  */
 public class StaticTiledMapTile implements TiledMapTile {
 
+	private BlendMode blendMode = BlendMode.ALPHA;
+	
 	private MapProperties properties;
 	
 	private TextureRegion textureRegion;	
 
+	@Override
+	public BlendMode getBlendMode () {
+		return blendMode;
+	}
+
+	@Override
+	public void setBlendMode (BlendMode blendMode) {
+		this.blendMode = blendMode;
+	}	
+	
 	/**
 	 * @return tile's properties set
 	 */
 	@Override
 	public MapProperties getProperties() {
+		if (properties == null) {
+			properties = new MapProperties();
+		}
 		return properties;
 	}
 
@@ -44,7 +59,7 @@ public class StaticTiledMapTile implements TiledMapTile {
 	 * @param copy
 	 */
 	public StaticTiledMapTile(StaticTiledMapTile copy) {
-		this.properties.putAll(copy.properties);
+		getProperties().putAll(copy.properties);
 		this.textureRegion = copy.textureRegion;
 	}
 	
