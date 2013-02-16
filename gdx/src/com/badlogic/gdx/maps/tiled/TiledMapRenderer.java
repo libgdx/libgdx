@@ -14,6 +14,11 @@ import com.badlogic.gdx.utils.Disposable;
 
 import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
 
+/**
+ * @brief Logic for rendering TiledMap objects
+ * 
+ * Includes several optimisations such as SpriteCache usage, fustrum culling etc.
+ */
 public class TiledMapRenderer implements MapRenderer, Disposable {
 
 	private Map map;
@@ -24,34 +29,63 @@ public class TiledMapRenderer implements MapRenderer, Disposable {
 	
 	private boolean ownsSpriteBatch = false;
 	
+	/**
+	 * @return map currently being used for rendering
+	 */
 	public Map getMap() {
 		return map;
 	}
 	
+	/**
+	 * @return batch used for rendering
+	 */
 	public SpriteBatch getSpriteBatch() {
 		return spriteBatch;
 	}
 	
+	/**
+	 * @return world units per pixel used for rendering
+	 */
 	public float getUnitScale() {
 		return unitScale;
 	}
 	
+	/**
+	 * Creates a renderer from a map. Will use own spritebatch and world units of 1.0 pixels
+	 * 
+	 * @param map will use this map for rendering 
+	 */
 	public TiledMapRenderer(TiledMap map) {
 		this(map, new SpriteBatch());
 		ownsSpriteBatch = true;
 	}
 	
+	/**
+	 * Creates a renderer from a map using the given world units. Will use a batch from its own.
+	 * 
+	 * @param map will use this map for rendering
+	 * @param unitScale world units per pixel
+	 */
 	public TiledMapRenderer(TiledMap map, float unitScale) {
 		this(map, new SpriteBatch(), unitScale);
 		ownsSpriteBatch = true;
 	}
 	
+	/**
+	 * @param map will use this map for rendering
+	 * @param spriteBatch batch that will be used for rendering
+	 */
 	public TiledMapRenderer(TiledMap map, SpriteBatch spriteBatch) {
 		this.map = map;
 		this.spriteBatch = spriteBatch;
 		this.ownsSpriteBatch = false;
 	}
 	
+	/**
+	 * @param map will use this map for rendering
+	 * @param spriteBatch batch that will be used for rendering
+	 * @param unitScale world units per pixel
+	 */
 	public TiledMapRenderer(TiledMap map, SpriteBatch spriteBatch, float unitScale) {
 		this.map = map;
 		this.spriteBatch = spriteBatch;
@@ -59,6 +93,9 @@ public class TiledMapRenderer implements MapRenderer, Disposable {
 		this.ownsSpriteBatch = false;
 	}
 
+	/**
+	 * @param projection projection matrix that will be used for rendering the map
+	 */
 	@Override
 	public void setProjectionMatrix (Matrix4 projection) {
 		spriteBatch.setProjectionMatrix(projection);
@@ -109,8 +146,13 @@ public class TiledMapRenderer implements MapRenderer, Disposable {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.badlogic.gdx.maps.MapRenderer2#render(float, float, float, float, int[])
+	/**
+	 * Renders all the layers using the projection matrix and the given bounds for fustrum culling
+	 * 
+	 * @param viewboundsX
+	 * @param viewboundsY
+	 * @param viewboundsWidth
+	 * @param viewboundsHeight
 	 */
 	@Override
 	public void render (float viewboundsX, float viewboundsY, float viewboundsWidth, float viewboundsHeight) {
@@ -120,8 +162,14 @@ public class TiledMapRenderer implements MapRenderer, Disposable {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.badlogic.gdx.maps.MapRenderer2#render(float, float, float, float, int[])
+	/**
+	 * Renders the given layers using the projection matrix and the given bounds for fustrum culling
+	 * 
+	 * @param viewboundsX
+	 * @param viewboundsY
+	 * @param viewboundsWidth
+	 * @param viewboundsHeight
+	 * @param layers
 	 */
 	@Override
 	public void render (float viewboundsX, float viewboundsY, float viewboundsWidth, float viewboundsHeight, int[] layers) {

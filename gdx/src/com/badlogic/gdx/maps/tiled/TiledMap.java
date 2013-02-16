@@ -5,14 +5,25 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.utils.Array;
 
+/**
+ * @brief Represents a Tiled created map, adds the concept of tiles and tilesets
+ * 
+ * @see Map
+ */
 public class TiledMap extends Map {
 	private TiledMapTileSets tilesets;
 	private Array<Texture> ownedTextures;
 	
+	/**
+	 * @return collection of tilesets for this map
+	 */
 	public TiledMapTileSets getTileSets() {
 		return tilesets;
 	}
 	
+	/**
+	 * Creates empty TiledMap
+	 */
 	public TiledMap() {
 		tilesets = new TiledMapTileSets();
 	}

@@ -34,6 +34,9 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
+/**
+ * @brief synchronous loader for TMX maps created with the Tiled tool
+ */
 public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.Parameters> {
 
 	public static class Parameters extends AssetLoaderParameters<TiledMap> {
@@ -52,6 +55,11 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		super(new InternalFileHandleResolver());
 	}
 	
+	/**
+	 * Creates loader 
+	 *  
+	 * @param resolver
+	 */
 	public TmxMapLoader(FileHandleResolver resolver) {
 		super(resolver);
 	}
@@ -86,11 +94,17 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		try {
 			return loadTilemap(root, tmxFile, new AssetManagerImageResolver(assetManager));
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
 		}
-		return null;
 	}
 
+	/**
+	 * Retrieves TiledMap resource dependencies
+	 * 
+	 * @param fileName
+	 * @param parameter not used for now
+	 * @return dependencies for the given .tmx file
+	 */
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName, Parameters parameter) {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
@@ -100,10 +114,10 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			for(FileHandle image: loadTilesets(root, tmxFile)) {
 				dependencies.add(new AssetDescriptor(image.path(), Texture.class));
 			}
+			return dependencies;
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
 		}
-		return dependencies;
 	}
 	
 	/**
