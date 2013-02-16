@@ -1,6 +1,8 @@
 package com.badlogic.gdx.maps;
 
-public class Map {
+import com.badlogic.gdx.utils.Disposable;
+
+public class Map implements Disposable {
 	
 	private MapLayers layers = new MapLayers();
 	private MapProperties properties = new MapProperties();
@@ -16,5 +18,8 @@ public class Map {
 	public Map() {
 		
 	}
-	
+
+	@Override
+	public void dispose () {
+	}
 }

@@ -21,7 +21,10 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tests.AssetManagerTest;
 import com.badlogic.gdx.tests.GamepadTest;
 import com.badlogic.gdx.tests.InverseKinematicsTest;
+import com.badlogic.gdx.tests.TiledMapDirectLoaderTest;
+import com.badlogic.gdx.tests.TiledMapAssetManagerTest;
 import com.badlogic.gdx.tests.YDownTest;
+import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.extensions.FreeTypeTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
@@ -35,11 +38,9 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new GamepadTest();
+		GdxTest test = new TiledMapDirectLoaderTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		new LwjglApplication(test, config);
 	}
-	
-	
 }
