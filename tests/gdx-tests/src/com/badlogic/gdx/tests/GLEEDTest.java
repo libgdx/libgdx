@@ -33,7 +33,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Logger;
 
-public class GLEEDTest extends GdxTest {
+public class GleedTest extends GdxTest {
 	
 	enum State {
 		Loading,
