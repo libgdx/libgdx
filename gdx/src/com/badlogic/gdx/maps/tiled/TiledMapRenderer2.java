@@ -1,25 +1,6 @@
 package com.badlogic.gdx.maps.tiled;
 
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y4;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -49,7 +30,7 @@ public interface TiledMapRenderer2 {
 	public void renderObject(MapObject object);
 	public void renderTileLayer(TiledMapTileLayer layer);
 	
-	public class BaseTiledMapRenderer implements TiledMapRenderer2 {
+	public class BatchTiledMapRenderer implements TiledMapRenderer2 {
 		
 		protected TiledMap map;
 
@@ -75,14 +56,14 @@ public interface TiledMapRenderer2 {
 			return viewBounds;
 		}
 		
-		public BaseTiledMapRenderer(TiledMap map) {
+		public BatchTiledMapRenderer(TiledMap map) {
 			this.map = map;
 			this.unitScale = 1;
 			this.spriteBatch = new SpriteBatch();
 			this.viewBounds = new Rectangle();
 		}
 		
-		public BaseTiledMapRenderer(TiledMap map, float unitScale) {
+		public BatchTiledMapRenderer(TiledMap map, float unitScale) {
 			this.map = map;
 			this.unitScale = unitScale;
 			this.viewBounds = new Rectangle();
@@ -136,7 +117,92 @@ public interface TiledMapRenderer2 {
 
 	}
 	
-	public class IsometricTiledMapRenderer extends  BaseTiledMapRenderer {
+	public class CacheTiledMapRenderer implements TiledMapRenderer2 {
+		protected TiledMap map;
+
+		protected float unitScale;
+		
+		protected SpriteCache spriteCache;
+		
+		protected Rectangle viewBounds; 
+
+		public TiledMap getMap() {
+			return map;			
+		}
+		
+		public float getUnitScale() {
+			return unitScale;
+		}
+		
+		public SpriteCache getSpriteCache() {
+			return spriteCache;
+		}
+
+		public Rectangle getViewBounds() {
+			return viewBounds;
+		}
+		
+		public CacheTiledMapRenderer(TiledMap map) {
+			this.map = map;
+			this.unitScale = 1;
+			this.spriteCache = new SpriteCache();
+			this.viewBounds = new Rectangle();
+		}
+		
+		public CacheTiledMapRenderer(TiledMap map, float unitScale) {
+			this.map = map;
+			this.unitScale = unitScale;
+			this.viewBounds = new Rectangle();
+			this.spriteCache = new SpriteCache();
+		}
+		
+		@Override
+		public void setViewBounds (float x, float y, float width, float height) {
+			viewBounds.set(x, y, width, height);
+		}
+		
+		@Override
+		public void setProjectionMatrix (Matrix4 projection) {
+			spriteCache.setProjectionMatrix(projection);
+		}
+		
+		@Override
+		public void begin () {
+			spriteCache.begin();
+		}
+
+		@Override
+		public void end () {
+			spriteCache.end();
+		}
+		
+		@Override
+		public void render () {
+			for (MapLayer layer : map.getLayers()) {
+				if (layer.getVisible()) {
+					if (layer instanceof TiledMapTileLayer) {
+						renderTileLayer((TiledMapTileLayer) layer);
+					} else {
+						for (MapObject object : layer.getObjects()) {
+							renderObject(object);
+						}
+					}					
+				}				
+			}			
+		}
+
+		@Override
+		public void renderObject (MapObject object) {
+			// Do nothing
+		}
+
+		@Override
+		public void renderTileLayer (TiledMapTileLayer layer) {
+			// Do nothing			
+		}
+		
+	}
+	public class IsometricTiledMapRenderer extends  BatchTiledMapRenderer {
 
 		private TiledMap map;
 		
@@ -172,7 +238,6 @@ public interface TiledMapRenderer2 {
 			float halfTileHeight = tileHeight * 0.5f;
 			
 			for (int row = row2; row >= row1; row--) {
-				boolean firstCol = true;
 				for (int col = col1; col <= col2; col++) {
 					float x = (col * halfTileWidth) + (row * halfTileWidth);
 					float y = (row * halfTileHeight) - (col * halfTileHeight);
@@ -292,7 +357,7 @@ public interface TiledMapRenderer2 {
 		
 	}
 	
-	public class OrthogonalTiledMapRenderer extends BaseTiledMapRenderer {
+	public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 		
 		private float[] vertices = new float[20];
 		
