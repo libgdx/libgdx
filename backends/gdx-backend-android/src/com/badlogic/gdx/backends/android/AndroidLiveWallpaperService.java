@@ -67,7 +67,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 	}
 	
 	static final String TAG = "AndroidLiveWallpaperService";
-	static boolean DEBUG	= true;//false;	// TODO remember to disable this
+	static boolean DEBUG	= false;	// TODO remember to disable this
 
 	
 	// instance of libGDX Application, acts as singleton - one instance per application (per WallpaperService)
