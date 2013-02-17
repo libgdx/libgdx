@@ -6,7 +6,7 @@ import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.utils.Array;
 
 /**
- * @brief Represents a Tiled created map, adds the concept of tiles and tilesets
+ * @brief Represents a tiled map, adds the concept of tiles and tilesets
  * 
  * @see Map
  */

@@ -67,5 +67,10 @@ public class TiledMapTileSet {
 	public void removeTile(int id) {
 		tiles.remove(id);
 	}
+
+	public int size() {
+		return tiles.size;
+	}
 	
 }
+

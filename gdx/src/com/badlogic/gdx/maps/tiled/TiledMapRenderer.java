@@ -1,27 +1,44 @@
 package com.badlogic.gdx.maps.tiled;
 
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C1;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C2;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C3;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C4;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U1;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U2;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U3;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U4;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V1;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V2;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V3;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V4;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X1;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X2;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X3;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X4;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y1;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y2;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y3;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y4;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 
 public interface TiledMapRenderer {
 	
-	public void setViewBounds(float x, float y, float width, float height);
-	
-	public void setProjectionMatrix(Matrix4 projection);
+	public void setView(Matrix4 projectionMatrix, float viewBoundsX, float viewBoundsY, float viewBoundsWidth, float viewBoundsHeight);
+	public void setView(OrthographicCamera camera);
 	
 	public void begin();
 	public void end();
@@ -71,13 +88,14 @@ public interface TiledMapRenderer {
 		}
 		
 		@Override
-		public void setViewBounds (float x, float y, float width, float height) {
-			viewBounds.set(x, y, width, height);
+		public void setView(Matrix4 projectionMatrix, float viewBoundsX, float viewBoundsY, float viewBoundsWidth, float viewBoundsHeight) {
+			spriteBatch.setProjectionMatrix(projectionMatrix);
+			viewBounds.set(viewBoundsX, viewBoundsY, viewBoundsWidth, viewBoundsHeight);
 		}
 		
 		@Override
-		public void setProjectionMatrix (Matrix4 projection) {
-			spriteBatch.setProjectionMatrix(projection);
+		public void setView(OrthographicCamera camera) {
+			setView(camera.combined, camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2, camera.viewportWidth, camera.viewportHeight);
 		}
 		
 		@Override
@@ -157,13 +175,14 @@ public interface TiledMapRenderer {
 		}
 		
 		@Override
-		public void setViewBounds (float x, float y, float width, float height) {
-			viewBounds.set(x, y, width, height);
+		public void setView(Matrix4 projectionMatrix, float viewBoundsX, float viewBoundsY, float viewBoundsWidth, float viewBoundsHeight) {
+			spriteCache.setProjectionMatrix(projectionMatrix);
+			viewBounds.set(viewBoundsX, viewBoundsY, viewBoundsWidth, viewBoundsHeight);
 		}
 		
 		@Override
-		public void setProjectionMatrix (Matrix4 projection) {
-			spriteCache.setProjectionMatrix(projection);
+		public void setView(OrthographicCamera camera) {
+			setView(camera.combined, camera.position.x - camera.viewportWidth / 2, camera.position.y - camera.viewportHeight / 2, camera.viewportWidth, camera.viewportHeight);
 		}
 		
 		@Override
@@ -508,7 +527,7 @@ public interface TiledMapRenderer {
 		
 	}
 
-	public class OrthogonalTiledMapRenderer2 implements TiledMapRenderer {
+	public class OrthogonalTiledMapRenderer2 extends CacheTiledMapRenderer {
 
 		protected TiledMap map;
 
@@ -523,27 +542,11 @@ public interface TiledMapRenderer {
 		public boolean recache;
 		
 		public OrthogonalTiledMapRenderer2(TiledMap map) {
-			this.map = map;
-			this.unitScale = 1;
-			this.spriteCache = new SpriteCache(4000, true);
-			this.viewBounds = new Rectangle();
+			super(map);
 		}
 		
 		public OrthogonalTiledMapRenderer2(TiledMap map, float unitScale) {
-			this.map = map;
-			this.unitScale = unitScale;
-			this.viewBounds = new Rectangle();
-			this.spriteCache = new SpriteCache(4000, true);
-		}	
-		
-		@Override
-		public void setViewBounds (float x, float y, float width, float height) {
-			viewBounds.set(x, y, width, height);
-		}
-
-		@Override
-		public void setProjectionMatrix (Matrix4 projection) {
-			spriteCache.setProjectionMatrix(projection);
+			super(map, unitScale);
 		}
 
 		@Override
@@ -595,12 +598,6 @@ public interface TiledMapRenderer {
 				}				
 			}
 
-		}
-
-		@Override
-		public void renderObject (MapObject object) {
-			// TODO Auto-generated method stub
-			
 		}
 
 		boolean cached = false;

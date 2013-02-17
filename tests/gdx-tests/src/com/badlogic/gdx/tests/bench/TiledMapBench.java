@@ -78,11 +78,10 @@ public class TiledMapBench extends GdxTest {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		if (cameraController.dirty) {
 			camera.update();
-			renderer.setProjectionMatrix(camera.combined);
+			renderer.setView(camera);
 			cameraController.dirty = false;
 			((OrthogonalTiledMapRenderer2) renderer).recache = true;
 		}
-		renderer.setViewBounds(camera.position.x - camera.viewportWidth * 0.5f, camera.position.y - camera.viewportHeight * 0.5f, camera.viewportWidth, camera.viewportHeight);
 		renderer.begin();
 		renderer.render();
 		renderer.end();

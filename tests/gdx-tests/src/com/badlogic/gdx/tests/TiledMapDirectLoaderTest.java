@@ -55,8 +55,7 @@ public class TiledMapDirectLoaderTest extends GdxTest {
 		Gdx.gl.glClearColor(0.55f, 0.55f, 0.55f, 1f);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
-		renderer.setProjectionMatrix(camera.combined);
-		renderer.setViewBounds(camera.position.x - camera.viewportWidth * 0.5f, camera.position.y - camera.viewportHeight * 0.5f, camera.viewportWidth, camera.viewportHeight);
+		renderer.setView(camera);
 		renderer.begin();
 		renderer.render();
 		renderer.end();
