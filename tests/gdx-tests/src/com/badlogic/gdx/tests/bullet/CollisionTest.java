@@ -128,4 +128,10 @@ public class CollisionTest extends ShootTest {
 		projectile = shoot(x, y);
 		return true;
 	}
+	
+	@Override
+	public void dispose () {
+		super.dispose();
+		projectile = null;
+	}
 }

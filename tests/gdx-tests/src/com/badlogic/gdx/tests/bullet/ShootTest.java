@@ -57,4 +57,10 @@ public class ShootTest extends BaseBulletTest {
 		shoot(x, y);
 		return true;
 	}
+	
+	@Override
+	public void dispose () {
+		super.dispose();
+		ground = null;
+	}
 }
