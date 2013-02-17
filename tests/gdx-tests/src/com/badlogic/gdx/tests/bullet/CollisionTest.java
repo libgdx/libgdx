@@ -94,13 +94,14 @@ public class CollisionTest extends ShootTest {
 		// See InternalTickTest on how to implement it.
 		
 		// Check what the projectile hits
-		if (projectile != null)
+		if (projectile != null) {
+			color = projectile.color;
+			projectile.color = Color.RED;
 			world.collisionWorld.contactTest(projectile.body, contactCB);
+		}
 		// Check for other collisions
 		updateContactInfo();
 		
-		color = projectile.color;
-		projectile.color = Color.RED;
 		if (hits.size > 0) {
 			for (int i = 0; i < hits.size; i++) {
 				colors.add(hits.get(i).color);
@@ -114,15 +115,12 @@ public class CollisionTest extends ShootTest {
 			}
 		}
 		render(false);
-		if (hits.size > 0) {
+		if (projectile != null)
 			projectile.color = color;
-			for (int i = 0; i < hits.size; i++)
-				hits.get(i).color = colors.get(i);
-		}
-		if (contacts.size > 0) {
-			for (int i = 0; i < contacts.size; i++)
-				contacts.get(i).color = colors.get(hits.size+i);
-		}
+		for (int i = 0; i < hits.size; i++)
+			hits.get(i).color = colors.get(i);
+		for (int i = 0; i < contacts.size; i++)
+			contacts.get(i).color = colors.get(hits.size+i);
 	}
 	
 	@Override
