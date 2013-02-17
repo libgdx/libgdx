@@ -6,31 +6,25 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 
-public interface TiledMapRenderer {
+public interface TiledMapRenderer extends MapRenderer {
 	
-	public void setViewBounds(float x, float y, float width, float height);
-	
-	public void setProjectionMatrix(Matrix4 projection);
-	
-	public void begin();
-	public void end();
-	
-	public void render();
 	public void renderObject(MapObject object);
 	public void renderTileLayer(TiledMapTileLayer layer);
 	
-	public class BatchTiledMapRenderer implements TiledMapRenderer {
+	public abstract class BatchTiledMapRenderer implements TiledMapRenderer {
 		
 		protected TiledMap map;
 
@@ -71,28 +65,41 @@ public interface TiledMapRenderer {
 		}
 		
 		@Override
-		public void setViewBounds (float x, float y, float width, float height) {
+		public void setView(OrthographicCamera camera) {
+			spriteBatch.setProjectionMatrix(camera.combined);
+			float width = camera.viewportWidth * camera.zoom;
+			float height = camera.viewportHeight * camera.zoom;
+			viewBounds.set(camera.position.x - width / 2, camera.position.y - height / 2, width, height);
+		}
+		
+		@Override
+		public void setView (Matrix4 projection, float x, float y, float width, float height) {
+			spriteBatch.setProjectionMatrix(projection);
 			viewBounds.set(x, y, width, height);
 		}
 		
 		@Override
-		public void setProjectionMatrix (Matrix4 projection) {
-			spriteBatch.setProjectionMatrix(projection);
-		}
-		
-		@Override
-		public void begin () {
+		public void render () {
 			spriteBatch.begin();
-		}
-
-		@Override
-		public void end () {
+			for (MapLayer layer : map.getLayers()) {
+				if (layer.getVisible()) {
+					if (layer instanceof TiledMapTileLayer) {
+						renderTileLayer((TiledMapTileLayer) layer);
+					} else {
+						for (MapObject object : layer.getObjects()) {
+							renderObject(object);
+						}
+					}					
+				}				
+			}
 			spriteBatch.end();
 		}
 		
 		@Override
-		public void render () {
-			for (MapLayer layer : map.getLayers()) {
+		public void render (int[] layers) {
+			spriteBatch.begin();
+			for (int layerIdx : layers) {
+				MapLayer layer = map.getLayers().getLayer(layerIdx);
 				if (layer.getVisible()) {
 					if (layer instanceof TiledMapTileLayer) {
 						renderTileLayer((TiledMapTileLayer) layer);
@@ -102,106 +109,11 @@ public interface TiledMapRenderer {
 						}
 					}					
 				}				
-			}			
+			}		
+			spriteBatch.end();
 		}
-
-		@Override
-		public void renderObject (MapObject object) {
-			// Do nothing
-		}
-
-		@Override
-		public void renderTileLayer (TiledMapTileLayer layer) {
-			// Do nothing			
-		}
-
 	}
 	
-	public class CacheTiledMapRenderer implements TiledMapRenderer {
-		protected TiledMap map;
-
-		protected float unitScale;
-		
-		protected SpriteCache spriteCache;
-		
-		protected Rectangle viewBounds; 
-
-		public TiledMap getMap() {
-			return map;			
-		}
-		
-		public float getUnitScale() {
-			return unitScale;
-		}
-		
-		public SpriteCache getSpriteCache() {
-			return spriteCache;
-		}
-
-		public Rectangle getViewBounds() {
-			return viewBounds;
-		}
-		
-		public CacheTiledMapRenderer(TiledMap map) {
-			this.map = map;
-			this.unitScale = 1;
-			this.spriteCache = new SpriteCache();
-			this.viewBounds = new Rectangle();
-		}
-		
-		public CacheTiledMapRenderer(TiledMap map, float unitScale) {
-			this.map = map;
-			this.unitScale = unitScale;
-			this.viewBounds = new Rectangle();
-			this.spriteCache = new SpriteCache();
-		}
-		
-		@Override
-		public void setViewBounds (float x, float y, float width, float height) {
-			viewBounds.set(x, y, width, height);
-		}
-		
-		@Override
-		public void setProjectionMatrix (Matrix4 projection) {
-			spriteCache.setProjectionMatrix(projection);
-		}
-		
-		@Override
-		public void begin () {
-			spriteCache.begin();
-		}
-
-		@Override
-		public void end () {
-			spriteCache.end();
-		}
-		
-		@Override
-		public void render () {
-			for (MapLayer layer : map.getLayers()) {
-				if (layer.getVisible()) {
-					if (layer instanceof TiledMapTileLayer) {
-						renderTileLayer((TiledMapTileLayer) layer);
-					} else {
-						for (MapObject object : layer.getObjects()) {
-							renderObject(object);
-						}
-					}					
-				}				
-			}			
-		}
-
-		@Override
-		public void renderObject (MapObject object) {
-			// Do nothing
-		}
-
-		@Override
-		public void renderTileLayer (TiledMapTileLayer layer) {
-			// Do nothing			
-		}
-		
-	}
 	public class IsometricTiledMapRenderer extends  BatchTiledMapRenderer {
 
 		private TiledMap map;
@@ -534,19 +446,24 @@ public interface TiledMapRenderer {
 			this.unitScale = unitScale;
 			this.viewBounds = new Rectangle();
 			this.spriteCache = new SpriteCache(4000, true);
-		}	
+		}
 		
 		@Override
-		public void setViewBounds (float x, float y, float width, float height) {
-			viewBounds.set(x, y, width, height);
+		public void setView(OrthographicCamera camera) {
+			spriteCache.setProjectionMatrix(camera.combined);
+			float width = camera.viewportWidth * camera.zoom;
+			float height = camera.viewportHeight * camera.zoom;
+			viewBounds.set(camera.position.x - width / 2, camera.position.y - height / 2, width, height);
+			recache = true;
 		}
-
+		
 		@Override
-		public void setProjectionMatrix (Matrix4 projection) {
+		public void setView (Matrix4 projection, float x, float y, float width, float height) {
 			spriteCache.setProjectionMatrix(projection);
+			viewBounds.set(x, y, width, height);
+			recache = true;
 		}
 
-		@Override
 		public void begin () {
 			if (recache) {
 				cached = false;
@@ -563,7 +480,6 @@ public interface TiledMapRenderer {
 			
 		}
 
-		@Override
 		public void end () {
 			if (!cached) {
 				spriteCache.endCache();
@@ -579,6 +495,7 @@ public interface TiledMapRenderer {
 
 		@Override
 		public void render () {
+			begin();
 			if (cached) {
 				spriteCache.draw(0);
 			} else {
@@ -594,7 +511,13 @@ public interface TiledMapRenderer {
 					}				
 				}				
 			}
-
+			end();
+		}
+		
+		@Override
+		public void render (int[] layers) {
+			// FIXME not implemented
+			throw new UnsupportedOperationException("Not implemented");
 		}
 
 		@Override

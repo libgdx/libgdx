@@ -20,10 +20,9 @@ public class TiledMapAssetManagerTest extends GdxTest {
 	private TiledMapRenderer renderer;
 	private OrthographicCamera camera;
 	private OrthoCamController cameraController;
-	
-	AssetManager assetManager;
-	BitmapFont font;
-	SpriteBatch batch;
+	private AssetManager assetManager;
+	private BitmapFont font;
+	private SpriteBatch batch;
 	
 	@Override
 	public void create() {		
@@ -53,11 +52,8 @@ public class TiledMapAssetManagerTest extends GdxTest {
 		Gdx.gl.glClearColor(100f / 255f, 100f / 255f, 250f / 255f, 1f);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
-		renderer.setProjectionMatrix(camera.combined);
-		renderer.setViewBounds(camera.position.x - camera.viewportWidth * 0.5f, camera.position.y - camera.viewportHeight * 0.5f, camera.viewportWidth, camera.viewportHeight);
-		renderer.begin();
+		renderer.setView(camera);
 		renderer.render();
-		renderer.end();
 		batch.begin();
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20); 
 		batch.end();

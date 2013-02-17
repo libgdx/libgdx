@@ -38,6 +38,7 @@ import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
@@ -53,20 +54,11 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<Map, GleedMapLoader
 	static public class Parameters extends AssetLoaderParameters<Map> {
 	}
 	
-	static private Logger s_logger = new Logger("GleedMapLoader");
-	
-	private String m_atlasFile = "";
-	private TextureAtlas m_atlas = null;
-	private String m_pathRoot = "data";
-	private Map m_map = null;
-	private AssetManager m_assetManager = null;
-	
-	/**
-	 * @param loggingLevel logger level, output more or less information
-	 */
-	public static void setLoggingLevel(int loggingLevel) {
-		s_logger.setLevel(loggingLevel);
-	}
+	private String atlasFile = "";
+	private TextureAtlas atlas = null;
+	private String pathRoot = "data";
+	private Map map = null;
+	private AssetManager assetManager = null;
 	
 	/**
 	 * @param resolver
@@ -84,27 +76,21 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<Map, GleedMapLoader
 	 */
 	@Override
 	public void loadAsync (AssetManager manager, String fileName, Parameters parameter) {
-		m_assetManager = manager;
-		
-		s_logger.info("loading file " + fileName);
+		assetManager = manager;
 		
 		try {
 			XmlReader reader = new XmlReader();
 			Element root = reader.parse(Gdx.files.internal(fileName));
 			
-			s_logger.info("loading level properties");
-			
-			if (m_map == null) {
-				m_map = new Map();
-				loadProperties(root, m_map.getProperties());
+			if (map == null) {
+				map = new Map();
+				loadProperties(root, map.getProperties());
 			}
 			
-			if (!m_atlasFile.isEmpty()) {
-				s_logger.info("fetching texture atlas " + m_atlasFile);
-				m_atlas = manager.get(m_atlasFile, TextureAtlas.class);
+			if (!atlasFile.isEmpty()) {
+				atlas = manager.get(atlasFile, TextureAtlas.class);
 			}
 			
-			s_logger.info("loading layers");
 			Array<Element> layerElements = root.getChildByName("Layers").getChildrenByName("Layer");
 			
 			for (int i = 0; i < layerElements.size; ++i) {
@@ -113,7 +99,7 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<Map, GleedMapLoader
 			}
 			
 		} catch (Exception e) {
-			s_logger.error("error loading file " + fileName + " " + e.getMessage());
+			throw new GdxRuntimeException("Couldn't load Gleed map '" + fileName + "'", e);
 		}
 	}
 	
@@ -128,7 +114,7 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<Map, GleedMapLoader
 	 */
 	@Override
 	public Map loadSync (AssetManager manager, String fileName, Parameters parameter) {
-		return m_map;
+		return map;
 	}
 	
 	/**
@@ -139,30 +125,27 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<Map, GleedMapLoader
 	 */
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, Parameters parameter) {
-		s_logger.info("getting asset dependencies for " + fileName);
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
 		
 		try {
 			XmlReader reader = new XmlReader();
 			Element root = reader.parse(Gdx.files.internal(fileName));
 			
-			if (m_map == null) {
-				m_map = new Map();
+			if (map == null) {
+				map = new Map();
 				
-				loadProperties(root, m_map.getProperties());
+				loadProperties(root, map.getProperties());
 			}
 			
-			MapProperties properties = m_map.getProperties();
+			MapProperties properties = map.getProperties();
 			
-			m_atlasFile = properties.getAsString("atlas", "");
-			m_pathRoot = properties.getAsString("assetRoot", "data");
+			atlasFile = properties.getAsString("atlas", "");
+			pathRoot = properties.getAsString("assetRoot", "data");
 			
-			if (!m_atlasFile.isEmpty()) {
-				s_logger.info("texture atlas dependency " + m_atlasFile);
-				dependencies.add(new AssetDescriptor(m_atlasFile, TextureAtlas.class));
+			if (!atlasFile.isEmpty()) {
+				dependencies.add(new AssetDescriptor(atlasFile, TextureAtlas.class));
 			}
 			else {
-				s_logger.info("textures asset folder " + m_pathRoot);
 				Array<Element> elements = root.getChildrenByNameRecursively("Item");
 				
 				for (int i = 0; i < elements.size; ++i) {
@@ -170,14 +153,13 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<Map, GleedMapLoader
 					
 					if (element.getAttribute("xsi:type", "").equals("TextureItem")) {
 						String[] pathParts = element.getChildByName("texture_filename").getText().split("\\\\");
-						s_logger.info("texture dependency " + m_pathRoot + "/" + pathParts[pathParts.length - 1]);
-						dependencies.add(new AssetDescriptor(m_pathRoot + "/" + pathParts[pathParts.length - 1], Texture.class));
+						dependencies.add(new AssetDescriptor(pathRoot + "/" + pathParts[pathParts.length - 1], Texture.class));
 					}
 				}
 			}
 			
 		} catch (Exception e) {
-			s_logger.error("error loading asset dependencies " + fileName + " " + e.getMessage());
+			throw new GdxRuntimeException("Couldn't load dependencies of Gleed map '" + fileName + "'", e);
 		}
 		
 		return dependencies;
@@ -238,7 +220,6 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<Map, GleedMapLoader
 		layer.setName(element.getAttribute("Name", ""));
 		layer.setVisible(Boolean.parseBoolean(element.getAttribute("Visible", "true")));
 		
-		s_logger.info("loading layer " + layer.getName());
 		Array<Element> items = element.getChildByName("Items").getChildrenByName("Item");
 		
 		for (int i = 0; i < items.size; ++i) {
@@ -271,15 +252,13 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<Map, GleedMapLoader
 			layer.getObjects().addObject(mapObject);
 		}
 		
-		m_map.getLayers().addLayer(layer);
+		map.getLayers().addLayer(layer);
 	}
 	
 	private void loadObject(Element element, MapObject mapObject) {
 		mapObject.setName(element.getAttribute("Name", ""));
 		mapObject.setVisible(Boolean.parseBoolean(element.getAttribute("Visible", "true")));
 		loadProperties(element, mapObject.getProperties());
-		
-		s_logger.info("loading element " + mapObject.getName());
 	}
 	
 	private TextureMapObject loadTexture(Element item) {
@@ -292,13 +271,13 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<Map, GleedMapLoader
 		
 		TextureRegion region;
 		
-		if (m_atlasFile.isEmpty()) {
+		if (atlasFile.isEmpty()) {
 			String[] pathParts = item.getChildByName("texture_filename").getText().split("\\\\");
-			region = new TextureRegion(m_assetManager.get(m_pathRoot + "/" + pathParts[pathParts.length - 1], Texture.class));
+			region = new TextureRegion(assetManager.get(pathRoot + "/" + pathParts[pathParts.length - 1], Texture.class));
 		}
 		else {
 			String[] assetParts = item.getChildByName("asset_name").getText().split("\\\\");
-			region = new TextureRegion(m_atlas.findRegion(assetParts[assetParts.length - 1]));
+			region = new TextureRegion(atlas.findRegion(assetParts[assetParts.length - 1]));
 		}
 		
 		region.flip(Boolean.parseBoolean(item.getChildByName("FlipHorizontally").getText()),

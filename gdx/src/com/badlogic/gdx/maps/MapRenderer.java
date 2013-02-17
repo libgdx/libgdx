@@ -1,42 +1,42 @@
 package com.badlogic.gdx.maps;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 
 /**
  * @brief models a common way of rendering Map objects
  */
 public interface MapRenderer {
-
-	public void setProjectionMatrix(Matrix4 projectionMatrix);
-	
 	/**
-	 * Begin rendering.
+	 * Sets the projection matrix and viewbounds from the given camera. If
+	 * the camera changes, you have to call this method again. The viewbounds
+	 * are taken from the camera's position and viewport size as well as the 
+	 * scale. This method will only work if the camera's direction vector
+	 * is (0,0,-1) and its up vector is (0, 1, 0), which are the defaults. 
+	 * @param camera the {@link OrthographicCamera}
 	 */
-	public void begin();
+	public void setView(OrthographicCamera camera);
 	
 	/**
-	 * End rendering.
-	 */
-	public void end();
-	
-	/**
-	 * Renders all the layers of a map using the given viewbounds.
-	 * 
+	 * Sets the projection matrix for rendering, as well as the bounds of the map
+	 * which should be rendered. Make sure that the frustum spanned by the projection
+	 * matrix coincides with the viewbounds.
+	 * @param projectionMatrix
 	 * @param viewboundsX
 	 * @param viewboundsY
 	 * @param viewboundsWidth
 	 * @param viewboundsHeight
 	 */
-	public void render(float viewboundsX, float viewboundsY, float viewboundsWidth, float viewboundsHeight);
+	public void setView(Matrix4 projectionMatrix, float viewboundsX, float viewboundsY, float viewboundsWidth, float viewboundsHeight);
 	
-	/** Renders the given layers of a map using the given viewbounds.
+	/**
+	 * Renders all the layers of a map.
+	 */
+	public void render();
+	
+	/** Renders the given layers of a map.
 	 * 
-	 * @param viewboundsX
-	 * @param viewboundsY
-	 * @param viewboundsWidth
-	 * @param viewboundsHeight
 	 * @param layers
 	 */
-	public void render(float viewboundsX, float viewboundsY, float viewboundsWidth, float viewboundsHeight, int[] layers);
-	
+	public void render(int[] layers);
 }

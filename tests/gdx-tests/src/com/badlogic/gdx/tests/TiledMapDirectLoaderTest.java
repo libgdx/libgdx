@@ -1,23 +1,14 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer.IsometricTiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer.OrthogonalTiledMapRenderer2;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
 
@@ -27,9 +18,8 @@ public class TiledMapDirectLoaderTest extends GdxTest {
 	private TiledMapRenderer renderer;
 	private OrthographicCamera camera;
 	private OrthoCamController cameraController;
-	
-	BitmapFont font;
-	SpriteBatch batch;
+	private BitmapFont font;
+	private SpriteBatch batch;
 	
 	@Override
 	public void create() {		
@@ -47,7 +37,7 @@ public class TiledMapDirectLoaderTest extends GdxTest {
 		batch = new SpriteBatch();
 		
 		map = new TmxMapLoader().load("data/maps/tiles.tmx");
-		renderer = new OrthogonalTiledMapRenderer2(map, 1f / 32f);
+		renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
 	}
 
 	@Override
@@ -55,11 +45,8 @@ public class TiledMapDirectLoaderTest extends GdxTest {
 		Gdx.gl.glClearColor(0.55f, 0.55f, 0.55f, 1f);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
-		renderer.setProjectionMatrix(camera.combined);
-		renderer.setViewBounds(camera.position.x - camera.viewportWidth * 0.5f, camera.position.y - camera.viewportHeight * 0.5f, camera.viewportWidth, camera.viewportHeight);
-		renderer.begin();
+		renderer.setView(camera);
 		renderer.render();
-		renderer.end();
 		batch.begin();
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20); 
 		batch.end();

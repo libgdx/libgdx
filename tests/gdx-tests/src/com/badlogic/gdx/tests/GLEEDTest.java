@@ -63,7 +63,6 @@ public class GleedTest extends GdxTest {
 		manager = new AssetManager();
 		camera = new OrthographicCamera(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
 		camera.zoom = 2.0f;
-		GleedMapLoader.setLoggingLevel(Logger.INFO);
 		manager.setLoader(Map.class, new GleedMapLoader(new InternalFileHandleResolver()));
 		manager.load("data/gleedtest.xml", Map.class);
 		manager.load("data/font.fnt", BitmapFont.class);
@@ -90,9 +89,8 @@ public class GleedTest extends GdxTest {
 		}
 		
 		if (state == State.Running) {
-			renderer.begin();
-			renderer.render(camera);
-			renderer.end();
+			renderer.setView(camera);
+			renderer.render();
 			
 			if (Gdx.input.isKeyPressed(Keys.UP)) {
 				camera.position.y += 5.0f;
