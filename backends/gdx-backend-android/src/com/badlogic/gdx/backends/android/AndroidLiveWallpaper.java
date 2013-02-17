@@ -106,7 +106,12 @@ public class AndroidLiveWallpaper implements Application {
 	}
 
 	public void onPause() {
+		if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.TAG, " > AndroidLiveWallpaper - onPause()");
+
 		graphics.pause();
+		
+		if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.TAG, " > AndroidLiveWallpaper - onPause() graphics paused!");
+
 		//if (audio != null) audio.pause();	// jw: moved to AndroidGraphicsLiveWallpaper.onFrameRender
 		input.unregisterSensorListeners();
 		
@@ -116,6 +121,8 @@ public class AndroidLiveWallpaper implements Application {
 			else if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
 			else throw new RuntimeException("unimplemented");
 		}
+		
+		if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.TAG, " > AndroidLiveWallpaper - onPause() done!");
 	}
 
 	public void onResume() {

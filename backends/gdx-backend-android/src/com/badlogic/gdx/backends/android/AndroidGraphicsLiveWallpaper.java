@@ -490,7 +490,10 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		synchronized (synch) {
 			running = true;
 			resume = true;
-			while (resume) {
+			
+			// by jw: added synchronization, there was nothing before:)
+			resuming = true;
+			while (resuming) {
 				try {
 					synch.wait();
 				} catch (InterruptedException ignored) {
@@ -505,7 +508,9 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			if (!running) return;
 			running = false;
 			pause = true;
-			while (pause) {
+			
+			pausing = true;
+			while (pausing) {	// by jw: from pause
 				try {
 					synch.wait();
 				} catch (InterruptedException ignored) {
@@ -520,7 +525,8 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			running = false;
 			destroy = true;
 
-			while (destroy) {
+			destroying = true;
+			while (destroying) {	// by jw: from destroy
 				try {
 					synch.wait();
 				} catch (InterruptedException ex) {
@@ -530,6 +536,13 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		}
 	}
 
+	
+	// by jw: synch.notiftAll was called to early, this helps to notify in right time
+	volatile boolean resuming = false;
+	volatile boolean pausing = false;
+	volatile boolean destroying = false;
+	
+	
 	@Override
 	public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
 		long time = System.nanoTime();
@@ -553,22 +566,22 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 
 			if (resume) {
 				resume = false;
-				synch.notifyAll();
+				// by jw: originally was not synchronized
 			}
 
 			if (pause) {
 				pause = false;
-				synch.notifyAll();
+				//synch.notifyAll();	// by jw: removed
 			}
 
 			if (destroy) {
 				destroy = false;
-				synch.notifyAll();
+				//synch.notifyAll();	// by jw: removed
 			}
 		}
 
 		if (lresume) {
-			((AndroidAudio)app.getAudio()).resume();	// jw: added
+			((AndroidAudio)app.getAudio()).resume();	// jw: added (moved from AndroidLiveWallpaper.onResume)
 			app.listener.resume();
 			Gdx.app.log("AndroidGraphics", "resumed");
 		}
@@ -625,6 +638,24 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			frameStart = time;
 		}
 		frames++;
+		
+		// by jw: added
+		synchronized (synch) {
+			if (resuming) {
+				resuming = false;
+				synch.notifyAll();
+			}
+			
+			if (pausing) {
+				pausing = false;
+				synch.notifyAll();
+			}
+
+			if (destroying) {
+				destroying = false;
+				synch.notifyAll();
+			}
+		}
 	}
 
 	/** {@inheritDoc} */

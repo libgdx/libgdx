@@ -64,7 +64,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		GdxNativesLoader.load();
 	}
 	
-	final String TAG = "AndroidLiveWallpaperService";
+	static final String TAG = "AndroidLiveWallpaperService";
 	static boolean DEBUG	= true;//false;	// TODO remember to disable this
 
 	
@@ -110,9 +110,10 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 	 */
 	@Override
 	public void onCreate () {
-		if (DEBUG) Log.d(TAG, " > AndroidLiveWallpaperService - onCreate()");
-		super.onCreate();
-		
+		if (DEBUG) Log.d(TAG, " > AndroidLiveWallpaperService - onCreate() " + hashCode());
+		Log.i(TAG, "service created");
+
+		super.onCreate();		
 	}
 	
 	
@@ -123,6 +124,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 	@Override
 	public Engine onCreateEngine () {
 		if (DEBUG) Log.d(TAG, " > AndroidLiveWallpaperService - onCreateEngine()");
+		Log.i(TAG, "engine created");
 		
 		return new AndroidWallpaperEngine();
 	}
@@ -218,7 +220,9 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 	 */
 	@Override
 	public void onDestroy () {
-		if (DEBUG) Log.d(TAG, " > AndroidLiveWallpaperService - onDestroy()");
+		if (DEBUG) Log.d(TAG, " > AndroidLiveWallpaperService - onDestroy() " + hashCode());
+		Log.i(TAG, "service destroyed");
+		
 		super.onDestroy();	// can call engine.onSurfaceDestroyed, must be before bellow code:
 		
 		if (app != null)
@@ -227,12 +231,14 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			if (app.graphics != null)
 			{
 				// app.graphics.clearManagedCaches(); already called in onDeepPauseApplication
+				
+				/* FIXME what is it? I was drunk? 
 				if (app.graphics.view != null)
 				{
 					if (app.graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)app.graphics.view).onResume();
 					else if (app.graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)app.graphics.view).onResume();
 					else throw new RuntimeException("unimplemented");
-				}
+				}*/
 			}
 			
 			app = null;
@@ -293,6 +299,8 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			setLinkedEngine(this);
 			
 			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onSurfaceCreated() " + hashCode() + ", running: " + engines + ", linked: " + (linkedEngine == this));
+			Log.i(TAG, "engine surface created");
+			
 			super.onSurfaceCreated(holder);
 	
 			if (engines == 1) {
@@ -333,7 +341,9 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		 */
 		@Override
 		public void onSurfaceChanged (final SurfaceHolder holder, final int format, final int width, final int height) {
-			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onSurfaceChanged() isPreview: " + isPreview() + ", " + hashCode() + ", running: " + engines + ", linked: " + (linkedEngine == this));
+			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onSurfaceChanged() isPreview: " + isPreview() + ", " + hashCode() + ", running: " + engines + ", linked: " + (linkedEngine == this) + ", sufcace valid: " + getSurfaceHolder().getSurface().isValid());
+			Log.i(TAG, "engine surface changed");
+			
 			super.onSurfaceChanged(holder, format, width, height);
 			
 			if (linkedEngine == this)
@@ -343,6 +353,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 				waitingSurfaceChangedEvent = new Runnable() {
 					@Override
 					public void run () {
+						if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onSurfaceChanged() calling delayed..");
 						onSurfaceChanged(holder, format, width, height);
 					}
 				};
@@ -359,12 +370,19 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		 */
 		@Override
 		public void onVisibilityChanged (final boolean visible) {
-			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onVisibilityChanged(" + visible + ") " + hashCode());
+			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onVisibilityChanged(" + visible + ") " + hashCode()  + ", sufcace valid: " + getSurfaceHolder().getSurface().isValid());
 			super.onVisibilityChanged(visible);
-			
+
+			// Android WallpaperService sends fake visibility changed events sometimes to force some buggy live wallpapers to shut down when they aren't visible, it can cause problems in current implementation and it is not nessesary - wallpaper is pausing correctly
+			if (visible != isVisible())
+			{
+				if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onVisibilityChanged() fake visibilityChanged event! Android WallpaperService likes do that!");
+				return;
+			}
+
 			notifyVisibilityChanged(visible);
 		}
-		
+
 		
 		private void notifyVisibilityChanged(final boolean visible)
 		{
@@ -382,6 +400,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		public void onResume () {
 			visibleEngines ++;
 			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onResume() " + hashCode() + ", running: " + engines + ", linked: " + (linkedEngine == this) + ", visible: " + visibleEngines);
+			Log.i(TAG, "engine resumed");
 			
 			if (linkedEngine != null) {
 				if (linkedEngine != this) {
@@ -405,7 +424,8 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		public void onPause () {
 			visibleEngines --;
 			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onPause() " + hashCode() + ", running: " + engines + ", linked: " + (linkedEngine == this) + ", visible: " + visibleEngines);
-	
+			Log.i(TAG, "engine pausde");
+			
 			if (linkedEngine != null) {
 				if (visibleEngines == 0)
 					app.onPause();
@@ -413,6 +433,8 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 				//if (linkedEngine == this)
 				//	app.graphics.view.surfaceDestroyed(getSurfaceHolder());
 			}
+			
+			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onPause() done!");
 		}
 
 		
@@ -422,12 +444,16 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		 * you should no longer try to access this surface. If you have a rendering thread that directly 
 		 * accesses the surface, you must ensure that thread is no longer touching the Surface before 
 		 * returning from this function.
+		 * 
+		 * Attention!
+		 * In some cases GL context may be shutdown right now! and SurfaceHolder.Surface.isVaild = false
 		 */
 		@Override
 		public void onSurfaceDestroyed (final SurfaceHolder holder) {
 			engines --;
 			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onSurfaceDestroyed() " + hashCode()  + ", running: " + engines + " ,linked: " + (linkedEngine == this) + ", isVisible: " + isVisible);
-
+			Log.i(TAG, "engine surface destroyed");
+			
 			// application can be in resumed state at this moment if app surface had been lost just after it was created (wallpaper selected too fast from preview mode etc)
 			// it is too late probably - calling on pause causes deadlock
 			//notifyVisibilityChanged(false);
