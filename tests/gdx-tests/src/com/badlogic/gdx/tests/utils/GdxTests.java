@@ -75,7 +75,7 @@ public class GdxTests {
 		// InternationalFontsTest.class, VorbisTest.class
 		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
-		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GleedTest.class, GamepadTest.class, NetAPITest.class, TiledMapAssetManagerTest.class, TiledMapBench.class,
+		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GleedTest.class, GamepadTest.class, NetAPITest.class, TideMapAssetManagerTest.class, TideMapDirectLoaderTest.class, TiledMapAssetManagerTest.class, TiledMapBench.class,
 		RunnablePostTest.class, Vector2dTest.class));
 	
 	public static List<String> getNames () {

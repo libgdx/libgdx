@@ -215,7 +215,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 			int x, y;
 			for (int row = 0, rowCount = rows.size; row < rowCount; row++) {
 				Element currentRow = rows.get(row);
-				y = row;
+				y = rowCount -1 - row;
 				x = 0;
 				for (int child = 0, childCount = currentRow.getChildCount(); child < childCount; child++) {
 					Element currentChild = currentRow.getChild(child);
@@ -226,7 +226,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 					} else if (name.equals("Null")) {
 						x += currentChild.getIntAttribute("Count");
 					} else if (name.equals("Static")) {
-						layer.setCell(x, y, currentTileSet.getTile(firstgid + currentChild.getIntAttribute("Index")));
+						layer.setCell(x++, y, currentTileSet.getTile(firstgid + currentChild.getIntAttribute("Index")));
 					} else if (name.equals("Animated")) {
 						// Create an AnimatedTile
 						int interval = currentChild.getInt("Interval");
@@ -236,16 +236,17 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 							Element frame = frames.getChild(frameChild);
 							String frameName = frame.getName();
 							if (frameName.equals("TileSheet")) {
-								currentTileSet = tilesets.getTileSet(currentChild.getAttribute("Ref"));
+								currentTileSet = tilesets.getTileSet(frame.getAttribute("Ref"));
 								firstgid = currentTileSet.getProperties().getAsInteger("firstgid");
 							} else if (frameName.equals("Static")) {
 								frameTiles.add((StaticTiledMapTile) currentTileSet.getTile(firstgid + frame.getIntAttribute("Index")));
 							}
 						}
-						layer.setCell(x, y, new AnimatedTiledMapTile(interval / 1000f, frameTiles)); //TODO: Reuse existing animated tiles
+						layer.setCell(x++, y, new AnimatedTiledMapTile(interval / 1000f, frameTiles)); //TODO: Reuse existing animated tiles
 					}
 				}
 			}
+			map.getLayers().addLayer(layer);
 		}
 	}
 	
