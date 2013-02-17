@@ -17,7 +17,6 @@
 package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.math.MathUtils;
-
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -34,6 +33,7 @@ public class Array<T> implements Iterable<T> {
 	public boolean ordered;
 
 	private ArrayIterator iterator;
+	private Predicate.PredicateIterable<T> predicateIterable;
 
 	/** Creates an ordered array with a capacity of 16. */
 	public Array () {
@@ -362,6 +362,17 @@ public class Array<T> implements Iterable<T> {
 		else
 			iterator.index = 0;
 		return iterator;
+	}
+	
+	/** Returns an iterable for the selected items in the array. Remove is supported, but not between hasNext() and next(). 
+	 * Note that the same iteratable instance is returned each time this method is called. 
+	 * Use the {@link Predicate.PredicateIterable} constructor for nested or multithreaded iteration. */
+	public Iterable<T> select(Predicate<T> predicate) {
+		if (predicateIterable == null)
+			predicateIterable = new Predicate.PredicateIterable<T>(this, predicate);
+		else
+			predicateIterable.set(this, predicate);
+		return predicateIterable;
 	}
 
 	/** Reduces the size of the array to the specified size. If the array is already smaller than the specified size, no action is
