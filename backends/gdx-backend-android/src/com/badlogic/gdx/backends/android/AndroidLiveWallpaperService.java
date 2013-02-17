@@ -14,6 +14,7 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.badlogic.gdx.Application;
@@ -31,6 +32,7 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
 import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.Context;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.LiveFolders;
@@ -214,7 +216,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 	
 	
 	/**
-	 * Service is dying
+	 * Service is dying, and will not be used again.
 	 * You have to finish execution off all living threads there or short after there, 
 	 * besides the new wallpaper service wouldn't be able to start.
 	 */
@@ -227,23 +229,63 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		
 		if (app != null)
 		{
-			// it is too late co call app.onDestroy
+			// it is too late to call app.onDestroy (gl context is dead)
+			//app.onDestroy();
+			
+			// so we do what we can..
 			if (app.graphics != null)
 			{
-				// app.graphics.clearManagedCaches(); already called in onDeepPauseApplication
+				// not necessary - already called in onDeepPauseApplication
+				// app.graphics.clearManagedCaches();
 				
-				/* FIXME what is it? I was drunk? 
-				if (app.graphics.view != null)
+				// kill the GLThread managed by GLSurfaceView (only for GLSurfaceView because GLSurffaceViewCupcake stops thread in onPause events - and it is not so easy and safe for GLSurfaceView)
+				if (app.graphics.view != null && (app.graphics.view instanceof GLSurfaceView))
 				{
-					if (app.graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)app.graphics.view).onResume();
-					else if (app.graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)app.graphics.view).onResume();
-					else throw new RuntimeException("unimplemented");
-				}*/
+					GLSurfaceView glSurfaceView = (GLSurfaceView)app.graphics.view;
+					try {
+						Method method = null;
+						for (Method m : glSurfaceView.getClass().getMethods()) 
+						{
+							if (m.getName().equals("onDestroy"))	// implemented in AndroidGraphicsLiveWallpaper, redirects to onDetachedFromWindow - which stops GLThread by calling mGLThread.requestExitAndWait()
+							{
+								method = m;
+								break;
+							}
+						}
+						
+						if (method != null)
+						{
+							method.invoke(glSurfaceView);
+							if (DEBUG) Log.d(TAG, " > AndroidLiveWallpaperService - onDestroy() stopped GLThread managed by GLSurfaceView");
+						}
+						else
+							throw new Exception("method not found!");
+					} 
+					catch (Throwable t)
+					{
+						// error while scheduling exit of GLThread, GLThread will remain live and wallpaper service wouldn't be able to shutdown completely
+						Log.e(TAG, "failed to destroy GLSurfaceView's thread! GLSurfaceView.onDetachedFromWindow impl changed since API lvl 16!");
+						t.printStackTrace();
+					}
+				}
+			}
+			
+			if (app.audio != null)
+			{
+				// dispose audio and free native resources, mandatory sinde app.onDispose is never called in live wallpaper
+				app.audio.dispose();
 			}
 			
 			app = null;
 			view = null;
 		}
+	}
+	
+	
+	@Override
+	protected void finalize () throws Throwable {
+		Log.i(TAG, "service finalized");
+		super.finalize();
 	}
 	
 	// end of lifecycle methods ////////////////////////////////////////////////////////

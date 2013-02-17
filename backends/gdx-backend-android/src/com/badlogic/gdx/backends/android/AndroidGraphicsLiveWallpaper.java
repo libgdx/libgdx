@@ -161,6 +161,9 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 				public SurfaceHolder getHolder () {
 					return getSurfaceHolder();
 				}
+				public void onDestroy () {
+					onDetachedFromWindow();	// calls GLSurfaceView.mGLThread.requestExitAndWait();
+				}
 				// <- specific for live wallpapers
 			};
 			
@@ -187,6 +190,9 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 					@Override
 					public SurfaceHolder getHolder () {
 						return getSurfaceHolder();
+					}
+					public void onDestroy () {
+						onDetachedFromWindow();	// calls GLSurfaceView.mGLThread.requestExitAndWait();
 					}
 					// <- specific for live wallpapers
 				};
@@ -628,7 +634,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 
 		if (ldestroy) {
 			app.listener.dispose();
-			((AndroidAudio)app.getAudio()).dispose();
+			((AndroidAudio)app.getAudio()).dispose();	// jw: it will be never called in wallpaper, so I will call it in AndroidLiveWallpaper.onDestroy
 			Gdx.app.log("AndroidGraphics", "destroyed");
 		}
 
