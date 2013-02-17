@@ -102,9 +102,12 @@ public class OrthogonalTiledMapRenderer2 implements TiledMapRenderer {
 		if (!cached) {
 			spriteCache.endCache();
 			cached = true;
-			begin();
-			render();
-			end();
+			Gdx.gl.glEnable(GL10.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			spriteCache.begin();
+			spriteCache.draw(0);
+			spriteCache.end();
+			Gdx.gl.glDisable(GL10.GL_BLEND);
 		} else {
 			spriteCache.end();
 			Gdx.gl.glDisable(GL10.GL_BLEND);
