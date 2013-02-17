@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
 
@@ -20,10 +20,9 @@ public class TiledMapAssetManagerTest extends GdxTest {
 	private TiledMapRenderer renderer;
 	private OrthographicCamera camera;
 	private OrthoCamController cameraController;
-	
-	AssetManager assetManager;
-	BitmapFont font;
-	SpriteBatch batch;
+	private AssetManager assetManager;
+	private BitmapFont font;
+	private SpriteBatch batch;
 	
 	@Override
 	public void create() {		
@@ -32,6 +31,7 @@ public class TiledMapAssetManagerTest extends GdxTest {
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, (w / h) * 10, 10);
+		camera.zoom = 2;
 		camera.update();
 		
 		cameraController = new OrthoCamController(camera);
@@ -54,9 +54,7 @@ public class TiledMapAssetManagerTest extends GdxTest {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
 		renderer.setView(camera);
-		renderer.begin();
 		renderer.render();
-		renderer.end();
 		batch.begin();
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20); 
 		batch.end();
