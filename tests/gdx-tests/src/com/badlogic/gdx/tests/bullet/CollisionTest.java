@@ -22,6 +22,7 @@ import com.badlogic.gdx.physics.bullet.ContactResultCallback;
 import com.badlogic.gdx.physics.bullet.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.btCollisionObjectWrapper;
 import com.badlogic.gdx.physics.bullet.btManifoldPoint;
+import com.badlogic.gdx.physics.bullet.btPersistentManifold;
 import com.badlogic.gdx.tests.bullet.CollisionWorldTest.TestContactResultCallback;
 import com.badlogic.gdx.utils.Array;
 
@@ -29,6 +30,7 @@ import com.badlogic.gdx.utils.Array;
 public class CollisionTest extends ShootTest {
 	BulletEntity projectile;
 	Array<BulletEntity> hits = new Array<BulletEntity>();
+	Array<BulletEntity> contacts = new Array<BulletEntity>();
 	Array<Color> colors = new Array<Color>();
 	
 	public class TestContactResultCallback extends ContactResultCallback
@@ -39,13 +41,35 @@ public class CollisionTest extends ShootTest {
 			btCollisionObject other = colObj0Wrap.getM_collisionObject() == projectile.body ?
 					colObj1Wrap.getM_collisionObject() : colObj0Wrap.getM_collisionObject();
 			if (other != null && other.userData != null && other.userData instanceof BulletEntity) {
-				if (!hits.contains((BulletEntity)other.userData, true))
+				BulletEntity ent = (BulletEntity)other.userData;
+				if (ent != ground && !hits.contains(ent, true))
 					hits.add((BulletEntity)other.userData);
 			}
 			return 0f;
 		}
 	}
 	TestContactResultCallback contactCB;
+	
+	public void updateContactInfo() {
+		int n = world.dispatcher.getNumManifolds();
+		for (int i = 0; i < n; i++) {
+			btPersistentManifold manifold = world.dispatcher.getManifoldByIndexInternal(i);
+			btCollisionObject objA = manifold.getBody0();
+			btCollisionObject objB = manifold.getBody1();
+			if (objA != ground.body && objB != ground.body) {
+				if (objA.userData != null && objA.userData instanceof BulletEntity) {
+					BulletEntity ent = (BulletEntity)objA.userData; 
+					if (ent != projectile && !contacts.contains(ent, true) && !hits.contains(ent, true))
+						contacts.add(ent);
+				}
+				if (objB.userData != null && objB.userData instanceof BulletEntity) {
+					BulletEntity ent = (BulletEntity)objB.userData;
+					if (ent != projectile && !contacts.contains(ent, true) && !hits.contains(ent, true))
+						contacts.add(ent);
+				}
+			}
+		}
+	}
 
 	@Override
 	public void create () {
@@ -63,15 +87,30 @@ public class CollisionTest extends ShootTest {
 		Color color = null;
 		update();
 		hits.clear();
+		contacts.clear();
 		colors.clear();
+		
+		// Note that this might miss collisions, use InternalTickCallback to check for collision on every tick.
+		// See InternalTickTest on how to implement it.
+		
+		// Check what the projectile hits
 		if (projectile != null)
 			world.collisionWorld.contactTest(projectile.body, contactCB);
+		// Check for other collisions
+		updateContactInfo();
+		
+		color = projectile.color;
+		projectile.color = Color.RED;
 		if (hits.size > 0) {
-			color = projectile.color;
-			projectile.color = Color.RED;
 			for (int i = 0; i < hits.size; i++) {
 				colors.add(hits.get(i).color);
 				hits.get(i).color = Color.RED;
+			}
+		}
+		if (contacts.size > 0) {
+			for (int i = 0; i < contacts.size; i++) {
+				colors.add(contacts.get(i).color);
+				contacts.get(i).color = Color.BLUE;
 			}
 		}
 		render(false);
@@ -79,6 +118,10 @@ public class CollisionTest extends ShootTest {
 			projectile.color = color;
 			for (int i = 0; i < hits.size; i++)
 				hits.get(i).color = colors.get(i);
+		}
+		if (contacts.size > 0) {
+			for (int i = 0; i < contacts.size; i++)
+				contacts.get(i).color = colors.get(hits.size+i);
 		}
 	}
 	
