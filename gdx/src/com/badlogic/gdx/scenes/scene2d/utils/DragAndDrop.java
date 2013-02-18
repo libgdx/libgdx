@@ -40,22 +40,17 @@ public class DragAndDrop {
 	float dragActorX = 14, dragActorY = -20;
 	long dragStartTime;
 	int dragTime = 250;
-	boolean isDragging = false;
-	Object dragSyncObj = new Object();
-	int activePointer;
+	int activePointer = -1;
 
 	public void addSource (final Source source) {
 		DragListener listener = new DragListener() {
 			public void dragStart (InputEvent event, float x, float y, int pointer) {
-				synchronized (dragSyncObj) {
-					if (isDragging) {
-						event.stop();
-						return;
-					}
-
-					isDragging = true;
-					activePointer = pointer;
+				if (activePointer != -1) {
+					event.stop();
+					return;
 				}
+
+				activePointer = pointer;
 
 				dragStartTime = System.currentTimeMillis();
 				payload = source.dragStart(event, getTouchDownX(), getTouchDownY(), pointer);
@@ -119,9 +114,7 @@ public class DragAndDrop {
 				if (payload == null) return;
 				if (pointer != activePointer) return;
 
-				synchronized (dragSyncObj) {
-					isDragging = false;
-				}
+				activePointer = -1;
 
 				if (System.currentTimeMillis() - dragStartTime < dragTime) isValidTarget = false;
 				if (dragActor != null) dragActor.remove();
