@@ -517,8 +517,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			resume = true;
 			
 			// by jw: added synchronization, there was nothing before:)
-			resuming = true;
-			while (resuming) {
+			while (resume || resuming) {
 				try {
 					synch.wait();
 				} catch (InterruptedException ignored) {
@@ -534,8 +533,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			running = false;
 			pause = true;
 			
-			pausing = true;
-			while (pausing) {	// by jw: from pause
+			while (pause || pausing) {	// by jw: from pause
 				try {
 					synch.wait();
 				} catch (InterruptedException ignored) {
@@ -550,8 +548,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			running = false;
 			destroy = true;
 
-			destroying = true;
-			while (destroying) {	// by jw: from destroy
+			while (destroy || destroying) {	// by jw: from destroy
 				try {
 					synch.wait();
 				} catch (InterruptedException ex) {
@@ -592,16 +589,19 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			if (resume) {
 				resume = false;
 				// by jw: originally was not synchronized
+				resuming = true;
 			}
 
 			if (pause) {
 				pause = false;
 				//synch.notifyAll();	// by jw: removed
+				pausing = true;
 			}
 
 			if (destroy) {
 				destroy = false;
 				//synch.notifyAll();	// by jw: removed
+				destroying = true;
 			}
 		}
 

@@ -421,12 +421,14 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onVisibilityChanged(" + visible + ") " + hashCode()  + ", sufcace valid: " + getSurfaceHolder().getSurface().isValid());
 			super.onVisibilityChanged(visible);
 
+			/* this is helpfull but doesn't work correctly in all situations, can cause serious problems with visibleEngines counters! do not uncomment this 
 			// Android WallpaperService sends fake visibility changed events sometimes to force some buggy live wallpapers to shut down when they aren't visible, it can cause problems in current implementation and it is not nessesary - wallpaper is pausing correctly
 			if (visible != isVisible())
 			{
 				if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onVisibilityChanged() fake visibilityChanged event! Android WallpaperService likes do that!");
 				return;
 			}
+			*/
 
 			notifyVisibilityChanged(visible);
 		}
@@ -472,7 +474,14 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		public void onPause () {
 			visibleEngines --;
 			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onPause() " + hashCode() + ", running: " + engines + ", linked: " + (linkedEngine == this) + ", visible: " + visibleEngines);
-			Log.i(TAG, "engine pausde");
+			Log.i(TAG, "engine paused");
+			
+			// this shouldn't never happen, but if it will.. live wallpaper will not be stopped when device will pause and it will drain all battery - shortly!
+			if (visibleEngines >= engines)
+			{
+				Log.e(AndroidLiveWallpaperService.TAG, "wallpaper lifecycle error, counted too many visible engines! repairing..");
+				visibleEngines = Math.max(engines - 1, 0);
+			}
 			
 			if (linkedEngine != null) {
 				if (visibleEngines == 0)
