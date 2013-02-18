@@ -57,9 +57,16 @@ import android.view.WindowManager;
  * You have to kill all not daemon threads you created in {@link ApplicationListener#pause()} method.
  * {@link ApplicationListener#dispose()} is never called!
  * If you leave live non daemon threads, wallpaper service wouldn't be able to close, 
- * this will cause problems with wallpaper lifecycle.
+ * this can cause problems with wallpaper lifecycle.
  * 
- * @author libGDX team, enhanced by Jaroslaw Wisniewski <j.wisniewski@appsisle.com>
+ * Notice #2!
+ * On some devices wallpaper service is not killed immediately after exiting from preview. Service object 
+ * is destroyed (onDestroy called) but process on which it runs remains alive. When user comes back to wallpaper
+ * preview, new wallpaper service object is created, but in the same process. It is important if you plan to
+ * use static variables / objects - they will be shared between living instances of wallpaper services'!
+ * And depending on your implementation - it can cause problems you were not prepared to.
+ * 
+ * @author Jaroslaw Wisniewski <j.wisniewski@appsisle.com>
  */
 public abstract class AndroidLiveWallpaperService extends WallpaperService {
 	static {
@@ -168,7 +175,6 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		if (DEBUG) Log.d(TAG, " > AndroidLiveWallpaperService - initialize()");
 		
 		app.initialize(listener, config);
-		//view = ((AndroidGraphicsLiveWallpaper)app.getGraphics()).getView();
 		
 		if (config.getTouchEventsForLiveWallpaper && Integer.parseInt(android.os.Build.VERSION.SDK) < 9)
 			linkedEngine.setTouchEventsEnabled(true);
@@ -507,8 +513,6 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			// free surface if it belongs to this engine and if it was initialized
 			if (linkedEngine == this && view != null)
 				view.surfaceDestroyed(holder);
-			//else
-			//	save surface destroyed state for further processing
 		
 			waitingSurfaceChangedEvent = null;
 			
@@ -534,15 +538,6 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		public Bundle onCommand (final String pAction, final int pX, final int pY, final int pZ, final Bundle pExtras,
 			final boolean pResultRequested) {
 			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onCommand(" + pAction + " " + pX + " " + pY + " " + pZ + " " + pExtras + " " + pResultRequested + ")" + ", linked: " + (linkedEngine == this));
-
-			// FIXME
-			/*if (linkedEngine == this) {
-				if (pAction.equals(WallpaperManager.COMMAND_TAP)) {
-						linkedApp.input.onTap(pX, pY);
-				} else if (pAction.equals(WallpaperManager.COMMAND_DROP)) {
-						linkedApp.input.onDrop(pX, pY);
-				}
-			}*/
 			
 			return super.onCommand(pAction, pX, pY, pZ, pExtras, pResultRequested);
 		}
