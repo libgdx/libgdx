@@ -89,8 +89,11 @@ public class AndroidLiveWallpaper implements Application {
 	
 	public void initialize(ApplicationListener listener, AndroidApplicationConfiguration config) {
 		graphics = new AndroidGraphicsLiveWallpaper(this, config, config.resolutionStrategy==null?new FillResolutionStrategy():config.resolutionStrategy);
-		//input = new AndroidInput(this, this.getService(), null, config);
-		input = AndroidInputFactory.newAndroidInput(this, this.getService(), graphics.view, config);
+		
+		// AndroidInputFactory causes exceptions when obfuscated: java.lang.RuntimeException: Couldn't construct AndroidInput, this should never happen
+		//input = AndroidInputFactory.newAndroidInput(this, this.getService(), graphics.view, config);
+		input = new AndroidInput(this, this.getService(), null, config);
+
 		audio = new AndroidAudio(this.getService(), config);
 		
 		// jw: added initialization of android local storage: /data/data/<app package>/files/
