@@ -403,6 +403,15 @@ public class LwjglAWTCanvas implements Application {
 		}
 	}
 
+	/** Test whether the canvas' context is current. */
+	public boolean isCurrent() {
+		try {
+			return canvas.isCurrent();
+		} catch (LWJGLException ex) {
+			throw new GdxRuntimeException(ex);
+		}
+	}
+
 	/** @param cursor May be null. */
 	public void setCursor (Cursor cursor) {
 		this.cursor = cursor;

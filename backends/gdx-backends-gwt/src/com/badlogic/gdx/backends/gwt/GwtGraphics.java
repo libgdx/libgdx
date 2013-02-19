@@ -275,17 +275,15 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
-		throw new GdxRuntimeException("No supported");
 	}
 
 	@Override
 	public boolean isContinuousRendering () {
-		throw new GdxRuntimeException("No supported");
+		return false;
 	}
 
 	@Override
 	public void requestRendering () {
-		throw new GdxRuntimeException("No supported");
 	}
 
 	@Override
