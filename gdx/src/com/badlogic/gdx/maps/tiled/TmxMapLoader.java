@@ -205,13 +205,13 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 				image = getRelativeFileHandle(tmxFile, imageSource);
 			}
 
-			Texture texture = imageResolver.getImage(image.path());
+			TextureRegion texture = imageResolver.getImage(image.path());
 
 			TiledMapTileSet tileset = new TiledMapTileSet();
 			tileset.setName(name);
 			
-			int stopWidth = texture.getWidth() - tilewidth;
-			int stopHeight = texture.getHeight() - tileheight;
+			int stopWidth = texture.getRegionWidth() - tilewidth;
+			int stopHeight = texture.getRegionHeight() - tileheight;
 
 			int id = firstgid;
 			

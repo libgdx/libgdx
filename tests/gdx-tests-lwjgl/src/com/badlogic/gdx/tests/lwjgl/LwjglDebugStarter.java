@@ -18,6 +18,11 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.tests.GleedTest;
+import com.badlogic.gdx.tests.TideMapAssetManagerTest;
+import com.badlogic.gdx.tests.TideMapDirectLoaderTest;
+import com.badlogic.gdx.tests.TiledMapAssetManagerTest;
+import com.badlogic.gdx.tests.TiledMapDirectLoaderTest;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
@@ -31,7 +36,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new TiledMapBench();
+		GdxTest test = new TideMapDirectLoaderTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		new LwjglApplication(test, config);

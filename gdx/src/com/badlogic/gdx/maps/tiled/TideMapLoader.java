@@ -155,7 +155,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 			int spacingY = Integer.parseInt(spacingParts[1]);
 
 			FileHandle image = getRelativeFileHandle(tideFile, imageSource);
-			Texture texture = imageResolver.getImage(image.path());
+			TextureRegion texture = imageResolver.getImage(image.path());
 			
 			// TODO: Actually load the tilesheet
 			// Need to make global ids as Tide doesn't have global ids.
@@ -170,8 +170,8 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 			tileset.getProperties().put("firstgid", firstgid);
 			int gid = firstgid;
 			
-			int stopWidth = texture.getWidth() - tileSizeX;
-			int stopHeight = texture.getHeight() - tileSizeY;
+			int stopWidth = texture.getRegionWidth() - tileSizeX;
+			int stopHeight = texture.getRegionHeight() - tileSizeY;
 			
 			for (int y = marginY; y <= stopHeight; y += tileSizeY + spacingY) {
 				for (int x = marginX; x <= stopWidth; x += tileSizeX + spacingX) {

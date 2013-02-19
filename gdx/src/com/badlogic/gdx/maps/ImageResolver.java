@@ -2,6 +2,8 @@ package com.badlogic.gdx.maps;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -15,7 +17,7 @@ public interface ImageResolver {
 	 * @param name
 	 * @return the Texture for the given image name or null.
 	 */
-	public Texture getImage(String name);
+	public TextureRegion getImage(String name);
 	
 	public static class DirectImageResolver implements ImageResolver {
 		private final ObjectMap<String, Texture> images;
@@ -25,8 +27,8 @@ public interface ImageResolver {
 		}
 
 		@Override
-		public Texture getImage (String name) {
-			return images.get(name);
+		public TextureRegion getImage (String name) {
+			return new TextureRegion(images.get(name));
 		}
 	}
 	
@@ -38,8 +40,21 @@ public interface ImageResolver {
 		}
 		
 		@Override
-		public Texture getImage (String name) {
-			return assetManager.get(name, Texture.class);
+		public TextureRegion getImage (String name) {
+			return new TextureRegion(assetManager.get(name, Texture.class));
+		}
+	}
+	
+	public static class TextureAtlasImageResolver implements ImageResolver {
+		private final TextureAtlas atlas;
+		
+		public TextureAtlasImageResolver(TextureAtlas atlas) {
+			this.atlas = atlas;
+		}
+		
+		@Override
+		public TextureRegion getImage (String name) {
+			return atlas.findRegion(name);
 		}
 	}
 }
