@@ -22,7 +22,6 @@ import com.badlogic.gdx.math.Vector2;
  * the methods here do nothing with the event.  Users are expected to override the methods they are interested in, like this:
  * 
  * <pre>
- * {@code
  * actor.addListener(new InputListener() {
  *    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
  *       Gdx.app.log("Example", "touch started at (" +x+ ", " +y+ ")");
@@ -31,7 +30,6 @@ import com.badlogic.gdx.math.Vector2;
  *       Gdx.app.log("Example", "touch done at (" +x+ ", " +y+ ")");
  *    }
  * });
- * }
  * </pre>
  */
 public class InputListener implements EventListener {
