@@ -31,23 +31,21 @@ import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pools;
 
-/** 2D scene graph node. An actor has a position, rectangular size, origin, scale, rotation, Z index, and color. The position corresponds to
- * the unrotated, unscaled bottom left corner of the actor. The position is relative to the actor's parent. The origin is relative
- * to the position and is used for scale and rotation.
+/** 2D scene graph node. An actor has a position, rectangular size, origin, scale, rotation, Z index, and color. The position
+ * corresponds to the unrotated, unscaled bottom left corner of the actor. The position is relative to the actor's parent. The
+ * origin is relative to the position and is used for scale and rotation.
  * <p>
- * An actor has a list of in-progress {@link Action actions} that are applied to the actor (over time).  These are generally used to change
- * the presentation of the actor (moving it, resizing it, etc).  See {@link #act(float)} and {@link Action}.
+ * An actor has a list of in-progress {@link Action actions} that are applied to the actor (over time). These are generally used to
+ * change the presentation of the actor (moving it, resizing it, etc). See {@link #act(float)} and {@link Action}.
  * <p>
- * An actor has two kinds of listeners associated with it: "capture" and regular.  
- * The listeners are notified of
- * events the actor or its children receive. 
- * The capture listeners are 
- * designed to allow a parent or container actor to hide events from child actors.  The regular listeners
- * are designed to allow an actor to respond to events that have been delivered.  See {@link #fire} for more details.
+ * An actor has two kinds of listeners associated with it: "capture" and regular. The listeners are notified of events the actor
+ * or its children receive. The capture listeners are designed to allow a parent or container actor to hide events from child
+ * actors. The regular listeners are designed to allow an actor to respond to events that have been delivered. See {@link #fire}
+ * for more details.
  * <p>
- * An {@link InputListener} can receive all the basic input events, and more 
- * complex listeners (like {@link ClickListener} and {@link ActorGestureListener}) can listen for and combine 
- * primitive events and recognize complex interactions like multi-click or pinch. 
+ * An {@link InputListener} can receive all the basic input events, and more complex listeners (like {@link ClickListener} and
+ * {@link ActorGestureListener}) can listen for and combine primitive events and recognize complex interactions like multi-click
+ * or pinch.
  * 
  * @author mzechner
  * @author Nathan Sweet */
@@ -98,15 +96,14 @@ public class Actor {
 	/** Sets this actor as the event {@link Event#setTarget(Actor) target} and propagates the event to this actor and ancestor
 	 * actors as necessary. If this actor is not in the stage, the stage must be set before calling this method.
 	 * <p>
-	 * Events are fired in 2 phases. 
+	 * Events are fired in 2 phases.
 	 * <ol>
-	 * <li>The first phase (the "capture" phase) notifies listeners on each actor starting at the root and propagating downward
-	 * to (and including) this actor.</li> 
-	 * <li>The second phase notifies listeners on each actor starting at this actor and, if
-	 * {@link Event#getBubbles()} is true, propagating upward to the root.</li>
+	 * <li>The first phase (the "capture" phase) notifies listeners on each actor starting at the root and propagating downward to
+	 * (and including) this actor.</li>
+	 * <li>The second phase notifies listeners on each actor starting at this actor and, if {@link Event#getBubbles()} is true,
+	 * propagating upward to the root.</li>
 	 * </ol>
-	 * If the event is {@link Event#stop() stopped} at any time,
-	 * it will not propagate to the next actor.
+	 * If the event is {@link Event#stop() stopped} at any time, it will not propagate to the next actor.
 	 * @return true if the event was {@link Event#cancel() cancelled}. */
 	public boolean fire (Event event) {
 		if (event.getStage() == null) event.setStage(getStage());
@@ -188,7 +185,8 @@ public class Actor {
 	 * {@link #isVisible() visible}, or null if no actor was hit. The point is specified in the actor's local coordinate system (0,0
 	 * is the bottom left of the actor and width,height is the upper right).
 	 * <p>
-	 * This method is used to delegate touchDown, mouse, and enter/exit events. If this method returns null, those events will not occur on this Actor.
+	 * This method is used to delegate touchDown, mouse, and enter/exit events. If this method returns null, those events will not
+	 * occur on this Actor.
 	 * <p>
 	 * The default implementation returns this actor if the point is within this actor's bounds.
 	 * 
@@ -206,9 +204,7 @@ public class Actor {
 		return false;
 	}
 
-	/**
-	 * Add a listener to receive events that {@link #hit(float, float, boolean) hit} this actor.  
-	 * See {@link #fire(Event)}.
+	/** Add a listener to receive events that {@link #hit(float, float, boolean) hit} this actor. See {@link #fire(Event)}.
 	 * 
 	 * @see InputListener
 	 * @see ClickListener */
@@ -261,6 +257,18 @@ public class Actor {
 		for (int i = actions.size - 1; i >= 0; i--)
 			actions.get(i).setActor(null);
 		actions.clear();
+	}
+
+	/** Removes all listeners on this actor. */
+	public void clearListeners () {
+		listeners.clear();
+		captureListeners.clear();
+	}
+
+	/** Removes all actions and listeners on this actor. */
+	public void clear () {
+		clearActions();
+		clearListeners();
 	}
 
 	/** Returns the stage that this actor is currently in, or null if not in a stage. */
