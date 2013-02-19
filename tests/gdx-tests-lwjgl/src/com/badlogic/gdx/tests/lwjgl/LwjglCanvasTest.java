@@ -26,7 +26,6 @@ public class LwjglCanvasTest extends JFrame {
 
 		Container container = getContentPane();
 		canvas = new LwjglCanvas(new UITest(), false);
-		canvas.getCanvas().setSize(200, 480);
 
 		container.add(canvas.getCanvas(), BorderLayout.CENTER);
 

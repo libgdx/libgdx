@@ -76,7 +76,7 @@ public class LwjglCanvas implements Application {
 		LwjglNativesLoader.load();
 
 		canvas = new Canvas() {
-			private final Dimension minSize = new Dimension(0, 0);
+			private final Dimension minSize = new Dimension(1, 1);
 
 			public final void addNotify () {
 				super.addNotify();
@@ -99,6 +99,7 @@ public class LwjglCanvas implements Application {
 				return minSize;
 			}
 		};
+		canvas.setSize(1, 1);
 		canvas.setIgnoreRepaint(true);
 
 		graphics = new LwjglGraphics(canvas, config) {
