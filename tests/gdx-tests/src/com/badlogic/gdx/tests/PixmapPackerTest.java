@@ -39,10 +39,6 @@ public class PixmapPackerTest extends GdxTest {
 		packer.pack("wheel", pixmap1);
 		packer.pack("egg", pixmap1);		
 		
-		for(Page page: packer.getPages()) {
-			PixmapIO.writePNG(Gdx.files.absolute("out.png"), page.getPixmap());
-		}
-		
 		atlas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest, false);
 		Gdx.app.log("PixmaPackerTest", "Number of textures: " + atlas.getTextures().size());
 	}
