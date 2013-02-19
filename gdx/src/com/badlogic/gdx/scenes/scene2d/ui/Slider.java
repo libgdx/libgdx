@@ -219,7 +219,6 @@ public class Slider extends Widget {
 
 	/** Sets the slider position, rounded to the nearest step size and clamped to the minumum and maximim values. */
 	public void setValue (float value) {
-		if (value < min || value > max) throw new IllegalArgumentException("value must be >= min and <= max: " + value);
 		value = MathUtils.clamp(Math.round(value / stepSize) * stepSize, min, max);
 		float oldValue = this.value;
 		if (value == oldValue) return;
