@@ -74,7 +74,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 	}
 	
 	static final String TAG = "AndroidLiveWallpaperService";
-	static boolean DEBUG	= false;	// TODO remember to disable this
+	static boolean DEBUG	= true;	// TODO remember to disable this
 
 	
 	// instance of libGDX Application, acts as singleton - one instance per application (per WallpaperService)
@@ -418,17 +418,20 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		 */
 		@Override
 		public void onVisibilityChanged (final boolean visible) {
-			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onVisibilityChanged(" + visible + ") " + hashCode()  + ", sufcace valid: " + getSurfaceHolder().getSurface().isValid());
+			boolean reportedVisible = isVisible();
+
+			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onVisibilityChanged(paramVisible: " + visible + " reportedVisible: " + reportedVisible + ") " + hashCode()  + ", sufcace valid: " + getSurfaceHolder().getSurface().isValid());
 			super.onVisibilityChanged(visible);
 
-			/* this is helpfull but doesn't work correctly in all situations, can cause serious problems with visibleEngines counters! do not uncomment this 
-			// Android WallpaperService sends fake visibility changed events sometimes to force some buggy live wallpapers to shut down when they aren't visible, it can cause problems in current implementation and it is not nessesary - wallpaper is pausing correctly
-			if (visible != isVisible())
-			{
-				if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onVisibilityChanged() fake visibilityChanged event! Android WallpaperService likes do that!");
-				return;
-			}
-			*/
+			// FIXME was modified, can be uncommented
+			// this is helpfull but doesn't work correctly in all situations, can cause serious problems with visibleEngines counters! do not uncomment this 
+			// Android WallpaperService sends fake visibility changed events to force some buggy live wallpapers to shut down after onSurfaceChanged when they aren't visible, it can cause problems in current implementation and it is not necessary
+			//if (reportedVisible == false && visible == true)
+			//{
+			//	if (DEBUG) Log.d(TAG, " > fake visibilityChanged event! Android WallpaperService likes do that!");
+			//	return;
+			//}
+
 
 			notifyVisibilityChanged(visible);
 		}
