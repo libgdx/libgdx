@@ -113,7 +113,14 @@ public class BaseBulletTest extends BulletTest {
 	
 	@Override
 	public void render () {
+		render(true);
+	}
+		
+	public void render(boolean update) {
 		fpsCounter.put(Gdx.graphics.getFramesPerSecond());
+		
+		if (update)
+			update();
 		
 		GL10 gl = Gdx.gl10;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
@@ -128,27 +135,32 @@ public class BaseBulletTest extends BulletTest {
 
 		camera.apply(Gdx.gl10);
 		
-		world.update();
+		world.render();
 		
 		performance.setLength(0);
 		performance.append("FPS: ").append(fpsCounter.value).append(", Bullet: ")
 			.append((int)(performanceCounter.load.value*100f)).append("%");
 	}
 	
-	public void shoot(final float x, final float y) {
-		shoot(x,y,30f);
+	public void update() {
+		world.update();
 	}
 	
-	public void shoot(final float x, final float y, final float impulse) {
-		shoot("box", x, y, impulse);
+	public BulletEntity shoot(final float x, final float y) {
+		return shoot(x,y,30f);
 	}
 	
-	public void shoot(final String what, final float x, final float y, final float impulse) {
+	public BulletEntity shoot(final float x, final float y, final float impulse) {
+		return shoot("box", x, y, impulse);
+	}
+	
+	public BulletEntity shoot(final String what, final float x, final float y, final float impulse) {
 		// Shoot a box
 		Ray ray = camera.getPickRay(x, y);
 		BulletEntity entity = world.add(what, ray.origin.x, ray.origin.y, ray.origin.z);
 		entity.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 		((btRigidBody)entity.body).applyCentralImpulse(ray.direction.mul(impulse));
+		return entity;
 	}
 	
 	public void setDebugMode(final int mode) {
