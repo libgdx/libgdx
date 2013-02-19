@@ -53,11 +53,21 @@ import android.view.WindowManager;
  * 
  * MyAppListener implements ApplicationListener, AndroidWallpaperListener
  * 
- * Notice!
- * You have to kill all not daemon threads you created in {@link ApplicationListener#pause()} method.
- * {@link ApplicationListener#dispose()} is never called!
- * If you leave live non daemon threads, wallpaper service wouldn't be able to close, 
- * this can cause problems with wallpaper lifecycle.
+ * Notice:
+ * Following methods are not called for live wallpapers:
+ * {@link ApplicationListener#pause()}
+ * {@link ApplicationListener#dispose()}
+ * TODO add callbacks to AndroidWallpaperListener allowing to notify app listener about changed visibility
+ * state of live wallpaper but called from main thread, not from GL thread:
+ * for example:
+ * AndroidWallpaperListener.visibilityChanged(boolean)
+ * 
+ * //obsoleted:
+ * //Notice!
+ * //You have to kill all not daemon threads you created in {@link ApplicationListener#pause()} method.
+ * //{@link ApplicationListener#dispose()} is never called!
+ * //If you leave live non daemon threads, wallpaper service wouldn't be able to close, 
+ * //this can cause problems with wallpaper lifecycle.
  * 
  * Notice #2!
  * On some devices wallpaper service is not killed immediately after exiting from preview. Service object 
@@ -73,7 +83,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		GdxNativesLoader.load();
 	}
 	
-	static final String TAG = "AndroidLiveWallpaperService";
+	static final String TAG = "WallpaperService";
 	static boolean DEBUG	= true;	// TODO remember to disable this
 
 	
@@ -202,11 +212,11 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 	
 	
 	/**
-	 * Called when the last engine is ending its live, it can occurs when:
+	 * Called when the last engine is ending its live, it can occur when:
 	 * 1. service is dying
 	 * 2. service is switching from one engine to another
 	 * 3. [only my assumption] when wallpaper is not visible and system is going to restore some memory 
-	 * 	for foreground process by disposing not used wallpaper engine
+	 * 	for foreground processing by disposing not used wallpaper engine
 	 * We can't destroy app there, because:
 	 * 1. in won't work - gl context is disposed right now and after app.onDestroy() app would stuck somewhere in gl thread synchronizing code
 	 * 2. we don't know if service create more engines, app is shared between them and should stay initialized waiting for new engines
@@ -235,52 +245,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		
 		if (app != null)
 		{
-			// it is too late to call app.onDestroy (gl context is dead)
-			//app.onDestroy();
-			
-			// so we do what we can..
-			if (app.graphics != null)
-			{
-				// not necessary - already called in onDeepPauseApplication
-				// app.graphics.clearManagedCaches();
-				
-				// kill the GLThread managed by GLSurfaceView (only for GLSurfaceView because GLSurffaceViewCupcake stops thread in onPause events - and it is not so easy and safe for GLSurfaceView)
-				if (app.graphics.view != null && (app.graphics.view instanceof GLSurfaceView))
-				{
-					GLSurfaceView glSurfaceView = (GLSurfaceView)app.graphics.view;
-					try {
-						Method method = null;
-						for (Method m : glSurfaceView.getClass().getMethods()) 
-						{
-							if (m.getName().equals("onDestroy"))	// implemented in AndroidGraphicsLiveWallpaper, redirects to onDetachedFromWindow - which stops GLThread by calling mGLThread.requestExitAndWait()
-							{
-								method = m;
-								break;
-							}
-						}
-						
-						if (method != null)
-						{
-							method.invoke(glSurfaceView);
-							if (DEBUG) Log.d(TAG, " > AndroidLiveWallpaperService - onDestroy() stopped GLThread managed by GLSurfaceView");
-						}
-						else
-							throw new Exception("method not found!");
-					} 
-					catch (Throwable t)
-					{
-						// error while scheduling exit of GLThread, GLThread will remain live and wallpaper service wouldn't be able to shutdown completely
-						Log.e(TAG, "failed to destroy GLSurfaceView's thread! GLSurfaceView.onDetachedFromWindow impl changed since API lvl 16!");
-						t.printStackTrace();
-					}
-				}
-			}
-			
-			if (app.audio != null)
-			{
-				// dispose audio and free native resources, mandatory sinde app.onDispose is never called in live wallpaper
-				app.audio.dispose();
-			}
+			app.onDestroy();
 			
 			app = null;
 			view = null;
@@ -423,15 +388,12 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onVisibilityChanged(paramVisible: " + visible + " reportedVisible: " + reportedVisible + ") " + hashCode()  + ", sufcace valid: " + getSurfaceHolder().getSurface().isValid());
 			super.onVisibilityChanged(visible);
 
-			// FIXME was modified, can be uncommented
-			// this is helpfull but doesn't work correctly in all situations, can cause serious problems with visibleEngines counters! do not uncomment this 
 			// Android WallpaperService sends fake visibility changed events to force some buggy live wallpapers to shut down after onSurfaceChanged when they aren't visible, it can cause problems in current implementation and it is not necessary
-			//if (reportedVisible == false && visible == true)
-			//{
-			//	if (DEBUG) Log.d(TAG, " > fake visibilityChanged event! Android WallpaperService likes do that!");
-			//	return;
-			//}
-
+			if (reportedVisible == false && visible == true)
+			{
+				if (DEBUG) Log.d(TAG, " > fake visibilityChanged event! Android WallpaperService likes do that!");
+				return;
+			}
 
 			notifyVisibilityChanged(visible);
 		}
@@ -446,6 +408,10 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 					onResume();
 				else
 					onPause();
+			}
+			else
+			{
+				if (DEBUG) Log.d(TAG, " > visible state is current, skipping visibilityChanged event!");
 			}
 		}
 		
@@ -479,7 +445,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onPause() " + hashCode() + ", running: " + engines + ", linked: " + (linkedEngine == this) + ", visible: " + visibleEngines);
 			Log.i(TAG, "engine paused");
 			
-			// this shouldn't never happen, but if it will.. live wallpaper will not be stopped when device will pause and it will drain all battery - shortly!
+			// this shouldn't never happen, but if it will.. live wallpaper will not be stopped when device will pause and lwp will drain battery.. shortly!
 			if (visibleEngines >= engines)
 			{
 				Log.e(AndroidLiveWallpaperService.TAG, "wallpaper lifecycle error, counted too many visible engines! repairing..");

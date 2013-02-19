@@ -18,12 +18,18 @@ import com.badlogic.gdx.ApplicationListener;
 
 /**
  * Implement this listener in your libGDX application additionally to {@link ApplicationListener} if you want 
- * to receive live wallpaper specific events, ex:
+ * receive live wallpaper specific events, ex:
  * MyApplication implements ApplicationListener, AndroidWallpaperListener
  * 
- * Notice, this callbacks will work only if app is running as android live wallpaper: 
- * you have to link application with AndroidLiveWallpaperService available
+ * Notice!
+ * This callbacks will work only if app is running as android live wallpaper: 
+ * you have to link application with AndroidLiveWallpaperService from
  * in gdx-android-backend
+ * 
+ * Notice libGDX developers!
+ * If you do not like android specific classes in gdx backend, you can rename this class to for example:
+ * com.badlogic.gdx.WallpaperListener so it will be 'generic' and not 'android specific', 
+ * but besides of point of view the fact is that live wallpapers are available only on android devices so far.
  * 
  * @author Jaroslaw Wisniewski <j.wisniewski@appsisle.com>
  *

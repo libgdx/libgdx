@@ -516,8 +516,8 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			running = true;
 			resume = true;
 			
-			// by jw: added synchronization, there was nothing before:)
-			while (resume || resuming) {
+			// by jw: added synchronization, there was nothing before
+			while (resume) {
 				try {
 					synch.wait();
 				} catch (InterruptedException ignored) {
@@ -533,7 +533,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			running = false;
 			pause = true;
 			
-			while (pause || pausing) {	// by jw: from pause
+			while (pause) {
 				try {
 					synch.wait();
 				} catch (InterruptedException ignored) {
@@ -548,7 +548,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			running = false;
 			destroy = true;
 
-			while (destroy || destroying) {	// by jw: from destroy
+			while (destroy) {
 				try {
 					synch.wait();
 				} catch (InterruptedException ex) {
@@ -558,13 +558,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		}
 	}
 
-	
-	// by jw: synch.notiftAll was called to early, this helps to notify in right time
-	volatile boolean resuming = false;
-	volatile boolean pausing = false;
-	volatile boolean destroying = false;
-	
-	
+
 	@Override
 	public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
 		long time = System.nanoTime();
@@ -589,24 +583,22 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			if (resume) {
 				resume = false;
 				// by jw: originally was not synchronized
-				resuming = true;
+				synch.notifyAll();
 			}
 
 			if (pause) {
 				pause = false;
-				//synch.notifyAll();	// by jw: removed
-				pausing = true;
+				synch.notifyAll();
 			}
 
 			if (destroy) {
 				destroy = false;
-				//synch.notifyAll();	// by jw: removed
-				destroying = true;
+				synch.notifyAll();
 			}
 		}
 
 		if (lresume) {
-			((AndroidAudio)app.getAudio()).resume();	// jw: added (moved from AndroidLiveWallpaper.onResume)
+			//((AndroidAudio)app.getAudio()).resume();	// jw: moved to AndroidLiveWallpaper.onResume
 			app.listener.resume();
 			Gdx.app.log("AndroidGraphics", "resumed");
 		}
@@ -614,7 +606,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		// HACK: added null check to handle set wallpaper from preview null
 		// error in renderer
 		// jw: this hack is not working always, renderer ends with error for some devices - because of uninitialized gl context
-		// jw: now its shouldn't be necessary - after wallpaper backend refactoring:)
+		// jw: now it shouldn't be necessary - after wallpaper backend refactoring:)
 		if (lrunning && (Gdx.graphics.getGL10() != null || Gdx.graphics.getGL11() != null || Gdx.graphics.getGL20() != null)) {
 
 			// jw: changed
@@ -645,15 +637,17 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			app.listener.render();
 		}
 
+		// jw: never called on lvp, why? see description in AndroidLiveWallpaper.onPause
 		if (lpause) {
 			app.listener.pause();
-			((AndroidAudio)app.getAudio()).pause();
+			//((AndroidAudio)app.getAudio()).pause();		jw: moved to AndroidLiveWallpaper.onPause
 			Gdx.app.log("AndroidGraphics", "paused");
 		}
 
+		// jw: never called on lwp, why? see description in AndroidLiveWallpaper.onPause
 		if (ldestroy) {
 			app.listener.dispose();
-			((AndroidAudio)app.getAudio()).dispose();	// jw: it will be never called in wallpaper, so I will call it in AndroidLiveWallpaper.onDestroy
+			//((AndroidAudio)app.getAudio()).dispose();	 jw: moved to AndroidLiveWallpaper.onDestroy
 			Gdx.app.log("AndroidGraphics", "destroyed");
 		}
 
@@ -663,24 +657,6 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			frameStart = time;
 		}
 		frames++;
-		
-		// by jw: added
-		synchronized (synch) {
-			if (resuming) {
-				resuming = false;
-				synch.notifyAll();
-			}
-			
-			if (pausing) {
-				pausing = false;
-				synch.notifyAll();
-			}
-
-			if (destroying) {
-				destroying = false;
-				synch.notifyAll();
-			}
-		}
 	}
 
 	/** {@inheritDoc} */
