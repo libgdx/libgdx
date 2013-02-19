@@ -18,6 +18,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -38,6 +39,7 @@ import com.badlogic.gdx.utils.Pools;
 public class List extends Widget implements Cullable {
 	private ListStyle style;
 	private String[] items;
+	private BitmapFontCache[] cachedTexts;
 	private int selectedIndex;
 	private Rectangle cullingArea;
 	private float prefWidth, prefHeight;
@@ -93,7 +95,6 @@ public class List extends Widget implements Cullable {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		BitmapFont font = style.font;
 		Drawable selectedDrawable = style.selection;
 		Color fontColorSelected = style.fontColorSelected;
 		Color fontColorUnselected = style.fontColorUnselected;
@@ -104,18 +105,18 @@ public class List extends Widget implements Cullable {
 		float x = getX();
 		float y = getY();
 
-		font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a * parentAlpha);
 		float itemY = getHeight();
 		for (int i = 0; i < items.length; i++) {
 			if (cullingArea == null || (itemY - itemHeight <= cullingArea.y + cullingArea.height && itemY >= cullingArea.y)) {
 				if (selectedIndex == i) {
 					selectedDrawable.draw(batch, x, y + itemY - itemHeight, Math.max(prefWidth, getWidth()), itemHeight);
-					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
+					cachedTexts[i].setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a);
 				}
-				font.draw(batch, items[i], x + textOffsetX, y + itemY - textOffsetY);
+				cachedTexts[i].setPosition(x + textOffsetX, y + itemY - textOffsetY);
+				cachedTexts[i].draw(batch, parentAlpha);
 				if (selectedIndex == i) {
-					font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a
-						* parentAlpha);
+					cachedTexts[i]
+						.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a);
 				}
 			} else if (itemY < cullingArea.y) {
 				break;
@@ -164,6 +165,8 @@ public class List extends Widget implements Cullable {
 		} else
 			items = (String[])objects;
 
+		cachedTexts = new BitmapFontCache[items.length];
+
 		selectedIndex = 0;
 
 		final BitmapFont font = style.font;
@@ -177,7 +180,9 @@ public class List extends Widget implements Cullable {
 
 		prefWidth = 0;
 		for (int i = 0; i < items.length; i++) {
-			TextBounds bounds = font.getBounds(items[i]);
+			cachedTexts[i] = new BitmapFontCache(font);
+			cachedTexts[i].setText(items[i], 0, 0);
+			TextBounds bounds = cachedTexts[i].getBounds();
 			prefWidth = Math.max(bounds.width, prefWidth);
 		}
 		prefHeight = items.length * itemHeight;
