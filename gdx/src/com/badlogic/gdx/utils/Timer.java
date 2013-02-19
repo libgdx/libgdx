@@ -30,8 +30,13 @@ public class Timer {
 					synchronized (instances) {
 						float time = System.nanoTime() * MathUtils.nanoToSec;
 						float wait = Float.MAX_VALUE;
-						for (int i = 0, n = instances.size; i < n; i++)
-							wait = Math.min(wait, instances.get(i).update(time));
+						for (int i = 0, n = instances.size; i < n; i++) {
+							try {
+								wait = instances.get(i).update(time, wait);
+							} catch (Throwable ex) {
+								throw new GdxRuntimeException("Task failed: " + instances.get(i).getClass().getName(), ex);
+							}
+						}
 						long waitMillis = (long)(wait * 1000);
 						try {
 							if (waitMillis > 0) instances.wait(waitMillis);
@@ -78,7 +83,7 @@ public class Timer {
 		task.executeTime = System.nanoTime() * MathUtils.nanoToSec + delaySeconds;
 		task.intervalSeconds = intervalSeconds;
 		task.repeatCount = repeatCount;
-		synchronized(tasks) {
+		synchronized (tasks) {
 			tasks.add(task);
 		}
 		wake();
@@ -102,16 +107,15 @@ public class Timer {
 
 	/** Cancels all tasks. */
 	public void clear () {
-		synchronized(tasks) {
+		synchronized (tasks) {
 			for (int i = 0, n = tasks.size; i < n; i++)
 				tasks.get(i).cancel();
 			tasks.clear();
 		}
 	}
 
-	float update (float time) {
-		float wait = Float.MAX_VALUE;
-		synchronized(tasks) {
+	float update (float time, float wait) {
+		synchronized (tasks) {
 			for (int i = 0, n = tasks.size; i < n; i++) {
 				Task task = tasks.get(i);
 				if (task.executeTime > time) {
@@ -119,7 +123,10 @@ public class Timer {
 					continue;
 				}
 				if (task.repeatCount != CANCELLED) {
-					if (task.repeatCount == 0) task.repeatCount = CANCELLED; // Set cancelled before run so it may be rescheduled in run.
+					if (task.repeatCount == 0) {
+						// Set cancelled before run so it may be rescheduled in run.
+						task.repeatCount = CANCELLED;
+					}
 					Gdx.app.postRunnable(task);
 				}
 				if (task.repeatCount == CANCELLED) {

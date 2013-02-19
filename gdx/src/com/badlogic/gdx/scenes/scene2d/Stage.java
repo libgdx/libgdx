@@ -46,7 +46,7 @@ import com.badlogic.gdx.utils.SnapshotArray;
  * {@link Input#setInputProcessor(com.badlogic.gdx.InputProcessor) Gdx.input.setInputProcessor}. An {@link InputMultiplexer} may be
  * used to handle input events before or after the stage does. If an actor handles an event by returning true from the input
  * method, then the stage's input method will also return true, causing subsequent InputProcessors to not receive the event.
-
+ * 
  * @author mzechner
  * @author Nathan Sweet */
 public class Stage extends InputAdapter implements Disposable {
@@ -507,7 +507,7 @@ public class Stage extends InputAdapter implements Disposable {
 		return root.removeCaptureListener(listener);
 	}
 
-	/** Clears the stage, removing all actors. */
+	/** Removes the root's children, actions, and listeners. */
 	public void clear () {
 		unfocusAll();
 		root.clear();

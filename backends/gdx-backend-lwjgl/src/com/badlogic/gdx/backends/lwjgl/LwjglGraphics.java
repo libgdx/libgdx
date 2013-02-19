@@ -94,14 +94,14 @@ public class LwjglGraphics implements Graphics {
 
 	public int getHeight () {
 		if (canvas != null)
-			return canvas.getHeight();
+			return Math.max(1, canvas.getHeight());
 		else
 			return Display.getHeight();
 	}
 
 	public int getWidth () {
 		if (canvas != null)
-			return canvas.getWidth();
+			return Math.max(1, canvas.getWidth());
 		else
 			return Display.getWidth();
 	}
@@ -192,6 +192,10 @@ public class LwjglGraphics implements Graphics {
 		} catch (Exception ex) {
 			Display.destroy();
 			try {
+				Thread.sleep(200);
+			} catch (InterruptedException ignored) {
+			}
+			try {
 				Display.create(new PixelFormat(0, 16, 8));
 				if (getDesktopDisplayMode().bitsPerPixel == 16) {
 					bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 8, 0, false);
@@ -204,6 +208,10 @@ public class LwjglGraphics implements Graphics {
 				}
 			} catch (Exception ex2) {
 				Display.destroy();
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException ignored) {
+				}
 				try {
 					Display.create(new PixelFormat());
 				} catch (Exception ex3) {
