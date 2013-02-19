@@ -177,8 +177,8 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Removes all actors and cells from the table. */
-	public void clear () {
-		super.clear();
+	public void clearChildren () {
+		super.clearChildren();
 		layout.clear();
 		invalidate();
 	}
@@ -250,8 +250,8 @@ public class Table extends WidgetGroup {
 		layout.layout();
 	}
 
-	/** Removes all actors and cells from the table (same as {@link #clear()}) and additionally resets all table properties and
-	 * cell, column, and row defaults. */
+	/** Removes all actors and cells from the table (same as {@link #clearChildren()}) and additionally resets all table properties
+	 * and cell, column, and row defaults. */
 	public void reset () {
 		layout.reset();
 	}

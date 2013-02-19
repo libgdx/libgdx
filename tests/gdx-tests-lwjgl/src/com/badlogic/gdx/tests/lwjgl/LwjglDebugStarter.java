@@ -18,15 +18,7 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.tests.AssetManagerTest;
-import com.badlogic.gdx.tests.GleedTest;
-import com.badlogic.gdx.tests.GamepadTest;
-import com.badlogic.gdx.tests.InverseKinematicsTest;
-import com.badlogic.gdx.tests.TiledMapDirectLoaderTest;
-import com.badlogic.gdx.tests.TiledMapAssetManagerTest;
-import com.badlogic.gdx.tests.YDownTest;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
-import com.badlogic.gdx.tests.extensions.FreeTypeTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 

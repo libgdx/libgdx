@@ -268,7 +268,7 @@ public class Group extends Actor implements Cullable {
 	}
 
 	/** Removes all actors from this group. */
-	public void clear () {
+	public void clearChildren () {
 		Actor[] actors = children.begin();
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = actors[i];
@@ -278,6 +278,12 @@ public class Group extends Actor implements Cullable {
 		children.end();
 		children.clear();
 		childrenChanged();
+	}
+
+	/** Removes all children, actions, and listeners from this group. */
+	public void clear () {
+		super.clear();
+		clearChildren();
 	}
 
 	/** Returns the first actor found with the specified name. Note this recursively compares the name of every actor in the group. */
