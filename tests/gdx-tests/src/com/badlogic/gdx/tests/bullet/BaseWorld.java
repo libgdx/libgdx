@@ -65,7 +65,7 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 		return entity;
 	}
 	
-	public void update () {
+	public void render() {
 		GL10 gl = Gdx.gl10;
 
 		for (int i = 0; i < entities.size; i++) {
@@ -75,8 +75,10 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 			gl.glColor4f(entity.color.r, entity.color.g, entity.color.b, entity.color.a);
 			entity.model.render();
 			gl.glPopMatrix();
-		}
+		}		
 	}
+	
+	public void update() {	}
 	
 	@Override
 	public void dispose () {
