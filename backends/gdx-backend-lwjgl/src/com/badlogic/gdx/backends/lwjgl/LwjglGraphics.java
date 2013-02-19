@@ -192,6 +192,10 @@ public class LwjglGraphics implements Graphics {
 		} catch (Exception ex) {
 			Display.destroy();
 			try {
+				Thread.sleep(200);
+			} catch (InterruptedException ignored) {
+			}
+			try {
 				Display.create(new PixelFormat(0, 16, 8));
 				if (getDesktopDisplayMode().bitsPerPixel == 16) {
 					bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 8, 0, false);
@@ -204,6 +208,10 @@ public class LwjglGraphics implements Graphics {
 				}
 			} catch (Exception ex2) {
 				Display.destroy();
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException ignored) {
+				}
 				try {
 					Display.create(new PixelFormat());
 				} catch (Exception ex3) {

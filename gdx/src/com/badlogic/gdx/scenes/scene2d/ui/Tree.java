@@ -143,8 +143,8 @@ public class Tree extends WidgetGroup {
 	}
 
 	/** Removes all tree nodes. */
-	public void clear () {
-		super.clear();
+	public void clearChildren () {
+		super.clearChildren();
 		rootNodes.clear();
 		selectedNodes.clear();
 		setOverNode(null);

@@ -1,23 +1,19 @@
 <project name="gdx" default="convert" basedir=".">
 	<property environment="env"/>
-	<property name="IKVM_HOME" value="${env.IKVM_HOME}"/>
+	<property file="convert.properties" />
+	<property name="IKVM_HOME" value="../../../../backends/gdx-backend-iosmonotouch/libs/ikvm"/>
 	<property name="MONO_HOME" value="/Developer/MonoTouch/usr/lib/mono/2.1"/>
-	<property name="IN" value="-recurse:target/core/*.class"/>
-	<property name="OUT" value="gdx.dll"/>
-	<property name="SRC" value="src/"/>
-	<property name="CLASSPATH" value=""/>
-	<property name="EXCLUDE" value=""/>
 
 	<target name="compile">
 		<delete dir="target"/>
 		<mkdir dir="target"/>
-		<javac srcdir="${SRC}" debug="on" destdir="target" classpath="${CLASSPATH}">
+		<javac srcdir="${SRC}" debug="on" source="1.6" target="1.6" destdir="target" classpath="${CLASSPATH}">
 			<include name="**/*.java"/>
 			<exclude name="${EXCLUDE}"/>
 		</javac>
 	</target>
 
-	<target name="convert">
+	<target name="convert" depends="compile">
 		<exec executable="mono">
 			<arg value="${IKVM_HOME}/bin/ikvmc.exe"/>
 			<arg value="-nostdlib"/>

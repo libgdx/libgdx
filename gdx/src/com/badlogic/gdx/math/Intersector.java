@@ -364,7 +364,7 @@ public final class Intersector {
 	 * @param box The box
 	 * @param intersection The intersection point (optional)
 	 * @return Whether an intersection is present. */
-	boolean intersectRayBounds(Ray ray, BoundingBox box, Vector3 intersection)
+	public static boolean intersectRayBounds(Ray ray, BoundingBox box, Vector3 intersection)
 	{
 		Vector3.tmp.set(ray.origin);
 		Vector3.tmp2.set(ray.origin);

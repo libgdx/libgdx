@@ -6,6 +6,20 @@
 		</ant>
 	</target>
 		
+    <target name="ios-java-only">
+        <ant antfile="build.xml" target="gdx-backend-iosmonotouch" dir=".">
+			<property name="compile-natives" value="false"/>
+		</ant>
+        <ant antfile="convert-ikvm.xml" dir=".">
+			<property name="IN" value="-srcpath:gdx/src/ dist/gdx.jar"/>
+			<property name="OUT" value="gdx/libs/ios32/gdx.dll"/>
+		</ant>
+        <ant antfile="convert-ikvm.xml" dir=".">
+			<property name="IN" value="-r:gdx/libs/ios32/gdx.dll -srcpath:backends/gdx-backend-iosmonotouch/src/ dist/gdx-backend-iosmonotouch.jar"/>
+			<property name="OUT" value="backends/gdx-backend-iosmonotouch/libs/ios32/gdx-backend-ios.dll"/>
+		</ant>
+    </target>
+    
 	<target name="core" depends="compile-jars">
 		<ant antfile="build-macosx32.xml" dir="gdx/jni">
 			<target name="clean"/>
@@ -21,7 +35,7 @@
 	<target name="backend-iosmonotouch" depends="core">
 		<ant antfile="convert-ikvm.xml" dir=".">
 			<property name="IN" value="-r:gdx/libs/ios32/gdx.dll -srcpath:backends/gdx-backend-iosmonotouch/src/ dist/gdx-backend-iosmonotouch.jar"/>
-			<property name="OUT" value="backends/gdx-backend-iosmonotouch/libs/gdx-backend-ios.dll"/>
+			<property name="OUT" value="backends/gdx-backend-iosmonotouch/libs/ios32/gdx-backend-ios.dll"/>
 		</ant>
 	</target>
 	
