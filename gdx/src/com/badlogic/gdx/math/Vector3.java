@@ -418,6 +418,17 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 		return a + b + c;
 	}
+	
+	/** Limits this vector's length to given value
+	 * @param limit Max length
+	 * @return This vector for chaining */
+	public Vector3 limit (float limit) {
+		if (len2() > limit * limit) {
+			nor();
+			mul(limit);
+		}
+		return this;
+	}
 
 	/** Returns the squared distance between this point and the given point
 	 * 
