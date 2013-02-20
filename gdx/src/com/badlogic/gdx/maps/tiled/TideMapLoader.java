@@ -222,7 +222,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 					String name = currentChild.getName();
 					if (name.equals("TileSheet")) {
 						currentTileSet = tilesets.getTileSet(currentChild.getAttribute("Ref"));
-						firstgid = currentTileSet.getProperties().getAsInteger("firstgid");
+						firstgid = currentTileSet.getProperties().get("firstgid", Integer.class);
 					} else if (name.equals("Null")) {
 						x += currentChild.getIntAttribute("Count");
 					} else if (name.equals("Static")) {
@@ -237,7 +237,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 							String frameName = frame.getName();
 							if (frameName.equals("TileSheet")) {
 								currentTileSet = tilesets.getTileSet(frame.getAttribute("Ref"));
-								firstgid = currentTileSet.getProperties().getAsInteger("firstgid");
+								firstgid = currentTileSet.getProperties().get("firstgid", Integer.class);
 							} else if (frameName.equals("Static")) {
 								frameTiles.add((StaticTiledMapTile) currentTileSet.getTile(firstgid + frame.getIntAttribute("Index")));
 							}

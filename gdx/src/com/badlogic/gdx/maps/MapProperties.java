@@ -25,7 +25,7 @@ public class MapProperties {
 	 * @param key property name 
 	 * @return true if and only if the property exists
 	 */
-	public boolean has(String key) {
+	public boolean containsKey(String key) {
 		return properties.containsKey(key);
 	}
 	
@@ -38,311 +38,27 @@ public class MapProperties {
 	}
 	
 	/**
-	 * @param key property name 
-	 * @return the value for that property if it exists and can be interpreted as a boolean, otherwise, null
+	 * Returns the object for the given key, casting it to clazz.
+	 * @param key the key of the object
+	 * @param clazz the class of the object
+	 * @return the object or null if the object is not in the map
+	 * @throws ClassCastException if the object with the given key is not of type clazz
 	 */
-	public Boolean getAsBoolean(String key) {
-		Object value = properties.get(key);
-		try {
-			return (Boolean) value;
-		} catch (ClassCastException e) {
-			if (value instanceof CharSequence) {
-				return Boolean.valueOf(value.toString());
-			} else {
-				return null;
-			}
-		}
+	public <T> T get(String key, Class<T> clazz) {
+		return (T)get(key);
 	}
 	
 	/**
-	 * @param key property name 
-	 * @return the value for that property if it exists and can be interpreted as a byte, otherwise, null
+	 * Returns the object for the given key, casting it to clazz.
+	 * @param key the key of the object
+	 * @param defaultValue the default value
+	 * @param clazz the class of the object
+	 * @return the object or the defaultValue if the object is not in the map
+	 * @throws ClassCastException if the object with the given key is not of type clazz
 	 */
-	public Byte getAsByte(String key) {
-		Object value = properties.get(key);
-		if (value != null) {
-			if (value instanceof Number) {
-				return ((Number) value).byteValue();
-			} else {
-				if (value instanceof CharSequence) {
-					try {
-						return Byte.valueOf(value.toString());	
-					} catch (NumberFormatException e2) {
-						return null;
-					}
-				} else {
-					return null;
-				}
-			}			
-		} else {
-			return null;			
-		}
-	}
-	
-	/**
-	 * @param key property name 
-	 * @return the value for that property if it exists and can be interpreted as a double, otherwise, null
-	 */
-	public Double getAsDouble(String key) {
-		Object value = properties.get(key);
-		if (value != null) {
-			if (value instanceof Number) {
-				return ((Number) value).doubleValue();
-			} else {
-				if (value instanceof CharSequence) {
-					try {
-						return Double.valueOf(value.toString());	
-					} catch (NumberFormatException e2) {
-						return null;
-					}
-				} else {
-					return null;
-				}
-			}
-		} else {
-			return null;			
-		}
-	}
-	
-	/**
-	 * @param key property name 
-	 * @return the value for that property if it exists and can be interpreted as a float, otherwise, null
-	 */
-	public Float getAsFloat(String key) {
-		Object value = properties.get(key);
-		if (value != null) {
-			if (value instanceof Number) {
-				return ((Number) value).floatValue();
-			} else {
-				if (value instanceof CharSequence) {
-					try {
-						return Float.valueOf(value.toString());	
-					} catch (NumberFormatException e2) {
-						return null;
-					}
-				} else {
-					return null;
-				}
-			}
-		} else {
-			return null;			
-		}
-	}
-	
-	/**
-	 * @param key property name 
-	 * @return the value for that property if it exists and can be interpreted as an integer, otherwise, null
-	 */
-	public Integer getAsInteger(String key) {
-		Object value = properties.get(key);
-		if (value != null) {
-			if (value instanceof Number) {
-				return ((Number) value).intValue();
-			} else {
-				if (value instanceof CharSequence) {
-					try {
-						return Integer.valueOf(value.toString());	
-					} catch (NumberFormatException e2) {
-						return null;
-					}
-				} else {
-					return null;
-				}
-			}
-		} else {
-			return null;			
-		}
-	}
-	
-	/**
-	 * @param key property name 
-	 * @return the value for that property if it exists and can be interpreted as a long, otherwise, null
-	 */
-	public Long getAsLong(String key) {
-		Object value = properties.get(key);
-		if (value != null) {
-			if (value instanceof Number) {
-				return ((Number) value).longValue();
-			} else {
-				if (value instanceof CharSequence) {
-					try {
-						return Long.valueOf(value.toString());	
-					} catch (NumberFormatException e2) {
-						return null;
-					}
-				} else {
-					return null;
-				}
-			}
-		} else {
-			return null;			
-		}
-	}
-	
-	/**
-	 * @param key property name 
-	 * @return the value for that property if it exists and can be interpreted as a short, otherwise, null
-	 */
-	public Short getAsShort(String key) {
-		Object value = properties.get(key);
-		if (value != null) {
-			if (value instanceof Number) {
-				return ((Number) value).shortValue();
-			} else {
-				if (value instanceof CharSequence) {
-					try {
-						return Short.valueOf(value.toString());	
-					} catch (NumberFormatException e2) {
-						return null;
-					}
-				} else {
-					return null;
-				}
-			}
-		} else {
-			return null;			
-		}
-	}
-	
-	/**
-	 * @param key property name 
-	 * @return the value for that property as a string if it exists, otherwise, null
-	 */
-	public String getAsString(String key) {
-		Object value = properties.get(key);
-		if (value != null) {
-			return value.toString();
-		} else {
-			return null;			
-		}
-	}
-	
-	/**
-	 * @param key property name 
-	 * @return the value for that property if it exists and it's a Vector2, otherwise, null
-	 */
-	public Vector2 getAsVector2(String key) {
-		Object value = properties.get(key);
-		
-		if (value != null && value instanceof Vector2) {
-			return (Vector2)value;
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * @param key property name 
-	 * @return the value for that property if it exists and it's a Color, otherwise, null
-	 */
-	public Color getAsColor(String key) {
-		Object value = properties.get(key);
-		
-		if (value != null && value instanceof Color) {
-			return (Color)value;
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * @param key property name 
-	 * @param defaultValue value to be returned in case of failure
-	 * @return the value for that property if it exists and it's a boolean, otherwise, defaultValue
-	 */
-	public Boolean getAsBoolean(String key, Boolean defaultValue) {
-		Boolean value = getAsBoolean(key);
-		return value == null? defaultValue : value;
-	}
-	
-	/**
-	 * @param key property name 
-	 * @param defaultValue value to be returned in case of failure
-	 * @return the value for that property if it exists and it's a byte, otherwise, defaultValue
-	 */
-	public Byte getAsByte(String key, Byte defaultValue) {
-		Byte value = getAsByte(key);
-		return value == null? defaultValue : value;
-	}
-	
-	/**
-	 * @param key property name 
-	 * @param defaultValue value to be returned in case of failure
-	 * @return the value for that property if it exists and it's a double, otherwise, defaultValue
-	 */
-	public Double getAsDouble(String key, Double defaultValue) {
-		Double value = getAsDouble(key);
-		return value == null? defaultValue : value;
-	}
-	
-	/**
-	 * @param key property name 
-	 * @param defaultValue value to be returned in case of failure
-	 * @return the value for that property if it exists and it's a float, otherwise, defaultValue
-	 */
-	public Float getAsFloat(String key, Float defaultValue) {
-		Float value = getAsFloat(key);
-		return value == null? defaultValue : value;
-	}
-	
-	/**
-	 * @param key property name 
-	 * @param defaultValue value to be returned in case of failure
-	 * @return the value for that property if it exists and it's an integer, otherwise, defaultValue
-	 */
-	public Integer getAsInteger(String key, Integer defaultValue) {
-		Integer value = getAsInteger(key);
-		return value == null? defaultValue : value;
-	}
-	
-	/**
-	 * @param key property name 
-	 * @param defaultValue value to be returned in case of failure
-	 * @return the value for that property if it exists and it's a long, otherwise, defaultValue
-	 */
-	public Long getAsLong(String key, Long defaultValue) {
-		Long value = getAsLong(key);
-		return value == null? defaultValue : value;
-	}
-	
-	/**
-	 * @param key property name 
-	 * @param defaultValue value to be returned in case of failure
-	 * @return the value for that property if it exists and it's a short, otherwise, defaultValue
-	 */
-	public Short getAsShort(String key, Short defaultValue) {
-		Short value = getAsShort(key);
-		return value == null? defaultValue : value;
-	}
-	
-	/**
-	 * @param key property name 
-	 * @param defaultValue value to be returned in case of failure
-	 * @return the value for that property as a string if it exists, otherwise, defaultValue
-	 */
-	public String getAsString(String key, String defaultValue) {
-		String value = getAsString(key);
-		return value == null? defaultValue : value;
-	}
-	
-	/**
-	 * @param key property name 
-	 * @param defaultValue value to be returned in case of failure
-	 * @return the value for that property if it exists and it's a Vector2, otherwise, defaultValue
-	 */
-	public Vector2 getAsVector2(String key, Vector2 defaultValue) {
-		Vector2 value = getAsVector2(key);
-		return value == null? defaultValue : value;
-	}
-	
-	/**
-	 * @param key property name 
-	 * @param defaultValue value to be returned in case of failure
-	 * @return the value for that property if it exists and it's a Color, otherwise, defaultValue
-	 */
-	public Color getAsColor(String key, Color defaultValue) {
-		Color value = getAsColor(key);
-		return value == null? defaultValue : value;
+	public <T> T get(String key, T defaultValue, Class<T> clazz) {
+		Object object = get(key);
+		return object == null? defaultValue: (T)object;
 	}
 	
 	/**

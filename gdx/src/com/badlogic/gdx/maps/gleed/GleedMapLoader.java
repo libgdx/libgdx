@@ -139,8 +139,8 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<Map, GleedMapLoader
 			
 			MapProperties properties = map.getProperties();
 			
-			atlasFile = properties.getAsString("atlas", "");
-			pathRoot = properties.getAsString("assetRoot", "data");
+			atlasFile = properties.get("atlas", "", String.class);
+			pathRoot = properties.get("assetRoot", "data", String.class);
 			
 			if (!atlasFile.isEmpty()) {
 				dependencies.add(new AssetDescriptor(atlasFile, TextureAtlas.class));
