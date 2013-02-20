@@ -207,7 +207,7 @@ public class SelectBox extends Widget {
 		InputListener stageListener = new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == 0 && button != 0) return false;
-				stageToLocalCoordinates(Vector2.tmp);
+				stageToLocalCoordinates(Vector2.tmp.set(event.getStageX(), event.getStageY()));
 				x = Vector2.tmp.x;
 				y = Vector2.tmp.y;
 				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
@@ -230,7 +230,7 @@ public class SelectBox extends Widget {
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
-				stageToLocalCoordinates(Vector2.tmp);
+				stageToLocalCoordinates(Vector2.tmp.set(event.getStageX(), event.getStageY()));
 				x = Vector2.tmp.x;
 				y = Vector2.tmp.y;
 				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
