@@ -122,7 +122,7 @@ public class AndroidLiveWallpaper implements Application {
 		// in my opinion it is a bug of android not libgdx, even example Cubic live wallpaper from
 		// Android SDK crashes on affected devices.......... and on some configurations of android emulator too.
 		// 
-		// Samsung rejected my live wallpaper because of this, so I decided to disable graphics.pause.. 
+		// My wallpaper was rejected on Samsung Apps because of this issue, so I decided to disable graphics.pause.. 
 		// also I moved audio lifecycle methods from AndroidGraphicsLiveWallpaper into this class
 		
 		//graphics.pause();

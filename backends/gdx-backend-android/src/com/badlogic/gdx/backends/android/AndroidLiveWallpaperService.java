@@ -88,15 +88,19 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 
 	
 	// instance of libGDX Application, acts as singleton - one instance per application (per WallpaperService)
-	// at specified time linked to one of available engines
 	protected volatile AndroidLiveWallpaper app = null;	// can be accessed from GL render thread
 	protected SurfaceHolder.Callback view = null;
 	
-	// app is initialized when engines == 1 first time, app is destroyed never destroyed! It should be in WallpaperService.onDestroy or Engine.onDestroy, but at this moment gl context is lost, libgdx needs gl context to process 'destroy' method
+	// current format of surface (one GLSurfaceView is shared between all engines)
+	protected int viewFormat;
+	protected int viewWidth;
+	protected int viewHeight;
+	
+	// app is initialized when engines == 1 first time, app is destroyed in WallpaperService.onDestroy, but ApplicationListener.dispose is not called for wallpapers
 	protected int engines = 0;
 	protected int visibleEngines = 0;
 	
-	// engine currently associated with app instance, also this engine serves surface handler for GLSurfaceView
+	// engine currently associated with app instance, linked engine serves surface handler for GLSurfaceView
 	protected volatile AndroidWallpaperEngine linkedEngine = null;		// can be accessed from GL render thread by getSurfaceHolder
 	
 	protected void setLinkedEngine (AndroidWallpaperEngine linkedEngine) {
@@ -282,8 +286,13 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 	 */
 	public class AndroidWallpaperEngine extends Engine {
 
-		protected boolean isVisible = false;
-		protected Runnable waitingSurfaceChangedEvent = null;
+		protected boolean engineIsVisible = false;
+		//private Runnable waitingSurfaceChangedEvent = null;
+		
+		// destination format of surface when this engine is active (updated in onSurfaceChanged)
+		protected int engineFormat;
+		protected int engineWidth;
+		protected int engineHeight;
 		
 		
 		// lifecycle methods - the order of calling (flow) is maintained /////////////////
@@ -322,6 +331,10 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			}
 			
 			if (engines == 1 && app == null) {
+				viewFormat = 0;	// must be initialized with zeroes
+				viewWidth = 0;
+				viewHeight = 0;
+				
 				app = new AndroidLiveWallpaper(AndroidLiveWallpaperService.this);
 				
 				onCreateApplication();
@@ -331,6 +344,17 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 				view = (SurfaceHolder.Callback)app.graphics.view;
 				this.getSurfaceHolder().removeCallback(view);	// we are going to call this events manually
 			}
+
+			// inherit format from shared surface view
+			engineFormat = viewFormat;
+			engineWidth = viewWidth;
+			engineHeight = viewHeight;
+			
+			//if (waitingSurfaceChangedEvent != null)
+			//	waitingSurfaceChangedEvent.run();
+			
+			// probably not necessary, onSurfaceChanged should always be called after onSurfaceCreated - but the problem is - it's just my assumption
+			notifySurfaceChanged(engineFormat, engineWidth, engineHeight, false);
 			
 			if (engines == 1)
 				view.surfaceCreated(holder);
@@ -338,9 +362,6 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 				view.surfaceDestroyed(holder);	// force gl surface reload, new instance will be created on current surface holder
 				view.surfaceCreated(holder);
 			}
-			
-			if (waitingSurfaceChangedEvent != null)
-				waitingSurfaceChangedEvent.run();
 			
 			notifyPreviewState();
 			notifyOffsetsChanged();
@@ -359,23 +380,60 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			
 			super.onSurfaceChanged(holder, format, width, height);
 			
-			if (linkedEngine == this)
-				view.surfaceChanged(holder, format, width, height);
-			else {
-				// save new surface holder format and call surfaceChanged when this engine will be linked again
-				waitingSurfaceChangedEvent = new Runnable() {
-					@Override
-					public void run () {
-						if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onSurfaceChanged() calling delayed..");
-						onSurfaceChanged(holder, format, width, height);
-					}
-				};
-			}
+			notifySurfaceChanged(format, width, height, true);
 			
-			// it shouldn't be required there (as I studied original Android WallpaperService impl)
+			// it shouldn't be required there (as I understand android.service.wallpaper.WallpaperService impl)
 			//notifyPreviewState();
 		}
 
+		
+		/**
+		 * Notifies shared GLSurfaceView about changed surface format.
+		 * @param format
+		 * @param width
+		 * @param height
+		 * @param forceUpdate if false, surface view will be notified only if currently contains expired information
+		 */
+		private void notifySurfaceChanged(final int format, final int width, final int height, boolean forceUpdate)
+		{
+			if (!forceUpdate && format == viewFormat && width == viewWidth && height == viewHeight)
+			{
+				// skip if didn't changed
+				if (DEBUG) Log.d(TAG, " > surface is current, skipping surfaceChanged event");
+			}
+			else
+			{
+				// update engine desired surface format
+				engineFormat = format;
+				engineWidth = width;
+				engineHeight = height;
+				
+				// update surface view if engine is linked with it already
+				if (linkedEngine == this)
+				{
+					viewFormat = engineFormat;
+					viewWidth = engineWidth;
+					viewHeight = engineHeight;
+					view.surfaceChanged(this.getSurfaceHolder(), viewFormat, viewWidth, viewHeight);
+				}
+				else
+				{
+					if (DEBUG) Log.d(TAG, " > engine is not active, skipping surfaceChanged event");
+				}
+				
+				//else {
+				//	// save new surface holder format and call surfaceChanged when this engine will be linked again
+				//	waitingSurfaceChangedEvent = new Runnable() {
+				//		@Override
+				//		public void run () {
+				//			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onSurfaceChanged() calling delayed..");
+				//			onSurfaceChanged(holder, format, width, height);
+				//		}
+				//	};
+				//}
+			}
+		}
+		
 
 		/**
 		 * Called to inform you of the wallpaper becoming visible or hidden. It is very important that 
@@ -401,10 +459,10 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		
 		private void notifyVisibilityChanged(final boolean visible)
 		{
-			if (this.isVisible != visible) {
-				this.isVisible = visible;
+			if (this.engineIsVisible != visible) {
+				this.engineIsVisible = visible;
 				
-				if (this.isVisible)
+				if (this.engineIsVisible)
 					onResume();
 				else
 					onPause();
@@ -424,15 +482,18 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			if (linkedEngine != null) {
 				if (linkedEngine != this) {
 					setLinkedEngine(this);
-					view.surfaceDestroyed(getSurfaceHolder());	// force gl surface reload, new instance will be created on current surface holder
-					view.surfaceCreated(getSurfaceHolder());
+					view.surfaceDestroyed(this.getSurfaceHolder());	// force gl surface reload, new instance will be created on current surface holder
+					view.surfaceCreated(this.getSurfaceHolder());
 				}
+				
+				// update if surface changed when engine wasn't active
+				notifySurfaceChanged(engineFormat, engineWidth, engineHeight, false);
 				
 				if (visibleEngines == 1)
 					app.onResume();
 	
-				if (waitingSurfaceChangedEvent != null)
-					waitingSurfaceChangedEvent.run();
+				//if (waitingSurfaceChangedEvent != null)
+				//	waitingSurfaceChangedEvent.run();
 	
 				notifyPreviewState();
 				notifyOffsetsChanged();
@@ -457,7 +518,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 					app.onPause();
 	
 				//if (linkedEngine == this)
-				//	app.graphics.view.surfaceDestroyed(getSurfaceHolder());
+				//	app.graphics.view.surfaceDestroyed(this.getSurfaceHolder());
 			}
 			
 			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onPause() done!");
@@ -477,7 +538,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		@Override
 		public void onSurfaceDestroyed (final SurfaceHolder holder) {
 			engines --;
-			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onSurfaceDestroyed() " + hashCode()  + ", running: " + engines + " ,linked: " + (linkedEngine == this) + ", isVisible: " + isVisible);
+			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onSurfaceDestroyed() " + hashCode()  + ", running: " + engines + " ,linked: " + (linkedEngine == this) + ", isVisible: " + engineIsVisible);
 			Log.i(TAG, "engine surface destroyed");
 			
 			// application can be in resumed state at this moment if app surface had been lost just after it was created (wallpaper selected too fast from preview mode etc)
@@ -492,7 +553,10 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			if (linkedEngine == this && view != null)
 				view.surfaceDestroyed(holder);
 		
-			waitingSurfaceChangedEvent = null;
+			//waitingSurfaceChangedEvent = null;
+			engineFormat = 0;
+			engineWidth = 0;
+			engineHeight = 0;
 			
 			// safeguard for other engine callbacks
 			if (engines == 0)
