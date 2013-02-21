@@ -211,6 +211,11 @@ public class LwjglApplication implements Application {
 	}
 
 	@Override
+	public ApplicationListener getListener () {
+		return listener;
+	}
+	
+	@Override
 	public Audio getAudio () {
 		return audio;
 	}
