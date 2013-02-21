@@ -266,7 +266,7 @@ public class AndroidApplication extends Activity implements Application {
 	}
 
 	@Override
-	public ApplicationListener getListener () {
+	public ApplicationListener getApplicationListener () {
 		return listener;
 	}
 	

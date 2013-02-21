@@ -258,7 +258,7 @@ public class AndroidDaydream extends DreamService implements Application {
 	}
 	
 	@Override
-	public ApplicationListener getListener () {
+	public ApplicationListener getApplicationListener () {
 		return listener;
 	}
 

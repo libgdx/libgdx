@@ -151,7 +151,7 @@ public class LwjglAWTCanvas implements Application {
 	}
 	
 	@Override
-	public ApplicationListener getListener () {
+	public ApplicationListener getApplicationListener () {
 		return listener;
 	}
 
