@@ -42,6 +42,9 @@ public class DragAndDrop {
 	int dragTime = 250;
 	int activePointer = -1;
 
+	/* Scratch vector used to convert event's stage coordinates to local coordinates. */
+	static final Vector2 tmpVector = new Vector2();
+
 	public void addSource (final Source source) {
 		DragListener listener = new DragListener() {
 			public void dragStart (InputEvent event, float x, float y, int pointer) {
@@ -79,8 +82,8 @@ public class DragAndDrop {
 						Target target = targets.get(i);
 						if (!target.actor.isAscendantOf(hit)) continue;
 						newTarget = target;
-						target.actor.stageToLocalCoordinates(Vector2.tmp.set(event.getStageX(), event.getStageY()));
-						isValidTarget = target.drag(source, payload, Vector2.tmp.x, Vector2.tmp.y, pointer);
+						target.actor.stageToLocalCoordinates(tmpVector.set(event.getStageX(), event.getStageY()));
+						isValidTarget = target.drag(source, payload, tmpVector.x, tmpVector.y, pointer);
 						break;
 					}
 				}
@@ -119,8 +122,8 @@ public class DragAndDrop {
 				if (System.currentTimeMillis() - dragStartTime < dragTime) isValidTarget = false;
 				if (dragActor != null) dragActor.remove();
 				if (isValidTarget) {
-					target.actor.stageToLocalCoordinates(Vector2.tmp.set(event.getStageX(), event.getStageY()));
-					target.drop(source, payload, Vector2.tmp.x, Vector2.tmp.y, pointer);
+					target.actor.stageToLocalCoordinates(tmpVector.set(event.getStageX(), event.getStageY()));
+					target.drop(source, payload, tmpVector.x, tmpVector.y, pointer);
 				}
 				source.dragStop(event, x, y, pointer, isValidTarget ? target : null);
 				if (target != null) target.reset(source, payload);

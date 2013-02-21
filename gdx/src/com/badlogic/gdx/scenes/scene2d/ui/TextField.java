@@ -583,20 +583,28 @@ public class TextField extends Widget {
 		cursor = minIndex;
 		clearSelection();
 	}
+	
+	/*
+	 * Three hacks to work around the inability to stack allocate small scratch-space objects in Java.  
+	 * Used by #next() and #findNextTextField.
+	 */
+	private static final Vector2 tmp1 = new Vector2();
+	private static final Vector2 tmp2 = new Vector2();
+	private static final Vector2 tmp3 = new Vector2();
 
 	/** Focuses the next TextField. If none is found, the keyboard is hidden. Does nothing if the text field is not in a stage.
 	 * @param up If true, the TextField with the same or next smallest y coordinate is found, else the next highest. */
 	public void next (boolean up) {
 		Stage stage = getStage();
 		if (stage == null) return;
-		getParent().localToStageCoordinates(Vector2.tmp.set(getX(), getY()));
-		TextField textField = findNextTextField(stage.getActors(), null, Vector2.tmp2, Vector2.tmp, up);
+		getParent().localToStageCoordinates(tmp1.set(getX(), getY()));
+		TextField textField = findNextTextField(stage.getActors(), null, tmp2, tmp1, up);
 		if (textField == null) { // Try to wrap around.
 			if (up)
-				Vector2.tmp.set(Float.MIN_VALUE, Float.MIN_VALUE);
+				tmp1.set(Float.MIN_VALUE, Float.MIN_VALUE);
 			else
-				Vector2.tmp.set(Float.MAX_VALUE, Float.MAX_VALUE);
-			textField = findNextTextField(getStage().getActors(), null, Vector2.tmp2, Vector2.tmp, up);
+				tmp1.set(Float.MAX_VALUE, Float.MAX_VALUE);
+			textField = findNextTextField(getStage().getActors(), null, tmp2, tmp1, up);
 		}
 		if (textField != null)
 			stage.setKeyboardFocus(textField);
@@ -609,7 +617,7 @@ public class TextField extends Widget {
 			Actor actor = actors.get(i);
 			if (actor == this) continue;
 			if (actor instanceof TextField) {
-				Vector2 actorCoords = actor.getParent().localToStageCoordinates(Vector2.tmp3.set(actor.getX(), actor.getY()));
+				Vector2 actorCoords = actor.getParent().localToStageCoordinates(tmp3.set(actor.getX(), actor.getY()));
 				if ((actorCoords.y < currentCoords.y || (actorCoords.y == currentCoords.y && actorCoords.x > currentCoords.x)) ^ up) {
 					if (best == null
 						|| (actorCoords.y > bestCoords.y || (actorCoords.y == bestCoords.y && actorCoords.x < bestCoords.x)) ^ up) {
