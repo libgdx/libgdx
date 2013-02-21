@@ -135,15 +135,22 @@ public class Window extends Table {
 		}
 		super.draw(batch, parentAlpha);
 	}
+	
+	/*
+	 * Hacks to work around the inability to stack allocate small scratch objects in Java.
+	 */
+	
+	private static final Vector2 tmpPosition = new Vector2();
+	private static final Vector2 tmpSize = new Vector2();
 
 	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
 		if (style.stageBackground != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			Stage stage = getStage();
-			Vector2 position = stageToLocalCoordinates(Vector2.tmp.set(0, 0));
-			Vector2 size = stageToLocalCoordinates(Vector2.tmp2.set(stage.getWidth(), stage.getHeight()));
-			style.stageBackground.draw(batch, getX() + position.x, getY() + position.y, getX() + size.x, getY() + size.y);
+			stageToLocalCoordinates(/*in/out*/tmpPosition.set(0, 0));
+			stageToLocalCoordinates(/*in/out*/tmpSize.set(stage.getWidth(), stage.getHeight()));
+			style.stageBackground.draw(batch, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY() + tmpSize.y);
 		}
 
 		super.drawBackground(batch, parentAlpha);
