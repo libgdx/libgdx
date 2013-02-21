@@ -48,7 +48,7 @@ public class TiledMapBench extends GdxTest {
 		batch = new SpriteBatch();
 		
 		{
-			tiles = new Texture(Gdx.files.internal("data/maps/tiles.png"));
+			tiles = new Texture(Gdx.files.internal("data/maps/tiled/tiles.png"));
 			TextureRegion[][] splitTiles = TextureRegion.split(tiles, 32, 32);
 			map = new TiledMap();
 			MapLayers layers = map.getLayers();

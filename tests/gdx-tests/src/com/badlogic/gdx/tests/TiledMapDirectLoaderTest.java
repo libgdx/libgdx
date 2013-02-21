@@ -36,7 +36,7 @@ public class TiledMapDirectLoaderTest extends GdxTest {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 		
-		map = new TmxMapLoader().load("data/maps/tiles.tmx");
+		map = new TmxMapLoader().load("data/maps/tiled/super-koalio/level1.tmx");
 		renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
 	}
 

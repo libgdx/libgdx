@@ -42,9 +42,9 @@ public class TiledMapAssetManagerTest extends GdxTest {
 		
 		assetManager = new AssetManager();
 		assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-		assetManager.load("data/maps/isometric_grass_and_water.tmx", TiledMap.class);
+		assetManager.load("data/maps/tiled/isometric_grass_and_water.tmx", TiledMap.class);
 		assetManager.finishLoading();
-		map = assetManager.get("data/maps/isometric_grass_and_water.tmx");
+		map = assetManager.get("data/maps/tiled/isometric_grass_and_water.tmx");
 		renderer = new IsometricTiledMapRenderer(map, 1f / 64f);
 	}
 
