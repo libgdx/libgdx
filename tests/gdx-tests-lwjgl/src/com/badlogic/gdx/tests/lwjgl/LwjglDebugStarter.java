@@ -18,7 +18,7 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.tests.GleedTest;
+import com.badlogic.gdx.tests.Gleed3Test;
 import com.badlogic.gdx.tests.InputTest;
 import com.badlogic.gdx.tests.TideMapAssetManagerTest;
 import com.badlogic.gdx.tests.TideMapDirectLoaderTest;
