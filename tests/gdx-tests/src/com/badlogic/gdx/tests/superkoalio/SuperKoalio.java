@@ -23,14 +23,16 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
 /**
- * Super Mario Brothers like platformer, using a tile map build
+ * Super Mario Brothers like very basic platformer, using a tile map build
  * via <a href="http://www.mapeditor.org/>Tiled</a> and a tileset
  * and sprites by <a href="http://www.vickiwenderlich.com/">Vicky Wenderlich</a>
  * @author mzechner
  *
  */
 public class SuperKoalio extends GdxTest {
-	
+	/**
+	 * The player character, has state and state time, 
+	 */
 	private static class Koala {
 		private static float WIDTH;
 		private static float HEIGHT;
@@ -202,9 +204,16 @@ public class SuperKoalio extends GdxTest {
 		koalaRect.y += koala.velocity.y;
 		for(Rectangle tile: tiles) {
 			if(koalaRect.overlaps(tile)) {
-				// if we hit the ground with our feet, mark us as grounded
-				// so we can jump.
-				if(koala.velocity.y < 0) koala.grounded = true;
+				// we actually reset the koala y-position here
+				// so it is just below/above the tile we collided with
+				// this removes bouncing :)
+				if(koala.velocity.y > 0) {
+					koala.position.y = tile.y - Koala.HEIGHT;
+				} else {
+					koala.position.y = tile.y + tile.height;
+					// if we hit the ground, mark us as grounded so we can jump
+					koala.grounded = true;
+				}
 				koala.velocity.y = 0;
 				break;
 			}
@@ -215,7 +224,6 @@ public class SuperKoalio extends GdxTest {
 		// the latest position
 		koala.position.add(koala.velocity);
 		koala.velocity.mul(1/deltaTime);
-		System.out.println(koala.velocity);
 		
 		// Apply damping to the velocity on the x-axis so we don't
 		// walk infinitely once a key was pressed
@@ -230,9 +238,11 @@ public class SuperKoalio extends GdxTest {
 		for(int y = startY; y <= endY; y++) {
 			for(int x = startX; x <= endX; x++) {
 				Cell cell = layer.getCell(x, y);
-				Rectangle rect = rectPool.obtain();
-				rect.set(x, y, 1, 1);
-				if(cell != null) tiles.add(rect);
+				if(cell != null) {
+					Rectangle rect = rectPool.obtain();
+					rect.set(x, y, 1, 1);
+					tiles.add(rect);
+				}
 			}
 		}
 	}
