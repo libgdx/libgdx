@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.Gdx;
@@ -514,6 +515,7 @@ public class Tree extends WidgetGroup {
 			return children;
 		}
 
+		/** @return May be null. */
 		public Node getParent () {
 			return parent;
 		}
