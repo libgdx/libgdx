@@ -94,14 +94,14 @@ public class LwjglGraphics implements Graphics {
 
 	public int getHeight () {
 		if (canvas != null)
-			return canvas.getHeight();
+			return Math.max(1, canvas.getHeight());
 		else
 			return Display.getHeight();
 	}
 
 	public int getWidth () {
 		if (canvas != null)
-			return canvas.getWidth();
+			return Math.max(1, canvas.getWidth());
 		else
 			return Display.getWidth();
 	}
