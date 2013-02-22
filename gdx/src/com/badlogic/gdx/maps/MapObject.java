@@ -3,10 +3,9 @@ package com.badlogic.gdx.maps;
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * @brief Generic Map entity
+ * Generic Map entity with basic attributes like name, opacity, color 
  */
 public class MapObject {
-
 	private String name = "";
 	private float opacity = 1.0f;
 	private boolean visible = true;
@@ -74,12 +73,5 @@ public class MapObject {
 	 */
 	public MapProperties getProperties() {
 		return properties;
-	}
-	
-	/**
-	 * Creates empty object 
-	 */
-	public MapObject() {
-		
 	}
 }

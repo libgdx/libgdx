@@ -5,19 +5,11 @@ import java.util.Iterator;
 import com.badlogic.gdx.utils.Array;
 
 /**
- * @brief set of MapLayer instances
+ * Ordered list of {@link MapLayer} instances owned by a {@link Map}
  */
 public class MapLayers implements Iterable<MapLayer> {
-	
 	private Array<MapLayer> layers = new Array<MapLayer>();
 
-	/**
-	 * Creates empty set of layers
-	 */
-	public MapLayers() {
-	
-	}
-	
 	/**
 	 * @param index
 	 * @return layer at index
@@ -28,7 +20,7 @@ public class MapLayers implements Iterable<MapLayer> {
 	
 	/**
 	 * @param name
-	 * @return matching layer if exists, otherwise, null
+	 * @return first layer matching the name, null otherwise
 	 */
 	public MapLayer getLayer(String name) {
 		for (MapLayer layer : layers) {
