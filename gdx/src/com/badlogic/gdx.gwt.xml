@@ -246,5 +246,11 @@
 		<include name="net/Socket.java"/>
 		<include name="net/SocketHints.java"/>
 		<include name="graphics/g3d/**/*"/>
+		<include name="maps/**"/>
+		
+		<include name="math/Vector.java"/>
+		<include name="math/Path.java"/>
+		<include name="math/Bezier.java"/>
+		<include name="math/BSpline.java"/>
 	</source>
 </module>

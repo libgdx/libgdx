@@ -25,7 +25,10 @@ import com.badlogic.gdx.utils.Pool;
 /**
  * Super Mario Brothers like very basic platformer, using a tile map build
  * via <a href="http://www.mapeditor.org/>Tiled</a> and a tileset
- * and sprites by <a href="http://www.vickiwenderlich.com/">Vicky Wenderlich</a>
+ * and sprites by <a href="http://www.vickiwenderlich.com/">Vicky Wenderlich</a></p>
+ * 
+ * Shows simple platformer collision detection as well as on-the-fly map modifications
+ * through destructable blocks!
  * @author mzechner
  *
  */
@@ -209,6 +212,9 @@ public class SuperKoalio extends GdxTest {
 				// this removes bouncing :)
 				if(koala.velocity.y > 0) {
 					koala.position.y = tile.y - Koala.HEIGHT;
+					// we hit a block jumping upwards, let's destroy it!
+					TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().getLayer(1);
+					layer.setCell((int)tile.x, (int)tile.y, null);
 				} else {
 					koala.position.y = tile.y + tile.height;
 					// if we hit the ground, mark us as grounded so we can jump
