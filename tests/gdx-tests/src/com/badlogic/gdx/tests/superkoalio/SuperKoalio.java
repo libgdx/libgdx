@@ -8,8 +8,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -126,6 +124,7 @@ public class SuperKoalio extends GdxTest {
 		renderKoala(deltaTime);
 	}
 	
+	private Vector2 tmp = new Vector2();
 	private void updateKoala(float deltaTime) {
 		koala.stateTime += deltaTime;
 		
@@ -159,76 +158,96 @@ public class SuperKoalio extends GdxTest {
 		// position and velocity. Collision detection will clamp the
 		// velocity if necessary and move the koala out of tiles
 		Rectangle koalaRect = rectPool.obtain();
-		System.out.println("frame");
-		koalaRect.set(koala.position.x, koala.position.y, Koala.WIDTH, Koala.HEIGHT);
+		Rectangle intersect = rectPool.obtain();
+		tmp.set(koala.position).add(koala.velocity);
 		
-		koalaRect.y += koala.velocity.y;
-		for (Rectangle rect: getCollidingTiles(koala.position, 0, koala.velocity.y)) {
-			if (koalaRect.overlaps(rect)) {
-				System.out.println("coll y");
-				if (koala.velocity.y < 0) {
-					koalaRect.y = rect.y + rect.height + 0.001f;
-					koala.grounded = true;
-				} else if(koala.velocity.y > 0 ){
-					koalaRect.y = rect.y - rect.height - 0.001f;
-				}
+		koalaRect.set(tmp.x, tmp.y, Koala.WIDTH, Koala.HEIGHT);
+		getSurroundingTilesForPosition(tmp.set(koala.position).add(Koala.WIDTH / 2, Koala.HEIGHT / 2), (TiledMapTileLayer) map.getLayers().getLayer(1));
+		
+		TileData item = null;
+		
+		item = surroundingTiles[UP];
+		if (item.tile != null) {
+			if (intersect(koalaRect, item.rectangle, intersect)) {				
+				koalaRect.y -= intersect.height;
 				koala.velocity.y = 0;
 			}
 		}
-		koala.position.set(koalaRect.x, koalaRect.y);
-
-		koalaRect.x += koala.velocity.x;
-		for (Rectangle rect: getCollidingTiles(koala.position, koala.velocity.x, 0)) {
-			if (koalaRect.overlaps(rect)) {
-				System.out.println("coll x");
-				if (koala.velocity.x < 0) {
-					koalaRect.x = rect.x + rect.width + 0.001f;
-				} else if(koala.velocity.x > 0){
-					koalaRect.x = rect.x - rect.width - 0.001f;
+		item = surroundingTiles[DOWN];
+		if (item.tile != null) {
+			if (intersect(koalaRect, item.rectangle, intersect)) {
+				koalaRect.y += intersect.height;
+				koala.velocity.y = 0;
+				koala.grounded = true;
+			}	
+		}
+		item = surroundingTiles[LEFT];
+		if (item.tile != null) {
+			if (intersect(koalaRect, item.rectangle, intersect)) {
+				koalaRect.x += intersect.width;
+			}
+		}
+		item = surroundingTiles[RIGHT];
+		if (item.tile != null) {
+			if (intersect(koalaRect, item.rectangle, intersect)) {
+				koalaRect.x -= intersect.width;
+			}			
+		}
+		item = surroundingTiles[UP_LEFT];
+		if (item.tile != null) {
+			if (intersect(koalaRect, item.rectangle, intersect)) {
+				if (intersect.width > intersect.height) {
+					koalaRect.y -= intersect.height;
+					koala.velocity.y = 0;
+				} else {
+					koalaRect.x += intersect.width;
 				}
-				koala.velocity.x = 0;
-				koala.state = Koala.State.Standing;
+			}			
+		}
+		item = surroundingTiles[UP_RIGHT];
+		if (item.tile != null) {
+			if (intersect(koalaRect, item.rectangle, intersect)) {
+				if (intersect.width > intersect.height) {
+					koalaRect.y -= intersect.height;
+					koala.velocity.y = 0;
+				} else {
+					koalaRect.x -= intersect.width;
+				}
+			}			
+		}
+		item = surroundingTiles[DOWN_LEFT];
+		if (item.tile != null) {
+			if (intersect(koalaRect, item.rectangle, intersect)) {
+				if (intersect.width > intersect.height) {
+					koalaRect.y += intersect.height;
+				} else {
+					koalaRect.x += intersect.width;
+				}
+			}			
+		}
+		item = surroundingTiles[DOWN_RIGHT];
+		if (item.tile != null) {
+			if (intersect(koalaRect, item.rectangle, intersect)) {
+				if (intersect.width > intersect.height) {
+					koalaRect.y += intersect.height;
+				} else {
+					koalaRect.x -= intersect.width;
+				}
 			}
 		}
 		koala.position.set(koalaRect.x, koalaRect.y);
-
+		
 		// unscale the velocity by the inverse delta time and set 
 		// the latest position
 		koala.velocity.mul(1/deltaTime);
 		
 		// free the koala rectangle
 		rectPool.free(koalaRect);
+		rectPool.free(intersect);
 		
 		// Apply damping to the velocity on the x-axis so we don't
 		// walk infinitely once a key was pressed
 		koala.velocity.x *= Koala.DAMPING;
-	}
-	
-	private Array<Rectangle> getCollidingTiles(Vector2 position, float velocityX, float velocityY) {
-		// figure out the tiles within which the koala is moving in the current timestep
-		int startX, startY, endX, endY;
-		if(velocityX < 0) startX = (int)(position.x + velocityX);
-		else startX = (int)position.x;
-		if(velocityY < 0) startY = (int)(position.y + velocityY);
-		else startY = (int)position.y;
-		endX = (int)(startX + Koala.WIDTH + Math.abs(velocityX));
-		endY = (int)(startY + Koala.HEIGHT + Math.abs(velocityY));
-		
-		// get all the tiles that overlap this area
-		TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().getLayer(1);
-		rectPool.freeAll(tiles);
-		tiles.clear();
-		for(int y = startY; y <= endY; y++) {
-			for(int x = startX; x <= endX; x++) {
-				Cell cell = layer.getCell(x, y);
-				if(cell.getTile() != null) {
-					Rectangle rect = rectPool.obtain();
-					rect.set(x, y, 1, 1);
-					tiles.add(rect);
-				}
-			}
-		}
-		return tiles;
 	}
 	
 	private void renderKoala(float deltaTime) {
@@ -255,5 +274,145 @@ public class SuperKoalio extends GdxTest {
 
 	@Override
 	public void dispose () {
+	}
+	
+	public static final int UP = 1;
+	public static final int DOWN = 6;
+	public static final int LEFT = 3;
+	public static final int RIGHT = 4;
+	public static final int UP_LEFT = 0;
+	public static final int UP_RIGHT = 2;
+	public static final int DOWN_LEFT = 5;
+	public static final int DOWN_RIGHT = 7;
+	
+	TileData[] surroundingTiles = new TileData[] {
+		new TileData(), new TileData(), new TileData(),
+		new TileData(), /*  KOALIO  */  new TileData(),
+		new TileData(), new TileData(), new TileData(),
+	};
+	
+	public static class TileData {
+		TiledMapTile tile;
+		int tileX;
+		int tileY;
+		
+		Rectangle rectangle;
+		
+		public TileData() {
+			tile = null;
+			tileX = -1;
+			tileY = -1;
+			rectangle = new Rectangle();
+		}
+		
+		public void reset() {
+			tile = null;
+			tileX = -1;
+			tileY = -1;
+			rectangle.set(0, 0, 0, 0);
+		}
+		
+	}
+	private void getSurroundingTilesForPosition(Vector2 position, TiledMapTileLayer layer) {
+		int tileX = (int) position.x;
+		int tileY = (int) position.y;
+		
+		for (int i = 0, j = surroundingTiles.length; i < j; i++) {
+			surroundingTiles[i].reset();
+		}
+		
+		boolean goUp = tileY > 0;
+		boolean goDown = tileY < layer.getHeight() - 1;
+		boolean goLeft = tileX > 0;
+		boolean goRight = tileX < layer.getWidth() - 1;
+
+		TileData item = null;
+		
+		if (goUp) {
+			item = surroundingTiles[UP];
+			
+			item.tileX = tileX;
+			item.tileY = tileY + 1;
+			
+			item.tile = layer.getCell(item.tileX, item.tileY).getTile();
+			item.rectangle.set(item.tileX, item.tileY, 1, 1);
+			
+			if (goLeft) {
+				item = surroundingTiles[UP_LEFT];
+				item.tileX = tileX - 1;
+				item.tileY = tileY + 1;
+				item.tile = layer.getCell(item.tileX, item.tileY).getTile();
+				item.rectangle.set(item.tileX, item.tileY, 1, 1);
+			}
+			if (goRight) {
+				item = surroundingTiles[UP_RIGHT];
+				item.tileX = tileX + 1;
+				item.tileY = tileY + 1;
+				item.tile = layer.getCell(item.tileX, item.tileY).getTile();
+				item.rectangle.set(item.tileX, item.tileY, 1, 1);
+			}			
+		}
+		if (goDown) {
+			item = surroundingTiles[DOWN];
+			item.tileX = tileX;
+			item.tileY = tileY - 1;
+			item.tile = layer.getCell(item.tileX, item.tileY).getTile();
+			item.rectangle.set(item.tileX, item.tileY, 1, 1);
+			if (goLeft) {
+				item = surroundingTiles[DOWN_LEFT];
+				item.tileX = tileX - 1;
+				item.tileY = tileY - 1;
+				item.tile = layer.getCell(item.tileX, item.tileY).getTile();
+				item.rectangle.set(item.tileX, item.tileY, 1, 1);
+			}
+			if (goRight) {
+				item = surroundingTiles[DOWN_RIGHT];
+				item.tileX = tileX + 1;
+				item.tileY = tileY - 1;
+				item.tile = layer.getCell(item.tileX, item.tileY).getTile();
+				item.rectangle.set(item.tileX, item.tileY, 1, 1);
+			}
+		}
+		if (goLeft) {
+			item = surroundingTiles[LEFT];
+			item.tileX = tileX - 1;
+			item.tileY = tileY;
+			item.tile = layer.getCell(item.tileX, item.tileY).getTile();
+			item.rectangle.set(item.tileX, item.tileY, 1, 1);
+		}
+		if (goRight) {
+			item = surroundingTiles[RIGHT];
+			item.tileX = tileX + 1;
+			item.tileY = tileY;
+			item.tile = layer.getCell(item.tileX, item.tileY).getTile();
+			item.rectangle.set(item.tileX, item.tileY, 1, 1);
+		}
+	}
+
+	public static boolean intersect (Rectangle r1, Rectangle r2, Rectangle out) {
+		final float r1L = r1.x;
+		final float r1T = r1.y;
+
+		final float r1R = r1.x + r1.width;
+		final float r1B = r1.y + r1.height;
+
+		final float r2L = r2.x;
+		final float r2T = r2.y;
+
+		final float r2R = r2.x + r2.width;
+		final float r2B = r2.y + r2.height;
+
+		if (r1L < r2R && r2L < r1R && r1T < r2B && r2T < r1B) {
+			if (out != null) {
+				final float outL = (r1L > r2L) ? r1L : r2L;
+				final float outT = (r1T > r2T) ? r1T : r2T;
+				final float outR = (r1R < r2R) ? r1R : r2R;
+				final float outB = (r1B < r2B) ? r1B : r2B;
+
+				out.set(outL, outT, outR - outL, outB - outT);
+			}
+			return true;
+		}
+		return false;
 	}
 }
