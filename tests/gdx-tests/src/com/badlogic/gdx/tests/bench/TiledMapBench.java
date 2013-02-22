@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer2;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
@@ -58,7 +59,9 @@ public class TiledMapBench extends GdxTest {
 					for (int y = 0; y < 100; y++) {
 						int ty = (int)(Math.random() * splitTiles.length);
 						int tx = (int)(Math.random() * splitTiles[ty].length);
-						layer.setCell(x, y, new StaticTiledMapTile(splitTiles[ty][tx]));
+						Cell cell = new Cell();
+						cell.setTile(new StaticTiledMapTile(splitTiles[ty][tx]));
+						layer.setCell(x, y, cell);
 					}
 				}
 				layers.addLayer(layer);

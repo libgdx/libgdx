@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -33,7 +35,6 @@ public class SuperKoalio extends GdxTest {
 		private static float WIDTH;
 		private static float HEIGHT;
 		private static float MAX_VELOCITY = 10f;
-		private static float WALK_VELOCITY = 2f;
 		private static float JUMP_VELOCITY = 40f;
 		private static float DAMPING = 0.87f;
 		
@@ -96,7 +97,7 @@ public class SuperKoalio extends GdxTest {
 		
 		// create the Koala we want to move around the world
 		koala = new Koala();
-		koala.position.set(10, 2);
+		koala.position.set(20, 20);
 	}
 
 	@Override
@@ -136,118 +137,104 @@ public class SuperKoalio extends GdxTest {
 		}
 		
 		if(Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
-			koala.velocity.x -= Koala.WALK_VELOCITY;
-			if(koala.state != Koala.State.Jumping) koala.state = Koala.State.Walking;
+			koala.velocity.x = -Koala.MAX_VELOCITY;
+			if(koala.grounded) koala.state = Koala.State.Walking;
 			koala.facesRight = false;
 		}
 		
 		if(Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
-			koala.velocity.x += Koala.WALK_VELOCITY;
-			if(koala.state != Koala.State.Jumping) koala.state = Koala.State.Walking;
+			koala.velocity.x = Koala.MAX_VELOCITY;
+			if(koala.grounded) koala.state = Koala.State.Walking;
 			koala.facesRight = true;
 		}
 		
 		// apply gravity if we are falling
 		koala.velocity.add(0, GRAVITY);
 		
+		// clamp the velocity to the maximum, x-axis only
+		if(Math.abs(koala.velocity.x) > Koala.MAX_VELOCITY) {
+			koala.velocity.x = Math.signum(koala.velocity.x) * Koala.MAX_VELOCITY;
+		}
+		
+		// clamp the velocity to 0 if it's < 1, and set the state to standign
+		if(Math.abs(koala.velocity.x) < 1) {
+			koala.velocity.x = 0;
+			if(koala.grounded) koala.state = Koala.State.Standing;
+		}
+		
 		// multiply by delta time so we know how far we go
 		// in this frame
 		koala.velocity.mul(deltaTime);
 		
-		// perform collision detection & response based on the current
-		// position and velocity. Collision detection will clamp the
-		// velocity if necessary and move the koala out of tiles
+		// perform collision detection & response, on each axis, separately
+		// if the koala is moving right, check the tiles to the right of it's
+		// right bounding box edge, otherwise check the ones to the left
 		Rectangle koalaRect = rectPool.obtain();
-		Rectangle intersect = rectPool.obtain();
-		tmp.set(koala.position).add(koala.velocity);
+		koalaRect.set(koala.position.x, koala.position.y, Koala.WIDTH, Koala.HEIGHT);
+		int startX, startY, endX, endY;
+		if(koala.velocity.x > 0) {
+			startX = endX = (int)(koala.position.x + Koala.WIDTH + koala.velocity.x);
+		} else {
+			startX = endX = (int)(koala.position.x + koala.velocity.x);
+		}
+		startY = (int)(koala.position.y);
+		endY = (int)(koala.position.y + Koala.HEIGHT);
+		getTiles(startX, startY, endX, endY, tiles);
+		koalaRect.x += koala.velocity.x;
+		for(Rectangle tile: tiles) {
+			if(koalaRect.overlaps(tile)) {
+				koala.velocity.x = 0;
+				break;
+			}
+		}
+		koalaRect.x = koala.position.x;
 		
-		koalaRect.set(tmp.x, tmp.y, Koala.WIDTH, Koala.HEIGHT);
-		getSurroundingTilesForPosition(tmp.set(koala.position).add(Koala.WIDTH / 2, Koala.HEIGHT / 2), (TiledMapTileLayer) map.getLayers().getLayer(1));
-		
-		TileData item = null;
-		
-		item = surroundingTiles[UP];
-		if (item.tile != null) {
-			if (intersect(koalaRect, item.rectangle, intersect)) {				
-				koalaRect.y -= intersect.height;
+		// if the koala is moving upwards, check the tiles to the top of it's
+		// top bounding box edge, otherwise check the ones to the bottom
+		if(koala.velocity.y > 0) {
+			startY = endY = (int)(koala.position.y + Koala.HEIGHT + koala.velocity.y);
+		} else {
+			startY = endY = (int)(koala.position.y + koala.velocity.y);
+		}
+		startX = (int)(koala.position.x);
+		endX = (int)(koala.position.x + Koala.WIDTH);
+		getTiles(startX, startY, endX, endY, tiles);
+		koalaRect.y += koala.velocity.y;
+		for(Rectangle tile: tiles) {
+			if(koalaRect.overlaps(tile)) {
+				// if we hit the ground with our feet, mark us as grounded
+				// so we can jump.
+				if(koala.velocity.y < 0) koala.grounded = true;
 				koala.velocity.y = 0;
+				break;
 			}
 		}
-		item = surroundingTiles[DOWN];
-		if (item.tile != null) {
-			if (intersect(koalaRect, item.rectangle, intersect)) {
-				koalaRect.y += intersect.height;
-				koala.velocity.y = 0;
-				koala.grounded = true;
-			}	
-		}
-		item = surroundingTiles[LEFT];
-		if (item.tile != null) {
-			if (intersect(koalaRect, item.rectangle, intersect)) {
-				koalaRect.x += intersect.width;
-			}
-		}
-		item = surroundingTiles[RIGHT];
-		if (item.tile != null) {
-			if (intersect(koalaRect, item.rectangle, intersect)) {
-				koalaRect.x -= intersect.width;
-			}			
-		}
-		item = surroundingTiles[UP_LEFT];
-		if (item.tile != null) {
-			if (intersect(koalaRect, item.rectangle, intersect)) {
-				if (intersect.width > intersect.height) {
-					koalaRect.y -= intersect.height;
-					koala.velocity.y = 0;
-				} else {
-					koalaRect.x += intersect.width;
-				}
-			}			
-		}
-		item = surroundingTiles[UP_RIGHT];
-		if (item.tile != null) {
-			if (intersect(koalaRect, item.rectangle, intersect)) {
-				if (intersect.width > intersect.height) {
-					koalaRect.y -= intersect.height;
-					koala.velocity.y = 0;
-				} else {
-					koalaRect.x -= intersect.width;
-				}
-			}			
-		}
-		item = surroundingTiles[DOWN_LEFT];
-		if (item.tile != null) {
-			if (intersect(koalaRect, item.rectangle, intersect)) {
-				if (intersect.width > intersect.height) {
-					koalaRect.y += intersect.height;
-				} else {
-					koalaRect.x += intersect.width;
-				}
-			}			
-		}
-		item = surroundingTiles[DOWN_RIGHT];
-		if (item.tile != null) {
-			if (intersect(koalaRect, item.rectangle, intersect)) {
-				if (intersect.width > intersect.height) {
-					koalaRect.y += intersect.height;
-				} else {
-					koalaRect.x -= intersect.width;
-				}
-			}
-		}
-		koala.position.set(koalaRect.x, koalaRect.y);
+		rectPool.free(koalaRect);
 		
 		// unscale the velocity by the inverse delta time and set 
 		// the latest position
+		koala.position.add(koala.velocity);
 		koala.velocity.mul(1/deltaTime);
-		
-		// free the koala rectangle
-		rectPool.free(koalaRect);
-		rectPool.free(intersect);
+		System.out.println(koala.velocity);
 		
 		// Apply damping to the velocity on the x-axis so we don't
 		// walk infinitely once a key was pressed
 		koala.velocity.x *= Koala.DAMPING;
+		
+	}
+	
+	private void getTiles(int startX, int startY, int endX, int endY, Array<Rectangle> tiles) {
+		TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().getLayer(1);
+		rectPool.freeAll(tiles);
+		tiles.clear();
+		for(int y = startY; y <= endY; y++) {
+			for(int x = startX; x <= endX; x++) {
+				Cell cell = layer.getCell(x, y);
+				Rectangle rect = rectPool.obtain();
+				rect.set(x, y, 1, 1);
+				if(cell != null) tiles.add(rect);
+			}
+		}
 	}
 	
 	private void renderKoala(float deltaTime) {
@@ -274,145 +261,5 @@ public class SuperKoalio extends GdxTest {
 
 	@Override
 	public void dispose () {
-	}
-	
-	public static final int UP = 1;
-	public static final int DOWN = 6;
-	public static final int LEFT = 3;
-	public static final int RIGHT = 4;
-	public static final int UP_LEFT = 0;
-	public static final int UP_RIGHT = 2;
-	public static final int DOWN_LEFT = 5;
-	public static final int DOWN_RIGHT = 7;
-	
-	TileData[] surroundingTiles = new TileData[] {
-		new TileData(), new TileData(), new TileData(),
-		new TileData(), /*  KOALIO  */  new TileData(),
-		new TileData(), new TileData(), new TileData(),
-	};
-	
-	public static class TileData {
-		TiledMapTile tile;
-		int tileX;
-		int tileY;
-		
-		Rectangle rectangle;
-		
-		public TileData() {
-			tile = null;
-			tileX = -1;
-			tileY = -1;
-			rectangle = new Rectangle();
-		}
-		
-		public void reset() {
-			tile = null;
-			tileX = -1;
-			tileY = -1;
-			rectangle.set(0, 0, 0, 0);
-		}
-		
-	}
-	private void getSurroundingTilesForPosition(Vector2 position, TiledMapTileLayer layer) {
-		int tileX = (int) position.x;
-		int tileY = (int) position.y;
-		
-		for (int i = 0, j = surroundingTiles.length; i < j; i++) {
-			surroundingTiles[i].reset();
-		}
-		
-		boolean goUp = tileY > 0;
-		boolean goDown = tileY < layer.getHeight() - 1;
-		boolean goLeft = tileX > 0;
-		boolean goRight = tileX < layer.getWidth() - 1;
-
-		TileData item = null;
-		
-		if (goUp) {
-			item = surroundingTiles[UP];
-			
-			item.tileX = tileX;
-			item.tileY = tileY + 1;
-			
-			item.tile = layer.getCell(item.tileX, item.tileY).getTile();
-			item.rectangle.set(item.tileX, item.tileY, 1, 1);
-			
-			if (goLeft) {
-				item = surroundingTiles[UP_LEFT];
-				item.tileX = tileX - 1;
-				item.tileY = tileY + 1;
-				item.tile = layer.getCell(item.tileX, item.tileY).getTile();
-				item.rectangle.set(item.tileX, item.tileY, 1, 1);
-			}
-			if (goRight) {
-				item = surroundingTiles[UP_RIGHT];
-				item.tileX = tileX + 1;
-				item.tileY = tileY + 1;
-				item.tile = layer.getCell(item.tileX, item.tileY).getTile();
-				item.rectangle.set(item.tileX, item.tileY, 1, 1);
-			}			
-		}
-		if (goDown) {
-			item = surroundingTiles[DOWN];
-			item.tileX = tileX;
-			item.tileY = tileY - 1;
-			item.tile = layer.getCell(item.tileX, item.tileY).getTile();
-			item.rectangle.set(item.tileX, item.tileY, 1, 1);
-			if (goLeft) {
-				item = surroundingTiles[DOWN_LEFT];
-				item.tileX = tileX - 1;
-				item.tileY = tileY - 1;
-				item.tile = layer.getCell(item.tileX, item.tileY).getTile();
-				item.rectangle.set(item.tileX, item.tileY, 1, 1);
-			}
-			if (goRight) {
-				item = surroundingTiles[DOWN_RIGHT];
-				item.tileX = tileX + 1;
-				item.tileY = tileY - 1;
-				item.tile = layer.getCell(item.tileX, item.tileY).getTile();
-				item.rectangle.set(item.tileX, item.tileY, 1, 1);
-			}
-		}
-		if (goLeft) {
-			item = surroundingTiles[LEFT];
-			item.tileX = tileX - 1;
-			item.tileY = tileY;
-			item.tile = layer.getCell(item.tileX, item.tileY).getTile();
-			item.rectangle.set(item.tileX, item.tileY, 1, 1);
-		}
-		if (goRight) {
-			item = surroundingTiles[RIGHT];
-			item.tileX = tileX + 1;
-			item.tileY = tileY;
-			item.tile = layer.getCell(item.tileX, item.tileY).getTile();
-			item.rectangle.set(item.tileX, item.tileY, 1, 1);
-		}
-	}
-
-	public static boolean intersect (Rectangle r1, Rectangle r2, Rectangle out) {
-		final float r1L = r1.x;
-		final float r1T = r1.y;
-
-		final float r1R = r1.x + r1.width;
-		final float r1B = r1.y + r1.height;
-
-		final float r2L = r2.x;
-		final float r2T = r2.y;
-
-		final float r2R = r2.x + r2.width;
-		final float r2B = r2.y + r2.height;
-
-		if (r1L < r2R && r2L < r1R && r1T < r2B && r2T < r1B) {
-			if (out != null) {
-				final float outL = (r1L > r2L) ? r1L : r2L;
-				final float outT = (r1T > r2T) ? r1T : r2T;
-				final float outR = (r1R < r2R) ? r1R : r2R;
-				final float outB = (r1B < r2B) ? r1B : r2B;
-
-				out.set(outL, outT, outR - outL, outB - outT);
-			}
-			return true;
-		}
-		return false;
 	}
 }

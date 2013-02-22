@@ -18,6 +18,7 @@ import com.badlogic.gdx.maps.ImageResolver.AssetManagerImageResolver;
 import com.badlogic.gdx.maps.ImageResolver.DirectImageResolver;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -226,7 +227,9 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 					} else if (name.equals("Null")) {
 						x += currentChild.getIntAttribute("Count");
 					} else if (name.equals("Static")) {
-						layer.setCell(x++, y, currentTileSet.getTile(firstgid + currentChild.getIntAttribute("Index")));
+						Cell cell = new Cell();
+						cell.setTile(currentTileSet.getTile(firstgid + currentChild.getIntAttribute("Index")));
+						layer.setCell(x++, y, cell);
 					} else if (name.equals("Animated")) {
 						// Create an AnimatedTile
 						int interval = currentChild.getInt("Interval");
@@ -242,7 +245,9 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 								frameTiles.add((StaticTiledMapTile) currentTileSet.getTile(firstgid + frame.getIntAttribute("Index")));
 							}
 						}
-						layer.setCell(x++, y, new AnimatedTiledMapTile(interval / 1000f, frameTiles)); //TODO: Reuse existing animated tiles
+						Cell cell = new Cell();
+						cell.setTile(new AnimatedTiledMapTile(interval / 1000f, frameTiles));
+						layer.setCell(x++, y, cell); //TODO: Reuse existing animated tiles
 					}
 				}
 			}

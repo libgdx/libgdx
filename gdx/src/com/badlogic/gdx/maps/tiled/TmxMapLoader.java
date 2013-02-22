@@ -273,7 +273,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 						tilesets.getTile(id);
 						TiledMapTile tile = tilesets.getTile(id);
 						if (tile != null) {
-							Cell cell = layer.getCell(x, height - 1 - y);
+							Cell cell = new Cell();
 							if (flipDiagonally) {
 								if (flipHorizontally && flipVertically) {
 									cell.setFlipHorizontally(true);
@@ -291,6 +291,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 								cell.setFlipVertically(flipVertically);
 							}
 							cell.setTile(tile);
+							layer.setCell(x, height - 1 - y, cell);
 						}
 					}
 				}
@@ -317,7 +318,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 								tilesets.getTile(id);
 								TiledMapTile tile = tilesets.getTile(id);
 								if (tile != null) {
-									Cell cell = layer.getCell(x, height - 1 - y);
+									Cell cell = new Cell();
 									if (flipDiagonally) {
 										if (flipHorizontally && flipVertically) {
 											cell.setFlipHorizontally(true);
@@ -335,6 +336,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 										cell.setFlipVertically(flipVertically);
 									}
 									cell.setTile(tile);
+									layer.setCell(x, height - 1 - y, cell);
 								}
 							}
 						}
@@ -366,7 +368,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 									tilesets.getTile(id);
 									TiledMapTile tile = tilesets.getTile(id);
 									if (tile != null) {
-										Cell cell = layer.getCell(x, height - 1 - y);
+										Cell cell = new Cell();
 										if (flipDiagonally) {
 											if (flipHorizontally && flipVertically) {
 												cell.setFlipHorizontally(true);
@@ -384,6 +386,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 											cell.setFlipVertically(flipVertically);
 										}
 										cell.setTile(tile);
+										layer.setCell(x, height - 1 - y, cell);
 									}
 								} catch (IOException e) {
 									throw new GdxRuntimeException("Error Reading TMX Layer Data.", e);
@@ -416,7 +419,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 									tilesets.getTile(id);
 									TiledMapTile tile = tilesets.getTile(id);
 									if (tile != null) {
-										Cell cell = layer.getCell(x, height - 1 - y);
+										Cell cell = new Cell();
 										if (flipDiagonally) {
 											if (flipHorizontally && flipVertically) {
 												cell.setFlipHorizontally(true);
@@ -434,6 +437,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 											cell.setFlipVertically(flipVertically);
 										}
 										cell.setTile(tile);
+										layer.setCell(x, height - 1 - y, cell);
 									}
 			
 								} catch (DataFormatException e) {

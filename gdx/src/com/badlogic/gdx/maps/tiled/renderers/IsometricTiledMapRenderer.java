@@ -70,6 +70,7 @@ public class IsometricTiledMapRenderer extends  BatchTiledMapRenderer {
 				float y = (row * halfTileHeight) - (col * halfTileHeight);
 
 				final TiledMapTileLayer.Cell cell = layer.getCell(col, row);
+				if(cell == null) continue;
 				final TiledMapTile tile = cell.getTile();
 				if (tile != null) {
 					

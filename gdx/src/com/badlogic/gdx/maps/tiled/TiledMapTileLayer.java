@@ -58,11 +58,6 @@ public class TiledMapTileLayer extends MapLayer {
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
 		this.cells = new Cell[width][height];
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				cells[x][y] = new Cell();
-			}
-		}
 	}
 	
 	/**
@@ -71,24 +66,27 @@ public class TiledMapTileLayer extends MapLayer {
 	 * @return cell at (x, y)
 	 */
 	public Cell getCell(int x, int y) {
+		if(x < 0 || x >= width) return null;
+		if(y < 0 || y >= height) return null;
 		return cells[x][y];
 	}
 	
 	/**
-	 * Sets the tile which should be used for the cell in the given location.
-	 * 
+	 * Sets the {@link Cell} at the given coordinates.
 	 * @param x
 	 * @param y
-	 * @param tile
+	 * @param cell
 	 */
-	public void setCell(int x, int y, TiledMapTile tile) {
-		cells[x][y].setTile(tile);
+	public void setCell(int x, int y, Cell cell) {
+		if(x < 0 || x >= width) return;
+		if(y < 0 || y >= height) return;
+		cells[x][y] = cell;
 	}
 	
 	/**
-	 * @brief represents a slot in a TiledLayer: TiledMapTile, flip and rotation properties.
+	 * @brief represents a cell in a TiledLayer: TiledMapTile, flip and rotation properties.
 	 */
-	public class Cell {
+	public static class Cell {
 		
 		private TiledMapTile tile;
 		
