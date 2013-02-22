@@ -147,6 +147,8 @@ public class StageTest extends GdxTest implements InputProcessor {
 			}
 	}
 
+	private final Vector2 stageCoords = new Vector2();
+
 	@Override
 	public void render () {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -154,7 +156,6 @@ public class StageTest extends GdxTest implements InputProcessor {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		if (Gdx.input.isTouched()) {
-			Vector2 stageCoords = Vector2.tmp;
 			stage.screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
 			Actor actor = stage.hit(stageCoords.x, stageCoords.y, true);
 			if (actor instanceof Image)
