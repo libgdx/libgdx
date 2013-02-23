@@ -17,5 +17,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers-desktop"/>
 	<classpathentry kind="lib" path="/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-sqlite"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-sqlite-desktop"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
