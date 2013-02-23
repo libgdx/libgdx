@@ -127,7 +127,7 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 	
 	private void renderLayer(MapLayer layer) {
 		
-		if (!layer.getVisible()) {
+		if (!layer.isVisible()) {
 			return;
 		}
 		
@@ -137,7 +137,7 @@ public class GleedMapRenderer implements MapRenderer, Disposable {
 		for (int j = 0; j < numObjects; ++j) {
 			MapObject mapObject = objects.getObject(j);
 			
-			if (mapObject == null || !mapObject.getVisible()) {
+			if (mapObject == null || !mapObject.isVisible()) {
 				continue;
 			}
 			

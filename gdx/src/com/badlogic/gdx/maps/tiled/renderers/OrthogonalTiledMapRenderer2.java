@@ -121,7 +121,7 @@ public class OrthogonalTiledMapRenderer2 implements TiledMapRenderer {
 			spriteCache.draw(0);
 		} else {
 			for (MapLayer layer : map.getLayers()) {
-				if (layer.getVisible()) {
+				if (layer.isVisible()) {
 					if (layer instanceof TiledMapTileLayer) {
 						renderTileLayer((TiledMapTileLayer) layer);
 					} else {

@@ -57,7 +57,7 @@ public class MapObject {
 	/**
 	 * @return whether the object is visible or not
 	 */
-	public boolean getVisible() {
+	public boolean isVisible() {
 		return visible;
 	}
 

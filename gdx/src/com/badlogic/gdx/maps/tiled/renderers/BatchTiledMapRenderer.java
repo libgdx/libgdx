@@ -68,7 +68,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer {
 	public void render () {
 		spriteBatch.begin();
 		for (MapLayer layer : map.getLayers()) {
-			if (layer.getVisible()) {
+			if (layer.isVisible()) {
 				if (layer instanceof TiledMapTileLayer) {
 					renderTileLayer((TiledMapTileLayer) layer);
 				} else {
@@ -86,7 +86,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer {
 		spriteBatch.begin();
 		for (int layerIdx : layers) {
 			MapLayer layer = map.getLayers().getLayer(layerIdx);
-			if (layer.getVisible()) {
+			if (layer.isVisible()) {
 				if (layer instanceof TiledMapTileLayer) {
 					renderTileLayer((TiledMapTileLayer) layer);
 				} else {

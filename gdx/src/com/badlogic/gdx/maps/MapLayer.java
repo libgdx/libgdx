@@ -64,7 +64,7 @@ public class MapLayer {
 	/**
 	 * @return whether the layer is visible or not
 	 */
-	public boolean getVisible() {
+	public boolean isVisible() {
 		return visible;
 	}
 
