@@ -380,7 +380,11 @@ public class ShapeRenderer {
 	 * @param x
 	 * @param y
 	 * @param width
-	 * @param height */
+	 * @param height 
+	 * @param col1 The color at (x, y) 
+	 * @param col2 The color at (x + width, y)
+	 * @param col3 The color at (x + width, y + height)
+	 * @param col4 The color at (x, y + height) */
 	public void rect(float x, float y, float width, float height, Color col1, Color col2, Color col3, Color col4){
 		if (currType != ShapeType.Filled && currType != ShapeType.Line) 
 			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
