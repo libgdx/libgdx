@@ -29,6 +29,7 @@ ipch/
 *.dll.mdb
 *.userprefs
 *.sdf
+*.class
 
 libgdx-*.zip
 

@@ -32,7 +32,10 @@ public class ActorGestureListener implements EventListener {
 	private final GestureDetector detector;
 	InputEvent event;
 	Actor actor, touchDownTarget;
-
+	
+	/** Scratch coordinates used to convert event coordinates into local coordinates. */
+	static final Vector2 tmpCoords = new Vector2();
+	
 	/** @see GestureDetector#GestureDetector(com.badlogic.gdx.input.GestureDetector.GestureListener) */
 	public ActorGestureListener () {
 		this(20, 0.4f, 1.1f, 0.15f);
@@ -45,14 +48,14 @@ public class ActorGestureListener implements EventListener {
 			private final Vector2 pointer1 = new Vector2(), pointer2 = new Vector2();
 
 			public boolean tap (float stageX, float stageY, int count, int button) {
-				actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
-				ActorGestureListener.this.tap(event, Vector2.tmp.x, Vector2.tmp.y, count, button);
+				actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
+				ActorGestureListener.this.tap(event, tmpCoords.x, tmpCoords.y, count, button);
 				return true;
 			}
 
 			public boolean longPress (float stageX, float stageY) {
-				actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
-				return ActorGestureListener.this.longPress(actor, Vector2.tmp.x, Vector2.tmp.y);
+				actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
+				return ActorGestureListener.this.longPress(actor, tmpCoords.x, tmpCoords.y);
 			}
 
 			public boolean fling (float velocityX, float velocityY, int button) {
@@ -61,8 +64,8 @@ public class ActorGestureListener implements EventListener {
 			}
 
 			public boolean pan (float stageX, float stageY, float deltaX, float deltaY) {
-				actor.stageToLocalCoordinates(Vector2.tmp.set(stageX, stageY));
-				ActorGestureListener.this.pan(event, Vector2.tmp.x, Vector2.tmp.y, deltaX, deltaY);
+				actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
+				ActorGestureListener.this.pan(event, tmpCoords.x, tmpCoords.y, deltaX, deltaY);
 				return true;
 			}
 
@@ -92,15 +95,15 @@ public class ActorGestureListener implements EventListener {
 			actor = event.getListenerActor();
 			touchDownTarget = event.getTarget();
 			detector.touchDown(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
-			actor.stageToLocalCoordinates(Vector2.tmp.set(event.getStageX(), event.getStageY()));
-			touchDown(event, Vector2.tmp.x, Vector2.tmp.y, event.getPointer(), event.getButton());
+			actor.stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
+			touchDown(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
 			return true;
 		case touchUp:
 			this.event = event;
 			actor = event.getListenerActor();
 			detector.touchUp(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
-			actor.stageToLocalCoordinates(Vector2.tmp.set(event.getStageX(), event.getStageY()));
-			touchUp(event, Vector2.tmp.x, Vector2.tmp.y, event.getPointer(), event.getButton());
+			actor.stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
+			touchUp(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
 			return true;
 		case touchDragged:
 			this.event = event;

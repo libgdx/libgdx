@@ -136,7 +136,6 @@
 		<include name="math/collision/Segment.java"/>
 		<include name="graphics/glutils/ShapeRenderer.java"/>
 		<include name="graphics/g3d/decals/SimpleOrthoGroupStrategy.java"/>
-		<include name="graphics/g2d/tiled/SimpleTileAtlas.java"/>
 		<include name="assets/loaders/SkinLoader.java"/>
 		<include name="utils/Sort.java"/>
 		<include name="utils/SortedIntList.java"/>
@@ -153,14 +152,6 @@
 		<include name="graphics/TextureDict.java"/>
 		<include name="graphics/TextureRef.java"/>
 		<include name="graphics/g2d/TextureRegion.java"/>
-		<include name="graphics/g2d/tiled/TileAtlas.java"/>
-		<include name="assets/loaders/TileAtlasLoader.java"/>
-		<include name="graphics/g2d/tiled/TileMapRenderer.java"/>
-		<include name="graphics/g2d/tiled/TileSet.java"/>
-		<include name="graphics/g2d/tiled/TiledLayer.java"/>
-		<include name="graphics/g2d/tiled/TiledMap.java"/>
-		<include name="graphics/g2d/tiled/TiledObject.java"/>
-		<include name="graphics/g2d/tiled/TiledObjectGroup.java"/>
 		<include name="utils/TimSort.java"/>
 		<include name="src/com/esotericsoftware/tablelayout/Toolkit.java"/>
 		<include name="math/Vector2.java"/>
@@ -255,5 +246,11 @@
 		<include name="net/Socket.java"/>
 		<include name="net/SocketHints.java"/>
 		<include name="graphics/g3d/**/*"/>
+		<include name="maps/**"/>
+		
+		<include name="math/Vector.java"/>
+		<include name="math/Path.java"/>
+		<include name="math/Bezier.java"/>
+		<include name="math/BSpline.java"/>
 	</source>
 </module>
