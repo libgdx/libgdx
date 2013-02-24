@@ -228,7 +228,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 				int localtid = tileElement.getIntAttribute("id", 0);
 				TiledMapTile tile = tileset.getTile(firstgid + localtid);
 				if (tile!= null) {
-					Element properties = element.getChildByName("properties");
+					Element properties = tileElement.getChildByName("properties");
 					if (properties != null) {
 						loadProperties(tile.getProperties(), properties);
 					}
