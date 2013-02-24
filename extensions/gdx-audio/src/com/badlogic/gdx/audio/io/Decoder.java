@@ -79,6 +79,16 @@ public abstract class Decoder implements Disposable {
 	 * @param numSamples the number of samples to skip
 	 * @return the number of samples actually skipped. If this is < numSamples then the end of the file has been reached. */
 	public abstract int skipSamples (int numSamples);
+	
+	/** @return	True if the methods {@link #setPosition(float)} and {@link #getPosition()} can be used, false otherwise. */
+	public abstract boolean canSeek();
+	
+	/** Sets the current position within the file to the specified value if supported
+	 * @return True if successful, false otherwise */
+	public abstract boolean setPosition(float seconds);
+	
+	/** @return The current position (in seconds) within the decoder or negative if not supported. */
+	public abstract float getPosition();
 
 	/** @return the number of channels */
 	public abstract int getChannels ();

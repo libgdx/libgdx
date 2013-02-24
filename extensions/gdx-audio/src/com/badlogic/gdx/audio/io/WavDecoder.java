@@ -81,6 +81,21 @@ public class WavDecoder extends Decoder {
 	public float getLength () {
 		return (in.dataRemaining / (2 * getChannels()) / (float)getRate());
 	}
+	
+	@Override
+	public boolean canSeek () {
+		return false;
+	}
+
+	@Override
+	public boolean setPosition (float seconds) {
+		return false;
+	}
+
+	@Override
+	public float getPosition () {
+		return -1f;
+	}
 
 	@Override
 	public void dispose () {
