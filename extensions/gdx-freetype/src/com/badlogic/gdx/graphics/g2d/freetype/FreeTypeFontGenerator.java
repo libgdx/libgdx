@@ -209,10 +209,11 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// generate the glyphs
 		int maxGlyphHeight = (int)Math.ceil(data.lineHeight);
-		int pageWidth = MathUtils.nextPowerOfTwo((int)Math.sqrt(maxGlyphHeight * maxGlyphHeight * characters.length()));
+		int pageWidth = MathUtils.nextPowerOfTwo((maxGlyphHeight + 4) * (int) Math.ceil(Math.sqrt(characters.length())));
 		PixmapPacker atlas = new PixmapPacker(pageWidth, pageWidth, Format.RGBA8888, 2, false);
 		for (int i = 0; i < characters.length(); i++) {
 			char c = characters.charAt(i);
+
 			if (!FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) {
 				Gdx.app.log("FreeTypeFontGenerator", "Couldn't load char '" + c + "'");
 				continue;
@@ -225,7 +226,7 @@ public class FreeTypeFontGenerator implements Disposable {
 			GlyphMetrics metrics = slot.getMetrics();
 			Bitmap bitmap = slot.getBitmap();
 			Pixmap pixmap = bitmap.getPixmap(Format.RGBA8888);
-			Rectangle rect = atlas.pack("" + c, pixmap);
+			Rectangle rect = atlas.pack("" + c, pixmap, Math.max(0, (maxGlyphHeight - pixmap.getWidth())), Math.max(0, (maxGlyphHeight - pixmap.getHeight())));
 			Glyph glyph = new Glyph();
 			glyph.width = pixmap.getWidth();
 			glyph.height = pixmap.getHeight();
