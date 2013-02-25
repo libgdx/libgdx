@@ -43,13 +43,13 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		
 	}
 	
-	private static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
-	private static final int FLAG_FLIP_VERTICALLY = 0x40000000;
-	private static final int FLAG_FLIP_DIAGONALLY = 0x20000000;		
-	private static final int MASK_CLEAR  = 0xE0000000;
+	protected static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
+	protected static final int FLAG_FLIP_VERTICALLY = 0x40000000;
+	protected static final int FLAG_FLIP_DIAGONALLY = 0x20000000;
+	protected static final int MASK_CLEAR  = 0xE0000000;
 	
-	private XmlReader xml = new XmlReader();
-	private Element root;
+	protected XmlReader xml = new XmlReader();
+	protected Element root;
 	
 	public TmxMapLoader() {
 		super(new InternalFileHandleResolver());
@@ -128,7 +128,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	 * @param imageResolver the {@link ImageResolver}
 	 * @return the {@link TiledMap}
 	 */
-	private TiledMap loadTilemap(Element root, FileHandle tmxFile, ImageResolver imageResolver) {
+	protected TiledMap loadTilemap(Element root, FileHandle tmxFile, ImageResolver imageResolver) {
 		TiledMap map = new TiledMap();
 		Element properties = root.getChildByName("properties");
 		if (properties != null) {
@@ -157,7 +157,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	 * @return a list of filenames for images containing tiles
 	 * @throws IOException 
 	 */
-	private Array<FileHandle> loadTilesets(Element root, FileHandle tmxFile) throws IOException {
+	protected Array<FileHandle> loadTilesets(Element root, FileHandle tmxFile) throws IOException {
 		Array<FileHandle> images = new Array<FileHandle>();
 		for (Element tileset : root.getChildrenByName("tileset")) {
 			String source = tileset.getAttribute("source", null);
@@ -176,7 +176,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		return images;
 	}
 
-	private void loadTileSet(TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
+	protected void loadTileSet(TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
 		if (element.getName().equals("tileset")) {
 			String name = element.get("name", null);
 			int firstgid = element.getIntAttribute("firstgid", 1);
@@ -243,7 +243,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		}		
 	}
 	
-	private void loadTileLayer(TiledMap map, Element element) {
+	protected void loadTileLayer(TiledMap map, Element element) {
 		if (element.getName().equals("layer")) {
 			String name = element.getAttribute("name", null);
 			int width = element.getIntAttribute("width", 0);
@@ -456,7 +456,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		}		
 	}
 	
-	public void loadObjectGroup(TiledMap map, Element element) {
+	protected void loadObjectGroup(TiledMap map, Element element) {
 		if (element.getName().equals("objectgroup")) {
 			String name = element.getAttribute("name", null);
 			MapLayer layer = new MapLayer();
@@ -474,7 +474,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		}
 	}
 	
-	private void loadObject(MapLayer layer, Element element) {
+	protected void loadObject(MapLayer layer, Element element) {
 		if (element.getName().equals("object")) {
 			MapObject object = null;
 			
@@ -525,7 +525,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		}
 	}
 	
-	private void loadProperties(MapProperties properties, Element element) {
+	protected void loadProperties(MapProperties properties, Element element) {
 		if (element.getName().equals("properties")) {
 			for (Element property : element.getChildrenByName("property")) {
 				String name = property.getAttribute("name", null);
@@ -538,7 +538,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		}
 	}
 	
-	private static FileHandle getRelativeFileHandle(FileHandle file, String path) {
+	protected static FileHandle getRelativeFileHandle(FileHandle file, String path) {
 		StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
 		FileHandle result = file.parent();
 		while (tokenizer.hasMoreElements()) {
@@ -552,7 +552,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		return result;		
 	}
 	
-	private static int unsignedByteToInt (byte b) {
+	protected static int unsignedByteToInt (byte b) {
 		return (int) b & 0xFF;
 	}
 
