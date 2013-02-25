@@ -32,6 +32,7 @@ package com.badlogic.gdx.audio.io;
  * limitations under the License.
  ******************************************************************************/
 
+import com.badlogic.gdx.audio.analysis.AudioTools;
 import com.badlogic.gdx.utils.Disposable;
 
 /** Abstract class for audio decoders that return successive amplitude frames. When a decoder is no longer used it has to be
@@ -39,15 +40,34 @@ import com.badlogic.gdx.utils.Disposable;
  * 
  * @author badlogicgames@gmail.com */
 public abstract class Decoder implements Disposable {
-	/** Reads in samples.capacity() samples in 16-bit signed PCM format from the decoder. Returns the actual number read in. If this
-	 * number is smaller than the capacity of the buffer then the end of stream has been reached. The provided ShortBuffer must be
-	 * a direct buffer.
+	/** Reads in samples.capacity() samples in 16-bit signed PCM short format from the decoder. Returns the actual number read in.
+	 * If this number is smaller than the capacity of the buffer then the end of stream has been reached.
 	 * 
 	 * @param samples The number of samples to read.
 	 * @param offset the offset at which to start writting samples to
 	 * @return the number of samples read, < numSamples means end of file */
 	public abstract int readSamples (short[] samples, int offset, int numSamples);
 
+	private short[] readBuffer;
+	private int channels;
+	/** Reads in samples.capacity() samples in 32-bit signed PCM float format from the decoder. Returns the actual number read in. 
+	 * If this number is smaller than the capacity of the buffer then the end of stream has been reached. 
+	 * 
+	 * @param samples The number of samples to read.
+	 * @param offset the offset at which to start writting samples to
+	 * @return the number of samples read, < numSamples means end of file */
+	public int readSamples(float[] samples, int offset, int numSamples) {
+		if (readBuffer == null || readBuffer.length < numSamples)
+			readBuffer = new short[numSamples];
+		if (channels <= 0)
+			channels = getChannels();
+		int result = readSamples(readBuffer, 0, numSamples);
+		if (result <= 0) 
+			return result;
+		AudioTools.toFloat(readBuffer, 0, samples, offset, result);
+		return result;
+	}
+	
 	/** Reads in the entire sound file into a single short[] array. */
 	public short[] readAllSamples () {
 		short[] out = new short[(int)Math.ceil(getLength() * getRate() * getChannels())];
