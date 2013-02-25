@@ -79,6 +79,13 @@ public class CircularBuffer {
 
 		return total;
 	}
+	
+	public int skip(int count) {
+		int total = count = Math.min(available, count);
+		available -= total;
+		readPosition = (readPosition + total) % buffer.length;
+		return total;
+	}
 
 	public void clear () {
 		for (int i = 0, n = buffer.length; i < n; i++)
@@ -104,6 +111,10 @@ public class CircularBuffer {
 	public int getReadPosition () {
 		return readPosition;
 	}
+	
+	public int getAvailable() {
+		return available;
+	}
 
 	private void dump () {
 		for (int i = 0, n = buffer.length; i < n; i++)
@@ -114,10 +125,11 @@ public class CircularBuffer {
 	static private void combine (short[] src, int srcPos, short[] dest, int destPos, int length) {
 		for (int i = 0; i < length; i++) {
 			int destIndex = destPos + i;
-			short a = src[srcPos + i];
-			short b = dest[destIndex];
-			dest[destIndex] = MathUtils.clamp((short)(a + b - a * b / Short.MAX_VALUE), (short)0, Short.MAX_VALUE);
-			// dest[destIndex] = (short)(a + b / 2);
+			int a = src[srcPos + i];
+			int b = dest[destIndex];
+			// TODO: This doesn't work as its signed short:
+			// dest[destIndex] = MathUtils.clamp((short)(a + b - a * b / Short.MAX_VALUE), (short)0, Short.MAX_VALUE);
+			dest[destIndex] = (short)(0.5f * (a + b));
 		}
 	}
 
