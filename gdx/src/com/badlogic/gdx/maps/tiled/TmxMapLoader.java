@@ -525,7 +525,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 						vertices[i * 2 + 1] = y + Integer.parseInt(point[1]);
 					}
 					object = new PolylineMapObject(vertices);
-				} else if ((child == element.getChildByName("ellipse"))) {
+				} else if ((child = element.getChildByName("ellipse")) != null) {
 					object = new EllipseMapObject(x, y, width, height);
 				}
 			}
