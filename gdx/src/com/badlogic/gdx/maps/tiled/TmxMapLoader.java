@@ -22,6 +22,7 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.ImageResolver.AssetManagerImageResolver;
 import com.badlogic.gdx.maps.ImageResolver.DirectImageResolver;
+import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -130,6 +131,26 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	 */
 	protected TiledMap loadTilemap(Element root, FileHandle tmxFile, ImageResolver imageResolver) {
 		TiledMap map = new TiledMap();
+		
+		String mapOrientation = root.getAttribute("orientation", null);
+		int mapWidth = root.getIntAttribute("width", 0);
+		int mapHeight = root.getIntAttribute("height", 0);
+		int tileWidth = root.getIntAttribute("tilewidth", 0);
+		int tileHeight = root.getIntAttribute("tileheight", 0);
+		String mapBackgroundColor = root.getAttribute("backgroundcolor", null);
+		
+		MapProperties mapProperties = map.getProperties();
+		if (mapOrientation != null) {
+			mapProperties.put("orientation", mapBackgroundColor);
+		}
+		mapProperties.put("width", mapWidth);
+		mapProperties.put("height", mapHeight);
+		mapProperties.put("tilewidth", mapWidth);
+		mapProperties.put("tileheight", mapHeight);
+		if (mapBackgroundColor != null) {
+			mapProperties.put("backgroundcolor", mapBackgroundColor);
+		}
+		
 		Element properties = root.getChildByName("properties");
 		if (properties != null) {
 			loadProperties(map.getProperties(), properties);
@@ -485,8 +506,8 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			int height = element.getIntAttribute("height", 0);
 			
 			if (element.getChildCount() > 0) {
-				Element child = element.getChildByName("polygon");
-				if (child != null) {
+				Element child = null;
+				if ((child = element.getChildByName("polygon")) != null) {
 					String[] points = child.getAttribute("points").split(" ");
 					float[] vertices = new float[points.length * 2];
 					for (int i = 0; i < points.length; i++) {
@@ -495,18 +516,17 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 						vertices[i * 2 + 1] = y + Integer.parseInt(point[1]);
 					}
 					object = new PolygonMapObject(vertices);
-				} else {
-					child = element.getChildByName("polyline");
-					if (child != null) {
-						String[] points = child.getAttribute("points").split(" ");
-						float[] vertices = new float[points.length * 2];
-						for (int i = 0; i < points.length; i++) {
-							String[] point = points[i].split(",");
-							vertices[i * 2] = x + Integer.parseInt(point[0]);
-							vertices[i * 2 + 1] = y + Integer.parseInt(point[1]);
-						}
-						object = new PolylineMapObject(vertices);
+				} else if ((child = element.getChildByName("polyline")) != null) {
+					String[] points = child.getAttribute("points").split(" ");
+					float[] vertices = new float[points.length * 2];
+					for (int i = 0; i < points.length; i++) {
+						String[] point = points[i].split(",");
+						vertices[i * 2] = x + Integer.parseInt(point[0]);
+						vertices[i * 2 + 1] = y + Integer.parseInt(point[1]);
 					}
+					object = new PolylineMapObject(vertices);
+				} else if ((child == element.getChildByName("ellipse"))) {
+					object = new EllipseMapObject(x, y, width, height);
 				}
 			}
 			if (object == null) {
@@ -517,6 +537,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			if (type != null) {
 				object.getProperties().put("type", type);
 			}
+			object.setVisible(element.getIntAttribute("visible", 1) == 1);
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
 				loadProperties(object.getProperties(), properties);
