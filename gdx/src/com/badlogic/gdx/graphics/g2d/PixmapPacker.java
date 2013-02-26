@@ -153,12 +153,28 @@ public class PixmapPacker implements Disposable {
 	 * @return Rectangle describing the area the pixmap was rendered to or null.
 	 * @throws RuntimeException in case the image did not fit due to the page size being to small or providing a duplicate name */
 	public synchronized Rectangle pack (String name, Pixmap image) {
+		return this.pack(name, image, 0, 0);
+	}
+
+	/** <p>
+	 * Inserts the given {@link Pixmap} with paddings in the page for better pixmap alignment. You can later on retrieve the images position in the output image via the supplied name
+	 * and the method {@link #getRect(String)}.
+	 * </p>
+	 *
+	 * @param name the name of the image
+	 * @param image the image
+	 * @param marginRight The right margin for the pixmap drawing in the page of the packer.
+	 * @param marginBottom The bottom margin for the pixmap drawing in the page of the packer.
+	 * @return Rectangle describing the area the pixmap was rendered to or null.
+	 * @throws RuntimeException in case the image did not fit due to the page size being to small or providing a duplicate name */
+	public synchronized Rectangle pack (String name, Pixmap image, int marginRight, int marginBottom) {
 		if (disposed) return null;
 		if (getRect(name) != null) throw new RuntimeException("Key with name '" + name + "' is already in map");
+		if (marginRight < 0 || marginBottom < 0) throw new RuntimeException("Margin for the pixmap in the packer should be zero or positive");
 		int borderPixels = padding + (duplicateBorder ? 1 : 0);
 		borderPixels <<= 1;
 
-		Rectangle rect = new Rectangle(0, 0, image.getWidth() + borderPixels, image.getHeight() + borderPixels);
+		Rectangle rect = new Rectangle(0, 0, image.getWidth() + marginRight + borderPixels, image.getHeight() + marginBottom + borderPixels);
 		if (rect.getWidth() > pageWidth || rect.getHeight() > pageHeight)
 			throw new GdxRuntimeException("page size for '" + name + "' to small");
 		
@@ -171,8 +187,8 @@ public class PixmapPacker implements Disposable {
 
 		node.leaveName = name;
 		rect = new Rectangle(node.rect);
-		rect.width -= borderPixels;
-		rect.height -= borderPixels;
+		rect.width -= (marginRight + borderPixels);
+		rect.height -= (marginBottom + borderPixels);
 		borderPixels >>= 1;
 		rect.x += borderPixels;
 		rect.y += borderPixels;
