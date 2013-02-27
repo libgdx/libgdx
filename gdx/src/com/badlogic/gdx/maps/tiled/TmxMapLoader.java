@@ -145,8 +145,8 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		}
 		mapProperties.put("width", mapWidth);
 		mapProperties.put("height", mapHeight);
-		mapProperties.put("tilewidth", mapWidth);
-		mapProperties.put("tileheight", mapHeight);
+		mapProperties.put("tilewidth", tileWidth);
+		mapProperties.put("tileheight", tileHeight);
 		if (mapBackgroundColor != null) {
 			mapProperties.put("backgroundcolor", mapBackgroundColor);
 		}
