@@ -16,10 +16,6 @@
 
 package com.badlogic.gdx.math;
 
-/**
- * @author Travis Carter - development@castleofotratno.net
- *
- */
 public class Polyline {
 	private final float[] localVertices;
 	private float[] worldVertices;
@@ -38,7 +34,7 @@ public class Polyline {
 	}
 
 	public Polyline (float[] vertices) {
-		if (vertices.length < 4) throw new IllegalArgumentException("polylines must contain at least 3 points.");
+		if (vertices.length < 4) throw new IllegalArgumentException("polylines must contain at least 2 points.");
 		this.localVertices = vertices;
 	}
 	
@@ -110,14 +106,14 @@ public class Polyline {
 		if (!calculateScaledLength) return scaledLength;
 		calculateScaledLength = false;
 		
-		length = 0;
+		scaledLength = 0;
 		for (int i = 0, n = localVertices.length - 2; i < n ; i += 2) {
 			float x = localVertices[i + 2] * scaleX - localVertices[i] * scaleX;
 			float y = localVertices[i + 1] * scaleY - localVertices[i + 3] * scaleY;
-			length += (float)Math.sqrt(x * x + y * y);
+			scaledLength += (float)Math.sqrt(x * x + y * y);
 		}
 		
-		return length;
+		return scaledLength;
 	}
 	
 	public float getX () {

@@ -104,14 +104,28 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		return load(fileName, true);
 	}
 	
-	@Override
-	public TiledMap load(AssetManager assetManager, String fileName, Parameters parameter) {
+	/**
+	 * Loads the {@link TiledMap} from the given file using the supplied
+	 * {@link AssetManager}.
+	 * @param assetManager
+	 * @param fileName the filename
+	 * @param parameter
+	 * @param yUp if the y-axis points up or not for object positions.
+	 * @return the TiledMap
+	 */
+	public TiledMap load(AssetManager assetManager, String fileName, Parameters parameter, boolean yUp) {
+		this.yUp = yUp;
 		FileHandle tmxFile = resolve(fileName);
 		try {
 			return loadTilemap(root, tmxFile, new AssetManagerImageResolver(assetManager));
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
 		}
+	}
+	
+	@Override
+	public TiledMap load(AssetManager assetManager, String fileName, Parameters parameter) {
+		return load(assetManager, fileName, parameter, true);
 	}
 
 	/**
