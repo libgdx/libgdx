@@ -36,6 +36,7 @@ import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Polyline;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -367,7 +368,7 @@ public class GleedMapLoader  extends AsynchronousAssetLoader<Map, GleedMapLoader
 			vertices[j * 2 + 1] = -Float.parseFloat(pointElement.getChildByName("Y").getText());
 		}
 		
-		polyline.setPolygon(new Polygon(vertices));
+		polyline.setPolyline(new Polyline(vertices));
 		polyline.setColor(loadColor(item.getChildByName("LineColor")));
 		
 		return polyline;

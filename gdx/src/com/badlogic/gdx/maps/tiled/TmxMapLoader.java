@@ -51,6 +51,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	
 	protected XmlReader xml = new XmlReader();
 	protected Element root;
+	protected boolean yUp;
 	
 	public TmxMapLoader() {
 		super(new InternalFileHandleResolver());
@@ -70,9 +71,11 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	 * resolved via the {@link FileHandleResolver} set in the constructor
 	 * of this class. By default it will resolve to an internal file.
 	 * @param fileName the filename
+	 * @param yUp if the y-axis points up or not for object positions.
 	 * @return the TiledMap
 	 */
-	public TiledMap load(String fileName) {
+	public TiledMap load(String fileName, boolean yUp) {
+		this.yUp = yUp;
 		try {
 			FileHandle tmxFile = resolve(fileName);
 			root = xml.parse(tmxFile);
@@ -87,6 +90,18 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		} catch(IOException e) {
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
 		}
+	}
+	
+	/**
+	 * Loads the {@link TiledMap} from the given file. The file is
+	 * resolved via the {@link FileHandleResolver} set in the constructor
+	 * of this class. By default it will resolve to an internal file. 
+	 * This method assumes the y-axis points upwards for object positions.
+	 * @param fileName the filename
+	 * @return the TiledMap
+	 */
+	public TiledMap load(String fileName) {
+		return load(fileName, true);
 	}
 	
 	@Override
@@ -480,6 +495,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	protected void loadObjectGroup(TiledMap map, Element element) {
 		if (element.getName().equals("objectgroup")) {
 			String name = element.getAttribute("name", null);
+			int mapHeight = map.getProperties().get("height", Integer.class) * map.getProperties().get("tileheight", Integer.class);
 			MapLayer layer = new MapLayer();
 			layer.setName(name);
 			Element properties = element.getChildByName("properties");
@@ -488,19 +504,24 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			}
 			
 			for (Element objectElement : element.getChildrenByName("object")) {
-				loadObject(layer, objectElement);
+				loadObject(layer, objectElement, mapHeight);
 			}
 
 			map.getLayers().addLayer(layer);
 		}
 	}
 	
-	protected void loadObject(MapLayer layer, Element element) {
+	protected void loadObject(MapLayer layer, Element element, int mapHeight) {
 		if (element.getName().equals("object")) {
 			MapObject object = null;
 			
 			int x = element.getIntAttribute("x", 0);
-			int y = element.getIntAttribute("y", 0);
+			int y;
+			if (yUp) {
+				y = mapHeight - element.getIntAttribute("y", 0);
+			} else {
+				y = element.getIntAttribute("y", 0);
+			}
 			
 			int width = element.getIntAttribute("width", 0);
 			int height = element.getIntAttribute("height", 0);
@@ -512,19 +533,27 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 					float[] vertices = new float[points.length * 2];
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
-						vertices[i * 2] = x + Integer.parseInt(point[0]);
-						vertices[i * 2 + 1] = y + Integer.parseInt(point[1]);
+						vertices[i * 2] = Integer.parseInt(point[0]);
+						vertices[i * 2 + 1] = Integer.parseInt(point[1]);
+						if(yUp) {
+							vertices[i * 2 + 1] *= -1;
+						}
 					}
 					object = new PolygonMapObject(vertices);
+					((PolygonMapObject)object).getPolygon().setPosition(x, y);
 				} else if ((child = element.getChildByName("polyline")) != null) {
 					String[] points = child.getAttribute("points").split(" ");
 					float[] vertices = new float[points.length * 2];
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
-						vertices[i * 2] = x + Integer.parseInt(point[0]);
-						vertices[i * 2 + 1] = y + Integer.parseInt(point[1]);
+						vertices[i * 2] = Integer.parseInt(point[0]);
+						vertices[i * 2 + 1] = Integer.parseInt(point[1]);
+						if(yUp) {
+							vertices[i * 2 + 1] *= -1;
+						}
 					}
 					object = new PolylineMapObject(vertices);
+					((PolylineMapObject)object).getPolyline().setPosition(x, y);
 				} else if ((child = element.getChildByName("ellipse")) != null) {
 					object = new EllipseMapObject(x, y, width, height);
 				}
