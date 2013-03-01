@@ -71,8 +71,11 @@ public class StaticTiledMapTile implements TiledMapTile {
 	 * @param copy
 	 */
 	public StaticTiledMapTile(StaticTiledMapTile copy) {
-		getProperties().putAll(copy.properties);
+		if (copy.properties != null) {
+			getProperties().putAll(copy.properties);	
+		}
 		this.textureRegion = copy.textureRegion;
+		this.id = copy.id;
 	}
 	
 }
