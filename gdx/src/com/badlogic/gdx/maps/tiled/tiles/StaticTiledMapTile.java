@@ -9,12 +9,24 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
  */
 public class StaticTiledMapTile implements TiledMapTile {
 
+	private int id;
+	
 	private BlendMode blendMode = BlendMode.ALPHA;
 	
 	private MapProperties properties;
 	
 	private TextureRegion textureRegion;	
 
+	@Override
+	public int getId () {
+		return id;
+	}
+
+	@Override
+	public void setId (int id) {
+		this.id = id;
+	}
+	
 	@Override
 	public BlendMode getBlendMode () {
 		return blendMode;
