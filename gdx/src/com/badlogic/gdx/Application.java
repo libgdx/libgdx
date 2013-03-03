@@ -107,6 +107,9 @@ public interface Application {
 	public static final int LOG_INFO = 2;
 	public static final int LOG_ERROR = 1;
 
+	/** @return the {@link ApplicationListener} instance */ 
+	public ApplicationListener getApplicationListener ();
+	
 	/** @return the {@link Graphics} instance */
 	public Graphics getGraphics ();
 

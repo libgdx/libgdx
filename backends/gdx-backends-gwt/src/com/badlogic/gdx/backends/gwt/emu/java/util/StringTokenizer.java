@@ -44,6 +44,10 @@ public class StringTokenizer {
 		return result;
 	}
 
+	public boolean hasMoreElements() {
+		return hasMoreTokens();
+	}
+	
 	public boolean hasMoreTokens () {
 		if (next != null) {
 			return true;
