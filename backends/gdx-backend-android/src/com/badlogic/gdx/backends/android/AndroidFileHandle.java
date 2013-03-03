@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 
 import com.badlogic.gdx.Files.FileType;
@@ -149,16 +150,13 @@ public class AndroidFileHandle extends FileHandle {
 		if (type == FileType.Internal) {
 			AssetFileDescriptor fileDescriptor = null;
 			try {
-				try {
-					fileDescriptor = assets.openFd(file.getPath());
-					return fileDescriptor.getLength();
-				}
-				finally {
-					if (fileDescriptor != null) {
-						fileDescriptor.close();
-					}
-				}
+				fileDescriptor = assets.openFd(file.getPath());
+				return fileDescriptor.getLength();
 			} catch (IOException ignored) {
+			} finally {
+				if (fileDescriptor != null) {
+					try { fileDescriptor.close(); } catch(IOException e) { };
+				}
 			}
 		}
 		return super.length();
