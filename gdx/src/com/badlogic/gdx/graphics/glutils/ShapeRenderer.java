@@ -665,6 +665,35 @@ public class ShapeRenderer {
 		}
 	}
 	
+	/** Draws a polyline in the x/y plane. The vertices must contain at least 2 points (4 floats x,y). The
+	 * {@link ShapeType} passed to begin has to be {@link ShapeType#Line}.
+	 * @param vertices */
+	public void polyline(float[] vertices) {
+		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
+		if (vertices.length < 4) throw new IllegalArgumentException("Polylines must contain at least 2 points.");
+		if (vertices.length % 2 != 0) throw new IllegalArgumentException("Polylines must have a pair number of vertices.");
+		final int numFloats = vertices.length;
+
+		checkDirty();
+		checkFlush(numFloats);
+
+		for (int i = 0; i < numFloats - 2; i += 2) {
+			float x1 = vertices[i];
+			float y1 = vertices[i + 1];
+
+			float x2;
+			float y2;
+
+			x2 = vertices[i + 2];
+			y2 = vertices[i + 3];
+
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x1, y1, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x2, y2, 0);
+		}
+	}
+
 	private void checkDirty () {
 		if (!matrixDirty) return;
 		ShapeType type = currType;
