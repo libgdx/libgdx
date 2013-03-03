@@ -177,6 +177,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 			for (int y = marginY; y <= stopHeight; y += tileSizeY + spacingY) {
 				for (int x = marginX; x <= stopWidth; x += tileSizeX + spacingX) {
 					TiledMapTile tile = new StaticTiledMapTile(new TextureRegion(texture, x, y, tileSizeX, tileSizeY));
+					tile.setId(gid);
 					tileset.putTile(gid++, tile);
 				}
 			}
