@@ -147,8 +147,17 @@ public class AndroidFileHandle extends FileHandle {
 
 	public long length () {
 		if (type == FileType.Internal) {
+			AssetFileDescriptor fileDescriptor = null;
 			try {
-				return assets.openFd(file.getPath()).getLength();
+				try {
+					fileDescriptor = assets.openFd(file.getPath());
+					return fileDescriptor.getLength();
+				}
+				finally {
+					if (fileDescriptor != null) {
+						fileDescriptor.close();
+					}
+				}
 			} catch (IOException ignored) {
 			}
 		}
