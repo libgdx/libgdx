@@ -47,7 +47,7 @@ public class SharedLibraryLoader {
 			isMac = false;
 			is64Bit = false;
 		}
-		if(!isAndroid && !isWindows && !isLinux && !isMac) {
+		if (!isAndroid && !isWindows && !isLinux && !isMac) {
 			isIos = true;
 			is64Bit = false;
 		}
@@ -68,7 +68,7 @@ public class SharedLibraryLoader {
 
 	/** Returns a CRC of the remaining bytes in the stream. */
 	public String crc (InputStream input) {
-		if (input == null) return "" + System.nanoTime(); // fallback
+		if (input == null) throw new IllegalArgumentException("input cannot be null.");
 		CRC32 crc = new CRC32();
 		byte[] buffer = new byte[4096];
 		try {
@@ -98,8 +98,8 @@ public class SharedLibraryLoader {
 	 * @param libraryName The platform independent library name. If not contain a prefix (eg lib) or suffix (eg .dll). */
 	public synchronized void load (String libraryName) {
 		// in case of iOS, things have been linked statically to the executable, bail out.
-		if(isIos) return;
-		
+		if (isIos) return;
+
 		libraryName = mapLibraryName(libraryName);
 		if (loadedLibraries.contains(libraryName)) return;
 
@@ -116,7 +116,11 @@ public class SharedLibraryLoader {
 	}
 
 	private InputStream readFile (String path) {
-		if (nativesJar == null) return SharedLibraryLoader.class.getResourceAsStream("/" + path);
+		if (nativesJar == null) {
+			InputStream input = SharedLibraryLoader.class.getResourceAsStream("/" + path);
+			if (input == null) throw new GdxRuntimeException("Unable to read file for extraction: " + path);
+			return input;
+		}
 
 		// Read from JAR.
 		try {
@@ -153,7 +157,6 @@ public class SharedLibraryLoader {
 		if (extractedCrc == null || !extractedCrc.equals(sourceCrc)) {
 			try {
 				InputStream input = readFile(sourcePath);
-				if (input == null) return null;
 				extractedDir.mkdirs();
 				FileOutputStream output = new FileOutputStream(extractedFile);
 				byte[] buffer = new byte[4096];
@@ -168,6 +171,7 @@ public class SharedLibraryLoader {
 				throw new GdxRuntimeException("Error extracting file: " + sourcePath, ex);
 			}
 		}
-		return extractedFile.exists() ? extractedFile : null;
+		if (!extractedFile.exists()) throw new GdxRuntimeException("Unable to extract file: " + sourcePath);
+		return extractedFile;
 	}
 }
