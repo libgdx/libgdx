@@ -355,25 +355,27 @@ public class Quaternion implements Serializable {
 	}
 	
 	/** Set this quaternion to the rotation between two vectors.
-	 * @param v1 The base vector
-	 * @param v2 The target vector
+	 * @param v1 The base vector, which should be normalized.
+	 * @param v2 The target vector, which should be normalized.
 	 * @return This quaternion for chaining */
 	public Quaternion setFromCross (final Vector3 v1, final Vector3 v2) {
-		final float dot = MathUtils.clamp(Vector3.tmp.set(v1).nor().dot(Vector3.tmp2.set(v2).nor()), -1f, 1f);
-		return setFromAxis(Vector3.tmp.crs(Vector3.tmp2), (float)Math.acos(dot) * MathUtils.radiansToDegrees);
+		final float dot = MathUtils.clamp(v1.dot(v2), -1f, 1f);
+		final float angle = (float)Math.acos(dot) * MathUtils.radiansToDegrees;
+		return setFromAxis(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x, angle);
 	}
 	
 	/** Set this quaternion to the rotation between two vectors.
-	 * @param x1 The base vectors x value
-	 * @param y1 The base vectors y value
-	 * @param z1 The base vectors z value
-	 * @param x2 The target vector x value
-	 * @param y2 The target vector y value
-	 * @param z2 The target vector z value
+	 * @param x1 The base vectors x value, which should be normalized.
+	 * @param y1 The base vectors y value, which should be normalized.
+	 * @param z1 The base vectors z value, which should be normalized.
+	 * @param x2 The target vector x value, which should be normalized.
+	 * @param y2 The target vector y value, which should be normalized.
+	 * @param z2 The target vector z value, which should be normalized.
 	 * @return This quaternion for chaining */
 	public Quaternion setFromCross (final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
-		final float dot = MathUtils.clamp(Vector3.tmp.set(x1, y1, z1).nor().dot(Vector3.tmp2.set(x2, y2, z2).nor()), -1f, 1f);
-		return setFromAxis(Vector3.tmp.crs(Vector3.tmp2), (float)Math.acos(dot) * MathUtils.radiansToDegrees);
+		final float dot = MathUtils.clamp(Vector3.dot(x1, y1, z1, x2, y2, z2), -1f, 1f);
+		final float angle = (float)Math.acos(dot) * MathUtils.radiansToDegrees;
+		return setFromAxis(y1 * z2 - z1 * y2, z1 * x2 - x1 * z2, x1 * y2 - y1 * x2, angle);
 	}
 
 	/** Spherical linear interpolation between this quaternion and the other quaternion, based on the alpha value in the range
