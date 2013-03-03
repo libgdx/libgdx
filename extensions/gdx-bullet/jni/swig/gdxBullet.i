@@ -338,7 +338,6 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %}
 %include "BulletCollision/CollisionShapes/btSphereShape.h"
 
-%include "custom/btMultiSphereShape.i"
 
 %{
 #include <BulletCollision/CollisionShapes/btStridingMeshInterface.h>
@@ -666,6 +665,8 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 
 /* Has nested classes or structs */
 %include "custom/btTypedConstraint.i"
+
+%include "custom/btMultiSphereShape.i"
 
 %{
 #include <BulletDynamics/Dynamics/btDynamicsWorld.h>
