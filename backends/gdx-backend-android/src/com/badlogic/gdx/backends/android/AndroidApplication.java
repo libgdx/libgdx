@@ -265,25 +265,26 @@ public class AndroidApplication extends Activity implements Application {
 		super.onDestroy();
 	}
 
-	/** {@inheritDoc} */
+	@Override
+	public ApplicationListener getApplicationListener () {
+		return listener;
+	}
+	
 	@Override
 	public Audio getAudio () {
 		return audio;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Files getFiles () {
 		return files;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Graphics getGraphics () {
 		return graphics;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Input getInput () {
 		return input;
@@ -294,13 +295,11 @@ public class AndroidApplication extends Activity implements Application {
 		return net;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public ApplicationType getType () {
 		return ApplicationType.Android;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int getVersion () {
 		return Integer.parseInt(android.os.Build.VERSION.SDK);
