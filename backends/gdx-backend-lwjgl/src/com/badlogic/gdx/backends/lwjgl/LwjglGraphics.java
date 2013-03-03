@@ -155,27 +155,27 @@ public class LwjglGraphics implements Graphics {
 			if (!setDisplayMode(config.width, config.height, config.fullscreen))
 				throw new GdxRuntimeException("Couldn't set display mode " + config.width + "x" + config.height + ", fullscreen: "
 					+ config.fullscreen);
+
+			if (config.iconPaths.size > 0) {
+				ByteBuffer[] icons = new ByteBuffer[config.iconPaths.size];
+				for (int i = 0, n = config.iconPaths.size; i < n; i++) {
+					Pixmap pixmap = new Pixmap(Gdx.files.getFileHandle(config.iconPaths.get(i), config.iconFileTypes.get(i)));
+					if (pixmap.getFormat() != Format.RGBA8888) {
+						Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGBA8888);
+						rgba.drawPixmap(pixmap, 0, 0);
+						pixmap = rgba;
+					}
+					icons[i] = ByteBuffer.allocateDirect(pixmap.getPixels().limit());
+					icons[i].put(pixmap.getPixels()).flip();
+					pixmap.dispose();
+				}
+				Display.setIcon(icons);
+			}
 		}
 		Display.setTitle(config.title);
 		Display.setResizable(config.resizable);
 		Display.setInitialBackground(config.initialBackgroundColor.r, config.initialBackgroundColor.g,
 			config.initialBackgroundColor.b);
-
-		if (config.iconPaths.size > 0) {
-			ByteBuffer[] icons = new ByteBuffer[config.iconPaths.size];
-			for (int i = 0, n = config.iconPaths.size; i < n; i++) {
-				Pixmap pixmap = new Pixmap(Gdx.files.getFileHandle(config.iconPaths.get(i), config.iconFileTypes.get(i)));
-				if (pixmap.getFormat() != Format.RGBA8888) {
-					Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGBA8888);
-					rgba.drawPixmap(pixmap, 0, 0);
-					pixmap = rgba;
-				}
-				icons[i] = ByteBuffer.allocateDirect(pixmap.getPixels().limit());
-				icons[i].put(pixmap.getPixels()).flip();
-				pixmap.dispose();
-			}
-			Display.setIcon(icons);
-		}
 
 		if (config.x != -1 && config.y != -1) Display.setLocation(config.x, config.y);
 		createDisplayPixelFormat();
