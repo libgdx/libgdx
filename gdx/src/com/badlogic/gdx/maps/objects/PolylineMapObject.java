@@ -1,27 +1,27 @@
 package com.badlogic.gdx.maps.objects;
 
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Polyline;
 
 /**
  * @brief Represents polyline map objects
  */
 public class PolylineMapObject extends MapObject {
 
-	private Polygon polygon;
+	private Polyline polyline;
 	
 	/**
 	 * @return polygon shape
 	 */
-	public Polygon getPolygon() {
-		return polygon;
+	public Polyline getPolyline() {
+		return polyline;
 	}
 	
 	/**
-	 * @param polygon new object's polygon shape
+	 * @param polyline new object's polyline shape
 	 */
-	public void setPolygon(Polygon polygon) {
-		this.polygon = polygon;
+	public void setPolyline(Polyline polyline) {
+		this.polyline = polyline;
 	}
 	
 	/**
@@ -36,7 +36,7 @@ public class PolylineMapObject extends MapObject {
 	 */
 	public PolylineMapObject(float[] vertices) {
 		super();
-		polygon = new Polygon(vertices);
+		polyline = new Polyline(vertices);
 	}
 
 }
