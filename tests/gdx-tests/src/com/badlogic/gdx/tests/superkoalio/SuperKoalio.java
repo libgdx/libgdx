@@ -132,22 +132,22 @@ public class SuperKoalio extends GdxTest {
 	
 	private Vector2 tmp = new Vector2();
 	private void updateKoala(float deltaTime) {
-		koala.stateTime += deltaTime;
+		koala.stateTime += deltaTime;	
 		
 		// check input and apply to velocity & state
-		if(Gdx.input.isKeyPressed(Keys.SPACE) & koala.grounded) {
+		if((Gdx.input.isKeyPressed(Keys.SPACE) || isTouched(0.75f, 1)) && koala.grounded) {
 			koala.velocity.y += Koala.JUMP_VELOCITY;
 			koala.state = Koala.State.Jumping;
 			koala.grounded = false;
 		}
 		
-		if(Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
+		if(Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A) || isTouched(0, 0.25f)) {
 			koala.velocity.x = -Koala.MAX_VELOCITY;
 			if(koala.grounded) koala.state = Koala.State.Walking;
 			koala.facesRight = false;
 		}
 		
-		if(Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
+		if(Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D) || isTouched(0.25f, 0.5f)) {
 			koala.velocity.x = Koala.MAX_VELOCITY;
 			if(koala.grounded) koala.state = Koala.State.Walking;
 			koala.facesRight = true;
@@ -235,6 +235,18 @@ public class SuperKoalio extends GdxTest {
 		// walk infinitely once a key was pressed
 		koala.velocity.x *= Koala.DAMPING;
 		
+	}
+
+	private boolean isTouched(float startX, float endX) {
+		// check if any finge is touch the area between startX and endX
+		// startX/endX are given between 0 (left edge of the screen) and 1 (right edge of the screen)
+		for(int i = 0; i < 2; i++) {
+			float x = Gdx.input.getX() / (float)Gdx.graphics.getWidth();
+			if(Gdx.input.isTouched(i) && (x >= startX && x <= endX)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private void getTiles(int startX, int startY, int endX, int endY, Array<Rectangle> tiles) {

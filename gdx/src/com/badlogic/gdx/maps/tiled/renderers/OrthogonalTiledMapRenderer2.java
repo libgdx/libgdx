@@ -37,8 +37,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Disposable;
 
-public class OrthogonalTiledMapRenderer2 implements TiledMapRenderer {
+public class OrthogonalTiledMapRenderer2 implements TiledMapRenderer, Disposable {
 
 	protected TiledMap map;
 
@@ -279,6 +280,11 @@ public class OrthogonalTiledMapRenderer2 implements TiledMapRenderer {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void dispose () {
+		spriteCache.dispose();
 	}
 	
 }

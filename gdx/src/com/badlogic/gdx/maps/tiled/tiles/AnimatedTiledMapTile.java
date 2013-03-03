@@ -8,9 +8,21 @@ import com.badlogic.gdx.utils.Array;
 
 public class AnimatedTiledMapTile implements TiledMapTile {
 
+	private int id;
+	
 	private Array<StaticTiledMapTile> frameTiles;
 	
 	private float animationTime;
+	
+	@Override
+	public int getId () {
+		return id;
+	}
+
+	@Override
+	public void setId (int id) {
+		this.id = id;
+	}
 	
 	@Override
 	public BlendMode getBlendMode () {

@@ -14,6 +14,9 @@ public interface TiledMapTile {
 		ALPHA
 	}
 
+	public int getId();
+	public void setId(int id);
+	
 	/**
 	 * @return the {@link BlendMode} to use for rendering the tile
 	 */	
