@@ -99,8 +99,8 @@ public class AudioBuild {
 		mac.preCompileTask = precompileTask;
 
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
-		android.cFlags += " -DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__ -DMPG123_NO_CONFIGURE -DOPT_GENERIC -DHAVE_STRERROR -DMPG123_NO_LARGENAME";
-		android.cppFlags += " -DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__ -DMPG123_NO_CONFIGURE -DOPT_GENERIC -DHAVE_STRERROR -DMPG123_NO_LARGENAME";
+		android.cFlags += " -DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__ -DMPG123_NO_CONFIGURE -DOPT_GENERIC -DHAVE_STRERROR -DMPG123_NO_LARGENAME -DASMALIGN_BYTE";
+		android.cppFlags += " -DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__ -DMPG123_NO_CONFIGURE -DOPT_GENERIC -DHAVE_STRERROR -DMPG123_NO_LARGENAME -DASMALIGN_BYTE";
 		android.headerDirs = headerDirs;
 		android.cIncludes = cIncludes;
 		android.cppIncludes = cppIncludes;
