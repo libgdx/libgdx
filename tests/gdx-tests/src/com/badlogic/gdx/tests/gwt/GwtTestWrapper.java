@@ -97,6 +97,7 @@ import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.YDownTest;
+import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class GwtTestWrapper extends GdxTest {
@@ -654,7 +655,11 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new YDownTest();
 			}
-		},};
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new SuperKoalio();
+			}
+		}};
 
 	@Override
 	public boolean needsGL20 () {

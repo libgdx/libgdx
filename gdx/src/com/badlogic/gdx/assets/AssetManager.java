@@ -32,8 +32,6 @@ import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.assets.loaders.SoundLoader;
 import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
-import com.badlogic.gdx.assets.loaders.TileAtlasLoader;
-import com.badlogic.gdx.assets.loaders.TileMapRendererLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -41,8 +39,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.tiled.TileAtlas;
-import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -84,8 +80,6 @@ public class AssetManager implements Disposable {
 		setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
 		setLoader(Texture.class, new TextureLoader(resolver));
 		setLoader(Skin.class, new SkinLoader(resolver));
-		setLoader(TileAtlas.class, new TileAtlasLoader(resolver));
-		setLoader(TileMapRenderer.class, new TileMapRendererLoader(resolver));
 		threadPool = Executors.newFixedThreadPool(1, new ThreadFactory() {
 			@Override
 			public Thread newThread (Runnable r) {
@@ -390,6 +384,20 @@ public class AssetManager implements Disposable {
 		if (loader == null) throw new GdxRuntimeException("No loader for type: " + assetDesc.type.getSimpleName());
 		tasks.push(new AssetLoadingTask(this, assetDesc, loader, threadPool));
 	}
+	
+	/** Adds an asset to this AssetManager */
+	protected <T> void addAsset(final String fileName, Class<T> type, T asset) {
+		// add the asset to the filename lookup
+		assetTypes.put(fileName, type);
+
+		// add the asset to the type lookup
+		ObjectMap<String, RefCountedContainer> typeToAssets = assets.get(type);
+		if (typeToAssets == null) {
+			typeToAssets = new ObjectMap<String, RefCountedContainer>();
+			assets.put(type, typeToAssets);
+		}
+		typeToAssets.put(fileName, new RefCountedContainer(asset));	
+	}
 
 	/** Updates the current task on the top of the task stack.
 	 * @return true if the asset is loaded. */
@@ -397,16 +405,7 @@ public class AssetManager implements Disposable {
 		AssetLoadingTask task = tasks.peek();
 		// if the task has finished loading
 		if (task.update()) {
-			// add the asset to the filename lookup
-			assetTypes.put(task.assetDesc.fileName, task.assetDesc.type);
-
-			// add the asset to the type lookup
-			ObjectMap<String, RefCountedContainer> typeToAssets = assets.get(task.assetDesc.type);
-			if (typeToAssets == null) {
-				typeToAssets = new ObjectMap<String, RefCountedContainer>();
-				assets.put(task.assetDesc.type, typeToAssets);
-			}
-			typeToAssets.put(task.assetDesc.fileName, new RefCountedContainer(task.getAsset()));
+			addAsset(task.assetDesc.fileName, task.assetDesc.type, task.getAsset());
 
 			// increase the number of loaded assets and pop the task from the stack
 			if (tasks.size() == 1) loaded++;

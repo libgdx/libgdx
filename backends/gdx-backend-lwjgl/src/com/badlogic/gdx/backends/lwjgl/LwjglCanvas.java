@@ -140,6 +140,11 @@ public class LwjglCanvas implements Application {
 
 	protected void setTitle (String title) {
 	}
+	
+	@Override
+	public ApplicationListener getApplicationListener () {
+		return listener;
+	}
 
 	public Canvas getCanvas () {
 		return canvas;
@@ -191,7 +196,7 @@ public class LwjglCanvas implements Application {
 		} catch (Exception ex) {
 			stopped();
 			exception(ex);
-			throw new GdxRuntimeException(ex);
+			return;
 		}
 
 		EventQueue.invokeLater(new Runnable() {

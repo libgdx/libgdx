@@ -104,7 +104,7 @@ public class OisJoystick {
 	}
 
 	public OisPov getPov (int povIndex) {
-		if(povIndex < 0 || povIndex >= axes.length) return OisPov.Centered;
+		if(povIndex < 0 || povIndex >= povs.length) return OisPov.Centered;
 		switch (povs[povIndex]) {
 		case 0x00000000:
 			return OisPov.Centered;
@@ -130,18 +130,18 @@ public class OisJoystick {
 	}
 
 	public boolean isButtonPressed (int buttonIndex) {
-		if(buttonIndex < 0 || buttonIndex >= axes.length) return false;
+		if(buttonIndex < 0 || buttonIndex >= buttons.length) return false;
 		return buttons[buttonIndex];
 	}
 
 	public boolean getSliderX (int sliderIndex) {
-		if(sliderIndex < 0 || sliderIndex >= axes.length) return false;
+		if(sliderIndex < 0 || sliderIndex >= slidersX.length) return false;
 
 		return slidersX[sliderIndex];
 	}
 
 	public boolean getSliderY (int sliderIndex) {
-		if(sliderIndex < 0 || sliderIndex >= axes.length) return false;
+		if(sliderIndex < 0 || sliderIndex >= slidersY.length) return false;
 		return slidersY[sliderIndex];
 	}
 

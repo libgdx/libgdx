@@ -33,6 +33,7 @@ package com.badlogic.gdx.audio.io;
  ******************************************************************************/
 
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
@@ -57,33 +58,48 @@ public class VorbisDecoder extends Decoder {
 	}
 
 	@Override
-	public void dispose () {
+	public synchronized void dispose () {
 		closeFile(handle);
 	}
 
 	@Override
-	public float getLength () {
+	public synchronized float getLength () {
 		return getLength(handle);
 	}
 
 	@Override
-	public int getChannels () {
+	public synchronized int getChannels () {
 		return getNumChannels(handle);
 	}
 
 	@Override
-	public int getRate () {
+	public synchronized int getRate () {
 		return getRate(handle);
 	}
 
 	@Override
-	public int readSamples (short[] samples, int offset, int numSamples) {
+	public synchronized int readSamples (short[] samples, int offset, int numSamples) {
 		return readSamples(handle, samples, offset, numSamples);
 	}
 
 	@Override
-	public int skipSamples (int numSamples) {
+	public synchronized int skipSamples (int numSamples) {
 		return skipSamples(handle, numSamples);
+	}
+	
+	@Override
+	public synchronized boolean canSeek () {
+		return seekable(handle) != 0;
+	}
+
+	@Override
+	public synchronized boolean setPosition (float seconds) {
+		return timeSeek(handle, seconds) == 0;
+	}
+
+	@Override
+	public synchronized float getPosition () {
+		return tellTime(handle);
 	}
 
 	// @off
@@ -136,7 +152,7 @@ public class VorbisDecoder extends Decoder {
 	
 		return (jlong)oggFile;	
 	*/
-
+	
 	private static native int getNumChannels (long handle); /*
 		OggFile* file = (OggFile*)handle;
 		return file->channels;
@@ -195,4 +211,20 @@ public class VorbisDecoder extends Decoder {
 		free(file->ogg);
 		free(file);
 	*/
+	
+	private static native int seekable (long handle); /*
+		OggFile* file = (OggFile*)handle;
+		return file->ogg->seekable;
+	*/
+	
+	private static native float tellTime (long handle); /*
+		OggFile* file = (OggFile*)handle;
+		return 0.001f * (float)ov_time_tell(file->ogg);
+	*/
+	
+	private static native int timeSeek (long handle, float time); /*
+		OggFile* file = (OggFile*)handle;
+		return ov_time_seek (file->ogg, (ogg_int64_t)(time * 1000.f));
+	*/
+	
 }

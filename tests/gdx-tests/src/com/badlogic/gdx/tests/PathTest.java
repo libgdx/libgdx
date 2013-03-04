@@ -100,8 +100,8 @@ public class PathTest extends GdxTest {
 		float val = 0f;
 		while (val <= 1f) {
 			renderer.color(0f, 0f, 0f, 1f);
-			paths.get(currentPath).valueAt(Vector2.tmp, val);
-			renderer.vertex(Vector2.tmp.x, Vector2.tmp.y, 0);
+			paths.get(currentPath).valueAt(/*out:*/tmpV, val);
+			renderer.vertex(tmpV.x, tmpV.y, 0);
 			val += SAMPLE_POINT_DISTANCE;
 		}
 		renderer.end();

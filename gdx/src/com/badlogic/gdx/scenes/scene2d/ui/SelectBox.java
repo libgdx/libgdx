@@ -52,6 +52,9 @@ public class SelectBox extends Widget {
 	private float prefWidth, prefHeight;
 	private ClickListener clickListener;
 
+	/** Scratch space for converting to/from stage coordinates. Only used in listener callbacks (so only on render thread). */
+	static final Vector2 tmpCoords = new Vector2();
+
 	public SelectBox (Object[] items, Skin skin) {
 		this(items, skin.get(SelectBoxStyle.class));
 	}
@@ -74,9 +77,8 @@ public class SelectBox extends Widget {
 					return true;
 				}
 				Stage stage = getStage();
-				Vector2 stageCoords = Vector2.tmp;
-				stage.screenToStageCoordinates(stageCoords.set(screenCoords.x, screenCoords.y));
-				list = new SelectList(stageCoords.x, stageCoords.y);
+				stage.screenToStageCoordinates(tmpCoords.set(screenCoords));
+				list = new SelectList(tmpCoords.x, tmpCoords.y);
 				stage.addActor(list);
 				return true;
 			}
@@ -207,9 +209,9 @@ public class SelectBox extends Widget {
 		InputListener stageListener = new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == 0 && button != 0) return false;
-				stageToLocalCoordinates(Vector2.tmp);
-				x = Vector2.tmp.x;
-				y = Vector2.tmp.y;
+				stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
+				x = tmpCoords.x;
+				y = tmpCoords.y;
 				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
 					listSelectedIndex = (int)((getHeight() - y) / itemHeight);
 					listSelectedIndex = Math.max(0, listSelectedIndex);
@@ -230,9 +232,9 @@ public class SelectBox extends Widget {
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
-				stageToLocalCoordinates(Vector2.tmp);
-				x = Vector2.tmp.x;
-				y = Vector2.tmp.y;
+				stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
+				x = tmpCoords.x;
+				y = tmpCoords.y;
 				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
 					listSelectedIndex = (int)((getHeight() - style.listBackground.getTopHeight() - y) / itemHeight);
 					listSelectedIndex = Math.max(0, listSelectedIndex);
