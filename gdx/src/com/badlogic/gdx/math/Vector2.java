@@ -212,6 +212,21 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		}
 		return this;
 	}
+	
+	/** Clamps this vector's length to given value
+	 * @param min Min length
+	 * @param max Max length
+	 * @return This vector for chaining */
+	public Vector2 clamp (float min, float max) {
+		final float l2 = len2();
+		if (l2 == 0f)
+			return this;
+		if (l2 > max * max)
+			return nor().mul(max);
+		if (l2 < min * min)
+			return nor().mul(min);
+		return this;
+	}
 
 	public String toString () {
 		return "[" + x + ":" + y + "]";

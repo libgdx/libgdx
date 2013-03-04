@@ -33,6 +33,12 @@ public interface Vector<T extends Vector> {
 	 * @return This vector for chaining */
 	T limit (float limit);
 
+	/** Clamps this vector's length to given value
+	 * @param min Min length
+	 * @param max Max length
+	 * @return This vector for chaining */
+	T clamp (float min, float max);
+	
 	/** Sets this vector from the given vector
 	 * @param v The vector
 	 * @return This vector for chaining */
