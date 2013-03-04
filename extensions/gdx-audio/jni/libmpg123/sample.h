@@ -88,12 +88,32 @@ static inline short ftoi16(float x)
 /* The actual storage of a decoded sample is separated in the following macros.
    We can handle different types, we could also handle dithering here. */
 
+#ifdef NEWOLD_WRITE_SAMPLE
+
+/* This is the old new mpg123 WRITE_SAMPLE, fixed for newer GCC by MPlayer folks.
+   Makes a huge difference on old machines. */
+#if WORDS_BIGENDIAN 
+#define MANTISSA_OFFSET 1
+#else
+#define MANTISSA_OFFSET 0
+#endif
+#define WRITE_SHORT_SAMPLE(samples,sum,clip) { \
+  union { double dtemp; int itemp[2]; } u; int v; \
+  u.dtemp = ((((65536.0 * 65536.0 * 16)+(65536.0 * 0.5))* 65536.0)) + (sum);\
+  v = u.itemp[MANTISSA_OFFSET] - 0x80000000; \
+  if( v > 32767) { *(samples) = 0x7fff; (clip)++; } \
+  else if( v < -32768) { *(samples) = -0x8000; (clip)++; } \
+  else { *(samples) = v; }  \
+}
+
+#else
 /* Macro to produce a short (signed 16bit) output sample from internal representation,
    which may be float, double or indeed some integer for fixed point handling. */
 #define WRITE_SHORT_SAMPLE(samples,sum,clip) \
   if( (sum) > REAL_PLUS_32767) { *(samples) = 0x7fff; (clip)++; } \
   else if( (sum) < REAL_MINUS_32768) { *(samples) = -0x8000; (clip)++; } \
   else { *(samples) = REAL_TO_SHORT(sum); }
+#endif
 
 /* Same as above, but always using accurate rounding. Would we want softer clipping here, too? */
 #define WRITE_SHORT_SAMPLE_ACCURATE(samples,sum,clip) \

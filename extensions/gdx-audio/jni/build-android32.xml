@@ -1,8 +1,10 @@
 <project name="android-natives" basedir="." default="postcompile">
 	<property environment="env" />
+	<!--  the suffix ndk-build executable -->	
+	<property name="ndkSuffix" value="" />
 
 	<target name="clean" depends="check-for-ndk" if="has-ndk-build">
-		<exec executable="${env.NDK_HOME}/ndk-build" failonerror="true">
+		<exec executable="${env.NDK_HOME}/ndk-build${ndkSuffix}" failonerror="true">
 			<arg value="clean"/>
 		</exec>
 	</target>
@@ -13,7 +15,7 @@
 
 	<target name="compile-natives" depends="precompile" if="has-ndk-build">
 		<echo>ndk_home: ${env.NDK_HOME}</echo>
-		<exec executable="${env.NDK_HOME}/ndk-build" failonerror="true"/>
+		<exec executable="${env.NDK_HOME}/ndk-build${ndkSuffix}" failonerror="true"/>
 	</target>
 	
 	<target name="postcompile" depends="compile-natives">
@@ -22,7 +24,7 @@
 
 	<target name="check-for-ndk">
 		<condition property="ndk-build-found">
-			<available file="ndk-build" filepath="${env.NDK_HOME}"/>
+			<available file="ndk-build${ndkSuffix}" filepath="${env.NDK_HOME}"/>
 		</condition>
 		<condition property="has-ndk-build">
 			<equals arg1="${ndk-build-found}" arg2="true"/>
