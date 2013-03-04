@@ -461,7 +461,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		final float b = y - this.y;
 		final float c = z - this.z;
 
-		return a * a + b * b + c * b;
+		return a * a + b * b + c * c;
 	}
 
 	/** @return the distance between this point and the given point */
