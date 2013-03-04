@@ -311,6 +311,7 @@ public class NativeCodeGenerator {
 					throw new RuntimeException("Method '" + javaMethod.getName() + "' has no body");
 				}
 				CMethod cMethod = findCMethod(javaMethod, cMethods);
+				cMethods.remove(cMethod);
 				if (cMethod == null)
 					throw new RuntimeException("Couldn't find C method for Java method '" + javaMethod.getClassName() + "#"
 						+ javaMethod.getName() + "'");
