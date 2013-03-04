@@ -132,10 +132,15 @@ class AndroidLiveWallpaper implements Application {
 		return engine;
 	}
 
+	/** @deprecated Use {@link #getApplicationListener()} instead */
 	public ApplicationListener getListener() {
 		return listener;
 	}
 
+	public ApplicationListener getApplicationListener() {
+		return listener;
+	}
+	
 	@Override 
 	public void postRunnable (Runnable runnable) {
 		synchronized(runnables) {

@@ -1,5 +1,5 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" />
   <MonoDevelop.Ide.Workbench ActiveDocument="gdx-vectorpinball-ios/Main.cs">
     <Files>
       <File FileName="gdx-vectorpinball-ios/Main.cs" Line="11" Column="3" />
@@ -8,10 +8,8 @@
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="gdx-vectorpinball-ios" expanded="True">
-            <Node name="References" expanded="True">
-              <Node name="/Users/badlogic/workspace/libgdx/backends/gdx-backend-iosmonotouch/libs/ikvm/bin/IKVM.OpenJDK.Charsets.dll" selected="True" />
-            </Node>
+          <Node name="gdx-vectorpinball-ios" expanded="True" selected="True">
+            <Node name="References" expanded="True" />
           </Node>
         </State>
       </Pad>

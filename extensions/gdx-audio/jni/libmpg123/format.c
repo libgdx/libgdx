@@ -155,14 +155,18 @@ static int freq_fit(mpg123_handle *fr, struct audioformat *nf, int f0, int f2)
 {
 	nf->rate = frame_freq(fr)>>fr->p.down_sample;
 	if(cap_fit(fr,nf,f0,f2)) return 1;
-	nf->rate>>=1;
-	if(cap_fit(fr,nf,f0,f2)) return 1;
-	nf->rate>>=1;
-	if(cap_fit(fr,nf,f0,f2)) return 1;
+	if(fr->p.flags & MPG123_AUTO_RESAMPLE)
+	{
+		nf->rate>>=1;
+		if(cap_fit(fr,nf,f0,f2)) return 1;
+		nf->rate>>=1;
+		if(cap_fit(fr,nf,f0,f2)) return 1;
+	}
 #ifndef NO_NTOM
 	/* If nothing worked, try the other rates, only without constrains from user.
 	   In case you didn't guess: We enable flexible resampling if we find a working rate. */
-	if(!fr->p.force_rate && fr->p.down_sample == 0)
+	if(  fr->p.flags & MPG123_AUTO_RESAMPLE &&
+	    !fr->p.force_rate && fr->p.down_sample == 0)
 	{
 		int i;
 		int c  = nf->channels-1;
@@ -428,7 +432,7 @@ off_t bytes_to_samples(mpg123_handle *fr , off_t b)
 
 #ifndef NO_32BIT
 /* Remove every fourth byte, facilitating conversion from 32 bit to 24 bit integers.
-   This has to be aware of endianess, of course. */
+   This has to be aware of endianness, of course. */
 static void chop_fourth_byte(struct outbuffer *buf)
 {
 	unsigned char *wpos = buf->data;

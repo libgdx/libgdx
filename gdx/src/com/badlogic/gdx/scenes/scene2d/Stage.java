@@ -46,6 +46,10 @@ import com.badlogic.gdx.utils.SnapshotArray;
  * {@link Input#setInputProcessor(com.badlogic.gdx.InputProcessor) Gdx.input.setInputProcessor}. An {@link InputMultiplexer} may be
  * used to handle input events before or after the stage does. If an actor handles an event by returning true from the input
  * method, then the stage's input method will also return true, causing subsequent InputProcessors to not receive the event.
+ * <p>
+ * The Stage and its constituents (like Actors and Listeners) are not thread-safe and should only be updated and queried from a
+ * single thread (presumably the main render thread). Methods should be reentrant, so you can update Actors and Stages from within
+ * callbacks and handlers.
  * 
  * @author mzechner
  * @author Nathan Sweet */
@@ -66,6 +70,12 @@ public class Stage extends InputAdapter implements Disposable {
 	private Actor mouseOverActor;
 	private Actor keyboardFocus, scrollFocus;
 	private SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
+
+	/* Scratch object used by hit(). */
+	private static final Vector2 actorCoords = new Vector2();
+
+	/* Scratch object used by screenToStageCoordinates() and stageToScreenCoordinates(). */
+	private static final Vector3 cameraCoords = new Vector3();
 
 	/** Creates a stage with a {@link #setViewport(float, float, boolean) viewport} equal to the device screen resolution. The stage
 	 * will use its own {@link SpriteBatch}. */
@@ -638,26 +648,28 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @param touchable If true, the hit detection will respect the {@link Actor#setTouchable(Touchable) touchability}.
 	 * @return May be null if no actor was hit. */
 	public Actor hit (float stageX, float stageY, boolean touchable) {
-		Vector2 actorCoords = Vector2.tmp;
 		root.parentToLocalCoordinates(actorCoords.set(stageX, stageY));
 		return root.hit(actorCoords.x, actorCoords.y, touchable);
 	}
 
 	/** Transforms the screen coordinates to stage coordinates.
-	 * @param screenCoords Stores the result. */
+	 * 
+	 * @param screenCoords input screen coordinates and output for resulting stage coordinates. */
 	public Vector2 screenToStageCoordinates (Vector2 screenCoords) {
-		camera.unproject(Vector3.tmp.set(screenCoords.x, screenCoords.y, 0));
-		screenCoords.x = Vector3.tmp.x;
-		screenCoords.y = Vector3.tmp.y;
+		camera.unproject(cameraCoords.set(screenCoords.x, screenCoords.y, 0));
+		screenCoords.x = cameraCoords.x;
+		screenCoords.y = cameraCoords.y;
 		return screenCoords;
 	}
 
-	/** Transforms the stage coordinates to screen coordinates. */
+	/** Transforms the stage coordinates to screen coordinates. 
+	 * 
+	 * @param stageCoords input stage coordinates and output for resulting screen coordinates */
 	public Vector2 stageToScreenCoordinates (Vector2 stageCoords) {
-		Vector3.tmp.set(stageCoords.x, stageCoords.y, 0);
-		camera.project(Vector3.tmp);
-		stageCoords.x = Vector3.tmp.x;
-		stageCoords.y = Vector3.tmp.y;
+		cameraCoords.set(stageCoords.x, stageCoords.y, 0);
+		camera.project(cameraCoords);
+		stageCoords.x = cameraCoords.x;
+		stageCoords.y = cameraCoords.y;
 		return stageCoords;
 	}
 

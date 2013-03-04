@@ -28,6 +28,10 @@ public interface Vector<T extends Vector> {
 
 	/** @return The squared euclidian length */
 	float len2 ();
+	
+	/** Limits this vector's length to given value
+	 * @return This vector for chaining */
+	T limit (float limit);
 
 	/** Sets this vector from the given vector
 	 * @param v The vector

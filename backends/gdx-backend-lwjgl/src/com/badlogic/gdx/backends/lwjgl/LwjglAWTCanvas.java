@@ -152,6 +152,11 @@ public class LwjglAWTCanvas implements Application {
 
 	protected void setTitle (String title) {
 	}
+	
+	@Override
+	public ApplicationListener getApplicationListener () {
+		return listener;
+	}
 
 	public Canvas getCanvas () {
 		return canvas;

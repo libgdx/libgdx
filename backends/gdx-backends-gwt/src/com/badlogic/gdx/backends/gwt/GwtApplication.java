@@ -79,9 +79,6 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	/** @return the configuration for the {@link GwtApplication}. */
 	public abstract GwtApplicationConfiguration getConfig ();
 
-	/** @return the {@link ApplicationListener} to be run by the {@link GwtApplication}. */
-	public abstract ApplicationListener getApplicationListener ();
-
 	@Override
 	public void onModuleLoad () {
 		this.agentInfo = computeAgentInfo();

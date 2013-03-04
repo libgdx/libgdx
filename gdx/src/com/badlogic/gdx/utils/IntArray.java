@@ -207,6 +207,7 @@ public class IntArray {
 
 	/** Returns the first item. */
 	public int first () {
+		if (size == 0) throw new IllegalStateException("Array is empty.");
 		return items[0];
 	}
 

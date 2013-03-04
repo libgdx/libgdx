@@ -25,7 +25,7 @@ import com.badlogic.gdx.tests.gwt.GwtTestWrapper;
 public class GwtTestStarter extends GwtApplication {
 	@Override
 	public GwtApplicationConfiguration getConfig () {
-		return new GwtApplicationConfiguration(640, 640);
+		return new GwtApplicationConfiguration(480, 320);
 	}
 
 	@Override

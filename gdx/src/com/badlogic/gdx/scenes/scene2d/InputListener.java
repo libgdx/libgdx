@@ -33,6 +33,10 @@ import com.badlogic.gdx.math.Vector2;
  * </pre>
  */
 public class InputListener implements EventListener {
+	
+	/** Scratch object used by handle().  Event dispatch should only be invoked by the render thread. */
+	private static final Vector2 coords = new Vector2();
+	
 	public boolean handle (Event e) {
 		if (!(e instanceof InputEvent)) return false;
 		InputEvent event = (InputEvent)e;
@@ -46,7 +50,7 @@ public class InputListener implements EventListener {
 			return keyTyped(event, event.getCharacter());
 		}
 
-		Vector2 coords = Vector2.tmp.set(event.getStageX(), event.getStageY());
+		coords.set(event.getStageX(), event.getStageY());
 		event.getListenerActor().stageToLocalCoordinates(coords);
 
 		switch (event.getType()) {
