@@ -100,16 +100,26 @@ public class Matrix4 implements Serializable {
 	 * @param quaternion The quaternion that is to be used to set this matrix.
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 set (Quaternion quaternion) {
-		// Compute quaternion factors
-		float l_xx = quaternion.x * quaternion.x;
-		float l_xy = quaternion.x * quaternion.y;
-		float l_xz = quaternion.x * quaternion.z;
-		float l_xw = quaternion.x * quaternion.w;
-		float l_yy = quaternion.y * quaternion.y;
-		float l_yz = quaternion.y * quaternion.z;
-		float l_yw = quaternion.y * quaternion.w;
-		float l_zz = quaternion.z * quaternion.z;
-		float l_zw = quaternion.z * quaternion.w;
+		return set(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
+	}
+	
+	/** Sets the matrix to a rotation matrix representing the quaternion.
+	 * 
+	 * @param x The X component of the quaternion that is to be used to set this matrix.
+	 * @param y The Y component of the quaternion that is to be used to set this matrix.
+	 * @param z The Z component of the quaternion that is to be used to set this matrix.
+	 * @param w The W component of the quaternion that is to be used to set this matrix.
+	 * @return This matrix for the purpose of chaining methods together. */
+	public Matrix4 set(float x, float y, float z, float w) {
+		float l_xx = x * x;
+		float l_xy = x * y;
+		float l_xz = x * z;
+		float l_xw = x * w;
+		float l_yy = y * y;
+		float l_yz = y * z;
+		float l_yw = y * w;
+		float l_zz = z * z;
+		float l_zw = z * w;
 		// Set matrix from quaternion
 		val[M00] = 1 - 2 * (l_yy + l_zz);
 		val[M01] = 2 * (l_xy - l_zw);
@@ -525,7 +535,7 @@ public class Matrix4 implements Serializable {
 			idt();
 			return this;
 		}
-		return set(quat.set(tmpV.set(axisX, axisY, axisZ), angle));
+		return set(quat.setFromAxis(axisX, axisY, axisZ, angle));
 	}
 
 	/** Set the matrix to a rotation matrix between two vectors.
@@ -549,8 +559,6 @@ public class Matrix4 implements Serializable {
 		idt();
 		return set(quat.setFromCross(x1, y1, z1, x2, y2, z2));
 	}
-	
-	static final Vector3 tmpV = new Vector3();
 	
 	/** Sets this matrix to a rotation matrix from the given euler angles.
 	 * @param yaw the yaw in degrees
@@ -588,9 +596,9 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-	static Vector3 l_vez = new Vector3();
-	static Vector3 l_vex = new Vector3();
-	static Vector3 l_vey = new Vector3();
+	static final Vector3 l_vez = new Vector3();
+	static final Vector3 l_vex = new Vector3();
+	static final Vector3 l_vey = new Vector3();
 
 	/** Sets the matrix to a look at matrix with a direction and an up vector. Multiply with a translation matrix to get a camera
 	 * model view matrix.
@@ -634,9 +642,9 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-	static Vector3 right = new Vector3();
-	static Vector3 tmpForward = new Vector3();
-	static Vector3 tmpUp = new Vector3();
+	static final Vector3 right = new Vector3();
+	static final Vector3 tmpForward = new Vector3();
+	static final Vector3 tmpUp = new Vector3();
 
 	public Matrix4 setToWorld (Vector3 position, Vector3 forward, Vector3 up) {
 		tmpForward.set(forward).nor();
@@ -1035,7 +1043,7 @@ public class Matrix4 implements Serializable {
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 rotate (float axisX, float axisY, float axisZ, float angle) {
 		if (angle == 0) return this;
-		quat.set(tmpV.set(axisX, axisY, axisZ), angle);
+		quat.setFromAxis(axisX, axisY, axisZ, angle);
 		return rotate(quat);
 	}
 
