@@ -584,6 +584,8 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			if (type != null) {
 				object.getProperties().put("type", type);
 			}
+			object.getProperties.put("x", x);
+			object.getProperties.put("y", y);
 			object.setVisible(element.getIntAttribute("visible", 1) == 1);
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
