@@ -352,22 +352,27 @@ public class AssetManager implements Disposable {
 		tasks.push(new AssetLoadingTask(this, assetDesc, loader));
 	}
 
+	/** Adds an asset to this AssetManager */
+	protected <T> void addAsset(final String fileName, Class<T> type, T asset) {
+		// add the asset to the filename lookup
+		assetTypes.put(fileName, type);
+
+		// add the asset to the type lookup
+		ObjectMap<String, RefCountedContainer> typeToAssets = assets.get(type);
+		if (typeToAssets == null) {
+			typeToAssets = new ObjectMap<String, RefCountedContainer>();
+			assets.put(type, typeToAssets);
+		}
+		typeToAssets.put(fileName, new RefCountedContainer(asset));	
+	}
+	
 	/** Updates the current task on the top of the task stack.
 	 * @return true if the asset is loaded. */
 	private boolean updateTask () {
 		AssetLoadingTask task = tasks.peek();
 		// if the task has finished loading
 		if (task.update()) {
-			// add the asset to the filename lookup
-			assetTypes.put(task.assetDesc.fileName, task.assetDesc.type);
-
-			// add the asset to the type lookup
-			ObjectMap<String, RefCountedContainer> typeToAssets = assets.get(task.assetDesc.type);
-			if (typeToAssets == null) {
-				typeToAssets = new ObjectMap<String, RefCountedContainer>();
-				assets.put(task.assetDesc.type, typeToAssets);
-			}
-			typeToAssets.put(task.assetDesc.fileName, new RefCountedContainer(task.getAsset()));
+			addAsset(task.assetDesc.fileName, task.assetDesc.type, task.getAsset());
 
 			// increase the number of loaded assets and pop the task from the stack
 			if (tasks.size() == 1) loaded++;
