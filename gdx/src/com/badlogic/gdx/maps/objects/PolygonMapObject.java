@@ -38,7 +38,14 @@ public class PolygonMapObject extends MapObject {
 	 * @param vertices polygon defining vertices (at least 3)
 	 */
 	public PolygonMapObject(float[] vertices) {
-		super();
 		polygon = new Polygon(vertices);
 	}
+	
+	/**
+	 * @param polygon the polygon
+	 */
+	public PolygonMapObject(Polygon polygon) {
+		this.polygon = polygon;
+	}
+	
 }

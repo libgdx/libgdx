@@ -17,17 +17,19 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
+import com.badlogic.gdx.maps.ImageResolver.AssetManagerImageResolver;
+import com.badlogic.gdx.maps.ImageResolver.DirectImageResolver;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.ImageResolver.AssetManagerImageResolver;
-import com.badlogic.gdx.maps.ImageResolver.DirectImageResolver;
 import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Polyline;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -41,7 +43,8 @@ import com.badlogic.gdx.utils.XmlReader.Element;
 public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.Parameters> {
 
 	public static class Parameters extends AssetLoaderParameters<TiledMap> {
-		
+		/** Whether to load the map for a y-up coordinate system */
+		boolean yUp = true;
 	}
 	
 	protected static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
@@ -51,6 +54,10 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	
 	protected XmlReader xml = new XmlReader();
 	protected Element root;
+	protected boolean yUp;
+
+	protected int mapWidthInPixels;
+	protected int mapHeightInPixels;
 	
 	public TmxMapLoader() {
 		super(new InternalFileHandleResolver());
@@ -68,12 +75,26 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	/**
 	 * Loads the {@link TiledMap} from the given file. The file is
 	 * resolved via the {@link FileHandleResolver} set in the constructor
-	 * of this class. By default it will resolve to an internal file.
+	 * of this class. By default it will resolve to an internal file. The
+	 * map will be loaded for a y-up coordinate system.
 	 * @param fileName the filename
 	 * @return the TiledMap
 	 */
 	public TiledMap load(String fileName) {
+		return load(fileName, true);
+	}
+
+	/**
+	 * Loads the {@link TiledMap} from the given file. The file is
+	 * resolved via the {@link FileHandleResolver} set in the constructor
+	 * of this class. By default it will resolve to an internal file.
+	 * @param fileName the filename
+	 * @param yUp whether to load the map for a y-up coordinate system
+	 * @return the TiledMap
+	 */
+	public TiledMap load(String fileName, boolean yUp) {
 		try {
+			this.yUp = yUp;
 			FileHandle tmxFile = resolve(fileName);
 			root = xml.parse(tmxFile);
 			ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
@@ -92,6 +113,11 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	@Override
 	public TiledMap load(AssetManager assetManager, String fileName, Parameters parameter) {
 		FileHandle tmxFile = resolve(fileName);
+		if (parameter != null) {
+			yUp = parameter.yUp;
+		} else {
+			yUp = true;
+		}
 		try {
 			return loadTilemap(root, tmxFile, new AssetManagerImageResolver(assetManager));
 		} catch (Exception e) {
@@ -150,6 +176,8 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		if (mapBackgroundColor != null) {
 			mapProperties.put("backgroundcolor", mapBackgroundColor);
 		}
+		mapWidthInPixels = mapWidth * tileWidth;
+		mapHeightInPixels = mapHeight * tileHeight;
 		
 		Element properties = root.getChildByName("properties");
 		if (properties != null) {
@@ -238,7 +266,11 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			
 			for (int y = margin; y <= stopHeight; y += tileheight + spacing) {
 				for (int x = margin; x <= stopWidth; x += tilewidth + spacing) {
-					TiledMapTile tile = new StaticTiledMapTile(new TextureRegion(texture, x, y, tilewidth, tileheight));
+					TextureRegion tileRegion = new TextureRegion(new TextureRegion(texture, x, y, tilewidth, tileheight));
+					if (!yUp) {
+						tileRegion.flip(false, true);
+					}
+					TiledMapTile tile = new StaticTiledMapTile(tileRegion);
 					tile.setId(id);
 					tileset.putTile(id++, tile);
 				}
@@ -317,7 +349,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 								cell.setFlipVertically(flipVertically);
 							}
 							cell.setTile(tile);
-							layer.setCell(x, height - 1 - y, cell);
+							layer.setCell(x, yUp ? height - 1 - y : y, cell);
 						}
 					}
 				}
@@ -362,7 +394,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 										cell.setFlipVertically(flipVertically);
 									}
 									cell.setTile(tile);
-									layer.setCell(x, height - 1 - y, cell);
+									layer.setCell(x, yUp ? height - 1 - y : y, cell);
 								}
 							}
 						}
@@ -412,7 +444,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 											cell.setFlipVertically(flipVertically);
 										}
 										cell.setTile(tile);
-										layer.setCell(x, height - 1 - y, cell);
+										layer.setCell(x, yUp ? height - 1 - y : y, cell);
 									}
 								} catch (IOException e) {
 									throw new GdxRuntimeException("Error Reading TMX Layer Data.", e);
@@ -463,7 +495,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 											cell.setFlipVertically(flipVertically);
 										}
 										cell.setTile(tile);
-										layer.setCell(x, height - 1 - y, cell);
+										layer.setCell(x, yUp ? height - 1 - y : y, cell);
 									}
 			
 								} catch (DataFormatException e) {
@@ -505,8 +537,8 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			MapObject object = null;
 			
 			int x = element.getIntAttribute("x", 0);
-			int y = element.getIntAttribute("y", 0);
-			
+			int y = (yUp ? mapHeightInPixels - element.getIntAttribute("y", 0) : element.getIntAttribute("y", 0));
+
 			int width = element.getIntAttribute("width", 0);
 			int height = element.getIntAttribute("height", 0);
 			
@@ -517,25 +549,35 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 					float[] vertices = new float[points.length * 2];
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
-						vertices[i * 2] = x + Integer.parseInt(point[0]);
-						vertices[i * 2 + 1] = y + Integer.parseInt(point[1]);
+						vertices[i * 2] = Integer.parseInt(point[0]);
+						vertices[i * 2 + 1] = Integer.parseInt(point[1]);
+						if (yUp) {
+							vertices[i * 2 + 1] *= -1;
+						}
 					}
-					object = new PolygonMapObject(vertices);
+					Polygon polygon = new Polygon(vertices);
+					polygon.setPosition(x, y);
+					object = new PolygonMapObject(polygon);
 				} else if ((child = element.getChildByName("polyline")) != null) {
 					String[] points = child.getAttribute("points").split(" ");
 					float[] vertices = new float[points.length * 2];
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
-						vertices[i * 2] = x + Integer.parseInt(point[0]);
-						vertices[i * 2 + 1] = y + Integer.parseInt(point[1]);
+						vertices[i * 2] = Integer.parseInt(point[0]);
+						vertices[i * 2 + 1] = Integer.parseInt(point[1]);
+						if (yUp) {
+							vertices[i * 2 + 1] *= -1;
+						}
 					}
-					object = new PolylineMapObject(vertices);
+					Polyline polyline = new Polyline(vertices);
+					polyline.setPosition(x, y);
+					object = new PolylineMapObject(polyline);
 				} else if ((child = element.getChildByName("ellipse")) != null) {
-					object = new EllipseMapObject(x, y, width, height);
+					object = new EllipseMapObject(x, yUp ? y - height : y, width, height);
 				}
 			}
 			if (object == null) {
-				object = new RectangleMapObject(x, y, width, height);
+				object = new RectangleMapObject(x, yUp ? y - height : y, width, height);
 			}
 			object.setName(element.getAttribute("name", null));
 			String type = element.getAttribute("type", null);

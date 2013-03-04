@@ -265,6 +265,11 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 			return this.div(len);
 		}
 	}
+	
+	/** @return The dot product between the two vectors */
+	public static float dot(float x1, float y1, float z1, float x2, float y2, float z2) {
+		return x1 * x2 + y1 * y2 + z1 * z2;
+	}
 
 	/** @param vector The other vector
 	 * @return The dot product between this and the other vector */

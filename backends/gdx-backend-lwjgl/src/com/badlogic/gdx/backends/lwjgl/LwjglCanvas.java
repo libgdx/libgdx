@@ -196,7 +196,7 @@ public class LwjglCanvas implements Application {
 		} catch (Exception ex) {
 			stopped();
 			exception(ex);
-			throw new GdxRuntimeException(ex);
+			return;
 		}
 
 		EventQueue.invokeLater(new Runnable() {

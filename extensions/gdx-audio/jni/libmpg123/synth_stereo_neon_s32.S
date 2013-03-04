@@ -20,6 +20,7 @@
 
 	.text
 	.globl ASM_NAME(synth_1to1_s32_s_neon_asm)
+	ALIGN4
 ASM_NAME(synth_1to1_s32_s_neon_asm):
 	push		{r4-r7, lr}
 	vpush		{q4-q7}
