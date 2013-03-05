@@ -25,8 +25,6 @@ public class JglfwApplicationConfiguration {
 	public int bitsPerPixel = 24;
 	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
 	public boolean vSync = true;
-	/** whether to sleep the CPU instead of vsync when vSync is enabled **/
-	public boolean cpuSync = true;
 	/** whether the window is resizable **/
 	public boolean resizable = true;
 	/** whether to attempt to use OpenGL ES 2.0. Note GL2 may be unavailable even when this is true. default: false **/

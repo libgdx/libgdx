@@ -52,16 +52,6 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	private void createWindow () {
-		glfwWindowHint(GLFW_RESIZABLE, config.resizable ? 1 : 0);
-		glfwWindowHint(GLFW_RED_BITS, config.r);
-		glfwWindowHint(GLFW_GREEN_BITS, config.g);
-		glfwWindowHint(GLFW_BLUE_BITS, config.b);
-		glfwWindowHint(GLFW_ALPHA_BITS, config.a);
-		glfwWindowHint(GLFW_DEPTH_BITS, config.depth);
-		glfwWindowHint(GLFW_STENCIL_BITS, config.stencil);
-		glfwWindowHint(GLFW_SAMPLES, config.samples);
-		glfwWindowHint(GLFW_DEPTH_BITS, config.bitsPerPixel);
-
 		long fullscreenMonitor = glfwGetPrimaryMonitor();
 		long[] monitors = glfwGetMonitors();
 		// Find index of primary monitor.
@@ -234,7 +224,19 @@ public class JglfwGraphics implements Graphics {
 			if (monitors.length > 0)
 				fullscreenMonitor = fullscreenMonitorIndex < monitors.length ? monitors[fullscreenMonitorIndex] : 0;
 
-			long window = glfwCreateWindow(config.width, config.height, config.title, fullscreenMonitor, 0);
+			// need to set the window hints every time we create a window, glfwCreateWindow resets them.
+			glfwWindowHint(GLFW_RESIZABLE, config.resizable ? 1 : 0);
+			glfwWindowHint(GLFW_RED_BITS, config.r);
+			glfwWindowHint(GLFW_GREEN_BITS, config.g);
+			glfwWindowHint(GLFW_BLUE_BITS, config.b);
+			glfwWindowHint(GLFW_ALPHA_BITS, config.a);
+			glfwWindowHint(GLFW_DEPTH_BITS, config.depth);
+			glfwWindowHint(GLFW_STENCIL_BITS, config.stencil);
+			glfwWindowHint(GLFW_SAMPLES, config.samples);
+			glfwWindowHint(GLFW_DEPTH_BITS, config.bitsPerPixel);				
+				
+			// share old window if any, so context survice
+			long window = glfwCreateWindow(config.width, config.height, config.title, 0, this.window);
 			if (window == 0) return false;
 			if (this.window != 0) glfwDestroyWindow(window);
 			glfwMakeContextCurrent(window);
@@ -251,7 +253,7 @@ public class JglfwGraphics implements Graphics {
 
 	public void setVSync (boolean vsync) {
 		this.sync = vsync;
-		if (!config.cpuSync) glfwSwapInterval(vsync ? 1 : 0);
+		glfwSwapInterval(vsync ? 1 : 0);
 	}
 
 	public BufferFormat getBufferFormat () {

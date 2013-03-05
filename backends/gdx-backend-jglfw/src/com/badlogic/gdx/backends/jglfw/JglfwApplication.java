@@ -116,7 +116,6 @@ public class JglfwApplication implements Application {
 				graphics.updateTime();
 				listener.render();
 				glfwSwapBuffers(graphics.window);
-				if (graphics.sync && graphics.config.cpuSync) nextFrameTime += 60 * 1000000;
 			} else {
 				// Avoid burning CPU when not rendering.
 				nextFrameTime += 60 * 1000000;
