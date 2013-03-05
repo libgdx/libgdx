@@ -220,9 +220,11 @@ public class JglfwGraphics implements Graphics {
 	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
 		if (window == 0 || fullscreen != config.fullscreen) {
 			long fullscreenMonitor = 0;
-			long[] monitors = glfwGetMonitors();
-			if (monitors.length > 0)
-				fullscreenMonitor = fullscreenMonitorIndex < monitors.length ? monitors[fullscreenMonitorIndex] : 0;
+			if (fullscreen) {
+				long[] monitors = glfwGetMonitors();
+				if (monitors.length > 0)
+					fullscreenMonitor = fullscreenMonitorIndex < monitors.length ? monitors[fullscreenMonitorIndex] : 0;
+			}
 
 			// need to set the window hints every time we create a window, glfwCreateWindow resets them.
 			glfwWindowHint(GLFW_RESIZABLE, config.resizable ? 1 : 0);
@@ -236,7 +238,7 @@ public class JglfwGraphics implements Graphics {
 			glfwWindowHint(GLFW_DEPTH_BITS, config.bitsPerPixel);
 
 			// share old window if any, so context service
-			long window = glfwCreateWindow(config.width, config.height, config.title, 0, this.window);
+			long window = glfwCreateWindow(config.width, config.height, config.title, fullscreenMonitor, this.window);
 			if (window == 0) return false;
 			if (this.window != 0) glfwDestroyWindow(window);
 			glfwMakeContextCurrent(window);
