@@ -85,7 +85,6 @@ public class JglfwGraphics implements Graphics {
 		glMinorVersion = Integer.parseInt("" + version.charAt(2));
 
 		if (config.useGL20 && (glMajorVersion >= 2 || version.contains("2.1"))) { // special case for MESA, wtf...
-			// FIXME - Add check for whether GL 2.0 is actually supported.
 			gl20 = new JglfwGL20();
 			gl = gl20;
 		} else {
@@ -191,6 +190,7 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	public DisplayMode[] getDisplayModes () {
+		// FIXME this should use GLFW methods on the current monitor in use
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		java.awt.DisplayMode desktopMode = device.getDisplayMode();
 		java.awt.DisplayMode[] displayModes = device.getDisplayModes();
@@ -207,17 +207,18 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	public DisplayMode getDesktopDisplayMode () {
+		// FIXME this should use GLFW APIs using the current monitor
 		java.awt.DisplayMode mode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
 		return new JglfwDisplayMode(mode.getWidth(), mode.getHeight(), mode.getRefreshRate(), mode.getBitDepth());
 	}
 
 	public boolean setDisplayMode (DisplayMode displayMode) {
-		if (displayMode.bitsPerPixel != 0) glfwWindowHint(GLFW_DEPTH_BITS, displayMode.bitsPerPixel);
 		glfwSetWindowSize(window, displayMode.width, displayMode.height);
 		return true;
 	}
 
 	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
+		// FIXME shouldn't this check against Graphics.fullscreen instead of config.fullscreen?
 		if (window == 0 || fullscreen != config.fullscreen) {
 			long fullscreenMonitor = 0;
 			if (fullscreen) {
@@ -235,7 +236,6 @@ public class JglfwGraphics implements Graphics {
 			glfwWindowHint(GLFW_DEPTH_BITS, config.depth);
 			glfwWindowHint(GLFW_STENCIL_BITS, config.stencil);
 			glfwWindowHint(GLFW_SAMPLES, config.samples);
-			glfwWindowHint(GLFW_DEPTH_BITS, config.bitsPerPixel);
 
 			// share old window if any, so context service
 			long window = glfwCreateWindow(config.width, config.height, config.title, fullscreenMonitor, this.window);
@@ -250,6 +250,7 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	public void setTitle (String title) {
+		if(title == null) glfwSetWindowTitle(window, "");
 		glfwSetWindowTitle(window, title);
 	}
 
@@ -281,6 +282,7 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	public boolean isFullscreen () {
+		// FIXME should use Graphics.fullscreen as config is never changed, no?
 		return config.fullscreen;
 	}
 

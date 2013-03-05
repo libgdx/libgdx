@@ -109,6 +109,7 @@ public class JglfwApplication implements Application {
 			// If one of the runnables set running to false, for example after an exit().
 			if (!running) break;
 
+			input.resetStates();
 			glfwPollEvents();
 			shouldRender |= graphics.shouldRender();
 
