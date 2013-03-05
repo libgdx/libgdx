@@ -41,14 +41,19 @@ public class JglfwInput implements Input {
 			private char lastCharacter;
 
 			public void key (long window, int key, int action) {
+				key = getGdxKeyCode(key);
 				switch (action) {
 				case GLFW_PRESS:
 					pressedKeys++;
-					if (processor != null) processor.keyDown(getGdxKeyCode(key));
+					if (processor != null) processor.keyDown(key);
+
+					lastCharacter = 0;
+					char character = characterForKeyCode(key);
+					if (character != 0) character(window, character);
 					break;
 				case GLFW_RELEASE:
 					pressedKeys--;
-					if (processor != null) processor.keyDown(getGdxKeyCode(key));
+					if (processor != null) processor.keyUp(key);
 					break;
 				case GLFW_REPEAT:
 					if (processor != null && lastCharacter != 0) processor.keyTyped(lastCharacter);
@@ -58,8 +63,6 @@ public class JglfwInput implements Input {
 			}
 
 			public void character (long window, char character) {
-				// FIXME controll chars like backspace aren't reported by this callback but
-				// key instead
 				lastCharacter = character;
 				if (processor != null) processor.keyTyped(character);
 				app.graphics.requestRendering();
@@ -187,7 +190,7 @@ public class JglfwInput implements Input {
 		if (key == Input.Keys.ANY_KEY)
 			return pressedKeys > 0;
 		else
-			return glfwGetKey(app.graphics.window, key);
+			return glfwGetKey(app.graphics.window, getJglfwKeyCode(key));
 	}
 
 	public void getTextInput (final TextInputListener listener, final String title, final String text) {
@@ -341,6 +344,19 @@ public class JglfwInput implements Input {
 
 	public void setCursorPosition (int x, int y) {
 		glfwSetCursorPos(app.graphics.window, x, y);
+	}
+
+	char characterForKeyCode (int key) {
+		// Map certain key codes to character codes.
+		switch (key) {
+		case Keys.BACKSPACE:
+			return 8;
+		case Keys.TAB:
+			return '\t';
+		case Keys.FORWARD_DEL:
+			return 127;
+		}
+		return 0;
 	}
 
 	static public int getGdxKeyCode (int lwjglKeyCode) {
