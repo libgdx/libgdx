@@ -16,7 +16,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public void glBindTexture (int target, int texture) {
-		GL.glBindTextureEXT(target, texture);
+		GL.glBindTexture(target, texture);
 	}
 
 	public void glBlendFunc (int sfactor, int dfactor) {
@@ -54,11 +54,11 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public void glCopyTexImage2D (int target, int level, int internalformat, int x, int y, int width, int height, int border) {
-		GL.glCopyTexImage2DEXT(target, level, internalformat, x, y, width, height, border);
+		GL.glCopyTexImage2D(target, level, internalformat, x, y, width, height, border);
 	}
 
 	public void glCopyTexSubImage2D (int target, int level, int xoffset, int yoffset, int x, int y, int width, int height) {
-		GL.glCopyTexSubImage2DEXT(target, level, xoffset, yoffset, x, y, width, height);
+		GL.glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
 	}
 
 	public void glCullFace (int mode) {
@@ -66,7 +66,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public void glDeleteTextures (int n, IntBuffer textures) {
-		GL.glDeleteTexturesEXT(n, textures, getPosition(textures));
+		GL.glDeleteTextures(n, textures, getPosition(textures));
 	}
 
 	public void glDepthFunc (int func) {
@@ -86,7 +86,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public void glDrawArrays (int mode, int first, int count) {
-		GL.glDrawArraysEXT(mode, first, count);
+		GL.glDrawArrays(mode, first, count);
 	}
 
 	public void glDrawElements (int mode, int count, int type, Buffer indices) {
@@ -110,7 +110,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public void glGenTextures (int n, IntBuffer textures) {
-		GL.glGenTexturesEXT(n, textures, getPosition(textures));
+		GL.glGenTextures(n, textures, getPosition(textures));
 	}
 
 	public int glGetError () {
@@ -138,7 +138,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public void glPolygonOffset (float factor, float units) {
-		GL.glPolygonOffsetEXT(factor, units);
+		GL.glPolygonOffset(factor, units);
 	}
 
 	public void glReadPixels (int x, int y, int width, int height, int format, int type, Buffer pixels) {
@@ -172,7 +172,7 @@ public class JglfwGL20 implements GL20 {
 
 	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
 		Buffer pixels) {
-		GL.glTexSubImage2DEXT(target, level, xoffset, yoffset, width, height, format, type, pixels, getPosition(pixels));
+		GL.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels, getPosition(pixels));
 	}
 
 	public void glViewport (int x, int y, int width, int height) {
@@ -248,15 +248,15 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public void glBindAttribLocation (int program, int index, String name) {
-		GL.glBindAttribLocation(program, index, name); // FIXME
+		GL.glBindAttribLocation(program, index, name);
 	}
 
 	public void glBindFramebuffer (int target, int framebuffer) {
-		GL.glBindFramebuffer(target, framebuffer);
+		GL.glBindFramebufferEXT(target, framebuffer);
 	}
 
 	public void glBindRenderbuffer (int target, int renderbuffer) {
-		GL.glBindRenderbuffer(target, renderbuffer);
+		GL.glBindRenderbufferEXT(target, renderbuffer);
 	}
 
 	public void glBlendColor (float red, float green, float blue, float alpha) {
@@ -276,7 +276,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public int glCheckFramebufferStatus (int target) {
-		return GL.glCheckFramebufferStatus(target);
+		return GL.glCheckFramebufferStatusEXT(target);
 	}
 
 	public void glCompileShader (int shader) {
@@ -292,7 +292,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public void glDeleteFramebuffers (int n, IntBuffer framebuffers) {
-		GL.glDeleteFramebuffers(n, framebuffers, getPosition(framebuffers));
+		GL.glDeleteFramebuffersEXT(n, framebuffers, getPosition(framebuffers));
 	}
 
 	public void glDeleteProgram (int program) {
@@ -300,7 +300,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public void glDeleteRenderbuffers (int n, IntBuffer renderbuffers) {
-		GL.glDeleteRenderbuffers(n, renderbuffers, getPosition(renderbuffers));
+		GL.glDeleteRenderbuffersEXT(n, renderbuffers, getPosition(renderbuffers));
 	}
 
 	public void glDeleteShader (int shader) {
@@ -320,31 +320,31 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public void glFramebufferRenderbuffer (int target, int attachment, int renderbuffertarget, int renderbuffer) {
-		GL.glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
+		GL.glFramebufferRenderbufferEXT(target, attachment, renderbuffertarget, renderbuffer);
 	}
 
 	public void glFramebufferTexture2D (int target, int attachment, int textarget, int texture, int level) {
-		GL.glFramebufferTexture2D(target, attachment, textarget, texture, level);
+		GL.glFramebufferTexture2DEXT(target, attachment, textarget, texture, level);
 	}
 
 	public void glGenerateMipmap (int target) {
-		GL.glGenerateMipmap(target);
+		GL.glGenerateMipmapEXT(target);
 	}
 
 	public void glGenFramebuffers (int n, IntBuffer framebuffers) {
-		GL.glGenFramebuffers(n, framebuffers, getPosition(framebuffers));
+		GL.glGenFramebuffersEXT(n, framebuffers, getPosition(framebuffers));
 	}
 
 	public void glGenRenderbuffers (int n, IntBuffer renderbuffers) {
-		GL.glGenRenderbuffers(n, renderbuffers, getPosition(renderbuffers));
+		GL.glGenRenderbuffersEXT(n, renderbuffers, getPosition(renderbuffers));
 	}
 
 	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
-		return GL.glGetActiveAttrib(program, index, size, size, type); // FIXME
+		return GL.glGetActiveAttrib(program, index, size, getPosition(size), type, getPosition(type));
 	}
 
 	public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type) {
-		return GL.glGetActiveUniform(program, index, size, type); // FIXME
+		return GL.glGetActiveUniform(program, index, size, getPosition(size), type, getPosition(type));
 	}
 
 	public void glGetAttachedShaders (int program, int maxcount, Buffer count, IntBuffer shaders) {
@@ -352,7 +352,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public int glGetAttribLocation (int program, String name) {
-		return GL.glGetAttribLocation(program, name); // FIXME
+		return GL.glGetAttribLocation(program, name);
 	}
 
 	public void glGetBooleanv (int pname, Buffer params) {
@@ -360,7 +360,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public void glGetFramebufferAttachmentParameteriv (int target, int attachment, int pname, IntBuffer params) {
-		GL.glGetFramebufferAttachmentParameteriv(target, attachment, pname, params, getPosition(params));
+		GL.glGetFramebufferAttachmentParameterivEXT(target, attachment, pname, params, getPosition(params));
 	}
 
 	public void glGetProgramiv (int program, int pname, IntBuffer params) {
@@ -368,11 +368,11 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public String glGetProgramInfoLog (int program) {
-		return GL.glGetProgramInfoLog(program); // FIXME
+		return GL.glGetProgramInfoLog(program);
 	}
 
 	public void glGetRenderbufferParameteriv (int target, int pname, IntBuffer params) {
-		GL.glGetRenderbufferParameteriv(target, pname, params, getPosition(params));
+		GL.glGetRenderbufferParameterivEXT(target, pname, params, getPosition(params));
 	}
 
 	public void glGetShaderiv (int shader, int pname, IntBuffer params) {
@@ -380,7 +380,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public String glGetShaderInfoLog (int shader) {
-		return GL.glGetShaderInfoLog(shader); // FIXME
+		return GL.glGetShaderInfoLog(shader);
 	}
 
 	public void glGetShaderPrecisionFormat (int shadertype, int precisiontype, IntBuffer range, IntBuffer precision) {
@@ -388,7 +388,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public void glGetShaderSource (int shader, int bufsize, Buffer length, String source) {
-		GL.glGetShaderSource(shader, bufsize, length, getPosition(length), source); // FIXME
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	public void glGetUniformfv (int program, int location, FloatBuffer params) {
@@ -400,7 +400,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public int glGetUniformLocation (int program, String name) {
-		return GL.glGetUniformLocation(program, name); // FIXME
+		return GL.glGetUniformLocation(program, name);
 	}
 
 	public void glGetVertexAttribfv (int index, int pname, FloatBuffer params) {
@@ -416,7 +416,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public boolean glIsFramebuffer (int framebuffer) {
-		return GL.glIsFramebuffer(framebuffer);
+		return GL.glIsFramebufferEXT(framebuffer);
 	}
 
 	public boolean glIsProgram (int program) {
@@ -424,7 +424,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public boolean glIsRenderbuffer (int renderbuffer) {
-		return GL.glIsRenderbuffer(renderbuffer);
+		return GL.glIsRenderbufferEXT(renderbuffer);
 	}
 
 	public boolean glIsShader (int shader) {
@@ -440,7 +440,7 @@ public class JglfwGL20 implements GL20 {
 	}
 
 	public void glRenderbufferStorage (int target, int internalformat, int width, int height) {
-		GL.glRenderbufferStorage(target, internalformat, width, height);
+		GL.glRenderbufferStorageEXT(target, internalformat, width, height);
 	}
 
 	public void glSampleCoverage (float value, boolean invert) {
