@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.jglfw.GlfwCallbackAdapter;
+import com.badlogic.jglfw.GlfwCallbacks;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +34,7 @@ public class JglfwApplication implements Application {
 	final Array<LifecycleListener> lifecycleListeners = new Array();
 	final Map<String, Preferences> preferences = new HashMap();
 	final JglfwClipboard clipboard = new JglfwClipboard();
+	final GlfwCallbacks callbacks = new GlfwCallbacks();
 	boolean running = true;
 	int logLevel = LOG_INFO;
 
@@ -53,7 +56,7 @@ public class JglfwApplication implements Application {
 		this(listener, new JglfwApplicationConfiguration());
 	}
 
-	public JglfwApplication (ApplicationListener listener, JglfwApplicationConfiguration config) {
+	public JglfwApplication (final ApplicationListener listener, JglfwApplicationConfiguration config) {
 		this.listener = listener;
 		this.config = config;
 
@@ -63,8 +66,41 @@ public class JglfwApplication implements Application {
 		Gdx.app = this;
 		Gdx.graphics = graphics = new JglfwGraphics(config);
 		Gdx.files = files = new JglfwFiles();
-		Gdx.input = input = new JglfwInput(graphics);
+		Gdx.input = input = new JglfwInput(this);
 		Gdx.net = net = new JglfwNet();
+
+		glfwSetCallback(callbacks);
+		callbacks.add(new GlfwCallbackAdapter() {
+			public void windowSize (long window, int width, int height) {
+				Gdx.gl.glViewport(0, 0, width, height);
+				if (listener != null) listener.resize(width, height);
+				graphics.requestRendering();
+			}
+
+			public void windowRefresh (long window) {
+				renderFrame();
+			}
+
+			public void windowPos (long window, int x, int y) {
+			}
+
+			public void windowIconify (long window, boolean iconified) {
+			}
+
+			public void windowFocus (long window, boolean focused) {
+			}
+
+			public boolean windowClose (long window) {
+				return true;
+			}
+
+			public void monitor (long monitor, boolean connected) {
+			}
+
+			public void error (int error, String description) {
+				throw new GdxRuntimeException("GLFW error " + error + ": " + description);
+			}
+		});
 
 		mainLoop();
 	}
@@ -72,57 +108,31 @@ public class JglfwApplication implements Application {
 	private void mainLoop () {
 		listener.create();
 		listener.resize(graphics.getWidth(), graphics.getHeight());
-		graphics.resize = false;
-
-		int lastWidth = graphics.getWidth();
-		int lastHeight = graphics.getHeight();
 
 		graphics.lastTime = System.nanoTime();
 		while (running) {
 			if (glfwWindowShouldClose(graphics.window)) exit();
-
-			graphics.config.x = glfwGetWindowX(graphics.window);
-			graphics.config.y = glfwGetWindowY(graphics.window);
-			int width = glfwGetWindowWidth(graphics.window);
-			int height = glfwGetWindowHeight(graphics.window);
-			if (graphics.resize || width != graphics.config.width || height != graphics.config.height) {
-				graphics.resize = false;
-				Gdx.gl.glViewport(0, 0, width, height);
-				graphics.config.width = width;
-				graphics.config.height = height;
-				if (listener != null) listener.resize(width, height);
-				graphics.requestRendering();
-			}
 
 			synchronized (runnables) {
 				executedRunnables.clear();
 				executedRunnables.addAll(runnables);
 				runnables.clear();
 			}
-
-			boolean shouldRender = false;
-			for (int i = 0; i < executedRunnables.size; i++) {
-				shouldRender = true;
-				executedRunnables.get(i).run(); // calls out to random app code that could do anything ...
+			if (executedRunnables.size > 0) {
+				for (int i = 0; i < executedRunnables.size; i++)
+					executedRunnables.get(i).run();
+				if (!running) break;
+				graphics.requestRendering();
 			}
 
-			// If one of the runnables set running to false, for example after an exit().
+			input.update();
 			if (!running) break;
 
-			glfwPollEvents();
-			shouldRender |= graphics.shouldRender();
-
-			// If input processing set running to false.
-			if (!running) break;
-
-			if (shouldRender) {
-				graphics.updateTime();
-				listener.render();
-				glfwSwapBuffers(graphics.window);
-			} else {
-				// Avoid burning CPU when not rendering.
+			if (graphics.shouldRender())
+				renderFrame();
+			else {
 				try {
-					Thread.sleep(16);
+					Thread.sleep(16); // Avoid wasting CPU when not rendering.
 				} catch (InterruptedException ignored) {
 				}
 			}
@@ -139,6 +149,12 @@ public class JglfwApplication implements Application {
 		listener.dispose();
 		glfwDestroyWindow(graphics.window);
 		if (graphics.config.forceExit) System.exit(-1);
+	}
+
+	void renderFrame () {
+		graphics.updateTime();
+		listener.render();
+		glfwSwapBuffers(graphics.window);
 	}
 
 	public ApplicationListener getApplicationListener () {
@@ -258,5 +274,9 @@ public class JglfwApplication implements Application {
 		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
 		}
+	}
+
+	public GlfwCallbacks getCallbacks () {
+		return callbacks;
 	}
 }

@@ -39,7 +39,6 @@ public class JglfwGraphics implements Graphics {
 	JglfwGL20 gl20;
 
 	boolean sync;
-	boolean resize;
 	volatile boolean requestRendering;
 
 	public JglfwGraphics (JglfwApplicationConfiguration config) {
@@ -47,11 +46,6 @@ public class JglfwGraphics implements Graphics {
 
 		bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples, false);
 
-		createWindow();
-		createGL();
-	}
-
-	private void createWindow () {
 		long fullscreenMonitor = glfwGetPrimaryMonitor();
 		long[] monitors = glfwGetMonitors();
 		// Find index of primary monitor.
@@ -70,20 +64,17 @@ public class JglfwGraphics implements Graphics {
 		}
 
 		// Create window.
-		if (!setDisplayMode(config.width, config.height, config.fullscreen)) {
+		if (!createWindow(config.width, config.height, config.fullscreen)) {
 			throw new GdxRuntimeException("Unable to create window: " + config.width + "x" + config.height + ", fullscreen: "
 				+ config.fullscreen);
 		}
-
-		setVSync(config.vSync);
 		if (config.x != -1 && config.y != -1) glfwSetWindowPos(window, config.x, config.y);
-	}
+		setVSync(config.vSync);
 
-	private void createGL () {
+		// Create GL.
 		String version = GL.glGetString(GL11.GL_VERSION);
 		glMajorVersion = Integer.parseInt("" + version.charAt(0));
 		glMinorVersion = Integer.parseInt("" + version.charAt(2));
-
 		if (config.useGL20 && (glMajorVersion >= 2 || version.contains("2.1"))) { // special case for MESA, wtf...
 			// FIXME - Add check for whether GL 2.0 is actually supported.
 			gl20 = new JglfwGL20();
@@ -98,7 +89,6 @@ public class JglfwGraphics implements Graphics {
 			}
 			gl = gl10;
 		}
-
 		Gdx.gl = gl;
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;
@@ -213,44 +203,51 @@ public class JglfwGraphics implements Graphics {
 
 	public boolean setDisplayMode (DisplayMode displayMode) {
 		if (displayMode.bitsPerPixel != 0) glfwWindowHint(GLFW_DEPTH_BITS, displayMode.bitsPerPixel);
+		if (displayMode.bitsPerPixel != 0 || config.fullscreen)
+			return createWindow(displayMode.width, displayMode.height, config.fullscreen);
+
 		glfwSetWindowSize(window, displayMode.width, displayMode.height);
 		return true;
 	}
 
 	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
-		if (window == 0 || fullscreen != config.fullscreen) {
-			long fullscreenMonitor = 0;
-			if (fullscreen) {
-				long[] monitors = glfwGetMonitors();
-				if (monitors.length > 0)
-					fullscreenMonitor = fullscreenMonitorIndex < monitors.length ? monitors[fullscreenMonitorIndex] : 0;
-			}
+		if (window == 0 || fullscreen != config.fullscreen || config.fullscreen) return createWindow(width, height, fullscreen);
 
-			// need to set the window hints every time we create a window, glfwCreateWindow resets them.
-			glfwWindowHint(GLFW_RESIZABLE, config.resizable ? 1 : 0);
-			glfwWindowHint(GLFW_RED_BITS, config.r);
-			glfwWindowHint(GLFW_GREEN_BITS, config.g);
-			glfwWindowHint(GLFW_BLUE_BITS, config.b);
-			glfwWindowHint(GLFW_ALPHA_BITS, config.a);
-			glfwWindowHint(GLFW_DEPTH_BITS, config.depth);
-			glfwWindowHint(GLFW_STENCIL_BITS, config.stencil);
-			glfwWindowHint(GLFW_SAMPLES, config.samples);
-			glfwWindowHint(GLFW_DEPTH_BITS, config.bitsPerPixel);
-
-			// share old window if any, so context service
-			long window = glfwCreateWindow(config.width, config.height, config.title, fullscreenMonitor, this.window);
-			if (window == 0) return false;
-			if (this.window != 0) glfwDestroyWindow(window);
-			glfwMakeContextCurrent(window);
-			this.window = window;
-			return true;
-		}
 		glfwSetWindowSize(window, width, height);
+		return true;
+	}
+
+	private boolean createWindow (int width, int height, boolean fullscreen) {
+		long fullscreenMonitor = 0;
+		if (fullscreen) {
+			long[] monitors = glfwGetMonitors();
+			if (monitors.length > 0)
+				fullscreenMonitor = fullscreenMonitorIndex < monitors.length ? monitors[fullscreenMonitorIndex] : 0;
+		}
+
+		glfwWindowHint(GLFW_RESIZABLE, config.resizable ? 1 : 0);
+		glfwWindowHint(GLFW_RED_BITS, config.r);
+		glfwWindowHint(GLFW_GREEN_BITS, config.g);
+		glfwWindowHint(GLFW_BLUE_BITS, config.b);
+		glfwWindowHint(GLFW_ALPHA_BITS, config.a);
+		glfwWindowHint(GLFW_DEPTH_BITS, config.depth);
+		glfwWindowHint(GLFW_STENCIL_BITS, config.stencil);
+		glfwWindowHint(GLFW_SAMPLES, config.samples);
+		glfwWindowHint(GLFW_DEPTH_BITS, config.bitsPerPixel);
+
+		long oldWindow = window;
+		long newWindow = glfwCreateWindow(width, height, config.title, fullscreenMonitor, oldWindow);
+		if (newWindow == 0) return false;
+		if (oldWindow != 0) glfwDestroyWindow(oldWindow);
+		glfwMakeContextCurrent(newWindow);
+		window = newWindow;
+		config.fullscreen = fullscreen;
 		return true;
 	}
 
 	public void setTitle (String title) {
 		glfwSetWindowTitle(window, title);
+		config.title = title;
 	}
 
 	public void setVSync (boolean vsync) {
