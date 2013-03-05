@@ -17,7 +17,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glBindTexture (int target, int texture) {
-		GL.glBindTextureEXT(target, texture);
+		GL.glBindTexture(target, texture);
 	}
 
 	public void glBlendFunc (int sfactor, int dfactor) {
@@ -55,11 +55,11 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glCopyTexImage2D (int target, int level, int internalformat, int x, int y, int width, int height, int border) {
-		GL.glCopyTexImage2DEXT(target, level, internalformat, x, y, width, height, border);
+		GL.glCopyTexImage2D(target, level, internalformat, x, y, width, height, border);
 	}
 
 	public void glCopyTexSubImage2D (int target, int level, int xoffset, int yoffset, int x, int y, int width, int height) {
-		GL.glCopyTexSubImage2DEXT(target, level, xoffset, yoffset, x, y, width, height);
+		GL.glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
 	}
 
 	public void glCullFace (int mode) {
@@ -67,7 +67,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glDeleteTextures (int n, IntBuffer textures) {
-		GL.glDeleteTexturesEXT(n, textures, getPosition(textures));
+		GL.glDeleteTextures(n, textures, getPosition(textures));
 	}
 
 	public void glDepthFunc (int func) {
@@ -87,7 +87,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glDrawArrays (int mode, int first, int count) {
-		GL.glDrawArraysEXT(mode, first, count);
+		GL.glDrawArrays(mode, first, count);
 	}
 
 	public void glDrawElements (int mode, int count, int type, Buffer indices) {
@@ -111,7 +111,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glGenTextures (int n, IntBuffer textures) {
-		GL.glGenTexturesEXT(n, textures, getPosition(textures));
+		GL.glGenTextures(n, textures, getPosition(textures));
 	}
 
 	public int glGetError () {
@@ -139,7 +139,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glPolygonOffset (float factor, float units) {
-		GL.glPolygonOffsetEXT(factor, units);
+		GL.glPolygonOffset(factor, units);
 	}
 
 	public void glReadPixels (int x, int y, int width, int height, int format, int type, Buffer pixels) {
@@ -173,7 +173,7 @@ public class JglfwGL10 implements GL10 {
 
 	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
 		Buffer pixels) {
-		GL.glTexSubImage2DEXT(target, level, xoffset, yoffset, width, height, format, type, pixels, getPosition(pixels));
+		GL.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels, getPosition(pixels));
 	}
 
 	public void glViewport (int x, int y, int width, int height) {
@@ -225,7 +225,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glGenTextures (int n, int[] textures, int offset) {
-		GL.glGenTexturesEXT(n, toBuffer(textures, offset), 0);
+		GL.glGenTextures(n, toBuffer(textures, offset), 0);
 	}
 
 	public void glGetIntegerv (int pname, int[] params, int offset) {
