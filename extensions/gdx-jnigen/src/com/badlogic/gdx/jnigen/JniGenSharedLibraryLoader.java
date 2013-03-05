@@ -25,7 +25,7 @@ public class JniGenSharedLibraryLoader {
 	public JniGenSharedLibraryLoader () {
 	}
 
-	/** Fetches the natives from the given natives jar file. Used for testing a shared lib on the fly, see {@link MyJniClass}.
+	/** Fetches the natives from the given natives jar file. Used for testing a shared lib on the fly, see MyJniClass.
 	 * @param nativesJar */
 	public JniGenSharedLibraryLoader (String nativesJar) {
 		this.nativesJar = nativesJar;

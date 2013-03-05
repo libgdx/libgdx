@@ -107,7 +107,7 @@ public class GamepadTest extends GdxTest {
 		});
 	}
 	
-	private void print(String message) {
+	void print(String message) {
 		String[] lines = console.getItems();
 		String[] newLines = new String[lines.length + 1];
 		System.arraycopy(lines, 0, newLines, 0, lines.length);
@@ -118,7 +118,7 @@ public class GamepadTest extends GdxTest {
 		scrollPane.setScrollPercentY(1.0f);
 	}
 	
-	private void clear() {
+	void clear() {
 		console.setItems(new Object[0]);
 	}
 

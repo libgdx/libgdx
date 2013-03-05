@@ -48,7 +48,7 @@ public class IOSSound implements Sound {
 	private int playerIndex;
 	
 	// one single thread will play sounds outside the rendering low (otherwise our FPS drops!)
-	private static class PlayThread extends Thread {
+	static class PlayThread extends Thread {
 		@Override
 		public void run () {
 			Gdx.app.debug("IOSSound", "Sound player is running.");
@@ -67,7 +67,7 @@ public class IOSSound implements Sound {
 	}
 	private static PlayThread playThread = null;
 	private static int soundCounter = 0;
-	private static final LinkedBlockingQueue<AVAudioPlayer> playQueue = new LinkedBlockingQueue<AVAudioPlayer>();
+	static final LinkedBlockingQueue<AVAudioPlayer> playQueue = new LinkedBlockingQueue<AVAudioPlayer>();
 	
 	/**
 	 * Creates a new sound object. We are creating several AVAudioPlayer objects to
