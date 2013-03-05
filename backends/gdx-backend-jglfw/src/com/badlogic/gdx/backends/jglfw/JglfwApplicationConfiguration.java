@@ -31,4 +31,6 @@ public class JglfwApplicationConfiguration {
 	public boolean useGL20 = false;
 	/** whether to call System.exit() when the main loop exits **/
 	public boolean forceExit = true;
+	
+	// FIXME add methods to allow enumeration of monitors/display modes before creating the application
 }

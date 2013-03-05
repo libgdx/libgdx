@@ -58,6 +58,8 @@ public class JglfwInput implements Input {
 			}
 
 			public void character (long window, char character) {
+				// FIXME controll chars like backspace aren't reported by this callback but
+				// key instead
 				lastCharacter = character;
 				if (processor != null) processor.keyTyped(character);
 				app.graphics.requestRendering();
@@ -71,6 +73,7 @@ public class JglfwInput implements Input {
 			public void mouseButton (long window, int button, boolean pressed) {
 				if (pressed) {
 					mousePressed++;
+					justTouched = true;
 					if (processor != null) processor.touchDown(mouseX, mouseY, 0, button);
 					justTouched = true;
 				} else {
