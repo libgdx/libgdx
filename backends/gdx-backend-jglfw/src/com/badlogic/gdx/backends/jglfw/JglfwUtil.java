@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Arrays;
 
 class JglfwUtil {
 	static private ByteBuffer buffer = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder());
@@ -43,4 +44,20 @@ class JglfwUtil {
 		bufferFloat.put(src, offset, n);
 		return bufferFloat;
 	}
+	
+	static void toArray(ByteBuffer src, boolean[] dst, int offset) {
+		for(int i = 0; i < dst.length - offset; i++) {
+			dst[i + offset] = src.get(i) != 0;
+		}
+	}
+	
+	static void toArray(IntBuffer src, int[] dst, int offset) {
+		src.position(0);
+		src.get(dst, offset, dst.length - offset);
+	}
+	
+	static void toArray(FloatBuffer src, float[] dst, int offset) {
+		src.position(0);
+		src.get(dst, offset, dst.length - offset);
+	}	
 }

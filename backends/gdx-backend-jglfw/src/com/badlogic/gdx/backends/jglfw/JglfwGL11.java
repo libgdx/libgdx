@@ -4,13 +4,14 @@ package com.badlogic.gdx.backends.jglfw;
 import static com.badlogic.gdx.backends.jglfw.JglfwUtil.*;
 import static com.badlogic.jglfw.utils.Memory.*;
 
+import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.jglfw.gl.GL;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-public class JglfwGL11 extends JglfwGL10 {
+public class JglfwGL11 extends JglfwGL10 implements GL11 {
 	public void glClipPlanef (int plane, float[] equation, int offset) {
 		GL.glClipPlane(plane, toBuffer(equation, offset), 0);
 	}
