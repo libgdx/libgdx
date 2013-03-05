@@ -20,7 +20,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -136,9 +135,6 @@ public interface Graphics {
 
 	/** @return the {@link GL20} instance or null if not supported */
 	public GL20 getGL20 ();
-
-	/** @return the {@link GLU} instance */
-	public GLU getGLU ();
 
 	/** @return the width in pixels of the display surface */
 	public int getWidth ();

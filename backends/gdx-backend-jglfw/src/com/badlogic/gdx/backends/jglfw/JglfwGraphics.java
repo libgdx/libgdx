@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.jglfw.gl.GL;
@@ -38,7 +37,6 @@ public class JglfwGraphics implements Graphics {
 	JglfwGL10 gl10;
 	JglfwGL11 gl11;
 	JglfwGL20 gl20;
-	JglfwGLU glu;
 
 	boolean sync;
 	boolean resize;
@@ -115,7 +113,6 @@ public class JglfwGraphics implements Graphics {
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;
 		Gdx.gl20 = gl20;
-		Gdx.glu = glu = new JglfwGLU();
 	}
 
 	public boolean isGL11Available () {
@@ -140,10 +137,6 @@ public class JglfwGraphics implements Graphics {
 
 	public GL20 getGL20 () {
 		return gl20;
-	}
-
-	public GLU getGLU () {
-		return glu;
 	}
 
 	public int getWidth () {
@@ -231,6 +224,7 @@ public class JglfwGraphics implements Graphics {
 	public boolean setDisplayMode (DisplayMode displayMode) {
 		if (displayMode.bitsPerPixel != 0) glfwWindowHint(GLFW_DEPTH_BITS, displayMode.bitsPerPixel);
 		glfwSetWindowSize(window, displayMode.width, displayMode.height);
+		return true;
 	}
 
 	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
