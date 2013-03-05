@@ -1,5 +1,5 @@
 /*
-	huffman.h: huffman tables ... recalcualted to work with optimzed decoder scheme (MH)
+	huffman.h: huffman tables ... recalcualted to work with optimized decoder scheme (MH)
 
 	copyright ?-2006 by the mpg123 project - free software under the terms of the LGPL 2.1
 	see COPYING and AUTHORS files in distribution or http://mpg123.org
@@ -16,46 +16,46 @@
 struct newhuff 
 {
   unsigned int linbits;
-  short *table;
+  const short *table;
 };
 
-static short tab0[] = 
+static const short tab0[] = 
 { 
    0
 };
 
-static short tab1[] =
+static const short tab1[] =
 {
   -5,  -3,  -1,  17,   1,  16,   0
 };
 
-static short tab2[] =
+static const short tab2[] =
 {
  -15, -11,  -9,  -5,  -3,  -1,  34,   2,  18,  -1,  33,  32,  17,  -1,   1,
   16,   0
 };
 
-static short tab3[] =
+static const short tab3[] =
 {
  -13, -11,  -9,  -5,  -3,  -1,  34,   2,  18,  -1,  33,  32,  16,  17,  -1,
    1,   0
 };
 
-static short tab5[] =
+static const short tab5[] =
 {
  -29, -25, -23, -15,  -7,  -5,  -3,  -1,  51,  35,  50,  49,  -3,  -1,  19,
    3,  -1,  48,  34,  -3,  -1,  18,  33,  -1,   2,  32,  17,  -1,   1,  16,
    0
 };
 
-static short tab6[] =
+static const short tab6[] =
 {
  -25, -19, -13,  -9,  -5,  -3,  -1,  51,   3,  35,  -1,  50,  48,  -1,  19,
   49,  -3,  -1,  34,   2,  18,  -3,  -1,  33,  32,   1,  -1,  17,  -1,  16,
    0
 };
 
-static short tab7[] =
+static const short tab7[] =
 {
  -69, -65, -57, -39, -29, -17, -11,  -7,  -3,  -1,  85,  69,  -1,  84,  83,
   -1,  53,  68,  -3,  -1,  37,  82,  21,  -5,  -1,  81,  -1,   5,  52,  -1,
@@ -64,7 +64,7 @@ static short tab7[] =
   -5,  -1,  33,  -1,   2,  32,  17,  -1,   1,  16,   0
 };
 
-static short tab8[] =
+static const short tab8[] =
 {
  -65, -63, -59, -45, -31, -19, -13,  -7,  -5,  -3,  -1,  85,  84,  69,  83,
   -3,  -1,  53,  68,  37,  -3,  -1,  82,   5,  21,  -5,  -1,  81,  -1,  52,
@@ -73,7 +73,7 @@ static short tab8[] =
    2,  32,  -1,  18,  33,  17,  -3,  -1,   1,  16,   0
 };
 
-static short tab9[] =
+static const short tab9[] =
 {
  -63, -53, -41, -29, -19, -11,  -5,  -3,  -1,  85,  69,  53,  -1,  83,  -1,
   84,   5,  -3,  -1,  68,  37,  -1,  82,  21,  -3,  -1,  81,  52,  -1,  67,
@@ -82,7 +82,7 @@ static short tab9[] =
   18,  -1,  33,  32,  -3,  -1,  17,   1,  -1,  16,   0
 };
 
-static short tab10[] =
+static const short tab10[] =
 {
 -125,-121,-111, -83, -55, -35, -21, -13,  -7,  -3,  -1, 119, 103,  -1, 118,
   87,  -3,  -1, 117, 102,  71,  -3,  -1, 116,  86,  -1, 101,  55,  -9,  -3,
@@ -95,7 +95,7 @@ static short tab10[] =
    2,  32,  17,  -1,   1,  16,   0
 };
 
-static short tab11[] =
+static const short tab11[] =
 {
 -121,-113, -89, -59, -43, -27, -17,  -7,  -3,  -1, 119, 103,  -1, 118, 117,
   -3,  -1, 102,  71,  -1, 116,  -1,  87,  85,  -5,  -3,  -1,  86, 101,  55,
@@ -108,7 +108,7 @@ static short tab11[] =
   32,  17,  -3,  -1,   1,  16,   0
 };
 
-static short tab12[] =
+static const short tab12[] =
 {
 -115, -99, -73, -45, -27, -17,  -9,  -5,  -3,  -1, 119, 103, 118,  -1,  87,
  117,  -3,  -1, 102,  71,  -1, 116, 101,  -3,  -1,  86,  55,  -3,  -1, 115,
@@ -121,7 +121,7 @@ static short tab12[] =
    2,  32,   0,  17,  -1,   1,  16
 };
 
-static short tab13[] =
+static const short tab13[] =
 {
 -509,-503,-475,-405,-333,-265,-205,-153,-115, -83, -53, -35, -21, -13,  -9,
   -7,  -5,  -3,  -1, 254, 252, 253, 237, 255,  -1, 239, 223,  -3,  -1, 238,
@@ -160,7 +160,7 @@ static short tab13[] =
    0
 };
 
-static short tab15[] =
+static const short tab15[] =
 {
 -495,-445,-355,-263,-183,-115, -77, -43, -27, -13,  -7,  -3,  -1, 255, 239,
   -1, 254, 223,  -1, 238,  -1, 253, 207,  -7,  -3,  -1, 252, 222,  -1, 237,
@@ -199,7 +199,7 @@ static short tab15[] =
    0
 };
 
-static short tab16[] =
+static const short tab16[] =
 {
 -509,-503,-461,-323,-103, -37, -27, -15,  -7,  -3,  -1, 239, 254,  -1, 223,
  253,  -3,  -1, 207, 252,  -1, 191, 251,  -5,  -1, 175,  -1, 250, 159,  -3,
@@ -238,7 +238,7 @@ static short tab16[] =
    0
 };
 
-static short tab24[] =
+static const short tab24[] =
 {
 -451,-117, -43, -25, -15,  -7,  -3,  -1, 239, 254,  -1, 223, 253,  -3,  -1,
  207, 252,  -1, 191, 251,  -5,  -1, 250,  -1, 175, 159,  -1, 249, 248,  -9,
@@ -277,14 +277,14 @@ static short tab24[] =
    0
 };
 
-static short tab_c0[] =
+static const short tab_c0[] =
 {
  -29, -21, -13,  -7,  -3,  -1,  11,  15,  -1,  13,  14,  -3,  -1,   7,   5,
    9,  -3,  -1,   6,   3,  -1,  10,  12,  -3,  -1,   2,   1,  -1,   4,   8,
    0
 };
 
-static short tab_c1[] =
+static const short tab_c1[] =
 {
  -15,  -7,  -3,  -1,  15,  14,  -1,  13,  12,  -3,  -1,  11,  10,  -1,   9,
    8,  -7,  -3,  -1,   7,   6,  -1,   5,   4,  -3,  -1,   3,   2,  -1,   1,
@@ -293,7 +293,7 @@ static short tab_c1[] =
 
 
 
-static struct newhuff ht[] = 
+static const struct newhuff ht[] = 
 {
  { /* 0 */ 0 , tab0  } ,
  { /* 2 */ 0 , tab1  } ,
@@ -330,7 +330,7 @@ static struct newhuff ht[] =
  { /* 16 */ 13, tab24 }
 };
 
-static struct newhuff htc[] = 
+static const struct newhuff htc[] = 
 {
  { /* 1 , 1 , */ 0 , tab_c0 } ,
  { /* 1 , 1 , */ 0 , tab_c1 }

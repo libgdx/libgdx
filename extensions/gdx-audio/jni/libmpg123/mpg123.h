@@ -12,7 +12,7 @@
 
 /* A macro to check at compile time which set of API functions to expect.
    This should be incremented at least each time a new symbol is added to the header. */
-#define MPG123_API_VERSION 33
+#define MPG123_API_VERSION @API_VERSION@
 
 /* These aren't actually in use... seems to work without using libtool. */
 #ifdef BUILD_MPG123_DLL
@@ -138,7 +138,7 @@ EXPORT void mpg123_delete(mpg123_handle *mh);
 /** Enumeration of the parameters types that it is possible to set/get. */
 enum mpg123_parms
 {
-	MPG123_VERBOSE,        /**< set verbosity value for enabling messages to stderr, >= 0 makes sense (integer) */
+	MPG123_VERBOSE = 0,        /**< set verbosity value for enabling messages to stderr, >= 0 makes sense (integer) */
 	MPG123_FLAGS,          /**< set all flags, p.ex val = MPG123_GAPLESS|MPG123_MONO_MIX (integer) */
 	MPG123_ADD_FLAGS,      /**< add some flags (integer) */
 	MPG123_FORCE_RATE,     /**< when value > 0, force output rate to that value (integer) */
@@ -152,7 +152,7 @@ enum mpg123_parms
 	MPG123_OUTSCALE,       /**< the scale for output samples (amplitude - integer or float according to mpg123 output format, normally integer) */
 	MPG123_TIMEOUT,        /**< timeout for reading from a stream (not supported on win32, integer) */
 	MPG123_REMOVE_FLAGS,   /**< remove some flags (inverse of MPG123_ADD_FLAGS, integer) */
-	MPG123_RESYNC_LIMIT,   /**< Try resync on frame parsing for that many bytes or until end of stream (<0 ... integer). */
+	MPG123_RESYNC_LIMIT,   /**< Try resync on frame parsing for that many bytes or until end of stream (<0 ... integer). This can enlarge the limit for skipping junk on beginning, too (but not reduce it).  */
 	MPG123_INDEX_SIZE      /**< Set the frame index size (if supported). Values <0 mean that the index is allowed to grow dynamically in these steps (in positive direction, of course) -- Use this when you really want a full index with every individual frame. */
 	,MPG123_PREFRAMES /**< Decode/ignore that many frames in advance for layer 3. This is needed to fill bit reservoir after seeking, for example (but also at least one frame in advance is needed to have all "normal" data for layer 3). Give a positive integer value, please.*/
 	,MPG123_FEEDPOOL  /**< For feeder mode, keep that many buffers in a pool to avoid frequent malloc/free. The pool is allocated on mpg123_open_feed(). If you change this parameter afterwards, you can trigger growth and shrinkage during decoding. The default value could change any time. If you care about this, then set it. (integer) */
@@ -178,6 +178,7 @@ enum mpg123_param_flags
 	,MPG123_IGNORE_STREAMLENGTH = 0x1000 /**< 1000000000000 Ignore any stream length information contained in the stream, which can be contained in a 'TLEN' frame of an ID3v2 tag or a Xing tag */
 	,MPG123_SKIP_ID3V2 = 0x2000 /**< 10 0000 0000 0000 Do not parse ID3v2 tags, just skip them. */
 	,MPG123_IGNORE_INFOFRAME = 0x4000 /**< 100 0000 0000 0000 Do not parse the LAME/Xing info frame, treat it as normal MPEG data. */
+	,MPG123_AUTO_RESAMPLE = 0x8000 /**< 1000 0000 0000 0000 Allow automatic internal resampling of any kind (default on if supported). Especially when going lowlevel with replacing output buffer, you might want to unset this flag. Setting MPG123_DOWNSAMPLE or MPG123_FORCE_RATE will override this. */
 };
 
 /** choices for MPG123_RVA */
@@ -767,6 +768,7 @@ enum mpg123_state
 {
 	 MPG123_ACCURATE = 1 /**< Query if positons are currently accurate (integer value, 0 if false, 1 if true) */
 	,MPG123_BUFFERFILL   /**< Get fill of internal (feed) input buffer as integer byte count returned as long and as double. An error is returned on integer overflow while converting to (signed) long, but the returned floating point value shold still be fine. */
+	,MPG123_FRANKENSTEIN /**< Stream consists of carelessly stitched together files (the leading one featuring gapless info).  */
 };
 
 /** Get various current decoder/stream state information.
@@ -844,6 +846,12 @@ EXPORT int  mpg123_set_substring(mpg123_string *sb, const char *stuff, size_t fr
  *  Even with the fill property, the character count is not obvious as there could be multiple trailing null bytes.
 */
 EXPORT size_t mpg123_strlen(mpg123_string *sb, int utf8);
+
+/** Remove trailing \r and \n, if present.
+ *  \return 0 on error, 1 on success
+ *  \param sb the string
+ */
+EXPORT int mpg123_chomp_string(mpg123_string *sb);
 
 /** The mpg123 text encodings. This contains encodings we encounter in ID3 tags or ICY meta info. */
 enum mpg123_text_encoding
@@ -949,6 +957,9 @@ typedef struct
 /** Query if there is (new) meta info, be it ID3 or ICY (or something new in future).
    The check function returns a combination of flags. */
 EXPORT int mpg123_meta_check(mpg123_handle *mh); /* On error (no valid handle) just 0 is returned. */
+
+/** Clean up meta data storage (ID3v2 and ICY), freeing memory. */
+EXPORT void mpg123_meta_free(mpg123_handle *mh);
 
 /** Point v1 and v2 to existing data structures wich may change on any next read/decode function call.
  *  v1 and/or v2 can be set to NULL when there is no corresponding data.

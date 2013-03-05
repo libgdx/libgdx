@@ -36,11 +36,11 @@ static void *align_the_pointer(void *base, unsigned int alignment)
 static void frame_default_pars(mpg123_pars *mp)
 {
 	mp->outscale = 1.0;
-#ifdef GAPLESS
-	mp->flags = MPG123_GAPLESS;
-#else
 	mp->flags = 0;
+#ifdef GAPLESS
+	mp->flags |= MPG123_GAPLESS;
 #endif
+	mp->flags |= MPG123_AUTO_RESAMPLE;
 #ifndef NO_NTOM
 	mp->force_rate = 0;
 #endif
@@ -73,8 +73,11 @@ void frame_init(mpg123_handle *fr)
 
 void frame_init_par(mpg123_handle *fr, mpg123_pars *mp)
 {
-	fr->own_buffer = FALSE;
+	fr->own_buffer = TRUE;
 	fr->buffer.data = NULL;
+	fr->buffer.rdata = NULL;
+	fr->buffer.fill = 0;
+	fr->buffer.size = 0;
 	fr->rawbuffs = NULL;
 	fr->rawbuffss = 0;
 	fr->rawdecwin = NULL;
@@ -172,34 +175,51 @@ int attribute_align_arg mpg123_reset_eq(mpg123_handle *mh)
 
 int frame_outbuffer(mpg123_handle *fr)
 {
-	size_t size = mpg123_safe_buffer()*AUDIOBUFSIZE;
-	if(!fr->own_buffer) fr->buffer.data = NULL;
-	if(fr->buffer.data != NULL && fr->buffer.size != size)
+	size_t size = fr->outblock;
+	if(!fr->own_buffer)
 	{
-		free(fr->buffer.data);
-		fr->buffer.data = NULL;
+		if(fr->buffer.size < size)
+		{
+			fr->err = MPG123_BAD_BUFFER;
+			if(NOQUIET) error2("have external buffer of size %"SIZE_P", need %"SIZE_P, (size_p)fr->buffer.size, size);
+
+			return MPG123_ERR;
+		}
+	}
+
+	debug1("need frame buffer of %"SIZE_P, (size_p)size);
+	if(fr->buffer.rdata != NULL && fr->buffer.size != size)
+	{
+		free(fr->buffer.rdata);
+		fr->buffer.rdata = NULL;
 	}
 	fr->buffer.size = size;
-	if(fr->buffer.data == NULL) fr->buffer.data = (unsigned char*) malloc(fr->buffer.size);
-	if(fr->buffer.data == NULL)
+	fr->buffer.data = NULL;
+	/* be generous: use 16 byte alignment */
+	if(fr->buffer.rdata == NULL) fr->buffer.rdata = (unsigned char*) malloc(fr->buffer.size+15);
+	if(fr->buffer.rdata == NULL)
 	{
 		fr->err = MPG123_OUT_OF_MEM;
-		return -1;
+		return MPG123_ERR;
 	}
+	fr->buffer.data = aligned_pointer(fr->buffer.rdata, unsigned char*, 16);
 	fr->own_buffer = TRUE;
 	fr->buffer.fill = 0;
-	return 0;
+	return MPG123_OK;
 }
 
 int attribute_align_arg mpg123_replace_buffer(mpg123_handle *mh, unsigned char *data, size_t size)
 {
-	if(data == NULL || size < mpg123_safe_buffer())
+	debug2("replace buffer with %p size %"SIZE_P, data, (size_p)size);
+	/* Will accept any size, the error comes later... */
+	if(data == NULL)
 	{
 		mh->err = MPG123_BAD_BUFFER;
 		return MPG123_ERR;
 	}
-	if(mh->own_buffer && mh->buffer.data != NULL) free(mh->buffer.data);
+	if(mh->buffer.rdata != NULL) free(mh->buffer.rdata);
 	mh->own_buffer = FALSE;
+	mh->buffer.rdata = NULL;
 	mh->buffer.data = data;
 	mh->buffer.size = size;
 	mh->buffer.fill = 0;
@@ -416,7 +436,7 @@ int frame_buffers_reset(mpg123_handle *fr)
 	/* Wondering: could it be actually _wanted_ to retain buffer contents over different files? (special gapless / cut stuff) */
 	fr->bsbuf = fr->bsspace[1];
 	fr->bsbufold = fr->bsbuf;
-	fr->bitreservoir = 0; /* Not entirely sure if this is the right place for that counter. */
+	fr->bitreservoir = 0;
 	frame_decode_buffers_reset(fr);
 	memset(fr->bsspace, 0, 2*(MAXFRAMESIZE+512));
 	memset(fr->ssave, 0, 34);
@@ -482,11 +502,11 @@ static void frame_fixed_reset(mpg123_handle *fr)
 	fr->to_decode = FALSE;
 	fr->to_ignore = FALSE;
 	fr->metaflags = 0;
-	fr->outblock = mpg123_safe_buffer();
+	fr->outblock = 0; /* This will be set before decoding! */
 	fr->num = -1;
 	fr->input_offset = -1;
 	fr->playnum = -1;
-	fr->accurate = TRUE;
+	fr->state_flags = FRAME_ACCURATE;
 	fr->silent_resync = 0;
 	fr->audio_start = 0;
 	fr->clip = 0;
@@ -514,7 +534,7 @@ static void frame_fixed_reset(mpg123_handle *fr)
 	fr->fresh = 1;
 	fr->new_format = 0;
 #ifdef GAPLESS
-	frame_gapless_init(fr,0,0);
+	frame_gapless_init(fr,-1,0,0);
 	fr->lastoff = 0;
 	fr->firstoff = 0;
 #endif
@@ -554,12 +574,12 @@ static void frame_free_buffers(mpg123_handle *fr)
 
 void frame_exit(mpg123_handle *fr)
 {
-	if(fr->own_buffer && fr->buffer.data != NULL)
+	if(fr->buffer.rdata != NULL)
 	{
-		debug1("freeing buffer at %p", (void*)fr->buffer.data);
-		free(fr->buffer.data);
+		debug1("freeing buffer at %p", (void*)fr->buffer.rdata);
+		free(fr->buffer.rdata);
 	}
-	fr->buffer.data = NULL;
+	fr->buffer.rdata = NULL;
 	frame_free_buffers(fr);
 	frame_free_toc(fr);
 #ifdef FRAME_INDEX
@@ -658,7 +678,7 @@ static off_t frame_fuzzy_find(mpg123_handle *fr, off_t want_frame, off_t* get_fr
 
 		/* Now estimate back what frame we get. */
 		*get_frame = (off_t) ((double)toc_entry/100. * fr->track_frames);
-		fr->accurate = FALSE;
+		fr->state_flags &= ~FRAME_ACCURATE;
 		fr->silent_resync = 1;
 		/* Question: Is the TOC for whole file size (with/without ID3) or the "real" audio data only?
 		   ID3v1 info could also matter. */
@@ -667,7 +687,7 @@ static off_t frame_fuzzy_find(mpg123_handle *fr, off_t want_frame, off_t* get_fr
 	else if(fr->mean_framesize > 0)
 	{	/* Just guess with mean framesize (may be exact with CBR files). */
 		/* Query filelen here or not? */
-		fr->accurate = FALSE; /* Fuzzy! */
+		fr->state_flags &= ~FRAME_ACCURATE; /* Fuzzy! */
 		fr->silent_resync = 1;
 		*get_frame = want_frame;
 		ret = (off_t) (fr->audio_start+fr->mean_framesize*want_frame);
@@ -714,7 +734,7 @@ off_t frame_index_find(mpg123_handle *fr, off_t want_frame, off_t* get_frame)
 		/* We have index position, that yields frame and byte offsets. */
 		*get_frame = fi*fr->index.step;
 		gopos = fr->index.data[fi];
-		fr->accurate = TRUE; /* When using the frame index, we are accurate. */
+		fr->state_flags |= FRAME_ACCURATE; /* When using the frame index, we are accurate. */
 	}
 	else
 	{
@@ -815,36 +835,44 @@ off_t frame_offset(mpg123_handle *fr, off_t outs)
 
 #ifdef GAPLESS
 /* input in _input_ samples */
-void frame_gapless_init(mpg123_handle *fr, off_t b, off_t e)
+void frame_gapless_init(mpg123_handle *fr, off_t framecount, off_t bskip, off_t eskip)
 {
-	fr->begin_s = b;
-	fr->end_s = e;
+	debug3("frame_gaples_init: given %"OFF_P" frames, skip %"OFF_P" and %"OFF_P, (off_p)framecount, (off_p)bskip, (off_p)eskip);
+	fr->gapless_frames = framecount;
+	if(fr->gapless_frames > 0)
+	{
+		fr->begin_s = bskip+GAPLESS_DELAY;
+		fr->end_s = framecount*spf(fr)-eskip+GAPLESS_DELAY;
+	}
+	else fr->begin_s = fr->end_s = 0;
 	/* These will get proper values later, from above plus resampling info. */
 	fr->begin_os = 0;
 	fr->end_os = 0;
-	debug2("frame_gapless_init: from %lu to %lu samples", (long unsigned)fr->begin_s, (long unsigned)fr->end_s);
+	fr->fullend_os = 0;
+	debug2("frame_gapless_init: from %"OFF_P" to %"OFF_P" samples", (off_p)fr->begin_s, (off_p)fr->end_s);
 }
 
 void frame_gapless_realinit(mpg123_handle *fr)
 {
 	fr->begin_os = frame_ins2outs(fr, fr->begin_s);
 	fr->end_os   = frame_ins2outs(fr, fr->end_s);
-	debug2("frame_gapless_realinit: from %lu to %lu samples", (long unsigned)fr->begin_os, (long unsigned)fr->end_os);
+	fr->fullend_os = frame_ins2outs(fr, fr->gapless_frames*spf(fr));
+	debug2("frame_gapless_realinit: from %"OFF_P" to %"OFF_P" samples", (off_p)fr->begin_os, (off_p)fr->end_os);
 }
 
-/* When we got a new sample count, update the gaplessness. */
+/* At least note when there is trouble... */
 void frame_gapless_update(mpg123_handle *fr, off_t total_samples)
 {
-	if(fr->end_s < 1)
+	off_t gapless_samples = fr->gapless_frames*spf(fr);
+	debug2("gapless update with new sample count %"OFF_P" as opposed to known %"OFF_P, total_samples, gapless_samples);
+	if(NOQUIET && total_samples != gapless_samples)
+	fprintf(stderr, "\nWarning: Real sample count differs from given gapless sample count. Frankenstein stream?\n");
+
+	if(gapless_samples > total_samples)
 	{
-		fr->end_s = total_samples;
-		frame_gapless_realinit(fr);
-	}
-	else if(fr->end_s > total_samples)
-	{
-		if(NOQUIET) error2("end sample count smaller than gapless end! (%"OFF_P" < %"OFF_P").", (off_p)total_samples, (off_p)fr->end_s);
-		/* Humbly disabling gapless stuff on track end. */
-		fr->end_s = 0;
+		if(NOQUIET) error2("End sample count smaller than gapless end! (%"OFF_P" < %"OFF_P"). Disabling gapless mode from now on.", (off_p)total_samples, (off_p)fr->end_s);
+		/* This invalidates the current position... but what should I do? */
+		frame_gapless_init(fr, -1, 0, 0);
 		frame_gapless_realinit(fr);
 		fr->lastframe = -1;
 		fr->lastoff = 0;
@@ -873,7 +901,7 @@ void frame_set_frameseek(mpg123_handle *fr, off_t fe)
 {
 	fr->firstframe = fe;
 #ifdef GAPLESS
-	if(fr->p.flags & MPG123_GAPLESS)
+	if(fr->p.flags & MPG123_GAPLESS && fr->gapless_frames > 0)
 	{
 		/* Take care of the beginning... */
 		off_t beg_f = frame_offset(fr, fr->begin_os);
@@ -888,7 +916,7 @@ void frame_set_frameseek(mpg123_handle *fr, off_t fe)
 		{
 			fr->lastframe  = frame_offset(fr,fr->end_os);
 			fr->lastoff    = fr->end_os - frame_outs(fr, fr->lastframe);
-		} else fr->lastoff = 0;
+		} else {fr->lastframe = -1; fr->lastoff = 0; }
 	} else { fr->firstoff = fr->lastoff = 0; fr->lastframe = -1; }
 #endif
 	fr->ignoreframe = ignoreframe(fr);
@@ -914,6 +942,7 @@ void frame_skip(mpg123_handle *fr)
 void frame_set_seek(mpg123_handle *fr, off_t sp)
 {
 	fr->firstframe = frame_offset(fr, sp);
+	debug1("frame_set_seek: from %"OFF_P, fr->num);
 #ifndef NO_NTOM
 	if(fr->down_sample == 3) ntom_set_ntom(fr, fr->firstframe);
 #endif
@@ -927,8 +956,6 @@ void frame_set_seek(mpg123_handle *fr, off_t sp)
 	debug3("frame_set_seek: begin at %li frames, end at %li; ignore from %li",
 	       (long) fr->firstframe, (long) fr->lastframe, (long) fr->ignoreframe);
 #endif
-	/* Old bit reservoir should be invalid, eh? */
-	fr->bitreservoir = 0;
 }
 
 int attribute_align_arg mpg123_volume_change(mpg123_handle *mh, double change)
