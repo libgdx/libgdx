@@ -6,9 +6,9 @@ import com.badlogic.gdx.Graphics;
 /** @author Nathan Sweet */
 public class JglfwApplicationConfiguration {
 	/** title of application window **/
-	public String title;
+	public String title = "Jglfw Application";
 	/** width & height of application window **/
-	public int width, height;
+	public int width = 480, height = 320;
 	/** x & y of application window, -1 for center **/
 	public int x = -1, y = -1;
 	/** whether to start in fullscreen **/
