@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.jglfw.gl.GL;
 
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -21,7 +22,9 @@ public class JglfwGL11 extends JglfwGL10 implements GL11 {
 	}
 
 	public void glGetClipPlanef (int pname, float[] eqn, int offset) {
-		GL.glGetClipPlane(pname, toBuffer(eqn, offset), 0);
+		FloatBuffer buffer = toBuffer(eqn, offset);
+		GL.glGetClipPlane(pname, buffer, 0);
+		toArray(buffer, eqn, offset);
 	}
 
 	public void glGetClipPlanef (int pname, FloatBuffer eqn) {
@@ -29,7 +32,9 @@ public class JglfwGL11 extends JglfwGL10 implements GL11 {
 	}
 
 	public void glGetFloatv (int pname, float[] params, int offset) {
-		GL.glGetFloatv(pname, toBuffer(params, offset), 0);
+		FloatBuffer buffer = toBuffer(params, offset);
+		GL.glGetFloatv(pname, buffer, 0);
+		toArray(buffer, params, offset);
 	}
 
 	public void glGetFloatv (int pname, FloatBuffer params) {
@@ -37,7 +42,9 @@ public class JglfwGL11 extends JglfwGL10 implements GL11 {
 	}
 
 	public void glGetLightfv (int light, int pname, float[] params, int offset) {
-		GL.glGetLightfv(light, pname, toBuffer(params, offset), 0);
+		FloatBuffer buffer = toBuffer(params, offset);
+		GL.glGetLightfv(light, pname, buffer, 0);
+		toArray(buffer, params, offset);
 	}
 
 	public void glGetLightfv (int light, int pname, FloatBuffer params) {
@@ -45,7 +52,9 @@ public class JglfwGL11 extends JglfwGL10 implements GL11 {
 	}
 
 	public void glGetMaterialfv (int face, int pname, float[] params, int offset) {
-		GL.glGetMaterialfv(face, pname, toBuffer(params, offset), 0);
+		FloatBuffer buffer = toBuffer(params, offset);
+		GL.glGetMaterialfv(face, pname, buffer, 0);
+		toArray(buffer, params, offset);
 	}
 
 	public void glGetMaterialfv (int face, int pname, FloatBuffer params) {
@@ -53,7 +62,9 @@ public class JglfwGL11 extends JglfwGL10 implements GL11 {
 	}
 
 	public void glGetTexParameterfv (int target, int pname, float[] params, int offset) {
-		GL.glGetTexParameterfv(target, pname, toBuffer(params, offset), 0);
+		FloatBuffer buffer = toBuffer(params, offset);
+		GL.glGetTexParameterfv(target, pname, buffer, 0);
+		toArray(buffer, params, offset);
 	}
 
 	public void glGetTexParameterfv (int target, int pname, FloatBuffer params) {
@@ -105,7 +116,9 @@ public class JglfwGL11 extends JglfwGL10 implements GL11 {
 	}
 
 	public void glGetBooleanv (int pname, boolean[] params, int offset) {
-		GL.glGetBooleanv(pname, toBuffer(params, offset), 0);
+		ByteBuffer buffer = toBuffer(params, offset);
+		GL.glGetBooleanv(pname, buffer, 0);
+		toArray(buffer, params, offset);
 	}
 
 	public void glGetBooleanv (int pname, IntBuffer params) {
@@ -113,7 +126,9 @@ public class JglfwGL11 extends JglfwGL10 implements GL11 {
 	}
 
 	public void glGetBufferParameteriv (int target, int pname, int[] params, int offset) {
-		GL.glGetBufferParameteriv(target, pname, toBuffer(params, offset), 0);
+		IntBuffer buffer = toBuffer(params, offset);
+		GL.glGetBufferParameteriv(target, pname, buffer, 0);
+		toArray(buffer, params, offset);
 	}
 
 	public void glGetBufferParameteriv (int target, int pname, IntBuffer params) {
@@ -121,7 +136,9 @@ public class JglfwGL11 extends JglfwGL10 implements GL11 {
 	}
 
 	public void glGenBuffers (int n, int[] buffers, int offset) {
-		GL.glGenBuffers(n, toBuffer(buffers, offset), 0);
+		IntBuffer buffer = toBuffer(buffers, offset);
+		GL.glGenBuffers(n, buffer, 0);
+		toArray(buffer, buffers, offset);
 	}
 
 	public void glGenBuffers (int n, IntBuffer buffers) {
@@ -134,7 +151,9 @@ public class JglfwGL11 extends JglfwGL10 implements GL11 {
 	}
 
 	public void glGetTexEnviv (int env, int pname, int[] params, int offset) {
-		GL.glGetTexEnviv(env, pname, toBuffer(params, offset), 0);
+		IntBuffer buffer = toBuffer(params, offset);
+		GL.glGetTexEnviv(env, pname, buffer, 0);
+		toArray(buffer, params, offset);
 	}
 
 	public void glGetTexEnviv (int env, int pname, IntBuffer params) {
@@ -142,7 +161,9 @@ public class JglfwGL11 extends JglfwGL10 implements GL11 {
 	}
 
 	public void glGetTexParameteriv (int target, int pname, int[] params, int offset) {
-		GL.glGetTexParameteriv(target, pname, toBuffer(params, offset), 0);
+		IntBuffer buffer = toBuffer(params, offset);
+		GL.glGetTexParameteriv(target, pname, buffer, 0);
+		toArray(buffer, params, offset);
 	}
 
 	public void glGetTexParameteriv (int target, int pname, IntBuffer params) {
@@ -166,7 +187,9 @@ public class JglfwGL11 extends JglfwGL10 implements GL11 {
 	}
 
 	public void glTexEnviv (int target, int pname, int[] params, int offset) {
-		GL.glTexEnviv(target, pname, toBuffer(params, offset), 0);
+		IntBuffer buffer = toBuffer(params, offset);
+		GL.glTexEnviv(target, pname, buffer, 0);
+		toArray(buffer, params, offset);
 	}
 
 	public void glTexEnviv (int target, int pname, IntBuffer params) {

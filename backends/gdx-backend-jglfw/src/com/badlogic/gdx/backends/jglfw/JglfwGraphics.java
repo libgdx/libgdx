@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.jglfw.gl.GL;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -20,7 +21,7 @@ import java.awt.Toolkit;
 /** An implementation of the {@link Graphics} interface based on GLFW.
  * @author Nathan Sweet */
 public class JglfwGraphics implements Graphics {
-	static int glMajorVersison, glMinorVersion;
+	static int glMajorVersion, glMinorVersion;
 
 	JglfwApplicationConfiguration config;
 	long window;
@@ -91,7 +92,7 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	private void createGL () {
-		String version = glGetString(GL11.GL_VERSION);
+		String version = GL.glGetString(GL11.GL_VERSION);
 		glMajorVersion = Integer.parseInt("" + version.charAt(0));
 		glMinorVersion = Integer.parseInt("" + version.charAt(2));
 

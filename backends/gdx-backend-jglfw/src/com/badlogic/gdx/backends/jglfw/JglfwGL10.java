@@ -225,11 +225,15 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glGenTextures (int n, int[] textures, int offset) {
-		GL.glGenTextures(n, toBuffer(textures, offset), 0);
+		IntBuffer buffer = toBuffer(textures, offset);
+		GL.glGenTextures(n, buffer, 0);
+		toArray(buffer, textures, offset);
 	}
 
 	public void glGetIntegerv (int pname, int[] params, int offset) {
-		GL.glGetIntegerv(pname, toBuffer(params, offset), 0);
+		IntBuffer buffer = toBuffer(params, offset);
+		GL.glGetIntegerv(pname, buffer, 0);
+		toArray(buffer, params, offset);
 	}
 
 	public void glLightModelf (int pname, float param) {
