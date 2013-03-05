@@ -1,52 +1,17 @@
 
 package com.badlogic.gdx.backends.jglfw;
 
+import static com.badlogic.gdx.backends.jglfw.JglfwUtil.*;
+import static com.badlogic.jglfw.utils.Memory.*;
+
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.jglfw.gl.GL;
-import com.badlogic.jglfw.utils.Memory;
 
 import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public class JglfwGL10 implements GL10 {
-	private IntBuffer tempInt = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder()).asIntBuffer();
-	private FloatBuffer tempFloat = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-
-	private IntBuffer toBuffer (int n, int[] src, int offset) {
-		if (tempInt.capacity() < n)
-			tempInt = ByteBuffer.allocateDirect(n * 4).order(ByteOrder.nativeOrder()).asIntBuffer();
-		else
-			tempInt.clear();
-		tempInt.put(src, offset, n);
-		tempInt.flip();
-		return tempInt;
-	}
-
-	private IntBuffer toBuffer (int[] src, int offset) {
-		int n = src.length - offset;
-		if (tempInt.capacity() < n)
-			tempInt = ByteBuffer.allocateDirect(n * 4).order(ByteOrder.nativeOrder()).asIntBuffer();
-		else
-			tempInt.clear();
-		tempInt.put(src, offset, n);
-		tempInt.flip();
-		return tempInt;
-	}
-
-	private FloatBuffer toBuffer (float[] src, int offset) {
-		int n = src.length - offset;
-		if (tempFloat.capacity() < n)
-			tempFloat = ByteBuffer.allocateDirect(n * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-		else
-			tempFloat.clear();
-		tempFloat.put(src, offset, src.length - offset);
-		tempFloat.flip();
-		return tempFloat;
-	}
-
 	public void glActiveTexture (int texture) {
 		GL.glActiveTexture(texture);
 	}
@@ -81,13 +46,12 @@ public class JglfwGL10 implements GL10 {
 
 	public void glCompressedTexImage2D (int target, int level, int internalformat, int width, int height, int border,
 		int imageSize, Buffer data) {
-		GL.glCompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, data, Memory.getPosition(data));
+		GL.glCompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, data, getPosition(data));
 	}
 
 	public void glCompressedTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format,
 		int imageSize, Buffer data) {
-		GL.glCompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data,
-			Memory.getPosition(data));
+		GL.glCompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data, getPosition(data));
 	}
 
 	public void glCopyTexImage2D (int target, int level, int internalformat, int x, int y, int width, int height, int border) {
@@ -103,7 +67,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glDeleteTextures (int n, IntBuffer textures) {
-		GL.glDeleteTexturesEXT(n, textures, Memory.getPosition(textures));
+		GL.glDeleteTexturesEXT(n, textures, getPosition(textures));
 	}
 
 	public void glDepthFunc (int func) {
@@ -127,7 +91,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glDrawElements (int mode, int count, int type, Buffer indices) {
-		GL.glDrawElements(mode, count, type, indices, Memory.getPosition(indices));
+		GL.glDrawElements(mode, count, type, indices, getPosition(indices));
 	}
 
 	public void glEnable (int cap) {
@@ -147,7 +111,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glGenTextures (int n, IntBuffer textures) {
-		GL.glGenTexturesEXT(n, textures, Memory.getPosition(textures));
+		GL.glGenTexturesEXT(n, textures, getPosition(textures));
 	}
 
 	public int glGetError () {
@@ -155,7 +119,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glGetIntegerv (int pname, IntBuffer params) {
-		GL.glGetIntegerv(pname, params, Memory.getPosition(params));
+		GL.glGetIntegerv(pname, params, getPosition(params));
 	}
 
 	public String glGetString (int name) {
@@ -179,7 +143,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glReadPixels (int x, int y, int width, int height, int format, int type, Buffer pixels) {
-		GL.glReadPixels(x, y, width, height, format, type, pixels, Memory.getPosition(pixels));
+		GL.glReadPixels(x, y, width, height, format, type, pixels, getPosition(pixels));
 	}
 
 	public void glScissor (int x, int y, int width, int height) {
@@ -200,7 +164,7 @@ public class JglfwGL10 implements GL10 {
 
 	public void glTexImage2D (int target, int level, int internalFormat, int width, int height, int border, int format, int type,
 		Buffer pixels) {
-		GL.glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels, Memory.getPosition(pixels));
+		GL.glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels, getPosition(pixels));
 	}
 
 	public void glTexParameterf (int target, int pname, float param) {
@@ -209,7 +173,7 @@ public class JglfwGL10 implements GL10 {
 
 	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
 		Buffer pixels) {
-		GL.glTexSubImage2DEXT(target, level, xoffset, yoffset, width, height, format, type, pixels, Memory.getPosition(pixels));
+		GL.glTexSubImage2DEXT(target, level, xoffset, yoffset, width, height, format, type, pixels, getPosition(pixels));
 	}
 
 	public void glViewport (int x, int y, int width, int height) {
@@ -229,7 +193,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glColorPointer (int size, int type, int stride, Buffer pointer) {
-		GL.glColorPointer(size, type, stride, pointer, Memory.getPosition(pointer));
+		GL.glColorPointer(size, type, stride, pointer, getPosition(pointer));
 	}
 
 	public void glDeleteTextures (int n, int[] textures, int offset) {
@@ -253,7 +217,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glFogfv (int pname, FloatBuffer params) {
-		GL.glFogfv(pname, params, Memory.getPosition(params));
+		GL.glFogfv(pname, params, getPosition(params));
 	}
 
 	public void glFrustumf (float left, float right, float bottom, float top, float zNear, float zFar) {
@@ -277,7 +241,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glLightModelfv (int pname, FloatBuffer params) {
-		GL.glLightModelfv(pname, params, Memory.getPosition(params));
+		GL.glLightModelfv(pname, params, getPosition(params));
 	}
 
 	public void glLightf (int light, int pname, float param) {
@@ -289,7 +253,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glLightfv (int light, int pname, FloatBuffer params) {
-		GL.glLightfv(light, pname, params, Memory.getPosition(params));
+		GL.glLightfv(light, pname, params, getPosition(params));
 	}
 
 	public void glLoadIdentity () {
@@ -301,7 +265,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glLoadMatrixf (FloatBuffer m) {
-		GL.glLoadMatrixf(m, Memory.getPosition(m));
+		GL.glLoadMatrixf(m, getPosition(m));
 	}
 
 	public void glLogicOp (int opcode) {
@@ -317,7 +281,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glMaterialfv (int face, int pname, FloatBuffer params) {
-		GL.glMaterialfv(face, pname, params, Memory.getPosition(params));
+		GL.glMaterialfv(face, pname, params, getPosition(params));
 	}
 
 	public void glMatrixMode (int mode) {
@@ -329,7 +293,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glMultMatrixf (FloatBuffer m) {
-		GL.glMultMatrixf(m, Memory.getPosition(m));
+		GL.glMultMatrixf(m, getPosition(m));
 	}
 
 	public void glMultiTexCoord4f (int target, float s, float t, float r, float q) {
@@ -341,7 +305,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glNormalPointer (int type, int stride, Buffer pointer) {
-		GL.glNormalPointer(type, stride, pointer, Memory.getPosition(pointer));
+		GL.glNormalPointer(type, stride, pointer, getPosition(pointer));
 	}
 
 	public void glOrthof (float left, float right, float bottom, float top, float zNear, float zFar) {
@@ -377,7 +341,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glTexCoordPointer (int size, int type, int stride, Buffer pointer) {
-		GL.glTexCoordPointer(size, type, stride, pointer, Memory.getPosition(pointer));
+		GL.glTexCoordPointer(size, type, stride, pointer, getPosition(pointer));
 	}
 
 	public void glTexEnvf (int target, int pname, float param) {
@@ -389,7 +353,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glTexEnvfv (int target, int pname, FloatBuffer params) {
-		GL.glTexEnvfv(target, pname, params, Memory.getPosition(params));
+		GL.glTexEnvfv(target, pname, params, getPosition(params));
 	}
 
 	public void glTranslatef (float x, float y, float z) {
@@ -397,7 +361,7 @@ public class JglfwGL10 implements GL10 {
 	}
 
 	public void glVertexPointer (int size, int type, int stride, Buffer buffer) {
-		GL.glVertexPointer(size, type, stride, buffer, Memory.getPosition(buffer));
+		GL.glVertexPointer(size, type, stride, buffer, getPosition(buffer));
 	}
 
 	public void glPolygonMode (int face, int mode) {
