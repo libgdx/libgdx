@@ -11,6 +11,7 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
+import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.util.HashMap;
@@ -56,6 +57,7 @@ public class JglfwApplication implements Application {
 		this.listener = listener;
 		this.config = config;
 
+		GdxNativesLoader.load();
 		if (!glfwInit()) throw new GdxRuntimeException("Unable to initialize GLFW.");
 
 		Gdx.app = this;
@@ -108,8 +110,10 @@ public class JglfwApplication implements Application {
 			if (!running) break;
 
 			glfwPollEvents();
-			input.update();
 			shouldRender |= graphics.shouldRender();
+
+			// If input processing set running to false.
+			if (!running) break;
 
 			long nextFrameTime = graphics.lastTime;
 			if (shouldRender) {

@@ -85,7 +85,7 @@ public class JglfwGraphics implements Graphics {
 		glMinorVersion = Integer.parseInt("" + version.charAt(2));
 
 		if (config.useGL20 && (glMajorVersion >= 2 || version.contains("2.1"))) { // special case for MESA, wtf...
-			// FIXME - Add check whether gl 2.0 is actually supported.
+			// FIXME - Add check for whether GL 2.0 is actually supported.
 			gl20 = new JglfwGL20();
 			gl = gl20;
 		} else {
@@ -203,7 +203,7 @@ public class JglfwGraphics implements Graphics {
 			if (mode.getBitDepth() != desktopMode.getBitDepth()) continue;
 			modes.add(new JglfwDisplayMode(mode.getWidth(), mode.getHeight(), mode.getRefreshRate(), mode.getBitDepth()));
 		}
-		return modes.toArray();
+		return modes.toArray(DisplayMode.class);
 	}
 
 	public DisplayMode getDesktopDisplayMode () {
@@ -233,9 +233,9 @@ public class JglfwGraphics implements Graphics {
 			glfwWindowHint(GLFW_DEPTH_BITS, config.depth);
 			glfwWindowHint(GLFW_STENCIL_BITS, config.stencil);
 			glfwWindowHint(GLFW_SAMPLES, config.samples);
-			glfwWindowHint(GLFW_DEPTH_BITS, config.bitsPerPixel);				
-				
-			// share old window if any, so context survice
+			glfwWindowHint(GLFW_DEPTH_BITS, config.bitsPerPixel);
+
+			// share old window if any, so context service
 			long window = glfwCreateWindow(config.width, config.height, config.title, 0, this.window);
 			if (window == 0) return false;
 			if (this.window != 0) glfwDestroyWindow(window);

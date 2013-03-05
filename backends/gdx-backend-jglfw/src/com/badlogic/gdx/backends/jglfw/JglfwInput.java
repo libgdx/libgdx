@@ -6,6 +6,8 @@ import static com.badlogic.jglfw.Glfw.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.jglfw.GlfwCallback;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -36,10 +38,84 @@ public class JglfwInput implements Input {
 
 	public JglfwInput (JglfwGraphics graphics) {
 		this.graphics = graphics;
-	}
 
-	public void update () {
+		glfwSetCallback(new GlfwCallback() {
+			private int mouseX, mouseY, mousePressed;
+			private char lastCharacter;
 
+			public void key (long window, int key, int action) {
+				switch (action) {
+				case GLFW_PRESS:
+					if (processor != null) processor.keyDown(getGdxKeyCode(key));
+					break;
+				case GLFW_RELEASE:
+					if (processor != null) processor.keyDown(getGdxKeyCode(key));
+					break;
+				case GLFW_REPEAT:
+					if (processor != null && lastCharacter != 0) processor.keyTyped(lastCharacter);
+					break;
+				}
+			}
+
+			public void character (long window, char character) {
+				lastCharacter = character;
+				if (processor != null) processor.keyTyped(character);
+			}
+
+			public void scroll (long window, double scrollX, double scrollY) {
+				if (processor != null) processor.scrolled((int)-Math.signum(scrollY));
+			}
+
+			public void mouseButton (long window, int button, boolean pressed) {
+				if (pressed) {
+					mousePressed++;
+					if (processor != null) processor.touchDown(mouseX, mouseY, 0, button);
+				} else {
+					mousePressed--;
+					if (processor != null) processor.touchUp(mouseX, mouseY, 0, button);
+				}
+			}
+
+			public void cursorPos (long window, int x, int y) {
+				mouseX = x;
+				mouseY = y;
+				if (processor != null) {
+					if (mousePressed > 0)
+						processor.touchDragged(mouseX, mouseY, 0);
+					else
+						processor.mouseMoved(mouseX, mouseY);
+				}
+			}
+
+			public void cursorEnter (long window, boolean entered) {
+			}
+
+			public void windowSize (long window, int width, int height) {
+			}
+
+			public void windowRefresh (long window) {
+			}
+
+			public void windowPos (long window, int x, int y) {
+			}
+
+			public void windowIconify (long window, boolean iconified) {
+			}
+
+			public void windowFocus (long window, boolean focused) {
+			}
+
+			public boolean windowClose (long window) {
+				return true;
+			}
+
+			public void monitor (long monitor, boolean connected) {
+			}
+
+			public void error (int error, String description) {
+				throw new GdxRuntimeException("GLFW error " + error + ": " + description);
+			}
+		});
 	}
 
 	public float getAccelerometerX () {
