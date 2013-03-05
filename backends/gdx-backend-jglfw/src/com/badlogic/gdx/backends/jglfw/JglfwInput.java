@@ -131,7 +131,7 @@ public class JglfwInput implements Input {
 	}
 
 	public int getY () {
-		return app.graphics.getHeight() - 1 - glfwGetCursorPosY(app.graphics.window);
+		return glfwGetCursorPosY(app.graphics.window);
 	}
 
 	public int getY (int pointer) {

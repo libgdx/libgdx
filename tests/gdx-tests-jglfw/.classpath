@@ -10,5 +10,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-freetype"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-image"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-tests"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers-desktop"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
