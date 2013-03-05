@@ -23,6 +23,6 @@ public class JglfwDebugStarter {
 		GdxTest test = new FullscreenTest();
 		JglfwApplicationConfiguration config = new JglfwApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
-		new JglfwApplication(test, config);
+		new JglfwApplication(test, config).start();
 	}
 }

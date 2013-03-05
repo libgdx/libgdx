@@ -11,10 +11,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.jglfw.GlfwVideoMode;
 import com.badlogic.jglfw.gl.GL;
 
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 
 /** An implementation of the {@link Graphics} interface based on GLFW.
@@ -22,12 +21,15 @@ import java.awt.Toolkit;
 public class JglfwGraphics implements Graphics {
 	static int glMajorVersion, glMinorVersion;
 
-	JglfwApplicationConfiguration config;
 	long window;
 	boolean fullscreen;
-	int fullscreenMonitorIndex;
-	final BufferFormat bufferFormat;
+	long fullscreenMonitor;
+	String title;
+	boolean resizable;
+	BufferFormat bufferFormat;
+	boolean sync;
 	volatile boolean isContinuous = true;
+	volatile boolean requestRendering;
 
 	float deltaTime;
 	long frameStart, lastTime;
@@ -38,29 +40,14 @@ public class JglfwGraphics implements Graphics {
 	JglfwGL11 gl11;
 	JglfwGL20 gl20;
 
-	boolean sync;
-	volatile boolean requestRendering;
-
 	public JglfwGraphics (JglfwApplicationConfiguration config) {
-		this.config = config;
-
+		// Store values from config.
 		bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples, false);
-
-		long fullscreenMonitor = glfwGetPrimaryMonitor();
-		long[] monitors = glfwGetMonitors();
-		// Find index of primary monitor.
-		for (int i = 0, n = monitors.length; i < n; i++) {
-			if (monitors[i] == fullscreenMonitor) {
-				fullscreenMonitorIndex = i;
-				break;
-			}
-		}
-		// Find monitor specified in config.
-		if (config.fullscreen) {
-			if (monitors.length > 0) {
-				if (config.fullscreenMonitorIndex < monitors.length) fullscreenMonitorIndex = config.fullscreenMonitorIndex;
-				fullscreenMonitor = monitors[fullscreenMonitorIndex];
-			}
+		title = config.title;
+		resizable = config.resizable;
+		if (config.fullscreenMonitorIndex != -1) { // Use monitor specified in config if it is valid.
+			long[] monitors = glfwGetMonitors();
+			if (config.fullscreenMonitorIndex < monitors.length) fullscreenMonitor = monitors[config.fullscreenMonitorIndex];
 		}
 
 		// Create window.
@@ -180,76 +167,64 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	public DisplayMode[] getDisplayModes () {
-		// FIXME this should use GLFW methods on the current monitor in use
-		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		java.awt.DisplayMode desktopMode = device.getDisplayMode();
-		java.awt.DisplayMode[] displayModes = device.getDisplayModes();
 		Array<DisplayMode> modes = new Array();
-		outer:
-		for (java.awt.DisplayMode mode : displayModes) {
-			for (DisplayMode other : modes)
-				if (other.width == mode.getWidth() && other.height == mode.getHeight() && other.bitsPerPixel == mode.getBitDepth())
-					continue outer; // Duplicate.
-			if (mode.getBitDepth() != desktopMode.getBitDepth()) continue;
-			modes.add(new JglfwDisplayMode(mode.getWidth(), mode.getHeight(), mode.getRefreshRate(), mode.getBitDepth()));
-		}
+		for (GlfwVideoMode mode : glfwGetVideoModes(glfwGetWindowMonitor(window)))
+			modes.add(new JglfwDisplayMode(mode.width, mode.height, 0, mode.redBits + mode.greenBits + mode.blueBits));
 		return modes.toArray(DisplayMode.class);
 	}
 
 	public DisplayMode getDesktopDisplayMode () {
-		// FIXME this should use GLFW APIs using the current monitor
-		java.awt.DisplayMode mode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
-		return new JglfwDisplayMode(mode.getWidth(), mode.getHeight(), mode.getRefreshRate(), mode.getBitDepth());
+		GlfwVideoMode mode = glfwGetVideoMode(glfwGetWindowMonitor(window));
+		return new JglfwDisplayMode(mode.width, mode.height, 0, mode.redBits + mode.greenBits + mode.blueBits);
 	}
 
 	public boolean setDisplayMode (DisplayMode displayMode) {
-		if (displayMode.bitsPerPixel != 0) glfwWindowHint(GLFW_DEPTH_BITS, displayMode.bitsPerPixel);
-		if (displayMode.bitsPerPixel != 0 || config.fullscreen)
-			return createWindow(displayMode.width, displayMode.height, config.fullscreen);
-
-		glfwSetWindowSize(window, displayMode.width, displayMode.height);
-		return true;
+		bufferFormat = new BufferFormat( //
+			displayMode.bitsPerPixel == 16 ? 5 : 8, //
+			displayMode.bitsPerPixel == 16 ? 6 : 8, //
+			displayMode.bitsPerPixel == 16 ? 6 : 8, //
+			bufferFormat.a, bufferFormat.depth, bufferFormat.stencil, bufferFormat.samples, false);
+		return createWindow(displayMode.width, displayMode.height, fullscreen);
 	}
 
 	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
-		if (window == 0 || fullscreen != config.fullscreen || config.fullscreen) return createWindow(width, height, fullscreen);
+		if (window == 0 || fullscreen != this.fullscreen || this.fullscreen) return createWindow(width, height, fullscreen);
 
 		glfwSetWindowSize(window, width, height);
 		return true;
 	}
 
 	private boolean createWindow (int width, int height, boolean fullscreen) {
-		long fullscreenMonitor = 0;
-		if (fullscreen) {
-			long[] monitors = glfwGetMonitors();
-			if (monitors.length > 0)
-				fullscreenMonitor = fullscreenMonitorIndex < monitors.length ? monitors[fullscreenMonitorIndex] : 0;
-		}
+		if (fullscreenMonitor == 0) fullscreenMonitor = glfwGetPrimaryMonitor();
 
-		glfwWindowHint(GLFW_RESIZABLE, config.resizable ? 1 : 0);
-		glfwWindowHint(GLFW_RED_BITS, config.r);
-		glfwWindowHint(GLFW_GREEN_BITS, config.g);
-		glfwWindowHint(GLFW_BLUE_BITS, config.b);
-		glfwWindowHint(GLFW_ALPHA_BITS, config.a);
-		glfwWindowHint(GLFW_DEPTH_BITS, config.depth);
-		glfwWindowHint(GLFW_STENCIL_BITS, config.stencil);
-		glfwWindowHint(GLFW_SAMPLES, config.samples);
-		glfwWindowHint(GLFW_DEPTH_BITS, config.bitsPerPixel);
+		glfwWindowHint(GLFW_RESIZABLE, resizable ? 1 : 0);
+		glfwWindowHint(GLFW_RED_BITS, bufferFormat.r);
+		glfwWindowHint(GLFW_GREEN_BITS, bufferFormat.g);
+		glfwWindowHint(GLFW_BLUE_BITS, bufferFormat.b);
+		glfwWindowHint(GLFW_ALPHA_BITS, bufferFormat.a);
+		glfwWindowHint(GLFW_DEPTH_BITS, bufferFormat.depth);
+		glfwWindowHint(GLFW_STENCIL_BITS, bufferFormat.stencil);
+		glfwWindowHint(GLFW_SAMPLES, bufferFormat.samples);
+
+		boolean mouseCaptured = window != 0 && glfwGetInputMode(window, GLFW_CURSOR_MODE) == GLFW_CURSOR_CAPTURED;
 
 		long oldWindow = window;
-		long newWindow = glfwCreateWindow(width, height, config.title, fullscreenMonitor, oldWindow);
+		long newWindow = glfwCreateWindow(width, height, title, fullscreen ? fullscreenMonitor : 0, oldWindow);
 		if (newWindow == 0) return false;
 		if (oldWindow != 0) glfwDestroyWindow(oldWindow);
 		glfwMakeContextCurrent(newWindow);
 		window = newWindow;
-		config.fullscreen = fullscreen;
+		this.fullscreen = fullscreen;
+
+		if (!mouseCaptured) glfwSetInputMode(window, GLFW_CURSOR_MODE, GLFW_CURSOR_NORMAL); // Prevent fullscreen from taking mouse.
+
 		return true;
 	}
 
 	public void setTitle (String title) {
 		if (title == null) glfwSetWindowTitle(window, "");
 		glfwSetWindowTitle(window, title);
-		config.title = title;
+		this.title = title;
 	}
 
 	public void setVSync (boolean vsync) {
@@ -280,8 +255,7 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	public boolean isFullscreen () {
-		// FIXME should use Graphics.fullscreen as config is never changed, no?
-		return config.fullscreen;
+		return fullscreen;
 	}
 
 	/** Returns the JGLFW window handle. Note this should not be stored externally as it may change if the window is recreated to

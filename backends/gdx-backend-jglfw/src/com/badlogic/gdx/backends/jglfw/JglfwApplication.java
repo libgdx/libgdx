@@ -23,7 +23,6 @@ import java.util.Map;
  * @author mzechner
  * @author Nathan Sweet */
 public class JglfwApplication implements Application {
-	final JglfwApplicationConfiguration config;
 	final JglfwGraphics graphics;
 	final JglfwFiles files;
 	final JglfwInput input;
@@ -35,6 +34,7 @@ public class JglfwApplication implements Application {
 	final Map<String, Preferences> preferences = new HashMap();
 	final JglfwClipboard clipboard = new JglfwClipboard();
 	final GlfwCallbacks callbacks = new GlfwCallbacks();
+	final boolean forceExit;
 	boolean running = true;
 	int logLevel = LOG_INFO;
 
@@ -58,7 +58,8 @@ public class JglfwApplication implements Application {
 
 	public JglfwApplication (final ApplicationListener listener, JglfwApplicationConfiguration config) {
 		this.listener = listener;
-		this.config = config;
+
+		forceExit = config.forceExit;
 
 		GdxNativesLoader.load();
 		if (!glfwInit()) throw new GdxRuntimeException("Unable to initialize GLFW.");
@@ -101,11 +102,9 @@ public class JglfwApplication implements Application {
 				throw new GdxRuntimeException("GLFW error " + error + ": " + description);
 			}
 		});
-
-		mainLoop();
 	}
 
-	private void mainLoop () {
+	public void start () {
 		listener.create();
 		listener.resize(graphics.getWidth(), graphics.getHeight());
 
@@ -148,7 +147,7 @@ public class JglfwApplication implements Application {
 		listener.pause();
 		listener.dispose();
 		glfwDestroyWindow(graphics.window);
-		if (graphics.config.forceExit) System.exit(-1);
+		if (forceExit) System.exit(-1);
 	}
 
 	void renderFrame () {
