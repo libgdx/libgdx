@@ -38,6 +38,10 @@ public class JglfwApplication implements Application {
 	boolean running = true;
 	int logLevel = LOG_INFO;
 
+	public JglfwApplication (ApplicationListener listener) {
+		this(listener, listener.getClass().getSimpleName(), 640, 480, false);
+	}
+
 	public JglfwApplication (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
 		this(listener, createConfig(title, width, height, useGL2));
 	}
@@ -50,10 +54,6 @@ public class JglfwApplication implements Application {
 		config.useGL20 = useGL2;
 		config.vSync = true;
 		return config;
-	}
-
-	public JglfwApplication (ApplicationListener listener) {
-		this(listener, new JglfwApplicationConfiguration());
 	}
 
 	public JglfwApplication (final ApplicationListener listener, JglfwApplicationConfiguration config) {

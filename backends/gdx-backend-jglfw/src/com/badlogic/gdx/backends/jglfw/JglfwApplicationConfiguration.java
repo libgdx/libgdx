@@ -12,9 +12,9 @@ import java.awt.GraphicsEnvironment;
 /** @author Nathan Sweet */
 public class JglfwApplicationConfiguration {
 	/** title of application window **/
-	public String title = "Jglfw Application";
+	public String title = "";
 	/** width & height of application window **/
-	public int width = 480, height = 320;
+	public int width = 640, height = 480;
 	/** x & y of application window, -1 for center **/
 	public int x = -1, y = -1;
 	/** whether to start in fullscreen **/
@@ -37,7 +37,6 @@ public class JglfwApplicationConfiguration {
 	public boolean forceExit = true;
 
 	static public DisplayMode[] getDisplayModes () {
-		// FIXME this should use GLFW methods on the current monitor in use
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		java.awt.DisplayMode desktopMode = device.getDisplayMode();
 		java.awt.DisplayMode[] displayModes = device.getDisplayModes();
@@ -54,7 +53,6 @@ public class JglfwApplicationConfiguration {
 	}
 
 	static public DisplayMode getDesktopDisplayMode () {
-		// FIXME this should use GLFW APIs using the current monitor
 		java.awt.DisplayMode mode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
 		return new JglfwDisplayMode(mode.getWidth(), mode.getHeight(), mode.getRefreshRate(), mode.getBitDepth());
 	}
