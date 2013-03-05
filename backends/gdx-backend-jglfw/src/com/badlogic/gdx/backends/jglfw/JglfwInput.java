@@ -55,15 +55,18 @@ public class JglfwInput implements Input {
 					if (processor != null && lastCharacter != 0) processor.keyTyped(lastCharacter);
 					break;
 				}
+				Gdx.graphics.requestRendering();
 			}
 
 			public void character (long window, char character) {
 				lastCharacter = character;
 				if (processor != null) processor.keyTyped(character);
+				Gdx.graphics.requestRendering();
 			}
 
 			public void scroll (long window, double scrollX, double scrollY) {
 				if (processor != null) processor.scrolled((int)-Math.signum(scrollY));
+				Gdx.graphics.requestRendering();
 			}
 
 			public void mouseButton (long window, int button, boolean pressed) {
@@ -74,6 +77,7 @@ public class JglfwInput implements Input {
 					mousePressed--;
 					if (processor != null) processor.touchUp(mouseX, mouseY, 0, button);
 				}
+				Gdx.graphics.requestRendering();
 			}
 
 			public void cursorPos (long window, int x, int y) {
@@ -85,6 +89,7 @@ public class JglfwInput implements Input {
 					else
 						processor.mouseMoved(mouseX, mouseY);
 				}
+				Gdx.graphics.requestRendering();
 			}
 
 			public void cursorEnter (long window, boolean entered) {

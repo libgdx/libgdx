@@ -115,20 +115,14 @@ public class JglfwApplication implements Application {
 			// If input processing set running to false.
 			if (!running) break;
 
-			long nextFrameTime = graphics.lastTime;
 			if (shouldRender) {
 				graphics.updateTime();
 				listener.render();
 				glfwSwapBuffers(graphics.window);
 			} else {
 				// Avoid burning CPU when not rendering.
-				nextFrameTime += 60 * 1000000;
-			}
-			while (true) {
-				long time = System.nanoTime();
-				if (nextFrameTime <= time) break;
 				try {
-					Thread.sleep(time / 1000000);
+					Thread.sleep(16);
 				} catch (InterruptedException ignored) {
 				}
 			}
