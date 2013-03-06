@@ -271,7 +271,10 @@ public class Quaternion implements Serializable {
 	 * @param angle The angle in degrees
 	 * @return This quaternion for chaining. */
 	public Quaternion setFromAxis (final float x, final float y, final float z, final float angle) {
-		final float d = 1f / Vector3.len(x, y, z);
+		float d = Vector3.len(x, y, z);
+		if (d == 0f)
+			return idt();
+		d = 1f /d;
 		float l_ang = angle * MathUtils.degreesToRadians;
 		float l_sin = MathUtils.sin(l_ang / 2);
 		float l_cos = MathUtils.cos(l_ang / 2);
