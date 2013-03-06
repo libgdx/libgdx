@@ -39,7 +39,7 @@ public class JglfwApplication implements Application {
 	int logLevel = LOG_INFO;
 
 	public JglfwApplication (ApplicationListener listener) {
-		this(listener, listener.getClass().getSimpleName(), 640, 480, false);
+		this(listener, listener.getClass().getSimpleName(), 640, 480, true);
 	}
 
 	public JglfwApplication (ApplicationListener listener, String title, int width, int height, boolean useGL2) {

@@ -25,7 +25,7 @@ public class JglfwGraphics implements Graphics {
 	boolean fullscreen;
 	long fullscreenMonitor;
 	String title;
-	boolean resizable;
+	boolean resizable, undecorated;
 	BufferFormat bufferFormat;
 	boolean sync;
 	volatile boolean isContinuous = true;
@@ -45,6 +45,7 @@ public class JglfwGraphics implements Graphics {
 		bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples, false);
 		title = config.title;
 		resizable = config.resizable;
+		undecorated = config.undecorated;
 		if (config.fullscreenMonitorIndex != -1) { // Use monitor specified in config if it is valid.
 			long[] monitors = glfwGetMonitors();
 			if (config.fullscreenMonitorIndex < monitors.length) fullscreenMonitor = monitors[config.fullscreenMonitorIndex];
@@ -198,6 +199,7 @@ public class JglfwGraphics implements Graphics {
 		if (fullscreenMonitor == 0) fullscreenMonitor = glfwGetPrimaryMonitor();
 
 		glfwWindowHint(GLFW_RESIZABLE, resizable ? 1 : 0);
+		glfwWindowHint(GLFW_UNDECORATED, undecorated ? 1 : 0);
 		glfwWindowHint(GLFW_RED_BITS, bufferFormat.r);
 		glfwWindowHint(GLFW_GREEN_BITS, bufferFormat.g);
 		glfwWindowHint(GLFW_BLUE_BITS, bufferFormat.b);

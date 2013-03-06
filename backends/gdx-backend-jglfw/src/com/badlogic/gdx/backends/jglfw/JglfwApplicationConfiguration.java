@@ -35,6 +35,8 @@ public class JglfwApplicationConfiguration {
 	public boolean useGL20 = false;
 	/** whether to call System.exit() when the main loop exits **/
 	public boolean forceExit = true;
+	/** whether to have chrome around the window **/
+	public boolean undecorated;
 
 	static public DisplayMode[] getDisplayModes () {
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
