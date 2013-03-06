@@ -118,9 +118,9 @@ public abstract class Camera {
 		direction.mul(tmpMat).nor();
 		up.mul(tmpMat).nor();
 	}
-	
-	/** Rotates the direction and up vector of this camera by the given angle around the given axis, with the axis attached to given point. 
-	 * The direction and up vector will not be orthogonalized.
+
+	/** Rotates the direction and up vector of this camera by the given angle around the given axis, with the axis attached to given
+	 * point. The direction and up vector will not be orthogonalized.
 	 * 
 	 * @param point
 	 * @param axis
@@ -148,13 +148,12 @@ public abstract class Camera {
 		position.add(vec);
 	}
 
-	/** Function to translate a point given in window (or window) coordinates to world space. It's the same as
-	 * {@link GLU#gluUnProject(float, float, float, float[], int, float[], int, int[], int, float[], int)} but does not rely on
-	 * OpenGL. The x- and y-coordinate of vec are assumed to be in window coordinates (origin is the top left corner, y pointing
-	 * down, x pointing to the right) as reported by the touch methods in {@link Input}. A z-coordinate of 0 will return a point on
-	 * the near plane, a z-coordinate of 1 will return a point on the far plane. This method allows you to specify the viewport
-	 * position and dimensions in the coordinate system expected by {@link GLCommon#glViewport(int, int, int, int)}, with the
-	 * origin in the bottom left corner of the screen.
+	/** Function to translate a point given in window (or window) coordinates to world space. It's the same as GLU gluUnProject, but
+	 * does not rely on OpenGL. The x- and y-coordinate of vec are assumed to be in window coordinates (origin is the top left
+	 * corner, y pointing down, x pointing to the right) as reported by the touch methods in {@link Input}. A z-coordinate of 0
+	 * will return a point on the near plane, a z-coordinate of 1 will return a point on the far plane. This method allows you to
+	 * specify the viewport position and dimensions in the coordinate system expected by
+	 * {@link GLCommon#glViewport(int, int, int, int)}, with the origin in the bottom left corner of the screen.
 	 * 
 	 * @param vec the point in window coordinates (origin top left)
 	 * @param viewportX the coordinate of the top left corner of the viewport in glViewport coordinates (origin bottom left)
@@ -172,35 +171,32 @@ public abstract class Camera {
 		vec.prj(invProjectionView);
 	}
 
-	/** Function to translate a point given in window (or window) coordinates to world space. It's the same as
-	 * {@link GLU#gluUnProject(float, float, float, float[], int, float[], int, int[], int, float[], int)} but does not rely on
-	 * OpenGL. The viewport is assumed to span the whole screen and is fetched from {@link Graphics#getWidth()} and
-	 * {@link Graphics#getHeight()}. The x- and y-coordinate of vec are assumed to be in window coordinates (origin is the top left
-	 * corner, y pointing down, x pointing to the right) as reported by the touch methods in {@link Input}. A z-coordinate of 0
-	 * will return a point on the near plane, a z-coordinate of 1 will return a point on the far plane.
+	/** Function to translate a point given in window (or window) coordinates to world space. It's the same as GLU gluUnProject but
+	 * does not rely on OpenGL. The viewport is assumed to span the whole screen and is fetched from {@link Graphics#getWidth()}
+	 * and {@link Graphics#getHeight()}. The x- and y-coordinate of vec are assumed to be in window coordinates (origin is the top
+	 * left corner, y pointing down, x pointing to the right) as reported by the touch methods in {@link Input}. A z-coordinate of
+	 * 0 will return a point on the near plane, a z-coordinate of 1 will return a point on the far plane.
 	 * 
 	 * @param vec the point in window coordinates */
 	public void unproject (Vector3 vec) {
 		unproject(vec, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
-	/** Projects the {@link Vector3} given in object/world space to window coordinates. It's the same as
-	 * {@link GLU#gluProject(float, float, float, float[], int, float[], int, int[], int, float[], int)} with one small deviation:
-	 * The viewport is assumed to span the whole screen. The window coordinate system has its origin in the <b>bottom</b> left,
-	 * with the y-axis pointing <b>upwards</b> and the x-axis pointing to the right. This makes it easily useable in conjunction
-	 * with {@link SpriteBatch} and similar classes.
+	/** Projects the {@link Vector3} given in object/world space to window coordinates. It's the same as GLU gluProject with one
+	 * small deviation: The viewport is assumed to span the whole screen. The window coordinate system has its origin in the
+	 * <b>bottom</b> left, with the y-axis pointing <b>upwards</b> and the x-axis pointing to the right. This makes it easily
+	 * useable in conjunction with {@link SpriteBatch} and similar classes.
 	 * @param vec the position in object/world space. */
 	public void project (Vector3 vec) {
 		project(vec, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
-	/** Projects the {@link Vector3} given in object/world space to window coordinates. It's the same as
-	 * {@link GLU#gluProject(float, float, float, float[], int, float[], int, int[], int, float[], int)} with one small deviation:
-	 * The viewport is assumed to span the whole screen. The window coordinate system has its origin in the <b>bottom</b> left,
-	 * with the y-axis pointing <b>upwards</b> and the x-axis pointing to the right. This makes it easily useable in conjunction
-	 * with {@link SpriteBatch} and similar classes. This method allows you to specify the viewport position and dimensions in the
-	 * coordinate system expected by {@link GLCommon#glViewport(int, int, int, int)}, with the origin in the bottom left corner of
-	 * the screen.
+	/** Projects the {@link Vector3} given in object/world space to window coordinates. It's the same as GLU gluProject with one
+	 * small deviation: The viewport is assumed to span the whole screen. The window coordinate system has its origin in the
+	 * <b>bottom</b> left, with the y-axis pointing <b>upwards</b> and the x-axis pointing to the right. This makes it easily
+	 * useable in conjunction with {@link SpriteBatch} and similar classes. This method allows you to specify the viewport position
+	 * and dimensions in the coordinate system expected by {@link GLCommon#glViewport(int, int, int, int)}, with the origin in the
+	 * bottom left corner of the screen.
 	 * 
 	 * @param vec the point in object/world space
 	 * @param viewportX the coordinate of the top left corner of the viewport in glViewport coordinates (origin bottom left)

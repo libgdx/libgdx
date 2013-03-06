@@ -52,13 +52,15 @@ public final class LwjglNativesLoader {
 		try {
 			if (isWindows) {
 				nativesDir = loader.extractFile(is64Bit ? "lwjgl64.dll" : "lwjgl.dll", null).getParentFile();
-				loader.extractFile(is64Bit ? "OpenAL64.dll" : "OpenAL32.dll", nativesDir.getName());
+				if (!LwjglApplicationConfiguration.disableAudio)
+					loader.extractFile(is64Bit ? "OpenAL64.dll" : "OpenAL32.dll", nativesDir.getName());
 			} else if (isMac) {
 				nativesDir = loader.extractFile("liblwjgl.jnilib", null).getParentFile();
-				loader.extractFile("openal.dylib", nativesDir.getName());
+				if (!LwjglApplicationConfiguration.disableAudio) loader.extractFile("openal.dylib", nativesDir.getName());
 			} else if (isLinux) {
 				nativesDir = loader.extractFile(is64Bit ? "liblwjgl64.so" : "liblwjgl.so", null).getParentFile();
-				loader.extractFile(is64Bit ? "libopenal64.so" : "libopenal.so", nativesDir.getName());
+				if (!LwjglApplicationConfiguration.disableAudio)
+					loader.extractFile(is64Bit ? "libopenal64.so" : "libopenal.so", nativesDir.getName());
 			}
 		} catch (Throwable ex) {
 			throw new GdxRuntimeException("Unable to extract LWJGL natives.", ex);

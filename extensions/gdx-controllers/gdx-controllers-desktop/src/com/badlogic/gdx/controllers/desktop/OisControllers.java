@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.controllers.desktop;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
+import com.badlogic.gdx.Graphics.GraphicsType;
 import com.badlogic.gdx.controllers.ControlType;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
@@ -29,20 +30,17 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-import java.awt.Container;
-import java.awt.Frame;
+import java.awt.Component;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import javax.swing.SwingUtilities;
 
-import org.lwjgl.opengl.Display;
-
 /** @author Nathan Sweet */
 public class OisControllers {
 	final DesktopControllerManager manager;
-	final Ois ois = new Ois(getLwjglWindowHandle());
+	final Ois ois = new Ois(getWindowHandle());
 	final OisController[] controllers;
 
 	public OisControllers (DesktopControllerManager manager) {
@@ -202,28 +200,37 @@ public class OisControllers {
 	}
 
 	/** Returns the window handle from LWJGL needed by OIS. */
-	static public long getLwjglWindowHandle () {
+	static public long getWindowHandle () {
 		// don't need a window handle for Mac OS X
-		if(System.getProperty("os.name").toLowerCase().contains("mac")) {
+		if (System.getProperty("os.name").toLowerCase().contains("mac")) {
 			return 0;
 		}
-		
-		try {
-			if (Gdx.app instanceof LwjglCanvas) {
-				return (Long)invokeMethod(
-					invokeMethod(SwingUtilities.windowForComponent(((LwjglCanvas)Gdx.app).getCanvas()), "getPeer"), "getHWnd");
-			}
 
-			Method getImplementation = Display.class.getDeclaredMethod("getImplementation", new Class[0]);
-			getImplementation.setAccessible(true);
-			Object display = getImplementation.invoke(null, (Object[])null);
-			String fieldName = System.getProperty("os.name").toLowerCase().contains("windows") ? "hwnd" : "parent_window";
-			Field field = display.getClass().getDeclaredField(fieldName);
-			field.setAccessible(true);
-			return (Long)field.get(display);
+		try {
+			if (Gdx.graphics.getType() == GraphicsType.JGLFW)
+				return (Long)Gdx.graphics.getClass().getDeclaredMethod("getWindow").invoke(null);
+
+			if (Gdx.graphics.getType() == GraphicsType.LWJGL) {
+				if (Gdx.app.getClass().getName().equals("com.badlogic.gdx.backends.lwjgl.LwjglCanvas")) {
+					Class canvasClass = Class.forName("com.badlogic.gdx.backends.lwjgl.LwjglCanvas");
+					Object canvas = canvasClass.getDeclaredMethod("getCanvas").invoke(Gdx.app);
+					return (Long)invokeMethod(invokeMethod(SwingUtilities.windowForComponent((Component)canvas), "getPeer"), "getHWnd");
+				}
+
+				Class displayClass = Class.forName("org.lwjgl.opengl.Display");
+				Method getImplementation = displayClass.getDeclaredMethod("getImplementation", new Class[0]);
+				getImplementation.setAccessible(true);
+				Object display = getImplementation.invoke(null, (Object[])null);
+				String fieldName = System.getProperty("os.name").toLowerCase().contains("windows") ? "hwnd" : "parent_window";
+				Field field = display.getClass().getDeclaredField(fieldName);
+				field.setAccessible(true);
+				return (Long)field.get(display);
+			}
 		} catch (Exception ex) {
 			throw new RuntimeException("Unable to get window handle.", ex);
 		}
+
+		return 0;
 	}
 
 	static private Object invokeMethod (Object object, String methodName) throws Exception {

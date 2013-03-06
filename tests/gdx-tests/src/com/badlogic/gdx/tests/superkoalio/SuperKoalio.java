@@ -36,12 +36,12 @@ public class SuperKoalio extends GdxTest {
 	/**
 	 * The player character, has state and state time, 
 	 */
-	private static class Koala {
-		private static float WIDTH;
-		private static float HEIGHT;
-		private static float MAX_VELOCITY = 10f;
-		private static float JUMP_VELOCITY = 40f;
-		private static float DAMPING = 0.87f;
+	static class Koala {
+		static float WIDTH;
+		static float HEIGHT;
+		static float MAX_VELOCITY = 10f;
+		static float JUMP_VELOCITY = 40f;
+		static float DAMPING = 0.87f;
 		
 		enum State {
 			Standing,

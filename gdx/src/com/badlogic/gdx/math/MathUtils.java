@@ -147,20 +147,22 @@ public class MathUtils {
 		return start + random.nextInt(end - start + 1);
 	}
 
+	/** Returns a random boolean value. */
 	static public final boolean randomBoolean () {
 		return random.nextBoolean();
 	}
 
+	/** Returns random number between 0.0 (inclusive) and 1.0 (exclusive). */
 	static public final float random () {
 		return random.nextFloat();
 	}
 
-	/** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
+	/** Returns a random number between 0 (inclusive) and the specified value (exclusive). */
 	static public final float random (float range) {
 		return random.nextFloat() * range;
 	}
 
-	/** Returns a random number between start (inclusive) and end (inclusive). */
+	/** Returns a random number between start (inclusive) and end (exclusive). */
 	static public final float random (float start, float end) {
 		return start + random.nextFloat() * (end - start);
 	}
