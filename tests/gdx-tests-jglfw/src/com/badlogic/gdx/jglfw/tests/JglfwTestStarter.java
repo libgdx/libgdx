@@ -99,7 +99,7 @@ public class JglfwTestStarter extends JFrame {
 			});
 
 			final Preferences prefs = new JglfwPreferences(new FileHandle(new JglfwFiles().getExternalStoragePath()
-				+ ".prefs/lwjgl-tests"));
+				+ ".prefs/jglfw-tests"));
 			list.setSelectedValue(prefs.getString("last", null), true);
 
 			button.addActionListener(new ActionListener() {
@@ -116,9 +116,6 @@ public class JglfwTestStarter extends JFrame {
 
 			add(pane, BorderLayout.CENTER);
 			add(button, BorderLayout.SOUTH);
-
-			// GdxTest test = GdxTests.newTest("BitmapFontFlipTest");
-			// new LwjglApplication(test, "Test", 480, 320, test.needsGL20());
 		}
 	}
 
