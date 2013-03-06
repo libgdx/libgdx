@@ -160,16 +160,24 @@ public class IOSNet implements Net {
 					httpWebRequest.set_Headers(webHeaderCollection);
 
 					if (method.equalsIgnoreCase(HttpMethods.POST)) {
-						Stream stream = httpWebRequest.GetRequestStream();
-
 						InputStream contentAsStream = httpRequest.getContentStream();
 						String contentAsString = httpRequest.getContent();
 
 						if (contentAsStream != null) {
+							httpWebRequest.set_ContentLength(contentAsStream.available());
+							
+							Stream stream = httpWebRequest.GetRequestStream();
 							StreamUtils.copyStream(contentAsStream, new OutputStreamNetStreamImpl(stream));
+							stream.Close();
 						} else if (contentAsString != null) {
-							new StreamWriter(stream).Write(contentAsString);
+							byte[] data = contentAsString.getBytes();
+							httpWebRequest.set_ContentLength(data.length);
+							
+							Stream stream = httpWebRequest.GetRequestStream();
+							stream.Write(data, 0, data.length);
+							stream.Close();
 						}
+						
 					}
 
 					final HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
