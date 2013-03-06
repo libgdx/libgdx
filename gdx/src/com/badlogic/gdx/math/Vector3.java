@@ -188,48 +188,72 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this.set(this.x - value, this.y - value, this.z - value);
 	}
 
-	/** Multiplies all components of this vector by the given value
-	 * 
+	/** Scales this vector by the given value
 	 * @param value The value
 	 * @return This vector for chaining */
-	public Vector3 mul (float value) {
+	public Vector3 scl (float value) {
 		return this.set(this.x * value, this.y * value, this.z * value);
 	}
-
-	/** Multiplies all components of this vector by the given vector3's values
-	 * 
-	 * @param other The vector3 to multiply by
-	 * @return This vector for chaining */
-	public Vector3 mul (final Vector3 other) {
-		return this.set(x * other.x, y * other.y, z * other.z);
+	
+	/** @deprecated Use {@link #scl(float)} instead. */
+	public Vector3 mul (float value) {
+		return scl(value);
 	}
 
-	/** Multiplies all components of this vector by the given values
-	 * 
+	/** Scales this vector by the given vector3's values
+	 * @param other The vector3 to multiply by
+	 * @return This vector for chaining */
+	public Vector3 scl (final Vector3 other) {
+		return this.set(x * other.x, y * other.y, z * other.z);
+	}
+	
+	/** @deprecated Use {@link #scl(Vector3)} instead. */
+	public Vector3 mul (final Vector3 other) {
+		return scl(other);
+	}
+
+	/** Scales this vector by the given values
 	 * @param vx X value
 	 * @param vy Y value
 	 * @param vz Z value
 	 * @return This vector for chaining */
-	public Vector3 mul (float vx, float vy, float vz) {
+	public Vector3 scl (float vx, float vy, float vz) {
 		return this.set(this.x * vx, this.y * vy, this.z * vz);
 	}
+	
+	/** @deprecated Use {@link #scl(float, float, float)} instead. */
+	public Vector3 mul (float vx, float vy, float vz) {
+		return scl(vx, vy, vz);
+	}
 
-	/** Divides all components of this vector by the given value
-	 * 
+	/** @deprecated Use {@link #scl(float, float, float)} instead. */
+	public Vector3 scale (float scalarX, float scalarY, float scalarZ) {
+		return scl(scalarX, scalarY, scalarZ);
+	}
+	
+	/** @deprecated Use {@link #scl(float)} instead.
+	 * Divides all components of this vector by the given value
 	 * @param value The value
 	 * @return This vector for chaining */
 	public Vector3 div (float value) {
-		return this.mul(1/value);
+		return this.scl(1f/value);
 	}
 
-	/** Divides this vector by the given vector */
+	/** @deprecated Use {@link #scl(float, float, float)} instead.
+	 * Divides this vector by the given vector */
 	public Vector3 div (float vx, float vy, float vz) {
 		return this.set(x/vx, y/vy, z/vz);
 	}
 
-	/** Divides this vector by the given vector */
+	/** @deprecated Use {@link #scl(Vector3)} instead. 
+	 * Divides this vector by the given vector */
 	public Vector3 div (final Vector3 other) {
 		return this.set(x/other.x, y/other.y, z/other.z);
+	}
+	
+	/** @return The euclidian length */
+	public static float len (final float x, final float y, final float z) {
+		return (float)Math.sqrt(x * x + y * y + z * z);
 	}
 
 	/** @return The euclidian length */
@@ -237,6 +261,11 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return (float)Math.sqrt(x * x + y * y + z * z);
 	}
 
+	/** @return The squared euclidian length */
+	public static float len2 (final float x, final float y, final float z) {
+		return x * x + y * y + z * z;
+	}
+	
 	/** @return The squared euclidian length */
 	public float len2 () {
 		return x * x + y * y + z * z;
@@ -247,6 +276,14 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	public boolean idt (final Vector3 vector) {
 		return x == vector.x && y == vector.y && z == vector.z;
 	}
+	
+	/** @return The euclidian distance between the two specified vectors */
+	public static float dst (final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
+		final float a = x2 - x1;
+		final float b = y2 - y1;
+		final float c = z2 - z1;
+		return (float)Math.sqrt(a * a + b * b + c * c); 
+	}
 
 	/** @param vector The other vector
 	 * @return The euclidian distance between this and the other vector */
@@ -254,18 +291,54 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		final float a = vector.x - x;
 		final float b = vector.y - y;
 		final float c = vector.z - z;
-
 		return (float)Math.sqrt(a * a + b * b + c * c);
 	}
 
+	/** @return the distance between this point and the given point */
+	public float dst (float x, float y, float z) {
+		final float a = x - this.x;
+		final float b = y - this.y;
+		final float c = z - this.z;
+		return (float)Math.sqrt(a * a + b * b + c * c);
+	}
+	
+	/** @return the squared distance between the given points */
+	public static float dst2(final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
+		final float a = x2 - x1;
+		final float b = y2 - y1;
+		final float c = z2 - z1;
+		return a * a + b * b + c * c; 
+	}
+	
+	/** Returns the squared distance between this point and the given point
+	 * @param point The other point
+	 * @return The squared distance */
+	public float dst2 (Vector3 point) {
+		final float a = point.x - x;
+		final float b = point.y - y;
+		final float c = point.z - z;
+		return a * a + b * b + c * c;
+	}
+	
+	/** Returns the squared distance between this point and the given point
+	 * @param x The x-component of the other point
+	 * @param y The y-component of the other point
+	 * @param z The z-component of the other point
+	 * @return The squared distance */
+	public float dst2 (float x, float y, float z) {
+		final float a = x - this.x;
+		final float b = y - this.y;
+		final float c = z - this.z;
+		return a * a + b * b + c * c;
+	}
+
 	/** Normalizes this vector to unit length
-	 * 
 	 * @return This vector for chaining */
 	public Vector3 nor () {
 		final float len2 = this.len2();
 		if (len2 == 0f || len2 == 1f)
 			return this;
-		return this.div((float)Math.sqrt(len2));
+		return this.scl(1f/(float)Math.sqrt(len2));
 	}
 	
 	/** @return The dot product between the two vectors */
@@ -279,6 +352,15 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return x * vector.x + y * vector.y + z * vector.z;
 	}
 
+	/** Returns the dot product between this and the given vector.
+	 * @param x The x-component of the other vector
+	 * @param y The y-component of the other vector
+	 * @param z The z-component of the other vector
+	 * @return The dot product */
+	public float dot (float x, float y, float z) {
+		return this.x * x + this.y * y + this.z * z;
+	}
+	
 	/** Sets this vector to the cross product between it and the other vector.
 	 * @param vector The other vector
 	 * @return This vector for chaining */
@@ -305,6 +387,12 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 			* l_mat[Matrix4.M21] + z * l_mat[Matrix4.M22] + l_mat[Matrix4.M23]);
 	}
 
+	/** Multiplies the vector by the given {@link Quaternion}.
+	 * @return This vector for chaining */	
+	public Vector3 mul (final Quaternion quat) {
+		return quat.transform(this);
+	}
+	
 	/** Multiplies this vector by the given matrix dividing by w. This is mostly used to project/unproject vectors via a perspective
 	 * projection matrix.
 	 * 
@@ -350,12 +438,22 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	/** @return Whether this vector is a unit length vector */
 	public boolean isUnit () {
-		return this.len2() == 1f;
+		return isUnit(0.000000001f);
+	}
+	
+	/** @return Whether this vector is a unit length vector within the given margin */
+	public boolean isUnit(final float margin) {
+		return Math.abs(len2() - 1f) < margin * margin;
 	}
 
 	/** @return Whether this vector is a zero vector */
 	public boolean isZero () {
 		return x == 0 && y == 0 && z == 0;
+	}
+	
+	/** @return Whether the length of this vector is smaller than the given margin */
+	public boolean isZero (final float margin) {
+		return len2() < margin * margin;
 	}
 
 	/** Linearly interpolates between this vector and the target vector by alpha which is in the range [0,1]. The result is stored
@@ -365,7 +463,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param alpha The interpolation coefficient
 	 * @return This vector for chaining. */
 	public Vector3 lerp (final Vector3 target, float alpha) {
-		mul(1.0f - alpha);
+		scl(1.0f - alpha);
 		add(target.x * alpha, target.y * alpha, target.z * alpha);
 		return this;
 	}
@@ -379,8 +477,8 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	public Vector3 slerp (final Vector3 target, float alpha) {
 		final float dot = dot(target);
 		// If the inputs are too close for comfort, simply linearly interpolate.
-		if (dot > 0.99995 || dot < -0.9995)
-			return this.add(target.x - x * alpha, target.y - y * alpha, target.z - z * alpha).nor();
+		if (dot > 0.9995 || dot < -0.9995)
+			return lerp(target, alpha);
 
 		// theta0 = angle between input vectors
 		final float theta0 = (float)Math.acos(dot);
@@ -392,46 +490,21 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		final float ty = target.y - y * dot;
 		final float tz = target.z - z * dot;
 		final float l2 = tx * tx + ty * ty + tz * tz;
-		final float dl = st * ((l2 == 0 || l2 == 1f) ? 1f : 1f / (float)Math.sqrt(l2));
+		final float dl = st * ((l2 < 0.0001f) ? 1f : 1f / (float)Math.sqrt(l2));
 		
-		return this.mul((float)Math.cos(theta)).add(tx * dl, ty * dl, tz * dl).nor();
+		return scl((float)Math.cos(theta)).add(tx * dl, ty * dl, tz * dl).nor();
 	}
 
-	/** {@inheritDoc} */
 	public String toString () {
 		return x + "," + y + "," + z;
-	}
-
-	/** Returns the dot product between this and the given vector.
-	 * 
-	 * @param x The x-component of the other vector
-	 * @param y The y-component of the other vector
-	 * @param z The z-component of the other vector
-	 * @return The dot product */
-	public float dot (float x, float y, float z) {
-		return this.x * x + this.y * y + this.z * z;
-	}
-
-	/** Returns the squared distance between this point and the given point
-	 * 
-	 * @param point The other point
-	 * @return The squared distance */
-	public float dst2 (Vector3 point) {
-		final float a = point.x - x;
-		final float b = point.y - y;
-		final float c = point.z - z;
-
-		return a * a + b * b + c * c;
 	}
 	
 	/** Limits this vector's length to given value
 	 * @param limit Max length
 	 * @return This vector for chaining */
 	public Vector3 limit (float limit) {
-		if (len2() > limit * limit) {
-			nor();
-			mul(limit);
-		}
+		if (len2() > limit * limit)
+			nor().scl(limit);
 		return this;
 	}
 	
@@ -444,30 +517,10 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		if (l2 == 0f)
 			return this;
 		if (l2 > max * max)
-			return nor().mul(max);
+			return nor().scl(max);
 		if (l2 < min * min)
-			return nor().mul(min);
+			return nor().scl(min);
 		return this;
-	}
-
-	/** Returns the squared distance between this point and the given point
-	 * 
-	 * @param x The x-component of the other point
-	 * @param y The y-component of the other point
-	 * @param z The z-component of the other point
-	 * @return The squared distance */
-	public float dst2 (float x, float y, float z) {
-		final float a = x - this.x;
-		final float b = y - this.y;
-		final float c = z - this.z;
-
-		return a * a + b * b + c * c;
-	}
-
-	/** @return the distance between this point and the given point */
-	public float dst (float x, float y, float z) {
-		final float d2 = dst2(x, y, z);
-		return (d2 == 0f || d2 == 1f) ? d2 : (float)Math.sqrt(d2);
 	}
 
 	@Override
@@ -511,15 +564,5 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		if (Math.abs(y - this.y) > epsilon) return false;
 		if (Math.abs(z - this.z) > epsilon) return false;
 		return true;
-	}
-
-	/** @deprecated Use {@link #mul(float, float, float)} instead.
-	 * Scales the vector components by the given scalars.
-	 * 
-	 * @param scalarX
-	 * @param scalarY
-	 * @param scalarZ */
-	public Vector3 scale (float scalarX, float scalarY, float scalarZ) {
-		return mul(scalarX, scalarY, scalarZ);
 	}
 }
