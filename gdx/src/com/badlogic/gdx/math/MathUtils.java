@@ -128,6 +128,10 @@ public class MathUtils {
 			add = 0;
 		}
 		float invDiv = 1 / ((x < y ? y : x) * INV_ATAN2_DIM_MINUS_1);
+		
+		if (invDiv == Float.POSITIVE_INFINITY)
+			return ((float)Math.atan2(y, x) + add) * mul;
+		
 		int xi = (int)(x * invDiv);
 		int yi = (int)(y * invDiv);
 		return (Atan2.table[yi * ATAN2_DIM + xi] + add) * mul;
