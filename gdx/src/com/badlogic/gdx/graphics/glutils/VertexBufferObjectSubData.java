@@ -72,8 +72,17 @@ public class VertexBufferObjectSubData implements VertexData {
 	 * @param numVertices the maximum number of vertices
 	 * @param attributes the {@link VertexAttribute}s. */
 	public VertexBufferObjectSubData (boolean isStatic, int numVertices, VertexAttribute... attributes) {
+		this(isStatic, numVertices, new VertexAttributes(attributes));
+	}
+	
+	/** Constructs a new interleaved VertexBufferObject.
+	 * 
+	 * @param isStatic whether the vertex data is static.
+	 * @param numVertices the maximum number of vertices
+	 * @param attributes the {@link VertexAttribute}s. */
+	public VertexBufferObjectSubData (boolean isStatic, int numVertices, VertexAttributes attributes) {
 		this.isStatic = isStatic;
-		this.attributes = new VertexAttributes(attributes);
+		this.attributes = attributes;
 // if (Gdx.app.getType() == ApplicationType.Android
 // && Gdx.app.getVersion() < 5) {
 // byteBuffer = ByteBuffer.allocate(this.attributes.vertexSize

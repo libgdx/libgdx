@@ -125,6 +125,41 @@ public class Mesh implements Disposable {
 		addManagedMesh(Gdx.app, this);
 	}
 
+	/** by jw:
+	 * Creates a new Mesh with the given attributes. 
+	 * Adds extra optimizations for dynamic (frequently modified) meshes.
+	 * 
+	 * @param staticVertices whether vertices of this mesh are static or not. Allows for internal optimizations.
+	 * @param staticIndices whether indices of this mesh are static or not. Allows for internal optimizations.
+	 * @param maxVertices the maximum number of vertices this mesh can hold
+	 * @param maxIndices the maximum number of indices this mesh can hold
+	 * @param attributes the {@link VertexAttributes}. Each vertex attribute defines one property of a vertex such as position,
+	 *           normal or texture coordinate 
+	 *           
+	 * @author Jaroslaw Wisniewski <j.wisniewski@appsisle.com>           
+	 **/
+	public Mesh (boolean staticVertices, boolean staticIndices, int maxVertices, int maxIndices, VertexAttributes attributes) {
+		if (Gdx.gl20 != null || Gdx.gl11 != null || Mesh.forceVBO) {
+			if (staticVertices) 
+				vertices = new VertexBufferObject(true, maxVertices, attributes);
+			else 
+				vertices = new VertexBufferObjectSubData(false, maxVertices, attributes);	// when updating vertices - updates buffer instead recreating it
+
+			if (staticIndices) 
+				indices = new IndexBufferObject(true, maxIndices);
+			else 
+				indices = new IndexBufferObjectSubData(false, maxIndices);	// when updating indices - updates buffer instead recreating it
+			
+			isVertexArray = false;
+		} else {
+			vertices = new VertexArray(maxVertices, attributes);
+			indices = new IndexArray(maxIndices);
+			isVertexArray = true;
+		}
+
+		addManagedMesh(Gdx.app, this);
+	}
+	
 	/** Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own risk.
 	 * 
 	 * @param type the {@link VertexDataType} to be used, VBO or VA.
