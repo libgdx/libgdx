@@ -140,16 +140,21 @@ public class Mesh implements Disposable {
 	 **/
 	public Mesh (boolean staticVertices, boolean staticIndices, int maxVertices, int maxIndices, VertexAttributes attributes) {
 		if (Gdx.gl20 != null || Gdx.gl11 != null || Mesh.forceVBO) {
-			if (staticVertices) 
-				vertices = new VertexBufferObject(true, maxVertices, attributes);
+			
+			// buffers do not update when initialized with ..ObjectSubData classes
+			/*if (staticVertices) 
+				vertices = new VertexBufferObject(staticVertices, maxVertices, attributes);
 			else 
-				vertices = new VertexBufferObjectSubData(false, maxVertices, attributes);	// when updating vertices - updates buffer instead recreating it
+				vertices = new VertexBufferObjectSubData(staticVertices, maxVertices, attributes);	// when updating vertices - updates buffer instead recreating it
 
 			if (staticIndices) 
-				indices = new IndexBufferObject(true, maxIndices);
+				indices = new IndexBufferObject(staticIndices, maxIndices);
 			else 
-				indices = new IndexBufferObjectSubData(false, maxIndices);	// when updating indices - updates buffer instead recreating it
+				indices = new IndexBufferObjectSubData(staticIndices, maxIndices);	// when updating indices - updates buffer instead recreating it
+			*/
 			
+			vertices = new VertexBufferObject(staticVertices, maxVertices, attributes);
+			indices = new IndexBufferObject(staticIndices, maxIndices);
 			isVertexArray = false;
 		} else {
 			vertices = new VertexArray(maxVertices, attributes);
