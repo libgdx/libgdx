@@ -37,7 +37,7 @@ public class JglfwApplicationConfiguration {
 	public boolean forceExit = true;
 	/** True to have a title and border around the window **/
 	public boolean undecorated;
-	/** Must be true for OSX if any AWT is used. When enabled keyup won't be sent for cmd+key on OSX. **/
+	/** Must be true for OSX if any AWT classes are used. **/
 	public boolean enableAWT;
 
 	static public DisplayMode[] getDisplayModes () {

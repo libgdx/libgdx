@@ -20,7 +20,14 @@ import com.badlogic.jglfw.GlfwCallbacks;
 import java.util.HashMap;
 import java.util.Map;
 
-/** An OpenGL surface fullscreen or in a lightweight window.
+/** An OpenGL surface fullscreen or in a lightweight window using GLFW.
+ * <p>
+ * When running on OSX and no AWT classes are being used, the -XstartOnFirstThread JVM parameter must be specified or the app will
+ * crash.
+ * <p>
+ * When running on OSX and AWT classes are being used, the -XstartOnFirstThread JVM parameter must not be specified or the app
+ * will hang. Also, {@link JglfwApplicationConfiguration#enableAWT} must be true or input events will be erratic. When AWT classes
+ * are used, keyUp won't happen for cmd+key combinations.
  * @author mzechner
  * @author Nathan Sweet */
 public class JglfwApplication implements Application {
