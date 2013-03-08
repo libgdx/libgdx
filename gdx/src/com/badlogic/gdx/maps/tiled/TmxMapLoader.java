@@ -335,14 +335,14 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 							if (flipDiagonally) {
 								if (flipHorizontally && flipVertically) {
 									cell.setFlipHorizontally(true);
-									cell.setRotation(Cell.ROTATE_90);
-								} else if (flipHorizontally) {
-									cell.setRotation(Cell.ROTATE_90);
-								} else if (flipVertically) {
 									cell.setRotation(Cell.ROTATE_270);
+								} else if (flipHorizontally) {
+									cell.setRotation(Cell.ROTATE_270);
+								} else if (flipVertically) {
+									cell.setRotation(Cell.ROTATE_90);
 								} else {
 									cell.setFlipVertically(true);
-									cell.setRotation(Cell.ROTATE_90);
+									cell.setRotation(Cell.ROTATE_270);
 								}
 							} else {
 								cell.setFlipHorizontally(flipHorizontally);
@@ -380,14 +380,14 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 									if (flipDiagonally) {
 										if (flipHorizontally && flipVertically) {
 											cell.setFlipHorizontally(true);
-											cell.setRotation(Cell.ROTATE_90);
-										} else if (flipHorizontally) {
-											cell.setRotation(Cell.ROTATE_90);
-										} else if (flipVertically) {
 											cell.setRotation(Cell.ROTATE_270);
+										} else if (flipHorizontally) {
+											cell.setRotation(Cell.ROTATE_270);
+										} else if (flipVertically) {
+											cell.setRotation(Cell.ROTATE_90);
 										} else {
 											cell.setFlipVertically(true);
-											cell.setRotation(Cell.ROTATE_90);
+											cell.setRotation(Cell.ROTATE_270);
 										}
 									} else {
 										cell.setFlipHorizontally(flipHorizontally);
@@ -430,14 +430,14 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 										if (flipDiagonally) {
 											if (flipHorizontally && flipVertically) {
 												cell.setFlipHorizontally(true);
-												cell.setRotation(Cell.ROTATE_90);
-											} else if (flipHorizontally) {
-												cell.setRotation(Cell.ROTATE_90);
-											} else if (flipVertically) {
 												cell.setRotation(Cell.ROTATE_270);
+											} else if (flipHorizontally) {
+												cell.setRotation(Cell.ROTATE_270);
+											} else if (flipVertically) {
+												cell.setRotation(Cell.ROTATE_90);
 											} else {
 												cell.setFlipVertically(true);
-												cell.setRotation(Cell.ROTATE_90);
+												cell.setRotation(Cell.ROTATE_270);
 											}
 										} else {
 											cell.setFlipHorizontally(flipHorizontally);
@@ -481,14 +481,14 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 										if (flipDiagonally) {
 											if (flipHorizontally && flipVertically) {
 												cell.setFlipHorizontally(true);
-												cell.setRotation(-90);
+												cell.setRotation(Cell.ROTATE_270);
 											} else if (flipHorizontally) {
-												cell.setRotation(-90);
+												cell.setRotation(Cell.ROTATE_270);
 											} else if (flipVertically) {
-												cell.setRotation(+90);
+												cell.setRotation(Cell.ROTATE_90);
 											} else {
 												cell.setFlipVertically(true);
-												cell.setRotation(-90);
+												cell.setRotation(Cell.ROTATE_270);
 											}
 										} else {
 											cell.setFlipHorizontally(flipHorizontally);
