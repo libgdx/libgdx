@@ -11,32 +11,34 @@ import java.awt.GraphicsEnvironment;
 
 /** @author Nathan Sweet */
 public class JglfwApplicationConfiguration {
-	/** title of application window **/
+	/** Title of application window **/
 	public String title = "";
-	/** width & height of application window **/
+	/** Width & height of application window **/
 	public int width = 640, height = 480;
-	/** x & y of application window, -1 for center **/
+	/** The x & y of application window, -1 for center **/
 	public int x = -1, y = -1;
-	/** whether to start in fullscreen **/
+	/** True to start in fullscreen **/
 	public boolean fullscreen;
-	/** monitor index to use for fullscreen **/
+	/** Monitor index to use for fullscreen **/
 	public int fullscreenMonitorIndex = -1;
-	/** number of bits per color channel **/
+	/** Number of bits per color channel **/
 	public int r = 8, g = 8, b = 8, a = 8;
-	/** number of bits for depth and stencil buffer **/
+	/** Number of bits for depth and stencil buffer **/
 	public int depth = 16, stencil = 0;
-	/** number of samples for MSAA **/
+	/** Number of samples for MSAA **/
 	public int samples = 0;
-	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
+	/** True to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
 	public boolean vSync = true;
-	/** whether the window is resizable **/
+	/** True if the window is resizable **/
 	public boolean resizable = true;
-	/** whether to attempt to use OpenGL ES 2.0. Note GL2 may be unavailable even when this is true. default: false **/
-	public boolean useGL20 = false;
-	/** whether to call System.exit() when the main loop exits **/
+	/** True to attempt to use OpenGL ES 2.0. Note GL2 may be unavailable even when this is true. default: false **/
+	public boolean useGL20;
+	/** True to call System.exit() when the main loop exits **/
 	public boolean forceExit = true;
-	/** whether to have chrome around the window **/
+	/** True to have a title and border around the window **/
 	public boolean undecorated;
+	/** Must be true for OSX if any AWT is used. When enabled keyup won't be sent for cmd+key on OSX. **/
+	public boolean enableAWT;
 
 	static public DisplayMode[] getDisplayModes () {
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();

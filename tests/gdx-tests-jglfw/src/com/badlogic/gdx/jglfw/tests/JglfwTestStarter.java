@@ -26,6 +26,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -58,16 +59,17 @@ public class JglfwTestStarter extends JFrame {
 	 * @param testName the name of a test class
 	 * @return {@code true} if the test was found and run, {@code false} otherwise */
 	public static boolean runTest (String testName) {
-		GdxTest test = GdxTests.newTest(testName);
+		final GdxTest test = GdxTests.newTest(testName);
 		if (test == null) {
 			return false;
 		}
-		JglfwApplicationConfiguration config = new JglfwApplicationConfiguration();
+		final JglfwApplicationConfiguration config = new JglfwApplicationConfiguration();
 		config.width = 640;
 		config.height = 480;
 		config.title = testName;
 		config.useGL20 = test.needsGL20();
 		config.forceExit = false;
+		config.enableAWT = true;
 		new JglfwApplication(test, config).start();
 		return true;
 	}

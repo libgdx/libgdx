@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.backends.jglfw;
 
+import static com.badlogic.gdx.utils.SharedLibraryLoader.*;
 import static com.badlogic.jglfw.Glfw.*;
 
 import com.badlogic.gdx.Application;
@@ -39,7 +40,7 @@ public class JglfwApplication implements Application {
 	int logLevel = LOG_INFO;
 
 	public JglfwApplication (ApplicationListener listener) {
-		this(listener, listener.getClass().getSimpleName(), 640, 480, true);
+		this(listener, listener.getClass().getSimpleName(), 640, 480, false);
 	}
 
 	public JglfwApplication (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
@@ -52,12 +53,13 @@ public class JglfwApplication implements Application {
 		config.width = width;
 		config.height = height;
 		config.useGL20 = useGL2;
-		config.vSync = true;
 		return config;
 	}
 
 	public JglfwApplication (final ApplicationListener listener, JglfwApplicationConfiguration config) {
 		this.listener = listener;
+
+		if (config.enableAWT && isMac) java.awt.Toolkit.getDefaultToolkit(); // Ensure AWT is initialized before GLFW.
 
 		forceExit = config.forceExit;
 
@@ -67,7 +69,7 @@ public class JglfwApplication implements Application {
 		Gdx.app = this;
 		Gdx.graphics = graphics = new JglfwGraphics(config);
 		Gdx.files = files = new JglfwFiles();
-		Gdx.input = input = new JglfwInput(this);
+		Gdx.input = input = new JglfwInput(this, config.enableAWT && isMac);
 		Gdx.net = net = new JglfwNet();
 
 		glfwSetCallback(callbacks);

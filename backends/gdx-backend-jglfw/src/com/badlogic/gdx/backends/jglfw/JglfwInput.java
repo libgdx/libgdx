@@ -5,6 +5,7 @@ import static com.badlogic.jglfw.Glfw.*;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.InputProcessorQueue;
 import com.badlogic.jglfw.GlfwCallbackAdapter;
 
 import java.awt.Color;
@@ -27,87 +28,85 @@ import javax.swing.event.DocumentListener;
  * @author mzechner
  * @author Nathan Sweet */
 public class JglfwInput implements Input {
-	JglfwApplication app;
+	final JglfwApplication app;
+	final InputProcessorQueue processorQueue;
 	InputProcessor processor;
 	int pressedKeys = 0;
 	boolean justTouched;
 	int deltaX, deltaY;
+	long currentEventTime;
 
-	public JglfwInput (final JglfwApplication app) {
+	public JglfwInput (final JglfwApplication app, boolean queueEvents) {
 		this.app = app;
 
-		app.callbacks.add(new GlfwCallbackAdapter() {
-			private int mouseX, mouseY, mousePressed;
-			private char lastCharacter;
+		InputProcessor inputProcessor = new InputProcessor() {
+			private int mouseX, mouseY;
 
-			public void key (long window, int key, int action) {
-				key = getGdxKeyCode(key);
-				switch (action) {
-				case GLFW_PRESS:
-					pressedKeys++;
-					if (processor != null) processor.keyDown(key);
-
-					lastCharacter = 0;
-					char character = characterForKeyCode(key);
-					if (character != 0) character(window, character);
-					break;
-				case GLFW_RELEASE:
-					pressedKeys--;
-					if (processor != null) processor.keyUp(key);
-					break;
-				case GLFW_REPEAT:
-					if (processor != null && lastCharacter != 0) processor.keyTyped(lastCharacter);
-					break;
-				}
+			public boolean keyDown (int keycode) {
+				pressedKeys++;
 				app.graphics.requestRendering();
+				return processor != null ? processor.keyDown(keycode) : false;
 			}
 
-			public void character (long window, char character) {
-				lastCharacter = character;
-				if (processor != null) processor.keyTyped(character);
+			public boolean keyUp (int keycode) {
+				pressedKeys--;
 				app.graphics.requestRendering();
+				return processor != null ? processor.keyUp(keycode) : false;
 			}
 
-			public void scroll (long window, double scrollX, double scrollY) {
-				if (processor != null) processor.scrolled((int)-Math.signum(scrollY));
+			public boolean keyTyped (char character) {
 				app.graphics.requestRendering();
+				return processor != null ? processor.keyTyped(character) : false;
 			}
 
-			public void mouseButton (long window, int button, boolean pressed) {
-				if (pressed) {
-					mousePressed++;
-					justTouched = true;
-					if (processor != null) processor.touchDown(mouseX, mouseY, 0, button);
-					justTouched = true;
-				} else {
-					mousePressed--;
-					if (processor != null) processor.touchUp(mouseX, mouseY, 0, button);
-				}
+			public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+				justTouched = true;
 				app.graphics.requestRendering();
+				return processor != null ? processor.touchDown(screenX, screenY, pointer, button) : false;
 			}
 
-			public void cursorPos (long window, int x, int y) {
-				deltaX = x - mouseX;
-				deltaY = y - mouseX;
-				mouseX = x;
-				mouseY = y;
-				if (processor != null) {
-					if (mousePressed > 0)
-						processor.touchDragged(mouseX, mouseY, 0);
-					else
-						processor.mouseMoved(mouseX, mouseY);
-				}
+			public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 				app.graphics.requestRendering();
+				return processor != null ? processor.touchUp(screenX, screenY, pointer, button) : false;
 			}
 
-			public void cursorEnter (long window, boolean entered) {
+			public boolean touchDragged (int screenX, int screenY, int pointer) {
+				deltaX = screenX - mouseX;
+				deltaY = screenY - mouseY;
+				mouseX = screenX;
+				mouseY = screenY;
+				app.graphics.requestRendering();
+				return processor != null ? processor.touchDragged(mouseX, mouseY, 0) : false;
 			}
-		});
+
+			public boolean mouseMoved (int screenX, int screenY) {
+				deltaX = screenX - mouseX;
+				deltaY = screenY - mouseX;
+				mouseX = screenX;
+				mouseY = screenY;
+				app.graphics.requestRendering();
+				return processor != null ? processor.mouseMoved(mouseX, mouseY) : false;
+			}
+
+			public boolean scrolled (int amount) {
+				app.graphics.requestRendering();
+				return processor != null ? processor.scrolled(amount) : false;
+			}
+		};
+
+		processorQueue = queueEvents ? new InputProcessorQueue(inputProcessor) : null;
+
+		app.callbacks.add(new GlfwInputProcessor(inputProcessor));
 	}
 
 	public void update () {
 		justTouched = false;
-		glfwPollEvents();
+		if (processorQueue != null)
+			processorQueue.drain(); // Main loop is handled elsewhere and events are queued.
+		else {
+			currentEventTime = System.nanoTime();
+			glfwPollEvents(); // Use GLFW main loop to process events.
+		}
 	}
 
 	public float getAccelerometerX () {
@@ -127,10 +126,7 @@ public class JglfwInput implements Input {
 	}
 
 	public int getX (int pointer) {
-		if (pointer > 0)
-			return 0;
-		else
-			return getX();
+		return pointer > 0 ? 0 : getX();
 	}
 
 	public int getY () {
@@ -138,10 +134,7 @@ public class JglfwInput implements Input {
 	}
 
 	public int getY (int pointer) {
-		if (pointer > 0)
-			return 0;
-		else
-			return getY();
+		return pointer > 0 ? 0 : getY();
 	}
 
 	public int getDeltaX () {
@@ -149,10 +142,7 @@ public class JglfwInput implements Input {
 	}
 
 	public int getDeltaX (int pointer) {
-		if (pointer > 0)
-			return 0;
-		else
-			return deltaX;
+		return pointer > 0 ? 0 : deltaX;
 	}
 
 	public int getDeltaY () {
@@ -160,10 +150,7 @@ public class JglfwInput implements Input {
 	}
 
 	public int getDeltaY (int pointer) {
-		if (pointer > 0)
-			return 0;
-		else
-			return deltaY;
+		return pointer > 0 ? 0 : deltaY;
 	}
 
 	public boolean isTouched () {
@@ -172,10 +159,7 @@ public class JglfwInput implements Input {
 	}
 
 	public boolean isTouched (int pointer) {
-		if (pointer > 0)
-			return false;
-		else
-			return isTouched();
+		return pointer > 0 ? false : isTouched();
 	}
 
 	public boolean justTouched () {
@@ -187,10 +171,77 @@ public class JglfwInput implements Input {
 	}
 
 	public boolean isKeyPressed (int key) {
-		if (key == Input.Keys.ANY_KEY)
-			return pressedKeys > 0;
-		else
-			return glfwGetKey(app.graphics.window, getJglfwKeyCode(key));
+		if (key == Input.Keys.ANY_KEY) return pressedKeys > 0;
+		return glfwGetKey(app.graphics.window, getJglfwKeyCode(key));
+	}
+
+	public void setOnscreenKeyboardVisible (boolean visible) {
+	}
+
+	public void vibrate (int milliseconds) {
+	}
+
+	public void vibrate (long[] pattern, int repeat) {
+	}
+
+	public void cancelVibrate () {
+	}
+
+	public float getAzimuth () {
+		return 0;
+	}
+
+	public float getPitch () {
+		return 0;
+	}
+
+	public float getRoll () {
+		return 0;
+	}
+
+	public void getRotationMatrix (float[] matrix) {
+	}
+
+	public long getCurrentEventTime () {
+		return processorQueue != null ? processorQueue.getCurrentEventTime() : currentEventTime;
+	}
+
+	public void setCatchBackKey (boolean catchBack) {
+	}
+
+	public void setCatchMenuKey (boolean catchMenu) {
+	}
+
+	public void setInputProcessor (InputProcessor processor) {
+		this.processor = processor;
+	}
+
+	public InputProcessor getInputProcessor () {
+		return processor;
+	}
+
+	public boolean isPeripheralAvailable (Peripheral peripheral) {
+		return peripheral == Peripheral.HardwareKeyboard;
+	}
+
+	public int getRotation () {
+		return 0;
+	}
+
+	public Orientation getNativeOrientation () {
+		return Orientation.Landscape;
+	}
+
+	public void setCursorCatched (boolean captured) {
+		glfwSetInputMode(app.graphics.window, GLFW_CURSOR_MODE, captured ? GLFW_CURSOR_CAPTURED : GLFW_CURSOR_NORMAL);
+	}
+
+	public boolean isCursorCatched () {
+		return glfwGetInputMode(app.graphics.window, GLFW_CURSOR_MODE) == GLFW_CURSOR_CAPTURED;
+	}
+
+	public void setCursorPosition (int x, int y) {
+		glfwSetCursorPos(app.graphics.window, x, y);
 	}
 
 	public void getTextInput (final TextInputListener listener, final String title, final String text) {
@@ -277,76 +328,7 @@ public class JglfwInput implements Input {
 		});
 	}
 
-	public void setOnscreenKeyboardVisible (boolean visible) {
-	}
-
-	public void vibrate (int milliseconds) {
-	}
-
-	public void vibrate (long[] pattern, int repeat) {
-	}
-
-	public void cancelVibrate () {
-	}
-
-	public float getAzimuth () {
-		return 0;
-	}
-
-	public float getPitch () {
-		return 0;
-	}
-
-	public float getRoll () {
-		return 0;
-	}
-
-	public void getRotationMatrix (float[] matrix) {
-	}
-
-	public long getCurrentEventTime () {
-		return 0;
-	}
-
-	public void setCatchBackKey (boolean catchBack) {
-	}
-
-	public void setCatchMenuKey (boolean catchMenu) {
-	}
-
-	public void setInputProcessor (InputProcessor processor) {
-		this.processor = processor;
-	}
-
-	public InputProcessor getInputProcessor () {
-		return processor;
-	}
-
-	public boolean isPeripheralAvailable (Peripheral peripheral) {
-		return peripheral == Peripheral.HardwareKeyboard;
-	}
-
-	public int getRotation () {
-		return 0;
-	}
-
-	public Orientation getNativeOrientation () {
-		return Orientation.Landscape;
-	}
-
-	public void setCursorCatched (boolean captured) {
-		glfwSetInputMode(app.graphics.window, GLFW_CURSOR_MODE, captured ? GLFW_CURSOR_CAPTURED : GLFW_CURSOR_NORMAL);
-	}
-
-	public boolean isCursorCatched () {
-		return glfwGetInputMode(app.graphics.window, GLFW_CURSOR_MODE) == GLFW_CURSOR_CAPTURED;
-	}
-
-	public void setCursorPosition (int x, int y) {
-		glfwSetCursorPos(app.graphics.window, x, y);
-	}
-
-	char characterForKeyCode (int key) {
+	static char characterForKeyCode (int key) {
 		// Map certain key codes to character codes.
 		switch (key) {
 		case Keys.BACKSPACE:
@@ -722,6 +704,68 @@ public class JglfwInput implements Input {
 			return GLFW_KEY_F12;
 		default:
 			return 0;
+		}
+	}
+
+	/** Receives GLFW input and calls InputProcessor methods.
+	 * @author Nathan Sweet */
+	static class GlfwInputProcessor extends GlfwCallbackAdapter {
+		private int mouseX, mouseY, mousePressed;
+		private char lastCharacter;
+		private InputProcessor processor;
+
+		public GlfwInputProcessor (InputProcessor processor) {
+			if (processor == null) throw new IllegalArgumentException("processor cannot be null.");
+			this.processor = processor;
+		}
+
+		public void key (long window, int key, int action) {
+			switch (action) {
+			case GLFW_PRESS:
+				key = getGdxKeyCode(key);
+				processor.keyDown(key);
+
+				lastCharacter = 0;
+				char character = characterForKeyCode(key);
+				if (character != 0) character(window, character);
+				break;
+
+			case GLFW_RELEASE:
+				processor.keyUp(getGdxKeyCode(key));
+				break;
+
+			case GLFW_REPEAT:
+				if (lastCharacter != 0) processor.keyTyped(lastCharacter);
+				break;
+			}
+		}
+
+		public void character (long window, char character) {
+			lastCharacter = character;
+			processor.keyTyped(character);
+		}
+
+		public void scroll (long window, double scrollX, double scrollY) {
+			processor.scrolled((int)-Math.signum(scrollY));
+		}
+
+		public void mouseButton (long window, int button, boolean pressed) {
+			if (pressed) {
+				mousePressed++;
+				processor.touchDown(mouseX, mouseY, 0, button);
+			} else {
+				mousePressed--;
+				processor.touchUp(mouseX, mouseY, 0, button);
+			}
+		}
+
+		public void cursorPos (long window, int x, int y) {
+			mouseX = x;
+			mouseY = y;
+			if (mousePressed > 0)
+				processor.touchDragged(x, y, 0);
+			else
+				processor.mouseMoved(x, y);
 		}
 	}
 }

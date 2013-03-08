@@ -47,13 +47,15 @@ public class JglfwPreferences implements Preferences {
 		InputStream in = null;
 		try {
 			in = new BufferedInputStream(file.read());
-			properties.loadFromXML(in);
-		} catch (Throwable t) {
-			t.printStackTrace();
+			properties.load(in);
+		} catch (Throwable ex) {
+			ex.printStackTrace();
 		} finally {
-			if (in != null) try {
-				in.close();
-			} catch (Exception e) {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (Exception ignored) {
+				}
 			}
 		}
 	}
@@ -154,13 +156,15 @@ public class JglfwPreferences implements Preferences {
 		OutputStream out = null;
 		try {
 			out = new BufferedOutputStream(file.write(false));
-			properties.storeToXML(out, null);
+			properties.store(out, null);
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error writing preferences: " + file, ex);
 		} finally {
-			if (out != null) try {
-				out.close();
-			} catch (Exception e) {
+			if (out != null) {
+				try {
+					out.close();
+				} catch (Exception ignored) {
+				}
 			}
 		}
 	}

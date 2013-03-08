@@ -62,7 +62,7 @@ import com.badlogic.gdx.utils.JsonWriter;
  * @author acoppes */
 public class AndroidNet implements Net {
 
-	// IMPORTANT: The Gdx.net classes are a currently duplicated for LWJGL + Android!
+	// IMPORTANT: The Gdx.net classes are a currently duplicated for JGLFW/LWJGL + Android!
 	// If you make changes here, make changes in the other backend as well.
 	final AndroidApplication app;
 	NetJavaImpl netJavaImpl;
