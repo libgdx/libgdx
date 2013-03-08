@@ -35,33 +35,35 @@ public class InputProcessorQueue implements InputProcessor {
 	}
 
 	public synchronized void drain () {
-		for (int i = 0, n = queue.size; i < n; i++) {
-			currentEventTime = (long)queue.get(i++) << 32 | queue.get(i++) & 0xFFFFFFFFL;
-			switch (queue.get(i++)) {
-			case KEY_DOWN:
-				processor.keyDown(queue.get(i++));
-				break;
-			case KEY_UP:
-				processor.keyUp(queue.get(i++));
-				break;
-			case KEY_TYPED:
-				processor.keyTyped((char)queue.get(i++));
-				break;
-			case TOUCH_DOWN:
-				processor.touchDown(queue.get(i++), queue.get(i++), queue.get(i++), queue.get(i++));
-				break;
-			case TOUCH_UP:
-				processor.touchUp(queue.get(i++), queue.get(i++), queue.get(i++), queue.get(i++));
-				break;
-			case TOUCH_DRAGGED:
-				processor.touchDragged(queue.get(i++), queue.get(i++), queue.get(i++));
-				break;
-			case MOUSE_MOVED:
-				processor.mouseMoved(queue.get(i++), queue.get(i++));
-				break;
-			case SCROLLED:
-				processor.scrolled(queue.get(i++));
-				break;
+		if (processor != null) {
+			for (int i = 0, n = queue.size; i < n;) {
+				currentEventTime = (long)queue.get(i++) << 32 | queue.get(i++) & 0xFFFFFFFFL;
+				switch (queue.get(i++)) {
+				case KEY_DOWN:
+					processor.keyDown(queue.get(i++));
+					break;
+				case KEY_UP:
+					processor.keyUp(queue.get(i++));
+					break;
+				case KEY_TYPED:
+					processor.keyTyped((char)queue.get(i++));
+					break;
+				case TOUCH_DOWN:
+					processor.touchDown(queue.get(i++), queue.get(i++), queue.get(i++), queue.get(i++));
+					break;
+				case TOUCH_UP:
+					processor.touchUp(queue.get(i++), queue.get(i++), queue.get(i++), queue.get(i++));
+					break;
+				case TOUCH_DRAGGED:
+					processor.touchDragged(queue.get(i++), queue.get(i++), queue.get(i++));
+					break;
+				case MOUSE_MOVED:
+					processor.mouseMoved(queue.get(i++), queue.get(i++));
+					break;
+				case SCROLLED:
+					processor.scrolled(queue.get(i++));
+					break;
+				}
 			}
 		}
 		queue.clear();

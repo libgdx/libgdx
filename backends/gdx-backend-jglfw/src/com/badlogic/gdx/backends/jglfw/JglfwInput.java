@@ -94,7 +94,10 @@ public class JglfwInput implements Input {
 			}
 		};
 
-		processorQueue = queueEvents ? new InputProcessorQueue(inputProcessor) : null;
+		if (queueEvents)
+			inputProcessor = processorQueue = new InputProcessorQueue(inputProcessor);
+		else
+			processorQueue = null;
 
 		app.callbacks.add(new GlfwInputProcessor(inputProcessor));
 	}

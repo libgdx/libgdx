@@ -66,7 +66,8 @@ public class JglfwApplication implements Application {
 	public JglfwApplication (final ApplicationListener listener, JglfwApplicationConfiguration config) {
 		this.listener = listener;
 
-		if (config.enableAWT && isMac) java.awt.Toolkit.getDefaultToolkit(); // Ensure AWT is initialized before GLFW.
+		final boolean callbacksOnAppKitThread = config.enableAWT && isMac;
+		if (callbacksOnAppKitThread) java.awt.Toolkit.getDefaultToolkit(); // Ensure AWT is initialized before GLFW.
 
 		forceExit = config.forceExit;
 
@@ -76,19 +77,27 @@ public class JglfwApplication implements Application {
 		Gdx.app = this;
 		Gdx.graphics = graphics = new JglfwGraphics(config);
 		Gdx.files = files = new JglfwFiles();
-		Gdx.input = input = new JglfwInput(this, config.enableAWT && isMac);
+		Gdx.input = input = new JglfwInput(this, callbacksOnAppKitThread);
 		Gdx.net = net = new JglfwNet();
 
 		glfwSetCallback(callbacks);
 		callbacks.add(new GlfwCallbackAdapter() {
-			public void windowSize (long window, int width, int height) {
-				Gdx.gl.glViewport(0, 0, width, height);
-				if (listener != null) listener.resize(width, height);
-				graphics.requestRendering();
+			public void windowSize (long window, final int width, final int height) {
+				Runnable runnable = new Runnable() {
+					public void run () {
+						Gdx.gl.glViewport(0, 0, width, height);
+						if (listener != null) listener.resize(width, height);
+						graphics.requestRendering();
+					}
+				};
+				if (callbacksOnAppKitThread)
+					postRunnable(runnable);
+				else
+					runnable.run();
 			}
 
 			public void windowRefresh (long window) {
-				renderFrame();
+				if (!callbacksOnAppKitThread) renderFrame();
 			}
 
 			public void windowPos (long window, int x, int y) {
