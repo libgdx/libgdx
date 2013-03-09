@@ -78,6 +78,8 @@
 
 	<!-- gdx jglfw backend -->
 	<target name="gdx-backend-jglfw" depends="gdx-core">
+		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw.jar" dest="backends/gdx-backend-jglfw/libs/jglfw.jar"/>
+		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw-natives.jar" dest="backends/gdx-backend-jglfw/libs/gdx-backend-jglfw-natives.jar"/>
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
 		</path>
