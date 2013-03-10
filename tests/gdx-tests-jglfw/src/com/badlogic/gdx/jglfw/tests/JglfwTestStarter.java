@@ -69,8 +69,7 @@ public class JglfwTestStarter extends JFrame {
 		config.title = testName;
 		config.useGL20 = test.needsGL20();
 		config.forceExit = false;
-		config.enableAWT = true;
-		new JglfwApplication(test, config).start();
+		new JglfwApplication(test, config);
 		return true;
 	}
 

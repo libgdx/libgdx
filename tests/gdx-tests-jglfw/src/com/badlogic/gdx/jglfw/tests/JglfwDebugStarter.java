@@ -20,6 +20,6 @@ public class JglfwDebugStarter {
 		GdxTest test = new UITest();
 		JglfwApplicationConfiguration config = new JglfwApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
-		new JglfwApplication(test, config).start();
+		new JglfwApplication(test, config);
 	}
 }
