@@ -99,6 +99,9 @@ public class ShaderProgram implements Disposable {
 	/** uniform types **/
 	private final ObjectIntMap<String> uniformTypes = new ObjectIntMap<String>();
 
+	/** uniform sizes **/
+	private final ObjectIntMap<String> uniformSizes = new ObjectIntMap<String>();
+
 	/** uniform names **/
 	private String[] uniformNames;
 
@@ -107,6 +110,9 @@ public class ShaderProgram implements Disposable {
 
 	/** attribute types **/
 	private final ObjectIntMap<String> attributeTypes = new ObjectIntMap<String>();
+
+	/** attribute sizes **/
+	private final ObjectIntMap<String> attributeSizes = new ObjectIntMap<String>();
 
 	/** attribute names **/
 	private String[] attributeNames;
@@ -829,12 +835,13 @@ public class ShaderProgram implements Disposable {
 
 		for (int i = 0; i < numUniforms; i++) {
 			params.clear();
-			params.put(0, 256);
+			params.put(0, 1);
 			type.clear();
 			String name = Gdx.gl20.glGetActiveUniform(program, i, params, type);
 			int location = Gdx.gl20.glGetUniformLocation(program, name);
 			uniforms.put(name, location);
 			uniformTypes.put(name, type.get(0));
+			uniformSizes.put(name, params.get(0));
 			uniformNames[i] = name;
 		}
 	}
@@ -848,12 +855,13 @@ public class ShaderProgram implements Disposable {
 
 		for (int i = 0; i < numAttributes; i++) {
 			params.clear();
-			params.put(0, 256);
+			params.put(0, 1);
 			type.clear();
 			String name = Gdx.gl20.glGetActiveAttrib(program, i, params, type);
 			int location = Gdx.gl20.glGetAttribLocation(program, name);
 			attributes.put(name, location);
 			attributeTypes.put(name, type.get(0));
+			attributeSizes.put(name, params.get(0));
 			attributeNames[i] = name;
 		}
 	}
@@ -884,6 +892,16 @@ public class ShaderProgram implements Disposable {
 			return location;
 	}
 
+	/** @param name the name of the attribute
+	 * @return the size of the attribute or 0. */
+	public int getAttributeSize (String name) {
+		int size = attributeSizes.get(name, -1);
+		if (size == -1)
+			return 0;
+		else
+			return size;
+	}
+
 	/** @param name the name of the uniform
 	 * @return whether the uniform is available in the shader */
 	public boolean hasUniform (String name) {
@@ -908,6 +926,16 @@ public class ShaderProgram implements Disposable {
 			return -1;
 		else
 			return location;
+	}
+
+	/** @param name the name of the uniform
+	 * @return the size of the uniform or 0. */
+	public int getUniformSize (String name) {
+		int size = uniformSizes.get(name, -1);
+		if (size == -1)
+			return 0;
+		else
+			return size;
 	}
 
 	/** @return the attributes */
