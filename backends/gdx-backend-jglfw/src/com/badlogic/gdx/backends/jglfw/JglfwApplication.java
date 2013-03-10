@@ -74,29 +74,29 @@ public class JglfwApplication implements Application {
 	void start (JglfwApplicationConfiguration config) {
 		forceExit = config.forceExit;
 
+		final Thread glThread = Thread.currentThread();
+
 		GdxNativesLoader.load();
 
-		final boolean callbacksOnAppKitThread = isMac;
-		if (callbacksOnAppKitThread) java.awt.Toolkit.getDefaultToolkit(); // Ensure AWT is initialized before GLFW.
+		boolean inputCallbacksOnAppKitThread = isMac;
+		if (inputCallbacksOnAppKitThread) java.awt.Toolkit.getDefaultToolkit(); // Ensure AWT is initialized before GLFW.
 
 		if (!glfwInit()) throw new GdxRuntimeException("Unable to initialize GLFW.");
 
 		Gdx.app = this;
 		Gdx.graphics = graphics = new JglfwGraphics(config);
 		Gdx.files = files = new JglfwFiles();
-		Gdx.input = input = new JglfwInput(this, callbacksOnAppKitThread);
+		Gdx.input = input = new JglfwInput(this, inputCallbacksOnAppKitThread);
 		Gdx.net = net = new JglfwNet();
 
 		callbacks.add(new GlfwCallbackAdapter() {
 			public void windowSize (long window, final int width, final int height) {
 				Runnable runnable = new Runnable() {
 					public void run () {
-						Gdx.gl.glViewport(0, 0, width, height);
-						if (listener != null) listener.resize(width, height);
-						graphics.requestRendering();
+						graphics.resized(width, height);
 					}
 				};
-				if (callbacksOnAppKitThread)
+				if (Thread.currentThread() != glThread)
 					postRunnable(runnable);
 				else
 					runnable.run();
@@ -109,14 +109,14 @@ public class JglfwApplication implements Application {
 						graphics.y = y;
 					}
 				};
-				if (callbacksOnAppKitThread)
+				if (Thread.currentThread() != glThread)
 					postRunnable(runnable);
 				else
 					runnable.run();
 			}
 
 			public void windowRefresh (long window) {
-				if (!callbacksOnAppKitThread) renderFrame();
+				if (Thread.currentThread() == glThread) renderFrame();
 			}
 
 			public void error (int error, String description) {
@@ -131,21 +131,21 @@ public class JglfwApplication implements Application {
 		if (config.runOnEDT) {
 			new Runnable() {
 				public void run () {
-					loopFrame();
+					frame();
 					if (running)
 						EventQueue.invokeLater(this);
 					else
-						loopEnd();
+						end();
 				}
 			}.run();
 		} else {
 			while (running)
-				loopFrame();
-			loopEnd();
+				frame();
+			end();
 		}
 	}
 
-	void loopFrame () {
+	void frame () {
 		if (glfwWindowShouldClose(graphics.window)) {
 			exit();
 			return;
@@ -181,7 +181,7 @@ public class JglfwApplication implements Application {
 		glfwSwapBuffers(graphics.window);
 	}
 
-	void loopEnd () {
+	void end () {
 		synchronized (lifecycleListeners) {
 			for (LifecycleListener listener : lifecycleListeners) {
 				listener.pause();

@@ -3,6 +3,7 @@ package com.badlogic.gdx.backends.jglfw;
 
 import static com.badlogic.jglfw.Glfw.*;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
@@ -104,6 +105,13 @@ public class JglfwGraphics implements Graphics {
 		frames++;
 	}
 
+	void resized (int width, int height) {
+		Gdx.gl.glViewport(0, 0, width, height);
+		ApplicationListener listener = Gdx.app.getApplicationListener();
+		if (listener != null) listener.resize(width, height);
+		requestRendering();
+	}
+
 	public boolean isGL11Available () {
 		return gl11 != null;
 	}
@@ -199,11 +207,17 @@ public class JglfwGraphics implements Graphics {
 			displayMode.bitsPerPixel == 16 ? 6 : 8, //
 			displayMode.bitsPerPixel == 16 ? 6 : 8, //
 			bufferFormat.a, bufferFormat.depth, bufferFormat.stencil, bufferFormat.samples, false);
-		return createWindow(displayMode.width, displayMode.height, fullscreen);
+		boolean success = createWindow(displayMode.width, displayMode.height, fullscreen);
+		if (success && fullscreen) resized(displayMode.width, displayMode.height);
+		return success;
 	}
 
 	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
-		if (window == 0 || fullscreen != this.fullscreen || this.fullscreen) return createWindow(width, height, fullscreen);
+		if (fullscreen || this.fullscreen) {
+			boolean success = createWindow(width, height, fullscreen);
+			if (success && fullscreen) resized(width, height);
+			return success;
+		}
 
 		glfwSetWindowSize(window, width, height);
 		return true;
@@ -230,8 +244,8 @@ public class JglfwGraphics implements Graphics {
 		if (newWindow == 0) return false;
 		if (oldWindow != 0) glfwDestroyWindow(oldWindow);
 		window = newWindow;
-		this.fullscreen = fullscreen;
 
+		this.fullscreen = fullscreen;
 		if (!fullscreen) {
 			if (x != -1 && y != -1)
 				glfwSetWindowPos(window, x, y);
