@@ -52,6 +52,7 @@ public class JglfwGraphics implements Graphics {
 		undecorated = config.undecorated;
 		x = config.x;
 		y = config.y;
+		vSync = config.vSync;
 		initialBackgroundColor = config.initialBackgroundColor;
 		if (config.fullscreenMonitorIndex != -1) { // Use monitor specified in config if it is valid.
 			long[] monitors = glfwGetMonitors();
@@ -87,8 +88,6 @@ public class JglfwGraphics implements Graphics {
 		Gdx.gl20 = gl20;
 
 		if (!config.hidden) show();
-
-		setVSync(config.vSync);
 	}
 
 	void frameStart () {
@@ -245,6 +244,7 @@ public class JglfwGraphics implements Graphics {
 		if (!mouseCaptured) glfwSetInputMode(window, GLFW_CURSOR_MODE, GLFW_CURSOR_NORMAL); // Prevent fullscreen from taking mouse.
 
 		glfwMakeContextCurrent(newWindow);
+		setVSync(vSync);
 		if (visible) glfwShowWindow(window);
 
 		return true;
