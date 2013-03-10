@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.jglfw.tests;
 
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.jglfw.JglfwApplication;
 import com.badlogic.gdx.backends.jglfw.JglfwApplicationConfiguration;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.backends.jglfw.JglfwPreferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -58,19 +60,17 @@ public class JglfwTestStarter extends JFrame {
 	/** Runs the {@link GdxTest} with the given name.
 	 * @param testName the name of a test class
 	 * @return {@code true} if the test was found and run, {@code false} otherwise */
-	public static boolean runTest (String testName) {
+	public static JglfwApplication runTest (String testName) {
 		final GdxTest test = GdxTests.newTest(testName);
-		if (test == null) {
-			return false;
-		}
+		if (test == null) throw new GdxRuntimeException("Test not found: " + testName);
+
 		final JglfwApplicationConfiguration config = new JglfwApplicationConfiguration();
 		config.width = 640;
 		config.height = 480;
 		config.title = testName;
 		config.useGL20 = test.needsGL20();
 		config.forceExit = false;
-		new JglfwApplication(test, config);
-		return true;
+		return new JglfwApplication(test, config);
 	}
 
 	class TestList extends JPanel {
@@ -110,8 +110,17 @@ public class JglfwTestStarter extends JFrame {
 					prefs.putString("last", testName);
 					prefs.flush();
 					JglfwTestStarter.this.setVisible(false);
-					runTest(testName);
-					JglfwTestStarter.this.setVisible(true);
+					runTest(testName).addLifecycleListener(new LifecycleListener() {
+						public void resume () {
+						}
+
+						public void pause () {
+						}
+
+						public void dispose () {
+							JglfwTestStarter.this.setVisible(true);
+						}
+					});
 				}
 			});
 
@@ -128,10 +137,8 @@ public class JglfwTestStarter extends JFrame {
 	 * @param argv command line arguments */
 	public static void main (String[] argv) throws Exception {
 		if (argv.length > 0) {
-			if (runTest(argv[0])) {
-				return;
-				// Otherwise, fall back to showing the list
-			}
+			runTest(argv[0]);
+			return;
 		}
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		new JglfwTestStarter();
