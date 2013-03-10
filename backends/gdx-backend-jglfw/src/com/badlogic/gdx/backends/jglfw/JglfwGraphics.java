@@ -15,11 +15,11 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.jglfw.GlfwVideoMode;
 import com.badlogic.jglfw.gl.GL;
 
+import java.awt.Toolkit;
+
 /** An implementation of the {@link Graphics} interface based on GLFW.
  * @author Nathan Sweet */
 public class JglfwGraphics implements Graphics {
-	static private final float DPI = 72;
-
 	static int glMajorVersion, glMinorVersion;
 
 	long window;
@@ -154,23 +154,23 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	public float getPpiX () {
-		return DPI;
+		return Toolkit.getDefaultToolkit().getScreenResolution();
 	}
 
 	public float getPpiY () {
-		return DPI;
+		return Toolkit.getDefaultToolkit().getScreenResolution();
 	}
 
 	public float getPpcX () {
-		return DPI / 2.54f;
+		return Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f;
 	}
 
 	public float getPpcY () {
-		return DPI / 2.54f;
+		return Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f;
 	}
 
 	public float getDensity () {
-		return DPI / 160f;
+		return Toolkit.getDefaultToolkit().getScreenResolution() / 160f;
 	}
 
 	public boolean supportsDisplayModeChange () {
