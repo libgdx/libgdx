@@ -34,7 +34,7 @@ public class TiledMap extends Map {
 	 * {@link #dispose()}.
 	 * @param textures
 	 */
-	void setOwnedTextures(Array<Texture> textures) {
+	public void setOwnedTextures(Array<Texture> textures) {
 		this.ownedTextures = textures;
 	}
 	
