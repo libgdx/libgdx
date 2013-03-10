@@ -99,7 +99,7 @@ public class JglfwInput implements Input {
 		else
 			processorQueue = null;
 
-		app.callbacks.add(new GlfwInputProcessor(inputProcessor));
+		app.getCallbacks().add(new GlfwInputProcessor(inputProcessor));
 	}
 
 	public void update () {

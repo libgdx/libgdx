@@ -5,6 +5,7 @@ import static com.badlogic.jglfw.Glfw.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,31 +15,34 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.jglfw.GlfwVideoMode;
 import com.badlogic.jglfw.gl.GL;
 
-import java.awt.Toolkit;
-
 /** An implementation of the {@link Graphics} interface based on GLFW.
  * @author Nathan Sweet */
 public class JglfwGraphics implements Graphics {
+	static private final float DPI = 72;
+
 	static int glMajorVersion, glMinorVersion;
 
 	long window;
-	boolean fullscreen;
-	long fullscreenMonitor;
-	String title;
-	boolean resizable, undecorated;
-	BufferFormat bufferFormat;
-	boolean sync;
-	volatile boolean isContinuous = true;
-	volatile boolean requestRendering;
+	private boolean fullscreen;
+	private long fullscreenMonitor;
+	private String title;
+	private boolean resizable, undecorated;
+	private BufferFormat bufferFormat;
+	private boolean vSync;
+	int x, y;
+	private boolean visible;
+	private Color initialBackgroundColor;
+	private volatile boolean isContinuous = true;
+	private volatile boolean renderRequested;
 
-	float deltaTime;
-	long frameStart, lastTime;
-	int frames, fps;
+	private float deltaTime;
+	private long frameStart, lastTime = -1;
+	private int frames, fps;
 
-	GLCommon gl;
-	JglfwGL10 gl10;
-	JglfwGL11 gl11;
-	JglfwGL20 gl20;
+	private GLCommon gl;
+	private JglfwGL10 gl10;
+	private JglfwGL11 gl11;
+	private JglfwGL20 gl20;
 
 	public JglfwGraphics (JglfwApplicationConfiguration config) {
 		// Store values from config.
@@ -46,6 +50,9 @@ public class JglfwGraphics implements Graphics {
 		title = config.title;
 		resizable = config.resizable;
 		undecorated = config.undecorated;
+		x = config.x;
+		y = config.y;
+		initialBackgroundColor = config.initialBackgroundColor;
 		if (config.fullscreenMonitorIndex != -1) { // Use monitor specified in config if it is valid.
 			long[] monitors = glfwGetMonitors();
 			if (config.fullscreenMonitorIndex < monitors.length) fullscreenMonitor = monitors[config.fullscreenMonitorIndex];
@@ -56,8 +63,6 @@ public class JglfwGraphics implements Graphics {
 			throw new GdxRuntimeException("Unable to create window: " + config.width + "x" + config.height + ", fullscreen: "
 				+ config.fullscreen);
 		}
-		if (config.x != -1 && config.y != -1) glfwSetWindowPos(window, config.x, config.y);
-		setVSync(config.vSync);
 
 		// Create GL.
 		String version = GL.glGetString(GL11.GL_VERSION);
@@ -68,9 +73,9 @@ public class JglfwGraphics implements Graphics {
 			gl = gl20;
 		} else {
 			gl20 = null;
-			if (glMajorVersion == 1 && glMinorVersion < 5) {
+			if (glMajorVersion == 1 && glMinorVersion < 5)
 				gl10 = new JglfwGL10();
-			} else {
+			else {
 				gl11 = new JglfwGL11();
 				gl10 = gl11;
 			}
@@ -80,6 +85,24 @@ public class JglfwGraphics implements Graphics {
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;
 		Gdx.gl20 = gl20;
+
+		if (!config.hidden) show();
+
+		setVSync(config.vSync);
+	}
+
+	void frameStart () {
+		long time = System.nanoTime();
+		if (lastTime == -1) lastTime = time;
+		deltaTime = (time - lastTime) / 1000000000.0f;
+		lastTime = time;
+
+		if (time - frameStart >= 1000000000) {
+			fps = frames;
+			frames = 0;
+			frameStart = time;
+		}
+		frames++;
 	}
 
 	public boolean isGL11Available () {
@@ -114,19 +137,6 @@ public class JglfwGraphics implements Graphics {
 		return glfwGetWindowHeight(window);
 	}
 
-	void updateTime () {
-		long time = System.nanoTime();
-		deltaTime = (time - lastTime) / 1000000000.0f;
-		lastTime = time;
-
-		if (time - frameStart >= 1000000000) {
-			fps = frames;
-			frames = 0;
-			frameStart = time;
-		}
-		frames++;
-	}
-
 	public float getDeltaTime () {
 		return deltaTime;
 	}
@@ -144,23 +154,23 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	public float getPpiX () {
-		return Toolkit.getDefaultToolkit().getScreenResolution();
+		return DPI;
 	}
 
 	public float getPpiY () {
-		return Toolkit.getDefaultToolkit().getScreenResolution();
+		return DPI;
 	}
 
 	public float getPpcX () {
-		return Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f;
+		return DPI / 2.54f;
 	}
 
 	public float getPpcY () {
-		return Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f;
+		return DPI / 2.54f;
 	}
 
 	public float getDensity () {
-		return Toolkit.getDefaultToolkit().getScreenResolution() / 160f;
+		return DPI / 160f;
 	}
 
 	public boolean supportsDisplayModeChange () {
@@ -168,14 +178,19 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	public DisplayMode[] getDisplayModes () {
+		long monitor = glfwGetWindowMonitor(window);
+		if (monitor == 0) monitor = glfwGetPrimaryMonitor();
+
 		Array<DisplayMode> modes = new Array();
-		for (GlfwVideoMode mode : glfwGetVideoModes(glfwGetWindowMonitor(window)))
+		for (GlfwVideoMode mode : glfwGetVideoModes(monitor))
 			modes.add(new JglfwDisplayMode(mode.width, mode.height, 0, mode.redBits + mode.greenBits + mode.blueBits));
 		return modes.toArray(DisplayMode.class);
 	}
 
 	public DisplayMode getDesktopDisplayMode () {
-		GlfwVideoMode mode = glfwGetVideoMode(glfwGetWindowMonitor(window));
+		long monitor = glfwGetWindowMonitor(window);
+		if (monitor == 0) monitor = glfwGetPrimaryMonitor();
+		GlfwVideoMode mode = glfwGetVideoMode(monitor);
 		return new JglfwDisplayMode(mode.width, mode.height, 0, mode.redBits + mode.greenBits + mode.blueBits);
 	}
 
@@ -198,6 +213,7 @@ public class JglfwGraphics implements Graphics {
 	private boolean createWindow (int width, int height, boolean fullscreen) {
 		if (fullscreenMonitor == 0) fullscreenMonitor = glfwGetPrimaryMonitor();
 
+		glfwWindowHint(GLFW_VISIBLE, 0);
 		glfwWindowHint(GLFW_RESIZABLE, resizable ? 1 : 0);
 		glfwWindowHint(GLFW_UNDECORATED, undecorated ? 1 : 0);
 		glfwWindowHint(GLFW_RED_BITS, bufferFormat.r);
@@ -214,11 +230,22 @@ public class JglfwGraphics implements Graphics {
 		long newWindow = glfwCreateWindow(width, height, title, fullscreen ? fullscreenMonitor : 0, oldWindow);
 		if (newWindow == 0) return false;
 		if (oldWindow != 0) glfwDestroyWindow(oldWindow);
-		glfwMakeContextCurrent(newWindow);
 		window = newWindow;
 		this.fullscreen = fullscreen;
 
+		if (!fullscreen) {
+			if (x != -1 && y != -1)
+				glfwSetWindowPos(window, x, y);
+			else {
+				DisplayMode mode = getDesktopDisplayMode();
+				glfwSetWindowPos(window, (mode.width - width) / 2, (mode.height - height) / 2);
+			}
+		}
+
 		if (!mouseCaptured) glfwSetInputMode(window, GLFW_CURSOR_MODE, GLFW_CURSOR_NORMAL); // Prevent fullscreen from taking mouse.
+
+		glfwMakeContextCurrent(newWindow);
+		if (visible) glfwShowWindow(window);
 
 		return true;
 	}
@@ -230,7 +257,7 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	public void setVSync (boolean vsync) {
-		this.sync = vsync;
+		this.vSync = vsync;
 		glfwSwapInterval(vsync ? 1 : 0);
 	}
 
@@ -251,9 +278,7 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	public void requestRendering () {
-		synchronized (this) {
-			requestRendering = true;
-		}
+		renderRequested = true;
 	}
 
 	public boolean isFullscreen () {
@@ -266,11 +291,33 @@ public class JglfwGraphics implements Graphics {
 		return window;
 	}
 
+	public int getX () {
+		return x;
+	}
+
+	public int getY () {
+		return y;
+	}
+
+	public void hide () {
+		visible = false;
+		glfwHideWindow(window);
+	}
+
+	public void show () {
+		visible = true;
+		glfwShowWindow(window);
+
+		Gdx.gl.glClearColor(initialBackgroundColor.r, initialBackgroundColor.g, initialBackgroundColor.b, initialBackgroundColor.a);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		glfwSwapBuffers(window);
+	}
+
 	boolean shouldRender () {
-		synchronized (this) {
-			boolean requestRendering = this.requestRendering;
-			this.requestRendering = false;
-			return requestRendering || isContinuous;
+		try {
+			return renderRequested || isContinuous;
+		} finally {
+			renderRequested = false;
 		}
 	}
 

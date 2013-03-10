@@ -4,6 +4,7 @@ package com.badlogic.gdx.backends.jglfw;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.jglfw.JglfwGraphics.JglfwDisplayMode;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 
 import java.awt.GraphicsDevice;
@@ -29,16 +30,20 @@ public class JglfwApplicationConfiguration {
 	public int samples = 0;
 	/** True to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
 	public boolean vSync = true;
-	/** True if the window is resizable **/
+	/** True if the window is resizable. **/
 	public boolean resizable = true;
-	/** True to attempt to use OpenGL ES 2.0. Note GL2 may be unavailable even when this is true. default: false **/
+	/** True to attempt to use OpenGL ES 2.0. Note GL2 may be unavailable even when this is true. **/
 	public boolean useGL20;
-	/** True to call System.exit() when the main loop exits **/
+	/** True to call System.exit() when the main loop is complete. **/
 	public boolean forceExit = true;
-	/** True to have a title and border around the window **/
+	/** True to have a title and border around the window. **/
 	public boolean undecorated;
-	/** Must be true for OSX if any AWT classes are used. **/
-	public boolean enableAWT;
+	/** Causes the main loop to run on the EDT instead of a new thread, for easier interoperability with AWT/Swing. **/
+	public boolean runOnEDT;
+	/** The color to clear the window immediately after creation. **/
+	public Color initialBackgroundColor = Color.BLACK;
+	/** True to hide the window when it is created. The window must be shown with {@link JglfwGraphics#show()}. **/
+	public boolean hidden;
 
 	static public DisplayMode[] getDisplayModes () {
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
