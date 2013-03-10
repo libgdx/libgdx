@@ -234,6 +234,10 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			int spacing = element.getIntAttribute("spacing", 0);
 			int margin = element.getIntAttribute("margin", 0);			
 			String source = element.getAttribute("source", null);
+
+			String imageSource = "";
+			int imageWidth = 0, imageHeight = 0;
+
 			FileHandle image = null;
 			if (source != null) {
 				FileHandle tsx = getRelativeFileHandle(tmxFile, source);
@@ -244,19 +248,24 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 					tileheight = element.getIntAttribute("tileheight", 0);
 					spacing = element.getIntAttribute("spacing", 0);
 					margin = element.getIntAttribute("margin", 0);
-					String imageSource = element.getChildByName("image").getAttribute("source");
+					imageSource = element.getChildByName("image").getAttribute("source");
+					imageWidth = element.getChildByName("image").getIntAttribute("width", 0);
+					imageHeight = element.getChildByName("image").getIntAttribute("height", 0);
 					image = getRelativeFileHandle(tsx, imageSource);
 				} catch (IOException e) {
 					throw new GdxRuntimeException("Error parsing external tileset.");
 				}
 			} else {
-				String imageSource = element.getChildByName("image").getAttribute("source");
+				imageSource = element.getChildByName("image").getAttribute("source");
+				imageWidth = element.getChildByName("image").getIntAttribute("width", 0);
+				imageHeight = element.getChildByName("image").getIntAttribute("height", 0);
 				image = getRelativeFileHandle(tmxFile, imageSource);
 			}
 
 			TextureRegion texture = imageResolver.getImage(image.path());
 
-			TiledMapTileSet tileset = new TiledMapTileSet();
+			TiledMapTileSet tileset = new TmxMapTileSet(
+				imageSource, imageWidth, imageHeight, firstgid, tilewidth, tileheight, margin, spacing);
 			tileset.setName(name);
 			
 			int stopWidth = texture.getRegionWidth() - tilewidth;
