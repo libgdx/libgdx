@@ -16,8 +16,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.jglfw.GlfwVideoMode;
 import com.badlogic.jglfw.gl.GL;
 
-import java.awt.Toolkit;
-
 /** An implementation of the {@link Graphics} interface based on GLFW.
  * @author Nathan Sweet */
 public class JglfwGraphics implements Graphics {
@@ -91,6 +89,47 @@ public class JglfwGraphics implements Graphics {
 		if (!config.hidden) show();
 	}
 
+	private boolean createWindow (int width, int height, boolean fullscreen) {
+		if (fullscreen && fullscreenMonitor == 0) fullscreenMonitor = getWindowMonitor();
+
+		glfwWindowHint(GLFW_VISIBLE, 0);
+		glfwWindowHint(GLFW_RESIZABLE, resizable ? 1 : 0);
+		glfwWindowHint(GLFW_UNDECORATED, undecorated ? 1 : 0);
+		glfwWindowHint(GLFW_RED_BITS, bufferFormat.r);
+		glfwWindowHint(GLFW_GREEN_BITS, bufferFormat.g);
+		glfwWindowHint(GLFW_BLUE_BITS, bufferFormat.b);
+		glfwWindowHint(GLFW_ALPHA_BITS, bufferFormat.a);
+		glfwWindowHint(GLFW_DEPTH_BITS, bufferFormat.depth);
+		glfwWindowHint(GLFW_STENCIL_BITS, bufferFormat.stencil);
+		glfwWindowHint(GLFW_SAMPLES, bufferFormat.samples);
+
+		boolean mouseCaptured = window != 0 && glfwGetInputMode(window, GLFW_CURSOR_MODE) == GLFW_CURSOR_CAPTURED;
+
+		long oldWindow = window;
+		long newWindow = glfwCreateWindow(width, height, title, fullscreen ? fullscreenMonitor : 0, oldWindow);
+		if (newWindow == 0) return false;
+		if (oldWindow != 0) glfwDestroyWindow(oldWindow);
+		window = newWindow;
+
+		this.fullscreen = fullscreen;
+		if (!fullscreen) {
+			if (x != -1 && y != -1)
+				glfwSetWindowPos(window, x, y);
+			else {
+				DisplayMode mode = getDesktopDisplayMode();
+				glfwSetWindowPos(window, (mode.width - width) / 2, (mode.height - height) / 2);
+			}
+		}
+
+		if (!mouseCaptured) glfwSetInputMode(window, GLFW_CURSOR_MODE, GLFW_CURSOR_NORMAL); // Prevent fullscreen from taking mouse.
+
+		glfwMakeContextCurrent(newWindow);
+		setVSync(vSync);
+		if (visible) glfwShowWindow(window);
+
+		return true;
+	}
+
 	void frameStart () {
 		long time = System.nanoTime();
 		if (lastTime == -1) lastTime = time;
@@ -161,43 +200,54 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	public float getPpiX () {
-		return Toolkit.getDefaultToolkit().getScreenResolution();
+		return getWidth() / glfwGetMonitorPhysicalWidth(getWindowMonitor());
 	}
 
 	public float getPpiY () {
-		return Toolkit.getDefaultToolkit().getScreenResolution();
+		return getHeight() / glfwGetMonitorPhysicalHeight(getWindowMonitor());
 	}
 
 	public float getPpcX () {
-		return Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f;
+		return getPpiX() / 2.54f;
 	}
 
 	public float getPpcY () {
-		return Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f;
+		return getPpiY() / 2.54f;
 	}
 
 	public float getDensity () {
-		return Toolkit.getDefaultToolkit().getScreenResolution() / 160f;
+		long monitor = getWindowMonitor();
+		float mmWidth = glfwGetMonitorPhysicalWidth(monitor);
+		float mmHeight = glfwGetMonitorPhysicalHeight(monitor);
+		float mm = (float)Math.sqrt(mmWidth * mmWidth + mmHeight * mmHeight);
+		float pixelWidth = getWidth();
+		float pixelHeight = getHeight();
+		float pixels = (float)Math.sqrt(pixelWidth * pixelWidth + pixelHeight * pixelHeight);
+		float diagonlPpi = pixels / mm;
+		return diagonlPpi / 160f;
 	}
 
 	public boolean supportsDisplayModeChange () {
 		return true;
 	}
 
-	public DisplayMode[] getDisplayModes () {
-		long monitor = glfwGetWindowMonitor(window);
-		if (monitor == 0) monitor = glfwGetPrimaryMonitor();
+	private long getWindowMonitor () {
+		if (window != 0) {
+			long monitor = glfwGetWindowMonitor(window);
+			if (monitor != 0) return monitor;
+		}
+		return glfwGetPrimaryMonitor();
+	}
 
+	public DisplayMode[] getDisplayModes () {
 		Array<DisplayMode> modes = new Array();
-		for (GlfwVideoMode mode : glfwGetVideoModes(monitor))
+		for (GlfwVideoMode mode : glfwGetVideoModes(getWindowMonitor()))
 			modes.add(new JglfwDisplayMode(mode.width, mode.height, 0, mode.redBits + mode.greenBits + mode.blueBits));
 		return modes.toArray(DisplayMode.class);
 	}
 
 	public DisplayMode getDesktopDisplayMode () {
-		long monitor = glfwGetWindowMonitor(window);
-		if (monitor == 0) monitor = glfwGetPrimaryMonitor();
-		GlfwVideoMode mode = glfwGetVideoMode(monitor);
+		GlfwVideoMode mode = glfwGetVideoMode(getWindowMonitor());
 		return new JglfwDisplayMode(mode.width, mode.height, 0, mode.redBits + mode.greenBits + mode.blueBits);
 	}
 
@@ -220,47 +270,6 @@ public class JglfwGraphics implements Graphics {
 		}
 
 		glfwSetWindowSize(window, width, height);
-		return true;
-	}
-
-	private boolean createWindow (int width, int height, boolean fullscreen) {
-		if (fullscreenMonitor == 0) fullscreenMonitor = glfwGetPrimaryMonitor();
-
-		glfwWindowHint(GLFW_VISIBLE, 0);
-		glfwWindowHint(GLFW_RESIZABLE, resizable ? 1 : 0);
-		glfwWindowHint(GLFW_UNDECORATED, undecorated ? 1 : 0);
-		glfwWindowHint(GLFW_RED_BITS, bufferFormat.r);
-		glfwWindowHint(GLFW_GREEN_BITS, bufferFormat.g);
-		glfwWindowHint(GLFW_BLUE_BITS, bufferFormat.b);
-		glfwWindowHint(GLFW_ALPHA_BITS, bufferFormat.a);
-		glfwWindowHint(GLFW_DEPTH_BITS, bufferFormat.depth);
-		glfwWindowHint(GLFW_STENCIL_BITS, bufferFormat.stencil);
-		glfwWindowHint(GLFW_SAMPLES, bufferFormat.samples);
-
-		boolean mouseCaptured = window != 0 && glfwGetInputMode(window, GLFW_CURSOR_MODE) == GLFW_CURSOR_CAPTURED;
-
-		long oldWindow = window;
-		long newWindow = glfwCreateWindow(width, height, title, fullscreen ? fullscreenMonitor : 0, oldWindow);
-		if (newWindow == 0) return false;
-		if (oldWindow != 0) glfwDestroyWindow(oldWindow);
-		window = newWindow;
-
-		this.fullscreen = fullscreen;
-		if (!fullscreen) {
-			if (x != -1 && y != -1)
-				glfwSetWindowPos(window, x, y);
-			else {
-				DisplayMode mode = getDesktopDisplayMode();
-				glfwSetWindowPos(window, (mode.width - width) / 2, (mode.height - height) / 2);
-			}
-		}
-
-		if (!mouseCaptured) glfwSetInputMode(window, GLFW_CURSOR_MODE, GLFW_CURSOR_NORMAL); // Prevent fullscreen from taking mouse.
-
-		glfwMakeContextCurrent(newWindow);
-		setVSync(vSync);
-		if (visible) glfwShowWindow(window);
-
 		return true;
 	}
 

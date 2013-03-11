@@ -116,7 +116,7 @@ public class JglfwApplication implements Application {
 			}
 
 			public void windowRefresh (long window) {
-				if (Thread.currentThread() == glThread) renderFrame();
+				if (Thread.currentThread() == glThread) render();
 			}
 
 			public void error (int error, String description) {
@@ -166,7 +166,7 @@ public class JglfwApplication implements Application {
 		input.update();
 
 		if (graphics.shouldRender())
-			renderFrame();
+			render();
 		else {
 			try {
 				Thread.sleep(16); // Avoid wasting CPU when not rendering.
@@ -175,7 +175,7 @@ public class JglfwApplication implements Application {
 		}
 	}
 
-	void renderFrame () {
+	void render () {
 		graphics.frameStart();
 		listener.render();
 		glfwSwapBuffers(graphics.window);
