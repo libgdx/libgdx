@@ -52,50 +52,25 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 		super.layout(0, 0, width, height);
 
 		java.util.List<Cell> cells = getCells();
-		if (round) {
-			for (int i = 0, n = cells.size(); i < n; i++) {
-				Cell c = cells.get(i);
-				if (c.getIgnore()) continue;
-				float widgetWidth = Math.round(c.getWidgetWidth());
-				float widgetHeight = Math.round(c.getWidgetHeight());
-				float widgetX = Math.round(c.getWidgetX());
-				float widgetY = height - Math.round(c.getWidgetY()) - widgetHeight;
-				c.setWidgetX(widgetX);
-				c.setWidgetY(widgetY);
-				c.setWidgetWidth(widgetWidth);
-				c.setWidgetHeight(widgetHeight);
-				Actor actor = (Actor)c.getWidget();
-				if (actor != null) {
-					actor.setX(widgetX);
-					actor.setY(widgetY);
-					if (actor.getWidth() != widgetWidth || actor.getHeight() != widgetHeight) {
-						actor.setWidth(widgetWidth);
-						actor.setHeight(widgetHeight);
-						if (actor instanceof Layout) ((Layout)actor).invalidate();
-					}
-				}
-			}
-		} else {
-			for (int i = 0, n = cells.size(); i < n; i++) {
-				Cell c = cells.get(i);
-				if (c.getIgnore()) continue;
-				float widgetWidth = c.getWidgetWidth();
-				float widgetHeight = c.getWidgetHeight();
-				float widgetX = c.getWidgetX();
-				float widgetY = height - c.getWidgetY() - widgetHeight;
-				c.setWidgetX(widgetX);
-				c.setWidgetY(widgetY);
-				c.setWidgetWidth(widgetWidth);
-				c.setWidgetHeight(widgetHeight);
-				Actor actor = (Actor)c.getWidget();
-				if (actor != null) {
-					actor.setX(widgetX);
-					actor.setY(widgetY);
-					if (actor.getWidth() != widgetWidth || actor.getHeight() != widgetHeight) {
-						actor.setWidth(widgetWidth);
-						actor.setHeight(widgetHeight);
-						if (actor instanceof Layout) ((Layout)actor).invalidate();
-					}
+		for (int i = 0, n = cells.size(); i < n; i++) {
+			Cell c = cells.get(i);
+			if (c.getIgnore()) continue;
+			float widgetWidth = round ? Math.round(c.getWidgetWidth()) : c.getWidgetWidth();
+			float widgetHeight = round ? Math.round(c.getWidgetHeight()) : c.getWidgetHeight();
+			float widgetX = round ? Math.round(c.getWidgetX()) : c.getWidgetX();
+			float widgetY = height - (round ? Math.round(c.getWidgetY()) : c.getWidgetY()) - widgetHeight;
+			c.setWidgetX(widgetX);
+			c.setWidgetY(widgetY);
+			c.setWidgetWidth(widgetWidth);
+			c.setWidgetHeight(widgetHeight);
+			Actor actor = (Actor)c.getWidget();
+			if (actor != null) {
+				actor.setX(widgetX);
+				actor.setY(widgetY);
+				if (actor.getWidth() != widgetWidth || actor.getHeight() != widgetHeight) {
+					actor.setWidth(widgetWidth);
+					actor.setHeight(widgetHeight);
+					if (actor instanceof Layout) ((Layout)actor).invalidate();
 				}
 			}
 		}
