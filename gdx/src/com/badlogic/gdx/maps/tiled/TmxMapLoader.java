@@ -266,7 +266,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			
 			for (int y = margin; y <= stopHeight; y += tileheight + spacing) {
 				for (int x = margin; x <= stopWidth; x += tilewidth + spacing) {
-					TextureRegion tileRegion = new TextureRegion(new TextureRegion(texture, x, y, tilewidth, tileheight));
+					TextureRegion tileRegion = new TextureRegion(texture, x, y, tilewidth, tileheight);
 					if (!yUp) {
 						tileRegion.flip(false, true);
 					}
