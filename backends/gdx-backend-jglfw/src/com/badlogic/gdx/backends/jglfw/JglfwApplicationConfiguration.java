@@ -1,7 +1,7 @@
 
 package com.badlogic.gdx.backends.jglfw;
 
-import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.jglfw.JglfwGraphics.JglfwDisplayMode;
 import com.badlogic.gdx.graphics.Color;
@@ -12,27 +12,33 @@ import java.awt.GraphicsEnvironment;
 
 /** @author Nathan Sweet */
 public class JglfwApplicationConfiguration {
-	/** Title of application window **/
+	/** Title of application window. **/
 	public String title = "";
-	/** Width & height of application window **/
-	public int width = 640, height = 480;
-	/** The x & y of application window, -1 for center **/
-	public int x = -1, y = -1;
-	/** True to start in fullscreen **/
+	/** Initial width of the application window. **/
+	public int width = 640;
+	/** Initial height of the application window. **/
+	public int height = 480;
+	/** Intial x coordinate of the application window, -1 for center. **/
+	public int x = -1;
+	/** Intial x coordinate of the application window, -1 for center. **/
+	public int y = -1;
+	/** True to start in fullscreen. **/
 	public boolean fullscreen;
-	/** Monitor index to use for fullscreen **/
+	/** Monitor index to use for fullscreen. **/
 	public int fullscreenMonitorIndex = -1;
-	/** Number of bits per color channel **/
+	/** Number of bits per color channel. **/
 	public int r = 8, g = 8, b = 8, a = 8;
-	/** Number of bits for depth and stencil buffer **/
-	public int depth = 16, stencil = 0;
+	/** Number of bits for the depth buffer. **/
+	public int depth = 16;
+	/** Number of bits for the stencil buffer. **/
+	public int stencil = 0;
 	/** Number of samples for MSAA **/
 	public int samples = 0;
-	/** True to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
+	/** True to enable vsync. **/
 	public boolean vSync = true;
 	/** True if the window is resizable. **/
 	public boolean resizable = true;
-	/** True to attempt to use OpenGL ES 2.0. Note GL2 may be unavailable even when this is true. **/
+	/** True to attempt to use OpenGL ES 2.0. Note {@link Gdx#gl20} may be null even when this is true. **/
 	public boolean useGL20;
 	/** True to call System.exit() when the main loop is complete. **/
 	public boolean forceExit = true;
