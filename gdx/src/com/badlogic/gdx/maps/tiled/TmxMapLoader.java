@@ -226,9 +226,28 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	}
 
 	/**
-	 * Loads the specified tileset data, adding it to the specified map, given the XML element, the tmxFile and an
-	 * {@link ImageResolver} used to retrieve the tileset Textures
-	 * @param the Map into which to load the tileset
+	 * Loads the specified tileset data, adding it to the collection of the specified map, given the XML element, the tmxFile 
+	 * and an {@link ImageResolver} used to retrieve the tileset Textures.
+	 *
+	 * <p>
+	 * Default tileset's property keys that are loaded by default are:
+	 * </p>
+	 *
+	 * <ul>
+	 * <li><em>firstgid</em>, (int, defaults to 1) the first valid global id used for tile numbering</li>
+	 * <li><em>imagesource</em>, (String, defaults to empty string) the tileset source image filename</li>
+	 * <li><em>imagewidth</em>, (int, defaults to 0) the tileset source image width</li>
+	 * <li><em>imageheight</em>, (int, defaults to 0) the tileset source image height</li>
+	 * <li><em>tilewidth</em>, (int, defaults to 0) the tile width</li>
+	 * <li><em>tileheight</em>, (int, defaults to 0) the tile height</li>
+	 * <li><em>margin</em>, (int, defaults to 0) the tileset margin</li>
+	 * <li><em>spacing</em>, (int, defaults to 0) the tileset spacing</li>
+	 * </ul>
+	 *
+	 * <p>
+	 * The values are extracted from the specified Tmx file, if a value can't be found then the default is used.
+	 * </p>
+	 * @param map the Map whose tilesets collection will be populated
 	 * @param element the XML element identifying the tileset to load
 	 * @param tmxFile the Filehandle of the tmx file
 	 * @param imageResolver the {@link ImageResolver}
