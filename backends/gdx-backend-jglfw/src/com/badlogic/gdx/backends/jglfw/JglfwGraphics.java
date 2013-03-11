@@ -187,11 +187,11 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	public int getWidth () {
-		return glfwGetWindowWidth(window);
+		return width;
 	}
 
 	public int getHeight () {
-		return glfwGetWindowHeight(window);
+		return height;
 	}
 
 	public float getDeltaTime () {
