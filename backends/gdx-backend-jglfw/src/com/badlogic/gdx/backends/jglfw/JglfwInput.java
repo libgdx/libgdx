@@ -361,6 +361,10 @@ public class JglfwInput implements Input {
 		case GLFW_KEY_KP_DIVIDE:
 			return Input.Keys.SLASH;
 		case GLFW_KEY_MENU:
+			return Input.Keys.MENU;
+		case GLFW_KEY_RIGHT_SUPER:
+			return Input.Keys.SYM;
+		case GLFW_KEY_LEFT_SUPER:
 			return Input.Keys.SYM;
 		case GLFW_KEY_KP_EQUAL:
 			return Input.Keys.EQUALS;
@@ -559,8 +563,10 @@ public class JglfwInput implements Input {
 			return GLFW_KEY_NUM_LOCK;
 		case Input.Keys.EQUALS:
 			return GLFW_KEY_MENU;
-		case Input.Keys.SYM:
+		case Input.Keys.MENU:
 			return GLFW_KEY_MENU;
+		case Input.Keys.SYM:
+			return GLFW_KEY_LEFT_SUPER;
 		case Input.Keys.NUM_0:
 			return GLFW_KEY_0;
 		case Input.Keys.NUM_1:
@@ -725,6 +731,7 @@ public class JglfwInput implements Input {
 		public void key (long window, int key, int action) {
 			switch (action) {
 			case GLFW_PRESS:
+
 				key = getGdxKeyCode(key);
 				processor.keyDown(key);
 
