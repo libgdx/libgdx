@@ -757,7 +757,7 @@ public class JglfwInput implements Input {
 				mousePressed++;
 				processor.touchDown(mouseX, mouseY, 0, button);
 			} else {
-				mousePressed--;
+				mousePressed = Math.max(0, mousePressed - 1);
 				processor.touchUp(mouseX, mouseY, 0, button);
 			}
 		}
