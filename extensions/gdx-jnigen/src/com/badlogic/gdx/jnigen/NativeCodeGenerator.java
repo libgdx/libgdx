@@ -514,8 +514,8 @@ public class NativeCodeGenerator {
 		for (Argument arg : javaMethod.getArguments()) {
 			if (arg.getType().isBuffer()) {
 				String type = arg.getType().getBufferCType();
-				buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")env->GetDirectBufferAddress(" + JNI_ARG_PREFIX
-					+ arg.getName() + ");\n");
+				buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")(" + JNI_ARG_PREFIX
+					+ arg.getName() + "?env->GetDirectBufferAddress(" + JNI_ARG_PREFIX	+ arg.getName() + "):0);\n");
 				additionalArgs.append(", ");
 				additionalArgs.append(type);
 				additionalArgs.append(" ");
