@@ -96,8 +96,7 @@ public class PreloaderBundleGenerator extends Generator {
 	}
 
 	private void copyFile (FileWrapper source, FileWrapper dest, AssetFilter filter, ArrayList<Asset> assets) {
-		if (filter.accept(dest.path(), false))
-		;
+		if (!filter.accept(dest.path(), false)) return;
 		try {
 			assets.add(new Asset(dest, filter.getType(dest.path())));
 			dest.write(source.read(), false);
