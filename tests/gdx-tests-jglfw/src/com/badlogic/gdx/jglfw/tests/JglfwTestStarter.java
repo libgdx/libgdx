@@ -48,7 +48,7 @@ import javax.swing.UIManager;
 
 public class JglfwTestStarter extends JFrame {
 	public JglfwTestStarter () throws HeadlessException {
-		super("libgdx Tests");
+		super("JGLFW libgdx Tests");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setContentPane(new TestList());
 		pack();

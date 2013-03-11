@@ -62,13 +62,24 @@ public class JglfwApplication implements Application {
 
 		Runnable runnable = new Runnable() {
 			public void run () {
-				start(config);
+				try {
+					start(config);
+				} catch (Throwable ex) {
+					exception(ex);
+				}
 			}
 		};
 		if (config.runOnEDT)
 			EventQueue.invokeLater(runnable);
 		else
 			new Thread(runnable, "MainLoop").start();
+	}
+
+	/** Called when an uncaught exception happens in the game loop. Default implementation prints the exception and calls
+	 * System.exit(0). */
+	protected void exception (Throwable ex) {
+		ex.printStackTrace();
+		System.exit(0);
 	}
 
 	void start (JglfwApplicationConfiguration config) {
@@ -235,7 +246,13 @@ public class JglfwApplication implements Application {
 	}
 
 	public Preferences getPreferences (String name) {
-		return preferences.get(name);
+		if (preferences.containsKey(name))
+			return preferences.get(name);
+		else {
+			Preferences prefs = new JglfwPreferences(name);
+			preferences.put(name, prefs);
+			return prefs;
+		}
 	}
 
 	public Clipboard getClipboard () {
