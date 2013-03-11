@@ -112,8 +112,8 @@ public class JglfwGraphics implements Graphics {
 		if (newWindow == 0) return false;
 		if (oldWindow != 0) glfwDestroyWindow(oldWindow);
 		window = newWindow;
-		this.width = width;
-		this.height = height;
+		this.width = Math.max(1, width);
+		this.height = Math.max(1, height);
 
 		this.fullscreen = fullscreen;
 		if (!fullscreen) {
@@ -149,6 +149,8 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	void sizeChanged (int width, int height) {
+		width = Math.max(1, width);
+		height = Math.max(1, height);
 		this.width = width;
 		this.height = height;
 		Gdx.gl.glViewport(0, 0, width, height);
@@ -211,35 +213,36 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	public float getPpiX () {
-		// return getWidth() / (glfwGetMonitorPhysicalWidth(getWindowMonitor()) * 0.03937f);
+		// return getWidth() / (glfwGetMonitorPhysicalWidth(getWindowMonitor()) * 0.03937f); // mm to inches
 		return Toolkit.getDefaultToolkit().getScreenResolution();
 	}
 
 	public float getPpiY () {
-		// return getHeight() / (glfwGetMonitorPhysicalHeight(getWindowMonitor()) * 0.03937f);
+		// return getHeight() / (glfwGetMonitorPhysicalHeight(getWindowMonitor()) * 0.03937f); // mm to inches
 		return Toolkit.getDefaultToolkit().getScreenResolution();
 	}
 
 	public float getPpcX () {
-		// return getWidth() / (glfwGetMonitorPhysicalWidth(getWindowMonitor()) / 10);
+		// return getWidth() / (glfwGetMonitorPhysicalWidth(getWindowMonitor()) / 10); // mm to cm
 		return Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f;
 	}
 
 	public float getPpcY () {
-		// return getHeight() / (glfwGetMonitorPhysicalHeight(getWindowMonitor()) / 10);
+		// return getHeight() / (glfwGetMonitorPhysicalHeight(getWindowMonitor()) / 10); // mm to cm
 		return Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f;
 	}
 
 	public float getDensity () {
-		long monitor = getWindowMonitor();
-		float mmWidth = glfwGetMonitorPhysicalWidth(monitor);
-		float mmHeight = glfwGetMonitorPhysicalHeight(monitor);
-		float inches = (float)Math.sqrt(mmWidth * mmWidth + mmHeight * mmHeight) * 0.03937f;
-		float pixelWidth = getWidth();
-		float pixelHeight = getHeight();
-		float pixels = (float)Math.sqrt(pixelWidth * pixelWidth + pixelHeight * pixelHeight);
-		float diagonalPpi = pixels / inches;
-		return diagonalPpi / 160f;
+		// long monitor = getWindowMonitor();
+		// float mmWidth = glfwGetMonitorPhysicalWidth(monitor);
+		// float mmHeight = glfwGetMonitorPhysicalHeight(monitor);
+		// float inches = (float)Math.sqrt(mmWidth * mmWidth + mmHeight * mmHeight) * 0.03937f; // mm to inches
+		// float pixelWidth = getWidth();
+		// float pixelHeight = getHeight();
+		// float pixels = (float)Math.sqrt(pixelWidth * pixelWidth + pixelHeight * pixelHeight);
+		// float diagonalPpi = pixels / inches;
+		// return diagonalPpi / 160f;
+		return Toolkit.getDefaultToolkit().getScreenResolution() / 160f;
 	}
 
 	public boolean supportsDisplayModeChange () {
