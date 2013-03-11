@@ -16,6 +16,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.jglfw.GlfwVideoMode;
 import com.badlogic.jglfw.gl.GL;
 
+import java.awt.Toolkit;
+
 /** An implementation of the {@link Graphics} interface based on GLFW.
  * @author Nathan Sweet */
 public class JglfwGraphics implements Graphics {
@@ -200,31 +202,35 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	public float getPpiX () {
-		return getWidth() / glfwGetMonitorPhysicalWidth(getWindowMonitor());
+		// return getWidth() / (glfwGetMonitorPhysicalWidth(getWindowMonitor()) * 0.03937f);
+		return Toolkit.getDefaultToolkit().getScreenResolution();
 	}
 
 	public float getPpiY () {
-		return getHeight() / glfwGetMonitorPhysicalHeight(getWindowMonitor());
+		// return getHeight() / (glfwGetMonitorPhysicalHeight(getWindowMonitor()) * 0.03937f);
+		return Toolkit.getDefaultToolkit().getScreenResolution();
 	}
 
 	public float getPpcX () {
-		return getPpiX() / 2.54f;
+		// return getWidth() / (glfwGetMonitorPhysicalWidth(getWindowMonitor()) / 10);
+		return Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f;
 	}
 
 	public float getPpcY () {
-		return getPpiY() / 2.54f;
+		// return getHeight() / (glfwGetMonitorPhysicalHeight(getWindowMonitor()) / 10);
+		return Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f;
 	}
 
 	public float getDensity () {
 		long monitor = getWindowMonitor();
 		float mmWidth = glfwGetMonitorPhysicalWidth(monitor);
 		float mmHeight = glfwGetMonitorPhysicalHeight(monitor);
-		float mm = (float)Math.sqrt(mmWidth * mmWidth + mmHeight * mmHeight);
+		float inches = (float)Math.sqrt(mmWidth * mmWidth + mmHeight * mmHeight) * 0.03937f;
 		float pixelWidth = getWidth();
 		float pixelHeight = getHeight();
 		float pixels = (float)Math.sqrt(pixelWidth * pixelWidth + pixelHeight * pixelHeight);
-		float diagonlPpi = pixels / mm;
-		return diagonlPpi / 160f;
+		float diagonalPpi = pixels / inches;
+		return diagonalPpi / 160f;
 	}
 
 	public boolean supportsDisplayModeChange () {
