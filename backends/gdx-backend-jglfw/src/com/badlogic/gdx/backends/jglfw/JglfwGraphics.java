@@ -30,7 +30,7 @@ public class JglfwGraphics implements Graphics {
 	private boolean resizable, undecorated;
 	private BufferFormat bufferFormat;
 	private boolean vSync;
-	int x, y;
+	private int x, y, width, height;
 	private boolean visible;
 	private Color initialBackgroundColor;
 	private volatile boolean isContinuous = true;
@@ -112,15 +112,17 @@ public class JglfwGraphics implements Graphics {
 		if (newWindow == 0) return false;
 		if (oldWindow != 0) glfwDestroyWindow(oldWindow);
 		window = newWindow;
+		this.width = width;
+		this.height = height;
 
 		this.fullscreen = fullscreen;
 		if (!fullscreen) {
-			if (x != -1 && y != -1)
-				glfwSetWindowPos(window, x, y);
-			else {
+			if (x == -1 || y == -1) {
 				DisplayMode mode = getDesktopDisplayMode();
-				glfwSetWindowPos(window, (mode.width - width) / 2, (mode.height - height) / 2);
+				x = (mode.width - width) / 2;
+				y = (mode.height - height) / 2;
 			}
+			glfwSetWindowPos(window, x, y);
 		}
 
 		if (!mouseCaptured) glfwSetInputMode(window, GLFW_CURSOR_MODE, GLFW_CURSOR_NORMAL); // Prevent fullscreen from taking mouse.
@@ -146,11 +148,18 @@ public class JglfwGraphics implements Graphics {
 		frames++;
 	}
 
-	void resized (int width, int height) {
+	void sizeChanged (int width, int height) {
+		this.width = width;
+		this.height = height;
 		Gdx.gl.glViewport(0, 0, width, height);
 		ApplicationListener listener = Gdx.app.getApplicationListener();
 		if (listener != null) listener.resize(width, height);
 		requestRendering();
+	}
+
+	void positionChanged (int x, int y) {
+		this.x = x;
+		this.y = y;
 	}
 
 	public boolean isGL11Available () {
@@ -264,14 +273,14 @@ public class JglfwGraphics implements Graphics {
 			displayMode.bitsPerPixel == 16 ? 6 : 8, //
 			bufferFormat.a, bufferFormat.depth, bufferFormat.stencil, bufferFormat.samples, false);
 		boolean success = createWindow(displayMode.width, displayMode.height, fullscreen);
-		if (success && fullscreen) resized(displayMode.width, displayMode.height);
+		if (success && fullscreen) sizeChanged(displayMode.width, displayMode.height);
 		return success;
 	}
 
 	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
 		if (fullscreen || this.fullscreen) {
 			boolean success = createWindow(width, height, fullscreen);
-			if (success && fullscreen) resized(width, height);
+			if (success && fullscreen) sizeChanged(width, height);
 			return success;
 		}
 
@@ -328,6 +337,10 @@ public class JglfwGraphics implements Graphics {
 		return y;
 	}
 
+	public void setPosition (int x, int y) {
+		glfwSetWindowPos(window, x, y);
+	}
+
 	public void hide () {
 		visible = false;
 		glfwHideWindow(window);
@@ -340,6 +353,18 @@ public class JglfwGraphics implements Graphics {
 		Gdx.gl.glClearColor(initialBackgroundColor.r, initialBackgroundColor.g, initialBackgroundColor.b, initialBackgroundColor.a);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		glfwSwapBuffers(window);
+	}
+
+	public boolean isMinimized () {
+		return glfwGetWindowParam(window, GLFW_ICONIFIED) == 1;
+	}
+
+	public void minimize () {
+		glfwIconifyWindow(window);
+	}
+
+	public void restore () {
+		glfwRestoreWindow(window);
 	}
 
 	boolean shouldRender () {

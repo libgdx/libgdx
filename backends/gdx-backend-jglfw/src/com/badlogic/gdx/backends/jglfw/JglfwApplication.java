@@ -37,6 +37,7 @@ public class JglfwApplication implements Application {
 	private final JglfwClipboard clipboard = new JglfwClipboard();
 	private final GlfwCallbacks callbacks = new GlfwCallbacks();
 	private boolean forceExit;
+	private boolean runOnEDT;
 	volatile boolean running = true;
 	private int logLevel = LOG_INFO;
 
@@ -63,7 +64,7 @@ public class JglfwApplication implements Application {
 		Runnable runnable = new Runnable() {
 			public void run () {
 				try {
-					start(config);
+					initialize(config);
 				} catch (Throwable ex) {
 					exception(ex);
 				}
@@ -82,8 +83,9 @@ public class JglfwApplication implements Application {
 		System.exit(0);
 	}
 
-	void start (JglfwApplicationConfiguration config) {
+	void initialize (JglfwApplicationConfiguration config) {
 		forceExit = config.forceExit;
+		runOnEDT = config.forceExit;
 
 		final Thread glThread = Thread.currentThread();
 
@@ -104,7 +106,7 @@ public class JglfwApplication implements Application {
 			public void windowSize (long window, final int width, final int height) {
 				Runnable runnable = new Runnable() {
 					public void run () {
-						graphics.resized(width, height);
+						graphics.sizeChanged(width, height);
 					}
 				};
 				if (Thread.currentThread() != glThread)
@@ -116,8 +118,7 @@ public class JglfwApplication implements Application {
 			public void windowPos (long window, final int x, final int y) {
 				Runnable runnable = new Runnable() {
 					public void run () {
-						graphics.x = x;
-						graphics.y = y;
+						graphics.positionChanged(x, y);
 					}
 				};
 				if (Thread.currentThread() != glThread)
@@ -136,10 +137,15 @@ public class JglfwApplication implements Application {
 		});
 		glfwSetCallback(callbacks);
 
+		start();
+	}
+
+	/** Starts the game loop after the application internals have been initialized. */
+	protected void start () {
 		listener.create();
 		listener.resize(graphics.getWidth(), graphics.getHeight());
 
-		if (config.runOnEDT) {
+		if (runOnEDT) {
 			new Runnable() {
 				public void run () {
 					frame();
