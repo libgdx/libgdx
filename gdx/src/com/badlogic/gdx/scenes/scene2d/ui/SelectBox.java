@@ -197,6 +197,8 @@ public class SelectBox extends Widget {
 
 	public void hideList () {
 		if (list.getParent() == null) return;
+		
+		getStage().removeCaptureListener(list.stageListener)
 		list.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
 	}
 
@@ -228,7 +230,6 @@ public class SelectBox extends Widget {
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				hideList();
-				event.getStage().removeCaptureListener(stageListener);
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
