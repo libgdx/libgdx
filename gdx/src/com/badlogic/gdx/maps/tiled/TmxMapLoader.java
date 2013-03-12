@@ -44,7 +44,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 
 	public static class Parameters extends AssetLoaderParameters<TiledMap> {
 		/** Whether to load the map for a y-up coordinate system */
-		boolean yUp = true;
+		public boolean yUp = true;
 	}
 	
 	protected static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
