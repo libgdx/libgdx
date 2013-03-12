@@ -253,5 +253,7 @@
 		<include name="math/Path.java"/>
 		<include name="math/Bezier.java"/>
 		<include name="math/BSpline.java"/>
+		<include name="math/Ellipse.java"/>
+		<include name="math/Polyline.java"/>
 	</source>
 </module>
