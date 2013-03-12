@@ -85,7 +85,7 @@ public class JglfwApplication implements Application {
 
 	void initialize (JglfwApplicationConfiguration config) {
 		forceExit = config.forceExit;
-		runOnEDT = config.forceExit;
+		runOnEDT = config.runOnEDT;
 
 		final Thread glThread = Thread.currentThread();
 
