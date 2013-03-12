@@ -196,7 +196,7 @@ public class SelectBox extends Widget {
 	}
 
 	public void hideList () {
-		if (list.getParent() == null) return;
+		if (list == null || list.getParent() == null) return;
 
 		getStage().removeCaptureListener(list.stageListener);
 		list.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
