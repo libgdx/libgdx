@@ -17,6 +17,7 @@ public class InputProcessorQueue implements InputProcessor {
 
 	private InputProcessor processor;
 	private final IntArray queue = new IntArray();
+	private final IntArray processingQueue = new IntArray();
 	private long currentEventTime;
 
 	public InputProcessorQueue () {
@@ -34,39 +35,46 @@ public class InputProcessorQueue implements InputProcessor {
 		return processor;
 	}
 
-	public synchronized void drain () {
-		if (processor != null) {
-			for (int i = 0, n = queue.size; i < n;) {
-				currentEventTime = (long)queue.get(i++) << 32 | queue.get(i++) & 0xFFFFFFFFL;
-				switch (queue.get(i++)) {
-				case KEY_DOWN:
-					processor.keyDown(queue.get(i++));
-					break;
-				case KEY_UP:
-					processor.keyUp(queue.get(i++));
-					break;
-				case KEY_TYPED:
-					processor.keyTyped((char)queue.get(i++));
-					break;
-				case TOUCH_DOWN:
-					processor.touchDown(queue.get(i++), queue.get(i++), queue.get(i++), queue.get(i++));
-					break;
-				case TOUCH_UP:
-					processor.touchUp(queue.get(i++), queue.get(i++), queue.get(i++), queue.get(i++));
-					break;
-				case TOUCH_DRAGGED:
-					processor.touchDragged(queue.get(i++), queue.get(i++), queue.get(i++));
-					break;
-				case MOUSE_MOVED:
-					processor.mouseMoved(queue.get(i++), queue.get(i++));
-					break;
-				case SCROLLED:
-					processor.scrolled(queue.get(i++));
-					break;
-				}
+	public void drain () {
+		IntArray q = processingQueue;
+		synchronized (this) {
+			if (processor == null) {
+				queue.clear();
+				return;
+			}
+			q.addAll(queue);
+			queue.clear();
+		}
+		for (int i = 0, n = q.size; i < n;) {
+			currentEventTime = (long)q.get(i++) << 32 | q.get(i++) & 0xFFFFFFFFL;
+			switch (q.get(i++)) {
+			case KEY_DOWN:
+				processor.keyDown(q.get(i++));
+				break;
+			case KEY_UP:
+				processor.keyUp(q.get(i++));
+				break;
+			case KEY_TYPED:
+				processor.keyTyped((char)q.get(i++));
+				break;
+			case TOUCH_DOWN:
+				processor.touchDown(q.get(i++), q.get(i++), q.get(i++), q.get(i++));
+				break;
+			case TOUCH_UP:
+				processor.touchUp(q.get(i++), q.get(i++), q.get(i++), q.get(i++));
+				break;
+			case TOUCH_DRAGGED:
+				processor.touchDragged(q.get(i++), q.get(i++), q.get(i++));
+				break;
+			case MOUSE_MOVED:
+				processor.mouseMoved(q.get(i++), q.get(i++));
+				break;
+			case SCROLLED:
+				processor.scrolled(q.get(i++));
+				break;
 			}
 		}
-		queue.clear();
+		q.clear();
 	}
 
 	private void queueTime () {
