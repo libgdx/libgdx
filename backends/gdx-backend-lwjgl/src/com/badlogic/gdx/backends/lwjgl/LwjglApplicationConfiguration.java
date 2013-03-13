@@ -41,7 +41,7 @@ public class LwjglApplicationConfiguration {
 	/** number of samples for MSAA **/
 	public int samples = 0;
 	/** width & height of application window **/
-	public int width = 480, height = 320;
+	public int width = 640, height = 480;
 	/** x & y of application window, -1 for center **/
 	public int x = -1, y = -1;
 	/** fullscreen **/

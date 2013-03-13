@@ -57,7 +57,7 @@ public class LwjglApplication implements Application {
 	}
 
 	public LwjglApplication (ApplicationListener listener) {
-		this(listener, new LwjglApplicationConfiguration());
+		this(listener, listener.getClass().getSimpleName(), 640, 480, false);
 	}
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config) {
@@ -217,7 +217,7 @@ public class LwjglApplication implements Application {
 	public ApplicationListener getApplicationListener () {
 		return listener;
 	}
-	
+
 	@Override
 	public Audio getAudio () {
 		return audio;
