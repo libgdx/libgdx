@@ -32,7 +32,7 @@ public class MapLayers implements Iterable<MapLayer> {
 	}
 	
 	/** @return number of layers in the collection */
-	public int getNumLayers () {
+	public int getCount() {
 		return layers.size;
 	}
 
