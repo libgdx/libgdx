@@ -61,6 +61,8 @@ public class LwjglApplicationConfiguration {
 	/** the audio device buffer count **/
 	public int audioDeviceBufferCount = 9;
 	public Color initialBackgroundColor = Color.BLACK;
+	/** whether the game should pause when minimized or not */
+	public boolean pauseWhenMinimized = false;
 
 	Array<String> iconPaths = new Array();
 	Array<FileType> iconFileTypes = new Array();
