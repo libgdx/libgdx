@@ -135,23 +135,26 @@ public class LwjglApplication implements Application {
 		int lastHeight = graphics.getHeight();
 
 		graphics.lastTime = System.nanoTime();
-		boolean pausedBecauseMinimized;
 		boolean wasPaused = false;
 		while (running) {
 			Display.processMessages();
 			if (Display.isCloseRequested()) {
 				exit();
 			}
-			pausedBecauseMinimized = (graphics.config.pauseWhenMinimized && !Display.isActive());
-			if (pausedBecauseMinimized) {
-				if (!wasPaused) {
+			
+			if (graphics.config.pauseWhenMinimized) {
+				if (!wasPaused && !Display.isActive()) {
 					wasPaused = true;
 					listener.pause();
 				}
-				continue;
-			} else if (wasPaused && Display.isActive()){
-				wasPaused = false;
-				listener.resume();
+				if (!Display.isActive()) {
+					Display.sync(60);
+					continue;
+				}
+				if (wasPaused && Display.isActive()){
+					wasPaused = false;
+					listener.resume();
+				}
 			}
 			boolean shouldRender = false;
 
