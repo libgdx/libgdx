@@ -225,6 +225,34 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		return images;
 	}
 
+	/**
+	 * Loads the specified tileset data, adding it to the collection of the specified map, given the XML element, the tmxFile 
+	 * and an {@link ImageResolver} used to retrieve the tileset Textures.
+	 *
+	 * <p>
+	 * Default tileset's property keys that are loaded by default are:
+	 * </p>
+	 *
+	 * <ul>
+	 * <li><em>firstgid</em>, (int, defaults to 1) the first valid global id used for tile numbering</li>
+	 * <li><em>imagesource</em>, (String, defaults to empty string) the tileset source image filename</li>
+	 * <li><em>imagewidth</em>, (int, defaults to 0) the tileset source image width</li>
+	 * <li><em>imageheight</em>, (int, defaults to 0) the tileset source image height</li>
+	 * <li><em>tilewidth</em>, (int, defaults to 0) the tile width</li>
+	 * <li><em>tileheight</em>, (int, defaults to 0) the tile height</li>
+	 * <li><em>margin</em>, (int, defaults to 0) the tileset margin</li>
+	 * <li><em>spacing</em>, (int, defaults to 0) the tileset spacing</li>
+	 * </ul>
+	 *
+	 * <p>
+	 * The values are extracted from the specified Tmx file, if a value can't be found then the default is used.
+	 * </p>
+	 * @param map the Map whose tilesets collection will be populated
+	 * @param element the XML element identifying the tileset to load
+	 * @param tmxFile the Filehandle of the tmx file
+	 * @param imageResolver the {@link ImageResolver}
+	 */
+
 	protected void loadTileSet(TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
 		if (element.getName().equals("tileset")) {
 			String name = element.get("name", null);
@@ -234,6 +262,10 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			int spacing = element.getIntAttribute("spacing", 0);
 			int margin = element.getIntAttribute("margin", 0);			
 			String source = element.getAttribute("source", null);
+
+			String imageSource = "";
+			int imageWidth = 0, imageHeight = 0;
+
 			FileHandle image = null;
 			if (source != null) {
 				FileHandle tsx = getRelativeFileHandle(tmxFile, source);
@@ -244,21 +276,34 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 					tileheight = element.getIntAttribute("tileheight", 0);
 					spacing = element.getIntAttribute("spacing", 0);
 					margin = element.getIntAttribute("margin", 0);
-					String imageSource = element.getChildByName("image").getAttribute("source");
+					imageSource = element.getChildByName("image").getAttribute("source");
+					imageWidth = element.getChildByName("image").getIntAttribute("width", 0);
+					imageHeight = element.getChildByName("image").getIntAttribute("height", 0);
 					image = getRelativeFileHandle(tsx, imageSource);
 				} catch (IOException e) {
 					throw new GdxRuntimeException("Error parsing external tileset.");
 				}
 			} else {
-				String imageSource = element.getChildByName("image").getAttribute("source");
+				imageSource = element.getChildByName("image").getAttribute("source");
+				imageWidth = element.getChildByName("image").getIntAttribute("width", 0);
+				imageHeight = element.getChildByName("image").getIntAttribute("height", 0);
 				image = getRelativeFileHandle(tmxFile, imageSource);
 			}
 
 			TextureRegion texture = imageResolver.getImage(image.path());
 
 			TiledMapTileSet tileset = new TiledMapTileSet();
+			MapProperties props = tileset.getProperties();
 			tileset.setName(name);
-			
+			props.put("firstgid", firstgid);
+			props.put("imagesource", imageSource);
+			props.put("imagewidth", imageWidth);
+			props.put("imageheight", imageHeight);
+			props.put("tilewidth", tilewidth);
+			props.put("tileheight", tileheight);
+			props.put("margin", margin);
+			props.put("spacing", spacing);
+
 			int stopWidth = texture.getRegionWidth() - tilewidth;
 			int stopHeight = texture.getRegionHeight() - tileheight;
 
