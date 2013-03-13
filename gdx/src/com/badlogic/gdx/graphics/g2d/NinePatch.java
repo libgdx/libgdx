@@ -320,7 +320,7 @@ public class NinePatch {
 		vertices[idx] = color;
 	}
 
-	public void draw (final SpriteBatch batch, final float x, final float y, final float width, final float height) {
+	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
 		final float centerColumnX = x + leftWidth;
 		final float rightColumnX = x + width - rightWidth;
 		final float middleRowY = y + bottomHeight;
