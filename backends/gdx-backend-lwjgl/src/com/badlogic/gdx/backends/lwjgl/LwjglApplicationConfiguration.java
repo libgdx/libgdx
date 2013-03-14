@@ -47,7 +47,7 @@ public class LwjglApplicationConfiguration {
 	/** fullscreen **/
 	public boolean fullscreen = false;
 	/** whether to use CPU synching. If this is false display vsynching is used, which might not work in windowed mode **/
-	public boolean useCPUSynch = true;
+	public boolean useCPUSynch = false;
 	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
 	public boolean vSyncEnabled = true;
 	/** title of application **/
