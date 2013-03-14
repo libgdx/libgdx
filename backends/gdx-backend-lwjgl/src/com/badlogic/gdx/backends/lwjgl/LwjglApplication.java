@@ -142,7 +142,7 @@ public class LwjglApplication implements Application {
 			if (Display.isCloseRequested()) {
 				exit();
 			}
-			
+
 			if (graphics.config.pauseWhenMinimized) {
 				isActive = Display.isActive();
 				if (!wasPaused && !isActive) { // if it's not here yet and windows currently minimized
