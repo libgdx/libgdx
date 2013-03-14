@@ -31,6 +31,11 @@ public class MapLayers implements Iterable<MapLayer> {
 		return null;
 	}
 	
+	/** @return number of layers in the collection */
+	public int getCount() {
+		return layers.size;
+	}
+
 	/**
 	 * @param layer layer to be added to the set
 	 */
