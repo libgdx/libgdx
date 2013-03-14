@@ -30,7 +30,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import java.io.BufferedReader;
@@ -96,7 +95,6 @@ public class TextureAtlas implements Disposable {
 
 		public TextureAtlasData (FileHandle packFile, FileHandle imagesDir, boolean flip) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);
-			
 			try {
 				Page pageImage = null;
 				while (true) {

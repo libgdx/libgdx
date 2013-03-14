@@ -42,9 +42,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.SerializationException;
 
 /** @author Nathan Sweet */
@@ -74,7 +72,7 @@ public class TexturePacker2 {
 	public void pack (File outputDir, String packFileName) {
 		outputDir.mkdirs();
 
-		if (packFileName.indexOf('.') == -1) packFileName += settings.jsonOutput ? ".json" : ".atlas";
+		if (packFileName.indexOf('.') == -1) packFileName += ".atlas";
 
 		Array<Page> pages = maxRectsPacker.pack(imageProcessor.getImages());
 		writeImages(outputDir, pages, packFileName);
@@ -184,8 +182,6 @@ public class TexturePacker2 {
 
 			try {
 				if (settings.outputFormat.equalsIgnoreCase("jpg")) {
-					if (settings.format == Format.RGBA8888 || settings.format == Format.RGBA4444)
-						throw new RuntimeException("Invalid format for JPG output: " + settings.format);
 					Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
 					ImageWriter writer = writers.next();
 					ImageWriteParam param = writer.getDefaultWriteParam();
@@ -211,6 +207,7 @@ public class TexturePacker2 {
 			for (Page page : pages) {
 				for (Rect rect : page.outputRects) {
 					String rectName = settings.flattenPaths ? new FileHandle(rect.name).name() : rect.name;
+					System.out.println(rectName);
 					for (Region region : textureAtlasData.getRegions()) {
 						if (region.name.equals(rectName)) {
 							throw new GdxRuntimeException("A region with the name \"" + rectName + "\" has already been packed: "
@@ -222,91 +219,27 @@ public class TexturePacker2 {
 		}
 
 		FileWriter writer = new FileWriter(packFile, true);
-		if (settings.jsonOutput) {
-			JsonWriter json = new JsonWriter(writer);
-			json.object();
-			json.array("pages");
-			for (Page page : pages) {
-				json.object();
-				json.set("name", page.imageName);
-				if (settings.format != Format.RGBA8888) json.set("format", settings.format);
-				if (settings.filterMin != TextureFilter.Nearest) json.set("filterMin", settings.filterMin);
-				if (settings.filterMag != TextureFilter.Nearest) json.set("filterMag", settings.filterMag);
-				if (!getRepeatValue().equals("none")) json.set("repeat", getRepeatValue());
+// if (settings.jsonOutput) {
+// } else {
+		for (Page page : pages) {
+			writer.write("\n" + page.imageName + "\n");
+			writer.write("format: " + settings.format + "\n");
+			writer.write("filter: " + settings.filterMin + "," + settings.filterMag + "\n");
+			writer.write("repeat: " + getRepeatValue() + "\n");
 
-				json.object("regions");
-				for (Rect rect : page.outputRects) {
-					writeRectJson(json, page, rect);
-					for (Rect alias : rect.aliases) {
-						alias.setSize(rect);
-						writeRectJson(json, page, alias);
-					}
-				}
-				json.pop();
-
-				json.pop();
-			}
-			json.close();
-		} else {
-			for (Page page : pages) {
-				writer.write("\n" + page.imageName + "\n");
-				writer.write("format: " + settings.format + "\n");
-				writer.write("filter: " + settings.filterMin + "," + settings.filterMag + "\n");
-				writer.write("repeat: " + getRepeatValue() + "\n");
-
-				for (Rect rect : page.outputRects) {
-					writeRectLegacy(writer, page, rect);
-					for (Rect alias : rect.aliases) {
-						alias.setSize(rect);
-						writeRectLegacy(writer, page, alias);
-					}
+			for (Rect rect : page.outputRects) {
+				writeRect(writer, page, rect);
+				for (Rect alias : rect.aliases) {
+					alias.setSize(rect);
+					writeRect(writer, page, alias);
 				}
 			}
 		}
+// }
 		writer.close();
 	}
 
-	private void writeRectJson (JsonWriter json, Page page, Rect rect) throws IOException {
-		String rectName = settings.flattenPaths ? new FileHandle(rect.name).name() : rect.name;
-		json.object(rectName);
-
-		if (rect.rotated) json.set("rotate", true);
-		json.set("x", page.x + rect.x);
-		json.set("y", page.y + page.height - rect.height - rect.y);
-		json.set("width", rect.image.getWidth());
-		json.set("height", rect.image.getHeight());
-		if (rect.splits != null) {
-			json.name("splits");
-			json.array();
-			json.value(rect.splits[0]);
-			json.value(rect.splits[1]);
-			json.value(rect.splits[2]);
-			json.value(rect.splits[3]);
-			json.pop();
-			json.pop();
-		}
-		if (rect.pads != null) {
-			json.name("pad");
-			json.array();
-			json.value(rect.pads[0]);
-			json.value(rect.pads[1]);
-			json.value(rect.pads[2]);
-			json.value(rect.pads[3]);
-			json.pop();
-			json.pop();
-		}
-		if (rect.originalWidth != rect.image.getWidth()) json.set("originalWidth", rect.originalWidth);
-		if (rect.originalHeight != rect.image.getHeight()) json.set("originalHeight", rect.image.getHeight());
-		if (rect.offsetX != 0) json.set("offsetX", rect.offsetX);
-		if (rect.originalHeight - rect.image.getHeight() - rect.offsetY != 0)
-			json.set("offsetY", (rect.originalHeight - rect.image.getHeight() - rect.offsetY));
-		if (rect.offsetX != 0) json.set("offsetX", rect.offsetX);
-		if (rect.index != -1) json.set("index", rect.index);
-
-		json.pop();
-	}
-
-	private void writeRectLegacy (FileWriter writer, Page page, Rect rect) throws IOException {
+	private void writeRect (FileWriter writer, Page page, Rect rect) throws IOException {
 		String rectName = settings.flattenPaths ? new FileHandle(rect.name).name() : rect.name;
 		writer.write(rectName + "\n");
 		writer.write("  rotate: " + rect.rotated + "\n");
@@ -532,7 +465,7 @@ public class TexturePacker2 {
 	}
 
 	public static void main (String[] args) throws Exception {
-		String input = null, output = null, packFileName = "pack.json";
+		String input = null, output = null, packFileName = "pack.atlas";
 
 		switch (args.length) {
 		case 3:
