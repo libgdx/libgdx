@@ -482,7 +482,7 @@ public class TextField extends Widget {
 				} else
 					font.setColor(0.7f, 0.7f, 0.7f, parentAlpha);
 				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
-				font.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset);
+				messageFont.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset);
 			}
 		} else {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
