@@ -29,13 +29,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
  * @see GestureDetector
  * @author Nathan Sweet */
 public class ActorGestureListener implements EventListener {
+	static final Vector2 tmpCoords = new Vector2();
+
 	private final GestureDetector detector;
 	InputEvent event;
 	Actor actor, touchDownTarget;
-	
-	/** Scratch coordinates used to convert event coordinates into local coordinates. */
-	static final Vector2 tmpCoords = new Vector2();
-	
+
 	/** @see GestureDetector#GestureDetector(com.badlogic.gdx.input.GestureDetector.GestureListener) */
 	public ActorGestureListener () {
 		this(20, 0.4f, 1.1f, 0.15f);

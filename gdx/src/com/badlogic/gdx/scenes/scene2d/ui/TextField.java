@@ -63,6 +63,10 @@ public class TextField extends Widget {
 	static private final char DELETE = 127;
 	static private final char BULLET = 149;
 
+	static private final Vector2 tmp1 = new Vector2();
+	static private final Vector2 tmp2 = new Vector2();
+	static private final Vector2 tmp3 = new Vector2();
+
 	TextFieldStyle style;
 	String text, messageText;
 	private CharSequence displayText;
@@ -583,14 +587,6 @@ public class TextField extends Widget {
 		cursor = minIndex;
 		clearSelection();
 	}
-
-	/*
-	 * Three hacks to work around the inability to stack allocate small scratch-space objects in Java. Used by #next() and
-	 * #findNextTextField.
-	 */
-	private static final Vector2 tmp1 = new Vector2();
-	private static final Vector2 tmp2 = new Vector2();
-	private static final Vector2 tmp3 = new Vector2();
 
 	/** Focuses the next TextField. If none is found, the keyboard is hidden. Does nothing if the text field is not in a stage.
 	 * @param up If true, the TextField with the same or next smallest y coordinate is found, else the next highest. */

@@ -43,6 +43,8 @@ import com.badlogic.gdx.utils.Pools;
  * @author mzechner
  * @author Nathan Sweet */
 public class SelectBox extends Widget {
+	static final Vector2 tmpCoords = new Vector2();
+
 	SelectBoxStyle style;
 	String[] items;
 	int selectedIndex = 0;
@@ -51,9 +53,6 @@ public class SelectBox extends Widget {
 	SelectList list;
 	private float prefWidth, prefHeight;
 	private ClickListener clickListener;
-
-	/** Scratch space for converting to/from stage coordinates. Only used in listener callbacks (so only on render thread). */
-	static final Vector2 tmpCoords = new Vector2();
 
 	public SelectBox (Object[] items, Skin skin) {
 		this(items, skin.get(SelectBoxStyle.class));
@@ -203,7 +202,7 @@ public class SelectBox extends Widget {
 	}
 
 	class SelectList extends Actor {
-		Vector2 oldScreenCoords = new Vector2();
+		final Vector2 oldScreenCoords = new Vector2();
 		float itemHeight;
 		float textOffsetX, textOffsetY;
 		int listSelectedIndex = SelectBox.this.selectedIndex;
