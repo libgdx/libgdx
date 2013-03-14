@@ -86,7 +86,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	public void render (int[] layers) {
 		spriteBatch.begin();
 		for (int layerIdx : layers) {
-			MapLayer layer = map.getLayers().getLayer(layerIdx);
+			MapLayer layer = map.getLayers().get(layerIdx);
 			if (layer.isVisible()) {
 				if (layer instanceof TiledMapTileLayer) {
 					renderTileLayer((TiledMapTileLayer) layer);

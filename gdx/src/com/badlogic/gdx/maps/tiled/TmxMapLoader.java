@@ -555,7 +555,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			if (properties != null) {
 				loadProperties(layer.getProperties(), properties);
 			}
-			map.getLayers().addLayer(layer);
+			map.getLayers().add(layer);
 		}		
 	}
 	
@@ -573,7 +573,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 				loadObject(layer, objectElement);
 			}
 
-			map.getLayers().addLayer(layer);
+			map.getLayers().add(layer);
 		}
 	}
 	
@@ -634,7 +634,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			if (properties != null) {
 				loadProperties(object.getProperties(), properties);
 			}
-			layer.getObjects().addObject(object);
+			layer.getObjects().add(object);
 		}
 	}
 	
