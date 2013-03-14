@@ -213,7 +213,7 @@ public class SuperKoalio extends GdxTest {
 				if(koala.velocity.y > 0) {
 					koala.position.y = tile.y - Koala.HEIGHT;
 					// we hit a block jumping upwards, let's destroy it!
-					TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().getLayer(1);
+					TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get(1);
 					layer.setCell((int)tile.x, (int)tile.y, null);
 				} else {
 					koala.position.y = tile.y + tile.height;
@@ -250,7 +250,7 @@ public class SuperKoalio extends GdxTest {
 	}
 	
 	private void getTiles(int startX, int startY, int endX, int endY, Array<Rectangle> tiles) {
-		TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().getLayer(1);
+		TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get(1);
 		rectPool.freeAll(tiles);
 		tiles.clear();
 		for(int y = startY; y <= endY; y++) {
