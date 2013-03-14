@@ -136,6 +136,7 @@ public class LwjglApplication implements Application {
 
 		graphics.lastTime = System.nanoTime();
 		boolean wasPaused = false;
+		boolean isActive;
 		while (running) {
 			Display.processMessages();
 			if (Display.isCloseRequested()) {
@@ -143,15 +144,16 @@ public class LwjglApplication implements Application {
 			}
 			
 			if (graphics.config.pauseWhenMinimized) {
-				if (!wasPaused && !Display.isActive()) {
+				isActive = Display.isActive();
+				if (!wasPaused && !isActive) { // if it's not here yet and windows currently minimized
 					wasPaused = true;
 					listener.pause();
 				}
-				if (!Display.isActive()) {
+				if (!isActive) { // if windows minimized
 					Display.sync(60);
 					continue;
 				}
-				if (wasPaused && Display.isActive()){
+				if (wasPaused && isActive){ // if it was minimized and now currently active
 					wasPaused = false;
 					listener.resume();
 				}
