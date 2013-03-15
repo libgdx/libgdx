@@ -4,6 +4,7 @@ Libgdx is a cross-platform Java game development framework based on
 OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, your
 WebGL enabled browser and iOS.
 
+#### Learn [https://code.google.com/p/libgdx/wiki/Contributing?ts=1363359071&updated=Contributing how to contribute] ===
 #### The [Libgdx Official Site][1] hosts downloads, documentation and contains useful links
 #### The [community-maintained wiki][4] hosted at Google Code will explain much of Libgdx
 #### Use the [Badlogic Forum][5] to ask questions about Libgdx
