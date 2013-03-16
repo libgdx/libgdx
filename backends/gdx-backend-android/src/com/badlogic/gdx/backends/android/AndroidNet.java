@@ -89,6 +89,10 @@ public class AndroidNet implements Net {
 
 	@Override
 	public void openURI (String URI) {
+		if(app == null) {
+			Gdx.app.log("AndroidNet", "Can't open browser activity from livewallpaper");
+			return;
+		}
 		final Uri uri = Uri.parse(URI);
 		app.runOnUiThread(new Runnable() {
 			@Override
