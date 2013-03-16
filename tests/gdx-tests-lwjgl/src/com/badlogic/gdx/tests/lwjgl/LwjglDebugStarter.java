@@ -41,9 +41,10 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new AnimationTest();
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = test.needsGL20();
-		new LwjglApplication(test, config);
+		MathUtils.atan2(-6.0E-44f,0f);
+//		GdxTest test = new AnimationTest();
+//		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+//		config.useGL20 = test.needsGL20();
+//		new LwjglApplication(test, config);
 	}
 }
