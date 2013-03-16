@@ -22,6 +22,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 
@@ -57,7 +58,6 @@ public abstract class Camera {
 	/** the frustum **/
 	public final Frustum frustum = new Frustum();
 
-	private final Matrix4 tmpMat = new Matrix4();
 	private final Vector3 tmpVec = new Vector3();
 
 	/** Recalculates the projection and view matrix of this camera and the {@link Frustum} planes. Use this after you've manipulated
@@ -87,6 +87,12 @@ public abstract class Camera {
 	public void lookAt (float x, float y, float z) {
 		direction.set(x, y, z).sub(position).nor();
 	}
+	
+	/** Recalculates the direction of the camera to look at the point (x, y, z).
+	 * @param target the point to look at */
+	public void lookAt (Vector3 target) {
+		direction.set(target).sub(position).nor();
+	}
 
 	/** Normalizes the up vector by first calculating the right vector via a cross product between direction and up, and then
 	 * recalculating the up vector via a cross product between right and direction. */
@@ -105,7 +111,8 @@ public abstract class Camera {
 	 * @param axisY the y-component of the axis
 	 * @param axisZ the z-component of the axis */
 	public void rotate (float angle, float axisX, float axisY, float axisZ) {
-		rotate(tmpVec.set(axisX, axisY, axisZ), angle);
+		direction.rotate(axisX, axisY, axisZ, angle);
+		up.rotate(axisX, axisY, axisZ, angle);
 	}
 
 	/** Rotates the direction and up vector of this camera by the given angle around the given axis. The direction and up vector
@@ -114,9 +121,26 @@ public abstract class Camera {
 	 * @param axis
 	 * @param angle the angle */
 	public void rotate (Vector3 axis, float angle) {
-		tmpMat.setToRotation(axis, angle);
-		direction.mul(tmpMat).nor();
-		up.mul(tmpMat).nor();
+		direction.rotate(axis, angle);
+		up.rotate(axis, angle);
+	}
+
+	/** Rotates the direction and up vector of this camera by the given rotation matrix. The direction and up vector
+	 * will not be orthogonalized.
+	 * 
+	 * @param transform The rotation matrix */
+	public void rotate(final Matrix4 transform) {
+		direction.rot(transform);
+		up.rot(transform);
+	}
+	
+	/** Rotates the direction and up vector of this camera by the given {@link Quaternion}. The direction and up vector
+	 * will not be orthogonalized.
+	 * 
+	 * @param quat The quaternion */
+	public void rotate(final Quaternion quat) {
+		direction.mul(quat);
+		up.mul(quat);
 	}
 	
 	/** Rotates the direction and up vector of this camera by the given angle around the given axis, with the axis attached to given point. 
@@ -132,6 +156,14 @@ public abstract class Camera {
 		rotate(axis, angle);
 		tmpVec.rotate(axis, angle);
 		translate(-tmpVec.x, -tmpVec.y, -tmpVec.z);
+	}
+	
+	/** Transform the position, direction and up vector by the given matrix
+	 * 
+	 * @param transform The transform matrix */
+	public void transform(final Matrix4 transform) {
+		position.mul(transform);
+		rotate(transform);
 	}
 
 	/** Moves the camera by the given amount on each axis.
