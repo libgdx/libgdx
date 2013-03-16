@@ -210,8 +210,9 @@ public class MathUtils {
 	static private final int BIG_ENOUGH_INT = 16 * 1024;
 	static private final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
 	static private final double CEIL = 0.9999999;
-	static private final double BIG_ENOUGH_CEIL = NumberUtils
-		.longBitsToDouble(NumberUtils.doubleToLongBits(BIG_ENOUGH_INT + 1) - 1);
+//	static private final double BIG_ENOUGH_CEIL = NumberUtils
+//		.longBitsToDouble(NumberUtils.doubleToLongBits(BIG_ENOUGH_INT + 1) - 1);
+	static private final double BIG_ENOUGH_CEIL = 16384.999999999996;
 	static private final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5f;
 
 	/** Returns the largest integer less than or equal to the specified float. This method will only properly floor floats from
