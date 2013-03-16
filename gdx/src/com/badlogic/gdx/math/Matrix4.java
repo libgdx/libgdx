@@ -441,6 +441,17 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
+	/** Sets the 4th column to the translation vector.
+	 * 
+	 * @param vector The translation vector
+	 * @return This matrix for the purpose of chaining methods together. */
+	public Matrix4 setTranslation (Vector3 vector) {
+		val[M03] = vector.x;
+		val[M13] = vector.y;
+		val[M23] = vector.z;
+		return this;
+	}
+
 	/** Sets this matrix to a translation matrix, overwriting it first by an identity matrix and then setting the 4th column to the
 	 * translation vector.
 	 * 
@@ -543,7 +554,6 @@ public class Matrix4 implements Serializable {
 	 * @param v2 The target vector
 	 * @return This matrix for the purpose of chaining methods together */
 	public Matrix4 setToRotation (final Vector3 v1, final Vector3 v2) {
-		idt();
 		return set(quat.setFromCross(v1, v2));
 	}
 	
@@ -555,8 +565,7 @@ public class Matrix4 implements Serializable {
 	 * @param y2 The target vector y value
 	 * @param z2 The target vector z value
 	 * @return This matrix for the purpose of chaining methods together */
-		public Matrix4 setToRotation (final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
-		idt();
+	public Matrix4 setToRotation (final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
 		return set(quat.setFromCross(x1, y1, z1, x2, y2, z2));
 	}
 	
@@ -1056,6 +1065,14 @@ public class Matrix4 implements Serializable {
 		rotation.toMatrix(tmp);
 		mul(val, tmp);
 		return this;
+	}
+	
+	/** Postmultiplies this matrix by the rotation between two vectors.
+	 * @param v1 The base vector
+	 * @param v2 The target vector
+	 * @return This matrix for the purpose of chaining methods together */	
+	public Matrix4 rotate (final Vector3 v1, final Vector3 v2) {
+		return rotate(quat.setFromCross(v1, v2));
 	}
 
 	/** Postmultiplies this matrix with a scale matrix. Postmultiplication is also used by OpenGL ES' 1.x
