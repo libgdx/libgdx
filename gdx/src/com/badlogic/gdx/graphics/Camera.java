@@ -139,8 +139,8 @@ public abstract class Camera {
 	 * 
 	 * @param quat The quaternion */
 	public void rotate(final Quaternion quat) {
-		direction.mul(quat);
-		up.mul(quat);
+		quat.transform(direction);
+		quat.transform(up);
 	}
 	
 	/** Rotates the direction and up vector of this camera by the given angle around the given axis, with the axis attached to given point. 
