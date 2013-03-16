@@ -56,6 +56,7 @@ public class ETC1 {
 			this.height = height;
 			this.compressedData = compressedData;
 			this.dataOffset = dataOffset;
+			checkNPOT();
 		}
 
 		public ETC1Data (FileHandle pkmFile) {
@@ -84,6 +85,7 @@ public class ETC1 {
 			height = getHeightPKM(compressedData, 0);
 			dataOffset = PKM_HEADER_SIZE;
 			compressedData.position(dataOffset);
+			checkNPOT();
 		}
 		
 		private void checkNPOT() {
