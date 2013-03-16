@@ -12,6 +12,8 @@ import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.SynchronousAssetLoader;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
@@ -45,6 +47,8 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	public static class Parameters extends AssetLoaderParameters<TiledMap> {
 		/** Whether to load the map for a y-up coordinate system */
 		public boolean yUp = true;
+		/** generate mipmaps? **/
+		public boolean generateMipMaps = false;
 	}
 	
 	protected static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
@@ -81,7 +85,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	 * @return the TiledMap
 	 */
 	public TiledMap load(String fileName) {
-		return load(fileName, true);
+		return load(fileName, new TmxMapLoader.Parameters());
 	}
 
 	/**
@@ -89,17 +93,17 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	 * resolved via the {@link FileHandleResolver} set in the constructor
 	 * of this class. By default it will resolve to an internal file.
 	 * @param fileName the filename
-	 * @param yUp whether to load the map for a y-up coordinate system
+	 * @param parameters specifies whether to use y-up, generate mip maps etc.
 	 * @return the TiledMap
 	 */
-	public TiledMap load(String fileName, boolean yUp) {
+	public TiledMap load(String fileName, TmxMapLoader.Parameters parameters) {
 		try {
-			this.yUp = yUp;
+			this.yUp = parameters.yUp;
 			FileHandle tmxFile = resolve(fileName);
 			root = xml.parse(tmxFile);
 			ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 			for(FileHandle textureFile: loadTilesets(root, tmxFile)) {
-				textures.put(textureFile.path(), new Texture(textureFile));
+				textures.put(textureFile.path(), new Texture(textureFile, parameters.generateMipMaps));
 			}
 			DirectImageResolver imageResolver = new DirectImageResolver(textures);
 			TiledMap map = loadTilemap(root, tmxFile, imageResolver);
@@ -138,8 +142,11 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		try {
 			FileHandle tmxFile = resolve(fileName);
 			root = xml.parse(tmxFile);
+			boolean generateMipMaps = (parameter!=null?parameter.generateMipMaps: false);
+			TextureLoader.TextureParameter texParams = new TextureParameter();
+			texParams.genMipMaps = generateMipMaps;
 			for(FileHandle image: loadTilesets(root, tmxFile)) {
-				dependencies.add(new AssetDescriptor(image.path(), Texture.class));
+				dependencies.add(new AssetDescriptor(image.path(), Texture.class, texParams));
 			}
 			return dependencies;
 		} catch (IOException e) {
