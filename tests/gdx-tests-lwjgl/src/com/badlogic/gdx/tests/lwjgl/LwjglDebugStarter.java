@@ -42,6 +42,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
+		
 		GdxTest test = new TiledMapDirectLoaderTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
