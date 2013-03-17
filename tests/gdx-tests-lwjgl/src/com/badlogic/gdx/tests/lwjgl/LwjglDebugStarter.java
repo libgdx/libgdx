@@ -43,7 +43,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
 		
-		GdxTest test = new TiledMapDirectLoaderTest();
+		GdxTest test = new SuperKoalio();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		new LwjglApplication(test, config);
