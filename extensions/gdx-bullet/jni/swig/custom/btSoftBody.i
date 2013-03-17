@@ -125,7 +125,6 @@ struct	Config
 
 %{
 #include <BulletSoftBody/btSoftBody.h>
-#include <stdint.h>
 %}
 %include "BulletSoftBody/btSoftBody.h"
 
