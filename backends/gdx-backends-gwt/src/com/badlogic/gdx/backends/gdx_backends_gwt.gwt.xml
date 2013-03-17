@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='com.badlogic.gdx.backends.gwt'>
 	<inherits name='com.google.gwt.user.User' />
-	<!-- Inherit edited GWT stylesheet (gwt classes only) -->
+	<!-- Inherit edited chrome theme ("gwt"-prefixed classes only) for a little bit of default styling in the text input dialogs -->
 	<inherits name='com.badlogic.gdx.backends.gwt.theme.chrome.Chrome'/>
 	<inherits name="com.google.gwt.http.HTTP"/>
 	
