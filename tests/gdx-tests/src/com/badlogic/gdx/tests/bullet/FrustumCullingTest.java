@@ -75,35 +75,17 @@ public class FrustumCullingTest extends BaseBulletTest {
 	final static Vector3 tmpV = new Vector3();
 	final static Matrix4 tmpM = new Matrix4();
 	
-	private btGhostPairCallback ghostPairCallback;
 	final static int ptrs[] = new int[512];
 	final static Array<btCollisionObject> visibleObjects = new Array<btCollisionObject>(); 
 	
-	// 1. Make sure to set a callback for ghost object on the broadphase 
-	@Override
-	public BulletWorld createWorld () {
-		for (int i = 0; i < ptrs.length; i++)
-			ptrs[i] = 0;
-		btDbvtBroadphase broadphase = new btDbvtBroadphase();
-		// Create and set the callback for the ghost objects 
-		broadphase.getOverlappingPairCache().setInternalGhostPairCallback(ghostPairCallback = new btGhostPairCallback());
-		
-		// No need to use dynamics for this test
-		btDefaultCollisionConfiguration collisionConfig = new btDefaultCollisionConfiguration();
-		btCollisionDispatcher dispatcher = new btCollisionDispatcher(collisionConfig);
-		btCollisionWorld collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfig);
-		return new BulletWorld(collisionConfig, dispatcher, broadphase, null, collisionWorld);
-	}
-	
-	// 2. Create a ghost object based on a frustum, or any other shape like a cone for a spotlight.
 	public static btPairCachingGhostObject createFrustumObject(final Vector3... points) {
 		final btPairCachingGhostObject result = new TestPairCachingGhostObject();
 		final boolean USE_COMPOUND = true;
 		// Using a compound shape is not necessary, but it's good practice to create shapes around the center.
 		if (USE_COMPOUND) {
-			final Vector3 centerNear = new Vector3(points[2]).sub(points[0]).mul(0.5f).add(points[0]);
-			final Vector3 centerFar = new Vector3(points[6]).sub(points[4]).mul(0.5f).add(points[4]);
-			final Vector3 center = new Vector3(centerFar).sub(centerNear).mul(0.5f).add(centerNear);
+			final Vector3 centerNear = new Vector3(points[2]).sub(points[0]).scl(0.5f).add(points[0]);
+			final Vector3 centerFar = new Vector3(points[6]).sub(points[4]).scl(0.5f).add(points[4]);
+			final Vector3 center = new Vector3(centerFar).sub(centerNear).scl(0.5f).add(centerNear);
 			final btConvexHullShape hullShape = new btConvexHullShape();
 			for (int i = 0; i < points.length; i++)
 				hullShape.addPoint(tmpV.set(points[i]).sub(center));
@@ -120,26 +102,26 @@ public class FrustumCullingTest extends BaseBulletTest {
 		return result;
 	}
 	
-	// 3. On every render call and after updating the world select the objects in contact with the ghost object.
-	public static Array<BulletEntity> getEntitiesInObject(final BulletWorld world, final btPairCachingGhostObject object, final Array<BulletEntity> out, final btManifoldArray tmpArr) {
-		out.clear();
-		// Refresh the ghost object's contacts, note that this is not always necessary, depending on the broadphase type.
-		world.dispatcher.dispatchAllCollisionPairs(object.getOverlappingPairCache(), world.collisionWorld.getDispatchInfo(), world.dispatcher);
+	public static Array<BulletEntity> getEntitiesCollidingWithObject(final BulletWorld world, final btPairCachingGhostObject object, final Array<BulletEntity> out, final btManifoldArray tmpArr) {
 		// Fetch the array of contacts
-		btBroadphasePairArray arr = object.getOverlappingPairCache().getOverlappingPairArray();
-		// Get all collision objects within that array
-		visibleObjects.clear();
-		arr.getCollisionObjects(visibleObjects, object, ptrs);
+		btBroadphasePairArray arr = world.broadphase.getOverlappingPairCache().getOverlappingPairArray();
+		// Get the user values (which are indices in the entities array) of all objects colliding with the object
+		final int n = arr.getCollisionObjectsValue(ptrs, object);
 		// Fill the array of entities
-		for (int i = 0; i < visibleObjects.size; i++) {
-			final Object o = visibleObjects.get(i).userData;
-			if (o instanceof BulletEntity)
-				out.add((BulletEntity)o);
-		}
+		out.clear();
+		for (int i = 0; i < n; i++)
+			out.add(world.entities.get(ptrs[i]));
 		return out;
 	}
 	
-	// Mostly basic -not frustum culling specific- stuff below this line
+	public static Model createFrustumModel(final Vector3... p) {
+		final Mesh mesh = new Mesh(true, 8, 32, new VertexAttribute(Usage.Position, 3, "a_position"));
+		mesh.setVertices(new float[] {
+			p[0].x, p[0].y, p[0].z, p[1].x, p[1].y, p[1].z, p[2].x, p[2].y, p[2].z, p[3].x, p[3].y, p[3].z, // near
+			p[4].x, p[4].y, p[4].z, p[5].x, p[5].y, p[5].z, p[6].x, p[6].y, p[6].z, p[7].x, p[7].y, p[7].z});// far
+		mesh.setIndices(new short[] {0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7});
+		return new StillModel(new StillSubMesh("frustum", mesh, GL10.GL_LINES, new Material()));
+	}
 	
 	private float angleX, angleY, angleZ;
 	private btPairCachingGhostObject frustumObject;
@@ -184,13 +166,14 @@ public class FrustumCullingTest extends BaseBulletTest {
 		world.renderMeshes = false;
 	}
 	
-	public static Model createFrustumModel(final Vector3... p) {
-		final Mesh mesh = new Mesh(true, 8, 32, new VertexAttribute(Usage.Position, 3, "a_position"));
-		mesh.setVertices(new float[] {
-			p[0].x, p[0].y, p[0].z, p[1].x, p[1].y, p[1].z, p[2].x, p[2].y, p[2].z, p[3].x, p[3].y, p[3].z, // near
-			p[4].x, p[4].y, p[4].z, p[5].x, p[5].y, p[5].z, p[6].x, p[6].y, p[6].z, p[7].x, p[7].y, p[7].z});// far
-		mesh.setIndices(new short[] {0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7});
-		return new StillModel(new StillSubMesh("frustum", mesh, GL10.GL_LINES, new Material()));
+	@Override
+	public BulletWorld createWorld () {
+		// No need to use dynamics for this test
+		btDbvtBroadphase broadphase = new btDbvtBroadphase();
+		btDefaultCollisionConfiguration collisionConfig = new btDefaultCollisionConfiguration();
+		btCollisionDispatcher dispatcher = new btCollisionDispatcher(collisionConfig);
+		btCollisionWorld collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfig);
+		return new BulletWorld(collisionConfig, dispatcher, broadphase, null, collisionWorld);
 	}
 
 	@Override
@@ -233,7 +216,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		if (world.performanceCounter != null)
 			world.performanceCounter.start();
 		if (USE_BULLET_FRUSTUM_CULLING)
-			getEntitiesInObject(world, frustumObject, visibleEntities, tempManifoldArr);
+			getEntitiesCollidingWithObject(world, frustumObject, visibleEntities, tempManifoldArr);
 		else {
 			visibleEntities.clear();
 			for (int i = 0; i < world.entities.size; i++) {
@@ -268,13 +251,9 @@ public class FrustumCullingTest extends BaseBulletTest {
 	
 	@Override
 	public void dispose () {
-		super.dispose();
-		
 		frustumObject = null;
 		
-		if (ghostPairCallback != null)
-			ghostPairCallback.delete();
-		ghostPairCallback = null;
+		super.dispose();
 		
 		if (tempManifoldArr != null)
 			tempManifoldArr.delete();
