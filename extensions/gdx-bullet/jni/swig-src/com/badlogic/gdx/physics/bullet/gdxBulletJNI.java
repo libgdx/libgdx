@@ -1743,6 +1743,8 @@ public class gdxBulletJNI {
   public final static native void btCollisionObject_getInterpolationWorldTransform__SWIG_2(long jarg1, btCollisionObject jarg1_, Matrix4 jarg2);
   public final static native void btCollisionObject_getInterpolationLinearVelocity__SWIG_1(long jarg1, btCollisionObject jarg1_, Vector3 jarg2);
   public final static native void btCollisionObject_getInterpolationAngularVelocity__SWIG_1(long jarg1, btCollisionObject jarg1_, Vector3 jarg2);
+  public final static native int btCollisionObject_getUserValue(long jarg1, btCollisionObject jarg1_);
+  public final static native void btCollisionObject_setUserValue(long jarg1, btCollisionObject jarg1_, int jarg2);
   public final static native void btCollisionObjectDoubleData_m_broadphaseHandle_set(long jarg1, btCollisionObjectDoubleData jarg1_, long jarg2);
   public final static native long btCollisionObjectDoubleData_m_broadphaseHandle_get(long jarg1, btCollisionObjectDoubleData jarg1_);
   public final static native void btCollisionObjectDoubleData_m_collisionShape_set(long jarg1, btCollisionObjectDoubleData jarg1_, long jarg2);
@@ -4490,6 +4492,7 @@ public class gdxBulletJNI {
   public final static native int btBroadphasePairArray_size(long jarg1, btBroadphasePairArray jarg1_);
   public final static native long btBroadphasePairArray_at(long jarg1, btBroadphasePairArray jarg1_, int jarg2);
   public final static native int btBroadphasePairArray_getCollisionObjects(long jarg1, btBroadphasePairArray jarg1_, int[] jarg2, int jarg3, int jarg4);
+  public final static native int btBroadphasePairArray_getCollisionObjectsValue(long jarg1, btBroadphasePairArray jarg1_, int[] jarg2, int jarg3, int jarg4);
   public final static native long new_btBroadphasePairArray();
   public final static native void delete_btBroadphasePairArray(long jarg1);
   public final static native long new_btManifoldArray__SWIG_0();

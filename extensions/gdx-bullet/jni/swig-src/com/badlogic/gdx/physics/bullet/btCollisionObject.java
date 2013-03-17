@@ -320,6 +320,14 @@ public class btCollisionObject implements
     gdxBulletJNI.btCollisionObject_getInterpolationAngularVelocity__SWIG_1(swigCPtr, this, out);
   }
 
+  public int getUserValue() {
+    return gdxBulletJNI.btCollisionObject_getUserValue(swigCPtr, this);
+  }
+
+  public void setUserValue(int value) {
+    gdxBulletJNI.btCollisionObject_setUserValue(swigCPtr, this, value);
+  }
+
   public final static class CollisionFlags {
     public final static int CF_STATIC_OBJECT = 1;
     public final static int CF_KINEMATIC_OBJECT = 2;
