@@ -22,7 +22,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -44,7 +43,6 @@ public class LwjglGraphics implements Graphics {
 	GL10 gl10;
 	GL11 gl11;
 	GL20 gl20;
-	GLU glu;
 	float deltaTime = 0;
 	long frameStart = 0;
 	int frames = 0;
@@ -86,10 +84,6 @@ public class LwjglGraphics implements Graphics {
 
 	public GL20 getGL20 () {
 		return gl20;
-	}
-
-	public GLU getGLU () {
-		return glu;
 	}
 
 	public int getHeight () {
@@ -252,9 +246,6 @@ public class LwjglGraphics implements Graphics {
 			gl = gl10;
 		}
 
-		glu = new LwjglGLU();
-
-		Gdx.glu = glu;
 		Gdx.gl = gl;
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;

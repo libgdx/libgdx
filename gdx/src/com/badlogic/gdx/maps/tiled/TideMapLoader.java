@@ -252,7 +252,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 					}
 				}
 			}
-			map.getLayers().addLayer(layer);
+			map.getLayers().add(layer);
 		}
 	}
 	

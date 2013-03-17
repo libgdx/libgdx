@@ -113,9 +113,15 @@ public class FreeTypeFontGenerator implements Disposable {
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
 		int baseline = FreeType.toInt(fontMetrics.getAscender());
 
-		// Check if character exists in this font
-		if (!FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) {
+		// Check if character exists in this font.
+		// 0 means 'undefined character code'
+		if (FreeType.getCharIndex(face, c) == 0) {
 			return null;
+		}
+
+		// Try to load character
+		if (!FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) {
+			throw new GdxRuntimeException("Unable to load character!");
 		}
 
 		GlyphSlot slot = face.getGlyph();

@@ -39,7 +39,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 
@@ -235,12 +234,6 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	@Override
 	public GL20 getGL20 () {
 		return gl20;
-	}
-
-	@Override
-	public GLU getGLU () {
-		// FIXME implement this
-		return null;
 	}
 
 	@Override

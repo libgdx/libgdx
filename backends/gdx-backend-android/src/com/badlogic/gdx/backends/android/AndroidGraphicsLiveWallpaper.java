@@ -45,7 +45,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -70,7 +69,6 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	protected GL10 gl10;
 	protected GL11 gl11;
 	protected GL20 gl20;
-	protected GLU glu;
 	protected EGLContext eglContext;
 	protected String extensions;
 
@@ -415,13 +413,10 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			}
 		}
 
-		this.glu = new AndroidGLU();
-
 		Gdx.gl = this.gl;
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;
 		Gdx.gl20 = gl20;
-		Gdx.glu = glu;
 
 		Gdx.app.log("AndroidGraphics", "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
 		Gdx.app.log("AndroidGraphics", "OGL vendor: " + gl.glGetString(GL10.GL_VENDOR));
@@ -597,11 +592,6 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	@Override
 	public DisplayMode[] getDisplayModes () {
 		return new DisplayMode[0];
-	}
-
-	@Override
-	public GLU getGLU () {
-		return glu;
 	}
 
 	@Override

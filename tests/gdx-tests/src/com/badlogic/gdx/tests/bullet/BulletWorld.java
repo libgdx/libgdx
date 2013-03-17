@@ -39,8 +39,7 @@ import com.badlogic.gdx.utils.PerformanceCounter;
  * Bullet physics world that holds all bullet entities and constructors.  
  */
 public class BulletWorld extends BaseWorld<BulletEntity> {
-	// For debugging purposes:
-	private DebugDrawer debugDrawer = null;
+	public DebugDrawer debugDrawer = null;
 	public boolean renderMeshes = true;
 	
 	public final btCollisionConfiguration collisionConfiguration;

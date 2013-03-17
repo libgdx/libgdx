@@ -15,11 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.controllers.desktop.ois;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-
-import org.lwjgl.opengl.Display;
 
 /** JNI wrapper for OIS (Object-oriented Input System).
  * @author mzechner

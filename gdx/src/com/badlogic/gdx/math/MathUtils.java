@@ -128,6 +128,10 @@ public class MathUtils {
 			add = 0;
 		}
 		float invDiv = 1 / ((x < y ? y : x) * INV_ATAN2_DIM_MINUS_1);
+		
+		if (invDiv == Float.POSITIVE_INFINITY)
+			return ((float)Math.atan2(y, x) + add) * mul;
+		
 		int xi = (int)(x * invDiv);
 		int yi = (int)(y * invDiv);
 		return (Atan2.table[yi * ATAN2_DIM + xi] + add) * mul;
@@ -147,20 +151,22 @@ public class MathUtils {
 		return start + random.nextInt(end - start + 1);
 	}
 
+	/** Returns a random boolean value. */
 	static public final boolean randomBoolean () {
 		return random.nextBoolean();
 	}
 
+	/** Returns random number between 0.0 (inclusive) and 1.0 (exclusive). */
 	static public final float random () {
 		return random.nextFloat();
 	}
 
-	/** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
+	/** Returns a random number between 0 (inclusive) and the specified value (exclusive). */
 	static public final float random (float range) {
 		return random.nextFloat() * range;
 	}
 
-	/** Returns a random number between start (inclusive) and end (inclusive). */
+	/** Returns a random number between start (inclusive) and end (exclusive). */
 	static public final float random (float start, float end) {
 		return start + random.nextFloat() * (end - start);
 	}
@@ -208,8 +214,9 @@ public class MathUtils {
 	static private final int BIG_ENOUGH_INT = 16 * 1024;
 	static private final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
 	static private final double CEIL = 0.9999999;
-	static private final double BIG_ENOUGH_CEIL = NumberUtils
-		.longBitsToDouble(NumberUtils.doubleToLongBits(BIG_ENOUGH_INT + 1) - 1);
+//	static private final double BIG_ENOUGH_CEIL = NumberUtils
+//		.longBitsToDouble(NumberUtils.doubleToLongBits(BIG_ENOUGH_INT + 1) - 1);
+	static private final double BIG_ENOUGH_CEIL = 16384.999999999996;
 	static private final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5f;
 
 	/** Returns the largest integer less than or equal to the specified float. This method will only properly floor floats from

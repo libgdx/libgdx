@@ -859,13 +859,14 @@ public class SpriteCache implements Disposable {
 				customShader.setUniformMatrix("u_trans", transformMatrix);
 				customShader.setUniformMatrix("u_projTrans", combinedMatrix);
 				customShader.setUniformi("u_texture", 0);
+				mesh.bind(customShader);
 			} else {
 				shader.begin();
 				shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
 				shader.setUniformi("u_texture", 0);
+				mesh.bind(shader);
 			}
 
-			mesh.bind(shader);
 		}
 		drawing = true;
 	}
@@ -884,7 +885,8 @@ public class SpriteCache implements Disposable {
 			shader.end();
 			GL20 gl = Gdx.gl20;
 			gl.glDepthMask(true);
-			mesh.unbind(shader);
+			if(customShader != null) mesh.unbind(customShader);
+			else mesh.unbind(shader);
 		}
 	}
 

@@ -26,6 +26,7 @@ import java.util.concurrent.Future;
 
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponseListener;
+import com.badlogic.gdx.net.HttpStatus;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.ServerSocket;
@@ -39,7 +40,7 @@ import com.badlogic.gdx.utils.JsonWriter;
  * To perform an HTTP request create a {@link HttpRequest} with the HTTP method (see {@link HttpMethods} for common methods) and
  * invoke {@link #sendHttpRequest(HttpRequest, HttpResponseListener)} with it and a {@link HttpResponseListener}. After the HTTP
  * request was processed, the {@link HttpResponseListener} is called with a {@link HttpResponse} with the HTTP response values and
- * an status code to determine if the request was successful or not.
+ * an status code to determine if the request was successful or not.</p>
  * 
  * To create a TCP client socket to communicate with a remote TCP server, invoke the
  * {@link #newClientSocket(Protocol, String, int, SocketHints)} method. The returned {@link Socket} offers an {@link InputStream}
@@ -54,24 +55,6 @@ import com.badlogic.gdx.utils.JsonWriter;
  * @author arielsan */
 public interface Net {
 
-	/** Contains information about the HTTP status line returned with the {@link HttpResponse} after a {@link HttpRequest} was
-	 * performed. */
-	public static class HttpStatus {
-
-		int statusCode;
-
-		/** Returns the status code of the HTTP response, normally 2xx status codes indicate success while 4xx and 5xx indicate
-		 * client and server errors, respectively (see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">HTTP/1.1:
-		 * Status Code Definitions</a> for more information about HTTP status codes). */
-		public int getStatusCode () {
-			return statusCode;
-		}
-
-		public HttpStatus (int statusCode) {
-			this.statusCode = statusCode;
-		}
-
-	}
 
 	/** HTTP response interface with methods to get the response data as a byte[], a {@link String} or an {@link InputStream}. */
 	public static interface HttpResponse {
