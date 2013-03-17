@@ -276,8 +276,8 @@ public class Quaternion implements Serializable {
 			return idt();
 		d = 1f /d;
 		float l_ang = angle * MathUtils.degreesToRadians;
-		float l_sin = MathUtils.sin(l_ang / 2);
-		float l_cos = MathUtils.cos(l_ang / 2);
+		float l_sin = (float)Math.sin(l_ang / 2);
+		float l_cos = (float)Math.cos(l_ang / 2);
 		return this.set(d * x * l_sin, d * y * l_sin, d * z * l_sin, l_cos).nor();
 	}
 
