@@ -50,10 +50,10 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		final float dt = 1f - u;
 		final float t2 = u * u;
 		final float t3 = t2 * u;
-		out.set(points[i]).mul((3f * t3 - 6f * t2 + 4f) * d6);
-		if (continuous || i > 0) out.add(tmp.set(points[(n+i-1)%n]).mul(dt * dt * dt * d6));
-		if (continuous || i < (n - 1)) out.add(tmp.set(points[(i + 1)%n]).mul((-3f * t3 + 3f * t2 + 3f * u + 1f) * d6));
-		if (continuous || i < (n - 2)) out.add(tmp.set(points[(i + 2)%n]).mul(t3 * d6));
+		out.set(points[i]).scl((3f * t3 - 6f * t2 + 4f) * d6);
+		if (continuous || i > 0) out.add(tmp.set(points[(n+i-1)%n]).scl(dt * dt * dt * d6));
+		if (continuous || i < (n - 1)) out.add(tmp.set(points[(i + 1)%n]).scl((-3f * t3 + 3f * t2 + 3f * u + 1f) * d6));
+		if (continuous || i < (n - 2)) out.add(tmp.set(points[(i + 2)%n]).scl(t3 * d6));
 		return out;
 	}
 	
@@ -187,5 +187,11 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		float s = (L2*L2 + L1*L1 - L3*L3) / (2*L1);
 		float u = MathUtils.clamp((L1-s)/L1, 0f, 1f);
 		return ((float)n + u) / spanCount;
+	}
+	
+	@Override
+	public float locate (T v) {
+		// TODO Add a precise method
+		return approximate(v);
 	}
 }
