@@ -19,33 +19,24 @@ package com.badlogic.gdx.backends.ios;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import sun.awt.SunToolkit.InfiniteLoop;
-
 import cli.MonoTouch.Foundation.NSUrl;
 import cli.MonoTouch.UIKit.UIApplication;
-import cli.System.Uri;
 import cli.System.IO.Stream;
 import cli.System.IO.StreamReader;
-import cli.System.IO.StreamWriter;
 import cli.System.Net.HttpWebRequest;
 import cli.System.Net.HttpWebResponse;
 import cli.System.Net.WebHeaderCollection;
 import cli.System.Net.WebRequest;
-import cli.System.Net.WebResponse;
-import cli.System.Text.Encoding;
-import cli.System.Text.UTF8Encoding;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.StreamUtils;
-import com.badlogic.gdx.Net.HttpMethods;
-import com.badlogic.gdx.Net.HttpStatus;
+import com.badlogic.gdx.net.HttpStatus;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
