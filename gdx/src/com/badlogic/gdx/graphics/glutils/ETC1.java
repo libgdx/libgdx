@@ -23,9 +23,11 @@ import java.nio.ByteBuffer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -54,6 +56,7 @@ public class ETC1 {
 			this.height = height;
 			this.compressedData = compressedData;
 			this.dataOffset = dataOffset;
+			checkNPOT();
 		}
 
 		public ETC1Data (FileHandle pkmFile) {
@@ -82,6 +85,13 @@ public class ETC1 {
 			height = getHeightPKM(compressedData, 0);
 			dataOffset = PKM_HEADER_SIZE;
 			compressedData.position(dataOffset);
+			checkNPOT();
+		}
+		
+		private void checkNPOT() {
+			if(!MathUtils.isPowerOfTwo(width) || !MathUtils.isPowerOfTwo(height)) {
+				Gdx.app.debug("ETC1Data", "warning: non-power-of-two ETC1 textures may crash the driver of PowerVR GPUs");
+			}
 		}
 
 		/** @return whether this ETC1Data has a PKM header */

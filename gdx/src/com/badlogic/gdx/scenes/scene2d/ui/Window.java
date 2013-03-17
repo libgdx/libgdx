@@ -36,6 +36,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * children to the window, it can be convenient to call {@link #pack()} to size the window to the size of the children.
  * @author Nathan Sweet */
 public class Window extends Table {
+	static private final Vector2 tmpPosition = new Vector2();
+	static private final Vector2 tmpSize = new Vector2();
+
 	private WindowStyle style;
 	private String title;
 	private BitmapFontCache titleCache;
@@ -135,22 +138,16 @@ public class Window extends Table {
 		}
 		super.draw(batch, parentAlpha);
 	}
-	
-	/*
-	 * Hacks to work around the inability to stack allocate small scratch objects in Java.
-	 */
-	
-	private static final Vector2 tmpPosition = new Vector2();
-	private static final Vector2 tmpSize = new Vector2();
 
 	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
 		if (style.stageBackground != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			Stage stage = getStage();
-			stageToLocalCoordinates(/*in/out*/tmpPosition.set(0, 0));
-			stageToLocalCoordinates(/*in/out*/tmpSize.set(stage.getWidth(), stage.getHeight()));
-			style.stageBackground.draw(batch, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY() + tmpSize.y);
+			stageToLocalCoordinates(/* in/out */tmpPosition.set(0, 0));
+			stageToLocalCoordinates(/* in/out */tmpSize.set(stage.getWidth(), stage.getHeight()));
+			style.stageBackground
+				.draw(batch, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY() + tmpSize.y);
 		}
 
 		super.drawBackground(batch, parentAlpha);

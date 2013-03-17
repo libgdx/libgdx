@@ -57,6 +57,11 @@
 		<get src="${domain}/extensions/gdx-image/gdx-image-natives.jar" dest="extensions/gdx-image/libs"/>
 		<get src="${domain}/extensions/gdx-image/armeabi/libgdx-image.so" dest="tmp/armeabi"/>
 		<get src="${domain}/extensions/gdx-image/armeabi-v7a/libgdx-image.so" dest="tmp/armeabi-v7a"/>	
+
+		<!-- jglfw -->
+		<mkdir dir="backends/gdx-backend-jglfw/libs"/>
+		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw-natives.jar" dest="backends/gdx-backend-jglfw/libs/gdx-backend-jglfw-natives.jar"/>
+		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw.jar" dest="backends/gdx-backend-jglfw/libs/"/>
 	</target>
 	
 	<target name="copy">

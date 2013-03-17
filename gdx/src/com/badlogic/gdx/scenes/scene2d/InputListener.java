@@ -33,9 +33,7 @@ import com.badlogic.gdx.math.Vector2;
  * </pre>
  */
 public class InputListener implements EventListener {
-	
-	/** Scratch object used by handle().  Event dispatch should only be invoked by the render thread. */
-	private static final Vector2 coords = new Vector2();
+	static private final Vector2 tmpCoords = new Vector2();
 	
 	public boolean handle (Event e) {
 		if (!(e instanceof InputEvent)) return false;
@@ -50,27 +48,27 @@ public class InputListener implements EventListener {
 			return keyTyped(event, event.getCharacter());
 		}
 
-		coords.set(event.getStageX(), event.getStageY());
-		event.getListenerActor().stageToLocalCoordinates(coords);
+		tmpCoords.set(event.getStageX(), event.getStageY());
+		event.getListenerActor().stageToLocalCoordinates(tmpCoords);
 
 		switch (event.getType()) {
 		case touchDown:
-			return touchDown(event, coords.x, coords.y, event.getPointer(), event.getButton());
+			return touchDown(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
 		case touchUp:
-			touchUp(event, coords.x, coords.y, event.getPointer(), event.getButton());
+			touchUp(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
 			return true;
 		case touchDragged:
-			touchDragged(event, coords.x, coords.y, event.getPointer());
+			touchDragged(event, tmpCoords.x, tmpCoords.y, event.getPointer());
 			return true;
 		case mouseMoved:
-			return mouseMoved(event, coords.x, coords.y);
+			return mouseMoved(event, tmpCoords.x, tmpCoords.y);
 		case scrolled:
-			return scrolled(event, coords.x, coords.y, event.getScrollAmount());
+			return scrolled(event, tmpCoords.x, tmpCoords.y, event.getScrollAmount());
 		case enter:
-			enter(event, coords.x, coords.y, event.getPointer(), event.getRelatedActor());
+			enter(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getRelatedActor());
 			return false;
 		case exit:
-			exit(event, coords.x, coords.y, event.getPointer(), event.getRelatedActor());
+			exit(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getRelatedActor());
 			return false;
 		}
 		return false;

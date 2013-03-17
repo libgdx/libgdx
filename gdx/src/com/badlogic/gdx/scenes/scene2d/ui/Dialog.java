@@ -79,6 +79,7 @@ public class Dialog extends Window {
 
 		buttonTable.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
+				if (!values.containsKey(actor)) return;
 				while (actor.getParent() != buttonTable)
 					actor = actor.getParent();
 				result(values.get(actor));

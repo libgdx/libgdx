@@ -48,8 +48,8 @@ public class btCollisionAlgorithm {
     return gdxBulletJNI.btCollisionAlgorithm_calculateTimeOfImpact(swigCPtr, this, btCollisionObject.getCPtr(body0), body0, btCollisionObject.getCPtr(body1), body1, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, btManifoldResult.getCPtr(resultOut), resultOut);
   }
 
-  public void getAllContactManifolds(SWIGTYPE_p_btAlignedObjectArrayT_btPersistentManifold_p_t manifoldArray) {
-    gdxBulletJNI.btCollisionAlgorithm_getAllContactManifolds(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btPersistentManifold_p_t.getCPtr(manifoldArray));
+  public void getAllContactManifolds(btManifoldArray manifoldArray) {
+    gdxBulletJNI.btCollisionAlgorithm_getAllContactManifolds(swigCPtr, this, btManifoldArray.getCPtr(manifoldArray), manifoldArray);
   }
 
 }

@@ -403,7 +403,7 @@ public class FilesTest extends GdxTest {
 		if (handle.delete()) fail();
 		if (handle.list().length != 0) fail();
 		if (handle.child("meow").exists()) fail();
-		if (!handle.parent().exists()) fail();
+		if (handle.parent().exists()) fail();
 		try {
 			handle.read().close();
 			fail();

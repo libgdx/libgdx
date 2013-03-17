@@ -163,7 +163,6 @@ public class UITest extends GdxTest {
 					.key(Keys.ESCAPE, false).show(stage);
 			}
 		});
-
 	}
 
 	@Override

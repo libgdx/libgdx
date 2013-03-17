@@ -43,6 +43,8 @@ import com.badlogic.gdx.utils.Pools;
  * @author mzechner
  * @author Nathan Sweet */
 public class SelectBox extends Widget {
+	static final Vector2 tmpCoords = new Vector2();
+
 	SelectBoxStyle style;
 	String[] items;
 	int selectedIndex = 0;
@@ -51,9 +53,6 @@ public class SelectBox extends Widget {
 	SelectList list;
 	private float prefWidth, prefHeight;
 	private ClickListener clickListener;
-
-	/** Scratch space for converting to/from stage coordinates. Only used in listener callbacks (so only on render thread). */
-	static final Vector2 tmpCoords = new Vector2();
 
 	public SelectBox (Object[] items, Skin skin) {
 		this(items, skin.get(SelectBoxStyle.class));
@@ -196,12 +195,14 @@ public class SelectBox extends Widget {
 	}
 
 	public void hideList () {
-		if (list.getParent() == null) return;
+		if (list == null || list.getParent() == null) return;
+
+		getStage().removeCaptureListener(list.stageListener);
 		list.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
 	}
 
 	class SelectList extends Actor {
-		Vector2 oldScreenCoords = new Vector2();
+		final Vector2 oldScreenCoords = new Vector2();
 		float itemHeight;
 		float textOffsetX, textOffsetY;
 		int listSelectedIndex = SelectBox.this.selectedIndex;
@@ -213,7 +214,7 @@ public class SelectBox extends Widget {
 				x = tmpCoords.x;
 				y = tmpCoords.y;
 				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
-					listSelectedIndex = (int)((getHeight() - y) / itemHeight);
+					listSelectedIndex = (int) ((getHeight() - style.listBackground.getTopHeight() - y) / itemHeight);
 					listSelectedIndex = Math.max(0, listSelectedIndex);
 					listSelectedIndex = Math.min(items.length - 1, listSelectedIndex);
 					selectedIndex = listSelectedIndex;
@@ -228,7 +229,6 @@ public class SelectBox extends Widget {
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				hideList();
-				event.getStage().removeCaptureListener(stageListener);
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
