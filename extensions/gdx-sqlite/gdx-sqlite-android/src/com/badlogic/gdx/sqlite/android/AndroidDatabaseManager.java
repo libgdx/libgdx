@@ -60,6 +60,7 @@ public class AndroidDatabaseManager implements DatabaseManager {
 				helper.close();
 			} catch (SQLiteException e) {
 				Gdx.app.log(DatabaseFactory.ERROR_TAG, "Cannot close the database.", e);
+				throw new GdxRuntimeException(e);
 			}
 		}
 

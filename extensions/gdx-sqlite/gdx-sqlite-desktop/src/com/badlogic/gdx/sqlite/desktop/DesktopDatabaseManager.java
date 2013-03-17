@@ -67,6 +67,7 @@ public class DesktopDatabaseManager implements DatabaseManager {
 				connection.close();
 			} catch (SQLException e) {
 				Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in closing the database: " + dbName, e);
+				throw new GdxRuntimeException(e);
 			}
 		}
 
