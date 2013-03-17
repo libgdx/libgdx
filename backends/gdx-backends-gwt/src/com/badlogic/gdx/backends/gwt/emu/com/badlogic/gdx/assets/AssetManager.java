@@ -47,7 +47,7 @@ public class AssetManager implements Disposable {
 	final ObjectMap<String, Class> assetTypes = new ObjectMap<String, Class>();
 	final ObjectMap<String, Array<String>> assetDependencies = new ObjectMap<String, Array<String>>();
 
-	final ObjectMap<Class, AssetLoader> loaders = new ObjectMap<Class, AssetLoader>();
+	final ObjectMap<Class, ObjectMap<String, AssetLoader>> loaders = new ObjectMap<Class, ObjectMap<String, AssetLoader>>();
 	final ArrayList<AssetDescriptor> loadQueue = new ArrayList<AssetDescriptor>();
 
 	Stack<AssetLoadingTask> tasks = new Stack<AssetLoadingTask>();
@@ -201,19 +201,48 @@ public class AssetManager implements Disposable {
 		return assetContainer.getObject(type) != null;
 	}
 
+	/** Returns the default loader for the given type
+	 * @param type The type of the loader to get
+	 * @return The loader capable of loading the type, or null if none exists
+	 */
+	public <T> AssetLoader getLoader(final Class<T> type) {
+		return getLoader(type, null);
+	}
+
+	/** Returns the loader for the given type and the specified filename. If no loader exists for the specific
+	 * filename, the default loader for that type is returned.
+	 * @param type The type of the loader to get
+	 * @param fileName The filename of the asset to get a loader for, or null to get the default loader
+	 * @return The loader capable of loading the type and filename, or null if none exists
+	 */
+	public <T> AssetLoader getLoader(final Class<T> type, final String fileName) {
+		final ObjectMap<String, AssetLoader> loaders = this.loaders.get(type);
+		if (loaders == null || loaders.size < 1) return null;
+		if (fileName == null) return loaders.get("");
+		AssetLoader result = null;
+		int l = -1;
+		for (ObjectMap.Entry<String, AssetLoader> entry : loaders.entries()) {
+			if (entry.key.length() > l && fileName.endsWith(entry.key)) {
+				result = entry.value;
+				l = entry.key.length();
+			}
+		}
+		return result;
+	}
+
 	/** Adds the given asset to the loading queue of the AssetManager.
 	 * @param fileName the file name (interpretation depends on {@link AssetLoader})
 	 * @param type the type of the asset. */
 	public synchronized <T> void load (String fileName, Class<T> type) {
 		load(fileName, type, null);
 	}
-
+	
 	/** Adds the given asset to the loading queue of the AssetManager.
 	 * @param fileName the file name (interpretation depends on {@link AssetLoader})
 	 * @param type the type of the asset.
 	 * @param parameter parameters for the AssetLoader. */
 	public synchronized <T> void load (String fileName, Class<T> type, AssetLoaderParameters<T> parameter) {
-		AssetLoader loader = loaders.get(type);
+		AssetLoader loader = getLoader(type, fileName);
 		if (loader == null) throw new GdxRuntimeException("No loader for type: " + type.getName());
 
 		if (loadQueue.size() == 0) {
@@ -347,7 +376,7 @@ public class AssetManager implements Disposable {
 	/** Adds a {@link AssetLoadingTask} to the task stack for the given asset.
 	 * @param assetDesc */
 	private void addTask (AssetDescriptor assetDesc) {
-		AssetLoader loader = loaders.get(assetDesc.type);
+		AssetLoader loader = getLoader(assetDesc.type, assetDesc.fileName);
 		if (loader == null) throw new GdxRuntimeException("No loader for type: " + assetDesc.type.getName());
 		tasks.push(new AssetLoadingTask(this, assetDesc, loader));
 	}
@@ -442,10 +471,21 @@ public class AssetManager implements Disposable {
 	 * @param type the type of the asset
 	 * @param loader the loader */
 	public synchronized <T, P extends AssetLoaderParameters<T>> void setLoader (Class<T> type, AssetLoader<T, P> loader) {
+		setLoader(type, null, loader);
+	}
+	
+	/** Sets a new {@link AssetLoader} for the given type.
+	 * @param type the type of the asset
+	 * @param suffix the suffix the filename must have for this loader to be used or null to specify the default loader. 
+	 * @param loader the loader */
+	public synchronized <T, P extends AssetLoaderParameters<T>> void setLoader (Class<T> type, String suffix, AssetLoader<T, P> loader) {
 		if (type == null) throw new IllegalArgumentException("type cannot be null.");
 		if (loader == null) throw new IllegalArgumentException("loader cannot be null.");
 // log.debug("Loader set: " + type.getName() + " -> " + loader.getClass().getName());
-		loaders.put(type, loader);
+		ObjectMap<String, AssetLoader> loaders = this.loaders.get(type);
+		if (loaders == null)
+			this.loaders.put(type, loaders = new ObjectMap<String, AssetLoader>());
+		loaders.put(suffix == null ? "" : suffix, loader);
 	}
 
 	/** @return the number of loaded assets */
