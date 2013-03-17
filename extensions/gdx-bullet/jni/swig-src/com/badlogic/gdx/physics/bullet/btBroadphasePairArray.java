@@ -42,14 +42,23 @@ public class btBroadphasePairArray {
 
 	/**
 	 * @param out The array to fill with collision objects
-	 * @param exclude The (if any) collision object to exclude from the result
+	 * @param other The collision object the pair must contain (which itself is excluded from the result)
 	 * @param tempArray A temporary array used by the method, not more object than the length of this array are added 
 	 * @return The array specified by out */
-	public com.badlogic.gdx.utils.Array<btCollisionObject> getCollisionObjects(final com.badlogic.gdx.utils.Array<btCollisionObject> out, final btCollisionObject exclude, final int[] tempArray) {
-		final int c = getCollisionObjects(tempArray, tempArray.length, (int)btCollisionObject.getCPtr(exclude));
+	public com.badlogic.gdx.utils.Array<btCollisionObject> getCollisionObjects(final com.badlogic.gdx.utils.Array<btCollisionObject> out, final btCollisionObject other, final int[] tempArray) {
+		final int c = getCollisionObjects(tempArray, tempArray.length, (int)btCollisionObject.getCPtr(other));
 		for (int i = 0; i < c; i++)
 			out.add(btCollisionObject.getInstance(tempArray[i], false));
 		return out;
+	}
+	
+	/** Fills the given array with user value set using {@link btCollisionObject#setUserValue(int)} of the collision objects
+	 * within this pair array colliding with the given collision object.
+	 * @param out The array to fill with the user values
+	 * @param other The collision object the pair must contain (which itself is excluded from the result)
+	 * @return The amount of user values set in the out array. */
+	public int getCollisionObjectsValue(final int[] out, final btCollisionObject other) {
+		return getCollisionObjectsValue(out, out.length, (int)btCollisionObject.getCPtr(other));
 	}
 
   public int size() {
@@ -60,8 +69,12 @@ public class btBroadphasePairArray {
     return new btBroadphasePair(gdxBulletJNI.btBroadphasePairArray_at(swigCPtr, this, n), false);
   }
 
-  public int getCollisionObjects(int[] result, int max, int exclude) {
-    return gdxBulletJNI.btBroadphasePairArray_getCollisionObjects(swigCPtr, this, result, max, exclude);
+  public int getCollisionObjects(int[] result, int max, int other) {
+    return gdxBulletJNI.btBroadphasePairArray_getCollisionObjects(swigCPtr, this, result, max, other);
+  }
+
+  public int getCollisionObjectsValue(int[] result, int max, int other) {
+    return gdxBulletJNI.btBroadphasePairArray_getCollisionObjectsValue(swigCPtr, this, result, max, other);
   }
 
   public btBroadphasePairArray() {

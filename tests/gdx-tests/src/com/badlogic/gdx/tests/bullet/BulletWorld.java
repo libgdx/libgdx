@@ -92,6 +92,8 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 				((btDiscreteDynamicsWorld)collisionWorld).addRigidBody((btRigidBody)entity.body);
 			else
 				collisionWorld.addCollisionObject(entity.body);
+			// Store the index of the entity in the collision object.  
+			entity.body.setUserValue(entities.size-1);
 		}
 	}
 	
