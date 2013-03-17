@@ -1,7 +1,8 @@
-
 package com.badlogic.gdx.net;
 
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.HttpRequest;
+import com.badlogic.gdx.Net.HttpResponse;
 
 /** This implementation is widely based Apache's HttpStatus which uses license (Apache license 2.0) -
  * http://www.apache.org/licenses/LICENSE-2.0 For more information on the Apache Software Foundation, please see
