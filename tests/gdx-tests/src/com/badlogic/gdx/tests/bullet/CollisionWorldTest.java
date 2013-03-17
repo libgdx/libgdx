@@ -66,6 +66,8 @@ public class CollisionWorldTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 		
+		instructions = "Long press to toggle debug mode\nSwipe for next test";
+		
 		contactCB = new TestContactResultCallback();
 		
 		Model groundModel = world.getConstructor("ground").model;
@@ -96,18 +98,37 @@ public class CollisionWorldTest extends BaseBulletTest {
 		movingBox.transform.rotate(Vector3.Y, Gdx.graphics.getDeltaTime() * 45f);
 		movingBox.transform.translate(-5f, 1f, 0f);
 		movingBox.body.setWorldTransform(movingBox.transform);
+		
+		super.render();
+	}
+	
+	@Override
+	public void update () {
+		super.update();
+		// Not using dynamics, so update the collision world manually
+		if (world.performanceCounter != null)
+			world.performanceCounter.start();
 		world.collisionWorld.performDiscreteCollisionDetection();
+		if (world.performanceCounter != null)
+			world.performanceCounter.stop();
+	}
+	
+	@Override
+	protected void renderWorld () {
 		hit = false;
 		other = null;
 		world.collisionWorld.contactTest(movingBox.body, contactCB);
 		movingBox.color.set(hit ? Color.RED : normalColor);
+		
 		BulletEntity e = null;
 		if (other != null && other.userData != null && other.userData instanceof BulletEntity) { 
 			e = (BulletEntity)(other.userData);
 			tmpColor.set(e.color);
 			e.color.set(Color.RED);
 		}
-		super.render();
+		
+		super.renderWorld();
+
 		if (e != null)
 			e.color.set(tmpColor);
 	}

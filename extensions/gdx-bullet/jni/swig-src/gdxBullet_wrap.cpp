@@ -1809,6 +1809,14 @@ SWIGINTERN void btCollisionObject_getInterpolationLinearVelocity__SWIG_1(btColli
 SWIGINTERN void btCollisionObject_getInterpolationAngularVelocity__SWIG_1(btCollisionObject *self,btVector3 &out){
 		out = self->getInterpolationAngularVelocity();
 	}
+SWIGINTERN int btCollisionObject_getUserValue(btCollisionObject *self){
+		int result;
+		*(const void **)&result = self->getUserPointer();
+		return result;
+	}
+SWIGINTERN void btCollisionObject_setUserValue(btCollisionObject *self,int value){
+		self->setUserPointer((void*)value);
+	}
 
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 
@@ -2244,7 +2252,7 @@ typedef btRaycastVehicle::btVehicleTuning btVehicleTuning;
  /*SWIG_JavaArrayArgout##Longlong(jenv, jarr$argnum, (long long *)$1, $input);*/ 
  /*SWIG_JavaArrayArgout##Float(jenv, jarr$argnum, (float *)$1, $input);*/ 
  /*SWIG_JavaArrayArgout##Double(jenv, jarr$argnum, (double *)$1, $input);*/ 
-SWIGINTERN int btAlignedObjectArray_Sl_btBroadphasePair_Sg__getCollisionObjects(btAlignedObjectArray< btBroadphasePair > *self,int result[],int max,int exclude){
+SWIGINTERN int btAlignedObjectArray_Sl_btBroadphasePair_Sg__getCollisionObjects(btAlignedObjectArray< btBroadphasePair > *self,int result[],int max,int other){
 		static btManifoldArray marr;
 		const int n = self->size();
 		int count = 0;
@@ -2260,7 +2268,40 @@ SWIGINTERN int btAlignedObjectArray_Sl_btBroadphasePair_Sg__getCollisionObjects(
 					if (manifold->getNumContacts() > 0) {
 						*(const btCollisionObject **)&obj0 = manifold->getBody0();
 						*(const btCollisionObject **)&obj1 = manifold->getBody1();
-						result[count++] = obj0 == exclude ? obj1 : obj0;
+						if (obj0 == other)
+							result[count++] = obj1;
+						else if (obj1 == other)
+							result[count++] = obj0;
+						else continue;
+						if (count >= max)
+							return count;
+					}
+				}
+			}
+		}
+		return count;
+	}
+SWIGINTERN int btAlignedObjectArray_Sl_btBroadphasePair_Sg__getCollisionObjectsValue(btAlignedObjectArray< btBroadphasePair > *self,int result[],int max,int other){
+		static btManifoldArray marr;
+		const int n = self->size();
+		int count = 0;
+		int obj0, obj1;
+		for (int i = 0; i < n; i++) {
+			const btBroadphasePair& collisionPair = (*self)[i];
+			if (collisionPair.m_algorithm) {
+				marr.resize(0);
+				collisionPair.m_algorithm->getAllContactManifolds(marr);
+				const int s = marr.size();
+				for (int j = 0; j < s; j++) {
+					btPersistentManifold *manifold = marr[j];
+					if (manifold->getNumContacts() > 0) {
+						*(const btCollisionObject **)&obj0 = manifold->getBody0();
+						*(const btCollisionObject **)&obj1 = manifold->getBody1();
+						if (obj0 == other)
+							*(const void **)&(result[count++]) = manifold->getBody1()->getUserPointer();
+						else if (obj1 == other)
+							*(const void **)&(result[count++]) = manifold->getBody0()->getUserPointer();
+						else continue;
 						if (count >= max)
 							return count;
 					}
@@ -32256,6 +32297,34 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btColl
   arg2 = &local_arg2;
   gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
   btCollisionObject_getInterpolationAngularVelocity__SWIG_1(arg1,*arg2);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCollisionObject_1getUserValue(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btCollisionObject *arg1 = (btCollisionObject *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btCollisionObject **)&jarg1; 
+  result = (int)btCollisionObject_getUserValue(arg1);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btCollisionObject_1setUserValue(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btCollisionObject *arg1 = (btCollisionObject *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btCollisionObject **)&jarg1; 
+  arg2 = (int)jarg2; 
+  btCollisionObject_setUserValue(arg1,arg2);
 }
 
 
@@ -75400,6 +75469,28 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btBroa
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
   result = (int)btAlignedObjectArray_Sl_btBroadphasePair_Sg__getCollisionObjects(arg1,arg2,arg3,arg4);
+  jresult = (jint)result; 
+  jenv->ReleasePrimitiveArrayCritical(jarg2, (int *)arg2, 0); 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btBroadphasePairArray_1getCollisionObjectsValue(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jintArray jarg2, jint jarg3, jint jarg4) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btBroadphasePair > *arg1 = (btAlignedObjectArray< btBroadphasePair > *) 0 ;
+  int *arg2 ;
+  int arg3 ;
+  int arg4 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btBroadphasePair > **)&jarg1; 
+  arg2 = (int *)jenv->GetPrimitiveArrayCritical(jarg2, 0); 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  result = (int)btAlignedObjectArray_Sl_btBroadphasePair_Sg__getCollisionObjectsValue(arg1,arg2,arg3,arg4);
   jresult = (jint)result; 
   jenv->ReleasePrimitiveArrayCritical(jarg2, (int *)arg2, 0); 
   return jresult;

@@ -79,4 +79,14 @@
 	void getInterpolationAngularVelocity(btVector3 & out) {
 		out = $self->getInterpolationAngularVelocity();
 	}
+	
+	int getUserValue() {
+		int result;
+		*(const void **)&result = $self->getUserPointer();
+		return result;
+	}
+	
+	void setUserValue(int value) {
+		$self->setUserPointer((void*)value);
+	}
 };
