@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests.extensions;
 
 import com.badlogic.gdx.Gdx;
@@ -9,37 +10,35 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.sqlite.DatabaseCursor;
-import com.badlogic.gdx.sqlite.DatabaseHandler;
-import com.badlogic.gdx.sqlite.DatabaseHandlerFactory;
+import com.badlogic.gdx.sql.DatabaseCursor;
+import com.badlogic.gdx.sql.Database;
+import com.badlogic.gdx.sql.DatabaseFactory;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class DatabaseTest extends GdxTest {
 
-	DatabaseHandler dbHandler;
+	Database dbHandler;
 
 	public static final String TABLE_COMMENTS = "comments";
-   public static final String COLUMN_ID = "_id";
-   public static final String COLUMN_COMMENT = "comment";
+	public static final String COLUMN_ID = "_id";
+	public static final String COLUMN_COMMENT = "comment";
 
-   private static final String DATABASE_NAME = "comments.db";
-   private static final int DATABASE_VERSION = 1;
+	private static final String DATABASE_NAME = "comments.db";
+	private static final int DATABASE_VERSION = 1;
 
-   // Database creation sql statement
-   private static final String DATABASE_CREATE = "create table if not exists "
-      + TABLE_COMMENTS + "(" + COLUMN_ID
-      + " integer primary key autoincrement, " + COLUMN_COMMENT
-      + " text not null);";
+	// Database creation sql statement
+	private static final String DATABASE_CREATE = "create table if not exists " + TABLE_COMMENTS + "(" + COLUMN_ID
+		+ " integer primary key autoincrement, " + COLUMN_COMMENT + " text not null);";
 
-   private Stage stage;
-   private TextButton textButton;
-   private Label statusLabel;   
-   private Skin skin;
-   
+	private Stage stage;
+	private TextButton textButton;
+	private Label statusLabel;
+	private Skin skin;
+
 	@Override
-	public void create() {
+	public void create () {
 		Gdx.app.log("DatabaseTest", "creation started");
-		dbHandler = DatabaseHandlerFactory.getNewDatabaseHandler(DATABASE_NAME, DATABASE_VERSION, DATABASE_CREATE, null);
+		dbHandler = DatabaseFactory.getNewDatabase(DATABASE_NAME, DATABASE_VERSION, DATABASE_CREATE, null);
 
 		dbHandler.setupDatabase();
 		dbHandler.openOrCreateDatabase();
@@ -61,7 +60,7 @@ public class DatabaseTest extends GdxTest {
 		textButton.setPosition(Gdx.graphics.getWidth() * 0.5f - textButton.getWidth() * 0.5f, 60f);
 		textButton.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void clicked (InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
 
 				dbHandler.execSQL("INSERT INTO comments ('comment') VALUES ('This is a test comment')");
@@ -70,17 +69,19 @@ public class DatabaseTest extends GdxTest {
 
 				cursor = dbHandler.rawQuery("SELECT * FROM comments");
 
-				while(cursor.next()) {
+				while (cursor.next()) {
 					statusLabel.setText(String.valueOf(cursor.getInt(0)));
 				}
+
+				cursor = dbHandler.rawQuery(cursor, "SELECT * FROM comments");
 			}
 		});
-		stage.addActor(textButton);		
+		stage.addActor(textButton);
 
 	}
 
 	@Override
-	public void render() {
+	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
@@ -89,8 +90,8 @@ public class DatabaseTest extends GdxTest {
 	}
 
 	@Override
-	public void dispose() {
-		dbHandler.closeDatabae();
+	public void dispose () {
+		dbHandler.closeDatabase();
 		dbHandler = null;
 		Gdx.app.log("DatabaseTest", "dispose");
 	}

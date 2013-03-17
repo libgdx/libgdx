@@ -1,66 +1,73 @@
+
 package com.badlogic.gdx.sqlite.desktop;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.sqlite.DatabaseManager;
-import com.badlogic.gdx.sqlite.DatabaseHandler;
-import com.badlogic.gdx.sqlite.DatabaseCursor;
+import com.badlogic.gdx.sql.DatabaseCursor;
+import com.badlogic.gdx.sql.Database;
+import com.badlogic.gdx.sql.DatabaseFactory;
+import com.badlogic.gdx.sql.DatabaseManager;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/** @author M Rafay Aleem */
 public class DesktopDatabaseManager implements DatabaseManager {
-	
-	private class DesktopDatabaseHandler implements DatabaseHandler {
-		
+
+	private class DesktopDatabase implements Database {
+
 		private SQLiteDatabaseHelper helper = null;
-		
-		private final String DATABASE_NAME;
-		private final int DATABASE_VERSION;
-		private final String DATABASE_ONCREATE_QUERY;
-		private final String DATABASE_ONUPGRADE_QUERY;
-		
+
+		private final String dbName;
+		private final int dbVersion;
+		private final String dbOnCreateQuery;
+		private final String dbOnUpgradeQuery;
+
 		private Connection connection = null;
 		private Statement stmt = null;
-		
-		public DesktopDatabaseHandler(String dbName, int dbVersion, String dbOnCreateQuery, String dbOnUpgradeQuery) {
-			this.DATABASE_NAME = dbName;
-			this.DATABASE_VERSION = dbVersion;
-			this.DATABASE_ONCREATE_QUERY = dbOnCreateQuery;
-			this.DATABASE_ONUPGRADE_QUERY = dbOnUpgradeQuery;
+
+		private DesktopDatabase (String dbName, int dbVersion, String dbOnCreateQuery, String dbOnUpgradeQuery) {
+			this.dbName = dbName;
+			this.dbVersion = dbVersion;
+			this.dbOnCreateQuery = dbOnCreateQuery;
+			this.dbOnUpgradeQuery = dbOnUpgradeQuery;
 		}
 
 		@Override
-		public void setupDatabase () {			
+		public void setupDatabase () {
 			try {
-				Class.forName("org.sqlite.JDBC");				
+				Class.forName("org.sqlite.JDBC");
 			} catch (ClassNotFoundException e) {
-				Gdx.app.log("Database", "Unable to load the SQLite JDBC driver. Please see your build path.", e);
+				Gdx.app.log(DatabaseFactory.ERROR_TAG, "Unable to load the SQLite JDBC driver. Please see your build path.", e);
+				throw new GdxRuntimeException(e);
 			}
 		}
 
 		@Override
-		public void openOrCreateDatabase () {			
-			if(helper == null) helper = new SQLiteDatabaseHelper(DATABASE_NAME, DATABASE_VERSION, DATABASE_ONCREATE_QUERY, DATABASE_ONUPGRADE_QUERY);
-			
+		public void openOrCreateDatabase () {
+			if (helper == null) helper = new SQLiteDatabaseHelper(dbName, dbVersion, dbOnCreateQuery, dbOnUpgradeQuery);
+
 			try {
-				connection = DriverManager.getConnection("jdbc:sqlite:" + DATABASE_NAME);
+				connection = DriverManager.getConnection("jdbc:sqlite:" + dbName);
 				stmt = connection.createStatement();
 				helper.onCreate(stmt);
-			} catch(SQLException e) {
-				Gdx.app.log("Database", "There was an error in opening: " + DATABASE_NAME, e);
-			}			
+			} catch (SQLException e) {
+				Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in opening: " + dbName, e);
+				throw new GdxRuntimeException(e);
+			}
 		}
 
 		@Override
-		public void closeDatabae () {
+		public void closeDatabase () {
 			try {
 				stmt.close();
 				connection.close();
 			} catch (SQLException e) {
-				Gdx.app.log("Database", "There was an error in closing the database: " + DATABASE_NAME, e);
-			}						
+				Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in closing the database: " + dbName, e);
+			}
 		}
 
 		@Override
@@ -68,7 +75,7 @@ public class DesktopDatabaseManager implements DatabaseManager {
 			try {
 				stmt.executeUpdate(sql);
 			} catch (SQLException e) {
-				Gdx.app.log("Database", "There was an error in executing the queery.", e);
+				Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in executing the queery.", e);
 			}
 		}
 
@@ -76,19 +83,33 @@ public class DesktopDatabaseManager implements DatabaseManager {
 		public DatabaseCursor rawQuery (String sql) {
 			DesktopCursor lCursor = new DesktopCursor();
 			try {
-				lCursor.resultSet = stmt.executeQuery(sql);
+				ResultSet resultSetRef = stmt.executeQuery(sql);
+				lCursor.setNativeCursor(resultSetRef);
 				return lCursor;
 			} catch (SQLException e) {
-				Gdx.app.log("Database", "There was an error in executing the query.", e);
+				Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in executing the query.", e);
 			}
 			return null;
 		}
-		
-	}	
-	
+
+		@Override
+		public DatabaseCursor rawQuery (DatabaseCursor cursor, String sql) {
+			DesktopCursor lCursor = (DesktopCursor)cursor;
+			try {
+				ResultSet resultSetRef = stmt.executeQuery(sql);
+				lCursor.setNativeCursor(resultSetRef);
+				return lCursor;
+			} catch (SQLException e) {
+				Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in executing the query.", e);
+			}
+			return null;
+		}
+
+	}
+
 	@Override
-	public DatabaseHandler getNewDatabaseHandler (String dbName, int dbVersion, String dbOnCreateQuery, String dbOnUpgradeQuery) {
-		return new DesktopDatabaseHandler(dbName, dbVersion, dbOnCreateQuery, dbOnUpgradeQuery);
+	public Database getNewDatabase (String dbName, int dbVersion, String dbOnCreateQuery, String dbOnUpgradeQuery) {
+		return new DesktopDatabase(dbName, dbVersion, dbOnCreateQuery, dbOnUpgradeQuery);
 	}
 
 }

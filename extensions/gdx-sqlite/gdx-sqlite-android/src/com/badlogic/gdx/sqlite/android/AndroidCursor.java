@@ -1,51 +1,97 @@
+
 package com.badlogic.gdx.sqlite.android;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 
-import com.badlogic.gdx.sqlite.DatabaseCursor;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.sql.DatabaseCursor;
+import com.badlogic.gdx.sql.DatabaseFactory;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/** @author M Rafay Aleem */
 public class AndroidCursor implements DatabaseCursor {
-	
-	public Cursor cursor = null;
+
+	private Cursor cursor = null;
 
 	@Override
 	public byte[] getBlob (int columnIndex) {
-		return cursor.getBlob(columnIndex);
+		try {
+			return cursor.getBlob(columnIndex);
+		} catch (SQLiteException e) {
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the blob", e);
+			throw new GdxRuntimeException(e);
+		}
 	}
 
 	@Override
 	public double getDouble (int columnIndex) {
+		try {
 			return cursor.getDouble(columnIndex);
+		} catch (SQLiteException e) {
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the double", e);
+			throw new GdxRuntimeException(e);
+		}
 	}
 
 	@Override
 	public float getFloat (int columnIndex) {
-		return cursor.getFloat(columnIndex);
+		try {
+			return cursor.getFloat(columnIndex);
+		} catch (SQLiteException e) {
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the float", e);
+			throw new GdxRuntimeException(e);
+		}
 	}
 
 	@Override
 	public int getInt (int columnIndex) {
-		return cursor.getInt(columnIndex);
+		try {
+			return cursor.getInt(columnIndex);
+		} catch (SQLiteException e) {
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the int", e);
+			throw new GdxRuntimeException(e);
+		}
 	}
 
 	@Override
 	public long getLong (int columnIndex) {
-		return cursor.getLong(columnIndex);
+		try {
+			return cursor.getLong(columnIndex);
+		} catch (SQLiteException e) {
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the long", e);
+			throw new GdxRuntimeException(e);
+		}
 	}
 
 	@Override
 	public short getShort (int columnIndex) {
-		return cursor.getShort(columnIndex);
+		try {
+			return cursor.getShort(columnIndex);
+		} catch (SQLiteException e) {
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the short", e);
+			throw new GdxRuntimeException(e);
+		}
 	}
 
 	@Override
 	public String getString (int columnIndex) {
-		return cursor.getString(columnIndex);
+		try {
+			return cursor.getString(columnIndex);
+		} catch (SQLiteException e) {
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the string", e);
+			throw new GdxRuntimeException(e);
+		}
 	}
 
 	@Override
 	public boolean next () {
-		return cursor.moveToNext();
+		try {
+			return cursor.moveToNext();
+		} catch (SQLiteException e) {
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in moving the cursor to next", e);
+			throw new GdxRuntimeException(e);
+		}
 	}
 
 	@Override
@@ -55,7 +101,15 @@ public class AndroidCursor implements DatabaseCursor {
 
 	@Override
 	public void close () {
-		cursor.close();		
+		try {
+			cursor.close();
+		} catch (SQLiteException e) {
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in closing the cursor", e);
+			throw new GdxRuntimeException(e);
+		}
 	}
 
+	public void setNativeCursor (Cursor cursorRef) {
+		cursor = cursorRef;
+	}
 }

@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.sqlite.android;
 
 import android.content.Context;
@@ -5,33 +6,33 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class SQLiteDatabaseHelper extends SQLiteOpenHelper
-{
-	
-	private final String DB_NAME; 
-	private final int DB_VERSION;
-	private final String DB_ONCREATE_QUERY;
-	private final String DB_ONUPGRADE_QUERY;
+/** @author M Rafay Aleem */
+public class SQLiteDatabaseHelper extends SQLiteOpenHelper {
 
-	public SQLiteDatabaseHelper (Context context, String name, CursorFactory factory, int version, String dbOnCreateQuery, String dbOnUpgradeQuery) {
+	private final String dbName;
+	private final int dbVersion;
+	private final String dbOnCreateQuery;
+	private final String dbOnUpgradeQuery;
+
+	public SQLiteDatabaseHelper (Context context, String name, CursorFactory factory, int version, String dbOnCreateQuery,
+		String dbOnUpgradeQuery) {
 		super(context, name, factory, version);
-		this.DB_NAME = name;
-		this.DB_VERSION = version;
-		this.DB_ONCREATE_QUERY = dbOnCreateQuery;
-		this.DB_ONUPGRADE_QUERY = dbOnUpgradeQuery;
+		this.dbName = name;
+		this.dbVersion = version;
+		this.dbOnCreateQuery = dbOnCreateQuery;
+		this.dbOnUpgradeQuery = dbOnUpgradeQuery;
 	}
 
 	@Override
 	public void onCreate (SQLiteDatabase database) {
-		if(DB_ONCREATE_QUERY != null)
-			database.execSQL(DB_ONCREATE_QUERY);
-		
+		if (dbOnCreateQuery != null) database.execSQL(dbOnCreateQuery);
+
 	}
 
 	@Override
-	public void onUpgrade (SQLiteDatabase database, int oldVersion, int newVersion) {		
-		if(DB_ONUPGRADE_QUERY != null) {
-			database.execSQL(DB_ONUPGRADE_QUERY);
+	public void onUpgrade (SQLiteDatabase database, int oldVersion, int newVersion) {
+		if (dbOnUpgradeQuery != null) {
+			database.execSQL(dbOnUpgradeQuery);
 			onCreate(database);
 		}
 	}
