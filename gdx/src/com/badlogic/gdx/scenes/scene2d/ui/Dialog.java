@@ -186,7 +186,10 @@ public class Dialog extends Window {
 	/** Hides the dialog. Called automatically when a button is clicked. The default implementation fades out the dialog over
 	 * {@link #fadeDuration} seconds and then removes it from the stage. */
 	public void hide () {
-		addAction(sequence(fadeOut(fadeDuration, Interpolation.fade), Actions.removeActor()));
+		if (fadeDuration > 0)
+			addAction(sequence(fadeOut(fadeDuration, Interpolation.fade), Actions.removeActor()));
+		else
+			remove();
 	}
 
 	protected void setParent (Group parent) {
