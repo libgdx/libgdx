@@ -33,8 +33,8 @@ public class JglfwGraphics implements Graphics {
 	private int x, y, width, height;
 	private boolean visible;
 	private Color initialBackgroundColor;
-	private volatile boolean isContinuous = true;
-	private volatile boolean renderRequested;
+	private volatile boolean isContinuous = true, renderRequested;
+	volatile boolean foreground, minimized;
 
 	private float deltaTime;
 	private long frameStart, lastTime = -1;
@@ -134,8 +134,7 @@ public class JglfwGraphics implements Graphics {
 		return true;
 	}
 
-	void frameStart () {
-		long time = System.nanoTime();
+	void frameStart (long time) {
 		if (lastTime == -1) lastTime = time;
 		deltaTime = (time - lastTime) / 1000000000.0f;
 		lastTime = time;
@@ -358,8 +357,16 @@ public class JglfwGraphics implements Graphics {
 		glfwSwapBuffers(window);
 	}
 
+	public boolean isHidden () {
+		return !visible;
+	}
+
 	public boolean isMinimized () {
-		return glfwGetWindowParam(window, GLFW_ICONIFIED) == 1;
+		return minimized;
+	}
+
+	public boolean isForeground () {
+		return foreground;
 	}
 
 	public void minimize () {

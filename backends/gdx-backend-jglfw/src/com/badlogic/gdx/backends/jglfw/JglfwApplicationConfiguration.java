@@ -44,12 +44,18 @@ public class JglfwApplicationConfiguration {
 	public boolean forceExit = true;
 	/** True to have a title and border around the window. **/
 	public boolean undecorated;
-	/** Causes the main loop to run on the EDT instead of a new thread, for easier interoperability with AWT/Swing. **/
+	/** Causes the main loop to run on the EDT instead of a new thread, for easier interoperability with AWT/Swing. Broken on Linux. **/
 	public boolean runOnEDT;
 	/** The color to clear the window immediately after creation. **/
 	public Color initialBackgroundColor = Color.BLACK;
 	/** True to hide the window when it is created. The window must be shown with {@link JglfwGraphics#show()}. **/
 	public boolean hidden;
+	/** Target framerate when the window is in the foreground. The CPU sleeps as needed. Use 0 to never sleep. **/
+	public int foregroundFPS;
+	/** Target framerate when the window is in the background. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. **/
+	public int backgroundFPS;
+	/** Target framerate when the window is hidden or minimized. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. **/
+	public int hiddenFPS = -1;
 
 	static public DisplayMode[] getDisplayModes () {
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();

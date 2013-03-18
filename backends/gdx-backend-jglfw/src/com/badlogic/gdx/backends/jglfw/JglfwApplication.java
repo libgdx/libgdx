@@ -36,10 +36,11 @@ public class JglfwApplication implements Application {
 	private final Map<String, Preferences> preferences = new HashMap();
 	private final JglfwClipboard clipboard = new JglfwClipboard();
 	private final GlfwCallbacks callbacks = new GlfwCallbacks();
-	private boolean forceExit;
-	private boolean runOnEDT;
 	volatile boolean running = true;
 	private int logLevel = LOG_INFO;
+
+	private boolean forceExit, runOnEDT;
+	private int foregroundFPS, backgroundFPS, hiddenFPS;
 
 	public JglfwApplication (ApplicationListener listener) {
 		this(listener, listener.getClass().getSimpleName(), 640, 480, false);
@@ -86,6 +87,9 @@ public class JglfwApplication implements Application {
 	void initialize (JglfwApplicationConfiguration config) {
 		forceExit = config.forceExit;
 		runOnEDT = config.runOnEDT;
+		foregroundFPS = config.foregroundFPS;
+		backgroundFPS = config.backgroundFPS;
+		hiddenFPS = config.hiddenFPS;
 
 		final Thread glThread = Thread.currentThread();
 
@@ -128,7 +132,15 @@ public class JglfwApplication implements Application {
 			}
 
 			public void windowRefresh (long window) {
-				if (Thread.currentThread() == glThread) render();
+				if (Thread.currentThread() == glThread) render(System.nanoTime());
+			}
+
+			public void windowFocus (long window, boolean focused) {
+				graphics.foreground = focused;
+			}
+
+			public void windowIconify (long window, boolean iconified) {
+				graphics.minimized = iconified;
 			}
 
 			public void error (int error, String description) {
@@ -182,18 +194,25 @@ public class JglfwApplication implements Application {
 
 		input.update();
 
-		if (graphics.shouldRender())
-			render();
-		else {
-			try {
-				Thread.sleep(16); // Avoid wasting CPU when not rendering.
-			} catch (InterruptedException ignored) {
-			}
+		int targetFPS = (graphics.isHidden() || graphics.isMinimized()) ? hiddenFPS : //
+			(graphics.isForeground() ? foregroundFPS : backgroundFPS);
+		long time = System.nanoTime();
+
+		if (graphics.shouldRender() && targetFPS != -1) render(time);
+
+		if (targetFPS != 0) sleep(targetFPS == -1 ? 100 : (int)(1000f / targetFPS - (System.nanoTime() - time) / 1000000f));
+	}
+
+	void sleep (int millis) {
+		if (millis <= 0) return;
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException ignored) {
 		}
 	}
 
-	void render () {
-		graphics.frameStart();
+	void render (long time) {
+		graphics.frameStart(time);
 		listener.render();
 		glfwSwapBuffers(graphics.window);
 	}
