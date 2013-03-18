@@ -484,7 +484,7 @@ public class Json {
 				return;
 			}
 
-			if (actualType.isEnum()) {
+			if (Enum.class.isAssignableFrom(actualType)) {
 				writer.value(value);
 				return;
 			}
@@ -879,7 +879,7 @@ public class Json {
 			}
 			if (type == boolean.class || type == Boolean.class) return (T)Boolean.valueOf(string);
 			if (type == char.class || type == Character.class) return (T)(Character)string.charAt(0);
-			if (type.isEnum()) {
+			if (Enum.class.isAssignableFrom(type)) {
 				Object[] constants = type.getEnumConstants();
 				for (int i = 0, n = constants.length; i < n; i++)
 					if (string.equals(constants[i].toString())) return (T)constants[i];
