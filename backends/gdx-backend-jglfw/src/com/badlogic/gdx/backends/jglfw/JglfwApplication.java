@@ -36,8 +36,9 @@ public class JglfwApplication implements Application {
 	private final Map<String, Preferences> preferences = new HashMap();
 	private final JglfwClipboard clipboard = new JglfwClipboard();
 	private final GlfwCallbacks callbacks = new GlfwCallbacks();
-	volatile boolean running = true;
 	private int logLevel = LOG_INFO;
+	volatile boolean running = true;
+	boolean isPaused;
 
 	private boolean forceExit, runOnEDT;
 	private int foregroundFPS, backgroundFPS, hiddenFPS;
@@ -60,6 +61,9 @@ public class JglfwApplication implements Application {
 	}
 
 	public JglfwApplication (final ApplicationListener listener, final JglfwApplicationConfiguration config) {
+		if (listener == null) throw new IllegalArgumentException("listener cannot be null.");
+		if (config == null) throw new IllegalArgumentException("config cannot be null.");
+
 		this.listener = listener;
 
 		Runnable runnable = new Runnable() {
@@ -194,13 +198,21 @@ public class JglfwApplication implements Application {
 
 		input.update();
 
+		long frameStartTime = System.nanoTime();
 		int targetFPS = (graphics.isHidden() || graphics.isMinimized()) ? hiddenFPS : //
 			(graphics.isForeground() ? foregroundFPS : backgroundFPS);
-		long time = System.nanoTime();
 
-		if (graphics.shouldRender() && targetFPS != -1) render(time);
+		if (targetFPS == -1) { // Rendering is paused.
+			if (!isPaused) listener.pause();
+			isPaused = true;
+		} else {
+			if (isPaused) listener.resume();
+			isPaused = false;
+			if (graphics.shouldRender()) render(frameStartTime);
+		}
 
-		if (targetFPS != 0) sleep(targetFPS == -1 ? 100 : (int)(1000f / targetFPS - (System.nanoTime() - time) / 1000000f));
+		if (targetFPS != 0)
+			sleep(targetFPS == -1 ? 100 : (int)(1000f / targetFPS - (System.nanoTime() - frameStartTime) / 1000000f));
 	}
 
 	void sleep (int millis) {
@@ -288,6 +300,10 @@ public class JglfwApplication implements Application {
 			runnables.add(runnable);
 			graphics.requestRendering();
 		}
+	}
+
+	public boolean isPaused () {
+		return isPaused;
 	}
 
 	public void exit () {
