@@ -219,22 +219,20 @@ public class AssetManager implements Disposable {
 		if (assetContainer == null) return false;
 		return assetContainer.getObject(type) != null;
 	}
-	
+
 	/** Returns the default loader for the given type
 	 * @param type The type of the loader to get
-	 * @return The loader capable of loading the type, or null if none exists
-	 */
-	public <T> AssetLoader getLoader(final Class<T> type) {
+	 * @return The loader capable of loading the type, or null if none exists */
+	public <T> AssetLoader getLoader (final Class<T> type) {
 		return getLoader(type, null);
 	}
 
-	/** Returns the loader for the given type and the specified filename. If no loader exists for the specific
-	 * filename, the default loader for that type is returned.
+	/** Returns the loader for the given type and the specified filename. If no loader exists for the specific filename, the default
+	 * loader for that type is returned.
 	 * @param type The type of the loader to get
 	 * @param fileName The filename of the asset to get a loader for, or null to get the default loader
-	 * @return The loader capable of loading the type and filename, or null if none exists
-	 */
-	public <T> AssetLoader getLoader(final Class<T> type, final String fileName) {
+	 * @return The loader capable of loading the type and filename, or null if none exists */
+	public <T> AssetLoader getLoader (final Class<T> type, final String fileName) {
 		final ObjectMap<String, AssetLoader> loaders = this.loaders.get(type);
 		if (loaders == null || loaders.size < 1) return null;
 		if (fileName == null) return loaders.get("");
@@ -346,7 +344,7 @@ public class AssetManager implements Disposable {
 	 * of a single task that happens in the GL thread takes a long time.
 	 * @return true if all loading is finished. */
 	public synchronized boolean update (int millis) {
-		long endTime = System.nanoTime() + millis * 1000;
+		long endTime = System.currentTimeMillis() + millis;
 		while (true) {
 			boolean done = update();
 			if (done || System.currentTimeMillis() > endTime) return done;
@@ -413,9 +411,9 @@ public class AssetManager implements Disposable {
 		if (loader == null) throw new GdxRuntimeException("No loader for type: " + assetDesc.type.getSimpleName());
 		tasks.push(new AssetLoadingTask(this, assetDesc, loader, threadPool));
 	}
-	
+
 	/** Adds an asset to this AssetManager */
-	protected <T> void addAsset(final String fileName, Class<T> type, T asset) {
+	protected <T> void addAsset (final String fileName, Class<T> type, T asset) {
 		// add the asset to the filename lookup
 		assetTypes.put(fileName, type);
 
@@ -425,7 +423,7 @@ public class AssetManager implements Disposable {
 			typeToAssets = new ObjectMap<String, RefCountedContainer>();
 			assets.put(type, typeToAssets);
 		}
-		typeToAssets.put(fileName, new RefCountedContainer(asset));	
+		typeToAssets.put(fileName, new RefCountedContainer(asset));
 	}
 
 	/** Updates the current task on the top of the task stack.
@@ -499,7 +497,7 @@ public class AssetManager implements Disposable {
 			throw new GdxRuntimeException(t);
 		}
 	}
-	
+
 	/** Sets a new {@link AssetLoader} for the given type.
 	 * @param type the type of the asset
 	 * @param loader the loader */
@@ -509,15 +507,15 @@ public class AssetManager implements Disposable {
 
 	/** Sets a new {@link AssetLoader} for the given type.
 	 * @param type the type of the asset
-	 * @param suffix the suffix the filename must have for this loader to be used or null to specify the default loader. 
+	 * @param suffix the suffix the filename must have for this loader to be used or null to specify the default loader.
 	 * @param loader the loader */
-	public synchronized <T, P extends AssetLoaderParameters<T>> void setLoader (Class<T> type, String suffix, AssetLoader<T, P> loader) {
+	public synchronized <T, P extends AssetLoaderParameters<T>> void setLoader (Class<T> type, String suffix,
+		AssetLoader<T, P> loader) {
 		if (type == null) throw new IllegalArgumentException("type cannot be null.");
 		if (loader == null) throw new IllegalArgumentException("loader cannot be null.");
 		log.debug("Loader set: " + type.getSimpleName() + " -> " + loader.getClass().getSimpleName());
 		ObjectMap<String, AssetLoader> loaders = this.loaders.get(type);
-		if (loaders == null)
-			this.loaders.put(type, loaders = new ObjectMap<String, AssetLoader>());
+		if (loaders == null) this.loaders.put(type, loaders = new ObjectMap<String, AssetLoader>());
 		loaders.put(suffix == null ? "" : suffix, loader);
 	}
 
