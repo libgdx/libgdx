@@ -8,6 +8,7 @@
 - changed the build system, natives are now fetched from the build server, see http://www.badlogicgames.com/wordpress/?p=2821
 - freetype extension supported on iOS, see http://www.badlogicgames.com/wordpress/?p=2819
 - changed ShapeRenderer API, see http://www.badlogicgames.com/wordpress/?p=2809
+- changed Actions.add to addAction, changed parameter order, and added removeAction, addListener, removeListener
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2664
