@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /** Reads/writes Java objects to/from JSON, automatically.
@@ -831,9 +832,8 @@ public class Json {
 					newArray.add(readValue(elementType, null, array.get(i)));
 				return (T)newArray;
 			}
-			if (ArrayList.class.isAssignableFrom(type)) {
-				ArrayList newArray = type == null ? new ArrayList() : (ArrayList)newInstance(type);
-				newArray.ensureCapacity(array.size);
+			if (List.class.isAssignableFrom(type)) {
+				List newArray = type == null ? new ArrayList(array.size) : (List)newInstance(type);
 				for (int i = 0, n = array.size; i < n; i++)
 					newArray.add(readValue(elementType, null, array.get(i)));
 				return (T)newArray;
