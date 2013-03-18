@@ -204,9 +204,8 @@ public class JglfwApplication implements Application {
 	}
 
 	void sleep (int millis) {
-		if (millis <= 0) return;
 		try {
-			Thread.sleep(millis);
+			if (millis > 0) Thread.sleep(millis);
 		} catch (InterruptedException ignored) {
 		}
 	}

@@ -1,4 +1,6 @@
 [0.9.9]
+- TmxMapLoader has a flag in Parameters that lets you specify whether to generate mipmaps
+- Animation#isAnimationFinished was fixed to behave as per javadocs (ignores looping)
 - remove GLU interface and implementations. Use Matrix4 et al instead. see http://www.badlogicgames.com/wordpress/?p=2886
 - new maps API, see http://www.badlogicgames.com/wordpress/?p=2870
 - removed static public tmp Vector2 instances, manage such temporary vars yourself, see http://www.badlogicgames.com/wordpress/?p=2840

@@ -171,7 +171,6 @@ public class Animation {
 	 * @param stateTime
 	 * @return whether the animation is finished. */
 	public boolean isAnimationFinished (float stateTime) {
-		if(playMode != NORMAL && playMode != REVERSED) return false;
 		int frameNumber = (int)(stateTime / frameDuration);
 		return keyFrames.length - 1 < frameNumber;
 	}

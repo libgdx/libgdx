@@ -3,8 +3,7 @@ package com.badlogic.gdx.jglfw.tests;
 
 import com.badlogic.gdx.backends.jglfw.JglfwApplication;
 import com.badlogic.gdx.backends.jglfw.JglfwApplicationConfiguration;
-import com.badlogic.gdx.tests.UITest;
-import com.badlogic.gdx.tests.VBOVATest;
+import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
@@ -18,8 +17,9 @@ public class JglfwDebugStarter {
 			.load("gdx-controllers-desktop");
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new VBOVATest();
+		GdxTest test = new SuperKoalio();
 		JglfwApplicationConfiguration config = new JglfwApplicationConfiguration();
+		config.vSync = true;
 		config.useGL20 = test.needsGL20();
 		new JglfwApplication(test, config);
 	}

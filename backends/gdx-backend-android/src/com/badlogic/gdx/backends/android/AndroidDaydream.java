@@ -104,7 +104,7 @@ public class AndroidDaydream extends DreamService implements Application {
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-// net = new AndroidNet(this);
+		net = new AndroidNet(null);
 		this.listener = listener;
 		this.handler = new Handler();
 
@@ -186,7 +186,7 @@ public class AndroidDaydream extends DreamService implements Application {
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-// net = new AndroidNet(this);
+		net = new AndroidNet(null);
 		this.listener = listener;
 		this.handler = new Handler();
 

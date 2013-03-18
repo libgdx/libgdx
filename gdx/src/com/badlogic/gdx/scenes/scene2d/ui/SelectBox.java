@@ -214,7 +214,7 @@ public class SelectBox extends Widget {
 				x = tmpCoords.x;
 				y = tmpCoords.y;
 				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
-					listSelectedIndex = (int)((getHeight() - y) / itemHeight);
+					listSelectedIndex = (int) ((getHeight() - style.listBackground.getTopHeight() - y) / itemHeight);
 					listSelectedIndex = Math.max(0, listSelectedIndex);
 					listSelectedIndex = Math.min(items.length - 1, listSelectedIndex);
 					selectedIndex = listSelectedIndex;

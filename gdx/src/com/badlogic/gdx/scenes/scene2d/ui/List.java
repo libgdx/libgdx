@@ -72,9 +72,11 @@ public class List extends Widget implements Cullable {
 		selectedIndex = (int)((getHeight() - y) / itemHeight);
 		selectedIndex = Math.max(0, selectedIndex);
 		selectedIndex = Math.min(items.length - 1, selectedIndex);
-		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-		if (fire(changeEvent)) selectedIndex = oldIndex;
-		Pools.free(changeEvent);
+		if (oldIndex != selectedIndex) {
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			if (fire(changeEvent)) selectedIndex = oldIndex;
+			Pools.free(changeEvent);
+		}
 	}
 
 	public void setStyle (ListStyle style) {

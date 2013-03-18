@@ -16,6 +16,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -132,6 +133,7 @@ public class SuperKoalio extends GdxTest {
 	
 	private Vector2 tmp = new Vector2();
 	private void updateKoala(float deltaTime) {
+		if(deltaTime == 0) return;
 		koala.stateTime += deltaTime;	
 		
 		// check input and apply to velocity & state

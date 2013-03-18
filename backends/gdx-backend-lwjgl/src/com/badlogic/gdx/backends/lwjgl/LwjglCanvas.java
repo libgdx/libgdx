@@ -64,7 +64,7 @@ public class LwjglCanvas implements Application {
 
 	public LwjglCanvas (ApplicationListener listener, boolean useGL2) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = true;
+		config.useGL20 = useGL2;
 		initialize(listener, config);
 	}
 

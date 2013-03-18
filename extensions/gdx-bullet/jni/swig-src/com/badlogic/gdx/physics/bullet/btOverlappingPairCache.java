@@ -45,8 +45,8 @@ public class btOverlappingPairCache extends btOverlappingPairCallback {
     return (cPtr == 0) ? null : new btBroadphasePair(cPtr, false);
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btBroadphasePair_t getOverlappingPairArray() {
-    return new SWIGTYPE_p_btAlignedObjectArrayT_btBroadphasePair_t(gdxBulletJNI.btOverlappingPairCache_getOverlappingPairArray(swigCPtr, this), false);
+  public btBroadphasePairArray getOverlappingPairArray() {
+    return new btBroadphasePairArray(gdxBulletJNI.btOverlappingPairCache_getOverlappingPairArray(swigCPtr, this), false);
   }
 
   public void cleanOverlappingPair(btBroadphasePair pair, btDispatcher dispatcher) {

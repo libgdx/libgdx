@@ -122,24 +122,34 @@ public class BaseBulletTest extends BulletTest {
 		if (update)
 			update();
 		
+		beginRender(true);
+
+		renderWorld();
+		
+		performance.setLength(0);
+		performance.append("FPS: ").append(fpsCounter.value).append(", Bullet: ")
+			.append((int)(performanceCounter.load.value*100f)).append("%");
+	}
+	
+	protected void beginRender(boolean lighting) {
 		GL10 gl = Gdx.gl10;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL10.GL_LEQUAL);
 		gl.glEnable(GL10.GL_COLOR_MATERIAL);
-		gl.glEnable(GL10.GL_LIGHTING);
-		gl.glEnable(GL10.GL_LIGHT0);
-		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
-		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);
-		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
-
+		if (lighting) {
+			gl.glEnable(GL10.GL_LIGHTING);
+			gl.glEnable(GL10.GL_LIGHT0);
+			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
+			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);
+			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
+		} else
+			gl.glDisable(GL10.GL_LIGHTING);
 		camera.apply(Gdx.gl10);
-		
+	}
+	
+	protected void renderWorld() {
 		world.render();
-		
-		performance.setLength(0);
-		performance.append("FPS: ").append(fpsCounter.value).append(", Bullet: ")
-			.append((int)(performanceCounter.load.value*100f)).append("%");
 	}
 	
 	public void update() {
