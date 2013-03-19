@@ -135,29 +135,29 @@ public class LwjglApplication implements Application {
 		int lastHeight = graphics.getHeight();
 
 		graphics.lastTime = System.nanoTime();
-		boolean wasPaused = false;
+		boolean wasActive = true;
 		boolean isActive;
+		int frameRate;
 		while (running) {
 			Display.processMessages();
 			if (Display.isCloseRequested()) {
 				exit();
 			}
 
-			if (graphics.config.pauseWhenMinimized) {
-				isActive = Display.isActive();
-				if (!wasPaused && !isActive) { // if it's not here yet and windows currently minimized
-					wasPaused = true;
-					listener.pause();
-				}
-				if (!isActive) { // if windows minimized
-					Display.sync(60);
-					continue;
-				}
-				if (wasPaused && isActive){ // if it was minimized and now currently active
-					wasPaused = false;
-					listener.resume();
-				}
+			isActive = Display.isActive();
+			if (wasActive && !isActive) { // if it's just recently minimized from active state
+				wasActive = false;
+				listener.pause();
 			}
+			if (!wasActive && isActive){ // if it's just recently focused from minimized state
+				wasActive = true;
+				listener.resume();
+			}
+			if (!isActive && graphics.config.hiddenFPS == -1) { // don't render if it's inactive and hiddenFPS set to -1
+				continue;
+			}
+			frameRate = isActive ? graphics.config.foregroundFPS : graphics.config.hiddenFPS;
+
 			boolean shouldRender = false;
 
 			if (graphics.canvas != null) {
@@ -207,12 +207,12 @@ public class LwjglApplication implements Application {
 				listener.render();
 				Display.update();
 				if (graphics.vsync && graphics.config.useCPUSynch) {
-					Display.sync(60);
+					Display.sync(frameRate);
 				}
 			} else {
 				// Effectively sleeps for a little while so we don't spend all available
 				// cpu power in an essentially empty loop.
-				Display.sync(60);
+				Display.sync(frameRate);
 			}
 		}
 
