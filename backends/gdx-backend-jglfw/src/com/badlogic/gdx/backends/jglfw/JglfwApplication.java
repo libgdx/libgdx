@@ -178,7 +178,8 @@ public class JglfwApplication implements Application {
 		}
 	}
 
-	void frame () {
+	/** Handles posted runnables, input, and rendering for each frame. */
+	protected void frame () {
 		if (glfwWindowShouldClose(graphics.window)) {
 			exit();
 			return;
@@ -228,7 +229,8 @@ public class JglfwApplication implements Application {
 		glfwSwapBuffers(graphics.window);
 	}
 
-	void end () {
+	/** Called when the game loop has exited. */
+	protected void end () {
 		synchronized (lifecycleListeners) {
 			for (LifecycleListener listener : lifecycleListeners) {
 				listener.pause();
@@ -304,6 +306,18 @@ public class JglfwApplication implements Application {
 
 	public boolean isPaused () {
 		return isPaused;
+	}
+
+	public void setForegroundFPS (int foregroundFPS) {
+		this.foregroundFPS = foregroundFPS;
+	}
+
+	public void setBackgroundFPS (int backgroundFPS) {
+		this.backgroundFPS = backgroundFPS;
+	}
+
+	public void setHiddenFPS (int hiddenFPS) {
+		this.hiddenFPS = hiddenFPS;
 	}
 
 	public void exit () {
