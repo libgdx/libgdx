@@ -32,15 +32,16 @@ public:
 		disable();
 	}
 
+	virtual void onContactDestroyed(int manifoldPointUserValue) = 0;
+
+#ifndef SWIG
 	bool internalCallback(void *userPersistentData) {
 		int val;
 		*(const void **)&val = userPersistentData;
-		return onContactDestroyed(val);
-	}
-
-	virtual bool onContactDestroyed(int manifoldPointUserValue) {
+		onContactDestroyed(val);
 		return false;
 	}
+#endif // SWIG
 
 	void enable() {
 		currentContactDestroyedListener = this;

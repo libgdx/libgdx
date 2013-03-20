@@ -22,6 +22,7 @@ static bool ContactAddedListener_CB(btManifoldPoint& cp,const btCollisionObjectW
 BaseContactAddedListener *currentContactAddedListener = 0;
 
 /** @author Xoppa */
+#ifndef SWIG
 class BaseContactAddedListener {
 public:
 	BaseContactAddedListener() {
@@ -32,9 +33,8 @@ public:
 		disable();
 	}
 
-	virtual bool internalCallback(btManifoldPoint& cp,const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1) {
-		return false;
-	}
+	virtual bool internalCallback(btManifoldPoint& cp,const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,
+			const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1) = 0;
 
 	void enable() {
 		currentContactAddedListener = this;
@@ -52,41 +52,53 @@ public:
 		return currentContactAddedListener == this;
 	}
 };
+#endif // SWIG
 
 class ContactAddedListenerByWrapper : public BaseContactAddedListener {
 public:
-	bool internalCallback(btManifoldPoint& cp,const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1) {
-		return onContactAdded(cp, colObj0Wrap, partId0, index0, colObj1Wrap, partId1, index1);
-	}
+	virtual bool onContactAdded(btManifoldPoint& cp,const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,bool match0,
+			const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1,bool match1) = 0;
 
-	virtual bool onContactAdded(btManifoldPoint& cp,const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1) {
-		return false;
+#ifndef SWIG
+	bool internalCallback(btManifoldPoint& cp,const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1) {
+		bool match0 = gdxCheckFilter(colObj0Wrap->m_collisionObject, colObj1Wrap->m_collisionObject);
+		bool match1 = gdxCheckFilter(colObj1Wrap->m_collisionObject, colObj0Wrap->m_collisionObject);
+		return (match0 || match1) ? onContactAdded(cp, colObj0Wrap, partId0, index0, match0, colObj1Wrap, partId1, index1, match1) : false;
 	}
+#endif // SWIG
 };
 
 class ContactAddedListenerByObject : public BaseContactAddedListener {
 public:
-	bool internalCallback(btManifoldPoint& cp,const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1) {
-		return onContactAdded(cp, colObj0Wrap->m_collisionObject, partId0, index0, colObj1Wrap->m_collisionObject, partId1, index1);
-	}
+	virtual bool onContactAdded(btManifoldPoint& cp,const btCollisionObject* colObj0,int partId0,int index0,bool match0,
+			const btCollisionObject* colObj1,int partId1,int index1,bool match1) = 0;
 
-	virtual bool onContactAdded(btManifoldPoint& cp,const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1) {
-		return false;
+#ifndef SWIG
+	bool internalCallback(btManifoldPoint& cp,const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1) {
+		bool match0 = gdxCheckFilter(colObj0Wrap->m_collisionObject, colObj1Wrap->m_collisionObject);
+		bool match1 = gdxCheckFilter(colObj1Wrap->m_collisionObject, colObj0Wrap->m_collisionObject);
+		return (match0 || match1) ? onContactAdded(cp, colObj0Wrap->m_collisionObject, partId0, index0, match0, colObj1Wrap->m_collisionObject, partId1, index1, match1) : false;
 	}
+#endif // SWIG
 };
 
 class ContactAddedListenerByValue : public BaseContactAddedListener {
 public:
+	virtual bool onContactAdded(btManifoldPoint& cp,int userValue0,int partId0,int index0,bool match0,
+			int userValue1,int partId1,int index1,bool match1) = 0;
+
+#ifndef SWIG
 	bool internalCallback(btManifoldPoint& cp,const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1) {
+		bool match0 = gdxCheckFilter(colObj0Wrap->m_collisionObject, colObj1Wrap->m_collisionObject);
+		bool match1 = gdxCheckFilter(colObj1Wrap->m_collisionObject, colObj0Wrap->m_collisionObject);
+		if (!match0 && !match1)
+			return false;
 		int val0, val1;
 		val0 = ((GdxCollisionObjectBridge*)(colObj0Wrap->m_collisionObject->getUserPointer()))->userValue;
 		val1 = ((GdxCollisionObjectBridge*)(colObj1Wrap->m_collisionObject->getUserPointer()))->userValue;
-		return onContactAdded(cp, val0, partId0, index0, val1, partId1, index1);
+		return onContactAdded(cp, val0, partId0, index0, match0, val1, partId1, index1, match1);
 	}
-
-	virtual bool onContactAdded(btManifoldPoint& cp,int userValue0,int partId0,int index0,int userValue1,int partId1,int index1) {
-		return false;
-	}
+#endif // SWIG
 };
 
 bool ContactAddedListener_CB(btManifoldPoint& cp,const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1) {

@@ -22,6 +22,7 @@ static bool ContactProcessedListener_CB(btManifoldPoint& cp,void *body0, void *b
 BaseContactProcessedListener *currentContactProcessedListener = 0;
 
 /** @author Xoppa */
+#ifndef SWIG
 class BaseContactProcessedListener {
 public:
 	BaseContactProcessedListener() {
@@ -32,9 +33,7 @@ public:
 		disable();
 	}
 
-	virtual bool internalCallback(btManifoldPoint& cp,void *body0, void *body1) {
-		return false;
-	}
+	virtual bool internalCallback(btManifoldPoint& cp,void *body0, void *body1) = 0;
 
 	void enable() {
 		currentContactProcessedListener = this;
@@ -52,30 +51,41 @@ public:
 		return currentContactProcessedListener == this;
 	}
 };
+#endif //SWIG
 
 class ContactProcessedListenerByObject : public BaseContactProcessedListener {
 public:
-	bool internalCallback(btManifoldPoint& cp,void *body0, void *body1) {
-		return onContactProcessed(cp, (btCollisionObject*)body0, (btCollisionObject*)body1);
-	}
+	virtual void onContactProcessed(btManifoldPoint& cp, const btCollisionObject* colObj0, bool match0,
+			const btCollisionObject* colObj1, bool match1) = 0;
 
-	virtual bool onContactProcessed(btManifoldPoint& cp, const btCollisionObject* colObj0, const btCollisionObject* colObj1) {
+#ifndef SWIG
+	bool internalCallback(btManifoldPoint& cp,void *body0, void *body1) {
+		bool match0 = gdxCheckFilter((btCollisionObject*)body0, (btCollisionObject*)body1);
+		bool match1 = gdxCheckFilter((btCollisionObject*)body1, (btCollisionObject*)body0);
+		if (match0 || match1)
+			onContactProcessed(cp, (btCollisionObject*)body0, match0, (btCollisionObject*)body1, match1);
 		return false;
 	}
+#endif // SWIG
 };
 
 class ContactProcessedListenerByValue : public BaseContactProcessedListener {
 public:
-	bool internalCallback(btManifoldPoint& cp,void *body0, void *body1) {
-		int val0, val1;
-		val0 = ((GdxCollisionObjectBridge*)(((btCollisionObject*)body0)->getUserPointer()))->userValue;
-		val1 = ((GdxCollisionObjectBridge*)(((btCollisionObject*)body1)->getUserPointer()))->userValue;
-		return onContactProcessed(cp, val0, val1);
-	}
+	virtual bool onContactProcessed(btManifoldPoint& cp,int userValue0,bool match0,int userValue1,bool match1) = 0;
 
-	virtual bool onContactProcessed(btManifoldPoint& cp,int userValue0,int userValue1) {
+#ifndef SWIG
+	bool internalCallback(btManifoldPoint& cp,void *body0, void *body1) {
+		bool match0 = gdxCheckFilter((btCollisionObject*)body0, (btCollisionObject*)body1);
+		bool match1 = gdxCheckFilter((btCollisionObject*)body1, (btCollisionObject*)body0);
+		if (match0 || match1) {
+			int val0, val1;
+			val0 = ((GdxCollisionObjectBridge*)(((btCollisionObject*)body0)->getUserPointer()))->userValue;
+			val1 = ((GdxCollisionObjectBridge*)(((btCollisionObject*)body1)->getUserPointer()))->userValue;
+			onContactProcessed(cp, val0, match0, val1, match1);
+		}
 		return false;
 	}
+#endif // SWIG
 };
 
 bool ContactProcessedListener_CB(btManifoldPoint& cp,void *body0, void *body1) {
