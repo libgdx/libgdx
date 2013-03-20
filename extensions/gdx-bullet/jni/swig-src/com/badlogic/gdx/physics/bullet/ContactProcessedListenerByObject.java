@@ -13,11 +13,12 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class ContactProcessedListenerByObject extends BaseContactProcessedListener {
+public class ContactProcessedListenerByObject {
   private long swigCPtr;
+  protected boolean swigCMemOwn;
 
   protected ContactProcessedListenerByObject(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.ContactProcessedListenerByObject_SWIGUpcast(cPtr), cMemoryOwn);
+    swigCMemOwn = cMemoryOwn;
     swigCPtr = cPtr;
   }
 
@@ -37,7 +38,6 @@ public class ContactProcessedListenerByObject extends BaseContactProcessedListen
       }
       swigCPtr = 0;
     }
-    super.delete();
   }
 
   protected void swigDirectorDisconnect() {
@@ -55,8 +55,8 @@ public class ContactProcessedListenerByObject extends BaseContactProcessedListen
     gdxBulletJNI.ContactProcessedListenerByObject_change_ownership(this, swigCPtr, true);
   }
 
-  public boolean onContactProcessed(btManifoldPoint cp, btCollisionObject colObj0, btCollisionObject colObj1) {
-    return gdxBulletJNI.ContactProcessedListenerByObject_onContactProcessed(swigCPtr, this, btManifoldPoint.getCPtr(cp), cp, btCollisionObject.getCPtr(colObj0), colObj0, btCollisionObject.getCPtr(colObj1), colObj1);
+  public void onContactProcessed(btManifoldPoint cp, btCollisionObject colObj0, boolean match0, btCollisionObject colObj1, boolean match1) {
+    gdxBulletJNI.ContactProcessedListenerByObject_onContactProcessed(swigCPtr, this, btManifoldPoint.getCPtr(cp), cp, btCollisionObject.getCPtr(colObj0), colObj0, match0, btCollisionObject.getCPtr(colObj1), colObj1, match1);
   }
 
   public ContactProcessedListenerByObject() {

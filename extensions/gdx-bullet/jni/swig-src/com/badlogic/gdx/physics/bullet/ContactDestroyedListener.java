@@ -55,8 +55,13 @@ public class ContactDestroyedListener {
     gdxBulletJNI.ContactDestroyedListener_change_ownership(this, swigCPtr, true);
   }
 
-  public boolean onContactDestroyed(int manifoldPointUserValue) {
-    return gdxBulletJNI.ContactDestroyedListener_onContactDestroyed(swigCPtr, this, manifoldPointUserValue);
+  public ContactDestroyedListener() {
+    this(gdxBulletJNI.new_ContactDestroyedListener(), true);
+    gdxBulletJNI.ContactDestroyedListener_director_connect(this, swigCPtr, swigCMemOwn, true);
+  }
+
+  public void onContactDestroyed(int manifoldPointUserValue) {
+    gdxBulletJNI.ContactDestroyedListener_onContactDestroyed(swigCPtr, this, manifoldPointUserValue);
   }
 
   public void enable() {
@@ -69,11 +74,6 @@ public class ContactDestroyedListener {
 
   public boolean isEnabled() {
     return gdxBulletJNI.ContactDestroyedListener_isEnabled(swigCPtr, this);
-  }
-
-  public ContactDestroyedListener() {
-    this(gdxBulletJNI.new_ContactDestroyedListener(), true);
-    gdxBulletJNI.ContactDestroyedListener_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
 }

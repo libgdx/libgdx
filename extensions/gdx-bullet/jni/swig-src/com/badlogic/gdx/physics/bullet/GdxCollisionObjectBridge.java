@@ -48,6 +48,22 @@ public class GdxCollisionObjectBridge {
     return gdxBulletJNI.GdxCollisionObjectBridge_userValue_get(swigCPtr, this);
   }
 
+  public void setContactCallbackFlag(int value) {
+    gdxBulletJNI.GdxCollisionObjectBridge_contactCallbackFlag_set(swigCPtr, this, value);
+  }
+
+  public int getContactCallbackFlag() {
+    return gdxBulletJNI.GdxCollisionObjectBridge_contactCallbackFlag_get(swigCPtr, this);
+  }
+
+  public void setContactCallbackFilter(int value) {
+    gdxBulletJNI.GdxCollisionObjectBridge_contactCallbackFilter_set(swigCPtr, this, value);
+  }
+
+  public int getContactCallbackFilter() {
+    return gdxBulletJNI.GdxCollisionObjectBridge_contactCallbackFilter_get(swigCPtr, this);
+  }
+
   public GdxCollisionObjectBridge() {
     this(gdxBulletJNI.new_GdxCollisionObjectBridge(), true);
   }

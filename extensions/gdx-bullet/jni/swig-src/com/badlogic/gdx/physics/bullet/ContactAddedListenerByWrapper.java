@@ -13,11 +13,12 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class ContactAddedListenerByWrapper extends BaseContactAddedListener {
+public class ContactAddedListenerByWrapper {
   private long swigCPtr;
+  protected boolean swigCMemOwn;
 
   protected ContactAddedListenerByWrapper(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.ContactAddedListenerByWrapper_SWIGUpcast(cPtr), cMemoryOwn);
+    swigCMemOwn = cMemoryOwn;
     swigCPtr = cPtr;
   }
 
@@ -37,7 +38,6 @@ public class ContactAddedListenerByWrapper extends BaseContactAddedListener {
       }
       swigCPtr = 0;
     }
-    super.delete();
   }
 
   protected void swigDirectorDisconnect() {
@@ -55,8 +55,8 @@ public class ContactAddedListenerByWrapper extends BaseContactAddedListener {
     gdxBulletJNI.ContactAddedListenerByWrapper_change_ownership(this, swigCPtr, true);
   }
 
-  public boolean onContactAdded(btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
-    return gdxBulletJNI.ContactAddedListenerByWrapper_onContactAdded(swigCPtr, this, btManifoldPoint.getCPtr(cp), cp, btCollisionObjectWrapper.getCPtr(colObj0Wrap), colObj0Wrap, partId0, index0, btCollisionObjectWrapper.getCPtr(colObj1Wrap), colObj1Wrap, partId1, index1);
+  public boolean onContactAdded(btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, boolean match0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1, boolean match1) {
+    return gdxBulletJNI.ContactAddedListenerByWrapper_onContactAdded(swigCPtr, this, btManifoldPoint.getCPtr(cp), cp, btCollisionObjectWrapper.getCPtr(colObj0Wrap), colObj0Wrap, partId0, index0, match0, btCollisionObjectWrapper.getCPtr(colObj1Wrap), colObj1Wrap, partId1, index1, match1);
   }
 
   public ContactAddedListenerByWrapper() {
