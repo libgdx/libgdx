@@ -281,4 +281,12 @@ public class btManifoldPoint {
     return gdxBulletJNI.btManifoldPoint_getAppliedImpulse(swigCPtr, this);
   }
 
+  public int getUserValue() {
+    return gdxBulletJNI.btManifoldPoint_getUserValue(swigCPtr, this);
+  }
+
+  public void setUserValue(int value) {
+    gdxBulletJNI.btManifoldPoint_setUserValue(swigCPtr, this, value);
+  }
+
 }

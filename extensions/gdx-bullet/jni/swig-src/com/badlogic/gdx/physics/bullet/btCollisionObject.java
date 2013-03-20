@@ -27,6 +27,7 @@ public class btCollisionObject implements
 	
 	private long swigCPtr;
 	protected boolean swigCMemOwn;
+	public GdxCollisionObjectBridge gdxBridge;
 	
 	public Object userData;
 	
@@ -34,11 +35,12 @@ public class btCollisionObject implements
 		swigCMemOwn = cMemoryOwn;
 		swigCPtr = cPtr;
 		instances.put(cPtr, this);
+		gdxBridge = new GdxCollisionObjectBridge();
+		internalSetGdxBridge(gdxBridge);
 	}
 	
 	@Override
 	public void dispose() {
-		instances.remove(swigCPtr);
 		delete();
 	}
 	
@@ -58,8 +60,13 @@ public class btCollisionObject implements
     delete();
   }
 
-  public synchronized void delete() {
+  public synchronized void delete()  {
+    if (gdxBridge != null) {
+    	gdxBridge.delete();
+    	gdxBridge = null;
+    }
     if (swigCPtr != 0) {
+      instances.remove(swigCPtr);
       if (swigCMemOwn) {
         swigCMemOwn = false;
         gdxBulletJNI.delete_btCollisionObject(swigCPtr);
@@ -67,6 +74,7 @@ public class btCollisionObject implements
       swigCPtr = 0;
     }
   }
+
 
   public boolean mergesSimulationIslands() {
     return gdxBulletJNI.btCollisionObject_mergesSimulationIslands(swigCPtr, this);
@@ -298,6 +306,15 @@ public class btCollisionObject implements
 
   public void serializeSingleObject(SWIGTYPE_p_btSerializer serializer) {
     gdxBulletJNI.btCollisionObject_serializeSingleObject(swigCPtr, this, SWIGTYPE_p_btSerializer.getCPtr(serializer));
+  }
+
+  public void internalSetGdxBridge(GdxCollisionObjectBridge bridge) {
+    gdxBulletJNI.btCollisionObject_internalSetGdxBridge(swigCPtr, this, GdxCollisionObjectBridge.getCPtr(bridge), bridge);
+  }
+
+  public GdxCollisionObjectBridge internalGetGdxBridge() {
+    long cPtr = gdxBulletJNI.btCollisionObject_internalGetGdxBridge(swigCPtr, this);
+    return (cPtr == 0) ? null : new GdxCollisionObjectBridge(cPtr, false);
   }
 
   public void getAnisotropicFriction(Vector3 out) {
