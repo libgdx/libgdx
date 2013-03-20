@@ -13,6 +13,22 @@
 	com.badlogic.gdx.utils.Disposable
 %}
 
+%typemap(javadestruct, methodname="delete", methodmodifiers="public synchronized") btCollisionObject %{ {
+    if (gdxBridge != null) {
+    	gdxBridge.delete();
+    	gdxBridge = null;
+    }
+    if (swigCPtr != 0) {
+      instances.remove(swigCPtr);
+      if (swigCMemOwn) {
+        swigCMemOwn = false;
+        gdxBulletJNI.delete_btCollisionObject(swigCPtr);
+      }
+      swigCPtr = 0;
+    }
+  }
+%}
+
 %typemap(javabody) btCollisionObject %{
 	public final static com.badlogic.gdx.utils.LongMap<btCollisionObject> instances = new com.badlogic.gdx.utils.LongMap<btCollisionObject>();
 	
@@ -25,6 +41,7 @@
 	
 	private long swigCPtr;
 	protected boolean swigCMemOwn;
+	public GdxCollisionObjectBridge gdxBridge;
 	
 	public Object userData;
 	
@@ -32,11 +49,12 @@
 		swigCMemOwn = cMemoryOwn;
 		swigCPtr = cPtr;
 		instances.put(cPtr, this);
+		gdxBridge = new GdxCollisionObjectBridge();
+		internalSetGdxBridge(gdxBridge);
 	}
 	
 	@Override
 	public void dispose() {
-		instances.remove(swigCPtr);
 		delete();
 	}
 	
@@ -55,10 +73,19 @@
 
 %{
 #include <BulletCollision/CollisionDispatch/btCollisionObject.h>
+#include <GdxCustom/GdxCollisionObjectBridge.h>
 %}
 %include "BulletCollision/CollisionDispatch/btCollisionObject.h"
+%include "GdxCustom/GdxCollisionObjectBridge.h"
 
 %extend btCollisionObject {
+	void internalSetGdxBridge(GdxCollisionObjectBridge *bridge) {
+		$self->setUserPointer(bridge);
+	}
+	
+	GdxCollisionObjectBridge *internalGetGdxBridge() {
+		return (GdxCollisionObjectBridge *)($self->getUserPointer());
+	}
 
 	void getAnisotropicFriction(btVector3 & out) {
 		out = $self->getAnisotropicFriction();
@@ -81,12 +108,10 @@
 	}
 	
 	int getUserValue() {
-		int result;
-		*(const void **)&result = $self->getUserPointer();
-		return result;
+		return ((GdxCollisionObjectBridge*)($self->getUserPointer()))->userValue;;
 	}
 	
 	void setUserValue(int value) {
-		$self->setUserPointer((void*)value);
+		((GdxCollisionObjectBridge*)($self->getUserPointer()))->userValue = value;
 	}
 };
