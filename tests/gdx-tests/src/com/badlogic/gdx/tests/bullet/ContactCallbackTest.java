@@ -31,27 +31,22 @@ public class ContactCallbackTest extends BaseBulletTest {
 	// which allows you to alter the objects/manifold before it's processed. 
 	public static class TestContactProcessedListener extends ContactProcessedListenerByValue {
 		public Array<BulletEntity> entities;
-		public BulletEntity ground;
+		int c = 0;
 		@Override
-		public boolean onContactProcessed (btManifoldPoint cp, int userValue0, int userValue1) {
-			BulletEntity e1 = (BulletEntity)(entities.get(userValue0));
-			BulletEntity e2 = (BulletEntity)(entities.get(userValue1));
-			if (e1 == ground || e2 == ground) {
-				return false;
+		public boolean onContactProcessed (btManifoldPoint cp, int userValue0, boolean match0, int userValue1, boolean match1) {
+			if (match0) {
+				final BulletEntity e = (BulletEntity)(entities.get(userValue0));
+				// Disable future callbacks for this entity
+				e.body.setContactCallbackFilter(0);
+				e.color.set(Color.RED);
+				Gdx.app.log("ContactCallbackTest", "Contact processed "+(++c));
 			}
-
-			int flags1 = e1.body.getCollisionFlags();
-			int flags2 = e2.body.getCollisionFlags();
-
-			// In general, the first (userValue0) object is the object that triggered the callback.
-			if ((flags1 & btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK) == btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK) {
-				e1.body.setCollisionFlags(flags1 & (-1 ^ btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK));
-				e1.color.set(Color.RED);
-			}
-			// The second object might also have the callback enabled.
-			if ((flags2 & btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK) == btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK) {
-				e2.body.setCollisionFlags(flags2 & (-1 ^ btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK));
-				e2.color.set(Color.RED);
+			if (match1) {
+				final BulletEntity e = (BulletEntity)(entities.get(userValue1));
+				// Disable future callbacks for this entity
+				e.body.setContactCallbackFilter(0);
+				e.color.set(Color.RED);
+				Gdx.app.log("ContactCallbackTest", "Contact processed "+(++c));
 			}
 			return false;
 		}
@@ -82,8 +77,9 @@ public class ContactCallbackTest extends BaseBulletTest {
 				for (int z = 0; z < BOXCOUNT_Z; z++) {
 					final BulletEntity e = (BulletEntity)world.add("box", BOXOFFSET_X + x * 2f, BOXOFFSET_Y + y * 2f, BOXOFFSET_Z + z * 2f);
 					e.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
-					// Set the collision flags to include CF_CUSTOM_MATERIAL_CALLBACK to receive contact callbacks for that collision object.
-					e.body.setCollisionFlags(e.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+
+					e.body.setContactCallbackFlag(2);
+					e.body.setContactCallbackFilter(2);
 				}
 			}
 		}
@@ -91,7 +87,6 @@ public class ContactCallbackTest extends BaseBulletTest {
 		// Creating a contact listener, also enables that particular type of contact listener and sets it active.
 		contactProcessedListener = new TestContactProcessedListener();
 		contactProcessedListener.entities = world.entities;
-		contactProcessedListener.ground = ground;
 	}
 	
 	@Override
