@@ -233,7 +233,7 @@ class SwigDirector_ContactProcessedListenerByValue : public ContactProcessedList
 public:
     void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
     SwigDirector_ContactProcessedListenerByValue(JNIEnv *jenv);
-    virtual bool onContactProcessed(btManifoldPoint &cp, int userValue0, bool match0, int userValue1, bool match1);
+    virtual void onContactProcessed(btManifoldPoint &cp, int userValue0, bool match0, int userValue1, bool match1);
 public:
     bool swig_overrides(int n) {
       return (n < 1 ? swig_override[n] : false);

@@ -4106,9 +4106,7 @@ void SwigDirector_ContactProcessedListenerByObject::swig_connect_director(JNIEnv
 SwigDirector_ContactProcessedListenerByValue::SwigDirector_ContactProcessedListenerByValue(JNIEnv *jenv) : ContactProcessedListenerByValue(), Swig::Director(jenv) {
 }
 
-bool SwigDirector_ContactProcessedListenerByValue::onContactProcessed(btManifoldPoint &cp, int userValue0, bool match0, int userValue1, bool match1) {
-  bool c_result = SwigValueInit< bool >() ;
-  jboolean jresult = 0 ;
+void SwigDirector_ContactProcessedListenerByValue::onContactProcessed(btManifoldPoint &cp, int userValue0, bool match0, int userValue1, bool match1) {
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
@@ -4120,7 +4118,7 @@ bool SwigDirector_ContactProcessedListenerByValue::onContactProcessed(btManifold
   
   if (!swig_override[0]) {
     SWIG_JavaThrowException(JNIEnvWrapper(this).getJNIEnv(), SWIG_JavaDirectorPureVirtual, "Attempted to invoke pure virtual method ContactProcessedListenerByValue::onContactProcessed.");
-    return c_result;
+    return;
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
@@ -4129,14 +4127,12 @@ bool SwigDirector_ContactProcessedListenerByValue::onContactProcessed(btManifold
     jmatch0 = (jboolean) match0;
     juserValue1 = (jint) userValue1;
     jmatch1 = (jboolean) match1;
-    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_gdxBulletJNI, Swig::director_methids[42], swigjobj, jcp, juserValue0, jmatch0, juserValue1, jmatch1);
-    if (jenv->ExceptionCheck() == JNI_TRUE) return c_result;
-    c_result = jresult ? true : false; 
+    jenv->CallStaticVoidMethod(Swig::jclass_gdxBulletJNI, Swig::director_methids[42], swigjobj, jcp, juserValue0, jmatch0, juserValue1, jmatch1);
+    if (jenv->ExceptionCheck() == JNI_TRUE) return ;
   } else {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
   }
   if (swigjobj) jenv->DeleteLocalRef(swigjobj);
-  return c_result;
 }
 
 void SwigDirector_ContactProcessedListenerByValue::swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global) {
@@ -4146,7 +4142,7 @@ void SwigDirector_ContactProcessedListenerByValue::swig_connect_director(JNIEnv 
     jmethodID base_methid;
   } methods[] = {
     {
-      "onContactProcessed", "(Lcom/badlogic/gdx/physics/bullet/btManifoldPoint;IZIZ)Z", NULL 
+      "onContactProcessed", "(Lcom/badlogic/gdx/physics/bullet/btManifoldPoint;IZIZ)V", NULL 
     }
   };
   
@@ -50667,15 +50663,13 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_Contac
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactProcessedListenerByValue_1onContactProcessed(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jint jarg3, jboolean jarg4, jint jarg5, jboolean jarg6) {
-  jboolean jresult = 0 ;
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactProcessedListenerByValue_1onContactProcessed(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jint jarg3, jboolean jarg4, jint jarg5, jboolean jarg6) {
   ContactProcessedListenerByValue *arg1 = (ContactProcessedListenerByValue *) 0 ;
   btManifoldPoint *arg2 = 0 ;
   int arg3 ;
   bool arg4 ;
   int arg5 ;
   bool arg6 ;
-  bool result;
   
   (void)jenv;
   (void)jcls;
@@ -50685,15 +50679,13 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_Co
   arg2 = *(btManifoldPoint **)&jarg2;
   if (!arg2) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btManifoldPoint & reference is null");
-    return 0;
+    return ;
   } 
   arg3 = (int)jarg3; 
   arg4 = jarg4 ? true : false; 
   arg5 = (int)jarg5; 
   arg6 = jarg6 ? true : false; 
-  result = (bool)(arg1)->onContactProcessed(*arg2,arg3,arg4,arg5,arg6);
-  jresult = (jboolean)result; 
-  return jresult;
+  (arg1)->onContactProcessed(*arg2,arg3,arg4,arg5,arg6);
 }
 
 
@@ -78220,7 +78212,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_swig_1
       "SwigDirector_ContactProcessedListenerByObject_onContactProcessed", "(Lcom/badlogic/gdx/physics/bullet/ContactProcessedListenerByObject;JJZJZ)V" 
     },
     {
-      "SwigDirector_ContactProcessedListenerByValue_onContactProcessed", "(Lcom/badlogic/gdx/physics/bullet/ContactProcessedListenerByValue;JIZIZ)Z" 
+      "SwigDirector_ContactProcessedListenerByValue_onContactProcessed", "(Lcom/badlogic/gdx/physics/bullet/ContactProcessedListenerByValue;JIZIZ)V" 
     },
     {
       "SwigDirector_ContactDestroyedListener_onContactDestroyed", "(Lcom/badlogic/gdx/physics/bullet/ContactDestroyedListener;I)V" 

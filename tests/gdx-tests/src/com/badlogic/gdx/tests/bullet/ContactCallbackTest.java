@@ -33,7 +33,7 @@ public class ContactCallbackTest extends BaseBulletTest {
 		public Array<BulletEntity> entities;
 		int c = 0;
 		@Override
-		public boolean onContactProcessed (btManifoldPoint cp, int userValue0, boolean match0, int userValue1, boolean match1) {
+		public void onContactProcessed (btManifoldPoint cp, int userValue0, boolean match0, int userValue1, boolean match1) {
 			if (match0) {
 				final BulletEntity e = (BulletEntity)(entities.get(userValue0));
 				// Disable future callbacks for this entity
@@ -48,7 +48,6 @@ public class ContactCallbackTest extends BaseBulletTest {
 				e.color.set(Color.RED);
 				Gdx.app.log("ContactCallbackTest", "Contact processed "+(++c));
 			}
-			return false;
 		}
 	}
 	

@@ -2899,7 +2899,7 @@ public class gdxBulletJNI {
   public final static native void delete_ContactProcessedListenerByObject(long jarg1);
   public final static native void ContactProcessedListenerByObject_director_connect(ContactProcessedListenerByObject obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void ContactProcessedListenerByObject_change_ownership(ContactProcessedListenerByObject obj, long cptr, boolean take_or_release);
-  public final static native boolean ContactProcessedListenerByValue_onContactProcessed(long jarg1, ContactProcessedListenerByValue jarg1_, long jarg2, btManifoldPoint jarg2_, int jarg3, boolean jarg4, int jarg5, boolean jarg6);
+  public final static native void ContactProcessedListenerByValue_onContactProcessed(long jarg1, ContactProcessedListenerByValue jarg1_, long jarg2, btManifoldPoint jarg2_, int jarg3, boolean jarg4, int jarg5, boolean jarg6);
   public final static native long new_ContactProcessedListenerByValue();
   public final static native void delete_ContactProcessedListenerByValue(long jarg1);
   public final static native void ContactProcessedListenerByValue_director_connect(ContactProcessedListenerByValue obj, long cptr, boolean mem_own, boolean weak_global);
@@ -4822,8 +4822,8 @@ public class gdxBulletJNI {
   public static void SwigDirector_ContactProcessedListenerByObject_onContactProcessed(ContactProcessedListenerByObject self, long cp, long colObj0, boolean match0, long colObj1, boolean match1) {
     self.onContactProcessed(new btManifoldPoint(cp, false), (colObj0 == 0) ? null : new btCollisionObject(colObj0, false), match0, (colObj1 == 0) ? null : new btCollisionObject(colObj1, false), match1);
   }
-  public static boolean SwigDirector_ContactProcessedListenerByValue_onContactProcessed(ContactProcessedListenerByValue self, long cp, int userValue0, boolean match0, int userValue1, boolean match1) {
-    return self.onContactProcessed(new btManifoldPoint(cp, false), userValue0, match0, userValue1, match1);
+  public static void SwigDirector_ContactProcessedListenerByValue_onContactProcessed(ContactProcessedListenerByValue self, long cp, int userValue0, boolean match0, int userValue1, boolean match1) {
+    self.onContactProcessed(new btManifoldPoint(cp, false), userValue0, match0, userValue1, match1);
   }
   public static void SwigDirector_ContactDestroyedListener_onContactDestroyed(ContactDestroyedListener self, int manifoldPointUserValue) {
     self.onContactDestroyed(manifoldPointUserValue);
