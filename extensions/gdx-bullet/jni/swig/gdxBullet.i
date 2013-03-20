@@ -630,10 +630,7 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %}
 %include "BulletCollision/NarrowPhaseCollision/btGjkConvexCast.h"
 
-%{
-#include <BulletCollision/NarrowPhaseCollision/btManifoldPoint.h>
-%}
-%include "BulletCollision/NarrowPhaseCollision/btManifoldPoint.h"
+%include "custom/btManifoldPoint.i"
 
 %{
 #include <BulletCollision/NarrowPhaseCollision/btContinuousConvexCollision.h>
@@ -684,6 +681,8 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 #include <GdxCustom/InternalTickCallback.h>
 %}
 %include "GdxCustom/InternalTickCallback.h"
+
+%include "custom/ContactListener.i"
 
 %{
 #include <BulletDynamics/Dynamics/btSimpleDynamicsWorld.h>
