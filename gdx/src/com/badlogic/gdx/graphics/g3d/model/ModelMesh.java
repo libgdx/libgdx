@@ -1,10 +1,10 @@
-package com.badlogic.gdx.graphics.g3d.loader;
+package com.badlogic.gdx.graphics.g3d.model;
 
 import com.badlogic.gdx.graphics.VertexAttribute;
 
-public class JsonMesh {
+public class ModelMesh {
 	public String id;
 	public VertexAttribute[] attributes;
 	public float[] vertices;
-	public JsonMeshPart[] parts;
+	public ModelMeshPart[] parts;
 }

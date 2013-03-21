@@ -8,7 +8,14 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.g3d.loader.JsonMaterial.MaterialType;
+import com.badlogic.gdx.graphics.g3d.model.ModelMaterial;
+import com.badlogic.gdx.graphics.g3d.model.ModelMesh;
+import com.badlogic.gdx.graphics.g3d.model.ModelMeshPart;
+import com.badlogic.gdx.graphics.g3d.model.ModelMeshPartMaterial;
+import com.badlogic.gdx.graphics.g3d.model.JsonModel;
+import com.badlogic.gdx.graphics.g3d.model.ModelNode;
+import com.badlogic.gdx.graphics.g3d.model.ModelTexture;
+import com.badlogic.gdx.graphics.g3d.model.ModelMaterial.MaterialType;
 import com.badlogic.gdx.graphics.g3d.old.ModelLoaderHints;
 import com.badlogic.gdx.graphics.g3d.old.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.g3d.old.materials.ColorAttribute;
@@ -61,14 +68,14 @@ public class JsonModelLoader implements ModelLoader {
 		// We create the materials first
 		ObjectMap<String, Material> materials = new ObjectMap<String, Material>();
 		for(int i=0; i<model.materials.length; i++){
-			JsonMaterial jsonMaterial = model.materials[i];
+			ModelMaterial jsonMaterial = model.materials[i];
 			Material material = new Material(jsonMaterial.id);
 			
 			// simple loader for now. Just diffuse & textures
 			material.addAttribute(new ColorAttribute(jsonMaterial.diffuse, "diffuse"));
 
 			if(jsonMaterial.diffuseTextures != null){
-				JsonTexture jsonTexture = jsonMaterial.diffuseTextures.get(0);
+				ModelTexture jsonTexture = jsonMaterial.diffuseTextures.get(0);
 				
 				// one texture unit for now
 				Texture texture = new Texture(Gdx.files.internal(jsonTexture.fileName));
@@ -81,9 +88,9 @@ public class JsonModelLoader implements ModelLoader {
 		
 		// Create the meshes and assign materials to them. This is a super hack until we have hierarchy
 		for(int i=0; i<model.meshes.length; i++){
-			JsonMesh jsonMesh = model.meshes[i];
+			ModelMesh jsonMesh = model.meshes[i];
 			// if we have more than one submesh we're screwed for now.
-			JsonMeshPart jsonMeshPart = model.meshes[i].parts[0];
+			ModelMeshPart jsonMeshPart = model.meshes[i].parts[0];
 			
 			Mesh mesh = new Mesh(false, jsonMesh.vertices.length, jsonMeshPart.indices.length, jsonMesh.attributes);
 			mesh.setIndices(jsonMeshPart.indices);
@@ -120,10 +127,10 @@ public class JsonModelLoader implements ModelLoader {
 			throw new GdxRuntimeException("No meshes found in file");
 		}
 		
-		model.meshes = new JsonMesh[meshes.size];
+		model.meshes = new ModelMesh[meshes.size];
 		int i = 0;
 		for(OrderedMap<String, Object> mesh: meshes) {
-			JsonMesh jsonMesh = new JsonMesh();
+			ModelMesh jsonMesh = new ModelMesh();
 			String id = (String)mesh.get("id");
 			if(id == null) {
 				throw new GdxRuntimeException("No id given for mesh");
@@ -151,14 +158,14 @@ public class JsonModelLoader implements ModelLoader {
 			if(meshParts == null) {
 				throw new GdxRuntimeException("No mesh parts given for mesh '" + id + "'");
 			}
-			Array<JsonMeshPart> parts = new Array<JsonMeshPart>();
+			Array<ModelMeshPart> parts = new Array<ModelMeshPart>();
 			for(OrderedMap<String, Object> meshPart: meshParts) {
-				JsonMeshPart jsonPart = new JsonMeshPart();
+				ModelMeshPart jsonPart = new ModelMeshPart();
 				String partId = (String)meshPart.get("id");
 				if(id == null) {
 					throw new GdxRuntimeException("Not id given for mesh part");
 				}
-				for(JsonMeshPart other: parts) {
+				for(ModelMeshPart other: parts) {
 					if(other.id.equals(partId)) {
 						throw new GdxRuntimeException("Mesh part with id '" + partId + "' already in defined");
 					}
@@ -183,7 +190,7 @@ public class JsonModelLoader implements ModelLoader {
 				jsonPart.indices = partIndices;
 				parts.add(jsonPart);
 			}
-			jsonMesh.parts = parts.toArray(JsonMeshPart.class);
+			jsonMesh.parts = parts.toArray(ModelMeshPart.class);
 			model.meshes[i++] = jsonMesh;
 		}
 	}
@@ -242,11 +249,11 @@ public class JsonModelLoader implements ModelLoader {
 			// we should probably create some default material in this case
 		}
 		else {
-			model.materials = new JsonMaterial[materials.size];
+			model.materials = new ModelMaterial[materials.size];
 			
 			int i = 0;
 			for(OrderedMap<String, Object> material: materials) {
-				JsonMaterial jsonMaterial = new JsonMaterial();
+				ModelMaterial jsonMaterial = new ModelMaterial();
 				
 				String id = (String)material.get("id");
 				if(id == null)
@@ -278,7 +285,7 @@ public class JsonModelLoader implements ModelLoader {
 				Array<OrderedMap<String, Object>> textures = (Array<OrderedMap<String, Object>>)material.get("textures");
 				if(textures != null){
 					for(OrderedMap<String, Object> texture : textures) {
-						JsonTexture jsonTexture = new JsonTexture();
+						ModelTexture jsonTexture = new ModelTexture();
 						
 						String textureId = (String)texture.get("id");
 						if(textureId == null)
@@ -301,7 +308,7 @@ public class JsonModelLoader implements ModelLoader {
 						 	So we probably need to find a workaround. */
 						if(textureType.equals("STANDARD")){
 							if(jsonMaterial.diffuseTextures == null)
-								jsonMaterial.diffuseTextures = new Array<JsonTexture>();
+								jsonMaterial.diffuseTextures = new Array<ModelTexture>();
 							jsonMaterial.diffuseTextures.add(jsonTexture);
 						}
 					}
@@ -331,13 +338,13 @@ public class JsonModelLoader implements ModelLoader {
 			throw new GdxRuntimeException("Expected Vector2 values <> than two.");
 	}
 
-	private JsonNode[] parseNodes (JsonModel model, OrderedMap<String, Object> json, ModelLoaderHints hints) {
+	private ModelNode[] parseNodes (JsonModel model, OrderedMap<String, Object> json, ModelLoaderHints hints) {
 		Array<OrderedMap<String, Object>> nodes = (Array<OrderedMap<String, Object>>)json.get("nodes");
 		if(nodes == null) {
 			throw new GdxRuntimeException("At least one node is required.");
 		}
 		
-		model.nodes = new JsonNode[nodes.size];
+		model.nodes = new ModelNode[nodes.size];
 		
 		int i = 0;
 		for(OrderedMap<String, Object> node : nodes) {
@@ -346,8 +353,8 @@ public class JsonModelLoader implements ModelLoader {
 		return model.nodes;
 	}
 	
-	private JsonNode parseNodesRecursively(OrderedMap<String, Object> json, ModelLoaderHints hints){
-		JsonNode jsonNode = new JsonNode();
+	private ModelNode parseNodesRecursively(OrderedMap<String, Object> json, ModelLoaderHints hints){
+		ModelNode jsonNode = new ModelNode();
 		
 		String id = (String)json.get("id");
 		if(id == null)
@@ -375,11 +382,11 @@ public class JsonModelLoader implements ModelLoader {
 		
 		Array<OrderedMap<String, Object>> materials = (Array<OrderedMap<String, Object>>)json.get("materials");
 		if(materials != null){
-			jsonNode.meshPartMaterials = new JsonMeshPartMaterial[materials.size];
+			jsonNode.meshPartMaterials = new ModelMeshPartMaterial[materials.size];
 			
 			int i = 0;
 			for(OrderedMap<String, Object> material : materials) {
-				JsonMeshPartMaterial meshPartMaterial = new JsonMeshPartMaterial();
+				ModelMeshPartMaterial meshPartMaterial = new ModelMeshPartMaterial();
 				
 				String meshPartId = (String)material.get("meshpartid");
 				String materialId = (String)material.get("materialid");
@@ -395,7 +402,7 @@ public class JsonModelLoader implements ModelLoader {
 		
 		Array<OrderedMap<String, Object>> children = (Array<OrderedMap<String, Object>>)json.get("children");
 		if(children != null){
-			jsonNode.children = new JsonNode[children.size];
+			jsonNode.children = new ModelNode[children.size];
 			
 			int i = 0;
 			for(OrderedMap<String, Object> child : children) {

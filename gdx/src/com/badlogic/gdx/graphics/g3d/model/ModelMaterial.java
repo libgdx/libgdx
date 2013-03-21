@@ -1,9 +1,9 @@
-package com.badlogic.gdx.graphics.g3d.loader;
+package com.badlogic.gdx.graphics.g3d.model;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 
-public class JsonMaterial {
+public class ModelMaterial {
 	public enum MaterialType {
 		Lambert,
 		Phong
@@ -20,5 +20,5 @@ public class JsonMaterial {
 	
 	public float shininess;
 	
-	public Array<JsonTexture> diffuseTextures;
+	public Array<ModelTexture> diffuseTextures;
 }

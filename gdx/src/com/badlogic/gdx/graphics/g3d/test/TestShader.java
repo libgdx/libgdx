@@ -28,14 +28,14 @@ public class TestShader implements Shader {
 	private static String defaultVertexShader = null;
 	public final static String getDefaultVertexShader() {
 		if (defaultVertexShader == null)
-			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/xoppa/test/test.vertex.glsl").readString();
+			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/test/test.vertex.glsl").readString();
 		return defaultVertexShader;
 	}
 	
 	private static String defaultFragmentShader = null;
 	public final static String getDefaultFragmentShader() {
 		if (defaultFragmentShader == null)
-			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/xoppa/test/test.fragment.glsl").readString();
+			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/test/test.fragment.glsl").readString();
 		return defaultFragmentShader;
 	}
 
