@@ -97,7 +97,7 @@ public class PolygonSpriteTest extends GdxTest {
 		// Some debug rendering, bounding box & origin of one sprite
 		renderer.setProjectionMatrix(camera.combined);
 		renderer.setColor(Color.GREEN);
-		renderer.begin(ShapeType.Rectangle);
+		renderer.begin(ShapeType.Line);
 
 		PolygonSprite sprite = sprites.get(49);
 
@@ -106,9 +106,9 @@ public class PolygonSpriteTest extends GdxTest {
 
 		renderer.end();
 
-		renderer.begin(ShapeType.FilledCircle);
+		renderer.begin(ShapeType.Filled);
 
-		renderer.filledCircle(sprite.getX() + sprite.getOriginX(), sprite.getY() + sprite.getOriginY(), 4);
+		renderer.circle(sprite.getX() + sprite.getOriginX(), sprite.getY() + sprite.getOriginY(), 4);
 
 		renderer.end();
 	}

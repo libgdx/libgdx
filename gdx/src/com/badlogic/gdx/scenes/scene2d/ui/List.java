@@ -72,9 +72,11 @@ public class List extends Widget implements Cullable {
 		selectedIndex = (int)((getHeight() - y) / itemHeight);
 		selectedIndex = Math.max(0, selectedIndex);
 		selectedIndex = Math.min(items.length - 1, selectedIndex);
-		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-		if (fire(changeEvent)) selectedIndex = oldIndex;
-		Pools.free(changeEvent);
+		if (oldIndex != selectedIndex) {
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			if (fire(changeEvent)) selectedIndex = oldIndex;
+			Pools.free(changeEvent);
+		}
 	}
 
 	public void setStyle (ListStyle style) {
@@ -106,10 +108,11 @@ public class List extends Widget implements Cullable {
 
 		font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a * parentAlpha);
 		float itemY = getHeight();
+        float padding = selectedDrawable.getLeftWidth() + selectedDrawable.getRightWidth();
 		for (int i = 0; i < items.length; i++) {
 			if (cullingArea == null || (itemY - itemHeight <= cullingArea.y + cullingArea.height && itemY >= cullingArea.y)) {
 				if (selectedIndex == i) {
-					selectedDrawable.draw(batch, x, y + itemY - itemHeight, Math.max(prefWidth, getWidth()), itemHeight);
+					selectedDrawable.draw(batch, x, y + itemY - itemHeight, Math.max(prefWidth, getWidth() + padding), itemHeight);
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				}
 				font.draw(batch, items[i], x + textOffsetX, y + itemY - textOffsetY);

@@ -27,7 +27,7 @@ import com.badlogic.gdx.utils.Clipboard;
  * <p>
  * An application can be an instance of any of the following:
  * <ul>
- * <li>a desktop application (see <code>LwjglApplication</code> found in gdx-backends-lwjgl.jar)</li>
+ * <li>a desktop application (see <code>JglfwApplication</code> found in gdx-backends-jglfw.jar)</li>
  * <li>an Android application (see <code>AndroidApplication</code> found in gdx-backends-android.jar)</li>
  * <li>a HTML5 application (see <code>GwtApplication</code> found in gdx-backends-gwt.jar)</li>
  * <li>an iOS application (see <code>IOSApplication</code> found in gdx-backends-iosmonotouch.jar)</li>
@@ -107,6 +107,9 @@ public interface Application {
 	public static final int LOG_INFO = 2;
 	public static final int LOG_ERROR = 1;
 
+	/** @return the {@link ApplicationListener} instance */ 
+	public ApplicationListener getApplicationListener ();
+	
 	/** @return the {@link Graphics} instance */
 	public Graphics getGraphics ();
 

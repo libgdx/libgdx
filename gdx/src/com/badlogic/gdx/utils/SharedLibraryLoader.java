@@ -30,11 +30,13 @@ import java.util.zip.ZipFile;
 /** Loads shared libraries from a natives jar file (desktop) or arm folders (Android). For desktop projects, have the natives jar
  * in the classpath, for Android projects put the shared libraries in the libs/armeabi and libs/armeabi-v7a folders.
  * 
- * @author mzechner */
+ * @author mzechner
+ * @author Nathan Sweet */
 public class SharedLibraryLoader {
 	static public boolean isWindows = System.getProperty("os.name").contains("Windows");
 	static public boolean isLinux = System.getProperty("os.name").contains("Linux");
 	static public boolean isMac = System.getProperty("os.name").contains("Mac");
+	static public boolean isIos = false;
 	static public boolean isAndroid = false;
 	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64");
 	static {
@@ -44,6 +46,10 @@ public class SharedLibraryLoader {
 			isWindows = false;
 			isLinux = false;
 			isMac = false;
+			is64Bit = false;
+		}
+		if (!isAndroid && !isWindows && !isLinux && !isMac) {
+			isIos = true;
 			is64Bit = false;
 		}
 	}
@@ -63,7 +69,7 @@ public class SharedLibraryLoader {
 
 	/** Returns a CRC of the remaining bytes in the stream. */
 	public String crc (InputStream input) {
-		if (input == null) return "" + System.nanoTime(); // fallback
+		if (input == null) throw new IllegalArgumentException("input cannot be null.");
 		CRC32 crc = new CRC32();
 		byte[] buffer = new byte[4096];
 		try {
@@ -92,14 +98,26 @@ public class SharedLibraryLoader {
 	/** Loads a shared library for the platform the application is running on.
 	 * @param libraryName The platform independent library name. If not contain a prefix (eg lib) or suffix (eg .dll). */
 	public synchronized void load (String libraryName) {
+		// in case of iOS, things have been linked statically to the executable, bail out.
+		if (isIos) return;
+
 		libraryName = mapLibraryName(libraryName);
 		if (loadedLibraries.contains(libraryName)) return;
 
 		try {
 			if (isAndroid)
 				System.loadLibrary(libraryName);
-			else
-				System.load(extractFile(libraryName, null).getAbsolutePath());
+			else {
+				File f = extractFile(libraryName, null);
+				if (f != null){
+					System.load(f.getAbsolutePath());
+				}else{
+					// fallback for applets, see https://code.google.com/p/libgdx/issues/detail?id=1290
+					String fallback = new File(System.getProperty("java.library.path")+"/"+libraryName).getAbsolutePath();
+					System.load(fallback);
+				}
+			}
+			
 		} catch (Throwable ex) {
 			throw new GdxRuntimeException("Couldn't load shared library '" + libraryName + "' for target: "
 				+ System.getProperty("os.name") + (is64Bit ? ", 64-bit" : ", 32-bit"), ex);
@@ -108,7 +126,11 @@ public class SharedLibraryLoader {
 	}
 
 	private InputStream readFile (String path) {
-		if (nativesJar == null) return SharedLibraryLoader.class.getResourceAsStream("/" + path);
+		if (nativesJar == null) {
+			InputStream input = SharedLibraryLoader.class.getResourceAsStream("/" + path);
+			if (input == null) throw new GdxRuntimeException("Unable to read file for extraction: " + path);
+			return input;
+		}
 
 		// Read from JAR.
 		try {
@@ -145,7 +167,6 @@ public class SharedLibraryLoader {
 		if (extractedCrc == null || !extractedCrc.equals(sourceCrc)) {
 			try {
 				InputStream input = readFile(sourcePath);
-				if (input == null) return null;
 				extractedDir.mkdirs();
 				FileOutputStream output = new FileOutputStream(extractedFile);
 				byte[] buffer = new byte[4096];
@@ -160,6 +181,7 @@ public class SharedLibraryLoader {
 				throw new GdxRuntimeException("Error extracting file: " + sourcePath, ex);
 			}
 		}
-		return extractedFile.exists() ? extractedFile : null;
+		if (!extractedFile.exists()) throw new GdxRuntimeException("Unable to extract file: " + sourcePath);
+		return extractedFile;
 	}
 }

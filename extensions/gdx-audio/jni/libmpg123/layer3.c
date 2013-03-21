@@ -79,10 +79,10 @@ struct III_sideinfo
 
 struct bandInfoStruct
 {
-	int longIdx[23];
-	int longDiff[22];
-	int shortIdx[14];
-	int shortDiff[13];
+	unsigned short longIdx[23];
+	unsigned char longDiff[22];
+	unsigned short shortIdx[14];
+	unsigned char shortDiff[13];
 };
 
 /* Techy details about our friendly MPEG data. Fairly constant over the years;-) */
@@ -270,7 +270,7 @@ void init_layer3(void)
 		const struct bandInfoStruct *bi = &bandInfo[j];
 		int *mp;
 		int cb,lwin;
-		const int *bdf;
+		const unsigned char *bdf;
 
 		mp = map[j][0] = mapbuf0[j];
 		bdf = bi->longDiff;
@@ -403,7 +403,7 @@ static int III_get_side_info(mpg123_handle *fr, struct III_sideinfo *si,int ster
 
 	if(si->main_data_begin > fr->bitreservoir)
 	{
-		if(VERBOSE2) fprintf(stderr, "Note: missing %d bytes in bit reservoir for frame %li\n", (int)(si->main_data_begin - fr->bitreservoir), (long)fr->num);
+		if(!fr->to_ignore && VERBOSE2) fprintf(stderr, "Note: missing %d bytes in bit reservoir for frame %li\n", (int)(si->main_data_begin - fr->bitreservoir), (long)fr->num);
 
 		/*  overwrite main_data_begin for the really available bit reservoir */
 		backbits(fr, tab[1]);
@@ -678,8 +678,11 @@ static int III_get_scale_factors_2(mpg123_handle *fr, int *scf,struct gr_info_s 
 	return numbits;
 }
 
-static const int pretab1[22] = {0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,2,2,3,3,3,2,0};
-static const int pretab2[22] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+static unsigned char pretab_choice[2][22] =
+{
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,2,2,3,3,3,2,0}
+};
 
 /*
 	Dequantize samples
@@ -769,7 +772,7 @@ static int III_dequantize_sample(mpg123_handle *fr, real xr[SBLIMIT][SSLIMIT],in
 		for(i=0;i<2;i++)
 		{
 			int lp = l[i];
-			struct newhuff *h = ht+gr_info->table_select[i];
+			const struct newhuff *h = ht+gr_info->table_select[i];
 			for(;lp;lp--,mc--)
 			{
 				register int x,y;
@@ -797,7 +800,7 @@ static int III_dequantize_sample(mpg123_handle *fr, real xr[SBLIMIT][SSLIMIT],in
 					}
 				}
 				{
-					register short *val = h->table;
+					const short *val = h->table;
 					REFRESH_MASK;
 					while((y=*val++)<0)
 					{
@@ -862,8 +865,8 @@ static int III_dequantize_sample(mpg123_handle *fr, real xr[SBLIMIT][SSLIMIT],in
 
 		for(;l3 && (part2remain+num > 0);l3--)
 		{
-			struct newhuff* h;
-			register short* val;
+			const struct newhuff* h;
+			const short* val;
 			register short a;
 			/*
 				This is only a humble hack to prevent a special segfault.
@@ -981,7 +984,7 @@ static int III_dequantize_sample(mpg123_handle *fr, real xr[SBLIMIT][SSLIMIT],in
 	else
 	{
 		/* decoding with 'long' BandIndex table (block_type != 2) */
-		const int *pretab = gr_info->preflag ? pretab1 : pretab2;
+		const unsigned char *pretab = pretab_choice[gr_info->preflag];
 		int i,max = -1;
 		int cb = 0;
 		int *m = map[sfreq][2];
@@ -992,7 +995,7 @@ static int III_dequantize_sample(mpg123_handle *fr, real xr[SBLIMIT][SSLIMIT],in
 		for(i=0;i<3;i++)
 		{
 			int lp = l[i];
-			struct newhuff *h = ht+gr_info->table_select[i];
+			const struct newhuff *h = ht+gr_info->table_select[i];
 
 			for(;lp;lp--,mc--)
 			{
@@ -1014,7 +1017,7 @@ static int III_dequantize_sample(mpg123_handle *fr, real xr[SBLIMIT][SSLIMIT],in
 					}
 				}
 				{
-					register short *val = h->table;
+					const short *val = h->table;
 					REFRESH_MASK;
 					while((y=*val++)<0)
 					{
@@ -1078,8 +1081,9 @@ static int III_dequantize_sample(mpg123_handle *fr, real xr[SBLIMIT][SSLIMIT],in
 		/* short (count1table) values */
 		for(;l3 && (part2remain+num > 0);l3--)
 		{
-			struct newhuff *h = htc+gr_info->count1table_select;
-			register short *val = h->table,a;
+			const struct newhuff *h = htc+gr_info->count1table_select;
+			const short *val = h->table;
+			register short a;
 
 			REFRESH_MASK;
 			while((a=*val++)<0)

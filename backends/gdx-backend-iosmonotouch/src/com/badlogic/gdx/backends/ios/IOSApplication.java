@@ -168,6 +168,14 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		Gdx.app.debug("IOSApplication", "created");
 		return true;
 	}
+	
+	/**
+	 * Return the UI view controller of IOSApplication
+	 * @return the view controller of IOSApplication
+	 */
+	public UIViewController getUIViewController(){
+		return uiViewController;
+	}
 
 	/** Returns our real display dimension based on screen orientation.
 	 * 
@@ -239,6 +247,11 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 		Gdx.gl.glFlush();
 	}
 
+	@Override
+	public ApplicationListener getApplicationListener () {
+		return listener;
+	}
+	
 	@Override
 	public Graphics getGraphics () {
 		return graphics;

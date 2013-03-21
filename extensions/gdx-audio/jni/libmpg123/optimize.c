@@ -513,7 +513,8 @@ int frame_cpu_opt(mpg123_handle *fr, const char* cpu)
 			fr->cpu_opts.type = dreidnowext;
 #ifdef OPT_MULTI
 #			ifndef NO_LAYER3
-			fr->cpu_opts.the_dct36 = dct36_3dnowext;
+/* The DCT36 is _bad_, at least compared to gcc 4.4-built C code. */
+/*			fr->cpu_opts.the_dct36 = dct36_3dnowext; */
 #			endif
 #endif
 #			ifndef NO_16BIT
@@ -530,7 +531,8 @@ int frame_cpu_opt(mpg123_handle *fr, const char* cpu)
 			fr->cpu_opts.type = dreidnow;
 #ifdef OPT_MULTI
 #			ifndef NO_LAYER3
-			fr->cpu_opts.the_dct36 = dct36_3dnow;
+/* The DCT36 is _bad_, at least compared to gcc 4.4-built C code. */
+/*			fr->cpu_opts.the_dct36 = dct36_3dnow; */
 #			endif
 #endif
 #			ifndef NO_16BIT

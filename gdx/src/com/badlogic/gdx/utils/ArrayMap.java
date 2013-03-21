@@ -157,10 +157,12 @@ public class ArrayMap<K, V> {
 	}
 
 	public K firstKey () {
+		if (size == 0) throw new IllegalStateException("Map is empty.");
 		return keys[0];
 	}
 
 	public V firstValue () {
+		if (size == 0) throw new IllegalStateException("Map is empty.");
 		return values[0];
 	}
 

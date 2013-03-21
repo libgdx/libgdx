@@ -6,7 +6,7 @@
 	<property name="env.NDK_HOME" value="/home/mzechner/android-ndk-r5"/>
 	
 	<!-- library version -->
-	<property name="version" value="0.9.8"/>
+	<property name="version" value="0.9.9-SNAPSHOT"/>
 	
 	<!-- define distribution/output directory -->
 	<property name="distDir" value="${basedir}/dist"/>
@@ -61,7 +61,7 @@
 			<reference refid="classpath"/>
 		</ant>
 	</target>
-	
+
 	<!-- gdx lwjgl backend -->
 	<target name="gdx-backend-lwjgl" depends="gdx-core,gdx-openal">
 		<path id="classpath">
@@ -75,7 +75,21 @@
 			<reference refid="jarfiles"/>
 		</ant>
 	</target>
-	
+
+	<!-- gdx jglfw backend -->
+	<target name="gdx-backend-jglfw" depends="gdx-core">
+		<mkdir dir="backends/gdx-backend-jglfw/libs"/>
+		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw.jar" dest="backends/gdx-backend-jglfw/libs/jglfw.jar"/>
+		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw-natives.jar" dest="backends/gdx-backend-jglfw/libs/gdx-backend-jglfw-natives.jar"/>
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-jglfw">
+			<property name="jar" value="gdx-backend-jglfw"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+
 	<!-- gdx android backend -->
 	<target name="gdx-backend-android" depends="gdx-core">
 		<path id="classpath">
@@ -95,7 +109,24 @@
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backends-gwt">
 			<property name="jar" value="gdx-backend-gwt"/>
 			<reference refid="classpath"/>
-			<reference refid="jarfiles"/>
+		</ant>
+	</target>
+	
+	<!-- gdx ios-monotouch backend -->
+	<target name="gdx-backend-iosmonotouch" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/monotouch-5.4.0.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/mscorlib-4.0.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/opentk-5.4.0.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/system-2.1.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/system-core-2.1.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/system-data-2.1.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/objectal/libObjectAL.jar"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-iosmonotouch">
+			<property name="jar" value="gdx-backend-iosmonotouch"/>
+			<reference refid="classpath"/>
 		</ant>
 	</target>
 	
@@ -113,20 +144,6 @@
 		</ant>
 	</target>
 	
-	<!-- gdx tiled processor -->
-	<target name="gdx-tiled-preprocessor" depends="gdx-core">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/gdx-backend-lwjgl.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-tools/gdx-tools.jar"/>
-		</path>
-		<ant antfile="../../build-template.xml" dir="extensions/gdx-tiled-preprocessor">
-			<property name="distDir" value="${distDir}/extensions/gdx-tiled-preprocessor"/>
-			<property name="jar" value="gdx-tiled-preprocessor"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-	
 	<!-- gdx controllers -->
 	<target name="gdx-controllers" depends="gdx-core">
 		<path id="classpath">
@@ -139,10 +156,9 @@
 		</ant>
 	</target>
 	
-	<target name="gdx-controllers-desktop" depends="gdx-core,gdx-backend-lwjgl,gdx-jnigen,gdx-controllers">
+	<target name="gdx-controllers-desktop" depends="gdx-core,gdx-jnigen,gdx-controllers">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/gdx-backend-lwjgl.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
 		</path>
@@ -225,10 +241,15 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 		</path>
-		<ant antfile="../../build-template-bullet.xml" dir="extensions/gdx-bullet">
+		<path id="src">
+				<pathelement location="extensions/gdx-bullet/src"/>
+				<pathelement location="extensions/gdx-bullet/jni/swig-src"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="extensions/gdx-bullet">
 			<property name="distDir" value="${distDir}/extensions/gdx-bullet"/>
 			<property name="jar" value="gdx-bullet"/>
 			<reference refid="classpath"/>
+			<reference refid="src"/>
 		</ant>
 	</target>
 	
@@ -254,7 +275,7 @@
 			]]></header>
 			<bottom><![CDATA[
 				<div style="font-size:9pt"><i>
-				Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+				Copyright &copy; 2010-2013 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
 				</i></div>
 			]]></bottom>
 			<fileset dir="gdx/src" defaultexcludes="yes">
@@ -264,17 +285,30 @@
 				<exclude name="com/badlogic/gdx/utils/XmlReader.rl" />
 				<exclude name="com/badlogic/gdx/utils/JsonReader.rl" />
 			</fileset>			
+			<fileset dir="backends" includes="gdx-backend-jglfw/src/com/badlogic/gdx/backends/jglfw/JglfwApplication.java"/>
 			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglApplication.java"/>
 			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglCanvas.java"/>
 			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglApplet.java"/>
 			<fileset dir="backends" includes="gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplication.java"/>
 			<fileset dir="backends" includes="gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplicationConfiguration.java"/>
+			<fileset dir="backends" includes="gdx-backend-iosmonotouch/src/com/badlogic/gdx/backends/ios/IOSApplication.java"/>
+			<fileset dir="backends" includes="gdx-backend-iosmonotouch/src/com/badlogic/gdx/backends/ios/IOSApplicationConfiguration.java"/>
+			<fileset dir="backends" includes="gdx-backends-gwt/src/com/badlogic/gdx/backends/gwt/GwtApplication.java"/>
+			<fileset dir="backends" includes="gdx-backends-gwt/src/com/badlogic/gdx/backends/gwt/GwtApplicationConfiguration.java"/>
 		</javadoc>
 	</target>
 	
+	<!-- assumes that all the .dll and .a files have been compiled on a Mac and copied on top 
+	of the current libgdx folder -->
 	<target name="copy-iosfiles">
+		<!-- copy dll and .a files as well as IKVM, monotouch and ObjectAL binaries to ios folder-->
 		<copy todir="${distDir}/ios" flatten="true" failonerror="false">
-			<fileset dir="backends/gdx-backend-iosmonotouch/libs/">
+			<fileset dir="gdx/libs/ios32/">
+				<include name="*.a"/>
+				<include name="*.dll"/>
+				<include name="*.dll.mdb"/>
+			</fileset>
+			<fileset dir="backends/gdx-backend-iosmonotouch/libs/ios32">
 				<include name="*.dll"/>
 				<include name="*.dll.mdb"/>
 				<include name="*.a"/>
@@ -288,11 +322,29 @@
 		</copy>
 		<copy todir="${distDir}/ios/objectal" failonerror="false">
 			<fileset dir="backends/gdx-backend-iosmonotouch/libs/objectal"/>
+		</copy>		
+		
+		<!-- copy freetype extension dll and .a files -->
+		<copy todir="${distDir}/extensions/gdx-freetype/ios" failonerror="false">
+			<fileset dir="extensions/gdx-freetype/libs/ios32">
+				<include name="*.a"/>
+				<include name="*.dll"/>
+				<include name="*.dll.mdb"/>
+			</fileset>
+		</copy>
+		
+		<!-- copy bullet extension dll and .a files -->
+		<copy todir="${distDir}/extensions/gdx-bullet/ios" failonerror="false">
+			<fileset dir="extensions/gdx-bullet/libs/ios32">
+				<include name="*.a"/>
+				<include name="*.dll"/>
+				<include name="*.dll.mdb"/>
+			</fileset>
 		</copy>
 	</target>
 
 	<target name="jars" 
-depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-android,gdx-backend-gwt,gdx-tools,gdx-tiled-preprocessor,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-image,gdx-audio,gdx-freetype,gdx-bullet"/>
+depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-android,gdx-backend-gwt,gdx-backend-iosmonotouch,gdx-tools,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-image,gdx-audio,gdx-freetype,gdx-bullet"/>
 
 	<target name="all" depends="jars,docs,copy-iosfiles">
 		<!-- copy distribution files (licences etc.) -->

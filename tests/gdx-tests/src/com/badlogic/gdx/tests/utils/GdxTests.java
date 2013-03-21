@@ -34,13 +34,14 @@ import java.util.Collections;
 import java.util.List;
 
 import com.badlogic.gdx.tests.*;
+import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
-import com.badlogic.gdx.tests.extensions.GLEEDTest;
 import com.badlogic.gdx.tests.g3d.BatchRenderTest;
 import com.badlogic.gdx.tests.g3d.JsonModelLoaderTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.net.NetAPITest;
+import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 
 /** List of GdxTest classes. To be used by the test launchers. If you write your own test, add it in here!
  * 
@@ -64,12 +65,12 @@ public class GdxTests {
 		OrthoCamBorderTest.class, ParallaxTest.class, ParticleEmitterTest.class, PickingTest.class, PixelsPerInchTest.class,
 		PixmapBlendingTest.class, PixmapTest.class, PixmapPackerTest.class, PolygonRegionTest.class, PolygonSpriteTest.class, PreferencesTest.class,
 		ProjectiveTextureTest.class, Pong.class, ProjectTest.class, RemoteTest.class, RotationTest.class, DragAndDropTest.class,
-		ShaderMultitextureTest.class, ShadowMappingTest.class, SplineTest.class, SimpleAnimationTest.class, SimpleDecalTest.class,
+		ShaderMultitextureTest.class, ShadowMappingTest.class, PathTest.class, SimpleAnimationTest.class, SimpleDecalTest.class,
 		SimpleStageCullingTest.class, SoundTest.class, SpriteCacheTest.class, SpriteCacheOffsetTest.class, LetterBoxTest.class,
 		SpriteBatchRotationTest.class, SpriteBatchShaderTest.class, SpriteBatchTest.class, SpritePerformanceTest.class,
 		SpritePerformanceTest2.class, StagePerformanceTest.class, StageTest.class, TerrainTest.class, TextureDataTest.class,
 		TextureDownloadTest.class, TextureFormatTest.class, TextureAtlasTest.class, TextInputDialogTest.class,
-		TextureRenderTest.class, TiledMapTest.class, TileTest.class, UITest.class, VBOVATest.class, VertexArrayTest.class,
+		TextureRenderTest.class, TileTest.class, UITest.class, VBOVATest.class, VertexArrayTest.class,
 		VertexBufferObjectTest.class, VertexArrayClassTest.class, VertexBufferObjectClassTest.class, LetterBoxTest2.class,
 		VertexBufferObjectShaderTest.class, VibratorTest.class, WaterRipples.class, HelloTriangle.class,
 		SimpleVertexShader.class, ShapeRendererTest.class, MoveSpriteExample.class,
@@ -77,8 +78,9 @@ public class GdxTests {
 		// InternationalFontsTest.class, VorbisTest.class
 		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
-		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GLEEDTest.class, GamepadTest.class, NetAPITest.class,
-		JsonModelLoaderTest.class, BatchRenderTest.class, RunnablePostTest.class, Vector2dTest.class));
+		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GamepadTest.class, NetAPITest.class, TideMapAssetManagerTest.class, TideMapDirectLoaderTest.class, TiledMapAssetManagerTest.class, TiledMapBench.class,
+		RunnablePostTest.class, Vector2dTest.class, SuperKoalio.class, NinePatchTest.class,
+		JsonModelLoaderTest.class, BatchRenderTest.class));
 	
 	public static List<String> getNames () {
 		List<String> names = new ArrayList<String>(tests.size());

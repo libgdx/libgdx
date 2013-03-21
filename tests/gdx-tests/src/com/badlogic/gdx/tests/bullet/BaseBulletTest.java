@@ -113,42 +113,64 @@ public class BaseBulletTest extends BulletTest {
 	
 	@Override
 	public void render () {
+		render(true);
+	}
+		
+	public void render(boolean update) {
 		fpsCounter.put(Gdx.graphics.getFramesPerSecond());
 		
-		GL10 gl = Gdx.gl10;
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		gl.glEnable(GL10.GL_DEPTH_TEST);
-		gl.glDepthFunc(GL10.GL_LEQUAL);
-		gl.glEnable(GL10.GL_COLOR_MATERIAL);
-		gl.glEnable(GL10.GL_LIGHTING);
-		gl.glEnable(GL10.GL_LIGHT0);
-		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
-		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);
-		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
-
-		camera.apply(Gdx.gl10);
+		if (update)
+			update();
 		
-		world.update();
+		beginRender(true);
+
+		renderWorld();
 		
 		performance.setLength(0);
 		performance.append("FPS: ").append(fpsCounter.value).append(", Bullet: ")
 			.append((int)(performanceCounter.load.value*100f)).append("%");
 	}
 	
-	public void shoot(final float x, final float y) {
-		shoot(x,y,30f);
+	protected void beginRender(boolean lighting) {
+		GL10 gl = Gdx.gl10;
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		gl.glEnable(GL10.GL_DEPTH_TEST);
+		gl.glDepthFunc(GL10.GL_LEQUAL);
+		gl.glEnable(GL10.GL_COLOR_MATERIAL);
+		if (lighting) {
+			gl.glEnable(GL10.GL_LIGHTING);
+			gl.glEnable(GL10.GL_LIGHT0);
+			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
+			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);
+			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
+		} else
+			gl.glDisable(GL10.GL_LIGHTING);
+		camera.apply(Gdx.gl10);
 	}
 	
-	public void shoot(final float x, final float y, final float impulse) {
-		shoot("box", x, y, impulse);
+	protected void renderWorld() {
+		world.render();
 	}
 	
-	public void shoot(final String what, final float x, final float y, final float impulse) {
+	public void update() {
+		world.update();
+	}
+	
+	public BulletEntity shoot(final float x, final float y) {
+		return shoot(x,y,30f);
+	}
+	
+	public BulletEntity shoot(final float x, final float y, final float impulse) {
+		return shoot("box", x, y, impulse);
+	}
+	
+	public BulletEntity shoot(final String what, final float x, final float y, final float impulse) {
 		// Shoot a box
 		Ray ray = camera.getPickRay(x, y);
 		BulletEntity entity = world.add(what, ray.origin.x, ray.origin.y, ray.origin.z);
 		entity.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 		((btRigidBody)entity.body).applyCentralImpulse(ray.direction.mul(impulse));
+		return entity;
 	}
 	
 	public void setDebugMode(final int mode) {

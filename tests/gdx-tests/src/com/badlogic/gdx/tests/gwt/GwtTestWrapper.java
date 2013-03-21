@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.tests.gwt;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
@@ -77,6 +78,7 @@ import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.ProjectiveTextureTest;
 import com.badlogic.gdx.tests.RotationTest;
+import com.badlogic.gdx.tests.RunnablePostTest;
 import com.badlogic.gdx.tests.ShadowMappingTest;
 import com.badlogic.gdx.tests.ShapeRendererTest;
 import com.badlogic.gdx.tests.SimpleAnimationTest;
@@ -95,6 +97,7 @@ import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.YDownTest;
+import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class GwtTestWrapper extends GdxTest {
@@ -103,10 +106,13 @@ public class GwtTestWrapper extends GdxTest {
 	Skin skin;
 	BitmapFont font;
 	GdxTest test;
-	boolean dispose;
+	boolean dispose = false;
 
 	@Override
 	public void create () {
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		Gdx.app.log("GdxTestGwt", "Setting up for " +tests.length+ " tests.");
+		
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
@@ -125,6 +131,7 @@ public class GwtTestWrapper extends GdxTest {
 				public void clicked (InputEvent event, float x, float y) {
 					((InputWrapper)Gdx.input).multiplexer.removeProcessor(ui);
 					test = instancer.instance();
+					Gdx.app.log("GdxTestGwt", "Clicked on " + test.getClass().getName());
 					test.create();
 					test.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				}
@@ -139,14 +146,19 @@ public class GwtTestWrapper extends GdxTest {
 			@Override
 			public boolean keyUp (int keycode) {
 				if (keycode == Keys.ESCAPE) {
-					dispose = true;
+					if (test != null) {
+						Gdx.app.log("GdxTestGwt", "Exiting current test.");
+						dispose = true;
+					}
 				}
 				return false;
 			}
 		};
 		((InputWrapper)Gdx.input).multiplexer.addProcessor(ui);
+		
+		Gdx.app.log("GdxTestGwt", "Test picker UI setup complete.");
 	}
-
+	
 	public void render () {
 		if (test == null) {
 			Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -174,6 +186,9 @@ public class GwtTestWrapper extends GdxTest {
 	public void resize (int width, int height) {
 		ui.setViewport(width, height, false);
 		container.setSize(width, height);
+		if (test != null) {
+			test.resize(width, height);
+		}
 	}
 
 	class InputWrapper extends InputAdapter implements Input {
@@ -562,7 +577,8 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new RotationTest();
 			}
-		},
+		}, 
+// new Instancer() {public GdxTest instance(){return new RunnablePostTest();}}, // Goes into infinite loop
 // new Instancer() {public GdxTest instance(){return new ScrollPaneTest();}}, // FIXME this messes up stuff, why?
 // new Instancer() {public GdxTest instance(){return new ShaderMultitextureTest();}}, // FIXME fucks up stuff
 		new Instancer() {
@@ -639,7 +655,11 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new YDownTest();
 			}
-		},};
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new SuperKoalio();
+			}
+		}};
 
 	@Override
 	public boolean needsGL20 () {

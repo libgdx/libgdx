@@ -41,13 +41,13 @@ public class LwjglApplicationConfiguration {
 	/** number of samples for MSAA **/
 	public int samples = 0;
 	/** width & height of application window **/
-	public int width = 480, height = 320;
+	public int width = 640, height = 480;
 	/** x & y of application window, -1 for center **/
 	public int x = -1, y = -1;
 	/** fullscreen **/
 	public boolean fullscreen = false;
 	/** whether to use CPU synching. If this is false display vsynching is used, which might not work in windowed mode **/
-	public boolean useCPUSynch = true;
+	public boolean useCPUSynch = false;
 	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
 	public boolean vSyncEnabled = true;
 	/** title of application **/

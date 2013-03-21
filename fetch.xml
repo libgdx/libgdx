@@ -1,0 +1,138 @@
+<!-- Call this to fetch all the natives from the build server -->
+<project name="fetch-natives" default="all">
+	<property name="domain" value="http://libgdx.badlogicgames.com/nightlies/dist"/>
+	<target name="fetch">		
+		<!-- create a temporary directory for all android and ios natives, to be distributed
+		     across demos and tests. The xxx-natives.jar files are put into the respective 
+			 project's libs/ folder -->
+		<mkdir dir="tmp"/>
+		<mkdir dir="tmp/armeabi"/>
+		<mkdir dir="tmp/armeabi-v7a"/>
+		<mkdir dir="tmp/ios"/>
+		
+		<!-- core -->
+		<mkdir dir="gdx/libs/ios32"/>
+		<get src="${domain}/gdx-natives.jar" dest="gdx/libs"/>
+		<get src="${domain}/armeabi/libandroidgl20.so" dest="tmp/armeabi"/>
+		<get src="${domain}/armeabi/libgdx.so" dest="tmp/armeabi"/>
+		<get src="${domain}/armeabi-v7a/libandroidgl20.so" dest="tmp/armeabi-v7a"/>
+		<get src="${domain}/armeabi-v7a/libgdx.so" dest="tmp/armeabi-v7a"/>
+		<get src="${domain}/ios/gdx.dll" dest="gdx/libs/ios32"/>
+		<get src="${domain}/ios/gdx.dll.mdb" dest="gdx/libs/ios32"/>
+		<get src="${domain}/ios/libgdx.a" dest="tmp/ios"/>
+		<get src="${domain}/ios/ikvm/bin/libikvm-natives.a" dest="tmp/ios"/>
+		
+		<!-- ios backend -->
+		<mkdir dir="backends/gdx-backend-iosmonotouch/libs/ios32"/>
+		<get src="${domain}/ios/gdx-backend-ios.dll" dest="backends/gdx-backend-iosmonotouch/libs/ios32"/>
+		<get src="${domain}/ios/gdx-backend-ios.dll.mdb" dest="backends/gdx-backend-iosmonotouch/libs/ios32"/>		
+		
+		<!-- audio natives -->
+		<mkdir dir="extensions/gdx-audio/libs/ios32"/>
+		<get src="${domain}/extensions/gdx-audio/gdx-audio-natives.jar" dest="extensions/gdx-audio/libs"/>
+		<get src="${domain}/extensions/gdx-audio/armeabi/libgdx-audio.so" dest="tmp/armeabi"/>
+		<get src="${domain}/extensions/gdx-audio/armeabi-v7a/libgdx-audio.so" dest="tmp/armeabi-v7a"/>
+		
+		<!-- bullet natives -->
+		<mkdir dir="extensions/gdx-bullet/libs/ios32"/>
+		<get src="${domain}/extensions/gdx-bullet/gdx-bullet-natives.jar" dest="extensions/gdx-bullet/libs"/>
+		<get src="${domain}/extensions/gdx-bullet/armeabi/libgdx-bullet.so" dest="tmp/armeabi"/>
+		<get src="${domain}/extensions/gdx-bullet/armeabi-v7a/libgdx-bullet.so" dest="tmp/armeabi-v7a"/>
+		
+		<!-- controllers natives, desktop only -->
+		<mkdir dir="extensions/gdx-controllers/gdx-controllers-desktop/libs/ios32"/>
+		<get src="${domain}/extensions/gdx-controllers/gdx-controllers-desktop-natives.jar" dest="extensions/gdx-controllers/gdx-controllers-desktop/libs"/>
+		
+		<!-- freetype natives -->
+		<mkdir dir="extensions/gdx-freetype/libs/ios32"/>
+		<get src="${domain}/extensions/gdx-freetype/gdx-freetype-natives.jar" dest="extensions/gdx-freetype/libs"/>
+		<get src="${domain}/extensions/gdx-freetype/armeabi/libgdx-freetype.so" dest="tmp/armeabi"/>
+		<get src="${domain}/extensions/gdx-freetype/armeabi-v7a/libgdx-freetype.so" dest="tmp/armeabi-v7a"/>
+		<get src="${domain}/extensions/gdx-freetype/ios/gdx-freetype.dll" dest="extensions/gdx-freetype/libs/ios32"/>
+		<get src="${domain}/extensions/gdx-freetype/ios/gdx-freetype.dll.mdb" dest="extensions/gdx-freetype/libs/ios32"/>
+		<get src="${domain}/extensions/gdx-freetype/ios/libgdx-freetype.a" dest="tmp/ios"/>
+		
+		<!-- image natives -->
+		<mkdir dir="extensions/gdx-image/libs/ios32"/>
+		<get src="${domain}/extensions/gdx-image/gdx-image-natives.jar" dest="extensions/gdx-image/libs"/>
+		<get src="${domain}/extensions/gdx-image/armeabi/libgdx-image.so" dest="tmp/armeabi"/>
+		<get src="${domain}/extensions/gdx-image/armeabi-v7a/libgdx-image.so" dest="tmp/armeabi-v7a"/>	
+
+		<!-- jglfw -->
+		<mkdir dir="backends/gdx-backend-jglfw/libs"/>
+		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw-natives.jar" dest="backends/gdx-backend-jglfw/libs/gdx-backend-jglfw-natives.jar"/>
+		<get src="http://libgdx.badlogicgames.com/jglfw/nightlies/dist/jglfw.jar" dest="backends/gdx-backend-jglfw/libs/"/>
+	</target>
+	
+	<target name="copy">
+		<!-- copy all extension natives to android tests -->
+		<copy todir="tests/gdx-tests-android/libs/armeabi">
+			<fileset dir="tmp/armeabi"/>			
+		</copy>
+		<copy todir="tests/gdx-tests-android/libs/armeabi-v7a">
+			<fileset dir="tmp/armeabi-v7a"/>			
+		</copy>
+		
+		<!-- copy all extension natives to ios tests -->
+		<copy todir="tests/gdx-tests-iosmonotouch/gdx-tests-iosmonotouch">
+			<fileset dir="tmp/ios"/>
+		</copy>
+	
+		<!-- filesets to copy to demos -->
+		<fileset id="gdx-armeabi" dir="tmp/armeabi">
+			<include name="**/libandroidgl20.so"/>
+			<include name="**/libgdx.so"/>
+		</fileset>
+		<fileset id="gdx-armeabi-v7a" dir="tmp/armeabi-v7a">
+			<include name="**/libandroidgl20.so"/>
+			<include name="**/libgdx.so"/>
+		</fileset>
+		<fileset id="gdx-ios" dir="tmp/ios">
+			<include name="**/libgdx.a"/>
+			<include name="**/libikvm-natives.a"/>
+		</fileset>
+		
+		<!-- copy to demos -->
+		<!-- invaders -->
+		<copy todir="demos/invaders/gdx-invaders-android/libs/armeabi"><fileset refid="gdx-armeabi"/></copy>
+		<copy todir="demos/invaders/gdx-invaders-android/libs/armeabi-v7a"><fileset refid="gdx-armeabi-v7a"/></copy>
+		<copy todir="demos/invaders/gdx-invaders-ios/gdx-invaders-ios"><fileset refid="gdx-ios"/></copy>
+				
+		<!-- vector pinball -->
+		<copy todir="demos/vector-pinball/gdx-vectorpinball-android/libs/armeabi"><fileset refid="gdx-armeabi"/></copy>
+		<copy todir="demos/vector-pinball/gdx-vectorpinball-android/libs/armeabi-v7a"><fileset refid="gdx-armeabi-v7a"/></copy>
+		<copy todir="demos/vector-pinball/gdx-vectorpinball-ios/gdx-vectorpinball-ios"><fileset refid="gdx-ios"/></copy>
+		
+		<!-- super jumper -->
+		<copy todir="demos/superjumper/superjumper-android/libs/armeabi"><fileset refid="gdx-armeabi"/></copy>
+		<copy todir="demos/superjumper/superjumper-android/libs/armeabi-v7a"><fileset refid="gdx-armeabi-v7a"/></copy>
+		<copy todir="demos/superjumper/superjumper-ios/superjumper-ios"><fileset refid="gdx-ios"/></copy>
+		
+		<!-- metagun -->
+		<copy todir="demos/metagun/metagun-android/libs/armeabi"><fileset refid="gdx-armeabi"/></copy>
+		<copy todir="demos/metagun/metagun-android/libs/armeabi-v7a"><fileset refid="gdx-armeabi-v7a"/></copy>
+		
+		<!-- cuboc -->
+		<copy todir="demos/cuboc/cuboc-android/libs/armeabi"><fileset refid="gdx-armeabi"/></copy>
+		<copy todir="demos/cuboc/cuboc-android/libs/armeabi-v7a"><fileset refid="gdx-armeabi-v7a"/></copy>
+		
+		<!-- pax britannica -->
+		<copy todir="demos/pax-britannica/pax-britannica-android/libs/armeabi"><fileset refid="gdx-armeabi"/></copy>
+		<copy todir="demos/pax-britannica/pax-britannica-android/libs/armeabi-v7a"><fileset refid="gdx-armeabi-v7a"/></copy>
+		<copy todir="demos/pax-britannica/pax-britannica-iosmonotouch/pax-britannica-iosmonotouch"><fileset refid="gdx-ios"/></copy>
+		
+		<!-- very angry robots -->
+		<copy todir="demos/very-angry-robots/very-angry-robots-android/libs/armeabi"><fileset refid="gdx-armeabi"/></copy>
+		<copy todir="demos/very-angry-robots/very-angry-robots-android/libs/armeabi-v7a"><fileset refid="gdx-armeabi-v7a"/></copy>
+		
+		<!-- model loaders -->
+		<copy todir="extensions/model-loaders/model-loaders-android/libs/armeabi"><fileset refid="gdx-armeabi"/></copy>
+		<copy todir="extensions/model-loaders/model-loaders-android/libs/armeabi-v7a"><fileset refid="gdx-armeabi-v7a"/></copy>
+		
+		<!-- gdx remote -->
+		<copy todir="extensions/gdx-remote/libs/armeabi"><fileset refid="gdx-armeabi"/></copy>
+		<copy todir="extensions/gdx-remote/libs/armeabi-v7a"><fileset refid="gdx-armeabi-v7a"/></copy>
+	</target>
+	
+	<target name="all" depends="fetch,copy"/>
+</project>

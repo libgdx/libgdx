@@ -86,12 +86,14 @@ class AndroidLiveWallpaper implements Application {
 		input = AndroidInputFactory.newAndroidInput(this, this.getService(), null, config);
 		audio = new AndroidAudio(this.getService(), config);
 		files = new AndroidFiles(this.getService().getAssets(), this.getService().getFilesDir().getAbsolutePath());
+		net = new AndroidNet(null);
 		this.listener = listener;
 		
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
 		Gdx.files = this.getFiles();
+		Gdx.net = this.getNet();
 		Gdx.graphics = this.getGraphics();
 	}
 
@@ -106,6 +108,7 @@ class AndroidLiveWallpaper implements Application {
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
 		Gdx.files = this.getFiles();
+		Gdx.net = this.getNet();
 		Gdx.graphics = this.getGraphics();
 
 		((AndroidInput)getInput()).registerSensorListeners();
@@ -130,10 +133,15 @@ class AndroidLiveWallpaper implements Application {
 		return engine;
 	}
 
+	/** @deprecated Use {@link #getApplicationListener()} instead */
 	public ApplicationListener getListener() {
 		return listener;
 	}
 
+	public ApplicationListener getApplicationListener() {
+		return listener;
+	}
+	
 	@Override 
 	public void postRunnable (Runnable runnable) {
 		synchronized(runnables) {

@@ -16,20 +16,19 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
-
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
+import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.BaseInputConnection;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -42,13 +41,19 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.utils.Array;
+
+import java.lang.reflect.Method;
+
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
 
 /** An implementation of {@link Graphics} for Android.
  * 
@@ -62,7 +67,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	GL10 gl10;
 	GL11 gl11;
 	GL20 gl20;
-	GLU glu;
 	EGLContext eglContext;
 	String extensions;
 
@@ -142,6 +146,35 @@ public final class AndroidGraphics implements Graphics, Renderer {
 							heightMeasureSpec);
 						setMeasuredDimension(measures.width, measures.height);
 					}
+
+					@Override
+					public InputConnection onCreateInputConnection (EditorInfo outAttrs) {
+						BaseInputConnection connection = new BaseInputConnection(this, false) {
+							@Override
+							public boolean deleteSurroundingText (int beforeLength, int afterLength) {
+								int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+								if (sdkVersion >= 16) {
+									/* In Jelly Bean, they don't send key events for delete.
+									 *  Instead, they send beforeLength = 1, afterLength = 0.
+									 *  So, we'll just simulate what it used to do. */
+									if (beforeLength == 1 && afterLength == 0) {
+										sendDownUpKeyEventForBackwardCompatibility(KeyEvent.KEYCODE_DEL);
+										return true;
+									}
+								}
+								return super.deleteSurroundingText(beforeLength, afterLength);
+							}
+							private void sendDownUpKeyEventForBackwardCompatibility (final int code) {
+								final long eventTime = SystemClock.uptimeMillis();
+								super.sendKeyEvent(new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, code, 0, 0,
+									KeyCharacterMap.VIRTUAL_KEYBOARD, 0, KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
+								super.sendKeyEvent(new KeyEvent(SystemClock.uptimeMillis(), eventTime, KeyEvent.ACTION_UP, code, 0, 0,
+									KeyCharacterMap.VIRTUAL_KEYBOARD, 0, KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
+							}
+						};
+						return connection;
+					}
+
 				};
 				if (configChooser != null)
 					view.setEGLConfigChooser(configChooser);
@@ -268,13 +301,10 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			}
 		}
 
-		this.glu = new AndroidGLU();
-
 		Gdx.gl = this.gl;
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;
 		Gdx.gl20 = gl20;
-		Gdx.glu = glu;
 
 		Gdx.app.log("AndroidGraphics", "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
 		Gdx.app.log("AndroidGraphics", "OGL vendor: " + gl.glGetString(GL10.GL_VENDOR));
@@ -558,11 +588,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public float getDensity () {
 		return density;
-	}
-
-	@Override
-	public GLU getGLU () {
-		return glu;
 	}
 
 	@Override

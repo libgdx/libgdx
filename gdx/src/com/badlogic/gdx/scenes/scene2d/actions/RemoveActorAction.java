@@ -19,7 +19,7 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-/** Removes the actor the action is attached to or another actor.
+/** Removes an actor from the stage.
  * @author Nathan Sweet */
 public class RemoveActorAction extends Action {
 	private Actor removeActor;
@@ -46,7 +46,7 @@ public class RemoveActorAction extends Action {
 		return removeActor;
 	}
 
-	/** Sets the actor to remove. If null (the default), the {@link #getActor() actor} will be removed. */
+	/** Sets the actor to remove. If null (the default), the {@link #getActor() actor} will be used. */
 	public void setRemoveActor (Actor removeActor) {
 		this.removeActor = removeActor;
 	}

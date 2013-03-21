@@ -57,7 +57,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -77,7 +76,6 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 	GL10 gl10;
 	GL11 gl11;
 	GL20 gl20;
-	GLU glu;
 	EGLContext eglContext;
 	String extensions;
 
@@ -283,13 +281,10 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 			}
 		}
 
-		this.glu = new AndroidGLU();
-
 		Gdx.gl = this.gl;
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;
 		Gdx.gl20 = gl20;
-		Gdx.glu = glu;
 
 		Gdx.app.log("AndroidGraphics", "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
 		Gdx.app.log("AndroidGraphics", "OGL vendor: " + gl.glGetString(GL10.GL_VENDOR));
@@ -573,11 +568,6 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 	@Override
 	public float getDensity () {
 		return density;
-	}
-
-	@Override
-	public GLU getGLU () {
-		return glu;
 	}
 
 	@Override

@@ -75,6 +75,21 @@ public class Mpg123Decoder extends Decoder {
 	public float getLength () {
 		return getLength(handle);
 	}
+	
+	@Override
+	public boolean canSeek () {
+		return false;
+	}
+
+	@Override
+	public boolean setPosition (float seconds) {
+		return false;
+	}
+
+	@Override
+	public float getPosition () {
+		return -1f;
+	}
 
 	@Override
 	public void dispose () {

@@ -13,7 +13,9 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btCollisionObject {
+public class btCollisionObject implements 
+	com.badlogic.gdx.utils.Disposable
+ {
 	public final static com.badlogic.gdx.utils.LongMap<btCollisionObject> instances = new com.badlogic.gdx.utils.LongMap<btCollisionObject>();
 	
 	public static btCollisionObject getInstance(final long swigCPtr, boolean owner) {
@@ -32,6 +34,12 @@ public class btCollisionObject {
 		swigCMemOwn = cMemoryOwn;
 		swigCPtr = cPtr;
 		instances.put(cPtr, this);
+	}
+	
+	@Override
+	public void dispose() {
+		instances.remove(swigCPtr);
+		delete();
 	}
 	
 	public void takeOwnership() {
@@ -310,6 +318,14 @@ public class btCollisionObject {
 
   public void getInterpolationAngularVelocity(Vector3 out) {
     gdxBulletJNI.btCollisionObject_getInterpolationAngularVelocity__SWIG_1(swigCPtr, this, out);
+  }
+
+  public int getUserValue() {
+    return gdxBulletJNI.btCollisionObject_getUserValue(swigCPtr, this);
+  }
+
+  public void setUserValue(int value) {
+    gdxBulletJNI.btCollisionObject_setUserValue(swigCPtr, this, value);
   }
 
   public final static class CollisionFlags {

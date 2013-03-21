@@ -57,7 +57,7 @@ public class LwjglApplication implements Application {
 	}
 
 	public LwjglApplication (ApplicationListener listener) {
-		this(listener, new LwjglApplicationConfiguration());
+		this(listener, listener.getClass().getSimpleName(), 640, 480, false);
 	}
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config) {
@@ -110,7 +110,10 @@ public class LwjglApplication implements Application {
 					LwjglApplication.this.mainLoop();
 				} catch (Throwable t) {
 					if (audio != null) audio.dispose();
-					throw new GdxRuntimeException(t);
+					if (t instanceof RuntimeException)
+						throw (RuntimeException)t;
+					else
+						throw new GdxRuntimeException(t);
 				}
 			}
 		};
@@ -197,8 +200,8 @@ public class LwjglApplication implements Application {
 		}
 
 		Array<LifecycleListener> listeners = lifecycleListeners;
-		synchronized(listeners) {
-			for(LifecycleListener listener: listeners) {
+		synchronized (listeners) {
+			for (LifecycleListener listener : listeners) {
 				listener.pause();
 				listener.dispose();
 			}
@@ -208,6 +211,11 @@ public class LwjglApplication implements Application {
 		Display.destroy();
 		if (audio != null) audio.dispose();
 		if (graphics.config.forceExit) System.exit(-1);
+	}
+
+	@Override
+	public ApplicationListener getApplicationListener () {
+		return listener;
 	}
 
 	@Override
@@ -347,18 +355,18 @@ public class LwjglApplication implements Application {
 			}
 		});
 	}
-	
+
 	@Override
 	public void addLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.add(listener);
 		}
 	}
 
 	@Override
 	public void removeLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
-		}		
+		}
 	}
 }

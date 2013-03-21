@@ -22,7 +22,6 @@
 
 #include "config.h"
 #include "compat.h"
-#include <unistd.h>
 
 struct frame_index
 {
