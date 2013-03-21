@@ -182,7 +182,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 				}
 			}
 			
-			Element properties = element.getChildByName("Proeprties");
+			Element properties = element.getChildByName("Properties");
 			if (properties != null) {
 				loadProperties(tileset.getProperties(), properties);
 			}
