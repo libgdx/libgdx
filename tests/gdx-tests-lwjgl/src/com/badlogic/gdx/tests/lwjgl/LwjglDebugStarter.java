@@ -29,6 +29,8 @@ import com.badlogic.gdx.tests.TideMapDirectLoaderTest;
 import com.badlogic.gdx.tests.TiledMapAssetManagerTest;
 import com.badlogic.gdx.tests.TiledMapDirectLoaderTest;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
+import com.badlogic.gdx.tests.g3d.BatchRenderTest;
+import com.badlogic.gdx.tests.g3d.JsonModelLoaderTest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
@@ -43,7 +45,7 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
 		
-		GdxTest test = new SuperKoalio();
+		GdxTest test = new BatchRenderTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		new LwjglApplication(test, config);
