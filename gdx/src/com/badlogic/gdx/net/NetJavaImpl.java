@@ -157,13 +157,13 @@ public class NetJavaImpl {
 
 						connection.connect();
 
-						final HttpClientResponse hcr = new HttpClientResponse(connection);
+						final HttpClientResponse clientResponse = new HttpClientResponse(connection);
 						// post a runnable to sync the handler with the main thread
 						Gdx.app.postRunnable(new Runnable() {
 							@Override
 							public void run () {
 								try {
-									httpResponseListener.handleHttpResponse(hcr);
+									httpResponseListener.handleHttpResponse(clientResponse);
 								} finally {
 									connection.disconnect();
 								}
