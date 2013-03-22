@@ -1,5 +1,7 @@
 %module btManifoldPoint
 
+CREATE_POOLED_OBJECT(btManifoldPoint, com/badlogic/gdx/physics/bullet/btManifoldPoint);
+
 %{
 #include <BulletCollision/NarrowPhaseCollision/btManifoldPoint.h>
 %}
