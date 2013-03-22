@@ -228,19 +228,17 @@ public class TexturePacker2 {
 			writer.write("repeat: " + getRepeatValue() + "\n");
 
 			for (Rect rect : page.outputRects) {
-				writeRect(writer, page, rect);
-				for (Rect alias : rect.aliases) {
-					alias.setSize(rect);
-					writeRect(writer, page, alias);
-				}
+				writeRect(writer, page, rect, rect.name);
+				for (String alias : rect.aliases)
+					writeRect(writer, page, rect, alias);
 			}
 		}
 // }
 		writer.close();
 	}
 
-	private void writeRect (FileWriter writer, Page page, Rect rect) throws IOException {
-		String rectName = settings.flattenPaths ? new FileHandle(rect.name).name() : rect.name;
+	private void writeRect (FileWriter writer, Page page, Rect rect, String name) throws IOException {
+		String rectName = settings.flattenPaths ? new FileHandle(name).name() : name;
 		writer.write(rectName + "\n");
 		writer.write("  rotate: " + rect.rotated + "\n");
 		writer.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.height - rect.y) + "\n");
@@ -296,7 +294,7 @@ public class TexturePacker2 {
 		public int x, y, width, height;
 		public int index;
 		public boolean rotated;
-		public ArrayList<Rect> aliases = new ArrayList();
+		public ArrayList<String> aliases = new ArrayList();
 		public int[] splits;
 		public int[] pads;
 		public boolean canRotate = true;
