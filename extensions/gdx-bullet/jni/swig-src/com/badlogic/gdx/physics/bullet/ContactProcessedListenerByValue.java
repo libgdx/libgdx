@@ -56,7 +56,7 @@ public class ContactProcessedListenerByValue {
   }
 
   public void onContactProcessed(btManifoldPoint cp, int userValue0, boolean match0, int userValue1, boolean match1) {
-    gdxBulletJNI.ContactProcessedListenerByValue_onContactProcessed(swigCPtr, this, btManifoldPoint.getCPtr(cp), cp, userValue0, match0, userValue1, match1);
+    gdxBulletJNI.ContactProcessedListenerByValue_onContactProcessed(swigCPtr, this, cp, userValue0, match0, userValue1, match1);
   }
 
   public ContactProcessedListenerByValue() {

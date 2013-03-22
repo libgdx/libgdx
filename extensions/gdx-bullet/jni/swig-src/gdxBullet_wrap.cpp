@@ -2028,6 +2028,72 @@ typedef btTypedConstraint::btConstraintInfo2 btConstraintInfo2;
 #include <GdxCustom/ContactDestroyedListener.h>
 
 
+	// Inline (cached) method to retrieve the type's jclass
+	SWIGINTERN inline jclass gdx_getClassbtManifoldPoint(JNIEnv * jenv) {
+		static jclass cls = NULL;
+		if (cls == NULL)
+			cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/btManifoldPoint"));
+		return cls;
+	}
+	
+	// Inline method to get the termporary instance
+	SWIGINTERN inline jobject gdx_getTempbtManifoldPoint(JNIEnv * jenv, void *cPtr, bool ownMem) {
+	  static jobject ret = NULL;
+	  static jclass clazz = gdx_getClassbtManifoldPoint(jenv);
+	  if (ret == NULL) {
+	    jfieldID field = jenv->GetStaticFieldID(clazz, "temp", "com/badlogic/gdx/physics/bullet/btManifoldPoint");
+	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(clazz, field));
+	  }
+	  
+	  static jmethodID reuseMethod = NULL;
+	  if (reuseMethod == NULL)
+		  reuseMethod = (jmethodID) jenv->GetMethodID(clazz, "reuse", "(JZ)V");
+	  
+	  long ptr;
+	  *(const void **)&ptr = cPtr;
+	  jenv->CallVoidMethod(ret, reuseMethod, ptr, (jboolean)ownMem);
+	  return ret;
+	}
+
+	// Inline method to obtain an instance from the pool
+	SWIGINTERN inline jobject gdx_obtainbtManifoldPoint(JNIEnv * jenv, jclass clazz, void *cPtr, bool ownMem) {
+		static jmethodID obtainMethod = NULL;
+		if (obtainMethod == NULL)
+			obtainMethod = (jmethodID) jenv->GetStaticMethodID(clazz, "obtain", "(JZ)Lcom/badlogic/gdx/physics/bullet/btManifoldPoint;");
+		
+		long ptr;
+		*(const void **)&ptr = cPtr; 
+		jobject ret = jenv->CallStaticObjectMethod(clazz, obtainMethod, ptr, (jboolean)ownMem);
+		
+		return ret;
+	}
+	
+	// Inline method to free an instance from the pool
+	SWIGINTERN inline void gdx_freebtManifoldPoint(JNIEnv * jenv, const jclass clazz, const jobject obj) {
+		static jmethodID freeMethod = NULL;
+		if (freeMethod == NULL)
+			freeMethod = (jmethodID) jenv->GetStaticMethodID(clazz, "free", "(Lcom/badlogic/gdx/physics/bullet/btManifoldPoint;)V");
+		
+		jenv->CallStaticVoidMethod(clazz, freeMethod, obj);
+		
+		jenv->DeleteLocalRef(obj);
+	}
+	
+	// Simple raii class to auto free the instance from the pool 
+	class gdxAutoFreebtManifoldPoint {
+	private:
+		JNIEnv * jenv;
+		jobject jbtManifoldPoint;
+		jclass jclazz;
+	public:
+		gdxAutoFreebtManifoldPoint(JNIEnv * jenv, jclass jclazz, jobject jbtManifoldPoint) : 
+			jenv(jenv), jbtManifoldPoint(jbtManifoldPoint), jclazz(jclazz) { }
+		virtual ~gdxAutoFreebtManifoldPoint() {
+			gdx_freebtManifoldPoint(this->jenv, this->jclazz, this->jbtManifoldPoint);
+		}
+	};
+
+
 #include <BulletDynamics/Dynamics/btSimpleDynamicsWorld.h>
 
 
@@ -3804,7 +3870,7 @@ bool SwigDirector_ContactAddedListenerByWrapper::onContactAdded(btManifoldPoint 
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
-  jlong jcp = 0 ;
+  jobject jcp = 0 ;
   jlong jcolObj0Wrap = 0 ;
   jint jpartId0  ;
   jint jindex0  ;
@@ -3820,7 +3886,9 @@ bool SwigDirector_ContactAddedListenerByWrapper::onContactAdded(btManifoldPoint 
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    *(btManifoldPoint **)&jcp = (btManifoldPoint *) &cp; 
+    jclass jclazz = gdx_getClassbtManifoldPoint(jenv);
+    jcp = gdx_obtainbtManifoldPoint(jenv, jclazz, (void*)&cp, false);
+    gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jclazz, jcp);
     *((btCollisionObjectWrapper **)&jcolObj0Wrap) = (btCollisionObjectWrapper *) colObj0Wrap; 
     jpartId0 = (jint) partId0;
     jindex0 = (jint) index0;
@@ -3884,7 +3952,7 @@ bool SwigDirector_ContactAddedListenerByObject::onContactAdded(btManifoldPoint &
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
-  jlong jcp = 0 ;
+  jobject jcp = 0 ;
   jlong jcolObj0 = 0 ;
   jint jpartId0  ;
   jint jindex0  ;
@@ -3900,7 +3968,9 @@ bool SwigDirector_ContactAddedListenerByObject::onContactAdded(btManifoldPoint &
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    *(btManifoldPoint **)&jcp = (btManifoldPoint *) &cp; 
+    jclass jclazz = gdx_getClassbtManifoldPoint(jenv);
+    jcp = gdx_obtainbtManifoldPoint(jenv, jclazz, (void*)&cp, false);
+    gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jclazz, jcp);
     *((btCollisionObject **)&jcolObj0) = (btCollisionObject *) colObj0; 
     jpartId0 = (jint) partId0;
     jindex0 = (jint) index0;
@@ -3964,7 +4034,7 @@ bool SwigDirector_ContactAddedListenerByValue::onContactAdded(btManifoldPoint &c
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
-  jlong jcp = 0 ;
+  jobject jcp = 0 ;
   jint juserValue0  ;
   jint jpartId0  ;
   jint jindex0  ;
@@ -3980,7 +4050,9 @@ bool SwigDirector_ContactAddedListenerByValue::onContactAdded(btManifoldPoint &c
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    *(btManifoldPoint **)&jcp = (btManifoldPoint *) &cp; 
+    jclass jclazz = gdx_getClassbtManifoldPoint(jenv);
+    jcp = gdx_obtainbtManifoldPoint(jenv, jclazz, (void*)&cp, false);
+    gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jclazz, jcp);
     juserValue0 = (jint) userValue0;
     jpartId0 = (jint) partId0;
     jindex0 = (jint) index0;
@@ -4042,7 +4114,7 @@ void SwigDirector_ContactProcessedListenerByObject::onContactProcessed(btManifol
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
-  jlong jcp = 0 ;
+  jobject jcp = 0 ;
   jlong jcolObj0 = 0 ;
   jboolean jmatch0  ;
   jlong jcolObj1 = 0 ;
@@ -4054,7 +4126,9 @@ void SwigDirector_ContactProcessedListenerByObject::onContactProcessed(btManifol
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    *(btManifoldPoint **)&jcp = (btManifoldPoint *) &cp; 
+    jclass jclazz = gdx_getClassbtManifoldPoint(jenv);
+    jcp = gdx_obtainbtManifoldPoint(jenv, jclazz, (void*)&cp, false);
+    gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jclazz, jcp);
     *((btCollisionObject **)&jcolObj0) = (btCollisionObject *) colObj0; 
     jmatch0 = (jboolean) match0;
     *((btCollisionObject **)&jcolObj1) = (btCollisionObject *) colObj1; 
@@ -4110,7 +4184,7 @@ void SwigDirector_ContactProcessedListenerByValue::onContactProcessed(btManifold
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
-  jlong jcp = 0 ;
+  jobject jcp = 0 ;
   jint juserValue0  ;
   jboolean jmatch0  ;
   jint juserValue1  ;
@@ -4122,7 +4196,9 @@ void SwigDirector_ContactProcessedListenerByValue::onContactProcessed(btManifold
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    *(btManifoldPoint **)&jcp = (btManifoldPoint *) &cp; 
+    jclass jclazz = gdx_getClassbtManifoldPoint(jenv);
+    jcp = gdx_obtainbtManifoldPoint(jenv, jclazz, (void*)&cp, false);
+    gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jclazz, jcp);
     juserValue0 = (jint) userValue0;
     jmatch0 = (jboolean) match0;
     juserValue1 = (jint) userValue1;
@@ -50249,7 +50325,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_Intern
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactAddedListener_1CB(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jint jarg3, jint jarg4, jlong jarg5, jobject jarg5_, jint jarg6, jint jarg7) {
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactAddedListener_1CB(JNIEnv *jenv, jclass jcls, jobject jarg1, jlong jarg2, jobject jarg2_, jint jarg3, jint jarg4, jlong jarg5, jobject jarg5_, jint jarg6, jint jarg7) {
   jboolean jresult = 0 ;
   btManifoldPoint *arg1 = 0 ;
   btCollisionObjectWrapper *arg2 = (btCollisionObjectWrapper *) 0 ;
@@ -50262,7 +50338,6 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_Co
   
   (void)jenv;
   (void)jcls;
-  (void)jarg1_;
   (void)jarg2_;
   (void)jarg5_;
   arg1 = *(btManifoldPoint **)&jarg1;
@@ -50304,7 +50379,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_curre
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactAddedListenerByWrapper_1onContactAdded(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jint jarg4, jint jarg5, jboolean jarg6, jlong jarg7, jobject jarg7_, jint jarg8, jint jarg9, jboolean jarg10) {
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactAddedListenerByWrapper_1onContactAdded(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jlong jarg3, jobject jarg3_, jint jarg4, jint jarg5, jboolean jarg6, jlong jarg7, jobject jarg7_, jint jarg8, jint jarg9, jboolean jarg10) {
   jboolean jresult = 0 ;
   ContactAddedListenerByWrapper *arg1 = (ContactAddedListenerByWrapper *) 0 ;
   btManifoldPoint *arg2 = 0 ;
@@ -50321,7 +50396,6 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_Co
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  (void)jarg2_;
   (void)jarg3_;
   (void)jarg7_;
   arg1 = *(ContactAddedListenerByWrapper **)&jarg1; 
@@ -50386,7 +50460,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_Contac
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactAddedListenerByObject_1onContactAdded(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jint jarg4, jint jarg5, jboolean jarg6, jlong jarg7, jobject jarg7_, jint jarg8, jint jarg9, jboolean jarg10) {
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactAddedListenerByObject_1onContactAdded(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jlong jarg3, jobject jarg3_, jint jarg4, jint jarg5, jboolean jarg6, jlong jarg7, jobject jarg7_, jint jarg8, jint jarg9, jboolean jarg10) {
   jboolean jresult = 0 ;
   ContactAddedListenerByObject *arg1 = (ContactAddedListenerByObject *) 0 ;
   btManifoldPoint *arg2 = 0 ;
@@ -50403,7 +50477,6 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_Co
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  (void)jarg2_;
   (void)jarg3_;
   (void)jarg7_;
   arg1 = *(ContactAddedListenerByObject **)&jarg1; 
@@ -50468,7 +50541,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_Contac
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactAddedListenerByValue_1onContactAdded(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jint jarg3, jint jarg4, jint jarg5, jboolean jarg6, jint jarg7, jint jarg8, jint jarg9, jboolean jarg10) {
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactAddedListenerByValue_1onContactAdded(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jint jarg3, jint jarg4, jint jarg5, jboolean jarg6, jint jarg7, jint jarg8, jint jarg9, jboolean jarg10) {
   jboolean jresult = 0 ;
   ContactAddedListenerByValue *arg1 = (ContactAddedListenerByValue *) 0 ;
   btManifoldPoint *arg2 = 0 ;
@@ -50485,7 +50558,6 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_Co
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  (void)jarg2_;
   arg1 = *(ContactAddedListenerByValue **)&jarg1; 
   arg2 = *(btManifoldPoint **)&jarg2;
   if (!arg2) {
@@ -50548,7 +50620,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_Contac
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactProcessedListener_1CB(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jlong jarg3) {
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactProcessedListener_1CB(JNIEnv *jenv, jclass jcls, jobject jarg1, jlong jarg2, jlong jarg3) {
   jboolean jresult = 0 ;
   btManifoldPoint *arg1 = 0 ;
   void *arg2 = (void *) 0 ;
@@ -50557,7 +50629,6 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_Co
   
   (void)jenv;
   (void)jcls;
-  (void)jarg1_;
   arg1 = *(btManifoldPoint **)&jarg1;
   if (!arg1) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btManifoldPoint & reference is null");
@@ -50593,7 +50664,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_curre
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactProcessedListenerByObject_1onContactProcessed(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jboolean jarg4, jlong jarg5, jobject jarg5_, jboolean jarg6) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactProcessedListenerByObject_1onContactProcessed(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jlong jarg3, jobject jarg3_, jboolean jarg4, jlong jarg5, jobject jarg5_, jboolean jarg6) {
   ContactProcessedListenerByObject *arg1 = (ContactProcessedListenerByObject *) 0 ;
   btManifoldPoint *arg2 = 0 ;
   btCollisionObject *arg3 = (btCollisionObject *) 0 ;
@@ -50604,7 +50675,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_Contac
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  (void)jarg2_;
   (void)jarg3_;
   (void)jarg5_;
   arg1 = *(ContactProcessedListenerByObject **)&jarg1; 
@@ -50663,7 +50733,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_Contac
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactProcessedListenerByValue_1onContactProcessed(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jint jarg3, jboolean jarg4, jint jarg5, jboolean jarg6) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_ContactProcessedListenerByValue_1onContactProcessed(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jint jarg3, jboolean jarg4, jint jarg5, jboolean jarg6) {
   ContactProcessedListenerByValue *arg1 = (ContactProcessedListenerByValue *) 0 ;
   btManifoldPoint *arg2 = 0 ;
   int arg3 ;
@@ -50674,7 +50744,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_Contac
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  (void)jarg2_;
   arg1 = *(ContactProcessedListenerByValue **)&jarg1; 
   arg2 = *(btManifoldPoint **)&jarg2;
   if (!arg2) {
@@ -78200,19 +78269,19 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_swig_1
       "SwigDirector_InternalTickCallback_onInternalTick", "(Lcom/badlogic/gdx/physics/bullet/InternalTickCallback;JF)V" 
     },
     {
-      "SwigDirector_ContactAddedListenerByWrapper_onContactAdded", "(Lcom/badlogic/gdx/physics/bullet/ContactAddedListenerByWrapper;JJIIZJIIZ)Z" 
+      "SwigDirector_ContactAddedListenerByWrapper_onContactAdded", "(Lcom/badlogic/gdx/physics/bullet/ContactAddedListenerByWrapper;Lcom/badlogic/gdx/physics/bullet/btManifoldPoint;JIIZJIIZ)Z" 
     },
     {
-      "SwigDirector_ContactAddedListenerByObject_onContactAdded", "(Lcom/badlogic/gdx/physics/bullet/ContactAddedListenerByObject;JJIIZJIIZ)Z" 
+      "SwigDirector_ContactAddedListenerByObject_onContactAdded", "(Lcom/badlogic/gdx/physics/bullet/ContactAddedListenerByObject;Lcom/badlogic/gdx/physics/bullet/btManifoldPoint;JIIZJIIZ)Z" 
     },
     {
-      "SwigDirector_ContactAddedListenerByValue_onContactAdded", "(Lcom/badlogic/gdx/physics/bullet/ContactAddedListenerByValue;JIIIZIIIZ)Z" 
+      "SwigDirector_ContactAddedListenerByValue_onContactAdded", "(Lcom/badlogic/gdx/physics/bullet/ContactAddedListenerByValue;Lcom/badlogic/gdx/physics/bullet/btManifoldPoint;IIIZIIIZ)Z" 
     },
     {
-      "SwigDirector_ContactProcessedListenerByObject_onContactProcessed", "(Lcom/badlogic/gdx/physics/bullet/ContactProcessedListenerByObject;JJZJZ)V" 
+      "SwigDirector_ContactProcessedListenerByObject_onContactProcessed", "(Lcom/badlogic/gdx/physics/bullet/ContactProcessedListenerByObject;Lcom/badlogic/gdx/physics/bullet/btManifoldPoint;JZJZ)V" 
     },
     {
-      "SwigDirector_ContactProcessedListenerByValue_onContactProcessed", "(Lcom/badlogic/gdx/physics/bullet/ContactProcessedListenerByValue;JIZIZ)V" 
+      "SwigDirector_ContactProcessedListenerByValue_onContactProcessed", "(Lcom/badlogic/gdx/physics/bullet/ContactProcessedListenerByValue;Lcom/badlogic/gdx/physics/bullet/btManifoldPoint;IZIZ)V" 
     },
     {
       "SwigDirector_ContactDestroyedListener_onContactDestroyed", "(Lcom/badlogic/gdx/physics/bullet/ContactDestroyedListener;I)V" 

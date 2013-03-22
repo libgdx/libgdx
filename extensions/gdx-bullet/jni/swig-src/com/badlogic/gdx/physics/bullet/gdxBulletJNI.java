@@ -2873,33 +2873,33 @@ public class gdxBulletJNI {
   public final static native void delete_InternalTickCallback(long jarg1);
   public final static native void InternalTickCallback_director_connect(InternalTickCallback obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void InternalTickCallback_change_ownership(InternalTickCallback obj, long cptr, boolean take_or_release);
-  public final static native boolean ContactAddedListener_CB(long jarg1, btManifoldPoint jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, int jarg3, int jarg4, long jarg5, btCollisionObjectWrapper jarg5_, int jarg6, int jarg7);
+  public final static native boolean ContactAddedListener_CB(btManifoldPoint jarg1, long jarg2, btCollisionObjectWrapper jarg2_, int jarg3, int jarg4, long jarg5, btCollisionObjectWrapper jarg5_, int jarg6, int jarg7);
   public final static native void currentContactAddedListener_set(long jarg1);
   public final static native long currentContactAddedListener_get();
-  public final static native boolean ContactAddedListenerByWrapper_onContactAdded(long jarg1, ContactAddedListenerByWrapper jarg1_, long jarg2, btManifoldPoint jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, int jarg4, int jarg5, boolean jarg6, long jarg7, btCollisionObjectWrapper jarg7_, int jarg8, int jarg9, boolean jarg10);
+  public final static native boolean ContactAddedListenerByWrapper_onContactAdded(long jarg1, ContactAddedListenerByWrapper jarg1_, btManifoldPoint jarg2, long jarg3, btCollisionObjectWrapper jarg3_, int jarg4, int jarg5, boolean jarg6, long jarg7, btCollisionObjectWrapper jarg7_, int jarg8, int jarg9, boolean jarg10);
   public final static native long new_ContactAddedListenerByWrapper();
   public final static native void delete_ContactAddedListenerByWrapper(long jarg1);
   public final static native void ContactAddedListenerByWrapper_director_connect(ContactAddedListenerByWrapper obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void ContactAddedListenerByWrapper_change_ownership(ContactAddedListenerByWrapper obj, long cptr, boolean take_or_release);
-  public final static native boolean ContactAddedListenerByObject_onContactAdded(long jarg1, ContactAddedListenerByObject jarg1_, long jarg2, btManifoldPoint jarg2_, long jarg3, btCollisionObject jarg3_, int jarg4, int jarg5, boolean jarg6, long jarg7, btCollisionObject jarg7_, int jarg8, int jarg9, boolean jarg10);
+  public final static native boolean ContactAddedListenerByObject_onContactAdded(long jarg1, ContactAddedListenerByObject jarg1_, btManifoldPoint jarg2, long jarg3, btCollisionObject jarg3_, int jarg4, int jarg5, boolean jarg6, long jarg7, btCollisionObject jarg7_, int jarg8, int jarg9, boolean jarg10);
   public final static native long new_ContactAddedListenerByObject();
   public final static native void delete_ContactAddedListenerByObject(long jarg1);
   public final static native void ContactAddedListenerByObject_director_connect(ContactAddedListenerByObject obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void ContactAddedListenerByObject_change_ownership(ContactAddedListenerByObject obj, long cptr, boolean take_or_release);
-  public final static native boolean ContactAddedListenerByValue_onContactAdded(long jarg1, ContactAddedListenerByValue jarg1_, long jarg2, btManifoldPoint jarg2_, int jarg3, int jarg4, int jarg5, boolean jarg6, int jarg7, int jarg8, int jarg9, boolean jarg10);
+  public final static native boolean ContactAddedListenerByValue_onContactAdded(long jarg1, ContactAddedListenerByValue jarg1_, btManifoldPoint jarg2, int jarg3, int jarg4, int jarg5, boolean jarg6, int jarg7, int jarg8, int jarg9, boolean jarg10);
   public final static native long new_ContactAddedListenerByValue();
   public final static native void delete_ContactAddedListenerByValue(long jarg1);
   public final static native void ContactAddedListenerByValue_director_connect(ContactAddedListenerByValue obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void ContactAddedListenerByValue_change_ownership(ContactAddedListenerByValue obj, long cptr, boolean take_or_release);
-  public final static native boolean ContactProcessedListener_CB(long jarg1, btManifoldPoint jarg1_, long jarg2, long jarg3);
+  public final static native boolean ContactProcessedListener_CB(btManifoldPoint jarg1, long jarg2, long jarg3);
   public final static native void currentContactProcessedListener_set(long jarg1);
   public final static native long currentContactProcessedListener_get();
-  public final static native void ContactProcessedListenerByObject_onContactProcessed(long jarg1, ContactProcessedListenerByObject jarg1_, long jarg2, btManifoldPoint jarg2_, long jarg3, btCollisionObject jarg3_, boolean jarg4, long jarg5, btCollisionObject jarg5_, boolean jarg6);
+  public final static native void ContactProcessedListenerByObject_onContactProcessed(long jarg1, ContactProcessedListenerByObject jarg1_, btManifoldPoint jarg2, long jarg3, btCollisionObject jarg3_, boolean jarg4, long jarg5, btCollisionObject jarg5_, boolean jarg6);
   public final static native long new_ContactProcessedListenerByObject();
   public final static native void delete_ContactProcessedListenerByObject(long jarg1);
   public final static native void ContactProcessedListenerByObject_director_connect(ContactProcessedListenerByObject obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void ContactProcessedListenerByObject_change_ownership(ContactProcessedListenerByObject obj, long cptr, boolean take_or_release);
-  public final static native void ContactProcessedListenerByValue_onContactProcessed(long jarg1, ContactProcessedListenerByValue jarg1_, long jarg2, btManifoldPoint jarg2_, int jarg3, boolean jarg4, int jarg5, boolean jarg6);
+  public final static native void ContactProcessedListenerByValue_onContactProcessed(long jarg1, ContactProcessedListenerByValue jarg1_, btManifoldPoint jarg2, int jarg3, boolean jarg4, int jarg5, boolean jarg6);
   public final static native long new_ContactProcessedListenerByValue();
   public final static native void delete_ContactProcessedListenerByValue(long jarg1);
   public final static native void ContactProcessedListenerByValue_director_connect(ContactProcessedListenerByValue obj, long cptr, boolean mem_own, boolean weak_global);
@@ -4810,20 +4810,20 @@ public class gdxBulletJNI {
   public static void SwigDirector_InternalTickCallback_onInternalTick(InternalTickCallback self, long dynamicsWorld, float timeStep) {
     self.onInternalTick((dynamicsWorld == 0) ? null : new btDynamicsWorld(dynamicsWorld, false), timeStep);
   }
-  public static boolean SwigDirector_ContactAddedListenerByWrapper_onContactAdded(ContactAddedListenerByWrapper self, long cp, long colObj0Wrap, int partId0, int index0, boolean match0, long colObj1Wrap, int partId1, int index1, boolean match1) {
-    return self.onContactAdded(new btManifoldPoint(cp, false), (colObj0Wrap == 0) ? null : new btCollisionObjectWrapper(colObj0Wrap, false), partId0, index0, match0, (colObj1Wrap == 0) ? null : new btCollisionObjectWrapper(colObj1Wrap, false), partId1, index1, match1);
+  public static boolean SwigDirector_ContactAddedListenerByWrapper_onContactAdded(ContactAddedListenerByWrapper self, btManifoldPoint cp, long colObj0Wrap, int partId0, int index0, boolean match0, long colObj1Wrap, int partId1, int index1, boolean match1) {
+    return self.onContactAdded(cp, (colObj0Wrap == 0) ? null : new btCollisionObjectWrapper(colObj0Wrap, false), partId0, index0, match0, (colObj1Wrap == 0) ? null : new btCollisionObjectWrapper(colObj1Wrap, false), partId1, index1, match1);
   }
-  public static boolean SwigDirector_ContactAddedListenerByObject_onContactAdded(ContactAddedListenerByObject self, long cp, long colObj0, int partId0, int index0, boolean match0, long colObj1, int partId1, int index1, boolean match1) {
-    return self.onContactAdded(new btManifoldPoint(cp, false), (colObj0 == 0) ? null : new btCollisionObject(colObj0, false), partId0, index0, match0, (colObj1 == 0) ? null : new btCollisionObject(colObj1, false), partId1, index1, match1);
+  public static boolean SwigDirector_ContactAddedListenerByObject_onContactAdded(ContactAddedListenerByObject self, btManifoldPoint cp, long colObj0, int partId0, int index0, boolean match0, long colObj1, int partId1, int index1, boolean match1) {
+    return self.onContactAdded(cp, (colObj0 == 0) ? null : new btCollisionObject(colObj0, false), partId0, index0, match0, (colObj1 == 0) ? null : new btCollisionObject(colObj1, false), partId1, index1, match1);
   }
-  public static boolean SwigDirector_ContactAddedListenerByValue_onContactAdded(ContactAddedListenerByValue self, long cp, int userValue0, int partId0, int index0, boolean match0, int userValue1, int partId1, int index1, boolean match1) {
-    return self.onContactAdded(new btManifoldPoint(cp, false), userValue0, partId0, index0, match0, userValue1, partId1, index1, match1);
+  public static boolean SwigDirector_ContactAddedListenerByValue_onContactAdded(ContactAddedListenerByValue self, btManifoldPoint cp, int userValue0, int partId0, int index0, boolean match0, int userValue1, int partId1, int index1, boolean match1) {
+    return self.onContactAdded(cp, userValue0, partId0, index0, match0, userValue1, partId1, index1, match1);
   }
-  public static void SwigDirector_ContactProcessedListenerByObject_onContactProcessed(ContactProcessedListenerByObject self, long cp, long colObj0, boolean match0, long colObj1, boolean match1) {
-    self.onContactProcessed(new btManifoldPoint(cp, false), (colObj0 == 0) ? null : new btCollisionObject(colObj0, false), match0, (colObj1 == 0) ? null : new btCollisionObject(colObj1, false), match1);
+  public static void SwigDirector_ContactProcessedListenerByObject_onContactProcessed(ContactProcessedListenerByObject self, btManifoldPoint cp, long colObj0, boolean match0, long colObj1, boolean match1) {
+    self.onContactProcessed(cp, (colObj0 == 0) ? null : new btCollisionObject(colObj0, false), match0, (colObj1 == 0) ? null : new btCollisionObject(colObj1, false), match1);
   }
-  public static void SwigDirector_ContactProcessedListenerByValue_onContactProcessed(ContactProcessedListenerByValue self, long cp, int userValue0, boolean match0, int userValue1, boolean match1) {
-    self.onContactProcessed(new btManifoldPoint(cp, false), userValue0, match0, userValue1, match1);
+  public static void SwigDirector_ContactProcessedListenerByValue_onContactProcessed(ContactProcessedListenerByValue self, btManifoldPoint cp, int userValue0, boolean match0, int userValue1, boolean match1) {
+    self.onContactProcessed(cp, userValue0, match0, userValue1, match1);
   }
   public static void SwigDirector_ContactDestroyedListener_onContactDestroyed(ContactDestroyedListener self, int manifoldPointUserValue) {
     self.onContactDestroyed(manifoldPointUserValue);

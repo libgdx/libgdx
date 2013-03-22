@@ -56,7 +56,7 @@ public class ContactProcessedListenerByObject {
   }
 
   public void onContactProcessed(btManifoldPoint cp, btCollisionObject colObj0, boolean match0, btCollisionObject colObj1, boolean match1) {
-    gdxBulletJNI.ContactProcessedListenerByObject_onContactProcessed(swigCPtr, this, btManifoldPoint.getCPtr(cp), cp, btCollisionObject.getCPtr(colObj0), colObj0, match0, btCollisionObject.getCPtr(colObj1), colObj1, match1);
+    gdxBulletJNI.ContactProcessedListenerByObject_onContactProcessed(swigCPtr, this, cp, btCollisionObject.getCPtr(colObj0), colObj0, match0, btCollisionObject.getCPtr(colObj1), colObj1, match1);
   }
 
   public ContactProcessedListenerByObject() {

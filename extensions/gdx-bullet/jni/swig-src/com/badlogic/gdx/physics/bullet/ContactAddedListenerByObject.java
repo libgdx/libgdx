@@ -56,7 +56,7 @@ public class ContactAddedListenerByObject {
   }
 
   public boolean onContactAdded(btManifoldPoint cp, btCollisionObject colObj0, int partId0, int index0, boolean match0, btCollisionObject colObj1, int partId1, int index1, boolean match1) {
-    return gdxBulletJNI.ContactAddedListenerByObject_onContactAdded(swigCPtr, this, btManifoldPoint.getCPtr(cp), cp, btCollisionObject.getCPtr(colObj0), colObj0, partId0, index0, match0, btCollisionObject.getCPtr(colObj1), colObj1, partId1, index1, match1);
+    return gdxBulletJNI.ContactAddedListenerByObject_onContactAdded(swigCPtr, this, cp, btCollisionObject.getCPtr(colObj0), colObj0, partId0, index0, match0, btCollisionObject.getCPtr(colObj1), colObj1, partId1, index1, match1);
   }
 
   public ContactAddedListenerByObject() {
