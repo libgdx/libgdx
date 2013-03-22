@@ -1,11 +1,11 @@
 22.3.2013
 - Merged latest Box2D trunk, revision https://code.google.com/p/box2d/source/detail?r=254
 - Body#setTransform with update flag for contacts was removed, removed from jni wrapper
-- Body#applyForce has a new parameter, wake, exposed in jni wrapper
-- Body#applyForceToCenter has a new parameter, wake, exposed in jni wrapper
-- Body#applyTorque has a new parameter, wake, exposed in jni wrapper
-- Body#applyLinearImpulse has a new parameter, wake, exposed in jni wrapper
-- Body#applyAngularImpulse has a new parameter, wake, exposed in jni wrapper
+- Body#applyForce has a new parameter, wake, exposed in jni wrapper, added to GWT wrapper, but ignored
+- Body#applyForceToCenter has a new parameter, wake, exposed in jni wrapper, added to GWT wrapper, but ignored
+- Body#applyTorque has a new parameter, wake, exposed in jni wrapper, added to GWT wrapper, but ignored
+- Body#applyLinearImpulse has a new parameter, wake, exposed in jni wrapper, added to GWT wrapper, but ignored
+- Body#applyAngularImpulse has a new parameter, wake, exposed in jni wrapper, added to GWT wrapper, but ignored
 
 - tangent speed in contact was added, not exposed in jni wrapper
 - motor joint was added, not exposed in jni wrapper (missing equivalent in GWT JBox2D port)
