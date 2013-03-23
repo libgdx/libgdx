@@ -4,62 +4,15 @@
  
 %module btCollisionObject
 
-%typemap(javaout) 	btCollisionObject *, const btCollisionObject * {
-	long cPtr = $jnicall;
-	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, $owner);
-}
+CREATE_MANAGED_OBJECT(btCollisionObject);
 
 %typemap(javainterfaces) btCollisionObject %{
 	com.badlogic.gdx.utils.Disposable
 %}
 
-%typemap(javadestruct, methodname="delete", methodmodifiers="public synchronized") btCollisionObject %{ {
-    if (swigCPtr != 0)
-      removeInstance(this);
-	if (gdxBridge != null) {
-    	gdxBridge.delete();
-    	gdxBridge = null;
-    }
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btCollisionObject(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-%}
-
 %typemap(javabody) btCollisionObject %{
-	public final static com.badlogic.gdx.utils.LongMap<btCollisionObject> instances = new com.badlogic.gdx.utils.LongMap<btCollisionObject>();
-	
-	public static btCollisionObject getInstance(final long swigCPtr) {
-		return instances.get(swigCPtr);
-	}
-	
-	public static btCollisionObject getInstance(final long swigCPtr, boolean owner) {
-		btCollisionObject result = getInstance(swigCPtr);
-		if (result == null)
-			result = new btCollisionObject(swigCPtr, owner);
-		return result;
-	}
-	
-	public static void addInstance(final btCollisionObject obj) {
-		instances.put(getCPtr(obj), obj);
-	}
-	
-	public static void removeInstance(final btCollisionObject obj) {
-		instances.remove(getCPtr(obj));
-	}
-	
 	private long swigCPtr;
 	protected boolean swigCMemOwn;
-	protected GdxCollisionObjectBridge gdxBridge;
-	protected int userValue;
-	protected int contactCallbackFlag = 1;
-	protected int contactCallbackFilter;
-	
-	public Object userData;
 	
 	protected btCollisionObject(long cPtr, boolean cMemoryOwn) {
 		swigCMemOwn = cMemoryOwn;
@@ -69,23 +22,27 @@
 		addInstance(this);
 	}
 	
+	protected void beforeDelete() {
+		if (swigCPtr != 0)
+			removeInstance(this);
+		if (gdxBridge != null)
+			gdxBridge.delete();
+		gdxBridge = null;
+	}
+	
+	protected GdxCollisionObjectBridge gdxBridge;
+	protected int userValue;
+	protected int contactCallbackFlag = 1;
+	protected int contactCallbackFilter;
+	
+	/** User definable data, not used by Bullet itself. */
+	public Object userData;
+
 	@Override
 	public void dispose() {
 		delete();
 	}
-	
-	public void takeOwnership() {
-		swigCMemOwn = true;
-	}
-	
-	public void releaseOwnership() {
-		swigCMemOwn = false;
-	}
-	
-	public static long getCPtr($javaclassname obj) {
-		return (obj == null) ? 0 : obj.swigCPtr;
-	}
-	
+
 	/** @return A user definable value set using {@link #setUserValue(int)}, intended to quickly identify the collision object */ 
 	public int getUserValue() {
 		return userValue;

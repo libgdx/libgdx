@@ -1,4 +1,5 @@
 /** Creates a pool for the type and sets SWIG to use the pool instead of creating a new java object every time.
+ * TODO: Add better pointer support
  * @author Xoppa */
 %define CREATE_POOLED_OBJECT(_TYPE, _JCLASS)
 
@@ -6,6 +7,10 @@
 %typemap(javacode) _TYPE %{
 	/** Temporary instance, use by native methods that return a _TYPE instance */
 	protected final static _TYPE temp = new _TYPE(0, false);
+	public static _TYPE internalTemp(long cPtr, boolean own) {
+		temp.reuse(cPtr, own);
+		return temp;
+	}
 	/** Pool of _TYPE instances, used by director interface to provide the arguments. */
 	protected static final com.badlogic.gdx.utils.Pool<_TYPE> pool = new com.badlogic.gdx.utils.Pool<_TYPE>() {
 		@Override
@@ -32,7 +37,7 @@
 	}
 %}
 
-%fragment("gdxPooled##_TYPE", "header") {
+%fragment(gdxToString(gdxPooled##_TYPE), "header") {
 	// Inline (cached) method to retrieve the type's jclass
 	SWIGINTERN inline jclass gdx_getClass##_TYPE(JNIEnv * jenv) {
 		static jclass cls = NULL;
@@ -100,28 +105,34 @@
 }
 
 // The typemaps
-%typemap(jstype) 			_TYPE, _TYPE &, const _TYPE & 	"_TYPE"
-%typemap(jtype) 			_TYPE, _TYPE &, const _TYPE & 	"_TYPE"
+%typemap(jni)				_TYPE *	"jlong"
+%typemap(jtype)				_TYPE *	"long"
+%typemap(jstype)			_TYPE * "_TYPE"
+%typemap(jni) 				_TYPE, _TYPE &, const _TYPE &	"jobject"
+%typemap(jstype) 			_TYPE, _TYPE &, const _TYPE &	"_TYPE"
+%typemap(jtype) 			_TYPE, _TYPE &, const _TYPE &	"_TYPE"
 %typemap(javain)			_TYPE, _TYPE &, const _TYPE &	"$javainput"
 %typemap(javadirectorin)	_TYPE, _TYPE &, const _TYPE &	"$1"
 %typemap(javadirectorout)	_TYPE, _TYPE &, const _TYPE &	"$javacall"
-%typemap(jni) 				_TYPE, _TYPE &, const _TYPE & 	"jobject"
 
-%typemap(directorin, fragment="gdxPooled##_TYPE", descriptor=gdxToString(L##_JCLASS;), noblock=1)	const _TYPE &  {
-	jclass jclazz = gdx_getClass##_TYPE(jenv);
-	$input = gdx_obtain##_TYPE(jenv, jclazz, (void*)$1, false);
-	gdxAutoFree##_TYPE autoRelease_$input(jenv, jclazz, $input);
+%typemap(directorin, fragment=gdxToString(gdxPooled##_TYPE), descriptor=gdxToString(L##_JCLASS;), noblock=1)	const _TYPE &  {
+	jclass jc$1 = gdx_getClass##_TYPE(jenv);
+	$input = gdx_obtain##_TYPE(jenv, jc$1, (void*)$1, false);
+	gdxAutoFree##_TYPE autoRelease_$input(jenv, jc$1, $input);
 }
-%typemap(directorin, fragment="gdxPooled##_TYPE", descriptor=gdxToString(L##_JCLASS;), noblock=1)	_TYPE, _TYPE &  {
-	jclass jclazz = gdx_getClass##_TYPE(jenv);
-	$input = gdx_obtain##_TYPE(jenv, jclazz, (void*)&$1, false);
-	gdxAutoFree##_TYPE autoRelease_$input(jenv, jclazz, $input);
+%typemap(directorin, fragment=gdxToString(gdxPooled##_TYPE), descriptor=gdxToString(L##_JCLASS;), noblock=1)	_TYPE, _TYPE &  {
+	jclass jc$1 = gdx_getClass##_TYPE(jenv);
+	$input = gdx_obtain##_TYPE(jenv, jc$1, (void*)&$1, false);
+	gdxAutoFree##_TYPE autoRelease_$input(jenv, jc$1, $input);
 }
-%typemap(out, fragment="gdxPooled##_TYPE", noblock=1)		_TYPE, _TYPE &, const _TYPE &	{
-	$result = gdx_getTemp##_TYPE(jenv, $1, false);
+%typemap(out, fragment=gdxToString(gdxPooled##_TYPE), noblock=1)		_TYPE, _TYPE &, const _TYPE &	{
+	$result = gdx_getTemp##_TYPE(jenv, &$1, false);
 }
 %typemap(javaout)		_TYPE, _TYPE &, const _TYPE &	{
 	return $jnicall;
+}
+%typemap(javaout)		_TYPE * {
+	return _TYPE.internalTemp($jnicall, false);
 }
 
 %enddef // CREATE_POOLED_OBJECT

@@ -4,6 +4,8 @@
 
 %module(directors="1") gdxBullet
 
+#define gdxToString(X)	"X"
+
 /* 
  * Allow public access to the CPtr methods on proxy classes and wrappers.
  * 
@@ -29,6 +31,10 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 
 %include "gdxPool.i"
 %include "gdxPooledTypemap.i"
+
+%include "gdxPooledObject.i"
+
+%include "gdxManagedObject.i"
 
 /* Prefer libgdx's linear math types (Vector3, Matrix3, etc.). */
 %include "gdxMathTypes.i"
