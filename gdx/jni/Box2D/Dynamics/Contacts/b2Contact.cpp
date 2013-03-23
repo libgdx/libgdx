@@ -102,14 +102,19 @@ void b2Contact::Destroy(b2Contact* contact, b2BlockAllocator* allocator)
 {
 	b2Assert(s_initialized == true);
 
-	if (contact->m_manifold.pointCount > 0)
+	b2Fixture* fixtureA = contact->m_fixtureA;
+	b2Fixture* fixtureB = contact->m_fixtureB;
+
+	if (contact->m_manifold.pointCount > 0 &&
+		fixtureA->IsSensor() == false &&
+		fixtureB->IsSensor() == false)
 	{
-		contact->GetFixtureA()->GetBody()->SetAwake(true);
-		contact->GetFixtureB()->GetBody()->SetAwake(true);
+		fixtureA->GetBody()->SetAwake(true);
+		fixtureB->GetBody()->SetAwake(true);
 	}
 
-	b2Shape::Type typeA = contact->GetFixtureA()->GetType();
-	b2Shape::Type typeB = contact->GetFixtureB()->GetType();
+	b2Shape::Type typeA = fixtureA->GetType();
+	b2Shape::Type typeB = fixtureB->GetType();
 
 	b2Assert(0 <= typeA && typeB < b2Shape::e_typeCount);
 	b2Assert(0 <= typeA && typeB < b2Shape::e_typeCount);
@@ -147,6 +152,8 @@ b2Contact::b2Contact(b2Fixture* fA, int32 indexA, b2Fixture* fB, int32 indexB)
 
 	m_friction = b2MixFriction(m_fixtureA->m_friction, m_fixtureB->m_friction);
 	m_restitution = b2MixRestitution(m_fixtureA->m_restitution, m_fixtureB->m_restitution);
+
+	m_tangentSpeed = 0.0f;
 }
 
 // Update the contact manifold and touching status.

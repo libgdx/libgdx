@@ -146,8 +146,8 @@ public class ImageTextButton extends Button {
 		public ImageTextButtonStyle () {
 		}
 
-		public ImageTextButtonStyle (Drawable up, Drawable down, Drawable checked) {
-			super(up, down, checked);
+		public ImageTextButtonStyle (Drawable up, Drawable down, Drawable checked, BitmapFont font) {
+			super(up, down, checked, font);
 		}
 
 		public ImageTextButtonStyle (ImageTextButtonStyle style) {

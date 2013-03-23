@@ -73,7 +73,7 @@
 		{
 			"id" : "head",
 			"translation" : [0.0,0.0,0.0],
-			"rotation" : [0.0,0.0,0.0],
+			"rotation" : [0.0,0.0,0.0,1.0],
 			"scale" : [1.0,1.0,1.0],
 			"mesh" : "head_Mesh",
 			"materials" : [
@@ -86,7 +86,7 @@
 				{
 					"id" : "eyes",
 					"translation" : [0.117882,0.679631,0.584643],
-					"rotation" : [90.000000,0.0,0.0],
+					"rotation" : [0.707107,0.0,0.0,0.707107],
 					"scale" : [1.0,1.0,1.0],
 					"mesh" : "eyes_Mesh",
 					"materials" : [
@@ -100,6 +100,11 @@
 		}
 	],
 	"animations" : [
-		
+		{
+			"id" : "Take 001",
+			"bones" : [
+				
+			]
+		}
 	]
 }

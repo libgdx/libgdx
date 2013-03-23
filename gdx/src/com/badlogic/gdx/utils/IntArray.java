@@ -111,6 +111,7 @@ public class IntArray {
 	}
 
 	public void insert (int index, int value) {
+		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		int[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		if (ordered)

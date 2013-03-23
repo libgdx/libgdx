@@ -2,7 +2,7 @@ package com.badlogic.gdx.graphics.g3d.materials;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.materials.NewMaterial.Attribute;
-import com.badlogic.gdx.graphics.g3d.utils.TextureDescription;
+import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class TextureAttribute extends NewMaterial.Attribute {
@@ -11,6 +11,10 @@ public class TextureAttribute extends NewMaterial.Attribute {
 	public final static String SpecularAlias = "specularTexture";
 	public final static long Specular = register(SpecularAlias);
 	
+	// FIXME add more types?
+	// FIXME add scaling + offset?
+	// FIXME add filter settings? MipMap needs to be obeyed during loading :/
+	
 	// Might be useful:...
 	protected static long Mask = Diffuse | Specular;
 	
@@ -18,9 +22,9 @@ public class TextureAttribute extends NewMaterial.Attribute {
 		return (mask & Mask) != 0;
 	}
 	
-	public final TextureDescription textureDescription;
+	public final TextureDescriptor textureDescription;
 	
-	public TextureAttribute(final long type, final TextureDescription textureDescription) {
+	public TextureAttribute(final long type, final TextureDescriptor textureDescription) {
 		super(type);
 		if (!is(type))
 			throw new GdxRuntimeException("Invalid type specified");

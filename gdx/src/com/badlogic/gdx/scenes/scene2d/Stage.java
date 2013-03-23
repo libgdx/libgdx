@@ -650,8 +650,7 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** Transforms the screen coordinates to stage coordinates.
-	 * 
-	 * @param screenCoords input screen coordinates and output for resulting stage coordinates. */
+	 * @param screenCoords Input screen coordinates and output for resulting stage coordinates. */
 	public Vector2 screenToStageCoordinates (Vector2 screenCoords) {
 		camera.unproject(cameraCoords.set(screenCoords.x, screenCoords.y, 0));
 		screenCoords.x = cameraCoords.x;
@@ -660,18 +659,17 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** Transforms the stage coordinates to screen coordinates.
-	 * 
-	 * @param stageCoords input stage coordinates and output for resulting screen coordinates */
+	 * @param stageCoords Input stage coordinates and output for resulting screen coordinates. */
 	public Vector2 stageToScreenCoordinates (Vector2 stageCoords) {
-		cameraCoords.set(stageCoords.x, stageCoords.y, 0);
-		camera.project(cameraCoords);
+		camera.project(cameraCoords.set(stageCoords.x, stageCoords.y, 0));
 		stageCoords.x = cameraCoords.x;
-		stageCoords.y = cameraCoords.y;
+		stageCoords.y = Gdx.graphics.getHeight() - cameraCoords.y;
 		return stageCoords;
 	}
 
 	/** Transforms the coordinates to screen coordinates. The coordinates can be anywhere in the stage since the transform matrix
-	 * describes how to convert them. The transform matrix is typically obtained from {@link SpriteBatch#getTransformMatrix()}. */
+	 * describes how to convert them. The transform matrix is typically obtained from {@link SpriteBatch#getTransformMatrix()}
+	 * during {@link Actor#draw(SpriteBatch, float)}. */
 	public Vector2 toScreenCoordinates (Vector2 coords, Matrix4 transformMatrix) {
 		ScissorStack.toWindowCoordinates(camera, transformMatrix, coords);
 		return coords;
