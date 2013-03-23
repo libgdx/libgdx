@@ -36,14 +36,44 @@ public class btCollisionObjectWrapper {
     }
   }
 
+	/** Temporary instance, use by native methods that return a btCollisionObjectWrapper instance */
+	protected final static btCollisionObjectWrapper temp = new btCollisionObjectWrapper(0, false);
+	public static btCollisionObjectWrapper internalTemp(long cPtr, boolean own) {
+		temp.reuse(cPtr, own);
+		return temp;
+	}
+	/** Pool of btCollisionObjectWrapper instances, used by director interface to provide the arguments. */
+	protected static final com.badlogic.gdx.utils.Pool<btCollisionObjectWrapper> pool = new com.badlogic.gdx.utils.Pool<btCollisionObjectWrapper>() {
+		@Override
+		protected btCollisionObjectWrapper newObject() {
+			return new btCollisionObjectWrapper(0, false);
+		}
+	};
+	/** Reuses a previous freed instance or creates a new instance and set it to reflect the specified native object */
+	public static btCollisionObjectWrapper obtain(long cPtr, boolean own) {
+		final btCollisionObjectWrapper result = pool.obtain();
+		result.reuse(cPtr, own);
+		return result;
+	}
+	/** delete the native object if required and allow the instance to be reused by the obtain method */
+	public static void free(final btCollisionObjectWrapper inst) {
+		inst.delete();
+		pool.free(inst);
+	}
+	/** Same as deleting and recreating this object with the new pointer, but without garbage collecting */
+	protected void reuse(final long cPtr, final boolean own) {
+		delete();
+		swigCPtr = cPtr;
+		swigCMemOwn = own;
+	}
+
   public void setM_parent(btCollisionObjectWrapper value) {
     gdxBulletJNI.btCollisionObjectWrapper_m_parent_set(swigCPtr, this, btCollisionObjectWrapper.getCPtr(value), value);
   }
 
   public btCollisionObjectWrapper getM_parent() {
-    long cPtr = gdxBulletJNI.btCollisionObjectWrapper_m_parent_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObjectWrapper(cPtr, false);
-  }
+	return btCollisionObjectWrapper.internalTemp(gdxBulletJNI.btCollisionObjectWrapper_m_parent_get(swigCPtr, this), false);
+}
 
   public void setM_shape(btCollisionShape value) {
     gdxBulletJNI.btCollisionObjectWrapper_m_shape_set(swigCPtr, this, btCollisionShape.getCPtr(value), value);
@@ -59,8 +89,7 @@ public class btCollisionObjectWrapper {
   }
 
   public btCollisionObject getM_collisionObject() {
-	long cPtr = gdxBulletJNI.btCollisionObjectWrapper_m_collisionObject_get(swigCPtr, this);
-	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+	return btCollisionObject.getInstance(gdxBulletJNI.btCollisionObjectWrapper_m_collisionObject_get(swigCPtr, this), false);
 }
 
   public Matrix4 getM_worldTransform() {
@@ -72,8 +101,7 @@ public class btCollisionObjectWrapper {
 }
 
   public btCollisionObject getCollisionObject() {
-	long cPtr = gdxBulletJNI.btCollisionObjectWrapper_getCollisionObject(swigCPtr, this);
-	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+	return btCollisionObject.getInstance(gdxBulletJNI.btCollisionObjectWrapper_getCollisionObject(swigCPtr, this), false);
 }
 
   public btCollisionShape getCollisionShape() {

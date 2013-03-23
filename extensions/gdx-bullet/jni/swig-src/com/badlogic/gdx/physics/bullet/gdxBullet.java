@@ -371,6 +371,14 @@ public class gdxBullet implements gdxBulletConstants {
     return gdxBulletJNI.BT_NULL_PAIR_get();
   }
 
+  public static boolean gdxCheckFilter(int filter, int flag) {
+    return gdxBulletJNI.gdxCheckFilter__SWIG_0(filter, flag);
+  }
+
+  public static boolean gdxCheckFilter(btCollisionObject colObj0, btCollisionObject colObj1) {
+    return gdxBulletJNI.gdxCheckFilter__SWIG_1(btCollisionObject.getCPtr(colObj0), colObj0, btCollisionObject.getCPtr(colObj1), colObj1);
+  }
+
   public static void setGDeactivationTime(float value) {
     gdxBulletJNI.gDeactivationTime_set(value);
   }
@@ -440,6 +448,45 @@ public class gdxBullet implements gdxBulletConstants {
 
   public static void InternalTickCallback_CB(btDynamicsWorld world, float timeStep) {
     gdxBulletJNI.InternalTickCallback_CB(btDynamicsWorld.getCPtr(world), world, timeStep);
+  }
+
+  public static boolean ContactAddedListener_CB(btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
+    return gdxBulletJNI.ContactAddedListener_CB(cp, btCollisionObjectWrapper.getCPtr(colObj0Wrap), colObj0Wrap, partId0, index0, btCollisionObjectWrapper.getCPtr(colObj1Wrap), colObj1Wrap, partId1, index1);
+  }
+
+  public static void setCurrentContactAddedListener(SWIGTYPE_p_BaseContactAddedListener value) {
+    gdxBulletJNI.currentContactAddedListener_set(SWIGTYPE_p_BaseContactAddedListener.getCPtr(value));
+  }
+
+  public static SWIGTYPE_p_BaseContactAddedListener getCurrentContactAddedListener() {
+    long cPtr = gdxBulletJNI.currentContactAddedListener_get();
+    return (cPtr == 0) ? null : new SWIGTYPE_p_BaseContactAddedListener(cPtr, false);
+  }
+
+  public static boolean ContactProcessedListener_CB(btManifoldPoint cp, SWIGTYPE_p_void body0, SWIGTYPE_p_void body1) {
+    return gdxBulletJNI.ContactProcessedListener_CB(cp, SWIGTYPE_p_void.getCPtr(body0), SWIGTYPE_p_void.getCPtr(body1));
+  }
+
+  public static void setCurrentContactProcessedListener(SWIGTYPE_p_BaseContactProcessedListener value) {
+    gdxBulletJNI.currentContactProcessedListener_set(SWIGTYPE_p_BaseContactProcessedListener.getCPtr(value));
+  }
+
+  public static SWIGTYPE_p_BaseContactProcessedListener getCurrentContactProcessedListener() {
+    long cPtr = gdxBulletJNI.currentContactProcessedListener_get();
+    return (cPtr == 0) ? null : new SWIGTYPE_p_BaseContactProcessedListener(cPtr, false);
+  }
+
+  public static boolean ContactDestroyedListener_CB(SWIGTYPE_p_void userPersistentData) {
+    return gdxBulletJNI.ContactDestroyedListener_CB(SWIGTYPE_p_void.getCPtr(userPersistentData));
+  }
+
+  public static void setCurrentContactDestroyedListener(ContactDestroyedListener value) {
+    gdxBulletJNI.currentContactDestroyedListener_set(ContactDestroyedListener.getCPtr(value), value);
+  }
+
+  public static ContactDestroyedListener getCurrentContactDestroyedListener() {
+    long cPtr = gdxBulletJNI.currentContactDestroyedListener_get();
+    return (cPtr == 0) ? null : new ContactDestroyedListener(cPtr, false);
   }
 
   public static float resolveSingleCollision(btRigidBody body1, btCollisionObject colObj2, Vector3 contactPositionWorld, Vector3 contactNormalOnB, btContactSolverInfo solverInfo, float distance) {

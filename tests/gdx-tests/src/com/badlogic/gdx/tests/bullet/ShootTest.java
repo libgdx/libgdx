@@ -16,12 +16,7 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-
-/** @author xoppa */
+/** @author Xoppa */
 public class ShootTest extends BaseBulletTest {
 	final int BOXCOUNT_X = 5;
 	final int BOXCOUNT_Y = 5;

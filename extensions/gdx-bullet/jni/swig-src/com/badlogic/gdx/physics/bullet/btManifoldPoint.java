@@ -40,6 +40,37 @@ public class btManifoldPoint {
     }
   }
 
+	/** Temporary instance, use by native methods that return a btManifoldPoint instance */
+	protected final static btManifoldPoint temp = new btManifoldPoint(0, false);
+	public static btManifoldPoint internalTemp(long cPtr, boolean own) {
+		temp.reuse(cPtr, own);
+		return temp;
+	}
+	/** Pool of btManifoldPoint instances, used by director interface to provide the arguments. */
+	protected static final com.badlogic.gdx.utils.Pool<btManifoldPoint> pool = new com.badlogic.gdx.utils.Pool<btManifoldPoint>() {
+		@Override
+		protected btManifoldPoint newObject() {
+			return new btManifoldPoint(0, false);
+		}
+	};
+	/** Reuses a previous freed instance or creates a new instance and set it to reflect the specified native object */
+	public static btManifoldPoint obtain(long cPtr, boolean own) {
+		final btManifoldPoint result = pool.obtain();
+		result.reuse(cPtr, own);
+		return result;
+	}
+	/** delete the native object if required and allow the instance to be reused by the obtain method */
+	public static void free(final btManifoldPoint inst) {
+		inst.delete();
+		pool.free(inst);
+	}
+	/** Same as deleting and recreating this object with the new pointer, but without garbage collecting */
+	protected void reuse(final long cPtr, final boolean own) {
+		delete();
+		swigCPtr = cPtr;
+		swigCMemOwn = own;
+	}
+
   public btManifoldPoint() {
     this(gdxBulletJNI.new_btManifoldPoint__SWIG_0(), true);
   }
@@ -279,6 +310,14 @@ public class btManifoldPoint {
 
   public float getAppliedImpulse() {
     return gdxBulletJNI.btManifoldPoint_getAppliedImpulse(swigCPtr, this);
+  }
+
+  public int getUserValue() {
+    return gdxBulletJNI.btManifoldPoint_getUserValue(swigCPtr, this);
+  }
+
+  public void setUserValue(int value) {
+    gdxBulletJNI.btManifoldPoint_setUserValue(swigCPtr, this, value);
   }
 
 }
