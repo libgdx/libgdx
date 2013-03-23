@@ -527,6 +527,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		}
 	}
 
+	// jw: never called on lvp, why? see description in AndroidLiveWallpaper.onPause
 	void pause () {
 		synchronized (synch) {
 			if (!running) return;
@@ -543,6 +544,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		}
 	}
 
+	// jw: never called on lvp
 	void destroy () {
 		synchronized (synch) {
 			running = false;

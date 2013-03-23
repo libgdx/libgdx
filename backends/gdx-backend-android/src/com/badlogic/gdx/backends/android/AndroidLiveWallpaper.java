@@ -149,14 +149,18 @@ public class AndroidLiveWallpaper implements Application {
 
 		input.registerSensorListeners();
 		
+		// FIXME restore conditional execution if lifecycle errors will occur when GLSurfaceView used. 
+		// GLSurfaceView is guaranteed to work with this condition on, but GLSurfaceViewCupcake requires it off,
+		// so I disabled it.
+		//if (!firstResume)	// mentioned condition
+		if (graphics != null && graphics.view != null) {
+			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onResume();
+			else if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
+			else throw new RuntimeException("unimplemented");
+		}
+		
 		if (!firstResume)
 		{
-			if (graphics != null && graphics.view != null) {
-				if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onResume();
-				else if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
-				else throw new RuntimeException("unimplemented");
-			}
-
 			audio.resume();
 			graphics.resume();
 		}
