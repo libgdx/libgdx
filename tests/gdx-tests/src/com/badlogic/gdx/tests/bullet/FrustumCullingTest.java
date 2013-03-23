@@ -102,7 +102,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		return result;
 	}
 	
-	public static Array<BulletEntity> getEntitiesCollidingWithObject(final BulletWorld world, final btPairCachingGhostObject object, final Array<BulletEntity> out, final btManifoldArray tmpArr) {
+	public static Array<BulletEntity> getEntitiesCollidingWithObject(final BulletWorld world, final btCollisionObject object, final Array<BulletEntity> out, final btManifoldArray tmpArr) {
 		// Fetch the array of contacts
 		btBroadphasePairArray arr = world.broadphase.getOverlappingPairCache().getOverlappingPairArray();
 		// Get the user values (which are indices in the entities array) of all objects colliding with the object
@@ -153,9 +153,13 @@ public class FrustumCullingTest extends BaseBulletTest {
 				).color.set(Color.GRAY);
 		
 		frustumCam = new PerspectiveCamera(camera.fieldOfView, camera.viewportWidth, camera.viewportHeight);
+		frustumCam.far = Vector3.len(BOX_X_MAX, BOX_Y_MAX, BOX_Z_MAX);
+		frustumCam.update();
+		
 		overviewCam = camera;
 		overviewCam.position.set(BOX_X_MAX, BOX_Y_MAX, BOX_Z_MAX);
 		overviewCam.lookAt(Vector3.Zero);
+		overviewCam.far = 150f;
 		overviewCam.update();
 		
 		final Model frustumModel = createFrustumModel(frustumCam.frustum.planePoints);

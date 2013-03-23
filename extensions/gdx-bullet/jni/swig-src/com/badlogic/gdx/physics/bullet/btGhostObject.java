@@ -77,8 +77,7 @@ public class btGhostObject extends btCollisionObject {
   }
 
   public btCollisionObject getOverlappingObject(int index) {
-	long cPtr = gdxBulletJNI.btGhostObject_getOverlappingObject__SWIG_0(swigCPtr, this, index);
-	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+	return btCollisionObject.getInstance(gdxBulletJNI.btGhostObject_getOverlappingObject__SWIG_0(swigCPtr, this, index), false);
 }
 
   public btCollisionObjectArray getOverlappingPairs() {
