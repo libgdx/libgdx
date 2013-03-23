@@ -58,6 +58,7 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 		return 1L << (types.size - 1);
 	}
 	
+	public String id;
 	protected long mask;
 	protected Array<Attribute> attributes = new Array<Attribute>();
 	protected boolean sorted = true;

@@ -21,7 +21,7 @@ public final class ExclusiveTextures {
 	/** The weight added to a texture when its reused */
 	private final int reuseWeight;
 	/** The textures currently exclusive bound */
-	private final TextureDescription[] textures;
+	private final TextureDescriptor[] textures;
 	/** The weight (reuseWeight * reused - discarded) of the textures */
 	private final int[] weights;
 	/** The method of binding to use */
@@ -54,14 +54,14 @@ public final class ExclusiveTextures {
 		this.method = method;
 		this.offset = offset;
 		this.count = count;
-		this.textures = new TextureDescription[count];
+		this.textures = new TextureDescriptor[count];
 		for (int i = 0; i < count; i++)
-			this.textures[i] = new TextureDescription();
+			this.textures[i] = new TextureDescriptor();
 		this.reuseWeight = reuseWeight;
 		this.weights = (method == WEIGHTED) ? new int[count] : null;
 	}
 
-	private final TextureDescription tempDesc = new TextureDescription();
+	private final TextureDescriptor tempDesc = new TextureDescriptor();
 	/** @deprecated
 	 * Binds the texture if needed and sets it active, returns the unit */
 	public final int bindTexture(final Texture texture) {
@@ -71,7 +71,7 @@ public final class ExclusiveTextures {
 	}
 	
 	/** Binds the texture if needed and sets it active, returns the unit */
-	public final int bindTexture(final TextureDescription textureDesc) {
+	public final int bindTexture(final TextureDescriptor textureDesc) {
 		return bindTexture(textureDesc, false);
 	}
 
@@ -84,7 +84,7 @@ public final class ExclusiveTextures {
 	}
 	
 	/** Force binds the texture and sets it active, returns the unit */
-	public final int rebindTexture(final TextureDescription textureDesc) {
+	public final int rebindTexture(final TextureDescriptor textureDesc) {
 		return bindTexture(textureDesc, true);
 	}
 	
@@ -99,7 +99,7 @@ public final class ExclusiveTextures {
 		}
 	}
 	
-	private final int bindTexture(final TextureDescription textureDesc, final boolean rebind) {
+	private final int bindTexture(final TextureDescriptor textureDesc, final boolean rebind) {
 		int idx, result;
 		reused = false;
 		

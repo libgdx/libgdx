@@ -9,9 +9,13 @@ public class ColorAttribute extends NewMaterial.Attribute {
 	public final static long Diffuse = register(DiffuseAlias);
 	public final static String SpecularAlias = "specularColor";
 	public final static long Specular = register(SpecularAlias);
+	public final static String AmbientAlias = "ambientColor";
+	public static final long Ambient = register("ambientColor");
+	public final static String EmissiveAlias = "emissiveColor";
+	public static final long Emissive = register("emissiveColor");
 	
 	// Might be useful:...
-	protected static long Mask = Diffuse | Specular;
+	protected static long Mask = Ambient | Diffuse | Specular | Emissive;
 	
 	public final static boolean is(final long mask) {
 		return (mask & Mask) != 0;

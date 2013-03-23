@@ -21,7 +21,8 @@ public class JsonModelLoaderTest extends GdxTest {
 	@Override
 	public void create () {
 		JsonModelLoader loader = new JsonModelLoader();
-		model = loader.load(Gdx.files.internal("data/g3d/head.g3dj"), null);
+		com.badlogic.gdx.graphics.g3d.model.Model model2 = new com.badlogic.gdx.graphics.g3d.model.Model(loader.parseModel(Gdx.files.internal("data/g3d/head2.g3dj"),  null));
+		model = loader.load(Gdx.files.internal("data/g3d/head2.g3dj"), null);
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(1f, 1.5f, 1f);

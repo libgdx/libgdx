@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g3d.old.materials.Material;
 import com.badlogic.gdx.graphics.g3d.old.materials.MaterialAttribute;
 import com.badlogic.gdx.graphics.g3d.old.model.Model;
 import com.badlogic.gdx.graphics.g3d.old.model.SubMesh;
-import com.badlogic.gdx.graphics.g3d.utils.TextureDescription;
+import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -31,7 +31,7 @@ public class InterimModel implements NewModel {
 					result.add(ColorAttribute.createDiffuse(a.color));
 			} else if (attr instanceof com.badlogic.gdx.graphics.g3d.old.materials.TextureAttribute) {
 				com.badlogic.gdx.graphics.g3d.old.materials.TextureAttribute a = (com.badlogic.gdx.graphics.g3d.old.materials.TextureAttribute)attr;
-				final TextureDescription tex = new TextureDescription(a.texture, a.minFilter, a.magFilter, a.uWrap, a.vWrap);
+				final TextureDescriptor tex = new TextureDescriptor(a.texture, a.minFilter, a.magFilter, a.uWrap, a.vWrap);
 				if (a.name.compareTo(com.badlogic.gdx.graphics.g3d.old.materials.TextureAttribute.specularTexture)==0)
 					result.add(new TextureAttribute(TextureAttribute.Specular, tex));
 				else // if (a.name.compareTo(com.badlogic.gdx.graphics.g3d.materials.TextureAttribute.diffuseTexture)==0)
