@@ -147,22 +147,18 @@ void b2GearJoint::InitVelocityConstraints(const b2SolverData& data)
 	m_iC = m_bodyC->m_invI;
 	m_iD = m_bodyD->m_invI;
 
-	b2Vec2 cA = data.positions[m_indexA].c;
 	float32 aA = data.positions[m_indexA].a;
 	b2Vec2 vA = data.velocities[m_indexA].v;
 	float32 wA = data.velocities[m_indexA].w;
 
-	b2Vec2 cB = data.positions[m_indexB].c;
 	float32 aB = data.positions[m_indexB].a;
 	b2Vec2 vB = data.velocities[m_indexB].v;
 	float32 wB = data.velocities[m_indexB].w;
 
-	b2Vec2 cC = data.positions[m_indexC].c;
 	float32 aC = data.positions[m_indexC].a;
 	b2Vec2 vC = data.velocities[m_indexC].v;
 	float32 wC = data.velocities[m_indexC].w;
 
-	b2Vec2 cD = data.positions[m_indexD].c;
 	float32 aD = data.positions[m_indexD].a;
 	b2Vec2 vD = data.velocities[m_indexD].v;
 	float32 wD = data.velocities[m_indexD].w;

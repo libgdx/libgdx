@@ -112,7 +112,7 @@ public class ImageProcessor {
 			Rect existing = crcs.get(crc);
 			if (existing != null) {
 				System.out.println(rect.name + " (alias of " + existing.name + ")");
-				existing.aliases.add(rect);
+				existing.aliases.add(rect.name);
 				return;
 			}
 			crcs.put(crc, rect);

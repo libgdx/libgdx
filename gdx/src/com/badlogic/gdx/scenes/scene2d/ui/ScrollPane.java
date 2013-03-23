@@ -567,7 +567,7 @@ public class ScrollPane extends WidgetGroup {
 	/** Sets the {@link Actor} embedded in this scroll pane.
 	 * @param widget May be null to remove any current actor. */
 	public void setWidget (Actor widget) {
-		if(widget == this) throw new IllegalArgumentException("widget cannot be same object");
+		if (widget == this) throw new IllegalArgumentException("widget cannot be same object");
 		if (this.widget != null) super.removeActor(this.widget);
 		this.widget = widget;
 		if (widget != null) super.addActor(widget);
@@ -578,15 +578,23 @@ public class ScrollPane extends WidgetGroup {
 		return widget;
 	}
 
+	/** @deprecated */
 	public void addActor (Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
+	/** @deprecated */
 	public void addActorAt (int index, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
+	/** @deprecated */
 	public void addActorBefore (Actor actorBefore, Actor actor) {
+		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+	}
+
+	/** @deprecated */
+	public void addActorAfter (Actor actorAfter, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 

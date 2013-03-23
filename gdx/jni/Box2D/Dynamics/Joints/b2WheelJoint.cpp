@@ -55,7 +55,7 @@ b2WheelJoint::b2WheelJoint(const b2WheelJointDef* def)
 
 	m_mass = 0.0f;
 	m_impulse = 0.0f;
-	m_motorMass = 0.0;
+	m_motorMass = 0.0f;
 	m_motorImpulse = 0.0f;
 	m_springMass = 0.0f;
 	m_springImpulse = 0.0f;
