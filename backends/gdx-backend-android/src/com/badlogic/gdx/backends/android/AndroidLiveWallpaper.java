@@ -357,4 +357,9 @@ public class AndroidLiveWallpaper implements Application {
 			lifecycleListeners.removeValue(listener, true);
 		}		
 	}
+
+	@Override
+	public ApplicationListener getApplicationListener () {
+		return listener;
+	}
 }
