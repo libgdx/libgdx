@@ -506,7 +506,7 @@ public class GLBaseSurfaceViewLW
 	 * An interface for customizing the eglCreateContext and eglDestroyContext calls.
 	 * <p>
 	 * This interface must be implemented by clients wishing to call
-	 * {@link GLBaseSurfaceViewLW#setEGLContextFactory(EGLContextFactory)}
+	 * GLBaseSurfaceViewLW#setEGLContextFactory(EGLContextFactory)
 	 */
 	public interface EGLContextFactory {
 		EGLContext createContext (EGL10 egl, EGLDisplay display, EGLConfig eglConfig);
@@ -529,7 +529,7 @@ public class GLBaseSurfaceViewLW
 	 * An interface for customizing the eglCreateWindowSurface and eglDestroySurface calls.
 	 * <p>
 	 * This interface must be implemented by clients wishing to call
-	 * {@link GLBaseSurfaceViewLW#setEGLWindowSurfaceFactory(EGLWindowSurfaceFactory)}
+	 * GLBaseSurfaceViewLW#setEGLWindowSurfaceFactory(EGLWindowSurfaceFactory)
 	 */
 	public interface EGLWindowSurfaceFactory {
 		EGLSurface createWindowSurface (EGL10 egl, EGLDisplay display, EGLConfig config, Object nativeWindow);

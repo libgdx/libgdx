@@ -64,7 +64,7 @@ public class TiledMapBench extends GdxTest {
 						layer.setCell(x, y, cell);
 					}
 				}
-				layers.addLayer(layer);
+				layers.add(layer);
 			}
 		}
 		

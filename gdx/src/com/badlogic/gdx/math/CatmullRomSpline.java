@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.math;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 
 /** @author Xoppa */
@@ -47,10 +48,10 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 		final int n = points.length;
 		final float u2 = u * u;
 		final float u3 = u2 * u;
-		out.set(points[i]).mul(1.5f * u3 - 2.5f * u2 + 1.0f);
-		if (continuous || i > 0) out.add(tmp.set(points[(n+i-1)%n]).mul(-0.5f * u3 + u2 - 0.5f * u));
-		if (continuous || i < (n - 1)) out.add(tmp.set(points[(i + 1)%n]).mul(-1.5f * u3 + 2f * u2 + 0.5f * u));
-		if (continuous || i < (n - 2)) out.add(tmp.set(points[(i + 2)%n]).mul(0.5f * u3 - 0.5f * u2));
+		out.set(points[i]).scl(1.5f * u3 - 2.5f * u2 + 1.0f);
+		if (continuous || i > 0) out.add(tmp.set(points[(n+i-1)%n]).scl(-0.5f * u3 + u2 - 0.5f * u));
+		if (continuous || i < (n - 1)) out.add(tmp.set(points[(i + 1)%n]).scl(-1.5f * u3 + 2f * u2 + 0.5f * u));
+		if (continuous || i < (n - 2)) out.add(tmp.set(points[(i + 2)%n]).scl(0.5f * u3 - 0.5f * u2));
 		return out;
 	}
 	
@@ -58,6 +59,7 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 	public boolean continuous;
 	public int spanCount;
 	private T tmp;
+	private T tmp2;
 	
 	public CatmullRomSpline() { }
 	public CatmullRomSpline(final T[] controlPoints, final boolean continuous) {
@@ -67,6 +69,8 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 	public CatmullRomSpline set(final T[] controlPoints, final boolean continuous) {
 		if (tmp == null)
 			tmp = controlPoints[0].cpy();
+		if (tmp2 == null)
+			tmp2 = controlPoints[0].cpy();
 		this.controlPoints = controlPoints;
 		this.continuous = continuous;
 		this.spanCount = continuous ? controlPoints.length : controlPoints.length - 3;
@@ -141,5 +145,10 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 		float s = (L2*L2 + L1*L1 - L3*L3) / (2*L1);
 		float u = MathUtils.clamp((L1-s)/L1, 0f, 1f);
 		return ((float)n + u) / spanCount;
+	}
+	
+	@Override
+	public float locate (T v) {
+		return approximate(v);
 	}
 }

@@ -29,6 +29,7 @@ public class FullscreenTest extends GdxTest {
 
 	Mesh mesh;
 	Texture texture;
+	boolean fullscreen = false;
 
 	@Override
 	public void create () {
@@ -41,7 +42,6 @@ public class FullscreenTest extends GdxTest {
 		for (DisplayMode mode : modes) {
 			System.out.println(mode);
 		}
-		Gdx.graphics.setDisplayMode(800, 600, true);
 		Gdx.app.log("FullscreenTest", Gdx.graphics.getBufferFormat().toString());
 	}
 
@@ -59,7 +59,14 @@ public class FullscreenTest extends GdxTest {
 		mesh.render(GL10.GL_TRIANGLES);
 
 		if (Gdx.input.justTouched()) {
-			Gdx.graphics.setDisplayMode(480, 320, false);
+			if(fullscreen) {
+				Gdx.graphics.setDisplayMode(480, 320, false);
+				fullscreen = false;
+			} else {
+				DisplayMode desktopDisplayMode = Gdx.graphics.getDesktopDisplayMode();
+				Gdx.graphics.setDisplayMode(desktopDisplayMode.width, desktopDisplayMode.height, true);
+				fullscreen = true;
+			}
 		}
 	}
 

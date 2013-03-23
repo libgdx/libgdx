@@ -63,6 +63,10 @@ public class TextField extends Widget {
 	static private final char DELETE = 127;
 	static private final char BULLET = 149;
 
+	static private final Vector2 tmp1 = new Vector2();
+	static private final Vector2 tmp2 = new Vector2();
+	static private final Vector2 tmp3 = new Vector2();
+
 	TextFieldStyle style;
 	String text, messageText;
 	private CharSequence displayText;
@@ -100,7 +104,7 @@ public class TextField extends Widget {
 	float keyRepeatInitialTime = 0.4f;
 	float keyRepeatTime = 0.1f;
 	boolean rightAligned;
-	
+
 	int maxLength = 0;
 
 	public TextField (String text, Skin skin) {
@@ -129,7 +133,7 @@ public class TextField extends Widget {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (!super.touchDown(event, x, y, pointer, button)) return false;
 				if (pointer == 0 && button != 0) return false;
-				if (disabled) return true;				
+				if (disabled) return true;
 				clearSelection();
 				setCursorPosition(x);
 				selectionStart = cursor;
@@ -360,12 +364,12 @@ public class TextField extends Widget {
 			}
 		});
 	}
-	
-	public void setMaxLength(int maxLength) {
+
+	public void setMaxLength (int maxLength) {
 		this.maxLength = maxLength;
 	}
-	
-	public int getMaxLength() {
+
+	public int getMaxLength () {
 		return this.maxLength;
 	}
 
@@ -482,7 +486,7 @@ public class TextField extends Widget {
 				} else
 					font.setColor(0.7f, 0.7f, 0.7f, parentAlpha);
 				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
-				font.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset);
+				messageFont.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset);
 			}
 		} else {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
@@ -583,14 +587,6 @@ public class TextField extends Widget {
 		cursor = minIndex;
 		clearSelection();
 	}
-	
-	/*
-	 * Three hacks to work around the inability to stack allocate small scratch-space objects in Java.  
-	 * Used by #next() and #findNextTextField.
-	 */
-	private static final Vector2 tmp1 = new Vector2();
-	private static final Vector2 tmp2 = new Vector2();
-	private static final Vector2 tmp3 = new Vector2();
 
 	/** Focuses the next TextField. If none is found, the keyboard is hidden. Does nothing if the text field is not in a stage.
 	 * @param up If true, the TextField with the same or next smallest y coordinate is found, else the next highest. */
@@ -773,16 +769,16 @@ public class TextField extends Widget {
 	public boolean isDisabled () {
 		return disabled;
 	}
-	
-	public boolean isPasswordMode(){
+
+	public boolean isPasswordMode () {
 		return passwordMode;
 	}
-	
-	public TextFieldFilter getTextFieldFilter(){
+
+	public TextFieldFilter getTextFieldFilter () {
 		return filter;
 	}
 
- 	class KeyRepeatTask extends Task {
+	class KeyRepeatTask extends Task {
 		int keycode;
 
 		public void run () {

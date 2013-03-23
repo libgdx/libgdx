@@ -32,7 +32,7 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 	 * @param tmp A temporary vector to be used by the calculation.
 	 * @return The value specified by out for chaining */
 	public static <T extends Vector<T>> T linear(final T out, final float t, final T p0, final T p1, final T tmp) {
-		return out.set(p0).mul(1f - t).add(tmp.set(p1).mul(t)); // Could just use lerp...
+		return out.set(p0).scl(1f - t).add(tmp.set(p1).scl(t)); // Could just use lerp...
 	}
 	
 	/** Quadratic Bezier curve 
@@ -45,7 +45,7 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 	 * @return The value specified by out for chaining */
 	public static <T extends Vector<T>> T quadratic(final T out, final float t, final T p0, final T p1, final T p2, final T tmp) {
 		final float dt = 1f - t;
-		return out.set(p0).mul(dt*dt).add(tmp.set(p1).mul(2*dt*t)).add(tmp.set(p2).mul(t*t));
+		return out.set(p0).scl(dt*dt).add(tmp.set(p1).scl(2*dt*t)).add(tmp.set(p2).scl(t*t));
 	}
 	
 	/** Cubic Bezier curve
@@ -61,7 +61,7 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 		final float dt = 1f - t;
 		final float dt2 = dt * dt;
 		final float t2 = t * t;
-		return out.set(p0).mul(dt2*dt).add(tmp.set(p1).mul(3*dt2*t)).add(tmp.set(p2).mul(3*dt*t2)).add(tmp.set(p3).mul(t2*t));
+		return out.set(p0).scl(dt2*dt).add(tmp.set(p1).scl(3*dt2*t)).add(tmp.set(p2).scl(3*dt*t2)).add(tmp.set(p3).scl(t2*t));
 	}
 	
 	public Array<T> points = new Array<T>();
@@ -121,5 +121,11 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 		float l3 = p3.dst(p1);
 		float s = (l2*l2 + l1*l1 - l3*l3) / (2*l1);
 		return MathUtils.clamp((l1-s)/l1, 0f, 1f);
+	}
+	
+	@Override
+	public float locate (T v) {
+		// TODO implement a precise method
+		return approximate(v);
 	}
 }

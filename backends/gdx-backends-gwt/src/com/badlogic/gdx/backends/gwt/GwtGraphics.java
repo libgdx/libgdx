@@ -25,7 +25,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.dom.client.CanvasElement;
@@ -98,11 +97,6 @@ public class GwtGraphics implements Graphics {
 	@Override
 	public GL20 getGL20 () {
 		return gl;
-	}
-
-	@Override
-	public GLU getGLU () {
-		return null;
 	}
 
 	@Override

@@ -14,7 +14,7 @@ public class MapLayers implements Iterable<MapLayer> {
 	 * @param index
 	 * @return layer at index
 	 */
-	public MapLayer getLayer(int index) {
+	public MapLayer get(int index) {
 		return layers.get(index);
 	}
 	
@@ -22,7 +22,7 @@ public class MapLayers implements Iterable<MapLayer> {
 	 * @param name
 	 * @return first layer matching the name, null otherwise
 	 */
-	public MapLayer getLayer(String name) {
+	public MapLayer get(String name) {
 		for (MapLayer layer : layers) {
 			if (name.equals(layer.getName())) {
 				return layer;
@@ -31,24 +31,29 @@ public class MapLayers implements Iterable<MapLayer> {
 		return null;
 	}
 	
+	/** @return number of layers in the collection */
+	public int getCount() {
+		return layers.size;
+	}
+
 	/**
 	 * @param layer layer to be added to the set
 	 */
-	public void addLayer(MapLayer layer) {
+	public void add(MapLayer layer) {
 		this.layers.add(layer);
 	}
 	
 	/**
 	 * @param index removes layer at index
 	 */
-	public void removeLayer(int index) {
+	public void remove(int index) {
 		layers.removeIndex(index);
 	}
 	
 	/**
 	 * @param layer layer to be removed
 	 */
-	public void removeLayer(MapLayer layer) {
+	public void remove(MapLayer layer) {
 		layers.removeValue(layer, true);
 	}
 
@@ -56,8 +61,8 @@ public class MapLayers implements Iterable<MapLayer> {
 	 * @param type
 	 * @return array with all the layers matching type
 	 */
-	public <T extends MapLayer> Array<T> getLayersByType(Class<T> type) {
-		return getLayersByType(type, new Array<T>());	
+	public <T extends MapLayer> Array<T> getByType(Class<T> type) {
+		return getByType(type, new Array<T>());
 	}
 	
 	/**
@@ -66,7 +71,7 @@ public class MapLayers implements Iterable<MapLayer> {
 	 * @param fill array to be filled with the matching layers
 	 * @return array with all the layers matching type
 	 */
-	public <T extends MapLayer> Array<T> getLayersByType(Class<T> type, Array<T> fill) {
+	public <T extends MapLayer> Array<T> getByType(Class<T> type, Array<T> fill) {
 		fill.clear();
 		for (MapLayer layer : layers) {
 			if (type.isInstance(layer)) {

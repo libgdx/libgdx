@@ -19,10 +19,10 @@ package com.badlogic.gdx.tests.bullet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
-import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
+import com.badlogic.gdx.graphics.g3d.old.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.old.loaders.wavefront.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.old.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.old.model.still.StillSubMesh;
 import com.badlogic.gdx.physics.bullet.btConvexHullShape;
 import com.badlogic.gdx.physics.bullet.btShapeHull;
 

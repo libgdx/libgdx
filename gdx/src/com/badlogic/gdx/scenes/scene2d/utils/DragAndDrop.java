@@ -28,6 +28,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 /** Manages drag and drop operations through registered drag sources and drop targets.
  * @author Nathan Sweet */
 public class DragAndDrop {
+	static final Vector2 tmpVector = new Vector2();
+
 	Source source;
 	Payload payload;
 	Actor dragActor;
@@ -41,9 +43,6 @@ public class DragAndDrop {
 	long dragStartTime;
 	int dragTime = 250;
 	int activePointer = -1;
-
-	/* Scratch vector used to convert event's stage coordinates to local coordinates. */
-	static final Vector2 tmpVector = new Vector2();
 
 	public void addSource (final Source source) {
 		DragListener listener = new DragListener() {

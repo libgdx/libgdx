@@ -22,12 +22,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.old.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.old.materials.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.old.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.old.materials.Material;
+import com.badlogic.gdx.graphics.g3d.old.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.old.model.still.StillModel;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MaterialTest extends GdxTest {

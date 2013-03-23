@@ -8,26 +8,26 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.loaders.json.JsonModelLoader;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.model.Model;
-import com.badlogic.gdx.graphics.g3d.model.SubMesh;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
-import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
-import com.badlogic.gdx.graphics.g3d.xoppa.RenderBatch;
-import com.badlogic.gdx.graphics.g3d.xoppa.RenderContext;
-import com.badlogic.gdx.graphics.g3d.xoppa.RenderInstance;
-import com.badlogic.gdx.graphics.g3d.xoppa.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.xoppa.materials.NewMaterial;
-import com.badlogic.gdx.graphics.g3d.xoppa.test.Light;
-import com.badlogic.gdx.graphics.g3d.xoppa.test.NewModel;
-import com.badlogic.gdx.graphics.g3d.xoppa.test.OldBatchRendererGLES11;
-import com.badlogic.gdx.graphics.g3d.xoppa.test.OldBatchRendererGLES20;
-import com.badlogic.gdx.graphics.g3d.xoppa.test.InterimModel;
-import com.badlogic.gdx.graphics.g3d.xoppa.test.TestShader;
-import com.badlogic.gdx.graphics.g3d.xoppa.utils.ExclusiveTextures;
+import com.badlogic.gdx.graphics.g3d.RenderBatch;
+import com.badlogic.gdx.graphics.g3d.RenderContext;
+import com.badlogic.gdx.graphics.g3d.RenderInstance;
+import com.badlogic.gdx.graphics.g3d.loader.JsonModelLoader;
+import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
+import com.badlogic.gdx.graphics.g3d.old.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.old.materials.Material;
+import com.badlogic.gdx.graphics.g3d.old.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.old.model.Model;
+import com.badlogic.gdx.graphics.g3d.old.model.SubMesh;
+import com.badlogic.gdx.graphics.g3d.old.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.old.model.still.StillSubMesh;
+import com.badlogic.gdx.graphics.g3d.test.InterimModel;
+import com.badlogic.gdx.graphics.g3d.test.Light;
+import com.badlogic.gdx.graphics.g3d.test.NewModel;
+import com.badlogic.gdx.graphics.g3d.test.OldBatchRendererGLES11;
+import com.badlogic.gdx.graphics.g3d.test.OldBatchRendererGLES20;
+import com.badlogic.gdx.graphics.g3d.test.TestShader;
+import com.badlogic.gdx.graphics.g3d.utils.ExclusiveTextures;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -91,7 +91,7 @@ public class BatchRenderTest extends GdxTest {
 		for (int i = 0; i < textures.size; i++)
 			cubes.add(new InterimModel(new StillModel(new StillSubMesh(mesh.name, mesh.mesh, mesh.primitiveType, new Material("mat", new TextureAttribute(textures.get(i), 0, TextureAttribute.diffuseTexture))))));
 		
-		createScene1();
+		createScene2();
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.near = 1f;
@@ -121,7 +121,7 @@ public class BatchRenderTest extends GdxTest {
 		instances.add(new ModelInstance(testModel, (new Matrix4()).setToTranslation(0, 5, 4)));
 		instances.add(new ModelInstance(carModel, (new Matrix4()).setToTranslation(6, 0, -4)));
 		
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 1000; i++)
 			instances.add(new ModelInstance(sphereModel, (new Matrix4()).setToTranslation(MIN_X + (float)Math.random() * SIZE_X, MIN_Y + (float)Math.random() * SIZE_Y, MIN_Z + (float)Math.random() * SIZE_Z).scl(0.25f + (float)Math.random())));		
 	}
 	

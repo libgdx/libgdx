@@ -17,16 +17,19 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
+import com.badlogic.gdx.maps.ImageResolver.AssetManagerImageResolver;
+import com.badlogic.gdx.maps.ImageResolver.DirectImageResolver;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.ImageResolver.AssetManagerImageResolver;
-import com.badlogic.gdx.maps.ImageResolver.DirectImageResolver;
+import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Polyline;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -40,16 +43,21 @@ import com.badlogic.gdx.utils.XmlReader.Element;
 public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.Parameters> {
 
 	public static class Parameters extends AssetLoaderParameters<TiledMap> {
-		
+		/** Whether to load the map for a y-up coordinate system */
+		boolean yUp = true;
 	}
 	
-	private static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
-	private static final int FLAG_FLIP_VERTICALLY = 0x40000000;
-	private static final int FLAG_FLIP_DIAGONALLY = 0x20000000;		
-	private static final int MASK_CLEAR  = 0xE0000000;
+	protected static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
+	protected static final int FLAG_FLIP_VERTICALLY = 0x40000000;
+	protected static final int FLAG_FLIP_DIAGONALLY = 0x20000000;
+	protected static final int MASK_CLEAR  = 0xE0000000;
 	
-	private XmlReader xml = new XmlReader();
-	private Element root;
+	protected XmlReader xml = new XmlReader();
+	protected Element root;
+	protected boolean yUp;
+
+	protected int mapWidthInPixels;
+	protected int mapHeightInPixels;
 	
 	public TmxMapLoader() {
 		super(new InternalFileHandleResolver());
@@ -67,12 +75,26 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	/**
 	 * Loads the {@link TiledMap} from the given file. The file is
 	 * resolved via the {@link FileHandleResolver} set in the constructor
-	 * of this class. By default it will resolve to an internal file.
+	 * of this class. By default it will resolve to an internal file. The
+	 * map will be loaded for a y-up coordinate system.
 	 * @param fileName the filename
 	 * @return the TiledMap
 	 */
 	public TiledMap load(String fileName) {
+		return load(fileName, true);
+	}
+
+	/**
+	 * Loads the {@link TiledMap} from the given file. The file is
+	 * resolved via the {@link FileHandleResolver} set in the constructor
+	 * of this class. By default it will resolve to an internal file.
+	 * @param fileName the filename
+	 * @param yUp whether to load the map for a y-up coordinate system
+	 * @return the TiledMap
+	 */
+	public TiledMap load(String fileName, boolean yUp) {
 		try {
+			this.yUp = yUp;
 			FileHandle tmxFile = resolve(fileName);
 			root = xml.parse(tmxFile);
 			ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
@@ -91,6 +113,11 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	@Override
 	public TiledMap load(AssetManager assetManager, String fileName, Parameters parameter) {
 		FileHandle tmxFile = resolve(fileName);
+		if (parameter != null) {
+			yUp = parameter.yUp;
+		} else {
+			yUp = true;
+		}
 		try {
 			return loadTilemap(root, tmxFile, new AssetManagerImageResolver(assetManager));
 		} catch (Exception e) {
@@ -128,8 +155,30 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	 * @param imageResolver the {@link ImageResolver}
 	 * @return the {@link TiledMap}
 	 */
-	private TiledMap loadTilemap(Element root, FileHandle tmxFile, ImageResolver imageResolver) {
+	protected TiledMap loadTilemap(Element root, FileHandle tmxFile, ImageResolver imageResolver) {
 		TiledMap map = new TiledMap();
+		
+		String mapOrientation = root.getAttribute("orientation", null);
+		int mapWidth = root.getIntAttribute("width", 0);
+		int mapHeight = root.getIntAttribute("height", 0);
+		int tileWidth = root.getIntAttribute("tilewidth", 0);
+		int tileHeight = root.getIntAttribute("tileheight", 0);
+		String mapBackgroundColor = root.getAttribute("backgroundcolor", null);
+		
+		MapProperties mapProperties = map.getProperties();
+		if (mapOrientation != null) {
+			mapProperties.put("orientation", mapBackgroundColor);
+		}
+		mapProperties.put("width", mapWidth);
+		mapProperties.put("height", mapHeight);
+		mapProperties.put("tilewidth", tileWidth);
+		mapProperties.put("tileheight", tileHeight);
+		if (mapBackgroundColor != null) {
+			mapProperties.put("backgroundcolor", mapBackgroundColor);
+		}
+		mapWidthInPixels = mapWidth * tileWidth;
+		mapHeightInPixels = mapHeight * tileHeight;
+		
 		Element properties = root.getChildByName("properties");
 		if (properties != null) {
 			loadProperties(map.getProperties(), properties);
@@ -157,7 +206,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 	 * @return a list of filenames for images containing tiles
 	 * @throws IOException 
 	 */
-	private Array<FileHandle> loadTilesets(Element root, FileHandle tmxFile) throws IOException {
+	protected Array<FileHandle> loadTilesets(Element root, FileHandle tmxFile) throws IOException {
 		Array<FileHandle> images = new Array<FileHandle>();
 		for (Element tileset : root.getChildrenByName("tileset")) {
 			String source = tileset.getAttribute("source", null);
@@ -176,7 +225,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		return images;
 	}
 
-	private void loadTileSet(TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
+	protected void loadTileSet(TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
 		if (element.getName().equals("tileset")) {
 			String name = element.get("name", null);
 			int firstgid = element.getIntAttribute("firstgid", 1);
@@ -217,7 +266,12 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			
 			for (int y = margin; y <= stopHeight; y += tileheight + spacing) {
 				for (int x = margin; x <= stopWidth; x += tilewidth + spacing) {
-					TiledMapTile tile = new StaticTiledMapTile(new TextureRegion(texture, x, y, tilewidth, tileheight));
+					TextureRegion tileRegion = new TextureRegion(texture, x, y, tilewidth, tileheight);
+					if (!yUp) {
+						tileRegion.flip(false, true);
+					}
+					TiledMapTile tile = new StaticTiledMapTile(tileRegion);
+					tile.setId(id);
 					tileset.putTile(id++, tile);
 				}
 			}
@@ -228,7 +282,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 				int localtid = tileElement.getIntAttribute("id", 0);
 				TiledMapTile tile = tileset.getTile(firstgid + localtid);
 				if (tile!= null) {
-					Element properties = element.getChildByName("properties");
+					Element properties = tileElement.getChildByName("properties");
 					if (properties != null) {
 						loadProperties(tile.getProperties(), properties);
 					}
@@ -243,14 +297,18 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		}		
 	}
 	
-	private void loadTileLayer(TiledMap map, Element element) {
+	protected void loadTileLayer(TiledMap map, Element element) {
 		if (element.getName().equals("layer")) {
 			String name = element.getAttribute("name", null);
 			int width = element.getIntAttribute("width", 0);
 			int height = element.getIntAttribute("height", 0);
 			int tileWidth = element.getParent().getIntAttribute("tilewidth", 0);
 			int tileHeight = element.getParent().getIntAttribute("tileheight", 0);
+			boolean visible = element.getIntAttribute("visible", 1) == 1;
+			float opacity = element.getFloatAttribute("opacity", 1.0f);
 			TiledMapTileLayer layer = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
+			layer.setVisible(visible);
+			layer.setOpacity(opacity);
 			layer.setName(name);
 			
 			TiledMapTileSets tilesets = map.getTileSets();
@@ -277,21 +335,21 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 							if (flipDiagonally) {
 								if (flipHorizontally && flipVertically) {
 									cell.setFlipHorizontally(true);
-									cell.setRotation(Cell.ROTATE_90);
-								} else if (flipHorizontally) {
-									cell.setRotation(Cell.ROTATE_90);
-								} else if (flipVertically) {
 									cell.setRotation(Cell.ROTATE_270);
+								} else if (flipHorizontally) {
+									cell.setRotation(Cell.ROTATE_270);
+								} else if (flipVertically) {
+									cell.setRotation(Cell.ROTATE_90);
 								} else {
 									cell.setFlipVertically(true);
-									cell.setRotation(Cell.ROTATE_90);
+									cell.setRotation(Cell.ROTATE_270);
 								}
 							} else {
 								cell.setFlipHorizontally(flipHorizontally);
 								cell.setFlipVertically(flipVertically);
 							}
 							cell.setTile(tile);
-							layer.setCell(x, height - 1 - y, cell);
+							layer.setCell(x, yUp ? height - 1 - y : y, cell);
 						}
 					}
 				}
@@ -322,28 +380,28 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 									if (flipDiagonally) {
 										if (flipHorizontally && flipVertically) {
 											cell.setFlipHorizontally(true);
-											cell.setRotation(Cell.ROTATE_90);
-										} else if (flipHorizontally) {
-											cell.setRotation(Cell.ROTATE_90);
-										} else if (flipVertically) {
 											cell.setRotation(Cell.ROTATE_270);
+										} else if (flipHorizontally) {
+											cell.setRotation(Cell.ROTATE_270);
+										} else if (flipVertically) {
+											cell.setRotation(Cell.ROTATE_90);
 										} else {
 											cell.setFlipVertically(true);
-											cell.setRotation(Cell.ROTATE_90);
+											cell.setRotation(Cell.ROTATE_270);
 										}
 									} else {
 										cell.setFlipHorizontally(flipHorizontally);
 										cell.setFlipVertically(flipVertically);
 									}
 									cell.setTile(tile);
-									layer.setCell(x, height - 1 - y, cell);
+									layer.setCell(x, yUp ? height - 1 - y : y, cell);
 								}
 							}
 						}
 					} else if (compression.equals("gzip")) {
-						throw new GdxRuntimeException("Not supported in GWT backend");
+						throw new GdxRuntimeException("GZIP compression not supported in GWT backend");
 					} else if (compression.equals("zlib")) {
-						throw new GdxRuntimeException("Not supported in GWT backend");
+						throw new GdxRuntimeException("ZLIB compression not supported in GWT backend");
 					}
 				}
 			}
@@ -351,11 +409,11 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			if (properties != null) {
 				loadProperties(layer.getProperties(), properties);
 			}
-			map.getLayers().addLayer(layer);
+			map.getLayers().add(layer);
 		}		
 	}
 	
-	public void loadObjectGroup(TiledMap map, Element element) {
+	protected void loadObjectGroup(TiledMap map, Element element) {
 		if (element.getName().equals("objectgroup")) {
 			String name = element.getAttribute("name", null);
 			MapLayer layer = new MapLayer();
@@ -369,66 +427,76 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 				loadObject(layer, objectElement);
 			}
 
-			map.getLayers().addLayer(layer);
+			map.getLayers().add(layer);
 		}
 	}
 	
-	private void loadObject(MapLayer layer, Element element) {
+	protected void loadObject(MapLayer layer, Element element) {
 		if (element.getName().equals("object")) {
 			MapObject object = null;
 			
 			int x = element.getIntAttribute("x", 0);
-			int y = element.getIntAttribute("y", 0);
-			
+			int y = (yUp ? mapHeightInPixels - element.getIntAttribute("y", 0) : element.getIntAttribute("y", 0));
+
 			int width = element.getIntAttribute("width", 0);
 			int height = element.getIntAttribute("height", 0);
 			
 			if (element.getChildCount() > 0) {
-				Element child = element.getChildByName("polygon");
-				if (child != null) {
+				Element child = null;
+				if ((child = element.getChildByName("polygon")) != null) {
 					String[] points = child.getAttribute("points").split(" ");
 					float[] vertices = new float[points.length * 2];
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
-						vertices[i * 2] = x + Integer.parseInt(point[0]);
-						vertices[i * 2 + 1] = y + Integer.parseInt(point[1]);
-					}
-					object = new PolygonMapObject(vertices);
-				} else {
-					child = element.getChildByName("polyline");
-					if (child != null) {
-						String[] points = child.getAttribute("points").split(" ");
-						float[] vertices = new float[points.length * 2];
-						for (int i = 0; i < points.length; i++) {
-							String[] point = points[i].split(",");
-							vertices[i * 2] = x + Integer.parseInt(point[0]);
-							vertices[i * 2 + 1] = y + Integer.parseInt(point[1]);
+						vertices[i * 2] = Integer.parseInt(point[0]);
+						vertices[i * 2 + 1] = Integer.parseInt(point[1]);
+						if (yUp) {
+							vertices[i * 2 + 1] *= -1;
 						}
-						object = new PolylineMapObject(vertices);
 					}
+					Polygon polygon = new Polygon(vertices);
+					polygon.setPosition(x, y);
+					object = new PolygonMapObject(polygon);
+				} else if ((child = element.getChildByName("polyline")) != null) {
+					String[] points = child.getAttribute("points").split(" ");
+					float[] vertices = new float[points.length * 2];
+					for (int i = 0; i < points.length; i++) {
+						String[] point = points[i].split(",");
+						vertices[i * 2] = Integer.parseInt(point[0]);
+						vertices[i * 2 + 1] = Integer.parseInt(point[1]);
+						if (yUp) {
+							vertices[i * 2 + 1] *= -1;
+						}
+					}
+					Polyline polyline = new Polyline(vertices);
+					polyline.setPosition(x, y);
+					object = new PolylineMapObject(polyline);
+				} else if ((child = element.getChildByName("ellipse")) != null) {
+					object = new EllipseMapObject(x, yUp ? y - height : y, width, height);
 				}
 			}
 			if (object == null) {
-				object = new RectangleMapObject(x, y, width, height);
+				object = new RectangleMapObject(x, yUp ? y - height : y, width, height);
 			}
 			object.setName(element.getAttribute("name", null));
 			String type = element.getAttribute("type", null);
 			if (type != null) {
 				object.getProperties().put("type", type);
 			}
+			object.setVisible(element.getIntAttribute("visible", 1) == 1);
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
 				loadProperties(object.getProperties(), properties);
 			}
-			layer.getObjects().addObject(object);
+			layer.getObjects().add(object);
 		}
 	}
 	
-	private void loadProperties(MapProperties properties, Element element) {
+	protected void loadProperties(MapProperties properties, Element element) {
 		if (element.getName().equals("properties")) {
 			for (Element property : element.getChildrenByName("property")) {
 				String name = property.getAttribute("name", null);
-				String value = property.getAttribute(name, null);
+				String value = property.getAttribute("value", null);
 				if (value == null) {
 					value = property.getText();
 				}
@@ -437,7 +505,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		}
 	}
 	
-	private static FileHandle getRelativeFileHandle(FileHandle file, String path) {
+	protected static FileHandle getRelativeFileHandle(FileHandle file, String path) {
 		StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
 		FileHandle result = file.parent();
 		while (tokenizer.hasMoreElements()) {
@@ -451,7 +519,7 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 		return result;		
 	}
 	
-	private static int unsignedByteToInt (byte b) {
+	protected static int unsignedByteToInt (byte b) {
 		return (int) b & 0xFF;
 	}
 

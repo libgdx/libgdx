@@ -33,6 +33,12 @@ public interface Vector<T extends Vector> {
 	 * @return This vector for chaining */
 	T limit (float limit);
 
+	/** Clamps this vector's length to given value
+	 * @param min Min length
+	 * @param max Max length
+	 * @return This vector for chaining */
+	T clamp (float min, float max);
+	
 	/** Sets this vector from the given vector
 	 * @param v The vector
 	 * @return This vector for chaining */
@@ -56,18 +62,14 @@ public interface Vector<T extends Vector> {
 	 * @return The dot product between this and the other vector */
 	float dot (T v);
 
-	/** Multiplies this vector by a scalar
+	/** Scales this vector by a scalar
 	 * @param scalar The scalar
 	 * @return This vector for chaining */
-	T mul (float scalar);
+	T scl (float scalar);
 
-	/** Multiplies this vector by another vector
+	/** Scales this vector by another vector
 	 * @return This vector for chaining */
-	T mul (T v);
-
-	T div (float scalar);
-
-	T div (T v);
+	T scl (T v);
 
 	/** @param v The other vector
 	 * @return the distance between this and the other vector */
@@ -79,7 +81,6 @@ public interface Vector<T extends Vector> {
 
 	/** Linearly interpolates between this vector and the target vector by alpha which is in the range [0,1]. The result is stored
 	 * in this vector.
-	 * 
 	 * @param target The target vector
 	 * @param alpha The interpolation coefficient
 	 * @return This vector for chaining. */

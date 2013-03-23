@@ -90,10 +90,7 @@ public class Quaternion implements Serializable {
 	 * @param angle The angle in degrees
 	 * @return This quaternion for chaining. */
 	public Quaternion set (Vector3 axis, float angle) {
-		float l_ang = (float)Math.toRadians(angle);
-		float l_sin = (float)Math.sin(l_ang / 2);
-		float l_cos = (float)Math.cos(l_ang / 2);
-		return this.set(axis.x * l_sin, axis.y * l_sin, axis.z * l_sin, l_cos).nor();
+		return setFromAxis(axis.x, axis.y, axis.z, angle);
 	}
 
 	/** @return a copy of this quaternion */
@@ -174,7 +171,7 @@ public class Quaternion implements Serializable {
 	/** Transforms the given vector using this quaternion
 	 * 
 	 * @param v Vector to transform */
-	public void transform (Vector3 v) {
+	public Vector3 transform (Vector3 v) {
 		tmp2.set(this);
 		tmp2.conjugate();
 		tmp2.mulLeft(tmp1.set(v.x, v.y, v.z, 0)).mulLeft(this);
@@ -182,6 +179,7 @@ public class Quaternion implements Serializable {
 		v.x = tmp2.x;
 		v.y = tmp2.y;
 		v.z = tmp2.z;
+		return v;
 	}
 
 	/** Multiplies this quaternion with another one
@@ -189,10 +187,10 @@ public class Quaternion implements Serializable {
 	 * @param q Quaternion to multiply with
 	 * @return This quaternion for chaining */
 	public Quaternion mul (Quaternion q) {
-		float newX = w * q.x + x * q.w + y * q.z - z * q.y;
-		float newY = w * q.y + y * q.w + z * q.x - x * q.z;
-		float newZ = w * q.z + z * q.w + x * q.y - y * q.x;
-		float newW = w * q.w - x * q.x - y * q.y - z * q.z;
+		final float newX = w * q.x + x * q.w + y * q.z - z * q.y;
+		final float newY = w * q.y + y * q.w + z * q.x - x * q.z;
+		final float newZ = w * q.z + z * q.w + x * q.y - y * q.x;
+		final float newW = w * q.w - x * q.x - y * q.y - z * q.z;
 		x = newX;
 		y = newY;
 		z = newZ;
@@ -205,10 +203,10 @@ public class Quaternion implements Serializable {
 	 * @param q Quaternion to multiply with
 	 * @return This quaternion for chaining */
 	public Quaternion mulLeft (Quaternion q) {
-		float newX = q.w * x + q.x * w + q.y * z - q.z * y;
-		float newY = q.w * y + q.y * w + q.z * x - q.x * z;
-		float newZ = q.w * z + q.z * w + q.x * y - q.y * x;
-		float newW = q.w * w - q.x * x - q.y * y - q.z * z;
+		final float newX = q.w * x + q.x * w + q.y * z - q.z * y;
+		final float newY = q.w * y + q.y * w + q.z * x - q.x * z;
+		final float newZ = q.w * z + q.z * w + q.x * y - q.y * x;
+		final float newW = q.w * w - q.x * x - q.y * y - q.z * z;
 		x = newX;
 		y = newY;
 		z = newZ;
@@ -221,16 +219,16 @@ public class Quaternion implements Serializable {
 	/** Fills a 4x4 matrix with the rotation matrix represented by this quaternion.
 	 * 
 	 * @param matrix Matrix to fill */
-	public void toMatrix (float[] matrix) {
-		float xx = x * x;
-		float xy = x * y;
-		float xz = x * z;
-		float xw = x * w;
-		float yy = y * y;
-		float yz = y * z;
-		float yw = y * w;
-		float zz = z * z;
-		float zw = z * w;
+	public void toMatrix (final float[] matrix) {
+		final float xx = x * x;
+		final float xy = x * y;
+		final float xz = x * z;
+		final float xw = x * w;
+		final float yy = y * y;
+		final float yz = y * z;
+		final float yw = y * w;
+		final float zz = z * z;
+		final float zw = z * w;
 		// Set matrix from quaternion
 		matrix[Matrix4.M00] = 1 - 2 * (yy + zz);
 		matrix[Matrix4.M01] = 2 * (xy - zw);
@@ -253,8 +251,7 @@ public class Quaternion implements Serializable {
 	/** Sets the quaternion to an identity Quaternion
 	 * @return this quaternion for chaining */
 	public Quaternion idt () {
-		this.set(0, 0, 0, 1);
-		return this;
+		return this.set(0, 0, 0, 1);
 	}
 
 	// todo : the setFromAxis(v3,float) method should replace the set(v3,float) method
@@ -263,22 +260,25 @@ public class Quaternion implements Serializable {
 	 * @param axis The axis
 	 * @param angle The angle in degrees
 	 * @return This quaternion for chaining. */
-	public Quaternion setFromAxis (Vector3 axis, float angle) {
+	public Quaternion setFromAxis (final Vector3 axis, final float angle) {
 		return setFromAxis(axis.x, axis.y, axis.z, angle);
 	}
 
 	/** Sets the quaternion components from the given axis and angle around that axis.
-	 * 
 	 * @param x X direction of the axis
 	 * @param y Y direction of the axis
 	 * @param z Z direction of the axis
 	 * @param angle The angle in degrees
 	 * @return This quaternion for chaining. */
-	public Quaternion setFromAxis (float x, float y, float z, float angle) {
+	public Quaternion setFromAxis (final float x, final float y, final float z, final float angle) {
+		float d = Vector3.len(x, y, z);
+		if (d == 0f)
+			return idt();
+		d = 1f /d;
 		float l_ang = angle * MathUtils.degreesToRadians;
-		float l_sin = MathUtils.sin(l_ang / 2);
-		float l_cos = MathUtils.cos(l_ang / 2);
-		return this.set(x * l_sin, y * l_sin, z * l_sin, l_cos).nor();
+		float l_sin = (float)Math.sin(l_ang / 2);
+		float l_cos = (float)Math.cos(l_ang / 2);
+		return this.set(d * x * l_sin, d * y * l_sin, d * z * l_sin, l_cos).nor();
 	}
 
 // fromRotationMatrix(xAxis.x, yAxis.x, zAxis.x, xAxis.y, yAxis.y, zAxis.y,

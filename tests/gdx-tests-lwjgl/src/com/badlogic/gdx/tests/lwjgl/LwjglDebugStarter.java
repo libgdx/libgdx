@@ -18,12 +18,19 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.tests.AnimationTest;
+import com.badlogic.gdx.tests.ETC1Test;
+import com.badlogic.gdx.tests.FullscreenTest;
 import com.badlogic.gdx.tests.InputTest;
+import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.TideMapAssetManagerTest;
 import com.badlogic.gdx.tests.TideMapDirectLoaderTest;
 import com.badlogic.gdx.tests.TiledMapAssetManagerTest;
 import com.badlogic.gdx.tests.TiledMapDirectLoaderTest;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
+import com.badlogic.gdx.tests.g3d.BatchRenderTest;
+import com.badlogic.gdx.tests.g3d.JsonModelLoaderTest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
@@ -37,7 +44,8 @@ public class LwjglDebugStarter {
 		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new SuperKoalio();
+		
+		GdxTest test = new BatchRenderTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		new LwjglApplication(test, config);

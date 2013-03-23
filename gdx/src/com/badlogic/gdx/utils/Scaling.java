@@ -44,7 +44,7 @@ public enum Scaling {
 	/** The source is not scaled. */
 	none;
 
-	static private Vector2 temp = new Vector2();
+	static private final Vector2 temp = new Vector2();
 
 	/** Returns the size of the source scaled to the target. Note the same Vector2 instance is always returned and should never be
 	 * cached. */

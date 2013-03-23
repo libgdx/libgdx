@@ -242,6 +242,7 @@
 		<include name="scenes/scene2d/utils/DragListener.java"/>
 		
 		<include name="Net.java"/>
+		<include name="net/HttpStatus.java"/>
 		<include name="net/ServerSocket.java"/>
 		<include name="net/ServerSocketHints.java"/>
 		<include name="net/Socket.java"/>
@@ -253,5 +254,7 @@
 		<include name="math/Path.java"/>
 		<include name="math/Bezier.java"/>
 		<include name="math/BSpline.java"/>
+		<include name="math/Ellipse.java"/>
+		<include name="math/Polyline.java"/>
 	</source>
 </module>

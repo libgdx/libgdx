@@ -81,9 +81,10 @@ public class Gdx2DPixmap implements Disposable {
 		format = (int)nativeData[3];
 	}
 
-	public Gdx2DPixmap (int width, int height, int format) throws IllegalArgumentException {
+	/** @throws GdxRuntimeException if allocation failed. */
+	public Gdx2DPixmap (int width, int height, int format) throws GdxRuntimeException {
 		pixelPtr = newPixmap(nativeData, width, height, format);
-		if (pixelPtr == null) throw new IllegalArgumentException("couldn't load pixmap");
+		if (pixelPtr == null) throw new GdxRuntimeException("couldn't load pixmap");
 
 		this.basePtr = nativeData[0];
 		this.width = (int)nativeData[1];
