@@ -71,7 +71,7 @@ public:
 
 class ContactProcessedListenerByValue : public BaseContactProcessedListener {
 public:
-	virtual bool onContactProcessed(btManifoldPoint& cp,int userValue0,bool match0,int userValue1,bool match1) = 0;
+	virtual void onContactProcessed(btManifoldPoint& cp,int userValue0,bool match0,int userValue1,bool match1) = 0;
 
 #ifndef SWIG
 	bool internalCallback(btManifoldPoint& cp,void *body0, void *body1) {
