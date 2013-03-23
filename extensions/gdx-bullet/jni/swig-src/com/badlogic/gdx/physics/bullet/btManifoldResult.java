@@ -74,14 +74,12 @@ public class btManifoldResult {
   }
 
   public btCollisionObjectWrapper getBody0Wrap() {
-    long cPtr = gdxBulletJNI.btManifoldResult_getBody0Wrap(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObjectWrapper(cPtr, false);
-  }
+	return btCollisionObjectWrapper.internalTemp(gdxBulletJNI.btManifoldResult_getBody0Wrap(swigCPtr, this), false);
+}
 
   public btCollisionObjectWrapper getBody1Wrap() {
-    long cPtr = gdxBulletJNI.btManifoldResult_getBody1Wrap(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObjectWrapper(cPtr, false);
-  }
+	return btCollisionObjectWrapper.internalTemp(gdxBulletJNI.btManifoldResult_getBody1Wrap(swigCPtr, this), false);
+}
 
   public void setBody0Wrap(btCollisionObjectWrapper obj0Wrap) {
     gdxBulletJNI.btManifoldResult_setBody0Wrap(swigCPtr, this, btCollisionObjectWrapper.getCPtr(obj0Wrap), obj0Wrap);
@@ -92,13 +90,11 @@ public class btManifoldResult {
   }
 
   public btCollisionObject getBody0Internal() {
-	long cPtr = gdxBulletJNI.btManifoldResult_getBody0Internal(swigCPtr, this);
-	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+	return btCollisionObject.getInstance(gdxBulletJNI.btManifoldResult_getBody0Internal(swigCPtr, this), false);
 }
 
   public btCollisionObject getBody1Internal() {
-	long cPtr = gdxBulletJNI.btManifoldResult_getBody1Internal(swigCPtr, this);
-	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+	return btCollisionObject.getInstance(gdxBulletJNI.btManifoldResult_getBody1Internal(swigCPtr, this), false);
 }
 
 }

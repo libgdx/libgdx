@@ -81,9 +81,9 @@ public:
 						*(const btCollisionObject **)&obj0 = manifold->getBody0();
 						*(const btCollisionObject **)&obj1 = manifold->getBody1();
 						if (obj0 == other)
-							*(const void **)&(result[count++]) = manifold->getBody1()->getUserPointer();
+							result[count++] = ((GdxCollisionObjectBridge*)manifold->getBody1()->getUserPointer())->userValue;
 						else if (obj1 == other)
-							*(const void **)&(result[count++]) = manifold->getBody0()->getUserPointer();
+							result[count++] = ((GdxCollisionObjectBridge*)manifold->getBody0()->getUserPointer())->userValue;
 						else continue;
 						if (count >= max)
 							return count;

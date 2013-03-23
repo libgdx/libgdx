@@ -45,8 +45,7 @@ public class sCti {
   }
 
   public btCollisionObject getM_colObj() {
-	long cPtr = gdxBulletJNI.sCti_m_colObj_get(swigCPtr, this);
-	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+	return btCollisionObject.getInstance(gdxBulletJNI.sCti_m_colObj_get(swigCPtr, this), false);
 }
 
   public void setM_normal(btVector3 value) {
