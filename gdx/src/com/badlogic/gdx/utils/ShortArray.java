@@ -111,6 +111,7 @@ public class ShortArray {
 	}
 
 	public void insert (int index, short value) {
+		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		short[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		if (ordered)
