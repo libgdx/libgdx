@@ -3886,9 +3886,9 @@ bool SwigDirector_ContactAddedListenerByWrapper::onContactAdded(btManifoldPoint 
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jclass jclazz = gdx_getClassbtManifoldPoint(jenv);
-    jcp = gdx_obtainbtManifoldPoint(jenv, jclazz, (void*)&cp, false);
-    gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jclazz, jcp);
+    jclass jccp = gdx_getClassbtManifoldPoint(jenv);
+    jcp = gdx_obtainbtManifoldPoint(jenv, jccp, (void*)&cp, false);
+    gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jccp, jcp);
     *((btCollisionObjectWrapper **)&jcolObj0Wrap) = (btCollisionObjectWrapper *) colObj0Wrap; 
     jpartId0 = (jint) partId0;
     jindex0 = (jint) index0;
@@ -3968,9 +3968,9 @@ bool SwigDirector_ContactAddedListenerByObject::onContactAdded(btManifoldPoint &
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jclass jclazz = gdx_getClassbtManifoldPoint(jenv);
-    jcp = gdx_obtainbtManifoldPoint(jenv, jclazz, (void*)&cp, false);
-    gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jclazz, jcp);
+    jclass jccp = gdx_getClassbtManifoldPoint(jenv);
+    jcp = gdx_obtainbtManifoldPoint(jenv, jccp, (void*)&cp, false);
+    gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jccp, jcp);
     *((btCollisionObject **)&jcolObj0) = (btCollisionObject *) colObj0; 
     jpartId0 = (jint) partId0;
     jindex0 = (jint) index0;
@@ -4050,9 +4050,9 @@ bool SwigDirector_ContactAddedListenerByValue::onContactAdded(btManifoldPoint &c
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jclass jclazz = gdx_getClassbtManifoldPoint(jenv);
-    jcp = gdx_obtainbtManifoldPoint(jenv, jclazz, (void*)&cp, false);
-    gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jclazz, jcp);
+    jclass jccp = gdx_getClassbtManifoldPoint(jenv);
+    jcp = gdx_obtainbtManifoldPoint(jenv, jccp, (void*)&cp, false);
+    gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jccp, jcp);
     juserValue0 = (jint) userValue0;
     jpartId0 = (jint) partId0;
     jindex0 = (jint) index0;
@@ -4126,9 +4126,9 @@ void SwigDirector_ContactProcessedListenerByObject::onContactProcessed(btManifol
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jclass jclazz = gdx_getClassbtManifoldPoint(jenv);
-    jcp = gdx_obtainbtManifoldPoint(jenv, jclazz, (void*)&cp, false);
-    gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jclazz, jcp);
+    jclass jccp = gdx_getClassbtManifoldPoint(jenv);
+    jcp = gdx_obtainbtManifoldPoint(jenv, jccp, (void*)&cp, false);
+    gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jccp, jcp);
     *((btCollisionObject **)&jcolObj0) = (btCollisionObject *) colObj0; 
     jmatch0 = (jboolean) match0;
     *((btCollisionObject **)&jcolObj1) = (btCollisionObject *) colObj1; 
@@ -4196,9 +4196,9 @@ void SwigDirector_ContactProcessedListenerByValue::onContactProcessed(btManifold
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jclass jclazz = gdx_getClassbtManifoldPoint(jenv);
-    jcp = gdx_obtainbtManifoldPoint(jenv, jclazz, (void*)&cp, false);
-    gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jclazz, jcp);
+    jclass jccp = gdx_getClassbtManifoldPoint(jenv);
+    jcp = gdx_obtainbtManifoldPoint(jenv, jccp, (void*)&cp, false);
+    gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jccp, jcp);
     juserValue0 = (jint) userValue0;
     jmatch0 = (jboolean) match0;
     juserValue1 = (jint) userValue1;

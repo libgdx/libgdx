@@ -68,8 +68,7 @@ public class RayResultCallback {
   }
 
   public btCollisionObject getM_collisionObject() {
-	long cPtr = gdxBulletJNI.RayResultCallback_m_collisionObject_get(swigCPtr, this);
-	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+	return btCollisionObject.getInstance(gdxBulletJNI.RayResultCallback_m_collisionObject_get(swigCPtr, this), false);
 }
 
   public void setM_collisionFilterGroup(short value) {

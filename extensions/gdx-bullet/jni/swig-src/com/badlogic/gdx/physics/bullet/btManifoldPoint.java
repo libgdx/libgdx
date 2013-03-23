@@ -42,6 +42,10 @@ public class btManifoldPoint {
 
 	/** Temporary instance, use by native methods that return a btManifoldPoint instance */
 	protected final static btManifoldPoint temp = new btManifoldPoint(0, false);
+	public static btManifoldPoint internalTemp(long cPtr, boolean own) {
+		temp.reuse(cPtr, own);
+		return temp;
+	}
 	/** Pool of btManifoldPoint instances, used by director interface to provide the arguments. */
 	protected static final com.badlogic.gdx.utils.Pool<btManifoldPoint> pool = new com.badlogic.gdx.utils.Pool<btManifoldPoint>() {
 		@Override

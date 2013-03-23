@@ -38,6 +38,10 @@ public class btCollisionObjectWrapper {
 
 	/** Temporary instance, use by native methods that return a btCollisionObjectWrapper instance */
 	protected final static btCollisionObjectWrapper temp = new btCollisionObjectWrapper(0, false);
+	public static btCollisionObjectWrapper internalTemp(long cPtr, boolean own) {
+		temp.reuse(cPtr, own);
+		return temp;
+	}
 	/** Pool of btCollisionObjectWrapper instances, used by director interface to provide the arguments. */
 	protected static final com.badlogic.gdx.utils.Pool<btCollisionObjectWrapper> pool = new com.badlogic.gdx.utils.Pool<btCollisionObjectWrapper>() {
 		@Override
@@ -68,9 +72,8 @@ public class btCollisionObjectWrapper {
   }
 
   public btCollisionObjectWrapper getM_parent() {
-    long cPtr = gdxBulletJNI.btCollisionObjectWrapper_m_parent_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btCollisionObjectWrapper(cPtr, false);
-  }
+	return btCollisionObjectWrapper.internalTemp(gdxBulletJNI.btCollisionObjectWrapper_m_parent_get(swigCPtr, this), false);
+}
 
   public void setM_shape(btCollisionShape value) {
     gdxBulletJNI.btCollisionObjectWrapper_m_shape_set(swigCPtr, this, btCollisionShape.getCPtr(value), value);
@@ -86,8 +89,7 @@ public class btCollisionObjectWrapper {
   }
 
   public btCollisionObject getM_collisionObject() {
-	long cPtr = gdxBulletJNI.btCollisionObjectWrapper_m_collisionObject_get(swigCPtr, this);
-	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+	return btCollisionObject.getInstance(gdxBulletJNI.btCollisionObjectWrapper_m_collisionObject_get(swigCPtr, this), false);
 }
 
   public Matrix4 getM_worldTransform() {
@@ -99,8 +101,7 @@ public class btCollisionObjectWrapper {
 }
 
   public btCollisionObject getCollisionObject() {
-	long cPtr = gdxBulletJNI.btCollisionObjectWrapper_getCollisionObject(swigCPtr, this);
-	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+	return btCollisionObject.getInstance(gdxBulletJNI.btCollisionObjectWrapper_getCollisionObject(swigCPtr, this), false);
 }
 
   public btCollisionShape getCollisionShape() {

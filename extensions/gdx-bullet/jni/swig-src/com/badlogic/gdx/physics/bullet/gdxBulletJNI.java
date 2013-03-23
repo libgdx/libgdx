@@ -4814,13 +4814,13 @@ public class gdxBulletJNI {
     return self.onContactAdded(cp, (colObj0Wrap == 0) ? null : new btCollisionObjectWrapper(colObj0Wrap, false), partId0, index0, match0, (colObj1Wrap == 0) ? null : new btCollisionObjectWrapper(colObj1Wrap, false), partId1, index1, match1);
   }
   public static boolean SwigDirector_ContactAddedListenerByObject_onContactAdded(ContactAddedListenerByObject self, btManifoldPoint cp, long colObj0, int partId0, int index0, boolean match0, long colObj1, int partId1, int index1, boolean match1) {
-    return self.onContactAdded(cp, (colObj0 == 0) ? null : new btCollisionObject(colObj0, false), partId0, index0, match0, (colObj1 == 0) ? null : new btCollisionObject(colObj1, false), partId1, index1, match1);
+    return self.onContactAdded(cp, btCollisionObject.getInstance(colObj0, false), partId0, index0, match0, btCollisionObject.getInstance(colObj1, false), partId1, index1, match1);
   }
   public static boolean SwigDirector_ContactAddedListenerByValue_onContactAdded(ContactAddedListenerByValue self, btManifoldPoint cp, int userValue0, int partId0, int index0, boolean match0, int userValue1, int partId1, int index1, boolean match1) {
     return self.onContactAdded(cp, userValue0, partId0, index0, match0, userValue1, partId1, index1, match1);
   }
   public static void SwigDirector_ContactProcessedListenerByObject_onContactProcessed(ContactProcessedListenerByObject self, btManifoldPoint cp, long colObj0, boolean match0, long colObj1, boolean match1) {
-    self.onContactProcessed(cp, (colObj0 == 0) ? null : new btCollisionObject(colObj0, false), match0, (colObj1 == 0) ? null : new btCollisionObject(colObj1, false), match1);
+    self.onContactProcessed(cp, btCollisionObject.getInstance(colObj0, false), match0, btCollisionObject.getInstance(colObj1, false), match1);
   }
   public static void SwigDirector_ContactProcessedListenerByValue_onContactProcessed(ContactProcessedListenerByValue self, btManifoldPoint cp, int userValue0, boolean match0, int userValue1, boolean match1) {
     self.onContactProcessed(cp, userValue0, match0, userValue1, match1);
