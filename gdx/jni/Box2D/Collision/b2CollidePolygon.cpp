@@ -26,10 +26,10 @@ static float32 b2EdgeSeparation(const b2PolygonShape* poly1, const b2Transform& 
 	const b2Vec2* vertices1 = poly1->m_vertices;
 	const b2Vec2* normals1 = poly1->m_normals;
 
-	int32 count2 = poly2->m_vertexCount;
+	int32 count2 = poly2->m_count;
 	const b2Vec2* vertices2 = poly2->m_vertices;
 
-	b2Assert(0 <= edge1 && edge1 < poly1->m_vertexCount);
+	b2Assert(0 <= edge1 && edge1 < poly1->m_count);
 
 	// Convert normal from poly1's frame into poly2's frame.
 	b2Vec2 normal1World = b2Mul(xf1.q, normals1[edge1]);
@@ -60,7 +60,7 @@ static float32 b2FindMaxSeparation(int32* edgeIndex,
 								 const b2PolygonShape* poly1, const b2Transform& xf1,
 								 const b2PolygonShape* poly2, const b2Transform& xf2)
 {
-	int32 count1 = poly1->m_vertexCount;
+	int32 count1 = poly1->m_count;
 	const b2Vec2* normals1 = poly1->m_normals;
 
 	// Vector pointing from the centroid of poly1 to the centroid of poly2.
@@ -144,11 +144,11 @@ static void b2FindIncidentEdge(b2ClipVertex c[2],
 {
 	const b2Vec2* normals1 = poly1->m_normals;
 
-	int32 count2 = poly2->m_vertexCount;
+	int32 count2 = poly2->m_count;
 	const b2Vec2* vertices2 = poly2->m_vertices;
 	const b2Vec2* normals2 = poly2->m_normals;
 
-	b2Assert(0 <= edge1 && edge1 < poly1->m_vertexCount);
+	b2Assert(0 <= edge1 && edge1 < poly1->m_count);
 
 	// Get the normal of the reference edge in poly2's frame.
 	b2Vec2 normal1 = b2MulT(xf2.q, b2Mul(xf1.q, normals1[edge1]));
@@ -239,7 +239,7 @@ void b2CollidePolygons(b2Manifold* manifold,
 	b2ClipVertex incidentEdge[2];
 	b2FindIncidentEdge(incidentEdge, poly1, xf1, edge1, poly2, xf2);
 
-	int32 count1 = poly1->m_vertexCount;
+	int32 count1 = poly1->m_count;
 	const b2Vec2* vertices1 = poly1->m_vertices;
 
 	int32 iv1 = edge1;

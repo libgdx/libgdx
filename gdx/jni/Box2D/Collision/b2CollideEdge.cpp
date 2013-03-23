@@ -425,8 +425,8 @@ void b2EPCollider::Collide(b2Manifold* manifold, const b2EdgeShape* edgeA, const
 	}
 	
 	// Get polygonB in frameA
-	m_polygonB.count = polygonB->m_vertexCount;
-	for (int32 i = 0; i < polygonB->m_vertexCount; ++i)
+	m_polygonB.count = polygonB->m_count;
+	for (int32 i = 0; i < polygonB->m_count; ++i)
 	{
 		m_polygonB.vertices[i] = b2Mul(m_xf, polygonB->m_vertices[i]);
 		m_polygonB.normals[i] = b2Mul(m_xf.q, polygonB->m_normals[i]);

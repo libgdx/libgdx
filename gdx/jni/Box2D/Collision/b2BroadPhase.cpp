@@ -90,7 +90,6 @@ void b2BroadPhase::UnBufferMove(int32 proxyId)
 		if (m_moveBuffer[i] == proxyId)
 		{
 			m_moveBuffer[i] = e_nullProxy;
-			return;
 		}
 	}
 }

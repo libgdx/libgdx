@@ -46,6 +46,7 @@ LOCAL_SRC_FILES := Box2D/Collision/b2BroadPhase.cpp\
 	Box2D/Dynamics/Joints/b2FrictionJoint.cpp\
 	Box2D/Dynamics/Joints/b2GearJoint.cpp\
 	Box2D/Dynamics/Joints/b2Joint.cpp\
+	Box2D/Dynamics/Joints/b2MotorJoint.cpp\
 	Box2D/Dynamics/Joints/b2MouseJoint.cpp\
 	Box2D/Dynamics/Joints/b2PrismaticJoint.cpp\
 	Box2D/Dynamics/Joints/b2PulleyJoint.cpp\

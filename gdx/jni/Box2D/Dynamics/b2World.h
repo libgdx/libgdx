@@ -43,8 +43,7 @@ class b2World
 public:
 	/// Construct a world object.
 	/// @param gravity the world gravity vector.
-	/// @param doSleep improve performance by not simulating inactive bodies.
-	b2World(const b2Vec2& gravity, bool doSleep);
+	b2World(const b2Vec2& gravity);
 
 	/// Destruct the world. All physics entities are destroyed and all heap memory is released.
 	~b2World();
@@ -194,6 +193,11 @@ public:
 
 	/// Get the flag that controls automatic clearing of forces after each time step.
 	bool GetAutoClearForces() const;
+
+	/// Shift the world origin. Useful for large worlds.
+	/// The body shift formula is: position -= newOrigin
+	/// @param newOrigin the new origin with respect to the old origin
+	void ShiftOrigin(const b2Vec2& newOrigin);
 
 	/// Get the contact manager for testing.
 	const b2ContactManager& GetContactManager() const;

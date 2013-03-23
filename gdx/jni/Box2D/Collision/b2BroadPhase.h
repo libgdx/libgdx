@@ -29,7 +29,6 @@ struct b2Pair
 {
 	int32 proxyIdA;
 	int32 proxyIdB;
-	int32 next;
 };
 
 /// The broad-phase is used for computing pairs and performing volume queries and ray casts.
@@ -100,6 +99,11 @@ public:
 
 	/// Get the quality metric of the embedded tree.
 	float32 GetTreeQuality() const;
+
+	/// Shift the world origin. Useful for large worlds.
+	/// The shift formula is: position -= newOrigin
+	/// @param newOrigin the new origin with respect to the old origin
+	void ShiftOrigin(const b2Vec2& newOrigin);
 
 private:
 
@@ -276,6 +280,11 @@ template <typename T>
 inline void b2BroadPhase::RayCast(T* callback, const b2RayCastInput& input) const
 {
 	m_tree.RayCast(callback, input);
+}
+
+inline void b2BroadPhase::ShiftOrigin(const b2Vec2& newOrigin)
+{
+	m_tree.ShiftOrigin(newOrigin);
 }
 
 #endif
