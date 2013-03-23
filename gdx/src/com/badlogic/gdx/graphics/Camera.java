@@ -111,8 +111,8 @@ public abstract class Camera {
 	 * @param axisY the y-component of the axis
 	 * @param axisZ the z-component of the axis */
 	public void rotate (float angle, float axisX, float axisY, float axisZ) {
-		direction.rotate(axisX, axisY, axisZ, angle);
-		up.rotate(axisX, axisY, axisZ, angle);
+		direction.rotate(angle, axisX, axisY, axisZ);
+		up.rotate(angle, axisX, axisY, axisZ);
 	}
 
 	/** Rotates the direction and up vector of this camera by the given angle around the given axis. The direction and up vector
