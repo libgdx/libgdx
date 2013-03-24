@@ -208,39 +208,6 @@ public class Model implements Disposable {
 	}
 	
 	/**
-	 * Traverses the Node hierarchy and collects {@link Renderable} instances for every
-	 * node with a graphical representation. Renderables are obtained from the provided
-	 * pool. The resulting array can be rendered via a {@link ModelBatch}.
-	 * 
-	 * @param renderables the output array
-	 * @param pool the pool to obtain Renderables from
-	 */
-	public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
-		for(Node node: nodes) {
-			getRenderables(node, renderables, pool);
-		}
-	}
-	
-	private void getRenderables(Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
-		if(node.meshPartMaterials.size > 0) {
-			for(MeshPartMaterial meshPart: node.meshPartMaterials) {
-				Renderable renderable = pool.obtain();
-				renderable.material = meshPart.material;
-				renderable.mesh = meshPart.meshPart.mesh;
-				renderable.meshPartOffset = meshPart.meshPart.indexOffset;
-				renderable.meshPartSize = meshPart.meshPart.numVertices;
-				renderable.primitiveType = meshPart.meshPart.primitiveType;
-				renderable.transform.set(node.worldTransform);
-				renderables.add(renderable);
-			}
-		}
-		
-		for(Node child: node.children) {
-			getRenderables(child, renderables, pool);
-		}
-	}
-	
-	/**
 	 * Calculates the local and world transform of all {@link Node} instances in this model, recursively.
 	 * First each {@link Node#localTransform} transform is calculated based on the translation, rotation and
 	 * scale of each Node. Then each {@link Node#calculateWorldTransform()}
