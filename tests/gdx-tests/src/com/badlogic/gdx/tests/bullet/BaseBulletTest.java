@@ -19,14 +19,26 @@ package com.badlogic.gdx.tests.bullet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPart;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPartMaterial;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
+import com.badlogic.gdx.graphics.g3d.old.loaders.wavefront.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.old.materials.Material;
-import com.badlogic.gdx.graphics.g3d.old.model.still.StillModel;
-import com.badlogic.gdx.graphics.g3d.old.model.still.StillSubMesh;
+import com.badlogic.gdx.graphics.g3d.test.Light;
+import com.badlogic.gdx.graphics.g3d.test.TestShader;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.btIDebugDraw;
@@ -52,20 +64,57 @@ public class BaseBulletTest extends BulletTest {
 		initialized = true;
 	}
 	
-	final float lightAmbient[] = new float[] {0.5f, 0.5f, 0.5f, 1f};
-	final float lightPosition[] = new float[] {10f, 10f, 10f, 1f};
-	final float lightDiffuse[] = new float[] {0.5f, 0.5f, 0.5f, 1f};
+	public Light[] lights = new Light[] {
+		//new Light(Color.WHITE, Vector3.tmp.set(-10f, 10f, -10f), 150f),
+		//new Light(Color.BLUE, Vector3.tmp.set(10f, 5f, 0f), 10f),
+		//new Light(Color.GREEN, Vector3.tmp.set(0f, 10f, 5f), 5f)
+	};
 
-	PerspectiveCamera camera;
-	BulletWorld world;
-	
+	public PerspectiveCamera camera;
+	public BulletWorld world;
+	public ObjLoader objLoader = new ObjLoader();
+	public ModelBatch modelBatch;
+			
 	public BulletWorld createWorld() {
 		return new BulletWorld();
+	}
+	
+	public static Model createSimpleModel(final VertexAttribute[] attributes, final float[] vertices, final short[] indices) {
+		final ModelMesh mesh = new ModelMesh();
+		mesh.attributes = attributes;
+		mesh.id = "mesh1";
+		mesh.vertices = vertices;
+		ModelMeshPart mp = new ModelMeshPart();
+		mp.id = "part1";
+		mp.indices = indices;
+		mp.primitiveType = GL10.GL_TRIANGLES;
+		mesh.parts = new ModelMeshPart[] { mp };
+		ModelNode node = new ModelNode();
+		node.id = "node1";
+		node.meshId = "mesh1";
+		node.translation = new Vector3();
+		node.rotation = new Quaternion();
+		node.scale = new Vector3(1,1,1);
+		ModelMeshPartMaterial pm = new ModelMeshPartMaterial();
+		pm.meshPartId = "part1";
+		pm.materialId = "mat1";
+		node.meshPartMaterials = new ModelMeshPartMaterial[] { pm };
+		ModelMaterial mat = new ModelMaterial();
+		mat.id = "mat1";
+		mat.diffuse = new Color(Color.WHITE);
+		final ModelData data = new ModelData();
+		data.meshes.add(mesh);
+		data.nodes.add(node);
+		data.materials.add(mat);
+		return new Model(data);
 	}
 	
 	@Override
 	public void create () {
 		init();
+		modelBatch = new ModelBatch();
+		TestShader.ignoreUnimplemented = true;
+		
 		world = createWorld();
 		world.performanceCounter = performanceCounter;
 
@@ -80,22 +129,20 @@ public class BaseBulletTest extends BulletTest {
 		camera.update();
 		
 		// Create some simple meshes
-		final Mesh groundMesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_position"));
-		groundMesh.setVertices(new float[] {20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f});
-		groundMesh.setIndices(new short[] {0, 1, 2, 1, 2, 3});
-		final StillModel groundModel = new StillModel(new StillSubMesh("ground", groundMesh, GL10.GL_TRIANGLES, new Material()));
+		final Model groundModel = createSimpleModel(new VertexAttribute[] { new VertexAttribute(Usage.Position, 3, "a_position") },
+			new float[] {20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f},
+			new short[] {0, 1, 2, 1, 2, 3}); 
 
-		final Mesh boxMesh = new Mesh(true, 8, 36, new VertexAttribute(Usage.Position, 3, "a_position"));
-		boxMesh.setVertices(new float[] {0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f,
-			0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, -0.5f});
-		boxMesh.setIndices(new short[] {0, 1, 2, 1, 2, 3, // top
-			4, 5, 6, 5, 6, 7, // bottom
-			0, 2, 4, 4, 6, 2, // front
-			1, 3, 5, 5, 7, 3, // back
-			2, 3, 6, 6, 7, 3, // left
-			0, 1, 4, 4, 5, 1 // right
-			});
-		final StillModel boxModel = new StillModel(new StillSubMesh("box", boxMesh, GL10.GL_TRIANGLES, new Material()));
+		final Model boxModel = createSimpleModel(new VertexAttribute[] { new VertexAttribute(Usage.Position, 3, "a_position") },
+			new float[] {0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f,
+						0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, -0.5f},
+			new short[] {0, 1, 2, 1, 2, 3, // top
+						4, 5, 6, 5, 6, 7, // bottom
+						0, 2, 4, 4, 6, 2, // front
+						1, 3, 5, 5, 7, 3, // back
+						2, 3, 6, 6, 7, 3, // left
+						0, 1, 4, 4, 5, 1 // right
+				});
 
 		// Add the constructors
 		world.addConstructor("ground", new BulletConstructor(groundModel, 0f)); // mass = 0: static body
@@ -132,7 +179,10 @@ public class BaseBulletTest extends BulletTest {
 	}
 	
 	protected void beginRender(boolean lighting) {
-		GL10 gl = Gdx.gl10;
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		camera.update();
+		/* GL10 gl = Gdx.gl10;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL10.GL_LEQUAL);
@@ -145,11 +195,13 @@ public class BaseBulletTest extends BulletTest {
 			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
 		} else
 			gl.glDisable(GL10.GL_LIGHTING);
-		camera.apply(Gdx.gl10);
+		camera.apply(Gdx.gl10); */
 	}
 	
 	protected void renderWorld() {
-		world.render();
+		modelBatch.begin(camera);
+		world.render(modelBatch, lights);
+		modelBatch.end();
 	}
 	
 	public void update() {
@@ -168,7 +220,7 @@ public class BaseBulletTest extends BulletTest {
 		// Shoot a box
 		Ray ray = camera.getPickRay(x, y);
 		BulletEntity entity = world.add(what, ray.origin.x, ray.origin.y, ray.origin.z);
-		entity.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+		entity.getColor().set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 		((btRigidBody)entity.body).applyCentralImpulse(ray.direction.mul(impulse));
 		return entity;
 	}

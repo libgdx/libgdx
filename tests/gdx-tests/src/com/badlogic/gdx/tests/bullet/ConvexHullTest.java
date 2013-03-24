@@ -19,10 +19,7 @@ package com.badlogic.gdx.tests.bullet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.g3d.old.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.old.loaders.wavefront.ObjLoader;
-import com.badlogic.gdx.graphics.g3d.old.model.still.StillModel;
-import com.badlogic.gdx.graphics.g3d.old.model.still.StillSubMesh;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.physics.bullet.btConvexHullShape;
 import com.badlogic.gdx.physics.bullet.btShapeHull;
 
@@ -33,17 +30,16 @@ public class ConvexHullTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 
-		final StillModel sceneModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/car.obj"));
-		final Mesh sceneMesh = sceneModel.subMeshes[0].getMesh();
-		world.addConstructor("car", new BulletConstructor(sceneModel, 5f, createConvexHullShape(sceneMesh)));
+		final Model sceneModel = objLoader.loadObj(Gdx.files.internal("data/car.obj"));
+		world.addConstructor("car", new BulletConstructor(sceneModel, 5f, createConvexHullShape(sceneModel)));
 
 		// Create the entities
 		world.add("ground", 0f, 0f, 0f)
-			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+			.getColor().set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		for (float y = 10f; y < 50f; y += 5f)
 			world.add("car", -2f+(float)Math.random()*4f, y, -2f+(float)Math.random()*4f)
-				.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+				.getColor().set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 	}
 	
 	@Override
@@ -52,7 +48,8 @@ public class ConvexHullTest extends BaseBulletTest {
 		return true;
 	}
 	
-	public static btConvexHullShape createConvexHullShape(final Mesh mesh) {
+	public static btConvexHullShape createConvexHullShape(final Model model) {
+		final Mesh mesh = model.meshes.get(0);
 		final btConvexHullShape shape = new btConvexHullShape(mesh.getVerticesBuffer(), mesh.getNumVertices(), mesh.getVertexSize());
 		// now optimize the shape
 		final btShapeHull hull = new btShapeHull(shape);

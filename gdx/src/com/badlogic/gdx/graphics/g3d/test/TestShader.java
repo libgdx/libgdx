@@ -82,7 +82,7 @@ public class TestShader implements Shader {
 			prefix += "#define "+TextureAttribute.DiffuseAlias+"Flag\n";
 		if ((mask & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
 			prefix += "#define "+ColorAttribute.DiffuseAlias+"Flag\n";
-		
+
 		program = new ShaderProgram(prefix + vertexShader, prefix + fragmentShader);
 		if (!program.isCompiled())
 			throw new GdxRuntimeException(program.getLog());
