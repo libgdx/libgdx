@@ -1022,20 +1022,26 @@ public final class Intersector {
 		Circle c2 = new Circle(0, 0, 1);
 		Circle c3 = new Circle(2, 0, 1);
 		Circle c4 = new Circle(0, 0, 2);
+		System.out.println("Circle test cases");
 		System.out.println(c1.overlaps(c1)); // true
 		System.out.println(c1.overlaps(c2)); // true
 		System.out.println(c1.overlaps(c3)); // false
 		System.out.println(c1.overlaps(c4)); // true
 		System.out.println(c4.overlaps(c1)); // true
 		System.out.println(c1.contains(0, 1)); // true
+		System.out.println(c1.contains(0, 2)); // false
+		System.out.println(c1.contains(c1)); // true
+		System.out.println(c1.contains(c4)); // false
+		System.out.println(c4.contains(c1)); // true
 
-		// IMO Rectangle has the correct behaviour
+		System.out.println("Rectangle test cases");
 		Rectangle r1 = new Rectangle(0, 0, 1, 1);
 		Rectangle r2 = new Rectangle(1, 0, 2, 1);
 		System.out.println(r1.overlaps(r1)); // true
 		System.out.println(r1.overlaps(r2)); // false
 		System.out.println(r1.contains(0, 0)); // true
 
+		System.out.println("BoundingBox test cases");
 		BoundingBox b1 = new BoundingBox(Vector3.Zero, new Vector3(1, 1, 1));
 		BoundingBox b2 = new BoundingBox(new Vector3(1, 1, 1), new Vector3(2, 2, 2));
 		System.out.println(b1.contains(Vector3.Zero)); // true
