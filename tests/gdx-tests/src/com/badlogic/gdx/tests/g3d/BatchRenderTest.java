@@ -129,7 +129,7 @@ public class BatchRenderTest extends GdxTest {
 		
 		renderBatch.begin(cam);
 		for (int i = 0; i < instances.size; i++)
-			renderBatch.addModel(instances.get(i).model, instances.get(i).transform, lights);
+			renderBatch.render(instances.get(i).model, instances.get(i).transform, lights);
 		renderBatch.end();		
 	}
 	

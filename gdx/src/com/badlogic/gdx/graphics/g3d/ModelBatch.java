@@ -73,21 +73,21 @@ public class ModelBatch implements Disposable {
 	}
 
 	/** Add an instance to render */
-	protected void addRenderable(final Renderable renderable) {
+	protected void render(final Renderable renderable) {
 		renderable.shader = shaderProvider.getShader(renderable);
 		renderable.mesh.setAutoBind(false);
 		renderables.add(renderable);
 	}
 	
-	public void addModel(final Model model, final Matrix4 transform) {
-		addModel(model, transform, null, null);
+	public void render(final Model model, final Matrix4 transform) {
+		render(model, transform, null, null);
 	}
 	
-	public void addModel(final Model model, final Matrix4 transform, final Light[] lights) {
-		addModel(model, transform, lights, null);
+	public void render(final Model model, final Matrix4 transform, final Light[] lights) {
+		render(model, transform, lights, null);
 	}
 	
-	public void addModel(final Model model, final Matrix4 transform, final Light[] lights, final Shader shader) {
+	public void render(final Model model, final Matrix4 transform, final Light[] lights, final Shader shader) {
 		int offset = renderables.size;
 		model.getRenderables(renderables, renderablesPool);
 		for (int i = offset; i < renderables.size; i++) {

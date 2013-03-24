@@ -63,8 +63,11 @@ public class NewModelTest extends GdxTest {
 		shapeRenderer.line(0, 0, 0, 0, 0, 100);
 		shapeRenderer.end();
 		
+		transform.idt();
+		transform.translate(0, 0, 3);
+		
 		modelBatch.begin(cam);
-		modelBatch.addModel(model, transform, lights);
+		modelBatch.render(model, transform, lights);
 		modelBatch.end();
 	}
 	
