@@ -40,9 +40,12 @@ import com.badlogic.gdx.utils.Pool;
  * a graphical part in form of a {@link MeshPart} and {@link NewMaterial}. Mesh parts reference subsets of
  * vertices in one of the meshes of the model. Animations can be applied to nodes, to modify their
  * transform (translation, rotation, scale) over time.</p>
- * 
- * A model can be converted to {@link Renderable} instances via {@link #getRenderables(Array, Pool)}, which
- * can be rendered by a {@link ModelBatch}.
+ *
+ * A model can be rendered by creating a {@link ModelInstance} from it. That instance has an additional
+ * transform to position the model in the world, and allows modification of materials and nodes without
+ * destroying the original model. The original model is the owner of any meshes and textures, all instances
+ * derrived from the model share these resources. Disposing the model will automatically make all instances
+ * invalid!</p>
  * 
  * A model is derrived from {@link ModelData}, which in turn is loaded by a {@link ModelLoader}.
  *   

@@ -73,12 +73,15 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 	}
 	
 	public void render(final ModelBatch batch, final Light[] lights, final Iterable<T> entities) {
-		for (final T e : entities)
-			batch.addModel(e.model, e.transform, lights);
+		for (final T e : entities) {
+			e.modelInstance.calculateTransforms();
+			batch.render(e.modelInstance, lights);
+		}
 	}
 	
 	public void render(final ModelBatch batch, final Light[] lights, final T entity) {
-		batch.addModel(entity.model, entity.transform, lights);
+		entity.modelInstance.calculateTransforms();
+		batch.render(entity.modelInstance, lights);
 		//final GL10 gl = Gdx.gl10;
 		//gl.glPushMatrix();
 		//gl.glMultMatrixf(entity.transform.val, 0);

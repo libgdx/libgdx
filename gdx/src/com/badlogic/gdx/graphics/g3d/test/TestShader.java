@@ -44,7 +44,7 @@ public class TestShader implements Shader {
 	protected int normalTransLoc;
 	protected int diffuseTextureLoc;
 	protected int diffuseColorLoc;
-	protected int lightsCount = 5;
+	public static int lightsCount = 5;
 	protected int lightsLoc;
 	protected int lightSize;
 	protected int lightPositionOffset;

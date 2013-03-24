@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d;
 
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
 import com.badlogic.gdx.graphics.g3d.model.Node;
@@ -13,7 +14,7 @@ import com.badlogic.gdx.math.Matrix4;
  * a {@link NewMaterial} to be applied to the mesh.</p>
  * 
  * Renderables can be rendered via a {@link ModelBatch}, either directly, or by passing a
- * {@link Model} to the RenderBatch. A Model returns all Renderables via its {@link Model#getRenderables(com.badlogic.gdx.utils.Array, com.badlogic.gdx.utils.Pool)} method.
+ * {@link ModelInstance} to the RenderBatch. A Model returns all Renderables via its {@link ModelInstance#getRenderables(com.badlogic.gdx.utils.Array, com.badlogic.gdx.utils.Pool)} method.
  * @author badlogic
  *
  */

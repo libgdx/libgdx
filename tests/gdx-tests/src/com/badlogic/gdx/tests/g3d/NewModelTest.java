@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.loader.JsonModelLoader;
 import com.badlogic.gdx.graphics.g3d.test.Light;
 import com.badlogic.gdx.graphics.g3d.test.TestShader;
@@ -19,7 +20,7 @@ public class NewModelTest extends GdxTest {
 	PerspectiveCamera cam;
 	ModelBatch modelBatch;
 	Model model;
-	Matrix4 transform = new Matrix4();
+	ModelInstance instance;
 	ShapeRenderer shapeRenderer;
 	
 	Light[] lights = new Light[] {
@@ -35,6 +36,7 @@ public class NewModelTest extends GdxTest {
 	public void create () {
 		JsonModelLoader loader = new JsonModelLoader();
 		model = new Model(loader.parseModel(Gdx.files.internal("data/g3d/cubes.g3dj"),  null));
+		instance = new ModelInstance(model);
 		modelBatch = new ModelBatch();
 		TestShader.ignoreUnimplemented = true;
 		shapeRenderer = new ShapeRenderer();
@@ -62,12 +64,12 @@ public class NewModelTest extends GdxTest {
 		shapeRenderer.setColor(Color.BLUE);
 		shapeRenderer.line(0, 0, 0, 0, 0, 100);
 		shapeRenderer.end();
-		
-		transform.idt();
-		transform.translate(0, 0, -3);
+
+		instance.transform.idt();
+		instance.transform.translate(0, 0, 3);
 		
 		modelBatch.begin(cam);
-		modelBatch.render(model, transform, lights);
+		modelBatch.render(instance, lights);
 		modelBatch.end();
 	}
 	
