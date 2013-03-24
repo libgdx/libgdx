@@ -227,4 +227,9 @@ public class TestShader implements Shader {
 			}
 		}
 	}
+
+	@Override
+	public void dispose () {
+		program.dispose();
+	}
 }

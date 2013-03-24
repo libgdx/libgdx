@@ -34,7 +34,7 @@ public class NewModelTest extends GdxTest {
 	@Override
 	public void create () {
 		JsonModelLoader loader = new JsonModelLoader();
-		model = new Model(loader.parseModel(Gdx.files.internal("data/g3d/head.g3dj"),  null));
+		model = new Model(loader.parseModel(Gdx.files.internal("data/g3d/cubes.g3dj"),  null));
 		modelBatch = new ModelBatch();
 		TestShader.ignoreUnimplemented = true;
 		shapeRenderer = new ShapeRenderer();
@@ -56,16 +56,25 @@ public class NewModelTest extends GdxTest {
 		shapeRenderer.setProjectionMatrix(cam.combined);
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(Color.RED);
-		shapeRenderer.line(-100, 0, 0, 100, 0, 0);
+		shapeRenderer.line(0, 0, 0, 100, 0, 0);
 		shapeRenderer.setColor(Color.GREEN);
-		shapeRenderer.line(0, -100, 0, 0, 100, 0);
+		shapeRenderer.line(0, 0, 0, 0, 100, 0);
 		shapeRenderer.setColor(Color.BLUE);
-		shapeRenderer.line(0, 0, -100, 0, 0, 100);
+		shapeRenderer.line(0, 0, 0, 0, 0, 100);
 		shapeRenderer.end();
 		
+		transform.idt();
+		transform.translate(0, 0, -3);
+		
 		modelBatch.begin(cam);
-		modelBatch.addModel(model, transform, lights);
+		modelBatch.render(model, transform, lights);
 		modelBatch.end();
+	}
+	
+	@Override
+	public void dispose () {
+		model.dispose();
+		modelBatch.dispose();
 	}
 
 	@Override

@@ -9,9 +9,10 @@ import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 
-public class ModelBatch {
+public class ModelBatch implements Disposable {
 	protected Camera camera;
 	protected final Pool<Renderable> renderablesPool = new Pool<Renderable>() {
 		@Override
@@ -72,22 +73,21 @@ public class ModelBatch {
 		camera = null;
 	}
 
-	/** Add an instance to render */
-	protected void addRenderable(final Renderable renderable) {
+	public void render(final Renderable renderable) {
 		renderable.shader = shaderProvider.getShader(renderable);
 		renderable.mesh.setAutoBind(false);
 		renderables.add(renderable);
 	}
 	
-	public void addModel(final Model model, final Matrix4 transform) {
-		addModel(model, transform, null, null);
+	public void render(final Model model, final Matrix4 transform) {
+		render(model, transform, null, null);
 	}
 	
-	public void addModel(final Model model, final Matrix4 transform, final Light[] lights) {
-		addModel(model, transform, lights, null);
+	public void render(final Model model, final Matrix4 transform, final Light[] lights) {
+		render(model, transform, lights, null);
 	}
 	
-	public void addModel(final Model model, final Matrix4 transform, final Light[] lights, final Shader shader) {
+	public void render(final Model model, final Matrix4 transform, final Light[] lights, final Shader shader) {
 		int offset = renderables.size;
 		model.getRenderables(renderables, renderablesPool);
 		for (int i = offset; i < renderables.size; i++) {
@@ -95,8 +95,13 @@ public class ModelBatch {
 			renderable.lights = lights;
 			renderable.shader = shader;
 			renderable.transform.set(transform);
-//			renderable.transform; FIXME multiply transform!
+			renderable.transform.mul(transform);
 			reuseableRenderables.add(renderable);
 		}
+	}
+
+	@Override
+	public void dispose () {
+		shaderProvider.dispose();
 	}
 }

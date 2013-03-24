@@ -33,5 +33,8 @@ public class DefaultShaderProvider implements ShaderProvider {
 
 	@Override
 	public void dispose () {
+		for(Shader shader: shaders) {
+			shader.dispose();
+		}
 	}
 }
