@@ -6,16 +6,12 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g3d.RenderBatch;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.loader.JsonModelLoader;
-import com.badlogic.gdx.graphics.g3d.old.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.old.materials.Material;
-import com.badlogic.gdx.graphics.g3d.old.materials.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.old.model.still.StillModel;
-import com.badlogic.gdx.graphics.g3d.old.model.still.StillSubMesh;
-import com.badlogic.gdx.graphics.g3d.test.InterimModel;
+import com.badlogic.gdx.graphics.g3d.old.loaders.wavefront.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.test.Light;
-import com.badlogic.gdx.graphics.g3d.test.NewModel;
+import com.badlogic.gdx.graphics.g3d.test.TestShader;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -32,23 +28,23 @@ public class BatchRenderTest extends GdxTest {
 	float SIZE_X = 20f, SIZE_Y = 20f, SIZE_Z = 20f;
 	
 	public static class ModelInstance {
-		public NewModel model;
+		public Model model;
 		public Matrix4 transform;
-		public ModelInstance(NewModel model, Matrix4 transform) {
+		public ModelInstance(Model model, Matrix4 transform) {
 			this.model = model;
 			this.transform = transform;
 		}
 	}
 	PerspectiveCamera cam;
 	Array<ModelInstance> instances = new Array<ModelInstance>();
-	NewModel sphereModel;
-	NewModel sceneModel;
-	StillModel cubeModel;
-	NewModel carModel;
-	NewModel testModel;
-	Array<NewModel> cubes = new Array<NewModel>();
+	Model sphereModel;
+	Model sceneModel;
+	Model cubeModel;
+	Model carModel;
+	Model testModel;
+	Array<Model> cubes = new Array<Model>();
 	Array<Texture> textures = new Array<Texture>();
-	RenderBatch renderBatch;
+	ModelBatch renderBatch;
 	DefaultTextureBinder exclusiveTextures;
 	Light[] lights;
 	
@@ -59,6 +55,8 @@ public class BatchRenderTest extends GdxTest {
 	
 	@Override
 	public void create () {
+		TestShader.ignoreUnimplemented = true;
+		
 		final JsonModelLoader loader = new JsonModelLoader();
 
 		// need more higher resolution textures for this test...
@@ -68,15 +66,17 @@ public class BatchRenderTest extends GdxTest {
 		for (int i = 0; i < TEXTURE_COUNT; i++)
 			textures.add(new Texture(Gdx.files.internal(TEXTURES[i%TEXTURES.length])));
 		
-		sphereModel = new InterimModel(ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/sphere.obj")));
-		sceneModel = new InterimModel(ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/scene.obj")));
-		cubeModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/cube.obj"));
-		carModel = new InterimModel(ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/car.obj")));
-		testModel = new InterimModel(loader.load(Gdx.files.internal("data/g3d/test.g3dj"), null));
+		ObjLoader objLoader = new ObjLoader();
+		sphereModel = objLoader.loadObj(Gdx.files.internal("data/sphere.obj"));
+		sceneModel = objLoader.loadObj(Gdx.files.internal("data/scene.obj"));
+		cubeModel = objLoader.loadObj(Gdx.files.internal("data/cube.obj"));
+		carModel = objLoader.loadObj(Gdx.files.internal("data/car.obj"));
+		testModel = new Model(loader.parseModel(Gdx.files.internal("data/g3d/head.g3dj"),  null));
 		
-		StillSubMesh mesh = (StillSubMesh)(cubeModel.subMeshes[0]);
+		//StillSubMesh mesh = (StillSubMesh)(cubeModel.subMeshes[0]);
 		for (int i = 0; i < textures.size; i++)
-			cubes.add(new InterimModel(new StillModel(new StillSubMesh(mesh.name, mesh.mesh, mesh.primitiveType, new Material("mat", new TextureAttribute(textures.get(i), 0, TextureAttribute.diffuseTexture))))));
+			cubes.add(cubeModel);
+			// cubes.add(new InterimModel(new StillModel(new StillSubMesh(mesh.name, mesh.mesh, mesh.primitiveType, new Material("mat", new TextureAttribute(textures.get(i), 0, TextureAttribute.diffuseTexture))))));
 		
 		createScene2();
 		
@@ -87,7 +87,7 @@ public class BatchRenderTest extends GdxTest {
 		cam.lookAt(0, 0, 0);
 		cam.update();
 		
-		renderBatch = new RenderBatch();
+		renderBatch = new ModelBatch();
 		
 		lights = new Light[] {
 			new Light(Color.WHITE, Vector3.tmp.set(-10f, 10f, -10f), 15f),
@@ -118,8 +118,8 @@ public class BatchRenderTest extends GdxTest {
 	public void render () {
 		if ((dbgTimer += Gdx.graphics.getDeltaTime()) >= 1f) {
 			dbgTimer -= 1f;
-			Gdx.app.log("Test", "FPS: "+Gdx.graphics.getFramesPerSecond()+", binds: "+exclusiveTextures.getBindCount()+", reused: "+exclusiveTextures.getReuseCount());
-			exclusiveTextures.resetCounts();
+			// Gdx.app.log("Test", "FPS: "+Gdx.graphics.getFramesPerSecond()+", binds: "+exclusiveTextures.getBindCount()+", reused: "+exclusiveTextures.getReuseCount());
+			// exclusiveTextures.resetCounts();
 		}
 		GL20 gl = Gdx.gl20;
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -128,8 +128,12 @@ public class BatchRenderTest extends GdxTest {
 		Gdx.gl.glDisable(GL20.GL_CULL_FACE);
 		
 		renderBatch.begin(cam);
-		for (int i = 0; i < instances.size; i++)
-			renderBatch.addModel(instances.get(i).model, instances.get(i).transform, lights);
+		for (int i = 0; i < instances.size; i++) {
+			if (instances.get(i).model == null)
+				Gdx.app.log("Test", "Model "+i+" is null");
+			else
+				renderBatch.addModel(instances.get(i).model, instances.get(i).transform, lights);
+		}
 		renderBatch.end();		
 	}
 	

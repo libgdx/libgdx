@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.test.Light;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultRenderableSorter;
@@ -93,7 +94,7 @@ public class ModelBatch {
 			Renderable renderable = renderables.get(i);
 			renderable.lights = lights;
 			renderable.shader = shader;
-			renderable.shader = shader;
+			renderable.transform.set(transform);
 //			renderable.transform; FIXME multiply transform!
 			reuseableRenderables.add(renderable);
 		}

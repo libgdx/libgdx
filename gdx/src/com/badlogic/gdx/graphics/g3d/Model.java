@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.g3d.old.materials.MaterialAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider.FileTextureProvider;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -252,5 +253,15 @@ public class Model {
 		for(Node node: nodes) {
 			node.calculateTransforms(true);
 		}
+	}
+	
+	private final BoundingBox meshBounds = new BoundingBox();
+	public BoundingBox getBoundingBox(final BoundingBox out) {
+		out.inf();
+		for (Mesh mesh : meshes) {
+			mesh.calculateBoundingBox(meshBounds);
+			out.ext(meshBounds);
+		}
+		return out;
 	}
 }

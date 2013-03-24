@@ -16,10 +16,13 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.g3d.old.model.Model;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.test.Light;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -65,22 +68,23 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 		return entity;
 	}
 	
-	public void render() {
-		render(entities);
+	public void render(final ModelBatch batch, final Light[] lights) {
+		render(batch, lights, entities);
 	}
 	
-	public void render(final Iterable<T> entities) {
+	public void render(final ModelBatch batch, final Light[] lights, final Iterable<T> entities) {
 		for (final T e : entities)
-			render(e);
+			batch.addModel(e.model, e.transform, lights);
 	}
 	
-	public void render(final T entity) {
-		final GL10 gl = Gdx.gl10;
-		gl.glPushMatrix();
-		gl.glMultMatrixf(entity.transform.val, 0);
-		gl.glColor4f(entity.color.r, entity.color.g, entity.color.b, entity.color.a);
-		entity.model.render();
-		gl.glPopMatrix();
+	public void render(final ModelBatch batch, final Light[] lights, final T entity) {
+		batch.addModel(entity.model, entity.transform, lights);
+		//final GL10 gl = Gdx.gl10;
+		//gl.glPushMatrix();
+		//gl.glMultMatrixf(entity.transform.val, 0);
+		//gl.glColor4f(entity.color.r, entity.color.g, entity.color.b, entity.color.a);
+		//entity.model.render();
+		//gl.glPopMatrix();
 	}
 	
 	public void update() {	}
@@ -95,8 +99,8 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 			constructor.dispose();
 		constructors.clear();
 		
-		for (int i = 0; i < models.size; i++)
-			models.get(i).dispose();
+		//for (int i = 0; i < models.size; i++)
+			//models.get(i).dispose();
 		models.clear();
 	}
 }

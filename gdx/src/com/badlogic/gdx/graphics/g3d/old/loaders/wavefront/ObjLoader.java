@@ -33,20 +33,29 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
+import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPart;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPartMaterial;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
 import com.badlogic.gdx.graphics.g3d.old.ModelLoaderHints;
-import com.badlogic.gdx.graphics.g3d.old.loaders.StillModelLoader;
-import com.badlogic.gdx.graphics.g3d.old.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.old.materials.Material;
-import com.badlogic.gdx.graphics.g3d.old.materials.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.old.model.still.StillModel;
-import com.badlogic.gdx.graphics.g3d.old.model.still.StillSubMesh;
+import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 
 /** Loads Wavefront OBJ files.
  * 
  * @author mzechner, espitz */
-public class ObjLoader implements StillModelLoader {
+public class ObjLoader /* implements StillModelLoader */ {
 	final FloatArray verts;
 	final FloatArray norms;
 	final FloatArray uvs;
@@ -62,7 +71,7 @@ public class ObjLoader implements StillModelLoader {
 	/** Loads a Wavefront OBJ file from a given file handle.
 	 * 
 	 * @param file the FileHandle */
-	public StillModel loadObj (FileHandle file) {
+	public Model loadObj (FileHandle file) {
 		return loadObj(file, false);
 	}
 
@@ -70,7 +79,7 @@ public class ObjLoader implements StillModelLoader {
 	 * 
 	 * @param file the FileHandle
 	 * @param flipV whether to flip the v texture coordinate (Blender, Wings3D, et al) */
-	public StillModel loadObj (FileHandle file, boolean flipV) {
+	public Model loadObj (FileHandle file, boolean flipV) {
 		return loadObj(file, file.parent(), flipV);
 	}
 
@@ -79,7 +88,7 @@ public class ObjLoader implements StillModelLoader {
 	 * @param file the FileHandle
 	 * @param textureDir
 	 * @param flipV whether to flip the v texture coordinate (Blender, Wings3D, et al) */
-	public StillModel loadObj (FileHandle file, FileHandle textureDir, boolean flipV) {
+	public Model loadObj (FileHandle file, FileHandle textureDir, boolean flipV) {
 		String line;
 		String[] tokens;
 		char firstChar;
@@ -91,10 +100,13 @@ public class ObjLoader implements StillModelLoader {
 		groups.add(activeGroup);
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(file.read()), 4096);
+		int id = 0;
 		try {
 			while ((line = reader.readLine()) != null) {
 
 				tokens = line.split("\\s+");
+				if (tokens.length < 1)
+					break;
 
 				if (tokens[0].length() == 0) {
 					continue;
@@ -178,7 +190,7 @@ public class ObjLoader implements StillModelLoader {
 		// Get number of objects/groups remaining after removing empty ones
 		final int numGroups = groups.size();
 
-		final StillModel model = new StillModel(new StillSubMesh[numGroups]);
+		final ModelData data = new ModelData();
 
 		for (int g = 0; g < numGroups; g++) {
 			Group group = groups.get(g);
@@ -216,23 +228,43 @@ public class ObjLoader implements StillModelLoader {
 					finalIndices[i] = (short)i;
 				}
 			}
-			final Mesh mesh;
 
 			ArrayList<VertexAttribute> attributes = new ArrayList<VertexAttribute>();
 			attributes.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
 			if (hasNorms) attributes.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 			if (hasUVs) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
-
-			mesh = new Mesh(true, numFaces * 3, numIndices, attributes.toArray(new VertexAttribute[attributes.size()]));
-			mesh.setVertices(finalVerts);
-			if (numIndices > 0) mesh.setIndices(finalIndices);
-
-			StillSubMesh subMesh = new StillSubMesh(group.name, mesh, GL10.GL_TRIANGLES);
-			subMesh.material = mtl.getMaterial(group.materialName);
-			model.subMeshes[g] = subMesh;
-
+		
+			String nodeId = "node" + (++id);
+			String meshId = "mesh" + id;
+			String partId = "part" + id;
+			ModelNode node = new ModelNode();
+			node.id = nodeId;
+			node.meshId = meshId;
+			node.scale = new Vector3(1,1,1);
+			node.translation = new Vector3();
+			node.rotation = new Quaternion();
+			ModelMeshPartMaterial pm = new ModelMeshPartMaterial();
+			pm.meshPartId = partId;
+			pm.materialId = group.materialName;
+			node.meshPartMaterials = new ModelMeshPartMaterial[] { pm };
+			ModelMeshPart part = new ModelMeshPart();
+			part.id = partId;
+			part.indices = finalIndices;
+			part.primitiveType = GL10.GL_TRIANGLES;
+			ModelMesh mesh = new ModelMesh();
+			mesh.id = meshId;
+			mesh.attributes = attributes.toArray(new VertexAttribute[attributes.size()]);
+			mesh.vertices = finalVerts;
+			mesh.parts = new ModelMeshPart[] { part };
+			data.nodes.add(node);
+			data.meshes.add(mesh);
+			ModelMaterial mm = mtl.getMaterial(group.materialName);
+			data.materials.add(mm);
 		}
 
+		//for (ModelMaterial m : mtl.materials)
+			//data.materials.add(m);
+		
 		// An instance of ObjLoader can be used to load more than one OBJ.
 		// Clearing the ArrayList cache instead of instantiating new
 		// ArrayLists should result in slightly faster load times for
@@ -242,7 +274,7 @@ public class ObjLoader implements StillModelLoader {
 		if (uvs.size > 0) uvs.clear();
 		if (groups.size() > 0) groups.clear();
 
-		return model;
+		return new Model(data);
 	}
 
 	private Group setActiveGroup (String name) {
@@ -272,25 +304,24 @@ public class ObjLoader implements StillModelLoader {
 		int numFaces;
 		boolean hasNorms;
 		boolean hasUVs;
-		Material mat;
+		NewMaterial mat;
 
 		Group (String name) {
 			this.name = name;
 			this.faces = new ArrayList<Integer>(200);
 			this.numFaces = 0;
-			this.mat = new Material("");
+			this.mat = new NewMaterial("");
 			this.materialName = "default";
 		}
 	}
 
-	@Override
-	public StillModel load (FileHandle handle, ModelLoaderHints hints) {
+	public Model load (FileHandle handle, ModelLoaderHints hints) {
 		return loadObj(handle, hints.flipV);
 	}
 }
 
 class MtlLoader {
-	private ArrayList<Material> materials = new ArrayList<Material>();
+	public ArrayList<ModelMaterial> materials = new ArrayList<ModelMaterial>();
 	private static AssetManager assetManager;
 	private static Texture emptyTexture = null;
 
@@ -312,7 +343,7 @@ class MtlLoader {
 		String curMatName = "default";
 		Color difcolor = Color.WHITE;
 		Color speccolor = Color.WHITE;
-		Texture texture = emptyTexture;
+		String texFilename = null;
 
 		FileHandle file = Gdx.files.internal(name);
 		if (file == null || file.exists() == false) return;
@@ -330,8 +361,14 @@ class MtlLoader {
 				} else if (tokens[0].charAt(0) == '#')
 					continue;
 				else if (tokens[0].toLowerCase().equals("newmtl")) {
-					Material mat = new Material(curMatName, new TextureAttribute(texture, 0, TextureAttribute.diffuseTexture),
-						new ColorAttribute(difcolor, ColorAttribute.diffuse), new ColorAttribute(speccolor, ColorAttribute.specular));
+					ModelMaterial mat = new ModelMaterial();
+					mat.id = curMatName;
+					mat.diffuse = new Color(difcolor);
+					mat.specular = new Color(speccolor);
+					mat.diffuseTextures = new Array<ModelTexture>();
+					ModelTexture tex = new ModelTexture();
+					tex.fileName = new String(texFilename);
+					mat.diffuseTextures.add(tex);
 					materials.add(mat);
 
 					if (tokens.length > 1) {
@@ -360,13 +397,9 @@ class MtlLoader {
 				} else if (tokens[0].toLowerCase().equals("map_kd")) {
 					String textureName = tokens[1];
 					if (textureName.length() > 0) {
-						String texname = textureDir.child(textureName).toString();
-						assetManager.load(texname, Texture.class);
-						assetManager.finishLoading();
-						texture = assetManager.get(texname, Texture.class);
-						texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+						texFilename = textureDir.child(textureName).toString();
 					} else
-						texture = emptyTexture;
+						texFilename = null; 
 
 				}
 
@@ -377,18 +410,27 @@ class MtlLoader {
 		}
 
 		// last material
-		Material mat = new Material(curMatName, new TextureAttribute(texture, 0, TextureAttribute.diffuseTexture),
-			new ColorAttribute(difcolor, ColorAttribute.diffuse), new ColorAttribute(speccolor, ColorAttribute.specular));
+		ModelMaterial mat = new ModelMaterial();
+		mat.id = curMatName;
+		mat.diffuse = new Color(difcolor);
+		mat.specular = new Color(speccolor);
+		mat.diffuseTextures = new Array<ModelTexture>();
+		ModelTexture tex = new ModelTexture();
+		tex.fileName = new String(texFilename);
+		mat.diffuseTextures.add(tex);
 		materials.add(mat);
 
 		return;
 	}
-
-	public Material getMaterial (String name) {
-		name = name.replace('.', '_');
-		for (Material mat : materials) {
-			if (mat.getName().equals(name)) return mat;
-		}
-		return new Material("default");
+	
+	public ModelMaterial getMaterial(final String name) {
+		for (final ModelMaterial m : materials)
+			if (m.id.equals(name))
+				return m;
+		ModelMaterial mat = new ModelMaterial();
+		mat.id = name;
+		mat.diffuse = new Color(Color.WHITE);
+		materials.add(mat);
+		return mat;
 	}
 }
