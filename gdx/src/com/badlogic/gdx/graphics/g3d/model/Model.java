@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
@@ -26,12 +28,16 @@ import com.badlogic.gdx.graphics.g3d.utils.TextureProvider.FileTextureProvider;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Pool;
 
 /**
  * A model represents a 3D assets. It stores a hierarchy of nodes. A node has a transform and optionally
  * a graphical part in form of a {@link MeshPart} and {@link NewMaterial}. Mesh parts reference subsets of
  * vertices in one of the meshes of the model. Animations can be applied to nodes, to modify their
- * transform (position, rotation, scale) over time.</p>
+ * transform (translation, rotation, scale) over time.</p>
+ * 
+ * A model can be converted to {@link Renderable} instances via {@link #getRenderables(Array, Pool)}, which
+ * can be rendered by a {@link ModelBatch}.
  * 
  * A model is derrived from {@link ModelData}, which in turn is loaded by a {@link ModelLoader}.
  *   
@@ -67,6 +73,7 @@ public class Model {
 		loadMeshes(modelData.meshes);
 		loadMaterials(modelData.materials, textureProvider);
 		loadNodes(modelData.nodes);
+		calculateTransforms();
 	}
 
 	private void loadNodes (ModelNode[] modelNodes) {
@@ -89,6 +96,7 @@ public class Model {
 			NewMaterial meshMaterial = null;
 			if(modelMeshPartMaterial.meshPartId != null) {
 				for(MeshPart part: meshParts) {
+					// FIXME need to make sure this is unique by adding mesh id to mesh part id!
 					if(modelMeshPartMaterial.meshPartId.equals(part.id)) {
 						meshPart = part;
 						break;
@@ -144,7 +152,7 @@ public class Model {
 		mesh.getIndicesBuffer().clear();
 		for(ModelMeshPart part: modelMesh.parts) {
 			MeshPart meshPart = new MeshPart();
-			meshPart.id = modelMesh.id + "-" + part.id; // FIXME not storing the mesh name
+			meshPart.id = part.id; // FIXME not storing the mesh name, part ids may collide!
 			meshPart.primitiveType = part.primitiveType;
 			meshPart.indexOffset = offset;
 			meshPart.numVertices = part.indices.length;
@@ -188,5 +196,53 @@ public class Model {
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * Traverses the Node hierarchy and collects {@link Renderable} instances for every
+	 * node with a graphical representation. Renderables are obtained from the provided
+	 * pool. The resulting array can be rendered via a {@link ModelBatch}.
+	 * 
+	 * @param renderables the output array
+	 * @param pool the pool to obtain Renderables from
+	 */
+	public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+		for(Node node: nodes) {
+			getRenderables(node, renderables, pool);
+		}
+	}
+	
+	private void getRenderables(Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
+		if(node.meshPartMaterials.size > 0) {
+			for(MeshPartMaterial meshPart: node.meshPartMaterials) {
+				Renderable renderable = pool.obtain();
+				renderable.material = meshPart.material;
+				renderable.mesh = meshPart.meshPart.mesh;
+				renderable.meshPartOffset = meshPart.meshPart.indexOffset;
+				renderable.meshPartSize = meshPart.meshPart.numVertices;
+				renderable.primitiveType = meshPart.meshPart.primitiveType;
+				renderable.transform.set(node.worldTransform);
+				renderables.add(renderable);
+			}
+		}
+		
+		for(Node child: node.children) {
+			getRenderables(child, renderables, pool);
+		}
+	}
+	
+	/**
+	 * Calculates the local and world transform of all {@link Node} instances in this model, recursively.
+	 * First each {@link Node#localTransform} transform is calculated based on the translation, rotation and
+	 * scale of each Node. Then each {@link Node#calculateWorldTransform()}
+	 * is calculated, based on the parent's world transform and the local transform of each Node.</p>
+	 * 
+	 * This method can be used to recalculate all transforms if any of the Node's local properties (translation, rotation, scale)
+	 * was modified.
+	 */
+	public void calculateTransforms() {
+		for(Node node: nodes) {
+			node.calculateTransforms(true);
+		}
 	}
 }

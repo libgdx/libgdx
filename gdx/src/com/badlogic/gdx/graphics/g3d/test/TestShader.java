@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ExclusiveTextures;
+import com.badlogic.gdx.graphics.g3d.utils.RenderInstancePool;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
@@ -40,7 +41,7 @@ public class TestShader implements Shader {
 	}
 
 	protected static long implementedFlags = BlendingAttribute.Type | TextureAttribute.Diffuse | ColorAttribute.Diffuse;
-	protected static boolean ignoreUnimplemented = false;
+	public static boolean ignoreUnimplemented = false;
 	
 	protected final ShaderProgram program;
 	protected int projTransLoc;
@@ -56,6 +57,7 @@ public class TestShader implements Shader {
 	
 	private Light[] currentLights = new Light[lightsCount];
 	
+	protected RenderInstancePool renderInstancePool = new RenderInstancePool();
 	protected RenderContext context;
 	protected long mask;
 	
@@ -158,9 +160,9 @@ public class TestShader implements Shader {
 		if (Vector3.tmp2.div(dist).dot(camera.direction) < 0)
 			dist = -dist;
 		for (Renderable renderable : model.getParts(dist)) {
-			final RenderInstance instance = RenderInstance.pool.obtain(renderable, transform, dist, lights, null);
+			final RenderInstance instance = renderInstancePool.obtain(renderable, transform, dist, lights, null);
 			render(instance);
-			RenderInstance.pool.free(instance);
+			renderInstancePool.free(instance);
 		}
 	}
 	
@@ -217,8 +219,11 @@ public class TestShader implements Shader {
 					bindTextureAttribute(diffuseTextureLoc, tex);
 				// TODO else if (..)
 			}  
-			else 
-				throw new GdxRuntimeException("unknown attribute");
+			else {
+				if(!ignoreUnimplemented) {
+					throw new GdxRuntimeException("unknown attribute");
+				}
+			}
 		}
 	}
 

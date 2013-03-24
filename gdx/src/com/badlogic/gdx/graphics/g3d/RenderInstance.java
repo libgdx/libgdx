@@ -14,23 +14,4 @@ public class RenderInstance {
 	public float distance;
 	public Shader shader;
 	public Light[] lights;
-	
-	public final static class RenderInstancePool extends Pool<RenderInstance> {
-		@Override
-		protected final RenderInstance newObject () {
-			return new RenderInstance();
-		}
-		
-		public final RenderInstance obtain(final Renderable renderable, final Matrix4 transform, final float distance, final Light[] lights, final Shader shader) {
-			final RenderInstance result = obtain();
-			result.renderable = renderable;
-			result.transform = transform;
-			result.distance = distance;
-			result.lights = lights;
-			result.shader = shader;
-			return result;
-		}
-	};
-	
-	public final static RenderInstancePool pool = new RenderInstancePool(); 
 }

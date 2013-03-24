@@ -1,17 +1,13 @@
 package com.badlogic.gdx.graphics.g3d;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g3d.old.model.Model;
-import com.badlogic.gdx.graphics.g3d.old.model.SubMesh;
-import com.badlogic.gdx.graphics.g3d.test.InterimModel;
 import com.badlogic.gdx.graphics.g3d.test.Light;
 import com.badlogic.gdx.graphics.g3d.test.NewModel;
 import com.badlogic.gdx.graphics.g3d.utils.ExclusiveTextures;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.g3d.utils.RenderInstancePool;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
 
 public class RenderBatch {
 	protected RenderContext context;
@@ -19,6 +15,7 @@ public class RenderBatch {
 	protected Camera camera;
 	// TODO: perhaps its better to use a sorted list?
 	protected final Array<RenderInstance> instances = new Array<RenderInstance>();
+	private final RenderInstancePool renderInstancePool = new RenderInstancePool(); 
 	
 	/** Construct a BaseRenderBatch with the specified listener */
 	public RenderBatch(RenderBatchListener listener, ExclusiveTextures textures) {
@@ -57,7 +54,7 @@ public class RenderBatch {
 		if (currentShader != null)
 			currentShader.end();
 		context.end();
-		RenderInstance.pool.freeAll(instances);
+		renderInstancePool.freeAll(instances);
 		instances.clear();
 		camera = null;
 	}
@@ -70,7 +67,7 @@ public class RenderBatch {
 	}
 	
 	public void addModelPart(final Renderable renderable, final Matrix4 transform, final float distance, final Light[] lights, final Shader shader) {
-		addInstance(RenderInstance.pool.obtain(renderable, transform, distance, lights, null), shader);
+		addInstance(renderInstancePool.obtain(renderable, transform, distance, lights, null), shader);
 	}
 	
 	public void addModel(final NewModel model, final Matrix4 transform) {
