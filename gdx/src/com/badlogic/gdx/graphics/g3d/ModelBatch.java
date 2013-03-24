@@ -72,8 +72,7 @@ public class ModelBatch implements Disposable {
 		camera = null;
 	}
 
-	/** Add an instance to render */
-	protected void render(final Renderable renderable) {
+	public void render(final Renderable renderable) {
 		renderable.shader = shaderProvider.getShader(renderable);
 		renderable.mesh.setAutoBind(false);
 		renderables.add(renderable);
@@ -95,7 +94,7 @@ public class ModelBatch implements Disposable {
 			renderable.lights = lights;
 			renderable.shader = shader;
 			renderable.shader = shader;
-//			renderable.transform; FIXME multiply transform!
+			renderable.transform.mul(transform);
 			reuseableRenderables.add(renderable);
 		}
 	}
