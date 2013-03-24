@@ -42,7 +42,10 @@ public class Node {
 	 * @return the local transform
 	 */
 	public Matrix4 calculateLocalTransform() {
-		// FIXME implement local transform calculation based on translation,rotation,scale
+		localTransform.idt();
+		localTransform.translate(translation);
+		localTransform.rotate(rotation);
+		localTransform.scale(scale.x, scale.y, scale.z);
 		return localTransform;
 	}
 
@@ -52,7 +55,9 @@ public class Node {
 	 * @return the world transform
 	 */
 	public Matrix4 calculateWorldTransform() {
-		// FIXME implement world transform calculation based on local transform and parent transform
+		worldTransform.set(localTransform);
+		if(parent != null) 
+			worldTransform.mul(parent.worldTransform);
 		return worldTransform;
 	}
 	
