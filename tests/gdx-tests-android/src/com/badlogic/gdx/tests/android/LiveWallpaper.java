@@ -15,33 +15,47 @@
  ******************************************************************************/
 package com.badlogic.gdx.tests.android;
 
+import android.util.Log;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.android.AndroidWallpaperListener;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.MeshShaderTest;
+import com.badlogic.gdx.tests.SpritePerformanceTest2;
 import com.badlogic.gdx.tests.WaterRipples;
 
 public class LiveWallpaper extends AndroidLiveWallpaperService {
+	
 	@Override
-	public ApplicationListener createListener (boolean isPreview) {
-		return new MeshShaderTest();
-	}
-
-	@Override
-	public AndroidApplicationConfiguration createConfig () {
+	public void onCreateApplication () {
+		super.onCreateApplication();
+		
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useGL20 = true;
-		return config;
+		
+		ApplicationListener listener = new MyLiveWallpaperListener();
+		initialize(listener, config);
 	}
+	
+	// implement AndroidWallpaperListener additionally to ApplicationListener 
+	// if you want to receive callbacks specific to live wallpapers
+	public static class MyLiveWallpaperListener extends MeshShaderTest implements AndroidWallpaperListener {
+		
+		@Override
+		public void offsetChange (float xOffset, float yOffset, float xOffsetStep, float yOffsetStep, int xPixelOffset,
+			int yPixelOffset) {
+			Log.i("LiveWallpaper test", "offsetChange(xOffset:"+xOffset+" yOffset:"+yOffset+" xOffsetSteep:"+xOffsetStep+" yOffsetStep:"+yOffsetStep+" xPixelOffset:"+xPixelOffset+" yPixelOffset:"+yPixelOffset+")");
+		}
 
-	@Override
-	public void offsetChange (ApplicationListener listener, float xOffset, float yOffset, float xOffsetStep, float yOffsetStep,
-		int xPixelOffset, int yPixelOffset) {
-		Gdx.app.log("LiveWallpaper", "offset changed: " + xOffset + ", " + yOffset);
+		@Override
+		public void previewStateChange (boolean isPreview) {
+			Log.i("LiveWallpaper test", "previewStateChange(isPreview:"+isPreview+")");
+		}
 	}
 }
