@@ -2,6 +2,7 @@ package com.badlogic.gdx.graphics.g3d.model.data;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.old.loaders.ModelLoader;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -14,10 +15,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  */
 public class ModelData {
 	public String version;
-	public ModelMesh[] meshes;
-	public ModelMaterial[] materials;
-	public ModelNode[] nodes;
-	public ModelAnimation[] animations;
+	public final Array<ModelMesh> meshes = new Array<ModelMesh>();
+	public final Array<ModelMaterial> materials = new Array<ModelMaterial>();
+	public final Array<ModelNode> nodes = new Array<ModelNode>();
+	public final Array<ModelAnimation> animations = new Array<ModelAnimation>();
 	
 	public void addMesh(ModelMesh mesh) {
 		for(ModelMesh other: meshes) {
@@ -25,5 +26,6 @@ public class ModelData {
 				throw new GdxRuntimeException("Mesh with id '" + other.id + "' already in model");
 			}
 		}
+		meshes.add(mesh);
 	}
 }

@@ -80,7 +80,7 @@ public class Model implements Disposable {
 		calculateTransforms();
 	}
 
-	private void loadNodes (ModelNode[] modelNodes) {
+	private void loadNodes (Iterable<ModelNode> modelNodes) {
 		for(ModelNode node: modelNodes) {
 			nodes.add(loadNode(null, node));
 		}
@@ -134,7 +134,7 @@ public class Model implements Disposable {
 		return node;
 	}
 
-	private void loadMeshes (ModelMesh[] meshes) {
+	private void loadMeshes (Iterable<ModelMesh> meshes) {
 		for(ModelMesh mesh: meshes) {
 			convertMesh(mesh);
 		}
@@ -168,7 +168,7 @@ public class Model implements Disposable {
 		mesh.getIndicesBuffer().position(0);
 	}
 
-	private void loadMaterials (ModelMaterial[] modelMaterials, TextureProvider textureProvider) {
+	private void loadMaterials (Iterable<ModelMaterial> modelMaterials, TextureProvider textureProvider) {
 		for(ModelMaterial mtl: modelMaterials) {
 			this.materials.add(convertMaterial(mtl, textureProvider));
 		}
