@@ -70,7 +70,7 @@ public class SoftBodyTest extends BaseBulletTest {
 		super.create();
 		
 		world.add("ground", 0f, 0f, 0f)
-		.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+		.getColor().set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		float x0 = -2f, y0 = 6f, z0 = -2f;
 		float x1 = 8f, y1 = 6f, z1 = 8f;
