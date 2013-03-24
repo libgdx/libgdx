@@ -47,27 +47,45 @@ public class btIndexedMesh {
 		set(mesh);
 	}
 	
+	/** Construct a new btIndexedMesh based on the supplied {@link Mesh}
+	 * The specified mesh must be indexed and triangulated and must outlive this btIndexedMesh.
+	 * The buffers for the vertices and indices are shared amonst both. */
+	public btIndexedMesh(final Mesh mesh, int offset, int count) {
+		this();
+		set(mesh, offset, count);
+	}
+	
 	/** Convenience method to set this btIndexedMesh to the specified {@link Mesh} 
 	 * The specified mesh must be indexed and triangulated and must outlive this btIndexedMesh.
 	 * The buffers for the vertices and indices are shared amonst both. */
 	public void set(final Mesh mesh) {
-		final int numIndices = mesh.getNumIndices();
-		if ((numIndices <= 0) || ((numIndices % 3) != 0))
+		set(mesh, 0, mesh.getNumIndices());
+	}
+
+	/** Convenience method to set this btIndexedMesh to the specified {@link Mesh} 
+	 * The specified mesh must be indexed and triangulated and must outlive this btIndexedMesh.
+	 * The buffers for the vertices and indices are shared amonst both. */
+	public void set(final Mesh mesh, int offset, int count) {
+		if ((count <= 0) || ((count % 3) != 0))
 			throw new com.badlogic.gdx.utils.GdxRuntimeException("Mesh must be indexed and triangulated");
 		java.nio.FloatBuffer buf = mesh.getVerticesBuffer();
+		java.nio.ShortBuffer ind = mesh.getIndicesBuffer();
 		VertexAttribute posAttr = mesh.getVertexAttribute(Usage.Position);
 		if (posAttr == null)
 			throw new com.badlogic.gdx.utils.GdxRuntimeException("Mesh doesn't have a position attribute");
 		final int pos = buf.position();
 		buf.position(posAttr.offset);
 		setM_indexType(PHY_ScalarType.PHY_SHORT);
-		setM_numTriangles(numIndices/3);
+		setM_numTriangles(count/3);
 		setM_numVertices(mesh.getNumVertices());
 		setM_triangleIndexStride(6);
 		setM_vertexStride(mesh.getVertexSize());
 		setM_vertexType(PHY_ScalarType.PHY_FLOAT);
-		setTriangleIndexBase(mesh.getIndicesBuffer());
+		final int ipos = ind.position();
+		ind.position(offset);
+		setTriangleIndexBase(ind);
 		setVertexBase(buf);
+		ind.position(ipos);
 		buf.position(pos);
 	}
 

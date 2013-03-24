@@ -41,13 +41,13 @@ public class MeshShapeTest extends BaseBulletTest {
 		sphereConstructor.bodyInfo.setM_restitution(1f);
 		world.addConstructor("sphere", sphereConstructor);
 		
-		final StillModel sceneModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/scene.obj"));
-		final BulletConstructor sceneConstructor = new BulletConstructor(sceneModel, 0f, new btBvhTriangleMeshShape(true, sceneModel));
-		sceneConstructor.bodyInfo.setM_restitution(0.25f);
-		world.addConstructor("scene", sceneConstructor);
+		// final StillModel sceneModel = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/scene.obj"));
+		// final BulletConstructor sceneConstructor = new BulletConstructor(sceneModel, 0f, new btBvhTriangleMeshShape(true, sceneModel));
+		// sceneConstructor.bodyInfo.setM_restitution(0.25f);
+		// world.addConstructor("scene", sceneConstructor);
 		
-		world.add("scene", (new Matrix4()).setToTranslation(0f, 2f, 0f).rotate(Vector3.Y, -90))
-			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+		// world.add("scene", (new Matrix4()).setToTranslation(0f, 2f, 0f).rotate(Vector3.Y, -90))
+			// .color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 
 		world.add("ground", 0f, 0f, 0f)
 			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
