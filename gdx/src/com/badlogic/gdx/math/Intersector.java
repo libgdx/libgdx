@@ -1022,8 +1022,9 @@ public final class Intersector {
 		Circle c2 = new Circle(0, 0, 1);
 		Circle c3 = new Circle(2, 0, 1);
 		Circle c4 = new Circle(0, 0, 2);
+		System.out.println(c1.overlaps(c1)); // true
 		System.out.println(c1.overlaps(c2)); // true
-		System.out.println(c1.overlaps(c3)); // true, should be false?
+		System.out.println(c1.overlaps(c3)); // false
 		System.out.println(c1.overlaps(c4)); // true
 		System.out.println(c4.overlaps(c1)); // true
 		System.out.println(c1.contains(0, 1)); // true, should be false?

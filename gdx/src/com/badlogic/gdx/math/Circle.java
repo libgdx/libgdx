@@ -63,7 +63,7 @@ public class Circle implements Serializable {
 		float dy = y - c.y;
 		float distance = dx * dx + dy * dy;
 		float radiusSum = radius + c.radius;
-		return distance <= radiusSum * radiusSum;
+		return distance < radiusSum * radiusSum;
 	}
 
 	public String toString () {
