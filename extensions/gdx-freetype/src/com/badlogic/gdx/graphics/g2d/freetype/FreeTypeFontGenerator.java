@@ -76,7 +76,9 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)} */
 	public BitmapFont generateFont (int size, String characters, boolean flip) {
 		FreeTypeBitmapFontData data = generateData(size, characters, flip);
-		return new BitmapFont(data, data.getTextureRegion(), false);
+		BitmapFont font = new BitmapFont(data, data.getTextureRegion(), false);
+		font.setOwnsTexture(true);
+		return font;
 	}
 
 	/** Generates a new {@link BitmapFont}. The size is expressed in pixels. Throws a GdxRuntimeException in case the font could not
