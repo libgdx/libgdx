@@ -8,6 +8,8 @@ precision mediump float;
 #define LOWP
 #endif
 
+varying vec3 v_normal;
+
 #if defined(diffuseTextureFlag) || defined(specularTextureFlag)
 varying MED vec2 v_texCoords0;
 #endif
@@ -40,7 +42,6 @@ struct Light
 uniform Light lights[NUM_LIGHTS];
 
 varying vec3 v_lightLambert;
-varying vec3 v_normal;
 #endif
 #endif
 
