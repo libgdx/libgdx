@@ -109,7 +109,7 @@ public class Rectangle implements Serializable {
 	 * @param y point y coordinate
 	 * @return whether the point is contained in the rectangle */
 	public boolean contains (float x, float y) {
-		return this.x < x && this.x + this.width > x && this.y < y && this.y + this.height > y;
+		return this.x <= x && this.x + this.width >= x && this.y <= y && this.y + this.height >= y;
 	}
 
 	/** @param rectangle the other {@link Rectangle}.

@@ -1027,19 +1027,19 @@ public final class Intersector {
 		System.out.println(c1.overlaps(c3)); // false
 		System.out.println(c1.overlaps(c4)); // true
 		System.out.println(c4.overlaps(c1)); // true
-		System.out.println(c1.contains(0, 1)); // true, should be false?
+		System.out.println(c1.contains(0, 1)); // true
 
 		// IMO Rectangle has the correct behaviour
 		Rectangle r1 = new Rectangle(0, 0, 1, 1);
-		Rectangle r2 = new Rectangle(0, 0, 1, 1);
-		Rectangle r3 = new Rectangle(1, 0, 2, 1);
-		System.out.println(r1.overlaps(r2)); // true
-		System.out.println(r1.overlaps(r3)); // false
-		System.out.println(r1.contains(0, 0)); // false
+		Rectangle r2 = new Rectangle(1, 0, 2, 1);
+		System.out.println(r1.overlaps(r1)); // true
+		System.out.println(r1.overlaps(r2)); // false
+		System.out.println(r1.contains(0, 0)); // true
 
 		BoundingBox b1 = new BoundingBox(Vector3.Zero, new Vector3(1, 1, 1));
 		BoundingBox b2 = new BoundingBox(new Vector3(1, 1, 1), new Vector3(2, 2, 2));
-		System.out.println(b1.contains(Vector3.Zero)); // true, should be false?
+		System.out.println(b1.contains(Vector3.Zero)); // true
+		System.out.println(b1.contains(b1)); // true
 		System.out.println(b1.contains(b2)); // true, should be false?
 
 		// Note, in stage the bottom and left sides are inclusive while the right and top sides are exclusive.
