@@ -3,10 +3,13 @@
 #endif
 
 attribute vec3 a_position;
+
+#ifdef NUM_LIGHTS
 attribute vec3 a_normal;
 
 uniform mat3 u_normalMatrix;
 varying vec3 v_normal;
+#endif
 
 #ifdef textureFlag
 attribute vec2 a_texCoord0;
@@ -38,9 +41,10 @@ void main() {
 		
 	vec4 pos = u_modelTrans * vec4(a_position, 1.0);
 	gl_Position = u_projTrans * pos;
+
+	#ifdef NUM_LIGHTS
 	v_normal = u_normalMatrix * a_normal;
 	
-	#ifdef NUM_LIGHTS
 	vec3 aggDir = vec3(0.0);
 	float aggWeight = 0.0;
 	vec3 aggCol = vec3(0.0);

@@ -21,9 +21,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.old.materials.Material;
-import com.badlogic.gdx.graphics.g3d.old.model.still.StillModel;
-import com.badlogic.gdx.graphics.g3d.old.model.still.StillSubMesh;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.btDiscreteDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
@@ -41,28 +39,27 @@ public class ConstraintsTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 
-		final Mesh barMesh = new Mesh(true, 8, 36, new VertexAttribute(Usage.Position, 3, "a_position"));
-		barMesh.setVertices(new float[] {5f, 0.5f, 0.5f, 5f, 0.5f, -0.5f, -5f, 0.5f, 0.5f, -5f, 0.5f, -0.5f,
-			5f, -0.5f, 0.5f, 5f, -0.5f, -0.5f, -5f, -0.5f, 0.5f, -5f, -0.5f, -0.5f});
-		barMesh.setIndices(new short[] {0, 1, 2, 1, 2, 3, // top
-			4, 5, 6, 5, 6, 7, // bottom
-			0, 2, 4, 4, 6, 2, // front
-			1, 3, 5, 5, 7, 3, // back
-			2, 3, 6, 6, 7, 3, // left
-			0, 1, 4, 4, 5, 1 // right
+		final Model barModel = createSimpleModel(new VertexAttribute[] { new VertexAttribute(Usage.Position, 3, "a_position")},
+			new float[] {5f, 0.5f, 0.5f, 5f, 0.5f, -0.5f, -5f, 0.5f, 0.5f, -5f, 0.5f, -0.5f,
+				5f, -0.5f, 0.5f, 5f, -0.5f, -0.5f, -5f, -0.5f, 0.5f, -5f, -0.5f, -0.5f},
+			new short[] {0, 1, 2, 1, 2, 3, // top
+				4, 5, 6, 5, 6, 7, // bottom
+				0, 2, 4, 4, 6, 2, // front
+				1, 3, 5, 5, 7, 3, // back
+				2, 3, 6, 6, 7, 3, // left
+				0, 1, 4, 4, 5, 1 // right
 			});
-		final StillModel barModel = new StillModel(new StillSubMesh("bar", barMesh, GL10.GL_TRIANGLES, new Material()));
 		world.addConstructor("bar", new BulletConstructor(barModel, 0f)); // mass = 0: static body
 		
 		// Create the entities
 		world.add("ground", 0f, 0f, 0f)
-			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+			.getColor().set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		BulletEntity bar = world.add("bar", 0f, 7f, 0f);
-		bar.color.set(0.75f + 0.25f * (float)Math.random(), 0.75f + 0.25f * (float)Math.random(), 0.75f + 0.25f * (float)Math.random(), 1f);
+		bar.getColor().set(0.75f + 0.25f * (float)Math.random(), 0.75f + 0.25f * (float)Math.random(), 0.75f + 0.25f * (float)Math.random(), 1f);
 		
 		BulletEntity box1 = world.add("box", -4.5f, 6f, 0f);
-		box1.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+		box1.getColor().set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 		btPoint2PointConstraint constraint = new btPoint2PointConstraint((btRigidBody)bar.body, (btRigidBody)box1.body, Vector3.tmp.set(-5, -0.5f, -0.5f), Vector3.tmp2.set(-0.5f, 0.5f, -0.5f));
 		((btDynamicsWorld)world.collisionWorld).addConstraint(constraint, false);
 		constraints.add(constraint);
@@ -70,11 +67,11 @@ public class ConstraintsTest extends BaseBulletTest {
 		for (int i = 0; i < 10; i++) {
 			if (i % 2 == 0) {
 				box2 = world.add("box", -3.5f + (float)i, 6f, 0f);
-				box2.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+				box2.getColor().set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 				constraint = new btPoint2PointConstraint((btRigidBody)box1.body, (btRigidBody)box2.body, Vector3.tmp.set(0.5f, -0.5f, 0.5f), Vector3.tmp2.set(-0.5f, -0.5f, 0.5f));
 			} else {
 				box1 = world.add("box", -3.5f + (float)i, 6f, 0f);
-				box1.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+				box1.getColor().set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 				constraint = new btPoint2PointConstraint((btRigidBody)box2.body, (btRigidBody)box1.body, Vector3.tmp.set(0.5f, 0.5f, -0.5f), Vector3.tmp2.set(-0.5f, 0.5f, -0.5f));
 			}
 			((btDynamicsWorld)world.collisionWorld).addConstraint(constraint, false);

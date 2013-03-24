@@ -67,7 +67,7 @@ public class SoftMeshTest extends BaseBulletTest {
 		world.maxSubSteps = 20;
 		
 		world.add("ground", 0f, 0f, 0f)
-		.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+		.getColor().set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		// Note: not every model is suitable for a one on one translation with a soft body, a better model might be added later.
 		final StillModel model = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/wheel.obj"));
