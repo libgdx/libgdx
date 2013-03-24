@@ -1040,7 +1040,7 @@ public final class Intersector {
 		BoundingBox b2 = new BoundingBox(new Vector3(1, 1, 1), new Vector3(2, 2, 2));
 		System.out.println(b1.contains(Vector3.Zero)); // true
 		System.out.println(b1.contains(b1)); // true
-		System.out.println(b1.contains(b2)); // true, should be false?
+		System.out.println(b1.contains(b2)); // false
 
 		// Note, in stage the bottom and left sides are inclusive while the right and top sides are exclusive.
 	}

@@ -217,19 +217,19 @@ public class BoundingBox implements Serializable {
 		return this.set(min, max);
 	}
 
-	/** Returns wheter the given bounding box is contained in this bounding box.
+	/** Returns whether the given bounding box is contained in this bounding box.
 	 * @param b The bounding box
-	 * @return Wheter the given bounding box is contained */
+	 * @return Whether the given bounding box is contained */
 	public boolean contains (BoundingBox b) {
 		return !isValid()
-			|| !(min.x > b.min.x || min.y > b.min.y || min.z > b.min.z || max.x < b.max.x || max.y < b.max.y || max.z < b.max.z);
+			|| (min.x <= b.min.x && min.y <= b.min.y && min.z <= b.min.z && max.x >= b.max.x && max.y >= b.max.y && max.z >= b.max.z);
 	}
 
 	/** Returns whether the given vector is contained in this bounding box.
 	 * @param v The vector
 	 * @return Whether the vector is contained or not. */
 	public boolean contains (Vector3 v) {
-		return !(min.x > v.x || max.x < v.x || min.y > v.y || max.y < v.y || min.z > v.z || max.z < v.z);
+		return min.x <= v.x && max.x >= v.x && min.y <= v.y && max.y >= v.y && min.z <= v.z && max.z >= v.z;
 	}
 
 	@Override
