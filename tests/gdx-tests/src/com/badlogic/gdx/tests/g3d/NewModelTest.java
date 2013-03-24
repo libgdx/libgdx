@@ -67,6 +67,12 @@ public class NewModelTest extends GdxTest {
 		modelBatch.addModel(model, transform, lights);
 		modelBatch.end();
 	}
+	
+	@Override
+	public void dispose () {
+		model.dispose();
+		modelBatch.dispose();
+	}
 
 	@Override
 	public boolean touchDown (int x, int y, int pointer, int newParam) {

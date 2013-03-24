@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider.FileTextureProvider;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 
@@ -47,7 +48,7 @@ import com.badlogic.gdx.utils.Pool;
  * @author badlogic
  *
  */
-public class Model {
+public class Model implements Disposable {
 	/** the meshes of the model **/
 	public Array<Mesh> meshes = new Array<Mesh>();
 	/** parts of meshes, used by nodes that have a graphical representation FIXME not sure if superfluous, stored in Nodes as well, could be useful to create bullet meshes **/
@@ -251,6 +252,16 @@ public class Model {
 	public void calculateTransforms() {
 		for(Node node: nodes) {
 			node.calculateTransforms(true);
+		}
+	}
+
+	@Override
+	public void dispose () {
+		for(Mesh mesh: meshes) {
+			mesh.dispose();
+		}
+		for(NewMaterial material: materials) {
+			// FIXME dispose textures! attribtue should probably be disposable, can decide whether it wants to get rid of resource or not
 		}
 	}
 }
