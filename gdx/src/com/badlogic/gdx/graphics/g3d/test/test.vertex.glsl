@@ -4,12 +4,10 @@
 
 attribute vec3 a_position;
 
-#ifdef NUM_LIGHTS
 attribute vec3 a_normal;
 
 uniform mat3 u_normalMatrix;
 varying vec3 v_normal;
-#endif
 
 #ifdef textureFlag
 attribute vec2 a_texCoord0;
