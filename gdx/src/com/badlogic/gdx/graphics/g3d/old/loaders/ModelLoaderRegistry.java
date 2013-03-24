@@ -51,7 +51,7 @@ public class ModelLoaderRegistry {
 		registerLoader("dae", new ColladaLoader(), new ModelLoaderHints(false));
 		registerLoader("dae", new ColladaLoaderSkeleton(), new ModelLoaderHints(false));
 		*/
-		registerLoader("obj", new ObjLoader(), new ModelLoaderHints(false));
+		// registerLoader("obj", new ObjLoader(), new ModelLoaderHints(false));
 		registerLoader("md2", new MD2Loader(), new MD2LoaderHints(0.2f));
 		registerLoader("g3dt", new G3dtStillModelLoader(), new ModelLoaderHints(true));
 		registerLoader("g3dt", new G3dtKeyframedModelLoader(), new ModelLoaderHints(true));

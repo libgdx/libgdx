@@ -65,16 +65,35 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	
 	/** Create an empty material */
 	public NewMaterial() {	}
+	/** Create an empty material */
+	public NewMaterial(final String id) { 
+		this.id = id;	
+	}
 	/** Create a material with the specified attributes */
 	public NewMaterial(final Attribute... attributes) {
+		add(attributes);
+	}
+	/** Create a material with the specified attributes */
+	public NewMaterial(final String id, final Attribute... attributes) {
+		this(id);
 		add(attributes);
 	}
 	/** Create a material with the specified attributes */
 	public NewMaterial(final Array<Attribute> attributes) {
 		add(attributes);
 	}
+	/** Create a material with the specified attributes */
+	public NewMaterial(final String id, final Array<Attribute> attributes) {
+		this(id);
+		add(attributes);
+	}
 	/** Create a material which is an exact copy of the specified material */
 	public NewMaterial(final NewMaterial copyFrom) {
+		this(copyFrom.id, copyFrom);
+	}
+	/** Create a material which is an exact copy of the specified material */
+	public NewMaterial(final String id, final NewMaterial copyFrom) {
+		this(id);
 		for (Attribute attr : copyFrom)
 			add(attr.copy());
 	}

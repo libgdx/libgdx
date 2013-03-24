@@ -66,12 +66,12 @@ public class JsonModelLoader implements ModelLoader {
 	}
 
 	private StillModel createStillModel (ModelData model) {
-		StillModel stillModel = new StillModel(new SubMesh[model.meshes.length]);
+		StillModel stillModel = new StillModel(new SubMesh[model.meshes.size]);
 		
 		// We create the materials first
 		ObjectMap<String, Material> materials = new ObjectMap<String, Material>();
-		for(int i=0; i<model.materials.length; i++){
-			ModelMaterial jsonMaterial = model.materials[i];
+		for(int i=0; i<model.materials.size; i++){
+			ModelMaterial jsonMaterial = model.materials.get(i);
 			Material material = new Material(jsonMaterial.id);
 			
 			// simple loader for now. Just diffuse & textures
@@ -90,10 +90,10 @@ public class JsonModelLoader implements ModelLoader {
 		}
 		
 		// Create the meshes and assign materials to them. This is a super hack until we have hierarchy
-		for(int i=0; i<model.meshes.length; i++){
-			ModelMesh jsonMesh = model.meshes[i];
+		for(int i=0; i<model.meshes.size; i++){
+			ModelMesh jsonMesh = model.meshes.get(i);
 			// if we have more than one submesh we're screwed for now.
-			ModelMeshPart jsonMeshPart = model.meshes[i].parts[0];
+			ModelMeshPart jsonMeshPart = model.meshes.get(i).parts[0];
 			
 			Mesh mesh = new Mesh(false, jsonMesh.vertices.length, jsonMeshPart.indices.length, jsonMesh.attributes);
 			mesh.setIndices(jsonMeshPart.indices);
@@ -101,7 +101,7 @@ public class JsonModelLoader implements ModelLoader {
 			
 			StillSubMesh subMesh = new StillSubMesh(jsonMesh.id, mesh, jsonMeshPart.primitiveType);
 			// Just assumes i material. We need the node tree to work this properly
-			subMesh.material = materials.get(model.materials[i].id);
+			subMesh.material = materials.get(model.materials.get(i).id);
 			stillModel.subMeshes[i] = subMesh;
 		}
 		
@@ -130,7 +130,7 @@ public class JsonModelLoader implements ModelLoader {
 			throw new GdxRuntimeException("No meshes found in file");
 		}
 		
-		model.meshes = new ModelMesh[meshes.size];
+		model.meshes.ensureCapacity(meshes.size);
 		int i = 0;
 		for(OrderedMap<String, Object> mesh: meshes) {
 			ModelMesh jsonMesh = new ModelMesh();
@@ -194,7 +194,7 @@ public class JsonModelLoader implements ModelLoader {
 				parts.add(jsonPart);
 			}
 			jsonMesh.parts = parts.toArray(ModelMeshPart.class);
-			model.meshes[i++] = jsonMesh;
+			model.meshes.add(jsonMesh);
 		}
 	}
 	
@@ -252,7 +252,7 @@ public class JsonModelLoader implements ModelLoader {
 			// we should probably create some default material in this case
 		}
 		else {
-			model.materials = new ModelMaterial[materials.size];
+			model.materials.ensureCapacity(materials.size);
 			
 			int i = 0;
 			for(OrderedMap<String, Object> material: materials) {
@@ -317,7 +317,7 @@ public class JsonModelLoader implements ModelLoader {
 					}
 				}
 
-				model.materials[i++] = jsonMaterial;
+				model.materials.add(jsonMaterial);
 			}
 		}
 	}
@@ -341,17 +341,17 @@ public class JsonModelLoader implements ModelLoader {
 			throw new GdxRuntimeException("Expected Vector2 values <> than two.");
 	}
 
-	private ModelNode[] parseNodes (ModelData model, OrderedMap<String, Object> json, ModelLoaderHints hints) {
+	private Array<ModelNode> parseNodes (ModelData model, OrderedMap<String, Object> json, ModelLoaderHints hints) {
 		Array<OrderedMap<String, Object>> nodes = (Array<OrderedMap<String, Object>>)json.get("nodes");
 		if(nodes == null) {
 			throw new GdxRuntimeException("At least one node is required.");
 		}
 		
-		model.nodes = new ModelNode[nodes.size];
+		model.nodes.ensureCapacity(nodes.size);
 		
 		int i = 0;
 		for(OrderedMap<String, Object> node : nodes) {
-			model.nodes[i++] = parseNodesRecursively(node, hints);
+			model.nodes.add(parseNodesRecursively(node, hints));
 		}
 		return model.nodes;
 	}
