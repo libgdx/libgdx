@@ -241,7 +241,7 @@ b2ContactFilter defaultFilter;
 			shouldCollideID = env->GetMethodID( worldClass, "contactFilter", "(JJ)Z");
 		}
 	
-		b2World* world = new b2World( b2Vec2( gravityX, gravityY ), doSleep );
+		b2World* world = new b2World( b2Vec2( gravityX, gravityY ));
 		return (jlong)world;
 	*/
 

@@ -111,6 +111,7 @@ public class CharArray {
 	}
 
 	public void insert (int index, char value) {
+		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		char[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		if (ordered)

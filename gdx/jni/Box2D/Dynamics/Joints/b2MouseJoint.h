@@ -92,6 +92,9 @@ public:
 	/// The mouse joint does not support dumping.
 	void Dump() { b2Log("Mouse joint dumping is not supported.\n"); }
 
+	/// Implement b2Joint::ShiftOrigin
+	void ShiftOrigin(const b2Vec2& newOrigin);
+
 protected:
 	friend class b2Joint;
 

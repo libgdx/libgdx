@@ -18,23 +18,23 @@ package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.math.Vector2;
 
-/** EventListener for low-level input events.  Unpacks {@link InputEvent}s and calls the appropriate method.  By default
- * the methods here do nothing with the event.  Users are expected to override the methods they are interested in, like this:
+/** EventListener for low-level input events. Unpacks {@link InputEvent}s and calls the appropriate method. By default the methods
+ * here do nothing with the event. Users are expected to override the methods they are interested in, like this:
  * 
  * <pre>
  * actor.addListener(new InputListener() {
- *    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
- *       Gdx.app.log("Example", "touch started at (" +x+ ", " +y+ ")");
- *    }
- *    public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
- *       Gdx.app.log("Example", "touch done at (" +x+ ", " +y+ ")");
- *    }
+ * 	public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+ * 		Gdx.app.log(&quot;Example&quot;, &quot;touch started at (&quot; + x + &quot;, &quot; + y + &quot;)&quot;);
+ * 	}
+ * 
+ * 	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+ * 		Gdx.app.log(&quot;Example&quot;, &quot;touch done at (&quot; + x + &quot;, &quot; + y + &quot;)&quot;);
+ * 	}
  * });
- * </pre>
- */
+ * </pre> */
 public class InputListener implements EventListener {
 	static private final Vector2 tmpCoords = new Vector2();
-	
+
 	public boolean handle (Event e) {
 		if (!(e instanceof InputEvent)) return false;
 		InputEvent event = (InputEvent)e;
@@ -48,8 +48,7 @@ public class InputListener implements EventListener {
 			return keyTyped(event, event.getCharacter());
 		}
 
-		tmpCoords.set(event.getStageX(), event.getStageY());
-		event.getListenerActor().stageToLocalCoordinates(tmpCoords);
+		event.toCoordinates(event.getListenerActor(), tmpCoords);
 
 		switch (event.getType()) {
 		case touchDown:

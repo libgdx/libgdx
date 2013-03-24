@@ -713,6 +713,6 @@ public class Actor {
 			int dotIndex = name.lastIndexOf('.');
 			if (dotIndex != -1) name = name.substring(dotIndex + 1);
 		}
-		return name + " " + x + "," + y + " " + width + "x" + height;
+		return name;
 	}
 }

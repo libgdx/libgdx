@@ -286,8 +286,11 @@ void b2ContactManager::AddPair(void* proxyUserDataA, void* proxyUserDataB)
 	bodyB->m_contactList = &c->m_nodeB;
 
 	// Wake up the bodies
-	bodyA->SetAwake(true);
-	bodyB->SetAwake(true);
+	if (fixtureA->IsSensor() == false && fixtureB->IsSensor() == false)
+	{
+		bodyA->SetAwake(true);
+		bodyB->SetAwake(true);
+	}
 
 	++m_contactCount;
 }

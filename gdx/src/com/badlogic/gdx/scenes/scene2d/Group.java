@@ -331,6 +331,10 @@ public class Group extends Actor implements Cullable {
 		return children;
 	}
 
+	public boolean hasChildren () {
+		return children.size > 0;
+	}
+
 	/** When true (the default), the SpriteBatch is transformed so children are drawn in their parent's coordinate system. This has
 	 * a performance impact because {@link SpriteBatch#flush()} must be done before and after the transform. If the actors in a
 	 * group are not rotated or scaled, then the transform for the group can be set to false. In this case, each child's position
@@ -354,5 +358,19 @@ public class Group extends Actor implements Cullable {
 		// Then from each parent down to the descendant.
 		descendant.parentToLocalCoordinates(localCoords);
 		return localCoords;
+	}
+
+	/** Prints the actor hierarchy recursively for debugging purposes. */
+	public void print () {
+		print("");
+	}
+
+	private void print (String indent) {
+		Actor[] actors = children.begin();
+		for (int i = 0, n = children.size; i < n; i++) {
+			System.out.println(indent + actors[i]);
+			if (actors[i] instanceof Group) ((Group)actors[i]).print(indent + "|  ");
+		}
+		children.end();
 	}
 }

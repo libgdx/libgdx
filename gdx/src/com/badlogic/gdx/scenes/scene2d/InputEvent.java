@@ -17,6 +17,7 @@
 package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.math.Vector2;
 
 /** Event for actor input: touch, mouse, keyboard, and scroll.
  * @see InputListener */
@@ -118,6 +119,14 @@ public class InputEvent extends Event {
 		this.relatedActor = relatedActor;
 	}
 
+	/** Sets actorCoords to this event's coordinates relative to the specified actor.
+	 * @param actorCoords Output for resulting coordinates. */
+	public Vector2 toCoordinates (Actor actor, Vector2 actorCoords) {
+		actorCoords.set(stageX, stageY);
+		actor.stageToLocalCoordinates(actorCoords);
+		return actorCoords;
+	}
+
 	public String toString () {
 		return type.toString();
 	}
@@ -125,23 +134,23 @@ public class InputEvent extends Event {
 	/** Types of low-level input events supported by stage2d. */
 	static public enum Type {
 		/** A new touch for a pointer on the stage was detected */
-		touchDown, 
+		touchDown,
 		/** A pointer has stopped touching the stage. */
-		touchUp, 
+		touchUp,
 		/** A pointer that is touching the stage has moved. */
-		touchDragged, 
+		touchDragged,
 		/** The mouse pointer has moved (without a mouse button being active). */
-		mouseMoved, 
-		/** The mouse pointer or an active touch have entered (i.e., {@link Actor#hit(float, float, boolean) hit}) an actor. */ 
-		enter, 
-		/** The mouse pointer or an active touch have exited an actor. */ 
-		exit, 
+		mouseMoved,
+		/** The mouse pointer or an active touch have entered (i.e., {@link Actor#hit(float, float, boolean) hit}) an actor. */
+		enter,
+		/** The mouse pointer or an active touch have exited an actor. */
+		exit,
 		/** The mouse scroll wheel has changed. */
-		scrolled, 
+		scrolled,
 		/** A keyboard key has been pressed. */
-		keyDown, 
+		keyDown,
 		/** A keyboard key has been released. */
-		keyUp, 
+		keyUp,
 		/** A keyboard key has been pressed and released. */
 		keyTyped
 	}
