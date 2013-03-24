@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.model;
 
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;

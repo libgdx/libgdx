@@ -2,8 +2,8 @@ package com.badlogic.gdx.graphics.g3d;
 
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
-import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.test.Light;
 import com.badlogic.gdx.math.Matrix4;
 
 /**
@@ -30,4 +30,8 @@ public class Renderable {
 	public int primitiveType;
 	/** the material to be applied to the mesh **/
 	public NewMaterial material;
+	/** the lights to be used to render this Renderable, may be null **/
+	public Light[] lights;
+	/** the Shader to be used to render this Renderable, may be null **/
+	public Shader shader;
 }

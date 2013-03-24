@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.model;
 
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.Model;
 
 /**
  * A mesh part is composed of a subset of vertices

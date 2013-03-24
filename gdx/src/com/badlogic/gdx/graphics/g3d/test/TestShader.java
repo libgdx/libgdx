@@ -3,22 +3,17 @@ package com.badlogic.gdx.graphics.g3d.test;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.g3d.RenderInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
-import com.badlogic.gdx.graphics.g3d.utils.RenderInstancePool;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class TestShader implements Shader {
@@ -57,7 +52,6 @@ public class TestShader implements Shader {
 	
 	private Light[] currentLights = new Light[lightsCount];
 	
-	protected RenderInstancePool renderInstancePool = new RenderInstancePool();
 	protected RenderContext context;
 	protected long mask;
 	
@@ -105,8 +99,8 @@ public class TestShader implements Shader {
 	}
 	
 	@Override
-	public boolean canRender(final RenderInstance instance) {
-		return mask == instance.renderable.material.getMask();
+	public boolean canRender(final Renderable renderable) {
+		return mask == renderable.material.getMask();
 	}
 	
 	/*@Override
@@ -128,14 +122,6 @@ public class TestShader implements Shader {
 	public boolean equals (TestShader obj) {
 		return (obj == this);
 	}
-	
-	@Override
-	public int compare (final RenderInstance arg0, final RenderInstance arg1) {
-		final boolean b1 = arg0.renderable.material.has(BlendingAttribute.Type);
-		final boolean b2 = arg1.renderable.material.has(BlendingAttribute.Type);
-		if (b1 != b2) return b1 ? 1 : -1;
-		return arg0.distance > arg1.distance ? (b1 ? -1 : 1) : (arg0.distance < arg1.distance ? (b1 ? 1 : -1) : 0);
-	}
 
 	private Mesh currentMesh;
 	private Matrix4 currentTransform;
@@ -154,35 +140,22 @@ public class TestShader implements Shader {
 	}
 
 	@Override
-	public void render (NewModel model, Matrix4 transform, final Light[] lights) {
-		transform.getTranslation(Vector3.tmp);
-		float dist = Vector3.tmp2.set(Vector3.tmp.x - camera.position.x, Vector3.tmp.y - camera.position.y , Vector3.tmp.z - camera.position.z).len();
-		if (Vector3.tmp2.div(dist).dot(camera.direction) < 0)
-			dist = -dist;
-		for (Renderable renderable : model.getParts(dist)) {
-			final RenderInstance instance = renderInstancePool.obtain(renderable, transform, dist, lights, null);
-			render(instance);
-			renderInstancePool.free(instance);
-		}
-	}
-	
-	@Override
-	public void render (final RenderInstance instance) {
-		if (!instance.renderable.material.has(BlendingAttribute.Type))
+	public void render (final Renderable renderable) {
+		if (!renderable.material.has(BlendingAttribute.Type))
 			context.setBlending(false, GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		if (currentTransform != instance.transform) {
-			program.setUniformMatrix(modelTransLoc, currentTransform = instance.transform);
+		if (currentTransform != renderable.transform) {
+			program.setUniformMatrix(modelTransLoc, currentTransform = renderable.transform);
 			program.setUniformMatrix(normalTransLoc, normalMatrix.set(currentTransform));
 		}
-		bindMaterial(instance);
+		bindMaterial(renderable);
 		if (lightsLoc >= 0)
-			bindLights(instance);
-		if (currentMesh != instance.renderable.mesh) {
+			bindLights(renderable);
+		if (currentMesh != renderable.mesh) {
 			if (currentMesh != null)
 				currentMesh.unbind(program);
-			(currentMesh = instance.renderable.mesh).bind(program);
+			(currentMesh = renderable.mesh).bind(program);
 		}
-		instance.renderable.mesh.render(program, instance.renderable.primitiveType, instance.renderable.meshPartOffset, instance.renderable.meshPartSize);
+		renderable.mesh.render(program, renderable.primitiveType, renderable.meshPartOffset, renderable.meshPartSize);
 	}
 
 	@Override
@@ -199,10 +172,10 @@ public class TestShader implements Shader {
 	
 	/////// bindMaterial /////////
 	NewMaterial currentMaterial;
-	private final void bindMaterial(final RenderInstance instance) {
-		if (currentMaterial == instance.renderable.material)
+	private final void bindMaterial(final Renderable renderable) {
+		if (currentMaterial == renderable.material)
 			return;
-		currentMaterial = instance.renderable.material;
+		currentMaterial = renderable.material;
 		for (NewMaterial.Attribute attr : currentMaterial) {
 			long t = attr.getType();
 			if (BlendingAttribute.is(t))
@@ -235,21 +208,21 @@ public class TestShader implements Shader {
 		currentTextureAttribute = attribute;
 	}
 	 
-	private final void bindLights(final RenderInstance instance) {
+	private final void bindLights(final Renderable renderable) {
 		for (int i = 0; i < lightsCount; i++) {
 			final int loc = lightsLoc + i * lightSize;
-			if (instance.lights.length <= i) {
+			if (renderable.lights.length <= i) {
 				if (currentLights[i] != null) {
 					program.setUniformf(loc + lightPowerOffset, 0f);
 					currentLights[i] = null;
 				}
 			}
 			else {
-				if (currentLights[i] != instance.lights[i]) {
-					program.setUniformf(loc, instance.lights[i].color);
-					program.setUniformf(loc + lightPositionOffset, instance.lights[i].position);
-					program.setUniformf(loc + lightPowerOffset, instance.lights[i].power);
-					currentLights[i] = instance.lights[i];
+				if (currentLights[i] != renderable.lights[i]) {
+					program.setUniformf(loc, renderable.lights[i].color);
+					program.setUniformf(loc + lightPositionOffset, renderable.lights[i].position);
+					program.setUniformf(loc + lightPowerOffset, renderable.lights[i].power);
+					currentLights[i] = renderable.lights[i];
 				}
 			}
 		}

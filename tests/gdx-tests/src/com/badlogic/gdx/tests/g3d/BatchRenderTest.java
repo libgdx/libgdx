@@ -87,7 +87,7 @@ public class BatchRenderTest extends GdxTest {
 		cam.lookAt(0, 0, 0);
 		cam.update();
 		
-		renderBatch = new RenderBatch(exclusiveTextures = new DefaultTextureBinder(BIND_METHOD, UNIT_OFFSET, MAX_TEXTURES));
+		renderBatch = new RenderBatch();
 		
 		lights = new Light[] {
 			new Light(Color.WHITE, Vector3.tmp.set(-10f, 10f, -10f), 15f),
