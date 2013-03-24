@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
 import com.badlogic.gdx.graphics.g3d.old.materials.Material;
 import com.badlogic.gdx.graphics.g3d.test.Light;
 import com.badlogic.gdx.graphics.g3d.test.NewModel;
+import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.math.Matrix4;
 
 public interface Shader extends Comparator<RenderInstance> {

@@ -7,8 +7,7 @@ import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Matrix4;
 
 /**
- * A renderable encapsulates all necessary information to render a {@link Node} within
- * a {@link Model}. A renderable defines a world {@link #transform}, the {@link Mesh} to render
+ * A renderable defines a world {@link #transform}, the {@link Mesh} to render
  * along with the offset into the mesh's indices and the number of indices to use plus the
  * primitive type to render the part of the mesh with. Finally, a renderable defines
  * a {@link NewMaterial} to be applied to the mesh.</p>

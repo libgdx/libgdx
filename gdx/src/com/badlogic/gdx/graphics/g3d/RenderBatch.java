@@ -3,7 +3,8 @@ package com.badlogic.gdx.graphics.g3d;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.test.Light;
 import com.badlogic.gdx.graphics.g3d.test.NewModel;
-import com.badlogic.gdx.graphics.g3d.utils.ExclusiveTextures;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
+import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.g3d.utils.RenderInstancePool;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -18,19 +19,19 @@ public class RenderBatch {
 	private final RenderInstancePool renderInstancePool = new RenderInstancePool(); 
 	
 	/** Construct a BaseRenderBatch with the specified listener */
-	public RenderBatch(RenderBatchListener listener, ExclusiveTextures textures) {
+	public RenderBatch(RenderBatchListener listener, DefaultTextureBinder textures) {
 		this.listener = listener;
 		this.context = new RenderContext(textures);
 	}
 	
 	/** Construct a BaseRenderBatch with the default implementation and the specified texture range */
-	public RenderBatch(ExclusiveTextures textures) {
+	public RenderBatch(DefaultTextureBinder textures) {
 		this(new RenderBatchAdapter(), textures);
 	}
 	
 	/** Construct a BaseRenderBatch with the default implementation */
 	public RenderBatch() {
-		this((ExclusiveTextures)null);
+		this((DefaultTextureBinder)null);
 	}
 
 	public void begin (Camera cam) {

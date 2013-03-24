@@ -80,8 +80,8 @@ public class NewModelTest extends GdxTest {
 
 	@Override
 	public boolean touchDragged (int x, int y, int pointer) {
+		cam.rotateAround(new Vector3(), Vector3.X, y - touchStartY);
 		cam.rotateAround(new Vector3(), Vector3.Y, x - touchStartX);
-//		cam.rotateAround(new Vector3(), Vector3.X, y - touchStartY);
 		touchStartX = x;
 		touchStartY = y;
 		return false;

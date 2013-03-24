@@ -4,43 +4,30 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g3d.RenderBatch;
-import com.badlogic.gdx.graphics.g3d.RenderContext;
-import com.badlogic.gdx.graphics.g3d.RenderInstance;
 import com.badlogic.gdx.graphics.g3d.loader.JsonModelLoader;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
 import com.badlogic.gdx.graphics.g3d.old.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.old.materials.Material;
 import com.badlogic.gdx.graphics.g3d.old.materials.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.old.model.Model;
-import com.badlogic.gdx.graphics.g3d.old.model.SubMesh;
 import com.badlogic.gdx.graphics.g3d.old.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.old.model.still.StillSubMesh;
 import com.badlogic.gdx.graphics.g3d.test.InterimModel;
 import com.badlogic.gdx.graphics.g3d.test.Light;
 import com.badlogic.gdx.graphics.g3d.test.NewModel;
-import com.badlogic.gdx.graphics.g3d.test.OldBatchRendererGLES11;
-import com.badlogic.gdx.graphics.g3d.test.OldBatchRendererGLES20;
-import com.badlogic.gdx.graphics.g3d.test.TestShader;
-import com.badlogic.gdx.graphics.g3d.utils.ExclusiveTextures;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
 
 public class BatchRenderTest extends GdxTest {
 	int TEXTURE_COUNT = 30;
 	int BOX_COUNT = 500;
 	int UNIT_OFFSET = 2;
-	int MAX_TEXTURES = Math.min(16 /*GL10.GL_MAX_TEXTURE_UNITS*/ - UNIT_OFFSET, ExclusiveTextures.MAX_GLES_UNITS - UNIT_OFFSET);
-	int BIND_METHOD = ExclusiveTextures.WEIGHTED;
+	int MAX_TEXTURES = Math.min(16 /*GL10.GL_MAX_TEXTURE_UNITS*/ - UNIT_OFFSET, DefaultTextureBinder.MAX_GLES_UNITS - UNIT_OFFSET);
+	int BIND_METHOD = DefaultTextureBinder.WEIGHTED;
 	float MIN_X = -10f, MIN_Y = -10f, MIN_Z = -10f;
 	float SIZE_X = 20f, SIZE_Y = 20f, SIZE_Z = 20f;
 	
@@ -62,7 +49,7 @@ public class BatchRenderTest extends GdxTest {
 	Array<NewModel> cubes = new Array<NewModel>();
 	Array<Texture> textures = new Array<Texture>();
 	RenderBatch renderBatch;
-	ExclusiveTextures exclusiveTextures;
+	DefaultTextureBinder exclusiveTextures;
 	Light[] lights;
 	
 	float[] lightColor = {1, 1, 1, 0};
@@ -100,7 +87,7 @@ public class BatchRenderTest extends GdxTest {
 		cam.lookAt(0, 0, 0);
 		cam.update();
 		
-		renderBatch = new RenderBatch(exclusiveTextures = new ExclusiveTextures(BIND_METHOD, UNIT_OFFSET, MAX_TEXTURES));
+		renderBatch = new RenderBatch(exclusiveTextures = new DefaultTextureBinder(BIND_METHOD, UNIT_OFFSET, MAX_TEXTURES));
 		
 		lights = new Light[] {
 			new Light(Color.WHITE, Vector3.tmp.set(-10f, 10f, -10f), 15f),
@@ -121,7 +108,7 @@ public class BatchRenderTest extends GdxTest {
 		instances.add(new ModelInstance(testModel, (new Matrix4()).setToTranslation(0, 5, 4)));
 		instances.add(new ModelInstance(carModel, (new Matrix4()).setToTranslation(6, 0, -4)));
 		
-		for (int i = 0; i < 1000; i++)
+		for (int i = 0; i < 10; i++)
 			instances.add(new ModelInstance(sphereModel, (new Matrix4()).setToTranslation(MIN_X + (float)Math.random() * SIZE_X, MIN_Y + (float)Math.random() * SIZE_Y, MIN_Z + (float)Math.random() * SIZE_Z).scl(0.25f + (float)Math.random())));		
 	}
 	
@@ -132,7 +119,7 @@ public class BatchRenderTest extends GdxTest {
 		if ((dbgTimer += Gdx.graphics.getDeltaTime()) >= 1f) {
 			dbgTimer -= 1f;
 			Gdx.app.log("Test", "FPS: "+Gdx.graphics.getFramesPerSecond()+", binds: "+exclusiveTextures.getBindCount()+", reused: "+exclusiveTextures.getReuseCount());
-			exclusiveTextures.resetCounter();
+			exclusiveTextures.resetCounts();
 		}
 		GL20 gl = Gdx.gl20;
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

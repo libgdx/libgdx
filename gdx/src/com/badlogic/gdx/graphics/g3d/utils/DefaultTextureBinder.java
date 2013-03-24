@@ -1,19 +1,22 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
+import java.nio.IntBuffer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Class that you assign a range of texture units and binds textures for you within that range.
  * It does some basic usage tracking to avoid unnessecary bind calls. 
  * @author xoppa */
-public final class ExclusiveTextures {
+public final class DefaultTextureBinder implements TextureBinder {
 	public final static int ROUNDROBIN = 0;
 	public final static int WEIGHTED = 1;
 	/** GLES only supports up to 32 textures */
-	public final static int MAX_GLES_UNITS = 32;
+	public final static int MAX_GLES_UNITS = 4;
 	/** The index of the first exclusive texture unit */
 	private final int offset;
 	/** The amount of exclusive textures that may be used */
@@ -33,22 +36,23 @@ public final class ExclusiveTextures {
 	private int bindCount = 0; // TODO remove debug code
 	
 	/** Uses all available texture units and reuse weight of 3 */
-	public ExclusiveTextures(final int method) {
+	public DefaultTextureBinder(final int method) {
 		this(method, 0);
 	}
 	
 	/** Uses all remaining texture units and reuse weight of 3 */
-	public ExclusiveTextures(final int method, final int offset) {
-		this(method, offset, GL10.GL_MAX_TEXTURE_UNITS - offset);
+	public DefaultTextureBinder(final int method, final int offset) {
+		this(method, offset, getMaxTextureUnits() - offset);
 	}
 	
 	/** Uses reuse weight of 10 */
-	public ExclusiveTextures(final int method, final int offset, final int count) {
+	public DefaultTextureBinder(final int method, final int offset, final int count) {
 		this(method, offset, count, 10);
 	}
 	
-	public ExclusiveTextures(final int method, final int offset, final int count, final int reuseWeight) {
-		int max = Math.max(GL10.GL_MAX_TEXTURE_UNITS, MAX_GLES_UNITS - offset);
+	public DefaultTextureBinder(final int method, final int offset, final int count, final int reuseWeight) {
+		// FIXME this is wrong, GL_MATRX_TEXTURE_UNITS is a constant, doesn't return the #units for the current GPU
+		int max = Math.max(getMaxTextureUnits(), MAX_GLES_UNITS - offset);
 		if (offset < 0 || count < 0 || (offset + count) > max || reuseWeight < 1)
 			throw new GdxRuntimeException("Illegal arguments");
 		this.method = method;
@@ -61,44 +65,36 @@ public final class ExclusiveTextures {
 		this.weights = (method == WEIGHTED) ? new int[count] : null;
 	}
 
-	private final TextureDescriptor tempDesc = new TextureDescriptor();
-	/** @deprecated
-	 * Binds the texture if needed and sets it active, returns the unit */
-	public final int bindTexture(final Texture texture) {
-		tempDesc.reset();
-		tempDesc.texture = texture;
-		return bindTexture(tempDesc, false);
+	private static int getMaxTextureUnits () {
+		IntBuffer buffer = BufferUtils.newIntBuffer(16);
+		Gdx.gl.glGetIntegerv(GL20.GL_MAX_TEXTURE_UNITS, buffer);
+		return buffer.get(0);
+	}
+
+	@Override
+	public void begin () {
+		for(int i = 0; i < count; i++) {
+			textures[i].texture = null;
+			if(weights != null) weights[i] = 0;
+		}
+	}
+
+	@Override
+	public void end () {
+		// FIXME only unbind textures that are bound
+		for(int i = 0; i < count; i++) {
+			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + i);
+			Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
+		}
+		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 	}
 	
 	/** Binds the texture if needed and sets it active, returns the unit */
-	public final int bindTexture(final TextureDescriptor textureDesc) {
+	@Override
+	public final int bind(final TextureDescriptor textureDesc) {
 		return bindTexture(textureDesc, false);
 	}
 
-	/** @deprecated 
-	 * Force binds the texture and sets it active, returns the unit */
-	public final int rebindTexture(final Texture texture) {
-		tempDesc.reset();
-		tempDesc.texture = texture;
-		return bindTexture(tempDesc, true);
-	}
-	
-	/** Force binds the texture and sets it active, returns the unit */
-	public final int rebindTexture(final TextureDescriptor textureDesc) {
-		return bindTexture(textureDesc, true);
-	}
-	
-	/** Removes the reference to the texture, to assure that it will be rebound at the next bind call */
-	public final void unbindTexture(final Texture texture) {
-		for (int i = 0; i < count; i++) {
-			if (textures[i].texture == texture) {
-				textures[i] = null;
-				weights[i] = 0;
-				return;
-			}
-		}
-	}
-	
 	private final int bindTexture(final TextureDescriptor textureDesc, final boolean rebind) {
 		int idx, result;
 		reused = false;
@@ -165,7 +161,12 @@ public final class ExclusiveTextures {
 		return result;
 	}
 	
+	@Override
 	public final int getBindCount() { return bindCount; }
+	
+	@Override
 	public final int getReuseCount() { return reuseCount; }
-	public final void resetCounter() { bindCount = reuseCount = 0; }
+	
+	@Override
+	public final void resetCounts() { bindCount = reuseCount = 0; }
 }

@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
 import com.badlogic.gdx.graphics.g3d.old.materials.Material;
 import com.badlogic.gdx.graphics.g3d.test.TestShader;
-import com.badlogic.gdx.graphics.g3d.utils.ExclusiveTextures;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
 import com.badlogic.gdx.utils.Array;
 
 public class RenderBatchAdapter implements RenderBatchListener {

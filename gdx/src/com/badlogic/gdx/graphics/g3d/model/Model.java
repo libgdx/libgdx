@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.model;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -191,6 +192,11 @@ public class Model {
 			
 			for(ModelTexture tex: mtl.diffuseTextures) {
 				TextureDescriptor descriptor = new TextureDescriptor();
+				descriptor.texture = textures.get(tex.fileName);
+				descriptor.minFilter = GL20.GL_LINEAR;
+				descriptor.magFilter = GL20.GL_LINEAR;
+				descriptor.uWrap = GL20.GL_CLAMP_TO_EDGE;
+				descriptor.vWrap = GL20.GL_CLAMP_TO_EDGE;
 				result.add(new TextureAttribute(TextureAttribute.Diffuse, descriptor));
 			}
 		}
