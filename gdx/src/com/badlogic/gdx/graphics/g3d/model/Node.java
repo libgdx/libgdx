@@ -27,9 +27,9 @@ public class Node {
 	/** the translation, relative to the parent, not modified by animations **/
 	public final Vector3 translation = new Vector3();
 	/** the rotation, relative to the parent, not modified by animations **/
-	public final Quaternion rotation = new Quaternion();
+	public final Quaternion rotation = new Quaternion(0, 0, 0, 1);
 	/** the scale, relative to the parent, not modified by animations **/
-	public final Vector3 scale = new Vector3();
+	public final Vector3 scale = new Vector3(1, 1, 1);
 	/** the local transform, based on translation/rotation/scale ({@link #calculateLocalTransform()}) or any applied animation **/
 	public final Matrix4 localTransform = new Matrix4();
 	/** the world transform, product of local transform and transform of the parent node, calculated via {@link #calculateWorldTransform()}**/

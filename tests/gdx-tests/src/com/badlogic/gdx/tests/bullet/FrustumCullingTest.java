@@ -223,7 +223,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 				final BulletEntity e = world.entities.get(i);
 				if (e == frustumEntity)
 					continue;
-				e.transform.getTranslation(tmpV);
+				e.modelInstance.transform.getTranslation(tmpV);
 				if (frustumCam.frustum.sphereInFrustum(tmpV, 1))
 					visibleEntities.add(e);
 			}

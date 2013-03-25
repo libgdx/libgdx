@@ -40,9 +40,12 @@ import com.badlogic.gdx.utils.Pool;
  * a graphical part in form of a {@link MeshPart} and {@link NewMaterial}. Mesh parts reference subsets of
  * vertices in one of the meshes of the model. Animations can be applied to nodes, to modify their
  * transform (translation, rotation, scale) over time.</p>
- * 
- * A model can be converted to {@link Renderable} instances via {@link #getRenderables(Array, Pool)}, which
- * can be rendered by a {@link ModelBatch}.
+ *
+ * A model can be rendered by creating a {@link ModelInstance} from it. That instance has an additional
+ * transform to position the model in the world, and allows modification of materials and nodes without
+ * destroying the original model. The original model is the owner of any meshes and textures, all instances
+ * derrived from the model share these resources. Disposing the model will automatically make all instances
+ * invalid!</p>
  * 
  * A model is derrived from {@link ModelData}, which in turn is loaded by a {@link ModelLoader}.
  *   
@@ -208,39 +211,6 @@ public class Model implements Disposable {
 		}
 		
 		return result;
-	}
-	
-	/**
-	 * Traverses the Node hierarchy and collects {@link Renderable} instances for every
-	 * node with a graphical representation. Renderables are obtained from the provided
-	 * pool. The resulting array can be rendered via a {@link ModelBatch}.
-	 * 
-	 * @param renderables the output array
-	 * @param pool the pool to obtain Renderables from
-	 */
-	public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
-		for(Node node: nodes) {
-			getRenderables(node, renderables, pool);
-		}
-	}
-	
-	private void getRenderables(Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
-		if(node.meshPartMaterials.size > 0) {
-			for(MeshPartMaterial meshPart: node.meshPartMaterials) {
-				Renderable renderable = pool.obtain();
-				renderable.material = meshPart.material;
-				renderable.mesh = meshPart.meshPart.mesh;
-				renderable.meshPartOffset = meshPart.meshPart.indexOffset;
-				renderable.meshPartSize = meshPart.meshPart.numVertices;
-				renderable.primitiveType = meshPart.meshPart.primitiveType;
-				renderable.transform.set(node.worldTransform);
-				renderables.add(renderable);
-			}
-		}
-		
-		for(Node child: node.children) {
-			getRenderables(child, renderables, pool);
-		}
 	}
 	
 	/**

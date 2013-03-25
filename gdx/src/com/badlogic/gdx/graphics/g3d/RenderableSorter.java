@@ -3,7 +3,7 @@ package com.badlogic.gdx.graphics.g3d;
 import com.badlogic.gdx.utils.Array;
 
 /**
- * Responsible for sorting {@link RenderInstance} lists by whatever criteria (material, distance to camera, etc.)
+ * Responsible for sorting {@link Renderable} lists by whatever criteria (material, distance to camera, etc.)
  * @author badlogic
  *
  */

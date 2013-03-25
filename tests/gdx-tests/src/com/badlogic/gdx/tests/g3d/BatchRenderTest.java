@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.loader.JsonModelLoader;
 import com.badlogic.gdx.graphics.g3d.old.loaders.wavefront.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.test.Light;
@@ -27,14 +28,6 @@ public class BatchRenderTest extends GdxTest {
 	float MIN_X = -10f, MIN_Y = -10f, MIN_Z = -10f;
 	float SIZE_X = 20f, SIZE_Y = 20f, SIZE_Z = 20f;
 	
-	public static class ModelInstance {
-		public Model model;
-		public Matrix4 transform;
-		public ModelInstance(Model model, Matrix4 transform) {
-			this.model = model;
-			this.transform = transform;
-		}
-	}
 	PerspectiveCamera cam;
 	Array<ModelInstance> instances = new Array<ModelInstance>();
 	Model sphereModel;
@@ -132,7 +125,7 @@ public class BatchRenderTest extends GdxTest {
 			if (instances.get(i).model == null)
 				Gdx.app.log("Test", "Model "+i+" is null");
 			else
-				renderBatch.addModel(instances.get(i).model, instances.get(i).transform, lights);
+				renderBatch.render(instances.get(i), lights);
 		}
 		renderBatch.end();		
 	}
