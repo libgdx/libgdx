@@ -31,6 +31,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.btCapsuleShape;
+import com.badlogic.gdx.physics.bullet.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.btConeTwistConstraint;
 import com.badlogic.gdx.physics.bullet.btConstraintSetting;
 import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
@@ -173,7 +174,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		btRigidBody leftlowerarm = (btRigidBody)world.add("lowerarm", tmpM.setFromEulerAngles(PI2, 0, 0).trn(x-0.7f, y+1.45f, z)).body;
 		btRigidBody rightupperarm = (btRigidBody)world.add("upperarm", tmpM.setFromEulerAngles(-PI2, 0, 0).trn(x+0.35f, y+1.45f, z)).body;
 		btRigidBody rightlowerarm = (btRigidBody)world.add("lowerarm", tmpM.setFromEulerAngles(-PI2, 0, 0).trn(x+0.7f, y+1.45f, z)).body;
-		
+
 		final Matrix4 localA = new Matrix4();
 		final Matrix4 localB = new Matrix4();
 		btHingeConstraint hingeC = null;
@@ -252,6 +253,8 @@ public class RayPickRagdollTest extends BaseBulletTest {
 	
 	protected Model createCapsuleModel(float radius, float height) {
 		final float hh = radius + 0.5f * height;
-		return ModelBuilder.createBox(radius*2f, hh*2f, radius*2f, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)));
+		// return ModelBuilder
+		return ModelBuilder.createCylinder(radius * 2, hh * 2f, radius * 2f, 16, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)));
+		// return ModelBuilder.createBox(radius*2f, hh*2f, radius*2f, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)));
 	}
 }
