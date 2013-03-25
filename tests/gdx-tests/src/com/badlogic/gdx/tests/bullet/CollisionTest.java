@@ -25,6 +25,7 @@ import com.badlogic.gdx.physics.bullet.btManifoldPoint;
 import com.badlogic.gdx.physics.bullet.btPersistentManifold;
 import com.badlogic.gdx.tests.bullet.CollisionWorldTest.TestContactResultCallback;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 
 /** @author Xoppa */
 public class CollisionTest extends ShootTest {
@@ -83,12 +84,17 @@ public class CollisionTest extends ShootTest {
 		process();
 	}
 	
+	private Pool<Color> colorPool = new Pool<Color>() {
+		@Override 
+		protected Color newObject () {
+			return new Color();
+		}
+	};
 	public void process() {
 		Color color = null;
 		update();
 		hits.clear();
 		contacts.clear();
-		colors.clear();
 		
 		// Note that this might miss collisions, use InternalTickCallback to check for collision on every tick.
 		// See InternalTickTest on how to implement it.
@@ -104,13 +110,13 @@ public class CollisionTest extends ShootTest {
 		
 		if (hits.size > 0) {
 			for (int i = 0; i < hits.size; i++) {
-				colors.add(hits.get(i).getColor());
+				colors.add(colorPool.obtain().set(hits.get(i).getColor()));
 				hits.get(i).setColor(Color.RED);
 			}
 		}
 		if (contacts.size > 0) {
 			for (int i = 0; i < contacts.size; i++) {
-				colors.add(contacts.get(i).getColor());
+				colors.add(colorPool.obtain().set(contacts.get(i).getColor()));
 				contacts.get(i).setColor(Color.BLUE);
 			}
 		}
@@ -121,6 +127,8 @@ public class CollisionTest extends ShootTest {
 			hits.get(i).setColor(colors.get(i));
 		for (int i = 0; i < contacts.size; i++)
 			contacts.get(i).setColor(colors.get(hits.size+i));
+		colorPool.freeAll(colors);
+		colors.clear();
 	}
 	
 	@Override

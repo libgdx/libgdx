@@ -16,11 +16,11 @@ import com.badlogic.gdx.utils.Array;
  */
 public class Node {
 	/** the id, may be null, FIXME is this unique? **/
-	public String id;
+	public String id = null;
 	/** bone id, -1 if this is not a bone, used for skinning **/
 	public int boneId = -1;
 	/** parent node, may be null **/
-	public Node parent;
+	public Node parent = null;
 	/** child nodes **/
 	public final Array<Node> children = new Array<Node>(2);
 	

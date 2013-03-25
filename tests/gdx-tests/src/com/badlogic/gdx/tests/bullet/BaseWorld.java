@@ -82,12 +82,6 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 	public void render(final ModelBatch batch, final Light[] lights, final T entity) {
 		entity.modelInstance.calculateTransforms();
 		batch.render(entity.modelInstance, lights);
-		//final GL10 gl = Gdx.gl10;
-		//gl.glPushMatrix();
-		//gl.glMultMatrixf(entity.transform.val, 0);
-		//gl.glColor4f(entity.color.r, entity.color.g, entity.color.b, entity.color.a);
-		//entity.model.render();
-		//gl.glPopMatrix();
 	}
 	
 	public void update() {	}

@@ -25,12 +25,12 @@ public final class VertexAttributes {
 	 * 
 	 * @author mzechner */
 	public static final class Usage {
-		public static final int Position = 0;
-		public static final int Color = 1;
-		public static final int ColorPacked = 5;
-		public static final int Normal = 2;
-		public static final int TextureCoordinates = 3;
-		public static final int Generic = 4;
+		public static final int Position = 1;
+		public static final int Color = 2;
+		public static final int ColorPacked = 4;
+		public static final int Normal = 8;
+		public static final int TextureCoordinates = 16;
+		public static final int Generic = 32;
 	}
 
 	/** the attributes in the order they were specified **/
