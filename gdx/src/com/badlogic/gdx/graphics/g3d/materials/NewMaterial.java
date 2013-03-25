@@ -41,6 +41,8 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	/** The registered type aliases */
 	private final static Array<String> types = new Array<String>();
 	
+	private static int counter = 0;
+	
 	/** @return The ID of the specified attribute type, or zero if not available */
 	protected final static long getAttributeType(final String alias) {
 		for (int i = 0; i < types.size; i++)
@@ -64,13 +66,16 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	protected boolean sorted = true;
 	
 	/** Create an empty material */
-	public NewMaterial() {	}
+	public NewMaterial() {
+		this("mtl"+(++counter));
+	}
 	/** Create an empty material */
 	public NewMaterial(final String id) { 
 		this.id = id;	
 	}
 	/** Create a material with the specified attributes */
 	public NewMaterial(final Attribute... attributes) {
+		this();
 		add(attributes);
 	}
 	/** Create a material with the specified attributes */
@@ -80,6 +85,7 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	}
 	/** Create a material with the specified attributes */
 	public NewMaterial(final Array<Attribute> attributes) {
+		this();
 		add(attributes);
 	}
 	/** Create a material with the specified attributes */

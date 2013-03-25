@@ -23,6 +23,12 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
+import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.model.ModelBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -47,6 +53,8 @@ public class SoftBodyTest extends BaseBulletTest {
 	btSoftBody softBody;
 	Texture texture;
 	Mesh mesh;
+	Model model;
+	ModelInstance instance;
 	Matrix4 tmpM = new Matrix4();
 	
 	@Override
@@ -70,7 +78,7 @@ public class SoftBodyTest extends BaseBulletTest {
 		super.create();
 		
 		world.add("ground", 0f, 0f, 0f)
-		.getColor().set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+		.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		float x0 = -2f, y0 = 6f, z0 = -2f;
 		float x1 = 8f, y1 = 6f, z1 = 8f;
@@ -85,7 +93,7 @@ public class SoftBodyTest extends BaseBulletTest {
 		
 		final int vertCount = softBody.getNodeCount();
 		final int faceCount = softBody.getFaceCount(); 
-		mesh = new Mesh(false, vertCount, faceCount*3,  new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+		mesh = new Mesh(false, vertCount, faceCount*3,  new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE), new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		final int vertSize = mesh.getVertexSize() / 4;
 		mesh.getVerticesBuffer().position(0);
 		mesh.getVerticesBuffer().limit(vertCount * vertSize);
@@ -96,13 +104,20 @@ public class SoftBodyTest extends BaseBulletTest {
 		
 		final float[] verts = new float[vertCount * vertSize];
 		final int uvOffset = mesh.getVertexAttribute(Usage.TextureCoordinates).offset / 4;
+		final int normalOffset = mesh.getVertexAttribute(Usage.Normal).offset / 4;
 		mesh.getVertices(verts);
 		for (int i = 0; i < vertCount; i++) {
+			verts[i*vertSize+normalOffset] = 0f;
+			verts[i*vertSize+normalOffset+1] = 1f;
+			verts[i*vertSize+normalOffset+2] = 0f;
 			verts[i*vertSize+uvOffset] = (verts[i*vertSize] - x0) / (x1 - x0);
 			verts[i*vertSize+uvOffset+1] = (verts[i*vertSize+2] - z0) / (z1 - z0);
 		}
 		mesh.setVertices(verts);
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		
+		model = ModelBuilder.createFromMesh(mesh, GL10.GL_TRIANGLES, new NewMaterial(new TextureAttribute(TextureAttribute.Diffuse, new TextureDescriptor(texture))));
+		instance = new ModelInstance(model);
 	}
 	
 	@Override
@@ -115,13 +130,26 @@ public class SoftBodyTest extends BaseBulletTest {
 				
 		worldInfo.delete();
 		worldInfo = null;
-		mesh.dispose();
+		instance = null;
+		model.dispose();
+		model = null;
 		mesh = null;
 		texture.dispose();
 		texture = null;
 	}
 	
 	@Override
+	protected void renderWorld () {
+		softBody.getVertices(mesh.getVerticesBuffer(), softBody.getNodeCount(), mesh.getVertexSize(), 0);
+		softBody.getWorldTransform(instance.transform);
+		
+		modelBatch.begin(camera);
+		world.render(modelBatch, lights);
+		modelBatch.render(instance, lights);
+		modelBatch.end();
+	}
+	
+	/* @Override
 	public void render () {
 		super.render();
 		if (world.renderMeshes) {
@@ -136,8 +164,7 @@ public class SoftBodyTest extends BaseBulletTest {
 			Gdx.gl10.glPopMatrix();
 			Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
 		}
-		
-	}
+	} */
 	
 	@Override
 	public boolean tap (float x, float y, int count, int button) {

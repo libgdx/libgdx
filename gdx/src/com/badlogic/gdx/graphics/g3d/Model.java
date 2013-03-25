@@ -64,6 +64,8 @@ public class Model implements Disposable {
 	/** animations of the model, modifiying node transformations **/
 	public Array<Animation> animation = new Array<Animation>();
 	
+	public Model() {}
+	
 	/**
 	 * Constructs a new Model based on the {@link ModelData}. Texture files
 	 * will be loaded from the internal file storage via an {@link FileTextureProvider}.

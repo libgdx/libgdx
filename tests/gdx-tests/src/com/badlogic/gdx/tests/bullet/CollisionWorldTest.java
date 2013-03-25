@@ -77,16 +77,16 @@ public class CollisionWorldTest extends BaseBulletTest {
 		world.addConstructor("collisionBox", new BulletConstructor(boxModel));
 		
 		world.add("collisionGround", 0f, 0f, 0f)
-			.getColor().set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		world.add("collisionBox", 0f, 1f, 5f)
-			.getColor().set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 		world.add("collisionBox", 0f, 1f, -5f)
-			.getColor().set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 		world.add("collisionBox", 5f, 1f, 0f)
-			.getColor().set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 		world.add("collisionBox", -5f, 1f, 0f)
-			.getColor().set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 		movingBox = world.add("collisionBox", -5f, 1f, 0f);
 		normalColor.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 	}
@@ -118,19 +118,19 @@ public class CollisionWorldTest extends BaseBulletTest {
 		hit = false;
 		other = null;
 		world.collisionWorld.contactTest(movingBox.body, contactCB);
-		movingBox.getColor().set(hit ? Color.RED : normalColor);
+		movingBox.setColor(hit ? Color.RED : normalColor);
 		
 		BulletEntity e = null;
 		if (other != null && other.userData != null && other.userData instanceof BulletEntity) { 
 			e = (BulletEntity)(other.userData);
 			tmpColor.set(e.getColor());
-			e.getColor().set(Color.RED);
+			e.setColor(Color.RED);
 		}
 		
 		super.renderWorld();
 
 		if (e != null)
-			e.getColor().set(tmpColor);
+			e.setColor(tmpColor);
 	}
 	
 	@Override
