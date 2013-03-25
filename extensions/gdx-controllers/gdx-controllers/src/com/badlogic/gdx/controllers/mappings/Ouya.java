@@ -39,7 +39,8 @@ public class Ouya {
 		try {
 			Class<?> buildClass = Class.forName("android.os.Build");
 			Field deviceField = buildClass.getDeclaredField("DEVICE");
-			isOuya = "cardhu".equals(deviceField.get(null));
+			Object device = deviceField.get(null);
+			isOuya = "ouya_1_1".equals(device) || "cardhu".equals(device);
 		} catch(Exception e) {
 		}
 		runningOnOuya = isOuya;
