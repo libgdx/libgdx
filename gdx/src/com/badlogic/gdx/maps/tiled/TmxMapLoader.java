@@ -10,6 +10,7 @@ import java.util.zip.Inflater;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.SynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
@@ -42,7 +43,7 @@ import com.badlogic.gdx.utils.XmlReader.Element;
 /**
  * @brief synchronous loader for TMX maps created with the Tiled tool
  */
-public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.Parameters> {
+public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader.Parameters> {
 
 	public static class Parameters extends AssetLoaderParameters<TiledMap> {
 		/** Whether to load the map for a y-up coordinate system */
@@ -62,6 +63,8 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 
 	protected int mapWidthInPixels;
 	protected int mapHeightInPixels;
+	
+	protected TiledMap map;
 	
 	public TmxMapLoader() {
 		super(new InternalFileHandleResolver());
@@ -113,9 +116,11 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
 		}
 	}
-	
+
 	@Override
-	public TiledMap load(AssetManager assetManager, String fileName, Parameters parameter) {
+	public void loadAsync (AssetManager manager, String fileName, Parameters parameter) {
+		map = null;
+		
 		FileHandle tmxFile = resolve(fileName);
 		if (parameter != null) {
 			yUp = parameter.yUp;
@@ -123,12 +128,17 @@ public class TmxMapLoader extends SynchronousAssetLoader<TiledMap, TmxMapLoader.
 			yUp = true;
 		}
 		try {
-			return loadTilemap(root, tmxFile, new AssetManagerImageResolver(assetManager));
+			map = loadTilemap(root, tmxFile, new AssetManagerImageResolver(manager));
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
 		}
 	}
 
+	@Override
+	public TiledMap loadSync (AssetManager manager, String fileName, Parameters parameter) {
+		return map;
+	}
+	
 	/**
 	 * Retrieves TiledMap resource dependencies
 	 * 
