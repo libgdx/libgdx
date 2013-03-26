@@ -24,12 +24,12 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
-import com.badlogic.gdx.graphics.g3d.model.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
@@ -40,6 +40,8 @@ import com.badlogic.gdx.graphics.g3d.old.loaders.wavefront.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.old.materials.Material;
 import com.badlogic.gdx.graphics.g3d.test.Light;
 import com.badlogic.gdx.graphics.g3d.test.TestShader;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -106,12 +108,16 @@ public class BaseBulletTest extends BulletTest {
 		camera.update();
 		
 		// Create some simple meshes
-		final Model groundModel = ModelBuilder.createPlaneModel(20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f, 0, 1, 0, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE))); 
+		final Model groundModel = ModelBuilder.createRect(20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f, 0, 1, 0, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE))); 
 //			createSimpleModel(new VertexAttribute[] { new VertexAttribute(Usage.Position, 3, "a_position") },
 //			new float[] {20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f},
 //			new short[] {0, 1, 2, 1, 2, 3}); 
 
-		final Model boxModel = ModelBuilder.createBox(1f, 1f, 1f, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE))); 
+		//ModelBuilder b = new ModelBuilder(24, 36, new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
+		//b.begin();
+		//b.box(1f, 1f, 1f);
+		//final Model boxModel = b.end(new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)));
+		final Model boxModel = ModelBuilder.createBox(1f, 1f, 1f, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE))); 
 			
 		/*	createSimpleModel(new VertexAttribute[] { new VertexAttribute(Usage.Position, 3, "a_position") },
 			new float[] {0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f,

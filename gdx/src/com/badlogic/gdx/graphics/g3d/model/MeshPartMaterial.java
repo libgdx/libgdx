@@ -12,4 +12,11 @@ import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
 public class MeshPartMaterial {
 	public MeshPart meshPart;
 	public NewMaterial material;
+	
+	public MeshPartMaterial() {}
+	
+	public MeshPartMaterial(final MeshPart meshPart, final NewMaterial material) {
+		this.meshPart = meshPart;
+		this.material = material;
+	}
 }

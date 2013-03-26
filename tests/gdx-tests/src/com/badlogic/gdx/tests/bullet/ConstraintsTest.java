@@ -20,11 +20,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
-import com.badlogic.gdx.graphics.g3d.model.ModelBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.btDiscreteDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
@@ -42,7 +44,7 @@ public class ConstraintsTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 
-		final Model barModel = ModelBuilder.createBox(10f, 1f, 1f, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE))); 
+		final Model barModel = ModelBuilder.createBox(10f, 1f, 1f, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE))); 
 /*			createSimpleModel(new VertexAttribute[] { new VertexAttribute(Usage.Position, 3, "a_position")},
 			new float[] {5f, 0.5f, 0.5f, 5f, 0.5f, -0.5f, -5f, 0.5f, 0.5f, -5f, 0.5f, -0.5f,
 				5f, -0.5f, 0.5f, 5f, -0.5f, -0.5f, -5f, -0.5f, 0.5f, -5f, -0.5f, -0.5f},
