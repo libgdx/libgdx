@@ -27,8 +27,6 @@ public class ModelBuilder {
 	private Model model;
 	/** The node currently being build */
 	private Node node;
-	/** The model created between begin and end */
-	private Array<Model> models = new Array<Model>();
 	/** The mesh builders created between begin and end */
 	private Array<MeshBuilder> builders = new Array<MeshBuilder>();
 	
@@ -44,56 +42,35 @@ public class ModelBuilder {
 	
 	/** Begin builder models */
 	public void begin() {
+		if (model != null)
+			throw new GdxRuntimeException("Call end() first");
 		node = null;
-		model = null;
-		models.clear();
+		model = new Model();
 		builders.clear();
 	}
 	
 	/** End building model(s) */
 	public Model end() {
+		if (model == null)
+			throw new GdxRuntimeException("Call begin() first");
 		final Model result = model;
-		endmodel();
+		endnode();
+		model = null;
 		
-		Gdx.app.log("Test", "Builders: "+builders.size);
 		for (final MeshBuilder mb : builders)
 			mb.end();
 		builders.clear();
 		
-		Gdx.app.log("Test", "model = "+models.size);
-		for (final Model m : models) {
-			for (final MeshPart mp : m.meshParts) {
-				if (!m.meshes.contains(mp.mesh, true))
-					m.meshes.add(mp.mesh);
-			}
-			Gdx.app.log("Test", "meshparts = "+m.meshParts.size+" meshes = "+m.meshes.size);
+		for (final MeshPart mp : result.meshParts) {
+			if (!result.meshes.contains(mp.mesh, true))
+				result.meshes.add(mp.mesh);
 		}
-		models.clear();
 		return result;
-	}
-	
-	/** Start building a new model, the model is not usable until the call to end().
-	 * Call node() after this method to start building this model */
-	public Model model() {
-		endmodel();
-		
-		model = new Model();
-		models.add(model);
-		return model;
-	}
-	
-	private void endmodel() {
-		if (model != null) {
-			endnode();
-			
-			model = null;
-		}
 	}
 
 	public Node node() {
-		// Allow to add nodes rights after the call to begin() for building just one model
 		if (model == null)
-			model();
+			throw new GdxRuntimeException("Call begin() first");
 		
 		endnode();
 		
@@ -129,42 +106,32 @@ public class ModelBuilder {
 		part(builder.part(id), material);
 		return builder;
 	}
-
-	protected static ModelBuilder instance;
-	public static ModelBuilder getInstance() {
-		if (instance == null)
-			instance = new ModelBuilder();
-		return instance;
+	
+	public Model createBox(float width, float height, float depth, final NewMaterial material, final VertexAttributes attributes) {
+		begin();
+		part("box", attributes, material).box(width, height, depth);
+		return end();
 	}
 	
-	public static Model createBox(float width, float height, float depth, final NewMaterial material, final VertexAttributes attributes) {
-		ModelBuilder mb = getInstance();
-		mb.begin();
-		mb.part("box", attributes, material).box(width, height, depth);
-		return mb.end();
-	}
-	
-	public static Model createRect(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, float normalX, float normalY, float normalZ, final NewMaterial material, final VertexAttributes attributes) {
-		ModelBuilder mb = getInstance();
-		mb.begin();
-		mb.part("rect", attributes, material).rect(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, normalX, normalY, normalZ);
-		return mb.end();
+	public Model createRect(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, float normalX, float normalY, float normalZ, final NewMaterial material, final VertexAttributes attributes) {
+		begin();
+		part("rect", attributes, material).rect(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, normalX, normalY, normalZ);
+		return end();
 	}
 
 	// FIXME: Add transform
-	public static Model createCylinder(float width, float height, float depth, int divisions, final NewMaterial material, final VertexAttributes attributes) {
-		ModelBuilder mb = getInstance();
-		mb.begin();
-		mb.part("cylinder", attributes, material).cylinder(width, height, depth, divisions);
-		return mb.end();
+	public Model createCylinder(float width, float height, float depth, int divisions, final NewMaterial material, final VertexAttributes attributes) {
+		begin();
+		part("cylinder", attributes, material).cylinder(width, height, depth, divisions);
+		return end();
 	}
 	
 	// Old code below this line, as for now still useful for testing. 
-	
+	@Deprecated
 	public static Model createFromMesh(final Mesh mesh, int primitiveType, final NewMaterial material) {
 		return createFromMesh(mesh, 0, mesh.getNumIndices(), primitiveType, material);
 	}
-	
+	@Deprecated
 	public static Model createFromMesh(final Mesh mesh, int indexOffset, int vertexCount, int primitiveType, final NewMaterial material) {
 		Model result = new Model();
 		MeshPart meshPart = new MeshPart();
@@ -187,74 +154,11 @@ public class ModelBuilder {
 		result.meshParts.add(meshPart);
 		return result;
 	}
-	
+	@Deprecated
 	public static Model createFromMesh(final float[] vertices, final VertexAttribute[] attributes, final short[] indices, int primitiveType, final NewMaterial material) {
 		final Mesh mesh = new Mesh(false, vertices.length, indices.length, attributes);
 		mesh.setVertices(vertices);
 		mesh.setIndices(indices);
 		return createFromMesh(mesh, 0, indices.length, primitiveType, material);
 	}
-	
-	// along Y axis
-	/*
-	public static Mesh createCylinderMesh(float width, float height, float depth, int divisions) {
-		final int stride = 6;
-		final float hw = width * 0.5f;
-		final float hh = height * 0.5f;
-		final float hd = depth * 0.5f;
-		final float step = MathUtils.PI2 / divisions;
-		for (int i = 0; i < divisions; i++) {
-			final float angle = step * i;
-			vectorArray.add(vectorPool.obtain().set(MathUtils.cos(angle) * hw, 0f, MathUtils.sin(angle) * hd));
-		}
-		final float[] vertices = new float[divisions * 4 * stride];
-		final short[] indices = new short[divisions * 6];
-		int voffset = 0;
-		int ioffset = 0;
-		for (int i = 0; i < divisions; i++) {
-			final Vector3 v1 = vectorArray.get(i);
-			final Vector3 v2 = vectorArray.get((i+1)%divisions);
-			final Vector3 n = tempV1.set(v1).lerp(v2, 0.5f).nor();
-			vertices[voffset++] = v1.x;
-			vertices[voffset++] = -hh;
-			vertices[voffset++] = v1.z;
-			vertices[voffset++] = n.x;
-			vertices[voffset++] = n.y;
-			vertices[voffset++] = n.z;
-			
-			vertices[voffset++] = v2.x;
-			vertices[voffset++] = -hh;
-			vertices[voffset++] = v2.z;
-			vertices[voffset++] = n.x;
-			vertices[voffset++] = n.y;
-			vertices[voffset++] = n.z;
-			
-			vertices[voffset++] = v1.x;
-			vertices[voffset++] = hh;
-			vertices[voffset++] = v1.z;
-			vertices[voffset++] = n.x;
-			vertices[voffset++] = n.y;
-			vertices[voffset++] = n.z;
-			
-			vertices[voffset++] = v2.x;
-			vertices[voffset++] = hh;
-			vertices[voffset++] = v2.z;
-			vertices[voffset++] = n.x;
-			vertices[voffset++] = n.y;
-			vertices[voffset++] = n.z;
-			
-			indices[ioffset++] = (short)(i * 4);
-			indices[ioffset++] = (short)(i * 4 + 1);
-			indices[ioffset++] = (short)(i * 4 + 2);
-			indices[ioffset++] = (short)(i * 4 + 1);
-			indices[ioffset++] = (short)(i * 4 + 2);
-			indices[ioffset++] = (short)(i * 4 + 3);
-		}
-		vectorPool.freeAll(vectorArray);
-		vectorArray.clear();
-		final Mesh result = new Mesh(true, vertices.length, indices.length, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(Usage.Normal, 3, "a_normal"));
-		result.setVertices(vertices);
-		result.setIndices(indices);
-		return result;
-	}*/
 }

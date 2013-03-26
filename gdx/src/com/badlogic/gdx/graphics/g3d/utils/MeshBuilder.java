@@ -72,6 +72,8 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	/** Begin building a mesh */
 	public void begin(final VertexAttributes attributes) {
+		if (this.attributes != null)
+			throw new RuntimeException("Call end() first");
 		this.attributes = attributes;
 		this.vertices.clear();
 		this.indices.clear();
@@ -105,6 +107,8 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	/** Starts a new MeshPart. The mesh part is not usable until end() is called */
 	public MeshPart part(final String id) {
+		if (this.attributes == null)
+			throw new RuntimeException("Call begin() first");
 		endpart();
 		
 		part = new MeshPart();
@@ -116,6 +120,8 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	/** End building the mesh and results the mesh */
 	public Mesh end() {
+		if (this.attributes == null)
+			throw new RuntimeException("Call begin() first");
 		endpart();
 		
 		final Mesh mesh = new Mesh(true, vertices.size, indices.size, attributes);

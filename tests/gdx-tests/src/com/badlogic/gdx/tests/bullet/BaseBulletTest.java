@@ -76,6 +76,7 @@ public class BaseBulletTest extends BulletTest {
 	public PerspectiveCamera camera;
 	public BulletWorld world;
 	public ObjLoader objLoader = new ObjLoader();
+	public ModelBuilder modelBuilder = new ModelBuilder();
 	public ModelBatch modelBatch;
 			
 	public BulletWorld createWorld() {
@@ -108,27 +109,8 @@ public class BaseBulletTest extends BulletTest {
 		camera.update();
 		
 		// Create some simple meshes
-		final Model groundModel = ModelBuilder.createRect(20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f, 0, 1, 0, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE))); 
-//			createSimpleModel(new VertexAttribute[] { new VertexAttribute(Usage.Position, 3, "a_position") },
-//			new float[] {20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f},
-//			new short[] {0, 1, 2, 1, 2, 3}); 
-
-		//ModelBuilder b = new ModelBuilder(24, 36, new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
-		//b.begin();
-		//b.box(1f, 1f, 1f);
-		//final Model boxModel = b.end(new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)));
-		final Model boxModel = ModelBuilder.createBox(1f, 1f, 1f, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE))); 
-			
-		/*	createSimpleModel(new VertexAttribute[] { new VertexAttribute(Usage.Position, 3, "a_position") },
-			new float[] {0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f,
-						0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, -0.5f},
-			new short[] {0, 1, 2, 1, 2, 3, // top
-						4, 5, 6, 5, 6, 7, // bottom
-						0, 2, 4, 4, 6, 2, // front
-						1, 3, 5, 5, 7, 3, // back
-						2, 3, 6, 6, 7, 3, // left
-						0, 1, 4, 4, 5, 1 // right
-				});*/
+		final Model groundModel = modelBuilder.createRect(20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f, 0, 1, 0, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE)));
+		final Model boxModel = modelBuilder.createBox(1f, 1f, 1f, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE))); 
 
 		// Add the constructors
 		world.addConstructor("ground", new BulletConstructor(groundModel, 0f)); // mass = 0: static body
