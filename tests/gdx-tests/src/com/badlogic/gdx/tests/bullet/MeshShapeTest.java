@@ -32,7 +32,7 @@ public class MeshShapeTest extends BaseBulletTest {
 		super.create();
 		
 		final Model sphereModel = objLoader.loadObj(Gdx.files.internal("data/sphere.obj"));
-		// sphereModel.subMeshes[0].getMesh().scale(0.25f, 0.25f, 0.25f);
+		sphereModel.meshes.get(0).scale(0.25f, 0.25f, 0.25f);
 		final BoundingBox sphereBounds = new BoundingBox();
 		sphereModel.getBoundingBox(sphereBounds);
 	
@@ -46,15 +46,15 @@ public class MeshShapeTest extends BaseBulletTest {
 		world.addConstructor("scene", sceneConstructor);
 		
 		world.add("scene", (new Matrix4()).setToTranslation(0f, 2f, 0f).rotate(Vector3.Y, -90))
-			.getColor().set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 
 		world.add("ground", 0f, 0f, 0f)
-			.getColor().set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		for (float x = -3; x < 7; x++) {
 			for (float z = -5; z < 5; z++) {
 				world.add("sphere", x, 10f + (float)Math.random() * 0.1f, z)
-					.getColor().set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+					.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 			}
 		}
 	}

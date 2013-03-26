@@ -38,9 +38,9 @@ public abstract class BaseEntity implements Disposable {
 		setColor(color.r, color.g, color.b, color.a);
 	}
 	public void setColor (float r, float g, float b, float a) {
+		color.set(r, g, b, a);
 		if (modelInstance != null) {
-			NewMaterial m = modelInstance.materials.get(0);
-			if (m != null) {
+			for (NewMaterial m : modelInstance.materials) {
 				ColorAttribute ca = (ColorAttribute)m.get(ColorAttribute.Diffuse);
 				if (ca != null)
 					ca.color.set(r, g, b, a);

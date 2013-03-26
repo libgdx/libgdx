@@ -35,11 +35,11 @@ public class ConvexHullTest extends BaseBulletTest {
 
 		// Create the entities
 		world.add("ground", 0f, 0f, 0f)
-			.getColor().set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		for (float y = 10f; y < 50f; y += 5f)
 			world.add("car", -2f+(float)Math.random()*4f, y, -2f+(float)Math.random()*4f)
-				.getColor().set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+				.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 	}
 	
 	@Override
