@@ -40,6 +40,11 @@ public interface MeshPartBuilder {
 	public void box(float x, float y, float z, float width, float height, float depth);
 	/** Add a cylinder */
 	public void cylinder(float width, float height, float depth, int divisions);
+	/** Add a cone */
+	public void cone(float width, float height, float depth, int divisions);
+	/** Add a sphere */
+	public void sphere(float width, float height, float depth, int divisionsU, int divisionsV);
+	// FIXME: Add capsule
 	
 	/** Class that contains all vertex information the builder can use.
 	 * @author Xoppa */
