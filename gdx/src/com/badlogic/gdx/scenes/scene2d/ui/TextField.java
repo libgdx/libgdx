@@ -445,12 +445,16 @@ public class TextField extends Widget {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
+		
+		Stage stage = getStage();
+		boolean focused = stage != null && stage.getKeyboardFocus() == this;
+		
 		final BitmapFont font = style.font;
-		final Color fontColor = disabled ? style.disabledFontColor : style.fontColor;
+		final Color fontColor = disabled && style.disabledFontColor != null ? style.disabledFontColor : focused ? style.focusedFontColor : style.fontColor;
 		final Drawable selection = style.selection;
 		final Drawable cursorPatch = style.cursor;
-		final Drawable background = style.background;
-
+		final Drawable background = focused && style.focusedBackground != null ? style.focusedBackground : style.background;
+		
 		Color color = getColor();
 		float x = getX();
 		float y = getY();
@@ -470,8 +474,6 @@ public class TextField extends Widget {
 
 		calculateOffsets();
 
-		Stage stage = getStage();
-		boolean focused = stage != null && stage.getKeyboardFocus() == this;
 		if (focused && hasSelection && selection != null) {
 			selection.draw(batch, x + selectionX + bgLeftWidth + renderOffset, y + textY - textBounds.height - font.getDescent(),
 				selectionWidth, textBounds.height + font.getDescent() / 2);
@@ -830,9 +832,9 @@ public class TextField extends Widget {
 	 * @author Nathan Sweet */
 	static public class TextFieldStyle {
 		public BitmapFont font;
-		public Color fontColor, disabledFontColor;
+		public Color fontColor, focusedFontColor, disabledFontColor;
 		/** Optional. */
-		public Drawable background, cursor, selection;
+		public Drawable background, focusedBackground, cursor, selection;
 		/** Optional. */
 		public BitmapFont messageFont;
 		/** Optional. */
@@ -853,9 +855,11 @@ public class TextField extends Widget {
 			this.messageFont = style.messageFont;
 			if (style.messageFontColor != null) this.messageFontColor = new Color(style.messageFontColor);
 			this.background = style.background;
+			this.focusedBackground = style.focusedBackground;
 			this.cursor = style.cursor;
 			this.font = style.font;
 			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
+			if (style.focusedFontColor != null) this.focusedFontColor = new Color(style.focusedFontColor);
 			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
 			this.selection = style.selection;
 		}
