@@ -13,7 +13,7 @@
 - Changes to Intersector, Circle, Rectangle and BoundingBox for consistency in #overlap, #intersect and #contains methods, see https://github.com/libgdx/libgdx/pull/312
 
 [0.9.8]
-- see http://www.badlogicgames.com/wordpress/?p=2664
+- see http://www.badlogicgames.com/wordpress/?p=2791
 
 [0.9.7]
 - see http://www.badlogicgames.com/wordpress/?p=2664
