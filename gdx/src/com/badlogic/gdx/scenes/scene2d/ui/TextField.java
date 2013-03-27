@@ -450,10 +450,10 @@ public class TextField extends Widget {
 		boolean focused = stage != null && stage.getKeyboardFocus() == this;
 		
 		final BitmapFont font = style.font;
-		final Color fontColor = disabled && style.disabledFontColor != null ? style.disabledFontColor : focused ? style.focusedFontColor : style.fontColor;
+		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor : ((focused && style.focusedFontColor != null) ? style.focusedFontColor : style.fontColor);
 		final Drawable selection = style.selection;
 		final Drawable cursorPatch = style.cursor;
-		final Drawable background = focused && style.focusedBackground != null ? style.focusedBackground : style.background;
+		final Drawable background = (focused && style.focusedBackground != null) ? style.focusedBackground : style.background;
 		
 		Color color = getColor();
 		float x = getX();
