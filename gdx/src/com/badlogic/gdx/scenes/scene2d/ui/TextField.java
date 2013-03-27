@@ -453,7 +453,7 @@ public class TextField extends Widget {
 		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor : ((focused && style.focusedFontColor != null) ? style.focusedFontColor : style.fontColor);
 		final Drawable selection = style.selection;
 		final Drawable cursorPatch = style.cursor;
-		final Drawable background = (focused && style.focusedBackground != null) ? style.focusedBackground : style.background;
+		final Drawable background = (disabled && style.disabledBackground != null) ? style.disabledBackground : ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
 		
 		Color color = getColor();
 		float x = getX();
@@ -469,7 +469,7 @@ public class TextField extends Widget {
 			bgLeftWidth = background.getLeftWidth();
 			float bottom = background.getBottomHeight();
 			textY = (int)(textY + (height - background.getTopHeight() - bottom) / 2 + bottom);
-		} else
+		} else 
 			textY = (int)(textY + height / 2);
 
 		calculateOffsets();
@@ -834,7 +834,7 @@ public class TextField extends Widget {
 		public BitmapFont font;
 		public Color fontColor, focusedFontColor, disabledFontColor;
 		/** Optional. */
-		public Drawable background, focusedBackground, cursor, selection;
+		public Drawable background, focusedBackground, disabledBackground, cursor, selection;
 		/** Optional. */
 		public BitmapFont messageFont;
 		/** Optional. */
@@ -856,6 +856,7 @@ public class TextField extends Widget {
 			if (style.messageFontColor != null) this.messageFontColor = new Color(style.messageFontColor);
 			this.background = style.background;
 			this.focusedBackground = style.focusedBackground;
+			this.disabledBackground = style.disabledBackground;
 			this.cursor = style.cursor;
 			this.font = style.font;
 			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
