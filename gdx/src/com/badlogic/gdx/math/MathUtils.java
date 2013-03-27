@@ -30,7 +30,7 @@ public class MathUtils {
 	// ---
 
 	static public final float PI = 3.1415927f;
-	public static final float PI2 = PI * 2;
+	static public final float PI2 = PI * 2;
 
 	static private final int SIN_BITS = 13; // Adjust for accuracy.
 	static private final int SIN_MASK = ~(-1 << SIN_BITS);
