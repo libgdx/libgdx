@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
-public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<NewMaterial.Attribute>, Disposable {
+public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<NewMaterial.Attribute> {
 	/** Extend this class to implement a material attribute.
 	 *  Register the attribute type by statically calling the {@link #register(String)} method, 
 	 *  whose return value should be used to instantiate the attribute. 
@@ -231,10 +231,5 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	@Override
 	public final Iterator<Attribute> iterator () {
 		return attributes.iterator();
-	}
-
-	@Override
-	public void dispose () {
-		clear();
 	}
 }

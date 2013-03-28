@@ -20,7 +20,9 @@ import com.badlogic.gdx.utils.Pool;
  * @author badlogic
  *
  */
-public class ModelInstance extends Model.ManagedInstance {
+public class ModelInstance {
+	/** the {@link Model} this instances derrives from **/
+	public final Model model;
 	/** the world transform **/
 	public final Matrix4 transform = new Matrix4();
 	/** a copy of the materials of the original model **/
@@ -33,15 +35,15 @@ public class ModelInstance extends Model.ManagedInstance {
 	}
 	
 	public ModelInstance(Model model, Matrix4 transform) {
-		super(model);
+		this.model = model;
 		this.transform.set(transform);
 		copyMaterials(model.materials);
 		copyNodes(model.nodes);
 		calculateTransforms();
 	}
 
-	private void copyMaterials (Array<NewMaterial> materials2) {
-		for(NewMaterial material: model.materials) {
+	private void copyMaterials (Array<NewMaterial> materials) {
+		for(NewMaterial material: materials) {
 			this.materials.add(material.copy());
 		}		
 	}
@@ -134,13 +136,5 @@ public class ModelInstance extends Model.ManagedInstance {
 		for(Node child: node.children) {
 			getRenderables(child, renderables, pool);
 		}
-	}
-
-	@Override
-	public void dispose () {
-		for (final NewMaterial material : materials)
-			material.dispose();
-		materials.clear();
-		super.dispose();
 	}
 }

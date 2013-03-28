@@ -3,7 +3,6 @@ package com.badlogic.gdx.graphics.g3d.utils;
 import java.util.Comparator;
 
 import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableSorter;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.utils.Array;
 

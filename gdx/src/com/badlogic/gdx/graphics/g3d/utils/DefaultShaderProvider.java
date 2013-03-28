@@ -3,7 +3,6 @@ package com.badlogic.gdx.graphics.g3d.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.ShaderProvider;
 import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
 import com.badlogic.gdx.graphics.g3d.test.TestShader;
 import com.badlogic.gdx.utils.Array;
