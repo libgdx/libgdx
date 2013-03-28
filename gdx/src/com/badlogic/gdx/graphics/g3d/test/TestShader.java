@@ -177,7 +177,7 @@ public class TestShader implements Shader {
 			return;
 		currentMaterial = renderable.material;
 		for (NewMaterial.Attribute attr : currentMaterial) {
-			long t = attr.getType();
+			final long t = attr.type;
 			if (BlendingAttribute.is(t))
 				context.setBlending(true, ((BlendingAttribute)attr).sourceFunction, ((BlendingAttribute)attr).destFunction);
 			else if (ColorAttribute.is(t)) {

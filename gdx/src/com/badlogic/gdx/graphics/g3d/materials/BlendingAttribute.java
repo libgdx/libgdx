@@ -37,4 +37,8 @@ public class BlendingAttribute extends NewMaterial.Attribute {
 		return ((BlendingAttribute)other).sourceFunction == sourceFunction && 
 			((BlendingAttribute)other).destFunction == destFunction; 
 	}
+
+	@Override
+	public void dispose () {
+	}
 }

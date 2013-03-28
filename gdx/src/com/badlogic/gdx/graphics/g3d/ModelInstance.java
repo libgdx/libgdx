@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g3d.model.MeshPartMaterial;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 
@@ -19,9 +20,7 @@ import com.badlogic.gdx.utils.Pool;
  * @author badlogic
  *
  */
-public class ModelInstance {
-	/** the model this instance was derrived from **/
-	public final Model model;
+public class ModelInstance extends Model.ManagedInstance {
 	/** the world transform **/
 	public final Matrix4 transform = new Matrix4();
 	/** a copy of the materials of the original model **/
@@ -34,7 +33,7 @@ public class ModelInstance {
 	}
 	
 	public ModelInstance(Model model, Matrix4 transform) {
-		this.model = model;
+		super(model);
 		this.transform.set(transform);
 		copyMaterials(model.materials);
 		copyNodes(model.nodes);
@@ -135,5 +134,13 @@ public class ModelInstance {
 		for(Node child: node.children) {
 			getRenderables(child, renderables, pool);
 		}
+	}
+
+	@Override
+	public void dispose () {
+		for (final NewMaterial material : materials)
+			material.dispose();
+		materials.clear();
+		super.dispose();
 	}
 }
