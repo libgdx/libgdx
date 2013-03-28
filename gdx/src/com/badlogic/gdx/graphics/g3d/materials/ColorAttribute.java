@@ -14,7 +14,6 @@ public class ColorAttribute extends NewMaterial.Attribute {
 	public final static String EmissiveAlias = "emissiveColor";
 	public static final long Emissive = register("emissiveColor");
 	
-	// Might be useful:...
 	protected static long Mask = Ambient | Diffuse | Specular | Emissive;
 	
 	public final static boolean is(final long mask) {
@@ -56,4 +55,7 @@ public class ColorAttribute extends NewMaterial.Attribute {
 	protected boolean equals (Attribute other) {
 		return ((ColorAttribute)other).color.equals(color);
 	}
+
+	@Override
+	public void dispose () {}
 }

@@ -32,6 +32,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 
@@ -53,16 +54,42 @@ import com.badlogic.gdx.utils.Pool;
  *
  */
 public class Model implements Disposable {
+	/** A managed instance is the base for an instance which gets disposed when the model is disposed. */ 
+	public static abstract class ManagedInstance implements Disposable {
+		/** the model this instance was derived from **/
+		public final Model model;
+		protected boolean disposed;
+		protected ManagedInstance(final Model model) {
+			if (model == null)
+				throw new GdxRuntimeException("Model cannot be null");
+			this.model = model;
+			model.addInstance(this);
+		}
+		@Override
+		public void dispose () {
+			disposed = true;
+			model.removeInstance(this);
+		}
+		@Override
+		protected void finalize () throws Throwable {
+			if (!disposed)
+				dispose();
+			super.finalize();
+		}
+	}
+	
 	/** the meshes of the model **/
-	public Array<Mesh> meshes = new Array<Mesh>();
+	public final Array<Mesh> meshes = new Array<Mesh>();
 	/** parts of meshes, used by nodes that have a graphical representation FIXME not sure if superfluous, stored in Nodes as well, could be useful to create bullet meshes **/
-	public Array<MeshPart> meshParts = new Array<MeshPart>();
+	public final Array<MeshPart> meshParts = new Array<MeshPart>();
 	/** the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous, allows modification of materials without having to traverse the nodes**/
-	public Array<NewMaterial> materials = new Array<NewMaterial>();
+	public final Array<NewMaterial> materials = new Array<NewMaterial>();
 	/** root nodes of the model **/
-	public Array<Node> nodes = new Array<Node>();
-	/** animations of the model, modifiying node transformations **/
+	public final Array<Node> nodes = new Array<Node>();
+	/** animations of the model, modifying node transformations **/
 	public Array<Animation> animation = new Array<Animation>();
+	/** the model instances that will be disposed when this model is disposed. */
+	protected final Array<ManagedInstance> instances = new Array<ManagedInstance>();
 	
 	public Model() {}
 	
@@ -77,6 +104,14 @@ public class Model implements Disposable {
 	
 	public Model(ModelData modelData, TextureProvider textureProvider) {
 		load(modelData, textureProvider);
+	}
+	
+	protected void addInstance(ManagedInstance instance) {
+		instances.add(instance);
+	}
+	
+	protected void removeInstance(ManagedInstance instance) {
+		instances.removeValue(instance, true);
 	}
 
 	private void load (ModelData modelData, TextureProvider textureProvider) {
@@ -230,14 +265,17 @@ public class Model implements Disposable {
 
 	@Override
 	public void dispose () {
+		for (final ManagedInstance instance : instances)
+			instance.dispose();
+		instances.clear();
 		for(Mesh mesh: meshes) {
 			mesh.dispose();
 		}
 		for(NewMaterial material: materials) {
-			// FIXME dispose textures! attribtue should probably be disposable, can decide whether it wants to get rid of resource or not
+			material.dispose();
 		}
 	}
-	
+
 	private final BoundingBox meshBounds = new BoundingBox();
 	public BoundingBox getBoundingBox(final BoundingBox out) {
 		out.inf();

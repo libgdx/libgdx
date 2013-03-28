@@ -5,24 +5,21 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 
-public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<NewMaterial.Attribute> {
+public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<NewMaterial.Attribute>, Disposable {
 	/** Extend this class to implement a material attribute.
 	 *  Register the attribute type by statically calling the {@link #register(String)} method, 
 	 *  whose return value should be used to instantiate the attribute. 
 	 *  A class can implement multiple types*/
-	public static abstract class Attribute {
+	public static abstract class Attribute implements Disposable {
 		protected static long register(final String type) {
 			return NewMaterial.register(type);
 		}
 		/** The type of this attribute */
-		protected long type;
+		public final long type;
 		protected Attribute(final long type) {
 			this.type = type;
-		}
-		/** @return The type of material */
-		public final long getType() {
-			return type;
 		}
 		/** @return An exact copy of this attribute */
 		public abstract Attribute copy(); 
@@ -62,7 +59,7 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	
 	public String id;
 	protected long mask;
-	protected Array<Attribute> attributes = new Array<Attribute>();
+	protected final Array<Attribute> attributes = new Array<Attribute>();
 	protected boolean sorted = true;
 	
 	/** Create an empty material */
@@ -120,13 +117,7 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	public final boolean has(final long type) {
 		return type > 0 && (this.mask & type) == type;
 	}
-	
-	/** @deprecated Use {@link #has(long)} instead
-	 * @return True if this material has the specified attribute, i.e. material.has(BlendingAttribute.class); */
-	public final boolean has(final String type) {
-		return has(getAttributeType(type));
-	}
-	
+
 	/** Add one or more attributes to this material */
 	public final void add(final Attribute... attributes) {
 		for (int i = 0; i < attributes.length; i++) {
@@ -157,25 +148,11 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 		for (int i = 0; i < attributes.size; i++) {
 			final long type = attributes.get(i).type;
 			if ((mask & type) == type) {
+				attributes.get(i).dispose();
 				attributes.removeIndex(i);
 				disable(type);
 				sorted = false;
 			}
-		}
-	}
-	
-	/** @deprecated Use {@link #remove(long)} instead
-	 * Removes the attribute from the material, i.e.: material.remove(BlendingAttribute.class); */
-	public final void remove(final String alias) {
-		final long type = getAttributeType(alias);
-		if (has(type)) {
-			for (int i = 0; i < attributes.size; i++)
-				if (attributes.get(i).type == type) {
-					attributes.removeIndex(i);
-					break;
-				}
-			sorted = false;
-			disable(type);
 		}
 	}
 	
@@ -201,6 +178,8 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	/** Removes all attributes */
 	public final void clear() {
 		mask = 0;
+		for (int i = 0; i < attributes.size; i++)
+			attributes.get(i).dispose();
 		attributes.clear();
 	}
 	
@@ -252,5 +231,10 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	@Override
 	public final Iterator<Attribute> iterator () {
 		return attributes.iterator();
+	}
+
+	@Override
+	public void dispose () {
+		clear();
 	}
 }
