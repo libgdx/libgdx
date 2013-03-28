@@ -58,7 +58,6 @@ public class Model implements Disposable {
 	public static abstract class ManagedInstance implements Disposable {
 		/** the model this instance was derived from **/
 		public final Model model;
-		protected boolean disposed;
 		protected ManagedInstance(final Model model) {
 			if (model == null)
 				throw new GdxRuntimeException("Model cannot be null");
@@ -67,14 +66,7 @@ public class Model implements Disposable {
 		}
 		@Override
 		public void dispose () {
-			disposed = true;
 			model.removeInstance(this);
-		}
-		@Override
-		protected void finalize () throws Throwable {
-			if (!disposed)
-				dispose();
-			super.finalize();
 		}
 	}
 	
