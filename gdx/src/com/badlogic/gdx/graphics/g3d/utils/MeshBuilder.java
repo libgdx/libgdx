@@ -67,7 +67,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	/** The parts created between begin and end */
 	private Array<MeshPart> parts = new Array<MeshPart>();
 	// FIXME makes this configurable
-	private float uMin, uMax, vMin, vMax;
+	private float uMin = 0, uMax = 1, vMin = 0, vMax = 1;
 	private float[] vertex;
 	
 	/** Begin building a mesh */
@@ -285,27 +285,27 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void cylinder(float width, float height, float depth, int divisions) {
-		// FIXME create better cylinder method
+		// FIXME create better cylinder method (- fill the sides, - axis on which to create the cylinder (matrix?), - partial cylinder)
 		final float hw = width * 0.5f;
 		final float hh = height * 0.5f;
 		final float hd = depth * 0.5f;
 		final float step = MathUtils.PI2 / divisions;
-		final float vs = 1f / divisions;
-		float v = 0f;
+		final float us = 1f / divisions;
+		float u = 0f;
 		float angle = 0f;
 		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
 		VertexInfo curr2 = vertTmp4.set(null, null, null, null);
 		for (int i = 0; i <= divisions; i++) {
 			angle = step * i;
-			v = vs * i;
+			u = 1f - us * i;
 			curr1.position.set(MathUtils.cos(angle) * hw, 0f, MathUtils.sin(angle) * hd);
 			curr1.normal.set(curr1.position).nor();
 			curr1.position.y = -hh;
-			curr1.uv.set(v, 0);
+			curr1.uv.set(u, 1);
 			curr2.position.set(curr1.position);
 			curr2.normal.set(curr1.normal);
 			curr2.position.y = hh;
-			curr2.uv.set(v, 1);
+			curr2.uv.set(u, 0);
 			vertex(curr1);
 			vertex(curr2);
 			if (i == 0)
@@ -316,6 +316,74 @@ public class MeshBuilder implements MeshPartBuilder {
 			indices.add((short)(vindex-3));
 			indices.add((short)(vindex-2));
 			indices.add((short)(vindex-1));
+		}
+	}
+	
+	@Override
+	public void cone(float width, float height, float depth, int divisions) {
+		// FIXME create better cylinder method (- fill the side, - axis on which to create the cone (matrix?), - partial cone)
+		final float hw = width * 0.5f;
+		final float hh = height * 0.5f;
+		final float hd = depth * 0.5f;
+		final float step = MathUtils.PI2 / divisions;
+		final float us = 1f / divisions;
+		float u = 0f;
+		float angle = 0f;
+		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
+		VertexInfo curr2 = vertTmp4.set(null, null, null, null).setPos(0,hh,0).setNor(0,1,0).setUV(0.5f, 0);
+		final int base = vertex(curr2);
+		for (int i = 0; i <= divisions; i++) {
+			angle = step * i;
+			u = 1f - us * i;
+			curr1.position.set(MathUtils.cos(angle) * hw, 0f, MathUtils.sin(angle) * hd);
+			curr1.normal.set(curr1.position).nor();
+			curr1.position.y = -hh;
+			curr1.uv.set(u, 1);
+			vertex(curr1);
+			if (i == 0)
+				continue;
+			indices.add((short)base);
+			indices.add((short)(vindex-2));
+			indices.add((short)(vindex-1));
+		}
+	}
+	
+	@Override
+	public void sphere(float width, float height, float depth, int divisionsU, int divisionsV) {
+		// FIXME create better sphere method (- only one vertex for each pole, - partial sphere, - position)
+		final float hw = width * 0.5f;
+		final float hh = height * 0.5f;
+		final float hd = depth * 0.5f;
+		final float stepU = MathUtils.PI2 / divisionsU;
+		final float stepV = MathUtils.PI / divisionsV;
+		final float us = 1f / divisionsU;
+		final float vs = 1f / divisionsV;
+		float u = 0f;
+		float v = 0f;
+		float angleU = 0f;
+		float angleV = 0f;
+		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
+		for (int i = 0; i <= divisionsU; i++) {
+			angleU = stepU * i;
+			u = 1f - us * i;
+			tempV1.set(MathUtils.cos(angleU) * hw, 0f, MathUtils.sin(angleU) * hd);
+			for (int j = 0; j <= divisionsV; j++) {
+				angleV = stepV * j;
+				v = vs * j;
+				final float t = MathUtils.sin(angleV);
+				curr1.position.set(tempV1.x * t, MathUtils.cos(angleV) * hh, tempV1.z * t);
+				curr1.normal.set(curr1.position).nor();
+				curr1.uv.set(u, v);
+				vertex(curr1);
+				if (i == 0 || j == 0)
+					continue;
+				indices.add((short)(vindex-2));
+				indices.add((short)(vindex-1));
+				indices.add((short)(vindex-(divisionsV+2)));
+				indices.add((short)(vindex-1));
+				indices.add((short)(vindex-(divisionsV+2)));
+				indices.add((short)(vindex-(divisionsV+1)));
+			}
 		}
 	}
 }

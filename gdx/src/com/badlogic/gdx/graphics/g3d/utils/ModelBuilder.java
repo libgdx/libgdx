@@ -119,10 +119,21 @@ public class ModelBuilder {
 		return end();
 	}
 
-	// FIXME: Add transform
 	public Model createCylinder(float width, float height, float depth, int divisions, final NewMaterial material, final VertexAttributes attributes) {
 		begin();
 		part("cylinder", attributes, material).cylinder(width, height, depth, divisions);
+		return end();
+	}
+	
+	public Model createCone(float width, float height, float depth, int divisions, final NewMaterial material, final VertexAttributes attributes) {
+		begin();
+		part("cone", attributes, material).cone(width, height, depth, divisions);
+		return end();
+	}
+	
+	public Model createSphere(float width, float height, float depth, int divisionsU, int divisionsV, final NewMaterial material, final VertexAttributes attributes) {
+		begin();
+		part("cylinder", attributes, material).sphere(width, height, depth, divisionsU, divisionsV);
 		return end();
 	}
 	
