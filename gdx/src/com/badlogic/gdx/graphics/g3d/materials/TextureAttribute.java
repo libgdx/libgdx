@@ -11,11 +11,10 @@ public class TextureAttribute extends NewMaterial.Attribute {
 	public final static String SpecularAlias = "specularTexture";
 	public final static long Specular = register(SpecularAlias);
 	
-	// FIXME add more types?
+	// FIXME add more types!
 	// FIXME add scaling + offset?
 	// FIXME add filter settings? MipMap needs to be obeyed during loading :/
 	
-	// Might be useful:...
 	protected static long Mask = Diffuse | Specular;
 	
 	public final static boolean is(final long mask) {
@@ -28,7 +27,7 @@ public class TextureAttribute extends NewMaterial.Attribute {
 		super(type);
 		if (!is(type))
 			throw new GdxRuntimeException("Invalid type specified");
-		this.textureDescription = textureDescription;
+		this.textureDescription = textureDescription; // FIXME Add TextureDescriptor#copy or #addRef ?
 	}
 	
 	public TextureAttribute(final long type) {
@@ -36,7 +35,7 @@ public class TextureAttribute extends NewMaterial.Attribute {
 	}
 	
 	public TextureAttribute(final TextureAttribute copyFrom) {
-		this(copyFrom.getType(), copyFrom.textureDescription);
+		this(copyFrom.type, copyFrom.textureDescription);
 	}
 	
 	@Override
@@ -47,5 +46,10 @@ public class TextureAttribute extends NewMaterial.Attribute {
 	@Override
 	protected boolean equals (Attribute other) {
 		return ((TextureAttribute)other).textureDescription.equals(textureDescription);
+	}
+
+	@Override
+	public void dispose () {
+		// FIXME dispose texture if needed
 	}
 }

@@ -27,4 +27,7 @@ public class FloatAttribute extends NewMaterial.Attribute {
 		// FIXME use epsilon?
 		return ((FloatAttribute)other).value == value;
 	}
+
+	@Override
+	public void dispose () {}
 }
