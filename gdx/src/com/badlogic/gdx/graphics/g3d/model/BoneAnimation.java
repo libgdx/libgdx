@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.model;
 
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * A BoneAnimation defines keyframes for a {@link Node} in a {@link Model}. The keyframes
