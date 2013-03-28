@@ -47,9 +47,4 @@ public class TextureAttribute extends NewMaterial.Attribute {
 	protected boolean equals (Attribute other) {
 		return ((TextureAttribute)other).textureDescription.equals(textureDescription);
 	}
-
-	@Override
-	public void dispose () {
-		// FIXME dispose texture if needed
-	}
 }

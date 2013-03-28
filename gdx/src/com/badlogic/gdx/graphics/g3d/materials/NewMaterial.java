@@ -12,7 +12,7 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	 *  Register the attribute type by statically calling the {@link #register(String)} method, 
 	 *  whose return value should be used to instantiate the attribute. 
 	 *  A class can implement multiple types*/
-	public static abstract class Attribute implements Disposable {
+	public static abstract class Attribute {
 		protected static long register(final String type) {
 			return NewMaterial.register(type);
 		}
@@ -148,7 +148,6 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 		for (int i = 0; i < attributes.size; i++) {
 			final long type = attributes.get(i).type;
 			if ((mask & type) == type) {
-				attributes.get(i).dispose();
 				attributes.removeIndex(i);
 				disable(type);
 				sorted = false;
@@ -178,8 +177,6 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	/** Removes all attributes */
 	public final void clear() {
 		mask = 0;
-		for (int i = 0; i < attributes.size; i++)
-			attributes.get(i).dispose();
 		attributes.clear();
 	}
 	

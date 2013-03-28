@@ -55,7 +55,4 @@ public class ColorAttribute extends NewMaterial.Attribute {
 	protected boolean equals (Attribute other) {
 		return ((ColorAttribute)other).color.equals(color);
 	}
-
-	@Override
-	public void dispose () {}
 }
