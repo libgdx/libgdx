@@ -20,7 +20,7 @@ import com.badlogic.gdx.math.Matrix4;
  */
 public class Renderable {
 	/** the world transform **/
-	public Matrix4 transform = new Matrix4();
+	public final Matrix4 transform = new Matrix4();
 	/** the mesh to render **/
 	public Mesh mesh;
 	/** the offset into the mesh's indices **/

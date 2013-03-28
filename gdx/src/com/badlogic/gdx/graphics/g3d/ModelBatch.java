@@ -21,6 +21,16 @@ public class ModelBatch implements Disposable {
 		protected Renderable newObject () {
 			return new Renderable();
 		}
+
+		@Override
+		public Renderable obtain () {
+			Renderable renderable = super.obtain();
+			renderable.lights = null;
+			renderable.material = null;
+			renderable.mesh = null;
+			renderable.shader = null;
+			return renderable;
+		}
 	};
 	/** list of Renderables to be rendered in the current batch **/
 	protected final Array<Renderable> renderables = new Array<Renderable>();
@@ -81,17 +91,41 @@ public class ModelBatch implements Disposable {
 		renderables.add(renderable);
 	}
 	
-	public void render(final ModelInstance modelInstance) {
-		render(modelInstance, null, null);
+	/**
+	 * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds
+	 * all returned {@link Renderable} instances to the current batch to be
+	 * rendered.
+	 * @param renderableProvider the renderable provider
+	 */
+	public void render(final RenderableProvider renderableProvider) {
+		render(renderableProvider, null, null);
 	}
 	
-	public void render(final ModelInstance modelInstance, final Light[] lights) {
-		render(modelInstance, lights, null);
+	/**
+	 * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds
+	 * all returned {@link Renderable} instances to the current batch to be
+	 * rendered. Any lights set on the returned renderables will be replaced
+	 * with the given lights
+	 * @param renderableProvider the renderable provider
+	 * @param lights the lights to use for the renderables
+	 */
+	public void render(final RenderableProvider renderableProvider, final Light[] lights) {
+		render(renderableProvider, lights, null);
 	}
 	
-	public void render(final ModelInstance modelInstance, final Light[] lights, final Shader shader) {
+	/**
+	 * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds
+	 * all returned {@link Renderable} instances to the current batch to be
+	 * rendered. Any lights set on the returned renderables will be replaced
+	 * with the given lights. Any shaders set on the returned renderables will
+	 * be replaced by the given {@link Shader}.
+	 * @param renderableProvider the renderable provider
+	 * @param lights the lights to use for the renderables
+	 * @param shader the shader to use for the renderables
+	 */
+	public void render(final RenderableProvider renderableProvider, final Light[] lights, final Shader shader) {
 		int offset = renderables.size;
-		modelInstance.getRenderables(renderables, renderablesPool);
+		renderableProvider.getRenderables(renderables, renderablesPool);
 		for (int i = offset; i < renderables.size; i++) {
 			Renderable renderable = renderables.get(i);
 			renderable.lights = lights;

@@ -239,7 +239,7 @@ public class Model implements Disposable {
 	 * @param disposable the Disposable
 	 */
 	public void manageDisposable(Disposable disposable) {
-		
+		disposables.add(disposable);
 	}
 
 	@Override

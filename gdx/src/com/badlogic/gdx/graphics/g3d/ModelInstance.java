@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.Pool;
  * @author badlogic
  *
  */
-public class ModelInstance {
+public class ModelInstance implements RenderableProvider {
 	/** the {@link Model} this instances derrives from **/
 	public final Model model;
 	/** the world transform **/
