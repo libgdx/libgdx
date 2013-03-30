@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.model.MeshPartMaterial;
 import com.badlogic.gdx.graphics.g3d.model.Node;
@@ -88,7 +88,7 @@ public class ModelBuilder {
 	}
 	
 	/** Adds the specified MeshPart to the current Node. */
-	public void part(final MeshPart meshpart, final NewMaterial material) {
+	public void part(final MeshPart meshpart, final Material material) {
 		// Allow to add parts right after the call to model() for models containing just one node
 		if (node == null)
 			node();
@@ -101,37 +101,37 @@ public class ModelBuilder {
 	}
 	
 	/** Creates a new MeshPart within the current Node. Use the construction method to construct the part. */
-	public MeshPartBuilder part(final String id, final VertexAttributes attributes, final NewMaterial material) {
+	public MeshPartBuilder part(final String id, final VertexAttributes attributes, final Material material) {
 		final MeshBuilder builder = getBuilder(attributes);
 		part(builder.part(id), material);
 		return builder;
 	}
 	
-	public Model createBox(float width, float height, float depth, final NewMaterial material, final VertexAttributes attributes) {
+	public Model createBox(float width, float height, float depth, final Material material, final VertexAttributes attributes) {
 		begin();
 		part("box", attributes, material).box(width, height, depth);
 		return end();
 	}
 	
-	public Model createRect(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, float normalX, float normalY, float normalZ, final NewMaterial material, final VertexAttributes attributes) {
+	public Model createRect(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, float normalX, float normalY, float normalZ, final Material material, final VertexAttributes attributes) {
 		begin();
 		part("rect", attributes, material).rect(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, normalX, normalY, normalZ);
 		return end();
 	}
 
-	public Model createCylinder(float width, float height, float depth, int divisions, final NewMaterial material, final VertexAttributes attributes) {
+	public Model createCylinder(float width, float height, float depth, int divisions, final Material material, final VertexAttributes attributes) {
 		begin();
 		part("cylinder", attributes, material).cylinder(width, height, depth, divisions);
 		return end();
 	}
 	
-	public Model createCone(float width, float height, float depth, int divisions, final NewMaterial material, final VertexAttributes attributes) {
+	public Model createCone(float width, float height, float depth, int divisions, final Material material, final VertexAttributes attributes) {
 		begin();
 		part("cone", attributes, material).cone(width, height, depth, divisions);
 		return end();
 	}
 	
-	public Model createSphere(float width, float height, float depth, int divisionsU, int divisionsV, final NewMaterial material, final VertexAttributes attributes) {
+	public Model createSphere(float width, float height, float depth, int divisionsU, int divisionsV, final Material material, final VertexAttributes attributes) {
 		begin();
 		part("cylinder", attributes, material).sphere(width, height, depth, divisionsU, divisionsV);
 		return end();
@@ -139,11 +139,11 @@ public class ModelBuilder {
 	
 	// Old code below this line, as for now still useful for testing. 
 	@Deprecated
-	public static Model createFromMesh(final Mesh mesh, int primitiveType, final NewMaterial material) {
+	public static Model createFromMesh(final Mesh mesh, int primitiveType, final Material material) {
 		return createFromMesh(mesh, 0, mesh.getNumIndices(), primitiveType, material);
 	}
 	@Deprecated
-	public static Model createFromMesh(final Mesh mesh, int indexOffset, int vertexCount, int primitiveType, final NewMaterial material) {
+	public static Model createFromMesh(final Mesh mesh, int indexOffset, int vertexCount, int primitiveType, final Material material) {
 		Model result = new Model();
 		MeshPart meshPart = new MeshPart();
 		meshPart.id = "part1";
@@ -166,7 +166,7 @@ public class ModelBuilder {
 		return result;
 	}
 	@Deprecated
-	public static Model createFromMesh(final float[] vertices, final VertexAttribute[] attributes, final short[] indices, int primitiveType, final NewMaterial material) {
+	public static Model createFromMesh(final float[] vertices, final VertexAttribute[] attributes, final short[] indices, int primitiveType, final Material material) {
 		final Mesh mesh = new Mesh(false, vertices.length, indices.length, attributes);
 		mesh.setVertices(vertices);
 		mesh.setIndices(indices);

@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.loader.JsonModelLoader;
-import com.badlogic.gdx.graphics.g3d.old.loaders.wavefront.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.test.Light;
 import com.badlogic.gdx.graphics.g3d.test.TestShader;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
@@ -64,7 +64,7 @@ public class BatchRenderTest extends GdxTest {
 		sceneModel = objLoader.loadObj(Gdx.files.internal("data/scene.obj"));
 		cubeModel = objLoader.loadObj(Gdx.files.internal("data/cube.obj"));
 		carModel = objLoader.loadObj(Gdx.files.internal("data/car.obj"));
-		testModel = new Model(loader.parseModel(Gdx.files.internal("data/g3d/head.g3dj"),  null));
+		testModel = new Model(loader.parseModel(Gdx.files.internal("data/g3d/head.g3dj")));
 		
 		//StillSubMesh mesh = (StillSubMesh)(cubeModel.subMeshes[0]);
 		for (int i = 0; i < textures.size; i++)

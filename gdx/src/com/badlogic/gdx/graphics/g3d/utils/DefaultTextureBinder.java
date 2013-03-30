@@ -67,7 +67,10 @@ public final class DefaultTextureBinder implements TextureBinder {
 
 	private static int getMaxTextureUnits () {
 		IntBuffer buffer = BufferUtils.newIntBuffer(16);
-		Gdx.gl.glGetIntegerv(GL20.GL_MAX_TEXTURE_IMAGE_UNITS, buffer);
+		if (Gdx.graphics.isGL20Available())
+			Gdx.gl.glGetIntegerv(GL20.GL_MAX_TEXTURE_IMAGE_UNITS, buffer);
+		else
+			Gdx.gl.glGetIntegerv(GL10.GL_MAX_TEXTURE_UNITS, buffer);
 		return buffer.get(0);
 	}
 

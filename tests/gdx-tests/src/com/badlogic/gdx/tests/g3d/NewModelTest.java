@@ -35,7 +35,7 @@ public class NewModelTest extends GdxTest {
 	@Override
 	public void create () {
 		JsonModelLoader loader = new JsonModelLoader();
-		model = new Model(loader.parseModel(Gdx.files.internal("data/g3d/cubes.g3dj"),  null));
+		model = new Model(loader.parseModel(Gdx.files.internal("data/g3d/cubes.g3dj")));
 		instance = new ModelInstance(model);
 		modelBatch = new ModelBatch();
 		TestShader.ignoreUnimplemented = true;

@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -38,7 +38,7 @@ public class MeshShapeTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 		
-		final Model sphereModel = modelBuilder.createSphere(0.5f, 0.5f, 0.5f, 8, 8, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE))); 
+		final Model sphereModel = modelBuilder.createSphere(0.5f, 0.5f, 0.5f, 8, 8, new Material(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE))); 
 		final BulletConstructor sphereConstructor = new BulletConstructor(sphereModel, 0.25f, new btSphereShape(0.25f));
 		sphereConstructor.bodyInfo.setM_restitution(1f);
 		world.addConstructor("sphere", sphereConstructor);

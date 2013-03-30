@@ -1,8 +1,8 @@
 package com.badlogic.gdx.graphics.g3d.materials;
 
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial.Attribute;
+import com.badlogic.gdx.graphics.g3d.materials.Material.Attribute;
 
-public class FloatAttribute extends NewMaterial.Attribute {
+public class FloatAttribute extends Material.Attribute {
 	public static final String ShininessAlias = "shininess";
 	public static final long Shininess = register(ShininessAlias);
 	

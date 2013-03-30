@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -40,7 +40,7 @@ public abstract class BaseEntity implements Disposable {
 	public void setColor (float r, float g, float b, float a) {
 		color.set(r, g, b, a);
 		if (modelInstance != null) {
-			for (NewMaterial m : modelInstance.materials) {
+			for (Material m : modelInstance.materials) {
 				ColorAttribute ca = (ColorAttribute)m.get(ColorAttribute.Diffuse);
 				if (ca != null)
 					ca.color.set(r, g, b, a);

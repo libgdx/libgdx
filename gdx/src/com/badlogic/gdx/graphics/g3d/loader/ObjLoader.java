@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.graphics.g3d.old.loaders.wavefront;
+package com.badlogic.gdx.graphics.g3d.loader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,7 +34,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
@@ -44,7 +44,6 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPartMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
-import com.badlogic.gdx.graphics.g3d.old.ModelLoaderHints;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Quaternion;
@@ -304,19 +303,15 @@ public class ObjLoader /* implements StillModelLoader */ {
 		int numFaces;
 		boolean hasNorms;
 		boolean hasUVs;
-		NewMaterial mat;
+		Material mat;
 
 		Group (String name) {
 			this.name = name;
 			this.faces = new ArrayList<Integer>(200);
 			this.numFaces = 0;
-			this.mat = new NewMaterial("");
+			this.mat = new Material("");
 			this.materialName = "default";
 		}
-	}
-
-	public Model load (FileHandle handle, ModelLoaderHints hints) {
-		return loadObj(handle, hints.flipV);
 	}
 }
 
