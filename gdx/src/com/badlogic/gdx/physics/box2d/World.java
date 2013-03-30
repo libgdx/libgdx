@@ -580,6 +580,7 @@ b2ContactFilter defaultFilter;
 	/** Destroy a joint. This may cause the connected bodies to begin colliding.
 	 * @warning This function is locked during callbacks. */
 	public void destroyJoint (Joint joint) {
+		joint.setUserData(null);
 		joints.remove(joint.addr);
 		joint.jointEdgeA.other.joints.remove(joint.jointEdgeB);
 		joint.jointEdgeB.other.joints.remove(joint.jointEdgeA);
