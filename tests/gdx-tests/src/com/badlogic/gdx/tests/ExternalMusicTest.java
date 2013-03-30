@@ -28,7 +28,7 @@ public class ExternalMusicTest extends GdxTest {
 	@Override
 	public void create () {
 		// copy an internal mp3 to the external storage
-		FileHandle src = Gdx.files.internal("data/iron.mp3");
+		FileHandle src = Gdx.files.internal("data/8.12.mp3");
 		FileHandle dst = Gdx.files.external("8.12.mp3");
 		src.copyTo(dst);
 
