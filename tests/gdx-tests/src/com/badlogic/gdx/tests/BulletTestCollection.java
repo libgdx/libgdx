@@ -161,7 +161,7 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 
 	@Override
 	public boolean needsGL20 () {
-		return true;
+		return false;
 	}
 
 	@Override

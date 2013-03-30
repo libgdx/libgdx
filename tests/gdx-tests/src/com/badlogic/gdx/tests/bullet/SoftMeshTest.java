@@ -21,9 +21,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.old.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.old.loaders.wavefront.ObjLoader;
-import com.badlogic.gdx.graphics.g3d.old.model.still.StillModel;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Material;
@@ -38,7 +35,7 @@ import com.badlogic.gdx.physics.bullet.btSoftRigidDynamicsWorld;
 
 /** @author xoppa */
 public class SoftMeshTest extends BaseBulletTest {
-	btSoftBodyWorldInfo worldInfo;
+	/* btSoftBodyWorldInfo worldInfo;
 	btSoftBody  softBody;
 	Mesh mesh;
 	Matrix4 tmpM = new Matrix4();
@@ -70,7 +67,7 @@ public class SoftMeshTest extends BaseBulletTest {
 		.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		// Note: not every model is suitable for a one on one translation with a soft body, a better model might be added later.
-		final StillModel model = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/wheel.obj"));
+		final StillModel model = null; // FIXME objLoader.loadObj(Gdx.files.internal("data/wheel.obj"));
 		mesh = model.subMeshes[0].getMesh().copy(false, true, new int[] {Usage.Position});
 		mesh.scale(6f, 6f, 6f);
 
@@ -122,5 +119,5 @@ public class SoftMeshTest extends BaseBulletTest {
 	public boolean tap (float x, float y, int count, int button) {
 		shoot(x, y, 20f);
 		return true;
-	}
+	} */
 }

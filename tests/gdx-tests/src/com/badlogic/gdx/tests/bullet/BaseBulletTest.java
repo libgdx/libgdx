@@ -28,16 +28,15 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPartMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
-import com.badlogic.gdx.graphics.g3d.old.loaders.wavefront.ObjLoader;
-import com.badlogic.gdx.graphics.g3d.old.materials.Material;
 import com.badlogic.gdx.graphics.g3d.test.Light;
 import com.badlogic.gdx.graphics.g3d.test.TestShader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -85,7 +84,7 @@ public class BaseBulletTest extends BulletTest {
 	
 	@Deprecated
 	public static Model createSimpleModel(final VertexAttribute[] attributes, final float[] vertices, final short[] indices) {
-		return ModelBuilder.createFromMesh(vertices, attributes, indices, GL10.GL_TRIANGLES, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)));
+		return ModelBuilder.createFromMesh(vertices, attributes, indices, GL10.GL_TRIANGLES, new Material(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)));
 	}
 	
 	@Override
@@ -109,8 +108,8 @@ public class BaseBulletTest extends BulletTest {
 		camera.update();
 		
 		// Create some simple meshes
-		final Model groundModel = modelBuilder.createRect(20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f, 0, 1, 0, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE)));
-		final Model boxModel = modelBuilder.createBox(1f, 1f, 1f, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE))); 
+		final Model groundModel = modelBuilder.createRect(20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f, 0, 1, 0, new Material(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE)));
+		final Model boxModel = modelBuilder.createBox(1f, 1f, 1f, new Material(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE))); 
 
 		// Add the constructors
 		world.addConstructor("ground", new BulletConstructor(groundModel, 0f)); // mass = 0: static body
