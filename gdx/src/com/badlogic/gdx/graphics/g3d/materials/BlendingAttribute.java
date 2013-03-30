@@ -1,8 +1,8 @@
 package com.badlogic.gdx.graphics.g3d.materials;
 
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial.Attribute;
+import com.badlogic.gdx.graphics.g3d.materials.Material.Attribute;
 
-public class BlendingAttribute extends NewMaterial.Attribute {
+public class BlendingAttribute extends Material.Attribute {
 	public final static String Alias = "blended";
 	public final static long Type = register(Alias);
 	

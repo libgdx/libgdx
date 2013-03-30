@@ -1,11 +1,11 @@
 package com.badlogic.gdx.graphics.g3d.materials;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial.Attribute;
+import com.badlogic.gdx.graphics.g3d.materials.Material.Attribute;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class TextureAttribute extends NewMaterial.Attribute {
+public class TextureAttribute extends Material.Attribute {
 	public final static String DiffuseAlias = "diffuseTexture";
 	public final static long Diffuse = register(DiffuseAlias);
 	public final static String SpecularAlias = "specularTexture";
@@ -21,6 +21,14 @@ public class TextureAttribute extends NewMaterial.Attribute {
 		return (mask & Mask) != 0;
 	}
 	
+	public static TextureAttribute createDiffuse(final Texture texture) {
+		return new TextureAttribute(Diffuse, texture);
+	}
+	
+	public static TextureAttribute createSpecular(final Texture texture) {
+		return new TextureAttribute(Specular, texture);
+	}
+	
 	public final TextureDescriptor textureDescription;
 	
 	public TextureAttribute(final long type, final TextureDescriptor textureDescription) {
@@ -31,7 +39,11 @@ public class TextureAttribute extends NewMaterial.Attribute {
 	}
 	
 	public TextureAttribute(final long type) {
-		this(type, null);
+		this(type, (TextureDescriptor)null);
+	}
+	
+	public TextureAttribute(final long type, final Texture texture) {
+		this(type, new TextureDescriptor(texture));
 	}
 	
 	public TextureAttribute(final TextureAttribute copyFrom) {

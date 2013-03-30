@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -55,7 +55,7 @@ public class TestShader implements Shader {
 	protected RenderContext context;
 	protected long mask;
 	
-	public TestShader(final NewMaterial material) {
+	public TestShader(final Material material) {
 		this(getDefaultVertexShader(), getDefaultFragmentShader(), material);
 	}
 	
@@ -63,11 +63,14 @@ public class TestShader implements Shader {
 		this(getDefaultVertexShader(), getDefaultFragmentShader(), mask);
 	}
 
-	public TestShader(final String vertexShader, final String fragmentShader, final NewMaterial material) {
+	public TestShader(final String vertexShader, final String fragmentShader, final Material material) {
 		this(vertexShader, fragmentShader, material.getMask());
 	}
 	
 	public TestShader(final String vertexShader, final String fragmentShader, final long mask) {
+		if (!Gdx.graphics.isGL20Available())
+			throw new GdxRuntimeException("This shader requires OpenGL ES 2.0");
+		
 		String prefix = "";
 		this.mask = mask;
 		
@@ -171,12 +174,12 @@ public class TestShader implements Shader {
 	}
 	
 	/////// bindMaterial /////////
-	NewMaterial currentMaterial;
+	Material currentMaterial;
 	private final void bindMaterial(final Renderable renderable) {
 		if (currentMaterial == renderable.material)
 			return;
 		currentMaterial = renderable.material;
-		for (NewMaterial.Attribute attr : currentMaterial) {
+		for (Material.Attribute attr : currentMaterial) {
 			final long t = attr.type;
 			if (BlendingAttribute.is(t))
 				context.setBlending(true, ((BlendingAttribute)attr).sourceFunction, ((BlendingAttribute)attr).destFunction);

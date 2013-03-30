@@ -1,10 +1,11 @@
 package com.badlogic.gdx.graphics.g3d;
 
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.model.MeshPartMaterial;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -21,29 +22,39 @@ import com.badlogic.gdx.utils.Pool;
  *
  */
 public class ModelInstance implements RenderableProvider {
-	/** the {@link Model} this instances derrives from **/
+	/** the {@link Model} this instances derives from **/
 	public final Model model;
 	/** the world transform **/
 	public final Matrix4 transform = new Matrix4();
 	/** a copy of the materials of the original model **/
-	public final Array<NewMaterial> materials = new Array<NewMaterial>();
+	public final Array<Material> materials = new Array<Material>();
 	/** a copy of the nodes of the original model, referencing the copied materials in their {@link MeshPartMaterial} instances **/
 	public final Array<Node> nodes = new Array<Node>();
-	
+
 	public ModelInstance(Model model) {
-		this(model, new Matrix4());
-	}
-	
-	public ModelInstance(Model model, Matrix4 transform) {
 		this.model = model;
-		this.transform.set(transform);
 		copyMaterials(model.materials);
 		copyNodes(model.nodes);
 		calculateTransforms();
 	}
+	
+	public ModelInstance(Model model, Vector3 position) {
+		this(model);
+		this.transform.setToTranslation(position);
+	}
+	
+	public ModelInstance(Model model, float x, float y, float z) {
+		this(model);
+		this.transform.setToTranslation(x, y, z);
+	}
+	
+	public ModelInstance(Model model, Matrix4 transform) {
+		this(model);
+		this.transform.set(transform);
+	}
 
-	private void copyMaterials (Array<NewMaterial> materials) {
-		for(NewMaterial material: materials) {
+	private void copyMaterials (Array<Material> materials) {
+		for(Material material: materials) {
 			this.materials.add(material.copy());
 		}		
 	}

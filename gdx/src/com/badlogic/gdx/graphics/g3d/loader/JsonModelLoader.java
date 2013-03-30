@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
@@ -16,16 +17,6 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPartMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial.MaterialType;
-import com.badlogic.gdx.graphics.g3d.old.ModelLoaderHints;
-import com.badlogic.gdx.graphics.g3d.old.loaders.ModelLoader;
-import com.badlogic.gdx.graphics.g3d.old.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.old.materials.Material;
-import com.badlogic.gdx.graphics.g3d.old.materials.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.old.model.Model;
-import com.badlogic.gdx.graphics.g3d.old.model.SubMesh;
-import com.badlogic.gdx.graphics.g3d.old.model.skeleton.SkeletonModel;
-import com.badlogic.gdx.graphics.g3d.old.model.still.StillModel;
-import com.badlogic.gdx.graphics.g3d.old.model.still.StillSubMesh;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -44,29 +35,16 @@ import com.badlogic.gdx.utils.OrderedMap;
  * FIXME remove ModelLoader dependency, or rewrite ModelLoader interface
  * FIXME remove createXXXModel methods
  */
-public class JsonModelLoader implements ModelLoader {
+public class JsonModelLoader {
 	public static String VERSION = "1.0";
 	
-	@Override
-	public Model load (FileHandle handle, ModelLoaderHints hints) {
-		ModelData jsonModel = parseModel(handle, hints);
-		Model model = null;
-		
-		if(jsonModel.animations == null)
-			model = createStillModel(jsonModel);
-		else // add hints for sampling to keyframed model
-			model = createSkeletonModel(jsonModel);
-		
-		return model;
+	public Model load (FileHandle handle) {
+		ModelData jsonModel = parseModel(handle);
+		return new Model(jsonModel);
 	}
 
-	private SkeletonModel createSkeletonModel (ModelData jsonModel) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private StillModel createStillModel (ModelData model) {
-		StillModel stillModel = new StillModel(new SubMesh[model.meshes.size]);
+	/* private Model createStillModel (ModelData model) {
+		Model stillModel = new Model(new SubMesh[model.meshes.size]);
 		
 		// We create the materials first
 		ObjectMap<String, Material> materials = new ObjectMap<String, Material>();
@@ -106,9 +84,9 @@ public class JsonModelLoader implements ModelLoader {
 		}
 		
 		return stillModel;
-	}
+	} */
 
-	public ModelData parseModel (FileHandle handle, ModelLoaderHints hints) {
+	public ModelData parseModel (FileHandle handle) {
 		JsonReader reader = new JsonReader();
 		OrderedMap<String, Object> json = (OrderedMap<String, Object>)reader.parse(handle);
 		
@@ -118,13 +96,13 @@ public class JsonModelLoader implements ModelLoader {
 		}
 		
 		ModelData model = new ModelData();
-		parseMeshes(model, json, hints);
-		parseMaterials(model, json, hints, handle.parent().path());
-		parseNodes(model, json, hints);
+		parseMeshes(model, json);
+		parseMaterials(model, json, handle.parent().path());
+		parseNodes(model, json);
 		return model;
 	}
 	
-	private void parseMeshes (ModelData model, OrderedMap<String, Object> json, ModelLoaderHints hints) {
+	private void parseMeshes (ModelData model, OrderedMap<String, Object> json) {
 		Array<OrderedMap<String, Object>> meshes = (Array<OrderedMap<String, Object>>)json.get("meshes");
 		if(meshes == null) {
 			throw new GdxRuntimeException("No meshes found in file");
@@ -246,7 +224,7 @@ public class JsonModelLoader implements ModelLoader {
 		return vertexAttributes.toArray(VertexAttribute.class);
 	}
 
-	private void parseMaterials (ModelData model, OrderedMap<String, Object> json, ModelLoaderHints hints, String materialDir) {
+	private void parseMaterials (ModelData model, OrderedMap<String, Object> json, String materialDir) {
 		Array<OrderedMap<String, Object>> materials = (Array<OrderedMap<String, Object>>)json.get("materials");
 		if(materials == null) {
 			// we should probably create some default material in this case
@@ -341,7 +319,7 @@ public class JsonModelLoader implements ModelLoader {
 			throw new GdxRuntimeException("Expected Vector2 values <> than two.");
 	}
 
-	private Array<ModelNode> parseNodes (ModelData model, OrderedMap<String, Object> json, ModelLoaderHints hints) {
+	private Array<ModelNode> parseNodes (ModelData model, OrderedMap<String, Object> json) {
 		Array<OrderedMap<String, Object>> nodes = (Array<OrderedMap<String, Object>>)json.get("nodes");
 		if(nodes == null) {
 			throw new GdxRuntimeException("At least one node is required.");
@@ -351,12 +329,12 @@ public class JsonModelLoader implements ModelLoader {
 		
 		int i = 0;
 		for(OrderedMap<String, Object> node : nodes) {
-			model.nodes.add(parseNodesRecursively(node, hints));
+			model.nodes.add(parseNodesRecursively(node));
 		}
 		return model.nodes;
 	}
 	
-	private ModelNode parseNodesRecursively(OrderedMap<String, Object> json, ModelLoaderHints hints){
+	private ModelNode parseNodesRecursively(OrderedMap<String, Object> json){
 		ModelNode jsonNode = new ModelNode();
 		
 		String id = (String)json.get("id");
@@ -409,7 +387,7 @@ public class JsonModelLoader implements ModelLoader {
 			
 			int i = 0;
 			for(OrderedMap<String, Object> child : children) {
-				jsonNode.children[i++] = parseNodesRecursively(child, hints);
+				jsonNode.children[i++] = parseNodesRecursively(child);
 			}
 		}
 		

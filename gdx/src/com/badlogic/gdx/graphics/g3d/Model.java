@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
@@ -22,9 +22,6 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPartMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
-import com.badlogic.gdx.graphics.g3d.old.loaders.ModelLoader;
-import com.badlogic.gdx.graphics.g3d.old.materials.Material;
-import com.badlogic.gdx.graphics.g3d.old.materials.MaterialAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider.FileTextureProvider;
@@ -38,7 +35,7 @@ import com.badlogic.gdx.utils.Pool;
 
 /**
  * A model represents a 3D assets. It stores a hierarchy of nodes. A node has a transform and optionally
- * a graphical part in form of a {@link MeshPart} and {@link NewMaterial}. Mesh parts reference subsets of
+ * a graphical part in form of a {@link MeshPart} and {@link Material}. Mesh parts reference subsets of
  * vertices in one of the meshes of the model. Animations can be applied to nodes, to modify their
  * transform (translation, rotation, scale) over time.</p>
  *
@@ -59,7 +56,7 @@ public class Model implements Disposable {
 	/** parts of meshes, used by nodes that have a graphical representation FIXME not sure if superfluous, stored in Nodes as well, could be useful to create bullet meshes **/
 	public final Array<MeshPart> meshParts = new Array<MeshPart>();
 	/** the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous, allows modification of materials without having to traverse the nodes**/
-	public final Array<NewMaterial> materials = new Array<NewMaterial>();
+	public final Array<Material> materials = new Array<Material>();
 	/** root nodes of the model **/
 	public final Array<Node> nodes = new Array<Node>();
 	/** animations of the model, modifying node transformations **/
@@ -106,7 +103,7 @@ public class Model implements Disposable {
 		// FIXME create temporary maps for faster lookup?
 		for(ModelMeshPartMaterial modelMeshPartMaterial: modelNode.meshPartMaterials) {
 			MeshPart meshPart = null;
-			NewMaterial meshMaterial = null;
+			Material meshMaterial = null;
 			if(modelMeshPartMaterial.meshPartId != null) {
 				for(MeshPart part: meshParts) {
 					// FIXME need to make sure this is unique by adding mesh id to mesh part id!
@@ -117,7 +114,7 @@ public class Model implements Disposable {
 				}
 			}
 			if(modelMeshPartMaterial.materialId != null) {
-				for(NewMaterial material: materials) {
+				for(Material material: materials) {
 					if(modelMeshPartMaterial.materialId.equals(material.id)) {
 						meshMaterial = material;
 						break;
@@ -184,8 +181,8 @@ public class Model implements Disposable {
 		}
 	}
 	
-	private NewMaterial convertMaterial(ModelMaterial mtl, TextureProvider textureProvider) {
-		NewMaterial result = new NewMaterial();
+	private Material convertMaterial(ModelMaterial mtl, TextureProvider textureProvider) {
+		Material result = new Material();
 		result.id = mtl.id;
 		result.add(new ColorAttribute(ColorAttribute.Ambient, mtl.ambient));
 		result.add(new ColorAttribute(ColorAttribute.Diffuse, mtl.diffuse));

@@ -1,9 +1,9 @@
 package com.badlogic.gdx.graphics.g3d.model;
 
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
 
 /**
- * A combination of {@link MeshPart} and {@link NewMaterial}, used to represent a {@link Node}'s graphical
+ * A combination of {@link MeshPart} and {@link Material}, used to represent a {@link Node}'s graphical
  * properties
  * @author badlogic
  *
@@ -11,11 +11,11 @@ import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
  */
 public class MeshPartMaterial {
 	public MeshPart meshPart;
-	public NewMaterial material;
+	public Material material;
 	
 	public MeshPartMaterial() {}
 	
-	public MeshPartMaterial(final MeshPart meshPart, final NewMaterial material) {
+	public MeshPartMaterial(final MeshPart meshPart, final Material material) {
 		this.meshPart = meshPart;
 		this.material = material;
 	}

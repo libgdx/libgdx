@@ -7,14 +7,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
-public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<NewMaterial.Attribute> {
+public class Material implements Iterable<Material.Attribute>, Comparator<Material.Attribute> {
 	/** Extend this class to implement a material attribute.
 	 *  Register the attribute type by statically calling the {@link #register(String)} method, 
 	 *  whose return value should be used to instantiate the attribute. 
 	 *  A class can implement multiple types*/
 	public static abstract class Attribute {
 		protected static long register(final String type) {
-			return NewMaterial.register(type);
+			return Material.register(type);
 		}
 		/** The type of this attribute */
 		public final long type;
@@ -63,39 +63,39 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	protected boolean sorted = true;
 	
 	/** Create an empty material */
-	public NewMaterial() {
+	public Material() {
 		this("mtl"+(++counter));
 	}
 	/** Create an empty material */
-	public NewMaterial(final String id) { 
+	public Material(final String id) { 
 		this.id = id;	
 	}
 	/** Create a material with the specified attributes */
-	public NewMaterial(final Attribute... attributes) {
+	public Material(final Attribute... attributes) {
 		this();
 		add(attributes);
 	}
 	/** Create a material with the specified attributes */
-	public NewMaterial(final String id, final Attribute... attributes) {
+	public Material(final String id, final Attribute... attributes) {
 		this(id);
 		add(attributes);
 	}
 	/** Create a material with the specified attributes */
-	public NewMaterial(final Array<Attribute> attributes) {
+	public Material(final Array<Attribute> attributes) {
 		this();
 		add(attributes);
 	}
 	/** Create a material with the specified attributes */
-	public NewMaterial(final String id, final Array<Attribute> attributes) {
+	public Material(final String id, final Array<Attribute> attributes) {
 		this(id);
 		add(attributes);
 	}
 	/** Create a material which is an exact copy of the specified material */
-	public NewMaterial(final NewMaterial copyFrom) {
+	public Material(final Material copyFrom) {
 		this(copyFrom.id, copyFrom);
 	}
 	/** Create a material which is an exact copy of the specified material */
-	public NewMaterial(final String id, final NewMaterial copyFrom) {
+	public Material(final String id, final Material copyFrom) {
 		this(id);
 		for (Attribute attr : copyFrom)
 			add(attr.copy());
@@ -180,9 +180,14 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 		attributes.clear();
 	}
 	
+	/** @return The amount of attributes this material contains. */
+	public int size() {
+		return attributes.size;
+	}
+	
 	/** Create a copy of this material */
-	public final NewMaterial copy() {
-		return new NewMaterial(this); 
+	public final Material copy() {
+		return new Material(this); 
 	}
 
 	/** Used for sorting attributes */
@@ -200,13 +205,13 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	}
 	
 	/** @return True if this material contains the same attributes as the other, 
-	 * use {@link #equals(NewMaterial)} to see if the values are also the same */
-	public final boolean same(final NewMaterial other) {
+	 * use {@link #equals(Material)} to see if the values are also the same */
+	public final boolean same(final Material other) {
 		return mask == other.mask;
 	}
 	
 	/** @return True if this material equals the other material in every aspect */
-	public final boolean equals (final NewMaterial other) {
+	public final boolean equals (final Material other) {
 		if (other == null) return false;
 		if (other == this) return true;
 		if (!same(other)) return false;
@@ -221,7 +226,7 @@ public class NewMaterial implements Iterable<NewMaterial.Attribute>, Comparator<
 	/** @return True if this material equals the other material in every aspect */
 	@Override
 	public final boolean equals (final Object obj) {
-		return obj instanceof NewMaterial ? equals((NewMaterial)obj) : false;
+		return obj instanceof Material ? equals((Material)obj) : false;
 	}
 	
 	/** Used for iterating through the attributes */

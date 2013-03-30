@@ -1,10 +1,10 @@
 package com.badlogic.gdx.graphics.g3d.materials;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial.Attribute;
+import com.badlogic.gdx.graphics.g3d.materials.Material.Attribute;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class ColorAttribute extends NewMaterial.Attribute {
+public class ColorAttribute extends Material.Attribute {
 	public final static String DiffuseAlias = "diffuseColor";
 	public final static long Diffuse = register(DiffuseAlias);
 	public final static String SpecularAlias = "specularColor";
@@ -24,22 +24,35 @@ public class ColorAttribute extends NewMaterial.Attribute {
 		return new ColorAttribute(Diffuse, color);
 	}
 	
+	public final static ColorAttribute createDiffuse(float r, float g, float b, float a) {
+		return new ColorAttribute(Diffuse, r, g, b, a);
+	}
+	
 	public final static ColorAttribute createSpecular(final Color color) {
 		return new ColorAttribute(Specular, color);
+	}
+	
+	public final static ColorAttribute createSpecular(float r, float g, float b, float a) {
+		return new ColorAttribute(Specular, r, g, b, a);
 	}
 	
 	public final Color color = new Color();
 	
 	public ColorAttribute(final long type) {
-		this(type, null);
-	}
-	
-	public ColorAttribute(final long type, final Color color) {
 		super(type);
 		if (!is(type))
 			throw new GdxRuntimeException("Invalid type specified");
+	}
+	
+	public ColorAttribute(final long type, final Color color) {
+		this(type);
 		if (color != null)
 			this.color.set(color);
+	}
+	
+	public ColorAttribute(final long type, float r, float g, float b, float a) {
+		this(type);
+		this.color.set(r,g,b,a);
 	}
 	
 	public ColorAttribute(final ColorAttribute copyFrom) {
