@@ -27,13 +27,11 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.OrderedMap;
 
 /**
- * {@link ModelLoader} for the JSON format written by the 
+ * Loads the JSON format written by the 
  * <a href="https://github.com/libgdx/fbx-conv">fbx-conv</a> tool.
  * 
  * @author mzechner
  *
- * FIXME remove ModelLoader dependency, or rewrite ModelLoader interface
- * FIXME remove createXXXModel methods
  */
 public class JsonModelLoader {
 	public static String VERSION = "1.0";
@@ -42,49 +40,6 @@ public class JsonModelLoader {
 		ModelData jsonModel = parseModel(handle);
 		return new Model(jsonModel);
 	}
-
-	/* private Model createStillModel (ModelData model) {
-		Model stillModel = new Model(new SubMesh[model.meshes.size]);
-		
-		// We create the materials first
-		ObjectMap<String, Material> materials = new ObjectMap<String, Material>();
-		for(int i=0; i<model.materials.size; i++){
-			ModelMaterial jsonMaterial = model.materials.get(i);
-			Material material = new Material(jsonMaterial.id);
-			
-			// simple loader for now. Just diffuse & textures
-			material.addAttribute(new ColorAttribute(jsonMaterial.diffuse, "diffuse"));
-
-			if(jsonMaterial.diffuseTextures != null){
-				ModelTexture jsonTexture = jsonMaterial.diffuseTextures.get(0);
-				
-				// one texture unit for now
-				Texture texture = new Texture(Gdx.files.internal(jsonTexture.fileName));
-				texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-				material.addAttribute(new TextureAttribute(texture, 0, "diffuseTexture"));
-			}
-			
-			materials.put(jsonMaterial.id, material);
-		}
-		
-		// Create the meshes and assign materials to them. This is a super hack until we have hierarchy
-		for(int i=0; i<model.meshes.size; i++){
-			ModelMesh jsonMesh = model.meshes.get(i);
-			// if we have more than one submesh we're screwed for now.
-			ModelMeshPart jsonMeshPart = model.meshes.get(i).parts[0];
-			
-			Mesh mesh = new Mesh(false, jsonMesh.vertices.length, jsonMeshPart.indices.length, jsonMesh.attributes);
-			mesh.setIndices(jsonMeshPart.indices);
-			mesh.setVertices(jsonMesh.vertices);
-			
-			StillSubMesh subMesh = new StillSubMesh(jsonMesh.id, mesh, jsonMeshPart.primitiveType);
-			// Just assumes i material. We need the node tree to work this properly
-			subMesh.material = materials.get(model.materials.get(i).id);
-			stillModel.subMeshes[i] = subMesh;
-		}
-		
-		return stillModel;
-	} */
 
 	public ModelData parseModel (FileHandle handle) {
 		JsonReader reader = new JsonReader();
