@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
@@ -256,7 +256,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 	protected Model createCapsuleModel(float radius, float height) {
 		final float hh = radius + 0.5f * height;
 		// return ModelBuilder
-		return modelBuilder.createCylinder(radius * 2, hh * 2f, radius * 2f, 16, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE)));
+		return modelBuilder.createCylinder(radius * 2, hh * 2f, radius * 2f, 16, new Material(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE)));
 		// return ModelBuilder.createBox(radius*2f, hh*2f, radius*2f, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)));
 	}
 }

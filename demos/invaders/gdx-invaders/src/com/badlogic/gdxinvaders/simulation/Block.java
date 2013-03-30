@@ -13,14 +13,14 @@
 
 package com.badlogic.gdxinvaders.simulation;
 
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 
-public class Block {
+public class Block extends ModelInstance {
 	public final static float BLOCK_RADIUS = 0.5f;
 
-	public Vector3 position = new Vector3();
-
-	public Block (Vector3 position) {
-		this.position.set(position);
+	public Block (Model model, float x, float y, float z) {
+		super(model, x,y,z);
 	}
 }

@@ -1,7 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.model;
 
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.materials.NewMaterial;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Array;
 /**
  * A node is part of a hierarchy of Nodes in a {@link Model}. A Node encodes
  * a transform relative to its parents. A Node can have child nodes. Optionally
- * a node can specify a {@link MeshPart} and a {@link NewMaterial} to be applied to the mesh part.
+ * a node can specify a {@link MeshPart} and a {@link Material} to be applied to the mesh part.
  * @author badlogic
  *
  */

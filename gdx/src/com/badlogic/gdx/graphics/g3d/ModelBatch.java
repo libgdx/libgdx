@@ -101,6 +101,8 @@ public class ModelBatch implements Disposable {
 		render(renderableProvider, null, null);
 	}
 	
+	// FIXME add render methods accepting an array of RenderableProvider?
+	
 	/**
 	 * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds
 	 * all returned {@link Renderable} instances to the current batch to be

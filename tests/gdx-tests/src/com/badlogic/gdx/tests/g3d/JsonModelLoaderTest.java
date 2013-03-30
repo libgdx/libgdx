@@ -3,8 +3,8 @@ package com.badlogic.gdx.tests.g3d;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.loader.JsonModelLoader;
-import com.badlogic.gdx.graphics.g3d.old.model.Model;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class JsonModelLoaderTest extends GdxTest {
@@ -21,7 +21,7 @@ public class JsonModelLoaderTest extends GdxTest {
 	@Override
 	public void create () {
 		JsonModelLoader loader = new JsonModelLoader();
-		model = loader.load(Gdx.files.internal("data/g3d/head2.g3dj"), null);
+		model = loader.load(Gdx.files.internal("data/g3d/head2.g3dj"));
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(1f, 1.5f, 1f);
@@ -56,7 +56,7 @@ public class JsonModelLoaderTest extends GdxTest {
 		gl.glRotatef(angleY, 0, 1, 0);
 		gl.glRotatef(angleX, 1, 0, 0);
 		
-		model.render();
+		// FIXME model.render()
 	}
 
 	@Override
