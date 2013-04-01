@@ -27,7 +27,7 @@ public class GLES10Shader implements Shader{
 	private Material currentMaterial;
 	private Texture currentTexture0;
 	private Mesh currentMesh;
-	private Light lights[] = new Light[lightsCount];
+	private final Light lights[] = new Light[lightsCount];
 	
 	public GLES10Shader() {
 		if (Gdx.gl10 == null)
@@ -131,9 +131,14 @@ public class GLES10Shader implements Shader{
 			Gdx.gl10.glPushMatrix();
 			Gdx.gl10.glLoadMatrixf(currentTransform.val, 0);
 		}
-		for (int i = 0; i < lightsCount; i++) {
-			final Light light = (renderable.lights == null || renderable.lights.length <= i) ? null : renderable.lights[i];
-			bindLight(i, light);
+		if (renderable.lights == null)
+			Gdx.gl10.glDisable(GL10.GL_LIGHTING);
+		else {
+			Gdx.gl10.glEnable(GL10.GL_LIGHTING);
+			for (int i = 0; i < lightsCount; i++) {
+				final Light light = renderable.lights.length > i ? renderable.lights[i] : null;
+				bindLight(i, light);
+			}
 		}
 		if (currentMesh != renderable.mesh) {
 			if (currentMesh != null)

@@ -44,32 +44,33 @@ public class TestShader implements Shader {
 	protected int normalTransLoc;
 	protected int diffuseTextureLoc;
 	protected int diffuseColorLoc;
-	public static int lightsCount = 5;
 	protected int lightsLoc;
 	protected int lightSize;
 	protected int lightPositionOffset;
 	protected int lightPowerOffset;
 	
-	private Light[] currentLights = new Light[lightsCount];
+	private final Light[] currentLights;
 	
 	protected RenderContext context;
 	protected long mask;
 	
-	public TestShader(final Material material) {
-		this(getDefaultVertexShader(), getDefaultFragmentShader(), material);
+	public TestShader(final Material material, int maxLightsCount) {
+		this(getDefaultVertexShader(), getDefaultFragmentShader(), material, maxLightsCount);
 	}
 	
-	public TestShader(final long mask) {
-		this(getDefaultVertexShader(), getDefaultFragmentShader(), mask);
+	public TestShader(final long mask, int maxLightsCount) {
+		this(getDefaultVertexShader(), getDefaultFragmentShader(), mask, maxLightsCount);
 	}
 
-	public TestShader(final String vertexShader, final String fragmentShader, final Material material) {
-		this(vertexShader, fragmentShader, material.getMask());
+	public TestShader(final String vertexShader, final String fragmentShader, final Material material, int maxLightsCount) {
+		this(vertexShader, fragmentShader, material.getMask(), maxLightsCount);
 	}
 	
-	public TestShader(final String vertexShader, final String fragmentShader, final long mask) {
+	public TestShader(final String vertexShader, final String fragmentShader, final long mask, int maxLightsCount) {
 		if (!Gdx.graphics.isGL20Available())
 			throw new GdxRuntimeException("This shader requires OpenGL ES 2.0");
+		
+		currentLights = maxLightsCount > 0 ? new Light[maxLightsCount] : null;
 		
 		String prefix = "";
 		this.mask = mask;
@@ -77,8 +78,8 @@ public class TestShader implements Shader {
 		if (!ignoreUnimplemented && (implementedFlags & mask) != mask)
 			throw new GdxRuntimeException("Some attributes not implemented yet ("+mask+")");
 		
-		if (lightsCount > 0)
-			prefix += "#define lightsCount "+lightsCount+"\n";
+		if (maxLightsCount > 0)
+			prefix += "#define lightsCount "+maxLightsCount+"\n";
 		if ((mask & BlendingAttribute.Type) == BlendingAttribute.Type)
 			prefix += "#define "+BlendingAttribute.Alias+"Flag\n";
 		if ((mask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse)
@@ -95,15 +96,15 @@ public class TestShader implements Shader {
 		normalTransLoc = program.getUniformLocation(NORMAL_TRANSFORM);
 		diffuseTextureLoc = ((mask & TextureAttribute.Diffuse) != TextureAttribute.Diffuse) ? -1 : program.getUniformLocation(TextureAttribute.DiffuseAlias);
 		diffuseColorLoc = ((mask & ColorAttribute.Diffuse) != ColorAttribute.Diffuse) ? -1 : program.getUniformLocation(ColorAttribute.DiffuseAlias);
-		lightsLoc = lightsCount > 0 ? program.getUniformLocation("lights[0].color") : -1;
-		lightSize = (lightsLoc >= 0 && lightsCount > 1) ? (program.getUniformLocation("lights[1].color") - lightsLoc) : -1;
+		lightsLoc = maxLightsCount > 0 ? program.getUniformLocation("lights[0].color") : -1;
+		lightSize = (lightsLoc >= 0 && maxLightsCount > 1) ? (program.getUniformLocation("lights[1].color") - lightsLoc) : -1;
 		lightPositionOffset = lightsLoc >= 0 ? program.getUniformLocation("lights[0].position") - lightsLoc : -1;
 		lightPowerOffset = lightsLoc >= 0 ? program.getUniformLocation("lights[0].power") - lightsLoc : -1;
 	}
 	
 	@Override
 	public boolean canRender(final Renderable renderable) {
-		return mask == renderable.material.getMask();
+		return mask == renderable.material.getMask() && (renderable.lights == null) == (currentLights == null);
 	}
 	
 	/*@Override
@@ -138,8 +139,9 @@ public class TestShader implements Shader {
 		program.begin();
 		context.setDepthTest(true, GL10.GL_LEQUAL);
 		program.setUniformMatrix(projTransLoc, camera.combined);
-		for (int i = 0; i < currentLights.length; i++)
-			currentLights[i] = null;
+		if (currentLights != null)
+			for (int i = 0; i < currentLights.length; i++)
+				currentLights[i] = null;
 	}
 
 	@Override
@@ -173,7 +175,6 @@ public class TestShader implements Shader {
 		program.end();
 	}
 	
-	/////// bindMaterial /////////
 	Material currentMaterial;
 	private final void bindMaterial(final Renderable renderable) {
 		if (currentMaterial == renderable.material)
@@ -203,7 +204,6 @@ public class TestShader implements Shader {
 		}
 	}
 
-	/////// bindTextureAttribute /////////
 	TextureAttribute currentTextureAttribute;
 	private final void bindTextureAttribute(final int uniform, final TextureAttribute attribute) {
 		final int unit = context.textureBinder.bind(attribute.textureDescription);
@@ -212,7 +212,7 @@ public class TestShader implements Shader {
 	}
 	 
 	private final void bindLights(final Renderable renderable) {
-		for (int i = 0; i < lightsCount; i++) {
+		for (int i = 0; i < currentLights.length; i++) {
 			final int loc = lightsLoc + i * lightSize;
 			if (renderable.lights.length <= i) {
 				if (currentLights[i] != null) {

@@ -8,12 +8,14 @@ import com.badlogic.gdx.graphics.g3d.test.GLES10Shader;
 import com.badlogic.gdx.graphics.g3d.test.TestShader;
 import com.badlogic.gdx.utils.Array;
 
-public class DefaultShaderProvider extends BaseShaderProvider {	
+public class DefaultShaderProvider extends BaseShaderProvider {
+	public int maxLightsCount = 5;
+	
 	@Override
 	protected Shader createShader(final Renderable renderable) {
 		Gdx.app.log("DefaultShaderProvider", "Creating new shader");
 		if (Gdx.graphics.isGL20Available())
-			return new TestShader(renderable.material);
+			return new TestShader(renderable.material, renderable.lights == null ? 0 : maxLightsCount);
 		return new GLES10Shader();
 	}
 }
