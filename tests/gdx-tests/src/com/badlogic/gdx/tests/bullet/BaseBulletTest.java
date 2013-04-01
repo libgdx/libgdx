@@ -92,7 +92,6 @@ public class BaseBulletTest extends BulletTest {
 		init();
 		modelBatch = new ModelBatch();
 		TestShader.ignoreUnimplemented = true;
-		TestShader.lightsCount = 5;
 		
 		world = createWorld();
 		world.performanceCounter = performanceCounter;

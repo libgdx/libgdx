@@ -59,7 +59,6 @@ public class CullTest extends GdxTest implements ApplicationListener {
 
 	@Override
 	public void create () {
-		TestShader.lightsCount = 0;
 		ModelBuilder builder = new ModelBuilder();
 		sphere = builder.createSphere(2f, 2f, 2f, 16, 16, new Material(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE)));
 		// cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
