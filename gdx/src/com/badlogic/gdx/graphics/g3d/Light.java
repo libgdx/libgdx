@@ -9,13 +9,13 @@ import com.badlogic.gdx.math.Vector3;
 public class Light {
 	/** The (diffuse) color of the light */
 	public final Color color = new Color();
-	/** The position of the light or null of not applicable. */ 
+	/** The position of the light or null if not applicable. */ 
 	public Vector3 position;
-	/** The direction of the light or null of not applicable. */
+	/** The direction of the light or null if not applicable. */
 	public Vector3 direction;
 	/** The cut off angle of the light, only applicable if both direction and position aren't null. */ 
 	public float angle = 0f;
-	/** The power of the light */
+	/** The power of the light, only applicable if position isn't null */
 	public float power = 1f;
 	
 	/** Create a new ambient light */
