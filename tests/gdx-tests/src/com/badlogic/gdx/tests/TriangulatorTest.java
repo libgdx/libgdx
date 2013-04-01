@@ -17,25 +17,18 @@
 package com.badlogic.gdx.tests;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.EarClippingTriangulator;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class TriangulatorTest extends GdxTest {
 
@@ -94,10 +87,12 @@ public class TriangulatorTest extends GdxTest {
 				renderer.triangle(v.get(i).x, v.get(i).y, v.get(i + 1).x, v.get(i + 1).y, v.get(i + 2).x, v.get(i + 2).y);
 		}
 		renderer.end();
-
+		
+		if (triangulated) return;
+		
 		renderer.begin(ShapeType.Filled);
 
-		if (!triangulated) for (int i = 0; i < vertices.size(); i++)
+		 for (int i = 0; i < vertices.size(); i++)
 			renderer.circle(vertices.get(i).x, vertices.get(i).y, 5f);
 
 		renderer.end();
