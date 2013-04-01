@@ -101,7 +101,25 @@ public class AndroidMusic implements Music {
 		isPrepared = false;
 	}
 
+	public void setPosition (float position) {
+		try {
+			if (!isPrepared) {
+				player.prepare();
+				isPrepared = true;
+			}
+			player.seekTo((int)(position * 1000));
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public float getPosition () {
 		return player.getCurrentPosition() / 1000f;
+	}
+
+	public float getDuration () {
+		return player.getDuration() / 1000f;
 	}
 }

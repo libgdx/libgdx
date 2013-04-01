@@ -66,8 +66,16 @@ public interface Music extends Disposable {
 	 * @param volume */
 	public void setVolume (float volume);
 
+	/** Sets the playback position in milliseconds.
+	 * 
+	 * @param position */
+	public void setPosition (float position);
+
 	/** Returns the playback position in milliseconds. */
 	public float getPosition ();
+
+	/** Returns the music stream duration in milliseconds. */
+	public float getDuration ();
 
 	/** Needs to be called when the Music is no longer needed. */
 	public void dispose ();

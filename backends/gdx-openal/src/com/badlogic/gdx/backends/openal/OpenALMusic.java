@@ -122,10 +122,17 @@ public abstract class OpenALMusic implements Music {
 		if (sourceID != -1) alSourcef(sourceID, AL_GAIN, volume);
 	}
 
+	public void setPosition (float position) {
+	}
+
 	public float getPosition () {
 		if (audio.noDevice) return 0;
 		if (sourceID == -1) return 0;
 		return renderedSeconds + alGetSourcef(sourceID, AL11.AL_SEC_OFFSET);
+	}
+
+	public float getDuration () {
+		return 0;
 	}
 
 	/** Fills as much of the buffer as possible and returns the number of bytes filled. Returns <= 0 to indicate the end of the

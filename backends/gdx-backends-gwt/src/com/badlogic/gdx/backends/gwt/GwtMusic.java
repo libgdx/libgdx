@@ -75,8 +75,17 @@ public class GwtMusic implements Music {
 	}
 
 	@Override
+	public void setPosition (float position) {
+	}
+
+	@Override
 	public float getPosition () {
 		return sound.getPosition() / 1000f;
+	}
+
+	@Override
+	public float getDuration () {
+		return 0;
 	}
 
 	@Override
