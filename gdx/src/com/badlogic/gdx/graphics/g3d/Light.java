@@ -65,7 +65,21 @@ public class Light {
 	public boolean equals(Light other) {
 		if (other == null) return false;
 		if (other == this) return true;
-		return color.equals(other.color) && position.equals(other.position) && power == other.power;
+		if (!color.equals(other.color))
+			return false;
+		if ((position == null) != (other.position == null))
+			return false;
+		if (position != null && !position.equals(other.position))
+			return false;
+		if ((direction == null) != (other.direction == null))
+			return false;
+		if (direction != null && !direction.equals(other.direction))
+			return false;
+		if (position != null && power != other.power)
+			return false;
+		if (direction != null && position != null && angle != other.angle)
+			return false;
+		return true;
 	}
 	
 	@Override
