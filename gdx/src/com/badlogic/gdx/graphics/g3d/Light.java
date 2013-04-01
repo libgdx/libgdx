@@ -3,12 +3,30 @@ package com.badlogic.gdx.graphics.g3d;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 
+/** Basic general light class which can represent an ambient, directional, point and spot light.
+ * Extend this class to add additional data.
+ * @author Xoppa */
 public class Light {
+	/** The (diffuse) color of the light */
 	public final Color color = new Color();
+	/** The position of the light or null of not applicable. */ 
 	public Vector3 position;
+	/** The direction of the light or null of not applicable. */
 	public Vector3 direction;
+	/** The cut off angle of the light, only applicable if both direction and position aren't null. */ 
 	public float angle = 0f;
+	/** The power of the light */
 	public float power = 1f;
+	
+	/** Create a new ambient light */
+	public Light(final Color color) {
+		this.color.set(color);
+	}
+	
+	/** Create a new ambient light */
+	public Light(float r, float g, float b, float a) {
+		this.color.set(r, g, b, a);
+	}
 	
 	/** Create a new directional light */
 	public Light(final Color color, final Vector3 direction) {
@@ -56,6 +74,10 @@ public class Light {
 		if (arg0 == this) return true;
 		if (!(arg0 instanceof Light)) return false;
 		return equals((Light)arg0);
+	}
+	
+	public boolean isAmbientLight() {
+		return position == null && direction == null;
 	}
 	
 	public boolean isPointLight() {
