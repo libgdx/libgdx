@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.test.TestShader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
@@ -102,11 +103,12 @@ public class Renderer {
 		setProjectionAndCamera(simulation.ship);
 		
 		modelBatch.begin(camera);
-		renderExplosions(simulation.explosions);
-		renderShip(simulation.ship);
-		renderInvaders(simulation.invaders);
-		renderBlocks(simulation.blocks);
-		renderShots(simulation.shots);
+		modelBatch.render(simulation.explosions);
+		if (!simulation.ship.isExploding)
+			modelBatch.render(simulation.ship);
+		modelBatch.render(simulation.invaders);
+		modelBatch.render(simulation.blocks);
+		modelBatch.render(simulation.shots);
 		modelBatch.end();
 		
 		gl.glDisable(GL10.GL_CULL_FACE);
@@ -145,32 +147,6 @@ public class Renderer {
 		camera.position.set(tmpV.x, 6, 2);
 		camera.direction.set(tmpV.x, 0, -4).sub(camera.position).nor();
 		camera.update();
-	}
-
-	private void renderShip (Ship ship) {
-		if (ship.isExploding) return;
-
-		modelBatch.render(ship);
-	}
-
-	private void renderInvaders (ArrayList<Invader> invaders) {
-		for (final Invader invader : invaders)
-			modelBatch.render(invader);
-	}
-
-	private void renderBlocks (ArrayList<Block> blocks) {
-		for (final Block block : blocks)
-			modelBatch.render(block);
-	}
-
-	private void renderShots (ArrayList<Shot> shots) {
-		for (final Shot shot : shots)
-			modelBatch.render(shot);
-	}
-
-	private void renderExplosions (ArrayList<Explosion> explosions) {
-		for (final Explosion explosion : explosions)
-			modelBatch.render(explosion);
 	}
 
 	public void dispose () {

@@ -18,6 +18,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
@@ -40,7 +41,7 @@ public class ModelBuilder {
 		return result;
 	}
 	
-	/** Begin builder models */
+	/** Begin building a new model */
 	public void begin() {
 		if (model != null)
 			throw new GdxRuntimeException("Call end() first");
@@ -49,7 +50,8 @@ public class ModelBuilder {
 		builders.clear();
 	}
 	
-	/** End building model(s) */
+	/** End building the model.
+	 * @return The newly created model. Call the {@link Model#dispose()} method when no longer used. */
 	public Model end() {
 		if (model == null)
 			throw new GdxRuntimeException("Call begin() first");
@@ -61,80 +63,163 @@ public class ModelBuilder {
 			mb.end();
 		builders.clear();
 		
-		for (final MeshPart mp : result.meshParts) {
-			if (!result.meshes.contains(mp.mesh, true))
-				result.meshes.add(mp.mesh);
-		}
+		rebuildReferences(result);
 		return result;
-	}
-
-	public Node node() {
-		if (model == null)
-			throw new GdxRuntimeException("Call begin() first");
-		
-		endnode();
-		
-		node = new Node();
-		node.id = "node"+model.nodes.size;
-		model.nodes.add(node);
-		return node;
 	}
 	
 	private void endnode() {
 		if (node != null) {
 			node = null;
-			// FIXME
 		}
 	}
+
+	/** Adds the {@link Node} to the model and sets it active for building. */
+	protected Node node(final Node node) {
+		if (model == null)
+			throw new GdxRuntimeException("Call begin() first");
+		
+		endnode();
+		
+		model.nodes.add(node);
+		this.node = node;
+		
+		return node;
+	}
 	
-	/** Adds the specified MeshPart to the current Node. */
+	/** Add a node to the model. 
+	 * @return The node being created. */
+	public Node node() {
+		final Node node = new Node();
+		node.id = "node"+model.nodes.size;
+		return node(node);
+	}
+	
+	/** Adds the nodes of the specified model to a new node the model being build.
+	 * After this method the given model can no longer be used. Do not call the {@link Model#dispose()} method on that model. 
+	 * @return The newly created node containing the nodes of the given model. */
+	public Node node(final String id, final Model model) {
+		final Node node = new Node();
+		node.id = id;
+		node.children.addAll(model.nodes);
+		for (final Disposable disposable : model.getManagedDisposables())
+			manage(disposable);
+		return node(node);
+	}
+	
+	/** Add the {@link Disposable} object to the model, causing it to be disposed when the model is disposed. */
+	public void manage(final Disposable disposable) {
+		if (model == null)
+			throw new GdxRuntimeException("Call begin() first");
+		model.manageDisposable(disposable);
+	}
+	
+	/** Adds the specified MeshPart to the current Node. 
+	 * The Mesh will be managed by the model and disposed when the model is disposed.
+	 * The resources the Material might contain are not managed, use {@link #manage(Disposable)} to add those to the model. */
 	public void part(final MeshPart meshpart, final Material material) {
-		// Allow to add parts right after the call to model() for models containing just one node
 		if (node == null)
 			node();
-		
-		if (!model.meshParts.contains(meshpart, true))
-			model.meshParts.add(meshpart);
-		if (!model.materials.contains(material, true))
-			model.materials.add(material);
 		node.meshPartMaterials.add(new MeshPartMaterial(meshpart, material));
 	}
 	
-	/** Creates a new MeshPart within the current Node. Use the construction method to construct the part. */
+	/** Adds the specified mesh part to the current node.
+	 * The Mesh will be managed by the model and disposed when the model is disposed.
+	 * The resources the Material might contain are not managed, use {@link #manage(Disposable)} to add those to the model.
+	 * @return The added MeshPart. */
+	public MeshPart part(final String id, final Mesh mesh, int primitiveType, int offset, int size, final Material material) {
+		final MeshPart meshPart = new MeshPart();
+		meshPart.id = id;
+		meshPart.primitiveType = primitiveType;
+		meshPart.mesh = mesh;
+		meshPart.indexOffset = offset;
+		meshPart.numVertices = size;
+		part(meshPart, material);
+		return meshPart;
+	}
+	
+	/** Adds the specified mesh part to the current node.
+	 * The Mesh will be managed by the model and disposed when the model is disposed.
+	 * The resources the Material might contain are not managed, use {@link #manage(Disposable)} to add those to the model.
+	 * @return The added MeshPart. */
+	public MeshPart part(final String id, final Mesh mesh, int primitiveType, final Material material) {
+		return part(id, mesh, primitiveType, 0, mesh.getNumIndices(), material);
+	}
+	
+	/** Creates a new MeshPart within the current Node.
+	 * The resources the Material might contain are not managed, use {@link #manage(Disposable)} to add those to the model.
+	 * @return The {@link MeshPartBuilder} you can use to build the MeshPart. */ 
 	public MeshPartBuilder part(final String id, final VertexAttributes attributes, final Material material) {
 		final MeshBuilder builder = getBuilder(attributes);
 		part(builder.part(id), material);
 		return builder;
 	}
 	
+	/** Convenience method to create a model with a single node containing a box shape.
+	 * The resources the Material might contain are not managed, 
+	 * use {@link Model#manageDisposable(Disposable)} to add those to the model. */ 
 	public Model createBox(float width, float height, float depth, final Material material, final VertexAttributes attributes) {
 		begin();
 		part("box", attributes, material).box(width, height, depth);
 		return end();
 	}
 	
+	/** Convenience method to create a model with a single node containing a rectangle shape. 
+	 * The resources the Material might contain are not managed, 
+	 * use {@link Model#manageDisposable(Disposable)} to add those to the model. */
 	public Model createRect(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, float normalX, float normalY, float normalZ, final Material material, final VertexAttributes attributes) {
 		begin();
 		part("rect", attributes, material).rect(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, normalX, normalY, normalZ);
 		return end();
 	}
 
+	/** Convenience method to create a model with a single node containing a cylinder shape.
+	 * The resources the Material might contain are not managed, 
+	 * use {@link Model#manageDisposable(Disposable)} to add those to the model. */
 	public Model createCylinder(float width, float height, float depth, int divisions, final Material material, final VertexAttributes attributes) {
 		begin();
 		part("cylinder", attributes, material).cylinder(width, height, depth, divisions);
 		return end();
 	}
 	
+	/** Convenience method to create a model with a single node containing a cone shape.
+	 * The resources the Material might contain are not managed, 
+	 * use {@link Model#manageDisposable(Disposable)} to add those to the model. */
 	public Model createCone(float width, float height, float depth, int divisions, final Material material, final VertexAttributes attributes) {
 		begin();
 		part("cone", attributes, material).cone(width, height, depth, divisions);
 		return end();
 	}
 	
+	/** Convenience method to create a model with a single node containing a sphere shape.
+	 * The resources the Material might contain are not managed, 
+	 * use {@link Model#manageDisposable(Disposable)} to add those to the model. */
 	public Model createSphere(float width, float height, float depth, int divisionsU, int divisionsV, final Material material, final VertexAttributes attributes) {
 		begin();
 		part("cylinder", attributes, material).sphere(width, height, depth, divisionsU, divisionsV);
 		return end();
+	}
+	
+	public static void rebuildReferences(final Model model) {
+		model.materials.clear();
+		model.meshes.clear();
+		model.meshParts.clear();
+		for (final Node node : model.nodes)
+			rebuildReferences(model, node);
+	}
+	
+	private static void rebuildReferences(final Model model, final Node node) {
+		for (final MeshPartMaterial mpm : node.meshPartMaterials) {
+			if (!model.materials.contains(mpm.material, true))
+				model.materials.add(mpm.material);
+			if (!model.meshParts.contains(mpm.meshPart, true)) {
+				model.meshParts.add(mpm.meshPart);
+				if (!model.meshes.contains(mpm.meshPart.mesh, true))
+					model.meshes.add(mpm.meshPart.mesh);
+				model.manageDisposable(mpm.meshPart.mesh);
+			}
+		}
+		for (final Node child : node.children)
+			rebuildReferences(model, child);
 	}
 	
 	// Old code below this line, as for now still useful for testing. 
@@ -163,6 +248,7 @@ public class ModelBuilder {
 		result.materials.add(material);
 		result.nodes.add(node);
 		result.meshParts.add(meshPart);
+		result.manageDisposable(mesh);
 		return result;
 	}
 	@Deprecated

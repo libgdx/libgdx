@@ -31,37 +31,71 @@ public class ModelInstance implements RenderableProvider {
 	/** a copy of the nodes of the original model, referencing the copied materials in their {@link MeshPartMaterial} instances **/
 	public final Array<Node> nodes = new Array<Node>();
 
+	/** Constructs a new ModelInstance with all nodes and materials of the given model. */
 	public ModelInstance(Model model) {
+		this(model, (String[])null);
+	}
+	
+	/** Constructs a new ModelInstance with only the specified nodes and materials of the given model. */
+	public ModelInstance(Model model, final String... rootNodeIds) {
 		this.model = model;
-		copyMaterials(model.materials);
-		copyNodes(model.nodes);
+		if (rootNodeIds == null)
+			copyNodes(model.nodes);
+		else
+			copyNodes(model.nodes, rootNodeIds);
 		calculateTransforms();
 	}
 	
+	/** Constructs a new ModelInstance with only the specified nodes and materials of the given model. */
+	public ModelInstance(Model model, final Array<String> rootNodeIds) {
+		this.model = model;
+		copyNodes(model.nodes, rootNodeIds);
+		calculateTransforms();
+	}
+	
+	/** Constructs a new ModelInstance at the specified position. */
 	public ModelInstance(Model model, Vector3 position) {
 		this(model);
 		this.transform.setToTranslation(position);
 	}
 	
+	/** Constructs a new ModelInstance at the specified position. */
 	public ModelInstance(Model model, float x, float y, float z) {
 		this(model);
 		this.transform.setToTranslation(x, y, z);
 	}
 	
+	/** Constructs a new ModelInstance with the specified transform. */
 	public ModelInstance(Model model, Matrix4 transform) {
 		this(model);
 		this.transform.set(transform);
 	}
 
-	private void copyMaterials (Array<Material> materials) {
-		for(Material material: materials) {
-			this.materials.add(material.copy());
-		}		
-	}
-
 	private void copyNodes (Array<Node> nodes) {
 		for(Node node: nodes) {
 			this.nodes.add(copyNode(null, node));
+		}
+	}
+	
+	private void copyNodes (Array<Node> nodes, final String... nodeIds) {
+		for(Node node: nodes) {
+			for (final String nodeId : nodeIds) {
+				if (nodeId.equals(node.id)) {
+					this.nodes.add(copyNode(null, node));
+					break;
+				}
+			}
+		}
+	}
+	
+	private void copyNodes (Array<Node> nodes, final Array<String> nodeIds) {
+		for(Node node: nodes) {
+			for (final String nodeId : nodeIds) {
+				if (nodeId.equals(node.id)) {
+					this.nodes.add(copyNode(null, node));
+					break;
+				}
+			}
 		}
 	}
 	
@@ -93,11 +127,12 @@ public class ModelInstance implements RenderableProvider {
 		copy.meshPart.primitiveType = meshPart.meshPart.primitiveType;
 		copy.meshPart.mesh = meshPart.meshPart.mesh;
 		
-		int index = model.materials.indexOf(meshPart.material, true);
-		if(index == -1) {
-			throw new GdxRuntimeException("Inconsistent model, material in MeshPartMaterial not found in Model");
-		}
-		copy.material = materials.get(index);
+		final int index = materials.indexOf(meshPart.material, false);
+		if (index < 0)
+			materials.add(copy.material = meshPart.material.copy());
+		else
+			copy.material = materials.get(index);
+		
 		return copy;
 	}
 
