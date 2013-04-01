@@ -64,6 +64,8 @@ public class Model implements Disposable {
 	/** List of disposable resources like textures or meshes the Model is responsible for disposing **/
 	protected Array<Disposable> disposables = new Array<Disposable>();
 	
+	/** Constructs an empty model. Manual created models do not manage their resources by default. 
+	 * Use {@link #manageDisposable(Disposable)} to add resources to be managed by this model. */
 	public Model() {}
 	
 	/**
@@ -236,7 +238,12 @@ public class Model implements Disposable {
 	 * @param disposable the Disposable
 	 */
 	public void manageDisposable(Disposable disposable) {
-		disposables.add(disposable);
+		if (!disposables.contains(disposable, true))
+			disposables.add(disposable);
+	}
+	
+	public Iterable<Disposable> getManagedDisposables() {
+		return disposables;
 	}
 
 	@Override
