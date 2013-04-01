@@ -75,13 +75,13 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 	public void render(final ModelBatch batch, final Light[] lights, final Iterable<T> entities) {
 		for (final T e : entities) {
 			e.modelInstance.calculateTransforms();
-			batch.render(e.modelInstance, lights);
+			batch.render(lights, e.modelInstance);
 		}
 	}
 	
 	public void render(final ModelBatch batch, final Light[] lights, final T entity) {
 		entity.modelInstance.calculateTransforms();
-		batch.render(entity.modelInstance, lights);
+		batch.render(lights, entity.modelInstance);
 	}
 	
 	public void update() {	}

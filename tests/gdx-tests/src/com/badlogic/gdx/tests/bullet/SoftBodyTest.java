@@ -145,7 +145,7 @@ public class SoftBodyTest extends BaseBulletTest {
 		
 		modelBatch.begin(camera);
 		world.render(modelBatch, lights);
-		modelBatch.render(instance, lights);
+		modelBatch.render(lights, instance);
 		modelBatch.end();
 	}
 	
