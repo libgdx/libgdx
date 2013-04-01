@@ -122,7 +122,12 @@ public abstract class OpenALMusic implements Music {
 		if (sourceID != -1) alSourcef(sourceID, AL_GAIN, volume);
 	}
 
-	public void setPosition (float position) {
+	public boolean canSeek () {
+		return false;
+	}
+
+	public boolean setPosition (float position) {
+		return false;
 	}
 
 	public float getPosition () {
@@ -132,7 +137,7 @@ public abstract class OpenALMusic implements Music {
 	}
 
 	public float getDuration () {
-		return 0;
+		return -1;
 	}
 
 	/** Fills as much of the buffer as possible and returns the number of bytes filled. Returns <= 0 to indicate the end of the
