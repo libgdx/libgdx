@@ -24,6 +24,7 @@ import java.util.List;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** A simple implementation of the ear cutting algorithm to triangulate simple polygons without holes.
+ * @author badlogicgames@gmail.com
  * @author seroperson */
 public final class EarClippingTriangulator {
 
