@@ -48,8 +48,6 @@ public class BatchRenderTest extends GdxTest {
 	
 	@Override
 	public void create () {
-		DefaultShader.ignoreUnimplemented = true;
-		
 		final JsonModelLoader loader = new JsonModelLoader();
 
 		// need more higher resolution textures for this test...

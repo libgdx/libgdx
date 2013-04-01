@@ -38,7 +38,6 @@ public class NewModelTest extends GdxTest {
 		model = new Model(loader.parseModel(Gdx.files.internal("data/g3d/cubes.g3dj")));
 		instance = new ModelInstance(model);
 		modelBatch = new ModelBatch();
-		DefaultShader.ignoreUnimplemented = true;
 		shapeRenderer = new ShapeRenderer();
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

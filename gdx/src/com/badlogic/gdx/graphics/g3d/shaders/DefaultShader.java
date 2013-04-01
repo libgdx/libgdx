@@ -37,7 +37,7 @@ public class DefaultShader implements Shader {
 	}
 
 	protected static long implementedFlags = BlendingAttribute.Type | TextureAttribute.Diffuse | ColorAttribute.Diffuse;
-	public static boolean ignoreUnimplemented = false;
+	public static boolean ignoreUnimplemented = true;
 	
 	protected final ShaderProgram program;
 	protected int projTransLoc;

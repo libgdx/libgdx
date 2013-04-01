@@ -91,7 +91,6 @@ public class BaseBulletTest extends BulletTest {
 	public void create () {
 		init();
 		modelBatch = new ModelBatch();
-		DefaultShader.ignoreUnimplemented = true;
 		
 		world = createWorld();
 		world.performanceCounter = performanceCounter;

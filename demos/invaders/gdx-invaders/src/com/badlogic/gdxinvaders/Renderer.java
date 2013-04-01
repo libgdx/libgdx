@@ -78,7 +78,6 @@ public class Renderer {
 		try {
 			spriteBatch = new SpriteBatch();
 			modelBatch = new ModelBatch();
-			DefaultShader.ignoreUnimplemented = true;
 
 			backgroundTexture = new Texture(Gdx.files.internal("data/planet.jpg"), Format.RGB565, true);
 			backgroundTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
