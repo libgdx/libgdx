@@ -72,7 +72,6 @@ public class EdgeDetectionTest extends GdxTest {
 			Gdx.app.log("EdgeDetectionTest", "couldn't compile post-processing shader: " + batchShader.getLog());
 		}
 
-		TestShader.lightsCount = 0;
 		TestShader.ignoreUnimplemented = true;
 		ObjLoader objLoader = new ObjLoader();
 		scene = objLoader.loadObj(Gdx.files.internal("data/scene.obj"));
