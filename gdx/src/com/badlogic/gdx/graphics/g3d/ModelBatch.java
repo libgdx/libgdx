@@ -94,7 +94,7 @@ public class ModelBatch implements Disposable {
 	 * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds
 	 * all returned {@link Renderable} instances to the current batch to be
 	 * rendered.
-	 * @param renderableProviders the renderable provider
+	 * @param renderableProvider the renderable provider
 	 */
 	public void render(final RenderableProvider renderableProvider) {
 		render(renderableProvider, null, null);
@@ -115,8 +115,8 @@ public class ModelBatch implements Disposable {
 	 * all returned {@link Renderable} instances to the current batch to be
 	 * rendered. Any lights set on the returned renderables will be replaced
 	 * with the given lights
+	 * @param renderableProvider the renderable provider
 	 * @param lights the lights to use for the renderables
-	 * @param renderableProviders the renderable provider
 	 */
 	public void render(final RenderableProvider renderableProvider, final Light[] lights) {
 		render(renderableProvider, lights, null);
@@ -139,8 +139,8 @@ public class ModelBatch implements Disposable {
 	 * all returned {@link Renderable} instances to the current batch to be
 	 * rendered. Any shaders set on the returned renderables will be replaced
 	 * with the given {@link Shader}.
+	 * @param renderableProvider the renderable provider
 	 * @param shader the shader to use for the renderables
-	 * @param renderableProviders the renderable provider
 	 */
 	public void render(final RenderableProvider renderableProvider, final Shader shader) {
 		render(renderableProvider, null, shader);
