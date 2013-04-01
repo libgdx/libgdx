@@ -183,6 +183,7 @@ public final class World implements Disposable {
 	/** Destroy a joint. This may cause the connected bodies to begin colliding.
 	 * @warning This function is locked during callbacks. */
 	public void destroyJoint (Joint joint) {
+		joint.setUserData(null);
 		world.destroyJoint(joint.joint);
 		joints.remove(joint.joint);
 	}
