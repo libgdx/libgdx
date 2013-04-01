@@ -125,7 +125,7 @@ public class BatchRenderTest extends GdxTest {
 			if (instances.get(i).model == null)
 				Gdx.app.log("Test", "Model "+i+" is null");
 			else
-				renderBatch.render(lights, instances.get(i));
+				renderBatch.render(instances.get(i), lights);
 		}
 		renderBatch.end();		
 	}

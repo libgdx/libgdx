@@ -94,10 +94,10 @@ public class ModelBatch implements Disposable {
 	 * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds
 	 * all returned {@link Renderable} instances to the current batch to be
 	 * rendered.
-	 * @param renderableProviders one or more renderable providers
+	 * @param renderableProviders the renderable provider
 	 */
-	public void render(final RenderableProvider... renderableProviders) {
-		render(null, null, renderableProviders);
+	public void render(final RenderableProvider renderableProvider) {
+		render(renderableProvider, null, null);
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public class ModelBatch implements Disposable {
 	 * @param renderableProviders one or more renderable providers
 	 */
 	public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders) {
-		render(null, null, renderableProviders);
+		render(renderableProviders, null, null);
 	}
 	
 	/**
@@ -116,10 +116,10 @@ public class ModelBatch implements Disposable {
 	 * rendered. Any lights set on the returned renderables will be replaced
 	 * with the given lights
 	 * @param lights the lights to use for the renderables
-	 * @param renderableProviders one or more renderable providers
+	 * @param renderableProviders the renderable provider
 	 */
-	public void render(final Light[] lights, final RenderableProvider... renderableProviders) {
-		render(lights, null, renderableProviders);
+	public void render(final RenderableProvider renderableProvider, final Light[] lights) {
+		render(renderableProvider, lights, null);
 	}
 	
 	/**
@@ -127,11 +127,11 @@ public class ModelBatch implements Disposable {
 	 * all returned {@link Renderable} instances to the current batch to be
 	 * rendered. Any lights set on the returned renderables will be replaced
 	 * with the given lights
+	 * @param renderableProviders one or more renderable providers
 	 * @param lights the lights to use for the renderables
-	 * @param renderableProviders one or more renderable providers
 	 */
-	public <T extends RenderableProvider> void render(final Light[] lights, final Iterable<T> renderableProviders) {
-		render(lights, null, renderableProviders);
+	public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Light[] lights) {
+		render(renderableProviders, lights, null);
 	}
 	
 	/**
@@ -140,10 +140,10 @@ public class ModelBatch implements Disposable {
 	 * rendered. Any shaders set on the returned renderables will be replaced
 	 * with the given {@link Shader}.
 	 * @param shader the shader to use for the renderables
-	 * @param renderableProviders one or more renderable providers
+	 * @param renderableProviders the renderable provider
 	 */
-	public void render(final Shader shader, final RenderableProvider... renderableProviders) {
-		render(null, shader, renderableProviders);
+	public void render(final RenderableProvider renderableProvider, final Shader shader) {
+		render(renderableProvider, null, shader);
 	}
 	
 	/**
@@ -151,11 +151,11 @@ public class ModelBatch implements Disposable {
 	 * all returned {@link Renderable} instances to the current batch to be
 	 * rendered. Any shaders set on the returned renderables will be replaced
 	 * with the given {@link Shader}.
-	 * @param shader the shader to use for the renderables
 	 * @param renderableProviders one or more renderable providers
+	 * @param shader the shader to use for the renderables
 	 */
-	public <T extends RenderableProvider> void render(final Shader shader, final Iterable<T> renderableProviders) {
-		render(null, shader, renderableProviders);
+	public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Shader shader) {
+		render(renderableProviders, null, shader);
 	}
 
 	/**
@@ -164,11 +164,11 @@ public class ModelBatch implements Disposable {
 	 * rendered. Any lights set on the returned renderables will be replaced
 	 * with the given lights. Any shaders set on the returned renderables will
 	 * be replaced by the given {@link Shader}.
+	 * @param renderableProvider the renderable provider
 	 * @param lights the lights to use for the renderables
 	 * @param shader the shader to use for the renderables
-	 * @param renderableProvider the renderable provider
 	 */
-	public void render(final Light[] lights, final Shader shader, final RenderableProvider renderableProvider) {
+	public void render(final RenderableProvider renderableProvider, final Light[] lights, final Shader shader) {
 		int offset = renderables.size;
 		renderableProvider.getRenderables(renderables, renderablesPool);
 		for (int i = offset; i < renderables.size; i++) {
@@ -186,28 +186,13 @@ public class ModelBatch implements Disposable {
 	 * rendered. Any lights set on the returned renderables will be replaced
 	 * with the given lights. Any shaders set on the returned renderables will
 	 * be replaced by the given {@link Shader}.
-	 * @param lights the lights to use for the renderables
-	 * @param shader the shader to use for the renderables
-	 * @param renderableProviders the renderable providers
-	 */
-	public void render(final Light[] lights, final Shader shader, final RenderableProvider... renderableProviders) {
-		for (final RenderableProvider renderableProvider : renderableProviders)
-			render(lights, shader, renderableProvider);
-	}
-	
-	/**
-	 * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds
-	 * all returned {@link Renderable} instances to the current batch to be
-	 * rendered. Any lights set on the returned renderables will be replaced
-	 * with the given lights. Any shaders set on the returned renderables will
-	 * be replaced by the given {@link Shader}.
-	 * @param lights the lights to use for the renderables
-	 * @param shader the shader to use for the renderables
 	 * @param renderableProviders one or more renderable providers
+	 * @param lights the lights to use for the renderables
+	 * @param shader the shader to use for the renderables
 	 */
-	public <T extends RenderableProvider> void render(final Light[] lights, final Shader shader, final Iterable<T> renderableProviders) {
+	public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Light[] lights, final Shader shader) {
 		for (final RenderableProvider renderableProvider : renderableProviders)
-			render(lights, shader, renderableProvider);
+			render(renderableProvider, lights, shader);
 	}
 
 	@Override
