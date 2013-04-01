@@ -30,7 +30,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
-import com.badlogic.gdx.graphics.g3d.test.TestShader;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
@@ -72,7 +72,7 @@ public class EdgeDetectionTest extends GdxTest {
 			Gdx.app.log("EdgeDetectionTest", "couldn't compile post-processing shader: " + batchShader.getLog());
 		}
 
-		TestShader.ignoreUnimplemented = true;
+		DefaultShader.ignoreUnimplemented = true;
 		ObjLoader objLoader = new ObjLoader();
 		scene = objLoader.loadObj(Gdx.files.internal("data/scene.obj"));
 		sceneInstance = new ModelInstance(scene);

@@ -16,8 +16,8 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.test.Light;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.WindowedMean;

@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
@@ -37,8 +38,7 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPartMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
-import com.badlogic.gdx.graphics.g3d.test.Light;
-import com.badlogic.gdx.graphics.g3d.test.TestShader;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Quaternion;
@@ -91,7 +91,7 @@ public class BaseBulletTest extends BulletTest {
 	public void create () {
 		init();
 		modelBatch = new ModelBatch();
-		TestShader.ignoreUnimplemented = true;
+		DefaultShader.ignoreUnimplemented = true;
 		
 		world = createWorld();
 		world.performanceCounter = performanceCounter;

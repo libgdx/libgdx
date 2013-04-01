@@ -6,13 +6,13 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.loader.JsonModelLoader;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
-import com.badlogic.gdx.graphics.g3d.test.Light;
-import com.badlogic.gdx.graphics.g3d.test.TestShader;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -48,7 +48,7 @@ public class BatchRenderTest extends GdxTest {
 	
 	@Override
 	public void create () {
-		TestShader.ignoreUnimplemented = true;
+		DefaultShader.ignoreUnimplemented = true;
 		
 		final JsonModelLoader loader = new JsonModelLoader();
 

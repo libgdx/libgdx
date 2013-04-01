@@ -1,9 +1,10 @@
-package com.badlogic.gdx.graphics.g3d.test;
+package com.badlogic.gdx.graphics.g3d.shaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
@@ -16,7 +17,7 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class TestShader implements Shader {
+public class DefaultShader implements Shader {
 	public final static String PROJECTION_TRANSFORM = "u_projTrans";
 	public final static String MODEL_TRANSFORM = "u_modelTrans";
 	public final static String NORMAL_TRANSFORM = "u_normalMatrix";
@@ -24,14 +25,14 @@ public class TestShader implements Shader {
 	private static String defaultVertexShader = null;
 	public final static String getDefaultVertexShader() {
 		if (defaultVertexShader == null)
-			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/test/test.vertex.glsl").readString();
+			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl").readString();
 		return defaultVertexShader;
 	}
 	
 	private static String defaultFragmentShader = null;
 	public final static String getDefaultFragmentShader() {
 		if (defaultFragmentShader == null)
-			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/test/test.fragment.glsl").readString();
+			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl").readString();
 		return defaultFragmentShader;
 	}
 
@@ -54,19 +55,19 @@ public class TestShader implements Shader {
 	protected RenderContext context;
 	protected long mask;
 	
-	public TestShader(final Material material, int maxLightsCount) {
+	public DefaultShader(final Material material, int maxLightsCount) {
 		this(getDefaultVertexShader(), getDefaultFragmentShader(), material, maxLightsCount);
 	}
 	
-	public TestShader(final long mask, int maxLightsCount) {
+	public DefaultShader(final long mask, int maxLightsCount) {
 		this(getDefaultVertexShader(), getDefaultFragmentShader(), mask, maxLightsCount);
 	}
 
-	public TestShader(final String vertexShader, final String fragmentShader, final Material material, int maxLightsCount) {
+	public DefaultShader(final String vertexShader, final String fragmentShader, final Material material, int maxLightsCount) {
 		this(vertexShader, fragmentShader, material.getMask(), maxLightsCount);
 	}
 	
-	public TestShader(final String vertexShader, final String fragmentShader, final long mask, int maxLightsCount) {
+	public DefaultShader(final String vertexShader, final String fragmentShader, final long mask, int maxLightsCount) {
 		if (!Gdx.graphics.isGL20Available())
 			throw new GdxRuntimeException("This shader requires OpenGL ES 2.0");
 		
@@ -120,10 +121,10 @@ public class TestShader implements Shader {
 	
 	@Override
 	public boolean equals (Object obj) {
-		return (obj instanceof TestShader) ? equals((TestShader)obj) : false;
+		return (obj instanceof DefaultShader) ? equals((DefaultShader)obj) : false;
 	}
 	
-	public boolean equals (TestShader obj) {
+	public boolean equals (DefaultShader obj) {
 		return (obj == this);
 	}
 

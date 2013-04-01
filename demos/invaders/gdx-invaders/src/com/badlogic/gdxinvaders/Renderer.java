@@ -30,7 +30,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
-import com.badlogic.gdx.graphics.g3d.test.TestShader;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
@@ -78,7 +78,7 @@ public class Renderer {
 		try {
 			spriteBatch = new SpriteBatch();
 			modelBatch = new ModelBatch();
-			TestShader.ignoreUnimplemented = true;
+			DefaultShader.ignoreUnimplemented = true;
 
 			backgroundTexture = new Texture(Gdx.files.internal("data/planet.jpg"), Format.RGB565, true);
 			backgroundTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
