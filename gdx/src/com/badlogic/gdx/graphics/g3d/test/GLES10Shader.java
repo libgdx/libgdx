@@ -17,7 +17,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class GLES10Shader implements Shader{
-	public static int lightsCount = 2;
 	public final static float ambient[] = { 0.3f, 0.3f, 0.3f, 1.0f };
 	public final static Light defaultLight = new Light(1f, 1f, 1f, 1f, 0, 10f, 10f, 50f); 
 	
@@ -27,11 +26,12 @@ public class GLES10Shader implements Shader{
 	private Material currentMaterial;
 	private Texture currentTexture0;
 	private Mesh currentMesh;
-	private final Light lights[] = new Light[lightsCount];
+	private final Light lights[];
 	
-	public GLES10Shader() {
+	public GLES10Shader(int maxLightsCount) {
 		if (Gdx.gl10 == null)
 			throw new GdxRuntimeException("This shader requires OpenGL ES 1.x");
+		lights = new Light[maxLightsCount < 0 ? 0 : maxLightsCount];
 	}
 	
 	@Override
@@ -61,14 +61,14 @@ public class GLES10Shader implements Shader{
 		context.setDepthTest(true, GL10.GL_LEQUAL);
 		Gdx.gl10.glMatrixMode(GL10.GL_PROJECTION);
 		Gdx.gl10.glLoadMatrixf(camera.combined.val, 0);
-		if (lightsCount < 1)
+		if (lights.length < 1)
 			Gdx.gl10.glDisable(GL10.GL_LIGHTING);
 		else {
 			Gdx.gl10.glEnable(GL10.GL_LIGHTING);
 			Gdx.gl10.glEnable(GL10.GL_COLOR_MATERIAL);
-			for (int i = 0; i < lightsCount; i++)
+			for (int i = 0; i < lights.length; i++)
 				Gdx.gl10.glEnable(GL10.GL_LIGHT0 + i);
-			for (int i = lightsCount; i < 8; i++)
+			for (int i = lights.length; i < 8; i++)
 				Gdx.gl10.glDisable(GL10.GL_LIGHT0 + i);
 			Gdx.gl10.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, ambient, 0);
 		}
@@ -135,7 +135,7 @@ public class GLES10Shader implements Shader{
 			Gdx.gl10.glDisable(GL10.GL_LIGHTING);
 		else {
 			Gdx.gl10.glEnable(GL10.GL_LIGHTING);
-			for (int i = 0; i < lightsCount; i++) {
+			for (int i = 0; i < lights.length; i++) {
 				final Light light = renderable.lights.length > i ? renderable.lights[i] : null;
 				bindLight(i, light);
 			}

@@ -70,7 +70,7 @@ public class TestShader implements Shader {
 		if (!Gdx.graphics.isGL20Available())
 			throw new GdxRuntimeException("This shader requires OpenGL ES 2.0");
 		
-		currentLights = maxLightsCount > 0 ? new Light[maxLightsCount] : null;
+		currentLights = maxLightsCount < 0 ? null : new Light[maxLightsCount];
 		
 		String prefix = "";
 		this.mask = mask;
