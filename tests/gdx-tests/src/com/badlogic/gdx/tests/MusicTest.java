@@ -58,10 +58,19 @@ public class MusicTest extends GdxTest {
 
 	@Override
 	public void render () {
+		final float musicDuration = music[0].getDuration();
+
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(buttons, 0, 0);
-// font.draw(batch, "\"Three of a perfect pair: " + music[0].getPosition(), 10, Gdx.graphics.getHeight() - 20);
+		if (musicDuration > 0) {
+			font.draw(batch, "Position: " + music[0].getPosition() + " / " + music[0].getDuration(), 10,
+				Gdx.graphics.getHeight() - 20);
+			font.draw(batch, "|", (music[0].getPosition() / music[0].getDuration()) * Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight() - 100);
+		} else {
+			font.draw(batch, "Position: " + music[0].getPosition(), 10, Gdx.graphics.getHeight() - 20);
+		}
 		batch.end();
 
 		if (Gdx.input.justTouched()) {
@@ -78,6 +87,9 @@ public class MusicTest extends GdxTest {
 					for (int i = 0; i < music.length; i++)
 						music[i].pause();
 				}
+
+			} else if (music[0].canSeek()) {
+				music[0].setPosition(((float)Gdx.input.getX() / Gdx.graphics.getWidth()) * music[0].getDuration());
 			}
 		}
 	}

@@ -72,8 +72,24 @@ public class IOSMusic implements Music {
 	}
 
 	@Override
+	public boolean canSeek () {
+		return true;
+	}
+
+	@Override
+	public boolean setPosition (float position) {
+		player.set_CurrentTime(position / 1000);
+		return true;
+	}
+
+	@Override
 	public float getPosition () {
 		return (float)(player.get_CurrentTime() * 1000); // Note: player returns seconds => x1000 to convert to millis!
+	}
+
+	@Override
+	public float getDuration () {
+		return (float)player.get_Duration() / 1000;
 	}
 
 	@Override
