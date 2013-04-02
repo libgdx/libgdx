@@ -204,8 +204,8 @@ public class LwjglApplication implements Application {
 			} else {
 				// Sleeps to avoid wasting CPU in an empty loop.
 				if (frameRate == -1) frameRate = 10;
-				if (frameRate <= 0) frameRate = graphics.config.backgroundFPS;
-				if (frameRate <= 0) frameRate = 30;
+				if (frameRate == 0) frameRate = graphics.config.backgroundFPS;
+				if (frameRate == 0) frameRate = 30;
 			}
 			if (frameRate > 0) Display.sync(frameRate);
 		}
