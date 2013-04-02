@@ -69,7 +69,10 @@ public class BaseBulletTest extends BulletTest {
 	}
 	
 	public Light[] lights = new Light[] {
-		new Light(Color.WHITE, Vector3.tmp.set(-10f, 10f, -10f), 50f),
+		new Light(0.2f, 0.2f, 0.2f, 1f), // ambient light
+		new Light(0.2f, 0.2f, 0.2f, 1f, 0f, -0.7f, 0.7f), // directional light
+		new Light(0f, 0.5f, 0f, 1f, -10f, 10f, -10f, 30f), // point light
+		new Light(0.3f, 0f, 0f, 1f, 0f, 20f, 0f, 0f, -1f, 0f, 15f, 50f), // spot light
 	};
 
 	public PerspectiveCamera camera;

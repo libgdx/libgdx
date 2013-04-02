@@ -72,6 +72,9 @@ public class DefaultShader implements Shader {
 			throw new GdxRuntimeException("This shader requires OpenGL ES 2.0");
 		
 		currentLights = maxLightsCount < 0 ? null : new Light[maxLightsCount];
+		if (currentLights != null)
+			for (int i = 0; i < currentLights.length; i++)
+				currentLights[i] = new Light();
 		
 		String prefix = "";
 		this.mask = mask;
@@ -142,7 +145,7 @@ public class DefaultShader implements Shader {
 		program.setUniformMatrix(projTransLoc, camera.combined);
 		if (currentLights != null)
 			for (int i = 0; i < currentLights.length; i++)
-				currentLights[i] = null;
+				currentLights[i].set(null);
 	}
 
 	@Override
@@ -216,17 +219,17 @@ public class DefaultShader implements Shader {
 		for (int i = 0; i < currentLights.length; i++) {
 			final int loc = lightsLoc + i * lightSize;
 			if (renderable.lights.length <= i) {
-				if (currentLights[i] != null) {
+				if (currentLights[i].type != Light.NONE) {
 					program.setUniformf(loc + lightPowerOffset, 0f);
-					currentLights[i] = null;
+					currentLights[i].type = Light.NONE;
 				}
 			}
 			else {
-				if (currentLights[i] != renderable.lights[i]) {
+				if (!currentLights[i].equals(renderable.lights[i])) {
 					program.setUniformf(loc, renderable.lights[i].color);
 					program.setUniformf(loc + lightPositionOffset, renderable.lights[i].position);
 					program.setUniformf(loc + lightPowerOffset, renderable.lights[i].power);
-					currentLights[i] = renderable.lights[i];
+					currentLights[i].set(renderable.lights[i]);
 				}
 			}
 		}
