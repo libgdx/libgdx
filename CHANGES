@@ -10,7 +10,7 @@
 - freetype extension supported on iOS, see http://www.badlogicgames.com/wordpress/?p=2819
 - changed ShapeRenderer API, see http://www.badlogicgames.com/wordpress/?p=2809
 - changed Actions.add to addAction, changed parameter order, and added removeAction, addListener, removeListener
-- added setPosition, getDuration and canSeek to Music
+- added setPosition, getDuration and canSeek to Music (implemented for Android and iOS)
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2664
