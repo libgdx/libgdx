@@ -46,8 +46,6 @@ public class LwjglApplicationConfiguration {
 	public int x = -1, y = -1;
 	/** fullscreen **/
 	public boolean fullscreen = false;
-	/** whether to use CPU synching. If this is false display vsynching is used, which might not work in windowed mode **/
-	public boolean useCPUSynch = false;
 	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
 	public boolean vSyncEnabled = true;
 	/** title of application **/
@@ -62,10 +60,9 @@ public class LwjglApplicationConfiguration {
 	public int audioDeviceBufferCount = 9;
 	public Color initialBackgroundColor = Color.BLACK;
 	/** Target framerate when the window is in the foreground. The CPU sleeps as needed. Use 0 to never sleep. **/
-	public int foregroundFPS = 60;
-	/** Target framerate when the window not in the background. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. **/
-	public int hiddenFPS = 60;
-	
+	public int foregroundFPS = 0;
+	/** Target framerate when the window is not in the foreground. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. **/
+	public int backgroundFPS = -1;
 
 	Array<String> iconPaths = new Array();
 	Array<FileType> iconFileTypes = new Array();

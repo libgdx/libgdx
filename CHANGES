@@ -12,6 +12,7 @@
 - changed Actions.add to addAction, changed parameter order, and added removeAction, addListener, removeListener
 - Box2d joints now allow for user data
 - Changes to Intersector, Circle, Rectangle and BoundingBox for consistency in #overlap, #intersect and #contains methods, see https://github.com/libgdx/libgdx/pull/312
+- Removed LwjglApplicationConfiguration CPU sync. Added foreground and background target framerate.
 
 
 [0.9.8]
