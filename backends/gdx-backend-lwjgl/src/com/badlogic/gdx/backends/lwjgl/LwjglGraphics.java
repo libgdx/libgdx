@@ -405,8 +405,7 @@ public class LwjglGraphics implements Graphics {
 	@Override
 	public void setVSync (boolean vsync) {
 		this.vsync = vsync;
-		if (vsync && !config.useCPUSynch) Display.setVSyncEnabled(true);
-		if (!vsync && !config.useCPUSynch) Display.setVSyncEnabled(false);
+		Display.setVSyncEnabled(vsync);
 	}
 
 	@Override
