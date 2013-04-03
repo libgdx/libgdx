@@ -217,6 +217,10 @@ public class Json {
 		this.writer.setOutputType(outputType);
 	}
 
+	public JsonWriter getWriter () {
+		return writer;
+	}
+
 	public void writeFields (Object object) {
 		Class type = object.getClass();
 
