@@ -202,16 +202,19 @@ public class Json {
 	/** @param knownType May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown. */
 	public void toJson (Object object, Class knownType, Class elementType, Writer writer) {
-		if (!(writer instanceof JsonWriter)) {
-			writer = new JsonWriter(writer);
-		}
-		((JsonWriter)writer).setOutputType(outputType);
-		this.writer = (JsonWriter)writer;
+		setWriter(writer);
 		try {
 			writeValue(object, knownType, elementType);
 		} finally {
 			this.writer = null;
 		}
+	}
+
+	/** Sets the writer where JSON output will go. This is only necessary when not using the toJson methods. */
+	public void setWriter (Writer writer) {
+		if (!(writer instanceof JsonWriter)) writer = new JsonWriter(writer);
+		this.writer = (JsonWriter)writer;
+		this.writer.setOutputType(outputType);
 	}
 
 	public void writeFields (Object object) {
