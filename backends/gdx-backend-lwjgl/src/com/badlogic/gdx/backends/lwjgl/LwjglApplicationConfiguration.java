@@ -62,7 +62,7 @@ public class LwjglApplicationConfiguration {
 	/** Target framerate when the window is in the foreground. The CPU sleeps as needed. Use 0 to never sleep. **/
 	public int foregroundFPS = 0;
 	/** Target framerate when the window is not in the foreground. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. **/
-	public int backgroundFPS = -1;
+	public int backgroundFPS = 0;
 
 	Array<String> iconPaths = new Array();
 	Array<FileType> iconFileTypes = new Array();
