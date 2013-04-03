@@ -57,6 +57,47 @@ public class Json {
 	public Json () {
 		outputType = OutputType.minimal;
 	}
+	
+		/**
+	  * Manually initialzes the {@link JsonWriter}
+	  */ 
+	public void initialzeJsonWriter(){
+		initialzeJsonWriter(new JsonWriter(new StringWriter()), OutputType.minimal);
+	}
+	 /**
+	  * Manually initialzes the {@link JsonWriter}
+	  * @param writer if the {@link JsonWriter}
+	  * @param outputTpye if the {@link OutputType}
+	  */
+	  public void initialzeJsonWriter(JsonWriter writer,OutputType outputTpye){
+	    setJsonWriter(writer);
+	    setOutputType(outputType);
+	    writer.setOutputType(outputType);
+	  }
+	  
+	  /**
+	   * 
+	   * @return the String that was built with the json
+	   */
+	  public String getString(){
+		  if(this.writer != null){
+			  if(this.writer.writer != null)
+				  return this.writer.writer.toString();
+		  }
+		  return null;
+	  }
+	  
+	public void setJsonWriter(JsonWriter writer){
+	  this.writer = writer;
+	} 
+	  
+	 public JsonWriter getJsonWriter(){
+		return writer;
+	}
+
+	public Json (OutputType outputType) {
+		this.outputType = outputType;
+	}
 
 	public Json (OutputType outputType) {
 		this.outputType = outputType;
