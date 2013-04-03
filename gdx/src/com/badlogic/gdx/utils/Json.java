@@ -61,6 +61,23 @@ public class Json {
 	public Json (OutputType outputType) {
 		this.outputType = outputType;
 	}
+	
+	/**
+	 * Manually initialzes the {@link JsonWriter}
+	 */
+	public void initialzeJsonWriter(JsonWriter writer,OutputType outputTpye){
+		setJsonWriter(writer);
+		setOutputType(outputType);
+		writer.setOutputType(outputType);
+	}
+	
+	public JsonWriter getJsonWriter(){
+		return writer;
+	}
+	
+	public void setJsonWriter(JsonWriter writer){
+		this.writer = writer;
+	}
 
 	public void setIgnoreUnknownFields (boolean ignoreUnknownFields) {
 		this.ignoreUnknownFields = ignoreUnknownFields;
