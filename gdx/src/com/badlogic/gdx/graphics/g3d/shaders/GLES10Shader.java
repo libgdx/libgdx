@@ -121,10 +121,9 @@ public class GLES10Shader implements Shader{
 		} else
 			Gdx.gl10.glLightf(GL10.GL_LIGHT0+num, GL10.GL_SPOT_CUTOFF, 180f);
 		Gdx.gl10.glPopMatrix();
-		Gdx.gl10.glLightf(GL10.GL_LIGHT0+num, GL10.GL_CONSTANT_ATTENUATION, light.type == Light.DIRECTIONAL ? 1 : 0);
-		Gdx.gl10.glLightf(GL10.GL_LIGHT0+num, GL10.GL_LINEAR_ATTENUATION, light.type == Light.DIRECTIONAL ? 0 : 1f / light.power);
-		// Gdx.gl10.glLightf(GL10.GL_LIGHT0+num, GL10.GL_QUADRATIC_ATTENUATION, 0);
-		Gdx.app.log("test", "Light power = "+light.power);
+		Gdx.gl10.glLightf(GL10.GL_LIGHT0+num, GL10.GL_CONSTANT_ATTENUATION, light.type == Light.DIRECTIONAL ? 1 : light.attenuation.x);
+		Gdx.gl10.glLightf(GL10.GL_LIGHT0+num, GL10.GL_LINEAR_ATTENUATION, light.type == Light.DIRECTIONAL ? 0 : light.attenuation.y);
+		Gdx.gl10.glLightf(GL10.GL_LIGHT0+num, GL10.GL_QUADRATIC_ATTENUATION, light.type == Light.DIRECTIONAL ? 0 : light.attenuation.z);
 	}
 	
 	@Override

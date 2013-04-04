@@ -41,6 +41,7 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -70,9 +71,9 @@ public class BaseBulletTest extends BulletTest {
 	
 	public Light[] lights = new Light[] {
 		new Light(0.2f, 0.2f, 0.2f, 1f), // ambient light
-		new Light(0.2f, 0.2f, 0.2f, 1f, 0f, -0.7f, 0.7f), // directional light
-		new Light(0f, 0.5f, 0f, 1f, -10f, 10f, -10f, 30f), // point light
-		new Light(0.3f, 0f, 0f, 1f, 0f, 20f, 0f, 0f, -1f, 0f, 15f, 50f), // spot light
+		new Light(0.5f, 0.5f, 0.5f, 1f, 0f, -1f, -1f), // directional light
+		new Light(0f, 0f, 1f, 1f, 10f, 10f, -10f, 0f, 1f/10f, 0f), // point light
+		new Light(1f, 0f, 0f, 1f, 0f, 20f, 0f, 0f, -1f, 0f, 20f, 1f, 0f, 0f), // spot light
 	};
 
 	public PerspectiveCamera camera;

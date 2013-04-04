@@ -41,8 +41,6 @@ public class BatchRenderTest extends GdxTest {
 	DefaultTextureBinder exclusiveTextures;
 	Light[] lights;
 	
-	float[] lightColor = {1, 1, 1, 0};
-	float[] lightPosition = {2, 5, 10, 0};
 	float touchStartX = 0;
 	float touchStartY = 0;
 	
@@ -74,16 +72,16 @@ public class BatchRenderTest extends GdxTest {
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.near = 1f;
 		cam.far = 100f;
-		cam.position.set(10f, 10f, 10f);
+		cam.position.set(0f, 10f, -15f);
 		cam.lookAt(0, 0, 0);
 		cam.update();
 		
 		renderBatch = new ModelBatch();
 		
 		lights = new Light[] {
-			new Light(Color.WHITE, Vector3.tmp.set(-10f, 10f, -10f), 15f),
-			new Light(Color.BLUE, Vector3.tmp.set(10f, 5f, 0f), 10f),
-			new Light(Color.GREEN, Vector3.tmp.set(0f, 10f, 5f), 5f)
+			new Light(1f, 1f, 1f, 1f, -20f, 10f, 0f, 0f, -1f, 0f, 15f, 1f, 0f, 0f),
+			new Light(0f, 0f, 1f, 1f, 10f, 10f, 0f, 0f, -1f, 0f, 15f, 1f, 0f, 0f),
+			new Light(0f, 1f, 0f, 1f, 0f, 10f, 50f, 0f, -1f, 0f, 15f, 1f, 0f, 0f)
 		};
 		
 		Gdx.input.setInputProcessor(this);
@@ -107,15 +105,19 @@ public class BatchRenderTest extends GdxTest {
 	boolean test = false;
 	@Override
 	public void render () {
-		if ((dbgTimer += Gdx.graphics.getDeltaTime()) >= 1f) {
+		final float delta = Gdx.graphics.getDeltaTime();
+		if ((dbgTimer += delta) >= 1f) {
 			dbgTimer -= 1f;
 			// Gdx.app.log("Test", "FPS: "+Gdx.graphics.getFramesPerSecond()+", binds: "+exclusiveTextures.getBindCount()+", reused: "+exclusiveTextures.getReuseCount());
 			// exclusiveTextures.resetCounts();
 		}
-		GL20 gl = Gdx.gl20;
-		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		for (int i = 0; i < lights.length; i++) {
+			lights[i].position.rotate(Vector3.Y, delta*45f);
+			lights[i].direction.set(-lights[i].position.x,-lights[i].position.y,-lights[i].position.z).nor();
+		}
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(0, 0, 0, 0);
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glDisable(GL20.GL_CULL_FACE);
 		
 		renderBatch.begin(cam);

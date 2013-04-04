@@ -19,12 +19,14 @@ public class Light {
 	public final Color color = new Color();
 	/** The position of the light, only applicable for point and spot lights. */ 
 	public final Vector3 position = new Vector3(0,0,0);
+	/** The constant (x), linear (y) and quadratic (z) attenuation of the light, only applicable for point and spot lights. */
+	public final Vector3 attenuation = new Vector3(1, 0, 0);
 	/** The direction of the light, only applicable for directional and spot lights. */
 	public final Vector3 direction = new Vector3(0,-1,0);
 	/** The cut off angle of the light, only applicable for spot lights. */ 
 	public float angle = 90f;
-	/** The power of the light, only applicable for point and spot lights. */
-	public float power = 1f;
+	/** The exponent (focus) of the light (range [0,128]), only applicable for spot lights. */
+	public float exponent = 0f;
 	
 	public Light() { }
 	
@@ -52,36 +54,38 @@ public class Light {
 	/** Create a new directional light */
 	public Light(float r, float g, float b, float a, float x, float y, float z) {
 		this.color.set(r, g, b, a);
-		this.direction.set(x, y, z);
+		this.direction.set(x, y, z).nor();
 		type = DIRECTIONAL;
 	}
 	
 	/** Create a new point light */
-	public Light(final Color color, final Vector3 position, final float power) {
-		this(color.r, color.g, color.b, color.a, position.x, position.y, position.z, power);
+	public Light(final Color color, final Vector3 position, final Vector3 attenuation) {
+		this(color.r, color.g, color.b, color.a, position.x, position.y, position.z, attenuation.x, attenuation.y, attenuation.z);
 	}
 	
 	/** Create a new point light */
-	public Light(final float red, final float green, final float blue, final float alpha, 
-					final float x, final float y, final float z, final float power) {
+	public Light(float red, float green, float blue, float alpha, float x, float y, float z, 
+						float attConstant, float attLinear, float attQuadratic) {
 		color.set(red, green, blue, alpha);
 		this.position.set(x, y, z);
-		this.power = power;
+		this.attenuation.set(attConstant, attLinear, attQuadratic);
 		type = POINT;
 	}
 	
 	/** Create a new spot light */
-	public Light(final Color color, final Vector3 position, final Vector3 direction, final float angle, final float power) {
-		this(color.r, color.g, color.b, color.a, position.x, position.y, position.z, direction.x, direction.y, direction.z, angle, power);
+	public Light(final Color color, final Vector3 position, final Vector3 direction, final float angle, final Vector3 attenuation) {
+		this(color.r, color.g, color.b, color.a, position.x, position.y, position.z, 
+			direction.x, direction.y, direction.z, angle, attenuation.x, attenuation.y, attenuation.z);
 	}
 	
 	/** Create a new spot light */
-	public Light(float red, float green, float blue, float alpha, float x, float y, float z, float dirX, float dirY, float dirZ, float angle, float power) {
+	public Light(float red, float green, float blue, float alpha, float x, float y, float z, float dirX, float dirY, float dirZ, 
+						float angle, float attConstant, float attLinear, float attQuadratic) {
 		this.color.set(red, green, blue, alpha);
 		this.position.set(x, y, z);
-		this.direction.set(dirX, dirY, dirZ);
+		this.direction.set(dirX, dirY, dirZ).nor();
 		this.angle = angle;
-		this.power = power;
+		this.attenuation.set(attConstant, attLinear, attQuadratic);
 		type = SPOT;
 	}
 	
@@ -95,7 +99,7 @@ public class Light {
 			position.set(other.position);
 			direction.set(other.direction);
 			angle = other.angle;
-			power = other.power;
+			attenuation.set(other.attenuation);
 		}
 	}
 	
@@ -106,7 +110,7 @@ public class Light {
 			return false;
 		if (!color.equals(other.color))
 			return false;
-		if ((type == POINT || type == SPOT) && (!position.equals(other.position) || power != other.power))
+		if ((type == POINT || type == SPOT) && (!position.equals(other.position) || !attenuation.equals(other.attenuation)))
 			return false;
 		if ((type == DIRECTIONAL || type == SPOT) && !direction.equals(other.direction))
 			return false;

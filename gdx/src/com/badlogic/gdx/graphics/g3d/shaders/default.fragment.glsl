@@ -31,8 +31,9 @@ uniform sampler2D specularTexture;
 #endif
 
 #if defined(lightsCount)
-#if (lightsCount > 0)
 #define NUM_LIGHTS lightsCount
+varying vec3 v_lightLambert;
+/* #if (NUM_LIGHTS > 0)
 struct Light
 {
 	vec4 color;
@@ -40,9 +41,7 @@ struct Light
 	float power;
 };
 uniform Light lights[NUM_LIGHTS];
-
-varying vec3 v_lightLambert;
-#endif
+#endif */
 #endif
 
 void main() {
@@ -63,7 +62,7 @@ void main() {
 	#elif defined(specularColorFlag)
 		vec4 specular = specularColor;
 	#else
-		vec4 specular = vec4(1.0);
+		vec4 specular = vec4(0.0);
 	#endif
 	
 	#ifdef NUM_LIGHTS

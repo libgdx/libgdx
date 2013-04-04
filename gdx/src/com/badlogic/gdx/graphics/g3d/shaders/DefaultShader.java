@@ -2,6 +2,7 @@ package com.badlogic.gdx.graphics.g3d.shaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.Light;
@@ -13,8 +14,10 @@ import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class DefaultShader implements Shader {
@@ -45,12 +48,19 @@ public class DefaultShader implements Shader {
 	protected int normalTransLoc;
 	protected int diffuseTextureLoc;
 	protected int diffuseColorLoc;
+	protected int ambientLoc;
 	protected int lightsLoc;
 	protected int lightSize;
+	protected int lightTypeOffset;
+	protected int lightColorOffset;
 	protected int lightPositionOffset;
-	protected int lightPowerOffset;
+	protected int lightAttenuationOffset;
+	protected int lightDirectionOffset;
+	protected int lightAngleOffset;
+	protected int lightExponentOffset;
 	
 	private final Light[] currentLights;
+	private final Color ambient = new Color(0,0,0,1);
 	
 	protected RenderContext context;
 	protected long mask;
@@ -100,10 +110,16 @@ public class DefaultShader implements Shader {
 		normalTransLoc = program.getUniformLocation(NORMAL_TRANSFORM);
 		diffuseTextureLoc = ((mask & TextureAttribute.Diffuse) != TextureAttribute.Diffuse) ? -1 : program.getUniformLocation(TextureAttribute.DiffuseAlias);
 		diffuseColorLoc = ((mask & ColorAttribute.Diffuse) != ColorAttribute.Diffuse) ? -1 : program.getUniformLocation(ColorAttribute.DiffuseAlias);
-		lightsLoc = maxLightsCount > 0 ? program.getUniformLocation("lights[0].color") : -1;
-		lightSize = (lightsLoc >= 0 && maxLightsCount > 1) ? (program.getUniformLocation("lights[1].color") - lightsLoc) : -1;
+		ambientLoc = maxLightsCount < 0 ? -1 : program.getUniformLocation("ambient");
+		lightsLoc = maxLightsCount > 0 ? program.getUniformLocation("lights[0].type") : -1;
+		lightSize = (lightsLoc >= 0 && maxLightsCount > 1) ? (program.getUniformLocation("lights[1].type") - lightsLoc) : -1;
+		lightTypeOffset = 0;
+		lightColorOffset = lightsLoc >= 0 ? program.getUniformLocation("lights[0].color") - lightsLoc : -1;
 		lightPositionOffset = lightsLoc >= 0 ? program.getUniformLocation("lights[0].position") - lightsLoc : -1;
-		lightPowerOffset = lightsLoc >= 0 ? program.getUniformLocation("lights[0].power") - lightsLoc : -1;
+		lightAttenuationOffset = lightsLoc >= 0 ? program.getUniformLocation("lights[0].attenuation") - lightsLoc : -1;
+		lightDirectionOffset = lightsLoc >= 0 ? program.getUniformLocation("lights[0].direction") - lightsLoc : -1;
+		lightAngleOffset = lightsLoc >= 0 ? program.getUniformLocation("lights[0].angle") - lightsLoc : -1;
+		lightExponentOffset = lightsLoc >= 0 ? program.getUniformLocation("lights[0].exponent") - lightsLoc : -1;
 	}
 	
 	@Override
@@ -146,6 +162,7 @@ public class DefaultShader implements Shader {
 		if (currentLights != null)
 			for (int i = 0; i < currentLights.length; i++)
 				currentLights[i].set(null);
+		ambient.set(0,0,0,0);
 	}
 
 	@Override
@@ -157,7 +174,7 @@ public class DefaultShader implements Shader {
 			program.setUniformMatrix(normalTransLoc, normalMatrix.set(currentTransform));
 		}
 		bindMaterial(renderable);
-		if (lightsLoc >= 0)
+		if (currentLights != null)
 			bindLights(renderable);
 		if (currentMesh != renderable.mesh) {
 			if (currentMesh != null)
@@ -214,9 +231,38 @@ public class DefaultShader implements Shader {
 		program.setUniformi(uniform, unit);
 		currentTextureAttribute = attribute;
 	}
-	 
+	
 	private final void bindLights(final Renderable renderable) {
-		for (int i = 0; i < currentLights.length; i++) {
+		int idx = -1;
+		ambient.set(0,0,0,1);
+		if (renderable.lights != null) {
+			for (final Light light : renderable.lights) {
+				if (light.type == Light.AMBIENT)
+					ambient.add(light.color);
+				else if (lightsLoc >= 0 && ++idx < currentLights.length && !currentLights[idx].equals(light)) {
+					final int loc = lightsLoc + idx * lightSize;
+					currentLights[idx].set(light);
+					program.setUniformi(loc + lightTypeOffset, light.type);
+					program.setUniformf(loc + lightColorOffset, light.color);
+					program.setUniformf(loc + lightPositionOffset, light.position);
+					program.setUniformf(loc + lightAttenuationOffset, light.attenuation);
+					program.setUniformf(loc + lightDirectionOffset, light.direction);
+					program.setUniformf(loc + lightAngleOffset, MathUtils.cosDeg(light.angle));
+					program.setUniformf(loc + lightExponentOffset, light.exponent);
+				}
+			}
+		}
+		if (lightsLoc >= 0) {
+			while (++idx < currentLights.length){
+				if (currentLights[idx].type != Light.NONE) {
+					program.setUniformi(lightsLoc + idx * lightSize + lightTypeOffset, Light.NONE);
+					currentLights[idx].type = Light.NONE;
+				}
+			}
+		}
+		if (ambientLoc >= 0)
+			program.setUniformf(ambientLoc, ambient);
+		/* for (int i = 0; i < currentLights.length; i++) {
 			final int loc = lightsLoc + i * lightSize;
 			if (renderable.lights.length <= i) {
 				if (currentLights[i].type != Light.NONE) {
@@ -232,7 +278,7 @@ public class DefaultShader implements Shader {
 					currentLights[i].set(renderable.lights[i]);
 				}
 			}
-		}
+		} */
 	}
 
 	@Override

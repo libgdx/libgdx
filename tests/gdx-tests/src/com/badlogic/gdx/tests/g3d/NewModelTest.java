@@ -24,9 +24,9 @@ public class NewModelTest extends GdxTest {
 	ShapeRenderer shapeRenderer;
 	
 	Light[] lights = new Light[] {
-		new Light(Color.WHITE, Vector3.tmp.set(-10f, 10f, -10f), 15f),
-		new Light(Color.BLUE, Vector3.tmp.set(10f, 5f, 0f), 10f),
-		new Light(Color.GREEN, Vector3.tmp.set(0f, 10f, 5f), 5f)
+		new Light(Color.WHITE, Vector3.tmp.set(-10f, 10f, -10f), Vector3.tmp2.set(0f, 1f/15f, 0f)),
+		new Light(Color.BLUE, Vector3.tmp.set(10f, 5f, 0f), Vector3.tmp2.set(0f, 1f/10f, 0f)),
+		new Light(Color.GREEN, Vector3.tmp.set(0f, 10f, 5f), Vector3.tmp2.set(0f, 1f/5f, 0f))
 	};
 	
 	float touchStartX = 0;

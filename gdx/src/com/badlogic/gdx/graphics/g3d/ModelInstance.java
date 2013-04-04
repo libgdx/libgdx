@@ -70,6 +70,24 @@ public class ModelInstance implements RenderableProvider {
 		this(model);
 		this.transform.set(transform);
 	}
+	
+	/** Constructs a new ModelInstance which is an copy of the specified ModelInstance. */
+	public ModelInstance(ModelInstance copyFrom) {
+		this(copyFrom, null);
+	}
+	
+	/** Constructs a new ModelInstance which is an copy of the specified ModelInstance. */
+	public ModelInstance(ModelInstance copyFrom, Matrix4 transform) {
+		this.model = copyFrom.model;
+		this.transform.set(transform == null ? copyFrom.transform: transform);
+		copyNodes(copyFrom.nodes);
+		calculateTransforms();
+	}
+	
+	/** @return A newly created ModelInstance which is a copy of this ModelInstance */
+	public ModelInstance copy() {
+		return new ModelInstance(this);
+	}
 
 	private void copyNodes (Array<Node> nodes) {
 		for(Node node: nodes) {
