@@ -13,7 +13,8 @@
 - Box2d joints now allow for user data
 - Changes to Intersector, Circle, Rectangle and BoundingBox for consistency in #overlap, #intersect and #contains methods, see https://github.com/libgdx/libgdx/pull/312
 - Removed LwjglApplicationConfiguration CPU sync. Added foreground and background target framerate.
-
+- scene2d, no longer use getters/setters internally for Actor x, y, width, height, scalex, scaley and rotation.
+- Array, detect nested iterator usage and throw exception.
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791
