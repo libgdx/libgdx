@@ -470,7 +470,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		while (i < n) {
 			Cell c = cells.get(i++);
 			if (c.getIgnore()) continue;
-			if (c.widgetY + c.computedPadTop > y) break;
+			if (c.widgetY + c.computedPadTop > y) continue;
 			if (c.endRow) row++;
 		}
 		return rows - row;
