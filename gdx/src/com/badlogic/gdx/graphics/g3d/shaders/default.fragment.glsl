@@ -32,7 +32,7 @@ uniform sampler2D specularTexture;
 
 #if defined(lightsCount)
 #define NUM_LIGHTS lightsCount
-varying vec3 v_lightLambert;
+varying vec3 v_lightDiffuse;
 varying vec3 v_lightSpecular;
 varying vec3 v_viewVec;
 /* #if (NUM_LIGHTS > 0)
@@ -67,7 +67,7 @@ void main() {
 	#else
 		vec4 specular = vec4(0.0);
 	#endif
-		diffuse.rgb *= v_lightLambert;
+		diffuse.rgb *= v_lightDiffuse;
 		specular.rgb *= v_lightSpecular;
 		gl_FragColor.rgb = diffuse.rgb + specular.rgb;
 	#else

@@ -23,7 +23,7 @@ const float shininess = 20.0;
 #if defined(lightsCount)
 #define NUM_LIGHTS lightsCount
 
-varying vec3 v_lightLambert;
+varying vec3 v_lightDiffuse;
 varying vec3 v_lightSpecular;
 uniform vec4 ambient;
 uniform vec3 u_cameraPosition;
@@ -62,24 +62,20 @@ void main() {
 	gl_Position = u_projTrans * pos;
 
 	#ifdef NUM_LIGHTS
-	v_lightLambert = ambient.rgb;
+	v_lightDiffuse = ambient.rgb;
+	v_lightSpecular = vec3(0.0);
 	#if (NUM_LIGHTS > 0)
 	v_normal = u_normalMatrix * a_normal;
 	v_viewVec = normalize(u_cameraPosition - pos.xyz);
-	
-	vec3 aggDir = vec3(0.0);
-	float aggWeight = 0.0;
-	vec3 aggCol = vec3(0.0);
-	vec3 aggSpc = vec3(0.0);
-	
+		
 	for (int i = 0; i < NUM_LIGHTS; i++) {
-		if (lights[i].type != NONE && (lights[i].attenuation.x > 0.0 || lights[i].attenuation.y > 0.0 || lights[i].attenuation.z > 0.0)) {
-			vec3 lightVec = lights[i].type == DIRECTIONAL ? (-1.0 * lights[i].direction) : normalize(lights[i].position - pos.xyz);
+		if (lights[i].type != NONE) {
+			vec3 lightVec = lights[i].type == DIRECTIONAL ? -lights[i].direction : normalize(lights[i].position - pos.xyz);
 			float diff = dot(v_normal, lightVec);
 			
 			if (diff > 0.0) {
 				float spot = 1.0;
-				if (lights[i].type == SPOT && (lights[i].direction.x != 0.0 || lights[i].direction.y != 0.0 || lights[i].direction.z != 0.0)) {
+				if (lights[i].type == SPOT) {
 					spot = max(-dot(lightVec, lights[i].direction), 0.0);
 					float fade = clamp((lights[i].angle - spot)/(-lights[i].angle*0.05), 0.0, 1.0); // FIXME make inner angle variable
 					spot = pow(spot * fade, lights[i].exponent);
@@ -94,14 +90,12 @@ void main() {
 					weight = spot / (lights[i].attenuation.x + lights[i].attenuation.y * d + lights[i].attenuation.z * d * d);
 				}
 				
-				vec3 fc = vec3(lights[i].color) * weight;
-				aggCol += diff * fc;
-				aggSpc += spec * fc;
+				vec3 fc = lights[i].color.rgb * weight;
+				v_lightDiffuse += diff * fc;
+				v_lightSpecular += spec * fc;
 			}
 		}
 	}
-	v_lightLambert = aggCol;
-	v_lightSpecular = aggSpc;
 	#endif
 	#endif
 }
