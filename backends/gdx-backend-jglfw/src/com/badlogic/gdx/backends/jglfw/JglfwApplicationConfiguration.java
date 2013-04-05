@@ -1,4 +1,3 @@
-
 package com.badlogic.gdx.backends.jglfw;
 
 import com.badlogic.gdx.Gdx;
@@ -35,7 +34,7 @@ public class JglfwApplicationConfiguration {
 	/** Number of samples for MSAA **/
 	public int samples = 0;
 	/** True to enable vsync. **/
-	public boolean vSync = true;
+	public boolean vSyncEnabled = true;
 	/** True if the window is resizable. **/
 	public boolean resizable = true;
 	/** True to attempt to use OpenGL ES 2.0. Note {@link Gdx#gl20} may be null even when this is true. **/
