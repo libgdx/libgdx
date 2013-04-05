@@ -74,7 +74,7 @@ void main() {
 	
 	for (int i = 0; i < NUM_LIGHTS; i++) {
 		if (lights[i].type != NONE && (lights[i].attenuation.x > 0.0 || lights[i].attenuation.y > 0.0 || lights[i].attenuation.z > 0.0)) {
-			vec3 lightVec = lights[i].type == DIRECTIONAL ? (-1 * lights[i].direction) : normalize(lights[i].position - pos.xyz);
+			vec3 lightVec = lights[i].type == DIRECTIONAL ? (-1.0 * lights[i].direction) : normalize(lights[i].position - pos.xyz);
 			float diff = dot(v_normal, lightVec);
 			
 			if (diff > 0.0) {
