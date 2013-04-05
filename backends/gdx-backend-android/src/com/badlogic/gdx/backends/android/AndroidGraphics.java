@@ -82,6 +82,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	volatile boolean pause = false;
 	volatile boolean resume = false;
 	volatile boolean destroy = false;
+	volatile boolean resumeAudio = false;
 
 	private float ppiX = 0;
 	private float ppiY = 0;
@@ -387,10 +388,19 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	Object synch = new Object();
 
-	void resume () {
+	void resume (boolean resumeAudio) {
 		synchronized (synch) {
 			running = true;
 			resume = true;
+			if (resumeAudio) {
+				this.resumeAudio = true;
+			}
+		}
+	}
+
+	void resumeAudio () {
+		synchronized (synch) {
+			resumeAudio = true;
 		}
 	}
 
@@ -435,15 +445,21 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		boolean lpause = false;
 		boolean ldestroy = false;
 		boolean lresume = false;
+		boolean lresumeAudio = false;
 
 		synchronized (synch) {
 			lrunning = running;
 			lpause = pause;
 			ldestroy = destroy;
 			lresume = resume;
+			lresumeAudio = resumeAudio;
 
 			if (resume) {
 				resume = false;
+			}
+
+			if (resumeAudio) {
+				resumeAudio = false;
 			}
 
 			if (pause) {
@@ -457,8 +473,11 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			}
 		}
 
-		if (lresume) {
+		if (lresumeAudio) {
 			((AndroidApplication)app).audio.resume();
+		}
+
+		if (lresume) {
 			Array<LifecycleListener> listeners = ((AndroidApplication)app).lifecycleListeners;
 			synchronized(listeners) {
 				for(LifecycleListener listener: listeners) {

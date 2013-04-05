@@ -74,6 +74,7 @@ public class AndroidApplication extends Activity implements Application {
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected WakeLock wakeLock = null;
 	protected int logLevel = LOG_INFO;
+	protected boolean hasFocus = true;
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
@@ -254,7 +255,7 @@ public class AndroidApplication extends Activity implements Application {
 		}
 
 		if (!firstResume) {
-			graphics.resume();
+			graphics.resume(hasFocus);
 		} else
 			firstResume = false;
 		super.onResume();
@@ -263,6 +264,14 @@ public class AndroidApplication extends Activity implements Application {
 	@Override
 	protected void onDestroy () {
 		super.onDestroy();
+	}
+
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		this.hasFocus = hasFocus;
+		if (hasFocus) {
+			graphics.resumeAudio();
+		}
 	}
 
 	@Override
