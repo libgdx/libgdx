@@ -33,6 +33,8 @@ uniform sampler2D specularTexture;
 #if defined(lightsCount)
 #define NUM_LIGHTS lightsCount
 varying vec3 v_lightLambert;
+varying vec3 v_lightSpecular;
+varying vec3 v_viewVec;
 /* #if (NUM_LIGHTS > 0)
 struct Light
 {
@@ -67,7 +69,8 @@ void main() {
 	
 	#ifdef NUM_LIGHTS
 		diffuse.rgb *= v_lightLambert;
+		specular.rgb *= v_lightSpecular;
 	#endif
 	
-	gl_FragColor.rgb = diffuse.rgb;
+	gl_FragColor.rgb = diffuse.rgb + specular.rgb;
 }

@@ -17,9 +17,11 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.physics.bullet.btConvexHullShape;
 import com.badlogic.gdx.physics.bullet.btShapeHull;
 
@@ -31,6 +33,8 @@ public class ConvexHullTest extends BaseBulletTest {
 		super.create();
 
 		final Model sceneModel = objLoader.loadObj(Gdx.files.internal("data/car.obj"));
+		sceneModel.materials.get(0).clear();
+		sceneModel.materials.get(0).add(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE));
 		world.addConstructor("car", new BulletConstructor(sceneModel, 5f, createConvexHullShape(sceneModel)));
 
 		// Create the entities

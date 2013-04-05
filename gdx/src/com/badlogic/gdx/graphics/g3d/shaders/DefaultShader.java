@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
@@ -21,9 +22,13 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class DefaultShader implements Shader {
+	// General uniform names
 	public final static String PROJECTION_TRANSFORM = "u_projTrans";
-	public final static String MODEL_TRANSFORM = "u_modelTrans";
-	public final static String NORMAL_TRANSFORM = "u_normalMatrix";
+	public final static String MODEL_TRANSFORM 		= "u_modelTrans";
+	public final static String NORMAL_TRANSFORM 		= "u_normalMatrix";
+	public final static String CAMERA_POSITION 		= "u_cameraPosition";
+	public final static String CAMERA_DIRECTION 		= "u_cameraDirection";
+	public final static String CAMERA_UP 				= "u_cameraUp";
 	
 	private static String defaultVertexShader = null;
 	public final static String getDefaultVertexShader() {
@@ -39,15 +44,24 @@ public class DefaultShader implements Shader {
 		return defaultFragmentShader;
 	}
 
-	protected static long implementedFlags = BlendingAttribute.Type | TextureAttribute.Diffuse | ColorAttribute.Diffuse;
+	protected static long implementedFlags = BlendingAttribute.Type | TextureAttribute.Diffuse | ColorAttribute.Diffuse | 
+		ColorAttribute.Specular | FloatAttribute.Shininess;
 	public static boolean ignoreUnimplemented = true;
 	
 	protected final ShaderProgram program;
+	// General uniform locations, a shader doesn't have to implement all of them
 	protected int projTransLoc;
 	protected int modelTransLoc;
 	protected int normalTransLoc;
+	protected int cameraPosLoc;
+	protected int cameraDirLoc;
+	protected int cameraUpLoc;
+	// Material uniform locations
 	protected int diffuseTextureLoc;
 	protected int diffuseColorLoc;
+	protected int specularColorLoc;
+	protected int shininessLoc;
+	// Lighting uniform locations
 	protected int ambientLoc;
 	protected int lightsLoc;
 	protected int lightSize;
@@ -94,22 +108,36 @@ public class DefaultShader implements Shader {
 		
 		if (maxLightsCount > 0)
 			prefix += "#define lightsCount "+maxLightsCount+"\n";
-		if ((mask & BlendingAttribute.Type) == BlendingAttribute.Type)
+		if (can(BlendingAttribute.Type))
 			prefix += "#define "+BlendingAttribute.Alias+"Flag\n";
-		if ((mask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse)
+		if (can(TextureAttribute.Diffuse))
 			prefix += "#define "+TextureAttribute.DiffuseAlias+"Flag\n";
-		if ((mask & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
+		if (can(ColorAttribute.Diffuse))
 			prefix += "#define "+ColorAttribute.DiffuseAlias+"Flag\n";
+		if (can(ColorAttribute.Specular))
+			prefix += "#define "+ColorAttribute.SpecularAlias+"Flag\n";
+		if (can(FloatAttribute.Shininess))
+			prefix += "#define "+FloatAttribute.ShininessAlias+"Flag\n";
 
 		program = new ShaderProgram(prefix + vertexShader, prefix + fragmentShader);
 		if (!program.isCompiled())
 			throw new GdxRuntimeException(program.getLog());
 		
+		// General uniforms
 		projTransLoc = program.getUniformLocation(PROJECTION_TRANSFORM);
 		modelTransLoc = program.getUniformLocation(MODEL_TRANSFORM);
 		normalTransLoc = program.getUniformLocation(NORMAL_TRANSFORM);
-		diffuseTextureLoc = ((mask & TextureAttribute.Diffuse) != TextureAttribute.Diffuse) ? -1 : program.getUniformLocation(TextureAttribute.DiffuseAlias);
-		diffuseColorLoc = ((mask & ColorAttribute.Diffuse) != ColorAttribute.Diffuse) ? -1 : program.getUniformLocation(ColorAttribute.DiffuseAlias);
+		cameraPosLoc = program.getUniformLocation(CAMERA_POSITION);
+		cameraDirLoc = program.getUniformLocation(CAMERA_DIRECTION);
+		cameraUpLoc = program.getUniformLocation(CAMERA_UP);
+		
+		// Material uniforms
+		diffuseTextureLoc = !can(TextureAttribute.Diffuse) ? -1 : program.getUniformLocation(TextureAttribute.DiffuseAlias);
+		diffuseColorLoc = !can(ColorAttribute.Diffuse) ? -1 : program.getUniformLocation(ColorAttribute.DiffuseAlias);
+		specularColorLoc = !can(ColorAttribute.Specular) ? -1 : program.getUniformLocation(ColorAttribute.SpecularAlias);
+		shininessLoc = !can(FloatAttribute.Shininess) ? -1 : program.getUniformLocation(FloatAttribute.ShininessAlias);
+		
+		// Lighting uniforms
 		ambientLoc = maxLightsCount < 0 ? -1 : program.getUniformLocation("ambient");
 		lightsLoc = maxLightsCount > 0 ? program.getUniformLocation("lights[0].type") : -1;
 		lightSize = (lightsLoc >= 0 && maxLightsCount > 1) ? (program.getUniformLocation("lights[1].type") - lightsLoc) : -1;
@@ -120,11 +148,17 @@ public class DefaultShader implements Shader {
 		lightDirectionOffset = lightsLoc >= 0 ? program.getUniformLocation("lights[0].direction") - lightsLoc : -1;
 		lightAngleOffset = lightsLoc >= 0 ? program.getUniformLocation("lights[0].angle") - lightsLoc : -1;
 		lightExponentOffset = lightsLoc >= 0 ? program.getUniformLocation("lights[0].exponent") - lightsLoc : -1;
+		
+		// FIXME Cache vertex attribute locations...
 	}
 	
 	@Override
 	public boolean canRender(final Renderable renderable) {
 		return mask == renderable.material.getMask() && (renderable.lights == null) == (currentLights == null);
+	}
+	
+	private final boolean can(final long flag) {
+		return (mask & flag) == flag;
 	}
 	
 	/*@Override
@@ -158,7 +192,16 @@ public class DefaultShader implements Shader {
 		this.camera = camera;
 		program.begin();
 		context.setDepthTest(true, GL10.GL_LEQUAL);
-		program.setUniformMatrix(projTransLoc, camera.combined);
+		
+		if (projTransLoc >= 0)
+			program.setUniformMatrix(projTransLoc, camera.combined);
+		if (cameraPosLoc >= 0)
+			program.setUniformf(cameraPosLoc, camera.position);
+		if (cameraDirLoc >= 0)
+			program.setUniformf(cameraDirLoc, camera.direction);
+		if (cameraUpLoc >= 0)
+			program.setUniformf(cameraUpLoc, camera.up);
+		
 		if (currentLights != null)
 			for (int i = 0; i < currentLights.length; i++)
 				currentLights[i].set(null);
@@ -209,19 +252,19 @@ public class DefaultShader implements Shader {
 				ColorAttribute col = (ColorAttribute)attr;
 				if ((t & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
 					program.setUniformf(diffuseColorLoc, col.color);
-				// TODO else if (..)
+				else if ((t & ColorAttribute.Specular) == ColorAttribute.Specular)
+					program.setUniformf(specularColorLoc, col.color);
 			}
 			else if (TextureAttribute.is(t)) {
 				TextureAttribute tex = (TextureAttribute)attr;
 				if ((t & TextureAttribute.Diffuse) == TextureAttribute.Diffuse)
 					bindTextureAttribute(diffuseTextureLoc, tex);
 				// TODO else if (..)
-			}  
-			else {
-				if(!ignoreUnimplemented) {
-					throw new GdxRuntimeException("unknown attribute");
-				}
 			}
+			else if ((t & FloatAttribute.Shininess) == FloatAttribute.Shininess)
+				program.setUniformf(shininessLoc, ((FloatAttribute)attr).value);
+			else if(!ignoreUnimplemented)
+					throw new GdxRuntimeException("Unknown material attribute: "+attr.toString());
 		}
 	}
 
