@@ -242,6 +242,7 @@
 		<include name="scenes/scene2d/utils/DragListener.java"/>
 		
 		<include name="Net.java"/>
+		<include name="net/HttpParametersUtils.java"/>
 		<include name="net/HttpStatus.java"/>
 		<include name="net/ServerSocket.java"/>
 		<include name="net/ServerSocketHints.java"/>

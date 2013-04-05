@@ -155,11 +155,11 @@ public class GwtGraphics implements Graphics {
 	}
 
 	private native int getScreenWidthJSNI () /*-{
-															return screen.width;
+															return $wnd.screen.width;
 															}-*/;
 
 	private native int getScreenHeightJSNI () /*-{
-															return screen.height;
+															return $wnd.screen.height;
 															}-*/;
 
 	private native boolean isFullscreenJSNI () /*-{
@@ -181,8 +181,8 @@ public class GwtGraphics implements Graphics {
 
 	private native boolean setFullscreenJSNI (GwtGraphics graphics, CanvasElement element) /*-{
 																														if(element.webkitRequestFullScreen) {
-																														element.width = screen.width;
-																														element.height = screen.height;
+																														element.width = $wnd.screen.width;
+																														element.height = $wnd.screen.height;
 																														element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
 																														$doc.addEventListener("webkitfullscreenchange", function() {
 																														graphics.@com.badlogic.gdx.backends.gwt.GwtGraphics::fullscreenChanged()();
@@ -190,8 +190,8 @@ public class GwtGraphics implements Graphics {
 																														return true;
 																														}
 																														if(element.mozRequestFullScreen) {
-																														element.width = screen.width;
-																														element.height = screen.height;
+																														element.width = $wnd.screen.width;
+																														element.height = $wnd.screen.height;
 																														element.mozRequestFullScreen();
 																														$doc.addEventListener("mozfullscreenchange", function() {
 																														graphics.@com.badlogic.gdx.backends.gwt.GwtGraphics::fullscreenChanged()();
@@ -264,7 +264,7 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public float getDensity () {
-		return 96 / 160;
+		return 96.0f / 160;
 	}
 
 	@Override
