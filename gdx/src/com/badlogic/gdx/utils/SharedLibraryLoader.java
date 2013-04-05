@@ -107,17 +107,8 @@ public class SharedLibraryLoader {
 		try {
 			if (isAndroid)
 				System.loadLibrary(libraryName);
-			else {
-				File f = extractFile(libraryName, null);
-				if (f != null){
-					System.load(f.getAbsolutePath());
-				}else{
-					// fallback for applets, see https://code.google.com/p/libgdx/issues/detail?id=1290
-					String fallback = new File(System.getProperty("java.library.path")+"/"+libraryName).getAbsolutePath();
-					System.load(fallback);
-				}
-			}
-			
+			else
+				System.load(extractFile(libraryName, null).getAbsolutePath());
 		} catch (Throwable ex) {
 			throw new GdxRuntimeException("Couldn't load shared library '" + libraryName + "' for target: "
 				+ System.getProperty("os.name") + (is64Bit ? ", 64-bit" : ", 32-bit"), ex);
@@ -181,7 +172,11 @@ public class SharedLibraryLoader {
 				throw new GdxRuntimeException("Error extracting file: " + sourcePath, ex);
 			}
 		}
-		if (!extractedFile.exists()) throw new GdxRuntimeException("Unable to extract file: " + sourcePath);
+		if (!extractedFile.exists()) {
+			// Fallback to file at java.library.path location, eg for applets.
+			extractedFile = new File(System.getProperty("java.library.path"), sourcePath);
+			if (!extractedFile.exists()) throw new GdxRuntimeException("Unable to extract file: " + sourcePath);
+		}
 		return extractedFile;
 	}
 }
