@@ -206,6 +206,10 @@ public class Json {
 		try {
 			writeValue(object, knownType, elementType);
 		} finally {
+			try {
+				this.writer.close();
+			} catch (IOException ignored) {
+			}
 			this.writer = null;
 		}
 	}
