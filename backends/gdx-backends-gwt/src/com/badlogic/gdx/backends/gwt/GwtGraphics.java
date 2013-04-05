@@ -264,7 +264,7 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public float getDensity () {
-		return 96.0 / 160;
+		return 96.0f / 160;
 	}
 
 	@Override
