@@ -1,4 +1,3 @@
-
 package com.badlogic.gdx.jglfw.tests;
 
 import com.badlogic.gdx.backends.jglfw.JglfwApplication;
@@ -19,7 +18,7 @@ public class JglfwDebugStarter {
 
 		GdxTest test = new SuperKoalio();
 		JglfwApplicationConfiguration config = new JglfwApplicationConfiguration();
-		config.vSync = true;
+		config.vSyncEnabled = true;
 		config.useGL20 = test.needsGL20();
 		new JglfwApplication(test, config);
 	}
