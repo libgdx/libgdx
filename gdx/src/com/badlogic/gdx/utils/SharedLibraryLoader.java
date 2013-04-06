@@ -134,49 +134,53 @@ public class SharedLibraryLoader {
 		}
 	}
 
-	/** Extracts the specified file into the temp directory if it does not already exist or the CRC does not match.
+	/** Extracts the specified file into the temp directory if it does not already exist or the CRC does not match. If file
+	 * extraction fails and the file exists at java.library.path, that file is returned.
 	 * @param sourcePath The file to extract from the classpath or JAR.
 	 * @param dirName The name of the subdirectory where the file will be extracted. If null, the file's CRC will be used.
 	 * @return The extracted file. */
 	public File extractFile (String sourcePath, String dirName) throws IOException {
-		String sourceCrc = crc(readFile(sourcePath));
-		if (dirName == null) dirName = sourceCrc;
+		try {
+			String sourceCrc = crc(readFile(sourcePath));
+			if (dirName == null) dirName = sourceCrc;
 
-		File extractedDir = new File(System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/"
-			+ dirName);
-		File extractedFile = new File(extractedDir, new File(sourcePath).getName());
+			File extractedDir = new File(System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/"
+				+ dirName);
+			File extractedFile = new File(extractedDir, new File(sourcePath).getName());
 
-		String extractedCrc = null;
-		if (extractedFile.exists()) {
-			try {
-				extractedCrc = crc(new FileInputStream(extractedFile));
-			} catch (FileNotFoundException ignored) {
-			}
-		}
-
-		// If file doesn't exist or the CRC doesn't match, extract it to the temp dir.
-		if (extractedCrc == null || !extractedCrc.equals(sourceCrc)) {
-			try {
-				InputStream input = readFile(sourcePath);
-				extractedDir.mkdirs();
-				FileOutputStream output = new FileOutputStream(extractedFile);
-				byte[] buffer = new byte[4096];
-				while (true) {
-					int length = input.read(buffer);
-					if (length == -1) break;
-					output.write(buffer, 0, length);
+			String extractedCrc = null;
+			if (extractedFile.exists()) {
+				try {
+					extractedCrc = crc(new FileInputStream(extractedFile));
+				} catch (FileNotFoundException ignored) {
 				}
-				input.close();
-				output.close();
-			} catch (IOException ex) {
-				throw new GdxRuntimeException("Error extracting file: " + sourcePath, ex);
 			}
+
+			// If file doesn't exist or the CRC doesn't match, extract it to the temp dir.
+			if (extractedCrc == null || !extractedCrc.equals(sourceCrc)) {
+				try {
+					InputStream input = readFile(sourcePath);
+					extractedDir.mkdirs();
+					FileOutputStream output = new FileOutputStream(extractedFile);
+					byte[] buffer = new byte[4096];
+					while (true) {
+						int length = input.read(buffer);
+						if (length == -1) break;
+						output.write(buffer, 0, length);
+					}
+					input.close();
+					output.close();
+				} catch (IOException ex) {
+					throw new GdxRuntimeException("Error extracting file: " + sourcePath, ex);
+				}
+			}
+
+			return extractedFile;
+		} catch (RuntimeException ex) {
+			// Attempt to fallback to file at java.library.path location, eg for applets.
+			File file = new File(System.getProperty("java.library.path"), sourcePath);
+			if (file.exists()) return file;
+			throw ex;
 		}
-		if (!extractedFile.exists()) {
-			// Fallback to file at java.library.path location, eg for applets.
-			extractedFile = new File(System.getProperty("java.library.path"), sourcePath);
-			if (!extractedFile.exists()) throw new GdxRuntimeException("Unable to extract file: " + sourcePath);
-		}
-		return extractedFile;
 	}
 }
