@@ -6,6 +6,10 @@ public class FloatAttribute extends Material.Attribute {
 	public static final String ShininessAlias = "shininess";
 	public static final long Shininess = register(ShininessAlias);
 	
+	public static FloatAttribute createShininess(float value) {
+		return new FloatAttribute(Shininess, value);
+	}
+	
 	public float value;
 	
 	public FloatAttribute(long type) {

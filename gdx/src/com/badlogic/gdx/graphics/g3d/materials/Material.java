@@ -33,6 +33,10 @@ public class Material implements Iterable<Material.Attribute>, Comparator<Materi
 			if (other.type != other.type) return false; 
 			return equals(other);
 		}
+		@Override
+		public String toString () {
+			return Material.getAttributeAlias(type);
+		}
 	}
 	
 	/** The registered type aliases */
@@ -46,6 +50,13 @@ public class Material implements Iterable<Material.Attribute>, Comparator<Materi
 			if (types.get(i).compareTo(alias)==0)
 				return 1L << i;
 		return 0;
+	}
+	
+	/** @return The alias of the specified attribute type, or null if not available. */
+	protected final static String getAttributeAlias(final long type) {
+		int idx = -1;
+		while (type != 0 && ++idx < 63 && (((type >> idx) & 1) == 0));
+		return (idx >= 0 && idx < types.size) ? types.get(idx) : null;
 	}
 	
 	/** Use {@link Attribute#register(String)} instead */ 
