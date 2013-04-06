@@ -460,7 +460,7 @@ public class Array<T> implements Iterable<T> {
 
 		public T next () {
 			if (index >= array.size) throw new NoSuchElementException(String.valueOf(index));
-			if (!valid) throw new GdxRuntimeException("Array#iterator() cannot be used nested.");
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			return array.items[index++];
 		}
 
