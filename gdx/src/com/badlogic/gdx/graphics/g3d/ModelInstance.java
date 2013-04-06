@@ -76,13 +76,14 @@ public class ModelInstance implements RenderableProvider {
 	
 	/** Constructs a new ModelInstance which is an copy of the specified ModelInstance. */
 	public ModelInstance(ModelInstance copyFrom) {
-		this(copyFrom, null);
+		this(copyFrom, copyFrom.transform);
 	}
 	
 	/** Constructs a new ModelInstance which is an copy of the specified ModelInstance. */
-	public ModelInstance(ModelInstance copyFrom, Matrix4 transform) {
+	public ModelInstance(ModelInstance copyFrom, final Matrix4 transform) {
 		this.model = copyFrom.model;
-		this.transform.set(transform == null ? copyFrom.transform: transform);
+		if (transform != null)
+			this.transform.set(transform);
 		copyNodes(copyFrom.nodes);
 		calculateTransforms();
 	}
