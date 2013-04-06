@@ -464,16 +464,25 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		y += h(padTop);
 		int i = 0, n = cells.size();
 		if (n == 0) return -1;
-		// Skip first row.
-		while (i < n && !cells.get(i).isEndRow())
-			i++;
+		if (n == 1) return 0;
+		if (cells.get(0).widgetY < cells.get(1).widgetY) {
+			// Using y-down coordinate system.
+			while (i < n) {
+				Cell c = cells.get(i++);
+				if (c.getIgnore()) continue;
+				if (c.widgetY + c.computedPadTop > y) break;
+				if (c.endRow) row++;
+			}
+			return row - 1;
+		}
+		// Using y-up coordinate system.
 		while (i < n) {
 			Cell c = cells.get(i++);
 			if (c.getIgnore()) continue;
-			if (c.widgetY + c.computedPadTop > y) break;
+			if (c.widgetY + c.computedPadTop < y) break;
 			if (c.endRow) row++;
 		}
-		return rows - row;
+		return row;
 	}
 
 	private float[] ensureSize (float[] array, int size) {

@@ -125,6 +125,12 @@ public class SelectBox extends Widget {
 		prefWidth = Math.max(prefWidth, max + style.listBackground.getLeftWidth() + style.listBackground.getRightWidth() + 2
 			* style.itemSpacing);
 
+		if (items.length > 0) {
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			SelectBox.this.fire(changeEvent);
+			Pools.free(changeEvent);
+		}
+
 		invalidateHierarchy();
 	}
 

@@ -44,9 +44,9 @@ public class ObjectMap<K, V> {
 	private int stashCapacity;
 	private int pushIterations;
 
-	private Entries entries;
-	private Values values;
-	private Keys keys;
+	private Entries entries1, entries2;
+	private Values values1, values2;
+	private Keys keys1, keys2;
 
 	/** Creates a new map with an initial capacity of 32 and a load factor of 0.8. This map will hold 25 items before growing the
 	 * backing table. */
@@ -514,31 +514,58 @@ public class ObjectMap<K, V> {
 	/** Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
 	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Entries<K, V> entries () {
-		if (entries == null)
-			entries = new Entries(this);
-		else
-			entries.reset();
-		return entries;
+		if (entries1 == null) {
+			entries1 = new Entries(this);
+			entries2 = new Entries(this);
+		}
+		if (!entries1.valid) {
+			entries1.reset();
+			entries1.valid = true;
+			entries2.valid = false;
+			return entries1;
+		}
+		entries2.reset();
+		entries2.valid = true;
+		entries1.valid = false;
+		return entries2;
 	}
 
 	/** Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
 	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Values<V> values () {
-		if (values == null)
-			values = new Values(this);
-		else
-			values.reset();
-		return values;
+		if (values1 == null) {
+			values1 = new Values(this);
+			values2 = new Values(this);
+		}
+		if (!values1.valid) {
+			values1.reset();
+			values1.valid = true;
+			values2.valid = false;
+			return values1;
+		}
+		values2.reset();
+		values2.valid = true;
+		values1.valid = false;
+		return values2;
 	}
 
 	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
 	 * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Keys<K> keys () {
-		if (keys == null)
-			keys = new Keys(this);
-		else
-			keys.reset();
-		return keys;
+		if (keys1 == null) {
+			keys1 = new Keys(this);
+			keys2 = new Keys(this);
+		}
+		if (!keys1.valid) {
+			keys1.reset();
+			keys1.valid = true;
+			keys2.valid = false;
+			return keys1;
+		}
+		keys2.reset();
+		keys2.valid = true;
+		keys1.valid = false;
+		return keys2;
 	}
 
 	static public class Entry<K, V> {
@@ -555,6 +582,7 @@ public class ObjectMap<K, V> {
 
 		final ObjectMap<K, V> map;
 		int nextIndex, currentIndex;
+		boolean valid = true;
 
 		public MapIterator (ObjectMap<K, V> map) {
 			this.map = map;
@@ -601,6 +629,7 @@ public class ObjectMap<K, V> {
 		/** Note the same entry instance is returned each time this method is called. */
 		public Entry<K, V> next () {
 			if (!hasNext) throw new NoSuchElementException();
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			K[] keyTable = map.keyTable;
 			entry.key = keyTable[nextIndex];
 			entry.value = map.valueTable[nextIndex];
@@ -628,6 +657,8 @@ public class ObjectMap<K, V> {
 		}
 
 		public V next () {
+			if (!hasNext) throw new NoSuchElementException();
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			V value = map.valueTable[nextIndex];
 			currentIndex = nextIndex;
 			advance();
@@ -663,6 +694,8 @@ public class ObjectMap<K, V> {
 		}
 
 		public K next () {
+			if (!hasNext) throw new NoSuchElementException();
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			K key = map.keyTable[nextIndex];
 			currentIndex = nextIndex;
 			advance();

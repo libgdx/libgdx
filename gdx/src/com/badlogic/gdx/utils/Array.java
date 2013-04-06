@@ -32,7 +32,7 @@ public class Array<T> implements Iterable<T> {
 	public int size;
 	public boolean ordered;
 
-	private ArrayIterator iterator;
+	private ArrayIterator iterator1, iterator2;
 	private Predicate.PredicateIterable<T> predicateIterable;
 
 	/** Creates an ordered array with a capacity of 16. */
@@ -351,11 +351,20 @@ public class Array<T> implements Iterable<T> {
 	/** Returns an iterator for the items in the array. Remove is supported. Note that the same iterator instance is returned each
 	 * time this method is called. Use the {@link ArrayIterator} constructor for nested or multithreaded iteration. */
 	public Iterator<T> iterator () {
-		if (iterator == null)
-			iterator = new ArrayIterator(this);
-		else
-			iterator.index = 0;
-		return iterator;
+		if (iterator1 == null) {
+			iterator1 = new ArrayIterator(this);
+			iterator2 = new ArrayIterator(this);
+		}
+		if (!iterator1.valid) {
+			iterator1.index = 0;
+			iterator1.valid = true;
+			iterator2.valid = false;
+			return iterator1;
+		}
+		iterator2.index = 0;
+		iterator2.valid = true;
+		iterator1.valid = false;
+		return iterator2;
 	}
 
 	/** Returns an iterable for the selected items in the array. Remove is supported, but not between hasNext() and next(). Note
@@ -439,6 +448,7 @@ public class Array<T> implements Iterable<T> {
 	static public class ArrayIterator<T> implements Iterator<T> {
 		private final Array<T> array;
 		int index;
+		boolean valid = true;
 
 		public ArrayIterator (Array<T> array) {
 			this.array = array;
@@ -450,6 +460,7 @@ public class Array<T> implements Iterable<T> {
 
 		public T next () {
 			if (index >= array.size) throw new NoSuchElementException(String.valueOf(index));
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			return array.items[index++];
 		}
 

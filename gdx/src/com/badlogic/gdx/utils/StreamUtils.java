@@ -1,5 +1,5 @@
 
-package com.badlogic.gdx;
+package com.badlogic.gdx.utils;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class TileTest extends GdxTest {
 	static final int LAYERS = 5;
@@ -38,7 +39,7 @@ public class TileTest extends GdxTest {
 	int[] layers = new int[LAYERS];
 	OrthographicCamera cam;
 	OrthoCamController camController;
-	long startTime = System.nanoTime();
+	long startTime = TimeUtils.nanoTime();
 
 	@Override
 	public void create () {
@@ -84,9 +85,9 @@ public class TileTest extends GdxTest {
 			cache.end();
 		}
 
-		if (System.nanoTime() - startTime >= 1000000000) {
+		if (TimeUtils.nanoTime() - startTime >= 1000000000) {
 			Gdx.app.log("TileTest", "fps: " + Gdx.graphics.getFramesPerSecond());
-			startTime = System.nanoTime();
+			startTime = TimeUtils.nanoTime();
 		}
 	}
 

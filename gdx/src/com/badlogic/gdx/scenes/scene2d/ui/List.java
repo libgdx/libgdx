@@ -108,11 +108,10 @@ public class List extends Widget implements Cullable {
 
 		font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a * parentAlpha);
 		float itemY = getHeight();
-        float padding = selectedDrawable.getLeftWidth() + selectedDrawable.getRightWidth();
 		for (int i = 0; i < items.length; i++) {
 			if (cullingArea == null || (itemY - itemHeight <= cullingArea.y + cullingArea.height && itemY >= cullingArea.y)) {
 				if (selectedIndex == i) {
-					selectedDrawable.draw(batch, x, y + itemY - itemHeight, Math.max(prefWidth, getWidth() + padding), itemHeight);
+					selectedDrawable.draw(batch, x, y + itemY - itemHeight, prefWidth, itemHeight);
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				}
 				font.draw(batch, items[i], x + textOffsetX, y + itemY - textOffsetY);
@@ -174,7 +173,6 @@ public class List extends Widget implements Cullable {
 
 		itemHeight = font.getCapHeight() - font.getDescent() * 2;
 		itemHeight += selectedDrawable.getTopHeight() + selectedDrawable.getBottomHeight();
-		prefWidth += selectedDrawable.getLeftWidth() + selectedDrawable.getRightWidth();
 		textOffsetX = selectedDrawable.getLeftWidth();
 		textOffsetY = selectedDrawable.getTopHeight() - font.getDescent();
 
@@ -183,6 +181,7 @@ public class List extends Widget implements Cullable {
 			TextBounds bounds = font.getBounds(items[i]);
 			prefWidth = Math.max(bounds.width, prefWidth);
 		}
+		prefWidth += selectedDrawable.getLeftWidth() + selectedDrawable.getRightWidth();
 		prefHeight = items.length * itemHeight;
 
 		invalidateHierarchy();

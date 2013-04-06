@@ -20,8 +20,8 @@ import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
-import com.badlogic.gdx.StreamUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** Implements part of the {@link Net} API using {@link HttpURLConnection}, to be easily reused between the Android and Desktop
  * backends.

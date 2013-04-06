@@ -60,8 +60,7 @@ public class DragListener extends InputListener {
 	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 		if (pointer == pressedPointer) {
 			if (dragging) dragStop(event, x, y, pointer);
-			dragging = false;
-			pressedPointer = -1;
+			cancel();
 		}
 	}
 
@@ -72,6 +71,12 @@ public class DragListener extends InputListener {
 	}
 
 	public void dragStop (InputEvent event, float x, float y, int pointer) {
+	}
+
+	/* If a drag is in progress, no further drag methods will be called until a new drag is started. */
+	public void cancel () {
+		dragging = false;
+		pressedPointer = -1;
 	}
 
 	/** Returns true if a touch has been dragged outside the tap square. */
