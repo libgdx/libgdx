@@ -35,12 +35,12 @@ import cli.System.Net.WebRequest;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.StreamUtils;
 import com.badlogic.gdx.net.HttpStatus;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.utils.StreamUtils;
 
 public class IOSNet implements Net {
 

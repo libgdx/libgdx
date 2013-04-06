@@ -135,10 +135,19 @@ public class LwjglApplication implements Application {
 		int lastHeight = graphics.getHeight();
 
 		graphics.lastTime = System.nanoTime();
+		boolean wasActive = true;
 		while (running) {
 			Display.processMessages();
-			if (Display.isCloseRequested()) {
-				exit();
+			if (Display.isCloseRequested()) exit();
+
+			boolean isActive = Display.isActive();
+			if (wasActive && !isActive) { // if it's just recently minimized from active state
+				wasActive = false;
+				listener.pause();
+			}
+			if (!wasActive && isActive) { // if it's just recently focused from minimized state
+				wasActive = true;
+				listener.resume();
 			}
 
 			boolean shouldRender = false;
@@ -185,18 +194,20 @@ public class LwjglApplication implements Application {
 			shouldRender |= graphics.shouldRender();
 			input.processEvents();
 			if (audio != null) audio.update();
+
+			if (!isActive && graphics.config.backgroundFPS == -1) shouldRender = false;
+			int frameRate = isActive ? graphics.config.foregroundFPS : graphics.config.backgroundFPS;
 			if (shouldRender) {
 				graphics.updateTime();
 				listener.render();
 				Display.update();
-				if (graphics.vsync && graphics.config.useCPUSynch) {
-					Display.sync(60);
-				}
 			} else {
-				// Effectively sleeps for a little while so we don't spend all available
-				// cpu power in an essentially empty loop.
-				Display.sync(60);
+				// Sleeps to avoid wasting CPU in an empty loop.
+				if (frameRate == -1) frameRate = 10;
+				if (frameRate == 0) frameRate = graphics.config.backgroundFPS;
+				if (frameRate == 0) frameRate = 30;
 			}
+			if (frameRate > 0) Display.sync(frameRate);
 		}
 
 		Array<LifecycleListener> listeners = lifecycleListeners;

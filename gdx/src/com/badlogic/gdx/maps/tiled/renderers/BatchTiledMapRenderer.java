@@ -21,8 +21,14 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	
 	protected Rectangle viewBounds; 
 
+	protected boolean ownsSpriteBatch;
+	
 	public TiledMap getMap() {
 		return map;			
+	}
+	
+	public void setMap(TiledMap map) {
+		this.map = map;
 	}
 	
 	public float getUnitScale() {
@@ -38,10 +44,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	}
 	
 	public BatchTiledMapRenderer(TiledMap map) {
-		this.map = map;
-		this.unitScale = 1;
-		this.spriteBatch = new SpriteBatch();
-		this.viewBounds = new Rectangle();
+		this(map, 1.0f);
 	}
 	
 	public BatchTiledMapRenderer(TiledMap map, float unitScale) {
@@ -49,6 +52,19 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 		this.unitScale = unitScale;
 		this.viewBounds = new Rectangle();
 		this.spriteBatch = new SpriteBatch();
+		this.ownsSpriteBatch = true;
+	}
+	
+	public BatchTiledMapRenderer(TiledMap map, SpriteBatch spriteBatch) {
+		this(map, 1.0f, spriteBatch);		
+	}
+	
+	public BatchTiledMapRenderer(TiledMap map, float unitScale, SpriteBatch spriteBatch) {
+		this.map = map;
+		this.unitScale = unitScale;
+		this.viewBounds = new Rectangle();
+		this.spriteBatch = spriteBatch;
+		this.ownsSpriteBatch = false;
 	}
 	
 	@Override
@@ -102,7 +118,9 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 
 	@Override
 	public void dispose () {
-		spriteBatch.dispose();
+		if (ownsSpriteBatch) {
+			spriteBatch.dispose();	
+		}		
 	}
 	
 }

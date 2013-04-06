@@ -21,7 +21,13 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
+import android.view.inputmethod.BaseInputConnection;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 
 /** A simple GLSurfaceView sub-class that demonstrate how to perform OpenGL ES 2.0 rendering into a GL Surface. Note the following
  * important details:
@@ -59,6 +65,34 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		setMeasuredDimension(measures.width, measures.height);
 	}
 
+	@Override
+	public InputConnection onCreateInputConnection (EditorInfo outAttrs) {
+		BaseInputConnection connection = new BaseInputConnection(this, false) {
+			@Override
+			public boolean deleteSurroundingText (int beforeLength, int afterLength) {
+				int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+				if (sdkVersion >= 16) {
+					/* In Jelly Bean, they don't send key events for delete.
+					 *  Instead, they send beforeLength = 1, afterLength = 0.
+					 *  So, we'll just simulate what it used to do. */
+					if (beforeLength == 1 && afterLength == 0) {
+						sendDownUpKeyEventForBackwardCompatibility(KeyEvent.KEYCODE_DEL);
+						return true;
+					}
+				}
+				return super.deleteSurroundingText(beforeLength, afterLength);
+			}
+			private void sendDownUpKeyEventForBackwardCompatibility (final int code) {
+				final long eventTime = SystemClock.uptimeMillis();
+				super.sendKeyEvent(new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, code, 0, 0,
+					KeyCharacterMap.VIRTUAL_KEYBOARD, 0, KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
+				super.sendKeyEvent(new KeyEvent(SystemClock.uptimeMillis(), eventTime, KeyEvent.ACTION_UP, code, 0, 0,
+					KeyCharacterMap.VIRTUAL_KEYBOARD, 0, KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
+			}
+		};
+		return connection;
+	}
+	
 	private void init (boolean translucent, int depth, int stencil) {
 
 		/*

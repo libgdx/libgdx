@@ -1,11 +1,12 @@
 
-package com.badlogic.gdx;
+package com.badlogic.gdx.net;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
 
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpRequest;
 
 /** Provides utility methods to work with the {@link HttpRequest} content and parameters. */

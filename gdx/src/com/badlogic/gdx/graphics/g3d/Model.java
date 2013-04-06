@@ -42,10 +42,10 @@ import com.badlogic.gdx.utils.Pool;
  * A model can be rendered by creating a {@link ModelInstance} from it. That instance has an additional
  * transform to position the model in the world, and allows modification of materials and nodes without
  * destroying the original model. The original model is the owner of any meshes and textures, all instances
- * derrived from the model share these resources. Disposing the model will automatically make all instances
+ * created from the model share these resources. Disposing the model will automatically make all instances
  * invalid!</p>
  * 
- * A model is derrived from {@link ModelData}, which in turn is loaded by a {@link ModelLoader}.
+ * A model is created from {@link ModelData}, which in turn is loaded by a {@link ModelLoader}.
  *   
  * @author badlogic
  *

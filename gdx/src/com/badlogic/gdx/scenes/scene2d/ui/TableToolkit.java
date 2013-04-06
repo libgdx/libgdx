@@ -33,13 +33,6 @@ class TableToolkit extends Toolkit<Actor, Table, TableLayout> {
 
 	public void addChild (Actor parent, Actor child) {
 		child.remove();
-		try {
-			parent.getClass().getMethod("setWidget", Actor.class).invoke(parent, child);
-			return;
-		} catch (InvocationTargetException ex) {
-			throw new RuntimeException("Error calling setWidget.", ex);
-		} catch (Exception ignored) {
-		}
 		((Group)parent).addActor(child);
 	}
 

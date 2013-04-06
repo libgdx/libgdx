@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics.g3d;
 
 import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.model.MeshPartMaterial;
 import com.badlogic.gdx.graphics.g3d.model.Node;
@@ -30,6 +31,8 @@ public class ModelInstance implements RenderableProvider {
 	public final Array<Material> materials = new Array<Material>();
 	/** a copy of the nodes of the original model, referencing the copied materials in their {@link MeshPartMaterial} instances **/
 	public final Array<Node> nodes = new Array<Node>();
+	/** a copy of the animations of the original model **/
+	public final Array<Animation> animations = new Array<Animation>();
 
 	/** Constructs a new ModelInstance with all nodes and materials of the given model. */
 	public ModelInstance(Model model) {

@@ -5,11 +5,11 @@ import com.badlogic.gdx.math.Vector3;
 
 /**
  * A BoneyKeyframe specifies the translation, rotation and scale of a frame within
- * a {@link BoneAnimation}.
+ * a {@link NodeAnimation}.
  * @author badlogic
  *
  */
-public class BoneKeyframe {
+public class NodeKeyframe {
 	/** the timestamp of this keyframe **/
 	public float keytime;
 	/** the translation, given in local space, relative to the parent **/

@@ -24,6 +24,7 @@ import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 public abstract class Joint {
 	World world;
 	org.jbox2d.dynamics.joints.Joint joint;
+	Object userData;
 	JointEdge jointEdgeA;
 	JointEdge jointEdgeB;
 
@@ -89,6 +90,16 @@ public abstract class Joint {
 	/** Get the reaction torque on body2 in N*m. */
 	public float getReactionTorque (float inv_dt) {
 		return joint.getReactionTorque(inv_dt);
+	}
+
+	/** Get the user data */
+	public Object getUserData () {
+		return userData;
+	}
+
+	/** Set the user data */
+	public void setUserData (Object userData) {
+		this.userData = userData;
 	}
 
 	/** Short-cut function to determine if either body is inactive. */

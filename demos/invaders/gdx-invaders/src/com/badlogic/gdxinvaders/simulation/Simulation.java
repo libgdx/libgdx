@@ -80,7 +80,7 @@ public class Simulation implements Disposable {
 		shipModel.materials.get(0).add(TextureAttribute.createDiffuse(shipTexture));
 		invaderModel.materials.get(0).add(TextureAttribute.createDiffuse(invaderTexture));
 		
-		blockModel.materials.get(0).add(ColorAttribute.createDiffuse(0, 0, 1, 0.5f));
+		((ColorAttribute)blockModel.materials.get(0).get(ColorAttribute.Diffuse)).color.set(0, 0, 1, 0.5f);
 		blockModel.materials.get(0).add(new BlendingAttribute(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA));
 		
 		shotModel.materials.get(0).add(ColorAttribute.createDiffuse(1, 1, 0, 1f));
@@ -139,6 +139,7 @@ public class Simulation implements Disposable {
 				TextureAttribute.createDiffuse(explosionTexture)));
 		
 		ship = new Ship(shipModel);
+		ship.transform.rotate(0, 1, 0, 180);
 
 		for (int row = 0; row < 4; row++) {
 			for (int column = 0; column < 8; column++) {
@@ -231,10 +232,10 @@ public class Simulation implements Disposable {
 		removedShots.clear();
 
 		if (!ship.isExploding) {
+			ship.transform.getTranslation(tmpV1);
 			for (int i = 0; i < shots.size(); i++) {
 				Shot shot = shots.get(i);
 				if (!shot.isInvaderShot) continue;
-				ship.transform.getTranslation(tmpV1);
 				shot.transform.getTranslation(tmpV2);
 				if (tmpV1.dst(tmpV2) < Ship.SHIP_RADIUS) {
 					removedShots.add(shot);
@@ -251,10 +252,10 @@ public class Simulation implements Disposable {
 				shots.remove(removedShots.get(i));
 		}
 
+		ship.transform.getTranslation(tmpV2);
 		for (int i = 0; i < invaders.size(); i++) {
 			Invader invader = invaders.get(i);
 			invader.transform.getTranslation(tmpV1);
-			ship.transform.getTranslation(tmpV2);
 			if (tmpV1.dst(tmpV2) < Ship.SHIP_RADIUS) {
 				ship.lives--;
 				invaders.remove(invader);
@@ -272,11 +273,11 @@ public class Simulation implements Disposable {
 
 		for (int i = 0; i < shots.size(); i++) {
 			Shot shot = shots.get(i);
+			shot.transform.getTranslation(tmpV2);
 
 			for (int j = 0; j < blocks.size(); j++) {
 				Block block = blocks.get(j);
 				block.transform.getTranslation(tmpV1);
-				shot.transform.getTranslation(tmpV2);
 				if (tmpV1.dst(tmpV2) < Block.BLOCK_RADIUS) {
 					removedShots.add(shot);
 					shot.hasLeftField = true;
