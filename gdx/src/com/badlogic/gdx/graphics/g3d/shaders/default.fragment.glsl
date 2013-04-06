@@ -73,4 +73,8 @@ void main() {
 	#else
 		gl_FragColor.rgb = diffuse.rgb;
 	#endif
+
+	#ifdef blendedFlag
+		gl_FragColor.a = diffuse.a;
+	#endif
 }
