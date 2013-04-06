@@ -4,12 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.loader.JsonModelLoader;
-import com.badlogic.gdx.graphics.g3d.test.Light;
-import com.badlogic.gdx.graphics.g3d.test.TestShader;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
@@ -24,9 +24,9 @@ public class NewModelTest extends GdxTest {
 	ShapeRenderer shapeRenderer;
 	
 	Light[] lights = new Light[] {
-		new Light(Color.WHITE, Vector3.tmp.set(-10f, 10f, -10f), 15f),
-		new Light(Color.BLUE, Vector3.tmp.set(10f, 5f, 0f), 10f),
-		new Light(Color.GREEN, Vector3.tmp.set(0f, 10f, 5f), 5f)
+		new Light(Color.WHITE, Vector3.tmp.set(-10f, 10f, -10f), Vector3.tmp2.set(0f, 1f/15f, 0f)),
+		new Light(Color.BLUE, Vector3.tmp.set(10f, 5f, 0f), Vector3.tmp2.set(0f, 1f/10f, 0f)),
+		new Light(Color.GREEN, Vector3.tmp.set(0f, 10f, 5f), Vector3.tmp2.set(0f, 1f/5f, 0f))
 	};
 	
 	float touchStartX = 0;
@@ -38,7 +38,6 @@ public class NewModelTest extends GdxTest {
 		model = new Model(loader.parseModel(Gdx.files.internal("data/g3d/cubes.g3dj")));
 		instance = new ModelInstance(model);
 		modelBatch = new ModelBatch();
-		TestShader.ignoreUnimplemented = true;
 		shapeRenderer = new ShapeRenderer();
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

@@ -256,7 +256,9 @@ public class RayPickRagdollTest extends BaseBulletTest {
 	protected Model createCapsuleModel(float radius, float height) {
 		final float hh = radius + 0.5f * height;
 		// return ModelBuilder
-		return modelBuilder.createCylinder(radius * 2, hh * 2f, radius * 2f, 16, new Material(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE)));
+		return modelBuilder.createCylinder(radius * 2, hh * 2f, radius * 2f, 16, 
+			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE)), 
+			new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE)));
 		// return ModelBuilder.createBox(radius*2f, hh*2f, radius*2f, new NewMaterial(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)));
 	}
 }

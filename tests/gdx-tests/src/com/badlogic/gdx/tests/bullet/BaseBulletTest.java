@@ -26,10 +26,12 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
@@ -37,10 +39,10 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPartMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
-import com.badlogic.gdx.graphics.g3d.test.Light;
-import com.badlogic.gdx.graphics.g3d.test.TestShader;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -69,7 +71,10 @@ public class BaseBulletTest extends BulletTest {
 	}
 	
 	public Light[] lights = new Light[] {
-		new Light(Color.WHITE, Vector3.tmp.set(-10f, 10f, -10f), 50f),
+		//new Light(0.3f, 0.3f, 0.3f, 1f), // ambient light
+		new Light(0.8f, 0.8f, 0.8f, 1f, 0f, -1f, -1f), // directional light
+		//new Light(1f, 1f, 1f, 1f, 5f, 10f, 20f, 1f, 0f, 0f), // point light
+		//new Light(1f, 1f, 1f, 1f, 10f, 20f, 5f, -1f, -2f, -0.5f, 30f, 1f, 0f, 0f), // spot light
 	};
 
 	public PerspectiveCamera camera;
@@ -91,7 +96,6 @@ public class BaseBulletTest extends BulletTest {
 	public void create () {
 		init();
 		modelBatch = new ModelBatch();
-		TestShader.ignoreUnimplemented = true;
 		
 		world = createWorld();
 		world.performanceCounter = performanceCounter;
@@ -107,8 +111,12 @@ public class BaseBulletTest extends BulletTest {
 		camera.update();
 		
 		// Create some simple meshes
-		final Model groundModel = modelBuilder.createRect(20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f, 0, 1, 0, new Material(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE)));
-		final Model boxModel = modelBuilder.createBox(1f, 1f, 1f, new Material(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)), new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE))); 
+		final Model groundModel = modelBuilder.createRect(20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f, 0, 1, 0, 
+			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(16f)),
+			new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE)));
+		final Model boxModel = modelBuilder.createBox(1f, 1f, 1f,
+			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), 
+			new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE)));
 
 		// Add the constructors
 		world.addConstructor("ground", new BulletConstructor(groundModel, 0f)); // mass = 0: static body

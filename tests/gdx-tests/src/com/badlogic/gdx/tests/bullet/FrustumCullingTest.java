@@ -168,7 +168,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		frustumEntity.setColor(Color.BLUE);
 		
 		lights[0].position.set(0,0,0);
-		lights[0].power = frustumCam.far * 1.25f;
+		lights[0].attenuation.set(1f, 0f, 0f);
 	}
 	
 	@Override
