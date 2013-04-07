@@ -161,15 +161,11 @@ public class DefaultShader implements Shader {
 		return (mask & flag) == flag;
 	}
 	
-	/*@Override
-	public int compareTo (final Object other) {
-		return (other instanceof RenderShader) ? compareTo((RenderShader)other) : -1;
-	}*/
-	
 	@Override
 	public int compareTo(Shader other) {
-		// TODO Auto-generated method stub
-		return 0;
+		if (other == null) return -1;
+		if (other == this) return 0;
+		return 0; // FIXME compare shaders on their impact on performance
 	}
 	
 	@Override
@@ -222,6 +218,7 @@ public class DefaultShader implements Shader {
 		if (currentMesh != renderable.mesh) {
 			if (currentMesh != null)
 				currentMesh.unbind(program);
+			renderable.mesh.setAutoBind(false); // FIXME this doesn't belong here
 			(currentMesh = renderable.mesh).bind(program);
 		}
 		renderable.mesh.render(program, renderable.primitiveType, renderable.meshPartOffset, renderable.meshPartSize);
