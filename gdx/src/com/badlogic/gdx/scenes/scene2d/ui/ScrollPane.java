@@ -547,12 +547,20 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public float getPrefWidth () {
-		if (widget instanceof Layout) return ((Layout)widget).getPrefWidth();
+		if (widget instanceof Layout) {
+			float width = ((Layout)widget).getPrefWidth();
+			if (style.background != null) width += style.background.getLeftWidth() + style.background.getRightWidth();
+			return width;
+		}
 		return 150;
 	}
 
 	public float getPrefHeight () {
-		if (widget instanceof Layout) return ((Layout)widget).getPrefHeight();
+		if (widget instanceof Layout) {
+			float height = ((Layout)widget).getPrefHeight();
+			if (style.background != null) height += style.background.getTopHeight() + style.background.getBottomHeight();
+			return height;
+		}
 		return 150;
 	}
 
