@@ -32,12 +32,4 @@ public class FloatAttribute extends Material.Attribute {
 		// FIXME use epsilon?
 		return ((FloatAttribute)other).value == value;
 	}
-	
-	@Override
-	public void set (Attribute other) {
-		if (other == null || other.type != type || !(other instanceof FloatAttribute))
-			throw new GdxRuntimeException("Cannot set this attribute to an attribute of another type");
-		final FloatAttribute o = (FloatAttribute)other;
-		value = o.value;
-	}
 }

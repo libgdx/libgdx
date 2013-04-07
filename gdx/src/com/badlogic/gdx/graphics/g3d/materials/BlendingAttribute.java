@@ -38,13 +38,4 @@ public class BlendingAttribute extends Material.Attribute {
 		return ((BlendingAttribute)other).sourceFunction == sourceFunction && 
 			((BlendingAttribute)other).destFunction == destFunction; 
 	}
-
-	@Override
-	public void set (Attribute other) {
-		if (other == null || other.type != type || !(other instanceof BlendingAttribute))
-			throw new GdxRuntimeException("Cannot set this attribute to an attribute of another type");
-		final BlendingAttribute o = (BlendingAttribute)other;
-		sourceFunction = o.sourceFunction;
-		destFunction = o.destFunction;
-	}
 }

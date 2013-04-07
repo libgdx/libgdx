@@ -59,12 +59,4 @@ public class TextureAttribute extends Material.Attribute {
 	protected boolean equals (Attribute other) {
 		return ((TextureAttribute)other).textureDescription.equals(textureDescription);
 	}
-	
-	@Override
-	public void set (Attribute other) {
-		if (other == null || other.type != type || !(other instanceof TextureAttribute))
-			throw new GdxRuntimeException("Cannot set this attribute to an attribute of another type");
-		final TextureAttribute o = (TextureAttribute)other;
-		textureDescription.set(o.textureDescription);
-	}
 }

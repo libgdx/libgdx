@@ -34,4 +34,6 @@ public class Renderable {
 	public Light[] lights;
 	/** the Shader to be used to render this Renderable, may be null **/
 	public Shader shader;
+	/** user definable value. */
+	public Object userData;
 }

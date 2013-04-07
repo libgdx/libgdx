@@ -37,8 +37,6 @@ public class Material implements Iterable<Material.Attribute>, Comparator<Materi
 		public String toString () {
 			return Material.getAttributeAlias(type);
 		}
-		/** Set this attribute to the values of the specified other attribute, which must be of the same type. */
-		public abstract void set(Attribute other);
 	}
 	
 	/** The registered type aliases */

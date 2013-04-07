@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.utils.Array;
 
@@ -14,5 +15,5 @@ public interface RenderableSorter {
 	 * e.g. material, distance to camera etc.
 	 * @param renderables the array of renderables to be sorted
 	 */
-	public void sort(Array<Renderable> renderables);
+	public void sort(Camera camera, Array<Renderable> renderables);
 }

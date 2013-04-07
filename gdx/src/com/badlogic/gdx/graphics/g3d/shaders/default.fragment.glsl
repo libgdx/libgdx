@@ -35,15 +35,6 @@ uniform sampler2D specularTexture;
 varying vec3 v_lightDiffuse;
 varying vec3 v_lightSpecular;
 varying vec3 v_viewVec;
-/* #if (NUM_LIGHTS > 0)
-struct Light
-{
-	vec4 color;
-	vec3 position;
-	float power;
-};
-uniform Light lights[NUM_LIGHTS];
-#endif */
 #endif
 
 void main() {

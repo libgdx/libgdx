@@ -68,12 +68,4 @@ public class ColorAttribute extends Material.Attribute {
 	protected boolean equals (Attribute other) {
 		return ((ColorAttribute)other).color.equals(color);
 	}
-	
-	@Override
-	public void set (Attribute other) {
-		if (other == null || other.type != type || !(other instanceof ColorAttribute))
-			throw new GdxRuntimeException("Cannot set this attribute to an attribute of another type");
-		final ColorAttribute o = (ColorAttribute)other;
-		color.set(o.color);
-	}
 }
