@@ -11,7 +11,7 @@ public class Material implements Iterable<Material.Attribute>, Comparator<Materi
 	/** Extend this class to implement a material attribute.
 	 *  Register the attribute type by statically calling the {@link #register(String)} method, 
 	 *  whose return value should be used to instantiate the attribute. 
-	 *  A class can implement multiple types*/
+	 *  A class can implement multiple types */
 	public static abstract class Attribute {
 		protected static long register(final String type) {
 			return Material.register(type);
@@ -128,29 +128,41 @@ public class Material implements Iterable<Material.Attribute>, Comparator<Materi
 	public final boolean has(final long type) {
 		return type > 0 && (this.mask & type) == type;
 	}
-
-	/** Add one or more attributes to this material */
-	public final void add(final Attribute... attributes) {
-		for (int i = 0; i < attributes.length; i++) {
-			final Attribute attr = attributes[i];
-			if (!has(attr.type)) {
-				enable(attr.type);
-				this.attributes.add(attr);
-				sorted = false;
-			}
-		}
+	
+	/** @return the index of the attribute with the specified type or negative if not available. */
+	protected int indexOf(final long type) {
+		if (has(type))
+			for (int i = 0; i < attributes.size; i++)
+				if (attributes.get(i).type == type)
+					return i;
+		return -1;
 	}
 
-	/** Add an array of attributes to this material */
-	public final void add(final Array<Attribute> attributes) {
-		for (int i = 0; i < attributes.size; i++) {
-			final Attribute attr = attributes.get(i);
-			if (!has(attr.type)) {
-				enable(attr.type);
-				this.attributes.add(attr);
-				sorted = false;
-			}
+	/** Add a attribute to this material.
+	 * If the material already contains an attribute of the same type it is overwritten. */
+	public final void add(final Attribute attribute) {
+		final int idx = indexOf(attribute.type);
+		if (idx < 0) {
+			enable(attribute.type);
+			attributes.add(attribute);
+			sorted = false;
+		} else {
+			attributes.set(idx, attribute);
 		}
+	}
+	
+	/** Add an array of attributes to this material. 
+	 * If the material already contains an attribute of the same type it is overwritten. */
+	public final void add(final Attribute... attributes) {
+		for (final Attribute attr : attributes)
+			add(attr);
+	}
+
+	/** Add an array of attributes to this material.
+	 * If the material already contains an attribute of the same type it is overwritten. */
+	public final void add(final Array<Attribute> attributes) {
+		for (final Attribute attr : attributes)
+			add(attr);
 	}
 	
 	/** Removes the attribute from the material, i.e.: material.remove(BlendingAttribute.ID);

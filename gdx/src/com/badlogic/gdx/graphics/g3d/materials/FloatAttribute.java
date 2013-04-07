@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.materials;
 
 import com.badlogic.gdx.graphics.g3d.materials.Material.Attribute;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class FloatAttribute extends Material.Attribute {
 	public static final String ShininessAlias = "shininess";

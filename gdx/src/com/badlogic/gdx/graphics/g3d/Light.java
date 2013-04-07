@@ -100,6 +100,7 @@ public class Light {
 			direction.set(other.direction);
 			angle = other.angle;
 			attenuation.set(other.attenuation);
+			exponent = other.exponent;
 		}
 	}
 	
@@ -114,7 +115,7 @@ public class Light {
 			return false;
 		if ((type == DIRECTIONAL || type == SPOT) && !direction.equals(other.direction))
 			return false;
-		if (type == SPOT && angle != other.angle)
+		if (type == SPOT && (angle != other.angle || exponent != other.exponent))
 			return false;
 		return true;
 	}

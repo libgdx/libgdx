@@ -39,7 +39,7 @@ public class TextureAttribute extends Material.Attribute {
 	}
 	
 	public TextureAttribute(final long type) {
-		this(type, (TextureDescriptor)null);
+		this(type, new TextureDescriptor());
 	}
 	
 	public TextureAttribute(final long type, final Texture texture) {

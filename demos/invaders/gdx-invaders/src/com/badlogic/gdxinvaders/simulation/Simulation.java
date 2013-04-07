@@ -121,7 +121,7 @@ public class Simulation implements Disposable {
 				vertices[idx++] = 0.25f + column * 0.25f;
 				vertices[idx++] = 0.25f + row * 0.25f;
 				
-				final int t = row*column*4;
+				final int t = (4*row+column)*4;
 				indices[index++] = (short)(t);
 				indices[index++] = (short)(t+1);
 				indices[index++] = (short)(t+2);
