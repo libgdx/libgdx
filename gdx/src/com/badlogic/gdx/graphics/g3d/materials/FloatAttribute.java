@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.materials;
 
 import com.badlogic.gdx.graphics.g3d.materials.Material.Attribute;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class FloatAttribute extends Material.Attribute {
 	public static final String ShininessAlias = "shininess";
@@ -30,5 +31,13 @@ public class FloatAttribute extends Material.Attribute {
 	protected boolean equals (Attribute other) {
 		// FIXME use epsilon?
 		return ((FloatAttribute)other).value == value;
+	}
+	
+	@Override
+	public void set (Attribute other) {
+		if (other == null || other.type != type || !(other instanceof FloatAttribute))
+			throw new GdxRuntimeException("Cannot set this attribute to an attribute of another type");
+		final FloatAttribute o = (FloatAttribute)other;
+		value = o.value;
 	}
 }

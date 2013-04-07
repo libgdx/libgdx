@@ -39,7 +39,7 @@ public class TextureAttribute extends Material.Attribute {
 	}
 	
 	public TextureAttribute(final long type) {
-		this(type, (TextureDescriptor)null);
+		this(type, new TextureDescriptor());
 	}
 	
 	public TextureAttribute(final long type, final Texture texture) {
@@ -58,5 +58,13 @@ public class TextureAttribute extends Material.Attribute {
 	@Override
 	protected boolean equals (Attribute other) {
 		return ((TextureAttribute)other).textureDescription.equals(textureDescription);
+	}
+	
+	@Override
+	public void set (Attribute other) {
+		if (other == null || other.type != type || !(other instanceof TextureAttribute))
+			throw new GdxRuntimeException("Cannot set this attribute to an attribute of another type");
+		final TextureAttribute o = (TextureAttribute)other;
+		textureDescription.set(o.textureDescription);
 	}
 }

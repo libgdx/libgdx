@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.materials;
 
 import com.badlogic.gdx.graphics.g3d.materials.Material.Attribute;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class BlendingAttribute extends Material.Attribute {
 	public final static String Alias = "blended";
@@ -36,5 +37,14 @@ public class BlendingAttribute extends Material.Attribute {
 	protected boolean equals (final Attribute other) {
 		return ((BlendingAttribute)other).sourceFunction == sourceFunction && 
 			((BlendingAttribute)other).destFunction == destFunction; 
+	}
+
+	@Override
+	public void set (Attribute other) {
+		if (other == null || other.type != type || !(other instanceof BlendingAttribute))
+			throw new GdxRuntimeException("Cannot set this attribute to an attribute of another type");
+		final BlendingAttribute o = (BlendingAttribute)other;
+		sourceFunction = o.sourceFunction;
+		destFunction = o.destFunction;
 	}
 }
