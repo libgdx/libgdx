@@ -269,7 +269,6 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	 * @param tmxFile the Filehandle of the tmx file
 	 * @param imageResolver the {@link ImageResolver}
 	 */
-
 	protected void loadTileSet(TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
 		if (element.getName().equals("tileset")) {
 			String name = element.get("name", null);
@@ -358,7 +357,11 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 			map.getTileSets().addTileSet(tileset);
 		}		
 	}
-	
+		
+	/** Load one layer (a 'layer' tag).
+	 * @param map
+	 * @param element
+	 */
 	protected void loadTileLayer(TiledMap map, Element element) {
 		if (element.getName().equals("layer")) {
 			String name = element.getAttribute("name", null);
@@ -378,6 +381,9 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 			Element data = element.getChildByName("data");
 			String encoding = data.getAttribute("encoding", null);
 			String compression = data.getAttribute("compression", null);
+			if (encoding == null) {	  // no 'encoding' attribute means that the encoding is XML
+				throw new GdxRuntimeException("Unsupported encoding (XML) for TMX Layer Data");
+			}
 			if (encoding.equals("csv")) {
 				String[] array = data.getText().split(",");
 				for (int y = 0; y < height; y++) {
@@ -566,6 +572,9 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 							}
 						}
 					}
+				}
+				else {         // any other value of 'encoding' is one we're not aware of, probably a feature of a future version of Tiled or another editor
+					throw new GdxRuntimeException("Unrecognised encoding (" + encoding + ") for TMX Layer Data");
 				}
 			}
 			Element properties = element.getChildByName("properties");
