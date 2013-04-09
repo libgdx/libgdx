@@ -22,7 +22,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -54,17 +57,24 @@ import com.badlogic.gdx.utils.FloatArray;
 /** Loads Wavefront OBJ files.
  * 
  * @author mzechner, espitz */
-public class ObjLoader /* implements StillModelLoader */ {
-	final FloatArray verts;
-	final FloatArray norms;
-	final FloatArray uvs;
-	final ArrayList<Group> groups;
+public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
+	public static class ObjLoaderParameters extends AssetLoaderParameters<Model> {
+		public boolean flipV;
+		public FileHandle textureDir;
+	}
+	
+	final FloatArray verts = new FloatArray(300);
+	final FloatArray norms = new FloatArray(300);
+	final FloatArray uvs = new FloatArray(200);
+	final ArrayList<Group> groups = new ArrayList<Group>(10);
 
+	@Deprecated
 	public ObjLoader () {
-		verts = new FloatArray(300);
-		norms = new FloatArray(300);
-		uvs = new FloatArray(200);
-		groups = new ArrayList<Group>(10);
+		this(null);
+	}
+	
+	public ObjLoader (FileHandleResolver resolver) {
+		super(resolver);
 	}
 
 	/** Loads a Wavefront OBJ file from a given file handle.
@@ -88,6 +98,16 @@ public class ObjLoader /* implements StillModelLoader */ {
 	 * @param textureDir
 	 * @param flipV whether to flip the v texture coordinate (Blender, Wings3D, et al) */
 	public Model loadObj (FileHandle file, FileHandle textureDir, boolean flipV) {
+		return new Model(loadModelData(file, textureDir, flipV));
+	}
+	
+	public ModelData loadModelData (FileHandle file, ObjLoaderParameters parameters) {
+		return loadModelData(file, 
+			parameters == null || parameters.textureDir == null ? file.parent() : parameters.textureDir,
+			parameters == null ? false : parameters.flipV);
+	}
+	
+	public ModelData loadModelData (FileHandle file, FileHandle textureDir, boolean flipV) {
 		String line;
 		String[] tokens;
 		char firstChar;
@@ -273,7 +293,7 @@ public class ObjLoader /* implements StillModelLoader */ {
 		if (uvs.size > 0) uvs.clear();
 		if (groups.size() > 0) groups.clear();
 
-		return new Model(data);
+		return data;
 	}
 
 	private Group setActiveGroup (String name) {
@@ -317,18 +337,6 @@ public class ObjLoader /* implements StillModelLoader */ {
 
 class MtlLoader {
 	public ArrayList<ModelMaterial> materials = new ArrayList<ModelMaterial>();
-	private static AssetManager assetManager;
-	private static Texture emptyTexture = null;
-
-	public MtlLoader () {
-		if (emptyTexture == null) {
-			assetManager = new AssetManager();
-			Pixmap pm = new Pixmap(1, 1, Format.RGB888);
-			pm.setColor(0.5f, 0.5f, 0.5f, 1);
-			pm.fill();
-			emptyTexture = new Texture(pm, false);
-		}
-	}
 
 	/** loads .mtl file
 	 * @param name */
@@ -360,10 +368,13 @@ class MtlLoader {
 					mat.id = curMatName;
 					mat.diffuse = new Color(difcolor);
 					mat.specular = new Color(speccolor);
-					mat.diffuseTextures = new Array<ModelTexture>();
-					ModelTexture tex = new ModelTexture();
-					tex.fileName = new String(texFilename);
-					mat.diffuseTextures.add(tex);
+					if (texFilename != null) {
+						ModelTexture tex = new ModelTexture();
+						tex.fileName = new String(texFilename);
+						if (mat.diffuseTextures == null)
+							mat.diffuseTextures = new Array<ModelTexture>(1);
+						mat.diffuseTextures.add(tex);						
+					}
 					materials.add(mat);
 
 					if (tokens.length > 1) {
@@ -409,10 +420,13 @@ class MtlLoader {
 		mat.id = curMatName;
 		mat.diffuse = new Color(difcolor);
 		mat.specular = new Color(speccolor);
-		mat.diffuseTextures = new Array<ModelTexture>();
-		ModelTexture tex = new ModelTexture();
-		tex.fileName = new String(texFilename);
-		mat.diffuseTextures.add(tex);
+		if (texFilename != null) {
+			ModelTexture tex = new ModelTexture();
+			tex.fileName = new String(texFilename);
+			if (mat.diffuseTextures == null)
+				mat.diffuseTextures = new Array<ModelTexture>(1);
+			mat.diffuseTextures.add(tex);
+		}
 		materials.add(mat);
 
 		return;

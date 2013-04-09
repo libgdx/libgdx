@@ -37,9 +37,9 @@ public class NewModelTest extends GdxTest {
 	public void create () {
 		if (assets == null)
 			assets = new AssetManager();
-		assets.load("data/g3d/test.g3dj", Model.class);
+		assets.load("data/cube.obj", Model.class);
 		assets.finishLoading();
-		model = assets.get("data/g3d/test.g3dj", Model.class);
+		model = assets.get("data/cube.obj", Model.class);
 		instance = new ModelInstance(model);
 		modelBatch = new ModelBatch();
 		shapeRenderer = new ShapeRenderer();
