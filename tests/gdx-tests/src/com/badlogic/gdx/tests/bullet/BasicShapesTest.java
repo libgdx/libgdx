@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
@@ -35,7 +36,7 @@ public class BasicShapesTest extends BaseBulletTest {
 		super.create();
 
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
-		final Material material = new Material(ColorAttribute.createSpecular(1,1,1,1), new TextureAttribute(TextureAttribute.Diffuse, new TextureDescriptor(texture)));
+		final Material material = new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(1,1,1,1), FloatAttribute.createShininess(8f));
 		final VertexAttributes attributes = new VertexAttributes(
 						new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
 						new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE),

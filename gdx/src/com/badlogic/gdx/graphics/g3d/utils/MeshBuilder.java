@@ -222,48 +222,48 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 	
 	@Override
-	public void rect(VertexInfo corner00, VertexInfo corner01, VertexInfo corner10, VertexInfo corner11) {
+	public void rect(VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01) {
 		vertex(corner00);
-		vertex(corner01);
 		vertex(corner10);
 		vertex(corner11);
+		vertex(corner01);
 		indices.ensureCapacity(6);
 		indices.add((short)(vindex-4));
 		indices.add((short)(vindex-3));
 		indices.add((short)(vindex-2));
-		indices.add((short)(vindex-3));
 		indices.add((short)(vindex-2));
 		indices.add((short)(vindex-1));
+		indices.add((short)(vindex-4));
 	}
 	
 	@Override
-	public void rect(Vector3 corner00, Vector3 corner01, Vector3 corner10, Vector3 corner11, Vector3 normal) {
+	public void rect(Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal) {
 		rect(vertTmp1.set(corner00, normal, null, null).setUV(uMin,vMin),
-			vertTmp2.set(corner01, normal, null, null).setUV(uMin,vMax),
 			vertTmp3.set(corner10, normal, null, null).setUV(uMax,vMin),
-			vertTmp4.set(corner11, normal, null, null).setUV(uMax,vMax));
+			vertTmp4.set(corner11, normal, null, null).setUV(uMax,vMax),
+			vertTmp2.set(corner01, normal, null, null).setUV(uMin,vMax));
 	}
 	
 	@Override
-	public void rect(float x00, float y00, float z00, float x01, float y01, float z01, float x10, float y10, float z10, float x11, float y11, float z11, float normalX, float normalY, float normalZ) {
+	public void rect(float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11, float x01, float y01, float z01, float normalX, float normalY, float normalZ) {
 		rect(vertTmp1.set(null, null, null, null).setPos(x00,y00,z00).setNor(normalX,normalY,normalZ).setUV(uMin,vMin),
-			vertTmp2.set(null, null, null, null).setPos(x01,y01,z01).setNor(normalX,normalY,normalZ).setUV(uMin,vMax),
 			vertTmp3.set(null, null, null, null).setPos(x10,y10,z10).setNor(normalX,normalY,normalZ).setUV(uMax,vMin),
-			vertTmp4.set(null, null, null, null).setPos(x11,y11,z11).setNor(normalX,normalY,normalZ).setUV(uMax,vMax));
+			vertTmp4.set(null, null, null, null).setPos(x11,y11,z11).setNor(normalX,normalY,normalZ).setUV(uMax,vMax),
+			vertTmp2.set(null, null, null, null).setPos(x01,y01,z01).setNor(normalX,normalY,normalZ).setUV(uMin,vMax));
 	}
 	
 	@Override
 	public void box(Vector3 corner000, Vector3 corner010, Vector3 corner100, Vector3 corner110,
 						Vector3 corner001, Vector3 corner011, Vector3 corner101, Vector3 corner111) {
 		Vector3 nor = tempV1.set(corner000).lerp(corner110, 0.5f).sub(tempV2.set(corner001).lerp(corner111, 0.5f)).nor();
-		rect(corner000, corner010, corner100, corner110, nor);
-		rect(corner001, corner011, corner101, corner111, nor.scl(-1));
+		rect(corner000, corner010, corner110, corner100, nor);
+		rect(corner011, corner001, corner101, corner111, nor.scl(-1));
 		nor = tempV1.set(corner000).lerp(corner101, 0.5f).sub(tempV2.set(corner010).lerp(corner111, 0.5f)).nor();
-		rect(corner000, corner001, corner100, corner101, nor);
-		rect(corner010, corner011, corner110, corner111, nor.scl(-1));
+		rect(corner001, corner000, corner100, corner101, nor);
+		rect(corner010, corner011, corner111, corner110, nor.scl(-1));
 		nor = tempV1.set(corner000).lerp(corner011, 0.5f).sub(tempV2.set(corner100).lerp(corner111, 0.5f)).nor();
-		rect(corner000, corner001, corner010, corner011, nor);
-		rect(corner100, corner101, corner110, corner111, nor.scl(-1));
+		rect(corner001, corner011, corner010, corner000, nor);
+		rect(corner100, corner110, corner111, corner101, nor.scl(-1));
 	}
 	
 	@Override
@@ -314,8 +314,8 @@ public class MeshBuilder implements MeshPartBuilder {
 			indices.add((short)(vindex-3));
 			indices.add((short)(vindex-2));
 			indices.add((short)(vindex-3));
-			indices.add((short)(vindex-2));
 			indices.add((short)(vindex-1));
+			indices.add((short)(vindex-2));
 		}
 	}
 	
@@ -343,8 +343,8 @@ public class MeshBuilder implements MeshPartBuilder {
 			if (i == 0)
 				continue;
 			indices.add((short)base);
-			indices.add((short)(vindex-2));
 			indices.add((short)(vindex-1));
+			indices.add((short)(vindex-2));
 		}
 	}
 	
@@ -381,8 +381,8 @@ public class MeshBuilder implements MeshPartBuilder {
 				indices.add((short)(vindex-1));
 				indices.add((short)(vindex-(divisionsV+2)));
 				indices.add((short)(vindex-1));
-				indices.add((short)(vindex-(divisionsV+2)));
 				indices.add((short)(vindex-(divisionsV+1)));
+				indices.add((short)(vindex-(divisionsV+2)));
 			}
 		}
 	}
