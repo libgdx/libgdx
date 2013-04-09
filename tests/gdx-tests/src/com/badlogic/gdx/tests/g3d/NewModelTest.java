@@ -1,6 +1,7 @@
 package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class NewModelTest extends GdxTest {
+	AssetManager assets;
 	PerspectiveCamera cam;
 	ModelBatch modelBatch;
 	Model model;
@@ -24,9 +26,8 @@ public class NewModelTest extends GdxTest {
 	ShapeRenderer shapeRenderer;
 	
 	Light[] lights = new Light[] {
-		new Light(Color.WHITE, Vector3.tmp.set(-10f, 10f, -10f), Vector3.tmp2.set(0f, 1f/15f, 0f)),
-		new Light(Color.BLUE, Vector3.tmp.set(10f, 5f, 0f), Vector3.tmp2.set(0f, 1f/10f, 0f)),
-		new Light(Color.GREEN, Vector3.tmp.set(0f, 10f, 5f), Vector3.tmp2.set(0f, 1f/5f, 0f))
+		new Light(0.8f, 0.8f, 0.8f, 1f),
+		new Light(0.2f, 0.2f, 0.2f, 1f, -1f, -2f, -3f)
 	};
 	
 	float touchStartX = 0;
@@ -34,8 +35,11 @@ public class NewModelTest extends GdxTest {
 	
 	@Override
 	public void create () {
-		JsonModelLoader loader = new JsonModelLoader();
-		model = new Model(loader.parseModel(Gdx.files.internal("data/g3d/cubes.g3dj")));
+		if (assets == null)
+			assets = new AssetManager();
+		assets.load("data/g3d/test.g3dj", Model.class);
+		assets.finishLoading();
+		model = assets.get("data/g3d/test.g3dj", Model.class);
 		instance = new ModelInstance(model);
 		modelBatch = new ModelBatch();
 		shapeRenderer = new ShapeRenderer();
@@ -74,8 +78,9 @@ public class NewModelTest extends GdxTest {
 	
 	@Override
 	public void dispose () {
-		model.dispose();
 		modelBatch.dispose();
+		assets.dispose();
+		assets = null;
 	}
 
 	@Override
