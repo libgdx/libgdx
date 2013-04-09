@@ -70,6 +70,11 @@ public class IOSMusic implements Music {
 	public void setVolume (float volume) {
 		player.set_Volume(volume);
 	}
+	
+	@Override
+	public float getVolume () {
+		return player.get_Volume();
+	}
 
 	@Override
 	public float getPosition () {
