@@ -72,7 +72,7 @@ public class BaseBulletTest extends BulletTest {
 	
 	public Light[] lights = new Light[] {
 		//new Light(0.3f, 0.3f, 0.3f, 1f), // ambient light
-		new Light(0.8f, 0.8f, 0.8f, 1f, 0f, -1f, -1f), // directional light
+		new Light(0.8f, 0.8f, 0.8f, 1f, -0.5f, -1f, -0.7f), // directional light
 		//new Light(1f, 1f, 1f, 1f, 5f, 10f, 20f, 1f, 0f, 0f), // point light
 		//new Light(1f, 1f, 1f, 1f, 10f, 20f, 5f, -1f, -2f, -0.5f, 30f, 1f, 0f, 0f), // spot light
 	};
@@ -111,7 +111,7 @@ public class BaseBulletTest extends BulletTest {
 		camera.update();
 		
 		// Create some simple meshes
-		final Model groundModel = modelBuilder.createRect(20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f, 0, 1, 0, 
+		final Model groundModel = modelBuilder.createRect(20f, 0f, -20f, -20f, 0f, -20f, -20f, 0f, 20f, 20f, 0f, 20f, 0, 1, 0, 
 			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(16f)),
 			new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE)));
 		final Model boxModel = modelBuilder.createBox(1f, 1f, 1f,
@@ -155,21 +155,9 @@ public class BaseBulletTest extends BulletTest {
 	protected void beginRender(boolean lighting) {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		//Gdx.gl.glEnable(GL10.GL_CULL_FACE);
+		//Gdx.gl.glCullFace(GL10.GL_BACK);
 		camera.update();
-		/* GL10 gl = Gdx.gl10;
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		gl.glEnable(GL10.GL_DEPTH_TEST);
-		gl.glDepthFunc(GL10.GL_LEQUAL);
-		gl.glEnable(GL10.GL_COLOR_MATERIAL);
-		if (lighting) {
-			gl.glEnable(GL10.GL_LIGHTING);
-			gl.glEnable(GL10.GL_LIGHT0);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
-		} else
-			gl.glDisable(GL10.GL_LIGHTING);
-		camera.apply(Gdx.gl10); */
 	}
 	
 	protected void renderWorld() {

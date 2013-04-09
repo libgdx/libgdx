@@ -61,7 +61,7 @@ public class ModelBatch implements Disposable {
 	}
 
 	public void end () {
-		sorter.sort(renderables);
+		sorter.sort(camera, renderables);
 		context.begin();
 		Shader currentShader = null;
 		for (int i = 0; i < renderables.size; i++) {
