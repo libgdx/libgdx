@@ -99,9 +99,12 @@ public class Model implements Disposable {
 		node.id = modelNode.id;
 		node.boneId = modelNode.boneId; // FIXME check meaning of this, breadth first index of node hierarchy?
 		node.parent = parent;
-		node.translation.set(modelNode.translation);
-		node.rotation.set(modelNode.rotation);
-		node.scale.set(modelNode.scale);
+		if (modelNode.translation != null)
+			node.translation.set(modelNode.translation);
+		if (modelNode.rotation != null)
+			node.rotation.set(modelNode.rotation);
+		if (modelNode.scale != null)
+			node.scale.set(modelNode.scale);
 		// FIXME create temporary maps for faster lookup?
 		for(ModelMeshPartMaterial modelMeshPartMaterial: modelNode.meshPartMaterials) {
 			MeshPart meshPart = null;

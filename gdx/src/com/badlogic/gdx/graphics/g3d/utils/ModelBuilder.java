@@ -166,9 +166,9 @@ public class ModelBuilder {
 	/** Convenience method to create a model with a single node containing a rectangle shape. 
 	 * The resources the Material might contain are not managed, 
 	 * use {@link Model#manageDisposable(Disposable)} to add those to the model. */
-	public Model createRect(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, float normalX, float normalY, float normalZ, final Material material, final VertexAttributes attributes) {
+	public Model createRect(float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11, float x01, float y01, float z01, float normalX, float normalY, float normalZ, final Material material, final VertexAttributes attributes) {
 		begin();
-		part("rect", attributes, material).rect(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, normalX, normalY, normalZ);
+		part("rect", attributes, material).rect(x00, y00, z00, x10, y10, z10, x11, y11, z11, x01, y01, z01, normalX, normalY, normalZ);
 		return end();
 	}
 

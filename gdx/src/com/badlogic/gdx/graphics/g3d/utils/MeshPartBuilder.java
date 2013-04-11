@@ -24,11 +24,11 @@ public interface MeshPartBuilder {
 	/** Add an index, MeshPartBuilder expects all meshes to be indexed and triangulated. */
 	public void index(final short value);
 	/** Add a rectangle. */
-	public void rect(VertexInfo corner00, VertexInfo corner01, VertexInfo corner10, VertexInfo corner11);
+	public void rect(VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01);
 	/** Add a rectangle. */
-	public void rect(Vector3 corner00, Vector3 corner01, Vector3 corner10, Vector3 corner11, Vector3 normal);
+	public void rect(Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal);
 	/** Add a rectangle */
-	public void rect(float x00, float y00, float z00, float x01, float y01, float z01, float x10, float y10, float z10, float x11, float y11, float z11, float normalX, float normalY, float normalZ);
+	public void rect(float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11, float x01, float y01, float z01, float normalX, float normalY, float normalZ);
 	/** Add a box */
 	public void box(Vector3 corner000, Vector3 corner010, Vector3 corner100, Vector3 corner110,
 						Vector3 corner001, Vector3 corner011, Vector3 corner101, Vector3 corner111);
