@@ -208,7 +208,7 @@ public class Json {
 		} finally {
 			try {
 				this.writer.close();
-			} catch (IOException ignored) {
+			} catch (Exception ignored) {
 			}
 			this.writer = null;
 		}
@@ -394,14 +394,23 @@ public class Json {
 				return;
 			}
 
-			if (knownType.isPrimitive() || knownType == String.class || knownType == Integer.class || knownType == Boolean.class
-				|| knownType == Float.class || knownType == Long.class || knownType == Double.class || knownType == Short.class
-				|| knownType == Byte.class || knownType == Character.class) {
+			if ((knownType != null && knownType.isPrimitive()) || knownType == String.class || knownType == Integer.class
+				|| knownType == Boolean.class || knownType == Float.class || knownType == Long.class || knownType == Double.class
+				|| knownType == Short.class || knownType == Byte.class || knownType == Character.class) {
 				writer.value(value);
 				return;
 			}
 
 			Class actualType = value.getClass();
+
+			if (actualType.isPrimitive() || actualType == String.class || actualType == Integer.class || actualType == Boolean.class
+				|| actualType == Float.class || actualType == Long.class || actualType == Double.class || actualType == Short.class
+				|| actualType == Byte.class || actualType == Character.class) {
+				writeObjectStart(actualType, null);
+				writeValue("value", value);
+				writeObjectEnd();
+				return;
+			}
 
 			if (value instanceof Serializable) {
 				writeObjectStart(actualType, knownType);
@@ -797,9 +806,13 @@ public class Json {
 				}
 			}
 
+			if (type == String.class || type == Integer.class || type == Boolean.class || type == Float.class || type == Long.class
+				|| type == Double.class || type == Short.class || type == Byte.class || type == Character.class) {
+				return readValue("value", type, jsonData);
+			}
+
 			Object object;
-			if (type != null && type != String.class && type != Integer.class && type != Boolean.class && type != Float.class
-				&& type != Long.class && type != Double.class && type != Short.class && type != Byte.class && type != Character.class) {
+			if (type != null) {
 				Serializer serializer = classToSerializer.get(type);
 				if (serializer != null) return (T)serializer.read(this, jsonMap, type);
 
