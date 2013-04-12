@@ -26,6 +26,7 @@ public class GwtMusic implements Music {
 	boolean isPlaying = false;
 	boolean isLooping = false;
 	SMSound sound;
+	private float volume = 1f;
 
 	public GwtMusic (FileHandle file) {
 		String url = ((GwtApplication)Gdx.app).getBaseUrl() + file.path();
@@ -72,6 +73,12 @@ public class GwtMusic implements Music {
 	@Override
 	public void setVolume (float volume) {
 		sound.setVolume((int)(volume * 100));
+		this.volume = volume;
+	}
+	
+	@Override
+	public float getVolume () {
+		return volume;
 	}
 
 	@Override
