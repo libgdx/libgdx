@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
@@ -71,6 +72,10 @@ public class Renderer {
 	/** perspective camera **/
 	private PerspectiveCamera camera;
 
+	/** the directional light **/
+	Light[] lights = { new Light(Color.WHITE, new Vector3(-1, -0.5f, 0).nor()) };
+
+
 	ModelBatch modelBatch;
 	
 	final Vector3 tmpV = new Vector3();
@@ -104,8 +109,8 @@ public class Renderer {
 		modelBatch.begin(camera);
 		modelBatch.render(simulation.explosions);
 		if (!simulation.ship.isExploding)
-			modelBatch.render(simulation.ship);
-		modelBatch.render(simulation.invaders);
+			modelBatch.render(simulation.ship, lights);
+		modelBatch.render(simulation.invaders, lights);
 		modelBatch.render(simulation.blocks);
 		modelBatch.render(simulation.shots);
 		modelBatch.end();
