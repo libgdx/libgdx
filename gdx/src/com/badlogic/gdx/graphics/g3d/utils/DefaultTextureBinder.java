@@ -16,7 +16,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 	public final static int ROUNDROBIN = 0;
 	public final static int WEIGHTED = 1;
 	/** GLES only supports up to 32 textures */
-	public final static int MAX_GLES_UNITS = 4;
+	public final static int MAX_GLES_UNITS = 32;
 	/** The index of the first exclusive texture unit */
 	private final int offset;
 	/** The amount of exclusive textures that may be used */
@@ -51,8 +51,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 	}
 	
 	public DefaultTextureBinder(final int method, final int offset, final int count, final int reuseWeight) {
-		// FIXME this is wrong, GL_MATRX_TEXTURE_UNITS is a constant, doesn't return the #units for the current GPU
-		int max = Math.max(getMaxTextureUnits(), MAX_GLES_UNITS - offset);
+		final int max = Math.min(getMaxTextureUnits(), MAX_GLES_UNITS - offset);
 		if (offset < 0 || count < 0 || (offset + count) > max || reuseWeight < 1)
 			throw new GdxRuntimeException("Illegal arguments");
 		this.method = method;
@@ -84,10 +83,12 @@ public final class DefaultTextureBinder implements TextureBinder {
 
 	@Override
 	public void end () {
-		// FIXME only unbind textures that are bound
 		for(int i = 0; i < count; i++) {
-			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + i);
-			Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
+			if (textures[i].texture != null) {
+				Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + i);
+				Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
+				textures[i].texture = null;
+			}
 		}
 		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 	}

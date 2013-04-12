@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.model.MeshPartMaterial;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -26,7 +27,7 @@ public class ModelInstance implements RenderableProvider {
 	/** the {@link Model} this instances derives from **/
 	public final Model model;
 	/** the world transform **/
-	public final Matrix4 transform = new Matrix4();
+	public final Matrix4 transform; // FIXME does this have to be final?
 	/** a copy of the materials of the original model **/
 	public final Array<Material> materials = new Array<Material>();
 	/** a copy of the nodes of the original model, referencing the copied materials in their {@link MeshPartMaterial} instances **/
@@ -41,7 +42,13 @@ public class ModelInstance implements RenderableProvider {
 	
 	/** Constructs a new ModelInstance with only the specified nodes and materials of the given model. */
 	public ModelInstance(Model model, final String... rootNodeIds) {
+		this(model, null, rootNodeIds);
+	}
+	
+	/** Constructs a new ModelInstance with only the specified nodes and materials of the given model. */
+	public ModelInstance(Model model, final Matrix4 transform, final String... rootNodeIds) {
 		this.model = model;
+		this.transform = transform == null ? new Matrix4() : transform;
 		if (rootNodeIds == null)
 			copyNodes(model.nodes);
 		else
@@ -51,7 +58,13 @@ public class ModelInstance implements RenderableProvider {
 	
 	/** Constructs a new ModelInstance with only the specified nodes and materials of the given model. */
 	public ModelInstance(Model model, final Array<String> rootNodeIds) {
+		this(model, null, rootNodeIds);
+	}
+	
+	/** Constructs a new ModelInstance with only the specified nodes and materials of the given model. */
+	public ModelInstance(Model model, final Matrix4 transform, final Array<String> rootNodeIds) {
 		this.model = model;
+		this.transform = transform == null ? new Matrix4() : transform;
 		copyNodes(model.nodes, rootNodeIds);
 		calculateTransforms();
 	}
@@ -70,20 +83,18 @@ public class ModelInstance implements RenderableProvider {
 	
 	/** Constructs a new ModelInstance with the specified transform. */
 	public ModelInstance(Model model, Matrix4 transform) {
-		this(model);
-		this.transform.set(transform);
+		this(model, transform, (String[])null);
 	}
 	
 	/** Constructs a new ModelInstance which is an copy of the specified ModelInstance. */
 	public ModelInstance(ModelInstance copyFrom) {
-		this(copyFrom, copyFrom.transform);
+		this(copyFrom, copyFrom.transform.cpy());
 	}
 	
 	/** Constructs a new ModelInstance which is an copy of the specified ModelInstance. */
 	public ModelInstance(ModelInstance copyFrom, final Matrix4 transform) {
 		this.model = copyFrom.model;
-		if (transform != null)
-			this.transform.set(transform);
+		this.transform = transform == null ? new Matrix4() : transform;
 		copyNodes(copyFrom.nodes);
 		calculateTransforms();
 	}
@@ -171,6 +182,22 @@ public class ModelInstance implements RenderableProvider {
 		for(Node node: nodes) {
 			node.calculateTransforms(true);
 		}
+	}
+	
+	/** Calculate the bounding box of this model instance.
+	 * This is a potential slow operation, it is advised to cache the result. */
+	public BoundingBox calculateBoundingBox(final BoundingBox out) {
+		out.inf();
+		for (final Node node : nodes)
+			calculateBoundingBox(out, node);
+		return out;
+	}
+	
+	protected void calculateBoundingBox(final BoundingBox out, final Node node) {
+		for (final MeshPartMaterial mpm : node.meshPartMaterials)
+			mpm.meshPart.mesh.calculateBoundingBox(out, mpm.meshPart.indexOffset, mpm.meshPart.numVertices);
+		for (final Node child : node.children)
+			calculateBoundingBox(out, child);
 	}
 	
 	/**

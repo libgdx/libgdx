@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -118,7 +119,7 @@ public class SoftBodyTest extends BaseBulletTest {
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 		
 		model = ModelBuilder.createFromMesh(mesh, GL10.GL_TRIANGLES, 
-			new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(Color.WHITE)));
+			new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(1f)));
 		instance = new ModelInstance(model);
 	}
 	
