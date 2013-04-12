@@ -45,7 +45,7 @@ public class RayCastTest extends BaseBulletTest {
 	@Override
 	public void create () {
 		super.create();
-		instructions = "Tap a box to ray cast\nLong press to toggle debug mode\nSwipe for next test";
+		instructions = "Tap a box to ray cast\nLong press to toggle debug mode\nSwipe for next test\nCtrl+drag to rotate\nScroll to zoom";
 
 		// Create the entities
 		world.add("ground", -7f, 0f, -7f)

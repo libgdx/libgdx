@@ -24,6 +24,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
@@ -66,6 +67,7 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 	private Label titleLabel;
 	private Label instructLabel;
 	private int loading = 0;
+	private CameraInputController cameraController;
 	
 	@Override
 	public void render () {
@@ -84,7 +86,12 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 			tests[testIndex].create();
 		}
 
-		Gdx.input.setInputProcessor(new InputMultiplexer(this, new GestureDetector(this)));
+		cameraController = new CameraInputController(tests[testIndex].camera);
+		cameraController.activateKey = Keys.CONTROL_LEFT;
+		cameraController.autoUpdate = false;
+		cameraController.forwardTarget = false;
+		cameraController.translateTarget = false;
+		Gdx.input.setInputProcessor(new InputMultiplexer(cameraController, this, new GestureDetector(this)));
 		
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 		hud = new Stage(480, 320, true);
@@ -117,6 +124,7 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		testIndex++;
 		if (testIndex >= tests.length) testIndex = 0;
 		tests[testIndex].create();
+		cameraController.camera = tests[testIndex].camera;
 		app.log("TestCollection", "created test '" + tests[testIndex].getClass().getName() + "'");
 		
 		titleLabel.setText(tests[testIndex].getClass().getSimpleName());

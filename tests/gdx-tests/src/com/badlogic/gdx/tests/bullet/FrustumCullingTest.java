@@ -135,7 +135,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 		
-		instructions = "Tap to toggle view\nLong press to toggle debug mode\nSwipe for next test";
+		instructions = "Tap to toggle view\nLong press to toggle debug mode\nSwipe for next test\nCtrl+drag to rotate\nScroll to zoom";
 		
 		tempManifoldArr = new btManifoldArray();
 

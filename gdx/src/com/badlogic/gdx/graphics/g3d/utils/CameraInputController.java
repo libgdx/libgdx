@@ -55,14 +55,14 @@ public class CameraInputController extends InputAdapter {
 			startY = screenY;
 			this.button = button;
 		}
-		return false;
+		return activatePressed;
 	}
 	
 	@Override
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 		if (button == this.button)
 			this.button = -1;
-		return false;
+		return activatePressed;
 	}
 	
 	protected boolean process(float deltaX, float deltaY, int button) {
