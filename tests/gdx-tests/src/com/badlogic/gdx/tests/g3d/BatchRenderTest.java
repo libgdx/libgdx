@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.loader.JsonModelLoader;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -84,7 +85,7 @@ public class BatchRenderTest extends GdxTest {
 			new Light(0f, 1f, 0f, 1f, 0f, 10f, 50f, 0f, -1f, 0f, 15f, 1f, 0f, 0f)
 		};
 		
-		Gdx.input.setInputProcessor(this);
+		Gdx.input.setInputProcessor(new CameraInputController(cam));
 	}
 	
 	public void createScene1() {
@@ -128,30 +129,6 @@ public class BatchRenderTest extends GdxTest {
 				renderBatch.render(instances.get(i), lights);
 		}
 		renderBatch.end();		
-	}
-	
-	@Override
-	public boolean touchDown (int x, int y, int pointer, int newParam) {
-		touchStartX = x;
-		touchStartY = y;
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged (int x, int y, int pointer) {
-		cam.rotateAround(Vector3.Zero, Vector3.X, (x - touchStartX));
-		cam.rotateAround(Vector3.Zero, Vector3.Y, (y - touchStartY));
-		touchStartX = x;
-		touchStartY = y;
-		cam.update();
-		return false;
-	}
-
-	@Override
-	public boolean scrolled (int amount) {
-		cam.fieldOfView -= -amount * Gdx.graphics.getDeltaTime() * 100;
-		cam.update();
-		return false;
 	}
 
 	@Override

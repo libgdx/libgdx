@@ -189,15 +189,20 @@ public class Model implements Disposable {
 	private Material convertMaterial(ModelMaterial mtl, TextureProvider textureProvider) {
 		Material result = new Material();
 		result.id = mtl.id;
-		result.add(new ColorAttribute(ColorAttribute.Ambient, mtl.ambient));
-		result.add(new ColorAttribute(ColorAttribute.Diffuse, mtl.diffuse));
-		result.add(new ColorAttribute(ColorAttribute.Specular, mtl.specular));
-		result.add(new ColorAttribute(ColorAttribute.Emissive, mtl.emissive));
-		result.add(new FloatAttribute(FloatAttribute.Shininess, mtl.shininess));
+		if (mtl.ambient != null)
+			result.add(new ColorAttribute(ColorAttribute.Ambient, mtl.ambient));
+		if (mtl.diffuse != null)
+			result.add(new ColorAttribute(ColorAttribute.Diffuse, mtl.diffuse));
+		if (mtl.specular != null)
+			result.add(new ColorAttribute(ColorAttribute.Specular, mtl.specular));
+		if (mtl.emissive != null)
+			result.add(new ColorAttribute(ColorAttribute.Emissive, mtl.emissive));
+		if (mtl.shininess > 0f)
+			result.add(new FloatAttribute(FloatAttribute.Shininess, mtl.shininess));
 		
 		ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 		
-		// FIXME mipmapping totally ignored, filters totally ignored
+		// FIXME mipmapping totally ignored, filters totally ignored, uvScaling/uvTranslation totally ignored
 		if(mtl.diffuseTextures != null) {
 			for(ModelTexture tex: mtl.diffuseTextures) {
 				if(textures.containsKey(tex.fileName)) continue;

@@ -21,6 +21,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Frustum;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -86,21 +87,21 @@ public abstract class Camera {
 	 * @param z the x-coordinate of the point to look at */
 	public void lookAt (float x, float y, float z) {
 		direction.set(x, y, z).sub(position).nor();
+		normalizeUp();
 	}
 	
 	/** Recalculates the direction of the camera to look at the point (x, y, z).
 	 * @param target the point to look at */
 	public void lookAt (Vector3 target) {
 		direction.set(target).sub(position).nor();
+		normalizeUp();
 	}
 
 	/** Normalizes the up vector by first calculating the right vector via a cross product between direction and up, and then
 	 * recalculating the up vector via a cross product between right and direction. */
-	final Vector3 right = new Vector3();
-
 	public void normalizeUp () {
-		right.set(direction).crs(up).nor();
-		up.set(right).crs(direction).nor();
+		tmpVec.set(direction).crs(up).nor();
+		up.set(tmpVec).crs(direction).nor();
 	}
 
 	/** Rotates the direction and up vector of this camera by the given angle around the given axis. The direction and up vector
