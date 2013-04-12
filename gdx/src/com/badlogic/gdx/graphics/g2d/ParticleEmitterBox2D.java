@@ -113,7 +113,7 @@ public class ParticleEmitterBox2D extends ParticleEmitter {
 			if (world != null) world.rayCast(rayCallBack, startPoint, endPoint);
 
 			/** If ray collided boolean has set to true at rayCallBack */
-			if (!particleCollided) {
+			if (particleCollided) {
 				// perfect reflection
 				angle = 2f * normalAngle - angle - 180f;
 				angleCos = MathUtils.cosDeg(angle);

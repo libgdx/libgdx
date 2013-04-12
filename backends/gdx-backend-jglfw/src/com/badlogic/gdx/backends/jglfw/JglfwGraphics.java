@@ -148,6 +148,7 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	void sizeChanged (int width, int height) {
+		glfwShowWindow(window); // This is required to refresh the NSOpenGLContext on OSX!
 		width = Math.max(1, width);
 		height = Math.max(1, height);
 		this.width = width;

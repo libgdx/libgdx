@@ -60,9 +60,9 @@ public class LwjglApplicationConfiguration {
 	public int audioDeviceBufferCount = 9;
 	public Color initialBackgroundColor = Color.BLACK;
 	/** Target framerate when the window is in the foreground. The CPU sleeps as needed. Use 0 to never sleep. **/
-	public int foregroundFPS = 0;
+	public int foregroundFPS = 61;
 	/** Target framerate when the window is not in the foreground. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. **/
-	public int backgroundFPS = 0;
+	public int backgroundFPS = 61;
 
 	Array<String> iconPaths = new Array();
 	Array<FileType> iconFileTypes = new Array();
