@@ -19,7 +19,7 @@ public class CameraInputController extends InputAdapter {
 	public int forwardButton = Buttons.MIDDLE;
 	/** The key which must be pressed to activate rotate, translate and forward or 0 to always activate. */ 
 	public int activateKey = 0;
-	/** Indices if the activateKey is currently being pressed. */
+	/** Indicates if the activateKey is currently being pressed. */
 	protected boolean activatePressed;
 	/** Whether scrolling requires the activeKey to be pressed (false) or always allow scrolling (true). */
 	public boolean alwaysScroll = true;
@@ -27,7 +27,7 @@ public class CameraInputController extends InputAdapter {
 	public float scrollFactor = -0.1f;
 	/** Whether to update the camera after it has been changed. */
 	public boolean autoUpdate = true;
-	/** The target to rotating around. */
+	/** The target to rotate around. */
 	public Vector3 target = new Vector3();
 	/** Whether to update the target on translation */ 
 	public boolean translateTarget = true;
@@ -50,7 +50,7 @@ public class CameraInputController extends InputAdapter {
 	
 	@Override
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-		if (this.button < 0 && activateKey == 0 || activatePressed) {
+		if (this.button < 0 && (activateKey == 0 || activatePressed)) {
 			startX = screenX;
 			startY = screenY;
 			this.button = button;
@@ -66,8 +66,6 @@ public class CameraInputController extends InputAdapter {
 	}
 	
 	protected boolean process(float deltaX, float deltaY, int button) {
-		deltaX = (deltaX + 1f) * 0.5f;
-		deltaY = (deltaY + 1f) * 0.5f;
 		if (button == rotateButton) {
 			tmpV1.set(camera.direction).crs(camera.up).y = 0f;
 			camera.rotateAround(target, tmpV1.nor(), deltaY * rotateAngle);
@@ -91,8 +89,8 @@ public class CameraInputController extends InputAdapter {
 	public boolean touchDragged (int screenX, int screenY, int pointer) {
 		if (this.button < 0)
 			return false;
-		final float deltaX = -1f + 2f * (screenX - startX) / Gdx.graphics.getWidth();
-		final float deltaY = -1f + 2f * (startY - screenY) / Gdx.graphics.getHeight();
+		final float deltaX = (screenX - startX) / Gdx.graphics.getWidth();
+		final float deltaY = (startY - screenY) / Gdx.graphics.getHeight();
 		startX = screenX;
 		startY = screenY;
 		return process(deltaX, deltaY, button);
