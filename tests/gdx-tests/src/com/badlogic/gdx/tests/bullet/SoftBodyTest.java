@@ -119,7 +119,7 @@ public class SoftBodyTest extends BaseBulletTest {
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 		
 		model = ModelBuilder.createFromMesh(mesh, GL10.GL_TRIANGLES, 
-			new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(1f)));
+			new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)));
 		instance = new ModelInstance(model);
 	}
 	
@@ -151,23 +151,6 @@ public class SoftBodyTest extends BaseBulletTest {
 		modelBatch.render(instance, lights);
 		modelBatch.end();
 	}
-	
-	/* @Override
-	public void render () {
-		super.render();
-		if (world.renderMeshes) {
-			Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
-			texture.bind(0);
-			softBody.getVertices(mesh.getVerticesBuffer(), softBody.getNodeCount(), mesh.getVertexSize(), 0);
-			softBody.getWorldTransform(tmpM);
-			Gdx.gl10.glPushMatrix();
-			Gdx.gl10.glMultMatrixf(tmpM.val, 0);
-			Gdx.gl10.glColor4f(1f, 1f, 1f, 1f);
-			mesh.render(GL10.GL_TRIANGLES);
-			Gdx.gl10.glPopMatrix();
-			Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
-		}
-	} */
 	
 	@Override
 	public boolean tap (float x, float y, int count, int button) {

@@ -77,12 +77,12 @@ public class BaseBulletTest extends BulletTest {
 		//new Light(1f, 1f, 1f, 1f, 10f, 20f, 5f, -1f, -2f, -0.5f, 30f, 1f, 0f, 0f), // spot light
 	};
 
-	public PerspectiveCamera camera;
 	public BulletWorld world;
 	public ObjLoader objLoader = new ObjLoader();
 	public ModelBuilder modelBuilder = new ModelBuilder();
 	public ModelBatch modelBatch;
-			
+	private int debugMode = DebugDrawModes.DBG_NoDebug;
+
 	public BulletWorld createWorld() {
 		return new BulletWorld();
 	}
@@ -158,6 +158,8 @@ public class BaseBulletTest extends BulletTest {
 		//Gdx.gl.glEnable(GL10.GL_CULL_FACE);
 		//Gdx.gl.glCullFace(GL10.GL_BACK);
 		camera.update();
+		if (debugMode != DebugDrawModes.DBG_NoDebug)
+			world.setDebugMode(debugMode, camera.combined);
 	}
 	
 	protected void renderWorld() {
@@ -188,7 +190,7 @@ public class BaseBulletTest extends BulletTest {
 	}
 	
 	public void setDebugMode(final int mode) {
-		world.setDebugMode(mode, camera.combined);
+		world.setDebugMode(debugMode = mode, camera.combined);
 	}
 	
 	public void toggleDebugMode() {
