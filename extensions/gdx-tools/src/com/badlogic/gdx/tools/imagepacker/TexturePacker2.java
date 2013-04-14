@@ -190,8 +190,10 @@ public class TexturePacker2 {
 					ImageOutputStream ios = ImageIO.createImageOutputStream(outputFile);
 					writer.setOutput(ios);
 					writer.write(null, new IIOImage(canvas, null, null), param);
-				} else
+				} else {
+					if (settings.premultiplyAlpha) canvas.getColorModel().coerceData(canvas.getRaster(), true);
 					ImageIO.write(canvas, "png", outputFile);
+				}
 			} catch (IOException ex) {
 				throw new RuntimeException("Error writing file: " + outputFile, ex);
 			}
@@ -387,8 +389,8 @@ public class TexturePacker2 {
 		public boolean fast;
 		public boolean debug;
 		public boolean combineSubdirectories;
-		public boolean jsonOutput = true;
 		public boolean flattenPaths;
+		public boolean premultiplyAlpha;
 
 		public Settings () {
 		}
@@ -419,8 +421,8 @@ public class TexturePacker2 {
 			duplicatePadding = settings.duplicatePadding;
 			debug = settings.debug;
 			combineSubdirectories = settings.combineSubdirectories;
-			jsonOutput = settings.jsonOutput;
 			flattenPaths = settings.flattenPaths;
+			premultiplyAlpha = settings.premultiplyAlpha;
 		}
 	}
 
