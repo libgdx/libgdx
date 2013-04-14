@@ -65,6 +65,9 @@ public interface Music extends Disposable {
 	 * 
 	 * @param volume */
 	public void setVolume (float volume);
+	
+	/** @return the volume of this music stream. */
+	public float getVolume ();
 
 	/** Returns the playback position in milliseconds. */
 	public float getPosition ();
