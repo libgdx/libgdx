@@ -38,9 +38,21 @@ public class OrthographicCamera extends Camera {
 	 * @param viewportWidth the viewport width
 	 * @param viewportHeight the viewport height */
 	public OrthographicCamera (float viewportWidth, float viewportHeight) {
+		this(0.0F, 0.0F, viewportWidth, viewportHeight);
+	}
+
+	/** Constructs a new OrthographicCamera, using the given center position, and viewport width and height. For pixel perfect 2D rendering just supply
+	 * the screen size, for other unit scales (e.g. meters for box2d) proceed accordingly.
+	 * 
+   * @param centerX
+   * @param centerY
+	 * @param viewportWidth the viewport width
+	 * @param viewportHeight the viewport height */
+	public OrthographicCamera (float centerX, float centerY, float viewportWidth, float viewportHeight) {
 		this.viewportWidth = viewportWidth;
 		this.viewportHeight = viewportHeight;
 		this.near = 0;
+    this.position.set(centerX, centerY, 0.0F);
 		update();
 	}
 
@@ -51,9 +63,22 @@ public class OrthographicCamera extends Camera {
 	 * @param viewportHeight the viewport height
 	 * @param diamondAngle the angle in degrees */
 	public OrthographicCamera (float viewportWidth, float viewportHeight, float diamondAngle) {
+		this(0.0F, 0.0F, viewportWidth, viewportHeight, diamondAngle);
+	}
+
+	/** Constructs a new OrthographicCamera, using the given center position, and viewport width and height. This will create a camera useable for
+	 * iso-metric views. The diamond angle is specifies the angle of a tile viewed isometrically.
+	 * 
+   * @param centerX
+   * @param centerY
+	 * @param viewportWidth the viewport width
+	 * @param viewportHeight the viewport height
+	 * @param diamondAngle the angle in degrees */
+	public OrthographicCamera (float centerX, float centerY, float viewportWidth, float viewportHeight, float diamondAngle) {
 		this.viewportWidth = viewportWidth;
 		this.viewportHeight = viewportHeight;
 		this.near = 0;
+    this.position.set(centerX, centerY, 0.0F);
 		findDirectionForIsoView(diamondAngle, 0.00000001f, 20);
 		update();
 	}
@@ -139,11 +164,22 @@ public class OrthographicCamera extends Camera {
 	 * @param viewportWidth
 	 * @param viewportHeight */
 	public void setToOrtho (boolean yDown, float viewportWidth, float viewportHeight) {
+    setToOrtho(yDown, viewportWidth / 2.0f, viewportHeight / 2.0f, viewportWidth, viewportHeight);
+	}
+
+	/** Sets this camera to an orthographic projection, centered at (centerX, centerY), with the y-axis pointing up
+	 * or down.
+	 * @param yDown whether y should be pointing down.
+   * @param centerX
+   * @param centerY
+	 * @param viewportWidth
+	 * @param viewportHeight */
+	public void setToOrtho (boolean yDown, float centerX, float centerY, float viewportWidth, float viewportHeight) {
 		if (yDown) {
 			up.set(0, -1, 0);
 			direction.set(0, 0, 1);
 		}
-		position.set(zoom * viewportWidth / 2.0f, zoom * viewportHeight / 2.0f, 0);
+		position.set(zoom * centerX, zoom * centerY, 0);
 		this.viewportWidth = viewportWidth;
 		this.viewportHeight = viewportHeight;
 		update();
