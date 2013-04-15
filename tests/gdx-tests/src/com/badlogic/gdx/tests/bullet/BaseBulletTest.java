@@ -169,7 +169,7 @@ public class BaseBulletTest extends BulletTest {
 		Ray ray = camera.getPickRay(x, y);
 		BulletEntity entity = world.add(what, ray.origin.x, ray.origin.y, ray.origin.z);
 		entity.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
-		((btRigidBody)entity.body).applyCentralImpulse(ray.direction.mul(impulse));
+		((btRigidBody)entity.body).applyCentralImpulse(ray.direction.scl(impulse));
 		return entity;
 	}
 	

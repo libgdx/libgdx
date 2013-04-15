@@ -172,15 +172,15 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 
 	public Vector2 div (float value) {
-		return this.mul(1 / value);
+		return this.scl(1 / value);
 	}
 
 	public Vector2 div (float vx, float vy) {
-		return this.mul(1 / vx, 1 / vy);
+		return this.scl(1 / vx, 1 / vy);
 	}
 
 	public Vector2 div (Vector2 other) {
-		return this.mul(1 / other.x, 1 / other.y);
+		return this.scl(1 / other.x, 1 / other.y);
 	}
 
 	/** @param v The other vector
@@ -223,7 +223,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public Vector2 limit (float limit) {
 		if (len2() > limit * limit) {
 			nor();
-			mul(limit);
+			scl(limit);
 		}
 		return this;
 	}
@@ -237,9 +237,9 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		if (l2 == 0f)
 			return this;
 		if (l2 > max * max)
-			return nor().mul(max);
+			return nor().scl(max);
 		if (l2 < min * min)
-			return nor().mul(min);
+			return nor().scl(min);
 		return this;
 	}
 

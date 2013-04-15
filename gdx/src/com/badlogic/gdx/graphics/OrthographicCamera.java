@@ -83,7 +83,7 @@ public class OrthographicCamera extends Camera {
 
 	private float calculateAngle (float a) {
 		Vector3 camPos = calculateDirection(a);
-		position.set(camPos.mul(30));
+		position.set(camPos.scl(30));
 		lookAt(0, 0, 0);
 		normalizeUp();
 		update();

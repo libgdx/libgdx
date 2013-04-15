@@ -48,7 +48,7 @@ public class Ray implements Serializable {
 	 * @param distance The distance from the end point to the start point.
 	 * @return The end point */
 	public Vector3 getEndPoint (float distance) {
-		return new Vector3(origin).add(direction.tmp().mul(distance));
+		return new Vector3(origin).add(direction.tmp().scl(distance));
 	}
 
 	static Vector3 tmp = new Vector3();

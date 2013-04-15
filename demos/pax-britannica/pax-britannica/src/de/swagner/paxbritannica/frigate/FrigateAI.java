@@ -33,7 +33,7 @@ public class FrigateAI {
 		if (target != null) {
 			Vector2 random = new Vector2(MathUtils.cos((float) ((MathUtils.random() * MathUtils.PI * 2) * Math.sqrt(MathUtils.random()))),
 										MathUtils.sin((float) ((MathUtils.random() * MathUtils.PI * 2) * Math.sqrt(MathUtils.random()))));
-			target_fuzzy_pos.set(target.collisionCenter).add(random.mul(250));
+			target_fuzzy_pos.set(target.collisionCenter).add(random.scl(250));
 		}
 	}
 

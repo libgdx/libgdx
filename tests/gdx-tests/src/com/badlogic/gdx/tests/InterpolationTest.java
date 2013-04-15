@@ -119,7 +119,7 @@ public class InterpolationTest extends GdxTest {
 	Vector2 getCurrentPosition () {
 		temp.set(targetPosition);
 		temp.sub(position);
-		temp.mul(getInterpolation().apply(Math.min(1, timer / 1f)));
+		temp.scl(getInterpolation().apply(Math.min(1, timer / 1f)));
 		temp.add(position);
 		return temp;
 	}
