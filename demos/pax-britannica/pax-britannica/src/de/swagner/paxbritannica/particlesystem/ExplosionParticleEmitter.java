@@ -29,17 +29,17 @@ public class ExplosionParticleEmitter extends ParticleEmitter {
 				(float) (MathUtils.sin(MathUtils.random() * MathUtils.PI * 2f) * Math.sqrt(MathUtils.random())));
 		for (int i = 1; i <= 20; ++i) {
 			Vector2 vel = new Vector2().set(random).add(random);
-			Vector2 velp = new Vector2().set(vel).mul(i / 20.f * 2.f);
-			Vector2 offset = new Vector2().set(random).mul(10);
+			Vector2 velp = new Vector2().set(vel).scl(i / 20.f * 2.f);
+			Vector2 offset = new Vector2().set(random).scl(10);
 			GameInstance.getInstance().sparkParticles.addLaserExplosion(new Vector2(position.x + offset.x, position.y + offset.y), velp);
 		}
 		for (int i = 1; i <= 5; ++i) {
-			Vector2 vel = new Vector2(MathUtils.random() * 2 - 1, MathUtils.random() * 2 - 1).mul(4);
-			Vector2 offset = new Vector2().set(random).mul(3);
+			Vector2 vel = new Vector2(MathUtils.random() * 2 - 1, MathUtils.random() * 2 - 1).scl(4);
+			Vector2 offset = new Vector2().set(random).scl(3);
 			GameInstance.getInstance().sparkParticles.addLaserExplosion(new Vector2(position.x + offset.x, position.y + offset.y), vel);
 		}
 		for (int i = 1; i <= 50; ++i) {
-			Vector2 offset = new Vector2().set(random).mul(17);
+			Vector2 offset = new Vector2().set(random).scl(17);
 			GameInstance.getInstance().bigBubbleParticles.addParticle(new Vector2(position.x + offset.x, position.y + offset.y));
 		}
 	}
@@ -51,17 +51,17 @@ public class ExplosionParticleEmitter extends ParticleEmitter {
 				(float) (MathUtils.sin(MathUtils.random() * MathUtils.PI * 2f) * Math.sqrt(MathUtils.random())));
 		for (int i = 1; i <= 10; ++i) {
 			Vector2 vel = new Vector2().set(random).add(random);
-			Vector2 velp = new Vector2().set(vel).mul(i / 20.f * 2.f);
-			Vector2 offset = new Vector2().set(random).mul(10);
+			Vector2 velp = new Vector2().set(vel).scl(i / 20.f * 2.f);
+			Vector2 offset = new Vector2().set(random).scl(10);
 			GameInstance.getInstance().sparkParticles.addLaserExplosion(new Vector2(position.x + offset.x, position.y + offset.y), velp);
 		}
 		for (int i = 1; i <= 3; ++i) {
-			Vector2 vel = new Vector2(MathUtils.random() * 2 - 1, MathUtils.random() * 2 - 1).mul(3);
-			Vector2 offset = new Vector2().set(random).mul(3);
+			Vector2 vel = new Vector2(MathUtils.random() * 2 - 1, MathUtils.random() * 2 - 1).scl(3);
+			Vector2 offset = new Vector2().set(random).scl(3);
 			GameInstance.getInstance().sparkParticles.addLaserExplosion(new Vector2(position.x + offset.x, position.y + offset.y), vel);
 		}
 		for (int i = 1; i <= 20; ++i) {
-			Vector2 offset = new Vector2().set(random).mul(2);
+			Vector2 offset = new Vector2().set(random).scl(2);
 			GameInstance.getInstance().bigBubbleParticles.addParticle(new Vector2(position.x + offset.x, position.y + offset.y));
 		}
 	}
@@ -73,17 +73,17 @@ public class ExplosionParticleEmitter extends ParticleEmitter {
 				(float) (MathUtils.sin(MathUtils.random() * MathUtils.PI * 2f) * Math.sqrt(MathUtils.random())));
 		for (int i = 1; i <= 2; ++i) {
 			Vector2 vel = new Vector2().set(random).add(random);
-			Vector2 velp = new Vector2().set(vel).mul(i / 20.f * 2.f);
-			Vector2 offset = new Vector2().set(random).mul(10);
+			Vector2 velp = new Vector2().set(vel).scl(i / 20.f * 2.f);
+			Vector2 offset = new Vector2().set(random).scl(10);
 			GameInstance.getInstance().sparkParticles.addLaserExplosion(new Vector2(position.x + offset.x, position.y + offset.y), velp);
 		}
 		for (int i = 1; i <= 2; ++i) {
-			Vector2 vel = new Vector2(MathUtils.random() * 2 - 1, MathUtils.random() * 2 - 1).mul(2);
-			Vector2 offset = new Vector2().set(random).mul(3);
+			Vector2 vel = new Vector2(MathUtils.random() * 2 - 1, MathUtils.random() * 2 - 1).scl(2);
+			Vector2 offset = new Vector2().set(random).scl(3);
 			GameInstance.getInstance().sparkParticles.addLaserExplosion(new Vector2(position.x + offset.x, position.y + offset.y), vel);
 		}
 		for (int i = 1; i <= 10; ++i) {
-			Vector2 offset = new Vector2().set(random).mul(2);
+			Vector2 offset = new Vector2().set(random).scl(2);
 			GameInstance.getInstance().bigBubbleParticles.addParticle(new Vector2(position.x + offset.x, position.y + offset.y));
 		}
 	}
@@ -95,17 +95,17 @@ public class ExplosionParticleEmitter extends ParticleEmitter {
 				(float) (MathUtils.sin(MathUtils.random() * MathUtils.PI * 2f) * Math.sqrt(MathUtils.random())));
 		for (int i = 1; i <= 1; ++i) {
 			Vector2 vel = new Vector2().set(random).add(random);
-			Vector2 velp = new Vector2().set(vel).mul(i / 20.f * 2.f);
-			Vector2 offset = new Vector2().set(random).mul(10);
+			Vector2 velp = new Vector2().set(vel).scl(i / 20.f * 2.f);
+			Vector2 offset = new Vector2().set(random).scl(10);
 			GameInstance.getInstance().sparkParticles.addLaserExplosion(new Vector2(position.x + offset.x, position.y + offset.y), velp);
 		}
 		for (int i = 1; i <= 1; ++i) {
 			Vector2 vel = new Vector2(MathUtils.random() * 2 - 1, MathUtils.random() * 2 - 1);
-			Vector2 offset = new Vector2().set(random).mul(3);
+			Vector2 offset = new Vector2().set(random).scl(3);
 			GameInstance.getInstance().sparkParticles.addLaserExplosion(new Vector2(position.x + offset.x, position.y + offset.y), vel);
 		}
 		for (int i = 1; i <= 5; ++i) {
-			Vector2 offset = new Vector2().set(random).mul(17);
+			Vector2 offset = new Vector2().set(random).scl(17);
 			GameInstance.getInstance().bigBubbleParticles.addParticle(new Vector2(position.x + offset.x, position.y + offset.y));
 		}
 	}

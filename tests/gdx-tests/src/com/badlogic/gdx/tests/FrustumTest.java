@@ -49,7 +49,7 @@ public class FrustumTest extends GdxTest {
 	@Override
 	public void create () {
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.position.set(0, 2, 3).nor().mul(10);
+		camera.position.set(0, 2, 3).nor().scl(10);
 		camera.lookAt(0, 0, 0);
 
 		camera2 = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
