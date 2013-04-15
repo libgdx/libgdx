@@ -64,7 +64,7 @@ public class PickingTest extends GdxTest {
 		VP_HEIGHT = Gdx.graphics.getHeight() - 4 * BORDER;
 		ObjLoader objLoader = new ObjLoader();
 		sphere = objLoader.loadObj(Gdx.files.internal("data/sphere.obj"));
-		sphere.materials.get(0).add(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE));
+		sphere.materials.get(0).set(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE));
 		cam = new PerspectiveCamera(45, VP_WIDTH, VP_HEIGHT);
 // cam = new OrthographicCamera(10, 10);
 		cam.far = 200;

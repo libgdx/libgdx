@@ -79,13 +79,13 @@ public class Simulation implements Disposable {
 		shipTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 		final Texture invaderTexture = new Texture(Gdx.files.internal("data/invader.png"), Format.RGB565, true);
 		invaderTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
-		shipModel.materials.get(0).add(TextureAttribute.createDiffuse(shipTexture));
-		invaderModel.materials.get(0).add(TextureAttribute.createDiffuse(invaderTexture));
+		shipModel.materials.get(0).set(TextureAttribute.createDiffuse(shipTexture));
+		invaderModel.materials.get(0).set(TextureAttribute.createDiffuse(invaderTexture));
 		
 		((ColorAttribute)blockModel.materials.get(0).get(ColorAttribute.Diffuse)).color.set(0, 0, 1, 0.5f);
-		blockModel.materials.get(0).add(new BlendingAttribute(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA));
+		blockModel.materials.get(0).set(new BlendingAttribute(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA));
 		
-		shotModel.materials.get(0).add(ColorAttribute.createDiffuse(1, 1, 0, 1f));
+		shotModel.materials.get(0).set(ColorAttribute.createDiffuse(1, 1, 0, 1f));
 		
 		final Texture explosionTexture = new Texture(Gdx.files.internal("data/explode.png"), Format.RGBA4444, true);
 		explosionTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);

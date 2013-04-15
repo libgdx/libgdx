@@ -113,10 +113,10 @@ public class BaseBulletTest extends BulletTest {
 		// Create some simple meshes
 		final Model groundModel = modelBuilder.createRect(20f, 0f, -20f, -20f, 0f, -20f, -20f, 0f, 20f, 20f, 0f, 20f, 0, 1, 0, 
 			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(16f)),
-			new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE)));
+			Usage.Position | Usage.Normal);
 		final Model boxModel = modelBuilder.createBox(1f, 1f, 1f,
 			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), 
-			new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE)));
+			Usage.Position | Usage.Normal);
 
 		// Add the constructors
 		world.addConstructor("ground", new BulletConstructor(groundModel, 0f)); // mass = 0: static body

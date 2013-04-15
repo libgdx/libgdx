@@ -34,7 +34,7 @@ public class ConvexHullTest extends BaseBulletTest {
 
 		final Model sceneModel = objLoader.loadObj(Gdx.files.internal("data/car.obj"));
 		sceneModel.materials.get(0).clear();
-		sceneModel.materials.get(0).add(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE));
+		sceneModel.materials.get(0).set(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE));
 		world.addConstructor("car", new BulletConstructor(sceneModel, 5f, createConvexHullShape(sceneModel)));
 
 		// Create the entities
