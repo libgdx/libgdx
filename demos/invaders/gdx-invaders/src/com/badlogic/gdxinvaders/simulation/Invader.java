@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 
 public class Invader extends ModelInstance {
+	public static float INVADER_ROTATION = 45f;
 	public static float INVADER_RADIUS = 0.75f;
 	public static float INVADER_VELOCITY = 1;
 	public static int INVADER_POINTS = 40;
@@ -61,5 +62,6 @@ public class Invader extends ModelInstance {
 				movedDistance = 0;
 			}
 		}
+		transform.rotate(0, 1, 0, INVADER_ROTATION * delta);
 	}
 }

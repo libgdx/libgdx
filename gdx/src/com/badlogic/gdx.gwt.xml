@@ -172,6 +172,7 @@
 		<include name="graphics/g2d/Animation.java"/>
 		<include name="graphics/g3d/Animation.java"/>
 		
+		<include name="utils/Predicate.java"/>
 		<include name="utils/StringBuilder.java"/>
 		<include name="utils/compression/CRC.java"/>
 		<include name="utils/compression/ICodeProgress.java"/>
@@ -213,6 +214,7 @@
 		<include name="scenes/scene2d/ui/Stack.java"/>
 		<include name="scenes/scene2d/ui/Table.java"/>
 		<include name="scenes/scene2d/ui/TableLayout.java"/>
+		<include name="scenes/scene2d/ui/TableToolkit.java"/>
 		<include name="scenes/scene2d/ui/TextButton.java"/>
 		<include name="scenes/scene2d/ui/TextField.java"/>
 		<include name="scenes/scene2d/ui/Tree.java"/>
