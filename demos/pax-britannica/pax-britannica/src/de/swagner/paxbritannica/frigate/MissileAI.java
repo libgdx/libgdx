@@ -52,7 +52,7 @@ public class MissileAI {
 		toTarget.set(target.collisionCenter).sub(missile.collisionCenter);
 		if (missile.velocity.dot(toTarget) != 0) {
 			float time_to_target = toTarget.dot(toTarget) / relativeVel.dot(toTarget);
-			return new Vector2(target.collisionCenter).sub(relativeVel.mul(Math.max(0, time_to_target)));
+			return new Vector2(target.collisionCenter).sub(relativeVel.scl(Math.max(0, time_to_target)));
 		} else {
 			return target.collisionCenter;
 		}

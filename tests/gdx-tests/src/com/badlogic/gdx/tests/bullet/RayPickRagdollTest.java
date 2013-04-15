@@ -89,7 +89,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		boolean result = false;
 		if (button == Buttons.LEFT) {
 			Ray ray = camera.getPickRay(screenX, screenY);
-			Vector3.tmp.set(ray.direction).mul(10f).add(ray.origin);
+			Vector3.tmp.set(ray.direction).scl(10f).add(ray.origin);
 			ClosestRayResultCallback cb = new ClosestRayResultCallback(ray.origin, Vector3.tmp);
 			world.collisionWorld.rayTest(ray.origin, Vector3.tmp, cb);
 			if (cb.hasHit()) {
@@ -143,7 +143,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		boolean result = false;
 		if (pickConstraint != null) {
 			Ray ray = camera.getPickRay(screenX, screenY);
-			Vector3.tmp.set(ray.direction).mul(pickDistance).add(camera.position);
+			Vector3.tmp.set(ray.direction).scl(pickDistance).add(camera.position);
 			pickConstraint.setPivotB(Vector3.tmp);
 			result = true;
 		}
