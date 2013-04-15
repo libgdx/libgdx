@@ -16,6 +16,12 @@
 
 package com.badlogic.gdx.graphics.g3d.decals;
 
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C1;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C2;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C3;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C4;
+
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Quaternion;
@@ -68,6 +74,21 @@ public class Decal {
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		float color = NumberUtils.intToFloatColor(intBits);
+		vertices[C1] = color;
+		vertices[C2] = color;
+		vertices[C3] = color;
+		vertices[C4] = color;
+	}
+	
+	public void setColor (Color tint) {
+		float color = tint.toFloatBits();
+		vertices[C1] = color;
+		vertices[C2] = color;
+		vertices[C3] = color;
+		vertices[C4] = color;
+	}
+	
+	public void setColor (float color) {
 		vertices[C1] = color;
 		vertices[C2] = color;
 		vertices[C3] = color;
