@@ -59,7 +59,7 @@ public class ParticleEmitter extends Sprite {
 		if (particle.life > 0) {
 			particle.life -= delta;
 			particle.position.add(particle.velocity.x * delta*10,particle.velocity.y * delta*10);
-			particle.velocity.mul((float) Math.pow(damping, delta));
+			particle.velocity.scl((float) Math.pow(damping, delta));
 			particle.scale += this.delta_scale * delta/5f;
 		}
 	}

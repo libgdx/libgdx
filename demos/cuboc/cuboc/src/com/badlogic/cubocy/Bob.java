@@ -48,14 +48,14 @@ public class Bob {
 		processKeys();
 
 		accel.y = -GRAVITY;
-		accel.mul(deltaTime);
+		accel.scl(deltaTime);
 		vel.add(accel.x, accel.y);
 		if (accel.x == 0) vel.x *= DAMP;
 		if (vel.x > MAX_VEL) vel.x = MAX_VEL;
 		if (vel.x < -MAX_VEL) vel.x = -MAX_VEL;
-		vel.mul(deltaTime);
+		vel.scl(deltaTime);
 		tryMove();
-		vel.mul(1.0f / deltaTime);
+		vel.scl(1.0f / deltaTime);
 
 		if (state == SPAWN) {
 			if (stateTime > 0.4f) {

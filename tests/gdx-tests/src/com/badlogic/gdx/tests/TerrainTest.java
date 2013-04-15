@@ -137,24 +137,24 @@ public class TerrainTest extends GdxTest {
 		}
 
 		if (input.isKeyPressed(Keys.W)) {
-			Vector3 forward = new Vector3().set(camera.direction).mul(delta);
+			Vector3 forward = new Vector3().set(camera.direction).scl(delta);
 			camera.position.add(forward);
 		}
 		if (input.isKeyPressed(Keys.S)) {
-			Vector3 backward = new Vector3().set(camera.direction).mul(delta);
+			Vector3 backward = new Vector3().set(camera.direction).scl(delta);
 			camera.position.sub(backward);
 		}
 
 		if (input.isKeyPressed(Keys.A)) {
-			Vector3 left = new Vector3().set(camera.direction.cpy().crs(camera.up).nor()).mul(delta);
+			Vector3 left = new Vector3().set(camera.direction.cpy().crs(camera.up).nor()).scl(delta);
 			camera.position.sub(left);
 		}
 		if (input.isKeyPressed(Keys.D)) {
-			Vector3 right = new Vector3().set(camera.direction.cpy().crs(camera.up).nor()).mul(delta);
+			Vector3 right = new Vector3().set(camera.direction.cpy().crs(camera.up).nor()).scl(delta);
 			camera.position.add(right);
 		}
 
-		Vector3 forward = new Vector3().set(camera.direction).mul(delta);
+		Vector3 forward = new Vector3().set(camera.direction).scl(delta);
 		camera.position.add(forward);
 		int nextId = (MathUtils.floor(camera.position.x) * 33) + MathUtils.floor(camera.position.z);
 		// are we still on our current chunk ? - maybe switching to another chunk
