@@ -66,7 +66,7 @@ public class CollisionWorldTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 		
-		instructions = "Long press to toggle debug mode\nSwipe for next test";
+		instructions = "Long press to toggle debug mode\nSwipe for next test\nCtrl+drag to rotate\nScroll to zoom";
 		
 		contactCB = new TestContactResultCallback();
 		
