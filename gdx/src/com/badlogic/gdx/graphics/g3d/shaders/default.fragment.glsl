@@ -8,7 +8,12 @@ precision mediump float;
 #define LOWP
 #endif
 
+#ifdef normalFlag
 varying vec3 v_normal;
+#endif
+#ifdef colorFlag
+varying vec4 v_color;
+#endif
 
 #if defined(diffuseTextureFlag) || defined(specularTextureFlag)
 varying MED vec2 v_texCoords0;
@@ -46,6 +51,10 @@ void main() {
 		vec4 diffuse = diffuseColor;
 	#else
 		vec4 diffuse = vec4(1.0);
+	#endif
+		
+	#ifdef colorFlag
+	diffuse *= v_color;
 	#endif
 
 	#ifdef NUM_LIGHTS

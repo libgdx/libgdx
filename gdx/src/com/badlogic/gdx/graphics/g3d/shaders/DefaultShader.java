@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
@@ -78,20 +80,21 @@ public class DefaultShader implements Shader {
 	
 	protected RenderContext context;
 	protected long mask;
+	protected long attributes;
 	
-	public DefaultShader(final Material material, int maxLightsCount) {
-		this(getDefaultVertexShader(), getDefaultFragmentShader(), material, maxLightsCount);
+	public DefaultShader(final Material material, final VertexAttributes attributes, int maxLightsCount) {
+		this(getDefaultVertexShader(), getDefaultFragmentShader(), material, attributes, maxLightsCount);
 	}
 	
-	public DefaultShader(final long mask, int maxLightsCount) {
-		this(getDefaultVertexShader(), getDefaultFragmentShader(), mask, maxLightsCount);
+	public DefaultShader(final long mask, final long attributes, int maxLightsCount) {
+		this(getDefaultVertexShader(), getDefaultFragmentShader(), mask, attributes, maxLightsCount);
 	}
 
-	public DefaultShader(final String vertexShader, final String fragmentShader, final Material material, int maxLightsCount) {
-		this(vertexShader, fragmentShader, material.getMask(), maxLightsCount);
+	public DefaultShader(final String vertexShader, final String fragmentShader, final Material material, final VertexAttributes attributes, int maxLightsCount) {
+		this(vertexShader, fragmentShader, material.getMask(), getAttributesMask(attributes), maxLightsCount);
 	}
 	
-	public DefaultShader(final String vertexShader, final String fragmentShader, final long mask, int maxLightsCount) {
+	public DefaultShader(final String vertexShader, final String fragmentShader, final long mask, final long attributes, int maxLightsCount) {
 		if (!Gdx.graphics.isGL20Available())
 			throw new GdxRuntimeException("This shader requires OpenGL ES 2.0");
 		
@@ -102,12 +105,18 @@ public class DefaultShader implements Shader {
 		
 		String prefix = "";
 		this.mask = mask;
-		
+		this.attributes = attributes;
+				
 		if (!ignoreUnimplemented && (implementedFlags & mask) != mask)
 			throw new GdxRuntimeException("Some attributes not implemented yet ("+mask+")");
 		
-		if (maxLightsCount > 0)
-			prefix += "#define lightsCount "+maxLightsCount+"\n";
+		if ((attributes & Usage.Color) == Usage.Color)
+			prefix += "#define colorFlag\n";
+		if ((attributes & Usage.Normal) == Usage.Normal) {
+			prefix += "#define normalFlag\n";
+			if (maxLightsCount > 0)
+				prefix += "#define lightsCount "+maxLightsCount+"\n";
+		}
 		if (can(BlendingAttribute.Type))
 			prefix += "#define "+BlendingAttribute.Alias+"Flag\n";
 		if (can(TextureAttribute.Diffuse))
@@ -152,9 +161,19 @@ public class DefaultShader implements Shader {
 		// FIXME Cache vertex attribute locations...
 	}
 	
+	private static long getAttributesMask(final VertexAttributes attributes) {
+		long result = 0;
+		final int n = attributes.size();
+		for (int i = 0; i < n; i++)
+			result |= (long)attributes.get(i).usage;
+		return result;
+	}
+	
 	@Override
 	public boolean canRender(final Renderable renderable) {
-		return mask == renderable.material.getMask() && (renderable.lights == null) == (currentLights == null);
+		return mask == renderable.material.getMask() && 
+			attributes == getAttributesMask(renderable.mesh.getVertexAttributes()) && 
+			(renderable.lights == null) == (currentLights == null);
 	}
 	
 	private final boolean can(final long flag) {
