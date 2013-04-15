@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
@@ -8,19 +9,21 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
+import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.ShortArray;
 
 /** Class to construct a mesh, optionally splitting it into one or more mesh parts.
- * Before you can call any other method you must call {@link #begin(VertexAttributes)}. 
- * To use mesh parts you must call {@link #part(String)} before you start building the part. 
+ * Before you can call any other method you must call {@link #begin(VertexAttributes)} or {@link #begin(VertexAttributes, int)}. 
+ * To use mesh parts you must call {@link #part(String, int)} before you start building the part.
  * The MeshPart itself is only valid after the call to {@link #end()}.
  * @author Xoppa */
 public class MeshBuilder implements MeshPartBuilder {
@@ -28,6 +31,10 @@ public class MeshBuilder implements MeshPartBuilder {
 	private final VertexInfo vertTmp2 = new VertexInfo();
 	private final VertexInfo vertTmp3 = new VertexInfo();
 	private final VertexInfo vertTmp4 = new VertexInfo();
+	private final VertexInfo vertTmp5 = new VertexInfo();
+	private final VertexInfo vertTmp6 = new VertexInfo();
+	private final VertexInfo vertTmp7 = new VertexInfo();
+	private final VertexInfo vertTmp8 = new VertexInfo();
 	
 	private final Matrix4 matTmp1 = new Matrix4();
 	
@@ -52,12 +59,16 @@ public class MeshBuilder implements MeshPartBuilder {
 	private short vindex;
 	/** The offset in the indices array when begin() was called, used to define a meshpart. */
 	private int istart;
-	/** The offset within an vertex to position, or -1 if not available */
+	/** The offset within an vertex to position */
 	private int posOffset;
+	/** The size (in number of floats) of the position attribute */
+	private int posSize;
 	/** The offset within an vertex to normal, or -1 if not available */
 	private int norOffset;
 	/** The offset within an vertex to color, or -1 if not available */
 	private int colOffset;
+	/** The size (in number of floats) of the color attribute */
+	private int colSize;
 	/** The offset within an vertex to packed color, or -1 if not available */
 	private int cpOffset;
 	/** The offset within an vertex to texture coordinates, or -1 if not available */
@@ -66,12 +77,22 @@ public class MeshBuilder implements MeshPartBuilder {
 	private MeshPart part;
 	/** The parts created between begin and end */
 	private Array<MeshPart> parts = new Array<MeshPart>();
+	/** The color used if no vertex color is specified. */
+	private final Color color = new Color();
+	/** Whether to apply the default color. */
+	private boolean colorSet;
+	/** The current primitiveType */
+	private int primitiveType;
 	// FIXME makes this configurable
 	private float uMin = 0, uMax = 1, vMin = 0, vMax = 1;
 	private float[] vertex;
 	
 	/** Begin building a mesh */
 	public void begin(final VertexAttributes attributes) {
+		begin(attributes, 0);
+	}
+	/** Begin building a mesh */
+	public void begin(final VertexAttributes attributes, int primitiveType) {
 		if (this.attributes != null)
 			throw new RuntimeException("Call end() first");
 		this.attributes = attributes;
@@ -84,41 +105,49 @@ public class MeshBuilder implements MeshPartBuilder {
 		this.stride = attributes.vertexSize / 4;
 		this.vertex = new float[stride];
 		VertexAttribute a = attributes.findByUsage(Usage.Position);
-		posOffset = a == null ? -1 : a.offset / 4;
+		if (a == null)
+			throw new GdxRuntimeException("Cannot build mesh without position attribute");
+		posOffset = a.offset / 4;
+		posSize = a.numComponents;
 		a = attributes.findByUsage(Usage.Normal);
 		norOffset = a == null ? -1 : a.offset / 4;
 		a = attributes.findByUsage(Usage.Color);
 		colOffset = a == null ? -1 : a.offset / 4;
+		colSize = a == null ? 0 : a.numComponents;
 		a = attributes.findByUsage(Usage.ColorPacked);
 		cpOffset = a == null ? -1 : a.offset / 4;
 		a = attributes.findByUsage(Usage.TextureCoordinates);
 		uvOffset = a == null ? -1 : a.offset / 4;
+		setColor(null);
+		this.primitiveType = primitiveType;
 	}
 	
 	private void endpart() {
 		if (part != null) {
 			part.indexOffset = istart;
 			part.numVertices = indices.size - istart;
-			part.primitiveType = GL10.GL_TRIANGLES;
 			istart = indices.size;
 			part = null;
 		}
 	}
 	
 	/** Starts a new MeshPart. The mesh part is not usable until end() is called */
-	public MeshPart part(final String id) {
+	public MeshPart part(final String id, int primitiveType) {
 		if (this.attributes == null)
 			throw new RuntimeException("Call begin() first");
 		endpart();
 		
 		part = new MeshPart();
 		part.id = id;
+		this.primitiveType = part.primitiveType = primitiveType;
 		parts.add(part);
+		
+		setColor(null);
 		
 		return part;
 	}
 	
-	/** End building the mesh and results the mesh */
+	/** End building the mesh and returns the mesh */
 	public Mesh end() {
 		if (this.attributes == null)
 			throw new RuntimeException("Call begin() first");
@@ -139,7 +168,6 @@ public class MeshBuilder implements MeshPartBuilder {
 		return mesh;
 	}
 	
-	/** @return the vertex attributes, only valid between begin() and end() */
 	@Override
 	public VertexAttributes getAttributes() {
 		return attributes;
@@ -175,12 +203,25 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 	
 	@Override
-	public int vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
+	public void setColor(float r, float g, float b, float a) {
+		this.color.set(r, g, b, a);
+	}
+	
+	@Override
+	public void setColor(final Color color) {
+		if ((colorSet = color != null)==true)
+			this.color.set(color);
+	}
+	
+	@Override
+	public short vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
 		// FIXME perhaps clear vertex[] upfront
-		if (pos != null && posOffset >= 0) {
+		if (col == null && colorSet)
+			col = color;
+		if (pos != null) {
 			vertex[posOffset  ] = pos.x;
-			vertex[posOffset+1] = pos.y;
-			vertex[posOffset+2] = pos.z;
+			if (posSize > 1) vertex[posOffset+1] = pos.y;
+			if (posSize > 2) vertex[posOffset+2] = pos.z;
 		}
 		if (nor != null && norOffset >= 0) {
 			vertex[norOffset  ] = nor.x;
@@ -192,28 +233,29 @@ public class MeshBuilder implements MeshPartBuilder {
 				vertex[colOffset  ] = col.r;
 				vertex[colOffset+1] = col.g;
 				vertex[colOffset+2] = col.b;
-				vertex[colOffset+3] = col.a;
-			} else if (cpOffset >0 )
-				vertex[cpOffset] = col.toFloatBits(); // FIXME cache packed color? 
+				if (colSize > 3) vertex[colOffset+3] = col.a;
+			} else if (cpOffset > 0)
+				vertex[cpOffset] = col.toFloatBits(); // FIXME cache packed color?
 		}
 		if (uv != null && uvOffset >= 0) {
 			vertex[uvOffset  ] = uv.x;
 			vertex[uvOffset+1] = uv.y;
 		}
 		vertices.addAll(vertex);
-		return vindex++;
+		return (short)(vindex++);
 	}	
 
 	@Override
-	public int vertex(final float[] values) {
+	public short vertex(final float[] values) {
 		vertices.addAll(values);
 		vindex += values.length / stride;
-		return vindex-1;
+		return (short)(vindex-1);
 	}
 	
 	@Override
-	public int vertex(final VertexInfo info) {
-		return vertex(info.position, info.normal, info.color, info.uv);
+	public short vertex(final VertexInfo info) {
+		return vertex(info.hasPosition ? info.position : null, info.hasNormal ? info.normal : null, 
+			info.hasColor ? info.color : null, info.hasUV ? info.uv : null);
 	}
 	
 	@Override
@@ -222,48 +264,184 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 	
 	@Override
-	public void rect(VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01) {
-		vertex(corner00);
-		vertex(corner10);
-		vertex(corner11);
-		vertex(corner01);
+	public void index(final short value1, final short value2) {
+		indices.ensureCapacity(2);
+		indices.add(value1);
+		indices.add(value2);
+	}
+	
+	@Override
+	public void index(final short value1, final short value2, final short value3) {
+		indices.ensureCapacity(3);
+		indices.add(value1);
+		indices.add(value2);
+		indices.add(value3);
+	}
+	
+	@Override
+	public void index(final short value1, final short value2, final short value3, final short value4) {
+		indices.ensureCapacity(4);
+		indices.add(value1);
+		indices.add(value2);
+		indices.add(value3);
+		indices.add(value4);
+	}
+	
+	@Override
+	public void index(short value1, short value2, short value3, short value4, short value5, short value6) {
 		indices.ensureCapacity(6);
-		indices.add((short)(vindex-4));
-		indices.add((short)(vindex-3));
-		indices.add((short)(vindex-2));
-		indices.add((short)(vindex-2));
-		indices.add((short)(vindex-1));
-		indices.add((short)(vindex-4));
+		indices.add(value1);
+		indices.add(value2);
+		indices.add(value3);
+		indices.add(value4);
+		indices.add(value5);
+		indices.add(value6);
+	}
+
+	@Override
+	public void index(short value1, short value2, short value3, short value4, short value5, short value6, short value7, short value8) {
+		indices.ensureCapacity(8);
+		indices.add(value1);
+		indices.add(value2);
+		indices.add(value3);
+		indices.add(value4);
+		indices.add(value5);
+		indices.add(value6);
+		indices.add(value7);
+		indices.add(value8);
+	}
+	
+	@Override
+	public void line(short index1, short index2) {
+		if (primitiveType == GL10.GL_LINES || primitiveType == GL10.GL_POINTS) {
+			index(index1, index2);
+		} else
+			throw new GdxRuntimeException("Incorrect primitive type");
+	}
+	
+	@Override
+	public void line(VertexInfo p1, VertexInfo p2) {
+		line(vertex(p1), vertex(p2));
+	}
+
+	@Override
+	public void line(Vector3 p1, Vector3 p2) {
+		line(vertTmp1.set(p1, null, null, null), vertTmp2.set(p2, null, null, null));
+	}
+	
+	@Override
+	public void line(float x1, float y1, float z1, float x2, float y2, float z2) {
+		line(vertTmp1.set(null, null, null, null).setPos(x1, y1, z1), vertTmp2.set(null, null, null, null).setPos(x2, y2, z2));
+	}
+
+	@Override
+	public void line(Vector3 p1, Color c1, Vector3 p2, Color c2) {
+		line(vertTmp1.set(p1, null, c1, null), vertTmp2.set(p2, null, c2, null));
+	}
+	
+	@Override
+	public void triangle(short index1, short index2, short index3) {
+		if (primitiveType == GL10.GL_TRIANGLES) {
+			index(index1, index2, index3);
+		} else if (primitiveType == GL10.GL_LINES) {
+			index(index1, index2, index2, index3, index3, index1);
+		} else if (primitiveType == GL10.GL_POINTS) {
+			index(index1, index2, index3);			
+		} else
+			throw new GdxRuntimeException("Incorrect primitive type");
+	}
+
+	@Override
+	public void triangle(VertexInfo p1, VertexInfo p2, VertexInfo p3) {
+		triangle(vertex(p1), vertex(p2), vertex(p3));
+	}
+	
+	@Override
+	public void triangle(Vector3 p1, Vector3 p2, Vector3 p3) {
+		triangle(vertTmp1.set(p1, null, null, null), vertTmp2.set(p2, null, null, null), vertTmp3.set(p3, null, null, null));
+	}
+	
+	@Override
+	public void triangle(Vector3 p1, Color c1, Vector3 p2, Color c2, Vector3 p3, Color c3) {
+		triangle(vertTmp1.set(p1, null, c1, null), vertTmp2.set(p2, null, c2, null), vertTmp3.set(p3, null, c3, null));
+	}
+	
+	@Override
+	public void rect(short corner00, short corner10, short corner11, short corner01) {
+		if (primitiveType == GL10.GL_TRIANGLES) {
+			index(corner00, corner10, corner11, corner11, corner01, corner00);
+		} else if (primitiveType == GL10.GL_LINES) {
+			index(corner00, corner10, corner10, corner11, corner11, corner01, corner01, corner00);
+		} else if (primitiveType == GL10.GL_POINTS) {
+			index(corner00, corner10, corner11, corner01);
+		} else
+			throw new GdxRuntimeException("Incorrect primitive type");
+	}
+	
+	@Override
+	public void rect(VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01) {
+		rect(vertex(corner00), vertex(corner10), vertex(corner11), vertex(corner01));
 	}
 	
 	@Override
 	public void rect(Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal) {
 		rect(vertTmp1.set(corner00, normal, null, null).setUV(uMin,vMin),
-			vertTmp3.set(corner10, normal, null, null).setUV(uMax,vMin),
-			vertTmp4.set(corner11, normal, null, null).setUV(uMax,vMax),
-			vertTmp2.set(corner01, normal, null, null).setUV(uMin,vMax));
+			vertTmp2.set(corner10, normal, null, null).setUV(uMax,vMin),
+			vertTmp3.set(corner11, normal, null, null).setUV(uMax,vMax),
+			vertTmp4.set(corner01, normal, null, null).setUV(uMin,vMax));
 	}
 	
 	@Override
 	public void rect(float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11, float x01, float y01, float z01, float normalX, float normalY, float normalZ) {
 		rect(vertTmp1.set(null, null, null, null).setPos(x00,y00,z00).setNor(normalX,normalY,normalZ).setUV(uMin,vMin),
-			vertTmp3.set(null, null, null, null).setPos(x10,y10,z10).setNor(normalX,normalY,normalZ).setUV(uMax,vMin),
-			vertTmp4.set(null, null, null, null).setPos(x11,y11,z11).setNor(normalX,normalY,normalZ).setUV(uMax,vMax),
-			vertTmp2.set(null, null, null, null).setPos(x01,y01,z01).setNor(normalX,normalY,normalZ).setUV(uMin,vMax));
+			vertTmp2.set(null, null, null, null).setPos(x10,y10,z10).setNor(normalX,normalY,normalZ).setUV(uMax,vMin),
+			vertTmp3.set(null, null, null, null).setPos(x11,y11,z11).setNor(normalX,normalY,normalZ).setUV(uMax,vMax),
+			vertTmp4.set(null, null, null, null).setPos(x01,y01,z01).setNor(normalX,normalY,normalZ).setUV(uMin,vMax));
+	}
+	
+	@Override
+	public void box(VertexInfo corner000, VertexInfo corner010, VertexInfo corner100, VertexInfo corner110,
+						VertexInfo corner001, VertexInfo corner011, VertexInfo corner101, VertexInfo corner111) {
+		final short i000 = vertex(corner000);
+		final short i100 = vertex(corner100);
+		final short i110 = vertex(corner110);
+		final short i010 = vertex(corner010);
+		final short i001 = vertex(corner001);
+		final short i101 = vertex(corner101);
+		final short i111 = vertex(corner111);
+		final short i011 = vertex(corner011);
+		rect(i000, i100, i110, i010);
+		rect(i101, i001, i011, i111);
+		if (primitiveType == GL10.GL_LINES) {
+			index(i000, i001, i010, i011, i110, i111, i100, i101);
+		} else if (primitiveType == GL10.GL_TRIANGLES) {
+			index(i001, i000, i010, i010, i011, i001);
+			index(i100, i101, i111, i111, i110, i100);
+			index(i001, i101, i100, i100, i000, i001);
+			index(i010, i110, i111, i111, i011, i010);
+		} else if (primitiveType != GL10.GL_POINTS) 
+			throw new GdxRuntimeException("Incorrect primitive type");
 	}
 	
 	@Override
 	public void box(Vector3 corner000, Vector3 corner010, Vector3 corner100, Vector3 corner110,
 						Vector3 corner001, Vector3 corner011, Vector3 corner101, Vector3 corner111) {
-		Vector3 nor = tempV1.set(corner000).lerp(corner110, 0.5f).sub(tempV2.set(corner001).lerp(corner111, 0.5f)).nor();
-		rect(corner000, corner010, corner110, corner100, nor);
-		rect(corner011, corner001, corner101, corner111, nor.scl(-1));
-		nor = tempV1.set(corner000).lerp(corner101, 0.5f).sub(tempV2.set(corner010).lerp(corner111, 0.5f)).nor();
-		rect(corner001, corner000, corner100, corner101, nor);
-		rect(corner010, corner011, corner111, corner110, nor.scl(-1));
-		nor = tempV1.set(corner000).lerp(corner011, 0.5f).sub(tempV2.set(corner100).lerp(corner111, 0.5f)).nor();
-		rect(corner001, corner011, corner010, corner000, nor);
-		rect(corner100, corner110, corner111, corner101, nor.scl(-1));
+		if (norOffset < 0) {
+			box(vertTmp1.set(corner000, null, null, null), vertTmp1.set(corner010, null, null, null),
+				vertTmp1.set(corner100, null, null, null), vertTmp1.set(corner110, null, null, null),
+				vertTmp1.set(corner001, null, null, null), vertTmp1.set(corner011, null, null, null),
+				vertTmp1.set(corner101, null, null, null), vertTmp1.set(corner111, null, null, null));
+		} else {
+			Vector3 nor = tempV1.set(corner000).lerp(corner110, 0.5f).sub(tempV2.set(corner001).lerp(corner111, 0.5f)).nor();
+			rect(corner000, corner010, corner110, corner100, nor);
+			rect(corner011, corner001, corner101, corner111, nor.scl(-1));
+			nor = tempV1.set(corner000).lerp(corner101, 0.5f).sub(tempV2.set(corner010).lerp(corner111, 0.5f)).nor();
+			rect(corner001, corner000, corner100, corner101, nor);
+			rect(corner010, corner011, corner111, corner110, nor.scl(-1));
+			nor = tempV1.set(corner000).lerp(corner011, 0.5f).sub(tempV2.set(corner100).lerp(corner111, 0.5f)).nor();
+			rect(corner001, corner011, corner010, corner000, nor);
+			rect(corner100, corner110, corner111, corner101, nor.scl(-1));
+		}
 	}
 	
 	@Override
@@ -310,12 +488,7 @@ public class MeshBuilder implements MeshPartBuilder {
 			vertex(curr2);
 			if (i == 0)
 				continue;
-			indices.add((short)(vindex-4));
-			indices.add((short)(vindex-3));
-			indices.add((short)(vindex-2));
-			indices.add((short)(vindex-3));
-			indices.add((short)(vindex-1));
-			indices.add((short)(vindex-2));
+			rect((short)(vindex-4), (short)(vindex-2), (short)(vindex-1), (short)(vindex-3)); // FIXME don't duplicate lines and points
 		}
 	}
 	
@@ -342,9 +515,7 @@ public class MeshBuilder implements MeshPartBuilder {
 			vertex(curr1);
 			if (i == 0)
 				continue;
-			indices.add((short)base);
-			indices.add((short)(vindex-1));
-			indices.add((short)(vindex-2));
+			triangle((short)base, (short)(vindex-1), (short)(vindex-2)); // FIXME don't duplicate lines and points
 		}
 	}
 	
@@ -377,12 +548,9 @@ public class MeshBuilder implements MeshPartBuilder {
 				vertex(curr1);
 				if (i == 0 || j == 0)
 					continue;
-				indices.add((short)(vindex-2));
-				indices.add((short)(vindex-1));
-				indices.add((short)(vindex-(divisionsV+2)));
-				indices.add((short)(vindex-1));
-				indices.add((short)(vindex-(divisionsV+1)));
-				indices.add((short)(vindex-(divisionsV+2)));
+				// FIXME don't duplicate lines and points
+				index((short)(vindex-2), (short)(vindex-1), (short)(vindex-(divisionsV+2)), 
+					(short)(vindex-1), (short)(vindex-(divisionsV+1)), (short)(vindex-(divisionsV+2))); 
 			}
 		}
 	}
