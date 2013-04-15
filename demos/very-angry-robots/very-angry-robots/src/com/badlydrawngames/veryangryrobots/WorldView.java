@@ -433,7 +433,7 @@ public class WorldView {
 			worldCam.unproject(dragPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 			float dx = dragPoint.x - touchPoint.x;
 			float dy = dragPoint.y - touchPoint.y;
-			joystick.set(dx, dy).mul(JOYSTICK_DISTANCE_MULTIPLIER);
+			joystick.set(dx, dy).scl(JOYSTICK_DISTANCE_MULTIPLIER);
 			float len = joystick.len();
 			if (len > 1) {
 				joystick.nor();

@@ -395,7 +395,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		public void update (float deltaTime) {
 			dist += dir.len() * deltaTime;
 			if (dist > maxDist) {
-				dir.mul(-1);
+				dir.scl(-1);
 				dist = 0;
 			}
 

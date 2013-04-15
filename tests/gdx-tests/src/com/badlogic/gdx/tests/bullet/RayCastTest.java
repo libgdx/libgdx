@@ -75,7 +75,7 @@ public class RayCastTest extends BaseBulletTest {
 	public boolean tap (float x, float y, int count, int button) {
 		Ray ray = camera.getPickRay(x, y);
 		rayFrom.set(ray.origin);
-		rayTo.set(ray.direction).mul(50f).add(rayFrom); // 50 meters max from the origin
+		rayTo.set(ray.direction).scl(50f).add(rayFrom); // 50 meters max from the origin
 
 		// Because we reuse the ClosestRayResultCallback, we need reset it's values
 		rayTestCB.setM_collisionObject(null);
@@ -90,7 +90,7 @@ public class RayCastTest extends BaseBulletTest {
 			if (!obj.isStaticOrKinematicObject()) {
 				final btRigidBody body = btRigidBody.upcast(obj);
 				body.activate();
-				body.applyCentralImpulse(Vector3.tmp2.set(ray.direction).mul(20f));
+				body.applyCentralImpulse(Vector3.tmp2.set(ray.direction).scl(20f));
 			}
 		}
 		return true;

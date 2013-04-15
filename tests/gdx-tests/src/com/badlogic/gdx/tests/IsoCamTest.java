@@ -47,7 +47,7 @@ public class IsoCamTest extends GdxTest {
 		float pixelsOnX = Gdx.graphics.getWidth() / unitsOnX;
 		float unitsOnY = Gdx.graphics.getHeight() / pixelsOnX;
 		cam = new OrthographicCamera(unitsOnX, unitsOnY, 25);
-		cam.position.mul(30);
+		cam.position.scl(30);
 		cam.near = 1;
 		cam.far = 1000;
 		matrix.setToRotation(new Vector3(1, 0, 0), 90);

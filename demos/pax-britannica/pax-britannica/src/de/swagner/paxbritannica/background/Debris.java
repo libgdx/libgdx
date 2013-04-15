@@ -58,7 +58,7 @@ public class Debris extends Sprite {
 		since_alive += delta;
 
 		facing.rotate((SPEED + random_speed) * delta).nor();
-		position.add(facing.mul((SPEED + random_speed) * delta));
+		position.add(facing.scl((SPEED + random_speed) * delta));
 		this.setPosition(position.x, position.y);
 
 		if (since_alive < FADE_TIME) {
