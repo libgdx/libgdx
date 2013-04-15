@@ -204,7 +204,8 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void setColor(float r, float g, float b, float a) {
-		this.color.set(r, g, b, a);
+		color.set(r, g, b, a);
+		colorSet = true;
 	}
 	
 	@Override
@@ -341,12 +342,10 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void triangle(short index1, short index2, short index3) {
-		if (primitiveType == GL10.GL_TRIANGLES) {
+		if (primitiveType == GL10.GL_TRIANGLES || primitiveType == GL10.GL_POINTS) {
 			index(index1, index2, index3);
 		} else if (primitiveType == GL10.GL_LINES) {
 			index(index1, index2, index2, index3, index3, index1);
-		} else if (primitiveType == GL10.GL_POINTS) {
-			index(index1, index2, index3);			
 		} else
 			throw new GdxRuntimeException("Incorrect primitive type");
 	}
@@ -472,7 +471,9 @@ public class MeshBuilder implements MeshPartBuilder {
 		float u = 0f;
 		float angle = 0f;
 		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
+		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
 		VertexInfo curr2 = vertTmp4.set(null, null, null, null);
+		curr2.hasUV = curr2.hasPosition = curr2.hasNormal = true;
 		for (int i = 0; i <= divisions; i++) {
 			angle = step * i;
 			u = 1f - us * i;
@@ -503,6 +504,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		float u = 0f;
 		float angle = 0f;
 		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
+		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
 		VertexInfo curr2 = vertTmp4.set(null, null, null, null).setPos(0,hh,0).setNor(0,1,0).setUV(0.5f, 0);
 		final int base = vertex(curr2);
 		for (int i = 0; i <= divisions; i++) {
@@ -534,6 +536,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		float angleU = 0f;
 		float angleV = 0f;
 		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
+		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
 		for (int i = 0; i <= divisionsU; i++) {
 			angleU = stepU * i;
 			u = 1f - us * i;
