@@ -183,7 +183,7 @@ public class JsonReader {
 				fret;
 			}
 
-			floatChars = '-'? [0-9]+ ('.' [0-9]+)? ([eE] [+\-]? [0-9]+)?;
+			floatChars = '-'? [0-9]+ '.' [0-9]+? ([eE] [+\-]? [0-9]+)?;
 			longChars = '-'? [0-9]+;
 			quotedChars = (^["\\] | ('\\' ["\\/bfnrtu] >needsUnescape))*;
 			unquotedNameChars = [a-zA-Z0-9_$] ^([:}\],] | space)*;
