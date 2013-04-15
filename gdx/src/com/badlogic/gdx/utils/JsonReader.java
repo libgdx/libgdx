@@ -19,18 +19,18 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.files.FileHandle;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import com.badlogic.gdx.files.FileHandle;
+
 /** Lightweight JSON parser.<br>
  * <br>
- * The default behavior is to parse the JSON into a DOM made up of {@link OrderedMap}, {@link Array}, String, Float, and Boolean
- * objects. Extend this class and override methods to perform event driven parsing. When this is done, the parse methods will
- * return null.
+ * The default behavior is to parse the JSON into a DOM made up of {@link OrderedMap}, {@link Array}, String, Float, Long, and
+ * Boolean objects. Extend this class and override methods to perform event driven parsing. When this is done, the parse methods
+ * will return null.
  * @author Nathan Sweet */
 public class JsonReader {
 	public Object parse (String json) {
@@ -178,7 +178,7 @@ public class JsonReader {
 							while (_nacts-- > 0) {
 								switch (_json_actions[_acts++]) {
 								case 0:
-								// line 105 "JsonReader.rl"
+								// line 106 "JsonReader.rl"
 								{
 									s = p;
 									needsUnescape = false;
@@ -186,13 +186,13 @@ public class JsonReader {
 								}
 									break;
 								case 1:
-								// line 110 "JsonReader.rl"
+								// line 111 "JsonReader.rl"
 								{
 									needsUnescape = true;
 								}
 									break;
 								case 2:
-								// line 113 "JsonReader.rl"
+								// line 114 "JsonReader.rl"
 								{
 									String name = new String(data, s, p - s);
 									s = p;
@@ -202,7 +202,7 @@ public class JsonReader {
 								}
 									break;
 								case 3:
-								// line 120 "JsonReader.rl"
+								// line 121 "JsonReader.rl"
 								{
 									if (!discardBuffer) {
 										String value = new String(data, s, p - s);
@@ -215,17 +215,27 @@ public class JsonReader {
 								}
 									break;
 								case 4:
-								// line 130 "JsonReader.rl"
+								// line 131 "JsonReader.rl"
 								{
 									String value = new String(data, s, p - s);
 									s = p;
 									String name = names.size > 0 ? names.pop() : null;
-									if (debug) System.out.println("number: " + name + "=" + Float.parseFloat(value));
+									if (debug) System.out.println("float: " + name + "=" + Float.parseFloat(value));
 									number(name, Float.parseFloat(value));
 								}
 									break;
 								case 5:
-								// line 137 "JsonReader.rl"
+								// line 138 "JsonReader.rl"
+								{
+									String value = new String(data, s, p - s);
+									s = p;
+									String name = names.size > 0 ? names.pop() : null;
+									if (debug) System.out.println("long: " + name + "=" + Long.parseLong(value));
+									number(name, Long.parseLong(value));
+								}
+									break;
+								case 6:
+								// line 145 "JsonReader.rl"
 								{
 									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("boolean: " + name + "=true");
@@ -233,8 +243,8 @@ public class JsonReader {
 									discardBuffer = true;
 								}
 									break;
-								case 6:
-								// line 143 "JsonReader.rl"
+								case 7:
+								// line 151 "JsonReader.rl"
 								{
 									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("boolean: " + name + "=false");
@@ -242,8 +252,8 @@ public class JsonReader {
 									discardBuffer = true;
 								}
 									break;
-								case 7:
-								// line 149 "JsonReader.rl"
+								case 8:
+								// line 157 "JsonReader.rl"
 								{
 									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("null: " + name);
@@ -251,8 +261,8 @@ public class JsonReader {
 									discardBuffer = true;
 								}
 									break;
-								case 8:
-								// line 155 "JsonReader.rl"
+								case 9:
+								// line 163 "JsonReader.rl"
 								{
 									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("startObject: " + name);
@@ -272,8 +282,8 @@ public class JsonReader {
 									}
 								}
 									break;
-								case 9:
-								// line 161 "JsonReader.rl"
+								case 10:
+								// line 169 "JsonReader.rl"
 								{
 									if (debug) System.out.println("endObject");
 									pop();
@@ -284,8 +294,8 @@ public class JsonReader {
 									}
 								}
 									break;
-								case 10:
-								// line 166 "JsonReader.rl"
+								case 11:
+								// line 174 "JsonReader.rl"
 								{
 									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("startArray: " + name);
@@ -305,8 +315,8 @@ public class JsonReader {
 									}
 								}
 									break;
-								case 11:
-								// line 172 "JsonReader.rl"
+								case 12:
+								// line 180 "JsonReader.rl"
 								{
 									if (debug) System.out.println("endArray");
 									pop();
@@ -317,7 +327,7 @@ public class JsonReader {
 									}
 								}
 									break;
-								// line 207 "JsonReader.java"
+								// line 217 "JsonReader.java"
 								}
 							}
 						}
@@ -338,7 +348,7 @@ public class JsonReader {
 							while (__nacts-- > 0) {
 								switch (_json_actions[__acts++]) {
 								case 3:
-								// line 120 "JsonReader.rl"
+								// line 121 "JsonReader.rl"
 								{
 									if (!discardBuffer) {
 										String value = new String(data, s, p - s);
@@ -351,17 +361,27 @@ public class JsonReader {
 								}
 									break;
 								case 4:
-								// line 130 "JsonReader.rl"
+								// line 131 "JsonReader.rl"
 								{
 									String value = new String(data, s, p - s);
 									s = p;
 									String name = names.size > 0 ? names.pop() : null;
-									if (debug) System.out.println("number: " + name + "=" + Float.parseFloat(value));
+									if (debug) System.out.println("float: " + name + "=" + Float.parseFloat(value));
 									number(name, Float.parseFloat(value));
 								}
 									break;
 								case 5:
-								// line 137 "JsonReader.rl"
+								// line 138 "JsonReader.rl"
+								{
+									String value = new String(data, s, p - s);
+									s = p;
+									String name = names.size > 0 ? names.pop() : null;
+									if (debug) System.out.println("long: " + name + "=" + Long.parseLong(value));
+									number(name, Long.parseLong(value));
+								}
+									break;
+								case 6:
+								// line 145 "JsonReader.rl"
 								{
 									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("boolean: " + name + "=true");
@@ -369,8 +389,8 @@ public class JsonReader {
 									discardBuffer = true;
 								}
 									break;
-								case 6:
-								// line 143 "JsonReader.rl"
+								case 7:
+								// line 151 "JsonReader.rl"
 								{
 									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("boolean: " + name + "=false");
@@ -378,8 +398,8 @@ public class JsonReader {
 									discardBuffer = true;
 								}
 									break;
-								case 7:
-								// line 149 "JsonReader.rl"
+								case 8:
+								// line 157 "JsonReader.rl"
 								{
 									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("null: " + name);
@@ -387,7 +407,7 @@ public class JsonReader {
 									discardBuffer = true;
 								}
 									break;
-								// line 278 "JsonReader.java"
+								// line 298 "JsonReader.java"
 								}
 							}
 						}
@@ -398,7 +418,7 @@ public class JsonReader {
 				}
 			}
 
-			// line 203 "JsonReader.rl"
+			// line 212 "JsonReader.rl"
 
 		} catch (RuntimeException ex) {
 			parseRuntimeEx = ex;
@@ -423,10 +443,11 @@ public class JsonReader {
 		return root;
 	}
 
-	// line 288 "JsonReader.java"
+	// line 308 "JsonReader.java"
 	private static byte[] init__json_actions_0 () {
-		return new byte[] {0, 1, 0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 8, 1, 9, 1, 10, 1, 11, 2, 0, 2, 2, 0, 3, 2, 3, 9, 2, 3, 11, 2, 4, 9,
-			2, 4, 11, 2, 5, 3, 2, 6, 3, 2, 7, 3, 3, 5, 3, 9, 3, 5, 3, 11, 3, 6, 3, 9, 3, 6, 3, 11, 3, 7, 3, 9, 3, 7, 3, 11};
+		return new byte[] {0, 1, 0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 9, 1, 10, 1, 11, 1, 12, 2, 0, 2, 2, 0, 3, 2, 3, 10, 2, 3, 12, 2, 4,
+			10, 2, 4, 12, 2, 5, 4, 2, 6, 3, 2, 7, 3, 2, 8, 3, 3, 5, 4, 10, 3, 5, 4, 12, 3, 6, 3, 10, 3, 6, 3, 12, 3, 7, 3, 10, 3, 7,
+			3, 12, 3, 8, 3, 10, 3, 8, 3, 12};
 	}
 
 	private static final byte _json_actions[] = init__json_actions_0();
@@ -523,19 +544,19 @@ public class JsonReader {
 			0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 13, 0, 1, 1, 1, 0, 19, 1, 1, 5, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 15, 1, 1, 1, 1, 11, 0,
 			1, 1, 1, 0, 22, 1, 1, 7, 0, 0, 0, 0, 13, 0, 0, 0, 0, 1, 1, 1, 13, 0, 1, 1, 1, 0, 5, 0, 5, 0, 0, 5, 0, 0, 0, 5, 0, 5, 0,
 			0, 5, 0, 0, 0, 0, 5, 5, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 7, 7, 0, 0, 25, 7, 0,
-			0, 0, 9, 9, 0, 0, 0, 31, 9, 0, 0, 0, 0, 9, 9, 0, 0, 31, 9, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 31, 9, 0, 0, 7, 7, 0, 0, 0, 25,
-			7, 0, 7, 7, 0, 0, 0, 25, 7, 0, 7, 7, 0, 0, 0, 25, 7, 0, 7, 7, 0, 0, 0, 25, 7, 0, 40, 40, 0, 0, 54, 40, 0, 7, 7, 0, 0, 0,
-			25, 7, 0, 7, 7, 0, 0, 0, 25, 7, 0, 7, 7, 0, 0, 0, 25, 7, 0, 43, 43, 0, 0, 62, 43, 0, 7, 7, 0, 0, 0, 25, 7, 0, 7, 7, 0,
-			0, 0, 25, 7, 0, 7, 7, 0, 0, 0, 25, 7, 0, 37, 37, 0, 0, 46, 37, 0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 1, 0, 1, 15, 17, 1,
-			1, 1, 1, 11, 0, 1, 1, 1, 0, 22, 1, 1, 7, 0, 0, 0, 0, 17, 0, 0, 0, 0, 1, 1, 15, 17, 1, 1, 1, 1, 11, 0, 1, 1, 1, 0, 7, 7,
-			0, 28, 0, 7, 0, 0, 0, 9, 9, 0, 0, 34, 0, 9, 0, 0, 0, 0, 9, 9, 0, 34, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 34, 9, 0, 0, 7,
-			7, 0, 28, 0, 0, 7, 0, 7, 7, 0, 28, 0, 0, 7, 0, 7, 7, 0, 28, 0, 0, 7, 0, 7, 7, 0, 28, 0, 0, 7, 0, 40, 40, 0, 58, 0, 40,
-			0, 7, 7, 0, 28, 0, 0, 7, 0, 7, 7, 0, 28, 0, 0, 7, 0, 7, 7, 0, 28, 0, 0, 7, 0, 43, 43, 0, 66, 0, 43, 0, 7, 7, 0, 28, 0,
-			0, 7, 0, 7, 7, 0, 28, 0, 0, 7, 0, 7, 7, 0, 28, 0, 0, 7, 0, 37, 37, 0, 50, 0, 37, 0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0,
-			7, 0, 0, 0, 0, 7, 0, 9, 0, 0, 0, 9, 0, 0, 9, 0, 0, 9, 0, 0, 9, 9, 0, 0, 7, 0, 0, 0, 0, 0, 7, 0, 7, 0, 0, 0, 0, 0, 7, 0,
-			7, 0, 0, 0, 0, 0, 7, 0, 7, 0, 0, 0, 0, 0, 7, 0, 40, 0, 0, 0, 0, 40, 0, 7, 0, 0, 0, 0, 0, 7, 0, 7, 0, 0, 0, 0, 0, 7, 0,
-			7, 0, 0, 0, 0, 0, 7, 0, 43, 0, 0, 0, 0, 43, 0, 7, 0, 0, 0, 0, 0, 7, 0, 7, 0, 0, 0, 0, 0, 7, 0, 7, 0, 0, 0, 0, 0, 7, 0,
-			37, 0, 0, 0, 0, 37, 0, 0, 0, 0};
+			0, 0, 37, 37, 0, 0, 0, 49, 37, 0, 0, 0, 0, 9, 9, 0, 0, 31, 9, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 31, 9, 0, 0, 7, 7, 0, 0, 0,
+			25, 7, 0, 7, 7, 0, 0, 0, 25, 7, 0, 7, 7, 0, 0, 0, 25, 7, 0, 7, 7, 0, 0, 0, 25, 7, 0, 43, 43, 0, 0, 65, 43, 0, 7, 7, 0,
+			0, 0, 25, 7, 0, 7, 7, 0, 0, 0, 25, 7, 0, 7, 7, 0, 0, 0, 25, 7, 0, 46, 46, 0, 0, 73, 46, 0, 7, 7, 0, 0, 0, 25, 7, 0, 7,
+			7, 0, 0, 0, 25, 7, 0, 7, 7, 0, 0, 0, 25, 7, 0, 40, 40, 0, 0, 57, 40, 0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 1, 0, 1, 15,
+			17, 1, 1, 1, 1, 11, 0, 1, 1, 1, 0, 22, 1, 1, 7, 0, 0, 0, 0, 17, 0, 0, 0, 0, 1, 1, 15, 17, 1, 1, 1, 1, 11, 0, 1, 1, 1, 0,
+			7, 7, 0, 28, 0, 7, 0, 0, 0, 37, 37, 0, 0, 53, 0, 37, 0, 0, 0, 0, 9, 9, 0, 34, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 34, 9,
+			0, 0, 7, 7, 0, 28, 0, 0, 7, 0, 7, 7, 0, 28, 0, 0, 7, 0, 7, 7, 0, 28, 0, 0, 7, 0, 7, 7, 0, 28, 0, 0, 7, 0, 43, 43, 0, 69,
+			0, 43, 0, 7, 7, 0, 28, 0, 0, 7, 0, 7, 7, 0, 28, 0, 0, 7, 0, 7, 7, 0, 28, 0, 0, 7, 0, 46, 46, 0, 77, 0, 46, 0, 7, 7, 0,
+			28, 0, 0, 7, 0, 7, 7, 0, 28, 0, 0, 7, 0, 7, 7, 0, 28, 0, 0, 7, 0, 40, 40, 0, 61, 0, 40, 0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0,
+			0, 0, 7, 0, 0, 0, 0, 7, 0, 37, 0, 0, 0, 37, 0, 0, 9, 0, 0, 9, 0, 0, 9, 9, 0, 0, 7, 0, 0, 0, 0, 0, 7, 0, 7, 0, 0, 0, 0,
+			0, 7, 0, 7, 0, 0, 0, 0, 0, 7, 0, 7, 0, 0, 0, 0, 0, 7, 0, 43, 0, 0, 0, 0, 43, 0, 7, 0, 0, 0, 0, 0, 7, 0, 7, 0, 0, 0, 0,
+			0, 7, 0, 7, 0, 0, 0, 0, 0, 7, 0, 46, 0, 0, 0, 0, 46, 0, 7, 0, 0, 0, 0, 0, 7, 0, 7, 0, 0, 0, 0, 0, 7, 0, 7, 0, 0, 0, 0,
+			0, 7, 0, 40, 0, 0, 0, 0, 40, 0, 0, 0, 0};
 	}
 
 	private static final byte _json_trans_actions[] = init__json_trans_actions_0();
@@ -543,7 +564,7 @@ public class JsonReader {
 	private static byte[] init__json_eof_actions_0 () {
 		return new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 7, 9, 9, 9, 7, 7, 7, 7, 40, 7, 7, 7, 43, 7, 7, 7, 37, 0, 0};
+			0, 0, 7, 37, 9, 9, 7, 7, 7, 7, 43, 7, 7, 7, 46, 7, 7, 7, 40, 0, 0};
 	}
 
 	private static final byte _json_eof_actions[] = init__json_eof_actions_0();
@@ -556,7 +577,7 @@ public class JsonReader {
 	static final int json_en_array = 49;
 	static final int json_en_main = 1;
 
-	// line 227 "JsonReader.rl"
+	// line 236 "JsonReader.rl"
 
 	private final Array elements = new Array(8);
 	private Object root, current;
@@ -594,6 +615,10 @@ public class JsonReader {
 	}
 
 	protected void number (String name, float value) {
+		set(name, value);
+	}
+
+	protected void number (String name, long value) {
 		set(name, value);
 	}
 
