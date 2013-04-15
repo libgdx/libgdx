@@ -148,9 +148,9 @@ public class ModelBuilder {
 	/** Creates a new MeshPart within the current Node.
 	 * The resources the Material might contain are not managed, use {@link #manage(Disposable)} to add those to the model.
 	 * @return The {@link MeshPartBuilder} you can use to build the MeshPart. */ 
-	public MeshPartBuilder part(final String id, final VertexAttributes attributes, final Material material) {
+	public MeshPartBuilder part(final String id, int primitiveType, final VertexAttributes attributes, final Material material) {
 		final MeshBuilder builder = getBuilder(attributes);
-		part(builder.part(id), material);
+		part(builder.part(id, primitiveType), material);
 		return builder;
 	}
 	
@@ -159,7 +159,7 @@ public class ModelBuilder {
 	 * use {@link Model#manageDisposable(Disposable)} to add those to the model. */ 
 	public Model createBox(float width, float height, float depth, final Material material, final VertexAttributes attributes) {
 		begin();
-		part("box", attributes, material).box(width, height, depth);
+		part("box", GL10.GL_TRIANGLES, attributes, material).box(width, height, depth);
 		return end();
 	}
 	
@@ -168,7 +168,7 @@ public class ModelBuilder {
 	 * use {@link Model#manageDisposable(Disposable)} to add those to the model. */
 	public Model createRect(float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11, float x01, float y01, float z01, float normalX, float normalY, float normalZ, final Material material, final VertexAttributes attributes) {
 		begin();
-		part("rect", attributes, material).rect(x00, y00, z00, x10, y10, z10, x11, y11, z11, x01, y01, z01, normalX, normalY, normalZ);
+		part("rect", GL10.GL_TRIANGLES, attributes, material).rect(x00, y00, z00, x10, y10, z10, x11, y11, z11, x01, y01, z01, normalX, normalY, normalZ);
 		return end();
 	}
 
@@ -177,7 +177,7 @@ public class ModelBuilder {
 	 * use {@link Model#manageDisposable(Disposable)} to add those to the model. */
 	public Model createCylinder(float width, float height, float depth, int divisions, final Material material, final VertexAttributes attributes) {
 		begin();
-		part("cylinder", attributes, material).cylinder(width, height, depth, divisions);
+		part("cylinder", GL10.GL_TRIANGLES, attributes, material).cylinder(width, height, depth, divisions);
 		return end();
 	}
 	
@@ -186,7 +186,7 @@ public class ModelBuilder {
 	 * use {@link Model#manageDisposable(Disposable)} to add those to the model. */
 	public Model createCone(float width, float height, float depth, int divisions, final Material material, final VertexAttributes attributes) {
 		begin();
-		part("cone", attributes, material).cone(width, height, depth, divisions);
+		part("cone", GL10.GL_TRIANGLES, attributes, material).cone(width, height, depth, divisions);
 		return end();
 	}
 	
@@ -195,7 +195,7 @@ public class ModelBuilder {
 	 * use {@link Model#manageDisposable(Disposable)} to add those to the model. */
 	public Model createSphere(float width, float height, float depth, int divisionsU, int divisionsV, final Material material, final VertexAttributes attributes) {
 		begin();
-		part("cylinder", attributes, material).sphere(width, height, depth, divisionsU, divisionsV);
+		part("cylinder", GL10.GL_TRIANGLES, attributes, material).sphere(width, height, depth, divisionsU, divisionsV);
 		return end();
 	}
 	

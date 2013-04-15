@@ -3,11 +3,15 @@
 #endif
 
 attribute vec3 a_position;
-
+#ifdef colorFlag
+attribute vec4 a_color;
+varying vec4 v_color;
+#endif
+#ifdef normalFlag
 attribute vec3 a_normal;
-
 uniform mat3 u_normalMatrix;
 varying vec3 v_normal;
+#endif
 
 #ifdef textureFlag
 attribute vec2 a_texCoord0;
@@ -57,15 +61,22 @@ void main() {
 	#ifdef textureFlag
 		v_texCoords0 = a_texCoord0;
 	#endif
-		
+	
+	#ifdef colorFlag
+	v_color = a_color;
+	#endif
+	
 	vec4 pos = u_modelTrans * vec4(a_position, 1.0);
 	gl_Position = u_projTrans * pos;
+	
+	#ifdef normalFlag
+	v_normal = u_normalMatrix * a_normal;
+	#endif
 
 	#ifdef NUM_LIGHTS
 	v_lightDiffuse = ambient.rgb;
 	v_lightSpecular = vec3(0.0);
 	#if (NUM_LIGHTS > 0)
-	v_normal = u_normalMatrix * a_normal;
 	v_viewVec = normalize(u_cameraPosition - pos.xyz);
 		
 	for (int i = 0; i < NUM_LIGHTS; i++) {
