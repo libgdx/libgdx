@@ -16,11 +16,6 @@
 
 package com.badlogic.gdx.graphics.g3d.decals;
 
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C4;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -80,6 +75,7 @@ public class Decal {
 		vertices[C4] = color;
 	}
 	
+	/** Sets the color used to tint this decal. Default is {@link Color#WHITE}. */
 	public void setColor (Color tint) {
 		float color = tint.toFloatBits();
 		vertices[C1] = color;
@@ -88,6 +84,7 @@ public class Decal {
 		vertices[C4] = color;
 	}
 	
+	/** @see #setColor(Color) */
 	public void setColor (float color) {
 		vertices[C1] = color;
 		vertices[C2] = color;
