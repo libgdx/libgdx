@@ -46,13 +46,14 @@ public class Box2DDebugRenderer {
 	private boolean drawAABBs;
 	private boolean drawInactiveBodies;
 	private boolean drawVelocities;
+	private boolean drawContacts;
 
 	public Box2DDebugRenderer () {
-		this(true, true, false, true, false);
+		this(true, true, false, true, false, true);
 	}
 
 	public Box2DDebugRenderer (boolean drawBodies, boolean drawJoints, boolean drawAABBs, boolean drawInactiveBodies,
-		boolean drawVelocities) {
+		boolean drawVelocities, boolean drawContacts) {
 		// next we setup the immediate mode renderer
 		renderer = new ShapeRenderer();
 
@@ -65,6 +66,7 @@ public class Box2DDebugRenderer {
 		this.drawAABBs = drawAABBs;
 		this.drawInactiveBodies = drawInactiveBodies;
 		this.drawVelocities = drawVelocities;
+		this.drawContacts = drawContacts;
 	}
 
 	/** This assumes that the projection matrix has already been set. */
@@ -99,14 +101,15 @@ public class Box2DDebugRenderer {
 			}
 		}
 		renderer.end();
-
-		if (Gdx.gl10 != null) Gdx.gl10.glPointSize(3);
-		renderer.begin(ShapeType.Point);
-		int len = world.getContactList().size();
-		for (int i = 0; i < len; i++)
-			drawContact(world.getContactList().get(i));
-		renderer.end();
-		if (Gdx.gl10 != null) Gdx.gl10.glPointSize(1);
+		if (drawContacts) {
+			if (Gdx.gl10 != null) Gdx.gl10.glPointSize(3);
+			renderer.begin(ShapeType.Point);
+			int len = world.getContactList().size();
+			for (int i = 0; i < len; i++)
+				drawContact(world.getContactList().get(i));
+			renderer.end();
+			if (Gdx.gl10 != null) Gdx.gl10.glPointSize(1);
+		}
 	}
 
 	protected void renderBody (Body body) {
@@ -340,6 +343,14 @@ public class Box2DDebugRenderer {
 
 	public void setDrawVelocities (boolean drawVelocities) {
 		this.drawVelocities = drawVelocities;
+	}
+	
+	public boolean isDrawContacts () {
+		return drawContacts;
+	}
+
+	public void setDrawContacts (boolean drawContacts) {
+		this.drawContacts = drawContacts;
 	}
 
 	public static Vector2 getAxis () {
