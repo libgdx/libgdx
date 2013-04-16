@@ -77,6 +77,7 @@
 		<include name="math/Intersector.java"/>
 		<include name="utils/JsonReader.java"/>
 		<include name="utils/JsonWriter.java"/>
+		<include name="utils/DataInput.java"/>
 		<include name="graphics/g3d/keyframed/Keyframe.java"/>
 		<include name="graphics/g3d/keyframed/KeyframeAnimation.java"/>
 		<include name="graphics/g3d/keyframed/KeyframeAnimator.java"/>
@@ -136,7 +137,6 @@
 		<include name="math/collision/Segment.java"/>
 		<include name="graphics/glutils/ShapeRenderer.java"/>
 		<include name="graphics/g3d/decals/SimpleOrthoGroupStrategy.java"/>
-		<include name="graphics/g2d/tiled/SimpleTileAtlas.java"/>
 		<include name="assets/loaders/SkinLoader.java"/>
 		<include name="utils/Sort.java"/>
 		<include name="utils/SortedIntList.java"/>
@@ -153,14 +153,6 @@
 		<include name="graphics/TextureDict.java"/>
 		<include name="graphics/TextureRef.java"/>
 		<include name="graphics/g2d/TextureRegion.java"/>
-		<include name="graphics/g2d/tiled/TileAtlas.java"/>
-		<include name="assets/loaders/TileAtlasLoader.java"/>
-		<include name="graphics/g2d/tiled/TileMapRenderer.java"/>
-		<include name="graphics/g2d/tiled/TileSet.java"/>
-		<include name="graphics/g2d/tiled/TiledLayer.java"/>
-		<include name="graphics/g2d/tiled/TiledMap.java"/>
-		<include name="graphics/g2d/tiled/TiledObject.java"/>
-		<include name="graphics/g2d/tiled/TiledObjectGroup.java"/>
 		<include name="utils/TimSort.java"/>
 		<include name="src/com/esotericsoftware/tablelayout/Toolkit.java"/>
 		<include name="math/Vector2.java"/>
@@ -180,6 +172,7 @@
 		<include name="graphics/g2d/Animation.java"/>
 		<include name="graphics/g3d/Animation.java"/>
 		
+		<include name="utils/Predicate.java"/>
 		<include name="utils/StringBuilder.java"/>
 		<include name="utils/compression/CRC.java"/>
 		<include name="utils/compression/ICodeProgress.java"/>
@@ -221,6 +214,7 @@
 		<include name="scenes/scene2d/ui/Stack.java"/>
 		<include name="scenes/scene2d/ui/Table.java"/>
 		<include name="scenes/scene2d/ui/TableLayout.java"/>
+		<include name="scenes/scene2d/ui/TableToolkit.java"/>
 		<include name="scenes/scene2d/ui/TextButton.java"/>
 		<include name="scenes/scene2d/ui/TextField.java"/>
 		<include name="scenes/scene2d/ui/Tree.java"/>
@@ -250,10 +244,20 @@
 		<include name="scenes/scene2d/utils/DragListener.java"/>
 		
 		<include name="Net.java"/>
+		<include name="net/HttpParametersUtils.java"/>
+		<include name="net/HttpStatus.java"/>
 		<include name="net/ServerSocket.java"/>
 		<include name="net/ServerSocketHints.java"/>
 		<include name="net/Socket.java"/>
 		<include name="net/SocketHints.java"/>
 		<include name="graphics/g3d/**/*"/>
+		<include name="maps/**"/>
+		
+		<include name="math/Vector.java"/>
+		<include name="math/Path.java"/>
+		<include name="math/Bezier.java"/>
+		<include name="math/BSpline.java"/>
+		<include name="math/Ellipse.java"/>
+		<include name="math/Polyline.java"/>
 	</source>
 </module>

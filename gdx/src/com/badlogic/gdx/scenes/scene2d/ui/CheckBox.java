@@ -38,7 +38,7 @@ public class CheckBox extends TextButton {
 
 	public CheckBox (String text, CheckBoxStyle style) {
 		super(text, style);
-		clear();
+		clearChildren();
 		add(image = new Image(style.checkboxOff));
 		Label label = getLabel();
 		add(label);

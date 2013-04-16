@@ -64,7 +64,7 @@ public class LwjglCanvas implements Application {
 
 	public LwjglCanvas (ApplicationListener listener, boolean useGL2) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = true;
+		config.useGL20 = useGL2;
 		initialize(listener, config);
 	}
 
@@ -76,7 +76,7 @@ public class LwjglCanvas implements Application {
 		LwjglNativesLoader.load();
 
 		canvas = new Canvas() {
-			private final Dimension minSize = new Dimension(0, 0);
+			private final Dimension minSize = new Dimension(1, 1);
 
 			public final void addNotify () {
 				super.addNotify();
@@ -99,6 +99,7 @@ public class LwjglCanvas implements Application {
 				return minSize;
 			}
 		};
+		canvas.setSize(1, 1);
 		canvas.setIgnoreRepaint(true);
 
 		graphics = new LwjglGraphics(canvas, config) {
@@ -138,6 +139,11 @@ public class LwjglCanvas implements Application {
 	}
 
 	protected void setTitle (String title) {
+	}
+	
+	@Override
+	public ApplicationListener getApplicationListener () {
+		return listener;
 	}
 
 	public Canvas getCanvas () {
@@ -190,7 +196,7 @@ public class LwjglCanvas implements Application {
 		} catch (Exception ex) {
 			stopped();
 			exception(ex);
-			throw new GdxRuntimeException(ex);
+			return;
 		}
 
 		EventQueue.invokeLater(new Runnable() {

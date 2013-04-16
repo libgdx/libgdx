@@ -113,6 +113,7 @@ public class BooleanArray {
 	}
 
 	public void insert (int index, boolean value) {
+		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		boolean[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		if (ordered)
@@ -176,6 +177,7 @@ public class BooleanArray {
 
 	/** Returns the first item. */
 	public boolean first () {
+		if (size == 0) throw new IllegalStateException("Array is empty.");
 		return items[0];
 	}
 

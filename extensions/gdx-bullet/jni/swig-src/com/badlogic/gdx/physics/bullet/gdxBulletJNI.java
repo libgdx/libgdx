@@ -907,7 +907,7 @@ public class gdxBulletJNI {
   public final static native boolean btMultiSapBroadphase_testAabbOverlap(long jarg1, btMultiSapBroadphase jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btBroadphaseProxy jarg3_);
   public final static native long btMultiSapBroadphase_getOverlappingPairCache__SWIG_0(long jarg1, btMultiSapBroadphase jarg1_);
   public final static native void btMultiSapBroadphase_buildTree(long jarg1, btMultiSapBroadphase jarg1_, Vector3 jarg2, Vector3 jarg3);
-  public final static native void btMultiSapBroadphase_quicksort(long jarg1, btMultiSapBroadphase jarg1_, long jarg2, int jarg3, int jarg4);
+  public final static native void btMultiSapBroadphase_quicksort(long jarg1, btMultiSapBroadphase jarg1_, long jarg2, btBroadphasePairArray jarg2_, int jarg3, int jarg4);
   public final static native long new_btCollisionAlgorithmConstructionInfo__SWIG_0();
   public final static native long new_btCollisionAlgorithmConstructionInfo__SWIG_1(long jarg1, btDispatcher jarg1_, int jarg2);
   public final static native void btCollisionAlgorithmConstructionInfo_m_dispatcher1_set(long jarg1, btCollisionAlgorithmConstructionInfo jarg1_, long jarg2, btDispatcher jarg2_);
@@ -918,7 +918,7 @@ public class gdxBulletJNI {
   public final static native void delete_btCollisionAlgorithm(long jarg1);
   public final static native void btCollisionAlgorithm_processCollision(long jarg1, btCollisionAlgorithm jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4, btDispatcherInfo jarg4_, long jarg5, btManifoldResult jarg5_);
   public final static native float btCollisionAlgorithm_calculateTimeOfImpact(long jarg1, btCollisionAlgorithm jarg1_, long jarg2, btCollisionObject jarg2_, long jarg3, btCollisionObject jarg3_, long jarg4, btDispatcherInfo jarg4_, long jarg5, btManifoldResult jarg5_);
-  public final static native void btCollisionAlgorithm_getAllContactManifolds(long jarg1, btCollisionAlgorithm jarg1_, long jarg2);
+  public final static native void btCollisionAlgorithm_getAllContactManifolds(long jarg1, btCollisionAlgorithm jarg1_, long jarg2, btManifoldArray jarg2_);
   public final static native void delete_btOverlappingPairCallback(long jarg1);
   public final static native long btOverlappingPairCallback_addOverlappingPair(long jarg1, btOverlappingPairCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btBroadphaseProxy jarg3_);
   public final static native long btOverlappingPairCallback_removeOverlappingPair(long jarg1, btOverlappingPairCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btBroadphaseProxy jarg3_, long jarg4, btDispatcher jarg4_);
@@ -1316,27 +1316,6 @@ public class gdxBulletJNI {
   public final static native float btSphereShape_getRadius(long jarg1, btSphereShape jarg1_);
   public final static native void btSphereShape_setUnscaledRadius(long jarg1, btSphereShape jarg1_, float jarg2);
   public final static native void delete_btSphereShape(long jarg1);
-  public final static native long new_btMultiSphereShape(long jarg1, btVector3 jarg1_, java.nio.FloatBuffer jarg2, int jarg3);
-  public final static native int btMultiSphereShape_getSphereCount(long jarg1, btMultiSphereShape jarg1_);
-  public final static native Vector3 btMultiSphereShape_getSpherePosition(long jarg1, btMultiSphereShape jarg1_, int jarg2);
-  public final static native float btMultiSphereShape_getSphereRadius(long jarg1, btMultiSphereShape jarg1_, int jarg2);
-  public final static native void delete_btMultiSphereShape(long jarg1);
-  public final static native void btPositionAndRadius_m_pos_set(long jarg1, btPositionAndRadius jarg1_, long jarg2, btVector3FloatData jarg2_);
-  public final static native long btPositionAndRadius_m_pos_get(long jarg1, btPositionAndRadius jarg1_);
-  public final static native void btPositionAndRadius_m_radius_set(long jarg1, btPositionAndRadius jarg1_, float jarg2);
-  public final static native float btPositionAndRadius_m_radius_get(long jarg1, btPositionAndRadius jarg1_);
-  public final static native long new_btPositionAndRadius();
-  public final static native void delete_btPositionAndRadius(long jarg1);
-  public final static native void btMultiSphereShapeData_m_convexInternalShapeData_set(long jarg1, btMultiSphereShapeData jarg1_, long jarg2, btConvexInternalShapeData jarg2_);
-  public final static native long btMultiSphereShapeData_m_convexInternalShapeData_get(long jarg1, btMultiSphereShapeData jarg1_);
-  public final static native void btMultiSphereShapeData_m_localPositionArrayPtr_set(long jarg1, btMultiSphereShapeData jarg1_, long jarg2, btPositionAndRadius jarg2_);
-  public final static native long btMultiSphereShapeData_m_localPositionArrayPtr_get(long jarg1, btMultiSphereShapeData jarg1_);
-  public final static native void btMultiSphereShapeData_m_localPositionArraySize_set(long jarg1, btMultiSphereShapeData jarg1_, int jarg2);
-  public final static native int btMultiSphereShapeData_m_localPositionArraySize_get(long jarg1, btMultiSphereShapeData jarg1_);
-  public final static native void btMultiSphereShapeData_m_padding_set(long jarg1, btMultiSphereShapeData jarg1_, String jarg2);
-  public final static native String btMultiSphereShapeData_m_padding_get(long jarg1, btMultiSphereShapeData jarg1_);
-  public final static native long new_btMultiSphereShapeData();
-  public final static native void delete_btMultiSphereShapeData(long jarg1);
   public final static native void delete_btStridingMeshInterface(long jarg1);
   public final static native void btStridingMeshInterface_InternalProcessAllTriangles(long jarg1, btStridingMeshInterface jarg1_, long jarg2, btInternalTriangleIndexCallback jarg2_, Vector3 jarg3, Vector3 jarg4);
   public final static native void btStridingMeshInterface_calculateAabbBruteForce(long jarg1, btStridingMeshInterface jarg1_, Vector3 jarg2, Vector3 jarg3);
@@ -1759,6 +1738,8 @@ public class gdxBulletJNI {
   public final static native int btCollisionObject_calculateSerializeBufferSize(long jarg1, btCollisionObject jarg1_);
   public final static native String btCollisionObject_serialize(long jarg1, btCollisionObject jarg1_, long jarg2, long jarg3);
   public final static native void btCollisionObject_serializeSingleObject(long jarg1, btCollisionObject jarg1_, long jarg2);
+  public final static native void btCollisionObject_internalSetGdxBridge(long jarg1, btCollisionObject jarg1_, long jarg2, GdxCollisionObjectBridge jarg2_);
+  public final static native long btCollisionObject_internalGetGdxBridge(long jarg1, btCollisionObject jarg1_);
   public final static native void btCollisionObject_getAnisotropicFriction__SWIG_1(long jarg1, btCollisionObject jarg1_, Vector3 jarg2);
   public final static native void btCollisionObject_getWorldTransform__SWIG_2(long jarg1, btCollisionObject jarg1_, Matrix4 jarg2);
   public final static native void btCollisionObject_getInterpolationWorldTransform__SWIG_2(long jarg1, btCollisionObject jarg1_, Matrix4 jarg2);
@@ -1862,6 +1843,16 @@ public class gdxBulletJNI {
   public final static native int btCollisionObjectFloatData_m_checkCollideWith_get(long jarg1, btCollisionObjectFloatData jarg1_);
   public final static native long new_btCollisionObjectFloatData();
   public final static native void delete_btCollisionObjectFloatData(long jarg1);
+  public final static native void GdxCollisionObjectBridge_userValue_set(long jarg1, GdxCollisionObjectBridge jarg1_, int jarg2);
+  public final static native int GdxCollisionObjectBridge_userValue_get(long jarg1, GdxCollisionObjectBridge jarg1_);
+  public final static native void GdxCollisionObjectBridge_contactCallbackFlag_set(long jarg1, GdxCollisionObjectBridge jarg1_, int jarg2);
+  public final static native int GdxCollisionObjectBridge_contactCallbackFlag_get(long jarg1, GdxCollisionObjectBridge jarg1_);
+  public final static native void GdxCollisionObjectBridge_contactCallbackFilter_set(long jarg1, GdxCollisionObjectBridge jarg1_, int jarg2);
+  public final static native int GdxCollisionObjectBridge_contactCallbackFilter_get(long jarg1, GdxCollisionObjectBridge jarg1_);
+  public final static native long new_GdxCollisionObjectBridge();
+  public final static native void delete_GdxCollisionObjectBridge(long jarg1);
+  public final static native boolean gdxCheckFilter__SWIG_0(int jarg1, int jarg2);
+  public final static native boolean gdxCheckFilter__SWIG_1(long jarg1, btCollisionObject jarg1_, long jarg2, btCollisionObject jarg2_);
   public final static native void btRigidBodyConstructionInfo_m_mass_set(long jarg1, btRigidBodyConstructionInfo jarg1_, float jarg2);
   public final static native float btRigidBodyConstructionInfo_m_mass_get(long jarg1, btRigidBodyConstructionInfo jarg1_);
   public final static native void btRigidBodyConstructionInfo_m_motionState_set(long jarg1, btRigidBodyConstructionInfo jarg1_, long jarg2, btMotionState jarg2_);
@@ -2568,6 +2559,8 @@ public class gdxBulletJNI {
   public final static native Vector3 btManifoldPoint_getPositionWorldOnB(long jarg1, btManifoldPoint jarg1_);
   public final static native void btManifoldPoint_setDistance(long jarg1, btManifoldPoint jarg1_, float jarg2);
   public final static native float btManifoldPoint_getAppliedImpulse(long jarg1, btManifoldPoint jarg1_);
+  public final static native int btManifoldPoint_getUserValue(long jarg1, btManifoldPoint jarg1_);
+  public final static native void btManifoldPoint_setUserValue(long jarg1, btManifoldPoint jarg1_, int jarg2);
   public final static native void delete_btManifoldPoint(long jarg1);
   public final static native long new_btContinuousConvexCollision__SWIG_0(long jarg1, btConvexShape jarg1_, long jarg2, btConvexShape jarg2_, long jarg3, long jarg4, btConvexPenetrationDepthSolver jarg4_);
   public final static native long new_btContinuousConvexCollision__SWIG_1(long jarg1, btConvexShape jarg1_, long jarg2, btStaticPlaneShape jarg2_);
@@ -2815,6 +2808,27 @@ public class gdxBulletJNI {
   public final static native float btAngularLimit_getLow(long jarg1, btAngularLimit jarg1_);
   public final static native float btAngularLimit_getHigh(long jarg1, btAngularLimit jarg1_);
   public final static native void delete_btAngularLimit(long jarg1);
+  public final static native long new_btMultiSphereShape(Vector3[] jarg1, float[] jarg2, int jarg3);
+  public final static native int btMultiSphereShape_getSphereCount(long jarg1, btMultiSphereShape jarg1_);
+  public final static native Vector3 btMultiSphereShape_getSpherePosition(long jarg1, btMultiSphereShape jarg1_, int jarg2);
+  public final static native float btMultiSphereShape_getSphereRadius(long jarg1, btMultiSphereShape jarg1_, int jarg2);
+  public final static native void delete_btMultiSphereShape(long jarg1);
+  public final static native void btPositionAndRadius_m_pos_set(long jarg1, btPositionAndRadius jarg1_, long jarg2, btVector3FloatData jarg2_);
+  public final static native long btPositionAndRadius_m_pos_get(long jarg1, btPositionAndRadius jarg1_);
+  public final static native void btPositionAndRadius_m_radius_set(long jarg1, btPositionAndRadius jarg1_, float jarg2);
+  public final static native float btPositionAndRadius_m_radius_get(long jarg1, btPositionAndRadius jarg1_);
+  public final static native long new_btPositionAndRadius();
+  public final static native void delete_btPositionAndRadius(long jarg1);
+  public final static native void btMultiSphereShapeData_m_convexInternalShapeData_set(long jarg1, btMultiSphereShapeData jarg1_, long jarg2, btConvexInternalShapeData jarg2_);
+  public final static native long btMultiSphereShapeData_m_convexInternalShapeData_get(long jarg1, btMultiSphereShapeData jarg1_);
+  public final static native void btMultiSphereShapeData_m_localPositionArrayPtr_set(long jarg1, btMultiSphereShapeData jarg1_, long jarg2, btPositionAndRadius jarg2_);
+  public final static native long btMultiSphereShapeData_m_localPositionArrayPtr_get(long jarg1, btMultiSphereShapeData jarg1_);
+  public final static native void btMultiSphereShapeData_m_localPositionArraySize_set(long jarg1, btMultiSphereShapeData jarg1_, int jarg2);
+  public final static native int btMultiSphereShapeData_m_localPositionArraySize_get(long jarg1, btMultiSphereShapeData jarg1_);
+  public final static native void btMultiSphereShapeData_m_padding_set(long jarg1, btMultiSphereShapeData jarg1_, String jarg2);
+  public final static native String btMultiSphereShapeData_m_padding_get(long jarg1, btMultiSphereShapeData jarg1_);
+  public final static native long new_btMultiSphereShapeData();
+  public final static native void delete_btMultiSphereShapeData(long jarg1);
   public final static native void delete_btDynamicsWorld(long jarg1);
   public final static native int btDynamicsWorld_stepSimulation__SWIG_0(long jarg1, btDynamicsWorld jarg1_, float jarg2, int jarg3, float jarg4);
   public final static native int btDynamicsWorld_stepSimulation__SWIG_1(long jarg1, btDynamicsWorld jarg1_, float jarg2, int jarg3);
@@ -2859,6 +2873,48 @@ public class gdxBulletJNI {
   public final static native void delete_InternalTickCallback(long jarg1);
   public final static native void InternalTickCallback_director_connect(InternalTickCallback obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void InternalTickCallback_change_ownership(InternalTickCallback obj, long cptr, boolean take_or_release);
+  public final static native boolean ContactAddedListener_CB(btManifoldPoint jarg1, long jarg2, btCollisionObjectWrapper jarg2_, int jarg3, int jarg4, long jarg5, btCollisionObjectWrapper jarg5_, int jarg6, int jarg7);
+  public final static native void currentContactAddedListener_set(long jarg1);
+  public final static native long currentContactAddedListener_get();
+  public final static native boolean ContactAddedListenerByWrapper_onContactAdded(long jarg1, ContactAddedListenerByWrapper jarg1_, btManifoldPoint jarg2, long jarg3, btCollisionObjectWrapper jarg3_, int jarg4, int jarg5, boolean jarg6, long jarg7, btCollisionObjectWrapper jarg7_, int jarg8, int jarg9, boolean jarg10);
+  public final static native long new_ContactAddedListenerByWrapper();
+  public final static native void delete_ContactAddedListenerByWrapper(long jarg1);
+  public final static native void ContactAddedListenerByWrapper_director_connect(ContactAddedListenerByWrapper obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void ContactAddedListenerByWrapper_change_ownership(ContactAddedListenerByWrapper obj, long cptr, boolean take_or_release);
+  public final static native boolean ContactAddedListenerByObject_onContactAdded(long jarg1, ContactAddedListenerByObject jarg1_, btManifoldPoint jarg2, long jarg3, btCollisionObject jarg3_, int jarg4, int jarg5, boolean jarg6, long jarg7, btCollisionObject jarg7_, int jarg8, int jarg9, boolean jarg10);
+  public final static native long new_ContactAddedListenerByObject();
+  public final static native void delete_ContactAddedListenerByObject(long jarg1);
+  public final static native void ContactAddedListenerByObject_director_connect(ContactAddedListenerByObject obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void ContactAddedListenerByObject_change_ownership(ContactAddedListenerByObject obj, long cptr, boolean take_or_release);
+  public final static native boolean ContactAddedListenerByValue_onContactAdded(long jarg1, ContactAddedListenerByValue jarg1_, btManifoldPoint jarg2, int jarg3, int jarg4, int jarg5, boolean jarg6, int jarg7, int jarg8, int jarg9, boolean jarg10);
+  public final static native long new_ContactAddedListenerByValue();
+  public final static native void delete_ContactAddedListenerByValue(long jarg1);
+  public final static native void ContactAddedListenerByValue_director_connect(ContactAddedListenerByValue obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void ContactAddedListenerByValue_change_ownership(ContactAddedListenerByValue obj, long cptr, boolean take_or_release);
+  public final static native boolean ContactProcessedListener_CB(btManifoldPoint jarg1, long jarg2, long jarg3);
+  public final static native void currentContactProcessedListener_set(long jarg1);
+  public final static native long currentContactProcessedListener_get();
+  public final static native void ContactProcessedListenerByObject_onContactProcessed(long jarg1, ContactProcessedListenerByObject jarg1_, btManifoldPoint jarg2, long jarg3, btCollisionObject jarg3_, boolean jarg4, long jarg5, btCollisionObject jarg5_, boolean jarg6);
+  public final static native long new_ContactProcessedListenerByObject();
+  public final static native void delete_ContactProcessedListenerByObject(long jarg1);
+  public final static native void ContactProcessedListenerByObject_director_connect(ContactProcessedListenerByObject obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void ContactProcessedListenerByObject_change_ownership(ContactProcessedListenerByObject obj, long cptr, boolean take_or_release);
+  public final static native void ContactProcessedListenerByValue_onContactProcessed(long jarg1, ContactProcessedListenerByValue jarg1_, btManifoldPoint jarg2, int jarg3, boolean jarg4, int jarg5, boolean jarg6);
+  public final static native long new_ContactProcessedListenerByValue();
+  public final static native void delete_ContactProcessedListenerByValue(long jarg1);
+  public final static native void ContactProcessedListenerByValue_director_connect(ContactProcessedListenerByValue obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void ContactProcessedListenerByValue_change_ownership(ContactProcessedListenerByValue obj, long cptr, boolean take_or_release);
+  public final static native boolean ContactDestroyedListener_CB(long jarg1);
+  public final static native void currentContactDestroyedListener_set(long jarg1, ContactDestroyedListener jarg1_);
+  public final static native long currentContactDestroyedListener_get();
+  public final static native long new_ContactDestroyedListener();
+  public final static native void delete_ContactDestroyedListener(long jarg1);
+  public final static native void ContactDestroyedListener_onContactDestroyed(long jarg1, ContactDestroyedListener jarg1_, int jarg2);
+  public final static native void ContactDestroyedListener_enable(long jarg1, ContactDestroyedListener jarg1_);
+  public final static native void ContactDestroyedListener_disable(long jarg1, ContactDestroyedListener jarg1_);
+  public final static native boolean ContactDestroyedListener_isEnabled(long jarg1, ContactDestroyedListener jarg1_);
+  public final static native void ContactDestroyedListener_director_connect(ContactDestroyedListener obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void ContactDestroyedListener_change_ownership(ContactDestroyedListener obj, long cptr, boolean take_or_release);
   public final static native long new_btSimpleDynamicsWorld(long jarg1, btDispatcher jarg1_, long jarg2, btBroadphaseInterface jarg2_, long jarg3, btConstraintSolver jarg3_, long jarg4, btCollisionConfiguration jarg4_);
   public final static native void delete_btSimpleDynamicsWorld(long jarg1);
   public final static native int btSimpleDynamicsWorld_stepSimulation__SWIG_0(long jarg1, btSimpleDynamicsWorld jarg1_, float jarg2, int jarg3, float jarg4);
@@ -4487,6 +4543,34 @@ public class gdxBulletJNI {
   public final static native void btCollisionObjectArray_remove(long jarg1, btCollisionObjectArray jarg1_, long jarg2, btCollisionObject jarg2_);
   public final static native void btCollisionObjectArray_initializeFromBuffer(long jarg1, btCollisionObjectArray jarg1_, long jarg2, int jarg3, int jarg4);
   public final static native void btCollisionObjectArray_copyFromArray(long jarg1, btCollisionObjectArray jarg1_, long jarg2, btCollisionObjectArray jarg2_);
+  public final static native int btBroadphasePairArray_size(long jarg1, btBroadphasePairArray jarg1_);
+  public final static native long btBroadphasePairArray_at(long jarg1, btBroadphasePairArray jarg1_, int jarg2);
+  public final static native int btBroadphasePairArray_getCollisionObjects(long jarg1, btBroadphasePairArray jarg1_, int[] jarg2, int jarg3, int jarg4);
+  public final static native int btBroadphasePairArray_getCollisionObjectsValue(long jarg1, btBroadphasePairArray jarg1_, int[] jarg2, int jarg3, int jarg4);
+  public final static native long new_btBroadphasePairArray();
+  public final static native void delete_btBroadphasePairArray(long jarg1);
+  public final static native long new_btManifoldArray__SWIG_0();
+  public final static native void delete_btManifoldArray(long jarg1);
+  public final static native long new_btManifoldArray__SWIG_1(long jarg1, btManifoldArray jarg1_);
+  public final static native int btManifoldArray_size(long jarg1, btManifoldArray jarg1_);
+  public final static native long btManifoldArray_at__SWIG_0(long jarg1, btManifoldArray jarg1_, int jarg2);
+  public final static native void btManifoldArray_clear(long jarg1, btManifoldArray jarg1_);
+  public final static native void btManifoldArray_pop_back(long jarg1, btManifoldArray jarg1_);
+  public final static native void btManifoldArray_resizeNoInitialize(long jarg1, btManifoldArray jarg1_, int jarg2);
+  public final static native void btManifoldArray_resize__SWIG_0(long jarg1, btManifoldArray jarg1_, int jarg2, long jarg3, btPersistentManifold jarg3_);
+  public final static native void btManifoldArray_resize__SWIG_1(long jarg1, btManifoldArray jarg1_, int jarg2);
+  public final static native long btManifoldArray_expandNonInitializing(long jarg1, btManifoldArray jarg1_);
+  public final static native long btManifoldArray_expand__SWIG_0(long jarg1, btManifoldArray jarg1_, long jarg2, btPersistentManifold jarg2_);
+  public final static native long btManifoldArray_expand__SWIG_1(long jarg1, btManifoldArray jarg1_);
+  public final static native void btManifoldArray_push_back(long jarg1, btManifoldArray jarg1_, long jarg2, btPersistentManifold jarg2_);
+  public final static native int btManifoldArray_capacity(long jarg1, btManifoldArray jarg1_);
+  public final static native void btManifoldArray_reserve(long jarg1, btManifoldArray jarg1_, int jarg2);
+  public final static native void btManifoldArray_swap(long jarg1, btManifoldArray jarg1_, int jarg2, int jarg3);
+  public final static native int btManifoldArray_findBinarySearch(long jarg1, btManifoldArray jarg1_, long jarg2, btPersistentManifold jarg2_);
+  public final static native int btManifoldArray_findLinearSearch(long jarg1, btManifoldArray jarg1_, long jarg2, btPersistentManifold jarg2_);
+  public final static native void btManifoldArray_remove(long jarg1, btManifoldArray jarg1_, long jarg2, btPersistentManifold jarg2_);
+  public final static native void btManifoldArray_initializeFromBuffer(long jarg1, btManifoldArray jarg1_, long jarg2, int jarg3, int jarg4);
+  public final static native void btManifoldArray_copyFromArray(long jarg1, btManifoldArray jarg1_, long jarg2, btManifoldArray jarg2_);
   public final static native long btVector4_SWIGUpcast(long jarg1);
   public final static native long btDefaultMotionState_SWIGUpcast(long jarg1);
   public final static native long GrahamVector2_SWIGUpcast(long jarg1);
@@ -4521,7 +4605,6 @@ public class gdxBulletJNI {
   public final static native long btBox2dShape_SWIGUpcast(long jarg1);
   public final static native long btTriangleShape_SWIGUpcast(long jarg1);
   public final static native long btSphereShape_SWIGUpcast(long jarg1);
-  public final static native long btMultiSphereShape_SWIGUpcast(long jarg1);
   public final static native long btMinkowskiSumShape_SWIGUpcast(long jarg1);
   public final static native long btOptimizedBvh_SWIGUpcast(long jarg1);
   public final static native long btTriangleBuffer_SWIGUpcast(long jarg1);
@@ -4577,6 +4660,7 @@ public class gdxBulletJNI {
   public final static native long btTriangleConvexcastCallback_SWIGUpcast(long jarg1);
   public final static native long btGjkEpaPenetrationDepthSolver_SWIGUpcast(long jarg1);
   public final static native long btTypedConstraint_SWIGUpcast(long jarg1);
+  public final static native long btMultiSphereShape_SWIGUpcast(long jarg1);
   public final static native long btDynamicsWorld_SWIGUpcast(long jarg1);
   public final static native long btSimpleDynamicsWorld_SWIGUpcast(long jarg1);
   public final static native long btDiscreteDynamicsWorld_SWIGUpcast(long jarg1);
@@ -4725,6 +4809,24 @@ public class gdxBulletJNI {
   }
   public static void SwigDirector_InternalTickCallback_onInternalTick(InternalTickCallback self, long dynamicsWorld, float timeStep) {
     self.onInternalTick((dynamicsWorld == 0) ? null : new btDynamicsWorld(dynamicsWorld, false), timeStep);
+  }
+  public static boolean SwigDirector_ContactAddedListenerByWrapper_onContactAdded(ContactAddedListenerByWrapper self, btManifoldPoint cp, long colObj0Wrap, int partId0, int index0, boolean match0, long colObj1Wrap, int partId1, int index1, boolean match1) {
+    return self.onContactAdded(cp, (colObj0Wrap == 0) ? null : new btCollisionObjectWrapper(colObj0Wrap, false), partId0, index0, match0, (colObj1Wrap == 0) ? null : new btCollisionObjectWrapper(colObj1Wrap, false), partId1, index1, match1);
+  }
+  public static boolean SwigDirector_ContactAddedListenerByObject_onContactAdded(ContactAddedListenerByObject self, btManifoldPoint cp, long colObj0, int partId0, int index0, boolean match0, long colObj1, int partId1, int index1, boolean match1) {
+    return self.onContactAdded(cp, btCollisionObject.getInstance(colObj0, false), partId0, index0, match0, btCollisionObject.getInstance(colObj1, false), partId1, index1, match1);
+  }
+  public static boolean SwigDirector_ContactAddedListenerByValue_onContactAdded(ContactAddedListenerByValue self, btManifoldPoint cp, int userValue0, int partId0, int index0, boolean match0, int userValue1, int partId1, int index1, boolean match1) {
+    return self.onContactAdded(cp, userValue0, partId0, index0, match0, userValue1, partId1, index1, match1);
+  }
+  public static void SwigDirector_ContactProcessedListenerByObject_onContactProcessed(ContactProcessedListenerByObject self, btManifoldPoint cp, long colObj0, boolean match0, long colObj1, boolean match1) {
+    self.onContactProcessed(cp, btCollisionObject.getInstance(colObj0, false), match0, btCollisionObject.getInstance(colObj1, false), match1);
+  }
+  public static void SwigDirector_ContactProcessedListenerByValue_onContactProcessed(ContactProcessedListenerByValue self, btManifoldPoint cp, int userValue0, boolean match0, int userValue1, boolean match1) {
+    self.onContactProcessed(cp, userValue0, match0, userValue1, match1);
+  }
+  public static void SwigDirector_ContactDestroyedListener_onContactDestroyed(ContactDestroyedListener self, int manifoldPointUserValue) {
+    self.onContactDestroyed(manifoldPointUserValue);
   }
 
   private final static native void swig_module_init();

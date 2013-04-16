@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import java.lang.reflect.InvocationTargetException;
-
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -33,13 +31,6 @@ class TableToolkit extends Toolkit<Actor, Table, TableLayout> {
 
 	public void addChild (Actor parent, Actor child) {
 		child.remove();
-		try {
-			parent.getClass().getMethod("setWidget", Actor.class).invoke(parent, child);
-			return;
-		} catch (InvocationTargetException ex) {
-			throw new RuntimeException("Error calling setWidget.", ex);
-		} catch (Exception ignored) {
-		}
 		((Group)parent).addActor(child);
 	}
 

@@ -53,8 +53,8 @@ public class btHashedOverlappingPairCache extends btOverlappingPairCache {
     return (cPtr == 0) ? null : new btBroadphasePair(cPtr, false);
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btBroadphasePair_t getOverlappingPairArray() {
-    return new SWIGTYPE_p_btAlignedObjectArrayT_btBroadphasePair_t(gdxBulletJNI.btHashedOverlappingPairCache_getOverlappingPairArray__SWIG_0(swigCPtr, this), false);
+  public btBroadphasePairArray getOverlappingPairArray() {
+    return new btBroadphasePairArray(gdxBulletJNI.btHashedOverlappingPairCache_getOverlappingPairArray__SWIG_0(swigCPtr, this), false);
   }
 
   public int GetCount() {

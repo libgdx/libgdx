@@ -16,13 +16,7 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.math.collision.Ray;
-
-/** @author xoppa */
+/** @author Xoppa */
 public class ShootTest extends BaseBulletTest {
 	final int BOXCOUNT_X = 5;
 	final int BOXCOUNT_Y = 5;
@@ -32,12 +26,14 @@ public class ShootTest extends BaseBulletTest {
 	final float BOXOFFSET_Y = 0.5f;
 	final float BOXOFFSET_Z = 0f;
 	
+	protected BulletEntity ground;
+	
 	@Override
 	public void create () {
 		super.create();
 
 		// Create the entities
-		world.add("ground", 0f, 0f, 0f)
+		(ground = world.add("ground", 0f, 0f, 0f))
 			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 
 		for (int x = 0; x < BOXCOUNT_X; x++) {
@@ -54,5 +50,11 @@ public class ShootTest extends BaseBulletTest {
 	public boolean tap (float x, float y, int count, int button) {
 		shoot(x, y);
 		return true;
+	}
+	
+	@Override
+	public void dispose () {
+		super.dispose();
+		ground = null;
 	}
 }

@@ -22,7 +22,7 @@ import java.io.Writer;
 /** Builder style API for emitting JSON.
  * @author Nathan Sweet */
 public class JsonWriter extends Writer {
-	Writer writer;
+	final Writer writer;
 	private final Array<JsonObject> stack = new Array();
 	private JsonObject current;
 	private boolean named;
@@ -30,6 +30,10 @@ public class JsonWriter extends Writer {
 
 	public JsonWriter (Writer writer) {
 		this.writer = writer;
+	}
+
+	public Writer getWriter () {
+		return writer;
 	}
 
 	public void setOutputType (OutputType outputType) {

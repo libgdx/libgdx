@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /** Reads/writes Java objects to/from JSON, automatically.
@@ -201,16 +202,27 @@ public class Json {
 	/** @param knownType May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown. */
 	public void toJson (Object object, Class knownType, Class elementType, Writer writer) {
-		if (!(writer instanceof JsonWriter)) {
-			writer = new JsonWriter(writer);
-		}
-		((JsonWriter)writer).setOutputType(outputType);
-		this.writer = (JsonWriter)writer;
+		setWriter(writer);
 		try {
 			writeValue(object, knownType, elementType);
 		} finally {
+			try {
+				this.writer.close();
+			} catch (Exception ignored) {
+			}
 			this.writer = null;
 		}
+	}
+
+	/** Sets the writer where JSON output will go. This is only necessary when not using the toJson methods. */
+	public void setWriter (Writer writer) {
+		if (!(writer instanceof JsonWriter)) writer = new JsonWriter(writer);
+		this.writer = (JsonWriter)writer;
+		this.writer.setOutputType(outputType);
+	}
+
+	public JsonWriter getWriter () {
+		return writer;
 	}
 
 	public void writeFields (Object object) {
@@ -382,12 +394,21 @@ public class Json {
 				return;
 			}
 
+			if ((knownType != null && knownType.isPrimitive()) || knownType == String.class || knownType == Integer.class
+				|| knownType == Boolean.class || knownType == Float.class || knownType == Long.class || knownType == Double.class
+				|| knownType == Short.class || knownType == Byte.class || knownType == Character.class) {
+				writer.value(value);
+				return;
+			}
+
 			Class actualType = value.getClass();
 
 			if (actualType.isPrimitive() || actualType == String.class || actualType == Integer.class || actualType == Boolean.class
 				|| actualType == Float.class || actualType == Long.class || actualType == Double.class || actualType == Short.class
 				|| actualType == Byte.class || actualType == Character.class) {
-				writer.value(value);
+				writeObjectStart(actualType, null);
+				writeValue("value", value);
+				writeObjectEnd();
 				return;
 			}
 
@@ -483,7 +504,7 @@ public class Json {
 				return;
 			}
 
-			if (actualType.isEnum()) {
+			if (Enum.class.isAssignableFrom(actualType)) {
 				writer.value(value);
 				return;
 			}
@@ -785,6 +806,11 @@ public class Json {
 				}
 			}
 
+			if (type == String.class || type == Integer.class || type == Boolean.class || type == Float.class || type == Long.class
+				|| type == Double.class || type == Short.class || type == Byte.class || type == Character.class) {
+				return readValue("value", type, jsonData);
+			}
+
 			Object object;
 			if (type != null) {
 				Serializer serializer = classToSerializer.get(type);
@@ -831,9 +857,8 @@ public class Json {
 					newArray.add(readValue(elementType, null, array.get(i)));
 				return (T)newArray;
 			}
-			if (ArrayList.class.isAssignableFrom(type)) {
-				ArrayList newArray = type == null ? new ArrayList() : (ArrayList)newInstance(type);
-				newArray.ensureCapacity(array.size);
+			if (List.class.isAssignableFrom(type)) {
+				List newArray = type == null ? new ArrayList(array.size) : (List)newInstance(type);
 				for (int i = 0, n = array.size; i < n; i++)
 					newArray.add(readValue(elementType, null, array.get(i)));
 				return (T)newArray;
@@ -879,7 +904,7 @@ public class Json {
 			}
 			if (type == boolean.class || type == Boolean.class) return (T)Boolean.valueOf(string);
 			if (type == char.class || type == Character.class) return (T)(Character)string.charAt(0);
-			if (type.isEnum()) {
+			if (Enum.class.isAssignableFrom(type)) {
 				Object[] constants = type.getEnumConstants();
 				for (int i = 0, n = constants.length; i < n; i++)
 					if (string.equals(constants[i].toString())) return (T)constants[i];

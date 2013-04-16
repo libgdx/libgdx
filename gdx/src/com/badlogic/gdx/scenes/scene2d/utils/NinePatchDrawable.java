@@ -31,7 +31,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class NinePatchDrawable extends BaseDrawable {
 	private NinePatch patch;
 
-	/** Creates an unitialized NinePatchDrawable. The ninepatch must be set before use. */
+	/** Creates an uninitialized NinePatchDrawable. The ninepatch must be {@link #setPatch(NinePatch) set} before use. */
 	public NinePatchDrawable () {
 	}
 

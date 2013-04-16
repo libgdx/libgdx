@@ -149,6 +149,11 @@ public class LwjglAWTCanvas implements Application {
 
 	protected void setTitle (String title) {
 	}
+	
+	@Override
+	public ApplicationListener getApplicationListener () {
+		return listener;
+	}
 
 	public Canvas getCanvas () {
 		return canvas;
@@ -388,6 +393,15 @@ public class LwjglAWTCanvas implements Application {
 		try {
 			canvas.makeCurrent();
 			setGlobals();
+		} catch (LWJGLException ex) {
+			throw new GdxRuntimeException(ex);
+		}
+	}
+
+	/** Test whether the canvas' context is current. */
+	public boolean isCurrent() {
+		try {
+			return canvas.isCurrent();
 		} catch (LWJGLException ex) {
 			throw new GdxRuntimeException(ex);
 		}

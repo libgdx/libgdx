@@ -1,4 +1,3 @@
-
 package com.badlogic.gdx.net;
 
 import java.io.BufferedReader;
@@ -21,9 +20,8 @@ import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
-import com.badlogic.gdx.Net.HttpStatus;
-import com.badlogic.gdx.StreamUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** Implements part of the {@link Net} API using {@link HttpURLConnection}, to be easily reused between the Android and Desktop
  * backends.
@@ -159,14 +157,13 @@ public class NetJavaImpl {
 
 						connection.connect();
 
+						final HttpClientResponse clientResponse = new HttpClientResponse(connection);
 						// post a runnable to sync the handler with the main thread
 						Gdx.app.postRunnable(new Runnable() {
 							@Override
 							public void run () {
 								try {
-									httpResponseListener.handleHttpResponse(new HttpClientResponse(connection));
-								} catch (IOException e) {
-									httpResponseListener.failed(e);
+									httpResponseListener.handleHttpResponse(clientResponse);
 								} finally {
 									connection.disconnect();
 								}

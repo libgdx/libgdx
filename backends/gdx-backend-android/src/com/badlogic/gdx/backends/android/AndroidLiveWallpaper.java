@@ -2,6 +2,7 @@
  * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
  * 
  * Modified by Elijah Cornell
+ * 2013.01 Modified by Jaroslaw Wisniewski <j.wisniewski@appsisle.com>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -16,12 +17,14 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
@@ -30,6 +33,7 @@ import android.service.wallpaper.WallpaperService;
 import android.service.wallpaper.WallpaperService.Engine;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout.LayoutParams;
 
 import com.badlogic.gdx.Application;
@@ -44,6 +48,10 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
+import com.badlogic.gdx.backends.android.surfaceview.GLBaseSurfaceViewLW;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20LW;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.utils.Array;
@@ -57,13 +65,13 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
  * 
  * @author mzechner
  */
-class AndroidLiveWallpaper implements Application {
+public class AndroidLiveWallpaper implements Application {
 	static {
 		GdxNativesLoader.load();
 	}
+	
+	protected AndroidLiveWallpaperService service;
 
-	protected WallpaperService service;
-	private Engine engine;
 	protected AndroidGraphicsLiveWallpaper graphics;
 	protected AndroidInput input;
 	protected AndroidAudio audio;
@@ -76,58 +84,149 @@ class AndroidLiveWallpaper implements Application {
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
 
-	public AndroidLiveWallpaper(WallpaperService service, Engine engine) {
+	public AndroidLiveWallpaper(AndroidLiveWallpaperService service) {
 		this.service = service;
-		this.engine = engine;
 	}
 	
 	public void initialize(ApplicationListener listener, AndroidApplicationConfiguration config) {
 		graphics = new AndroidGraphicsLiveWallpaper(this, config, config.resolutionStrategy==null?new FillResolutionStrategy():config.resolutionStrategy);
-		input = AndroidInputFactory.newAndroidInput(this, this.getService(), null, config);
+		
+		// factory in use, but note: AndroidInputFactory causes exceptions when obfuscated: java.lang.RuntimeException: Couldn't construct AndroidInput, this should never happen, proguard deletes constructor used only by reflection
+		input = AndroidInputFactory.newAndroidInput(this, this.getService(), graphics.view, config);
+		//input = new AndroidInput(this, this.getService(), null, config);
+
 		audio = new AndroidAudio(this.getService(), config);
+		
+		// added initialization of android local storage: /data/data/<app package>/files/
 		files = new AndroidFiles(this.getService().getAssets(), this.getService().getFilesDir().getAbsolutePath());
+		
 		this.listener = listener;
 		
 		Gdx.app = this;
-		Gdx.input = this.getInput();
-		Gdx.audio = this.getAudio();
-		Gdx.files = this.getFiles();
-		Gdx.graphics = this.getGraphics();
+		Gdx.input = input;
+		Gdx.audio = audio;
+		Gdx.files = files;
+		Gdx.graphics = graphics;
 	}
 
 	public void onPause() {
-		graphics.pause();
-		if (audio != null) audio.pause();
+		if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.TAG, " > AndroidLiveWallpaper - onPause()");
+
+		// IMPORTANT!
+		// jw: graphics.pause is never called, graphics.pause works on most devices but not on all.. 
+		// for example on Samsung Galaxy Tab (GT-P6800) on android 4.0.4 invoking graphics.pause causes "Fatal Signal 11" 
+		// near mEglHelper.swap() in GLSurfaceView while processing next onPause event.
+		// See related issue: 
+		// http://code.google.com/p/libgdx/issues/detail?id=541
+		// the problem with graphics.pause occurs while using OpenGL 2.0 and original GLSurfaceView while rotating device in lwp preview
+		// in my opinion it is a bug of android not libgdx, even example Cubic live wallpaper from
+		// Android SDK crashes on affected devices.......... and on some configurations of android emulator too.
+		// 
+		// My wallpaper was rejected on Samsung Apps because of this issue, so I decided to disable graphics.pause.. 
+		// also I moved audio lifecycle methods from AndroidGraphicsLiveWallpaper into this class
+		
+		//graphics.pause();
+		//if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.TAG, " > AndroidLiveWallpaper - onPause() application paused!");
+		audio.pause();
+
 		input.unregisterSensorListeners();
+		
+		if (graphics != null && graphics.view != null) {
+			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onPause();
+			else if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
+			else throw new RuntimeException("unimplemented");
+		}
+		
+		if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.TAG, " > AndroidLiveWallpaper - onPause() done!");
 	}
 
 	public void onResume() {
 		Gdx.app = this;
-		Gdx.input = this.getInput();
-		Gdx.audio = this.getAudio();
-		Gdx.files = this.getFiles();
-		Gdx.graphics = this.getGraphics();
+		Gdx.input = input;
+		Gdx.audio = audio;
+		Gdx.files = files;
+		Gdx.graphics = graphics;
 
-		((AndroidInput)getInput()).registerSensorListeners();
+		input.registerSensorListeners();
 		
-		if (audio != null) audio.resume();		
+		// FIXME restore conditional execution if lifecycle errors will occur when GLSurfaceView used. 
+		// GLSurfaceView is guaranteed to work with this condition on, but GLSurfaceViewCupcake requires it off,
+		// so I disabled it.
+		//if (!firstResume)	// mentioned condition
+		if (graphics != null && graphics.view != null) {
+			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onResume();
+			else if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
+			else throw new RuntimeException("unimplemented");
+		}
+		
 		if (!firstResume)
+		{
+			audio.resume();
 			graphics.resume();
+		}
 		else
 			firstResume = false;
 	}
 	
 	public void onDestroy() {
-		graphics.clearManagedCaches();
-		// graphics.destroy();
+
+		// it is too late to call graphics.destroy - it needs live gl GLThread and gl context, otherwise it will cause of deadlock
+		//if (graphics != null) {
+		//	graphics.clearManagedCaches();
+		//	graphics.destroy();
+		//}
+		
+		// so we do what we can..
+		if (graphics != null)
+		{
+			// not necessary - already called in AndroidLiveWallpaperService.onDeepPauseApplication
+			// app.graphics.clearManagedCaches();
+			
+			// kill the GLThread managed by GLSurfaceView (only for GLSurfaceView because GLSurffaceViewCupcake stops thread in onPause events - which is not as easy and safe for GLSurfaceView)
+			if (graphics.view != null && (graphics.view instanceof GLSurfaceView))
+			{
+				GLSurfaceView glSurfaceView = (GLSurfaceView)graphics.view;
+				try {
+					Method method = null;
+					for (Method m : glSurfaceView.getClass().getMethods()) 
+					{
+						if (m.getName().equals("onDestroy"))	// implemented in AndroidGraphicsLiveWallpaper, redirects to onDetachedFromWindow - which stops GLThread by calling mGLThread.requestExitAndWait()
+						{
+							method = m;
+							break;
+						}
+					}
+					
+					if (method != null)
+					{
+						method.invoke(glSurfaceView);
+						if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.TAG, " > AndroidLiveWallpaper - onDestroy() stopped GLThread managed by GLSurfaceView");
+					}
+					else
+						throw new Exception("method not found!");
+				} 
+				catch (Throwable t)
+				{
+					// error while scheduling exit of GLThread, GLThread will remain live and wallpaper service wouldn't be able to shutdown completely
+					Log.e(AndroidLiveWallpaperService.TAG, "failed to destroy GLSurfaceView's thread! GLSurfaceView.onDetachedFromWindow impl changed since API lvl 16!");
+					t.printStackTrace();
+				}
+			}
+		}
+		
+		if (audio != null)
+		{
+			// dispose audio and free native resources, mandatory since graphics.pause is never called in live wallpaper
+			audio.dispose();
+		}
 	}
 
-	public WallpaperService getService() {
+	public WindowManager getWindowManager() {
+		return service.getWindowManager();
+	}
+	
+	public AndroidLiveWallpaperService getService() {
 		return service;
-	}
-
-	public Engine getEngine() {
-		return engine;
 	}
 
 	public ApplicationListener getListener() {
@@ -257,5 +356,10 @@ class AndroidLiveWallpaper implements Application {
 		synchronized(lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
 		}		
+	}
+
+	@Override
+	public ApplicationListener getApplicationListener () {
+		return listener;
 	}
 }

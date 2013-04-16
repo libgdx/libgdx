@@ -229,6 +229,7 @@ gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len, uint32_t req
 		return NULL;
 
 	gdx2d_pixmap* pixmap = (gdx2d_pixmap*)malloc(sizeof(gdx2d_pixmap));
+	if (!pixmap) return 0;
 	pixmap->width = (uint32_t)width;
 	pixmap->height = (uint32_t)height;
 	pixmap->format = (uint32_t)format;
@@ -255,10 +256,15 @@ uint32_t gdx2d_bytes_per_pixel(uint32_t format) {
 
 gdx2d_pixmap* gdx2d_new(uint32_t width, uint32_t height, uint32_t format) {
 	gdx2d_pixmap* pixmap = (gdx2d_pixmap*)malloc(sizeof(gdx2d_pixmap));
+	if (!pixmap) return 0;
 	pixmap->width = width;
 	pixmap->height = height;
 	pixmap->format = format;
 	pixmap->pixels = (unsigned char*)malloc(width * height * gdx2d_bytes_per_pixel(format));
+	if (!pixmap->pixels) {
+		free((void*)pixmap);
+		return 0;
+	}
 	return pixmap;
 }
 void gdx2d_free(const gdx2d_pixmap* pixmap) {

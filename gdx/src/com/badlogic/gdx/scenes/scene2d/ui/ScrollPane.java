@@ -96,9 +96,8 @@ public class ScrollPane extends WidgetGroup {
 	/** @param widget May be null. */
 	public ScrollPane (Actor widget, ScrollPaneStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
-		this.widget = widget;
 		this.style = style;
-		if (widget != null) setWidget(widget);
+		setWidget(widget);
 		setWidth(150);
 		setHeight(150);
 
@@ -548,12 +547,20 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public float getPrefWidth () {
-		if (widget instanceof Layout) return ((Layout)widget).getPrefWidth();
+		if (widget instanceof Layout) {
+			float width = ((Layout)widget).getPrefWidth();
+			if (style.background != null) width += style.background.getLeftWidth() + style.background.getRightWidth();
+			return width;
+		}
 		return 150;
 	}
 
 	public float getPrefHeight () {
-		if (widget instanceof Layout) return ((Layout)widget).getPrefHeight();
+		if (widget instanceof Layout) {
+			float height = ((Layout)widget).getPrefHeight();
+			if (style.background != null) height += style.background.getTopHeight() + style.background.getBottomHeight();
+			return height;
+		}
 		return 150;
 	}
 
@@ -568,6 +575,7 @@ public class ScrollPane extends WidgetGroup {
 	/** Sets the {@link Actor} embedded in this scroll pane.
 	 * @param widget May be null to remove any current actor. */
 	public void setWidget (Actor widget) {
+		if (widget == this) throw new IllegalArgumentException("widget cannot be same object");
 		if (this.widget != null) super.removeActor(this.widget);
 		this.widget = widget;
 		if (widget != null) super.addActor(widget);
@@ -578,15 +586,23 @@ public class ScrollPane extends WidgetGroup {
 		return widget;
 	}
 
+	/** @deprecated */
 	public void addActor (Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
+	/** @deprecated */
 	public void addActorAt (int index, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
+	/** @deprecated */
 	public void addActorBefore (Actor actorBefore, Actor actor) {
+		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+	}
+
+	/** @deprecated */
+	public void addActorAfter (Actor actorAfter, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 

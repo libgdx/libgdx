@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 
 import com.badlogic.gdx.Files.FileType;
@@ -113,7 +114,7 @@ public class AndroidFileHandle extends FileHandle {
 				throw new GdxRuntimeException("Error listing children: " + file + " (" + type + ")", ex);
 			}
 		}
-		return super.list();
+		return super.list(suffix);
 	}
 
 	public boolean isDirectory () {
@@ -147,9 +148,15 @@ public class AndroidFileHandle extends FileHandle {
 
 	public long length () {
 		if (type == FileType.Internal) {
+			AssetFileDescriptor fileDescriptor = null;
 			try {
-				return assets.openFd(file.getPath()).getLength();
+				fileDescriptor = assets.openFd(file.getPath());
+				return fileDescriptor.getLength();
 			} catch (IOException ignored) {
+			} finally {
+				if (fileDescriptor != null) {
+					try { fileDescriptor.close(); } catch(IOException e) { };
+				}
 			}
 		}
 		return super.length();

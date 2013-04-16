@@ -248,6 +248,11 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	}
 
 	@Override
+	public ApplicationListener getApplicationListener () {
+		return listener;
+	}
+	
+	@Override
 	public Graphics getGraphics () {
 		return graphics;
 	}

@@ -310,7 +310,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		transform.rotate(0, 0, 1, (float)Math.toDegrees(angle));
 
 		// render the box
-		renderer.begin(ShapeType.Rectangle);
+		renderer.begin(ShapeType.Line);
 		renderer.setTransformMatrix(transform);
 		renderer.setColor(1, 1, 1, 1);
 		renderer.rect(-halfWidth, -halfHeight, halfWidth * 2, halfHeight * 2);

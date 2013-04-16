@@ -18,7 +18,11 @@ package com.badlogic.gdx.math;
 
 import com.badlogic.gdx.utils.StringBuilder;
 
-/** @author xoppa */
+/** 
+ * Track properties of a stream of float values.  The properties (total value, minimum, etc) are updated as
+ * values are {@link #put(float)} into the stream.
+ * 
+ * @author xoppa */
 public class FloatCounter {	
 	/** The amount of values added */
 	public int count;

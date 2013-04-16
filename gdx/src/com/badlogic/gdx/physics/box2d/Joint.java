@@ -33,6 +33,9 @@ public abstract class Joint {
 	/** temporary float array **/
 	private final float[] tmp = new float[2];
 
+	/** user data **/
+	private Object userData;
+
 	/** joint edge a **/
 	protected JointEdge jointEdgeA;
 
@@ -144,11 +147,16 @@ public abstract class Joint {
 // /// Get the next joint the world joint list.
 // b2Joint* GetNext();
 //
-// /// Get the user data pointer.
-// void* GetUserData() const;
-//
-// /// Set the user data pointer.
-// void SetUserData(void* data);
+
+	/** Get the user data */
+	public Object getUserData () {
+		return userData;
+	}
+
+	/** Set the user data */
+	public void setUserData (Object userData) {
+		this.userData = userData;
+	}
 
 	/** Short-cut function to determine if either body is inactive. */
 	public boolean isActive () {
@@ -159,4 +167,6 @@ public abstract class Joint {
 		b2Joint* joint = (b2Joint*)addr;
 		return joint->IsActive();
 	*/
+	
+
 }

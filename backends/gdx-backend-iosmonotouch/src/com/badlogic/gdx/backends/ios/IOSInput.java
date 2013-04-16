@@ -417,14 +417,14 @@ public class IOSInput implements Input {
 		}
 	});
 	
-	private int getFreePointer() {
+	int getFreePointer() {
 		for(int i = 0; i < touchDown.length; i++) {
 			if(touchDown[i] == 0) return i;
 		}
 		throw new GdxRuntimeException("Couldn't find free pointer id!");
 	}
 	
-	private int findPointer(UITouch touch) {
+	int findPointer(UITouch touch) {
 		int ptr = touch.get_Handle().ToInt32();
 		for(int i = 0; i < touchDown.length; i++) {
 			if(touchDown[i] == ptr) return i;

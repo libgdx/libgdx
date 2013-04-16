@@ -19,7 +19,10 @@ package com.badlogic.gdx.utils;
 /** A pool of objects that can be reused to avoid allocation.
  * @author Nathan Sweet */
 abstract public class Pool<T> {
+	/** The maximum number of objects that will be pooled. */
 	public final int max;
+	/** The highest number of free objects. Can be reset any time. */
+	public int peak;
 
 	private final Array<T> freeObjects;
 
@@ -51,7 +54,10 @@ abstract public class Pool<T> {
 	 * {@link #max} free objects, the specified object is reset but not added to the pool. */
 	public void free (T object) {
 		if (object == null) throw new IllegalArgumentException("object cannot be null.");
-		if (freeObjects.size < max) freeObjects.add(object);
+		if (freeObjects.size < max) {
+			freeObjects.add(object);
+			peak = Math.max(peak, freeObjects.size);
+		}
 		if (object instanceof Poolable) ((Poolable)object).reset();
 	}
 
@@ -65,11 +71,17 @@ abstract public class Pool<T> {
 			if (freeObjects.size < max) freeObjects.add(object);
 			if (object instanceof Poolable) ((Poolable)object).reset();
 		}
+		peak = Math.max(peak, freeObjects.size);
 	}
 
 	/** Removes all free objects from this pool. */
 	public void clear () {
 		freeObjects.clear();
+	}
+
+	/** The number of objects available to be obtained. */
+	public int getFree () {
+		return freeObjects.size;
 	}
 
 	/** Objects implementing this interface will have {@link #reset()} called when passed to {@link #free(Object)}. */
