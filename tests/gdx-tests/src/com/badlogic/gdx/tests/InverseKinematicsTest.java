@@ -117,12 +117,12 @@ public class InverseKinematicsTest extends GdxTest {
 			diff.set(endPoint.x, endPoint.y).sub(bones[i + 1].position.x, bones[i + 1].position.y);
 			diff.add(0, gravity);
 			diff.add(bones[i + 1].inertia.x, bones[i + 1].inertia.y);
-			diff.nor().mul(bones[i + 1].len);
+			diff.nor().scl(bones[i + 1].len);
 
 			float x = endPoint.x - diff.x;
 			float y = endPoint.y - diff.y;
 			float delta = Gdx.graphics.getDeltaTime();
-			bones[i + 1].inertia.add((bones[i + 1].position.x - x) * delta, (bones[i + 1].position.y - y) * delta, 0).mul(0.99f);
+			bones[i + 1].inertia.add((bones[i + 1].position.x - x) * delta, (bones[i + 1].position.y - y) * delta, 0).scl(0.99f);
 			bones[i + 1].position.set(x, y, 0);
 		}
 	}

@@ -18,6 +18,7 @@ import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
 import com.badlogic.gdx.maps.ImageResolver.AssetManagerImageResolver;
@@ -49,7 +50,11 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 		/** Whether to load the map for a y-up coordinate system */
 		public boolean yUp = true;
 		/** generate mipmaps? **/
-		public boolean generateMipMaps = false;
+		public boolean generateMipMaps = false;		
+		/** The TextureFilter to use for minification **/
+		public TextureFilter textureMinFilter = TextureFilter.Nearest;
+		/** The TextureFilter to use for magnification **/
+		public TextureFilter textureMagFilter = TextureFilter.Nearest;
 	}
 	
 	protected static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
@@ -106,7 +111,9 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 			root = xml.parse(tmxFile);
 			ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 			for(FileHandle textureFile: loadTilesets(root, tmxFile)) {
-				textures.put(textureFile.path(), new Texture(textureFile, parameters.generateMipMaps));
+				Texture texture = new Texture(textureFile, parameters.generateMipMaps);
+				texture.setFilter(parameters.textureMinFilter, parameters.textureMagFilter);
+				textures.put(textureFile.path(), new Texture(textureFile, parameters.generateMipMaps));				
 			}
 			DirectImageResolver imageResolver = new DirectImageResolver(textures);
 			TiledMap map = loadTilemap(root, tmxFile, imageResolver);
@@ -153,8 +160,12 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 			FileHandle tmxFile = resolve(fileName);
 			root = xml.parse(tmxFile);
 			boolean generateMipMaps = (parameter!=null?parameter.generateMipMaps: false);
-			TextureLoader.TextureParameter texParams = new TextureParameter();
+			TextureLoader.TextureParameter texParams = new TextureParameter();			
 			texParams.genMipMaps = generateMipMaps;
+			if (parameter != null) {
+				texParams.minFilter = parameter.textureMinFilter;
+				texParams.magFilter = parameter.textureMagFilter;
+			}
 			for(FileHandle image: loadTilesets(root, tmxFile)) {
 				dependencies.add(new AssetDescriptor(image.path(), Texture.class, texParams));
 			}
@@ -184,7 +195,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 		
 		MapProperties mapProperties = map.getProperties();
 		if (mapOrientation != null) {
-			mapProperties.put("orientation", mapBackgroundColor);
+			mapProperties.put("orientation", mapOrientation);
 		}
 		mapProperties.put("width", mapWidth);
 		mapProperties.put("height", mapHeight);
@@ -342,7 +353,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 			for (Element tileElement : tileElements) {
 				int localtid = tileElement.getIntAttribute("id", 0);
 				TiledMapTile tile = tileset.getTile(firstgid + localtid);
-				if (tile!= null) {
+				if (tile != null) {
 					Element properties = tileElement.getChildByName("properties");
 					if (properties != null) {
 						loadProperties(tile.getProperties(), properties);

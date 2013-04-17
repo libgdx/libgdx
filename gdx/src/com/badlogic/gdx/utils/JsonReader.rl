@@ -27,8 +27,9 @@ import com.badlogic.gdx.files.FileHandle;
 
 /** Lightweight JSON parser.<br>
  * <br>
- * The default behavior is to parse the JSON into a DOM made up of {@link OrderedMap}, {@link Array}, String, Float, and Boolean objects.
- * Extend this class and override methods to perform event driven parsing. When this is done, the parse methods will return null.
+ * The default behavior is to parse the JSON into a DOM made up of {@link OrderedMap}, {@link Array}, String, Float, Long, and
+ * Boolean objects. Extend this class and override methods to perform event driven parsing. When this is done, the parse methods
+ * will return null.
  * @author Nathan Sweet */
 public class JsonReader {
 	public Object parse (String json) {
@@ -127,12 +128,19 @@ public class JsonReader {
 					string(name, value);
 				}
 			}
-			action number {
+			action float {
 				String value = new String(data, s, p - s);
 				s = p;
 				String name = names.size > 0 ? names.pop() : null;
-				if (debug) System.out.println("number: " + name + "=" + Float.parseFloat(value));
+				if (debug) System.out.println("float: " + name + "=" + Float.parseFloat(value));
 				number(name, Float.parseFloat(value));
+			}
+			action long {
+				String value = new String(data, s, p - s);
+				s = p;
+				String name = names.size > 0 ? names.pop() : null;
+				if (debug) System.out.println("long: " + name + "=" + Long.parseLong(value));
+				number(name, Long.parseLong(value));
 			}
 			action trueValue {
 				String name = names.size > 0 ? names.pop() : null;
@@ -175,17 +183,18 @@ public class JsonReader {
 				fret;
 			}
 
-			numberChars = '-'? [0-9]+ ('.' [0-9]+)? ([eE] [+\-]? [0-9]+)?;
+			floatChars = '-'? [0-9]+ '.' [0-9]+? ([eE] [+\-]? [0-9]+)?;
+			longChars = '-'? [0-9]+;
 			quotedChars = (^["\\] | ('\\' ["\\/bfnrtu] >needsUnescape))*;
 			unquotedNameChars = [a-zA-Z0-9_$] ^([:}\],] | space)*;
 			unquotedValueChars = [a-zA-Z_$] ^([:}\],] | space)*;
-			name = ('"' quotedChars >buffer %name '"') | unquotedNameChars >buffer %name | numberChars >buffer %name;
+			name = ('"' quotedChars >buffer %name '"') | unquotedNameChars >buffer %name | floatChars >buffer %name;
 
 			startObject = '{' @startObject;
 			startArray = '[' @startArray;
 			string = '"' quotedChars >buffer %string '"';
 			unquotedString = unquotedValueChars >buffer %string;
-			number = numberChars >buffer %number;
+			number = longChars >buffer %long | floatChars >buffer %float $-1;
 			nullValue = 'null' %null;
 			booleanValue = 'true' %trueValue | 'false' %falseValue;
 			value = startObject | startArray | number | string | nullValue | booleanValue | unquotedString $-1;
@@ -261,6 +270,10 @@ public class JsonReader {
 	}
 
 	protected void number (String name, float value) {
+		set(name, value);
+	}
+
+	protected void number (String name, long value) {
 		set(name, value);
 	}
 

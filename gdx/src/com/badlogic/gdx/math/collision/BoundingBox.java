@@ -123,7 +123,7 @@ public class BoundingBox implements Serializable {
 			minimum.z < maximum.z ? minimum.z : maximum.z);
 		max.set(minimum.x > maximum.x ? minimum.x : maximum.x, minimum.y > maximum.y ? minimum.y : maximum.y,
 			minimum.z > maximum.z ? minimum.z : maximum.z);
-		cnt.set(min).add(max).mul(0.5f);
+		cnt.set(min).add(max).scl(0.5f);
 		dim.set(max).sub(min);
 		crn_dirty = true;
 		return this;

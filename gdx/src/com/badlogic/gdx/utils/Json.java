@@ -877,12 +877,26 @@ public class Json {
 		if (jsonData instanceof Float) {
 			Float floatValue = (Float)jsonData;
 			try {
-				if (type == null || type == float.class || type == Float.class) return (T)(Float)floatValue;
+				if (type == null || type == float.class || type == Float.class) return (T)floatValue;
 				if (type == int.class || type == Integer.class) return (T)(Integer)floatValue.intValue();
 				if (type == long.class || type == Long.class) return (T)(Long)floatValue.longValue();
 				if (type == double.class || type == Double.class) return (T)(Double)floatValue.doubleValue();
 				if (type == short.class || type == Short.class) return (T)(Short)floatValue.shortValue();
 				if (type == byte.class || type == Byte.class) return (T)(Byte)floatValue.byteValue();
+			} catch (NumberFormatException ignored) {
+			}
+			jsonData = String.valueOf(jsonData);
+		}
+
+		if (jsonData instanceof Long) {
+			Long longValue = (Long)jsonData;
+			try {
+				if (type == null || type == long.class || type == Long.class) return (T)longValue;
+				if (type == int.class || type == Integer.class) return (T)(Integer)longValue.intValue();
+				if (type == float.class || type == Float.class) return (T)(Float)longValue.floatValue();
+				if (type == double.class || type == Double.class) return (T)(Double)longValue.doubleValue();
+				if (type == short.class || type == Short.class) return (T)(Short)longValue.shortValue();
+				if (type == byte.class || type == Byte.class) return (T)(Byte)longValue.byteValue();
 			} catch (NumberFormatException ignored) {
 			}
 			jsonData = String.valueOf(jsonData);
@@ -1025,6 +1039,8 @@ public class Json {
 			Float floatValue = (Float)object;
 			int intValue = floatValue.intValue();
 			buffer.append(floatValue - intValue == 0 ? intValue : object);
+		} else if (object instanceof Long) {
+			buffer.append((Long)object);
 		} else if (object instanceof Boolean) {
 			buffer.append(object);
 		} else if (object == null) {

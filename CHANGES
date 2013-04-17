@@ -15,6 +15,8 @@
 - Removed LwjglApplicationConfiguration CPU sync. Added foreground and background target framerate.
 - scene2d, no longer use getters/setters internally for Actor x, y, width, height, scalex, scaley and rotation.
 - Array, detect nested iterator usage and throw exception.
+- Added getVolume to Music class and Android, IOS and GWT backends
+- 1381, fixed JSON parsing of longs. In addition to Float, it now parses Long if no decimal point is found.
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791

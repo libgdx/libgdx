@@ -28,6 +28,7 @@ import com.badlogic.gdx.audio.Music;
 public class IOSMusic implements Music {
 
 	private AVAudioPlayer player;
+	private float volume = 1f;
 
 	public IOSMusic (AVAudioPlayer player) {
 		this.player = player;
@@ -69,6 +70,12 @@ public class IOSMusic implements Music {
 	@Override
 	public void setVolume (float volume) {
 		player.set_Volume(volume);
+		this.volume = volume;
+	}
+	
+	@Override
+	public float getVolume () {
+		return volume;
 	}
 
 	@Override

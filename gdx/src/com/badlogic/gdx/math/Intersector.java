@@ -91,7 +91,7 @@ public final class Intersector {
 		float t = -(start.dot(plane.getNormal()) + plane.getD()) / denom;
 		if (t < 0 || t > 1) return false;
 
-		intersection.set(start).add(dir.mul(t));
+		intersection.set(start).add(dir.scl(t));
 		return true;
 	}
 
@@ -153,7 +153,7 @@ public final class Intersector {
 		else if (t > 1.0f) return point.dst(end); // Beyond 'end'-end of the segment
 
 		tmp.set(end.x, end.y, 0); // Projection falls on the segment
-		tmp.sub(start.x, start.y, 0).mul(t).add(start.x, start.y, 0);
+		tmp.sub(start.x, start.y, 0).scl(t).add(start.x, start.y, 0);
 		return tmp2.set(point.x, point.y, 0).dst(tmp);
 	}
 
@@ -180,7 +180,7 @@ public final class Intersector {
 		} else if (u >= l) {
 			tmp2.set(end.x, end.y, 0);
 		} else {
-			tmp3.set(tmp.mul(u)); // remember tmp is already normalized
+			tmp3.set(tmp.scl(u)); // remember tmp is already normalized
 			tmp2.set(tmp3.x + start.x, tmp3.y + start.y, 0);
 		}
 
@@ -206,7 +206,7 @@ public final class Intersector {
 		u /= d * d;
 		if (u < 0 || u > 1) return Float.POSITIVE_INFINITY;
 		tmp.set(end.x, end.y, 0).sub(start.x, start.y, 0);
-		tmp2.set(start.x, start.y, 0).add(tmp.mul(u));
+		tmp2.set(start.x, start.y, 0).add(tmp.scl(u));
 		d = tmp2.dst(point.x, point.y, 0);
 		if (d < radius) {
 			displacement.set(point).sub(tmp2.x, tmp2.y).nor();
@@ -228,7 +228,7 @@ public final class Intersector {
 			float t = -(ray.origin.dot(plane.getNormal()) + plane.getD()) / denom;
 			if (t < 0) return false;
 
-			if (intersection != null) intersection.set(ray.origin).add(ray.direction.tmp().mul(t));
+			if (intersection != null) intersection.set(ray.origin).add(ray.direction.tmp().scl(t));
 			return true;
 		} else if (plane.testPoint(ray.origin) == Plane.PlaneSide.OnPlane) {
 			if (intersection != null) intersection.set(ray.origin);
@@ -254,7 +254,7 @@ public final class Intersector {
 		float denom = direction.dot(plane.getNormal());
 		if (denom != 0) {
 			float t = -(origin.dot(plane.getNormal()) + plane.getD()) / denom;
-			if (t >= 0 && t <= 1 && intersection != null) intersection.set(origin).add(direction.mul(t));
+			if (t >= 0 && t <= 1 && intersection != null) intersection.set(origin).add(direction.scl(t));
 			return t;
 		} else if (plane.testPoint(origin) == Plane.PlaneSide.OnPlane) {
 			if (intersection != null) intersection.set(origin);
@@ -349,12 +349,12 @@ public final class Intersector {
 
 		// if t0 is less than zero, the intersection point is at t1
 		if (t0 < 0) {
-			if (intersection != null) intersection.set(start).add(dir.tmp().mul(t1));
+			if (intersection != null) intersection.set(start).add(dir.tmp().scl(t1));
 			return true;
 		}
 		// else the intersection point is at t0
 		else {
-			if (intersection != null) intersection.set(start).add(dir.tmp().mul(t0));
+			if (intersection != null) intersection.set(start).add(dir.tmp().scl(t0));
 			return true;
 		}
 	}
@@ -381,7 +381,7 @@ public final class Intersector {
 		if (ray.origin.x <= box.min.x && ray.direction.x > 0) {
 			t = (box.min.x - ray.origin.x) / ray.direction.x;
 			if (t >= 0) {
-				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				Vector3.tmp3.set(ray.direction).scl(t).add(ray.origin);
 				if (Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y && Vector3.tmp3.z >= box.min.z
 					&& Vector3.tmp3.z <= box.max.z && (!hit || t < lowest)) {
 					hit = true;
@@ -393,7 +393,7 @@ public final class Intersector {
 		if (ray.origin.x >= box.max.x && ray.direction.x < 0) {
 			t = (box.max.x - ray.origin.x) / ray.direction.x;
 			if (t >= 0) {
-				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				Vector3.tmp3.set(ray.direction).scl(t).add(ray.origin);
 				if (Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y && Vector3.tmp3.z >= box.min.z
 					&& Vector3.tmp3.z <= box.max.z && (!hit || t < lowest)) {
 					hit = true;
@@ -405,7 +405,7 @@ public final class Intersector {
 		if (ray.origin.y <= box.min.y && ray.direction.y > 0) {
 			t = (box.min.y - ray.origin.y) / ray.direction.y;
 			if (t >= 0) {
-				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				Vector3.tmp3.set(ray.direction).scl(t).add(ray.origin);
 				if (Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x && Vector3.tmp3.z >= box.min.z
 					&& Vector3.tmp3.z <= box.max.z && (!hit || t < lowest)) {
 					hit = true;
@@ -417,7 +417,7 @@ public final class Intersector {
 		if (ray.origin.y >= box.max.y && ray.direction.y < 0) {
 			t = (box.max.y - ray.origin.y) / ray.direction.y;
 			if (t >= 0) {
-				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				Vector3.tmp3.set(ray.direction).scl(t).add(ray.origin);
 				if (Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x && Vector3.tmp3.z >= box.min.z
 					&& Vector3.tmp3.z <= box.max.z && (!hit || t < lowest)) {
 					hit = true;
@@ -429,7 +429,7 @@ public final class Intersector {
 		if (ray.origin.z <= box.min.y && ray.direction.z > 0) {
 			t = (box.min.z - ray.origin.z) / ray.direction.z;
 			if (t >= 0) {
-				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				Vector3.tmp3.set(ray.direction).scl(t).add(ray.origin);
 				if (Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x && Vector3.tmp3.y >= box.min.y
 					&& Vector3.tmp3.y <= box.max.y && (!hit || t < lowest)) {
 					hit = true;
@@ -441,7 +441,7 @@ public final class Intersector {
 		if (ray.origin.z >= box.max.z && ray.direction.z < 0) {
 			t = (box.max.z - ray.origin.z) / ray.direction.z;
 			if (t >= 0) {
-				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
+				Vector3.tmp3.set(ray.direction).scl(t).add(ray.origin);
 				if (Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x && Vector3.tmp3.y >= box.min.y
 					&& Vector3.tmp3.y <= box.max.y && (!hit || t < lowest)) {
 					hit = true;
@@ -450,7 +450,7 @@ public final class Intersector {
 			}
 		}
 		if (hit && intersection != null) {
-			intersection.set(ray.direction).mul(lowest).add(ray.origin);
+			intersection.set(ray.direction).scl(lowest).add(ray.origin);
 		}
 		return hit;
 	}
