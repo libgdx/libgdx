@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d;
 
+import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -190,15 +191,15 @@ public class Model implements Disposable {
 		Material result = new Material();
 		result.id = mtl.id;
 		if (mtl.ambient != null)
-			result.add(new ColorAttribute(ColorAttribute.Ambient, mtl.ambient));
+			result.set(new ColorAttribute(ColorAttribute.Ambient, mtl.ambient));
 		if (mtl.diffuse != null)
-			result.add(new ColorAttribute(ColorAttribute.Diffuse, mtl.diffuse));
+			result.set(new ColorAttribute(ColorAttribute.Diffuse, mtl.diffuse));
 		if (mtl.specular != null)
-			result.add(new ColorAttribute(ColorAttribute.Specular, mtl.specular));
+			result.set(new ColorAttribute(ColorAttribute.Specular, mtl.specular));
 		if (mtl.emissive != null)
-			result.add(new ColorAttribute(ColorAttribute.Emissive, mtl.emissive));
+			result.set(new ColorAttribute(ColorAttribute.Emissive, mtl.emissive));
 		if (mtl.shininess > 0f)
-			result.add(new FloatAttribute(FloatAttribute.Shininess, mtl.shininess));
+			result.set(new FloatAttribute(FloatAttribute.Shininess, mtl.shininess));
 		
 		ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 		
@@ -218,7 +219,7 @@ public class Model implements Disposable {
 				descriptor.magFilter = GL20.GL_LINEAR;
 				descriptor.uWrap = GL20.GL_CLAMP_TO_EDGE;
 				descriptor.vWrap = GL20.GL_CLAMP_TO_EDGE;
-				result.add(new TextureAttribute(TextureAttribute.Diffuse, descriptor));
+				result.set(new TextureAttribute(TextureAttribute.Diffuse, descriptor));
 			}
 		}
 		

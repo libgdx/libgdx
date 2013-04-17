@@ -96,11 +96,11 @@ public class MaterialTest extends GdxTest {
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 		
 		if(!material.has(TextureAttribute.Diffuse))
-			material.add(textureAttribute);
+			material.set(textureAttribute);
 		else if(!material.has(ColorAttribute.Diffuse))
-			material.add(colorAttribute);
+			material.set(colorAttribute);
 		else if(!material.has(BlendingAttribute.Type))
-			material.add(blendingAttribute);
+			material.set(blendingAttribute);
 		else
 			material.clear();
 		

@@ -12,6 +12,9 @@ import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.loader.JsonModelLoader;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
@@ -28,10 +31,14 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 
 public class NewModelTest extends BaseG3dHudTest {
-	Light[] lights = new Light[] {
-		new Light(0.5f, 0.5f, 0.5f, 1f),
-		new Light(0.5f, 0.5f, 0.5f, 1f, -1f, -2f, -3f)
-	};
+	Lights lights = new Lights(0.2f, 0.2f, 0.2f).add(
+		//new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -1f, 0f)
+		new PointLight().set(1f, 0f, 0f, 5f, 5f, 5f, 100f),
+		new PointLight().set(0f, 0f, 1f, -5f, 5f, 5f, 100f),
+		new PointLight().set(0f, 1f, 0f, 0f, 5f, -5f, 100f)
+		//new Light(0.5f, 0.5f, 0.5f, 1f),
+		//new Light(0.5f, 0.5f, 0.5f, 1f, -1f, -2f, -3f)
+	);
 	
 	@Override
 	public void create () {

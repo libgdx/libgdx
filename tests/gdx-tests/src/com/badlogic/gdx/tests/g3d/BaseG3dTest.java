@@ -38,7 +38,7 @@ public abstract class BaseG3dTest extends GdxTest {
 		modelBatch = new ModelBatch();
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.position.set(10f, 10f, 10f);
+		cam.position.set(2f, 2f, 2f);
 		cam.lookAt(0,0,0);
 		cam.near = 0.1f;
 		cam.far = 300f;
@@ -55,17 +55,13 @@ public abstract class BaseG3dTest extends GdxTest {
 	private void createAxes() {
 		ModelBuilder modelBuilder = new ModelBuilder();
 		modelBuilder.begin();
-		MeshPartBuilder builder = modelBuilder.part("grid", GL10.GL_LINES, new VertexAttributes(
-			new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
-			new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE)), new Material());
+		MeshPartBuilder builder = modelBuilder.part("grid", GL10.GL_LINES, Usage.Position | Usage.Color, new Material());
 		builder.setColor(Color.LIGHT_GRAY);
 		for (float t = GRID_MIN; t <= GRID_MAX; t+=GRID_STEP) {
 			builder.line(t, 0, GRID_MIN, t, 0, GRID_MAX);
 			builder.line(GRID_MIN, 0, t, GRID_MAX, 0, t);
 		}
-		builder = modelBuilder.part("axes", GL10.GL_LINES, new VertexAttributes(
-			new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
-			new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE)), new Material());
+		builder = modelBuilder.part("axes", GL10.GL_LINES, Usage.Position | Usage.Color, new Material());
 		builder.setColor(Color.RED);
 		builder.line(0, 0, 0, 100, 0, 0);
 		builder.setColor(Color.GREEN);
