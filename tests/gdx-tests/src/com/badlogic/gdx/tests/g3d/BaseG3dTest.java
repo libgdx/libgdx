@@ -38,7 +38,7 @@ public abstract class BaseG3dTest extends GdxTest {
 		modelBatch = new ModelBatch();
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.position.set(10f, 10f, 10f);
+		cam.position.set(2f, 2f, 2f);
 		cam.lookAt(0,0,0);
 		cam.near = 0.1f;
 		cam.far = 300f;

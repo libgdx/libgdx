@@ -2,111 +2,137 @@
 #define textureFlag
 #endif
 
+#if defined(specularTextureFlag) || defined(specularColorFlag)
+#define specularFlag
+#endif
+
 attribute vec3 a_position;
+uniform mat4 u_projTrans;
+uniform mat4 u_modelTrans;
+
 #ifdef colorFlag
 attribute vec4 a_color;
 varying vec4 v_color;
-#endif
+#endif // colorFlag
+
 #ifdef normalFlag
 attribute vec3 a_normal;
 uniform mat3 u_normalMatrix;
 varying vec3 v_normal;
-#endif
+#endif // normalFlag
 
 #ifdef textureFlag
 attribute vec2 a_texCoord0;
 varying vec2 v_texCoords0;
-#endif
+#endif // textureFlag
 
 #ifdef shininessFlag
 uniform float shininess;
 #else
 const float shininess = 20.0;
-#endif
+#endif // shininessFlag
 
-#if defined(lightsCount)
-#define NUM_LIGHTS lightsCount
-
+#ifdef lightingFlag
 varying vec3 v_lightDiffuse;
+
+#ifdef ambientLightFlag
+uniform vec3 ambientLight;
+#endif // ambientLightFlag
+
+#ifdef ambientCubemapFlag
+uniform vec3 ambientCubemap[6];
+#endif // ambientCubemapFlag 
+
+#ifdef specularFlag
 varying vec3 v_lightSpecular;
-uniform vec4 ambient;
 uniform vec3 u_cameraPosition;
-varying vec3 v_viewVec;
+#endif // specularFlag
 
-#if (NUM_LIGHTS > 0)
-#define NONE 		0
-#define AMBIENT 	1
-#define POINT		3
-#define DIRECTIONAL	5
-#define SPOT		7
-
-struct Light
+#if defined(numDirectionalLights) && (numDirectionalLights > 0)
+struct DirectionalLight
 {
-	int type;
-	vec4 color;
-	vec3 position;
-	vec3 attenuation;
+	vec3 color;
 	vec3 direction;
-	float angle;
-	float exponent;
 };
-uniform Light lights[NUM_LIGHTS];
-#endif
-#endif
+uniform DirectionalLight directionalLights[numDirectionalLights];
+#endif // numDirectionalLights
 
-uniform mat4 u_projTrans;
-uniform mat4 u_modelTrans;
+#if defined(numPointLights) && (numPointLights > 0)
+struct PointLight
+{
+	vec3 color;
+	vec3 position;
+	float intensity;
+};
+uniform PointLight pointLights[numPointLights];
+#endif // numPointLights
+#endif // lightingFlag
 
 void main() {
 	#ifdef textureFlag
 		v_texCoords0 = a_texCoord0;
-	#endif
+	#endif // textureFlag
 	
 	#ifdef colorFlag
-	v_color = a_color;
-	#endif
+		v_color = a_color;
+	#endif // colorFlag
 	
 	vec4 pos = u_modelTrans * vec4(a_position, 1.0);
 	gl_Position = u_projTrans * pos;
 	
 	#ifdef normalFlag
-	v_normal = u_normalMatrix * a_normal;
-	#endif
+		v_normal = u_normalMatrix * a_normal;
+	#endif // normalFlag
 
-	#ifdef NUM_LIGHTS
-	v_lightDiffuse = ambient.rgb;
-	v_lightSpecular = vec3(0.0);
-	#if (NUM_LIGHTS > 0)
-	v_viewVec = normalize(u_cameraPosition - pos.xyz);
+	#ifdef lightingFlag
+		#ifdef ambientCubemapFlag		
+			vec3 squaredNormal = v_normal * v_normal;
+			vec3 isPositive  = step(0.0, v_normal);
+			#ifdef ambientLightFlag
+				v_lightDiffuse = ambientLight + squaredNormal.x * mix(ambientCubemap[0], ambientCubemap[1], isPositive.x) +
+					squaredNormal.y * mix(ambientCubemap[2], ambientCubemap[3], isPositive.y) +
+					squaredNormal.z * mix(ambientCubemap[4], ambientCubemap[5], isPositive.z);
+			#else
+				v_lightDiffuse = squaredNormal.x * mix(ambientCubemap[0], ambientCubemap[1], isPositive.x) +
+					squaredNormal.y * mix(ambientCubemap[2], ambientCubemap[3], isPositive.y) +
+					squaredNormal.z * mix(ambientCubemap[4], ambientCubemap[5], isPositive.z);
+			#endif
+		#elif defined(ambientLightFlag)
+			v_lightDiffuse = ambientLight;
+		#else
+			v_lightDiffuse = vec3(0.0);
+		#endif // ambient
 		
-	for (int i = 0; i < NUM_LIGHTS; i++) {
-		if (lights[i].type != NONE) {
-			vec3 lightVec = lights[i].type == DIRECTIONAL ? -lights[i].direction : normalize(lights[i].position - pos.xyz);
-			float diff = dot(v_normal, lightVec);
+		#ifdef specularFlag
+			v_lightSpecular = vec3(0.0);
+			vec3 viewVec = normalize(u_cameraPosition - pos.xyz);
+		#endif // specularFlag
 			
-			if (diff > 0.0) {
-				float spot = 1.0;
-				if (lights[i].type == SPOT) {
-					spot = max(-dot(lightVec, lights[i].direction), 0.0);
-					float fade = clamp((lights[i].angle - spot)/(-lights[i].angle*0.05), 0.0, 1.0); // FIXME make inner angle variable
-					spot = pow(spot * fade, lights[i].exponent);
-				}
-				
-				vec3 r = -normalize(reflect(lightVec, v_normal));
-				float spec = pow(max(dot(r, v_viewVec), 0.0), shininess);
-				
-				float weight = 1.0;
-				if (lights[i].type != DIRECTIONAL) {
-					float d = distance(pos.xyz, lights[i].position);
-					weight = spot / (lights[i].attenuation.x + lights[i].attenuation.y * d + lights[i].attenuation.z * d * d);
-				}
-				
-				vec3 fc = lights[i].color.rgb * weight;
-				v_lightDiffuse += diff * fc;
-				v_lightSpecular += spec * fc;
+		#if defined(numDirectionalLights) && (numDirectionalLights > 0)
+			for (int i = 0; i < numDirectionalLights; i++) {
+				vec3 lightDir = -directionalLights[i].direction;
+				float NdotL = clamp(dot(v_normal, lightDir), 0.0, 1.0);
+				v_lightDiffuse += directionalLights[i].color * NdotL;
+				#ifdef specularFlag
+					float halfDotView = dot(v_normal, normalize(lightDir + viewVec));
+					v_lightSpecular += directionalLights[i].color * clamp(NdotL * pow(halfDotView, shininess), 0.0, 1.0);
+				#endif // specularFlag
 			}
-		}
-	}
-	#endif
-	#endif
+		#endif // numDirectionalLights
+
+		#if defined(numPointLights) && (numPointLights > 0)
+			for (int i = 0; i < numPointLights; i++) {
+				vec3 lightDir = pointLights[i].position - pos.xyz;
+				float distance = length(lightDir);
+				lightDir /= distance;
+				float NdotL = clamp(dot(v_normal, lightDir), 0.0, 1.0);
+				float falloff = clamp(pointLights[i].intensity / (1.0 + distance), 0.0, 1.0);
+				v_lightDiffuse += pointLights[i].color * (NdotL * falloff);
+				#ifdef specularFlag
+					float halfDotView = dot(v_normal, normalize(lightDir + viewVec));
+					v_lightSpecular += pointLights[i].color * clamp(NdotL * pow(halfDotView, shininess) * falloff, 0.0, 1.0);
+				#endif // specularFlag
+			}
+		#endif // numPointLights
+	#endif // lightingFlag
 }

@@ -9,6 +9,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
@@ -16,6 +19,7 @@ import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class GLES10Shader implements Shader{
@@ -25,14 +29,10 @@ public class GLES10Shader implements Shader{
 	private Material currentMaterial;
 	private Texture currentTexture0;
 	private Mesh currentMesh;
-	private final Light currentLights[];
-	
-	public GLES10Shader(int maxLightsCount) {
+
+	public GLES10Shader() {
 		if (Gdx.gl10 == null)
 			throw new GdxRuntimeException("This shader requires OpenGL ES 1.x");
-		currentLights = new Light[maxLightsCount < 0 ? 0 : maxLightsCount];
-		for (int i = 0; i < currentLights.length; i++)
-			currentLights[i] = new Light();
 	}
 	
 	@Override
@@ -62,68 +62,58 @@ public class GLES10Shader implements Shader{
 		context.setDepthTest(true, GL10.GL_LEQUAL);
 		Gdx.gl10.glMatrixMode(GL10.GL_PROJECTION);
 		Gdx.gl10.glLoadMatrixf(camera.combined.val, 0);
-		if (currentLights.length < 1)
-			Gdx.gl10.glDisable(GL10.GL_LIGHTING);
-		else {
-			Gdx.gl10.glEnable(GL10.GL_LIGHTING);
-			Gdx.gl10.glEnable(GL10.GL_COLOR_MATERIAL);
-			for (int i = 0; i < currentLights.length; i++)
-				Gdx.gl10.glEnable(GL10.GL_LIGHT0 + i);
-			for (int i = currentLights.length; i < 8; i++)
-				Gdx.gl10.glDisable(GL10.GL_LIGHT0 + i);
-		}
 		Gdx.gl10.glMatrixMode(GL10.GL_MODELVIEW);
 	}
 
 	private final float[] lightVal = {0,0,0,0};
 	private final float[] zeroVal4 = {0,0,0,0};
-	private void bindLight(int num, Light light) {
-		// FIXME cache values
-		if (currentLights[num].equals(light))
-			return;
-		currentLights[num].set(light);
-		Gdx.gl10.glLightfv(GL10.GL_LIGHT0+num, GL10.GL_AMBIENT, zeroVal4, 0);
-		Gdx.gl10.glLightfv(GL10.GL_LIGHT0+num, GL10.GL_DIFFUSE, zeroVal4, 0);
-		Gdx.gl10.glLightfv(GL10.GL_LIGHT0+num, GL10.GL_SPECULAR, zeroVal4, 0);
-		Gdx.gl10.glLightfv(GL10.GL_LIGHT0+num, GL10.GL_POSITION, zeroVal4, 0);
-		if (light == null || light.type == Light.NONE)
-			return;
-		lightVal[0] = light.color.r;
-		lightVal[1] = light.color.g;
-		lightVal[2] = light.color.b;
-		lightVal[3] = light.color.a;
-		if (light.type == Light.AMBIENT) {
-			Gdx.gl10.glLightfv(GL10.GL_LIGHT0+num, GL10.GL_AMBIENT, lightVal, 0);
+	private void bindLights(Lights lights) {
+		if (lights == null) {
+			Gdx.gl10.glDisable(GL10.GL_LIGHTING);
 			return;
 		}
-		Gdx.gl10.glLightfv(GL10.GL_LIGHT0+num, GL10.GL_DIFFUSE, lightVal, 0);
-		if (light.type == Light.DIRECTIONAL) {
-			lightVal[0] = -light.direction.x;
-			lightVal[1] = -light.direction.y;
-			lightVal[2] = -light.direction.z;
-			lightVal[3] = 0f;
-		} else {
-			lightVal[0] = light.position.x;
-			lightVal[1] = light.position.y;
-			lightVal[2] = light.position.z;
-			lightVal[3] = 1f;			
-		}
+		Gdx.gl10.glEnable(GL10.GL_LIGHTING);
+		Gdx.gl10.glEnable(GL10.GL_LIGHT0);
+		Gdx.gl10.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, getValues(lightVal, lights.ambientLight), 0);
+		int idx=1;
 		Gdx.gl10.glPushMatrix();
 		Gdx.gl10.glLoadIdentity();
-		Gdx.gl10.glLightfv(GL10.GL_LIGHT0+num, GL10.GL_POSITION, lightVal, 0);
-		if (light.type == Light.SPOT) {
-			lightVal[0] = light.direction.x;
-			lightVal[1] = light.direction.y;
-			lightVal[2] = light.direction.z;
-			lightVal[3] = 0f;
-			Gdx.gl10.glLightfv(GL10.GL_LIGHT0+num, GL10.GL_SPOT_DIRECTION, lightVal, 0);
-			Gdx.gl10.glLightf(GL10.GL_LIGHT0+num, GL10.GL_SPOT_CUTOFF, MathUtils.clamp(light.angle, 0f, 90f));
-		} else
-			Gdx.gl10.glLightf(GL10.GL_LIGHT0+num, GL10.GL_SPOT_CUTOFF, 180f);
+		for (int i = 0; i < lights.directionalLights.size && idx < 8; i++) {
+			final DirectionalLight light = lights.directionalLights.get(i);
+			Gdx.gl10.glEnable(GL10.GL_LIGHT0+idx);
+			Gdx.gl10.glLightfv(GL10.GL_LIGHT0+idx, GL10.GL_DIFFUSE, getValues(lightVal, light.color), 0);
+			Gdx.gl10.glLightfv(GL10.GL_LIGHT0+idx, GL10.GL_POSITION, getValues(lightVal, -light.direction.x, -light.direction.y, -light.direction.z, 0f), 0);
+			Gdx.gl10.glLightf(GL10.GL_LIGHT0+idx, GL10.GL_SPOT_CUTOFF, 180f);
+			Gdx.gl10.glLightf(GL10.GL_LIGHT0+idx, GL10.GL_CONSTANT_ATTENUATION, 1f);
+			Gdx.gl10.glLightf(GL10.GL_LIGHT0+idx, GL10.GL_LINEAR_ATTENUATION, 0f);
+			Gdx.gl10.glLightf(GL10.GL_LIGHT0+idx, GL10.GL_QUADRATIC_ATTENUATION, 0f);
+			idx++;
+		}
+		for (int i = 0; i < lights.pointLights.size && idx < 8; i++) {
+			Gdx.gl10.glEnable(GL10.GL_LIGHT0+idx);
+			final PointLight light = lights.pointLights.get(i);
+			Gdx.gl10.glLightfv(GL10.GL_LIGHT0+idx, GL10.GL_DIFFUSE, getValues(lightVal, light.color), 0);
+			Gdx.gl10.glLightfv(GL10.GL_LIGHT0+idx, GL10.GL_POSITION, getValues(lightVal, light.position.x, light.position.y, light.position.z, 1f), 0);
+			Gdx.gl10.glLightf(GL10.GL_LIGHT0+idx, GL10.GL_SPOT_CUTOFF, 180f);
+			Gdx.gl10.glLightf(GL10.GL_LIGHT0+idx, GL10.GL_CONSTANT_ATTENUATION, 0f);
+			Gdx.gl10.glLightf(GL10.GL_LIGHT0+idx, GL10.GL_LINEAR_ATTENUATION, 1f/light.intensity);
+			idx++;
+		}
+		while(idx < 8)
+			Gdx.gl10.glDisable(GL10.GL_LIGHT0+(idx++));
 		Gdx.gl10.glPopMatrix();
-		Gdx.gl10.glLightf(GL10.GL_LIGHT0+num, GL10.GL_CONSTANT_ATTENUATION, light.type == Light.DIRECTIONAL ? 1 : light.attenuation.x);
-		Gdx.gl10.glLightf(GL10.GL_LIGHT0+num, GL10.GL_LINEAR_ATTENUATION, light.type == Light.DIRECTIONAL ? 0 : light.attenuation.y);
-		Gdx.gl10.glLightf(GL10.GL_LIGHT0+num, GL10.GL_QUADRATIC_ATTENUATION, light.type == Light.DIRECTIONAL ? 0 : light.attenuation.z);
+	}
+	
+	private final static float[] getValues(final float out[], final float v0, final float v1, final float v2, final float v3) {
+		out[0] = v0;
+		out[1] = v1;
+		out[2] = v2;
+		out[3] = v3;
+		return out;
+	}
+	
+	private final static float[] getValues(final float out[], final Color color) {
+		return getValues(out, color.r, color.g, color.b, color.a);
 	}
 	
 	@Override
@@ -155,15 +145,7 @@ public class GLES10Shader implements Shader{
 			Gdx.gl10.glPushMatrix();
 			Gdx.gl10.glLoadMatrixf(currentTransform.val, 0);
 		}
-		if (renderable.lights == null)
-			Gdx.gl10.glDisable(GL10.GL_LIGHTING);
-		else {
-			Gdx.gl10.glEnable(GL10.GL_LIGHTING);
-			for (int i = 0; i < currentLights.length; i++) {
-				final Light light = renderable.lights.length > i ? renderable.lights[i] : null;
-				bindLight(i, light);
-			}
-		}
+		bindLights(renderable.lights);
 		if (currentMesh != renderable.mesh) {
 			if (currentMesh != null)
 				currentMesh.unbind();

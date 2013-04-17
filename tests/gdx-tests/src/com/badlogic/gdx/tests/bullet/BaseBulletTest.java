@@ -29,6 +29,8 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
@@ -70,12 +72,12 @@ public class BaseBulletTest extends BulletTest {
 		initialized = true;
 	}
 	
-	public Light[] lights = new Light[] {
-		//new Light(0.3f, 0.3f, 0.3f, 1f), // ambient light
-		new Light(0.8f, 0.8f, 0.8f, 1f, -0.5f, -1f, -0.7f), // directional light
-		//new Light(1f, 1f, 1f, 1f, 5f, 10f, 20f, 1f, 0f, 0f), // point light
+	public Lights lights = new Lights().add(
+		//new Light(0.8f, 0.8f, 0.8f, 1f, -0.5f, -1f, -0.7f), // directional light
+		new PointLight().set(1f, 0f, 0f, 5f, 10f, 20f, 100f), // point light
+		new PointLight().set(0f, 0f, 1f, -5f, 10f, 20f, 100f) // point light
 		//new Light(1f, 1f, 1f, 1f, 10f, 20f, 5f, -1f, -2f, -0.5f, 30f, 1f, 0f, 0f), // spot light
-	};
+	);
 
 	public BulletWorld world;
 	public ObjLoader objLoader = new ObjLoader();

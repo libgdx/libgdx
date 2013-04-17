@@ -250,7 +250,6 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public short vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
-		// FIXME perhaps clear vertex[] upfront
 		if (col == null && colorSet)
 			col = color;
 		if (pos != null) {
@@ -348,10 +347,9 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void line(short index1, short index2) {
-		if (primitiveType == GL10.GL_LINES || primitiveType == GL10.GL_POINTS) {
-			index(index1, index2);
-		} else
+		if (primitiveType != GL10.GL_LINES)
 			throw new GdxRuntimeException("Incorrect primitive type");
+		index(index1, index2);
 	}
 	
 	@Override

@@ -20,7 +20,7 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 	protected CollapsableWindow modelsWindow;
 
 	protected  String models[] = new String[] {
-		"car.obj", "cube.obj", "scene.obj", "scene2.obj", "wheel.obj", 
+		"car.obj", "cube.obj", "scene.obj", "scene2.obj", "sphere.obj", "wheel.obj", 
 		"g3d/cube_anim.g3dj", "g3d/cubes.g3dj", "g3d/head_parented.g3dj", "g3d/head.g3dj", "g3d/head2.g3dj", "g3d/test.g3dj"
 	};
 
