@@ -78,6 +78,7 @@
 		<include name="utils/JsonReader.java"/>
 		<include name="utils/JsonWriter.java"/>
 		<include name="utils/DataInput.java"/>
+		<include name="utils/DataOutput.java"/>
 		<include name="graphics/g3d/keyframed/Keyframe.java"/>
 		<include name="graphics/g3d/keyframed/KeyframeAnimation.java"/>
 		<include name="graphics/g3d/keyframed/KeyframeAnimator.java"/>
