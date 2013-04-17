@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d;
 
+import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;

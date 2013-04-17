@@ -85,7 +85,7 @@ void main() {
 	#endif // normalFlag
 
 	#ifdef lightingFlag
-		#ifdef ambientCubemapFlag		
+		#if defined(ambientCubemapFlag) && defined(normalFlag) 		
 			vec3 squaredNormal = v_normal * v_normal;
 			vec3 isPositive  = step(0.0, v_normal);
 			#ifdef ambientLightFlag
@@ -108,7 +108,7 @@ void main() {
 			vec3 viewVec = normalize(u_cameraPosition - pos.xyz);
 		#endif // specularFlag
 			
-		#if defined(numDirectionalLights) && (numDirectionalLights > 0)
+		#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
 			for (int i = 0; i < numDirectionalLights; i++) {
 				vec3 lightDir = -directionalLights[i].direction;
 				float NdotL = clamp(dot(v_normal, lightDir), 0.0, 1.0);
@@ -120,13 +120,14 @@ void main() {
 			}
 		#endif // numDirectionalLights
 
-		#if defined(numPointLights) && (numPointLights > 0)
+		#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
 			for (int i = 0; i < numPointLights; i++) {
 				vec3 lightDir = pointLights[i].position - pos.xyz;
-				float distance = length(lightDir);
-				lightDir /= distance;
+				float dist2 = dot(lightDir, lightDir);
+				lightDir *= inversesqrt(dist2);
 				float NdotL = clamp(dot(v_normal, lightDir), 0.0, 1.0);
-				float falloff = clamp(pointLights[i].intensity / (1.0 + distance), 0.0, 1.0);
+				// FIXME mul intensity on cpu
+				float falloff = clamp((pointLights[i].intensity * pointLights[i].intensity) / (1.0 + dist2), 0.0, 1.0);
 				v_lightDiffuse += pointLights[i].color * (NdotL * falloff);
 				#ifdef specularFlag
 					float halfDotView = dot(v_normal, normalize(lightDir + viewVec));
