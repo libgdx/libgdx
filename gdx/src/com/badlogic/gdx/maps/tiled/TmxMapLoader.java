@@ -113,7 +113,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 			for(FileHandle textureFile: loadTilesets(root, tmxFile)) {
 				Texture texture = new Texture(textureFile, parameters.generateMipMaps);
 				texture.setFilter(parameters.textureMinFilter, parameters.textureMagFilter);
-				textures.put(textureFile.path(), new Texture(textureFile, parameters.generateMipMaps));				
+				textures.put(textureFile.path(), texture);				
 			}
 			DirectImageResolver imageResolver = new DirectImageResolver(textures);
 			TiledMap map = loadTilemap(root, tmxFile, imageResolver);
