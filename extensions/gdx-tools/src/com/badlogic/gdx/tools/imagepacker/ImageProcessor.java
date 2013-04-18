@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.imagepacker;
 
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Rect;
@@ -89,11 +90,13 @@ public class ImageProcessor {
 		}
 
 		// Strip digits off end of name and use as index.
-		Matcher matcher = indexPattern.matcher(name);
 		int index = -1;
-		if (matcher.matches()) {
-			name = matcher.group(1);
-			index = Integer.parseInt(matcher.group(2));
+		if (settings.useIndexes) {
+			Matcher matcher = indexPattern.matcher(name);
+			if (matcher.matches()) {
+				name = matcher.group(1);
+				index = Integer.parseInt(matcher.group(2));
+			}
 		}
 
 		if (rect == null) {

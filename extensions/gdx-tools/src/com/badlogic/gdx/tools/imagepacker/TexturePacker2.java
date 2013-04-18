@@ -391,6 +391,7 @@ public class TexturePacker2 {
 		public boolean combineSubdirectories;
 		public boolean flattenPaths;
 		public boolean premultiplyAlpha;
+		public boolean useIndexes = true;
 
 		public Settings () {
 		}
