@@ -36,28 +36,26 @@ public class Box2DDebugRenderer {
 	protected ShapeRenderer renderer;
 
 	/** vertices for polygon rendering **/
-	private static Vector2[] vertices = new Vector2[1000];
+	private final static Vector2[] vertices = new Vector2[1000];
 
-	private static Vector2 lower;
-	private static Vector2 upper;
+	private final static Vector2 lower = new Vector2();
+	private final static Vector2 upper = new Vector2();
 
 	private boolean drawBodies;
 	private boolean drawJoints;
 	private boolean drawAABBs;
 	private boolean drawInactiveBodies;
 	private boolean drawVelocities;
+	private boolean drawContacts;
 
 	public Box2DDebugRenderer () {
-		this(true, true, false, true, false);
+		this(true, true, false, true, false, true);
 	}
 
 	public Box2DDebugRenderer (boolean drawBodies, boolean drawJoints, boolean drawAABBs, boolean drawInactiveBodies,
-		boolean drawVelocities) {
+		boolean drawVelocities, boolean drawContacts) {
 		// next we setup the immediate mode renderer
 		renderer = new ShapeRenderer();
-
-		lower = new Vector2();
-		upper = new Vector2();
 
 		// initialize vertices array
 		for (int i = 0; i < vertices.length; i++)
@@ -68,6 +66,7 @@ public class Box2DDebugRenderer {
 		this.drawAABBs = drawAABBs;
 		this.drawInactiveBodies = drawInactiveBodies;
 		this.drawVelocities = drawVelocities;
+		this.drawContacts = drawContacts;
 	}
 
 	/** This assumes that the projection matrix has already been set. */
@@ -102,35 +101,22 @@ public class Box2DDebugRenderer {
 			}
 		}
 		renderer.end();
-
-		if (Gdx.gl10 != null) Gdx.gl10.glPointSize(3);
-		renderer.begin(ShapeType.Point);
-		int len = world.getContactList().size();
-		for (int i = 0; i < len; i++)
-			drawContact(world.getContactList().get(i));
-		renderer.end();
-		if (Gdx.gl10 != null) Gdx.gl10.glPointSize(1);
+		if (drawContacts) {
+			if (Gdx.gl10 != null) Gdx.gl10.glPointSize(3);
+			renderer.begin(ShapeType.Point);
+			int len = world.getContactList().size();
+			for (int i = 0; i < len; i++)
+				drawContact(world.getContactList().get(i));
+			renderer.end();
+			if (Gdx.gl10 != null) Gdx.gl10.glPointSize(1);
+		}
 	}
 
 	protected void renderBody (Body body) {
 		Transform transform = body.getTransform();
-		int len = body.getFixtureList().size();
-		List<Fixture> fixtures = body.getFixtureList();
-		for (int i = 0; i < len; i++) {
-			Fixture fixture = fixtures.get(i);
-
+		for (Fixture fixture : body.getFixtureList()) {
 			if (drawBodies) {
-				if (body.isActive() == false)
-					drawShape(fixture, transform, SHAPE_NOT_ACTIVE);
-				else if (body.getType() == BodyType.StaticBody)
-					drawShape(fixture, transform, SHAPE_STATIC);
-				else if (body.getType() == BodyType.KinematicBody)
-					drawShape(fixture, transform, SHAPE_KINEMATIC);
-				else if (body.isAwake() == false)
-					drawShape(fixture, transform, SHAPE_NOT_AWAKE);
-				else
-					drawShape(fixture, transform, SHAPE_AWAKE);
-
+					drawShape(fixture, transform, getColorByBody(body));
 				if (drawVelocities) {
 					Vector2 position = body.getPosition();
 					drawSegment(position, body.getLinearVelocity().add(position), VELOCITY_COLOR);
@@ -141,6 +127,19 @@ public class Box2DDebugRenderer {
 				drawAABB(fixture, transform);
 			}
 		}
+	}
+	
+	private Color getColorByBody (Body body) { 
+		if (body.isActive() == false)
+			return SHAPE_NOT_ACTIVE;
+		else if (body.getType() == BodyType.StaticBody)
+			return SHAPE_STATIC;
+		else if (body.getType() == BodyType.KinematicBody)
+			return SHAPE_KINEMATIC;
+		else if (body.isAwake() == false)
+			return SHAPE_NOT_AWAKE;
+		else
+			return SHAPE_AWAKE;
 	}
 
 	private void drawAABB (Fixture fixture, Transform transform) {
@@ -195,6 +194,7 @@ public class Box2DDebugRenderer {
 			t.set(circle.getPosition());
 			transform.mul(t);
 			drawSolidCircle(t, circle.getRadius(), axis.set(transform.vals[Transform.COS], transform.vals[Transform.SIN]), color);
+			return;
 		}
 
 		if (fixture.getType() == Type.Edge) {
@@ -204,6 +204,7 @@ public class Box2DDebugRenderer {
 			transform.mul(vertices[0]);
 			transform.mul(vertices[1]);
 			drawSolidPolygon(vertices, 2, color, true);
+			return;
 		}
 
 		if (fixture.getType() == Type.Polygon) {
@@ -214,6 +215,7 @@ public class Box2DDebugRenderer {
 				transform.mul(vertices[i]);
 			}
 			drawSolidPolygon(vertices, vertexCount, color, true);
+			return;
 		}
 
 		if (fixture.getType() == Type.Chain) {
@@ -251,13 +253,10 @@ public class Box2DDebugRenderer {
 
 	private void drawSolidPolygon (Vector2[] vertices, int vertexCount, Color color, boolean closed) {
 		renderer.setColor(color.r, color.g, color.b, color.a);
-		for (int i = 0; i < vertexCount; i++) {
+		lv.set(vertices[0]);
+		f.set(vertices[0]);
+		for (int i = 1; i < vertexCount; i++) {
 			Vector2 v = vertices[i];
-			if (i == 0) {
-				lv.set(v);
-				f.set(v);
-				continue;
-			}
 			renderer.line(lv.x, lv.y, v.x, v.y);
 			lv.set(v);
 		}
@@ -302,6 +301,7 @@ public class Box2DDebugRenderer {
 		WorldManifold worldManifold = contact.getWorldManifold();
 		if (worldManifold.getNumberOfContactPoints() == 0) return;
 		Vector2 point = worldManifold.getPoints()[0];
+		renderer.setColor(getColorByBody(contact.getFixtureA().getBody()));
 		renderer.point(point.x, point.y, 0);
 	}
 
@@ -343,6 +343,14 @@ public class Box2DDebugRenderer {
 
 	public void setDrawVelocities (boolean drawVelocities) {
 		this.drawVelocities = drawVelocities;
+	}
+	
+	public boolean isDrawContacts () {
+		return drawContacts;
+	}
+
+	public void setDrawContacts (boolean drawContacts) {
+		this.drawContacts = drawContacts;
 	}
 
 	public static Vector2 getAxis () {
