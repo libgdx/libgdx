@@ -153,6 +153,7 @@
 		<include name="graphics/TextureData.java"/>
 		<include name="graphics/TextureDict.java"/>
 		<include name="graphics/TextureRef.java"/>
+		<include name="graphics/Pixmap.java"/>
 		<include name="graphics/g2d/TextureRegion.java"/>
 		<include name="utils/TimSort.java"/>
 		<include name="src/com/esotericsoftware/tablelayout/Toolkit.java"/>
