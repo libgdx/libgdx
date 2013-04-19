@@ -2,6 +2,7 @@ package com.badlogic.gdx.graphics.g3d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultRenderableSorter;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
@@ -117,7 +118,7 @@ public class ModelBatch implements Disposable {
 	 * @param renderableProvider the renderable provider
 	 * @param lights the lights to use for the renderables
 	 */
-	public void render(final RenderableProvider renderableProvider, final Light[] lights) {
+	public void render(final RenderableProvider renderableProvider, final Lights lights) {
 		render(renderableProvider, lights, null);
 	}
 	
@@ -129,7 +130,7 @@ public class ModelBatch implements Disposable {
 	 * @param renderableProviders one or more renderable providers
 	 * @param lights the lights to use for the renderables
 	 */
-	public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Light[] lights) {
+	public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Lights lights) {
 		render(renderableProviders, lights, null);
 	}
 	
@@ -167,7 +168,7 @@ public class ModelBatch implements Disposable {
 	 * @param lights the lights to use for the renderables
 	 * @param shader the shader to use for the renderables
 	 */
-	public void render(final RenderableProvider renderableProvider, final Light[] lights, final Shader shader) {
+	public void render(final RenderableProvider renderableProvider, final Lights lights, final Shader shader) {
 		int offset = renderables.size;
 		renderableProvider.getRenderables(renderables, renderablesPool);
 		for (int i = offset; i < renderables.size; i++) {
@@ -189,7 +190,7 @@ public class ModelBatch implements Disposable {
 	 * @param lights the lights to use for the renderables
 	 * @param shader the shader to use for the renderables
 	 */
-	public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Light[] lights, final Shader shader) {
+	public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Lights lights, final Shader shader) {
 		for (final RenderableProvider renderableProvider : renderableProviders)
 			render(renderableProvider, lights, shader);
 	}

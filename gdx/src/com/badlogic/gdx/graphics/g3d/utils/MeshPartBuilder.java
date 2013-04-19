@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
@@ -37,41 +38,41 @@ public interface MeshPartBuilder {
 	public void index(short value1, short value2, short value3, short value4, short value5, short value6);
 	/** Add multiple indices, MeshPartBuilder expects all meshes to be indexed. */
 	public void index(short value1, short value2, short value3, short value4, short value5, short value6, short value7, short value8);
-	/** Add a line by indices. */
+	/** Add a line by indices. Requires GL_LINES primitive type. */
 	public void line(short index1, short index2);
-	/** Add a line. */
+	/** Add a line. Requires GL_LINES primitive type. */
 	public void line(VertexInfo p1, VertexInfo p2);
-	/** Add a line. */
+	/** Add a line. Requires GL_LINES primitive type. */
 	public void line(Vector3 p1, Vector3 p2);
-	/** Add a line. */
+	/** Add a line. Requires GL_LINES primitive type. */
 	public void line(float x1, float y1, float z1, float x2, float y2, float z2);
-	/** Add a line. */
+	/** Add a line. Requires GL_LINES primitive type. */
 	public void line(Vector3 p1, Color c1, Vector3 p2, Color c2);
-	/** Add a triangle by indices. */
+	/** Add a triangle by indices. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void triangle(short index1, short index2, short index3);
-	/** Add a triangle. */
+	/** Add a triangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void triangle(VertexInfo p1, VertexInfo p2, VertexInfo p3);
-	/** Add a triangle. */
+	/** Add a triangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void triangle(Vector3 p1, Vector3 p2, Vector3 p3);
-	/** Add a triangle. */
+	/** Add a triangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void triangle(Vector3 p1, Color c1, Vector3 p2, Color c2, Vector3 p3, Color c3);
-	/** Add a rectangle by indices. */
+	/** Add a rectangle by indices. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void rect(short corner00, short corner10, short corner11, short corner01);
-	/** Add a rectangle. */
+	/** Add a rectangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void rect(VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01);
-	/** Add a rectangle. */
+	/** Add a rectangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void rect(Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal);
-	/** Add a rectangle */
+	/** Add a rectangle Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void rect(float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11, float x01, float y01, float z01, float normalX, float normalY, float normalZ);
-	/** Add a box */
+	/** Add a box. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void box(VertexInfo corner000, VertexInfo corner010, VertexInfo corner100, VertexInfo corner110,
 						VertexInfo corner001, VertexInfo corner011, VertexInfo corner101, VertexInfo corner111);
-	/** Add a box */
+	/** Add a box. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void box(Vector3 corner000, Vector3 corner010, Vector3 corner100, Vector3 corner110,
 						Vector3 corner001, Vector3 corner011, Vector3 corner101, Vector3 corner111);
-	/** Add a box given the matrix */
+	/** Add a box given the matrix. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void box(Matrix4 transform);
-	/** Add a box with the specified dimensions */
+	/** Add a box with the specified dimensions. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void box(float width, float height, float depth);
 	/** Add a box at the specified location, with the specified dimensions */
 	public void box(float x, float y, float z, float width, float height, float depth);

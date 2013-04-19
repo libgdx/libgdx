@@ -2,6 +2,7 @@ package com.badlogic.gdx.graphics.g3d;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Matrix4;
@@ -31,7 +32,7 @@ public class Renderable {
 	/** the material to be applied to the mesh **/
 	public Material material;
 	/** the lights to be used to render this Renderable, may be null **/
-	public Light[] lights;
+	public Lights lights;
 	/** the Shader to be used to render this Renderable, may be null **/
 	public Shader shader;
 	/** user definable value. */

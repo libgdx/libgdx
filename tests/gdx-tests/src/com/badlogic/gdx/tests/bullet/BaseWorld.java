@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -68,18 +69,18 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 		return entity;
 	}
 	
-	public void render(final ModelBatch batch, final Light[] lights) {
+	public void render(final ModelBatch batch, final Lights lights) {
 		render(batch, lights, entities);
 	}
 	
-	public void render(final ModelBatch batch, final Light[] lights, final Iterable<T> entities) {
+	public void render(final ModelBatch batch, final Lights lights, final Iterable<T> entities) {
 		for (final T e : entities) {
 			e.modelInstance.calculateTransforms();
 			batch.render(e.modelInstance, lights);
 		}
 	}
 	
-	public void render(final ModelBatch batch, final Light[] lights, final T entity) {
+	public void render(final ModelBatch batch, final Lights lights, final T entity) {
 		entity.modelInstance.calculateTransforms();
 		batch.render(entity.modelInstance, lights);
 	}

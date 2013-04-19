@@ -279,7 +279,7 @@ public class ShaderProgram implements Disposable {
 		return location;
 	}
 
-	private int fetchUniformLocation (String name) {
+	public int fetchUniformLocation (String name) {
 		GL20 gl = Gdx.graphics.getGL20();
 		// -2 == not yet cached
 		// -1 == cached but not found

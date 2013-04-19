@@ -1,6 +1,7 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -37,10 +38,7 @@ public class BasicShapesTest extends BaseBulletTest {
 
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 		final Material material = new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(1,1,1,1), FloatAttribute.createShininess(8f));
-		final VertexAttributes attributes = new VertexAttributes(
-						new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
-						new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE),
-						new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE+"0"));
+		final long attributes = Usage.Position | Usage.Normal | Usage.TextureCoordinates;
 		
 		final Model sphere = modelBuilder.createSphere(4f, 4f, 4f, 24, 24, material, attributes);
 		world.addConstructor("sphere", new BulletConstructor(sphere, 10f, new btSphereShape(2f)));

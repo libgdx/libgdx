@@ -32,6 +32,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
@@ -73,8 +75,7 @@ public class Renderer {
 	private PerspectiveCamera camera;
 
 	/** the directional light **/
-	Light[] lights = { new Light(Color.WHITE, new Vector3(-1, -0.5f, 0).nor()) };
-
+	Lights lights = new Lights(Color.BLACK, new DirectionalLight().set(Color.WHITE, new Vector3(-1, -0.5f, 0).nor()));
 
 	ModelBatch modelBatch;
 	

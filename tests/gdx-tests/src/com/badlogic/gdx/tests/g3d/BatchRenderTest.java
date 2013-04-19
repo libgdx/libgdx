@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.loader.JsonModelLoader;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
@@ -40,7 +42,7 @@ public class BatchRenderTest extends GdxTest {
 	Array<Texture> textures = new Array<Texture>();
 	ModelBatch renderBatch;
 	DefaultTextureBinder exclusiveTextures;
-	Light[] lights;
+	Lights lights;
 	
 	float touchStartX = 0;
 	float touchStartY = 0;
@@ -79,11 +81,11 @@ public class BatchRenderTest extends GdxTest {
 		
 		renderBatch = new ModelBatch();
 		
-		lights = new Light[] {
-			new Light(1f, 1f, 1f, 1f, -20f, 10f, 0f, 0f, -1f, 0f, 15f, 1f, 0f, 0f),
-			new Light(0f, 0f, 1f, 1f, 10f, 10f, 0f, 0f, -1f, 0f, 15f, 1f, 0f, 0f),
-			new Light(0f, 1f, 0f, 1f, 0f, 10f, 50f, 0f, -1f, 0f, 15f, 1f, 0f, 0f)
-		};
+		lights = new Lights().add(
+			new PointLight().set(1f, 1f, 1f, -20f, 10f, 0f, 150f),
+			new PointLight().set(0f, 0f, 1f, 10f, 10f, 0f, 150f),
+			new PointLight().set(0f, 1f, 0f, 0f, 10f, 50f, 150f)
+		);
 		
 		Gdx.input.setInputProcessor(new CameraInputController(cam));
 	}
@@ -112,10 +114,8 @@ public class BatchRenderTest extends GdxTest {
 			// Gdx.app.log("Test", "FPS: "+Gdx.graphics.getFramesPerSecond()+", binds: "+exclusiveTextures.getBindCount()+", reused: "+exclusiveTextures.getReuseCount());
 			// exclusiveTextures.resetCounts();
 		}
-		for (int i = 0; i < lights.length; i++) {
-			lights[i].position.rotate(Vector3.Y, delta*45f);
-			lights[i].direction.set(-lights[i].position.x,-lights[i].position.y,-lights[i].position.z).nor();
-		}
+		for (final PointLight light : lights.pointLights)
+			light.position.rotate(Vector3.Y, delta*45f);
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);

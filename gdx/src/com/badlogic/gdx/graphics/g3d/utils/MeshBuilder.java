@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -87,10 +88,43 @@ public class MeshBuilder implements MeshPartBuilder {
 	private float uMin = 0, uMax = 1, vMin = 0, vMax = 1;
 	private float[] vertex;
 	
-	/** Begin building a mesh */
+	/** @param usage bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
+	 * only Position, Color, Normal and TextureCoordinates is supported. */
+	public static VertexAttributes createAttributes(long usage) {
+		final Array<VertexAttribute> attrs = new Array<VertexAttribute>();
+		if ((usage & Usage.Position) == Usage.Position)
+			attrs.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
+		if ((usage & Usage.Color) == Usage.Color)
+			attrs.add(new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE));
+		if ((usage & Usage.Normal) == Usage.Normal)
+			attrs.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
+		if ((usage & Usage.TextureCoordinates) == Usage.TextureCoordinates)
+			attrs.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE+"0"));
+		final VertexAttribute attributes[] = new VertexAttribute[attrs.size];
+		for (int i = 0; i < attributes.length; i++)
+			attributes[i] = attrs.get(i);
+		return new VertexAttributes(attributes);
+	}
+	
+	/** Begin building a mesh. Call {@link #part(String, int)} to start a {@link MeshPart}.
+	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
+	 * only Position, Color, Normal and TextureCoordinates is supported. */
+	public void begin(final long attributes) {
+		begin(createAttributes(attributes), 0);
+	}
+	
+	/** Begin building a mesh. Call {@link #part(String, int)} to start a {@link MeshPart}. */
 	public void begin(final VertexAttributes attributes) {
 		begin(attributes, 0);
 	}
+	
+	/** Begin building a mesh.
+	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
+	 * only Position, Color, Normal and TextureCoordinates is supported. */
+	public void begin(final long attributes, int primitiveType) {
+		begin(createAttributes(attributes), primitiveType);
+	}
+	
 	/** Begin building a mesh */
 	public void begin(final VertexAttributes attributes, int primitiveType) {
 		if (this.attributes != null)
@@ -216,7 +250,6 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public short vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
-		// FIXME perhaps clear vertex[] upfront
 		if (col == null && colorSet)
 			col = color;
 		if (pos != null) {
@@ -314,10 +347,9 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void line(short index1, short index2) {
-		if (primitiveType == GL10.GL_LINES || primitiveType == GL10.GL_POINTS) {
-			index(index1, index2);
-		} else
+		if (primitiveType != GL10.GL_LINES)
 			throw new GdxRuntimeException("Incorrect primitive type");
+		index(index1, index2);
 	}
 	
 	@Override

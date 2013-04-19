@@ -41,7 +41,7 @@ public class MeshShapeTest extends BaseBulletTest {
 		
 		final Model sphereModel = modelBuilder.createSphere(0.5f, 0.5f, 0.5f, 8, 8, 
 			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE)), 
-			new VertexAttributes(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE))); 
+			Usage.Position | Usage.Normal); 
 		final BulletConstructor sphereConstructor = new BulletConstructor(sphereModel, 0.25f, new btSphereShape(0.25f));
 		sphereConstructor.bodyInfo.setM_restitution(1f);
 		world.addConstructor("sphere", sphereConstructor);
