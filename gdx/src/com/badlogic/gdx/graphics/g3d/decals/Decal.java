@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.g3d.decals;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Quaternion;
@@ -68,6 +69,23 @@ public class Decal {
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		float color = NumberUtils.intToFloatColor(intBits);
+		vertices[C1] = color;
+		vertices[C2] = color;
+		vertices[C3] = color;
+		vertices[C4] = color;
+	}
+	
+	/** Sets the color used to tint this decal. Default is {@link Color#WHITE}. */
+	public void setColor (Color tint) {
+		float color = tint.toFloatBits();
+		vertices[C1] = color;
+		vertices[C2] = color;
+		vertices[C3] = color;
+		vertices[C4] = color;
+	}
+	
+	/** @see #setColor(Color) */
+	public void setColor (float color) {
 		vertices[C1] = color;
 		vertices[C2] = color;
 		vertices[C3] = color;

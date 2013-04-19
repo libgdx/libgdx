@@ -245,7 +245,8 @@ public class Sprite extends TextureRegion {
 		vertices[X4] += xAmount;
 		vertices[Y4] += yAmount;
 	}
-
+	
+	/** Sets the color used to tint this sprite. Default is {@link Color#WHITE}. */
 	public void setColor (Color tint) {
 		float color = tint.toFloatBits();
 		float[] vertices = this.vertices;
@@ -254,7 +255,8 @@ public class Sprite extends TextureRegion {
 		vertices[C3] = color;
 		vertices[C4] = color;
 	}
-
+	
+	/** @see #setColor(Color) */
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		float color = NumberUtils.intToFloatColor(intBits);
@@ -265,6 +267,8 @@ public class Sprite extends TextureRegion {
 		vertices[C4] = color;
 	}
 
+	/** @see #setColor(Color)
+	 * @see Color#toFloatBits() */
 	public void setColor (float color) {
 		float[] vertices = this.vertices;
 		vertices[C1] = color;
