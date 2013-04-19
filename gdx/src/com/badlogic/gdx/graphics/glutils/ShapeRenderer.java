@@ -562,7 +562,7 @@ public class ShapeRenderer {
 		renderer.vertex(x + cx, y + cy, 0);
 	}
 	
-	/** Calls {@link #ellipse(float, float, float, int)} by estimating the number of segments needed for a smooth ellipse. */
+	/** Calls {@link #ellipse(float, float, float, float, int)} by estimating the number of segments needed for a smooth ellipse. */
 	public void ellipse(float x, float y, float width, float height) {
 		ellipse(x, y, width, height, (int)(12 * (float) Math.cbrt(Math.max(width * 0.5f,  height * 0.5f))));
 	}
