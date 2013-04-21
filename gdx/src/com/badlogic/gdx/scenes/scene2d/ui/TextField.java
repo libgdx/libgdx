@@ -379,8 +379,10 @@ public class TextField extends Widget {
 		invalidateHierarchy();
 	}
 
+	/** Sets the password character for the text field. The character must be present in the {@link BitmapFont} */
 	public void setPasswordCharacter (char passwordCharacter) {
 		this.passwordCharacter = passwordCharacter;
+		if(passwordMode) updateDisplayText();
 	}
 
 	/** Returns the text field's style. Modifying the returned style may not have an effect until {@link #setStyle(TextFieldStyle)}
@@ -758,6 +760,7 @@ public class TextField extends Widget {
 	 * no affect. */
 	public void setPasswordMode (boolean passwordMode) {
 		this.passwordMode = passwordMode;
+		updateDisplayText();
 	}
 
 	public void setBlinkTime (float blinkTime) {
