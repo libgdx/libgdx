@@ -382,7 +382,7 @@ public class TextField extends Widget {
 	/** Sets the password character for the text field. The character must be present in the {@link BitmapFont} */
 	public void setPasswordCharacter (char passwordCharacter) {
 		this.passwordCharacter = passwordCharacter;
-		updateDisplayText();
+		if(passwordMode) updateDisplayText();
 	}
 
 	/** Returns the text field's style. Modifying the returned style may not have an effect until {@link #setStyle(TextFieldStyle)}
