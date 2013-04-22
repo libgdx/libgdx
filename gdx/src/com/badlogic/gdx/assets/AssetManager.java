@@ -41,6 +41,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.loader.G3dbModelLoader;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
@@ -84,6 +85,7 @@ public class AssetManager implements Disposable {
 		setLoader(Texture.class, new TextureLoader(resolver));
 		setLoader(Skin.class, new SkinLoader(resolver));
 		setLoader(Model.class, ".g3dj", new ModelLoader.G3djModelLoader(resolver));
+		setLoader(Model.class, ".g3db", new G3dbModelLoader(resolver));
 		setLoader(Model.class, ".obj", new ObjLoader(resolver));
 		threadPool = Executors.newFixedThreadPool(1, new ThreadFactory() {
 			@Override

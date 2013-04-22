@@ -107,33 +107,35 @@ public class Model implements Disposable {
 		if (modelNode.scale != null)
 			node.scale.set(modelNode.scale);
 		// FIXME create temporary maps for faster lookup?
-		for(ModelMeshPartMaterial modelMeshPartMaterial: modelNode.meshPartMaterials) {
-			MeshPart meshPart = null;
-			Material meshMaterial = null;
-			if(modelMeshPartMaterial.meshPartId != null) {
-				for(MeshPart part: meshParts) {
-					// FIXME need to make sure this is unique by adding mesh id to mesh part id!
-					if(modelMeshPartMaterial.meshPartId.equals(part.id)) {
-						meshPart = part;
-						break;
+		if (modelNode.meshPartMaterials != null) {
+			for(ModelMeshPartMaterial modelMeshPartMaterial: modelNode.meshPartMaterials) {
+				MeshPart meshPart = null;
+				Material meshMaterial = null;
+				if(modelMeshPartMaterial.meshPartId != null) {
+					for(MeshPart part: meshParts) {
+						// FIXME need to make sure this is unique by adding mesh id to mesh part id!
+						if(modelMeshPartMaterial.meshPartId.equals(part.id)) {
+							meshPart = part;
+							break;
+						}
 					}
 				}
-			}
-			if(modelMeshPartMaterial.materialId != null) {
-				for(Material material: materials) {
-					if(modelMeshPartMaterial.materialId.equals(material.id)) {
-						meshMaterial = material;
-						break;
+				if(modelMeshPartMaterial.materialId != null) {
+					for(Material material: materials) {
+						if(modelMeshPartMaterial.materialId.equals(material.id)) {
+							meshMaterial = material;
+							break;
+						}
 					}
 				}
-			}
-			
-			// FIXME what if meshPart is set but meshMaterial isn't and vice versa?
-			if(meshPart != null && meshMaterial != null) {
-				MeshPartMaterial meshPartMaterial = new MeshPartMaterial();
-				meshPartMaterial.meshPart = meshPart;
-				meshPartMaterial.material = meshMaterial;
-				node.meshPartMaterials.add(meshPartMaterial);
+				
+				// FIXME what if meshPart is set but meshMaterial isn't and vice versa?
+				if(meshPart != null && meshMaterial != null) {
+					MeshPartMaterial meshPartMaterial = new MeshPartMaterial();
+					meshPartMaterial.meshPart = meshPart;
+					meshPartMaterial.material = meshMaterial;
+					node.meshPartMaterials.add(meshPartMaterial);
+				}
 			}
 		}
 		
