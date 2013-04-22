@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Camera;
@@ -35,6 +36,14 @@ public class CameraInputController extends InputAdapter {
 	public boolean forwardTarget = true;
 	/** Whether to update the target on scroll */
 	public boolean scrollTarget = false;
+	public int forwardKey = Keys.UP;
+	protected boolean forwardPressed;
+	public int backwardKey = Keys.DOWN;
+	protected boolean backwardPressed;
+	public int rotateRightKey = Keys.RIGHT;
+	protected boolean rotateRightPressed;
+	public int rotateLeftKey = Keys.LEFT;
+	protected boolean rotateLeftPressed;
 	/** The camera. */
 	public Camera camera;
 	/** The current (first) button being pressed. */
@@ -46,6 +55,28 @@ public class CameraInputController extends InputAdapter {
 	
 	public CameraInputController(final Camera camera) {
 		this.camera = camera;
+	}
+	
+	public void update() {
+		if (rotateRightPressed || rotateLeftPressed || forwardPressed || backwardPressed) {
+			final float delta = Gdx.graphics.getDeltaTime();
+			if (rotateRightPressed)
+				camera.rotate(camera.up, -delta * rotateAngle);
+			if (rotateLeftPressed)
+				camera.rotate(camera.up, delta * rotateAngle);
+			if (forwardPressed) {
+				camera.translate(tmpV1.set(camera.direction).scl(delta * translateUnits));
+				if (forwardTarget)
+					target.add(tmpV1);
+			}
+			if (backwardPressed) {
+				camera.translate(tmpV1.set(camera.direction).scl(-delta * translateUnits));
+				if (forwardTarget)
+					target.add(tmpV1);
+			}
+			if (autoUpdate)
+				camera.update();
+		}
 	}
 	
 	@Override
@@ -112,6 +143,14 @@ public class CameraInputController extends InputAdapter {
 	public boolean keyDown (int keycode) {
 		if (keycode == activateKey)
 			activatePressed = true;
+		if (keycode == forwardKey)
+			forwardPressed = true;
+		else if (keycode == backwardKey)
+			backwardPressed = true;
+		else if (keycode == rotateRightKey)
+			rotateRightPressed = true;
+		else if (keycode == rotateLeftKey)
+			rotateLeftPressed = true;
 		return false;
 	}
 	
@@ -121,6 +160,14 @@ public class CameraInputController extends InputAdapter {
 			activatePressed = false;
 			button = -1;
 		}
+		if (keycode == forwardKey)
+			forwardPressed = false;
+		else if (keycode == backwardKey)
+			backwardPressed = false;
+		else if (keycode == rotateRightKey)
+			rotateRightPressed = false;
+		else if (keycode == rotateLeftKey)
+			rotateLeftPressed = false;
 		return false;
 	}
 }
