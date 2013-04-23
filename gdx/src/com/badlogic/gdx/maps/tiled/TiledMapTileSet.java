@@ -52,6 +52,12 @@ public class TiledMapTileSet {
 	}
 	
 	/**
+	 *  Get TiledMapTiles used by this TileSet (in case you don't know the exact ID)
+	 */
+	public Values<TiledMapTile> getTiles() {
+     		return tiles.values();
+	}
+	/**
 	 * Adds or replaces tile with that id
 	 * 
 	 * @param id
