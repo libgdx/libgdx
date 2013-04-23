@@ -1,12 +1,13 @@
 package com.badlogic.gdx.maps.tiled;
 
+import java.util.Iterator;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.utils.IntMap;
 
 /**
  * @brief Set of TiledMapTile instances used to compose a TiledMapLayer
  */
-public class TiledMapTileSet {
+public class TiledMapTileSet implements Iterable<TiledMapTile> {
 	
 	private String name;
 	
@@ -52,11 +53,13 @@ public class TiledMapTileSet {
 	}
 	
 	/**
-	 *  Get TiledMapTiles used by this TileSet (in case you don't know the exact ID)
+	 * @return iterator to tiles in this tileset
 	 */
-	public Values<TiledMapTile> getTiles() {
-     		return tiles.values();
+	@Override
+	public Iterator<TiledMapTile> iterator() {
+		return tiles.values().iterator();
 	}
+	
 	/**
 	 * Adds or replaces tile with that id
 	 * 
