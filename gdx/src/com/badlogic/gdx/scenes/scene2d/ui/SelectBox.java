@@ -134,6 +134,10 @@ public class SelectBox extends Widget {
 		invalidateHierarchy();
 	}
 
+	public String[] getItems () {
+		return items;
+	}
+
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		Drawable background;
