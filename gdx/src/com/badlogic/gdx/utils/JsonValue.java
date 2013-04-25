@@ -545,8 +545,8 @@ public class JsonValue {
 			buffer.append(outputType.quoteValue(object.asString()));
 		} else if (object.isDouble()) {
 			double doubleValue = object.asDouble();
-			long longValue = (int)doubleValue;
-			buffer.append(doubleValue - longValue == 0 ? longValue : object);
+			long longValue = object.asLong();
+			buffer.append(doubleValue == longValue ? longValue : doubleValue);
 		} else if (object.isLong()) {
 			buffer.append(object.asLong());
 		} else if (object.isBoolean()) {
