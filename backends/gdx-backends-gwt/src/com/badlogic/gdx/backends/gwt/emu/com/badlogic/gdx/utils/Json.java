@@ -478,7 +478,7 @@ public class Json {
 			}
 
 			if (value instanceof Map) {
-				if (knownType == null) knownType = ReflectionCache.getType(OrderedMap.class);
+				if (knownType == null) knownType = ReflectionCache.getType(HashMap.class);
 				writeObjectStart(actualType.getClassOfType(), knownType.getClassOfType());
 				for (Map.Entry entry : ((Map<?, ?>)value).entrySet()) {
 					writer.name(convertToString(entry.getKey()));
