@@ -41,6 +41,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gwtref.client.ReflectionCache;
+import com.badlogic.gdx.utils.JsonValue;
 
 /** A skin has a {@link TextureAtlas} and stores resources for UI widgets to use (texture regions, ninepatches, fonts, colors,
  * etc). Resources are named and can be looked up by name and type. Skin provides useful conversions, such as allowing access to
@@ -361,11 +362,11 @@ public class Skin implements Disposable {
 
 		final Json json = new Json() {
 			@Override
-			public <T> T readValue (Class<T> type, Class elementType, Object jsonData) {
+			public <T> T readValue (Class<T> type, Class elementType, JsonValue jsonData) {
 				// If the JSON is a string but the type is not, look up the actual value by name.
-				if (jsonData instanceof String
+				if (jsonData.isString()
 					&& !ReflectionCache.getType(type).isAssignableFrom(ReflectionCache.getType(CharSequence.class)))
-					return get((String)jsonData, type);
+					return get((String)jsonData.asString(), type);
 				return super.readValue(type, elementType, jsonData);
 			}
 		};
@@ -373,7 +374,7 @@ public class Skin implements Disposable {
 		json.setUsePrototypes(false);
 
 		json.setSerializer(Skin.class, new ReadOnlySerializer<Skin>() {
-			public Skin read (Json json, Object jsonData, Class ignored) {
+			public Skin read (Json json, JsonValue jsonData, Class ignored) {
 				ObjectMap<String, ObjectMap> typeToValueMap = (ObjectMap)jsonData;
 				for (Entry<String, ObjectMap> typeEntry : typeToValueMap.entries()) {
 					String className = typeEntry.key;
@@ -403,7 +404,8 @@ public class Skin implements Disposable {
 		});
 
 		json.setSerializer(BitmapFont.class, new ReadOnlySerializer<BitmapFont>() {
-			public BitmapFont read (Json json, Object jsonData, Class type) {
+			@Override
+			public BitmapFont read (Json json, JsonValue jsonData, Class type) {
 				String path = json.readValue("file", String.class, jsonData);
 
 				FileHandle fontFile = skinFile.parent().child(path);
@@ -430,7 +432,7 @@ public class Skin implements Disposable {
 		});
 
 		json.setSerializer(Color.class, new ReadOnlySerializer<Color>() {
-			public Color read (Json json, Object jsonData, Class type) {
+			public Color read (Json json, JsonValue jsonData, Class type) {
 				if (jsonData instanceof String) return get((String)jsonData, Color.class);
 				ObjectMap map = (ObjectMap)jsonData;
 				float r = json.readValue("r", float.class, 0f, jsonData);
@@ -442,7 +444,7 @@ public class Skin implements Disposable {
 		});
 
 		json.setSerializer(TintedDrawable.class, new ReadOnlySerializer() {
-			public Object read (Json json, Object jsonData, Class type) {
+			public Object read (Json json, JsonValue jsonData, Class type) {
 				String name = json.readValue("name", String.class, jsonData);
 				Color color = json.readValue("color", Color.class, jsonData);
 				return newDrawable(name, color);
