@@ -134,7 +134,7 @@ public class JsonValue {
 	public String asString () {
 		if (stringValue != null) return stringValue;
 		if (doubleValue != null) {
-			if (doubleValue == longValue) return Long.toString(longValue);
+			if (doubleValue % 1 == 0) return Long.toString(longValue);
 			return Double.toString(doubleValue);
 		}
 		if (booleanValue != null) return Boolean.toString(booleanValue);
