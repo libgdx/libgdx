@@ -563,15 +563,6 @@ public class JsonValue {
 		return true;
 	}
 
-	static private boolean isFlat (Array array) {
-		for (int i = 0, n = array.size; i < n; i++) {
-			Object value = array.get(i);
-			if (value instanceof ObjectMap) return false;
-			if (value instanceof Array) return false;
-		}
-		return true;
-	}
-
 	static private void indent (int count, StringBuilder buffer) {
 		for (int i = 0; i < count; i++)
 			buffer.append('\t');
