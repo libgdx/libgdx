@@ -128,12 +128,12 @@ public class JsonReader {
 					string(name, value);
 				}
 			}
-			action float {
+			action double {
 				String value = new String(data, s, p - s);
 				s = p;
 				String name = names.size > 0 ? names.pop() : null;
-				if (debug) System.out.println("float: " + name + "=" + Float.parseFloat(value));
-				number(name, Float.parseFloat(value));
+				if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
+				number(name, Double.parseDouble(value));
 			}
 			action long {
 				String value = new String(data, s, p - s);
@@ -183,18 +183,18 @@ public class JsonReader {
 				fret;
 			}
 
-			floatChars = '-'? [0-9]+ '.' [0-9]+? ([eE] [+\-]? [0-9]+)?;
+			doubleChars = '-'? [0-9]+ '.' [0-9]+? ([eE] [+\-]? [0-9]+)?;
 			longChars = '-'? [0-9]+;
 			quotedChars = (^["\\] | ('\\' ["\\/bfnrtu] >needsUnescape))*;
 			unquotedNameChars = [a-zA-Z0-9_$] ^([:}\],] | space)*;
 			unquotedValueChars = [a-zA-Z_$] ^([:}\],] | space)*;
-			name = ('"' quotedChars >buffer %name '"') | unquotedNameChars >buffer %name | floatChars >buffer %name;
+			name = ('"' quotedChars >buffer %name '"') | unquotedNameChars >buffer %name | doubleChars >buffer %name;
 
 			startObject = '{' @startObject;
 			startArray = '[' @startArray;
 			string = '"' quotedChars >buffer %string '"';
 			unquotedString = unquotedValueChars >buffer %string;
-			number = longChars >buffer %long | floatChars >buffer %float $-1;
+			number = longChars >buffer %long | doubleChars >buffer %double $-1;
 			nullValue = 'null' %null;
 			booleanValue = 'true' %trueValue | 'false' %falseValue;
 			value = startObject | startArray | number | string | nullValue | booleanValue | unquotedString $-1;
@@ -268,7 +268,7 @@ public class JsonReader {
 		addChild(name, new JsonValue(value));
 	}
 
-	protected void number (String name, float value) {
+	protected void number (String name, double value) {
 		addChild(name, new JsonValue(value));
 	}
 

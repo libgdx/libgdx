@@ -19,13 +19,13 @@
 
 package com.badlogic.gdx.utils;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.JsonValue.ValueType;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.JsonValue.ValueType;
 
 /** Lightweight JSON parser.<br>
  * <br>
@@ -220,8 +220,8 @@ public class JsonReader {
 									String value = new String(data, s, p - s);
 									s = p;
 									String name = names.size > 0 ? names.pop() : null;
-									if (debug) System.out.println("float: " + name + "=" + Float.parseFloat(value));
-									number(name, Float.parseFloat(value));
+									if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
+									number(name, Double.parseDouble(value));
 								}
 									break;
 								case 5:
@@ -366,8 +366,8 @@ public class JsonReader {
 									String value = new String(data, s, p - s);
 									s = p;
 									String name = names.size > 0 ? names.pop() : null;
-									if (debug) System.out.println("float: " + name + "=" + Float.parseFloat(value));
-									number(name, Float.parseFloat(value));
+									if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
+									number(name, Double.parseDouble(value));
 								}
 									break;
 								case 5:
@@ -610,7 +610,7 @@ public class JsonReader {
 		addChild(name, new JsonValue(value));
 	}
 
-	protected void number (String name, float value) {
+	protected void number (String name, double value) {
 		addChild(name, new JsonValue(value));
 	}
 
