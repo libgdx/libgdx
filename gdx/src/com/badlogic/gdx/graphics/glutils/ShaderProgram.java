@@ -598,6 +598,20 @@ public class ShaderProgram implements Disposable {
 	 * @param name the name of the uniform
 	 * @param buffer buffer containing the matrix data
 	 * @param transpose whether the uniform matrix should be transposed */
+	public void setUniformMatrix3fv (String name, FloatBuffer buffer, int count, boolean transpose) {
+		GL20 gl = Gdx.graphics.getGL20();
+		checkManaged();
+		buffer.position(0);
+		int location = fetchUniformLocation(name);
+		gl.glUniformMatrix3fv(location, count, transpose, buffer);
+	}
+
+	/** Sets an array of uniform matrices with the given name. Throws an IllegalArgumentException in case it is not called in between a
+	 * {@link #begin()}/{@link #end()} block.
+	 * 
+	 * @param name the name of the uniform
+	 * @param buffer buffer containing the matrix data
+	 * @param transpose whether the uniform matrix should be transposed */
 	public void setUniformMatrix4fv (String name, FloatBuffer buffer, int count, boolean transpose) {
 		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged();
