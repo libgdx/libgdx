@@ -86,6 +86,10 @@ public class JsonWriter extends Writer {
 	}
 
 	public JsonWriter value (Object value) throws IOException {
+		if (value instanceof Number) {
+			Number number = (Number)value;
+			if (number.doubleValue() % 1 == 0) value = number.longValue();
+		}
 		if (current != null) {
 			if (current.array) {
 				if (!current.needsComma)

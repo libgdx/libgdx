@@ -25,20 +25,20 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.JsonValue.ValueType;
 
 /** Lightweight JSON parser.<br>
  * <br>
- * The default behavior is to parse the JSON into a DOM made up of {@link OrderedMap}, {@link Array}, String, Float, Long, and
- * Boolean objects. Extend this class and override methods to perform event driven parsing. When this is done, the parse methods
- * will return null.
+ * The default behavior is to parse the JSON into a DOM containing {@link JsonValue} objects. Extend this class and override
+ * methods to perform event driven parsing. When this is done, the parse methods will return null.
  * @author Nathan Sweet */
 public class JsonReader {
-	public Object parse (String json) {
+	public JsonValue parse (String json) {
 		char[] data = json.toCharArray();
 		return parse(data, 0, data.length);
 	}
 
-	public Object parse (Reader reader) {
+	public JsonValue parse (Reader reader) {
 		try {
 			char[] data = new char[1024];
 			int offset = 0;
@@ -63,7 +63,7 @@ public class JsonReader {
 		}
 	}
 
-	public Object parse (InputStream input) {
+	public JsonValue parse (InputStream input) {
 		try {
 			return parse(new InputStreamReader(input, "ISO-8859-1"));
 		} catch (IOException ex) {
@@ -71,7 +71,7 @@ public class JsonReader {
 		}
 	}
 
-	public Object parse (FileHandle file) {
+	public JsonValue parse (FileHandle file) {
 		try {
 			return parse(file.read());
 		} catch (Exception ex) {
@@ -79,7 +79,7 @@ public class JsonReader {
 		}
 	}
 
-	public Object parse (char[] data, int offset, int length) {
+	public JsonValue parse (char[] data, int offset, int length) {
 		int cs, p = offset, pe = length, eof = pe, top = 0;
 		int[] stack = new int[4];
 
@@ -431,14 +431,14 @@ public class JsonReader {
 			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: " + new String(data, p, pe - p),
 				parseRuntimeEx);
 		} else if (elements.size != 0) {
-			Object element = elements.peek();
+			JsonValue element = elements.peek();
 			elements.clear();
-			if (element instanceof OrderedMap)
+			if (element != null && element.isObject())
 				throw new SerializationException("Error parsing JSON, unmatched brace.");
 			else
 				throw new SerializationException("Error parsing JSON, unmatched bracket.");
 		}
-		Object root = this.root;
+		JsonValue root = this.root;
 		this.root = null;
 		return root;
 	}
@@ -576,28 +576,27 @@ public class JsonReader {
 
 	// line 236 "JsonReader.rl"
 
-	private final Array elements = new Array(8);
-	private Object root, current;
+	private final Array<JsonValue> elements = new Array(8);
+	private JsonValue root, current;
 
-	private void set (String name, Object value) {
-		if (current instanceof OrderedMap)
-			((OrderedMap)current).put(name, value);
-		else if (current instanceof Array)
-			((Array)current).add(value);
+	private void addChild (String name, JsonValue child) {
+		child.setName(name);
+		if (current.isArray() || current.isObject())
+			current.addChild(child);
 		else
-			root = value;
+			root = current;
 	}
 
 	protected void startObject (String name) {
-		OrderedMap value = new OrderedMap();
-		if (current != null) set(name, value);
+		JsonValue value = new JsonValue(ValueType.object);
+		if (current != null) addChild(name, value);
 		elements.add(value);
 		current = value;
 	}
 
 	protected void startArray (String name) {
-		Array value = new Array();
-		if (current != null) set(name, value);
+		JsonValue value = new JsonValue(ValueType.array);
+		if (current != null) addChild(name, value);
 		elements.add(value);
 		current = value;
 	}
@@ -608,19 +607,19 @@ public class JsonReader {
 	}
 
 	protected void string (String name, String value) {
-		set(name, value);
+		addChild(name, new JsonValue(value));
 	}
 
 	protected void number (String name, float value) {
-		set(name, value);
+		addChild(name, new JsonValue(value));
 	}
 
 	protected void number (String name, long value) {
-		set(name, value);
+		addChild(name, new JsonValue(value));
 	}
 
 	protected void bool (String name, boolean value) {
-		set(name, value);
+		addChild(name, new JsonValue(value));
 	}
 
 	private String unescape (String value) {
