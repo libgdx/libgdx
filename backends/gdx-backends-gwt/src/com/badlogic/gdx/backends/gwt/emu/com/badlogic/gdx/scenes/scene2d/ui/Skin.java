@@ -393,7 +393,7 @@ public class Skin implements Disposable {
 					try {
 						add(valueEntry.name(), object, addType);
 					} catch (Exception ex) {
-						throw new SerializationException("Error reading " + type.getSimpleName() + ": " + valueEntry.name(), ex);
+						throw new SerializationException("Error reading " + type.getName() + ": " + valueEntry.name(), ex);
 					}
 				}
 			}
