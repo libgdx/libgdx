@@ -14,13 +14,13 @@ import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
-import com.badlogic.gdx.graphics.g3d.model.MeshPartMaterial;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPart;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPartMaterial;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
@@ -107,8 +107,8 @@ public class Model implements Disposable {
 		if (modelNode.scale != null)
 			node.scale.set(modelNode.scale);
 		// FIXME create temporary maps for faster lookup?
-		if (modelNode.meshPartMaterials != null) {
-			for(ModelMeshPartMaterial modelMeshPartMaterial: modelNode.meshPartMaterials) {
+		if (modelNode.parts != null) {
+			for(ModelNodePart modelMeshPartMaterial: modelNode.parts) {
 				MeshPart meshPart = null;
 				Material meshMaterial = null;
 				if(modelMeshPartMaterial.meshPartId != null) {
@@ -131,10 +131,10 @@ public class Model implements Disposable {
 				
 				// FIXME what if meshPart is set but meshMaterial isn't and vice versa?
 				if(meshPart != null && meshMaterial != null) {
-					MeshPartMaterial meshPartMaterial = new MeshPartMaterial();
+					NodePart meshPartMaterial = new NodePart();
 					meshPartMaterial.meshPart = meshPart;
 					meshPartMaterial.material = meshMaterial;
-					node.meshPartMaterials.add(meshPartMaterial);
+					node.parts.add(meshPartMaterial);
 				}
 			}
 		}

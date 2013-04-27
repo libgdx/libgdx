@@ -10,6 +10,6 @@ public class ModelNode {
 	public Quaternion rotation;
 	public Vector3 scale;
 	public String meshId;
-	public ModelMeshPartMaterial[] meshPartMaterials;
+	public ModelNodePart[] parts;
 	public ModelNode[] children;
 }

@@ -35,7 +35,7 @@ public class Node {
 	/** the world transform, product of local transform and transform of the parent node, calculated via {@link #calculateWorldTransform()}**/
 	public final Matrix4 worldTransform = new Matrix4();
 	
-	public Array<MeshPartMaterial> meshPartMaterials = new Array<MeshPartMaterial>(2);
+	public Array<NodePart> parts = new Array<NodePart>(2);
 	
 	/**
 	 * Calculates the local transform based on the translation, scale and rotation

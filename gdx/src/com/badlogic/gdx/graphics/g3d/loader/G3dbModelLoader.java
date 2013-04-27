@@ -17,7 +17,7 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial.MaterialType;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPart;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPartMaterial;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
 import com.badlogic.gdx.math.Quaternion;
@@ -137,7 +137,7 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		long cnt = 0;
 		ModelNode node = new ModelNode();
 		Array<ModelNode> children = new Array<ModelNode>();
-		Array<ModelMeshPartMaterial> parts = new Array<ModelMeshPartMaterial>();
+		Array<ModelNodePart> parts = new Array<ModelNodePart>();
 		result.nodes.add(node);
 		while ((din.available() > 0) && (cnt < length)) {
 			final byte type = din.readByte();
@@ -170,15 +170,15 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				node.children[i] = children.get(i);
 		}
 		if (parts.size > 0) {
-			node.meshPartMaterials = new ModelMeshPartMaterial[parts.size];
+			node.parts = new ModelNodePart[parts.size];
 			for (int i = 0; i < parts.size; i++)
-				node.meshPartMaterials[i] = parts.get(i);
+				node.parts[i] = parts.get(i);
 		}
 		return node;
 	}
 	
-	private ModelMeshPartMaterial readMeshPartMaterial(final long length) throws IOException {
-		final ModelMeshPartMaterial part = new ModelMeshPartMaterial();
+	private ModelNodePart readMeshPartMaterial(final long length) throws IOException {
+		final ModelNodePart part = new ModelNodePart();
 		long cnt = 0;
 		while((din.available() > 0) && (cnt < length)) {
 			final byte type = din.readByte();
