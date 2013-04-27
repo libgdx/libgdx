@@ -10,9 +10,9 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
-import com.badlogic.gdx.graphics.g3d.model.MeshPartMaterial;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPartMaterial;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -119,7 +119,7 @@ public class ModelBuilder {
 	public void part(final MeshPart meshpart, final Material material) {
 		if (node == null)
 			node();
-		node.meshPartMaterials.add(new MeshPartMaterial(meshpart, material));
+		node.parts.add(new NodePart(meshpart, material));
 	}
 	
 	/** Adds the specified mesh part to the current node.
@@ -263,6 +263,8 @@ public class ModelBuilder {
 		return end();
 	}
 	
+	/** Resets the references to materials, meshes and meshparts within the model to the ones used within it's nodes.
+	 * This will make the model responsible for disposing all referenced meshes. */ 
 	public static void rebuildReferences(final Model model) {
 		model.materials.clear();
 		model.meshes.clear();
@@ -272,7 +274,7 @@ public class ModelBuilder {
 	}
 	
 	private static void rebuildReferences(final Model model, final Node node) {
-		for (final MeshPartMaterial mpm : node.meshPartMaterials) {
+		for (final NodePart mpm : node.parts) {
 			if (!model.materials.contains(mpm.material, true))
 				model.materials.add(mpm.material);
 			if (!model.meshParts.contains(mpm.meshPart, true)) {
@@ -301,12 +303,12 @@ public class ModelBuilder {
 		meshPart.primitiveType = primitiveType;
 		meshPart.mesh = mesh;
 
-		MeshPartMaterial partMaterial = new MeshPartMaterial();
+		NodePart partMaterial = new NodePart();
 		partMaterial.material = material;
 		partMaterial.meshPart = meshPart;
 		Node node = new Node();
 		node.id = "node1";
-		node.meshPartMaterials.add(partMaterial);
+		node.parts.add(partMaterial);
 		
 		result.meshes.add(mesh);
 		result.materials.add(material);

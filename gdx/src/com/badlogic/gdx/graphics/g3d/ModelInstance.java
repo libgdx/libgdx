@@ -3,7 +3,7 @@ package com.badlogic.gdx.graphics.g3d;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
-import com.badlogic.gdx.graphics.g3d.model.MeshPartMaterial;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -30,10 +30,12 @@ public class ModelInstance implements RenderableProvider {
 	public final Matrix4 transform; // FIXME does this have to be final?
 	/** a copy of the materials of the original model **/
 	public final Array<Material> materials = new Array<Material>();
-	/** a copy of the nodes of the original model, referencing the copied materials in their {@link MeshPartMaterial} instances **/
+	/** a copy of the nodes of the original model, referencing the copied materials in their {@link NodePart} instances **/
 	public final Array<Node> nodes = new Array<Node>();
 	/** a copy of the animations of the original model **/
 	public final Array<Animation> animations = new Array<Animation>();
+	/** user definable value, which is passed to the shader. */
+	public Object userData;
 
 	/** Constructs a new ModelInstance with all nodes and materials of the given model. */
 	public ModelInstance(Model model) {
@@ -142,8 +144,8 @@ public class ModelInstance implements RenderableProvider {
 		copy.scale.set(node.scale);
 		copy.localTransform.set(node.localTransform);
 		copy.worldTransform.set(node.worldTransform);
-		for(MeshPartMaterial meshPart: node.meshPartMaterials) {
-			copy.meshPartMaterials.add(copyMeshPart(meshPart));
+		for(NodePart meshPart: node.parts) {
+			copy.parts.add(copyMeshPart(meshPart));
 		}
 		for(Node child: node.children) {
 			copy.children.add(copyNode(copy, child));
@@ -151,8 +153,8 @@ public class ModelInstance implements RenderableProvider {
 		return copy;
 	}
 	
-	private MeshPartMaterial copyMeshPart (MeshPartMaterial meshPart) {
-		MeshPartMaterial copy = new MeshPartMaterial();
+	private NodePart copyMeshPart (NodePart meshPart) {
+		NodePart copy = new NodePart();
 		copy.meshPart = new MeshPart();
 		copy.meshPart.id = meshPart.meshPart.id;
 		copy.meshPart.indexOffset = meshPart.meshPart.indexOffset;
@@ -194,7 +196,7 @@ public class ModelInstance implements RenderableProvider {
 	}
 	
 	protected void calculateBoundingBox(final BoundingBox out, final Node node) {
-		for (final MeshPartMaterial mpm : node.meshPartMaterials)
+		for (final NodePart mpm : node.parts)
 			mpm.meshPart.mesh.calculateBoundingBox(out, mpm.meshPart.indexOffset, mpm.meshPart.numVertices);
 		for (final Node child : node.children)
 			calculateBoundingBox(out, child);
@@ -215,8 +217,8 @@ public class ModelInstance implements RenderableProvider {
 	}
 	
 	private void getRenderables(Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
-		if(node.meshPartMaterials.size > 0) {
-			for(MeshPartMaterial meshPart: node.meshPartMaterials) {
+		if(node.parts.size > 0) {
+			for(NodePart meshPart: node.parts) {
 				Renderable renderable = pool.obtain();
 				renderable.material = meshPart.material;
 				renderable.mesh = meshPart.meshPart.mesh;
@@ -224,6 +226,7 @@ public class ModelInstance implements RenderableProvider {
 				renderable.meshPartSize = meshPart.meshPart.numVertices;
 				renderable.primitiveType = meshPart.meshPart.primitiveType;
 				renderable.transform.set(transform).mul(node.worldTransform);
+				renderable.userData = userData;
 				renderables.add(renderable);
 			}
 		}
