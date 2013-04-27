@@ -170,7 +170,7 @@ public class JsonModelLoader {
 			} else if(attr.equals("BLENDWEIGHTS")) {
 				vertexAttributes.add(VertexAttribute.BoneWeights(4));
 			} else if(attr.equals("COLOR")) {
-				vertexAttributes.add(VertexAttribute.Color());
+				vertexAttributes.add(VertexAttribute.ColorUnpacked());
 			} else {
 				throw new GdxRuntimeException("Unknown vertex attribuet '" + attr + "', should be one of position, normal, uv, tangent or binormal");
 			}
