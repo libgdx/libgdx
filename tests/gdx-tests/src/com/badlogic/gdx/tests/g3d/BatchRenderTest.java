@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.lights.PointLight;
-import com.badlogic.gdx.graphics.g3d.loader.JsonModelLoader;
+import com.badlogic.gdx.graphics.g3d.loader.G3djModelLoader;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
@@ -49,7 +49,7 @@ public class BatchRenderTest extends GdxTest {
 	
 	@Override
 	public void create () {
-		final JsonModelLoader loader = new JsonModelLoader();
+		final G3djModelLoader loader = new G3djModelLoader();
 
 		// need more higher resolution textures for this test...
 		String[] TEXTURES = {"data/badlogic.jpg", "data/egg.png", "data/particle-fire.png", "data/planet_earth.png", "data/planet_heavyclouds.jpg",
