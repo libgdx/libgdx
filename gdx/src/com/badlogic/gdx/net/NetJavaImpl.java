@@ -36,7 +36,11 @@ public class NetJavaImpl {
 
 		public HttpClientResponse (HttpURLConnection connection) throws IOException {
 			this.connection = connection;
-			this.inputStream = connection.getInputStream();
+			try {
+				this.inputStream = connection.getInputStream();
+			} catch (IOException e) {
+				this.inputStream = connection.getErrorStream();
+			}
 
 			try {
 				this.status = new HttpStatus(connection.getResponseCode());
