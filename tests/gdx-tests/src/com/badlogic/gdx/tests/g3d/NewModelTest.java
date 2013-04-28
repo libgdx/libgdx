@@ -16,7 +16,7 @@ import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.loader.G3dbModelLoader;
-import com.badlogic.gdx.graphics.g3d.loader.JsonModelLoader;
+import com.badlogic.gdx.graphics.g3d.loader.G3djModelLoader;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;

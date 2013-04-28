@@ -6,7 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.loader.JsonModelLoader;
+import com.badlogic.gdx.graphics.g3d.loader.G3djModelLoader;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
@@ -50,19 +50,5 @@ public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extend
 		final Model result = new Model(data, new TextureProvider.AssetTextureProvider(manager));
 		data = null;
 		return result;
-	}
-	
-	public static class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
-		private JsonModelLoader loader;
-		public G3djModelLoader (FileHandleResolver resolver) {
-			super(resolver);
-		}
-
-		@Override
-		protected ModelData loadModelData (FileHandle fileHandle, AssetLoaderParameters<Model> parameters) {
-			if (loader == null)
-				loader = new JsonModelLoader();
-			return loader.parseModel(fileHandle);
-		}
 	}
 }
