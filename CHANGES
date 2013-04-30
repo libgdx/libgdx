@@ -1,4 +1,5 @@
 [0.9.9]
+- Updated to LWJGL 2.9.0
 - Updated Box2D to the latest trunk. Body#applyXXX methods now take an additional boolean parameter.
 - TmxMapLoader has a flag in Parameters that lets you specify whether to generate mipmaps
 - Animation#isAnimationFinished was fixed to behave as per javadocs (ignores looping)
