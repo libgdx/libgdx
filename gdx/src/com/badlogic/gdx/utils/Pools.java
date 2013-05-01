@@ -41,8 +41,7 @@ public class Pools {
 	static public void free (Object object) {
 		if (object == null) throw new IllegalArgumentException("object cannot be null.");
 		ReflectionPool pool = typePools.get(object.getClass());
-		if (pool == null)
-			throw new IllegalArgumentException("No objects have been obtained of type: " + object.getClass().getName());
+		if (pool == null) return; // Ignore freeing an object that was never retained.
 		pool.free(object);
 	}
 
@@ -52,8 +51,7 @@ public class Pools {
 		for (int i = 0, n = objects.size; i < n; i++) {
 			Object object = objects.get(i);
 			ReflectionPool pool = typePools.get(object.getClass());
-			if (pool == null)
-				throw new IllegalArgumentException("No objects have been obtained of type: " + object.getClass().getName());
+			if (pool == null) return; // Ignore freeing an object that was never retained.
 			pool.free(object);
 		}
 	}
