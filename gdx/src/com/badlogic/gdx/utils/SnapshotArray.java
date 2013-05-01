@@ -56,8 +56,8 @@ public class SnapshotArray<T> extends Array<T> {
 		super(ordered, capacity);
 	}
 
-	public SnapshotArray (boolean ordered, T[] array) {
-		super(ordered, array);
+	public SnapshotArray (boolean ordered, T[] array, int startIndex, int count) {
+		super(ordered, array, startIndex, count);
 	}
 
 	public SnapshotArray (Class<T> arrayType) {
