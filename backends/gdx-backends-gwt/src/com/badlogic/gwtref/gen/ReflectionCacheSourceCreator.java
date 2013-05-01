@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.badlogic.gdx.utils.GdxReflect;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.TreeLogger.Type;
@@ -227,7 +228,8 @@ public class ReflectionCacheSourceCreator {
 			|| name.contains("java.lang.Double") || name.contains("java.lang.CharSequence") || name.contains("java.lang.Object") || !name
 				.contains(".")
 			|| name.contains("com.badlogic.gdx.math")
-			|| name.contains("com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute"))) {
+			|| name.contains("com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute")
+			|| (type.isClassOrInterface() != null && type.isClassOrInterface().getAnnotation(GdxReflect.class) != null))) {
 			nesting--;
 			return;
 		}
@@ -548,6 +550,8 @@ public class ReflectionCacheSourceCreator {
 
 	private void invokeM () {
 		p("public Object invoke(Method m, Object obj, Object[] params) {");
+		int subN = 0;
+		int nDispatch = 0;
 		for (MethodStub stub : methodStubs) {
 			if (stub.enclosingType == null) continue;
 			if (stub.enclosingType.contains("[]")) continue;
@@ -573,6 +577,14 @@ public class ReflectionCacheSourceCreator {
 				pn(");");
 			}
 			p("   }");
+			nDispatch++;
+			if (nDispatch > 1000) {
+				subN++;
+				p("   return invoke" + subN + "(m, obj, params);");
+				p("}");
+				p("public Object invoke" + subN + "(Method m, Object obj, Object[] params) {");
+				nDispatch = 0;
+			}
 		}
 
 		p("   return null;");

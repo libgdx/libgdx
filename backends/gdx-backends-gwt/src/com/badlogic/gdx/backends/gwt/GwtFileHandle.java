@@ -310,7 +310,10 @@ public class GwtFileHandle extends FileHandle {
 	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the child
 	 *        doesn't exist. */
 	public FileHandle child (String name) {
-		return new GwtFileHandle(preloader, file + (file.endsWith("/") ? "" : "/") + name, FileType.Internal);
+		if (file.isEmpty())
+			return new GwtFileHandle(preloader, name, FileType.Internal);
+		else
+			return new GwtFileHandle(preloader, file + (file.endsWith("/") ? "" : "/") + name, FileType.Internal);
 	}
 
 	public FileHandle parent () {
