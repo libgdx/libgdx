@@ -94,7 +94,7 @@ public class ReflectionCacheSourceCreator {
 		if (printWriter == null) {
 			return packageName + "." + simpleName;
 		}
-		sw = composer.createSourceWriter(context, printWriter);		
+		sw = composer.createSourceWriter(context, printWriter);
 
 		generateLookups();
 
@@ -222,13 +222,10 @@ public class ReflectionCacheSourceCreator {
 		try {
 			ConfigurationProperty prop;
 			keep |= !name.contains(".");
-			prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.classes");
+			prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.include");
 			for (String s : prop.getValues())
 				keep |= name.contains(s);
-			prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.packages");
-			for (String s : prop.getValues())
-				keep |= name.contains(s);
-			prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.classes.exclude");
+			prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.exclude");
 			for (String s : prop.getValues())
 				keep &= !name.equals(s);
 		} catch (BadPropertyValueException e) {
