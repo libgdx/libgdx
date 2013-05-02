@@ -22,7 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.badlogic.gdx.utils.GdxReflect;
+import com.google.gwt.core.ext.BadPropertyValueException;
+import com.google.gwt.core.ext.ConfigurationProperty;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.TreeLogger.Type;
@@ -215,21 +216,26 @@ public class ReflectionCacheSourceCreator {
 			return;
 		}
 
-		// java base class
+		// filter reflection scope based on configuration in gwt xml module
+		boolean keep = false;
 		String name = type.getQualifiedSourceName();
-		if (!(name.contains("com.badlogic.gdx.scenes.scene2d") || name.contains("com.badlogic.gdx.graphics.g2d.TextureRegion")
-			|| name.contains("com.badlogic.gdx.graphics.g2d.BitmapFont") || name.contains("com.badlogic.gdx.graphics.g2d.NinePatch")
-			|| name.contains("com.badlogic.gdx.graphics.Color") || name.contains("com.badlogic.gdx.utils.Array")
-			|| name.contains("com.badlogic.gdx.utils.ObjectMap") || name.contains("com.badlogic.gdx.utils.OrderedMap")
-			|| name.contains("com.badlogic.gdx.utils.Disposable") || name.contains("java.util.ArrayList")
-			|| name.contains("java.util.Map") || name.contains("java.util.HashMap") || name.contains("java.lang.String")
-			|| name.contains("java.lang.Boolean") || name.contains("java.lang.Byte") || name.contains("java.lang.Short")
-			|| name.contains("java.lang.Character") || name.contains("java.lang.Integer") || name.contains("java.lang.Float")
-			|| name.contains("java.lang.Double") || name.contains("java.lang.CharSequence") || name.contains("java.lang.Object") || !name
-				.contains(".")
-			|| name.contains("com.badlogic.gdx.math")
-			|| name.contains("com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute")
-			|| (type.isClassOrInterface() != null && type.isClassOrInterface().getAnnotation(GdxReflect.class) != null))) {
+		try {
+			ConfigurationProperty prop;
+			keep |= !name.contains(".");
+			prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.classes");
+			for (String s : prop.getValues())
+				keep |= name.contains(s);
+			prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.packages");
+			for (String s : prop.getValues())
+				keep |= name.contains(s);
+			prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.classes.exclude");
+			for (String s : prop.getValues())
+				keep &= !name.equals(s);
+		} catch (BadPropertyValueException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (!keep) {
 			nesting--;
 			return;
 		}
