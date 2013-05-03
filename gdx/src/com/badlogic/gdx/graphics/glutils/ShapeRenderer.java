@@ -591,7 +591,7 @@ public class ShapeRenderer {
 	}
 	
 	public void circle(float x, float y, float radius, int segments){
-		if (segments <= 0) throw new IllegalArgumentException("segments must be >= 0.");
+		if (segments <= 0) throw new IllegalArgumentException("segments must be > 0.");
 		if (currType != ShapeType.Filled && currType != ShapeType.Line) 
 			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
 		checkDirty();
