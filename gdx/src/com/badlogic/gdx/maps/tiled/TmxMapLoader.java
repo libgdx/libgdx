@@ -702,7 +702,6 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 				result = result += "/" + token;
 			}
 		}
-		System.out.println(result);
 		return result;
 	}
 
