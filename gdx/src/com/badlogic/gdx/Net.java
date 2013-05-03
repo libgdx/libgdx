@@ -80,11 +80,15 @@ public interface Net {
 	 * <ul>
 	 * <li>GET</li>
 	 * <li>POST</li>
+	 * <li>PUT</li>
+	 * <li>DELETE</li>
 	 * </ul> */
 	public static interface HttpMethods {
 
 		public static final String GET = "GET";
 		public static final String POST = "POST";
+		public static final String PUT = "PUT";
+		public static final String DELETE = "DELETE";
 
 	}
 
