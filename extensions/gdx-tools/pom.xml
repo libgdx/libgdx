@@ -12,6 +12,10 @@
   <packaging>jar</packaging>
   <name>libGDX Tools</name>
 
+  <properties>
+    <particleClass>com.badlogic.gdx.tools.particleeditor.ParticleEditor</particleClass>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -49,10 +53,24 @@
       <version>3.0.9</version>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>com.badlogic.gdx</groupId>
+      <artifactId>gdx-platform</artifactId>
+      <version>${project.version}</version>
+      <classifier>natives-desktop</classifier>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>assets</directory>
+      </resource>
+    </resources>
+
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -95,6 +113,50 @@
           </execution>
         </executions>
       </plugin>
+      <!-- unpack natives when running particle editor -->
+      <plugin>
+        <groupId>com.googlecode.mavennatives</groupId>
+        <artifactId>maven-nativedependencies-plugin</artifactId>
+        <version>0.0.6</version>
+        <executions>
+          <execution>
+            <id>unpacknatives</id>
+            <phase>test-compile</phase>
+            <goals><goal>copy</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <!-- allows one to run the particle editor via: mvn test -Pparticles -->
+    <profile>
+      <id>particles</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <phase>test</phase>
+                <configuration>
+                  <target>
+                    <java fork="true" classname="${particleClass}"
+                          classpathref="maven.test.classpath">
+                      <sysproperty key="java.library.path" value="target/natives"/>
+                    </java>
+                  </target>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
