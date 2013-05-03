@@ -98,6 +98,10 @@ public class PolygonShape extends Shape {
 	public void setAsBox (float hx, float hy, Vector2 center, float angle) {
 		jniSetAsBox(addr, hx, hy, center.x, center.y, angle);
 	}
+	
+	public void setAsBox (float hx, float hy, float centerX, float centerY, float angle) {
+		jniSetAsBox(addr, hx, hy, centerX, centerY, angle);
+	}
 
 	private native void jniSetAsBox (long addr, float hx, float hy, float centerX, float centerY, float angle); /*
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
