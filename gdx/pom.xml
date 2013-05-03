@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.badlogic.gdx</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>gdx-parent</artifactId>
     <version>0.9.9-SNAPSHOT</version>
   </parent>
 

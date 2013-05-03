@@ -8,7 +8,7 @@
   </parent>
 
   <groupId>com.badlogic.gdx</groupId>
-  <artifactId>parent</artifactId>
+  <artifactId>gdx-parent</artifactId>
   <packaging>pom</packaging>
   <version>0.9.9-SNAPSHOT</version>
 
