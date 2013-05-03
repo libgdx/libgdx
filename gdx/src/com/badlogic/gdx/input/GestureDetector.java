@@ -130,12 +130,13 @@ public class GestureDetector extends InputAdapter {
 		if (pointer > 1) return false;
 		if (longPressFired) return false;
 
+		if (pointer == 0)
+			pointer1.set(x, y);
+		else
+			pointer2.set(x, y);
+
 		// handle pinch zoom
 		if (pinching) {
-			if (pointer == 0)
-				pointer1.set(x, y);
-			else
-				pointer2.set(x, y);
 			if (listener != null) {
 				boolean result = listener.pinch(initialPointer1, initialPointer2, pointer1, pointer2);
 				return listener.zoom(initialPointer1.dst(initialPointer2), pointer1.dst(pointer2)) || result;

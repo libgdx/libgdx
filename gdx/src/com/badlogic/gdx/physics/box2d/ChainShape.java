@@ -64,6 +64,13 @@ public class ChainShape extends Shape {
 	*/
 
 	/** Create a chain with isolated end vertices.
+	 * @param vertices an array of floats of alternating x, y coordinates. */
+	public void createChain (float[] vertices) {
+		jniCreateChain(addr, vertices, vertices.length / 2);
+		isLooped = false;
+	}
+	
+	/** Create a chain with isolated end vertices.
 	 * @param vertices an array of vertices, these are copied */
 	public void createChain (Vector2[] vertices) {
 		float[] verts = new float[vertices.length * 2];
@@ -71,8 +78,7 @@ public class ChainShape extends Shape {
 			verts[i] = vertices[j].x;
 			verts[i + 1] = vertices[j].y;
 		}
-		jniCreateChain(addr, verts, verts.length / 2);
-		isLooped = false;
+		createChain(verts);
 	}
 
 	private native void jniCreateChain (long addr, float[] verts, int numVertices); /*
