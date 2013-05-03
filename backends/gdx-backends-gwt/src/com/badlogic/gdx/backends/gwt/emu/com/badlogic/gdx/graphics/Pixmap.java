@@ -173,10 +173,10 @@ public class Pixmap implements Disposable {
 	/** Sets the color for the following drawing operations
 	 * @param color the color, encoded as RGBA8888 */
 	public void setColor (int color) {
-		a = ((color >>> 24) & 0xff) / 255f;
-		r = (color >>> 16) & 0xff;
-		g = (color >>> 8) & 0xff;
-		b = (color & 0xff);
+		r = (color >>> 24) & 0xff;
+		g = (color >>> 16) & 0xff;
+		b = (color >>> 8) & 0xff;
+		a = (color & 0xff) / 255f;
 		this.color = make(r, g, b, a);
 		context.setFillStyle(this.color);
 		context.setStrokeStyle(this.color);

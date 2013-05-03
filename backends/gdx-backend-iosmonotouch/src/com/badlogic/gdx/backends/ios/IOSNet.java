@@ -149,7 +149,7 @@ public class IOSNet implements Net {
 						webHeaderCollection.Add(key, headers.get(key));
 					httpWebRequest.set_Headers(webHeaderCollection);
 
-					if (method.equalsIgnoreCase(HttpMethods.POST)) {
+					if (method.equalsIgnoreCase(HttpMethods.POST) || method.equalsIgnoreCase(HttpMethods.PUT)) {
 						InputStream contentAsStream = httpRequest.getContentStream();
 						String contentAsString = httpRequest.getContent();
 

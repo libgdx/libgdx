@@ -36,7 +36,11 @@ public class NetJavaImpl {
 
 		public HttpClientResponse (HttpURLConnection connection) throws IOException {
 			this.connection = connection;
-			this.inputStream = connection.getInputStream();
+			try {
+				this.inputStream = connection.getInputStream();
+			} catch (IOException e) {
+				this.inputStream = connection.getErrorStream();
+			}
 
 			try {
 				this.status = new HttpStatus(connection.getResponseCode());
@@ -117,7 +121,8 @@ public class NetJavaImpl {
 
 			final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			// should be enabled to upload data.
-			connection.setDoOutput(method.equalsIgnoreCase(HttpMethods.POST));
+			final boolean doingOutPut = method.equalsIgnoreCase(HttpMethods.POST) || method.equalsIgnoreCase(HttpMethods.PUT); 
+			connection.setDoOutput(doingOutPut);
 			connection.setDoInput(true);
 			connection.setRequestMethod(method);
 
@@ -136,8 +141,8 @@ public class NetJavaImpl {
 				public void run () {
 					try {
 
-						// Set the content for POST (GET has the information embedded in the URL)
-						if (method.equalsIgnoreCase(HttpMethods.POST)) {
+						// Set the content for POST and PUT (GET has the information embedded in the URL)
+						if (doingOutPut) {
 							// we probably need to use the content as stream here instead of using it as a string.
 							String contentAsString = httpRequest.getContent();
 							InputStream contentAsStream = httpRequest.getContentStream();
