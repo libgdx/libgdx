@@ -374,6 +374,86 @@ public class ShapeRenderer {
 		}
 	}
 	
+	/** Draws a rectangle in the x/y plane rotated about (cx, cy). The x and y coordinate specify the
+	 * bottom left corner of the rectangle. The {@link ShapeType} passed to begin has to be
+	 * {@link ShapeType#Filled} or {@link ShapeType#Line}.
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param cx  local rotation center x-coordinate with respect to the bottom left corner.
+	 * @param cy  local rotation center y-coordinate with respect to the bottom left corner.
+	 * @param angle  rotated angle in radians */
+	public void rect(float x, float y, float width, float height, float cx, float cy, float angle){
+		if (currType != ShapeType.Filled && currType != ShapeType.Line)
+			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
+
+		checkDirty();
+		checkFlush(8);
+
+		// Corner coordinates with respect to the rotation center.
+		float cBLX = -cx;
+		float cBLY = -cy;
+		float cBRX = width - cx;
+		float cBRY = cBLY;
+		float cTLX = cBLX;
+		float cTLY = height - cy;
+		float cTRX = cBRX;
+		float cTRY = cTLY;
+		// Global rotation center coordinates.
+		float centerX = x + cx;
+		float centerY = y + cy;
+		// Precalculate sin and cos.
+		float cos = MathUtils.cos(angle);
+		float sin = MathUtils.sin(angle);
+		// Global rotated corner coordinates.
+		float rBLX = centerX + cos * cBLX - sin * cBLY;
+		float rBLY = centerY + sin * cBLX + cos * cBLY;
+		float rBRX = centerX + cos * cBRX - sin * cBRY;
+		float rBRY = centerY + sin * cBRX + cos * cBRY;
+		float rTLX = centerX + cos * cTLX - sin * cTLY;
+		float rTLY = centerY + sin * cTLX + cos * cTLY;
+		float rTRX = centerX + cos * cTRX - sin * cTRY;
+		float rTRY = centerY + sin * cTRX + cos * cTRY;
+
+		if(currType == ShapeType.Line){
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(rBLX, rBLY, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(rBRX, rBRY, 0);
+
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(rBRX, rBRY, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(rTRX, rTRY, 0);
+
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(rTRX, rTRY, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(rTLX, rTLY, 0);
+
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(rTLX, rTLY, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(rBLX, rBLY, 0);
+		}
+		else {
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(rBLX, rBLY, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(rBRX, rBRY, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(rTRX, rTRY, 0);
+
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(rTRX, rTRY, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(rTLX, rTLY, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(rBLX, rBLY, 0);
+		}
+	}
+
 	
 	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The
 	 * {@link ShapeType} passed to begin has to be {@link ShapeType#Filled} or  {@link ShapeType#Line}.
