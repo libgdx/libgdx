@@ -1,6 +1,9 @@
 package com.badlogic.gdx.graphics.g3d.loader;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -33,8 +36,21 @@ import com.badlogic.gdx.utils.OrderedMap;
  * @author mzechner
  *
  */
-public class JsonModelLoader {
+public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	public static String VERSION = "1.0";
+	
+	public G3djModelLoader() {
+		this(null);
+	}
+	
+	public G3djModelLoader(FileHandleResolver resolver) {
+		super(resolver);
+	}
+	
+	@Override
+	protected ModelData loadModelData (FileHandle fileHandle, AssetLoaderParameters<Model> parameters) {
+		return parseModel(fileHandle);
+	}
 	
 	public Model load (FileHandle handle) {
 		ModelData jsonModel = parseModel(handle);
