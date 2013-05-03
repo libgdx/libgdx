@@ -377,6 +377,10 @@ public class ShapeRenderer {
 	/** Draws a rectangle in the x/y plane rotated about (cx, cy). The x and y coordinate specify the
 	 * bottom left corner of the rectangle. The {@link ShapeType} passed to begin has to be
 	 * {@link ShapeType#Filled} or {@link ShapeType#Line}.
+	 * 
+	 * The rectangle is first positioned such that its bottom left corner is at (x, y).
+	 * The rectangle is then rotated around (x + cx, y + cy).
+	 * 
 	 * @param x
 	 * @param y
 	 * @param width
