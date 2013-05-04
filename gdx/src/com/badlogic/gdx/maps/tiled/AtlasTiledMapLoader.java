@@ -302,7 +302,7 @@ public class AtlasTiledMapLoader extends
 				atlas = resolver.getAtlas(atlasHandle.path());
 				regionsName = atlasHandle.nameWithoutExtension();
 
-				if (parameter.forceTextureFilters) {
+				if (parameter != null && parameter.forceTextureFilters) {
 					for (Texture texture : atlas.getTextures()) {
 						texture.setFilter(parameter.textureMinFilter, parameter.textureMagFilter);
 					}
