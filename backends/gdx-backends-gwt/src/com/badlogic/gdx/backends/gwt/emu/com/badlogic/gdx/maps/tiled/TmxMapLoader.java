@@ -1,11 +1,7 @@
 package com.badlogic.gdx.maps.tiled;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.StringTokenizer;
-import java.util.zip.DataFormatException;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.Inflater;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
