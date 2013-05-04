@@ -166,6 +166,10 @@ public class AtlasTiledMapLoader extends
 			AtlasResolver.DirectAtlasResolver atlasResolver = new AtlasResolver.DirectAtlasResolver(atlases);
 			AtlasTiledMap map = loadMap(root, tmxFile, atlasResolver, parameter);
 			map.setOwnedAtlases(atlases.values().toArray());
+			if (parameter.forceTextureFilters) {
+				setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
+			}
+
 			return map;
 		} catch (IOException e) {
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
@@ -194,6 +198,12 @@ public class AtlasTiledMapLoader extends
 		return atlases;
 	}
 
+	private void setTextureFilters (TextureFilter min, TextureFilter mag) {
+		for (Texture texture : trackedTextures) {
+			texture.setFilter(min, mag);
+		}
+	}
+
 	@Override
 	public void loadAsync (AssetManager manager, String fileName, AtlasTiledMapLoaderParameters parameter) {
 		map = null;
@@ -214,11 +224,10 @@ public class AtlasTiledMapLoader extends
 
 	@Override
 	public AtlasTiledMap loadSync (AssetManager manager, String fileName, AtlasTiledMapLoaderParameters parameter) {
-		for (Texture texture : trackedTextures) {
-			texture.setFilter(parameter.textureMinFilter, parameter.textureMagFilter);
+		if (parameter.forceTextureFilters) {
+			setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
 		}
 
-		trackedTextures.clear();
 		return map;
 	}
 
