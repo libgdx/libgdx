@@ -60,10 +60,12 @@ import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** Packs a Tiled Map, adding some properties to improve the speed of the {@link TileMapRenderer}. Also runs the texture packer on
  * the tiles for use with a {@link TileAtlas}
- * @author David Fraska */
+ * @author David Fraska
+ * @author Manuel Bua */
 public class TiledMapPacker {
 
 	private TexturePacker2 packer;
@@ -110,6 +112,7 @@ public class TiledMapPacker {
 	public void processMap (File inputDir, File outputDir, Settings settings) throws IOException {
 		FileHandle inputDirHandle = new FileHandle(inputDir.getAbsolutePath());
 		File[] files = inputDir.listFiles(new TmxFilter());
+		ObjectMap<String, TiledMapTileSet> tilesetsToPack = new ObjectMap<String, TiledMapTileSet>();
 
 		for (File file : files) {
 			map = mapLoader.load(file.getAbsolutePath());
@@ -131,30 +134,37 @@ public class TiledMapPacker {
 
 						for (int y = 0; y < mapHeight; ++y) {
 							for (int x = 0; x < mapWidth; ++x) {
-								int tileid = tlayer.getCell(x, y).getTile().getId() & ~0xE0000000;
-								IntArray usedIds = getUsedIdsBucket(tilesetNameFromTileId(map, tileid), bucketSize);
-								usedIds.add(tileid);
+								if (tlayer.getCell(x, y) != null) {
+									int tileid = tlayer.getCell(x, y).getTile().getId() & ~0xE0000000;
+									String tilesetName = tilesetNameFromTileId(map, tileid);
+									IntArray usedIds = getUsedIdsBucket(tilesetName, bucketSize);
+									usedIds.add(tileid);
+
+									// track this tileset to be packed if not already tracked
+									if (!tilesetsToPack.containsKey(tilesetName)) {
+										tilesetsToPack.put(tilesetName, map.getTileSets().getTileSet(tilesetName));
+									}
+								}
 							}
 						}
+					}
+				}
+			} else {
+				for (TiledMapTileSet tileset : map.getTileSets()) {
+					String tilesetName = tileset.getName();
+					if (!tilesetsToPack.containsKey(tilesetName)) {
+						tilesetsToPack.put(tilesetName, map.getTileSets().getTileSet(tilesetName));
 					}
 				}
 			}
 
 			FileHandle tmxFile = new FileHandle(file.getAbsolutePath());
-			writeUpdatedTMX(outputDir, tmxFile);
+			writeUpdatedTMX(map, outputDir, tmxFile);
 		}
 
-		if (this.settings.stripUnusedTiles) {
-			for (String tilesetName : tilesetUsedIds.keySet()) {
-				TiledMapTileSet tileset = map.getTileSets().getTileSet(tilesetName);
-				if (tileset != null) {
-					packTileSet(map, tileset, tilesetUsedIds.get(tilesetName), inputDirHandle, outputDir, settings);
-				}
-			}
-		} else {
-			for (TiledMapTileSet tileset : map.getTileSets()) {
-				packTileSet(map, tileset, null, inputDirHandle, outputDir, settings);
-			}
+		for (TiledMapTileSet tileset : tilesetsToPack.values()) {
+			packTileSet(tileset, this.settings.stripUnusedTiles ? tilesetUsedIds.get(tileset.getName()) : null, inputDirHandle,
+				outputDir, settings);
 		}
 	}
 
@@ -194,8 +204,8 @@ public class TiledMapPacker {
 		return bucket;
 	}
 
-	private void packTileSet (TiledMap map, TiledMapTileSet set, IntArray usedIds, FileHandle inputDirHandle, File outputDir,
-		Settings settings) throws IOException {
+	private void packTileSet (TiledMapTileSet set, IntArray usedIds, FileHandle inputDirHandle, File outputDir, Settings settings)
+		throws IOException {
 		BufferedImage tile;
 		Vector2 tileLocation;
 		TileSetLayout packerTileSet;
@@ -203,14 +213,12 @@ public class TiledMapPacker {
 
 		packer = new TexturePacker2(settings);
 
-		int mapWidth = map.getProperties().get("width", Integer.class);
-		int mapHeight = map.getProperties().get("height", Integer.class);
 		int tileWidth = set.getProperties().get("tilewidth", Integer.class);
 		int tileHeight = set.getProperties().get("tileheight", Integer.class);
 		int firstgid = set.getProperties().get("firstgid", Integer.class);
 		String imageName = set.getProperties().get("imagesource", String.class);
 
-		TileSetLayout layout = new TileSetLayout(map, firstgid, set, inputDirHandle);
+		TileSetLayout layout = new TileSetLayout(firstgid, set, inputDirHandle);
 
 		for (int gid = layout.firstgid, i = 0; i < layout.numTiles; gid++, i++) {
 			if (usedIds != null && !usedIds.contains(gid)) {
@@ -280,7 +288,7 @@ public class TiledMapPacker {
 		blendedTiles.add(tileNum);
 	}
 
-	private void writeUpdatedTMX (File outputDir, FileHandle tmxFileHandle) throws IOException {
+	private void writeUpdatedTMX (TiledMap tiledMap, File outputDir, FileHandle tmxFileHandle) throws IOException {
 		Document doc;
 		DocumentBuilder docBuilder;
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -297,6 +305,12 @@ public class TiledMapPacker {
 			}
 
 			setProperty(doc, map, "blended tiles", toCSV(blendedTiles));
+
+			// set used tileset atlases
+			for (TiledMapTileSet tileset : tiledMap.getTileSets()) {
+				String atlasName = removeExtension(tileset.getProperties().get("imagesource", String.class))+".atlas";
+				setProperty(doc, map, "atlas_" + tileset.getName(), atlasName);
+			}
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
