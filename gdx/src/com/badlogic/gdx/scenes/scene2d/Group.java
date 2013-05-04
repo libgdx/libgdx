@@ -74,7 +74,7 @@ public class Group extends Actor implements Cullable {
 			float cullBottom = cullingArea.y;
 			float cullTop = cullBottom + cullingArea.height;
 			if (transform) {
-				for (int i = 0, n = children.size; i < n; i++) {
+				for (int i = 0, n = actors.length; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
 					float cx = child.x, cy = child.y;
@@ -87,7 +87,7 @@ public class Group extends Actor implements Cullable {
 				float offsetX = x, offsetY = y;
 				x = 0;
 				y = 0;
-				for (int i = 0, n = children.size; i < n; i++) {
+				for (int i = 0, n = actors.length; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
 					float cx = child.x, cy = child.y;
@@ -105,7 +105,7 @@ public class Group extends Actor implements Cullable {
 		} else {
 			// No culling, draw all children.
 			if (transform) {
-				for (int i = 0, n = children.size; i < n; i++) {
+				for (int i = 0, n = actors.length; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
 					child.draw(batch, parentAlpha);
@@ -116,7 +116,7 @@ public class Group extends Actor implements Cullable {
 				float offsetX = x, offsetY = y;
 				x = 0;
 				y = 0;
-				for (int i = 0, n = children.size; i < n; i++) {
+				for (int i = 0, n = actors.length; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
 					float cx = child.x, cy = child.y;
