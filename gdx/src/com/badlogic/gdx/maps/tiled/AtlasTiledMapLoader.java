@@ -75,6 +75,7 @@ public class AtlasTiledMapLoader extends
 	protected int mapHeightInPixels;
 
 	protected AtlasTiledMap map;
+	protected Array<Texture> trackedTextures = new Array<Texture>();
 
 	private interface AtlasResolver {
 
@@ -213,6 +214,11 @@ public class AtlasTiledMapLoader extends
 
 	@Override
 	public AtlasTiledMap loadSync (AssetManager manager, String fileName, AtlasTiledMapLoaderParameters parameter) {
+		for (Texture texture : trackedTextures) {
+			texture.setFilter(parameter.textureMinFilter, parameter.textureMagFilter);
+		}
+
+		trackedTextures.clear();
 		return map;
 	}
 
@@ -304,7 +310,7 @@ public class AtlasTiledMapLoader extends
 
 				if (parameter != null && parameter.forceTextureFilters) {
 					for (Texture texture : atlas.getTextures()) {
-						texture.setFilter(parameter.textureMinFilter, parameter.textureMagFilter);
+						trackedTextures.add(texture);
 					}
 				}
 			}
