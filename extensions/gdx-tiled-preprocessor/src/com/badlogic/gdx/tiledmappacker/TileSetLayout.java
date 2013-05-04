@@ -42,9 +42,7 @@ public class TileSetLayout {
 	 * being processed by {@link TiledMapPacker} (the ones actually read by Tiled).
 	 * @param tileSet the tile set to process
 	 * @param baseDir the directory in which the tile set image is stored */
-	protected TileSetLayout (TiledMap map, int firstgid, TiledMapTileSet tileset, FileHandle baseDir) throws IOException {
-		int mapWidth = map.getProperties().get("width", Integer.class);
-		int mapHeight = map.getProperties().get("height", Integer.class);
+	protected TileSetLayout (int firstgid, TiledMapTileSet tileset, FileHandle baseDir) throws IOException {
 		int tileWidth = tileset.getProperties().get("tilewidth", Integer.class);
 		int tileHeight = tileset.getProperties().get("tileheight", Integer.class);
 		int margin = tileset.getProperties().get("margin", Integer.class);
