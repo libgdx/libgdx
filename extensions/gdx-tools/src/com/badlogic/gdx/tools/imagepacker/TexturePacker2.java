@@ -65,8 +65,16 @@ public class TexturePacker2 {
 		imageProcessor = new ImageProcessor(rootDir, settings);
 	}
 
+	public TexturePacker2 (Settings settings) {
+		this(null, settings);
+	}
+
 	public void addImage (File file) {
 		imageProcessor.addImage(file);
+	}
+
+	public void addImage (BufferedImage image, String name) {
+		imageProcessor.addImage(image, name);
 	}
 
 	public void pack (File outputDir, String packFileName) {
