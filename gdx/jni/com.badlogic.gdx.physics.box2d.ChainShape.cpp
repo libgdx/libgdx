@@ -34,7 +34,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ChainShape_jniCreateC
 	float* verts = (float*)env->GetPrimitiveArrayCritical(obj_verts, 0);
 
 
-//@line:78
+//@line:84
 
 		b2ChainShape* chain = (b2ChainShape*)addr;
 		b2Vec2* verticesOut = new b2Vec2[numVertices];
@@ -50,7 +50,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ChainShape_jniCreateC
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ChainShape_jniSetPrevVertex(JNIEnv* env, jobject object, jlong addr, jfloat x, jfloat y) {
 
 
-//@line:97
+//@line:103
 
 		b2ChainShape* chain = (b2ChainShape*)addr;
 		chain->SetPrevVertex(b2Vec2(x, y));
@@ -61,7 +61,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ChainShape_jniSetPrev
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ChainShape_jniSetNextVertex(JNIEnv* env, jobject object, jlong addr, jfloat x, jfloat y) {
 
 
-//@line:112
+//@line:118
 
 		b2ChainShape* chain = (b2ChainShape*)addr;
 		chain->SetNextVertex(b2Vec2(x, y));
@@ -72,7 +72,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ChainShape_jniSetNext
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_ChainShape_jniGetVertexCount(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:122
+//@line:128
 
 		b2ChainShape* chain = (b2ChainShape*)addr;
 		return chain->GetVertexCount();
@@ -84,7 +84,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ChainShape_jniGetVert
 	float* verts = (float*)env->GetPrimitiveArrayCritical(obj_verts, 0);
 
 
-//@line:138
+//@line:144
 
 		b2ChainShape* chain = (b2ChainShape*)addr;
 		const b2Vec2 v = chain->GetVertex( index );
