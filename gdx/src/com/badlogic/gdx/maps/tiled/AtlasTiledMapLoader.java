@@ -46,9 +46,9 @@ import com.badlogic.gdx.utils.XmlReader.Element;
  * @author Justin Shapcott
  * @author Manuel Bua */
 public class AtlasTiledMapLoader extends
-	AsynchronousAssetLoader<AtlasTiledMap, AtlasTiledMapLoader.AtlasTiledMapLoaderParameters> {
+	AsynchronousAssetLoader<TiledMap, AtlasTiledMapLoader.AtlasTiledMapLoaderParameters> {
 
-	public static class AtlasTiledMapLoaderParameters extends AssetLoaderParameters<AtlasTiledMap> {
+	public static class AtlasTiledMapLoaderParameters extends AssetLoaderParameters<TiledMap> {
 		/** Whether to load the map for a y-up coordinate system */
 		public boolean yUp = true;
 
@@ -74,7 +74,7 @@ public class AtlasTiledMapLoader extends
 	protected int mapWidthInPixels;
 	protected int mapHeightInPixels;
 
-	protected AtlasTiledMap map;
+	protected TiledMap map;
 	protected Array<Texture> trackedTextures = new Array<Texture>();
 
 	private interface AtlasResolver {
@@ -147,7 +147,7 @@ public class AtlasTiledMapLoader extends
 		return dependencies;
 	}
 
-	public AtlasTiledMap load (String fileName, AtlasTiledMapLoaderParameters parameter) {
+	public TiledMap load (String fileName, AtlasTiledMapLoaderParameters parameter) {
 		try {
 			if (parameter != null) {
 				yUp = parameter.yUp;
@@ -164,8 +164,8 @@ public class AtlasTiledMapLoader extends
 			}
 
 			AtlasResolver.DirectAtlasResolver atlasResolver = new AtlasResolver.DirectAtlasResolver(atlases);
-			AtlasTiledMap map = loadMap(root, tmxFile, atlasResolver, parameter);
-			map.setOwnedAtlases(atlases.values().toArray());
+			TiledMap map = loadMap(root, tmxFile, atlasResolver, parameter);
+			map.setOwnedResources(atlases.values().toArray());
 			if (parameter.forceTextureFilters) {
 				setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
 			}
@@ -223,7 +223,7 @@ public class AtlasTiledMapLoader extends
 	}
 
 	@Override
-	public AtlasTiledMap loadSync (AssetManager manager, String fileName, AtlasTiledMapLoaderParameters parameter) {
+	public TiledMap loadSync (AssetManager manager, String fileName, AtlasTiledMapLoaderParameters parameter) {
 		if (parameter.forceTextureFilters) {
 			setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
 		}
@@ -231,9 +231,9 @@ public class AtlasTiledMapLoader extends
 		return map;
 	}
 
-	protected AtlasTiledMap loadMap (Element root, FileHandle tmxFile, AtlasResolver resolver,
+	protected TiledMap loadMap (Element root, FileHandle tmxFile, AtlasResolver resolver,
 		AtlasTiledMapLoaderParameters parameter) {
-		AtlasTiledMap map = new AtlasTiledMap();
+		TiledMap map = new TiledMap();
 
 		String mapOrientation = root.getAttribute("orientation", null);
 		int mapWidth = root.getIntAttribute("width", 0);
@@ -272,7 +272,7 @@ public class AtlasTiledMapLoader extends
 		return map;
 	}
 
-	protected void loadTileset (AtlasTiledMap map, Element element, FileHandle tmxFile, AtlasResolver resolver,
+	protected void loadTileset (TiledMap map, Element element, FileHandle tmxFile, AtlasResolver resolver,
 		AtlasTiledMapLoaderParameters parameter) {
 		if (element.getName().equals("tileset")) {
 			String name = element.get("name", null);

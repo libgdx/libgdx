@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.AtlasTiledMap;
 import com.badlogic.gdx.maps.tiled.AtlasTiledMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -52,8 +51,8 @@ public class TiledMapAtlasAssetManagerTest extends GdxTest {
 		params.textureMagFilter = TextureFilter.Linear;
 
 		assetManager = new AssetManager();
-		assetManager.setLoader(AtlasTiledMap.class, new AtlasTiledMapLoader(new InternalFileHandleResolver()));
-		assetManager.load("data/maps/tiled-atlas-processed/test.tmx", AtlasTiledMap.class, params);
+		assetManager.setLoader(TiledMap.class, new AtlasTiledMapLoader(new InternalFileHandleResolver()));
+		assetManager.load("data/maps/tiled-atlas-processed/test.tmx", TiledMap.class, params);
 		assetManager.finishLoading();
 		map = assetManager.get("data/maps/tiled-atlas-processed/test.tmx");
 		renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
