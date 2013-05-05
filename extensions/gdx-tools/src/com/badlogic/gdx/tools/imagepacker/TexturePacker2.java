@@ -208,7 +208,7 @@ public class TexturePacker2 {
 			TextureAtlasData textureAtlasData = new TextureAtlasData(new FileHandle(packFile), new FileHandle(packFile), false);
 			for (Page page : pages) {
 				for (Rect rect : page.outputRects) {
-					String rectName = rect.getName(settings.flattenPaths);
+					String rectName = Rect.getAtlasName(rect.name, settings.flattenPaths);
 					System.out.println(rectName);
 					for (Region region : textureAtlasData.getRegions()) {
 						if (region.name.equals(rectName)) {
@@ -240,7 +240,7 @@ public class TexturePacker2 {
 	}
 
 	private void writeRect (FileWriter writer, Page page, Rect rect, String name) throws IOException {
-		writer.write(rect.getName(settings.flattenPaths) + "\n");
+		writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
 		writer.write("  rotate: " + rect.rotated + "\n");
 		writer.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.height - rect.y) + "\n");
 		writer.write("  size: " + rect.image.getWidth() + ", " + rect.image.getHeight() + "\n");
@@ -348,10 +348,6 @@ public class TexturePacker2 {
 			score2 = rect.score2;
 		}
 
-		public String getName (boolean flattenPaths) {
-			return flattenPaths ? new FileHandle(name).name() : name;
-		}
-
 		@Override
 		public boolean equals (Object obj) {
 			if (this == obj) return true;
@@ -367,6 +363,10 @@ public class TexturePacker2 {
 		@Override
 		public String toString () {
 			return name + "[" + x + "," + y + " " + width + "x" + height + "]";
+		}
+
+		static public String getAtlasName (String name, boolean flattenPaths) {
+			return flattenPaths ? new FileHandle(name).name() : name;
 		}
 	}
 

@@ -677,7 +677,7 @@ public class MaxRectsPacker {
 
 	class RectComparator implements Comparator<Rect> {
 		public int compare (Rect o1, Rect o2) {
-			return o1.getName(settings.flattenPaths).compareTo(o2.getName(settings.flattenPaths));
+			return Rect.getAtlasName(o1.name, settings.flattenPaths).compareTo(Rect.getAtlasName(o2.name, settings.flattenPaths));
 		}
 	}
 }
