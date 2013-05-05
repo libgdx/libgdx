@@ -22,8 +22,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.AnimationTest;
 import com.badlogic.gdx.tests.ETC1Test;
 import com.badlogic.gdx.tests.FullscreenTest;
+import com.badlogic.gdx.tests.GroupTest;
 import com.badlogic.gdx.tests.InputTest;
 import com.badlogic.gdx.tests.SpriteCacheTest;
+import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TideMapAssetManagerTest;
 import com.badlogic.gdx.tests.TideMapDirectLoaderTest;
 import com.badlogic.gdx.tests.TiledMapAssetManagerTest;
@@ -36,14 +38,13 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
 		// this is only here for me to debug native code faster
-		new SharedLibraryLoader("../../extensions/gdx-audio/libs/gdx-audio-natives.jar").load("gdx-audio");
-		new SharedLibraryLoader("../../extensions/gdx-image/libs/gdx-image-natives.jar").load("gdx-image");
-		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
-		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
-		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
+//		new SharedLibraryLoader("../../extensions/gdx-audio/libs/gdx-audio-natives.jar").load("gdx-audio");
+//		new SharedLibraryLoader("../../extensions/gdx-image/libs/gdx-image-natives.jar").load("gdx-image");
+//		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
+//		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
+//		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		
-		GdxTest test = new FullscreenTest();
+		GdxTest test = new GroupTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		new LwjglApplication(test, config);
