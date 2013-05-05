@@ -21,6 +21,7 @@
 - 1381, fixed JSON parsing of longs. In addition to Float, it now parses Long if no decimal point is found.
 - Changed Array constructors that took an array to have offset and count
 - Json refactoring, see http://www.badlogicgames.com/wordpress/?p=2993
+- scene2d, Actor parentToLocalCoordinates and localToParentCoordinates refactoring, see http://www.badlogicgames.com/forum/viewtopic.php?p=40441#p40441
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791
