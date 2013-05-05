@@ -12,11 +12,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelAnimation;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeAnimation;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial.MaterialType;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPart;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
@@ -36,21 +39,22 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	private final static int G3DB_TAG_MATERIAL		= 0x08;
 	private final static int G3DB_TAG_DIFFUSE			= 0x09;
 	private final static int G3DB_TAG_AMBIENT			= 0x0A;
-	private final static int G3DB_TAG_EMMISIVE		= 0x0B;
+	private final static int G3DB_TAG_EMISSIVE		= 0x0B;
 	private final static int G3DB_TAG_OPACITY			= 0x0C;
 	private final static int G3DB_TAG_SPECULAR		= 0x0D;
 	private final static int G3DB_TAG_SHININESS		= 0x0E;
 	private final static int G3DB_TAG_NODE	 			= 0x0F;
-	private final static int G3DB_TAG_TRANSLATE		= 0x10;
-	private final static int G3DB_TAG_ROTATE 			= 0x11;
-	private final static int G3DB_TAG_SCALE 			= 0x12;
-	private final static int G3DB_TAG_PARTMATERIAL	= 0x13;
+	private final static int G3DB_TAG_NODEPART		= 0x10;
+	private final static int G3DB_TAG_TRANSLATE		= 0x11;
+	private final static int G3DB_TAG_ROTATE 			= 0x12;
+	private final static int G3DB_TAG_SCALE 			= 0x13;
 	private final static int G3DB_TAG_TEXTURE			= 0x14;
 	private final static int G3DB_TAG_FILENAME		= 0x15;
-	private final static int G3DB_TAG_ANIMATIONCLIP	= 0x16;
-	private final static int G3DB_TAG_BONE				= 0x17;
+	private final static int G3DB_TAG_ANIMATION		= 0x16;
+	private final static int G3DB_TAG_NODEANIMATION	= 0x17;
 	private final static int G3DB_TAG_KEYFRAME		= 0x18;
 	private final static int G3DB_TAG_TIME				= 0x19;
+	private final static int G3DB_TAG_BONE				= 0x20;
 	
 	private final static int USAGE_UNKNOWN = 0;
 	private final static int USAGE_POSITION = 1;
@@ -58,16 +62,22 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	private final static int USAGE_COLOR = 3;
 	private final static int USAGE_TANGENT = 4;
 	private final static int USAGE_BINORMAL = 5;
-	private final static int USAGE_BLENDWEIGHTS = 6;
-	private final static int USAGE_BLENDINDICES = 7;
-	private final static int USAGE_TEXCOORD0 = 8;
-	private final static int USAGE_TEXCOORD1 = 9;
-	private final static int USAGE_TEXCOORD2 = 10;
-	private final static int USAGE_TEXCOORD3 = 11;
-	private final static int USAGE_TEXCOORD4 = 12;
-	private final static int USAGE_TEXCOORD5 = 13;
-	private final static int USAGE_TEXCOORD6 = 14;
-	private final static int USAGE_TEXCOORD7 = 15;
+	private final static int USAGE_TEXCOORD0 = 6;
+	private final static int USAGE_TEXCOORD1 = 7;
+	private final static int USAGE_TEXCOORD2 = 8;
+	private final static int USAGE_TEXCOORD3 = 9;
+	private final static int USAGE_TEXCOORD4 = 10;
+	private final static int USAGE_TEXCOORD5 = 11;
+	private final static int USAGE_TEXCOORD6 = 12;
+	private final static int USAGE_TEXCOORD7 = 13;
+	private final static int USAGE_BLENDWEIGHT0 = 14;
+	private final static int USAGE_BLENDWEIGHT1 = 15;
+	private final static int USAGE_BLENDWEIGHT2 = 16;
+	private final static int USAGE_BLENDWEIGHT3 = 17;
+	private final static int USAGE_BLENDWEIGHT4 = 18;
+	private final static int USAGE_BLENDWEIGHT5 = 19;
+	private final static int USAGE_BLENDWEIGHT6 = 20;
+	private final static int USAGE_BLENDWEIGHT7 = 21;
 	
 	private final static int MATERIAL_LAMBERT = 0;
 	private final static int MATERIAL_PHONG = 1;
@@ -126,27 +136,87 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				result.materials.add(readMaterial(size));
 			else if ((type & TYPE_MASK) == G3DB_TAG_NODE)
 				result.nodes.add(readNode(size));
-			else { // unknown tag, just skip it
+			else if ((type & TYPE_MASK) == G3DB_TAG_ANIMATION)
+				result.animations.add(readAnimation(size));
+			else {
 				din.skipBytes((int)size);
-				Gdx.app.log("G3dbModelLoader", "Unknown model tag: "+type+"["+size+"], skipping");
+				Gdx.app.log("G3dbModelLoader", "Unknown model tag: "+(type & TYPE_MASK)+"["+size+"], skipping");
 			}
 		}		
 	}
 	
+	private ModelAnimation readAnimation(final long length) throws IOException {
+		long cnt = 0;
+		final ModelAnimation animation = new ModelAnimation();
+		while ((din.available() > 0) && (cnt < length)) {
+			final byte type = din.readByte();
+			final long size = readSize(type);
+			cnt += 1 + getSize(type) + size;
+			if ((type & TYPE_MASK) == G3DB_TAG_ID)
+				animation.id = readString(size);
+			else if ((type & TYPE_MASK) == G3DB_TAG_NODEANIMATION)
+				animation.nodeAnimations.add(readNodeAnimation(size));
+			else {
+				din.skipBytes((int)size);
+				Gdx.app.log("G3dbModelLoader", "Unknown animation tag: "+(type & TYPE_MASK)+"["+size+"], skipping");
+			}
+		}
+		return animation;
+	}
+	
+	private ModelNodeAnimation readNodeAnimation(final long length) throws IOException {
+		long cnt = 0;
+		final ModelNodeAnimation nodeAnim = new ModelNodeAnimation();
+		while ((din.available() > 0) && (cnt < length)) {
+			final byte type = din.readByte();
+			final long size = readSize(type);
+			cnt += 1 + getSize(type) + size;
+			if ((type & TYPE_MASK) == G3DB_TAG_NODE)
+				nodeAnim.nodeId = readString(size);
+			else if ((type & TYPE_MASK) == G3DB_TAG_KEYFRAME)
+				nodeAnim.keyframes.add(readKeyframe(size));
+			else {
+				din.skipBytes((int)size);
+				Gdx.app.log("G3dbModelLoader", "Unknown node animation tag: "+(type & TYPE_MASK)+"["+size+"], skipping");
+			}
+		}
+		return nodeAnim;
+	}
+	
+	private ModelNodeKeyframe readKeyframe(final long length) throws IOException {
+		long cnt = 0;
+		final ModelNodeKeyframe keyframe = new ModelNodeKeyframe();
+		while ((din.available() > 0) && (cnt < length)) {
+			final byte type = din.readByte();
+			final long size = readSize(type);
+			cnt += 1 + getSize(type) + size;
+			if ((type & TYPE_MASK) == G3DB_TAG_TIME)
+				keyframe.keytime = readFloat(size) / 1000.f;
+			else if ((type & TYPE_MASK) == G3DB_TAG_TRANSLATE)
+				keyframe.translation = readVector3(size);
+			else if ((type & TYPE_MASK) == G3DB_TAG_ROTATE)
+				keyframe.rotation = readQuaternion(size);
+			else if ((type & TYPE_MASK) == G3DB_TAG_SCALE)
+				keyframe.scale = readVector3(size);
+			else {
+				din.skipBytes((int)size);
+				Gdx.app.log("G3dbModelLoader", "Unknown keyframe tag: "+(type & TYPE_MASK)+"["+size+"], skipping");
+			}
+		}
+		return keyframe;
+	}
+	
 	private ModelNode readNode(final long length) throws IOException {
 		long cnt = 0;
-		ModelNode node = new ModelNode();
-		Array<ModelNode> children = new Array<ModelNode>();
-		Array<ModelNodePart> parts = new Array<ModelNodePart>();
-		result.nodes.add(node);
+		final ModelNode node = new ModelNode();
+		final Array<ModelNode> children = new Array<ModelNode>();
+		final Array<ModelNodePart> parts = new Array<ModelNodePart>();
 		while ((din.available() > 0) && (cnt < length)) {
 			final byte type = din.readByte();
 			final long size = readSize(type);
 			cnt += 1 + getSize(type) + size;
 			if ((type & TYPE_MASK) == G3DB_TAG_ID)
 				node.id = readString(size);
-			else if ((type & TYPE_MASK) == G3DB_TAG_BONE)
-				din.skipBytes((int)size);
 			else if ((type & TYPE_MASK) == G3DB_TAG_TRANSLATE)
 				node.translation = readVector3(size);
 			else if ((type & TYPE_MASK) == G3DB_TAG_ROTATE)
@@ -155,8 +225,8 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				node.scale = readVector3(size);
 			else if ((type & TYPE_MASK) == G3DB_TAG_MESH)
 				node.meshId = readString(size);
-			else if ((type & TYPE_MASK) == G3DB_TAG_PARTMATERIAL)
-				parts.add(readMeshPartMaterial(size));
+			else if ((type & TYPE_MASK) == G3DB_TAG_NODEPART)
+				parts.add(readNodePart(size));
 			else if ((type & TYPE_MASK) == G3DB_TAG_NODE)
 				children.add(readNode(size));
 			else {
@@ -177,8 +247,9 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		return node;
 	}
 	
-	private ModelNodePart readMeshPartMaterial(final long length) throws IOException {
+	private ModelNodePart readNodePart(final long length) throws IOException {
 		final ModelNodePart part = new ModelNodePart();
+		final Array<String> bones = new Array<String>();
 		long cnt = 0;
 		while((din.available() > 0) && (cnt < length)) {
 			final byte type = din.readByte();
@@ -188,10 +259,17 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				part.meshPartId = readString(size);
 			else if ((type & TYPE_MASK) == G3DB_TAG_MATERIAL)
 				part.materialId = readString(size);
+			else if ((type & TYPE_MASK) == G3DB_TAG_BONE)
+				bones.add(readString(size));
 			else {
 				din.skipBytes((int)size);
-				Gdx.app.log("G3dbModelLoader", "Unknown meshpartmaterial tag: "+type+"["+size+"], skipping");
+				Gdx.app.log("G3dbModelLoader", "Unknown nodepart tag: "+type+"["+size+"], skipping");
 			}
+		}
+		if (bones.size > 0) {
+			part.bones = new String[bones.size];
+			for (int i = 0; i < bones.size; i++)
+				part.bones[i] = bones.get(i);
 		}
 		return part;
 	}
@@ -213,17 +291,15 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				material.diffuse = readColor(size);
 			else if ((type & TYPE_MASK) == G3DB_TAG_AMBIENT)
 				material.ambient = readColor(size);
-			else if ((type & TYPE_MASK) == G3DB_TAG_EMMISIVE)
+			else if ((type & TYPE_MASK) == G3DB_TAG_EMISSIVE)
 				material.ambient = readColor(size);
 			else if ((type & TYPE_MASK) == G3DB_TAG_OPACITY)
 				din.skipBytes((int)size); // FIXME why is this implemented g3dj but not in ModelMaterial?
 			else if ((type & TYPE_MASK) == G3DB_TAG_SPECULAR)
 				material.specular = readColor(size);
-			else if ((type & TYPE_MASK) == G3DB_TAG_SHININESS) {
-				material.shininess = din.readFloat();
-				if (size > 4)
-					din.skipBytes((int)size - 4);
-			} else if ((type & TYPE_MASK) == G3DB_TAG_TEXTURE) {
+			else if ((type & TYPE_MASK) == G3DB_TAG_SHININESS)
+				material.shininess = readFloat(size);
+			else if ((type & TYPE_MASK) == G3DB_TAG_TEXTURE) {
 				if (material.diffuseTextures == null)
 					material.diffuseTextures = new Array<ModelTexture>();
 				material.diffuseTextures.add(readTexture(size));
@@ -338,12 +414,10 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				result[i] = VertexAttribute.Tangent();
 			else if (type == USAGE_BINORMAL)
 				result[i] = VertexAttribute.Binormal();
-			else if (type == USAGE_BLENDWEIGHTS)
-				result[i] = VertexAttribute.BoneWeights(4);
-			else if (type == USAGE_BLENDINDICES)
-				result[i] = VertexAttribute.BoneIds(4);
 			else if (type >= USAGE_TEXCOORD0 && type <= USAGE_TEXCOORD7)
 				result[i] = VertexAttribute.TexCoords(type - USAGE_TEXCOORD0);
+			else if (type >= USAGE_BLENDWEIGHT0 && type <= USAGE_BLENDWEIGHT7)
+				result[i] = VertexAttribute.BoneWeight(type - USAGE_BLENDWEIGHT0);
 			else if (type == USAGE_UNKNOWN)
 				;
 		}
@@ -354,6 +428,13 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		final byte data[] = new byte[(int)size];
 		din.readFully(data);
 		return new String(data, "UTF-8");
+	}
+	
+	private float readFloat(final long size) throws IOException {
+		final float result = din.readFloat();
+		if (size > 4)
+			din.skipBytes((int)size - 4);
+		return result;
 	}
 	
 	private Color readColor(final long size) throws IOException {

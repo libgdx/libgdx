@@ -4,5 +4,5 @@ import com.badlogic.gdx.utils.Array;
 
 public class ModelAnimation {
 	public String id;
-	public Array<ModelBoneAnimation> boneAnimations = new Array<ModelBoneAnimation>();
+	public Array<ModelNodeAnimation> nodeAnimations = new Array<ModelNodeAnimation>();
 }

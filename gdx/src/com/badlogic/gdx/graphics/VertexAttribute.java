@@ -75,12 +75,8 @@ public final class VertexAttribute {
 		return new VertexAttribute(Usage.Generic, 3, ShaderProgram.BINORMAL_ATTRIBUTE);
 	}
 	
-	public static VertexAttribute BoneIds(int numBones) {
-		return new VertexAttribute(Usage.Generic, numBones, "a_boneids");
-	}
-	
-	public static VertexAttribute BoneWeights(int numBones) {
-		return new VertexAttribute(Usage.Generic, numBones, "a_boneWeights");
+	public static VertexAttribute BoneWeight (int unit) {
+		return new VertexAttribute(Usage.Generic, 2, "a_boneWeight" + unit);
 	}
 
 	/** Tests to determine if the passed object was created with the same parameters */
@@ -89,7 +85,10 @@ public final class VertexAttribute {
 		if (!(obj instanceof VertexAttribute)) {
 			return false;
 		}
-		final VertexAttribute other = (VertexAttribute)obj;
-		return this.usage == other.usage && this.numComponents == other.numComponents && this.alias.equals(other.alias);
+		return equals((VertexAttribute)obj);
+	}
+	
+	public boolean equals (final VertexAttribute other) {
+		return other != null && usage == other.usage && numComponents == other.numComponents && alias.equals(other.alias); 
 	}
 }
