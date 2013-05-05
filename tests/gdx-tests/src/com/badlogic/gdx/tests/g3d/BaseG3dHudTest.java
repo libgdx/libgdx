@@ -2,6 +2,7 @@ package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -12,12 +13,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.StringBuilder;
 
 public abstract class BaseG3dHudTest extends BaseG3dTest {
 	protected Stage hud;
 	protected Skin skin;
 	protected Label fpsLabel;
 	protected CollapsableWindow modelsWindow;
+	protected final StringBuilder stringBuilder = new StringBuilder();
 
 	protected  String models[] = new String[] {
 		"car.obj", "cube.obj", "scene.obj", "scene2.obj", "sphere.obj", "wheel.obj", 
@@ -30,7 +33,7 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 
 		createHUD();
 
-		Gdx.input.setInputProcessor(new InputMultiplexer(hud, inputController));
+		Gdx.input.setInputProcessor(new InputMultiplexer(this, hud, inputController));
 	}
 	
 	private void createHUD() {
@@ -60,11 +63,17 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 
 	protected abstract void onModelClicked(final String name);
 	
+	protected void getStatus(final StringBuilder stringBuilder) {
+		stringBuilder.append("FPS: ").append(Gdx.graphics.getFramesPerSecond());
+	}
+	
 	@Override
 	public void render () {
 		super.render();
 		
-		fpsLabel.setText("FPS: "+Gdx.graphics.getFramesPerSecond());
+		stringBuilder.setLength(0);
+		getStatus(stringBuilder);
+		fpsLabel.setText(stringBuilder);
 		hud.act(Gdx.graphics.getDeltaTime());
 		hud.draw();
 	}

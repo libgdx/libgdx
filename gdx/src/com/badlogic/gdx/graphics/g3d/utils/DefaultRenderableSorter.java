@@ -28,8 +28,8 @@ public class DefaultRenderableSorter implements RenderableSorter, Comparator<Ren
 		// FIXME implement better sorting algorithm
 		// final boolean same = o1.shader == o2.shader && o1.mesh == o2.mesh && (o1.lights == null) == (o2.lights == null) && 
 			// o1.material.equals(o2.material);
-		o1.transform.getTranslation(tmpV1);
-		o2.transform.getTranslation(tmpV2);
+		o1.worldTransform.getTranslation(tmpV1);
+		o2.worldTransform.getTranslation(tmpV2);
 		final float dst = camera.position.dst2(tmpV1) - camera.position.dst2(tmpV2);
 		return dst < 0f ? -1 : (dst > 0f ? 1 : 0);
 	}

@@ -279,7 +279,12 @@ public class ShaderProgram implements Disposable {
 		return location;
 	}
 
-	public int fetchUniformLocation (String name) {
+	
+	private int fetchUniformLocation (String name) {
+		return fetchUniformLocation(name, pedantic);
+	}
+
+	public int fetchUniformLocation (String name, boolean pedantic) {
 		GL20 gl = Gdx.graphics.getGL20();
 		// -2 == not yet cached
 		// -1 == cached but not found
@@ -610,6 +615,15 @@ public class ShaderProgram implements Disposable {
 		buffer.position(0);
 		int location = fetchUniformLocation(name);
 		gl.glUniformMatrix4fv(location, count, transpose, buffer);
+	}
+	
+	public void setUniformMatrix4fv (int location, float[] values, int offset, int length) {
+		GL20 gl = Gdx.graphics.getGL20();
+		checkManaged();
+		ensureBufferCapacity(length << 2);
+		floatBuffer.clear();
+		BufferUtils.copy(values, floatBuffer, length, offset);
+		gl.glUniformMatrix4fv(location, length / 16, false, floatBuffer);
 	}
 
 	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a

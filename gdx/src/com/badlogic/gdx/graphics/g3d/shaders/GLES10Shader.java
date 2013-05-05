@@ -138,10 +138,10 @@ public class GLES10Shader implements Shader{
 				}
 			}
 		}
-		if (currentTransform != renderable.transform) {
+		if (currentTransform != renderable.worldTransform) {
 			if (currentTransform != null)
 				Gdx.gl10.glPopMatrix();
-			currentTransform = renderable.transform;
+			currentTransform = renderable.worldTransform;
 			Gdx.gl10.glPushMatrix();
 			Gdx.gl10.glLoadMatrixf(currentTransform.val, 0);
 		}

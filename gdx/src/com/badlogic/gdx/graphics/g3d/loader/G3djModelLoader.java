@@ -12,6 +12,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelAnimation;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelBoneAnimation;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelBoneKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
@@ -70,6 +73,7 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		parseMeshes(model, json);
 		parseMaterials(model, json, handle.parent().path());
 		parseNodes(model, json);
+		parseAnimations(model, json);
 		return model;
 	}
 	
@@ -169,24 +173,23 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	private VertexAttribute[] parseAttributes (Array<Object> attributes) {
 		Array<VertexAttribute> vertexAttributes = new Array<VertexAttribute>();
 		int unit = 0;
+		int blendWeightCount = 0;
 		for(Object attribute: attributes) {
 			String attr = (String)attribute;
 			if(attr.equals("POSITION")) {
 				vertexAttributes.add(VertexAttribute.Position());
 			} else if(attr.equals("NORMAL")) {
 				vertexAttributes.add(VertexAttribute.Normal());
-			} else if(attr.startsWith("TEXCOORD")) {
-				vertexAttributes.add(VertexAttribute.TexCoords(unit++));
+			} else if(attr.equals("COLOR")) {
+				vertexAttributes.add(VertexAttribute.ColorUnpacked());
 			} else if(attr.equals("TANGENT")) {
 				vertexAttributes.add(VertexAttribute.Tangent());
 			} else if(attr.equals("BINORMAL")) {
 				vertexAttributes.add(VertexAttribute.Binormal());
-			} else if(attr.equals("BLENDINDICES")) {
-				vertexAttributes.add(VertexAttribute.BoneIds(4));
-			} else if(attr.equals("BLENDWEIGHTS")) {
-				vertexAttributes.add(VertexAttribute.BoneWeights(4));
-			} else if(attr.equals("COLOR")) {
-				vertexAttributes.add(VertexAttribute.ColorUnpacked());
+			} else if(attr.startsWith("TEXCOORD")) {
+				vertexAttributes.add(VertexAttribute.TexCoords(unit++));
+			} else if(attr.startsWith("BLENDWEIGHT")) {
+				vertexAttributes.add(VertexAttribute.BoneWeight(blendWeightCount++));
 			} else {
 				throw new GdxRuntimeException("Unknown vertex attribuet '" + attr + "', should be one of position, normal, uv, tangent or binormal");
 			}
@@ -215,15 +218,12 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				// Read material colors
 				jsonMaterial.diffuse = parseColor((Array<Object>)material.get("diffuse"), Color.WHITE);
 				jsonMaterial.ambient = parseColor((Array<Object>)material.get("ambient"), Color.BLACK);
-				jsonMaterial.emissive = parseColor((Array<Object>)material.get("emissive"), Color.WHITE);
+				jsonMaterial.emissive = parseColor((Array<Object>)material.get("emissive"), Color.BLACK);
 				
-				if(jsonMaterial.type == MaterialType.Phong){
-				   // Read specular
-					jsonMaterial.specular = parseColor((Array<Object>)material.get("specular"), Color.WHITE);
-					
-					// Read shininess
-					float shininess = (Float)material.get("shininess", 1.0f);
-				}
+			   // Read specular
+				jsonMaterial.specular = parseColor((Array<Object>)material.get("specular"), Color.BLACK);
+				// Read shininess
+				float shininess = (Float)material.get("shininess", 0.0f);
 				
 				// Read textures
 				Array<OrderedMap<String, Object>> textures = (Array<OrderedMap<String, Object>>)material.get("textures");
@@ -330,17 +330,24 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			
 			int i = 0;
 			for(OrderedMap<String, Object> material : materials) {
-				ModelNodePart meshPartMaterial = new ModelNodePart();
+				ModelNodePart nodePart = new ModelNodePart();
 				
 				String meshPartId = (String)material.get("meshpartid");
 				String materialId = (String)material.get("materialid");
 				if(meshPartId == null || materialId == null){
 					throw new GdxRuntimeException("Node "+id+" part is missing meshPartId or materialId");
 				}
-				meshPartMaterial.materialId = materialId;
-				meshPartMaterial.meshPartId = meshPartId;
+				nodePart.materialId = materialId;
+				nodePart.meshPartId = meshPartId;
 				
-				jsonNode.parts[i++] = meshPartMaterial;
+				Array<Object> bones = (Array<Object>)material.get("bones");
+				if (bones != null) {
+					nodePart.bones = new String[bones.size];
+					for (int j = 0; j < bones.size; j++)
+						nodePart.bones[j] = (String)bones.get(j); 
+				}
+				
+				jsonNode.parts[i++] = nodePart;
 			}
 		}
 		
@@ -355,5 +362,45 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		}
 		
 		return jsonNode;
+	}
+	
+	private void parseAnimations (ModelData model, OrderedMap<String, Object> json) {
+		Array<OrderedMap<String, Object>> animations = (Array<OrderedMap<String, Object>>)json.get("animations");
+		if(animations == null)
+			return;
+		
+		model.animations.ensureCapacity(animations.size);
+		
+		int i = 0;
+		for(OrderedMap<String, Object> anim : animations) {
+			Array<OrderedMap<String, Object>> nodes = (Array<OrderedMap<String, Object>>)anim.get("bones");
+			if (nodes == null)
+				continue;
+			ModelAnimation animation = new ModelAnimation();
+			model.animations.add(animation);
+			animation.boneAnimations.ensureCapacity(nodes.size);
+			animation.id = (String)anim.get("id");
+			for (OrderedMap<String, Object> node : nodes) {
+				ModelBoneAnimation nodeAnim = new ModelBoneAnimation();
+				animation.boneAnimations.add(nodeAnim);
+				nodeAnim.boneId = (String)node.get("boneId");
+				Array<OrderedMap<String, Object>> keyframes = (Array<OrderedMap<String, Object>>)node.get("keyframe");
+				nodeAnim.keyframes.ensureCapacity(keyframes.size);
+				for (OrderedMap<String, Object> keyframe : keyframes) {
+					ModelBoneKeyframe kf = new ModelBoneKeyframe();
+					nodeAnim.keyframes.add(kf);
+					kf.keytime = (Float)keyframe.get("keytime") / 1000.f;
+					Array<Object> translation = (Array<Object>)keyframe.get("translation");
+					if (translation != null && translation.size == 3)
+						kf.translation = new Vector3((Float)translation.get(0), (Float)translation.get(1), (Float)translation.get(2));
+					Array<Object> rotation = (Array<Object>)keyframe.get("rotation");
+					if (rotation != null && rotation.size == 4)
+						kf.rotation = new Quaternion((Float)rotation.get(0), (Float)rotation.get(1), (Float)rotation.get(2), (Float)rotation.get(3));
+					Array<Object> scale = (Array<Object>)keyframe.get("scale");
+					if (scale != null && scale.size == 3)
+						kf.scale = new Vector3((Float)scale.get(0), (Float)scale.get(1), (Float)scale.get(2));
+				}
+			}
+		}
 	}
 }

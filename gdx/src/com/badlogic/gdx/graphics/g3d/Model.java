@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,8 +15,13 @@ import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
+import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
+import com.badlogic.gdx.graphics.g3d.model.NodeKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelAnimation;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelBoneAnimation;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelBoneKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
@@ -26,8 +32,10 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider.FileTextureProvider;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -61,7 +69,7 @@ public class Model implements Disposable {
 	/** root nodes of the model **/
 	public final Array<Node> nodes = new Array<Node>();
 	/** animations of the model, modifying node transformations **/
-	public Array<Animation> animation = new Array<Animation>();
+	public Array<Animation> animations = new Array<Animation>();
 	/** List of disposable resources like textures or meshes the Model is responsible for disposing **/
 	protected Array<Disposable> disposables = new Array<Disposable>();
 	
@@ -86,19 +94,58 @@ public class Model implements Disposable {
 		loadMeshes(modelData.meshes);
 		loadMaterials(modelData.materials, textureProvider);
 		loadNodes(modelData.nodes);
+		loadAnimations(modelData.animations);
 		calculateTransforms();
+		setInitialTransform(null);
+	}
+	
+	private void loadAnimations (Iterable<ModelAnimation> modelAnimations) {
+		for (final ModelAnimation anim : modelAnimations) {
+			Animation animation = new Animation();
+			animation.id = anim.id;
+			for (ModelBoneAnimation nanim : anim.boneAnimations) {
+				final Node node = getNode(nanim.boneId);
+				if (node == null)
+					continue;
+				NodeAnimation nodeAnim = new NodeAnimation();
+				nodeAnim.node = node;
+				for (ModelBoneKeyframe kf : nanim.keyframes) {
+					if (kf.keytime > animation.duration)
+						animation.duration = kf.keytime;
+					NodeKeyframe keyframe = new NodeKeyframe();
+					keyframe.keytime = kf.keytime;
+					keyframe.rotation.set(kf.rotation == null ? node.rotation : kf.rotation);
+					keyframe.scale.set(kf.scale == null ? node.scale : kf.scale);
+					keyframe.translation.set(kf.translation == null ? node.translation : kf.translation);					
+					nodeAnim.keyframes.add(keyframe);
+				}
+				if (nodeAnim.keyframes.size > 0)
+					animation.nodeAnimations.add(nodeAnim);
+			}
+			if (animation.nodeAnimations.size > 0)
+				animations.add(animation);
+		}
 	}
 
+	private ObjectMap<NodePart, String[]> nodePartBones = new ObjectMap<NodePart, String[]>(); // FIXME Does this preserve array index? 
 	private void loadNodes (Iterable<ModelNode> modelNodes) {
+		nodePartBones.clear();
 		for(ModelNode node: modelNodes) {
 			nodes.add(loadNode(null, node));
+		}
+		for (ObjectMap.Entry<NodePart,String[]> e : nodePartBones.entries()) {
+			if (e.key.bones == null)
+				e.key.bones = new ArrayMap<Node, Matrix4>();
+			e.key.bones.clear();
+			for (final String n : e.value)
+				e.key.bones.put(getNode(n), null); // null because transform only has meaning for ModelInstance 
 		}
 	}
 
 	private Node loadNode (Node parent, ModelNode modelNode) {
 		Node node = new Node();
 		node.id = modelNode.id;
-		node.boneId = modelNode.boneId; // FIXME check meaning of this, breadth first index of node hierarchy?
+		// node.boneId = modelNode.boneId; // FIXME check meaning of this, breadth first index of node hierarchy?
 		node.parent = parent;
 		if (modelNode.translation != null)
 			node.translation.set(modelNode.translation);
@@ -108,21 +155,21 @@ public class Model implements Disposable {
 			node.scale.set(modelNode.scale);
 		// FIXME create temporary maps for faster lookup?
 		if (modelNode.parts != null) {
-			for(ModelNodePart modelMeshPartMaterial: modelNode.parts) {
+			for(ModelNodePart modelNodePart: modelNode.parts) {
 				MeshPart meshPart = null;
 				Material meshMaterial = null;
-				if(modelMeshPartMaterial.meshPartId != null) {
+				if(modelNodePart.meshPartId != null) {
 					for(MeshPart part: meshParts) {
 						// FIXME need to make sure this is unique by adding mesh id to mesh part id!
-						if(modelMeshPartMaterial.meshPartId.equals(part.id)) {
+						if(modelNodePart.meshPartId.equals(part.id)) {
 							meshPart = part;
 							break;
 						}
 					}
 				}
-				if(modelMeshPartMaterial.materialId != null) {
+				if(modelNodePart.materialId != null) {
 					for(Material material: materials) {
-						if(modelMeshPartMaterial.materialId.equals(material.id)) {
+						if(modelNodePart.materialId.equals(material.id)) {
 							meshMaterial = material;
 							break;
 						}
@@ -131,10 +178,12 @@ public class Model implements Disposable {
 				
 				// FIXME what if meshPart is set but meshMaterial isn't and vice versa?
 				if(meshPart != null && meshMaterial != null) {
-					NodePart meshPartMaterial = new NodePart();
-					meshPartMaterial.meshPart = meshPart;
-					meshPartMaterial.material = meshMaterial;
-					node.parts.add(meshPartMaterial);
+					NodePart nodePart = new NodePart();
+					nodePart.meshPart = meshPart;
+					nodePart.material = meshMaterial;
+					node.parts.add(nodePart);
+					if (modelNodePart.bones != null)
+						nodePartBones.put(nodePart, modelNodePart.bones);
 				}
 			}
 		}
@@ -228,6 +277,13 @@ public class Model implements Disposable {
 		return result;
 	}
 	
+	private void setInitialTransform(Node node) {
+		if (node != null)
+			node.invInitialTransform.set(node.globalTransform).inv();
+		for (Node child : (node == null ? nodes : node.children))
+			setInitialTransform(child);
+	}
+	
 	/**
 	 * Calculates the local and world transform of all {@link Node} instances in this model, recursively.
 	 * First each {@link Node#localTransform} transform is calculated based on the translation, rotation and
@@ -272,5 +328,20 @@ public class Model implements Disposable {
 			out.ext(meshBounds);
 		}
 		return out;
+	}
+	
+	public Node getNode(final String id) {
+		return getNode(id, nodes);
+	}
+	
+	private Node getNode(final String id, final Iterable<Node> nodes) {
+		for (final Node node : nodes) {
+			if (node.id.equals(id))
+				return node;
+			final Node n = getNode(id, node.children);
+			if (n != null)
+				return n;
+		}
+		return null;
 	}
 }
