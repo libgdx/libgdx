@@ -50,7 +50,7 @@ public class NewModelTest extends BaseG3dHudTest {
 	@Override
 	public void create () {
 		super.create();
-		onModelClicked("g3d/knight.g3dj");
+		onModelClicked("g3d/knight.g3db");
 	}
 
 	private final static Vector3 tmpV = new Vector3();

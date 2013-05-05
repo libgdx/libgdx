@@ -20,8 +20,8 @@ import com.badlogic.gdx.graphics.g3d.model.NodeKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelAnimation;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelBoneAnimation;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelBoneKeyframe;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeAnimation;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
@@ -103,13 +103,13 @@ public class Model implements Disposable {
 		for (final ModelAnimation anim : modelAnimations) {
 			Animation animation = new Animation();
 			animation.id = anim.id;
-			for (ModelBoneAnimation nanim : anim.boneAnimations) {
-				final Node node = getNode(nanim.boneId);
+			for (ModelNodeAnimation nanim : anim.nodeAnimations) {
+				final Node node = getNode(nanim.nodeId);
 				if (node == null)
 					continue;
 				NodeAnimation nodeAnim = new NodeAnimation();
 				nodeAnim.node = node;
-				for (ModelBoneKeyframe kf : nanim.keyframes) {
+				for (ModelNodeKeyframe kf : nanim.keyframes) {
 					if (kf.keytime > animation.duration)
 						animation.duration = kf.keytime;
 					NodeKeyframe keyframe = new NodeKeyframe();

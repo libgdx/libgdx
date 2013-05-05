@@ -13,8 +13,8 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelAnimation;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelBoneAnimation;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelBoneKeyframe;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeAnimation;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
@@ -378,16 +378,16 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				continue;
 			ModelAnimation animation = new ModelAnimation();
 			model.animations.add(animation);
-			animation.boneAnimations.ensureCapacity(nodes.size);
+			animation.nodeAnimations.ensureCapacity(nodes.size);
 			animation.id = (String)anim.get("id");
 			for (OrderedMap<String, Object> node : nodes) {
-				ModelBoneAnimation nodeAnim = new ModelBoneAnimation();
-				animation.boneAnimations.add(nodeAnim);
-				nodeAnim.boneId = (String)node.get("boneId");
+				ModelNodeAnimation nodeAnim = new ModelNodeAnimation();
+				animation.nodeAnimations.add(nodeAnim);
+				nodeAnim.nodeId = (String)node.get("boneId");
 				Array<OrderedMap<String, Object>> keyframes = (Array<OrderedMap<String, Object>>)node.get("keyframe");
 				nodeAnim.keyframes.ensureCapacity(keyframes.size);
 				for (OrderedMap<String, Object> keyframe : keyframes) {
-					ModelBoneKeyframe kf = new ModelBoneKeyframe();
+					ModelNodeKeyframe kf = new ModelNodeKeyframe();
 					nodeAnim.keyframes.add(kf);
 					kf.keytime = (Float)keyframe.get("keytime") / 1000.f;
 					Array<Object> translation = (Array<Object>)keyframe.get("translation");
