@@ -242,6 +242,7 @@ b2ContactFilter defaultFilter;
 		}
 	
 		b2World* world = new b2World( b2Vec2( gravityX, gravityY ));
+		world->SetAllowSleeping( doSleep );
 		return (jlong)world;
 	*/
 

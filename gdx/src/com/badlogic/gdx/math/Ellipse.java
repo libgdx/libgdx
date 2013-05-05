@@ -11,7 +11,6 @@ public class Ellipse implements Serializable {
 
 	public float x, y;
 	public float width, height;
-	private float halfWidth, halfHeight;
 
 	private static final long serialVersionUID = 7381533206532032099L;
 
@@ -37,10 +36,8 @@ public class Ellipse implements Serializable {
 	public boolean contains (float x, float y) {
 		x = x - this.x;
 		y = y - this.y;
-		halfWidth = width * 0.5f;
-		halfHeight = height * 0.5f;
 
-		return (x * x) / (halfWidth * halfWidth) + (y * y) / (halfHeight * halfHeight) <= 1.0f;
+		return (x * x) / (width * 0.5f * width * 0.5f) + (y * y) / (height * 0.5f * height * 0.5f) <= 1.0f;
 	}
 
 	public boolean contains (Vector2 point) {
@@ -54,4 +51,11 @@ public class Ellipse implements Serializable {
 		this.height = height;
 	}
 
+	public void set (Ellipse ellipse) { 
+		x = ellipse.x;
+		y = ellipse.y;
+		width = ellipse.width;
+		height = ellipse.height;
+	}
+	
 }

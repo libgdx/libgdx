@@ -77,8 +77,8 @@ public class PolygonRegion {
 		for (int i = 0; i < triangulatedVectors.size(); i++) {
 			localVertices[i * 2] = triangulatedVectors.get(i).x;
 			localVertices[i * 2 + 1] = triangulatedVectors.get(i).y;
-			texCoords[i * 2] = region.u + (localVertices[i * 2] - region.getRegionX()) / region.getRegionWidth();
-			texCoords[i * 2 + 1] = region.v + (1 - (localVertices[i * 2 + 1] - region.getRegionY()) / region.getRegionHeight());
+			texCoords[i*2 ] = region.getU() + uvWidth * (localVertices[i*2] / region.getRegionWidth());
+			texCoords[i*2+ 1] = region.getV() + uvHeight * (1-(localVertices[i*2+1] / region.getRegionHeight()));
 		}
 	}
 

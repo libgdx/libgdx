@@ -144,7 +144,12 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 
 	public void glCompressedTexImage2D (int target, int level, int internalformat, int width, int height, int border,
 		int imageSize, Buffer data) {
-		throw new GdxRuntimeException("not implemented");
+		if (data instanceof ByteBuffer) {
+	       GL13.glCompressedTexImage2D(target, level, internalformat, width, height, border, (ByteBuffer)data);
+	    } else {
+	        throw new GdxRuntimeException("Can't use " + data.getClass().getName()
+	           + " with this method. Use ByteBuffer instead.");
+	    }
 	}
 
 	public void glCompressedTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format,

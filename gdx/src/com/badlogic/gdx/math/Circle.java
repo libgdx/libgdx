@@ -44,6 +44,12 @@ public class Circle implements Serializable {
 		this.radius = radius;
 	}
 
+	public void set (Circle circle) { 
+		x = circle.x;
+		y = circle.y;
+		radius = circle.radius;
+	}
+	
 	public boolean contains (float x, float y) {
 		x = this.x - x;
 		y = this.y - y;

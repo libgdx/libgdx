@@ -2,6 +2,7 @@
 package com.badlogic.gdx;
 
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.TimeUtils;
 
 /** Queues events that are later passed to the wrapped {@link InputProcessor}.
  * @author Nathan Sweet */
@@ -78,7 +79,7 @@ public class InputProcessorQueue implements InputProcessor {
 	}
 
 	private void queueTime () {
-		long time = System.nanoTime();
+		long time = TimeUtils.nanoTime();
 		queue.add((int)(time >> 32));
 		queue.add((int)time);
 	}
