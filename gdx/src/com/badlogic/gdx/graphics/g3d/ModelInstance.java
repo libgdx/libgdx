@@ -313,18 +313,11 @@ public class ModelInstance implements RenderableProvider {
 				renderable.meshPartSize = nodePart.meshPart.numVertices;
 				renderable.primitiveType = nodePart.meshPart.primitiveType;
 				renderable.bones = nodePart.bones == null ? null : nodePart.bones.values;
-				if (renderable.bones == null) {
-					renderable.localTransform = null;
-					renderable.worldTransform.set(node.globalTransform);
-					if (transform != null)
-						renderable.worldTransform.mul(transform);
-				} else {
-					renderable.localTransform = node.globalTransform;
-					if (transform != null)
-						renderable.worldTransform.set(transform);
-					else
-						renderable.worldTransform.idt();
-				}
+				if (transform == null)
+					renderable.modelTransform.idt();
+				else
+					renderable.modelTransform.set(transform);
+				renderable.localTransform = node.globalTransform;
 				renderable.userData = userData;
 				renderables.add(renderable);
 			}

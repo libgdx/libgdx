@@ -19,9 +19,9 @@ import com.badlogic.gdx.math.Matrix4;
  *
  */
 public class Renderable {
-	/** the world transform **/
-	public final Matrix4 worldTransform = new Matrix4();
-	/** the local transform, only used for skinning */
+	/** the model transform **/
+	public final Matrix4 modelTransform = new Matrix4();
+	/** the local transform, or null if not used */
 	public Matrix4 localTransform;
 	/** the mesh to render **/
 	public Mesh mesh;

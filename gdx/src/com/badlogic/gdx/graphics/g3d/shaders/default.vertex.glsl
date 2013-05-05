@@ -8,7 +8,6 @@
 
 attribute vec3 a_position;
 uniform mat4 u_projTrans;
-uniform mat4 u_modelTrans;
 
 #ifdef colorFlag
 attribute vec4 a_color;
@@ -66,10 +65,6 @@ attribute vec2 a_boneWeight6;
 attribute vec2 a_boneWeight7;
 #endif //boneWeight7Flag
 
-#ifdef boneIndicesFlag
-attribute vec4 a_boneids;
-#endif //boneIndicesFlag
-
 #if defined(numBones) && defined(boneWeightsFlag)
 #if (numBones > 0) 
 #define skinningFlag
@@ -78,6 +73,9 @@ attribute vec4 a_boneids;
 
 #ifdef skinningFlag
 uniform mat4 u_localTrans;
+uniform mat4 u_modelTrans;
+#else
+uniform mat4 u_worldTrans;
 #endif //skinningFlag
 
 #if defined(numBones)
@@ -172,7 +170,7 @@ void main() {
 	#ifdef skinningFlag
 		vec4 pos = u_modelTrans * ((skinning * u_localTrans) * vec4(a_position, 1.0));
 	#else
-		vec4 pos = u_modelTrans * vec4(a_position, 1.0);
+		vec4 pos = u_worldTrans * vec4(a_position, 1.0);
 	#endif
 	gl_Position = u_projTrans * pos; // FIXME dont use a temp pos value (<kalle_h> this causes some vertex yittering with positions as low as 300)
 
