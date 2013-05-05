@@ -22,11 +22,13 @@ import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Page;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Rect;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Sort;
 
 /** Packs pages of images using the maximal rectangles bin packing algorithm by Jukka Jylänki. A brute force binary search is used
  * to pack into the smallest bin possible.
  * @author Nathan Sweet */
 public class MaxRectsPacker {
+	private RectComparator rectComparator = new RectComparator();
 	private FreeRectChoiceHeuristic[] methods = FreeRectChoiceHeuristic.values();
 	private MaxRects maxRects = new MaxRects();
 	Settings settings;
@@ -124,6 +126,8 @@ public class MaxRectsPacker {
 		// Rects don't fit on one page. Fill a whole page and return.
 		if (bestResult == null)
 			bestResult = packAtSize(false, settings.maxWidth - edgePaddingX, settings.maxHeight - edgePaddingY, inputRects);
+
+		Sort.instance().sort(bestResult.outputRects, rectComparator);
 
 		return bestResult;
 	}
@@ -670,4 +674,15 @@ public class MaxRectsPacker {
 		// CP: Choosest the placement where the rectangle touches other rects as much as possible.
 		ContactPointRule
 	};
+
+	/** {@link Comparator} implementation to compare the name fields of {@link Rect} objects */
+	private final class RectComparator implements Comparator<Rect> {
+		public RectComparator () {
+		}
+
+		@Override
+		public int compare (Rect o1, Rect o2) {
+			return settings.getRectAtlasName(o1.name).compareTo(settings.getRectAtlasName(o2.name));
+		}
+	}
 }
