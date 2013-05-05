@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.sql.DatabaseCursor;
 import com.badlogic.gdx.sql.Database;
 import com.badlogic.gdx.sql.DatabaseFactory;
+import com.badlogic.gdx.sql.SQLiteGdxException;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class DatabaseTest extends GdxTest {
@@ -41,8 +42,13 @@ public class DatabaseTest extends GdxTest {
 		dbHandler = DatabaseFactory.getNewDatabase(DATABASE_NAME, DATABASE_VERSION, DATABASE_CREATE, null);
 
 		dbHandler.setupDatabase();
-		dbHandler.openOrCreateDatabase();
-		dbHandler.execSQL(DATABASE_CREATE);
+		try {
+			dbHandler.openOrCreateDatabase();
+			dbHandler.execSQL(DATABASE_CREATE);
+		} catch (SQLiteGdxException e) {
+			e.printStackTrace();
+		}
+
 		Gdx.app.log("DatabaseTest", "created successfully");
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -63,17 +69,29 @@ public class DatabaseTest extends GdxTest {
 			public void clicked (InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
 
-				dbHandler.execSQL("INSERT INTO comments ('comment') VALUES ('This is a test comment')");
+				try {
+					dbHandler.execSQL("INSERT INTO csomments ('comment') VALUES ('This is a test comment')");
+				} catch (SQLiteGdxException e) {
+					e.printStackTrace();
+				}
 
-				DatabaseCursor cursor;
+				DatabaseCursor cursor = null;
 
-				cursor = dbHandler.rawQuery("SELECT * FROM comments");
+				try {
+					cursor = dbHandler.rawQuery("SELECT * FROM comments");
+				} catch (SQLiteGdxException e) {
+					e.printStackTrace();
+				}
 
 				while (cursor.next()) {
 					statusLabel.setText(String.valueOf(cursor.getInt(0)));
 				}
 
-				cursor = dbHandler.rawQuery(cursor, "SELECT * FROM comments");
+				try {
+					cursor = dbHandler.rawQuery(cursor, "SELECT * FROM comments");
+				} catch (SQLiteGdxException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		stage.addActor(textButton);
@@ -91,7 +109,11 @@ public class DatabaseTest extends GdxTest {
 
 	@Override
 	public void dispose () {
-		dbHandler.closeDatabase();
+		try {
+			dbHandler.closeDatabase();
+		} catch (SQLiteGdxException e) {
+			e.printStackTrace();
+		}
 		dbHandler = null;
 		Gdx.app.log("DatabaseTest", "dispose");
 	}

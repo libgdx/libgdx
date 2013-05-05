@@ -20,20 +20,24 @@ public interface Database {
 	 * {@link Database#openOrCreateDatabase()} is called. */
 	public void setupDatabase ();
 
-	/** Opens an already existing database or creates a new database if it doesn't already exists. */
-	public void openOrCreateDatabase ();
+	/** Opens an already existing database or creates a new database if it doesn't already exists.
+	 * @throws SQLiteGdxException */
+	public void openOrCreateDatabase () throws SQLiteGdxException;
 
-	/** Closes the opened database and releases all the resources related to this database. */
-	public void closeDatabase ();
+	/** Closes the opened database and releases all the resources related to this database.
+	 * @throws SQLiteGdxException */
+	public void closeDatabase () throws SQLiteGdxException;
 
 	/** Execute a single SQL statement that is NOT a SELECT or any other SQL statement that returns data.
-	 * @param sql the SQL statement to be executed. Multiple statements separated by semicolons are not supported. */
-	public void execSQL (String sql);
+	 * @param sql the SQL statement to be executed. Multiple statements separated by semicolons are not supported.
+	 * @throws SQLiteGdxException */
+	public void execSQL (String sql) throws SQLiteGdxException;
 
 	/** Runs the provided SQL and returns a {@link DatabaseCursor} over the result set.
 	 * @param sql the SQL query. The SQL string must not be ; terminated
-	 * @return {@link DatabaseCursor} */
-	public DatabaseCursor rawQuery (String sql);
+	 * @return {@link DatabaseCursor}
+	 * @throws SQLiteGdxException */
+	public DatabaseCursor rawQuery (String sql) throws SQLiteGdxException;
 
 	/** Runs the provided SQL and returns the same {@link DatabaseCursor} that was passed to this method. Use this method when you
 	 * want to avoid reallocation of {@link DatabaseCursor} object. Note that you shall only pass the {@link DatabaseCursor} object
@@ -41,7 +45,8 @@ public interface Database {
 	 * will not work.
 	 * @param cursor existing {@link DatabaseCursor} object
 	 * @param sql the SQL query. The SQL string must not be ; terminated
-	 * @return the passed {@link DatabaseCursor}. */
-	public DatabaseCursor rawQuery (DatabaseCursor cursor, String sql);
+	 * @return the passed {@link DatabaseCursor}.
+	 * @throws SQLiteGdxException */
+	public DatabaseCursor rawQuery (DatabaseCursor cursor, String sql) throws SQLiteGdxException;
 
 }

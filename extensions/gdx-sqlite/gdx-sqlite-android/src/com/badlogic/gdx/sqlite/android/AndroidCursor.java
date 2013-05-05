@@ -7,7 +7,8 @@ import android.database.sqlite.SQLiteException;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.sql.DatabaseCursor;
 import com.badlogic.gdx.sql.DatabaseFactory;
-import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.sql.SQLiteGdxException;
+import com.badlogic.gdx.sql.SQLiteGdxRuntimeException;
 
 /** @author M Rafay Aleem */
 public class AndroidCursor implements DatabaseCursor {
@@ -20,7 +21,7 @@ public class AndroidCursor implements DatabaseCursor {
 			return cursor.getBlob(columnIndex);
 		} catch (SQLiteException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the blob", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -30,7 +31,7 @@ public class AndroidCursor implements DatabaseCursor {
 			return cursor.getDouble(columnIndex);
 		} catch (SQLiteException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the double", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -40,7 +41,7 @@ public class AndroidCursor implements DatabaseCursor {
 			return cursor.getFloat(columnIndex);
 		} catch (SQLiteException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the float", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -50,7 +51,7 @@ public class AndroidCursor implements DatabaseCursor {
 			return cursor.getInt(columnIndex);
 		} catch (SQLiteException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the int", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -60,7 +61,7 @@ public class AndroidCursor implements DatabaseCursor {
 			return cursor.getLong(columnIndex);
 		} catch (SQLiteException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the long", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -70,7 +71,7 @@ public class AndroidCursor implements DatabaseCursor {
 			return cursor.getShort(columnIndex);
 		} catch (SQLiteException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the short", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -80,7 +81,7 @@ public class AndroidCursor implements DatabaseCursor {
 			return cursor.getString(columnIndex);
 		} catch (SQLiteException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the string", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -90,13 +91,19 @@ public class AndroidCursor implements DatabaseCursor {
 			return cursor.moveToNext();
 		} catch (SQLiteException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in moving the cursor to next", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
 	@Override
 	public int getCount () {
-		return cursor.getCount();
+		int count = -1;
+		try {
+			count = cursor.getCount();
+			return count;
+		} catch (SQLiteException e) {
+			throw new SQLiteGdxRuntimeException(e);
+		}
 	}
 
 	@Override
@@ -105,7 +112,7 @@ public class AndroidCursor implements DatabaseCursor {
 			cursor.close();
 		} catch (SQLiteException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in closing the cursor", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 

@@ -35,22 +35,22 @@ public class DatabaseFactory {
 				try {
 					databaseManager = (DatabaseManager)Class.forName(androidClassname).newInstance();
 				} catch (Throwable ex) {
-					throw new GdxRuntimeException("Error geting database: " + androidClassname, ex);
+					throw new GdxRuntimeException("Error getting database: " + androidClassname, ex);
 				}
 				break;
 			case Desktop:
 				try {
 					databaseManager = (DatabaseManager)Class.forName(desktopClassname).newInstance();
 				} catch (Throwable ex) {
-					throw new GdxRuntimeException("Error geting database: " + desktopClassname, ex);
+					throw new GdxRuntimeException("Error getting database: " + desktopClassname, ex);
 				}
 				break;
 			case Applet:
-				throw new GdxRuntimeException("SQLite is currently not supported in Applets");
+				throw new GdxRuntimeException("SQLite is currently not supported in Applets by this libgdx extension.");
 			case WebGL:
-				throw new GdxRuntimeException("SQLite is currently not supported in WebGL");
+				throw new GdxRuntimeException("SQLite is currently not supported in WebGL by this libgdx extension.");
 			case iOS:
-				throw new GdxRuntimeException("SQLite is currently not supported in iOS");
+				throw new GdxRuntimeException("SQLite is currently not supported in iOS by this libgdx extension.");
 			}
 		}
 		return databaseManager.getNewDatabase(dbName, dbVersion, dbOnCreateQuery, dbOnUpgradeQuery);

@@ -45,7 +45,8 @@ public interface DatabaseCursor {
 	public boolean next ();
 
 	/** Returns the numbers of rows in the cursor.
-	 * @return number of rows */
+	 * @return number of rows
+	 * @throws SQLiteGdxException */
 	public int getCount ();
 
 	/** Closes the Cursor, releasing all of its resources and making it completely invalid. */

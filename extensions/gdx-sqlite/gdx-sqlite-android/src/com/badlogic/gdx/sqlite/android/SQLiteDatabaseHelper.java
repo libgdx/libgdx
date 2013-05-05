@@ -26,7 +26,6 @@ public class SQLiteDatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate (SQLiteDatabase database) {
 		if (dbOnCreateQuery != null) database.execSQL(dbOnCreateQuery);
-
 	}
 
 	@Override

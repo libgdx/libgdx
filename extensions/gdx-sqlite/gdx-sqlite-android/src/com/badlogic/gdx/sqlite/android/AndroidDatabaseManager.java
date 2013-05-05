@@ -13,6 +13,7 @@ import com.badlogic.gdx.sql.Database;
 import com.badlogic.gdx.sql.DatabaseCursor;
 import com.badlogic.gdx.sql.DatabaseFactory;
 import com.badlogic.gdx.sql.DatabaseManager;
+import com.badlogic.gdx.sql.SQLiteGdxException;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** @author M Rafay Aleem */
@@ -45,58 +46,54 @@ public class AndroidDatabaseManager implements DatabaseManager {
 		}
 
 		@Override
-		public void openOrCreateDatabase () {
+		public void openOrCreateDatabase () throws SQLiteGdxException {
 			try {
 				database = helper.getWritableDatabase();
 			} catch (SQLiteException e) {
-				Gdx.app.log(DatabaseFactory.ERROR_TAG, "Cannot get a writable database.", e);
-				throw new GdxRuntimeException(e);
+				throw new SQLiteGdxException(e);
 			}
 		}
 
 		@Override
-		public void closeDatabase () {
+		public void closeDatabase () throws SQLiteGdxException {
 			try {
 				helper.close();
 			} catch (SQLiteException e) {
-				Gdx.app.log(DatabaseFactory.ERROR_TAG, "Cannot close the database.", e);
-				throw new GdxRuntimeException(e);
+				throw new SQLiteGdxException(e);
 			}
 		}
 
 		@Override
-		public void execSQL (String sql) {
+		public void execSQL (String sql) throws SQLiteGdxException {
 			try {
 				database.execSQL(sql);
 			} catch (SQLException e) {
-				Gdx.app.log(DatabaseFactory.ERROR_TAG, "Cannot execute the query on database.", e);
+				throw new SQLiteGdxException(e);
 			}
 		}
 
 		@Override
-		public DatabaseCursor rawQuery (String sql) {
+		public DatabaseCursor rawQuery (String sql) throws SQLiteGdxException {
 			AndroidCursor aCursor = new AndroidCursor();
 			try {
 				Cursor tmp = database.rawQuery(sql, null);
 				aCursor.setNativeCursor(tmp);
 				return aCursor;
 			} catch (SQLiteException e) {
-				Gdx.app.log(DatabaseFactory.ERROR_TAG, "Cannot execute the raw query on database.", e);
+				throw new SQLiteGdxException(e);
 			}
-			return null;
 		}
 
 		@Override
-		public DatabaseCursor rawQuery (DatabaseCursor cursor, String sql) {
+		public DatabaseCursor rawQuery (DatabaseCursor cursor, String sql) throws SQLiteGdxException {
 			AndroidCursor aCursor = (AndroidCursor)cursor;
 			try {
 				Cursor tmp = database.rawQuery(sql, null);
 				aCursor.setNativeCursor(tmp);
 				return aCursor;
 			} catch (SQLiteException e) {
-				Gdx.app.log(DatabaseFactory.ERROR_TAG, "Cannot execute the raw query on database.", e);
+				throw new SQLiteGdxException(e);
 			}
-			return null;
 		}
 
 	}

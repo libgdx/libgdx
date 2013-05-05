@@ -8,7 +8,8 @@ import java.sql.SQLException;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.sql.DatabaseCursor;
 import com.badlogic.gdx.sql.DatabaseFactory;
-import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.sql.SQLiteGdxException;
+import com.badlogic.gdx.sql.SQLiteGdxRuntimeException;
 
 /** This is a Desktop implementation of the public interface {@link DatabaseCursor}. Note that columns in JDBC are not zero-based
  * and hence +1 has been added to accomodate for this difference.
@@ -23,8 +24,8 @@ public class DesktopCursor implements DatabaseCursor {
 			Blob blob = resultSet.getBlob(columnIndex + 1);
 			return blob.getBytes(1, (int)blob.length());
 		} catch (SQLException e) {
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the blog", e);
-			throw new GdxRuntimeException(e);
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the blob", e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -34,7 +35,7 @@ public class DesktopCursor implements DatabaseCursor {
 			return resultSet.getDouble(columnIndex + 1);
 		} catch (SQLException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the double", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -44,7 +45,7 @@ public class DesktopCursor implements DatabaseCursor {
 			return resultSet.getFloat(columnIndex + 1);
 		} catch (SQLException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the float", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -54,7 +55,7 @@ public class DesktopCursor implements DatabaseCursor {
 			return resultSet.getInt(columnIndex + 1);
 		} catch (SQLException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the int", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -64,7 +65,7 @@ public class DesktopCursor implements DatabaseCursor {
 			return resultSet.getLong(columnIndex + 1);
 		} catch (SQLException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the long", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -74,7 +75,7 @@ public class DesktopCursor implements DatabaseCursor {
 			return resultSet.getShort(columnIndex + 1);
 		} catch (SQLException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the short", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -84,7 +85,7 @@ public class DesktopCursor implements DatabaseCursor {
 			return resultSet.getString(columnIndex + 1);
 		} catch (SQLException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in getting the string", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -94,7 +95,7 @@ public class DesktopCursor implements DatabaseCursor {
 			return resultSet.next();
 		} catch (SQLException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in moving the cursor to next", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -109,7 +110,7 @@ public class DesktopCursor implements DatabaseCursor {
 			resultSet.close();
 		} catch (SQLException e) {
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in closing the cursor", e);
-			throw new GdxRuntimeException(e);
+			throw new SQLiteGdxRuntimeException(e);
 		}
 	}
 
@@ -121,7 +122,8 @@ public class DesktopCursor implements DatabaseCursor {
 			resultSet.last();
 			return resultSet.getRow();
 		} catch (SQLException e) {
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error counting the number of results", e);
+			// Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error counting the number of results", e);
+			throw new SQLiteGdxRuntimeException(e);
 		} finally {
 			try {
 				resultSet.beforeFirst();
@@ -129,7 +131,6 @@ public class DesktopCursor implements DatabaseCursor {
 				Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error counting the number of results", e);
 			}
 		}
-		return 0;
 	}
 
 	public void setNativeCursor (ResultSet resultSetRef) {
