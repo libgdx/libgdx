@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-backend-android"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-sqlite"/>
+	<classpathentry kind="lib" path="/gdx-backend-android/libs/android-4.2.jar" sourcepath="D:/Portable Programs/Android Development/Android SDK/temp/docs-17_r01.zip"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
