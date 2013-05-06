@@ -70,7 +70,7 @@ public class DatabaseTest extends GdxTest {
 				super.clicked(event, x, y);
 
 				try {
-					dbHandler.execSQL("INSERT INTO csomments ('comment') VALUES ('This is a test comment')");
+					dbHandler.execSQL("INSERT INTO comments ('comment') VALUES ('This is a test comment')");
 				} catch (SQLiteGdxException e) {
 					e.printStackTrace();
 				}

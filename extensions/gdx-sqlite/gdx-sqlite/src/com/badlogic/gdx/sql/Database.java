@@ -20,7 +20,7 @@ public interface Database {
 	 * {@link Database#openOrCreateDatabase()} is called. */
 	public void setupDatabase ();
 
-	/** Opens an already existing database or creates a new database if it doesn't already exists.
+	/** Opens an already existing database or creates a new database if it doesn't already exist.
 	 * @throws SQLiteGdxException */
 	public void openOrCreateDatabase () throws SQLiteGdxException;
 

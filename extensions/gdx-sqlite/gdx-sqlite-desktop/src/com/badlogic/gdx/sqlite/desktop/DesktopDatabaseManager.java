@@ -43,7 +43,7 @@ public class DesktopDatabaseManager implements DatabaseManager {
 				Class.forName("org.sqlite.JDBC");
 			} catch (ClassNotFoundException e) {
 				Gdx.app.log(DatabaseFactory.ERROR_TAG,
-					"Unable to load the SQLite JDBC driver. Their might be a problem with your build path or project setup.", e);
+					"Unable to load the SQLite JDBC driver. There might be a problem with your build path or project setup.", e);
 				throw new GdxRuntimeException(e);
 			}
 		}

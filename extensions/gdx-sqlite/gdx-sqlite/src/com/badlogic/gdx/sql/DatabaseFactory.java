@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author M Rafay Aleem */
 public class DatabaseFactory {
 
-	public static String ERROR_TAG = "DATABASE";
+	public static final String ERROR_TAG = "DATABASE";
 	private static final String androidClassname = "com.badlogic.gdx.sqlite.android.AndroidDatabaseManager";
 	private static final String desktopClassname = "com.badlogic.gdx.sqlite.desktop.DesktopDatabaseManager";
 
