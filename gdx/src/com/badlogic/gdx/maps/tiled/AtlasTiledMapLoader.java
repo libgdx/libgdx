@@ -45,8 +45,7 @@ import com.badlogic.gdx.utils.XmlReader.Element;
  * 
  * @author Justin Shapcott
  * @author Manuel Bua */
-public class AtlasTiledMapLoader extends
-	AsynchronousAssetLoader<TiledMap, AtlasTiledMapLoader.AtlasTiledMapLoaderParameters> {
+public class AtlasTiledMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTiledMapLoader.AtlasTiledMapLoaderParameters> {
 
 	public static class AtlasTiledMapLoaderParameters extends AssetLoaderParameters<TiledMap> {
 		/** Whether to load the map for a y-up coordinate system */
@@ -158,17 +157,18 @@ public class AtlasTiledMapLoader extends
 			FileHandle tmxFile = resolve(fileName);
 			root = xml.parse(tmxFile);
 			ObjectMap<String, TextureAtlas> atlases = new ObjectMap<String, TextureAtlas>();
-			for (FileHandle atlasFile : loadAtlases(root, tmxFile)) {
-				TextureAtlas atlas = new TextureAtlas(atlasFile);
-				atlases.put(atlasFile.path(), atlas);
+			FileHandle atlasFile = loadAtlas(root, tmxFile);
+			if (atlasFile == null) {
+				throw new GdxRuntimeException("Couldn't load atlas");
 			}
+
+			TextureAtlas atlas = new TextureAtlas(atlasFile);
+			atlases.put(atlasFile.path(), atlas);
 
 			AtlasResolver.DirectAtlasResolver atlasResolver = new AtlasResolver.DirectAtlasResolver(atlases);
 			TiledMap map = loadMap(root, tmxFile, atlasResolver, parameter);
 			map.setOwnedResources(atlases.values().toArray());
-			if (parameter.forceTextureFilters) {
-				setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
-			}
+			setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
 
 			return map;
 		} catch (IOException e) {
@@ -176,7 +176,7 @@ public class AtlasTiledMapLoader extends
 		}
 	}
 
-	protected Array<FileHandle> loadAtlases (Element root, FileHandle tmxFile) throws IOException {
+	protected FileHandle loadAtlas (Element root, FileHandle tmxFile) throws IOException {
 
 		Element e = root.getChildByName("properties");
 		Array<FileHandle> atlases = new Array<FileHandle>();
@@ -185,17 +185,22 @@ public class AtlasTiledMapLoader extends
 			for (Element property : e.getChildrenByName("property")) {
 				String name = property.getAttribute("name", null);
 				String value = property.getAttribute("value", null);
-				if (name.startsWith("atlas_")) {
+				if (name.equals("atlas")) {
 					if (value == null) {
 						value = property.getText();
 					}
-					FileHandle atlas = getRelativeFileHandle(tmxFile, value);
-					atlases.add(atlas);
+
+					if (value == null || value.length() == 0) {
+						// keep trying until there are no more atlas properties
+						continue;
+					}
+
+					return getRelativeFileHandle(tmxFile, value);
 				}
 			}
 		}
 
-		return atlases;
+		return null;
 	}
 
 	private void setTextureFilters (TextureFilter min, TextureFilter mag) {
@@ -224,15 +229,12 @@ public class AtlasTiledMapLoader extends
 
 	@Override
 	public TiledMap loadSync (AssetManager manager, String fileName, AtlasTiledMapLoaderParameters parameter) {
-		if (parameter.forceTextureFilters) {
-			setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
-		}
+		setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
 
 		return map;
 	}
 
-	protected TiledMap loadMap (Element root, FileHandle tmxFile, AtlasResolver resolver,
-		AtlasTiledMapLoaderParameters parameter) {
+	protected TiledMap loadMap (Element root, FileHandle tmxFile, AtlasResolver resolver, AtlasTiledMapLoaderParameters parameter) {
 		TiledMap map = new TiledMap();
 
 		String mapOrientation = root.getAttribute("orientation", null);
@@ -311,8 +313,8 @@ public class AtlasTiledMapLoader extends
 			// get the TextureAtlas for this tileset
 			TextureAtlas atlas = null;
 			String regionsName = "";
-			if (map.getProperties().containsKey("atlas_" + name)) {
-				FileHandle atlasHandle = getRelativeFileHandle(tmxFile, map.getProperties().get("atlas_" + name, String.class));
+			if (map.getProperties().containsKey("atlas")) {
+				FileHandle atlasHandle = getRelativeFileHandle(tmxFile, map.getProperties().get("atlas", String.class));
 				atlasHandle = resolve(atlasHandle.path());
 				atlas = resolver.getAtlas(atlasHandle.path());
 				regionsName = atlasHandle.nameWithoutExtension();

@@ -75,6 +75,12 @@ public class TiledMapPacker {
 	private TmxMapLoader mapLoader = new TmxMapLoader();
 	private TiledMapPackerSettings settings;
 
+	// the tilesets output directory, relative to the global output directory
+	private static final String TilesetsOutputDir = "tilesets";
+
+	// the generate atlas' name
+	private static final String AtlasOutputName = "tileset";
+
 	// a map tracking tileids usage for any given tileset, across multiple maps
 	private HashMap<String, IntArray> tilesetUsedIds = new HashMap<String, IntArray>();
 
@@ -162,10 +168,7 @@ public class TiledMapPacker {
 			writeUpdatedTMX(map, outputDir, tmxFile);
 		}
 
-		for (TiledMapTileSet tileset : tilesetsToPack.values()) {
-			packTileSet(tileset, this.settings.stripUnusedTiles ? tilesetUsedIds.get(tileset.getName()) : null, inputDirHandle,
-				outputDir, settings);
-		}
+		packTileSet(tilesetsToPack, inputDirHandle, outputDir, settings);
 	}
 
 	/** Returns the tileset name associated with the specified tile id
@@ -204,7 +207,7 @@ public class TiledMapPacker {
 		return bucket;
 	}
 
-	private void packTileSet (TiledMapTileSet set, IntArray usedIds, FileHandle inputDirHandle, File outputDir, Settings settings)
+	private void packTileSet (ObjectMap<String, TiledMapTileSet> sets, FileHandle inputDirHandle, File outputDir, Settings settings)
 		throws IOException {
 		BufferedImage tile;
 		Vector2 tileLocation;
@@ -213,34 +216,41 @@ public class TiledMapPacker {
 
 		packer = new TexturePacker2(settings);
 
-		int tileWidth = set.getProperties().get("tilewidth", Integer.class);
-		int tileHeight = set.getProperties().get("tileheight", Integer.class);
-		int firstgid = set.getProperties().get("firstgid", Integer.class);
-		String imageName = set.getProperties().get("imagesource", String.class);
+		int tileidx = 0;
+		for (TiledMapTileSet set : sets.values()) {
 
-		TileSetLayout layout = new TileSetLayout(firstgid, set, inputDirHandle);
+			String tilesetName = set.getName();
+			IntArray usedIds = this.settings.stripUnusedTiles ? tilesetUsedIds.get(tilesetName) : null;
 
-		for (int gid = layout.firstgid, i = 0; i < layout.numTiles; gid++, i++) {
-			if (usedIds != null && !usedIds.contains(gid)) {
-				System.out.println("Stripped Id: " + gid);
-				continue;
+			int tileWidth = set.getProperties().get("tilewidth", Integer.class);
+			int tileHeight = set.getProperties().get("tileheight", Integer.class);
+			int firstgid = set.getProperties().get("firstgid", Integer.class);
+			String imageName = set.getProperties().get("imagesource", String.class);
+
+			TileSetLayout layout = new TileSetLayout(firstgid, set, inputDirHandle);
+
+			for (int gid = layout.firstgid, i = 0; i < layout.numTiles; gid++, i++, tileidx++) {
+				if (usedIds != null && !usedIds.contains(gid)) {
+					System.out.println("Stripped id #" + gid + " from tileset \"" + tilesetName + "\"");
+					continue;
+				}
+
+				tileLocation = layout.getLocation(gid);
+				tile = new BufferedImage(tileWidth, tileHeight, BufferedImage.TYPE_4BYTE_ABGR);
+
+				g = tile.createGraphics();
+				g.drawImage(layout.image, 0, 0, tileWidth, tileHeight, (int)tileLocation.x, (int)tileLocation.y, (int)tileLocation.x
+					+ tileWidth, (int)tileLocation.y + tileHeight, null);
+
+				if (isBlended(tile)) setBlended(gid);
+
+				packer.addImage(tile, AtlasOutputName + "_" + tileidx);
 			}
-
-			tileLocation = layout.getLocation(gid);
-			tile = new BufferedImage(tileWidth, tileHeight, BufferedImage.TYPE_4BYTE_ABGR);
-
-			g = tile.createGraphics();
-			g.drawImage(layout.image, 0, 0, tileWidth, tileHeight, (int)tileLocation.x, (int)tileLocation.y, (int)tileLocation.x
-				+ tileWidth, (int)tileLocation.y + tileHeight, null);
-
-			if (isBlended(tile)) setBlended(gid);
-
-			packer.addImage(tile, removeExtension(removePath(imageName)) + "_" + i);
 		}
 
-		File outputFile = getRelativeFile(outputDir, removeExtension(imageName) + " packfile");
-		outputFile.getParentFile().mkdirs();
-		packer.pack(outputFile.getParentFile(), removeExtension(removePath(imageName)));
+		File outputDirTilesets = getRelativeFile(outputDir, TilesetsOutputDir);
+		outputDirTilesets.mkdirs();
+		packer.pack(outputDirTilesets, AtlasOutputName + ".atlas");
 	}
 
 	private static String removeExtension (String s) {
@@ -305,12 +315,7 @@ public class TiledMapPacker {
 			}
 
 			setProperty(doc, map, "blended tiles", toCSV(blendedTiles));
-
-			// set used tileset atlases
-			for (TiledMapTileSet tileset : tiledMap.getTileSets()) {
-				String atlasName = removeExtension(tileset.getProperties().get("imagesource", String.class))+".atlas";
-				setProperty(doc, map, "atlas_" + tileset.getName(), atlasName);
-			}
+			setProperty(doc, map, "atlas", TilesetsOutputDir + "/" + AtlasOutputName + ".atlas");
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
