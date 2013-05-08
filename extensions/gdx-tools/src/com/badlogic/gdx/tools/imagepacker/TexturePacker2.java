@@ -51,10 +51,7 @@ public class TexturePacker2 {
 	private final MaxRectsPacker maxRectsPacker;
 	private final ImageProcessor imageProcessor;
 
-	/**
-	 * @param rootDir Can be null.
-	 * @param settings
-	 */
+	/** @param rootDir Can be null. */
 	public TexturePacker2 (File rootDir, Settings settings) {
 		this.settings = settings;
 
