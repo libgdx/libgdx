@@ -42,13 +42,9 @@ import org.xml.sax.SAXException;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
@@ -56,10 +52,8 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
-
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.IntIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** Packs a Tiled Map, adding some properties to improve the speed of the {@link TileMapRenderer}. Also runs the texture packer on
@@ -76,10 +70,10 @@ public class TiledMapPacker {
 	private TiledMapPackerSettings settings;
 
 	// the tilesets output directory, relative to the global output directory
-	private static final String TilesetsOutputDir = "tilesets";
+	private static final String TilesetsOutputDir = "tileset";
 
 	// the generate atlas' name
-	private static final String AtlasOutputName = "tileset";
+	private static final String AtlasOutputName = "packed";
 
 	// a map tracking tileids usage for any given tileset, across multiple maps
 	private HashMap<String, IntArray> tilesetUsedIds = new HashMap<String, IntArray>();

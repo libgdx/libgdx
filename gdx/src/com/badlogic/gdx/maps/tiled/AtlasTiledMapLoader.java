@@ -340,9 +340,10 @@ public class AtlasTiledMapLoader extends AsynchronousAssetLoader<TiledMap, Atlas
 
 			Array<AtlasRegion> regions = atlas.findRegions(regionsName);
 			for (AtlasRegion region : regions) {
-				StaticTiledMapTile tile = new StaticTiledMapTile(region);
 				// handle unused tile ids
 				if (region != null) {
+					StaticTiledMapTile tile = new StaticTiledMapTile(region);
+
 					if (!yUp) {
 						region.flip(false, true);
 					}
