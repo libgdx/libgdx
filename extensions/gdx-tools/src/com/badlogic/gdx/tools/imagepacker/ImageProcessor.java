@@ -43,6 +43,10 @@ public class ImageProcessor {
 	private final HashMap<String, Rect> crcs = new HashMap();
 	private final Array<Rect> rects = new Array();
 
+	/**
+	 * @param rootDir Can be null.
+	 * @param settings
+	 */
 	public ImageProcessor (File rootDir, Settings settings) {
 		this.settings = settings;
 
