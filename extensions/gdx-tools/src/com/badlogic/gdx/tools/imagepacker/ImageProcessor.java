@@ -46,8 +46,14 @@ public class ImageProcessor {
 	public ImageProcessor (File rootDir, Settings settings) {
 		this.settings = settings;
 
-		rootPath = rootDir.getAbsolutePath().replace('\\', '/');
-		if (!rootPath.endsWith("/")) rootPath += "/";
+		if (rootDir != null) {
+			rootPath = rootDir.getAbsolutePath().replace('\\', '/');
+			if (!rootPath.endsWith("/")) rootPath += "/";
+		}
+	}
+
+	public ImageProcessor (Settings settings) {
+		this(null, settings);
 	}
 
 	public void addImage (File file) {
@@ -68,6 +74,10 @@ public class ImageProcessor {
 		int dotIndex = name.lastIndexOf('.');
 		if (dotIndex != -1) name = name.substring(0, dotIndex);
 
+		addImage(image, name);
+	}
+
+	public void addImage (BufferedImage image, String name) {
 		Rect rect = null;
 
 		// Strip ".9" from file name, read ninepatch split pixels, and strip ninepatch split pixels.
