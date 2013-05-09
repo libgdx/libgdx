@@ -504,6 +504,13 @@ public class ShapeRenderer {
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x, y + height, z + depth);
 	}
+
+	/** Draws two crossed lines. */
+	public void x (float x, float y, float radius) {
+		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
+		line(x - radius, y - radius, x + radius, y + radius);
+		line(x - radius, y + radius, x + radius, y - radius);
+	}
 	
 	/** Calls {@link #circle(float, float, float, int)} by estimating the number of segments needed for a smooth circle. */
 	public void circle (float x, float y, float radius) {
