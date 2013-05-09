@@ -677,6 +677,7 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	public void dispose () {
+		clear();
 		if (ownsBatch) batch.dispose();
 	}
 
