@@ -337,7 +337,7 @@ public class TextField extends Widget {
 					}
 					if ((character == TAB || character == ENTER_ANDROID) && focusTraversal)
 						next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
-					if (Character.isLetter(character) && (!onlyFontChars || font.containsCharacter(character))) {
+					if (font.containsCharacter(character)) {
 						if (maxLength > 0 && text.length() + 1 > maxLength) {
 							return true;
 						}
@@ -374,10 +374,13 @@ public class TextField extends Widget {
 		return this.maxLength;
 	}
 
+	/** When false, text set by {@link #setText(String)} may contain characters not in the font, a space will be displayed instead.
+	 * When true (the default), characters not in the font are stripped by setText. Characters not in the font are always stripped
+	 * when typed or pasted. */
 	public void setOnlyFontChars (boolean onlyFontChars) {
 		this.onlyFontChars = onlyFontChars;
 	}
-	
+
 	public void setStyle (TextFieldStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
@@ -570,7 +573,7 @@ public class TextField extends Widget {
 			for (int i = 0; i < content.length(); i++) {
 				if (maxLength > 0 && text.length() + buffer.length() + 1 > maxLength) break;
 				char c = content.charAt(i);
-				if (onlyFontChars && !style.font.containsCharacter(c)) continue;
+				if (!style.font.containsCharacter(c)) continue;
 				if (filter != null && !filter.acceptChar(this, c)) continue;
 				buffer.append(c);
 			}
