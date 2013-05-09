@@ -281,6 +281,15 @@ public class LwjglAWTCanvas implements Application {
 		}
 		listener.pause();
 		listener.dispose();
+		
+		if (audio != null) {
+			audio.dispose();
+			Gdx.audio = null;
+		}
+		
+		if (files != null) Gdx.files = null;
+		
+		if (net != null) Gdx.net = null;
 	}
 
 	@Override
@@ -372,16 +381,7 @@ public class LwjglAWTCanvas implements Application {
 		postRunnable(new Runnable() {
 			@Override
 			public void run () {
-				setGlobals();
-				Array<LifecycleListener> listeners = lifecycleListeners;
-				synchronized(listeners) {
-					for(LifecycleListener listener: listeners) {
-						listener.pause();
-						listener.dispose();
-					}
-				}
-				LwjglAWTCanvas.this.listener.pause();
-				LwjglAWTCanvas.this.listener.dispose();
+				stop();
 				System.exit(-1);
 			}
 		});
