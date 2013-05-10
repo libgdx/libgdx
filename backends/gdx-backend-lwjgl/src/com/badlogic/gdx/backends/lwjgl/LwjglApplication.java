@@ -57,7 +57,7 @@ public class LwjglApplication implements Application {
 	}
 
 	public LwjglApplication (ApplicationListener listener) {
-		this(listener, listener.getClass().getSimpleName(), 640, 480, false);
+		this(listener, null, 640, 480, false);
 	}
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config) {
@@ -74,6 +74,8 @@ public class LwjglApplication implements Application {
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, LwjglGraphics graphics) {
 		LwjglNativesLoader.load();
+
+		if (config.title == null) config.title = listener.getClass().getSimpleName();
 
 		this.graphics = graphics;
 		if (!LwjglApplicationConfiguration.disableAudio)
