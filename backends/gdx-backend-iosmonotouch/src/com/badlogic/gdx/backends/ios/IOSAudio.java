@@ -102,14 +102,15 @@ public class IOSAudio implements Audio {
 		verify(fileHandle);
 
 		// create audio player - from file path
+		String path = fileHandle.file().getPath().replace('\\', '/');
 		NSError[] error = new NSError[1];
-		AVAudioPlayer player = AVAudioPlayer.FromUrl(NSUrl.FromFilename(fileHandle.path()), error);
+		AVAudioPlayer player = AVAudioPlayer.FromUrl(NSUrl.FromFilename(path), error);
 		if (error[0] == null) {
 			// no error: return the music object
 			return new IOSMusic(player);
 		} else {
 			// throw an exception
-			throw new GdxRuntimeException("Error opening music file at " + fileHandle.path() + ": " + error[0].ToString());
+			throw new GdxRuntimeException("Error opening music file at " + path + ": " + error[0].ToString());
 		}
 	}
 }
