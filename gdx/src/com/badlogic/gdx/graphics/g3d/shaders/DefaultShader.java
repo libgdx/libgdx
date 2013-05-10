@@ -28,14 +28,17 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class DefaultShader implements Shader {
-	// General uniform names
-	public final static String PROJECTION_TRANSFORM = "u_projTrans";
-	public final static String MODEL_TRANSFORM 		= "u_modelTrans";
-	public final static String NORMAL_TRANSFORM 		= "u_normalMatrix";
-	public final static String CAMERA_POSITION 		= "u_cameraPosition";
-	public final static String CAMERA_DIRECTION 		= "u_cameraDirection";
-	public final static String CAMERA_UP 				= "u_cameraUp";
+public class DefaultShader extends BaseShader {
+	/** Note on shadow mapping:
+<kalle_h> so api could check if depth textures are avaible
+<kalle_h> if yes use normal path
+<kalle_h> and if not then use rgb888
+<kalle_h> then pack depth to those 24bits
+<kalle_h> its quite much slower tought
+<Xoppa> ok, thanx, would you recommend vsm?
+<kalle_h> its quite leaky
+<kalle_h> hard to make it work for every cases
+	 */
 	
 	private static String defaultVertexShader = null;
 	public final static String getDefaultVertexShader() {
@@ -50,26 +53,41 @@ public class DefaultShader implements Shader {
 			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl").readString();
 		return defaultFragmentShader;
 	}
-
+	
 	protected static long implementedFlags = BlendingAttribute.Type | TextureAttribute.Diffuse | ColorAttribute.Diffuse | 
 		ColorAttribute.Specular | FloatAttribute.Shininess;
+	
 	public static boolean ignoreUnimplemented = true;
 	
-	protected final ShaderProgram program;
-	// General uniform locations, a shader doesn't have to implement all of them
-	protected int projTransLoc;
-	protected int modelTransLoc;
-	protected int normalTransLoc;
-	protected int cameraPosLoc;
-	protected int cameraDirLoc;
-	protected int cameraUpLoc;
-	// Material uniform locations
-	protected int diffuseTextureLoc;
-	protected int diffuseColorLoc;
-	protected int specularColorLoc;
-	protected int shininessLoc;
-	// Lighting uniform locations
-	protected int ambientCubemapLoc;
+	// Global uniforms
+	protected final int u_projTrans					= registerUniform("u_projTrans");
+	protected final int u_cameraPosition			= registerUniform("u_cameraPosition");
+	protected final int u_cameraDirection			= registerUniform("u_cameraDirection");
+	protected final int u_cameraUp					= registerUniform("u_cameraUp");
+	// Object uniforms
+	protected final int u_modelTrans					= registerUniform("u_modelTrans");
+	protected final int u_localTrans					= registerUniform("u_localTrans");
+	protected final int u_worldTrans					= registerUniform("u_worldTrans");
+	protected final int u_normalMatrix				= registerUniform("u_normalMatrix", 0, Usage.Normal);
+	protected final int u_bones						= registerUniform("u_bones");
+	// Material uniforms
+	protected final int u_shininess					= registerUniform("u_shininess", FloatAttribute.Shininess);
+	protected final int u_diffuseColor				= registerUniform("u_diffuseColor", ColorAttribute.Diffuse);
+	protected final int u_diffuseTexture			= registerUniform("u_diffuseTexture", TextureAttribute.Diffuse);
+	protected final int u_specularColor				= registerUniform("u_specularColor", ColorAttribute.Specular);
+	protected final int u_specularTexture			= registerUniform("u_specularTexture", TextureAttribute.Specular);
+	// Lighting uniforms
+	protected final int u_ambientLight				= registerUniform("u_ambientLight");
+	protected final int u_ambientCubemap			= registerUniform("u_ambientCubemap");
+	protected final int u_dirLights0color			= registerUniform("u_dirLights[0].color");
+	protected final int u_dirLights0direction		= registerUniform("u_dirLights[0].direction");
+	protected final int u_dirLights1color			= registerUniform("u_dirLights[1].color");
+	protected final int u_pointLights0color		= registerUniform("u_pointLights[0].color");
+	protected final int u_pointLights0position	= registerUniform("u_pointLights[0].position");
+	protected final int u_pointLights0intensity	= registerUniform("u_pointLights[0].intensity");
+	protected final int u_pointLights1color		= registerUniform("u_pointLights[1].color");
+	// FIXME Cache vertex attribute locations...
+		
 	protected int dirLightsLoc;
 	protected int dirLightsColorOffset;
 	protected int dirLightsDirectionOffset;
@@ -79,35 +97,37 @@ public class DefaultShader implements Shader {
 	protected int pointLightsPositionOffset;
 	protected int pointLightsIntensityOffset;
 	protected int pointLightsSize;
-	
-	
+
 	protected boolean lighting;
 	protected final AmbientCubemap ambientCubemap = new AmbientCubemap();
 	protected final DirectionalLight directionalLights[];
 	protected final PointLight pointLights[];
 	
+	protected final float bones[];
+	
 	protected RenderContext context;
 	protected long mask;
 	protected long attributes;
 	
-	public DefaultShader(final Material material, final VertexAttributes attributes, boolean lighting, int numDirectional, int numPoint, int numSpot) {
-		this(getDefaultVertexShader(), getDefaultFragmentShader(), material, attributes, lighting, numDirectional, numPoint, numSpot);
+	protected final ShaderProgram program;
+	
+	public DefaultShader(final Material material, final VertexAttributes attributes, boolean lighting, int numDirectional, int numPoint, int numSpot, int numBones) {
+		this(getDefaultVertexShader(), getDefaultFragmentShader(), material, attributes, lighting, numDirectional, numPoint, numSpot, numBones);
 	}
 	
-	public DefaultShader(final long mask, final long attributes, boolean lighting, int numDirectional, int numPoint, int numSpot) {
-		this(getDefaultVertexShader(), getDefaultFragmentShader(), mask, attributes, lighting, numDirectional, numPoint, numSpot);
+	public DefaultShader(final long mask, final long attributes, boolean lighting, int numDirectional, int numPoint, int numSpot, int numBones) {
+		this(getDefaultVertexShader(), getDefaultFragmentShader(), mask, attributes, lighting, numDirectional, numPoint, numSpot, numBones);
 	}
 
-	public DefaultShader(final String vertexShader, final String fragmentShader, final Material material, final VertexAttributes attributes, boolean lighting, int numDirectional, int numPoint, int numSpot) {
-		this(vertexShader, fragmentShader, material.getMask(), getAttributesMask(attributes), lighting, numDirectional, numPoint, numSpot);
+	public DefaultShader(final String vertexShader, final String fragmentShader, final Material material, final VertexAttributes attributes, boolean lighting, int numDirectional, int numPoint, int numSpot, int numBones) {
+		this(vertexShader, fragmentShader, material.getMask(), getAttributesMask(attributes), lighting, numDirectional, numPoint, numSpot, numBones);
 	}
-	
-	public DefaultShader(final String vertexShader, final String fragmentShader, final long mask, final long attributes, boolean lighting, int numDirectional, int numPoint, int numSpot) {
-		if (!Gdx.graphics.isGL20Available())
-			throw new GdxRuntimeException("This shader requires OpenGL ES 2.0");
-		
-		ShaderProgram.pedantic = false; // FIXME
-		
+
+	public DefaultShader(final String vertexShader, final String fragmentShader, final long mask, final long attributes, boolean lighting, int numDirectional, int numPoint, int numSpot, int numBones) {
+		final String prefix = createPrefix(mask, attributes, lighting, numDirectional, numPoint, numSpot, numBones);
+		Gdx.app.log("Test", "Prefix:\n"+prefix);
+		program = new ShaderProgram(prefix + vertexShader, prefix + fragmentShader);
+		init(program, mask, attributes, 0);
 		this.lighting = lighting;
 		this.directionalLights = new DirectionalLight[lighting && numDirectional > 0 ? numDirectional : 0];
 		for (int i = 0; i < directionalLights.length; i++)
@@ -115,14 +135,47 @@ public class DefaultShader implements Shader {
 		this.pointLights = new PointLight[lighting && numPoint > 0 ? numPoint : 0];
 		for (int i = 0; i < pointLights.length; i++)
 			pointLights[i] = new PointLight();
+		bones = new float[numBones > 0 ? numBones * 16 : 0];
 		
-		String prefix = "";
 		this.mask = mask;
 		this.attributes = attributes;
 				
 		if (!ignoreUnimplemented && (implementedFlags & mask) != mask)
 			throw new GdxRuntimeException("Some attributes not implemented yet ("+mask+")");
 		
+		dirLightsLoc 					= loc(u_dirLights0color);
+		dirLightsColorOffset			= loc(u_dirLights0color) - dirLightsLoc;
+		dirLightsDirectionOffset 	= loc(u_dirLights0direction) - dirLightsLoc;
+		dirLightsSize 					= loc(u_dirLights1color) - dirLightsLoc;
+		
+		pointLightsLoc 				= loc(u_pointLights0color);
+		pointLightsColorOffset 		= loc(u_pointLights0color) - pointLightsLoc;
+		pointLightsPositionOffset 	= loc(u_pointLights0position) - pointLightsLoc;
+		pointLightsIntensityOffset = loc(u_pointLights0intensity) - pointLightsLoc;
+		pointLightsSize 				= loc(u_pointLights1color)- pointLightsLoc;
+	}
+	
+	protected final static long blendAttributes[] = {
+		Usage.Generic << 1, Usage.Generic << 2, Usage.Generic << 3, Usage.Generic << 4, 
+		Usage.Generic << 5, Usage.Generic << 6, Usage.Generic << 7, Usage.Generic << 8
+	}; // FIXME this is a temporary, quick and dirty fix and should be changed
+	protected static long getAttributesMask(final VertexAttributes attributes) {
+		long result = 0;
+		int currentBone = 0; // FIXME 
+		final int n = attributes.size();
+		for (int i = 0; i < n; i++) {
+			long a = (long)attributes.get(i).usage;
+			if (a == Usage.Generic) { 
+				if (attributes.get(i).alias.startsWith("a_boneWeight"))
+					a = blendAttributes[Integer.parseInt(attributes.get(i).alias.substring(12))];
+			}
+			result |= a;
+		}
+		return result;
+	}
+	
+	private String createPrefix(final long mask, final long attributes, boolean lighting, int numDirectional, int numPoint, int numSpot, int numBones) {
+		String prefix = "";
 		if ((attributes & Usage.Color) == Usage.Color)
 			prefix += "#define colorFlag\n";
 		if ((attributes & Usage.Normal) == Usage.Normal) {
@@ -134,58 +187,23 @@ public class DefaultShader implements Shader {
 				prefix += "#define numPointLights "+numPoint+"\n";
 			}
 		}
-		if (can(BlendingAttribute.Type))
+		for (int i = 0; i < blendAttributes.length; i++) {
+			if ((attributes & blendAttributes[i]) == blendAttributes[i])
+				prefix += "#define boneWeight"+i+"Flag\n";
+		}
+		if ((mask & BlendingAttribute.Type) == BlendingAttribute.Type)
 			prefix += "#define "+BlendingAttribute.Alias+"Flag\n";
-		if (can(TextureAttribute.Diffuse))
+		if ((mask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse)
 			prefix += "#define "+TextureAttribute.DiffuseAlias+"Flag\n";
-		if (can(ColorAttribute.Diffuse))
+		if ((mask & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
 			prefix += "#define "+ColorAttribute.DiffuseAlias+"Flag\n";
-		if (can(ColorAttribute.Specular))
+		if ((mask & ColorAttribute.Specular) == ColorAttribute.Specular)
 			prefix += "#define "+ColorAttribute.SpecularAlias+"Flag\n";
-		if (can(FloatAttribute.Shininess))
+		if ((mask & FloatAttribute.Shininess) == FloatAttribute.Shininess)
 			prefix += "#define "+FloatAttribute.ShininessAlias+"Flag\n";
-
-		program = new ShaderProgram(prefix + vertexShader, prefix + fragmentShader);
-		if (!program.isCompiled())
-			throw new GdxRuntimeException(program.getLog());
-		
-		// General uniforms
-		projTransLoc = program.getUniformLocation(PROJECTION_TRANSFORM);
-		modelTransLoc = program.getUniformLocation(MODEL_TRANSFORM);
-		normalTransLoc = program.getUniformLocation(NORMAL_TRANSFORM);
-		cameraPosLoc = program.getUniformLocation(CAMERA_POSITION);
-		cameraDirLoc = program.getUniformLocation(CAMERA_DIRECTION);
-		cameraUpLoc = program.getUniformLocation(CAMERA_UP);
-		
-		// Material uniforms
-		diffuseTextureLoc = !can(TextureAttribute.Diffuse) ? -1 : program.getUniformLocation(TextureAttribute.DiffuseAlias);
-		diffuseColorLoc = !can(ColorAttribute.Diffuse) ? -1 : program.getUniformLocation(ColorAttribute.DiffuseAlias);
-		specularColorLoc = !can(ColorAttribute.Specular) ? -1 : program.getUniformLocation(ColorAttribute.SpecularAlias);
-		shininessLoc = !can(FloatAttribute.Shininess) ? -1 : program.getUniformLocation(FloatAttribute.ShininessAlias);
-		
-		// Lighting uniforms
-		ambientCubemapLoc = lighting ? program.fetchUniformLocation("ambientCubemap") : -1;
-		
-		dirLightsLoc = lighting ? program.fetchUniformLocation("directionalLights[0].color") : -1;
-		dirLightsColorOffset = dirLightsLoc >= 0 ? 0 : -1; //program.fetchUniformLocation("directionalLights[0].color") - directionalLightsLoc : -1;
-		dirLightsDirectionOffset = dirLightsLoc >= 0 ? program.fetchUniformLocation("directionalLights[0].direction") - dirLightsLoc : -1;
-		dirLightsSize = (numDirectional > 1 && dirLightsLoc >= 0) ? program.fetchUniformLocation("directionalLights[1].color") - dirLightsLoc : -1;
-		
-		pointLightsLoc = lighting ? program.fetchUniformLocation("pointLights[0].color") : -1;
-		pointLightsColorOffset = pointLightsLoc >= 0 ? 0 : -1; //program.fetchUniformLocation("pointLights[0].color") - pointLightsLoc : -1;
-		pointLightsPositionOffset = pointLightsLoc >= 0 ? program.fetchUniformLocation("pointLights[0].position") - pointLightsLoc : -1;
-		pointLightsIntensityOffset = pointLightsLoc >= 0 ? program.fetchUniformLocation("pointLights[0].intensity") - pointLightsLoc : -1;
-		pointLightsSize = (numPoint > 1 && pointLightsLoc >= 0) ? program.fetchUniformLocation("pointLights[1].color") - pointLightsLoc : -1;
-		
-		// FIXME Cache vertex attribute locations...
-	}
-	
-	private static long getAttributesMask(final VertexAttributes attributes) {
-		long result = 0;
-		final int n = attributes.size();
-		for (int i = 0; i < n; i++)
-			result |= (long)attributes.get(i).usage;
-		return result;
+		if (numBones > 0)
+			prefix += "#define numBones "+numBones+"\n";
+		return prefix;
 	}
 	
 	@Override
@@ -216,9 +234,13 @@ public class DefaultShader implements Shader {
 	}
 
 	private Mesh currentMesh;
-	private Matrix4 currentTransform;
+	private Matrix4 currentModelTransform;
+	private Matrix4 currentLocalTransform;
+	private Matrix4 currentWorldTransform;
+	private Matrix4 combinedWorldTransform = new Matrix4();
 	private Matrix3 normalMatrix = new Matrix3();
 	private Camera camera;
+	private final static Matrix4 idtMatrix = new Matrix4();
 	
 	@Override
 	public void begin (final Camera camera, final RenderContext context) {
@@ -227,29 +249,42 @@ public class DefaultShader implements Shader {
 		program.begin();
 		context.setDepthTest(true, GL10.GL_LEQUAL);
 		
-		if (projTransLoc >= 0)
-			program.setUniformMatrix(projTransLoc, camera.combined);
-		if (cameraPosLoc >= 0)
-			program.setUniformf(cameraPosLoc, camera.position);
-		if (cameraDirLoc >= 0)
-			program.setUniformf(cameraDirLoc, camera.direction);
-		if (cameraUpLoc >= 0)
-			program.setUniformf(cameraUpLoc, camera.up);
+		set(u_projTrans, camera.combined);
+		set(u_cameraPosition, camera.position);
+		set(u_cameraDirection, camera.direction);
+		set(u_cameraUp, camera.up);
 		
 		for (final DirectionalLight dirLight : directionalLights)
 			dirLight.set(0,0,0,0,-1,0);
 		for (final PointLight pointLight : pointLights)
 			pointLight.set(0,0,0,0,0,0,0);
+		for (int i = 0; i < bones.length; i++)
+			bones[i] = idtMatrix.val[i%16];
 	}
 
+	private void setWorldTransform(final Matrix4 value, final boolean force) {
+		if (force || ((currentWorldTransform == null) != (value == null)) || !currentWorldTransform.equals(value)) { // FIXME implement Matrix4#equals
+			set(u_worldTrans, (currentWorldTransform = value) == null ? idtMatrix : value);
+			set(u_normalMatrix, normalMatrix.set(currentWorldTransform == null ? idtMatrix : currentWorldTransform));
+		}
+	}
+	
 	@Override
 	public void render (final Renderable renderable) {
 		if (!renderable.material.has(BlendingAttribute.Type))
 			context.setBlending(false, GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		if (currentTransform != renderable.transform) {
-			program.setUniformMatrix(modelTransLoc, currentTransform = renderable.transform);
-			program.setUniformMatrix(normalTransLoc, normalMatrix.set(currentTransform));
-		}
+		if (currentLocalTransform != renderable.localTransform)
+			set(u_localTrans, (currentLocalTransform = renderable.localTransform) == null ? idtMatrix : renderable.localTransform);
+		if (currentModelTransform != renderable.modelTransform)
+			set(u_modelTrans, (currentWorldTransform = renderable.modelTransform) == null ? idtMatrix : renderable.modelTransform);
+		if (currentLocalTransform == null && currentModelTransform == null)
+			setWorldTransform(idtMatrix, false);
+		else if (currentLocalTransform == null)
+			setWorldTransform(currentModelTransform, false);
+		else if (currentModelTransform == null)
+			setWorldTransform(currentLocalTransform, false);
+		else
+			setWorldTransform(combinedWorldTransform.set(currentLocalTransform).mul(currentModelTransform), true);
 		bindMaterial(renderable);
 		if (lighting)
 			bindLights(renderable);
@@ -258,6 +293,14 @@ public class DefaultShader implements Shader {
 				currentMesh.unbind(program);
 			renderable.mesh.setAutoBind(false); // FIXME this doesn't belong here
 			(currentMesh = renderable.mesh).bind(program);
+		}
+		if (hasUniform(u_bones)) {
+			for (int i = 0; i < bones.length; i++) {
+				final int idx = i/16;
+				bones[i] = (renderable.bones == null || idx >= renderable.bones.length || renderable.bones[idx] == null) ? 
+					idtMatrix.val[i%16] : renderable.bones[idx].val[i%16];
+			}
+			program.setUniformMatrix4fv(loc(u_bones), bones, 0, bones.length);
 		}
 		renderable.mesh.render(program, renderable.primitiveType, renderable.meshPartOffset, renderable.meshPartSize);
 	}
@@ -268,7 +311,7 @@ public class DefaultShader implements Shader {
 			currentMesh.unbind(program);
 			currentMesh = null;
 		}
-		currentTransform = null;
+		currentModelTransform = null;
 		currentTextureAttribute = null;
 		currentMaterial = null;
 		program.end();
@@ -286,18 +329,18 @@ public class DefaultShader implements Shader {
 			else if (ColorAttribute.is(t)) {
 				ColorAttribute col = (ColorAttribute)attr;
 				if ((t & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
-					program.setUniformf(diffuseColorLoc, col.color);
+					set(u_diffuseColor, col.color);
 				else if ((t & ColorAttribute.Specular) == ColorAttribute.Specular)
-					program.setUniformf(specularColorLoc, col.color);
+					set(u_specularColor, col.color);
 			}
 			else if (TextureAttribute.is(t)) {
 				TextureAttribute tex = (TextureAttribute)attr;
 				if ((t & TextureAttribute.Diffuse) == TextureAttribute.Diffuse)
-					bindTextureAttribute(diffuseTextureLoc, tex);
+					bindTextureAttribute(loc(u_diffuseTexture), tex);
 				// TODO else if (..)
 			}
 			else if ((t & FloatAttribute.Shininess) == FloatAttribute.Shininess)
-				program.setUniformf(shininessLoc, ((FloatAttribute)attr).value);
+				set(u_shininess, ((FloatAttribute)attr).value);
 			else if(!ignoreUnimplemented)
 					throw new GdxRuntimeException("Unknown material attribute: "+attr.toString());
 		}
@@ -316,8 +359,8 @@ public class DefaultShader implements Shader {
 		final Array<DirectionalLight> dirs = lights.directionalLights; 
 		final Array<PointLight> points = lights.pointLights;
 		
-		if (ambientCubemapLoc >= 0) {
-			renderable.transform.getTranslation(tmpV1);
+		if (hasUniform(u_ambientCubemap)) {
+			renderable.modelTransform.getTranslation(tmpV1);
 			ambientCubemap.set(lights.ambientLight);
 			
 			for (int i = directionalLights.length; i < dirs.size; i++)
@@ -328,7 +371,7 @@ public class DefaultShader implements Shader {
 			
 			ambientCubemap.clamp();
 			
-			program.setUniform3fv(ambientCubemapLoc, ambientCubemap.data, 0, ambientCubemap.data.length);
+			program.setUniform3fv(loc(u_ambientCubemap), ambientCubemap.data, 0, ambientCubemap.data.length);
 		}
 		
 		if (dirLightsLoc >= 0) {

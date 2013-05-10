@@ -19,8 +19,10 @@ import com.badlogic.gdx.math.Matrix4;
  *
  */
 public class Renderable {
-	/** the world transform **/
-	public final Matrix4 transform = new Matrix4();
+	/** the model transform **/
+	public final Matrix4 modelTransform = new Matrix4();
+	/** the local transform, or null if not used */
+	public Matrix4 localTransform;
 	/** the mesh to render **/
 	public Mesh mesh;
 	/** the offset into the mesh's indices **/
@@ -31,6 +33,8 @@ public class Renderable {
 	public int primitiveType;
 	/** the material to be applied to the mesh **/
 	public Material material;
+	/** the bones transformations used for skinning, or null if not applicable */  
+	public Matrix4 bones[];
 	/** the lights to be used to render this Renderable, may be null **/
 	public Lights lights;
 	/** the Shader to be used to render this Renderable, may be null **/

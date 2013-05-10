@@ -15,7 +15,7 @@ public class NodeKeyframe {
 	/** the translation, given in local space, relative to the parent **/
 	public final Vector3 translation = new Vector3();
 	/** the scale, given in local space relative to the parent **/
-	public final Vector3 scale = new Vector3();
+	public final Vector3 scale = new Vector3(1,1,1);
 	/** the rotation, given in local space, relative to the parent **/
 	public final Quaternion rotation = new Quaternion();
 }
