@@ -198,7 +198,7 @@ void main() {
 	gl_Position = u_projTrans * pos; // FIXME dont use a temp pos value (<kalle_h> this causes some vertex yittering with positions as low as 300)
 	
 	#if defined(lightingFlag) && defined(phongFlag)
-	v_pos = gl_Position.xyz;
+		v_pos = gl_Position.xyz;
 	#endif
 
 	#if defined(normalFlag)
@@ -262,37 +262,37 @@ void main() {
 			v_viewVec = normalize(u_cameraPosition - pos.xyz);
 		#else //phongFlag
 			
-		#ifdef specularFlag
-			v_lightSpecular = vec3(0.0);
-			vec3 viewVec = normalize(u_cameraPosition - pos.xyz);
-		#endif // specularFlag
-			
-		#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
-			for (int i = 0; i < numDirectionalLights; i++) {
-				vec3 lightDir = -u_dirLights[i].direction;
-				float NdotL = clamp(dot(v_normal, lightDir), 0.0, 1.0);
-				v_lightDiffuse += u_dirLights[i].color * NdotL;
-				#ifdef specularFlag
-					float halfDotView = dot(v_normal, normalize(lightDir + viewVec));
-					v_lightSpecular += u_dirLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess), 0.0, 1.0);
-				#endif // specularFlag
-			}
-		#endif // numDirectionalLights
-
-		#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
-			for (int i = 0; i < numPointLights; i++) {
-				vec3 lightDir = u_pointLights[i].position - pos.xyz;
-				float dist2 = dot(lightDir, lightDir);
-				lightDir *= inversesqrt(dist2);
-				float NdotL = clamp(dot(v_normal, lightDir), 0.0, 2.0);
-				float falloff = clamp(u_pointLights[i].intensity / (1.0 + dist2), 0.0, 2.0); // FIXME mul intensity on cpu
-				v_lightDiffuse += u_pointLights[i].color * (NdotL * falloff);
-				#ifdef specularFlag
-					float halfDotView = clamp(dot(v_normal, normalize(lightDir + viewVec)), 0.0, 2.0);
-					v_lightSpecular += u_pointLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess) * falloff, 0.0, 2.0);
-				#endif // specularFlag
-			}
-		#endif // numPointLights
+			#ifdef specularFlag
+				v_lightSpecular = vec3(0.0);
+				vec3 viewVec = normalize(u_cameraPosition - pos.xyz);
+			#endif // specularFlag
+				
+			#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
+				for (int i = 0; i < numDirectionalLights; i++) {
+					vec3 lightDir = -u_dirLights[i].direction;
+					float NdotL = clamp(dot(v_normal, lightDir), 0.0, 1.0);
+					v_lightDiffuse += u_dirLights[i].color * NdotL;
+					#ifdef specularFlag
+						float halfDotView = dot(v_normal, normalize(lightDir + viewVec));
+						v_lightSpecular += u_dirLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess), 0.0, 1.0);
+					#endif // specularFlag
+				}
+			#endif // numDirectionalLights
+	
+			#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
+				for (int i = 0; i < numPointLights; i++) {
+					vec3 lightDir = u_pointLights[i].position - pos.xyz;
+					float dist2 = dot(lightDir, lightDir);
+					lightDir *= inversesqrt(dist2);
+					float NdotL = clamp(dot(v_normal, lightDir), 0.0, 2.0);
+					float falloff = clamp(u_pointLights[i].intensity / (1.0 + dist2), 0.0, 2.0); // FIXME mul intensity on cpu
+					v_lightDiffuse += u_pointLights[i].color * (NdotL * falloff);
+					#ifdef specularFlag
+						float halfDotView = clamp(dot(v_normal, normalize(lightDir + viewVec)), 0.0, 2.0);
+						v_lightSpecular += u_pointLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess) * falloff, 0.0, 2.0);
+					#endif // specularFlag
+				}
+			#endif // numPointLights
 		#endif //!phongFlag
 	#endif // lightingFlag
 }

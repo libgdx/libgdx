@@ -128,8 +128,10 @@ void main() {
 		vec4 diffuse = vec4(1.0);
 	#endif
 
-	#if !defined(specularFlag) || !defined(lightingFlag)
+	#if (!defined(lightingFlag))  
 		gl_FragColor.rgb = diffuse.rgb;
+	#elif (!defined(specularFlag))
+		gl_FragColor.rgb = (diffuse.rgb * v_lightDiffuse);
 		
 	#elif defined(phongFlag)
 		vec3 lightDiffuse = v_lightDiffuse;
@@ -186,7 +188,7 @@ void main() {
 		#else //if defined(lightingFlag)
 			vec3 specular = v_lightSpecular;
 		#endif
-		gl_FragColor.rgb = diffuse.rgb * v_lightDiffuse + specular;
+		gl_FragColor.rgb = (diffuse.rgb * v_lightDiffuse) + specular;
 	#endif //phongFlag
 
 	#ifdef blendedFlag
