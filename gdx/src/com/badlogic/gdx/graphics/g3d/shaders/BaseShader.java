@@ -77,10 +77,10 @@ public abstract class BaseShader implements Shader {
 			if (((material & entry.material) == entry.material) && 
 				((attributes & entry.attribute) == entry.attribute) && 
 				((userMask & entry.userFlag) == entry.userFlag))  {
-				Gdx.app.log("Test", "Fetching uniform: "+entry.name);
 				uniformLocations[i] = program.fetchUniformLocation(entry.name, false);
 			} else
 				uniformLocations[i] = -1;
+			Gdx.app.log("Test", "Uniform: "+entry.name+" = "+uniformLocations[i]);
 		}
 		UniformEntry.pool.freeAll(uniformEntries);
 		uniformEntries.clear();

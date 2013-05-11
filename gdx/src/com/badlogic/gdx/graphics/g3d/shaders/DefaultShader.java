@@ -76,6 +76,7 @@ public class DefaultShader extends BaseShader {
 	protected final int u_diffuseTexture			= registerUniform("u_diffuseTexture", TextureAttribute.Diffuse);
 	protected final int u_specularColor				= registerUniform("u_specularColor", ColorAttribute.Specular);
 	protected final int u_specularTexture			= registerUniform("u_specularTexture", TextureAttribute.Specular);
+	protected final int u_normalTexture				= registerUniform("u_normalTexture", TextureAttribute.Normal);
 	// Lighting uniforms
 	protected final int u_ambientLight				= registerUniform("u_ambientLight");
 	protected final int u_ambientCubemap			= registerUniform("u_ambientCubemap");
@@ -176,7 +177,7 @@ public class DefaultShader extends BaseShader {
 	
 	private String createPrefix(final long mask, final long attributes, boolean lighting, int numDirectional, int numPoint, int numSpot, int numBones) {
 		String prefix = "";
-		if ((attributes & Usage.Color) == Usage.Color)
+		if (((attributes & Usage.Color) == Usage.Color) || ((attributes & Usage.ColorPacked) == Usage.ColorPacked))
 			prefix += "#define colorFlag\n";
 		if ((attributes & Usage.Normal) == Usage.Normal) {
 			prefix += "#define normalFlag\n";
@@ -195,6 +196,9 @@ public class DefaultShader extends BaseShader {
 			prefix += "#define "+BlendingAttribute.Alias+"Flag\n";
 		if ((mask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse)
 			prefix += "#define "+TextureAttribute.DiffuseAlias+"Flag\n";
+		//prefix += "#define phongFlag\n";
+		if ((mask & TextureAttribute.Normal) == TextureAttribute.Normal)
+			prefix += "#define "+TextureAttribute.NormalAlias+"Flag\n";
 		if ((mask & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
 			prefix += "#define "+ColorAttribute.DiffuseAlias+"Flag\n";
 		if ((mask & ColorAttribute.Specular) == ColorAttribute.Specular)
@@ -322,7 +326,7 @@ public class DefaultShader extends BaseShader {
 		if (currentMaterial == renderable.material)
 			return;
 		currentMaterial = renderable.material;
-		for (Material.Attribute attr : currentMaterial) {
+		for (final Material.Attribute attr : currentMaterial) {
 			final long t = attr.type;
 			if (BlendingAttribute.is(t))
 				context.setBlending(true, ((BlendingAttribute)attr).sourceFunction, ((BlendingAttribute)attr).destFunction);
@@ -334,9 +338,11 @@ public class DefaultShader extends BaseShader {
 					set(u_specularColor, col.color);
 			}
 			else if (TextureAttribute.is(t)) {
-				TextureAttribute tex = (TextureAttribute)attr;
-				if ((t & TextureAttribute.Diffuse) == TextureAttribute.Diffuse)
+				final TextureAttribute tex = (TextureAttribute)attr;
+				if ((t & TextureAttribute.Diffuse) == TextureAttribute.Diffuse && hasUniform(u_diffuseTexture))
 					bindTextureAttribute(loc(u_diffuseTexture), tex);
+				if ((t & TextureAttribute.Normal) == TextureAttribute.Normal && hasUniform(u_normalTexture))
+					bindTextureAttribute(loc(u_normalTexture), tex);
 				// TODO else if (..)
 			}
 			else if ((t & FloatAttribute.Shininess) == FloatAttribute.Shininess)

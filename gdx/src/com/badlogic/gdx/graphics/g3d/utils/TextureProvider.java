@@ -19,11 +19,11 @@ public interface TextureProvider {
 		@Override
 		public Texture load (String fileName) {
 			return new Texture(Gdx.files.internal(fileName));
-		}		
+		}
 	}
 	
 	public static class AssetTextureProvider implements TextureProvider {
-		public AssetManager assetManager;
+		public final AssetManager assetManager;
 		public AssetTextureProvider(final AssetManager assetManager) {
 			this.assetManager = assetManager;
 		}

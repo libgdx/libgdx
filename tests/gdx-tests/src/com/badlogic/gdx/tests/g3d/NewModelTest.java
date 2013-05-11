@@ -38,7 +38,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
 
 public class NewModelTest extends BaseG3dHudTest {
-	Lights lights = new Lights(0.5f, 0.5f, 0.5f).add(
+	Lights lights = new Lights(0.2f, 0.2f, 0.2f).add(
 		new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -1f, 0f)
 		//new PointLight().set(1f, 0f, 0f, 5f, 5f, 5f, 15f),
 		//new PointLight().set(0f, 0f, 1f, -5f, 5f, 5f, 15f),
@@ -50,6 +50,7 @@ public class NewModelTest extends BaseG3dHudTest {
 	@Override
 	public void create () {
 		super.create();
+		showAxes = false;
 		onModelClicked("g3d/knight.g3db");
 	}
 
@@ -94,13 +95,16 @@ public class NewModelTest extends BaseG3dHudTest {
 		assets.finishLoading();
 		
 		instances.clear();
-		for (float x = -10; x <= 10; x += 10) {
+		final ModelInstance instance = new ModelInstance(assets.get("data/"+name, Model.class));
+		instances.add(instance);
+		
+		/*for (float x = -10; x <= 10; x += 10) {
 			for (float z = -10; z <= 10; z += 10) {
 				final ModelInstance instance = new ModelInstance(assets.get("data/"+name, Model.class));
 				instance.transform.translate(x, 9.492372f, z);
 				instances.add(instance);
 			}
-		}
+		}*/
 	}
 	
 	protected void switchAnimation() {

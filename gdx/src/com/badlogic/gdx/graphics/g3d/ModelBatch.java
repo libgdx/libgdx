@@ -52,7 +52,7 @@ public class ModelBatch implements Disposable {
 	
 	/** Construct a BaseRenderBatch with the default implementation */
 	public ModelBatch() {
-		this(new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.ROUNDROBIN)),
+		this(new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.ROUNDROBIN, 1)),
 			  new DefaultShaderProvider(),
 			  new DefaultRenderableSorter());
 	}

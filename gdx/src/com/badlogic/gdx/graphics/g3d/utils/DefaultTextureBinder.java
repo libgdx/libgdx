@@ -85,7 +85,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 	public void end () {
 		for(int i = 0; i < count; i++) {
 			if (textures[i].texture != null) {
-				Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + i);
+				Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + offset + i);
 				Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
 				textures[i].texture = null;
 			}
