@@ -49,37 +49,51 @@ attribute vec2 a_boneWeight0;
 #endif //boneWeight0Flag
 
 #ifdef boneWeight1Flag
+#ifndef boneWeightsFlag
 #define boneWeightsFlag
+#endif
 attribute vec2 a_boneWeight1;
 #endif //boneWeight1Flag
 
 #ifdef boneWeight2Flag
+#ifndef boneWeightsFlag
 #define boneWeightsFlag
+#endif
 attribute vec2 a_boneWeight2;
 #endif //boneWeight2Flag
 
 #ifdef boneWeight3Flag
+#ifndef boneWeightsFlag
 #define boneWeightsFlag
+#endif
 attribute vec2 a_boneWeight3;
 #endif //boneWeight3Flag
 
 #ifdef boneWeight4Flag
+#ifndef boneWeightsFlag
 #define boneWeightsFlag
+#endif
 attribute vec2 a_boneWeight4;
 #endif //boneWeight4Flag
 
 #ifdef boneWeight5Flag
+#ifndef boneWeightsFlag
 #define boneWeightsFlag
+#endif
 attribute vec2 a_boneWeight5;
 #endif //boneWeight5Flag
 
 #ifdef boneWeight6Flag
+#ifndef boneWeightsFlag
 #define boneWeightsFlag
+#endif
 attribute vec2 a_boneWeight6;
 #endif //boneWeight6Flag
 
 #ifdef boneWeight7Flag
+#ifndef boneWeightsFlag
 #define boneWeightsFlag
+#endif
 attribute vec2 a_boneWeight7;
 #endif //boneWeight7Flag
 

@@ -128,6 +128,9 @@ public class DefaultShader extends BaseShader {
 		final String prefix = createPrefix(mask, attributes, lighting, numDirectional, numPoint, numSpot, numBones);
 		Gdx.app.log("Test", "Prefix:\n"+prefix);
 		program = new ShaderProgram(prefix + vertexShader, prefix + fragmentShader);
+		if(!program.isCompiled()) {
+			throw new GdxRuntimeException("Couldn't compile shader " + program.getLog());
+		}
 		init(program, mask, attributes, 0);
 		this.lighting = lighting;
 		this.directionalLights = new DirectionalLight[lighting && numDirectional > 0 ? numDirectional : 0];
