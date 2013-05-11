@@ -23,6 +23,7 @@ public class JsonValue {
 	private long longValue;
 
 	private JsonValue child, next, prev;
+	private int size;
 
 	public JsonValue (ValueType type) {
 		this.type = type;
@@ -99,6 +100,7 @@ public class JsonValue {
 			child.prev.next = child.next;
 			if (child.next != null) child.next.prev = child.prev;
 		}
+		size--;
 		return child;
 	}
 
@@ -114,17 +116,12 @@ public class JsonValue {
 			child.prev.next = child.next;
 			if (child.next != null) child.next.prev = child.prev;
 		}
+		size--;
 		return child;
 	}
 
 	/** Returns this number of children in the array or object. */
 	public int size () {
-		JsonValue current = child;
-		int size = 0;
-		while (current != null) {
-			size++;
-			current = current.next;
-		}
 		return size;
 	}
 
@@ -419,6 +416,7 @@ public class JsonValue {
 	}
 
 	public void addChild (JsonValue newChild) {
+		size++;
 		JsonValue current = child;
 		if (current == null) {
 			child = newChild;
