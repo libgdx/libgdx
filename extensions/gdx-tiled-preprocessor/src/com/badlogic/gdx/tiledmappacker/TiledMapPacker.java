@@ -41,6 +41,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.files.FileHandle;
@@ -62,7 +63,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * produces a new TMX file to be loaded with an {@link AtlasTiledMapLoader} loader. Optionally, it can keep track of unused tiles
  * and omit them from the generated atlas, reducing the resource size.
  * 
- * The original TMX map file will be parsed by using the {@link TmxMapLoader} loader, thus access to a valid {@link Gdx.files}
+ * The original TMX map file will be parsed by using the {@link TmxMapLoader} loader, thus access to a valid Gdx.{@link Files}
  * instance is <b>required</b>, that's why an LwjglApplication is created by this preprocessor.
  * 
  * The new TMX map file will contains a new property, namely "atlas", whose value will enable the {@link AtlasTiledMapLoader} to
@@ -116,7 +117,7 @@ public class TiledMapPacker {
 	 * this method.
 	 * 
 	 * Keep in mind that this preprocessor will need to load the maps by using the {@link TmxMapLoader} loader and this in turn
-	 * will need a valid {@link Gdx.files} instance to work, hence you'll need to instantiate the packer making sure of that.
+	 * will need a valid Gdx.{@link Files} instance to work, hence you'll need to instantiate the packer making sure of that.
 	 * 
 	 * Process a directory containing TMX map files representing Tiled maps and produce a single TextureAtlas as well as new
 	 * processed TMX map files, correctly referencing the generated {@link TextureAtlas} by using the "atlas" custom map property.
@@ -332,6 +333,7 @@ public class TiledMapPacker {
 				}
 			}
 
+			setProperty(doc, map, "blended tiles", toCSV(blendedTiles));
 			setProperty(doc, map, "atlas", settings.tilesetOutputDirectory + "/" + settings.atlasOutputName + ".atlas");
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -368,6 +370,15 @@ public class TiledMapPacker {
 		}
 	}
 
+	private static String toCSV (ArrayList<Integer> values) {
+		String temp = "";
+		for (int i = 0; i < values.size() - 1; i++) {
+			temp += values.get(i) + ",";
+		}
+		if (values.size() > 0) temp += values.get(values.size() - 1);
+		return temp;
+	}
+
 	/** If the child node doesn't exist, it is created. */
 	private static Node getFirstChildNodeByName (Node parent, String child) {
 		NodeList childNodes = parent.getChildNodes();
@@ -383,6 +394,17 @@ public class TiledMapPacker {
 			return parent.insertBefore(newNode, childNodes.item(0));
 		else
 			return parent.appendChild(newNode);
+	}
+
+	private static boolean isBlended (BufferedImage tile) {
+		int[] rgbArray = new int[tile.getWidth() * tile.getHeight()];
+		tile.getRGB(0, 0, tile.getWidth(), tile.getHeight(), rgbArray, 0, tile.getWidth());
+		for (int i = 0; i < tile.getWidth() * tile.getHeight(); i++) {
+			if (((rgbArray[i] >> 24) & 0xff) != 255) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/** If the child node or attribute doesn't exist, it is created. Usage example: Node property =
@@ -411,16 +433,17 @@ public class TiledMapPacker {
 		}
 	}
 
+	static File inputDir;
+	static File outputDir;
+
 	/** Processes a directory of Tile Maps, compressing each tile set contained in any map once.
+	 * 
 	 * @param args args[0]: the input directory containing the tmx files (and tile sets, relative to the path listed in the tmx
 	 *           file). args[1]: The output directory for the tmx files, should be empty before running. WARNING: Use caution if
 	 *           you have a "../" in the path of your tile sets! The output for these tile sets will be relative to the output
 	 *           directory. For example, if your output directory is "C:\mydir\output" and you have a tileset with the path
 	 *           "../tileset.png", the tileset will be output to "C:\mydir\" and the maps will be in "C:\mydir\output". args[2]:
 	 *           --strip-unused (optional, include to let the TiledMapPacker remove tiles which are not used. */
-	static File inputDir;
-	static File outputDir;
-
 	public static void main (String[] args) {
 		final Settings texturePackerSettings = new Settings();
 		texturePackerSettings.paddingX = 2;
