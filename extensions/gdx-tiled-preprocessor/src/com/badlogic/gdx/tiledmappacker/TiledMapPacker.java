@@ -41,8 +41,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -63,8 +63,9 @@ import com.badlogic.gdx.utils.ObjectMap;
  * produces a new TMX file to be loaded with an {@link AtlasTiledMapLoader} loader. Optionally, it can keep track of unused tiles
  * and omit them from the generated atlas, reducing the resource size.
  * 
- * The original TMX map file will be parsed by using the {@link TmxMapLoader} loader, thus access to a valid Gdx.{@link Files}
- * instance is <b>required</b>, that's why an LwjglApplication is created by this preprocessor.
+ * The original TMX map file will be parsed by using the {@link TmxMapLoader} loader, thus access to a valid OpenGL context is
+ * <b>required</b>, that's why an LwjglApplication is created by this preprocessor: this is probably subject to change in the
+ * future, where loading both maps metadata and graphics resources should be made conditional.
  * 
  * The new TMX map file will contains a new property, namely "atlas", whose value will enable the {@link AtlasTiledMapLoader} to
  * correctly read the associated TextureAtlas representing the tileset.
@@ -77,7 +78,7 @@ public class TiledMapPacker {
 	private TiledMap map;
 
 	private ArrayList<Integer> blendedTiles = new ArrayList<Integer>();
-	private TmxMapLoader mapLoader = new TmxMapLoader();
+	private TmxMapLoader mapLoader = new TmxMapLoader(new PackerFileHandleResolver());
 	private TiledMapPackerSettings settings;
 
 	// the tilesets output directory, relative to the global output directory
@@ -89,8 +90,7 @@ public class TiledMapPacker {
 	// a map tracking tileids usage for any given tileset, across multiple maps
 	private HashMap<String, IntArray> tilesetUsedIds = new HashMap<String, IntArray>();
 
-	static private class TmxFilter implements FilenameFilter {
-
+	private static class TmxFilter implements FilenameFilter {
 		public TmxFilter () {
 		}
 
@@ -100,7 +100,16 @@ public class TiledMapPacker {
 
 			return false;
 		}
+	}
 
+	private static class PackerFileHandleResolver implements FileHandleResolver {
+		public PackerFileHandleResolver () {
+		}
+
+		@Override
+		public FileHandle resolve (String fileName) {
+			return new FileHandle(fileName);
+		}
 	}
 
 	/** Constructs a new preprocessor by using the default packing settings */
@@ -117,7 +126,8 @@ public class TiledMapPacker {
 	 * this method.
 	 * 
 	 * Keep in mind that this preprocessor will need to load the maps by using the {@link TmxMapLoader} loader and this in turn
-	 * will need a valid Gdx.{@link Files} instance to work, hence you'll need to instantiate the packer making sure of that.
+	 * will need a valid OpenGL context to work: this is probably subject to change in the future, where loading both maps metadata
+	 * and graphics resources should be made conditional.
 	 * 
 	 * Process a directory containing TMX map files representing Tiled maps and produce a single TextureAtlas as well as new
 	 * processed TMX map files, correctly referencing the generated {@link TextureAtlas} by using the "atlas" custom map property.
@@ -481,6 +491,8 @@ public class TiledMapPacker {
 			System.exit(0);
 		}
 		}
+
+		TiledMapPacker packer = new TiledMapPacker(packerSettings);
 
 		new LwjglApplication(new ApplicationListener() {
 
