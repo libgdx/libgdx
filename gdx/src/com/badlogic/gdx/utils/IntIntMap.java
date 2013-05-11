@@ -282,7 +282,10 @@ public class IntIntMap {
 
 	/** @param defaultValue Returned if the key was not associated with a value. */
 	public int get (int key, int defaultValue) {
-		if (key == 0) return zeroValue;
+		if (key == 0) {
+			if (!hasZeroValue) return defaultValue;
+			return zeroValue;
+		}
 		int index = key & mask;
 		if (keyTable[index] != key) {
 			index = hash2(key);
@@ -393,6 +396,7 @@ public class IntIntMap {
 			keyTable[i] = EMPTY;
 		size = 0;
 		stashSize = 0;
+		hasZeroValue = false;
 	}
 
 	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be

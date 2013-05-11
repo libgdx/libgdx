@@ -81,7 +81,7 @@ public class GdxTests {
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
 		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GamepadTest.class, NetAPITest.class, TideMapAssetManagerTest.class, TideMapDirectLoaderTest.class, TiledMapAssetManagerTest.class, TiledMapBench.class,
 		RunnablePostTest.class, Vector2dTest.class, SuperKoalio.class, NinePatchTest.class,
-		JsonModelLoaderTest.class, BatchRenderTest.class, NewModelTest.class));
+		JsonModelLoaderTest.class, BatchRenderTest.class, NewModelTest.class, HexagonalTiledMapTest.class));
 	
 	public static List<String> getNames () {
 		List<String> names = new ArrayList<String>(tests.size());

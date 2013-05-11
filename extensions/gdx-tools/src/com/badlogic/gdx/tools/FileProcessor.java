@@ -201,9 +201,9 @@ public class FileProcessor {
 				entry.outputDir = outputDir;
 
 				if (flattenOutput) {
-					entry.outputFile = outputRoot.length() == 0 ? new File(outputName) : new File(outputRoot, outputName);
+					entry.outputFile = new File(outputRoot, outputName);
 				} else {
-					entry.outputFile = outputDir.length() == 0 ? new File(outputName) : new File(outputDir, outputName);
+					entry.outputFile = new File(outputDir, outputName);
 				}
 
 				dirToEntries.get(dir).add(entry);

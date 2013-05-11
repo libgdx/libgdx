@@ -128,12 +128,11 @@ public class IOSNet implements Net {
 					String method = httpRequest.getMethod();
 
 					if (method.equalsIgnoreCase(HttpMethods.GET)) {
-						String queryString = "";
 						String value = httpRequest.getContent();
 						if (value != null && !"".equals(value)) url += "?" + value;
 					}
 
-					HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(httpRequest.getUrl());
+					HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
 
 					int timeOut = httpRequest.getTimeOut();
 					if (timeOut > 0)
@@ -150,7 +149,7 @@ public class IOSNet implements Net {
 						webHeaderCollection.Add(key, headers.get(key));
 					httpWebRequest.set_Headers(webHeaderCollection);
 
-					if (method.equalsIgnoreCase(HttpMethods.POST)) {
+					if (method.equalsIgnoreCase(HttpMethods.POST) || method.equalsIgnoreCase(HttpMethods.PUT)) {
 						InputStream contentAsStream = httpRequest.getContentStream();
 						String contentAsString = httpRequest.getContent();
 

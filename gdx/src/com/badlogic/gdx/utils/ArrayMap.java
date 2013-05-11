@@ -523,6 +523,10 @@ public class ArrayMap<K, V> {
 		public void reset () {
 			index = 0;
 		}
+
+		public Array<V> toArray () {
+			return new Array(true, map.values, index, map.size - index);
+		}
 	}
 
 	static public class Keys<K> implements Iterable<K>, Iterator<K> {
@@ -555,6 +559,10 @@ public class ArrayMap<K, V> {
 
 		public void reset () {
 			index = 0;
+		}
+
+		public Array<K> toArray () {
+			return new Array(true, map.keys, index, map.size - index);
 		}
 	}
 }

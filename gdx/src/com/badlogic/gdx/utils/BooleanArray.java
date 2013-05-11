@@ -61,17 +61,17 @@ public class BooleanArray {
 	/** Creates a new ordered array containing the elements in the specified array. The capacity is set to the number of elements,
 	 * so any subsequent elements added will cause the backing array to be grown. */
 	public BooleanArray (boolean[] array) {
-		this(true, array);
+		this(true, array, 0, array.length);
 	}
 
 	/** Creates a new array containing the elements in the specified array. The capacity is set to the number of elements, so any
 	 * subsequent elements added will cause the backing array to be grown.
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy. */
-	public BooleanArray (boolean ordered, boolean[] array) {
+	public BooleanArray (boolean ordered, boolean[] array, int startIndex, int count) {
 		this(ordered, array.length);
-		size = array.length;
-		System.arraycopy(array, 0, items, 0, size);
+		size = count;
+		System.arraycopy(array, startIndex, items, 0, count);
 	}
 
 	public void add (boolean value) {

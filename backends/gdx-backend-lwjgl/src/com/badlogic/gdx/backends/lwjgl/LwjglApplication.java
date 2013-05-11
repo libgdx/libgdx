@@ -200,7 +200,7 @@ public class LwjglApplication implements Application {
 			if (shouldRender) {
 				graphics.updateTime();
 				listener.render();
-				Display.update();
+				Display.update(false);
 			} else {
 				// Sleeps to avoid wasting CPU in an empty loop.
 				if (frameRate == -1) frameRate = 10;

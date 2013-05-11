@@ -38,7 +38,7 @@ public class PerformanceCounters {
 	}
 	
 	public void tick() {
-		final long t = System.nanoTime();
+		final long t = TimeUtils.nanoTime();
 		if (lastTick > 0L)
 			tick((t - lastTick) * nano2seconds);
 		lastTick = t;

@@ -34,7 +34,7 @@ public class Rocket {
 // if(pos.dst(map.bob.pos) < pos.dst(map.cube.pos)) vel.set(map.bob.pos);
 // else vel.set(map.cube.pos);
 			vel.set(map.bob.pos);
-			vel.sub(pos).nor().mul(VELOCITY);
+			vel.sub(pos).nor().scl(VELOCITY);
 			pos.add(vel.x * deltaTime, vel.y * deltaTime);
 			bounds.x = pos.x + 0.2f;
 			bounds.y = pos.y + 0.2f;

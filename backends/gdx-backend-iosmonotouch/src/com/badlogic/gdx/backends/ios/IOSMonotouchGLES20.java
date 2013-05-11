@@ -278,8 +278,10 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	@Override
 	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
 		Buffer pixels) {
+		// pixels can be null by OpenGL definition if an blank image is to be created (e.g. for buffering)
+		IntPtr pixelsPointer = pixels != null ? IntPtr.op_Explicit(BufferUtils.getUnsafeBufferAddress(pixels)) : null;
 		GL.TexImage2D(TextureTarget.wrap(target), level, PixelInternalFormat.wrap(internalformat), width, height, border,
-			PixelFormat.wrap(format), PixelType.wrap(type), IntPtr.op_Explicit(BufferUtils.getUnsafeBufferAddress(pixels)));
+			PixelFormat.wrap(format), PixelType.wrap(type), pixelsPointer);
 	}
 
 	@Override

@@ -414,7 +414,7 @@ public class GameScreen extends DefaultScreen implements InputProcessor {
 	public Array<Vector2> generatePositions(int n) {
 		Array<Vector2> positions = new Array<Vector2>();
 		for (int i = 1; i <= n; ++i) {
-			positions.add(new Vector2(MathUtils.cos(i / n), MathUtils.sin(i / n)).mul(200));
+			positions.add(new Vector2(MathUtils.cos(i / n), MathUtils.sin(i / n)).scl(200));
 		}
 		return positions;
 	}

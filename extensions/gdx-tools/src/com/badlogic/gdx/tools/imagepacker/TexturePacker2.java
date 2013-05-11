@@ -51,6 +51,7 @@ public class TexturePacker2 {
 	private final MaxRectsPacker maxRectsPacker;
 	private final ImageProcessor imageProcessor;
 
+	/** @param rootDir Can be null. */
 	public TexturePacker2 (File rootDir, Settings settings) {
 		this.settings = settings;
 
@@ -65,8 +66,16 @@ public class TexturePacker2 {
 		imageProcessor = new ImageProcessor(rootDir, settings);
 	}
 
+	public TexturePacker2 (Settings settings) {
+		this(null, settings);
+	}
+
 	public void addImage (File file) {
 		imageProcessor.addImage(file);
+	}
+
+	public void addImage (BufferedImage image, String name) {
+		imageProcessor.addImage(image, name);
 	}
 
 	public void pack (File outputDir, String packFileName) {
@@ -190,8 +199,10 @@ public class TexturePacker2 {
 					ImageOutputStream ios = ImageIO.createImageOutputStream(outputFile);
 					writer.setOutput(ios);
 					writer.write(null, new IIOImage(canvas, null, null), param);
-				} else
+				} else {
+					if (settings.premultiplyAlpha) canvas.getColorModel().coerceData(canvas.getRaster(), true);
 					ImageIO.write(canvas, "png", outputFile);
+				}
 			} catch (IOException ex) {
 				throw new RuntimeException("Error writing file: " + outputFile, ex);
 			}
@@ -206,7 +217,7 @@ public class TexturePacker2 {
 			TextureAtlasData textureAtlasData = new TextureAtlasData(new FileHandle(packFile), new FileHandle(packFile), false);
 			for (Page page : pages) {
 				for (Rect rect : page.outputRects) {
-					String rectName = settings.flattenPaths ? new FileHandle(rect.name).name() : rect.name;
+					String rectName = Rect.getAtlasName(rect.name, settings.flattenPaths);
 					System.out.println(rectName);
 					for (Region region : textureAtlasData.getRegions()) {
 						if (region.name.equals(rectName)) {
@@ -238,8 +249,7 @@ public class TexturePacker2 {
 	}
 
 	private void writeRect (FileWriter writer, Page page, Rect rect, String name) throws IOException {
-		String rectName = settings.flattenPaths ? new FileHandle(name).name() : name;
-		writer.write(rectName + "\n");
+		writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
 		writer.write("  rotate: " + rect.rotated + "\n");
 		writer.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.height - rect.y) + "\n");
 		writer.write("  size: " + rect.image.getWidth() + ", " + rect.image.getHeight() + "\n");
@@ -363,6 +373,10 @@ public class TexturePacker2 {
 		public String toString () {
 			return name + "[" + x + "," + y + " " + width + "x" + height + "]";
 		}
+
+		static public String getAtlasName (String name, boolean flattenPaths) {
+			return flattenPaths ? new FileHandle(name).name() : name;
+		}
 	}
 
 	/** @author Nathan Sweet */
@@ -387,8 +401,9 @@ public class TexturePacker2 {
 		public boolean fast;
 		public boolean debug;
 		public boolean combineSubdirectories;
-		public boolean jsonOutput = true;
 		public boolean flattenPaths;
+		public boolean premultiplyAlpha;
+		public boolean useIndexes = true;
 
 		public Settings () {
 		}
@@ -419,8 +434,8 @@ public class TexturePacker2 {
 			duplicatePadding = settings.duplicatePadding;
 			debug = settings.debug;
 			combineSubdirectories = settings.combineSubdirectories;
-			jsonOutput = settings.jsonOutput;
 			flattenPaths = settings.flattenPaths;
+			premultiplyAlpha = settings.premultiplyAlpha;
 		}
 	}
 

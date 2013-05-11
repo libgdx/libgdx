@@ -504,6 +504,13 @@ public class ShapeRenderer {
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x, y + height, z + depth);
 	}
+
+	/** Draws two crossed lines. */
+	public void x (float x, float y, float radius) {
+		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
+		line(x - radius, y - radius, x + radius, y + radius);
+		line(x - radius, y + radius, x + radius, y - radius);
+	}
 	
 	/** Calls {@link #circle(float, float, float, int)} by estimating the number of segments needed for a smooth circle. */
 	public void circle (float x, float y, float radius) {
@@ -560,6 +567,44 @@ public class ShapeRenderer {
 		cy = 0;
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x + cx, y + cy, 0);
+	}
+	
+	/** Calls {@link #ellipse(float, float, float, float, int)} by estimating the number of segments needed for a smooth ellipse. */
+	public void ellipse(float x, float y, float width, float height) {
+		ellipse(x, y, width, height, (int)(12 * (float) Math.cbrt(Math.max(width * 0.5f,  height * 0.5f))));
+	}
+	
+	public void ellipse(float x, float y, float width, float height, int segments) {
+		if (segments <= 0) throw new IllegalArgumentException("segments must be >= 0.");
+		if (currType != ShapeType.Filled && currType != ShapeType.Line) 
+			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
+		checkDirty();
+		checkFlush(segments * 2 + 2);
+
+		float angle = 2 * 3.1415926f / segments;
+
+		float cx = x + width / 2, cy = y + height / 2;
+		if(currType == ShapeType.Line){
+			for (int i = 0; i < segments; i++) {
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(cx + (width * 0.5f * MathUtils.cos(i * angle)), cy + (height * 0.5f * MathUtils.sin(i * angle)), 0);
+				
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(cx + (width * 0.5f * MathUtils.cos((i + 1) * angle)), cy + (height * 0.5f * MathUtils.sin((i + 1) * angle)), 0);
+			}
+		}
+		else {
+			for (int i = 0; i < segments; i++) {
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(cx + (width * 0.5f * MathUtils.cos(i * angle)), cy + (height * 0.5f * MathUtils.sin(i * angle)), 0);
+			
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(cx, cy, 0);
+				
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(cx + (width * 0.5f * MathUtils.cos((i + 1) * angle)), cy + (height * 0.5f * MathUtils.sin((i + 1) * angle)), 0);
+			}
+		}
 	}
 	
 	/** Calls {@link #cone(float, float, float, float, float, int)} by estimating the number of segments needed for a smooth

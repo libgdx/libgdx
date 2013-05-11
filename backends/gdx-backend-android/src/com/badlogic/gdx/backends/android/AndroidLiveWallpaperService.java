@@ -190,7 +190,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		
 		app.initialize(listener, config);
 		
-		if (config.getTouchEventsForLiveWallpaper && Integer.parseInt(android.os.Build.VERSION.SDK) < 9)
+		if (config.getTouchEventsForLiveWallpaper && Integer.parseInt(android.os.Build.VERSION.SDK) >= 7)
 			linkedEngine.setTouchEventsEnabled(true);
 		
 		//onResume(); do not call it there
@@ -338,10 +338,10 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 				onCreateApplication();
 				if (app.graphics == null)
 					throw new Error("You must override 'AndroidLiveWallpaperService.onCreateApplication' method and call 'initialize' from its body.");
-				
-				view = (SurfaceHolder.Callback)app.graphics.view;
-				this.getSurfaceHolder().removeCallback(view);	// we are going to call this events manually
 			}
+
+			view = (SurfaceHolder.Callback)app.graphics.view;
+			this.getSurfaceHolder().removeCallback(view);	// we are going to call this events manually
 
 			// inherit format from shared surface view
 			engineFormat = viewFormat;

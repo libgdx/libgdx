@@ -68,6 +68,16 @@ public class Array<T> implements Iterable<T> {
 	public Array (Class<T> arrayType) {
 		this(true, 16, arrayType);
 	}
+	
+	/** Creates a new array containing the elements in the specified array. The new array will have the same type of backing array.
+	* The capacity is set to the number of elements, so any subsequent elements added will cause the backing array to be grown.
+	* @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
+	* memory copy. */
+	public Array (boolean ordered, T[] array, int start, int count) {
+		this(ordered, array.length, (Class)array.getClass().getComponentType());
+		size = array.length;
+		System.arraycopy(array, 0, items, 0, size);
+	}
 
 	/** Creates a new array containing the elements in the specified array. The new array will have the same type of backing array
 	 * and will be ordered if the specified array is ordered. The capacity is set to the number of elements, so any subsequent
