@@ -61,12 +61,15 @@ public class Preloader {
 		GWT.create(PreloaderBundle.class);
 	}
 
+	public Array<Asset> assets;
+	public int loaded = 0;
+	
 	public void preload (final String assetFileUrl, final PreloaderCallback callback) {
 		new TextLoader(baseUrl + assetFileUrl, new LoaderCallback<String>() {
 			@Override
 			public void success (String result) {
 				String[] lines = result.split("\n");
-				Array<Asset> assets = new Array<Asset>();
+				assets = new Array<Asset>();
 				for (String line : lines) {
 					String[] tokens = line.split(":");
 					if (tokens.length != 2) continue; // FIXME :p
@@ -77,8 +80,9 @@ public class Preloader {
 					if (tokens[0].equals("d")) type = AssetType.Directory;
 					assets.add(new Asset(tokens[1].trim(), type));
 				}
-
-				loadNextAsset(assets, 0, callback);
+				for (Asset asset : assets) {
+					beginLoadingAsset(asset, callback);
+				}
 			}
 
 			@Override
@@ -88,27 +92,18 @@ public class Preloader {
 		});
 	}
 
-	private void loadNextAsset (final Array<Asset> assets, final int next, final PreloaderCallback callback) {
-
-		if (next == assets.size) {
-			callback.done();
-			return;
-		}
-
-		final Asset asset = assets.get(next);
+	public void beginLoadingAsset (final Asset asset, final PreloaderCallback callback) {
 		if (asset.type == AssetType.Text) {
 			new TextLoader(baseUrl + asset.url, new LoaderCallback<String>() {
 				@Override
 				public void success (String result) {
-					texts.put(asset.url, result);
-					callback.loaded(asset.url, next + 1, assets.size);
-					loadNextAsset(assets, next + 1, callback);
+					texts.put(asset.url, result);					
+					finishLoadingAsset(asset, callback, true);
 				}
 
 				@Override
 				public void error () {
-					callback.error(asset.url);
-					loadNextAsset(assets, next + 1, callback);
+					finishLoadingAsset(asset, callback, false);
 				}
 			});
 		}
@@ -118,14 +113,12 @@ public class Preloader {
 				@Override
 				public void success (ImageElement result) {
 					images.put(asset.url, result);
-					callback.loaded(asset.url, next + 1, assets.size);
-					loadNextAsset(assets, next + 1, callback);
+					finishLoadingAsset(asset, callback, true);
 				}
 
 				@Override
 				public void error () {
-					callback.error(asset.url);
-					loadNextAsset(assets, next + 1, callback);
+					finishLoadingAsset(asset, callback, false);
 				}
 			});
 		}
@@ -135,14 +128,12 @@ public class Preloader {
 				@Override
 				public void success (Blob result) {
 					binaries.put(asset.url, result);
-					callback.loaded(asset.url, next + 1, assets.size);
-					loadNextAsset(assets, next + 1, callback);
+					finishLoadingAsset(asset, callback, true);
 				}
 
 				@Override
 				public void error () {
-					callback.error(asset.url);
-					loadNextAsset(assets, next + 1, callback);
+					finishLoadingAsset(asset, callback, false);
 				}
 			});
 		}
@@ -152,20 +143,30 @@ public class Preloader {
 				@Override
 				public void success (Void result) {
 					audio.put(asset.url, null);
-					callback.loaded(asset.url, next + 1, assets.size);
-					loadNextAsset(assets, next + 1, callback);
+					finishLoadingAsset(asset, callback, true);
 				}
 
 				@Override
 				public void error () {
-					callback.error(asset.url);
-					loadNextAsset(assets, next + 1, callback);
+					finishLoadingAsset(asset, callback, false);
 				}
 			});
 		}
 
 		if (asset.type == AssetType.Directory) {
-			loadNextAsset(assets, next + 1, callback);
+			finishLoadingAsset(asset, callback, true);
+		}
+	}
+	
+	public void finishLoadingAsset (final Asset asset, final PreloaderCallback callback, boolean success) {
+		loaded++;
+		if (success) {
+			callback.loaded(asset.url, loaded, assets.size);
+		} else {
+			callback.error(asset.url);
+		}
+		if (loaded == assets.size) {
+			callback.done();
 		}
 	}
 
