@@ -267,6 +267,7 @@ public class TiledMapPacker {
 				g.drawImage(layout.image, 0, 0, tileWidth, tileHeight, (int)tileLocation.x, (int)tileLocation.y, (int)tileLocation.x
 					+ tileWidth, (int)tileLocation.y + tileHeight, null);
 
+				if (isBlended(tile)) setBlended(gid);
 				packer.addImage(tile, this.settings.atlasOutputName + "_" + tileidx);
 			}
 		}
@@ -315,6 +316,10 @@ public class TiledMapPacker {
 		}
 
 		return child;
+	}
+
+	private void setBlended (int tileNum) {
+		blendedTiles.add(tileNum);
 	}
 
 	private void writeUpdatedTMX (TiledMap tiledMap, File outputDir, FileHandle tmxFileHandle) throws IOException {
