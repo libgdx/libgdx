@@ -10,12 +10,16 @@ public class TextureAttribute extends Material.Attribute {
 	public final static long Diffuse = register(DiffuseAlias);
 	public final static String SpecularAlias = "specularTexture";
 	public final static long Specular = register(SpecularAlias);
+	public final static String BumpAlias = "bumpTexture";
+	public final static long Bump = register(BumpAlias);
+	public final static String NormalAlias = "normalTexture";
+	public final static long Normal = register(NormalAlias);
 	
 	// FIXME add more types!
 	// FIXME add scaling + offset?
 	// FIXME add filter settings? MipMap needs to be obeyed during loading :/
 	
-	protected static long Mask = Diffuse | Specular;
+	protected static long Mask = Diffuse | Specular | Bump | Normal;
 	
 	public final static boolean is(final long mask) {
 		return (mask & Mask) != 0;

@@ -60,24 +60,25 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	private final static int USAGE_POSITION = 1;
 	private final static int USAGE_NORMAL = 2;
 	private final static int USAGE_COLOR = 3;
-	private final static int USAGE_TANGENT = 4;
-	private final static int USAGE_BINORMAL = 5;
-	private final static int USAGE_TEXCOORD0 = 6;
-	private final static int USAGE_TEXCOORD1 = 7;
-	private final static int USAGE_TEXCOORD2 = 8;
-	private final static int USAGE_TEXCOORD3 = 9;
-	private final static int USAGE_TEXCOORD4 = 10;
-	private final static int USAGE_TEXCOORD5 = 11;
-	private final static int USAGE_TEXCOORD6 = 12;
-	private final static int USAGE_TEXCOORD7 = 13;
-	private final static int USAGE_BLENDWEIGHT0 = 14;
-	private final static int USAGE_BLENDWEIGHT1 = 15;
-	private final static int USAGE_BLENDWEIGHT2 = 16;
-	private final static int USAGE_BLENDWEIGHT3 = 17;
-	private final static int USAGE_BLENDWEIGHT4 = 18;
-	private final static int USAGE_BLENDWEIGHT5 = 19;
-	private final static int USAGE_BLENDWEIGHT6 = 20;
-	private final static int USAGE_BLENDWEIGHT7 = 21;
+	private final static int USAGE_COLORPACKED = 4;
+	private final static int USAGE_TANGENT = 5;
+	private final static int USAGE_BINORMAL = 6;
+	private final static int USAGE_TEXCOORD0 = 7;
+	private final static int USAGE_TEXCOORD1 = 8;
+	private final static int USAGE_TEXCOORD2 = 9;
+	private final static int USAGE_TEXCOORD3 = 10;
+	private final static int USAGE_TEXCOORD4 = 11;
+	private final static int USAGE_TEXCOORD5 = 12;
+	private final static int USAGE_TEXCOORD6 = 13;
+	private final static int USAGE_TEXCOORD7 = 14;
+	private final static int USAGE_BLENDWEIGHT0 = 15;
+	private final static int USAGE_BLENDWEIGHT1 = 16;
+	private final static int USAGE_BLENDWEIGHT2 = 17;
+	private final static int USAGE_BLENDWEIGHT3 = 18;
+	private final static int USAGE_BLENDWEIGHT4 = 19;
+	private final static int USAGE_BLENDWEIGHT5 = 20;
+	private final static int USAGE_BLENDWEIGHT6 = 21;
+	private final static int USAGE_BLENDWEIGHT7 = 22;
 	
 	private final static int MATERIAL_LAMBERT = 0;
 	private final static int MATERIAL_PHONG = 1;
@@ -153,7 +154,7 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			final long size = readSize(type);
 			cnt += 1 + getSize(type) + size;
 			if ((type & TYPE_MASK) == G3DB_TAG_ID)
-				animation.id = readString(size);
+			 	animation.id = readString(size);
 			else if ((type & TYPE_MASK) == G3DB_TAG_NODEANIMATION)
 				animation.nodeAnimations.add(readNodeAnimation(size));
 			else {
@@ -195,7 +196,7 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			else if ((type & TYPE_MASK) == G3DB_TAG_TRANSLATE)
 				keyframe.translation = readVector3(size);
 			else if ((type & TYPE_MASK) == G3DB_TAG_ROTATE)
-				keyframe.rotation = readQuaternion(size);
+				keyframe.rotation = readQuaternion(size).nor();
 			else if ((type & TYPE_MASK) == G3DB_TAG_SCALE)
 				keyframe.scale = readVector3(size);
 			else {
@@ -220,7 +221,7 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			else if ((type & TYPE_MASK) == G3DB_TAG_TRANSLATE)
 				node.translation = readVector3(size);
 			else if ((type & TYPE_MASK) == G3DB_TAG_ROTATE)
-				node.rotation = readQuaternion(size);
+				node.rotation = readQuaternion(size).nor();
 			else if ((type & TYPE_MASK) == G3DB_TAG_SCALE)
 				node.scale = readVector3(size);
 			else if ((type & TYPE_MASK) == G3DB_TAG_MESH)
@@ -300,9 +301,9 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			else if ((type & TYPE_MASK) == G3DB_TAG_SHININESS)
 				material.shininess = readFloat(size);
 			else if ((type & TYPE_MASK) == G3DB_TAG_TEXTURE) {
-				if (material.diffuseTextures == null)
-					material.diffuseTextures = new Array<ModelTexture>();
-				material.diffuseTextures.add(readTexture(size));
+				if (material.textures == null)
+					material.textures = new Array<ModelTexture>();
+				material.textures.add(readTexture(size));
 			} else { // unknown tag, just skip it
 				din.skipBytes((int)size);
 				Gdx.app.log("G3dbModelLoader", "Unknown material tag: "+type+"["+size+"], skipping");
@@ -313,6 +314,7 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	
 	private ModelTexture readTexture(final long length) throws IOException {
 		final ModelTexture texture = new ModelTexture();
+		texture.usage = ModelTexture.USAGE_DIFFUSE;
 		long cnt = 0;
 		while ((din.available() > 0) && (cnt < length)) {
 			final byte type = din.readByte();
@@ -410,6 +412,8 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				result[i] = VertexAttribute.Normal();
 			else if (type == USAGE_COLOR)
 				result[i] = VertexAttribute.ColorUnpacked();
+			else if (type == USAGE_COLORPACKED)
+				result[i] = VertexAttribute.Color();
 			else if (type == USAGE_TANGENT)
 				result[i] = VertexAttribute.Tangent();
 			else if (type == USAGE_BINORMAL)
