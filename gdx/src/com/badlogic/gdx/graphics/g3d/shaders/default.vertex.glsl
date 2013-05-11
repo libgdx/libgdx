@@ -1,5 +1,9 @@
-#if defined(diffuseTextureFlag) || defined(specularTextureFlag)
+#if defined(diffuseTextureFlag) || defined(specularTextureFlag) || defined(normalTextureFlag)
 #define textureFlag
+#endif
+
+#if defined(normalTextureFlag)
+#define phongFlag
 #endif
 
 #if defined(specularTextureFlag) || defined(specularColorFlag)
@@ -9,15 +13,29 @@
 attribute vec3 a_position;
 uniform mat4 u_projTrans;
 
-#ifdef colorFlag
-attribute vec4 a_color;
+#if defined(colorFlag)
 varying vec4 v_color;
+attribute vec4 a_color;
 #endif // colorFlag
 
 #ifdef normalFlag
 attribute vec3 a_normal;
 uniform mat3 u_normalMatrix;
 varying vec3 v_normal;
+
+#ifdef binormalFlag
+attribute vec3 a_binormal;
+#endif //binormalFlag
+
+#ifdef tangentFlag
+attribute vec3 a_tangent;
+#endif //tangentFlag
+
+#if defined(binormalFlag) || defined(tangentFlag) || defined(normalTextureFlag)
+varying vec3 v_binormal;
+varying vec3 v_tangent;
+#endif //binormalFlag || tangentFlag
+
 #endif // normalFlag
 
 #ifdef textureFlag
@@ -110,6 +128,11 @@ varying vec3 v_lightSpecular;
 uniform vec3 u_cameraPosition;
 #endif // specularFlag
 
+#ifdef phongFlag
+varying vec3 v_viewVec;
+varying vec3 v_pos;
+#endif //phongFlag
+
 #if defined(numDirectionalLights) && (numDirectionalLights > 0)
 struct DirectionalLight
 {
@@ -135,7 +158,7 @@ void main() {
 		v_texCoords0 = a_texCoord0;
 	#endif // textureFlag
 	
-	#ifdef colorFlag
+	#if defined(colorFlag)
 		v_color = a_color;
 	#endif // colorFlag
 	
@@ -173,11 +196,39 @@ void main() {
 		vec4 pos = u_worldTrans * vec4(a_position, 1.0);
 	#endif
 	gl_Position = u_projTrans * pos; // FIXME dont use a temp pos value (<kalle_h> this causes some vertex yittering with positions as low as 300)
+	
+	#if defined(lightingFlag) && defined(phongFlag)
+	v_pos = gl_Position.xyz;
+	#endif
 
-	#if defined(normalFlag) && defined(skinningFlag)
-		v_normal = normalize((skinning * vec4(a_normal, 0.0)).xyz);
-	#elif defined(normalFlag)
-		v_normal = normalize(u_normalMatrix * a_normal);
+	#if defined(normalFlag)
+		#if defined(skinningFlag)
+			v_normal = normalize((skinning * vec4(a_normal, 0.0)).xyz); // FIXME mul normals like pos
+		#else
+			v_normal = normalize(u_normalMatrix * a_normal);
+		#endif
+			
+		#if defined(binormalFlag) && defined(tangentFlag)
+			v_binormal = normalize(u_normalMatrix * a_binormal);
+			v_tangent = normalize(u_normalMatrix * a_tangent);
+		#elif defined(binormalFlag)
+			v_binormal = normalize(u_normalMatrix * a_binormal);
+			v_tangent = normalize(cross(v_normal, v_binormal));
+		#elif defined(tangentFlag)
+			v_tangent = normalize(u_normalMatrix * a_tangent);
+			v_binormal = normalize(cross(v_normal, v_tangent));
+		#elif defined(normalTextureFlag)
+			/*vec3 c1 = cross(v_normal, vec3(1.0, 0.0, 0.0));
+			vec3 c2 = cross(v_normal, vec3(0.0, 1.0, 0.0));
+			if (length(c1) > length(c2))
+				v_tangent = vec3(1.0, 0.0, 0.0);
+			else
+				v_tangent = vec3(0.0, 1.0, 0.0);
+			v_binormal = normalize(cross(v_normal, v_tangent));
+			v_tangent = normalize(cross(v_normal, v_binormal));*/
+			v_tangent = vec3(1.0, 0.0, 0.0);
+			v_binormal = vec3(0.0, 1.0, 0.0);
+		#endif
 	#endif // normalFlag
 
 	#ifdef lightingFlag
@@ -207,6 +258,10 @@ void main() {
 			v_lightDiffuse += u_sphericalHarmonics[8] * (normal.x * normal.x - normal.y * normal.y);			
 		#endif // sphericalHarmonicsFlag
 		
+		#ifdef phongFlag
+			v_viewVec = normalize(u_cameraPosition - pos.xyz);
+		#else //phongFlag
+			
 		#ifdef specularFlag
 			v_lightSpecular = vec3(0.0);
 			vec3 viewVec = normalize(u_cameraPosition - pos.xyz);
@@ -238,5 +293,6 @@ void main() {
 				#endif // specularFlag
 			}
 		#endif // numPointLights
+		#endif //!phongFlag
 	#endif // lightingFlag
 }

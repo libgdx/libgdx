@@ -104,7 +104,11 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			}
 			float[] verts = new float[vertices.size()];
 			for(int j = 0; j < vertices.size(); j++) {
-				verts[j] = (Float)vertices.getFloat(j);
+				final String s = vertices.getString(j);
+				if (s.startsWith("0x"))  // FIXME just use double for packed colors
+					verts[j] = Float.intBitsToFloat((int)Long.parseLong(s.substring(2), 16));
+				else
+					verts[j] = vertices.getFloat(j);
 			}
 			jsonMesh.vertices = verts;
 			
@@ -160,11 +164,7 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			return GL10.GL_TRIANGLE_STRIP;
 		} else if(type.equals("LINE_STRIP")) {
 			return GL10.GL_LINE_STRIP;
-		} /* Gameplay encoder doesn't read out line loop
-			else if(type.equals("lineloop")) {
-			return GL10.GL_LINE_LOOP; 
-		} */
-			else { 
+		} else { 
 			throw new GdxRuntimeException("Unknown primitive type '" + type + "', should be one of triangle, trianglestrip, line, linestrip, lineloop or point");
 		}
 	}
@@ -182,6 +182,8 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				vertexAttributes.add(VertexAttribute.Normal());
 			} else if(attr.equals("COLOR")) {
 				vertexAttributes.add(VertexAttribute.ColorUnpacked());
+			} else if(attr.equals("COLORPACKED")) {
+				vertexAttributes.add(VertexAttribute.Color());
 			} else if(attr.equals("TANGENT")) {
 				vertexAttributes.add(VertexAttribute.Tangent());
 			} else if(attr.equals("BINORMAL")) {
@@ -191,7 +193,7 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			} else if(attr.startsWith("BLENDWEIGHT")) {
 				vertexAttributes.add(VertexAttribute.BoneWeight(blendWeightCount++));
 			} else {
-				throw new GdxRuntimeException("Unknown vertex attribuet '" + attr + "', should be one of position, normal, uv, tangent or binormal");
+				throw new GdxRuntimeException("Unknown vertex attribute '" + attr + "', should be one of position, normal, uv, tangent or binormal");
 			}
 		}
 		return vertexAttributes.toArray(VertexAttribute.class);
@@ -249,19 +251,41 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 						if(textureType == null)
 							throw new GdxRuntimeException("Texture needs type.");
 						
-						/* Only diffuse textures for now. Most programs don't export texture usage properly ..
-						 	So we probably need to find a workaround. */
-						if(textureType.equals("STANDARD")){
-							if(jsonMaterial.diffuseTextures == null)
-								jsonMaterial.diffuseTextures = new Array<ModelTexture>();
-							jsonMaterial.diffuseTextures.add(jsonTexture);
-						}
+						jsonTexture.usage = parseTextureUsage(textureType);
+						
+						if(jsonMaterial.textures == null)
+							jsonMaterial.textures = new Array<ModelTexture>();
+						jsonMaterial.textures.add(jsonTexture);
 					}
 				}
 
 				model.materials.add(jsonMaterial);
 			}
 		}
+	}
+	
+	private int parseTextureUsage(final String value) {
+		if (value.equalsIgnoreCase("AMBIENT"))
+			return ModelTexture.USAGE_AMBIENT;
+		else if (value.equalsIgnoreCase("BUMP"))
+			return ModelTexture.USAGE_BUMP;
+		else if (value.equalsIgnoreCase("DIFFUSE"))
+			return ModelTexture.USAGE_DIFFUSE;
+		else if (value.equalsIgnoreCase("EMISSIVE"))
+			return ModelTexture.USAGE_EMISSIVE;
+		else if (value.equalsIgnoreCase("NONE"))
+			return ModelTexture.USAGE_NONE;
+		else if (value.equalsIgnoreCase("NORMAL"))
+			return ModelTexture.USAGE_NORMAL;
+		else if (value.equalsIgnoreCase("REFLECTION"))
+			return ModelTexture.USAGE_REFLECTION;
+		else if (value.equalsIgnoreCase("SHININESS"))
+			return ModelTexture.USAGE_SHININESS;
+		else if (value.equalsIgnoreCase("SPECULAR"))
+			return ModelTexture.USAGE_SPECULAR;
+		else if (value.equalsIgnoreCase("TRANSPARENCY"))
+			return ModelTexture.USAGE_TRANSPARENCY;
+		return ModelTexture.USAGE_UNKNOWN;
 	}
 
 	private Color parseColor (JsonValue colorArray, Color defaultColor) {
@@ -321,7 +345,7 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			throw new GdxRuntimeException("Node scale incomplete");
 		jsonNode.scale = scale == null ? null : new Vector3(scale.getFloat(0), scale.getFloat(1), scale.getFloat(2));
 		
-		String meshId = json.getString("mesh");
+		String meshId = json.getString("mesh", null);
 		if(meshId != null)
 			jsonNode.meshId = meshId;
 		

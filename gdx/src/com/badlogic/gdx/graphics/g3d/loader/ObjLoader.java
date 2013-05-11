@@ -371,9 +371,9 @@ class MtlLoader {
 					if (texFilename != null) {
 						ModelTexture tex = new ModelTexture();
 						tex.fileName = new String(texFilename);
-						if (mat.diffuseTextures == null)
-							mat.diffuseTextures = new Array<ModelTexture>(1);
-						mat.diffuseTextures.add(tex);						
+						if (mat.textures == null)
+							mat.textures = new Array<ModelTexture>(1);
+						mat.textures.add(tex);						
 					}
 					materials.add(mat);
 
@@ -423,9 +423,9 @@ class MtlLoader {
 		if (texFilename != null) {
 			ModelTexture tex = new ModelTexture();
 			tex.fileName = new String(texFilename);
-			if (mat.diffuseTextures == null)
-				mat.diffuseTextures = new Array<ModelTexture>(1);
-			mat.diffuseTextures.add(tex);
+			if (mat.textures == null)
+				mat.textures = new Array<ModelTexture>(1);
+			mat.textures.add(tex);
 		}
 		materials.add(mat);
 
