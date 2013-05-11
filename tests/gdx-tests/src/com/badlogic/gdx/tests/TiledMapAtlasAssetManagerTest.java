@@ -52,7 +52,8 @@ public class TiledMapAtlasAssetManagerTest extends GdxTest {
 
 		assetManager = new AssetManager();
 		assetManager.setLoader(TiledMap.class, new AtlasTiledMapLoader(new InternalFileHandleResolver()));
-		assetManager.load("data/maps/tiled-atlas-processed/test.tmx", TiledMap.class, params);
+//		assetManager.load("data/maps/tiled-atlas-processed/test.tmx", TiledMap.class, params);
+		assetManager.load("data/maps/tiled-atlas-processed/test.tmx", TiledMap.class);
 		assetManager.finishLoading();
 		map = assetManager.get("data/maps/tiled-atlas-processed/test.tmx");
 		renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);

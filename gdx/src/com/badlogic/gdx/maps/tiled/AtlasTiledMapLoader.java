@@ -229,7 +229,9 @@ public class AtlasTiledMapLoader extends AsynchronousAssetLoader<TiledMap, Atlas
 
 	@Override
 	public TiledMap loadSync (AssetManager manager, String fileName, AtlasTiledMapLoaderParameters parameter) {
-		setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
+		if (parameter != null) {
+			setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
+		}
 
 		return map;
 	}
