@@ -45,7 +45,8 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 		Texture texture;
 	};
 // can't use objectmap, because filename is not guaranteed to be unique at this stage (however, that's pure theoretical, so might change)
-	private final Array<TextureLoaderInfo> items = new Array<TextureLoaderInfo>(); 
+	TextureLoaderInfo info = new TextureLoaderInfo(); // REMOVE THIS, replace by:
+	// FIXME private final Array<TextureLoaderInfo> items = new Array<TextureLoaderInfo>();
 
 	public TextureLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -53,7 +54,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 
 	@Override
 	public void loadAsync (AssetManager manager, String fileName, TextureParameter parameter) {
-		TextureLoaderInfo info = new TextureLoaderInfo();
+		// FIXME TextureLoaderInfo info = new TextureLoaderInfo();
 		info.filename = fileName;
 		if (parameter == null || (parameter != null && parameter.textureData == null)) {
 			Pixmap pixmap = null;
@@ -82,23 +83,23 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 			if (!info.data.isPrepared()) info.data.prepare();
 			info.texture = parameter.texture;
 		}
-		synchronized(items) {
-			items.add(info);			
-		}
+		//FIXME synchronized(items) {
+			//items.add(info);			
+		//}
 	}
 
 	@Override
 	public Texture loadSync (AssetManager manager, String fileName, TextureParameter parameter) {
-		TextureLoaderInfo info = null;
-		synchronized(items) {
-			for (int i = 0; i < items.size; i++) {
-				if (items.get(i).filename.equals(fileName)) {
-					info = items.get(i);
-					items.removeIndex(i);
-					break;
-				}
-			}
-		}
+// FIXME		TextureLoaderInfo info = null;
+//		synchronized(items) {
+//			for (int i = 0; i < items.size; i++) {
+//				if (items.get(i).filename.equals(fileName)) {
+//					info = items.get(i);
+//					items.removeIndex(i);
+//					break;
+//				}
+//			}
+//		}
 		if (info == null)
 			return null;
 		Texture texture = info.texture;
