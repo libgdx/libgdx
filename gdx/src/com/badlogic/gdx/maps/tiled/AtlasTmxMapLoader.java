@@ -414,23 +414,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 						tilesets.getTile(id);
 						TiledMapTile tile = tilesets.getTile(id);
 						if (tile != null) {
-							Cell cell = new Cell();
-							if (flipDiagonally) {
-								if (flipHorizontally && flipVertically) {
-									cell.setFlipHorizontally(true);
-									cell.setRotation(Cell.ROTATE_270);
-								} else if (flipHorizontally) {
-									cell.setRotation(Cell.ROTATE_270);
-								} else if (flipVertically) {
-									cell.setRotation(Cell.ROTATE_90);
-								} else {
-									cell.setFlipVertically(true);
-									cell.setRotation(Cell.ROTATE_270);
-								}
-							} else {
-								cell.setFlipHorizontally(flipHorizontally);
-								cell.setFlipVertically(flipVertically);
-							}
+							Cell cell = createTileLayerCell(flipHorizontally, flipVertically, flipDiagonally);
 							cell.setTile(tile);
 							layer.setCell(x, yUp ? height - 1 - y : y, cell);
 						}
@@ -456,23 +440,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 								tilesets.getTile(id);
 								TiledMapTile tile = tilesets.getTile(id);
 								if (tile != null) {
-									Cell cell = new Cell();
-									if (flipDiagonally) {
-										if (flipHorizontally && flipVertically) {
-											cell.setFlipHorizontally(true);
-											cell.setRotation(Cell.ROTATE_270);
-										} else if (flipHorizontally) {
-											cell.setRotation(Cell.ROTATE_270);
-										} else if (flipVertically) {
-											cell.setRotation(Cell.ROTATE_90);
-										} else {
-											cell.setFlipVertically(true);
-											cell.setRotation(Cell.ROTATE_270);
-										}
-									} else {
-										cell.setFlipHorizontally(flipHorizontally);
-										cell.setFlipVertically(flipVertically);
-									}
+									Cell cell = createTileLayerCell(flipHorizontally, flipVertically, flipDiagonally);
 									cell.setTile(tile);
 									layer.setCell(x, yUp ? height - 1 - y : y, cell);
 								}
@@ -503,23 +471,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 									tilesets.getTile(id);
 									TiledMapTile tile = tilesets.getTile(id);
 									if (tile != null) {
-										Cell cell = new Cell();
-										if (flipDiagonally) {
-											if (flipHorizontally && flipVertically) {
-												cell.setFlipHorizontally(true);
-												cell.setRotation(Cell.ROTATE_270);
-											} else if (flipHorizontally) {
-												cell.setRotation(Cell.ROTATE_270);
-											} else if (flipVertically) {
-												cell.setRotation(Cell.ROTATE_90);
-											} else {
-												cell.setFlipVertically(true);
-												cell.setRotation(Cell.ROTATE_270);
-											}
-										} else {
-											cell.setFlipHorizontally(flipHorizontally);
-											cell.setFlipVertically(flipVertically);
-										}
+										Cell cell = createTileLayerCell(flipHorizontally, flipVertically, flipDiagonally);
 										cell.setTile(tile);
 										layer.setCell(x, yUp ? height - 1 - y : y, cell);
 									}
@@ -551,23 +503,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 									tilesets.getTile(id);
 									TiledMapTile tile = tilesets.getTile(id);
 									if (tile != null) {
-										Cell cell = new Cell();
-										if (flipDiagonally) {
-											if (flipHorizontally && flipVertically) {
-												cell.setFlipHorizontally(true);
-												cell.setRotation(Cell.ROTATE_270);
-											} else if (flipHorizontally) {
-												cell.setRotation(Cell.ROTATE_270);
-											} else if (flipVertically) {
-												cell.setRotation(Cell.ROTATE_90);
-											} else {
-												cell.setFlipVertically(true);
-												cell.setRotation(Cell.ROTATE_270);
-											}
-										} else {
-											cell.setFlipHorizontally(flipHorizontally);
-											cell.setFlipVertically(flipVertically);
-										}
+										Cell cell = createTileLayerCell(flipHorizontally, flipVertically, flipDiagonally);
 										cell.setTile(tile);
 										layer.setCell(x, yUp ? height - 1 - y : y, cell);
 									}
@@ -686,6 +622,27 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 		}
 	}
 
+	protected Cell createTileLayerCell (boolean flipHorizontally, boolean flipVertically, boolean flipDiagonally) {
+		Cell cell = new Cell();
+		if (flipDiagonally) {
+			if (flipHorizontally && flipVertically) {
+				cell.setFlipHorizontally(true);
+				cell.setRotation(yUp ? Cell.ROTATE_270 : Cell.ROTATE_90);
+			} else if (flipHorizontally) {
+				cell.setRotation(yUp ? Cell.ROTATE_270 : Cell.ROTATE_90);
+			} else if (flipVertically) {
+				cell.setRotation(yUp ? Cell.ROTATE_90 : Cell.ROTATE_270);
+			} else {
+				cell.setFlipVertically(true);
+				cell.setRotation(yUp ? Cell.ROTATE_270 : Cell.ROTATE_90);
+			}
+		} else {
+			cell.setFlipHorizontally(flipHorizontally);
+			cell.setFlipVertically(flipVertically);
+		}
+		return cell;
+	}
+	
 	public static FileHandle getRelativeFileHandle (FileHandle file, String path) {
 		StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
 		FileHandle result = file.parent();
