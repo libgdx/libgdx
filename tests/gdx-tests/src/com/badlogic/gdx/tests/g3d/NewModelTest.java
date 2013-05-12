@@ -52,7 +52,6 @@ public class NewModelTest extends BaseG3dHudTest {
 		super.create();
 		showAxes = false;
 		onModelClicked("g3d/knight.g3db");
-		System.out.println(Gdx.gl.glGetString(GL10.GL_RENDERER));
 		switchAnimation();
 	}
 

@@ -79,10 +79,7 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	}
 	
 	private void parseMeshes (ModelData model, JsonValue json) {
-		JsonValue meshes = json.get("meshes");
-		if(meshes == null) {
-			throw new GdxRuntimeException("No meshes found in file");
-		}
+		JsonValue meshes = json.require("meshes");
 		
 		model.meshes.ensureCapacity(meshes.size());
 		for(int i = 0; i < meshes.size(); i++) {
@@ -92,16 +89,10 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			String id = mesh.getString("id", "");
 			jsonMesh.id = id;
 			
-			JsonValue attributes = mesh.get("attributes");
-			if(attributes == null) {
-				throw new GdxRuntimeException("No vertex attributes given for mesh '" + id + "'");
-			}
+			JsonValue attributes = mesh.require("attributes");
 			jsonMesh.attributes = parseAttributes(attributes);
 			
-			JsonValue vertices = mesh.get("vertices");
-			if(vertices == null) {
-				throw new GdxRuntimeException("No vertices given for mesh '" + id + "'");
-			}
+			JsonValue vertices = mesh.require("vertices");
 			float[] verts = new float[vertices.size()];
 			for(int j = 0; j < vertices.size(); j++) {
 				final String s = vertices.getString(j);
@@ -112,10 +103,7 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			}
 			jsonMesh.vertices = verts;
 			
-			JsonValue meshParts = mesh.get("parts");
-			if(meshParts == null) {
-				throw new GdxRuntimeException("No mesh parts given for mesh '" + id + "'");
-			}
+			JsonValue meshParts = mesh.require("parts");
 			Array<ModelMeshPart> parts = new Array<ModelMeshPart>();
 			for(int j = 0; j < meshParts.size(); j++) {
 				JsonValue meshPart = meshParts.get(j);
@@ -137,10 +125,7 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				}
 				jsonPart.primitiveType = parseType(type);
 				
-				JsonValue indices = meshPart.get("indices");
-				if(indices == null) {
-					throw new GdxRuntimeException("No indices given for mesh part '" + partId + "'");
-				}
+				JsonValue indices = meshPart.require("indices");
 				short[] partIndices = new short[indices.size()];
 				for(int k = 0; k < indices.size(); k++) {
 					partIndices[k] = (short)indices.getInt(k);
