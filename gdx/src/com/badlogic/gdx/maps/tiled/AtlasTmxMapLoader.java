@@ -45,7 +45,7 @@ import com.badlogic.gdx.utils.XmlReader.Element;
  * 
  * @author Justin Shapcott
  * @author Manuel Bua */
-public class AtlasTiledMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTiledMapLoader.AtlasTiledMapLoaderParameters> {
+public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTmxMapLoader.AtlasTiledMapLoaderParameters> {
 
 	public static class AtlasTiledMapLoaderParameters extends AssetLoaderParameters<TiledMap> {
 		/** Whether to load the map for a y-up coordinate system */
@@ -109,11 +109,11 @@ public class AtlasTiledMapLoader extends AsynchronousAssetLoader<TiledMap, Atlas
 		}
 	}
 
-	public AtlasTiledMapLoader () {
+	public AtlasTmxMapLoader () {
 		super(new InternalFileHandleResolver());
 	}
 
-	public AtlasTiledMapLoader (FileHandleResolver resolver) {
+	public AtlasTmxMapLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
 
