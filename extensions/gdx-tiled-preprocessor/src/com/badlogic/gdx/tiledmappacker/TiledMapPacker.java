@@ -188,7 +188,7 @@ public class TiledMapPacker {
 				for (TiledMapTileSet tileset : map.getTileSets()) {
 					String tilesetName = tileset.getName();
 					if (!tilesetsToPack.containsKey(tilesetName)) {
-						tilesetsToPack.put(tilesetName, map.getTileSets().getTileSet(tilesetName));
+						tilesetsToPack.put(tilesetName, tileset);
 					}
 				}
 			}
@@ -253,8 +253,8 @@ public class TiledMapPacker {
 
 		int tileidx = 0;
 		for (TiledMapTileSet set : sets.values()) {
-
 			String tilesetName = set.getName();
+			System.out.println("Processing tileset " + tilesetName);
 			IntArray usedIds = this.settings.stripUnusedTiles ? getUsedIdsBucket(tilesetName, -1) : null;
 
 			int tileWidth = set.getProperties().get("tilewidth", Integer.class);
@@ -278,6 +278,8 @@ public class TiledMapPacker {
 					+ tileWidth, (int)tileLocation.y + tileHeight, null);
 
 				if (isBlended(tile)) setBlended(gid);
+				System.out.println("Adding " + tileWidth + "x" + tileHeight + " (" + (int)tileLocation.x + ", " + (int)tileLocation.y
+					+ ")");
 				packer.addImage(tile, this.settings.atlasOutputName + "_" + tileidx);
 			}
 		}
@@ -464,6 +466,8 @@ public class TiledMapPacker {
 		texturePackerSettings.paddingX = 2;
 		texturePackerSettings.paddingY = 2;
 		texturePackerSettings.duplicatePadding = true;
+		texturePackerSettings.alias = true;
+		texturePackerSettings.useIndexes = true;
 
 		final TiledMapPackerSettings packerSettings = new TiledMapPackerSettings();
 

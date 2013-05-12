@@ -22,7 +22,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.IntMap;
@@ -40,7 +39,7 @@ public class TileSetLayout {
 
 	/** Constructs a Tile Set layout. The tile set image contained in the baseDir should be the original tile set images before
 	 * being processed by {@link TiledMapPacker} (the ones actually read by Tiled).
-	 * @param tileSet the tile set to process
+	 * @param tileset the tile set to process
 	 * @param baseDir the directory in which the tile set image is stored */
 	protected TileSetLayout (int firstgid, TiledMapTileSet tileset, FileHandle baseDir) throws IOException {
 		int tileWidth = tileset.getProperties().get("tilewidth", Integer.class);
