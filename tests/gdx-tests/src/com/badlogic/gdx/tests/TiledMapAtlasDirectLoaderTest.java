@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.AtlasTiledMapLoader;
+import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -38,7 +38,7 @@ public class TiledMapAtlasDirectLoaderTest extends GdxTest {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 
-		map = new AtlasTiledMapLoader().load("data/maps/tiled-atlas-processed/test.tmx");
+		map = new AtlasTmxMapLoader().load("data/maps/tiled-atlas-processed/test.tmx");
 		renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
 	}
 
