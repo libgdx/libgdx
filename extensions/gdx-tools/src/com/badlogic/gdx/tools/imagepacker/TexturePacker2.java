@@ -20,11 +20,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -36,14 +36,11 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.SerializationException;
 
 /** @author Nathan Sweet */
 public class TexturePacker2 {
@@ -304,7 +301,7 @@ public class TexturePacker2 {
 		public int x, y, width, height;
 		public int index;
 		public boolean rotated;
-		public ArrayList<String> aliases = new ArrayList();
+		public Set<String> aliases = new HashSet<String>();
 		public int[] splits;
 		public int[] pads;
 		public boolean canRotate = true;
