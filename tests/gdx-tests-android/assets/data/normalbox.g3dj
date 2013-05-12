@@ -44,18 +44,38 @@
 	"materials" : [
 		{
 			"id" : "phong1",
-			"diffuse" : [ 0.000000, 0.000000, 0.000000],
+			"diffuse" : [ 1.000000, 1.000000, 1.000000],
 			"specular" : [ 1.000000, 1.000000, 1.000000],
 			"textures" : [
 				{
 					"id" : "file1",
 					"filename" : "badlogic.jpg",
-					"type" : "SPECULAR"
+					"type" : "DIFFUSE"
 				},
 				{
 					"id" : "file2",
 					"filename" : "badlogicnormal.png",
-					"type" : "NORMAL"
+					"type" : "SPECULAR"
+				},
+				{
+					"id" : "file3",
+					"filename" : "egg.png",
+					"type" : "SPECULAR"
+				},
+				{
+					"id" : "file4",
+					"filename" : "jump.png",
+					"type" : "SPECULAR"
+				},
+				{
+					"id" : "file5",
+					"filename" : "pack1.png",
+					"type" : "SPECULAR"
+				},
+				{
+					"id" : "file6",
+					"filename" : "isotile.png",
+					"type" : "SPECULAR"
 				}
 			]
 		}
