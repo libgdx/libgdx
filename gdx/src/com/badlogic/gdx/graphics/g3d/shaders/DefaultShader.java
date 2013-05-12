@@ -159,9 +159,11 @@ public class DefaultShader extends BaseShader {
 		pointLightsSize 				= loc(u_pointLights1color)- pointLightsLoc;
 	}
 	
+	protected final static long tangentAttribute = Usage.Generic << 1;
+	protected final static long binormalAttribute = Usage.Generic << 2;
 	protected final static long blendAttributes[] = {
-		Usage.Generic << 1, Usage.Generic << 2, Usage.Generic << 3, Usage.Generic << 4, 
-		Usage.Generic << 5, Usage.Generic << 6, Usage.Generic << 7, Usage.Generic << 8
+		Usage.Generic << 3, Usage.Generic << 4, Usage.Generic << 5, Usage.Generic << 6, 
+		Usage.Generic << 7, Usage.Generic << 8, Usage.Generic << 9, Usage.Generic << 10
 	}; // FIXME this is a temporary, quick and dirty fix and should be changed
 	protected static long getAttributesMask(final VertexAttributes attributes) {
 		long result = 0;
@@ -172,6 +174,10 @@ public class DefaultShader extends BaseShader {
 			if (a == Usage.Generic) { 
 				if (attributes.get(i).alias.startsWith("a_boneWeight"))
 					a = blendAttributes[Integer.parseInt(attributes.get(i).alias.substring(12))];
+				else if (attributes.get(i).alias.equals(ShaderProgram.TANGENT_ATTRIBUTE))
+					a = tangentAttribute;
+				else if (attributes.get(i).alias.equals(ShaderProgram.BINORMAL_ATTRIBUTE))
+					a = binormalAttribute;
 			}
 			result |= a;
 		}
@@ -195,6 +201,10 @@ public class DefaultShader extends BaseShader {
 			if ((attributes & blendAttributes[i]) == blendAttributes[i])
 				prefix += "#define boneWeight"+i+"Flag\n";
 		}
+		if ((attributes & tangentAttribute) == tangentAttribute)
+			prefix += "#define tangentFlag\n";
+		if ((attributes & binormalAttribute) == binormalAttribute)
+			prefix += "#define binormalFlag\n";
 		if ((mask & BlendingAttribute.Type) == BlendingAttribute.Type)
 			prefix += "#define "+BlendingAttribute.Alias+"Flag\n";
 		if ((mask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse)
