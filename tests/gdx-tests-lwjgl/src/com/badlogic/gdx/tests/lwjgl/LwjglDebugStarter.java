@@ -21,6 +21,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.AnimationTest;
 import com.badlogic.gdx.tests.ETC1Test;
+import com.badlogic.gdx.tests.FilesTest;
 import com.badlogic.gdx.tests.FullscreenTest;
 import com.badlogic.gdx.tests.GroupTest;
 import com.badlogic.gdx.tests.InputTest;
@@ -44,7 +45,7 @@ public class LwjglDebugStarter {
 //		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new GroupTest();
+		GdxTest test = new FilesTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		new LwjglApplication(test, config);

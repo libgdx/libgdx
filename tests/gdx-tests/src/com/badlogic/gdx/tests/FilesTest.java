@@ -26,6 +26,7 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -488,7 +489,7 @@ public class FilesTest extends GdxTest {
 
 	@Override
 	public boolean needsGL20 () {
-		return false;
+		return true;
 	}
 
 }
