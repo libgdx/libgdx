@@ -437,6 +437,8 @@ public class JsonReader {
 				throw new SerializationException("Error parsing JSON, unmatched brace.");
 			else
 				throw new SerializationException("Error parsing JSON, unmatched bracket.");
+		} else if (parseRuntimeEx != null) {
+			throw new SerializationException("Error parsing JSON: " + new String(data), parseRuntimeEx);
 		}
 		JsonValue root = this.root;
 		this.root = null;
@@ -581,7 +583,10 @@ public class JsonReader {
 
 	private void addChild (String name, JsonValue child) {
 		child.setName(name);
-		if (current.isArray() || current.isObject())
+		if (current == null) {
+			current = child;
+			root = child;
+		} else if (current.isArray() || current.isObject())
 			current.addChild(child);
 		else
 			root = current;

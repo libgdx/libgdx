@@ -5,7 +5,8 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
 /** Container for a JSON object, array, string, double, long, boolean, or null.
  * <p>
- * Iteration of arrays or objects is easily done using a for loop:<br>
+ * JsonValue children are a linked list. Iteration of arrays or objects is easily done using a for loop, like the example below.
+ * This is more efficient than accessing children by index when there are many children.<br>
  * 
  * <pre>
  * JsonValue map = ...;

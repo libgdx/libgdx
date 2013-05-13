@@ -1,4 +1,8 @@
 [0.9.9]
+- add updated gdx-tiled-preprocessor, generate one single TextureAtlas for all the specified Tiled maps, see http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=8911
+- maps API, add new AtlasTiledMapLoader for loading maps produced by the tiled preprocessor tool
+- ImageProcessor, TexturePacker2 now accepts BufferedImage objects as input
+- TexturePacker2 now avoids duplicated aliases
 - Updated to LWJGL 2.9.0
 - refactored JSON API, see http://www.badlogicgames.com/wordpress/?p=2993
 - Updated Box2D to the latest trunk. Body#applyXXX methods now take an additional boolean parameter.
