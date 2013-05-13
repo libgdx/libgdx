@@ -1,9 +1,5 @@
-#if defined(diffuseTextureFlag) || defined(specularTextureFlag) || defined(normalTextureFlag)
+#if defined(diffuseTextureFlag) || defined(specularTextureFlag)
 #define textureFlag
-#endif
-
-#if defined(normalTextureFlag)
-#define phongFlag
 #endif
 
 #if defined(specularTextureFlag) || defined(specularColorFlag)
@@ -22,20 +18,6 @@ attribute vec4 a_color;
 attribute vec3 a_normal;
 uniform mat3 u_normalMatrix;
 varying vec3 v_normal;
-
-#ifdef binormalFlag
-attribute vec3 a_binormal;
-#endif //binormalFlag
-
-#ifdef tangentFlag
-attribute vec3 a_tangent;
-#endif //tangentFlag
-
-#if defined(binormalFlag) || defined(tangentFlag) || defined(normalTextureFlag)
-varying vec3 v_binormal;
-varying vec3 v_tangent;
-#endif //binormalFlag || tangentFlag
-
 #endif // normalFlag
 
 #ifdef textureFlag
@@ -142,11 +124,6 @@ varying vec3 v_lightSpecular;
 uniform vec3 u_cameraPosition;
 #endif // specularFlag
 
-#ifdef phongFlag
-varying vec3 v_viewVec;
-varying vec3 v_pos;
-#endif //phongFlag
-
 #if defined(numDirectionalLights) && (numDirectionalLights > 0)
 struct DirectionalLight
 {
@@ -211,38 +188,13 @@ void main() {
 	#endif
 	gl_Position = u_projTrans * pos; // FIXME dont use a temp pos value (<kalle_h> this causes some vertex yittering with positions as low as 300)
 	
-	#if defined(lightingFlag) && defined(phongFlag)
-		v_pos = gl_Position.xyz;
-	#endif
-
 	#if defined(normalFlag)
 		#if defined(skinningFlag)
-			v_normal = normalize((skinning * vec4(a_normal, 0.0)).xyz); // FIXME mul normals like pos
+			vec3 normal = normalize((skinning * vec4(a_normal, 0.0)).xyz); // FIXME mul normals like pos
 		#else
-			v_normal = normalize(u_normalMatrix * a_normal);
+			vec3 normal = normalize(u_normalMatrix * a_normal);
 		#endif
-			
-		#if defined(binormalFlag) && defined(tangentFlag)
-			v_binormal = normalize(u_normalMatrix * a_binormal);
-			v_tangent = normalize(u_normalMatrix * a_tangent);
-		#elif defined(binormalFlag)
-			v_binormal = normalize(u_normalMatrix * a_binormal);
-			v_tangent = normalize(cross(v_normal, v_binormal));
-		#elif defined(tangentFlag)
-			v_tangent = normalize(u_normalMatrix * a_tangent);
-			v_binormal = normalize(cross(v_normal, v_tangent));
-		#elif defined(normalTextureFlag)
-			/*vec3 c1 = cross(v_normal, vec3(1.0, 0.0, 0.0));
-			vec3 c2 = cross(v_normal, vec3(0.0, 1.0, 0.0));
-			if (length(c1) > length(c2))
-				v_tangent = vec3(1.0, 0.0, 0.0);
-			else
-				v_tangent = vec3(0.0, 1.0, 0.0);
-			v_binormal = normalize(cross(v_normal, v_tangent));
-			v_tangent = normalize(cross(v_normal, v_binormal));*/
-			v_tangent = vec3(1.0, 0.0, 0.0);
-			v_binormal = vec3(0.0, 1.0, 0.0);
-		#endif
+		v_normal = normal;
 	#endif // normalFlag
 
 	#ifdef lightingFlag
@@ -253,8 +205,8 @@ void main() {
 		#endif // ambientLightFlag
 			
 		#ifdef ambientCubemapFlag 		
-			vec3 squaredNormal = v_normal * v_normal;
-			vec3 isPositive  = step(0.0, v_normal);
+			vec3 squaredNormal = normal * normal;
+			vec3 isPositive  = step(0.0, normal);
 			v_lightDiffuse += squaredNormal.x * mix(u_ambientCubemap[0], u_ambientCubemap[1], isPositive.x) +
 					squaredNormal.y * mix(u_ambientCubemap[2], u_ambientCubemap[3], isPositive.y) +
 					squaredNormal.z * mix(u_ambientCubemap[4], u_ambientCubemap[5], isPositive.z);
@@ -271,42 +223,37 @@ void main() {
 			v_lightDiffuse += u_sphericalHarmonics[7] * (3.0 * normal.z * normal.z - 1.0);
 			v_lightDiffuse += u_sphericalHarmonics[8] * (normal.x * normal.x - normal.y * normal.y);			
 		#endif // sphericalHarmonicsFlag
-		
-		#ifdef phongFlag
-			v_viewVec = normalize(u_cameraPosition - pos.xyz);
-		#else //phongFlag
 			
-			#ifdef specularFlag
-				v_lightSpecular = vec3(0.0);
-				vec3 viewVec = normalize(u_cameraPosition - pos.xyz);
-			#endif // specularFlag
-				
-			#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
-				for (int i = 0; i < numDirectionalLights; i++) {
-					vec3 lightDir = -u_dirLights[i].direction;
-					float NdotL = clamp(dot(v_normal, lightDir), 0.0, 1.0);
-					v_lightDiffuse += u_dirLights[i].color * NdotL;
-					#ifdef specularFlag
-						float halfDotView = dot(v_normal, normalize(lightDir + viewVec));
-						v_lightSpecular += u_dirLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess), 0.0, 1.0);
-					#endif // specularFlag
-				}
-			#endif // numDirectionalLights
-	
-			#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
-				for (int i = 0; i < numPointLights; i++) {
-					vec3 lightDir = u_pointLights[i].position - pos.xyz;
-					float dist2 = dot(lightDir, lightDir);
-					lightDir *= inversesqrt(dist2);
-					float NdotL = clamp(dot(v_normal, lightDir), 0.0, 2.0);
-					float falloff = clamp(u_pointLights[i].intensity / (1.0 + dist2), 0.0, 2.0); // FIXME mul intensity on cpu
-					v_lightDiffuse += u_pointLights[i].color * (NdotL * falloff);
-					#ifdef specularFlag
-						float halfDotView = clamp(dot(v_normal, normalize(lightDir + viewVec)), 0.0, 2.0);
-						v_lightSpecular += u_pointLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess) * falloff, 0.0, 2.0);
-					#endif // specularFlag
-				}
-			#endif // numPointLights
-		#endif //!phongFlag
+		#ifdef specularFlag
+			v_lightSpecular = vec3(0.0);
+			vec3 viewVec = normalize(u_cameraPosition - pos.xyz);
+		#endif // specularFlag
+			
+		#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
+			for (int i = 0; i < numDirectionalLights; i++) {
+				vec3 lightDir = -u_dirLights[i].direction;
+				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
+				v_lightDiffuse += u_dirLights[i].color * NdotL;
+				#ifdef specularFlag
+					float halfDotView = dot(normal, normalize(lightDir + viewVec));
+					v_lightSpecular += u_dirLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess), 0.0, 1.0);
+				#endif // specularFlag
+			}
+		#endif // numDirectionalLights
+
+		#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
+			for (int i = 0; i < numPointLights; i++) {
+				vec3 lightDir = u_pointLights[i].position - pos.xyz;
+				float dist2 = dot(lightDir, lightDir);
+				lightDir *= inversesqrt(dist2);
+				float NdotL = clamp(dot(normal, lightDir), 0.0, 2.0);
+				float falloff = clamp(u_pointLights[i].intensity / (1.0 + dist2), 0.0, 2.0); // FIXME mul intensity on cpu
+				v_lightDiffuse += u_pointLights[i].color * (NdotL * falloff);
+				#ifdef specularFlag
+					float halfDotView = clamp(dot(normal, normalize(lightDir + viewVec)), 0.0, 2.0);
+					v_lightSpecular += u_pointLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess) * falloff, 0.0, 2.0);
+				#endif // specularFlag
+			}
+		#endif // numPointLights
 	#endif // lightingFlag
 }
