@@ -37,6 +37,8 @@ import cli.objectal.OALAudioSession;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.BaseDeviceInfo;
+import com.badlogic.gdx.DeviceInfo;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -88,6 +90,7 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	IOSFiles files;
 	IOSInput input;
 	IOSNet net;
+	BaseDeviceInfo deviceInfo;
 	int logLevel = Application.LOG_DEBUG;
 
 	/** The display scale factor (1.0f for normal; 2.0f to use retina coordinates/dimensions). */
@@ -336,6 +339,16 @@ public class IOSApplication extends UIApplicationDelegate implements Application
 	public int getVersion () {
 		// FIXME return iOS version
 		return 0;
+	}
+	
+	@Override
+	public DeviceInfo getDeviceInfo() {
+		if (deviceInfo == null) {
+			deviceInfo = new BaseDeviceInfo();
+			deviceInfo.put(DeviceInfo.MANUFACTURER, "Apple");
+			// FIXME add deviceInfo
+		}
+		return deviceInfo;
 	}
 
 	@Override

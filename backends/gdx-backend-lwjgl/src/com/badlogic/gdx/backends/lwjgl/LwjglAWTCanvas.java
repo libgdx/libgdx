@@ -32,6 +32,8 @@ import org.lwjgl.opengl.PixelFormat;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.BaseDeviceInfo;
+import com.badlogic.gdx.DeviceInfo;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -54,6 +56,7 @@ public class LwjglAWTCanvas implements Application {
 	final LwjglFiles files;
 	final LwjglAWTInput input;
 	final LwjglNet net;
+	BaseDeviceInfo deviceInfo;
 	final ApplicationListener listener;
 	final AWTGLCanvas canvas;
 	final List<Runnable> runnables = new ArrayList();
@@ -194,6 +197,13 @@ public class LwjglAWTCanvas implements Application {
 		return 0;
 	}
 
+	@Override
+	public DeviceInfo getDeviceInfo() {
+		if (deviceInfo == null)
+			deviceInfo = new BaseDeviceInfo();
+		return deviceInfo;
+	}
+	
 	void setGlobals () {
 		Gdx.app = this;
 		if (audio != null) Gdx.audio = audio;

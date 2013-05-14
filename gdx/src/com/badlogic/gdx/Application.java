@@ -101,7 +101,7 @@ public interface Application {
 	public enum ApplicationType {
 		Android, Desktop, Applet, WebGL, iOS
 	}
-
+	
 	public static final int LOG_NONE = 0;
 	public static final int LOG_DEBUG = 3;
 	public static final int LOG_INFO = 2;
@@ -153,6 +153,9 @@ public interface Application {
 
 	/** @return the Android API level on Android or 0 on the desktop. */
 	public int getVersion ();
+	
+	/** @return the device hardware information or null if not available */
+	public DeviceInfo getDeviceInfo();
 
 	/** @return the Java heap memory use in bytes */
 	public long getJavaHeap ();

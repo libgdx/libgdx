@@ -30,6 +30,8 @@ import org.lwjgl.opengl.Display;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.BaseDeviceInfo;
+import com.badlogic.gdx.DeviceInfo;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -58,6 +60,8 @@ public class LwjglCanvas implements Application {
 	final List<Runnable> runnables = new ArrayList();
 	final List<Runnable> executedRunnables = new ArrayList();
 	final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	BaseDeviceInfo deviceInfo;
+
 	boolean running = true;
 	int logLevel = LOG_INFO;
 	Cursor cursor;
@@ -183,6 +187,13 @@ public class LwjglCanvas implements Application {
 	@Override
 	public int getVersion () {
 		return 0;
+	}
+
+	@Override
+	public DeviceInfo getDeviceInfo() {
+		if (deviceInfo == null)
+			deviceInfo = new BaseDeviceInfo();
+		return deviceInfo;
 	}
 
 	void create () {

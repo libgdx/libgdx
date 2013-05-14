@@ -36,6 +36,7 @@ import android.widget.FrameLayout;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.DeviceInfo;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -60,12 +61,13 @@ public class AndroidApplication extends Activity implements Application {
 	static {
 		GdxNativesLoader.load();
 	}
-
+	
 	protected AndroidGraphics graphics;
 	protected AndroidInput input;
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
 	protected AndroidNet net;
+	protected AndroidDeviceInfo deviceInfo;
 	protected ApplicationListener listener;
 	public Handler handler;
 	protected boolean firstResume = true;
@@ -303,6 +305,13 @@ public class AndroidApplication extends Activity implements Application {
 	@Override
 	public int getVersion () {
 		return Integer.parseInt(android.os.Build.VERSION.SDK);
+	}
+	
+	@Override
+	public DeviceInfo getDeviceInfo() {
+		if (deviceInfo == null)
+			deviceInfo = new AndroidDeviceInfo(this);
+		return deviceInfo;
 	}
 
 	@Override

@@ -19,6 +19,8 @@ package com.badlogic.gdx.backends.gwt;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.BaseDeviceInfo;
+import com.badlogic.gdx.DeviceInfo;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -64,6 +66,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private GwtGraphics graphics;
 	private GwtInput input;
 	private GwtNet net;
+	private BaseDeviceInfo deviceInfo;
 	private Panel root = null;
 	private TextArea log = null;
 	private int logLevel = LOG_ERROR;
@@ -363,6 +366,13 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	@Override
 	public int getVersion () {
 		return 0;
+	}
+	
+	@Override
+	public DeviceInfo getDeviceInfo () {
+		if (deviceInfo == null)
+			deviceInfo = new BaseDeviceInfo();
+		return deviceInfo;
 	}
 
 	@Override
