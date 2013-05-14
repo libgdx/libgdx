@@ -314,7 +314,6 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	
 	private ModelTexture readTexture(final long length) throws IOException {
 		final ModelTexture texture = new ModelTexture();
-		texture.usage = ModelTexture.USAGE_DIFFUSE;
 		long cnt = 0;
 		while ((din.available() > 0) && (cnt < length)) {
 			final byte type = din.readByte();
@@ -324,12 +323,12 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				texture.id = readString(size);
 			else if ((type & TYPE_MASK) == G3DB_TAG_FILENAME)
 				texture.fileName = file.parent().child(readString(size)).path();
-			else if ((type & TYPE_MASK) == G3DB_TAG_TYPE)
-				din.skipBytes((int)size); // FIXME
 			else if ((type & TYPE_MASK) == G3DB_TAG_TRANSLATE)
-				texture.uvTranslation = readVector2(size);//read
+				texture.uvTranslation = readVector2(size);
 			else if ((type & TYPE_MASK) == G3DB_TAG_SCALE)
 				texture.uvScaling = readVector2(size);
+			else if ((type & TYPE_MASK) == G3DB_TAG_TYPE)
+				texture.usage = readByte(size);
 			else { // unknown tag, just skip it
 				din.skipBytes((int)size);
 				Gdx.app.log("G3dbModelLoader", "Unknown material tag: "+type+"["+size+"], skipping");
@@ -432,6 +431,13 @@ public class G3dbModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		final byte data[] = new byte[(int)size];
 		din.readFully(data);
 		return new String(data, "UTF-8");
+	}
+	
+	private int readByte(final long size) throws IOException {
+		int result = din.readByte() & 0xFF;
+		if (size > 1)
+			din.skipBytes((int)size - 1);
+		return result;
 	}
 	
 	private float readFloat(final long size) throws IOException {

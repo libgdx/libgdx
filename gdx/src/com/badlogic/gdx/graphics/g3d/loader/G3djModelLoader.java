@@ -357,7 +357,7 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 						nodePart.bones[j] = bones.getString(j); 
 				}
 				
-				jsonNode.parts[i++] = nodePart;
+				jsonNode.parts[i] = nodePart;
 			}
 		}
 		
@@ -392,11 +392,13 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			animation.id = anim.getString("id");
 			for(int j = 0; j < nodes.size(); j++) {
 				JsonValue node = nodes.get(j);
+				JsonValue keyframes = node.get("keyframes");
+
 				ModelNodeAnimation nodeAnim = new ModelNodeAnimation();
 				animation.nodeAnimations.add(nodeAnim);
 				nodeAnim.nodeId = node.getString("boneId");
-				JsonValue keyframes = node.get("keyframes");
 				nodeAnim.keyframes.ensureCapacity(keyframes.size());
+				
 				for(int k = 0; k < keyframes.size(); k++) {
 					JsonValue keyframe = keyframes.get(k);
 					ModelNodeKeyframe kf = new ModelNodeKeyframe();
