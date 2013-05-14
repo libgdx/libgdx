@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * @brief Represents a tiled map, adds the concept of tiles and tilesets
@@ -12,7 +13,7 @@ import com.badlogic.gdx.utils.Array;
  */
 public class TiledMap extends Map {
 	private TiledMapTileSets tilesets;
-	private Array<Texture> ownedTextures;
+	private Array<? extends Disposable> ownedResources;
 	
 	/**
 	 * @return collection of tilesets for this map
@@ -29,20 +30,20 @@ public class TiledMap extends Map {
 	}
 	
 	/**
-	 * Used by TmxMapLoader to set textures when loading the map
+	 * Used by loaders to set resources when loading the map
 	 * directly, without {@link AssetManager}. To be disposed in
 	 * {@link #dispose()}.
-	 * @param textures
+	 * @param resources
 	 */
-	public void setOwnedTextures(Array<Texture> textures) {
-		this.ownedTextures = textures;
+	public void setOwnedResources(Array<? extends Disposable> resources) {
+		this.ownedResources = resources;
 	}
 	
 	@Override
 	public void dispose() {
-		if(ownedTextures != null) {
-			for(Texture texture: ownedTextures) {
-				texture.dispose();
+		if(ownedResources != null) {
+			for(Disposable resource: ownedResources) {
+				resource.dispose();
 			}
 		}
 	}
