@@ -12,7 +12,7 @@
 	<!-- the compilerPrefix for the C & C++ compilers -->
 	<property name="compilerPrefix" value="x86_64-w64-mingw32-"/>
 	<!--  the compilerSuffix for the C & C++ compilers -->	
-	<property name="compilerSuffix" value=".exe" />	
+	<property name="compilerSuffix" value="" />	
 	
 	<!-- define gcc compiler, options and files to compile -->
 	<property name="gcc" value="${compilerPrefix}gcc${compilerSuffix}"/>	
