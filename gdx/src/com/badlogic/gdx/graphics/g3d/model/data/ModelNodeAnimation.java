@@ -6,5 +6,5 @@ public class ModelNodeAnimation {
 	/** the id of the node animated by this animation FIXME should be nodeId **/
 	public String nodeId;
 	/** the keyframes, defining the transformation of a node for a sepcific timestamp **/
-	public Array<ModelNodeKeyframe> keyframes = new Array<ModelNodeKeyframe>();
+	public final Array<ModelNodeKeyframe> keyframes = new Array<ModelNodeKeyframe>();
 }
