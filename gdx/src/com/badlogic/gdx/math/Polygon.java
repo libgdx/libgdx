@@ -19,7 +19,7 @@ package com.badlogic.gdx.math;
 /** Encapsulates a 2D polygon defined by it's vertices relative 
  * to an origin point (default of 0, 0). */
 public class Polygon {
-	private final float[] localVertices;
+	private float[] localVertices;
 	private float[] worldVertices;
 	private float x, y;
 	private float originX, originY;
@@ -118,6 +118,18 @@ public class Polygon {
 	public void setPosition (float x, float y) {
 		this.x = x;
 		this.y = y;
+		dirty = true;
+	}
+	
+	/** Sets the polygon's local vertices relative to the origin point,
+	 * without any scaling, rotating or translations being applied.
+	 * 
+	 * @param vertices float array where every even element represents the
+	 * x-coordinate of a vertex, and the proceeding element representing the
+	 * y-coordinate.
+	 */
+	public void setVertices (float[] vertices) {
+		localVertices = vertices;
 		dirty = true;
 	}
 
