@@ -139,9 +139,17 @@ public class ShapeRenderer {
 		matrixDirty = true;
 	}
 
+	public Matrix4 getProjectionMatrix () {
+		return projView;
+	}
+
 	public void setTransformMatrix (Matrix4 matrix) {
 		transform.set(matrix);
 		matrixDirty = true;
+	}
+
+	public Matrix4 getTransformMatrix () {
+		return transform;
 	}
 
 	/** Sets the transformation matrix to identity. */
