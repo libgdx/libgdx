@@ -34,6 +34,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** Holds the settings needed to configure a UnicodeFont.
  * @author Nathan Sweet */
 public class HieroSettings {
+	private String fontName = "Arial";
 	private int fontSize = 12;
 	private boolean bold = false, italic = false;
 	private int paddingTop, paddingLeft, paddingBottom, paddingRight, paddingAdvanceX, paddingAdvanceY;
@@ -57,7 +58,9 @@ public class HieroSettings {
 				String[] pieces = line.split("=", 2);
 				String name = pieces[0].trim();
 				String value = pieces[1];
-				if (name.equals("font.size")) {
+				if (name.equals("font.name")) {
+					fontName = value;
+				} else if (name.equals("font.size")) {
 					fontSize = Integer.parseInt(value);
 				} else if (name.equals("font.bold")) {
 					bold = Boolean.parseBoolean(value);
@@ -189,6 +192,18 @@ public class HieroSettings {
 	public void setGlyphPageHeight (int glyphPageHeight) {
 		this.glyphPageHeight = glyphPageHeight;
 	}
+	
+	/** @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
+	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean) */
+	public String getFontName() {
+		return fontName;
+	}
+	
+	/** @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
+	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean) */
+	public void setFontName(String fontName) {
+		this.fontName = fontName;
+	}
 
 	/** @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
 	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean) */
@@ -251,6 +266,7 @@ public class HieroSettings {
 	 * @throws IOException if the file could not be saved. */
 	public void save (File file) throws IOException {
 		PrintStream out = new PrintStream(new FileOutputStream(file));
+		out.println("font.name=" + fontName);
 		out.println("font.size=" + fontSize);
 		out.println("font.bold=" + bold);
 		out.println("font.italic=" + italic);
