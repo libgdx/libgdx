@@ -32,6 +32,7 @@ import com.badlogic.gdx.tests.box2d.Chain;
 import com.badlogic.gdx.tests.box2d.CharacterCollision;
 import com.badlogic.gdx.tests.box2d.CollisionFiltering;
 import com.badlogic.gdx.tests.box2d.ContinuousTest;
+import com.badlogic.gdx.tests.box2d.ConveyorBelt;
 import com.badlogic.gdx.tests.box2d.DebugRendererTest;
 import com.badlogic.gdx.tests.box2d.OneSidedPlatform;
 import com.badlogic.gdx.tests.box2d.Prismatic;
@@ -45,7 +46,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class Box2DTestCollection extends GdxTest implements InputProcessor, GestureListener {
 	private final Box2DTest[] tests = {new DebugRendererTest(), new CollisionFiltering(), new Chain(), new Bridge(),
 		new SphereStack(), new Cantilever(), new ApplyForce(), new ContinuousTest(), new Prismatic(), new CharacterCollision(),
-		new BodyTypes(), new SimpleTest(), new Pyramid(), new OneSidedPlatform(), new VerticalStack(), new VaryingRestitution()};
+		new BodyTypes(), new SimpleTest(), new Pyramid(), new OneSidedPlatform(), new VerticalStack(), new VaryingRestitution(), new ConveyorBelt()};
 
 	private int testIndex = 0;
 
