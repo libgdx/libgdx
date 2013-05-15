@@ -127,9 +127,19 @@ public class Polygon {
 	 * @param vertices float array where every even element represents the
 	 * x-coordinate of a vertex, and the proceeding element representing the
 	 * y-coordinate.
+	 * @throws IllegalArgumentException  if less than 6 elements, 
+	 * representing 3 points, are provided
 	 */
 	public void setVertices (float[] vertices) {
-		localVertices = vertices;
+		if (vertices.length < 6) throw new IllegalArgumentException("polygons must contain at least 3 points.");
+		
+		if (localVertices.length == vertices.length) {
+			for (int i = 0; i < localVertices.length; i++) {
+				localVertices[i] = vertices[i];
+			}
+		} else {
+			localVertices = vertices;
+		}
 		dirty = true;
 	}
 
