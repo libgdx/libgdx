@@ -133,6 +133,7 @@ public class Polygon {
 	public void setVertices (float[] vertices) {
 		if (vertices.length < 6) throw new IllegalArgumentException("polygons must contain at least 3 points.");
 		
+		// if the provided vertices are the same length, we can copy them into localVertices
 		if (localVertices.length == vertices.length) {
 			for (int i = 0; i < localVertices.length; i++) {
 				localVertices[i] = vertices[i];
