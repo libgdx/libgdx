@@ -36,7 +36,7 @@ public class Polygon {
 	/** Constructs a new polygon from a float array of parts of vertex points. 
 	 * 
 	 * @param vertices an array where every even element represents the horizontal
-	 * part of a point, and the proceeding element representing the vertical part
+	 * part of a point, and the following element representing the vertical part
 	 * 
 	 * @throws IllegalArgumentException if less than 6 elements, 
 	 * representing 3 points, are provided
@@ -46,9 +46,8 @@ public class Polygon {
 		this.localVertices = vertices;
 	}
 
-	/** Returns the polygon's local vertices. 
-	 * 
-	 * @return vertices without scaling or rotation and without being offset by the polygon position. */
+	/** Returns the polygon's local vertices without scaling or rotation and 
+	 * without being offset by the polygon position. */
 	public float[] getVertices () {
 		return localVertices;
 	}
@@ -99,72 +98,47 @@ public class Polygon {
 		return worldVertices;
 	}
 
-	/** Sets the origin point to which all of the polygon's local vertices are relative to. 
-	 * 
-	 * @param originX the x-coordinate that the polygon's local vertices will be relative to
-	 * @param originY the y-coordinate that the polygon's local vertices will be relative to
-	 */
+	/** Sets the origin point to which all of the polygon's local vertices are relative to. */
 	public void setOrigin (float originX, float originY) {
 		this.originX = originX;
 		this.originY = originY;
 		dirty = true;
 	}
 
-	/** Sets the polygon's position within the world.
-	 * 
-	 * @param x the x-coordinate of the polygon's position in the world
-	 * @param y the y-coordinate of the polygon's position in the world
-	 */
+	/** Sets the polygon's position within the world. */
 	public void setPosition (float x, float y) {
 		this.x = x;
 		this.y = y;
 		dirty = true;
 	}
 
-	/** Translates the polygon's position by the specified horizontal and vertical amounts.
-	 * 
-	 * @param x the horizontal amount to translate the polygon's position by
-	 * @param y the vertical amount to translate the polygon's position by
-	 */
+	/** Translates the polygon's position by the specified horizontal and vertical amounts. */
 	public void translate (float x, float y) {
 		this.x += x;
 		this.y += y;
 		dirty = true;
 	}
 
-	/** Sets the polygon to be rotated by the supplied degrees.
-	 * 
-	 * @param degrees the amount of total rotation to apply to the polygon
-	 */
+	/** Sets the polygon to be rotated by the supplied degrees. */
 	public void setRotation (float degrees) {
 		this.rotation = degrees;
 		dirty = true;
 	}
 
-	/** Applies additional rotation to the polygon by the supplied degrees.
-	 * 
-	 * @param degrees the amount of additional rotation to apply to the polygon
-	 */
+	/** Applies additional rotation to the polygon by the supplied degrees. */
 	public void rotate (float degrees) {
 		rotation += degrees;
 		dirty = true;
 	}
 
-	/** Sets the amount of scaling to be applied to the polygon.
-	 *  
-	 * @param scaleX the amount of horizontal scaling to apply to the polygon
-	 * @param scaleY the amount of vertical scaling to apply to the polygon
-	 */
+	/** Sets the amount of scaling to be applied to the polygon. */
 	public void setScale (float scaleX, float scaleY) {
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
 		dirty = true;
 	}
 
-	/** Applies additional scaling to the polygon by the supplied amount.
-	 * 
-	 * @param amount the amount of scaling to apply to the polygon
-	 */
+	/** Applies additional scaling to the polygon by the supplied amount. */
 	public void scale (float amount) {
 		this.scaleX += amount;
 		this.scaleY += amount;
@@ -178,9 +152,7 @@ public class Polygon {
 		dirty = true;
 	}
 
-	/** Returns the area contained within the polygon. 
-	 * 
-	 * @return the area contained within the polygon */
+	/** Returns the area contained within the polygon. */
 	public float area () {
 		float area = 0;
 
@@ -233,11 +205,7 @@ public class Polygon {
 		return bounds;
 	}
 	
-	/** Returns whether an x, y pair is contained within the polygon.
-	 *  
-	 * @param x x-coordinate to be tested
-	 * @param y y-coordinate to be tested
-	 * @return whether the point is contained in the polygon */
+	/** Returns whether an x, y pair is contained within the polygon. */
 	public boolean contains (float x, float y) {
 		final float[] vertices = getTransformedVertices();
 		final int numFloats = vertices.length;
@@ -253,51 +221,37 @@ public class Polygon {
 		return (intersects & 1) == 1;
 	}
 
-	/** Returns the x-coordinate of the polygon's position.
-	 *  
-	 * @return the x-coordinate of the polygon's position within the world */ 
+	/** Returns the x-coordinate of the polygon's position within the world. */
 	public float getX () {
 		return x;
 	}
 
-	/** Returns the y-coordinate of the polygon's position.
-	 *  
-	 * @return the y-coordinate of the polygon's position within the world */
+	/** Returns the y-coordinate of the polygon's position within the world. */
 	public float getY () {
 		return y;
 	}
 
-	/** Returns the x-coordinate of the polygon's origin point. 
-	 * 
-	 * @return the x-coordinate that the polygon's vertices are relative to */
+	/** Returns the x-coordinate of the polygon's origin point. */
 	public float getOriginX () {
 		return originX;
 	}
 
-	/** Returns the y-coordinate of the polygon's origin point. 
-	 * 
-	 * @return the y-coordinate that the polygon's vertices are relative to */
+	/** Returns the y-coordinate of the polygon's origin point. */
 	public float getOriginY () {
 		return originY;
 	}
 
-	/** Returns the total rotation applied to the polygon. 
-	 * 
-	 * @return the amount of rotation applied to the polygon */
+	/** Returns the total rotation applied to the polygon. */
 	public float getRotation () {
 		return rotation;
 	}
 
-	/** Returns the total horizontal scaling applied to the polygon. 
-	 * 
-	 * @return the total horizontal scaling applied to the polygon */
+	/** Returns the total horizontal scaling applied to the polygon. */ 
 	public float getScaleX () {
 		return scaleX;
 	}
 
-	/** Returns the total vertical scaling applied to the polygon.
-	 * 
-	 * @return the total vertical scaling applied to the polygon */
+	/** Returns the total vertical scaling applied to the polygon. */
 	public float getScaleY () {
 		return scaleY;
 	}
