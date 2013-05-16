@@ -249,6 +249,24 @@ public class ShapeRenderer {
 		renderer.vertex(x2, y2, 0);
 	}
 	
+	/** Draws a line in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. The line
+	 * is drawn with 2 colors interpolated between start & end point.
+	 * @param x
+	 * @param y
+	 * @param x2
+	 * @param y2 
+	 * @param c1 Color at start of the line 
+	 * @param c2 Color at end of the line */
+	public void line(float x, float y, float x2, float y2, Color c1, Color c2){
+		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
+		checkDirty();
+		checkFlush(2);
+		renderer.color(c1.r, c1.g, c1.b, c1.a);
+		renderer.vertex(x, y, 0);
+		renderer.color(c2.r, c2.g, c2.b, c2.a);
+		renderer.vertex(x2, y2, 0);
+	}
+	
 	public void curve(float x1, float y1, float cx1, float cy1, float cx2, float cy2, float x2, float y2, int segments){
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		checkDirty();
