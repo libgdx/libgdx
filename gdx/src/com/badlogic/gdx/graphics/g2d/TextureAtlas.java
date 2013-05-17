@@ -582,7 +582,6 @@ public class TextureAtlas implements Disposable {
 
 		public void flip (boolean x, boolean y) {
 			// Flip texture.
-
 			super.flip(x, y);
 
 			float oldOriginX = getOriginX();
