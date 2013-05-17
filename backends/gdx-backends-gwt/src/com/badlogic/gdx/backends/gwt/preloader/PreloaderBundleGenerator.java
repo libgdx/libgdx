@@ -18,11 +18,10 @@ package com.badlogic.gdx.backends.gwt.preloader;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.core.ext.BadPropertyValueException;
 import com.google.gwt.core.ext.ConfigurationProperty;
@@ -88,6 +87,11 @@ public class PreloaderBundleGenerator extends Generator {
 			buffer.append(asset.type.code);
 			buffer.append(":");
 			buffer.append(path);
+			buffer.append(":");
+			buffer.append(asset.file.isDirectory() ? 0 : asset.file.length());
+			buffer.append(":");
+			String mimetype = URLConnection.guessContentTypeFromName(asset.file.name());
+			buffer.append(mimetype == null ? "application/unknown" : mimetype);
 			buffer.append("\n");
 		}
 		target.child("assets.txt").writeString(buffer.toString(), false);
