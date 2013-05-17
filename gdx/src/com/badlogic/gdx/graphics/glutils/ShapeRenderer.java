@@ -75,7 +75,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * The projection and transformation matrices are a state of the ShapeRenderer, just like the color and will be applied to all
  * shapes until they are changed.
  * 
- * @author mzechner, stbachmann */
+ * @author mzechner, stbachmann
+ * @author Nathan Sweet */
 public class ShapeRenderer {
 	/** Shape types to be used with {@link #begin(ShapeType)}.
 	 * @author mzechner, stbachmann */
@@ -115,17 +116,12 @@ public class ShapeRenderer {
 		matrixDirty = true;
 	}
 
-	/** Sets the {@link Color} to be used by shapes.
-	 * @param color */
+	/** Sets the {@link Color} to be used by shapes. */
 	public void setColor (Color color) {
 		this.color.set(color);
 	}
 
-	/** Sets the {@link Color} to be used by shapes.
-	 * @param r
-	 * @param g
-	 * @param b
-	 * @param a */
+	/** Sets the {@link Color} to be used by shapes. */
 	public void setColor (float r, float g, float b, float a) {
 		this.color.set(r, g, b, a);
 	}
@@ -156,29 +152,20 @@ public class ShapeRenderer {
 		matrixDirty = true;
 	}
 
-	/** Multiplies the current transformation matrix by a translation matrix.
-	 * @param x
-	 * @param y
-	 * @param z */
+	/** Multiplies the current transformation matrix by a translation matrix. */
 	public void translate (float x, float y, float z) {
 		transform.translate(x, y, z);
 		matrixDirty = true;
 	}
 
 	/** Multiplies the current transformation matrix by a rotation matrix.
-	 * @param angle angle in degrees
-	 * @param axisX
-	 * @param axisY
-	 * @param axisZ */
+	 * @param angle angle in degrees */
 	public void rotate (float axisX, float axisY, float axisZ, float angle) {
 		transform.rotate(axisX, axisY, axisZ, angle);
 		matrixDirty = true;
 	}
 
-	/** Multiplies the current transformation matrix by a scale matrix.
-	 * @param scaleX
-	 * @param scaleY
-	 * @param scaleZ */
+	/** Multiplies the current transformation matrix by a scale matrix. */
 	public void scale (float scaleX, float scaleY, float scaleZ) {
 		transform.scale(scaleX, scaleY, scaleZ);
 		matrixDirty = true;
@@ -190,7 +177,6 @@ public class ShapeRenderer {
 	 * The call to this method must be paired with a call to {@link #end()}.
 	 * 
 	 * In case OpenGL ES 1.x is used, the projection and modelview matrix will be modified.
-	 * 
 	 * @param type the {@link ShapeType}. */
 	public void begin (ShapeType type) {
 		if (currType != null) throw new GdxRuntimeException("Call end() before beginning a new shape batch");
@@ -215,13 +201,7 @@ public class ShapeRenderer {
 		renderer.vertex(x, y, z);
 	}
 
-	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}.
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param x2
-	 * @param y2
-	 * @param z2 */
+	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. */
 	public void line (float x, float y, float z, float x2, float y2, float z2) {
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		checkDirty();
@@ -232,11 +212,7 @@ public class ShapeRenderer {
 		renderer.vertex(x2, y2, z2);
 	}
 
-	/** Draws a line in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}.
-	 * @param x
-	 * @param y
-	 * @param x2
-	 * @param y2 */
+	/** Draws a line in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. */
 	public void line (float x, float y, float x2, float y2) {
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		checkDirty();
@@ -246,16 +222,12 @@ public class ShapeRenderer {
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x2, y2, 0);
 	}
-	
-	/** Draws a line in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. The line
-	 * is drawn with 2 colors interpolated between start & end point.
-	 * @param x
-	 * @param y
-	 * @param x2
-	 * @param y2 
-	 * @param c1 Color at start of the line 
+
+	/** Draws a line in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. The line is drawn
+	 * with 2 colors interpolated between start & end point.
+	 * @param c1 Color at start of the line
 	 * @param c2 Color at end of the line */
-	public void line(float x, float y, float x2, float y2, Color c1, Color c2){
+	public void line (float x, float y, float x2, float y2, Color c1, Color c2) {
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		checkDirty();
 		checkFlush(2);
@@ -264,8 +236,8 @@ public class ShapeRenderer {
 		renderer.color(c2.r, c2.g, c2.b, c2.a);
 		renderer.vertex(x2, y2, 0);
 	}
-	
-	public void curve(float x1, float y1, float cx1, float cy1, float cx2, float cy2, float x2, float y2, int segments){
+
+	public void curve (float x1, float y1, float cx1, float cy1, float cx2, float cy2, float x2, float y2, int segments) {
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		checkDirty();
 		checkFlush(segments * 2 + 2);
@@ -347,11 +319,7 @@ public class ShapeRenderer {
 	}
 
 	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The
-	 * {@link ShapeType} passed to begin has to be {@link ShapeType#Filled} or {@link ShapeType#Line}.
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height */
+	 * {@link ShapeType} passed to begin has to be {@link ShapeType#Filled} or {@link ShapeType#Line}. */
 	public void rect (float x, float y, float width, float height) {
 		if (currType != ShapeType.Filled && currType != ShapeType.Line)
 			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
@@ -398,10 +366,6 @@ public class ShapeRenderer {
 
 	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The
 	 * {@link ShapeType} passed to begin has to be {@link ShapeType#Filled} or {@link ShapeType#Line}.
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
 	 * @param col1 The color at (x, y)
 	 * @param col2 The color at (x + width, y)
 	 * @param col3 The color at (x + width, y + height)
@@ -451,11 +415,7 @@ public class ShapeRenderer {
 	}
 
 	/** Draws a box. The x, y and z coordinate specify the bottom left front corner of the rectangle. The {@link ShapeType} passed
-	 * to begin has to be {@link ShapeType#Line}.
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height */
+	 * to begin has to be {@link ShapeType#Line}. */
 	public void box (float x, float y, float z, float width, float height, float depth) {
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 
