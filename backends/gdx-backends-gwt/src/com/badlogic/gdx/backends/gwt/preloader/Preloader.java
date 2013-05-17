@@ -20,8 +20,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+import com.badlogic.gdx.backends.gwt.preloader.AssetDownloader.AssetLoaderListener;
 import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
-import com.badlogic.gdx.backends.gwt.preloader.AssetLoader.AssetLoaderListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -107,9 +107,7 @@ public class Preloader {
 	}
 
 	public void preload (final String assetFileUrl, final PreloaderCallback callback) {
-		final AssetLoader loader = new AssetLoader();
-		loader.setUseBrowserCache(true);
-		loader.setUseInlineBase64(false);
+		final AssetDownloader loader = new AssetDownloader();
 		
 		loader.loadText(baseUrl + assetFileUrl, new AssetLoaderListener<String>() {
 			@Override
@@ -125,13 +123,19 @@ public class Preloader {
 				Array<Asset> assets = new Array<Asset>();
 				for (String line : lines) {
 					String[] tokens = line.split(":");
-					if (tokens.length != 4) continue; // FIXME :p
+					if (tokens.length != 4) {
+						throw new GdxRuntimeException("Invalid assets description file.");
+					}
 					AssetType type = AssetType.Text;
 					if (tokens[0].equals("i")) type = AssetType.Image;
 					if (tokens[0].equals("b")) type = AssetType.Binary;
 					if (tokens[0].equals("a")) type = AssetType.Audio;
 					if (tokens[0].equals("d")) type = AssetType.Directory;
-					assets.add(new Asset(tokens[1].trim(), type, Long.parseLong(tokens[2]), tokens[3]));
+					long size = Long.parseLong(tokens[2]);
+					if (type == AssetType.Audio && !loader.isUseBrowserCache()) {
+						size = 0;
+					}
+					assets.add(new Asset(tokens[1].trim(), type, size, tokens[3]));
 				}
 				final PreloaderState state = new PreloaderState(assets);
 				for (int i = 0; i < assets.size; i++) {

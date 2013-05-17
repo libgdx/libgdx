@@ -26,15 +26,19 @@ import com.google.gwt.xhr.client.ReadyStateChangeHandler;
 import com.google.gwt.xhr.client.XMLHttpRequest;
 import com.google.gwt.xhr.client.XMLHttpRequest.ResponseType;
 
-public class AssetLoader {
+public class AssetDownloader {
 
-	public AssetLoader () {
-		useBrowserCache = false;
-		useInlineBase64 = true;
+	public AssetDownloader () {
+		useBrowserCache = true;
+		useInlineBase64 = false;
 	}
 
 	public void setUseBrowserCache (boolean useBrowserCache) {
 		this.useBrowserCache = useBrowserCache;
+	}
+
+	public boolean isUseBrowserCache () {
+		return useBrowserCache;
 	}
 
 	public void setUseInlineBase64 (boolean useInlineBase64) {
@@ -200,13 +204,13 @@ public class AssetLoader {
 				.addEventListener(
 						'load',
 						function(e) {
-							h.@com.badlogic.gdx.backends.gwt.preloader.AssetLoader.ImgEventListener::onEvent(Lcom/google/gwt/dom/client/NativeEvent;)(e);
+							h.@com.badlogic.gdx.backends.gwt.preloader.AssetDownloader.ImgEventListener::onEvent(Lcom/google/gwt/dom/client/NativeEvent;)(e);
 						}, false);
 		img
 				.addEventListener(
 						'error',
 						function(e) {
-							h.@com.badlogic.gdx.backends.gwt.preloader.AssetLoader.ImgEventListener::onEvent(Lcom/google/gwt/dom/client/NativeEvent;)(e);
+							h.@com.badlogic.gdx.backends.gwt.preloader.AssetDownloader.ImgEventListener::onEvent(Lcom/google/gwt/dom/client/NativeEvent;)(e);
 						}, false);
 	}-*/;
 
@@ -217,7 +221,7 @@ public class AssetLoader {
 	private native static void setOnProgress (XMLHttpRequest req, AssetLoaderListener listener) /*-{
 		var _this = this;
 		this.onprogress = $entry(function(evt) {
-			listener.@com.badlogic.gdx.backends.gwt.preloader.AssetLoader.AssetLoaderListener::onProgress(D)(evt.loaded);
+			listener.@com.badlogic.gdx.backends.gwt.preloader.AssetDownloader.AssetLoaderListener::onProgress(D)(evt.loaded);
 		});
 	}-*/;
 
