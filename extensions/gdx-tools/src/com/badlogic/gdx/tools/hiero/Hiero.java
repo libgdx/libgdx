@@ -268,6 +268,7 @@ public class Hiero extends JFrame {
 
 	void save (File file) throws IOException {
 		HieroSettings settings = new HieroSettings();
+		settings.setFontName((String)fontList.getSelectedValue());
 		settings.setFontSize(((Integer)fontSizeSpinner.getValue()).intValue());
 		settings.setBold(boldCheckBox.isSelected());
 		settings.setItalic(italicCheckBox.isSelected());
@@ -293,6 +294,7 @@ public class Hiero extends JFrame {
 			panels[i].remove();
 
 		HieroSettings settings = new HieroSettings(file.getAbsolutePath());
+		fontList.setSelectedValue(settings.getFontName(), true);
 		fontSizeSpinner.setValue(new Integer(settings.getFontSize()));
 		boldCheckBox.setSelected(settings.isBold());
 		italicCheckBox.setSelected(settings.isItalic());
