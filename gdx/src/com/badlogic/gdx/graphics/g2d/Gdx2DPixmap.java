@@ -136,6 +136,10 @@ public class Gdx2DPixmap implements Disposable {
 		fillCircle(basePtr, x, y, radius, color);
 	}
 
+	public void fillTriangle (int x1, int y1, int x2, int y2, int x3, int y3, int color) {
+		fillTriangle(basePtr, x1, y1, x2, y2, x3, y3, color);
+	}
+
 	public void drawPixmap (Gdx2DPixmap src, int srcX, int srcY, int dstX, int dstY, int width, int height) {
 		drawPixmap(src.basePtr, basePtr, srcX, srcY, width, height, dstX, dstY, width, height);
 	}
@@ -308,6 +312,10 @@ public class Gdx2DPixmap implements Disposable {
 
 	private static native void fillCircle (long pixmap, int x, int y, int radius, int color); /*
 		gdx2d_fill_circle((gdx2d_pixmap*)pixmap, x, y, radius, color);
+	*/
+
+	private static native void fillTriangle (long pixmap, int x1, int y1, int x2, int y2, int x3, int y3, int color); /*
+		gdx2d_fill_triangle((gdx2d_pixmap*)pixmap, x1, y1, x2, y2, x3, y3, color);
 	*/
 
 	private static native void drawPixmap (long src, long dst, int srcX, int srcY, int srcWidth, int srcHeight, int dstX,
