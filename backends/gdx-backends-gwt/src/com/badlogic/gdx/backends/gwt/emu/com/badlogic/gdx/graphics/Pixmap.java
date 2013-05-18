@@ -327,7 +327,7 @@ public class Pixmap implements Disposable {
 	 * @param y2 The y-coordinate of vertex 2
 	 * @param x3 The x-coordinate of vertex 3
 	 * @param y3 The y-coordinate of vertex 3 */
-	public void fillTriangle (int x1, int y1, int x2, int y2, int x3, int y3, int radius) {
+	public void fillTriangle (int x1, int y1, int x2, int y2, int x3, int y3) {
 		context.beginPath();
 		context.moveTo(x1,y1);
 		context.lineTo(x2,y2);
