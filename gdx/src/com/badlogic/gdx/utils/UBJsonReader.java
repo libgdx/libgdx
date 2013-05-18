@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.badlogic.gdx.utils;
 
 import java.io.DataInputStream;
@@ -9,6 +24,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
+/** Lightweight UBJSON parser.<br>
+ * <br>
+ * The default behavior is to parse the JSON into a DOM containing {@link JsonValue} objects. Extend this class and override
+ * methods to perform event driven parsing. When this is done, the parse methods will return null.
+ * @author Xoppa */
 public class UBJsonReader implements BaseJsonReader {
 	@Override
 	public JsonValue parse (InputStream input) {
@@ -32,7 +52,7 @@ public class UBJsonReader implements BaseJsonReader {
 		return parse(din, din.readByte());
 	}
 	
-	private JsonValue parse(final DataInputStream din, final byte type) throws IOException {
+	protected JsonValue parse(final DataInputStream din, final byte type) throws IOException {
 		if (type == '[')
 			return parseArray(din);
 		else if (type == '{')
@@ -60,7 +80,7 @@ public class UBJsonReader implements BaseJsonReader {
 		return null;
 	}
 	
-	private JsonValue parseArray(final DataInputStream din) throws IOException {
+	protected JsonValue parseArray(final DataInputStream din) throws IOException {
 		JsonValue result = new JsonValue(JsonValue.ValueType.array);
 		byte type = din.readByte();
 		while (din.available() > 0 && type != ']') {
@@ -70,7 +90,7 @@ public class UBJsonReader implements BaseJsonReader {
 		return result;
 	}
 	
-	private JsonValue parseObject(final DataInputStream din) throws IOException {
+	protected JsonValue parseObject(final DataInputStream din) throws IOException {
 		JsonValue result = new JsonValue(JsonValue.ValueType.object);
 		byte type = din.readByte();
 		while (din.available() > 0 && type != '}') {
@@ -85,19 +105,19 @@ public class UBJsonReader implements BaseJsonReader {
 		return result;
 	}
 	
-	private String parseString(final DataInputStream din, final byte type) throws IOException {
+	protected String parseString(final DataInputStream din, final byte type) throws IOException {
 		return readString(din, (type == 's') ? (long)readUChar(din) : readUInt(din));
 	}
 	
-	private short readUChar(final DataInputStream din) throws IOException {
+	protected short readUChar(final DataInputStream din) throws IOException {
 		return (short)((short)din.readByte() & 0xFF);
 	}
 	
-	private long readUInt(final DataInputStream din) throws IOException {
+	protected long readUInt(final DataInputStream din) throws IOException {
 		return ((long)din.readInt() & 0xFFFFFFFF);
 	}
 	
-	private String readString(final DataInputStream din, final long size) throws IOException {
+	protected String readString(final DataInputStream din, final long size) throws IOException {
 		final byte data[] = new byte[(int)size];
 		din.readFully(data);
 		return new String(data, "UTF-8");

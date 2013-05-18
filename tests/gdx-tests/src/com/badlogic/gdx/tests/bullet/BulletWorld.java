@@ -16,7 +16,6 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.math.Matrix4;
