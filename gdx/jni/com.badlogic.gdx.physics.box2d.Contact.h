@@ -119,6 +119,22 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetResti
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniResetRestitution
   (JNIEnv *, jobject, jlong);
 
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Contact
+ * Method:    jniGetTangentSpeed
+ * Signature: (J)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetTangentSpeed
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Contact
+ * Method:    jniSetTangentSpeed
+ * Signature: (JF)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniSetTangentSpeed
+  (JNIEnv *, jobject, jlong, jfloat);
+
 #ifdef __cplusplus
 }
 #endif

@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gwt.core.ext.BadPropertyValueException;
+import com.google.gwt.core.ext.ConfigurationProperty;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.TreeLogger.Type;
@@ -182,7 +184,7 @@ public class ReflectionCacheSourceCreator {
 		for (MethodStub stub : methodStubs) {
 			String stubSource = generateMethodStub(stub);
 			if (stubSource.equals("")) stub.unused = true;
-			p(stubSource);
+				p(stubSource);
 		}
 		logger.log(Type.INFO, types.size() + " types reflected");
 	}
@@ -214,20 +216,23 @@ public class ReflectionCacheSourceCreator {
 			return;
 		}
 
-		// java base class
+		// filter reflection scope based on configuration in gwt xml module
+		boolean keep = false;
 		String name = type.getQualifiedSourceName();
-		if (!(name.contains("com.badlogic.gdx.scenes.scene2d") || name.contains("com.badlogic.gdx.graphics.g2d.TextureRegion")
-			|| name.contains("com.badlogic.gdx.graphics.g2d.BitmapFont") || name.contains("com.badlogic.gdx.graphics.g2d.NinePatch")
-			|| name.contains("com.badlogic.gdx.graphics.Color") || name.contains("com.badlogic.gdx.utils.Array")
-			|| name.contains("com.badlogic.gdx.utils.ObjectMap") || name.contains("com.badlogic.gdx.utils.OrderedMap")
-			|| name.contains("com.badlogic.gdx.utils.Disposable") || name.contains("java.util.ArrayList")
-			|| name.contains("java.util.Map") || name.contains("java.util.HashMap") || name.contains("java.lang.String")
-			|| name.contains("java.lang.Boolean") || name.contains("java.lang.Byte") || name.contains("java.lang.Short")
-			|| name.contains("java.lang.Character") || name.contains("java.lang.Integer") || name.contains("java.lang.Float")
-			|| name.contains("java.lang.Double") || name.contains("java.lang.CharSequence") || name.contains("java.lang.Object") || !name
-				.contains(".")
-			|| name.contains("com.badlogic.gdx.math")
-			|| name.contains("com.badlogic.gdx.graphics.g3d.materials.MaterialAttribute"))) {
+		try {
+			ConfigurationProperty prop;
+			keep |= !name.contains(".");
+			prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.include");
+			for (String s : prop.getValues())
+				keep |= name.contains(s);
+			prop = context.getPropertyOracle().getConfigurationProperty("gdx.reflect.exclude");
+			for (String s : prop.getValues())
+				keep &= !name.equals(s);
+		} catch (BadPropertyValueException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (!keep) {
 			nesting--;
 			return;
 		}
@@ -548,6 +553,8 @@ public class ReflectionCacheSourceCreator {
 
 	private void invokeM () {
 		p("public Object invoke(Method m, Object obj, Object[] params) {");
+		int subN = 0;
+		int nDispatch = 0;
 		for (MethodStub stub : methodStubs) {
 			if (stub.enclosingType == null) continue;
 			if (stub.enclosingType.contains("[]")) continue;
@@ -573,6 +580,14 @@ public class ReflectionCacheSourceCreator {
 				pn(");");
 			}
 			p("   }");
+			nDispatch++;
+			if (nDispatch > 1000) {
+				subN++;
+				p("   return invoke" + subN + "(m, obj, params);");
+				p("}");
+				p("public Object invoke" + subN + "(Method m, Object obj, Object[] params) {");
+				nDispatch = 0;
+			}
 		}
 
 		p("   return null;");

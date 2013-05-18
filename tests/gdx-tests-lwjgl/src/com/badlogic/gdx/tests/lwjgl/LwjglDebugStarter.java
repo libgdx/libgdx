@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.AnimationTest;
 import com.badlogic.gdx.tests.BulletTestCollection;
 import com.badlogic.gdx.tests.ETC1Test;
+import com.badlogic.gdx.tests.FilesTest;
 import com.badlogic.gdx.tests.FullscreenTest;
 import com.badlogic.gdx.tests.GroupTest;
 import com.badlogic.gdx.tests.InputTest;

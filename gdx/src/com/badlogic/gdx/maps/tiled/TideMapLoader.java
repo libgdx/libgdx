@@ -52,7 +52,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 			}
 			DirectImageResolver imageResolver = new DirectImageResolver(textures);
 			TiledMap map = loadMap(root, tideFile, imageResolver);
-			map.setOwnedTextures(textures.values().toArray());
+			map.setOwnedResources(textures.values().toArray());
 			return map;
 		} catch(IOException e) {
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);

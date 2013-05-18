@@ -111,7 +111,7 @@ public class List extends Widget implements Cullable {
 		for (int i = 0; i < items.length; i++) {
 			if (cullingArea == null || (itemY - itemHeight <= cullingArea.y + cullingArea.height && itemY >= cullingArea.y)) {
 				if (selectedIndex == i) {
-					selectedDrawable.draw(batch, x, y + itemY - itemHeight, prefWidth, itemHeight);
+					selectedDrawable.draw(batch, x, y + itemY - itemHeight, getWidth(), itemHeight);
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				}
 				font.draw(batch, items[i], x + textOffsetX, y + itemY - textOffsetY);
