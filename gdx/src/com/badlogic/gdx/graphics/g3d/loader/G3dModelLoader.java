@@ -28,6 +28,8 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.UBJsonReader;
 
 public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
+	public static final short VERSION_HI = 0;
+	public static final short VERSION_LO = 1;
 	protected final BaseJsonReader reader;
 	
 	public G3dModelLoader(final BaseJsonReader reader) {
@@ -52,6 +54,13 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	public ModelData parseModel (FileHandle handle) {
 		JsonValue json = reader.parse(handle);
 		ModelData model = new ModelData();
+		JsonValue version = json.require("version");
+		model.version[0] = (short)version.getInt(0);
+		model.version[1] = (short)version.getInt(1);
+		if (model.version[0] != VERSION_HI || model.version[1] != VERSION_LO)
+			throw new GdxRuntimeException("Model version not supported");
+
+		model.id = json.getString("id", "");
 		parseMeshes(model, json);
 		parseMaterials(model, json, handle.parent().path());
 		parseNodes(model, json);
@@ -77,11 +86,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			JsonValue vertices = mesh.require("vertices");
 			float[] verts = new float[vertices.size()];
 			for(int j = 0; j < vertices.size(); j++) {
-				final String s = vertices.getString(j);
-				if (s.startsWith("0x"))  // FIXME just use double for packed colors
-					verts[j] = Float.intBitsToFloat((int)Long.parseLong(s.substring(2), 16));
-				else
-					verts[j] = vertices.getFloat(j);
+				verts[j] = vertices.getFloat(j);
 			}
 			jsonMesh.vertices = verts;
 			
