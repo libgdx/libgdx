@@ -4,8 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.loader.G3djModelLoader;
+import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.JsonReader;
 
 public class JsonModelLoaderTest extends GdxTest {
 	PerspectiveCamera cam;
@@ -20,7 +21,7 @@ public class JsonModelLoaderTest extends GdxTest {
 	
 	@Override
 	public void create () {
-		G3djModelLoader loader = new G3djModelLoader();
+		G3dModelLoader loader = new G3dModelLoader(new JsonReader());
 		model = loader.load(Gdx.files.internal("data/g3d/head2.g3dj"));
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

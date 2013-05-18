@@ -1,8 +1,13 @@
 package com.badlogic.gdx.graphics.g3d.loader;
 
+import com.badlogic.gdx.assets.AssetLoaderParameters;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.ModelLoader;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelAnimation;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
@@ -17,18 +22,43 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.BaseJsonReader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.UBJsonReader;
 
-public class G3dModelLoader {
-	protected ModelData parseModel (final JsonValue json, final String folder) {
+public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
+	protected final BaseJsonReader reader;
+	
+	public G3dModelLoader(final BaseJsonReader reader) {
+		this(reader, null);
+	}
+	
+	public G3dModelLoader(BaseJsonReader reader, FileHandleResolver resolver) {
+		super(resolver);
+		this.reader = reader;
+	}
+	
+	@Override
+	protected ModelData loadModelData (FileHandle fileHandle, AssetLoaderParameters<Model> parameters) {
+		return parseModel(fileHandle);
+	}
+	
+	public Model load (FileHandle handle) {
+		ModelData modelData = parseModel(handle);
+		return new Model(modelData);
+	}
+
+	public ModelData parseModel (FileHandle handle) {
+		JsonValue json = reader.parse(handle);
 		ModelData model = new ModelData();
 		parseMeshes(model, json);
-		parseMaterials(model, json, folder);
+		parseMaterials(model, json, handle.parent().path());
 		parseNodes(model, json);
 		parseAnimations(model, json);
 		return model;
 	}
+
 	
 	private void parseMeshes (ModelData model, JsonValue json) {
 		JsonValue meshes = json.require("meshes");

@@ -2,22 +2,30 @@ package com.badlogic.gdx.utils;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
-public class UBJsonReader {
-	public JsonValue parse(final FileHandle fileHandle) {
-		JsonValue result = null;
+public class UBJsonReader implements BaseJsonReader {
+	@Override
+	public JsonValue parse (InputStream input) {
 		try {
-			DataInputStream din = new DataInputStream(fileHandle.read());
-			result = parse(din);
-			din.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+			return parse(new DataInputStream(input));
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
 		}
-		return result;
+	}
+
+	@Override
+	public JsonValue parse (FileHandle file) {
+		try {
+			return parse(file.read());
+		} catch (Exception ex) {
+			throw new SerializationException("Error parsing file: " + file, ex);
+		}
 	}
 	
 	public JsonValue parse(final DataInputStream din) throws IOException {
@@ -41,7 +49,7 @@ public class UBJsonReader {
 			return new JsonValue((long)din.readShort());
 		else if (type == 'I')
 			return new JsonValue((long)din.readInt());
-		else if (type == 'I')
+		else if (type == 'L')
 			return new JsonValue(din.readLong());
 		else if (type == 'd')
 			return new JsonValue(din.readFloat());

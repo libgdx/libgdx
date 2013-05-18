@@ -32,7 +32,7 @@ import java.io.Reader;
  * The default behavior is to parse the JSON into a DOM containing {@link JsonValue} objects. Extend this class and override
  * methods to perform event driven parsing. When this is done, the parse methods will return null.
  * @author Nathan Sweet */
-public class JsonReader {
+public class JsonReader implements BaseJsonReader {
 	public JsonValue parse (String json) {
 		char[] data = json.toCharArray();
 		return parse(data, 0, data.length);
@@ -63,6 +63,7 @@ public class JsonReader {
 		}
 	}
 
+	@Override
 	public JsonValue parse (InputStream input) {
 		try {
 			return parse(new InputStreamReader(input, "ISO-8859-1"));
@@ -71,6 +72,7 @@ public class JsonReader {
 		}
 	}
 
+	@Override
 	public JsonValue parse (FileHandle file) {
 		try {
 			return parse(file.read());
