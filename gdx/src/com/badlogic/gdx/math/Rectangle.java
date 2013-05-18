@@ -105,6 +105,21 @@ public class Rectangle implements Serializable {
 		this.height = height;
 	}
 
+	/** Sets the x and y-coordinates of the bottom left corner from vector
+	 * @param position The position vector */
+	public void setPosition (Vector2 position) {
+		this.x = position.x;
+		this.y = position.y;
+	}
+
+	/** Sets the x and y-coordinates of the bottom left corner
+	 * @param x The x-coordinate
+	 * @param y The y-coordinate */
+	public void setPosition (float x, float y) {
+		this.x = x;
+		this.y = y;
+	}
+
 	/** Sets the width and height of this rectangle
 	 * @param width The width
 	 * @param height The height */
