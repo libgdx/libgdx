@@ -87,7 +87,7 @@ public class DefaultShader extends BaseShader {
 	protected final int u_pointLights0intensity	= registerUniform("u_pointLights[0].intensity");
 	protected final int u_pointLights1color		= registerUniform("u_pointLights[1].color");
 	// FIXME Cache vertex attribute locations...
-		
+	
 	protected int dirLightsLoc;
 	protected int dirLightsColorOffset;
 	protected int dirLightsDirectionOffset;
@@ -292,7 +292,7 @@ public class DefaultShader extends BaseShader {
 		if (currentLocalTransform != renderable.localTransform)
 			set(u_localTrans, (currentLocalTransform = renderable.localTransform) == null ? idtMatrix : renderable.localTransform);
 		if (currentModelTransform != renderable.modelTransform)
-			set(u_modelTrans, (currentWorldTransform = renderable.modelTransform) == null ? idtMatrix : renderable.modelTransform);
+			set(u_modelTrans, (currentModelTransform = renderable.modelTransform) == null ? idtMatrix : renderable.modelTransform);
 		if (currentLocalTransform == null && currentModelTransform == null)
 			setWorldTransform(idtMatrix, false);
 		else if (currentLocalTransform == null)
