@@ -22,6 +22,7 @@ import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y3;
 import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y4;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -37,9 +38,17 @@ public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 		super(map);
 	}
 
+	public OrthogonalTiledMapRenderer(TiledMap map, SpriteBatch spriteBatch) {
+		super(map, spriteBatch);
+	}
+	
 	public OrthogonalTiledMapRenderer(TiledMap map, float unitScale) {
 		super(map, unitScale);
 	}		
+	
+	public OrthogonalTiledMapRenderer(TiledMap map, float unitScale, SpriteBatch spriteBatch) {
+		super(map, unitScale, spriteBatch);
+	}
 	
 	@Override
 	public void renderObject (MapObject object) {
@@ -48,8 +57,8 @@ public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 
 	@Override
 	public void renderTileLayer (TiledMapTileLayer layer) {
-		
-		final float color = Color.toFloatBits(1, 1, 1, layer.getOpacity());
+		final Color batchColor = spriteBatch.getColor();
+		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
 		
 		final int layerWidth = layer.getWidth();
 		final int layerHeight = layer.getHeight();
