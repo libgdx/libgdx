@@ -494,21 +494,21 @@ public class ShapeRenderer {
 
 	/** Calls {@link #circle(float, float, float, int)} by estimating the number of segments needed for a smooth circle. */
 	public void circle (float x, float y, float radius) {
-		circle(x, y, radius, (int)(6 * (float)Math.cbrt(radius)));
+		circle(x, y, radius, Math.max(1, (int)(6 * (float)Math.cbrt(radius))));
 	}
 
 	public void circle (float x, float y, float radius, int segments) {
-		if (segments <= 0) throw new IllegalArgumentException("segments must be >= 0.");
+		if (segments <= 0) throw new IllegalArgumentException("segments must be > 0.");
 		if (currType != ShapeType.Filled && currType != ShapeType.Line)
 			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
 		checkDirty();
-		checkFlush(segments * 2 + 2);
 
 		float angle = 2 * 3.1415926f / segments;
 		float cos = MathUtils.cos(angle);
 		float sin = MathUtils.sin(angle);
 		float cx = radius, cy = 0;
 		if (currType == ShapeType.Line) {
+			checkFlush(segments * 2 + 2);
 			for (int i = 0; i < segments; i++) {
 				renderer.color(color.r, color.g, color.b, color.a);
 				renderer.vertex(x + cx, y + cy, 0);
@@ -522,6 +522,7 @@ public class ShapeRenderer {
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(x + cx, y + cy, 0);
 		} else {
+			checkFlush(segments * 3 + 3);
 			segments--;
 			for (int i = 0; i < segments; i++) {
 				renderer.color(color.r, color.g, color.b, color.a);
@@ -550,15 +551,15 @@ public class ShapeRenderer {
 
 	/** Calls {@link #ellipse(float, float, float, float, int)} by estimating the number of segments needed for a smooth ellipse. */
 	public void ellipse (float x, float y, float width, float height) {
-		ellipse(x, y, width, height, (int)(12 * (float)Math.cbrt(Math.max(width * 0.5f, height * 0.5f))));
+		ellipse(x, y, width, height, Math.max(1, (int)(12 * (float)Math.cbrt(Math.max(width * 0.5f, height * 0.5f)))));
 	}
 
 	public void ellipse (float x, float y, float width, float height, int segments) {
-		if (segments <= 0) throw new IllegalArgumentException("segments must be >= 0.");
+		if (segments <= 0) throw new IllegalArgumentException("segments must be > 0.");
 		if (currType != ShapeType.Filled && currType != ShapeType.Line)
 			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
 		checkDirty();
-		checkFlush(segments * 2 + 2);
+		checkFlush(segments * 3);
 
 		float angle = 2 * 3.1415926f / segments;
 
@@ -590,11 +591,11 @@ public class ShapeRenderer {
 	/** Calls {@link #cone(float, float, float, float, float, int)} by estimating the number of segments needed for a smooth
 	 * circular base. */
 	public void cone (float x, float y, float z, float radius, float height) {
-		cone(x, y, z, radius, height, (int)(4 * (float)Math.sqrt(radius)));
+		cone(x, y, z, radius, height, Math.max(1, (int)(4 * (float)Math.sqrt(radius))));
 	}
 
 	public void cone (float x, float y, float z, float radius, float height, int segments) {
-		if (segments <= 0) throw new IllegalArgumentException("segments must be >= 0.");
+		if (segments <= 0) throw new IllegalArgumentException("segments must be > 0.");
 		if (currType != ShapeType.Filled && currType != ShapeType.Line)
 			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
 		checkDirty();
