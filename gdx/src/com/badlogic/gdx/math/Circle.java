@@ -49,7 +49,28 @@ public class Circle implements Serializable {
 		y = circle.y;
 		radius = circle.radius;
 	}
-	
+
+	/** Sets the x and y-coordinates of circle center from vector
+	 * @param position The position vector */
+	public void setPosition (Vector2 position) {
+		this.x = position.x;
+		this.y = position.y;
+	}
+
+	/** Sets the x and y-coordinates of circle center
+	 * @param x The x-coordinate
+	 * @param y The y-coordinate */
+	public void setPosition (float x, float y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	/** Sets the radius of circle
+	 * @param radius The radius */
+	public void setRadius (float radius) {
+		this.radius = radius;
+	}
+
 	public boolean contains (float x, float y) {
 		x = this.x - x;
 		y = this.y - y;

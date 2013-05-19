@@ -207,4 +207,24 @@ public class Contact {
 	  	b2Contact* contact = (b2Contact*)addr;
 		contact->ResetRestitution();
 	*/
+		
+	/** Get the tangent speed. */
+	public float getTangentSpeed () {
+		return jniGetTangentSpeed(addr);
+	}
+
+	private native float jniGetTangentSpeed (long addr); /*
+	  	b2Contact* contact = (b2Contact*)addr;
+		return contact->GetTangentSpeed();
+	*/
+
+	/** Set the tangent speed. */
+	public void setTangentSpeed (float speed) {
+		jniSetTangentSpeed(addr, speed);
+	}
+
+	private native void jniSetTangentSpeed (long addr, float speed); /*
+	  	b2Contact* contact = (b2Contact*)addr;
+		contact->SetTangentSpeed(speed);
+	*/
 }

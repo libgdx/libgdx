@@ -15,6 +15,7 @@ public class Ouya {
 	public static final int BUTTON_U;
 	public static final int BUTTON_Y;
 	public static final int BUTTON_A;
+	public static final int BUTTON_MENU;
 	public static final int BUTTON_DPAD_UP;
 	public static final int BUTTON_DPAD_DOWN;
 	public static final int BUTTON_DPAD_RIGHT;
@@ -31,6 +32,7 @@ public class Ouya {
 	public static final int AXIS_RIGHT_X;
 	public static final int AXIS_RIGHT_Y;
 	public static final int AXIS_RIGHT_TRIGGER;
+	public static final float STICK_DEADZONE = 0.25F;
 	/** whether the app is running on a real Ouya device **/
 	public static final boolean runningOnOuya;
 	
@@ -50,6 +52,7 @@ public class Ouya {
 			BUTTON_U = 99;
 			BUTTON_Y = 100;
 			BUTTON_A = 97;
+			BUTTON_MENU = 82;
 			BUTTON_DPAD_UP = 19;
 			BUTTON_DPAD_DOWN = 20;
 			BUTTON_DPAD_RIGHT = 22;
@@ -71,6 +74,7 @@ public class Ouya {
 			BUTTON_U = 97;
 			BUTTON_Y = 98;
 			BUTTON_A = 99;
+			BUTTON_MENU = 108;
 			BUTTON_DPAD_UP = 104;
 			BUTTON_DPAD_DOWN = 105;
 			BUTTON_DPAD_RIGHT = 108;

@@ -653,6 +653,113 @@ void gdx2d_fill_circle(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, uint3
 	}
 }
 
+#define max(a, b) (a < b?b:a)
+
+#define EDGE_ASSIGN(edge,_x1,_y1,_x2,_y2) \
+  { if (_y2 > _y1) { edge.y1 = _y1; edge.y2 = _y2; edge.x1 = _x1; edge.x2 = _x2; } \
+    else { edge.y2 = _y1; edge.y1 = _y2; edge.x2 = _x1; edge.x1 = _x2; } }
+
+void gdx2d_fill_triangle(const gdx2d_pixmap* pixmap, int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, uint32_t col) {
+
+	// this structure is used to sort edges according to y-component.
+	struct edge {
+		int32_t x1;
+		int32_t y1;
+		int32_t x2;
+		int32_t y2;
+	};
+	struct edge edges[3], edge_tmp;
+	float slope0, slope1, slope2;
+	int32_t edge0_len, edge1_len, edge2_len, edge_len_tmp;
+	int32_t y, bound_y1, bound_y2, calc_x1, calc_x2;
+
+	// do nothing when points are colinear -- we draw the fill not the line.
+	if ((x2 - x1) * (y3 - y1) == (x3 - x1) * (y2 - y1)) {
+		return;
+	}
+
+	// asign input vertices into internally-sorted edge structures.
+	EDGE_ASSIGN(edges[0], x1, y1, x2, y2);
+	EDGE_ASSIGN(edges[1], x1, y1, x3, y3);
+	EDGE_ASSIGN(edges[2], x2, y2, x3, y3);
+
+	// order edges according to descending length.
+	edge0_len = edges[0].y2 - edges[0].y1;
+	edge1_len = edges[1].y2 - edges[1].y1;
+	edge2_len = edges[2].y2 - edges[2].y1;
+
+	if (edge1_len >= edge0_len && edge1_len >= edge2_len) {
+		// swap edge0 and edge1 with respective lengths.
+		edge_tmp = edges[0];
+		edges[0] = edges[1];
+		edges[1] = edge_tmp;
+		edge_len_tmp = edge0_len;
+		edge0_len = edge1_len;
+		edge1_len = edge_len_tmp;
+	} else if (edge2_len >= edge0_len && edge2_len >= edge1_len) {
+		// swap edge0 and edge2 with respective lengths.
+		edge_tmp = edges[0];
+		edges[0] = edges[2];
+		edges[2] = edge_tmp;
+		edge_len_tmp = edge0_len;
+		edge0_len = edge2_len;
+		edge2_len = edge_len_tmp;
+	}
+
+	if (edge2_len > edge1_len) {
+		// swap edge1 and edge2 - edge len no longer necessary.
+		edge_tmp = edges[1];
+		edges[1] = edges[2];
+		edges[2] = edge_tmp;
+	}
+
+	// y-component of the two longest y-component edges is provably > 0.
+
+	slope0 = ((float) (edges[0].x1 - edges[0].x2)) /
+		((float) (edges[0].y2 - edges[0].y1));
+	slope1 = ((float) (edges[1].x1 - edges[1].x2)) /
+		((float) (edges[1].y2 - edges[1].y1));
+
+	// avoid iterating on y values out of bounds.
+	bound_y1 = max(edges[1].y1, 0);
+	bound_y2 = min(edges[1].y2, pixmap->height-1);
+
+	for ( y=bound_y1; y <= bound_y2; y++ ) {
+
+		// calculate the x values for this y value.
+		calc_x1 = (int32_t) ((float) edges[0].x2 +
+			slope0 * (float) (edges[0].y2 - y) + 0.5);
+		calc_x2 = (int32_t) ((float) edges[1].x2 +
+			slope1 * (float) (edges[1].y2 - y) + 0.5);
+
+		// do not duplicate hline() swap and boundary checking.
+		hline(pixmap, calc_x1, calc_x2, y, col);
+	}
+
+	// if there are still values of y which remain, keep calculating.
+
+	if (edges[2].y2 - edges[2].y1 > 0) {
+
+		slope2 = ((float) (edges[2].x1 - edges[2].x2)) /
+			((float) (edges[2].y2 - edges[2].y1));
+
+		bound_y1 = max(edges[2].y1, 0);
+		bound_y2 = min(edges[2].y2, pixmap->height-1);
+
+		for ( y=bound_y1; y <= bound_y2; y++ ) {
+
+			calc_x1 = (int32_t) ((float) edges[0].x2 +
+				slope0 * (float) (edges[0].y2 - y) + 0.5);
+			calc_x2 = (int32_t) ((float) edges[2].x2 +
+				slope2 * (float) (edges[2].y2 - y) + 0.5);
+
+			hline(pixmap, calc_x1, calc_x2, y, col);
+		}
+	}
+
+	return;
+}
+
 static inline void blit_same_size(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap, 
 						 			 int32_t src_x, int32_t src_y, 
 									 int32_t dst_x, int32_t dst_y, 

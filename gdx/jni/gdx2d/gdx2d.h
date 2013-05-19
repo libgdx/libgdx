@@ -82,6 +82,7 @@ JNIEXPORT void		gdx2d_draw_rect   (const gdx2d_pixmap* pixmap, int32_t x, int32_
 JNIEXPORT void		gdx2d_draw_circle (const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t radius, uint32_t col);
 JNIEXPORT void		gdx2d_fill_rect   (const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t width, uint32_t height, uint32_t col);
 JNIEXPORT void		gdx2d_fill_circle (const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t radius, uint32_t col);
+JNIEXPORT void		gdx2d_fill_triangle(const gdx2d_pixmap* pixmap,int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, uint32_t col);
 JNIEXPORT void		gdx2d_draw_pixmap (const gdx2d_pixmap* src_pixmap,
 								   const gdx2d_pixmap* dst_pixmap,
 								   int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,

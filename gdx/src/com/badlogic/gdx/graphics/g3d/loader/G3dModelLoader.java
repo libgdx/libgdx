@@ -1,54 +1,44 @@
 package com.badlogic.gdx.graphics.g3d.loader;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelAnimation;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeAnimation;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPart;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeAnimation;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeKeyframe;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial.MaterialType;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.BaseJsonReader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.OrderedMap;
+import com.badlogic.gdx.utils.UBJsonReader;
 
-/**
- * Loads the JSON format written by the 
- * <a href="https://github.com/libgdx/fbx-conv">fbx-conv</a> tool.
- * 
- * @author mzechner
- *
- */
-public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
-	public static String VERSION = "1.0";
+public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
+	public static final short VERSION_HI = 0;
+	public static final short VERSION_LO = 1;
+	protected final BaseJsonReader reader;
 	
-	public G3djModelLoader() {
-		this(null);
+	public G3dModelLoader(final BaseJsonReader reader) {
+		this(reader, null);
 	}
 	
-	public G3djModelLoader(FileHandleResolver resolver) {
+	public G3dModelLoader(BaseJsonReader reader, FileHandleResolver resolver) {
 		super(resolver);
+		this.reader = reader;
 	}
 	
 	@Override
@@ -57,26 +47,27 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	}
 	
 	public Model load (FileHandle handle) {
-		ModelData jsonModel = parseModel(handle);
-		return new Model(jsonModel);
+		ModelData modelData = parseModel(handle);
+		return new Model(modelData);
 	}
 
 	public ModelData parseModel (FileHandle handle) {
-		JsonReader reader = new JsonReader();
 		JsonValue json = reader.parse(handle);
-		
-		String version = (String)json.getString("version");
-		if(version == null || !version.equals(VERSION)) {
-			throw new GdxRuntimeException("No or wrong JSON format version given, should be " + VERSION + ", is " + version);
-		}
-		
 		ModelData model = new ModelData();
+		JsonValue version = json.require("version");
+		model.version[0] = (short)version.getInt(0);
+		model.version[1] = (short)version.getInt(1);
+		if (model.version[0] != VERSION_HI || model.version[1] != VERSION_LO)
+			throw new GdxRuntimeException("Model version not supported");
+
+		model.id = json.getString("id", "");
 		parseMeshes(model, json);
 		parseMaterials(model, json, handle.parent().path());
 		parseNodes(model, json);
 		parseAnimations(model, json);
 		return model;
 	}
+
 	
 	private void parseMeshes (ModelData model, JsonValue json) {
 		JsonValue meshes = json.require("meshes");
@@ -95,11 +86,7 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			JsonValue vertices = mesh.require("vertices");
 			float[] verts = new float[vertices.size()];
 			for(int j = 0; j < vertices.size(); j++) {
-				final String s = vertices.getString(j);
-				if (s.startsWith("0x"))  // FIXME just use double for packed colors
-					verts[j] = Float.intBitsToFloat((int)Long.parseLong(s.substring(2), 16));
-				else
-					verts[j] = vertices.getFloat(j);
+				verts[j] = vertices.getFloat(j);
 			}
 			jsonMesh.vertices = verts;
 			
