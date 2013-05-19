@@ -1,4 +1,7 @@
 [0.9.9]
+- add Pixmap#fillTriangle via jni gdx2d_fill_triangle() to fill a triangle based on its vertices.
+- add asynchronous download with continuous progress feedback to GWT asset preloader, see https://github.com/libgdx/libgdx/pull/409?w=1
+- add capability to add/exclude package/classes GWT Reflection system, see https://github.com/libgdx/libgdx/pull/409?w=1
 - add updated gdx-tiled-preprocessor, generate one single TextureAtlas for all the specified Tiled maps, see http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=8911
 - maps API, add new AtlasTiledMapLoader for loading maps produced by the tiled preprocessor tool
 - ImageProcessor, TexturePacker2 now accepts BufferedImage objects as input
@@ -24,7 +27,6 @@
 - Added getVolume to Music class and Android, IOS and GWT backends
 - 1381, fixed JSON parsing of longs. In addition to Float, it now parses Long if no decimal point is found.
 - Changed Array constructors that took an array to have offset and count
-- Json refactoring, see http://www.badlogicgames.com/wordpress/?p=2993
 - scene2d, Actor parentToLocalCoordinates and localToParentCoordinates refactoring, see http://www.badlogicgames.com/forum/viewtopic.php?p=40441#p40441
 
 [0.9.8]

@@ -117,6 +117,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_fillCircle
 
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_Gdx2DPixmap
+ * Method:    fillTriangle
+ * Signature: (JIIIIIII)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_fillTriangle
+  (JNIEnv *, jclass, jlong, jint, jint, jint, jint, jint, jint, jint);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_Gdx2DPixmap
  * Method:    drawPixmap
  * Signature: (JJIIIIIIII)V
  */

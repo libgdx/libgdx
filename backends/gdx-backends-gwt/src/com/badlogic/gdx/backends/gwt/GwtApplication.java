@@ -28,6 +28,7 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
+import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderState;
 import com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -54,8 +55,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-/** Implementation of an {@link Application} based on GWT. Clients have to override {@link #getConfig()},
- * {@link #getApplicationListener()} and {@link #getAssetsPath()}. Clients can override the default loading screen via
+/** Implementation of an {@link Application} based on GWT. Clients have to override {@link #getConfig()} and
+ * {@link #getApplicationListener()}. Clients can override the default loading screen via
  * {@link #getPreloaderCallback()} and implement any loading screen drawing via GWT widgets.
  * @author mzechner */
 public abstract class GwtApplication implements EntryPoint, Application {
@@ -124,20 +125,17 @@ public abstract class GwtApplication implements EntryPoint, Application {
 					preloader = new Preloader();
 					preloader.preload("assets.txt", new PreloaderCallback() {
 						@Override
-						public void loaded (String file, int loaded, int total) {
-							callback.loaded(file, loaded, total);
-						}
-
-						@Override
 						public void error (String file) {
 							callback.error(file);
 						}
 
 						@Override
-						public void done () {
-							callback.done();
-							root.clear();
-							setupLoop();
+						public void update (PreloaderState state) {
+							callback.update(state);
+							if (state.hasEnded()) {
+								root.clear();
+								setupLoop();
+							}
 						}
 					});
 					cancel();
@@ -228,20 +226,17 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		preloaderPanel.add(meterPanel);
 		getRootPanel().add(preloaderPanel);
 		return new PreloaderCallback() {
-			@Override
-			public void done () {
-				meter.getElement().getStyle().setWidth(100, Unit.PCT);
-			}
-			@Override
-			public void loaded (String file, int loaded, int total) {
-				System.out.println("loaded " + file + "," + loaded + "/" + total);
-				float percent = (float) loaded / (float) total * 100;
-				meterStyle.setWidth(percent, Unit.PCT);
-			}
+
 			@Override
 			public void error (String file) {
 				System.out.println("error: " + file);
+			}
+			
+			@Override
+			public void update (PreloaderState state) {
+				meterStyle.setWidth(100f * state.getProgress(), Unit.PCT);
 			}			
+			
 		};
 	}
 
