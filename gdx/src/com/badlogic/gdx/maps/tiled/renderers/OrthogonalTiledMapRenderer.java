@@ -28,7 +28,6 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 
 public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 	
@@ -78,8 +77,6 @@ public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 				}
 				final TiledMapTile tile = cell.getTile();
 				if (tile != null) {
-					if (tile instanceof AnimatedTiledMapTile) continue;
-					
 					final boolean flipX = cell.getFlipHorizontally();
 					final boolean flipY = cell.getFlipVertically();
 					final int rotations = cell.getRotation();
