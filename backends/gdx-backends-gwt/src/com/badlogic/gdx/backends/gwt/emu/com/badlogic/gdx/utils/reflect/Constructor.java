@@ -4,18 +4,18 @@ import java.lang.reflect.InvocationTargetException;
 
 public final class Constructor {
 	
-	private final java.lang.reflect.Constructor constructor;
+	private final com.badlogic.gwtref.client.Constructor constructor;
 	
-	Constructor(java.lang.reflect.Constructor constructor) {
+	Constructor(com.badlogic.gwtref.client.Constructor constructor) {
 		this.constructor = constructor;
 	}
 
 	public Class[] getParameterTypes() {
-		return constructor.getParameterTypes();
+		return null;
 	}
 	
 	public Class getDeclaringClass() {
-		return constructor.getDeclaringClass();
+		return constructor.getEnclosingType().getClassOfType();
 	}
 	
 	public boolean isAccessible() {
@@ -28,14 +28,8 @@ public final class Constructor {
 	
 	public Object newInstance(Object... args) throws ReflectionException {
 		try {
-			return constructor.newInstance(args);
+			return constructor.newInstance();
 		} catch (IllegalArgumentException e) {
-			throw new ReflectionException("", e); // TODO: Real Message
-		} catch (InstantiationException e) {
-			throw new ReflectionException("", e); // TODO: Real Message
-		} catch (IllegalAccessException e) {
-			throw new ReflectionException("", e); // TODO: Real Message
-		} catch (InvocationTargetException e) {
 			throw new ReflectionException("", e); // TODO: Real Message
 		}		
 	}

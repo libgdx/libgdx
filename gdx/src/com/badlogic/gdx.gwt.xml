@@ -464,6 +464,12 @@
 		<include name="utils/compression/rangecoder/BitTreeEncoder.java"/>
 		<include name="utils/compression/rangecoder/Decoder.java"/>
 		<include name="utils/compression/rangecoder/Encoder.java"/>
-
+		
+	<!-- utils/compression/rangecoder -->
+		<include name="utils/reflect/Constructor.java"/>
+		<include name="utils/reflect/Field.java"/>
+		<include name="utils/reflect/Method.java"/>
+		<include name="utils/reflect/Reflection.java"/>
+		<include name="utils/reflect/ReflectionException.java"/>		
 	</source>
 </module>

@@ -1,5 +1,7 @@
 package com.badlogic.gdx.utils.reflect;
 
+import java.lang.reflect.Modifier;
+
 public class Reflection {
 
 	static public Class forName(String name) throws ReflectionException {
@@ -18,6 +20,18 @@ public class Reflection {
 		return c.isAssignableFrom(obj.getClass());		
 	}
 	
+	static public boolean isMemberClass(Class c) {
+		return c.isMemberClass();		
+	}
+	
+	static public boolean isStaticClass(Class c) {
+		return Modifier.isStatic(c.getModifiers());		
+	}
+	
+	static public Object newArray(Class c, int size) {
+		return java.lang.reflect.Array.newInstance(c, size);		
+	}
+	
 	static public Constructor[] getConstructors(Class c) {
 		java.lang.reflect.Constructor[] constructors = c.getConstructors();
 		Constructor[] result = new Constructor[constructors.length];
@@ -30,6 +44,16 @@ public class Reflection {
 	static public Constructor getConstructor(Class c, Class... parameterTypes) throws ReflectionException {
 		try {
 			return new Constructor(c.getConstructor(parameterTypes));
+		} catch (SecurityException e) {
+			throw new ReflectionException("", e); // TODO: Real Message
+		} catch (NoSuchMethodException e) {
+			throw new ReflectionException("", e); // TODO: Real Message
+		}
+	}
+	
+	static public Constructor getDeclaredConstructor(Class c, Class... parameterTypes) throws ReflectionException {
+		try {
+			return new Constructor(c.getDeclaredConstructor(parameterTypes));
 		} catch (SecurityException e) {
 			throw new ReflectionException("", e); // TODO: Real Message
 		} catch (NoSuchMethodException e) {

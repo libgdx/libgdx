@@ -6,9 +6,9 @@ import java.lang.reflect.Type;
 
 public final class Field {
 	
-	private final java.lang.reflect.Field field;
+	private final com.badlogic.gwtref.client.Field field;
 	
-	Field(java.lang.reflect.Field field) {
+	Field(com.badlogic.gwtref.client.Field field) {
 		this.field = field;
 	}
 	
@@ -17,11 +17,11 @@ public final class Field {
 	}
 	
 	public Class getType() {
-		return field.getType();
+		return field.getType().getClassOfType();
 	}
 	
 	public Class getDeclaringClass() {
-		return field.getDeclaringClass();
+		return field.getEnclosingType().getClassOfType();
 	}
 	
 	public boolean isAccessible() {
@@ -37,31 +37,31 @@ public final class Field {
 	}
 	
 	public boolean isFinal() {
-		return Modifier.isFinal(field.getModifiers());
+		return field.isFinal();
 	}
 	
 	public boolean isPrivate() {
-		return Modifier.isPrivate(field.getModifiers());
+		return field.isPrivate();
 	}
 	
 	public boolean isProtected() {
-		return Modifier.isProtected(field.getModifiers());
+		return field.isProtected();
 	}
 	
 	public boolean isPublic() {
-		return Modifier.isPublic(field.getModifiers());
+		return field.isPublic();
 	}
 	
 	public boolean isStatic() {
-		return Modifier.isStatic(field.getModifiers());
+		return field.isStatic();
 	}
 
 	public boolean isTransient() {
-		return Modifier.isTransient(field.getModifiers());
+		return field.isTransient();
 	}
 	
 	public boolean isVolatile() {
-		return Modifier.isVolatile(field.getModifiers());
+		return field.isVolatile();
 	}
 
 	public boolean isSynthetic() {
@@ -69,17 +69,6 @@ public final class Field {
 	}
 	
 	public Class getElementType() {
-		Type genericType = field.getGenericType();
-		if (genericType instanceof ParameterizedType) {
-			Type[] actualTypes = ((ParameterizedType)genericType).getActualTypeArguments();
-			if (actualTypes.length == 1) {
-				Type actualType = actualTypes[0];
-				if (actualType instanceof Class)
-					return (Class)actualType;
-				else if (actualType instanceof ParameterizedType)
-					return (Class)((ParameterizedType)actualType).getRawType();
-			}
-		}		
 		return null;
 	}
 	

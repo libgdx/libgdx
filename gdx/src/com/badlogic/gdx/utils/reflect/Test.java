@@ -33,7 +33,7 @@ public class Test {
 				System.out.println(method.getName());
 			}
 			
-			TestClass testClass = (TestClass) constructors[1].newInstance(1);
+			TestClass testClass = (TestClass) constructors[1].newInstance();
 			Method setField1 = Reflection.getDeclaredMethod(TestClass.class, "mulField1", int.class);
 			setField1.invoke(testClass, 2);
 			System.out.println(testClass.field1);
