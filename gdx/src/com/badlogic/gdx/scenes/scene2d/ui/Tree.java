@@ -44,7 +44,7 @@ public class Tree extends WidgetGroup {
 	private float leftColumnWidth, prefWidth, prefHeight;
 	private boolean sizeInvalid = true;
 	boolean multiSelect = true;
-	boolean toggleSelect;
+	boolean toggleSelect = true;
 	private Node foundNode;
 	Node overNode;
 	private ClickListener clickListener;
