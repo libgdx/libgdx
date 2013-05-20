@@ -113,10 +113,9 @@ public class DragAndDrop {
 			}
 
 			public void dragStop (InputEvent event, float x, float y, int pointer) {
-				if (payload == null) return;
 				if (pointer != activePointer) return;
-
 				activePointer = -1;
+				if (payload == null) return;
 
 				if (System.currentTimeMillis() - dragStartTime < dragTime) isValidTarget = false;
 				if (dragActor != null) dragActor.remove();
