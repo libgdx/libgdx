@@ -21,12 +21,16 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
@@ -45,30 +49,35 @@ public class PickingTest extends GdxTest {
 	static final int VP_Y = BORDER * 2;
 	static int VP_WIDTH;
 	static int VP_HEIGHT;
-	StillModel sphere;
+	Model sphere;
 	Camera cam;
-	Vector3[] positions = new Vector3[100];
+	ModelInstance[] instances = new ModelInstance[100];
+	ModelBatch modelBatch;
 	ImmediateModeRenderer10 renderer;
 	SpriteBatch batch;
 	Texture logo;
+	Vector3 tempVector = new Vector3();
 
 	@Override
 	public void create () {
 		VP_WIDTH = Gdx.graphics.getWidth() - 4 * BORDER;
 		VP_HEIGHT = Gdx.graphics.getHeight() - 4 * BORDER;
-		sphere = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/sphere.obj"));
+		ObjLoader objLoader = new ObjLoader();
+		sphere = objLoader.loadObj(Gdx.files.internal("data/sphere.obj"));
+		sphere.materials.get(0).set(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE));
 		cam = new PerspectiveCamera(45, VP_WIDTH, VP_HEIGHT);
 // cam = new OrthographicCamera(10, 10);
 		cam.far = 200;
 		batch = new SpriteBatch();
 		logo = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		Random rand = new Random(10);
-		for (int i = 0; i < positions.length; i++) {
-			positions[i] = new Vector3(rand.nextFloat() * 100 - rand.nextFloat() * 100, rand.nextFloat() * 100 - rand.nextFloat()
-				* 100, rand.nextFloat() * 100 - rand.nextFloat() * 100);
+		for (int i = 0; i < instances.length; i++) {
+			instances[i] = new ModelInstance(sphere, rand.nextFloat() * 100 - rand.nextFloat() * 100, 
+				rand.nextFloat() * 100 - rand.nextFloat() * 100, rand.nextFloat() * 100 - rand.nextFloat() * 100);
 		}
-		positions[0].set(0, 0, -10);
+		instances[0].transform.setToTranslation(0, 0, -10);
 		renderer = new ImmediateModeRenderer10();
+		modelBatch = new ModelBatch();
 	}
 
 	Vector3 intersection = new Vector3();
@@ -82,7 +91,6 @@ public class PickingTest extends GdxTest {
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 
 		cam.update();
-		cam.apply(gl);
 		gl.glViewport(VP_X, VP_Y, VP_WIDTH, VP_HEIGHT);
 
 		Ray pickRay = null;
@@ -92,18 +100,18 @@ public class PickingTest extends GdxTest {
 		}
 
 		boolean intersected = false;
-		for (int i = 0; i < positions.length; i++) {
-			if (pickRay != null && Intersector.intersectRaySphere(pickRay, positions[i], 1, intersection)) {
-				gl.glColor4f(1, 0, 0, 1);
+		modelBatch.begin(cam);
+		for (int i = 0; i < instances.length; i++) {
+			instances[i].transform.getTranslation(tempVector);
+			if (pickRay != null && Intersector.intersectRaySphere(pickRay, tempVector, 1, intersection)) {
+				((ColorAttribute)instances[i].materials.get(0).get(ColorAttribute.Diffuse)).color.set(Color.RED);
 				intersected = true;
 			} else {
-				gl.glColor4f(1, 1, 1, 1);
+				((ColorAttribute)instances[i].materials.get(0).get(ColorAttribute.Diffuse)).color.set(Color.WHITE);
 			}
-			gl.glPushMatrix();
-			gl.glTranslatef(positions[i].x, positions[i].y, positions[i].z);
-			sphere.render();
-			gl.glPopMatrix();
+			modelBatch.render(instances[i]);
 		}
+		modelBatch.end();
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.begin();

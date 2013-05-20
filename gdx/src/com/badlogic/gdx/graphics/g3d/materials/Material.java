@@ -1,226 +1,260 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package com.badlogic.gdx.graphics.g3d.materials;
 
+import java.util.Comparator;
 import java.util.Iterator;
 
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 
-public class Material implements Iterable<MaterialAttribute> {
-	protected String name;
-	private Array<MaterialAttribute> attributes;
-
-	/** This flag is true if material contain blendingAttribute */
-	protected boolean needBlending;
-	/** This flag is true if material contain TextureAttribute */
-	protected boolean hasTexture;
-
-	protected ShaderProgram shader;
-
-	public Material () {
-		attributes = new Array<MaterialAttribute>(2);
-	}
-
-	public Material (String name, Array<MaterialAttribute> attributes) {
-		this.name = name;
-		this.attributes = attributes;
-
-		checkAttributes();
-	}
-
-	public Material (String name, MaterialAttribute... attributes) {
-		this(name, new Array<MaterialAttribute>(attributes));
+public class Material implements Iterable<Material.Attribute>, Comparator<Material.Attribute> {
+	/** Extend this class to implement a material attribute.
+	 *  Register the attribute type by statically calling the {@link #register(String)} method, 
+	 *  whose return value should be used to instantiate the attribute. 
+	 *  A class can implement multiple types */
+	public static abstract class Attribute {
+		protected static long register(final String type) {
+			return Material.register(type);
+		}
+		/** The type of this attribute */
+		public final long type;
+		protected Attribute(final long type) {
+			this.type = type;
+		}
+		/** @return An exact copy of this attribute */
+		public abstract Attribute copy(); 
+		protected abstract boolean equals(Attribute other);
+		@Override
+		public boolean equals (Object obj) {
+			if (obj == null) return false;
+			if (obj == this) return true;
+			if (!(obj instanceof Attribute)) return false;
+			final Attribute other = (Attribute)obj;
+			if (other.type != other.type) return false; 
+			return equals(other);
+		}
+		@Override
+		public String toString () {
+			return Material.getAttributeAlias(type);
+		}
 	}
 	
-	protected void checkAttributes() {
-		// this way we foresee if blending is needed with this material and rendering can deferred more easily
-		this.needBlending = false;
-		this.hasTexture = false;
-		for (int i = 0; i < this.attributes.size; i++) {
-			if (!needBlending && this.attributes.get(i) instanceof BlendingAttribute)
-				this.needBlending = true;
-			else if (!hasTexture && this.attributes.get(i) instanceof TextureAttribute)
-				this.hasTexture = true;
-		}		
+	/** The registered type aliases */
+	private final static Array<String> types = new Array<String>();
+	
+	private static int counter = 0;
+	
+	/** @return The ID of the specified attribute type, or zero if not available */
+	protected final static long getAttributeType(final String alias) {
+		for (int i = 0; i < types.size; i++)
+			if (types.get(i).compareTo(alias)==0)
+				return 1L << i;
+		return 0;
+	}
+	
+	/** @return The alias of the specified attribute type, or null if not available. */
+	protected final static String getAttributeAlias(final long type) {
+		int idx = -1;
+		while (type != 0 && ++idx < 63 && (((type >> idx) & 1) == 0));
+		return (idx >= 0 && idx < types.size) ? types.get(idx) : null;
+	}
+	
+	/** Use {@link Attribute#register(String)} instead */ 
+	protected final static long register(final String alias) {
+		long result = getAttributeType(alias);
+		if (result > 0)
+			return result;
+		types.add(alias);
+		return 1L << (types.size - 1);
+	}
+	
+	public String id;
+	protected long mask;
+	protected final Array<Attribute> attributes = new Array<Attribute>();
+	protected boolean sorted = true;
+	
+	/** Create an empty material */
+	public Material() {
+		this("mtl"+(++counter));
+	}
+	/** Create an empty material */
+	public Material(final String id) { 
+		this.id = id;	
+	}
+	/** Create a material with the specified attributes */
+	public Material(final Attribute... attributes) {
+		this();
+		set(attributes);
+	}
+	/** Create a material with the specified attributes */
+	public Material(final String id, final Attribute... attributes) {
+		this(id);
+		set(attributes);
+	}
+	/** Create a material with the specified attributes */
+	public Material(final Array<Attribute> attributes) {
+		this();
+		set(attributes);
+	}
+	/** Create a material with the specified attributes */
+	public Material(final String id, final Array<Attribute> attributes) {
+		this(id);
+		set(attributes);
+	}
+	/** Create a material which is an exact copy of the specified material */
+	public Material(final Material copyFrom) {
+		this(copyFrom.id, copyFrom);
+	}
+	/** Create a material which is an exact copy of the specified material */
+	public Material(final String id, final Material copyFrom) {
+		this(id);
+		for (Attribute attr : copyFrom)
+			set(attr.copy());
+	}
+	
+	private final void enable(final long mask) {
+		this.mask |= mask; 
+	}
+	private final void disable(final long mask) {
+		this.mask &= -1L ^ mask;
+	}
+	
+	/** @return Bitwise mask of the ID's of all the containing attributes */  
+	public final long getMask() {
+		return mask;
+	}
+	
+	/** @return True if this material has the specified attribute, i.e. material.has(BlendingAttribute.ID); */
+	public final boolean has(final long type) {
+		return type > 0 && (this.mask & type) == type;
+	}
+	
+	/** @return the index of the attribute with the specified type or negative if not available. */
+	protected int indexOf(final long type) {
+		if (has(type))
+			for (int i = 0; i < attributes.size; i++)
+				if (attributes.get(i).type == type)
+					return i;
+		return -1;
 	}
 
-	public void bind () {
+	/** Add a attribute to this material.
+	 * If the material already contains an attribute of the same type it is overwritten. */
+	public final void set(final Attribute attribute) {
+		final int idx = indexOf(attribute.type);
+		if (idx < 0) {
+			enable(attribute.type);
+			attributes.add(attribute);
+			sorted = false;
+		} else {
+			attributes.set(idx, attribute);
+		}
+	}
+	
+	/** Add an array of attributes to this material. 
+	 * If the material already contains an attribute of the same type it is overwritten. */
+	public final void set(final Attribute... attributes) {
+		for (final Attribute attr : attributes)
+			set(attr);
+	}
+
+	/** Add an array of attributes to this material.
+	 * If the material already contains an attribute of the same type it is overwritten. */
+	public final void set(final Array<Attribute> attributes) {
+		for (final Attribute attr : attributes)
+			set(attr);
+	}
+	
+	/** Removes the attribute from the material, i.e.: material.remove(BlendingAttribute.ID);
+	 * Can also be used to remove multiple attributes also, i.e. remove(AttributeA.ID | AttributeB.ID); */
+	public final void remove(final long mask) {
 		for (int i = 0; i < attributes.size; i++) {
-			attributes.get(i).bind();
-		}
-	}
-
-	public void bind (ShaderProgram program) {
-		for (int i = 0; i < attributes.size; i++) {
-			attributes.get(i).bind(program);
-		}
-	}
-
-	public String getName () {
-		return name;
-	}
-	
-	public void addAttribute(MaterialAttribute... attributes){
-		for (int i = 0; i < attributes.length; i++) {
-			if(attributes[i] instanceof BlendingAttribute)
-				needBlending = true;
-			else if (attributes[i] instanceof TextureAttribute)
-				hasTexture = true;
-			this.attributes.add(attributes[i]);
+			final long type = attributes.get(i).type;
+			if ((mask & type) == type) {
+				attributes.removeIndex(i);
+				disable(type);
+				sorted = false;
+			}
 		}
 	}
 	
-	public void removeAttribute(MaterialAttribute... attributes){
-		for (int i = 0; i < attributes.length; i++)
-			this.attributes.removeValue(attributes[i], true);
-		checkAttributes();
-	}
-	
-	public void clearAttributes(){
-		attributes.clear();
-		needBlending = false;
-	}
-	
-	public MaterialAttribute getAttribute(int index){
-		if(index >= 0 && index < attributes.size)
-			return attributes.get(index);
+	/** Example usage: ((BlendingAttribute)material.get(BlendingAttribute.ID)).sourceFunction;
+	 * @return The attribute (which can safely be cast) if any, otherwise null */
+	public final Attribute get(final long type) {
+		if (has(type))
+			for (int i = 0; i < attributes.size; i++)
+				if (attributes.get(i).type == type)
+					return attributes.get(i);
 		return null;
 	}
 	
-	public int getNumberOfAttributes(){
+	/** Get multiple attributes at once.
+	 * Example: material.get(out, AttributeA.ID | AttributeB.ID | AttributeC.ID); */
+	public final Array<Attribute> get(final Array<Attribute> out, final long type) {
+		for (int i = 0; i < attributes.size; i++)
+			if ((attributes.get(i).type & type) != 0)
+				out.add(attributes.get(i));
+		return out;
+	}
+	
+	/** Removes all attributes */
+	public final void clear() {
+		mask = 0;
+		attributes.clear();
+	}
+	
+	/** @return The amount of attributes this material contains. */
+	public int size() {
 		return attributes.size;
 	}
 	
-//	/** @return True if this material contains attribute of the specified type, false otherwise */
-//	public <T extends MaterialAttribute> boolean hasAttribute(Class<T> type) {
-//		return indexOfAttribute(type) >= 0;
-//	}
-//	
-//	/** @return The index of the first attribute of the specified type or -1 if not available */
-//	public <T extends MaterialAttribute> int indexOfAttribute(Class<T> type) {
-//		for (int i = 0; i < attributes.size; i++)
-//			if (type.isInstance(attributes.get(i)))
-//				return i;
-//		return -1;
-//	}
-//	
-//	/** @return The first attribute of the specified type, or null if not available */
-//	public <T extends MaterialAttribute> T getAttribute(Class<T> type) {
-//		return (T)getAttribute(indexOfAttribute(type));
-//	}
-
-	public Material copy () {
-		Array<MaterialAttribute> attributes = new Array<MaterialAttribute>(this.attributes.size);
-		for (int i = 0; i < attributes.size; i++) {
-			attributes.add(this.attributes.get(i).copy());
-		}
-		final Material copy = new Material(name, attributes);
-		copy.shader = this.shader;
-		return copy;
+	/** Create a copy of this material */
+	public final Material copy() {
+		return new Material(this); 
 	}
 
+	/** Used for sorting attributes */
 	@Override
-	public int hashCode () {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + attributes.hashCode();
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
+	public final int compare (final Attribute arg0, final Attribute arg1) {
+		return (int)(arg0.type - arg1.type);
 	}
-
-	@Override
-	public boolean equals (Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
-		Material other = (Material)obj;
-		if (other.attributes.size != attributes.size) return false;
-		for (int i = 0; i < attributes.size; i++) {
-			if (!attributes.get(i).equals(other.attributes.get(i))) return false;
+	
+	/** Sort the attributes by their ID */
+	public final void sort() {
+		if (!sorted) {
+			attributes.sort(this);
+			sorted = true;
 		}
-		if (name == null) {
-			if (other.name != null) return false;
-		} else if (!name.equals(other.name)) return false;
+	}
+	
+	/** @return True if this material contains the same attributes as the other, 
+	 * use {@link #equals(Material)} to see if the values are also the same */
+	public final boolean same(final Material other) {
+		return mask == other.mask;
+	}
+	
+	/** @return True if this material equals the other material in every aspect */
+	public final boolean equals (final Material other) {
+		if (other == null) return false;
+		if (other == this) return true;
+		if (!same(other)) return false;
+		sort();
+		other.sort();
+		for (int i = 0; i < attributes.size; i++)
+			if (!attributes.get(i).equals(other.attributes.get(i)))
+				return false;
 		return true;
 	}
-
-	public boolean shaderEquals (Material other) {
-		if (this == other) return true;
-
-		int len = this.attributes.size;
-		if (len != other.attributes.size) return false;
-
-		for (int i = 0; i < len; i++) {
-			final String str = this.attributes.get(i).name;
-			if (str == null) return false;
-
-			boolean matchFound = false;
-			for (int j = 0; j < len; j++) {
-				if (str.equals(other.attributes.get(j).name)) {
-					matchFound = true;
-					break;
-				}
-			}
-			if (!matchFound) return false;
-		}
-
-		return true;
-	}
-
-	public void setPooled (Material material) {
-		name = material.name;
-		shader = material.shader;
-		needBlending = material.needBlending;
-		hasTexture = material.hasTexture;
-		attributes.clear();
-		for (int i = 0, len = material.attributes.size; i < len; i++) {
-			attributes.add(material.attributes.get(i).pooledCopy());
-		}
-	}
-
-	public boolean isNeedBlending () {
-		return needBlending;
-	}
 	
-	public boolean hasTexture() {
-		return hasTexture;
-	}
-
-	public ShaderProgram getShader () {
-		return shader;
-	}
-	
-	public void setShader(final ShaderProgram shader) {
-		this.shader = shader;
-	}
-	
-	public void resetShader () {
-		shader = null;
-	}
-
+	/** @return True if this material equals the other material in every aspect */
 	@Override
-	public Iterator<MaterialAttribute> iterator () {
+	public final boolean equals (final Object obj) {
+		return obj instanceof Material ? equals((Material)obj) : false;
+	}
+	
+	/** Used for iterating through the attributes */
+	@Override
+	public final Iterator<Attribute> iterator () {
 		return attributes.iterator();
 	}
-
-	/* TODO: Sits in Experimental only used for ProtoRenderer
-	public void generateShader (MaterialShaderHandler materialShaderHandler) {
-		shader = materialShaderHandler.getShader(this);
-	}
-	*/
 }

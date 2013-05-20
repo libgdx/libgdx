@@ -22,10 +22,10 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.model.Model;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
-import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -115,12 +115,12 @@ public class FrustumCullingTest extends BaseBulletTest {
 	}
 	
 	public static Model createFrustumModel(final Vector3... p) {
-		final Mesh mesh = new Mesh(true, 8, 32, new VertexAttribute(Usage.Position, 3, "a_position"));
-		mesh.setVertices(new float[] {
-			p[0].x, p[0].y, p[0].z, p[1].x, p[1].y, p[1].z, p[2].x, p[2].y, p[2].z, p[3].x, p[3].y, p[3].z, // near
-			p[4].x, p[4].y, p[4].z, p[5].x, p[5].y, p[5].z, p[6].x, p[6].y, p[6].z, p[7].x, p[7].y, p[7].z});// far
-		mesh.setIndices(new short[] {0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7});
-		return new StillModel(new StillSubMesh("frustum", mesh, GL10.GL_LINES, new Material()));
+		return ModelBuilder.createFromMesh(new float[] {
+				p[0].x, p[0].y, p[0].z, 0, 0, 1, p[1].x, p[1].y, p[1].z, 0, 0, 1, p[2].x, p[2].y, p[2].z, 0, 0, 1, p[3].x, p[3].y, p[3].z, 0, 0, 1, // near
+				p[4].x, p[4].y, p[4].z, 0, 0, -1, p[5].x, p[5].y, p[5].z, 0, 0, -1, p[6].x, p[6].y, p[6].z, 0, 0, -1, p[7].x, p[7].y, p[7].z, 0, 0, -1},// far
+				new VertexAttribute[] { new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(Usage.Normal, 3, "a_normal")},
+				new short[] {0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7},
+				GL10.GL_LINES, new Material(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)));
 	}
 	
 	private float angleX, angleY, angleZ;
@@ -135,7 +135,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 		
-		instructions = "Tap to toggle view\nLong press to toggle debug mode\nSwipe for next test";
+		instructions = "Tap to toggle view\nLong press to toggle debug mode\nSwipe for next test\nCtrl+drag to rotate\nScroll to zoom";
 		
 		tempManifoldArr = new btManifoldArray();
 
@@ -150,7 +150,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 					BOX_X_MIN + dX * (float)Math.random(), 
 					BOX_Y_MIN + dY * (float)Math.random(), 
 					BOX_Z_MIN + dZ * (float)Math.random()
-				).color.set(Color.GRAY);
+				).setColor(Color.GRAY);
 		
 		frustumCam = new PerspectiveCamera(camera.fieldOfView, camera.viewportWidth, camera.viewportHeight);
 		frustumCam.far = Vector3.len(BOX_X_MAX, BOX_Y_MAX, BOX_Z_MAX);
@@ -165,9 +165,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		final Model frustumModel = createFrustumModel(frustumCam.frustum.planePoints);
 		frustumObject = createFrustumObject(frustumCam.frustum.planePoints);
 		world.add(frustumEntity = new BulletEntity(frustumModel, frustumObject, 0, 0, 0));
-		frustumEntity.color.set(Color.BLUE);
-		
-		world.renderMeshes = false;
+		frustumEntity.setColor(Color.BLUE);
 	}
 	
 	@Override
@@ -227,7 +225,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 				final BulletEntity e = world.entities.get(i);
 				if (e == frustumEntity)
 					continue;
-				e.transform.getTranslation(tmpV);
+				e.modelInstance.transform.getTranslation(tmpV);
 				if (frustumCam.frustum.sphereInFrustum(tmpV, 1))
 					visibleEntities.add(e);
 			}
@@ -236,16 +234,18 @@ public class FrustumCullingTest extends BaseBulletTest {
 			world.performanceCounter.stop();
 		
 		for (int i = 0; i < visibleEntities.size; i++)
-			visibleEntities.get(i).color.set(Color.RED);
-		
+			visibleEntities.get(i).setColor(Color.RED);
+
+		modelBatch.begin(camera);
 		if ((state & CULL_FRUSTUM) == CULL_FRUSTUM) {
-			world.render(visibleEntities);
-			world.render(frustumEntity);
+			world.render(modelBatch, lights, visibleEntities);
+			world.render(modelBatch, lights, frustumEntity);
 		} else
-			world.render(world.entities);
+			world.render(modelBatch, lights);
+		modelBatch.end();
 		
 		for (int i = 0; i < visibleEntities.size; i++)
-			visibleEntities.get(i).color.set(Color.GRAY);
+			visibleEntities.get(i).setColor(Color.GRAY);
 	}
 	
 	@Override

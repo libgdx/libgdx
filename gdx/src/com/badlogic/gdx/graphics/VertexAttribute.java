@@ -34,6 +34,8 @@ public final class VertexAttribute {
 	public int offset;
 	/** the alias for the attribute used in a {@link ShaderProgram} **/
 	public String alias;
+	/** optional unit/index specifier, used for texture coordinates and bone weights **/
+	public int unit;
 
 	/** Constructs a new VertexAttribute.
 	 * 
@@ -42,9 +44,22 @@ public final class VertexAttribute {
 	 * @param numComponents the number of components of this attribute, must be between 1 and 4.
 	 * @param alias the alias used in a shader for this attribute. Can be changed after construction. */
 	public VertexAttribute (int usage, int numComponents, String alias) {
+		this(usage, numComponents, alias, 0);
+	}
+	
+	/** Constructs a new VertexAttribute.
+	 * 
+	 * @param usage the usage, used for the fixed function pipeline. Generic attributes are not supported in the fixed function
+	 *           pipeline.
+	 * @param numComponents the number of components of this attribute, must be between 1 and 4.
+	 * @param alias the alias used in a shader for this attribute. Can be changed after construction.
+	 * @param unit unit/index of the attribute, used for boneweights and texture coordinates. 
+	 * */
+	public VertexAttribute (int usage, int numComponents, String alias, int index) {
 		this.usage = usage;
 		this.numComponents = numComponents;
 		this.alias = alias;
+		this.unit = index;
 	}
 
 	public static VertexAttribute Position () {
@@ -52,7 +67,7 @@ public final class VertexAttribute {
 	}
 
 	public static VertexAttribute TexCoords (int unit) {
-		return new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + unit);
+		return new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + unit, unit);
 	}
 
 	public static VertexAttribute Normal () {
@@ -66,6 +81,18 @@ public final class VertexAttribute {
 	public static VertexAttribute ColorUnpacked () {
 		return new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE);
 	}
+	
+	public static VertexAttribute Tangent() {
+		return new VertexAttribute(Usage.Tangent, 3, ShaderProgram.TANGENT_ATTRIBUTE);
+	}
+	
+	public static VertexAttribute Binormal() {
+		return new VertexAttribute(Usage.BiNormal, 3, ShaderProgram.BINORMAL_ATTRIBUTE);
+	}
+	
+	public static VertexAttribute BoneWeight (int unit) {
+		return new VertexAttribute(Usage.BoneWeight, 2, "a_boneWeight" + unit, unit);
+	}
 
 	/** Tests to determine if the passed object was created with the same parameters */
 	@Override
@@ -73,7 +100,10 @@ public final class VertexAttribute {
 		if (!(obj instanceof VertexAttribute)) {
 			return false;
 		}
-		final VertexAttribute other = (VertexAttribute)obj;
-		return this.usage == other.usage && this.numComponents == other.numComponents && this.alias.equals(other.alias);
+		return equals((VertexAttribute)obj);
+	}
+	
+	public boolean equals (final VertexAttribute other) {
+		return other != null && usage == other.usage && numComponents == other.numComponents && alias.equals(other.alias) && unit == other.unit; 
 	}
 }

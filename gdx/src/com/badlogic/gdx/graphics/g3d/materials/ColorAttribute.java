@@ -1,96 +1,71 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package com.badlogic.gdx.graphics.g3d.materials;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.graphics.g3d.materials.Material.Attribute;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class ColorAttribute extends MaterialAttribute {
-
-	static final public String diffuse = "diffuseColor";
-	static final public String specular = "specularColor";
-	static final public String emissive = "emissiveColor";
-	static final public String rim = "rimColor";
-	static final public String fog = "fogColor";
-
+public class ColorAttribute extends Material.Attribute {
+	public final static String DiffuseAlias = "diffuseColor";
+	public final static long Diffuse = register(DiffuseAlias);
+	public final static String SpecularAlias = "specularColor";
+	public final static long Specular = register(SpecularAlias);
+	public final static String AmbientAlias = "ambientColor";
+	public static final long Ambient = register("ambientColor");
+	public final static String EmissiveAlias = "emissiveColor";
+	public static final long Emissive = register("emissiveColor");
+	
+	protected static long Mask = Ambient | Diffuse | Specular | Emissive;
+	
+	public final static boolean is(final long mask) {
+		return (mask & Mask) != 0;
+	}
+	
+	public final static ColorAttribute createDiffuse(final Color color) {
+		return new ColorAttribute(Diffuse, color);
+	}
+	
+	public final static ColorAttribute createDiffuse(float r, float g, float b, float a) {
+		return new ColorAttribute(Diffuse, r, g, b, a);
+	}
+	
+	public final static ColorAttribute createSpecular(final Color color) {
+		return new ColorAttribute(Specular, color);
+	}
+	
+	public final static ColorAttribute createSpecular(float r, float g, float b, float a) {
+		return new ColorAttribute(Specular, r, g, b, a);
+	}
+	
 	public final Color color = new Color();
-
-	protected ColorAttribute () {
+	
+	public ColorAttribute(final long type) {
+		super(type);
+		if (!is(type))
+			throw new GdxRuntimeException("Invalid type specified");
 	}
-
-	/** Creates a {@link MaterialAttribute} that is a pure {@link Color}.
-	 * 
-	 * @param color The {@link Color} that you wish the attribute to represent.
-	 * @param name The name of the uniform in the {@link ShaderProgram} that will have its value set to this color. (A 'name' does
-	 *           not matter for a game that uses {@link GL10}). */
-	public ColorAttribute (Color color, String name) {
-		super(name);
-		this.color.set(color);
+	
+	public ColorAttribute(final long type, final Color color) {
+		this(type);
+		if (color != null)
+			this.color.set(color);
 	}
-
-	@Override
-	public void bind () {
-		if (Gdx.gl10 == null) throw new RuntimeException("Can't call ColorAttribute.bind() in a GL20 context");
-
-		// todo how about emissive or specular?
-		// TODO replace string equals with something more performant
-		if (diffuse.equals(diffuse)) Gdx.gl10.glColor4f(color.r, color.g, color.b, color.a);
+	
+	public ColorAttribute(final long type, float r, float g, float b, float a) {
+		this(type);
+		this.color.set(r,g,b,a);
 	}
-
-	@Override
-	public void bind (ShaderProgram program) {
-		program.setUniformf(name, color.r, color.g, color.b, color.a);
+	
+	public ColorAttribute(final ColorAttribute copyFrom) {
+		this(copyFrom.type, copyFrom.color);
 	}
 
 	@Override
-	public MaterialAttribute copy () {
-		return new ColorAttribute(color, name);
+	public Attribute copy () {
+		return new ColorAttribute(this);
 	}
 
 	@Override
-	public void set (MaterialAttribute attr) {
-		ColorAttribute colAttr = (ColorAttribute)attr;
-		name = colAttr.name;
-		final Color c = colAttr.color;
-		color.r = c.r;
-		color.g = c.g;
-		color.b = c.b;
-		color.a = c.a;
-	}
-
-	private final static Pool<ColorAttribute> pool = new Pool<ColorAttribute>() {
-		@Override
-		protected ColorAttribute newObject () {
-			return new ColorAttribute();
-		}
-	};
-
-	@Override
-	public MaterialAttribute pooledCopy () {
-		ColorAttribute attr = pool.obtain();
-		attr.set(this);
-		return attr;
-	}
-
-	@Override
-	public void free () {
-		if (isPooled) pool.free(this);
+	protected boolean equals (Attribute other) {
+		return ((ColorAttribute)other).color.equals(color);
 	}
 }

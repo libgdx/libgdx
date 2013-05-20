@@ -35,6 +35,7 @@ import com.badlogic.gdx.graphics.glutils.VertexArray;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObjectSubData;
 import com.badlogic.gdx.graphics.glutils.VertexData;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -669,6 +670,55 @@ public class Mesh implements Disposable {
 			break;
 		}
 	}
+	
+	/** Calculate the {@link BoundingBox} of the specified part.
+	 * @param out the bounding box to store the result in. 
+	 * @param offset the start index of the part.
+	 * @param count the amount of indices the part contains. 
+	 * @return the value specified by out. */
+	public BoundingBox calculateBoundingBox(final BoundingBox out, int offset, int count) {
+		return extendBoundingBox(out.inf(), offset, count);
+	}
+	
+	/** Extends the specified {@link BoundingBox} with the specified part.
+	 * @param out the bounding box to store the result in. 
+	 * @param offset the start index of the part.
+	 * @param count the amount of indices the part contains. 
+	 * @return the value specified by out. */
+	public BoundingBox extendBoundingBox(final BoundingBox out, int offset, int count) {
+		int numIndices = getNumIndices();
+		if (offset < 0 || count < 1 || offset + count > numIndices)
+			throw new GdxRuntimeException("Not enough indices");
+		
+		final FloatBuffer verts = vertices.getBuffer();
+		final ShortBuffer index = indices.getBuffer();
+		final VertexAttribute posAttrib = getVertexAttribute(Usage.Position);
+		final int posoff = posAttrib.offset / 4;
+		final int vertexSize = vertices.getAttributes().vertexSize / 4;
+		final int end = offset + count;
+		
+		switch (posAttrib.numComponents) {
+		case 1:
+			for (int i = offset; i < end; i++) {
+				final int idx = index.get(i) * vertexSize + posoff;
+				out.ext(verts.get(idx), 0, 0);
+			}
+			break;
+		case 2:
+			for (int i = offset; i < end; i++) {
+				final int idx = index.get(i) * vertexSize + posoff;
+				out.ext(verts.get(idx), verts.get(idx + 1), 0);
+			}
+			break;
+		case 3:
+			for (int i = offset; i < end; i++) {
+				final int idx = index.get(i) * vertexSize + posoff;
+				out.ext(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
+			}
+			break;
+		}
+		return out;
+	}
 
 	/** @return the backing shortbuffer holding the indices. Does not have to be a direct buffer on Android! */
 	public ShortBuffer getIndicesBuffer () {
@@ -797,7 +847,7 @@ public class Mesh implements Disposable {
 		if (start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length)
 			throw new IndexOutOfBoundsException("start = "+start+", count = "+count+", vertexSize = "+vertexSize+", length = "+vertices.length);
 		
-		final Vector3 tmp = Vector3.tmp;
+		final Vector3 tmp = new Vector3();
 		
 		int idx = offset + (start * vertexSize);
 		switch(dimensions) {
@@ -825,6 +875,54 @@ public class Mesh implements Disposable {
 				idx += vertexSize;
 			}
 			break;
+		}
+	}
+	
+	/** 
+	 * Method to transform the texture coordinates in the mesh. This is a potentially slow operation, use with care.
+	 * It will also create a temporary float[] which will be garbage collected.
+	 * 
+	 * @param matrix the transformation matrix */
+	public void transformUV(final Matrix3 matrix) {
+		transformUV(matrix, 0, getNumVertices());
+	}
+	
+	// TODO: Protected for now, because transforming a portion works but still copies all vertices
+	protected void transformUV(final Matrix3 matrix, final int start, final int count) {
+		final VertexAttribute posAttr = getVertexAttribute(Usage.TextureCoordinates);
+		final int offset = posAttr.offset / 4;
+		final int vertexSize = getVertexSize() / 4;
+		final int numVertices = getNumVertices();
+		
+		final float[] vertices = new float[numVertices * vertexSize];
+		// TODO: getVertices(vertices, start * vertexSize, count * vertexSize);
+		getVertices(0, vertices.length, vertices);
+		transformUV(matrix, vertices, vertexSize, offset, start, count);
+		setVertices(vertices, 0, vertices.length);
+		// TODO: setVertices(start * vertexSize, vertices, 0, vertices.length);
+	}
+	
+	/**
+	 * Method to transform the texture coordinates (UV) in the float array. This is a potentially slow operation, use with care.
+	 * @param matrix the transformation matrix
+	 * @param vertices the float array
+	 * @param vertexSize the number of floats in each vertex
+	 * @param offset the offset within a vertex to the texture location
+	 * @param start the vertex to start with
+	 * @param count the amount of vertices to transform
+	 */
+	public static void transformUV(final Matrix3 matrix, final float[] vertices, int vertexSize, int offset, int start, int count) {
+		if (start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length)
+			throw new IndexOutOfBoundsException("start = "+start+", count = "+count+", vertexSize = "+vertexSize+", length = "+vertices.length);
+		
+		final Vector2 tmp = new Vector2();
+		
+		int idx = offset + (start * vertexSize);
+		for (int i = 0; i < count; i++) {
+			tmp.set(vertices[idx], vertices[idx+1]).mul(matrix);
+			vertices[idx] = tmp.x;
+			vertices[idx+1] = tmp.y;
+			idx += vertexSize;
 		}
 	}
 	

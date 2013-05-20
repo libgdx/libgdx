@@ -22,19 +22,24 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MaterialTest extends GdxTest {
 	
 	float angleY = 0;
 	
-	StillModel model;
+	Model model;
+	ModelInstance modelInstance;
+	ModelBatch modelBatch;
 	
 	TextureAttribute textureAttribute;
 	ColorAttribute colorAttribute;
@@ -48,19 +53,22 @@ public class MaterialTest extends GdxTest {
 
 	@Override
 	public void create () {
-		model =  ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/cube.obj"));
+		ObjLoader objLoader = new ObjLoader();
+		model =  objLoader.loadObj(Gdx.files.internal("data/cube.obj"));
 		
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
 		
 		// Create material attributes. Each material can contain x-number of attributes.
-		textureAttribute = new TextureAttribute(texture, 0, "Badlogic");
-		colorAttribute = new ColorAttribute(Color.ORANGE, "Orange");
-		blendingAttribute = new BlendingAttribute("Additive", GL10.GL_ONE, GL10.GL_ONE);
+		textureAttribute = new TextureAttribute(TextureAttribute.Diffuse, texture);
+		colorAttribute = new ColorAttribute(ColorAttribute.Diffuse, Color.ORANGE);
+		blendingAttribute = new BlendingAttribute(GL10.GL_ONE, GL10.GL_ONE);
 
-		// Assign material to model. If you pass an Material[] into setMaterials() it'll be assigned to 
-		// SubMeshes accordingly.
-		material = new Material();
-		model.setMaterial(material);
+		modelInstance = new ModelInstance(model);
+		
+		material = modelInstance.materials.get(0);
+		material.clear();
+		
+		modelBatch = new ModelBatch();
 		
 		camera = new PerspectiveCamera(45, 4, 4);
 		camera.position.set(3, 3, 3);
@@ -76,46 +84,25 @@ public class MaterialTest extends GdxTest {
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		
-		if(material.getNumberOfAttributes() == 1)
-			gl.glEnable(GL10.GL_TEXTURE_2D);
-		
-		if(material.getNumberOfAttributes() == 3){
-			gl.glDisable(GL10.GL_DEPTH_TEST);
-			gl.glEnable(GL10.GL_BLEND);
-		}
-		else
-			gl.glEnable(GL10.GL_DEPTH_TEST);
-		
 		camera.update();
-		camera.apply(gl);
-		
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		angleY += 30 * Gdx.graphics.getDeltaTime();
-		gl.glRotatef(angleY, 0, 1, 0);
-		
-		// That's it. Materials are bound automatically on render
-		model.render();
+
+		modelInstance.transform.rotate(Vector3.Y, 30 * Gdx.graphics.getDeltaTime());
+		modelBatch.begin(camera);
+		modelBatch.render(modelInstance);
+		modelBatch.end();
 	}
 
 	@Override
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 		
-		if(material.getNumberOfAttributes() == 0)
-			material.addAttribute(textureAttribute);
-		else if(material.getNumberOfAttributes() == 1)
-			material.addAttribute(colorAttribute);
-		else if(material.getNumberOfAttributes() == 2)
-			material.addAttribute(blendingAttribute);
-		else {
-			GL10 gl = Gdx.gl10;
-			
-			// Reset state
-			gl.glColor4f(1f, 1f, 1f, 1f);
-			gl.glDisable(GL10.GL_TEXTURE_2D);
-			gl.glDisable(GL10.GL_BLEND);
-			
-			material.clearAttributes();
-		}
+		if(!material.has(TextureAttribute.Diffuse))
+			material.set(textureAttribute);
+		else if(!material.has(ColorAttribute.Diffuse))
+			material.set(colorAttribute);
+		else if(!material.has(BlendingAttribute.Type))
+			material.set(blendingAttribute);
+		else
+			material.clear();
 		
 		return super.touchUp(screenX, screenY, pointer, button);
 	}

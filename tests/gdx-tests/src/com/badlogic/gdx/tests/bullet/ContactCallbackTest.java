@@ -38,14 +38,14 @@ public class ContactCallbackTest extends BaseBulletTest {
 				final BulletEntity e = (BulletEntity)(entities.get(userValue0));
 				// Disable future callbacks for this entity
 				e.body.setContactCallbackFilter(0);
-				e.color.set(Color.RED);
+				e.setColor(Color.RED);
 				Gdx.app.log("ContactCallbackTest", "Contact processed "+(++c));
 			}
 			if (match1) {
 				final BulletEntity e = (BulletEntity)(entities.get(userValue1));
 				// Disable future callbacks for this entity
 				e.body.setContactCallbackFilter(0);
-				e.color.set(Color.RED);
+				e.setColor(Color.RED);
 				Gdx.app.log("ContactCallbackTest", "Contact processed "+(++c));
 			}
 		}
@@ -69,13 +69,13 @@ public class ContactCallbackTest extends BaseBulletTest {
 		
 		// Create the entities
 		(ground = world.add("ground", 0f, 0f, 0f))
-			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		for (int x = 0; x < BOXCOUNT_X; x++) {
 			for (int y = 0; y < BOXCOUNT_Y; y++) {
 				for (int z = 0; z < BOXCOUNT_Z; z++) {
 					final BulletEntity e = (BulletEntity)world.add("box", BOXOFFSET_X + x * 2f, BOXOFFSET_Y + y * 2f, BOXOFFSET_Z + z * 2f);
-					e.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+					e.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 
 					e.body.setContactCallbackFlag(2);
 					e.body.setContactCallbackFilter(2);

@@ -16,7 +16,8 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.g3d.model.Model;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.bullet.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.btCollisionShape;
@@ -46,14 +47,14 @@ public class BulletEntity extends BaseEntity {
 	}
 	
 	public BulletEntity (final Model model, final btCollisionObject body, final Matrix4 transform) {
-		this.model = model;
-		this.transform.set(transform);
+		this.modelInstance = new ModelInstance(model, transform.cpy());
+		this.transform = this.modelInstance.transform;
 		this.body = body;
 		
 		if (body != null) {
 			body.userData = this;
 			if (body instanceof btRigidBody) {
-				this.motionState = new MotionState(this.transform);
+				this.motionState = new MotionState(this.modelInstance.transform);
 				((btRigidBody)this.body).setMotionState(motionState);
 			} else
 				body.setWorldTransform(transform);

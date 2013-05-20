@@ -16,20 +16,24 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.model.Model;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
-import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.btCapsuleShape;
+import com.badlogic.gdx.physics.bullet.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.btConeTwistConstraint;
 import com.badlogic.gdx.physics.bullet.btConstraintSetting;
 import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
@@ -52,7 +56,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 	@Override
 	public void create () {
 		super.create();
-		instructions = "Tap to shoot\nDrag ragdoll to pick\nLong press to toggle debug mode\nSwipe for next test";
+		instructions = "Tap to shoot\nDrag ragdoll to pick\nLong press to toggle debug mode\nSwipe for next test\nCtrl+drag to rotate\nScroll to zoom";
 		
 		camera.position.set(4f, 2f, 4f);
 		camera.lookAt(0f, 1f, 0f);
@@ -67,7 +71,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		world.addConstructor("lowerarm", new BulletConstructor(createCapsuleModel(0.04f, 0.25f), 1f, new btCapsuleShape(0.04f, 0.25f)));
 		
 		world.add("ground", 0f, 0f, 0f)
-			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		addRagdoll(0, 3f, 0);
 		addRagdoll(1f, 6f, 0);
@@ -172,7 +176,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		btRigidBody leftlowerarm = (btRigidBody)world.add("lowerarm", tmpM.setFromEulerAngles(PI2, 0, 0).trn(x-0.7f, y+1.45f, z)).body;
 		btRigidBody rightupperarm = (btRigidBody)world.add("upperarm", tmpM.setFromEulerAngles(-PI2, 0, 0).trn(x+0.35f, y+1.45f, z)).body;
 		btRigidBody rightlowerarm = (btRigidBody)world.add("lowerarm", tmpM.setFromEulerAngles(-PI2, 0, 0).trn(x+0.7f, y+1.45f, z)).body;
-		
+
 		final Matrix4 localA = new Matrix4();
 		final Matrix4 localB = new Matrix4();
 		btHingeConstraint hingeC = null;
@@ -251,16 +255,8 @@ public class RayPickRagdollTest extends BaseBulletTest {
 	
 	protected Model createCapsuleModel(float radius, float height) {
 		final float hh = radius + 0.5f * height;
-		final Mesh mesh = new Mesh(true, 8, 36, new VertexAttribute(Usage.Position, 3, "a_position"));
-		mesh.setVertices(new float[] {radius, hh, radius, radius, hh, -radius, -radius, hh, radius, -radius, hh, -radius,
-			radius, -hh, radius, radius, -hh, -radius, -radius, -hh, radius, -radius, -hh, -radius});
-		mesh.setIndices(new short[] {0, 1, 2, 1, 2, 3, // top
-			4, 5, 6, 5, 6, 7, // bottom
-			0, 2, 4, 4, 6, 2, // front
-			1, 3, 5, 5, 7, 3, // back
-			2, 3, 6, 6, 7, 3, // left
-			0, 1, 4, 4, 5, 1 // right
-			});
-		return new StillModel(new StillSubMesh("capsule", mesh, GL10.GL_TRIANGLES, new Material()));
+		return modelBuilder.createCylinder(radius * 2, hh * 2f, radius * 2f, 16, 
+			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE)), 
+			Usage.Position | Usage.Normal);
 	}
 }

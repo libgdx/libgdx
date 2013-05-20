@@ -25,8 +25,13 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -39,7 +44,9 @@ public class FramebufferToTextureTest extends GdxTest {
 
 	TextureRegion fbTexture;
 	Texture texture;
-	StillModel mesh;
+	Model mesh;
+	ModelInstance modelInstance;
+	ModelBatch modelBatch;
 	PerspectiveCamera cam;
 	SpriteBatch batch;
 	BitmapFont font;
@@ -48,9 +55,13 @@ public class FramebufferToTextureTest extends GdxTest {
 
 	@Override
 	public void create () {
-		mesh =  ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/cube.obj"));
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
+		ObjLoader objLoader = new ObjLoader();
+		mesh =  objLoader.loadObj(Gdx.files.internal("data/cube.obj"));
+		mesh.materials.get(0).set(new TextureAttribute(TextureAttribute.Diffuse, texture));
+		modelInstance = new ModelInstance(mesh);
+		modelBatch = new ModelBatch();
 
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(3, 3, 3);
@@ -70,14 +81,11 @@ public class FramebufferToTextureTest extends GdxTest {
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 
 		cam.update();
-		cam.apply(gl);
 
-		angle += 45 * Gdx.graphics.getDeltaTime();
-		gl.glPushMatrix();
-		gl.glRotatef(angle, 0, 1, 0);
-		texture.bind();
-		mesh.render();
-		gl.glPopMatrix();
+		modelInstance.transform.rotate(Vector3.Y, 45 * Gdx.graphics.getDeltaTime());
+		modelBatch.begin(cam);
+		modelBatch.render(modelInstance);
+		modelBatch.end();
 
 		if (Gdx.input.justTouched() || fbTexture == null) {
 			if (fbTexture != null) fbTexture.getTexture().dispose();

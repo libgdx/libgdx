@@ -1,4 +1,6 @@
 [0.9.9]
+- added new VertexAttribute Usage flags, bone weight, tangent, binormal. previously encoded as Usage.Generic. Also
+  added field "unit" to VertexAttribute, used by texture coordinates and bone weights to specify index/unit.
 - setup-ui template for iOS disables pngcrush, also updated wiki iOS article
 - add Pixmap#fillTriangle via jni gdx2d_fill_triangle() to fill a triangle based on its vertices.
 - add asynchronous download with continuous progress feedback to GWT asset preloader, see https://github.com/libgdx/libgdx/pull/409?w=1
