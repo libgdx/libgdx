@@ -1,54 +1,44 @@
 package com.badlogic.gdx.graphics.g3d.loader;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelAnimation;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeAnimation;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPart;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeAnimation;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeKeyframe;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial.MaterialType;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.BaseJsonReader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.OrderedMap;
+import com.badlogic.gdx.utils.UBJsonReader;
 
-/**
- * Loads the JSON format written by the 
- * <a href="https://github.com/libgdx/fbx-conv">fbx-conv</a> tool.
- * 
- * @author mzechner
- *
- */
-public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
-	public static String VERSION = "1.0";
+public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
+	public static final short VERSION_HI = 0;
+	public static final short VERSION_LO = 1;
+	protected final BaseJsonReader reader;
 	
-	public G3djModelLoader() {
-		this(null);
+	public G3dModelLoader(final BaseJsonReader reader) {
+		this(reader, null);
 	}
 	
-	public G3djModelLoader(FileHandleResolver resolver) {
+	public G3dModelLoader(BaseJsonReader reader, FileHandleResolver resolver) {
 		super(resolver);
+		this.reader = reader;
 	}
 	
 	@Override
@@ -57,32 +47,30 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	}
 	
 	public Model load (FileHandle handle) {
-		ModelData jsonModel = parseModel(handle);
-		return new Model(jsonModel);
+		ModelData modelData = parseModel(handle);
+		return new Model(modelData);
 	}
 
 	public ModelData parseModel (FileHandle handle) {
-		JsonReader reader = new JsonReader();
 		JsonValue json = reader.parse(handle);
-		
-		String version = (String)json.getString("version");
-		if(version == null || !version.equals(VERSION)) {
-			throw new GdxRuntimeException("No or wrong JSON format version given, should be " + VERSION + ", is " + version);
-		}
-		
 		ModelData model = new ModelData();
+		JsonValue version = json.require("version");
+		model.version[0] = (short)version.getInt(0);
+		model.version[1] = (short)version.getInt(1);
+		if (model.version[0] != VERSION_HI || model.version[1] != VERSION_LO)
+			throw new GdxRuntimeException("Model version not supported");
+
+		model.id = json.getString("id", "");
 		parseMeshes(model, json);
 		parseMaterials(model, json, handle.parent().path());
 		parseNodes(model, json);
 		parseAnimations(model, json);
 		return model;
 	}
+
 	
 	private void parseMeshes (ModelData model, JsonValue json) {
-		JsonValue meshes = json.get("meshes");
-		if(meshes == null) {
-			throw new GdxRuntimeException("No meshes found in file");
-		}
+		JsonValue meshes = json.require("meshes");
 		
 		model.meshes.ensureCapacity(meshes.size());
 		for(int i = 0; i < meshes.size(); i++) {
@@ -92,26 +80,17 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			String id = mesh.getString("id", "");
 			jsonMesh.id = id;
 			
-			JsonValue attributes = mesh.get("attributes");
-			if(attributes == null) {
-				throw new GdxRuntimeException("No vertex attributes given for mesh '" + id + "'");
-			}
+			JsonValue attributes = mesh.require("attributes");
 			jsonMesh.attributes = parseAttributes(attributes);
 			
-			JsonValue vertices = mesh.get("vertices");
-			if(vertices == null) {
-				throw new GdxRuntimeException("No vertices given for mesh '" + id + "'");
-			}
+			JsonValue vertices = mesh.require("vertices");
 			float[] verts = new float[vertices.size()];
 			for(int j = 0; j < vertices.size(); j++) {
-				verts[j] = (Float)vertices.getFloat(j);
+				verts[j] = vertices.getFloat(j);
 			}
 			jsonMesh.vertices = verts;
 			
-			JsonValue meshParts = mesh.get("parts");
-			if(meshParts == null) {
-				throw new GdxRuntimeException("No mesh parts given for mesh '" + id + "'");
-			}
+			JsonValue meshParts = mesh.require("parts");
 			Array<ModelMeshPart> parts = new Array<ModelMeshPart>();
 			for(int j = 0; j < meshParts.size(); j++) {
 				JsonValue meshPart = meshParts.get(j);
@@ -133,10 +112,7 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				}
 				jsonPart.primitiveType = parseType(type);
 				
-				JsonValue indices = meshPart.get("indices");
-				if(indices == null) {
-					throw new GdxRuntimeException("No indices given for mesh part '" + partId + "'");
-				}
+				JsonValue indices = meshPart.require("indices");
 				short[] partIndices = new short[indices.size()];
 				for(int k = 0; k < indices.size(); k++) {
 					partIndices[k] = (short)indices.getInt(k);
@@ -160,11 +136,7 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			return GL10.GL_TRIANGLE_STRIP;
 		} else if(type.equals("LINE_STRIP")) {
 			return GL10.GL_LINE_STRIP;
-		} /* Gameplay encoder doesn't read out line loop
-			else if(type.equals("lineloop")) {
-			return GL10.GL_LINE_LOOP; 
-		} */
-			else { 
+		} else { 
 			throw new GdxRuntimeException("Unknown primitive type '" + type + "', should be one of triangle, trianglestrip, line, linestrip, lineloop or point");
 		}
 	}
@@ -182,6 +154,8 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				vertexAttributes.add(VertexAttribute.Normal());
 			} else if(attr.equals("COLOR")) {
 				vertexAttributes.add(VertexAttribute.ColorUnpacked());
+			} else if(attr.equals("COLORPACKED")) {
+				vertexAttributes.add(VertexAttribute.Color());
 			} else if(attr.equals("TANGENT")) {
 				vertexAttributes.add(VertexAttribute.Tangent());
 			} else if(attr.equals("BINORMAL")) {
@@ -191,7 +165,7 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			} else if(attr.startsWith("BLENDWEIGHT")) {
 				vertexAttributes.add(VertexAttribute.BoneWeight(blendWeightCount++));
 			} else {
-				throw new GdxRuntimeException("Unknown vertex attribuet '" + attr + "', should be one of position, normal, uv, tangent or binormal");
+				throw new GdxRuntimeException("Unknown vertex attribute '" + attr + "', should be one of position, normal, uv, tangent or binormal");
 			}
 		}
 		return vertexAttributes.toArray(VertexAttribute.class);
@@ -249,19 +223,41 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 						if(textureType == null)
 							throw new GdxRuntimeException("Texture needs type.");
 						
-						/* Only diffuse textures for now. Most programs don't export texture usage properly ..
-						 	So we probably need to find a workaround. */
-						if(textureType.equals("STANDARD")){
-							if(jsonMaterial.diffuseTextures == null)
-								jsonMaterial.diffuseTextures = new Array<ModelTexture>();
-							jsonMaterial.diffuseTextures.add(jsonTexture);
-						}
+						jsonTexture.usage = parseTextureUsage(textureType);
+						
+						if(jsonMaterial.textures == null)
+							jsonMaterial.textures = new Array<ModelTexture>();
+						jsonMaterial.textures.add(jsonTexture);
 					}
 				}
 
 				model.materials.add(jsonMaterial);
 			}
 		}
+	}
+	
+	private int parseTextureUsage(final String value) {
+		if (value.equalsIgnoreCase("AMBIENT"))
+			return ModelTexture.USAGE_AMBIENT;
+		else if (value.equalsIgnoreCase("BUMP"))
+			return ModelTexture.USAGE_BUMP;
+		else if (value.equalsIgnoreCase("DIFFUSE"))
+			return ModelTexture.USAGE_DIFFUSE;
+		else if (value.equalsIgnoreCase("EMISSIVE"))
+			return ModelTexture.USAGE_EMISSIVE;
+		else if (value.equalsIgnoreCase("NONE"))
+			return ModelTexture.USAGE_NONE;
+		else if (value.equalsIgnoreCase("NORMAL"))
+			return ModelTexture.USAGE_NORMAL;
+		else if (value.equalsIgnoreCase("REFLECTION"))
+			return ModelTexture.USAGE_REFLECTION;
+		else if (value.equalsIgnoreCase("SHININESS"))
+			return ModelTexture.USAGE_SHININESS;
+		else if (value.equalsIgnoreCase("SPECULAR"))
+			return ModelTexture.USAGE_SPECULAR;
+		else if (value.equalsIgnoreCase("TRANSPARENCY"))
+			return ModelTexture.USAGE_TRANSPARENCY;
+		return ModelTexture.USAGE_UNKNOWN;
 	}
 
 	private Color parseColor (JsonValue colorArray, Color defaultColor) {
@@ -321,7 +317,7 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			throw new GdxRuntimeException("Node scale incomplete");
 		jsonNode.scale = scale == null ? null : new Vector3(scale.getFloat(0), scale.getFloat(1), scale.getFloat(2));
 		
-		String meshId = json.getString("mesh");
+		String meshId = json.getString("mesh", null);
 		if(meshId != null)
 			jsonNode.meshId = meshId;
 		
@@ -348,7 +344,7 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 						nodePart.bones[j] = bones.getString(j); 
 				}
 				
-				jsonNode.parts[i++] = nodePart;
+				jsonNode.parts[i] = nodePart;
 			}
 		}
 		
@@ -383,11 +379,13 @@ public class G3djModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			animation.id = anim.getString("id");
 			for(int j = 0; j < nodes.size(); j++) {
 				JsonValue node = nodes.get(j);
+				JsonValue keyframes = node.get("keyframes");
+
 				ModelNodeAnimation nodeAnim = new ModelNodeAnimation();
 				animation.nodeAnimations.add(nodeAnim);
 				nodeAnim.nodeId = node.getString("boneId");
-				JsonValue keyframes = node.get("keyframes");
 				nodeAnim.keyframes.ensureCapacity(keyframes.size());
+				
 				for(int k = 0; k < keyframes.size(); k++) {
 					JsonValue keyframe = keyframes.get(k);
 					ModelNodeKeyframe kf = new ModelNodeKeyframe();

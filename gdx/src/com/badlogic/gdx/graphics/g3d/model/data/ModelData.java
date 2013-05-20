@@ -13,7 +13,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  *
  */
 public class ModelData {
-	public String version;
+	public String id;
+	public final short version[] = new short[2];
 	public final Array<ModelMesh> meshes = new Array<ModelMesh>();
 	public final Array<ModelMaterial> materials = new Array<ModelMaterial>();
 	public final Array<ModelNode> nodes = new Array<ModelNode>();

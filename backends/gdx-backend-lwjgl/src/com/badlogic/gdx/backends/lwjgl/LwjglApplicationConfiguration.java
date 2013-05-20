@@ -49,7 +49,7 @@ public class LwjglApplicationConfiguration {
 	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
 	public boolean vSyncEnabled = true;
 	/** title of application **/
-	public String title = "Lwjgl Application";
+	public String title;
 	/** whether to call System.exit() on tear-down. Needed for Webstarts on some versions of Mac OS X it seems **/
 	public boolean forceExit = true;
 	/** whether the window is resizable **/

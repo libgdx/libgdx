@@ -103,8 +103,8 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 
 	public void texCoord (float u, float v) {
 		final int idx = vertexIdx + texCoordOffset;
-		vertices[idx] = u;
-		vertices[idx + 1] = v;
+		vertices[idx + numSetTexCoords] = u;
+		vertices[idx + numSetTexCoords + 1] = v;
 		numSetTexCoords += 2;
 	}
 

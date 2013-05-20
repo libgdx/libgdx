@@ -2,43 +2,19 @@ package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
-import com.badlogic.gdx.graphics.g3d.lights.PointLight;
-import com.badlogic.gdx.graphics.g3d.loader.G3dbModelLoader;
-import com.badlogic.gdx.graphics.g3d.loader.G3djModelLoader;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
-import com.badlogic.gdx.graphics.g3d.model.NodeKeyframe;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
-import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.StringBuilder;
 
 public class NewModelTest extends BaseG3dHudTest {
-	Lights lights = new Lights(0.5f, 0.5f, 0.5f).add(
+	Lights lights = new Lights(0.4f, 0.4f, 0.4f).add(
 		new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -1f, 0f)
 		//new PointLight().set(1f, 0f, 0f, 5f, 5f, 5f, 15f),
 		//new PointLight().set(0f, 0f, 1f, -5f, 5f, 5f, 15f),
@@ -50,13 +26,21 @@ public class NewModelTest extends BaseG3dHudTest {
 	@Override
 	public void create () {
 		super.create();
-		onModelClicked("g3d/knight.g3db");
+		showAxes = false;
+		onModelClicked("g3d/knight.g3dj");
 	}
 
 	private final static Vector3 tmpV = new Vector3();
 	private final static Quaternion tmpQ = new Quaternion();
+	float counter;
+	String currentAsset;
 	@Override
 	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
+//		if ((counter += Gdx.graphics.getDeltaTime()) > 1.f) {
+//			assets.unload(currentAsset);
+//			onModelClicked("normalbox.g3dj");
+//			counter = 0f;
+//		}
 		for (final ModelInstance instance : instances) {
 			if (instance.currentAnimation != null) {
 				instance.currentAnimTime = (instance.currentAnimTime + Gdx.graphics.getDeltaTime()) % instance.currentAnimation.duration;
@@ -94,13 +78,16 @@ public class NewModelTest extends BaseG3dHudTest {
 		assets.finishLoading();
 		
 		instances.clear();
-		for (float x = -10; x <= 10; x += 10) {
+		final ModelInstance instance = new ModelInstance(assets.get(currentAsset = "data/"+name, Model.class));
+		instances.add(instance);
+		
+		/*for (float x = -10; x <= 10; x += 10) {
 			for (float z = -10; z <= 10; z += 10) {
 				final ModelInstance instance = new ModelInstance(assets.get("data/"+name, Model.class));
 				instance.transform.translate(x, 9.492372f, z);
 				instances.add(instance);
 			}
-		}
+		}*/
 	}
 	
 	protected void switchAnimation() {

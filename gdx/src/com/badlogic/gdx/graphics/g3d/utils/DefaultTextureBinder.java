@@ -42,7 +42,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 	
 	/** Uses all remaining texture units and reuse weight of 3 */
 	public DefaultTextureBinder(final int method, final int offset) {
-		this(method, offset, getMaxTextureUnits() - offset);
+		this(method, offset,  Math.min(getMaxTextureUnits(), MAX_GLES_UNITS) - offset);
 	}
 	
 	/** Uses reuse weight of 10 */
@@ -51,7 +51,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 	}
 	
 	public DefaultTextureBinder(final int method, final int offset, final int count, final int reuseWeight) {
-		final int max = Math.min(getMaxTextureUnits(), MAX_GLES_UNITS - offset);
+		final int max = Math.min(getMaxTextureUnits(), MAX_GLES_UNITS);
 		if (offset < 0 || count < 0 || (offset + count) > max || reuseWeight < 1)
 			throw new GdxRuntimeException("Illegal arguments");
 		this.method = method;
@@ -85,7 +85,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 	public void end () {
 		for(int i = 0; i < count; i++) {
 			if (textures[i].texture != null) {
-				Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + i);
+				Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + offset + i);
 				Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
 				textures[i].texture = null;
 			}

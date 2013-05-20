@@ -69,9 +69,9 @@ public class Model implements Disposable {
 	/** root nodes of the model **/
 	public final Array<Node> nodes = new Array<Node>();
 	/** animations of the model, modifying node transformations **/
-	public Array<Animation> animations = new Array<Animation>();
+	public final Array<Animation> animations = new Array<Animation>();
 	/** List of disposable resources like textures or meshes the Model is responsible for disposing **/
-	protected Array<Disposable> disposables = new Array<Disposable>();
+	protected final Array<Disposable> disposables = new Array<Disposable>();
 	
 	/** Constructs an empty model. Manual created models do not manage their resources by default. 
 	 * Use {@link #manageDisposable(Disposable)} to add resources to be managed by this model. */
@@ -83,14 +83,14 @@ public class Model implements Disposable {
 	 * @param modelData
 	 */
 	public Model(ModelData modelData) {
-		load(modelData, new FileTextureProvider());
+		this(modelData, new FileTextureProvider());
 	}
 	
 	public Model(ModelData modelData, TextureProvider textureProvider) {
 		load(modelData, textureProvider);
 	}
 	
-	private void load (ModelData modelData, TextureProvider textureProvider) {
+	private void load(ModelData modelData, TextureProvider textureProvider) {
 		loadMeshes(modelData.meshes);
 		loadMaterials(modelData.materials, textureProvider);
 		loadNodes(modelData.nodes);
@@ -255,22 +255,36 @@ public class Model implements Disposable {
 		ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 		
 		// FIXME mipmapping totally ignored, filters totally ignored, uvScaling/uvTranslation totally ignored
-		if(mtl.diffuseTextures != null) {
-			for(ModelTexture tex: mtl.diffuseTextures) {
-				if(textures.containsKey(tex.fileName)) continue;
-				Texture texture = textureProvider.load(tex.fileName);
-				textures.put(tex.fileName, texture);
-				disposables.add(texture);
-			}
-			
-			for(ModelTexture tex: mtl.diffuseTextures) {
-				TextureDescriptor descriptor = new TextureDescriptor();
-				descriptor.texture = textures.get(tex.fileName);
+		if(mtl.textures != null) {
+			for(ModelTexture tex: mtl.textures) {
+				Texture texture;
+				if(textures.containsKey(tex.fileName)) {
+					texture = textures.get(tex.fileName);
+				} else {
+					texture = textureProvider.load(tex.fileName);
+					textures.put(tex.fileName, texture);
+					disposables.add(texture);
+				}
+				
+				TextureDescriptor descriptor = new TextureDescriptor(texture);
 				descriptor.minFilter = GL20.GL_LINEAR;
 				descriptor.magFilter = GL20.GL_LINEAR;
 				descriptor.uWrap = GL20.GL_CLAMP_TO_EDGE;
 				descriptor.vWrap = GL20.GL_CLAMP_TO_EDGE;
-				result.set(new TextureAttribute(TextureAttribute.Diffuse, descriptor));
+				switch (tex.usage) {
+				case ModelTexture.USAGE_DIFFUSE:
+					result.set(new TextureAttribute(TextureAttribute.Diffuse, descriptor));
+					break;
+				case ModelTexture.USAGE_SPECULAR:
+					result.set(new TextureAttribute(TextureAttribute.Specular, descriptor));
+					break;
+				case ModelTexture.USAGE_BUMP:
+					result.set(new TextureAttribute(TextureAttribute.Bump, descriptor));
+					break;
+				case ModelTexture.USAGE_NORMAL:
+					result.set(new TextureAttribute(TextureAttribute.Normal, descriptor));
+					break;					
+				}
 			}
 		}
 		

@@ -147,6 +147,11 @@ public class JglfwApplication implements Application {
 				graphics.minimized = iconified;
 			}
 
+			public boolean windowClose (long window) {
+				if (shouldExit()) exit();
+				return false;
+			}
+
 			public void error (int error, String description) {
 				throw new GdxRuntimeException("GLFW error " + error + ": " + description);
 			}
@@ -180,10 +185,7 @@ public class JglfwApplication implements Application {
 
 	/** Handles posted runnables, input, and rendering for each frame. */
 	protected void frame () {
-		if (glfwWindowShouldClose(graphics.window)) {
-			exit();
-			return;
-		}
+		if (!running) return;
 
 		synchronized (runnables) {
 			executedRunnables.clear();
@@ -318,6 +320,10 @@ public class JglfwApplication implements Application {
 
 	public void setHiddenFPS (int hiddenFPS) {
 		this.hiddenFPS = hiddenFPS;
+	}
+
+	protected boolean shouldExit () {
+		return true;
 	}
 
 	public void exit () {

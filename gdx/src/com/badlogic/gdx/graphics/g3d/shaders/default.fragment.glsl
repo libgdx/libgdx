@@ -14,13 +14,14 @@ precision mediump float;
 
 #ifdef normalFlag
 varying vec3 v_normal;
-#endif
+#endif //normalFlag
 
-#ifdef colorFlag
+#if defined(colorFlag)
 varying vec4 v_color;
 #endif
 
 #if defined(diffuseTextureFlag) || defined(specularTextureFlag)
+#define textureFlag
 varying MED vec2 v_texCoords0;
 #endif
 
@@ -40,14 +41,23 @@ uniform vec4 u_specularColor;
 uniform sampler2D u_specularTexture;
 #endif
 
-#ifdef lightingFlag
-varying vec3 v_lightDiffuse;
-	#ifdef specularFlag
-	varying vec3 v_lightSpecular;
-	#endif
+#ifdef normalTextureFlag
+uniform sampler2D u_normalTexture;
 #endif
 
+#ifdef lightingFlag
+varying vec3 v_lightDiffuse;
+
+#ifdef specularFlag
+varying vec3 v_lightSpecular;
+#endif //specularFlag
+#endif //lightingFlag
+
 void main() {
+	#if defined(normalFlag) 
+		vec3 normal = v_normal;
+	#endif // normalFlag
+		
 	#if defined(diffuseTextureFlag) && defined(diffuseColorFlag) && defined(colorFlag)
 		vec4 diffuse = texture2D(u_diffuseTexture, v_texCoords0) * u_diffuseColor * v_color;
 	#elif defined(diffuseTextureFlag) && defined(diffuseColorFlag)
@@ -66,12 +76,10 @@ void main() {
 		vec4 diffuse = vec4(1.0);
 	#endif
 
-	#ifdef lightingFlag
-		diffuse.rgb *= v_lightDiffuse;
-	#endif
-
-	#if !defined(specularFlag) || !defined(lightingFlag)
+	#if (!defined(lightingFlag))  
 		gl_FragColor.rgb = diffuse.rgb;
+	#elif (!defined(specularFlag))
+		gl_FragColor.rgb = (diffuse.rgb * v_lightDiffuse);
 	#else
 		#if defined(specularTextureFlag) && defined(specularColorFlag)
 			vec3 specular = texture2D(u_specularTexture, v_texCoords0).rgb * u_specularColor.rgb * v_lightSpecular;
@@ -82,8 +90,9 @@ void main() {
 		#else //if defined(lightingFlag)
 			vec3 specular = v_lightSpecular;
 		#endif
-		gl_FragColor.rgb = diffuse.rgb + specular.rgb;
-	#endif
+			
+		gl_FragColor.rgb = (diffuse.rgb * v_lightDiffuse) + specular;
+	#endif //lightingFlag
 
 	#ifdef blendedFlag
 		gl_FragColor.a = diffuse.a;

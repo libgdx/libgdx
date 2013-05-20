@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.Light;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.lights.AmbientCubemap;
@@ -76,6 +75,7 @@ public class DefaultShader extends BaseShader {
 	protected final int u_diffuseTexture			= registerUniform("u_diffuseTexture", TextureAttribute.Diffuse);
 	protected final int u_specularColor				= registerUniform("u_specularColor", ColorAttribute.Specular);
 	protected final int u_specularTexture			= registerUniform("u_specularTexture", TextureAttribute.Specular);
+	protected final int u_normalTexture				= registerUniform("u_normalTexture", TextureAttribute.Normal);
 	// Lighting uniforms
 	protected final int u_ambientLight				= registerUniform("u_ambientLight");
 	protected final int u_ambientCubemap			= registerUniform("u_ambientCubemap");
@@ -87,7 +87,7 @@ public class DefaultShader extends BaseShader {
 	protected final int u_pointLights0intensity	= registerUniform("u_pointLights[0].intensity");
 	protected final int u_pointLights1color		= registerUniform("u_pointLights[1].color");
 	// FIXME Cache vertex attribute locations...
-		
+	
 	protected int dirLightsLoc;
 	protected int dirLightsColorOffset;
 	protected int dirLightsDirectionOffset;
@@ -127,6 +127,9 @@ public class DefaultShader extends BaseShader {
 		final String prefix = createPrefix(mask, attributes, lighting, numDirectional, numPoint, numSpot, numBones);
 		Gdx.app.log("Test", "Prefix:\n"+prefix);
 		program = new ShaderProgram(prefix + vertexShader, prefix + fragmentShader);
+		if(!program.isCompiled()) {
+			throw new GdxRuntimeException("Couldn't compile shader " + program.getLog());
+		}
 		init(program, mask, attributes, 0);
 		this.lighting = lighting;
 		this.directionalLights = new DirectionalLight[lighting && numDirectional > 0 ? numDirectional : 0];
@@ -155,9 +158,11 @@ public class DefaultShader extends BaseShader {
 		pointLightsSize 				= loc(u_pointLights1color)- pointLightsLoc;
 	}
 	
+	protected final static long tangentAttribute = Usage.Generic << 1;
+	protected final static long binormalAttribute = Usage.Generic << 2;
 	protected final static long blendAttributes[] = {
-		Usage.Generic << 1, Usage.Generic << 2, Usage.Generic << 3, Usage.Generic << 4, 
-		Usage.Generic << 5, Usage.Generic << 6, Usage.Generic << 7, Usage.Generic << 8
+		Usage.Generic << 3, Usage.Generic << 4, Usage.Generic << 5, Usage.Generic << 6, 
+		Usage.Generic << 7, Usage.Generic << 8, Usage.Generic << 9, Usage.Generic << 10
 	}; // FIXME this is a temporary, quick and dirty fix and should be changed
 	protected static long getAttributesMask(final VertexAttributes attributes) {
 		long result = 0;
@@ -165,10 +170,9 @@ public class DefaultShader extends BaseShader {
 		final int n = attributes.size();
 		for (int i = 0; i < n; i++) {
 			long a = (long)attributes.get(i).usage;
-			if (a == Usage.Generic) { 
-				if (attributes.get(i).alias.startsWith("a_boneWeight"))
-					a = blendAttributes[Integer.parseInt(attributes.get(i).alias.substring(12))];
-			}
+			if (a == Usage.BoneWeight) a = blendAttributes[attributes.get(i).unit];
+			else if (a == Usage.Tangent) a = tangentAttribute;
+			else if (a == Usage.BiNormal) a = binormalAttribute;
 			result |= a;
 		}
 		return result;
@@ -176,7 +180,7 @@ public class DefaultShader extends BaseShader {
 	
 	private String createPrefix(final long mask, final long attributes, boolean lighting, int numDirectional, int numPoint, int numSpot, int numBones) {
 		String prefix = "";
-		if ((attributes & Usage.Color) == Usage.Color)
+		if (((attributes & Usage.Color) == Usage.Color) || ((attributes & Usage.ColorPacked) == Usage.ColorPacked))
 			prefix += "#define colorFlag\n";
 		if ((attributes & Usage.Normal) == Usage.Normal) {
 			prefix += "#define normalFlag\n";
@@ -191,10 +195,17 @@ public class DefaultShader extends BaseShader {
 			if ((attributes & blendAttributes[i]) == blendAttributes[i])
 				prefix += "#define boneWeight"+i+"Flag\n";
 		}
+		if ((attributes & tangentAttribute) == tangentAttribute)
+			prefix += "#define tangentFlag\n";
+		if ((attributes & binormalAttribute) == binormalAttribute)
+			prefix += "#define binormalFlag\n";
 		if ((mask & BlendingAttribute.Type) == BlendingAttribute.Type)
 			prefix += "#define "+BlendingAttribute.Alias+"Flag\n";
 		if ((mask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse)
 			prefix += "#define "+TextureAttribute.DiffuseAlias+"Flag\n";
+		//prefix += "#define phongFlag\n";
+		if ((mask & TextureAttribute.Normal) == TextureAttribute.Normal)
+			prefix += "#define "+TextureAttribute.NormalAlias+"Flag\n";
 		if ((mask & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
 			prefix += "#define "+ColorAttribute.DiffuseAlias+"Flag\n";
 		if ((mask & ColorAttribute.Specular) == ColorAttribute.Specular)
@@ -276,7 +287,7 @@ public class DefaultShader extends BaseShader {
 		if (currentLocalTransform != renderable.localTransform)
 			set(u_localTrans, (currentLocalTransform = renderable.localTransform) == null ? idtMatrix : renderable.localTransform);
 		if (currentModelTransform != renderable.modelTransform)
-			set(u_modelTrans, (currentWorldTransform = renderable.modelTransform) == null ? idtMatrix : renderable.modelTransform);
+			set(u_modelTrans, (currentModelTransform = renderable.modelTransform) == null ? idtMatrix : renderable.modelTransform);
 		if (currentLocalTransform == null && currentModelTransform == null)
 			setWorldTransform(idtMatrix, false);
 		else if (currentLocalTransform == null)
@@ -322,7 +333,7 @@ public class DefaultShader extends BaseShader {
 		if (currentMaterial == renderable.material)
 			return;
 		currentMaterial = renderable.material;
-		for (Material.Attribute attr : currentMaterial) {
+		for (final Material.Attribute attr : currentMaterial) {
 			final long t = attr.type;
 			if (BlendingAttribute.is(t))
 				context.setBlending(true, ((BlendingAttribute)attr).sourceFunction, ((BlendingAttribute)attr).destFunction);
@@ -334,9 +345,11 @@ public class DefaultShader extends BaseShader {
 					set(u_specularColor, col.color);
 			}
 			else if (TextureAttribute.is(t)) {
-				TextureAttribute tex = (TextureAttribute)attr;
-				if ((t & TextureAttribute.Diffuse) == TextureAttribute.Diffuse)
+				final TextureAttribute tex = (TextureAttribute)attr;
+				if ((t & TextureAttribute.Diffuse) == TextureAttribute.Diffuse && hasUniform(u_diffuseTexture))
 					bindTextureAttribute(loc(u_diffuseTexture), tex);
+				if ((t & TextureAttribute.Normal) == TextureAttribute.Normal && hasUniform(u_normalTexture))
+					bindTextureAttribute(loc(u_normalTexture), tex);
 				// TODO else if (..)
 			}
 			else if ((t & FloatAttribute.Shininess) == FloatAttribute.Shininess)

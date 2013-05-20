@@ -20,11 +20,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -36,14 +36,11 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.SerializationException;
 
 /** @author Nathan Sweet */
 public class TexturePacker2 {
@@ -142,42 +139,58 @@ public class TexturePacker2 {
 			System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
 
 			for (Rect rect : page.outputRects) {
-				int rectX = page.x + rect.x, rectY = page.y + page.height - rect.y - rect.height;
-				if (rect.rotated) {
-					g.translate(rectX, rectY);
-					g.rotate(-90 * MathUtils.degreesToRadians);
-					g.translate(-rectX, -rectY);
-					g.translate(-(rect.height - settings.paddingY), 0);
-				}
 				BufferedImage image = rect.image;
+				int iw = image.getWidth();
+				int ih = image.getHeight();
+				int rectX = page.x + rect.x, rectY = page.y + page.height - rect.y - rect.height;
 				if (settings.duplicatePadding) {
 					int amountX = settings.paddingX / 2;
 					int amountY = settings.paddingY / 2;
-					int imageWidth = image.getWidth();
-					int imageHeight = image.getHeight();
-					// Copy corner pixels to fill corners of the padding.
-					g.drawImage(image, rectX - amountX, rectY - amountY, rectX, rectY, 0, 0, 1, 1, null);
-					g.drawImage(image, rectX + imageWidth, rectY - amountY, rectX + imageWidth + amountX, rectY, imageWidth - 1, 0,
-						imageWidth, 1, null);
-					g.drawImage(image, rectX - amountX, rectY + imageHeight, rectX, rectY + imageHeight + amountY, 0, imageHeight - 1,
-						1, imageHeight, null);
-					g.drawImage(image, rectX + imageWidth, rectY + imageHeight, rectX + imageWidth + amountX, rectY + imageHeight
-						+ amountY, imageWidth - 1, imageHeight - 1, imageWidth, imageHeight, null);
-					// Copy edge pixels into padding.
-					g.drawImage(image, rectX, rectY - amountY, rectX + imageWidth, rectY, 0, 0, imageWidth, 1, null);
-					g.drawImage(image, rectX, rectY + imageHeight, rectX + imageWidth, rectY + imageHeight + amountY, 0,
-						imageHeight - 1, imageWidth, imageHeight, null);
-					g.drawImage(image, rectX - amountX, rectY, rectX, rectY + imageHeight, 0, 0, 1, imageHeight, null);
-					g.drawImage(image, rectX + imageWidth, rectY, rectX + imageWidth + amountX, rectY + imageHeight, imageWidth - 1,
-						0, imageWidth, imageHeight, null);
+					if (rect.rotated) {
+						// Copy corner pixels to fill corners of the padding.
+						for (int i = 1; i <= amountX; i++) {
+							for (int j = 1; j <= amountY; j++) {
+								plot(canvas, rectX - j, rectY + iw - 1 + i, image.getRGB(0, 0));
+								plot(canvas, rectX + ih - 1 + j, rectY + iw - 1 + i, image.getRGB(0, ih - 1));
+								plot(canvas, rectX - j, rectY - i, image.getRGB(iw - 1, 0));
+								plot(canvas, rectX + ih - 1 + j, rectY - i, image.getRGB(iw - 1, ih - 1));
+							}
+						}
+						// Copy edge pixels into padding.
+						for (int i = 1; i <= amountY; i++) {
+							for (int j = 0; j < iw; j++) {
+								plot(canvas, rectX - i, rectY + iw - 1 - j, image.getRGB(j, 0));
+								plot(canvas, rectX + ih - 1 + i, rectY + iw - 1 - j, image.getRGB(j, ih - 1));
+							}
+						}
+						for (int i = 1; i <= amountX; i++) {
+							for (int j = 0; j < ih; j++) {
+								plot(canvas, rectX + j, rectY - i, image.getRGB(iw - 1, j));
+								plot(canvas, rectX + j, rectY + iw - 1 + i, image.getRGB(0, j));
+							}
+						}
+					} else {
+						// Copy corner pixels to fill corners of the padding.
+						for (int i = 1; i <= amountX; i++) {
+							for (int j = 1; j <= amountY; j++) {
+								canvas.setRGB(rectX - i, rectY - j, image.getRGB(0, 0));
+								canvas.setRGB(rectX - i, rectY + ih - 1 + j, image.getRGB(0, ih - 1));
+								canvas.setRGB(rectX + iw - 1 + i, rectY - j, image.getRGB(iw - 1, 0));
+								canvas.setRGB(rectX + iw - 1 + i, rectY + ih - 1 + j, image.getRGB(iw - 1, ih - 1));
+							}
+						}
+						// Copy edge pixels into padding.
+						for (int i = 1; i <= amountY; i++) {
+							copy(image, 0, 0, iw, 1, canvas, rectX, rectY - i, rect.rotated);
+							copy(image, 0, ih - 1, iw, 1, canvas, rectX, rectY + ih - 1 + i, rect.rotated);
+						}
+						for (int i = 1; i <= amountX; i++) {
+							copy(image, 0, 0, 1, ih, canvas, rectX - i, rectY, rect.rotated);
+							copy(image, iw - 1, 0, 1, ih, canvas, rectX + iw - 1 + i, rectY, rect.rotated);
+						}
+					}
 				}
-				g.drawImage(image, rectX, rectY, null);
-				if (rect.rotated) {
-					g.translate(rect.height - settings.paddingY, 0);
-					g.translate(rectX, rectY);
-					g.rotate(90 * MathUtils.degreesToRadians);
-					g.translate(-rectX, -rectY);
-				}
+				copy(image, 0, 0, iw, ih, canvas, rectX, rectY, rect.rotated);
 				if (settings.debug) {
 					g.setColor(Color.magenta);
 					g.drawRect(rectX, rectY, rect.width - settings.paddingX - 1, rect.height - settings.paddingY - 1);
@@ -205,6 +218,28 @@ public class TexturePacker2 {
 				}
 			} catch (IOException ex) {
 				throw new RuntimeException("Error writing file: " + outputFile, ex);
+			}
+		}
+	}
+
+	private static void plot (BufferedImage dst, int x, int y, int argb) {
+		if (0 <= x && x < dst.getWidth() && 0 <= y && y < dst.getHeight()) {
+			dst.setRGB(x, y, argb);
+		}
+	}
+
+	private static void copy (BufferedImage src, int x, int y, int w, int h, BufferedImage dst, int dx, int dy, boolean rotated) {
+		if (rotated) {
+			for (int i = 0; i < w; i++) {
+				for (int j = 0; j < h; j++) {
+					dst.setRGB(dx + j, dy + w - i - 1, src.getRGB(x + i, y + j));
+				}
+			}
+		} else {
+			for (int i = 0; i < w; i++) {
+				for (int j = 0; j < h; j++) {
+					dst.setRGB(dx + i, dy + j, src.getRGB(x + i, y + j));
+				}
 			}
 		}
 	}
@@ -304,7 +339,7 @@ public class TexturePacker2 {
 		public int x, y, width, height;
 		public int index;
 		public boolean rotated;
-		public ArrayList<String> aliases = new ArrayList();
+		public Set<String> aliases = new HashSet<String>();
 		public int[] splits;
 		public int[] pads;
 		public boolean canRotate = true;

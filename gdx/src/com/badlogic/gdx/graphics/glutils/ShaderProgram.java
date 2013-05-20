@@ -844,7 +844,7 @@ public class ShaderProgram implements Disposable {
 	}
 
 	private void ensureBufferCapacity (int numBytes) {
-		if (buffer == null || buffer.capacity() != numBytes) {
+		if (buffer == null || buffer.capacity() < numBytes) {
 			buffer = BufferUtils.newByteBuffer(numBytes);
 			floatBuffer = buffer.asFloatBuffer();
 			intBuffer = buffer.asIntBuffer();

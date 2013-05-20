@@ -31,6 +31,9 @@ public final class VertexAttributes {
 		public static final int Normal = 8;
 		public static final int TextureCoordinates = 16;
 		public static final int Generic = 32;
+		public static final int BoneWeight = 64;
+		public static final int Tangent = 128;
+		public static final int BiNormal = 256;
 	}
 
 	/** the attributes in the order they were specified **/

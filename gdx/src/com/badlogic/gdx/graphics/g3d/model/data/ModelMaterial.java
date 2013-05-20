@@ -20,5 +20,5 @@ public class ModelMaterial {
 	
 	public float shininess;
 	
-	public Array<ModelTexture> diffuseTextures;
+	public Array<ModelTexture> textures;
 }

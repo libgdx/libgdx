@@ -32,7 +32,7 @@ import java.io.Reader;
  * The default behavior is to parse the JSON into a DOM containing {@link JsonValue} objects. Extend this class and override
  * methods to perform event driven parsing. When this is done, the parse methods will return null.
  * @author Nathan Sweet */
-public class JsonReader {
+public class JsonReader implements BaseJsonReader {
 	public JsonValue parse (String json) {
 		char[] data = json.toCharArray();
 		return parse(data, 0, data.length);
@@ -63,6 +63,7 @@ public class JsonReader {
 		}
 	}
 
+	@Override
 	public JsonValue parse (InputStream input) {
 		try {
 			return parse(new InputStreamReader(input, "ISO-8859-1"));
@@ -71,6 +72,7 @@ public class JsonReader {
 		}
 	}
 
+	@Override
 	public JsonValue parse (FileHandle file) {
 		try {
 			return parse(file.read());
@@ -437,6 +439,8 @@ public class JsonReader {
 				throw new SerializationException("Error parsing JSON, unmatched brace.");
 			else
 				throw new SerializationException("Error parsing JSON, unmatched bracket.");
+		} else if (parseRuntimeEx != null) {
+			throw new SerializationException("Error parsing JSON: " + new String(data), parseRuntimeEx);
 		}
 		JsonValue root = this.root;
 		this.root = null;
@@ -581,7 +585,10 @@ public class JsonReader {
 
 	private void addChild (String name, JsonValue child) {
 		child.setName(name);
-		if (current.isArray() || current.isObject())
+		if (current == null) {
+			current = child;
+			root = child;
+		} else if (current.isArray() || current.isObject())
 			current.addChild(child);
 		else
 			root = current;
