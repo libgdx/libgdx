@@ -170,14 +170,9 @@ public class DefaultShader extends BaseShader {
 		final int n = attributes.size();
 		for (int i = 0; i < n; i++) {
 			long a = (long)attributes.get(i).usage;
-			if (a == Usage.Generic) { 
-				if (attributes.get(i).alias.startsWith("a_boneWeight"))
-					a = blendAttributes[Integer.parseInt(attributes.get(i).alias.substring(12))];
-				else if (attributes.get(i).alias.equals(ShaderProgram.TANGENT_ATTRIBUTE))
-					a = tangentAttribute;
-				else if (attributes.get(i).alias.equals(ShaderProgram.BINORMAL_ATTRIBUTE))
-					a = binormalAttribute;
-			}
+			if (a == Usage.BoneWeight) a = blendAttributes[attributes.get(i).unit];
+			else if (a == Usage.Tangent) a = tangentAttribute;
+			else if (a == Usage.BiNormal) a = binormalAttribute;
 			result |= a;
 		}
 		return result;
