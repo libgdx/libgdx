@@ -7,6 +7,7 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
@@ -83,6 +84,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	
 	@Override
 	public void render () {
+		AnimatedTiledMapTile.updateAnimationBaseTime();
 		spriteBatch.begin();
 		for (MapLayer layer : map.getLayers()) {
 			if (layer.isVisible()) {
@@ -100,6 +102,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	
 	@Override
 	public void render (int[] layers) {
+		AnimatedTiledMapTile.updateAnimationBaseTime();
 		spriteBatch.begin();
 		for (int layerIdx : layers) {
 			MapLayer layer = map.getLayers().get(layerIdx);

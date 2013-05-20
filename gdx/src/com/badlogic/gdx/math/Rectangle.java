@@ -142,6 +142,12 @@ public class Rectangle implements Serializable {
 		return this.x <= x && this.x + this.width >= x && this.y <= y && this.y + this.height >= y;
 	}
 
+	/** @param vector The coordinates vector
+	 * @return whether the vector is contained in the rectangle */
+	public boolean contains (Vector2 vector) {
+		return contains(vector.x, vector.y);
+	}
+
 	/** @param rectangle the other {@link Rectangle}.
 	 * @return whether the other rectangle is contained in this rectangle. */
 	public boolean contains (Rectangle rectangle) {
