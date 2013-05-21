@@ -58,6 +58,7 @@ public class DefaultShader extends BaseShader {
 		ColorAttribute.Specular | FloatAttribute.Shininess;
 	
 	public static boolean ignoreUnimplemented = true;
+	public static int defaultCullFace = GL10.GL_BACK;
 	
 	// Global uniforms
 	protected final int u_projTrans					= registerUniform("u_projTrans");
@@ -332,7 +333,7 @@ public class DefaultShader extends BaseShader {
 	private final void bindMaterial(final Renderable renderable) {
 		if (currentMaterial == renderable.material)
 			return;
-		int cullFace = 0;
+		int cullFace = defaultCullFace;
 		currentMaterial = renderable.material;
 		for (final Material.Attribute attr : currentMaterial) {
 			final long t = attr.type;
