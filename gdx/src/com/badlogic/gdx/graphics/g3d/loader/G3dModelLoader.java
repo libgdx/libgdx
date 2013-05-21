@@ -114,7 +114,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				JsonValue indices = meshPart.require("indices");
 				short[] partIndices = new short[indices.size()];
 				int k = 0;
-				for (JsonValue value = indices.child(); value != null; value = value.next(), j++) {
+				for (JsonValue value = indices.child(); value != null; value = value.next(), k++) {
 					partIndices[k] = (short)indices.getInt(k);
 				}
 				jsonPart.indices = partIndices;
