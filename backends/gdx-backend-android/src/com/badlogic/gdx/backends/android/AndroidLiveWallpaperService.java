@@ -21,7 +21,6 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.android.AndroidWallpaperListener;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLBaseSurfaceViewLW;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
