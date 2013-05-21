@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
@@ -331,6 +332,7 @@ public class DefaultShader extends BaseShader {
 	private final void bindMaterial(final Renderable renderable) {
 		if (currentMaterial == renderable.material)
 			return;
+		int cullFace = 0;
 		currentMaterial = renderable.material;
 		for (final Material.Attribute attr : currentMaterial) {
 			final long t = attr.type;
@@ -353,9 +355,12 @@ public class DefaultShader extends BaseShader {
 			}
 			else if ((t & FloatAttribute.Shininess) == FloatAttribute.Shininess)
 				set(u_shininess, ((FloatAttribute)attr).value);
+			else if ((t & IntAttribute.CullFace) == IntAttribute.CullFace)
+				cullFace = ((IntAttribute)attr).value;
 			else if(!ignoreUnimplemented)
 					throw new GdxRuntimeException("Unknown material attribute: "+attr.toString());
 		}
+		context.setCullFace(cullFace);
 	}
 
 	TextureAttribute currentTextureAttribute;

@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
@@ -125,6 +126,7 @@ public class GLES10Shader implements Shader{
 				Gdx.gl10.glColor4f(1,1,1,1);
 			if (!currentMaterial.has(TextureAttribute.Diffuse))
 				Gdx.gl10.glDisable(GL10.GL_TEXTURE_2D);
+			int cullFace = 0;
 			for (final Material.Attribute attribute : currentMaterial) {
 				if (attribute.type == BlendingAttribute.Type)
 					context.setBlending(true, ((BlendingAttribute)attribute).sourceFunction, ((BlendingAttribute)attribute).destFunction);
@@ -135,7 +137,10 @@ public class GLES10Shader implements Shader{
 						(currentTexture0 = ((TextureAttribute)attribute).textureDescription.texture).bind(0);
 					Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
 				}
+				else if ((attribute.type & IntAttribute.CullFace) == IntAttribute.CullFace)
+					cullFace = ((IntAttribute)attribute).value;
 			}
+			context.setCullFace(cullFace);
 		}
 		if (currentTransform != renderable.modelTransform) { // FIXME mul localtransform
 			if (currentTransform != null)
