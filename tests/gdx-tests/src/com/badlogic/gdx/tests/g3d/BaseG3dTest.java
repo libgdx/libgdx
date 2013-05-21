@@ -74,8 +74,16 @@ public abstract class BaseG3dTest extends GdxTest {
 	
 	protected abstract void render(final ModelBatch batch, final Array<ModelInstance> instances);
 	
+	protected boolean loading = false;
+	protected void onLoaded() {}
+	
 	@Override
 	public void render () {
+		if (loading && assets.update()) {
+			loading = false;
+			onLoaded();
+		}
+		
 		inputController.update();
 		
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
