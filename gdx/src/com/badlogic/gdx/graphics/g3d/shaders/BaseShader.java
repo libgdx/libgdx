@@ -80,7 +80,6 @@ public abstract class BaseShader implements Shader {
 				uniformLocations[i] = program.fetchUniformLocation(entry.name, false);
 			} else
 				uniformLocations[i] = -1;
-			Gdx.app.log("Test", "Uniform: "+entry.name+" = "+uniformLocations[i]);
 		}
 		UniformEntry.pool.freeAll(uniformEntries);
 		uniformEntries.clear();
