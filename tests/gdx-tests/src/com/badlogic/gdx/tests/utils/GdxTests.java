@@ -36,9 +36,7 @@ import java.util.List;
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
-import com.badlogic.gdx.tests.g3d.BatchRenderTest;
 import com.badlogic.gdx.tests.g3d.NewModelTest;
-import com.badlogic.gdx.tests.g3d.JsonModelLoaderTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.net.NetAPITest;
@@ -81,7 +79,7 @@ public class GdxTests {
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
 		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GamepadTest.class, NetAPITest.class, TideMapAssetManagerTest.class, TideMapDirectLoaderTest.class, TiledMapAssetManagerTest.class, TiledMapBench.class,
 		RunnablePostTest.class, Vector2dTest.class, SuperKoalio.class, NinePatchTest.class,
-		JsonModelLoaderTest.class, BatchRenderTest.class, NewModelTest.class, HexagonalTiledMapTest.class));
+		NewModelTest.class, HexagonalTiledMapTest.class));
 	
 	public static List<String> getNames () {
 		List<String> names = new ArrayList<String>(tests.size());
