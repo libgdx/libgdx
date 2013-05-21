@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
-public class NewModelTest extends BaseG3dHudTest {
+public class ModelTest extends BaseG3dHudTest {
 	Lights lights = new Lights(0.4f, 0.4f, 0.4f).add(
 		new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -1f, 0f)
 		//new PointLight().set(1f, 0f, 0f, 5f, 5f, 5f, 15f),
@@ -75,14 +75,6 @@ public class NewModelTest extends BaseG3dHudTest {
 		instances.clear();
 		final ModelInstance instance = new ModelInstance(assets.get(currentAsset = "data/"+name, Model.class));
 		instances.add(instance);
-		
-		/*for (float x = -10; x <= 10; x += 10) {
-			for (float z = -10; z <= 10; z += 10) {
-				final ModelInstance instance = new ModelInstance(assets.get("data/"+name, Model.class));
-				instance.transform.translate(x, 9.492372f, z);
-				instances.add(instance);
-			}
-		}*/
 	}
 	
 	protected void switchAnimation() {
