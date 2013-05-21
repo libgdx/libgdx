@@ -36,11 +36,6 @@ public class NewModelTest extends BaseG3dHudTest {
 	String currentAsset;
 	@Override
 	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
-//		if ((counter += Gdx.graphics.getDeltaTime()) > 1.f) {
-//			assets.unload(currentAsset);
-//			onModelClicked("normalbox.g3dj");
-//			counter = 0f;
-//		}
 		for (final ModelInstance instance : instances) {
 			if (instance.currentAnimation != null) {
 				instance.currentAnimTime = (instance.currentAnimTime + Gdx.graphics.getDeltaTime()) % instance.currentAnimation.duration;
