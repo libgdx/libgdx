@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.StringBuilder;
 
 public class ModelTest extends BaseG3dHudTest {
 	Lights lights = new Lights(0.4f, 0.4f, 0.4f).add(
@@ -26,8 +27,8 @@ public class ModelTest extends BaseG3dHudTest {
 	@Override
 	public void create () {
 		super.create();
-		showAxes = false;
-		onModelClicked("g3d/knight.g3dj");
+		showAxes = true;
+		onModelClicked("g3d/teapot.g3db");
 	}
 
 	private final static Vector3 tmpV = new Vector3();
@@ -66,15 +67,37 @@ public class ModelTest extends BaseG3dHudTest {
 	}
 	
 	@Override
+	protected void getStatus (StringBuilder stringBuilder) {
+		super.getStatus(stringBuilder);
+
+		for (final ModelInstance instance : instances) {
+			if (instance.animations.size > 0) {
+				stringBuilder.append(" press space or menu to switch animation");
+				break;
+			}
+		}
+	}
+	
+	protected String currentlyLoading;
+	@Override
 	protected void onModelClicked(final String name) {
 		if (name == null)
 			return;
-		assets.load("data/"+name, Model.class);
-		assets.finishLoading();
+		
+		currentlyLoading = "data/"+name; 
+		assets.load(currentlyLoading, Model.class);
+		loading = true;
+	}
+	
+	@Override
+	protected void onLoaded() {
+		if (currentlyLoading == null || currentlyLoading.isEmpty())
+			return;
 		
 		instances.clear();
-		final ModelInstance instance = new ModelInstance(assets.get(currentAsset = "data/"+name, Model.class));
+		final ModelInstance instance = new ModelInstance(assets.get(currentlyLoading, Model.class));
 		instances.add(instance);
+		currentlyLoading = null;
 	}
 	
 	protected void switchAnimation() {
