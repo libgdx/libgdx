@@ -32,7 +32,7 @@ public class Basic3DTest extends GdxTest implements ApplicationListener {
 		modelBatch = new ModelBatch();
 		lights = new Lights();
 		lights.ambientLight.set(0.4f, 0.4f, 0.4f, 1f);
-		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -1f, 0f));
+		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(10f, 10f, 10f);
