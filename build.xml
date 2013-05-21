@@ -301,6 +301,7 @@
 			]]></bottom>
 			<fileset dir="gdx/src" defaultexcludes="yes">
 				<include name="com/badlogic/gdx/**" />
+				<exclude name="com/badlogic/gdx/**/*.glsl"/>
 				<exclude name="com/badlogic/gdx/utils/arial-15.fnt" />
 				<exclude name="com/badlogic/gdx/utils/arial-15.png" />
 				<exclude name="com/badlogic/gdx/utils/XmlReader.rl" />
