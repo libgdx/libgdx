@@ -46,6 +46,8 @@ public class Slider extends Widget {
 	int draggingPointer = -1;
 	private float animateDuration, animateTime;
 	private Interpolation animateInterpolation = Interpolation.linear;
+	private float[] snapValues;
+	private float threshold;
 
 	public Slider (float min, float max, float stepSize, boolean vertical, Skin skin) {
 		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), SliderStyle.class));
@@ -226,7 +228,7 @@ public class Slider extends Widget {
 	/** Sets the slider position, rounded to the nearest step size and clamped to the minumum and maximim values.
 	 * @return false if the value was not changed because the slider already had the value or it was canceled by a listener. */
 	public boolean setValue (float value) {
-		value = MathUtils.clamp(Math.round(value / stepSize) * stepSize, min, max);
+		value = snap(MathUtils.clamp(Math.round(value / stepSize) * stepSize, min, max));
 		float oldValue = this.value;
 		if (value == oldValue) return false;
 		float oldVisualValue = getVisualValue();
@@ -294,6 +296,21 @@ public class Slider extends Widget {
 	public void setAnimateInterpolation (Interpolation animateInterpolation) {
 		if (animateInterpolation == null) throw new IllegalArgumentException("animateInterpolation cannot be null.");
 		this.animateInterpolation = animateInterpolation;
+	}
+	
+	/** Will make this slider snap to the specified values, if the knob is within the threshold */
+	public void setSnapToValues(float[] values, float threshold) {
+		this.snapValues = values;
+		this.threshold = threshold;
+	}
+	
+	/** Returns a snapped value, or the original value */
+	private float snap(float value) {
+		if(snapValues == null) return value;
+		for (int i = 0; i < snapValues.length; i++) {
+			if(Math.abs(value - snapValues[i]) <= threshold) return snapValues[i];
+		}
+		return value;
 	}
 
 	/** The style for a slider, see {@link Slider}.
