@@ -61,7 +61,7 @@ void main() {
 	#if defined(diffuseTextureFlag) && defined(diffuseColorFlag) && defined(colorFlag)
 		vec4 diffuse = texture2D(u_diffuseTexture, v_texCoords0) * u_diffuseColor * v_color;
 	#elif defined(diffuseTextureFlag) && defined(diffuseColorFlag)
-		vec4 diffuse = texture2D(u_diffuseTexture, v_texCoords0);
+		vec4 diffuse = texture2D(u_diffuseTexture, v_texCoords0) * u_diffuseColor;
 	#elif defined(diffuseTextureFlag) && defined(colorFlag)
 		vec4 diffuse = texture2D(u_diffuseTexture, v_texCoords0) * v_color;
 	#elif defined(diffuseTextureFlag)
