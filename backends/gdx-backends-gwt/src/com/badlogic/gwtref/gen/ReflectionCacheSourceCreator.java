@@ -114,7 +114,7 @@ public class ReflectionCacheSourceCreator {
 
 		sw.commit(logger);
 		createProxy(type);
-		System.out.println(source.toString());
+//		System.out.println(source.toString());
 		return packageName + "." + simpleName;
 	}
 
