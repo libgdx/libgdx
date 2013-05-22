@@ -25,6 +25,7 @@ import java.nio.ShortBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -326,7 +327,11 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glGetIntegerv (int pname, IntBuffer params) {
-		// FIXME
+		// FIXME this is a hack, a nasty nasty hack
+		if(pname == GL10.GL_MAX_TEXTURE_UNITS || pname == GL20.GL_MAX_TEXTURE_IMAGE_UNITS) {
+			params.put(16);
+			return;
+		}
 		throw new GdxRuntimeException("glGetInteger not supported by GWT WebGL backend");
 	}
 

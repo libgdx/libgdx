@@ -28,7 +28,7 @@ public class ModelTest extends BaseG3dHudTest {
 	public void create () {
 		super.create();
 		showAxes = true;
-		onModelClicked("g3d/teapot.g3db");
+		onModelClicked("g3d/knight.g3dj");
 	}
 
 	private final static Vector3 tmpV = new Vector3();
