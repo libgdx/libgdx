@@ -39,7 +39,7 @@ public class GwtFileHandle extends FileHandle {
 	private final FileType type;
 
 	protected GwtFileHandle (Preloader preloader, String fileName, FileType type) {
-		if (type != FileType.Internal) throw new GdxRuntimeException("FileType '" + type + "' Not supported in GWT backend");
+		if (type != FileType.Internal && type != FileType.Classpath) throw new GdxRuntimeException("FileType '" + type + "' Not supported in GWT backend");
 		this.preloader = preloader;
 		this.file = fileName.replace('\\', '/');
 		this.type = type;
