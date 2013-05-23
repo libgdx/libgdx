@@ -7,8 +7,15 @@ public class FloatAttribute extends Material.Attribute {
 	public static final String ShininessAlias = "shininess";
 	public static final long Shininess = register(ShininessAlias);
 	
+	public static final String OpacityAlias = "opacity";
+	public static final long Opacity = register(OpacityAlias);
+	
 	public static FloatAttribute createShininess(float value) {
 		return new FloatAttribute(Shininess, value);
+	}
+	
+	public static FloatAttribute createOpacity(float value) {
+		return new FloatAttribute(Opacity, value);
 	}
 	
 	public float value;

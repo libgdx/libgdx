@@ -104,6 +104,11 @@ uniform float u_shininess;
 const float u_shininess = 20.0;
 #endif // shininessFlag
 
+#ifdef opacityFlag
+uniform float u_opacity;
+varying float v_opacity;
+#endif // opacityFlag
+
 #ifdef lightingFlag
 varying vec3 v_lightDiffuse;
 
@@ -152,6 +157,10 @@ void main() {
 	#if defined(colorFlag)
 		v_color = a_color;
 	#endif // colorFlag
+		
+	#ifdef opacityFlag
+		v_opacity = u_opacity;
+	#endif // opacityFlag
 	
 	#ifdef skinningFlag
 		mat4 skinning = mat4(0.0);
