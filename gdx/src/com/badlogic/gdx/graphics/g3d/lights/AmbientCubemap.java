@@ -18,7 +18,8 @@ public class AmbientCubemap {
 	public AmbientCubemap(final float copyFrom[]) {
 		if (copyFrom.length != (6*3))
 			throw new GdxRuntimeException("Incorrect array size");
-		data = copyFrom.clone();
+		data = new float[copyFrom.length];
+		System.arraycopy(copyFrom, 0, data, 0, data.length);
 	}
 	
 	public AmbientCubemap(final AmbientCubemap copyFrom) {

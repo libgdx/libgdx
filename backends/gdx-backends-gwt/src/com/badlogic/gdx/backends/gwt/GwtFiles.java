@@ -36,7 +36,7 @@ public class GwtFiles implements Files {
 
 	@Override
 	public FileHandle classpath (String path) {
-		throw new GdxRuntimeException("Not supported in GWT backend");
+		return new GwtFileHandle(preloader, path, FileType.Classpath);
 	}
 
 	@Override

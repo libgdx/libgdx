@@ -125,7 +125,6 @@ public class DefaultShader extends BaseShader {
 
 	public DefaultShader(final String vertexShader, final String fragmentShader, final long mask, final long attributes, boolean lighting, int numDirectional, int numPoint, int numSpot, int numBones) {
 		final String prefix = createPrefix(mask, attributes, lighting, numDirectional, numPoint, numSpot, numBones);
-		Gdx.app.log("Test", "Prefix:\n"+prefix);
 		program = new ShaderProgram(prefix + vertexShader, prefix + fragmentShader);
 		if(!program.isCompiled()) {
 			throw new GdxRuntimeException("Couldn't compile shader " + program.getLog());
