@@ -20,9 +20,9 @@ varying vec3 v_normal;
 varying vec4 v_color;
 #endif
 
-#ifdef opacityFlag
+#ifdef blendedFlag
 varying float v_opacity;
-#endif // opacityFlag
+#endif //blendedFlag
 
 #if defined(diffuseTextureFlag) || defined(specularTextureFlag)
 #define textureFlag
@@ -98,9 +98,7 @@ void main() {
 		gl_FragColor.rgb = (diffuse.rgb * v_lightDiffuse) + specular;
 	#endif //lightingFlag
 
-	#if defined(blendedFlag) && defined(opacityFlag)
+	#ifdef blendedFlag
 		gl_FragColor.a = diffuse.a * v_opacity;
-	#elif defined(blendedFlag)
-		gl_FragColor.a = diffuse.a;
 	#endif
 }

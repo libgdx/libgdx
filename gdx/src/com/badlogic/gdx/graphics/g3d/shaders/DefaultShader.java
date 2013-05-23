@@ -73,7 +73,7 @@ public class DefaultShader extends BaseShader {
 	protected final int u_bones						= registerUniform("u_bones");
 	// Material uniforms
 	protected final int u_shininess					= registerUniform("u_shininess", FloatAttribute.Shininess);
-	protected final int u_opacity						= registerUniform("u_opacity", FloatAttribute.Opacity);
+	protected final int u_opacity						= registerUniform("u_opacity");
 	protected final int u_diffuseColor				= registerUniform("u_diffuseColor", ColorAttribute.Diffuse);
 	protected final int u_diffuseTexture			= registerUniform("u_diffuseTexture", TextureAttribute.Diffuse);
 	protected final int u_specularColor				= registerUniform("u_specularColor", ColorAttribute.Specular);
@@ -214,8 +214,6 @@ public class DefaultShader extends BaseShader {
 			prefix += "#define "+ColorAttribute.SpecularAlias+"Flag\n";
 		if ((mask & FloatAttribute.Shininess) == FloatAttribute.Shininess)
 			prefix += "#define "+FloatAttribute.ShininessAlias+"Flag\n";
-		if ((mask & FloatAttribute.Opacity) == FloatAttribute.Opacity)
-			prefix += "#define "+FloatAttribute.OpacityAlias+"Flag\n";
 		if (numBones > 0)
 			prefix += "#define numBones "+numBones+"\n";
 		return prefix;
@@ -340,9 +338,10 @@ public class DefaultShader extends BaseShader {
 		currentMaterial = renderable.material;
 		for (final Material.Attribute attr : currentMaterial) {
 			final long t = attr.type;
-			if (BlendingAttribute.is(t))
+			if (BlendingAttribute.is(t)) {
 				context.setBlending(true, ((BlendingAttribute)attr).sourceFunction, ((BlendingAttribute)attr).destFunction);
-			else if (ColorAttribute.is(t)) {
+				set(u_opacity, ((BlendingAttribute)attr).opacity);
+			} else if (ColorAttribute.is(t)) {
 				ColorAttribute col = (ColorAttribute)attr;
 				if ((t & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
 					set(u_diffuseColor, col.color);
@@ -359,8 +358,6 @@ public class DefaultShader extends BaseShader {
 			}
 			else if ((t & FloatAttribute.Shininess) == FloatAttribute.Shininess)
 				set(u_shininess, ((FloatAttribute)attr).value);
-			else if ((t & FloatAttribute.Opacity) == FloatAttribute.Opacity)
-				set(u_opacity, ((FloatAttribute)attr).value);
 			else if ((t & IntAttribute.CullFace) == IntAttribute.CullFace)
 				cullFace = ((IntAttribute)attr).value;
 			else if(!ignoreUnimplemented)

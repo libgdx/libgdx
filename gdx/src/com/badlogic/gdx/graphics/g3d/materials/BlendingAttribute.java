@@ -13,15 +13,21 @@ public class BlendingAttribute extends Material.Attribute {
  
 	public int sourceFunction;
 	public int destFunction;
+	public float opacity = 1.f;
 
 	public BlendingAttribute() { 
 		super(Type); 
 	}
-	
-	public BlendingAttribute(final int sourceFunc, final int destFunc) {
+
+	public BlendingAttribute(final int sourceFunc, final int destFunc, final float opacity) {
 		this();
 		sourceFunction = sourceFunc;
 		destFunction = destFunc;
+		this.opacity = opacity; 
+	}
+	
+	public BlendingAttribute(final int sourceFunc, final int destFunc) {
+		this(sourceFunc, destFunc, 1.f);
 	}
 	
 	public BlendingAttribute(final BlendingAttribute copyFrom) {
