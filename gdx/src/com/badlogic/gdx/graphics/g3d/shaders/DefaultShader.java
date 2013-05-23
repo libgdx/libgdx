@@ -58,7 +58,7 @@ public class DefaultShader extends BaseShader {
 		ColorAttribute.Specular | FloatAttribute.Shininess;
 	
 	public static boolean ignoreUnimplemented = true;
-	public static int defaultCullFace = GL10.GL_BACK;
+	public static int defaultCullFace = 0;
 	
 	// Global uniforms
 	protected final int u_projTrans					= registerUniform("u_projTrans");
@@ -260,6 +260,7 @@ public class DefaultShader extends BaseShader {
 		this.context = context;
 		this.camera = camera;
 		program.begin();
+		// FIXME add DepthTest Material Attribute ?
 		context.setDepthTest(true, GL10.GL_LEQUAL);
 		
 		set(u_projTrans, camera.combined);
