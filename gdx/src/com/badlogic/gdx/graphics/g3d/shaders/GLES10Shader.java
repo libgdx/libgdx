@@ -75,6 +75,7 @@ public class GLES10Shader implements Shader{
 		Gdx.gl10.glEnable(GL10.GL_LIGHTING);
 		Gdx.gl10.glEnable(GL10.GL_LIGHT0);
 		Gdx.gl10.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, getValues(lightVal, lights.ambientLight), 0);
+		Gdx.gl10.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, zeroVal4, 0);
 		int idx=1;
 		Gdx.gl10.glPushMatrix();
 		Gdx.gl10.glLoadIdentity();
