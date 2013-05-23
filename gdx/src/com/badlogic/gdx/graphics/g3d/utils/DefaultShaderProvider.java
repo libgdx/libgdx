@@ -13,7 +13,7 @@ public class DefaultShaderProvider extends BaseShaderProvider {
 	protected Shader createShader(final Renderable renderable) {
 		Gdx.app.log("DefaultShaderProvider", "Creating new shader");
 		if (Gdx.graphics.isGL20Available())
-			return new DefaultShader(renderable.material, renderable.mesh.getVertexAttributes(), renderable.lights != null, renderable.lights.directionalLights.size, renderable.lights.pointLights.size, 0, renderable.bones == null ? 0 : 12);
+			return new DefaultShader(renderable.material, renderable.mesh.getVertexAttributes(), renderable.lights != null, 2, 5, 3, renderable.bones == null ? 0 : 12);
 		return new GLES10Shader();
 	}
 }
