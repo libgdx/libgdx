@@ -30,10 +30,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.typedarrays.client.Float32Array;
-import com.google.gwt.typedarrays.client.Int16Array;
-import com.google.gwt.typedarrays.client.Int32Array;
-import com.google.gwt.typedarrays.client.Uint8Array;
+import com.google.gwt.typedarrays.client.Float32ArrayNative;
+import com.google.gwt.typedarrays.client.Int16ArrayNative;
+import com.google.gwt.typedarrays.client.Int32ArrayNative;
+import com.google.gwt.typedarrays.client.Uint8ArrayNative;
+import com.google.gwt.typedarrays.shared.Float32Array;
+import com.google.gwt.typedarrays.shared.Int16Array;
+import com.google.gwt.typedarrays.shared.Int32Array;
+import com.google.gwt.typedarrays.shared.Uint8Array;
 import com.google.gwt.webgl.client.WebGLActiveInfo;
 import com.google.gwt.webgl.client.WebGLBuffer;
 import com.google.gwt.webgl.client.WebGLFramebuffer;
@@ -61,33 +65,34 @@ public class GwtGL20 implements GL20 {
 	int nextUniformId = 1;
 	int currProgram = 0;
 
-	Float32Array floatBuffer = Float32Array.create(2000 * 20);
-	Int32Array intBuffer = Int32Array.create(2000 * 6);
-	Int16Array shortBuffer = Int16Array.create(2000 * 6);
+	Float32Array floatBuffer = Float32ArrayNative.create(2000 * 20);
+	Int32Array intBuffer = Int32ArrayNative.create(2000 * 6);
+	Int16Array shortBuffer = Int16ArrayNative.create(2000 * 6);
 	float[] floatArray = new float[16000];
 
 	final WebGLRenderingContext gl;
 
 	protected GwtGL20 (WebGLRenderingContext gl) {
+		;
 		this.gl = gl;
 		this.gl.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 0);
 	}
 
 	private void ensureCapacity (FloatBuffer buffer) {
-		if (buffer.remaining() > floatBuffer.getLength()) {
-			floatBuffer = Float32Array.create(buffer.remaining());
+		if (buffer.remaining() > floatBuffer.length()) {
+			floatBuffer = Float32ArrayNative.create(buffer.remaining());
 		}
 	}
 
 	private void ensureCapacity (ShortBuffer buffer) {
-		if (buffer.remaining() > shortBuffer.getLength()) {
-			shortBuffer = Int16Array.create(buffer.remaining());
+		if (buffer.remaining() > shortBuffer.length()) {
+			shortBuffer = Int16ArrayNative.create(buffer.remaining());
 		}
 	}
 	
 	private void ensureCapacity (IntBuffer buffer) {
-		if (buffer.remaining() > intBuffer.getLength()) {
-			intBuffer = Int32Array.create(buffer.remaining());
+		if (buffer.remaining() > intBuffer.length()) {
+			intBuffer = Int32ArrayNative.create(buffer.remaining());
 		}
 	}
 
@@ -391,7 +396,7 @@ public class GwtGL20 implements GL20 {
 		
 		// create new ArrayBufferView (4 bytes per pixel)
 		int size = 4 * width * height;
-		Uint8Array buffer = Uint8Array.create(size);
+		Uint8Array buffer = Uint8ArrayNative.create(size);
 		
 		// read bytes to ArrayBufferView
 		gl.readPixels(x, y, width, height, format, type, buffer);
