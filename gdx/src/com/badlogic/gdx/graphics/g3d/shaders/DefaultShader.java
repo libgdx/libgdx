@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
@@ -57,6 +58,7 @@ public class DefaultShader extends BaseShader {
 		ColorAttribute.Specular | FloatAttribute.Shininess;
 	
 	public static boolean ignoreUnimplemented = true;
+	public static int defaultCullFace = GL10.GL_BACK;
 	
 	// Global uniforms
 	protected final int u_projTrans					= registerUniform("u_projTrans");
@@ -71,6 +73,7 @@ public class DefaultShader extends BaseShader {
 	protected final int u_bones						= registerUniform("u_bones");
 	// Material uniforms
 	protected final int u_shininess					= registerUniform("u_shininess", FloatAttribute.Shininess);
+	protected final int u_opacity						= registerUniform("u_opacity");
 	protected final int u_diffuseColor				= registerUniform("u_diffuseColor", ColorAttribute.Diffuse);
 	protected final int u_diffuseTexture			= registerUniform("u_diffuseTexture", TextureAttribute.Diffuse);
 	protected final int u_specularColor				= registerUniform("u_specularColor", ColorAttribute.Specular);
@@ -331,12 +334,14 @@ public class DefaultShader extends BaseShader {
 	private final void bindMaterial(final Renderable renderable) {
 		if (currentMaterial == renderable.material)
 			return;
+		int cullFace = defaultCullFace;
 		currentMaterial = renderable.material;
 		for (final Material.Attribute attr : currentMaterial) {
 			final long t = attr.type;
-			if (BlendingAttribute.is(t))
+			if (BlendingAttribute.is(t)) {
 				context.setBlending(true, ((BlendingAttribute)attr).sourceFunction, ((BlendingAttribute)attr).destFunction);
-			else if (ColorAttribute.is(t)) {
+				set(u_opacity, ((BlendingAttribute)attr).opacity);
+			} else if (ColorAttribute.is(t)) {
 				ColorAttribute col = (ColorAttribute)attr;
 				if ((t & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
 					set(u_diffuseColor, col.color);
@@ -353,9 +358,12 @@ public class DefaultShader extends BaseShader {
 			}
 			else if ((t & FloatAttribute.Shininess) == FloatAttribute.Shininess)
 				set(u_shininess, ((FloatAttribute)attr).value);
+			else if ((t & IntAttribute.CullFace) == IntAttribute.CullFace)
+				cullFace = ((IntAttribute)attr).value;
 			else if(!ignoreUnimplemented)
 					throw new GdxRuntimeException("Unknown material attribute: "+attr.toString());
 		}
+		context.setCullFace(cullFace);
 	}
 
 	TextureAttribute currentTextureAttribute;
