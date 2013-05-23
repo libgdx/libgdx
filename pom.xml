@@ -7,14 +7,14 @@
     <version>5</version>
   </parent>
 
-  <groupId>com.badlogic.gdx</groupId>
+  <groupId>com.badlogicgames.gdx</groupId>
   <artifactId>gdx-parent</artifactId>
   <packaging>pom</packaging>
   <version>0.9.9-SNAPSHOT</version>
 
   <name>libGDX Parent</name>
   <description>Android/desktop game development framework.</description>
-  <url>http://code.google.com/p/libgdx/</url>
+  <url>http://libgdx.badlogicgames.com</url>
   <issueManagement>
     <url>https://code.google.com/p/libgdx/issues/list</url>
   </issueManagement>

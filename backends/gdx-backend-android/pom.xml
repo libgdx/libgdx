@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.badlogic.gdx</groupId>
+    <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
     <version>0.9.9-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
@@ -19,7 +19,7 @@
       <version>${project.version}</version>
     </dependency>
 
-    <!-- TODO: replace with proper depend from Maven Central when Google ships one -->
+    <!-- TODO: replace with proper depend from Maven Central when Google ships o -->
     <dependency>
       <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
