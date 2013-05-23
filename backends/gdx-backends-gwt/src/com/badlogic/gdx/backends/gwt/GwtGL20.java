@@ -30,13 +30,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.typedarrays.client.Float32ArrayNative;
-import com.google.gwt.typedarrays.client.Int16ArrayNative;
-import com.google.gwt.typedarrays.client.Int32ArrayNative;
 import com.google.gwt.typedarrays.client.Uint8ArrayNative;
 import com.google.gwt.typedarrays.shared.Float32Array;
 import com.google.gwt.typedarrays.shared.Int16Array;
 import com.google.gwt.typedarrays.shared.Int32Array;
+import com.google.gwt.typedarrays.shared.TypedArrays;
 import com.google.gwt.typedarrays.shared.Uint8Array;
 import com.google.gwt.webgl.client.WebGLActiveInfo;
 import com.google.gwt.webgl.client.WebGLBuffer;
@@ -65,9 +63,9 @@ public class GwtGL20 implements GL20 {
 	int nextUniformId = 1;
 	int currProgram = 0;
 
-	Float32Array floatBuffer = Float32ArrayNative.create(2000 * 20);
-	Int32Array intBuffer = Int32ArrayNative.create(2000 * 6);
-	Int16Array shortBuffer = Int16ArrayNative.create(2000 * 6);
+	Float32Array floatBuffer = TypedArrays.createFloat32Array(2000 * 20);
+	Int32Array intBuffer = TypedArrays.createInt32Array(2000 * 6);
+	Int16Array shortBuffer = TypedArrays.createInt16Array(2000 * 6);
 	float[] floatArray = new float[16000];
 
 	final WebGLRenderingContext gl;
@@ -80,19 +78,19 @@ public class GwtGL20 implements GL20 {
 
 	private void ensureCapacity (FloatBuffer buffer) {
 		if (buffer.remaining() > floatBuffer.length()) {
-			floatBuffer = Float32ArrayNative.create(buffer.remaining());
+			floatBuffer = TypedArrays.createFloat32Array(buffer.remaining());
 		}
 	}
 
 	private void ensureCapacity (ShortBuffer buffer) {
 		if (buffer.remaining() > shortBuffer.length()) {
-			shortBuffer = Int16ArrayNative.create(buffer.remaining());
+			shortBuffer = TypedArrays.createInt16Array(buffer.remaining());
 		}
 	}
 	
 	private void ensureCapacity (IntBuffer buffer) {
 		if (buffer.remaining() > intBuffer.length()) {
-			intBuffer = Int32ArrayNative.create(buffer.remaining());
+			intBuffer = TypedArrays.createInt32Array(buffer.remaining());
 		}
 	}
 
