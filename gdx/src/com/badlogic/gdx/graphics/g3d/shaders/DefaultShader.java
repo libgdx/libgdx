@@ -58,7 +58,10 @@ public class DefaultShader extends BaseShader {
 		ColorAttribute.Specular | FloatAttribute.Shininess;
 	
 	public static boolean ignoreUnimplemented = true;
-	public static int defaultCullFace = 0;
+	/** Set to 0 to disable culling */
+	public static int defaultCullFace = GL10.GL_BACK;
+	/** Set to 0 to disable depth test */
+	public static int defaultDepthFunc = GL10.GL_LEQUAL;
 	
 	// Global uniforms
 	protected final int u_projTrans					= registerUniform("u_projTrans");
@@ -73,12 +76,13 @@ public class DefaultShader extends BaseShader {
 	protected final int u_bones						= registerUniform("u_bones");
 	// Material uniforms
 	protected final int u_shininess					= registerUniform("u_shininess", FloatAttribute.Shininess);
-	protected final int u_opacity						= registerUniform("u_opacity");
+	protected final int u_opacity						= registerUniform("u_opacity", BlendingAttribute.Type);
 	protected final int u_diffuseColor				= registerUniform("u_diffuseColor", ColorAttribute.Diffuse);
 	protected final int u_diffuseTexture			= registerUniform("u_diffuseTexture", TextureAttribute.Diffuse);
 	protected final int u_specularColor				= registerUniform("u_specularColor", ColorAttribute.Specular);
 	protected final int u_specularTexture			= registerUniform("u_specularTexture", TextureAttribute.Specular);
 	protected final int u_normalTexture				= registerUniform("u_normalTexture", TextureAttribute.Normal);
+	protected final int u_alphaTest					= registerUniform("u_alphaTest", FloatAttribute.AlphaTest);
 	// Lighting uniforms
 	protected final int u_ambientLight				= registerUniform("u_ambientLight");
 	protected final int u_ambientCubemap			= registerUniform("u_ambientCubemap");
@@ -214,6 +218,8 @@ public class DefaultShader extends BaseShader {
 			prefix += "#define "+ColorAttribute.SpecularAlias+"Flag\n";
 		if ((mask & FloatAttribute.Shininess) == FloatAttribute.Shininess)
 			prefix += "#define "+FloatAttribute.ShininessAlias+"Flag\n";
+		if ((mask & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
+			prefix += "#define "+FloatAttribute.AlphaTestAlias+"Flag\n";
 		if (numBones > 0)
 			prefix += "#define numBones "+numBones+"\n";
 		return prefix;
@@ -261,7 +267,10 @@ public class DefaultShader extends BaseShader {
 		this.camera = camera;
 		program.begin();
 		// FIXME add DepthTest Material Attribute ?
-		context.setDepthTest(true, GL10.GL_LEQUAL);
+		if (defaultDepthFunc == 0)
+			context.setDepthTest(false, GL10.GL_LEQUAL);
+		else
+			context.setDepthTest(true, defaultDepthFunc);
 		
 		set(u_projTrans, camera.combined);
 		set(u_cameraPosition, camera.position);
@@ -361,6 +370,8 @@ public class DefaultShader extends BaseShader {
 				set(u_shininess, ((FloatAttribute)attr).value);
 			else if ((t & IntAttribute.CullFace) == IntAttribute.CullFace)
 				cullFace = ((IntAttribute)attr).value;
+			else if ((t & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
+				set(u_alphaTest, ((FloatAttribute)attr).value);
 			else if(!ignoreUnimplemented)
 					throw new GdxRuntimeException("Unknown material attribute: "+attr.toString());
 		}
