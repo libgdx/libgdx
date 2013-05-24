@@ -141,10 +141,25 @@ void b2Body::SetType(b2BodyType type)
 	m_force.SetZero();
 	m_torque = 0.0f;
 
-	// Since the body type changed, we need to flag contacts for filtering.
+	// Delete the attached contacts.
+	b2ContactEdge* ce = m_contactList;
+	while (ce)
+	{
+		b2ContactEdge* ce0 = ce;
+		ce = ce->next;
+		m_world->m_contactManager.Destroy(ce0->contact);
+	}
+	m_contactList = NULL;
+
+	// Touch the proxies so that new contacts will be created (when appropriate)
+	b2BroadPhase* broadPhase = &m_world->m_contactManager.m_broadPhase;
 	for (b2Fixture* f = m_fixtureList; f; f = f->m_next)
 	{
-		f->Refilter();
+		int32 proxyCount = f->m_proxyCount;
+		for (int32 i = 0; i < proxyCount; ++i)
+		{
+			broadPhase->TouchProxy(f->m_proxies[i].proxyId);
+		}
 	}
 }
 
@@ -401,11 +416,6 @@ bool b2Body::ShouldCollide(const b2Body* other) const
 
 void b2Body::SetTransform(const b2Vec2& position, float32 angle)
 {
-	this->SetTransform(position, angle, true);
-}
-
-void b2Body::SetTransform(const b2Vec2& position, float32 angle, bool updateContacts)
-{
 	b2Assert(m_world->IsLocked() == false);
 	if (m_world->IsLocked() == true)
 	{
@@ -427,8 +437,7 @@ void b2Body::SetTransform(const b2Vec2& position, float32 angle, bool updateCont
 		f->Synchronize(broadPhase, m_xf, m_xf);
 	}
 
-	if (updateContacts)
-		m_world->m_contactManager.FindNewContacts();
+	m_world->m_contactManager.FindNewContacts();
 }
 
 void b2Body::SynchronizeFixtures()
@@ -487,6 +496,28 @@ void b2Body::SetActive(bool flag)
 		}
 		m_contactList = NULL;
 	}
+}
+
+void b2Body::SetFixedRotation(bool flag)
+{
+	bool status = (m_flags & e_fixedRotationFlag) == e_fixedRotationFlag;
+	if (status == flag)
+	{
+		return;
+	}
+
+	if (flag)
+	{
+		m_flags |= e_fixedRotationFlag;
+	}
+	else
+	{
+		m_flags &= ~e_fixedRotationFlag;
+	}
+
+	m_angularVelocity = 0.0f;
+
+	ResetMassData();
 }
 
 void b2Body::Dump()

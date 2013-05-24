@@ -222,8 +222,9 @@ public class TextureAtlas implements Disposable {
 		this(new TextureAtlasData(packFile, imagesDir, flip));
 	}
 
+	/** @param data May be null. */
 	public TextureAtlas (TextureAtlasData data) {
-		load(data);
+		if (data != null) load(data);
 	}
 
 	private void load (TextureAtlasData data) {
@@ -488,6 +489,8 @@ public class TextureAtlas implements Disposable {
 
 		public AtlasRegion (Texture texture, int x, int y, int width, int height) {
 			super(texture, x, y, width, height);
+			originalWidth = width;
+			originalHeight = height;
 			packedWidth = width;
 			packedHeight = height;
 		}
@@ -579,7 +582,6 @@ public class TextureAtlas implements Disposable {
 
 		public void flip (boolean x, boolean y) {
 			// Flip texture.
-
 			super.flip(x, y);
 
 			float oldOriginX = getOriginX();

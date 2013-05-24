@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.imagepacker;
 
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Rect;
@@ -42,11 +43,18 @@ public class ImageProcessor {
 	private final HashMap<String, Rect> crcs = new HashMap();
 	private final Array<Rect> rects = new Array();
 
+	/** @param rootDir Can be null. */
 	public ImageProcessor (File rootDir, Settings settings) {
 		this.settings = settings;
 
-		rootPath = rootDir.getAbsolutePath().replace('\\', '/');
-		if (!rootPath.endsWith("/")) rootPath += "/";
+		if (rootDir != null) {
+			rootPath = rootDir.getAbsolutePath().replace('\\', '/');
+			if (!rootPath.endsWith("/")) rootPath += "/";
+		}
+	}
+
+	public ImageProcessor (Settings settings) {
+		this(null, settings);
 	}
 
 	public void addImage (File file) {
@@ -67,6 +75,10 @@ public class ImageProcessor {
 		int dotIndex = name.lastIndexOf('.');
 		if (dotIndex != -1) name = name.substring(0, dotIndex);
 
+		addImage(image, name);
+	}
+
+	public void addImage (BufferedImage image, String name) {
 		Rect rect = null;
 
 		// Strip ".9" from file name, read ninepatch split pixels, and strip ninepatch split pixels.
@@ -89,11 +101,13 @@ public class ImageProcessor {
 		}
 
 		// Strip digits off end of name and use as index.
-		Matcher matcher = indexPattern.matcher(name);
 		int index = -1;
-		if (matcher.matches()) {
-			name = matcher.group(1);
-			index = Integer.parseInt(matcher.group(2));
+		if (settings.useIndexes) {
+			Matcher matcher = indexPattern.matcher(name);
+			if (matcher.matches()) {
+				name = matcher.group(1);
+				index = Integer.parseInt(matcher.group(2));
+			}
 		}
 
 		if (rect == null) {
@@ -112,7 +126,7 @@ public class ImageProcessor {
 			Rect existing = crcs.get(crc);
 			if (existing != null) {
 				System.out.println(rect.name + " (alias of " + existing.name + ")");
-				existing.aliases.add(rect);
+				existing.aliases.add(rect.name);
 				return;
 			}
 			crcs.put(crc, rect);

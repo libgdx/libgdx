@@ -39,7 +39,7 @@ public class MultitouchTest extends GdxTest {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		camera.update();
 		renderer.setProjectionMatrix(camera.combined);
-		renderer.begin(ShapeType.FilledTriangle);
+		renderer.begin(ShapeType.Filled);
 		int size = Math.max(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 10;
 		for (int i = 0; i < 10; i++) {
 			if (Gdx.input.isTouched(i) == false) continue;
@@ -48,7 +48,7 @@ public class MultitouchTest extends GdxTest {
 			float y = Gdx.graphics.getHeight() - Gdx.input.getY(i) - 1;
 			Color color = colors[i % colors.length];
 			renderer.setColor(color);
-			renderer.filledTriangle(x, y + size, x + size, y - size, x - size, y - size);
+			renderer.triangle(x, y + size, x + size, y - size, x - size, y - size);
 		}
 		renderer.end();
 	}

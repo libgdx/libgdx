@@ -181,30 +181,24 @@ public class PixmapPacker implements Disposable {
 		Blending blending = Pixmap.getBlending();
 		Pixmap.setBlending(Blending.None);
 		this.currPage.image.drawPixmap(image, (int)rect.x, (int)rect.y);
-		Pixmap.setBlending(blending);
 
-		// not terribly efficient (as the rest of the code) but will do :p
 		if (duplicateBorder) {
-			this.currPage.image.drawPixmap(image, (int)rect.x, (int)rect.y - 1, (int)rect.x + (int)rect.width, (int)rect.y, 0, 0,
-				image.getWidth(), 1);
-			this.currPage.image.drawPixmap(image, (int)rect.x, (int)rect.y + (int)rect.height, (int)rect.x + (int)rect.width,
-				(int)rect.y + (int)rect.height + 1, 0, image.getHeight() - 1, image.getWidth(), image.getHeight());
-
-			this.currPage.image.drawPixmap(image, (int)rect.x - 1, (int)rect.y, (int)rect.x, (int)rect.y + (int)rect.height, 0, 0,
-				1, image.getHeight());
-			this.currPage.image.drawPixmap(image, (int)rect.x + (int)rect.width, (int)rect.y, (int)rect.x + (int)rect.width + 1,
-				(int)rect.y + (int)rect.height, image.getWidth() - 1, 0, image.getWidth(), image.getHeight());
-
-			this.currPage.image.drawPixmap(image, (int)rect.x - 1, (int)rect.y - 1, (int)rect.x, (int)rect.y, 0, 0, 1, 1);
-			this.currPage.image.drawPixmap(image, (int)rect.x + (int)rect.width, (int)rect.y - 1, (int)rect.x + (int)rect.width + 1,
-				(int)rect.y, image.getWidth() - 1, 0, image.getWidth(), 1);
-
-			this.currPage.image.drawPixmap(image, (int)rect.x - 1, (int)rect.y + (int)rect.height, (int)rect.x, (int)rect.y
-				+ (int)rect.height + 1, 0, image.getHeight() - 1, 1, image.getHeight());
-			this.currPage.image.drawPixmap(image, (int)rect.x + (int)rect.width, (int)rect.y + (int)rect.height, (int)rect.x
-				+ (int)rect.width + 1, (int)rect.y + (int)rect.height + 1, image.getWidth() - 1, image.getHeight() - 1,
-				image.getWidth(), image.getHeight());
+			int imageWidth = image.getWidth();
+			int imageHeight = image.getHeight();
+			// Copy corner pixels to fill corners of the padding.
+			this.currPage.image.drawPixmap(image, 0, 0, 1, 1, (int)rect.x - 1, (int)rect.y - 1, 1, 1);
+			this.currPage.image.drawPixmap(image, imageWidth - 1, 0, 1, 1, (int)rect.x + (int)rect.width, (int)rect.y - 1, 1, 1);
+			this.currPage.image.drawPixmap(image, 0, imageHeight - 1, 1, 1, (int)rect.x - 1, (int)rect.y + (int)rect.height, 1, 1);
+			this.currPage.image.drawPixmap(image, imageWidth - 1, imageHeight - 1, 1, 1, (int)rect.x + (int)rect.width, (int)rect.y + (int)rect.height, 1, 1);
+			// Copy edge pixels into padding.
+			this.currPage.image.drawPixmap(image, 0, 0, imageWidth, 1, (int)rect.x, (int)rect.y - 1, (int)rect.width, 1);
+			this.currPage.image.drawPixmap(image, 0, imageHeight - 1, imageWidth, 1, (int)rect.x, (int)rect.y + (int)rect.height, (int)rect.width, 1);
+			this.currPage.image.drawPixmap(image, 0, 0, 1, imageHeight, (int)rect.x - 1, (int)rect.y, 1, (int)rect.height);
+			this.currPage.image.drawPixmap(image, imageWidth - 1, 0, 1, imageHeight, (int)rect.x + (int)rect.width, (int)rect.y, 1, (int)rect.height);
 		}
+		
+		Pixmap.setBlending(blending);
+		
 		currPage.addedRects.add(name);
 		return rect;
 	}

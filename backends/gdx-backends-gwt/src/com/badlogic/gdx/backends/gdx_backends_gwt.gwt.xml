@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='com.badlogic.gdx.backends.gwt'>
 	<inherits name='com.google.gwt.user.User' />
-	<inherits name='com.google.gwt.user.theme.chrome.Chrome'/>
+	<!-- Inherit edited chrome theme ("gwt"-prefixed classes only) for a little bit of default styling in the text input dialogs -->
+	<inherits name='com.badlogic.gdx.backends.gwt.theme.chrome.Chrome'/>
+	<inherits name="com.google.gwt.http.HTTP"/>
 	
 	<inherits name="com.badlogic.gdx" />
-	<inherits name="com.google.gwt.typedarrays.CustomTypedArrays" />
 	<inherits name="com.google.gwt.webgl.WebGL" />
 	<inherits name="com.badlogic.gwtref.GwtReflect"/>
 
@@ -15,6 +16,7 @@
 	<super-source path="gwt/emu" />
 	<source path="gwt">
 		<exclude name="**/emu/**" />
+		<exclude name="**/theme/**" />
 		<exclude name="**/PreloaderBundleGenerator.java"/>
 		<exclude name="**/FileWrapper.java"/>
 	</source>

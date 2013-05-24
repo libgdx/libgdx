@@ -20,15 +20,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.Material;
 import com.badlogic.gdx.physics.bullet.btAxisSweep3;
 import com.badlogic.gdx.physics.bullet.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.btDefaultCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.btSequentialImpulseConstraintSolver;
 import com.badlogic.gdx.physics.bullet.btSoftBody;
@@ -40,10 +44,9 @@ import com.badlogic.gdx.physics.bullet.btSoftRigidDynamicsWorld;
 public class SoftMeshTest extends BaseBulletTest {
 	btSoftBodyWorldInfo worldInfo;
 	btSoftBody  softBody;
-	Mesh mesh;
-	Matrix4 tmpM = new Matrix4();
-	Color color = new Color(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
-	
+	Model model;
+	BulletEntity entity;
+
 	@Override
 	public BulletWorld createWorld () {
 		btDefaultCollisionConfiguration collisionConfiguration = new btSoftBodyRigidBodyCollisionConfiguration();
@@ -67,17 +70,23 @@ public class SoftMeshTest extends BaseBulletTest {
 		world.maxSubSteps = 20;
 		
 		world.add("ground", 0f, 0f, 0f)
-		.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+		.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		// Note: not every model is suitable for a one on one translation with a soft body, a better model might be added later.
-		final StillModel model = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/wheel.obj"));
-		mesh = model.subMeshes[0].getMesh().copy(false, true, new int[] {Usage.Position});
-		mesh.scale(6f, 6f, 6f);
+		final ModelBuilder modelBuilder = new ModelBuilder();
+		model = objLoader.loadObj(Gdx.files.internal("data/wheel.obj"));
 
+		final Mesh source = model.meshes.get(0);
+		final Mesh mesh = source.copy(false, true, new int[] {Usage.Position});
+		model.meshes.removeIndex(0);
+		model.meshes.add(mesh);
+		model.meshParts.get(0).mesh = mesh;
+		mesh.scale(6, 6, 6);
+		
 		softBody = new btSoftBody(worldInfo, mesh.getVerticesBuffer(), mesh.getNumVertices(), mesh.getVertexSize(), mesh.getVertexAttribute(Usage.Position).offset, mesh.getIndicesBuffer(), mesh.getNumIndices()/3);
 		// Set mass of the first vertex to zero so its unmovable, comment out this line to make it a full dynamic body.
 		softBody.setMass(0, 0);
-		Material pm = softBody.appendMaterial();
+		com.badlogic.gdx.physics.bullet.Material pm = softBody.appendMaterial();
 		pm.setM_kLST(0.2f);
 		pm.setM_flags(0);
 		softBody.generateBendingConstraints(2, pm);
@@ -87,12 +96,14 @@ public class SoftMeshTest extends BaseBulletTest {
 		softBody.randomizeConstraints();
 		softBody.setTotalMass(1);
 		softBody.translate(Vector3.tmp.set(1, 5, 1));
-		((btSoftRigidDynamicsWorld)(world.dynamicsWorld)).addSoftBody(softBody);
+		((btSoftRigidDynamicsWorld)(world.collisionWorld)).addSoftBody(softBody);
+		
+		world.add(entity = new BulletEntity(model, (btCollisionObject)null, 1, 5, 1));
 	}
 	
 	@Override
 	public void dispose () {
-		((btSoftRigidDynamicsWorld)(world.dynamicsWorld)).removeSoftBody(softBody);
+		((btSoftRigidDynamicsWorld)(world.collisionWorld)).removeSoftBody(softBody);
 		softBody.delete();
 		softBody = null;
 		
@@ -100,22 +111,18 @@ public class SoftMeshTest extends BaseBulletTest {
 		
 		worldInfo.delete();
 		worldInfo = null;
-		mesh.dispose();
-		mesh = null;
+		model.dispose();
+		model = null;
 	}
 	
 	@Override
 	public void render () {
-		super.render();
 		if (world.renderMeshes) {
-			softBody.getVertices(mesh.getVerticesBuffer(), softBody.getNodeCount(), mesh.getVertexSize(), 0);
-			softBody.getWorldTransform(tmpM);
-			Gdx.gl10.glPushMatrix();
-			Gdx.gl10.glMultMatrixf(tmpM.val, 0);
-			Gdx.gl10.glColor4f(color.r, color.g, color.b, color.a);
-			mesh.render(GL10.GL_TRIANGLES);
-			Gdx.gl10.glPopMatrix();
-		}	
+			final Mesh mesh = model.meshes.get(0);
+			softBody.getVertices(mesh.getVerticesBuffer(), softBody.getNodeCount(), mesh.getVertexSize(), mesh.getVertexAttribute(Usage.Position).offset);
+			softBody.getWorldTransform(entity.transform);
+		}
+		super.render();
 	}
 	
 	@Override

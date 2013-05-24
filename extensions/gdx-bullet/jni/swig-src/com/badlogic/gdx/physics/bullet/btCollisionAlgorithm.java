@@ -40,16 +40,16 @@ public class btCollisionAlgorithm {
     }
   }
 
-  public void processCollision(SWIGTYPE_p_btCollisionObjectWrapper body0Wrap, SWIGTYPE_p_btCollisionObjectWrapper body1Wrap, btDispatcherInfo dispatchInfo, btManifoldResult resultOut) {
-    gdxBulletJNI.btCollisionAlgorithm_processCollision(swigCPtr, this, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body0Wrap), SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body1Wrap), btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, btManifoldResult.getCPtr(resultOut), resultOut);
+  public void processCollision(btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, btDispatcherInfo dispatchInfo, btManifoldResult resultOut) {
+    gdxBulletJNI.btCollisionAlgorithm_processCollision(swigCPtr, this, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, btManifoldResult.getCPtr(resultOut), resultOut);
   }
 
   public float calculateTimeOfImpact(btCollisionObject body0, btCollisionObject body1, btDispatcherInfo dispatchInfo, btManifoldResult resultOut) {
     return gdxBulletJNI.btCollisionAlgorithm_calculateTimeOfImpact(swigCPtr, this, btCollisionObject.getCPtr(body0), body0, btCollisionObject.getCPtr(body1), body1, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, btManifoldResult.getCPtr(resultOut), resultOut);
   }
 
-  public void getAllContactManifolds(SWIGTYPE_p_btAlignedObjectArrayT_btPersistentManifold_p_t manifoldArray) {
-    gdxBulletJNI.btCollisionAlgorithm_getAllContactManifolds(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btPersistentManifold_p_t.getCPtr(manifoldArray));
+  public void getAllContactManifolds(btManifoldArray manifoldArray) {
+    gdxBulletJNI.btCollisionAlgorithm_getAllContactManifolds(swigCPtr, this, btManifoldArray.getCPtr(manifoldArray), manifoldArray);
   }
 
 }

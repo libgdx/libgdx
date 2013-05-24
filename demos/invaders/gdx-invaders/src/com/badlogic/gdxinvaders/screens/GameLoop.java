@@ -16,16 +16,12 @@ package com.badlogic.gdxinvaders.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.controllers.ControlType;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.controllers.mappings.Ouya;
 import com.badlogic.gdxinvaders.Renderer;
-import com.badlogic.gdxinvaders.RendererGL10;
-import com.badlogic.gdxinvaders.RendererGL20;
 import com.badlogic.gdxinvaders.simulation.Simulation;
 import com.badlogic.gdxinvaders.simulation.SimulationListener;
 
@@ -58,7 +54,7 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 	public GameLoop () {
 		simulation = new Simulation();
 		simulation.listener = this;
-		renderer = Gdx.graphics.isGL20Available() ? new RendererGL20() : new RendererGL10();
+		renderer = new Renderer();
 		explosion = Gdx.audio.newSound(Gdx.files.internal("data/explosion.wav"));
 		shot = Gdx.audio.newSound(Gdx.files.internal("data/shot.wav"));
 		
@@ -78,7 +74,9 @@ public class GameLoop extends InvadersScreen implements SimulationListener {
 		renderer.dispose();
 		shot.dispose();
 		explosion.dispose();
-		controller.removeListener(listener);
+		if (controller != null)
+			controller.removeListener(listener);
+		simulation.dispose();
 	}
 
 	@Override

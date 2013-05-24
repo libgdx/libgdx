@@ -22,12 +22,8 @@ import com.badlogic.gdx.utils.NumberUtils;
 
 /** Encapsulates a 2D vector. Allows chaining methods by returning a reference to itself
  * @author badlogicgames@gmail.com */
-public class Vector2 implements Serializable {
+public class Vector2 implements Serializable, Vector<Vector2> {
 	private static final long serialVersionUID = 913902788239530931L;
-
-	/** Static temporary vector. Use with care! Use only when sure other code will not also use this.
-	 * @see #tmp() **/
-	public final static Vector2 tmp = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
 
 	public final static Vector2 X = new Vector2(1, 0);
 	public final static Vector2 Y = new Vector2(0, 1);
@@ -138,30 +134,53 @@ public class Vector2 implements Serializable {
 	/** Multiplies this vector by a scalar
 	 * @param scalar The scalar
 	 * @return This vector for chaining */
-	public Vector2 mul (float scalar) {
+	public Vector2 scl (float scalar) {
 		x *= scalar;
 		y *= scalar;
 		return this;
 	}
+	
+	/** @deprecated Use {@link #scl(float)} instead. */
+	public Vector2 mul (float scalar) {
+		return scl(scalar);
+	}
 
 	/** Multiplies this vector by a scalar
 	 * @return This vector for chaining */
-	public Vector2 mul (float x, float y) {
+	public Vector2 scl (float x, float y) {
 		this.x *= x;
 		this.y *= y;
 		return this;
 	}
+	
+	/** @deprecated Use {@link #scl(float, float)} instead. */
+	public Vector2 mul (float x, float y) {
+		return scl(x,y);
+	}
+	
+	/** Multiplies this vector by a vector
+	 * @return This vector for chaining */
+	public Vector2 scl (Vector2 v) {
+		this.x *= v.x;
+		this.y *= v.y;
+		return this;
+	}
+	
+	/** @deprecated Use {@link #scl(Vector2)} instead. */
+	public Vector2 mul (Vector2 v) {
+		return scl(v);
+	}
 
 	public Vector2 div (float value) {
-		return this.mul(1/value);
+		return this.scl(1 / value);
 	}
 
 	public Vector2 div (float vx, float vy) {
-		return this.mul(1/vx, 1/vy);
+		return this.scl(1 / vx, 1 / vy);
 	}
 
 	public Vector2 div (Vector2 other) {
-		return this.mul(1/other.x, 1/other.y);
+		return this.scl(1 / other.x, 1 / other.y);
 	}
 
 	/** @param v The other vector
@@ -197,6 +216,32 @@ public class Vector2 implements Serializable {
 		final float y_d = y - this.y;
 		return x_d * x_d + y_d * y_d;
 	}
+	
+	/** Limits this vector's length to given value
+	 * @param limit Max length
+	 * @return This vector for chaining */
+	public Vector2 limit (float limit) {
+		if (len2() > limit * limit) {
+			nor();
+			scl(limit);
+		}
+		return this;
+	}
+	
+	/** Clamps this vector's length to given value
+	 * @param min Min length
+	 * @param max Max length
+	 * @return This vector for chaining */
+	public Vector2 clamp (float min, float max) {
+		final float l2 = len2();
+		if (l2 == 0f)
+			return this;
+		if (l2 > max * max)
+			return nor().scl(max);
+		if (l2 < min * min)
+			return nor().scl(min);
+		return this;
+	}
 
 	public String toString () {
 		return "[" + x + ":" + y + "]";
@@ -210,15 +255,6 @@ public class Vector2 implements Serializable {
 		this.x -= x;
 		this.y -= y;
 		return this;
-	}
-
-	/** NEVER EVER SAVE THIS REFERENCE! Do not use this unless you are aware of the side-effects, e.g. other methods might call this
-	 * as well.
-	 * 
-	 * @return a temporary copy of this vector. Use with care as this is backed by a single static Vector2 instance. v1.tmp().add(
-	 *         v2.tmp() ) will not work! */
-	public Vector2 tmp () {
-		return tmp.set(this);
 	}
 
 	/** Multiplies this vector by the given matrix
@@ -254,8 +290,8 @@ public class Vector2 implements Serializable {
 		if (angle < 0) angle += 360;
 		return angle;
 	}
-	
-	/** Sets the angle of the vector.
+
+	/** Sets the angle of the vector in degrees.
 	 * @param angle The angle to set. */
 	public void setAngle (float angle) {
 		this.set(len(), 0f);
@@ -285,9 +321,10 @@ public class Vector2 implements Serializable {
 	 * @param alpha The interpolation coefficient
 	 * @return This vector for chaining. */
 	public Vector2 lerp (Vector2 target, float alpha) {
-		Vector2 r = this.mul(1.0f - alpha);
-		r.add(target.tmp().mul(alpha));
-		return r;
+		final float invAlpha = 1.0f - alpha;
+		this.x = (x * invAlpha) + (target.x * alpha);
+		this.y = (y * invAlpha) + (target.y * alpha);
+		return this;
 	}
 
 	@Override
@@ -318,6 +355,17 @@ public class Vector2 implements Serializable {
 		if (obj == null) return false;
 		if (Math.abs(obj.x - x) > epsilon) return false;
 		if (Math.abs(obj.y - y) > epsilon) return false;
+		return true;
+	}
+	
+	/** Compares this vector with the other vector, using the supplied epsilon for fuzzy equality testing.
+	 * @param x
+	 * @param y
+	 * @param epsilon
+	 * @return whether the vectors are the same. */
+	public boolean epsilonEquals (float x, float y, float epsilon) {
+		if (Math.abs(x - this.x) > epsilon) return false;
+		if (Math.abs(y - this.y) > epsilon) return false;
 		return true;
 	}
 }

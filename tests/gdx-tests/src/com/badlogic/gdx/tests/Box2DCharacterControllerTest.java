@@ -232,7 +232,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 			// character hops :)
 			if (groundedPlatform != null && groundedPlatform instanceof MovingPlatform
 				&& ((MovingPlatform)groundedPlatform).dist == 0) {
-				player.applyLinearImpulse(0, -24, pos.x, pos.y);
+				player.applyLinearImpulse(0, -24, pos.x, pos.y, true);
 			}
 		}
 
@@ -245,12 +245,12 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 
 		// apply left impulse, but only if max velocity is not reached yet
 		if (Gdx.input.isKeyPressed(Keys.A) && vel.x > -MAX_VELOCITY) {
-			player.applyLinearImpulse(-2f, 0, pos.x, pos.y);
+			player.applyLinearImpulse(-2f, 0, pos.x, pos.y, true);
 		}
 
 		// apply right impulse, but only if max velocity is not reached yet
 		if (Gdx.input.isKeyPressed(Keys.D) && vel.x < MAX_VELOCITY) {
-			player.applyLinearImpulse(2f, 0, pos.x, pos.y);
+			player.applyLinearImpulse(2f, 0, pos.x, pos.y, true);
 		}
 
 		// jump, but only when grounded
@@ -260,7 +260,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 				player.setLinearVelocity(vel.x, 0);
 				System.out.println("jump before: " + player.getLinearVelocity());
 				player.setTransform(pos.x, pos.y + 0.01f, 0);
-				player.applyLinearImpulse(0, 40, pos.x, pos.y);
+				player.applyLinearImpulse(0, 40, pos.x, pos.y, true);
 				System.out.println("jump, " + player.getLinearVelocity());
 			}
 		}
@@ -395,7 +395,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		public void update (float deltaTime) {
 			dist += dir.len() * deltaTime;
 			if (dist > maxDist) {
-				dir.mul(-1);
+				dir.scl(-1);
 				dist = 0;
 			}
 

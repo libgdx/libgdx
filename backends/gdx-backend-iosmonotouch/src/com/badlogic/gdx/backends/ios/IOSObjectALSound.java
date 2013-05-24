@@ -33,7 +33,7 @@ public class IOSObjectALSound implements Sound {
 	private String soundPath;
 
 	public IOSObjectALSound (FileHandle filePath) {
-		soundPath = filePath.path();
+		soundPath = filePath.file().getPath().replace('\\', '/');
 		soundBuffer = OALSimpleAudio.sharedInstance().preloadEffect(soundPath);
 	}
 

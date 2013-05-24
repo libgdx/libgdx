@@ -63,6 +63,10 @@ public class TextField extends Widget {
 	static private final char DELETE = 127;
 	static private final char BULLET = 149;
 
+	static private final Vector2 tmp1 = new Vector2();
+	static private final Vector2 tmp2 = new Vector2();
+	static private final Vector2 tmp3 = new Vector2();
+
 	TextFieldStyle style;
 	String text, messageText;
 	private CharSequence displayText;
@@ -73,6 +77,7 @@ public class TextField extends Widget {
 	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 	boolean focusTraversal = true;
 	boolean disabled;
+	boolean onlyFontChars = true;
 
 	private boolean passwordMode;
 	private StringBuilder passwordBuffer;
@@ -100,7 +105,7 @@ public class TextField extends Widget {
 	float keyRepeatInitialTime = 0.4f;
 	float keyRepeatTime = 0.1f;
 	boolean rightAligned;
-	
+
 	int maxLength = 0;
 
 	public TextField (String text, Skin skin) {
@@ -129,7 +134,7 @@ public class TextField extends Widget {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (!super.touchDown(event, x, y, pointer, button)) return false;
 				if (pointer == 0 && button != 0) return false;
-				if (disabled) return true;				
+				if (disabled) return true;
 				clearSelection();
 				setCursorPosition(x);
 				selectionStart = cursor;
@@ -360,13 +365,20 @@ public class TextField extends Widget {
 			}
 		});
 	}
-	
-	public void setMaxLength(int maxLength) {
+
+	public void setMaxLength (int maxLength) {
 		this.maxLength = maxLength;
 	}
-	
-	public int getMaxLength() {
+
+	public int getMaxLength () {
 		return this.maxLength;
+	}
+
+	/** When false, text set by {@link #setText(String)} may contain characters not in the font, a space will be displayed instead.
+	 * When true (the default), characters not in the font are stripped by setText. Characters not in the font are always stripped
+	 * when typed or pasted. */
+	public void setOnlyFontChars (boolean onlyFontChars) {
+		this.onlyFontChars = onlyFontChars;
 	}
 
 	public void setStyle (TextFieldStyle style) {
@@ -375,8 +387,10 @@ public class TextField extends Widget {
 		invalidateHierarchy();
 	}
 
+	/** Sets the password character for the text field. The character must be present in the {@link BitmapFont} */
 	public void setPasswordCharacter (char passwordCharacter) {
 		this.passwordCharacter = passwordCharacter;
+		if (passwordMode) updateDisplayText();
 	}
 
 	/** Returns the text field's style. Modifying the returned style may not have an effect until {@link #setStyle(TextFieldStyle)}
@@ -441,11 +455,17 @@ public class TextField extends Widget {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
+
+		Stage stage = getStage();
+		boolean focused = stage != null && stage.getKeyboardFocus() == this;
+
 		final BitmapFont font = style.font;
-		final Color fontColor = disabled ? style.disabledFontColor : style.fontColor;
+		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor
+			: ((focused && style.focusedFontColor != null) ? style.focusedFontColor : style.fontColor);
 		final Drawable selection = style.selection;
 		final Drawable cursorPatch = style.cursor;
-		final Drawable background = style.background;
+		final Drawable background = (disabled && style.disabledBackground != null) ? style.disabledBackground
+			: ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
 
 		Color color = getColor();
 		float x = getX();
@@ -466,8 +486,6 @@ public class TextField extends Widget {
 
 		calculateOffsets();
 
-		Stage stage = getStage();
-		boolean focused = stage != null && stage.getKeyboardFocus() == this;
 		if (focused && hasSelection && selection != null) {
 			selection.draw(batch, x + selectionX + bgLeftWidth + renderOffset, y + textY - textBounds.height - font.getDescent(),
 				selectionWidth, textBounds.height + font.getDescent() / 2);
@@ -482,7 +500,7 @@ public class TextField extends Widget {
 				} else
 					font.setColor(0.7f, 0.7f, 0.7f, parentAlpha);
 				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
-				font.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset);
+				messageFont.draw(batch, messageText, x + bgLeftWidth, y + textY + yOffset);
 			}
 		} else {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
@@ -499,6 +517,13 @@ public class TextField extends Widget {
 	}
 
 	void updateDisplayText () {
+		StringBuilder buffer = new StringBuilder();
+		for (int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+			buffer.append(style.font.containsCharacter(c) ? c : ' ');
+		}
+		String text = buffer.toString();
+
 		if (passwordMode && style.font.containsCharacter(passwordCharacter)) {
 			if (passwordBuffer == null) passwordBuffer = new StringBuilder(text.length());
 			if (passwordBuffer.length() > text.length()) //
@@ -544,15 +569,15 @@ public class TextField extends Widget {
 	void paste () {
 		String content = clipboard.getContents();
 		if (content != null) {
-			StringBuilder builder = new StringBuilder();
+			StringBuilder buffer = new StringBuilder();
 			for (int i = 0; i < content.length(); i++) {
-				if (maxLength > 0 && text.length() + builder.length() + 1 > maxLength) {
-					break;
-				}
+				if (maxLength > 0 && text.length() + buffer.length() + 1 > maxLength) break;
 				char c = content.charAt(i);
-				if (style.font.containsCharacter(c) && (filter == null || filter.acceptChar(this, c))) builder.append(c);
+				if (!style.font.containsCharacter(c)) continue;
+				if (filter != null && !filter.acceptChar(this, c)) continue;
+				buffer.append(c);
 			}
-			content = builder.toString();
+			content = buffer.toString();
 
 			if (!hasSelection) {
 				text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
@@ -589,14 +614,14 @@ public class TextField extends Widget {
 	public void next (boolean up) {
 		Stage stage = getStage();
 		if (stage == null) return;
-		getParent().localToStageCoordinates(Vector2.tmp.set(getX(), getY()));
-		TextField textField = findNextTextField(stage.getActors(), null, Vector2.tmp2, Vector2.tmp, up);
+		getParent().localToStageCoordinates(tmp1.set(getX(), getY()));
+		TextField textField = findNextTextField(stage.getActors(), null, tmp2, tmp1, up);
 		if (textField == null) { // Try to wrap around.
 			if (up)
-				Vector2.tmp.set(Float.MIN_VALUE, Float.MIN_VALUE);
+				tmp1.set(Float.MIN_VALUE, Float.MIN_VALUE);
 			else
-				Vector2.tmp.set(Float.MAX_VALUE, Float.MAX_VALUE);
-			textField = findNextTextField(getStage().getActors(), null, Vector2.tmp2, Vector2.tmp, up);
+				tmp1.set(Float.MAX_VALUE, Float.MAX_VALUE);
+			textField = findNextTextField(getStage().getActors(), null, tmp2, tmp1, up);
 		}
 		if (textField != null)
 			stage.setKeyboardFocus(textField);
@@ -609,7 +634,7 @@ public class TextField extends Widget {
 			Actor actor = actors.get(i);
 			if (actor == this) continue;
 			if (actor instanceof TextField) {
-				Vector2 actorCoords = actor.getParent().localToStageCoordinates(Vector2.tmp3.set(actor.getX(), actor.getY()));
+				Vector2 actorCoords = actor.getParent().localToStageCoordinates(tmp3.set(actor.getX(), actor.getY()));
 				if ((actorCoords.y < currentCoords.y || (actorCoords.y == currentCoords.y && actorCoords.x > currentCoords.x)) ^ up) {
 					if (best == null
 						|| (actorCoords.y > bestCoords.y || (actorCoords.y == bestCoords.y && actorCoords.x < bestCoords.x)) ^ up) {
@@ -644,7 +669,7 @@ public class TextField extends Widget {
 	}
 
 	/** Sets the text that will be drawn in the text field if no text has been entered.
-	 * @parma messageText May be null. */
+	 * @param messageText may be null. */
 	public void setMessageText (String messageText) {
 		this.messageText = messageText;
 	}
@@ -654,13 +679,13 @@ public class TextField extends Widget {
 
 		BitmapFont font = style.font;
 
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < text.length(); i++) {
-			if (maxLength > 0 && buffer.length() + 1 > maxLength) {
-				break;
-			}
+			if (maxLength > 0 && buffer.length() + 1 > maxLength) break;
 			char c = text.charAt(i);
-			if (font.containsCharacter(c) && (filter == null || filter.acceptChar(this, c))) buffer.append(c);
+			if (onlyFontChars && !style.font.containsCharacter(c)) continue;
+			if (filter != null && !filter.acceptChar(this, c)) continue;
+			buffer.append(c);
 		}
 
 		this.text = buffer.toString();
@@ -752,6 +777,7 @@ public class TextField extends Widget {
 	 * no affect. */
 	public void setPasswordMode (boolean passwordMode) {
 		this.passwordMode = passwordMode;
+		updateDisplayText();
 	}
 
 	public void setBlinkTime (float blinkTime) {
@@ -765,16 +791,16 @@ public class TextField extends Widget {
 	public boolean isDisabled () {
 		return disabled;
 	}
-	
-	public boolean isPasswordMode(){
+
+	public boolean isPasswordMode () {
 		return passwordMode;
 	}
-	
-	public TextFieldFilter getTextFieldFilter(){
+
+	public TextFieldFilter getTextFieldFilter () {
 		return filter;
 	}
 
- 	class KeyRepeatTask extends Task {
+	class KeyRepeatTask extends Task {
 		int keycode;
 
 		public void run () {
@@ -826,9 +852,9 @@ public class TextField extends Widget {
 	 * @author Nathan Sweet */
 	static public class TextFieldStyle {
 		public BitmapFont font;
-		public Color fontColor, disabledFontColor;
+		public Color fontColor, focusedFontColor, disabledFontColor;
 		/** Optional. */
-		public Drawable background, cursor, selection;
+		public Drawable background, focusedBackground, disabledBackground, cursor, selection;
 		/** Optional. */
 		public BitmapFont messageFont;
 		/** Optional. */
@@ -849,9 +875,12 @@ public class TextField extends Widget {
 			this.messageFont = style.messageFont;
 			if (style.messageFontColor != null) this.messageFontColor = new Color(style.messageFontColor);
 			this.background = style.background;
+			this.focusedBackground = style.focusedBackground;
+			this.disabledBackground = style.disabledBackground;
 			this.cursor = style.cursor;
 			this.font = style.font;
 			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
+			if (style.focusedFontColor != null) this.focusedFontColor = new Color(style.focusedFontColor);
 			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
 			this.selection = style.selection;
 		}

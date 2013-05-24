@@ -21,7 +21,7 @@ package com.badlogic.gdx.jnigen;
 public class BuildTarget {
 	/** The target operating system of a build target. */
 	public enum TargetOs {
-		Windows, Linux, MacOsX, Android
+		Windows, Linux, MacOsX, Android, IOS
 	}
 
 	/** the target operating system **/
@@ -132,6 +132,16 @@ public class BuildTarget {
 				new String[] {"**/*.cpp"}, new String[0], new String[0], "", "-O2 -Wall -D__ANDROID__", "-O2 -Wall -D__ANDROID__",
 				"-lm");
 			return android;
+		}
+		
+		if(type == TargetOs.IOS) {
+			// iOS, 386 simulator and armv7a, compiled to fat static lib
+			BuildTarget ios = new BuildTarget(TargetOs.IOS, false, new String[] {"**/*.c"}, new String[0],
+				new String[] {"**/*.cpp"}, new String[0], new String[0], "",
+				"-c -Wall -O2",
+				"-c -Wall -O2",
+				"rcs");
+			return ios;
 		}
 
 		throw new RuntimeException("Unknown target type");

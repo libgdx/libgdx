@@ -241,7 +241,8 @@ b2ContactFilter defaultFilter;
 			shouldCollideID = env->GetMethodID( worldClass, "contactFilter", "(JJ)Z");
 		}
 	
-		b2World* world = new b2World( b2Vec2( gravityX, gravityY ), doSleep );
+		b2World* world = new b2World( b2Vec2( gravityX, gravityY ));
+		world->SetAllowSleeping( doSleep );
 		return (jlong)world;
 	*/
 
@@ -580,6 +581,7 @@ b2ContactFilter defaultFilter;
 	/** Destroy a joint. This may cause the connected bodies to begin colliding.
 	 * @warning This function is locked during callbacks. */
 	public void destroyJoint (Joint joint) {
+		joint.setUserData(null);
 		joints.remove(joint.addr);
 		joint.jointEdgeA.other.joints.remove(joint.jointEdgeB);
 		joint.jointEdgeB.other.joints.remove(joint.jointEdgeA);

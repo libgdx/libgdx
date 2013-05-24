@@ -33,9 +33,9 @@ public class ArrayMap<K, V> {
 	public int size;
 	public boolean ordered;
 
-	private Entries entries;
-	private Values valuesIter;
-	private Keys keysIter;
+	private Entries entries1, entries2;
+	private Values valuesIter1, valuesIter2;
+	private Keys keysIter1, keysIter2;
 
 	/** Creates an ordered map with a capacity of 16. */
 	public ArrayMap () {
@@ -157,10 +157,12 @@ public class ArrayMap<K, V> {
 	}
 
 	public K firstKey () {
+		if (size == 0) throw new IllegalStateException("Map is empty.");
 		return keys[0];
 	}
 
 	public V firstValue () {
+		if (size == 0) throw new IllegalStateException("Map is empty.");
 		return values[0];
 	}
 
@@ -175,6 +177,7 @@ public class ArrayMap<K, V> {
 	}
 
 	public void insert (int index, K key, V value) {
+		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		if (size == keys.length) resize(Math.max(8, (int)(size * 1.75f)));
 		if (ordered) {
 			System.arraycopy(keys, index, keys, index + 1, size - index);
@@ -399,37 +402,65 @@ public class ArrayMap<K, V> {
 	/** Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
 	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Entries<K, V> entries () {
-		if (entries == null)
-			entries = new Entries(this);
-		else
-			entries.reset();
-		return entries;
+		if (entries1 == null) {
+			entries1 = new Entries(this);
+			entries2 = new Entries(this);
+		}
+		if (!entries1.valid) {
+			entries1.index = 0;
+			entries1.valid = true;
+			entries2.valid = false;
+			return entries1;
+		}
+		entries2.index = 0;
+		entries2.valid = true;
+		entries1.valid = false;
+		return entries2;
 	}
 
 	/** Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
 	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Values<V> values () {
-		if (valuesIter == null)
-			valuesIter = new Values(this);
-		else
-			valuesIter.reset();
-		return valuesIter;
+		if (valuesIter1 == null) {
+			valuesIter1 = new Values(this);
+			valuesIter2 = new Values(this);
+		}
+		if (!valuesIter1.valid) {
+			valuesIter1.index = 0;
+			valuesIter1.valid = true;
+			valuesIter2.valid = false;
+			return valuesIter1;
+		}
+		valuesIter2.index = 0;
+		valuesIter2.valid = true;
+		valuesIter1.valid = false;
+		return valuesIter2;
 	}
 
 	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
 	 * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Keys<K> keys () {
-		if (keysIter == null)
-			keysIter = new Keys(this);
-		else
-			keysIter.reset();
-		return keysIter;
+		if (keysIter1 == null) {
+			keysIter1 = new Keys(this);
+			keysIter2 = new Keys(this);
+		}
+		if (!keysIter1.valid) {
+			keysIter1.index = 0;
+			keysIter1.valid = true;
+			keysIter2.valid = false;
+			return keysIter1;
+		}
+		keysIter2.index = 0;
+		keysIter2.valid = true;
+		keysIter1.valid = false;
+		return keysIter2;
 	}
 
 	static public class Entries<K, V> implements Iterable<Entry<K, V>>, Iterator<Entry<K, V>> {
 		private final ArrayMap<K, V> map;
 		Entry<K, V> entry = new Entry();
 		int index;
+		boolean valid = true;
 
 		public Entries (ArrayMap<K, V> map) {
 			this.map = map;
@@ -445,6 +476,7 @@ public class ArrayMap<K, V> {
 
 		public Entry<K, V> next () {
 			if (index >= map.size) throw new NoSuchElementException(String.valueOf(index));
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			entry.key = map.keys[index];
 			entry.value = map.values[index++];
 			return entry;
@@ -463,6 +495,7 @@ public class ArrayMap<K, V> {
 	static public class Values<V> implements Iterable<V>, Iterator<V> {
 		private final ArrayMap<Object, V> map;
 		int index;
+		boolean valid = true;
 
 		public Values (ArrayMap<Object, V> map) {
 			this.map = map;
@@ -478,6 +511,7 @@ public class ArrayMap<K, V> {
 
 		public V next () {
 			if (index >= map.size) throw new NoSuchElementException(String.valueOf(index));
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			return map.values[index++];
 		}
 
@@ -489,11 +523,16 @@ public class ArrayMap<K, V> {
 		public void reset () {
 			index = 0;
 		}
+
+		public Array<V> toArray () {
+			return new Array(true, map.values, index, map.size - index);
+		}
 	}
 
 	static public class Keys<K> implements Iterable<K>, Iterator<K> {
 		private final ArrayMap<K, Object> map;
 		int index;
+		boolean valid = true;
 
 		public Keys (ArrayMap<K, Object> map) {
 			this.map = map;
@@ -509,6 +548,7 @@ public class ArrayMap<K, V> {
 
 		public K next () {
 			if (index >= map.size) throw new NoSuchElementException(String.valueOf(index));
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			return map.keys[index++];
 		}
 
@@ -519,6 +559,10 @@ public class ArrayMap<K, V> {
 
 		public void reset () {
 			index = 0;
+		}
+
+		public Array<K> toArray () {
+			return new Array(true, map.keys, index, map.size - index);
 		}
 	}
 }

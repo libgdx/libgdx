@@ -29,9 +29,11 @@ public abstract class BaseProjectConfiguration {
 	public boolean isDesktopIncluded = false;
 	public boolean isAndroidIncluded = false;
 	public boolean isHtmlIncluded = false;
+	public boolean isIosIncluded = true;
 	public String suffixCommon = "";
 	public String suffixDesktop = "-desktop";
 	public String suffixAndroid = "-android";
+	public String suffixIos = "-ios";
 	public String suffixHtml = "-html";
 
 	public final List<String> libraries = new ArrayList<String>();

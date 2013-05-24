@@ -46,13 +46,13 @@ public class Cube {
 			if (map.bob.dir == Bob.LEFT) target.x++;
 			target.y += 0.2f;
 
-			vel.set(target).sub(pos).mul(Math.min(4, pos.dst(target)) * deltaTime);
-			if (vel.len() > MAX_VELOCITY) vel.nor().mul(MAX_VELOCITY);
+			vel.set(target).sub(pos).scl(Math.min(4, pos.dst(target)) * deltaTime);
+			if (vel.len() > MAX_VELOCITY) vel.nor().scl(MAX_VELOCITY);
 			tryMove();
 		}
 
 		if (state == CONTROLLED) {
-			accel.mul(deltaTime);
+			accel.scl(deltaTime);
 			vel.add(accel.x, accel.y);
 			if (accel.x == 0) vel.x *= DAMP;
 			if (accel.y == 0) vel.y *= DAMP;
@@ -60,9 +60,9 @@ public class Cube {
 			if (vel.x < -MAX_VELOCITY) vel.x = -MAX_VELOCITY;
 			if (vel.y > MAX_VELOCITY) vel.y = MAX_VELOCITY;
 			if (vel.y < -MAX_VELOCITY) vel.y = -MAX_VELOCITY;
-			vel.mul(deltaTime);
+			vel.scl(deltaTime);
 			tryMove();
-			vel.mul(1.0f / deltaTime);
+			vel.scl(1.0f / deltaTime);
 		}
 
 		if (state == FIXED) {

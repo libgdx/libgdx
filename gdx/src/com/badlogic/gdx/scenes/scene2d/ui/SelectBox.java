@@ -43,6 +43,8 @@ import com.badlogic.gdx.utils.Pools;
  * @author mzechner
  * @author Nathan Sweet */
 public class SelectBox extends Widget {
+	static final Vector2 tmpCoords = new Vector2();
+
 	SelectBoxStyle style;
 	String[] items;
 	int selectedIndex = 0;
@@ -74,9 +76,8 @@ public class SelectBox extends Widget {
 					return true;
 				}
 				Stage stage = getStage();
-				Vector2 stageCoords = Vector2.tmp;
-				stage.screenToStageCoordinates(stageCoords.set(screenCoords.x, screenCoords.y));
-				list = new SelectList(stageCoords.x, stageCoords.y);
+				stage.screenToStageCoordinates(tmpCoords.set(screenCoords));
+				list = new SelectList(tmpCoords.x, tmpCoords.y);
 				stage.addActor(list);
 				return true;
 			}
@@ -124,7 +125,17 @@ public class SelectBox extends Widget {
 		prefWidth = Math.max(prefWidth, max + style.listBackground.getLeftWidth() + style.listBackground.getRightWidth() + 2
 			* style.itemSpacing);
 
+		if (items.length > 0) {
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			SelectBox.this.fire(changeEvent);
+			Pools.free(changeEvent);
+		}
+
 		invalidateHierarchy();
+	}
+
+	public String[] getItems () {
+		return items;
 	}
 
 	@Override
@@ -194,12 +205,14 @@ public class SelectBox extends Widget {
 	}
 
 	public void hideList () {
-		if (list.getParent() == null) return;
+		if (list == null || list.getParent() == null) return;
+
+		getStage().removeCaptureListener(list.stageListener);
 		list.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
 	}
 
 	class SelectList extends Actor {
-		Vector2 oldScreenCoords = new Vector2();
+		final Vector2 oldScreenCoords = new Vector2();
 		float itemHeight;
 		float textOffsetX, textOffsetY;
 		int listSelectedIndex = SelectBox.this.selectedIndex;
@@ -207,11 +220,11 @@ public class SelectBox extends Widget {
 		InputListener stageListener = new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == 0 && button != 0) return false;
-				stageToLocalCoordinates(Vector2.tmp);
-				x = Vector2.tmp.x;
-				y = Vector2.tmp.y;
+				stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
+				x = tmpCoords.x;
+				y = tmpCoords.y;
 				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
-					listSelectedIndex = (int)((getHeight() - y) / itemHeight);
+					listSelectedIndex = (int)((getHeight() - style.listBackground.getTopHeight() - y) / itemHeight);
 					listSelectedIndex = Math.max(0, listSelectedIndex);
 					listSelectedIndex = Math.min(items.length - 1, listSelectedIndex);
 					selectedIndex = listSelectedIndex;
@@ -226,13 +239,12 @@ public class SelectBox extends Widget {
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				hideList();
-				event.getStage().removeCaptureListener(stageListener);
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
-				stageToLocalCoordinates(Vector2.tmp);
-				x = Vector2.tmp.x;
-				y = Vector2.tmp.y;
+				stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
+				x = tmpCoords.x;
+				y = tmpCoords.y;
 				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
 					listSelectedIndex = (int)((getHeight() - style.listBackground.getTopHeight() - y) / itemHeight);
 					listSelectedIndex = Math.max(0, listSelectedIndex);

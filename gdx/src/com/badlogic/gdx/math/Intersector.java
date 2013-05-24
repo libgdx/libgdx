@@ -91,7 +91,7 @@ public final class Intersector {
 		float t = -(start.dot(plane.getNormal()) + plane.getD()) / denom;
 		if (t < 0 || t > 1) return false;
 
-		intersection.set(start).add(dir.mul(t));
+		intersection.set(start).add(dir.scl(t));
 		return true;
 	}
 
@@ -117,8 +117,8 @@ public final class Intersector {
 		int j = polygon.size() - 1;
 		boolean oddNodes = false;
 		for (int i = 0; i < polygon.size(); i++) {
-			if ((polygon.get(i).y < point.y && polygon.get(j).y >= point.y)
-				|| (polygon.get(j).y < point.y && polygon.get(i).y >= point.y)) {
+			if (polygon.get(i).y < point.y && polygon.get(j).y >= point.y || polygon.get(j).y < point.y
+				&& polygon.get(i).y >= point.y) {
 				if (polygon.get(i).x + (point.y - polygon.get(i).y) / (polygon.get(j).y - polygon.get(i).y)
 					* (polygon.get(j).x - polygon.get(i).x) < point.x) {
 					oddNodes = !oddNodes;
@@ -153,7 +153,7 @@ public final class Intersector {
 		else if (t > 1.0f) return point.dst(end); // Beyond 'end'-end of the segment
 
 		tmp.set(end.x, end.y, 0); // Projection falls on the segment
-		tmp.sub(start.x, start.y, 0).mul(t).add(start.x, start.y, 0);
+		tmp.sub(start.x, start.y, 0).scl(t).add(start.x, start.y, 0);
 		return tmp2.set(point.x, point.y, 0).dst(tmp);
 	}
 
@@ -180,7 +180,7 @@ public final class Intersector {
 		} else if (u >= l) {
 			tmp2.set(end.x, end.y, 0);
 		} else {
-			tmp3.set(tmp.mul(u)); // remember tmp is already normalized
+			tmp3.set(tmp.scl(u)); // remember tmp is already normalized
 			tmp2.set(tmp3.x + start.x, tmp3.y + start.y, 0);
 		}
 
@@ -203,10 +203,10 @@ public final class Intersector {
 		Vector2 displacement) {
 		float u = (point.x - start.x) * (end.x - start.x) + (point.y - start.y) * (end.y - start.y);
 		float d = start.dst(end);
-		u /= (d * d);
+		u /= d * d;
 		if (u < 0 || u > 1) return Float.POSITIVE_INFINITY;
 		tmp.set(end.x, end.y, 0).sub(start.x, start.y, 0);
-		tmp2.set(start.x, start.y, 0).add(tmp.mul(u));
+		tmp2.set(start.x, start.y, 0).add(tmp.scl(u));
 		d = tmp2.dst(point.x, point.y, 0);
 		if (d < radius) {
 			displacement.set(point).sub(tmp2.x, tmp2.y).nor();
@@ -228,7 +228,7 @@ public final class Intersector {
 			float t = -(ray.origin.dot(plane.getNormal()) + plane.getD()) / denom;
 			if (t < 0) return false;
 
-			if (intersection != null) intersection.set(ray.origin).add(ray.direction.tmp().mul(t));
+			if (intersection != null) intersection.set(ray.origin).add(ray.direction.tmp().scl(t));
 			return true;
 		} else if (plane.testPoint(ray.origin) == Plane.PlaneSide.OnPlane) {
 			if (intersection != null) intersection.set(ray.origin);
@@ -254,7 +254,7 @@ public final class Intersector {
 		float denom = direction.dot(plane.getNormal());
 		if (denom != 0) {
 			float t = -(origin.dot(plane.getNormal()) + plane.getD()) / denom;
-			if ((t >= 0 && t <= 1) && intersection != null) intersection.set(origin).add(direction.mul(t));
+			if (t >= 0 && t <= 1 && intersection != null) intersection.set(origin).add(direction.scl(t));
 			return t;
 		} else if (plane.testPoint(origin) == Plane.PlaneSide.OnPlane) {
 			if (intersection != null) intersection.set(origin);
@@ -317,7 +317,7 @@ public final class Intersector {
 	public static boolean intersectRaySphere (Ray ray, Vector3 center, float radius, Vector3 intersection) {
 		dir.set(ray.direction).nor();
 		start.set(ray.origin);
-		float b = 2 * (dir.dot(start.tmp().sub(center)));
+		float b = 2 * dir.dot(start.tmp().sub(center));
 		float c = start.dst2(center) - radius * radius;
 		float disc = b * b - 4 * c;
 		if (disc < 0) return false;
@@ -349,137 +349,112 @@ public final class Intersector {
 
 		// if t0 is less than zero, the intersection point is at t1
 		if (t0 < 0) {
-			if (intersection != null) intersection.set(start).add(dir.tmp().mul(t1));
+			if (intersection != null) intersection.set(start).add(dir.tmp().scl(t1));
 			return true;
 		}
 		// else the intersection point is at t0
 		else {
-			if (intersection != null) intersection.set(start).add(dir.tmp().mul(t0));
+			if (intersection != null) intersection.set(start).add(dir.tmp().scl(t0));
 			return true;
 		}
 	}
+
 	/** Intersects a {@link Ray} and a {@link BoundingBox}, returning the intersection point in intersection.
 	 * 
 	 * @param ray The ray
 	 * @param box The box
 	 * @param intersection The intersection point (optional)
 	 * @return Whether an intersection is present. */
-	boolean intersectRayBounds(Ray ray, BoundingBox box, Vector3 intersection)
-	{
+	public static boolean intersectRayBounds (Ray ray, BoundingBox box, Vector3 intersection) {
 		Vector3.tmp.set(ray.origin);
 		Vector3.tmp2.set(ray.origin);
 		Vector3.tmp.sub(box.min);
 		Vector3.tmp.sub(box.max);
-		if(Vector3.tmp.x > 0 && Vector3.tmp.y > 0 && Vector3.tmp.z > 0 &&
-				Vector3.tmp2.x < 0 && Vector3.tmp2.y < 0 && Vector3.tmp2.z < 0)
-		{
+		if (Vector3.tmp.x > 0 && Vector3.tmp.y > 0 && Vector3.tmp.z > 0 && Vector3.tmp2.x < 0 && Vector3.tmp2.y < 0
+			&& Vector3.tmp2.z < 0) {
 			return true;
 		}
 		float lowest = 0, t;
 		boolean hit = false;
-		
-		//min x
-		if(ray.origin.x <= box.min.x && ray.direction.x > 0)
-		{
+
+		// min x
+		if (ray.origin.x <= box.min.x && ray.direction.x > 0) {
 			t = (box.min.x - ray.origin.x) / ray.direction.x;
-			if(t >= 0)
-			{
-				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
-				if(Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y &&
-						Vector3.tmp3.z >= box.min.z && Vector3.tmp3.z <= box.max.z &&
-						(!hit || t < lowest))
-				{
+			if (t >= 0) {
+				Vector3.tmp3.set(ray.direction).scl(t).add(ray.origin);
+				if (Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y && Vector3.tmp3.z >= box.min.z
+					&& Vector3.tmp3.z <= box.max.z && (!hit || t < lowest)) {
 					hit = true;
 					lowest = t;
 				}
 			}
 		}
-		//max x
-		if(ray.origin.x >= box.max.x && ray.direction.x < 0)
-		{
+		// max x
+		if (ray.origin.x >= box.max.x && ray.direction.x < 0) {
 			t = (box.max.x - ray.origin.x) / ray.direction.x;
-			if(t >= 0)
-			{
-				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
-				if(Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y &&
-						Vector3.tmp3.z >= box.min.z && Vector3.tmp3.z <= box.max.z &&
-						(!hit || t < lowest))
-				{
+			if (t >= 0) {
+				Vector3.tmp3.set(ray.direction).scl(t).add(ray.origin);
+				if (Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y && Vector3.tmp3.z >= box.min.z
+					&& Vector3.tmp3.z <= box.max.z && (!hit || t < lowest)) {
 					hit = true;
 					lowest = t;
 				}
 			}
 		}
-		//min y
-		if(ray.origin.y <= box.min.y && ray.direction.y > 0)
-		{
+		// min y
+		if (ray.origin.y <= box.min.y && ray.direction.y > 0) {
 			t = (box.min.y - ray.origin.y) / ray.direction.y;
-			if(t >= 0)
-			{
-				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
-				if(Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x &&
-						Vector3.tmp3.z >= box.min.z && Vector3.tmp3.z <= box.max.z &&
-						(!hit || t < lowest))
-				{
+			if (t >= 0) {
+				Vector3.tmp3.set(ray.direction).scl(t).add(ray.origin);
+				if (Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x && Vector3.tmp3.z >= box.min.z
+					&& Vector3.tmp3.z <= box.max.z && (!hit || t < lowest)) {
 					hit = true;
 					lowest = t;
 				}
 			}
 		}
-		//max y
-		if(ray.origin.y >= box.max.y && ray.direction.y < 0)
-		{
+		// max y
+		if (ray.origin.y >= box.max.y && ray.direction.y < 0) {
 			t = (box.max.y - ray.origin.y) / ray.direction.y;
-			if(t >= 0)
-			{
-				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
-				if(Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x &&
-						Vector3.tmp3.z >= box.min.z && Vector3.tmp3.z <= box.max.z &&
-						(!hit || t < lowest))
-				{
+			if (t >= 0) {
+				Vector3.tmp3.set(ray.direction).scl(t).add(ray.origin);
+				if (Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x && Vector3.tmp3.z >= box.min.z
+					&& Vector3.tmp3.z <= box.max.z && (!hit || t < lowest)) {
 					hit = true;
 					lowest = t;
 				}
 			}
 		}
-		//min z
-		if(ray.origin.z <= box.min.y && ray.direction.z > 0)
-		{
+		// min z
+		if (ray.origin.z <= box.min.y && ray.direction.z > 0) {
 			t = (box.min.z - ray.origin.z) / ray.direction.z;
-			if(t >= 0)
-			{
-				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
-				if(Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x &&
-						Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y &&
-						(!hit || t < lowest))
-				{
+			if (t >= 0) {
+				Vector3.tmp3.set(ray.direction).scl(t).add(ray.origin);
+				if (Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x && Vector3.tmp3.y >= box.min.y
+					&& Vector3.tmp3.y <= box.max.y && (!hit || t < lowest)) {
 					hit = true;
 					lowest = t;
 				}
 			}
 		}
-		//max y
-		if(ray.origin.z >= box.max.z && ray.direction.z < 0)
-		{
+		// max y
+		if (ray.origin.z >= box.max.z && ray.direction.z < 0) {
 			t = (box.max.z - ray.origin.z) / ray.direction.z;
-			if(t >= 0)
-			{
-				Vector3.tmp3.set(ray.direction).mul(t).add(ray.origin);
-				if(Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x &&
-						Vector3.tmp3.y >= box.min.y && Vector3.tmp3.y <= box.max.y &&
-						(!hit || t < lowest))
-				{
+			if (t >= 0) {
+				Vector3.tmp3.set(ray.direction).scl(t).add(ray.origin);
+				if (Vector3.tmp3.x >= box.min.x && Vector3.tmp3.x <= box.max.x && Vector3.tmp3.y >= box.min.y
+					&& Vector3.tmp3.y <= box.max.y && (!hit || t < lowest)) {
 					hit = true;
 					lowest = t;
 				}
 			}
 		}
-		if(hit && intersection != null)
-		{
-			intersection.set(ray.direction).mul(lowest).add(ray.origin);
+		if (hit && intersection != null) {
+			intersection.set(ray.direction).scl(lowest).add(ray.origin);
 		}
 		return hit;
 	}
+
 	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.
 	 * 
 	 * @param ray The ray
@@ -524,7 +499,7 @@ public final class Intersector {
 		if (a > min) min = a;
 		if (b < max) max = b;
 
-		return (max >= 0) && (max >= min);
+		return max >= 0 && max >= min;
 	}
 
 	static Vector3 tmp = new Vector3();
@@ -543,7 +518,7 @@ public final class Intersector {
 		float min_dist = Float.MAX_VALUE;
 		boolean hit = false;
 
-		if ((triangles.length / 3) % 3 != 0) throw new RuntimeException("triangle list size is not a multiple of 3");
+		if (triangles.length / 3 % 3 != 0) throw new RuntimeException("triangle list size is not a multiple of 3");
 
 		for (int i = 0; i < triangles.length - 6; i += 9) {
 			boolean result = intersectRayTriangle(ray, tmp1.set(triangles[i], triangles[i + 1], triangles[i + 2]),
@@ -580,7 +555,7 @@ public final class Intersector {
 		float min_dist = Float.MAX_VALUE;
 		boolean hit = false;
 
-		if ((indices.length % 3) != 0) throw new RuntimeException("triangle list size is not a multiple of 3");
+		if (indices.length % 3 != 0) throw new RuntimeException("triangle list size is not a multiple of 3");
 
 		for (int i = 0; i < indices.length; i += 3) {
 			int i1 = indices[i] * vertexSize;
@@ -642,16 +617,6 @@ public final class Intersector {
 		}
 	}
 
-	/** Returns whether the two rectangles intersect
-	 * 
-	 * @param a The first rectangle
-	 * @param b The second rectangle
-	 * @return Whether the two rectangles intersect */
-	public static boolean intersectRectangles (Rectangle a, Rectangle b) {
-		return !(a.getX() > b.getX() + b.getWidth() || a.getX() + a.getWidth() < b.getX() || a.getY() > b.getY() + b.getHeight() || a
-			.getY() + a.getHeight() < b.getY());
-	}
-
 	/** Intersects the two lines and returns the intersection point in intersection.
 	 * 
 	 * @param p1 The first point of the first line
@@ -674,6 +639,36 @@ public final class Intersector {
 		intersection.y = y;
 
 		return true;
+	}
+
+	/** Check whether the given line and {@link Polygon} intersect.
+	 * 
+	 * @param p1 The first point of the line
+	 * @param p2 The second point of the line
+	 * @param polygon The polygon
+	 * @return Whether polygon and line intersects
+	 */
+	public static boolean intersectLinePolygon(Vector2 p1, Vector2 p2, Polygon polygon) {
+		float[] vertices = polygon.getTransformedVertices();
+		int i = 0;
+		float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
+		float det1 = det(x1, y1, x2, y2);
+		while (i < vertices.length - 2) {
+			float x3 = vertices[i], y3 = vertices[i + 1], x4 = vertices[(i + 2)], y4 = vertices[(i + 3)];
+
+			float det2 = det(x3, y3, x4, y4);
+			float det3 = det(x1 - x2, y1 - y2, x3 - x4, y3 - y4);
+
+			float x = det(det1, x1 - x2, det2, x3 - x4) / det3;
+			float y = det(det1, y1 - y2, det2, y3 - y4) / det3;
+
+			if (((x >= x3 && x <= x4) || (x >= x4 && x <= x3))
+					&& ((y >= y3 && y <= y4) || (y >= y4 && y <= y3)))
+				return true;
+
+			i += 2;
+		}
+		return false;
 	}
 
 	/** Intersects the two line segments and returns the intersection point in intersection.
@@ -708,22 +703,15 @@ public final class Intersector {
 		return a * d - b * c;
 	}
 
-	public static boolean overlapCircles (Circle c1, Circle c2) {
-		float x = c1.x - c2.x;
-		float y = c1.y - c2.y;
-		float distance = x * x + y * y;
-		float radiusSum = c1.radius + c2.radius;
-		return distance <= radiusSum * radiusSum;
+	public static boolean overlaps (Circle c1, Circle c2) {
+		return c1.overlaps(c2);
 	}
 
-	public static boolean overlapRectangles (Rectangle r1, Rectangle r2) {
-		if (r1.x < r2.x + r2.width && r1.x + r1.width > r2.x && r1.y < r2.y + r2.height && r1.y + r1.height > r2.y)
-			return true;
-		else
-			return false;
+	public static boolean overlaps (Rectangle r1, Rectangle r2) {
+		return r1.overlaps(r2);
 	}
 
-	public static boolean overlapCircleRectangle (Circle c, Rectangle r) {
+	public static boolean overlaps (Circle c, Rectangle r) {
 		float closestX = c.x;
 		float closestY = c.y;
 
@@ -797,10 +785,10 @@ public final class Intersector {
 			// -- Begin check for separation on this axis --//
 
 			// Project polygon1 onto this axis
-			float min1 = (axisX * verts1[0]) + (axisY * verts1[1]);
+			float min1 = axisX * verts1[0] + axisY * verts1[1];
 			float max1 = min1;
 			for (int j = 2; j < verts1.length; j += 2) {
-				float p = (axisX * verts1[j]) + (axisY * verts1[j + 1]);
+				float p = axisX * verts1[j] + axisY * verts1[j + 1];
 				if (p < min1) {
 					min1 = p;
 				} else if (p > max1) {
@@ -809,10 +797,10 @@ public final class Intersector {
 			}
 
 			// Project polygon2 onto this axis
-			float min2 = (axisX * verts2[0]) + (axisY * verts2[1]);
+			float min2 = axisX * verts2[0] + axisY * verts2[1];
 			float max2 = min2;
 			for (int j = 2; j < verts2.length; j += 2) {
-				float p = (axisX * verts2[j]) + (axisY * verts2[j + 1]);
+				float p = axisX * verts2[j] + axisY * verts2[j + 1];
 				if (p < min2) {
 					min2 = p;
 				} else if (p > max2) {
@@ -820,11 +808,11 @@ public final class Intersector {
 				}
 			}
 
-			if (!((min1 <= min2 && max1 >= min2) || (min2 <= min1 && max2 >= min1))) {
+			if (!(min1 <= min2 && max1 >= min2 || min2 <= min1 && max2 >= min1)) {
 				return false;
 			} else {
 				float o = Math.min(max1, max2) - Math.max(min1, min2);
-				if ((min1 < min2 && max1 > max2) || (min2 < min1 && max2 > max1)) {
+				if (min1 < min2 && max1 > max2 || min2 < min1 && max2 > max1) {
 					float mins = Math.abs(min1 - min2);
 					float maxs = Math.abs(max1 - max2);
 					if (mins < maxs) {
@@ -862,10 +850,10 @@ public final class Intersector {
 			// -- Begin check for separation on this axis --//
 
 			// Project polygon1 onto this axis
-			float min1 = (axisX * verts1[0]) + (axisY * verts1[1]);
+			float min1 = axisX * verts1[0] + axisY * verts1[1];
 			float max1 = min1;
 			for (int j = 2; j < verts1.length; j += 2) {
-				float p = (axisX * verts1[j]) + (axisY * verts1[j + 1]);
+				float p = axisX * verts1[j] + axisY * verts1[j + 1];
 				if (p < min1) {
 					min1 = p;
 				} else if (p > max1) {
@@ -874,10 +862,10 @@ public final class Intersector {
 			}
 
 			// Project polygon2 onto this axis
-			float min2 = (axisX * verts2[0]) + (axisY * verts2[1]);
+			float min2 = axisX * verts2[0] + axisY * verts2[1];
 			float max2 = min2;
 			for (int j = 2; j < verts2.length; j += 2) {
-				float p = (axisX * verts2[j]) + (axisY * verts2[j + 1]);
+				float p = axisX * verts2[j] + axisY * verts2[j + 1];
 				if (p < min2) {
 					min2 = p;
 				} else if (p > max2) {
@@ -885,12 +873,12 @@ public final class Intersector {
 				}
 			}
 
-			if (!((min1 <= min2 && max1 >= min2) || (min2 <= min1 && max2 >= min1))) {
+			if (!(min1 <= min2 && max1 >= min2 || min2 <= min1 && max2 >= min1)) {
 				return false;
 			} else {
 				float o = Math.min(max1, max2) - Math.max(min1, min2);
 
-				if ((min1 < min2 && max1 > max2) || (min2 < min1 && max2 > max1)) {
+				if (min1 < min2 && max1 > max2 || min2 < min1 && max2 > max1) {
 					float mins = Math.abs(min1 - min2);
 					float maxs = Math.abs(max1 - max2);
 					if (mins < maxs) {
@@ -945,7 +933,7 @@ public final class Intersector {
 		split.reset();
 
 		// easy case, triangle is on one side (point on plane means front).
-		if ((r1 == r2) && (r2 == r3)) {
+		if (r1 == r2 && r2 == r3) {
 			split.total = 1;
 			if (r1) {
 				split.numBack = 1;
@@ -1059,6 +1047,38 @@ public final class Intersector {
 		float[] triangle = {-10, 0, 10, 10, 0, 0, -10, 0, -10};
 		Intersector.splitTriangle(triangle, plane, split);
 		System.out.println(split);
+
+		Circle c1 = new Circle(0, 0, 1);
+		Circle c2 = new Circle(0, 0, 1);
+		Circle c3 = new Circle(2, 0, 1);
+		Circle c4 = new Circle(0, 0, 2);
+		System.out.println("Circle test cases");
+		System.out.println(c1.overlaps(c1)); // true
+		System.out.println(c1.overlaps(c2)); // true
+		System.out.println(c1.overlaps(c3)); // false
+		System.out.println(c1.overlaps(c4)); // true
+		System.out.println(c4.overlaps(c1)); // true
+		System.out.println(c1.contains(0, 1)); // true
+		System.out.println(c1.contains(0, 2)); // false
+		System.out.println(c1.contains(c1)); // true
+		System.out.println(c1.contains(c4)); // false
+		System.out.println(c4.contains(c1)); // true
+
+		System.out.println("Rectangle test cases");
+		Rectangle r1 = new Rectangle(0, 0, 1, 1);
+		Rectangle r2 = new Rectangle(1, 0, 2, 1);
+		System.out.println(r1.overlaps(r1)); // true
+		System.out.println(r1.overlaps(r2)); // false
+		System.out.println(r1.contains(0, 0)); // true
+
+		System.out.println("BoundingBox test cases");
+		BoundingBox b1 = new BoundingBox(Vector3.Zero, new Vector3(1, 1, 1));
+		BoundingBox b2 = new BoundingBox(new Vector3(1, 1, 1), new Vector3(2, 2, 2));
+		System.out.println(b1.contains(Vector3.Zero)); // true
+		System.out.println(b1.contains(b1)); // true
+		System.out.println(b1.contains(b2)); // false
+
+		// Note, in stage the bottom and left sides are inclusive while the right and top sides are exclusive.
 	}
 
 	public static class SplitTriangle {

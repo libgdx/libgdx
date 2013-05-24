@@ -4,6 +4,8 @@
 
 %module(directors="1") gdxBullet
 
+#define gdxToString(X)	"X"
+
 /* 
  * Allow public access to the CPtr methods on proxy classes and wrappers.
  * 
@@ -25,8 +27,14 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 %include "gdxBuffers.i"
 %include "gdxEnableBuffers.i"
 
+%include "gdxCriticalArrays.i"
+
 %include "gdxPool.i"
 %include "gdxPooledTypemap.i"
+
+%include "gdxPooledObject.i"
+
+%include "gdxManagedObject.i"
 
 /* Prefer libgdx's linear math types (Vector3, Matrix3, etc.). */
 %include "gdxMathTypes.i"
@@ -40,6 +48,11 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 
 /* Include Java imports for all the types we'll need in all extensions/custom types. */
 %include "gdxJavaImports.i"
+
+
+%{
+#include <stdint.h>
+%}
 
 /*
  * btScalar.h defines macros the other types need, so process it first.  
@@ -338,10 +351,6 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %}
 %include "BulletCollision/CollisionShapes/btSphereShape.h"
 
-%{
-#include <BulletCollision/CollisionShapes/btMultiSphereShape.h>
-%}
-%include "BulletCollision/CollisionShapes/btMultiSphereShape.h"
 
 %{
 #include <BulletCollision/CollisionShapes/btStridingMeshInterface.h>
@@ -432,6 +441,7 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %}
 %include "BulletCollision/CollisionShapes/btUniformScalingShape.h"
 
+%include "javacode/btCompoundShape.i"
 %{
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
 %}
@@ -452,6 +462,8 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 
 /* Has nested classes or structs */
 %include "custom/btRigidBody.i"
+
+%include "custom/btCollisionObjectWrapper.i"
 
 %{
 #include <BulletCollision/CollisionDispatch/btEmptyCollisionAlgorithm.h>
@@ -624,10 +636,7 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %}
 %include "BulletCollision/NarrowPhaseCollision/btGjkConvexCast.h"
 
-%{
-#include <BulletCollision/NarrowPhaseCollision/btManifoldPoint.h>
-%}
-%include "BulletCollision/NarrowPhaseCollision/btManifoldPoint.h"
+%include "custom/btManifoldPoint.i"
 
 %{
 #include <BulletCollision/NarrowPhaseCollision/btContinuousConvexCollision.h>
@@ -667,6 +676,8 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 /* Has nested classes or structs */
 %include "custom/btTypedConstraint.i"
 
+%include "custom/btMultiSphereShape.i"
+
 %{
 #include <BulletDynamics/Dynamics/btDynamicsWorld.h>
 %}
@@ -676,6 +687,8 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 #include <GdxCustom/InternalTickCallback.h>
 %}
 %include "GdxCustom/InternalTickCallback.h"
+
+%include "custom/ContactListener.i"
 
 %{
 #include <BulletDynamics/Dynamics/btSimpleDynamicsWorld.h>
@@ -884,6 +897,8 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
  */
  
 %template(btCollisionObjectArray) btAlignedObjectArray<btCollisionObject *>;
+%include "custom/btBroadphasePairArray.i"
+%template(btManifoldArray) btAlignedObjectArray<btPersistentManifold*>;
 
 /*
  * Include dummy methods for ones Bullet declares but doesn't

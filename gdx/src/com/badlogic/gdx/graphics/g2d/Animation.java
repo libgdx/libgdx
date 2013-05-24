@@ -124,6 +124,9 @@ public class Animation {
 	public int getKeyFrameIndex (float stateTime) {
 		int frameNumber = (int)(stateTime / frameDuration);
 
+		if(keyFrames.length == 1)
+         return 0;
+		
 		switch (playMode) {
 		case NORMAL:
 			frameNumber = Math.min(keyFrames.length - 1, frameNumber);
@@ -132,9 +135,10 @@ public class Animation {
 			frameNumber = frameNumber % keyFrames.length;
 			break;
 		case LOOP_PINGPONG:
-			frameNumber = frameNumber % (keyFrames.length * 2);
-			if (frameNumber >= keyFrames.length) frameNumber = keyFrames.length - 1 - (frameNumber - keyFrames.length);
-			break;
+			frameNumber = frameNumber % ((keyFrames.length * 2) - 2);
+         if (frameNumber >= keyFrames.length)
+            frameNumber = keyFrames.length - 2 - (frameNumber - keyFrames.length);
+         break;
 		case LOOP_RANDOM:
 			frameNumber = MathUtils.random(keyFrames.length - 1);
 			break;
@@ -167,7 +171,6 @@ public class Animation {
 	 * @param stateTime
 	 * @return whether the animation is finished. */
 	public boolean isAnimationFinished (float stateTime) {
-		if(playMode != NORMAL && playMode != REVERSED) return false;
 		int frameNumber = (int)(stateTime / frameDuration);
 		return keyFrames.length - 1 < frameNumber;
 	}

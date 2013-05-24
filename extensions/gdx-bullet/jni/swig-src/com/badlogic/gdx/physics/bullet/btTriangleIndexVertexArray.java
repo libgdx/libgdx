@@ -52,10 +52,10 @@ public class btTriangleIndexVertexArray extends btStridingMeshInterface {
 		addMesh(meshes);
 	}
 	
-	/** Construct a new btTriangleIndexVertexArray based on one or more {@link com.badlogic.gdx.graphics.g3d.model.Model} instances.
+	/** Construct a new btTriangleIndexVertexArray based on one or more {@link com.badlogic.gdx.graphics.g3d.Model} instances.
 	 * Only the triangulated submeshes are added, which must be indexed. The model must outlive this btTriangleIndexVertexArray.
      * The buffers for the vertices and indices are shared amongst both. */
-	public btTriangleIndexVertexArray(final com.badlogic.gdx.graphics.g3d.model.Model... models) {
+	public btTriangleIndexVertexArray(final com.badlogic.gdx.graphics.g3d.Model... models) {
 		this();
 		addModel(models);
 	}
@@ -68,15 +68,16 @@ public class btTriangleIndexVertexArray extends btStridingMeshInterface {
 			addIndexedMesh(new btIndexedMesh(meshes[i]), PHY_ScalarType.PHY_SHORT, true);
 	}
 	
-	/** Add one or more {@link com.badlogic.gdx.graphics.g3d.model.Model} instances to this btTriangleIndexVertexArray.
+	/** Add one or more {@link com.badlogic.gdx.graphics.g3d.Model} instances to this btTriangleIndexVertexArray.
 	 * Only the triangulated submeshes are added, which must be indexed. The model must outlive this btTriangleIndexVertexArray.
      * The buffers for the vertices and indices are shared amongst both. */
-	public void addModel(final com.badlogic.gdx.graphics.g3d.model.Model... models) {
+	public void addModel(final com.badlogic.gdx.graphics.g3d.Model... models) {
 		for (int i = 0; i < models.length; i++) {
-			final com.badlogic.gdx.graphics.g3d.model.SubMesh[] subMeshes = models[i].getSubMeshes();
-			for (int j = 0; j < subMeshes.length; j++)
-				if (subMeshes[j].primitiveType == com.badlogic.gdx.graphics.GL10.GL_TRIANGLES)
-					addIndexedMesh(new btIndexedMesh(subMeshes[j].getMesh()), PHY_ScalarType.PHY_SHORT, true);
+			for (int j = 0; j < models[i].meshParts.size; j++) {
+				com.badlogic.gdx.graphics.g3d.model.MeshPart mp = models[i].meshParts.get(j);
+				if (mp.primitiveType == com.badlogic.gdx.graphics.GL10.GL_TRIANGLES)
+					addIndexedMesh(new btIndexedMesh(mp.mesh, mp.indexOffset, mp.numVertices), PHY_ScalarType.PHY_SHORT, true);
+			}
 		}
 	}
 	

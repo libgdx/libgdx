@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
@@ -35,11 +36,30 @@ public class Actions {
 		return action;
 	}
 
-	static public AddAction add (Actor targetActor, Action action) {
+	static public AddAction addAction (Action action) {
+		AddAction addAction = action(AddAction.class);
+		addAction.setAction(action);
+		return addAction;
+	}
+
+	static public AddAction addAction (Action action, Actor targetActor) {
 		AddAction addAction = action(AddAction.class);
 		addAction.setTargetActor(targetActor);
 		addAction.setAction(action);
 		return addAction;
+	}
+
+	static public RemoveAction removeAction (Action action) {
+		RemoveAction removeAction = action(RemoveAction.class);
+		removeAction.setAction(action);
+		return removeAction;
+	}
+
+	static public RemoveAction removeAction (Action action, Actor targetActor) {
+		RemoveAction removeAction = action(RemoveAction.class);
+		removeAction.setTargetActor(targetActor);
+		removeAction.setAction(action);
+		return removeAction;
 	}
 
 	/** Moves the actor instantly. */
@@ -287,6 +307,13 @@ public class Actions {
 		return action;
 	}
 
+	static public TimeScaleAction timeScale (float scale, Action scaledAction) {
+		TimeScaleAction action = action(TimeScaleAction.class);
+		action.setScale(scale);
+		action.setAction(scaledAction);
+		return action;
+	}
+
 	static public SequenceAction sequence (Action action1) {
 		SequenceAction action = action(SequenceAction.class);
 		action.addAction(action1);
@@ -419,5 +446,35 @@ public class Actions {
 		AfterAction afterAction = action(AfterAction.class);
 		afterAction.setAction(action);
 		return afterAction;
+	}
+
+	static public AddListenerAction addListener (EventListener listener, boolean capture) {
+		AddListenerAction addAction = action(AddListenerAction.class);
+		addAction.setListener(listener);
+		addAction.setCapture(capture);
+		return addAction;
+	}
+
+	static public AddListenerAction addListener (EventListener listener, boolean capture, Actor targetActor) {
+		AddListenerAction addAction = action(AddListenerAction.class);
+		addAction.setTargetActor(targetActor);
+		addAction.setListener(listener);
+		addAction.setCapture(capture);
+		return addAction;
+	}
+
+	static public RemoveListenerAction removeListener (EventListener listener, boolean capture) {
+		RemoveListenerAction addAction = action(RemoveListenerAction.class);
+		addAction.setListener(listener);
+		addAction.setCapture(capture);
+		return addAction;
+	}
+
+	static public RemoveListenerAction removeListener (EventListener listener, boolean capture, Actor targetActor) {
+		RemoveListenerAction addAction = action(RemoveListenerAction.class);
+		addAction.setTargetActor(targetActor);
+		addAction.setListener(listener);
+		addAction.setCapture(capture);
+		return addAction;
 	}
 }

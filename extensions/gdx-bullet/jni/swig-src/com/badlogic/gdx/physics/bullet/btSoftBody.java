@@ -693,8 +693,8 @@ public class btSoftBody extends btCollisionObject {
     gdxBulletJNI.btSoftBody_integrateMotion(swigCPtr, this);
   }
 
-  public void defaultCollisionHandler(SWIGTYPE_p_btCollisionObjectWrapper pcoWrap) {
-    gdxBulletJNI.btSoftBody_defaultCollisionHandler__SWIG_0(swigCPtr, this, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(pcoWrap));
+  public void defaultCollisionHandler(btCollisionObjectWrapper pcoWrap) {
+    gdxBulletJNI.btSoftBody_defaultCollisionHandler__SWIG_0(swigCPtr, this, btCollisionObjectWrapper.getCPtr(pcoWrap), pcoWrap);
   }
 
   public void defaultCollisionHandler(btSoftBody psb) {
@@ -754,8 +754,8 @@ public class btSoftBody extends btCollisionObject {
 	return gdxBulletJNI.btSoftBody_evaluateCom(swigCPtr, this);
 }
 
-  public boolean checkContact(SWIGTYPE_p_btCollisionObjectWrapper colObjWrap, Vector3 x, float margin, sCti cti) {
-    return gdxBulletJNI.btSoftBody_checkContact(swigCPtr, this, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(colObjWrap), x, margin, sCti.getCPtr(cti), cti);
+  public boolean checkContact(btCollisionObjectWrapper colObjWrap, Vector3 x, float margin, sCti cti) {
+    return gdxBulletJNI.btSoftBody_checkContact(swigCPtr, this, btCollisionObjectWrapper.getCPtr(colObjWrap), colObjWrap, x, margin, sCti.getCPtr(cti), cti);
   }
 
   public void updateNormals() {

@@ -1,0 +1,45 @@
+[0.9.9]
+- removed custom typedarrays in gwt backend
+- added classpath files support for gwt backend (limited)
+- moved AndroidWallpaperListener to Android Backend
+- added new VertexAttribute Usage flags, bone weight, tangent, binormal. previously encoded as Usage.Generic. Also
+  added field "unit" to VertexAttribute, used by texture coordinates and bone weights to specify index/unit.
+- setup-ui template for iOS disables pngcrush, also updated wiki iOS article
+- add Pixmap#fillTriangle via jni gdx2d_fill_triangle() to fill a triangle based on its vertices.
+- add asynchronous download with continuous progress feedback to GWT asset preloader, see https://github.com/libgdx/libgdx/pull/409?w=1
+- add capability to add/exclude package/classes GWT Reflection system, see https://github.com/libgdx/libgdx/pull/409?w=1
+- add updated gdx-tiled-preprocessor, generate one single TextureAtlas for all the specified Tiled maps, see http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=8911
+- maps API, add new AtlasTiledMapLoader for loading maps produced by the tiled preprocessor tool
+- ImageProcessor, TexturePacker2 now accepts BufferedImage objects as input
+- TexturePacker2 now avoids duplicated aliases
+- Updated to LWJGL 2.9.0
+- refactored JSON API, see http://www.badlogicgames.com/wordpress/?p=2993
+- Updated Box2D to the latest trunk. Body#applyXXX methods now take an additional boolean parameter.
+- TmxMapLoader has a flag in Parameters that lets you specify whether to generate mipmaps
+- Animation#isAnimationFinished was fixed to behave as per javadocs (ignores looping)
+- remove GLU interface and implementations. Use Matrix4 et al instead. see http://www.badlogicgames.com/wordpress/?p=2886
+- new maps API, see http://www.badlogicgames.com/wordpress/?p=2870
+- removed static public tmp Vector2 instances, manage such temporary vars yourself, see http://www.badlogicgames.com/wordpress/?p=2840
+- changed Scene2D Group#clear(), see http://www.badlogicgames.com/wordpress/?p=2837
+- changed the build system, natives are now fetched from the build server, see http://www.badlogicgames.com/wordpress/?p=2821
+- freetype extension supported on iOS, see http://www.badlogicgames.com/wordpress/?p=2819
+- changed ShapeRenderer API, see http://www.badlogicgames.com/wordpress/?p=2809
+- changed Actions.add to addAction, changed parameter order, and added removeAction, addListener, removeListener
+- Box2d joints now allow for user data
+- Changes to Intersector, Circle, Rectangle and BoundingBox for consistency in #overlap, #intersect and #contains methods, see https://github.com/libgdx/libgdx/pull/312
+- Removed LwjglApplicationConfiguration CPU sync. Added foreground and background target framerate.
+- scene2d, no longer use getters/setters internally for Actor x, y, width, height, scalex, scaley and rotation.
+- Array, detect nested iterator usage and throw exception.
+- Added getVolume to Music class and Android, IOS and GWT backends
+- 1381, fixed JSON parsing of longs. In addition to Float, it now parses Long if no decimal point is found.
+- Changed Array constructors that took an array to have offset and count
+- scene2d, Actor parentToLocalCoordinates and localToParentCoordinates refactoring, see http://www.badlogicgames.com/forum/viewtopic.php?p=40441#p40441
+
+[0.9.8]
+- see http://www.badlogicgames.com/wordpress/?p=2791
+
+[0.9.7]
+- see http://www.badlogicgames.com/wordpress/?p=2664
+
+[0.9.6]
+- see http://www.badlogicgames.com/wordpress/?p=2513

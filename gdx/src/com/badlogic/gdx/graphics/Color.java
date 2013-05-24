@@ -38,6 +38,7 @@ public class Color {
 	public static final Color MAGENTA = new Color(1, 0, 1, 1);
 	public static final Color CYAN = new Color(0, 1, 1, 1);
 
+	@Deprecated
 	public static Color tmp = new Color();
 
 	/** the red, green, blue and alpha components **/
@@ -76,7 +77,6 @@ public class Color {
 		this.g = color.g;
 		this.b = color.b;
 		this.a = color.a;
-		clamp();
 		return this;
 	}
 
@@ -89,8 +89,7 @@ public class Color {
 		this.g *= color.g;
 		this.b *= color.b;
 		this.a *= color.a;
-		clamp();
-		return this;
+		return clamp();
 	}
 
 	/** Multiplies all components of this Color with the given value.
@@ -102,8 +101,7 @@ public class Color {
 		this.g *= value;
 		this.b *= value;
 		this.a *= value;
-		clamp();
-		return this;
+		return clamp();
 	}
 
 	/** Adds the given color to this color.
@@ -115,8 +113,7 @@ public class Color {
 		this.g += color.g;
 		this.b += color.b;
 		this.a += color.a;
-		clamp();
-		return this;
+		return clamp();
 	}
 
 	/** Subtracts the given color from this color
@@ -128,11 +125,11 @@ public class Color {
 		this.g -= color.g;
 		this.b -= color.b;
 		this.a -= color.a;
-		clamp();
-		return this;
+		return clamp();
 	}
 
-	public void clamp () {
+	/** @return this Color for chaining */
+	public Color clamp () {
 		if (r < 0)
 			r = 0;
 		else if (r > 1) r = 1;
@@ -148,13 +145,72 @@ public class Color {
 		if (a < 0)
 			a = 0;
 		else if (a > 1) a = 1;
+		return this;
 	}
 
-	public void set (float r, float g, float b, float a) {
+	/** @return this Color for chaining */
+	public Color set (float r, float g, float b, float a) {
 		this.r = r;
 		this.g = g;
 		this.b = b;
 		this.a = a;
+		return clamp();
+	}
+
+	/** @return this Color for chaining */
+	public Color add (float r, float g, float b, float a) {
+		this.r += r;
+		this.g += g;
+		this.b += b;
+		this.a += a;
+		return clamp();
+	}
+
+	/** @return this Color for chaining */
+	public Color sub (float r, float g, float b, float a) {
+		this.r -= r;
+		this.g -= g;
+		this.b -= b;
+		this.a -= a;
+		return clamp();
+	}
+
+	/** @return this Color for chaining */
+	public Color mul (float r, float g, float b, float a) {
+		this.r *= r;
+		this.g *= g;
+		this.b *= b;
+		this.a *= a;
+		return clamp();
+	}
+	
+	/** Linearly interpolates between this color and the target color by t which is in the range [0,1]. 
+	 * The result is stored in this color.
+	 * @param target The target color
+	 * @param t The interpolation coefficient
+	 * @return This color for chaining. */
+	public Color lerp(final Color target, final float t) {
+		this.r += t * (target.r - this.r);
+		this.g += t * (target.g - this.g);
+		this.b += t * (target.b - this.b);
+		this.a += t * (target.a - this.a);
+		return clamp();
+	}
+	
+	/** Linearly interpolates between this color and the target color by t which is in the range [0,1]. 
+	 * The result is stored in this color.
+	 * @param r The red component of the target color
+	 * @param g The green component of the target color
+	 * @param b The blue component of the target color
+	 * @param a The alpha component of the target color
+	 * @param t The interpolation coefficient
+	 * @return This color for chaining. */
+	public Color lerp(final float r, final float g, final float b, final float a, final float t) {
+		this.r += t * (r - this.r);
+		this.g += t * (g - this.g);
+		this.b += t * (b - this.b);
+		this.a += t * (a - this.a);
+		return clamp();
 	}
 
 	@Override

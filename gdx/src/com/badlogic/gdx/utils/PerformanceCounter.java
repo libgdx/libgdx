@@ -62,7 +62,7 @@ public class PerformanceCounter {
 	 * The values are only valid after at least two calls to this method.
 	 */
 	public void tick() {
-		final long t = System.nanoTime();
+		final long t = TimeUtils.nanoTime();
 		if (lastTick > 0L)
 			tick((t - lastTick) * nano2seconds);
 		lastTick = t;
@@ -92,7 +92,7 @@ public class PerformanceCounter {
 	 * Call {@link #stop()} when done.
 	 */
 	public void start() {
-		startTime = System.nanoTime();
+		startTime = TimeUtils.nanoTime();
 		valid = false;
 	}
 	
@@ -102,7 +102,7 @@ public class PerformanceCounter {
 	 */
 	public void stop() {
 		if (startTime > 0L) {
-			current += (System.nanoTime() - startTime) * nano2seconds;
+			current += (TimeUtils.nanoTime() - startTime) * nano2seconds;
 			startTime = 0L;
 			valid = true;
 		}

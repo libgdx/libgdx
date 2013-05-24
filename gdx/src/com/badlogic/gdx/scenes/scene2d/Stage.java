@@ -37,18 +37,26 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SnapshotArray;
 
-/** A 2D scenegraph containing hierarchies of {@link Actor actors}. Stage handles the viewport and distributing input events.
+/** A 2D scene graph containing hierarchies of {@link Actor actors}. Stage handles the viewport and distributes input events.
  * <p>
  * A stage fills the whole screen. {@link #setViewport} controls the coordinates used within the stage and sets up the camera used
- * to convert between stage coordinates and screen coordinates. *
+ * to convert between stage coordinates and screen coordinates.
  * <p>
  * A stage must receive input events so it can distribute them to actors. This is typically done by passing the stage to
  * {@link Input#setInputProcessor(com.badlogic.gdx.InputProcessor) Gdx.input.setInputProcessor}. An {@link InputMultiplexer} may be
  * used to handle input events before or after the stage does. If an actor handles an event by returning true from the input
  * method, then the stage's input method will also return true, causing subsequent InputProcessors to not receive the event.
+ * <p>
+ * The Stage and its constituents (like Actors and Listeners) are not thread-safe and should only be updated and queried from a
+ * single thread (presumably the main render thread). Methods should be reentrant, so you can update Actors and Stages from within
+ * callbacks and handlers.
+ * 
  * @author mzechner
  * @author Nathan Sweet */
 public class Stage extends InputAdapter implements Disposable {
+	static private final Vector2 actorCoords = new Vector2();
+	static private final Vector3 cameraCoords = new Vector3();
+
 	private float width, height;
 	private float gutterWidth, gutterHeight;
 	private float centerX, centerY;
@@ -506,7 +514,7 @@ public class Stage extends InputAdapter implements Disposable {
 		return root.removeCaptureListener(listener);
 	}
 
-	/** Clears the stage, removing all actors. */
+	/** Removes the root's children, actions, and listeners. */
 	public void clear () {
 		unfocusAll();
 		root.clear();
@@ -637,37 +645,39 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @param touchable If true, the hit detection will respect the {@link Actor#setTouchable(Touchable) touchability}.
 	 * @return May be null if no actor was hit. */
 	public Actor hit (float stageX, float stageY, boolean touchable) {
-		Vector2 actorCoords = Vector2.tmp;
 		root.parentToLocalCoordinates(actorCoords.set(stageX, stageY));
 		return root.hit(actorCoords.x, actorCoords.y, touchable);
 	}
 
 	/** Transforms the screen coordinates to stage coordinates.
-	 * @param screenCoords Stores the result. */
+	 * @param screenCoords Input screen coordinates and output for resulting stage coordinates. */
 	public Vector2 screenToStageCoordinates (Vector2 screenCoords) {
-		camera.unproject(Vector3.tmp.set(screenCoords.x, screenCoords.y, 0));
-		screenCoords.x = Vector3.tmp.x;
-		screenCoords.y = Vector3.tmp.y;
+		camera.unproject(cameraCoords.set(screenCoords.x, screenCoords.y, 0));
+		screenCoords.x = cameraCoords.x;
+		screenCoords.y = cameraCoords.y;
 		return screenCoords;
 	}
 
-	/** Transforms the stage coordinates to screen coordinates. */
+	/** Transforms the stage coordinates to screen coordinates.
+	 * @param stageCoords Input stage coordinates and output for resulting screen coordinates. */
 	public Vector2 stageToScreenCoordinates (Vector2 stageCoords) {
-		Vector3.tmp.set(stageCoords.x, stageCoords.y, 0);
-		camera.project(Vector3.tmp);
-		stageCoords.x = Vector3.tmp.x;
-		stageCoords.y = Vector3.tmp.y;
+		camera.project(cameraCoords.set(stageCoords.x, stageCoords.y, 0));
+		stageCoords.x = cameraCoords.x;
+		stageCoords.y = Gdx.graphics.getHeight() - cameraCoords.y;
 		return stageCoords;
 	}
 
 	/** Transforms the coordinates to screen coordinates. The coordinates can be anywhere in the stage since the transform matrix
-	 * describes how to convert them. The transform matrix is typically obtained from {@link SpriteBatch#getTransformMatrix()}. */
+	 * describes how to convert them. The transform matrix is typically obtained from {@link SpriteBatch#getTransformMatrix()}
+	 * during {@link Actor#draw(SpriteBatch, float)}.
+	 * @see Actor#localToStageCoordinates(Vector2) */
 	public Vector2 toScreenCoordinates (Vector2 coords, Matrix4 transformMatrix) {
 		ScissorStack.toWindowCoordinates(camera, transformMatrix, coords);
 		return coords;
 	}
 
 	public void dispose () {
+		clear();
 		if (ownsBatch) batch.dispose();
 	}
 

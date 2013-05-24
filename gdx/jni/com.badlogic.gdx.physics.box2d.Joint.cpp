@@ -6,7 +6,7 @@
 	 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Joint_jniGetType(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:58
+//@line:61
 
 		b2Joint* joint = (b2Joint*)addr;
 		return joint->GetType();
@@ -17,7 +17,7 @@
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Joint_jniGetBodyA(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:68
+//@line:71
 
 		b2Joint* joint = (b2Joint*)addr;
 		return (jlong)joint->GetBodyA();
@@ -28,7 +28,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Joint_jniGetBodyA(JN
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Joint_jniGetBodyB(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:78
+//@line:81
 
 		b2Joint* joint = (b2Joint*)addr;
 		return (jlong)joint->GetBodyB();
@@ -40,7 +40,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Joint_jniGetAnchorA(J
 	float* anchorA = (float*)env->GetPrimitiveArrayCritical(obj_anchorA, 0);
 
 
-//@line:93
+//@line:96
 
 		b2Joint* joint = (b2Joint*)addr;
 		b2Vec2 a = joint->GetAnchorA();
@@ -55,7 +55,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Joint_jniGetAnchorB(J
 	float* anchorB = (float*)env->GetPrimitiveArrayCritical(obj_anchorB, 0);
 
 
-//@line:110
+//@line:113
 
 		b2Joint* joint = (b2Joint*)addr;
 		b2Vec2 a = joint->GetAnchorB();
@@ -70,7 +70,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Joint_jniGetReactionF
 	float* reactionForce = (float*)env->GetPrimitiveArrayCritical(obj_reactionForce, 0);
 
 
-//@line:127
+//@line:130
 
 		b2Joint* joint = (b2Joint*)addr;
 		b2Vec2 f = joint->GetReactionForce(inv_dt);
@@ -84,7 +84,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Joint_jniGetReactionF
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Joint_jniGetReactionTorque(JNIEnv* env, jobject object, jlong addr, jfloat inv_dt) {
 
 
-//@line:139
+//@line:142
 
 		b2Joint* joint = (b2Joint*)addr;
 		return joint->GetReactionTorque(inv_dt);
@@ -95,7 +95,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Joint_jniGetReactio
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Joint_jniIsActive(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:158
+//@line:166
 
 		b2Joint* joint = (b2Joint*)addr;
 		return joint->IsActive();

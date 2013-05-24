@@ -63,6 +63,30 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_skipSamples
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_closeFile
   (JNIEnv *, jclass, jlong);
 
+/*
+ * Class:     com_badlogic_gdx_audio_io_VorbisDecoder
+ * Method:    seekable
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_seekable
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_audio_io_VorbisDecoder
+ * Method:    tellTime
+ * Signature: (J)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_tellTime
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_audio_io_VorbisDecoder
+ * Method:    timeSeek
+ * Signature: (JF)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_timeSeek
+  (JNIEnv *, jclass, jlong, jfloat);
+
 #ifdef __cplusplus
 }
 #endif

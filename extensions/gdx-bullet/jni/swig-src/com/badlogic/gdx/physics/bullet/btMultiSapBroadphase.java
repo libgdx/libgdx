@@ -73,8 +73,8 @@ public class btMultiSapBroadphase extends btBroadphaseInterface {
     gdxBulletJNI.btMultiSapBroadphase_buildTree(swigCPtr, this, bvhAabbMin, bvhAabbMax);
   }
 
-  public void quicksort(SWIGTYPE_p_btAlignedObjectArrayT_btBroadphasePair_t a, int lo, int hi) {
-    gdxBulletJNI.btMultiSapBroadphase_quicksort(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btBroadphasePair_t.getCPtr(a), lo, hi);
+  public void quicksort(btBroadphasePairArray a, int lo, int hi) {
+    gdxBulletJNI.btMultiSapBroadphase_quicksort(swigCPtr, this, btBroadphasePairArray.getCPtr(a), a, lo, hi);
   }
 
 }

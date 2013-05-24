@@ -123,7 +123,7 @@ public class BoundingBox implements Serializable {
 			minimum.z < maximum.z ? minimum.z : maximum.z);
 		max.set(minimum.x > maximum.x ? minimum.x : maximum.x, minimum.y > maximum.y ? minimum.y : maximum.y,
 			minimum.z > maximum.z ? minimum.z : maximum.z);
-		cnt.set(min).add(max).mul(0.5f);
+		cnt.set(min).add(max).scl(0.5f);
 		dim.set(max).sub(min);
 		crn_dirty = true;
 		return this;
@@ -187,7 +187,7 @@ public class BoundingBox implements Serializable {
 	 * 
 	 * @return True in case the bounding box is valid, false otherwise */
 	public boolean isValid () {
-		return (min.x < max.x && min.y < max.y && min.z < max.z);
+		return min.x < max.x && min.y < max.y && min.z < max.z;
 	}
 
 	/** Extends this bounding box by the given bounding box.
@@ -218,33 +218,21 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Returns whether the given bounding box is contained in this bounding box.
-	 * @param bounds The bounding box
+	 * @param b The bounding box
 	 * @return Whether the given bounding box is contained */
-	public boolean contains (BoundingBox bounds) {
-		if (!isValid()) return true;
-		if (min.x > bounds.min.x) return false;
-		if (min.y > bounds.min.y) return false;
-		if (min.z > bounds.min.z) return false;
-		if (max.x < bounds.max.x) return false;
-		if (max.y < bounds.max.y) return false;
-		if (max.z < bounds.max.z) return false;
-		return true;
+	public boolean contains (BoundingBox b) {
+		return !isValid()
+			|| (min.x <= b.min.x && min.y <= b.min.y && min.z <= b.min.z && max.x >= b.max.x && max.y >= b.max.y && max.z >= b.max.z);
 	}
 
 	/** Returns whether the given vector is contained in this bounding box.
 	 * @param v The vector
 	 * @return Whether the vector is contained or not. */
 	public boolean contains (Vector3 v) {
-		if (min.x > v.x) return false;
-		if (max.x < v.x) return false;
-		if (min.y > v.y) return false;
-		if (max.y < v.y) return false;
-		if (min.z > v.z) return false;
-		if (max.z < v.z) return false;
-
-		return true;
+		return min.x <= v.x && max.x >= v.x && min.y <= v.y && max.y >= v.y && min.z <= v.z && max.z >= v.z;
 	}
 
+	@Override
 	public String toString () {
 		return "[" + min + "|" + max + "]";
 	}

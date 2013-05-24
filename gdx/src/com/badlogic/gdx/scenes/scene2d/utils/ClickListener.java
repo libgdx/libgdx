@@ -68,9 +68,9 @@ public class ClickListener extends InputListener {
 	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 		if (pointer == pressedPointer) {
 			if (!cancelled) {
-				boolean validClick = isOver(event.getListenerActor(), x, y);
-				if (validClick && pointer == 0 && this.button != -1 && button != this.button) validClick = false;
-				if (validClick) {
+				over = isOver(event.getListenerActor(), x, y);
+				if (over && pointer == 0 && this.button != -1 && button != this.button) over = false;
+				if (over) {
 					long time = TimeUtils.nanoTime();
 					if (time - lastTapTime > tapCountInterval) tapCount = 0;
 					tapCount++;

@@ -38,6 +38,39 @@ public class Circle implements Serializable {
 		this.radius = radius;
 	}
 
+	public void set (float x, float y, float radius) {
+		this.x = x;
+		this.y = y;
+		this.radius = radius;
+	}
+
+	public void set (Circle circle) { 
+		x = circle.x;
+		y = circle.y;
+		radius = circle.radius;
+	}
+
+	/** Sets the x and y-coordinates of circle center from vector
+	 * @param position The position vector */
+	public void setPosition (Vector2 position) {
+		this.x = position.x;
+		this.y = position.y;
+	}
+
+	/** Sets the x and y-coordinates of circle center
+	 * @param x The x-coordinate
+	 * @param y The y-coordinate */
+	public void setPosition (float x, float y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	/** Sets the radius of circle
+	 * @param radius The radius */
+	public void setRadius (float radius) {
+		this.radius = radius;
+	}
+
 	public boolean contains (float x, float y) {
 		x = this.x - x;
 		y = this.y - y;
@@ -45,14 +78,34 @@ public class Circle implements Serializable {
 	}
 
 	public boolean contains (Vector2 point) {
-		float x = this.x - point.x;
-		float y = this.y - point.y;
-		return x * x + y * y <= radius * radius;
+		float dx = x - point.x;
+		float dy = y - point.y;
+		return dx * dx + dy * dy <= radius * radius;
 	}
 
-	public void set (float x, float y, float radius) {
-		this.x = x;
-		this.y = y;
-		this.radius = radius;
+	/** @param c the other {@link Circle}
+	 * @return whether this circle contains the other circle. */
+	public boolean contains (Circle c) {
+		float dx = x - c.x;
+		float dy = y - c.y;
+		// The distance to the furthest point on circle c is the distance
+		// between the center of the two circles plus the radius.
+		// We use the squared distance so we can avoid a sqrt.
+		float maxDistanceSqrd = dx * dx + dy * dy + c.radius * c.radius;
+		return maxDistanceSqrd <= radius * radius;
+	}
+
+	/** @param c the other {@link Circle}
+	 * @return whether this circle overlaps the other circle. */
+	public boolean overlaps (Circle c) {
+		float dx = x - c.x;
+		float dy = y - c.y;
+		float distance = dx * dx + dy * dy;
+		float radiusSum = radius + c.radius;
+		return distance < radiusSum * radiusSum;
+	}
+
+	public String toString () {
+		return x + "," + y + "," + radius;
 	}
 }

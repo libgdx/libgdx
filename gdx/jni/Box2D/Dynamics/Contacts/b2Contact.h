@@ -135,6 +135,12 @@ public:
 	/// Reset the restitution to the default value.
 	void ResetRestitution();
 
+	/// Set the desired tangent speed for a conveyor belt behavior. In meters per second.
+	void SetTangentSpeed(float32 speed);
+
+	/// Get the desired tangent speed. In meters per second.
+	float32 GetTangentSpeed() const;
+
 	/// Evaluate this contact with your own manifold and transforms.
 	virtual void Evaluate(b2Manifold* manifold, const b2Transform& xfA, const b2Transform& xfB) = 0;
 
@@ -209,6 +215,8 @@ protected:
 
 	float32 m_friction;
 	float32 m_restitution;
+
+	float32 m_tangentSpeed;
 };
 
 inline b2Manifold* b2Contact::GetManifold()
@@ -326,6 +334,16 @@ inline float32 b2Contact::GetRestitution() const
 inline void b2Contact::ResetRestitution()
 {
 	m_restitution = b2MixRestitution(m_fixtureA->m_restitution, m_fixtureB->m_restitution);
+}
+
+inline void b2Contact::SetTangentSpeed(float32 speed)
+{
+	m_tangentSpeed = speed;
+}
+
+inline float32 b2Contact::GetTangentSpeed() const
+{
+	return m_tangentSpeed;
 }
 
 #endif

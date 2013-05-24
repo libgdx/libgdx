@@ -22,7 +22,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -44,7 +43,6 @@ public class LwjglGraphics implements Graphics {
 	GL10 gl10;
 	GL11 gl11;
 	GL20 gl20;
-	GLU glu;
 	float deltaTime = 0;
 	long frameStart = 0;
 	int frames = 0;
@@ -88,20 +86,16 @@ public class LwjglGraphics implements Graphics {
 		return gl20;
 	}
 
-	public GLU getGLU () {
-		return glu;
-	}
-
 	public int getHeight () {
 		if (canvas != null)
-			return canvas.getHeight();
+			return Math.max(1, canvas.getHeight());
 		else
 			return Display.getHeight();
 	}
 
 	public int getWidth () {
 		if (canvas != null)
-			return canvas.getWidth();
+			return Math.max(1, canvas.getWidth());
 		else
 			return Display.getWidth();
 	}
@@ -155,27 +149,27 @@ public class LwjglGraphics implements Graphics {
 			if (!setDisplayMode(config.width, config.height, config.fullscreen))
 				throw new GdxRuntimeException("Couldn't set display mode " + config.width + "x" + config.height + ", fullscreen: "
 					+ config.fullscreen);
+
+			if (config.iconPaths.size > 0) {
+				ByteBuffer[] icons = new ByteBuffer[config.iconPaths.size];
+				for (int i = 0, n = config.iconPaths.size; i < n; i++) {
+					Pixmap pixmap = new Pixmap(Gdx.files.getFileHandle(config.iconPaths.get(i), config.iconFileTypes.get(i)));
+					if (pixmap.getFormat() != Format.RGBA8888) {
+						Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGBA8888);
+						rgba.drawPixmap(pixmap, 0, 0);
+						pixmap = rgba;
+					}
+					icons[i] = ByteBuffer.allocateDirect(pixmap.getPixels().limit());
+					icons[i].put(pixmap.getPixels()).flip();
+					pixmap.dispose();
+				}
+				Display.setIcon(icons);
+			}
 		}
 		Display.setTitle(config.title);
 		Display.setResizable(config.resizable);
 		Display.setInitialBackground(config.initialBackgroundColor.r, config.initialBackgroundColor.g,
 			config.initialBackgroundColor.b);
-
-		if (config.iconPaths.size > 0) {
-			ByteBuffer[] icons = new ByteBuffer[config.iconPaths.size];
-			for (int i = 0, n = config.iconPaths.size; i < n; i++) {
-				Pixmap pixmap = new Pixmap(Gdx.files.getFileHandle(config.iconPaths.get(i), config.iconFileTypes.get(i)));
-				if (pixmap.getFormat() != Format.RGBA8888) {
-					Pixmap rgba = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Format.RGBA8888);
-					rgba.drawPixmap(pixmap, 0, 0);
-					pixmap = rgba;
-				}
-				icons[i] = ByteBuffer.allocateDirect(pixmap.getPixels().limit());
-				icons[i].put(pixmap.getPixels()).flip();
-				pixmap.dispose();
-			}
-			Display.setIcon(icons);
-		}
 
 		if (config.x != -1 && config.y != -1) Display.setLocation(config.x, config.y);
 		createDisplayPixelFormat();
@@ -192,6 +186,10 @@ public class LwjglGraphics implements Graphics {
 		} catch (Exception ex) {
 			Display.destroy();
 			try {
+				Thread.sleep(200);
+			} catch (InterruptedException ignored) {
+			}
+			try {
 				Display.create(new PixelFormat(0, 16, 8));
 				if (getDesktopDisplayMode().bitsPerPixel == 16) {
 					bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 8, 0, false);
@@ -204,6 +202,10 @@ public class LwjglGraphics implements Graphics {
 				}
 			} catch (Exception ex2) {
 				Display.destroy();
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException ignored) {
+				}
 				try {
 					Display.create(new PixelFormat());
 				} catch (Exception ex3) {
@@ -244,9 +246,6 @@ public class LwjglGraphics implements Graphics {
 			gl = gl10;
 		}
 
-		glu = new LwjglGLU();
-
-		Gdx.glu = glu;
 		Gdx.gl = gl;
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;
@@ -406,8 +405,7 @@ public class LwjglGraphics implements Graphics {
 	@Override
 	public void setVSync (boolean vsync) {
 		this.vsync = vsync;
-		if (vsync && !config.useCPUSynch) Display.setVSyncEnabled(true);
-		if (!vsync && !config.useCPUSynch) Display.setVSyncEnabled(false);
+		Display.setVSyncEnabled(vsync);
 	}
 
 	@Override

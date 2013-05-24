@@ -16,7 +16,6 @@
 package com.badlogic.gdx.controllers.desktop.ois;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.controllers.desktop.DesktopControllersBuild;
 import com.badlogic.gdx.controllers.desktop.OisControllers;
 import com.badlogic.gdx.controllers.desktop.ois.OisJoystick.OisPov;
@@ -31,7 +30,7 @@ public class OisTest {
 			Ois ois;
 
 			public void create () {
-				ois = new Ois(OisControllers.getLwjglWindowHandle());
+				ois = new Ois(OisControllers.getWindowHandle());
 				if (ois.getJoysticks().size() > 0) {
 					ois.getJoysticks().get(0).setListener(new OisListener() {
 						@Override
@@ -73,7 +72,7 @@ public class OisTest {
 			}
 		};
 
-		new LwjglApplication(app);
+		//new LwjglApplication(app);
 //		 new LwjglFrame(app, "Controllers", 200, 200, false);
 	}
 }

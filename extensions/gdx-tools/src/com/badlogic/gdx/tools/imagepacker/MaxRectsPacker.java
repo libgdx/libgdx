@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.tools.imagepacker;
 
-import java.util.Comparator;
+package com.badlogic.gdx.tools.imagepacker;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Page;
@@ -23,10 +22,13 @@ import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Rect;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.Comparator;
+
 /** Packs pages of images using the maximal rectangles bin packing algorithm by Jukka Jylänki. A brute force binary search is used
  * to pack into the smallest bin possible.
  * @author Nathan Sweet */
 public class MaxRectsPacker {
+	private RectComparator rectComparator = new RectComparator();
 	private FreeRectChoiceHeuristic[] methods = FreeRectChoiceHeuristic.values();
 	private MaxRects maxRects = new MaxRects();
 	Settings settings;
@@ -124,6 +126,8 @@ public class MaxRectsPacker {
 		// Rects don't fit on one page. Fill a whole page and return.
 		if (bestResult == null)
 			bestResult = packAtSize(false, settings.maxWidth - edgePaddingX, settings.maxHeight - edgePaddingY, inputRects);
+
+		bestResult.outputRects.sort(rectComparator);
 
 		return bestResult;
 	}
@@ -670,4 +674,10 @@ public class MaxRectsPacker {
 		// CP: Choosest the placement where the rectangle touches other rects as much as possible.
 		ContactPointRule
 	};
+
+	class RectComparator implements Comparator<Rect> {
+		public int compare (Rect o1, Rect o2) {
+			return Rect.getAtlasName(o1.name, settings.flattenPaths).compareTo(Rect.getAtlasName(o2.name, settings.flattenPaths));
+		}
+	}
 }

@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.NumberUtils;
 
 /** <p>
@@ -167,6 +168,9 @@ public class SpriteBatch implements Disposable {
 	 * @param buffers the number of buffers to use. only makes sense with VBOs. This is an expert function.
 	 * @param defaultShader the default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
 	public SpriteBatch (int size, int buffers, ShaderProgram defaultShader) {
+		if(size > 5460) {
+			throw new GdxRuntimeException("Can't have more than 5460 sprites per batch");
+		}
 		this.buffers = new Mesh[buffers];
 
 		for (int i = 0; i < buffers; i++) {

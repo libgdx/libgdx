@@ -54,6 +54,13 @@ public class Rectangle implements Serializable {
 		height = rect.height;
 	}
 
+	public void set (float x, float y, float width, float height) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+	}
+
 	/** @return the x-coordinate of the bottom left corner */
 	public float getX () {
 		return x;
@@ -98,6 +105,49 @@ public class Rectangle implements Serializable {
 		this.height = height;
 	}
 
+	/** Sets the x and y-coordinates of the bottom left corner from vector
+	 * @param position The position vector */
+	public void setPosition (Vector2 position) {
+		this.x = position.x;
+		this.y = position.y;
+	}
+
+	/** Sets the x and y-coordinates of the bottom left corner
+	 * @param x The x-coordinate
+	 * @param y The y-coordinate */
+	public void setPosition (float x, float y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	/** Sets the width and height of this rectangle
+	 * @param width The width
+	 * @param height The height */
+	public void setSize (float width, float height) {
+		this.width = width;
+		this.height = height;
+	}
+
+	/** Sets the squared size of this rectangle
+	 * @param sizeXY The size */
+	public void setSize (float sizeXY) {
+		this.width = sizeXY;
+		this.height = sizeXY;
+	}
+
+	/** @param x point x coordinate
+	 * @param y point y coordinate
+	 * @return whether the point is contained in the rectangle */
+	public boolean contains (float x, float y) {
+		return this.x <= x && this.x + this.width >= x && this.y <= y && this.y + this.height >= y;
+	}
+
+	/** @param vector The coordinates vector
+	 * @return whether the vector is contained in the rectangle */
+	public boolean contains (Vector2 vector) {
+		return contains(vector.x, vector.y);
+	}
+
 	/** @param rectangle the other {@link Rectangle}.
 	 * @return whether the other rectangle is contained in this rectangle. */
 	public boolean contains (Rectangle rectangle) {
@@ -111,24 +161,10 @@ public class Rectangle implements Serializable {
 			&& ((ymin > y && ymin < y + height) && (ymax > y && ymax < y + height));
 	}
 
-	/** @param rectangle the other {@link Rectangle}
+	/** @param r the other {@link Rectangle}
 	 * @return whether this rectangle overlaps the other rectangle. */
-	public boolean overlaps (Rectangle rectangle) {
-		return !(x > rectangle.x + rectangle.width || x + width < rectangle.x || y > rectangle.y + rectangle.height || y + height < rectangle.y);
-	}
-
-	public void set (float x, float y, float width, float height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-	}
-
-	/** @param x point x coordinate
-	 * @param y point y coordinate
-	 * @return whether the point is contained in the rectangle */
-	public boolean contains (float x, float y) {
-		return this.x < x && this.x + this.width > x && this.y < y && this.y + this.height > y;
+	public boolean overlaps (Rectangle r) {
+		return x < r.x + r.width && x + width > r.x && y < r.y + r.height && y + height > r.y;
 	}
 
 	/** Sets the values of the given rectangle to this rectangle.

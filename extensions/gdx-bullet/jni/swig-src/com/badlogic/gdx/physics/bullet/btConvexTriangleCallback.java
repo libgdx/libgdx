@@ -57,12 +57,12 @@ public class btConvexTriangleCallback extends btTriangleCallback {
     return (cPtr == 0) ? null : new btPersistentManifold(cPtr, false);
   }
 
-  public btConvexTriangleCallback(btDispatcher dispatcher, SWIGTYPE_p_btCollisionObjectWrapper body0Wrap, SWIGTYPE_p_btCollisionObjectWrapper body1Wrap, boolean isSwapped) {
-    this(gdxBulletJNI.new_btConvexTriangleCallback(btDispatcher.getCPtr(dispatcher), dispatcher, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body0Wrap), SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body1Wrap), isSwapped), true);
+  public btConvexTriangleCallback(btDispatcher dispatcher, btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, boolean isSwapped) {
+    this(gdxBulletJNI.new_btConvexTriangleCallback(btDispatcher.getCPtr(dispatcher), dispatcher, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, isSwapped), true);
   }
 
-  public void setTimeStepAndCounters(float collisionMarginTriangle, btDispatcherInfo dispatchInfo, SWIGTYPE_p_btCollisionObjectWrapper convexBodyWrap, SWIGTYPE_p_btCollisionObjectWrapper triBodyWrap, btManifoldResult resultOut) {
-    gdxBulletJNI.btConvexTriangleCallback_setTimeStepAndCounters(swigCPtr, this, collisionMarginTriangle, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(convexBodyWrap), SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(triBodyWrap), btManifoldResult.getCPtr(resultOut), resultOut);
+  public void setTimeStepAndCounters(float collisionMarginTriangle, btDispatcherInfo dispatchInfo, btCollisionObjectWrapper convexBodyWrap, btCollisionObjectWrapper triBodyWrap, btManifoldResult resultOut) {
+    gdxBulletJNI.btConvexTriangleCallback_setTimeStepAndCounters(swigCPtr, this, collisionMarginTriangle, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, btCollisionObjectWrapper.getCPtr(convexBodyWrap), convexBodyWrap, btCollisionObjectWrapper.getCPtr(triBodyWrap), triBodyWrap, btManifoldResult.getCPtr(resultOut), resultOut);
   }
 
   public void clearWrapperData() {

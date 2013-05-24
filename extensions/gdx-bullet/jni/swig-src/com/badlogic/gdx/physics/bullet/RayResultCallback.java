@@ -40,6 +40,21 @@ public class RayResultCallback {
     }
   }
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    gdxBulletJNI.RayResultCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    gdxBulletJNI.RayResultCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public void setM_closestHitFraction(float value) {
     gdxBulletJNI.RayResultCallback_m_closestHitFraction_set(swigCPtr, this, value);
   }
@@ -53,8 +68,7 @@ public class RayResultCallback {
   }
 
   public btCollisionObject getM_collisionObject() {
-	long cPtr = gdxBulletJNI.RayResultCallback_m_collisionObject_get(swigCPtr, this);
-	return (cPtr == 0) ? null : btCollisionObject.getInstance(cPtr, false);
+	return btCollisionObject.getInstance(gdxBulletJNI.RayResultCallback_m_collisionObject_get(swigCPtr, this), false);
 }
 
   public void setM_collisionFilterGroup(short value) {
@@ -85,8 +99,13 @@ public class RayResultCallback {
     return gdxBulletJNI.RayResultCallback_hasHit(swigCPtr, this);
   }
 
+  public RayResultCallback() {
+    this(gdxBulletJNI.new_RayResultCallback(), true);
+    gdxBulletJNI.RayResultCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
+  }
+
   public boolean needsCollision(btBroadphaseProxy proxy0) {
-    return gdxBulletJNI.RayResultCallback_needsCollision(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0);
+    return (getClass() == RayResultCallback.class) ? gdxBulletJNI.RayResultCallback_needsCollision(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0) : gdxBulletJNI.RayResultCallback_needsCollisionSwigExplicitRayResultCallback(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0);
   }
 
   public float addSingleResult(LocalRayResult rayResult, boolean normalInWorldSpace) {

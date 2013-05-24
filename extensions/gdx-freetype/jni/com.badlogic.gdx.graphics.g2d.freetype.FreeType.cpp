@@ -482,7 +482,7 @@ static inline jlong wrapped_Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType
 }
 
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_newMemoryFace(JNIEnv* env, jclass clazz, jlong library, jobject obj_data, jint dataSize, jint faceIndex) {
-	char* data = (char*)env->GetDirectBufferAddress(obj_data);
+	char* data = (char*)(obj_data?env->GetDirectBufferAddress(obj_data):0);
 
 	jlong JNI_returnValue = wrapped_Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_newMemoryFace(env, clazz, library, obj_data, dataSize, faceIndex, data);
 

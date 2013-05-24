@@ -74,9 +74,9 @@ public class MovingSpikes {
 			pos.x -= vel.x * deltaTime;
 			pos.y -= vel.y * deltaTime;
 			state = -state;
-			vel.mul(-1);
-			if (state == FORWARD) vel.nor().mul(FORWARD_VEL);
-			if (state == BACKWARD) vel.nor().mul(BACKWARD_VEL);
+			vel.scl(-1);
+			if (state == FORWARD) vel.nor().scl(FORWARD_VEL);
+			if (state == BACKWARD) vel.nor().scl(BACKWARD_VEL);
 		}
 
 		bounds.x = pos.x;

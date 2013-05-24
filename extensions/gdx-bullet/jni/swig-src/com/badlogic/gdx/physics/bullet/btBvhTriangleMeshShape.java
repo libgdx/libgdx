@@ -42,7 +42,7 @@ public class btBvhTriangleMeshShape extends btTriangleMeshShape {
   }
 
 
-	btStridingMeshInterface meshInterface = null;
+	protected btStridingMeshInterface meshInterface = null;
 	
 	/** @param managed If true this btBvhTriangleMeshShape will keep a reference to the {@link btStridingMeshInterface}
 	 * and deletes it when this btBvhTriangleMeshShape gets deleted. */
@@ -100,31 +100,31 @@ public class btBvhTriangleMeshShape extends btTriangleMeshShape {
 		this(true, new btTriangleIndexVertexArray(meshes), useQuantizedAabbCompression, bvhAabbMin, bvhAabbMax);
 	}
 	
-	/** Construct a new btBvhTriangleMeshShape based one or more supplied {@link com.badlogic.gdx.graphics.g3d.model.Model} instances.
+	/** Construct a new btBvhTriangleMeshShape based one or more supplied {@link com.badlogic.gdx.graphics.g3d.Model} instances.
 	 * Only the triangulated submeshes are added, which must be indexed. The model must outlive this btTriangleIndexVertexArray.
      * The buffers for the vertices and indices are shared amonst both. */
-	public btBvhTriangleMeshShape(boolean useQuantizedAabbCompression, final com.badlogic.gdx.graphics.g3d.model.Model... models) {
+	public btBvhTriangleMeshShape(boolean useQuantizedAabbCompression, final com.badlogic.gdx.graphics.g3d.Model... models) {
 		this(true, new btTriangleIndexVertexArray(models), useQuantizedAabbCompression);
 	}
 	
-	/** Construct a new btBvhTriangleMeshShape based one or more supplied {@link com.badlogic.gdx.graphics.g3d.model.Model} instances.
+	/** Construct a new btBvhTriangleMeshShape based one or more supplied {@link com.badlogic.gdx.graphics.g3d.Model} instances.
 	 * Only the triangulated submeshes are added, which must be indexed. The model must outlive this btTriangleIndexVertexArray.
      * The buffers for the vertices and indices are shared amonst both. */
-	public btBvhTriangleMeshShape(boolean useQuantizedAabbCompression, boolean buildBvh, final com.badlogic.gdx.graphics.g3d.model.Model... models) {
+	public btBvhTriangleMeshShape(boolean useQuantizedAabbCompression, boolean buildBvh, final com.badlogic.gdx.graphics.g3d.Model... models) {
 		this(true, new btTriangleIndexVertexArray(models), useQuantizedAabbCompression, buildBvh);
 	}
 	
-	/** Construct a new btBvhTriangleMeshShape based one or more supplied {@link com.badlogic.gdx.graphics.g3d.model.Model} instances.
+	/** Construct a new btBvhTriangleMeshShape based one or more supplied {@link com.badlogic.gdx.graphics.g3d.Model} instances.
 	 * Only the triangulated submeshes are added, which must be indexed. The model must outlive this btTriangleIndexVertexArray.
 	 * The buffers for the vertices and indices are shared amonst both. */
-	public btBvhTriangleMeshShape(boolean useQuantizedAabbCompression, Vector3 bvhAabbMin, Vector3 bvhAabbMax, boolean buildBvh, final com.badlogic.gdx.graphics.g3d.model.Model... models) {
+	public btBvhTriangleMeshShape(boolean useQuantizedAabbCompression, Vector3 bvhAabbMin, Vector3 bvhAabbMax, boolean buildBvh, final com.badlogic.gdx.graphics.g3d.Model... models) {
 		this(true, new btTriangleIndexVertexArray(models), useQuantizedAabbCompression, bvhAabbMin, bvhAabbMax, buildBvh);
 	}
 	
-	/** Construct a new btBvhTriangleMeshShape based one or more supplied {@link com.badlogic.gdx.graphics.g3d.model.Model} instances.
+	/** Construct a new btBvhTriangleMeshShape based one or more supplied {@link com.badlogic.gdx.graphics.g3d.Model} instances.
 	 * Only the triangulated submeshes are added, which must be indexed. The model must outlive this btTriangleIndexVertexArray.
      * The buffers for the vertices and indices are shared amonst both. */
-	public btBvhTriangleMeshShape(boolean useQuantizedAabbCompression, Vector3 bvhAabbMin, Vector3 bvhAabbMax, final com.badlogic.gdx.graphics.g3d.model.Model... models) {
+	public btBvhTriangleMeshShape(boolean useQuantizedAabbCompression, Vector3 bvhAabbMin, Vector3 bvhAabbMax, final com.badlogic.gdx.graphics.g3d.Model... models) {
 		this(true, new btTriangleIndexVertexArray(models), useQuantizedAabbCompression, bvhAabbMin, bvhAabbMax);
 	}
 		

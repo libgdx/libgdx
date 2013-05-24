@@ -59,17 +59,17 @@ public class LongArray {
 	/** Creates a new ordered array containing the elements in the specified array. The capacity is set to the number of elements,
 	 * so any subsequent elements added will cause the backing array to be grown. */
 	public LongArray (long[] array) {
-		this(true, array);
+		this(true, array, 0, array.length);
 	}
 
 	/** Creates a new array containing the elements in the specified array. The capacity is set to the number of elements, so any
 	 * subsequent elements added will cause the backing array to be grown.
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy. */
-	public LongArray (boolean ordered, long[] array) {
+	public LongArray (boolean ordered, long[] array, int startIndex, int count) {
 		this(ordered, array.length);
-		size = array.length;
-		System.arraycopy(array, 0, items, 0, size);
+		size = count;
+		System.arraycopy(array, startIndex, items, 0, count);
 	}
 
 	public void add (long value) {
@@ -111,6 +111,7 @@ public class LongArray {
 	}
 
 	public void insert (int index, long value) {
+		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		long[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		if (ordered)
@@ -207,6 +208,7 @@ public class LongArray {
 
 	/** Returns the first item. */
 	public long first () {
+		if (size == 0) throw new IllegalStateException("Array is empty.");
 		return items[0];
 	}
 

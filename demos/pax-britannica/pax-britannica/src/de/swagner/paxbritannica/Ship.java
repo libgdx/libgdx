@@ -66,9 +66,9 @@ public class Ship extends Sprite {
 		collisionPoints.get(2).set( this.getVertices()[10], this.getVertices()[11]);
 		collisionPoints.get(3).set( this.getVertices()[15], this.getVertices()[16]);
 		
-		collisionCenter.set(collisionPoints.get(0).tmp().add(collisionPoints.get(2)).mul(0.5f));
+		collisionCenter.set(collisionPoints.get(2)).scl(0.5f).add(collisionPoints.get(0));
 
-		velocity.mul( (float) Math.pow(0.97f, delta * 30.f));
+		velocity.scl( (float) Math.pow(0.97f, delta * 30.f));
 		position.add(velocity.x * delta, velocity.y * delta);
 		
 		this.setRotation(facing.angle());
@@ -105,10 +105,16 @@ public class Ship extends Sprite {
 				+ MathUtils.random(-this.getHeight() / 2, this.getHeight() / 2));
 	}
 
+	/*
+	 * Scratch space for computing a target's direction. This is safe (as a static) because
+	 * its only used in goTowardsOrAway which is only called on the render thread (via update).
+	 */
+	private static final Vector2 target_direction = new Vector2(); 
+
 	public void goTowardsOrAway(Vector2 targetPos, boolean forceThrust, boolean isAway) {
-		Vector2 target_direction = targetPos.tmp().sub(collisionCenter);
+		target_direction.set(targetPos).sub(collisionCenter);
 		if (isAway) {
-			target_direction.mul(-1);
+			target_direction.scl(-1);
 		}
 
 		if (facing.crs(target_direction) > 0) {
@@ -144,7 +150,7 @@ public class Ship extends Sprite {
 
 	public void factoryDestruct() {
 		delta = Math.min(0.06f, Gdx.graphics.getDeltaTime());
-		
+
 		if (deathCounter > 0) {
 			((FactoryProduction) this).production.halt_production = true;
 			this.setColor(1, 1, 1, Math.min(1, opacity));

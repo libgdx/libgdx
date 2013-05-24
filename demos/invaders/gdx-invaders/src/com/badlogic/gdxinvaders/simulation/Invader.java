@@ -13,9 +13,12 @@
 
 package com.badlogic.gdxinvaders.simulation;
 
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 
-public class Invader {
+public class Invader extends ModelInstance {
+	public static float INVADER_ROTATION = 45f;
 	public static float INVADER_RADIUS = 0.75f;
 	public static float INVADER_VELOCITY = 1;
 	public static int INVADER_POINTS = 40;
@@ -23,19 +26,18 @@ public class Invader {
 	public final static int STATE_MOVE_DOWN = 1;
 	public final static int STATE_MOVE_RIGHT = 2;
 
-	public final Vector3 position = new Vector3();
 	public int state = STATE_MOVE_LEFT;
 	public boolean wasLastStateLeft = true;
 	public float movedDistance = Simulation.PLAYFIELD_MAX_X / 2;;
 
-	public Invader (Vector3 position) {
-		this.position.set(position);
+	public Invader (Model model, float x, float y, float z) {
+		super(model, x, y, z);
 	}
 
 	public void update (float delta, float speedMultiplier) {
 		movedDistance += delta * INVADER_VELOCITY * speedMultiplier;
 		if (state == STATE_MOVE_LEFT) {
-			position.x -= delta * INVADER_VELOCITY * speedMultiplier;
+			transform.trn(-delta * INVADER_VELOCITY * speedMultiplier, 0, 0);
 			if (movedDistance > Simulation.PLAYFIELD_MAX_X) {
 				state = STATE_MOVE_DOWN;
 				movedDistance = 0;
@@ -43,7 +45,7 @@ public class Invader {
 			}
 		}
 		if (state == STATE_MOVE_RIGHT) {
-			position.x += delta * INVADER_VELOCITY * speedMultiplier;
+			transform.trn(delta * INVADER_VELOCITY * speedMultiplier, 0, 0);
 			if (movedDistance > Simulation.PLAYFIELD_MAX_X) {
 				state = STATE_MOVE_DOWN;
 				movedDistance = 0;
@@ -51,7 +53,7 @@ public class Invader {
 			}
 		}
 		if (state == STATE_MOVE_DOWN) {
-			position.z += delta * INVADER_VELOCITY * speedMultiplier;
+			transform.trn(0,0,delta * INVADER_VELOCITY * speedMultiplier);
 			if (movedDistance > 1) {
 				if (wasLastStateLeft)
 					state = STATE_MOVE_RIGHT;
@@ -60,5 +62,6 @@ public class Invader {
 				movedDistance = 0;
 			}
 		}
+		transform.rotate(0, 1, 0, INVADER_ROTATION * delta);
 	}
 }

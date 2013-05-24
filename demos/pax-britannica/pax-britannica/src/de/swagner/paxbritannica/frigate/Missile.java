@@ -15,7 +15,7 @@ public class Missile extends Bullet {
 		turnSpeed = 300f;
 		accel = 300.0f;	
 		bulletSpeed = 50;
-		this.velocity = new Vector2().set(facing).mul(bulletSpeed);
+		this.velocity = new Vector2().set(facing).scl(bulletSpeed);
 		damage = 50;
 		
 		this.set(Resources.getInstance().missile);

@@ -205,23 +205,56 @@ void MacHIDManager::iterateAndOpenDevices(io_iterator_t iterator)
 	IOObjectRelease(iterator);
 }
 
+const char* getCString(CFStringRef cfString) {
+	const char *useUTF8StringPtr = NULL;
+	UInt8 *freeUTF8StringPtr = NULL;
+
+	CFIndex stringLength = CFStringGetLength(cfString), usedBytes = 0L;
+
+	if ((useUTF8StringPtr = CFStringGetCStringPtr(cfString,	kCFStringEncodingUTF8)) == NULL) {
+		if ((freeUTF8StringPtr = (UInt8*)malloc(stringLength + 1L)) != NULL) {
+			CFStringGetBytes(cfString, CFRangeMake(0L, stringLength),
+					kCFStringEncodingUTF8, '?', false, freeUTF8StringPtr,
+					stringLength, &usedBytes);
+			freeUTF8StringPtr[usedBytes] = 0;
+			useUTF8StringPtr = (const char *) freeUTF8StringPtr;
+		}
+	}
+
+	return useUTF8StringPtr;
+}
+
 //------------------------------------------------------------------------------------------------------//
 HidInfo* MacHIDManager::enumerateDeviceProperties(CFMutableDictionaryRef propertyMap)
 {
 	HidInfo* info = new HidInfo();
 	
 	info->type = OISJoyStick;
-	
+
 	CFStringRef str = getDictionaryItemAsRef<CFStringRef>(propertyMap, kIOHIDManufacturerKey);
-	if (str)
-		info->vendor = CFStringGetCStringPtr(str, CFStringGetSystemEncoding());
-	
+	if (str) {
+		const char* str_c = getCString(str);
+		if(str_c) {
+			info->vendor = str_c;
+			free((char*)str_c);
+		} else {
+			info->vendor = "Unknown Vendor";
+		}
+	}
+
 	str = getDictionaryItemAsRef<CFStringRef>(propertyMap, kIOHIDProductKey);
-	if (str)
-		info->productKey = CFStringGetCStringPtr(str, CFStringGetSystemEncoding());
-	
+	if (str) {
+		const char* str_c = getCString(str);
+		if(str_c) {
+			info->productKey = str_c;
+			free((char*)str_c);
+		} else {
+			info->productKey = "Unknown Product";
+		}
+	}
+
 	info->combinedKey = info->vendor + " " + info->productKey;
-	
+
 	//Go through all items in this device (i.e. buttons, hats, sticks, axes, etc)
 	CFArrayRef array = getDictionaryItemAsRef<CFArrayRef>(propertyMap, kIOHIDElementKey);
 	if (array)

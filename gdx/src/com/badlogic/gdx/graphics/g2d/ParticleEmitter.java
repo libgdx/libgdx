@@ -899,17 +899,17 @@ public class ParticleEmitter {
 		return Float.parseFloat(readString(reader, name));
 	}
 
-	static class Particle extends Sprite {
-		int life, currentLife;
-		float scale, scaleDiff;
-		float rotation, rotationDiff;
-		float velocity, velocityDiff;
-		float angle, angleDiff;
-		float angleCos, angleSin;
-		float transparency, transparencyDiff;
-		float wind, windDiff;
-		float gravity, gravityDiff;
-		float[] tint;
+	public static class Particle extends Sprite {
+		protected int life, currentLife;
+		protected float scale, scaleDiff;
+		protected float rotation, rotationDiff;
+		protected float velocity, velocityDiff;
+		protected float angle, angleDiff;
+		protected float angleCos, angleSin;
+		protected float transparency, transparencyDiff;
+		protected float wind, windDiff;
+		protected float gravity, gravityDiff;
+		protected float[] tint;
 
 		public Particle (Sprite sprite) {
 			super(sprite);

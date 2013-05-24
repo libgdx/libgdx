@@ -36,6 +36,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 		desktopSuffixField.setText(Ctx.cfgSetup.suffixDesktop);
 		androidSuffixField.setText(Ctx.cfgSetup.suffixAndroid);
 		htmlSuffixField.setText(Ctx.cfgSetup.suffixHtml);
+                iosSuffixField.setText(Ctx.cfgSetup.suffixIos);
 		androidMinSdkField.setText(Ctx.cfgSetup.androidMinSdkVersion);
 		androidTargetSdkField.setText(Ctx.cfgSetup.androidTargetSdkVersion);
 		androidMaxSdkField.setText(Ctx.cfgSetup.androidMaxSdkVersion);
@@ -44,6 +45,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 		desktopSuffixField.addKeyListener(updateOnTypeKeyListener);
 		androidSuffixField.addKeyListener(updateOnTypeKeyListener);
 		htmlSuffixField.addKeyListener(updateOnTypeKeyListener);
+                iosSuffixField.addKeyListener(updateOnTypeKeyListener);
 		androidMinSdkField.addKeyListener(updateOnTypeKeyListener);
 		androidTargetSdkField.addKeyListener(updateOnTypeKeyListener);
 		androidMaxSdkField.addKeyListener(updateOnTypeKeyListener);
@@ -60,6 +62,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 		Ctx.cfgSetup.suffixCommon = coreSuffixField.getText();
 		Ctx.cfgSetup.suffixDesktop = desktopSuffixField.getText();
 		Ctx.cfgSetup.suffixAndroid = androidSuffixField.getText();
+                Ctx.cfgSetup.suffixIos = iosSuffixField.getText();
 		Ctx.cfgSetup.androidMinSdkVersion = androidMinSdkField.getText();
 		Ctx.cfgSetup.androidMaxSdkVersion = androidMaxSdkField.getText();
 		Ctx.cfgSetup.androidTargetSdkVersion = androidTargetSdkField.getText();
@@ -67,6 +70,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 		Ctx.cfgUpdate.suffixCommon = coreSuffixField.getText();
 		Ctx.cfgUpdate.suffixDesktop = desktopSuffixField.getText();
 		Ctx.cfgUpdate.suffixAndroid = androidSuffixField.getText();
+                Ctx.cfgUpdate.suffixIos = iosSuffixField.getText();
 		Ctx.fireCfgSetupChanged();
 	}
 
@@ -125,6 +129,8 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
+        iosSuffixField = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
 
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel7.setText("android:maxSdkVersion");
@@ -214,6 +220,12 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 
         jLabel9.setText("Do not use twice the same suffix to avoid undefined behavior");
 
+        iosSuffixField.setText("-ios");
+        iosSuffixField.setName(""); // NOI18N
+
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel11.setText("iOS project suffix");
+
         javax.swing.GroupLayout paintedPanel2Layout = new javax.swing.GroupLayout(paintedPanel2);
         paintedPanel2.setLayout(paintedPanel2Layout);
         paintedPanel2Layout.setHorizontalGroup(
@@ -241,7 +253,12 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
                             .addComponent(androidSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paintedPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel9)))
+                        .addGroup(paintedPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paintedPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(iosSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
         );
 
@@ -264,7 +281,11 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
                     .addComponent(htmlSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(desktopSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(paintedPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(iosSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(4, 4, 4)
                 .addComponent(jLabel9)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -287,7 +308,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
                 .addComponent(paintedPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(paintedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(92, Short.MAX_VALUE))
+                .addContainerGap(80, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -299,8 +320,10 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JTextField coreSuffixField;
     private javax.swing.JTextField desktopSuffixField;
     private javax.swing.JTextField htmlSuffixField;
+    private javax.swing.JTextField iosSuffixField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

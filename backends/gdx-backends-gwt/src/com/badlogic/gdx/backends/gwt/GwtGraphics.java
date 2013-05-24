@@ -25,7 +25,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.dom.client.CanvasElement;
@@ -101,11 +100,6 @@ public class GwtGraphics implements Graphics {
 	}
 
 	@Override
-	public GLU getGLU () {
-		return null;
-	}
-
-	@Override
 	public int getWidth () {
 		return canvas.getWidth();
 	}
@@ -161,11 +155,11 @@ public class GwtGraphics implements Graphics {
 	}
 
 	private native int getScreenWidthJSNI () /*-{
-															return screen.width;
+															return $wnd.screen.width;
 															}-*/;
 
 	private native int getScreenHeightJSNI () /*-{
-															return screen.height;
+															return $wnd.screen.height;
 															}-*/;
 
 	private native boolean isFullscreenJSNI () /*-{
@@ -187,8 +181,8 @@ public class GwtGraphics implements Graphics {
 
 	private native boolean setFullscreenJSNI (GwtGraphics graphics, CanvasElement element) /*-{
 																														if(element.webkitRequestFullScreen) {
-																														element.width = screen.width;
-																														element.height = screen.height;
+																														element.width = $wnd.screen.width;
+																														element.height = $wnd.screen.height;
 																														element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
 																														$doc.addEventListener("webkitfullscreenchange", function() {
 																														graphics.@com.badlogic.gdx.backends.gwt.GwtGraphics::fullscreenChanged()();
@@ -196,8 +190,8 @@ public class GwtGraphics implements Graphics {
 																														return true;
 																														}
 																														if(element.mozRequestFullScreen) {
-																														element.width = screen.width;
-																														element.height = screen.height;
+																														element.width = $wnd.screen.width;
+																														element.height = $wnd.screen.height;
 																														element.mozRequestFullScreen();
 																														$doc.addEventListener("mozfullscreenchange", function() {
 																														graphics.@com.badlogic.gdx.backends.gwt.GwtGraphics::fullscreenChanged()();
@@ -270,22 +264,20 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public float getDensity () {
-		return 96 / 160;
+		return 96.0f / 160;
 	}
 
 	@Override
 	public void setContinuousRendering (boolean isContinuous) {
-		throw new GdxRuntimeException("No supported");
 	}
 
 	@Override
 	public boolean isContinuousRendering () {
-		throw new GdxRuntimeException("No supported");
+		return false;
 	}
 
 	@Override
 	public void requestRendering () {
-		throw new GdxRuntimeException("No supported");
 	}
 
 	@Override

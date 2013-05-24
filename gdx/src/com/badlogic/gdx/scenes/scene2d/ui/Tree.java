@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.Gdx;
@@ -43,6 +44,7 @@ public class Tree extends WidgetGroup {
 	private float leftColumnWidth, prefWidth, prefHeight;
 	private boolean sizeInvalid = true;
 	boolean multiSelect = true;
+	boolean toggleSelect = true;
 	private Node foundNode;
 	Node overNode;
 	private ClickListener clickListener;
@@ -77,9 +79,7 @@ public class Tree extends WidgetGroup {
 						selectNodes(rootNodes, high, low);
 					else
 						selectNodes(rootNodes, low, high);
-					ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-					fire(changeEvent);
-					Pools.free(changeEvent);
+					fireChangeEvent();
 					return;
 				}
 				if (!multiSelect || (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && !Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))) {
@@ -93,14 +93,17 @@ public class Tree extends WidgetGroup {
 						}
 					}
 					if (!node.isSelectable()) return;
+					boolean unselect = toggleSelect && selectedNodes.size == 1 && selectedNodes.contains(node, true);
 					selectedNodes.clear();
+					if (unselect) {
+						fireChangeEvent();
+						return;
+					}
 				} else if (!node.isSelectable()) //
 					return;
 				// Select single (ctrl).
 				if (!selectedNodes.removeValue(node, true)) selectedNodes.add(node);
-				ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-				fire(changeEvent);
-				Pools.free(changeEvent);
+				fireChangeEvent();
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
@@ -143,11 +146,18 @@ public class Tree extends WidgetGroup {
 	}
 
 	/** Removes all tree nodes. */
-	public void clear () {
-		super.clear();
+	public void clearChildren () {
+		super.clearChildren();
 		rootNodes.clear();
 		selectedNodes.clear();
 		setOverNode(null);
+		fireChangeEvent();
+	}
+
+	void fireChangeEvent () {
+		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+		fire(changeEvent);
+		Pools.free(changeEvent);
 	}
 
 	public Array<Node> getNodes () {
@@ -300,19 +310,23 @@ public class Tree extends WidgetGroup {
 	public void setSelection (Node node) {
 		selectedNodes.clear();
 		selectedNodes.add(node);
+		fireChangeEvent();
 	}
 
 	public void setSelection (Array<Node> nodes) {
 		selectedNodes.clear();
 		selectedNodes.addAll(nodes);
+		fireChangeEvent();
 	}
 
 	public void addSelection (Node node) {
 		selectedNodes.add(node);
+		fireChangeEvent();
 	}
 
 	public void clearSelection () {
 		selectedNodes.clear();
+		fireChangeEvent();
 	}
 
 	public TreeStyle getStyle () {
@@ -354,6 +368,29 @@ public class Tree extends WidgetGroup {
 	public float getPrefHeight () {
 		if (sizeInvalid) computeSize();
 		return prefHeight;
+	}
+
+	public void findExpandedObjects (Array objects) {
+		findExpandedObjects(rootNodes, objects);
+	}
+
+	public void restoreExpandedObjects (Array objects) {
+		for (int i = 0, n = objects.size; i < n; i++) {
+			Node node = findNode(objects.get(i));
+			if (node != null) {
+				node.setExpanded(true);
+				node.expandTo();
+			}
+		}
+	}
+
+	static boolean findExpandedObjects (Array<Node> nodes, Array objects) {
+		boolean expanded = false;
+		for (int i = 0, n = nodes.size; i < n; i++) {
+			Node node = nodes.get(i);
+			if (node.expanded && !findExpandedObjects(node.children, objects)) objects.add(node.object);
+		}
+		return expanded;
 	}
 
 	/** Returns the node with the specified object, or null. */
@@ -403,6 +440,10 @@ public class Tree extends WidgetGroup {
 
 	public void setMultiSelect (boolean multiSelect) {
 		this.multiSelect = multiSelect;
+	}
+
+	public void setToggleSelect (boolean toggleSelect) {
+		this.toggleSelect = toggleSelect;
 	}
 
 	static public class Node {
@@ -514,6 +555,7 @@ public class Tree extends WidgetGroup {
 			return children;
 		}
 
+		/** @return May be null. */
 		public Node getParent () {
 			return parent;
 		}

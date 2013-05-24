@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -25,7 +26,7 @@ public class AddAction extends Action {
 	private Action action;
 
 	public boolean act (float delta) {
-		targetActor.addAction(action);
+		(targetActor != null ? targetActor : actor).addAction(action);
 		return true;
 	}
 
@@ -33,6 +34,7 @@ public class AddAction extends Action {
 		return targetActor;
 	}
 
+	/** Sets the actor to add an action to. If null (the default), the {@link #getActor() actor} will be used. */
 	public void setTargetActor (Actor actor) {
 		this.targetActor = actor;
 	}

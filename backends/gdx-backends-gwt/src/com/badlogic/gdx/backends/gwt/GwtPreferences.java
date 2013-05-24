@@ -139,7 +139,8 @@ public class GwtPreferences implements Preferences {
 
 	@Override
 	public String getString (String key) {
-		return (String)values.get(key);
+		String v = (String)values.get(key);
+		return v == null ? "" : v;
 	}
 
 	@Override

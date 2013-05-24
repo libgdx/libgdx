@@ -13,50 +13,136 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btCollisionObject {
-	public final static com.badlogic.gdx.utils.LongMap<btCollisionObject> instances = new com.badlogic.gdx.utils.LongMap<btCollisionObject>();
-	
-	public static btCollisionObject getInstance(final long swigCPtr, boolean owner) {
-		btCollisionObject result = instances.get(swigCPtr);
-		if (result == null)
-			result = new btCollisionObject(swigCPtr, owner);
-		return result;
-	}
-	
+public class btCollisionObject implements 
+	com.badlogic.gdx.utils.Disposable
+ {
 	private long swigCPtr;
 	protected boolean swigCMemOwn;
 	
 	protected btCollisionObject(long cPtr, boolean cMemoryOwn) {
 		swigCMemOwn = cMemoryOwn;
 		swigCPtr = cPtr;
-		instances.put(cPtr, this);
+		gdxBridge = new GdxCollisionObjectBridge();
+		internalSetGdxBridge(gdxBridge);
+		addInstance(this);
 	}
 	
-	public void takeOwnership() {
-		swigCMemOwn = true;
+	protected void beforeDelete() {
+		if (swigCPtr != 0)
+			removeInstance(this);
+		if (gdxBridge != null)
+			gdxBridge.delete();
+		gdxBridge = null;
 	}
 	
-	public void releaseOwnership() {
-		swigCMemOwn = false;
+	protected GdxCollisionObjectBridge gdxBridge;
+	protected int userValue;
+	protected int contactCallbackFlag = 1;
+	protected int contactCallbackFilter;
+	
+	/** User definable data, not used by Bullet itself. */
+	public Object userData;
+
+	@Override
+	public void dispose() {
+		delete();
+	}
+
+	/** @return A user definable value set using {@link #setUserValue(int)}, intended to quickly identify the collision object */ 
+	public int getUserValue() {
+		return userValue;
 	}
 	
-	public static long getCPtr(btCollisionObject obj) {
-		return (obj == null) ? 0 : obj.swigCPtr;
+	/** @param value A user definable value which allows you to quickly identify this collision object. Some frequently called
+	 * methods rather return this value than the collision object itself to minimize JNI overhead. */
+	public void setUserValue(int value) {
+		gdxBridge.setUserValue(userValue = value);
+	}
+	
+	/** @return The flag (defaults to 1) used to filter contact callbacks with this object */
+	public int getContactCallbackFlag() {
+		return contactCallbackFlag;
+	}
+	
+	/** @param flag The new flag used to filter contact callbacks with this object */
+	public void setContactCallbackFlag(int flag) {
+		gdxBridge.setContactCallbackFlag(contactCallbackFlag = flag);
+	}
+	
+	/** @return The filter (default to 0) that is used to match the flag of the other object for a contact callback to be triggered */
+	public int getContactCallbackFilter() {
+		return contactCallbackFilter;
+	}
+	
+	/** @param filter The new filter that is used to match the flag of the other object for a contact callback to be triggered */
+	public void setContactCallbackFilter(int filter) {
+		gdxBridge.setContactCallbackFilter(contactCallbackFilter = filter);
 	}
 
   protected void finalize() {
     delete();
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btCollisionObject(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  public synchronized void delete()  {
+	beforeDelete();
+	if (swigCPtr != 0) {
+		if (swigCMemOwn) {
+			swigCMemOwn = false;
+			gdxBulletJNI.delete_btCollisionObject(swigCPtr);
+		}
+		swigCPtr = 0;
+	}
+} 
+
+	/** Provides direct access to the instances this wrapper managed. */
+	public final static com.badlogic.gdx.utils.LongMap<btCollisionObject> instances = new com.badlogic.gdx.utils.LongMap<btCollisionObject>();
+	
+	/** @return The existing instance for the specified pointer, or null if the instance doesn't exist */
+	public static btCollisionObject getInstance(final long swigCPtr) {
+		return swigCPtr == 0 ? null : instances.get(swigCPtr);
+	}
+	
+	/** @return The existing isntance for the specified pointer, or a newly created instance if the instance didn't exist */
+	public static btCollisionObject getInstance(final long swigCPtr, boolean owner) {
+		if (swigCPtr == 0)
+			return null;
+		btCollisionObject result = instances.get(swigCPtr);
+		if (result == null)
+			result = new btCollisionObject(swigCPtr, owner);
+		return result;
+	}
+	
+	/** Add the instance to the managed instances.
+	 * You should avoid using this method. This method is intended for internal purposes only. */
+	public static void addInstance(final btCollisionObject obj) {
+		instances.put(getCPtr(obj), obj);
+	}
+	
+	/** Remove the instance to the managed instances.
+	 * Be careful using this method. This method is intended for internal purposes only. */	
+	public static void removeInstance(final btCollisionObject obj) {
+		instances.remove(getCPtr(obj));
+	}
+
+	/** Take ownership of the native instance, causing the native object to be deleted when this object gets out of scope. */
+	public void takeOwnership() {
+		swigCMemOwn = true;
+	}
+	
+	/** Release ownership of the native instance, causing the native object NOT to be deleted when this object gets out of scope. */
+	public void releaseOwnership() {
+		swigCMemOwn = false;
+	}
+	
+	/** @return True if the native is destroyed when this object gets out of scope, false otherwise. */
+	public boolean hasOwnership() {
+		return swigCMemOwn;
+	}
+	
+	/** @return The value of the pointer to the native instance this object represents. */
+	public static long getCPtr(btCollisionObject obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
   public boolean mergesSimulationIslands() {
     return gdxBulletJNI.btCollisionObject_mergesSimulationIslands(swigCPtr, this);
@@ -288,6 +374,15 @@ public class btCollisionObject {
 
   public void serializeSingleObject(SWIGTYPE_p_btSerializer serializer) {
     gdxBulletJNI.btCollisionObject_serializeSingleObject(swigCPtr, this, SWIGTYPE_p_btSerializer.getCPtr(serializer));
+  }
+
+  public void internalSetGdxBridge(GdxCollisionObjectBridge bridge) {
+    gdxBulletJNI.btCollisionObject_internalSetGdxBridge(swigCPtr, this, GdxCollisionObjectBridge.getCPtr(bridge), bridge);
+  }
+
+  public GdxCollisionObjectBridge internalGetGdxBridge() {
+    long cPtr = gdxBulletJNI.btCollisionObject_internalGetGdxBridge(swigCPtr, this);
+    return (cPtr == 0) ? null : new GdxCollisionObjectBridge(cPtr, false);
   }
 
   public void getAnisotropicFriction(Vector3 out) {

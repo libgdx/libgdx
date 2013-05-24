@@ -57,7 +57,7 @@ public class LwjglApplication implements Application {
 	}
 
 	public LwjglApplication (ApplicationListener listener) {
-		this(listener, new LwjglApplicationConfiguration());
+		this(listener, null, 640, 480, false);
 	}
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config) {
@@ -74,6 +74,8 @@ public class LwjglApplication implements Application {
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, LwjglGraphics graphics) {
 		LwjglNativesLoader.load();
+
+		if (config.title == null) config.title = listener.getClass().getSimpleName();
 
 		this.graphics = graphics;
 		if (!LwjglApplicationConfiguration.disableAudio)
@@ -110,7 +112,10 @@ public class LwjglApplication implements Application {
 					LwjglApplication.this.mainLoop();
 				} catch (Throwable t) {
 					if (audio != null) audio.dispose();
-					throw new GdxRuntimeException(t);
+					if (t instanceof RuntimeException)
+						throw (RuntimeException)t;
+					else
+						throw new GdxRuntimeException(t);
 				}
 			}
 		};
@@ -132,10 +137,19 @@ public class LwjglApplication implements Application {
 		int lastHeight = graphics.getHeight();
 
 		graphics.lastTime = System.nanoTime();
+		boolean wasActive = true;
 		while (running) {
 			Display.processMessages();
-			if (Display.isCloseRequested()) {
-				exit();
+			if (Display.isCloseRequested()) exit();
+
+			boolean isActive = Display.isActive();
+			if (wasActive && !isActive) { // if it's just recently minimized from active state
+				wasActive = false;
+				listener.pause();
+			}
+			if (!wasActive && isActive) { // if it's just recently focused from minimized state
+				wasActive = true;
+				listener.resume();
 			}
 
 			boolean shouldRender = false;
@@ -168,41 +182,39 @@ public class LwjglApplication implements Application {
 				executedRunnables.clear();
 				executedRunnables.addAll(runnables);
 				runnables.clear();
-
-				for (int i = 0; i < executedRunnables.size; i++) {
-					shouldRender = true;
-					try {
-						executedRunnables.get(i).run();
-					} catch (Throwable t) {
-						t.printStackTrace();
-					}
-				}
 			}
 
-			// If one of the runnables set running in false, for example after an exit().
+			for (int i = 0; i < executedRunnables.size; i++) {
+				shouldRender = true;
+				executedRunnables.get(i).run(); // calls out to random app code that could do anything ...
+			}
+
+			// If one of the runnables set running to false, for example after an exit().
 			if (!running) break;
 
 			input.update();
 			shouldRender |= graphics.shouldRender();
 			input.processEvents();
 			if (audio != null) audio.update();
+
+			if (!isActive && graphics.config.backgroundFPS == -1) shouldRender = false;
+			int frameRate = isActive ? graphics.config.foregroundFPS : graphics.config.backgroundFPS;
 			if (shouldRender) {
 				graphics.updateTime();
 				listener.render();
-				Display.update();
-				if (graphics.vsync && graphics.config.useCPUSynch) {
-					Display.sync(60);
-				}
+				Display.update(false);
 			} else {
-				// Effectively sleeps for a little while so we don't spend all available
-				// cpu power in an essentially empty loop.
-				Display.sync(60);
+				// Sleeps to avoid wasting CPU in an empty loop.
+				if (frameRate == -1) frameRate = 10;
+				if (frameRate == 0) frameRate = graphics.config.backgroundFPS;
+				if (frameRate == 0) frameRate = 30;
 			}
+			if (frameRate > 0) Display.sync(frameRate);
 		}
 
 		Array<LifecycleListener> listeners = lifecycleListeners;
-		synchronized(listeners) {
-			for(LifecycleListener listener: listeners) {
+		synchronized (listeners) {
+			for (LifecycleListener listener : listeners) {
 				listener.pause();
 				listener.dispose();
 			}
@@ -212,6 +224,11 @@ public class LwjglApplication implements Application {
 		Display.destroy();
 		if (audio != null) audio.dispose();
 		if (graphics.config.forceExit) System.exit(-1);
+	}
+
+	@Override
+	public ApplicationListener getApplicationListener () {
+		return listener;
 	}
 
 	@Override
@@ -351,18 +368,18 @@ public class LwjglApplication implements Application {
 			}
 		});
 	}
-	
+
 	@Override
 	public void addLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.add(listener);
 		}
 	}
 
 	@Override
 	public void removeLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
-		}		
+		}
 	}
 }

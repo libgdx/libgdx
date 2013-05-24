@@ -27,8 +27,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
@@ -59,7 +57,6 @@ public class ProjectiveTextureTest extends GdxTest {
 	PerspectiveCamera projector;
 	Texture texture;
 	Mesh plane;
-	StillModel cube;
 	Matrix4 planeTrans = new Matrix4();
 	Matrix4 cubeTrans = new Matrix4();
 	Matrix4 modelNormal = new Matrix4();
@@ -93,7 +90,6 @@ public class ProjectiveTextureTest extends GdxTest {
 		plane.setVertices(new float[] {-10, -1, 10, 0, 1, 0, 10, -1, 10, 0, 1, 0, 10, -1, -10, 0, 1, 0, -10, -1, -10, 0, 1, 0});
 		plane.setIndices(new short[] {3, 2, 1, 1, 0, 3});
 		
-		cube = ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/sphere.obj"));
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), Format.RGB565, true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Nearest);
 
@@ -199,7 +195,6 @@ public class ProjectiveTextureTest extends GdxTest {
 	public void dispose () {
 		texture.dispose();
 		plane.dispose();
-		cube.dispose();
 		projTexShader.dispose();
 		ui.dispose();
 		skin.dispose();

@@ -146,4 +146,9 @@ public class DataInputStream extends InputStream implements DataInput {
 		return 0;
 	}
 
+	@Override
+	public int available () {
+		return is.available();
+	}
+	
 }

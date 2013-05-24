@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 /** Builder style API for emitting JSON.
  * @author Nathan Sweet */
 public class JsonWriter extends Writer {
-	Writer writer;
+	final Writer writer;
 	private final Array<JsonObject> stack = new Array();
 	private JsonObject current;
 	private boolean named;
@@ -31,6 +31,10 @@ public class JsonWriter extends Writer {
 
 	public JsonWriter (Writer writer) {
 		this.writer = writer;
+	}
+
+	public Writer getWriter () {
+		return writer;
 	}
 
 	public void setOutputType (OutputType outputType) {
@@ -82,6 +86,11 @@ public class JsonWriter extends Writer {
 	}
 
 	public JsonWriter value (Object value) throws IOException {
+		if (value instanceof Number) {
+			Number number = (Number)value;
+			long longValue = number.longValue();
+			if (number.doubleValue() == longValue) value = longValue;
+		}
 		if (current != null) {
 			if (current.array) {
 				if (!current.needsComma)
@@ -149,8 +158,7 @@ public class JsonWriter extends Writer {
 		json,
 		/** Like JSON, but names are only quoted if necessary. */
 		javascript,
-		/** Like JSON, but names and values are only quoted if necessary. This is best for object serialization, because it has a
-		 * difference between a String field being null and "null". */
+		/** Like JSON, but names and values are only quoted if necessary. */
 		minimal;
 
 		static private Pattern javascriptPattern = Pattern.compile("[a-zA-Z_$][a-zA-Z_$0-9]*");
@@ -158,8 +166,7 @@ public class JsonWriter extends Writer {
 		static private Pattern minimalNamePattern = Pattern.compile("[a-zA-Z0-9_$][^:}\\], ]*");
 
 		public String quoteValue (Object value) {
-			if (this != OutputType.json && (value == null || value instanceof Number || value instanceof Boolean))
-				return String.valueOf(value);
+			if (value == null || value instanceof Number || value instanceof Boolean) return String.valueOf(value);
 			String string = String.valueOf(value).replace("\\", "\\\\");
 			if (this == OutputType.minimal && !string.equals("true") && !string.equals("false") && !string.equals("null")
 				&& minimalValuePattern.matcher(string).matches()) return string;

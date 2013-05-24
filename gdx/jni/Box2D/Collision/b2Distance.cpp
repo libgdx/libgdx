@@ -42,7 +42,7 @@ void b2DistanceProxy::Set(const b2Shape* shape, int32 index)
 		{
 			const b2PolygonShape* polygon = (b2PolygonShape*)shape;
 			m_vertices = polygon->m_vertices;
-			m_count = polygon->m_vertexCount;
+			m_count = polygon->m_count;
 			m_radius = polygon->m_radius;
 		}
 		break;
@@ -141,6 +141,7 @@ struct b2Simplex
 			v->wA = b2Mul(transformA, wALocal);
 			v->wB = b2Mul(transformB, wBLocal);
 			v->w = v->wB - v->wA;
+			v->a = 1.0f;
 			m_count = 1;
 		}
 	}
@@ -244,7 +245,7 @@ struct b2Simplex
 		{
 		case 0:
 			b2Assert(false);
-			return 0.0;
+			return 0.0f;
 
 		case 1:
 			return 0.0f;
@@ -465,8 +466,7 @@ void b2Distance(b2DistanceOutput* output,
 	int32 saveA[3], saveB[3];
 	int32 saveCount = 0;
 
-	b2Vec2 closestPoint = simplex.GetClosestPoint();
-	float32 distanceSqr1 = closestPoint.LengthSquared();
+	float32 distanceSqr1 = b2_maxFloat;
 	float32 distanceSqr2 = distanceSqr1;
 
 	// Main iteration loop.

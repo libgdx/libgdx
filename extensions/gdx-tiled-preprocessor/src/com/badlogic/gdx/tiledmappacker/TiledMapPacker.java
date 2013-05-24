@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -38,34 +40,56 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.tiled.TileAtlas;
-import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
-import com.badlogic.gdx.graphics.g2d.tiled.TileSet;
-import com.badlogic.gdx.graphics.g2d.tiled.TiledLayer;
-import com.badlogic.gdx.graphics.g2d.tiled.TiledLoader;
-import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker.Settings;
+import com.badlogic.gdx.tools.imagepacker.TexturePacker2;
+import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.ObjectMap;
 
-/** Packs a Tiled Map, adding some properties to improve the speed of the {@link TileMapRenderer}. Also runs the texture packer on
- * the tiles for use with a {@link TileAtlas}
- * @author David Fraska */
+/** Given one or more TMX tilemaps, packs all tileset resources used across the maps into a <b>single</b> {@link TextureAtlas} and
+ * produces a new TMX file to be loaded with an {@link AtlasTiledMapLoader} loader. Optionally, it can keep track of unused tiles
+ * and omit them from the generated atlas, reducing the resource size.
+ * 
+ * The original TMX map file will be parsed by using the {@link TmxMapLoader} loader, thus access to a valid OpenGL context is
+ * <b>required</b>, that's why an LwjglApplication is created by this preprocessor: this is probably subject to change in the
+ * future, where loading both maps metadata and graphics resources should be made conditional.
+ * 
+ * The new TMX map file will contains a new property, namely "atlas", whose value will enable the {@link AtlasTiledMapLoader} to
+ * correctly read the associated TextureAtlas representing the tileset.
+ * 
+ * @author David Fraska and others (initial implementation, tell me who you are!)
+ * @author Manuel Bua */
 public class TiledMapPacker {
 
-	private TexturePacker packer;
+	private TexturePacker2 packer;
 	private TiledMap map;
 
-	// private File outputDir;
-	private ArrayList<String> processedTileSets = new ArrayList<String>();
-
 	private ArrayList<Integer> blendedTiles = new ArrayList<Integer>();
+	private TmxMapLoader mapLoader = new TmxMapLoader(new PackerFileHandleResolver());
+	private TiledMapPackerSettings settings;
 
-	static private class TmxFilter implements FilenameFilter {
+	// the tilesets output directory, relative to the global output directory
+	private static final String TilesetsOutputDir = "tileset";
 
+	// the generate atlas' name
+	private static final String AtlasOutputName = "packed";
+
+	// a map tracking tileids usage for any given tileset, across multiple maps
+	private HashMap<String, IntArray> tilesetUsedIds = new HashMap<String, IntArray>();
+
+	private static class TmxFilter implements FilenameFilter {
 		public TmxFilter () {
 		}
 
@@ -75,90 +99,193 @@ public class TiledMapPacker {
 
 			return false;
 		}
-
 	}
 
-	TiledMapPackerSettings settings;
-	
-	public TiledMapPacker() {
-		this(new TiledMapPackerSettings());
-	}
-	
-	public TiledMapPacker(TiledMapPackerSettings settings) {
-		this.settings = settings;
-	}
-	
-	/** Typically, you should run the {@link TiledMapPacker#main(String[])} method instead of this method. Packs a directory of
-	 * Tiled Maps, adding properties to improve the speed of the {@link TileMapRenderer}. Also runs the texture packer on the tile
-	 * sets for use with a {@link TileAtlas}
-	 * @param inputDir the input directory containing the tmx files (and tile sets, relative to the path listed in the tmx file)
-	 * @param outputDir The output directory for the tmx files, should be empty before running. WARNING: Use caution if you have a
-	 *           "../" in the path of your tile sets! The output for these tile sets will be relative to the output directory. For
-	 *           example, if your output directory is "C:\mydir\maps" and you have a tileset with the path "../tileset.png", the
-	 *           tileset will be output to "C:\mydir\" and the maps will be in "C:\mydir\maps".
-	 * @param settings the settings used in the TexturePacker */
-	public void processMap (File inputDir, File outputDir, Settings settings) throws IOException {
-		FileHandle inputDirHandle = new FileHandle(inputDir.getAbsolutePath());
-		File[] files = inputDir.listFiles(new TmxFilter());
+	private static class PackerFileHandleResolver implements FileHandleResolver {
+		public PackerFileHandleResolver () {
+		}
 
-		for (File file : files) {
-			map = TiledLoader.createMap(new FileHandle(file.getAbsolutePath()));
-
-			IntArray usedIds = null;
-			if (this.settings.stripUnusedTiles) {
-				usedIds = new IntArray(map.layers.size() * map.height * map.width);
-				for (TiledLayer layer : map.layers) {
-					for (int y = 0; y < layer.tiles.length; ++y) {
-						for (int x = 0; x < layer.tiles[y].length; ++x) {
-							usedIds.add(layer.tiles[y][x] & ~0xE0000000);
-						}
-					}
-				}
-			}			
-			
-			for (TileSet set : map.tileSets) {
-				if (!processedTileSets.contains(set.imageName)) {
-					processedTileSets.add(set.imageName);
-					packTileSet(set, usedIds, inputDirHandle, outputDir, settings);
-				}
-			}
-
-			writeUpdatedTMX(outputDir, map.tmxFile);
+		@Override
+		public FileHandle resolve (String fileName) {
+			return new FileHandle(fileName);
 		}
 	}
 
-	private void packTileSet (TileSet set, IntArray usedIds, FileHandle inputDirHandle, File outputDir, Settings settings) throws IOException {
+	/** Constructs a new preprocessor by using the default packing settings */
+	public TiledMapPacker () {
+		this(new TiledMapPackerSettings());
+	}
+
+	/** Constructs a new preprocessor by using the specified packing settings */
+	public TiledMapPacker (TiledMapPackerSettings settings) {
+		this.settings = settings;
+	}
+
+	/** You can either run the {@link TiledMapPacker#main(String[])} method or reference this class in your own project and call
+	 * this method.
+	 * 
+	 * Keep in mind that this preprocessor will need to load the maps by using the {@link TmxMapLoader} loader and this in turn
+	 * will need a valid OpenGL context to work: this is probably subject to change in the future, where loading both maps metadata
+	 * and graphics resources should be made conditional.
+	 * 
+	 * Process a directory containing TMX map files representing Tiled maps and produce a single TextureAtlas as well as new
+	 * processed TMX map files, correctly referencing the generated {@link TextureAtlas} by using the "atlas" custom map property.
+	 * 
+	 * Typically, your maps will lie in a directory, such as "maps/" and your tilesets in a subdirectory such as "maps/city": this
+	 * layout will ensure that MapEditor will reference your tileset with a very simple relative path and no parent directory
+	 * names, such as "..", will ever happen in your TMX file definition avoiding much of the confusion caused by the preprocessor
+	 * working with relative paths.
+	 * 
+	 * <strong>WARNING!</strong> Use caution if you have a "../" in the path of your tile sets! The output for these tile sets will
+	 * be relative to the output directory. For example, if your output directory is "C:\mydir\maps" and you have a tileset with
+	 * the path "../tileset.png", the tileset will be output to "C:\mydir\" and the maps will be in "C:\mydir\maps".
+	 * 
+	 * @param inputDir the input directory containing the tmx files (and tile sets, relative to the path listed in the tmx file)
+	 * @param outputDir The output directory for the TMX files, <strong>should be empty before running</strong>.
+	 * @param settings the settings used in the TexturePacker */
+	public void processMaps (File inputDir, File outputDir, Settings settings) throws IOException {
+		FileHandle inputDirHandle = new FileHandle(inputDir.getAbsolutePath());
+		File[] files = inputDir.listFiles(new TmxFilter());
+		ObjectMap<String, TiledMapTileSet> tilesetsToPack = new ObjectMap<String, TiledMapTileSet>();
+
+		for (File file : files) {
+			map = mapLoader.load(file.getAbsolutePath());
+
+			// if enabled, build a list of used tileids for the tileset used by this map
+			if (this.settings.stripUnusedTiles) {
+				int mapWidth = map.getProperties().get("width", Integer.class);
+				int mapHeight = map.getProperties().get("height", Integer.class);
+				int numlayers = map.getLayers().getCount();
+				int bucketSize = mapWidth * mapHeight * numlayers;
+
+				Iterator<MapLayer> it = map.getLayers().iterator();
+				while (it.hasNext()) {
+					MapLayer layer = it.next();
+
+					// some layers can be plain MapLayer instances (ie. object groups), just ignore them
+					if (layer instanceof TiledMapTileLayer) {
+						TiledMapTileLayer tlayer = (TiledMapTileLayer)layer;
+
+						for (int y = 0; y < mapHeight; ++y) {
+							for (int x = 0; x < mapWidth; ++x) {
+								if (tlayer.getCell(x, y) != null) {
+									int tileid = tlayer.getCell(x, y).getTile().getId() & ~0xE0000000;
+									String tilesetName = tilesetNameFromTileId(map, tileid);
+									IntArray usedIds = getUsedIdsBucket(tilesetName, bucketSize);
+									usedIds.add(tileid);
+
+									// track this tileset to be packed if not already tracked
+									if (!tilesetsToPack.containsKey(tilesetName)) {
+										tilesetsToPack.put(tilesetName, map.getTileSets().getTileSet(tilesetName));
+									}
+								}
+							}
+						}
+					}
+				}
+			} else {
+				for (TiledMapTileSet tileset : map.getTileSets()) {
+					String tilesetName = tileset.getName();
+					if (!tilesetsToPack.containsKey(tilesetName)) {
+						tilesetsToPack.put(tilesetName, tileset);
+					}
+				}
+			}
+
+			FileHandle tmxFile = new FileHandle(file.getAbsolutePath());
+			writeUpdatedTMX(map, outputDir, tmxFile);
+		}
+
+		packTilesets(tilesetsToPack, inputDirHandle, outputDir, settings);
+	}
+
+	/** Returns the tileset name associated with the specified tile id
+	 * @return a tileset name */
+	private String tilesetNameFromTileId (TiledMap map, int tileid) {
+		String name = "";
+		if (tileid == 0) {
+			return "";
+		}
+
+		for (TiledMapTileSet tileset : map.getTileSets()) {
+			int firstgid = tileset.getProperties().get("firstgid", -1, Integer.class);
+			if (firstgid == -1) continue; // skip this tileset
+			if (tileid >= firstgid) {
+				name = tileset.getName();
+			} else {
+				return name;
+			}
+		}
+
+		return name;
+	}
+
+	/** Returns the usedIds bucket for the given tileset name. If it doesn't exist one will be created with the specified size if
+	 * its > 0, else null will be returned.
+	 * 
+	 * @param size The size to use to create a new bucket if it doesn't exist, else specify 0 or lower to return null instead
+	 * @return a bucket */
+	private IntArray getUsedIdsBucket (String tilesetName, int size) {
+		if (tilesetUsedIds.containsKey(tilesetName)) {
+			return tilesetUsedIds.get(tilesetName);
+		}
+
+		if (size <= 0) {
+			return null;
+		}
+
+		IntArray bucket = new IntArray(size);
+		tilesetUsedIds.put(tilesetName, bucket);
+		return bucket;
+	}
+
+	/** Traverse the specified tilesets, optionally lookup the used ids and pass every tile image to the {@link TexturePacker2},
+	 * optionally ignoring unused tile ids */
+	private void packTilesets (ObjectMap<String, TiledMapTileSet> sets, FileHandle inputDirHandle, File outputDir,
+		Settings texturePackerSettings) throws IOException {
 		BufferedImage tile;
 		Vector2 tileLocation;
 		TileSetLayout packerTileSet;
 		Graphics g;
 
-		packer = new TexturePacker(settings);
+		packer = new TexturePacker2(texturePackerSettings);
 
-		TileSetLayout layout = new TileSetLayout(set, inputDirHandle);
+		int tileidx = 0;
+		for (TiledMapTileSet set : sets.values()) {
+			String tilesetName = set.getName();
+			System.out.println("Processing tileset " + tilesetName);
+			IntArray usedIds = this.settings.stripUnusedTiles ? getUsedIdsBucket(tilesetName, -1) : null;
 
-		for (int gid = layout.firstgid, i = 0; i < layout.numTiles; gid++, i++) {
-			if (usedIds != null && !usedIds.contains(gid)) {
-				System.out.println("Stripped Id: " + gid);
-				continue;
+			int tileWidth = set.getProperties().get("tilewidth", Integer.class);
+			int tileHeight = set.getProperties().get("tileheight", Integer.class);
+			int firstgid = set.getProperties().get("firstgid", Integer.class);
+			String imageName = set.getProperties().get("imagesource", String.class);
+
+			TileSetLayout layout = new TileSetLayout(firstgid, set, inputDirHandle);
+
+			for (int gid = layout.firstgid, i = 0; i < layout.numTiles; gid++, i++, tileidx++) {
+				if (usedIds != null && !usedIds.contains(gid)) {
+					System.out.println("Stripped id #" + gid + " from tileset \"" + tilesetName + "\"");
+					continue;
+				}
+
+				tileLocation = layout.getLocation(gid);
+				tile = new BufferedImage(tileWidth, tileHeight, BufferedImage.TYPE_4BYTE_ABGR);
+
+				g = tile.createGraphics();
+				g.drawImage(layout.image, 0, 0, tileWidth, tileHeight, (int)tileLocation.x, (int)tileLocation.y, (int)tileLocation.x
+					+ tileWidth, (int)tileLocation.y + tileHeight, null);
+
+				if (isBlended(tile)) setBlended(gid);
+				System.out.println("Adding " + tileWidth + "x" + tileHeight + " (" + (int)tileLocation.x + ", " + (int)tileLocation.y
+					+ ")");
+				packer.addImage(tile, this.settings.atlasOutputName + "_" + tileidx);
 			}
-				
-			
-			tileLocation = layout.getLocation(gid);
-			tile = new BufferedImage(layout.tileWidth, layout.tileHeight, BufferedImage.TYPE_4BYTE_ABGR);
-
-			g = tile.createGraphics();
-			g.drawImage(layout.image, 0, 0, layout.tileWidth, layout.tileHeight, (int)tileLocation.x, (int)tileLocation.y,
-				(int)tileLocation.x + layout.tileWidth, (int)tileLocation.y + layout.tileHeight, null);
-
-			if (isBlended(tile)) setBlended(gid);
-
-			packer.addImage(tile, removeExtension(removePath(set.imageName)) + "_" + i);
 		}
 
-		File outputFile = getRelativeFile(outputDir, removeExtension(set.imageName) + " packfile");
-		outputFile.getParentFile().mkdirs();
-		packer.process(outputFile.getParentFile(), outputFile, removeExtension(removePath(set.imageName)));
+		File outputDirTilesets = getRelativeFile(outputDir, this.settings.tilesetOutputDirectory);
+		outputDirTilesets.mkdirs();
+		packer.pack(outputDirTilesets, this.settings.atlasOutputName + ".atlas");
 	}
 
 	private static String removeExtension (String s) {
@@ -206,7 +333,7 @@ public class TiledMapPacker {
 		blendedTiles.add(tileNum);
 	}
 
-	private void writeUpdatedTMX (File outputDir, FileHandle tmxFileHandle) throws IOException {
+	private void writeUpdatedTMX (TiledMap tiledMap, File outputDir, FileHandle tmxFileHandle) throws IOException {
 		Document doc;
 		DocumentBuilder docBuilder;
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -223,6 +350,7 @@ public class TiledMapPacker {
 			}
 
 			setProperty(doc, map, "blended tiles", toCSV(blendedTiles));
+			setProperty(doc, map, "atlas", settings.tilesetOutputDirectory + "/" + settings.atlasOutputName + ".atlas");
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
@@ -284,6 +412,17 @@ public class TiledMapPacker {
 			return parent.appendChild(newNode);
 	}
 
+	private static boolean isBlended (BufferedImage tile) {
+		int[] rgbArray = new int[tile.getWidth() * tile.getHeight()];
+		tile.getRGB(0, 0, tile.getWidth(), tile.getHeight(), rgbArray, 0, tile.getWidth());
+		for (int i = 0; i < tile.getWidth() * tile.getHeight(); i++) {
+			if (((rgbArray[i] >> 24) & 0xff) != 255) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/** If the child node or attribute doesn't exist, it is created. Usage example: Node property =
 	 * getFirstChildByAttrValue(properties, "property", "name", "blended tiles"); */
 	private static Node getFirstChildByNameAttrValue (Node node, String childName, String attr, String value) {
@@ -310,91 +449,98 @@ public class TiledMapPacker {
 		}
 	}
 
-	private static boolean isBlended (BufferedImage tile) {
-		int[] rgbArray = new int[tile.getWidth() * tile.getHeight()];
-		tile.getRGB(0, 0, tile.getWidth(), tile.getHeight(), rgbArray, 0, tile.getWidth());
-		for (int i = 0; i < tile.getWidth() * tile.getHeight(); i++) {
-			if (((rgbArray[i] >> 24) & 0xff) != 255) {
-				return true;
-			}
-		}
-		return false;
-	}
+	static File inputDir;
+	static File outputDir;
 
-	private TileSetLayout getTileSetLayout (int tileNum, FileHandle inputDirHandle) throws IOException {
-		int firstgid = 0;
-		int lastgid;
-
-		for (TileSet set : map.tileSets) {
-			TileSetLayout layout = new TileSetLayout(set, inputDirHandle);
-			firstgid = set.firstgid;
-			lastgid = firstgid + layout.numTiles - 1;
-			if (tileNum >= firstgid && tileNum <= lastgid) {
-				return layout;
-			}
-		}
-
-		return null;
-	}
-	
 	/** Processes a directory of Tile Maps, compressing each tile set contained in any map once.
+	 * 
 	 * @param args args[0]: the input directory containing the tmx files (and tile sets, relative to the path listed in the tmx
 	 *           file). args[1]: The output directory for the tmx files, should be empty before running. WARNING: Use caution if
 	 *           you have a "../" in the path of your tile sets! The output for these tile sets will be relative to the output
 	 *           directory. For example, if your output directory is "C:\mydir\output" and you have a tileset with the path
-	 *           "../tileset.png", the tileset will be output to "C:\mydir\" and the maps will be in "C:\mydir\output".
-	 *           args[2]: --strip-unused (optional, include to let the TiledMapPacker remove tiles which are not used. */
+	 *           "../tileset.png", the tileset will be output to "C:\mydir\" and the maps will be in "C:\mydir\output". args[2]:
+	 *           --strip-unused (optional, include to let the TiledMapPacker remove tiles which are not used. */
 	public static void main (String[] args) {
-		File inputDir = null;
-		File outputDir = null;
-
-		Settings texturePackerSettings = new Settings();
-		
-		texturePackerSettings.padding = 2;
+		final Settings texturePackerSettings = new Settings();
+		texturePackerSettings.paddingX = 2;
+		texturePackerSettings.paddingY = 2;
 		texturePackerSettings.duplicatePadding = true;
+		texturePackerSettings.alias = true;
+		texturePackerSettings.useIndexes = true;
 
-		TiledMapPackerSettings packerSettings = new TiledMapPackerSettings();
-		
+		final TiledMapPackerSettings packerSettings = new TiledMapPackerSettings();
+
 		switch (args.length) {
-			case 3: {
-				inputDir = new File(args[0]);
-				outputDir = new File(args[1]);
-				if ("--strip-unused".equals(args[2])) {
-					packerSettings.stripUnusedTiles = true;
-				}
-				break;
+		case 3: {
+			inputDir = new File(args[0]);
+			outputDir = new File(args[1]);
+			if ("--strip-unused".equals(args[2])) {
+				packerSettings.stripUnusedTiles = true;
 			}
-			case 2: {
-				inputDir = new File(args[0]);
-				outputDir = new File(args[1]);
-				break;
-			}
-			case 1: {
-				inputDir = new File(args[0]);
-				outputDir = new File(inputDir, "output/");
-				break;
-			}
-			default: {
-				System.out.println("Usage: INPUTDIR [OUTPUTDIR] [--strip-unused]");
-				System.exit(0);
-			}
+			break;
 		}
-		
+		case 2: {
+			inputDir = new File(args[0]);
+			outputDir = new File(args[1]);
+			break;
+		}
+		case 1: {
+			inputDir = new File(args[0]);
+			outputDir = new File(inputDir, "output/");
+			break;
+		}
+		default: {
+			System.out.println("Usage: INPUTDIR [OUTPUTDIR] [--strip-unused]");
+			System.exit(0);
+		}
+		}
+
 		TiledMapPacker packer = new TiledMapPacker(packerSettings);
 
-		if (!inputDir.exists()) {
-			throw new RuntimeException("Input directory does not exist");
-		}
+		new LwjglApplication(new ApplicationListener() {
 
-		try {
-			packer.processMap(inputDir, outputDir, texturePackerSettings);
-		} catch (IOException e) {
-			throw new RuntimeException("Error processing map: " + e.getMessage());
-		}
-		
+			@Override
+			public void resume () {
+			}
+
+			@Override
+			public void resize (int width, int height) {
+			}
+
+			@Override
+			public void render () {
+			}
+
+			@Override
+			public void pause () {
+			}
+
+			@Override
+			public void dispose () {
+			}
+
+			@Override
+			public void create () {
+				TiledMapPacker packer = new TiledMapPacker(packerSettings);
+
+				if (!inputDir.exists()) {
+					throw new RuntimeException("Input directory does not exist");
+				}
+
+				try {
+					packer.processMaps(inputDir, outputDir, texturePackerSettings);
+				} catch (IOException e) {
+					throw new RuntimeException("Error processing map: " + e.getMessage());
+				}
+
+				Gdx.app.exit();
+			}
+		}, "TiledMapPacker", 100, 50, true);
 	}
-	
+
 	public static class TiledMapPackerSettings {
 		public boolean stripUnusedTiles = false;
+		public String tilesetOutputDirectory = TilesetsOutputDir;
+		public String atlasOutputName = AtlasOutputName;
 	}
 }

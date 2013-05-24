@@ -72,9 +72,11 @@ public class List extends Widget implements Cullable {
 		selectedIndex = (int)((getHeight() - y) / itemHeight);
 		selectedIndex = Math.max(0, selectedIndex);
 		selectedIndex = Math.min(items.length - 1, selectedIndex);
-		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-		if (fire(changeEvent)) selectedIndex = oldIndex;
-		Pools.free(changeEvent);
+		if (oldIndex != selectedIndex) {
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			if (fire(changeEvent)) selectedIndex = oldIndex;
+			Pools.free(changeEvent);
+		}
 	}
 
 	public void setStyle (ListStyle style) {
@@ -109,7 +111,7 @@ public class List extends Widget implements Cullable {
 		for (int i = 0; i < items.length; i++) {
 			if (cullingArea == null || (itemY - itemHeight <= cullingArea.y + cullingArea.height && itemY >= cullingArea.y)) {
 				if (selectedIndex == i) {
-					selectedDrawable.draw(batch, x, y + itemY - itemHeight, Math.max(prefWidth, getWidth()), itemHeight);
+					selectedDrawable.draw(batch, x, y + itemY - itemHeight, getWidth(), itemHeight);
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				}
 				font.draw(batch, items[i], x + textOffsetX, y + itemY - textOffsetY);
@@ -171,7 +173,6 @@ public class List extends Widget implements Cullable {
 
 		itemHeight = font.getCapHeight() - font.getDescent() * 2;
 		itemHeight += selectedDrawable.getTopHeight() + selectedDrawable.getBottomHeight();
-		prefWidth += selectedDrawable.getLeftWidth() + selectedDrawable.getRightWidth();
 		textOffsetX = selectedDrawable.getLeftWidth();
 		textOffsetY = selectedDrawable.getTopHeight() - font.getDescent();
 
@@ -180,6 +181,7 @@ public class List extends Widget implements Cullable {
 			TextBounds bounds = font.getBounds(items[i]);
 			prefWidth = Math.max(bounds.width, prefWidth);
 		}
+		prefWidth += selectedDrawable.getLeftWidth() + selectedDrawable.getRightWidth();
 		prefHeight = items.length * itemHeight;
 
 		invalidateHierarchy();

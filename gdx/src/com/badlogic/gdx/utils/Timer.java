@@ -28,11 +28,15 @@ public class Timer {
 			public void run () {
 				while (true) {
 					synchronized (instances) {
-						float time = System.nanoTime() * MathUtils.nanoToSec;
-						float wait = Float.MAX_VALUE;
-						for (int i = 0, n = instances.size; i < n; i++)
-							wait = Math.min(wait, instances.get(i).update(time));
-						long waitMillis = (long)(wait * 1000);
+						long timeMillis = System.nanoTime() / 1000000;
+						long waitMillis = Long.MAX_VALUE;
+						for (int i = 0, n = instances.size; i < n; i++) {
+							try {
+								waitMillis = instances.get(i).update(timeMillis, waitMillis);
+							} catch (Throwable ex) {
+								throw new GdxRuntimeException("Task failed: " + instances.get(i).getClass().getName(), ex);
+							}
+						}
 						try {
 							if (waitMillis > 0) instances.wait(waitMillis);
 						} catch (InterruptedException ignored) {
@@ -75,10 +79,10 @@ public class Timer {
 	/** Schedules a task to occur once after the specified delay and then a number of additional times at the specified interval. */
 	public void scheduleTask (Task task, float delaySeconds, float intervalSeconds, int repeatCount) {
 		if (task.repeatCount != CANCELLED) throw new IllegalArgumentException("The same task may not be scheduled twice.");
-		task.executeTime = System.nanoTime() * MathUtils.nanoToSec + delaySeconds;
-		task.intervalSeconds = intervalSeconds;
+		task.executeTimeMillis = System.nanoTime() / 1000000 + (long)(delaySeconds * 1000);
+		task.intervalMillis = (long)(intervalSeconds * 1000);
 		task.repeatCount = repeatCount;
-		synchronized(tasks) {
+		synchronized (tasks) {
 			tasks.add(task);
 		}
 		wake();
@@ -102,24 +106,26 @@ public class Timer {
 
 	/** Cancels all tasks. */
 	public void clear () {
-		synchronized(tasks) {
+		synchronized (tasks) {
 			for (int i = 0, n = tasks.size; i < n; i++)
 				tasks.get(i).cancel();
 			tasks.clear();
 		}
 	}
 
-	float update (float time) {
-		float wait = Float.MAX_VALUE;
-		synchronized(tasks) {
+	long update (long timeMillis, long waitMillis) {
+		synchronized (tasks) {
 			for (int i = 0, n = tasks.size; i < n; i++) {
 				Task task = tasks.get(i);
-				if (task.executeTime > time) {
-					wait = Math.min(wait, task.executeTime - time);
+				if (task.executeTimeMillis > timeMillis) {
+					waitMillis = Math.min(waitMillis, task.executeTimeMillis - timeMillis);
 					continue;
 				}
 				if (task.repeatCount != CANCELLED) {
-					if (task.repeatCount == 0) task.repeatCount = CANCELLED; // Set cancelled before run so it may be rescheduled in run.
+					if (task.repeatCount == 0) {
+						// Set cancelled before run so it may be rescheduled in run.
+						task.repeatCount = CANCELLED;
+					}
 					Gdx.app.postRunnable(task);
 				}
 				if (task.repeatCount == CANCELLED) {
@@ -127,13 +133,13 @@ public class Timer {
 					i--;
 					n--;
 				} else {
-					task.executeTime = time + task.intervalSeconds;
-					wait = Math.min(wait, task.executeTime - time);
+					task.executeTimeMillis = timeMillis + task.intervalMillis;
+					waitMillis = Math.min(waitMillis, task.intervalMillis);
 					if (task.repeatCount > 0) task.repeatCount--;
 				}
 			}
 		}
-		return wait;
+		return waitMillis;
 	}
 
 	static private void wake () {
@@ -170,8 +176,8 @@ public class Timer {
 	 * @see Timer
 	 * @author Nathan Sweet */
 	static abstract public class Task implements Runnable {
-		float executeTime;
-		float intervalSeconds;
+		long executeTimeMillis;
+		long intervalMillis;
 		int repeatCount = CANCELLED;
 
 		/** If this is the last time the task will be ran or the task is first cancelled, it may be scheduled again in this method. */
@@ -179,7 +185,7 @@ public class Timer {
 
 		/** Cancels the task. It will not be executed until it is scheduled again. This method can be called at any time. */
 		public void cancel () {
-			executeTime = 0;
+			executeTimeMillis = 0;
 			repeatCount = CANCELLED;
 		}
 

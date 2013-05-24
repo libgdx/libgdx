@@ -51,7 +51,7 @@ import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 /** An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class. In
- * the {@link Activity#onCreate(Bundle)} method call the {@link #initialize(ApplicationListener, boolean)} method specifying the
+ * the Activity#onCreate(Bundle) method call the {@link #initialize(ApplicationListener, boolean)} method specifying the
  * configuration for the GLSurfaceView.
  * 
  * @author mzechner */
@@ -74,11 +74,11 @@ public class AndroidDaydream extends DreamService implements Application {
 	protected WakeLock wakeLock = null;
 	protected int logLevel = LOG_INFO;
 
-	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
-	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. Uses a default {@link AndroidApplicationConfiguration}.
+	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
+	 * render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0 context
+	 * which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be used when
+	 * OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the {@link Graphics#isGL20Available()}
+	 * method. Uses a default {@link AndroidApplicationConfiguration}.
 	 * 
 	 * @param listener the {@link ApplicationListener} implementing the program logic
 	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available. */
@@ -88,12 +88,12 @@ public class AndroidDaydream extends DreamService implements Application {
 		initialize(listener, config);
 	}
 
-	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If config.useGL20 is set the AndroidApplication will try to create an OpenGL ES 2.0
-	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. You can configure other aspects of the application with the rest of the fields in
-	 * the {@link AndroidApplicationConfiguration} instance.
+	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
+	 * render via OpenGL and so on. If config.useGL20 is set the AndroidApplication will try to create an OpenGL ES 2.0 context
+	 * which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be used when
+	 * OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the {@link Graphics#isGL20Available()}
+	 * method. You can configure other aspects of the application with the rest of the fields in the
+	 * {@link AndroidApplicationConfiguration} instance.
 	 * 
 	 * @param listener the {@link ApplicationListener} implementing the program logic
 	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
@@ -104,7 +104,7 @@ public class AndroidDaydream extends DreamService implements Application {
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-//		net = new AndroidNet(this);
+		net = new AndroidNet(null);
 		this.listener = listener;
 		this.handler = new Handler();
 
@@ -116,7 +116,7 @@ public class AndroidDaydream extends DreamService implements Application {
 		Gdx.net = this.getNet();
 
 		setFullscreen(true);
-		
+
 		setContentView(graphics.getView(), createLayoutParams());
 		createWakeLock(config);
 		hideStatusBar(config);
@@ -137,8 +137,7 @@ public class AndroidDaydream extends DreamService implements Application {
 	}
 
 	protected void hideStatusBar (AndroidApplicationConfiguration config) {
-		if (!config.hideStatusBar || getVersion() < 11)
-			return;
+		if (!config.hideStatusBar || getVersion() < 11) return;
 
 		View rootView = getWindow().getDecorView();
 
@@ -151,11 +150,11 @@ public class AndroidDaydream extends DreamService implements Application {
 		}
 	}
 
-	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
-	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. Uses a default {@link AndroidApplicationConfiguration}.
+	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
+	 * render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0 context
+	 * which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be used when
+	 * OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the {@link Graphics#isGL20Available()}
+	 * method. Uses a default {@link AndroidApplicationConfiguration}.
 	 * <p/>
 	 * Note: you have to add the returned view to your layout!
 	 * 
@@ -168,12 +167,12 @@ public class AndroidDaydream extends DreamService implements Application {
 		return initializeForView(listener, config);
 	}
 
-	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If config.useGL20 is set the AndroidApplication will try to create an OpenGL ES 2.0
-	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. You can configure other aspects of the application with the rest of the fields in
-	 * the {@link AndroidApplicationConfiguration} instance.
+	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
+	 * render via OpenGL and so on. If config.useGL20 is set the AndroidApplication will try to create an OpenGL ES 2.0 context
+	 * which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be used when
+	 * OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the {@link Graphics#isGL20Available()}
+	 * method. You can configure other aspects of the application with the rest of the fields in the
+	 * {@link AndroidApplicationConfiguration} instance.
 	 * <p/>
 	 * Note: you have to add the returned view to your layout!
 	 * 
@@ -187,7 +186,7 @@ public class AndroidDaydream extends DreamService implements Application {
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-//		net = new AndroidNet(this);
+		net = new AndroidNet(null);
 		this.listener = listener;
 		this.handler = new Handler();
 
@@ -253,46 +252,45 @@ public class AndroidDaydream extends DreamService implements Application {
 	}
 
 	@Override
-	public void onDetachedFromWindow() {
+	public void onDetachedFromWindow () {
 		super.onDetachedFromWindow();
 	}
 
-	/** {@inheritDoc} */
+	@Override
+	public ApplicationListener getApplicationListener () {
+		return listener;
+	}
+
 	@Override
 	public Audio getAudio () {
 		return audio;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Files getFiles () {
 		return files;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Graphics getGraphics () {
 		return graphics;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Input getInput () {
 		return input;
 	}
-	
+
 	@Override
 	public Net getNet () {
 		return net;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public ApplicationType getType () {
 		return ApplicationType.Android;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int getVersion () {
 		return Integer.parseInt(android.os.Build.VERSION.SDK);
@@ -314,15 +312,15 @@ public class AndroidDaydream extends DreamService implements Application {
 	}
 
 	AndroidClipboard clipboard;
-	
+
 	@Override
-	public Clipboard getClipboard() {
+	public Clipboard getClipboard () {
 		if (clipboard == null) {
 			clipboard = new AndroidClipboard(this);
 		}
 		return clipboard;
 	}
-	
+
 	@Override
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
@@ -387,18 +385,18 @@ public class AndroidDaydream extends DreamService implements Application {
 	public void setLogLevel (int logLevel) {
 		this.logLevel = logLevel;
 	}
-	
+
 	@Override
 	public void addLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.add(listener);
 		}
 	}
 
 	@Override
 	public void removeLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
-		}		
+		}
 	}
 }

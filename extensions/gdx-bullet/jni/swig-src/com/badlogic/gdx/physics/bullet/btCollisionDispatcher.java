@@ -61,13 +61,13 @@ public class btCollisionDispatcher extends btDispatcher {
     this(gdxBulletJNI.new_btCollisionDispatcher(btCollisionConfiguration.getCPtr(collisionConfiguration), collisionConfiguration), true);
   }
 
-  public btCollisionAlgorithm findAlgorithm(SWIGTYPE_p_btCollisionObjectWrapper body0Wrap, SWIGTYPE_p_btCollisionObjectWrapper body1Wrap, btPersistentManifold sharedManifold) {
-    long cPtr = gdxBulletJNI.btCollisionDispatcher_findAlgorithm__SWIG_0(swigCPtr, this, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body0Wrap), SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body1Wrap), btPersistentManifold.getCPtr(sharedManifold), sharedManifold);
+  public btCollisionAlgorithm findAlgorithm(btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, btPersistentManifold sharedManifold) {
+    long cPtr = gdxBulletJNI.btCollisionDispatcher_findAlgorithm__SWIG_0(swigCPtr, this, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, btPersistentManifold.getCPtr(sharedManifold), sharedManifold);
     return (cPtr == 0) ? null : new btCollisionAlgorithm(cPtr, false);
   }
 
-  public btCollisionAlgorithm findAlgorithm(SWIGTYPE_p_btCollisionObjectWrapper body0Wrap, SWIGTYPE_p_btCollisionObjectWrapper body1Wrap) {
-    long cPtr = gdxBulletJNI.btCollisionDispatcher_findAlgorithm__SWIG_1(swigCPtr, this, SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body0Wrap), SWIGTYPE_p_btCollisionObjectWrapper.getCPtr(body1Wrap));
+  public btCollisionAlgorithm findAlgorithm(btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap) {
+    long cPtr = gdxBulletJNI.btCollisionDispatcher_findAlgorithm__SWIG_1(swigCPtr, this, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap);
     return (cPtr == 0) ? null : new btCollisionAlgorithm(cPtr, false);
   }
 

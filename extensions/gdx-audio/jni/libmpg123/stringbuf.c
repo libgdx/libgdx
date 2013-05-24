@@ -161,3 +161,23 @@ size_t attribute_align_arg mpg123_strlen(mpg123_string *sb, int utf8)
 		return len;
 	}
 }
+
+int attribute_align_arg mpg123_chomp_string(mpg123_string *sb)
+{
+	ssize_t i;
+	if(!sb) return 0;
+
+	for(i=sb->fill-1; --i; i>0)
+	{
+		char *c = sb->p+i;
+		/* Stop at the first proper character. */
+		if(*c && *c != '\r' && *c != '\n') break;
+		else
+		{
+			*c = 0;
+			--sb->fill;
+		}
+	}
+
+	return 1;
+}

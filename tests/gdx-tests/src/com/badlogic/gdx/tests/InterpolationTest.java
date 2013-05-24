@@ -89,7 +89,7 @@ public class InterpolationTest extends GdxTest {
 
 		renderer.setProjectionMatrix(stage.getCamera().combined);
 
-		renderer.begin(ShapeType.Box);
+		renderer.begin(ShapeType.Line);
 		renderer.box(x, y, 0, size, size, 0);
 		renderer.end();
 
@@ -108,8 +108,8 @@ public class InterpolationTest extends GdxTest {
 
 		timer += Gdx.graphics.getDeltaTime();
 		Vector2 current = getCurrentPosition();
-		renderer.begin(ShapeType.FilledRectangle);
-		renderer.filledRect(current.x, current.y, 20, 20);
+		renderer.begin(ShapeType.Filled);
+		renderer.rect(current.x, current.y, 20, 20);
 		renderer.end();
 
 		stage.act(Gdx.graphics.getDeltaTime());
@@ -119,7 +119,7 @@ public class InterpolationTest extends GdxTest {
 	Vector2 getCurrentPosition () {
 		temp.set(targetPosition);
 		temp.sub(position);
-		temp.mul(getInterpolation().apply(Math.min(1, timer / 1f)));
+		temp.scl(getInterpolation().apply(Math.min(1, timer / 1f)));
 		temp.add(position);
 		return temp;
 	}

@@ -100,11 +100,11 @@ public class Touchpad extends Widget {
 			if (!deadzoneBounds.contains(x, y)) {
 				knobPercent.set((x - centerX) / knobBounds.radius, (y - centerY) / knobBounds.radius);
 				float length = knobPercent.len();
-				if (length > 1) knobPercent.mul(1 / length);
+				if (length > 1) knobPercent.scl(1 / length);
 				if (knobBounds.contains(x, y)) {
 					knobPosition.set(x, y);
 				} else {
-					knobPosition.set(knobPercent).nor().mul(knobBounds.radius).add(knobBounds.x, knobBounds.y);
+					knobPosition.set(knobPercent).nor().scl(knobBounds.radius).add(knobBounds.x, knobBounds.y);
 				}
 			}
 		}
