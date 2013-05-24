@@ -69,8 +69,6 @@ public class DefaultShader extends BaseShader {
 	protected final int u_cameraDirection			= registerUniform("u_cameraDirection");
 	protected final int u_cameraUp					= registerUniform("u_cameraUp");
 	// Object uniforms
-	protected final int u_modelTrans					= registerUniform("u_modelTrans");
-	protected final int u_localTrans					= registerUniform("u_localTrans");
 	protected final int u_worldTrans					= registerUniform("u_worldTrans");
 	protected final int u_normalMatrix				= registerUniform("u_normalMatrix", 0, Usage.Normal);
 	protected final int u_bones						= registerUniform("u_bones");
@@ -253,10 +251,6 @@ public class DefaultShader extends BaseShader {
 	}
 
 	private Mesh currentMesh;
-	private Matrix4 currentModelTransform;
-	private Matrix4 currentLocalTransform;
-	private Matrix4 currentWorldTransform;
-	private Matrix4 combinedWorldTransform = new Matrix4();
 	private Matrix3 normalMatrix = new Matrix3();
 	private Camera camera;
 	private final static Matrix4 idtMatrix = new Matrix4();
@@ -285,29 +279,16 @@ public class DefaultShader extends BaseShader {
 			bones[i] = idtMatrix.val[i%16];
 	}
 
-	private void setWorldTransform(final Matrix4 value, final boolean force) {
-		if (force || ((currentWorldTransform == null) != (value == null)) || !currentWorldTransform.equals(value)) { // FIXME implement Matrix4#equals
-			set(u_worldTrans, (currentWorldTransform = value) == null ? idtMatrix : value);
-			set(u_normalMatrix, normalMatrix.set(currentWorldTransform == null ? idtMatrix : currentWorldTransform));
-		}
+	private void setWorldTransform(final Matrix4 value) {
+		set(u_worldTrans, value);
+		set(u_normalMatrix, normalMatrix.set(value)); // FIXME normalize Matrix3 to remove scale component
 	}
 	
 	@Override
 	public void render (final Renderable renderable) {
 		if (!renderable.material.has(BlendingAttribute.Type))
 			context.setBlending(false, GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		if (currentLocalTransform != renderable.localTransform)
-			set(u_localTrans, (currentLocalTransform = renderable.localTransform) == null ? idtMatrix : renderable.localTransform);
-		if (currentModelTransform != renderable.modelTransform)
-			set(u_modelTrans, (currentModelTransform = renderable.modelTransform) == null ? idtMatrix : renderable.modelTransform);
-		if (currentLocalTransform == null && currentModelTransform == null)
-			setWorldTransform(idtMatrix, false);
-		else if (currentLocalTransform == null)
-			setWorldTransform(currentModelTransform, false);
-		else if (currentModelTransform == null)
-			setWorldTransform(currentLocalTransform, false);
-		else
-			setWorldTransform(combinedWorldTransform.set(currentLocalTransform).mul(currentModelTransform), true);
+		setWorldTransform(renderable.worldTransform);
 		bindMaterial(renderable);
 		if (lighting)
 			bindLights(renderable);
@@ -334,7 +315,6 @@ public class DefaultShader extends BaseShader {
 			currentMesh.unbind(program);
 			currentMesh = null;
 		}
-		currentModelTransform = null;
 		currentTextureAttribute = null;
 		currentMaterial = null;
 		program.end();
@@ -392,7 +372,7 @@ public class DefaultShader extends BaseShader {
 		final Array<PointLight> points = lights.pointLights;
 		
 		if (hasUniform(u_ambientCubemap)) {
-			renderable.modelTransform.getTranslation(tmpV1);
+			renderable.worldTransform.getTranslation(tmpV1);
 			ambientCubemap.set(lights.ambientLight);
 			
 			for (int i = directionalLights.length; i < dirs.size; i++)
