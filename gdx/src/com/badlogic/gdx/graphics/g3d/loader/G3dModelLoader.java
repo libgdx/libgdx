@@ -18,10 +18,12 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeAnimation;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.BaseJsonReader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonValue;
@@ -42,13 +44,8 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	}
 	
 	@Override
-	protected ModelData loadModelData (FileHandle fileHandle, AssetLoaderParameters<Model> parameters) {
+	public ModelData loadModelData (FileHandle fileHandle, AssetLoaderParameters<Model> parameters) {
 		return parseModel(fileHandle);
-	}
-	
-	public Model load (FileHandle handle) {
-		ModelData modelData = parseModel(handle);
-		return new Model(modelData);
 	}
 
 	public ModelData parseModel (FileHandle handle) {
@@ -291,6 +288,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		return model.nodes;
 	}
 	
+	private final Quaternion tempQ = new Quaternion(); 
 	private ModelNode parseNodesRecursively(JsonValue json){
 		ModelNode jsonNode = new ModelNode();
 		
@@ -335,10 +333,29 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				
 				JsonValue bones = material.get("bones");
 				if (bones != null) {
-					nodePart.bones = new String[bones.size()];
+					nodePart.bones = new ArrayMap<String, Matrix4>(true, bones.size(), String.class, Matrix4.class);
 					int j = 0;
-					for (JsonValue bone = bones.child(); bone != null; bone = bone.next(), j++)
-						nodePart.bones[j] = bone.asString(); 
+					for (JsonValue bone = bones.child(); bone != null; bone = bone.next(), j++) {
+						String nodeId = bone.getString("node", null);
+						if (nodeId == null)
+							throw new GdxRuntimeException("Bone node ID missing");
+						
+						Matrix4 transform = new Matrix4();
+						
+						JsonValue val = bone.get("translation");
+						if (val != null && val.size() >= 3)
+							transform.translate(val.getFloat(0), val.getFloat(1), val.getFloat(2));
+						
+						val = bone.get("rotation");
+						if(val != null && val.size() >= 4)
+							transform.rotate(tempQ.set(val.getFloat(0), val.getFloat(1), val.getFloat(2), val.getFloat(3)));
+						
+						val = bone.get("scale");
+						if(val != null && val.size() >= 3)
+							transform.scale(val.getFloat(0), val.getFloat(1), val.getFloat(2));
+						
+						nodePart.bones.put(nodeId, transform);
+					}
 				}
 				
 				jsonNode.parts[i] = nodePart;
