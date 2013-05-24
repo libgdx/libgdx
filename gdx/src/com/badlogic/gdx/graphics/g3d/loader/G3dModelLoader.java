@@ -44,13 +44,8 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	}
 	
 	@Override
-	protected ModelData loadModelData (FileHandle fileHandle, AssetLoaderParameters<Model> parameters) {
+	public ModelData loadModelData (FileHandle fileHandle, AssetLoaderParameters<Model> parameters) {
 		return parseModel(fileHandle);
-	}
-	
-	public Model load (FileHandle handle) {
-		ModelData modelData = parseModel(handle);
-		return new Model(modelData);
 	}
 
 	public ModelData parseModel (FileHandle handle) {
