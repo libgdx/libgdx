@@ -36,6 +36,7 @@
 		<include name="assets/loaders/AsynchronousAssetLoader.java"/>
 		<include name="assets/loaders/BitmapFontLoader.java"/>
 		<include name="assets/loaders/FileHandleResolver.java"/>
+		<include name="assets/loaders/ModelLoader.java"/>
 		<include name="assets/loaders/MusicLoader.java"/>
 		<include name="assets/loaders/PixmapLoader.java"/>
 		<include name="assets/loaders/SkinLoader.java"/>
@@ -100,12 +101,12 @@
 		<include name="graphics/g2d/TextureRegion.java"/>
 		
 	<!-- graphics/g3d -->
-		<include name="graphics/g3d/AnimatedModelInstance.java"/>
-		<include name="graphics/g3d/AnimatedModelNode.java"/>
-		<include name="graphics/g3d/ModelLoaderHints.java"/>
-		<include name="graphics/g3d/ModelRenderer.java"/>
-		<include name="graphics/g3d/StillModelInstance.java"/>
-		<include name="graphics/g3d/StillModelNode.java"/>
+		<include name="graphics/g3d/Model.java"/>
+		<include name="graphics/g3d/ModelBatch.java"/>
+		<include name="graphics/g3d/ModelInstance.java"/>
+		<include name="graphics/g3d/Renderable.java"/>
+		<include name="graphics/g3d/RenderableProvider.java"/>
+		<include name="graphics/g3d/Shader.java"/>
 		
 	<!-- graphics/g3d/decals -->
 		<include name="graphics/g3d/decals/CameraGroupStrategy.java"/>
@@ -118,65 +119,66 @@
 		<include name="graphics/g3d/decals/PluggableGroupStrategy.java"/>
 		<include name="graphics/g3d/decals/SimpleOrthoGroupStrategy.java"/>
 
-	<!-- graphics/g3d/loaders -->		
-		<include name="graphics/g3d/loaders/KeyframedModelLoader.java"/>
-		<include name="graphics/g3d/loaders/ModelLoader.java"/>
-		<include name="graphics/g3d/loaders/ModelLoaderRegistry.java"/>
-		<include name="graphics/g3d/loaders/SkeletonModelLoader.java"/>
-		<include name="graphics/g3d/loaders/StillModelLoader.java"/>
-
-	<!-- graphics/g3d/loaders/g3d -->
-		<include name="graphics/g3d/loaders/g3d/G3dConstants.java"/>
-		<include name="graphics/g3d/loaders/g3d/G3dLoader.java"/>
-		<include name="graphics/g3d/loaders/g3d/G3dtLoader.java"/>
-
-	<!-- graphics/g3d/loaders/g3d/chunks -->
-		<include name="graphics/g3d/loaders/g3d/chunks/ChunkReader.java"/>
-		<include name="graphics/g3d/loaders/g3d/chunks/ChunkWriter.java"/>
-		<include name="graphics/g3d/loaders/g3d/chunks/CountingDataInputStream.java"/>
-		<include name="graphics/g3d/loaders/g3d/chunks/G3dExporter.java"/>
-
-	<!-- graphics/g3d/loaders/md2 -->
-		<include name="graphics/g3d/loaders/md2/MD2Frame.java"/>
-		<include name="graphics/g3d/loaders/md2/MD2Header.java"/>
-		<include name="graphics/g3d/loaders/md2/MD2Loader.java"/>
-		<include name="graphics/g3d/loaders/md2/MD2Normals.java"/>
-		<include name="graphics/g3d/loaders/md2/MD2Triangle.java"/>
+	<!-- graphics/g3d/lights -->		
+		<include name="graphics/g3d/lights/AmbientCubemap.java"/>
+		<include name="graphics/g3d/lights/BaseLight.java"/>
+		<include name="graphics/g3d/lights/DirectionalLight.java"/>
+		<include name="graphics/g3d/lights/Lights.java"/>
+		<include name="graphics/g3d/lights/PointLight.java"/>
 				
-	<!-- graphics/g3d/loaders/obj -->
-		<include name="graphics/g3d/loaders/wavefront/ObjLoader.java"/>
-		
+	<!-- graphics/g3d/loader -->		
+		<include name="graphics/g3d/loader/G3dModelLoader.java"/>
+		<include name="graphics/g3d/loader/ObjLoader.java"/>
+
 	<!-- graphics/g3d/materials -->
 		<include name="graphics/g3d/materials/BlendingAttribute.java"/>
 		<include name="graphics/g3d/materials/ColorAttribute.java"/>
+		<include name="graphics/g3d/materials/FloatAttribute.java"/>
+		<include name="graphics/g3d/materials/IntAttribute.java"/>
 		<include name="graphics/g3d/materials/Material.java"/>
-		<include name="graphics/g3d/materials/MaterialAttribute.java"/>
 		<include name="graphics/g3d/materials/TextureAttribute.java"/>
 		
 	<!-- graphics/g3d/model -->
-		<include name="graphics/g3d/model/AnimatedModel.java"/>
 		<include name="graphics/g3d/model/Animation.java"/>
-		<include name="graphics/g3d/model/Model.java"/>
-		<include name="graphics/g3d/model/SubMesh.java"/>
+		<include name="graphics/g3d/model/MeshPart.java"/>
+		<include name="graphics/g3d/model/Node.java"/>
+		<include name="graphics/g3d/model/NodeAnimation.java"/>
+		<include name="graphics/g3d/model/NodeKeyframe.java"/>
+		<include name="graphics/g3d/model/NodePart.java"/>
+
+	<!-- graphics/g3d/model/data -->
+		<include name="graphics/g3d/model/data/ModelAnimation.java"/>
+		<include name="graphics/g3d/model/data/ModelData.java"/>
+		<include name="graphics/g3d/model/data/ModelMaterial.java"/>
+		<include name="graphics/g3d/model/data/ModelMesh.java"/>
+		<include name="graphics/g3d/model/data/ModelMeshPart.java"/>
+		<include name="graphics/g3d/model/data/ModelNode.java"/>
+		<include name="graphics/g3d/model/data/ModelNodeAnimation.java"/>
+		<include name="graphics/g3d/model/data/ModelNodeKeyframe.java"/>
+		<include name="graphics/g3d/model/data/ModelNodePart.java"/>
+		<include name="graphics/g3d/model/data/ModelTexture.java"/>
+				
+	<!-- graphics/g3d/shaders -->
+		<include name="graphics/g3d/shaders/BaseShader.java"/>
+		<include name="graphics/g3d/shaders/DefaultShader.java"/>
+		<include name="graphics/g3d/shaders/GLES10Shader.java"/>
 		
-	<!-- graphics/g3d/model/keyframe -->
-		<include name="graphics/g3d/model/keyframe/Keyframe.java"/>
-		<include name="graphics/g3d/model/keyframe/KeyframedAnimation.java"/>
-		<include name="graphics/g3d/model/keyframe/KeyframedModel.java"/>
-		<include name="graphics/g3d/model/keyframe/KeyframedSubMesh.java"/>
 		
-	<!-- graphics/g3d/model/skeleton -->
-		<include name="graphics/g3d/model/skeleton/Skeleton.java"/>
-		<include name="graphics/g3d/model/skeleton/SkeletonAnimation.java"/>
-		<include name="graphics/g3d/model/skeleton/SkeletonJoint.java"/>
-		<include name="graphics/g3d/model/skeleton/SkeletonKeyframe.java"/>
-		<include name="graphics/g3d/model/skeleton/SkeletonModel.java"/>
-		<include name="graphics/g3d/model/skeleton/SkeletonModelGpuSkinned.java"/>
-		<include name="graphics/g3d/model/skeleton/SkeletonSubMesh.java"/>
-		
-	<!-- graphics/g3d/model/still -->
-		<include name="graphics/g3d/model/still/StillModel.java"/>
-		<include name="graphics/g3d/model/still/StillSubMesh.java"/>
+	<!-- graphics/g3d/utils -->
+		<include name="graphics/g3d/utils/BaseShaderProvider.java"/>
+		<include name="graphics/g3d/utils/CameraInputController.java"/>
+		<include name="graphics/g3d/utils/DefaultRenderableSorter.java"/>
+		<include name="graphics/g3d/utils/DefaultShaderProvider.java"/>
+		<include name="graphics/g3d/utils/DefaultTextureBinder.java"/>
+		<include name="graphics/g3d/utils/MeshBuilder.java"/>
+		<include name="graphics/g3d/utils/MeshPartBuilder.java"/>
+		<include name="graphics/g3d/utils/ModelBuilder.java"/>
+		<include name="graphics/g3d/utils/RenderableSorter.java"/>
+		<include name="graphics/g3d/utils/RenderContext.java"/>
+		<include name="graphics/g3d/utils/ShaderProvider.java"/>
+		<include name="graphics/g3d/utils/TextureBinder.java"/>
+		<include name="graphics/g3d/utils/TextureDescriptor.java"/>
+		<include name="graphics/g3d/utils/TextureProvider.java"/>
 		
 	<!-- graphics/glutils -->
 		<exclude name="graphics/glutils/ETC1.java"/> <!-- Reason: No ETC1 Support -->
@@ -387,6 +389,7 @@
 		<include name="utils/ArrayMap.java"/> <!-- Emulated: Reflection -->
 		<exclude name="utils/AtomicQueue.java"/> <!-- Reason: No atomic support -->
 		<include name="utils/Base64Coder.java"/>
+		<include name="utils/BaseJsonReader.java"/>
 		<include name="utils/BinaryHeap.java"/>
 		<include name="utils/Bits.java"/>
 		<include name="utils/BooleanArray.java"/>
@@ -440,7 +443,8 @@
 		<include name="utils/StringBuilder.java"/>
 		<include name="utils/Timer.java"/> <!-- Emulated: Threading -->
 		<include name="utils/TimeUtils.java"/> <!-- Emulated: nanoTime() -->
-		<include name="utils/TimSort.java"/>		
+		<include name="utils/TimSort.java"/>
+		<include name="utils/UBJsonReader.java"/>		
 		<include name="utils/XmlReader.java"/>
 		<include name="utils/XmlWriter.java"/>
 		
@@ -466,4 +470,10 @@
 		<include name="utils/compression/rangecoder/Encoder.java"/>
 
 	</source>
+	
+	<define-configuration-property name="gdx.files.classpath" is-multi-valued="true" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/utils/arial-15.fnt" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/utils/arial-15.png" />
 </module>

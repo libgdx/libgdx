@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.tests;
+package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -30,6 +31,8 @@ import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -53,20 +56,19 @@ public class MaterialTest extends GdxTest {
 
 	@Override
 	public void create () {
-		ObjLoader objLoader = new ObjLoader();
-		model =  objLoader.loadObj(Gdx.files.internal("data/cube.obj"));
-		
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
+		
+		ModelBuilder builder = new ModelBuilder();
+		model = builder.createBox(1, 1, 1, new Material(), Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		model.manageDisposable(texture);
+		modelInstance = new ModelInstance(model);
 		
 		// Create material attributes. Each material can contain x-number of attributes.
 		textureAttribute = new TextureAttribute(TextureAttribute.Diffuse, texture);
 		colorAttribute = new ColorAttribute(ColorAttribute.Diffuse, Color.ORANGE);
-		blendingAttribute = new BlendingAttribute(GL10.GL_ONE, GL10.GL_ONE);
+		blendingAttribute = new BlendingAttribute(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
-		modelInstance = new ModelInstance(model);
-		
 		material = modelInstance.materials.get(0);
-		material.clear();
 		
 		modelBatch = new ModelBatch();
 		
@@ -77,12 +79,14 @@ public class MaterialTest extends GdxTest {
 		Gdx.input.setInputProcessor(this);
 	}
 
+	private float counter = 0.f;
 	@Override
 	public void render () {
-		GL10 gl = Gdx.graphics.getGL10();
-
-		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		counter = (counter + Gdx.graphics.getDeltaTime()) % 1.f;
+		blendingAttribute.opacity = 0.25f + Math.abs(0.5f - counter);
+		
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		
 		camera.update();
 
@@ -109,11 +113,12 @@ public class MaterialTest extends GdxTest {
 
 	@Override
 	public void dispose () {
-		texture.dispose();
+		model.dispose();
+		modelBatch.dispose();
 	}
 
 	@Override
 	public boolean needsGL20 () {
-		return false;
+		return true;
 	}
 }

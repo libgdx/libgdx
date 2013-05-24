@@ -3,6 +3,7 @@ package com.badlogic.gdx.graphics.g3d;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
@@ -251,6 +252,8 @@ public class Model implements Disposable {
 			result.set(new ColorAttribute(ColorAttribute.Emissive, mtl.emissive));
 		if (mtl.shininess > 0f)
 			result.set(new FloatAttribute(FloatAttribute.Shininess, mtl.shininess));
+		if (mtl.opacity != 1.f)
+			result.set(new BlendingAttribute(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA, mtl.opacity));
 		
 		ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 		

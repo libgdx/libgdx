@@ -81,6 +81,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	@Override
 	public void onModuleLoad () {
+		consoleLog("onModuleLoad");
 		this.agentInfo = computeAgentInfo();
 		this.listener = getApplicationListener();
 		this.config = getConfig();
@@ -120,7 +121,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		new Timer() {
 			@Override
 			public void run () {
-				if (SoundManager.swfLoaded()) {
+				if (SoundManager.ok()) {
 					final PreloaderCallback callback = getPreloaderCallback();
 					preloader = new Preloader();
 					preloader.preload("assets.txt", new PreloaderCallback() {
@@ -146,8 +147,9 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	private void setupLoop () {
 		// setup modules
-		try {
-			graphics = new GwtGraphics(root, config);
+		consoleLog("setupLoop");
+		try {			
+			graphics = new GwtGraphics(root, config);			
 		} catch (Throwable e) {
 			root.clear();
 			root.add(new Label("Sorry, your browser doesn't seem to support WebGL"));
@@ -485,4 +487,8 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			lifecycleListeners.removeValue(listener, true);
 		}		
 	}
+	
+	native void consoleLog(String message) /*-{
+		console.log( "GWT:" + message );
+	}-*/;
 }

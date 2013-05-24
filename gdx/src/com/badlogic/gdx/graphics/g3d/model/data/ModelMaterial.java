@@ -19,6 +19,7 @@ public class ModelMaterial {
 	public Color emissive;
 	
 	public float shininess;
+	public float opacity = 1.f;
 	
 	public Array<ModelTexture> textures;
 }

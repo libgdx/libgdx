@@ -17,9 +17,12 @@
 package com.badlogic.gdx.backends.gwt.preloader;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -80,6 +83,22 @@ public class PreloaderBundleGenerator extends Generator {
 		ArrayList<Asset> assets = new ArrayList<Asset>();
 		copyDirectory(source, target, assetFilter, assets);
 
+		// Now collect classpath files and copy to assets
+		List<String> classpathFiles = getClasspathFiles(context);
+		for (String classpathFile : classpathFiles) {			
+			if (assetFilter.accept(classpathFile, false)) {
+				try {
+					InputStream is = context.getClass().getClassLoader().getResourceAsStream(classpathFile);
+					FileWrapper dest = target.child(classpathFile);
+					dest.write(is, false);
+					assets.add(new Asset(dest, assetFilter.getType(dest.path())));
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}			
+			}
+		}		
+		
 		StringBuffer buffer = new StringBuffer();
 		for (Asset asset : assets) {
 			String path = asset.file.path().replace('\\', '/').replace(assetOutputPath + "assets/", "").replaceFirst("assets", "");
@@ -202,6 +221,19 @@ public class PreloaderBundleGenerator extends Generator {
 		}
 	}
 
+	private List<String> getClasspathFiles(GeneratorContext context) {
+		List<String> classpathFiles = new ArrayList<String>();
+		try {
+			ConfigurationProperty prop = context.getPropertyOracle().getConfigurationProperty("gdx.files.classpath");
+			for (String value : prop.getValues()) {
+				classpathFiles.add(value);
+			}
+		} catch (BadPropertyValueException e) {
+			// Ignore
+		}		
+		return classpathFiles;
+	}
+	
 	private String createDummyClass (TreeLogger logger, GeneratorContext context) {
 		String packageName = "com.badlogic.gdx.backends.gwt.preloader";
 		String className = "PreloaderBundleImpl";

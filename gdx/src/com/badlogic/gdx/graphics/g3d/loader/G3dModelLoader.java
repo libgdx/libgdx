@@ -195,7 +195,9 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			   // Read specular
 				jsonMaterial.specular = parseColor(material.get("specular"), Color.BLACK);
 				// Read shininess
-				float shininess = material.getFloat("shininess", 0.0f);
+				jsonMaterial.shininess = material.getFloat("shininess", 0.0f);
+				// Read opacity
+				jsonMaterial.opacity = material.getFloat("opacity", 1.0f);
 				
 				// Read textures
 				JsonValue textures = material.get("textures");
