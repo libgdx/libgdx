@@ -98,7 +98,7 @@ public class UITest extends GdxTest {
 		final Slider slider = new Slider(0, 10, 1, false, skin);
 		TextField textfield = new TextField("", skin);
 		textfield.setMessageText("Click here!");
-		SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX"}, skin);
+		SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX","Android", "Windows", "Linux", "OSX","Android", "Windows", "Linux", "OSX","Android", "Windows", "Linux", "OSX","Android", "Windows", "Linux", "OSX","Android", "Windows", "Linux", "OSX","Android", "Windows", "Linux", "OSX"}, skin);
 		Image imageActor = new Image(image2);
 		ScrollPane scrollPane = new ScrollPane(imageActor);
 		List list = new List(listEntries, skin);
