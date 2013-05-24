@@ -1,4 +1,5 @@
 [0.9.9]
+- removed custom typedarrays in gwt backend
 - added classpath files support for gwt backend (limited)
 - moved AndroidWallpaperListener to Android Backend
 - added new VertexAttribute Usage flags, bone weight, tangent, binormal. previously encoded as Usage.Generic. Also

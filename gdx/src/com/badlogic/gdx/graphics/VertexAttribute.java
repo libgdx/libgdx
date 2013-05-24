@@ -53,7 +53,7 @@ public final class VertexAttribute {
 	 *           pipeline.
 	 * @param numComponents the number of components of this attribute, must be between 1 and 4.
 	 * @param alias the alias used in a shader for this attribute. Can be changed after construction.
-	 * @param unit unit/index of the attribute, used for boneweights and texture coordinates. 
+	 * @param index unit/index of the attribute, used for boneweights and texture coordinates. 
 	 * */
 	public VertexAttribute (int usage, int numComponents, String alias, int index) {
 		this.usage = usage;

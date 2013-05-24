@@ -191,6 +191,10 @@ public class List extends Widget implements Cullable {
 		return items;
 	}
 
+	public float getItemHeight () {
+		return itemHeight;
+	}
+
 	public float getPrefWidth () {
 		return prefWidth;
 	}

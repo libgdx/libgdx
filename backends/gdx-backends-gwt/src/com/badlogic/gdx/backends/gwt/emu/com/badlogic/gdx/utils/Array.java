@@ -75,7 +75,7 @@ public class Array<T> implements Iterable<T> {
 	* memory copy. */
 	public Array (boolean ordered, T[] array, int start, int count) {
 		this(ordered, array.length, (Class)array.getClass().getComponentType());
-		size = array.length;
+		size = count;
 		System.arraycopy(array, 0, items, 0, size);
 	}
 
@@ -405,6 +405,9 @@ public class Array<T> implements Iterable<T> {
 		return items[MathUtils.random(0, size - 1)];
 	}
 
+
+	/** Returns the items as an array. Note the array is typed, so the {@link #Array(Class)} constructor must have been used.
+	 * Otherwise use {@link #toArray(Class)} to specify the array type. */
 	public T[] toArray () {
 		return (T[])toArray(items.getClass().getComponentType());
 	}
