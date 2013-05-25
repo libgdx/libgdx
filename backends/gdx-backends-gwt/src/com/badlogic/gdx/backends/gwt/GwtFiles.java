@@ -20,10 +20,14 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.gwt.storage.client.Storage;
 
 public class GwtFiles implements Files {
+	
+	public static final Storage LocalStorage = Storage.getLocalStorageIfSupported();
+	
 	final Preloader preloader;
-
+	
 	public GwtFiles (Preloader preloader) {
 		this.preloader = preloader;
 	}
