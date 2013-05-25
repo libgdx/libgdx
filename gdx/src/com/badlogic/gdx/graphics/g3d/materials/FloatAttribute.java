@@ -11,6 +11,13 @@ public class FloatAttribute extends Material.Attribute {
 		return new FloatAttribute(Shininess, value);
 	}
 	
+	public static final String AlphaTestAlias = "alphaTest";
+	public static final long AlphaTest = register(AlphaTestAlias);
+	
+	public static FloatAttribute createAlphaTest(float value) {
+		return new FloatAttribute(AlphaTest, value);
+	}
+	
 	public float value;
 	
 	public FloatAttribute(long type) {
