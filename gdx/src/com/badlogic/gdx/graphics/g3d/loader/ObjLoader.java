@@ -334,8 +334,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 class MtlLoader {
 	public ArrayList<ModelMaterial> materials = new ArrayList<ModelMaterial>();
 
-	/** loads .mtl file
-	 * @param name */
+	/** loads .mtl file */
 	public void load (FileHandle file) {
 		String line;
 		String[] tokens;
