@@ -21,7 +21,34 @@ public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extend
 	
 	protected Array<ObjectMap.Entry<String, ModelData>> items = new Array<ObjectMap.Entry<String, ModelData>>(); 
 	
-	protected abstract ModelData loadModelData(final FileHandle fileHandle, P parameters);
+	/** Directly load the raw model data on the calling thread. */ 
+	public abstract ModelData loadModelData(final FileHandle fileHandle, P parameters);
+	
+	/** Directly load the raw model data on the calling thread. */ 
+	public ModelData loadModelData(final FileHandle fileHandle) {
+		return loadModelData(fileHandle, null);
+	}
+	
+	/** Directly load the model on the calling thread. The model with not be managed by an {@link AssetManager}. */
+	public Model loadModel(final FileHandle fileHandle, TextureProvider textureProvider, P parameters) {
+		final ModelData data = loadModelData(fileHandle, parameters);
+		return data == null ? null : new Model(data, textureProvider);
+	}
+	
+	/** Directly load the model on the calling thread. The model with not be managed by an {@link AssetManager}. */
+	public Model loadModel(final FileHandle fileHandle, P parameters) {
+		return loadModel(fileHandle, new TextureProvider.FileTextureProvider(), parameters);
+	}
+	
+	/** Directly load the model on the calling thread. The model with not be managed by an {@link AssetManager}. */
+	public Model loadModel(final FileHandle fileHandle, TextureProvider textureProvider) {
+		return loadModel(fileHandle, textureProvider, null);
+	}
+	
+	/** Directly load the model on the calling thread. The model with not be managed by an {@link AssetManager}. */
+	public Model loadModel(final FileHandle fileHandle) {
+		return loadModel(fileHandle, new TextureProvider.FileTextureProvider(), null);
+	}
 	
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, P parameters) {

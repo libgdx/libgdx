@@ -32,7 +32,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 @Deprecated
 public class ObjTest extends GdxTest implements InputProcessor {
 	PerspectiveCamera cam;
-	Model mesh;
+	Model model;
 	Texture texture;
 	float angleY = 0;
 	float angleX = 0;
@@ -44,10 +44,10 @@ public class ObjTest extends GdxTest implements InputProcessor {
 	@Override
 	public void create () {
 		ObjLoader objLoader = new ObjLoader();
-		mesh =  objLoader.loadObj(Gdx.files.internal("data/cube.obj"));
+		model =  objLoader.loadModel(Gdx.files.internal("data/cube.obj"));
 		
 		BoundingBox bbox = new BoundingBox();
-		mesh.getBoundingBox(bbox);
+		model.getBoundingBox(bbox);
 		
 		Gdx.app.log("ObjTest", "obj bounds: " + bbox);
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
@@ -85,7 +85,13 @@ public class ObjTest extends GdxTest implements InputProcessor {
 		gl.glRotatef(angleY, 0, 1, 0);
 		gl.glRotatef(angleX, 1, 0, 0);
 		texture.bind();
-		mesh.meshes.get(0).render(GL10.GL_TRIANGLES);
+		model.meshes.get(0).render(GL10.GL_TRIANGLES);
+	}
+	
+	@Override
+	public void dispose () {
+		model.dispose();
+		texture.dispose();
 	}
 
 	@Override

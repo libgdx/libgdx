@@ -143,10 +143,10 @@ public class GLES10Shader implements Shader{
 			}
 			context.setCullFace(cullFace);
 		}
-		if (currentTransform != renderable.modelTransform) { // FIXME mul localtransform
+		if (currentTransform != renderable.worldTransform) { // FIXME mul localtransform
 			if (currentTransform != null)
 				Gdx.gl10.glPopMatrix();
-			currentTransform = renderable.modelTransform;
+			currentTransform = renderable.worldTransform;
 			Gdx.gl10.glPushMatrix();
 			Gdx.gl10.glLoadMatrixf(currentTransform.val, 0);
 		}

@@ -521,7 +521,7 @@ public class MeshBuilder implements MeshPartBuilder {
 			vertex(curr2);
 			if (i == 0)
 				continue;
-			rect((short)(vindex-4), (short)(vindex-2), (short)(vindex-1), (short)(vindex-3)); // FIXME don't duplicate lines and points
+			rect((short)(vindex-3), (short)(vindex-1), (short)(vindex-2), (short)(vindex-4)); // FIXME don't duplicate lines and points
 		}
 	}
 	

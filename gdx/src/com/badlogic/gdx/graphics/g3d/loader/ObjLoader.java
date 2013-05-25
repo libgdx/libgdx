@@ -60,7 +60,10 @@ import com.badlogic.gdx.utils.FloatArray;
 public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 	public static class ObjLoaderParameters extends AssetLoaderParameters<Model> {
 		public boolean flipV;
-		public FileHandle textureDir;
+		public ObjLoaderParameters() {}
+		public ObjLoaderParameters(boolean flipV) {
+			this.flipV = flipV;
+		}
 	}
 	
 	final FloatArray verts = new FloatArray(300);
@@ -68,7 +71,6 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 	final FloatArray uvs = new FloatArray(200);
 	final ArrayList<Group> groups = new ArrayList<Group>(10);
 
-	@Deprecated
 	public ObjLoader () {
 		this(null);
 	}
@@ -77,37 +79,35 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 		super(resolver);
 	}
 
-	/** Loads a Wavefront OBJ file from a given file handle.
+	/** @deprecated Use {@link ObjLoader#loadModel(FileHandle)} instead.<p>
+	 * Loads a Wavefront OBJ file from a given file handle.
 	 * 
 	 * @param file the FileHandle */
 	public Model loadObj (FileHandle file) {
-		return loadObj(file, false);
+		return loadModel(file);
 	}
 
-	/** Loads a Wavefront OBJ file from a given file handle.
+	/** @deprecated Use {@link ObjLoader#loadModel(FileHandle, boolean)} instead.<p>
+	 * Loads a Wavefront OBJ file from a given file handle.
 	 * 
 	 * @param file the FileHandle
-	 * @param flipV whether to flip the v texture coordinate (Blender, Wings3D, et al) */
+	 * @param flipV whether to flip the v texture coordinate (Blender, Wings3D, et al) 
+	 * */
 	public Model loadObj (FileHandle file, boolean flipV) {
-		return loadObj(file, file.parent(), flipV);
-	}
-
-	/** Loads a Wavefront OBJ file from a given file handle.
-	 * 
-	 * @param file the FileHandle
-	 * @param textureDir
-	 * @param flipV whether to flip the v texture coordinate (Blender, Wings3D, et al) */
-	public Model loadObj (FileHandle file, FileHandle textureDir, boolean flipV) {
-		return new Model(loadModelData(file, textureDir, flipV));
+		return loadModel(file, flipV);
 	}
 	
+	/** Directly load the model on the calling thread. The model with not be managed by an {@link AssetManager}. */
+	public Model loadModel(final FileHandle fileHandle, boolean flipV) {
+		return loadModel(fileHandle, new ObjLoaderParameters(flipV));
+	}
+	
+	@Override
 	public ModelData loadModelData (FileHandle file, ObjLoaderParameters parameters) {
-		return loadModelData(file, 
-			parameters == null || parameters.textureDir == null ? file.parent() : parameters.textureDir,
-			parameters == null ? false : parameters.flipV);
+		return loadModelData(file, parameters == null ? false : parameters.flipV);
 	}
 	
-	public ModelData loadModelData (FileHandle file, FileHandle textureDir, boolean flipV) {
+	protected ModelData loadModelData (FileHandle file, boolean flipV) {
 		String line;
 		String[] tokens;
 		char firstChar;
@@ -178,11 +178,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 					else
 						activeGroup = setActiveGroup("default");
 				} else if (tokens[0].equals("mtllib")) {
-					String path = "";
-					if (file.path().contains("/")) {
-						path = file.path().substring(0, file.path().lastIndexOf('/') + 1);
-					}
-					mtl.load(path + tokens[1], textureDir);
+					mtl.load(file.parent().child(tokens[1]));
 				} else if (tokens[0].equals("usemtl")) {
 					if (tokens.length == 1)
 						activeGroup.materialName = "default";
@@ -340,7 +336,7 @@ class MtlLoader {
 
 	/** loads .mtl file
 	 * @param name */
-	public void load (String name, FileHandle textureDir) {
+	public void load (FileHandle file) {
 		String line;
 		String[] tokens;
 		String curMatName = "default";
@@ -348,7 +344,6 @@ class MtlLoader {
 		Color speccolor = Color.WHITE;
 		String texFilename = null;
 
-		FileHandle file = Gdx.files.internal(name);
 		if (file == null || file.exists() == false) return;
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(file.read()), 4096);
@@ -370,6 +365,7 @@ class MtlLoader {
 					mat.specular = new Color(speccolor);
 					if (texFilename != null) {
 						ModelTexture tex = new ModelTexture();
+						tex.usage = ModelTexture.USAGE_DIFFUSE;
 						tex.fileName = new String(texFilename);
 						if (mat.textures == null)
 							mat.textures = new Array<ModelTexture>(1);
@@ -401,14 +397,8 @@ class MtlLoader {
 						speccolor.set(r, g, b, a);
 					}
 				} else if (tokens[0].toLowerCase().equals("map_kd")) {
-					String textureName = tokens[1];
-					if (textureName.length() > 0) {
-						texFilename = textureDir.child(textureName).toString();
-					} else
-						texFilename = null; 
-
+					texFilename = file.parent().child(tokens[1]).path();
 				}
-
 			}
 			reader.close();
 		} catch (IOException e) {
@@ -422,6 +412,7 @@ class MtlLoader {
 		mat.specular = new Color(speccolor);
 		if (texFilename != null) {
 			ModelTexture tex = new ModelTexture();
+			tex.usage = ModelTexture.USAGE_DIFFUSE;
 			tex.fileName = new String(texFilename);
 			if (mat.textures == null)
 				mat.textures = new Array<ModelTexture>(1);
