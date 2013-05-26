@@ -5,6 +5,7 @@
         <groupId>com.badlogicgames.gdx</groupId>
         <artifactId>gdx-parent</artifactId>
         <version>0.9.9-SNAPSHOT</version>
+        <relativePath>../../..</relativePath>
     </parent>
     
     <artifactId>gdx-platform</artifactId>
@@ -97,11 +98,11 @@
                         </goals>
                         <configuration>
                             <resources>
-                                <resource><directory>${basedir}/../gdx/libs/linux32</directory></resource>
-                                <resource><directory>${basedir}/../gdx/libs/linux64</directory></resource>
-                                <resource><directory>${basedir}/../gdx/libs/macosx32</directory></resource>
-                                <resource><directory>${basedir}/../gdx/libs/windows32</directory></resource>
-                                <resource><directory>${basedir}/../gdx/libs/windows64</directory></resource>
+                                <resource><directory>${basedir}/../../libs/linux32</directory></resource>
+                                <resource><directory>${basedir}/../../libs/linux64</directory></resource>
+                                <resource><directory>${basedir}/../../libs/macosx32</directory></resource>
+                                <resource><directory>${basedir}/../../libs/windows32</directory></resource>
+                                <resource><directory>${basedir}/../../libs/windows64</directory></resource>
                             </resources>
                             <outputDirectory>${basedir}/target/desktop</outputDirectory>
                             <overwrite>true</overwrite>
@@ -115,7 +116,7 @@
                         </goals>
                         <configuration>
                             <resources>
-                                <resource><directory>${basedir}/../gdx/libs/armeabi</directory></resource>
+                                <resource><directory>${basedir}/../../libs/armeabi</directory></resource>
                             </resources>
                             <outputDirectory>${basedir}/target/armeabi</outputDirectory>
                             <overwrite>true</overwrite>
@@ -129,7 +130,7 @@
                         </goals>
                         <configuration>
                             <resources>
-                                <resource><directory>${basedir}/../gdx/libs/armeabi-v7a</directory></resource>
+                                <resource><directory>${basedir}/../../libs/armeabi-v7a</directory></resource>
                             </resources>
                             <outputDirectory>${basedir}/target/armeabi-v7a</outputDirectory>
                             <overwrite>true</overwrite>
