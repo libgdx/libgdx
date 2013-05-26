@@ -21,6 +21,7 @@ import java.util.NoSuchElementException;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gwtref.client.ReflectionCache;
 
 /** An ordered or unordered map of objects. This implementation uses arrays to store the keys and values, which means
  * {@link #getKey(Object, boolean) gets} do a comparison for each key in the map. This may be acceptable for small maps and has the
@@ -62,8 +63,8 @@ public class ArrayMap<K, V> {
 	 * @param capacity Any elements added beyond this will cause the backing arrays to be grown. */
 	public ArrayMap (boolean ordered, int capacity, Class<K> keyArrayType, Class<V> valueArrayType) {
 		this.ordered = ordered;
-		keys = (K[])new Object[capacity];
-		values = (V[])new Object[capacity];
+		keys = (K[])ReflectionCache.instance.newArray(keyArrayType, capacity);
+		values = (V[])ReflectionCache.instance.newArray(valueArrayType, capacity);
 	}
 
 	/** Creates an ordered map with {@link #keys} and {@link #values} of the specified type and a capacity of 16. */
