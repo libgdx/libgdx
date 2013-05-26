@@ -20,8 +20,8 @@ import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.typedarrays.client.Uint8Array;
 import com.google.gwt.typedarrays.shared.Int8Array;
+import com.google.gwt.typedarrays.shared.TypedArrays;
 import com.google.gwt.xhr.client.ReadyStateChangeHandler;
 import com.google.gwt.xhr.client.XMLHttpRequest;
 import com.google.gwt.xhr.client.XMLHttpRequest.ResponseType;
@@ -102,8 +102,7 @@ public class AssetDownloader {
 	}
 
 	public void loadBinary (final String url, final AssetLoaderListener<Blob> listener) {
-		XMLHttpRequest request = XMLHttpRequest.create();
-		request.setResponseType(ResponseType.ArrayBuffer);
+		XMLHttpRequest request = XMLHttpRequest.create();		
 		request.setOnReadyStateChange(new ReadyStateChangeHandler() {
 			@Override
 			public void onReadyStateChange (XMLHttpRequest xhr) {
@@ -111,8 +110,7 @@ public class AssetDownloader {
 					if (xhr.getStatus() != 200) {
 						listener.onFailure();
 					} else {
-						@SuppressWarnings("synthetic-access")
-						Int8Array data = getInt8ArrayResponse(xhr);
+						Int8Array data = TypedArrays.createInt8Array(xhr.getResponseArrayBuffer());
 						listener.onSuccess(new Blob(data));
 					}
 				}
@@ -120,6 +118,7 @@ public class AssetDownloader {
 		});
 		setOnProgress(request, listener);
 		request.open("GET", url);
+		request.setResponseType(ResponseType.ArrayBuffer);
 		request.send();
 	}
 
@@ -223,10 +222,6 @@ public class AssetDownloader {
 		this.onprogress = $entry(function(evt) {
 			listener.@com.badlogic.gdx.backends.gwt.preloader.AssetDownloader.AssetLoaderListener::onProgress(D)(evt.loaded);
 		});
-	}-*/;
-
-	private native static Int8Array getInt8ArrayResponse (XMLHttpRequest req) /*-{
-		return new Int8Array(req.response);
 	}-*/;
 
 	private boolean useBrowserCache;

@@ -18,6 +18,7 @@ public class RenderContext {
 	private int blendDFactor;
 	private boolean depthTest;
 	private int depthFunc;
+	private int cullFace;
 	
 	public RenderContext(TextureBinder textures) {
 		this.textureBinder = textures;
@@ -32,7 +33,8 @@ public class RenderContext {
 		depthTest = false;
 		Gdx.gl.glDisable(GL10.GL_BLEND);
 		blending = false;
-		blendSFactor = blendDFactor = depthFunc = 0;
+		Gdx.gl.glDisable(GL10.GL_CULL_FACE);
+		cullFace = blendSFactor = blendDFactor = depthFunc = 0;
 		textureBinder.begin();
 	}
 	
@@ -42,6 +44,7 @@ public class RenderContext {
 	public final void end() {
 		if(depthTest) Gdx.gl.glDisable(GL10.GL_DEPTH_TEST);
 		if(blending) Gdx.gl.glDisable(GL10.GL_BLEND);
+		if(cullFace>0) Gdx.gl.glDisable(GL10.GL_CULL_FACE);
 		textureBinder.end();
 	}
 	
@@ -71,6 +74,18 @@ public class RenderContext {
 			Gdx.gl.glBlendFunc(sFactor, dFactor);
 			blendSFactor = sFactor;
 			blendDFactor = dFactor;
+		}
+	}
+	
+	public final void setCullFace(final int face) {
+		if (face != cullFace) {
+			cullFace = face;
+			if ((face == GL10.GL_FRONT) || (face == GL10.GL_BACK) || (face == GL10.GL_FRONT_AND_BACK)) {
+				Gdx.gl.glEnable(GL10.GL_CULL_FACE);
+				Gdx.gl.glCullFace(face);
+			}
+			else
+				Gdx.gl.glDisable(GL10.GL_CULL_FACE);
 		}
 	}
 }

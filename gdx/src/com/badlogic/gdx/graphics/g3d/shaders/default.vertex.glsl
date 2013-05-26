@@ -85,12 +85,7 @@ attribute vec2 a_boneWeight7;
 #endif
 #endif
 
-#ifdef skinningFlag
-uniform mat4 u_localTrans;
-uniform mat4 u_modelTrans;
-#else
 uniform mat4 u_worldTrans;
-#endif //skinningFlag
 
 #if defined(numBones)
 #if numBones > 0
@@ -103,6 +98,16 @@ uniform float u_shininess;
 #else
 const float u_shininess = 20.0;
 #endif // shininessFlag
+
+#ifdef blendedFlag
+uniform float u_opacity;
+varying float v_opacity;
+
+#ifdef alphaTestFlag
+uniform float u_alphaTest;
+varying float v_alphaTest;
+#endif //alphaTestFlag
+#endif // blendedFlag
 
 #ifdef lightingFlag
 varying vec3 v_lightDiffuse;
@@ -152,6 +157,13 @@ void main() {
 	#if defined(colorFlag)
 		v_color = a_color;
 	#endif // colorFlag
+		
+	#ifdef blendedFlag
+		v_opacity = u_opacity;
+		#ifdef alphaTestFlag
+			v_alphaTest = u_alphaTest;
+		#endif //alphaTestFlag
+	#endif // blendedFlag
 	
 	#ifdef skinningFlag
 		mat4 skinning = mat4(0.0);
@@ -182,7 +194,7 @@ void main() {
 	#endif //skinningFlag
 
 	#ifdef skinningFlag
-		vec4 pos = u_modelTrans * ((skinning * u_localTrans) * vec4(a_position, 1.0));
+		vec4 pos = u_worldTrans * skinning * vec4(a_position, 1.0);
 	#else
 		vec4 pos = u_worldTrans * vec4(a_position, 1.0);
 	#endif
@@ -190,7 +202,7 @@ void main() {
 	
 	#if defined(normalFlag)
 		#if defined(skinningFlag)
-			vec3 normal = normalize((skinning * vec4(a_normal, 0.0)).xyz); // FIXME mul normals like pos
+			vec3 normal = normalize((u_worldTrans * skinning * vec4(a_normal, 0.0)).xyz);
 		#else
 			vec3 normal = normalize(u_normalMatrix * a_normal);
 		#endif

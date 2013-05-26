@@ -67,6 +67,10 @@ public class SoundManager {
 															return $wnd.soundManager.swfLoaded;
 															}-*/;
 
+	public static native boolean ok () /*-{
+		return $wnd.soundManager.ok();
+	}-*/;
+	
 	public static native void init (String moduleBaseURL, int flashVersion) /*-{
 																									$wnd.SM2_DEFER = true;
 																									$wnd.soundManager = new $wnd.SoundManager();
@@ -74,4 +78,5 @@ public class SoundManager {
 																									$wnd.soundManager.flashVersion = flashVersion;
 																									$wnd.soundManager.beginDelayedInit()
 																									}-*/;
+
 }
