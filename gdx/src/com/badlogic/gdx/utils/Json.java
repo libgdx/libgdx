@@ -43,7 +43,7 @@ import java.util.Map;
  * https://code.google.com/p/libgdx/wiki/JsonParsing
  * @author Nathan Sweet */
 public class Json {
-	private static final boolean debug = true;
+	private static final boolean debug = false;
 
 	private JsonWriter writer;
 	private String typeName = "class";
