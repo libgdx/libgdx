@@ -218,6 +218,13 @@ public class Table extends WidgetGroup {
 		return layout.add(actor);
 	}
 
+	public boolean removeActor (Actor actor) {
+		if (!super.removeActor(actor)) return false;
+		Cell cell = getCell(actor);
+		if (cell != null) cell.setWidget(null);
+		return true;
+	}
+
 	/** Adds a new cell to the table with the specified actors in a {@link Stack}.
 	 * @param actors May be null to add a stack without any actors. */
 	public Cell stack (Actor... actors) {
