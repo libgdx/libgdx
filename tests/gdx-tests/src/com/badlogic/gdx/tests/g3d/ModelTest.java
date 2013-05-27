@@ -123,6 +123,16 @@ public class ModelTest extends BaseG3dHudTest {
 		}
 	}
 
+    Vector3 tmpTrans =  new Vector3();
+    protected void moveUpDown(int dir) {
+        for (final ModelInstance instance : instances) {
+            instance.transform.getTranslation(tmpTrans);
+
+            instance.transform.setToTranslation(tmpTrans.x, tmpTrans.y + Gdx.graphics.getDeltaTime()*dir, tmpTrans.z );
+            //instance.transform.val[13] += Gdx.graphics.getDeltaTime()*dir;
+        }
+    }
+
 	@Override
 	public boolean needsGL20 () {
 		return true;
@@ -132,6 +142,12 @@ public class ModelTest extends BaseG3dHudTest {
 	public boolean keyUp (int keycode) {
 		if (keycode == Keys.SPACE || keycode == Keys.MENU)
 			switchAnimation();
+
+        if (keycode == Keys.S) {
+            moveUpDown(-2);
+        } else if (keycode == Keys.W) {
+            moveUpDown(2);
+        }
 		return super.keyUp(keycode);
 	}
 }
