@@ -55,6 +55,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	private int columns, rows;
 
 	private final ArrayList<Cell> cells = new ArrayList(4);
+	private final ArrayList<Cell> cellTracker = new ArrayList(4);
 	private final Cell cellDefaults = Cell.defaults(this);
 	private final ArrayList<Cell> columnDefaults = new ArrayList(2);
 	private Cell rowDefaults;
@@ -132,6 +133,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	public Cell row () {
 		if (cells.size() > 0) endRow();
 		rowDefaults = getNewCell();
+		cellTracker.add(rowDefaults);
 		return rowDefaults;
 	}
 
@@ -154,6 +156,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		Cell cell = columnDefaults.size() > column ? columnDefaults.get(column) : null;
 		if (cell == null) {
 			cell = getNewCell();
+			cellTracker.add(cell);
 			if (column >= columnDefaults.size()) {
 				for (int i = columnDefaults.size(); i < column; i++)
 					columnDefaults.add(null);
@@ -186,7 +189,11 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 			if (widget != null) toolkit.removeChild(table, (C)widget);
 			cellPool.free(cells.get(i));
 		}
+		for (int i = 0, n = cellTracker.size(); i < n; i++) {
+			cellPool.free(cellTracker.get(i));
+		}
 		cells.clear();
+		cellTracker.clear();
 		rows = 0;
 		columns = 0;
 		rowDefaults = null;
