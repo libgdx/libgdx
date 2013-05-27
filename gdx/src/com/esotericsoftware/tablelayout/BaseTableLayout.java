@@ -27,6 +27,7 @@
 
 package com.esotericsoftware.tablelayout;
 
+import com.badlogic.gdx.utils.SimplePool;
 import com.esotericsoftware.tablelayout.Value.FixedValue;
 
 import java.util.ArrayList;
@@ -46,6 +47,8 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	static public enum Debug {
 		none, all, table, cell, widget
 	}
+	
+	private SimplePool<Cell> cellPool = new SimplePool<Cell>();
 
 	K toolkit;
 	T table;
@@ -84,7 +87,8 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 
 	/** Adds a new cell to the table with the specified widget. */
 	public Cell<C> add (C widget) {
-		Cell cell = new Cell(this);
+		
+		Cell cell = getNewCell();
 		cell.widget = widget;
 
 		if (cells.size() > 0) {
@@ -127,7 +131,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	 * for all cells in the new row. */
 	public Cell row () {
 		if (cells.size() > 0) endRow();
-		rowDefaults = new Cell(this);
+		rowDefaults = getNewCell();
 		return rowDefaults;
 	}
 
@@ -149,7 +153,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	public Cell columnDefaults (int column) {
 		Cell cell = columnDefaults.size() > column ? columnDefaults.get(column) : null;
 		if (cell == null) {
-			cell = new Cell(this);
+			cell = getNewCell();
 			if (column >= columnDefaults.size()) {
 				for (int i = columnDefaults.size(); i < column; i++)
 					columnDefaults.add(null);
@@ -180,6 +184,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		for (int i = cells.size() - 1; i >= 0; i--) {
 			Object widget = cells.get(i).widget;
 			if (widget != null) toolkit.removeChild(table, (C)widget);
+			cellPool.free(cells.get(i));
 		}
 		cells.clear();
 		rows = 0;
@@ -196,7 +201,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		}
 		return null;
 	}
-
+		
 	/** Returns the cells for this table. */
 	public List<Cell> getCells () {
 		return cells;
@@ -228,6 +233,13 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		return tableMinHeight;
 	}
 
+	private Cell getNewCell() {
+		Cell cell = cellPool.obtain();
+		if (cell == null) cell = new Cell(this);
+		
+		return cell;
+	}
+	
 	/** The preferred width of the table. */
 	public float getPrefWidth () {
 		if (sizeInvalid) computeSize();
