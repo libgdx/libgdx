@@ -27,14 +27,13 @@
 
 package com.esotericsoftware.tablelayout;
 
-import com.badlogic.gdx.utils.Pool.Poolable;
 import com.esotericsoftware.tablelayout.Value.FixedValue;
 
 import static com.esotericsoftware.tablelayout.BaseTableLayout.*;
 
 /** A cell in a table.
  * @author Nathan Sweet */
-public class Cell<C> implements Poolable{
+public class Cell<C> {
 	Value minWidth, minHeight;
 	Value prefWidth, prefHeight;
 	Value maxWidth, maxHeight;
@@ -933,8 +932,8 @@ public class Cell<C> implements Poolable{
 		return defaults;
 	}
 
-	@Override
-	public void reset () {
+	
+	void reset () {
 		
 		minWidth = minHeight = null;
 		prefWidth = prefHeight = null;
@@ -967,6 +966,9 @@ public class Cell<C> implements Poolable{
 		
 		public void free(Cell cell) {}
 		
+		protected void reset(Cell cell) {
+			cell.reset();
+		}
 		protected void setLayout(Cell cell, BaseTableLayout layout) {
 			cell.layout = layout;
 		}
