@@ -50,13 +50,16 @@ public class Cell<C> {
 	float widgetX, widgetY;
 	float widgetWidth, widgetHeight;
 
-	private final BaseTableLayout layout;
+	private BaseTableLayout layout;
 	boolean endRow;
 	int column, row;
 	int cellAboveIndex = -1;
 	float computedPadTop, computedPadLeft, computedPadBottom, computedPadRight;
 
-	Cell (BaseTableLayout layout) {
+	public Cell () {
+	}
+
+	public void setLayout (BaseTableLayout layout) {
 		this.layout = layout;
 	}
 
@@ -907,7 +910,8 @@ public class Cell<C> {
 	}
 
 	static Cell defaults (BaseTableLayout layout) {
-		Cell defaults = new Cell(layout);
+		Cell defaults = new Cell();
+		defaults.layout = layout;
 		defaults.minWidth = Value.minWidth;
 		defaults.minHeight = Value.minHeight;
 		defaults.prefWidth = Value.prefWidth;

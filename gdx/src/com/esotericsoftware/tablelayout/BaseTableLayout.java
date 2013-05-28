@@ -84,7 +84,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 
 	/** Adds a new cell to the table with the specified widget. */
 	public Cell<C> add (C widget) {
-		Cell cell = new Cell(this);
+		Cell cell = toolkit.obtainCell((L)this);
 		cell.widget = widget;
 
 		if (cells.size() > 0) {
@@ -127,7 +127,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	 * for all cells in the new row. */
 	public Cell row () {
 		if (cells.size() > 0) endRow();
-		rowDefaults = new Cell(this);
+		rowDefaults = toolkit.obtainCell((L)this);
 		return rowDefaults;
 	}
 
@@ -149,7 +149,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	public Cell columnDefaults (int column) {
 		Cell cell = columnDefaults.size() > column ? columnDefaults.get(column) : null;
 		if (cell == null) {
-			cell = new Cell(this);
+			cell = toolkit.obtainCell((L)this);
 			if (column >= columnDefaults.size()) {
 				for (int i = columnDefaults.size(); i < column; i++)
 					columnDefaults.add(null);
@@ -591,7 +591,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 			if (prefWidth < minWidth) prefWidth = minWidth;
 			if (maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
 
-			float spannedMinWidth = 0, spannedPrefWidth = 0;
+			float spannedMinWidth = -(c.computedPadLeft + c.computedPadRight), spannedPrefWidth = spannedMinWidth;
 			for (int column = c.column, nn = column + c.colspan; column < nn; column++) {
 				spannedMinWidth += columnMinWidth[column];
 				spannedPrefWidth += columnPrefWidth[column];
@@ -681,25 +681,19 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		float hpadding = w(padLeft) + w(padRight);
 		float vpadding = h(padTop) + h(padBottom);
 
-		// totalMinWidth/totalMinHeight are needed because tableMinWidth/tableMinHeight could be based on this.width or this.height.
-		float totalMinWidth = 0, totalMinHeight = 0;
 		float totalExpandWidth = 0, totalExpandHeight = 0;
-		for (int i = 0; i < columns; i++) {
-			totalMinWidth += columnMinWidth[i];
+		for (int i = 0; i < columns; i++)
 			totalExpandWidth += expandWidth[i];
-		}
-		for (int i = 0; i < rows; i++) {
-			totalMinHeight += rowMinHeight[i];
+		for (int i = 0; i < rows; i++)
 			totalExpandHeight += expandHeight[i];
-		}
 
 		// Size columns and rows between min and pref size using (preferred - min) size to weight distribution of extra space.
 		float[] columnWeightedWidth;
-		float totalGrowWidth = tablePrefWidth - totalMinWidth;
+		float totalGrowWidth = tablePrefWidth - tableMinWidth;
 		if (totalGrowWidth == 0)
 			columnWeightedWidth = columnMinWidth;
 		else {
-			float extraWidth = Math.min(totalGrowWidth, Math.max(0, layoutWidth - totalMinWidth));
+			float extraWidth = Math.min(totalGrowWidth, Math.max(0, layoutWidth - tableMinWidth));
 			columnWeightedWidth = this.columnWeightedWidth = ensureSize(this.columnWeightedWidth, columns);
 			for (int i = 0; i < columns; i++) {
 				float growWidth = columnPrefWidth[i] - columnMinWidth[i];
@@ -709,12 +703,12 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		}
 
 		float[] rowWeightedHeight;
-		float totalGrowHeight = tablePrefHeight - totalMinHeight;
+		float totalGrowHeight = tablePrefHeight - tableMinHeight;
 		if (totalGrowHeight == 0)
 			rowWeightedHeight = rowMinHeight;
 		else {
 			rowWeightedHeight = this.rowWeightedHeight = ensureSize(this.rowWeightedHeight, rows);
-			float extraHeight = Math.min(totalGrowHeight, Math.max(0, layoutHeight - totalMinHeight));
+			float extraHeight = Math.min(totalGrowHeight, Math.max(0, layoutHeight - tableMinHeight));
 			for (int i = 0; i < rows; i++) {
 				float growHeight = rowPrefHeight[i] - rowMinHeight[i];
 				float growRatio = growHeight / (float)totalGrowHeight;
