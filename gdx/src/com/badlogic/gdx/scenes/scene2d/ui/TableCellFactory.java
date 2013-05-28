@@ -13,9 +13,11 @@ import com.esotericsoftware.tablelayout.Cell.CellFactory;
  *
  */
 public class TableCellFactory extends CellFactory {
-
+	private static TableCellFactory instance;
 	private static SimplePool<Cell> cellPool = new SimplePool<Cell>();
-
+	
+	protected TableCellFactory() {}
+	
 	@Override
 	public Cell obtain (BaseTableLayout layout) {
 		Cell cell = cellPool.obtain();
@@ -32,5 +34,10 @@ public class TableCellFactory extends CellFactory {
 	public void free (Cell cell) {
 		reset(cell);
 		cellPool.free(cell);
+	}
+	
+	public static TableCellFactory getInstance() {
+		if(instance == null) instance = new TableCellFactory();
+		return instance;
 	}
 }

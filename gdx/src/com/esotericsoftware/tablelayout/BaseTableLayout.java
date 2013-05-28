@@ -74,7 +74,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	Debug debug = Debug.none;
 
 	public BaseTableLayout (K toolkit) {
-		this(toolkit, new CellFactory());
+		this(toolkit, CellFactory.getInstance());
 	}
 	
 	public BaseTableLayout (K toolkit, CellFactory cellFactory) {

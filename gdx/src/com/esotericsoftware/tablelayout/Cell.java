@@ -960,6 +960,9 @@ public class Cell<C> {
 	
 	static public class CellFactory {
 		
+		private static CellFactory instance;
+		protected CellFactory(){}
+		
 		public Cell obtain(BaseTableLayout layout) {
 			return new Cell(layout);
 		}
@@ -971,6 +974,11 @@ public class Cell<C> {
 		}
 		protected void setLayout(Cell cell, BaseTableLayout layout) {
 			cell.layout = layout;
+		}
+		
+		public static CellFactory getInstance() {
+			if(instance == null) instance = new CellFactory();
+			return instance;
 		}
 	}
 }
