@@ -33,6 +33,9 @@ ipch/
 
 libgdx-*.zip
 
+*.iml
+/.idea/
+
 #core & extension libs/ folders that have no 3rd party dependencies in them
 /gdx/libs
 /backends/gdx-backend-jglfw/libs/
