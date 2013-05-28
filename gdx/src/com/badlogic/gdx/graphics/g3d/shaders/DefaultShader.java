@@ -2,7 +2,6 @@ package com.badlogic.gdx.graphics.g3d.shaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -13,15 +12,9 @@ import com.badlogic.gdx.graphics.g3d.lights.AmbientCubemap;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.lights.PointLight;
-import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.IntAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.*;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -74,13 +67,15 @@ public class DefaultShader extends BaseShader {
 	protected final int u_bones						= registerUniform("u_bones");
 	// Material uniforms
 	protected final int u_shininess					= registerUniform("u_shininess", FloatAttribute.Shininess);
-	protected final int u_opacity						= registerUniform("u_opacity", BlendingAttribute.Type);
+	protected final int u_opacity					= registerUniform("u_opacity", BlendingAttribute.Type);
 	protected final int u_diffuseColor				= registerUniform("u_diffuseColor", ColorAttribute.Diffuse);
 	protected final int u_diffuseTexture			= registerUniform("u_diffuseTexture", TextureAttribute.Diffuse);
 	protected final int u_specularColor				= registerUniform("u_specularColor", ColorAttribute.Specular);
 	protected final int u_specularTexture			= registerUniform("u_specularTexture", TextureAttribute.Specular);
 	protected final int u_normalTexture				= registerUniform("u_normalTexture", TextureAttribute.Normal);
 	protected final int u_alphaTest					= registerUniform("u_alphaTest", FloatAttribute.AlphaTest);
+    protected final int u_fogDistance				= registerUniform("u_fogDistance", FloatAttribute.FogDistance);
+    protected final int u_fogColor				    = registerUniform("u_fogColor", ColorAttribute.Fog);
 	// Lighting uniforms
 	protected final int u_ambientLight				= registerUniform("u_ambientLight");
 	protected final int u_ambientCubemap			= registerUniform("u_ambientCubemap");
@@ -214,6 +209,8 @@ public class DefaultShader extends BaseShader {
 			prefix += "#define "+ColorAttribute.DiffuseAlias+"Flag\n";
 		if ((mask & ColorAttribute.Specular) == ColorAttribute.Specular)
 			prefix += "#define "+ColorAttribute.SpecularAlias+"Flag\n";
+        if ((mask & ColorAttribute.Fog) == ColorAttribute.Fog)
+            prefix += "#define "+ColorAttribute.FogAlias+"Flag\n";
 		if ((mask & FloatAttribute.Shininess) == FloatAttribute.Shininess)
 			prefix += "#define "+FloatAttribute.ShininessAlias+"Flag\n";
 		if ((mask & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
@@ -337,6 +334,8 @@ public class DefaultShader extends BaseShader {
 					set(u_diffuseColor, col.color);
 				else if ((t & ColorAttribute.Specular) == ColorAttribute.Specular)
 					set(u_specularColor, col.color);
+                else if ((t & ColorAttribute.Fog) == ColorAttribute.Fog)
+                    set(u_fogColor, col.color);
 			}
 			else if (TextureAttribute.is(t)) {
 				final TextureAttribute tex = (TextureAttribute)attr;
@@ -352,7 +351,9 @@ public class DefaultShader extends BaseShader {
 				cullFace = ((IntAttribute)attr).value;
 			else if ((t & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
 				set(u_alphaTest, ((FloatAttribute)attr).value);
-			else if(!ignoreUnimplemented)
+            else if ((t & FloatAttribute.FogDistance) == FloatAttribute.FogDistance)
+                set(u_fogDistance, ((FloatAttribute)attr).value);
+            else if(!ignoreUnimplemented)
 					throw new GdxRuntimeException("Unknown material attribute: "+attr.toString());
 		}
 		context.setCullFace(cullFace);

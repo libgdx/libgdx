@@ -9,12 +9,14 @@ public class ColorAttribute extends Material.Attribute {
 	public final static long Diffuse = register(DiffuseAlias);
 	public final static String SpecularAlias = "specularColor";
 	public final static long Specular = register(SpecularAlias);
+    public final static String FogAlias = "fogColor";
+    public final static long Fog = register(FogAlias);
 	public final static String AmbientAlias = "ambientColor";
 	public static final long Ambient = register("ambientColor");
 	public final static String EmissiveAlias = "emissiveColor";
 	public static final long Emissive = register("emissiveColor");
 	
-	protected static long Mask = Ambient | Diffuse | Specular | Emissive;
+	protected static long Mask = Ambient | Diffuse | Specular | Emissive | Fog;
 	
 	public final static boolean is(final long mask) {
 		return (mask & Mask) != 0;
@@ -35,6 +37,14 @@ public class ColorAttribute extends Material.Attribute {
 	public final static ColorAttribute createSpecular(float r, float g, float b, float a) {
 		return new ColorAttribute(Specular, r, g, b, a);
 	}
+
+    public final static ColorAttribute createFog(float r, float g, float b) {
+        return new ColorAttribute(Fog, r, g, b, 1.0f);
+    }
+
+    public final static ColorAttribute createFog(final Color color) {
+        return new ColorAttribute(Fog, color);
+    }
 	
 	public final Color color = new Color();
 	

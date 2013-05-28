@@ -6,6 +6,10 @@
 #define specularFlag
 #endif
 
+#if defined(specularFlag) || defined(fogColorFlag)
+#define cameraPositionFlag
+#endif
+
 attribute vec3 a_position;
 uniform mat4 u_projTrans;
 
@@ -126,8 +130,21 @@ uniform vec3 u_sphericalHarmonics[9];
 
 #ifdef specularFlag
 varying vec3 v_lightSpecular;
-uniform vec3 u_cameraPosition;
 #endif // specularFlag
+
+#ifdef cameraPositionFlag
+uniform vec3 u_cameraPosition;
+#endif // cameraPositionFlag
+
+#ifdef fogColorFlag
+varying float v_fog;
+#ifdef fogDistanceFlag
+uniform float u_fogDistance;
+#else
+const float u_fogDistance = 0.02;
+#endif // fogDistanceFlag
+#endif // fogColorFlag
+
 
 #if defined(numDirectionalLights) && (numDirectionalLights > 0)
 struct DirectionalLight
@@ -208,6 +225,12 @@ void main() {
 		#endif
 		v_normal = normal;
 	#endif // normalFlag
+
+    #ifdef fogColorFlag
+        float fog  = length(u_cameraPosition.xyz - pos.xyz) * u_fogDistance;
+              fog *= fog;
+        v_fog = min(fog, 1.0);
+    #endif
 
 	#ifdef lightingFlag
 		#ifdef ambientLightFlag

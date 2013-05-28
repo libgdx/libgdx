@@ -60,6 +60,11 @@ varying vec3 v_lightSpecular;
 #endif //specularFlag
 #endif //lightingFlag
 
+#ifdef fogColorFlag
+uniform vec4 u_fogColor;
+varying float v_fog;
+#endif // fogColorFlag
+
 void main() {
 	#if defined(normalFlag) 
 		vec3 normal = v_normal;
@@ -101,6 +106,10 @@ void main() {
 		gl_FragColor.rgb = (diffuse.rgb * v_lightDiffuse) + specular;
 	#endif //lightingFlag
 
+	#ifdef fogColorFlag
+    	gl_FragColor.rgb = mix(gl_FragColor.rgb, u_fogColor.rgb, v_fog);
+    #endif // end fogColorFlag
+
 	#ifdef blendedFlag
 		gl_FragColor.a = diffuse.a * v_opacity;
 		#ifdef alphaTestFlag
@@ -108,4 +117,5 @@ void main() {
 				discard;
 		#endif
 	#endif
+
 }
