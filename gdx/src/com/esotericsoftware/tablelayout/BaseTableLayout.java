@@ -32,8 +32,6 @@ import com.esotericsoftware.tablelayout.Value.FixedValue;
 import java.util.ArrayList;
 import java.util.List;
 
-// BOZO - Support inserting cells/rows.
-
 /** Base layout functionality.
  * @author Nathan Sweet */
 abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout, K extends Toolkit<C, T, L>> {
@@ -52,7 +50,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	private int columns, rows;
 
 	private final ArrayList<Cell> cells = new ArrayList(4);
-	private final Cell cellDefaults = Cell.defaults(this);
+	private final Cell cellDefaults;
 	private final ArrayList<Cell> columnDefaults = new ArrayList(2);
 	private Cell rowDefaults;
 
@@ -71,6 +69,8 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 
 	public BaseTableLayout (K toolkit) {
 		this.toolkit = toolkit;
+		cellDefaults = toolkit.obtainCell((L)this);
+		cellDefaults.defaults();
 	}
 
 	/** Invalidates the layout. The cached min and pref sizes are recalculated the next time layout is done or the min or pref sizes
@@ -88,13 +88,15 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		cell.widget = widget;
 
 		if (cells.size() > 0) {
-			// Set cell x and y.
+			// Set cell column and row.
 			Cell lastCell = cells.get(cells.size() - 1);
 			if (!lastCell.endRow) {
 				cell.column = lastCell.column + lastCell.colspan;
 				cell.row = lastCell.row;
-			} else
+			} else {
+				cell.column = 0;
 				cell.row = lastCell.row + 1;
+			}
 			// Set the index of the cell above.
 			if (cell.row > 0) {
 				outer:
@@ -108,13 +110,16 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 					}
 				}
 			}
+		} else {
+			cell.column = 0;
+			cell.row = 0;
 		}
 		cells.add(cell);
 
 		cell.set(cellDefaults);
 		if (cell.column < columnDefaults.size()) {
-			Cell columnDefaults = this.columnDefaults.get(cell.column);
-			if (columnDefaults != null) cell.merge(columnDefaults);
+			Cell columnCell = columnDefaults.get(cell.column);
+			if (columnCell != null) cell.merge(columnCell);
 		}
 		cell.merge(rowDefaults);
 
@@ -127,7 +132,9 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	 * for all cells in the new row. */
 	public Cell row () {
 		if (cells.size() > 0) endRow();
+		if (rowDefaults != null) toolkit.freeCell(rowDefaults);
 		rowDefaults = toolkit.obtainCell((L)this);
+		rowDefaults.clear();
 		return rowDefaults;
 	}
 
@@ -150,6 +157,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		Cell cell = columnDefaults.size() > column ? columnDefaults.get(column) : null;
 		if (cell == null) {
 			cell = toolkit.obtainCell((L)this);
+			cell.clear();
 			if (column >= columnDefaults.size()) {
 				for (int i = columnDefaults.size(); i < column; i++)
 					columnDefaults.add(null);
@@ -171,19 +179,26 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		align = CENTER;
 		if (debug != Debug.none) toolkit.clearDebugRectangles((L)this);
 		debug = Debug.none;
-		cellDefaults.set(Cell.defaults(this));
+		cellDefaults.defaults();
+		for (int i = 0, n = columnDefaults.size(); i < n; i++) {
+			Cell columnCell = columnDefaults.get(i);
+			if (columnCell != null) toolkit.freeCell(columnCell);
+		}
 		columnDefaults.clear();
 	}
 
 	/** Removes all widgets and cells from the table. */
 	public void clear () {
 		for (int i = cells.size() - 1; i >= 0; i--) {
-			Object widget = cells.get(i).widget;
+			Cell cell = cells.get(i);
+			Object widget = cell.widget;
 			if (widget != null) toolkit.removeChild(table, (C)widget);
+			toolkit.freeCell(cell);
 		}
 		cells.clear();
 		rows = 0;
 		columns = 0;
+		if (rowDefaults != null) toolkit.freeCell(rowDefaults);
 		rowDefaults = null;
 		invalidate();
 	}

@@ -45,7 +45,7 @@ class TableToolkit extends Toolkit<Actor, Table, TableLayout> {
 	}
 
 	public void freeCell (Cell cell) {
-		cell.setLayout(null);
+		cell.free();
 		cellPool.free(cell);
 	}
 
