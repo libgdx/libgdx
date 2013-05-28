@@ -17,6 +17,7 @@
 package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.math.MathUtils;
+
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -25,6 +26,9 @@ import java.util.NoSuchElementException;
  * last element is moved to the removed element's position).
  * @author Nathan Sweet */
 public class Array<T> implements Iterable<T> {
+
+
+
 	/** Provides direct access to the underlying array. If the Array's generic type is not Object, this field may only be accessed
 	 * if the {@link Array#Array(boolean, int, Class)} constructor was used. */
 	public T[] items;
@@ -32,8 +36,27 @@ public class Array<T> implements Iterable<T> {
 	public int size;
 	public boolean ordered;
 
-	private ArrayIterator iterator1, iterator2;
+	private ArrayIterator<T> iterator1, iterator2;
 	private Predicate.PredicateIterable<T> predicateIterable;
+
+	/** Avoids duplication of code when comparing by equality of identity */
+	static private  interface Equality<T> {
+		public boolean equals(T a, T b);
+	}
+	private final Equality<T> identity = new Equality<T>() {
+		@Override
+		public boolean equals(T a, T b) {
+			return a == b;
+		}
+		
+	};
+	private final Equality<T> equality = new Equality<T>() {
+		@Override
+		public boolean equals(T a, T b) {
+			return a.equals(b);
+		}
+		
+	};
 
 	/** Creates an ordered array with a capacity of 16. */
 	public Array () {
@@ -70,7 +93,7 @@ public class Array<T> implements Iterable<T> {
 	/** Creates a new array containing the elements in the specified array. The new array will have the same type of backing array
 	 * and will be ordered if the specified array is ordered. The capacity is set to the number of elements, so any subsequent
 	 * elements added will cause the backing array to be grown. */
-	public Array (Array array) {
+	public Array (Array<? extends T> array) {
 		this(array.ordered, array.size, (Class<T>)array.items.getClass().getComponentType());
 		size = array.size;
 		System.arraycopy(array.items, 0, items, 0, size);
@@ -93,17 +116,21 @@ public class Array<T> implements Iterable<T> {
 		System.arraycopy(array, 0, items, 0, size);
 	}
 
+	/** Adds a new element into the array
+	 */
 	public void add (T value) {
 		T[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		items[size++] = value;
 	}
 
-	public void addAll (Array array) {
+	/** Adds all elements in the parameter array at the beginning of this array.
+	 */
+	public void addAll (Array<? extends T> array) {
 		addAll(array, 0, array.size);
 	}
 
-	public void addAll (Array array, int offset, int length) {
+	public void addAll (Array<? extends T> array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
 		addAll((T[])array.items, offset, length);
@@ -156,17 +183,37 @@ public class Array<T> implements Iterable<T> {
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return true if array contains value, false if it doesn't */
 	public boolean contains (T value, boolean identity) {
+		if (identity || value == null) {
+			return containsByIdentity(value);
+		} else {
+			 return containsByEquality(value);
+		}
+
+	}
+	
+	/** Returns if this array contains value.
+	 *  == comparison will be used. 
+	 * @return true if array contains value, false if it doesn't */
+	public boolean containsByIdentity(T value) {
 		T[] items = this.items;
 		int i = size - 1;
-		if (identity || value == null) {
 			while (i >= 0)
 				if (items[i--] == value) return true;
-		} else {
-			while (i >= 0)
-				if (value.equals(items[i--])) return true;
-		}
 		return false;
 	}
+
+	/** Returns if this array contains value.
+	 * @param value cannot be null (if value could be null use contains / containsByIdentity instead
+	 * .equals() comparison will be used.
+	 * @return true if array contains value, false if it doesn't */
+	public boolean containsByEquality (T value) {
+		T[] items = this.items;
+		int i = size - 1;
+			while (i >= 0)
+				if (value.equals(items[i--])) return true;
+		return false;
+	}
+
 
 	/** Returns an index of first occurrence of value in array or -1 if no such value exists
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
@@ -239,36 +286,48 @@ public class Array<T> implements Iterable<T> {
 	/** Removes from this array all of elements contained in the specified array.
 	 * @param identity True to use ==, false to use .equals().
 	 * @return true if this array was modified. */
-	public boolean removeAll (Array<T> array, boolean identity) {
+	public boolean removeAll (Array<? extends T> array, boolean identity) {
+		if (identity) {
+			return innerRemoveAll(array, this.identity);	
+		} else {
+			return innerRemoveAll(array, this.equality);	
+		}
+	}
+
+	/** Removes from this array all of elements contained in the specified array.
+	 * Uses .equals().
+	 * @return true if this array was modified. */
+	public boolean removeAllByEquality(Array<? extends T> array) {
+		return innerRemoveAll(array, this.equality);	
+	}
+
+	/** Removes from this array all of elements contained in the specified array.
+	 * Uses ==.
+	 * @return true if this array was modified. */
+	public boolean removeAllByIdentity(Array<? extends T> array) {
+		return innerRemoveAll(array, this.identity);
+	}
+
+	
+	public boolean innerRemoveAll(Array<? extends T> array, Equality<T> e) {
 		int size = this.size;
 		int startSize = size;
 		T[] items = this.items;
-		if (identity) {
-			for (int i = 0, n = array.size; i < n; i++) {
-				T item = array.get(i);
-				for (int ii = 0; ii < size; ii++) {
-					if (item.equals(items[ii])) {
-						removeIndex(ii);
-						size--;
-						break;
-					}
-				}
-			}
-		} else {
-			for (int i = 0, n = array.size; i < n; i++) {
-				T item = array.get(i);
-				for (int ii = 0; ii < size; ii++) {
-					if (item == items[ii]) {
-						removeIndex(ii);
-						size--;
-						break;
-					}
+
+		for (int i = 0, n = array.size; i < n; i++) {
+			T item = array.get(i);
+			for (int ii = 0; ii < size; ii++) {
+				if (e.equals(item,items[ii])) {
+					removeIndex(ii);
+					size--;
+					break;
 				}
 			}
 		}
 		return size != startSize;
 	}
 
+	
 	/** Removes and returns the last item. */
 	public T pop () {
 		--size;
@@ -489,4 +548,9 @@ public class Array<T> implements Iterable<T> {
 			return iterator;
 		}
 	}
+	
+
+
+
+
 }
