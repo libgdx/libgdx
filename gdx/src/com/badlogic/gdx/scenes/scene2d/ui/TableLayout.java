@@ -36,12 +36,13 @@ import com.badlogic.gdx.utils.Array;
 /** The libgdx implementation to apply a table layout.
  * @author Nathan Sweet */
 class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolkit> {
+	
 	Array<DebugRect> debugRects;
 	private ImmediateModeRenderer debugRenderer;
 	boolean round = true;
 
 	public TableLayout () {
-		super((TableToolkit)Toolkit.instance);
+		super((TableToolkit)Toolkit.instance, TableCellFactory.getInstance());
 	}
 
 	public void layout () {

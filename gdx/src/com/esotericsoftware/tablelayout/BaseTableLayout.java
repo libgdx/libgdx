@@ -27,6 +27,8 @@
 
 package com.esotericsoftware.tablelayout;
 
+import com.badlogic.gdx.utils.SimplePool;
+import com.esotericsoftware.tablelayout.Cell.CellFactory;
 import com.esotericsoftware.tablelayout.Value.FixedValue;
 
 import java.util.ArrayList;
@@ -51,7 +53,9 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	T table;
 	private int columns, rows;
 
+	private CellFactory cellFactory;
 	private final ArrayList<Cell> cells = new ArrayList(4);
+	private final ArrayList<Cell> cellTracker = new ArrayList(4);
 	private final Cell cellDefaults = Cell.defaults(this);
 	private final ArrayList<Cell> columnDefaults = new ArrayList(2);
 	private Cell rowDefaults;
@@ -70,7 +74,12 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	Debug debug = Debug.none;
 
 	public BaseTableLayout (K toolkit) {
+		this(toolkit, CellFactory.getInstance());
+	}
+	
+	public BaseTableLayout (K toolkit, CellFactory cellFactory) {
 		this.toolkit = toolkit;
+		this.cellFactory = cellFactory;
 	}
 
 	/** Invalidates the layout. The cached min and pref sizes are recalculated the next time layout is done or the min or pref sizes
@@ -84,7 +93,8 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 
 	/** Adds a new cell to the table with the specified widget. */
 	public Cell<C> add (C widget) {
-		Cell cell = new Cell(this);
+		
+		Cell cell = cellFactory.obtain(this);
 		cell.widget = widget;
 
 		if (cells.size() > 0) {
@@ -127,7 +137,8 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	 * for all cells in the new row. */
 	public Cell row () {
 		if (cells.size() > 0) endRow();
-		rowDefaults = new Cell(this);
+		rowDefaults = cellFactory.obtain(this);
+		cellTracker.add(rowDefaults);
 		return rowDefaults;
 	}
 
@@ -149,7 +160,8 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	public Cell columnDefaults (int column) {
 		Cell cell = columnDefaults.size() > column ? columnDefaults.get(column) : null;
 		if (cell == null) {
-			cell = new Cell(this);
+			cell = cellFactory.obtain(this);
+			cellTracker.add(cell);
 			if (column >= columnDefaults.size()) {
 				for (int i = columnDefaults.size(); i < column; i++)
 					columnDefaults.add(null);
@@ -180,8 +192,13 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		for (int i = cells.size() - 1; i >= 0; i--) {
 			Object widget = cells.get(i).widget;
 			if (widget != null) toolkit.removeChild(table, (C)widget);
+			cellFactory.free(cells.get(i));
+		}
+		for (int i = 0, n = cellTracker.size(); i < n; i++) {
+			cellFactory.free(cellTracker.get(i));
 		}
 		cells.clear();
+		cellTracker.clear();
 		rows = 0;
 		columns = 0;
 		rowDefaults = null;
@@ -196,7 +213,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		}
 		return null;
 	}
-
+		
 	/** Returns the cells for this table. */
 	public List<Cell> getCells () {
 		return cells;
@@ -227,7 +244,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		if (sizeInvalid) computeSize();
 		return tableMinHeight;
 	}
-
+	
 	/** The preferred width of the table. */
 	public float getPrefWidth () {
 		if (sizeInvalid) computeSize();

@@ -50,7 +50,7 @@ public class Cell<C> {
 	float widgetX, widgetY;
 	float widgetWidth, widgetHeight;
 
-	private final BaseTableLayout layout;
+	BaseTableLayout layout;
 	boolean endRow;
 	int column, row;
 	int cellAboveIndex = -1;
@@ -59,7 +59,7 @@ public class Cell<C> {
 	Cell (BaseTableLayout layout) {
 		this.layout = layout;
 	}
-
+	
 	void set (Cell defaults) {
 		minWidth = defaults.minWidth;
 		minHeight = defaults.minHeight;
@@ -930,5 +930,55 @@ public class Cell<C> {
 		defaults.ignore = false;
 		defaults.colspan = 1;
 		return defaults;
+	}
+
+	
+	void reset () {
+		
+		minWidth = minHeight = null;
+		prefWidth = prefHeight = null;
+		maxWidth = maxHeight = null;
+		spaceTop = spaceLeft = spaceBottom = spaceRight = null;
+		padTop = padLeft = padBottom = padRight = null;
+		fillX = fillY = 0f;
+		align = null;
+		expandX = expandY = null;
+		ignore = false;
+		colspan = null;
+		uniformX = uniformY = false;
+
+		widget = null;
+		widgetX = widgetY = 0f;
+		widgetWidth = widgetHeight = 0f;
+
+		layout = null;
+		endRow = false;
+		column = row = 0;
+		cellAboveIndex = -1;
+		computedPadTop = computedPadLeft = computedPadBottom = computedPadRight = 0f;
+	}
+	
+	static public class CellFactory {
+		
+		private static CellFactory instance;
+		protected CellFactory(){}
+		
+		public Cell obtain(BaseTableLayout layout) {
+			return new Cell(layout);
+		}
+		
+		public void free(Cell cell) {}
+		
+		protected void reset(Cell cell) {
+			cell.reset();
+		}
+		protected void setLayout(Cell cell, BaseTableLayout layout) {
+			cell.layout = layout;
+		}
+		
+		public static CellFactory getInstance() {
+			if(instance == null) instance = new CellFactory();
+			return instance;
+		}
 	}
 }
