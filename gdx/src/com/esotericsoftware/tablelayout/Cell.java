@@ -51,7 +51,7 @@ public class Cell<C> implements Poolable{
 	float widgetX, widgetY;
 	float widgetWidth, widgetHeight;
 
-	private final BaseTableLayout layout;
+	BaseTableLayout layout;
 	boolean endRow;
 	int column, row;
 	int cellAboveIndex = -1;
@@ -60,7 +60,7 @@ public class Cell<C> implements Poolable{
 	Cell (BaseTableLayout layout) {
 		this.layout = layout;
 	}
-
+	
 	void set (Cell defaults) {
 		minWidth = defaults.minWidth;
 		minHeight = defaults.minHeight;
@@ -935,6 +935,7 @@ public class Cell<C> implements Poolable{
 
 	@Override
 	public void reset () {
+		
 		minWidth = minHeight = null;
 		prefWidth = prefHeight = null;
 		maxWidth = maxHeight = null;
@@ -951,9 +952,23 @@ public class Cell<C> implements Poolable{
 		widgetX = widgetY = 0f;
 		widgetWidth = widgetHeight = 0f;
 
+		layout = null;
 		endRow = false;
 		column = row = 0;
 		cellAboveIndex = -1;
 		computedPadTop = computedPadLeft = computedPadBottom = computedPadRight = 0f;
+	}
+	
+	static public class CellFactory {
+		
+		public Cell obtain(BaseTableLayout layout) {
+			return new Cell(layout);
+		}
+		
+		public void free(Cell cell) {}
+		
+		protected void setLayout(Cell cell, BaseTableLayout layout) {
+			cell.layout = layout;
+		}
 	}
 }
