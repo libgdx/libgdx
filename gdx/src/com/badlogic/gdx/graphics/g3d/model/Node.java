@@ -33,10 +33,6 @@ public class Node {
 	public final Matrix4 localTransform = new Matrix4();
 	/** the global transform, product of local transform and transform of the parent node, calculated via {@link #calculateWorldTransform()}**/
 	public final Matrix4 globalTransform = new Matrix4();
-	/** the inverted initial global transform, set when the model is created. */
-	public final Matrix4 invInitialTransform = new Matrix4();
-	/** this bone global transform */ 
-	public final Matrix4 boneTransform = new Matrix4();
 	
 	public Array<NodePart> parts = new Array<NodePart>(2);
 	
@@ -64,8 +60,6 @@ public class Node {
 			globalTransform.set(localTransform);
 		else
 			globalTransform.set(parent.globalTransform).mul(localTransform);
-		//boneTransform.set(initialTransform).inv().mul(worldTransform);
-		boneTransform.set(globalTransform).mul(invInitialTransform);
 		return globalTransform;
 	}
 	
@@ -82,6 +76,21 @@ public class Node {
 		if(recursive) {
 			for(Node child: children) {
 				child.calculateTransforms(true);
+			}
+		}
+	}
+	
+	public void calculateBoneTransforms(boolean recursive) {
+		for (final NodePart part : parts) {
+			if (part.invBoneBindTransforms == null || part.bones == null || part.invBoneBindTransforms.size != part.bones.length)
+				continue;
+			final int n = part.invBoneBindTransforms.size;
+			for (int i = 0; i < n; i++)
+				part.bones[i].set(part.invBoneBindTransforms.keys[i].globalTransform).mul(part.invBoneBindTransforms.values[i]);
+		}
+		if(recursive) {
+			for(Node child: children) {
+				child.calculateBoneTransforms(true);
 			}
 		}
 	}

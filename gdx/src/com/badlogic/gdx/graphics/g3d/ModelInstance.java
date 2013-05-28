@@ -117,7 +117,7 @@ public class ModelInstance implements RenderableProvider {
 		return new ModelInstance(this);
 	}
 
-	private ObjectMap<NodePart, String[]> nodePartBones = new ObjectMap<NodePart, String[]>();
+	private ObjectMap<NodePart, ArrayMap<Node, Matrix4>> nodePartBones = new ObjectMap<NodePart, ArrayMap<Node, Matrix4>>();
 	private void copyNodes (Array<Node> nodes) {
 		nodePartBones.clear();
 		for(Node node: nodes) {
@@ -153,14 +153,17 @@ public class ModelInstance implements RenderableProvider {
 	}
 	
 	private void setBones() {
-		for (ObjectMap.Entry<NodePart,String[]> e : nodePartBones.entries()) {
-			if (e.key.bones == null)
-				e.key.bones = new ArrayMap<Node, Matrix4>(true, e.value.length, Node.class, Matrix4.class);
-			e.key.bones.clear();
-			for (final String n : e.value) {
-				final Node node = getNode(n);
-				e.key.bones.put(node, node == null ? null : node.boneTransform);
-			}
+		for (ObjectMap.Entry<NodePart,ArrayMap<Node, Matrix4>> e : nodePartBones.entries()) {
+			if (e.key.invBoneBindTransforms == null)
+				e.key.invBoneBindTransforms = new ArrayMap<Node, Matrix4>(true, e.value.size, Node.class, Matrix4.class);
+			e.key.invBoneBindTransforms.clear();
+			
+			for (final ObjectMap.Entry<Node, Matrix4> b : e.value.entries())
+				e.key.invBoneBindTransforms.put(getNode(b.key.id), b.value); // Share the inv bind matrix with the model
+			
+			e.key.bones = new Matrix4[e.value.size];
+			for (int i = 0; i < e.key.bones.length; i++)
+				e.key.bones[i] = new Matrix4();
 		}
 	}
 	
@@ -174,7 +177,6 @@ public class ModelInstance implements RenderableProvider {
 		copy.scale.set(node.scale);
 		copy.localTransform.set(node.localTransform);
 		copy.globalTransform.set(node.globalTransform);
-		copy.invInitialTransform.set(node.invInitialTransform);
 		for(NodePart nodePart: node.parts) {
 			copy.parts.add(copyNodePart(nodePart));
 		}
@@ -193,12 +195,8 @@ public class ModelInstance implements RenderableProvider {
 		copy.meshPart.primitiveType = nodePart.meshPart.primitiveType;
 		copy.meshPart.mesh = nodePart.meshPart.mesh;
 		
-		if (nodePart.bones != null) {
-			final String bones[] = new String[nodePart.bones.size];
-			for (int i = 0; i < nodePart.bones.size; i++)
-				bones[i] = nodePart.bones.getKeyAt(i).id;
-			nodePartBones.put(copy, bones);
-		}
+		if (nodePart.invBoneBindTransforms != null)
+			nodePartBones.put(copy, nodePart.invBoneBindTransforms);
 		
 		final int index = materials.indexOf(nodePart.material, false);
 		if (index < 0)
@@ -240,7 +238,8 @@ public class ModelInstance implements RenderableProvider {
 	 * Calculates the local and world transform of all {@link Node} instances in this model, recursively.
 	 * First each {@link Node#localTransform} transform is calculated based on the translation, rotation and
 	 * scale of each Node. Then each {@link Node#calculateWorldTransform()}
-	 * is calculated, based on the parent's world transform and the local transform of each Node.</p>
+	 * is calculated, based on the parent's world transform and the local transform of each Node.
+	 * Finally, the animation bone matrices are updated accordingly.</p>
 	 * 
 	 * This method can be used to recalculate all transforms if any of the Node's local properties (translation, rotation, scale)
 	 * was modified.
@@ -248,6 +247,9 @@ public class ModelInstance implements RenderableProvider {
 	public void calculateTransforms() {
 		for(Node node: nodes) {
 			node.calculateTransforms(true);
+		}
+		for(Node node: nodes) {
+			node.calculateBoneTransforms(true);
 		}
 	}
 	
@@ -312,12 +314,13 @@ public class ModelInstance implements RenderableProvider {
 				renderable.meshPartOffset = nodePart.meshPart.indexOffset;
 				renderable.meshPartSize = nodePart.meshPart.numVertices;
 				renderable.primitiveType = nodePart.meshPart.primitiveType;
-				renderable.bones = nodePart.bones == null ? null : nodePart.bones.values;
-				if (transform == null)
-					renderable.modelTransform.idt();
+				renderable.bones = nodePart.bones;
+				if (nodePart.bones == null && transform != null)
+				renderable.worldTransform.set(node.globalTransform).mul(transform);
+				else if (transform != null)
+					renderable.worldTransform.set(transform);
 				else
-					renderable.modelTransform.set(transform);
-				renderable.localTransform = node.globalTransform;
+					renderable.worldTransform.idt();
 				renderable.userData = userData;
 				renderables.add(renderable);
 			}
