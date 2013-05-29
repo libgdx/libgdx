@@ -57,6 +57,7 @@ public class Stage extends InputAdapter implements Disposable {
 	static private final Vector2 actorCoords = new Vector2();
 	static private final Vector3 cameraCoords = new Vector3();
 
+	private float viewportX, viewportY, viewportWidth, viewportHeight;
 	private float width, height;
 	private float gutterWidth, gutterHeight;
 	private float centerX, centerY;
@@ -109,37 +110,53 @@ public class Stage extends InputAdapter implements Disposable {
 		setViewport(width, height, keepAspectRatio);
 	}
 
-	/** Sets the dimensions of the stage's viewport. The viewport covers the entire screen. If keepAspectRatio is false, the
-	 * viewport is simply stretched to the screen resolution, which may distort the aspect ratio. If keepAspectRatio is true, the
-	 * viewport is first scaled to fit then the shorter dimension is lengthened to fill the screen, which keeps the aspect ratio
-	 * from changing. The {@link #getGutterWidth()} and {@link #getGutterHeight()} provide access to the amount that was
-	 * lengthened. */
+	/** Sets up the stage size using a viewport that fills the entire screen.
+	 * @see #setViewport(float, float, boolean, float, float, float, float) */
 	public void setViewport (float width, float height, boolean keepAspectRatio) {
+		setViewport(width, height, keepAspectRatio, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	}
+
+	/** Sets up the stage size and viewport. The viewport is the glViewport position and size, which is the portion of the screen
+	 * used by the stage. The stage size determines the units used within the stage, depending on keepAspectRatio:
+	 * <p>
+	 * If keepAspectRatio is false, the stage is stretched to fill the viewport, which may distort the aspect ratio.
+	 * <p>
+	 * If keepAspectRatio is true, the stage is first scaled to fit the viewport in the longest dimension. Next the shorter
+	 * dimension is lengthened to fill the viewport, which keeps the aspect ratio from changing. The {@link #getGutterWidth()} and
+	 * {@link #getGutterHeight()} provide access to the amount that was lengthened.
+	 * @param viewportX The top left corner of the viewport in glViewport coordinates (the origin is bottom left).
+	 * @param viewportY The top left corner of the viewport in glViewport coordinates (the origin is bottom left).
+	 * @param viewportWidth The width of the viewport in pixels.
+	 * @param viewportHeight The height of the viewport in pixels. */
+	public void setViewport (float stageWidth, float stageHeight, boolean keepAspectRatio, float viewportX, float viewportY,
+		float viewportWidth, float viewportHeight) {
+		this.viewportX = viewportX;
+		this.viewportY = viewportY;
+		this.viewportWidth = viewportWidth;
+		this.viewportHeight = viewportHeight;
 		if (keepAspectRatio) {
-			float screenWidth = Gdx.graphics.getWidth();
-			float screenHeight = Gdx.graphics.getHeight();
-			if (screenHeight / screenWidth < height / width) {
-				float toScreenSpace = screenHeight / height;
-				float toViewportSpace = height / screenHeight;
-				float deviceWidth = width * toScreenSpace;
-				float lengthen = (screenWidth - deviceWidth) * toViewportSpace;
-				this.width = width + lengthen;
-				this.height = height;
+			if (viewportHeight / viewportWidth < stageHeight / stageWidth) {
+				float toViewportSpace = viewportHeight / stageHeight;
+				float toStageSpace = stageHeight / viewportHeight;
+				float deviceWidth = stageWidth * toViewportSpace;
+				float lengthen = (viewportWidth - deviceWidth) * toStageSpace;
+				this.width = stageWidth + lengthen;
+				this.height = stageHeight;
 				gutterWidth = lengthen / 2;
 				gutterHeight = 0;
 			} else {
-				float toScreenSpace = screenWidth / width;
-				float toViewportSpace = width / screenWidth;
-				float deviceHeight = height * toScreenSpace;
-				float lengthen = (screenHeight - deviceHeight) * toViewportSpace;
-				this.height = height + lengthen;
-				this.width = width;
+				float toViewportSpace = viewportWidth / stageWidth;
+				float toStageSpace = stageWidth / viewportWidth;
+				float deviceHeight = stageHeight * toViewportSpace;
+				float lengthen = (viewportHeight - deviceHeight) * toStageSpace;
+				this.height = stageHeight + lengthen;
+				this.width = stageWidth;
 				gutterWidth = 0;
 				gutterHeight = lengthen / 2;
 			}
 		} else {
-			this.width = width;
-			this.height = height;
+			this.width = stageWidth;
+			this.height = stageHeight;
 			gutterWidth = 0;
 			gutterHeight = 0;
 		}
@@ -652,7 +669,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Transforms the screen coordinates to stage coordinates.
 	 * @param screenCoords Input screen coordinates and output for resulting stage coordinates. */
 	public Vector2 screenToStageCoordinates (Vector2 screenCoords) {
-		camera.unproject(cameraCoords.set(screenCoords.x, screenCoords.y, 0));
+		camera.unproject(cameraCoords.set(screenCoords.x, screenCoords.y, 0), viewportX, viewportY, viewportWidth, viewportHeight);
 		screenCoords.x = cameraCoords.x;
 		screenCoords.y = cameraCoords.y;
 		return screenCoords;
@@ -661,9 +678,9 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Transforms the stage coordinates to screen coordinates.
 	 * @param stageCoords Input stage coordinates and output for resulting screen coordinates. */
 	public Vector2 stageToScreenCoordinates (Vector2 stageCoords) {
-		camera.project(cameraCoords.set(stageCoords.x, stageCoords.y, 0));
+		camera.project(cameraCoords.set(stageCoords.x, stageCoords.y, 0), viewportX, viewportY, viewportWidth, viewportHeight);
 		stageCoords.x = cameraCoords.x;
-		stageCoords.y = Gdx.graphics.getHeight() - cameraCoords.y;
+		stageCoords.y = viewportHeight - cameraCoords.y;
 		return stageCoords;
 	}
 

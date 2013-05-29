@@ -25,7 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** Keeps aspect ratio using black bars while scaling the stage to fit the screen. */
-public class LetterBoxTest extends GdxTest {
+public class LetterBoxTest1 extends GdxTest {
 	private Stage stage;
 	private Table root;
 
