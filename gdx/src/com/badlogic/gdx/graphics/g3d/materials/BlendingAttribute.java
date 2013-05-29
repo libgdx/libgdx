@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.materials;
 
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g3d.materials.Material.Attribute;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -16,11 +17,11 @@ public class BlendingAttribute extends Material.Attribute {
 	public float opacity = 1.f;
 
 	public BlendingAttribute() { 
-		super(Type); 
+		this(null); 
 	}
 
 	public BlendingAttribute(final int sourceFunc, final int destFunc, final float opacity) {
-		this();
+		super(Type);
 		sourceFunction = sourceFunc;
 		destFunction = destFunc;
 		this.opacity = opacity; 
@@ -31,7 +32,9 @@ public class BlendingAttribute extends Material.Attribute {
 	}
 	
 	public BlendingAttribute(final BlendingAttribute copyFrom) {
-		this(copyFrom == null ? 0 : copyFrom.sourceFunction, copyFrom == null ? 0 : copyFrom.destFunction);
+		this(copyFrom == null ? GL10.GL_SRC_ALPHA : copyFrom.sourceFunction,
+			copyFrom == null ? GL10.GL_ONE_MINUS_SRC_ALPHA : copyFrom.destFunction,
+			copyFrom == null ? 1.f : copyFrom.opacity);
 	}
 	
 	@Override
