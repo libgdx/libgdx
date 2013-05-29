@@ -152,19 +152,16 @@ public class ImageTextButton extends Button {
 
 		public ImageTextButtonStyle (ImageTextButtonStyle style) {
 			super(style);
-			this.font = style.font;
-			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
-			if (style.downFontColor != null) this.downFontColor = new Color(style.downFontColor);
-			if (style.overFontColor != null) this.overFontColor = new Color(style.overFontColor);
-			if (style.checkedFontColor != null) this.checkedFontColor = new Color(style.checkedFontColor);
-			if (style.checkedOverFontColor != null) this.checkedOverFontColor = new Color(style.checkedOverFontColor);
-			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
 			if (style.imageUp != null) this.imageUp = style.imageUp;
 			if (style.imageDown != null) this.imageDown = style.imageDown;
 			if (style.imageOver != null) this.imageOver = style.imageOver;
 			if (style.imageChecked != null) this.imageChecked = style.imageChecked;
 			if (style.imageCheckedOver != null) this.imageCheckedOver = style.imageCheckedOver;
 			if (style.imageDisabled != null) this.imageDisabled = style.imageDisabled;
+		}
+
+		public ImageTextButtonStyle (TextButtonStyle style) {
+			super(style);
 		}
 	}
 }

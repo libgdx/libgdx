@@ -703,7 +703,7 @@ public class SpriteBatch implements Disposable {
 
 	/** Draws a rectangle using the given vertices. There must be 4 vertices, each made up of 5 elements in this order: x, y, color,
 	 * u, v. The {@link #getColor()} from the SpriteBatch is not applied. */
-	public void draw (Texture texture, float[] spriteVertices, int offset, int length) {
+	public void draw (Texture texture, float[] spriteVertices, int offset, int count) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
 		if (texture != lastTexture) {
@@ -715,17 +715,17 @@ public class SpriteBatch implements Disposable {
 			renderMesh();
 			remainingVertices = vertices.length;
 		}
-		int vertexCount = Math.min(remainingVertices, length - offset);
-		System.arraycopy(spriteVertices, offset, vertices, idx, vertexCount);
-		offset += vertexCount;
-		idx += vertexCount;
-
-		while (offset < length) {
+		int copyCount = Math.min(remainingVertices, count);
+		System.arraycopy(spriteVertices, offset, vertices, idx, copyCount);
+		idx += copyCount;
+		count -= copyCount;
+		while (count > 0) {
+			offset += copyCount;
 			renderMesh();
-			vertexCount = Math.min(vertices.length, length - offset);
-			System.arraycopy(spriteVertices, offset, vertices, 0, vertexCount);
-			offset += vertexCount;
-			idx += vertexCount;
+			copyCount = Math.min(vertices.length, count);
+			System.arraycopy(spriteVertices, offset, vertices, 0, copyCount);
+			idx += copyCount;
+			count -= copyCount;
 		}
 	}
 
