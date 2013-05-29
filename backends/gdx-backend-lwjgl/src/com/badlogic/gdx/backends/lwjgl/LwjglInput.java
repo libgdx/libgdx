@@ -798,6 +798,9 @@ final class LwjglInput implements Input {
 					long timeStamp = Keyboard.getEventNanoseconds();
 
 					switch (keyCode) {
+					case Keys.DEL:
+						keyChar = 8;
+						break;
 					case Keys.FORWARD_DEL:
 						keyChar = 127;
 						break;
