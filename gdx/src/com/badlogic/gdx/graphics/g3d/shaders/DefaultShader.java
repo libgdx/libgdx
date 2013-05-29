@@ -42,8 +42,16 @@ public class DefaultShader extends BaseShader {
 	
 	private static String defaultVertexShader = null;
 	public final static String getDefaultVertexShader() {
-		if (defaultVertexShader == null)
-			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl").readString();
+		if (defaultVertexShader == null) {
+			defaultVertexShader  = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl.inc").readString() + "\n";
+			defaultVertexShader += Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/ambientcubemap.vertex.glsl.inc").readString() + "\n";
+			defaultVertexShader += Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/sphericalharmonics.vertex.glsl.inc").readString() + "\n";
+			defaultVertexShader += Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/directionallights.vertex.glsl.inc").readString() + "\n";
+			defaultVertexShader += Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/pointlights.vertex.glsl.inc").readString() + "\n";
+			defaultVertexShader += Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/lighting.vertex.glsl.inc").readString() + "\n";
+			defaultVertexShader += Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/skinning.vertex.glsl.inc").readString() + "\n";
+			defaultVertexShader += Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl").readString();
+		}
 		return defaultVertexShader;
 	}
 	
