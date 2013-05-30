@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -12,9 +14,10 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class ModelLoaderTest extends GdxTest {
 	AssetManager assets;
 	PerspectiveCamera camera;
-	ModelBatch batch;
+	ModelBatch modelBatch;
 	Model model;
 	ModelInstance instance;
+	SpriteBatch spriteBatch;
 
 	@Override
 	public void create () {
@@ -28,7 +31,8 @@ public class ModelLoaderTest extends GdxTest {
 		assets.finishLoading();
 		model = assets.get("data/g3d/cube.g3dj", Model.class);
 		instance = new ModelInstance(model);
-		batch = new ModelBatch();
+		modelBatch = new ModelBatch();
+		spriteBatch = new SpriteBatch();
 	}
 
 	@Override
@@ -42,14 +46,20 @@ public class ModelLoaderTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		
-		batch.begin(camera);
-		batch.render(instance);
-		batch.end();
+		modelBatch.begin(camera);
+		modelBatch.render(instance);
+		modelBatch.end();
+		
+		spriteBatch.begin();
+		spriteBatch.draw(assets.get("data/g3d/checkboard.png", Texture.class), 0, 0, 100, 100);
+		spriteBatch.draw(assets.get("data/g3d/Knight.png", Texture.class), 100, 0, 100, 100);
+		spriteBatch.end();
 	}
 
 	@Override
 	public void dispose () {
 		assets.dispose();
-		batch.dispose();
+		modelBatch.dispose();
+		spriteBatch.dispose();
 	}
 }
