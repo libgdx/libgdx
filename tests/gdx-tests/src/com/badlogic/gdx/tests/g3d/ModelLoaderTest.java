@@ -14,9 +14,8 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class ModelLoaderTest extends GdxTest {
 	AssetManager assets;
 	PerspectiveCamera camera;
-	ModelBatch modelBatch;
-	Model model;
 	ModelInstance instance;
+	ModelBatch modelBatch;
 	SpriteBatch spriteBatch;
 
 	@Override
@@ -28,8 +27,8 @@ public class ModelLoaderTest extends GdxTest {
 		camera.update();
 		assets = new AssetManager();
 		assets.load("data/g3d/cube.g3dj", Model.class);
-		modelBatch = new ModelBatch();
 		spriteBatch = new SpriteBatch();
+		modelBatch = new ModelBatch();
 	}
 
 	@Override
@@ -38,12 +37,20 @@ public class ModelLoaderTest extends GdxTest {
 	}
 
 	private void doneLoading() {
-		model = assets.get("data/g3d/cube.g3dj", Model.class);
-		instance = new ModelInstance(model);
+		instance = new ModelInstance(assets.get("data/g3d/cube.g3dj", Model.class));
 	}
 	
+	float counter;
 	@Override
 	public void render () {
+		if ((instance != null) && ((counter += Gdx.graphics.getDeltaTime()) >= 1f)) {
+			counter = 0f;
+			instance = null;
+			assets.unload("data/g3d/cube.g3dj");
+			assets.load("data/g3d/cube.g3dj", Model.class);
+			assets.finishLoading(); // FIXME: Remove this line
+		}
+		
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
@@ -56,7 +63,6 @@ public class ModelLoaderTest extends GdxTest {
 			modelBatch.begin(camera);
 			modelBatch.render(instance);
 			modelBatch.end();
-			
 			spriteBatch.begin();
 			spriteBatch.draw(assets.get("data/g3d/checkboard.png", Texture.class), 0, 0, 100, 100);
 			spriteBatch.draw(assets.get("data/g3d/Knight.png", Texture.class), 100, 0, 100, 100);
