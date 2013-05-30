@@ -297,18 +297,18 @@ public class Slider extends Widget {
 		if (animateInterpolation == null) throw new IllegalArgumentException("animateInterpolation cannot be null.");
 		this.animateInterpolation = animateInterpolation;
 	}
-	
+
 	/** Will make this slider snap to the specified values, if the knob is within the threshold */
-	public void setSnapToValues(float[] values, float threshold) {
+	public void setSnapToValues (float[] values, float threshold) {
 		this.snapValues = values;
 		this.threshold = threshold;
 	}
-	
+
 	/** Returns a snapped value, or the original value */
-	private float snap(float value) {
-		if(snapValues == null) return value;
+	private float snap (float value) {
+		if (snapValues == null) return value;
 		for (int i = 0; i < snapValues.length; i++) {
-			if(Math.abs(value - snapValues[i]) <= threshold) return snapValues[i];
+			if (Math.abs(value - snapValues[i]) <= threshold) return snapValues[i];
 		}
 		return value;
 	}
