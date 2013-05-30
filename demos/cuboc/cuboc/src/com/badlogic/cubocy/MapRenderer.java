@@ -17,7 +17,7 @@ public class MapRenderer {
 	Map map;
 	OrthographicCamera cam;
 	SpriteCache cache;
-	SpriteBatch batch = new SpriteBatch(10000);
+	SpriteBatch batch = new SpriteBatch(5460);
 	ImmediateModeRenderer20 renderer = new ImmediateModeRenderer20(false, true, 0);
 	int[][] blocks;
 	TextureRegion tile;
