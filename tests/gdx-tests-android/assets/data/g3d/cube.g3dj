@@ -38,12 +38,12 @@
 			"textures": [
 				{
 					"id": "Knight_png", 
-					"filename": "Knight.png", 
+					"filename": "checkboard.png", 
 					"type": "DIFFUSE"
 				},
 				{
 					"id": "checkerboard", 
-					"filename": "checkboard.png", 
+					"filename": "Knight.png", 
 					"type": "DIFFUSE"
 				}
 			]}
