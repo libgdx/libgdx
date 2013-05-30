@@ -48,6 +48,9 @@ final class AndroidSound implements Sound {
 	public long play (float volume) {
 		if (streamIds.size == 8) streamIds.pop();
 		int streamId = soundPool.play(soundId, volume, volume, 1, 0, 1);
+		//standardise error code with other backends
+		if (streamId == 0)
+			return -1;
 		streamIds.add(streamId);
 		return streamId;
 	}
@@ -81,6 +84,9 @@ final class AndroidSound implements Sound {
 	public long loop (float volume) {
 		if (streamIds.size == 8) streamIds.pop();
 		int streamId = soundPool.play(soundId, volume, volume, 1, -1, 1);
+		//standardise error code with other backends
+		if (streamId == 0)
+			return -1;
 		streamIds.add(streamId);
 		return streamId;
 	}
@@ -115,6 +121,9 @@ final class AndroidSound implements Sound {
 			leftVolume *= (1 - Math.abs(pan));
 		}
 		int streamId = soundPool.play(soundId, leftVolume, rightVolume, 1, 0, pitch);
+		//standardise error code with other backends
+		if (streamId == 0)
+			return -1;
 		streamIds.add(streamId);
 		return streamId;
 	}
@@ -130,6 +139,9 @@ final class AndroidSound implements Sound {
 			leftVolume *= (1 - Math.abs(pan));
 		}
 		int streamId = soundPool.play(soundId, leftVolume, rightVolume, 1, -1, pitch);
+		//standardise error code with other backends
+		if (streamId == 0)
+			return -1;
 		streamIds.add(streamId);
 		return streamId;
 	}
