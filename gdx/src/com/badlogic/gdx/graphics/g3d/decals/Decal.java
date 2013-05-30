@@ -267,7 +267,7 @@ public class Decal {
 	 * 
 	 * @param scale New scale along y axis */
 	public void setScaleY (float scale) {
-		this.scale.y += scale;
+		this.scale.y = scale;
 		updated = false;
 	}
 
