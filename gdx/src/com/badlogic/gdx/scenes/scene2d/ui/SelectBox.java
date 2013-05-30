@@ -118,8 +118,8 @@ public class SelectBox extends Widget {
 		for (int i = 0; i < items.length; i++)
 			max = Math.max(font.getBounds(items[i]).width, max);
 		prefWidth = bg.getLeftWidth() + bg.getRightWidth() + max;
-		prefWidth = Math.max(prefWidth, max + style.listBackground.getLeftWidth() + style.listBackground.getRightWidth() + 2
-			* style.itemSpacing);
+		prefWidth = Math.max(prefWidth, max + style.listBackground.getLeftWidth() + style.listBackground.getRightWidth()
+			+ style.listSelection.getLeftWidth() + style.listSelection.getRightWidth());
 
 		if (items.length > 0) {
 			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
@@ -313,7 +313,6 @@ public class SelectBox extends Widget {
 		public Drawable listSelection;
 		public BitmapFont font;
 		public Color fontColor = new Color(1, 1, 1, 1);
-		public float itemSpacing = 10;
 
 		public SelectBoxStyle () {
 		}
