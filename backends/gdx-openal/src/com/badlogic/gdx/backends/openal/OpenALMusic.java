@@ -45,6 +45,8 @@ public abstract class OpenALMusic implements Music {
 	private float renderedSeconds, secondsPerBuffer;
 
 	protected final FileHandle file;
+	
+	private OnCompletionListener onCompletionListener;
 
 	public OpenALMusic (OpenALAudio audio, FileHandle file) {
 		this.audio = audio;
@@ -163,7 +165,10 @@ public abstract class OpenALMusic implements Music {
 			else
 				end = true;
 		}
-		if (end && alGetSourcei(sourceID, AL_BUFFERS_QUEUED) == 0) stop();
+		if (end && alGetSourcei(sourceID, AL_BUFFERS_QUEUED) == 0) {
+			if (onCompletionListener != null) onCompletionListener.onCompletion(this);
+			stop();
+		}
 
 		// A buffer underflow will cause the source to stop.
 		if (isPlaying && alGetSourcei(sourceID, AL_SOURCE_STATE) != AL_PLAYING) alSourcePlay(sourceID);
@@ -197,5 +202,9 @@ public abstract class OpenALMusic implements Music {
 		}
 		alDeleteBuffers(buffers);
 		buffers = null;
+	}
+	
+	public void setOnCompletionListener (OnCompletionListener listener) {
+		onCompletionListener = listener;
 	}
 }

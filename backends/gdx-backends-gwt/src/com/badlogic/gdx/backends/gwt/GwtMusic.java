@@ -90,4 +90,9 @@ public class GwtMusic implements Music {
 	public void dispose () {
 		sound.destruct();
 	}
+	
+	@Override
+	public void setOnCompletionListener (OnCompletionListener listener) {
+		//FIXME
+	}
 }
