@@ -54,7 +54,7 @@ public class GestureDetector extends InputAdapter {
 	private final Task longPressTask = new Task() {
 		@Override
 		public void run () {
-			if (listener.longPress(pointer1.x, pointer1.y)) longPressFired = true;
+			longPressFired = listener.longPress(pointer1.x, pointer1.y);
 		}
 	};
 
@@ -128,7 +128,7 @@ public class GestureDetector extends InputAdapter {
 
 	public boolean touchDragged (float x, float y, int pointer) {
 		if (pointer > 1) return false;
-		if (longPressFired) return false;
+		if (longPressFired) return true;
 
 		if (pointer == 0)
 			pointer1.set(x, y);
@@ -175,7 +175,7 @@ public class GestureDetector extends InputAdapter {
 
 		longPressTask.cancel();
 		panning = false;
-		if (longPressFired) return false;
+		if (longPressFired) return true;
 		if (inTapSquare) {
 			// handle taps
 			if (lastTapButton != button || lastTapPointer != pointer || TimeUtils.nanoTime() - lastTapTime > tapCountInterval

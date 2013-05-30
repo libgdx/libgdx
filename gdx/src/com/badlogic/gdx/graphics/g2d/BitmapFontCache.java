@@ -113,6 +113,10 @@ public class BitmapFontCache {
 	public void draw (SpriteBatch spriteBatch) {
 		spriteBatch.draw(font.getRegion().getTexture(), vertices, 0, idx);
 	}
+	
+	public void draw(SpriteBatch spriteBatch, int start, int end) {
+            spriteBatch.draw(font.getRegion().getTexture(), vertices, start*20, end*20);
+        }
 
 	public void draw (SpriteBatch spriteBatch, float alphaModulation) {
 		if (alphaModulation == 1) {

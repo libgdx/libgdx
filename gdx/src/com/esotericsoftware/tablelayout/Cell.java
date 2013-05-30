@@ -909,30 +909,65 @@ public class Cell<C> {
 		return layout;
 	}
 
-	static Cell defaults (BaseTableLayout layout) {
-		Cell defaults = new Cell();
-		defaults.layout = layout;
-		defaults.minWidth = Value.minWidth;
-		defaults.minHeight = Value.minHeight;
-		defaults.prefWidth = Value.prefWidth;
-		defaults.prefHeight = Value.prefHeight;
-		defaults.maxWidth = Value.maxWidth;
-		defaults.maxHeight = Value.maxHeight;
-		defaults.spaceTop = Value.zero;
-		defaults.spaceLeft = Value.zero;
-		defaults.spaceBottom = Value.zero;
-		defaults.spaceRight = Value.zero;
-		defaults.padTop = Value.zero;
-		defaults.padLeft = Value.zero;
-		defaults.padBottom = Value.zero;
-		defaults.padRight = Value.zero;
-		defaults.fillX = 0f;
-		defaults.fillY = 0f;
-		defaults.align = CENTER;
-		defaults.expandX = 0;
-		defaults.expandY = 0;
-		defaults.ignore = false;
-		defaults.colspan = 1;
-		return defaults;
+	/** Sets all constraint fields to null. */
+	public void clear () {
+		minWidth = null;
+		minHeight = null;
+		prefWidth = null;
+		prefHeight = null;
+		maxWidth = null;
+		maxHeight = null;
+		spaceTop = null;
+		spaceLeft = null;
+		spaceBottom = null;
+		spaceRight = null;
+		padTop = null;
+		padLeft = null;
+		padBottom = null;
+		padRight = null;
+		fillX = null;
+		fillY = null;
+		align = null;
+		expandX = null;
+		expandY = null;
+		ignore = null;
+		colspan = null;
+		uniformX = null;
+		uniformY = null;
+	}
+
+	/** Reset state so the cell can be reused. Doesn't reset the constraint fields. */
+	public void free () {
+		widget = null;
+		layout = null;
+		endRow = false;
+		cellAboveIndex = -1;
+	}
+
+	/** Set all constraints to cell default values. */
+	void defaults () {
+		minWidth = Value.minWidth;
+		minHeight = Value.minHeight;
+		prefWidth = Value.prefWidth;
+		prefHeight = Value.prefHeight;
+		maxWidth = Value.maxWidth;
+		maxHeight = Value.maxHeight;
+		spaceTop = Value.zero;
+		spaceLeft = Value.zero;
+		spaceBottom = Value.zero;
+		spaceRight = Value.zero;
+		padTop = Value.zero;
+		padLeft = Value.zero;
+		padBottom = Value.zero;
+		padRight = Value.zero;
+		fillX = 0f;
+		fillY = 0f;
+		align = CENTER;
+		expandX = 0;
+		expandY = 0;
+		ignore = false;
+		colspan = 1;
+		uniformX = null;
+		uniformY = null;
 	}
 }

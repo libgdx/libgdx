@@ -39,7 +39,9 @@ import com.badlogic.gdx.tests.examples.MoveSpriteExample;
 import com.badlogic.gdx.tests.g3d.Basic3DTest;
 import com.badlogic.gdx.tests.g3d.MaterialTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
+import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.ShaderTest;
+import com.badlogic.gdx.tests.g3d.SkeletonTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.net.NetAPITest;
@@ -50,7 +52,7 @@ import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
  * @author badlogicgames@gmail.com */
 public class GdxTests {
 	public static final List<Class<? extends GdxTest>> tests = new ArrayList<Class<? extends GdxTest>>(Arrays.asList(
-		AnimationTest.class, AccelerometerTest.class, ActionTest.class, ActionSequenceTest.class,
+		AnimationTest.class, AccelerometerTest.class, ActionTest.class, ActionSequenceTest.class, LetterBoxTest3.class,
 		GroupTest.class, AlphaTest.class, AtlasIssueTest.class, AssetManagerTest.class, FilterPerformanceTest.class,
 		AudioDeviceTest.class, AudioRecorderTest.class, BitmapFontAlignmentTest.class, BitmapFontDistanceFieldTest.class, BitmapFontFlipTest.class,
 		GroupCullingTest.class, GestureDetectorTest.class, LabelTest.class, BitmapFontMetricsTest.class, BlitTest.class, TableTest.class,
@@ -68,7 +70,7 @@ public class GdxTests {
 		PixmapBlendingTest.class, PixmapTest.class, PixmapPackerTest.class, PolygonRegionTest.class, PolygonSpriteTest.class, PreferencesTest.class,
 		ProjectiveTextureTest.class, Pong.class, ProjectTest.class, RemoteTest.class, RotationTest.class, DragAndDropTest.class,
 		ShaderMultitextureTest.class, ShadowMappingTest.class, PathTest.class, SimpleAnimationTest.class, SimpleDecalTest.class,
-		SimpleStageCullingTest.class, SoundTest.class, SpriteCacheTest.class, SpriteCacheOffsetTest.class, LetterBoxTest.class,
+		SimpleStageCullingTest.class, SoundTest.class, SpriteCacheTest.class, SpriteCacheOffsetTest.class, LetterBoxTest1.class,
 		SpriteBatchRotationTest.class, SpriteBatchShaderTest.class, SpriteBatchTest.class, SpritePerformanceTest.class,
 		SpritePerformanceTest2.class, StagePerformanceTest.class, StageTest.class, TerrainTest.class, TextureDataTest.class,
 		TextureDownloadTest.class, TextureFormatTest.class, TextureAtlasTest.class, TextInputDialogTest.class,
@@ -81,8 +83,8 @@ public class GdxTests {
 		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
 		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GamepadTest.class, NetAPITest.class, TideMapAssetManagerTest.class, TideMapDirectLoaderTest.class, TiledMapAssetManagerTest.class, TiledMapBench.class,
-		RunnablePostTest.class, Vector2dTest.class, SuperKoalio.class, NinePatchTest.class,
-		ModelTest.class, Basic3DTest.class, ShaderTest.class, HexagonalTiledMapTest.class));
+		RunnablePostTest.class, Vector2dTest.class, SuperKoalio.class, NinePatchTest.class, Basic3DSceneTest.class,
+		ModelTest.class, Basic3DTest.class, ShaderTest.class, SkeletonTest.class, HexagonalTiledMapTest.class));
 	
 	public static List<String> getNames () {
 		List<String> names = new ArrayList<String>(tests.size());
