@@ -28,9 +28,6 @@ public class ModelLoaderTest extends GdxTest {
 		camera.update();
 		assets = new AssetManager();
 		assets.load("data/g3d/cube.g3dj", Model.class);
-		assets.finishLoading();
-		model = assets.get("data/g3d/cube.g3dj", Model.class);
-		instance = new ModelInstance(model);
 		modelBatch = new ModelBatch();
 		spriteBatch = new SpriteBatch();
 	}
@@ -40,20 +37,31 @@ public class ModelLoaderTest extends GdxTest {
 		return true;
 	}
 
+	private void doneLoading() {
+		model = assets.get("data/g3d/cube.g3dj", Model.class);
+		instance = new ModelInstance(model);
+	}
+	
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		
-		modelBatch.begin(camera);
-		modelBatch.render(instance);
-		modelBatch.end();
+		if(assets.update()) {
+			doneLoading();
+		}
 		
-		spriteBatch.begin();
-		spriteBatch.draw(assets.get("data/g3d/checkboard.png", Texture.class), 0, 0, 100, 100);
-		spriteBatch.draw(assets.get("data/g3d/Knight.png", Texture.class), 100, 0, 100, 100);
-		spriteBatch.end();
+		if(instance != null) {
+			modelBatch.begin(camera);
+			modelBatch.render(instance);
+			modelBatch.end();
+			
+			spriteBatch.begin();
+			spriteBatch.draw(assets.get("data/g3d/checkboard.png", Texture.class), 0, 0, 100, 100);
+			spriteBatch.draw(assets.get("data/g3d/Knight.png", Texture.class), 100, 0, 100, 100);
+			spriteBatch.end();
+		}
 	}
 
 	@Override
