@@ -32,7 +32,6 @@
     <MtouchI18n>west</MtouchI18n>
     <MtouchArch>ARMv7</MtouchArch>
     <OptimizePNGs>false</OptimizePNGs>
-    <MtouchSdkVersion>5.0</MtouchSdkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>

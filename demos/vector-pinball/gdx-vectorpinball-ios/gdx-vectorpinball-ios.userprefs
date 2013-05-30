@@ -8,8 +8,9 @@
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="gdx-vectorpinball-ios" expanded="True" selected="True">
+          <Node name="gdx-vectorpinball-ios" expanded="True">
             <Node name="References" expanded="True" />
+            <Node name="Main.cs" selected="True" />
           </Node>
         </State>
       </Pad>

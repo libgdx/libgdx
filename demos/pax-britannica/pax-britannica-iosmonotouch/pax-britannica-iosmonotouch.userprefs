@@ -12,8 +12,8 @@
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="pax-britannica-iosmonotouch" expanded="True">
-            <Node name="References" expanded="True" selected="True" />
+          <Node name="pax-britannica-iosmonotouch" expanded="True" selected="True">
+            <Node name="References" expanded="True" />
           </Node>
         </State>
       </Pad>
