@@ -8,7 +8,9 @@
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="superjumper-ios" expanded="True" selected="True" />
+          <Node name="superjumper-ios" expanded="True">
+            <Node name="data" expanded="True" selected="True" />
+          </Node>
         </State>
       </Pad>
     </Pads>
