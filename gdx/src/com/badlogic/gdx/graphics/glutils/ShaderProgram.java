@@ -639,6 +639,16 @@ public class ShaderProgram implements Disposable {
 		BufferUtils.copy(values, floatBuffer, length, offset);
 		gl.glUniformMatrix4fv(location, length / 16, false, floatBuffer);
 	}
+	
+	public void setUniformMatrix4fv (String name, float[] values, int offset, int length) {
+		GL20 gl = Gdx.graphics.getGL20();
+		checkManaged();
+		ensureBufferCapacity(length << 2);
+		floatBuffer.clear();
+		BufferUtils.copy(values, floatBuffer, length, offset);
+		int location = fetchUniformLocation(name);
+		gl.glUniformMatrix4fv(location, length / 16, false, floatBuffer);
+	}
 
 	/** Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a
 	 * {@link #begin()}/{@link #end()} block.
