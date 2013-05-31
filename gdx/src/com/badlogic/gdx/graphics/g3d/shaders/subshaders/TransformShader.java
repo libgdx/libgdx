@@ -14,54 +14,55 @@ import com.badlogic.gdx.utils.Array;
  * @author badlogic
  *
  */
-public class TransformShader implements SubShader {
-	private Array<String> vertexVars = new Array<String>(new String[] {
-		"uniform mat4 u_worldTrans;"
-	});
-	private String[] vertexCode = {
-		"#ifdef skinnedFlag",
-		"  mat4 skinning = mat4(0.0);",
-		"  #ifdef boneWeight0Flag",
-		"    skinning += (a_boneWeight0.y) * u_bones[int(a_boneWeight0.x)];",
-		"  #endif",
-		"  #ifdef boneWeight1Flag",
-		"    skinning += (a_boneWeight1.y) * u_bones[int(a_boneWeight1.x)];",
-		"  #endif",
-		"  #ifdef boneWeight2Flag",
-		"    skinning += (a_boneWeight2.y) * u_bones[int(a_boneWeight2.x)];",
-		"  #endif",
-		"  #ifdef boneWeight3Flag",
-		"    skinning += (a_boneWeight3.y) * u_bones[int(a_boneWeight3.x)];",
-		"  #endif",
-		"  #ifdef boneWeight4Flag",
-		"    skinning += (a_boneWeight4.y) * u_bones[int(a_boneWeight4.x)];",
-		"  #endif",
-		"  #ifdef boneWeight5Flag",
-		"    skinning += (a_boneWeight5.y) * u_bones[int(a_boneWeight5.x)];",
-		"  #endif",
-		"  #ifdef boneWeight6Flag",
-		"    skinning += (a_boneWeight6.y) * u_bones[int(a_boneWeight6.x)];",
-		"  #endif",
-		"  #ifdef boneWeight7Flag",
-		"    skinning += (a_boneWeight7.y) * u_bones[int(a_boneWeight7.x)];",
-		"  #endif",
-		"  vec4 position = u_worldTrans * skinning * vec4(a_position, 1.0);",
-		"#else",
-		"  vec4 position = u_worldTrans * vec4(" + ShaderProgram.POSITION_ATTRIBUTE + ", 1);",
-		"#endif",
-		"position = u_projTrans * position;"
-	};
-	private String[] fragmentVars = {
-		
-	};
-	private String[] fragmentCode = {
-		"vec4 color = vec4(1, 1, 1, 1);"
-	};
-	
+public class TransformShader extends BaseSubShader {
 	private int NUM_BONES = 12; // FIXME kinda arbitrary eh...
 	private boolean skinned;
 	private float[] bones = new float[NUM_BONES * 16];
 	private Matrix4 idtMatrix = new Matrix4();
+	
+	public TransformShader() {
+		vertexVars.addAll(new String[] {
+			"uniform mat4 u_worldTrans;"
+		});
+		
+		vertexCode.addAll(new String[] {
+			"#ifdef skinnedFlag",
+			"  mat4 skinning = mat4(0.0);",
+			"  #ifdef boneWeight0Flag",
+			"    skinning += (a_boneWeight0.y) * u_bones[int(a_boneWeight0.x)];",
+			"  #endif",
+			"  #ifdef boneWeight1Flag",
+			"    skinning += (a_boneWeight1.y) * u_bones[int(a_boneWeight1.x)];",
+			"  #endif",
+			"  #ifdef boneWeight2Flag",
+			"    skinning += (a_boneWeight2.y) * u_bones[int(a_boneWeight2.x)];",
+			"  #endif",
+			"  #ifdef boneWeight3Flag",
+			"    skinning += (a_boneWeight3.y) * u_bones[int(a_boneWeight3.x)];",
+			"  #endif",
+			"  #ifdef boneWeight4Flag",
+			"    skinning += (a_boneWeight4.y) * u_bones[int(a_boneWeight4.x)];",
+			"  #endif",
+			"  #ifdef boneWeight5Flag",
+			"    skinning += (a_boneWeight5.y) * u_bones[int(a_boneWeight5.x)];",
+			"  #endif",
+			"  #ifdef boneWeight6Flag",
+			"    skinning += (a_boneWeight6.y) * u_bones[int(a_boneWeight6.x)];",
+			"  #endif",
+			"  #ifdef boneWeight7Flag",
+			"    skinning += (a_boneWeight7.y) * u_bones[int(a_boneWeight7.x)];",
+			"  #endif",
+			"  vec4 position = u_worldTrans * skinning * vec4(a_position, 1.0);",
+			"#else",
+			"  vec4 position = u_worldTrans * vec4(" + ShaderProgram.POSITION_ATTRIBUTE + ", 1);",
+			"#endif",
+			"position = u_projTrans * position;"
+		});
+		
+		fragmentCode.addAll(new String[] {
+			"vec4 color = vec4(1.0);"
+		});
+	}
 	
 	@Override
 	public void init (Renderable renderable) {
@@ -105,25 +106,5 @@ public class TransformShader implements SubShader {
 			}
 			program.setUniformMatrix4fv("u_bones", bones, 0, bones.length);
 		}
-	}
-	
-	@Override
-	public String[] getVertexShaderVars () {
-		return vertexVars.toArray();
-	}
-
-	@Override
-	public String[] getVertexShaderCode () {
-		return vertexCode;
-	}
-
-	@Override
-	public String[] getFragmentShaderVars () {
-		return fragmentVars;
-	}
-
-	@Override
-	public String[] getFragmentShaderCode () {
-		return fragmentCode;
 	}
 }
