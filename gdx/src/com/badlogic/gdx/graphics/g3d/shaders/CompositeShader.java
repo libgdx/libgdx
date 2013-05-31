@@ -2,8 +2,10 @@ package com.badlogic.gdx.graphics.g3d.shaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.shaders.subshaders.DiffuseTextureShader;
 import com.badlogic.gdx.graphics.g3d.shaders.subshaders.SubShader;
 import com.badlogic.gdx.graphics.g3d.shaders.subshaders.TransformShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
@@ -31,6 +33,7 @@ public class CompositeShader implements Shader {
 	
 	public CompositeShader(Renderable renderable) {
 		subShaders.add(new TransformShader());
+		subShaders.add(new DiffuseTextureShader());
 		init(renderable);
 	}
 	
@@ -148,6 +151,7 @@ public class CompositeShader implements Shader {
 		program.begin();
 		this.camera = camera;
 		this.context = context;
+		context.setDepthTest(true, GL20.GL_LEQUAL);
 	}
 
 	@Override
