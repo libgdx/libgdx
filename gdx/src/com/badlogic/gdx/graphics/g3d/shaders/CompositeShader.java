@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.shaders.subshaders.DiffuseTextureShader;
+import com.badlogic.gdx.graphics.g3d.shaders.subshaders.DiffuseColorTextureShader;
 import com.badlogic.gdx.graphics.g3d.shaders.subshaders.SubShader;
 import com.badlogic.gdx.graphics.g3d.shaders.subshaders.TransformShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
@@ -33,7 +33,7 @@ public class CompositeShader implements Shader {
 	
 	public CompositeShader(Renderable renderable) {
 		subShaders.add(new TransformShader());
-		subShaders.add(new DiffuseTextureShader());
+		subShaders.add(new DiffuseColorTextureShader());
 		init(renderable);
 	}
 	
