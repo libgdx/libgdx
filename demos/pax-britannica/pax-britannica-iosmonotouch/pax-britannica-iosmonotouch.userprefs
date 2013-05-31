@@ -1,13 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="../pax-britannica/src/de/swagner/paxbritannica/settings/Settings.java">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhone.5.0" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="pax-britannica-iosmonotouch/Main.cs">
     <Files>
-      <File FileName="pax-britannica-iosmonotouch/Main.cs" Line="11" Column="2" />
-      <File FileName="../pax-britannica/src/de/swagner/paxbritannica/GameScreen.java" Line="90" Column="1" />
-      <File FileName="../../../gdx/src/com/badlogic/gdx/files/FileHandle.java" Line="126" Column="1" />
-      <File FileName="../../../gdx/src/com/badlogic/gdx/graphics/g2d/BitmapFont.java" Line="73" Column="1" />
-      <File FileName="../pax-britannica/src/de/swagner/paxbritannica/settings/Settings.java" Line="101" Column="5" />
-      <File FileName="../../../gdx/src/com/badlogic/gdx/Game.java" Line="59" Column="1" />
+      <File FileName="pax-britannica-iosmonotouch/Main.cs" Line="10" Column="1" />
+      <File FileName="../pax-britannica/src/de/swagner/paxbritannica/GameScreen.java" Line="1" Column="1" />
+      <File FileName="../../../gdx/src/com/badlogic/gdx/files/FileHandle.java" Line="1" Column="1" />
+      <File FileName="../../../gdx/src/com/badlogic/gdx/graphics/g2d/BitmapFont.java" Line="1" Column="1" />
+      <File FileName="../pax-britannica/src/de/swagner/paxbritannica/settings/Settings.java" Line="1" Column="1" />
+      <File FileName="../../../gdx/src/com/badlogic/gdx/Game.java" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -21,7 +21,7 @@
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/Users/badlogic/workspace/libgdx-git/backends/gdx-backend-iosmonotouch/Test.java" line="3" />
+      <Breakpoint file="/Users/badlogic/workspace/libgdx-git/backends/gdx-backend-iosmonotouch/Test.java" line="3" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

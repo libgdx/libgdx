@@ -14,10 +14,6 @@
 package com.badlogic.gdxinvaders.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.ControllerAdapter;
-import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.controllers.mappings.Ouya;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
@@ -57,18 +53,18 @@ public class GameOver extends InvadersScreen {
 
 		font = new BitmapFont(Gdx.files.internal("data/font16.fnt"), Gdx.files.internal("data/font16.png"), false);
 		
-		if(Controllers.getControllers().size > 0) {
-			Controller controller = Controllers.getControllers().get(0);
-			if(Ouya.ID.equals(controller.getName())) {
-				controller.addListener(new ControllerAdapter() {
-					@Override
-					public boolean buttonUp (Controller controller, int buttonIndex) {
-						isDone = true;
-						return false;
-					}
-				});
-			}
-		}
+//		if(Controllers.getControllers().size > 0) {
+//			Controller controller = Controllers.getControllers().get(0);
+//			if(Ouya.ID.equals(controller.getName())) {
+//				controller.addListener(new ControllerAdapter() {
+//					@Override
+//					public boolean buttonUp (Controller controller, int buttonIndex) {
+//						isDone = true;
+//						return false;
+//					}
+//				});
+//			}
+//		}
 	}
 
 	@Override
