@@ -257,6 +257,12 @@ public class ModelInstance implements RenderableProvider {
 	 * This is a potential slow operation, it is advised to cache the result. */
 	public BoundingBox calculateBoundingBox(final BoundingBox out) {
 		out.inf();
+		return extendBoundingBox(out);
+	}
+	
+	/** Extends the bounding box with the bounds of this model instance.
+	 * This is a potential slow operation, it is advised to cache the result. */
+	public BoundingBox extendBoundingBox(final BoundingBox out) {
 		for (final Node node : nodes)
 			calculateBoundingBox(out, node);
 		return out;
@@ -264,7 +270,7 @@ public class ModelInstance implements RenderableProvider {
 	
 	protected void calculateBoundingBox(final BoundingBox out, final Node node) {
 		for (final NodePart mpm : node.parts)
-			mpm.meshPart.mesh.calculateBoundingBox(out, mpm.meshPart.indexOffset, mpm.meshPart.numVertices);
+			mpm.meshPart.mesh.calculateBoundingBox(out, mpm.meshPart.indexOffset, mpm.meshPart.numVertices, node.globalTransform);
 		for (final Node child : node.children)
 			calculateBoundingBox(out, child);
 	}
@@ -276,17 +282,26 @@ public class ModelInstance implements RenderableProvider {
 		return null;
 	}
 	
-	public Node getNode(final String id) {
-		return getNode(id, nodes);
+	/** @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
+	 * @return The node with the specified id, or null if not found. */
+	public Node getNode(final String id, boolean recursive) {
+		return getNode(id, nodes, recursive);
 	}
 	
-	protected Node getNode(final String id, final Iterable<Node> nodes) {
+	/** @return The node with the specified id, or null if not found. */
+	public Node getNode(final String id) {
+		return getNode(id, true);
+	}
+	
+	protected Node getNode(final String id, final Iterable<Node> nodes, boolean recursive) {
 		for (final Node node : nodes) {
 			if (node.id.equals(id))
 				return node;
-			final Node n = getNode(id, node.children);
-			if (n != null)
-				return n;
+			if (recursive) {
+				final Node n = getNode(id, node.children, recursive);
+				if (n != null)
+					return n;
+			}
 		}
 		return null;
 	}
@@ -316,7 +331,7 @@ public class ModelInstance implements RenderableProvider {
 				renderable.primitiveType = nodePart.meshPart.primitiveType;
 				renderable.bones = nodePart.bones;
 				if (nodePart.bones == null && transform != null)
-				renderable.worldTransform.set(node.globalTransform).mul(transform);
+				renderable.worldTransform.set(transform).mul(node.globalTransform);
 				else if (transform != null)
 					renderable.worldTransform.set(transform);
 				else
