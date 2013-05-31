@@ -112,7 +112,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				short[] partIndices = new short[indices.size()];
 				int k = 0;
 				for (JsonValue value = indices.child(); value != null; value = value.next(), k++) {
-					partIndices[k] = (short)indices.getInt(k);
+					partIndices[k] = (short)value.asInt();
 				}
 				jsonPart.indices = partIndices;
 				parts.add(jsonPart);
