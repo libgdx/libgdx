@@ -74,18 +74,17 @@ public class DefaultShader extends BaseShader {
 	protected final int u_specularTexture			= registerUniform("u_specularTexture", TextureAttribute.Specular);
 	protected final int u_normalTexture				= registerUniform("u_normalTexture", TextureAttribute.Normal);
 	protected final int u_alphaTest					= registerUniform("u_alphaTest", FloatAttribute.AlphaTest);
-    protected final int u_fogDistance				= registerUniform("u_fogDistance", FloatAttribute.FogDistance);
-    protected final int u_fogColor				    = registerUniform("u_fogColor", ColorAttribute.Fog);
 	// Lighting uniforms
 	protected final int u_ambientLight				= registerUniform("u_ambientLight");
 	protected final int u_ambientCubemap			= registerUniform("u_ambientCubemap");
 	protected final int u_dirLights0color			= registerUniform("u_dirLights[0].color");
 	protected final int u_dirLights0direction		= registerUniform("u_dirLights[0].direction");
 	protected final int u_dirLights1color			= registerUniform("u_dirLights[1].color");
-	protected final int u_pointLights0color		= registerUniform("u_pointLights[0].color");
-	protected final int u_pointLights0position	= registerUniform("u_pointLights[0].position");
-	protected final int u_pointLights0intensity	= registerUniform("u_pointLights[0].intensity");
-	protected final int u_pointLights1color		= registerUniform("u_pointLights[1].color");
+	protected final int u_pointLights0color		    = registerUniform("u_pointLights[0].color");
+	protected final int u_pointLights0position	    = registerUniform("u_pointLights[0].position");
+	protected final int u_pointLights0intensity	    = registerUniform("u_pointLights[0].intensity");
+	protected final int u_pointLights1color		    = registerUniform("u_pointLights[1].color");
+    protected final int u_fogColor				    = registerUniform("u_fogColor");
 	// FIXME Cache vertex attribute locations...
 	
 	protected int dirLightsLoc;
@@ -111,20 +110,20 @@ public class DefaultShader extends BaseShader {
 	
 	protected final ShaderProgram program;
 	
-	public DefaultShader(final Material material, final VertexAttributes attributes, boolean lighting, int numDirectional, int numPoint, int numSpot, int numBones) {
-		this(getDefaultVertexShader(), getDefaultFragmentShader(), material, attributes, lighting, numDirectional, numPoint, numSpot, numBones);
+	public DefaultShader(final Material material, final VertexAttributes attributes, boolean lighting, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
+		this(getDefaultVertexShader(), getDefaultFragmentShader(), material, attributes, lighting, fog, numDirectional, numPoint, numSpot, numBones);
 	}
 	
-	public DefaultShader(final long mask, final long attributes, boolean lighting, int numDirectional, int numPoint, int numSpot, int numBones) {
-		this(getDefaultVertexShader(), getDefaultFragmentShader(), mask, attributes, lighting, numDirectional, numPoint, numSpot, numBones);
+	public DefaultShader(final long mask, final long attributes, boolean lighting, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
+		this(getDefaultVertexShader(), getDefaultFragmentShader(), mask, attributes, lighting, fog, numDirectional, numPoint, numSpot, numBones);
 	}
 
-	public DefaultShader(final String vertexShader, final String fragmentShader, final Material material, final VertexAttributes attributes, boolean lighting, int numDirectional, int numPoint, int numSpot, int numBones) {
-		this(vertexShader, fragmentShader, material.getMask(), getAttributesMask(attributes), lighting, numDirectional, numPoint, numSpot, numBones);
+	public DefaultShader(final String vertexShader, final String fragmentShader, final Material material, final VertexAttributes attributes, boolean lighting, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
+		this(vertexShader, fragmentShader, material.getMask(), getAttributesMask(attributes), lighting, fog, numDirectional, numPoint, numSpot, numBones);
 	}
 
-	public DefaultShader(final String vertexShader, final String fragmentShader, final long mask, final long attributes, boolean lighting, int numDirectional, int numPoint, int numSpot, int numBones) {
-		final String prefix = createPrefix(mask, attributes, lighting, numDirectional, numPoint, numSpot, numBones);
+	public DefaultShader(final String vertexShader, final String fragmentShader, final long mask, final long attributes, boolean lighting, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
+		final String prefix = createPrefix(mask, attributes, lighting, fog, numDirectional, numPoint, numSpot, numBones);
 		program = new ShaderProgram(prefix + vertexShader, prefix + fragmentShader);
 		if(!program.isCompiled()) {
 			throw new GdxRuntimeException("Couldn't compile shader " + program.getLog());
@@ -145,16 +144,16 @@ public class DefaultShader extends BaseShader {
 		if (!ignoreUnimplemented && (implementedFlags & mask) != mask)
 			throw new GdxRuntimeException("Some attributes not implemented yet ("+mask+")");
 		
-		dirLightsLoc 					= loc(u_dirLights0color);
-		dirLightsColorOffset			= loc(u_dirLights0color) - dirLightsLoc;
+		dirLightsLoc 				= loc(u_dirLights0color);
+		dirLightsColorOffset		= loc(u_dirLights0color) - dirLightsLoc;
 		dirLightsDirectionOffset 	= loc(u_dirLights0direction) - dirLightsLoc;
-		dirLightsSize 					= loc(u_dirLights1color) - dirLightsLoc;
+		dirLightsSize 				= loc(u_dirLights1color) - dirLightsLoc;
 		
 		pointLightsLoc 				= loc(u_pointLights0color);
 		pointLightsColorOffset 		= loc(u_pointLights0color) - pointLightsLoc;
 		pointLightsPositionOffset 	= loc(u_pointLights0position) - pointLightsLoc;
-		pointLightsIntensityOffset = loc(u_pointLights0intensity) - pointLightsLoc;
-		pointLightsSize 				= loc(u_pointLights1color)- pointLightsLoc;
+		pointLightsIntensityOffset  = loc(u_pointLights0intensity) - pointLightsLoc;
+		pointLightsSize 			= loc(u_pointLights1color)- pointLightsLoc;
 	}
 	
 	protected final static long tangentAttribute = Usage.Generic << 1;
@@ -177,7 +176,7 @@ public class DefaultShader extends BaseShader {
 		return result;
 	}
 	
-	private String createPrefix(final long mask, final long attributes, boolean lighting, int numDirectional, int numPoint, int numSpot, int numBones) {
+	private String createPrefix(final long mask, final long attributes, boolean lighting, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
 		String prefix = "";
 		if (((attributes & Usage.Color) == Usage.Color) || ((attributes & Usage.ColorPacked) == Usage.ColorPacked))
 			prefix += "#define colorFlag\n";
@@ -188,6 +187,10 @@ public class DefaultShader extends BaseShader {
 				prefix += "#define ambientCubemapFlag\n";
 				prefix += "#define numDirectionalLights "+numDirectional+"\n";
 				prefix += "#define numPointLights "+numPoint+"\n";
+
+                if (fog) {
+                    prefix += "#define fogFlag\n";
+                }
 			}
 		}
 		for (int i = 0; i < blendAttributes.length; i++) {
@@ -209,8 +212,6 @@ public class DefaultShader extends BaseShader {
 			prefix += "#define "+ColorAttribute.DiffuseAlias+"Flag\n";
 		if ((mask & ColorAttribute.Specular) == ColorAttribute.Specular)
 			prefix += "#define "+ColorAttribute.SpecularAlias+"Flag\n";
-        if ((mask & ColorAttribute.Fog) == ColorAttribute.Fog)
-            prefix += "#define "+ColorAttribute.FogAlias+"Flag\n";
 		if ((mask & FloatAttribute.Shininess) == FloatAttribute.Shininess)
 			prefix += "#define "+FloatAttribute.ShininessAlias+"Flag\n";
 		if ((mask & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
@@ -264,7 +265,7 @@ public class DefaultShader extends BaseShader {
 			context.setDepthTest(true, defaultDepthFunc);
 		
 		set(u_projTrans, camera.combined);
-		set(u_cameraPosition, camera.position);
+		set(u_cameraPosition, camera.position.x, camera.position.y, camera.position.z, camera.far);
 		set(u_cameraDirection, camera.direction);
 		set(u_cameraUp, camera.up);
 		
@@ -334,8 +335,6 @@ public class DefaultShader extends BaseShader {
 					set(u_diffuseColor, col.color);
 				else if ((t & ColorAttribute.Specular) == ColorAttribute.Specular)
 					set(u_specularColor, col.color);
-                else if ((t & ColorAttribute.Fog) == ColorAttribute.Fog)
-                    set(u_fogColor, col.color);
 			}
 			else if (TextureAttribute.is(t)) {
 				final TextureAttribute tex = (TextureAttribute)attr;
@@ -351,8 +350,6 @@ public class DefaultShader extends BaseShader {
 				cullFace = ((IntAttribute)attr).value;
 			else if ((t & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
 				set(u_alphaTest, ((FloatAttribute)attr).value);
-            else if ((t & FloatAttribute.FogDistance) == FloatAttribute.FogDistance)
-                set(u_fogDistance, ((FloatAttribute)attr).value);
             else if(!ignoreUnimplemented)
 					throw new GdxRuntimeException("Unknown material attribute: "+attr.toString());
 		}
@@ -422,6 +419,10 @@ public class DefaultShader extends BaseShader {
 					program.setUniformf(idx+pointLightsIntensityOffset, pointLights[i].intensity);
 			}
 		}
+
+        if (lights.fog.a > 0) {
+            program.setUniformf(loc(u_fogColor), lights.fog);
+        }
 	}
 
 	@Override

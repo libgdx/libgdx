@@ -17,13 +17,6 @@ public class FloatAttribute extends Material.Attribute {
 		return new FloatAttribute(AlphaTest, value);
 	}
 
-    public static final String FogDistanceAlias = "fodDistance";
-    public static final long FogDistance = register(FogDistanceAlias);
-
-    public static FloatAttribute createFogDistance(float value) {
-        return new FloatAttribute(FogDistance, value);
-    }
-
     public float value;
 	
 	public FloatAttribute(long type) {

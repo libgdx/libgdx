@@ -6,7 +6,7 @@
 #define specularFlag
 #endif
 
-#if defined(specularFlag) || defined(fogColorFlag)
+#if defined(specularFlag) || defined(fogFlag)
 #define cameraPositionFlag
 #endif
 
@@ -133,17 +133,12 @@ varying vec3 v_lightSpecular;
 #endif // specularFlag
 
 #ifdef cameraPositionFlag
-uniform vec3 u_cameraPosition;
+uniform vec4 u_cameraPosition;
 #endif // cameraPositionFlag
 
-#ifdef fogColorFlag
+#ifdef fogFlag
 varying float v_fog;
-#ifdef fogDistanceFlag
-uniform float u_fogDistance;
-#else
-const float u_fogDistance = 0.02;
-#endif // fogDistanceFlag
-#endif // fogColorFlag
+#endif // fogFlag
 
 
 #if defined(numDirectionalLights) && (numDirectionalLights > 0)
@@ -226,8 +221,8 @@ void main() {
 		v_normal = normal;
 	#endif // normalFlag
 
-    #ifdef fogColorFlag
-        float fog  = length(u_cameraPosition.xyz - pos.xyz) * u_fogDistance;
+    #ifdef fogFlag
+        float fog  = length(u_cameraPosition.xyz - pos.xyz) * (1.0 / u_cameraPosition.w);
               fog *= fog;
         v_fog = min(fog, 1.0);
     #endif
@@ -261,7 +256,7 @@ void main() {
 			
 		#ifdef specularFlag
 			v_lightSpecular = vec3(0.0);
-			vec3 viewVec = normalize(u_cameraPosition - pos.xyz);
+			vec3 viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
 		#endif // specularFlag
 			
 		#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
