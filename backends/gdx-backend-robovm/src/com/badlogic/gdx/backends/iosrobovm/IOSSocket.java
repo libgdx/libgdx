@@ -1,4 +1,4 @@
-package com.badlogic.gdx.backends.robovm;
+package com.badlogic.gdx.backends.iosrobovm;
 
 import java.io.InputStream;
 import java.io.OutputStream;

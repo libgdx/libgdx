@@ -1,4 +1,4 @@
-package com.badlogic.gdx.backends.robovm;
+package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;

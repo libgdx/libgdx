@@ -1,4 +1,4 @@
-package com.badlogic.gdx.backends.robovm;
+package com.badlogic.gdx.backends.iosrobovm;
 
 import org.robovm.cocoatouch.coregraphics.CGPoint;
 import org.robovm.cocoatouch.foundation.NSArray;

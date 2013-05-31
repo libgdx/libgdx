@@ -1,4 +1,4 @@
-package com.badlogic.gdx.backends.robovm;
+package com.badlogic.gdx.backends.iosrobovm;
 
 public class IOSApplicationConfiguration {
 	// FIXME add compass, framebuffer bit depth, stencil, just like on Android if possible
