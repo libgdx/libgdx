@@ -49,13 +49,13 @@ public class TransformShader implements SubShader {
 		"#else",
 		"  vec4 position = u_worldTrans * vec4(" + ShaderProgram.POSITION_ATTRIBUTE + ", 1);",
 		"#endif",
-		"gl_Position = u_projTrans * position;"
+		"position = u_projTrans * position;"
 	};
 	private String[] fragmentVars = {
 		
 	};
 	private String[] fragmentCode = {
-		"gl_FragColor = vec4(1, 1, 1, 1);"
+		"vec4 color = vec4(1, 1, 1, 1);"
 	};
 	
 	private int NUM_BONES = 12; // FIXME kinda arbitrary eh...

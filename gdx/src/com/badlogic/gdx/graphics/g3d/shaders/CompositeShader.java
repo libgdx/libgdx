@@ -97,6 +97,7 @@ public class CompositeShader implements Shader {
 				vertexShader.append("\n");
 			}
 		}
+		vertexShader.append("  gl_Position = position;\n"); // we asume at least one sub shader outputs a position
 		vertexShader.append("}");
 		
 		fragmentShader.append("void main() {\n");
@@ -107,6 +108,7 @@ public class CompositeShader implements Shader {
 				fragmentShader.append("\n");
 			}
 		}
+		fragmentShader.append("  gl_FragColor = color;\n"); // we assume at least one sub shader outputs a color
 		fragmentShader.append("}");
 		
 		program = new ShaderProgram(vertexShader.toString(), fragmentShader.toString());
