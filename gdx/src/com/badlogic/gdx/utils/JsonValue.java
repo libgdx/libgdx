@@ -15,7 +15,6 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * </pre>
  * @author Nathan Sweet */
 public class JsonValue {
-	private String name;
 	private ValueType type;
 
 	private String stringValue;
@@ -23,8 +22,10 @@ public class JsonValue {
 	private Double doubleValue;
 	private long longValue;
 
-	private JsonValue child, next, prev;
-	private int size;
+	public String name;
+	/** May be null */
+	public JsonValue child, next, prev;
+	public int size;
 
 	public JsonValue (ValueType type) {
 		this.type = type;
@@ -121,7 +122,8 @@ public class JsonValue {
 		return child;
 	}
 
-	/** Returns this number of children in the array or object. */
+	/** @deprecated Use the size property instead.
+	 * Returns this number of children in the array or object. */
 	public int size () {
 		return size;
 	}
@@ -416,6 +418,7 @@ public class JsonValue {
 		return child;
 	}
 
+	/** @deprecated */
 	public void addChild (JsonValue newChild) {
 		size++;
 		JsonValue current = child;

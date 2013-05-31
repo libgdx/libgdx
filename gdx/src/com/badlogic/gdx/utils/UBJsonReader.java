@@ -83,8 +83,17 @@ public class UBJsonReader implements BaseJsonReader {
 	protected JsonValue parseArray(final DataInputStream din) throws IOException {
 		JsonValue result = new JsonValue(JsonValue.ValueType.array);
 		byte type = din.readByte();
+		JsonValue prev = null;
 		while (din.available() > 0 && type != ']') {
-			result.addChild(parse(din, type));
+			final JsonValue val = parse(din, type);
+			if (prev != null) {
+				prev.next = val;
+				result.size++;
+			} else {
+				result.child = val;
+				result.size = 1;
+			}
+			prev = val;
 			type = din.readByte();
 		}
 		return result;
@@ -93,13 +102,21 @@ public class UBJsonReader implements BaseJsonReader {
 	protected JsonValue parseObject(final DataInputStream din) throws IOException {
 		JsonValue result = new JsonValue(JsonValue.ValueType.object);
 		byte type = din.readByte();
+		JsonValue prev = null;
 		while (din.available() > 0 && type != '}') {
 			if (type != 's' && type != 'S')
 				throw new GdxRuntimeException("Only string key are currently supported");
 			final String key = parseString(din, type);
 			final JsonValue child = parse(din);
 			child.setName(key);
-			result.addChild(child);
+			if (prev != null) {
+				prev.next = child;
+				result.size++;
+			} else {
+				result.child = child;
+				result.size = 1;
+			}
+			prev = child;
 			type = din.readByte();
 		}
 		return result;

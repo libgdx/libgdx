@@ -21,6 +21,10 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
+import com.badlogic.gdx.tests.g3d.Basic3DTest;
+import com.badlogic.gdx.tests.g3d.ModelLoaderTest;
+import com.badlogic.gdx.tests.g3d.ModelTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {
@@ -32,27 +36,11 @@ public class LwjglDebugStarter {
 //		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new GdxTest() {
-			OrthographicCamera camera;
-			Stage stage;
-
-			@Override
-			public void create () {
-				camera = new OrthographicCamera(600, 600);
-				stage = new Stage(600, 600, false);
-				Vector2 screenposition = new Vector2(100,100);
-				System.out.println(screenposition);
-				 Vector2 stageposition = stage.screenToStageCoordinates(screenposition);
-				 System.out.println(stageposition);
-				 screenposition = stage.stageToScreenCoordinates(stageposition);
-				 System.out.println(screenposition);
-			}
-
-		};
+		GdxTest test = new Basic3DTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
-		config.width = 600;
-		config.height = 600;
+		config.width = 480;
+		config.height = 320;
 		new LwjglApplication(test, config);
 	}
 }

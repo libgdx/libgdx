@@ -41,15 +41,15 @@ class AssetLoadingTask implements Callable<Void> {
 	final long startTime;
 
 	volatile boolean asyncDone = false;
-	boolean dependenciesLoaded = false;
-	Array<AssetDescriptor> dependencies;
-	Future<Void> depsFuture = null;
+	volatile boolean dependenciesLoaded = false;
+	volatile Array<AssetDescriptor> dependencies;
+	volatile Future<Void> depsFuture = null;
 
-	Future<Void> loadFuture = null;
-	Object asset = null;
+	volatile Future<Void> loadFuture = null;
+	volatile Object asset = null;
 
 	int ticks = 0;
-	boolean cancel = false;
+	volatile boolean cancel = false;
 
 	public AssetLoadingTask (AssetManager manager, AssetDescriptor assetDesc, AssetLoader loader, ExecutorService threadPool) {
 		this.manager = manager;
@@ -66,9 +66,7 @@ class AssetLoadingTask implements Callable<Void> {
 		if (dependenciesLoaded == false) {
 			dependencies = asyncLoader.getDependencies(assetDesc.fileName, assetDesc.params);
 			if (dependencies != null) {
-				for (AssetDescriptor desc : dependencies) {
-					manager.injectDependency(assetDesc.fileName, desc);
-				}
+				manager.injectDependencies(assetDesc.fileName, dependencies);
 			} else {
 				// if we have no dependencies, we load the async part of the task immediately.
 				asyncLoader.loadAsync(manager, assetDesc.fileName, assetDesc.params);
@@ -105,9 +103,7 @@ class AssetLoadingTask implements Callable<Void> {
 				asset = syncLoader.load(manager, assetDesc.fileName, assetDesc.params);
 				return;
 			}
-			for (AssetDescriptor desc : dependencies) {
-				manager.injectDependency(assetDesc.fileName, desc);
-			}
+			manager.injectDependencies(assetDesc.fileName, dependencies);
 		} else {
 			asset = syncLoader.load(manager, assetDesc.fileName, assetDesc.params);
 		}
