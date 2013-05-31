@@ -1,5 +1,6 @@
 package com.badlogic.gdx.tests.g3d;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Logger;
 
 public class ModelLoaderTest extends GdxTest {
 	AssetManager assets;
@@ -29,6 +31,7 @@ public class ModelLoaderTest extends GdxTest {
 		assets.load("data/g3d/cube.g3dj", Model.class);
 		spriteBatch = new SpriteBatch();
 		modelBatch = new ModelBatch();
+//		assets.getLogger().setLevel(Logger.DEBUG);
 	}
 
 	@Override
@@ -48,7 +51,7 @@ public class ModelLoaderTest extends GdxTest {
 			instance = null;
 			assets.unload("data/g3d/cube.g3dj");
 			assets.load("data/g3d/cube.g3dj", Model.class);
-			assets.finishLoading(); // FIXME: Remove this line
+			assets.finishLoading();
 		}
 		
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
