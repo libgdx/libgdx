@@ -1,5 +1,7 @@
+#ifdef __APPLE__
+#include <TargetConditionals.h>
 #ifdef TARGET_OS_IPHONE
-#include <iosgles20.h>
+#include <iosgl/iosgl20.h>
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
 #include <stdio.h>
@@ -1764,4 +1766,5 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glView
 {
 	glViewport( x, y, width, height );
 }
+#endif
 #endif
