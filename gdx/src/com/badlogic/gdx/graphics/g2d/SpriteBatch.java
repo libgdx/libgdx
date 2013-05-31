@@ -34,42 +34,27 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.NumberUtils;
 
-/** <p>
- * A SpriteBatch is used to draw 2D rectangles that reference a texture (region). The class will batch the drawing commands and
+/** A SpriteBatch is used to draw 2D rectangles that reference a texture (region). The class will batch the drawing commands and
  * optimize them for processing by the GPU.
- * </p>
- * 
  * <p>
  * To draw something with a SpriteBatch one has to first call the {@link SpriteBatch#begin()} method which will setup appropriate
  * render states. When you are done with drawing you have to call {@link SpriteBatch#end()} which will actually draw the things
  * you specified.
- * </p>
- * 
  * <p>
  * All drawing commands of the SpriteBatch operate in screen coordinates. The screen coordinate system has an x-axis pointing to
  * the right, an y-axis pointing upwards and the origin is in the lower left corner of the screen. You can also provide your own
  * transformation and projection matrices if you so wish.
- * </p>
- * 
  * <p>
  * A SpriteBatch is managed. In case the OpenGL context is lost all OpenGL resources a SpriteBatch uses internally get
  * invalidated. A context is lost when a user switches to another application or receives an incoming call on Android. A
  * SpriteBatch will be automatically reloaded after the OpenGL context is restored.
- * </p>
- * 
  * <p>
  * A SpriteBatch is a pretty heavy object so you should only ever have one in your program.
- * </p>
- * 
  * <p>
  * A SpriteBatch works with OpenGL ES 1.x and 2.0. In the case of a 2.0 context it will use its own custom shader to draw all
  * provided sprites. You can set your own custom shader via {@link #setShader(ShaderProgram)}.
- * </p>
- * 
  * <p>
  * A SpriteBatch has to be disposed if it is no longer used.
- * </p>
- * 
  * @author mzechner */
 public class SpriteBatch implements Disposable {
 	private Mesh mesh;
@@ -122,21 +107,14 @@ public class SpriteBatch implements Disposable {
 		this(size, null);
 	}
 
-	/** <p>
-	 * Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
+	/** Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
 	 * point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect with
 	 * respect to the screen resolution.
-	 * </p>
-	 * 
 	 * <p>
 	 * The size parameter specifies the maximum size of a single batch in number of sprites
-	 * </p>
-	 * 
 	 * <p>
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
 	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See the {@link #createDefaultShader()} method.
-	 * </p>
-	 * 
 	 * @param size the batch size in number of sprites
 	 * @param defaultShader the default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
 	public SpriteBatch (int size, ShaderProgram defaultShader) {
@@ -149,26 +127,19 @@ public class SpriteBatch implements Disposable {
 		this(size, buffers, null);
 	}
 
-	/** <p>
-	 * Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
+	/** Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
 	 * point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect with
 	 * respect to the screen resolution.
-	 * </p>
-	 * 
 	 * <p>
 	 * The size parameter specifies the maximum size of a single batch in number of sprites
-	 * </p>
-	 * 
 	 * <p>
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
 	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See the {@link #createDefaultShader()} method.
-	 * </p>
-	 * 
 	 * @param size the batch size in number of sprites
 	 * @param buffers the number of buffers to use. only makes sense with VBOs. This is an expert function.
 	 * @param defaultShader the default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
 	public SpriteBatch (int size, int buffers, ShaderProgram defaultShader) {
-		if(size > 5460) {
+		if (size > 5460) {
 			throw new GdxRuntimeException("Can't have more than 5460 sprites per batch");
 		}
 		this.buffers = new Mesh[buffers];
@@ -1101,15 +1072,13 @@ public class SpriteBatch implements Disposable {
 		if (ownsShader && shader != null) shader.dispose();
 	}
 
-	/** Returns the current projection matrix. Changing this will result in undefined behaviour.
-	 * 
+	/** Returns the current projection matrix. Changing this within {@link #begin()}/{@link #end()} resultsin undefined behaviour.
 	 * @return the currently set projection matrix */
 	public Matrix4 getProjectionMatrix () {
 		return projectionMatrix;
 	}
 
-	/** Returns the current transform matrix. Changing this will result in undefined behaviour.
-	 * 
+	/** Returns the current transform matrix. Changing this within {@link #begin()}/{@link #end()} results in undefined behaviour.
 	 * @return the currently set transform matrix */
 	public Matrix4 getTransformMatrix () {
 		return transformMatrix;
@@ -1117,7 +1086,6 @@ public class SpriteBatch implements Disposable {
 
 	/** Sets the projection matrix to be used by this SpriteBatch. If this is called inside a {@link #begin()}/{@link #end()} block.
 	 * the current batch is flushed to the gpu.
-	 * 
 	 * @param projection the projection matrix */
 	public void setProjectionMatrix (Matrix4 projection) {
 		if (drawing) flush();
