@@ -1,6 +1,7 @@
 #ifdef __APPLE__
 #include <TargetConditionals.h>
-#ifdef TARGET_OS_IPHONE
+
+#if TARGET_OS_IPHONE
 #include <iosgl/iosgl20.h>
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
