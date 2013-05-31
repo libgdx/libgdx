@@ -35,7 +35,7 @@ public class SuperJumper extends Game {
 	@Override
 	public void render() {
 		super.render();
-		fps.log();
+//		fps.log();
 	}
 
 	/** {@link Game#dispose()} only calls {@link Screen#hide()} so you need to override {@link Game#dispose()} in order to call
