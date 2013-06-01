@@ -82,13 +82,12 @@ public class Actor {
 	 * The default implementation calls {@link Action#act(float)} on each action and removes actions that are complete.
 	 * @param delta Time in seconds since the last frame. */
 	public void act (float delta) {
-		for (int i = 0, n = actions.size; i < n; i++) {
+		for (int i = 0; i < actions.size; i++) {
 			Action action = actions.get(i);
-			if (action.act(delta)) {
+			if (action.act(delta) && i < actions.size) {
 				actions.removeIndex(i);
 				action.setActor(null);
 				i--;
-				n--;
 			}
 		}
 	}
