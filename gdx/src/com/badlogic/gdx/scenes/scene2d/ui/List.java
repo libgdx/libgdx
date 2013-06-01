@@ -43,7 +43,7 @@ public class List extends Widget implements Cullable {
 	private float prefWidth, prefHeight;
 	private float itemHeight;
 	private float textOffsetX, textOffsetY;
-	private boolean selectable;
+	private boolean selectable = true;
 
 	public List (Object[] items, Skin skin) {
 		this(items, skin.get(ListStyle.class));
@@ -58,31 +58,24 @@ public class List extends Widget implements Cullable {
 		setItems(items);
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
-		setSelectable(true);
 
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == 0 && button != 0) return false;
-				if (!List.this.isSelectable()) return false; // don't eat touch event when NOT selectable
+				if (!isSelectable()) return false; // don't eat touch event when NOT selectable
 				List.this.touchDown(y);
 				return true;
 			}
 		});
 	}
-	
-	/**
-	 * Sets whether or not this List's items are selectable.
-	 *
-	 * *NOTE*
-	 * If the List is NOT selectable, it will NOT eat its touch events meaning they will still propagate down.
-	 * Please be aware of this behavior change.
-	 */
-	public void setSelectable(boolean s) {
-		selectable = s;
+
+	/** Sets whether this List's items are selectable. If not selectable, touch events will not be consumed. */
+	public void setSelectable (boolean selectable) {
+		this.selectable = selectable;
 	}
-	
-	/** @return Whether or not the List's items are selectable. */
-	public boolean isSelectable() {
+
+	/** @return True if items are selectable. */
+	public boolean isSelectable () {
 		return selectable;
 	}
 
@@ -150,25 +143,23 @@ public class List extends Widget implements Cullable {
 		return selectedIndex;
 	}
 
+	/** @param index Set to -1 for nothing selected. */
 	public void setSelectedIndex (int index) {
-		if (index < 0 || index >= items.length)
-			throw new GdxRuntimeException("index must be >= 0 and < " + items.length + ": " + index);
+		if (index < -1 || index >= items.length)
+			throw new GdxRuntimeException("index must be >= -1 and < " + items.length + ": " + index);
 		selectedIndex = index;
 	}
 
-	/** @return The text of the currently selected item, else null if the list is empty or nothing is selected. */
+	/** @return The text of the currently selected item, or null if the list is empty or nothing is selected. */
 	public String getSelection () {
-		if (items.length == 0 || isNothingSelected()) return null;
+		if (items.length == 0 || selectedIndex == -1) return null;
 		return items[selectedIndex];
 	}
 
-	/**
-	 * Sets the selection to the item if found, else sets the selection to nothing.
-	 * @return The new index of the list selection
-	 */
+	/** Sets the selection to the item if found, else sets the selection to nothing.
+	 * @return The new selected index. */
 	public int setSelection (String item) {
-		setSelectionToNothing();
-		
+		selectedIndex = -1;
 		for (int i = 0, n = items.length; i < n; i++) {
 			if (items[i].equals(item)) {
 				selectedIndex = i;
@@ -177,17 +168,6 @@ public class List extends Widget implements Cullable {
 		}
 		return selectedIndex;
 	}
-
-	/** Sets the list item selection to nothing with selection index value -1. */
-	public void setSelectionToNothing() {
-		selectedIndex = -1;
-	}
-	
-	/** @return Whether or not the list has an item selected. */
-	public boolean isNothingSelected() {
-		return selectedIndex == -1;
-	}
-	
 
 	public void setItems (Object[] objects) {
 		if (objects == null) throw new IllegalArgumentException("items cannot be null.");
