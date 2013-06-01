@@ -420,6 +420,7 @@
 		<include name="utils/LongArray.java"/>
 		<include name="utils/LongMap.java"/>
 		<include name="utils/NumberUtils.java"/> <!-- Emulated -->
+		<include name="utils/ObjectFloatMap.java"/>
 		<include name="utils/ObjectIntMap.java"/>
 		<include name="utils/ObjectMap.java"/>
 		<include name="utils/OrderedMap.java"/>
