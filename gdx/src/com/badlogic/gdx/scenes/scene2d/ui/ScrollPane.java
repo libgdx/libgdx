@@ -72,7 +72,7 @@ public class ScrollPane extends WidgetGroup {
 	private boolean overscrollX = true, overscrollY = true;
 	float flingTime = 1f;
 	private float overscrollDistance = 50, overscrollSpeedMin = 30, overscrollSpeedMax = 200;
-	private boolean forceOverscrollX, forceOverscrollY;
+	private boolean forceScrollX, forceScrollY;
 	private boolean disableX, disableY;
 	private boolean clamp = true;
 	private boolean scrollbarsOnTop;
@@ -157,7 +157,8 @@ public class ScrollPane extends WidgetGroup {
 					handlePosition = scrollH;
 					scrollH = Math.max(hScrollBounds.x, scrollH);
 					scrollH = Math.min(hScrollBounds.x + hScrollBounds.width - hKnobBounds.width, scrollH);
-					setScrollPercentX((scrollH - hScrollBounds.x) / (hScrollBounds.width - hKnobBounds.width));
+					float total = hScrollBounds.width - hKnobBounds.width;
+					if (total != 0) setScrollPercentX((scrollH - hScrollBounds.x) / total);
 					lastPoint.set(x, y);
 				} else if (touchScrollV) {
 					float delta = y - lastPoint.y;
@@ -165,7 +166,8 @@ public class ScrollPane extends WidgetGroup {
 					handlePosition = scrollV;
 					scrollV = Math.max(vScrollBounds.y, scrollV);
 					scrollV = Math.min(vScrollBounds.y + vScrollBounds.height - vKnobBounds.height, scrollV);
-					setScrollPercentY(1 - ((scrollV - vScrollBounds.y) / (vScrollBounds.height - vKnobBounds.height)));
+					float total = vScrollBounds.height - vKnobBounds.height;
+					if (total != 0) setScrollPercentY(1 - ((scrollV - vScrollBounds.y) / total));
 					lastPoint.set(x, y);
 				}
 			}
@@ -373,8 +375,8 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		// Determine if horizontal/vertical scrollbars are needed.
-		scrollX = forceOverscrollX || (widgetWidth > areaWidth && !disableX);
-		scrollY = forceOverscrollY || (widgetHeight > areaHeight && !disableY);
+		scrollX = forceScrollX || (widgetWidth > areaWidth && !disableX);
+		scrollY = forceScrollY || (widgetHeight > areaHeight && !disableY);
 
 		boolean fade = fadeScrollBars;
 		if (!fade) {
@@ -657,6 +659,12 @@ public class ScrollPane extends WidgetGroup {
 		return amountY;
 	}
 
+	/** Sets the visual scroll amount equal to the scroll amount. This can be used when setting the scroll amount without animating. */
+	public void updateVisualScroll () {
+		visualAmountX = amountX;
+		visualAmountY = amountY;
+	}
+
 	public float getVisualScrollX () {
 		return !scrollX ? 0 : visualAmountX;
 	}
@@ -799,11 +807,19 @@ public class ScrollPane extends WidgetGroup {
 		overscrollSpeedMax = speedMax;
 	}
 
-	/** For flick scroll, forces the enabling of overscrolling in a direction, even if the contents do not exceed the bounds in that
-	 * direction. */
-	public void setForceOverscroll (boolean x, boolean y) {
-		forceOverscrollX = x;
-		forceOverscrollY = y;
+	/** Forces enabling scrollbars (for non-flick scroll) and overscrolling (for flick scroll) in a direction, even if the contents
+	 * do not exceed the bounds in that direction. */
+	public void setForceScroll (boolean x, boolean y) {
+		forceScrollX = x;
+		forceScrollY = y;
+	}
+
+	public boolean isForceScrollX () {
+		return forceScrollX;
+	}
+
+	public boolean isForceScrollY () {
+		return forceScrollY;
 	}
 
 	/** For flick scroll, sets the amount of time in seconds that a fling will continue to scroll. Default is 1. */

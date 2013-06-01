@@ -1,0 +1,71 @@
+{
+	"version": [  0,   1], 
+	"id": "", 
+	"meshes": [
+		{
+			"attributes": ["POSITION", "NORMAL", "TEXCOORD0"], 
+			"vertices": [
+				-1.000000, -1.000000, 0.000000, 0, 0, 1, 0, 0,
+				 1.000000,  1.000000, 0.000000, 0, 0, 1, 1, 1,
+				 1.000000, -1.000000, 0.000000, 0, 0, 1, 1, 0,
+				-1.000000,  1.000000, 0.000000, 0, 0, 1, 0, 1
+			], 
+			"parts": [
+				{
+					"id": "mpart1", 
+					"type": "TRIANGLES", 
+					"indices": [
+						  0,   1,   2,   2,   3,   0
+					]
+				}
+			]
+		}
+	], 
+	"materials": [
+		{
+			"id": "Material", 
+			"diffuse": [ 1, 0, 0], 
+			"textures": [
+				{
+					"id": "Knight_png", 
+					"filename": "checkboard.png", 
+					"type": "DIFFUSE"
+				},
+				{
+					"id": "checkerboard", 
+					"filename": "Knight.png", 
+					"type": "NONE"
+				},
+				{
+					"id": "t1", 
+					"filename": "ship.png", 
+					"type": "NONE"
+				},
+				{
+					"id": "t2", 
+					"filename": "space.jpg", 
+					"type": "NONE"
+				},
+				{
+					"id": "t3", 
+					"filename": "invader.png", 
+					"type": "NONE"
+				}
+			]}
+	], 
+	"nodes": [
+		{"id": "Cube", 
+			"parts": [
+				{"meshpartid": "mpart1", 
+					"materialid": "Material",
+					"uvMapping": [[  0]]}
+			]
+		}
+	], 
+	"animations": [
+		{
+			"id": "Default Take", 
+			"bones": []
+		}
+	]
+}

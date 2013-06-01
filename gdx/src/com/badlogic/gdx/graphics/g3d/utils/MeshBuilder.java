@@ -458,10 +458,10 @@ public class MeshBuilder implements MeshPartBuilder {
 	public void box(Vector3 corner000, Vector3 corner010, Vector3 corner100, Vector3 corner110,
 						Vector3 corner001, Vector3 corner011, Vector3 corner101, Vector3 corner111) {
 		if (norOffset < 0) {
-			box(vertTmp1.set(corner000, null, null, null), vertTmp1.set(corner010, null, null, null),
-				vertTmp1.set(corner100, null, null, null), vertTmp1.set(corner110, null, null, null),
-				vertTmp1.set(corner001, null, null, null), vertTmp1.set(corner011, null, null, null),
-				vertTmp1.set(corner101, null, null, null), vertTmp1.set(corner111, null, null, null));
+			box(vertTmp1.set(corner000, null, null, null), vertTmp2.set(corner010, null, null, null),
+				vertTmp3.set(corner100, null, null, null), vertTmp4.set(corner110, null, null, null),
+				vertTmp5.set(corner001, null, null, null), vertTmp6.set(corner011, null, null, null),
+				vertTmp7.set(corner101, null, null, null), vertTmp8.set(corner111, null, null, null));
 		} else {
 			Vector3 nor = tempV1.set(corner000).lerp(corner110, 0.5f).sub(tempV2.set(corner001).lerp(corner111, 0.5f)).nor();
 			rect(corner000, corner010, corner110, corner100, nor);
@@ -491,7 +491,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	public void box(float x, float y, float z, float width, float height, float depth) {
 		box(matTmp1.setToScaling(width, height, depth).trn(x, y, z));
 	}
-	
+
 	@Override
 	public void cylinder(float width, float height, float depth, int divisions) {
 		// FIXME create better cylinder method (- fill the sides, - axis on which to create the cylinder (matrix?), - partial cylinder)
@@ -521,7 +521,7 @@ public class MeshBuilder implements MeshPartBuilder {
 			vertex(curr2);
 			if (i == 0)
 				continue;
-			rect((short)(vindex-4), (short)(vindex-2), (short)(vindex-1), (short)(vindex-3)); // FIXME don't duplicate lines and points
+			rect((short)(vindex-3), (short)(vindex-1), (short)(vindex-2), (short)(vindex-4)); // FIXME don't duplicate lines and points
 		}
 	}
 	

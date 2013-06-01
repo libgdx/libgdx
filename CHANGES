@@ -1,4 +1,6 @@
 [0.9.9]
+- removed FileHandle#file(), has no business in there.
+- removed box2deditor
 - removed custom typedarrays in gwt backend
 - added classpath files support for gwt backend (limited)
 - moved AndroidWallpaperListener to Android Backend
@@ -34,6 +36,11 @@
 - 1381, fixed JSON parsing of longs. In addition to Float, it now parses Long if no decimal point is found.
 - Changed Array constructors that took an array to have offset and count
 - scene2d, Actor parentToLocalCoordinates and localToParentCoordinates refactoring, see http://www.badlogicgames.com/forum/viewtopic.php?p=40441#p40441
+- scene2d, Action#setActor no longer calls reset if the Action has no pool. This allows non-pooled actions to be add and removed from actors, restarted, and reused.
+- ScrollBar#setForceOverscroll renamed to setForceScroll, as it affects more than just overscroll.
+- ArrayMap#addAll renamed to putAll to match the other maps.
+- Added ObjectSet and IntSet.
+- Sound#play and Sound#loop on Android now return -1 on failure, to match other backends.
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791

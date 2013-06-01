@@ -428,7 +428,7 @@ public class Json {
 			}
 
 			if (value instanceof Array) {
-				if (knownType != null && actualType != knownType)
+				if (knownType != null && actualType != knownType && actualType != Array.class)
 					throw new SerializationException("Serialization of an Array other than the known type is not supported.\n"
 						+ "Known type: " + knownType + "\nActual type: " + actualType);
 				writeArrayStart();

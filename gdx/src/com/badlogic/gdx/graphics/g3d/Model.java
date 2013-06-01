@@ -97,7 +97,6 @@ public class Model implements Disposable {
 		loadNodes(modelData.nodes);
 		loadAnimations(modelData.animations);
 		calculateTransforms();
-		setInitialTransform(null);
 	}
 	
 	private void loadAnimations (Iterable<ModelAnimation> modelAnimations) {
@@ -128,18 +127,18 @@ public class Model implements Disposable {
 		}
 	}
 
-	private ObjectMap<NodePart, String[]> nodePartBones = new ObjectMap<NodePart, String[]>(); // FIXME Does this preserve array index? 
+	private ObjectMap<NodePart, ArrayMap<String, Matrix4>> nodePartBones = new ObjectMap<NodePart, ArrayMap<String, Matrix4>>(); 
 	private void loadNodes (Iterable<ModelNode> modelNodes) {
 		nodePartBones.clear();
 		for(ModelNode node: modelNodes) {
 			nodes.add(loadNode(null, node));
 		}
-		for (ObjectMap.Entry<NodePart,String[]> e : nodePartBones.entries()) {
-			if (e.key.bones == null)
-				e.key.bones = new ArrayMap<Node, Matrix4>();
-			e.key.bones.clear();
-			for (final String n : e.value)
-				e.key.bones.put(getNode(n), null); // null because transform only has meaning for ModelInstance 
+		for (ObjectMap.Entry<NodePart,ArrayMap<String, Matrix4>> e : nodePartBones.entries()) {
+			if (e.key.invBoneBindTransforms == null)
+				e.key.invBoneBindTransforms = new ArrayMap<Node, Matrix4>(Node.class, Matrix4.class);
+			e.key.invBoneBindTransforms.clear();
+			for (ObjectMap.Entry<String, Matrix4> b : e.value.entries())
+				e.key.invBoneBindTransforms.put(getNode(b.key), new Matrix4(b.value).inv());
 		}
 	}
 
@@ -272,8 +271,8 @@ public class Model implements Disposable {
 				TextureDescriptor descriptor = new TextureDescriptor(texture);
 				descriptor.minFilter = GL20.GL_LINEAR;
 				descriptor.magFilter = GL20.GL_LINEAR;
-				descriptor.uWrap = GL20.GL_CLAMP_TO_EDGE;
-				descriptor.vWrap = GL20.GL_CLAMP_TO_EDGE;
+				descriptor.uWrap = GL20.GL_REPEAT;
+				descriptor.vWrap = GL20.GL_REPEAT;
 				switch (tex.usage) {
 				case ModelTexture.USAGE_DIFFUSE:
 					result.set(new TextureAttribute(TextureAttribute.Diffuse, descriptor));
@@ -292,13 +291,6 @@ public class Model implements Disposable {
 		}
 		
 		return result;
-	}
-	
-	private void setInitialTransform(Node node) {
-		if (node != null)
-			node.invInitialTransform.set(node.globalTransform).inv();
-		for (Node child : (node == null ? nodes : node.children))
-			setInitialTransform(child);
 	}
 	
 	/**

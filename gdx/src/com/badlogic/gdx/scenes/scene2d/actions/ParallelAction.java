@@ -26,6 +26,39 @@ public class ParallelAction extends Action {
 	Array<Action> actions = new Array(4);
 	private boolean complete;
 
+	public ParallelAction () {
+	}
+
+	public ParallelAction (Action action1) {
+		addAction(action1);
+	}
+
+	public ParallelAction (Action action1, Action action2) {
+		addAction(action1);
+		addAction(action2);
+	}
+
+	public ParallelAction (Action action1, Action action2, Action action3) {
+		addAction(action1);
+		addAction(action2);
+		addAction(action3);
+	}
+
+	public ParallelAction (Action action1, Action action2, Action action3, Action action4) {
+		addAction(action1);
+		addAction(action2);
+		addAction(action3);
+		addAction(action4);
+	}
+
+	public ParallelAction (Action action1, Action action2, Action action3, Action action4, Action action5) {
+		addAction(action1);
+		addAction(action2);
+		addAction(action3);
+		addAction(action4);
+		addAction(action5);
+	}
+
 	public boolean act (float delta) {
 		if (complete) return true;
 		complete = true;

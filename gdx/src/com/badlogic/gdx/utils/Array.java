@@ -70,7 +70,7 @@ public class Array<T> implements Iterable<T> {
 	/** Creates a new array containing the elements in the specified array. The new array will have the same type of backing array
 	 * and will be ordered if the specified array is ordered. The capacity is set to the number of elements, so any subsequent
 	 * elements added will cause the backing array to be grown. */
-	public Array (Array array) {
+	public Array (Array<? extends T> array) {
 		this(array.ordered, array.size, (Class<T>)array.items.getClass().getComponentType());
 		size = array.size;
 		System.arraycopy(array.items, 0, items, 0, size);
@@ -89,7 +89,7 @@ public class Array<T> implements Iterable<T> {
 	 *           memory copy. */
 	public Array (boolean ordered, T[] array, int start, int count) {
 		this(ordered, array.length, (Class)array.getClass().getComponentType());
-		size = array.length;
+		size = count;
 		System.arraycopy(array, 0, items, 0, size);
 	}
 
@@ -99,11 +99,11 @@ public class Array<T> implements Iterable<T> {
 		items[size++] = value;
 	}
 
-	public void addAll (Array array) {
+	public void addAll (Array<? extends T> array) {
 		addAll(array, 0, array.size);
 	}
 
-	public void addAll (Array array, int offset, int length) {
+	public void addAll (Array<? extends T> array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
 		addAll((T[])array.items, offset, length);
@@ -239,7 +239,7 @@ public class Array<T> implements Iterable<T> {
 	/** Removes from this array all of elements contained in the specified array.
 	 * @param identity True to use ==, false to use .equals().
 	 * @return true if this array was modified. */
-	public boolean removeAll (Array<T> array, boolean identity) {
+	public boolean removeAll (Array<? extends T> array, boolean identity) {
 		int size = this.size;
 		int startSize = size;
 		T[] items = this.items;
@@ -247,7 +247,7 @@ public class Array<T> implements Iterable<T> {
 			for (int i = 0, n = array.size; i < n; i++) {
 				T item = array.get(i);
 				for (int ii = 0; ii < size; ii++) {
-					if (item.equals(items[ii])) {
+					if (item == items[ii]) {
 						removeIndex(ii);
 						size--;
 						break;
@@ -258,7 +258,7 @@ public class Array<T> implements Iterable<T> {
 			for (int i = 0, n = array.size; i < n; i++) {
 				T item = array.get(i);
 				for (int ii = 0; ii < size; ii++) {
-					if (item == items[ii]) {
+					if (item.equals(items[ii])) {
 						removeIndex(ii);
 						size--;
 						break;
@@ -393,6 +393,8 @@ public class Array<T> implements Iterable<T> {
 		return items[MathUtils.random(0, size - 1)];
 	}
 
+	/** Returns the items as an array. Note the array is typed, so the {@link #Array(Class)} constructor must have been used.
+	 * Otherwise use {@link #toArray(Class)} to specify the array type. */
 	public T[] toArray () {
 		return (T[])toArray(items.getClass().getComponentType());
 	}
@@ -471,20 +473,6 @@ public class Array<T> implements Iterable<T> {
 
 		public void reset () {
 			index = 0;
-		}
-	}
-
-	static public class ArrayIterable<T> implements Iterable<T> {
-		private ArrayIterator<T> iterator;
-
-		public ArrayIterable (Array<T> array) {
-			iterator = new ArrayIterator<T>(array);
-		}
-
-		@Override
-		public Iterator<T> iterator () {
-			iterator.reset();
-			return iterator;
 		}
 	}
 }

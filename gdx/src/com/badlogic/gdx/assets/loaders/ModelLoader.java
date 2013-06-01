@@ -1,6 +1,7 @@
 package com.badlogic.gdx.assets.loaders;
 
-import com.badlogic.gdx.Gdx;
+import java.util.Iterator;
+
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extends AsynchronousAssetLoader<Model, P> {
@@ -21,7 +23,34 @@ public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extend
 	
 	protected Array<ObjectMap.Entry<String, ModelData>> items = new Array<ObjectMap.Entry<String, ModelData>>(); 
 	
-	protected abstract ModelData loadModelData(final FileHandle fileHandle, P parameters);
+	/** Directly load the raw model data on the calling thread. */ 
+	public abstract ModelData loadModelData(final FileHandle fileHandle, P parameters);
+	
+	/** Directly load the raw model data on the calling thread. */ 
+	public ModelData loadModelData(final FileHandle fileHandle) {
+		return loadModelData(fileHandle, null);
+	}
+	
+	/** Directly load the model on the calling thread. The model with not be managed by an {@link AssetManager}. */
+	public Model loadModel(final FileHandle fileHandle, TextureProvider textureProvider, P parameters) {
+		final ModelData data = loadModelData(fileHandle, parameters);
+		return data == null ? null : new Model(data, textureProvider);
+	}
+	
+	/** Directly load the model on the calling thread. The model with not be managed by an {@link AssetManager}. */
+	public Model loadModel(final FileHandle fileHandle, P parameters) {
+		return loadModel(fileHandle, new TextureProvider.FileTextureProvider(), parameters);
+	}
+	
+	/** Directly load the model on the calling thread. The model with not be managed by an {@link AssetManager}. */
+	public Model loadModel(final FileHandle fileHandle, TextureProvider textureProvider) {
+		return loadModel(fileHandle, textureProvider, null);
+	}
+	
+	/** Directly load the model on the calling thread. The model with not be managed by an {@link AssetManager}. */
+	public Model loadModel(final FileHandle fileHandle) {
+		return loadModel(fileHandle, new TextureProvider.FileTextureProvider(), null);
+	}
 	
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, P parameters) {
@@ -64,6 +93,15 @@ public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extend
 		if (data == null)
 			return null;
 		final Model result = new Model(data, new TextureProvider.AssetTextureProvider(manager));
+		// need to remove the textures from the managed disposables, or else ref counting
+		// doesn't work!
+		Iterator<Disposable> disposables = result.getManagedDisposables().iterator();
+		while(disposables.hasNext()) {
+			Disposable disposable = disposables.next();
+			if(disposable instanceof Texture) {
+				disposables.remove();
+			}
+		}
 		data = null;
 		return result;
 	}

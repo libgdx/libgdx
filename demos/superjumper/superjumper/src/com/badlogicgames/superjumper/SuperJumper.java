@@ -28,7 +28,7 @@ public class SuperJumper extends Game {
 	public void create () {
 		Settings.load();
 		Assets.load();
-		setScreen(new MainMenuScreen(this));
+		setScreen(new GameScreen(this));
 		fps = new FPSLogger();
 	}
 	

@@ -24,7 +24,7 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 
 	protected  String models[] = new String[] {
 		"car.obj", "cube.obj", "scene.obj", "scene2.obj", "sphere.obj", "wheel.obj", 
-		"g3d/head.g3db", "g3d/knight.g3dj", "g3d/knight.g3db", "g3d/teapot.g3db"
+		"g3d/invaders.g3dj", "g3d/head.g3db", "g3d/knight.g3dj", "g3d/knight.g3db", "g3d/ship.obj", "g3d/teapot.g3db"
 	};
 
 	@Override

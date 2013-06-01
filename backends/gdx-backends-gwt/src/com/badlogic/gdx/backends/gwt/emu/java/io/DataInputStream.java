@@ -50,7 +50,7 @@ public class DataInputStream extends InputStream implements DataInput {
 	}
 
 	public double readDouble () throws IOException {
-		throw new RuntimeException("readDouble");
+		return Double.longBitsToDouble(readLong());
 	}
 
 	public float readFloat () throws IOException {
