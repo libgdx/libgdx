@@ -330,7 +330,6 @@ public class TextField extends Widget {
 								delete();
 							}
 						}
-						return true;
 					}
 					if (character != ENTER_DESKTOP && character != ENTER_ANDROID) {
 						if (filter != null && !filter.acceptChar(TextField.this, character)) return true;
