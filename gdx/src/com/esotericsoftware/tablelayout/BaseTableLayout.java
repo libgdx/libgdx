@@ -131,7 +131,10 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	/** Indicates that subsequent cells should be added to a new row and returns the cell values that will be used as the defaults
 	 * for all cells in the new row. */
 	public Cell row () {
-		if (cells.size() > 0) endRow();
+		if (cells.size() > 0) {
+			endRow();
+			invalidate();
+		}
 		if (rowDefaults != null) toolkit.freeCell(rowDefaults);
 		rowDefaults = toolkit.obtainCell((L)this);
 		rowDefaults.clear();
@@ -148,7 +151,6 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 		columns = Math.max(columns, rowColumns);
 		rows++;
 		cells.get(cells.size() - 1).endRow = true;
-		invalidate();
 	}
 
 	/** Gets the cell values that will be used as the defaults for all cells in the specified column. Columns are indexed starting
@@ -442,7 +444,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	}
 
 	public float getPadTop () {
-		return padTop == null ? 0 : padTop.height(this);
+		return padTop == null ? 0 : padTop.height(table);
 	}
 
 	public Value getPadLeftValue () {
@@ -450,7 +452,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	}
 
 	public float getPadLeft () {
-		return padLeft == null ? 0 : padLeft.width(this);
+		return padLeft == null ? 0 : padLeft.width(table);
 	}
 
 	public Value getPadBottomValue () {
@@ -458,7 +460,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	}
 
 	public float getPadBottom () {
-		return padBottom == null ? 0 : padBottom.height(this);
+		return padBottom == null ? 0 : padBottom.height(table);
 	}
 
 	public Value getPadRightValue () {
@@ -466,7 +468,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	}
 
 	public float getPadRight () {
-		return padRight == null ? 0 : padRight.width(this);
+		return padRight == null ? 0 : padRight.width(table);
 	}
 
 	public int getAlign () {
@@ -563,12 +565,12 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 			spaceRightLast = spaceRight;
 
 			// Determine minimum and preferred cell sizes.
-			float prefWidth = w(c.prefWidth, c);
-			float prefHeight = h(c.prefHeight, c);
-			float minWidth = w(c.minWidth, c);
-			float minHeight = h(c.minHeight, c);
-			float maxWidth = w(c.maxWidth, c);
-			float maxHeight = h(c.maxHeight, c);
+			float prefWidth = c.prefWidth.get(c);
+			float prefHeight = c.prefHeight.get(c);
+			float minWidth = c.minWidth.get(c);
+			float minHeight = c.minHeight.get(c);
+			float maxWidth = c.maxWidth.get(c);
+			float maxHeight = c.maxHeight.get(c);
 			if (prefWidth < minWidth) prefWidth = minWidth;
 			if (prefHeight < minHeight) prefHeight = minHeight;
 			if (maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
@@ -600,9 +602,9 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 			Cell c = cells.get(i);
 			if (c.ignore || c.colspan == 1) continue;
 
-			float minWidth = w(c.minWidth, c);
-			float prefWidth = w(c.prefWidth, c);
-			float maxWidth = w(c.maxWidth, c);
+			float minWidth = c.minWidth.get(c);
+			float prefWidth = c.prefWidth.get(c);
+			float maxWidth = c.maxWidth.get(c);
 			if (prefWidth < minWidth) prefWidth = minWidth;
 			if (maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
 
@@ -693,8 +695,10 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 
 		if (sizeInvalid) computeSize();
 
-		float hpadding = w(padLeft) + w(padRight);
-		float vpadding = h(padTop) + h(padBottom);
+		float padLeft = w(this.padLeft);
+		float hpadding = padLeft + w(padRight);
+		float padTop = h(this.padTop);
+		float vpadding = padTop + h(padBottom);
 
 		float totalExpandWidth = 0, totalExpandHeight = 0;
 		for (int i = 0; i < columns; i++)
@@ -741,12 +745,12 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 				spannedWeightedWidth += columnWeightedWidth[column];
 			float weightedHeight = rowWeightedHeight[c.row];
 
-			float prefWidth = w(c.prefWidth, c);
-			float prefHeight = h(c.prefHeight, c);
-			float minWidth = w(c.minWidth, c);
-			float minHeight = h(c.minHeight, c);
-			float maxWidth = w(c.maxWidth, c);
-			float maxHeight = h(c.maxHeight, c);
+			float prefWidth = c.prefWidth.get(c);
+			float prefHeight = c.prefHeight.get(c);
+			float minWidth = c.minWidth.get(c);
+			float minHeight = c.minHeight.get(c);
+			float maxWidth = c.maxWidth.get(c);
+			float maxHeight = c.maxHeight.get(c);
 			if (prefWidth < minWidth) prefWidth = minWidth;
 			if (prefHeight < minHeight) prefHeight = minHeight;
 			if (maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
@@ -817,13 +821,13 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 			tableHeight += rowHeight[i];
 
 		// Position table within the container.
-		float x = layoutX + w(padLeft);
+		float x = layoutX + padLeft;
 		if ((align & RIGHT) != 0)
 			x += layoutWidth - tableWidth;
 		else if ((align & LEFT) == 0) // Center
 			x += (layoutWidth - tableWidth) / 2;
 
-		float y = layoutY + w(padTop);
+		float y = layoutY + padTop;
 		if ((align & BOTTOM) != 0)
 			y += layoutHeight - tableHeight;
 		else if ((align & TOP) == 0) // Center
@@ -844,12 +848,12 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 
 			if (c.fillX > 0) {
 				c.widgetWidth = spannedCellWidth * c.fillX;
-				float maxWidth = w(c.maxWidth, c);
+				float maxWidth = c.maxWidth.get(c);
 				if (maxWidth > 0) c.widgetWidth = Math.min(c.widgetWidth, maxWidth);
 			}
 			if (c.fillY > 0) {
 				c.widgetHeight = rowHeight[c.row] * c.fillY - c.computedPadTop - c.computedPadBottom;
-				float maxHeight = h(c.maxHeight, c);
+				float maxHeight = c.maxHeight.get(c);
 				if (maxHeight > 0) c.widgetHeight = Math.min(c.widgetHeight, maxHeight);
 			}
 
