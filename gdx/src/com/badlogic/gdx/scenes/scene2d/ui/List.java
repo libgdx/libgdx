@@ -257,6 +257,9 @@ public class List extends Widget implements Cullable {
 	 * @see #getItemsDisplayed()
 	 */
 	public void filterList(String filter, boolean case_sensitive) {
+		if (filter.isEmpty() && getItems().length == getItemsDisplayed().length) // don't need to filter
+			return;
+		
 		if (!case_sensitive)
 			filter = filter.toLowerCase();
 		
