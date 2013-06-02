@@ -598,6 +598,10 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 			if (type != null) {
 				object.getProperties().put("type", type);
 			}
+			int gid = element.getIntAttribute("gid", -1);
+			if (gid != -1) {
+				object.getProperties().put("gid", gid);
+			}
 			object.getProperties().put("x", x);
 			object.getProperties().put("y", yUp ? y - height : y);
 			object.setVisible(element.getIntAttribute("visible", 1) == 1);
