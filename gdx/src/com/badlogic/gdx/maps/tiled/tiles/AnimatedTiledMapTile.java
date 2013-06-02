@@ -44,7 +44,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 
 	@Override
 	public TextureRegion getTextureRegion () {
-		long currentFrame = (lastTiledMapRenderTime / (long)animationInterval) % frameCount;
+		long currentFrame = (lastTiledMapRenderTime / (long)(animationInterval * 1000f)) % frameCount;
 		return frameTiles.get((int)currentFrame).getTextureRegion();
 	}
 
