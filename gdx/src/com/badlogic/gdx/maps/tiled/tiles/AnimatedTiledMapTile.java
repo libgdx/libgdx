@@ -21,6 +21,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 
 	private float animationInterval;
 	private long frameCount = 0;
+	private static final long initialTimeOffset = TimeUtils.millis();
 
 	@Override
 	public int getId () {
@@ -44,7 +45,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 
 	@Override
 	public TextureRegion getTextureRegion () {
-		long currentFrame = (lastTiledMapRenderTime / (long)animationInterval) % frameCount;
+		long currentFrame = (lastTiledMapRenderTime / (long)(animationInterval * 1000f)) % frameCount;
 		return frameTiles.get((int)currentFrame).getTextureRegion();
 	}
 
@@ -59,7 +60,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	/** Function is called by BatchTiledMapRenderer render(), lastTiledMapRenderTime is used to keep all of the tiles in lock-step
 	 * animation and avoids having to call TimeUtils.millis() in getTextureRegion() */
 	public static void updateAnimationBaseTime () {
-		lastTiledMapRenderTime = TimeUtils.millis();
+		lastTiledMapRenderTime = TimeUtils.millis() - initialTimeOffset;
 	}
 
 	public AnimatedTiledMapTile (float interval, Array<StaticTiledMapTile> frameTiles) {
