@@ -222,7 +222,7 @@ void main() {
 	#endif // normalFlag
 
     #ifdef fogFlag
-        float fog  = length(u_cameraPosition.xyz - pos.xyz) * (1.09 / u_cameraPosition.w); // fog before clip
+        float fog  = length(u_cameraPosition.xyz - pos.xyz) * u_cameraPosition.w;
               fog *= fog;
         v_fog = min(fog, 1.0);
     #endif

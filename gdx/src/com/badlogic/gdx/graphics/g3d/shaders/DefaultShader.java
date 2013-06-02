@@ -98,6 +98,7 @@ public class DefaultShader extends BaseShader {
 	protected int pointLightsSize;
 
 	protected boolean lighting;
+    protected boolean fog;
 	protected final AmbientCubemap ambientCubemap = new AmbientCubemap();
 	protected final DirectionalLight directionalLights[];
 	protected final PointLight pointLights[];
@@ -130,6 +131,7 @@ public class DefaultShader extends BaseShader {
 		}
 		init(program, mask, attributes, 0);
 		this.lighting = lighting;
+        this.fog = fog;
 		this.directionalLights = new DirectionalLight[lighting && numDirectional > 0 ? numDirectional : 0];
 		for (int i = 0; i < directionalLights.length; i++)
 			directionalLights[i] = new DirectionalLight();
@@ -225,7 +227,8 @@ public class DefaultShader extends BaseShader {
 	public boolean canRender(final Renderable renderable) {
 		return mask == renderable.material.getMask() && 
 			attributes == getAttributesMask(renderable.mesh.getVertexAttributes()) && 
-			(renderable.lights != null) == lighting;
+			(renderable.lights != null) == lighting &&
+            ((renderable.lights != null && renderable.lights.fog != null) == fog);
 	}
 	
 	private final boolean can(final long flag) {
@@ -265,7 +268,7 @@ public class DefaultShader extends BaseShader {
 			context.setDepthTest(true, defaultDepthFunc);
 		
 		set(u_projTrans, camera.combined);
-		set(u_cameraPosition, camera.position.x, camera.position.y, camera.position.z, camera.far);
+		set(u_cameraPosition, camera.position.x, camera.position.y, camera.position.z, 1.09f / camera.far);
 		set(u_cameraDirection, camera.direction);
 		set(u_cameraUp, camera.up);
 		
@@ -420,7 +423,7 @@ public class DefaultShader extends BaseShader {
 			}
 		}
 
-        if (lights.fog.a > 0) {
+        if (lights.fog != null) {
             program.setUniformf(loc(u_fogColor), lights.fog);
         }
 	}
