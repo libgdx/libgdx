@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
-/* @author semtiko */
+/** @author semtiko */
 public class Tick {
   private long delay, time;
 
@@ -36,7 +36,7 @@ public class Tick {
 	}
 
 	public boolean ready() {
-		if (TimeUtils.millis() - time > delay) {
+		if (TimeUtils.millis() - time >= delay) {
 			setCurrentTime();
 
 			return true;
