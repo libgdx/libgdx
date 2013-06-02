@@ -1,4 +1,6 @@
 [0.9.9]
+- removed FileHandle#file(), has no business in there.
+- removed box2deditor
 - removed custom typedarrays in gwt backend
 - added classpath files support for gwt backend (limited)
 - moved AndroidWallpaperListener to Android Backend

@@ -15,12 +15,6 @@ package com.badlogic.gdxinvaders.screens;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.ControllerAdapter;
-import com.badlogic.gdx.controllers.ControllerListener;
-import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.controllers.PovDirection;
-import com.badlogic.gdx.controllers.mappings.Ouya;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
@@ -61,18 +55,18 @@ public class MainMenu extends InvadersScreen {
 		
 		// check for attached controllers and if we are on
 		// Ouya.
-		if(Controllers.getControllers().size > 0) {
-			Controller controller = Controllers.getControllers().get(0);
-			if(Ouya.ID.equals(controller.getName())) {
-				controller.addListener(new ControllerAdapter() {
-					@Override
-					public boolean buttonUp (Controller controller, int buttonIndex) {
-						isDone = true;
-						return false;
-					}
-				});
-			}
-		}
+//		if(Controllers.getControllers().size > 0) {
+//			Controller controller = Controllers.getControllers().get(0);
+//			if(Ouya.ID.equals(controller.getName())) {
+//				controller.addListener(new ControllerAdapter() {
+//					@Override
+//					public boolean buttonUp (Controller controller, int buttonIndex) {
+//						isDone = true;
+//						return false;
+//					}
+//				});
+//			}
+//		}
 	}
 
 	@Override

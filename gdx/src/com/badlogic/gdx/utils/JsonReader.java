@@ -426,6 +426,11 @@ public class JsonReader implements BaseJsonReader {
 			parseRuntimeEx = ex;
 		}
 
+		JsonValue root = this.root;
+		this.root = null;
+		current = null;
+		lastChild.clear();
+
 		if (p < pe) {
 			int lineNumber = 1;
 			for (int i = 0; i < p; i++)
@@ -442,8 +447,6 @@ public class JsonReader implements BaseJsonReader {
 		} else if (parseRuntimeEx != null) {
 			throw new SerializationException("Error parsing JSON: " + new String(data), parseRuntimeEx);
 		}
-		JsonValue root = this.root;
-		this.root = null;
 		return root;
 	}
 
@@ -581,6 +584,7 @@ public class JsonReader implements BaseJsonReader {
 	// line 236 "JsonReader.rl"
 
 	private final Array<JsonValue> elements = new Array(8);
+	private final Array<JsonValue> lastChild = new Array(8);
 	private JsonValue root, current;
 
 	private void addChild (String name, JsonValue child) {
@@ -588,9 +592,14 @@ public class JsonReader implements BaseJsonReader {
 		if (current == null) {
 			current = child;
 			root = child;
-		} else if (current.isArray() || current.isObject())
-			current.addChild(child);
-		else
+		} else if (current.isArray() || current.isObject()) {
+			if (current.size == 0)
+				current.child = child;
+			else
+				lastChild.pop().next = child;
+			lastChild.add(child);
+			current.size++;
+		} else
 			root = current;
 	}
 
@@ -610,6 +619,7 @@ public class JsonReader implements BaseJsonReader {
 
 	protected void pop () {
 		root = elements.pop();
+		if (current.size > 0) lastChild.pop();
 		current = elements.size > 0 ? elements.peek() : null;
 	}
 

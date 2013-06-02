@@ -21,7 +21,6 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <MtouchDebug>True</MtouchDebug>
-    <MtouchProfiling>True</MtouchProfiling>
     <MtouchLink>None</MtouchLink>
     <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
     <MtouchI18n>west</MtouchI18n>
@@ -30,6 +29,8 @@
         <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../gdx-invaders/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;invaders.dll&quot; -DEXCLUDE=&quot;**/GdxInvadersDesktop.java&quot; -v" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
+    <MtouchArch>ARMv7</MtouchArch>
+    <OptimizePNGs>false</OptimizePNGs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -44,9 +45,11 @@
     <MtouchUseLlvm>True</MtouchUseLlvm>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../gdx-invaders/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;invaders.dll&quot; -DEXCLUDE=&quot;**/GdxInvadersDesktop.java&quot; -v" workingdir="${ProjectDir}" />
+        <Command type="BeforeBuild" command="ant -v -f convert.xml" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
+    <MtouchArch>ARMv7</MtouchArch>
+    <OptimizePNGs>false</OptimizePNGs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>True</DebugSymbols>
@@ -59,7 +62,6 @@
     <ConsolePause>False</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>True</MtouchDebug>
-    <MtouchProfiling>True</MtouchProfiling>
     <CustomCommands>
       <CustomCommands>
         <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../gdx-invaders/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;invaders.dll&quot; -DEXCLUDE=&quot;**/GdxInvadersDesktop.java&quot; -v" workingdir="${ProjectDir}" />
@@ -68,6 +70,7 @@
     <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
     <MtouchArch>ARMv7</MtouchArch>
     <MtouchI18n>west</MtouchI18n>
+    <OptimizePNGs>false</OptimizePNGs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -87,6 +90,7 @@
     <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
     <MtouchArch>ARMv7</MtouchArch>
     <MtouchUseSGen>True</MtouchUseSGen>
+    <OptimizePNGs>false</OptimizePNGs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
@@ -114,9 +118,6 @@
     <Reference Include="monotouch" />
     <Reference Include="gdx">
       <HintPath>..\..\..\..\gdx\libs\ios32\gdx.dll</HintPath>
-    </Reference>
-    <Reference Include="gdx-backend-ios">
-      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\gdx-backend-ios.dll</HintPath>
     </Reference>
     <Reference Include="invaders">
       <HintPath>invaders.dll</HintPath>
@@ -150,6 +151,12 @@
     </Reference>
     <Reference Include="IKVM.Runtime">
       <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ikvm\bin\IKVM.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="gdx-backend-ios">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\ios32\gdx-backend-ios.dll</HintPath>
+    </Reference>
+    <Reference Include="libObjectAL">
+      <HintPath>..\..\..\..\backends\gdx-backend-iosmonotouch\libs\objectal\libObjectAL.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
