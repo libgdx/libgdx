@@ -54,6 +54,7 @@ public class SelectBox extends Widget {
 	SelectList list;
 	private float prefWidth, prefHeight;
 	private ClickListener clickListener;
+	private int maxDropdownCount;
 
 	public SelectBox (Object[] items, Skin skin) {
 		this(items, skin.get(SelectBoxStyle.class));
@@ -68,6 +69,7 @@ public class SelectBox extends Widget {
 		setItems(items);
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
+		setMaxDropdownCount(0);
 
 		addListener(clickListener = new ClickListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -78,6 +80,19 @@ public class SelectBox extends Widget {
 				return true;
 			}
 		});
+	}
+
+	/**
+	 * Set the max number of dropdown List items to display when the box is opened.
+	 * @param num_items Max number of items to display, or <= 0 to display them all
+	 */
+	public void setMaxDropdownCount(int num_items) {
+		maxDropdownCount = num_items;
+	}
+
+	/** @return Max number of dropdown List items to display when the box is opened, or <= 0 to display them all. */
+	public int getMaxDropdownCount() {
+		return maxDropdownCount;
 	}
 
 	public void setStyle (SelectBoxStyle style) {
@@ -255,7 +270,10 @@ public class SelectBox extends Widget {
 			list.setSelectedIndex(selectedIndex);
 
 			// Show the list above or below the select box, limited to the available height.
-			float height = getPrefHeight();
+			//float height = getPrefHeight(); // old method
+			
+			// set the available height to show the max desired dropdown items
+			float height = list.getItemHeight() * ((getMaxDropdownCount() <= 0 ? list.getItems().length : Math.min(getMaxDropdownCount(), list.getItems().length)) + 1);
 			float heightBelow = tmpCoords.y;
 			float heightAbove = stage.getCamera().viewportHeight - tmpCoords.y - SelectBox.this.getHeight();
 			boolean below = true;
