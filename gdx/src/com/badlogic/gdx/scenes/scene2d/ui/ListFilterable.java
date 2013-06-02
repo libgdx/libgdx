@@ -70,6 +70,9 @@ public class ListFilterable extends List {
 	 * @param case_sensitive Whether the filter and items are compared case sensitive
 	 */
 	public void filterList(String filter, boolean case_sensitive) {
+		if (filter.isEmpty() && getItems().length == getItemsDisplayed().length) // don't need to filter
+			return;
+		
 		if (!case_sensitive)
 			filter = filter.toLowerCase();
 		
