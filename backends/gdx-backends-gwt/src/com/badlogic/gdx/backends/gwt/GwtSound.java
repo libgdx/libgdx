@@ -45,12 +45,12 @@ public class GwtSound implements Sound {
 
 	@Override
 	public long loop () {
-		return 0;
+		return -1;
 	}
 
 	@Override
 	public long loop (float volume) {
-		return 0;
+		return -1;
 	}
 
 	@Override

@@ -32,6 +32,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 public class ClickListener extends InputListener {
 	private float tapSquareSize = 14, touchDownX = -1, touchDownY = -1;
 	private int pressedPointer = -1;
+	private int pressedButton = -1;
 	private int button;
 	private boolean pressed, over, cancelled;
 	private long tapCountInterval = (long)(0.4f * 1000000000l);
@@ -41,6 +42,7 @@ public class ClickListener extends InputListener {
 	public ClickListener () {
 	}
 
+	/** @see #setButton(int) */
 	public ClickListener (int button) {
 		this.button = button;
 	}
@@ -50,6 +52,7 @@ public class ClickListener extends InputListener {
 		if (pointer == 0 && this.button != -1 && button != this.button) return false;
 		pressed = true;
 		pressedPointer = pointer;
+		pressedButton = button;
 		touchDownX = x;
 		touchDownY = y;
 		return true;
@@ -80,6 +83,7 @@ public class ClickListener extends InputListener {
 			}
 			pressed = false;
 			pressedPointer = -1;
+			pressedButton = -1;
 			cancelled = false;
 		}
 	}
@@ -166,6 +170,17 @@ public class ClickListener extends InputListener {
 		return touchDownY;
 	}
 
+	/** The button that initially pressed this button or -1 if the button is not pressed. */
+	public int getPressedButton () {
+		return pressedButton;
+	}
+
+	/** The pointer that initially pressed this button or -1 if the button is not pressed. */
+	public int getPressedPointer () {
+		return pressedPointer;
+	}
+
+	/** @see #setButton(int) */
 	public int getButton () {
 		return button;
 	}

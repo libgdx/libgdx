@@ -54,7 +54,7 @@ public class GestureDetector extends InputAdapter {
 	private final Task longPressTask = new Task() {
 		@Override
 		public void run () {
-			if (listener.longPress(pointer1.x, pointer1.y)) longPressFired = true;
+			longPressFired = listener.longPress(pointer1.x, pointer1.y);
 		}
 	};
 

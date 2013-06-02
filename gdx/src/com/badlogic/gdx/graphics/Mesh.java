@@ -680,12 +680,31 @@ public class Mesh implements Disposable {
 		return extendBoundingBox(out.inf(), offset, count);
 	}
 	
+	/** Calculate the {@link BoundingBox} of the specified part.
+	 * @param out the bounding box to store the result in. 
+	 * @param offset the start index of the part.
+	 * @param count the amount of indices the part contains. 
+	 * @return the value specified by out. */
+	public BoundingBox calculateBoundingBox(final BoundingBox out, int offset, int count, final Matrix4 transform) {
+		return extendBoundingBox(out.inf(), offset, count, transform);
+	}
+
 	/** Extends the specified {@link BoundingBox} with the specified part.
 	 * @param out the bounding box to store the result in. 
 	 * @param offset the start index of the part.
 	 * @param count the amount of indices the part contains. 
 	 * @return the value specified by out. */
 	public BoundingBox extendBoundingBox(final BoundingBox out, int offset, int count) {
+		return extendBoundingBox(out, offset, count, null);
+	}
+	
+	private final Vector3 tmpV = new Vector3();
+	/** Extends the specified {@link BoundingBox} with the specified part.
+	 * @param out the bounding box to store the result in. 
+	 * @param offset the start index of the part.
+	 * @param count the amount of indices the part contains. 
+	 * @return the value specified by out. */
+	public BoundingBox extendBoundingBox(final BoundingBox out, int offset, int count, final Matrix4 transform) {
 		int numIndices = getNumIndices();
 		if (offset < 0 || count < 1 || offset + count > numIndices)
 			throw new GdxRuntimeException("Not enough indices");
@@ -701,19 +720,28 @@ public class Mesh implements Disposable {
 		case 1:
 			for (int i = offset; i < end; i++) {
 				final int idx = index.get(i) * vertexSize + posoff;
-				out.ext(verts.get(idx), 0, 0);
+				tmpV.set(verts.get(idx), 0, 0);
+				if (transform != null)
+					tmpV.mul(transform);
+				out.ext(tmpV);
 			}
 			break;
 		case 2:
 			for (int i = offset; i < end; i++) {
 				final int idx = index.get(i) * vertexSize + posoff;
-				out.ext(verts.get(idx), verts.get(idx + 1), 0);
+				tmpV.set(verts.get(idx), verts.get(idx + 1), 0);
+				if (transform != null)
+					tmpV.mul(transform);
+				out.ext(tmpV);
 			}
 			break;
 		case 3:
 			for (int i = offset; i < end; i++) {
 				final int idx = index.get(i) * vertexSize + posoff;
-				out.ext(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
+				tmpV.set(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
+				if (transform != null)
+					tmpV.mul(transform);
+				out.ext(tmpV);
 			}
 			break;
 		}
