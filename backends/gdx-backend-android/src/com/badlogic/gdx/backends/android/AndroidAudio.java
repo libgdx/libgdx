@@ -19,8 +19,6 @@ package com.badlogic.gdx.backends.android;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import android.app.Activity;
 import android.content.Context;
@@ -45,10 +43,11 @@ public final class AndroidAudio implements Audio {
 	private final AudioManager manager;
 	protected final List<AndroidMusic> musics = new ArrayList<AndroidMusic>();
 	private final List<SoundPoolContainer> containers = new ArrayList<SoundPoolContainer>();
-	private final int MAX_STREAMS_PER_POOL = 15;
+	int MAX_STREAMS_PER_POOL;
 
 	public AndroidAudio (Context context, AndroidApplicationConfiguration config) {
 		manager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+		MAX_STREAMS_PER_POOL = config.maxSimultaneousSounds;
 		if (context instanceof Activity) {
 			((Activity)context).setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		}
@@ -127,21 +126,14 @@ public final class AndroidAudio implements Audio {
 			try {
 				AssetFileDescriptor descriptor = aHandle.assets.openFd(aHandle.path());
 
-				String key = aHandle.path();
-				for (SoundPoolContainer container : containers) {
-					if (container.contains(key)) {
-						return container.get(key);
-					}
-				}
-
 				for (SoundPoolContainer container : containers) {
 					if (!container.isFull()) {
-						return container.loadSound(key, manager, container.soundPool.load(descriptor, 1));
+						return container.loadSound(manager, container.soundPool.load(descriptor, 1));
 					}
 				}
 				SoundPoolContainer container = new SoundPoolContainer();
 				containers.add(container);
-				AndroidSound sound = container.loadSound(key, manager, container.soundPool.load(descriptor, 1));
+				AndroidSound sound = container.loadSound(manager, container.soundPool.load(descriptor, 1));
 
 				descriptor.close();
 				return sound;
@@ -151,21 +143,15 @@ public final class AndroidAudio implements Audio {
 			}
 		} else {
 			try {
-				String key = aHandle.file().getPath();
-				for (SoundPoolContainer container : containers) {
-					if (container.contains(key)) {
-						return container.get(key);
-					}
-				}
 
 				for (SoundPoolContainer container : containers) {
 					if (!container.isFull()) {
-						return container.loadSound(key, manager, container.soundPool.load(aHandle.file().getPath(), 1));
+						return container.loadSound(manager, container.soundPool.load(aHandle.file().getPath(), 1));
 					}
 				}
 				SoundPoolContainer container = new SoundPoolContainer();
 				containers.add(container);
-				return container.loadSound(key, manager, container.soundPool.load(aHandle.file().getPath(), 1));
+				return container.loadSound(manager, container.soundPool.load(aHandle.file().getPath(), 1));
 			} catch (Exception ex) {
 				throw new GdxRuntimeException("Error loading audio file: " + file, ex);
 			}
@@ -199,37 +185,20 @@ public final class AndroidAudio implements Audio {
 	/** A private class that holds the <code>SoundPool</code>. */
 	private class SoundPoolContainer {
 		public SoundPool soundPool;
-		private Map<String, AndroidSound> soundMap;
 		private int size;
 
 		public SoundPoolContainer () {
 			soundPool = new SoundPool(MAX_STREAMS_PER_POOL, AudioManager.STREAM_MUSIC, 100);
-			soundMap = new ConcurrentHashMap<String, AndroidSound>(MAX_STREAMS_PER_POOL);
 			size = 0;
 		}
 
 		/** Creates a new AndroidSound and put it in the map.
-		 * @param key Unique key
 		 * @param manager Android AudioManager
 		 * @param soundId The id of the sound isntance.
 		 * @return The sound that just got created. */
-		public AndroidSound loadSound (String key, AudioManager manager, int soundId) {
+		public AndroidSound loadSound (AudioManager manager, int soundId) {
 			size++;
-			return soundMap.put(key, new AndroidSound(soundPool, manager, soundId));
-		}
-
-		/** Check if there is already a sound exists in this container.
-		 * @param key The key for the map.
-		 * @return Whether the sound already exists in this container or not. */
-		public boolean contains (String key) {
-			return soundMap.containsKey(key);
-		}
-
-		/** Get the sound from the container.
-		 * @param key The key value
-		 * @return The sound. */
-		public AndroidSound get (String key) {
-			return soundMap.get(key);
+			return new AndroidSound(soundPool, manager, soundId);
 		}
 
 		/** Check if the SoundPool is full or not.
@@ -241,7 +210,6 @@ public final class AndroidAudio implements Audio {
 		/** Dispose the sound pool and clear the soundmap. */
 		public void dispose () {
 			soundPool.release();
-			soundMap.clear();
 		}
 	}
 }
