@@ -282,13 +282,6 @@ public class SelectBox extends Widget {
 					height = heightBelow;
 			}
 
-			// Fit items evenly.
-			float itemHeight = list.getItemHeight();
-			float backgroundPadding = getStyle().background.getTopHeight() + getStyle().background.getBottomHeight();
-			height -= backgroundPadding;
-			height -= height % itemHeight;
-			height += backgroundPadding;
-
 			if (below)
 				setY(tmpCoords.y - height);
 			else
@@ -296,6 +289,8 @@ public class SelectBox extends Widget {
 			setX(tmpCoords.x);
 			setWidth(SelectBox.this.getWidth());
 			setHeight(height);
+
+			float itemHeight = list.getItemHeight();
 
 			scrollToCenter(0, list.getHeight() - selectedIndex * itemHeight - itemHeight / 2, 0, 0);
 			updateVisualScroll();
