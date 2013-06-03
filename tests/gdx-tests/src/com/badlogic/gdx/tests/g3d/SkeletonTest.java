@@ -11,16 +11,19 @@ import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.StringBuilder;
 
 public class SkeletonTest extends BaseG3dHudTest {
 	ShapeRenderer shapeRenderer;
+	ObjectMap<ModelInstance, AnimationController> animationControllers = new ObjectMap<ModelInstance, AnimationController>(); 
 	
 	@Override
 	public void create () {
@@ -41,10 +44,10 @@ public class SkeletonTest extends BaseG3dHudTest {
 	private final static Quaternion tmpQ = new Quaternion();
 	@Override
 	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
-		for (final ModelInstance instance : instances) {
-			updateAnimation(instance);
+		for (ObjectMap.Entry<ModelInstance, AnimationController> e : animationControllers.entries())
+			e.value.update(Gdx.graphics.getDeltaTime());
+		for (final ModelInstance instance : instances)
 			renderSkeleton(instance);
-		}
 		batch.render(instances);
 	}
 	
@@ -102,32 +105,29 @@ public class SkeletonTest extends BaseG3dHudTest {
 			return;
 		
 		instances.clear();
+		animationControllers.clear();
 		final ModelInstance instance = new ModelInstance(assets.get(currentlyLoading, Model.class));
 		instance.materials.get(0).set(new BlendingAttribute(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA, 0.5f));
 		instances.add(instance);
+		if (instance.animations.size > 0)
+			animationControllers.put(instance, new AnimationController(instance));
 		currentlyLoading = null;
 	}
 	
 	protected void switchAnimation() {
-		for (final ModelInstance instance : instances) {
-			if (instance.animations.size > 0) {
-				if (instance.currentAnimation != null) {
-					for (final NodeAnimation nodeAnim : instance.currentAnimation.nodeAnimations)
-						nodeAnim.node.isAnimated = false;
-					instance.calculateTransforms();
-				}
-				int animIndex = -1;
-				for (int i = 0; i < instance.animations.size; i++) {
-					final Animation animation = instance.animations.get(i);
-					if (instance.currentAnimation == animation) {
+		for (ObjectMap.Entry<ModelInstance, AnimationController> e : animationControllers.entries()) {
+			int animIndex = 0;
+			if (e.value.current != null) {
+				for (int i = 0; i < e.key.animations.size; i++) {
+					final Animation animation = e.key.animations.get(i);
+					if (e.value.current.animation == animation) {
 						animIndex = i;
 						break;
 					}
 				}
-				animIndex = (animIndex + 1) % (instance.animations.size + 1);
-				instance.currentAnimation = animIndex == instance.animations.size ? null : instance.animations.get(animIndex);
-				instance.currentAnimTime = 0f;
 			}
+			animIndex = (animIndex + 1) % e.key.animations.size;
+			e.value.animate(e.key.animations.get(animIndex).id, -1, 1f, null, 0.2f);
 		}
 	}
 	
@@ -141,32 +141,5 @@ public class SkeletonTest extends BaseG3dHudTest {
 		if (keycode == Keys.SPACE || keycode == Keys.MENU)
 			switchAnimation();
 		return super.keyUp(keycode);
-	}
-	
-	public void updateAnimation(final ModelInstance instance) {
-		if (instance.currentAnimation != null) {
-			instance.currentAnimTime = (instance.currentAnimTime + Gdx.graphics.getDeltaTime()) % instance.currentAnimation.duration;
-			for (final NodeAnimation nodeAnim : instance.currentAnimation.nodeAnimations) {
-				nodeAnim.node.isAnimated = true;
-				final int n = nodeAnim.keyframes.size - 1;
-				if (n == 0) {
-					nodeAnim.node.localTransform.idt().
-						translate(nodeAnim.keyframes.get(0).translation).
-						rotate(nodeAnim.keyframes.get(0).rotation).
-						scl(nodeAnim.keyframes.get(0).scale);					
-				}
-				for (int i = 0; i < n; i++) {
-					if (instance.currentAnimTime >= nodeAnim.keyframes.get(i).keytime && instance.currentAnimTime <= nodeAnim.keyframes.get(i+1).keytime) {
-						final float t = (instance.currentAnimTime - nodeAnim.keyframes.get(i).keytime) / (nodeAnim.keyframes.get(i+1).keytime - nodeAnim.keyframes.get(i).keytime);
-						nodeAnim.node.localTransform.idt().
-							translate(tmpV.set(nodeAnim.keyframes.get(i).translation).lerp(nodeAnim.keyframes.get(i+1).translation, t)).
-							rotate(tmpQ.set(nodeAnim.keyframes.get(i).rotation).slerp(nodeAnim.keyframes.get(i+1).rotation, t)).
-							scl(tmpV.set(nodeAnim.keyframes.get(i).scale).lerp(nodeAnim.keyframes.get(i+1).scale, t));
-						break;
-					}
-				}
-			}
-			instance.calculateTransforms();
-		}
 	}
 }
