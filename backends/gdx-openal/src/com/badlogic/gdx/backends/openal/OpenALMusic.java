@@ -24,6 +24,7 @@ import org.lwjgl.openal.AL11;
 
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import static org.lwjgl.openal.AL10.*;
@@ -42,6 +43,7 @@ public abstract class OpenALMusic implements Music {
 	private int format, sampleRate;
 	private boolean isLooping, isPlaying;
 	private float volume = 1;
+	private float pan = 0;
 	private float renderedSeconds, secondsPerBuffer;
 
 	protected final FileHandle file;
@@ -71,7 +73,7 @@ public abstract class OpenALMusic implements Music {
 				if (alGetError() != AL_NO_ERROR) throw new GdxRuntimeException("Unabe to allocate audio buffers.");
 			}
 			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
-			alSourcef(sourceID, AL_GAIN, volume);
+			setPan(pan, volume);
 			for (int i = 0; i < bufferCount; i++) {
 				int bufferID = buffers.get(i);
 				if (!fill(bufferID)) break;
@@ -124,6 +126,16 @@ public abstract class OpenALMusic implements Music {
 	
 	public float getVolume() {
 		return this.volume;
+	}
+	
+	public void setPan (float pan, float volume) {
+		this.volume = volume;
+		this.pan = pan;
+		if (audio.noDevice) return;
+		if (sourceID == -1) return;
+		alSource3f(sourceID, AL_POSITION, MathUtils.cos((pan - 1) * MathUtils.PI / 2), 0,
+			MathUtils.sin((pan + 1) * MathUtils.PI / 2));
+		alSourcef(sourceID, AL_GAIN, volume);
 	}
 
 	public float getPosition () {
