@@ -40,6 +40,7 @@
 - ScrollBar#setForceOverscroll renamed to setForceScroll, as it affects more than just overscroll.
 - ArrayMap#addAll renamed to putAll to match the other maps.
 - Added ObjectSet and IntSet.
+- Added Music#setPan.
 - Sound#play and Sound#loop on Android now return -1 on failure, to match other backends.
 
 [0.9.8]
