@@ -35063,21 +35063,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRigi
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRigidBody_1upcast_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btCollisionObject *arg1 = (btCollisionObject *) 0 ;
-  btRigidBody *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btCollisionObject **)&jarg1; 
-  result = (btRigidBody *)btRigidBody::upcast((btCollisionObject const *)arg1);
-  *(btRigidBody **)&jresult = result; 
-  return jresult;
-}
-
-
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btRigidBody_1predictIntegratedTransform(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2, jobject jarg3) {
   btRigidBody *arg1 = (btRigidBody *) 0 ;
   btScalar arg2 ;

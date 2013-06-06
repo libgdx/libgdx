@@ -1897,7 +1897,6 @@ public class gdxBulletJNI {
   public final static native long new_btRigidBody__SWIG_2(float jarg1, long jarg2, btMotionState jarg2_, long jarg3, btCollisionShape jarg3_);
   public final static native void delete_btRigidBody(long jarg1);
   public final static native void btRigidBody_proceedToTransform(long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
-  public final static native long btRigidBody_upcast__SWIG_0(long jarg1, btCollisionObject jarg1_);
   public final static native void btRigidBody_predictIntegratedTransform(long jarg1, btRigidBody jarg1_, float jarg2, Matrix4 jarg3);
   public final static native void btRigidBody_saveKinematicState(long jarg1, btRigidBody jarg1_, float jarg2);
   public final static native void btRigidBody_applyGravity(long jarg1, btRigidBody jarg1_);

@@ -53,9 +53,8 @@ public class btCollisionObjectArray {
   }
 
   public btCollisionObject at(int n) {
-    long cPtr = gdxBulletJNI.btCollisionObjectArray_at__SWIG_0(swigCPtr, this, n);
-    return (cPtr == 0) ? null : new btCollisionObject(cPtr, false);
-  }
+	return btCollisionObject.getInstance(gdxBulletJNI.btCollisionObjectArray_at__SWIG_0(swigCPtr, this, n), false);
+}
 
   public void clear() {
     gdxBulletJNI.btCollisionObjectArray_clear(swigCPtr, this);

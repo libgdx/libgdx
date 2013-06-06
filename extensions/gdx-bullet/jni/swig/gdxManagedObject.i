@@ -5,11 +5,11 @@
  * @author Xoppa */
 %define CREATE_MANAGED_OBJECT(_TYPE)
 
-%typemap(javaout) 	_TYPE *, const _TYPE * {
+%typemap(javaout) 	_TYPE *, const _TYPE *, _TYPE * const & {
 	return _TYPE.getInstance($jnicall, $owner);
 }
 
-%typemap(javadirectorin) _TYPE *, const _TYPE *	"_TYPE.getInstance($1, false)"
+%typemap(javadirectorin) _TYPE *, const _TYPE *, _TYPE * const &	"_TYPE.getInstance($1, false)"
 
 %typemap(javadestruct, methodname="delete", methodmodifiers="public synchronized") _TYPE %{ {
 	beforeDelete();

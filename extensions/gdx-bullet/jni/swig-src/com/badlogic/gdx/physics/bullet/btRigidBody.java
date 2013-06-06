@@ -56,11 +56,6 @@ public class btRigidBody extends btCollisionObject {
     gdxBulletJNI.btRigidBody_proceedToTransform(swigCPtr, this, newTrans);
   }
 
-  public static btRigidBody upcast(btCollisionObject colObj) {
-    long cPtr = gdxBulletJNI.btRigidBody_upcast__SWIG_0(btCollisionObject.getCPtr(colObj), colObj);
-    return (cPtr == 0) ? null : new btRigidBody(cPtr, false);
-  }
-
   public void predictIntegratedTransform(float step, Matrix4 predictedTransform) {
     gdxBulletJNI.btRigidBody_predictIntegratedTransform(swigCPtr, this, step, predictedTransform);
   }
