@@ -63,8 +63,8 @@ public class ArrayMap<K, V> {
 	 * @param capacity Any elements added beyond this will cause the backing arrays to be grown. */
 	public ArrayMap (boolean ordered, int capacity, Class<K> keyArrayType, Class<V> valueArrayType) {
 		this.ordered = ordered;
-		keys = (K[])Reflection.newArray(keyArrayType, capacity);
-		values = (V[])Reflection.newArray(valueArrayType, capacity);
+		keys = (K[])Reflection.ArrayReflection.newInstance(keyArrayType, capacity);
+		values = (V[])Reflection.ArrayReflection.newInstance(valueArrayType, capacity);
 	}
 
 	/** Creates an ordered map with {@link #keys} and {@link #values} of the specified type and a capacity of 16. */
@@ -335,11 +335,11 @@ public class ArrayMap<K, V> {
 	}
 
 	protected void resize (int newSize) {
-		K[] newKeys = (K[])Reflection.newArray(keys.getClass().getComponentType(), newSize);
+		K[] newKeys = (K[])Reflection.ArrayReflection.newInstance(keys.getClass().getComponentType(), newSize);
 		System.arraycopy(keys, 0, newKeys, 0, Math.min(keys.length, newKeys.length));
 		this.keys = newKeys;
 
-		V[] newValues = (V[])Reflection.newArray(values.getClass().getComponentType(), newSize);
+		V[] newValues = (V[])Reflection.ArrayReflection.newInstance(values.getClass().getComponentType(), newSize);
 		System.arraycopy(values, 0, newValues, 0, Math.min(values.length, newValues.length));
 		this.values = newValues;
 	}

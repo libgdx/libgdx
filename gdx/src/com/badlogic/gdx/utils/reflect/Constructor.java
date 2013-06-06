@@ -1,32 +1,33 @@
+
 package com.badlogic.gdx.utils.reflect;
 
 import java.lang.reflect.InvocationTargetException;
 
 public final class Constructor {
-	
+
 	private final java.lang.reflect.Constructor constructor;
-	
-	Constructor(java.lang.reflect.Constructor constructor) {
+
+	Constructor (java.lang.reflect.Constructor constructor) {
 		this.constructor = constructor;
 	}
 
-	public Class[] getParameterTypes() {
+	public Class[] getParameterTypes () {
 		return constructor.getParameterTypes();
 	}
-	
-	public Class getDeclaringClass() {
+
+	public Class getDeclaringClass () {
 		return constructor.getDeclaringClass();
 	}
-	
-	public boolean isAccessible() {
-		return constructor.isAccessible();		
+
+	public boolean isAccessible () {
+		return constructor.isAccessible();
 	}
-	
-	public void setAccessible(boolean accessible) {
+
+	public void setAccessible (boolean accessible) {
 		constructor.setAccessible(accessible);
 	}
-	
-	public Object newInstance(Object... args) throws ReflectionException {
+
+	public Object newInstance (Object... args) throws ReflectionException {
 		try {
 			return constructor.newInstance(args);
 		} catch (IllegalArgumentException e) {
@@ -37,7 +38,7 @@ public final class Constructor {
 			throw new ReflectionException("", e); // TODO: Real Message
 		} catch (InvocationTargetException e) {
 			throw new ReflectionException("", e); // TODO: Real Message
-		}		
+		}
 	}
-	
+
 }

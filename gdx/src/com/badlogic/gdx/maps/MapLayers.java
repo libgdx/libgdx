@@ -75,7 +75,7 @@ public class MapLayers implements Iterable<MapLayer> {
 	public <T extends MapLayer> Array<T> getByType(Class<T> type, Array<T> fill) {
 		fill.clear();
 		for (MapLayer layer : layers) {
-			if (Reflection.isInstance(type, layer)) {
+			if (Reflection.ClassReflection.isInstance(type, layer)) {
 				fill.add((T) layer);
 			}
 		}
