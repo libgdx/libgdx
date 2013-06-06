@@ -97,7 +97,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 			ClosestRayResultCallback cb = new ClosestRayResultCallback(ray.origin, Vector3.tmp);
 			world.collisionWorld.rayTest(ray.origin, Vector3.tmp, cb);
 			if (cb.hasHit()) {
-				btRigidBody body = btRigidBody.upcast(cb.getM_collisionObject());
+				btRigidBody body = (btRigidBody)(cb.getM_collisionObject());
 				if (body != null && !body.isStaticObject() && !body.isKinematicObject()) {
 					pickedBody = body;
 					body.setActivationState(gdxBullet.DISABLE_DEACTIVATION);
